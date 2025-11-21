@@ -1,0 +1,981 @@
+{
+  "schemaVersion": 1,
+  "projectPath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
+  "projectRootName": "AIWorkflowOrchestrator",
+  "graphRenderingMode": "multi-agent",
+  "linkDisplayMode": "all",
+  "graphStats": {
+    "totalNodes": 10,
+    "folders": 6,
+    "files": 4,
+    "images": 0,
+    "videos": 0,
+    "audio": 0,
+    "code": 0,
+    "text": 3,
+    "html": 0,
+    "yaml": 0,
+    "json": 0,
+    "other": 1,
+    "totalLines": 0,
+    "maxLines": 0
+  },
+  "directoryTree": {
+    "name": "AIWorkflowOrchestrator",
+    "type": "directory",
+    "path": "AIWorkflowOrchestrator",
+    "children": [
+      {
+        "name": ".claude",
+        "type": "directory",
+        "path": ".claude",
+        "children": [],
+        "hasMore": true
+      },
+      {
+        "name": ".kamui",
+        "type": "directory",
+        "path": ".kamui",
+        "children": [],
+        "hasMore": true
+      },
+      {
+        "name": ".worktrees",
+        "type": "directory",
+        "path": ".worktrees",
+        "children": [],
+        "hasMore": true
+      },
+      {
+        "name": "docs",
+        "type": "directory",
+        "path": "docs",
+        "children": [
+          {
+            "name": "00-requirements",
+            "type": "directory",
+            "path": "docs/00-requirements",
+            "children": [
+              {
+                "name": "claude_code_design.md",
+                "type": "file",
+                "path": "docs/00-requirements/claude_code_design.md"
+              },
+              {
+                "name": "master_system_design.md",
+                "type": "file",
+                "path": "docs/00-requirements/master_system_design.md"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": ".gitignore",
+        "type": "file",
+        "path": ".gitignore"
+      },
+      {
+        "name": "README.md",
+        "type": "file",
+        "path": "README.md"
+      }
+    ]
+  },
+  "graphData": {
+    "nodes": [
+      {
+        "id": "AIWorkflowOrchestrator",
+        "name": "AIWorkflowOrchestrator",
+        "path": "AIWorkflowOrchestrator",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": null,
+        "childFileCount": 2,
+        "x": -7.343708553967813,
+        "y": 143.41268180015135,
+        "z": 15.945623414718714,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude",
+        "name": ".claude",
+        "path": "AIWorkflowOrchestrator/.claude",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator",
+        "childFileCount": 0,
+        "x": -2.805318072989304,
+        "y": 143.33471610756925,
+        "z": 11.15753170703648,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.kamui",
+        "name": ".kamui",
+        "path": "AIWorkflowOrchestrator/.kamui",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator",
+        "childFileCount": 0,
+        "x": -3.1835444429920186,
+        "y": 141.32659220739222,
+        "z": 14.081421319370596,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.worktrees",
+        "name": ".worktrees",
+        "path": "AIWorkflowOrchestrator/.worktrees",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator",
+        "childFileCount": 0,
+        "x": -9.754285130639246,
+        "y": 146.99165264326837,
+        "z": 12.39064354075684,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/docs",
+        "name": "docs",
+        "path": "AIWorkflowOrchestrator/docs",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator",
+        "childFileCount": 0,
+        "x": -5.910395969099346,
+        "y": 145.3264689350591,
+        "z": 16.01501635443097,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/docs/00-requirements",
+        "name": "00-requirements",
+        "path": "AIWorkflowOrchestrator/docs/00-requirements",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/docs",
+        "childFileCount": 2,
+        "x": -4.01093861842312,
+        "y": 145.00817092460866,
+        "z": 11.132276294925816,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/docs/00-requirements/claude_code_design.md",
+        "name": "claude_code_design.md",
+        "path": "AIWorkflowOrchestrator/docs/00-requirements/claude_code_design.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/docs/00-requirements",
+        "childFileCount": 0,
+        "x": -8.618814567071833,
+        "y": 144.68894453510285,
+        "z": 15.948381095206768,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/docs/00-requirements/master_system_design.md",
+        "name": "master_system_design.md",
+        "path": "AIWorkflowOrchestrator/docs/00-requirements/master_system_design.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/docs/00-requirements",
+        "childFileCount": 0,
+        "x": -5.4357532714391095,
+        "y": 140.38965455131986,
+        "z": 15.626936946804065,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.gitignore",
+        "name": ".gitignore",
+        "path": "AIWorkflowOrchestrator/.gitignore",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#57606f",
+        "originalColor": "#57606f",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator",
+        "childFileCount": 0,
+        "x": -8.758023006582555,
+        "y": 148.07375766285267,
+        "z": 13.011918079629297,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/README.md",
+        "name": "README.md",
+        "path": "AIWorkflowOrchestrator/README.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator",
+        "childFileCount": 0,
+        "x": -19.29085425804985,
+        "y": 175.32134952799507,
+        "z": -2.083767718619554,
+        "vx": -0.9197747694881138,
+        "vy": 3.326587166685413,
+        "vz": -1.6603508792423909
+      }
+    ],
+    "links": [
+      {
+        "source": "AIWorkflowOrchestrator",
+        "target": "AIWorkflowOrchestrator/.claude",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator",
+        "target": "AIWorkflowOrchestrator/.kamui",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator",
+        "target": "AIWorkflowOrchestrator/.worktrees",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator",
+        "target": "AIWorkflowOrchestrator/docs",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/docs",
+        "target": "AIWorkflowOrchestrator/docs/00-requirements",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/docs/00-requirements",
+        "target": "AIWorkflowOrchestrator/docs/00-requirements/claude_code_design.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/docs/00-requirements",
+        "target": "AIWorkflowOrchestrator/docs/00-requirements/master_system_design.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator",
+        "target": "AIWorkflowOrchestrator/.gitignore",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator",
+        "target": "AIWorkflowOrchestrator/README.md",
+        "type": "tree"
+      }
+    ]
+  },
+  "trackedFiles": [
+    ".claude/agents/agent_list.md",
+    ".claude/agents/api-doc-writer.md",
+    ".claude/agents/arch-police.md",
+    ".claude/agents/auth-specialist.md",
+    ".claude/agents/code-quality.md",
+    ".claude/agents/command-arch.md",
+    ".claude/agents/db-architect.md",
+    ".claude/agents/dba-mgr.md",
+    ".claude/agents/dep-mgr.md",
+    ".claude/agents/devops-eng.md",
+    ".claude/agents/domain-modeler.md",
+    ".claude/agents/e2e-tester.md",
+    ".claude/agents/gateway-dev.md",
+    ".claude/agents/gha-workflow-architect.md",
+    ".claude/agents/hook-master.md",
+    ".claude/agents/local-sync.md",
+    ".claude/agents/local-watcher.md",
+    ".claude/agents/logic-dev.md",
+    ".claude/agents/manual-writer.md",
+    ".claude/agents/meta-agent-designer.md",
+    ".claude/agents/process-mgr.md",
+    ".claude/agents/product-manager.md",
+    ".claude/agents/prompt-eng.md",
+    ".claude/agents/repo-dev.md",
+    ".claude/agents/req-analyst.md",
+    ".claude/agents/router-dev.md",
+    ".claude/agents/sec-auditor.md",
+    ".claude/agents/secret-mgr.md",
+    ".claude/agents/skill-librarian.md",
+    ".claude/agents/spec-writer.md",
+    ".claude/agents/sre-observer.md",
+    ".claude/agents/state-manager.md",
+    ".claude/agents/ui-designer.md",
+    ".claude/agents/unit-tester.md",
+    ".claude/agents/workflow-engine.md",
+    ".claude/commands/00.command_list.md",
+    ".claude/commands/ai/README.md",
+    ".claude/mcp/Brave_Search.md",
+    ".claude/mcp/Context7.md",
+    ".claude/mcp/Playwright.md",
+    ".claude/mcp/Sequential.md",
+    ".claude/mcp/Serena.md",
+    ".claude/prompt/prompt_format.yaml",
+    ".claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md",
+    ".claude/prompt/ナレッジ_Claude_Code_command_ガイド.md",
+    ".claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md",
+    ".claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
+    ".claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
+    ".claude/settings.local.json",
+    ".claude/slills/skill_list.md",
+    ".gitignore",
+    "README.md",
+    "docs/00-requirements/claude_code_design.md",
+    "docs/00-requirements/master_system_design.md"
+  ],
+  "uiState": {
+    "expandedDirs": [
+      "AIWorkflowOrchestrator",
+      "AIWorkflowOrchestrator/.claude",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude",
+      "AIWorkflowOrchestrator/.claude/agents",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/agents",
+      "AIWorkflowOrchestrator/.claude/commands",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/commands",
+      "AIWorkflowOrchestrator/.claude/commands/ai",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/commands/ai",
+      "AIWorkflowOrchestrator/.claude/mcp",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/mcp",
+      "AIWorkflowOrchestrator/.claude/prompt",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt",
+      "AIWorkflowOrchestrator/.claude/slills",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/slills",
+      "AIWorkflowOrchestrator/docs",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/docs",
+      "AIWorkflowOrchestrator/docs/00-requirements",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/docs/00-requirements",
+      "task-1763719019782-ff4e70",
+      "task-1763719022041-576354",
+      "task-1763719017598-894959",
+      "AIWorkflowOrchestrator/.kamui",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.kamui",
+      "AIWorkflowOrchestrator/.kamui/prompt",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.kamui/prompt",
+      "AIWorkflowOrchestrator/.kamui/templates",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.kamui/templates",
+      "AIWorkflowOrchestrator/.kamui/scripts",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.kamui/scripts"
+    ],
+    "selectedPath": null
+  },
+  "directoryTreeMeta": {
+    "mode": "full",
+    "maxDepthApplied": 10,
+    "maxEntriesPerDirectory": 0,
+    "isPartial": false
+  },
+  "gitHistoryMeta": {
+    "mode": "full",
+    "isPartial": false,
+    "branchPulse": {
+      "generatedAt": 1763733191955,
+      "targets": [
+        "main",
+        "task/task-1763719017598-894959",
+        "task/task-1763719019782-ff4e70",
+        "task/task-1763719022041-576354",
+        "master",
+        "daishiman/feature/add-master-system-design",
+        "daishiman/feature/development"
+      ],
+      "statsByBranch": {
+        "task/task-1763719022041-576354": {
+          "branch": "task/task-1763719022041-576354",
+          "head": "52266792fbc47007b4ddca109f477ddcac9f72d0",
+          "baseRef": "main",
+          "baseHead": "203405915abfad5aa77fdfcfa624e416e6dafe3c",
+          "mergeBase": "52266792fbc47007b4ddca109f477ddcac9f72d0",
+          "divergence": {
+            "aheadCount": 0,
+            "fileCount": 0
+          },
+          "baseline": {
+            "aheadCount": 0,
+            "behindCount": 5,
+            "fileCount": 53
+          },
+          "upstream": null
+        },
+        "task/task-1763719019782-ff4e70": {
+          "branch": "task/task-1763719019782-ff4e70",
+          "head": "52266792fbc47007b4ddca109f477ddcac9f72d0",
+          "baseRef": "main",
+          "baseHead": "203405915abfad5aa77fdfcfa624e416e6dafe3c",
+          "mergeBase": "52266792fbc47007b4ddca109f477ddcac9f72d0",
+          "divergence": {
+            "aheadCount": 0,
+            "fileCount": 0
+          },
+          "baseline": {
+            "aheadCount": 0,
+            "behindCount": 5,
+            "fileCount": 53
+          },
+          "upstream": null
+        },
+        "task/task-1763719017598-894959": {
+          "branch": "task/task-1763719017598-894959",
+          "head": "52266792fbc47007b4ddca109f477ddcac9f72d0",
+          "baseRef": "main",
+          "baseHead": "203405915abfad5aa77fdfcfa624e416e6dafe3c",
+          "mergeBase": "52266792fbc47007b4ddca109f477ddcac9f72d0",
+          "divergence": {
+            "aheadCount": 0,
+            "fileCount": 0
+          },
+          "baseline": {
+            "aheadCount": 0,
+            "behindCount": 5,
+            "fileCount": 53
+          },
+          "upstream": null
+        },
+        "main": {
+          "branch": "main",
+          "head": "203405915abfad5aa77fdfcfa624e416e6dafe3c",
+          "baseRef": "origin/main",
+          "baseHead": "749c02316a15e038ea0ec30c0925af57799bc2dd",
+          "mergeBase": "749c02316a15e038ea0ec30c0925af57799bc2dd",
+          "divergence": {
+            "aheadCount": 1,
+            "fileCount": 1
+          },
+          "baseline": {
+            "aheadCount": 1,
+            "behindCount": 0,
+            "fileCount": 1
+          },
+          "upstream": null
+        }
+      }
+    }
+  },
+  "gitHistoryState": {
+    "selectedTimelineIndex": 1,
+    "activeCommitHash": null,
+    "entries": [
+      {
+        "type": "live",
+        "label": "現在のコードベース",
+        "files": [],
+        "branch": "main",
+        "targetCommitHash": "203405915abfad5aa77fdfcfa624e416e6dafe3c",
+        "worktreePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
+        "timestamp": 1763733200483,
+        "lane": 0,
+        "branchLabel": "main",
+        "branchTags": [
+          "main"
+        ],
+        "isDefaultWorktree": true,
+        "branchColor": "#4f85e8",
+        "index": 0
+      },
+      {
+        "type": "unstaged",
+        "label": "未ステージ (4)",
+        "files": [
+          ".kamui/model-versions-cache.json",
+          ".kamui/prompt/custom-prompt.txt",
+          ".kamui/prompt/merge-prompt.txt",
+          ".kamui/system-graph-state.json"
+        ],
+        "branch": "main",
+        "targetCommitHash": "203405915abfad5aa77fdfcfa624e416e6dafe3c",
+        "worktreePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
+        "timestamp": 1763733200483,
+        "sortOrder": 0,
+        "lane": 0,
+        "branchColor": "#4f85e8",
+        "index": 1
+      },
+      {
+        "type": "staged",
+        "label": "ステージ済み (1)",
+        "files": [
+          "gitignore"
+        ],
+        "branch": "main",
+        "targetCommitHash": "203405915abfad5aa77fdfcfa624e416e6dafe3c",
+        "worktreePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
+        "timestamp": 1763733200483,
+        "sortOrder": 1,
+        "lane": 0,
+        "branchColor": "#4f85e8",
+        "index": 2
+      },
+      {
+        "type": "commit",
+        "label": "chore: Add .kamui/ and .worktrees/ to .gitignore",
+        "commit": {
+          "hash": "203405915abfad5aa77fdfcfa624e416e6dafe3c",
+          "subject": "chore: Add .kamui/ and .worktrees/ to .gitignore",
+          "author": "daishiman",
+          "timestamp": 1763731638,
+          "parents": [
+            "749c02316a15e038ea0ec30c0925af57799bc2dd"
+          ],
+          "parent": "749c02316a15e038ea0ec30c0925af57799bc2dd",
+          "refs": "HEAD -> main",
+          "branches": [
+            "HEAD -> main",
+            "main"
+          ]
+        },
+        "commitHash": "203405915abfad5aa77fdfcfa624e416e6dafe3c",
+        "lane": 0,
+        "parentLinks": [
+          {
+            "hash": "749c02316a15e038ea0ec30c0925af57799bc2dd",
+            "lane": 0
+          }
+        ],
+        "primaryBranchName": "main",
+        "branchColor": "#4f85e8",
+        "branchTags": [
+          "main"
+        ],
+        "worktrees": [
+          {
+            "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
+            "head": "203405915abfad5aa77fdfcfa624e416e6dafe3c",
+            "branch": "main",
+            "isMerged": false,
+            "mergeCommitHash": null,
+            "status": {
+              "staged": [
+                {
+                  "path": "gitignore",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": "gitignore",
+                  "timestamp": 1763733191629
+                }
+              ],
+              "unstaged": [],
+              "untracked": [
+                {
+                  "path": ".kamui/model-versions-cache.json",
+                  "status": "untracked",
+                  "rawPath": ".kamui/model-versions-cache.json",
+                  "timestamp": 1763733191629
+                },
+                {
+                  "path": ".kamui/prompt/custom-prompt.txt",
+                  "status": "untracked",
+                  "rawPath": ".kamui/prompt/custom-prompt.txt",
+                  "timestamp": 1763733191629
+                },
+                {
+                  "path": ".kamui/prompt/merge-prompt.txt",
+                  "status": "untracked",
+                  "rawPath": ".kamui/prompt/merge-prompt.txt",
+                  "timestamp": 1763733191629
+                },
+                {
+                  "path": ".kamui/system-graph-state.json",
+                  "status": "untracked",
+                  "rawPath": ".kamui/system-graph-state.json",
+                  "timestamp": 1763733191629
+                }
+              ],
+              "capturedAt": 1763733191629
+            },
+            "normalizedPath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
+            "lane": 0
+          }
+        ],
+        "index": 3
+      },
+      {
+        "type": "commit",
+        "label": "Merge pull request #2 from daishiman/feature/add-master-syst…",
+        "commit": {
+          "hash": "749c02316a15e038ea0ec30c0925af57799bc2dd",
+          "subject": "Merge pull request #2 from daishiman/feature/add-master-system-design",
+          "author": "daishiman",
+          "timestamp": 1763731483,
+          "parents": [
+            "a132a282d48d1a867e42b032afdca93e5568d3ea",
+            "7fb9f93466f23f55a30b9d6d537ec28d6abdc696"
+          ],
+          "parent": "a132a282d48d1a867e42b032afdca93e5568d3ea",
+          "refs": "origin/main, origin/HEAD",
+          "branches": [
+            "origin/main",
+            "origin/HEAD",
+            "main",
+            "daishiman/feature/add-master-system-design"
+          ]
+        },
+        "commitHash": "749c02316a15e038ea0ec30c0925af57799bc2dd",
+        "lane": 0,
+        "parentLinks": [
+          {
+            "hash": "a132a282d48d1a867e42b032afdca93e5568d3ea",
+            "lane": 0
+          },
+          {
+            "hash": "7fb9f93466f23f55a30b9d6d537ec28d6abdc696",
+            "lane": 1
+          }
+        ],
+        "primaryBranchName": "main",
+        "branchColor": "#4f85e8",
+        "branchTags": [
+          "daishiman/feature/add-master-system-design"
+        ],
+        "index": 4
+      },
+      {
+        "type": "commit",
+        "label": "docs: Update master system design with comprehensive specifi…",
+        "commit": {
+          "hash": "7fb9f93466f23f55a30b9d6d537ec28d6abdc696",
+          "subject": "docs: Update master system design with comprehensive specifications",
+          "author": "daishiman",
+          "timestamp": 1763731391,
+          "parents": [
+            "0e8b3a86e793c44f9b8acda1fe7e9e6ce1af358e"
+          ],
+          "parent": "0e8b3a86e793c44f9b8acda1fe7e9e6ce1af358e",
+          "refs": "origin/feature/add-master-system-design",
+          "branches": [
+            "origin/feature/add-master-system-design",
+            "daishiman/feature/add-master-system-design",
+            "main"
+          ]
+        },
+        "commitHash": "7fb9f93466f23f55a30b9d6d537ec28d6abdc696",
+        "lane": 0,
+        "parentLinks": [
+          {
+            "hash": "0e8b3a86e793c44f9b8acda1fe7e9e6ce1af358e",
+            "lane": 1
+          }
+        ],
+        "primaryBranchName": "main",
+        "branchColor": "#4f85e8",
+        "branchTags": [
+          "feature/add-master-system-design"
+        ],
+        "index": 5
+      },
+      {
+        "type": "commit",
+        "label": "Merge pull request #1 from daishiman/feature/development",
+        "commit": {
+          "hash": "a132a282d48d1a867e42b032afdca93e5568d3ea",
+          "subject": "Merge pull request #1 from daishiman/feature/development",
+          "author": "daishiman",
+          "timestamp": 1763718270,
+          "parents": [
+            "52266792fbc47007b4ddca109f477ddcac9f72d0",
+            "0e8b3a86e793c44f9b8acda1fe7e9e6ce1af358e"
+          ],
+          "parent": "52266792fbc47007b4ddca109f477ddcac9f72d0",
+          "refs": "",
+          "branches": [
+            "main",
+            "daishiman/feature/development"
+          ]
+        },
+        "commitHash": "a132a282d48d1a867e42b032afdca93e5568d3ea",
+        "lane": 0,
+        "parentLinks": [
+          {
+            "hash": "52266792fbc47007b4ddca109f477ddcac9f72d0",
+            "lane": 0
+          },
+          {
+            "hash": "0e8b3a86e793c44f9b8acda1fe7e9e6ce1af358e",
+            "lane": 1
+          }
+        ],
+        "primaryBranchName": "main",
+        "branchColor": "#4f85e8",
+        "branchTags": [
+          "daishiman/feature/development"
+        ],
+        "index": 6
+      },
+      {
+        "type": "commit",
+        "label": "feat: Add Claude Code agent ecosystem and project documentat…",
+        "commit": {
+          "hash": "0e8b3a86e793c44f9b8acda1fe7e9e6ce1af358e",
+          "subject": "feat: Add Claude Code agent ecosystem and project documentation",
+          "author": "daishiman",
+          "timestamp": 1763717868,
+          "parents": [
+            "52266792fbc47007b4ddca109f477ddcac9f72d0"
+          ],
+          "parent": "52266792fbc47007b4ddca109f477ddcac9f72d0",
+          "refs": "origin/feature/development, feature/development",
+          "branches": [
+            "origin/feature/development",
+            "feature/development",
+            "daishiman/feature/development",
+            "main"
+          ]
+        },
+        "commitHash": "0e8b3a86e793c44f9b8acda1fe7e9e6ce1af358e",
+        "lane": 0,
+        "parentLinks": [
+          {
+            "hash": "52266792fbc47007b4ddca109f477ddcac9f72d0",
+            "lane": 0
+          }
+        ],
+        "primaryBranchName": "main",
+        "branchColor": "#4f85e8",
+        "branchTags": [
+          "feature/development"
+        ],
+        "index": 7
+      },
+      {
+        "type": "anchor",
+        "label": "[作業中] ClaudeCode1: @.claude/agents/age…",
+        "branch": "task/task-1763719017598-894959",
+        "worktreePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-1763719017598-894959",
+        "parentCommitHash": "52266792fbc47007b4ddca109f477ddcac9f72d0",
+        "lane": 1,
+        "isMerged": false,
+        "mergeCommitHash": null,
+        "statusChildren": [],
+        "isDefaultWorktree": false,
+        "renderMode": "node",
+        "shouldHide": false,
+        "tagLabel": "task/task-1763719017598-894959",
+        "taskId": "task-1763719017598-894959",
+        "taskStatus": "working",
+        "taskStatusLabel": "作業中",
+        "taskName": "ClaudeCode1: @.claude/agents/agent_list.md から最適なエージェントを選定した上で、次のドキュメントを誰が見ても同じような実装をできるようにしてください。ただし、ソースコードの作成は不要です。このドキュメントに追記してほしいです。@docs/00-requirements/master_system_design.md  を改善するために進めてほしいです。 \n\nソースコードを作成してそれを例とするサンプルを記述してしまうと、それに引っ張られてしまい、AIがそちらの方向にばかり実装を進めてしまいます。そのため、AIに考えてもらう余裕を持たせるために、箇条書きで記述するようにしてください。\n\n近くに座っていて、最新の情報を抽出してウェブ検索を行った上で、これらの情報に対して漏れがないように記述してほしいです。抽出してウェブ検索を行った上で、これらの情報に対して漏れがないように記述してほしいです。まずは最適なエージェントを選定してほしいです。 \n\n@docs/00-requirements/master_system_design.md  を改善するために進めてほしいです。",
+        "tooltip": "タスク: ClaudeCode1: @.claude/agents/agent_list.md から最適なエージェントを選定した上で、次のドキュメントを誰が見ても同じような実装をできるようにしてください。ただし、ソースコードの作成は不要です。このドキュメントに追記してほしいです。@docs/00-requirements/master_system_design.md  を改善するために進めてほしいです。 \n\nソースコードを作成してそれを例とするサンプルを記述してしまうと、それに引っ張られてしまい、AIがそちらの方向にばかり実装を進めてしまいます。そのため、AIに考えてもらう余裕を持たせるために、箇条書きで記述するようにしてください。\n\n近くに座っていて、最新の情報を抽出してウェブ検索を行った上で、これらの情報に対して漏れがないように記述してほしいです。抽出してウェブ検索を行った上で、これらの情報に対して漏れがないように記述してほしいです。まずは最適なエージェントを選定してほしいです。 \n\n@docs/00-requirements/master_system_design.md  を改善するために進めてほしいです。\nステータス: 作業中\nID: task-1763719017598-894959\nBranch: task/task-1763719017598-894959\nWorktree: Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-1763719017598-894959",
+        "branchColor": "#e8a84f",
+        "index": 8
+      },
+      {
+        "type": "anchor",
+        "label": "[作業中] ClaudeCode2: @.claude/agents/age…",
+        "branch": "task/task-1763719019782-ff4e70",
+        "worktreePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-1763719019782-ff4e70",
+        "parentCommitHash": "52266792fbc47007b4ddca109f477ddcac9f72d0",
+        "lane": 2,
+        "isMerged": false,
+        "mergeCommitHash": null,
+        "statusChildren": [],
+        "isDefaultWorktree": false,
+        "renderMode": "node",
+        "shouldHide": false,
+        "tagLabel": "task/task-1763719019782-ff4e70",
+        "taskId": "task-1763719019782-ff4e70",
+        "taskStatus": "working",
+        "taskStatusLabel": "作業中",
+        "taskName": "ClaudeCode2: @.claude/agents/agent_list.md から最適なエージェントを選定した上で、次のドキュメントを誰が見ても同じような実装をできるようにしてください。ただし、ソースコードの作成は不要です。このドキュメントに追記してほしいです。@docs/00-requirements/master_system_design.md  を改善するために進めてほしいです。 \n\nソースコードを作成してそれを例とするサンプルを記述してしまうと、それに引っ張られてしまい、AIがそちらの方向にばかり実装を進めてしまいます。そのため、AIに考えてもらう余裕を持たせるために、箇条書きで記述するようにしてください。\n\n近くに座っていて、最新の情報を抽出してウェブ検索を行った上で、これらの情報に対して漏れがないように記述してほしいです。抽出してウェブ検索を行った上で、これらの情報に対して漏れがないように記述してほしいです。まずは最適なエージェントを選定してほしいです。 \n\n@docs/00-requirements/master_system_design.md  を改善するために進めてほしいです。",
+        "tooltip": "タスク: ClaudeCode2: @.claude/agents/agent_list.md から最適なエージェントを選定した上で、次のドキュメントを誰が見ても同じような実装をできるようにしてください。ただし、ソースコードの作成は不要です。このドキュメントに追記してほしいです。@docs/00-requirements/master_system_design.md  を改善するために進めてほしいです。 \n\nソースコードを作成してそれを例とするサンプルを記述してしまうと、それに引っ張られてしまい、AIがそちらの方向にばかり実装を進めてしまいます。そのため、AIに考えてもらう余裕を持たせるために、箇条書きで記述するようにしてください。\n\n近くに座っていて、最新の情報を抽出してウェブ検索を行った上で、これらの情報に対して漏れがないように記述してほしいです。抽出してウェブ検索を行った上で、これらの情報に対して漏れがないように記述してほしいです。まずは最適なエージェントを選定してほしいです。 \n\n@docs/00-requirements/master_system_design.md  を改善するために進めてほしいです。\nステータス: 作業中\nID: task-1763719019782-ff4e70\nBranch: task/task-1763719019782-ff4e70\nWorktree: Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-1763719019782-ff4e70",
+        "branchColor": "#b84fe8",
+        "index": 9
+      },
+      {
+        "type": "anchor",
+        "label": "[作業中] ClaudeCode3: @.claude/agents/age…",
+        "branch": "task/task-1763719022041-576354",
+        "worktreePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-1763719022041-576354",
+        "parentCommitHash": "52266792fbc47007b4ddca109f477ddcac9f72d0",
+        "lane": 3,
+        "isMerged": false,
+        "mergeCommitHash": null,
+        "statusChildren": [],
+        "isDefaultWorktree": false,
+        "renderMode": "node",
+        "shouldHide": false,
+        "tagLabel": "task/task-1763719022041-576354",
+        "taskId": "task-1763719022041-576354",
+        "taskStatus": "working",
+        "taskStatusLabel": "作業中",
+        "taskName": "ClaudeCode3: @.claude/agents/agent_list.md から最適なエージェントを選定した上で、次のドキュメントを誰が見ても同じような実装をできるようにしてください。ただし、ソースコードの作成は不要です。このドキュメントに追記してほしいです。@docs/00-requirements/master_system_design.md  を改善するために進めてほしいです。 \n\nソースコードを作成してそれを例とするサンプルを記述してしまうと、それに引っ張られてしまい、AIがそちらの方向にばかり実装を進めてしまいます。そのため、AIに考えてもらう余裕を持たせるために、箇条書きで記述するようにしてください。\n\n近くに座っていて、最新の情報を抽出してウェブ検索を行った上で、これらの情報に対して漏れがないように記述してほしいです。抽出してウェブ検索を行った上で、これらの情報に対して漏れがないように記述してほしいです。まずは最適なエージェントを選定してほしいです。 \n\n@docs/00-requirements/master_system_design.md  を改善するために進めてほしいです。",
+        "tooltip": "タスク: ClaudeCode3: @.claude/agents/agent_list.md から最適なエージェントを選定した上で、次のドキュメントを誰が見ても同じような実装をできるようにしてください。ただし、ソースコードの作成は不要です。このドキュメントに追記してほしいです。@docs/00-requirements/master_system_design.md  を改善するために進めてほしいです。 \n\nソースコードを作成してそれを例とするサンプルを記述してしまうと、それに引っ張られてしまい、AIがそちらの方向にばかり実装を進めてしまいます。そのため、AIに考えてもらう余裕を持たせるために、箇条書きで記述するようにしてください。\n\n近くに座っていて、最新の情報を抽出してウェブ検索を行った上で、これらの情報に対して漏れがないように記述してほしいです。抽出してウェブ検索を行った上で、これらの情報に対して漏れがないように記述してほしいです。まずは最適なエージェントを選定してほしいです。 \n\n@docs/00-requirements/master_system_design.md  を改善するために進めてほしいです。\nステータス: 作業中\nID: task-1763719022041-576354\nBranch: task/task-1763719022041-576354\nWorktree: Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-1763719022041-576354",
+        "branchColor": "#e8e84f",
+        "index": 10
+      },
+      {
+        "type": "commit",
+        "label": "Initial commit: Setup repository structure",
+        "commit": {
+          "hash": "52266792fbc47007b4ddca109f477ddcac9f72d0",
+          "subject": "Initial commit: Setup repository structure",
+          "author": "daishiman",
+          "timestamp": 1763635997,
+          "parents": [],
+          "parent": null,
+          "refs": "origin/develop, task/task-1763719022041-576354, task/task-1763719019782-ff4e70, task/task-1763719017598-894959, develop",
+          "branches": [
+            "origin/develop",
+            "task/task-1763719022041-576354",
+            "task/task-1763719019782-ff4e70",
+            "task/task-1763719017598-894959",
+            "develop",
+            "main"
+          ]
+        },
+        "commitHash": "52266792fbc47007b4ddca109f477ddcac9f72d0",
+        "lane": 0,
+        "parentLinks": [],
+        "primaryBranchName": "main",
+        "branchColor": "#4f85e8",
+        "branchTags": [
+          "develop"
+        ],
+        "worktrees": [
+          {
+            "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-1763719017598-894959",
+            "head": "52266792fbc47007b4ddca109f477ddcac9f72d0",
+            "branch": "task/task-1763719017598-894959",
+            "prunable": true,
+            "isMerged": false,
+            "mergeCommitHash": null,
+            "status": {
+              "staged": [],
+              "unstaged": [],
+              "untracked": [],
+              "capturedAt": 1763733191610
+            },
+            "normalizedPath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-1763719017598-894959",
+            "lane": 1
+          },
+          {
+            "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-1763719019782-ff4e70",
+            "head": "52266792fbc47007b4ddca109f477ddcac9f72d0",
+            "branch": "task/task-1763719019782-ff4e70",
+            "prunable": true,
+            "isMerged": false,
+            "mergeCommitHash": null,
+            "status": {
+              "staged": [],
+              "unstaged": [],
+              "untracked": [],
+              "capturedAt": 1763733191610
+            },
+            "normalizedPath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-1763719019782-ff4e70",
+            "lane": 2
+          },
+          {
+            "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-1763719022041-576354",
+            "head": "52266792fbc47007b4ddca109f477ddcac9f72d0",
+            "branch": "task/task-1763719022041-576354",
+            "prunable": true,
+            "isMerged": false,
+            "mergeCommitHash": null,
+            "status": {
+              "staged": [],
+              "unstaged": [],
+              "untracked": [],
+              "capturedAt": 1763733191611
+            },
+            "normalizedPath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-1763719022041-576354",
+            "lane": 3
+          }
+        ],
+        "index": 11
+      },
+      {
+        "type": "empty",
+        "label": "初期状態 (初回コミット以前)",
+        "files": [],
+        "marker": "pre-history",
+        "index": 12
+      }
+    ]
+  },
+  "projectRoot": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
+  "savedAt": 1763733203388
+}

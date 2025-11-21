@@ -1,0 +1,751 @@
+# Git Worktree 完全ワークフローガイド
+
+🎯 **エージェント選定**: このドキュメントで Git 操作を行う際は、必ず `.claude/agents/agent_list.md` から最適なエージェントを選定してください。
+
+**推奨エージェント**:
+- **@command-arch**: ワークフロー定型化、コマンドオーケストレーション
+- **@devops-eng**: Git/CI/CD、GitHub Actions、デプロイフロー
+- **@prompt-eng**: コミットメッセージ・PR本文の自動生成
+
+---
+
+## 📋 目次
+
+1. [プロジェクト情報](#プロジェクト情報)
+2. [ワークフロー全体図](#ワークフロー全体図)
+3. [新規タスク開始](#1-新規タスク開始)
+4. [開発サイクル](#2-開発サイクル)
+5. [プルリクエスト作成](#3-プルリクエスト作成)
+6. [マージ＆同期](#4-マージ同期)
+7. [コミットメッセージ規約](#コミットメッセージ規約-conventional-commits)
+8. [PR テンプレート](#pr-テンプレート)
+9. [トラブルシューティング](#トラブルシューティング)
+10. [コマンドリファレンス](#コマンドリファレンス)
+
+---
+
+## プロジェクト情報
+
+### 現在のプロジェクト
+- **リポジトリルート**: `/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator`
+- **メインブランチ**: `main`
+- **ワークツリー格納先**: `.worktrees/`
+- **プロジェクト種別**: Universal AI Workflow Orchestrator（Next.js + TypeScript）
+
+### 技術スタック
+- **フレームワーク**: Next.js 15.x (App Router)
+- **言語**: TypeScript 5.x (Strict Mode)
+- **パッケージマネージャー**: pnpm 9.x
+- **データベース**: Neon (PostgreSQL)
+- **ORM**: Drizzle ORM
+- **AI**: Vercel AI SDK (OpenAI, Anthropic, Google, xAI)
+- **デプロイ**: Railway
+- **CI/CD**: GitHub Actions
+
+---
+
+## ワークフロー全体図
+
+```mermaid
+graph TB
+    A[1. 新規タスク開始] --> B[worktree 作成]
+    B --> C[2. 開発サイクル]
+    C --> D[実装 → テスト → コミット]
+    D --> E{追加変更?}
+    E -->|Yes| C
+    E -->|No| F[3. プルリクエスト]
+    F --> G[push → PR 作成]
+    G --> H[レビュー]
+    H --> I{修正必要?}
+    I -->|Yes| C
+    I -->|No| J[4. マージ＆同期]
+    J --> K[PR マージ]
+    K --> L[main pull]
+    L --> M[worktree 削除]
+    M --> N[完了]
+
+    style A fill:#e1f5e1
+    style F fill:#fff4e1
+    style J fill:#e1f0ff
+    style N fill:#ffe1f0
+```
+
+---
+
+## 1. 新規タスク開始
+
+### 1.1 ワークツリー作成
+
+**基本コマンド**:
+```bash
+# 変数設定
+TASK_NAME="feature/your-task-name"  # 例: feature/add-youtube-summarize
+WORKTREE_DIR=".worktrees/${TASK_NAME##*/}"
+
+# メインブランチから worktree 作成
+cd /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator
+git worktree add "${WORKTREE_DIR}" -b "${TASK_NAME}" main
+
+# worktree に移動
+cd "${WORKTREE_DIR}"
+
+# 現在の状態確認
+git status
+git branch
+```
+
+**ブランチ命名規則**:
+- `feature/機能名` - 新機能追加
+- `fix/バグ名` - バグ修正
+- `refactor/対象` - リファクタリング
+- `docs/対象` - ドキュメント更新
+- `test/対象` - テスト追加
+
+### 1.2 安全性チェック
+
+```bash
+# ブランチが正しく作成されたか確認
+git branch --show-current  # TASK_NAME と一致すること
+
+# リモート同期状態確認
+git fetch origin main
+git status
+```
+
+---
+
+## 2. 開発サイクル
+
+### 2.1 実装作業
+
+**TDD（Test-Driven Development）推奨フロー**:
+1. **Red**: テストを先に書く（失敗を確認）
+2. **Green**: 最小限の実装でテストをパスさせる
+3. **Refactor**: コードをリファクタリング
+
+**実装前チェック**:
+```bash
+# 依存関係インストール（初回のみ）
+pnpm install
+
+# 開発サーバー起動
+pnpm dev
+
+# テスト監視モード（別ターミナル）
+pnpm test --watch
+```
+
+### 2.2 段階的コミット
+
+**コミット前の品質チェック**:
+```bash
+# 型チェック
+pnpm typecheck
+
+# Lint チェック
+pnpm lint
+
+# テスト実行
+pnpm test
+
+# ビルド確認
+pnpm build
+```
+
+**コミット実行**（詳細は [コミットメッセージ規約](#コミットメッセージ規約-conventional-commits) 参照）:
+```bash
+# 変更確認
+git status
+git diff
+
+# ステージング
+git add .
+
+# コミット（Conventional Commits 形式）
+git commit -m "$(cat <<'EOF'
+feat(features): Add YouTube summarize workflow
+
+- Whisper API integration for transcription
+- AI-powered summary generation
+- Discord notification support
+
+Closes #42
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+EOF
+)"
+```
+
+**複数回の実装 → コミットを繰り返し可能**
+
+---
+
+## 3. プルリクエスト作成
+
+### 3.1 リモートへ Push
+
+```bash
+# 初回 push (upstream 設定含む)
+git push -u origin "${TASK_NAME}"
+
+# 2回目以降
+git push
+```
+
+### 3.2 PR 作成（gh CLI 使用）
+
+**基本的な PR 作成**:
+```bash
+gh pr create --title "feat(features): Add YouTube summarize workflow" --body "$(cat <<'EOF'
+## 概要
+YouTube動画のURLから自動要約を生成するワークフロー機能を追加します。
+
+## 変更内容
+- YouTube動画要約Executor の実装
+- 入出力スキーマ定義（Zod）
+- Registry への登録
+- ユニットテスト追加（カバレッジ80%達成）
+
+## テスト
+- [x] ユニットテスト実行（`pnpm test`）
+- [x] 型チェック実行（`pnpm typecheck`）
+- [x] ESLint チェック実行（`pnpm lint`）
+- [x] ビルド確認（`pnpm build`）
+- [x] 手動テスト実施
+
+## 関連Issue
+Closes #42
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+EOF
+)" --base main
+```
+
+**PR テンプレート詳細**: [PR テンプレート](#pr-テンプレート) を参照
+
+### 3.3 PR 確認
+
+```bash
+# PR 一覧確認
+gh pr list
+
+# 自分の PR 詳細表示
+gh pr view
+
+# ブラウザで開く
+gh pr view --web
+```
+
+### 3.4 レビュー対応
+
+```bash
+# レビューコメントに対応して修正
+# ... ファイル編集 ...
+
+# 追加コミット
+git add .
+git commit -m "fix: address review comments - improve error handling"
+git push
+
+# PR は自動的に更新される
+```
+
+---
+
+## 4. マージ＆同期
+
+### 4.1 PR マージ
+
+**GitHub Web UI でマージ（推奨）**:
+1. PR ページを開く
+2. レビュー承認を確認
+3. CI（GitHub Actions）が全てパスしていることを確認
+4. "Squash and merge" をクリック
+5. "Delete branch" にチェック
+
+**CLI からマージ**（緊急時のみ）:
+```bash
+gh pr merge --squash --delete-branch
+```
+
+### 4.2 ローカル main ブランチ更新
+
+```bash
+# メインリポジトリに戻る
+cd /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator
+
+# main ブランチに切り替え
+git checkout main
+
+# リモートから最新を取得
+git pull origin main
+
+# 状態確認
+git log --oneline -5
+```
+
+### 4.3 ワークツリー削除
+
+```bash
+# worktree 削除
+git worktree remove "${WORKTREE_DIR}"
+
+# 完全に削除されたか確認
+git worktree list
+
+# リモートブランチも削除済みか確認
+git fetch --prune
+git branch -a
+```
+
+---
+
+## コミットメッセージ規約 (Conventional Commits)
+
+### 基本形式
+
+```
+<type>(<scope>): <subject>
+
+<body>
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+### タイプ一覧
+
+| タイプ | 説明 | 使用例 |
+|--------|------|--------|
+| **feat** | 新機能追加 | `feat(features): Add YouTube summarize workflow` |
+| **fix** | バグ修正 | `fix(executor): Handle timeout error in AI processing` |
+| **refactor** | リファクタリング | `refactor(shared): Extract common AI client logic` |
+| **docs** | ドキュメント | `docs(specs): Update workflow execution flow diagram` |
+| **test** | テスト | `test(features): Add unit tests for YouTube summarize` |
+| **chore** | その他 | `chore(deps): Update Drizzle ORM to 0.39.x` |
+| **ci** | CI/CD | `ci(actions): Add TypeScript type check to CI` |
+
+### スコープ一覧
+
+| スコープ | 対象 | 説明 |
+|---------|------|------|
+| **features** | `src/features/` | 機能プラグイン |
+| **shared** | `src/shared/` | 共通インフラ |
+| **local-agent** | `local-agent/` | ローカルエージェント |
+| **api** | `src/app/api/` | API エンドポイント |
+| **db** | `src/shared/infrastructure/database/` | データベース |
+| **docs** | `docs/` | ドキュメント |
+| **infra** | `railway.json` 等 | インフラ設定 |
+| **config** | `tsconfig.json` 等 | 設定ファイル |
+
+### コミット例
+
+#### 例1: 新機能追加
+```
+feat(features): Add meeting transcribe workflow
+
+- Whisper API integration for audio transcription
+- Timestamped meeting notes generation
+- Discord notification support
+
+Closes #42
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+#### 例2: バグ修正
+```
+fix(executor): Handle AI API timeout gracefully
+
+- Implement retry logic with exponential backoff
+- Improve error messages
+- Add detailed logging
+
+Related to #38
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+#### 例3: ドキュメント更新
+```
+docs(specs): Update database schema specification
+
+- Add deleted_at column to workflows table
+- Detail index design section
+- Add state transition diagram
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+### コミットメッセージのルール
+
+- ✅ subject は50文字以内を推奨
+- ✅ subject は現在形・命令形で記述（"Add" not "Added"）
+- ✅ body は72文字で改行を推奨
+- ✅ 複数の変更は複数のコミットに分割
+- ✅ Claude Code署名は必須
+- ❌ "fix", "update", "changes" のみのメッセージは禁止
+- ❌ 日本語のみのメッセージは避ける（英語推奨）
+
+---
+
+## PR テンプレート
+
+### PR タイトル形式
+
+Conventional Commits と同じ形式:
+```
+<type>(<scope>): <subject>
+```
+
+例:
+- `feat(features): Add YouTube summarize workflow`
+- `fix(executor): Handle AI API timeout gracefully`
+- `docs(specs): Update database schema specification`
+
+### PR 本文テンプレート
+
+```markdown
+## 概要
+この PR の目的と背景を記述
+
+## 変更内容
+- 主な変更点1
+- 主な変更点2
+- 主な変更点3
+
+## テスト
+- [ ] ユニットテスト実行（`pnpm test`）
+- [ ] 型チェック実行（`pnpm typecheck`）
+- [ ] ESLint チェック実行（`pnpm lint`）
+- [ ] ビルド確認（`pnpm build`）
+- [ ] 手動テスト実施
+
+## 関連Issue
+Closes #123
+Related to #456
+
+## 破壊的変更
+なし / ある場合は詳細を記述
+
+## スクリーンショット（該当する場合）
+[画像を添付]
+
+## その他
+追加情報や補足事項
+
+---
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+```
+
+### PR 作成例
+
+#### 例1: 新機能追加PR
+
+**タイトル**:
+```
+feat(features): Add YouTube summarize workflow
+```
+
+**本文**:
+```markdown
+## 概要
+YouTube動画のURLから自動要約を生成するワークフロー機能を追加します。
+Discord経由で動画URLを送信すると、AIが要約とキーポイントを抽出して返信します。
+
+## 変更内容
+- YouTube動画要約Executor の実装（`features/youtube-summarize/`）
+- 入出力スキーマ定義（Zod）
+- Registry への登録
+- ユニットテスト追加（カバレッジ80%達成）
+- 仕様書作成（`docs/20-specifications/features/youtube-summarize.md`）
+
+## テスト
+- [x] ユニットテスト実行（`pnpm test`） - 全テストパス
+- [x] 型チェック実行（`pnpm typecheck`） - エラーなし
+- [x] ESLint チェック実行（`pnpm lint`） - 警告なし
+- [x] ビルド確認（`pnpm build`） - 成功
+- [x] 手動テスト実施 - Discord Bot 経由で動作確認
+
+## 関連Issue
+Closes #42
+
+## 破壊的変更
+なし
+
+## 動作確認
+- テスト動画URL: https://www.youtube.com/watch?v=example
+- 処理時間: 約15秒
+- 出力例: 要約300文字、キーポイント5項目
+
+---
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+```
+
+#### 例2: バグ修正PR
+
+**タイトル**:
+```
+fix(executor): Handle AI API timeout gracefully
+```
+
+**本文**:
+```markdown
+## 概要
+AI API のタイムアウト時にシステム全体がクラッシュする問題を修正します。
+エクスポネンシャルバックオフによるリトライロジックを実装し、最大3回までリトライします。
+
+## 変更内容
+- タイムアウトエラーのハンドリング追加
+- リトライロジック実装（指数バックオフ）
+- エラーログの詳細化
+- workflows テーブルの retry_count 更新処理
+- 関連するユニットテストの追加
+
+## テスト
+- [x] ユニットテスト実行（`pnpm test`） - 新規テスト5件追加
+- [x] 型チェック実行（`pnpm typecheck`） - エラーなし
+- [x] ESLint チェック実行（`pnpm lint`） - 警告なし
+- [x] ビルド確認（`pnpm build`） - 成功
+- [x] 手動テスト実施 - タイムアウト発生時のリトライ動作確認
+
+## 関連Issue
+Closes #38
+
+## 破壊的変更
+なし
+
+## 追加情報
+- リトライ間隔: 1秒 → 2秒 → 4秒
+- 最大リトライ回数: 3回
+- タイムアウト閾値: 30秒
+
+---
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+```
+
+---
+
+## トラブルシューティング
+
+### 5.1 未コミットの変更がある場合
+
+```bash
+# 変更を一時退避
+git stash push -m "作業中の変更を一時保存"
+
+# 後で復元
+git stash pop
+```
+
+### 5.2 マージ競合が発生した場合
+
+```bash
+# main の最新を取り込む
+git fetch origin main
+git merge origin/main
+
+# 競合解決
+# ... ファイルを手動編集 ...
+git add .
+git commit -m "merge: resolve conflicts with main branch"
+git push
+```
+
+### 5.3 worktree が削除できない場合
+
+```bash
+# 強制削除
+git worktree remove --force "${WORKTREE_DIR}"
+
+# それでも削除できない場合
+rm -rf "${WORKTREE_DIR}"
+git worktree prune
+```
+
+### 5.4 間違ったブランチで作業してしまった場合
+
+```bash
+# 正しいブランチを作成
+git checkout -b correct-branch-name
+
+# 変更をコミット
+git add .
+git commit -m "fix: move changes to correct branch"
+
+# 間違ったブランチは削除
+git branch -D wrong-branch-name
+```
+
+### 5.5 コミットメッセージを修正したい場合
+
+```bash
+# 最新のコミットメッセージを修正（push前のみ）
+git commit --amend
+
+# push済みの場合は新しいコミットを追加
+git commit -m "docs: fix typo in previous commit message"
+```
+
+### 5.6 CI が失敗した場合
+
+```bash
+# ローカルでエラーを再現
+pnpm typecheck  # 型エラー確認
+pnpm lint       # Lint エラー確認
+pnpm test       # テスト失敗確認
+pnpm build      # ビルドエラー確認
+
+# 修正後
+git add .
+git commit -m "fix: resolve CI errors"
+git push
+```
+
+---
+
+## コマンドリファレンス
+
+### ワンライナーコマンド集
+
+#### 新規タスク開始（全自動）
+```bash
+TASK_NAME="feature/task-name" && WORKTREE_DIR=".worktrees/${TASK_NAME##*/}" && cd /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator && git worktree add "${WORKTREE_DIR}" -b "${TASK_NAME}" main && cd "${WORKTREE_DIR}" && git status
+```
+
+#### コミット & Push（高速）
+```bash
+git add . && git commit -m "feat: 変更内容" && git push
+```
+
+#### PR 作成（簡易版）
+```bash
+gh pr create --fill --base main
+```
+
+#### マージ後のクリーンアップ（全自動）
+```bash
+WORKTREE_DIR=".worktrees/task-name" && cd /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator && git checkout main && git pull origin main && git worktree remove "${WORKTREE_DIR}" && git fetch --prune && git worktree list
+```
+
+### 状態確認コマンド
+
+```bash
+# すべての worktree 一覧
+git worktree list
+
+# 現在のブランチとコミット状態
+git status && git log --oneline -3
+
+# リモートとの差分確認
+git fetch origin main && git log --oneline main..origin/main
+
+# PR 状態確認
+gh pr status
+```
+
+### 品質チェックコマンド
+
+```bash
+# 全チェック実行（PR前に必須）
+pnpm typecheck && pnpm lint && pnpm test && pnpm build
+
+# テスト監視モード
+pnpm test --watch
+
+# カバレッジ確認
+pnpm test --coverage
+```
+
+---
+
+## ベストプラクティス
+
+### 1. ブランチ命名規則
+- `feature/機能名` - 新機能追加
+- `fix/バグ名` - バグ修正
+- `refactor/対象` - リファクタリング
+- `docs/対象` - ドキュメント更新
+
+### 2. コミットサイズ
+- 1 コミット = 1 論理的変更
+- 変更ファイル数は 10 ファイル以内が理想
+- 大きな変更は複数コミットに分割
+
+### 3. PR サイズ
+- 1 PR = 1 機能/修正
+- 変更ファイル数は 20 ファイル以内が理想
+- 大きな機能は複数 PR に分割
+
+### 4. レビューフロー
+- セルフレビューを最初に実施
+- CI/CD チェックが通ってから依頼
+- レビューコメントには必ず返信
+
+### 5. コミットタイミング
+- 機能単位でこまめにコミット
+- テストが通る状態でコミット
+- リファクタリングは別コミット
+
+---
+
+## 安全性チェックリスト
+
+### コミット前
+- [ ] `git status` で変更内容を確認
+- [ ] `git diff` で差分を確認
+- [ ] テストが通ることを確認（`pnpm test`）
+- [ ] 型チェックが通ることを確認（`pnpm typecheck`）
+- [ ] Lint エラーがないことを確認（`pnpm lint`）
+
+### Push前
+- [ ] コミットメッセージが Conventional Commits 形式
+- [ ] Claude Code署名が含まれている
+- [ ] ブランチ名が命名規則に従っている
+- [ ] ビルドが成功することを確認（`pnpm build`）
+
+### PR作成前
+- [ ] セルフレビュー実施
+- [ ] 仕様書が更新されている（機能追加の場合）
+- [ ] テストカバレッジが維持されている
+- [ ] README が更新されている（必要に応じて）
+
+### マージ前
+- [ ] CI（GitHub Actions）が全てパスしている
+- [ ] コードレビューが完了している
+- [ ] テストが全て通っている
+- [ ] 破壊的変更がドキュメント化されている
+
+### マージ後
+- [ ] main ブランチを pull
+- [ ] worktree を削除
+- [ ] リモートブランチが削除されていることを確認
+- [ ] `git fetch --prune` でクリーンアップ
+
+---
+
+## システム仕様参照
+
+本プロジェクトの詳細な仕様は以下を参照:
+- **マスター設計書**: `docs/00-requirements/master_system_design.md`
+- **エージェント定義**: `.claude/agents/agent_list.md`
+- **プロジェクトメモリ**: `.claude/memory.md`
+- **コーディング規約**: `.claude/rules.md`
+
+---
+
+**最終更新**: 2025-11-21
+**対象リポジトリ**: AIWorkflowOrchestrator
+**管理エージェント**: @command-arch, @devops-eng, @prompt-eng
