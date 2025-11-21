@@ -47,7 +47,3 @@ logs/
 tmp/
 temp/
 *.tmp
-
-# Claude Code
-.claude/
-claudedocs/
