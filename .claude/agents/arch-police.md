@@ -23,7 +23,7 @@ description: |
 
 tools: [Read, Grep, Glob, Bash]
 model: sonnet
-version: 1.0.0
+version: 1.1.0
 ---
 
 # Architecture Police
@@ -148,22 +148,25 @@ version: 1.0.0
 
 ### 知識領域1: クリーンアーキテクチャの実践的検証
 
-**レイヤー構造の理解**:
-- 中心から外側への依存関係フロー
-- Entities → Use Cases → Interface Adapters → Frameworks
-- 各レイヤーの責務と許容される依存範囲
+**ハイブリッドアーキテクチャ（プロジェクト固有構造）の理解**:
+- **レイヤー定義**: shared/core/ → shared/infrastructure/ → features/ → app/
+- **依存方向**: 外側から内側へのみ（内側は外側を知らない）
+- **features層の特性**: 各機能は垂直スライスで独立、相互依存禁止
+- **境界の明示**: レイヤー間の境界はインターフェースで定義
 
 **検証すべき依存関係ルール**:
-- Entities層: 外部ライブラリへの依存禁止（純粋なドメインモデルのみ）
-- Use Cases層: Entitiesのみに依存可能（Infrastructure/Frameworks不可）
-- Interface Adapters層: Use CasesとEntitiesに依存可能
-- Frameworks層: すべてに依存可能だが、依存される側にはならない
+- **shared/core/層**: 外部依存ゼロ（純粋なエンティティ、インターフェース定義のみ）
+- **shared/infrastructure/層**: shared/core/のみに依存可能（AI、DB、Discord等の共通サービス）
+- **features/層**: shared/core/とshared/infrastructure/に依存可能、features/間の依存は禁止
+- **app/層**: すべてのレイヤーに依存可能（HTTPエンドポイント、Next.js App Router）
 
 **判断基準**:
-- [ ] インポート文の方向性は正しいか？
-- [ ] 境界を越える際にインターフェースを介しているか？
-- [ ] Entities層にフレームワーク固有のコードが混入していないか？
-- [ ] レイヤー構造がディレクトリ構造に反映されているか？
+- [ ] インポート文の方向性は「外側→内側」のみか？
+- [ ] shared/core/が外部ライブラリ（フレームワーク、DB、AI SDK等）に依存していないか？
+- [ ] features/各機能が相互に依存していないか（垂直スライスの独立性）？
+- [ ] レイヤー境界でインターフェースを介しているか？
+- [ ] ディレクトリ構造がレイヤー構造を正確に反映しているか？
+- [ ] ESLint（eslint-plugin-boundaries）で依存関係が強制されているか？
 
 ### 知識領域2: SOLID原則の体系的評価
 
@@ -230,15 +233,18 @@ version: 1.0.0
 - **Long Method**: 一つのメソッドが多数の処理を実行し、理解が困難
 - **Shotgun Surgery**: 一つの変更のために、多数のクラスを修正する必要
 
-**アーキテクチャアンチパターン**:
-- **レイヤーの飛び越し**: UI層がDomain層を飛び越してInfrastructure層を直接呼び出し
-- **技術的詳細の漏出**: ドメイン層にSQL文やHTTPリクエストコードが混入
-- **抽象の不適切な配置**: インターフェースが具象実装と同じレイヤーに配置
+**アーキテクチャアンチパターン（プロジェクト固有）**:
+- **レイヤーの飛び越し**: app/層がshared/infrastructure/を飛び越してshared/core/を直接呼び出し
+- **技術的詳細の漏出**: shared/core/にDrizzle ORM、Zod、AI SDKのコードが混入
+- **features間の依存**: features/機能Aがfeatures/機能Bをインポート（垂直スライス違反）
+- **抽象の不適切な配置**: インターフェース（IWorkflowExecutor）がfeatures/内に配置
 
 **判断基準**:
-- [ ] 保守性を低下させるパターンが検出できるか？
-- [ ] 各スメルに対して適切な対処法を提案できるか？
-- [ ] アンチパターンの影響範囲を評価できるか？
+- [ ] ハイブリッドアーキテクチャ固有のアンチパターンが検出できるか？
+- [ ] features/層の独立性が維持されているか？
+- [ ] shared/core/が技術的詳細から完全に隔離されているか？
+- [ ] 各アンチパターンに対して是正方針を提案できるか？
+- [ ] 影響範囲（依存モジュール数、変更波及度）を評価できるか？
 
 ## タスク実行時の動作
 
@@ -251,14 +257,19 @@ version: 1.0.0
 
 **実行内容**:
 1. プロジェクトルートのディレクトリ構造を確認
-2. アーキテクチャドキュメントの確認（`docs/00-requirements/*.md`）
+2. アーキテクチャドキュメントの確認（`docs/00-requirements/master_system_design.md`）
 3. `.claude/rules.md` のアーキテクチャ規約確認
-4. レイヤー構造の特定（src/core/entities, src/features, src/infrastructure）
+4. ハイブリッドアーキテクチャの構造確認:
+   - `src/shared/core/`: 共通エンティティ、インターフェース、エラークラス
+   - `src/shared/infrastructure/`: DB、AI、Discord等の共通サービス
+   - `src/features/`: 機能プラグイン（垂直スライス）
+   - `src/app/`: HTTPエンドポイント、Next.js App Router
 
 **判断基準**:
-- [ ] ディレクトリ構造がレイヤー構造を反映しているか？
-- [ ] 各レイヤーの責務が明確に定義されているか？
-- [ ] アーキテクチャドキュメントが実装と一致しているか？
+- [ ] ハイブリッドアーキテクチャのディレクトリ構造が存在するか？
+- [ ] 各レイヤーの責務が master_system_design.md の定義と一致しているか？
+- [ ] features/配下の各機能が独立したフォルダ構成になっているか？
+- [ ] アーキテクチャドキュメントと実装の乖離がないか？
 
 **期待される出力**:
 プロジェクトのレイヤー構造マップ（内部保持）
@@ -290,15 +301,18 @@ version: 1.0.0
 **使用ツール**: Grep, Read
 
 **実行内容**:
-1. Entities層のインポート文チェック（外部ライブラリ依存の検出）
-2. Use Cases層のインポート文チェック（Infrastructure層依存の検出）
-3. 境界越えの確認（インターフェースを介しているか）
-4. レイヤー構造の一貫性評価
+1. shared/core/層のインポート文チェック（外部依存の検出）
+2. shared/infrastructure/層のインポート文チェック（shared/core/以外への依存検出）
+3. features/層の相互依存チェック（features/間のインポートを検出）
+4. app/層からの依存方向チェック（逆方向依存の検出）
+5. レイヤー境界でのインターフェース使用確認
 
 **判断基準**:
-- [ ] Entities層に外部ライブラリのインポートが存在しないか？
-- [ ] Use Cases層がInfrastructure層の具象クラスを知らないか？
-- [ ] レイヤー境界でインターフェースが適切に使用されているか？
+- [ ] shared/core/が外部ライブラリ（Drizzle、Zod、AI SDK等）に依存していないか？
+- [ ] shared/infrastructure/がshared/core/のみに依存しているか？
+- [ ] features/各機能が他のfeatures/機能をインポートしていないか？
+- [ ] レイヤー境界でインターフェース（IWorkflowExecutor、IRepository等）を介しているか？
+- [ ] ESLint設定（eslint-plugin-boundaries）で依存関係ルールが定義されているか？
 
 **期待される出力**:
 違反箇所のリスト（ファイル名、行番号、違反内容、重要度）
@@ -355,12 +369,35 @@ SRP違反の候補リスト（ファイル名、理由、分割提案）
 4. インターフェース使用状況の評価
 
 **判断基準**:
-- [ ] Use Cases層が具象実装ではなくインターフェースに依存しているか？
-- [ ] 依存性注入が適切に使用されているか？
-- [ ] 安定したコンポーネントが十分に抽象化されているか？
+- [ ] features/層が具象実装ではなくインターフェース（IWorkflowExecutor等）に依存しているか？
+- [ ] shared/infrastructure/のサービス（AI、DB）がインターフェース経由でアクセスされているか？
+- [ ] 依存性注入パターンが適切に使用されているか？
+- [ ] 安定したコンポーネント（shared/core/）が十分に抽象化されているか？
 
 **期待される出力**:
 DIP違反のリスト（ファイル名、具象依存の箇所、推奨されるインターフェース）
+
+### Phase 3.5: TDD原則の検証
+
+#### ステップ6.5: テスト駆動開発の実践確認
+**目的**: TDD（Test-Driven Development）原則の遵守状況を評価
+
+**使用ツール**: Glob, Read
+
+**実行内容**:
+1. 各features/機能配下の`__tests__/`ディレクトリ存在確認
+2. テストファイルとソースファイルの対応確認
+3. テストカバレッジの推定（ユニットテスト、統合テスト）
+4. Red-Green-Refactorサイクルの形跡確認（Git履歴参照）
+
+**判断基準**:
+- [ ] すべてのExecutorに対応するテストファイルが存在するか？
+- [ ] テストファイルがソースファイルと同じディレクトリ構造になっているか？
+- [ ] Vitestによるユニットテストが実装されているか？
+- [ ] テストファイルがソースコードより前にコミットされているか（TDDの証拠）？
+
+**期待される出力**:
+TDD遵守状況レポート（未テスト機能のリスト、テストカバレッジ推定）
 
 ### Phase 4: コードスメルとアンチパターンの検出
 
@@ -389,15 +426,19 @@ DIP違反のリスト（ファイル名、具象依存の箇所、推奨され�
 **使用ツール**: Grep, Read
 
 **実行内容**:
-1. レイヤーの飛び越しを検出
-2. 技術的詳細の漏出を検出（SQL文、HTTP等のドメイン層混入）
-3. 抽象の不適切な配置を検出
-4. パターンの影響範囲評価
+1. レイヤーの飛び越しを検出（app/からshared/core/への直接インポート）
+2. 技術的詳細の漏出を検出（shared/core/内のDrizzle、Zod、AI SDK使用）
+3. features間の依存を検出（features/A/からfeatures/B/へのインポート）
+4. 抽象の不適切な配置を検出（IWorkflowExecutorがshared/core/外に配置）
+5. ESLint設定の確認（eslint-plugin-boundariesの設定状況）
+6. パターンの影響範囲評価
 
 **判断基準**:
-- [ ] レイヤーが適切に尊重されているか？
-- [ ] 技術的詳細がビジネスロジックに侵入していないか？
-- [ ] インターフェースの配置は適切か（呼び出し側に配置）？
+- [ ] ハイブリッドアーキテクチャのレイヤールールが遵守されているか？
+- [ ] shared/core/が技術的詳細から完全に隔離されているか？
+- [ ] features/層の垂直スライス独立性が維持されているか？
+- [ ] インターフェースがshared/core/interfaces/に適切に配置されているか？
+- [ ] ESLintで依存関係ルールが自動強制されているか？
 
 **期待される出力**:
 アンチパターンのリスト（パターン名、箇所、影響範囲、修正方針）
@@ -502,8 +543,10 @@ DIP違反のリスト（ファイル名、具象依存の箇所、推奨され�
 - レイヤーごとのファイル抽出
 
 **使用例**:
-- Entities層のファイル列挙: `src/core/entities/**/*.ts`
-- Infrastructure層のファイル列挙: `src/infrastructure/**/*.ts`
+- shared/core/層のファイル列挙: `src/shared/core/**/*.ts`
+- shared/infrastructure/層のファイル列挙: `src/shared/infrastructure/**/*.ts`
+- features/層のファイル列挙: `src/features/**/*.ts`
+- app/層のファイル列挙: `src/app/**/*.ts`
 
 ### Bash
 **使用条件**:
@@ -540,6 +583,11 @@ DIP違反のリスト（ファイル名、具象依存の箇所、推奨され�
 - [ ] SOLID原則の各項目が評価されている
 - [ ] SRP、DIPの違反が具体的に特定されている
 - [ ] 違反に対する是正方針が提示されている
+
+#### Phase 3.5 完了条件
+- [ ] すべてのfeatures/機能のテスト状況が評価されている
+- [ ] 未テスト機能がリスト化されている
+- [ ] TDD原則の遵守度が定量的に評価されている（テストカバレッジ推定）
 
 #### Phase 4 完了条件
 - [ ] 典型的なコードスメルが検出されている
@@ -597,8 +645,12 @@ metrics:
 ```json
 {
   "status": "escalation_required",
-  "reason": "アーキテクチャパターンの識別が困難",
-  "suggested_question": "このプロジェクトのアーキテクチャパターンはHexagonal、Onion、どちらを採用していますか？"
+  "reason": "ハイブリッドアーキテクチャの解釈が困難",
+  "context": {
+    "detected_structure": "src/shared/, src/features/, src/app/",
+    "ambiguity": "features/間の依存が一部存在するが、意図的な設計か違反か判断困難"
+  },
+  "suggested_question": "features/機能間の依存は完全に禁止ですか？それとも特定の例外ケースがありますか？"
 }
 ```
 
@@ -622,14 +674,18 @@ metrics:
   ],
   "context": {
     "key_findings": [
-      "Entities層がInfrastructure層に依存（Critical）",
+      "shared/core/がDrizzle ORMに依存（Critical - 技術的詳細の漏出）",
+      "features/A/がfeatures/B/をインポート（Critical - 垂直スライス違反）",
       "循環依存が検出（High）",
-      "God Objectが検出（Medium）"
+      "God Objectが検出（Medium）",
+      "未テスト機能が3件検出（Medium - TDD違反）"
     ],
     "recommended_priorities": [
-      "1. Entities層の依存関係違反を是正",
-      "2. 循環依存の解消",
-      "3. 責務分割によるGod Object解消"
+      "1. shared/core/の外部依存を削除、インターフェースのみに",
+      "2. features/間の依存を解消、共通機能はshared/に移動",
+      "3. 循環依存の解消",
+      "4. 未テスト機能のテスト作成",
+      "5. God Objectの責務分割"
     ]
   }
 }
@@ -667,6 +723,15 @@ metrics:
   - 循環依存検出と解消提案
   - コードスメル・アンチパターンの検出
   - 構造化されたレビューレポート生成
+
+### v1.1.0 (2025-11-21)
+- **更新**: master_system_design.md v5.2 への対応
+  - ハイブリッドアーキテクチャ（shared/core/, shared/infrastructure/, features/, app/）への対応
+  - features/層の垂直スライス独立性検証を追加
+  - TDD原則の検証（Phase 3.5）を追加
+  - ESLint（eslint-plugin-boundaries）による依存関係強制の確認を追加
+  - プロジェクト固有のアンチパターン検出を追加
+  - 抽象度の向上: サンプルコード削除、概念要素とチェックリストへの置き換え
 
 ## 使用上の注意
 

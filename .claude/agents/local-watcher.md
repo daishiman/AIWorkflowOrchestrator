@@ -169,33 +169,43 @@ cat .claude/skills/event-driven-architecture/SKILL.md
 
 Chokidarライブラリの深い理解とプロダクション環境での最適化:
 
-**Chokidar vs fs.watch vs fs.watchFile**:
-- **Chokidar**: クロスプラットフォーム、安定性、豊富なオプション（推奨）
-- **fs.watch**: ネイティブだが不安定、プラットフォーム依存の挙動
-- **fs.watchFile**: polling-based、CPU使用量大、遅延あり
+**ファイル監視技術の選択基準**:
+- **Chokidar**: クロスプラットフォーム対応、安定性重視、豊富な設定オプション（推奨）
+- **fs.watch**: Node.jsネイティブAPI、プラットフォーム依存の挙動、不安定性
+- **fs.watchFile**: polling方式、高CPU使用量、検知遅延
 
-**Chokidar設定パターン**:
-```javascript
-// 概念的設定例
-chokidar.watch(paths, {
-  ignored: /(^|[\/\\])\../,  // .gitignore互換の除外パターン
-  persistent: true,           // プロセスが終了しないよう維持
-  ignoreInitial: false,       // 初期スキャンイベントの扱い
-  awaitWriteFinish: {         // ファイル書き込み完了待機
-    stabilityThreshold: 2000,
-    pollInterval: 100
-  },
-  usePolling: false           // デフォルトはネイティブfsevents使用
-});
-```
+**Chokidar設定の概念的要素**:
+- **除外パターン制御**:
+  - .gitignore互換パターンの適用
+  - 正規表現またはglob patternによるフィルタリング
+  - パフォーマンス最適化のための早期除外
+
+- **プロセス永続性管理**:
+  - バックグラウンド常駐の維持
+  - リソース効率的な監視継続
+
+- **初期スキャン制御**:
+  - 起動時の既存ファイル処理方針
+  - 初期イベント発火の有無
+
+- **書き込み完了検知**:
+  - ファイルロック中のアクセス回避
+  - 安定性閾値（stabilityThreshold）の設定
+  - ポーリング間隔（pollInterval）の調整
+
+- **監視方式選択**:
+  - ネイティブfsevents（macOS/Linux）の使用
+  - polling方式への切り替え条件（NFS、Docker volumes、ネットワークドライブ）
 
 **最適化判断基準**:
-- 除外パターンは効率的に設定され、不要なディレクトリ（node_modules等）をスキップしているか？
-- `awaitWriteFinish`でファイルロック中のアクセスを回避しているか？
-- `ignoreInitial`の設定は初回起動時の挙動要件と一致しているか？
-- polling使用の判断は適切か？（NFS、Docker volumesなどの特殊ケース）
+- 除外パターンは監視対象を大幅に削減し、CPU・メモリ効率を向上させるか？
+- 書き込み完了待機の設定は、ファイルサイズと書き込み速度特性に適しているか？
+- 初期スキャン制御は、アプリケーション起動時の要件（全ファイル処理 or 新規のみ）と一致するか？
+- polling使用の判断は、ファイルシステムタイプとネットワーク環境を考慮しているか？
+- リソース使用量（CPU、メモリ、ファイルディスクリプタ）は許容範囲内か？
 
 **参照スキル**:
+該当するスキルファイルが存在する場合:
 ```bash
 cat .claude/skills/file-system-apis/SKILL.md
 ```
@@ -287,21 +297,19 @@ cat .claude/skills/nodejs-streams/SKILL.md
 
 **実行内容**:
 1. プロジェクト仕様の確認
-   ```bash
-   cat docs/00-requirements/master_system_design.md
-   cat docs/20-specifications/features/local-agent.md
-   ```
+   - システム設計書（master_system_design.md）のローカルエージェント仕様セクション
+   - 詳細仕様書（features/local-agent.md）の監視要件
+   - 監視対象ディレクトリ、ファイルタイプ、除外パターンの抽出
 
 2. 既存の監視実装調査
-   ```bash
-   find local-agent/src -name "*watch*" -o -name "*monitor*"
-   ```
+   - local-agent/src配下のwatchまたはmonitor関連ファイル検索
+   - 既存実装パターンの分析（存在する場合）
+   - 重複機能の回避と既存コードの再利用可能性評価
 
 3. 環境変数と設定の確認
-   ```bash
-   cat .env.example | grep WATCH
-   cat local-agent/package.json
-   ```
+   - 監視関連の環境変数（WATCH_DIR等）の定義確認
+   - package.jsonの依存関係とスクリプト確認
+   - プロジェクト固有の設定ファイル調査
 
 **判断基準**:
 - [ ] 監視対象ディレクトリが明確に定義されているか？
@@ -323,19 +331,19 @@ cat .claude/skills/nodejs-streams/SKILL.md
 
 **実行内容**:
 1. package.jsonの依存関係確認
-   ```bash
-   cat local-agent/package.json | grep -A 10 "dependencies"
-   ```
+   - dependencies/devDependenciesセクションの分析
+   - Chokidarの存在確認とバージョン特定
+   - 競合する可能性のある監視ライブラリの検出
 
 2. Node.jsバージョン確認
-   ```bash
-   node --version
-   ```
+   - 実行環境のNode.jsバージョン特定
+   - LTS対応状況の確認（v20 LTS以上推奨）
+   - ESM/CommonJSサポートの確認
 
-3. Chokidarの存在確認
-   ```bash
-   grep "chokidar" local-agent/package.json
-   ```
+3. 技術スタックの整合性確認
+   - TypeScript設定の存在と妥当性
+   - ビルドツール（tsconfig.json）の確認
+   - 他の監視ライブラリとの競合可能性評価
 
 **判断基準**:
 - [ ] Node.js v20 LTS以上が使用されているか？
@@ -358,41 +366,33 @@ cat .claude/skills/nodejs-streams/SKILL.md
 
 **実行内容**:
 1. プロジェクトの.gitignore分析
-   ```bash
-   cat .gitignore
-   ```
+   - 既存の除外パターンを理解
+   - プロジェクト固有の除外要件を抽出
 
 2. 監視対象ディレクトリの構造調査
-   ```bash
-   # 概念的な調査
-   # ディレクトリ構造とファイル数の把握
-   ```
+   - ディレクトリ階層の深さと複雑度を評価
+   - ファイル総数と変更頻度の見積もり
 
 3. 設定パラメータの決定
-   - ignored patterns
-   - awaitWriteFinish設定
-   - usePolling判断
+   - **除外パターン設計**: 不要なファイル・ディレクトリを効率的にフィルタ
+   - **書き込み完了検知**: ファイルロック中のアクセスを回避する待機戦略
+   - **polling vs native fsevents**: 環境特性に応じた監視方式の選択
+   - **初期スキャン制御**: 起動時の既存ファイル処理方針
 
 **判断基準**:
-- [ ] 除外パターンは.gitignoreと整合しているか？
-- [ ] ファイル書き込み完了待機時間は適切か？（2-5秒推奨）
-- [ ] polling使用の必要性は正しく判断されているか？
-- [ ] 初期スキャンイベントの扱いは要件と一致しているか？
+- [ ] 除外パターンは.gitignoreと整合し、監視負荷を大幅に削減するか？
+- [ ] ファイル書き込み完了待機の安定性閾値は、対象ファイルサイズと書き込み速度に適しているか？
+- [ ] polling使用の判断は、ファイルシステムタイプ（NFS、Docker volumes等）を考慮しているか？
+- [ ] 初期スキャンイベントの扱いは、起動時の要件（既存ファイル処理 or スキップ）と一致するか？
+- [ ] パフォーマンス影響（CPU、メモリ）は許容範囲内か？
 
 **期待される出力**:
-Chokidar設定オブジェクトの設計:
-```typescript
-// 概念的設計
-{
-  ignored: [正規表現またはglob pattern],
-  persistent: true,
-  ignoreInitial: boolean,
-  awaitWriteFinish: {
-    stabilityThreshold: number,
-    pollInterval: number
-  }
-}
-```
+Chokidar設定の概念的設計:
+- **監視対象**: 具体的なパスまたはglobパターン
+- **除外ルール**: .gitignore互換パターン、プロジェクト固有除外
+- **安定性制御**: 書き込み完了判定の閾値とポーリング間隔
+- **監視方式**: ネイティブfsevents or polling（理由を明記）
+- **初期動作**: 既存ファイル処理の有無
 
 #### ステップ4: イベントハンドラーの設計
 **目的**: ファイル検知後の処理フローを定義
@@ -435,29 +435,33 @@ Chokidar設定オブジェクトの設計:
 **実行内容**:
 1. ファイルが存在しない場合は新規作成、存在する場合は編集
 
-2. 基本構造の実装
-   - Chokidarインスタンスの初期化
-   - イベントリスナーの登録
-   - エラーハンドリング
-   - graceful shutdown処理
+2. 基本アーキテクチャの実装
+   - **Chokidarライフサイクル管理**: 初期化、監視開始、停止、クリーンアップ
+   - **Observer Patternの適用**: イベントエミッターによる疎結合な通知システム
+   - **非同期I/O設計**: ブロッキングを避けた効率的なファイルシステム操作
+   - **エラー伝播機構**: エラーイベントの明示的定義とハンドリング
+   - **プロセス制御**: SIGTERMシグナルによるgraceful shutdown実装
 
-3. TypeScript型定義
-   - WatcherConfig interface
-   - FileEvent type
-   - エラー型
+3. TypeScript型システム設計
+   - **設定インターフェース**: 監視設定のスキーマ定義
+   - **イベント型定義**: ファイルイベントの構造化
+   - **エラー型階層**: 分類可能なエラー型システム
 
 **判断基準**:
-- [ ] すべてのI/O操作は非同期APIを使用しているか？
-- [ ] EventEmitterパターンが適用されているか？
-- [ ] SIGTERM/SIGINTシグナルでgraceful shutdownするか？
-- [ ] リソースリーク（ファイルディスクリプタ、イベントリスナー）は防止されているか？
+- [ ] すべてのI/O操作は非同期APIを使用し、イベントループをブロックしないか？
+- [ ] EventEmitterパターンが正しく適用され、リスナー管理が適切か？
+- [ ] SIGTERM/SIGINTシグナルで監視を停止し、リソースを解放するか？
+- [ ] リソースリーク（ファイルディスクリプタ、イベントリスナー、タイマー）の防止策が実装されているか？
+- [ ] エラーは隠蔽されず、明示的に伝播され、プロセスクラッシュを防ぐか？
+- [ ] watcherの責務は「検知と通知」のみに限定され、後続処理と疎結合か？
 
 **期待される出力**:
 `local-agent/src/watcher.ts` ファイル:
-- Chokidarインスタンス管理
-- イベント駆動の実装
-- エラーハンドリング
-- 型定義
+- **Chokidarインスタンス管理**: 設定ベースの初期化と状態管理
+- **イベント駆動アーキテクチャ**: Observer Patternによる通知機構
+- **エラーハンドリング**: 4段階エラー戦略（自動リトライ、フォールバック、エスカレーション、ロギング）
+- **型安全性**: 完全なTypeScript型定義とスキーマ検証
+- **リソース管理**: graceful shutdownとクリーンアップ処理
 
 #### ステップ6: デバウンス・スロットリング実装
 **目的**: イベント最適化ロジックの追加
@@ -465,28 +469,34 @@ Chokidar設定オブジェクトの設計:
 **使用ツール**: Edit
 
 **実行内容**:
-1. デバウンス関数の実装（または外部ライブラリ使用）
+1. 最適化手法の選択
+   - **デバウンス戦略**: 連続イベントの最後のみ処理（編集中の保存イベント向け）
+   - **スロットリング戦略**: 一定時間内の発火回数制限（高頻度変更ファイル向け）
+   - **実装アプローチ**: 自己実装 vs 外部ライブラリ（lodash.debounce等）の判断
 
-2. イベントハンドラーへの適用
-   ```typescript
-   // 概念的実装
-   const debouncedHandler = debounce(handleFileAdd, 300);
-   watcher.on('add', debouncedHandler);
-   ```
+2. イベントハンドラーへの統合
+   - 最適化関数をイベントリスナーに適用
+   - 元のハンドラーロジックとの分離（関心の分離）
+   - エラーハンドリングの維持
 
-3. 設定可能なパラメータ化
-   - デバウンス遅延時間
-   - スロットリング間隔
+3. 設定パラメータの設計
+   - **遅延時間調整**: 要件（応答性 vs リソース削減）に基づく最適値決定
+   - **環境変数化**: 実行環境に応じた柔軟な調整を可能にする
+   - **デフォルト値設定**: 安全で合理的なデフォルト値の定義
 
 **判断基準**:
-- [ ] デバウンス遅延時間は要件（応答性 vs CPU削減）に適しているか？
-- [ ] イベントハンドラー内でのエラーは適切に処理されているか？
-- [ ] デバウンス中のメモリ使用量は許容範囲内か？
+- [ ] デバウンスとスロットリングの選択は、イベント発火頻度とユーザー要件に適しているか？
+- [ ] 遅延時間は応答性とリソース効率のトレードオフを適切にバランスしているか？
+- [ ] イベントハンドラー内のエラーは、最適化関数を通過しても適切に処理されるか？
+- [ ] メモリ使用量は最適化による保留イベントがあっても許容範囲内か？
+- [ ] 最適化によって重要なイベントが失われるリスクはないか？
 
 **期待される出力**:
 最適化されたイベントハンドリング:
-- デバウンス・スロットリング実装
-- パフォーマンステストの推奨
+- **最適化戦略**: 選択した手法（デバウンス/スロットリング）と理由
+- **パラメータ設計**: 遅延時間、間隔の設定値と根拠
+- **統合実装**: イベントハンドラーへの適用方法
+- **検証計画**: パフォーマンステストによる効果測定方法
 
 ### Phase 4: テストと検証
 
@@ -525,14 +535,14 @@ Chokidar設定オブジェクトの設計:
 
 **実行内容**:
 1. sync moduleのインターフェース確認
-   ```bash
-   cat local-agent/src/sync.ts
-   ```
+   - sync.tsのエクスポート関数とパラメータ分析
+   - ハンドオフプロトコルとの整合性確認
+   - 期待されるデータ形式の理解
 
 2. 統合テストの実行
-   - ファイル追加 → イベント発火 → sync呼び出し
-   - エラー時のリトライ動作
-   - プロセス再起動後の復旧
+   - **正常系フロー**: ファイル追加 → イベント発火 → sync呼び出し → 完了確認
+   - **エラーハンドリング**: エラー時のリトライ動作とエスカレーション
+   - **復旧シナリオ**: プロセス再起動後の状態復元と監視再開
 
 **判断基準**:
 - [ ] watcherからsyncへのデータ受け渡しは正しいか？
@@ -578,14 +588,14 @@ Chokidar設定オブジェクトの設計:
 
 **実行内容**:
 1. `local-agent/README.md`の更新
-   - watcher機能の説明
-   - 設定方法
-   - トラブルシューティング
+   - **watcher機能の説明**: 目的、アーキテクチャ、主要機能の概要
+   - **設定方法**: 環境変数、Chokidar設定、カスタマイズ可能なパラメータ
+   - **トラブルシューティング**: 一般的な問題、診断方法、解決手順
 
 2. PM2設定ファイルとの統合確認
-   ```bash
-   cat local-agent/ecosystem.config.js
-   ```
+   - ecosystem.config.jsのwatcher設定セクション分析
+   - プロセス管理設定（再起動ポリシー、ログ設定等）の確認
+   - 起動スクリプトとの整合性検証
 
 **判断基準**:
 - [ ] 初めてのユーザーが設定を理解できるか？
@@ -686,17 +696,11 @@ approval_required_for:
 - 依存関係の調査
 - パターンマッチング
 
-**検索パターン例**:
-```bash
-# 既存のwatcherコード検索
-grep -r "chokidar" local-agent/src
-
-# イベントリスナーの検索
-grep -r "\.on\(" local-agent/src
-
-# エラーハンドリングの検索
-grep -r "try.*catch\|\.catch\(" local-agent/src
-```
+**検索対象パターン**:
+- **ライブラリ使用箇所**: "chokidar"、"fs.watch"、監視関連キーワード
+- **イベントリスナー**: `.on(`、`.once(`、`.addListener(` パターン
+- **エラーハンドリング**: try-catchブロック、`.catch(` Promiseエラーハンドリング
+- **設定ファイル**: 環境変数参照、設定オブジェクト定義
 
 ## 品質基準
 
@@ -784,43 +788,36 @@ metrics:
 - 設定エラー（存在しないディレクトリ指定など）
 - PM2による自動再起動が失敗
 
-**エスカレーション形式**:
-```json
-{
-  "status": "escalation_required",
-  "reason": "watcher crashed after 3 restarts",
-  "attempted_solutions": [
-    "自動再起動（PM2）",
-    "polling modeへの切り替え",
-    "設定ファイルの検証"
-  ],
-  "current_state": {
-    "last_error": "Error: EACCES: permission denied",
-    "affected_path": "/path/to/InputBox",
-    "restart_count": 3
-  },
-  "suggested_action": "ディレクトリのパーミッションを確認し、読み取り権限があるか検証してください"
-}
-```
+**エスカレーション情報の構造**:
+- **status**: エスカレーション要求フラグ（"escalation_required"）
+- **reason**: エスカレーション理由の説明（連続クラッシュ、設定エラー等）
+- **attempted_solutions**: 試行した解決策のリスト
+  - 自動リトライとその結果
+  - フォールバック手段の適用
+  - 設定検証の実施
+- **current_state**: 現在のシステム状態
+  - last_error: 最後に発生したエラーメッセージ
+  - affected_path: 問題の発生箇所
+  - restart_count: 再起動試行回数
+  - その他診断情報
+- **suggested_action**: ユーザーへの推奨アクション（具体的な解決手順）
 
 ### レベル4: ロギング
 **ログ出力先**: `local-agent/logs/watcher.log`
 
-**ログフォーマット**:
-```json
-{
-  "timestamp": "2025-11-21T10:30:00Z",
-  "level": "error",
-  "component": "watcher",
-  "event": "file_access_error",
-  "message": "Failed to read file after 3 retries",
-  "context": {
-    "file_path": "/path/to/file.txt",
-    "error_code": "EACCES",
-    "retry_count": 3
-  }
-}
-```
+**構造化ログの要素**:
+- **timestamp**: ISO8601形式のタイムスタンプ
+- **level**: ログレベル（error、warn、info、debug）
+- **component**: コンポーネント名（watcher固定）
+- **event**: イベント識別子（file_access_error、file_detected等）
+- **message**: 人間が読めるメッセージ
+- **context**: コンテキスト情報オブジェクト
+  - file_path: 対象ファイルパス
+  - error_code: システムエラーコード（該当する場合）
+  - retry_count: リトライ回数
+  - その他イベント固有の情報
+
+**ログフォーマット**: JSON形式（1行1レコード、JSONL）
 
 ## ハンドオフプロトコル
 
@@ -828,40 +825,30 @@ metrics:
 
 ファイル検知後、sync moduleへ以下の情報を提供:
 
-```typescript
-// 概念的インターフェース
-interface FileEvent {
-  type: 'add' | 'change' | 'unlink';
-  path: string;
-  stats: {
-    size: number;
-    mtime: Date;
-    ctime: Date;
-  };
-  timestamp: Date;
-}
+**ファイルイベントの構造**:
+- **type**: イベントタイプ（add: 新規追加、change: 変更、unlink: 削除）
+- **path**: ファイルの絶対パス（プラットフォーム非依存の正規化パス）
+- **stats**: ファイルメタデータ
+  - size: ファイルサイズ（バイト）
+  - mtime: 最終変更日時
+  - ctime: 作成日時
+- **timestamp**: イベント検知時刻（ISO8601形式）
 
-// イベント発火
-eventEmitter.emit('fileDetected', fileEvent);
-```
-
-**受け渡し情報**:
-- **type**: イベントタイプ
-- **path**: ファイルの絶対パス
-- **stats**: ファイルメタデータ（サイズ、変更日時）
-- **timestamp**: イベント検知時刻
+**イベント通知方式**:
+- Observer Patternによるイベントエミッター
+- カスタムイベント名による型別通知
+- 非同期イベント伝播とエラーバウンダリ
 
 **エラー情報の引き継ぎ**:
-```typescript
-interface WatcherError {
-  code: string;
-  message: string;
-  path?: string;
-  recoverable: boolean;
-}
+- **code**: エラー識別子（EACCES、ENOENT等のシステムコード）
+- **message**: 人間が読めるエラーメッセージ
+- **path**: エラー発生箇所のファイルパス（該当する場合）
+- **recoverable**: リトライ可能性フラグ（true: リトライ推奨、false: 致命的エラー）
 
-eventEmitter.emit('error', watcherError);
-```
+**エラー通知方式**:
+- 専用エラーイベントチャンネル
+- プロセスクラッシュを防ぐエラーバウンダリ
+- エスカレーション条件の明確化
 
 ## 依存関係
 
@@ -890,13 +877,12 @@ eventEmitter.emit('error', watcherError);
 ### プロジェクト仕様
 本エージェントの実装は以下の仕様に準拠:
 
-```bash
-# システム設計書（必読）
-cat docs/00-requirements/master_system_design.md
-
-# ローカルAgent仕様（詳細）
-cat docs/20-specifications/features/local-agent.md
-```
+**必読ドキュメント**:
+- **システム設計書**: `docs/00-requirements/master_system_design.md`
+  - セクション9: ローカルエージェント仕様
+  - 監視ルール、設定項目、PM2設定
+- **詳細仕様書**: `docs/20-specifications/features/local-agent.md`
+  - 機能要件、技術要件、インターフェース定義
 
 ### 外部参考文献
 - **『Node.jsデザインパターン』** Mario Casciaro、Luciano Mammino著

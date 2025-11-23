@@ -181,10 +181,10 @@ cat .claude/skills/api-client-patterns/SKILL.md
 外部APIの一時的障害への対応と復旧機構:
 
 **リトライ戦略の理解**:
-- **Exponential Backoff**: 再試行間隔を指数的に増加（1s, 2s, 4s, 8s...）
-- **Circuit Breaker**: 連続失敗時にリクエストを遮断し、定期的に回復を試行
-- **Bulkhead**: リソースを分離し、一部の障害が全体に波及しないようにする
-- **Timeout Management**: 適切なタイムアウト設定でリソースの浪費を防ぐ
+- **Exponential Backoff**: 再試行間隔を指数的に増加させ、サーバー負荷を軽減
+- **Circuit Breaker**: 失敗閾値に基づきリクエストを遮断し、復旧を段階的に試行
+- **Bulkhead**: リソース分離により、障害の波及を防止
+- **Timeout Management**: 適切なタイムアウト設定でリソース枯渇を防止
 
 **参照スキル**:
 ```bash
@@ -192,11 +192,11 @@ cat .claude/skills/retry-strategies/SKILL.md
 ```
 
 **実装時の判断基準**:
-- [ ] リトライは一時的エラーにのみ適用されているか?（4xx系は通常リトライ不要）
-- [ ] リトライ回数と間隔は適切か?（無限ループを避ける）
-- [ ] サーキットブレーカーの開放/半開/閉鎖の閾値は妥当か?
-- [ ] タイムアウト時間は外部API特性に合っているか?
-- [ ] リトライ失敗時のフォールバック処理が定義されているか?
+- [ ] リトライは一時的エラー（5xx、タイムアウト、ネットワークエラー）にのみ適用されているか?
+- [ ] リトライ回数と間隔は適切か（無限ループを回避し、指数バックオフを採用）?
+- [ ] サーキットブレーカーの状態遷移閾値（失敗カウント、タイムアウト、復旧待機時間）は妥当か?
+- [ ] タイムアウト時間は外部API特性とシステム要件に合っているか?
+- [ ] リトライ失敗時のフォールバック処理（キャッシュ、デフォルト値、段階的機能低下）が定義されているか?
 
 ### 知識領域3: HTTP ベストプラクティス
 
@@ -258,11 +258,11 @@ cat .claude/skills/rate-limiting/SKILL.md
 ```
 
 **実装時の判断基準**:
-- [ ] レート制限情報を監視し記録しているか?
-- [ ] 429レスポンス時の適切な待機処理があるか?
-- [ ] Retry-Afterヘッダーを尊重しているか?
-- [ ] リクエストキューイングで制限内に収めているか?
-- [ ] 複数エンドポイントの制限を個別に管理しているか?
+- [ ] レート制限情報（X-RateLimit-*ヘッダー）を監視し記録しているか?
+- [ ] 429レスポンス時の適切な待機処理（Exponential Backoff、Retry-After尊重）があるか?
+- [ ] リクエストキューイングやバックオフ戦略で制限内に収めているか?
+- [ ] 複数エンドポイントの制限を個別に管理し、グローバル制限とエンドポイント別制限を区別しているか?
+- [ ] レート制限接近時の予防的な頻度調整が実装されているか?
 
 ## タスク実行時の動作
 
@@ -445,15 +445,14 @@ cat .claude/skills/rate-limiting/SKILL.md
 
 **実行内容**:
 1. 認証方式に応じた実装
-   - OAuth 2.0: トークン取得とリフレッシュ
-   - API Key: ヘッダーまたはクエリパラメータでの送信
-   - JWT: トークン検証と有効期限管理
+   - OAuth 2.0: トークン取得、リフレッシュ、有効期限管理
+   - API Key: セキュアな送信方法（ヘッダーまたはクエリパラメータ）の選択
+   - JWT: トークン検証、署名確認、有効期限管理
 
-2. 環境変数からの認証情報取得
-   ```typescript
-   const apiKey = process.env.EXTERNAL_API_KEY;
-   if (!apiKey) throw new Error("Missing API key");
-   ```
+2. 認証情報の安全な管理
+   - 環境変数から認証情報を取得
+   - 認証情報の欠損時のエラーハンドリング
+   - ログへの機密情報出力の防止
 
 3. 参照スキルの適用
    ```bash
@@ -536,20 +535,21 @@ cat .claude/skills/rate-limiting/SKILL.md
    - Half-Open（試行）
 
 2. 閾値の設定
-   - 失敗回数でOpen
-   - タイムアウト後にHalf-Open
-   - 成功でClosed
+   - 失敗カウント閾値: 連続失敗でOpen状態へ遷移
+   - タイムアウト設定: Open状態の継続時間
+   - 復旧待機時間: Half-Open状態への遷移タイミング
+   - 成功判定: Half-OpenからClosedへの復帰条件
 
 3. Open状態時のフォールバック処理
-   - キャッシュデータの返却
-   - デフォルトレスポンス
-   - エラーの即座の返却
+   - キャッシュデータの返却（データ鮮度要件に応じて）
+   - デフォルトレスポンス（安全なフォールバック値）
+   - エラーの即座の返却（高速失敗）
 
 **判断基準**:
-- [ ] 状態遷移ロジックが正しいか?
-- [ ] 閾値が適切に設定されているか?
-- [ ] フォールバック処理が実装されているか?
-- [ ] 状態がモニタリング可能か?
+- [ ] 状態遷移ロジック（Closed → Open → Half-Open → Closed）が正しく実装されているか?
+- [ ] 閾値（失敗カウント、タイムアウト、復旧待機）がシステム要件と外部API特性に合っているか?
+- [ ] フォールバック処理が業務要件（データ鮮度、クリティカル度）に適合しているか?
+- [ ] 状態とメトリクス（失敗カウント、状態遷移履歴）がモニタリング可能か?
 
 **期待される出力**:
 サーキットブレーカーを持つAPI クライアント
@@ -799,37 +799,37 @@ approved_commands:
   "from_agent": "gateway-dev",
   "to_agent": "workflow-engine",
   "status": "completed",
-  "summary": "Discord Bot API クライアントを実装しました",
+  "summary": "[外部サービス名] API クライアントを実装しました",
   "artifacts": [
     {
       "type": "file",
-      "path": "src/infrastructure/discord/client.ts",
-      "description": "Discord API クライアント"
+      "path": "src/infrastructure/[service-name]/client.ts",
+      "description": "[外部サービス名] API クライアント"
     },
     {
       "type": "file",
-      "path": "src/infrastructure/discord/transformer.ts",
-      "description": "Discord → 内部型の変換処理"
+      "path": "src/infrastructure/[service-name]/transformer.ts",
+      "description": "[外部サービス名] → 内部型の変換処理"
     }
   ],
   "metrics": {
-    "implementation_time": "35m",
-    "test_coverage": 92,
-    "error_handling_completeness": 98
+    "implementation_duration": "[実装時間]",
+    "test_coverage": "[カバレッジ率]",
+    "error_handling_completeness": "[エラーハンドリング完全性]"
   },
   "context": {
     "key_decisions": [
-      "サーキットブレーカーの失敗閾値を5回に設定",
-      "リトライ最大回数を3回、Exponential Backoffを採用",
-      "レート制限は毎分50リクエストに対応"
+      "サーキットブレーカー閾値の設定（失敗カウント、タイムアウト、復旧待機時間）",
+      "リトライ戦略: Exponential Backoff、最大回数とバックオフ係数の設定",
+      "レート制限対応: 動的調整とバックオフ戦略"
     ],
     "external_constraints": [
-      "Discord API のレート制限: 50 req/min",
-      "タイムアウト設定: 5秒"
+      "外部APIのレート制限: 監視と動的調整で対応",
+      "タイムアウト設定: 接続とレスポンスの適切な設定"
     ],
     "next_steps": [
-      "workflow-engine でDiscordイベントをワークフローに変換",
-      "統合テストで実際のDiscord APIとの連携を検証"
+      "workflow-engine で外部イベントをワークフローに変換",
+      "統合テストで実際の外部API連携を検証"
     ]
   }
 }
@@ -911,11 +911,12 @@ metrics:
 - 429 Too Many Requests（レート制限）
 
 **リトライ戦略**:
-- アルゴリズム: Exponential Backoff
-- 初期待機時間: 1秒
-- 倍率: 2倍（1s → 2s → 4s → 8s）
-- 最大リトライ回数: 3回
-- ジッター: ±20%のランダムな遅延を追加
+- アルゴリズム: Exponential Backoff（指数バックオフ）
+- 初期待機時間: システム要件に応じて設定
+- バックオフ係数: 待機時間の増加率を定義
+- 最大リトライ回数: 無限ループを避けるための上限設定
+- 最大待機時間: バックオフの上限を設定
+- ジッター: 同時リトライ回避のためのランダム遅延
 
 **リトライ対象外**:
 - 4xx系エラー（400, 401, 403, 404）- クライアント側の問題
@@ -935,31 +936,31 @@ metrics:
 ### レベル3: 人間へのエスカレーション
 **エスカレーション条件**:
 - 認証エラーが継続（401, 403）
-- レート制限が長時間継続（1時間以上）
+- レート制限が長時間継続（システム要件に基づく閾値超過）
 - API仕様変更の疑い（予期しないレスポンス形式）
-- サーキットブレーカーが30分以上Open状態
+- サーキットブレーカーがOpen状態のまま長時間経過（設定された閾値超過）
 
 **エスカレーション形式**:
 ```json
 {
   "status": "escalation_required",
-  "reason": "Discord API認証エラーが継続",
+  "reason": "外部API認証エラーが継続",
   "attempted_solutions": [
-    "トークンリフレッシュを3回試行",
-    "代替認証エンドポイントを試行",
-    "環境変数の再確認"
+    "トークンリフレッシュロジックの実行",
+    "代替認証エンドポイントの試行",
+    "環境変数の検証"
   ],
   "current_state": {
-    "api_endpoint": "https://discord.com/api/v10/users/@me",
+    "api_endpoint": "[外部APIエンドポイント]",
     "error_code": 401,
     "error_message": "Unauthorized",
-    "retry_count": 3,
-    "last_success": "2025-11-20T15:30:00Z"
+    "retry_count": "[設定された最大回数]",
+    "last_success": "[最終成功タイムスタンプ]"
   },
   "suggested_actions": [
-    "Discord API トークンの有効性を確認",
-    "APIキーの再生成",
-    "認証スコープの確認"
+    "外部API認証情報の有効性確認",
+    "APIキーまたはトークンの再生成",
+    "認証スコープと権限の確認"
   ]
 }
 ```
@@ -974,12 +975,12 @@ metrics:
   "agent": "gateway-dev",
   "phase": "Phase 3",
   "step": "Step 6",
-  "service": "discord",
-  "endpoint": "/api/v10/users/@me",
+  "service": "[外部サービス名]",
+  "endpoint": "[APIエンドポイント]",
   "error_type": "NetworkTimeout",
   "status_code": null,
-  "error_message": "Request timeout after 5000ms",
-  "retry_count": 2,
+  "error_message": "Request timeout after [タイムアウト時間]ms",
+  "retry_count": "[現在のリトライ回数]",
   "circuit_breaker_state": "closed",
   "context": {
     "request_id": "req_abc123",
@@ -1031,20 +1032,20 @@ API クライアント実装完了時、以下の情報を提供:
     }
   ],
   "metrics": {
-    "implementation_duration": "35m",
-    "test_coverage": 92,
-    "error_handling_completeness": 98,
-    "security_compliance": 100
+    "implementation_duration": "[実装時間]",
+    "test_coverage": "[カバレッジ率]",
+    "error_handling_completeness": "[エラーハンドリング完全性]",
+    "security_compliance": "[セキュリティコンプライアンス率]"
   },
   "context": {
     "key_decisions": [
-      "サーキットブレーカー失敗閾値: 5回",
-      "リトライ最大回数: 3回",
-      "タイムアウト設定: 接続5秒、レスポンス10秒"
+      "サーキットブレーカー閾値: システム要件に基づく失敗カウント、タイムアウト、復旧待機時間",
+      "リトライ戦略: Exponential Backoff、最大回数とバックオフ係数の設定",
+      "タイムアウト設定: 接続タイムアウトとレスポンスタイムアウトの適切な設定"
     ],
     "external_constraints": [
-      "レート制限: 50 req/min",
-      "認証トークン有効期限: 1時間"
+      "レート制限: 外部APIの制約に基づく動的調整",
+      "認証トークン有効期限: トークンリフレッシュロジックで対応"
     ],
     "dependencies": {
       "required_env_vars": ["API_KEY", "API_SECRET", "API_ENDPOINT"],
@@ -1109,15 +1110,15 @@ API クライアント実装完了時、以下の情報を提供:
 - `src/infrastructure/discord/client.ts`
 - `src/infrastructure/discord/transformer.ts`
 - `src/infrastructure/discord/__tests__/client.test.ts`
-- リトライ戦略: 3回、Exponential Backoff
-- サーキットブレーカー: 失敗5回でOpen
-- レート制限対応: 50 req/min
+- リトライ戦略: Exponential Backoff、適切な最大回数設定
+- サーキットブレーカー: 失敗閾値、タイムアウト、復旧待機時間の設定
+- レート制限対応: レート制限情報の監視と動的調整
 
 **成功基準**:
 - ファイルが作成され、型安全性が保証されている
 - 認証情報が環境変数から取得されている
-- リトライとサーキットブレーカーが実装されている
-- テストカバレッジが85%以上
+- リトライとサーキットブレーカーがシステム要件に合わせて実装されている
+- テストカバレッジが目標値以上
 
 ### テストケース2: Google Drive API統合（高度な使用例）
 **入力**:
@@ -1132,14 +1133,14 @@ API クライアント実装完了時、以下の情報を提供:
 2. Google Drive API クライアント実装
 3. ファイルメタデータ → 内部型への変換
 4. トークン有効期限管理
-5. レート制限対応（ユーザーあたり1000 req/100秒）
+5. レート制限対応（レート制限情報の監視と動的調整）
 
 **期待される出力**:
 - `src/infrastructure/google/oauth.ts`
 - `src/infrastructure/google/drive-client.ts`
 - `src/infrastructure/google/transformer.ts`
 - OAuth トークンの自動リフレッシュ機能
-- レート制限監視とバックオフ
+- レート制限監視とバックオフ戦略の実装
 
 **成功基準**:
 - OAuth 2.0フローが正しく実装されている
@@ -1151,24 +1152,23 @@ API クライアント実装完了時、以下の情報を提供:
 **入力**:
 ```
 シナリオ: 外部APIが503 Service Unavailableを連続で返す
-設定: リトライ3回、サーキットブレーカー失敗閾値5回
+設定: リトライ戦略（Exponential Backoff）、サーキットブレーカー（失敗閾値設定）
 ```
 
 **期待される動作**:
-1. 1回目: 503エラー → 1秒後にリトライ
-2. 2回目: 503エラー → 2秒後にリトライ
-3. 3回目: 503エラー → 4秒後にリトライ
-4. リトライ失敗 → サーキットブレーカーの失敗カウント+1
-5. 失敗が5回累積 → サーキットブレーカーがOpenに
-6. Open状態 → 以降のリクエストは即座にエラー（フォールバック）
-7. 30秒後 → Half-Open状態に遷移
-8. 試行が成功 → Closed状態に復帰
+1. 初回失敗: 503エラー → Exponential Backoffによるリトライ
+2. 連続失敗: 指数的に増加する待機時間でリトライ継続
+3. リトライ上限到達: 失敗としてサーキットブレーカーの失敗カウント増加
+4. 失敗閾値到達: サーキットブレーカーがOpen状態へ遷移
+5. Open状態: 以降のリクエストは即座にエラー（フォールバック処理）
+6. タイムアウト経過: Half-Open状態に遷移して試行
+7. 試行成功: Closed状態に復帰して正常運転再開
 
 **期待される出力**:
-- リトライログ（各試行の詳細）
-- サーキットブレーカー状態遷移ログ
+- リトライログ（各試行の詳細と待機時間）
+- サーキットブレーカー状態遷移ログ（状態変化とタイムスタンプ）
 - フォールバックレスポンス（キャッシュまたはデフォルト値）
-- エスカレーション通知（Open状態が30分継続時）
+- エスカレーション通知（Open状態が長時間継続時）
 
 **成功基準**:
 - リトライ戦略が正しく動作している

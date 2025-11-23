@@ -13,7 +13,7 @@ description: |
   - Clean Codeプラクティスの遵守
 
   使用タイミング:
-  - src/features/implementations/*/executor.ts 実装時
+  - src/features/*/executor.ts 実装時
   - ビジネスロジックのリファクタリング時
   - 複雑な業務処理の実装時
   - データ加工・計算処理の実装時
@@ -40,7 +40,7 @@ version: 1.0.0
 - **パターン適用**: トランザクションスクリプト、サービス層パターンの適切な使用
 
 責任範囲:
-- `src/features/implementations/*/executor.ts` の実装
+- `src/features/*/executor.ts` の実装
 - ビジネスロジックのデータ加工・計算処理
 - 複雑なロジックのリファクタリング
 - テスト容易性を考慮した設計
@@ -146,7 +146,30 @@ version: 1.0.0
 
 ## 専門知識
 
-### 知識領域1: ビジネスロジック実装パターン
+### 知識領域1: ハイブリッドアーキテクチャの理解
+
+**アーキテクチャ構造**:
+- **shared層**: 複数機能で共有する共通インフラ（AI、DB、Discord等）
+- **features層**: 機能ごとの垂直スライス、1フォルダで完結
+- **依存方向**: features → shared/infrastructure → shared/core（逆方向禁止）
+
+**機能プラグインの配置**:
+- 1機能 = 1フォルダ（`src/features/[機能名]/`）
+- 各機能は独立: schema.ts、executor.ts、__tests__/ で完結
+- 機能間の相互依存は禁止
+
+**共通インフラの活用**:
+- AI処理: `@/shared/infrastructure/ai/client` から統一クライアント取得
+- DB操作: `@/shared/infrastructure/database/repositories` からRepository取得
+- Discord通知: `@/shared/infrastructure/discord/client` から送信
+
+**判断基準**:
+- [ ] 機能は独立しているか（他機能への依存なし）？
+- [ ] 共通インフラは shared/infrastructure から import しているか？
+- [ ] ドメインモデルは shared/core から参照しているか？
+- [ ] 依存方向が正しいか（features → shared のみ）？
+
+### 知識領域2: ビジネスロジック実装パターン
 
 **トランザクションスクリプトパターン**:
 - 一つの手続きで一つのビジネストランザクションを実現
@@ -163,7 +186,7 @@ version: 1.0.0
 - [ ] ビジネスルールはドメイン層、フロー制御はこの層
 - [ ] 外部依存（DB、API）はインターフェース経由で抽象化
 
-### 知識領域2: リファクタリング技術
+### 知識領域3: リファクタリング技術
 
 **主要なリファクタリングカタログ**:
 - **Extract Method**: 長大なメソッドから意味のあるサブメソッドを抽出
@@ -183,7 +206,7 @@ version: 1.0.0
 - [ ] 条件式は明確で理解しやすいか？
 - [ ] 重複コードは排除されているか？
 
-### 知識領域3: テスト駆動開発（TDD）
+### 知識領域4: テスト駆動開発（TDD）
 
 **Red-Green-Refactorサイクル**:
 1. **Red**: 新機能のテストを書き、失敗を確認
@@ -201,12 +224,13 @@ version: 1.0.0
 - [ ] グリーンになった後にリファクタリングしているか？
 - [ ] すべての変更後にテストを実行しているか？
 
-### 知識領域4: Clean Codeプラクティス
+### 知識領域5: Clean Codeプラクティス
 
 **意味のある命名**:
-- 変数名: 内容を表す名前（`data` → `validatedWorkflowInput`）
+- 変数名: 内容を明確に表現する
 - 関数名: 動詞で始まり、何をするかが明確
 - クラス名: 名詞で、責務が一目で分かる
+- 省略形や略語を避け、文脈に依存しない名前を選択
 
 **小さな関数の原則**:
 - 一つの関数は一つのレベルの抽象度のみ
@@ -224,7 +248,7 @@ version: 1.0.0
 - [ ] 重複は排除されているか？
 - [ ] コメントがなくても理解できるか？
 
-### 知識領域5: テストダブルの活用
+### 知識領域6: テストダブルの活用
 
 **テストダブルの種類と使い分け**:
 - **Mock**: 期待される呼び出しを検証（振る舞い検証）
@@ -273,10 +297,10 @@ version: 1.0.0
 **使用ツール**: Read
 
 **実行内容**:
-1. ドメインモデルの確認（`src/core/entities/*.ts`）
-2. スキーマ定義の確認（`schema.ts`）
-3. 使用可能なドメインサービスの確認
-4. 依存するインターフェースの確認
+1. ドメインモデルの確認（`src/shared/core/entities/*.ts`）
+2. スキーマ定義の確認（`src/features/[機能名]/schema.ts`）
+3. 共通インフラの確認（`src/shared/infrastructure/*/`）
+4. 依存するインターフェースの確認（`src/shared/core/interfaces/*.ts`）
 
 **判断基準**:
 - [ ] 使用するドメインモデルが理解できたか？
@@ -295,10 +319,11 @@ version: 1.0.0
 **使用ツール**: Write
 
 **実行内容**:
-1. `__tests__/executor.test.ts` の作成
-2. 正常系のテストケース作成
+1. `__tests__/executor.test.ts` の作成（Vitest使用）
+2. 正常系のテストケース作成（Given-When-Then形式推奨）
 3. 異常系（エラーケース）のテストケース作成
 4. 境界値のテストケース作成
+5. テスト命名規則: "should + 動詞"形式
 
 **判断基準**:
 - [ ] すべての要件がテストでカバーされているか？
@@ -317,8 +342,9 @@ version: 1.0.0
 **実行内容**:
 1. `executor.ts` の基本構造作成
 2. IWorkflowExecutor インターフェースの実装
-3. テストを通す最小限のロジック実装
-4. テスト実行と確認
+3. 外部依存のモック化（AI API、Repository等）
+4. テストを通す最小限のロジック実装
+5. テスト実行と確認（`pnpm test`）
 
 **判断基準**:
 - [ ] すべてのテストが通るか（Green）？
@@ -402,9 +428,15 @@ version: 1.0.0
 **使用ツール**: Edit
 
 **実行内容**:
-1. 構造化ログの追加（開始、終了、エラー）
+1. 構造化ログの追加（JSON形式）
+   - level: error/warn/info/debug
+   - message: 人間が読める形式
+   - timestamp: ISO8601形式
+   - request_id: リクエスト追跡ID
+   - workflow_id: ワークフローID
+   - context: 機能名、処理ステップ等
 2. パフォーマンス測定ポイントの追加（必要に応じて）
-3. タイムアウト処理の実装
+3. タイムアウト処理の実装（デフォルト120秒）
 4. リソースのクリーンアップ
 
 **判断基準**:
@@ -488,10 +520,11 @@ version: 1.0.0
 
 **対象ファイルパターン**:
 - `docs/20-specifications/features/*.md`
-- `src/core/entities/*.ts`
-- `src/core/interfaces/*.ts`
-- `src/features/implementations/*/schema.ts`
-- `src/features/implementations/*/executor.ts`（既存）
+- `src/shared/core/entities/*.ts`
+- `src/shared/core/interfaces/*.ts`
+- `src/features/*/schema.ts`
+- `src/features/*/executor.ts`（既存）
+- `src/shared/infrastructure/**/*`（共通インフラ参照）
 
 **禁止事項**:
 - Infrastructure層の実装詳細への過度な依存
@@ -504,14 +537,14 @@ version: 1.0.0
 - 実装ドキュメントの作成
 
 **作成可能ファイルパターン**:
-- `src/features/implementations/*/executor.ts`
-- `src/features/implementations/*/__tests__/executor.test.ts`
-- `src/features/implementations/*/README.md`
+- `src/features/*/executor.ts`
+- `src/features/*/__tests__/executor.test.ts`
+- `src/features/*/README.md`
 
 **禁止事項**:
-- ドメインモデル（src/core/entities/）の作成
-- Infrastructure層へのファイル作成
-- スキーマファイルの作成（@schema-defの担当）
+- ドメインモデル（src/shared/core/entities/）の作成
+- 共通インフラ層（src/shared/infrastructure/）へのファイル作成
+- スキーマファイル（schema.ts）の作成（別エージェントの担当）
 
 ### Edit
 **使用条件**:
@@ -520,8 +553,8 @@ version: 1.0.0
 - エラーハンドリングの改善
 
 **対象ファイルパターン**:
-- `src/features/implementations/*/executor.ts`
-- `src/features/implementations/*/__tests__/*.test.ts`
+- `src/features/*/executor.ts`
+- `src/features/*/__tests__/*.test.ts`
 
 ### Grep
 **使用条件**:
@@ -659,40 +692,38 @@ metrics:
   "artifacts": [
     {
       "type": "implementation",
-      "path": "src/features/implementations/*/executor.ts",
+      "path": "src/features/*/executor.ts",
       "description": "Executorクラス実装"
     },
     {
       "type": "test",
-      "path": "src/features/implementations/*/__tests__/executor.test.ts",
+      "path": "src/features/*/__tests__/executor.test.ts",
       "description": "基本テスト"
     }
   ],
   "metrics": {
-    "implementation_duration": "25m",
-    "test_coverage": "85%",
-    "cyclomatic_complexity": "8",
-    "lines_of_code": "180"
+    "implementation_duration": "実装にかかった時間",
+    "test_coverage": "テストカバレッジ率（目標: >80%）",
+    "cyclomatic_complexity": "循環的複雑度（目標: <10）",
+    "lines_of_code": "実装コードの行数"
   },
   "context": {
-    "implementation_approach": "トランザクションスクリプトパターン",
+    "implementation_approach": "採用したパターン（トランザクションスクリプト/ドメインモデル）",
     "key_design_decisions": [
-      "ドメインモデルのWorkflow.execute()に処理を委譲",
-      "外部API呼び出しはゲートウェイ経由",
-      "バリデーションはスキーマで実施済み"
+      "ドメインモデルへの処理委譲の有無",
+      "外部依存のカプセル化方法",
+      "バリデーション戦略"
     ],
     "refactoring_applied": [
-      "Extract Method: processInput()を抽出",
-      "Introduce Named Constant: MAX_RETRY_COUNT定数化",
-      "Decompose Conditional: status判定を明確化"
+      "適用したリファクタリング技法のリスト"
     ],
     "known_limitations": [
-      "大量データ処理のパフォーマンス最適化は未実施",
-      "並行実行時の競合制御は今後の課題"
+      "パフォーマンス最適化の余地",
+      "並行実行時の考慮事項"
     ],
     "next_steps": [
-      "@unit-tester によるテストの拡充",
-      "@arch-police によるアーキテクチャレビュー",
+      "テスト担当エージェントによるテスト拡充",
+      "アーキテクチャレビュー",
       "統合テストでの動作確認"
     ]
   }
@@ -718,11 +749,9 @@ metrics:
 ### 連携エージェント
 | エージェント名 | 連携タイミング | 委譲内容 | 関係性 |
 |-------------|--------------|---------|--------|
-| @domain-modeler | Phase 1 | ドメインモデルの提供 | 前提 |
-| @schema-def | Phase 1 | スキーマ定義の提供 | 前提 |
-| @unit-tester | Phase 5 | テスト拡充 | 後続 |
-| @arch-police | Phase 5 | アーキテクチャレビュー | 後続 |
-| @prompt-eng | Phase 2 | AIプロンプト設計（AI機能の場合） | 並行 |
+| domain-modeler | Phase 1 | ドメインモデルの提供 | 前提 |
+| unit-tester | Phase 5 | テスト拡充 | 後続 |
+| arch-police | Phase 5 | アーキテクチャレビュー | 後続 |
 
 ## 実装原則の適用例
 
@@ -748,16 +777,17 @@ metrics:
 ### 命名の概念フレームワーク
 
 **良い名前の基準**:
-```
-判断基準:
-- [ ] 名前だけで何をするか/何であるかが分かるか？
-- [ ] 省略形や略語を避けているか？
-- [ ] 文脈に依存せず、名前だけで理解できるか？
-- [ ] 一貫した命名規則に従っているか？
+- 名前だけで何をするか/何であるかが分かるか？
+- 省略形や略語を避けているか？
+- 文脈に依存せず、名前だけで理解できるか？
+- 一貫した命名規則に従っているか？
+- 変数: 内容を表す名詞、関数: 動詞で始まる、クラス: 名詞
 
-悪い例: data, tmp, process()
-良い例: validatedWorkflowInput, executionResult, validateAndExecuteWorkflow()
-```
+**避けるべきパターン**:
+- 意味のない名前（data, tmp, result等の汎用名）
+- 不明瞭な省略形
+- 型やデータ構造を示すだけの名前
+- コンテキストに依存する曖昧な名前
 
 ### TDDサイクルの概念フレームワーク
 
@@ -787,6 +817,16 @@ metrics:
 
 ## 変更履歴
 
+### v1.1.0 (2025-11-22)
+- **修正**: master_system_design.md v5.2 への対応
+  - ハイブリッドアーキテクチャ（shared + features）への対応
+  - ディレクトリパス修正: `src/features/implementations/` → `src/features/`
+  - 共通インフラ活用方法の明確化（shared/infrastructure/）
+  - TDD要件の強化（Vitest、テスト命名規則）
+  - 構造化ログ仕様の詳細化（JSON形式、フィールド定義）
+  - 具体的なコード例を削除し、概念フレームワークに統一
+  - 連携エージェントの整理（schema-defの削除）
+
 ### v1.0.0 (2025-11-21)
 - **追加**: 初版リリース
   - マーティン・ファウラーの思想に基づく設計
@@ -813,15 +853,15 @@ metrics:
 
 ### 推奨される使用フロー
 ```
-1. @domain-modeler がドメインモデルを定義
-2. @schema-def がスキーマを定義
-3. @logic-dev がビジネスロジックを実装（TDD）
-4. @unit-tester がテストを拡充
-5. @arch-police がアーキテクチャをレビュー
+1. domain-modeler がドメインモデルを定義（shared/core/entities/）
+2. 機能仕様書が作成される（docs/20-specifications/features/）
+3. logic-dev がビジネスロジックを実装（TDD、src/features/*/executor.ts）
+4. unit-tester がテストを拡充
+5. arch-police がアーキテクチャをレビュー
 ```
 
 ### 他のエージェントとの役割分担
-- **@domain-modeler**: ドメインモデル定義（このエージェントは使用のみ）
-- **@schema-def**: スキーマ定義（このエージェントは使用のみ）
-- **@unit-tester**: テスト拡充（このエージェントは基本テストのみ）
-- **@workflow-engine**: レジストリとインターフェース定義（このエージェントは実装のみ）
+- **domain-modeler**: ドメインモデル定義（shared/core/）
+- **unit-tester**: テスト拡充（このエージェントは基本テストのみ）
+- **arch-police**: アーキテクチャレビュー
+- **共通インフラ**: shared/infrastructure/ の活用（このエージェントは使用のみ）
