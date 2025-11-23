@@ -17,7 +17,18 @@
       "Bash(git push:*)",
       "Bash(grep:*)",
       "Bash(git worktree remove:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(TASK_NAME=\"refactor/reorganize-claude-documentation\")",
+      "Bash(WORKTREE_DIR=\".worktrees/$TASK_NAME##*/\")",
+      "Bash(git worktree add:*)",
+      "Bash(bash -c \"cd /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator && git status\")",
+      "Bash(echo:*)",
+      "Bash(git -C /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator status)",
+      "Bash(git --git-dir=/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.git --work-tree=/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator status)",
+      "Bash(git worktree:*)",
+      "Bash(chmod:*)",
+      "Bash(/tmp/git-workflow.sh)",
+      "Bash(/bin/bash /tmp/git-workflow.sh)"
     ],
     "deny": [],
     "ask": []
