@@ -5,17 +5,17 @@
   "graphRenderingMode": "multi-agent",
   "linkDisplayMode": "all",
   "graphStats": {
-    "totalNodes": 11,
-    "folders": 7,
-    "files": 4,
+    "totalNodes": 72,
+    "folders": 12,
+    "files": 60,
     "images": 0,
     "videos": 0,
     "audio": 0,
     "code": 0,
-    "text": 3,
+    "text": 55,
     "html": 0,
-    "yaml": 0,
-    "json": 0,
+    "yaml": 1,
+    "json": 3,
     "other": 1,
     "totalLines": 0,
     "maxLines": 0
@@ -23,55 +23,304 @@
   "directoryTree": {
     "name": "AIWorkflowOrchestrator",
     "type": "directory",
-    "path": "AIWorkflowOrchestrator",
     "children": [
       {
         "name": ".claude",
         "type": "directory",
-        "path": ".claude",
-        "children": [],
-        "hasMore": true
-      },
-      {
-        "name": ".kamui",
-        "type": "directory",
-        "path": ".kamui",
-        "children": [],
-        "hasMore": true
-      },
-      {
-        "name": ".vscode",
-        "type": "directory",
-        "path": ".vscode",
-        "children": [],
-        "hasMore": true
-      },
-      {
-        "name": ".worktrees",
-        "type": "directory",
-        "path": ".worktrees",
-        "children": [],
-        "hasMore": true
-      },
-      {
-        "name": "docs",
-        "type": "directory",
-        "path": "docs",
         "children": [
           {
-            "name": "00-requirements",
+            "name": "agents",
             "type": "directory",
-            "path": "docs/00-requirements",
             "children": [
               {
-                "name": "claude_code_design.md",
+                "name": "agent_list.md",
                 "type": "file",
-                "path": "docs/00-requirements/claude_code_design.md"
+                "lines": 0
               },
               {
-                "name": "master_system_design.md",
+                "name": "api-doc-writer.md",
                 "type": "file",
-                "path": "docs/00-requirements/master_system_design.md"
+                "lines": 0
+              },
+              {
+                "name": "arch-police.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "auth-specialist.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "code-quality.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "command-arch.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "db-architect.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "dba-mgr.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "dep-mgr.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "devops-eng.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "domain-modeler.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "e2e-tester.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "gateway-dev.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "gha-workflow-architect.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "hook-master.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "local-sync.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "local-watcher.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "logic-dev.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "manual-writer.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "mcp-integrator.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "meta-agent-designer.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "process-mgr.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "product-manager.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "prompt-eng.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "repo-dev.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "req-analyst.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "router-dev.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "schema-def.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "sec-auditor.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "secret-mgr.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "skill-librarian.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "spec-writer.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "sre-observer.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "state-manager.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "ui-designer.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "unit-tester.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "workflow-engine.md",
+                "type": "file",
+                "lines": 0
+              }
+            ]
+          },
+          {
+            "name": "commands",
+            "type": "directory",
+            "children": [
+              {
+                "name": "ai",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "README.md",
+                    "type": "file",
+                    "lines": 0
+                  }
+                ]
+              },
+              {
+                "name": "command_list.md",
+                "type": "file",
+                "lines": 0
+              }
+            ]
+          },
+          {
+            "name": "mcp",
+            "type": "directory",
+            "children": [
+              {
+                "name": "Brave_Search.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "Context7.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "Playwright.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "Sequential.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "Serena.md",
+                "type": "file",
+                "lines": 0
+              }
+            ]
+          },
+          {
+            "name": "prompt",
+            "type": "directory",
+            "children": [
+              {
+                "name": "prompt_format.yaml",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "ナレッジ_Claude_Code_agents_ガイド.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "ナレッジ_Claude_Code_command_ガイド.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "ナレッジ_Claude_Code_skills_ガイド.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
+                "type": "file",
+                "lines": 0
+              }
+            ]
+          },
+          {
+            "name": "settings.local.json",
+            "type": "file",
+            "lines": 0
+          },
+          {
+            "name": "slills",
+            "type": "directory",
+            "children": [
+              {
+                "name": "skill_list.md",
+                "type": "file",
+                "lines": 0
               }
             ]
           }
@@ -80,12 +329,66 @@
       {
         "name": ".gitignore",
         "type": "file",
-        "path": ".gitignore"
+        "lines": 0
+      },
+      {
+        "name": ".kamui",
+        "type": "directory",
+        "children": [
+          {
+            "name": "model-versions-cache.json",
+            "type": "file",
+            "lines": 0
+          },
+          {
+            "name": "prompt",
+            "type": "directory",
+            "children": [
+              {
+                "name": "custom-prompt.txt",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "merge-prompt.txt",
+                "type": "file",
+                "lines": 0
+              }
+            ]
+          },
+          {
+            "name": "system-graph-state.json",
+            "type": "file",
+            "lines": 0
+          }
+        ]
       },
       {
         "name": "README.md",
         "type": "file",
-        "path": "README.md"
+        "lines": 0
+      },
+      {
+        "name": "docs",
+        "type": "directory",
+        "children": [
+          {
+            "name": "00-requirements",
+            "type": "directory",
+            "children": [
+              {
+                "name": "claude_code_design.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
+                "name": "master_system_design.md",
+                "type": "file",
+                "lines": 0
+              }
+            ]
+          }
+        ]
       }
     ]
   },
@@ -127,10 +430,1308 @@
         "glowIntensity": 0,
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator",
-        "childFileCount": 0,
+        "childFileCount": 1,
         "x": -2.805318072989304,
         "y": 143.33471610756925,
         "z": 11.15753170703648,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents",
+        "name": "agents",
+        "path": "AIWorkflowOrchestrator/.claude/agents",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude",
+        "childFileCount": 37,
+        "x": -0.6069755794232052,
+        "y": 141.35424584894267,
+        "z": 13.624266700218033,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/agent_list.md",
+        "name": "agent_list.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/agent_list.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -0.13925140533593794,
+        "y": 144.98206813639456,
+        "z": 10.196845246768499,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/api-doc-writer.md",
+        "name": "api-doc-writer.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/api-doc-writer.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -5.31753190417928,
+        "y": 146.25490376709502,
+        "z": 17.878071490893404,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/arch-police.md",
+        "name": "arch-police.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/arch-police.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -4.983928086096862,
+        "y": 139.7146302026774,
+        "z": 16.03358168068953,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/auth-specialist.md",
+        "name": "auth-specialist.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/auth-specialist.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": 3.8179839671026072,
+        "y": 138.34050446655547,
+        "z": 12.07208737421937,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/code-quality.md",
+        "name": "code-quality.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/code-quality.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": 1.6501293246076192,
+        "y": 142.02818297963478,
+        "z": 17.661591858124453,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/command-arch.md",
+        "name": "command-arch.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/command-arch.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -3.1363913231121883,
+        "y": 146.0595236796112,
+        "z": 14.895701013741654,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/db-architect.md",
+        "name": "db-architect.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/db-architect.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": 1.824490882544643,
+        "y": 139.29915796693257,
+        "z": 17.333763163268785,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/dba-mgr.md",
+        "name": "dba-mgr.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/dba-mgr.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": 3.143797444217478,
+        "y": 144.31062187516346,
+        "z": 13.964644552140689,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/dep-mgr.md",
+        "name": "dep-mgr.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/dep-mgr.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -0.6455681149275501,
+        "y": 144.04733652652186,
+        "z": 13.261364776410867,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/devops-eng.md",
+        "name": "devops-eng.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/devops-eng.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -3.115143140759666,
+        "y": 138.59467052734834,
+        "z": 18.337251253836875,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/domain-modeler.md",
+        "name": "domain-modeler.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/domain-modeler.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -3.0284076982976655,
+        "y": 145.20300281109579,
+        "z": 13.602069781110536,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/e2e-tester.md",
+        "name": "e2e-tester.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/e2e-tester.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -3.1306080641428164,
+        "y": 143.72485249457378,
+        "z": 16.480230755443426,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/gateway-dev.md",
+        "name": "gateway-dev.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/gateway-dev.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -4.845163447526671,
+        "y": 143.63249654700584,
+        "z": 10.038925192165703,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/gha-workflow-architect.md",
+        "name": "gha-workflow-architect.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/gha-workflow-architect.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": 1.5766336226773996,
+        "y": 145.48116115884017,
+        "z": 12.623555043715244,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/hook-master.md",
+        "name": "hook-master.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/hook-master.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": 4.026616160732697,
+        "y": 141.4211902901838,
+        "z": 12.175888350401115,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/local-sync.md",
+        "name": "local-sync.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/local-sync.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -0.9759585156039625,
+        "y": 145.6568318785188,
+        "z": 9.650053709683245,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/local-watcher.md",
+        "name": "local-watcher.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/local-watcher.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -3.6919811357440553,
+        "y": 140.30835397581893,
+        "z": 16.262780256454622,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/logic-dev.md",
+        "name": "logic-dev.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/logic-dev.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -1.031456224580773,
+        "y": 138.42551740484487,
+        "z": 15.600731625255634,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/manual-writer.md",
+        "name": "manual-writer.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/manual-writer.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": 0.9802701048689615,
+        "y": 137.10812663221907,
+        "z": 11.132247742847037,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/mcp-integrator.md",
+        "name": "mcp-integrator.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/mcp-integrator.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": 3.357671130777003,
+        "y": 143.26549511053997,
+        "z": 12.276474593175063,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/meta-agent-designer.md",
+        "name": "meta-agent-designer.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/meta-agent-designer.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -5.308469659374069,
+        "y": 145.67351038514528,
+        "z": 15.276816519639059,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/process-mgr.md",
+        "name": "process-mgr.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/process-mgr.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -5.529697835459832,
+        "y": 140.61718408103079,
+        "z": 10.24580303961129,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/product-manager.md",
+        "name": "product-manager.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/product-manager.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": 2.845818510392078,
+        "y": 146.07865427941343,
+        "z": 16.196563415079655,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/prompt-eng.md",
+        "name": "prompt-eng.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/prompt-eng.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -3.39623214428121,
+        "y": 137.5361676914543,
+        "z": 10.088894698411968,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/repo-dev.md",
+        "name": "repo-dev.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/repo-dev.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -0.47919428291429433,
+        "y": 144.0336705943132,
+        "z": 9.521741367128458,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/req-analyst.md",
+        "name": "req-analyst.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/req-analyst.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": 3.4225346899322804,
+        "y": 136.42971121607076,
+        "z": 10.368980233826571,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/router-dev.md",
+        "name": "router-dev.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/router-dev.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": 2.0111750490348483,
+        "y": 137.96856586167465,
+        "z": 11.307585175915307,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/schema-def.md",
+        "name": "schema-def.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/schema-def.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -4.0255686620087845,
+        "y": 139.01138057190948,
+        "z": 17.924194065319753,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/sec-auditor.md",
+        "name": "sec-auditor.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/sec-auditor.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -2.9102672173549466,
+        "y": 144.6218266819069,
+        "z": 14.722553855595365,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/secret-mgr.md",
+        "name": "secret-mgr.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/secret-mgr.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -3.94206836824682,
+        "y": 136.80810868139196,
+        "z": 14.473097288069297,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/skill-librarian.md",
+        "name": "skill-librarian.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/skill-librarian.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -0.29016367594644166,
+        "y": 144.09887506391158,
+        "z": 8.70289511899784,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/spec-writer.md",
+        "name": "spec-writer.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/spec-writer.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -0.8101895759214801,
+        "y": 140.13302189321277,
+        "z": 9.257829551374948,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/sre-observer.md",
+        "name": "sre-observer.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/sre-observer.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -5.044912724995326,
+        "y": 145.10864466371063,
+        "z": 12.171747647961926,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/state-manager.md",
+        "name": "state-manager.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/state-manager.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -4.477133001325166,
+        "y": 143.31478729356346,
+        "z": 9.44418775280026,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/ui-designer.md",
+        "name": "ui-designer.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/ui-designer.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -2.6038647954384615,
+        "y": 144.03437419840085,
+        "z": 9.0380427538774,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/unit-tester.md",
+        "name": "unit-tester.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/unit-tester.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": 0.538447267343785,
+        "y": 136.38887565933396,
+        "z": 13.193388193625875,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/workflow-engine.md",
+        "name": "workflow-engine.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/workflow-engine.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": -1.482519989852404,
+        "y": 141.6949359673804,
+        "z": 9.95819094826089,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/commands",
+        "name": "commands",
+        "path": "AIWorkflowOrchestrator/.claude/commands",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude",
+        "childFileCount": 1,
+        "x": -6.180009664488141,
+        "y": 144.59712301892148,
+        "z": 14.469906493536305,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/commands/ai",
+        "name": "ai",
+        "path": "AIWorkflowOrchestrator/.claude/commands/ai",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/commands",
+        "childFileCount": 1,
+        "x": -4.19412622041842,
+        "y": 140.56418274510932,
+        "z": 19.061097753789355,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/commands/ai/README.md",
+        "name": "README.md",
+        "path": "AIWorkflowOrchestrator/.claude/commands/ai/README.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/commands/ai",
+        "childFileCount": 0,
+        "x": -2.1869477137510493,
+        "y": 135.9044409931276,
+        "z": 14.29619843021289,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/commands/command_list.md",
+        "name": "command_list.md",
+        "path": "AIWorkflowOrchestrator/.claude/commands/command_list.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/commands",
+        "childFileCount": 0,
+        "x": -8.773135723186455,
+        "y": 145.93596326639053,
+        "z": 17.47335870525413,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/mcp",
+        "name": "mcp",
+        "path": "AIWorkflowOrchestrator/.claude/mcp",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude",
+        "childFileCount": 5,
+        "x": -0.47857347739700584,
+        "y": 140.45460567059146,
+        "z": 13.079614891521533,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/mcp/Brave_Search.md",
+        "name": "Brave_Search.md",
+        "path": "AIWorkflowOrchestrator/.claude/mcp/Brave_Search.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/mcp",
+        "childFileCount": 0,
+        "x": -4.248531980704275,
+        "y": 135.57766026735297,
+        "z": 10.919751576608515,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/mcp/Context7.md",
+        "name": "Context7.md",
+        "path": "AIWorkflowOrchestrator/.claude/mcp/Context7.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/mcp",
+        "childFileCount": 0,
+        "x": -2.5392026036737176,
+        "y": 138.5804011856596,
+        "z": 17.533008006404145,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/mcp/Playwright.md",
+        "name": "Playwright.md",
+        "path": "AIWorkflowOrchestrator/.claude/mcp/Playwright.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/mcp",
+        "childFileCount": 0,
+        "x": -0.5134590462909512,
+        "y": 143.64944844140678,
+        "z": 8.279777625438788,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/mcp/Sequential.md",
+        "name": "Sequential.md",
+        "path": "AIWorkflowOrchestrator/.claude/mcp/Sequential.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/mcp",
+        "childFileCount": 0,
+        "x": 1.098934360763371,
+        "y": 144.39926524606383,
+        "z": 11.494422341303107,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/mcp/Serena.md",
+        "name": "Serena.md",
+        "path": "AIWorkflowOrchestrator/.claude/mcp/Serena.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/mcp",
+        "childFileCount": 0,
+        "x": -1.728545074086167,
+        "y": 135.76374657870315,
+        "z": 14.202522269951487,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/prompt",
+        "name": "prompt",
+        "path": "AIWorkflowOrchestrator/.claude/prompt",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude",
+        "childFileCount": 6,
+        "x": -2.822871767289607,
+        "y": 141.4044061900185,
+        "z": 8.94735269125731,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/prompt/prompt_format.yaml",
+        "name": "prompt_format.yaml",
+        "path": "AIWorkflowOrchestrator/.claude/prompt/prompt_format.yaml",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#f1c40f",
+        "originalColor": "#f1c40f",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/prompt",
+        "childFileCount": 0,
+        "x": -3.696856609060925,
+        "y": 138.98035494634325,
+        "z": 6.003624855922562,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md",
+        "name": "ナレッジ_Claude_Code_agents_ガイド.md",
+        "path": "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/prompt",
+        "childFileCount": 0,
+        "x": -5.999186169701118,
+        "y": 142.3232958948319,
+        "z": 5.816271336194064,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_command_ガイド.md",
+        "name": "ナレッジ_Claude_Code_command_ガイド.md",
+        "path": "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_command_ガイド.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/prompt",
+        "childFileCount": 0,
+        "x": 1.5889356314166019,
+        "y": 141.50543649945993,
+        "z": 4.657681956972496,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md",
+        "name": "ナレッジ_Claude_Code_skills_ガイド.md",
+        "path": "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/prompt",
+        "childFileCount": 0,
+        "x": -5.450086351658786,
+        "y": 140.97660143131253,
+        "z": 7.221801924130839,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
+        "name": "プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
+        "path": "AIWorkflowOrchestrator/.claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/prompt",
+        "childFileCount": 0,
+        "x": -2.1523889904265987,
+        "y": 139.37677247335125,
+        "z": 10.709447711094663,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
+        "name": "作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
+        "path": "AIWorkflowOrchestrator/.claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/prompt",
+        "childFileCount": 0,
+        "x": -1.5610149073903807,
+        "y": 142.13794699130204,
+        "z": 9.126064953567372,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/settings.local.json",
+        "name": "settings.local.json",
+        "path": "AIWorkflowOrchestrator/.claude/settings.local.json",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#8e44ad",
+        "originalColor": "#8e44ad",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude",
+        "childFileCount": 0,
+        "x": 0.7807462694235605,
+        "y": 144.49943111154198,
+        "z": 11.140866782821982,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/slills",
+        "name": "slills",
+        "path": "AIWorkflowOrchestrator/.claude/slills",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude",
+        "childFileCount": 1,
+        "x": -5.98256560329591,
+        "y": 147.35061447663776,
+        "z": 14.524345507997037,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/slills/skill_list.md",
+        "name": "skill_list.md",
+        "path": "AIWorkflowOrchestrator/.claude/slills/skill_list.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/slills",
+        "childFileCount": 0,
+        "x": -4.70379019321585,
+        "y": 146.86658544571,
+        "z": 19.309326712899114,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.gitignore",
+        "name": ".gitignore",
+        "path": "AIWorkflowOrchestrator/.gitignore",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#57606f",
+        "originalColor": "#57606f",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator",
+        "childFileCount": 0,
+        "x": -8.758023006582555,
+        "y": 148.07375766285267,
+        "z": 13.011918079629297,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -149,7 +1750,7 @@
         "glowIntensity": 0,
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator",
-        "childFileCount": 0,
+        "childFileCount": 2,
         "x": -6.598071576590862,
         "y": 141.7425223132983,
         "z": 13.376951674517908,
@@ -158,31 +1759,31 @@
         "vz": -0.5500846587732893
       },
       {
-        "id": "AIWorkflowOrchestrator/.vscode",
-        "name": ".vscode",
-        "path": "AIWorkflowOrchestrator/.vscode",
-        "type": "directory",
+        "id": "AIWorkflowOrchestrator/.kamui/model-versions-cache.json",
+        "name": "model-versions-cache.json",
+        "path": "AIWorkflowOrchestrator/.kamui/model-versions-cache.json",
+        "type": "file",
         "lines": 0,
-        "val": 14,
+        "val": 6,
         "color": "#2c3038",
-        "baseColor": "#4ec9b0",
-        "originalColor": "#4ec9b0",
+        "baseColor": "#8e44ad",
+        "originalColor": "#8e44ad",
         "defaultGlow": 0.18,
         "glowIntensity": 0,
         "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator",
+        "parentPath": "AIWorkflowOrchestrator/.kamui",
         "childFileCount": 0,
-        "x": -8.55875931812069,
-        "y": 141.62934912802032,
-        "z": 16.370496910033655,
+        "x": -4.516168074793029,
+        "y": 140.99081492686537,
+        "z": 17.372759142261568,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
       },
       {
-        "id": "AIWorkflowOrchestrator/.worktrees",
-        "name": ".worktrees",
-        "path": "AIWorkflowOrchestrator/.worktrees",
+        "id": "AIWorkflowOrchestrator/.kamui/prompt",
+        "name": "prompt",
+        "path": "AIWorkflowOrchestrator/.kamui/prompt",
         "type": "directory",
         "lines": 0,
         "val": 14,
@@ -192,14 +1793,102 @@
         "defaultGlow": 0.18,
         "glowIntensity": 0,
         "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator",
-        "childFileCount": 0,
-        "x": -7.412162437483246,
-        "y": 144.55529842369523,
-        "z": 20.752938401227418,
+        "parentPath": "AIWorkflowOrchestrator/.kamui",
+        "childFileCount": 2,
+        "x": -4.0510717693687965,
+        "y": 141.8209866382911,
+        "z": 16.917363385162947,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.kamui/prompt/custom-prompt.txt",
+        "name": "custom-prompt.txt",
+        "path": "AIWorkflowOrchestrator/.kamui/prompt/custom-prompt.txt",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#95a5a6",
+        "originalColor": "#95a5a6",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.kamui/prompt",
+        "childFileCount": 0,
+        "x": -8.376479168717266,
+        "y": 144.42236703072527,
+        "z": 16.747724582204476,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.kamui/prompt/merge-prompt.txt",
+        "name": "merge-prompt.txt",
+        "path": "AIWorkflowOrchestrator/.kamui/prompt/merge-prompt.txt",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#95a5a6",
+        "originalColor": "#95a5a6",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.kamui/prompt",
+        "childFileCount": 0,
+        "x": 0.47318814659713926,
+        "y": 140.11059423534294,
+        "z": 15.03137337051707,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.kamui/system-graph-state.json",
+        "name": "system-graph-state.json",
+        "path": "AIWorkflowOrchestrator/.kamui/system-graph-state.json",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#8e44ad",
+        "originalColor": "#8e44ad",
+        "defaultGlow": 0.18,
+        "glowIntensity": 2.4,
+        "highlighted": true,
+        "parentPath": "AIWorkflowOrchestrator/.kamui",
+        "childFileCount": 0,
+        "x": -6.554193493379982,
+        "y": 136.9728761385747,
+        "z": 8.829890422030836,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/README.md",
+        "name": "README.md",
+        "path": "AIWorkflowOrchestrator/README.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator",
+        "childFileCount": 0,
+        "x": -19.29085425804985,
+        "y": 175.32134952799507,
+        "z": -2.083767718619554,
+        "vx": -0.9197747694881138,
+        "vy": 3.326587166685413,
+        "vz": -1.6603508792423909
       },
       {
         "id": "AIWorkflowOrchestrator/docs",
@@ -260,9 +1949,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/docs/00-requirements",
         "childFileCount": 0,
-        "x": -8.81376173929342,
-        "y": 144.66115106564678,
-        "z": 14.992840008847718,
+        "x": -5.306916452167688,
+        "y": 147.08238450676436,
+        "z": 6.384718569815718,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -282,56 +1971,12 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/docs/00-requirements",
         "childFileCount": 0,
-        "x": -7.7374165891406275,
-        "y": 141.84566282652378,
-        "z": 11.399700325544442,
+        "x": -4.801093735523859,
+        "y": 142.4456186244939,
+        "z": 14.307976624805885,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
-      },
-      {
-        "id": "AIWorkflowOrchestrator/.gitignore",
-        "name": ".gitignore",
-        "path": "AIWorkflowOrchestrator/.gitignore",
-        "type": "file",
-        "lines": 0,
-        "val": 6,
-        "color": "#2c3038",
-        "baseColor": "#57606f",
-        "originalColor": "#57606f",
-        "defaultGlow": 0.18,
-        "glowIntensity": 0,
-        "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator",
-        "childFileCount": 0,
-        "x": -8.758023006582555,
-        "y": 148.07375766285267,
-        "z": 13.011918079629297,
-        "vx": 0.562360533541566,
-        "vy": 1.6658914866812142,
-        "vz": -0.5500846587732893
-      },
-      {
-        "id": "AIWorkflowOrchestrator/README.md",
-        "name": "README.md",
-        "path": "AIWorkflowOrchestrator/README.md",
-        "type": "file",
-        "lines": 0,
-        "val": 6,
-        "color": "#2c3038",
-        "baseColor": "#3498db",
-        "originalColor": "#3498db",
-        "defaultGlow": 0.18,
-        "glowIntensity": 0,
-        "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator",
-        "childFileCount": 0,
-        "x": -19.29085425804985,
-        "y": 175.32134952799507,
-        "z": -2.083767718619554,
-        "vx": -0.9197747694881138,
-        "vy": 3.326587166685413,
-        "vz": -1.6603508792423909
       }
     ],
     "links": [
@@ -341,18 +1986,333 @@
         "type": "tree"
       },
       {
+        "source": "AIWorkflowOrchestrator/.claude",
+        "target": "AIWorkflowOrchestrator/.claude/agents",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/agent_list.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/api-doc-writer.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/arch-police.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/auth-specialist.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/code-quality.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/command-arch.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/db-architect.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/dba-mgr.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/dep-mgr.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/devops-eng.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/domain-modeler.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/e2e-tester.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/gateway-dev.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/gha-workflow-architect.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/hook-master.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/local-sync.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/local-watcher.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/logic-dev.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/manual-writer.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/mcp-integrator.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/meta-agent-designer.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/process-mgr.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/product-manager.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/prompt-eng.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/repo-dev.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/req-analyst.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/router-dev.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/schema-def.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/sec-auditor.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/secret-mgr.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/skill-librarian.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/spec-writer.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/sre-observer.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/state-manager.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/ui-designer.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/unit-tester.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/workflow-engine.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude",
+        "target": "AIWorkflowOrchestrator/.claude/commands",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/commands",
+        "target": "AIWorkflowOrchestrator/.claude/commands/ai",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/commands/ai",
+        "target": "AIWorkflowOrchestrator/.claude/commands/ai/README.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/commands",
+        "target": "AIWorkflowOrchestrator/.claude/commands/command_list.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude",
+        "target": "AIWorkflowOrchestrator/.claude/mcp",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/mcp",
+        "target": "AIWorkflowOrchestrator/.claude/mcp/Brave_Search.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/mcp",
+        "target": "AIWorkflowOrchestrator/.claude/mcp/Context7.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/mcp",
+        "target": "AIWorkflowOrchestrator/.claude/mcp/Playwright.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/mcp",
+        "target": "AIWorkflowOrchestrator/.claude/mcp/Sequential.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/mcp",
+        "target": "AIWorkflowOrchestrator/.claude/mcp/Serena.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude",
+        "target": "AIWorkflowOrchestrator/.claude/prompt",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/prompt",
+        "target": "AIWorkflowOrchestrator/.claude/prompt/prompt_format.yaml",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/prompt",
+        "target": "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/prompt",
+        "target": "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_command_ガイド.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/prompt",
+        "target": "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/prompt",
+        "target": "AIWorkflowOrchestrator/.claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/prompt",
+        "target": "AIWorkflowOrchestrator/.claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude",
+        "target": "AIWorkflowOrchestrator/.claude/settings.local.json",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude",
+        "target": "AIWorkflowOrchestrator/.claude/slills",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/slills",
+        "target": "AIWorkflowOrchestrator/.claude/slills/skill_list.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator",
+        "target": "AIWorkflowOrchestrator/.gitignore",
+        "type": "tree"
+      },
+      {
         "source": "AIWorkflowOrchestrator",
         "target": "AIWorkflowOrchestrator/.kamui",
         "type": "tree"
       },
       {
-        "source": "AIWorkflowOrchestrator",
-        "target": "AIWorkflowOrchestrator/.vscode",
+        "source": "AIWorkflowOrchestrator/.kamui",
+        "target": "AIWorkflowOrchestrator/.kamui/model-versions-cache.json",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.kamui",
+        "target": "AIWorkflowOrchestrator/.kamui/prompt",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.kamui/prompt",
+        "target": "AIWorkflowOrchestrator/.kamui/prompt/custom-prompt.txt",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.kamui/prompt",
+        "target": "AIWorkflowOrchestrator/.kamui/prompt/merge-prompt.txt",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.kamui",
+        "target": "AIWorkflowOrchestrator/.kamui/system-graph-state.json",
         "type": "tree"
       },
       {
         "source": "AIWorkflowOrchestrator",
-        "target": "AIWorkflowOrchestrator/.worktrees",
+        "target": "AIWorkflowOrchestrator/README.md",
         "type": "tree"
       },
       {
@@ -373,16 +2333,6 @@
       {
         "source": "AIWorkflowOrchestrator/docs/00-requirements",
         "target": "AIWorkflowOrchestrator/docs/00-requirements/master_system_design.md",
-        "type": "tree"
-      },
-      {
-        "source": "AIWorkflowOrchestrator",
-        "target": "AIWorkflowOrchestrator/.gitignore",
-        "type": "tree"
-      },
-      {
-        "source": "AIWorkflowOrchestrator",
-        "target": "AIWorkflowOrchestrator/README.md",
         "type": "tree"
       }
     ]
@@ -505,10 +2455,9 @@
     "mode": "full",
     "isPartial": false,
     "branchPulse": {
-      "generatedAt": 1763861580580,
+      "generatedAt": 1763903393784,
       "targets": [
         "main",
-        "task/task-1763719022041-576354",
         "master",
         "daishiman/feature/add-master-system-design",
         "daishiman/feature/development"
@@ -516,10 +2465,10 @@
       "statsByBranch": {
         "main": {
           "branch": "main",
-          "head": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
+          "head": "eb67603b9eada8254154eeecb49e86002437ef54",
           "baseRef": "origin/main",
-          "baseHead": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
-          "mergeBase": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
+          "baseHead": "eb67603b9eada8254154eeecb49e86002437ef54",
+          "mergeBase": "eb67603b9eada8254154eeecb49e86002437ef54",
           "divergence": {
             "aheadCount": 0,
             "fileCount": 0
@@ -530,39 +2479,22 @@
             "fileCount": 0
           },
           "upstream": null
-        },
-        "task/task-1763719022041-576354": {
-          "branch": "task/task-1763719022041-576354",
-          "head": "52266792fbc47007b4ddca109f477ddcac9f72d0",
-          "baseRef": "main",
-          "baseHead": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
-          "mergeBase": "52266792fbc47007b4ddca109f477ddcac9f72d0",
-          "divergence": {
-            "aheadCount": 0,
-            "fileCount": 0
-          },
-          "baseline": {
-            "aheadCount": 0,
-            "behindCount": 6,
-            "fileCount": 59
-          },
-          "upstream": null
         }
       }
     }
   },
   "gitHistoryState": {
     "selectedTimelineIndex": 1,
-    "activeCommitHash": null,
+    "activeCommitHash": "d5273f485de8c2dea656002edd5786a9c7955699",
     "entries": [
       {
         "type": "live",
         "label": "現在のコードベース",
         "files": [],
         "branch": "main",
-        "targetCommitHash": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
+        "targetCommitHash": "eb67603b9eada8254154eeecb49e86002437ef54",
         "worktreePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
-        "timestamp": 1763861580602,
+        "timestamp": 1763903393807,
         "lane": 0,
         "branchLabel": "main",
         "branchTags": [
@@ -573,35 +2505,452 @@
         "index": 0
       },
       {
+        "type": "commit",
+        "label": "WIP on main: f6f8da7 chore(config): Update agent definitions…",
+        "commit": {
+          "hash": "d5273f485de8c2dea656002edd5786a9c7955699",
+          "subject": "WIP on main: f6f8da7 chore(config): Update agent definitions and command structure (#4)",
+          "author": "daishiman",
+          "timestamp": 1763865023,
+          "parents": [
+            "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
+            "411afa5dce5b538a9bfdb9c3c0d2fea68a84bb8e"
+          ],
+          "parent": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
+          "refs": "refs/stash",
+          "branches": [
+            "refs/stash"
+          ]
+        },
+        "commitHash": "d5273f485de8c2dea656002edd5786a9c7955699",
+        "lane": 1,
+        "parentLinks": [
+          {
+            "hash": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
+            "lane": 0
+          },
+          {
+            "hash": "411afa5dce5b538a9bfdb9c3c0d2fea68a84bb8e",
+            "lane": 1
+          }
+        ],
+        "primaryBranchName": "refs/stash",
+        "branchColor": "#e84f7f",
+        "branchTags": [
+          "refs/stash"
+        ],
+        "index": 1
+      },
+      {
+        "type": "commit",
+        "label": "index on main: f6f8da7 chore(config): Update agent definitio…",
+        "commit": {
+          "hash": "411afa5dce5b538a9bfdb9c3c0d2fea68a84bb8e",
+          "subject": "index on main: f6f8da7 chore(config): Update agent definitions and command structure (#4)",
+          "author": "daishiman",
+          "timestamp": 1763865023,
+          "parents": [
+            "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6"
+          ],
+          "parent": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
+          "refs": "",
+          "branches": []
+        },
+        "commitHash": "411afa5dce5b538a9bfdb9c3c0d2fea68a84bb8e",
+        "lane": 0,
+        "parentLinks": [
+          {
+            "hash": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
+            "lane": 0
+          }
+        ],
+        "branchColor": "#4f85e8",
+        "branchTags": [],
+        "index": 2
+      },
+      {
+        "type": "commit",
+        "label": "On chore/update-agent-definitions: Temporary stash of Kamui …",
+        "commit": {
+          "hash": "ae976fa6805d2feb2e118c9293b4b1cb79a36fb6",
+          "subject": "On chore/update-agent-definitions: Temporary stash of Kamui changes",
+          "author": "daishiman",
+          "timestamp": 1763865004,
+          "parents": [
+            "9e5b02f454e9b1a63ccf0d05336b61a3d617b8c7",
+            "d6297bd0343d3bdc5d70409b88ef6472f5e6709a"
+          ],
+          "parent": "9e5b02f454e9b1a63ccf0d05336b61a3d617b8c7",
+          "refs": "refs/stash",
+          "branches": [
+            "refs/stash"
+          ]
+        },
+        "commitHash": "ae976fa6805d2feb2e118c9293b4b1cb79a36fb6",
+        "lane": 1,
+        "parentLinks": [
+          {
+            "hash": "9e5b02f454e9b1a63ccf0d05336b61a3d617b8c7",
+            "lane": 2
+          },
+          {
+            "hash": "d6297bd0343d3bdc5d70409b88ef6472f5e6709a",
+            "lane": 3
+          }
+        ],
+        "primaryBranchName": "refs/stash",
+        "branchColor": "#e84f7f",
+        "branchTags": [],
+        "index": 3
+      },
+      {
+        "type": "commit",
+        "label": "index on chore/update-agent-definitions: 9e5b02f chore(kamui…",
+        "commit": {
+          "hash": "d6297bd0343d3bdc5d70409b88ef6472f5e6709a",
+          "subject": "index on chore/update-agent-definitions: 9e5b02f chore(kamui): Update system graph state with latest stats",
+          "author": "daishiman",
+          "timestamp": 1763865004,
+          "parents": [
+            "9e5b02f454e9b1a63ccf0d05336b61a3d617b8c7"
+          ],
+          "parent": "9e5b02f454e9b1a63ccf0d05336b61a3d617b8c7",
+          "refs": "",
+          "branches": []
+        },
+        "commitHash": "d6297bd0343d3bdc5d70409b88ef6472f5e6709a",
+        "lane": 0,
+        "parentLinks": [
+          {
+            "hash": "9e5b02f454e9b1a63ccf0d05336b61a3d617b8c7",
+            "lane": 2
+          }
+        ],
+        "branchColor": "#4f85e8",
+        "branchTags": [],
+        "index": 4
+      },
+      {
+        "type": "commit",
+        "label": "chore(kamui): Update system graph state with latest stats",
+        "commit": {
+          "hash": "9e5b02f454e9b1a63ccf0d05336b61a3d617b8c7",
+          "subject": "chore(kamui): Update system graph state with latest stats",
+          "author": "daishiman",
+          "timestamp": 1763864981,
+          "parents": [
+            "02d829b108d43ae943e144ee90f8fd40b68610e9"
+          ],
+          "parent": "02d829b108d43ae943e144ee90f8fd40b68610e9",
+          "refs": "origin/chore/update-agent-definitions, chore/update-agent-definitions",
+          "branches": [
+            "origin/chore/update-agent-definitions",
+            "chore/update-agent-definitions"
+          ]
+        },
+        "commitHash": "9e5b02f454e9b1a63ccf0d05336b61a3d617b8c7",
+        "lane": 2,
+        "parentLinks": [
+          {
+            "hash": "02d829b108d43ae943e144ee90f8fd40b68610e9",
+            "lane": 2
+          }
+        ],
+        "primaryBranchName": "chore/update-agent-definitions",
+        "branchColor": "#4fe8b8",
+        "branchTags": [
+          "chore/update-agent-definitions"
+        ],
+        "index": 5
+      },
+      {
         "type": "unstaged",
-        "label": "未ステージ (2)",
+        "label": "未ステージ (18)",
         "files": [
+          ".claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md",
+          ".claude/prompt/ナレッジ_Claude_Code_command_ガイド.md",
+          ".claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md",
+          ".claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
+          ".claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
+          ".claude/settings.local.json",
+          ".claude/slills/skill_list.md",
           ".kamui/model-versions-cache.json",
-          ".kamui/system-graph-state.json"
+          ".kamui/prompt/merge-prompt.txt",
+          ".kamui/system-graph-state.json",
+          ".claude/prompt/agents_skills_command_作成/prompt_format.yaml",
+          ".claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_agents_ガイド.md",
+          ".claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_command_ガイド.md",
+          ".claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_skills_ガイド.md",
+          ".claude/prompt/agents_skills_command_作成/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
+          ".claude/prompt/agents_skills_command_作成/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
+          ".claude/skills/skill_list.md",
+          "docs/skill-creation-complete-guide.md"
         ],
         "branch": "main",
-        "targetCommitHash": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
+        "targetCommitHash": "eb67603b9eada8254154eeecb49e86002437ef54",
         "worktreePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
-        "timestamp": 1763861580602,
+        "timestamp": 1763903393807,
         "sortOrder": 0,
         "lane": 0,
         "branchColor": "#4f85e8",
-        "index": 1
+        "index": 6
       },
       {
         "type": "staged",
         "label": "ステージ済み (1)",
         "files": [
-          "claude/agents/api-doc-writer.md"
+          "claude/prompt/prompt_format.yaml"
         ],
         "branch": "main",
-        "targetCommitHash": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
+        "targetCommitHash": "eb67603b9eada8254154eeecb49e86002437ef54",
         "worktreePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
-        "timestamp": 1763861580602,
+        "timestamp": 1763903393807,
         "sortOrder": 1,
         "lane": 0,
         "branchColor": "#4f85e8",
-        "index": 2
+        "index": 7
+      },
+      {
+        "type": "commit",
+        "label": "chore(config): Update agent definitions and Kamui system sta…",
+        "commit": {
+          "hash": "eb67603b9eada8254154eeecb49e86002437ef54",
+          "subject": "chore(config): Update agent definitions and Kamui system state (#5)",
+          "author": "daishiman",
+          "timestamp": 1763864961,
+          "parents": [
+            "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6"
+          ],
+          "parent": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
+          "refs": "HEAD -> main, origin/main, origin/HEAD, refactor/reorganize-claude-documentation",
+          "branches": [
+            "HEAD -> main",
+            "origin/main",
+            "origin/HEAD",
+            "refactor/reorganize-claude-documentation",
+            "main"
+          ]
+        },
+        "commitHash": "eb67603b9eada8254154eeecb49e86002437ef54",
+        "lane": 0,
+        "parentLinks": [
+          {
+            "hash": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
+            "lane": 0
+          }
+        ],
+        "primaryBranchName": "main",
+        "branchColor": "#4f85e8",
+        "branchTags": [
+          "main",
+          "refactor/reorganize-claude-documentation"
+        ],
+        "worktrees": [
+          {
+            "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
+            "head": "eb67603b9eada8254154eeecb49e86002437ef54",
+            "branch": "main",
+            "isMerged": false,
+            "mergeCommitHash": null,
+            "status": {
+              "staged": [
+                {
+                  "path": "claude/prompt/prompt_format.yaml",
+                  "originalPath": null,
+                  "status": "deleted",
+                  "rawPath": "claude/prompt/prompt_format.yaml",
+                  "timestamp": 1763903393508
+                }
+              ],
+              "unstaged": [
+                {
+                  "path": ".claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md",
+                  "originalPath": null,
+                  "status": "deleted",
+                  "rawPath": ".claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md",
+                  "timestamp": 1763903393508
+                },
+                {
+                  "path": ".claude/prompt/ナレッジ_Claude_Code_command_ガイド.md",
+                  "originalPath": null,
+                  "status": "deleted",
+                  "rawPath": ".claude/prompt/ナレッジ_Claude_Code_command_ガイド.md",
+                  "timestamp": 1763903393508
+                },
+                {
+                  "path": ".claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md",
+                  "originalPath": null,
+                  "status": "deleted",
+                  "rawPath": ".claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md",
+                  "timestamp": 1763903393508
+                },
+                {
+                  "path": ".claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
+                  "originalPath": null,
+                  "status": "deleted",
+                  "rawPath": ".claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
+                  "timestamp": 1763903393508
+                },
+                {
+                  "path": ".claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
+                  "originalPath": null,
+                  "status": "deleted",
+                  "rawPath": ".claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
+                  "timestamp": 1763903393508
+                },
+                {
+                  "path": ".claude/settings.local.json",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/settings.local.json",
+                  "timestamp": 1763903393508
+                },
+                {
+                  "path": ".claude/slills/skill_list.md",
+                  "originalPath": null,
+                  "status": "deleted",
+                  "rawPath": ".claude/slills/skill_list.md",
+                  "timestamp": 1763903393508
+                },
+                {
+                  "path": ".kamui/model-versions-cache.json",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".kamui/model-versions-cache.json",
+                  "timestamp": 1763903393508
+                },
+                {
+                  "path": ".kamui/prompt/merge-prompt.txt",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".kamui/prompt/merge-prompt.txt",
+                  "timestamp": 1763903393508
+                },
+                {
+                  "path": ".kamui/system-graph-state.json",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".kamui/system-graph-state.json",
+                  "timestamp": 1763903393508
+                }
+              ],
+              "untracked": [
+                {
+                  "path": ".claude/prompt/agents_skills_command_作成/prompt_format.yaml",
+                  "status": "untracked",
+                  "rawPath": ".claude/prompt/agents_skills_command_作成/prompt_format.yaml",
+                  "timestamp": 1763903393508
+                },
+                {
+                  "path": ".claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_agents_ガイド.md",
+                  "status": "untracked",
+                  "rawPath": ".claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_agents_ガイド.md",
+                  "timestamp": 1763903393508
+                },
+                {
+                  "path": ".claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_command_ガイド.md",
+                  "status": "untracked",
+                  "rawPath": ".claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_command_ガイド.md",
+                  "timestamp": 1763903393508
+                },
+                {
+                  "path": ".claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_skills_ガイド.md",
+                  "status": "untracked",
+                  "rawPath": ".claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_skills_ガイド.md",
+                  "timestamp": 1763903393508
+                },
+                {
+                  "path": ".claude/prompt/agents_skills_command_作成/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
+                  "status": "untracked",
+                  "rawPath": ".claude/prompt/agents_skills_command_作成/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
+                  "timestamp": 1763903393508
+                },
+                {
+                  "path": ".claude/prompt/agents_skills_command_作成/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
+                  "status": "untracked",
+                  "rawPath": ".claude/prompt/agents_skills_command_作成/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
+                  "timestamp": 1763903393508
+                },
+                {
+                  "path": ".claude/skills/skill_list.md",
+                  "status": "untracked",
+                  "rawPath": ".claude/skills/skill_list.md",
+                  "timestamp": 1763903393508
+                },
+                {
+                  "path": "docs/skill-creation-complete-guide.md",
+                  "status": "untracked",
+                  "rawPath": "docs/skill-creation-complete-guide.md",
+                  "timestamp": 1763903393508
+                }
+              ],
+              "capturedAt": 1763903393508
+            },
+            "normalizedPath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
+            "lane": 0
+          }
+        ],
+        "index": 8
+      },
+      {
+        "type": "commit",
+        "label": "chore(kamui): Update system state and model versions cache",
+        "commit": {
+          "hash": "02d829b108d43ae943e144ee90f8fd40b68610e9",
+          "subject": "chore(kamui): Update system state and model versions cache",
+          "author": "daishiman",
+          "timestamp": 1763864902,
+          "parents": [
+            "691402e426da95b1a5279d535b21ff3f41ca8fc3"
+          ],
+          "parent": "691402e426da95b1a5279d535b21ff3f41ca8fc3",
+          "refs": "",
+          "branches": [
+            "chore/update-agent-definitions"
+          ]
+        },
+        "commitHash": "02d829b108d43ae943e144ee90f8fd40b68610e9",
+        "lane": 2,
+        "parentLinks": [
+          {
+            "hash": "691402e426da95b1a5279d535b21ff3f41ca8fc3",
+            "lane": 2
+          }
+        ],
+        "primaryBranchName": "chore/update-agent-definitions",
+        "branchColor": "#4fe8b8",
+        "branchTags": [],
+        "index": 9
+      },
+      {
+        "type": "commit",
+        "label": "chore(agents): Update agent definitions to reflect hybrid ar…",
+        "commit": {
+          "hash": "691402e426da95b1a5279d535b21ff3f41ca8fc3",
+          "subject": "chore(agents): Update agent definitions to reflect hybrid architecture",
+          "author": "daishiman",
+          "timestamp": 1763864888,
+          "parents": [
+            "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6"
+          ],
+          "parent": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
+          "refs": "",
+          "branches": [
+            "chore/update-agent-definitions"
+          ]
+        },
+        "commitHash": "691402e426da95b1a5279d535b21ff3f41ca8fc3",
+        "lane": 2,
+        "parentLinks": [
+          {
+            "hash": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
+            "lane": 0
+          }
+        ],
+        "primaryBranchName": "chore/update-agent-definitions",
+        "branchColor": "#4fe8b8",
+        "branchTags": [],
+        "index": 10
       },
       {
         "type": "commit",
@@ -615,11 +2964,8 @@
             "8819107d7ff2017b4d4c4d382f462f84a97f881d"
           ],
           "parent": "8819107d7ff2017b4d4c4d382f462f84a97f881d",
-          "refs": "HEAD -> main, origin/main, origin/HEAD",
+          "refs": "",
           "branches": [
-            "HEAD -> main",
-            "origin/main",
-            "origin/HEAD",
             "main"
           ]
         },
@@ -633,50 +2979,8 @@
         ],
         "primaryBranchName": "main",
         "branchColor": "#4f85e8",
-        "branchTags": [
-          "main"
-        ],
-        "worktrees": [
-          {
-            "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
-            "head": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
-            "branch": "main",
-            "isMerged": false,
-            "mergeCommitHash": null,
-            "status": {
-              "staged": [
-                {
-                  "path": "claude/agents/api-doc-writer.md",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": "claude/agents/api-doc-writer.md",
-                  "timestamp": 1763861580198
-                }
-              ],
-              "unstaged": [
-                {
-                  "path": ".kamui/model-versions-cache.json",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": ".kamui/model-versions-cache.json",
-                  "timestamp": 1763861580198
-                },
-                {
-                  "path": ".kamui/system-graph-state.json",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": ".kamui/system-graph-state.json",
-                  "timestamp": 1763861580198
-                }
-              ],
-              "untracked": [],
-              "capturedAt": 1763861580198
-            },
-            "normalizedPath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
-            "lane": 0
-          }
-        ],
-        "index": 3
+        "branchTags": [],
+        "index": 11
       },
       {
         "type": "commit",
@@ -696,19 +3000,17 @@
           ]
         },
         "commitHash": "cff814fdde099630f642c760507ddb0ebead0c4b",
-        "lane": 1,
+        "lane": 2,
         "parentLinks": [
           {
             "hash": "d277946b738f79571d8817e00cf5cad194c22ca4",
-            "lane": 1
+            "lane": 5
           }
         ],
         "primaryBranchName": "chore/update-agent-definitions",
         "branchColor": "#4fe8b8",
-        "branchTags": [
-          "chore/update-agent-definitions"
-        ],
-        "index": 4
+        "branchTags": [],
+        "index": 12
       },
       {
         "type": "commit",
@@ -731,7 +3033,7 @@
         "parentLinks": [
           {
             "hash": "203405915abfad5aa77fdfcfa624e416e6dafe3c",
-            "lane": 1
+            "lane": 5
           },
           {
             "hash": "8819107d7ff2017b4d4c4d382f462f84a97f881d",
@@ -740,7 +3042,7 @@
         ],
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 5
+        "index": 13
       },
       {
         "type": "commit",
@@ -761,23 +3063,21 @@
           ]
         },
         "commitHash": "5a019aaed2762439e579f7f7078d6d11ce914076",
-        "lane": 2,
+        "lane": 1,
         "parentLinks": [
           {
             "hash": "f4d91f7a8f1bd4738278140417ee44971d6e3ac1",
-            "lane": 2
+            "lane": 6
           },
           {
             "hash": "ad90f6f84e43e7ea7a07d49d40fd951f450ea625",
-            "lane": 3
+            "lane": 7
           }
         ],
         "primaryBranchName": "refs/stash",
         "branchColor": "#e84f7f",
-        "branchTags": [
-          "refs/stash"
-        ],
-        "index": 6
+        "branchTags": [],
+        "index": 14
       },
       {
         "type": "commit",
@@ -799,12 +3099,12 @@
         "parentLinks": [
           {
             "hash": "f4d91f7a8f1bd4738278140417ee44971d6e3ac1",
-            "lane": 2
+            "lane": 6
           }
         ],
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 7
+        "index": 15
       },
       {
         "type": "commit",
@@ -834,7 +3134,7 @@
         "primaryBranchName": "main",
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 8
+        "index": 16
       },
       {
         "type": "commit",
@@ -858,7 +3158,7 @@
         "parentLinks": [
           {
             "hash": "67f583aa3bbe17a37683192ef365ed31f2ec2780",
-            "lane": 2
+            "lane": 6
           }
         ],
         "primaryBranchName": "docs/add-git-worktree-workflow-guide",
@@ -866,7 +3166,7 @@
         "branchTags": [
           "docs/add-git-worktree-workflow-guide"
         ],
-        "index": 9
+        "index": 17
       },
       {
         "type": "commit",
@@ -890,13 +3190,13 @@
         "parentLinks": [
           {
             "hash": "203405915abfad5aa77fdfcfa624e416e6dafe3c",
-            "lane": 1
+            "lane": 5
           }
         ],
         "primaryBranchName": "docs/add-git-worktree-workflow-guide",
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 10
+        "index": 18
       },
       {
         "type": "commit",
@@ -926,7 +3226,7 @@
         "primaryBranchName": "docs/add-git-worktree-workflow-guide",
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 11
+        "index": 19
       },
       {
         "type": "commit",
@@ -956,7 +3256,7 @@
           },
           {
             "hash": "7fb9f93466f23f55a30b9d6d537ec28d6abdc696",
-            "lane": 4
+            "lane": 8
           }
         ],
         "primaryBranchName": "main",
@@ -964,7 +3264,7 @@
         "branchTags": [
           "daishiman/feature/add-master-system-design"
         ],
-        "index": 12
+        "index": 20
       },
       {
         "type": "commit",
@@ -982,7 +3282,8 @@
           "branches": [
             "daishiman/feature/add-master-system-design",
             "docs/add-git-worktree-workflow-guide",
-            "main"
+            "main",
+            "refactor/reorganize-claude-documentation"
           ]
         },
         "commitHash": "7fb9f93466f23f55a30b9d6d537ec28d6abdc696",
@@ -990,13 +3291,13 @@
         "parentLinks": [
           {
             "hash": "0e8b3a86e793c44f9b8acda1fe7e9e6ce1af358e",
-            "lane": 4
+            "lane": 8
           }
         ],
         "primaryBranchName": "main",
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 13
+        "index": 21
       },
       {
         "type": "commit",
@@ -1026,7 +3327,7 @@
           },
           {
             "hash": "0e8b3a86e793c44f9b8acda1fe7e9e6ce1af358e",
-            "lane": 4
+            "lane": 8
           }
         ],
         "primaryBranchName": "main",
@@ -1034,7 +3335,7 @@
         "branchTags": [
           "daishiman/feature/development"
         ],
-        "index": 14
+        "index": 22
       },
       {
         "type": "commit",
@@ -1053,7 +3354,8 @@
             "feature/development",
             "daishiman/feature/development",
             "docs/add-git-worktree-workflow-guide",
-            "main"
+            "main",
+            "refactor/reorganize-claude-documentation"
           ]
         },
         "commitHash": "0e8b3a86e793c44f9b8acda1fe7e9e6ce1af358e",
@@ -1069,29 +3371,7 @@
         "branchTags": [
           "feature/development"
         ],
-        "index": 15
-      },
-      {
-        "type": "anchor",
-        "label": "[task/task-1763719022041-576354]",
-        "branch": "task/task-1763719022041-576354",
-        "worktreePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-1763719022041-576354",
-        "parentCommitHash": "52266792fbc47007b4ddca109f477ddcac9f72d0",
-        "lane": 4,
-        "isMerged": false,
-        "mergeCommitHash": null,
-        "statusChildren": [],
-        "isDefaultWorktree": false,
-        "renderMode": "node",
-        "shouldHide": false,
-        "tagLabel": "task/task-1763719022041-576354",
-        "taskId": "task-1763719022041-576354",
-        "taskStatus": null,
-        "taskStatusLabel": null,
-        "taskName": null,
-        "tooltip": "ID: task-1763719022041-576354\nBranch: task/task-1763719022041-576354\nWorktree: Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-1763719022041-576354",
-        "branchColor": "#e8e84f",
-        "index": 16
+        "index": 23
       },
       {
         "type": "commit",
@@ -1121,37 +3401,20 @@
         "branchTags": [
           "develop",
           "task/task-1763719017598-894959",
-          "task/task-1763719019782-ff4e70"
+          "task/task-1763719019782-ff4e70",
+          "task/task-1763719022041-576354"
         ],
-        "worktrees": [
-          {
-            "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-1763719022041-576354",
-            "head": "52266792fbc47007b4ddca109f477ddcac9f72d0",
-            "branch": "task/task-1763719022041-576354",
-            "prunable": true,
-            "isMerged": false,
-            "mergeCommitHash": null,
-            "status": {
-              "staged": [],
-              "unstaged": [],
-              "untracked": [],
-              "capturedAt": 1763861580172
-            },
-            "normalizedPath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-1763719022041-576354",
-            "lane": 4
-          }
-        ],
-        "index": 17
+        "index": 24
       },
       {
         "type": "empty",
         "label": "初期状態 (初回コミット以前)",
         "files": [],
         "marker": "pre-history",
-        "index": 18
+        "index": 25
       }
     ]
   },
   "projectRoot": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
-  "savedAt": 1763861582960
+  "savedAt": 1763903399367
 }
