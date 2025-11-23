@@ -402,13 +402,23 @@ version: 1.0.0
 
 **実行内容**:
 1. **プロジェクト構造の把握**
-   - ルートディレクトリ構成の確認（src/, tests/, docs/等）
-   - 主要なディレクトリとその役割の理解
-   - モノレポ構成の有無（pnpm-workspace.yaml等）
+   - アーキテクチャパターンの理解（ハイブリッド構造: 共通インフラ層 + 機能プラグイン層）
+   - レイヤー間の依存関係ルール
+     * 依存方向: app → features → shared/infrastructure → shared/core
+     * 逆方向の依存は禁止（ESLint で強制）
+     * 各層の責務: shared/core（外部依存ゼロ）、shared/infrastructure（外部サービス）、features（機能ロジック）、app（プレゼンテーション）
+   - モノレポ構成の有無とワークスペース設定
+   - ディレクトリ構造の設計方針
+     * 共通インフラ（shared/）: DB、AI、外部サービス接続等の複数機能で共有される要素
+     * 機能プラグイン（features/）: 機能ごとの垂直スライス、1フォルダで完結
+     * API層（app/）: HTTPエンドポイント、プレゼンテーション層
+     * ローカルエージェント（local-agent/）: PC上で動作する監視・同期プログラム（該当する場合）
+   - 品質ゲート要件: ESLint による依存関係違反の検出
 
 2. **技術スタックの特定**
    - package.json: 依存関係、スクリプトコマンド、パッケージマネージャー
    - tsconfig.json: TypeScript設定、ビルドターゲット
+   - 品質ツール設定: eslint.config.js（依存関係チェック含む）、.prettierrc、vitest.config.ts
    - README.md: プロジェクト概要、技術選定理由
    - master_system_design.md: システム設計仕様（存在する場合）
 
@@ -418,11 +428,22 @@ version: 1.0.0
    - 既存フローの実行パターン（トリガー、ジョブ構成、デプロイ先）
 
 4. **ビルド・テスト・デプロイ要件の抽出**
-   - ビルドプロセス: package.jsonのbuild/compileスクリプト
+   - ビルドプロセス: package.jsonのbuild/compileスクリプト、レイヤーごとのビルド戦略
+     * shared/core: 型定義のみ、ビルド不要
+     * shared/infrastructure: 外部サービス接続、トランスパイル必要
+     * features: 機能ごとのビジネスロジック、registry.tsへの登録確認
+     * app: Next.jsビルド、プレゼンテーション層
+     * local-agent: 独立したビルドプロセス（該当する場合）
    - テストプロセス: test/test:unit/test:e2eスクリプト、テストフレームワーク
+     * 機能プラグイン: features/**/__tests__/executor.test.ts
+     * 共通インフラ: shared/infrastructure/__tests__/
+     * E2Eテスト: Playwright等のブラウザテスト（該当する場合）
    - デプロイプロセス: デプロイコマンド、環境変数、設定ファイル
 
 **判断基準**:
+- [ ] プロジェクトのアーキテクチャパターン（ハイブリッド構造等）が理解されているか？
+- [ ] レイヤー間の依存関係ルール（app → features → shared/infrastructure → shared/core）が把握されているか？
+- [ ] 逆方向の依存禁止ルールとESLintによる強制が認識されているか？
 - [ ] プロジェクトの主要な技術スタックが特定されているか？
 - [ ] ビルド・テスト・デプロイの各プロセスに必要なコマンドが理解されているか？
 - [ ] 既存CI/CD設定の有無と、その移行・統合要件が明確か？
@@ -1019,12 +1040,23 @@ read_allowed_paths:
   - ".github/actions/**/*.yml"
   - "package.json"
   - "pnpm-lock.yaml"
+  - "pnpm-workspace.yaml"
   - "tsconfig.json"
+  - "eslint.config.js"
+  - ".prettierrc"
+  - "vitest.config.ts"
   - "README.md"
   - "docs/**/*.md"
   - ".env.example"
   - "railway.json"
   - "vercel.json"
+  - "src/shared/core/**/*.ts"
+  - "src/shared/infrastructure/**/*.ts"
+  - "src/features/**/schema.ts"
+  - "src/features/**/executor.ts"
+  - "src/app/**/*.ts"
+  - "local-agent/package.json"
+  - "local-agent/ecosystem.config.js"
 ```
 
 **禁止事項**:
@@ -1447,9 +1479,21 @@ metrics:
 本エージェントの設計・動作は以下のナレッジドキュメントに準拠:
 
 ```bash
-# プロジェクト設計仕様（参照）
+# プロジェクト設計仕様（最優先参照）
 cat docs/00-requirements/master_system_design.md
+```
 
+このドキュメントから以下を参照:
+- セクション2.4: テスト戦略（TDD、テストピラミッド、カバレッジ目標）
+- セクション4: ディレクトリ構造とハイブリッドアーキテクチャ
+  - レイヤー間の依存関係ルール（app → features → shared/infrastructure → shared/core）
+  - 各レイヤーの責務分離（shared/core、shared/infrastructure、features、app、local-agent）
+- セクション12: デプロイメント（Railway自動デプロイ、GitHub Actions要件）
+  - ci.yml の要件（トリガー、実行内容、品質ゲート）
+  - deploy.yml の要件（通知、Discord統合）
+  - 再利用可能ワークフローのパラメータ化
+
+```bash
 # エージェント設計ガイド
 cat .claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md
 ```

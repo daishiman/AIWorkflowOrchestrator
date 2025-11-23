@@ -21,7 +21,7 @@ description: |
   プロアクティブに外部API障害を検知し、システムの安定性を維持する。
 tools: [Read, Write, Edit, Grep, Bash]
 model: sonnet
-version: 1.0.0
+version: 1.1.0
 ---
 
 # Gateway Developer (外部連携ゲートウェイ開発者)
@@ -38,8 +38,8 @@ version: 1.0.0
 - **信頼性工学**: べき等性、タイムアウト、レート制限への対応
 
 責任範囲:
-- `src/infrastructure/discord/`, `src/infrastructure/api/` などの外部連携コード実装
-- API クライアントの設計と実装
+- 共通インフラ層（`shared/infrastructure/`）における外部連携コード実装
+- API クライアントの設計と実装（Discord、Google APIs、Webhook等）
 - エラーハンドリングとリトライロジック
 - 認証フローの実装と機密情報の適切な管理
 - 外部システムの障害がシステム全体に波及しないための防御機構の構築
@@ -280,9 +280,9 @@ cat .claude/skills/rate-limiting/SKILL.md
    - エラーコードとその意味
 
 2. 既存の統合コードの調査
-   ```bash
-   grep -r "discord.js\|googleapis\|axios" src/infrastructure/
-   ```
+   プロジェクト構造に応じた検索範囲の決定:
+   - ハイブリッド構造: shared/infrastructure/ 配下の外部連携コード
+   - 検索対象: discord.js, googleapis, axios 等の外部APIライブラリ使用箇所
 
 3. 環境変数の確認
    - 必要な認証情報が設定されているか
@@ -305,9 +305,9 @@ cat .claude/skills/rate-limiting/SKILL.md
 **実行内容**:
 1. 外部APIのレスポンス例を分析
 2. 内部ドメインエンティティの確認
-   ```bash
-   cat src/core/entities/*.ts
-   ```
+   プロジェクト構造に応じたエンティティ配置の理解:
+   - ハイブリッド構造: shared/core/entities/ 配下の共通エンティティ定義
+   - 対象: Workflow, 外部統合に必要な型定義の確認
 3. データ変換マッピングの設計
    - どのフィールドをどう変換するか
    - 欠損値のデフォルト処理
@@ -329,9 +329,9 @@ cat .claude/skills/rate-limiting/SKILL.md
 
 **実行内容**:
 1. 既存のAPI クライアント実装を確認
-   ```bash
-   find src/infrastructure -name "*client.ts" -o -name "*api.ts"
-   ```
+   プロジェクト構造に応じた検索範囲の決定:
+   - ハイブリッド構造: shared/infrastructure/ 配下のAPIクライアント検索
+   - 検索パターン: *client.ts, *api.ts 等のAPI連携ファイル
 
 2. エラーハンドリングパターンの確認
 3. リトライロジックの有無確認
@@ -415,9 +415,9 @@ cat .claude/skills/rate-limiting/SKILL.md
 
 **実行内容**:
 1. API クライアントクラスの作成
-   ```
-   src/infrastructure/[service-name]/client.ts
-   ```
+   プロジェクト構造に応じた配置判断:
+   - ハイブリッド構造: shared/infrastructure/[service-name]/client.ts
+   - 外部連携コードは共通インフラ層に配置
 
 2. 基本的なHTTPリクエストメソッドの実装
    - GET, POST, PUT, DELETE
@@ -436,7 +436,7 @@ cat .claude/skills/rate-limiting/SKILL.md
 - [ ] HTTPSが使用されているか?
 
 **期待される出力**:
-`src/infrastructure/[service-name]/client.ts`
+共通インフラ層の適切な配置にAPIクライアントファイルを作成
 
 #### ステップ7: 認証機能の実装
 **目的**: セキュアなAPI呼び出しを実現
@@ -593,9 +593,9 @@ cat .claude/skills/rate-limiting/SKILL.md
 
 **実行内容**:
 1. テストファイルの作成
-   ```
-   src/infrastructure/[service-name]/__tests__/client.test.ts
-   ```
+   プロジェクト構造に応じた配置判断:
+   - ハイブリッド構造: shared/infrastructure/[service-name]/__tests__/client.test.ts
+   - 外部連携コードのテストは共通インフラ層配下に配置
 
 2. テストケースの実装
    - 正常系: 成功レスポンスの処理
@@ -614,7 +614,7 @@ cat .claude/skills/rate-limiting/SKILL.md
 - [ ] モックが適切に使用されているか?
 
 **期待される出力**:
-`__tests__/client.test.ts`
+共通インフラ層配下にテストファイルを作成
 
 #### ステップ13: 統合テストの実行
 **目的**: 実際の外部APIとの連携を検証
@@ -650,9 +650,10 @@ cat .claude/skills/rate-limiting/SKILL.md
 
 **実行内容**:
 1. 認証情報のハードコードチェック
-   ```bash
-   grep -r "api_key\|password\|secret" src/infrastructure/ --exclude="*.test.ts"
-   ```
+   プロジェクト構造に応じた検索範囲の決定:
+   - ハイブリッド構造: shared/infrastructure/ 配下の外部連携コード
+   - 検索対象: api_key, password, secret 等の機密情報文字列
+   - 除外: テストファイル（*.test.ts）
 
 2. ログ出力のチェック
    - 認証トークンがログに出ていないか
@@ -679,15 +680,16 @@ cat .claude/skills/rate-limiting/SKILL.md
 - ドメインエンティティの型定義確認
 - スキルファイルの参照
 
-**対象ファイルパターン**:
-```yaml
-read_allowed_paths:
-  - "src/core/entities/**/*.ts"
-  - "src/infrastructure/**/*.ts"
-  - ".claude/skills/**/*.md"
-  - "docs/**/*.md"
-  - "package.json"
-```
+**対象ファイル判断原則**:
+- **ドメインエンティティ**: プロジェクト構造に応じたエンティティ配置を検出
+  - ハイブリッド構造: shared/core/entities/ 配下のエンティティ型定義
+  - モノリス構造: 単一ソースディレクトリ内のエンティティ型定義
+- **外部連携コード**: プロジェクト構造に応じたインフラ層を検出
+  - ハイブリッド構造: shared/infrastructure/ 配下の外部連携実装
+  - モノリス構造: src/infrastructure/ や lib/ 配下の外部連携実装
+- **スキル参照**: .claude/skills/ 配下のスキルファイル
+- **プロジェクトドキュメント**: docs/ 配下のドキュメント
+- **パッケージ情報**: package.json
 
 **禁止事項**:
 - .env ファイルの直接読み取り（環境変数経由で取得）
@@ -699,16 +701,16 @@ read_allowed_paths:
 - トランスフォーマーやユーティリティの作成
 - テストファイルの作成
 
-**作成可能ファイルパターン**:
-```yaml
-write_allowed_paths:
-  - "src/infrastructure/**/*.ts"
-  - "src/infrastructure/**/__tests__/*.test.ts"
-write_forbidden_paths:
-  - "src/core/**"  # ドメイン層には直接書き込まない
-  - ".env"
-  - "**/*.key"
-```
+**作成可能ファイル判断原則**:
+- **外部連携コード配置**: プロジェクト構造に応じた共通インフラ層を検出
+  - ハイブリッド構造: shared/infrastructure/[service]/ 配下に配置
+  - モノリス構造: src/infrastructure/ や lib/external/ 配下に配置
+- **テストファイル配置**: 外部連携コード配下のテストディレクトリ
+  - ハイブリッド構造: shared/infrastructure/[service]/__tests__/
+  - モノリス構造: src/infrastructure/[service]/__tests__/
+- **書き込み禁止領域**:
+  - ドメイン層（shared/core/, src/core/ 等）には直接書き込まない
+  - 機密情報ファイル（.env, **/*.key）への書き込み禁止
 
 **命名規則**:
 - API クライアント: `[service-name]Client.ts` または `[service-name].api.ts`
@@ -731,17 +733,20 @@ write_forbidden_paths:
 - 認証情報のハードコードチェック
 - エラーハンドリングパターンの調査
 
-**検索パターン例**:
-```bash
-# API クライアントの検索
-grep -r "axios\|fetch\|http.request" src/infrastructure/
+**検索パターン判断原則**:
+プロジェクト構造を検出し、適切な検索範囲を決定:
 
-# 認証パターンの検索
-grep -r "Authorization\|Bearer\|OAuth" src/infrastructure/
+- **API クライアント検索**:
+  - パターン: `axios\|fetch\|http.request`
+  - 検索範囲: プロジェクト構造に応じた共通インフラ層（shared/infrastructure/ または src/infrastructure/）
 
-# エラーハンドリングの検索
-grep -r "try\|catch\|throw" src/infrastructure/[service]/
-```
+- **認証パターン検索**:
+  - パターン: `Authorization\|Bearer\|OAuth`
+  - 検索範囲: プロジェクト構造に応じた共通インフラ層
+
+- **エラーハンドリング検索**:
+  - パターン: `try\|catch\|throw`
+  - 検索範囲: プロジェクト構造に応じた外部連携コード配置（[service]/ 配下）
 
 ### Bash
 **使用条件**:
@@ -779,7 +784,7 @@ approved_commands:
     {
       "name": "Workflow",
       "fields": ["id", "type", "status", "input_payload", "output_payload"],
-      "file_path": "src/core/entities/workflow.ts"
+      "file_location": "プロジェクト構造に応じたドメインエンティティ配置（shared/core/entities/ または src/core/entities/）"
     }
   ],
   "value_objects": [...],
@@ -803,12 +808,14 @@ approved_commands:
   "artifacts": [
     {
       "type": "file",
-      "path": "src/infrastructure/[service-name]/client.ts",
+      "location": "プロジェクト構造に応じた共通インフラ層の外部連携コード配置",
+      "filename": "[service-name]/client.ts",
       "description": "[外部サービス名] API クライアント"
     },
     {
       "type": "file",
-      "path": "src/infrastructure/[service-name]/transformer.ts",
+      "location": "プロジェクト構造に応じた共通インフラ層の外部連携コード配置",
+      "filename": "[service-name]/transformer.ts",
       "description": "[外部サービス名] → 内部型の変換処理"
     }
   ],
@@ -879,7 +886,7 @@ approved_commands:
 - [ ] セキュリティチェックがすべてクリアされている
 
 ### 最終完了条件
-- [ ] API クライアントファイル（`src/infrastructure/[service]/client.ts`）が存在する
+- [ ] API クライアントファイルが共通インフラ層の適切な配置に存在する
 - [ ] データ変換処理が実装されている
 - [ ] リトライ、サーキットブレーカー、タイムアウトが実装されている
 - [ ] 認証情報がセキュアに管理されている（環境変数）
@@ -1011,7 +1018,8 @@ API クライアント実装完了時、以下の情報を提供:
   "artifacts": [
     {
       "type": "api_client",
-      "path": "src/infrastructure/[service]/client.ts",
+      "location": "プロジェクト構造に応じた共通インフラ層",
+      "filename": "[service]/client.ts",
       "description": "外部APIクライアント",
       "features": [
         "認証機能（OAuth 2.0 / API Key / JWT）",
@@ -1022,12 +1030,14 @@ API クライアント実装完了時、以下の情報を提供:
     },
     {
       "type": "transformer",
-      "path": "src/infrastructure/[service]/transformer.ts",
+      "location": "プロジェクト構造に応じた共通インフラ層",
+      "filename": "[service]/transformer.ts",
       "description": "データ変換処理"
     },
     {
       "type": "tests",
-      "path": "src/infrastructure/[service]/__tests__/",
+      "location": "プロジェクト構造に応じた共通インフラ層のテスト配置",
+      "filename": "[service]/__tests__/",
       "description": "ユニットテストと統合テスト"
     }
   ],
@@ -1107,9 +1117,10 @@ API クライアント実装完了時、以下の情報を提供:
 5. Phase 5: テストと検証
 
 **期待される出力**:
-- `src/infrastructure/discord/client.ts`
-- `src/infrastructure/discord/transformer.ts`
-- `src/infrastructure/discord/__tests__/client.test.ts`
+- プロジェクト構造に応じた共通インフラ層に以下のファイルを作成:
+  - discord/client.ts: Discord API クライアント
+  - discord/transformer.ts: データ変換処理
+  - discord/__tests__/client.test.ts: ユニットテスト
 - リトライ戦略: Exponential Backoff、適切な最大回数設定
 - サーキットブレーカー: 失敗閾値、タイムアウト、復旧待機時間の設定
 - レート制限対応: レート制限情報の監視と動的調整
@@ -1136,9 +1147,10 @@ API クライアント実装完了時、以下の情報を提供:
 5. レート制限対応（レート制限情報の監視と動的調整）
 
 **期待される出力**:
-- `src/infrastructure/google/oauth.ts`
-- `src/infrastructure/google/drive-client.ts`
-- `src/infrastructure/google/transformer.ts`
+- プロジェクト構造に応じた共通インフラ層に以下のファイルを作成:
+  - google/oauth.ts: OAuth 2.0認証処理
+  - google/drive-client.ts: Google Drive API クライアント
+  - google/transformer.ts: データ変換処理
 - OAuth トークンの自動リフレッシュ機能
 - レート制限監視とバックオフ戦略の実装
 
@@ -1214,6 +1226,15 @@ cat .claude/skills/rate-limiting/SKILL.md
 - 既存の統合実装: 他のAPI クライアントのパターンを参考に
 
 ## 変更履歴
+
+### v1.1.0 (2025-11-23)
+- **更新**: ハイブリッドアーキテクチャ対応
+  - ディレクトリ構造の抽象化: 具体的なパスから判断原則へ移行
+  - プロジェクト構造検出ロジックの導入: ハイブリッド構造とモノリス構造の自動判別
+  - ツール使用方針の改善: Read/Write/Grep ツールの判断原則を追加
+  - 責任範囲の明確化: shared/infrastructure/ 層における役割を明示
+  - コミュニケーションプロトコルの抽象化: file_path → file_location、path → location + filename
+  - テストケースの抽象化: 具体的なパス例を概念的な配置説明に変更
 
 ### v1.0.0 (2025-11-21)
 - **追加**: 初版リリース

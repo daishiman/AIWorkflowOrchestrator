@@ -154,17 +154,45 @@ version: 1.1.0
 - **features層の特性**: 各機能は垂直スライスで独立、相互依存禁止
 - **境界の明示**: レイヤー間の境界はインターフェースで定義
 
+**レイヤー別の責務と構成要素**:
+- **shared/core/**:
+  - entities/: 共通エンティティ（ドメインモデル）
+  - interfaces/: 共通インターフェース（IWorkflowExecutor、IRepository等）
+  - errors/: エラークラス（ドメインエラー定義）
+  - 外部依存ゼロ: フレームワーク、ライブラリへの依存を一切持たない
+
+- **shared/infrastructure/**:
+  - database/: DB接続、スキーマ定義、repositories/
+  - ai/: AIクライアント、各プロバイダー実装
+  - discord/: Discord Bot、イベントハンドラー、コマンド
+  - storage/: ファイルストレージ
+  - 依存制約: shared/core/のインターフェースのみに依存
+
+- **features/**:
+  - registry.ts: 機能レジストリ（全機能の登録）
+  - 各機能フォルダ/: schema.ts、executor.ts、__tests__/
+  - 垂直スライス: 1機能＝1フォルダで完結
+  - 依存制約: shared/core/とshared/infrastructure/のみ、features/間は相互依存禁止
+
+- **app/**:
+  - api/webhook/: 外部トリガー受信
+  - api/agent/: ローカルAgent連携
+  - api/health/: ヘルスチェック
+  - page.tsx: ダッシュボード（任意）
+  - 依存制約: すべてのレイヤーに依存可能（Presentation Layer）
+
 **検証すべき依存関係ルール**:
-- **shared/core/層**: 外部依存ゼロ（純粋なエンティティ、インターフェース定義のみ）
-- **shared/infrastructure/層**: shared/core/のみに依存可能（AI、DB、Discord等の共通サービス）
-- **features/層**: shared/core/とshared/infrastructure/に依存可能、features/間の依存は禁止
-- **app/層**: すべてのレイヤーに依存可能（HTTPエンドポイント、Next.js App Router）
+- [ ] shared/core/層が外部ライブラリに依存していないか
+- [ ] shared/infrastructure/層がshared/core/のみに依存しているか
+- [ ] features/層が他のfeatures/をインポートしていないか
+- [ ] app/層の依存が適切な方向を向いているか
+- [ ] レイヤー境界でインターフェースを介しているか
 
 **判断基準**:
 - [ ] インポート文の方向性は「外側→内側」のみか？
-- [ ] shared/core/が外部ライブラリ（フレームワーク、DB、AI SDK等）に依存していないか？
+- [ ] shared/core/が外部ライブラリ（Drizzle、Zod、AI SDK等）に依存していないか？
 - [ ] features/各機能が相互に依存していないか（垂直スライスの独立性）？
-- [ ] レイヤー境界でインターフェースを介しているか？
+- [ ] レイヤー境界でインターフェース（IWorkflowExecutor、IRepository等）を介しているか？
 - [ ] ディレクトリ構造がレイヤー構造を正確に反映しているか？
 - [ ] ESLint（eslint-plugin-boundaries）で依存関係が強制されているか？
 
@@ -234,16 +262,23 @@ version: 1.1.0
 - **Shotgun Surgery**: 一つの変更のために、多数のクラスを修正する必要
 
 **アーキテクチャアンチパターン（プロジェクト固有）**:
-- **レイヤーの飛び越し**: app/層がshared/infrastructure/を飛び越してshared/core/を直接呼び出し
-- **技術的詳細の漏出**: shared/core/にDrizzle ORM、Zod、AI SDKのコードが混入
-- **features間の依存**: features/機能Aがfeatures/機能Bをインポート（垂直スライス違反）
-- **抽象の不適切な配置**: インターフェース（IWorkflowExecutor）がfeatures/内に配置
+- **レイヤー飛び越し**: 外側のレイヤーが中間層を飛び越して内側を直接参照
+- **技術的詳細の漏出**: 最内層（shared/core/）に技術フレームワークやライブラリの依存が混入
+- **垂直スライス違反**: features/層の各機能が相互に依存
+- **抽象の誤配置**: インターフェースやエンティティが本来の層以外に配置
+
+**検出パターン**:
+- [ ] app/層 → shared/core/への直接インポート（shared/infrastructure/を経由すべき）
+- [ ] shared/core/内のORM、バリデーションライブラリ、外部SDK等の使用
+- [ ] features/A/ → features/B/へのインポート文の存在
+- [ ] shared/core/interfaces/外へのインターフェース定義の配置
+- [ ] shared/core/entities/外へのエンティティ定義の配置
 
 **判断基準**:
 - [ ] ハイブリッドアーキテクチャ固有のアンチパターンが検出できるか？
-- [ ] features/層の独立性が維持されているか？
+- [ ] features/層の垂直スライス独立性が維持されているか？
 - [ ] shared/core/が技術的詳細から完全に隔離されているか？
-- [ ] 各アンチパターンに対して是正方針を提案できるか？
+- [ ] 各アンチパターンに対して是正方針（依存の再配置、インターフェース導入等）を提案できるか？
 - [ ] 影響範囲（依存モジュール数、変更波及度）を評価できるか？
 
 ## タスク実行時の動作
@@ -259,16 +294,19 @@ version: 1.1.0
 1. プロジェクトルートのディレクトリ構造を確認
 2. アーキテクチャドキュメントの確認（`docs/00-requirements/master_system_design.md`）
 3. `.claude/rules.md` のアーキテクチャ規約確認
-4. ハイブリッドアーキテクチャの構造確認:
-   - `src/shared/core/`: 共通エンティティ、インターフェース、エラークラス
-   - `src/shared/infrastructure/`: DB、AI、Discord等の共通サービス
-   - `src/features/`: 機能プラグイン（垂直スライス）
-   - `src/app/`: HTTPエンドポイント、Next.js App Router
+4. ハイブリッドアーキテクチャの4層構造確認:
+   - **shared/core/**: 外部依存ゼロの共通要素（entities/、interfaces/、errors/）
+   - **shared/infrastructure/**: 共通サービス（database/、ai/、discord/、storage/）
+   - **features/**: 垂直スライス機能（registry.ts、各機能フォルダ/）
+   - **app/**: プレゼンテーション層（api/webhook/、api/agent/、api/health/、page.tsx）
 
 **判断基準**:
-- [ ] ハイブリッドアーキテクチャのディレクトリ構造が存在するか？
+- [ ] 4層のディレクトリ構造（shared/core/、shared/infrastructure/、features/、app/）が存在するか？
+- [ ] shared/core/内にentities/、interfaces/、errors/のサブディレクトリが適切に配置されているか？
+- [ ] shared/infrastructure/内にdatabase/、ai/、discord/、storage/が適切に配置されているか？
+- [ ] features/配下の各機能フォルダがschema.ts、executor.ts、__tests__/を含む独立構成か？
+- [ ] app/配下がapi/webhook/、api/agent/、api/health/の構造になっているか？
 - [ ] 各レイヤーの責務が master_system_design.md の定義と一致しているか？
-- [ ] features/配下の各機能が独立したフォルダ構成になっているか？
 - [ ] アーキテクチャドキュメントと実装の乖離がないか？
 
 **期待される出力**:
@@ -426,19 +464,27 @@ TDD遵守状況レポート（未テスト機能のリスト、テストカバ�
 **使用ツール**: Grep, Read
 
 **実行内容**:
-1. レイヤーの飛び越しを検出（app/からshared/core/への直接インポート）
-2. 技術的詳細の漏出を検出（shared/core/内のDrizzle、Zod、AI SDK使用）
-3. features間の依存を検出（features/A/からfeatures/B/へのインポート）
-4. 抽象の不適切な配置を検出（IWorkflowExecutorがshared/core/外に配置）
-5. ESLint設定の確認（eslint-plugin-boundariesの設定状況）
-6. パターンの影響範囲評価
+1. **レイヤー飛び越しの検出**: 外側のレイヤーが中間層を経由せず内側を直接参照していないか
+2. **技術的詳細の漏出の検出**: shared/core/内に外部ライブラリやフレームワークへの依存が存在しないか
+3. **垂直スライス違反の検出**: features/層の各機能間で相互インポートが発生していないか
+4. **抽象の誤配置の検出**: インターフェースやエンティティが定義されるべき層以外に配置されていないか
+5. **ESLint設定の確認**: eslint-plugin-boundariesによる依存関係ルールの自動強制状況
+6. **影響範囲の評価**: 各違反が依存するモジュール数と変更波及度の測定
+
+**検証対象**:
+- [ ] app/ → shared/core/の直接インポート（shared/infrastructure/経由が正）
+- [ ] shared/core/内のORM（Drizzle）、バリデーション（Zod）、外部SDK使用
+- [ ] features/[A]/ → features/[B]/へのインポート文
+- [ ] shared/core/interfaces/外へのインターフェース定義
+- [ ] shared/core/entities/外へのエンティティ定義
+- [ ] shared/core/errors/外へのエラークラス定義
 
 **判断基準**:
-- [ ] ハイブリッドアーキテクチャのレイヤールールが遵守されているか？
-- [ ] shared/core/が技術的詳細から完全に隔離されているか？
-- [ ] features/層の垂直スライス独立性が維持されているか？
-- [ ] インターフェースがshared/core/interfaces/に適切に配置されているか？
-- [ ] ESLintで依存関係ルールが自動強制されているか？
+- [ ] ハイブリッドアーキテクチャの4層ルールが遵守されているか？
+- [ ] shared/core/が技術的詳細から完全に隔離されているか（外部依存ゼロ）？
+- [ ] features/層の垂直スライス独立性が維持されているか（相互依存ゼロ）？
+- [ ] インターフェースがshared/core/interfaces/に、エンティティがentities/に、エラーがerrors/に適切に配置されているか？
+- [ ] ESLintで依存関係ルールが自動強制されているか（eslint-plugin-boundaries設定）？
 
 **期待される出力**:
 アンチパターンのリスト（パターン名、箇所、影響範囲、修正方針）
@@ -732,6 +778,18 @@ metrics:
   - ESLint（eslint-plugin-boundaries）による依存関係強制の確認を追加
   - プロジェクト固有のアンチパターン検出を追加
   - 抽象度の向上: サンプルコード削除、概念要素とチェックリストへの置き換え
+
+### v1.2.0 (2025-11-23)
+- **更新**: master_system_design.md セクション4（ディレクトリ構造）への対応
+  - 知識領域1: レイヤー別の責務と構成要素を詳細化
+    - shared/core/: entities/, interfaces/, errors/のサブディレクトリ構造を明記
+    - shared/infrastructure/: database/, ai/, discord/, storage/の構成を明記
+    - features/: registry.ts、各機能フォルダ構成（schema.ts, executor.ts, __tests__/）を明記
+    - app/: api/webhook/, api/agent/, api/health/, page.tsxの構造を明記
+  - ステップ1（アーキテクチャ概要の把握）: 4層構造の詳細な検証基準を追加
+  - 知識領域5（アンチパターン）: 検出パターンをより抽象的な概念要素に置き換え
+  - ステップ8（アンチパターン評価）: 検証対象を具体的なサブディレクトリレベルで明確化
+  - 抽象度最適化: 具体例を削除し、AIが技術から選定できる概念要素とチェックリストに変更
 
 ## 使用上の注意
 

@@ -388,20 +388,44 @@ cat .claude/skills/monitoring-alerting/SKILL.md
 **使用ツール**: Read, Bash
 
 **実行内容**:
-1. プロジェクトルートの確認
-2. package.json/依存関係の確認
-3. ビルドスクリプトの特定
-4. テストスクリプトの存在確認
-5. 環境変数要件の把握
+1. **プロジェクトルートとパッケージ管理の確認**
+   - package.json/依存関係の確認
+   - パッケージマネージャーの特定（pnpm推奨）
+   - モノレポ構成の有無（pnpm-workspace.yaml等）
+
+2. **ハイブリッドアーキテクチャ構造の理解**
+   - **共通インフラ層（shared/）の認識**:
+     - shared/core/: ビジネスルール、エンティティ定義（外部依存ゼロ）
+     - shared/infrastructure/: 外部サービス接続（DB、AI、Discord等）
+   - **機能プラグイン層（features/）の認識**:
+     - 垂直スライス構造: 1機能＝1フォルダで完結
+     - 機能ごとのビジネスロジックとテスト
+   - **プレゼンテーション層（app/）の認識**:
+     - HTTPエンドポイント、Next.js App Router
+   - **レイヤー間依存関係ルールの検証**:
+     - 依存方向: app/ → features/ → shared/infrastructure/ → shared/core/
+     - 逆方向の依存禁止（ESLintで強制）
+
+3. **ビルド・テスト構成の確認**
+   - ビルドスクリプトの特定（Next.js, TypeScript等）
+   - テストスクリプトの存在確認（Vitest, Playwright等）
+   - 設定ファイルの検証（tsconfig.json, eslint.config.js, vitest.config.ts等）
+
+4. **環境変数要件の把握**
+   - Railway統合による環境変数管理
+   - Secret要件の特定（API キー、DB接続情報等）
+   - 環境ごとの分離状況（staging/production）
 
 **判断基準**:
 - [ ] プロジェクトのパッケージマネージャーが特定されているか？
-- [ ] ビルドコマンドが明確か？
-- [ ] テストコマンドが存在するか？
+- [ ] ハイブリッドアーキテクチャ構造（shared/core, shared/infrastructure, features, app）が理解されているか？
+- [ ] レイヤー間の依存関係ルール（app→features→shared/infrastructure→shared/core）が把握されているか？
+- [ ] 機能プラグインの垂直スライス構造が認識されているか？
+- [ ] ビルドコマンドとテストコマンドが明確か？
 - [ ] 必要な環境変数がリストアップされているか？
 
 **期待される出力**:
-プロジェクト構造の理解レポート（内部保持）
+プロジェクト構造の理解レポート（アーキテクチャパターン、レイヤー責務、依存関係ルールを含む）
 
 #### ステップ2: 既存CI/CD構成の確認
 **目的**: 既存のワークフローやデプロイ設定を分析
@@ -750,21 +774,35 @@ Railway連携設定ファイル（railway.json）および環境変数設定手�
 ### Read
 **使用条件**:
 - 既存ワークフロー、設定ファイルの読み取り
-- プロジェクト構造の確認
+- プロジェクト構造の確認（ハイブリッドアーキテクチャ理解）
 - 依存関係の分析
 
 **対象ファイルパターン**:
 ```yaml
 read_allowed_paths:
+  # CI/CD構成
   - ".github/workflows/**/*.yml"
+
+  # プロジェクト設定
   - "package.json"
   - "pnpm-lock.yaml"
+  - "pnpm-workspace.yaml"
   - "tsconfig.json"
   - "eslint.config.js"
   - "vitest.config.ts"
-  - "Dockerfile"
+  - "drizzle.config.ts"
   - "railway.json"
   - ".env.example"
+
+  # ハイブリッドアーキテクチャ構造理解
+  - "src/shared/core/**/*.ts"          # コアエンティティ・インターフェース
+  - "src/shared/infrastructure/**/*.ts" # 共通インフラ（DB、AI、Discord等）
+  - "src/features/**/schema.ts"        # 機能プラグインのスキーマ
+  - "src/features/**/executor.ts"      # 機能プラグインのExecutor
+  - "src/features/registry.ts"         # 機能レジストリ
+  - "src/app/**/*.ts"                  # Next.js App Router
+
+  # ドキュメンテーション
   - "docs/**/*.md"
   - "README.md"
 ```
@@ -821,6 +859,7 @@ write_forbidden_paths:
 
 #### Phase 1 完了条件
 - [ ] プロジェクト構造が理解されている
+- [ ] ハイブリッドアーキテクチャ（shared/features/app）とレイヤー間依存関係が把握されている
 - [ ] 既存CI/CD構成が分析されている
 - [ ] デプロイターゲットが明確である
 - [ ] 技術スタックが特定されている

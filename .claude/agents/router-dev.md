@@ -179,12 +179,44 @@ version: 2.0.0
 
 **ハイブリッドアーキテクチャとの統合**
 
-プロジェクトの依存関係ルール:
+**設計方針の理解**:
+- **shared**: 複数機能で共有する共通インフラ（AI、DB、Discord等）を集約
+- **features**: 機能ごとの垂直スライス設計、1フォルダで機能が完結
+- **MVP効率**: 機能追加・削除が高速、認知負荷を削減、拡張性を確保
+
+**プロジェクト固有のディレクトリ構造**:
+```
+src/
+├── shared/                         # [共通インフラ層]
+│   ├── core/                       # ドメイン共通要素（外部依存ゼロ）
+│   │   ├── entities/               # 共通エンティティ
+│   │   ├── interfaces/             # 共通インターフェース
+│   │   └── errors/                 # エラークラス
+│   └── infrastructure/             # 共通インフラ
+│       ├── database/               # DB接続（全機能共通）
+│       ├── ai/                     # AI SDK（全機能共通）
+│       ├── discord/                # Discord Bot（全機能共通）
+│       └── storage/                # ファイルストレージ
+├── features/                       # [機能プラグイン - 垂直スライス]
+│   ├── registry.ts                 # 機能レジストリ
+│   └── [feature-name]/             # 各機能（schema.ts, executor.ts, __tests__/）
+└── app/                            # [Presentation Layer - App Routerの責務範囲]
+    ├── api/                        # RESTful API Endpoints
+    │   ├── webhook/                # 外部トリガー受信（Discord、LINE等）
+    │   ├── agent/                  # ローカルAgent連携（upload、poll）
+    │   └── health/                 # ヘルスチェック
+    └── page.tsx                    # ダッシュボード（任意）
+```
+
+**レイヤー間の依存関係ルール**:
 ```
 app/ → features/ → shared/infrastructure/ → shared/core/
  ↓       ↓              ↓                      ↓
 API    機能ロジック    外部サービス           ビジネスルール
 ```
+- **依存方向**: 外から内への単方向依存、逆方向は禁止（ESLintで強制）
+- **機能の独立性**: features/各機能は相互依存禁止
+- **共通インフラの活用**: AI、DB、Discord等はshared/infrastructureから import
 
 **App Routerの責務範囲**:
 - **Presentation層のみ**: HTTPエンドポイント、ページレンダリング、ルーティング
@@ -255,27 +287,40 @@ API    機能ロジック    外部サービス           ビジネスルール
    └─ 大量データ？ → Streaming SSR + Suspense
    ```
 
-4. **ディレクトリ構造生成**
+4. **ディレクトリ構造設計の判断フレームワーク**
+
+   **プロジェクト固有のAPI Routes構造**（Presentation層として）:
    ```
    app/
-   ├─ (auth)/
-   │  ├─ login/
-   │  │  └─ page.tsx
-   │  └─ signup/
-   │     └─ page.tsx
-   ├─ (dashboard)/
-   │  ├─ layout.tsx
-   │  ├─ page.tsx
-   │  └─ settings/
-   │     └─ page.tsx
-   ├─ blog/
-   │  ├─ [slug]/
-   │  │  └─ page.tsx
-   │  └─ page.tsx
-   ├─ layout.tsx
-   ├─ page.tsx
-   └─ not-found.tsx
+   ├─ api/                      # RESTful API Endpoints
+   │  ├─ webhook/               # 外部トリガー受信（Discord、LINE等）
+   │  │  └─ generic/
+   │  │      └─ route.ts
+   │  ├─ agent/                 # ローカルAgent連携
+   │  │  ├─ upload/
+   │  │  │  └─ route.ts
+   │  │  └─ poll/
+   │  │      └─ route.ts
+   │  └─ health/                # ヘルスチェック
+   │      └─ route.ts
+   └─ page.tsx                  # ダッシュボード（任意）
    ```
+
+   **一般的な構造設計パターン判断**:
+   ```
+   ディレクトリ構造の判断基準:
+   ├─ 認証状態で分離が必要？ → (auth)、(dashboard) のルートグループ使用
+   ├─ レイアウト共有が必要？ → グループLayoutで共通UI実装
+   ├─ 動的セグメントが必要？ → [slug]、[id]、[...params] を適切に配置
+   ├─ API Routes が必要？ → app/api/ 配下に RESTful リソース構造
+   └─ 並列表示が必要？ → @folder 構文で並列ルート設計
+   ```
+
+   **依存関係準拠チェック**:
+   - [ ] API Routes は features/ の Executor を呼び出しているか？
+   - [ ] shared/infrastructure の共通サービスを活用しているか？
+   - [ ] ビジネスロジックを app/ 内に実装していないか？
+   - [ ] HTTPステータスコードとレスポンス形式が標準準拠か？
 
 **検証ゲート**:
 - [ ] すべての要件ページがルーティング構造に含まれる

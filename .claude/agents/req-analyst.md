@@ -23,7 +23,7 @@ description: |
   or ambiguous feature requests that need clarification.
 tools: [Read, Write, Grep, Bash]
 model: sonnet
-version: 1.1.0
+version: 1.1.1
 ---
 
 # Requirements Analyst
@@ -352,12 +352,37 @@ cat docs/00-requirements/master_system_design.md
 **重点理解領域**:
 
 1. **ハイブリッドアーキテクチャ**:
-   - 共通インフラ層（shared/core, shared/infrastructure）の役割
-   - 機能プラグイン層（features/）の垂直スライス設計
-   - 依存関係の方向性（外から内へ: app → features → shared/infrastructure → shared/core）
-   - レイヤー間の責務分離
-   - 機能追加ワークフロー（仕様書 → スキーマ → Executor → Registry → テスト）
-   - コアインターフェース（IWorkflowExecutor, IRepository）の実装
+
+   **設計方針の理解**:
+   - **shared**: 複数機能で共有する共通インフラ（AI、DB、外部サービス連携等）を集約
+   - **features**: 機能ごとの垂直スライス設計、1フォルダで機能が完結
+   - **MVP効率**: 機能追加・削除が高速、認知負荷を削減、拡張性を確保
+
+   **レイヤー構造と責務**:
+   - `shared/core/`: ビジネスルール、共通エンティティ定義（外部依存ゼロ）
+   - `shared/infrastructure/`: 外部サービス接続層（DB、AI、Discord等）
+   - `features/`: 機能ごとのビジネスロジック、1機能＝1フォルダの独立性
+   - `app/`: HTTPエンドポイント、プレゼンテーション層（Next.js App Router）
+
+   **依存関係の方向性原則**:
+   - 外から内への単方向依存: `app/` → `features/` → `shared/infrastructure/` → `shared/core/`
+   - 逆方向の依存は禁止（ESLintで強制）
+   - 機能間の相互依存は禁止（features/各機能は独立）
+   - 共通インフラの活用により重複を排除
+
+   **機能追加ワークフロー原則**:
+   - 仕様書作成 → スキーマ定義（Zod） → Executor実装 → Registry登録 → テスト作成
+   - コアインターフェース（IWorkflowExecutor, IRepository）の実装準拠
+   - 各機能は独立したフォルダで完結（schema.ts, executor.ts, __tests__/）
+   - 共通インフラは`@/shared/infrastructure/`からimport
+
+   **エージェント設計時の考慮点**:
+   - [ ] 生成するファイルはプロジェクト構造（shared/features/app）のどの層に配置すべきか？
+   - [ ] 複数機能で共有する要素か、特定機能固有の要素か？
+   - [ ] 外部依存（DB、AI、Discord）を持つ場合、shared/infrastructureを活用しているか？
+   - [ ] ビジネスルールやエンティティ定義はshared/coreに集約されているか？
+   - [ ] 機能間で重複するロジックが発生していないか？（共通化の検討）
+   - [ ] 依存関係の方向性ルールに違反していないか？（ESLintで検証）
 
 2. **データベース設計原則**:
    - JSONB活用による柔軟なスキーマ設計
@@ -404,7 +429,11 @@ cat docs/00-requirements/master_system_design.md
    - 再利用可能ワークフローパターン
 
 **要件定義への適用**:
-- プロジェクトアーキテクチャに準拠したワークフロー設計
+- ハイブリッドアーキテクチャに準拠した要件の配置（共通インフラ/機能固有/プレゼンテーションの分離）
+- 機能要件は垂直スライス設計に従い、features層での独立性を考慮
+- 共通的な非機能要件（DB、AI、外部サービス連携）はshared/infrastructureでの実現を想定
+- ビジネスルールやエンティティ定義はshared/coreでの集約を考慮
+- 依存関係の方向性ルール（外から内へ）に違反しない要件設計
 - データベース操作を行う機能はトランザクション管理を考慮
 - API連携機能はHTTPステータスコードの適切な処理
 - ファイルアップロード機能はストレージ戦略（一時/永続）を明確化
@@ -416,7 +445,12 @@ cat docs/00-requirements/master_system_design.md
 **設計時の判断基準**:
 - [ ] データベース操作を行う場合、トランザクション境界は明確か？
 - [ ] 外部API呼び出しがある場合、リトライ戦略は定義されているか？
-- [ ] ファイルを生成する場合、プロジェクト構造（shared/features）に準拠しているか？
+- [ ] ファイルを生成する場合、適切なレイヤー（shared/core、shared/infrastructure、features、app）に配置されているか？
+- [ ] 複数機能で共有される要素は、shared層に配置されているか？
+- [ ] 機能固有のロジックは、features層の独立したフォルダに配置されているか？
+- [ ] 依存関係の方向性（app → features → shared/infrastructure → shared/core）が守られているか？
+- [ ] 機能間の相互依存が発生していないか（features内の各機能の独立性）？
+- [ ] 外部サービス連携（DB、AI、Discord）はshared/infrastructureを活用しているか？
 - [ ] ファイルアップロード機能の場合、ストレージ戦略（一時/永続）が明確か？
 - [ ] ファイル処理の場合、サイズ制限と命名規則が定義されているか？
 - [ ] テスト関連要件はテストピラミッドの原則に従っているか？
@@ -1518,6 +1552,16 @@ cat docs/00-requirements/master_system_design.md
 - 既存要件（docs/00-requirements/）: 一貫性のため
 
 ## 変更履歴
+
+### v1.1.1 (2025-11-23)
+- **改善**: ハイブリッドアーキテクチャの説明を概念的に再構成
+  - 知識領域6「1. ハイブリッドアーキテクチャ」セクションを詳細化
+  - 設計方針の理解、レイヤー構造と責務、依存関係の方向性原則を明確化
+  - 機能追加ワークフロー原則を概念的に記述（具体的な実装例から概念要素へ）
+  - エージェント設計時の考慮点をチェックリスト形式で6項目追加
+  - 「要件定義への適用」セクションにハイブリッドアーキテクチャ関連の項目を5つ追加
+  - 「設計時の判断基準」セクションにディレクトリ構造関連のチェック項目を6つ追加
+  - master_system_design.mdのディレクトリ構造（セクション4）に完全準拠
 
 ### v1.1.0 (2025-11-22)
 - **改善**: 抽象度の最適化とプロジェクト固有設計原則の統合

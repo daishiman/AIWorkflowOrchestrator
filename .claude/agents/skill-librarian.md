@@ -23,7 +23,7 @@ description: |
   or organizing knowledge for Claude Code agents.
 tools: [Read, Write, Grep, Bash]
 model: sonnet
-version: 1.3.0
+version: 1.3.1
 ---
 
 # Skill Librarian
@@ -501,12 +501,37 @@ Claude Codeのスキル機能は、descriptionに基づいて自動的に発動�
 **重点理解領域**:
 
 1. **ハイブリッドアーキテクチャ**:
-   - 共通インフラ層（shared/core, shared/infrastructure）の役割と責務
-   - 機能プラグイン層（features/）の垂直スライス設計原則
-   - 依存関係の方向性（外から内へ: app → features → shared/infrastructure → shared/core）
-   - レイヤー間の責務分離と境界の明確化
-   - 機能追加ワークフロー（仕様書 → スキーマ → Executor → Registry → テスト）
-   - コアインターフェース（IWorkflowExecutor, IRepository）の実装パターン
+
+   **設計方針の理解**:
+   - **shared**: 複数機能で共有する共通インフラ（AI、DB、外部サービス連携等）を集約
+   - **features**: 機能ごとの垂直スライス設計、1フォルダで機能が完結
+   - **MVP効率**: 機能追加・削除が高速、認知負荷を削減、拡張性を確保
+
+   **レイヤー構造と責務**:
+   - `shared/core/`: ビジネスルール、共通エンティティ定義（外部依存ゼロ）
+   - `shared/infrastructure/`: 外部サービス接続層（DB、AI、Discord等）
+   - `features/`: 機能ごとのビジネスロジック、1機能＝1フォルダの独立性
+   - `app/`: HTTPエンドポイント、プレゼンテーション層（Next.js App Router）
+
+   **依存関係の方向性原則**:
+   - 外から内への単方向依存: `app/` → `features/` → `shared/infrastructure/` → `shared/core/`
+   - 逆方向の依存は禁止（ESLintで強制）
+   - 機能間の相互依存は禁止（features/各機能は独立）
+   - 共通インフラの活用により重複を排除
+
+   **機能追加ワークフロー原則**:
+   - 仕様書作成 → スキーマ定義（Zod） → Executor実装 → Registry登録 → テスト作成
+   - コアインターフェース（IWorkflowExecutor, IRepository）の実装準拠
+   - 各機能は独立したフォルダで完結（schema.ts, executor.ts, __tests__/）
+   - 共通インフラは`@/shared/infrastructure/`からimport
+
+   **スキル設計時の考慮点**:
+   - [ ] スキルが参照するファイルはプロジェクト構造（shared/features/app）のどの層に配置されているか？
+   - [ ] スキルが扱う知識は複数機能で共有する要素か、特定機能固有の要素か？
+   - [ ] 外部依存（DB、AI、Discord）を扱うスキルの場合、shared/infrastructureのパターンを参照しているか？
+   - [ ] ビジネスルールやエンティティ定義を扱うスキルの場合、shared/coreの構造を理解しているか？
+   - [ ] 機能横断的な知識を扱う場合、重複を排除する共通化の原則を含んでいるか？
+   - [ ] 依存関係の方向性ルールをスキルの説明に含めているか？
 
 2. **データベース設計原則**:
    - JSONB活用による柔軟なスキーマ設計の原則
@@ -1721,6 +1746,14 @@ descriptionは単なる説明ではなく、**スキル発動の成否を決定�
 - コーディングガイドライン: プロジェクト固有のベストプラクティス
 
 ## 変更履歴
+
+### v1.3.1 (2025-11-23)
+- **改善**: ハイブリッドアーキテクチャの説明を詳細化
+  - 知識領域7「1. ハイブリッドアーキテクチャ」セクションを強化
+  - 設計方針の理解、レイヤー構造と責務、依存関係の方向性原則を明確化
+  - 機能追加ワークフロー原則を概念的に記述
+  - スキル設計時の考慮点をチェックリスト形式で6項目追加
+  - master_system_design.mdのセクション4（ディレクトリ構造）に完全準拠
 
 ### v1.3.0 (2025-11-22)
 - **改善**: 抽象度の最適化とプロジェクト固有設計原則の統合

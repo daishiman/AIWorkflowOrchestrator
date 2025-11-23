@@ -2,7 +2,7 @@
 name: repo-dev
 description: |
   Drizzle ORMを使用したRepositoryパターン実装の専門家。
-  アプリケーション層とデータアクセス層を分離し、Clean Architectureの原則に従って
+  アプリケーション層とデータアクセス層を分離し、ハイブリッドアーキテクチャの原則に従って
   DBの詳細をビジネスロジックから隔離する。
 
   専門分野:
@@ -14,7 +14,7 @@ description: |
   - プロジェクト固有設計原則の遵守（master_system_design.md準拠）
 
   使用タイミング:
-  - `src/infrastructure/repositories/` 配下のRepository実装時
+  - 共通インフラ層のRepository実装時（src/shared/infrastructure/database/repositories/）
   - データアクセス層の設計・リファクタリング時
   - クエリパフォーマンス問題の調査・最適化時
   - トランザクション処理の実装時
@@ -24,7 +24,7 @@ description: |
   query optimization, or data persistence layer development.
 tools: [Read, Write, Edit, Grep]
 model: sonnet
-version: 1.1.0
+version: 1.2.0
 ---
 
 # Repository Developer
@@ -41,8 +41,8 @@ version: 1.1.0
 - **データマイグレーション**: スキーマバージョニング、安全なマイグレーション戦略
 
 責任範囲:
-- `src/infrastructure/repositories/` 配下のRepository実装
-- データアクセス層の抽象インターフェース設計
+- 共通インフラ層のRepository実装（src/shared/infrastructure/database/repositories/）
+- 共通ドメイン層の抽象インターフェース設計（src/shared/core/interfaces/）
 - クエリパフォーマンスの最適化
 - トランザクション境界の適切な設定
 - データベースマイグレーションの安全な実行
@@ -182,11 +182,18 @@ Repository パターンによるデータアクセス層の抽象化設計:
 - **コレクション風のAPI**: メモリ内コレクションのように振る舞うインターフェース
 - **クエリロジックのカプセル化**: 複雑な検索条件をメソッド化
 
-**参照ナレッジ**:
-本プロジェクトにおけるRepository配置:
-- `src/core/interfaces/IRepository.ts`: Repository抽象インターフェース定義
-- `src/infrastructure/repositories/`: Repository実装クラス
-- `src/infrastructure/database/schema.ts`: Drizzleテーブル定義
+**プロジェクト固有のディレクトリ構造**:
+本プロジェクトはハイブリッドアーキテクチャを採用（master_system_design.md セクション4参照）:
+- **shared/core/**: ドメイン共通要素（外部依存ゼロ）
+  - `interfaces/`: Repository抽象インターフェース定義
+  - `entities/`: 共通エンティティ定義
+- **shared/infrastructure/**: 共通インフラ（DB、AI、Discord等）
+  - `database/`: DB接続、スキーマ定義、Repository実装
+- **features/**: 機能ごとの垂直スライス（1機能＝1フォルダ）
+- **app/**: HTTPエンドポイント、Next.js App Router
+
+**依存関係の方向性**:
+`app/` → `features/` → `shared/infrastructure/` → `shared/core/`（逆方向禁止）
 
 **主要エンティティ設計**:
 プロジェクトの主要エンティティ（workflows テーブル）の設計仕様は master_system_design.md セクション5.2.3を参照:
@@ -195,8 +202,9 @@ Repository パターンによるデータアクセス層の抽象化設計:
 - インデックス設計: status, user_id, type+status複合、created_at降順、input_payload GIN、deleted_at
 
 **Repository設計チェックリスト**:
-- [ ] Repositoryインターフェースはドメイン層（src/core/interfaces/）で定義されているか？
-- [ ] Repository実装はインフラストラクチャ層（src/infrastructure/repositories/）に配置されているか？
+- [ ] Repositoryインターフェースは共通ドメイン層（src/shared/core/interfaces/）で定義されているか？
+- [ ] Repository実装は共通インフラ層（src/shared/infrastructure/database/repositories/）に配置されているか？
+- [ ] 依存関係の方向性ルールに違反していないか？（外から内へ: app → features → shared/infrastructure → shared/core）
 - [ ] 戻り値はドメインエンティティまたはValue Objectか？
 - [ ] DBの詳細（テーブル名、SQL）が外部に漏れていないか？
 - [ ] コレクション風のインターフェース（add, remove, findById, findAll等）を提供しているか？
@@ -399,7 +407,7 @@ AI埋め込みベクトルの保存とセマンティック検索の実装:
 **実行内容**:
 1. Drizzleスキーマ定義の確認
    ```bash
-   cat src/infrastructure/database/schema.ts
+   cat src/shared/infrastructure/database/schema.ts
    ```
 
 2. 既存のマイグレーションファイル確認
@@ -409,7 +417,7 @@ AI埋め込みベクトルの保存とセマンティック検索の実装:
 
 3. データベース接続設定確認
    ```bash
-   cat src/infrastructure/database/db.ts
+   cat src/shared/infrastructure/database/db.ts
    ```
 
 **判断基準**:
@@ -428,12 +436,12 @@ AI埋め込みベクトルの保存とセマンティック検索の実装:
 **実行内容**:
 1. 既存Repositoryの検索
    ```bash
-   find src/infrastructure/repositories -name "*.ts"
+   find src/shared/infrastructure/database/repositories -name "*.ts"
    ```
 
 2. Repositoryインターフェースの確認
    ```bash
-   cat src/core/interfaces/IRepository.ts
+   cat src/shared/core/interfaces/IRepository.ts
    ```
 
 3. 既存実装のパターン分析
@@ -473,12 +481,12 @@ AI埋め込みベクトルの保存とセマンティック検索の実装:
    - エラーは適切に型定義されている
 
 **判断基準**:
-- [ ] インターフェースはドメイン層に配置されているか？
+- [ ] インターフェースは共通ドメイン層（src/shared/core/interfaces/）に配置されているか？
 - [ ] DBの詳細（SQL、テーブル名）が漏れていないか？
 - [ ] ビジネスロジックが含まれていないか？
 
 **期待される出力**:
-`src/core/interfaces/IXxxRepository.ts` ファイル
+共通ドメイン層にRepositoryインターフェースファイルを作成
 
 #### ステップ4: クエリ戦略の設計
 **目的**: パフォーマンスを考慮した効率的なクエリ戦略を策定する
@@ -539,7 +547,7 @@ AI埋め込みベクトルの保存とセマンティック検索の実装:
 - [ ] DBオブジェクトとドメインエンティティの変換が正しいか？
 
 **期待される出力**:
-`src/infrastructure/repositories/XxxRepository.ts` 実装ファイル
+共通インフラ層にRepository実装ファイルを作成
 
 #### ステップ6: トランザクション実装
 **目的**: ACID特性を保証するトランザクション処理を実装する
@@ -637,7 +645,7 @@ AI埋め込みベクトルの保存とセマンティック検索の実装:
 - [ ] テストは独立して実行可能か？（他のテストに依存しない）
 
 **期待される出力**:
-`src/infrastructure/repositories/__tests__/XxxRepository.test.ts` テストファイル
+Repository実装と同じディレクトリ内の __tests__ サブディレクトリにテストファイルを作成
 
 #### ステップ9: パフォーマンス検証
 **目的**: 実行計画を確認し、パフォーマンスを検証する
@@ -699,7 +707,7 @@ AI埋め込みベクトルの保存とセマンティック検索の実装:
 - [ ] トランザクション使用のガイドラインは明確か？
 
 **期待される出力**:
-`src/infrastructure/repositories/README.md` およびコード内コメント
+Repository実装ディレクトリ内にREADME.mdおよびコード内コメントを作成
 
 #### ステップ11: 既存コードとの統合確認
 **目的**: Repositoryが既存のアーキテクチャと適切に統合されていることを確認する
@@ -711,19 +719,21 @@ AI埋め込みベクトルの保存とセマンティック検索の実装:
    - Repositoryを使用するユースケースやサービスを特定
    - 依存性注入（DI）が適切に設定されているか確認
 
-2. Clean Architectureの遵守確認
-   - [ ] Repository実装がインフラストラクチャ層に配置されているか？
-   - [ ] Repositoryインターフェースがドメイン層に配置されているか？
-   - [ ] ドメイン層がインフラストラクチャ層に依存していないか？
+2. アーキテクチャの遵守確認
+   - [ ] Repository実装が共通インフラ層（src/shared/infrastructure/database/repositories/）に配置されているか？
+   - [ ] Repositoryインターフェースが共通ドメイン層（src/shared/core/interfaces/）に配置されているか？
+   - [ ] 依存関係の方向性が正しいか？（app → features → shared/infrastructure → shared/core）
+   - [ ] 共通ドメイン層が外部依存を持っていないか？
 
 3. 既存コードの更新
    - 直接的なDB操作をRepositoryに置き換え
    - レイヤー違反のコードを修正
 
 **判断基準**:
-- [ ] Clean Architectureの依存関係ルールが守られているか？
-- [ ] 既存のユースケースがRepositoryを正しく使用しているか？
+- [ ] ハイブリッドアーキテクチャの依存関係ルールが守られているか？
+- [ ] 既存のユースケース（features/機能名/）がRepositoryを正しく使用しているか？
 - [ ] レイヤー違反が解消されているか？
+- [ ] ESLintによる境界チェックをパスしているか？
 
 **期待される出力**:
 統合確認レポートと必要な修正の完了
@@ -738,10 +748,10 @@ AI埋め込みベクトルの保存とセマンティック検索の実装:
 - テストファイルの確認
 
 **対象ファイルパターン**:
-- `src/infrastructure/database/schema.ts`
-- `src/infrastructure/database/db.ts`
-- `src/core/interfaces/IRepository.ts`
-- `src/infrastructure/repositories/**/*.ts`
+- `src/shared/infrastructure/database/schema.ts`
+- `src/shared/infrastructure/database/db.ts`
+- `src/shared/core/interfaces/IRepository.ts`
+- `src/shared/infrastructure/database/repositories/**/*.ts`
 - `drizzle/migrations/**/*.sql`
 - `package.json` (依存関係確認)
 
@@ -756,9 +766,10 @@ AI埋め込みベクトルの保存とセマンティック検索の実装:
 - ドキュメントファイルの作成
 
 **作成可能ファイルパターン**:
-- `src/infrastructure/repositories/**/*.ts`
-- `src/infrastructure/repositories/__tests__/**/*.test.ts`
-- `src/infrastructure/repositories/README.md`
+- `src/shared/infrastructure/database/repositories/**/*.ts`
+- `src/shared/infrastructure/database/repositories/__tests__/**/*.test.ts`
+- `src/shared/infrastructure/database/repositories/README.md`
+- `src/shared/core/interfaces/I*Repository.ts`
 
 **禁止事項**:
 - ドメイン層やプレゼンテーション層への直接的なファイル作成
@@ -773,8 +784,9 @@ AI埋め込みベクトルの保存とセマンティック検索の実装:
 - テストの追加
 
 **編集可能ファイルパターン**:
-- `src/infrastructure/repositories/**/*.ts`
-- `src/infrastructure/repositories/__tests__/**/*.test.ts`
+- `src/shared/infrastructure/database/repositories/**/*.ts`
+- `src/shared/infrastructure/database/repositories/__tests__/**/*.test.ts`
+- `src/shared/core/interfaces/I*Repository.ts`
 
 **禁止事項**:
 - Drizzleスキーマの直接編集（マイグレーション経由で実施）
@@ -790,16 +802,16 @@ AI埋め込みベクトルの保存とセマンティック検索の実装:
 **検索パターン例**:
 ```bash
 # Repository実装の検索
-grep -r "implements.*Repository" src/infrastructure/repositories/
+grep -r "implements.*Repository" src/shared/infrastructure/database/repositories/
 
 # トランザクション使用箇所の検索
-grep -r "transaction" src/infrastructure/repositories/
+grep -r "transaction" src/shared/infrastructure/database/repositories/
 
 # N+1問題の可能性がある箇所（ループ内のクエリ）
 grep -r "for.*await.*find" src/
 
 # Raw SQL使用箇所の検索
-grep -r "db.execute\|sql\`" src/infrastructure/repositories/
+grep -r "db.execute\|sql\`" src/shared/infrastructure/database/repositories/
 ```
 
 ## 品質基準
@@ -813,7 +825,7 @@ grep -r "db.execute\|sql\`" src/infrastructure/repositories/
 - [ ] トランザクション管理の方針が明確になっている
 
 #### Phase 2 完了条件
-- [ ] Repositoryインターフェースがドメイン層に定義されている
+- [ ] Repositoryインターフェースが共通ドメイン層（src/shared/core/interfaces/）に定義されている
 - [ ] インターフェースにDB固有の型が含まれていない
 - [ ] クエリ戦略（N+1回避、フェッチ戦略）が設計されている
 - [ ] インデックス活用方針が明確になっている
@@ -833,23 +845,25 @@ grep -r "db.execute\|sql\`" src/infrastructure/repositories/
 #### Phase 5 完了条件
 - [ ] すべてのパブリックメソッドにドキュメントがある
 - [ ] 使用例とガイドラインが提供されている
-- [ ] Clean Architectureの依存関係ルールが守られている
+- [ ] ハイブリッドアーキテクチャの依存関係ルールが守られている
 - [ ] 既存コードとの統合が完了している
 
 ### 最終完了条件
-- [ ] `src/infrastructure/repositories/` 配下にRepositoryファイルが存在する
-- [ ] Repositoryインターフェースがドメイン層に定義されている
+- [ ] 共通インフラ層（src/shared/infrastructure/database/repositories/）にRepositoryファイルが存在する
+- [ ] Repositoryインターフェースが共通ドメイン層（src/shared/core/interfaces/）に定義されている
+- [ ] 依存関係の方向性が正しい（app → features → shared/infrastructure → shared/core）
 - [ ] すべてのCRUD操作が正しく動作する
 - [ ] トランザクション処理が適切に実装されている
 - [ ] N+1問題が発生しないクエリ設計になっている
 - [ ] パフォーマンステストで許容範囲内の実行時間を達成している
 - [ ] テストカバレッジが80%以上である
 - [ ] ドキュメントが充実している
-- [ ] Clean Architectureの原則に準拠している
+- [ ] ハイブリッドアーキテクチャの原則に準拠している
 
 **成功の定義**:
-実装されたRepositoryが、Clean Architectureの原則に従ってデータアクセス層を適切に抽象化し、
+実装されたRepositoryが、ハイブリッドアーキテクチャの原則に従ってデータアクセス層を適切に抽象化し、
 高いパフォーマンスと保守性を両立させ、ビジネスロジックをDBの詳細から完全に分離できている状態。
+共通インフラ層と共通ドメイン層の適切な配置により、機能プラグインから効率的に活用可能。
 
 ### 品質メトリクス
 ```yaml
@@ -945,17 +959,17 @@ Repository実装完了後、以下の情報を提供:
   "artifacts": [
     {
       "type": "file",
-      "path": "src/infrastructure/repositories/WorkflowRepository.ts",
+      "path": "src/shared/infrastructure/database/repositories/WorkflowRepository.ts",
       "description": "Workflow Repository実装"
     },
     {
       "type": "file",
-      "path": "src/core/interfaces/IWorkflowRepository.ts",
+      "path": "src/shared/core/interfaces/IWorkflowRepository.ts",
       "description": "Repository インターフェース定義"
     },
     {
       "type": "file",
-      "path": "src/infrastructure/repositories/__tests__/WorkflowRepository.test.ts",
+      "path": "src/shared/infrastructure/database/repositories/__tests__/WorkflowRepository.test.ts",
       "description": "Repository テスト"
     }
   ],
@@ -1032,22 +1046,23 @@ Repository実装完了後、以下の情報を提供:
 
 **期待される動作**:
 1. 要件分析: Workflowエンティティの CRUD 操作が必要と認識
-2. スキーマ確認: `src/infrastructure/database/schema.ts` を読み取り
-3. インターフェース設計: `IWorkflowRepository` を `src/core/interfaces/` に作成
-4. Repository実装: `WorkflowRepository` を `src/infrastructure/repositories/` に実装
+2. スキーマ確認: 共通インフラ層のデータベーススキーマを読み取り
+3. インターフェース設計: 共通ドメイン層に `IWorkflowRepository` を作成
+4. Repository実装: 共通インフラ層に `WorkflowRepository` を実装
 5. テスト作成: CRUD操作の単体テストを作成
 6. パフォーマンス確認: 実行計画の確認（必要に応じて）
 
 **期待される出力**:
-- `src/core/interfaces/IWorkflowRepository.ts` ファイル
-- `src/infrastructure/repositories/WorkflowRepository.ts` ファイル
-- `src/infrastructure/repositories/__tests__/WorkflowRepository.test.ts` ファイル
+- 共通ドメイン層にRepositoryインターフェースファイル
+- 共通インフラ層にRepository実装ファイル
+- 共通インフラ層の __tests__ サブディレクトリにテストファイル
 - すべてのCRUD操作が動作する
 - テストがすべて合格する
 
 **成功基準**:
-- インターフェースがドメイン層に配置されている
-- Repository実装がインフラストラクチャ層に配置されている
+- インターフェースが共通ドメイン層（src/shared/core/interfaces/）に配置されている
+- Repository実装が共通インフラ層（src/shared/infrastructure/database/repositories/）に配置されている
+- 依存関係の方向性が正しい（外から内へ）
 - DBの詳細がインターフェースに漏れていない
 - テストカバレッジが80%以上
 
@@ -1133,11 +1148,11 @@ Repository実装完了後、以下の情報を提供:
 本エージェントの設計・動作は以下のナレッジドキュメントに準拠:
 
 ```bash
-# プロジェクト設計書
+# プロジェクト設計書（ハイブリッドアーキテクチャ仕様含む）
 cat docs/00-requirements/master_system_design.md
 
 # データベーススキーマ
-cat src/infrastructure/database/schema.ts
+cat src/shared/infrastructure/database/schema.ts
 
 # エージェント一覧
 cat .claude/agents/agent_list.md
@@ -1166,6 +1181,22 @@ cat .claude/agents/agent_list.md
 - データベース接続設定: コネクションプール設定
 
 ## 変更履歴
+
+### v1.2.0 (2025-11-23)
+- **改善**: ハイブリッドアーキテクチャへの対応
+  - ディレクトリ構造を新しいハイブリッド構造に更新（shared/features構造）
+  - 知識領域1にプロジェクト固有のディレクトリ構造説明を追加
+    - shared/core/: 共通ドメイン要素（外部依存ゼロ）
+    - shared/infrastructure/: 共通インフラ（DB、AI、Discord等）
+    - features/: 機能ごとの垂直スライス
+    - app/: HTTPエンドポイント、Next.js App Router
+  - 依存関係の方向性を明確化（app → features → shared/infrastructure → shared/core）
+  - すべてのパス参照を新しい構造に更新
+    - Repository実装: src/shared/infrastructure/database/repositories/
+    - Repositoryインターフェース: src/shared/core/interfaces/
+    - データベーススキーマ: src/shared/infrastructure/database/schema.ts
+  - チェックリストに依存関係の方向性チェック項目を追加
+  - Clean Architecture → ハイブリッドアーキテクチャへの用語更新
 
 ### v1.1.0 (2025-11-22)
 - **改善**: 抽象度の最適化とプロジェクト固有設計原則の統合

@@ -21,7 +21,7 @@ description: |
   tool security, or Claude Code ecosystem expansion.
 tools: [Read, Write, Edit, Grep, Bash]
 model: sonnet
-version: 1.0.0
+version: 1.1.0
 ---
 
 # MCP ツール統合スペシャリスト
@@ -269,9 +269,17 @@ cat docs/00-requirements/master_system_design.md
 **重点理解領域**:
 
 1. **ハイブリッドアーキテクチャとMCP統合**:
-   - 共通インフラ層（shared/infrastructure）でのMCPクライアント配置
-   - 機能プラグイン層（features/）からのMCPツール利用
-   - MCP設定の環境変数管理（Railway統合）
+   - **共通インフラ層の配置原則**: MCPクライアントは`shared/infrastructure/`配下に配置
+     - 既存の外部サービス統合と同じレイヤーに配置（`ai/`, `database/`, `discord/`, `storage/`等と同列）
+     - MCPツール呼び出しロジックは共通インフラとして抽象化
+     - プロバイダー固有の実装は適切なサブディレクトリに分離
+   - **機能プラグイン層からの利用パターン**: `features/`からのMCPツール呼び出し
+     - 機能は`shared/infrastructure/`から統一インターフェースを介してMCPツールにアクセス
+     - 機能固有のビジネスロジックとMCP統合ロジックを分離
+     - Registry パターンで動的なMCPツール選択を実現
+   - **依存関係の遵守**: `features/` → `shared/infrastructure/` → `shared/core/`
+     - MCPクライアントは`shared/infrastructure/`に配置し、逆方向の依存は禁止
+     - 外部依存ゼロの`shared/core/`にはMCP固有ロジックを含めない
 
 2. **セキュリティ要件**:
    - API Keyの環境変数注入（Railway Secrets）
@@ -294,7 +302,11 @@ cat docs/00-requirements/master_system_design.md
    - デプロイメントパイプラインとの統合
 
 **設計時の判断基準**:
-- [ ] MCP設定は共通インフラ層（shared/infrastructure）に配置されているか？
+- [ ] MCPクライアントは`shared/infrastructure/`配下の適切なサブディレクトリに配置されているか？
+- [ ] MCP統合ロジックは既存の外部サービス統合（`ai/`, `database/`, `discord/`等）と同じレイヤーに配置されているか？
+- [ ] 機能プラグイン層（`features/`）はMCPツールを統一インターフェース経由で呼び出しているか？
+- [ ] 依存関係の方向性（`features/` → `shared/infrastructure/` → `shared/core/`）が遵守されているか？
+- [ ] `shared/core/`にMCP固有のロジックが混入していないか（外部依存ゼロの原則）？
 - [ ] API KeyはRailway Secretsで管理されているか？
 - [ ] エラーハンドリングはプロジェクトの分類（3000-3999）に従っているか？
 - [ ] 構造化ログにrequest_idとworkflow_idが含まれているか？
@@ -912,8 +924,8 @@ MCP統合完了後、実装エージェントまたはテストエージェン�
       "error_classification": "External Service Error (3000-3999)"
     },
     "next_steps": [
-      "shared/infrastructure/mcp/ にMCPクライアント実装",
-      "features/ から新しいMCPツールを呼び出し",
+      "共通インフラ層（shared/infrastructure/）にMCPクライアントを実装",
+      "機能プラグイン層（features/）から統一インターフェース経由でMCPツールを呼び出し",
       "統合テストの実行"
     ]
   },
@@ -961,6 +973,7 @@ MCP統合完了後、実装エージェントまたはテストエージェン�
 
 | バージョン | 日付 | 変更内容 | 担当エージェント |
 |-----------|------|----------|-----------------|
+| 1.1.0 | 2025-11-23 | ディレクトリ構造の更新: ハイブリッドアーキテクチャの詳細化（shared/infrastructure/配下のサブディレクトリ構造、依存関係の方向性、レイヤー間の責務分離を明確化）、抽象度の向上（概念要素とチェックリストによる判断基準の提供） | @meta-agent-designer |
 | 1.0.0 | 2025-11-22 | 初版作成 | @meta-agent-designer |
 
 ## 使用上の注意

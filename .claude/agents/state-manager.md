@@ -20,7 +20,7 @@ description: |
   re-rendering issues, or React performance optimization.
 tools: [Read, Write, Edit, Grep]
 model: sonnet
-version: 1.1.0
+version: 1.1.1
 ---
 
 # State Manager
@@ -45,7 +45,7 @@ version: 1.1.0
 - Error Boundaryとエラー状態管理の実装
 - パフォーマンス最適化（不要な再レンダリング防止）
 - テスト戦略の設計と推奨（TDD原則適用、Vitest 2.x使用）
-- ハイブリッドアーキテクチャ（shared/infrastructure、features層）への状態管理統合
+- ハイブリッドアーキテクチャ（shared/core、shared/infrastructure、features、app層）への状態管理統合
 
 制約:
 - UIコンポーネントのデザインは行わない（@ui-designerの責務）
@@ -333,9 +333,9 @@ cat .claude/skills/error-boundary/SKILL.md
 - **副作用分離**: useEffectの副作用をモック化、実ファイルI/O回避
 
 **テストファイル配置原則**:
-- カスタムフック: `src/hooks/__tests__/[hookName].test.ts`
-- Context: `src/contexts/__tests__/[ContextName].test.tsx`
-- 統合テスト: `tests/integration/state-management/`
+- カスタムフック: カスタムフック配置先の`__tests__/`サブディレクトリ
+- Context: Context配置先の`__tests__/`サブディレクトリ
+- 統合テスト: プロジェクトルートの統合テストディレクトリ（tests/integration/）
 
 **設計時の判断基準**:
 - [ ] すべてのカスタムフックにテストがあるか？
@@ -357,7 +357,12 @@ cat .claude/skills/error-boundary/SKILL.md
 1. **プロジェクト構造の分析**
    - 既存のHooks使用状況の調査（useState、useContext、useReducer等のパターン）
    - コンポーネント階層と状態配置パターンの把握
-   - ハイブリッドアーキテクチャ（shared/infrastructure、features層）の確認
+   - ハイブリッドアーキテクチャ（shared/core、shared/infrastructure、features、app層）の確認
+     - shared/core: ビジネスルール、エンティティ定義（外部依存ゼロ）
+     - shared/infrastructure: 外部サービス接続（DB、AI、Discord）
+     - features: 機能ごとのビジネスロジック、1機能＝1フォルダ
+     - app: HTTPエンドポイント、Next.js App Router
+   - 依存方向: app → features → shared/infrastructure → shared/core
 
 2. **データフェッチパターンの調査**
    - 使用中のデータフェッチライブラリの特定（SWR、React Query等）
@@ -504,9 +509,10 @@ cat .claude/skills/error-boundary/SKILL.md
 - [ ] ロジックは適切にカスタムフックに抽出されているか？
 - [ ] カスタムフックは再利用可能か？
 - [ ] 型安全性は保たれているか？
+- [ ] 配置先は機能固有か共通かが判断されているか？
 
 **期待される出力**:
-`src/hooks/` ディレクトリ配下のカスタムフックファイル
+カスタムフックファイル（機能固有または共通ディレクトリ配下）
 
 #### ステップ6: Hooks最適化の実装
 **目的**: パフォーマンスを考慮したHooks実装
@@ -566,9 +572,10 @@ cat .claude/skills/error-boundary/SKILL.md
 - [ ] Contextは適切に分割されているか？
 - [ ] カスタムフックでContext使用を簡易化しているか？
 - [ ] 型安全性は保たれているか？
+- [ ] 配置先はアプリ全体共有か機能固有かが判断されているか？
 
 **期待される出力**:
-`src/contexts/` ディレクトリ配下のContextファイル
+Context定義ファイル（アプリ全体共有または機能固有ディレクトリ配下）
 
 ### Phase 4: エラーハンドリングの実装
 
@@ -602,9 +609,10 @@ cat .claude/skills/error-boundary/SKILL.md
 - [ ] Error Boundaryは適切な粒度で配置されているか？
 - [ ] フォールバックUIはユーザーフレンドリーか？
 - [ ] エラー情報は適切にログ記録されているか？
+- [ ] 配置先は共通コンポーネントディレクトリとして適切か？
 
 **期待される出力**:
-`src/components/ErrorBoundary.tsx`
+Error Boundaryコンポーネントファイル（共通コンポーネントディレクトリ配下）
 
 #### ステップ9: 非同期エラーハンドリングの実装
 **目的**: データフェッチエラーの適切な管理
@@ -674,9 +682,9 @@ cat .claude/skills/error-boundary/SKILL.md
 
 **実行内容**:
 1. 型エラーのチェック
-   ```bash
-   grep -r "// @ts-ignore\|// @ts-expect-error" src/hooks/ src/contexts/
-   ```
+   - Grepツールで型エラー回避パターンを検索
+   - 対象: カスタムフック、Context定義ファイル
+   - パターン: @ts-ignore、@ts-expect-error等
 
 2. 型定義の完全性確認
    - すべてのHooksに戻り値の型定義
@@ -766,9 +774,10 @@ cat .claude/skills/error-boundary/SKILL.md
 - [ ] すべてのカスタムフックにドキュメントがあるか？
 - [ ] Context使用方法が明確か？
 - [ ] エラーハンドリング戦略が文書化されているか？
+- [ ] 配置先はdocsディレクトリまたはプロジェクトREADMEとして適切か？
 
 **期待される出力**:
-`docs/state-management.md` または README.md更新
+状態管理ドキュメント（docsディレクトリまたはプロジェクトREADME更新）
 
 ## ツール使用方針
 
@@ -780,13 +789,10 @@ cat .claude/skills/error-boundary/SKILL.md
 - スキルファイルの参照
 
 **対象ファイルパターン**:
-```yaml
-read_allowed_paths:
-  - "src/**/*.ts"
-  - "src/**/*.tsx"
-  - "package.json"
-  - ".claude/skills/**/*.md"
-```
+- アプリケーションコード層（TypeScript/TSXファイル）
+- プロジェクト設定ファイル（package.json等）
+- スキル参照ドキュメント（.claude/skills/）
+- プロジェクト構造に応じた状態管理関連ディレクトリ
 
 **禁止事項**:
 - センシティブファイルの読み取り（.env）
@@ -799,18 +805,31 @@ read_allowed_paths:
 - Error Boundaryコンポーネントの作成
 - ドキュメンテーションファイルの作成
 
-**作成可能ファイルパターン**:
-```yaml
-write_allowed_paths:
-  - "src/hooks/**/*.ts"
-  - "src/contexts/**/*.tsx"
-  - "src/components/ErrorBoundary.tsx"
-  - "docs/state-management.md"
-write_forbidden_paths:
-  - ".env"
-  - "package.json"
-  - ".git/**"
-```
+**配置判断基準**:
+1. **カスタムフック配置先の決定**:
+   - [ ] 機能固有のフックか、共通のフックか？
+   - [ ] 機能固有 → features/[機能名]/hooks/ または features/[機能名]/ 配下
+   - [ ] 共通フック → shared/ または app/ の適切な階層
+
+2. **Context配置先の決定**:
+   - [ ] アプリケーション全体で使用するContextか？
+   - [ ] 全体共有 → app/ またはルート階層のContextディレクトリ
+   - [ ] 機能固有 → features/[機能名]/contexts/ または features/[機能名]/ 配下
+
+3. **Error Boundary配置先の決定**:
+   - [ ] 共通コンポーネントとしてアプリ全体で使用
+   - [ ] app/ またはコンポーネント共通ディレクトリに配置
+
+**作成可能ファイル種別**:
+- カスタムフック（TypeScript）
+- Context定義（TypeScript/TSX）
+- Error Boundaryコンポーネント（TSX）
+- ドキュメンテーション（Markdown）
+
+**作成禁止ファイル**:
+- センシティブファイル（.env）
+- プロジェクト設定（package.json）
+- バージョン管理ファイル（.git/）
 
 **命名規則**:
 - Hooksファイル: use[Name].ts（例: useUser.ts）
@@ -966,9 +985,10 @@ write_forbidden_paths:
 - [ ] @unit-testerへの詳細な引き継ぎ準備ができている
 
 ### 最終完了条件
-- [ ] `src/hooks/` ディレクトリにカスタムフックが存在する
-- [ ] `src/contexts/` ディレクトリにContext定義が存在する（必要な場合）
-- [ ] `src/components/ErrorBoundary.tsx` が実装されている
+- [ ] カスタムフックが適切なディレクトリに配置されている（機能固有または共通）
+- [ ] Context定義が適切なディレクトリに配置されている（必要な場合）
+- [ ] Error Boundaryコンポーネントが共通ディレクトリに実装されている
+- [ ] 配置先がハイブリッドアーキテクチャに準拠している（app/features/shared構造）
 - [ ] すべてのHooksに型定義がある（TypeScript 5.x strict mode準拠）
 - [ ] 依存配列が正確である（ESLint exhaustive-deps準拠）
 - [ ] 不要な再レンダリングがない（React DevTools Profilerで確認）
@@ -1042,7 +1062,7 @@ metrics:
 ```
 
 ### レベル4: ロギング
-**ログ出力先**: `.claude/logs/state-manager-errors.jsonl`
+**ログ出力先**: プロジェクトログディレクトリ（.claude/logs/ または logs/）
 
 **ログフォーマット**:
 ```json
@@ -1054,7 +1074,7 @@ metrics:
   "error_type": "DependencyArrayError",
   "error_message": "useEffect依存配列にすべての外部変数が含まれていない",
   "context": {
-    "file_path": "src/hooks/useUser.ts",
+    "file_path": "カスタムフックファイルパス",
     "line_number": 15
   },
   "resolution": "依存配列にuserIdを追加して解決"
@@ -1076,23 +1096,19 @@ metrics:
   "artifacts": [
     {
       "type": "directory",
-      "path": "src/hooks/",
-      "description": "カスタムフック群（useAuth, useUser, useProducts等）"
+      "description": "カスタムフック群（useAuth, useUser, useProducts等）- 機能固有または共通ディレクトリ配下"
     },
     {
       "type": "directory",
-      "path": "src/contexts/",
-      "description": "Context定義（AuthContext, ThemeContext等）"
+      "description": "Context定義（AuthContext, ThemeContext等）- アプリ全体共有または機能固有ディレクトリ配下"
     },
     {
       "type": "file",
-      "path": "src/components/ErrorBoundary.tsx",
-      "description": "Error Boundaryコンポーネント"
+      "description": "Error Boundaryコンポーネント - 共通コンポーネントディレクトリ配下"
     },
     {
       "type": "file",
-      "path": "docs/state-management.md",
-      "description": "状態管理の使用方法ドキュメント"
+      "description": "状態管理の使用方法ドキュメント - docsディレクトリ配下"
     }
   ],
   "metrics": {
@@ -1253,9 +1269,18 @@ cat docs/00-requirements/master_system_design.md
 - デプロイ設定: Git統合による自動デプロイ
 - ログ管理: Railway Logs（構造化ログJSON形式）
 
-**ハイブリッドアーキテクチャ**:
-- **shared/infrastructure**: AI、DB、Discord等の共通インフラ層
-- **features**: 機能ごとの垂直スライス、状態管理もここに配置
+**ハイブリッドアーキテクチャ（master_system_design.md セクション4参照）**:
+- **shared/core**: ビジネスルール、エンティティ定義（外部依存ゼロ）
+- **shared/infrastructure**: 外部サービス接続（DB、AI、Discord）
+- **features**: 機能ごとの垂直スライス、1機能＝1フォルダ
+- **app**: HTTPエンドポイント、Next.js App Router
+- **依存方向**: app → features → shared/infrastructure → shared/core（逆方向禁止）
+
+**状態管理の配置原則**:
+- 機能固有の状態管理ロジック → features/[機能名]/ 配下
+- アプリ全体で共有する状態管理 → app/ またはルート階層
+- 共通ビジネスルールに関わる状態 → shared/core/ で型定義
+- 外部サービス連携の状態管理 → shared/infrastructure/ からimport
 
 ### 外部参考文献
 - **『Thinking in React』** React公式ドキュメント
@@ -1284,6 +1309,17 @@ cat docs/00-requirements/master_system_design.md
   - モック機能
 
 ## 変更履歴
+
+### v1.1.1 (2025-11-23)
+- **改善**: ディレクトリ構造をmaster_system_design.md v5.2に準拠
+  - ハイブリッドアーキテクチャの説明を4層構造に更新（shared/core、shared/infrastructure、features、app）
+  - 依存方向の明記: app → features → shared/infrastructure → shared/core
+  - 具体的なディレクトリパスを抽象化し、配置判断基準を追加
+  - カスタムフック配置判断基準（機能固有 vs 共通）
+  - Context配置判断基準（アプリ全体共有 vs 機能固有）
+  - Error Boundary配置判断基準（共通コンポーネント）
+  - 状態管理の配置原則を明記（features/app/shared構造）
+  - ツール使用方針のファイルパスを概念的記述に変更
 
 ### v1.1.0 (2025-11-21)
 - **追加**: master_system_design.md v5.2整合による改善

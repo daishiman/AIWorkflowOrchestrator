@@ -188,8 +188,9 @@ cat .claude/skills/llm-context-management/SKILL.md
 
 3. 既存プロンプトの調査
    ```bash
-   find src/ -name "*.prompt.ts" -o -name "*-prompt.ts"
-   grep -r "systemPrompt\|userPrompt" src/
+   find src/features -name "*.prompt.ts" -o -name "*-prompt.ts"
+   find src/shared -name "*.prompt.ts" -o -name "*-prompt.ts"
+   grep -r "systemPrompt\|userPrompt" src/features src/shared
    ```
 
 **判断基準**:
@@ -255,18 +256,24 @@ cat .claude/skills/llm-context-management/SKILL.md
 
 **実行内容**:
 1. プロジェクト内の既存プロンプトを調査
+   - プロンプト配置パターンの理解（ハイブリッド構造：shared vs features）
+   - 機能ごとの垂直スライス構造の確認
    ```bash
-   grep -r "You are\|あなたは" src/ --include="*.ts" --include="*.js"
+   find src/features -name "*.prompt.ts" -o -name "*-prompt.ts"
+   find src/shared -name "*.prompt.ts" -o -name "*-prompt.ts"
+   grep -r "You are\|あなたは" src/features src/shared --include="*.ts"
    ```
 
 2. 類似機能のプロンプトを分析
    - 役割定義の方法
    - 出力フォーマットの指定方法
    - Few-Shot Examplesの有無と構造
+   - 配置場所（features/ vs shared/）の判断基準
 
 3. パターンライブラリの確認
    - Claude Code Skills内のプロンプトパターン
    - プロジェクト固有のプロンプトテンプレート
+   - 共通インフラ（shared/infrastructure/）の活用状況
 
 **判断基準**:
 - [ ] 類似プロンプトが存在するか？
@@ -554,10 +561,15 @@ cat .claude/skills/llm-context-management/SKILL.md
 **ファイル構成設計**:
 
 1. **ディレクトリ構造**:
-   - プロジェクトのディレクトリ規約に準拠
-   - 機能ごとの垂直スライス（features/[機能名]/prompts/）
-   - 関心の分離（システムプロンプト、例、スキーマを分離）
-   - 再利用性の考慮（共通プロンプト、機能固有プロンプト）
+   - **プロジェクトアーキテクチャの理解**:
+     - ハイブリッドアーキテクチャ構造の遵守
+       - `shared/`: 複数機能で共有する共通プロンプト（必要に応じて）
+       - `features/`: 機能ごとの垂直スライス、1機能＝1フォルダ
+       - `app/`: プレゼンテーション層（プロンプトは通常配置しない）
+   - **機能固有プロンプトの配置**: `features/[機能名]/prompts/`
+   - **共通プロンプトの配置**: `shared/infrastructure/ai/prompts/`（再利用される場合）
+   - **関心の分離**: システムプロンプト、Few-Shot、スキーマを分離
+   - **依存関係の方向性**: プロンプトは`features/`または`shared/infrastructure/`に配置
 
 2. **ファイル命名規則**:
    - プロジェクトの命名規約に準拠（kebab-case、camelCase等）
@@ -712,8 +724,8 @@ cat .claude/skills/llm-context-management/SKILL.md
 ```yaml
 read_allowed_paths:
   - "docs/**/*.md"
-  - "src/**/*.prompt.ts"
-  - "src/**/prompts/**/*.ts"
+  - "src/features/**/prompts/**/*.ts"  # 機能ごとの垂直スライス
+  - "src/shared/**/prompts/**/*.ts"    # 共通プロンプト（必要に応じて）
   - ".claude/skills/**/*.md"
   - "README.md"
 ```
@@ -731,9 +743,10 @@ read_allowed_paths:
 **作成可能ファイルパターン**:
 ```yaml
 write_allowed_paths:
-  - "src/**/prompts/**/*.ts"
+  - "src/features/**/prompts/**/*.ts"  # 機能固有プロンプト
+  - "src/shared/**/prompts/**/*.ts"    # 共通プロンプト（必要に応じて）
   - "docs/prompts/**/*.md"
-  - "src/**/*.schema.ts"
+  - "src/features/**/*.schema.ts"      # 機能固有スキーマ
 write_forbidden_paths:
   - ".env"
   - "**/*.key"
@@ -766,13 +779,13 @@ write_forbidden_paths:
 **検索パターン例**:
 ```bash
 # システムプロンプトの検索
-grep -r "You are\|あなたは" src/ --include="*.ts"
+grep -r "You are\|あなたは" src/features src/shared --include="*.ts"
 
 # 出力スキーマの検索
-grep -r "z.object\|interface.*Output" src/ --include="*.ts"
+grep -r "z.object\|interface.*Output" src/features --include="*.ts"
 
 # Few-Shot Examplesの検索
-grep -r "fewShot\|examples" src/features/*/prompts/
+grep -r "fewShot\|examples" src/features/*/prompts/ src/shared/*/prompts/
 ```
 
 ## コミュニケーションプロトコル
@@ -1037,6 +1050,11 @@ cat docs/00-requirements/master_system_design.md
   - AIプロバイダー情報の更新（OpenAI、Anthropic、Google、xAI）
   - Vercel AI SDK統合の明示
   - master_system_design.md の技術スタック反映
+  - ハイブリッドアーキテクチャ（shared/features/app）に基づくディレクトリ構造の反映
+    - プロンプト配置: `features/[機能名]/prompts/` と `shared/infrastructure/ai/prompts/`
+    - read_allowed_paths と write_allowed_paths の更新
+    - 既存プロンプト調査コマンド例の修正（ステップ1、ステップ3）
+    - 検索パターン例の修正
 
 ## 使用上の注意
 

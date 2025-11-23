@@ -172,9 +172,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator",
         "childFileCount": 0,
-        "x": -7.029409307339014,
-        "y": 146.77538917035946,
-        "z": 18.242452511791686,
+        "x": -8.55875931812069,
+        "y": 141.62934912802032,
+        "z": 16.370496910033655,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -194,9 +194,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator",
         "childFileCount": 0,
-        "x": -5.234410983861014,
-        "y": 145.76787014733443,
-        "z": 14.700029882086655,
+        "x": -7.412162437483246,
+        "y": 144.55529842369523,
+        "z": 20.752938401227418,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -260,9 +260,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/docs/00-requirements",
         "childFileCount": 0,
-        "x": -3.4212393528089904,
-        "y": 145.52110777326638,
-        "z": 13.22041382147631,
+        "x": -8.81376173929342,
+        "y": 144.66115106564678,
+        "z": 14.992840008847718,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -282,9 +282,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/docs/00-requirements",
         "childFileCount": 0,
-        "x": -4.46152672863229,
-        "y": 140.93032730415183,
-        "z": 14.024580552897216,
+        "x": -7.7374165891406275,
+        "y": 141.84566282652378,
+        "z": 11.399700325544442,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -407,6 +407,7 @@
     ".claude/agents/local-watcher.md",
     ".claude/agents/logic-dev.md",
     ".claude/agents/manual-writer.md",
+    ".claude/agents/mcp-integrator.md",
     ".claude/agents/meta-agent-designer.md",
     ".claude/agents/process-mgr.md",
     ".claude/agents/product-manager.md",
@@ -414,6 +415,7 @@
     ".claude/agents/repo-dev.md",
     ".claude/agents/req-analyst.md",
     ".claude/agents/router-dev.md",
+    ".claude/agents/schema-def.md",
     ".claude/agents/sec-auditor.md",
     ".claude/agents/secret-mgr.md",
     ".claude/agents/skill-librarian.md",
@@ -423,8 +425,8 @@
     ".claude/agents/ui-designer.md",
     ".claude/agents/unit-tester.md",
     ".claude/agents/workflow-engine.md",
-    ".claude/commands/00.command_list.md",
     ".claude/commands/ai/README.md",
+    ".claude/commands/command_list.md",
     ".claude/mcp/Brave_Search.md",
     ".claude/mcp/Context7.md",
     ".claude/mcp/Playwright.md",
@@ -483,7 +485,13 @@
       "AIWorkflowOrchestrator/claude",
       "AIWorkflowOrchestrator/AIWorkflowOrchestrator/claude",
       "AIWorkflowOrchestrator/claudedocs",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/claudedocs"
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/claudedocs",
+      "AIWorkflowOrchestrator/.claude/commands/00.command_list.md\t.claude",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/commands/00.command_list.md\t.claude",
+      "AIWorkflowOrchestrator/.claude/commands/00.command_list.md\t.claude/commands",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/commands/00.command_list.md\t.claude/commands",
+      "AIWorkflowOrchestrator/kamui",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/kamui"
     ],
     "selectedPath": null
   },
@@ -497,7 +505,7 @@
     "mode": "full",
     "isPartial": false,
     "branchPulse": {
-      "generatedAt": 1763768786525,
+      "generatedAt": 1763861580580,
       "targets": [
         "main",
         "task/task-1763719022041-576354",
@@ -506,11 +514,28 @@
         "daishiman/feature/development"
       ],
       "statsByBranch": {
+        "main": {
+          "branch": "main",
+          "head": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
+          "baseRef": "origin/main",
+          "baseHead": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
+          "mergeBase": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
+          "divergence": {
+            "aheadCount": 0,
+            "fileCount": 0
+          },
+          "baseline": {
+            "aheadCount": 0,
+            "behindCount": 0,
+            "fileCount": 0
+          },
+          "upstream": null
+        },
         "task/task-1763719022041-576354": {
           "branch": "task/task-1763719022041-576354",
           "head": "52266792fbc47007b4ddca109f477ddcac9f72d0",
           "baseRef": "main",
-          "baseHead": "d277946b738f79571d8817e00cf5cad194c22ca4",
+          "baseHead": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
           "mergeBase": "52266792fbc47007b4ddca109f477ddcac9f72d0",
           "divergence": {
             "aheadCount": 0,
@@ -518,25 +543,8 @@
           },
           "baseline": {
             "aheadCount": 0,
-            "behindCount": 7,
-            "fileCount": 57
-          },
-          "upstream": null
-        },
-        "main": {
-          "branch": "main",
-          "head": "d277946b738f79571d8817e00cf5cad194c22ca4",
-          "baseRef": "origin/main",
-          "baseHead": "8819107d7ff2017b4d4c4d382f462f84a97f881d",
-          "mergeBase": "8819107d7ff2017b4d4c4d382f462f84a97f881d",
-          "divergence": {
-            "aheadCount": 2,
-            "fileCount": 1
-          },
-          "baseline": {
-            "aheadCount": 2,
-            "behindCount": 0,
-            "fileCount": 1
+            "behindCount": 6,
+            "fileCount": 59
           },
           "upstream": null
         }
@@ -552,9 +560,9 @@
         "label": "現在のコードベース",
         "files": [],
         "branch": "main",
-        "targetCommitHash": "d277946b738f79571d8817e00cf5cad194c22ca4",
+        "targetCommitHash": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
         "worktreePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
-        "timestamp": 1763768786548,
+        "timestamp": 1763861580602,
         "lane": 0,
         "branchLabel": "main",
         "branchTags": [
@@ -566,30 +574,15 @@
       },
       {
         "type": "unstaged",
-        "label": "未ステージ (17)",
+        "label": "未ステージ (2)",
         "files": [
-          ".claude/agents/arch-police.md",
-          ".claude/agents/auth-specialist.md",
-          ".claude/agents/code-quality.md",
-          ".claude/agents/command-arch.md",
-          ".claude/agents/db-architect.md",
-          ".claude/agents/dba-mgr.md",
-          ".claude/agents/dep-mgr.md",
-          ".claude/agents/devops-eng.md",
-          ".claude/agents/domain-modeler.md",
-          ".claude/agents/e2e-tester.md",
-          ".claude/agents/gateway-dev.md",
-          ".claude/agents/gha-workflow-architect.md",
-          ".claude/agents/skill-librarian.md",
-          ".claude/agents/state-manager.md",
-          ".claude/settings.local.json",
           ".kamui/model-versions-cache.json",
           ".kamui/system-graph-state.json"
         ],
         "branch": "main",
-        "targetCommitHash": "d277946b738f79571d8817e00cf5cad194c22ca4",
+        "targetCommitHash": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
         "worktreePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
-        "timestamp": 1763768786548,
+        "timestamp": 1763861580602,
         "sortOrder": 0,
         "lane": 0,
         "branchColor": "#4f85e8",
@@ -602,13 +595,120 @@
           "claude/agents/api-doc-writer.md"
         ],
         "branch": "main",
-        "targetCommitHash": "d277946b738f79571d8817e00cf5cad194c22ca4",
+        "targetCommitHash": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
         "worktreePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
-        "timestamp": 1763768786548,
+        "timestamp": 1763861580602,
         "sortOrder": 1,
         "lane": 0,
         "branchColor": "#4f85e8",
         "index": 2
+      },
+      {
+        "type": "commit",
+        "label": "chore(config): Update agent definitions and command structur…",
+        "commit": {
+          "hash": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
+          "subject": "chore(config): Update agent definitions and command structure (#4)",
+          "author": "daishiman",
+          "timestamp": 1763861029,
+          "parents": [
+            "8819107d7ff2017b4d4c4d382f462f84a97f881d"
+          ],
+          "parent": "8819107d7ff2017b4d4c4d382f462f84a97f881d",
+          "refs": "HEAD -> main, origin/main, origin/HEAD",
+          "branches": [
+            "HEAD -> main",
+            "origin/main",
+            "origin/HEAD",
+            "main"
+          ]
+        },
+        "commitHash": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
+        "lane": 0,
+        "parentLinks": [
+          {
+            "hash": "8819107d7ff2017b4d4c4d382f462f84a97f881d",
+            "lane": 0
+          }
+        ],
+        "primaryBranchName": "main",
+        "branchColor": "#4f85e8",
+        "branchTags": [
+          "main"
+        ],
+        "worktrees": [
+          {
+            "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
+            "head": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
+            "branch": "main",
+            "isMerged": false,
+            "mergeCommitHash": null,
+            "status": {
+              "staged": [
+                {
+                  "path": "claude/agents/api-doc-writer.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": "claude/agents/api-doc-writer.md",
+                  "timestamp": 1763861580198
+                }
+              ],
+              "unstaged": [
+                {
+                  "path": ".kamui/model-versions-cache.json",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".kamui/model-versions-cache.json",
+                  "timestamp": 1763861580198
+                },
+                {
+                  "path": ".kamui/system-graph-state.json",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".kamui/system-graph-state.json",
+                  "timestamp": 1763861580198
+                }
+              ],
+              "untracked": [],
+              "capturedAt": 1763861580198
+            },
+            "normalizedPath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
+            "lane": 0
+          }
+        ],
+        "index": 3
+      },
+      {
+        "type": "commit",
+        "label": "chore(config): Update agent definitions and command structur…",
+        "commit": {
+          "hash": "cff814fdde099630f642c760507ddb0ebead0c4b",
+          "subject": "chore(config): Update agent definitions and command structure",
+          "author": "daishiman",
+          "timestamp": 1763860700,
+          "parents": [
+            "d277946b738f79571d8817e00cf5cad194c22ca4"
+          ],
+          "parent": "d277946b738f79571d8817e00cf5cad194c22ca4",
+          "refs": "origin/chore/update-agent-definitions",
+          "branches": [
+            "origin/chore/update-agent-definitions"
+          ]
+        },
+        "commitHash": "cff814fdde099630f642c760507ddb0ebead0c4b",
+        "lane": 1,
+        "parentLinks": [
+          {
+            "hash": "d277946b738f79571d8817e00cf5cad194c22ca4",
+            "lane": 1
+          }
+        ],
+        "primaryBranchName": "chore/update-agent-definitions",
+        "branchColor": "#4fe8b8",
+        "branchTags": [
+          "chore/update-agent-definitions"
+        ],
+        "index": 4
       },
       {
         "type": "commit",
@@ -623,175 +723,24 @@
             "8819107d7ff2017b4d4c4d382f462f84a97f881d"
           ],
           "parent": "203405915abfad5aa77fdfcfa624e416e6dafe3c",
-          "refs": "HEAD -> main",
-          "branches": [
-            "HEAD -> main",
-            "main"
-          ]
+          "refs": "",
+          "branches": []
         },
         "commitHash": "d277946b738f79571d8817e00cf5cad194c22ca4",
         "lane": 0,
         "parentLinks": [
           {
             "hash": "203405915abfad5aa77fdfcfa624e416e6dafe3c",
-            "lane": 0
+            "lane": 1
           },
           {
             "hash": "8819107d7ff2017b4d4c4d382f462f84a97f881d",
-            "lane": 1
-          }
-        ],
-        "primaryBranchName": "main",
-        "branchColor": "#4f85e8",
-        "branchTags": [
-          "main"
-        ],
-        "worktrees": [
-          {
-            "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
-            "head": "d277946b738f79571d8817e00cf5cad194c22ca4",
-            "branch": "main",
-            "isMerged": false,
-            "mergeCommitHash": null,
-            "status": {
-              "staged": [
-                {
-                  "path": "claude/agents/api-doc-writer.md",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": "claude/agents/api-doc-writer.md",
-                  "timestamp": 1763768786121
-                }
-              ],
-              "unstaged": [
-                {
-                  "path": ".claude/agents/arch-police.md",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": ".claude/agents/arch-police.md",
-                  "timestamp": 1763768786121
-                },
-                {
-                  "path": ".claude/agents/auth-specialist.md",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": ".claude/agents/auth-specialist.md",
-                  "timestamp": 1763768786121
-                },
-                {
-                  "path": ".claude/agents/code-quality.md",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": ".claude/agents/code-quality.md",
-                  "timestamp": 1763768786121
-                },
-                {
-                  "path": ".claude/agents/command-arch.md",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": ".claude/agents/command-arch.md",
-                  "timestamp": 1763768786121
-                },
-                {
-                  "path": ".claude/agents/db-architect.md",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": ".claude/agents/db-architect.md",
-                  "timestamp": 1763768786121
-                },
-                {
-                  "path": ".claude/agents/dba-mgr.md",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": ".claude/agents/dba-mgr.md",
-                  "timestamp": 1763768786121
-                },
-                {
-                  "path": ".claude/agents/dep-mgr.md",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": ".claude/agents/dep-mgr.md",
-                  "timestamp": 1763768786121
-                },
-                {
-                  "path": ".claude/agents/devops-eng.md",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": ".claude/agents/devops-eng.md",
-                  "timestamp": 1763768786121
-                },
-                {
-                  "path": ".claude/agents/domain-modeler.md",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": ".claude/agents/domain-modeler.md",
-                  "timestamp": 1763768786121
-                },
-                {
-                  "path": ".claude/agents/e2e-tester.md",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": ".claude/agents/e2e-tester.md",
-                  "timestamp": 1763768786121
-                },
-                {
-                  "path": ".claude/agents/gateway-dev.md",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": ".claude/agents/gateway-dev.md",
-                  "timestamp": 1763768786121
-                },
-                {
-                  "path": ".claude/agents/gha-workflow-architect.md",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": ".claude/agents/gha-workflow-architect.md",
-                  "timestamp": 1763768786121
-                },
-                {
-                  "path": ".claude/agents/skill-librarian.md",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": ".claude/agents/skill-librarian.md",
-                  "timestamp": 1763768786121
-                },
-                {
-                  "path": ".claude/agents/state-manager.md",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": ".claude/agents/state-manager.md",
-                  "timestamp": 1763768786121
-                },
-                {
-                  "path": ".claude/settings.local.json",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": ".claude/settings.local.json",
-                  "timestamp": 1763768786121
-                },
-                {
-                  "path": ".kamui/model-versions-cache.json",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": ".kamui/model-versions-cache.json",
-                  "timestamp": 1763768786121
-                },
-                {
-                  "path": ".kamui/system-graph-state.json",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": ".kamui/system-graph-state.json",
-                  "timestamp": 1763768786121
-                }
-              ],
-              "untracked": [],
-              "capturedAt": 1763768786121
-            },
-            "normalizedPath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
             "lane": 0
           }
         ],
-        "index": 3
+        "branchColor": "#4f85e8",
+        "branchTags": [],
+        "index": 5
       },
       {
         "type": "commit",
@@ -812,7 +761,7 @@
           ]
         },
         "commitHash": "5a019aaed2762439e579f7f7078d6d11ce914076",
-        "lane": 1,
+        "lane": 2,
         "parentLinks": [
           {
             "hash": "f4d91f7a8f1bd4738278140417ee44971d6e3ac1",
@@ -828,7 +777,7 @@
         "branchTags": [
           "refs/stash"
         ],
-        "index": 4
+        "index": 6
       },
       {
         "type": "commit",
@@ -855,7 +804,7 @@
         ],
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 5
+        "index": 7
       },
       {
         "type": "commit",
@@ -869,10 +818,8 @@
             "749c02316a15e038ea0ec30c0925af57799bc2dd"
           ],
           "parent": "749c02316a15e038ea0ec30c0925af57799bc2dd",
-          "refs": "origin/main, origin/HEAD",
+          "refs": "",
           "branches": [
-            "origin/main",
-            "origin/HEAD",
             "main"
           ]
         },
@@ -881,13 +828,13 @@
         "parentLinks": [
           {
             "hash": "749c02316a15e038ea0ec30c0925af57799bc2dd",
-            "lane": 1
+            "lane": 0
           }
         ],
         "primaryBranchName": "main",
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 6
+        "index": 8
       },
       {
         "type": "commit",
@@ -901,14 +848,13 @@
             "67f583aa3bbe17a37683192ef365ed31f2ec2780"
           ],
           "parent": "67f583aa3bbe17a37683192ef365ed31f2ec2780",
-          "refs": "origin/docs/add-git-worktree-workflow-guide, docs/add-git-worktree-workflow-guide",
+          "refs": "docs/add-git-worktree-workflow-guide",
           "branches": [
-            "origin/docs/add-git-worktree-workflow-guide",
             "docs/add-git-worktree-workflow-guide"
           ]
         },
         "commitHash": "f4d91f7a8f1bd4738278140417ee44971d6e3ac1",
-        "lane": 2,
+        "lane": 3,
         "parentLinks": [
           {
             "hash": "67f583aa3bbe17a37683192ef365ed31f2ec2780",
@@ -920,7 +866,7 @@
         "branchTags": [
           "docs/add-git-worktree-workflow-guide"
         ],
-        "index": 7
+        "index": 9
       },
       {
         "type": "commit",
@@ -940,17 +886,17 @@
           ]
         },
         "commitHash": "67f583aa3bbe17a37683192ef365ed31f2ec2780",
-        "lane": 2,
+        "lane": 3,
         "parentLinks": [
           {
             "hash": "203405915abfad5aa77fdfcfa624e416e6dafe3c",
-            "lane": 0
+            "lane": 1
           }
         ],
         "primaryBranchName": "docs/add-git-worktree-workflow-guide",
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 8
+        "index": 10
       },
       {
         "type": "commit",
@@ -966,21 +912,21 @@
           "parent": "749c02316a15e038ea0ec30c0925af57799bc2dd",
           "refs": "",
           "branches": [
-            "main"
+            "docs/add-git-worktree-workflow-guide"
           ]
         },
         "commitHash": "203405915abfad5aa77fdfcfa624e416e6dafe3c",
-        "lane": 0,
+        "lane": 3,
         "parentLinks": [
           {
             "hash": "749c02316a15e038ea0ec30c0925af57799bc2dd",
-            "lane": 1
+            "lane": 0
           }
         ],
-        "primaryBranchName": "main",
+        "primaryBranchName": "docs/add-git-worktree-workflow-guide",
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 9
+        "index": 11
       },
       {
         "type": "commit",
@@ -1006,7 +952,7 @@
         "parentLinks": [
           {
             "hash": "a132a282d48d1a867e42b032afdca93e5568d3ea",
-            "lane": 1
+            "lane": 0
           },
           {
             "hash": "7fb9f93466f23f55a30b9d6d537ec28d6abdc696",
@@ -1018,7 +964,7 @@
         "branchTags": [
           "daishiman/feature/add-master-system-design"
         ],
-        "index": 10
+        "index": 12
       },
       {
         "type": "commit",
@@ -1032,9 +978,8 @@
             "0e8b3a86e793c44f9b8acda1fe7e9e6ce1af358e"
           ],
           "parent": "0e8b3a86e793c44f9b8acda1fe7e9e6ce1af358e",
-          "refs": "origin/feature/add-master-system-design",
+          "refs": "",
           "branches": [
-            "origin/feature/add-master-system-design",
             "daishiman/feature/add-master-system-design",
             "docs/add-git-worktree-workflow-guide",
             "main"
@@ -1050,10 +995,8 @@
         ],
         "primaryBranchName": "main",
         "branchColor": "#4f85e8",
-        "branchTags": [
-          "feature/add-master-system-design"
-        ],
-        "index": 11
+        "branchTags": [],
+        "index": 13
       },
       {
         "type": "commit",
@@ -1079,7 +1022,7 @@
         "parentLinks": [
           {
             "hash": "52266792fbc47007b4ddca109f477ddcac9f72d0",
-            "lane": 1
+            "lane": 0
           },
           {
             "hash": "0e8b3a86e793c44f9b8acda1fe7e9e6ce1af358e",
@@ -1091,7 +1034,7 @@
         "branchTags": [
           "daishiman/feature/development"
         ],
-        "index": 12
+        "index": 14
       },
       {
         "type": "commit",
@@ -1105,9 +1048,8 @@
             "52266792fbc47007b4ddca109f477ddcac9f72d0"
           ],
           "parent": "52266792fbc47007b4ddca109f477ddcac9f72d0",
-          "refs": "origin/feature/development, feature/development",
+          "refs": "feature/development",
           "branches": [
-            "origin/feature/development",
             "feature/development",
             "daishiman/feature/development",
             "docs/add-git-worktree-workflow-guide",
@@ -1119,7 +1061,7 @@
         "parentLinks": [
           {
             "hash": "52266792fbc47007b4ddca109f477ddcac9f72d0",
-            "lane": 1
+            "lane": 0
           }
         ],
         "primaryBranchName": "main",
@@ -1127,7 +1069,7 @@
         "branchTags": [
           "feature/development"
         ],
-        "index": 13
+        "index": 15
       },
       {
         "type": "anchor",
@@ -1135,7 +1077,7 @@
         "branch": "task/task-1763719022041-576354",
         "worktreePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-1763719022041-576354",
         "parentCommitHash": "52266792fbc47007b4ddca109f477ddcac9f72d0",
-        "lane": 3,
+        "lane": 4,
         "isMerged": false,
         "mergeCommitHash": null,
         "statusChildren": [],
@@ -1149,7 +1091,7 @@
         "taskName": null,
         "tooltip": "ID: task-1763719022041-576354\nBranch: task/task-1763719022041-576354\nWorktree: Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-1763719022041-576354",
         "branchColor": "#e8e84f",
-        "index": 14
+        "index": 16
       },
       {
         "type": "commit",
@@ -1193,23 +1135,23 @@
               "staged": [],
               "unstaged": [],
               "untracked": [],
-              "capturedAt": 1763768786097
+              "capturedAt": 1763861580172
             },
             "normalizedPath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-1763719022041-576354",
-            "lane": 3
+            "lane": 4
           }
         ],
-        "index": 15
+        "index": 17
       },
       {
         "type": "empty",
         "label": "初期状態 (初回コミット以前)",
         "files": [],
         "marker": "pre-history",
-        "index": 16
+        "index": 18
       }
     ]
   },
   "projectRoot": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
-  "savedAt": 1763768788901
+  "savedAt": 1763861582960
 }

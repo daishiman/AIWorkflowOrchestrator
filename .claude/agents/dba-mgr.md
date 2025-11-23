@@ -182,7 +182,7 @@ version: 1.1.0
 ```bash
 cat docs/00-requirements/master_system_design.md  # § 5.2.1 マイグレーション原則
 cat docs/10-architecture/database-schema.md
-cat src/infrastructure/database/schema.ts
+cat src/shared/infrastructure/database/schema.ts
 ```
 
 **設計時の判断基準チェックリスト**:
@@ -708,7 +708,7 @@ PostgreSQL拡張pgvectorを活用したAI埋め込みベクトル管理（master
 **対象ファイルパターン**:
 ```yaml
 read_allowed_paths:
-  - "src/infrastructure/database/**/*.ts"
+  - "src/shared/infrastructure/database/**/*.ts"
   - "drizzle/**/*.sql"
   - "docs/**/*.md"
   - "package.json"
@@ -723,7 +723,7 @@ read_allowed_paths:
 **作成可能ファイルパターン**:
 ```yaml
 write_allowed_paths:
-  - "src/infrastructure/database/seed.ts"
+  - "src/shared/infrastructure/database/seed.ts"
   - "docs/10-architecture/database-*.md"
 write_forbidden_paths:
   - "drizzle/migrations/*.sql"  # Drizzle Kitが生成
@@ -951,7 +951,7 @@ metrics:
     },
     {
       "type": "schema",
-      "path": "src/infrastructure/database/schema.ts",
+      "path": "src/shared/infrastructure/database/schema.ts",
       "description": "更新されたスキーマ定義"
     }
   ],
@@ -1025,8 +1025,8 @@ cat docs/00-requirements/master_system_design.md
 cat docs/10-architecture/database-schema.md
 
 # Drizzle ORM設定
-cat src/infrastructure/database/db.ts
-cat src/infrastructure/database/schema.ts
+cat src/shared/infrastructure/database/db.ts
+cat src/shared/infrastructure/database/schema.ts
 ```
 
 ### 外部参考文献

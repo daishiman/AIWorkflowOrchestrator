@@ -149,25 +149,42 @@ version: 1.0.0
 ### 知識領域1: ハイブリッドアーキテクチャの理解
 
 **アーキテクチャ構造**:
-- **shared層**: 複数機能で共有する共通インフラ（AI、DB、Discord等）
+- **shared/core層**: ビジネスルール、エンティティ定義（外部依存ゼロ）
+  - `entities/`: 共通エンティティ（Workflow等）
+  - `interfaces/`: 共通インターフェース（IWorkflowExecutor, IRepository等）
+  - `errors/`: エラークラス定義
+- **shared/infrastructure層**: 外部サービス接続（DB、AI、Discord等）
+  - `database/`: DB接続とリポジトリ実装
+  - `ai/`: 統一AIクライアントとプロバイダー
+  - `discord/`: Discord Bot統合
+  - `storage/`: ファイルストレージ
 - **features層**: 機能ごとの垂直スライス、1フォルダで完結
-- **依存方向**: features → shared/infrastructure → shared/core（逆方向禁止）
+  - 各機能フォルダ: `schema.ts`, `executor.ts`, `__tests__/`
+  - `registry.ts`: 全機能の登録管理
+- **app層**: HTTPエンドポイント、Next.js App Router
 
-**機能プラグインの配置**:
-- 1機能 = 1フォルダ（`src/features/[機能名]/`）
-- 各機能は独立: schema.ts、executor.ts、__tests__/ で完結
-- 機能間の相互依存は禁止
+**依存関係の原則**:
+- 依存方向: `app/` → `features/` → `shared/infrastructure/` → `shared/core/`
+- 逆方向の依存は禁止（ESLintで強制）
+- 機能間の相互依存は禁止（各機能は独立）
 
-**共通インフラの活用**:
-- AI処理: `@/shared/infrastructure/ai/client` から統一クライアント取得
-- DB操作: `@/shared/infrastructure/database/repositories` からRepository取得
-- Discord通知: `@/shared/infrastructure/discord/client` から送信
+**機能プラグインの配置原則**:
+- 1機能 = 1フォルダ（`features/[機能名]/`）
+- 各機能は自己完結: スキーマ、ロジック、テストで完結
+- 機能の追加・削除: フォルダ単位で実施可能
+
+**共通インフラの活用パターン**:
+- AI処理: `shared/infrastructure/ai/client`から統一クライアント取得
+- DB操作: `shared/infrastructure/database/repositories`からRepository取得
+- Discord通知: `shared/infrastructure/discord/client`から送信機能取得
+- すべての共通機能は`shared/infrastructure/`経由でアクセス
 
 **判断基準**:
 - [ ] 機能は独立しているか（他機能への依存なし）？
-- [ ] 共通インフラは shared/infrastructure から import しているか？
-- [ ] ドメインモデルは shared/core から参照しているか？
-- [ ] 依存方向が正しいか（features → shared のみ）？
+- [ ] 共通インフラは`shared/infrastructure/`から import しているか？
+- [ ] ドメインモデルは`shared/core/`から参照しているか？
+- [ ] 依存方向が正しいか（`features/` → `shared/` のみ）？
+- [ ] 機能のファイルは垂直スライス構造に従っているか（schema, executor, tests）？
 
 ### 知識領域2: ビジネスロジック実装パターン
 

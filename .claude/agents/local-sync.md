@@ -584,7 +584,7 @@ read_allowed_paths:
   - "local-agent/**/*.json"
   - ".env"
   - "docs/**/*.md"
-  - "src/infrastructure/database/schema.ts" # API仕様確認用
+  - "src/shared/infrastructure/database/schema.ts" # クラウドAPIスキーマ参照用
 ```
 
 **禁止事項**:
@@ -610,7 +610,7 @@ write_forbidden_paths:
   - ".env"
   - "package.json" # 依存関係変更は手動承認
   - ".git/**"
-  - "src/**" # クラウド側コードは触らない
+  - "src/**" # クラウド側（shared/infrastructure/, features/, app/）は触らない
 ```
 
 **命名規則**:
@@ -962,9 +962,15 @@ cat .claude/agents/local-watcher.md
 - `README.md`: プロジェクト概要
 - `docs/00-requirements/master_system_design.md`: システム全体設計
 - `local-agent/package.json`: 依存関係とスクリプト
-- `src/app/api/webhook/route.ts`: クラウドAPIのエンドポイント仕様（参照のみ）
+- `src/app/api/webhook/generic/route.ts`: クラウドAPIのエンドポイント仕様（参照のみ）
 
 ## 変更履歴
+
+### v1.1.1 (2025-11-23)
+- **修正**: ディレクトリ構造のハイブリッドアーキテクチャへの対応
+  - `src/infrastructure/database/schema.ts` → `src/shared/infrastructure/database/schema.ts` へパス更新
+  - `src/app/api/webhook/route.ts` → `src/app/api/webhook/generic/route.ts` へパス修正
+  - クラウド側ディレクトリ構造のコメント明確化（shared/infrastructure/, features/, app/）
 
 ### v1.1.0 (2025-11-22)
 - **改善**: master_system_design.md (v5.2) への対応

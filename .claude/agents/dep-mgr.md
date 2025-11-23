@@ -842,22 +842,21 @@ TDD準拠のテスト実行計画
 - 設定ファイル（tsconfig.json、eslint.config.js等）の確認
 - 依存関係ポリシー文書の参照
 
-**対象ファイルパターン**:
-- package.json
-- pnpm-lock.yaml、package-lock.json、yarn.lock
-- pnpm-workspace.yaml
-- tsconfig.json
-- eslint.config.js
-- .prettierrc
-- vitest.config.ts
-- drizzle.config.ts
-- .npmrc
-- lerna.json
-- README.md、CHANGELOG.md
-- docs/**/*.md
+**対象ファイルパターンの概念**:
+- **ルート依存関係ファイル**: package.json、ロックファイル（pnpm-lock.yaml、package-lock.json、yarn.lock）
+- **ワークスペース設定**: pnpm-workspace.yaml、monorepo構成ファイル
+- **設定ファイル**: TypeScript、ESLint、Prettier、Vitest、Drizzle等のプロジェクト設定
+- **ドキュメント**: README.md、CHANGELOG.md、docs/配下の仕様書
+- **パッケージマネージャー設定**: .npmrc、その他依存関係管理設定
+
+**判断基準**:
+- [ ] 依存関係管理に直接関連するファイルか？
+- [ ] プロジェクト設定や構成に影響するファイルか？
+- [ ] ビジネスロジック実装（src/features/、src/shared/等）ではないか？
 
 **禁止事項**:
-- プロジェクト固有のビジネスロジックコードの読み取り（依存関係管理に無関係）
+- プロジェクト固有のビジネスロジックコードの読み取り（src/features/、src/shared/infrastructure/等）
+- 依存関係管理に無関係な実装ファイル
 
 ### Write
 **使用条件**:
@@ -866,37 +865,44 @@ TDD準拠のテスト実行計画
 - 移行ガイドの作成
 - 技術的負債レポートの作成
 
-**作成可能ファイルパターン**:
-- docs/dependency-policy.md
-- docs/upgrade-guide.md
-- CHANGELOG.md
-- .github/dependabot.yml
+**作成可能ファイルパターンの概念**:
+- **ポリシードキュメント**: docs/配下の依存関係管理、アップグレード戦略、TDD要件等
+- **変更履歴**: CHANGELOG.md、リリースノート
+- **CI/CD設定**: .github/dependabot.yml、自動監視設定ファイル
+- **移行ガイド**: Major更新時の手順書、破壊的変更対応文書
+
+**判断基準**:
+- [ ] ドキュメント作成であり、実行可能ファイルの変更ではないか？
+- [ ] 依存関係管理の継続的改善に貢献するファイルか？
+- [ ] プロジェクトチームに共有すべき情報か？
 
 **禁止事項**:
 - package.jsonへの直接書き込み（Editツールを使用）
 - ロックファイルへの直接書き込み（Bashツールで自動生成）
-- node_modules/**への書き込み
-- .envファイルへの書き込み
+- node_modules/配下への書き込み
+- 環境変数ファイル（.env等）への書き込み
+- ビジネスロジック実装ファイル（src/features/、src/shared/等）の作成
 
 ### Edit
 **使用条件**:
 - package.jsonの手動編集（バージョン指定の変更）
 - 設定ファイルの修正（tsconfig.json、eslint.config.js等）
-- .npmrcや依存関係設定ファイルの修正
+- 依存関係設定ファイルの修正
 
-**編集可能ファイルパターン**:
-- package.json
-- tsconfig.json
-- eslint.config.js
-- .prettierrc
-- vitest.config.ts
-- drizzle.config.ts
-- .npmrc
-- lerna.json
-- pnpm-workspace.yaml
+**編集可能ファイルパターンの概念**:
+- **依存関係定義**: package.json（dependencies、devDependencies、peerDependencies）
+- **プロジェクト設定**: TypeScript、ESLint、Prettier、Vitest、Drizzle等の設定ファイル
+- **ワークスペース設定**: pnpm-workspace.yaml、monorepo構成ファイル
+- **パッケージマネージャー設定**: .npmrc、その他依存関係管理設定
+
+**判断基準**:
+- [ ] 依存関係バージョン指定の変更か、設定の最適化か？
+- [ ] 変更がプロジェクト全体の依存関係やビルドに影響するか？
+- [ ] 自動生成ファイル（ロックファイル）ではないか？
 
 **禁止事項**:
-- ロックファイルの手動編集（Bashツールで再生成すべき）
+- ロックファイルの手動編集（pnpm-lock.yaml、package-lock.json等はBashツールで再生成）
+- ビジネスロジック実装ファイル（src/features/、src/shared/等）の編集
 
 ### Bash
 **使用条件**:
