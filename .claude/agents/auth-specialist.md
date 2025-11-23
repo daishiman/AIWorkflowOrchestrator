@@ -23,7 +23,7 @@ description: |
   OAuth, NextAuth, login, session, or access control.
 tools: [Read, Write, Edit, Grep]
 model: sonnet
-version: 1.0.0
+version: 1.2.0
 ---
 
 # Auth Specialist
@@ -736,7 +736,7 @@ CSRF対策設計ドキュメント（多層防御戦略、トークン方式、C
 - [ ] テストカバレッジは 80% 以上か？
 
 **期待される出力**:
-`src/infrastructure/auth/__tests__/`（テストファイル）
+`src/shared/infrastructure/auth/__tests__/`（テストファイル）
 
 #### ステップ14: 権限チェックの検証
 **目的**: RBACが正しく機能することを確認
@@ -769,7 +769,7 @@ CSRF対策設計ドキュメント（多層防御戦略、トークン方式、C
 - [ ] すべてのAPIルートが適切に保護されているか？
 
 **期待される出力**:
-`src/infrastructure/auth/__tests__/rbac.test.ts`
+`src/shared/infrastructure/auth/__tests__/rbac.test.ts`
 
 #### ステップ15: セキュリティ監査
 **目的**: セキュリティ脆弱性がないことを確認
@@ -810,8 +810,8 @@ CSRF対策設計ドキュメント（多層防御戦略、トークン方式、C
 read_allowed_paths:
   - "docs/**/*.md"
   - "src/app/api/auth/**/*.ts"
-  - "src/infrastructure/auth/**/*.ts"
-  - "src/infrastructure/database/schema.ts"
+  - "src/shared/infrastructure/auth/**/*.ts"
+  - "src/shared/infrastructure/database/schema.ts"
   - "src/middleware.ts"
   - ".env.example"
   - "package.json"
@@ -831,10 +831,10 @@ read_allowed_paths:
 ```yaml
 write_allowed_paths:
   - "src/app/api/auth/**/*.ts"
-  - "src/infrastructure/auth/**/*.ts"
-  - "src/core/entities/role.ts"
+  - "src/shared/infrastructure/auth/**/*.ts"
+  - "src/shared/core/entities/role.ts"
   - "src/types/next-auth.d.ts"
-  - "src/infrastructure/auth/__tests__/**/*.test.ts"
+  - "src/shared/infrastructure/auth/__tests__/**/*.test.ts"
 write_forbidden_paths:
   - ".env"
   - "**/*.key"
@@ -933,8 +933,8 @@ grep -r "X-Frame-Options\|Content-Security-Policy" .
   "payload": {
     "request": "認証・認可機能のユニットテスト作成",
     "test_targets": [
-      "src/infrastructure/auth/permissions.ts",
-      "src/core/entities/role.ts"
+      "src/shared/infrastructure/auth/permissions.ts",
+      "src/shared/core/entities/role.ts"
     ],
     "test_cases": [
       "ロール権限チェック（正常系・異常系）",
@@ -1106,12 +1106,12 @@ metrics:
     },
     {
       "type": "file",
-      "path": "src/infrastructure/auth/permissions.ts",
+      "path": "src/shared/infrastructure/auth/permissions.ts",
       "description": "RBAC権限チェック関数"
     },
     {
       "type": "file",
-      "path": "src/core/entities/role.ts",
+      "path": "src/shared/core/entities/role.ts",
       "description": "ロール・権限の型定義"
     },
     {
@@ -1274,6 +1274,14 @@ metrics:
 - セキュリティイベントが構造化ログに記録されている
 
 ## 変更履歴
+
+### v1.2.0 (2025-11-23)
+- **変更**: master_system_design.md v5.2 のハイブリッドアーキテクチャに対応
+  - ディレクトリ構造を更新: `src/infrastructure/` → `src/shared/infrastructure/`
+  - ディレクトリ構造を更新: `src/core/` → `src/shared/core/`
+  - ツール使用方針のread_allowed_pathsとwrite_allowed_pathsを新構造に合わせて修正
+  - Phase 5のテスト出力パスを新構造に合わせて修正
+  - コミュニケーションプロトコルとハンドオフプロトコルのファイルパスを新構造に反映
 
 ### v1.1.0 (2025-11-21)
 - **変更**: master_system_design.md v5.2 準拠への更新

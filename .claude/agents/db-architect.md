@@ -39,7 +39,7 @@ version: 1.0.0
 - **データ整合性保証**: 外部キー制約、CHECK制約、トリガーによるビジネスルール強制
 
 責任範囲:
-- `src/infrastructure/database/schema.ts` の設計と作成
+- `src/shared/infrastructure/database/schema.ts` の設計と作成
 - データベースマイグレーション戦略の策定
 - インデックス設計とパフォーマンスチューニング
 - JSONB構造の設計と検証ルール定義
@@ -364,7 +364,7 @@ PostgreSQL拡張pgvectorを活用したAI埋め込みベクトル管理（master
 **実行内容**:
 1. 既存スキーマファイルの確認
    ```bash
-   cat src/infrastructure/database/schema.ts
+   cat src/shared/infrastructure/database/schema.ts
    ```
 
 2. 既存テーブル構造の分析:
@@ -392,7 +392,7 @@ PostgreSQL拡張pgvectorを活用したAI埋め込みベクトル管理（master
 **実行内容**:
 1. リポジトリ実装の検索
    ```bash
-   find src/infrastructure/repositories -name "*.ts"
+   find src/shared/infrastructure/database/repositories -name "*.ts"
    ```
 
 2. クエリパターンの分析:
@@ -517,7 +517,7 @@ PostgreSQL拡張pgvectorを活用したAI埋め込みベクトル管理（master
 - [ ] 状態遷移が論理的に矛盾していないか？
 - [ ] カラム命名がプロジェクト規約に従っているか（snake_case/camelCase）？
 
-**成果物**: `src/infrastructure/database/schema.ts`
+**成果物**: `src/shared/infrastructure/database/schema.ts`
 
 ### Phase 3: インデックス設計
 
@@ -770,8 +770,7 @@ PostgreSQL拡張pgvectorを活用したAI埋め込みベクトル管理（master
 ```yaml
 read_allowed_paths:
   - "docs/00-requirements/**/*.md"
-  - "src/infrastructure/database/**/*.ts"
-  - "src/infrastructure/repositories/**/*.ts"
+  - "src/shared/infrastructure/database/**/*.ts"
   - "drizzle/**/*.sql"
   - ".env.example"
 ```
@@ -789,13 +788,13 @@ read_allowed_paths:
 **作成可能ファイルパターン**:
 ```yaml
 write_allowed_paths:
-  - "src/infrastructure/database/schema.ts"
+  - "src/shared/infrastructure/database/schema.ts"
   - "docs/database/**/*.md"
   - "drizzle/migrations/**/*.sql"
 write_forbidden_paths:
   - ".env"
   - "**/*.key"
-  - "src/core/**"
+  - "src/shared/core/**"
   - "src/features/**"
 ```
 
@@ -811,7 +810,7 @@ write_forbidden_paths:
 - 制約の追加・変更
 
 **編集対象**:
-- `src/infrastructure/database/schema.ts`
+- `src/shared/infrastructure/database/schema.ts`
 - マイグレーションファイル
 
 **禁止事項**:
@@ -828,16 +827,16 @@ write_forbidden_paths:
 **検索パターン例**:
 ```bash
 # JSONB演算子の使用箇所
-grep -r "@>" src/infrastructure/repositories/
+grep -r "@>" src/shared/infrastructure/database/repositories/
 
 # 外部キー参照
-grep -r "references" src/infrastructure/database/
+grep -r "references" src/shared/infrastructure/database/
 
 # NULL許可カラム
-grep -r "nullable()" src/infrastructure/database/
+grep -r "nullable()" src/shared/infrastructure/database/
 
 # アンチパターン検索
-grep -r "varchar.*,.*," src/infrastructure/database/  # カンマ区切り値
+grep -r "varchar.*,.*," src/shared/infrastructure/database/  # カンマ区切り値
 ```
 
 ## 品質基準
@@ -875,7 +874,7 @@ grep -r "varchar.*,.*," src/infrastructure/database/  # カンマ区切り値
 - [ ] マイグレーション戦略が文書化されている
 
 ### 最終完了条件
-- [ ] `src/infrastructure/database/schema.ts` が完成している
+- [ ] `src/shared/infrastructure/database/schema.ts` が完成している
 - [ ] すべてのテーブルが第3正規形（または意図的非正規化が文書化）
 - [ ] 外部キー制約とインデックスが適切に設定されている
 - [ ] JSONB構造が検証ルールと共に定義されている
@@ -983,7 +982,7 @@ metrics:
   "artifacts": [
     {
       "type": "file",
-      "path": "src/infrastructure/database/schema.ts",
+      "path": "src/shared/infrastructure/database/schema.ts",
       "description": "Drizzle スキーマ定義"
     },
     {
@@ -1103,7 +1102,7 @@ Repository実装時に必要な情報:
 10. **ドキュメンテーション**: スキーマ設計書の生成、設計判断の記録
 
 **期待される出力**:
-- `src/infrastructure/database/schema.ts`: 型安全なDrizzleスキーマ定義
+- `src/shared/infrastructure/database/schema.ts`: 型安全なDrizzleスキーマ定義
 - workflows テーブル: id, type, user_id, status, input_payload, output_payload, error_log, retry_count, created_at, updated_at, completed_at, deleted_at
 - インデックス: B-Tree（user_id, status, created_at）、GIN（input_payload, output_payload）、部分インデックス（WHERE deleted_at IS NULL）
 - `docs/database/schema-design.md`: 設計判断、正規化レベル、インデックス戦略の文書化

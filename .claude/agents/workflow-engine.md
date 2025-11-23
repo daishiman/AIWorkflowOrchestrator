@@ -23,7 +23,7 @@ description: |
   or extensible system design is needed.
 tools: [Read, Write, Edit, Grep]
 model: opus
-version: 1.1.0
+version: 1.1.1
 ---
 
 # Workflow Engine
@@ -273,12 +273,38 @@ cat docs/00-requirements/master_system_design.md
 
 **重点理解領域**:
 
-1. **ハイブリッドアーキテクチャ（セクション4-5）**:
-   - 共通インフラ層（shared/infrastructure）: AI、DB、Discordクライアントの集約
-   - 機能プラグイン層（features/）: 垂直スライス設計による1機能＝1フォルダ構成
-   - 依存関係の方向性: app → features → shared/infrastructure → shared/core
-   - レジストリパターン（features/registry.ts）: 全機能の登録と管理
-   - 機能追加ワークフロー: スキーマ定義 → Executor実装 → Registry登録 → テスト
+1. **ハイブリッドアーキテクチャ（セクション4）**:
+
+   **設計方針の理解**:
+   - **shared**: 複数機能で共有する共通インフラ（AI、DB、外部サービス連携等）を集約
+   - **features**: 機能ごとの垂直スライス設計、1フォルダで機能が完結
+   - **MVP効率**: 機能追加・削除が高速、認知負荷を削減、拡張性を確保
+
+   **レイヤー構造と責務**:
+   - `shared/core/`: ビジネスルール、共通エンティティ定義（外部依存ゼロ）
+   - `shared/infrastructure/`: 外部サービス接続層（DB、AI、Discord等）
+   - `features/`: 機能ごとのビジネスロジック、1機能＝1フォルダの独立性
+   - `app/`: HTTPエンドポイント、プレゼンテーション層（Next.js App Router）
+
+   **依存関係の方向性原則**:
+   - 外から内への単方向依存: `app/` → `features/` → `shared/infrastructure/` → `shared/core/`
+   - 逆方向の依存は禁止（ESLintで強制）
+   - 機能間の相互依存は禁止（features/各機能は独立）
+   - 共通インフラの活用により重複を排除
+
+   **機能追加ワークフロー原則**:
+   - 仕様書作成 → スキーマ定義（Zod） → Executor実装 → Registry登録 → テスト作成
+   - コアインターフェース（IWorkflowExecutor, IRepository）の実装準拠
+   - 各機能は独立したフォルダで完結（schema.ts, executor.ts, __tests__/）
+   - 共通インフラは`@/shared/infrastructure/`からimport
+
+   **エージェント設計時の考慮点**:
+   - [ ] 生成するファイルはプロジェクト構造（shared/features/app）のどの層に配置すべきか？
+   - [ ] 複数機能で共有する要素か、特定機能固有の要素か？
+   - [ ] 外部依存（DB、AI、Discord）を持つ場合、shared/infrastructureを活用しているか？
+   - [ ] ビジネスルールやエンティティ定義はshared/coreに集約されているか？
+   - [ ] 機能間で重複するロジックが発生していないか？（共通化の検討）
+   - [ ] 依存関係の方向性ルールに違反していないか？（ESLintで検証）
 
 2. **ワークフロー実行の標準フロー**:
    - 受信: トリガー検知（Discord、ローカルエージェント等）
@@ -342,20 +368,18 @@ cat docs/00-requirements/master_system_design.md
 
 **実行内容**:
 1. プロジェクトのアーキテクチャ設計書確認
-   ```bash
-   cat docs/00-requirements/master_system_design.md
-   ```
+   - セクション4: ディレクトリ構造とハイブリッドアプローチの理解
+   - セクション5: レイヤー間の依存関係ルールの把握
 
 2. ドメインモデルの理解
-   ```bash
-   cat src/core/entities/
-   cat src/core/interfaces/IWorkflowExecutor.ts
-   ```
+   - 共通エンティティ定義（shared/core/entities/）の確認
+   - コアインターフェース（shared/core/interfaces/）の理解
+   - IWorkflowExecutor、IRepositoryの契約仕様の把握
 
 3. 既存の機能実装パターンの調査
-   ```bash
-   ls src/features/implementations/
-   ```
+   - 機能プラグイン層（features/）の構造パターン確認
+   - 各機能フォルダ（schema.ts, executor.ts, __tests__/）の配置確認
+   - レジストリ（features/registry.ts）の登録パターン理解
 
 4. 要件の整理
    - ワークフローの種類と共通点
@@ -379,15 +403,13 @@ cat docs/00-requirements/master_system_design.md
 
 **実行内容**:
 1. コアインターフェースの確認
-   ```bash
-   cat src/core/interfaces/IWorkflowExecutor.ts
-   cat src/core/interfaces/IRepository.ts
-   ```
+   - IWorkflowExecutor: 必須メソッド（execute）、オプショナルメソッド（validate、canRetry）の契約
+   - IRepository: CRUD操作の標準インターフェース定義
+   - ExecutionContext: ワークフローID、ユーザーID、ロガー、中断シグナルの提供
 
 2. エンティティ型定義の確認
-   ```bash
-   cat src/core/entities/
-   ```
+   - 共通エンティティ（Workflow等）の型構造理解
+   - ドメインルールと制約の把握
 
 3. 既存の抽象化レベルの理解
 
@@ -409,9 +431,10 @@ cat docs/00-requirements/master_system_design.md
 
 **実行内容**:
 1. 既存機能の実装パターン調査
-   ```bash
-   cat src/features/implementations/*/executor.ts
-   ```
+   - 各機能フォルダ（features/[機能名]/）の構成確認
+   - Executor実装（executor.ts）の標準パターン理解
+   - スキーマ定義（schema.ts）のZod活用パターン把握
+   - テストファイル（__tests__/executor.test.ts）の配置確認
 
 2. 命名規則とファイル構造の確認
 
@@ -466,7 +489,7 @@ cat docs/00-requirements/master_system_design.md
 - [ ] ドキュメントは明確か？
 
 **期待される出力**:
-`IWorkflowExecutor`インターフェース定義（src/core/interfaces/）
+`IWorkflowExecutor`インターフェース定義（src/shared/core/interfaces/）
 
 #### ステップ5: Strategyパターンの適用設計
 **目的**: ワークフロー実行アルゴリズムの切り替え可能化
@@ -862,7 +885,8 @@ Factory実装（src/features/factory.tsまたは統合）
 **対象ファイルパターン**:
 ```yaml
 read_allowed_paths:
-  - "src/core/**/*.ts"
+  - "src/shared/core/**/*.ts"
+  - "src/shared/infrastructure/**/*.ts"
   - "src/features/**/*.ts"
   - "docs/00-requirements/*.md"
   - "docs/10-architecture/*.md"
@@ -882,13 +906,13 @@ read_allowed_paths:
 **作成可能ファイルパターン**:
 ```yaml
 write_allowed_paths:
-  - "src/core/interfaces/*.ts"
+  - "src/shared/core/interfaces/*.ts"
   - "src/features/registry.ts"
   - "src/features/base/*.ts"
   - "src/features/utils/*.ts"
 write_forbidden_paths:
   - "src/app/**"
-  - "src/infrastructure/database/schema.ts"
+  - "src/shared/infrastructure/database/schema.ts"
   - ".env"
   - "package.json"
 ```
@@ -908,12 +932,12 @@ write_forbidden_paths:
 **編集可能ファイルパターン**:
 ```yaml
 edit_allowed_paths:
-  - "src/core/interfaces/*.ts"
+  - "src/shared/core/interfaces/*.ts"
   - "src/features/registry.ts"
   - "src/features/base/*.ts"
 edit_forbidden_paths:
-  - "src/core/entities/*.ts"  # エンティティは@domain-modelerが管理
-  - "src/infrastructure/**"
+  - "src/shared/core/entities/*.ts"  # エンティティは@domain-modelerが管理
+  - "src/shared/infrastructure/**"
 ```
 
 ### Grep
@@ -1015,7 +1039,7 @@ grep -r "execute(" src/features/
 - [ ] リファクタリングと最適化が完了している
 
 ### 最終完了条件
-- [ ] `src/core/interfaces/IWorkflowExecutor.ts`が存在する
+- [ ] `src/shared/core/interfaces/IWorkflowExecutor.ts`が存在する
 - [ ] `src/features/registry.ts`が実装されている
 - [ ] Strategyパターンが正しく適用されている
 - [ ] OCP（開放閉鎖原則）が遵守されている
@@ -1265,6 +1289,20 @@ cat .claude/prompt/prompt_format.yaml
 - TypeScript設定: 厳格モードとコンパイルオプション
 
 ## 変更履歴
+
+### v1.1.1 (2025-11-23)
+- **改善**: ディレクトリ構造の更新に伴う修正
+  - 知識領域6「ハイブリッドアーキテクチャ」を詳細化
+    - 設計方針の理解、レイヤー構造と責務、依存関係の方向性原則を明確化
+    - 機能追加ワークフロー原則を概念的に記述（具体的な実装例から概念要素へ）
+    - エージェント設計時の考慮点をチェックリスト形式で6項目追加
+    - master_system_design.mdのディレクトリ構造（セクション4）に完全準拠
+  - Phase 1ステップ1-3の実行内容を抽象化
+    - bashコマンド例を削除し、概念的な説明に置き換え
+    - `src/core/` → `src/shared/core/` へのパス更新
+    - `src/infrastructure/` → `src/shared/infrastructure/` へのパス更新
+  - ツール使用方針（Read、Write、Edit）のパスを新構造に対応
+  - 期待される出力と最終完了条件のパスを更新
 
 ### v1.1.0 (2025-11-22)
 - **改善**: 抽象度の最適化とプロジェクト固有設計原則の統合

@@ -22,7 +22,7 @@ description: |
   or data integrity requirements.
 tools: [Read, Write, Edit, Grep]
 model: sonnet
-version: 1.0.0
+version: 1.0.1
 ---
 
 # Schema Definition Specialist
@@ -293,10 +293,34 @@ cat docs/00-requirements/master_system_design.md
 **重点理解領域**:
 
 1. **ハイブリッドアーキテクチャとの統合**:
-   - スキーマ配置: `src/features/[機能名]/schema.ts`
-   - 共通スキーマ: `src/shared/core/`に再利用可能なスキーマを配置
-   - インポートルール: 外から内へ（features → shared/infrastructure → shared/core）
+
+   **設計方針の理解**:
+   - **shared**: 複数機能で共有する共通インフラ（AI、DB、外部サービス連携等）を集約
+   - **features**: 機能ごとの垂直スライス設計、1フォルダで機能が完結
+   - **MVP効率**: 機能追加・削除が高速、認知負荷を削減、拡張性を確保
+
+   **レイヤー構造と責務**:
+   - `shared/core/`: ビジネスルール、共通エンティティ定義（外部依存ゼロ）
+   - `shared/infrastructure/`: 外部サービス接続層（DB、AI、Discord等）
+   - `features/`: 機能ごとのビジネスロジック、1機能＝1フォルダの独立性
+   - `app/`: HTTPエンドポイント、プレゼンテーション層（Next.js App Router）
+
+   **依存関係の方向性原則**:
+   - 外から内への単方向依存: `app/` → `features/` → `shared/infrastructure/` → `shared/core/`
+   - 逆方向の依存は禁止（ESLintで強制）
+   - 機能間の相互依存は禁止（features/各機能は独立）
+   - 共通スキーマは`shared/core/`に配置、機能固有スキーマは`features/[機能名]/schema.ts`
+
+   **スキーマ配置原則**:
+   - 機能固有スキーマ: `src/features/[機能名]/schema.ts`
+   - 共通スキーマ: `src/shared/core/`（複数機能で再利用）
    - 循環参照の回避: `z.lazy()`で解決、または設計を見直す
+
+   **エージェント設計時の考慮点**:
+   - [ ] 定義するスキーマは機能固有か、複数機能で共有するか？
+   - [ ] 共有スキーマの場合、`shared/core/`に配置すべきか？
+   - [ ] 依存関係の方向性ルールに違反していないか？
+   - [ ] 機能間で重複するスキーマ定義が発生していないか？（共通化の検討）
 
 2. **データベーススキーマとの整合性**:
    - Drizzle ORMスキーマとZodスキーマの型整合性を確保
@@ -328,7 +352,7 @@ cat docs/00-requirements/master_system_design.md
    - テストでバリデーションロジックが動作することを保証
 
 **設計時の判断基準**:
-- [ ] スキーマファイルは適切なディレクトリ（features/*/schema.ts）に配置されているか？
+- [ ] スキーマファイルは適切なディレクトリ（機能固有: features/*/schema.ts、共通: shared/core/）に配置されているか？
 - [ ] Drizzle ORMスキーマとZodスキーマの型が一致しているか？
 - [ ] APIエンドポイントの入出力スキーマが定義されているか？
 - [ ] TDDに従いテストケースが作成されているか？
@@ -455,10 +479,8 @@ cat docs/00-requirements/master_system_design.md
 
 **実行内容**:
 1. スキーマファイルの作成または編集
-   ```bash
-   # 新規作成の場合
-   src/features/[機能名]/schema.ts
-   ```
+   - 機能固有スキーマ: `src/features/[機能名]/schema.ts`
+   - 共通スキーマ（複数機能で再利用）: `src/shared/core/`
 
 2. 基本的なZodスキーマ定義
    - プリミティブ型の定義（string, number, boolean）
@@ -625,9 +647,8 @@ cat docs/00-requirements/master_system_design.md
 
 **実行内容**:
 1. テストファイルの作成
-   ```bash
-   src/features/[機能名]/__tests__/schema.test.ts
-   ```
+   - 機能固有スキーマのテスト: `src/features/[機能名]/__tests__/schema.test.ts`
+   - 共通スキーマのテスト: `src/shared/core/__tests__/`
 
 2. 正常系テスト
    - 有効な入力でバリデーションが成功することを確認
@@ -703,24 +724,16 @@ cat docs/00-requirements/master_system_design.md
 
 **実行内容**:
 1. Executorでのスキーマ使用を確認
-   ```bash
-   cat src/features/[機能名]/executor.ts
-   ```
+   - 機能固有スキーマ: `src/features/[機能名]/executor.ts`
 
 2. APIエンドポイントでのバリデーション確認（該当する場合）
-   ```bash
-   cat src/app/api/[エンドポイント]/route.ts
-   ```
+   - プレゼンテーション層: `src/app/api/[エンドポイント]/route.ts`
 
 3. データベーススキーマとの整合性確認（該当する場合）
-   ```bash
-   cat src/shared/infrastructure/database/schema.ts
-   ```
+   - インフラ層: `src/shared/infrastructure/database/schema.ts`
 
 4. 統合テストの確認（該当する場合）
-   ```bash
-   cat tests/integration/[機能名].test.ts
-   ```
+   - テスト配置: `src/features/[機能名]/__tests__/`または統合テスト用ディレクトリ
 
 **判断基準**:
 - [ ] Executorでスキーマが正しく使用されているか？
@@ -818,10 +831,10 @@ cat docs/00-requirements/master_system_design.md
 **対象ファイルパターン**:
 ```yaml
 read_allowed_paths:
-  - "docs/**/*.md"
-  - "src/features/**/schema.ts"
-  - "src/shared/core/**/*.ts"
-  - "src/shared/infrastructure/database/schema.ts"
+  - "docs/**/*.md"                              # ドキュメンテーション全体
+  - "src/features/**/schema.ts"                 # 機能固有スキーマ
+  - "src/shared/core/**/*.ts"                   # 共通エンティティ・インターフェース・エラークラス
+  - "src/shared/infrastructure/database/schema.ts"  # Drizzleスキーマ
   - "package.json"
   - "tsconfig.json"
 ```
@@ -839,15 +852,18 @@ read_allowed_paths:
 **作成可能ファイルパターン**:
 ```yaml
 write_allowed_paths:
-  - "src/features/**/schema.ts"
-  - "src/features/**/__tests__/schema.test.ts"
-  - "docs/20-specifications/features/**/*.md"
+  - "src/features/**/schema.ts"                 # 機能固有スキーマ
+  - "src/shared/core/**/*.ts"                   # 共通スキーマ（慎重に）
+  - "src/features/**/__tests__/schema.test.ts"  # 機能固有テスト
+  - "src/shared/core/__tests__/**/*.test.ts"    # 共通スキーマテスト
+  - "docs/20-specifications/features/**/*.md"   # 機能仕様書
 write_forbidden_paths:
   - ".env"
   - "**/*.key"
   - "package.json"
   - ".git/**"
-  - "src/shared/infrastructure/database/schema.ts"  # Drizzleスキーマは別エージェント
+  - "src/shared/infrastructure/database/schema.ts"  # Drizzleスキーマは別エージェント（db-architect）
+  - "src/shared/infrastructure/**"              # インフラ層は別エージェント
 ```
 
 **命名規則**:
@@ -864,13 +880,16 @@ write_forbidden_paths:
 **編集可能ファイルパターン**:
 ```yaml
 edit_allowed_paths:
-  - "src/features/**/schema.ts"
-  - "src/features/**/__tests__/schema.test.ts"
-  - "docs/20-specifications/features/**/*.md"
+  - "src/features/**/schema.ts"                 # 機能固有スキーマ
+  - "src/shared/core/**/*.ts"                   # 共通スキーマ（慎重に）
+  - "src/features/**/__tests__/schema.test.ts"  # 機能固有テスト
+  - "src/shared/core/__tests__/**/*.test.ts"    # 共通スキーマテスト
+  - "docs/20-specifications/features/**/*.md"   # 機能仕様書
 edit_forbidden_paths:
   - ".env"
   - "package.json"
-  - "src/shared/infrastructure/database/schema.ts"  # Drizzleスキーマは別エージェント
+  - "src/shared/infrastructure/database/schema.ts"  # Drizzleスキーマは別エージェント（db-architect）
+  - "src/shared/infrastructure/**"              # インフラ層は別エージェント
 ```
 
 **編集時の注意**:
@@ -1208,7 +1227,8 @@ cat docs/00-requirements/master_system_design.md
 このドキュメントから以下を参照:
 - セクション2.1: 基本要件（入力検証、機密情報管理）
 - セクション2.4: テスト戦略（TDD、ユニットテスト要件）
-- セクション4: ディレクトリ構造（features/*/schema.ts配置）
+- セクション4: ディレクトリ構造（ハイブリッドアーキテクチャ、features/*/schema.ts配置、shared/core/共通スキーマ）
+- セクション4.4: レイヤー間の依存関係ルール（app → features → shared/infrastructure → shared/core）
 - セクション5.2: データベース設計原則（Drizzleスキーマとの整合性）
 - セクション7: エラーハンドリング仕様（バリデーションエラーの分類）
 - セクション8: REST API設計原則（リクエスト/レスポンス形式）
@@ -1216,9 +1236,19 @@ cat docs/00-requirements/master_system_design.md
 **補助参照ドキュメント**:
 - 機能仕様書（`docs/20-specifications/features/`）: 入出力データ構造
 - Drizzleスキーマ（`src/shared/infrastructure/database/schema.ts`）: 型整合性確認
-- 既存スキーマ（`src/features/*/schema.ts`）: パターンと命名規則の参考
+- 機能固有スキーマ（`src/features/*/schema.ts`）: パターンと命名規則の参考
+- 共通スキーマ（`src/shared/core/`）: 再利用可能なスキーマパターン
 
 ## 変更履歴
+
+### v1.0.1 (2025-11-23)
+- **改善**: ディレクトリ構造の説明を更新
+  - 知識領域5「ハイブリッドアーキテクチャとの統合」を詳細化
+  - 設計方針の理解、レイヤー構造と責務、依存関係の方向性原則を明確化
+  - スキーマ配置原則を概念的に記述（機能固有 vs 共通スキーマ）
+  - エージェント設計時の考慮点をチェックリスト形式で4項目追加
+  - ツール使用方針（Read/Write/Edit）にコメントを追加し、パスの意図を明確化
+  - master_system_design.mdのディレクトリ構造（セクション4, 4.4）に完全準拠
 
 ### v1.0.0 (2025-11-22)
 - **追加**: 初版リリース

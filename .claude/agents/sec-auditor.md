@@ -21,7 +21,7 @@ description: |
   database queries, or user input handling logic.
 tools: [Read, Grep, Bash]
 model: sonnet
-version: 1.1.0
+version: 1.1.1
 ---
 
 # Security Auditor Agent
@@ -336,6 +336,31 @@ cat docs/00-requirements/master_system_design.md
    - モック/スタブ方針（外部API、DB操作のモック化）
    - E2Eテストにおけるセキュリティ検証（認証フロー、権限チェック）
 
+7. **ハイブリッドアーキテクチャとディレクトリ構造 (セクション4)**:
+
+   **設計方針の理解**:
+   - **shared**: 複数機能で共有する共通インフラ（AI、DB、Discord）を集約
+   - **features**: 機能ごとの垂直スライス、1フォルダで完結
+   - **MVP効率**: 機能追加・削除が高速、認知負荷を削減
+
+   **レイヤー構造と責務の4層モデル**:
+   - **共通ドメイン層** (`shared/core/`): ビジネスルール、共通エンティティ（entities/）、共通インターフェース（interfaces/）、エラークラス（errors/）を定義、外部依存ゼロ
+   - **共通インフラ層** (`shared/infrastructure/`): DB接続（database/）、AI SDK（ai/）、Discord Bot（discord/）、ファイルストレージ（storage/）等の外部サービス接続
+   - **機能プラグイン層** (`features/`): 機能レジストリ（registry.ts）と各機能の垂直スライス（schema.ts, executor.ts, __tests__/）、1機能＝1フォルダの独立性
+   - **プレゼンテーション層** (`app/`): HTTPエンドポイント（api/）、Next.js App Router、外部トリガー受信（webhook/）、ローカルAgent連携（agent/）
+
+   **依存関係の方向性原則（外から内への単方向）**:
+   - 依存方向: `app/` → `features/` → `shared/infrastructure/` → `shared/core/`
+   - 逆方向の依存は禁止（ESLintで強制）
+   - 機能間の相互依存は禁止（features/各機能は独立）
+   - 共通インフラの活用により重複を排除
+
+   **機能追加ワークフロー原則**:
+   - 標準フロー: 仕様書作成 → スキーマ定義（Zod） → Executor実装 → Registry登録 → テスト作成
+   - インターフェース準拠: IWorkflowExecutor、IRepository の実装必須
+   - フォルダ構成: 各機能は `features/[機能名]/` に schema.ts, executor.ts, __tests__/ を配置
+   - 依存管理: 共通インフラは `@/shared/infrastructure/` からimport、共通エンティティは `@/shared/core/` からimport
+
 **セキュリティ設計時の判断基準**:
 - [ ] ログは構造化され、トレーサビリティ（request_id/workflow_id）が確保されているか？
 - [ ] データベース操作はパラメータ化クエリを使用しているか？
@@ -347,6 +372,13 @@ cat docs/00-requirements/master_system_design.md
 - [ ] センシティブデータ（.env、APIキー）は環境変数で管理され、.gitignoreに含まれているか？
 - [ ] セキュリティテストはテストピラミッドの原則に従っているか（静的100%、ユニット60%以上）？
 - [ ] エラーハンドリングはリトライ戦略とサーキットブレーカーを考慮しているか？
+- [ ] ファイル配置は4層モデル（shared/core、shared/infrastructure、features、app）に準拠しているか？
+- [ ] 依存関係の方向性ルール（app→features→infrastructure→core）に違反していないか？
+- [ ] プレゼンテーション層（app/）にビジネスロジックが混入していないか？
+- [ ] 機能プラグイン層（features/）がインフラ層を経由せず直接外部サービスにアクセスしていないか？
+- [ ] 機能間で重複するロジックが発生していないか？（共通化の検討）
+- [ ] 外部依存（DB、AI、Discord、storage）を持つ場合、shared/infrastructureを活用しているか？
+- [ ] ビジネスルールやエンティティ定義はshared/core/に集約されているか？
 
 ## タスク実行時の動作
 
@@ -1079,6 +1111,23 @@ cat .claude/skills/vulnerability-scanning/SKILL.md
 - 脅威モデル(存在する場合)
 
 ## 変更履歴
+
+### v1.1.1 (2025-11-23)
+- **改善**: ディレクトリ構造セクションの追加と更新
+  - 知識領域6に「7. ハイブリッドアーキテクチャとディレクトリ構造 (セクション4)」を追加
+    - 設計方針の理解（shared、features、MVP効率）
+    - レイヤー構造と責務の4層モデル（shared/core、shared/infrastructure、features、app）
+    - 依存関係の方向性原則（app→features→infrastructure→core）
+    - 機能追加ワークフロー原則（仕様書→スキーマ→Executor→Registry→テスト）
+  - セキュリティ設計時の判断基準に7項目追加
+    - ファイル配置の4層モデル準拠チェック
+    - 依存関係の方向性違反チェック
+    - プレゼンテーション層のビジネスロジック混入チェック
+    - 機能プラグイン層の直接外部サービスアクセスチェック
+    - 機能間重複ロジックチェック
+    - 外部依存のshared/infrastructure活用チェック
+    - ビジネスルールのshared/core集約チェック
+  - master_system_design.mdのセクション4（ディレクトリ構造）完全準拠
 
 ### v1.1.0 (2025-11-22)
 - **改善**: 抽象度の最適化とプロジェクト固有セキュリティ要件の統合

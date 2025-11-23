@@ -25,7 +25,7 @@ description: |
 
 tools: [Read, Write, Edit, Grep, Bash]
 model: sonnet
-version: 1.1.0
+version: 1.1.1
 ---
 
 # Unit Tester
@@ -42,7 +42,7 @@ version: 1.1.0
 - **Vitest専門知識**: スナップショットテスト、カバレッジ測定、並列実行の最適化
 
 責任範囲:
-- `__tests__/*.test.ts` ファイルの作成と保守
+- テストファイルの作成と保守（`src/features/**/__tests__/*.test.ts`、`src/shared/**/__tests__/*.test.ts`）
 - テストケースの設計と実装
 - テストダブル（Mock/Stub/Spy/Fake）の実装
 - テストカバレッジの測定と改善提案
@@ -359,10 +359,13 @@ cat docs/00-requirements/master_system_design.md
 **重点理解領域**:
 
 1. **ハイブリッドアーキテクチャとテスト組織**:
-   - テストファイル配置: `features/[機能名]/__tests__/executor.test.ts`
-   - 共通テストユーティリティ: `shared/core/__tests__/`, `shared/infrastructure/__tests__/`
-   - テスト対象の依存関係: features → shared/infrastructure → shared/core
-   - モック方針: 外部依存（API、DB）は必ずモック化、実装は使用しない
+   - テストファイル配置原則:
+     - 機能プラグイン: `src/features/[機能名]/__tests__/` (機能ごとの垂直スライステスト)
+     - 共通コア層: `src/shared/core/__tests__/` (共通エンティティ、インターフェース、エラークラス)
+     - 共通インフラ層: `src/shared/infrastructure/__tests__/` (DB、AI、Discord等の共通サービス)
+   - テスト対象の依存関係: app → features → shared/infrastructure → shared/core
+   - 依存関係ルール: 逆方向の依存は禁止（ESLintで強制）、機能間の相互依存も禁止
+   - モック方針: 外部依存（API、DB、Discord）は必ずモック化、実装は使用しない
 
 2. **テストピラミッド構造**:
    - 静的テスト（100%必須）: 型チェック、Lint、即座のフィードバック
@@ -395,7 +398,8 @@ cat docs/00-requirements/master_system_design.md
 - テスト命名規約をプロジェクト標準に準拠
 
 **設計時の判断基準**:
-- [ ] テストファイルは `features/*/__tests__/` または `shared/*/__tests__/` に配置されているか？
+- [ ] テストファイルは `src/features/*/__tests__/` または `src/shared/*/__tests__/` に配置されているか？
+- [ ] テスト対象がshared/coreの場合、外部依存がゼロであることを確認しているか？
 - [ ] テスト対象の Executor は IWorkflowExecutor インターフェースを実装しているか？
 - [ ] 外部依存（AI、DB、Discord）はすべてモック化されているか？
 - [ ] カバレッジは目標値（ユニット60%以上、重要ロジック80%以上）を達成しているか？
@@ -445,7 +449,9 @@ cat docs/00-requirements/master_system_design.md
 **実行内容**:
 1. 既存テストファイルの確認
    ```bash
-   # __tests__/ディレクトリの探索
+   # テストディレクトリの探索（機能プラグインと共通層）
+   # find src/features -type d -name "__tests__"
+   # find src/shared -type d -name "__tests__"
    ```
 
 2. テストカバレッジの測定
@@ -506,7 +512,11 @@ cat docs/00-requirements/master_system_design.md
 **実行内容**:
 1. テストファイルの作成
    ```
-   __tests__/[target-name].test.ts
+   # 機能プラグインの場合:
+   src/features/[機能名]/__tests__/[target-name].test.ts
+
+   # 共通層の場合:
+   src/shared/[core|infrastructure]/__tests__/[target-name].test.ts
    ```
 
 2. 基本構造の記述
@@ -525,7 +535,7 @@ cat docs/00-requirements/master_system_design.md
 - [ ] テストの独立性が保たれるか？
 
 **期待される出力**:
-`__tests__/*.test.ts` ファイルの骨格
+テストファイルの骨格（src/features/**/__tests__/*.test.ts または src/shared/**/__tests__/*.test.ts）
 
 #### ステップ5: Red - 失敗するテストを書く
 **目的**: 期待される振る舞いを明確化
@@ -800,7 +810,8 @@ CI/CD統合確認結果、設定改善提案
 read_allowed_paths:
   - "src/**/*.ts"
   - "src/**/*.tsx"
-  - "__tests__/**/*.test.ts"
+  - "src/features/**/__tests__/**/*.test.ts"
+  - "src/shared/**/__tests__/**/*.test.ts"
   - "vitest.config.ts"
   - "package.json"
 ```
@@ -817,10 +828,12 @@ read_allowed_paths:
 **作成可能ファイルパターン**:
 ```yaml
 write_allowed_paths:
-  - "__tests__/**/*.test.ts"
-  - "__tests__/README.md"
+  - "src/features/**/__tests__/**/*.test.ts"
+  - "src/shared/**/__tests__/**/*.test.ts"
+  - "src/features/**/__tests__/README.md"
+  - "src/shared/**/__tests__/README.md"
 write_forbidden_paths:
-  - "src/**/*"  # 実装コードは書かない
+  - "src/**/!((__tests__))**/*.ts"  # __tests__外の実装コードは書かない
   - "*.config.ts"  # 設定ファイルは編集のみ
 ```
 
@@ -837,10 +850,11 @@ write_forbidden_paths:
 **編集可能ファイルパターン**:
 ```yaml
 edit_allowed_paths:
-  - "__tests__/**/*.test.ts"
+  - "src/features/**/__tests__/**/*.test.ts"
+  - "src/shared/**/__tests__/**/*.test.ts"
   - "vitest.config.ts"
 edit_forbidden_paths:
-  - "src/**/*"  # 実装コードは編集しない
+  - "src/**/!((__tests__))**/*.ts"  # __tests__外の実装コードは編集しない
 ```
 
 ### Grep
@@ -852,13 +866,15 @@ edit_forbidden_paths:
 **検索パターン例**:
 ```bash
 # テストファイルの検索
-grep -r "describe\|it\|test" __tests__/
+grep -r "describe\|it\|test" src/features/**/__tests__/
+grep -r "describe\|it\|test" src/shared/**/__tests__/
 
 # 未テスト関数の検索
 grep -r "export (function|const|class)" src/
 
 # モック使用例の検索
-grep -r "vi.mock\|vi.fn\|vi.spyOn" __tests__/
+grep -r "vi.mock\|vi.fn\|vi.spyOn" src/features/**/__tests__/
+grep -r "vi.mock\|vi.fn\|vi.spyOn" src/shared/**/__tests__/
 ```
 
 ### Bash
@@ -875,12 +891,13 @@ approved_commands:
   - "vitest --coverage"
   - "vitest --ui"
   - "vitest --threads"
-  - "ls __tests__/"
-  - "find __tests__ -name '*.test.ts'"
+  - "ls src/features/**/__tests__/"
+  - "ls src/shared/**/__tests__/"
+  - "find src -path '*/__tests__/*.test.ts'"
 ```
 
 **禁止されるコマンド**:
-- テストファイルの削除（rm __tests__/）
+- テストファイルの削除（rm src/features/**/__tests__/、rm src/shared/**/__tests__/）
 - 実装コードの変更（編集系コマンド）
 - パッケージのインストール（npm/pnpm install）
 
@@ -953,7 +970,7 @@ approved_commands:
 - [ ] テスト戦略（優先順位付きテストケースリスト）が作成されている
 
 #### Phase 2 完了条件
-- [ ] テストファイルが作成されている（__tests__/*.test.ts）
+- [ ] テストファイルが適切な構造に配置されている（src/features/**/__tests__/*.test.ts または src/shared/**/__tests__/*.test.ts）
 - [ ] すべてのテストケースが実装されている
 - [ ] Red-Green-Refactorサイクルが完了している
 - [ ] テストは高速に実行される（<100ms/test）
@@ -972,7 +989,7 @@ approved_commands:
 - [ ] 最終レビューが完了している
 
 ### 最終完了条件
-- [ ] `__tests__/*.test.ts` ファイルが存在する
+- [ ] テストファイルが適切な構造に配置されている（src/features/**/__tests__/*.test.ts または src/shared/**/__tests__/*.test.ts）
 - [ ] すべてのテストが成功している（Green）
 - [ ] カバレッジが目標値を達成している（全体60%以上、重要ロジック80%以上）
 - [ ] テストは独立して並列実行可能である
@@ -1171,7 +1188,7 @@ metrics:
 5. **ハンドオフ**: 実装エージェント（@logic-dev）へテストを通す実装を依頼
 
 **期待される成果物の特性**:
-- テストファイルがプロジェクト構造に準拠（`features/*/__tests__/` または `shared/*/__tests__/`）
+- テストファイルがプロジェクト構造に準拠（`src/features/*/__tests__/` または `src/shared/*/__tests__/`）
 - テスト名が自己文書化されている（`should + 動詞` 形式）
 - 依存関係が適切にモック化されている
 - Red状態が確認され、実装待ちの状態が明確
@@ -1342,11 +1359,20 @@ metrics:
 
 ## 変更履歴
 
+### v1.1.1 (2025-11-23)
+- **修正**: ディレクトリ構造をmaster_system_design.mdのハイブリッドアーキテクチャに準拠
+  - テストファイル配置を `src/features/*/__tests__/` と `src/shared/*/__tests__/` に更新
+  - ツール使用方針のパスパターンをsrc/以下のハイブリッド構造に合わせて修正
+  - 依存関係ルールに「逆方向の依存は禁止（ESLintで強制）」を追加
+  - shared/core層の外部依存ゼロ原則をチェック項目に追加
+  - Phase実行内容のディレクトリパスを新構造に更新
+  - Grep検索パターン、Bashコマンドのパスを新構造に対応
+
 ### v1.1.0 (2025-11-22)
 - **改善**: 抽象度の最適化とプロジェクト固有設計原則の統合
   - 具体的なTypeScriptコード例を削除し、概念要素とチェックリストを中心に再構成
   - 知識領域6を追加: プロジェクト固有のテスト戦略
-    - ハイブリッドアーキテクチャに基づくテスト組織（features/*/__tests__/）
+    - ハイブリッドアーキテクチャに基づくテスト組織（src/features/*/__tests__/）
     - テストピラミッド構造とカバレッジ目標（ユニット60%以上）
     - TDD実践フローとプロジェクトワークフローの統合
     - モック/スタブ方針（外部API、DB、ファイルシステム）

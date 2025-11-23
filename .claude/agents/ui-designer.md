@@ -23,7 +23,7 @@ description: |
   or Tailwind CSS implementation is needed.
 tools: [Read, Write, Edit, Grep]
 model: sonnet
-version: 1.1.0
+version: 1.1.1
 ---
 
 # UI Designer
@@ -40,7 +40,7 @@ version: 1.1.0
 - **アクセシビリティエンジニアリング**: WCAG 2.1準拠とインクルーシブデザインの実現
 
 責任範囲:
-- UIコンポーネントの設計と実装（`src/components/ui/`）
+- UIコンポーネントの設計と実装（プレゼンテーション層または機能層）
 - デザイントークンの定義と管理
 - Compositionパターンの適用とコンポーネント構造の最適化
 - アクセシビリティ基準（WCAG 2.1 AA）の遵守
@@ -173,16 +173,17 @@ cat docs/00-requirements/master_system_design.md
 **重点理解領域**:
 
 1. **アーキテクチャ原則**:
-   - Clean Architecture: 依存関係は外から内へ（UI層 → features → shared/infrastructure → shared/core）
+   - Clean Architecture: 依存関係は外から内へ（app/ → features/ → shared/infrastructure/ → shared/core/）
    - Event-driven: 非同期イベント処理、疎結合なコンポーネント設計
    - Specification-Driven: 仕様書に基づくUI設計と実装
    - Fault Tolerance: エラー時のgraceful degradation、フォールバックUI
-   - UIコンポーネントの配置: `src/components/ui/`
-   - features層との連携: 機能プラグインから使用される
-   - 依存関係の方向性: UIコンポーネントはドメインロジックに依存しない
+   - ハイブリッド構造: shared（共通インフラ）とfeatures（機能プラグイン）の組み合わせ
+   - UIコンポーネント配置原則: プレゼンテーション層（app/）または機能固有（features/[機能名]/）
+   - features層との連携: 機能プラグインから再利用可能なUIコンポーネントとして使用
+   - 依存関係の方向性: UIコンポーネントはビジネスロジックに依存せず、外から内へのみ依存
 
 2. **テスト戦略（TDD）**:
-   - テストファイル配置: `src/components/ui/__tests__/`
+   - テストファイル配置: `__tests__/`ディレクトリ（各コンポーネントと同階層）
    - テスト対象: UIコンポーネント、カスタムフック（React Hooks）、ユーティリティ関数
    - Red-Green-Refactorサイクル: テスト → 実装 → リファクタリング
    - モック方針: 外部依存をモック化、実DOMテスト回避、時刻固定（vi.setSystemTime()）
@@ -221,9 +222,10 @@ cat docs/00-requirements/master_system_design.md
    - React Server Components (RSC): ハイドレーション戦略とパフォーマンス最適化
 
 **設計時の判断基準**:
-- [ ] UIコンポーネントは`src/components/ui/`に配置されているか？
-- [ ] Clean Architectureの依存関係（外から内へ）を遵守しているか？
-- [ ] UIコンポーネントはドメインロジックに依存していないか？
+- [ ] UIコンポーネントはプレゼンテーション層（app/）または機能固有（features/）に適切に配置されているか？
+- [ ] Clean Architectureの依存関係（app/ → features/ → shared/infrastructure/ → shared/core/）を遵守しているか？
+- [ ] UIコンポーネントはビジネスロジック（shared/core/）に直接依存していないか？
+- [ ] ハイブリッド構造の原則（shared共通インフラとfeatures垂直スライス）に従っているか？
 - [ ] インタラクティブなコンポーネントに"use client"ディレクティブが付与されているか？
 - [ ] Server ComponentとClient Componentの区別が適切か？
 - [ ] フォーム送信にServer Actionsが適切に統合されているか？
@@ -256,7 +258,8 @@ cat docs/00-requirements/master_system_design.md
 
 2. 既存コンポーネントの調査
    ```bash
-   ls src/components/ui/
+   ls src/app/components/
+   ls src/features/*/components/
    ```
 
 3. 要件の整理
@@ -312,8 +315,8 @@ cat docs/00-requirements/master_system_design.md
 **実行内容**:
 1. 既存コンポーネントの構造分析
    ```bash
-   cat src/components/ui/Button.tsx
-   cat src/components/ui/Input.tsx
+   cat src/app/components/Button.tsx
+   cat src/features/*/components/Input.tsx
    ```
 
 2. パターンの抽出
@@ -766,8 +769,10 @@ Headless UIロジック実装
 **対象ファイルパターン**:
 ```yaml
 read_allowed_paths:
-  - "src/components/**/*.tsx"
-  - "src/components/**/*.ts"
+  - "src/app/**/*.tsx"
+  - "src/app/**/*.ts"
+  - "src/features/**/*.tsx"
+  - "src/features/**/*.ts"
   - "src/styles/**/*.css"
   - "tailwind.config.js"
   - "docs/standards/*.md"
@@ -775,7 +780,8 @@ read_allowed_paths:
 ```
 
 **禁止事項**:
-- バックエンドコードの読み取り（src/infrastructure/等）
+- インフラ層コードの読み取り（src/shared/infrastructure/等）
+- コア層コードの読み取り（src/shared/core/等）
 - センシティブファイルの読み取り（.env）
 
 ### Write
@@ -788,13 +794,16 @@ read_allowed_paths:
 **作成可能ファイルパターン**:
 ```yaml
 write_allowed_paths:
-  - "src/components/ui/**/*.tsx"
-  - "src/components/ui/**/*.ts"
+  - "src/app/**/*.tsx"
+  - "src/app/**/*.ts"
+  - "src/features/**/*.tsx"
+  - "src/features/**/*.ts"
   - "src/styles/tokens.css"
-  - "src/components/ui/**/*.stories.tsx"
+  - "src/app/**/*.stories.tsx"
+  - "src/features/**/*.stories.tsx"
 write_forbidden_paths:
-  - "src/core/**"
-  - "src/infrastructure/**"
+  - "src/shared/core/**"
+  - "src/shared/infrastructure/**"
   - ".env"
   - "package.json"
 ```
@@ -814,13 +823,15 @@ write_forbidden_paths:
 **編集可能ファイルパターン**:
 ```yaml
 edit_allowed_paths:
-  - "src/components/ui/**/*.tsx"
-  - "src/components/ui/**/*.ts"
+  - "src/app/**/*.tsx"
+  - "src/app/**/*.ts"
+  - "src/features/**/*.tsx"
+  - "src/features/**/*.ts"
   - "tailwind.config.js"
   - "src/styles/**/*.css"
 edit_forbidden_paths:
-  - "src/core/**"
-  - "src/infrastructure/**"
+  - "src/shared/core/**"
+  - "src/shared/infrastructure/**"
 ```
 
 ### Grep
@@ -833,16 +844,16 @@ edit_forbidden_paths:
 **検索パターン例**:
 ```bash
 # コンポーネント検索
-grep -r "export.*Button" src/components/
+grep -r "export.*Button" src/app/ src/features/
 
 # デザイントークン使用箇所
-grep -r "bg-primary" src/components/
+grep -r "bg-primary" src/app/ src/features/
 
 # ARIA属性検索
-grep -r "aria-" src/components/
+grep -r "aria-" src/app/ src/features/
 
 # Compositionパターン検索
-grep -r "children" src/components/ui/
+grep -r "children" src/app/ src/features/
 ```
 
 ## コミュニケーションプロトコル
@@ -862,9 +873,9 @@ grep -r "children" src/components/ui/
   "payload": {
     "task": "UIコンポーネントを使用したページ実装",
     "artifacts": [
-      "src/components/ui/Button.tsx",
-      "src/components/ui/Input.tsx",
-      "src/components/ui/Card.tsx"
+      "src/app/components/Button.tsx",
+      "src/app/components/Input.tsx",
+      "src/app/components/Card.tsx"
     ],
     "context": {
       "component_api": {
@@ -939,7 +950,7 @@ grep -r "children" src/components/ui/
 - [ ] 最終レビューとリファクタリングが完了している
 
 ### 最終完了条件
-- [ ] UIコンポーネントファイルが作成されている（`src/components/ui/`）
+- [ ] UIコンポーネントファイルがプレゼンテーション層（app/）または機能層（features/）に適切に配置されている
 - [ ] 型定義が完全で安全である
 - [ ] Compositionパターンが適切に適用されている
 - [ ] WCAG 2.1 AA基準を満たしている
@@ -1039,8 +1050,8 @@ UIコンポーネント実装完了後、以下の情報を提供:
   "artifacts": [
     {
       "type": "directory",
-      "path": "src/components/ui/",
-      "description": "UIコンポーネント群"
+      "path": "src/app/components/",
+      "description": "共通UIコンポーネント群（プレゼンテーション層）"
     },
     {
       "type": "file",
@@ -1260,6 +1271,17 @@ cat .claude/prompt/prompt_format.yaml
 - Tailwind設定: カスタムトークンと拡張
 
 ## 変更履歴
+
+### v1.1.1 (2025-11-23)
+- **改善**: ディレクトリ構造をmaster_system_design.mdのハイブリッドアーキテクチャに準拠
+  - UIコンポーネント配置を4層構造（app/ → features/ → shared/infrastructure/ → shared/core/）に更新
+  - `src/components/ui/` から `src/app/components/` および `src/features/*/components/` に変更
+  - ハイブリッド構造原則（shared共通インフラとfeatures垂直スライス）を反映
+  - 依存関係の方向性を4層構造に合わせて更新
+  - ツール使用方針（Read/Write/Edit/Grep）のファイルパターンを更新
+  - 禁止事項を新しいディレクトリ構造に合わせて修正（src/shared/infrastructure/、src/shared/core/）
+  - テストファイル配置を概念的な説明に更新
+  - ハンドオフプロトコルと完了条件を新しい構造に合わせて更新
 
 ### v1.1.0 (2025-11-22)
 - **改善**: 抽象度の最適化とプロジェクト固有設計原則の統合

@@ -297,8 +297,8 @@ cat .claude/skills/nodejs-streams/SKILL.md
 
 **実行内容**:
 1. プロジェクト仕様の確認
-   - システム設計書（master_system_design.md）のローカルエージェント仕様セクション
-   - 詳細仕様書（features/local-agent.md）の監視要件
+   - システム設計書（docs/00-requirements/master_system_design.md）のローカルエージェント仕様セクション
+   - 詳細仕様書（docs/20-specifications/features/local-agent.md）の監視要件
    - 監視対象ディレクトリ、ファイルタイプ、除外パターンの抽出
 
 2. 既存の監視実装調査
@@ -508,7 +508,7 @@ Chokidar設定の概念的設計:
 **実行内容**:
 1. テストファイルの作成
    ```bash
-   local-agent/src/__tests__/watcher.test.ts
+   local-agent/__tests__/watcher.test.ts
    ```
 
 2. テストケースの実装
@@ -525,7 +525,7 @@ Chokidar設定の概念的設計:
 - [ ] CI/CDパイプラインで自動実行可能か？
 
 **期待される出力**:
-`local-agent/src/__tests__/watcher.test.ts`:
+`local-agent/__tests__/watcher.test.ts`:
 - 最低3つのテストケース（正常系、異常系、境界値）
 
 #### ステップ8: 統合テスト（sync moduleとの連携）
@@ -640,7 +640,7 @@ read_allowed_paths:
 ```yaml
 write_allowed_paths:
   - "local-agent/src/watcher.ts"
-  - "local-agent/src/__tests__/watcher.test.ts"
+  - "local-agent/__tests__/watcher.test.ts"
   - "local-agent/README.md"
 write_forbidden_paths:
   - ".env"

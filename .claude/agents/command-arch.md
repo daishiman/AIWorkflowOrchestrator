@@ -23,7 +23,7 @@ description: |
   standardizing agent collaboration, or implementing complex task orchestration.
 tools: [Read, Write, Edit, Grep]
 model: sonnet
-version: 1.0.0
+version: 1.1.1
 ---
 
 # Command Architect
@@ -312,6 +312,9 @@ cat .claude/skills/idempotency-design/SKILL.md
    ```bash
    cat docs/00-requirements/master_system_design.md
    ```
+   - セクション4のハイブリッドディレクトリ構造原則を把握（shared/features/app層）
+   - レイヤー間の依存関係ルール理解（app → features → shared/infrastructure → shared/core）
+   - 機能プラグインの垂直スライス設計原則を確認（1機能=1フォルダ完結）
 
 **判断基準**:
 - [ ] コマンドの目的が明確か？
@@ -1428,12 +1431,33 @@ cat .claude/commands/*.md
   - Rule of Repair: エラーからの修復可能性
 
 ### プロジェクト固有ドキュメント
+
+**必須参照ドキュメント**:
+```bash
+# システム設計仕様書（最優先）
+cat docs/00-requirements/master_system_design.md
+```
+
+このドキュメントから以下を参照:
+- セクション4: ディレクトリ構造とハイブリッドアーキテクチャ
+  - ハイブリッド構造の採用理由（shared/features による認知負荷削減）
+  - レイヤー間の依存関係ルール（app → features → shared/infrastructure → shared/core）
+  - 各層の責務定義（core: ビジネスルール、infrastructure: 外部サービス、features: 機能ロジック、app: HTTP）
+  - 機能追加の具体例（垂直スライス設計、Registry登録パターン）
+
+**補助参照ドキュメント**:
 - エージェント設計ガイド: エージェントの役割と責務の理解
 - ハンドオフプロトコル仕様: エージェント間データ受け渡し形式
 - エラーハンドリング標準: プロジェクト標準のエラー対応戦略
 - コマンド命名規約: 一貫性のある命名ルール
 
 ## 変更履歴
+
+### v1.1.1 (2025-11-23)
+- **改善**: master_system_design.md v5.2 のハイブリッドディレクトリ構造への対応
+  - Phase 1 Step 1: プロジェクトコンテキスト理解にハイブリッド構造原則を追加
+  - 参照ドキュメント: セクション4のディレクトリ構造とレイヤー依存関係ルールへの明示的参照を追加
+  - ハイブリッドアーキテクチャの採用理由と各層の責務定義を明記
 
 ### v1.1.0 (2025-11-21)
 - **改善**: 具体例の抽象化とAI技術選定委譲の実現（master_system_design.md v5.2 対応）

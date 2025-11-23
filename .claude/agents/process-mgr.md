@@ -22,7 +22,7 @@ description: |
   auto-restart, or production stability requirements.
 tools: [Read, Write, Grep, Bash]
 model: sonnet
-version: 1.0.0
+version: 1.1.0
 ---
 
 # Process Manager
@@ -350,7 +350,7 @@ cat .claude/skills/log-streaming/SKILL.md
 
 2. 管理対象アプリケーションの特定
    - local-agentのファイル構造確認
-   - エントリーポイント（watcher.js, sync.js等）の特定
+   - エントリーポイント（index.ts, watcher.ts, sync.ts等）の特定
    - 依存関係と実行要件の理解
 
 3. 運用要件の抽出
@@ -390,6 +390,7 @@ cat .claude/skills/log-streaming/SKILL.md
    ```bash
    grep -r "pm2" .
    grep -r "process.on" local-agent/src/
+   grep -r "graceful" local-agent/src/
    ```
 
 **判断基準**:
@@ -934,8 +935,10 @@ cat .claude/skills/log-streaming/SKILL.md
 ```yaml
 read_allowed_paths:
   - "docs/**/*.md"
-  - "local-agent/**/*.js"
+  - "local-agent/src/**/*.ts"
+  - "local-agent/__tests__/**/*.ts"
   - "local-agent/package.json"
+  - "local-agent/tsconfig.json"
   - "local-agent/ecosystem.config.js"
   - ".env.example"
   - "README.md"
@@ -1243,21 +1246,25 @@ ecosystem.config.js作成後、DevOpsエージェント等への引き継ぎ時:
 ```
 ユーザー要求: "local-agentのPM2設定を作成してください"
 プロジェクト構造:
-  - local-agent/src/watcher.js (エントリーポイント)
+  - local-agent/src/index.ts (エントリーポイント)
+  - local-agent/src/watcher.ts (ファイル監視)
+  - local-agent/src/sync.ts (API通信)
+  - local-agent/src/config.ts (環境設定)
   - local-agent/package.json
+  - local-agent/tsconfig.json
   - 想定負荷: 低〜中程度のファイルI/O
 ```
 
 **期待される動作**:
-1. Phase 1: プロジェクト構造分析 → watcher.jsを特定
+1. Phase 1: プロジェクト構造分析 → index.tsをエントリーポイントとして特定
 2. Phase 2: 実行モード決定 → fork mode選択（I/O bound）
 3. Phase 3: ecosystem.config.js設計
    - name: "ai-workflow-agent"
-   - script: "./src/watcher.js"
+   - script: "./dist/index.js"（ビルド成果物を指定）
    - exec_mode: "fork"
    - autorestart: true
    - max_memory_restart: "500M"
-4. Phase 4: ログ設定 → error.log, out.log
+4. Phase 4: ログ設定 → ./logs/error.log, ./logs/out.log
 5. Phase 5: ドキュメント作成 → OPERATIONS.md
 
 **期待される出力**:
@@ -1371,6 +1378,14 @@ cat .claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md
   - https://pm2.keymetrics.io/docs/usage/log-management/
 
 ## 変更履歴
+
+### v1.1.0 (2025-11-23)
+- **更新**: ディレクトリ構造を master_system_design.md に合わせて更新
+  - local-agent/src/ 配下のファイル拡張子を .js から .ts に変更
+  - エントリーポイントを index.ts として明確化
+  - tsconfig.json と __tests__/ ディレクトリの参照を追加
+  - ビルド成果物 (./dist/index.js) をscript指定パスとして明記
+  - ログディレクトリ構造を ./logs/ に統一
 
 ### v1.0.0 (2025-11-21)
 - **追加**: 初版リリース

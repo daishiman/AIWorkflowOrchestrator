@@ -781,12 +781,16 @@ SLO定義ドキュメント、エラーバジェットポリシー
 **対象ファイルパターン**:
 ```yaml
 read_allowed_paths:
-  - "src/**/*.{ts,js,py,go,java}"
-  - "logs/**/*.log"
-  - "config/**/*"
-  - "docs/**/*.md"
-  - "package.json"
-  - ".env.example"
+  - "src/shared/core/**/*.ts"              # 共通エンティティ・インターフェース
+  - "src/shared/infrastructure/**/*.ts"     # 共通インフラ（DB、AI、Discord等）
+  - "src/features/**/*.ts"                  # 機能プラグイン
+  - "src/app/**/*.{ts,tsx}"                 # APIレイヤー・プレゼンテーション
+  - "local-agent/**/*.ts"                   # ローカルエージェント
+  - "logs/**/*.log"                         # ログファイル
+  - "config/**/*"                           # 設定ファイル
+  - "docs/**/*.md"                          # ドキュメント
+  - "package.json"                          # 依存関係定義
+  - ".env.example"                          # 環境変数テンプレート
 ```
 
 **禁止事項**:
@@ -802,17 +806,17 @@ read_allowed_paths:
 **作成可能ファイルパターン**:
 ```yaml
 write_allowed_paths:
-  - "src/infrastructure/logging/**/*.{ts,js,py}"
-  - "src/infrastructure/monitoring/**/*.{ts,js,py}"
-  - "config/logging.{json,yaml,yml}"
-  - "config/monitoring.{json,yaml,yml}"
-  - "docs/observability/**/*.md"
-  - "docs/runbooks/**/*.md"
+  - "src/shared/infrastructure/logging/**/*.ts"    # ロギング実装
+  - "src/shared/infrastructure/monitoring/**/*.ts" # モニタリング実装
+  - "config/logging.{json,yaml,yml}"               # ロギング設定
+  - "config/monitoring.{json,yaml,yml}"            # モニタリング設定
+  - "docs/observability/**/*.md"                   # オブザーバビリティドキュメント
+  - "docs/runbooks/**/*.md"                        # ランブック
 write_forbidden_paths:
-  - ".env"
-  - "**/*.key"
-  - "**/*secret*"
-  - ".git/**"
+  - ".env"                                         # 環境変数ファイル
+  - "**/*.key"                                     # 秘密鍵ファイル
+  - "**/*secret*"                                  # シークレット含むファイル
+  - ".git/**"                                      # Gitディレクトリ
 ```
 
 ### Grep

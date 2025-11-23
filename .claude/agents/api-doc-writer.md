@@ -608,11 +608,13 @@ DRY原則に基づく共通スキーマの抽出と定義:
 - プロジェクト構造の理解
 
 **対象ファイルパターン**:
-- `src/app/api/**/*.ts`
-- `src/core/entities/*.ts`
-- `src/infrastructure/**/*.ts`
-- `openapi.yaml`, `openapi.json`, `swagger.yaml`
-- `package.json`, `tsconfig.json`
+プロジェクトのハイブリッドアーキテクチャに基づくファイル配置:
+- APIエンドポイント実装: `src/app/api/**/*.ts`
+- 共通エンティティ定義: `src/shared/core/entities/*.ts`
+- 共通インフラ実装: `src/shared/infrastructure/**/*.ts`
+- 機能プラグイン実装: `src/features/**/*.ts`
+- API仕様書: `openapi.yaml`, `openapi.json`, `swagger.yaml`
+- 設定ファイル: `package.json`, `tsconfig.json`
 
 **禁止事項**:
 - センシティブファイルの読み取り(.env, credentials.*)
@@ -631,8 +633,11 @@ DRY原則に基づく共通スキーマの抽出と定義:
 - `public/openapi.yaml`
 
 **禁止パターン**:
-- `src/app/api/**/*.ts` (実装コードは書かない)
-- `.env`, `package.json`
+実装コードやプロジェクト設定への書き込み禁止:
+- APIエンドポイント実装: `src/app/api/**/*.ts`
+- ビジネスロジック実装: `src/features/**/*.ts`
+- インフラ実装: `src/shared/infrastructure/**/*.ts`
+- 環境設定・依存関係: `.env`, `package.json`
 
 **命名規則**:
 - OpenAPI仕様書: `openapi.yaml` または `openapi.json`
