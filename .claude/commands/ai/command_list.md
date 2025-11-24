@@ -749,6 +749,32 @@
 
 ## 13. Claude Code環境
 
+### `/ai:create-agent-command-skill`
+- **目的**: エージェント、コマンド、スキルを統合的に作成する高度なメタコマンド
+- **引数**: `[domain-name]` - ドメイン名（オプション、未指定時はインタラクティブ）
+- **使用エージェント**: @skill-librarian, @meta-agent-designer, @command-arch
+- **スキル活用**:
+  - **知識層(スキル)**: knowledge-management, progressive-disclosure, documentation-architecture, context-optimization, best-practices-curation
+  - **実行層(エージェント)**: agent-architecture-patterns, agent-structure-design, agent-persona-design, tool-permission-management, agent-dependency-design, multi-agent-systems, project-architecture-integration, agent-quality-standards, agent-validation-testing, prompt-engineering-for-agents, agent-template-patterns, agent-lifecycle-management
+  - **UI層(コマンド)**: command-structure-fundamentals, command-arguments-system, command-security-design, command-basic-patterns, command-advanced-patterns, command-agent-skill-integration, command-activation-mechanisms, command-error-handling, command-naming-conventions, command-documentation-patterns, command-placement-priority, command-best-practices, command-performance-optimization
+- **フロー**:
+  - **Phase 0**: 統合設計（全体アーキテクチャ決定、コンポーネント責任分担、依存関係マッピング）
+  - **Phase 1**: スキル作成（@skill-librarian: SECIモデルによる暗黙知→形式知化）
+  - **Phase 2**: エージェント作成（@meta-agent-designer: ペルソナ設計、ワークフロー定義、Phase 1スキル参照）
+  - **Phase 3**: コマンド作成（@command-arch: 統合インターフェース設計、Phase 2エージェント起動）
+  - **Phase 4**: 統合検証（依存関係、YAML構文、行数制約、相対パス、ツール権限）
+  - **Phase 5**: ドキュメント生成（使用ガイド、テストケース、保守手順書）
+- **成果物**:
+  - `.claude/skills/[domain-name]/SKILL.md`（500行以内）+ resources/, scripts/, templates/
+  - `.claude/agents/[domain-name].md`（450-550行範囲内）+ スキル参照
+  - `.claude/commands/ai/[domain-name].md`（YAML Frontmatter + エージェント起動ロジック）
+  - `.claude/docs/[domain-name]/`（usage-guide.md, test-cases.md, maintenance.md）
+- **設定**:
+  - `model: opus`（複雑な統合設計が必要）
+  - `allowed-tools: [Task, Read, Write(.claude/**), Grep, Bash]`
+  - **品質基準**: 関心の分離、依存性の方向（コマンド→エージェント→スキル）、Progressive Disclosure、単一責任原則、最小権限の原則、テスト可能性
+- **使用シナリオ**: 新しい専門分野の完全な統合、複雑なワークフローの自動化システム構築、マルチエージェント協調システムの新規構築、プロジェクト固有のベストプラクティス体系化
+
 ### `/ai:create-agent`
 - **目的**: 新しいClaude Codeエージェント（.claude/agents/*.md）の作成
 - **引数**: `[agent-name] [specialty]` - エージェント名と専門分野（両方オプション、未指定時はインタラクティブ）
@@ -1321,7 +1347,7 @@ model: opus
 
 ## 📊 最終統計
 
-### コマンド総数: 78個
+### コマンド総数: 79個
 
 | カテゴリ | コマンド数 |
 |---------|-----------|
@@ -1337,7 +1363,7 @@ model: opus
 | 10. CI/CD・デプロイ | 9 |
 | 11. ドキュメント | 5 |
 | 12. 運用・監視 | 4 |
-| 13. Claude Code環境 | 6 |
+| 13. Claude Code環境 | 7 |
 | 14. 統合ワークフロー | 5 |
 | 15. Git・バージョン管理 | 4 |
 | 16. パッケージ・依存関係 | 3 |
@@ -1350,8 +1376,8 @@ model: opus
 
 | モデル | コマンド数 | 比率 |
 |--------|-----------|------|
-| opus | 15 | 19% |
-| sonnet | 61 | 78% |
+| opus | 16 | 20% |
+| sonnet | 61 | 77% |
 | haiku | 2 | 3% |
 
 ### 全エージェント活用確認
@@ -1360,5 +1386,5 @@ model: opus
 
 ---
 
-以上、**全78コマンド**に設定可能要素の概要を追記しました。
+以上、**全79コマンド**（エージェント・コマンド・スキル統合作成コマンドを含む）に設定可能要素の概要を追記しました。
 
