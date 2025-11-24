@@ -1,0 +1,109 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Agent Handoff Protocol",
+  "description": "エージェント間の情報受け渡しフォーマット",
+  "type": "object",
+  "required": [
+    "from_agent",
+    "to_agent",
+    "status",
+    "summary",
+    "artifacts",
+    "context"
+  ],
+  "properties": {
+    "from_agent": {
+      "type": "string",
+      "description": "送信元エージェント名",
+      "example": "requirements-analyst"
+    },
+    "to_agent": {
+      "type": "string",
+      "description": "送信先エージェント名",
+      "example": "architecture-designer"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["completed", "partial", "failed"],
+      "description": "タスクのステータス"
+    },
+    "summary": {
+      "type": "string",
+      "description": "実施内容のサマリー（1-2文）",
+      "maxLength": 200,
+      "example": "要件分析完了。機能要件5件、非機能要件3件を特定"
+    },
+    "artifacts": {
+      "type": "array",
+      "description": "生成された成果物のパスリスト",
+      "items": {
+        "type": "string",
+        "pattern": "^\\.claude/"
+      },
+      "example": [
+        ".claude/docs/requirements.md",
+        ".claude/docs/user-stories.md"
+      ]
+    },
+    "context": {
+      "type": "object",
+      "description": "コンテキスト情報",
+      "properties": {
+        "key_decisions": {
+          "type": "array",
+          "description": "主要な決定事項",
+          "items": {
+            "type": "string"
+          },
+          "example": [
+            "マイクロサービスアーキテクチャを採用",
+            "PostgreSQL使用"
+          ]
+        },
+        "unresolved_issues": {
+          "type": "array",
+          "description": "未解決の課題",
+          "items": {
+            "type": "string"
+          },
+          "example": [
+            "認証方式の最終決定"
+          ]
+        },
+        "next_steps": {
+          "type": "array",
+          "description": "次のステップ",
+          "items": {
+            "type": "string"
+          },
+          "example": [
+            "アーキテクチャ図の作成",
+            "技術スタック選定"
+          ]
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "メタデータ（オプション）",
+      "properties": {
+        "duration": {
+          "type": "string",
+          "description": "実行時間",
+          "pattern": "^\\d+[msh]\\d*[ms]?$",
+          "example": "15m30s"
+        },
+        "model_used": {
+          "type": "string",
+          "enum": ["sonnet", "opus", "haiku"],
+          "description": "使用モデル"
+        },
+        "token_count": {
+          "type": "integer",
+          "description": "トークン数",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

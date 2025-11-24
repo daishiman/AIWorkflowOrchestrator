@@ -561,6 +561,13 @@
 
 | スキル名                          | 概要                                     |
 | --------------------------------- | ---------------------------------------- |
+| **agent-architecture-patterns**   | オーケストレーター・ワーカー、ハブアンドスポーク、パイプライン、ステートマシンパターン |
+| **agent-structure-design**        | YAML Frontmatter設計、システムプロンプト構造、5段階ワークフロー設計 |
+| **agent-dependency-design**       | スキル依存、エージェント依存、ハンドオフプロトコル、循環依存検出 |
+| **agent-quality-standards**       | 5カテゴリ品質基準（構造、設計原則、セキュリティ、ドキュメンテーション、統合） |
+| **agent-validation-testing**      | 正常系・エッジケース・異常系テスト、YAML/Markdown構文検証 |
+| **agent-template-patterns**       | 再利用可能エージェントテンプレート、変数設計、インスタンス化スクリプト |
+| **project-architecture-integration** | ハイブリッドアーキテクチャ（shared/features）、データベース設計、REST API |
 | **agent-persona-design**          | ペルソナ定義、役割の明確化、制約設定     |
 | **tool-permission-management**    | 最小権限、ツールアクセス制御             |
 | **multi-agent-systems**           | エージェント間協調、メッセージパッシング |
