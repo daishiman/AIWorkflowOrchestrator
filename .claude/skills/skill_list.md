@@ -576,13 +576,13 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                       | 概要                                           |
-| ------------------------------ | ---------------------------------------------- |
-| **knowledge-management**       | SECI Model、暗黙知の形式知化                   |
-| **progressive-disclosure**     | 3 層開示モデル、情報の段階的提供               |
-| **documentation-architecture** | ドキュメント構造、リソース分割、メタデータ設計 |
-| **context-optimization**       | トークン効率、必要情報の抽出                   |
-| **best-practices-curation**    | ベストプラクティスの収集、更新、共有           |
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **knowledge-management** | `.claude/skills/knowledge-management/SKILL.md` | SECI Model、暗黙知の形式知化 |
+| **progressive-disclosure** | `.claude/skills/progressive-disclosure/SKILL.md` | 3層開示モデル、スキル発動最適化 |
+| **documentation-architecture** | `.claude/skills/documentation-architecture/SKILL.md` | ドキュメント構造、リソース分割 |
+| **context-optimization** | `.claude/skills/context-optimization/SKILL.md` | ファイルサイズ最適化、550行基準 |
+| **best-practices-curation** | `.claude/skills/best-practices-curation/SKILL.md` | ベストプラクティス収集、品質評価 |
 ```
 
 ## 35. MCP ツール統合スペシャリスト
