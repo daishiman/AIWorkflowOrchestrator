@@ -5,18 +5,18 @@
   "graphRenderingMode": "multi-agent",
   "linkDisplayMode": "all",
   "graphStats": {
-    "totalNodes": 72,
-    "folders": 12,
-    "files": 60,
+    "totalNodes": 129,
+    "folders": 31,
+    "files": 98,
     "images": 0,
     "videos": 0,
     "audio": 0,
     "code": 0,
-    "text": 55,
+    "text": 88,
     "html": 0,
-    "yaml": 1,
+    "yaml": 2,
     "json": 3,
-    "other": 1,
+    "other": 5,
     "totalLines": 0,
     "maxLines": 0
   },
@@ -183,6 +183,11 @@
                 "lines": 0
               },
               {
+                "name": "skill-librarian-original-backup.md",
+                "type": "file",
+                "lines": 0
+              },
+              {
                 "name": "skill-librarian.md",
                 "type": "file",
                 "lines": 0
@@ -277,34 +282,40 @@
             "type": "directory",
             "children": [
               {
-                "name": "prompt_format.yaml",
-                "type": "file",
-                "lines": 0
-              },
-              {
-                "name": "ナレッジ_Claude_Code_agents_ガイド.md",
-                "type": "file",
-                "lines": 0
-              },
-              {
-                "name": "ナレッジ_Claude_Code_command_ガイド.md",
-                "type": "file",
-                "lines": 0
-              },
-              {
-                "name": "ナレッジ_Claude_Code_skills_ガイド.md",
-                "type": "file",
-                "lines": 0
-              },
-              {
-                "name": "プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
-                "type": "file",
-                "lines": 0
-              },
-              {
-                "name": "作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
-                "type": "file",
-                "lines": 0
+                "name": "agents_skills_command_作成",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "prompt_format.yaml",
+                    "type": "file",
+                    "lines": 0
+                  },
+                  {
+                    "name": "ナレッジ_Claude_Code_agents_ガイド.md",
+                    "type": "file",
+                    "lines": 0
+                  },
+                  {
+                    "name": "ナレッジ_Claude_Code_command_ガイド.md",
+                    "type": "file",
+                    "lines": 0
+                  },
+                  {
+                    "name": "ナレッジ_Claude_Code_skills_ガイド.md",
+                    "type": "file",
+                    "lines": 0
+                  },
+                  {
+                    "name": "プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
+                    "type": "file",
+                    "lines": 0
+                  },
+                  {
+                    "name": "作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
+                    "type": "file",
+                    "lines": 0
+                  }
+                ]
               }
             ]
           },
@@ -314,9 +325,292 @@
             "lines": 0
           },
           {
-            "name": "slills",
+            "name": "skills",
             "type": "directory",
             "children": [
+              {
+                "name": "best-practices-curation",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "SKILL.md",
+                    "type": "file",
+                    "lines": 0
+                  },
+                  {
+                    "name": "resources",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "information-source-evaluation.md",
+                        "type": "file",
+                        "lines": 0
+                      },
+                      {
+                        "name": "integration-strategies.md",
+                        "type": "file",
+                        "lines": 0
+                      },
+                      {
+                        "name": "quality-scoring.md",
+                        "type": "file",
+                        "lines": 0
+                      }
+                    ]
+                  },
+                  {
+                    "name": "templates",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "evaluation-checklist.md",
+                        "type": "file",
+                        "lines": 0
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "context-optimization",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "SKILL.md",
+                    "type": "file",
+                    "lines": 0
+                  },
+                  {
+                    "name": "resources",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "compression-techniques.md",
+                        "type": "file",
+                        "lines": 0
+                      },
+                      {
+                        "name": "index-driven-design.md",
+                        "type": "file",
+                        "lines": 0
+                      },
+                      {
+                        "name": "lazy-loading-patterns.md",
+                        "type": "file",
+                        "lines": 0
+                      }
+                    ]
+                  },
+                  {
+                    "name": "scripts",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "estimate-tokens.sh",
+                        "type": "file",
+                        "lines": 0
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "documentation-architecture",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "SKILL.md",
+                    "type": "file",
+                    "lines": 0
+                  },
+                  {
+                    "name": "resources",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "directory-organization.md",
+                        "type": "file",
+                        "lines": 0
+                      },
+                      {
+                        "name": "hierarchy-design.md",
+                        "type": "file",
+                        "lines": 0
+                      },
+                      {
+                        "name": "naming-conventions.md",
+                        "type": "file",
+                        "lines": 0
+                      },
+                      {
+                        "name": "splitting-patterns.md",
+                        "type": "file",
+                        "lines": 0
+                      }
+                    ]
+                  },
+                  {
+                    "name": "scripts",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "analyze-structure.sh",
+                        "type": "file",
+                        "lines": 0
+                      }
+                    ]
+                  },
+                  {
+                    "name": "templates",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "resource-structure.md",
+                        "type": "file",
+                        "lines": 0
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "knowledge-management",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "SKILL.md",
+                    "type": "file",
+                    "lines": 0
+                  },
+                  {
+                    "name": "resources",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "curation-framework.md",
+                        "type": "file",
+                        "lines": 0
+                      },
+                      {
+                        "name": "freshness-strategy.md",
+                        "type": "file",
+                        "lines": 0
+                      },
+                      {
+                        "name": "quality-assurance.md",
+                        "type": "file",
+                        "lines": 0
+                      },
+                      {
+                        "name": "seci-combination.md",
+                        "type": "file",
+                        "lines": 0
+                      },
+                      {
+                        "name": "seci-externalization.md",
+                        "type": "file",
+                        "lines": 0
+                      },
+                      {
+                        "name": "seci-model-details.md",
+                        "type": "file",
+                        "lines": 0
+                      },
+                      {
+                        "name": "seci-socialization.md",
+                        "type": "file",
+                        "lines": 0
+                      }
+                    ]
+                  },
+                  {
+                    "name": "scripts",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "validate-knowledge.sh",
+                        "type": "file",
+                        "lines": 0
+                      }
+                    ]
+                  },
+                  {
+                    "name": "templates",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "knowledge-document-template.md",
+                        "type": "file",
+                        "lines": 0
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "progressive-disclosure",
+                "type": "directory",
+                "children": [
+                  {
+                    "name": "SKILL.md",
+                    "type": "file",
+                    "lines": 0
+                  },
+                  {
+                    "name": "resources",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "commitment-mechanism.md",
+                        "type": "file",
+                        "lines": 0
+                      },
+                      {
+                        "name": "metadata-design.md",
+                        "type": "file",
+                        "lines": 0
+                      },
+                      {
+                        "name": "skill-activation-optimization.md",
+                        "type": "file",
+                        "lines": 0
+                      },
+                      {
+                        "name": "three-layer-model.md",
+                        "type": "file",
+                        "lines": 0
+                      },
+                      {
+                        "name": "token-efficiency-strategies.md",
+                        "type": "file",
+                        "lines": 0
+                      }
+                    ]
+                  },
+                  {
+                    "name": "scripts",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "calculate-token-usage.sh",
+                        "type": "file",
+                        "lines": 0
+                      }
+                    ]
+                  },
+                  {
+                    "name": "templates",
+                    "type": "directory",
+                    "children": [
+                      {
+                        "name": "skill-metadata-template.yaml",
+                        "type": "file",
+                        "lines": 0
+                      }
+                    ]
+                  }
+                ]
+              },
               {
                 "name": "skill_list.md",
                 "type": "file",
@@ -387,6 +681,16 @@
                 "lines": 0
               }
             ]
+          },
+          {
+            "name": "skill-creation-complete-guide.md",
+            "type": "file",
+            "lines": 0
+          },
+          {
+            "name": "skill-creation-pattern-knowledge-management.md",
+            "type": "file",
+            "lines": 0
           }
         ]
       }
@@ -452,10 +756,10 @@
         "glowIntensity": 0,
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude",
-        "childFileCount": 37,
-        "x": -0.6069755794232052,
-        "y": 141.35424584894267,
-        "z": 13.624266700218033,
+        "childFileCount": 38,
+        "x": -2.3659596470786677,
+        "y": 145.4901965922113,
+        "z": 15.180091653996156,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -475,9 +779,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -0.13925140533593794,
-        "y": 144.98206813639456,
-        "z": 10.196845246768499,
+        "x": -0.9829531362813055,
+        "y": 144.8918723026694,
+        "z": 10.199379510835158,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -497,9 +801,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -5.31753190417928,
-        "y": 146.25490376709502,
-        "z": 17.878071490893404,
+        "x": 2.1726116147123986,
+        "y": 148.39546435821268,
+        "z": 17.539036675757206,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -519,9 +823,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -4.983928086096862,
-        "y": 139.7146302026774,
-        "z": 16.03358168068953,
+        "x": 2.519894530034915,
+        "y": 143.4056469818194,
+        "z": 14.24251394586811,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -541,9 +845,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": 3.8179839671026072,
-        "y": 138.34050446655547,
-        "z": 12.07208737421937,
+        "x": -2.0945216794890116,
+        "y": 141.2473614841917,
+        "z": 17.930507847038257,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -563,9 +867,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": 1.6501293246076192,
-        "y": 142.02818297963478,
-        "z": 17.661591858124453,
+        "x": -2.8874935475886527,
+        "y": 141.08206205312518,
+        "z": 18.859996161957135,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -585,9 +889,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -3.1363913231121883,
-        "y": 146.0595236796112,
-        "z": 14.895701013741654,
+        "x": -6.962513859005794,
+        "y": 148.52963305215445,
+        "z": 14.99237724057157,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -607,9 +911,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": 1.824490882544643,
-        "y": 139.29915796693257,
-        "z": 17.333763163268785,
+        "x": -1.4090438135219014,
+        "y": 143.57819959926346,
+        "z": 12.284720795140556,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -629,9 +933,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": 3.143797444217478,
-        "y": 144.31062187516346,
-        "z": 13.964644552140689,
+        "x": -4.238136570871042,
+        "y": 140.96122636736763,
+        "z": 15.14897580895197,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -651,9 +955,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -0.6455681149275501,
-        "y": 144.04733652652186,
-        "z": 13.261364776410867,
+        "x": 1.8594990003580247,
+        "y": 144.2855198999005,
+        "z": 12.438774746950452,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -673,9 +977,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -3.115143140759666,
-        "y": 138.59467052734834,
-        "z": 18.337251253836875,
+        "x": 2.5494490181448763,
+        "y": 146.37700561114505,
+        "z": 13.301775421748072,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -695,9 +999,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -3.0284076982976655,
-        "y": 145.20300281109579,
-        "z": 13.602069781110536,
+        "x": -1.1816603241465025,
+        "y": 148.8709005517768,
+        "z": 17.72835298493187,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -717,9 +1021,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -3.1306080641428164,
-        "y": 143.72485249457378,
-        "z": 16.480230755443426,
+        "x": 0.33988120759874496,
+        "y": 145.95806511173902,
+        "z": 16.84901204071619,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -739,9 +1043,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -4.845163447526671,
-        "y": 143.63249654700584,
-        "z": 10.038925192165703,
+        "x": -0.8599558732678987,
+        "y": 146.88716458425216,
+        "z": 13.713836909410869,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -761,9 +1065,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": 1.5766336226773996,
-        "y": 145.48116115884017,
-        "z": 12.623555043715244,
+        "x": -5.15432244270175,
+        "y": 141.23347419568026,
+        "z": 10.671359278499214,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -783,9 +1087,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": 4.026616160732697,
-        "y": 141.4211902901838,
-        "z": 12.175888350401115,
+        "x": -4.932771527782753,
+        "y": 150.34754694956396,
+        "z": 12.943444665948181,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -805,9 +1109,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -0.9759585156039625,
-        "y": 145.6568318785188,
-        "z": 9.650053709683245,
+        "x": -0.4992243285109872,
+        "y": 141.3857086943648,
+        "z": 16.446728620176643,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -827,9 +1131,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -3.6919811357440553,
-        "y": 140.30835397581893,
-        "z": 16.262780256454622,
+        "x": -3.9767908171385797,
+        "y": 147.36106163775645,
+        "z": 15.354824446052415,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -849,9 +1153,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -1.031456224580773,
-        "y": 138.42551740484487,
-        "z": 15.600731625255634,
+        "x": -3.853418550320355,
+        "y": 145.1057374725578,
+        "z": 10.7561003682179,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -871,9 +1175,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": 0.9802701048689615,
-        "y": 137.10812663221907,
-        "z": 11.132247742847037,
+        "x": -6.972585147593174,
+        "y": 149.98672446374664,
+        "z": 16.56037113893906,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -893,9 +1197,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": 3.357671130777003,
-        "y": 143.26549511053997,
-        "z": 12.276474593175063,
+        "x": 0.34726593571303077,
+        "y": 142.24616646503065,
+        "z": 12.811867590337137,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -915,9 +1219,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -5.308469659374069,
-        "y": 145.67351038514528,
-        "z": 15.276816519639059,
+        "x": -7.294298852406495,
+        "y": 149.95401906503756,
+        "z": 18.659620279038737,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -937,9 +1241,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -5.529697835459832,
-        "y": 140.61718408103079,
-        "z": 10.24580303961129,
+        "x": -0.5611065403240452,
+        "y": 147.45746788611254,
+        "z": 14.712907358050831,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -959,9 +1263,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": 2.845818510392078,
-        "y": 146.07865427941343,
-        "z": 16.196563415079655,
+        "x": 0.1586833296912986,
+        "y": 149.44422724741074,
+        "z": 14.119937519905251,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -981,9 +1285,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -3.39623214428121,
-        "y": 137.5361676914543,
-        "z": 10.088894698411968,
+        "x": -6.974019117019818,
+        "y": 148.66919690890438,
+        "z": 13.753796016306728,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1003,9 +1307,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -0.47919428291429433,
-        "y": 144.0336705943132,
-        "z": 9.521741367128458,
+        "x": -2.402754837253018,
+        "y": 143.6720623524596,
+        "z": 15.551014520355505,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1025,9 +1329,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": 3.4225346899322804,
-        "y": 136.42971121607076,
-        "z": 10.368980233826571,
+        "x": 0.32650626968253427,
+        "y": 145.5340558344426,
+        "z": 19.15347034336604,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1047,9 +1351,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": 2.0111750490348483,
-        "y": 137.96856586167465,
-        "z": 11.307585175915307,
+        "x": -4.4862587765189295,
+        "y": 141.75659925211775,
+        "z": 13.662118935729476,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1069,9 +1373,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -4.0255686620087845,
-        "y": 139.01138057190948,
-        "z": 17.924194065319753,
+        "x": -6.535152650180999,
+        "y": 149.5771757950386,
+        "z": 18.530505878575852,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1091,9 +1395,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -2.9102672173549466,
-        "y": 144.6218266819069,
-        "z": 14.722553855595365,
+        "x": -5.328765828759676,
+        "y": 145.20918763143098,
+        "z": 16.904039033696712,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1113,9 +1417,31 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -3.94206836824682,
-        "y": 136.80810868139196,
-        "z": 14.473097288069297,
+        "x": -5.935265855375868,
+        "y": 144.3862517171321,
+        "z": 10.190935263233508,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/agents/skill-librarian-original-backup.md",
+        "name": "skill-librarian-original-backup.md",
+        "path": "AIWorkflowOrchestrator/.claude/agents/skill-librarian-original-backup.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/agents",
+        "childFileCount": 0,
+        "x": 0.5566309195794577,
+        "y": 145.94320173219728,
+        "z": 17.96427291944567,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1135,9 +1461,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -0.29016367594644166,
-        "y": 144.09887506391158,
-        "z": 8.70289511899784,
+        "x": -6.377555689861191,
+        "y": 141.84066139724757,
+        "z": 16.659163768501138,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1157,9 +1483,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -0.8101895759214801,
-        "y": 140.13302189321277,
-        "z": 9.257829551374948,
+        "x": 0.23483094044385355,
+        "y": 145.4930682292428,
+        "z": 16.311788199028225,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1179,9 +1505,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -5.044912724995326,
-        "y": 145.10864466371063,
-        "z": 12.171747647961926,
+        "x": 0.34753924338990094,
+        "y": 149.9956957970461,
+        "z": 13.41336396106844,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1201,9 +1527,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -4.477133001325166,
-        "y": 143.31478729356346,
-        "z": 9.44418775280026,
+        "x": -4.359353631619911,
+        "y": 145.34004818047995,
+        "z": 16.79668954550265,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1223,9 +1549,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -2.6038647954384615,
-        "y": 144.03437419840085,
-        "z": 9.0380427538774,
+        "x": -4.504041901633737,
+        "y": 140.9865494127986,
+        "z": 19.551050058949986,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1245,9 +1571,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": 0.538447267343785,
-        "y": 136.38887565933396,
-        "z": 13.193388193625875,
+        "x": 1.0801189300508733,
+        "y": 146.50604055482174,
+        "z": 12.158850751952635,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1267,9 +1593,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/agents",
         "childFileCount": 0,
-        "x": -1.482519989852404,
-        "y": 141.6949359673804,
-        "z": 9.95819094826089,
+        "x": -0.25230965885989676,
+        "y": 145.65473998506624,
+        "z": 16.6071586815792,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1289,9 +1615,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude",
         "childFileCount": 1,
-        "x": -6.180009664488141,
-        "y": 144.59712301892148,
-        "z": 14.469906493536305,
+        "x": -4.421573759928254,
+        "y": 147.31334836375763,
+        "z": 11.510889535828989,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1311,9 +1637,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/commands",
         "childFileCount": 1,
-        "x": -4.19412622041842,
-        "y": 140.56418274510932,
-        "z": 19.061097753789355,
+        "x": -4.361453025737049,
+        "y": 146.20115718504712,
+        "z": 7.960283496911382,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1333,9 +1659,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/commands/ai",
         "childFileCount": 0,
-        "x": -2.1869477137510493,
-        "y": 135.9044409931276,
-        "z": 14.29619843021289,
+        "x": -7.128229708027257,
+        "y": 146.76108747604113,
+        "z": 11.331916048593913,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1355,9 +1681,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/commands",
         "childFileCount": 0,
-        "x": -8.773135723186455,
-        "y": 145.93596326639053,
-        "z": 17.47335870525413,
+        "x": -3.151703990329546,
+        "y": 143.9469762208481,
+        "z": 15.585265617482312,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1377,9 +1703,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude",
         "childFileCount": 5,
-        "x": -0.47857347739700584,
-        "y": 140.45460567059146,
-        "z": 13.079614891521533,
+        "x": -7.617334833388536,
+        "y": 139.2005844127027,
+        "z": 12.986735950707484,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1399,9 +1725,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/mcp",
         "childFileCount": 0,
-        "x": -4.248531980704275,
-        "y": 135.57766026735297,
-        "z": 10.919751576608515,
+        "x": -11.165885896361335,
+        "y": 134.24312966298308,
+        "z": 13.165897532195093,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1421,9 +1747,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/mcp",
         "childFileCount": 0,
-        "x": -2.5392026036737176,
-        "y": 138.5804011856596,
-        "z": 17.533008006404145,
+        "x": -2.751354121313276,
+        "y": 142.76567249137904,
+        "z": 16.37217599433519,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1443,9 +1769,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/mcp",
         "childFileCount": 0,
-        "x": -0.5134590462909512,
-        "y": 143.64944844140678,
-        "z": 8.279777625438788,
+        "x": -9.308482698408406,
+        "y": 134.5332230834651,
+        "z": 9.905865353484755,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1465,9 +1791,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/mcp",
         "childFileCount": 0,
-        "x": 1.098934360763371,
-        "y": 144.39926524606383,
-        "z": 11.494422341303107,
+        "x": -6.113469562211064,
+        "y": 142.8229867188579,
+        "z": 14.797371076991134,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1487,9 +1813,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude/mcp",
         "childFileCount": 0,
-        "x": -1.728545074086167,
-        "y": 135.76374657870315,
-        "z": 14.202522269951487,
+        "x": -2.776693173513955,
+        "y": 142.7846993891317,
+        "z": 9.642650782195092,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1508,18 +1834,40 @@
         "glowIntensity": 0,
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude",
-        "childFileCount": 6,
-        "x": -2.822871767289607,
-        "y": 141.4044061900185,
-        "z": 8.94735269125731,
+        "childFileCount": 0,
+        "x": 1.6101212974622197,
+        "y": 142.29999347640387,
+        "z": 15.527849740848918,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
       },
       {
-        "id": "AIWorkflowOrchestrator/.claude/prompt/prompt_format.yaml",
+        "id": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成",
+        "name": "agents_skills_command_作成",
+        "path": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/prompt",
+        "childFileCount": 6,
+        "x": 1.5296764454526284,
+        "y": 144.61967889014605,
+        "z": 19.074190338447437,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成/prompt_format.yaml",
         "name": "prompt_format.yaml",
-        "path": "AIWorkflowOrchestrator/.claude/prompt/prompt_format.yaml",
+        "path": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成/prompt_format.yaml",
         "type": "file",
         "lines": 0,
         "val": 6,
@@ -1529,19 +1877,19 @@
         "defaultGlow": 0.18,
         "glowIntensity": 0,
         "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator/.claude/prompt",
+        "parentPath": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成",
         "childFileCount": 0,
-        "x": -3.696856609060925,
-        "y": 138.98035494634325,
-        "z": 6.003624855922562,
+        "x": 2.412938561997198,
+        "y": 148.8941361419038,
+        "z": 19.890318513607234,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
       },
       {
-        "id": "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md",
+        "id": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_agents_ガイド.md",
         "name": "ナレッジ_Claude_Code_agents_ガイド.md",
-        "path": "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md",
+        "path": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_agents_ガイド.md",
         "type": "file",
         "lines": 0,
         "val": 6,
@@ -1551,19 +1899,19 @@
         "defaultGlow": 0.18,
         "glowIntensity": 0,
         "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator/.claude/prompt",
+        "parentPath": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成",
         "childFileCount": 0,
-        "x": -5.999186169701118,
-        "y": 142.3232958948319,
-        "z": 5.816271336194064,
+        "x": 4.982847260626791,
+        "y": 145.55505441035035,
+        "z": 20.037878045402543,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
       },
       {
-        "id": "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_command_ガイド.md",
+        "id": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_command_ガイド.md",
         "name": "ナレッジ_Claude_Code_command_ガイド.md",
-        "path": "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_command_ガイド.md",
+        "path": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_command_ガイド.md",
         "type": "file",
         "lines": 0,
         "val": 6,
@@ -1573,19 +1921,19 @@
         "defaultGlow": 0.18,
         "glowIntensity": 0,
         "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator/.claude/prompt",
+        "parentPath": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成",
         "childFileCount": 0,
-        "x": 1.5889356314166019,
-        "y": 141.50543649945993,
-        "z": 4.657681956972496,
+        "x": 1.7970969008204478,
+        "y": 143.93581386474705,
+        "z": 15.495179136470492,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
       },
       {
-        "id": "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md",
+        "id": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_skills_ガイド.md",
         "name": "ナレッジ_Claude_Code_skills_ガイド.md",
-        "path": "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md",
+        "path": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_skills_ガイド.md",
         "type": "file",
         "lines": 0,
         "val": 6,
@@ -1595,19 +1943,19 @@
         "defaultGlow": 0.18,
         "glowIntensity": 0,
         "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator/.claude/prompt",
+        "parentPath": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成",
         "childFileCount": 0,
-        "x": -5.450086351658786,
-        "y": 140.97660143131253,
-        "z": 7.221801924130839,
+        "x": -0.7153944301943755,
+        "y": 141.60065632255188,
+        "z": 15.224870416966928,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
       },
       {
-        "id": "AIWorkflowOrchestrator/.claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
+        "id": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
         "name": "プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
-        "path": "AIWorkflowOrchestrator/.claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
+        "path": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
         "type": "file",
         "lines": 0,
         "val": 6,
@@ -1617,19 +1965,19 @@
         "defaultGlow": 0.18,
         "glowIntensity": 0,
         "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator/.claude/prompt",
+        "parentPath": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成",
         "childFileCount": 0,
-        "x": -2.1523889904265987,
-        "y": 139.37677247335125,
-        "z": 10.709447711094663,
+        "x": 5.299363632657681,
+        "y": 145.6362556643165,
+        "z": 19.30502958829716,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
       },
       {
-        "id": "AIWorkflowOrchestrator/.claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
+        "id": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
         "name": "作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
-        "path": "AIWorkflowOrchestrator/.claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
+        "path": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
         "type": "file",
         "lines": 0,
         "val": 6,
@@ -1639,11 +1987,11 @@
         "defaultGlow": 0.18,
         "glowIntensity": 0,
         "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator/.claude/prompt",
+        "parentPath": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成",
         "childFileCount": 0,
-        "x": -1.5610149073903807,
-        "y": 142.13794699130204,
-        "z": 9.126064953567372,
+        "x": 5.907506399415617,
+        "y": 147.2521200690413,
+        "z": 22.441678598208238,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1659,21 +2007,21 @@
         "baseColor": "#8e44ad",
         "originalColor": "#8e44ad",
         "defaultGlow": 0.18,
-        "glowIntensity": 0,
-        "highlighted": false,
+        "glowIntensity": 2.4,
+        "highlighted": true,
         "parentPath": "AIWorkflowOrchestrator/.claude",
         "childFileCount": 0,
-        "x": 0.7807462694235605,
-        "y": 144.49943111154198,
-        "z": 11.140866782821982,
+        "x": -6.539311593749632,
+        "y": 141.02334656617552,
+        "z": 9.268229177267955,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
       },
       {
-        "id": "AIWorkflowOrchestrator/.claude/slills",
-        "name": "slills",
-        "path": "AIWorkflowOrchestrator/.claude/slills",
+        "id": "AIWorkflowOrchestrator/.claude/skills",
+        "name": "skills",
+        "path": "AIWorkflowOrchestrator/.claude/skills",
         "type": "directory",
         "lines": 0,
         "val": 14,
@@ -1685,17 +2033,39 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.claude",
         "childFileCount": 1,
-        "x": -5.98256560329591,
-        "y": 147.35061447663776,
-        "z": 14.524345507997037,
+        "x": -7.536536824555912,
+        "y": 144.0255802501804,
+        "z": 6.63076231543727,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
       },
       {
-        "id": "AIWorkflowOrchestrator/.claude/slills/skill_list.md",
-        "name": "skill_list.md",
-        "path": "AIWorkflowOrchestrator/.claude/slills/skill_list.md",
+        "id": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation",
+        "name": "best-practices-curation",
+        "path": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills",
+        "childFileCount": 1,
+        "x": -3.557618665027262,
+        "y": 144.05133948433487,
+        "z": 7.151910647550569,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/SKILL.md",
+        "name": "SKILL.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/SKILL.md",
         "type": "file",
         "lines": 0,
         "val": 6,
@@ -1705,11 +2075,1155 @@
         "defaultGlow": 0.18,
         "glowIntensity": 0,
         "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator/.claude/slills",
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation",
         "childFileCount": 0,
-        "x": -4.70379019321585,
-        "y": 146.86658544571,
-        "z": 19.309326712899114,
+        "x": -6.750545143879633,
+        "y": 144.03110473389856,
+        "z": 2.552758636302862,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/resources",
+        "name": "resources",
+        "path": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/resources",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation",
+        "childFileCount": 3,
+        "x": 0.8233652418451274,
+        "y": 142.99579918447435,
+        "z": 5.29255778291308,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/resources/information-source-evaluation.md",
+        "name": "information-source-evaluation.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/resources/information-source-evaluation.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/resources",
+        "childFileCount": 0,
+        "x": 5.0666924359334615,
+        "y": 145.92823859290309,
+        "z": 5.651255772013494,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/resources/integration-strategies.md",
+        "name": "integration-strategies.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/resources/integration-strategies.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/resources",
+        "childFileCount": 0,
+        "x": -0.7971061391661274,
+        "y": 147.63365109077617,
+        "z": 6.2629025913903416,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/resources/quality-scoring.md",
+        "name": "quality-scoring.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/resources/quality-scoring.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/resources",
+        "childFileCount": 0,
+        "x": 5.282106919237043,
+        "y": 138.47082245624227,
+        "z": 2.1987701218785403,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/templates",
+        "name": "templates",
+        "path": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/templates",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation",
+        "childFileCount": 1,
+        "x": -3.702947601039421,
+        "y": 143.41205718308777,
+        "z": 6.814839697851577,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/templates/evaluation-checklist.md",
+        "name": "evaluation-checklist.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/templates/evaluation-checklist.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/templates",
+        "childFileCount": 0,
+        "x": -8.436998687992109,
+        "y": 144.70898131519323,
+        "z": 1.8457097220438587,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/context-optimization",
+        "name": "context-optimization",
+        "path": "AIWorkflowOrchestrator/.claude/skills/context-optimization",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills",
+        "childFileCount": 1,
+        "x": -8.394951239829307,
+        "y": 147.8116607769554,
+        "z": 6.063147262621291,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/context-optimization/SKILL.md",
+        "name": "SKILL.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/context-optimization/SKILL.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/context-optimization",
+        "childFileCount": 0,
+        "x": -10.047355588419196,
+        "y": 151.16941326983175,
+        "z": 9.695401102872767,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/context-optimization/resources",
+        "name": "resources",
+        "path": "AIWorkflowOrchestrator/.claude/skills/context-optimization/resources",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/context-optimization",
+        "childFileCount": 3,
+        "x": -12.585334059028138,
+        "y": 144.39928995028214,
+        "z": 7.320338694316677,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/context-optimization/resources/compression-techniques.md",
+        "name": "compression-techniques.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/context-optimization/resources/compression-techniques.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/context-optimization/resources",
+        "childFileCount": 0,
+        "x": -12.231288422040762,
+        "y": 144.0481367769922,
+        "z": 6.620948000016508,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/context-optimization/resources/index-driven-design.md",
+        "name": "index-driven-design.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/context-optimization/resources/index-driven-design.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/context-optimization/resources",
+        "childFileCount": 0,
+        "x": -12.335525481673269,
+        "y": 147.85027274512905,
+        "z": 5.164735630666639,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/context-optimization/resources/lazy-loading-patterns.md",
+        "name": "lazy-loading-patterns.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/context-optimization/resources/lazy-loading-patterns.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/context-optimization/resources",
+        "childFileCount": 0,
+        "x": -14.778125948778811,
+        "y": 144.30985490712197,
+        "z": 9.604271261529533,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/context-optimization/scripts",
+        "name": "scripts",
+        "path": "AIWorkflowOrchestrator/.claude/skills/context-optimization/scripts",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/context-optimization",
+        "childFileCount": 1,
+        "x": -3.719330219971658,
+        "y": 148.77565007485083,
+        "z": 6.695681285916342,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/context-optimization/scripts/estimate-tokens.sh",
+        "name": "estimate-tokens.sh",
+        "path": "AIWorkflowOrchestrator/.claude/skills/context-optimization/scripts/estimate-tokens.sh",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#57606f",
+        "originalColor": "#57606f",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/context-optimization/scripts",
+        "childFileCount": 0,
+        "x": 0.6660194973518472,
+        "y": 145.2987839196855,
+        "z": 3.8542848144153496,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture",
+        "name": "documentation-architecture",
+        "path": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills",
+        "childFileCount": 1,
+        "x": -10.21934049390666,
+        "y": 142.52231455262984,
+        "z": 9.013861960014841,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/SKILL.md",
+        "name": "SKILL.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/SKILL.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture",
+        "childFileCount": 0,
+        "x": -6.355542084096769,
+        "y": 143.68733353875254,
+        "z": 8.235923683414821,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/resources",
+        "name": "resources",
+        "path": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/resources",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture",
+        "childFileCount": 4,
+        "x": -8.918075356004499,
+        "y": 146.93139915917612,
+        "z": 7.092699500280754,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/resources/directory-organization.md",
+        "name": "directory-organization.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/resources/directory-organization.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/resources",
+        "childFileCount": 0,
+        "x": -8.8281257059544,
+        "y": 149.08539954073836,
+        "z": 5.707691896643829,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/resources/hierarchy-design.md",
+        "name": "hierarchy-design.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/resources/hierarchy-design.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/resources",
+        "childFileCount": 0,
+        "x": -4.214042127606229,
+        "y": 150.75400270729872,
+        "z": 2.384092446703134,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/resources/naming-conventions.md",
+        "name": "naming-conventions.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/resources/naming-conventions.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/resources",
+        "childFileCount": 0,
+        "x": -5.744357836887314,
+        "y": 147.97618430186333,
+        "z": 5.034181571121607,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/resources/splitting-patterns.md",
+        "name": "splitting-patterns.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/resources/splitting-patterns.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/resources",
+        "childFileCount": 0,
+        "x": -11.639801153153147,
+        "y": 143.72090626518371,
+        "z": 6.281843261469692,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/scripts",
+        "name": "scripts",
+        "path": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/scripts",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture",
+        "childFileCount": 1,
+        "x": -9.853486907364058,
+        "y": 146.12592680723455,
+        "z": 13.744645269921264,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/scripts/analyze-structure.sh",
+        "name": "analyze-structure.sh",
+        "path": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/scripts/analyze-structure.sh",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#57606f",
+        "originalColor": "#57606f",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/scripts",
+        "childFileCount": 0,
+        "x": -11.532238091204576,
+        "y": 145.44515803129474,
+        "z": 12.323310973630885,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/templates",
+        "name": "templates",
+        "path": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/templates",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture",
+        "childFileCount": 1,
+        "x": -12.848023300385329,
+        "y": 144.12390900706288,
+        "z": 5.098506225671901,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/templates/resource-structure.md",
+        "name": "resource-structure.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/templates/resource-structure.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/templates",
+        "childFileCount": 0,
+        "x": -11.551864178632808,
+        "y": 146.48783759345838,
+        "z": 4.450131010657318,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/knowledge-management",
+        "name": "knowledge-management",
+        "path": "AIWorkflowOrchestrator/.claude/skills/knowledge-management",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills",
+        "childFileCount": 1,
+        "x": -3.4251237879283565,
+        "y": 140.79069273143924,
+        "z": 1.726628964417686,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/SKILL.md",
+        "name": "SKILL.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/SKILL.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/knowledge-management",
+        "childFileCount": 0,
+        "x": -7.275415521521135,
+        "y": 136.09643964060663,
+        "z": 2.256383830324377,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources",
+        "name": "resources",
+        "path": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/knowledge-management",
+        "childFileCount": 7,
+        "x": -6.100904209702162,
+        "y": 137.91638808106936,
+        "z": 6.433679238626272,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources/curation-framework.md",
+        "name": "curation-framework.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources/curation-framework.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources",
+        "childFileCount": 0,
+        "x": -7.7613410691467095,
+        "y": 134.34936067484904,
+        "z": 5.041391242688793,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources/freshness-strategy.md",
+        "name": "freshness-strategy.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources/freshness-strategy.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources",
+        "childFileCount": 0,
+        "x": -4.23348253409077,
+        "y": 134.2112653992785,
+        "z": 11.168467737778204,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources/quality-assurance.md",
+        "name": "quality-assurance.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources/quality-assurance.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources",
+        "childFileCount": 0,
+        "x": -7.686419279108107,
+        "y": 141.5363205526803,
+        "z": 6.307484242908558,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources/seci-combination.md",
+        "name": "seci-combination.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources/seci-combination.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources",
+        "childFileCount": 0,
+        "x": -2.9605817179689504,
+        "y": 142.7351188451015,
+        "z": 10.979552490392333,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources/seci-externalization.md",
+        "name": "seci-externalization.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources/seci-externalization.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources",
+        "childFileCount": 0,
+        "x": -6.699557170037497,
+        "y": 135.3078143174109,
+        "z": 10.33899306584616,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources/seci-model-details.md",
+        "name": "seci-model-details.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources/seci-model-details.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources",
+        "childFileCount": 0,
+        "x": -6.26946895105382,
+        "y": 136.40757249932344,
+        "z": 10.0356463292309,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources/seci-socialization.md",
+        "name": "seci-socialization.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources/seci-socialization.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources",
+        "childFileCount": 0,
+        "x": -9.255226517564331,
+        "y": 135.0286691292722,
+        "z": 8.301241430601408,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/scripts",
+        "name": "scripts",
+        "path": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/scripts",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/knowledge-management",
+        "childFileCount": 1,
+        "x": -7.32968873742573,
+        "y": 142.5881853740956,
+        "z": 3.8785438231422145,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/scripts/validate-knowledge.sh",
+        "name": "validate-knowledge.sh",
+        "path": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/scripts/validate-knowledge.sh",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#57606f",
+        "originalColor": "#57606f",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/scripts",
+        "childFileCount": 0,
+        "x": -7.0883726310276245,
+        "y": 147.36849790553285,
+        "z": 8.783976890489125,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/templates",
+        "name": "templates",
+        "path": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/templates",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/knowledge-management",
+        "childFileCount": 1,
+        "x": -3.317360354043903,
+        "y": 144.0900478431172,
+        "z": 2.3696269163859065,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/templates/knowledge-document-template.md",
+        "name": "knowledge-document-template.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/templates/knowledge-document-template.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/templates",
+        "childFileCount": 0,
+        "x": 1.4559223442780538,
+        "y": 143.10159070055803,
+        "z": 2.1647966268358423,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure",
+        "name": "progressive-disclosure",
+        "path": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills",
+        "childFileCount": 1,
+        "x": -4.036892100397678,
+        "y": 140.24475718143358,
+        "z": 3.9596564409036996,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/SKILL.md",
+        "name": "SKILL.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/SKILL.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure",
+        "childFileCount": 0,
+        "x": -6.9046467132382645,
+        "y": 136.06632387498198,
+        "z": 3.694826273717368,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources",
+        "name": "resources",
+        "path": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure",
+        "childFileCount": 5,
+        "x": -1.2766395454904655,
+        "y": 142.4445059720582,
+        "z": 8.336823139442476,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources/commitment-mechanism.md",
+        "name": "commitment-mechanism.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources/commitment-mechanism.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources",
+        "childFileCount": 0,
+        "x": -3.139024706475224,
+        "y": 144.2404939508491,
+        "z": 10.108461101107308,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources/metadata-design.md",
+        "name": "metadata-design.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources/metadata-design.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources",
+        "childFileCount": 0,
+        "x": -0.2642658611011739,
+        "y": 143.08958992569347,
+        "z": 8.930853191679327,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources/skill-activation-optimization.md",
+        "name": "skill-activation-optimization.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources/skill-activation-optimization.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources",
+        "childFileCount": 0,
+        "x": -0.9254423134964185,
+        "y": 142.06074438120982,
+        "z": 11.35348955514106,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources/three-layer-model.md",
+        "name": "three-layer-model.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources/three-layer-model.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources",
+        "childFileCount": 0,
+        "x": -4.422030795399898,
+        "y": 147.42632669409898,
+        "z": 4.8877156901920795,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources/token-efficiency-strategies.md",
+        "name": "token-efficiency-strategies.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources/token-efficiency-strategies.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources",
+        "childFileCount": 0,
+        "x": 1.1551362632321704,
+        "y": 138.5757693707437,
+        "z": 12.402538561489925,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/scripts",
+        "name": "scripts",
+        "path": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/scripts",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure",
+        "childFileCount": 1,
+        "x": 0.2227921061738769,
+        "y": 141.06035205747776,
+        "z": 7.274558837752706,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/scripts/calculate-token-usage.sh",
+        "name": "calculate-token-usage.sh",
+        "path": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/scripts/calculate-token-usage.sh",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#57606f",
+        "originalColor": "#57606f",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/scripts",
+        "childFileCount": 0,
+        "x": -2.026222242000071,
+        "y": 144.37948590488296,
+        "z": 7.892595959475183,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/templates",
+        "name": "templates",
+        "path": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/templates",
+        "type": "directory",
+        "lines": 0,
+        "val": 14,
+        "color": "#2c3038",
+        "baseColor": "#4ec9b0",
+        "originalColor": "#4ec9b0",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure",
+        "childFileCount": 1,
+        "x": -3.5055550315718675,
+        "y": 138.47832741703934,
+        "z": 2.930786967327218,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml",
+        "name": "skill-metadata-template.yaml",
+        "path": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#f1c40f",
+        "originalColor": "#f1c40f",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/templates",
+        "childFileCount": 0,
+        "x": -2.370440998881631,
+        "y": 136.95983427843348,
+        "z": 1.9486736495326409,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/.claude/skills/skill_list.md",
+        "name": "skill_list.md",
+        "path": "AIWorkflowOrchestrator/.claude/skills/skill_list.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/.claude/skills",
+        "childFileCount": 0,
+        "x": -9.56105453653598,
+        "y": 147.55273748576596,
+        "z": 9.525093962977904,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1769,13 +3283,13 @@
         "baseColor": "#8e44ad",
         "originalColor": "#8e44ad",
         "defaultGlow": 0.18,
-        "glowIntensity": 0,
-        "highlighted": false,
+        "glowIntensity": 2.4,
+        "highlighted": true,
         "parentPath": "AIWorkflowOrchestrator/.kamui",
         "childFileCount": 0,
-        "x": -4.516168074793029,
-        "y": 140.99081492686537,
-        "z": 17.372759142261568,
+        "x": -5.980546447884567,
+        "y": 139.34922300666054,
+        "z": 14.223940051005151,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1795,9 +3309,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.kamui",
         "childFileCount": 2,
-        "x": -4.0510717693687965,
-        "y": 141.8209866382911,
-        "z": 16.917363385162947,
+        "x": -7.902509050204409,
+        "y": 140.4952434662283,
+        "z": 12.109989836874519,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1817,9 +3331,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.kamui/prompt",
         "childFileCount": 0,
-        "x": -8.376479168717266,
-        "y": 144.42236703072527,
-        "z": 16.747724582204476,
+        "x": -10.35445757962016,
+        "y": 144.12773619822008,
+        "z": 14.443776503623601,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1839,9 +3353,9 @@
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator/.kamui/prompt",
         "childFileCount": 0,
-        "x": 0.47318814659713926,
-        "y": 140.11059423534294,
-        "z": 15.03137337051707,
+        "x": -8.529413974180883,
+        "y": 139.50645688658602,
+        "z": 7.7730522903531165,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1861,9 +3375,9 @@
         "highlighted": true,
         "parentPath": "AIWorkflowOrchestrator/.kamui",
         "childFileCount": 0,
-        "x": -6.554193493379982,
-        "y": 136.9728761385747,
-        "z": 8.829890422030836,
+        "x": -9.735400974430414,
+        "y": 137.63363101989282,
+        "z": 17.49411844712248,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -1904,7 +3418,7 @@
         "glowIntensity": 0,
         "highlighted": false,
         "parentPath": "AIWorkflowOrchestrator",
-        "childFileCount": 0,
+        "childFileCount": 2,
         "x": -5.910395969099346,
         "y": 145.3264689350591,
         "z": 16.01501635443097,
@@ -1974,6 +3488,50 @@
         "x": -4.801093735523859,
         "y": 142.4456186244939,
         "z": 14.307976624805885,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/docs/skill-creation-complete-guide.md",
+        "name": "skill-creation-complete-guide.md",
+        "path": "AIWorkflowOrchestrator/docs/skill-creation-complete-guide.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 2.4,
+        "highlighted": true,
+        "parentPath": "AIWorkflowOrchestrator/docs",
+        "childFileCount": 0,
+        "x": -2.5149654660822387,
+        "y": 150.14591897961847,
+        "z": 13.52960689079679,
+        "vx": 0.562360533541566,
+        "vy": 1.6658914866812142,
+        "vz": -0.5500846587732893
+      },
+      {
+        "id": "AIWorkflowOrchestrator/docs/skill-creation-pattern-knowledge-management.md",
+        "name": "skill-creation-pattern-knowledge-management.md",
+        "path": "AIWorkflowOrchestrator/docs/skill-creation-pattern-knowledge-management.md",
+        "type": "file",
+        "lines": 0,
+        "val": 6,
+        "color": "#2c3038",
+        "baseColor": "#3498db",
+        "originalColor": "#3498db",
+        "defaultGlow": 0.18,
+        "glowIntensity": 0,
+        "highlighted": false,
+        "parentPath": "AIWorkflowOrchestrator/docs",
+        "childFileCount": 0,
+        "x": -7.274530056461112,
+        "y": 146.1326765553588,
+        "z": 14.709725405523988,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
@@ -2142,6 +3700,11 @@
       },
       {
         "source": "AIWorkflowOrchestrator/.claude/agents",
+        "target": "AIWorkflowOrchestrator/.claude/agents/skill-librarian-original-backup.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/agents",
         "target": "AIWorkflowOrchestrator/.claude/agents/skill-librarian.md",
         "type": "tree"
       },
@@ -2232,32 +3795,37 @@
       },
       {
         "source": "AIWorkflowOrchestrator/.claude/prompt",
-        "target": "AIWorkflowOrchestrator/.claude/prompt/prompt_format.yaml",
+        "target": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成",
         "type": "tree"
       },
       {
-        "source": "AIWorkflowOrchestrator/.claude/prompt",
-        "target": "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md",
+        "source": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成",
+        "target": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成/prompt_format.yaml",
         "type": "tree"
       },
       {
-        "source": "AIWorkflowOrchestrator/.claude/prompt",
-        "target": "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_command_ガイド.md",
+        "source": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成",
+        "target": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_agents_ガイド.md",
         "type": "tree"
       },
       {
-        "source": "AIWorkflowOrchestrator/.claude/prompt",
-        "target": "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md",
+        "source": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成",
+        "target": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_command_ガイド.md",
         "type": "tree"
       },
       {
-        "source": "AIWorkflowOrchestrator/.claude/prompt",
-        "target": "AIWorkflowOrchestrator/.claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
+        "source": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成",
+        "target": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_skills_ガイド.md",
         "type": "tree"
       },
       {
-        "source": "AIWorkflowOrchestrator/.claude/prompt",
-        "target": "AIWorkflowOrchestrator/.claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
+        "source": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成",
+        "target": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成",
+        "target": "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
         "type": "tree"
       },
       {
@@ -2267,12 +3835,277 @@
       },
       {
         "source": "AIWorkflowOrchestrator/.claude",
-        "target": "AIWorkflowOrchestrator/.claude/slills",
+        "target": "AIWorkflowOrchestrator/.claude/skills",
         "type": "tree"
       },
       {
-        "source": "AIWorkflowOrchestrator/.claude/slills",
-        "target": "AIWorkflowOrchestrator/.claude/slills/skill_list.md",
+        "source": "AIWorkflowOrchestrator/.claude/skills",
+        "target": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation",
+        "target": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/SKILL.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation",
+        "target": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/resources",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/resources",
+        "target": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/resources/information-source-evaluation.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/resources",
+        "target": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/resources/integration-strategies.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/resources",
+        "target": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/resources/quality-scoring.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation",
+        "target": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/templates",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/templates",
+        "target": "AIWorkflowOrchestrator/.claude/skills/best-practices-curation/templates/evaluation-checklist.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills",
+        "target": "AIWorkflowOrchestrator/.claude/skills/context-optimization",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/context-optimization",
+        "target": "AIWorkflowOrchestrator/.claude/skills/context-optimization/SKILL.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/context-optimization",
+        "target": "AIWorkflowOrchestrator/.claude/skills/context-optimization/resources",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/context-optimization/resources",
+        "target": "AIWorkflowOrchestrator/.claude/skills/context-optimization/resources/compression-techniques.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/context-optimization/resources",
+        "target": "AIWorkflowOrchestrator/.claude/skills/context-optimization/resources/index-driven-design.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/context-optimization/resources",
+        "target": "AIWorkflowOrchestrator/.claude/skills/context-optimization/resources/lazy-loading-patterns.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/context-optimization",
+        "target": "AIWorkflowOrchestrator/.claude/skills/context-optimization/scripts",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/context-optimization/scripts",
+        "target": "AIWorkflowOrchestrator/.claude/skills/context-optimization/scripts/estimate-tokens.sh",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills",
+        "target": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture",
+        "target": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/SKILL.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture",
+        "target": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/resources",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/resources",
+        "target": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/resources/directory-organization.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/resources",
+        "target": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/resources/hierarchy-design.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/resources",
+        "target": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/resources/naming-conventions.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/resources",
+        "target": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/resources/splitting-patterns.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture",
+        "target": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/scripts",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/scripts",
+        "target": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/scripts/analyze-structure.sh",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture",
+        "target": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/templates",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/templates",
+        "target": "AIWorkflowOrchestrator/.claude/skills/documentation-architecture/templates/resource-structure.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills",
+        "target": "AIWorkflowOrchestrator/.claude/skills/knowledge-management",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/knowledge-management",
+        "target": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/SKILL.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/knowledge-management",
+        "target": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources",
+        "target": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources/curation-framework.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources",
+        "target": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources/freshness-strategy.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources",
+        "target": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources/quality-assurance.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources",
+        "target": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources/seci-combination.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources",
+        "target": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources/seci-externalization.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources",
+        "target": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources/seci-model-details.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources",
+        "target": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/resources/seci-socialization.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/knowledge-management",
+        "target": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/scripts",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/scripts",
+        "target": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/scripts/validate-knowledge.sh",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/knowledge-management",
+        "target": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/templates",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/templates",
+        "target": "AIWorkflowOrchestrator/.claude/skills/knowledge-management/templates/knowledge-document-template.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills",
+        "target": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure",
+        "target": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/SKILL.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure",
+        "target": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources",
+        "target": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources/commitment-mechanism.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources",
+        "target": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources/metadata-design.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources",
+        "target": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources/skill-activation-optimization.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources",
+        "target": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources/three-layer-model.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources",
+        "target": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/resources/token-efficiency-strategies.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure",
+        "target": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/scripts",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/scripts",
+        "target": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/scripts/calculate-token-usage.sh",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure",
+        "target": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/templates",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/templates",
+        "target": "AIWorkflowOrchestrator/.claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/.claude/skills",
+        "target": "AIWorkflowOrchestrator/.claude/skills/skill_list.md",
         "type": "tree"
       },
       {
@@ -2334,6 +4167,16 @@
         "source": "AIWorkflowOrchestrator/docs/00-requirements",
         "target": "AIWorkflowOrchestrator/docs/00-requirements/master_system_design.md",
         "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/docs",
+        "target": "AIWorkflowOrchestrator/docs/skill-creation-complete-guide.md",
+        "type": "tree"
+      },
+      {
+        "source": "AIWorkflowOrchestrator/docs",
+        "target": "AIWorkflowOrchestrator/docs/skill-creation-pattern-knowledge-management.md",
+        "type": "tree"
       }
     ]
   },
@@ -2368,6 +4211,7 @@
     ".claude/agents/schema-def.md",
     ".claude/agents/sec-auditor.md",
     ".claude/agents/secret-mgr.md",
+    ".claude/agents/skill-librarian-original-backup.md",
     ".claude/agents/skill-librarian.md",
     ".claude/agents/spec-writer.md",
     ".claude/agents/sre-observer.md",
@@ -2382,14 +4226,49 @@
     ".claude/mcp/Playwright.md",
     ".claude/mcp/Sequential.md",
     ".claude/mcp/Serena.md",
-    ".claude/prompt/prompt_format.yaml",
-    ".claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md",
-    ".claude/prompt/ナレッジ_Claude_Code_command_ガイド.md",
-    ".claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md",
-    ".claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
-    ".claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
+    ".claude/prompt/agents_skills_command_作成/prompt_format.yaml",
+    ".claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_agents_ガイド.md",
+    ".claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_command_ガイド.md",
+    ".claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_skills_ガイド.md",
+    ".claude/prompt/agents_skills_command_作成/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
+    ".claude/prompt/agents_skills_command_作成/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
     ".claude/settings.local.json",
-    ".claude/slills/skill_list.md",
+    ".claude/skills/best-practices-curation/SKILL.md",
+    ".claude/skills/best-practices-curation/resources/information-source-evaluation.md",
+    ".claude/skills/best-practices-curation/resources/integration-strategies.md",
+    ".claude/skills/best-practices-curation/resources/quality-scoring.md",
+    ".claude/skills/best-practices-curation/templates/evaluation-checklist.md",
+    ".claude/skills/context-optimization/SKILL.md",
+    ".claude/skills/context-optimization/resources/compression-techniques.md",
+    ".claude/skills/context-optimization/resources/index-driven-design.md",
+    ".claude/skills/context-optimization/resources/lazy-loading-patterns.md",
+    ".claude/skills/context-optimization/scripts/estimate-tokens.sh",
+    ".claude/skills/documentation-architecture/SKILL.md",
+    ".claude/skills/documentation-architecture/resources/directory-organization.md",
+    ".claude/skills/documentation-architecture/resources/hierarchy-design.md",
+    ".claude/skills/documentation-architecture/resources/naming-conventions.md",
+    ".claude/skills/documentation-architecture/resources/splitting-patterns.md",
+    ".claude/skills/documentation-architecture/scripts/analyze-structure.sh",
+    ".claude/skills/documentation-architecture/templates/resource-structure.md",
+    ".claude/skills/knowledge-management/SKILL.md",
+    ".claude/skills/knowledge-management/resources/curation-framework.md",
+    ".claude/skills/knowledge-management/resources/freshness-strategy.md",
+    ".claude/skills/knowledge-management/resources/quality-assurance.md",
+    ".claude/skills/knowledge-management/resources/seci-combination.md",
+    ".claude/skills/knowledge-management/resources/seci-externalization.md",
+    ".claude/skills/knowledge-management/resources/seci-model-details.md",
+    ".claude/skills/knowledge-management/resources/seci-socialization.md",
+    ".claude/skills/knowledge-management/scripts/validate-knowledge.sh",
+    ".claude/skills/knowledge-management/templates/knowledge-document-template.md",
+    ".claude/skills/progressive-disclosure/SKILL.md",
+    ".claude/skills/progressive-disclosure/resources/commitment-mechanism.md",
+    ".claude/skills/progressive-disclosure/resources/metadata-design.md",
+    ".claude/skills/progressive-disclosure/resources/skill-activation-optimization.md",
+    ".claude/skills/progressive-disclosure/resources/three-layer-model.md",
+    ".claude/skills/progressive-disclosure/resources/token-efficiency-strategies.md",
+    ".claude/skills/progressive-disclosure/scripts/calculate-token-usage.sh",
+    ".claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml",
+    ".claude/skills/skill_list.md",
     ".gitignore",
     ".kamui/model-versions-cache.json",
     ".kamui/prompt/custom-prompt.txt",
@@ -2397,7 +4276,9 @@
     ".kamui/system-graph-state.json",
     "README.md",
     "docs/00-requirements/claude_code_design.md",
-    "docs/00-requirements/master_system_design.md"
+    "docs/00-requirements/master_system_design.md",
+    "docs/skill-creation-complete-guide.md",
+    "docs/skill-creation-pattern-knowledge-management.md"
   ],
   "uiState": {
     "expandedDirs": [
@@ -2441,7 +4322,47 @@
       "AIWorkflowOrchestrator/.claude/commands/00.command_list.md\t.claude/commands",
       "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/commands/00.command_list.md\t.claude/commands",
       "AIWorkflowOrchestrator/kamui",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/kamui"
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/kamui",
+      "AIWorkflowOrchestrator/.claude/prompt/prompt_format.yaml\t.claude",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/prompt_format.yaml\t.claude",
+      "AIWorkflowOrchestrator/.claude/prompt/prompt_format.yaml\t.claude/prompt",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/prompt_format.yaml\t.claude/prompt",
+      "AIWorkflowOrchestrator/.claude/prompt/prompt_format.yaml\t.claude/prompt/agents_skills_command_作成",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/prompt_format.yaml\t.claude/prompt/agents_skills_command_作成",
+      "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md\t.claude",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md\t.claude",
+      "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md\t.claude/prompt",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md\t.claude/prompt",
+      "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md\t.claude/prompt/agents_skills_command_作成",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md\t.claude/prompt/agents_skills_command_作成",
+      "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_command_ガイド.md\t.claude",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_command_ガイド.md\t.claude",
+      "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_command_ガイド.md\t.claude/prompt",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_command_ガイド.md\t.claude/prompt",
+      "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_command_ガイド.md\t.claude/prompt/agents_skills_command_作成",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_command_ガイド.md\t.claude/prompt/agents_skills_command_作成",
+      "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md\t.claude",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md\t.claude",
+      "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md\t.claude/prompt",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md\t.claude/prompt",
+      "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md\t.claude/prompt/agents_skills_command_作成",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md\t.claude/prompt/agents_skills_command_作成",
+      "AIWorkflowOrchestrator/.claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md\t.claude",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md\t.claude",
+      "AIWorkflowOrchestrator/.claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md\t.claude/prompt",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md\t.claude/prompt",
+      "AIWorkflowOrchestrator/.claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md\t.claude/prompt/agents_skills_command_作成",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md\t.claude/prompt/agents_skills_command_作成",
+      "AIWorkflowOrchestrator/.claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md\t.claude",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md\t.claude",
+      "AIWorkflowOrchestrator/.claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md\t.claude/prompt",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md\t.claude/prompt",
+      "AIWorkflowOrchestrator/.claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md\t.claude/prompt/agents_skills_command_作成",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md\t.claude/prompt/agents_skills_command_作成",
+      "AIWorkflowOrchestrator/.claude/skills",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills",
+      "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成",
+      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成"
     ],
     "selectedPath": null
   },
@@ -2455,7 +4376,7 @@
     "mode": "full",
     "isPartial": false,
     "branchPulse": {
-      "generatedAt": 1763903393784,
+      "generatedAt": 1763943204847,
       "targets": [
         "main",
         "master",
@@ -2465,10 +4386,10 @@
       "statsByBranch": {
         "main": {
           "branch": "main",
-          "head": "eb67603b9eada8254154eeecb49e86002437ef54",
+          "head": "ef0f5cdf1a45c0d46a6a9bc18eb0ecd0561efe5f",
           "baseRef": "origin/main",
-          "baseHead": "eb67603b9eada8254154eeecb49e86002437ef54",
-          "mergeBase": "eb67603b9eada8254154eeecb49e86002437ef54",
+          "baseHead": "ef0f5cdf1a45c0d46a6a9bc18eb0ecd0561efe5f",
+          "mergeBase": "ef0f5cdf1a45c0d46a6a9bc18eb0ecd0561efe5f",
           "divergence": {
             "aheadCount": 0,
             "fileCount": 0
@@ -2485,16 +4406,16 @@
   },
   "gitHistoryState": {
     "selectedTimelineIndex": 1,
-    "activeCommitHash": "d5273f485de8c2dea656002edd5786a9c7955699",
+    "activeCommitHash": "5d1223bd343741d38802df85643ffa68147b577b",
     "entries": [
       {
         "type": "live",
         "label": "現在のコードベース",
         "files": [],
         "branch": "main",
-        "targetCommitHash": "eb67603b9eada8254154eeecb49e86002437ef54",
+        "targetCommitHash": "ef0f5cdf1a45c0d46a6a9bc18eb0ecd0561efe5f",
         "worktreePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
-        "timestamp": 1763903393807,
+        "timestamp": 1763943204871,
         "lane": 0,
         "branchLabel": "main",
         "branchTags": [
@@ -2503,6 +4424,416 @@
         "isDefaultWorktree": true,
         "branchColor": "#4f85e8",
         "index": 0
+      },
+      {
+        "type": "commit",
+        "label": "On refactor/skill-librarian-agent-skills-separation: Uncommi…",
+        "commit": {
+          "hash": "5d1223bd343741d38802df85643ffa68147b577b",
+          "subject": "On refactor/skill-librarian-agent-skills-separation: Uncommitted changes - kamui and docs",
+          "author": "daishiman",
+          "timestamp": 1763943182,
+          "parents": [
+            "ca99430d374fb3e14dd62db8c308391beee51a1c",
+            "f818fc781bcdef16359c31f6859c8c8524b565ea"
+          ],
+          "parent": "ca99430d374fb3e14dd62db8c308391beee51a1c",
+          "refs": "refs/stash",
+          "branches": [
+            "refs/stash"
+          ]
+        },
+        "commitHash": "5d1223bd343741d38802df85643ffa68147b577b",
+        "lane": 1,
+        "parentLinks": [
+          {
+            "hash": "ca99430d374fb3e14dd62db8c308391beee51a1c",
+            "lane": 0
+          },
+          {
+            "hash": "f818fc781bcdef16359c31f6859c8c8524b565ea",
+            "lane": 1
+          }
+        ],
+        "primaryBranchName": "refs/stash",
+        "branchColor": "#e84f7f",
+        "branchTags": [
+          "refs/stash"
+        ],
+        "index": 1
+      },
+      {
+        "type": "commit",
+        "label": "index on refactor/skill-librarian-agent-skills-separation: c…",
+        "commit": {
+          "hash": "f818fc781bcdef16359c31f6859c8c8524b565ea",
+          "subject": "index on refactor/skill-librarian-agent-skills-separation: ca99430 refactor(config): Separate skill-librarian agent into 5 modular skills",
+          "author": "daishiman",
+          "timestamp": 1763943182,
+          "parents": [
+            "ca99430d374fb3e14dd62db8c308391beee51a1c"
+          ],
+          "parent": "ca99430d374fb3e14dd62db8c308391beee51a1c",
+          "refs": "",
+          "branches": []
+        },
+        "commitHash": "f818fc781bcdef16359c31f6859c8c8524b565ea",
+        "lane": 0,
+        "parentLinks": [
+          {
+            "hash": "ca99430d374fb3e14dd62db8c308391beee51a1c",
+            "lane": 0
+          }
+        ],
+        "branchColor": "#4f85e8",
+        "branchTags": [],
+        "index": 2
+      },
+      {
+        "type": "unstaged",
+        "label": "未ステージ (1)",
+        "files": [
+          ".claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_skillsをhooksで実行.md"
+        ],
+        "branch": "main",
+        "targetCommitHash": "ef0f5cdf1a45c0d46a6a9bc18eb0ecd0561efe5f",
+        "worktreePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
+        "timestamp": 1763943204871,
+        "sortOrder": 0,
+        "lane": 0,
+        "branchColor": "#4f85e8",
+        "index": 3
+      },
+      {
+        "type": "staged",
+        "label": "ステージ済み (1)",
+        "files": [
+          "kamui/system-graph-state.json"
+        ],
+        "branch": "main",
+        "targetCommitHash": "ef0f5cdf1a45c0d46a6a9bc18eb0ecd0561efe5f",
+        "worktreePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
+        "timestamp": 1763943204871,
+        "sortOrder": 1,
+        "lane": 0,
+        "branchColor": "#4f85e8",
+        "index": 4
+      },
+      {
+        "type": "commit",
+        "label": "refactor(config): Separate skill-librarian agent into 5 modu…",
+        "commit": {
+          "hash": "ef0f5cdf1a45c0d46a6a9bc18eb0ecd0561efe5f",
+          "subject": "refactor(config): Separate skill-librarian agent into 5 modular skills (#7)",
+          "author": "daishiman",
+          "timestamp": 1763943165,
+          "parents": [
+            "ae4df47a2f547ffb950dd08a459652202934248c"
+          ],
+          "parent": "ae4df47a2f547ffb950dd08a459652202934248c",
+          "refs": "HEAD -> main, origin/main, origin/HEAD",
+          "branches": [
+            "HEAD -> main",
+            "origin/main",
+            "origin/HEAD",
+            "main"
+          ]
+        },
+        "commitHash": "ef0f5cdf1a45c0d46a6a9bc18eb0ecd0561efe5f",
+        "lane": 0,
+        "parentLinks": [
+          {
+            "hash": "ae4df47a2f547ffb950dd08a459652202934248c",
+            "lane": 2
+          }
+        ],
+        "primaryBranchName": "main",
+        "branchColor": "#4f85e8",
+        "branchTags": [
+          "main"
+        ],
+        "worktrees": [
+          {
+            "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
+            "head": "ef0f5cdf1a45c0d46a6a9bc18eb0ecd0561efe5f",
+            "branch": "main",
+            "isMerged": false,
+            "mergeCommitHash": null,
+            "status": {
+              "staged": [
+                {
+                  "path": "kamui/system-graph-state.json",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": "kamui/system-graph-state.json",
+                  "timestamp": 1763943204483
+                }
+              ],
+              "unstaged": [],
+              "untracked": [
+                {
+                  "path": ".claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_skillsをhooksで実行.md",
+                  "status": "untracked",
+                  "rawPath": ".claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_skillsをhooksで実行.md",
+                  "timestamp": 1763943204483
+                }
+              ],
+              "capturedAt": 1763943204483
+            },
+            "normalizedPath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
+            "lane": 0
+          }
+        ],
+        "index": 5
+      },
+      {
+        "type": "commit",
+        "label": "refactor(config): Separate skill-librarian agent into 5 modu…",
+        "commit": {
+          "hash": "ca99430d374fb3e14dd62db8c308391beee51a1c",
+          "subject": "refactor(config): Separate skill-librarian agent into 5 modular skills",
+          "author": "daishiman",
+          "timestamp": 1763943107,
+          "parents": [
+            "ae4df47a2f547ffb950dd08a459652202934248c"
+          ],
+          "parent": "ae4df47a2f547ffb950dd08a459652202934248c",
+          "refs": "origin/refactor/skill-librarian-agent-skills-separation",
+          "branches": [
+            "origin/refactor/skill-librarian-agent-skills-separation"
+          ]
+        },
+        "commitHash": "ca99430d374fb3e14dd62db8c308391beee51a1c",
+        "lane": 2,
+        "parentLinks": [
+          {
+            "hash": "ae4df47a2f547ffb950dd08a459652202934248c",
+            "lane": 2
+          }
+        ],
+        "primaryBranchName": "refactor/skill-librarian-agent-skills-separation",
+        "branchColor": "#e8e84f",
+        "branchTags": [
+          "refactor/skill-librarian-agent-skills-separation"
+        ],
+        "index": 6
+      },
+      {
+        "type": "commit",
+        "label": "On main: Kamui system state on main branch",
+        "commit": {
+          "hash": "96523a7f167c6559f44d0100139591f099c3c15f",
+          "subject": "On main: Kamui system state on main branch",
+          "author": "daishiman",
+          "timestamp": 1763903801,
+          "parents": [
+            "eb67603b9eada8254154eeecb49e86002437ef54",
+            "781d96dff41a8524c82430c34a55a093a959a4ab"
+          ],
+          "parent": "eb67603b9eada8254154eeecb49e86002437ef54",
+          "refs": "refs/stash",
+          "branches": [
+            "refs/stash"
+          ]
+        },
+        "commitHash": "96523a7f167c6559f44d0100139591f099c3c15f",
+        "lane": 1,
+        "parentLinks": [
+          {
+            "hash": "eb67603b9eada8254154eeecb49e86002437ef54",
+            "lane": 3
+          },
+          {
+            "hash": "781d96dff41a8524c82430c34a55a093a959a4ab",
+            "lane": 4
+          }
+        ],
+        "primaryBranchName": "refs/stash",
+        "branchColor": "#e84f7f",
+        "branchTags": [],
+        "index": 7
+      },
+      {
+        "type": "commit",
+        "label": "index on main: eb67603 chore(config): Update agent definitio…",
+        "commit": {
+          "hash": "781d96dff41a8524c82430c34a55a093a959a4ab",
+          "subject": "index on main: eb67603 chore(config): Update agent definitions and Kamui system state (#5)",
+          "author": "daishiman",
+          "timestamp": 1763903801,
+          "parents": [
+            "eb67603b9eada8254154eeecb49e86002437ef54"
+          ],
+          "parent": "eb67603b9eada8254154eeecb49e86002437ef54",
+          "refs": "",
+          "branches": []
+        },
+        "commitHash": "781d96dff41a8524c82430c34a55a093a959a4ab",
+        "lane": 0,
+        "parentLinks": [
+          {
+            "hash": "eb67603b9eada8254154eeecb49e86002437ef54",
+            "lane": 3
+          }
+        ],
+        "branchColor": "#4f85e8",
+        "branchTags": [],
+        "index": 8
+      },
+      {
+        "type": "commit",
+        "label": "On refactor/reorganize-claude-documentation: Kamui system st…",
+        "commit": {
+          "hash": "56e1f5a5b3a3a45839e9d112aea83186bcf68a32",
+          "subject": "On refactor/reorganize-claude-documentation: Kamui system state updates during merge",
+          "author": "daishiman",
+          "timestamp": 1763903783,
+          "parents": [
+            "2cd094fca3afac16178412e5c337a018d14c149b",
+            "2bced8682c11714ff00f915f20b9c042fe434a2b"
+          ],
+          "parent": "2cd094fca3afac16178412e5c337a018d14c149b",
+          "refs": "refs/stash",
+          "branches": [
+            "refs/stash"
+          ]
+        },
+        "commitHash": "56e1f5a5b3a3a45839e9d112aea83186bcf68a32",
+        "lane": 1,
+        "parentLinks": [
+          {
+            "hash": "2cd094fca3afac16178412e5c337a018d14c149b",
+            "lane": 5
+          },
+          {
+            "hash": "2bced8682c11714ff00f915f20b9c042fe434a2b",
+            "lane": 6
+          }
+        ],
+        "primaryBranchName": "refs/stash",
+        "branchColor": "#e84f7f",
+        "branchTags": [],
+        "index": 9
+      },
+      {
+        "type": "commit",
+        "label": "index on refactor/reorganize-claude-documentation: 2cd094f c…",
+        "commit": {
+          "hash": "2bced8682c11714ff00f915f20b9c042fe434a2b",
+          "subject": "index on refactor/reorganize-claude-documentation: 2cd094f chore(config): Update auto-approved commands and system state",
+          "author": "daishiman",
+          "timestamp": 1763903783,
+          "parents": [
+            "2cd094fca3afac16178412e5c337a018d14c149b"
+          ],
+          "parent": "2cd094fca3afac16178412e5c337a018d14c149b",
+          "refs": "",
+          "branches": []
+        },
+        "commitHash": "2bced8682c11714ff00f915f20b9c042fe434a2b",
+        "lane": 0,
+        "parentLinks": [
+          {
+            "hash": "2cd094fca3afac16178412e5c337a018d14c149b",
+            "lane": 5
+          }
+        ],
+        "branchColor": "#4f85e8",
+        "branchTags": [],
+        "index": 10
+      },
+      {
+        "type": "commit",
+        "label": "chore(config): Update auto-approved commands and system stat…",
+        "commit": {
+          "hash": "2cd094fca3afac16178412e5c337a018d14c149b",
+          "subject": "chore(config): Update auto-approved commands and system state",
+          "author": "daishiman",
+          "timestamp": 1763903755,
+          "parents": [
+            "e7867c7816068bea5f2f35c3c76beb9ded1dead8"
+          ],
+          "parent": "e7867c7816068bea5f2f35c3c76beb9ded1dead8",
+          "refs": "origin/refactor/reorganize-claude-documentation, refactor/reorganize-claude-documentation",
+          "branches": [
+            "origin/refactor/reorganize-claude-documentation",
+            "refactor/reorganize-claude-documentation"
+          ]
+        },
+        "commitHash": "2cd094fca3afac16178412e5c337a018d14c149b",
+        "lane": 3,
+        "parentLinks": [
+          {
+            "hash": "e7867c7816068bea5f2f35c3c76beb9ded1dead8",
+            "lane": 5
+          }
+        ],
+        "primaryBranchName": "refactor/reorganize-claude-documentation",
+        "branchColor": "#b84fe8",
+        "branchTags": [
+          "refactor/reorganize-claude-documentation"
+        ],
+        "index": 11
+      },
+      {
+        "type": "commit",
+        "label": "refactor(config): Reorganize Claude Code documentation struc…",
+        "commit": {
+          "hash": "ae4df47a2f547ffb950dd08a459652202934248c",
+          "subject": "refactor(config): Reorganize Claude Code documentation structure (#6)",
+          "author": "daishiman",
+          "timestamp": 1763903729,
+          "parents": [
+            "eb67603b9eada8254154eeecb49e86002437ef54"
+          ],
+          "parent": "eb67603b9eada8254154eeecb49e86002437ef54",
+          "refs": "",
+          "branches": [
+            "main"
+          ]
+        },
+        "commitHash": "ae4df47a2f547ffb950dd08a459652202934248c",
+        "lane": 0,
+        "parentLinks": [
+          {
+            "hash": "eb67603b9eada8254154eeecb49e86002437ef54",
+            "lane": 3
+          }
+        ],
+        "primaryBranchName": "main",
+        "branchColor": "#4f85e8",
+        "branchTags": [],
+        "index": 12
+      },
+      {
+        "type": "commit",
+        "label": "refactor(config): Reorganize Claude Code documentation struc…",
+        "commit": {
+          "hash": "e7867c7816068bea5f2f35c3c76beb9ded1dead8",
+          "subject": "refactor(config): Reorganize Claude Code documentation structure",
+          "author": "daishiman",
+          "timestamp": 1763903634,
+          "parents": [
+            "eb67603b9eada8254154eeecb49e86002437ef54"
+          ],
+          "parent": "eb67603b9eada8254154eeecb49e86002437ef54",
+          "refs": "",
+          "branches": [
+            "refactor/reorganize-claude-documentation"
+          ]
+        },
+        "commitHash": "e7867c7816068bea5f2f35c3c76beb9ded1dead8",
+        "lane": 3,
+        "parentLinks": [
+          {
+            "hash": "eb67603b9eada8254154eeecb49e86002437ef54",
+            "lane": 3
+          }
+        ],
+        "primaryBranchName": "refactor/reorganize-claude-documentation",
+        "branchColor": "#b84fe8",
+        "branchTags": [],
+        "index": 13
       },
       {
         "type": "commit",
@@ -2527,19 +4858,17 @@
         "parentLinks": [
           {
             "hash": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
-            "lane": 0
+            "lane": 7
           },
           {
             "hash": "411afa5dce5b538a9bfdb9c3c0d2fea68a84bb8e",
-            "lane": 1
+            "lane": 8
           }
         ],
         "primaryBranchName": "refs/stash",
         "branchColor": "#e84f7f",
-        "branchTags": [
-          "refs/stash"
-        ],
-        "index": 1
+        "branchTags": [],
+        "index": 14
       },
       {
         "type": "commit",
@@ -2561,12 +4890,12 @@
         "parentLinks": [
           {
             "hash": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
-            "lane": 0
+            "lane": 7
           }
         ],
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 2
+        "index": 15
       },
       {
         "type": "commit",
@@ -2591,17 +4920,17 @@
         "parentLinks": [
           {
             "hash": "9e5b02f454e9b1a63ccf0d05336b61a3d617b8c7",
-            "lane": 2
+            "lane": 9
           },
           {
             "hash": "d6297bd0343d3bdc5d70409b88ef6472f5e6709a",
-            "lane": 3
+            "lane": 10
           }
         ],
         "primaryBranchName": "refs/stash",
         "branchColor": "#e84f7f",
         "branchTags": [],
-        "index": 3
+        "index": 16
       },
       {
         "type": "commit",
@@ -2623,12 +4952,12 @@
         "parentLinks": [
           {
             "hash": "9e5b02f454e9b1a63ccf0d05336b61a3d617b8c7",
-            "lane": 2
+            "lane": 9
           }
         ],
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 4
+        "index": 17
       },
       {
         "type": "commit",
@@ -2649,11 +4978,11 @@
           ]
         },
         "commitHash": "9e5b02f454e9b1a63ccf0d05336b61a3d617b8c7",
-        "lane": 2,
+        "lane": 4,
         "parentLinks": [
           {
             "hash": "02d829b108d43ae943e144ee90f8fd40b68610e9",
-            "lane": 2
+            "lane": 9
           }
         ],
         "primaryBranchName": "chore/update-agent-definitions",
@@ -2661,54 +4990,7 @@
         "branchTags": [
           "chore/update-agent-definitions"
         ],
-        "index": 5
-      },
-      {
-        "type": "unstaged",
-        "label": "未ステージ (18)",
-        "files": [
-          ".claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md",
-          ".claude/prompt/ナレッジ_Claude_Code_command_ガイド.md",
-          ".claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md",
-          ".claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
-          ".claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
-          ".claude/settings.local.json",
-          ".claude/slills/skill_list.md",
-          ".kamui/model-versions-cache.json",
-          ".kamui/prompt/merge-prompt.txt",
-          ".kamui/system-graph-state.json",
-          ".claude/prompt/agents_skills_command_作成/prompt_format.yaml",
-          ".claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_agents_ガイド.md",
-          ".claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_command_ガイド.md",
-          ".claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_skills_ガイド.md",
-          ".claude/prompt/agents_skills_command_作成/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
-          ".claude/prompt/agents_skills_command_作成/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
-          ".claude/skills/skill_list.md",
-          "docs/skill-creation-complete-guide.md"
-        ],
-        "branch": "main",
-        "targetCommitHash": "eb67603b9eada8254154eeecb49e86002437ef54",
-        "worktreePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
-        "timestamp": 1763903393807,
-        "sortOrder": 0,
-        "lane": 0,
-        "branchColor": "#4f85e8",
-        "index": 6
-      },
-      {
-        "type": "staged",
-        "label": "ステージ済み (1)",
-        "files": [
-          "claude/prompt/prompt_format.yaml"
-        ],
-        "branch": "main",
-        "targetCommitHash": "eb67603b9eada8254154eeecb49e86002437ef54",
-        "worktreePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
-        "timestamp": 1763903393807,
-        "sortOrder": 1,
-        "lane": 0,
-        "branchColor": "#4f85e8",
-        "index": 7
+        "index": 18
       },
       {
         "type": "commit",
@@ -2722,12 +5004,8 @@
             "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6"
           ],
           "parent": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
-          "refs": "HEAD -> main, origin/main, origin/HEAD, refactor/reorganize-claude-documentation",
+          "refs": "",
           "branches": [
-            "HEAD -> main",
-            "origin/main",
-            "origin/HEAD",
-            "refactor/reorganize-claude-documentation",
             "main"
           ]
         },
@@ -2736,161 +5014,13 @@
         "parentLinks": [
           {
             "hash": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
-            "lane": 0
+            "lane": 7
           }
         ],
         "primaryBranchName": "main",
         "branchColor": "#4f85e8",
-        "branchTags": [
-          "main",
-          "refactor/reorganize-claude-documentation"
-        ],
-        "worktrees": [
-          {
-            "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
-            "head": "eb67603b9eada8254154eeecb49e86002437ef54",
-            "branch": "main",
-            "isMerged": false,
-            "mergeCommitHash": null,
-            "status": {
-              "staged": [
-                {
-                  "path": "claude/prompt/prompt_format.yaml",
-                  "originalPath": null,
-                  "status": "deleted",
-                  "rawPath": "claude/prompt/prompt_format.yaml",
-                  "timestamp": 1763903393508
-                }
-              ],
-              "unstaged": [
-                {
-                  "path": ".claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md",
-                  "originalPath": null,
-                  "status": "deleted",
-                  "rawPath": ".claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md",
-                  "timestamp": 1763903393508
-                },
-                {
-                  "path": ".claude/prompt/ナレッジ_Claude_Code_command_ガイド.md",
-                  "originalPath": null,
-                  "status": "deleted",
-                  "rawPath": ".claude/prompt/ナレッジ_Claude_Code_command_ガイド.md",
-                  "timestamp": 1763903393508
-                },
-                {
-                  "path": ".claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md",
-                  "originalPath": null,
-                  "status": "deleted",
-                  "rawPath": ".claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md",
-                  "timestamp": 1763903393508
-                },
-                {
-                  "path": ".claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
-                  "originalPath": null,
-                  "status": "deleted",
-                  "rawPath": ".claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
-                  "timestamp": 1763903393508
-                },
-                {
-                  "path": ".claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
-                  "originalPath": null,
-                  "status": "deleted",
-                  "rawPath": ".claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
-                  "timestamp": 1763903393508
-                },
-                {
-                  "path": ".claude/settings.local.json",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": ".claude/settings.local.json",
-                  "timestamp": 1763903393508
-                },
-                {
-                  "path": ".claude/slills/skill_list.md",
-                  "originalPath": null,
-                  "status": "deleted",
-                  "rawPath": ".claude/slills/skill_list.md",
-                  "timestamp": 1763903393508
-                },
-                {
-                  "path": ".kamui/model-versions-cache.json",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": ".kamui/model-versions-cache.json",
-                  "timestamp": 1763903393508
-                },
-                {
-                  "path": ".kamui/prompt/merge-prompt.txt",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": ".kamui/prompt/merge-prompt.txt",
-                  "timestamp": 1763903393508
-                },
-                {
-                  "path": ".kamui/system-graph-state.json",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": ".kamui/system-graph-state.json",
-                  "timestamp": 1763903393508
-                }
-              ],
-              "untracked": [
-                {
-                  "path": ".claude/prompt/agents_skills_command_作成/prompt_format.yaml",
-                  "status": "untracked",
-                  "rawPath": ".claude/prompt/agents_skills_command_作成/prompt_format.yaml",
-                  "timestamp": 1763903393508
-                },
-                {
-                  "path": ".claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_agents_ガイド.md",
-                  "status": "untracked",
-                  "rawPath": ".claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_agents_ガイド.md",
-                  "timestamp": 1763903393508
-                },
-                {
-                  "path": ".claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_command_ガイド.md",
-                  "status": "untracked",
-                  "rawPath": ".claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_command_ガイド.md",
-                  "timestamp": 1763903393508
-                },
-                {
-                  "path": ".claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_skills_ガイド.md",
-                  "status": "untracked",
-                  "rawPath": ".claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_skills_ガイド.md",
-                  "timestamp": 1763903393508
-                },
-                {
-                  "path": ".claude/prompt/agents_skills_command_作成/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
-                  "status": "untracked",
-                  "rawPath": ".claude/prompt/agents_skills_command_作成/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md",
-                  "timestamp": 1763903393508
-                },
-                {
-                  "path": ".claude/prompt/agents_skills_command_作成/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
-                  "status": "untracked",
-                  "rawPath": ".claude/prompt/agents_skills_command_作成/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md",
-                  "timestamp": 1763903393508
-                },
-                {
-                  "path": ".claude/skills/skill_list.md",
-                  "status": "untracked",
-                  "rawPath": ".claude/skills/skill_list.md",
-                  "timestamp": 1763903393508
-                },
-                {
-                  "path": "docs/skill-creation-complete-guide.md",
-                  "status": "untracked",
-                  "rawPath": "docs/skill-creation-complete-guide.md",
-                  "timestamp": 1763903393508
-                }
-              ],
-              "capturedAt": 1763903393508
-            },
-            "normalizedPath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
-            "lane": 0
-          }
-        ],
-        "index": 8
+        "branchTags": [],
+        "index": 19
       },
       {
         "type": "commit",
@@ -2910,17 +5040,17 @@
           ]
         },
         "commitHash": "02d829b108d43ae943e144ee90f8fd40b68610e9",
-        "lane": 2,
+        "lane": 4,
         "parentLinks": [
           {
             "hash": "691402e426da95b1a5279d535b21ff3f41ca8fc3",
-            "lane": 2
+            "lane": 9
           }
         ],
         "primaryBranchName": "chore/update-agent-definitions",
         "branchColor": "#4fe8b8",
         "branchTags": [],
-        "index": 9
+        "index": 20
       },
       {
         "type": "commit",
@@ -2940,17 +5070,17 @@
           ]
         },
         "commitHash": "691402e426da95b1a5279d535b21ff3f41ca8fc3",
-        "lane": 2,
+        "lane": 4,
         "parentLinks": [
           {
             "hash": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
-            "lane": 0
+            "lane": 7
           }
         ],
         "primaryBranchName": "chore/update-agent-definitions",
         "branchColor": "#4fe8b8",
         "branchTags": [],
-        "index": 10
+        "index": 21
       },
       {
         "type": "commit",
@@ -2974,13 +5104,13 @@
         "parentLinks": [
           {
             "hash": "8819107d7ff2017b4d4c4d382f462f84a97f881d",
-            "lane": 0
+            "lane": 7
           }
         ],
         "primaryBranchName": "main",
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 11
+        "index": 22
       },
       {
         "type": "commit",
@@ -3000,17 +5130,17 @@
           ]
         },
         "commitHash": "cff814fdde099630f642c760507ddb0ebead0c4b",
-        "lane": 2,
+        "lane": 4,
         "parentLinks": [
           {
             "hash": "d277946b738f79571d8817e00cf5cad194c22ca4",
-            "lane": 5
+            "lane": 11
           }
         ],
         "primaryBranchName": "chore/update-agent-definitions",
         "branchColor": "#4fe8b8",
         "branchTags": [],
-        "index": 12
+        "index": 23
       },
       {
         "type": "commit",
@@ -3033,16 +5163,16 @@
         "parentLinks": [
           {
             "hash": "203405915abfad5aa77fdfcfa624e416e6dafe3c",
-            "lane": 5
+            "lane": 11
           },
           {
             "hash": "8819107d7ff2017b4d4c4d382f462f84a97f881d",
-            "lane": 0
+            "lane": 7
           }
         ],
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 13
+        "index": 24
       },
       {
         "type": "commit",
@@ -3067,17 +5197,17 @@
         "parentLinks": [
           {
             "hash": "f4d91f7a8f1bd4738278140417ee44971d6e3ac1",
-            "lane": 6
+            "lane": 12
           },
           {
             "hash": "ad90f6f84e43e7ea7a07d49d40fd951f450ea625",
-            "lane": 7
+            "lane": 13
           }
         ],
         "primaryBranchName": "refs/stash",
         "branchColor": "#e84f7f",
         "branchTags": [],
-        "index": 14
+        "index": 25
       },
       {
         "type": "commit",
@@ -3099,12 +5229,12 @@
         "parentLinks": [
           {
             "hash": "f4d91f7a8f1bd4738278140417ee44971d6e3ac1",
-            "lane": 6
+            "lane": 12
           }
         ],
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 15
+        "index": 26
       },
       {
         "type": "commit",
@@ -3128,13 +5258,13 @@
         "parentLinks": [
           {
             "hash": "749c02316a15e038ea0ec30c0925af57799bc2dd",
-            "lane": 0
+            "lane": 7
           }
         ],
         "primaryBranchName": "main",
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 16
+        "index": 27
       },
       {
         "type": "commit",
@@ -3154,11 +5284,11 @@
           ]
         },
         "commitHash": "f4d91f7a8f1bd4738278140417ee44971d6e3ac1",
-        "lane": 3,
+        "lane": 5,
         "parentLinks": [
           {
             "hash": "67f583aa3bbe17a37683192ef365ed31f2ec2780",
-            "lane": 6
+            "lane": 12
           }
         ],
         "primaryBranchName": "docs/add-git-worktree-workflow-guide",
@@ -3166,7 +5296,7 @@
         "branchTags": [
           "docs/add-git-worktree-workflow-guide"
         ],
-        "index": 17
+        "index": 28
       },
       {
         "type": "commit",
@@ -3186,17 +5316,17 @@
           ]
         },
         "commitHash": "67f583aa3bbe17a37683192ef365ed31f2ec2780",
-        "lane": 3,
+        "lane": 5,
         "parentLinks": [
           {
             "hash": "203405915abfad5aa77fdfcfa624e416e6dafe3c",
-            "lane": 5
+            "lane": 11
           }
         ],
         "primaryBranchName": "docs/add-git-worktree-workflow-guide",
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 18
+        "index": 29
       },
       {
         "type": "commit",
@@ -3216,17 +5346,17 @@
           ]
         },
         "commitHash": "203405915abfad5aa77fdfcfa624e416e6dafe3c",
-        "lane": 3,
+        "lane": 5,
         "parentLinks": [
           {
             "hash": "749c02316a15e038ea0ec30c0925af57799bc2dd",
-            "lane": 0
+            "lane": 7
           }
         ],
         "primaryBranchName": "docs/add-git-worktree-workflow-guide",
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 19
+        "index": 30
       },
       {
         "type": "commit",
@@ -3252,11 +5382,11 @@
         "parentLinks": [
           {
             "hash": "a132a282d48d1a867e42b032afdca93e5568d3ea",
-            "lane": 0
+            "lane": 7
           },
           {
             "hash": "7fb9f93466f23f55a30b9d6d537ec28d6abdc696",
-            "lane": 8
+            "lane": 14
           }
         ],
         "primaryBranchName": "main",
@@ -3264,7 +5394,7 @@
         "branchTags": [
           "daishiman/feature/add-master-system-design"
         ],
-        "index": 20
+        "index": 31
       },
       {
         "type": "commit",
@@ -3282,8 +5412,7 @@
           "branches": [
             "daishiman/feature/add-master-system-design",
             "docs/add-git-worktree-workflow-guide",
-            "main",
-            "refactor/reorganize-claude-documentation"
+            "main"
           ]
         },
         "commitHash": "7fb9f93466f23f55a30b9d6d537ec28d6abdc696",
@@ -3291,13 +5420,13 @@
         "parentLinks": [
           {
             "hash": "0e8b3a86e793c44f9b8acda1fe7e9e6ce1af358e",
-            "lane": 8
+            "lane": 14
           }
         ],
         "primaryBranchName": "main",
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 21
+        "index": 32
       },
       {
         "type": "commit",
@@ -3323,11 +5452,11 @@
         "parentLinks": [
           {
             "hash": "52266792fbc47007b4ddca109f477ddcac9f72d0",
-            "lane": 0
+            "lane": 7
           },
           {
             "hash": "0e8b3a86e793c44f9b8acda1fe7e9e6ce1af358e",
-            "lane": 8
+            "lane": 14
           }
         ],
         "primaryBranchName": "main",
@@ -3335,7 +5464,7 @@
         "branchTags": [
           "daishiman/feature/development"
         ],
-        "index": 22
+        "index": 33
       },
       {
         "type": "commit",
@@ -3354,8 +5483,7 @@
             "feature/development",
             "daishiman/feature/development",
             "docs/add-git-worktree-workflow-guide",
-            "main",
-            "refactor/reorganize-claude-documentation"
+            "main"
           ]
         },
         "commitHash": "0e8b3a86e793c44f9b8acda1fe7e9e6ce1af358e",
@@ -3363,7 +5491,7 @@
         "parentLinks": [
           {
             "hash": "52266792fbc47007b4ddca109f477ddcac9f72d0",
-            "lane": 0
+            "lane": 7
           }
         ],
         "primaryBranchName": "main",
@@ -3371,7 +5499,7 @@
         "branchTags": [
           "feature/development"
         ],
-        "index": 23
+        "index": 34
       },
       {
         "type": "commit",
@@ -3404,17 +5532,17 @@
           "task/task-1763719019782-ff4e70",
           "task/task-1763719022041-576354"
         ],
-        "index": 24
+        "index": 35
       },
       {
         "type": "empty",
         "label": "初期状態 (初回コミット以前)",
         "files": [],
         "marker": "pre-history",
-        "index": 25
+        "index": 36
       }
     ]
   },
   "projectRoot": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
-  "savedAt": 1763903399367
+  "savedAt": 1763943210288
 }
