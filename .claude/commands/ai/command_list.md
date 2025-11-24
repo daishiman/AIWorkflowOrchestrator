@@ -21,7 +21,7 @@
 
 ## 1. プロジェクト初期化・セットアップ
 
-### `/init-project`
+### `/ai:init-project`
 - **目的**: 新規プロジェクトの完全な初期化
 - **引数**: `[project-name]` - プロジェクト名
 - **使用エージェント**: @product-manager, @req-analyst, @arch-police
@@ -34,7 +34,7 @@
   - `model: opus` (高度な計画が必要)
   - `allowed-tools: Bash, Read, Write, Task`
 
-### `/scaffold-project`
+### `/ai:scaffold-project`
 - **目的**: プロジェクトディレクトリ構造の自動生成
 - **引数**: `[template-type]` - テンプレートタイプ(nextjs/react/node等)
 - **使用エージェント**: @command-arch
@@ -43,7 +43,7 @@
   - `model: sonnet`
   - `allowed-tools: Bash(mkdir*|npx*), Write`
 
-### `/setup-dev-env`
+### `/ai:setup-dev-env`
 - **目的**: 開発環境の完全セットアップ
 - **引数**: なし
 - **使用エージェント**: @devops-eng, @dep-mgr, @hook-master
@@ -56,7 +56,7 @@
   - `model: sonnet`
   - `allowed-tools: Bash(npm*|pnpm*), Read, Write`
 
-### `/init-git-workflow`
+### `/ai:init-git-workflow`
 - **目的**: Gitワークフローとブランチ戦略の確立
 - **引数**: `[strategy]` - ブランチ戦略(git-flow/github-flow/trunk-based)
 - **使用エージェント**: @hook-master
@@ -69,7 +69,7 @@
 
 ## 2. 要件定義・仕様策定
 
-### `/gather-requirements`
+### `/ai:gather-requirements`
 - **目的**: ステークホルダーへのヒアリングと要件整理
 - **引数**: `[stakeholder-name]` - ステークホルダー名(オプション)
 - **使用エージェント**: @req-analyst
@@ -79,7 +79,7 @@
   - `model: opus` (複雑なヒアリング分析)
   - `allowed-tools: Read, Write(docs/**)`
 
-### `/create-user-stories`
+### `/ai:create-user-stories`
 - **目的**: ユーザーストーリーとアクセプタンスクライテリアの作成
 - **引数**: `[feature-name]` - 機能名
 - **使用エージェント**: @product-manager, @req-analyst
@@ -89,7 +89,7 @@
   - `model: opus`
   - `allowed-tools: Read, Write(docs/**)`
 
-### `/define-use-cases`
+### `/ai:define-use-cases`
 - **目的**: ユースケース図とシナリオの作成
 - **引数**: `[actor-name]` - アクター名
 - **使用エージェント**: @req-analyst
@@ -99,7 +99,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write(docs/**)`
 
-### `/write-spec`
+### `/ai:write-spec`
 - **目的**: 実装可能な詳細仕様書の作成
 - **引数**: `[feature-name]` - 機能名
 - **使用エージェント**: @spec-writer
@@ -109,7 +109,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write(docs/**)`
 
-### `/estimate-project`
+### `/ai:estimate-project`
 - **目的**: プロジェクト規模の見積もり
 - **引数**: なし
 - **使用エージェント**: @product-manager
@@ -123,7 +123,7 @@
 
 ## 3. 設計・アーキテクチャ
 
-### `/design-architecture`
+### `/ai:design-architecture`
 - **目的**: システム全体のアーキテクチャ設計
 - **引数**: `[architecture-style]` - アーキテクチャスタイル(clean/hexagonal/onion)
 - **使用エージェント**: @arch-police, @domain-modeler
@@ -133,7 +133,7 @@
   - `model: opus`
   - `allowed-tools: Read, Write(docs/**), Task`
 
-### `/review-architecture`
+### `/ai:review-architecture`
 - **目的**: アーキテクチャレビューと依存関係チェック
 - **引数**: なし
 - **使用エージェント**: @arch-police
@@ -143,7 +143,7 @@
   - `model: opus`
   - `allowed-tools: Read, Grep, Glob, Write(docs/**)`
 
-### `/design-domain-model`
+### `/ai:design-domain-model`
 - **目的**: ドメインモデルの設計
 - **引数**: `[domain-name]` - ドメイン名
 - **使用エージェント**: @domain-modeler
@@ -153,7 +153,7 @@
   - `model: opus`
   - `allowed-tools: Read, Write(src/core/**|docs/**)`
 
-### `/design-api`
+### `/ai:design-api`
 - **目的**: REST API設計とエンドポイント定義
 - **引数**: `[resource-name]` - リソース名
 - **使用エージェント**: @gateway-dev, @api-doc-writer
@@ -163,7 +163,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write`
 
-### `/design-database`
+### `/ai:design-database`
 - **目的**: データベーススキーマ設計
 - **引数**: `[table-name]` - テーブル名(オプション)
 - **使用エージェント**: @db-architect
@@ -177,7 +177,7 @@
 
 ## 4. フロントエンド開発
 
-### `/create-component`
+### `/ai:create-component`
 - **目的**: Reactコンポーネントの作成(Atomic Design準拠)
 - **引数**: `[component-name] [type]` - コンポーネント名と種類(atom/molecule/organism)
 - **使用エージェント**: @ui-designer
@@ -187,7 +187,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write(src/components/**), Edit`
 
-### `/create-page`
+### `/ai:create-page`
 - **目的**: Next.js App Routerページの作成
 - **引数**: `[route-path]` - ルートパス(例: /dashboard/settings)
 - **使用エージェント**: @router-dev
@@ -197,7 +197,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write(src/app/**), Edit`
 
-### `/setup-state-management`
+### `/ai:setup-state-management`
 - **目的**: 状態管理の実装(SWR/React Query)
 - **引数**: `[library]` - ライブラリ(swr/react-query)
 - **使用エージェント**: @state-manager
@@ -207,7 +207,7 @@
   - `model: sonnet`
   - `allowed-tools: Bash(npm*), Read, Write(src/hooks/**)`
 
-### `/create-custom-hook`
+### `/ai:create-custom-hook`
 - **目的**: 再利用可能なカスタムフックの作成
 - **引数**: `[hook-name]` - フック名(use〜形式)
 - **使用エージェント**: @state-manager
@@ -217,7 +217,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write(src/hooks/**), Edit`
 
-### `/setup-design-system`
+### `/ai:setup-design-system`
 - **目的**: デザインシステムとTailwind設定
 - **引数**: なし
 - **使用エージェント**: @ui-designer
@@ -227,7 +227,7 @@
   - `model: sonnet`
   - `allowed-tools: Bash(npm*), Read, Write, Edit`
 
-### `/optimize-frontend-performance`
+### `/ai:optimize-frontend-performance`
 - **目的**: フロントエンドパフォーマンス最適化
 - **引数**: `[target-page]` - 対象ページパス(オプション)
 - **使用エージェント**: @router-dev
@@ -241,7 +241,7 @@
 
 ## 5. バックエンド開発
 
-### `/create-entity`
+### `/ai:create-entity`
 - **目的**: ドメインエンティティの作成
 - **引数**: `[entity-name]` - エンティティ名
 - **使用エージェント**: @domain-modeler
@@ -251,7 +251,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write(src/core/**), Edit`
 
-### `/create-executor`
+### `/ai:create-executor`
 - **目的**: ワークフローExecutorの実装
 - **引数**: `[workflow-name]` - ワークフロー名
 - **使用エージェント**: @workflow-engine, @logic-dev
@@ -261,7 +261,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write(src/features/**), Edit`
 
-### `/implement-business-logic`
+### `/ai:implement-business-logic`
 - **目的**: ビジネスロジックの実装
 - **引数**: `[logic-name]` - ロジック名
 - **使用エージェント**: @logic-dev
@@ -271,7 +271,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write(src/**), Edit, Task`
 
-### `/create-api-gateway`
+### `/ai:create-api-gateway`
 - **目的**: 外部API統合ゲートウェイの実装
 - **引数**: `[api-name]` - API名(discord/slack/openai等)
 - **使用エージェント**: @gateway-dev
@@ -281,7 +281,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write(src/infrastructure/**), Edit`
 
-### `/create-schema`
+### `/ai:create-schema`
 - **目的**: Zodスキーマ定義の作成
 - **引数**: `[schema-name]` - スキーマ名
 - **使用エージェント**: @schema-def
@@ -291,7 +291,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write(src/**/*.schema.ts), Edit`
 
-### `/optimize-prompts`
+### `/ai:optimize-prompts`
 - **目的**: AIプロンプトの最適化
 - **引数**: `[prompt-file]` - プロンプトファイルパス
 - **使用エージェント**: @prompt-eng
@@ -305,7 +305,7 @@
 
 ## 6. データベース
 
-### `/create-db-schema`
+### `/ai:create-db-schema`
 - **目的**: Drizzle ORMスキーマの作成
 - **引数**: `[table-name]` - テーブル名
 - **使用エージェント**: @db-architect
@@ -315,7 +315,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write(src/infrastructure/database/**), Edit`
 
-### `/create-migration`
+### `/ai:create-migration`
 - **目的**: データベースマイグレーションファイル作成
 - **引数**: `[migration-name]` - マイグレーション名
 - **使用エージェント**: @dba-mgr
@@ -325,7 +325,7 @@
   - `model: sonnet`
   - `allowed-tools: Bash(pnpm drizzle*), Read, Write(drizzle/**)`
 
-### `/create-repository`
+### `/ai:create-repository`
 - **目的**: Repositoryパターン実装
 - **引数**: `[entity-name]` - エンティティ名
 - **使用エージェント**: @repo-dev
@@ -335,7 +335,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write(src/infrastructure/repositories/**), Edit`
 
-### `/seed-database`
+### `/ai:seed-database`
 - **目的**: 初期データ・テストデータの投入
 - **引数**: `[environment]` - 環境(development/test/production)
 - **使用エージェント**: @dba-mgr
@@ -345,7 +345,7 @@
   - `model: sonnet`
   - `allowed-tools: Bash(pnpm*), Read, Write`
 
-### `/optimize-queries`
+### `/ai:optimize-queries`
 - **目的**: データベースクエリの最適化
 - **引数**: `[file-path]` - 対象ファイルパス
 - **使用エージェント**: @repo-dev, @dba-mgr
@@ -355,7 +355,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Edit, Bash(pnpm drizzle-kit studio)`
 
-### `/setup-db-backup`
+### `/ai:setup-db-backup`
 - **目的**: バックアップ・リカバリ戦略の設定
 - **引数**: `[backup-schedule]` - バックアップスケジュール(daily/hourly)
 - **使用エージェント**: @dba-mgr
@@ -369,7 +369,7 @@
 
 ## 7. テスト
 
-### `/generate-unit-tests`
+### `/ai:generate-unit-tests`
 - **目的**: ユニットテストの自動生成
 - **引数**: `[target-file]` - テスト対象ファイルパス
 - **使用エージェント**: @unit-tester
@@ -379,7 +379,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write(__tests__/**), Edit`
 
-### `/generate-e2e-tests`
+### `/ai:generate-e2e-tests`
 - **目的**: E2Eテストシナリオの作成
 - **引数**: `[user-flow]` - ユーザーフロー名
 - **使用エージェント**: @e2e-tester
@@ -389,7 +389,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write(tests/**), Edit`
 
-### `/run-all-tests`
+### `/ai:run-all-tests`
 - **目的**: 全テストスイートの実行
 - **引数**: `[--coverage]` - カバレッジ出力フラグ(オプション)
 - **使用エージェント**: @unit-tester, @e2e-tester
@@ -402,7 +402,7 @@
   - `model: haiku` (シンプルな実行)
   - `allowed-tools: Bash(npm test*|pnpm test*), Read`
 
-### `/tdd-cycle`
+### `/ai:tdd-cycle`
 - **目的**: TDDサイクル(Red-Green-Refactor)の実行
 - **引数**: `[feature-name]` - 機能名
 - **使用エージェント**: @unit-tester, @logic-dev
@@ -412,7 +412,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write, Edit, Bash(npm test*)`
 
-### `/create-test-fixtures`
+### `/ai:create-test-fixtures`
 - **目的**: テストデータ・フィクスチャの作成
 - **引数**: `[fixture-type]` - フィクスチャタイプ(user/post/product等)
 - **使用エージェント**: @unit-tester, @e2e-tester
@@ -422,7 +422,7 @@
   - `model: sonnet`
   - `allowed-tools: Write(tests/fixtures/**)`
 
-### `/fix-flaky-tests`
+### `/ai:fix-flaky-tests`
 - **目的**: 不安定なテストの修正
 - **引数**: `[test-file]` - 対象テストファイル
 - **使用エージェント**: @e2e-tester
@@ -436,7 +436,7 @@
 
 ## 8. 品質管理
 
-### `/lint`
+### `/ai:lint`
 - **目的**: ESLintによるコードチェック
 - **引数**: `[--fix]` - 自動修正フラグ(オプション)
 - **使用エージェント**: @code-quality
@@ -446,7 +446,7 @@
   - `model: haiku`
   - `allowed-tools: Bash(npm run lint*|pnpm lint*), Edit`
 
-### `/format`
+### `/ai:format`
 - **目的**: Prettierによるコードフォーマット
 - **引数**: `[target-pattern]` - 対象パターン(src/**/*.ts等)
 - **使用エージェント**: @code-quality
@@ -456,7 +456,7 @@
   - `model: haiku`
   - `allowed-tools: Bash(npx prettier*), Edit`
 
-### `/analyze-code-quality`
+### `/ai:analyze-code-quality`
 - **目的**: コード品質の詳細分析
 - **引数**: `[directory]` - 対象ディレクトリ
 - **使用エージェント**: @code-quality
@@ -466,7 +466,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Grep, Glob, Bash, Write(docs/**)`
 
-### `/setup-pre-commit`
+### `/ai:setup-pre-commit`
 - **目的**: Pre-commit hooksの設定
 - **引数**: なし
 - **使用エージェント**: @hook-master, @code-quality
@@ -476,7 +476,7 @@
   - `model: sonnet`
   - `allowed-tools: Bash(npx husky*), Write`
 
-### `/refactor`
+### `/ai:refactor`
 - **目的**: コードリファクタリング
 - **引数**: `[target-file]` - 対象ファイルパス
 - **使用エージェント**: @logic-dev, @arch-police
@@ -490,7 +490,7 @@
 
 ## 9. セキュリティ
 
-### `/security-audit`
+### `/ai:security-audit`
 - **目的**: 包括的セキュリティ監査
 - **引数**: `[scope]` - スコープ(all/auth/api/database)
 - **使用エージェント**: @sec-auditor, @auth-specialist, @secret-mgr
@@ -500,7 +500,7 @@
   - `model: opus`
   - `allowed-tools: Read, Grep, Bash(npm audit), Write(docs/**)`
 
-### `/setup-auth`
+### `/ai:setup-auth`
 - **目的**: 認証・認可システムの実装
 - **引数**: `[provider]` - 認証プロバイダー(github/google/credentials)
 - **使用エージェント**: @auth-specialist
@@ -510,7 +510,7 @@
   - `model: sonnet`
   - `allowed-tools: Bash(npm install*), Read, Write(src/**), Edit`
 
-### `/scan-vulnerabilities`
+### `/ai:scan-vulnerabilities`
 - **目的**: 脆弱性スキャン
 - **引数**: なし
 - **使用エージェント**: @sec-auditor, @dep-mgr
@@ -520,7 +520,7 @@
   - `model: sonnet`
   - `allowed-tools: Bash(npm audit|pnpm audit), Write(docs/**)`
 
-### `/setup-rate-limiting`
+### `/ai:setup-rate-limiting`
 - **目的**: レート制限の実装
 - **引数**: `[rate-limit]` - レート制限値(例: 100/hour)
 - **使用エージェント**: @sec-auditor, @gateway-dev
@@ -530,7 +530,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write(src/**), Edit`
 
-### `/manage-secrets`
+### `/ai:manage-secrets`
 - **目的**: 機密情報の安全な管理
 - **引数**: なし
 - **使用エージェント**: @secret-mgr
@@ -541,7 +541,7 @@
   - `allowed-tools: Read, Write(.env.example|docs/**)`
   - `disable-model-invocation: false`
 
-### `/rotate-secrets`
+### `/ai:rotate-secrets`
 - **目的**: APIキー・シークレットのローテーション
 - **引数**: `[secret-name]` - シークレット名
 - **使用エージェント**: @secret-mgr
@@ -556,7 +556,7 @@
 
 ## 10. CI/CD・デプロイ
 
-### `/create-ci-workflow`
+### `/ai:create-ci-workflow`
 - **目的**: CI(継続的インテグレーション)ワークフローの作成
 - **引数**: `[workflow-type]` - ワークフロータイプ(test/lint/build)
 - **使用エージェント**: @gha-workflow-architect
@@ -566,7 +566,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write(.github/workflows/**)`
 
-### `/create-cd-workflow`
+### `/ai:create-cd-workflow`
 - **目的**: CD(継続的デプロイ)ワークフローの作成
 - **引数**: `[environment]` - 環境(staging/production)
 - **使用エージェント**: @gha-workflow-architect, @devops-eng
@@ -576,7 +576,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write(.github/workflows/**)`
 
-### `/create-reusable-workflow`
+### `/ai:create-reusable-workflow`
 - **目的**: 再利用可能なワークフローの作成
 - **引数**: `[workflow-name]` - ワークフロー名
 - **使用エージェント**: @gha-workflow-architect
@@ -586,7 +586,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write(.github/workflows/reusable-**)`
 
-### `/create-composite-action`
+### `/ai:create-composite-action`
 - **目的**: カスタムコンポジットアクションの作成
 - **引数**: `[action-name]` - アクション名
 - **使用エージェント**: @gha-workflow-architect
@@ -596,7 +596,7 @@
   - `model: sonnet`
   - `allowed-tools: Write(.github/actions/**)`
 
-### `/optimize-ci-performance`
+### `/ai:optimize-ci-performance`
 - **目的**: CI/CDパイプラインの高速化
 - **引数**: `[workflow-file]` - 対象ワークフローファイル
 - **使用エージェント**: @gha-workflow-architect
@@ -606,7 +606,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Edit`
 
-### `/setup-deployment-environments`
+### `/ai:setup-deployment-environments`
 - **目的**: ステージング・本番環境の設定
 - **引数**: なし
 - **使用エージェント**: @devops-eng, @gha-workflow-architect
@@ -616,7 +616,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write(.github/**|docs/**)`
 
-### `/setup-docker`
+### `/ai:setup-docker`
 - **目的**: Dockerコンテナ化
 - **引数**: `[service-name]` - サービス名
 - **使用エージェント**: @devops-eng
@@ -626,7 +626,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write`
 
-### `/deploy-staging`
+### `/ai:deploy-staging`
 - **目的**: ステージング環境へのデプロイ
 - **引数**: `[--dry-run]` - ドライランフラグ(オプション)
 - **使用エージェント**: @devops-eng, @gha-workflow-architect
@@ -636,7 +636,7 @@
   - `model: sonnet`
   - `allowed-tools: Bash(gh*), Read`
 
-### `/deploy-production`
+### `/ai:deploy-production`
 - **目的**: 本番環境へのデプロイ(承認フロー付き)
 - **引数**: なし
 - **使用エージェント**: @devops-eng, @gha-workflow-architect
@@ -651,7 +651,7 @@
 
 ## 11. ドキュメント
 
-### `/generate-api-docs`
+### `/ai:generate-api-docs`
 - **目的**: API仕様書の自動生成
 - **引数**: `[source-path]` - ソースコードパス
 - **使用エージェント**: @api-doc-writer
@@ -661,7 +661,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write(docs/**|openapi.yaml)`
 
-### `/write-user-manual`
+### `/ai:write-user-manual`
 - **目的**: ユーザーマニュアルの作成
 - **引数**: `[target-audience]` - 対象読者(beginner/advanced/admin)
 - **使用エージェント**: @manual-writer
@@ -671,7 +671,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write(docs/**)`
 
-### `/create-troubleshooting-guide`
+### `/ai:create-troubleshooting-guide`
 - **目的**: トラブルシューティングガイドの作成
 - **引数**: なし
 - **使用エージェント**: @manual-writer
@@ -681,7 +681,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write(docs/**)`
 
-### `/generate-changelog`
+### `/ai:generate-changelog`
 - **目的**: CHANGELOG.mdの自動生成
 - **引数**: `[from-tag] [to-tag]` - バージョン範囲(オプション)
 - **使用エージェント**: @spec-writer
@@ -691,7 +691,7 @@
   - `model: sonnet`
   - `allowed-tools: Bash(git log*), Read, Write(CHANGELOG.md)|Edit`
 
-### `/update-readme`
+### `/ai:update-readme`
 - **目的**: README.mdの更新
 - **引数**: なし
 - **使用エージェント**: @spec-writer, @manual-writer
@@ -705,7 +705,7 @@
 
 ## 12. 運用・監視
 
-### `/setup-logging`
+### `/ai:setup-logging`
 - **目的**: 構造化ロギングの実装
 - **引数**: `[log-level]` - ログレベル(debug/info/warn/error)
 - **使用エージェント**: @sre-observer
@@ -715,7 +715,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write(src/**), Edit`
 
-### `/setup-monitoring`
+### `/ai:setup-monitoring`
 - **目的**: 監視・アラートの設定
 - **引数**: `[service-name]` - サービス名
 - **使用エージェント**: @sre-observer
@@ -725,7 +725,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Write`
 
-### `/setup-local-agent`
+### `/ai:setup-local-agent`
 - **目的**: ローカルエージェントのセットアップ
 - **引数**: なし
 - **使用エージェント**: @local-watcher, @local-sync, @process-mgr
@@ -735,7 +735,7 @@
   - `model: sonnet`
   - `allowed-tools: Bash, Read, Write(local-agent/**)`
 
-### `/manage-dependencies`
+### `/ai:manage-dependencies`
 - **目的**: 依存パッケージの管理・更新
 - **引数**: `[--upgrade-strategy]` - 更新戦略(patch/minor/major)
 - **使用エージェント**: @dep-mgr
@@ -749,37 +749,90 @@
 
 ## 13. Claude Code環境
 
-### `/create-agent`
-- **目的**: 新しいClaude Codeエージェントの作成
-- **引数**: `[agent-name] [specialty]` - エージェント名と専門分野
+### `/ai:create-agent`
+- **目的**: 新しいClaude Codeエージェント（.claude/agents/*.md）の作成
+- **引数**: `[agent-name] [specialty]` - エージェント名と専門分野（両方オプション、未指定時はインタラクティブ）
 - **使用エージェント**: @meta-agent-designer
-- **スキル活用**: agent-persona-design, tool-permission-management
-- **成果物**: .claude/agents/*.md
+- **スキル活用**（タスクに応じて必要なスキルのみ読み込み）:
+  - **コア設計**: agent-architecture-patterns, agent-structure-design, agent-persona-design, tool-permission-management
+  - **統合・協調**: agent-dependency-design, multi-agent-systems, project-architecture-integration
+  - **品質・検証**: agent-quality-standards, agent-validation-testing, prompt-engineering-for-agents
+  - **テンプレート**: agent-template-patterns, agent-lifecycle-management
+- **フロー**:
+  1. @meta-agent-designer: Phase 1 - 要件分析とアーキテクチャ選択（単一責任原則の確認）
+  2. @meta-agent-designer: Phase 2 - ペルソナとワークフロー設計（実在する専門家ベース、YAML Frontmatter、ツール権限）
+  3. @meta-agent-designer: Phase 3 - 依存関係と統合設計（スキル依存、エージェント間協調、プロジェクト統合）
+  4. @meta-agent-designer: Phase 4 - 品質基準と検証（完了条件、テストケース）
+  5. @meta-agent-designer: Phase 5 - 最適化と完成（System Prompt最適化、450-550行調整）
+- **成果物**:
+  - .claude/agents/[agent-name].md（450-550行範囲内）
+  - 単一責任を持つ特化型エージェント
+  - 実在する専門家ベースのペルソナ
+  - テストケースと検証基準
 - **設定**:
-  - `model: opus` (高度なペルソナ設計)
-  - `allowed-tools: Read, Write(.claude/agents/**)`
+  - `model: opus`（高度なペルソナ設計が必要）
+  - `allowed-tools: [Read, Write(.claude/agents/**), Grep, Bash]`
+  - **品質基準**: マービン・ミンスキーの『心の社会』、単一責任原則、最小権限の原則、450-550行範囲内、テスト可能性
 
-### `/create-skill`
-- **目的**: 新しいスキルの作成
-- **引数**: `[skill-name]` - スキル名
+### `/ai:create-skill`
+- **目的**: 新しいClaude Codeスキル（.claude/skills/*/SKILL.md）の作成
+- **引数**: `[skill-name]` - スキル名（オプション、未指定時はインタラクティブ）
 - **使用エージェント**: @skill-librarian
-- **スキル活用**: knowledge-management, progressive-disclosure
-- **成果物**: .claude/skills/*/SKILL.md
+- **スキル活用**:
+  - knowledge-management: SECIモデルによる暗黙知→形式知変換
+  - progressive-disclosure: 3層開示モデル（メタデータ→本文→リソース）
+  - documentation-architecture: トピック分割、階層設計、リソース最適化
+  - context-optimization: トークン効率化、段階的ロード設計
+  - best-practices-curation: 知識の収集、更新、陳腐化防止
+- **フロー**:
+  1. @skill-librarian: Phase 1 - Socialization（暗黙知の特定と共有）
+  2. @skill-librarian: Phase 2 - Externalization（暗黙知を形式知に変換、スキル構造設計）
+  3. @skill-librarian: Phase 3 - Combination（既存知識との統合、Progressive Disclosure設計）
+  4. @skill-librarian: Phase 4 - Internalization（使用条件明確化、品質検証）
+- **成果物**:
+  - .claude/skills/[skill-name]/SKILL.md（500行以内）
+  - resources/ ディレクトリ（詳細リソース、必要に応じて）
+  - scripts/ ディレクトリ（自動化スクリプト、必要に応じて）
+  - templates/ ディレクトリ（テンプレート、必要に応じて）
 - **設定**:
-  - `model: opus`
-  - `allowed-tools: Read, Write(.claude/skills/**)`
+  - `model: opus`（高度な知識体系化が必要）
+  - `allowed-tools: [Read, Write(.claude/skills/**), Grep, Bash]`
+  - **品質基準**: SECIモデル、Progressive Disclosure、500行以内、相対パス参照、トークン効率
 
-### `/create-command`
-- **目的**: 新しいスラッシュコマンドの作成
-- **引数**: `[command-name]` - コマンド名
+### `/ai:create-command`
+- **目的**: 新しいスラッシュコマンド（.claude/commands/*.md）の作成
+- **引数**: `[command-name]` - コマンド名（オプション、未指定時はインタラクティブ）
 - **使用エージェント**: @command-arch
-- **スキル活用**: command-pattern, workflow-orchestration
-- **成果物**: .claude/commands/*.md
+- **スキル活用**:
+  - command-structure-fundamentals: YAML Frontmatter設計
+  - command-arguments-system: 引数システム設計
+  - command-security-design: セキュリティレビュー
+  - command-basic-patterns: 実装パターン選択
+  - command-advanced-patterns: 高度なパターン（必要時）
+  - command-agent-skill-integration: エージェント・スキル統合
+  - command-activation-mechanisms: 自動起動設計
+  - command-error-handling: エラーハンドリング設計
+  - command-naming-conventions: 命名決定
+  - command-documentation-patterns: ドキュメンテーション作成
+  - command-placement-priority: ファイル配置決定
+  - command-best-practices: 設計原則確認
+  - command-performance-optimization: 最適化
+- **フロー**:
+  1. @command-arch: Phase 1 - 要件収集と初期分析
+  2. @command-arch: Phase 2 - コマンド設計（命名、Frontmatter、パターン選択、引数設計）
+  3. @command-arch: Phase 3 - エラーハンドリングとセキュリティレビュー
+  4. @command-arch: Phase 4 - ドキュメンテーションと例の作成
+  5. @command-arch: Phase 5 - ベストプラクティス確認と最適化
+- **成果物**:
+  - .claude/commands/*.md（完全なYAML Frontmatter + Markdown本文）
+  - 充実したドキュメンテーション
+  - 使用例とトラブルシューティングガイド
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Read, Write(.claude/commands/**)`
+  - `allowed-tools: [Read, Write(.claude/commands/**)]`
+  - **品質基準**: 単一責任原則、組み合わせ可能性、冪等性、セキュリティベストプラクティス
 
-### `/setup-hooks`
+### `/ai:setup-hooks`
 - **目的**: Claude Code hooksの設定
 - **引数**: `[hook-type]` - フックタイプ(PreToolUse/PostToolUse/Stop等)
 - **使用エージェント**: @hook-master
@@ -789,7 +842,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Edit`
 
-### `/setup-mcp`
+### `/ai:setup-mcp`
 - **目的**: MCPサーバーの統合設定
 - **引数**: `[mcp-server-name]` - MCPサーバー名
 - **使用エージェント**: @mcp-integrator
@@ -799,7 +852,7 @@
   - `model: sonnet`
   - `allowed-tools: Read, Edit, Write`
 
-### `/optimize-context`
+### `/ai:optimize-context`
 - **目的**: コンテキスト使用量の最適化
 - **引数**: なし
 - **使用エージェント**: @skill-librarian, @prompt-eng
@@ -813,7 +866,7 @@
 
 ## 14. 統合ワークフロー
 
-### `/full-feature-development`
+### `/ai:full-feature-development`
 - **目的**: 機能の完全な開発サイクル
 - **引数**: `[feature-name]` - 機能名
 - **使用エージェント**:
@@ -826,7 +879,7 @@
   - `model: opus` (複雑な調整)
   - `allowed-tools: Bash, Read, Write, Edit, Task`
 
-### `/create-full-stack-app`
+### `/ai:create-full-stack-app`
 - **目的**: フルスタックアプリケーションの構築
 - **引数**: `[app-name] [--features]` - アプリ名と機能リスト
 - **使用エージェント**:
@@ -837,7 +890,7 @@
   - `model: opus`
   - `allowed-tools: Bash, Read, Write, Edit, Task`
 
-### `/prepare-release`
+### `/ai:prepare-release`
 - **目的**: リリース準備の完全自動化
 - **引数**: `[version]` - バージョン番号(semver形式)
 - **使用エージェント**:
@@ -849,7 +902,7 @@
   - `model: sonnet`
   - `allowed-tools: Bash, Read, Write, Edit`
 
-### `/code-review-complete`
+### `/ai:code-review-complete`
 - **目的**: 包括的なコードレビュー
 - **引数**: `[target-path]` - レビュー対象パス
 - **使用エージェント**:
@@ -859,7 +912,7 @@
   - `model: opus`
   - `allowed-tools: Read, Grep, Glob, Write(docs/**)`
 
-### `/onboard-developer`
+### `/ai:onboard-developer`
 - **目的**: 新規開発者のオンボーディング
 - **引数**: `[developer-role]` - 開発者の役割(frontend/backend/fullstack)
 - **使用エージェント**:
@@ -1034,7 +1087,7 @@ model: opus
 
 ## 15. Git・バージョン管理
 
-### `/commit`
+### `/ai:commit`
 - **目的**: Conventional Commitsに従ったコミット作成
 - **引数**: `[commit-message]` - コミットメッセージ(オプション、未指定時は自動生成)
 - **使用エージェント**: なし(シンプルな自動化)
@@ -1043,7 +1096,7 @@ model: opus
   - `model: sonnet`
   - `allowed-tools: Bash(git*)`
 
-### `/create-pr`
+### `/ai:create-pr`
 - **目的**: Pull Request作成
 - **引数**: `[base-branch]` - ベースブランチ(デフォルト: main)
 - **使用エージェント**: @spec-writer
@@ -1052,7 +1105,7 @@ model: opus
   - `model: sonnet`
   - `allowed-tools: Bash(git*|gh*), Read`
 
-### `/merge-pr`
+### `/ai:merge-pr`
 - **目的**: Pull Requestのマージ
 - **引数**: `[pr-number]` - PR番号
 - **使用エージェント**: なし
@@ -1061,7 +1114,7 @@ model: opus
   - `model: haiku`
   - `allowed-tools: Bash(gh pr*|git*)`
 
-### `/tag-release`
+### `/ai:tag-release`
 - **目的**: リリースタグの作成
 - **引数**: `[version]` - バージョン番号(v1.0.0形式)
 - **使用エージェント**: @spec-writer
@@ -1074,7 +1127,7 @@ model: opus
 
 ## 16. パッケージ・依存関係
 
-### `/add-dependency`
+### `/ai:add-dependency`
 - **目的**: 新しい依存パッケージの追加
 - **引数**: `[package-name] [--dev]` - パッケージ名、devDependencyフラグ
 - **使用エージェント**: @dep-mgr
@@ -1084,7 +1137,7 @@ model: opus
   - `model: haiku`
   - `allowed-tools: Bash(npm install*|pnpm add*), Read, Edit`
 
-### `/update-dependencies`
+### `/ai:update-dependencies`
 - **目的**: 依存パッケージの一括更新
 - **引数**: `[strategy]` - 更新戦略(patch/minor/major/latest)
 - **使用エージェント**: @dep-mgr
@@ -1094,7 +1147,7 @@ model: opus
   - `model: sonnet`
   - `allowed-tools: Bash(npm*|pnpm*), Read, Edit`
 
-### `/audit-dependencies`
+### `/ai:audit-dependencies`
 - **目的**: 依存関係の脆弱性監査
 - **引数**: なし
 - **使用エージェント**: @dep-mgr, @sec-auditor
@@ -1108,7 +1161,7 @@ model: opus
 
 ## 17. 環境設定・設定ファイル
 
-### `/create-env-file`
+### `/ai:create-env-file`
 - **目的**: .env.exampleの作成・更新
 - **引数**: なし
 - **使用エージェント**: @secret-mgr
@@ -1118,7 +1171,7 @@ model: opus
   - `model: sonnet`
   - `allowed-tools: Read, Write(.env.example)|Edit`
 
-### `/setup-eslint`
+### `/ai:setup-eslint`
 - **目的**: ESLint設定の最適化
 - **引数**: `[style-guide]` - スタイルガイド(airbnb/google/standard)
 - **使用エージェント**: @code-quality
@@ -1128,7 +1181,7 @@ model: opus
   - `model: sonnet`
   - `allowed-tools: Bash(npm*), Read, Write, Edit`
 
-### `/setup-prettier`
+### `/ai:setup-prettier`
 - **目的**: Prettier設定
 - **引数**: なし
 - **使用エージェント**: @code-quality
@@ -1138,7 +1191,7 @@ model: opus
   - `model: haiku`
   - `allowed-tools: Write(.prettierrc*)`
 
-### `/setup-typescript`
+### `/ai:setup-typescript`
 - **目的**: TypeScript設定の最適化
 - **引数**: `[strictness]` - 厳格度(strict/moderate/loose)
 - **使用エージェント**: @schema-def
@@ -1152,7 +1205,7 @@ model: opus
 
 ## 18. メンテナンス・最適化
 
-### `/clean-codebase`
+### `/ai:clean-codebase`
 - **目的**: 未使用コード・ファイルの削除
 - **引数**: `[--dry-run]` - ドライランフラグ
 - **使用エージェント**: @code-quality, @arch-police
@@ -1162,7 +1215,7 @@ model: opus
   - `model: sonnet`
   - `allowed-tools: Read, Grep, Glob, Edit, Bash(rm*)`
 
-### `/update-all-docs`
+### `/ai:update-all-docs`
 - **目的**: 全ドキュメントの一括更新
 - **引数**: なし
 - **使用エージェント**: @spec-writer, @api-doc-writer, @manual-writer
@@ -1171,7 +1224,7 @@ model: opus
   - `model: sonnet`
   - `allowed-tools: Read, Edit, Write(docs/**)`
 
-### `/analyze-performance`
+### `/ai:analyze-performance`
 - **目的**: パフォーマンス分析とボトルネック特定
 - **引数**: `[target]` - 分析対象(frontend/backend/database)
 - **使用エージェント**: @router-dev, @repo-dev, @dba-mgr
@@ -1181,7 +1234,7 @@ model: opus
   - `model: sonnet`
   - `allowed-tools: Read, Bash, Write(docs/**)`
 
-### `/migrate-to-latest`
+### `/ai:migrate-to-latest`
 - **目的**: フレームワーク・ライブラリの最新版移行
 - **引数**: `[library-name]` - ライブラリ名
 - **使用エージェント**: @dep-mgr, @logic-dev
@@ -1195,7 +1248,7 @@ model: opus
 
 ## 19. トラブルシューティング・デバッグ
 
-### `/debug-error`
+### `/ai:debug-error`
 - **目的**: エラーのデバッグと原因特定
 - **引数**: `[error-message]` - エラーメッセージ
 - **使用エージェント**: @logic-dev, @sec-auditor
@@ -1204,7 +1257,7 @@ model: opus
   - `model: opus`
   - `allowed-tools: Read, Grep, Bash`
 
-### `/fix-build-error`
+### `/ai:fix-build-error`
 - **目的**: ビルドエラーの修正
 - **引数**: なし
 - **使用エージェント**: @devops-eng, @code-quality
@@ -1213,7 +1266,7 @@ model: opus
   - `model: sonnet`
   - `allowed-tools: Bash(npm run build*), Read, Edit`
 
-### `/fix-type-errors`
+### `/ai:fix-type-errors`
 - **目的**: TypeScriptエラーの修正
 - **引数**: `[file-path]` - 対象ファイル(オプション)
 - **使用エージェント**: @schema-def
@@ -1223,7 +1276,7 @@ model: opus
   - `model: sonnet`
   - `allowed-tools: Bash(tsc*), Read, Edit`
 
-### `/diagnose-performance-issue`
+### `/ai:diagnose-performance-issue`
 - **目的**: パフォーマンス問題の診断
 - **引数**: `[symptom]` - 症状(slow-render/slow-query/memory-leak)
 - **使用エージェント**: @router-dev, @repo-dev, @sre-observer
@@ -1236,7 +1289,7 @@ model: opus
 
 ## 20. チーム・コラボレーション
 
-### `/sync-team-standards`
+### `/ai:sync-team-standards`
 - **目的**: チームコーディング規約の同期
 - **引数**: なし
 - **使用エージェント**: @code-quality, @skill-librarian
@@ -1245,7 +1298,7 @@ model: opus
   - `model: sonnet`
   - `allowed-tools: Read, Edit`
 
-### `/create-workflow-template`
+### `/ai:create-workflow-template`
 - **目的**: チーム用ワークフローテンプレート作成
 - **引数**: `[workflow-name]` - ワークフロー名
 - **使用エージェント**: @gha-workflow-architect
@@ -1255,7 +1308,7 @@ model: opus
   - `model: sonnet`
   - `allowed-tools: Write(.github/workflow-templates/**)`
 
-### `/onboard-developer`
+### `/ai:onboard-developer`
 - **目的**: 新規開発者のオンボーディング
 - **引数**: `[developer-role]` - 役割(frontend/backend/fullstack)
 - **使用エージェント**: @manual-writer, @meta-agent-designer
