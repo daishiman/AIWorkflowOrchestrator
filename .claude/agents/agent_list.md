@@ -1,10 +1,10 @@
-# Universal AI Workflow Orchestrator & Claude Code Ecosystem
+# ユニバーサル AI ワークフローオーケストレーター & Claude Code エコシステム
 
 ## 全 35 エージェント定義リスト
 
 ---
 
-### チーム 1：プロジェクト管理・設計 (Management & Design Squad)
+### チーム 1：プロジェクト管理・設計（マネジメント・デザインチーム）
 
 #### 1. PM / プロダクトオーナー
 
@@ -56,7 +56,7 @@
   | **interview-techniques** | ヒアリングスキル、要求抽出、曖昧性除去 |
   | **functional-non-functional-requirements** | 機能要件と非機能要件の分類と定義 |
 
-#### 3. テクニカルライター (Spec Writer)
+#### 3. テクニカルライター（仕様書作成者）
 
 - **エージェント名:** `@spec-writer`
 - **モデル人物:** **アンドリュー・ハント (Andrew Hunt)** - 『達人プログラマー』著者
@@ -106,7 +106,7 @@
 
 ---
 
-### チーム 2：フロントエンド開発 (Frontend Squad)
+### チーム 2：フロントエンド開発（フロントエンドチーム）
 
 #### 5. UI コンポーネント設計
 
@@ -185,7 +185,7 @@
 
 ---
 
-### チーム 3：バックエンド・コア開発 (Backend Core Squad)
+### チーム 3：バックエンド・コア開発（バックエンドコアチーム）
 
 #### 8. ドメインモデラー
 
@@ -261,7 +261,7 @@
 
 ---
 
-### チーム 4：機能プラグイン実装 (Feature Plugin Squad)
+### チーム 4：機能プラグイン実装（機能プラグインチーム）
 
 #### 11. スキーマ定義
 
@@ -337,7 +337,7 @@
 
 ---
 
-### チーム 5：データベース・インフラ (DB & Infra Squad)
+### チーム 5：データベース・インフラ（DB・インフラチーム）
 
 #### 14. DB スキーマ設計
 
@@ -413,9 +413,9 @@
 
 ---
 
-### チーム 6：ローカル連携開発 (Local Agent Squad)
+### チーム 6：ローカル連携開発（ローカルエージェントチーム）
 
-#### 17. ファイル監視 (Watcher)
+#### 17. ファイル監視（ウォッチャー）
 
 - **エージェント名:** `@local-watcher`
 - **モデル人物:** **ライアン・ダール (Ryan Dahl)** - Node.js / Deno 開発者
@@ -439,7 +439,7 @@
   | **ignore-patterns** | .gitignore 互換、glob pattern、除外ルール設計 |
   | **nodejs-streams** | Readable/Writable Stream、バックプレッシャー |
 
-#### 18. ネットワーク同期 (Sync)
+#### 18. ネットワーク同期（シンク）
 
 - **エージェント名:** `@local-sync`
 - **モデル人物:** **アンドリュー・タネンバウム (Andrew S. Tanenbaum)** - 『コンピュータネットワーク』著者
@@ -489,7 +489,7 @@
 
 ---
 
-### チーム 7：品質保証 (QA Squad)
+### チーム 7：品質保証（QAチーム）
 
 #### 20. ユニットテスター
 
@@ -539,7 +539,7 @@
   | **visual-regression-testing** | スクリーンショット比較、CSS アニメーション考慮 |
   | **api-mocking** | MSW、Nock、モックサーバー構築 |
 
-#### 22. コード品質管理者 (Linter)
+#### 22. コード品質管理者（リンター）
 
 - **エージェント名:** `@code-quality`
 - **モデル人物:** **ニコラス・ザカス (Nicholas C. Zakas)** - ESLint 作者
@@ -565,7 +565,7 @@
 
 ---
 
-### チーム 8：セキュリティ・認証 (Security & Auth Squad)
+### チーム 8：セキュリティ・認証（セキュリティ・認証チーム）
 
 #### 23. 認証・認可スペシャリスト
 
@@ -641,7 +641,7 @@
 
 ---
 
-### チーム 9：運用・信頼性エンジニアリング (SRE Squad)
+### チーム 9：運用・信頼性エンジニアリング（SREチーム）
 
 #### 26. ロギング・監視設計者
 
@@ -667,7 +667,7 @@
   | **alert-design** | アラート閾値設定、通知ルーティング、Alert Fatigue 回避 |
   | **distributed-tracing** | OpenTelemetry、トレース ID、スパン管理 |
 
-#### 27. データベース管理者 (DBA)
+#### 27. データベース管理者（DBA）
 
 - **エージェント名:** `@dba-mgr`
 - **モデル人物:** **スコット・アンブラー (Scott Ambler)** - アジャイルデータベース手法提唱者
@@ -693,7 +693,7 @@
 
 ---
 
-### チーム 10：ドキュメント・開発体験 (Docs & DX Squad)
+### チーム 10：ドキュメント・開発体験（ドキュメント・DXチーム）
 
 #### 28. API ドキュメント作成者
 
@@ -769,7 +769,7 @@
 
 ---
 
-### チーム 11：Claude Code 環境構築 (Claude Code Ecosystem Squad)
+### チーム 11：Claude Code 環境構築（Claude Code エコシステムチーム）
 
 #### 31. フック構成管理者
 
@@ -811,13 +811,21 @@
   - [ ] 処理の途中で失敗した場合のリカバリは考慮されているか？
 - **成果物:** `.claude/commands/*.md`
 - **必要なスキル**:
-  | スキル名 | 概要 |
-  | -------------------------- | --------------------------------------------------- |
-  | **command-pattern** | Command パターン、要求のカプセル化 |
-  | **workflow-orchestration** | エージェント連携、順次/並列実行、エラーハンドリング |
-  | **cli-design-principles** | 直感的なコマンド名、引数設計、ヘルプ出力 |
-  | **idempotency-design** | 冪等性保証、リトライ安全性 |
-  | **routing-slip-pattern** | タスクルーティング、処理チェーン |
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **command-structure-fundamentals** | `.claude/skills/command-structure-fundamentals/SKILL.md` | コマンド基本構造 |
+| **command-arguments-system** | `.claude/skills/command-arguments-system/SKILL.md` | 引数システム |
+| **command-security-design** | `.claude/skills/command-security-design/SKILL.md` | セキュリティ設計 |
+| **command-basic-patterns** | `.claude/skills/command-basic-patterns/SKILL.md` | 基本パターン |
+| **command-advanced-patterns** | `.claude/skills/command-advanced-patterns/SKILL.md` | 高度なパターン |
+| **command-agent-skill-integration** | `.claude/skills/command-agent-skill-integration/SKILL.md` | エージェント・スキル統合 |
+| **command-activation-mechanisms** | `.claude/skills/command-activation-mechanisms/SKILL.md` | 起動メカニズム |
+| **command-error-handling** | `.claude/skills/command-error-handling/SKILL.md` | エラーハンドリング |
+| **command-naming-conventions** | `.claude/skills/command-naming-conventions/SKILL.md` | 命名規則 |
+| **command-documentation-patterns** | `.claude/skills/command-documentation-patterns/SKILL.md` | ドキュメンテーション |
+| **command-placement-priority** | `.claude/skills/command-placement-priority/SKILL.md` | 配置と優先順位 |
+| **command-best-practices** | `.claude/skills/command-best-practices/SKILL.md` | ベストプラクティス |
+| **command-performance-optimization** | `.claude/skills/command-performance-optimization/SKILL.md` | パフォーマンス最適化 |
 
 #### 33. メタ・エージェント設計者
 

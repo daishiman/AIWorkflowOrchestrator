@@ -542,13 +542,21 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                   | 概要                                                |
-| -------------------------- | --------------------------------------------------- |
-| **command-pattern**        | Command パターン、要求のカプセル化                  |
-| **workflow-orchestration** | エージェント連携、順次/並列実行、エラーハンドリング |
-| **cli-design-principles**  | 直感的なコマンド名、引数設計、ヘルプ出力            |
-| **idempotency-design**     | 冪等性保証、リトライ安全性                          |
-| **routing-slip-pattern**   | タスクルーティング、処理チェーン                    |
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **command-structure-fundamentals** | `.claude/skills/command-structure-fundamentals/SKILL.md` | Claude Codeスラッシュコマンドの基本構造 |
+| **command-arguments-system** | `.claude/skills/command-arguments-system/SKILL.md` | コマンド引数システム（$ARGUMENTS、位置引数） |
+| **command-security-design** | `.claude/skills/command-security-design/SKILL.md` | コマンドのセキュリティ設計 |
+| **command-basic-patterns** | `.claude/skills/command-basic-patterns/SKILL.md` | 4つの基本実装パターン |
+| **command-advanced-patterns** | `.claude/skills/command-advanced-patterns/SKILL.md` | 高度な実装パターン（パイプライン、メタコマンド、インタラクティブ） |
+| **command-agent-skill-integration** | `.claude/skills/command-agent-skill-integration/SKILL.md` | コマンド、エージェント、スキルの統合（三位一体） |
+| **command-activation-mechanisms** | `.claude/skills/command-activation-mechanisms/SKILL.md` | コマンドの起動メカニズム |
+| **command-error-handling** | `.claude/skills/command-error-handling/SKILL.md` | コマンドのエラーハンドリング |
+| **command-naming-conventions** | `.claude/skills/command-naming-conventions/SKILL.md` | コマンドの命名規則 |
+| **command-documentation-patterns** | `.claude/skills/command-documentation-patterns/SKILL.md` | コマンドのドキュメンテーション |
+| **command-placement-priority** | `.claude/skills/command-placement-priority/SKILL.md` | コマンドの配置場所と優先順位 |
+| **command-best-practices** | `.claude/skills/command-best-practices/SKILL.md` | コマンド設計のベストプラクティス |
+| **command-performance-optimization** | `.claude/skills/command-performance-optimization/SKILL.md` | コマンドのパフォーマンス最適化 |
 ```
 
 ## 33. メタ・エージェント設計者
@@ -585,11 +593,11 @@
 
 | スキル名 | パス | 概要 |
 |---------|------|------|
-| **knowledge-management** | `.claude/skills/knowledge-management/SKILL.md` | SECI Model、暗黙知の形式知化 |
-| **progressive-disclosure** | `.claude/skills/progressive-disclosure/SKILL.md` | 3層開示モデル、スキル発動最適化 |
-| **documentation-architecture** | `.claude/skills/documentation-architecture/SKILL.md` | ドキュメント構造、リソース分割 |
-| **context-optimization** | `.claude/skills/context-optimization/SKILL.md` | ファイルサイズ最適化、550行基準 |
-| **best-practices-curation** | `.claude/skills/best-practices-curation/SKILL.md` | ベストプラクティス収集、品質評価 |
+| **knowledge-management** | `.claude/skills/knowledge-management/SKILL.md` | SECIモデルに基づく組織知識の形式知化と共有 |
+| **progressive-disclosure** | `.claude/skills/progressive-disclosure/SKILL.md` | 3層開示モデルによるトークン効率と知識スケーラビリティの両立 |
+| **documentation-architecture** | `.claude/skills/documentation-architecture/SKILL.md` | ドキュメント構造設計、リソース分割、階層設計 |
+| **context-optimization** | `.claude/skills/context-optimization/SKILL.md` | トークン使用量の最小化と必要情報の効率的抽出 |
+| **best-practices-curation** | `.claude/skills/best-practices-curation/SKILL.md` | ベストプラクティスの収集、評価、統合、更新 |
 ```
 
 ## 35. MCP ツール統合スペシャリスト
