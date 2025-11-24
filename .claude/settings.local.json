@@ -28,7 +28,20 @@
       "Bash(git worktree:*)",
       "Bash(chmod:*)",
       "Bash(/tmp/git-workflow.sh)",
-      "Bash(/bin/bash /tmp/git-workflow.sh)"
+      "Bash(/bin/bash /tmp/git-workflow.sh)",
+      "Bash(mv:*)",
+      "Bash(find .claude/skills/knowledge-management -name \"*.md\" -exec sh -c 'lines=$(wc -l < \"\"$1\"\"); if [ $lines -gt 500 ]; then echo \"\"$1: $lines 行（超過）\"\"; fi' _ {} ;)",
+      "Bash(find .claude/skills/knowledge-management -name \"*.md\" -exec sh -c 'lines=$(wc -l < \"\"$1\"\"); if [ $lines -gt 500 ]; then echo \"\"$1: $lines 行（超過）\"\"; else echo \"\"$1: $lines 行（OK）\"\"; fi' _ {} ;)",
+      "Bash(./scripts/validate-knowledge.sh:*)",
+      "Bash(tree:*)",
+      "Bash(find .claude/skills/progressive-disclosure -name \"*.md\" -exec sh -c 'lines=$(wc -l < \"\"$1\"\"); if [ $lines -gt 500 ]; then echo \"\"$1: $lines 行（超過）\"\"; else echo \"\"$1: $lines 行（OK）\"\"; fi' _ {} ;)",
+      "Bash(for skill in knowledge-management progressive-disclosure documentation-architecture context-optimization best-practices-curation)",
+      "Bash(done)",
+      "Bash(do echo \"=== $skill ===\")",
+      "Bash(for skill in knowledge-management progressive-disclosure documentation-architecture)",
+      "Bash(do echo \"\")",
+      "Bash(.claude/skills/context-optimization/scripts/estimate-tokens.sh:*)",
+      "Bash(.claude/skills/progressive-disclosure/scripts/calculate-token-usage.sh .claude/skills/progressive-disclosure)"
     ],
     "deny": [],
     "ask": []
