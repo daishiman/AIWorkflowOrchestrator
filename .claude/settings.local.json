@@ -41,7 +41,8 @@
       "Bash(for skill in knowledge-management progressive-disclosure documentation-architecture)",
       "Bash(do echo \"\")",
       "Bash(.claude/skills/context-optimization/scripts/estimate-tokens.sh:*)",
-      "Bash(.claude/skills/progressive-disclosure/scripts/calculate-token-usage.sh .claude/skills/progressive-disclosure)"
+      "Bash(.claude/skills/progressive-disclosure/scripts/calculate-token-usage.sh .claude/skills/progressive-disclosure)",
+      "Bash(git stash pop:*)"
     ],
     "deny": [],
     "ask": []
