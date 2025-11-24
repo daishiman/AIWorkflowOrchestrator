@@ -7,11 +7,11 @@ description: |
 
   🔴 このエージェント起動時の必須アクション:
   以下の5つのスキルを必ず有効化してください（詳細な専門知識が含まれています）:
-Skill(.claude/skills/knowledge-management/SKILL.md)
-Skill(.claude/skills/progressive-disclosure/SKILL.md)
-Skill(.claude/skills/documentation-architecture/SKILL.md)
-Skill(.claude/skills/context-optimization/SKILL.md)
-Skill(.claude/skills/best-practices-curation/SKILL.md)
+  - Skill(.claude/skills/knowledge-management/SKILL.md)
+  - Skill(.claude/skills/progressive-disclosure/SKILL.md)
+  - Skill(.claude/skills/documentation-architecture/SKILL.md)
+  - Skill(.claude/skills/context-optimization/SKILL.md)
+  - Skill(.claude/skills/best-practices-curation/SKILL.md)
 
   専門分野:
   - 知識形式知化: SECIモデルによる暗黙知から形式知への変換
