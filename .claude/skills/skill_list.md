@@ -525,13 +525,13 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                          | 概要                                      |
-| --------------------------------- | ----------------------------------------- |
-| **git-hooks-concepts**            | pre-commit、pre-push、commit-msg 等の理解 |
-| **claude-code-hooks**             | UserPromptSubmit、PreToolUse、PostToolUse |
-| **automation-scripting**          | シェルスクリプト、Node.js スクリプト      |
-| **linting-formatting-automation** | 保存時自動フォーマット、コミット前 Lint   |
-| **approval-gates**                | 危険操作の承認フロー、確認プロンプト      |
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **git-hooks-concepts** | - | Git Hooks の基本概念 |
+| **claude-code-hooks** | - | Claude Code フックシステム |
+| **automation-scripting** | - | 自動化スクリプト作成 |
+| **linting-formatting-automation** | - | Lint・フォーマット自動化 |
+| **approval-gates** | - | 承認ゲート設計 |
 ```
 
 ## 32. コマンド・オーケストレーター
@@ -567,20 +567,20 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                          | 概要                                     |
-| --------------------------------- | ---------------------------------------- |
-| **agent-architecture-patterns**   | オーケストレーター・ワーカー、ハブアンドスポーク、パイプライン、ステートマシンパターン |
-| **agent-structure-design**        | YAML Frontmatter設計、システムプロンプト構造、5段階ワークフロー設計 |
-| **agent-dependency-design**       | スキル依存、エージェント依存、ハンドオフプロトコル、循環依存検出 |
-| **agent-quality-standards**       | 5カテゴリ品質基準（構造、設計原則、セキュリティ、ドキュメンテーション、統合） |
-| **agent-validation-testing**      | 正常系・エッジケース・異常系テスト、YAML/Markdown構文検証 |
-| **agent-template-patterns**       | 再利用可能エージェントテンプレート、変数設計、インスタンス化スクリプト |
-| **project-architecture-integration** | ハイブリッドアーキテクチャ（shared/features）、データベース設計、REST API |
-| **agent-persona-design**          | ペルソナ定義、役割の明確化、制約設定     |
-| **tool-permission-management**    | 最小権限、ツールアクセス制御             |
-| **multi-agent-systems**           | エージェント間協調、メッセージパッシング |
-| **prompt-engineering-for-agents** | System Prompt、Few-Shot Examples         |
-| **agent-lifecycle-management**    | 起動、実行、終了、状態管理               |
+  | スキル名 | パス | 概要 |
+  |---------|------|------|
+  | **agent-architecture-patterns** | `.claude/skills/agent-architecture-patterns/SKILL.md` | オーケストレーター・ワーカー、ハブアンドスポーク、パイプライン、ステートマシンパターン |
+  | **agent-structure-design** | `.claude/skills/agent-structure-design/SKILL.md` | YAML Frontmatter設計、システムプロンプト構造、5段階ワークフロー設計 |
+  | **agent-dependency-design** | `.claude/skills/agent-dependency-design/SKILL.md` | スキル依存、エージェント依存、ハンドオフプロトコル、循環依存検出 |
+  | **agent-quality-standards** | `.claude/skills/agent-quality-standards/SKILL.md` | 5カテゴリ品質基準（構造、設計原則、セキュリティ、ドキュメンテーション、統合） |
+  | **agent-validation-testing** | `.claude/skills/agent-validation-testing/SKILL.md` | 正常系・エッジケース・異常系テスト、YAML/Markdown構文検証 |
+  | **agent-template-patterns** | `.claude/skills/agent-template-patterns/SKILL.md` | 再利用可能エージェントテンプレート、変数設計、インスタンス化スクリプト |
+  | **project-architecture-integration** | `.claude/skills/project-architecture-integration/SKILL.md` | ハイブリッドアーキテクチャ（shared/features）、データベース設計、REST API |
+  | **agent-persona-design** | `.claude/skills/agent-persona-design/SKILL.md` | ペルソナ定義、役割の明確化、制約設定 |
+  | **tool-permission-management** | `.claude/skills/tool-permission-management/SKILL.md` | 最小権限、ツールアクセス制御 |
+  | **multi-agent-systems** | `.claude/skills/multi-agent-systems/SKILL.md` | エージェント間協調、メッセージパッシング |
+  | **prompt-engineering-for-agents** | `.claude/skills/prompt-engineering-for-agents/SKILL.md` | System Prompt、Few-Shot Examples |
+  | **agent-lifecycle-management** | `.claude/skills/agent-lifecycle-management/SKILL.md` | 起動、実行、終了、状態管理 |
 ```
 
 ## 34. スキル・ナレッジエンジニア
