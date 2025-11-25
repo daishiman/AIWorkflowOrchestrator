@@ -1,0 +1,271 @@
+{
+  "$schema": "dashboard-template",
+  "_comment": "このテンプレートはダッシュボード設計の参考として使用してください。実際の監視システムの形式に変換が必要です。",
+
+  "dashboard": {
+    "title": "Application Overview Dashboard",
+    "description": "アプリケーションの健全性を一目で確認するためのダッシュボード",
+    "refresh_interval": "30s",
+    "time_range": "last_1h"
+  },
+
+  "rows": [
+    {
+      "title": "ゴールデンシグナル",
+      "height": 200,
+      "panels": [
+        {
+          "title": "リクエストレート",
+          "type": "stat",
+          "metric": "requests_per_second",
+          "unit": "req/s",
+          "thresholds": {
+            "warning": 100,
+            "critical": 500
+          },
+          "description": "1秒あたりのリクエスト数"
+        },
+        {
+          "title": "エラーレート",
+          "type": "stat",
+          "metric": "error_rate_percent",
+          "unit": "%",
+          "thresholds": {
+            "warning": 1,
+            "critical": 5
+          },
+          "description": "エラーとなったリクエストの割合"
+        },
+        {
+          "title": "P99レスポンスタイム",
+          "type": "stat",
+          "metric": "response_time_p99",
+          "unit": "ms",
+          "thresholds": {
+            "warning": 500,
+            "critical": 2000
+          },
+          "description": "99パーセンタイルのレスポンス時間"
+        },
+        {
+          "title": "可用性",
+          "type": "stat",
+          "metric": "availability_percent",
+          "unit": "%",
+          "thresholds": {
+            "warning": 99.9,
+            "critical": 99
+          },
+          "description": "サービス可用性（過去24時間）"
+        }
+      ]
+    },
+    {
+      "title": "トラフィック",
+      "height": 300,
+      "panels": [
+        {
+          "title": "リクエスト数推移",
+          "type": "timeseries",
+          "metrics": [
+            { "name": "requests_total", "label": "Total" },
+            { "name": "requests_success", "label": "Success" },
+            { "name": "requests_error", "label": "Error" }
+          ],
+          "width": "66%"
+        },
+        {
+          "title": "エンドポイント別リクエスト",
+          "type": "table",
+          "metric": "requests_by_endpoint",
+          "columns": ["endpoint", "count", "avg_latency", "error_rate"],
+          "sort_by": "count",
+          "limit": 10,
+          "width": "34%"
+        }
+      ]
+    },
+    {
+      "title": "レイテンシ",
+      "height": 300,
+      "panels": [
+        {
+          "title": "レスポンスタイム分布",
+          "type": "timeseries",
+          "metrics": [
+            { "name": "response_time_p50", "label": "P50" },
+            { "name": "response_time_p90", "label": "P90" },
+            { "name": "response_time_p99", "label": "P99" }
+          ],
+          "width": "50%"
+        },
+        {
+          "title": "レイテンシヒストグラム",
+          "type": "histogram",
+          "metric": "response_time_histogram",
+          "buckets": ["0-100ms", "100-250ms", "250-500ms", "500-1000ms", "1000ms+"],
+          "width": "50%"
+        }
+      ]
+    },
+    {
+      "title": "エラー",
+      "height": 300,
+      "panels": [
+        {
+          "title": "エラー数推移",
+          "type": "timeseries",
+          "metrics": [
+            { "name": "errors_4xx", "label": "4xx Errors" },
+            { "name": "errors_5xx", "label": "5xx Errors" }
+          ],
+          "width": "50%"
+        },
+        {
+          "title": "エラー内訳",
+          "type": "piechart",
+          "metric": "errors_by_type",
+          "width": "25%"
+        },
+        {
+          "title": "最近のエラー",
+          "type": "logs",
+          "query": "level:error",
+          "limit": 20,
+          "width": "25%"
+        }
+      ]
+    },
+    {
+      "title": "リソース使用率",
+      "height": 250,
+      "panels": [
+        {
+          "title": "CPU使用率",
+          "type": "gauge",
+          "metric": "cpu_usage_percent",
+          "unit": "%",
+          "thresholds": {
+            "warning": 70,
+            "critical": 90
+          },
+          "width": "25%"
+        },
+        {
+          "title": "メモリ使用率",
+          "type": "gauge",
+          "metric": "memory_usage_percent",
+          "unit": "%",
+          "thresholds": {
+            "warning": 80,
+            "critical": 95
+          },
+          "width": "25%"
+        },
+        {
+          "title": "リソース推移",
+          "type": "timeseries",
+          "metrics": [
+            { "name": "cpu_usage_percent", "label": "CPU" },
+            { "name": "memory_usage_percent", "label": "Memory" }
+          ],
+          "width": "50%"
+        }
+      ]
+    },
+    {
+      "title": "データベース",
+      "height": 250,
+      "panels": [
+        {
+          "title": "接続プール",
+          "type": "stat",
+          "metrics": [
+            { "name": "db_connections_active", "label": "Active" },
+            { "name": "db_connections_idle", "label": "Idle" },
+            { "name": "db_connections_max", "label": "Max" }
+          ],
+          "width": "33%"
+        },
+        {
+          "title": "クエリパフォーマンス",
+          "type": "timeseries",
+          "metrics": [
+            { "name": "db_query_time_avg", "label": "Avg Query Time" }
+          ],
+          "width": "33%"
+        },
+        {
+          "title": "スロークエリ",
+          "type": "table",
+          "metric": "db_slow_queries",
+          "columns": ["query", "duration", "count"],
+          "limit": 5,
+          "width": "34%"
+        }
+      ]
+    },
+    {
+      "title": "外部サービス",
+      "height": 200,
+      "panels": [
+        {
+          "title": "外部API状態",
+          "type": "statusmap",
+          "metrics": [
+            { "name": "external_api_status", "label": "Status" }
+          ],
+          "services": ["auth-provider", "payment-gateway", "email-service"],
+          "width": "50%"
+        },
+        {
+          "title": "外部APIレイテンシ",
+          "type": "timeseries",
+          "metrics": [
+            { "name": "external_api_latency", "group_by": "service" }
+          ],
+          "width": "50%"
+        }
+      ]
+    },
+    {
+      "title": "デプロイメント",
+      "height": 150,
+      "panels": [
+        {
+          "title": "デプロイ履歴",
+          "type": "annotations",
+          "metric": "deployments",
+          "width": "70%"
+        },
+        {
+          "title": "現在のバージョン",
+          "type": "stat",
+          "metric": "app_version",
+          "width": "30%"
+        }
+      ]
+    }
+  ],
+
+  "variables": [
+    {
+      "name": "environment",
+      "type": "dropdown",
+      "options": ["production", "staging", "development"],
+      "default": "production"
+    },
+    {
+      "name": "time_range",
+      "type": "time_picker",
+      "options": ["5m", "15m", "1h", "6h", "24h", "7d"],
+      "default": "1h"
+    }
+  ],
+
+  "alerts_summary": {
+    "position": "top",
+    "show_active_alerts": true,
+    "max_alerts": 5
+  }
+}

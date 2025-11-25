@@ -1,0 +1,254 @@
+# アラートルールテンプレート
+#
+# このテンプレートはアラート設計の参考として使用してください。
+# 実際の監視システム（Prometheus、Datadog、等）の形式に合わせて調整が必要です。
+
+# ===========================================
+# 可用性アラート
+# ===========================================
+
+availability_alerts:
+  # サービスダウン
+  - name: service_down
+    description: アプリケーションが応答していません
+    condition: health_check_failures >= 3
+    duration: 1m
+    severity: critical
+    channels:
+      - discord_critical
+      - pagerduty
+    runbook: docs/runbooks/service-down.md
+
+  # 高エラーレート
+  - name: high_error_rate
+    description: エラーレートが閾値を超えています
+    condition: error_rate > 5%
+    duration: 5m
+    severity: critical
+    channels:
+      - discord_critical
+    runbook: docs/runbooks/high-error-rate.md
+
+  # エラーレート警告
+  - name: elevated_error_rate
+    description: エラーレートが上昇しています
+    condition: error_rate > 1%
+    duration: 10m
+    severity: warning
+    channels:
+      - discord_warning
+
+# ===========================================
+# パフォーマンスアラート
+# ===========================================
+
+performance_alerts:
+  # レスポンスタイム劣化（Critical）
+  - name: response_time_critical
+    description: P99レスポンスタイムが危険レベルです
+    condition: response_time_p99 > 2000ms
+    duration: 5m
+    severity: critical
+    channels:
+      - discord_critical
+
+  # レスポンスタイム劣化（Warning）
+  - name: response_time_warning
+    description: P99レスポンスタイムが上昇しています
+    condition: response_time_p99 > 500ms
+    duration: 10m
+    severity: warning
+    channels:
+      - discord_warning
+
+  # スループット低下
+  - name: low_throughput
+    description: リクエストスループットが異常に低下しています
+    condition: requests_per_minute < baseline * 0.5
+    duration: 15m
+    severity: warning
+    channels:
+      - discord_warning
+
+# ===========================================
+# リソースアラート
+# ===========================================
+
+resource_alerts:
+  # CPU使用率
+  - name: cpu_high
+    description: CPU使用率が高い状態が続いています
+    condition: cpu_usage > 80%
+    duration: 10m
+    severity: warning
+    channels:
+      - discord_warning
+
+  - name: cpu_critical
+    description: CPU使用率が危険レベルです
+    condition: cpu_usage > 95%
+    duration: 5m
+    severity: critical
+    channels:
+      - discord_critical
+
+  # メモリ使用率
+  - name: memory_high
+    description: メモリ使用率が高い状態が続いています
+    condition: memory_usage > 80%
+    duration: 10m
+    severity: warning
+    channels:
+      - discord_warning
+
+  - name: memory_critical
+    description: メモリ使用率が危険レベルです
+    condition: memory_usage > 95%
+    duration: 5m
+    severity: critical
+    channels:
+      - discord_critical
+
+  # ディスク使用率
+  - name: disk_high
+    description: ディスク使用率が高くなっています
+    condition: disk_usage > 80%
+    duration: 30m
+    severity: warning
+    channels:
+      - discord_warning
+
+# ===========================================
+# データベースアラート
+# ===========================================
+
+database_alerts:
+  # 接続プール枯渇
+  - name: db_connection_pool_exhausted
+    description: データベース接続プールが枯渇しています
+    condition: db_available_connections < 5
+    duration: 2m
+    severity: critical
+    channels:
+      - discord_critical
+
+  # クエリ遅延
+  - name: slow_queries
+    description: 遅いクエリが多発しています
+    condition: slow_query_count > 10
+    duration: 5m
+    severity: warning
+    channels:
+      - discord_warning
+
+  # レプリケーション遅延
+  - name: replication_lag
+    description: データベースレプリケーションが遅延しています
+    condition: replication_lag > 30s
+    duration: 5m
+    severity: warning
+    channels:
+      - discord_warning
+
+# ===========================================
+# セキュリティアラート
+# ===========================================
+
+security_alerts:
+  # 認証失敗の急増
+  - name: auth_failures_spike
+    description: 認証失敗が急増しています（ブルートフォース攻撃の可能性）
+    condition: auth_failures_per_minute > 100
+    duration: 1m
+    severity: critical
+    channels:
+      - discord_critical
+      - security_team
+
+  # 異常なAPIアクセス
+  - name: unusual_api_access
+    description: 異常なAPIアクセスパターンを検出
+    condition: api_requests_per_ip > 1000
+    duration: 5m
+    severity: warning
+    channels:
+      - discord_warning
+      - security_team
+
+# ===========================================
+# ビジネスアラート
+# ===========================================
+
+business_alerts:
+  # ユーザー登録ゼロ
+  - name: no_signups
+    description: 新規ユーザー登録がありません
+    condition: signups_last_hour == 0
+    duration: 2h
+    severity: info
+    channels:
+      - discord_info
+    # 営業時間のみ
+    time_window: "09:00-18:00 JST weekdays"
+
+  # 重要機能の利用低下
+  - name: feature_usage_drop
+    description: 重要機能の利用が大幅に低下しています
+    condition: feature_usage < baseline * 0.3
+    duration: 1h
+    severity: warning
+    channels:
+      - discord_warning
+
+# ===========================================
+# 通知チャンネル設定
+# ===========================================
+
+notification_channels:
+  discord_critical:
+    type: discord
+    webhook_url: ${DISCORD_WEBHOOK_CRITICAL}
+    mention: "@here"
+    color: 0xFF0000  # 赤
+
+  discord_warning:
+    type: discord
+    webhook_url: ${DISCORD_WEBHOOK_WARNING}
+    color: 0xFFA500  # オレンジ
+
+  discord_info:
+    type: discord
+    webhook_url: ${DISCORD_WEBHOOK_INFO}
+    color: 0x00FF00  # 緑
+
+  security_team:
+    type: email
+    recipients:
+      - security@example.com
+
+  pagerduty:
+    type: pagerduty
+    service_key: ${PAGERDUTY_SERVICE_KEY}
+
+# ===========================================
+# アラート抑制ルール
+# ===========================================
+
+suppression_rules:
+  # メンテナンス中は抑制
+  - name: maintenance_window
+    condition: maintenance_mode == true
+    suppress_all: true
+
+  # 既知の問題は重複アラートを抑制
+  - name: dedup_same_alert
+    group_by: [alert_name, service]
+    wait_time: 5m
+
+  # 依存アラートの抑制（サービスダウン時は他のアラートを抑制）
+  - name: cascade_suppression
+    when: service_down
+    suppress:
+      - high_error_rate
+      - response_time_critical
+      - low_throughput

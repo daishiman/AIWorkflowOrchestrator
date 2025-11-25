@@ -1,0 +1,142 @@
+# =============================================
+# Docker Compose Template for Local Development
+# =============================================
+# Usage:
+#   docker compose up        # Start all services
+#   docker compose up -d     # Start in background
+#   docker compose down      # Stop all services
+#   docker compose down -v   # Stop and remove volumes
+#   docker compose logs -f   # View logs
+# =============================================
+
+version: '3.8'
+
+services:
+  # =============================================
+  # Application
+  # =============================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner  # Use 'builder' for development
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/myapp
+      - REDIS_URL=redis://redis:6379
+      # Add more environment variables as needed
+      # - API_KEY=${API_KEY}
+    env_file:
+      - .env.local
+    volumes:
+      # Mount source code for hot reload (development only)
+      - .:/app
+      # Preserve node_modules from container
+      - /app/node_modules
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  # =============================================
+  # PostgreSQL Database
+  # =============================================
+  db:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: myapp
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Optional: Init scripts
+      # - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # =============================================
+  # Redis Cache
+  # =============================================
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  # =============================================
+  # Optional: pgAdmin (Database GUI)
+  # =============================================
+  # pgadmin:
+  #   image: dpage/pgadmin4:latest
+  #   ports:
+  #     - "8080:80"
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: admin@example.com
+  #     PGADMIN_DEFAULT_PASSWORD: admin
+  #   depends_on:
+  #     - db
+  #   restart: unless-stopped
+
+  # =============================================
+  # Optional: Redis Commander (Redis GUI)
+  # =============================================
+  # redis-commander:
+  #   image: rediscommander/redis-commander:latest
+  #   ports:
+  #     - "8081:8081"
+  #   environment:
+  #     - REDIS_HOSTS=local:redis:6379
+  #   depends_on:
+  #     - redis
+  #   restart: unless-stopped
+
+  # =============================================
+  # Optional: Mailhog (Email Testing)
+  # =============================================
+  # mailhog:
+  #   image: mailhog/mailhog:latest
+  #   ports:
+  #     - "1025:1025"  # SMTP
+  #     - "8025:8025"  # Web UI
+  #   restart: unless-stopped
+
+# =============================================
+# Volumes
+# =============================================
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+# =============================================
+# Networks (Optional)
+# =============================================
+# networks:
+#   frontend:
+#   backend:
+#     internal: true

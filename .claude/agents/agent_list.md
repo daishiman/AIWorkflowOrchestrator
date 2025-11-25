@@ -426,6 +426,7 @@
   | **deployment-strategies** | `.claude/skills/deployment-strategies/SKILL.md` | Blue-Green Deployment、Canary Release、ロールバック戦略 |
   | **monitoring-alerting** | `.claude/skills/monitoring-alerting/SKILL.md` | ヘルスチェック、ログ集約、メトリクス可視化 |
   | **docker-best-practices** | `.claude/skills/docker-best-practices/SKILL.md` | マルチステージビルド、レイヤーキャッシュ、セキュリティスキャン |
+  | **security-scanning** | `.claude/skills/security-scanning/SKILL.md` | 依存関係脆弱性、コンテナスキャン、SBOM生成、シークレット検出 |
 
 ---
 
@@ -1052,7 +1053,7 @@
 | @prompt-eng             | 5        | プロンプトエンジニアリング        |
 | @db-architect           | 5        | データベース/設計                 |
 | @repo-dev               | 5        | データベース/実装                 |
-| @devops-eng             | 5        | DevOps/CI/CD                      |
+| @devops-eng             | 6        | DevOps/CI/CD                      |
 | @local-watcher          | 5        | システム/イベント駆動             |
 | @local-sync             | 5        | ネットワーク/同期                 |
 | @process-mgr            | 5        | プロセス管理/運用                 |
