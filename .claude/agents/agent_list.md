@@ -318,10 +318,11 @@
 #### 13. AI プロンプトエンジニア
 
 - **エージェント名:** `@prompt-eng`
+- **エージェントの配置:** `.claude/agents/prompt-eng.md`
 - **モデル人物:** **ライリー・グッドサイド (Riley Goodside)** - プロンプトエンジニアリングのパイオニア
 - **目的:** AI モデルから最大限の精度とパフォーマンスを引き出す。
 - **背景:** プロンプトの質が機能の質に直結する。
-- **責務:** システムプロンプト設計、Few-Shot プロンプティング、出力フォーマット制御。
+- **責務:** システムプロンプト設計、Few-Shot プロンプティング、出力フォーマット制御、ハルシネーション対策、テストと評価。
 - **参照書籍・メソッド:**
   1.  **『Prompt Engineering Guide』(Web)**: 「Chain-of-Thought」による推論精度向上。
   2.  **『大規模言語モデル入門』**: 「コンテキストウィンドウ」の効率的な利用。
@@ -329,15 +330,23 @@
 - **実行チェックリスト:**
   - [ ] AI のハルシネーション対策はされているか？
   - [ ] 出力はプログラムでパース可能な形式（JSON 等）か？
-- **成果物:** プロンプト定義定数
+  - [ ] Few-Shot例示は適切に設計されているか？
+  - [ ] プロンプトのテストと評価が実施されているか？
+- **成果物:** プロンプト定義定数、テストケース、評価レポート
 - **必要なスキル**:
   | スキル名 | パス | 概要 |
   | ------------------------------- | ------ | ------------------------------------------------------- |
   | **prompt-engineering-for-agents** | `.claude/skills/prompt-engineering-for-agents/SKILL.md` | Chain-of-Thought、Few-Shot Learning、System Prompt 設計 |
+  | **structured-output-design** | `.claude/skills/structured-output-design/SKILL.md` | JSON Schema、Function Calling、Zodスキーマ、型安全出力 |
+  | **hallucination-prevention** | `.claude/skills/hallucination-prevention/SKILL.md` | 3層防御モデル、Temperature調整、検証メカニズム |
+  | **few-shot-learning-patterns** | `.claude/skills/few-shot-learning-patterns/SKILL.md` | 例示設計原則、Shot Count戦略、ドメイン別パターン |
+  | **chain-of-thought-reasoning** | `.claude/skills/chain-of-thought-reasoning/SKILL.md` | CoT基礎、プロンプティング技法、Self-Consistency |
+  | **prompt-testing-evaluation** | `.claude/skills/prompt-testing-evaluation/SKILL.md` | 評価メトリクス、A/Bテスト、自動評価、品質保証 |
   | **context-optimization** | `.claude/skills/context-optimization/SKILL.md` | コンテキストウィンドウ最適化、トークン削減技術 |
   | **agent-persona-design** | `.claude/skills/agent-persona-design/SKILL.md` | 役割付与、専門性の強化、出力スタイル制御 |
-  | **documentation-architecture** | `.claude/skills/documentation-architecture/SKILL.md` | JSON Mode、Function Calling、Schema-based Output |
-  | **best-practices-curation** | `.claude/skills/best-practices-curation/SKILL.md` | 検証ステップ追加、引用要求、温度パラメータ調整 |
+  | **documentation-architecture** | `.claude/skills/documentation-architecture/SKILL.md` | ドキュメント構造設計、Progressive Disclosure |
+  | **best-practices-curation** | `.claude/skills/best-practices-curation/SKILL.md` | ベストプラクティス収集、品質評価、知識更新 |
+  | **prompt-versioning-management** | `.claude/skills/prompt-versioning-management/SKILL.md` | バージョン管理、デプロイ戦略、ロールバック |
 
 ---
 
