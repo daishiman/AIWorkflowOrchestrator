@@ -130,13 +130,13 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                  | 概要                                                |
-| ------------------------- | --------------------------------------------------- |
-| **domain-driven-design**  | Entity, Value Object, Aggregate, Repository Pattern |
-| **ubiquitous-language**   | ドメインエキスパートとの共通言語、用語集作成        |
-| **value-object-patterns** | 不変性、型安全性、ビジネスルールのカプセル化        |
-| **domain-services**       | ドメインロジックの集約、エンティティ間の協調        |
-| **bounded-context**       | コンテキスト境界の定義、サブドメイン分割            |
+| スキル名                  | パス | 概要                                                |
+| ------------------------- | ---- | --------------------------------------------------- |
+| **domain-driven-design**  | `.claude/skills/domain-driven-design/SKILL.md` | Entity, Value Object, Aggregate, Repository Pattern |
+| **ubiquitous-language**   | `.claude/skills/ubiquitous-language/SKILL.md` | ドメインエキスパートとの共通言語、用語集作成        |
+| **value-object-patterns** | `.claude/skills/value-object-patterns/SKILL.md` | 不変性、型安全性、ビジネスルールのカプセル化        |
+| **domain-services**       | `.claude/skills/domain-services/SKILL.md` | ドメインロジックの集約、エンティティ間の協調        |
+| **bounded-context**       | `.claude/skills/bounded-context/SKILL.md` | コンテキスト境界の定義、サブドメイン分割            |
 ```
 
 ## 9. ワークフローエンジン実装
