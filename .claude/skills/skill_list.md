@@ -146,15 +146,15 @@
 - **エージェントの配置:** `.claude/agents/workflow-engine.md`
 
 ```markdown
-- **必要なスキル**:
+- **参照スキル（パス: `.claude/skills/[スキル名]/SKILL.md`）**:
 
-| スキル名                       | 概要                                       |
-| ------------------------------ | ------------------------------------------ |
-| **design-patterns-behavioral** | Strategy, Template Method, Command Pattern |
-| **plugin-architecture**        | 動的ロード、レジストリパターン、依存性注入 |
-| **interface-segregation**      | 小さなインターフェース、多重実装の回避     |
-| **factory-patterns**           | Factory Method, Abstract Factory, Builder  |
-| **open-closed-principle**      | 拡張に開かれ、修正に閉じた設計             |
+| スキル名                       | パス | 概要                                                |
+| ------------------------------ | ---- | --------------------------------------------------- |
+| **design-patterns-behavioral** | `.claude/skills/design-patterns-behavioral/SKILL.md` | Strategy, Template Method, Command, Chain of Responsibility, Observer, State |
+| **plugin-architecture**        | `.claude/skills/plugin-architecture/SKILL.md` | レジストリパターン、動的ロード、依存性注入、プラグインライフサイクル |
+| **interface-segregation**      | `.claude/skills/interface-segregation/SKILL.md` | ISP準拠設計、Fat Interface検出、ロールベースインターフェース |
+| **factory-patterns**           | `.claude/skills/factory-patterns/SKILL.md` | Factory Method, Abstract Factory, Builder, Registry Factory |
+| **open-closed-principle**      | `.claude/skills/open-closed-principle/SKILL.md` | 拡張メカニズム、OCP準拠パターン、OCPへのリファクタリング |
 ```
 
 ## 10. 外部連携ゲートウェイ
