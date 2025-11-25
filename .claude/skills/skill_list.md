@@ -95,13 +95,13 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                       | 概要                                              |
-| ------------------------------ | ------------------------------------------------- |
-| **nextjs-app-router**          | Server/Client Components、Dynamic Routes、Layouts |
-| **server-components-patterns** | データフェッチ最適化、Suspense 活用               |
-| **seo-optimization**           | Metadata API、動的 OGP、構造化データ              |
-| **web-performance**            | 動的インポート、画像最適化、Code Splitting        |
-| **error-handling-pages**       | error.tsx、not-found.tsx、global-error.tsx        |
+| スキル名                       | パス | 概要                                              |
+| ------------------------------ | ---- | ------------------------------------------------- |
+| **nextjs-app-router**          | `.claude/skills/nextjs-app-router/SKILL.md` | App Routerアーキテクチャ、Server/Client Components分離、Dynamic Routes |
+| **server-components-patterns** | `.claude/skills/server-components-patterns/SKILL.md` | サーバーサイドデータフェッチ、Suspense活用、キャッシュ戦略 |
+| **seo-optimization**           | `.claude/skills/seo-optimization/SKILL.md` | Metadata API、OGP/Twitter Cards、構造化データ（JSON-LD） |
+| **web-performance**            | `.claude/skills/web-performance/SKILL.md` | 動的インポート、next/image最適化、Code Splitting、Core Web Vitals |
+| **error-handling-pages**       | `.claude/skills/error-handling-pages/SKILL.md` | error.tsx、not-found.tsx、global-error.tsx、loading.tsx |
 ```
 
 ## 7. クライアント状態管理
