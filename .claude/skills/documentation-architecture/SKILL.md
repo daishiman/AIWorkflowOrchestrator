@@ -64,8 +64,51 @@ documentation-architecture/
 - **ディレクトリ組織化** (`resources/directory-organization.md`): フォルダ構造、配置基準
 - **命名規則** (`resources/naming-conventions.md`): ファイル・ディレクトリの命名パターン
 - **階層設計** (`resources/hierarchy-design.md`): 概要から詳細への段階的設計
-- **分析スクリプト** (`scripts/analyze-structure.sh`): 構造の妥当性を自動分析
+- **分析スクリプト** (`scripts/analyze-structure.mjs`): 構造の妥当性を自動分析（TypeScript）
 - **テンプレート** (`templates/resource-structure.md`): 標準的なリソース構造
+
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# ファイル分割パターン
+cat .claude/skills/documentation-architecture/resources/splitting-patterns.md
+
+# ディレクトリ組織化ガイド
+cat .claude/skills/documentation-architecture/resources/directory-organization.md
+
+# 命名規則ガイド
+cat .claude/skills/documentation-architecture/resources/naming-conventions.md
+
+# 階層設計原則
+cat .claude/skills/documentation-architecture/resources/hierarchy-design.md
+```
+
+### スクリプト実行
+
+```bash
+# スキルディレクトリの構造分析（TypeScript）
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs <skill-directory>
+
+# 例: documentation-architectureスキル自体を分析
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs .claude/skills/documentation-architecture
+
+# 例: 他のスキルの構造を分析
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs .claude/skills/knowledge-management
+```
+
+### テンプレート参照
+
+```bash
+# リソース構造テンプレートを読み取る
+cat .claude/skills/documentation-architecture/templates/resource-structure.md
+
+# 新しいスキルにテンプレートを適用
+cp .claude/skills/documentation-architecture/templates/resource-structure.md ./new-skill/resources/
+```
 
 ## いつ使うか
 

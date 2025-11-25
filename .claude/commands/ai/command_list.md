@@ -295,7 +295,7 @@
 - **目的**: AIプロンプトの最適化
 - **引数**: `[prompt-file]` - プロンプトファイルパス
 - **使用エージェント**: @prompt-eng
-- **スキル活用**: prompt-engineering-advanced, hallucination-mitigation
+- **スキル活用**: prompt-engineering-for-agents, context-optimization
 - **成果物**: 最適化されたプロンプト定義
 - **設定**:
   - `model: opus`
@@ -534,7 +534,7 @@
 - **目的**: 機密情報の安全な管理
 - **引数**: なし
 - **使用エージェント**: @secret-mgr
-- **スキル活用**: secret-management, zero-trust-security, gitignore-patterns
+- **スキル活用**: tool-permission-management, best-practices-curation, project-architecture-integration
 - **成果物**: .env.example, Secret管理手順書
 - **設定**:
   - `model: sonnet`
@@ -545,7 +545,7 @@
 - **目的**: APIキー・シークレットのローテーション
 - **引数**: `[secret-name]` - シークレット名
 - **使用エージェント**: @secret-mgr
-- **スキル活用**: secret-rotation
+- **スキル活用**: tool-permission-management, best-practices-curation
 - **成果物**: ローテーションスクリプト
 - **設定**:
   - `model: sonnet`
@@ -729,7 +729,7 @@
 - **目的**: ローカルエージェントのセットアップ
 - **引数**: なし
 - **使用エージェント**: @local-watcher, @local-sync, @process-mgr
-- **スキル活用**: event-driven-architecture, pm2-ecosystem
+- **スキル活用**: multi-agent-systems, agent-lifecycle-management
 - **成果物**: local-agent/, ecosystem.config.js
 - **設定**:
   - `model: sonnet`
@@ -856,7 +856,7 @@
 - **目的**: コンテキスト使用量の最適化
 - **引数**: なし
 - **使用エージェント**: @skill-librarian, @prompt-eng
-- **スキル活用**: context-optimization, llm-context-management
+- **スキル活用**: context-optimization, progressive-disclosure
 - **成果物**: 最適化されたスキル、プロンプト
 - **設定**:
   - `model: opus`
@@ -1165,7 +1165,7 @@ model: opus
 - **目的**: .env.exampleの作成・更新
 - **引数**: なし
 - **使用エージェント**: @secret-mgr
-- **スキル活用**: secret-management, gitignore-patterns
+- **スキル活用**: agent-architecture-patterns, best-practices-curation
 - **成果物**: .env.example
 - **設定**:
   - `model: sonnet`

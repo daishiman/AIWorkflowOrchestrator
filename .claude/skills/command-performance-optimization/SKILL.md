@@ -511,6 +511,49 @@ Improvements:
 - 最適化コマンド: `templates/optimized-command-template.md`
 - 並列実行: `templates/parallel-execution-template.md`
 
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# トークン最適化詳細
+cat .claude/skills/command-performance-optimization/resources/token-optimization.md
+
+# 並列実行ガイド
+cat .claude/skills/command-performance-optimization/resources/parallel-execution.md
+
+# モデル選択ガイド
+cat .claude/skills/command-performance-optimization/resources/model-selection.md
+
+# 実行速度改善
+cat .claude/skills/command-performance-optimization/resources/execution-speed.md
+```
+
+### テンプレート参照
+
+```bash
+# 最適化コマンドテンプレート
+cat .claude/skills/command-performance-optimization/templates/optimized-command-template.md
+
+# 並列実行テンプレート
+cat .claude/skills/command-performance-optimization/templates/parallel-execution-template.md
+```
+
+### 他のスキルのスクリプトを活用
+
+```bash
+# 知識ドキュメントの品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/skills/command-performance-optimization/resources/token-optimization.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/skills/command-performance-optimization/SKILL.md
+
+# ドキュメント構造分析
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs .claude/skills/command-performance-optimization
+```
+
 ## 関連スキル
 
 - `.claude/skills/command-structure-fundamentals/SKILL.md` - model フィールド

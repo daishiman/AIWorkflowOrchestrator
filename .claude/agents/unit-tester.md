@@ -1357,6 +1357,42 @@ metrics:
 - 5-6点: 要改善（重要な改善が必要）
 - 0-4点: 不合格（再作成が必要）
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# TDD原則とRed-Green-Refactorサイクル
+cat .claude/skills/tdd-principles/SKILL.md
+
+# テストダブル（Mock/Stub/Spy/Fake）の使い分け
+cat .claude/skills/test-doubles/SKILL.md
+
+# Vitest高度活用パターン
+cat .claude/skills/vitest-advanced/SKILL.md
+
+# 境界値分析と等価分割
+cat .claude/skills/boundary-value-analysis/SKILL.md
+
+# テスト命名規約とGiven-When-Then
+cat .claude/skills/test-naming-conventions/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# エージェント構造検証
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs .claude/agents/unit-tester.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/agents/unit-tester.md
+
+# ドキュメント構造分析
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs src/features/
+```
+
 ## 変更履歴
 
 ### v1.1.1 (2025-11-23)

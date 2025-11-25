@@ -67,8 +67,54 @@ progressive-disclosure/
 - **発動最適化** (`resources/skill-activation-optimization.md`): 発動率向上の戦略（20%→84%）
 - **トークン効率** (`resources/token-efficiency-strategies.md`): 遅延読み込み、インデックス設計
 - **コミットメントメカニズム** (`resources/commitment-mechanism.md`): 評価→約束→実行の3段階プロセス
-- **計算スクリプト** (`scripts/calculate-token-usage.sh`): トークン見積もりの自動化
+- **計算スクリプト** (`scripts/calculate-token-usage.mjs`): トークン見積もりの自動化（TypeScript）
 - **テンプレート** (`templates/skill-metadata-template.yaml`): スキルYAML Frontmatterの標準フォーマット
+
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# 3層開示モデル詳細
+cat .claude/skills/progressive-disclosure/resources/three-layer-model.md
+
+# メタデータ設計ガイド
+cat .claude/skills/progressive-disclosure/resources/metadata-design.md
+
+# スキル発動最適化戦略
+cat .claude/skills/progressive-disclosure/resources/skill-activation-optimization.md
+
+# トークン効率化戦略
+cat .claude/skills/progressive-disclosure/resources/token-efficiency-strategies.md
+
+# コミットメントメカニズム
+cat .claude/skills/progressive-disclosure/resources/commitment-mechanism.md
+```
+
+### スクリプト実行
+
+```bash
+# スキルディレクトリのトークン使用量計算（TypeScript）
+node .claude/skills/progressive-disclosure/scripts/calculate-token-usage.mjs <skill-directory>
+
+# 例: progressive-disclosureスキル自体を分析
+node .claude/skills/progressive-disclosure/scripts/calculate-token-usage.mjs .claude/skills/progressive-disclosure
+
+# 例: knowledge-managementスキルを分析
+node .claude/skills/progressive-disclosure/scripts/calculate-token-usage.mjs .claude/skills/knowledge-management
+```
+
+### テンプレート参照
+
+```bash
+# スキルメタデータテンプレートを読み取る
+cat .claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml
+
+# 新しいスキルにテンプレートを適用
+cp .claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml ./new-skill/SKILL.md
+```
 
 ## いつ使うか
 

@@ -487,6 +487,52 @@ Apply skill guidance:
 - スキル参照: `templates/skill-reference-template.md`
 - 複合ワークフロー: `templates/composite-workflow-template.md`
 
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# 三位一体アーキテクチャ詳細
+cat .claude/skills/command-agent-skill-integration/resources/trinity-architecture.md
+
+# コマンド→エージェントパターン
+cat .claude/skills/command-agent-skill-integration/resources/command-to-agent-patterns.md
+
+# コマンド→スキルパターン
+cat .claude/skills/command-agent-skill-integration/resources/command-to-skill-patterns.md
+
+# 複合ワークフロー設計
+cat .claude/skills/command-agent-skill-integration/resources/composite-workflows.md
+```
+
+### テンプレート参照
+
+```bash
+# エージェント起動テンプレート
+cat .claude/skills/command-agent-skill-integration/templates/agent-invocation-template.md
+
+# スキル参照テンプレート
+cat .claude/skills/command-agent-skill-integration/templates/skill-reference-template.md
+
+# 複合ワークフローテンプレート
+cat .claude/skills/command-agent-skill-integration/templates/composite-workflow-template.md
+```
+
+### 他のスキルのスクリプトを活用
+
+```bash
+# 知識ドキュメントの品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/skills/command-agent-skill-integration/resources/trinity-architecture.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/skills/command-agent-skill-integration/SKILL.md
+
+# ドキュメント構造分析
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs .claude/skills/command-agent-skill-integration
+```
+
 ## 関連スキル
 
 - `.claude/skills/command-advanced-patterns/SKILL.md` - パイプラインパターンとの組み合わせ

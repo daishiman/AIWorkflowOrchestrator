@@ -65,8 +65,60 @@ knowledge-management/
 - **SECIモデル関連** (`resources/seci-*.md`): SECIモデルの各フェーズの詳細ガイド
 - **キュレーション** (`resources/curation-framework.md`): 知識の収集・評価・統合・更新プロセス
 - **品質管理** (`resources/quality-assurance.md`, `freshness-strategy.md`): 品質保証と陳腐化防止
-- **検証スクリプト** (`scripts/validate-knowledge.sh`): ドキュメント品質の自動検証 - 実行: `./scripts/validate-knowledge.sh <file>`
+- **検証スクリプト** (`scripts/validate-knowledge.mjs`): ドキュメント品質の自動検証（TypeScript）
 - **テンプレート** (`templates/knowledge-document-template.md`): 知識文書化の標準テンプレート
+
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# SECIモデル詳細を読み取る
+cat .claude/skills/knowledge-management/resources/seci-model-details.md
+
+# Socialization（共同化）詳細
+cat .claude/skills/knowledge-management/resources/seci-socialization.md
+
+# Externalization（表出化）詳細
+cat .claude/skills/knowledge-management/resources/seci-externalization.md
+
+# Combination（連結化）詳細
+cat .claude/skills/knowledge-management/resources/seci-combination.md
+
+# キュレーションフレームワーク
+cat .claude/skills/knowledge-management/resources/curation-framework.md
+
+# 陳腐化防止戦略
+cat .claude/skills/knowledge-management/resources/freshness-strategy.md
+
+# 品質保証ガイド
+cat .claude/skills/knowledge-management/resources/quality-assurance.md
+```
+
+### スクリプト実行
+
+```bash
+# 知識ドキュメントの品質検証（TypeScript）
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs <file.md>
+
+# 複数ファイルの一括検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs ./resources/*.md
+
+# 例: SECIモデルドキュメントを検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs ./resources/seci-model-details.md
+```
+
+### テンプレート参照
+
+```bash
+# 知識文書化テンプレートを読み取る
+cat .claude/skills/knowledge-management/templates/knowledge-document-template.md
+
+# テンプレートを新しいファイルにコピー
+cp .claude/skills/knowledge-management/templates/knowledge-document-template.md ./new-knowledge-doc.md
+```
 
 ## いつ使うか
 

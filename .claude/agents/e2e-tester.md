@@ -786,6 +786,45 @@ E2Eテスト完了後、品質レポートを他のエージェントに提供:
 }
 ```
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# Playwrightによる安定したブラウザ自動化テストの実装技術
+cat .claude/skills/playwright-testing/SKILL.md
+
+# テストデータのセットアップとクリーンアップ戦略
+cat .claude/skills/test-data-management/SKILL.md
+
+# フレーキーテスト防止と安定性確保の技術
+cat .claude/skills/flaky-test-prevention/SKILL.md
+
+# スクリーンショット比較による視覚的回帰テスト
+cat .claude/skills/visual-regression-testing/SKILL.md
+
+# APIモック設定とテスト環境の構築
+cat .claude/skills/api-mocking/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# E2Eテストカバレッジレポート生成（クリティカルパスのカバー率分析）
+node .claude/skills/playwright-testing/scripts/generate-coverage-report.mjs tests/
+
+# フレーキーテスト検出（連続実行による不安定性の特定）
+node .claude/skills/flaky-test-prevention/scripts/detect-flaky-tests.mjs tests/ --runs=10
+
+# テストデータ整合性チェック（セットアップとクリーンアップの検証）
+node .claude/skills/test-data-management/scripts/validate-test-data.mjs tests/fixtures/
+
+# 視覚的回帰テストの差分分析
+node .claude/skills/visual-regression-testing/scripts/analyze-visual-diffs.mjs
+```
+
 ## 依存関係
 
 ### 依存スキル

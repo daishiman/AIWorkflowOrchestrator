@@ -1068,6 +1068,45 @@ cat src/shared/infrastructure/database/schema.ts
   - パフォーマンスチューニングの体系化
   - Drizzle ORM統合
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# データベースマイグレーションスキル（可逆的マイグレーション、移行期間設計）
+cat .claude/skills/database-migrations/SKILL.md
+
+# バックアップ・リカバリスキル（PITR、RPO/RTO、復旧戦略）
+cat .claude/skills/backup-recovery/SKILL.md
+
+# クエリパフォーマンスチューニングスキル（EXPLAIN ANALYZE、インデックス戦略）
+cat .claude/skills/query-performance-tuning/SKILL.md
+
+# データベースSeeding スキル（環境別初期データ管理、べき等性）
+cat .claude/skills/database-seeding/SKILL.md
+
+# コネクションプール管理スキル（接続数最適化、タイムアウト調整）
+cat .claude/skills/connection-pooling/SKILL.md
+
+# pgvector最適化スキル（ベクトルDB設計、類似検索）
+cat .claude/skills/pgvector-optimization/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# マイグレーションスクリプト検証
+node .claude/skills/database-migrations/scripts/validate-migration.mjs drizzle/migrations/0001_*.sql
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs docs/10-architecture/database-schema.md
+
+# ドキュメント品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs docs/10-architecture/database-schema.md
+```
+
 ## 使用上の注意
 
 ### このエージェントが得意なこと

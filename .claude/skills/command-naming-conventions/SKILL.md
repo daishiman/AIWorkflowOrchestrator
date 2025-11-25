@@ -462,6 +462,30 @@ ls -R .claude/commands/
 ### テンプレート
 命名パターンテンプレートは `templates/naming-template.md` を参照
 
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# 命名ルール
+cat .claude/skills/command-naming-conventions/resources/naming-rules.md
+```
+
+### 他のスキルのスクリプトを活用
+
+```bash
+# 知識ドキュメントの品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/skills/command-naming-conventions/resources/naming-rules.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/skills/command-naming-conventions/SKILL.md
+
+# ドキュメント構造分析
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs .claude/skills/command-naming-conventions
+```
+
 ## 関連スキル
 
 - `.claude/skills/command-structure-fundamentals/SKILL.md` - ファイル構造と配置

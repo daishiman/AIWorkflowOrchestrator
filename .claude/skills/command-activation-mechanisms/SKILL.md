@@ -408,6 +408,49 @@ Analyze user intent:
 - 自動起動: `templates/auto-invocation-template.md`
 - Extended Thinking: `templates/extended-thinking-template.md`
 
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# ユーザー明示起動の詳細
+cat .claude/skills/command-activation-mechanisms/resources/user-explicit-activation.md
+
+# SlashCommand Tool完全ガイド
+cat .claude/skills/command-activation-mechanisms/resources/slashcommand-tool-guide.md
+
+# Extended Thinking詳細
+cat .claude/skills/command-activation-mechanisms/resources/extended-thinking-triggers.md
+
+# 実行フロー図解集
+cat .claude/skills/command-activation-mechanisms/resources/execution-flow-diagrams.md
+```
+
+### テンプレート参照
+
+```bash
+# 自動起動テンプレート
+cat .claude/skills/command-activation-mechanisms/templates/auto-invocation-template.md
+
+# Extended Thinkingテンプレート
+cat .claude/skills/command-activation-mechanisms/templates/extended-thinking-template.md
+```
+
+### 他のスキルのスクリプトを活用
+
+```bash
+# 知識ドキュメントの品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/skills/command-activation-mechanisms/resources/slashcommand-tool-guide.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/skills/command-activation-mechanisms/SKILL.md
+
+# ドキュメント構造分析
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs .claude/skills/command-activation-mechanisms
+```
+
 ## 関連スキル
 
 - `.claude/skills/command-structure-fundamentals/SKILL.md` - description最適化

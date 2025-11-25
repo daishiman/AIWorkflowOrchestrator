@@ -465,6 +465,49 @@ If confirmed, create new pipeline command file
 - メタコマンド: `templates/meta-command-template.md`
 - インタラクティブ: `templates/interactive-template.md`
 
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# パイプラインパターン詳細
+cat .claude/skills/command-advanced-patterns/resources/pipeline-pattern-guide.md
+
+# メタコマンドパターン詳細
+cat .claude/skills/command-advanced-patterns/resources/meta-command-pattern-guide.md
+
+# インタラクティブパターン詳細
+cat .claude/skills/command-advanced-patterns/resources/interactive-pattern-guide.md
+```
+
+### テンプレート参照
+
+```bash
+# パイプラインテンプレート
+cat .claude/skills/command-advanced-patterns/templates/pipeline-template.md
+
+# メタコマンドテンプレート
+cat .claude/skills/command-advanced-patterns/templates/meta-command-template.md
+
+# インタラクティブテンプレート
+cat .claude/skills/command-advanced-patterns/templates/interactive-template.md
+```
+
+### 他のスキルのスクリプトを活用
+
+```bash
+# 知識ドキュメントの品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/skills/command-advanced-patterns/resources/pipeline-pattern-guide.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/skills/command-advanced-patterns/SKILL.md
+
+# ドキュメント構造分析
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs .claude/skills/command-advanced-patterns
+```
+
 ## 関連スキル
 
 - `.claude/skills/command-basic-patterns/SKILL.md` - 基本パターンの理解

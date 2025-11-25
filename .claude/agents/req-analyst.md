@@ -1189,6 +1189,42 @@ metrics:
 }
 ```
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# 要求工学の体系的手法（トリアージ、曖昧性除去、検証可能性）
+cat .claude/skills/requirements-engineering/SKILL.md
+
+# ユースケースモデリングとシナリオ記述
+cat .claude/skills/use-case-modeling/SKILL.md
+
+# 受け入れ基準の書き方（Given-When-Then形式）
+cat .claude/skills/acceptance-criteria-writing/SKILL.md
+
+# ヒアリング技法とオープンエンド質問
+cat .claude/skills/interview-techniques/SKILL.md
+
+# 機能要件と非機能要件の分類
+cat .claude/skills/functional-non-functional-requirements/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# 知識ドキュメントの品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs docs/00-requirements/*.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs docs/00-requirements/*.md
+
+# エージェント構造検証
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs .claude/agents/req-analyst.md
+```
+
 ## 依存関係
 
 ### 依存スキル

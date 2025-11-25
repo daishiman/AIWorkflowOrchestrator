@@ -125,6 +125,33 @@ version: 1.0.0
 詳細な実装ガイドとツールは以下を参照:
 - 協調パターン (`resources/collaboration-patterns.md`)
 
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# 協調パターンのガイドを読み取る
+cat .claude/skills/multi-agent-systems/resources/collaboration-patterns.md
+```
+
+### 他のスキルのスクリプトを活用
+
+```bash
+# エージェント構造検証
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs <agent_file.md>
+
+# 循環依存チェック
+node .claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs
+
+# アーキテクチャパターン検証
+node .claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs <agent_file.md>
+
+# ドキュメント構造分析
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs <doc_directory>
+```
+
 ## 変更履歴
 
 | バージョン | 日付 | 変更内容 |

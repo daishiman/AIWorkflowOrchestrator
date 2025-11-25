@@ -325,6 +325,37 @@ disable-model-invocation: true
 - 最小構成: `templates/minimal-command.md`
 - 完全版: `templates/complete-command.md`
 
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# YAML Frontmatter完全リファレンス
+cat .claude/skills/command-structure-fundamentals/resources/yaml-frontmatter-reference.md
+```
+
+### テンプレート参照
+
+```bash
+# 最小構成テンプレート
+cat .claude/skills/command-structure-fundamentals/templates/minimal-command.md
+```
+
+### 他のスキルのスクリプトを活用
+
+```bash
+# 知識ドキュメントの品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/skills/command-structure-fundamentals/resources/yaml-frontmatter-reference.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/skills/command-structure-fundamentals/SKILL.md
+
+# ドキュメント構造分析
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs .claude/skills/command-structure-fundamentals
+```
+
 ## 関連スキル
 
 - `.claude/skills/command-arguments-system/SKILL.md` - 引数システムの詳細

@@ -265,6 +265,40 @@ agent-template-patterns/
 詳細な実装ガイドとツールは以下を参照:
 - テンプレート変数ガイド (`resources/template-variable-guide.md`)
 
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# テンプレート変数ガイド
+cat .claude/skills/agent-template-patterns/resources/template-variable-guide.md
+```
+
+### テンプレート参照
+
+```bash
+# 統一エージェントテンプレートを読み取る
+cat .claude/skills/agent-template-patterns/templates/unified-agent-template.md
+
+# テンプレートをコピーして新規エージェントを作成
+cp .claude/skills/agent-template-patterns/templates/unified-agent-template.md .claude/agents/new-agent.md
+```
+
+### 他のスキルのスクリプトを活用
+
+```bash
+# エージェント構造検証（agent-structure-designスキルのスクリプトを使用）
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs <agent_file.md>
+
+# 循環依存チェック（agent-dependency-designスキルのスクリプトを使用）
+node .claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs <agent_file.md>
+
+# アーキテクチャ検証（agent-architecture-patternsスキルのスクリプトを使用）
+node .claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs <agent_file.md>
+```
+
 ## メトリクス
 
 ### テンプレート再利用率

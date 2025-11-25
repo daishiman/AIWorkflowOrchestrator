@@ -320,6 +320,43 @@ project-architecture-integration/
 詳細な実装ガイドとツールは以下を参照:
 - ハイブリッドアーキテクチャガイド (`resources/hybrid-architecture-guide.md`)
 
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# ハイブリッドアーキテクチャガイドを読み取る
+cat .claude/skills/project-architecture-integration/resources/hybrid-architecture-guide.md
+```
+
+### プロジェクト設計仕様書の参照
+
+```bash
+# マスターシステム設計仕様書を読み取る
+cat docs/00-requirements/master_system_design.md
+
+# 特定セクションの抽出（例: アーキテクチャ設計詳細）
+grep -A 50 "アーキテクチャ設計詳細" docs/00-requirements/master_system_design.md
+```
+
+### 他のスキルのスクリプトを活用
+
+```bash
+# エージェント構造検証
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs <agent_file.md>
+
+# アーキテクチャパターン検証
+node .claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs <agent_file.md>
+
+# ドキュメント構造分析
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs <doc_directory>
+
+# 循環依存チェック
+node .claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs
+```
+
 ## メトリクス
 
 ### アーキテクチャ準拠率

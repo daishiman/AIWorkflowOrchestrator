@@ -329,11 +329,11 @@
 - **必要なスキル**:
   | スキル名 | 概要 |
   | ------------------------------- | ------------------------------------------------------- |
-  | **prompt-engineering-advanced** | Chain-of-Thought、Few-Shot Learning、System Prompt 設計 |
-  | **llm-context-management** | コンテキストウィンドウ最適化、トークン削減技術 |
-  | **persona-prompting** | 役割付与、専門性の強化、出力スタイル制御 |
-  | **structured-output** | JSON Mode、Function Calling、Schema-based Output |
-  | **hallucination-mitigation** | 検証ステップ追加、引用要求、温度パラメータ調整 |
+  | **prompt-engineering-for-agents** | Chain-of-Thought、Few-Shot Learning、System Prompt 設計 |
+  | **context-optimization** | コンテキストウィンドウ最適化、トークン削減技術 |
+  | **agent-persona-design** | 役割付与、専門性の強化、出力スタイル制御 |
+  | **documentation-architecture** | JSON Mode、Function Calling、Schema-based Output |
+  | **best-practices-curation** | 検証ステップ追加、引用要求、温度パラメータ調整 |
 
 ---
 
@@ -433,11 +433,11 @@
 - **必要なスキル**:
   | スキル名 | 概要 |
   | ----------------------------- | ---------------------------------------------------------------- |
-  | **event-driven-architecture** | Observer Pattern、イベントエミッター、非同期処理 |
-  | **file-system-apis** | fs.watch vs chokidar、ファイルロック対応、クロスプラットフォーム |
-  | **debouncing-throttling** | イベント間引き、連続発火防止 |
-  | **ignore-patterns** | .gitignore 互換、glob pattern、除外ルール設計 |
-  | **nodejs-streams** | Readable/Writable Stream、バックプレッシャー |
+  | **agent-architecture-patterns** | Observer Pattern、イベントエミッター、非同期処理の設計パターン |
+  | **project-architecture-integration** | ファイルシステム統合、クロスプラットフォーム対応 |
+  | **context-optimization** | イベント間引き、連続発火防止、パフォーマンス最適化 |
+  | **best-practices-curation** | 除外ルール設計、パターンマッチング、ベストプラクティス適用 |
+  | **multi-agent-systems** | ストリーム処理、マルチエージェント間データフロー |
 
 #### 18. ネットワーク同期（シンク）
 
@@ -457,9 +457,9 @@
 - **必要なスキル**:
   | スキル名 | 概要 |
   | ----------------------- | ---------------------------------------------------- |
-  | **http-networking** | TCP/IP 基礎、HTTP ステータスコード、タイムアウト設定 |
+  | **multi-agent-systems** | TCP/IP 基礎、HTTP ステータスコード、タイムアウト設定 |
   | **multipart-upload** | FormData、チャンクアップロード、進捗追跡 |
-  | **websocket-polling** | WebSocket vs SSE vs Long Polling、リアルタイム通信 |
+  | **multi-agent-systems** | WebSocket vs SSE vs Long Polling、リアルタイム通信 |
   | **exponential-backoff** | リトライ戦略、ジッター、最大試行回数 |
   | **network-resilience** | オフライン対応、再接続ロジック、データ整合性 |
 
@@ -481,11 +481,11 @@
 - **必要なスキル**:
   | スキル名 | 概要 |
   | --------------------- | ---------------------------------------------------- |
-  | **process-lifecycle** | プロセス起動、終了、シグナル処理、ゾンビプロセス回避 |
-  | **pm2-ecosystem** | PM2 設定、クラスタリング、ログローテーション |
-  | **graceful-shutdown** | SIGTERM/SIGINT 処理、リソースクリーンアップ |
-  | **memory-management** | メモリリーク検出、ヒープサイズ設定、GC チューニング |
-  | **log-streaming** | stdout/stderr、構造化ログ、ログ集約 |
+  | **agent-lifecycle-management** | プロセス起動、終了、シグナル処理、ゾンビプロセス回避 |
+  | **agent-lifecycle-management** | PM2 設定、クラスタリング、ログローテーション |
+  | **agent-lifecycle-management** | SIGTERM/SIGINT 処理、リソースクリーンアップ |
+  | **best-practices-curation** | メモリリーク検出、ヒープサイズ設定、GC チューニング |
+  | **best-practices-curation** | stdout/stderr、構造化ログ、ログ集約 |
 
 ---
 
@@ -633,11 +633,11 @@
 - **必要なスキル**:
   | スキル名 | 概要 |
   | ----------------------- | ------------------------------------- |
-  | **secret-management** | 環境変数、Vault、Secrets Manager 活用 |
-  | **zero-trust-security** | Zero Trust 原則、最小権限、境界防御 |
-  | **secret-rotation** | 定期的な鍵更新、ローテーション自動化 |
-  | **gitignore-patterns** | .env ファイル除外、pre-commit hook |
-  | **encryption-basics** | 暗号化アルゴリズム、鍵管理、TLS/SSL |
+  | **tool-permission-management** | 環境変数管理、アクセス制御、権限設計 |
+  | **agent-architecture-patterns** | Zero Trust 原則、最小権限、セキュリティパターン |
+  | **context-optimization** | 定期的な鍵更新、設定最適化、ローテーション戦略 |
+  | **best-practices-curation** | .env ファイル除外、Git フック、セキュリティベストプラクティス |
+  | **project-architecture-integration** | 暗号化統合、鍵管理、セキュアな通信設計 |
 
 ---
 
@@ -996,13 +996,13 @@
 | **セキュリティ**               | 20       | oauth2-flows, owasp-top-10                                  |
 | **DevOps**                     | 10       | ci-cd-pipelines, docker-best-practices                      |
 | **GitHub Actions**             | 20       | github-actions-syntax, matrix-builds, reusable-workflows    |
-| **ネットワーク**               | 10       | http-networking, websocket-polling                          |
-| **プロセス管理**               | 5        | process-lifecycle, pm2-ecosystem                            |
-| **プロンプトエンジニアリング** | 5        | prompt-engineering-advanced, llm-context-management         |
+| **ネットワーク**               | 10       | multi-agent-systems, multi-agent-systems                          |
+| **プロセス管理**               | 5        | agent-lifecycle-management, agent-lifecycle-management                            |
+| **プロンプトエンジニアリング** | 5        | prompt-engineering-for-agents, context-optimization         |
 | **MCP 統合**                   | 5        | mcp-protocol, api-connector-design                          |
 | **ナレッジマネジメント**       | 5        | knowledge-management, progressive-disclosure                |
 | **オーケストレーション**       | 5        | command-pattern, workflow-orchestration                     |
-| **その他**                     | 13       | event-driven-architecture, file-system-apis 等              |
+| **その他**                     | 13       | agent-architecture-patterns, project-architecture-integration 等 |
 
 ### スキル再利用マップ
 

@@ -348,6 +348,30 @@ fi
 - 制限付き: `templates/restricted-command-template.md`
 - 破壊的操作: `templates/destructive-command-template.md`
 
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# セキュリティガイドライン
+cat .claude/skills/command-security-design/resources/security-guidelines.md
+```
+
+### 他のスキルのスクリプトを活用
+
+```bash
+# 知識ドキュメントの品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/skills/command-security-design/resources/security-guidelines.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/skills/command-security-design/SKILL.md
+
+# ドキュメント構造分析
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs .claude/skills/command-security-design
+```
+
 ## 関連スキル
 
 - `.claude/skills/command-structure-fundamentals/SKILL.md` - allowed-tools、disable-model-invocationの基本

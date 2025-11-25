@@ -1054,6 +1054,42 @@ metrics:
 }
 ```
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# OWASP Top 10脆弱性とその対策
+cat .claude/skills/owasp-top-10/SKILL.md
+
+# 脆弱性スキャン手法とツール活用
+cat .claude/skills/vulnerability-scanning/SKILL.md
+
+# Rate Limiting戦略とDoS対策
+cat .claude/skills/rate-limiting-strategies/SKILL.md
+
+# 高度な入力サニタイゼーション技術
+cat .claude/skills/input-sanitization-advanced/SKILL.md
+
+# セキュリティテスト設計と実装
+cat .claude/skills/security-testing/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# エージェント構造検証
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs .claude/agents/sec-auditor.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/agents/sec-auditor.md
+
+# 知識ドキュメント品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/prompt/ナレッジ_セキュリティ監査.md
+```
+
 ## 依存関係
 
 ### 依存スキル

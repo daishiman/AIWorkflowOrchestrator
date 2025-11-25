@@ -104,6 +104,33 @@ System Prompt設計技術です。
 詳細な実装ガイドとツールは以下を参照:
 - System Promptパターン (`resources/system-prompt-patterns.md`)
 
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# System Promptパターンのガイドを読み取る
+cat .claude/skills/prompt-engineering-for-agents/resources/system-prompt-patterns.md
+```
+
+### 他のスキルのスクリプトを活用
+
+```bash
+# エージェント構造検証
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs <agent_file.md>
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs <file.md>
+
+# トークン使用量計算
+node .claude/skills/progressive-disclosure/scripts/calculate-token-usage.mjs <file.md>
+
+# 知識ドキュメントの品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs <file.md>
+```
+
 ## 変更履歴
 
 | バージョン | 日付 | 変更内容 |

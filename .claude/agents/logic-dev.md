@@ -747,6 +747,42 @@ metrics:
 }
 ```
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# リファクタリングカタログとコードスメル検出技術
+cat .claude/skills/refactoring-techniques/SKILL.md
+
+# テスト駆動開発（TDD）のRed-Green-Refactorサイクル実践
+cat .claude/skills/tdd-red-green-refactor/SKILL.md
+
+# Clean Codeプラクティスと意味のある命名規則
+cat .claude/skills/clean-code-practices/SKILL.md
+
+# トランザクションスクリプトパターンの適用指針
+cat .claude/skills/transaction-script/SKILL.md
+
+# テストダブル（Mock、Stub、Fake、Spy）の使い分け
+cat .claude/skills/test-doubles/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# コードスメル検出（長大なメソッド、重複コード、循環的複雑度）
+node .claude/skills/refactoring-techniques/scripts/detect-code-smells.mjs src/features/
+
+# テストカバレッジ分析とギャップ特定
+node .claude/skills/tdd-red-green-refactor/scripts/analyze-coverage.mjs src/features/
+
+# Clean Code指標の測定（可読性スコア、保守性指標）
+node .claude/skills/clean-code-practices/scripts/measure-code-quality.mjs src/features/
+```
+
 ## 依存関係
 
 ### 依存スキル

@@ -1252,6 +1252,45 @@ metrics:
 
 **メタデータ**: 使用モデル、推定トークン数、ツール呼び出し回数
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# アジャイルプロジェクト管理とスクラム手法
+cat .claude/skills/agile-project-management/SKILL.md
+
+# ユーザーストーリーマッピング技法
+cat .claude/skills/user-story-mapping/SKILL.md
+
+# 見積もり技法（ストーリーポイント、プランニングポーカー）
+cat .claude/skills/estimation-techniques/SKILL.md
+
+# ステークホルダーコミュニケーション戦略
+cat .claude/skills/stakeholder-communication/SKILL.md
+
+# プロダクトビジョン策定とOKR設定
+cat .claude/skills/product-vision/SKILL.md
+
+# 優先順位付けフレームワーク（MoSCoW、RICE Scoring）
+cat .claude/skills/prioritization-frameworks/SKILL.md
+
+# メトリクス追跡とベロシティ計測
+cat .claude/skills/metrics-tracking/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs <file.md>
+
+# エージェント構造検証
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs .claude/agents/product-manager.md
+```
+
 ## 依存関係
 
 ### 依存スキル

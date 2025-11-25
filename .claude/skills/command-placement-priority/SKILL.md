@@ -514,6 +514,49 @@ cp .claude/commands/commit.md \
 - プロジェクトコマンド: `templates/project-command-template.md`
 - ユーザーコマンド: `templates/user-command-template.md`
 
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# 配置オプション詳細
+cat .claude/skills/command-placement-priority/resources/placement-options.md
+
+# 優先順位解決ルール
+cat .claude/skills/command-placement-priority/resources/priority-resolution.md
+
+# 名前空間戦略
+cat .claude/skills/command-placement-priority/resources/namespace-strategies.md
+
+# 移行ガイド
+cat .claude/skills/command-placement-priority/resources/migration-guide.md
+```
+
+### テンプレート参照
+
+```bash
+# プロジェクトコマンドテンプレート
+cat .claude/skills/command-placement-priority/templates/project-command-template.md
+
+# ユーザーコマンドテンプレート
+cat .claude/skills/command-placement-priority/templates/user-command-template.md
+```
+
+### 他のスキルのスクリプトを活用
+
+```bash
+# 知識ドキュメントの品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/skills/command-placement-priority/resources/placement-options.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/skills/command-placement-priority/SKILL.md
+
+# ドキュメント構造分析
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs .claude/skills/command-placement-priority
+```
+
 ## 関連スキル
 
 - `.claude/skills/command-structure-fundamentals/SKILL.md` - ファイル構造

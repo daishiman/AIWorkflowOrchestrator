@@ -1270,6 +1270,42 @@ cat .claude/prompt/prompt_format.yaml
 - コンポーネントカタログ: 既存コンポーネント一覧
 - Tailwind設定: カスタムトークンと拡張
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# デザインシステムアーキテクチャとトークン管理
+cat .claude/skills/design-system-architecture/SKILL.md
+
+# コンポーネントCompositionパターン
+cat .claude/skills/component-composition-patterns/SKILL.md
+
+# Headless UI原則とロジック分離
+cat .claude/skills/headless-ui-principles/SKILL.md
+
+# Tailwind CSSパターンとユーティリティ設計
+cat .claude/skills/tailwind-css-patterns/SKILL.md
+
+# アクセシビリティ（WCAG）準拠設計
+cat .claude/skills/accessibility-wcag/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# エージェント構造検証
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs .claude/agents/ui-designer.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/agents/ui-designer.md
+
+# ドキュメント構造分析
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs src/app/components/
+```
+
 ## 変更履歴
 
 ### v1.1.1 (2025-11-23)

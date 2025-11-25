@@ -65,6 +65,43 @@ agent-architecture-patterns/
 - **パイプラインテンプレート** (`templates/pipeline-template.md`): パイプラインパターンの実装テンプレート
 - **アーキテクチャ検証スクリプト** (`scripts/validate-architecture.sh`): アーキテクチャの妥当性を自動検証するスクリプト
 
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# パターンカタログ（4つのアーキテクチャパターンの詳細）
+cat .claude/skills/agent-architecture-patterns/resources/pattern-catalog.md
+```
+
+### スクリプト実行
+
+```bash
+# アーキテクチャ検証スクリプト（TypeScript）
+node .claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs <agent-file-path>
+
+# 例: skill-librarianエージェントのアーキテクチャを検証
+node .claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs .claude/agents/skill-librarian.md
+
+# シェルスクリプト版
+bash .claude/skills/agent-architecture-patterns/scripts/validate-architecture.sh <agent-file-path>
+```
+
+### テンプレート参照
+
+```bash
+# オーケストレーター・ワーカーパターンテンプレート
+cat .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-template.md
+
+# パイプラインパターンテンプレート
+cat .claude/skills/agent-architecture-patterns/templates/pipeline-template.md
+
+# テンプレートをコピーして新規エージェントを作成
+cp .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-template.md .claude/agents/new-agent.md
+```
+
 ## いつ使うか
 
 ### シナリオ1: 新規エージェントのアーキテクチャ設計

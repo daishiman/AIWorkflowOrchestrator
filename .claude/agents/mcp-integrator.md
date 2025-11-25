@@ -944,6 +944,42 @@ MCP統合完了後、実装エージェントまたはテストエージェン�
 - 期待されるレスポンス
 - エラーケースの検証基準
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# MCPプロトコル仕様と実装パターン
+cat .claude/skills/mcp-protocol/SKILL.md
+
+# APIコネクタ設計とRESTful統合
+cat .claude/skills/api-connector-design/SKILL.md
+
+# ツールセキュリティとアクセス制御
+cat .claude/skills/tool-security/SKILL.md
+
+# リソース指向API設計
+cat .claude/skills/resource-oriented-api/SKILL.md
+
+# 統合パターン（Adapter、Facade、Gateway）
+cat .claude/skills/integration-patterns/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# エージェント構造検証
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs .claude/agents/mcp-integrator.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/agents/mcp-integrator.md
+
+# 知識ドキュメント品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/prompt/ナレッジ_MCP統合.md
+```
+
 ## 依存関係
 
 ### 依存スキル

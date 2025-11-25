@@ -220,11 +220,11 @@
 
 | スキル名                        | 概要                                                    |
 | ------------------------------- | ------------------------------------------------------- |
-| **prompt-engineering-advanced** | Chain-of-Thought、Few-Shot Learning、System Prompt 設計 |
-| **llm-context-management**      | コンテキストウィンドウ最適化、トークン削減技術          |
-| **persona-prompting**           | 役割付与、専門性の強化、出力スタイル制御                |
-| **structured-output**           | JSON Mode、Function Calling、Schema-based Output        |
-| **hallucination-mitigation**    | 検証ステップ追加、引用要求、温度パラメータ調整          |
+| **prompt-engineering-for-agents** | エージェント向けプロンプト設計、Chain-of-Thought、Few-Shot Learning |
+| **context-optimization**      | コンテキストウィンドウ最適化、トークン削減技術          |
+| **agent-persona-design**           | エージェントペルソナ設計、役割付与、専門性の強化                |
+| **documentation-architecture**           | ドキュメント構造設計、Schema-based Output        |
+| **best-practices-curation**    | ベストプラクティス収集、品質検証、評価基準          |
 ```
 
 ## 14. DB スキーマ設計
@@ -289,11 +289,9 @@
 
 | スキル名                      | 概要                                                             |
 | ----------------------------- | ---------------------------------------------------------------- |
-| **event-driven-architecture** | Observer Pattern、イベントエミッター、非同期処理                 |
-| **file-system-apis**          | fs.watch vs chokidar、ファイルロック対応、クロスプラットフォーム |
-| **debouncing-throttling**     | イベント間引き、連続発火防止                                     |
-| **ignore-patterns**           | .gitignore 互換、glob pattern、除外ルール設計                    |
-| **nodejs-streams**            | Readable/Writable Stream、バックプレッシャー                     |
+| **agent-structure-design** | エージェント構造設計、YAML Frontmatter、必須セクション |
+| **agent-architecture-patterns** | アーキテクチャパターン、循環依存検出、単一責任原則 |
+| **context-optimization** | トークン最適化、文書サイズ管理、効率的コミュニケーション |
 ```
 
 ## 18. ネットワーク同期 (Sync)
@@ -306,11 +304,9 @@
 
 | スキル名                | 概要                                                 |
 | ----------------------- | ---------------------------------------------------- |
-| **http-networking**     | TCP/IP 基礎、HTTP ステータスコード、タイムアウト設定 |
-| **multipart-upload**    | FormData、チャンクアップロード、進捗追跡             |
-| **websocket-polling**   | WebSocket vs SSE vs Long Polling、リアルタイム通信   |
-| **exponential-backoff** | リトライ戦略、ジッター、最大試行回数                 |
-| **network-resilience**  | オフライン対応、再接続ロジック、データ整合性         |
+| **agent-architecture-patterns** | アーキテクチャパターン、循環依存検出、単一責任原則 |
+| **best-practices-curation** | ベストプラクティスの収集、評価、統合、更新 |
+| **context-optimization** | トークン使用量の最小化と必要情報の効率的抽出 |
 ```
 
 ## 19. プロセス管理
@@ -323,11 +319,9 @@
 
 | スキル名              | 概要                                                 |
 | --------------------- | ---------------------------------------------------- |
-| **process-lifecycle** | プロセス起動、終了、シグナル処理、ゾンビプロセス回避 |
-| **pm2-ecosystem**     | PM2 設定、クラスタリング、ログローテーション         |
-| **graceful-shutdown** | SIGTERM/SIGINT 処理、リソースクリーンアップ          |
-| **memory-management** | メモリリーク検出、ヒープサイズ設定、GC チューニング  |
-| **log-streaming**     | stdout/stderr、構造化ログ、ログ集約                  |
+| **agent-lifecycle-management** | エージェント起動、実行、終了、状態管理 |
+| **multi-agent-systems** | エージェント間協調、メッセージパッシング |
+| **best-practices-curation** | ベストプラクティスの収集、評価、統合、更新 |
 ```
 
 ## 20. ユニットテスター
@@ -425,11 +419,9 @@
 
 | スキル名                | 概要                                  |
 | ----------------------- | ------------------------------------- |
-| **secret-management**   | 環境変数、Vault、Secrets Manager 活用 |
-| **zero-trust-security** | Zero Trust 原則、最小権限、境界防御   |
-| **secret-rotation**     | 定期的な鍵更新、ローテーション自動化  |
-| **gitignore-patterns**  | .env ファイル除外、pre-commit hook    |
-| **encryption-basics**   | 暗号化アルゴリズム、鍵管理、TLS/SSL   |
+| **tool-permission-management** | ツール権限管理、最小権限原則 |
+| **best-practices-curation** | セキュリティベストプラクティス、コード品質基準 |
+| **project-architecture-integration** | ハイブリッドアーキテクチャ（shared/features）、データベース設計、REST API |
 ```
 
 ## 26. ロギング・監視設計者

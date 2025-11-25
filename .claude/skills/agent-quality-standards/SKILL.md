@@ -292,6 +292,40 @@ metrics:
 - 品質メトリクス (`resources/quality-metrics.md`)
 - 品質チェックリストテンプレート (`templates/quality-checklist-template.md`)
 
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# 品質メトリクス
+cat .claude/skills/agent-quality-standards/resources/quality-metrics.md
+```
+
+### テンプレート参照
+
+```bash
+# 品質チェックリストテンプレートを読み取る
+cat .claude/skills/agent-quality-standards/templates/quality-checklist-template.md
+
+# テンプレートをコピーして新規チェックリストを作成
+cp .claude/skills/agent-quality-standards/templates/quality-checklist-template.md ./quality-checklist.md
+```
+
+### 他のスキルのスクリプトを活用
+
+```bash
+# エージェント構造検証（agent-structure-designスキルのスクリプトを使用）
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs <agent_file.md>
+
+# 循環依存チェック（agent-dependency-designスキルのスクリプトを使用）
+node .claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs <agent_file.md>
+
+# アーキテクチャ検証（agent-architecture-patternsスキルのスクリプトを使用）
+node .claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs <agent_file.md>
+```
+
 ## メトリクス
 
 ### 品質スコア分布

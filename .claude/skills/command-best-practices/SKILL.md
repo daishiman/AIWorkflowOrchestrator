@@ -544,6 +544,40 @@ Run it
 ### チェックリスト
 完全版は `templates/best-practice-checklist.md` を参照
 
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# 単一責任原則詳細
+cat .claude/skills/command-best-practices/resources/single-responsibility-principle.md
+
+# 組み合わせ可能性詳細
+cat .claude/skills/command-best-practices/resources/composability-principle.md
+```
+
+### テンプレート参照
+
+```bash
+# ベストプラクティスチェックリスト
+cat .claude/skills/command-best-practices/templates/best-practice-checklist.md
+```
+
+### 他のスキルのスクリプトを活用
+
+```bash
+# 知識ドキュメントの品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/skills/command-best-practices/resources/single-responsibility-principle.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/skills/command-best-practices/SKILL.md
+
+# ドキュメント構造分析
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs .claude/skills/command-best-practices
+```
+
 ## 関連スキル
 
 - `.claude/skills/command-structure-fundamentals/SKILL.md` - 基本構造

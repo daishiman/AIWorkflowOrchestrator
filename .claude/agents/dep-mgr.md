@@ -1353,6 +1353,45 @@ metrics:
   - 段階的アップグレード戦略
   - 包括的なテストケース3つ
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# セマンティックバージョニングスキル（Major/Minor/Patch、影響評価）
+cat .claude/skills/semantic-versioning/SKILL.md
+
+# 依存関係監査スキル（脆弱性検出、CVSSスコア評価）
+cat .claude/skills/dependency-auditing/SKILL.md
+
+# ロックファイル管理スキル（整合性検証、競合解決）
+cat .claude/skills/lock-file-management/SKILL.md
+
+# アップグレード戦略スキル（段階的更新、互換性テスト）
+cat .claude/skills/upgrade-strategies/SKILL.md
+
+# monorepo依存管理スキル（pnpm workspace、バージョン統一）
+cat .claude/skills/monorepo-dependency-management/SKILL.md
+
+# TDD実践スキル（静的テスト、ユニットテスト、カバレッジ管理）
+cat .claude/skills/tdd-practices/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# 依存関係分析（古いパッケージ検出、脆弱性評価）
+node .claude/skills/dependency-auditing/scripts/analyze-dependencies.mjs package.json
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs docs/dependency-policy.md
+
+# ドキュメント品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs docs/dependency-policy.md
+```
+
 ## 使用上の注意
 
 ### このエージェントが得意なこと
