@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "{{SCHEMA_NAME}}",
+  "description": "{{SCHEMA_DESCRIPTION}}",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "一意識別子"
+    },
+    "data": {
+      "type": "object",
+      "description": "主要データ",
+      "properties": {
+        "field1": {
+          "type": "string",
+          "description": "フィールド1の説明",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "field2": {
+          "type": "number",
+          "description": "フィールド2の説明",
+          "minimum": 0
+        },
+        "field3": {
+          "type": "boolean",
+          "description": "フィールド3の説明",
+          "default": false
+        }
+      },
+      "required": ["field1"],
+      "additionalProperties": false
+    },
+    "items": {
+      "type": "array",
+      "description": "アイテムリスト",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "value": { "type": "number" }
+        },
+        "required": ["name", "value"]
+      },
+      "minItems": 0,
+      "maxItems": 100
+    },
+    "status": {
+      "type": "string",
+      "description": "ステータス",
+      "enum": ["pending", "processing", "completed", "failed"]
+    },
+    "metadata": {
+      "type": "object",
+      "description": "メタデータ",
+      "properties": {
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        }
+      }
+    }
+  },
+  "required": ["id", "data", "status"],
+  "additionalProperties": false
+}

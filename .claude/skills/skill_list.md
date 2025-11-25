@@ -220,13 +220,19 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                        | 概要                                                    |
-| ------------------------------- | ------------------------------------------------------- |
-| **prompt-engineering-for-agents** | エージェント向けプロンプト設計、Chain-of-Thought、Few-Shot Learning |
-| **context-optimization**      | コンテキストウィンドウ最適化、トークン削減技術          |
-| **agent-persona-design**           | エージェントペルソナ設計、役割付与、専門性の強化                |
-| **documentation-architecture**           | ドキュメント構造設計、Schema-based Output        |
-| **best-practices-curation**    | ベストプラクティス収集、品質検証、評価基準          |
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **prompt-engineering-for-agents** | `.claude/skills/prompt-engineering-for-agents/SKILL.md` | エージェント向けプロンプト設計、システムプロンプト最適化 |
+| **context-optimization** | `.claude/skills/context-optimization/SKILL.md` | コンテキストウィンドウ最適化、トークン削減技術 |
+| **agent-persona-design** | `.claude/skills/agent-persona-design/SKILL.md` | エージェントペルソナ設計、役割付与、専門性の強化 |
+| **documentation-architecture** | `.claude/skills/documentation-architecture/SKILL.md` | ドキュメント構造設計、階層化 |
+| **best-practices-curation** | `.claude/skills/best-practices-curation/SKILL.md` | ベストプラクティス収集、品質検証、評価基準 |
+| **structured-output-design** | `.claude/skills/structured-output-design/SKILL.md` | JSON Mode、Function Calling、Schema-based Output |
+| **hallucination-prevention** | `.claude/skills/hallucination-prevention/SKILL.md` | 3層防御、パラメータ調整、検証ステップ |
+| **few-shot-learning-patterns** | `.claude/skills/few-shot-learning-patterns/SKILL.md` | 例示設計、Shot数戦略、ドメイン別パターン |
+| **chain-of-thought-reasoning** | `.claude/skills/chain-of-thought-reasoning/SKILL.md` | CoT推論、Self-Consistency、推論パターン |
+| **prompt-testing-evaluation** | `.claude/skills/prompt-testing-evaluation/SKILL.md` | A/Bテスト、評価メトリクス、自動評価 |
+| **prompt-versioning-management** | `.claude/skills/prompt-versioning-management/SKILL.md` | バージョン管理、デプロイ戦略、ロールバック |
 ```
 
 ## 14. DB スキーマ設計
