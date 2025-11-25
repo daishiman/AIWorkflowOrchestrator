@@ -1,0 +1,311 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/api/v1/",
+  "title": "API Schema Template",
+  "description": "APIスキーマのテンプレート",
+
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID形式の識別子"
+    },
+
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601形式のタイムスタンプ"
+    },
+
+    "email": {
+      "type": "string",
+      "format": "email",
+      "maxLength": 254,
+      "description": "メールアドレス"
+    },
+
+    "pagination": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1,
+          "description": "ページ番号"
+        },
+        "pageSize": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20,
+          "description": "1ページあたりの件数"
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "総件数"
+        },
+        "hasMore": {
+          "type": "boolean",
+          "description": "次のページが存在するか"
+        }
+      },
+      "required": ["page", "pageSize", "total"]
+    },
+
+    "baseEntity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/uuid",
+          "readOnly": true
+        },
+        "createdAt": {
+          "$ref": "#/$defs/timestamp",
+          "readOnly": true,
+          "description": "作成日時"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/timestamp",
+          "readOnly": true,
+          "description": "更新日時"
+        }
+      },
+      "required": ["id", "createdAt", "updatedAt"]
+    },
+
+    "auditFields": {
+      "type": "object",
+      "properties": {
+        "createdBy": {
+          "$ref": "#/$defs/uuid",
+          "readOnly": true,
+          "description": "作成者ID"
+        },
+        "updatedBy": {
+          "$ref": "#/$defs/uuid",
+          "readOnly": true,
+          "description": "更新者ID"
+        }
+      }
+    },
+
+    "problemDetails": {
+      "type": "object",
+      "description": "RFC 7807 Problem Details",
+      "properties": {
+        "type": {
+          "type": "string",
+          "format": "uri",
+          "description": "エラータイプを識別するURI"
+        },
+        "title": {
+          "type": "string",
+          "description": "人間可読なエラータイトル"
+        },
+        "status": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 599,
+          "description": "HTTPステータスコード"
+        },
+        "detail": {
+          "type": "string",
+          "description": "エラーの詳細な説明"
+        },
+        "instance": {
+          "type": "string",
+          "format": "uri",
+          "description": "このエラー発生を識別するURI"
+        }
+      },
+      "required": ["type", "title", "status"]
+    },
+
+    "validationError": {
+      "allOf": [
+        { "$ref": "#/$defs/problemDetails" },
+        {
+          "type": "object",
+          "properties": {
+            "errors": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "field": {
+                    "type": "string",
+                    "description": "エラーが発生したフィールド名"
+                  },
+                  "message": {
+                    "type": "string",
+                    "description": "エラーメッセージ"
+                  },
+                  "code": {
+                    "type": "string",
+                    "description": "エラーコード"
+                  }
+                },
+                "required": ["field", "message"]
+              },
+              "description": "フィールド別のエラー一覧"
+            }
+          }
+        }
+      ]
+    },
+
+    "user": {
+      "type": "object",
+      "description": "ユーザー情報",
+      "allOf": [
+        { "$ref": "#/$defs/baseEntity" },
+        {
+          "type": "object",
+          "properties": {
+            "email": {
+              "$ref": "#/$defs/email"
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "description": "ユーザー名"
+            },
+            "role": {
+              "type": "string",
+              "enum": ["user", "admin", "moderator"],
+              "default": "user",
+              "description": "ユーザーロール"
+            },
+            "status": {
+              "type": "string",
+              "enum": ["active", "inactive", "suspended"],
+              "default": "active",
+              "description": "アカウントステータス"
+            },
+            "profile": {
+              "type": "object",
+              "properties": {
+                "displayName": {
+                  "type": "string",
+                  "maxLength": 50,
+                  "description": "表示名"
+                },
+                "bio": {
+                  "type": "string",
+                  "maxLength": 500,
+                  "description": "自己紹介"
+                },
+                "avatarUrl": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "アバター画像URL"
+                }
+              },
+              "description": "プロフィール情報"
+            }
+          },
+          "required": ["email", "name"]
+        }
+      ]
+    },
+
+    "userCreate": {
+      "type": "object",
+      "description": "ユーザー作成リクエスト",
+      "properties": {
+        "email": {
+          "$ref": "#/$defs/email"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "ユーザー名"
+        },
+        "password": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 128,
+          "writeOnly": true,
+          "description": "パスワード"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["user", "admin", "moderator"],
+          "default": "user",
+          "description": "ユーザーロール"
+        }
+      },
+      "required": ["email", "name", "password"],
+      "additionalProperties": false
+    },
+
+    "userUpdate": {
+      "type": "object",
+      "description": "ユーザー更新リクエスト（部分更新）",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "ユーザー名"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "inactive", "suspended"],
+          "description": "アカウントステータス"
+        },
+        "profile": {
+          "type": "object",
+          "properties": {
+            "displayName": {
+              "type": "string",
+              "maxLength": 50
+            },
+            "bio": {
+              "type": "string",
+              "maxLength": 500
+            },
+            "avatarUrl": {
+              "type": ["string", "null"],
+              "format": "uri"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "userList": {
+      "type": "object",
+      "description": "ユーザー一覧レスポンス",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/user"
+          },
+          "description": "ユーザー一覧"
+        },
+        "pagination": {
+          "$ref": "#/$defs/pagination"
+        }
+      },
+      "required": ["items", "pagination"]
+    }
+  },
+
+  "type": "object",
+  "description": "APIスキーマのルート",
+  "properties": {
+    "user": { "$ref": "#/$defs/user" },
+    "userCreate": { "$ref": "#/$defs/userCreate" },
+    "userUpdate": { "$ref": "#/$defs/userUpdate" },
+    "userList": { "$ref": "#/$defs/userList" },
+    "problemDetails": { "$ref": "#/$defs/problemDetails" },
+    "validationError": { "$ref": "#/$defs/validationError" }
+  }
+}

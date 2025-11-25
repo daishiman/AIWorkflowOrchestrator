@@ -281,13 +281,13 @@
   - [ ] バリデーションエラー時のメッセージは親切か？
 - **成果物:** `schema.ts` (各機能毎)
 - **必要なスキル**:
-  | スキル名 | 概要 |
-  | ------------------------ | ----------------------------------------------------- |
-  | **zod-validation** | Zod スキーマ定義、型推論、カスタムバリデーション |
-  | **type-safety-patterns** | TypeScript 厳格モード、型ガード、Discriminated Unions |
-  | **input-sanitization** | XSS 対策、SQL インジェクション対策、エスケープ処理 |
-  | **error-message-design** | ユーザーフレンドリーなエラーメッセージ、i18n 対応 |
-  | **json-schema** | JSON Schema 仕様、スキーマバージョニング |
+  | スキル名 | パス | 概要 |
+  | ------------------------ | ----------------------------------------- | ----------------------------------------------------- |
+  | **zod-validation** | `.claude/skills/zod-validation/SKILL.md` | Zod スキーマ定義、型推論、カスタムバリデーション |
+  | **type-safety-patterns** | `.claude/skills/type-safety-patterns/SKILL.md` | TypeScript 厳格モード、型ガード、Discriminated Unions |
+  | **input-sanitization** | `.claude/skills/input-sanitization/SKILL.md` | XSS 対策、SQL インジェクション対策、エスケープ処理 |
+  | **error-message-design** | `.claude/skills/error-message-design/SKILL.md` | ユーザーフレンドリーなエラーメッセージ、i18n 対応 |
+  | **json-schema** | `.claude/skills/json-schema/SKILL.md` | JSON Schema 仕様、スキーマバージョニング |
 
 #### 12. ビジネスロジック実装
 
