@@ -787,13 +787,13 @@
   - [ ] 危険なコマンド実行前に確認が入るか？
 - **成果物:** `settings.json` (Hooks section)
 - **必要なスキル**:
-  | スキル名 | 概要 |
-  | --------------------------------- | ----------------------------------------- |
-  | **git-hooks-concepts** | pre-commit、pre-push、commit-msg 等の理解 |
-  | **claude-code-hooks** | UserPromptSubmit、PreToolUse、PostToolUse |
-  | **automation-scripting** | シェルスクリプト、Node.js スクリプト |
-  | **linting-formatting-automation** | 保存時自動フォーマット、コミット前 Lint |
-  | **approval-gates** | 危険操作の承認フロー、確認プロンプト |
+  | スキル名 | パス | 概要 |
+  | --------------------------------- | ---- | ----------------------------------------- |
+  | **git-hooks-concepts** | - | Git Hooks の基本概念 |
+  | **claude-code-hooks** | - | Claude Code フックシステム |
+  | **automation-scripting** | - | 自動化スクリプト作成 |
+  | **linting-formatting-automation** | - | Lint・フォーマット自動化 |
+  | **approval-gates** | - | 承認ゲート設計 |
 
 #### 32. コマンド・オーケストレーター
 
