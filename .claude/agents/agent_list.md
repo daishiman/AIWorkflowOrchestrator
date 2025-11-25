@@ -48,13 +48,14 @@
   - [ ] 正常系だけでなく異常系も考慮されているか？
 - **成果物:** `docs/00-requirements/*.md`
 - **必要なスキル**:
-  | スキル名 | 概要 |
-  |---------|------|
-  | **requirements-engineering** | 要件定義手法、トリアージ、受け入れ基準の記述 |
-  | **use-case-modeling** | ユースケース図作成、アクター定義、シナリオ記述 |
-  | **acceptance-criteria-writing** | Given-When-Then 形式、テスト可能な条件定義 |
-  | **interview-techniques** | ヒアリングスキル、要求抽出、曖昧性除去 |
-  | **functional-non-functional-requirements** | 機能要件と非機能要件の分類と定義 |
+
+  | スキル名 | パス | 概要 |
+  |---------|------|------|
+  | **requirements-engineering** | `.claude/skills/requirements-engineering/SKILL.md` | Karl Wiegers方法論、MoSCoW優先度、曖昧性検出、トリアージフレームワーク |
+  | **use-case-modeling** | `.claude/skills/use-case-modeling/SKILL.md` | アクター識別、シナリオパターン、ユースケース関係（include/extend/generalization） |
+  | **acceptance-criteria-writing** | `.claude/skills/acceptance-criteria-writing/SKILL.md` | Given-When-Then形式、テスト可能性基準、エッジケースパターン |
+  | **interview-techniques** | `.claude/skills/interview-techniques/SKILL.md` | 5W1Hフレームワーク、Why分析（5 Whys）、質問タイプ分類 |
+  | **functional-non-functional-requirements** | `.claude/skills/functional-non-functional-requirements/SKILL.md` | FR/NFR分類、FURPS+品質モデル、測定可能な目標定義 |
 
 #### 3. テクニカルライター（仕様書作成者）
 
