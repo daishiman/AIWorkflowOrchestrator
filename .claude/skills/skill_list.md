@@ -232,19 +232,18 @@
 ## 14. DB スキーマ設計
 
 - **エージェント名:** `@db-architect`
-
 - **エージェントの配置:** `.claude/agents/db-architect.md`
 
 ```markdown
 - **必要なスキル**:
 
-| スキル名                    | 概要                                                 |
-| --------------------------- | ---------------------------------------------------- |
-| **database-normalization**  | 第 1〜5 正規形、意図的な非正規化                     |
-| **indexing-strategies**     | B-Tree、GiST、GIN インデックス、カーディナリティ考慮 |
-| **sql-anti-patterns**       | ジェイウォーク、EAV、Polymorphic Associations 回避   |
-| **jsonb-optimization**      | JSONB 索引、演算子活用、パフォーマンスチューニング   |
-| **foreign-key-constraints** | 参照整合性、CASCADE 設定、パフォーマンス影響         |
+| スキル名                    | パス | 概要                                                 |
+| --------------------------- | ---- | ---------------------------------------------------- |
+| **database-normalization**  | `.claude/skills/database-normalization/SKILL.md` | 第 1〜5 正規形、意図的な非正規化                     |
+| **indexing-strategies**     | `.claude/skills/indexing-strategies/SKILL.md` | B-Tree、GiST、GIN インデックス、カーディナリティ考慮 |
+| **sql-anti-patterns**       | `.claude/skills/sql-anti-patterns/SKILL.md` | ジェイウォーク、EAV、Polymorphic Associations 回避   |
+| **jsonb-optimization**      | `.claude/skills/jsonb-optimization/SKILL.md` | JSONB 索引、演算子活用、パフォーマンスチューニング   |
+| **foreign-key-constraints** | `.claude/skills/foreign-key-constraints/SKILL.md` | 参照整合性、CASCADE 設定、パフォーマンス影響         |
 ```
 
 ## 15. リポジトリ実装
@@ -255,13 +254,13 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                   | 概要                                                             |
-| -------------------------- | ---------------------------------------------------------------- |
-| **repository-pattern**     | コレクション風インターフェース、ドメイン型返却                   |
-| **query-optimization**     | N+1 問題回避、Eager/Lazy Loading、JOIN 戦略                      |
-| **transaction-management** | ACID 特性、トランザクション境界、ロールバック処理                |
-| **orm-best-practices**     | Drizzle ORM の効率的利用、Raw SQL との使い分け                   |
-| **database-migrations**    | スキーマバージョニング、データマイグレーション、ロールバック計画 |
+| スキル名                   | パス | 概要                                                             |
+| -------------------------- | ---- | ---------------------------------------------------------------- |
+| **repository-pattern**     | `.claude/skills/repository-pattern/SKILL.md` | コレクション風インターフェース、ドメイン型返却                   |
+| **query-optimization**     | `.claude/skills/query-optimization/SKILL.md` | N+1 問題回避、Eager/Lazy Loading、JOIN 戦略                      |
+| **transaction-management** | `.claude/skills/transaction-management/SKILL.md` | ACID 特性、トランザクション境界、ロールバック処理                |
+| **orm-best-practices**     | `.claude/skills/orm-best-practices/SKILL.md` | Drizzle ORM の効率的利用、Raw SQL との使い分け                   |
+| **database-migrations**    | `.claude/skills/database-migrations/SKILL.md` | スキーマバージョニング、データマイグレーション、ロールバック計画 |
 ```
 
 ## 16. DevOps/CI エンジニア
