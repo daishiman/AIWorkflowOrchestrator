@@ -228,14 +228,14 @@
   - [ ] 新機能追加時に既存コードの修正は不要か？
   - [ ] インターフェースは適切に抽象化されているか？
 - **成果物:** `src/features/registry.ts`, `IWorkflowExecutor`
-- **必要なスキル**:
-  | スキル名 | 概要 |
-  | ------------------------------ | ------------------------------------------ |
-  | **design-patterns-behavioral** | Strategy, Template Method, Command Pattern |
-  | **plugin-architecture** | 動的ロード、レジストリパターン、依存性注入 |
-  | **interface-segregation** | 小さなインターフェース、多重実装の回避 |
-  | **factory-patterns** | Factory Method, Abstract Factory, Builder |
-  | **open-closed-principle** | 拡張に開かれ、修正に閉じた設計 |
+- **参照スキル**:
+  | スキル名 | パス | 概要 |
+  | ------------------------------ | ------------------------------------------------ | ------------------------------------------------ |
+  | **design-patterns-behavioral** | `.claude/skills/design-patterns-behavioral/SKILL.md` | Strategy, Template Method, Command, Observer     |
+  | **plugin-architecture**        | `.claude/skills/plugin-architecture/SKILL.md` | 動的ロード、レジストリパターン、依存性注入        |
+  | **interface-segregation**      | `.claude/skills/interface-segregation/SKILL.md` | ISP準拠、ロールベースインターフェース設計         |
+  | **factory-patterns**           | `.claude/skills/factory-patterns/SKILL.md` | Factory Method, Abstract Factory, Builder, Registry |
+  | **open-closed-principle**      | `.claude/skills/open-closed-principle/SKILL.md` | 拡張ポイント設計、OCPへのリファクタリング         |
 
 #### 10. 外部連携ゲートウェイ
 
