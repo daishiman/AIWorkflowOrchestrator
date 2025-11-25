@@ -272,13 +272,14 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                   | 概要                                                           |
-| -------------------------- | -------------------------------------------------------------- |
-| **ci-cd-pipelines**        | GitHub Actions、デプロイパイプライン設計、ステージング環境     |
-| **infrastructure-as-code** | 構成管理の自動化、環境変数管理、Secret 管理                    |
-| **deployment-strategies**  | Blue-Green Deployment、Canary Release、ロールバック戦略        |
-| **monitoring-alerting**    | ヘルスチェック、ログ集約、メトリクス可視化                     |
-| **docker-best-practices**  | マルチステージビルド、レイヤーキャッシュ、セキュリティスキャン |
+| スキル名                   | パス                                              | 概要                                                           |
+| -------------------------- | ------------------------------------------------- | -------------------------------------------------------------- |
+| **ci-cd-pipelines**        | `.claude/skills/ci-cd-pipelines/SKILL.md`         | GitHub Actions、デプロイパイプライン設計、ステージング環境     |
+| **infrastructure-as-code** | `.claude/skills/infrastructure-as-code/SKILL.md`  | 構成管理の自動化、環境変数管理、Secret 管理                    |
+| **deployment-strategies**  | `.claude/skills/deployment-strategies/SKILL.md`   | Blue-Green Deployment、Canary Release、ロールバック戦略        |
+| **monitoring-alerting**    | `.claude/skills/monitoring-alerting/SKILL.md`     | ヘルスチェック、ログ集約、メトリクス可視化                     |
+| **docker-best-practices**  | `.claude/skills/docker-best-practices/SKILL.md`   | マルチステージビルド、レイヤーキャッシュ、セキュリティスキャン |
+| **security-scanning**      | `.claude/skills/security-scanning/SKILL.md`       | 依存関係脆弱性、コンテナスキャン、SBOM生成、シークレット検出   |
 ```
 
 ## 17. ファイル監視 (Watcher)
