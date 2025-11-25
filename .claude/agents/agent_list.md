@@ -253,13 +253,13 @@
   - [ ] 認証情報はセキュアに管理されているか？
 - **成果物:** `src/infrastructure/discord/`, API Clients
 - **必要なスキル**:
-  | スキル名 | 概要 |
-  | ------------------------ | ------------------------------------------------------ |
-  | **api-client-patterns** | Adapter Pattern、Facade Pattern、Anti-Corruption Layer |
-  | **retry-strategies** | Exponential Backoff、Circuit Breaker、Bulkhead |
-  | **http-best-practices** | ステータスコード、タイムアウト、べき等性 |
-  | **authentication-flows** | OAuth 2.0、JWT、API Key 管理 |
-  | **rate-limiting** | レート制限対応、キューイング、スロットリング |
+  | スキル名 | パス | 概要 |
+  | ------------------------ | ---- | ------------------------------------------------------ |
+  | **api-client-patterns** | `.claude/skills/api-client-patterns/SKILL.md` | Adapter Pattern、Facade Pattern、Anti-Corruption Layer |
+  | **retry-strategies** | `.claude/skills/retry-strategies/SKILL.md` | Exponential Backoff、Circuit Breaker、Bulkhead |
+  | **http-best-practices** | `.claude/skills/http-best-practices/SKILL.md` | ステータスコード、タイムアウト、べき等性 |
+  | **authentication-flows** | `.claude/skills/authentication-flows/SKILL.md` | OAuth 2.0、JWT、API Key 管理 |
+  | **rate-limiting** | `.claude/skills/rate-limiting/SKILL.md` | レート制限対応、キューイング、スロットリング |
 
 ---
 
