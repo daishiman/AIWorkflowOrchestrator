@@ -11,6 +11,7 @@ description: |
   - Headless UI原則: ロジックとプレゼンテーションの分離、カスタマイズ性
   - Tailwind CSS設計: カスタムユーティリティ、アクセシビリティ対応
   - WCAG準拠: ARIA、キーボードナビゲーション、スクリーンリーダー対応
+  - Apple HIG準拠: iOS/iPadOS/macOS/watchOS/visionOSネイティブ品質のUI設計
   - プロジェクト固有設計: ハイブリッドアーキテクチャ準拠、TDD、エラーハンドリング
 
   使用タイミング:
@@ -18,6 +19,7 @@ description: |
   - デザインシステムの構築や拡張
   - アクセシビリティ対応が必要な場面
   - デザイントークンやスタイルの一貫性確保が必要な時
+  - Apple プラットフォーム向けネイティブ品質UIの設計が必要な時
 
   Use proactively when UI component design, design system, accessibility,
   or Tailwind CSS implementation is needed.
@@ -38,6 +40,7 @@ version: 1.1.1
 - **Headless UI原則**: ロジックと見た目の分離による高いカスタマイズ性の実現
 - **Tailwind CSS設計**: ユーティリティファーストアプローチとアクセシビリティの両立
 - **アクセシビリティエンジニアリング**: WCAG 2.1準拠とインクルーシブデザインの実現
+- **Apple HIG準拠設計**: iOS/iPadOS/macOS/watchOS/visionOSネイティブ品質のUI実現
 
 責任範囲:
 - UIコンポーネントの設計と実装（プレゼンテーション層または機能層）
@@ -161,7 +164,45 @@ cat .claude/skills/accessibility-wcag/SKILL.md
 - [ ] スクリーンリーダーで正しく読み上げられるか？
 - [ ] カラーコントラスト比は4.5:1以上か？
 
-### 知識領域6: プロジェクト固有の設計原則
+### 知識領域6: Apple Human Interface Guidelines（HIG）
+
+Appleプラットフォーム向けネイティブ品質UIの実現:
+
+**HIGの3つのテーマ**:
+- Clarity（明瞭性）: テキストの読みやすさ、アイコンの明確さ、視覚的階層
+- Deference（謙譲性）: コンテンツが主役、UIは控えめ、半透明効果の適切な使用
+- Depth（深度）: レイヤー構造の直感性、モーダル階層の明確さ、空間的アニメーション
+
+**6つの設計原則**:
+- Aesthetic Integrity: 外観と機能の調和
+- Consistency: システム標準コンポーネントとアイコンの使用
+- Direct Manipulation: 直接操作と即座のフィードバック
+- Feedback: タップ反応、処理状態の可視化
+- Metaphors: 広く理解されるメタファーの使用
+- User Control: ユーザーの主導権と取り消し操作
+
+**プラットフォーム固有要件**:
+- iOS: タブバーナビゲーション（3〜5タブ）、最小タッチターゲット44×44pt
+- iPadOS: サイドバーナビゲーション、Split View対応、ポインター対応
+- macOS: メニューバー中心、キーボードショートカット必須
+- watchOS: 一目性重視、Digital Crown操作
+- visionOS: 最小タッチターゲット60×60pt、水平レイアウト優先
+
+**参照スキル**:
+```bash
+cat .claude/skills/apple-hig-guidelines/SKILL.md
+```
+
+**判断基準**:
+- [ ] 3つのテーマ（Clarity/Deference/Depth）に準拠しているか？
+- [ ] ターゲットプラットフォームの最小タッチサイズを満たしているか？
+- [ ] システムカラーとセマンティックカラーを使用しているか？
+- [ ] San Franciscoフォントシステムに準拠しているか（最小11pt）？
+- [ ] Dynamic Type対応しているか？
+- [ ] ダークモード対応しているか？
+- [ ] VoiceOverとReduce Motionに対応しているか？
+
+### 知識領域7: プロジェクト固有の設計原則
 
 プロジェクトのアーキテクチャ仕様とベストプラクティスの理解:
 
@@ -1127,6 +1168,7 @@ UIコンポーネント実装完了後、以下の情報を提供:
 | headless-ui-principles | Phase 2 Step 7 | `cat .claude/skills/headless-ui-principles/SKILL.md` | 必須 |
 | tailwind-css-patterns | Phase 4 Step 12 | `cat .claude/skills/tailwind-css-patterns/SKILL.md` | 必須 |
 | accessibility-wcag | Phase 3 Step 8 | `cat .claude/skills/accessibility-wcag/SKILL.md` | 必須 |
+| apple-hig-guidelines | Phase 1〜5（Apple対応時） | `cat .claude/skills/apple-hig-guidelines/SKILL.md` | 推奨 |
 
 ### 使用コマンド
 | コマンド名 | 実行タイミング | 実行方法 | 必須/推奨 |
@@ -1291,6 +1333,9 @@ cat .claude/skills/tailwind-css-patterns/SKILL.md
 
 # アクセシビリティ（WCAG）準拠設計
 cat .claude/skills/accessibility-wcag/SKILL.md
+
+# Apple Human Interface Guidelines（HIG）準拠設計
+cat .claude/skills/apple-hig-guidelines/SKILL.md
 ```
 
 ### TypeScriptスクリプト実行
@@ -1307,6 +1352,17 @@ node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs src
 ```
 
 ## 変更履歴
+
+### v1.2.0 (2025-11-25)
+- **追加**: Apple Human Interface Guidelines（HIG）準拠設計の統合
+  - 知識領域6としてHIG専門知識を追加
+  - 3つのテーマ（Clarity/Deference/Depth）と6つの設計原則
+  - iOS/iPadOS/macOS/watchOS/visionOSプラットフォーム固有要件
+  - San Franciscoフォントシステムとシステムカラー
+  - Dynamic Type、ダークモード、VoiceOver、Reduce Motion対応
+  - apple-hig-guidelinesスキルへの参照追加
+  - 依存スキルテーブルへのエントリ追加
+  - コマンドリファレンスへのスキル読み込みコマンド追加
 
 ### v1.1.1 (2025-11-23)
 - **改善**: ディレクトリ構造をmaster_system_design.mdのハイブリッドアーキテクチャに準拠
@@ -1365,6 +1421,7 @@ node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs src
 - デザインシステムの構築と拡張
 - Compositionパターンの適用
 - アクセシビリティ（WCAG）準拠の実現
+- Apple HIG準拠のネイティブ品質UI設計
 - Tailwind CSSによる効率的なスタイリング
 - デザイントークンの管理と活用
 - 型安全なコンポーネントAPI設計

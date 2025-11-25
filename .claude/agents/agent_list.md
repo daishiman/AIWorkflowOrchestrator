@@ -73,13 +73,13 @@
   - [ ] 入出力のデータ型が明記されているか？
 - **成果物:** `docs/20-specifications/*.md`
 - **必要なスキル**:
-  | スキル名 | 概要 |
-  |---------|------|
-  | **markdown-advanced-syntax** | Mermaid 図、テーブル、コードブロックの活用 |
-  | **technical-documentation-standards** | IEEE 830、DRY 原則、Documentation as Code |
-  | **api-documentation-best-practices** | OpenAPI、Swagger、エンドポイント記述 |
-  | **structured-writing** | DITA、トピックベースライティング、モジュール構造 |
-  | **version-control-for-docs** | Git Diff 活用、変更履歴管理、レビューフロー |
+  | スキル名 | パス | 概要 |
+  |---------|------|------|
+  | **markdown-advanced-syntax** | `.claude/skills/markdown-advanced-syntax/SKILL.md` | Mermaid 図、テーブル、コードブロックの活用 |
+  | **technical-documentation-standards** | `.claude/skills/technical-documentation-standards/SKILL.md` | IEEE 830、DRY 原則、Documentation as Code |
+  | **api-documentation-best-practices** | `.claude/skills/api-documentation-best-practices/SKILL.md` | OpenAPI、Swagger、エンドポイント記述 |
+  | **structured-writing** | `.claude/skills/structured-writing/SKILL.md` | DITA、トピックベースライティング、モジュール構造 |
+  | **version-control-for-docs** | `.claude/skills/version-control-for-docs/SKILL.md` | Git Diff 活用、変更履歴管理、レビューフロー |
 
 #### 4. アーキテクチャ・ポリス
 
@@ -97,13 +97,13 @@
   - [ ] 循環参照は発生していないか？
 - **成果物:** `.claude/rules.md`, レビュー指摘
 - **必要なスキル**:
-  | スキル名 | 概要 |
-  |---------|------|
-  | **clean-architecture-principles** | 依存関係逆転、レイヤー分離、境界の明確化 |
-  | **solid-principles** | SRP, OCP, LSP, ISP, DIP の実践 |
-  | **dependency-analysis** | 循環参照検出、依存関係可視化、メトリクス分析 |
-  | **architectural-patterns** | Hexagonal, Onion, Ports and Adapters |
-  | **code-smell-detection** | God Object, Feature Envy, Long Method 等の検出 |
+  | スキル名 | パス | 概要 |
+  |---------|------|------|
+  | **clean-architecture-principles** | `.claude/skills/clean-architecture-principles/SKILL.md` | 依存関係ルール、レイヤー構造、プロジェクト固有マッピング |
+  | **solid-principles** | `.claude/skills/solid-principles/SKILL.md` | SRP, OCP, LSP, ISP, DIP の評価基準と検出パターン |
+  | **dependency-analysis** | `.claude/skills/dependency-analysis/SKILL.md` | 依存グラフ構築、循環依存検出、安定度メトリクス |
+  | **architectural-patterns** | `.claude/skills/architectural-patterns/SKILL.md` | Hexagonal, Onion, Vertical Slice パターンの評価 |
+  | **code-smell-detection** | `.claude/skills/code-smell-detection/SKILL.md` | クラス/メソッドスメル、アーキテクチャアンチパターン |
 
 ---
 
@@ -128,13 +128,14 @@
   - [ ] 型安全性（TypeScript 等）が保たれているか？
 - **成果物:** `src/components/ui/`
 - **必要なスキル**:
-  | スキル名 | 概要 |
-  | ---------------------------------- | ---------------------------------------------------------------------- |
-  | **design-system-architecture** | コンポーネント規約、デザイントークン、Figma/コード統合 |
-  | **component-composition-patterns** | Slot/Compound/Controlled-Uncontrolled パターン、再利用性と拡張性の追求 |
-  | **headless-ui-principles** | 見た目非依存 UI、ロジックとプレゼンテーションの分離 |
-  | **tailwind-css-patterns** | カスタムユーティリティ、デザイントークン連携、アクセシビリティ |
-  | **accessibility-wcag** | WCAG 2.1、ARIA、キーボード・モバイル完全対応 |
+  | スキル名 | パス | 概要 |
+  | ---------------------------------- | ---- | ---------------------------------------------------------------------- |
+  | **design-system-architecture** | `.claude/skills/design-system-architecture/SKILL.md` | コンポーネント規約、デザイントークン、Figma/コード統合 |
+  | **component-composition-patterns** | `.claude/skills/component-composition-patterns/SKILL.md` | Slot/Compound/Controlled-Uncontrolled パターン、再利用性と拡張性の追求 |
+  | **headless-ui-principles** | `.claude/skills/headless-ui-principles/SKILL.md` | 見た目非依存 UI、ロジックとプレゼンテーションの分離 |
+  | **tailwind-css-patterns** | `.claude/skills/tailwind-css-patterns/SKILL.md` | カスタムユーティリティ、デザイントークン連携、アクセシビリティ |
+  | **accessibility-wcag** | `.claude/skills/accessibility-wcag/SKILL.md` | WCAG 2.1、ARIA、キーボード・モバイル完全対応 |
+  | **apple-hig-guidelines** | `.claude/skills/apple-hig-guidelines/SKILL.md` | Apple HIG準拠、iOS/iPadOS/macOS/watchOS/visionOS、角丸・シャドウ・アニメーション |
 
 #### 6. ページ/ルーティング実装
 
@@ -176,13 +177,13 @@
   - [ ] エラー状態、ローディング状態は考慮されているか？
 - **成果物:** `src/hooks/`, データフェッチ処理
 - **必要なスキル**:
-  | スキル名 | 概要 |
-  | ---------------------------- | ------------------------------------------------------------ |
-  | **react-hooks-advanced** | useEffect, useCallback, useMemo, useReducer の適切な使い分け |
-  | **data-fetching-strategies** | SWR, React Query、キャッシュ戦略、Optimistic Updates |
-  | **state-lifting** | State Lifting、Context API、Props Drilling 回避 |
-  | **custom-hooks-patterns** | ロジック再利用、関心の分離 |
-  | **error-boundary** | Error Boundary 実装、Fallback UI 設計 |
+  | スキル名 | パス | 概要 |
+  | ---------------------------- | ---- | ------------------------------------------------------------ |
+  | **react-hooks-advanced** | `.claude/skills/react-hooks-advanced/SKILL.md` | useEffect, useCallback, useMemo, useReducer の適切な使い分け |
+  | **data-fetching-strategies** | `.claude/skills/data-fetching-strategies/SKILL.md` | SWR, React Query、キャッシュ戦略、Optimistic Updates |
+  | **state-lifting** | `.claude/skills/state-lifting/SKILL.md` | State Lifting、Context API、Props Drilling 回避 |
+  | **custom-hooks-patterns** | `.claude/skills/custom-hooks-patterns/SKILL.md` | ロジック再利用、関心の分離 |
+  | **error-boundary** | `.claude/skills/error-boundary/SKILL.md` | Error Boundary 実装、Fallback UI 設計 |
 
 ---
 
