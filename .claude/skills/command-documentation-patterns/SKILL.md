@@ -551,6 +551,30 @@ A: Not with this command. To create component only:
 - 完全版: `templates/full-documentation-template.md`
 - 最小版: `templates/minimal-documentation-template.md`
 
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# ドキュメンテーションガイド
+cat .claude/skills/command-documentation-patterns/resources/documentation-guide.md
+```
+
+### 他のスキルのスクリプトを活用
+
+```bash
+# 知識ドキュメントの品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/skills/command-documentation-patterns/resources/documentation-guide.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/skills/command-documentation-patterns/SKILL.md
+
+# ドキュメント構造分析
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs .claude/skills/command-documentation-patterns
+```
+
 ## 関連スキル
 
 - `.claude/skills/command-structure-fundamentals/SKILL.md` - description書き方

@@ -160,9 +160,9 @@ Ryan Dahlが提唱する以下の原則を遵守:
 - イベントの発火頻度は適切にコントロールされているか？（デバウンス・スロットリング）
 
 **参照スキル**:
-該当するスキルファイルが存在する場合:
+プロジェクト全体のアーキテクチャパターンを理解するため、以下を参照:
 ```bash
-cat .claude/skills/event-driven-architecture/SKILL.md
+cat .claude/skills/agent-architecture-patterns/SKILL.md
 ```
 
 ### 知識領域2: Chokidar実装と最適化
@@ -205,9 +205,9 @@ Chokidarライブラリの深い理解とプロダクション環境での最適
 - リソース使用量（CPU、メモリ、ファイルディスクリプタ）は許容範囲内か？
 
 **参照スキル**:
-該当するスキルファイルが存在する場合:
+コード品質とベストプラクティスの確認:
 ```bash
-cat .claude/skills/file-system-apis/SKILL.md
+cat .claude/skills/best-practices-curation/SKILL.md
 ```
 
 ### 知識領域3: イベント最適化技術
@@ -230,8 +230,9 @@ cat .claude/skills/file-system-apis/SKILL.md
 - 最適化による遅延は許容範囲内か？（ユーザー体験への影響評価）
 
 **参照スキル**:
+パフォーマンス最適化の考え方を理解:
 ```bash
-cat .claude/skills/debouncing-throttling/SKILL.md
+cat .claude/skills/context-optimization/SKILL.md
 ```
 
 ### 知識領域4: 除外パターンとフィルタリング
@@ -257,8 +258,9 @@ cat .claude/skills/debouncing-throttling/SKILL.md
 - 除外ルールはプロジェクトの.gitignoreと整合しているか？
 
 **参照スキル**:
+ドキュメント構造とパターンの参考:
 ```bash
-cat .claude/skills/ignore-patterns/SKILL.md
+cat .claude/skills/documentation-architecture/SKILL.md
 ```
 
 ### 知識領域5: Node.jsストリームとバックプレッシャー
@@ -282,8 +284,9 @@ cat .claude/skills/ignore-patterns/SKILL.md
 - `pipeline()`または`stream.promises.pipeline()`でエラー伝播を保証しているか？
 
 **参照スキル**:
+プログレッシブディスクロージャーの原則:
 ```bash
-cat .claude/skills/nodejs-streams/SKILL.md
+cat .claude/skills/progressive-disclosure/SKILL.md
 ```
 
 ## タスク実行時の動作
@@ -850,16 +853,31 @@ metrics:
 - プロセスクラッシュを防ぐエラーバウンダリ
 - エスカレーション条件の明確化
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# コード品質検証スクリプト
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs .claude/agents/local-watcher.md
+
+# トークン使用量推定
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/agents/local-watcher.md
+
+# アーキテクチャ検証
+node .claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs .claude/agents/local-watcher.md
+```
+
 ## 依存関係
 
 ### 依存スキル
 | スキル名 | 参照タイミング | 参照方法 | 必須/推奨 |
 |---------|--------------|---------|----------|
-| event-driven-architecture | Phase 2 Step 4 | 該当する場合参照 | 必須 |
-| file-system-apis | Phase 2 Step 3 | 該当する場合参照 | 必須 |
-| debouncing-throttling | Phase 3 Step 6 | 該当する場合参照 | 推奨 |
-| ignore-patterns | Phase 2 Step 3 | 該当する場合参照 | 推奨 |
-| nodejs-streams | Phase 3 Step 5 | 該当する場合参照 | オプション |
+| agent-structure-design | 実装完了後 | 構造検証 | 推奨 |
+| agent-architecture-patterns | 設計時 | アーキテクチャパターン確認 | 推奨 |
+| context-optimization | ドキュメント作成時 | トークン最適化 | 推奨 |
 
 ### 使用コマンド
 | コマンド名 | 実行タイミング | 実行方法 | 必須/推奨 |

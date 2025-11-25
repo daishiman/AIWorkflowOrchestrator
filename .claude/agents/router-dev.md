@@ -995,6 +995,33 @@ Layoutの最適化:
 - Metadata設定とSEO最適化
 - エラーハンドリングUI
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# アジャイルプロジェクト管理（技術スタック理解、アーキテクチャ整合性）
+cat .claude/skills/agile-project-management/SKILL.md
+
+# コンテキスト最適化（トークン効率、大規模操作）
+cat .claude/skills/context-optimization/SKILL.md
+
+# コマンドパフォーマンス最適化（並列処理、リソース管理）
+cat .claude/skills/command-performance-optimization/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs src/app/**/*.tsx
+
+# エージェント構造検証
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs .claude/agents/router-dev.md
+```
+
 ## 変更履歴
 
 ### v2.0.0 (2025-11-22)

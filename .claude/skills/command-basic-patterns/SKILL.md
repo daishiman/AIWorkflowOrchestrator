@@ -369,6 +369,37 @@ Based on loaded config, execute deployment
 - パターン3: `templates/conditional-template.md`
 - パターン4: `templates/file-reference-template.md`
 
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# パターン選択ガイド
+cat .claude/skills/command-basic-patterns/resources/pattern-selection-guide.md
+```
+
+### テンプレート参照
+
+```bash
+# ステップバイステップテンプレート
+cat .claude/skills/command-basic-patterns/templates/step-by-step-template.md
+```
+
+### 他のスキルのスクリプトを活用
+
+```bash
+# 知識ドキュメントの品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/skills/command-basic-patterns/resources/pattern-selection-guide.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/skills/command-basic-patterns/SKILL.md
+
+# ドキュメント構造分析
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs .claude/skills/command-basic-patterns
+```
+
 ## 関連スキル
 
 - `.claude/skills/command-advanced-patterns/SKILL.md` - パイプライン、メタコマンド、インタラクティブ

@@ -57,6 +57,72 @@ cat .claude/skills/best-practices-curation/SKILL.md
 **なぜ必須か**: これらのスキルにこのエージェントの詳細な専門知識が分離されています。
 **スキル読み込みなしでのタスク実行は禁止です。**
 
+## コマンドリファレンス
+
+このエージェントで使用可能なスキルリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み
+
+```bash
+# 全依存スキルの一括読み込み
+cat .claude/skills/knowledge-management/SKILL.md
+cat .claude/skills/progressive-disclosure/SKILL.md
+cat .claude/skills/documentation-architecture/SKILL.md
+cat .claude/skills/context-optimization/SKILL.md
+cat .claude/skills/best-practices-curation/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# 知識ドキュメントの品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs <file.md>
+
+# スキルディレクトリのトークン使用量計算
+node .claude/skills/progressive-disclosure/scripts/calculate-token-usage.mjs <skill-directory>
+
+# ドキュメント構造分析
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs <skill-directory>
+
+# 単一ファイルのトークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs <file.md>
+```
+
+### リソース参照（詳細知識が必要な場合）
+
+```bash
+# SECIモデル詳細
+cat .claude/skills/knowledge-management/resources/seci-model-details.md
+
+# 3層開示モデル
+cat .claude/skills/progressive-disclosure/resources/three-layer-model.md
+
+# ファイル分割パターン
+cat .claude/skills/documentation-architecture/resources/splitting-patterns.md
+
+# 遅延読み込みパターン
+cat .claude/skills/context-optimization/resources/lazy-loading-patterns.md
+
+# 情報源評価ガイド
+cat .claude/skills/best-practices-curation/resources/information-source-evaluation.md
+```
+
+### テンプレート参照
+
+```bash
+# 知識文書化テンプレート
+cat .claude/skills/knowledge-management/templates/knowledge-document-template.md
+
+# スキルメタデータテンプレート
+cat .claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml
+
+# リソース構造テンプレート
+cat .claude/skills/documentation-architecture/templates/resource-structure.md
+
+# 評価チェックリスト
+cat .claude/skills/best-practices-curation/templates/evaluation-checklist.md
+```
+
 **🔴 重要な規則 - スキル/エージェント作成時**:
 - スキルを作成する際、「関連スキル」セクションでは**必ず相対パス**を記述してください
 - エージェントを作成/修正する際、スキル参照は**必ず相対パス**（`.claude/skills/[skill-name]/SKILL.md`）を使用してください

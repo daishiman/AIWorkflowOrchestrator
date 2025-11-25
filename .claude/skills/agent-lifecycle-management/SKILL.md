@@ -104,6 +104,30 @@ version: 1.0.0
 詳細な実装ガイドとツールは以下を参照:
 - バージョニングガイド (`resources/versioning-guide.md`)
 
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# バージョニングガイド
+cat .claude/skills/agent-lifecycle-management/resources/versioning-guide.md
+```
+
+### 他のスキルのスクリプトを活用
+
+```bash
+# エージェント構造検証（agent-structure-designスキルのスクリプトを使用）
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs <agent_file.md>
+
+# 循環依存チェック（agent-dependency-designスキルのスクリプトを使用）
+node .claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs <agent_file.md>
+
+# アーキテクチャ検証（agent-architecture-patternsスキルのスクリプトを使用）
+node .claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs <agent_file.md>
+```
+
 ## 変更履歴
 
 | バージョン | 日付 | 変更内容 |

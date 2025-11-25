@@ -567,6 +567,30 @@ echo "  See .claude/docs/deployment-guide.md"
 - ロールバック: `templates/rollback-template.md`
 - 確認: `templates/confirmation-template.md`
 
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# エラーパターン集
+cat .claude/skills/command-error-handling/resources/error-patterns.md
+```
+
+### 他のスキルのスクリプトを活用
+
+```bash
+# 知識ドキュメントの品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/skills/command-error-handling/resources/error-patterns.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/skills/command-error-handling/SKILL.md
+
+# ドキュメント構造分析
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs .claude/skills/command-error-handling
+```
+
 ## 関連スキル
 
 - `.claude/skills/command-arguments-system/SKILL.md` - 引数検証の基礎

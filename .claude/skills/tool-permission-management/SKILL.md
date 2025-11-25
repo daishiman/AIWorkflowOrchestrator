@@ -142,6 +142,30 @@ approved_commands:
 詳細な実装ガイドとツールは以下を参照:
 - ツール選択マトリックス (`resources/tool-selection-matrix.md`)
 
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# ツール選択マトリックスを読み取る
+cat .claude/skills/tool-permission-management/resources/tool-selection-matrix.md
+```
+
+### 他のスキルのスクリプトを活用
+
+```bash
+# エージェント構造検証（ツール権限も含む）
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs <agent_file.md>
+
+# アーキテクチャパターン検証
+node .claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs <agent_file.md>
+
+# 知識ドキュメントの品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs <file.md>
+```
+
 ## 変更履歴
 
 | バージョン | 日付 | 変更内容 |

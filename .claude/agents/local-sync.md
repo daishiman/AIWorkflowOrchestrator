@@ -822,16 +822,52 @@ metrics:
   - 未処理アップロード数
   - 次回リトライ予定時刻（ISO8601形式）
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# エージェントアーキテクチャパターンと設計原則
+cat .claude/skills/agent-architecture-patterns/SKILL.md
+
+# ベストプラクティスキュレーションと品質基準
+cat .claude/skills/best-practices-curation/SKILL.md
+
+# コンテキスト最適化とトークン効率化
+cat .claude/skills/context-optimization/SKILL.md
+
+# プロジェクトアーキテクチャ統合
+cat .claude/skills/project-architecture-integration/SKILL.md
+
+# マルチエージェントシステム設計
+cat .claude/skills/multi-agent-systems/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# エージェント構造検証
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs .claude/agents/local-sync.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/agents/local-sync.md
+
+# ベストプラクティス検証
+node .claude/skills/best-practices-curation/scripts/validate-practices.mjs local-agent/
+```
+
 ## 依存関係
 
 ### 依存スキル
 | スキル名 | 参照タイミング | 参照方法 | 必須/推奨 |
 |---------|--------------|---------|----------|
-| http-networking | Phase 2 Step 3 | HTTPリクエストのベストプラクティス | 必須 |
-| multipart-upload | Phase 2 Step 3 | FormDataとチャンクアップロードの実装 | 必須 |
-| websocket-polling | Phase 3 Step 5 | リアルタイム通信の選択基準 | 推奨 |
-| exponential-backoff | Phase 2 Step 4 | リトライ戦略の実装 | 必須 |
-| network-resilience | Phase 4 Step 8 | オフライン対応とリカバリ | 必須 |
+| agent-architecture-patterns | Phase 1 Step 2 | エージェント構造とパターン理解 | 必須 |
+| best-practices-curation | Phase 2 Step 4 | エラーハンドリングのベストプラクティス | 必須 |
+| context-optimization | Phase 5 Step 9 | ロギングとドキュメントの最適化 | 推奨 |
+| project-architecture-integration | Phase 1 Step 1 | プロジェクト構造の理解 | 必須 |
+| multi-agent-systems | Phase 4 Step 8 | エージェント間連携とハンドオフ | 必須 |
 
 *注: スキルが存在しない場合、エージェント内の知識領域セクションを参照*
 

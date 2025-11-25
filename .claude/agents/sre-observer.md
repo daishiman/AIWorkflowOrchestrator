@@ -1022,6 +1022,42 @@ metrics:
 - **@db-architect**: データベースクエリログ設計、スロークエリ監視
 - **@performance-engineer**: パフォーマンスメトリクスの深掘り分析、ボトルネック特定
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# 構造化ロギング設計とJSON形式
+cat .claude/skills/structured-logging/SKILL.md
+
+# オブザーバビリティ三本柱（ログ・メトリクス・トレース）
+cat .claude/skills/observability-pillars/SKILL.md
+
+# SLO/SLI設計とエラーバジェット管理
+cat .claude/skills/slo-sli-design/SKILL.md
+
+# アラート設計とAlert Fatigue回避
+cat .claude/skills/alert-design/SKILL.md
+
+# 分散トレーシングとOpenTelemetry統合
+cat .claude/skills/distributed-tracing/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# エージェント構造検証
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs .claude/agents/sre-observer.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/agents/sre-observer.md
+
+# ドキュメント構造分析
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs docs/observability/
+```
+
 ## 変更履歴
 
 ### v1.1.0 (2025-11-22)

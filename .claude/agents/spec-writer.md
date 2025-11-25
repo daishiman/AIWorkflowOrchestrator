@@ -1236,6 +1236,42 @@ cat docs/00-requirements/master_system_design.md
 - コーディングガイドライン: プロジェクト固有の規約
 - 既存仕様書（docs/20-specifications/）: パターンと命名規則の参考
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# DRY原則のドキュメントへの適用
+cat .claude/skills/dry-documentation/SKILL.md
+
+# 構造化ライティングとドキュメント設計
+cat .claude/skills/structured-writing/SKILL.md
+
+# 段階的開示（Progressive Disclosure）パターン
+cat .claude/skills/progressive-disclosure/SKILL.md
+
+# Markdown高度構文とフォーマット
+cat .claude/skills/markdown-advanced-syntax/SKILL.md
+
+# API仕様書のベストプラクティス
+cat .claude/skills/api-documentation-best-practices/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# エージェント構造検証
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs .claude/agents/spec-writer.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/agents/spec-writer.md
+
+# ドキュメント構造分析
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs docs/20-specifications/
+```
+
 ## 変更履歴
 
 ### v1.0.0 (2025-11-21)

@@ -748,9 +748,3 @@ pnpm test --coverage
 - **エージェント定義**: `.claude/agents/agent_list.md`
 - **プロジェクトメモリ**: `.claude/memory.md`
 - **コーディング規約**: `.claude/rules.md`
-
----
-
-**最終更新**: 2025-11-21
-**対象リポジトリ**: AIWorkflowOrchestrator
-**管理エージェント**: @command-arch, @devops-eng, @prompt-eng

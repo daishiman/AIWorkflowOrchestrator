@@ -1159,6 +1159,42 @@ APIエンドポイント実装に引き継ぐ場合:
 }
 ```
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# Zodバリデーション技術と型推論
+cat .claude/skills/zod-validation/SKILL.md
+
+# TypeScript型安全性パターン
+cat .claude/skills/type-safety-patterns/SKILL.md
+
+# 入力サニタイゼーションとセキュリティ
+cat .claude/skills/input-sanitization/SKILL.md
+
+# エラーメッセージ設計とUX
+cat .claude/skills/error-message-design/SKILL.md
+
+# JSON Schema仕様とバージョニング
+cat .claude/skills/json-schema/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# エージェント構造検証
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs .claude/agents/schema-def.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/agents/schema-def.md
+
+# 知識ドキュメント品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/prompt/ナレッジ_スキーマ定義.md
+```
+
 ## 依存関係
 
 ### 依存スキル

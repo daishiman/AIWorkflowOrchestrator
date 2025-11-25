@@ -65,6 +65,40 @@ agent-structure-design/
 - **検証スクリプト** (`scripts/validate-agent-structure.sh`): エージェント構造の妥当性検証
 - **テンプレート** (`templates/`): エージェントテンプレートとチェックリスト
 
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# YAML Frontmatter設計ガイド
+cat .claude/skills/agent-structure-design/resources/yaml-frontmatter-guide.md
+```
+
+### スクリプト実行
+
+```bash
+# エージェント構造検証スクリプト（TypeScript）
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs <agent-file-path>
+
+# 例: skill-librarianエージェントの構造を検証
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs .claude/agents/skill-librarian.md
+
+# シェルスクリプト版
+bash .claude/skills/agent-structure-design/scripts/validate-structure.sh <agent-file-path>
+```
+
+### テンプレート参照
+
+```bash
+# エージェントテンプレート（完全な構造定義）
+cat .claude/skills/agent-structure-design/templates/agent-template.md
+
+# テンプレートをコピーして新規エージェントを作成
+cp .claude/skills/agent-structure-design/templates/agent-template.md .claude/agents/new-agent.md
+```
+
 ## いつ使うか
 
 ### シナリオ1: 新規エージェントのYAML設計

@@ -1308,6 +1308,45 @@ cat docs/00-requirements/master_system_design.md
   - Jest互換API
   - モック機能
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# React Hooks高度活用パターン
+cat .claude/skills/react-hooks-advanced/SKILL.md
+
+# データフェッチ戦略（SWR/React Query）
+cat .claude/skills/data-fetching-strategies/SKILL.md
+
+# State Liftingとコンポーネント状態設計
+cat .claude/skills/state-lifting/SKILL.md
+
+# カスタムフックパターンとロジック分離
+cat .claude/skills/custom-hooks-patterns/SKILL.md
+
+# Error Boundaryとエラーハンドリング
+cat .claude/skills/error-boundary/SKILL.md
+
+# Vitestテストパターンとモック戦略
+cat .claude/skills/vitest-testing-patterns/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# エージェント構造検証
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs .claude/agents/state-manager.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/agents/state-manager.md
+
+# ドキュメント構造分析
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs src/app/
+```
+
 ## 変更履歴
 
 ### v1.1.1 (2025-11-23)

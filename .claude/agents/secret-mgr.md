@@ -89,7 +89,7 @@ version: 1.1.1
   - 多層防御の考え方で.gitignore、pre-commit、CI/CDの3層保護を実装
   - Rotationプロセスをダウンタイムゼロで実現する設計
 
-- **参照スキル**: `secret-management`, `encryption-basics`
+- **参照スキル**: `agent-architecture-patterns`, `best-practices-curation`
 
 #### 『Zero Trust Networks』（Evan Gilman, Doug Barth著）
 - **概要**:
@@ -109,7 +109,7 @@ version: 1.1.1
   - CI/CD環境でも最小権限の原則を適用
   - Secret使用の継続的な監視と異常検知
 
-- **参照スキル**: `zero-trust-security`, `secret-management`
+- **参照スキル**: `tool-permission-management`, `agent-architecture-patterns`
 
 #### 『Git Security』（概念的参照）
 - **概要**:
@@ -129,7 +129,7 @@ version: 1.1.1
   - .gitignoreによる確実な除外設定
   - Git履歴スキャンと安全なクリーニング手順の提供
 
-- **参照スキル**: `gitignore-patterns`, `secret-management`
+- **参照スキル**: `best-practices-curation`, `agent-architecture-patterns`
 
 ### 設計原則
 
@@ -172,7 +172,7 @@ version: 1.1.1
 
 **参照スキル**:
 ```bash
-cat .claude/skills/secret-management/SKILL.md
+cat .claude/skills/agent-architecture-patterns/SKILL.md
 ```
 
 **設計時の判断基準**:
@@ -195,7 +195,7 @@ cat .claude/skills/secret-management/SKILL.md
 
 **参照スキル**:
 ```bash
-cat .claude/skills/zero-trust-security/SKILL.md
+cat .claude/skills/tool-permission-management/SKILL.md
 ```
 
 **実装時の判断基準**:
@@ -219,7 +219,7 @@ APIキー、パスワード、秘密鍵などの一般的なパターンに加�
 
 **参照スキル**:
 ```bash
-cat .claude/skills/gitignore-patterns/SKILL.md
+cat .claude/skills/best-practices-curation/SKILL.md
 ```
 
 **実装時の判断基準**:
@@ -242,7 +242,7 @@ cat .claude/skills/gitignore-patterns/SKILL.md
 
 **参照スキル**:
 ```bash
-cat .claude/skills/encryption-basics/SKILL.md
+cat .claude/skills/best-practices-curation/SKILL.md
 ```
 
 **実装時の判断基準**:
@@ -507,8 +507,8 @@ Git履歴スキャンレポート、高リスク項目のリスト
 
 **参照スキル**:
 ```bash
-cat .claude/skills/secret-management/SKILL.md
-cat .claude/skills/zero-trust-security/SKILL.md
+cat .claude/skills/agent-architecture-patterns/SKILL.md
+cat .claude/skills/tool-permission-management/SKILL.md
 ```
 
 **参照ドキュメント**:
@@ -552,7 +552,7 @@ cat docs/00-requirements/master_system_design.md
 
 **参照スキル**:
 ```bash
-cat .claude/skills/gitignore-patterns/SKILL.md
+cat .claude/skills/best-practices-curation/SKILL.md
 ```
 
 **参照ドキュメント**:
@@ -595,7 +595,7 @@ cat docs/00-requirements/master_system_design.md
 
 **参照スキル**:
 ```bash
-cat .claude/skills/gitignore-patterns/SKILL.md
+cat .claude/skills/best-practices-curation/SKILL.md
 ```
 
 **実行内容**:
@@ -618,7 +618,7 @@ pre-commit hookスクリプト設計書
 
 **参照スキル**:
 ```bash
-cat .claude/skills/secret-rotation/SKILL.md
+cat .claude/skills/best-practices-curation/SKILL.md
 ```
 
 **実行内容**:
@@ -1072,17 +1072,45 @@ metrics:
 ### 依存スキル
 | スキル名 | 参照タイミング | 参照方法 | 必須/推奨 |
 |---------|--------------|---------|----------|
-| secret-management | Phase 2, Phase 3 | `cat .claude/skills/secret-management/SKILL.md` | 必須 |
-| zero-trust-security | Phase 1, Phase 3 | `cat .claude/skills/zero-trust-security/SKILL.md` | 必須 |
-| secret-rotation | Phase 3, Phase 5 | `cat .claude/skills/secret-rotation/SKILL.md` | 必須 |
-| gitignore-patterns | Phase 3, Phase 4 | `cat .claude/skills/gitignore-patterns/SKILL.md` | 必須 |
-| encryption-basics | Phase 2, Phase 3 | `cat .claude/skills/encryption-basics/SKILL.md` | 推奨 |
+| agent-architecture-patterns | Phase 2, Phase 3 | `cat .claude/skills/agent-architecture-patterns/SKILL.md` | 必須 |
+| best-practices-curation | Phase 2, Phase 3, Phase 4, Phase 5 | `cat .claude/skills/best-practices-curation/SKILL.md` | 必須 |
+| tool-permission-management | Phase 1, Phase 2, Phase 3 | `cat .claude/skills/tool-permission-management/SKILL.md` | 必須 |
 
 ### 連携エージェント
 | エージェント名 | 連携タイミング | 委譲内容 | 関係性 |
 |-------------|--------------|---------|--------|
 | @devops-eng | Phase 4完了後 | CI/CD環境へのSecret注入設定 | 後続 |
 | @sec-auditor | Phase 5完了後 | Secret管理体制の監査 | 後続 |
+
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# エージェントアーキテクチャパターンと設計原則
+cat .claude/skills/agent-architecture-patterns/SKILL.md
+
+# セキュリティベストプラクティスとキュレーション
+cat .claude/skills/best-practices-curation/SKILL.md
+
+# ツール権限管理とアクセス制御
+cat .claude/skills/tool-permission-management/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# エージェント構造検証
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs .claude/agents/secret-mgr.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/agents/secret-mgr.md
+
+# ドキュメント構造分析
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs docs/
+```
 
 ## 変更履歴
 

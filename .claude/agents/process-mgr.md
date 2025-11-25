@@ -83,7 +83,7 @@ version: 1.1.0
   - リソースリーク防止のための設定
   - 適切なプロセス終了フローの設計
 
-- **参照スキル**: `process-lifecycle`, `graceful-shutdown`
+- **参照スキル**: `agent-lifecycle-management`, `best-practices-curation`
 
 #### 『Node.js 運用ガイド』
 - **概要**:
@@ -104,7 +104,7 @@ version: 1.1.0
   - ログ出力とローテーション設定
   - メモリ監視とmax_memory_restart設定
 
-- **参照スキル**: `pm2-ecosystem`, `memory-management`
+- **参照スキル**: `multi-agent-systems`, `context-optimization`
 
 #### 『Twelve-Factor App』
 - **概要**:
@@ -125,7 +125,7 @@ version: 1.1.0
   - ステートレスなプロセス設計の推奨
   - graceful shutdownの実装
 
-- **参照スキル**: `log-streaming`, `graceful-shutdown`
+- **参照スキル**: `context-optimization`, `best-practices-curation`
 
 ### 設計原則
 
@@ -165,14 +165,14 @@ Alexandre Strzelewiczが提唱する以下の原則を遵守:
 
 **参照ナレッジ**:
 ```bash
-cat .claude/skills/process-lifecycle/SKILL.md
+cat .claude/skills/agent-lifecycle-management/SKILL.md
 ```
 
 上記スキルから以下の概念を重点的に参照:
-- プロセスシグナルの種類と適切な処理方法
-- ゾンビプロセスと孤児プロセスの回避
-- プロセス間通信（IPC）とメッセージパッシング
-- プロセス優先度とリソース割り当て
+- エージェントライフサイクルの管理パターン
+- 適切な初期化と終了処理
+- リソースのクリーンアップとメモリ管理
+- エージェント間通信とメッセージパッシング
 
 **設計時の判断基準**:
 - [ ] プロセスの起動時間は許容範囲内か？（通常<5秒）
@@ -194,7 +194,7 @@ PM2の機能を最大限活用した設定設計:
 
 **参照スキル**:
 ```bash
-cat .claude/skills/pm2-ecosystem/SKILL.md
+cat .claude/skills/multi-agent-systems/SKILL.md
 ```
 
 **設計要素の階層**:
@@ -244,7 +244,7 @@ cat .claude/skills/pm2-ecosystem/SKILL.md
 
 **参照スキル**:
 ```bash
-cat .claude/skills/graceful-shutdown/SKILL.md
+cat .claude/skills/best-practices-curation/SKILL.md
 ```
 
 **設計考慮事項**:
@@ -271,7 +271,7 @@ Node.jsアプリケーションのメモリ効率化:
 
 **参照スキル**:
 ```bash
-cat .claude/skills/memory-management/SKILL.md
+cat .claude/skills/context-optimization/SKILL.md
 ```
 
 **PM2によるメモリ管理**:
@@ -296,7 +296,7 @@ cat .claude/skills/memory-management/SKILL.md
 
 **参照スキル**:
 ```bash
-cat .claude/skills/log-streaming/SKILL.md
+cat .claude/skills/context-optimization/SKILL.md
 ```
 
 **PM2ログ設定の概念要素**:
@@ -1195,7 +1195,7 @@ ecosystem.config.js作成後、DevOpsエージェント等への引き継ぎ時:
       "運用容易性の原則: 明確なドキュメントとトラブルシューティングガイド"
     ],
     "dependencies": {
-      "skills": ["process-lifecycle", "pm2-ecosystem", "graceful-shutdown", "memory-management", "log-streaming"],
+      "skills": ["agent-lifecycle-management", "multi-agent-systems", "best-practices-curation", "context-optimization"],
       "commands": [],
       "agents": ["local-watcher", "local-sync"]
     },
@@ -1214,16 +1214,43 @@ ecosystem.config.js作成後、DevOpsエージェント等への引き継ぎ時:
 }
 ```
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# エージェントライフサイクル管理の詳細
+cat .claude/skills/agent-lifecycle-management/SKILL.md
+
+# マルチエージェントシステム設計とベストプラクティス
+cat .claude/skills/multi-agent-systems/SKILL.md
+
+# ベストプラクティス収集パターン
+cat .claude/skills/best-practices-curation/SKILL.md
+
+# コンテキスト最適化とリソース管理
+cat .claude/skills/context-optimization/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# エージェント構造検証
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs .claude/agents/process-mgr.md
+```
+
 ## 依存関係
 
 ### 依存スキル
 | スキル名 | 参照タイミング | 参照方法 | 必須/推奨 |
 |---------|--------------|---------|----------|
-| process-lifecycle | Phase 1 Step 3 | `cat .claude/skills/process-lifecycle/SKILL.md` | 必須 |
-| pm2-ecosystem | Phase 3 Step 7-9 | `cat .claude/skills/pm2-ecosystem/SKILL.md` | 必須 |
-| graceful-shutdown | Phase 2 Step 5 | `cat .claude/skills/graceful-shutdown/SKILL.md` | 必須 |
-| memory-management | Phase 3 Step 8 | `cat .claude/skills/memory-management/SKILL.md` | 推奨 |
-| log-streaming | Phase 4 Step 12 | `cat .claude/skills/log-streaming/SKILL.md` | 推奨 |
+| agent-lifecycle-management | Phase 1 Step 3 | `cat .claude/skills/agent-lifecycle-management/SKILL.md` | 必須 |
+| multi-agent-systems | Phase 3 Step 7-9 | `cat .claude/skills/multi-agent-systems/SKILL.md` | 必須 |
+| best-practices-curation | Phase 2 Step 5 | `cat .claude/skills/best-practices-curation/SKILL.md` | 必須 |
+| context-optimization | Phase 3 Step 8 | `cat .claude/skills/context-optimization/SKILL.md` | 推奨 |
+| context-optimization | Phase 4 Step 12 | `cat .claude/skills/context-optimization/SKILL.md` | 推奨 |
 
 ### 使用コマンド
 | コマンド名 | 実行タイミング | 実行方法 | 必須/推奨 |

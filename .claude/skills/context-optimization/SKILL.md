@@ -54,7 +54,40 @@ context-optimization/
 - **遅延読み込み** (`resources/lazy-loading-patterns.md`): 必要な時に必要な情報のみロード
 - **インデックス設計** (`resources/index-driven-design.md`): 目次駆動、効率的なナビゲーション
 - **圧縮テクニック** (`resources/compression-techniques.md`): 冗長性排除、本質的情報の抽出
-- **トークン見積もりスクリプト** (`scripts/estimate-tokens.sh`): トークン使用量の自動計算
+- **トークン見積もりスクリプト** (`scripts/estimate-tokens.mjs`): トークン使用量の自動計算（TypeScript）
+
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# 遅延読み込みパターン
+cat .claude/skills/context-optimization/resources/lazy-loading-patterns.md
+
+# インデックス駆動設計
+cat .claude/skills/context-optimization/resources/index-driven-design.md
+
+# 圧縮テクニック
+cat .claude/skills/context-optimization/resources/compression-techniques.md
+```
+
+### スクリプト実行
+
+```bash
+# 単一ファイルのトークン見積もり（TypeScript）
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs <file.md>
+
+# ディレクトリ内の全ファイルを分析
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs <directory>
+
+# 例: SKILL.mdのトークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/skills/context-optimization/SKILL.md
+
+# 例: リソースディレクトリの分析
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/skills/context-optimization/resources/
+```
 
 ## いつ使うか
 

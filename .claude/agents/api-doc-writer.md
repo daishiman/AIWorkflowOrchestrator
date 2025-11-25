@@ -893,6 +893,42 @@ metrics:
   - 認証フロー・エラーハンドリングガイドの自動生成
   - 品質評価チェックリストとメトリクス
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# OpenAPI仕様設計スキル（OpenAPI 3.x準拠）
+cat .claude/skills/openapi-specification/SKILL.md
+
+# Swagger UI統合スキル（インタラクティブドキュメント）
+cat .claude/skills/swagger-ui/SKILL.md
+
+# APIバージョニング戦略スキル（破壊的変更管理）
+cat .claude/skills/api-versioning/SKILL.md
+
+# リクエスト・レスポンス実例スキル（開発者体験向上）
+cat .claude/skills/request-response-examples/SKILL.md
+
+# 認証ドキュメント作成スキル（OAuth、JWT、API Key）
+cat .claude/skills/authentication-docs/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# OpenAPI仕様バリデーション
+node .claude/skills/openapi-specification/scripts/validate-openapi.mjs openapi.yaml
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs docs/api/integration-guide.md
+
+# ドキュメント品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs docs/api/authentication.md
+```
+
 ## 使用上の注意
 
 ### このエージェントが得意なこと

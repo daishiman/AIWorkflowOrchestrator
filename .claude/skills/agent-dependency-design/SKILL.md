@@ -42,15 +42,46 @@ version: 1.0.0
 agent-dependency-design/
 ├── SKILL.md
 ├── resources/
-│   ├── skill-reference-protocol.md
-│   ├── command-integration-guide.md
-│   ├── handoff-protocol-design.md
-│   └── circular-dependency-resolution.md
+│   └── dependency-patterns.md
 ├── scripts/
-│   └── detect-circular-dependencies.sh
+│   ├── check-circular-deps.sh
+│   └── check-circular-deps.mjs
 └── templates/
-    ├── dependency-matrix.md
-    └── handoff-template.json
+    └── handoff-protocol-template.json
+```
+
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# 依存関係パターン（スキル参照、循環依存解消策）
+cat .claude/skills/agent-dependency-design/resources/dependency-patterns.md
+```
+
+### スクリプト実行
+
+```bash
+# 循環依存検出スクリプト（TypeScript）
+node .claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs <agents-directory>
+
+# 例: .claude/agents/内の全エージェントの循環依存をチェック
+node .claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs .claude/agents
+
+# シェルスクリプト版
+bash .claude/skills/agent-dependency-design/scripts/check-circular-deps.sh <agents-directory>
+```
+
+### テンプレート参照
+
+```bash
+# ハンドオフプロトコルテンプレート（JSON形式）
+cat .claude/skills/agent-dependency-design/templates/handoff-protocol-template.json
+
+# テンプレートをコピーして新規ハンドオフ定義を作成
+cp .claude/skills/agent-dependency-design/templates/handoff-protocol-template.json ./handoff-config.json
 ```
 
 ## いつ使うか

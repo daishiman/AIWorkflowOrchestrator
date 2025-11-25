@@ -68,7 +68,7 @@ version: 1.1.0
 
 **参照スキル**:
 ```bash
-cat .claude/skills/prompt-engineering-advanced/SKILL.md
+cat .claude/skills/prompt-engineering-for-agents/SKILL.md
 ```
 
 ### 知識領域2: 推論パターン設計
@@ -92,8 +92,8 @@ cat .claude/skills/prompt-engineering-advanced/SKILL.md
 
 **参照スキル**:
 ```bash
-cat .claude/skills/prompt-engineering-advanced/SKILL.md
-cat .claude/skills/llm-context-management/SKILL.md
+cat .claude/skills/prompt-engineering-for-agents/SKILL.md
+cat .claude/skills/context-optimization/SKILL.md
 ```
 
 ### 知識領域3: 構造化出力設計
@@ -120,7 +120,7 @@ cat .claude/skills/llm-context-management/SKILL.md
 
 **参照スキル**:
 ```bash
-cat .claude/skills/structured-output/SKILL.md
+cat .claude/skills/documentation-architecture/SKILL.md
 ```
 
 ### 知識領域4: ハルシネーション対策
@@ -141,7 +141,7 @@ AIの誤情報生成を防ぐための技術:
 
 **参照スキル**:
 ```bash
-cat .claude/skills/hallucination-mitigation/SKILL.md
+cat .claude/skills/best-practices-curation/SKILL.md
 ```
 
 ### 知識領域5: コンテキスト効率化
@@ -162,7 +162,7 @@ cat .claude/skills/hallucination-mitigation/SKILL.md
 
 **参照スキル**:
 ```bash
-cat .claude/skills/llm-context-management/SKILL.md
+cat .claude/skills/context-optimization/SKILL.md
 ```
 
 ## タスク実行時の動作
@@ -984,16 +984,52 @@ metrics:
 - トークン使用量（エージェント実行時）
 - ツール呼び出し回数
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# エージェント用プロンプトエンジニアリング技術
+cat .claude/skills/prompt-engineering-for-agents/SKILL.md
+
+# コンテキスト最適化とトークン効率化
+cat .claude/skills/context-optimization/SKILL.md
+
+# エージェントペルソナ設計手法
+cat .claude/skills/agent-persona-design/SKILL.md
+
+# ドキュメント構造とアーキテクチャ設計
+cat .claude/skills/documentation-architecture/SKILL.md
+
+# ベストプラクティスキュレーション
+cat .claude/skills/best-practices-curation/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# エージェント構造検証
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs .claude/agents/prompt-eng.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/agents/prompt-eng.md
+
+# 知識ドキュメント品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/prompt/ナレッジ_プロンプトエンジニアリング.md
+```
+
 ## 依存関係
 
 ### 依存スキル
 | スキル名 | 参照タイミング | 参照方法 | 必須/推奨 |
 |---------|--------------|---------|----------|
-| prompt-engineering-advanced | Phase 2 Step 4 | `cat .claude/skills/prompt-engineering-advanced/SKILL.md` | 必須 |
-| llm-context-management | Phase 4 Step 9 | `cat .claude/skills/llm-context-management/SKILL.md` | 必須 |
-| persona-prompting | Phase 2 Step 4 | `cat .claude/skills/persona-prompting/SKILL.md` | 推奨 |
-| structured-output | Phase 2 Step 6 | `cat .claude/skills/structured-output/SKILL.md` | 必須 |
-| hallucination-mitigation | Phase 3 Step 7 | `cat .claude/skills/hallucination-mitigation/SKILL.md` | 必須 |
+| prompt-engineering-for-agents | Phase 2 Step 4 | `cat .claude/skills/prompt-engineering-for-agents/SKILL.md` | 必須 |
+| context-optimization | Phase 4 Step 9 | `cat .claude/skills/context-optimization/SKILL.md` | 必須 |
+| agent-persona-design | Phase 2 Step 4 | `cat .claude/skills/agent-persona-design/SKILL.md` | 推奨 |
+| documentation-architecture | Phase 2 Step 6 | `cat .claude/skills/documentation-architecture/SKILL.md` | 必須 |
+| best-practices-curation | Phase 3 Step 7 | `cat .claude/skills/best-practices-curation/SKILL.md` | 必須 |
 
 ### 使用コマンド
 | コマンド名 | 実行タイミング | 実行方法 | 必須/推奨 |
@@ -1015,11 +1051,11 @@ metrics:
 
 ```bash
 # スキル参照
-cat .claude/skills/prompt-engineering-advanced/SKILL.md
-cat .claude/skills/llm-context-management/SKILL.md
-cat .claude/skills/persona-prompting/SKILL.md
-cat .claude/skills/structured-output/SKILL.md
-cat .claude/skills/hallucination-mitigation/SKILL.md
+cat .claude/skills/prompt-engineering-for-agents/SKILL.md
+cat .claude/skills/context-optimization/SKILL.md
+cat .claude/skills/agent-persona-design/SKILL.md
+cat .claude/skills/documentation-architecture/SKILL.md
+cat .claude/skills/best-practices-curation/SKILL.md
 
 # プロジェクト設計書
 cat docs/00-requirements/master_system_design.md

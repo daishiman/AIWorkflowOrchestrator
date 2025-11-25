@@ -1304,6 +1304,42 @@ metrics:
   - トークンライフサイクル管理とセッション戦略
   - テストケース3つ（基本実装、RBAC、エラーハンドリング）
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# OAuth 2.0フロー実装スキル（Authorization Code Flow、PKCE、Refresh Token）
+cat .claude/skills/oauth2-flows/SKILL.md
+
+# セッション管理スキル（トークンライフサイクル、セッション固定対策）
+cat .claude/skills/session-management/SKILL.md
+
+# RBACアクセス制御スキル（ロールベースアクセス制御設計）
+cat .claude/skills/rbac-implementation/SKILL.md
+
+# NextAuth.jsパターンスキル（プロバイダー、アダプター、セッション戦略）
+cat .claude/skills/nextauth-patterns/SKILL.md
+
+# セキュリティヘッダースキル（CSP、HSTS、X-Frame-Options、Cookie属性）
+cat .claude/skills/security-headers/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# セキュリティ設定検証
+node .claude/skills/security-headers/scripts/validate-security-headers.mjs next.config.js
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs docs/api/authentication.md
+
+# ドキュメント品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs docs/api/authentication.md
+```
+
 ## 使用上の注意
 
 ### このエージェントが得意なこと

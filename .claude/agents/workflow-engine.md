@@ -1333,6 +1333,39 @@ cat .claude/prompt/prompt_format.yaml
   - 型安全性とジェネリクスの活用
   - テストケース3つ（基本、Template Method、エラーハンドリング）
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# 行動パターン設計スキル（Strategy、Template Method、Command、Chain of Responsibility）
+cat .claude/skills/design-patterns-behavioral/SKILL.md
+
+# プラグインアーキテクチャ設計スキル（動的ロード、レジストリ、依存性注入）
+cat .claude/skills/plugin-architecture/SKILL.md
+
+# インターフェース分離原則スキル（ISP準拠設計）
+cat .claude/skills/interface-segregation/SKILL.md
+
+# Factoryパターンスキル（オブジェクト生成の抽象化）
+cat .claude/skills/factory-patterns/SKILL.md
+
+# 開放閉鎖原則スキル（OCP準拠設計）
+cat .claude/skills/open-closed-principle/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# アーキテクチャパターン検証
+node .claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs src/features/registry.ts
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/agents/workflow-engine.md
+```
+
 ## 使用上の注意
 
 ### このエージェントが得意なこと

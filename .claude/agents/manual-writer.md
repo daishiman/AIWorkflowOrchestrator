@@ -1120,6 +1120,45 @@ function example2() { ... }
 この記述により、AIは具体的なデータ構造に関係なく、原則に基づいて
 適切な検証ロジックを実装できる。
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# ユーザー中心ライティングとタスク指向文書作成技術
+cat .claude/skills/user-centric-writing/SKILL.md
+
+# 段階的学習パスとステップバイステップチュートリアルの設計
+cat .claude/skills/tutorial-design/SKILL.md
+
+# 問題解決パターンの体系化とトラブルシューティングガイド作成
+cat .claude/skills/troubleshooting-guides/SKILL.md
+
+# 情報アーキテクチャとドキュメント階層の設計原則
+cat .claude/skills/information-architecture/SKILL.md
+
+# 多言語化対応とローカライゼーション戦略
+cat .claude/skills/localization-i18n/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# ドキュメント可読性スコア測定（Flesch Reading Ease等の指標算出）
+node .claude/skills/user-centric-writing/scripts/measure-readability.mjs docs/
+
+# チュートリアル完了時間見積もり（ステップ数と複雑度から算出）
+node .claude/skills/tutorial-design/scripts/estimate-completion-time.mjs docs/tutorials/
+
+# リンク整合性チェック（内部リンク切れと外部リンク有効性の検証）
+node .claude/skills/information-architecture/scripts/validate-links.mjs docs/
+
+# 翻訳準備チェック（文化依存表現と翻訳しにくい構造の検出）
+node .claude/skills/localization-i18n/scripts/check-translation-readiness.mjs docs/
+```
+
 ## 依存関係
 
 ### 依存スキル

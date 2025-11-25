@@ -1376,6 +1376,42 @@ metrics:
 }
 ```
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# Claude Code Hooksの設計と実装パターン
+cat .claude/skills/claude-code-hooks/SKILL.md
+
+# Git Hooksの概念と実装方法
+cat .claude/skills/git-hooks-concepts/SKILL.md
+
+# 自動化スクリプトの設計と実装
+cat .claude/skills/automation-scripting/SKILL.md
+
+# Lint・Format自動化の設定
+cat .claude/skills/linting-formatting-automation/SKILL.md
+
+# 承認ゲートの設計と実装
+cat .claude/skills/approval-gates/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# エージェント構造検証
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs .claude/agents/hook-master.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/agents/hook-master.md
+
+# 知識ドキュメント品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/prompt/ナレッジ_Claude_Code_Hooks.md
+```
+
 ## 依存関係
 
 ### 依存スキル

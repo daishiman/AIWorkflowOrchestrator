@@ -228,6 +228,30 @@ agent-validation-testing/
 詳細な実装ガイドとツールは以下を参照:
 - テストケースパターン (`resources/test-case-patterns.md`)
 
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# テストケースパターン
+cat .claude/skills/agent-validation-testing/resources/test-case-patterns.md
+```
+
+### 他のスキルのスクリプトを活用
+
+```bash
+# エージェント構造検証（agent-structure-designスキルのスクリプトを使用）
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs <agent_file.md>
+
+# 循環依存チェック（agent-dependency-designスキルのスクリプトを使用）
+node .claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs <agent_file.md>
+
+# アーキテクチャ検証（agent-architecture-patternsスキルのスクリプトを使用）
+node .claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs <agent_file.md>
+```
+
 ## メトリクス
 
 ### 検証合格率

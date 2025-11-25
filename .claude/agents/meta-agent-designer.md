@@ -70,11 +70,138 @@ cat .claude/skills/agent-structure-design/SKILL.md
 
 **読み込みタイミング**: 各Phaseの「必要なスキル」セクションを参照し、該当するスキルのみを読み込んでください。
 
+## コマンドリファレンス
+
+このエージェントで使用可能なスキルリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（タスクに応じて必要なもののみ）
+
+```bash
+# アーキテクチャパターン
+cat .claude/skills/agent-architecture-patterns/SKILL.md
+
+# 構造設計
+cat .claude/skills/agent-structure-design/SKILL.md
+
+# 依存関係設計
+cat .claude/skills/agent-dependency-design/SKILL.md
+
+# 品質基準
+cat .claude/skills/agent-quality-standards/SKILL.md
+
+# 検証・テスト
+cat .claude/skills/agent-validation-testing/SKILL.md
+
+# テンプレートパターン
+cat .claude/skills/agent-template-patterns/SKILL.md
+
+# プロジェクトアーキテクチャ統合
+cat .claude/skills/project-architecture-integration/SKILL.md
+
+# ペルソナ設計
+cat .claude/skills/agent-persona-design/SKILL.md
+
+# ツール権限管理
+cat .claude/skills/tool-permission-management/SKILL.md
+
+# マルチエージェントシステム
+cat .claude/skills/multi-agent-systems/SKILL.md
+
+# プロンプトエンジニアリング
+cat .claude/skills/prompt-engineering-for-agents/SKILL.md
+
+# ライフサイクル管理
+cat .claude/skills/agent-lifecycle-management/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# エージェント構造検証
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs <agent_file.md>
+
+# 循環依存チェック
+node .claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs <agent_file.md>
+
+# アーキテクチャパターン検証
+node .claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs <agent_file.md>
+
+# 例: 作成したエージェントの検証
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs .claude/agents/new-agent.md
+```
+
+### テンプレート参照
+
+```bash
+# 統一エージェントテンプレート
+cat .claude/skills/agent-template-patterns/templates/unified-agent-template.md
+
+# オーケストレーター・ワーカーテンプレート
+cat .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-template.md
+
+# パイプラインテンプレート
+cat .claude/skills/agent-architecture-patterns/templates/pipeline-template.md
+
+# 品質チェックリストテンプレート
+cat .claude/skills/agent-quality-standards/templates/quality-checklist-template.md
+
+# ハンドオフプロトコルテンプレート
+cat .claude/skills/agent-dependency-design/templates/handoff-protocol-template.json
+```
+
+### リソース参照（詳細知識が必要な場合）
+
+```bash
+# パターンカタログ
+cat .claude/skills/agent-architecture-patterns/resources/pattern-catalog.md
+
+# YAML Frontmatterガイド
+cat .claude/skills/agent-structure-design/resources/yaml-frontmatter-guide.md
+
+# 依存関係パターン
+cat .claude/skills/agent-dependency-design/resources/dependency-patterns.md
+
+# 品質メトリクス
+cat .claude/skills/agent-quality-standards/resources/quality-metrics.md
+```
+
 **🔴 重要な規則 - スキル/エージェント作成時**:
 - スキルを作成する際、「関連スキル」セクションでは**必ず相対パス**を記述してください
 - エージェントを作成/修正する際、スキル参照は**必ず相対パス**（`.claude/skills/[skill-name]/SKILL.md`）を使用してください
 - agent_list.mdの「参照スキル」も**必ず相対パス**で記載してください
 - スキル名のみの記述ではなく、フルパスで指定してください
+
+**🔴 エージェント作成時のYAML description規則**:
+作成するエージェントのYAML Frontmatterのdescription部分には、以下を必ず含めてください:
+
+1. **依存スキルの明示的記述**: エージェントが参照するスキルを以下の形式で記載
+   ```yaml
+   description: |
+     [エージェントの説明...]
+
+     📚 依存スキル:
+     このエージェントは以下のスキルに専門知識を分離しています:
+     - [skill-name-1]: [簡潔な説明]
+     - [skill-name-2]: [簡潔な説明]
+
+     パス: .claude/skills/[スキル名]/SKILL.md
+   ```
+
+2. **コマンドリファレンスセクションの必須追加**: エージェント本文に「## コマンドリファレンス」セクションを追加し、以下を含める
+   - スキル読み込みコマンド（`cat .claude/skills/[skill-name]/SKILL.md`）
+   - TypeScriptスクリプト実行コマンド（`node .claude/skills/[skill-name]/scripts/[script].mjs`）
+   - テンプレート参照コマンド（`cat .claude/skills/[skill-name]/templates/[template]`）
+   - リソース参照コマンド（`cat .claude/skills/[skill-name]/resources/[resource].md`）
+
+3. **明示的なスキル起動プロトコル**: エージェント本文の冒頭に、以下の形式でスキル読み込み指示を記載
+   ```markdown
+   **🔴 MANDATORY - 起動時に必ず実行**:
+   このエージェントが起動されたら、**タスク実行前に以下のスキルを有効化してください**:
+
+   ```bash
+   cat .claude/skills/[skill-name]/SKILL.md
+   ```
+   ```
 
 ---
 

@@ -394,6 +394,30 @@ $1, $2 等の使用方法は `resources/positional-arguments-guide.md` を参照
 - 複数引数: `templates/multiple-arguments-template.md`
 - オプション引数: `templates/optional-arguments-template.md`
 
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# $ARGUMENTS完全リファレンス
+cat .claude/skills/command-arguments-system/resources/arguments-reference.md
+```
+
+### 他のスキルのスクリプトを活用
+
+```bash
+# 知識ドキュメントの品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/skills/command-arguments-system/resources/arguments-reference.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/skills/command-arguments-system/SKILL.md
+
+# ドキュメント構造分析
+node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs .claude/skills/command-arguments-system
+```
+
 ## 関連スキル
 
 - `.claude/skills/command-structure-fundamentals/SKILL.md` - 基本構造とargument-hint

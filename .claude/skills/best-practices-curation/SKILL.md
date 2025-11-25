@@ -56,6 +56,43 @@ best-practices-curation/
 - **統合戦略** (`resources/integration-strategies.md`): 追加/強化/置換/統合の4パターン
 - **評価チェックリスト** (`templates/evaluation-checklist.md`): ベストプラクティス評価の標準チェックリスト
 
+## コマンドリファレンス
+
+このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### リソース読み取り
+
+```bash
+# 情報源評価ガイド
+cat .claude/skills/best-practices-curation/resources/information-source-evaluation.md
+
+# 品質スコアリングガイド
+cat .claude/skills/best-practices-curation/resources/quality-scoring.md
+
+# 統合戦略ガイド
+cat .claude/skills/best-practices-curation/resources/integration-strategies.md
+```
+
+### テンプレート参照
+
+```bash
+# 評価チェックリストテンプレートを読み取る
+cat .claude/skills/best-practices-curation/templates/evaluation-checklist.md
+
+# 評価チェックリストを新しいファイルにコピー
+cp .claude/skills/best-practices-curation/templates/evaluation-checklist.md ./new-evaluation.md
+```
+
+### 他のスキルのスクリプトを活用
+
+```bash
+# 知識ドキュメントの品質検証（knowledge-managementスキルのスクリプトを使用）
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs <file.md>
+
+# トークン見積もり（context-optimizationスキルのスクリプトを使用）
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs <file.md>
+```
+
 ## いつ使うか
 
 ### シナリオ1: ベストプラクティスの収集

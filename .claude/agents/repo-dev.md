@@ -1008,6 +1008,42 @@ Repository実装完了後、以下の情報を提供:
 }
 ```
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# Repositoryパターン設計と実装
+cat .claude/skills/repository-pattern/SKILL.md
+
+# クエリ最適化とパフォーマンスチューニング
+cat .claude/skills/query-optimization/SKILL.md
+
+# トランザクション管理とACID特性
+cat .claude/skills/transaction-management/SKILL.md
+
+# ORM（Drizzle）ベストプラクティス
+cat .claude/skills/orm-best-practices/SKILL.md
+
+# データベースマイグレーション管理
+cat .claude/skills/database-migrations/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# エージェント構造検証
+node .claude/skills/agent-structure-design/scripts/validate-structure.mjs .claude/agents/repo-dev.md
+
+# トークン見積もり
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/agents/repo-dev.md
+
+# 知識ドキュメント品質検証
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/prompt/ナレッジ_Repository開発.md
+```
+
 ## 依存関係
 
 ### 依存スキル

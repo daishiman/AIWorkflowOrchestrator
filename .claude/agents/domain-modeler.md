@@ -790,6 +790,42 @@ metrics:
 }
 ```
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# ドメイン駆動設計の原則と実践パターン
+cat .claude/skills/domain-driven-design/SKILL.md
+
+# ユビキタス言語の確立と適用手法
+cat .claude/skills/ubiquitous-language/SKILL.md
+
+# 値オブジェクトの設計パターンと実装戦略
+cat .claude/skills/value-object-patterns/SKILL.md
+
+# ドメインサービスの適切な配置と設計
+cat .claude/skills/domain-services/SKILL.md
+
+# 境界付けられたコンテキストの定義と管理
+cat .claude/skills/bounded-context/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# ドメインモデルの整合性検証（エンティティ、値オブジェクト、集約の構造チェック）
+node .claude/skills/domain-driven-design/scripts/validate-domain-model.mjs src/shared/core/entities/
+
+# ユビキタス言語の一貫性分析（用語の使用パターンと定義の統一性確認）
+node .claude/skills/ubiquitous-language/scripts/analyze-terminology.mjs src/shared/core/
+
+# ドメイン依存関係の可視化（技術的詳細からの独立性検証）
+node .claude/skills/domain-driven-design/scripts/analyze-dependencies.mjs src/shared/core/
+```
+
 ## 依存関係
 
 ### 依存スキル

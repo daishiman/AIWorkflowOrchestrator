@@ -5,125 +5,25 @@
   "graphRenderingMode": "multi-agent",
   "linkDisplayMode": "all",
   "graphStats": {
-    "totalNodes": 17,
-    "folders": 10,
-    "files": 7,
+    "totalNodes": 1,
+    "folders": 1,
+    "files": 0,
     "images": 0,
     "videos": 0,
     "audio": 0,
     "code": 0,
-    "text": 6,
+    "text": 0,
     "html": 0,
     "yaml": 0,
     "json": 0,
-    "other": 1,
+    "other": 0,
     "totalLines": 0,
     "maxLines": 0
   },
   "directoryTree": {
     "name": "AIWorkflowOrchestrator",
     "type": "directory",
-    "path": "AIWorkflowOrchestrator",
-    "children": [
-      {
-        "name": ".claude",
-        "type": "directory",
-        "path": ".claude",
-        "children": [],
-        "hasMore": true
-      },
-      {
-        "name": ".kamui",
-        "type": "directory",
-        "path": ".kamui",
-        "children": [],
-        "hasMore": true
-      },
-      {
-        "name": ".vscode",
-        "type": "directory",
-        "path": ".vscode",
-        "children": [],
-        "hasMore": true
-      },
-      {
-        "name": ".worktrees",
-        "type": "directory",
-        "path": ".worktrees",
-        "children": [],
-        "hasMore": true
-      },
-      {
-        "name": "docs",
-        "type": "directory",
-        "path": "docs",
-        "children": [
-          {
-            "name": "00-requirements",
-            "type": "directory",
-            "path": "docs/00-requirements",
-            "children": [
-              {
-                "name": "claude_code_design.md",
-                "type": "file",
-                "path": "docs/00-requirements/claude_code_design.md"
-              },
-              {
-                "name": "master_system_design.md",
-                "type": "file",
-                "path": "docs/00-requirements/master_system_design.md"
-              }
-            ]
-          },
-          {
-            "name": "10-guides",
-            "type": "directory",
-            "path": "docs/10-guides",
-            "children": [
-              {
-                "name": "skill-creation",
-                "type": "directory",
-                "path": "docs/10-guides/skill-creation",
-                "children": [
-                  {
-                    "name": "patterns",
-                    "type": "directory",
-                    "path": "docs/10-guides/skill-creation/patterns",
-                    "children": [
-                      {
-                        "name": "knowledge-management-example.md",
-                        "type": "file",
-                        "path": "docs/10-guides/skill-creation/patterns/knowledge-management-example.md"
-                      }
-                    ]
-                  },
-                  {
-                    "name": "complete-guide.md",
-                    "type": "file",
-                    "path": "docs/10-guides/skill-creation/complete-guide.md"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "name": "README.md",
-            "type": "file",
-            "path": "docs/README.md"
-          }
-        ]
-      },
-      {
-        "name": ".gitignore",
-        "type": "file",
-        "path": ".gitignore"
-      },
-      {
-        "name": "README.md",
-        "type": "file",
-        "path": "README.md"
-      }
-    ]
+    "children": []
   },
   "graphData": {
     "nodes": [
@@ -141,449 +41,16 @@
         "glowIntensity": 0,
         "highlighted": false,
         "parentPath": null,
-        "childFileCount": 2,
+        "childFileCount": 0,
         "x": -7.343708553967813,
         "y": 143.41268180015135,
         "z": 15.945623414718714,
         "vx": 0.562360533541566,
         "vy": 1.6658914866812142,
         "vz": -0.5500846587732893
-      },
-      {
-        "id": "AIWorkflowOrchestrator/.claude",
-        "name": ".claude",
-        "path": "AIWorkflowOrchestrator/.claude",
-        "type": "directory",
-        "lines": 0,
-        "val": 14,
-        "color": "#2c3038",
-        "baseColor": "#4ec9b0",
-        "originalColor": "#4ec9b0",
-        "defaultGlow": 0.18,
-        "glowIntensity": 0,
-        "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator",
-        "childFileCount": 0,
-        "x": -2.805318072989304,
-        "y": 143.33471610756925,
-        "z": 11.15753170703648,
-        "vx": 0.562360533541566,
-        "vy": 1.6658914866812142,
-        "vz": -0.5500846587732893
-      },
-      {
-        "id": "AIWorkflowOrchestrator/.kamui",
-        "name": ".kamui",
-        "path": "AIWorkflowOrchestrator/.kamui",
-        "type": "directory",
-        "lines": 0,
-        "val": 14,
-        "color": "#2c3038",
-        "baseColor": "#4ec9b0",
-        "originalColor": "#4ec9b0",
-        "defaultGlow": 0.18,
-        "glowIntensity": 0,
-        "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator",
-        "childFileCount": 0,
-        "x": -6.598071576590862,
-        "y": 141.7425223132983,
-        "z": 13.376951674517908,
-        "vx": 0.562360533541566,
-        "vy": 1.6658914866812142,
-        "vz": -0.5500846587732893
-      },
-      {
-        "id": "AIWorkflowOrchestrator/.vscode",
-        "name": ".vscode",
-        "path": "AIWorkflowOrchestrator/.vscode",
-        "type": "directory",
-        "lines": 0,
-        "val": 14,
-        "color": "#2c3038",
-        "baseColor": "#4ec9b0",
-        "originalColor": "#4ec9b0",
-        "defaultGlow": 0.18,
-        "glowIntensity": 0,
-        "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator",
-        "childFileCount": 0,
-        "x": -8.657550848670834,
-        "y": 139.4949007144932,
-        "z": 12.442984347068375,
-        "vx": 0.562360533541566,
-        "vy": 1.6658914866812142,
-        "vz": -0.5500846587732893
-      },
-      {
-        "id": "AIWorkflowOrchestrator/.worktrees",
-        "name": ".worktrees",
-        "path": "AIWorkflowOrchestrator/.worktrees",
-        "type": "directory",
-        "lines": 0,
-        "val": 14,
-        "color": "#2c3038",
-        "baseColor": "#4ec9b0",
-        "originalColor": "#4ec9b0",
-        "defaultGlow": 0.18,
-        "glowIntensity": 0,
-        "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator",
-        "childFileCount": 0,
-        "x": -3.9386049692531984,
-        "y": 139.22373876863094,
-        "z": 14.71692329931249,
-        "vx": 0.562360533541566,
-        "vy": 1.6658914866812142,
-        "vz": -0.5500846587732893
-      },
-      {
-        "id": "AIWorkflowOrchestrator/docs",
-        "name": "docs",
-        "path": "AIWorkflowOrchestrator/docs",
-        "type": "directory",
-        "lines": 0,
-        "val": 14,
-        "color": "#2c3038",
-        "baseColor": "#4ec9b0",
-        "originalColor": "#4ec9b0",
-        "defaultGlow": 0.18,
-        "glowIntensity": 0,
-        "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator",
-        "childFileCount": 1,
-        "x": -5.910395969099346,
-        "y": 145.3264689350591,
-        "z": 16.01501635443097,
-        "vx": 0.562360533541566,
-        "vy": 1.6658914866812142,
-        "vz": -0.5500846587732893
-      },
-      {
-        "id": "AIWorkflowOrchestrator/docs/00-requirements",
-        "name": "00-requirements",
-        "path": "AIWorkflowOrchestrator/docs/00-requirements",
-        "type": "directory",
-        "lines": 0,
-        "val": 14,
-        "color": "#2c3038",
-        "baseColor": "#4ec9b0",
-        "originalColor": "#4ec9b0",
-        "defaultGlow": 0.18,
-        "glowIntensity": 0,
-        "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator/docs",
-        "childFileCount": 2,
-        "x": -4.01093861842312,
-        "y": 145.00817092460866,
-        "z": 11.132276294925816,
-        "vx": 0.562360533541566,
-        "vy": 1.6658914866812142,
-        "vz": -0.5500846587732893
-      },
-      {
-        "id": "AIWorkflowOrchestrator/docs/00-requirements/claude_code_design.md",
-        "name": "claude_code_design.md",
-        "path": "AIWorkflowOrchestrator/docs/00-requirements/claude_code_design.md",
-        "type": "file",
-        "lines": 0,
-        "val": 6,
-        "color": "#2c3038",
-        "baseColor": "#3498db",
-        "originalColor": "#3498db",
-        "defaultGlow": 0.18,
-        "glowIntensity": 0,
-        "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator/docs/00-requirements",
-        "childFileCount": 0,
-        "x": -5.306916452167688,
-        "y": 147.08238450676436,
-        "z": 6.384718569815718,
-        "vx": 0.562360533541566,
-        "vy": 1.6658914866812142,
-        "vz": -0.5500846587732893
-      },
-      {
-        "id": "AIWorkflowOrchestrator/docs/00-requirements/master_system_design.md",
-        "name": "master_system_design.md",
-        "path": "AIWorkflowOrchestrator/docs/00-requirements/master_system_design.md",
-        "type": "file",
-        "lines": 0,
-        "val": 6,
-        "color": "#2c3038",
-        "baseColor": "#3498db",
-        "originalColor": "#3498db",
-        "defaultGlow": 0.18,
-        "glowIntensity": 0,
-        "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator/docs/00-requirements",
-        "childFileCount": 0,
-        "x": -4.801093735523859,
-        "y": 142.4456186244939,
-        "z": 14.307976624805885,
-        "vx": 0.562360533541566,
-        "vy": 1.6658914866812142,
-        "vz": -0.5500846587732893
-      },
-      {
-        "id": "AIWorkflowOrchestrator/docs/10-guides",
-        "name": "10-guides",
-        "path": "AIWorkflowOrchestrator/docs/10-guides",
-        "type": "directory",
-        "lines": 0,
-        "val": 14,
-        "color": "#2c3038",
-        "baseColor": "#4ec9b0",
-        "originalColor": "#4ec9b0",
-        "defaultGlow": 0.18,
-        "glowIntensity": 0,
-        "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator/docs",
-        "childFileCount": 0,
-        "x": -6.879232494651565,
-        "y": 140.97924519184568,
-        "z": 20.74653624092943,
-        "vx": 0.562360533541566,
-        "vy": 1.6658914866812142,
-        "vz": -0.5500846587732893
-      },
-      {
-        "id": "AIWorkflowOrchestrator/docs/10-guides/skill-creation",
-        "name": "skill-creation",
-        "path": "AIWorkflowOrchestrator/docs/10-guides/skill-creation",
-        "type": "directory",
-        "lines": 0,
-        "val": 14,
-        "color": "#2c3038",
-        "baseColor": "#4ec9b0",
-        "originalColor": "#4ec9b0",
-        "defaultGlow": 0.18,
-        "glowIntensity": 0,
-        "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator/docs/10-guides",
-        "childFileCount": 1,
-        "x": -9.723546999973541,
-        "y": 136.24903627460205,
-        "z": 16.91496987448492,
-        "vx": 0.562360533541566,
-        "vy": 1.6658914866812142,
-        "vz": -0.5500846587732893
-      },
-      {
-        "id": "AIWorkflowOrchestrator/docs/10-guides/skill-creation/patterns",
-        "name": "patterns",
-        "path": "AIWorkflowOrchestrator/docs/10-guides/skill-creation/patterns",
-        "type": "directory",
-        "lines": 0,
-        "val": 14,
-        "color": "#2c3038",
-        "baseColor": "#4ec9b0",
-        "originalColor": "#4ec9b0",
-        "defaultGlow": 0.18,
-        "glowIntensity": 0,
-        "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator/docs/10-guides/skill-creation",
-        "childFileCount": 1,
-        "x": -6.961503683572224,
-        "y": 132.85151423838488,
-        "z": 19.349358654921055,
-        "vx": 0.562360533541566,
-        "vy": 1.6658914866812142,
-        "vz": -0.5500846587732893
-      },
-      {
-        "id": "AIWorkflowOrchestrator/docs/10-guides/skill-creation/patterns/knowledge-management-example.md",
-        "name": "knowledge-management-example.md",
-        "path": "AIWorkflowOrchestrator/docs/10-guides/skill-creation/patterns/knowledge-management-example.md",
-        "type": "file",
-        "lines": 0,
-        "val": 6,
-        "color": "#2c3038",
-        "baseColor": "#3498db",
-        "originalColor": "#3498db",
-        "defaultGlow": 0.18,
-        "glowIntensity": 0,
-        "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator/docs/10-guides/skill-creation/patterns",
-        "childFileCount": 0,
-        "x": -3.180043795128834,
-        "y": 136.15775591761906,
-        "z": 17.290439578828703,
-        "vx": 0.562360533541566,
-        "vy": 1.6658914866812142,
-        "vz": -0.5500846587732893
-      },
-      {
-        "id": "AIWorkflowOrchestrator/docs/10-guides/skill-creation/complete-guide.md",
-        "name": "complete-guide.md",
-        "path": "AIWorkflowOrchestrator/docs/10-guides/skill-creation/complete-guide.md",
-        "type": "file",
-        "lines": 0,
-        "val": 6,
-        "color": "#2c3038",
-        "baseColor": "#3498db",
-        "originalColor": "#3498db",
-        "defaultGlow": 0.18,
-        "glowIntensity": 0,
-        "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator/docs/10-guides/skill-creation",
-        "childFileCount": 0,
-        "x": -12.977574723510278,
-        "y": 140.2039946072134,
-        "z": 16.06550788968181,
-        "vx": 0.562360533541566,
-        "vy": 1.6658914866812142,
-        "vz": -0.5500846587732893
-      },
-      {
-        "id": "AIWorkflowOrchestrator/docs/README.md",
-        "name": "README.md",
-        "path": "AIWorkflowOrchestrator/docs/README.md",
-        "type": "file",
-        "lines": 0,
-        "val": 6,
-        "color": "#2c3038",
-        "baseColor": "#3498db",
-        "originalColor": "#3498db",
-        "defaultGlow": 0.18,
-        "glowIntensity": 0,
-        "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator/docs",
-        "childFileCount": 0,
-        "x": -6.484170790161336,
-        "y": 147.54287896949043,
-        "z": 19.680122060326283,
-        "vx": 0.562360533541566,
-        "vy": 1.6658914866812142,
-        "vz": -0.5500846587732893
-      },
-      {
-        "id": "AIWorkflowOrchestrator/.gitignore",
-        "name": ".gitignore",
-        "path": "AIWorkflowOrchestrator/.gitignore",
-        "type": "file",
-        "lines": 0,
-        "val": 6,
-        "color": "#2c3038",
-        "baseColor": "#57606f",
-        "originalColor": "#57606f",
-        "defaultGlow": 0.18,
-        "glowIntensity": 0,
-        "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator",
-        "childFileCount": 0,
-        "x": -8.758023006582555,
-        "y": 148.07375766285267,
-        "z": 13.011918079629297,
-        "vx": 0.562360533541566,
-        "vy": 1.6658914866812142,
-        "vz": -0.5500846587732893
-      },
-      {
-        "id": "AIWorkflowOrchestrator/README.md",
-        "name": "README.md",
-        "path": "AIWorkflowOrchestrator/README.md",
-        "type": "file",
-        "lines": 0,
-        "val": 6,
-        "color": "#2c3038",
-        "baseColor": "#3498db",
-        "originalColor": "#3498db",
-        "defaultGlow": 0.18,
-        "glowIntensity": 0,
-        "highlighted": false,
-        "parentPath": "AIWorkflowOrchestrator",
-        "childFileCount": 0,
-        "x": -19.29085425804985,
-        "y": 175.32134952799507,
-        "z": -2.083767718619554,
-        "vx": -0.9197747694881138,
-        "vy": 3.326587166685413,
-        "vz": -1.6603508792423909
       }
     ],
-    "links": [
-      {
-        "source": "AIWorkflowOrchestrator",
-        "target": "AIWorkflowOrchestrator/.claude",
-        "type": "tree"
-      },
-      {
-        "source": "AIWorkflowOrchestrator",
-        "target": "AIWorkflowOrchestrator/.kamui",
-        "type": "tree"
-      },
-      {
-        "source": "AIWorkflowOrchestrator",
-        "target": "AIWorkflowOrchestrator/.vscode",
-        "type": "tree"
-      },
-      {
-        "source": "AIWorkflowOrchestrator",
-        "target": "AIWorkflowOrchestrator/.worktrees",
-        "type": "tree"
-      },
-      {
-        "source": "AIWorkflowOrchestrator",
-        "target": "AIWorkflowOrchestrator/docs",
-        "type": "tree"
-      },
-      {
-        "source": "AIWorkflowOrchestrator/docs",
-        "target": "AIWorkflowOrchestrator/docs/00-requirements",
-        "type": "tree"
-      },
-      {
-        "source": "AIWorkflowOrchestrator/docs/00-requirements",
-        "target": "AIWorkflowOrchestrator/docs/00-requirements/claude_code_design.md",
-        "type": "tree"
-      },
-      {
-        "source": "AIWorkflowOrchestrator/docs/00-requirements",
-        "target": "AIWorkflowOrchestrator/docs/00-requirements/master_system_design.md",
-        "type": "tree"
-      },
-      {
-        "source": "AIWorkflowOrchestrator/docs",
-        "target": "AIWorkflowOrchestrator/docs/10-guides",
-        "type": "tree"
-      },
-      {
-        "source": "AIWorkflowOrchestrator/docs/10-guides",
-        "target": "AIWorkflowOrchestrator/docs/10-guides/skill-creation",
-        "type": "tree"
-      },
-      {
-        "source": "AIWorkflowOrchestrator/docs/10-guides/skill-creation",
-        "target": "AIWorkflowOrchestrator/docs/10-guides/skill-creation/patterns",
-        "type": "tree"
-      },
-      {
-        "source": "AIWorkflowOrchestrator/docs/10-guides/skill-creation/patterns",
-        "target": "AIWorkflowOrchestrator/docs/10-guides/skill-creation/patterns/knowledge-management-example.md",
-        "type": "tree"
-      },
-      {
-        "source": "AIWorkflowOrchestrator/docs/10-guides/skill-creation",
-        "target": "AIWorkflowOrchestrator/docs/10-guides/skill-creation/complete-guide.md",
-        "type": "tree"
-      },
-      {
-        "source": "AIWorkflowOrchestrator/docs",
-        "target": "AIWorkflowOrchestrator/docs/README.md",
-        "type": "tree"
-      },
-      {
-        "source": "AIWorkflowOrchestrator",
-        "target": "AIWorkflowOrchestrator/.gitignore",
-        "type": "tree"
-      },
-      {
-        "source": "AIWorkflowOrchestrator",
-        "target": "AIWorkflowOrchestrator/README.md",
-        "type": "tree"
-      }
-    ]
+    "links": []
   },
   "trackedFiles": [
     ".claude/agents/agent_list.md",
@@ -780,279 +247,7 @@
   ],
   "uiState": {
     "expandedDirs": [
-      "AIWorkflowOrchestrator",
-      "AIWorkflowOrchestrator/.claude",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude",
-      "AIWorkflowOrchestrator/.claude/agents",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/agents",
-      "AIWorkflowOrchestrator/.claude/commands",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/commands",
-      "AIWorkflowOrchestrator/.claude/commands/ai",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/commands/ai",
-      "AIWorkflowOrchestrator/.claude/mcp",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/mcp",
-      "AIWorkflowOrchestrator/.claude/prompt",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt",
-      "AIWorkflowOrchestrator/.claude/slills",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/slills",
-      "AIWorkflowOrchestrator/docs",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/docs",
-      "AIWorkflowOrchestrator/docs/00-requirements",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/docs/00-requirements",
-      "task-1763719019782-ff4e70",
-      "task-1763719022041-576354",
-      "task-1763719017598-894959",
-      "AIWorkflowOrchestrator/.kamui",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.kamui",
-      "AIWorkflowOrchestrator/.kamui/prompt",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.kamui/prompt",
-      "AIWorkflowOrchestrator/.kamui/templates",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.kamui/templates",
-      "AIWorkflowOrchestrator/.kamui/scripts",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.kamui/scripts",
-      "AIWorkflowOrchestrator/claude",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/claude",
-      "AIWorkflowOrchestrator/claudedocs",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/claudedocs",
-      "AIWorkflowOrchestrator/.claude/commands/00.command_list.md\t.claude",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/commands/00.command_list.md\t.claude",
-      "AIWorkflowOrchestrator/.claude/commands/00.command_list.md\t.claude/commands",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/commands/00.command_list.md\t.claude/commands",
-      "AIWorkflowOrchestrator/kamui",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/kamui",
-      "AIWorkflowOrchestrator/.claude/prompt/prompt_format.yaml\t.claude",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/prompt_format.yaml\t.claude",
-      "AIWorkflowOrchestrator/.claude/prompt/prompt_format.yaml\t.claude/prompt",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/prompt_format.yaml\t.claude/prompt",
-      "AIWorkflowOrchestrator/.claude/prompt/prompt_format.yaml\t.claude/prompt/agents_skills_command_作成",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/prompt_format.yaml\t.claude/prompt/agents_skills_command_作成",
-      "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md\t.claude",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md\t.claude",
-      "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md\t.claude/prompt",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md\t.claude/prompt",
-      "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md\t.claude/prompt/agents_skills_command_作成",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_agents_ガイド.md\t.claude/prompt/agents_skills_command_作成",
-      "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_command_ガイド.md\t.claude",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_command_ガイド.md\t.claude",
-      "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_command_ガイド.md\t.claude/prompt",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_command_ガイド.md\t.claude/prompt",
-      "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_command_ガイド.md\t.claude/prompt/agents_skills_command_作成",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_command_ガイド.md\t.claude/prompt/agents_skills_command_作成",
-      "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md\t.claude",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md\t.claude",
-      "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md\t.claude/prompt",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md\t.claude/prompt",
-      "AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md\t.claude/prompt/agents_skills_command_作成",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/ナレッジ_Claude_Code_skills_ガイド.md\t.claude/prompt/agents_skills_command_作成",
-      "AIWorkflowOrchestrator/.claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md\t.claude",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md\t.claude",
-      "AIWorkflowOrchestrator/.claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md\t.claude/prompt",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md\t.claude/prompt",
-      "AIWorkflowOrchestrator/.claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md\t.claude/prompt/agents_skills_command_作成",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md\t.claude/prompt/agents_skills_command_作成",
-      "AIWorkflowOrchestrator/.claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md\t.claude",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md\t.claude",
-      "AIWorkflowOrchestrator/.claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md\t.claude/prompt",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md\t.claude/prompt",
-      "AIWorkflowOrchestrator/.claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md\t.claude/prompt/agents_skills_command_作成",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/作成シート_Claude_Code_agents_skills_command_ジェネレータ.md\t.claude/prompt/agents_skills_command_作成",
-      "AIWorkflowOrchestrator/.claude/skills",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills",
-      "AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/prompt/agents_skills_command_作成",
-      "AIWorkflowOrchestrator/docs/meta-agent-refactoring",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/docs/meta-agent-refactoring",
-      "AIWorkflowOrchestrator/.claude/skills/agent-architecture-patterns",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agent-architecture-patterns",
-      "AIWorkflowOrchestrator/.claude/skills/agent-structure-design",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agent-structure-design",
-      "AIWorkflowOrchestrator/.claude/skills/agent-dependency-design",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agent-dependency-design",
-      "AIWorkflowOrchestrator/.claude/skills/agent-quality-standards",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agent-quality-standards",
-      "AIWorkflowOrchestrator/.claude/skills/agent-validation-testing",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agent-validation-testing",
-      "AIWorkflowOrchestrator/.claude/skills/agent-template-patterns",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agent-template-patterns",
-      "AIWorkflowOrchestrator/.claude/skills/project-architecture-integration",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/project-architecture-integration",
-      "AIWorkflowOrchestrator/.claude/skills/agent-architecture-patterns/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agent-architecture-patterns/resources",
-      "AIWorkflowOrchestrator/.claude/skills/agent-structure-design/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agent-structure-design/resources",
-      "AIWorkflowOrchestrator/.claude/skills/agent-lifecycle-management",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agent-lifecycle-management",
-      "AIWorkflowOrchestrator/.claude/skills/agent-persona-design",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agent-persona-design",
-      "AIWorkflowOrchestrator/.claude/skills/multi-agent-systems",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/multi-agent-systems",
-      "AIWorkflowOrchestrator/.claude/skills/prompt-engineering-for-agents",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/prompt-engineering-for-agents",
-      "AIWorkflowOrchestrator/.claude/skills/tool-permission-management",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/tool-permission-management",
-      "AIWorkflowOrchestrator/.claude/skills/agent-architecture-patterns/templates",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agent-architecture-patterns/templates",
-      "AIWorkflowOrchestrator/.claude/skills/agent-architecture-patterns/scripts",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agent-architecture-patterns/scripts",
-      "AIWorkflowOrchestrator/.claude/skills/agent-structure-design/templates",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agent-structure-design/templates",
-      "AIWorkflowOrchestrator/.claude/skills/agent-structure-design/scripts",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agent-structure-design/scripts",
-      "AIWorkflowOrchestrator/.claude/skills/agent-dependency-design/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agent-dependency-design/resources",
-      "AIWorkflowOrchestrator/.claude/skills/agent-dependency-design/scripts",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agent-dependency-design/scripts",
-      "AIWorkflowOrchestrator/.claude/skills/agent-dependency-design/templates",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agent-dependency-design/templates",
-      "AIWorkflowOrchestrator/.claude/skills/agent-quality-standards/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agent-quality-standards/resources",
-      "AIWorkflowOrchestrator/.claude/skills/agent-quality-standards/templates",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agent-quality-standards/templates",
-      "AIWorkflowOrchestrator/.claude/skills/agent-validation-testing/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agent-validation-testing/resources",
-      "AIWorkflowOrchestrator/.claude/skills/agent-persona-design/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agent-persona-design/resources",
-      "AIWorkflowOrchestrator/.claude/skills/agent-template-patterns/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agent-template-patterns/resources",
-      "AIWorkflowOrchestrator/.claude/skills/project-architecture-integration/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/project-architecture-integration/resources",
-      "AIWorkflowOrchestrator/.claude/skills/tool-permission-management/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/tool-permission-management/resources",
-      "AIWorkflowOrchestrator/.claude/skills/agent-lifecycle-management/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agent-lifecycle-management/resources",
-      "AIWorkflowOrchestrator/.claude/skills/multi-agent-systems/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/multi-agent-systems/resources",
-      "AIWorkflowOrchestrator/.claude/skills/prompt-engineering-for-agents/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/prompt-engineering-for-agents/resources",
-      "AIWorkflowOrchestrator/.claude/skills/agent-template-patterns/templates",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agent-template-patterns/templates",
-      "AIWorkflowOrchestrator/docs/10-guides",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/docs/10-guides",
-      "AIWorkflowOrchestrator/docs/10-guides/skill-creation",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/docs/10-guides/skill-creation",
-      "AIWorkflowOrchestrator/docs/10-guides/skill-creation/patterns",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/docs/10-guides/skill-creation/patterns",
-      "AIWorkflowOrchestrator/docs/skill-creation-complete-guide.md\tdocs",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/docs/skill-creation-complete-guide.md\tdocs",
-      "AIWorkflowOrchestrator/docs/skill-creation-complete-guide.md\tdocs/10-guides",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/docs/skill-creation-complete-guide.md\tdocs/10-guides",
-      "AIWorkflowOrchestrator/docs/skill-creation-complete-guide.md\tdocs/10-guides/skill-creation",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/docs/skill-creation-complete-guide.md\tdocs/10-guides/skill-creation",
-      "AIWorkflowOrchestrator/docs/skill-creation-pattern-knowledge-management.md\tdocs",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/docs/skill-creation-pattern-knowledge-management.md\tdocs",
-      "AIWorkflowOrchestrator/docs/skill-creation-pattern-knowledge-management.md\tdocs/10-guides",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/docs/skill-creation-pattern-knowledge-management.md\tdocs/10-guides",
-      "AIWorkflowOrchestrator/docs/skill-creation-pattern-knowledge-management.md\tdocs/10-guides/skill-creation",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/docs/skill-creation-pattern-knowledge-management.md\tdocs/10-guides/skill-creation",
-      "AIWorkflowOrchestrator/docs/skill-creation-pattern-knowledge-management.md\tdocs/10-guides/skill-creation/patterns",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/docs/skill-creation-pattern-knowledge-management.md\tdocs/10-guides/skill-creation/patterns",
-      "AIWorkflowOrchestrator/.claude/commands/command_list.md\t.claude",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/commands/command_list.md\t.claude",
-      "AIWorkflowOrchestrator/.claude/commands/command_list.md\t.claude/commands",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/commands/command_list.md\t.claude/commands",
-      "AIWorkflowOrchestrator/.claude/commands/command_list.md\t.claude/commands/ai",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/commands/command_list.md\t.claude/commands/ai",
-      "AIWorkflowOrchestrator/.claude/skills/command-activation-mechanisms",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-activation-mechanisms",
-      "AIWorkflowOrchestrator/.claude/skills/command-activation-mechanisms/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-activation-mechanisms/resources",
-      "AIWorkflowOrchestrator/.claude/skills/command-activation-mechanisms/templates",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-activation-mechanisms/templates",
-      "AIWorkflowOrchestrator/.claude/skills/command-advanced-patterns",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-advanced-patterns",
-      "AIWorkflowOrchestrator/.claude/skills/command-advanced-patterns/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-advanced-patterns/resources",
-      "AIWorkflowOrchestrator/.claude/skills/command-advanced-patterns/templates",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-advanced-patterns/templates",
-      "AIWorkflowOrchestrator/.claude/skills/command-agent-skill-integration",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-agent-skill-integration",
-      "AIWorkflowOrchestrator/.claude/skills/command-agent-skill-integration/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-agent-skill-integration/resources",
-      "AIWorkflowOrchestrator/.claude/skills/command-agent-skill-integration/templates",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-agent-skill-integration/templates",
-      "AIWorkflowOrchestrator/.claude/skills/command-arguments-system",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-arguments-system",
-      "AIWorkflowOrchestrator/.claude/skills/command-arguments-system/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-arguments-system/resources",
-      "AIWorkflowOrchestrator/.claude/skills/command-basic-patterns",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-basic-patterns",
-      "AIWorkflowOrchestrator/.claude/skills/command-basic-patterns/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-basic-patterns/resources",
-      "AIWorkflowOrchestrator/.claude/skills/command-basic-patterns/templates",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-basic-patterns/templates",
-      "AIWorkflowOrchestrator/.claude/skills/command-best-practices",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-best-practices",
-      "AIWorkflowOrchestrator/.claude/skills/command-best-practices/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-best-practices/resources",
-      "AIWorkflowOrchestrator/.claude/skills/command-best-practices/templates",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-best-practices/templates",
-      "AIWorkflowOrchestrator/.claude/skills/command-documentation-patterns",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-documentation-patterns",
-      "AIWorkflowOrchestrator/.claude/skills/command-documentation-patterns/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-documentation-patterns/resources",
-      "AIWorkflowOrchestrator/.claude/skills/command-error-handling",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-error-handling",
-      "AIWorkflowOrchestrator/.claude/skills/command-error-handling/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-error-handling/resources",
-      "AIWorkflowOrchestrator/.claude/skills/command-naming-conventions",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-naming-conventions",
-      "AIWorkflowOrchestrator/.claude/skills/command-naming-conventions/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-naming-conventions/resources",
-      "AIWorkflowOrchestrator/.claude/skills/command-performance-optimization",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-performance-optimization",
-      "AIWorkflowOrchestrator/.claude/skills/command-performance-optimization/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-performance-optimization/resources",
-      "AIWorkflowOrchestrator/.claude/skills/command-performance-optimization/templates",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-performance-optimization/templates",
-      "AIWorkflowOrchestrator/.claude/skills/command-placement-priority",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-placement-priority",
-      "AIWorkflowOrchestrator/.claude/skills/command-placement-priority/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-placement-priority/resources",
-      "AIWorkflowOrchestrator/.claude/skills/command-placement-priority/templates",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-placement-priority/templates",
-      "AIWorkflowOrchestrator/.claude/skills/command-security-design",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-security-design",
-      "AIWorkflowOrchestrator/.claude/skills/command-security-design/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-security-design/resources",
-      "AIWorkflowOrchestrator/.claude/skills/command-structure-fundamentals",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-structure-fundamentals",
-      "AIWorkflowOrchestrator/.claude/skills/command-structure-fundamentals/resources",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-structure-fundamentals/resources",
-      "AIWorkflowOrchestrator/.claude/skills/command-structure-fundamentals/templates",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/command-structure-fundamentals/templates",
-      "AIWorkflowOrchestrator/claude/agents",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/claude/agents",
-      "AIWorkflowOrchestrator/.claude/skills/agile-project-management",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/agile-project-management",
-      "AIWorkflowOrchestrator/.claude/skills/user-story-mapping",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/user-story-mapping",
-      "AIWorkflowOrchestrator/.claude/skills/estimation-techniques",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/estimation-techniques",
-      "AIWorkflowOrchestrator/.claude/skills/stakeholder-communication",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/stakeholder-communication",
-      "AIWorkflowOrchestrator/.claude/skills/stakeholder-communication/templates",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/stakeholder-communication/templates",
-      "AIWorkflowOrchestrator/.claude/skills/stakeholder-communication/scripts",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/stakeholder-communication/scripts",
-      "AIWorkflowOrchestrator/.claude/skills/product-vision",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/product-vision",
-      "AIWorkflowOrchestrator/.claude/skills/product-vision/templates",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/product-vision/templates",
-      "AIWorkflowOrchestrator/.claude/skills/prioritization-frameworks",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/prioritization-frameworks",
-      "AIWorkflowOrchestrator/.claude/skills/prioritization-frameworks/scripts",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/prioritization-frameworks/scripts",
-      "AIWorkflowOrchestrator/.claude/skills/metrics-tracking",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/metrics-tracking",
-      "AIWorkflowOrchestrator/.claude/skills/backlog-management",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/backlog-management",
-      "AIWorkflowOrchestrator/.claude/skills/sprint-planning",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/sprint-planning",
-      "AIWorkflowOrchestrator/.claude/skills/risk-management",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/skills/risk-management",
-      "AIWorkflowOrchestrator/.claude/docs",
-      "AIWorkflowOrchestrator/AIWorkflowOrchestrator/.claude/docs"
+      "AIWorkflowOrchestrator"
     ],
     "selectedPath": null
   },
@@ -1066,7 +261,7 @@
     "mode": "full",
     "isPartial": false,
     "branchPulse": {
-      "generatedAt": 1763990067962,
+      "generatedAt": 1764047187106,
       "targets": [
         "main",
         "master",
@@ -1078,7 +273,7 @@
           "branch": "main",
           "head": "2ac55913d04e58f5ba60176777a6dc9fef3f8d34",
           "baseRef": "origin/main",
-          "baseHead": "2ac55913d04e58f5ba60176777a6dc9fef3f8d34",
+          "baseHead": "b40da1b6cf7577e3c5739736915b9b87aceb8347",
           "mergeBase": "2ac55913d04e58f5ba60176777a6dc9fef3f8d34",
           "divergence": {
             "aheadCount": 0,
@@ -1086,8 +281,8 @@
           },
           "baseline": {
             "aheadCount": 0,
-            "behindCount": 0,
-            "fileCount": 0
+            "behindCount": 1,
+            "fileCount": 24
           },
           "upstream": null
         }
@@ -1096,7 +291,7 @@
   },
   "gitHistoryState": {
     "selectedTimelineIndex": 1,
-    "activeCommitHash": null,
+    "activeCommitHash": "def4567ghi",
     "entries": [
       {
         "type": "live",
@@ -1105,7 +300,7 @@
         "branch": "main",
         "targetCommitHash": "2ac55913d04e58f5ba60176777a6dc9fef3f8d34",
         "worktreePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
-        "timestamp": 1763990068046,
+        "timestamp": 1764047189114,
         "lane": 0,
         "branchLabel": "main",
         "branchTags": [
@@ -1116,56 +311,315 @@
         "index": 0
       },
       {
+        "type": "commit",
+        "label": "Improve analytics",
+        "commit": {
+          "hash": "def4567ghi",
+          "subject": "Improve analytics",
+          "author": "KAMUI",
+          "timestamp": 1764032028,
+          "parents": [
+            "cde3456fgh"
+          ],
+          "parent": "cde3456fgh",
+          "branches": []
+        },
+        "commitHash": "def4567ghi",
+        "lane": 0,
+        "parentLinks": [
+          {
+            "hash": "cde3456fgh",
+            "lane": 0
+          }
+        ],
+        "branchColor": "#4f85e8",
+        "branchTags": [],
+        "index": 1
+      },
+      {
+        "type": "commit",
+        "label": "Integrate 3D graph",
+        "commit": {
+          "hash": "cde3456fgh",
+          "subject": "Integrate 3D graph",
+          "author": "KAMUI",
+          "timestamp": 1764017628,
+          "parents": [
+            "bcd2345efg"
+          ],
+          "parent": "bcd2345efg",
+          "branches": []
+        },
+        "commitHash": "cde3456fgh",
+        "lane": 0,
+        "parentLinks": [
+          {
+            "hash": "bcd2345efg",
+            "lane": 0
+          }
+        ],
+        "branchColor": "#4f85e8",
+        "branchTags": [],
+        "index": 2
+      },
+      {
+        "type": "commit",
+        "label": "Add taskboard UI",
+        "commit": {
+          "hash": "bcd2345efg",
+          "subject": "Add taskboard UI",
+          "author": "KAMUI",
+          "timestamp": 1763996028,
+          "parents": [
+            "abc1234def"
+          ],
+          "parent": "abc1234def",
+          "branches": []
+        },
+        "commitHash": "bcd2345efg",
+        "lane": 0,
+        "parentLinks": [
+          {
+            "hash": "abc1234def",
+            "lane": 0
+          }
+        ],
+        "branchColor": "#4f85e8",
+        "branchTags": [],
+        "index": 3
+      },
+      {
+        "type": "commit",
+        "label": "On feat/product-manager-skills-integration: Stash system-gra…",
+        "commit": {
+          "hash": "43800b2d99f2df466758297c2d65aadd30f94bf0",
+          "subject": "On feat/product-manager-skills-integration: Stash system-graph-state.json before merge",
+          "author": "daishiman",
+          "timestamp": 1763990933,
+          "parents": [
+            "be9dca507ecf06ae6cf16029cfa8e72cc7510a25",
+            "fe961418109f2e5ddb497d74d81e9df062911e1a"
+          ],
+          "parent": "be9dca507ecf06ae6cf16029cfa8e72cc7510a25",
+          "refs": "refs/stash",
+          "branches": [
+            "refs/stash"
+          ]
+        },
+        "commitHash": "43800b2d99f2df466758297c2d65aadd30f94bf0",
+        "lane": 1,
+        "parentLinks": [
+          {
+            "hash": "be9dca507ecf06ae6cf16029cfa8e72cc7510a25",
+            "lane": 1
+          },
+          {
+            "hash": "fe961418109f2e5ddb497d74d81e9df062911e1a",
+            "lane": 2
+          }
+        ],
+        "primaryBranchName": "refs/stash",
+        "branchColor": "#e84f7f",
+        "branchTags": [
+          "refs/stash"
+        ],
+        "index": 4
+      },
+      {
+        "type": "commit",
+        "label": "index on feat/product-manager-skills-integration: be9dca5 fe…",
+        "commit": {
+          "hash": "fe961418109f2e5ddb497d74d81e9df062911e1a",
+          "subject": "index on feat/product-manager-skills-integration: be9dca5 feat(agents): Integrate 10 product management skills into product-manager agent",
+          "author": "daishiman",
+          "timestamp": 1763990933,
+          "parents": [
+            "be9dca507ecf06ae6cf16029cfa8e72cc7510a25"
+          ],
+          "parent": "be9dca507ecf06ae6cf16029cfa8e72cc7510a25",
+          "refs": "",
+          "branches": []
+        },
+        "commitHash": "fe961418109f2e5ddb497d74d81e9df062911e1a",
+        "lane": 0,
+        "parentLinks": [
+          {
+            "hash": "be9dca507ecf06ae6cf16029cfa8e72cc7510a25",
+            "lane": 1
+          }
+        ],
+        "branchColor": "#4f85e8",
+        "branchTags": [],
+        "index": 5
+      },
+      {
+        "type": "commit",
+        "label": "feat(agents): Integrate 10 product management skills into pr…",
+        "commit": {
+          "hash": "b40da1b6cf7577e3c5739736915b9b87aceb8347",
+          "subject": "feat(agents): Integrate 10 product management skills into product-manager agent (#12)",
+          "author": "daishiman",
+          "timestamp": 1763990925,
+          "parents": [
+            "2ac55913d04e58f5ba60176777a6dc9fef3f8d34"
+          ],
+          "parent": "2ac55913d04e58f5ba60176777a6dc9fef3f8d34",
+          "refs": "origin/main, origin/HEAD",
+          "branches": [
+            "origin/main",
+            "origin/HEAD"
+          ]
+        },
+        "commitHash": "b40da1b6cf7577e3c5739736915b9b87aceb8347",
+        "lane": 0,
+        "parentLinks": [
+          {
+            "hash": "2ac55913d04e58f5ba60176777a6dc9fef3f8d34",
+            "lane": 3
+          }
+        ],
+        "primaryBranchName": "main",
+        "branchColor": "#4f85e8",
+        "branchTags": [
+          "main"
+        ],
+        "index": 6
+      },
+      {
+        "type": "commit",
+        "label": "feat(agents): Integrate 10 product management skills into pr…",
+        "commit": {
+          "hash": "be9dca507ecf06ae6cf16029cfa8e72cc7510a25",
+          "subject": "feat(agents): Integrate 10 product management skills into product-manager agent",
+          "author": "daishiman",
+          "timestamp": 1763990859,
+          "parents": [
+            "2ac55913d04e58f5ba60176777a6dc9fef3f8d34"
+          ],
+          "parent": "2ac55913d04e58f5ba60176777a6dc9fef3f8d34",
+          "refs": "origin/feat/product-manager-skills-integration, feat/product-manager-skills-integration",
+          "branches": [
+            "origin/feat/product-manager-skills-integration",
+            "feat/product-manager-skills-integration"
+          ]
+        },
+        "commitHash": "be9dca507ecf06ae6cf16029cfa8e72cc7510a25",
+        "lane": 2,
+        "parentLinks": [
+          {
+            "hash": "2ac55913d04e58f5ba60176777a6dc9fef3f8d34",
+            "lane": 3
+          }
+        ],
+        "primaryBranchName": "feat/product-manager-skills-integration",
+        "branchColor": "#4fe8b8",
+        "branchTags": [
+          "feat/product-manager-skills-integration"
+        ],
+        "index": 7
+      },
+      {
         "type": "unstaged",
-        "label": "未ステージ (23)",
+        "label": "未ステージ (74)",
         "files": [
+          ".claude/agents/arch-police.md",
+          ".claude/agents/auth-specialist.md",
+          ".claude/agents/code-quality.md",
+          ".claude/agents/command-arch.md",
+          ".claude/agents/db-architect.md",
+          ".claude/agents/dba-mgr.md",
+          ".claude/agents/dep-mgr.md",
+          ".claude/agents/devops-eng.md",
+          ".claude/agents/domain-modeler.md",
+          ".claude/agents/e2e-tester.md",
+          ".claude/agents/gateway-dev.md",
+          ".claude/agents/gha-workflow-architect.md",
+          ".claude/agents/hook-master.md",
+          ".claude/agents/local-sync.md",
+          ".claude/agents/local-watcher.md",
+          ".claude/agents/logic-dev.md",
+          ".claude/agents/manual-writer.md",
+          ".claude/agents/mcp-integrator.md",
+          ".claude/agents/meta-agent-designer.md",
+          ".claude/agents/process-mgr.md",
           ".claude/agents/product-manager.md",
+          ".claude/agents/prompt-eng.md",
+          ".claude/agents/repo-dev.md",
+          ".claude/agents/req-analyst.md",
+          ".claude/agents/router-dev.md",
+          ".claude/agents/schema-def.md",
+          ".claude/agents/sec-auditor.md",
+          ".claude/agents/secret-mgr.md",
           ".claude/agents/skill-librarian.md",
-          ".claude/commands/ai/command_list.md",
-          ".claude/skills/skill_list.md",
+          ".claude/agents/spec-writer.md",
+          ".claude/agents/sre-observer.md",
+          ".claude/agents/state-manager.md",
+          ".claude/agents/ui-designer.md",
+          ".claude/agents/unit-tester.md",
+          ".claude/agents/workflow-engine.md",
+          ".claude/skills/agent-architecture-patterns/SKILL.md",
+          ".claude/skills/agent-dependency-design/SKILL.md",
+          ".claude/skills/agent-lifecycle-management/SKILL.md",
+          ".claude/skills/agent-persona-design/SKILL.md",
+          ".claude/skills/agent-quality-standards/SKILL.md",
+          ".claude/skills/agent-structure-design/SKILL.md",
+          ".claude/skills/agent-template-patterns/SKILL.md",
+          ".claude/skills/agent-validation-testing/SKILL.md",
+          ".claude/skills/best-practices-curation/SKILL.md",
+          ".claude/skills/command-activation-mechanisms/SKILL.md",
+          ".claude/skills/command-advanced-patterns/SKILL.md",
+          ".claude/skills/command-agent-skill-integration/SKILL.md",
+          ".claude/skills/command-arguments-system/SKILL.md",
+          ".claude/skills/command-basic-patterns/SKILL.md",
+          ".claude/skills/command-best-practices/SKILL.md",
+          ".claude/skills/command-documentation-patterns/SKILL.md",
+          ".claude/skills/command-error-handling/SKILL.md",
+          ".claude/skills/command-naming-conventions/SKILL.md",
+          ".claude/skills/command-performance-optimization/SKILL.md",
+          ".claude/skills/command-placement-priority/SKILL.md",
+          ".claude/skills/command-security-design/SKILL.md",
+          ".claude/skills/command-structure-fundamentals/SKILL.md",
+          ".claude/skills/context-optimization/SKILL.md",
+          ".claude/skills/documentation-architecture/SKILL.md",
+          ".claude/skills/knowledge-management/SKILL.md",
+          ".claude/skills/multi-agent-systems/SKILL.md",
+          ".claude/skills/progressive-disclosure/SKILL.md",
+          ".claude/skills/project-architecture-integration/SKILL.md",
+          ".claude/skills/prompt-engineering-for-agents/SKILL.md",
+          ".claude/skills/tool-permission-management/SKILL.md",
           ".kamui/model-versions-cache.json",
-          ".kamui/prompt/custom-prompt.txt",
           ".kamui/system-graph-state.json",
-          ".claude/commands/ai/create-agent-command-skill.md",
-          ".claude/docs/product-management-integration-report.md",
-          ".claude/skills/agile-project-management/SKILL.md",
-          ".claude/skills/backlog-management/SKILL.md",
-          ".claude/skills/estimation-techniques/SKILL.md",
-          ".claude/skills/metrics-tracking/SKILL.md",
-          ".claude/skills/prioritization-frameworks/SKILL.md",
-          ".claude/skills/prioritization-frameworks/scripts/rice-calculator.py",
-          ".claude/skills/product-vision/SKILL.md",
-          ".claude/skills/product-vision/templates/okr-template.md",
-          ".claude/skills/risk-management/SKILL.md",
-          ".claude/skills/sprint-planning/SKILL.md",
-          ".claude/skills/stakeholder-communication/SKILL.md",
-          ".claude/skills/stakeholder-communication/scripts/generate-status-report.sh",
-          ".claude/skills/stakeholder-communication/templates/sprint-review-agenda.md",
-          ".claude/skills/user-story-mapping/SKILL.md"
+          ".claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs",
+          ".claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs",
+          ".claude/skills/agent-structure-design/scripts/validate-structure.mjs",
+          ".claude/skills/context-optimization/scripts/estimate-tokens.mjs",
+          ".claude/skills/documentation-architecture/scripts/analyze-structure.mjs",
+          ".claude/skills/knowledge-management/scripts/validate-knowledge.mjs",
+          ".claude/skills/progressive-disclosure/scripts/calculate-token-usage.mjs"
         ],
         "branch": "main",
         "targetCommitHash": "2ac55913d04e58f5ba60176777a6dc9fef3f8d34",
         "worktreePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
-        "timestamp": 1763990068046,
+        "timestamp": 1764047189114,
         "sortOrder": 0,
         "lane": 0,
         "branchColor": "#4f85e8",
-        "index": 1
+        "index": 8
       },
       {
         "type": "staged",
         "label": "ステージ済み (1)",
         "files": [
-          "claude/agents/agent_list.md"
+          "claude/agents/api-doc-writer.md"
         ],
         "branch": "main",
         "targetCommitHash": "2ac55913d04e58f5ba60176777a6dc9fef3f8d34",
         "worktreePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
-        "timestamp": 1763990068046,
+        "timestamp": 1764047189114,
         "sortOrder": 1,
         "lane": 0,
         "branchColor": "#4f85e8",
-        "index": 2
+        "index": 9
       },
       {
         "type": "commit",
@@ -1179,11 +633,9 @@
             "14a0780c48d9812381b967dff0aeab503dd36fd1"
           ],
           "parent": "14a0780c48d9812381b967dff0aeab503dd36fd1",
-          "refs": "HEAD -> main, origin/main, origin/HEAD",
+          "refs": "HEAD -> main",
           "branches": [
             "HEAD -> main",
-            "origin/main",
-            "origin/HEAD",
             "main"
           ]
         },
@@ -1192,7 +644,7 @@
         "parentLinks": [
           {
             "hash": "14a0780c48d9812381b967dff0aeab503dd36fd1",
-            "lane": 0
+            "lane": 3
           }
         ],
         "primaryBranchName": "main",
@@ -1210,266 +662,535 @@
             "status": {
               "staged": [
                 {
-                  "path": "claude/agents/agent_list.md",
+                  "path": "claude/agents/api-doc-writer.md",
                   "originalPath": null,
                   "status": "modified",
-                  "rawPath": "claude/agents/agent_list.md",
-                  "timestamp": 1763990067668
+                  "rawPath": "claude/agents/api-doc-writer.md",
+                  "timestamp": 1764047186667
                 }
               ],
               "unstaged": [
+                {
+                  "path": ".claude/agents/arch-police.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/arch-police.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/auth-specialist.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/auth-specialist.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/code-quality.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/code-quality.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/command-arch.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/command-arch.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/db-architect.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/db-architect.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/dba-mgr.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/dba-mgr.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/dep-mgr.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/dep-mgr.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/devops-eng.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/devops-eng.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/domain-modeler.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/domain-modeler.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/e2e-tester.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/e2e-tester.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/gateway-dev.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/gateway-dev.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/gha-workflow-architect.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/gha-workflow-architect.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/hook-master.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/hook-master.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/local-sync.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/local-sync.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/local-watcher.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/local-watcher.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/logic-dev.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/logic-dev.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/manual-writer.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/manual-writer.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/mcp-integrator.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/mcp-integrator.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/meta-agent-designer.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/meta-agent-designer.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/process-mgr.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/process-mgr.md",
+                  "timestamp": 1764047186667
+                },
                 {
                   "path": ".claude/agents/product-manager.md",
                   "originalPath": null,
                   "status": "modified",
                   "rawPath": ".claude/agents/product-manager.md",
-                  "timestamp": 1763990067668
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/prompt-eng.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/prompt-eng.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/repo-dev.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/repo-dev.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/req-analyst.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/req-analyst.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/router-dev.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/router-dev.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/schema-def.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/schema-def.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/sec-auditor.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/sec-auditor.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/secret-mgr.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/secret-mgr.md",
+                  "timestamp": 1764047186667
                 },
                 {
                   "path": ".claude/agents/skill-librarian.md",
                   "originalPath": null,
                   "status": "modified",
                   "rawPath": ".claude/agents/skill-librarian.md",
-                  "timestamp": 1763990067668
+                  "timestamp": 1764047186667
                 },
                 {
-                  "path": ".claude/commands/ai/command_list.md",
+                  "path": ".claude/agents/spec-writer.md",
                   "originalPath": null,
                   "status": "modified",
-                  "rawPath": ".claude/commands/ai/command_list.md",
-                  "timestamp": 1763990067668
+                  "rawPath": ".claude/agents/spec-writer.md",
+                  "timestamp": 1764047186667
                 },
                 {
-                  "path": ".claude/skills/skill_list.md",
+                  "path": ".claude/agents/sre-observer.md",
                   "originalPath": null,
                   "status": "modified",
-                  "rawPath": ".claude/skills/skill_list.md",
-                  "timestamp": 1763990067668
+                  "rawPath": ".claude/agents/sre-observer.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/state-manager.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/state-manager.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/ui-designer.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/ui-designer.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/unit-tester.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/unit-tester.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/agents/workflow-engine.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/agents/workflow-engine.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/agent-architecture-patterns/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/agent-architecture-patterns/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/agent-dependency-design/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/agent-dependency-design/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/agent-lifecycle-management/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/agent-lifecycle-management/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/agent-persona-design/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/agent-persona-design/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/agent-quality-standards/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/agent-quality-standards/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/agent-structure-design/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/agent-structure-design/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/agent-template-patterns/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/agent-template-patterns/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/agent-validation-testing/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/agent-validation-testing/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/best-practices-curation/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/best-practices-curation/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/command-activation-mechanisms/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/command-activation-mechanisms/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/command-advanced-patterns/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/command-advanced-patterns/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/command-agent-skill-integration/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/command-agent-skill-integration/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/command-arguments-system/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/command-arguments-system/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/command-basic-patterns/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/command-basic-patterns/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/command-best-practices/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/command-best-practices/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/command-documentation-patterns/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/command-documentation-patterns/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/command-error-handling/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/command-error-handling/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/command-naming-conventions/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/command-naming-conventions/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/command-performance-optimization/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/command-performance-optimization/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/command-placement-priority/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/command-placement-priority/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/command-security-design/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/command-security-design/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/command-structure-fundamentals/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/command-structure-fundamentals/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/context-optimization/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/context-optimization/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/documentation-architecture/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/documentation-architecture/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/knowledge-management/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/knowledge-management/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/multi-agent-systems/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/multi-agent-systems/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/progressive-disclosure/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/progressive-disclosure/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/project-architecture-integration/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/project-architecture-integration/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/prompt-engineering-for-agents/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/prompt-engineering-for-agents/SKILL.md",
+                  "timestamp": 1764047186667
+                },
+                {
+                  "path": ".claude/skills/tool-permission-management/SKILL.md",
+                  "originalPath": null,
+                  "status": "modified",
+                  "rawPath": ".claude/skills/tool-permission-management/SKILL.md",
+                  "timestamp": 1764047186667
                 },
                 {
                   "path": ".kamui/model-versions-cache.json",
                   "originalPath": null,
                   "status": "modified",
                   "rawPath": ".kamui/model-versions-cache.json",
-                  "timestamp": 1763990067668
-                },
-                {
-                  "path": ".kamui/prompt/custom-prompt.txt",
-                  "originalPath": null,
-                  "status": "modified",
-                  "rawPath": ".kamui/prompt/custom-prompt.txt",
-                  "timestamp": 1763990067668
+                  "timestamp": 1764047186667
                 },
                 {
                   "path": ".kamui/system-graph-state.json",
                   "originalPath": null,
                   "status": "modified",
                   "rawPath": ".kamui/system-graph-state.json",
-                  "timestamp": 1763990067668
+                  "timestamp": 1764047186667
                 }
               ],
               "untracked": [
                 {
-                  "path": ".claude/commands/ai/create-agent-command-skill.md",
+                  "path": ".claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs",
                   "status": "untracked",
-                  "rawPath": ".claude/commands/ai/create-agent-command-skill.md",
-                  "timestamp": 1763990067668
+                  "rawPath": ".claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs",
+                  "timestamp": 1764047186667
                 },
                 {
-                  "path": ".claude/docs/product-management-integration-report.md",
+                  "path": ".claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs",
                   "status": "untracked",
-                  "rawPath": ".claude/docs/product-management-integration-report.md",
-                  "timestamp": 1763990067668
+                  "rawPath": ".claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs",
+                  "timestamp": 1764047186667
                 },
                 {
-                  "path": ".claude/skills/agile-project-management/SKILL.md",
+                  "path": ".claude/skills/agent-structure-design/scripts/validate-structure.mjs",
                   "status": "untracked",
-                  "rawPath": ".claude/skills/agile-project-management/SKILL.md",
-                  "timestamp": 1763990067668
+                  "rawPath": ".claude/skills/agent-structure-design/scripts/validate-structure.mjs",
+                  "timestamp": 1764047186667
                 },
                 {
-                  "path": ".claude/skills/backlog-management/SKILL.md",
+                  "path": ".claude/skills/context-optimization/scripts/estimate-tokens.mjs",
                   "status": "untracked",
-                  "rawPath": ".claude/skills/backlog-management/SKILL.md",
-                  "timestamp": 1763990067668
+                  "rawPath": ".claude/skills/context-optimization/scripts/estimate-tokens.mjs",
+                  "timestamp": 1764047186667
                 },
                 {
-                  "path": ".claude/skills/estimation-techniques/SKILL.md",
+                  "path": ".claude/skills/documentation-architecture/scripts/analyze-structure.mjs",
                   "status": "untracked",
-                  "rawPath": ".claude/skills/estimation-techniques/SKILL.md",
-                  "timestamp": 1763990067668
+                  "rawPath": ".claude/skills/documentation-architecture/scripts/analyze-structure.mjs",
+                  "timestamp": 1764047186667
                 },
                 {
-                  "path": ".claude/skills/metrics-tracking/SKILL.md",
+                  "path": ".claude/skills/knowledge-management/scripts/validate-knowledge.mjs",
                   "status": "untracked",
-                  "rawPath": ".claude/skills/metrics-tracking/SKILL.md",
-                  "timestamp": 1763990067668
+                  "rawPath": ".claude/skills/knowledge-management/scripts/validate-knowledge.mjs",
+                  "timestamp": 1764047186667
                 },
                 {
-                  "path": ".claude/skills/prioritization-frameworks/SKILL.md",
+                  "path": ".claude/skills/progressive-disclosure/scripts/calculate-token-usage.mjs",
                   "status": "untracked",
-                  "rawPath": ".claude/skills/prioritization-frameworks/SKILL.md",
-                  "timestamp": 1763990067668
-                },
-                {
-                  "path": ".claude/skills/prioritization-frameworks/scripts/rice-calculator.py",
-                  "status": "untracked",
-                  "rawPath": ".claude/skills/prioritization-frameworks/scripts/rice-calculator.py",
-                  "timestamp": 1763990067668
-                },
-                {
-                  "path": ".claude/skills/product-vision/SKILL.md",
-                  "status": "untracked",
-                  "rawPath": ".claude/skills/product-vision/SKILL.md",
-                  "timestamp": 1763990067668
-                },
-                {
-                  "path": ".claude/skills/product-vision/templates/okr-template.md",
-                  "status": "untracked",
-                  "rawPath": ".claude/skills/product-vision/templates/okr-template.md",
-                  "timestamp": 1763990067668
-                },
-                {
-                  "path": ".claude/skills/risk-management/SKILL.md",
-                  "status": "untracked",
-                  "rawPath": ".claude/skills/risk-management/SKILL.md",
-                  "timestamp": 1763990067668
-                },
-                {
-                  "path": ".claude/skills/sprint-planning/SKILL.md",
-                  "status": "untracked",
-                  "rawPath": ".claude/skills/sprint-planning/SKILL.md",
-                  "timestamp": 1763990067668
-                },
-                {
-                  "path": ".claude/skills/stakeholder-communication/SKILL.md",
-                  "status": "untracked",
-                  "rawPath": ".claude/skills/stakeholder-communication/SKILL.md",
-                  "timestamp": 1763990067668
-                },
-                {
-                  "path": ".claude/skills/stakeholder-communication/scripts/generate-status-report.sh",
-                  "status": "untracked",
-                  "rawPath": ".claude/skills/stakeholder-communication/scripts/generate-status-report.sh",
-                  "timestamp": 1763990067668
-                },
-                {
-                  "path": ".claude/skills/stakeholder-communication/templates/sprint-review-agenda.md",
-                  "status": "untracked",
-                  "rawPath": ".claude/skills/stakeholder-communication/templates/sprint-review-agenda.md",
-                  "timestamp": 1763990067668
-                },
-                {
-                  "path": ".claude/skills/user-story-mapping/SKILL.md",
-                  "status": "untracked",
-                  "rawPath": ".claude/skills/user-story-mapping/SKILL.md",
-                  "timestamp": 1763990067668
+                  "rawPath": ".claude/skills/progressive-disclosure/scripts/calculate-token-usage.mjs",
+                  "timestamp": 1764047186667
                 }
               ],
-              "capturedAt": 1763990067668
+              "capturedAt": 1764047186667
             },
             "normalizedPath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
             "lane": 0
           }
         ],
-        "index": 3
-      },
-      {
-        "type": "commit",
-        "label": "refactor(config): Restructure command system and add 13 comm…",
-        "commit": {
-          "hash": "be517a09eb9c1f1e7052ff1882694e256cb6107e",
-          "subject": "refactor(config): Restructure command system and add 13 command-related skills",
-          "author": "daishiman",
-          "timestamp": 1763986720,
-          "parents": [
-            "14a0780c48d9812381b967dff0aeab503dd36fd1"
-          ],
-          "parent": "14a0780c48d9812381b967dff0aeab503dd36fd1",
-          "refs": "origin/refactor/command-system-restructure, refactor/command-system-restructure",
-          "branches": [
-            "origin/refactor/command-system-restructure",
-            "refactor/command-system-restructure"
-          ]
-        },
-        "commitHash": "be517a09eb9c1f1e7052ff1882694e256cb6107e",
-        "lane": 1,
-        "parentLinks": [
-          {
-            "hash": "14a0780c48d9812381b967dff0aeab503dd36fd1",
-            "lane": 0
-          }
-        ],
-        "primaryBranchName": "refactor/command-system-restructure",
-        "branchColor": "#e84f7f",
-        "branchTags": [
-          "refactor/command-system-restructure"
-        ],
-        "index": 4
-      },
-      {
-        "type": "commit",
-        "label": "On main: Temporary files: kamui cache and backup files",
-        "commit": {
-          "hash": "74fc27f28e0c877774e44c153356d5e7f11e37b7",
-          "subject": "On main: Temporary files: kamui cache and backup files",
-          "author": "daishiman",
-          "timestamp": 1763972790,
-          "parents": [
-            "5af5f13bca1b5dec5d0cf74d9159ed0020add44f",
-            "bbc996b31c611e8673d6a49c5d2d59f0aa585e7d"
-          ],
-          "parent": "5af5f13bca1b5dec5d0cf74d9159ed0020add44f",
-          "refs": "refs/stash",
-          "branches": [
-            "refs/stash"
-          ]
-        },
-        "commitHash": "74fc27f28e0c877774e44c153356d5e7f11e37b7",
-        "lane": 2,
-        "parentLinks": [
-          {
-            "hash": "5af5f13bca1b5dec5d0cf74d9159ed0020add44f",
-            "lane": 2
-          },
-          {
-            "hash": "bbc996b31c611e8673d6a49c5d2d59f0aa585e7d",
-            "lane": 3
-          }
-        ],
-        "primaryBranchName": "refs/stash",
-        "branchColor": "#e84f7f",
-        "branchTags": [
-          "refs/stash"
-        ],
-        "index": 5
-      },
-      {
-        "type": "commit",
-        "label": "index on main: 5af5f13 docs: Restructure documentation with …",
-        "commit": {
-          "hash": "bbc996b31c611e8673d6a49c5d2d59f0aa585e7d",
-          "subject": "index on main: 5af5f13 docs: Restructure documentation with IEEE 830 compliant hierarchy (#9)",
-          "author": "daishiman",
-          "timestamp": 1763972790,
-          "parents": [
-            "5af5f13bca1b5dec5d0cf74d9159ed0020add44f"
-          ],
-          "parent": "5af5f13bca1b5dec5d0cf74d9159ed0020add44f",
-          "refs": "",
-          "branches": []
-        },
-        "commitHash": "bbc996b31c611e8673d6a49c5d2d59f0aa585e7d",
-        "lane": 0,
-        "parentLinks": [
-          {
-            "hash": "5af5f13bca1b5dec5d0cf74d9159ed0020add44f",
-            "lane": 2
-          }
-        ],
-        "branchColor": "#4f85e8",
-        "branchTags": [],
-        "index": 6
+        "index": 10
       },
       {
         "type": "commit",
@@ -1493,107 +1214,13 @@
         "parentLinks": [
           {
             "hash": "5af5f13bca1b5dec5d0cf74d9159ed0020add44f",
-            "lane": 2
+            "lane": 3
           }
         ],
         "primaryBranchName": "main",
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 7
-      },
-      {
-        "type": "commit",
-        "label": "refactor(agents): Modularize meta-agent-designer into 12 spe…",
-        "commit": {
-          "hash": "96fd992052b64031082d5e1c219032480a599bc2",
-          "subject": "refactor(agents): Modularize meta-agent-designer into 12 specialized skills",
-          "author": "daishiman",
-          "timestamp": 1763972672,
-          "parents": [
-            "5af5f13bca1b5dec5d0cf74d9159ed0020add44f"
-          ],
-          "parent": "5af5f13bca1b5dec5d0cf74d9159ed0020add44f",
-          "refs": "origin/refactor/meta-agent-designer-modularization",
-          "branches": [
-            "origin/refactor/meta-agent-designer-modularization"
-          ]
-        },
-        "commitHash": "96fd992052b64031082d5e1c219032480a599bc2",
-        "lane": 3,
-        "parentLinks": [
-          {
-            "hash": "5af5f13bca1b5dec5d0cf74d9159ed0020add44f",
-            "lane": 2
-          }
-        ],
-        "primaryBranchName": "refactor/meta-agent-designer-modularization",
-        "branchColor": "#4f85e8",
-        "branchTags": [
-          "refactor/meta-agent-designer-modularization"
-        ],
-        "index": 8
-      },
-      {
-        "type": "commit",
-        "label": "On main: WIP: meta-agent-designer refactoring and 12 skills …",
-        "commit": {
-          "hash": "9221d54f482d5800c52ff4b190c493c0e230daf3",
-          "subject": "On main: WIP: meta-agent-designer refactoring and 12 skills creation",
-          "author": "daishiman",
-          "timestamp": 1763971355,
-          "parents": [
-            "78a4291db743497fe24500e2a029eb2389109f66",
-            "1b241d9f6263df24cc6f9e20a28e222d8a8eb1b2"
-          ],
-          "parent": "78a4291db743497fe24500e2a029eb2389109f66",
-          "refs": "refs/stash",
-          "branches": [
-            "refs/stash"
-          ]
-        },
-        "commitHash": "9221d54f482d5800c52ff4b190c493c0e230daf3",
-        "lane": 2,
-        "parentLinks": [
-          {
-            "hash": "78a4291db743497fe24500e2a029eb2389109f66",
-            "lane": 5
-          },
-          {
-            "hash": "1b241d9f6263df24cc6f9e20a28e222d8a8eb1b2",
-            "lane": 6
-          }
-        ],
-        "primaryBranchName": "refs/stash",
-        "branchColor": "#e84f7f",
-        "branchTags": [],
-        "index": 9
-      },
-      {
-        "type": "commit",
-        "label": "index on main: 78a4291 chore(config): Update Kamui system st…",
-        "commit": {
-          "hash": "1b241d9f6263df24cc6f9e20a28e222d8a8eb1b2",
-          "subject": "index on main: 78a4291 chore(config): Update Kamui system state and skill documentation (#8)",
-          "author": "daishiman",
-          "timestamp": 1763971355,
-          "parents": [
-            "78a4291db743497fe24500e2a029eb2389109f66"
-          ],
-          "parent": "78a4291db743497fe24500e2a029eb2389109f66",
-          "refs": "",
-          "branches": []
-        },
-        "commitHash": "1b241d9f6263df24cc6f9e20a28e222d8a8eb1b2",
-        "lane": 0,
-        "parentLinks": [
-          {
-            "hash": "78a4291db743497fe24500e2a029eb2389109f66",
-            "lane": 5
-          }
-        ],
-        "branchColor": "#4f85e8",
-        "branchTags": [],
-        "index": 10
+        "index": 11
       },
       {
         "type": "commit",
@@ -1617,45 +1244,32 @@
         "parentLinks": [
           {
             "hash": "78a4291db743497fe24500e2a029eb2389109f66",
-            "lane": 5
+            "lane": 3
           }
         ],
         "primaryBranchName": "main",
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 11
+        "index": 12
       },
       {
         "type": "commit",
-        "label": "docs: Restructure documentation with IEEE 830 compliant hier…",
+        "label": "Initial commit",
         "commit": {
-          "hash": "2db0ec5b53e2aed22c9e8805a68ef1d81d9412d4",
-          "subject": "docs: Restructure documentation with IEEE 830 compliant hierarchy",
-          "author": "daishiman",
-          "timestamp": 1763971240,
-          "parents": [
-            "78a4291db743497fe24500e2a029eb2389109f66"
-          ],
-          "parent": "78a4291db743497fe24500e2a029eb2389109f66",
-          "refs": "origin/docs/restructure-documentation",
-          "branches": [
-            "origin/docs/restructure-documentation"
-          ]
+          "hash": "abc1234def",
+          "subject": "Initial commit",
+          "author": "KAMUI",
+          "timestamp": 1763952828,
+          "parents": [],
+          "parent": null,
+          "branches": []
         },
-        "commitHash": "2db0ec5b53e2aed22c9e8805a68ef1d81d9412d4",
-        "lane": 4,
-        "parentLinks": [
-          {
-            "hash": "78a4291db743497fe24500e2a029eb2389109f66",
-            "lane": 5
-          }
-        ],
-        "primaryBranchName": "docs/restructure-documentation",
-        "branchColor": "#e84f4f",
-        "branchTags": [
-          "docs/restructure-documentation"
-        ],
-        "index": 12
+        "commitHash": "abc1234def",
+        "lane": 0,
+        "parentLinks": [],
+        "branchColor": "#4f85e8",
+        "branchTags": [],
+        "index": 13
       },
       {
         "type": "commit",
@@ -1679,13 +1293,13 @@
         "parentLinks": [
           {
             "hash": "ef0f5cdf1a45c0d46a6a9bc18eb0ecd0561efe5f",
-            "lane": 5
+            "lane": 3
           }
         ],
         "primaryBranchName": "main",
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 13
+        "index": 14
       },
       {
         "type": "commit",
@@ -1705,11 +1319,11 @@
           ]
         },
         "commitHash": "81a7ad86aa157adda077907779e5bc1475df882e",
-        "lane": 5,
+        "lane": 3,
         "parentLinks": [
           {
             "hash": "ef0f5cdf1a45c0d46a6a9bc18eb0ecd0561efe5f",
-            "lane": 5
+            "lane": 3
           }
         ],
         "primaryBranchName": "chore/update-kamui-state-and-docs",
@@ -1717,69 +1331,7 @@
         "branchTags": [
           "chore/update-kamui-state-and-docs"
         ],
-        "index": 14
-      },
-      {
-        "type": "commit",
-        "label": "On refactor/skill-librarian-agent-skills-separation: Uncommi…",
-        "commit": {
-          "hash": "5d1223bd343741d38802df85643ffa68147b577b",
-          "subject": "On refactor/skill-librarian-agent-skills-separation: Uncommitted changes - kamui and docs",
-          "author": "daishiman",
-          "timestamp": 1763943182,
-          "parents": [
-            "ca99430d374fb3e14dd62db8c308391beee51a1c",
-            "f818fc781bcdef16359c31f6859c8c8524b565ea"
-          ],
-          "parent": "ca99430d374fb3e14dd62db8c308391beee51a1c",
-          "refs": "refs/stash",
-          "branches": [
-            "refs/stash"
-          ]
-        },
-        "commitHash": "5d1223bd343741d38802df85643ffa68147b577b",
-        "lane": 2,
-        "parentLinks": [
-          {
-            "hash": "ca99430d374fb3e14dd62db8c308391beee51a1c",
-            "lane": 9
-          },
-          {
-            "hash": "f818fc781bcdef16359c31f6859c8c8524b565ea",
-            "lane": 10
-          }
-        ],
-        "primaryBranchName": "refs/stash",
-        "branchColor": "#e84f7f",
-        "branchTags": [],
         "index": 15
-      },
-      {
-        "type": "commit",
-        "label": "index on refactor/skill-librarian-agent-skills-separation: c…",
-        "commit": {
-          "hash": "f818fc781bcdef16359c31f6859c8c8524b565ea",
-          "subject": "index on refactor/skill-librarian-agent-skills-separation: ca99430 refactor(config): Separate skill-librarian agent into 5 modular skills",
-          "author": "daishiman",
-          "timestamp": 1763943182,
-          "parents": [
-            "ca99430d374fb3e14dd62db8c308391beee51a1c"
-          ],
-          "parent": "ca99430d374fb3e14dd62db8c308391beee51a1c",
-          "refs": "",
-          "branches": []
-        },
-        "commitHash": "f818fc781bcdef16359c31f6859c8c8524b565ea",
-        "lane": 0,
-        "parentLinks": [
-          {
-            "hash": "ca99430d374fb3e14dd62db8c308391beee51a1c",
-            "lane": 9
-          }
-        ],
-        "branchColor": "#4f85e8",
-        "branchTags": [],
-        "index": 16
       },
       {
         "type": "commit",
@@ -1803,197 +1355,13 @@
         "parentLinks": [
           {
             "hash": "ae4df47a2f547ffb950dd08a459652202934248c",
-            "lane": 5
+            "lane": 3
           }
         ],
         "primaryBranchName": "main",
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 17
-      },
-      {
-        "type": "commit",
-        "label": "refactor(config): Separate skill-librarian agent into 5 modu…",
-        "commit": {
-          "hash": "ca99430d374fb3e14dd62db8c308391beee51a1c",
-          "subject": "refactor(config): Separate skill-librarian agent into 5 modular skills",
-          "author": "daishiman",
-          "timestamp": 1763943107,
-          "parents": [
-            "ae4df47a2f547ffb950dd08a459652202934248c"
-          ],
-          "parent": "ae4df47a2f547ffb950dd08a459652202934248c",
-          "refs": "",
-          "branches": []
-        },
-        "commitHash": "ca99430d374fb3e14dd62db8c308391beee51a1c",
-        "lane": 0,
-        "parentLinks": [
-          {
-            "hash": "ae4df47a2f547ffb950dd08a459652202934248c",
-            "lane": 5
-          }
-        ],
-        "branchColor": "#4f85e8",
-        "branchTags": [],
-        "index": 18
-      },
-      {
-        "type": "commit",
-        "label": "On main: Kamui system state on main branch",
-        "commit": {
-          "hash": "96523a7f167c6559f44d0100139591f099c3c15f",
-          "subject": "On main: Kamui system state on main branch",
-          "author": "daishiman",
-          "timestamp": 1763903801,
-          "parents": [
-            "eb67603b9eada8254154eeecb49e86002437ef54",
-            "781d96dff41a8524c82430c34a55a093a959a4ab"
-          ],
-          "parent": "eb67603b9eada8254154eeecb49e86002437ef54",
-          "refs": "refs/stash",
-          "branches": [
-            "refs/stash"
-          ]
-        },
-        "commitHash": "96523a7f167c6559f44d0100139591f099c3c15f",
-        "lane": 2,
-        "parentLinks": [
-          {
-            "hash": "eb67603b9eada8254154eeecb49e86002437ef54",
-            "lane": 11
-          },
-          {
-            "hash": "781d96dff41a8524c82430c34a55a093a959a4ab",
-            "lane": 12
-          }
-        ],
-        "primaryBranchName": "refs/stash",
-        "branchColor": "#e84f7f",
-        "branchTags": [],
-        "index": 19
-      },
-      {
-        "type": "commit",
-        "label": "index on main: eb67603 chore(config): Update agent definitio…",
-        "commit": {
-          "hash": "781d96dff41a8524c82430c34a55a093a959a4ab",
-          "subject": "index on main: eb67603 chore(config): Update agent definitions and Kamui system state (#5)",
-          "author": "daishiman",
-          "timestamp": 1763903801,
-          "parents": [
-            "eb67603b9eada8254154eeecb49e86002437ef54"
-          ],
-          "parent": "eb67603b9eada8254154eeecb49e86002437ef54",
-          "refs": "",
-          "branches": []
-        },
-        "commitHash": "781d96dff41a8524c82430c34a55a093a959a4ab",
-        "lane": 0,
-        "parentLinks": [
-          {
-            "hash": "eb67603b9eada8254154eeecb49e86002437ef54",
-            "lane": 11
-          }
-        ],
-        "branchColor": "#4f85e8",
-        "branchTags": [],
-        "index": 20
-      },
-      {
-        "type": "commit",
-        "label": "On refactor/reorganize-claude-documentation: Kamui system st…",
-        "commit": {
-          "hash": "56e1f5a5b3a3a45839e9d112aea83186bcf68a32",
-          "subject": "On refactor/reorganize-claude-documentation: Kamui system state updates during merge",
-          "author": "daishiman",
-          "timestamp": 1763903783,
-          "parents": [
-            "2cd094fca3afac16178412e5c337a018d14c149b",
-            "2bced8682c11714ff00f915f20b9c042fe434a2b"
-          ],
-          "parent": "2cd094fca3afac16178412e5c337a018d14c149b",
-          "refs": "refs/stash",
-          "branches": [
-            "refs/stash"
-          ]
-        },
-        "commitHash": "56e1f5a5b3a3a45839e9d112aea83186bcf68a32",
-        "lane": 2,
-        "parentLinks": [
-          {
-            "hash": "2cd094fca3afac16178412e5c337a018d14c149b",
-            "lane": 13
-          },
-          {
-            "hash": "2bced8682c11714ff00f915f20b9c042fe434a2b",
-            "lane": 14
-          }
-        ],
-        "primaryBranchName": "refs/stash",
-        "branchColor": "#e84f7f",
-        "branchTags": [],
-        "index": 21
-      },
-      {
-        "type": "commit",
-        "label": "index on refactor/reorganize-claude-documentation: 2cd094f c…",
-        "commit": {
-          "hash": "2bced8682c11714ff00f915f20b9c042fe434a2b",
-          "subject": "index on refactor/reorganize-claude-documentation: 2cd094f chore(config): Update auto-approved commands and system state",
-          "author": "daishiman",
-          "timestamp": 1763903783,
-          "parents": [
-            "2cd094fca3afac16178412e5c337a018d14c149b"
-          ],
-          "parent": "2cd094fca3afac16178412e5c337a018d14c149b",
-          "refs": "",
-          "branches": []
-        },
-        "commitHash": "2bced8682c11714ff00f915f20b9c042fe434a2b",
-        "lane": 0,
-        "parentLinks": [
-          {
-            "hash": "2cd094fca3afac16178412e5c337a018d14c149b",
-            "lane": 13
-          }
-        ],
-        "branchColor": "#4f85e8",
-        "branchTags": [],
-        "index": 22
-      },
-      {
-        "type": "commit",
-        "label": "chore(config): Update auto-approved commands and system stat…",
-        "commit": {
-          "hash": "2cd094fca3afac16178412e5c337a018d14c149b",
-          "subject": "chore(config): Update auto-approved commands and system state",
-          "author": "daishiman",
-          "timestamp": 1763903755,
-          "parents": [
-            "e7867c7816068bea5f2f35c3c76beb9ded1dead8"
-          ],
-          "parent": "e7867c7816068bea5f2f35c3c76beb9ded1dead8",
-          "refs": "origin/refactor/reorganize-claude-documentation, refactor/reorganize-claude-documentation",
-          "branches": [
-            "origin/refactor/reorganize-claude-documentation",
-            "refactor/reorganize-claude-documentation"
-          ]
-        },
-        "commitHash": "2cd094fca3afac16178412e5c337a018d14c149b",
-        "lane": 6,
-        "parentLinks": [
-          {
-            "hash": "e7867c7816068bea5f2f35c3c76beb9ded1dead8",
-            "lane": 13
-          }
-        ],
-        "primaryBranchName": "refactor/reorganize-claude-documentation",
-        "branchColor": "#b84fe8",
-        "branchTags": [
-          "refactor/reorganize-claude-documentation"
-        ],
-        "index": 23
+        "index": 16
       },
       {
         "type": "commit",
@@ -2017,200 +1385,13 @@
         "parentLinks": [
           {
             "hash": "eb67603b9eada8254154eeecb49e86002437ef54",
-            "lane": 11
+            "lane": 3
           }
         ],
         "primaryBranchName": "main",
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 24
-      },
-      {
-        "type": "commit",
-        "label": "refactor(config): Reorganize Claude Code documentation struc…",
-        "commit": {
-          "hash": "e7867c7816068bea5f2f35c3c76beb9ded1dead8",
-          "subject": "refactor(config): Reorganize Claude Code documentation structure",
-          "author": "daishiman",
-          "timestamp": 1763903634,
-          "parents": [
-            "eb67603b9eada8254154eeecb49e86002437ef54"
-          ],
-          "parent": "eb67603b9eada8254154eeecb49e86002437ef54",
-          "refs": "",
-          "branches": [
-            "refactor/reorganize-claude-documentation"
-          ]
-        },
-        "commitHash": "e7867c7816068bea5f2f35c3c76beb9ded1dead8",
-        "lane": 6,
-        "parentLinks": [
-          {
-            "hash": "eb67603b9eada8254154eeecb49e86002437ef54",
-            "lane": 11
-          }
-        ],
-        "primaryBranchName": "refactor/reorganize-claude-documentation",
-        "branchColor": "#b84fe8",
-        "branchTags": [],
-        "index": 25
-      },
-      {
-        "type": "commit",
-        "label": "WIP on main: f6f8da7 chore(config): Update agent definitions…",
-        "commit": {
-          "hash": "d5273f485de8c2dea656002edd5786a9c7955699",
-          "subject": "WIP on main: f6f8da7 chore(config): Update agent definitions and command structure (#4)",
-          "author": "daishiman",
-          "timestamp": 1763865023,
-          "parents": [
-            "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
-            "411afa5dce5b538a9bfdb9c3c0d2fea68a84bb8e"
-          ],
-          "parent": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
-          "refs": "refs/stash",
-          "branches": [
-            "refs/stash"
-          ]
-        },
-        "commitHash": "d5273f485de8c2dea656002edd5786a9c7955699",
-        "lane": 2,
-        "parentLinks": [
-          {
-            "hash": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
-            "lane": 15
-          },
-          {
-            "hash": "411afa5dce5b538a9bfdb9c3c0d2fea68a84bb8e",
-            "lane": 16
-          }
-        ],
-        "primaryBranchName": "refs/stash",
-        "branchColor": "#e84f7f",
-        "branchTags": [],
-        "index": 26
-      },
-      {
-        "type": "commit",
-        "label": "index on main: f6f8da7 chore(config): Update agent definitio…",
-        "commit": {
-          "hash": "411afa5dce5b538a9bfdb9c3c0d2fea68a84bb8e",
-          "subject": "index on main: f6f8da7 chore(config): Update agent definitions and command structure (#4)",
-          "author": "daishiman",
-          "timestamp": 1763865023,
-          "parents": [
-            "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6"
-          ],
-          "parent": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
-          "refs": "",
-          "branches": []
-        },
-        "commitHash": "411afa5dce5b538a9bfdb9c3c0d2fea68a84bb8e",
-        "lane": 0,
-        "parentLinks": [
-          {
-            "hash": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
-            "lane": 15
-          }
-        ],
-        "branchColor": "#4f85e8",
-        "branchTags": [],
-        "index": 27
-      },
-      {
-        "type": "commit",
-        "label": "On chore/update-agent-definitions: Temporary stash of Kamui …",
-        "commit": {
-          "hash": "ae976fa6805d2feb2e118c9293b4b1cb79a36fb6",
-          "subject": "On chore/update-agent-definitions: Temporary stash of Kamui changes",
-          "author": "daishiman",
-          "timestamp": 1763865004,
-          "parents": [
-            "9e5b02f454e9b1a63ccf0d05336b61a3d617b8c7",
-            "d6297bd0343d3bdc5d70409b88ef6472f5e6709a"
-          ],
-          "parent": "9e5b02f454e9b1a63ccf0d05336b61a3d617b8c7",
-          "refs": "refs/stash",
-          "branches": [
-            "refs/stash"
-          ]
-        },
-        "commitHash": "ae976fa6805d2feb2e118c9293b4b1cb79a36fb6",
-        "lane": 2,
-        "parentLinks": [
-          {
-            "hash": "9e5b02f454e9b1a63ccf0d05336b61a3d617b8c7",
-            "lane": 17
-          },
-          {
-            "hash": "d6297bd0343d3bdc5d70409b88ef6472f5e6709a",
-            "lane": 18
-          }
-        ],
-        "primaryBranchName": "refs/stash",
-        "branchColor": "#e84f7f",
-        "branchTags": [],
-        "index": 28
-      },
-      {
-        "type": "commit",
-        "label": "index on chore/update-agent-definitions: 9e5b02f chore(kamui…",
-        "commit": {
-          "hash": "d6297bd0343d3bdc5d70409b88ef6472f5e6709a",
-          "subject": "index on chore/update-agent-definitions: 9e5b02f chore(kamui): Update system graph state with latest stats",
-          "author": "daishiman",
-          "timestamp": 1763865004,
-          "parents": [
-            "9e5b02f454e9b1a63ccf0d05336b61a3d617b8c7"
-          ],
-          "parent": "9e5b02f454e9b1a63ccf0d05336b61a3d617b8c7",
-          "refs": "",
-          "branches": []
-        },
-        "commitHash": "d6297bd0343d3bdc5d70409b88ef6472f5e6709a",
-        "lane": 0,
-        "parentLinks": [
-          {
-            "hash": "9e5b02f454e9b1a63ccf0d05336b61a3d617b8c7",
-            "lane": 17
-          }
-        ],
-        "branchColor": "#4f85e8",
-        "branchTags": [],
-        "index": 29
-      },
-      {
-        "type": "commit",
-        "label": "chore(kamui): Update system graph state with latest stats",
-        "commit": {
-          "hash": "9e5b02f454e9b1a63ccf0d05336b61a3d617b8c7",
-          "subject": "chore(kamui): Update system graph state with latest stats",
-          "author": "daishiman",
-          "timestamp": 1763864981,
-          "parents": [
-            "02d829b108d43ae943e144ee90f8fd40b68610e9"
-          ],
-          "parent": "02d829b108d43ae943e144ee90f8fd40b68610e9",
-          "refs": "origin/chore/update-agent-definitions, chore/update-agent-definitions",
-          "branches": [
-            "origin/chore/update-agent-definitions",
-            "chore/update-agent-definitions"
-          ]
-        },
-        "commitHash": "9e5b02f454e9b1a63ccf0d05336b61a3d617b8c7",
-        "lane": 7,
-        "parentLinks": [
-          {
-            "hash": "02d829b108d43ae943e144ee90f8fd40b68610e9",
-            "lane": 17
-          }
-        ],
-        "primaryBranchName": "chore/update-agent-definitions",
-        "branchColor": "#4fe8b8",
-        "branchTags": [
-          "chore/update-agent-definitions"
-        ],
-        "index": 30
+        "index": 17
       },
       {
         "type": "commit",
@@ -2234,73 +1415,13 @@
         "parentLinks": [
           {
             "hash": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
-            "lane": 15
+            "lane": 3
           }
         ],
         "primaryBranchName": "main",
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 31
-      },
-      {
-        "type": "commit",
-        "label": "chore(kamui): Update system state and model versions cache",
-        "commit": {
-          "hash": "02d829b108d43ae943e144ee90f8fd40b68610e9",
-          "subject": "chore(kamui): Update system state and model versions cache",
-          "author": "daishiman",
-          "timestamp": 1763864902,
-          "parents": [
-            "691402e426da95b1a5279d535b21ff3f41ca8fc3"
-          ],
-          "parent": "691402e426da95b1a5279d535b21ff3f41ca8fc3",
-          "refs": "",
-          "branches": [
-            "chore/update-agent-definitions"
-          ]
-        },
-        "commitHash": "02d829b108d43ae943e144ee90f8fd40b68610e9",
-        "lane": 7,
-        "parentLinks": [
-          {
-            "hash": "691402e426da95b1a5279d535b21ff3f41ca8fc3",
-            "lane": 17
-          }
-        ],
-        "primaryBranchName": "chore/update-agent-definitions",
-        "branchColor": "#4fe8b8",
-        "branchTags": [],
-        "index": 32
-      },
-      {
-        "type": "commit",
-        "label": "chore(agents): Update agent definitions to reflect hybrid ar…",
-        "commit": {
-          "hash": "691402e426da95b1a5279d535b21ff3f41ca8fc3",
-          "subject": "chore(agents): Update agent definitions to reflect hybrid architecture",
-          "author": "daishiman",
-          "timestamp": 1763864888,
-          "parents": [
-            "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6"
-          ],
-          "parent": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
-          "refs": "",
-          "branches": [
-            "chore/update-agent-definitions"
-          ]
-        },
-        "commitHash": "691402e426da95b1a5279d535b21ff3f41ca8fc3",
-        "lane": 7,
-        "parentLinks": [
-          {
-            "hash": "f6f8da75a910603a9fa9cf41dcfbf9ed3e92fac6",
-            "lane": 15
-          }
-        ],
-        "primaryBranchName": "chore/update-agent-definitions",
-        "branchColor": "#4fe8b8",
-        "branchTags": [],
-        "index": 33
+        "index": 18
       },
       {
         "type": "commit",
@@ -2324,137 +1445,13 @@
         "parentLinks": [
           {
             "hash": "8819107d7ff2017b4d4c4d382f462f84a97f881d",
-            "lane": 15
+            "lane": 3
           }
         ],
         "primaryBranchName": "main",
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 34
-      },
-      {
-        "type": "commit",
-        "label": "chore(config): Update agent definitions and command structur…",
-        "commit": {
-          "hash": "cff814fdde099630f642c760507ddb0ebead0c4b",
-          "subject": "chore(config): Update agent definitions and command structure",
-          "author": "daishiman",
-          "timestamp": 1763860700,
-          "parents": [
-            "d277946b738f79571d8817e00cf5cad194c22ca4"
-          ],
-          "parent": "d277946b738f79571d8817e00cf5cad194c22ca4",
-          "refs": "origin/chore/update-agent-definitions",
-          "branches": [
-            "origin/chore/update-agent-definitions"
-          ]
-        },
-        "commitHash": "cff814fdde099630f642c760507ddb0ebead0c4b",
-        "lane": 7,
-        "parentLinks": [
-          {
-            "hash": "d277946b738f79571d8817e00cf5cad194c22ca4",
-            "lane": 19
-          }
-        ],
-        "primaryBranchName": "chore/update-agent-definitions",
-        "branchColor": "#4fe8b8",
-        "branchTags": [],
-        "index": 35
-      },
-      {
-        "type": "commit",
-        "label": "merge: resolve .gitignore conflict with remote main",
-        "commit": {
-          "hash": "d277946b738f79571d8817e00cf5cad194c22ca4",
-          "subject": "merge: resolve .gitignore conflict with remote main",
-          "author": "daishiman",
-          "timestamp": 1763733495,
-          "parents": [
-            "203405915abfad5aa77fdfcfa624e416e6dafe3c",
-            "8819107d7ff2017b4d4c4d382f462f84a97f881d"
-          ],
-          "parent": "203405915abfad5aa77fdfcfa624e416e6dafe3c",
-          "refs": "",
-          "branches": []
-        },
-        "commitHash": "d277946b738f79571d8817e00cf5cad194c22ca4",
-        "lane": 0,
-        "parentLinks": [
-          {
-            "hash": "203405915abfad5aa77fdfcfa624e416e6dafe3c",
-            "lane": 19
-          },
-          {
-            "hash": "8819107d7ff2017b4d4c4d382f462f84a97f881d",
-            "lane": 15
-          }
-        ],
-        "branchColor": "#4f85e8",
-        "branchTags": [],
-        "index": 36
-      },
-      {
-        "type": "commit",
-        "label": "On docs/add-git-worktree-workflow-guide: Save local settings…",
-        "commit": {
-          "hash": "5a019aaed2762439e579f7f7078d6d11ce914076",
-          "subject": "On docs/add-git-worktree-workflow-guide: Save local settings before switching to main",
-          "author": "daishiman",
-          "timestamp": 1763733439,
-          "parents": [
-            "f4d91f7a8f1bd4738278140417ee44971d6e3ac1",
-            "ad90f6f84e43e7ea7a07d49d40fd951f450ea625"
-          ],
-          "parent": "f4d91f7a8f1bd4738278140417ee44971d6e3ac1",
-          "refs": "refs/stash",
-          "branches": [
-            "refs/stash"
-          ]
-        },
-        "commitHash": "5a019aaed2762439e579f7f7078d6d11ce914076",
-        "lane": 2,
-        "parentLinks": [
-          {
-            "hash": "f4d91f7a8f1bd4738278140417ee44971d6e3ac1",
-            "lane": 20
-          },
-          {
-            "hash": "ad90f6f84e43e7ea7a07d49d40fd951f450ea625",
-            "lane": 21
-          }
-        ],
-        "primaryBranchName": "refs/stash",
-        "branchColor": "#e84f7f",
-        "branchTags": [],
-        "index": 37
-      },
-      {
-        "type": "commit",
-        "label": "index on docs/add-git-worktree-workflow-guide: f4d91f7 chore…",
-        "commit": {
-          "hash": "ad90f6f84e43e7ea7a07d49d40fd951f450ea625",
-          "subject": "index on docs/add-git-worktree-workflow-guide: f4d91f7 chore(kamui): Update system graph state",
-          "author": "daishiman",
-          "timestamp": 1763733439,
-          "parents": [
-            "f4d91f7a8f1bd4738278140417ee44971d6e3ac1"
-          ],
-          "parent": "f4d91f7a8f1bd4738278140417ee44971d6e3ac1",
-          "refs": "",
-          "branches": []
-        },
-        "commitHash": "ad90f6f84e43e7ea7a07d49d40fd951f450ea625",
-        "lane": 0,
-        "parentLinks": [
-          {
-            "hash": "f4d91f7a8f1bd4738278140417ee44971d6e3ac1",
-            "lane": 20
-          }
-        ],
-        "branchColor": "#4f85e8",
-        "branchTags": [],
-        "index": 38
+        "index": 19
       },
       {
         "type": "commit",
@@ -2478,13 +1475,13 @@
         "parentLinks": [
           {
             "hash": "749c02316a15e038ea0ec30c0925af57799bc2dd",
-            "lane": 15
+            "lane": 3
           }
         ],
         "primaryBranchName": "main",
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 39
+        "index": 20
       },
       {
         "type": "commit",
@@ -2504,11 +1501,11 @@
           ]
         },
         "commitHash": "f4d91f7a8f1bd4738278140417ee44971d6e3ac1",
-        "lane": 8,
+        "lane": 4,
         "parentLinks": [
           {
             "hash": "67f583aa3bbe17a37683192ef365ed31f2ec2780",
-            "lane": 20
+            "lane": 5
           }
         ],
         "primaryBranchName": "docs/add-git-worktree-workflow-guide",
@@ -2516,7 +1513,7 @@
         "branchTags": [
           "docs/add-git-worktree-workflow-guide"
         ],
-        "index": 40
+        "index": 21
       },
       {
         "type": "commit",
@@ -2536,17 +1533,17 @@
           ]
         },
         "commitHash": "67f583aa3bbe17a37683192ef365ed31f2ec2780",
-        "lane": 8,
+        "lane": 4,
         "parentLinks": [
           {
             "hash": "203405915abfad5aa77fdfcfa624e416e6dafe3c",
-            "lane": 19
+            "lane": 5
           }
         ],
         "primaryBranchName": "docs/add-git-worktree-workflow-guide",
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 41
+        "index": 22
       },
       {
         "type": "commit",
@@ -2566,17 +1563,17 @@
           ]
         },
         "commitHash": "203405915abfad5aa77fdfcfa624e416e6dafe3c",
-        "lane": 8,
+        "lane": 4,
         "parentLinks": [
           {
             "hash": "749c02316a15e038ea0ec30c0925af57799bc2dd",
-            "lane": 15
+            "lane": 3
           }
         ],
         "primaryBranchName": "docs/add-git-worktree-workflow-guide",
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 42
+        "index": 23
       },
       {
         "type": "commit",
@@ -2602,11 +1599,11 @@
         "parentLinks": [
           {
             "hash": "a132a282d48d1a867e42b032afdca93e5568d3ea",
-            "lane": 15
+            "lane": 3
           },
           {
             "hash": "7fb9f93466f23f55a30b9d6d537ec28d6abdc696",
-            "lane": 22
+            "lane": 6
           }
         ],
         "primaryBranchName": "main",
@@ -2614,7 +1611,7 @@
         "branchTags": [
           "daishiman/feature/add-master-system-design"
         ],
-        "index": 43
+        "index": 24
       },
       {
         "type": "commit",
@@ -2632,6 +1629,7 @@
           "branches": [
             "daishiman/feature/add-master-system-design",
             "docs/add-git-worktree-workflow-guide",
+            "feat/product-manager-skills-integration",
             "main"
           ]
         },
@@ -2640,13 +1638,13 @@
         "parentLinks": [
           {
             "hash": "0e8b3a86e793c44f9b8acda1fe7e9e6ce1af358e",
-            "lane": 22
+            "lane": 6
           }
         ],
         "primaryBranchName": "main",
         "branchColor": "#4f85e8",
         "branchTags": [],
-        "index": 44
+        "index": 25
       },
       {
         "type": "commit",
@@ -2672,11 +1670,11 @@
         "parentLinks": [
           {
             "hash": "52266792fbc47007b4ddca109f477ddcac9f72d0",
-            "lane": 15
+            "lane": 3
           },
           {
             "hash": "0e8b3a86e793c44f9b8acda1fe7e9e6ce1af358e",
-            "lane": 22
+            "lane": 6
           }
         ],
         "primaryBranchName": "main",
@@ -2684,7 +1682,7 @@
         "branchTags": [
           "daishiman/feature/development"
         ],
-        "index": 45
+        "index": 26
       },
       {
         "type": "commit",
@@ -2703,6 +1701,7 @@
             "feature/development",
             "daishiman/feature/development",
             "docs/add-git-worktree-workflow-guide",
+            "feat/product-manager-skills-integration",
             "main"
           ]
         },
@@ -2711,7 +1710,7 @@
         "parentLinks": [
           {
             "hash": "52266792fbc47007b4ddca109f477ddcac9f72d0",
-            "lane": 15
+            "lane": 3
           }
         ],
         "primaryBranchName": "main",
@@ -2719,7 +1718,7 @@
         "branchTags": [
           "feature/development"
         ],
-        "index": 46
+        "index": 27
       },
       {
         "type": "commit",
@@ -2752,17 +1751,17 @@
           "task/task-1763719019782-ff4e70",
           "task/task-1763719022041-576354"
         ],
-        "index": 47
+        "index": 28
       },
       {
         "type": "empty",
         "label": "初期状態 (初回コミット以前)",
         "files": [],
         "marker": "pre-history",
-        "index": 48
+        "index": 29
       }
     ]
   },
   "projectRoot": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator",
-  "savedAt": 1763990076872
+  "savedAt": 1764047200104
 }

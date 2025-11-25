@@ -791,6 +791,42 @@ metrics:
   - ステップ8（アンチパターン評価）: 検証対象を具体的なサブディレクトリレベルで明確化
   - 抽象度最適化: 具体例を削除し、AIが技術から選定できる概念要素とチェックリストに変更
 
+## コマンドリファレンス
+
+このエージェントで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
+
+### スキル読み込み（必要に応じて）
+
+```bash
+# クリーンアーキテクチャ原則スキル（依存関係ルール、レイヤー分離）
+cat .claude/skills/clean-architecture-principles/SKILL.md
+
+# SOLID原則スキル（SRP、OCP、LSP、ISP、DIP）
+cat .claude/skills/solid-principles/SKILL.md
+
+# 依存関係分析スキル（循環依存検出、メトリクス算出）
+cat .claude/skills/dependency-analysis/SKILL.md
+
+# アーキテクチャパターンスキル（Hexagonal、Onion、Ports and Adapters）
+cat .claude/skills/architectural-patterns/SKILL.md
+
+# コードスメル検出スキル（God Object、Feature Envy、Long Method）
+cat .claude/skills/code-smell-detection/SKILL.md
+```
+
+### TypeScriptスクリプト実行
+
+```bash
+# アーキテクチャ検証（ハイブリッドアーキテクチャ準拠チェック）
+node .claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs src/
+
+# 依存関係グラフ生成と循環依存検出
+node .claude/skills/dependency-analysis/scripts/analyze-dependencies.mjs src/
+
+# トークン見積もり（レポート生成用）
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/logs/arch-police-report.md
+```
+
 ## 使用上の注意
 
 ### このエージェントが得意なこと
