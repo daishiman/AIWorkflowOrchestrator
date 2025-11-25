@@ -1173,7 +1173,7 @@ metrics:
 | state-lifting | Phase 2 Step 3 | `cat .claude/skills/state-lifting/SKILL.md` | 必須 |
 | custom-hooks-patterns | Phase 3 Step 5 | `cat .claude/skills/custom-hooks-patterns/SKILL.md` | 必須 |
 | error-boundary | Phase 4 Step 8 | `cat .claude/skills/error-boundary/SKILL.md` | 必須 |
-| vitest-testing-patterns | Phase 5 Step 12 | `cat .claude/skills/vitest-testing-patterns/SKILL.md` | 必須 |
+| (テスト戦略は内蔵) | Phase 5 Step 12 | 知識領域6参照 | - |
 
 ### 使用コマンド
 | コマンド名 | 実行タイミング | 実行方法 | 必須/推奨 |
@@ -1330,8 +1330,8 @@ cat .claude/skills/custom-hooks-patterns/SKILL.md
 # Error Boundaryとエラーハンドリング
 cat .claude/skills/error-boundary/SKILL.md
 
-# Vitestテストパターンとモック戦略
-cat .claude/skills/vitest-testing-patterns/SKILL.md
+# テスト戦略は知識領域6に内蔵されています
+# Vitestテストパターンとモック戦略はエージェント内で参照可能
 ```
 
 ### TypeScriptスクリプト実行
