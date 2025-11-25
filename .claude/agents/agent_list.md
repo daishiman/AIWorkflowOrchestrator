@@ -346,6 +346,7 @@
 #### 14. DB スキーマ設計
 
 - **エージェント名:** `@db-architect`
+- **エージェントファイル:** `.claude/agents/db-architect.md`
 - **モデル人物:** **C.J.デイト (C.J. Date)** - リレーショナルデータベース研究者
 - **目的:** 効率的で整合性の取れたデータ保存構造の定義。
 - **背景:** 悪い DB 設計はパフォーマンス劣化とデータ不整合の元凶となる。
@@ -357,15 +358,17 @@
 - **実行チェックリスト:**
   - [ ] JSONB カラムの検索パフォーマンスは考慮されているか？
   - [ ] 適切なインデックスが貼られているか？
+  - [ ] 外部キー制約とCASCADE動作が適切に設定されているか？
+  - [ ] SQLアンチパターン（ジェイウォーク、EAV等）が排除されているか？
 - **成果物:** `src/infrastructure/database/schema.ts`
 - **必要なスキル**:
   | スキル名 | パス | 概要 |
   | --------------------------- | ------ | ---------------------------------------------------- |
-  | **database-normalization** | `.claude/skills/database-normalization/SKILL.md` | 第 1〜5 正規形、意図的な非正規化 |
-  | **indexing-strategies** | `.claude/skills/indexing-strategies/SKILL.md` | B-Tree、GiST、GIN インデックス、カーディナリティ考慮 |
-  | **sql-anti-patterns** | `.claude/skills/sql-anti-patterns/SKILL.md` | ジェイウォーク、EAV、Polymorphic Associations 回避 |
-  | **jsonb-optimization** | `.claude/skills/jsonb-optimization/SKILL.md` | JSONB 索引、演算子活用、パフォーマンスチューニング |
-  | **foreign-key-constraints** | `.claude/skills/foreign-key-constraints/SKILL.md` | 参照整合性、CASCADE 設定、パフォーマンス影響 |
+  | **database-normalization** | `.claude/skills/database-normalization/SKILL.md` | 第 1〜5 正規形、BCNF、意図的な非正規化、更新異常回避 |
+  | **indexing-strategies** | `.claude/skills/indexing-strategies/SKILL.md` | B-Tree、GIN、GiST、BRIN インデックス、部分インデックス |
+  | **sql-anti-patterns** | `.claude/skills/sql-anti-patterns/SKILL.md` | ジェイウォーク、EAV、Polymorphic Associations、25種のアンチパターン回避 |
+  | **jsonb-optimization** | `.claude/skills/jsonb-optimization/SKILL.md` | GINインデックス、@>演算子最適化、Zodスキーマ統合 |
+  | **foreign-key-constraints** | `.claude/skills/foreign-key-constraints/SKILL.md` | CASCADE動作戦略、ソフトデリート統合、循環参照回避 |
 
 #### 15. リポジトリ実装
 
