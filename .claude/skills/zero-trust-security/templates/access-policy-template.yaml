@@ -1,0 +1,276 @@
+# Zero Trust Access Policy Template
+
+# ═══════════════════════════════════════════════════
+# Global Policy Settings
+# ═══════════════════════════════════════════════════
+
+policy_version: "1.0.0"
+effective_date: "2025-11-26"
+review_cycle: "quarterly"  # quarterly, monthly, annual
+
+# デフォルトポリシー（明示的な許可がない場合）
+default_policy:
+  action: "deny"  # deny, allow
+  require_justification: true
+  require_approval: true
+  require_mfa: false
+
+# ═══════════════════════════════════════════════════
+# Role Definitions
+# ═══════════════════════════════════════════════════
+
+roles:
+  - id: "developer"
+    name: "Developer"
+    description: "Software developers with access to development environment"
+    inherits_from: []
+    permissions:
+      - resource: "secret/dev/*"
+        actions: ["read", "write"]
+        conditions:
+          time_range: "00:00-23:59"  # 24時間アクセス可
+          days_of_week: [1, 2, 3, 4, 5, 6, 7]  # 全曜日
+          mfa_required: false
+          approval_required: false
+
+  - id: "devops-engineer"
+    name: "DevOps Engineer"
+    description: "DevOps engineers with access to all non-production environments"
+    inherits_from: ["developer"]
+    permissions:
+      - resource: "secret/dev/*"
+        actions: ["read", "write", "delete"]
+      - resource: "secret/staging/*"
+        actions: ["read", "write", "rotate"]
+      - resource: "secret/prod/*"
+        actions: ["read"]  # 本番は読み取りのみ
+        conditions:
+          mfa_required: true
+          approval_required: true
+          max_duration: 7200000  # 2時間
+
+  - id: "security-admin"
+    name: "Security Administrator"
+    description: "Full access to all secrets across all environments"
+    inherits_from: []
+    permissions:
+      - resource: "secret/*"
+        actions: ["read", "write", "rotate", "delete", "admin"]
+        conditions:
+          mfa_required: true
+          audit_level: "verbose"
+
+  - id: "auditor"
+    name: "Security Auditor"
+    description: "Read-only access to audit logs, no access to actual secrets"
+    inherits_from: []
+    permissions:
+      - resource: "audit/*"
+        actions: ["read"]
+      - resource: "secret/*"
+        actions: []  # Secretアクセス不可
+
+# ═══════════════════════════════════════════════════
+# Environment-Specific Policies
+# ═══════════════════════════════════════════════════
+
+environments:
+  development:
+    require_approval: false
+    require_mfa: false
+    access_logging: "standard"
+    allowed_roles: ["developer", "devops-engineer", "security-admin"]
+
+  staging:
+    require_approval: false
+    require_mfa: false
+    access_logging: "detailed"
+    allowed_roles: ["devops-engineer", "security-admin"]
+
+  production:
+    require_approval: true  # 本番は必ず承認
+    require_mfa: true       # 本番はMFA必須
+    access_logging: "verbose"
+    allowed_roles: ["devops-engineer", "security-admin"]
+    additional_controls:
+      - type: "time_restriction"
+        business_hours_only: true
+        business_hours: "09:00-18:00"
+        timezone: "Asia/Tokyo"
+      - type: "jit_access"
+        max_duration: 7200000  # 2時間
+        auto_revoke: true
+
+# ═══════════════════════════════════════════════════
+# Secret Classification Policies
+# ═══════════════════════════════════════════════════
+
+secret_classifications:
+  critical:
+    examples: ["DATABASE_PASSWORD_PROD", "STRIPE_SECRET_KEY", "ENCRYPTION_MASTER_KEY"]
+    access_controls:
+      require_approval: true
+      require_mfa: true
+      require_justification: true
+      max_access_duration: 3600000  # 1時間
+      allowed_roles: ["security-admin", "devops-engineer"]
+      approval_chain:
+        - role: "security-admin"
+          required: true
+        - role: "secret-owner"
+          required: true
+
+  high:
+    examples: ["API_KEY_OPENAI", "DISCORD_WEBHOOK_PROD"]
+    access_controls:
+      require_approval: true
+      require_mfa: false
+      require_justification: true
+      max_access_duration: 14400000  # 4時間
+      allowed_roles: ["devops-engineer", "security-admin"]
+
+  medium:
+    examples: ["DATABASE_URL_STAGING", "LOG_AGGREGATOR_KEY"]
+    access_controls:
+      require_approval: false
+      require_mfa: false
+      require_justification: true
+      allowed_roles: ["developer", "devops-engineer", "security-admin"]
+
+  low:
+    examples: ["LOG_LEVEL", "APP_NAME"]
+    access_controls:
+      require_approval: false
+      require_mfa: false
+      require_justification: false
+      allowed_roles: ["developer", "devops-engineer", "security-admin"]
+
+# ═══════════════════════════════════════════════════
+# Anomaly Detection Rules
+# ═══════════════════════════════════════════════════
+
+anomaly_detection:
+  enabled: true
+  rules:
+    - name: "rapid_access"
+      description: "Detect rapid successive access to secrets"
+      condition:
+        access_count: 10
+        time_window: 600000  # 10分
+      action: "alert"
+      severity: "high"
+
+    - name: "unusual_time"
+      description: "Access outside business hours"
+      condition:
+        time_range: "22:00-06:00"
+        days_of_week: [6, 7]  # 土日
+      action: "require_approval"
+      severity: "medium"
+
+    - name: "new_location"
+      description: "Access from new geographic location"
+      condition:
+        location_change: true
+        threshold: 100  # km
+      action: "require_mfa"
+      severity: "high"
+
+    - name: "multiple_critical_secrets"
+      description: "Access to multiple critical secrets in short time"
+      condition:
+        secret_classification: "critical"
+        access_count: 3
+        time_window: 3600000  # 1時間
+      action: "block"
+      severity: "critical"
+
+# ═══════════════════════════════════════════════════
+# Approval Workflows
+# ═══════════════════════════════════════════════════
+
+approval_workflows:
+  critical_secret_access:
+    approvers:
+      - role: "security-admin"
+        required: true
+        approval_timeout: 3600000  # 1時間以内に承認必要
+      - role: "secret-owner"
+        required: true
+        approval_timeout: 7200000  # 2時間以内に承認必要
+    notification_channels: ["email", "slack"]
+    escalation:
+      enabled: true
+      escalate_after: 1800000  # 30分後にエスカレーション
+      escalate_to: "security-team-lead"
+
+  high_secret_access:
+    approvers:
+      - role: "devops-manager"
+        required: true
+        approval_timeout: 7200000
+    notification_channels: ["slack"]
+
+# ═══════════════════════════════════════════════════
+# Audit & Compliance
+# ═══════════════════════════════════════════════════
+
+audit_settings:
+  enabled: true
+  log_level: "verbose"  # minimal, standard, detailed, verbose
+  retention_period: 2592000000  # 30日（ミリ秒）
+  log_destination:
+    - type: "file"
+      path: "/var/log/secret-access/audit.jsonl"
+    - type: "remote"
+      endpoint: "https://log-aggregator.example.com/api/logs"
+  compliance_reports:
+    - type: "monthly"
+      recipients: ["security-admin@example.com"]
+    - type: "quarterly"
+      recipients: ["security-admin@example.com", "compliance-officer@example.com"]
+
+# ═══════════════════════════════════════════════════
+# Emergency Access (Break Glass)
+# ═══════════════════════════════════════════════════
+
+emergency_access:
+  enabled: true
+  max_duration: 1800000  # 30分
+  allowed_roles: ["security-admin", "devops-engineer"]
+  notification:
+    immediate_alert: true
+    channels: ["slack", "email", "sms"]
+    recipients: ["security-team@example.com"]
+  post_incident_review:
+    required: true
+    due_within: 86400000  # 24時間以内
+    assigned_to: "security-admin"
+
+# ═══════════════════════════════════════════════════
+# Session & Token Management
+# ═══════════════════════════════════════════════════
+
+session_management:
+  token_ttl: 900000  # 15分
+  max_session_duration: 28800000  # 8時間
+  idle_timeout: 1800000  # 30分
+  re_authentication_required: true
+  mfa_validity: 3600000  # MFA検証は1時間有効
+
+# ═══════════════════════════════════════════════════
+# Notes & Customization Guide
+# ═══════════════════════════════════════════════════
+
+# このテンプレートの使用方法:
+# 1. プロジェクトのセキュリティ要件に応じてカスタマイズ
+# 2. 各環境のポリシーを適切に設定
+# 3. ロールと権限を組織構造に合わせて調整
+# 4. 承認フローを実際の組織プロセスに適合
+# 5. 監査設定をコンプライアンス要件に合わせる
+
+# カスタマイズ例:
+# - ロール追加: `roles`セクションに新規ロールを追加
+# - 環境追加: `environments`セクションに環境を追加（例: dr, qa）
+# - 異常検知ルール: `anomaly_detection.rules`に新規ルールを追加
+# - 承認フロー: `approval_workflows`をカスタマイズ

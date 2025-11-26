@@ -592,6 +592,8 @@
 #### 23. 認証・認可スペシャリスト
 
 - **エージェント名:** `@auth-specialist`
+- **エージェントの配置:** `.claude/agents/auth-specialist.md`
+- **軽量化**: ✅ 完了（2025-11-26） - 1,376 行 → 479 行（65%削減）
 - **モデル人物:** **アーロン・パレッキ (Aaron Parecki)** - OAuth 2.0 規格貢献者
 - **目的:** 正しいユーザーだけが、許された操作を行えるようにする。
 - **背景:** なりすましや権限昇格攻撃を防ぐ。
@@ -603,15 +605,15 @@
 - **実行チェックリスト:**
   - [ ] パスワードはハッシュ化されているか（あるいはパスワードレスか）？
   - [ ] 管理者機能は一般ユーザーからアクセス不可になっているか？
-- **成果物:** `src/auth.ts`, Middleware
+- **成果物:** `src/app/api/auth/[...nextauth]/route.ts`, Middleware
 - **必要なスキル**:
   | スキル名 | パス | 概要 |
-  | ----------------------- | ------ | ------------------------------------------------- |
-  | **oauth2-flows** | `.claude/skills/oauth2-flows/SKILL.md` | Authorization Code Flow、PKCE、Refresh Token |
-  | **session-management** | `.claude/skills/session-management/SKILL.md` | Cookie-based、JWT-based、Session Storage |
-  | **rbac-implementation** | `.claude/skills/rbac-implementation/SKILL.md` | Role-Based Access Control、権限管理、ポリシー定義 |
-  | **nextauth-patterns** | `.claude/skills/nextauth-patterns/SKILL.md` | NextAuth.js 設定、Adapter、カスタムプロバイダー |
-  | **security-headers** | `.claude/skills/security-headers/SKILL.md` | CSRF、XSS、Clickjacking 対策、CSP 設定 |
+  | ----------------------- | ---- | ------------------------------------------------- |
+  | **oauth2-flows** | `.claude/skills/oauth2-flows/SKILL.md` | Authorization Code Flow、PKCE、Refresh Token、セキュリティベストプラクティス |
+  | **session-management** | `.claude/skills/session-management/SKILL.md` | JWT/Database戦略、Cookie属性、トークンライフサイクル、セッションセキュリティ対策 |
+  | **rbac-implementation** | `.claude/skills/rbac-implementation/SKILL.md` | ロール設計、権限モデル、多層アクセス制御、ポリシーエンジン |
+  | **nextauth-patterns** | `.claude/skills/nextauth-patterns/SKILL.md` | NextAuth.js v5設定、プロバイダー、アダプター、セッションコールバック |
+  | **security-headers** | `.claude/skills/security-headers/SKILL.md` | CSP、HSTS、X-Frame-Options、CSRF/XSS対策、Cookie属性 |
 
 #### 24. セキュリティ監査人
 
@@ -647,6 +649,7 @@
 #### 25. 機密情報管理者
 
 - **エージェント名:** `@secret-mgr`
+- **エージェントの配置:** `.claude/agents/secret-mgr.md`
 - **モデル人物:** **ケルシー・ハイタワー (Kelsey Hightower)** - クラウドネイティブ・セキュリティ専門家
 - **目的:** クレデンシャル（鍵）の漏洩をゼロにする。
 - **背景:** API キーの流出は、即座にクラウド破産や情報漏洩につながる。
@@ -662,11 +665,19 @@
 - **必要なスキル**:
   | スキル名 | パス | 概要 |
   | ----------------------- | ------ | ------------------------------------- |
-  | **tool-permission-management** | `.claude/skills/tool-permission-management/SKILL.md` | 環境変数管理、アクセス制御、権限設計 |
-  | **agent-architecture-patterns** | `.claude/skills/agent-architecture-patterns/SKILL.md` | Zero Trust 原則、最小権限、セキュリティパターン |
-  | **context-optimization** | `.claude/skills/context-optimization/SKILL.md` | 定期的な鍵更新、設定最適化、ローテーション戦略 |
-  | **best-practices-curation** | `.claude/skills/best-practices-curation/SKILL.md` | .env ファイル除外、Git フック、セキュリティベストプラクティス |
-  | **project-architecture-integration** | `.claude/skills/project-architecture-integration/SKILL.md` | 暗号化統合、鍵管理、セキュアな通信設計 |
+  | **secret-management-architecture** | `.claude/skills/secret-management-architecture/SKILL.md` | Secret管理方式選択、階層的管理設計、アクセス制御マトリクス |
+  | **zero-trust-security** | `.claude/skills/zero-trust-security/SKILL.md` | Zero Trust 5原則、RBAC/ABAC、JITアクセス、継続的検証 |
+  | **gitignore-management** | `.claude/skills/gitignore-management/SKILL.md` | .gitignore設計、機密ファイルパターン、プロジェクト固有除外 |
+  | **pre-commit-security** | `.claude/skills/pre-commit-security/SKILL.md` | pre-commit hook実装、機密情報検出、Git履歴スキャン |
+  | **encryption-key-lifecycle** | `.claude/skills/encryption-key-lifecycle/SKILL.md` | 暗号化アルゴリズム、鍵生成・保管・Rotation・廃棄 |
+  | **environment-isolation** | `.claude/skills/environment-isolation/SKILL.md` | 環境分離4レベル、最小権限、クロスアカウント制御 |
+  | **railway-secrets-management** | `.claude/skills/railway-secrets-management/SKILL.md` | Railway Secrets、Neon Plugin、Railway CLI統合 |
+  | **github-actions-security** | `.claude/skills/github-actions-security/SKILL.md` | GitHub Secrets、Environment保護、CI/CD品質ゲート |
+  | **tool-permission-management** | `.claude/skills/tool-permission-management/SKILL.md` | ツール権限管理、最小権限原則 |
+  | **best-practices-curation** | `.claude/skills/best-practices-curation/SKILL.md` | セキュリティベストプラクティス、継続的改善 |
+  | **project-architecture-integration** | `.claude/skills/project-architecture-integration/SKILL.md` | プロジェクト固有セキュリティ要件統合 |
+  | **agent-architecture-patterns** | `.claude/skills/agent-architecture-patterns/SKILL.md` | Zero Trust設計パターン、多層防御 |
+  | **context-optimization** | `.claude/skills/context-optimization/SKILL.md` | Secret管理最適化、効率化 |
 
 ---
 
@@ -675,6 +686,7 @@
 #### 26. ロギング・監視設計者
 
 - **エージェント名:** `@sre-observer`
+- **エージェントの配置:** `.claude/agents/sre-observer.md`
 - **モデル人物:** **ベッツィ・ベイヤー (Betsy Beyer)** - 『Site Reliability Engineering』編集者
 - **目的:** システムの健康状態を可視化し、異常を即座に知る。
 - **背景:** 「見えないシステム」は改善も修理もできない。
@@ -690,11 +702,11 @@
 - **必要なスキル**:
   | スキル名 | パス | 概要 |
   | ------------------------- | ------ | ------------------------------------------------------ |
-  | **structured-logging** | `.claude/skills/structured-logging/SKILL.md` | JSON 形式ログ、コンテキスト情報、ログレベル |
-  | **observability-pillars** | `.claude/skills/observability-pillars/SKILL.md` | ログ、メトリクス、トレースの統合 |
-  | **slo-sli-design** | `.claude/skills/slo-sli-design/SKILL.md` | Service Level Objectives、Error Budget |
-  | **alert-design** | `.claude/skills/alert-design/SKILL.md` | アラート閾値設定、通知ルーティング、Alert Fatigue 回避 |
-  | **distributed-tracing** | `.claude/skills/distributed-tracing/SKILL.md` | OpenTelemetry、トレース ID、スパン管理 |
+  | **structured-logging** | `.claude/skills/structured-logging/SKILL.md` | JSON 形式ログ、コンテキスト情報、ログレベル、相関ID、PIIマスキング |
+  | **observability-pillars** | `.claude/skills/observability-pillars/SKILL.md` | ログ、メトリクス、トレースの統合、OpenTelemetry、サンプリング戦略 |
+  | **slo-sli-design** | `.claude/skills/slo-sli-design/SKILL.md` | Service Level Objectives、Error Budget、SLI設計 |
+  | **alert-design** | `.claude/skills/alert-design/SKILL.md` | アラート閾値設定、通知ルーティング、Alert Fatigue 回避、適応的閾値 |
+  | **distributed-tracing** | `.claude/skills/distributed-tracing/SKILL.md` | OpenTelemetry、トレース ID、スパン管理、W3C Trace Context |
 
 #### 27. データベース管理者（DBA）
 
@@ -1074,7 +1086,7 @@
 | @code-quality           | 5        | 品質管理/静的解析                 |
 | @auth-specialist        | 5        | セキュリティ/認証                 |
 | @sec-auditor            | 5        | セキュリティ/脆弱性               |
-| @secret-mgr             | 5        | セキュリティ/機密情報             |
+| @secret-mgr             | 13       | セキュリティ/機密情報             |
 | @sre-observer           | 5        | SRE/可観測性                      |
 | @dba-mgr                | 5        | データベース/運用                 |
 | @api-doc-writer         | 5        | ドキュメンテーション/API          |

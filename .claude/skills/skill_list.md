@@ -404,13 +404,13 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                | 概要                                              |
-| ----------------------- | ------------------------------------------------- |
-| **oauth2-flows**        | Authorization Code Flow、PKCE、Refresh Token      |
-| **session-management**  | Cookie-based、JWT-based、Session Storage          |
-| **rbac-implementation** | Role-Based Access Control、権限管理、ポリシー定義 |
-| **nextauth-patterns**   | NextAuth.js 設定、Adapter、カスタムプロバイダー   |
-| **security-headers**    | CSRF、XSS、Clickjacking 対策、CSP 設定            |
+| スキル名 | パス | 概要 |
+| ----------------------- | ---- | ---- |
+| **oauth2-flows** | `.claude/skills/oauth2-flows/SKILL.md` | Authorization Code Flow、PKCE、Refresh Token、セキュリティベストプラクティス、トークンストレージ戦略 |
+| **session-management** | `.claude/skills/session-management/SKILL.md` | JWT/Database/Hybrid戦略、Cookie属性設定、トークンライフサイクル、セッション固定・ハイジャック対策 |
+| **rbac-implementation** | `.claude/skills/rbac-implementation/SKILL.md` | ロール設計、権限モデル、多層アクセス制御（ミドルウェア/APIルート/データ層）、ポリシーエンジン |
+| **nextauth-patterns** | `.claude/skills/nextauth-patterns/SKILL.md` | NextAuth.js v5設定、プロバイダー設定、Drizzleアダプター統合、セッションコールバック、型安全性 |
+| **security-headers** | `.claude/skills/security-headers/SKILL.md` | CSP、HSTS、X-Frame-Options、Referrer-Policy、CSRF/XSS対策、Cookie属性安全化 |
 ```
 
 ## 24. セキュリティ監査人
@@ -430,20 +430,6 @@
 | **security-testing**            | ペネトレーションテスト、セキュリティテストケース |
 ```
 
-## 25. 機密情報管理者
-
-- **エージェント名:** `@secret-mgr`
-- **エージェントの配置:** `.claude/agents/secret-mgr.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                | 概要                                  |
-| ----------------------- | ------------------------------------- |
-| **tool-permission-management** | ツール権限管理、最小権限原則 |
-| **best-practices-curation** | セキュリティベストプラクティス、コード品質基準 |
-| **project-architecture-integration** | ハイブリッドアーキテクチャ（shared/features）、データベース設計、REST API |
-```
 
 ## 26. ロギング・監視設計者
 
@@ -453,13 +439,13 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                  | 概要                                                   |
-| ------------------------- | ------------------------------------------------------ |
-| **structured-logging**    | JSON 形式ログ、コンテキスト情報、ログレベル            |
-| **observability-pillars** | ログ、メトリクス、トレースの統合                       |
-| **slo-sli-design**        | Service Level Objectives、Error Budget                 |
-| **alert-design**          | アラート閾値設定、通知ルーティング、Alert Fatigue 回避 |
-| **distributed-tracing**   | OpenTelemetry、トレース ID、スパン管理                 |
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **structured-logging** | `.claude/skills/structured-logging/SKILL.md` | JSON 形式ログ、コンテキスト情報、ログレベル、相関ID、PIIマスキング |
+| **observability-pillars** | `.claude/skills/observability-pillars/SKILL.md` | ログ、メトリクス、トレースの統合、OpenTelemetry、サンプリング戦略 |
+| **slo-sli-design** | `.claude/skills/slo-sli-design/SKILL.md` | Service Level Objectives、Error Budget、SLI設計 |
+| **alert-design** | `.claude/skills/alert-design/SKILL.md` | アラート閾値設定、通知ルーティング、Alert Fatigue 回避、適応的閾値 |
+| **distributed-tracing** | `.claude/skills/distributed-tracing/SKILL.md` | OpenTelemetry、トレース ID、スパン管理、W3C Trace Context |
 ```
 
 ## 27. データベース管理者 (DBA)
@@ -715,4 +701,49 @@
 | **dependency-security-scanning** | `.claude/skills/dependency-security-scanning/SKILL.md` | 依存関係脆弱性スキャン、npm audit、Snyk、CVE評価 |
 | **code-static-analysis-security** | `.claude/skills/code-static-analysis-security/SKILL.md` | SAST、SQLインジェクション、XSS、コマンドインジェクション検出 |
 | **security-reporting** | `.claude/skills/security-reporting/SKILL.md` | セキュリティレポート生成、リスク評価、アクションプラン策定 |
+
+---
+
+## 新規スキル - Secret管理関連 (2025-11-26 追加)
+
+以下のスキルは @secret-mgr エージェント専用に作成されました:
+
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **secret-management-architecture** | `.claude/skills/secret-management-architecture/SKILL.md` | Secret管理方式選択、階層的管理設計、アクセス制御マトリクス、Rotation戦略 |
+| **zero-trust-security** | `.claude/skills/zero-trust-security/SKILL.md` | Zero Trust 5原則、RBAC/ABAC実装、JITアクセス、継続的検証、異常検知 |
+| **gitignore-management** | `.claude/skills/gitignore-management/SKILL.md` | .gitignore設計、機密ファイルパターン、プロジェクト固有除外、検証手法 |
+| **pre-commit-security** | `.claude/skills/pre-commit-security/SKILL.md` | pre-commit hook実装、機密情報検出パターン、Git履歴スキャン、git-secrets/gitleaks統合 |
+| **encryption-key-lifecycle** | `.claude/skills/encryption-key-lifecycle/SKILL.md` | 暗号化アルゴリズム選定、鍵生成・保管・使用・Rotation・廃棄の全フェーズ |
+| **environment-isolation** | `.claude/skills/environment-isolation/SKILL.md` | 環境分離4レベル、環境別Secret管理、クロスアカウント制御、データマスキング |
+| **railway-secrets-management** | `.claude/skills/railway-secrets-management/SKILL.md` | Railway Secrets、Variables、Neon Plugin自動注入、Railway CLI、一時ファイルセキュリティ |
+| **github-actions-security** | `.claude/skills/github-actions-security/SKILL.md` | GitHub Secrets、Environment Secrets、ログマスキング、CI/CD品質ゲート統合 |
+
+---
+
+## 新規スキル - SRE/オブザーバビリティ関連 (2025-11-26 追加)
+
+以下のスキルは @sre-observer エージェント専用に作成されました:
+
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **structured-logging** | `.claude/skills/structured-logging/SKILL.md` | JSON形式ログ、ログレベル階層、相関ID体系、PIIマスキング、ログスキーマ設計 |
+| **observability-pillars** | `.claude/skills/observability-pillars/SKILL.md` | ログ・メトリクス・トレース三本柱統合、OpenTelemetry、サンプリング戦略、高カーディナリティデータ |
+| **slo-sli-design** | `.claude/skills/slo-sli-design/SKILL.md` | SLI設計、SLO設定フレームワーク、エラーバジェット計算・管理、ダッシュボード可視化 |
+| **alert-design** | `.claude/skills/alert-design/SKILL.md` | アクション可能アラート設計、Alert Fatigue回避、適応的閾値、通知ルーティング |
+| **distributed-tracing** | `.claude/skills/distributed-tracing/SKILL.md` | トレース構造設計、W3C Trace Context、スパン設計、ボトルネック特定 |
+
+---
+
+## 新規スキル - 認証・認可関連 (2025-11-26 追加)
+
+以下のスキルは @auth-specialist エージェント軽量化により作成されました:
+
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **oauth2-flows** | `.claude/skills/oauth2-flows/SKILL.md` | OAuth 2.0認可フロー（Authorization Code、PKCE、Refresh Token）、セキュリティベストプラクティス、トークンストレージ戦略 |
+| **session-management** | `.claude/skills/session-management/SKILL.md` | セッション戦略（JWT/Database/Hybrid）、Cookie属性設定、トークンライフサイクル管理、セッション固定・ハイジャック対策 |
+| **rbac-implementation** | `.claude/skills/rbac-implementation/SKILL.md` | ロールベースアクセス制御、ロール設計、権限モデル、多層アクセス制御、ポリシーエンジン構築 |
+| **nextauth-patterns** | `.claude/skills/nextauth-patterns/SKILL.md` | NextAuth.js v5設定パターン、プロバイダー設定、Drizzleアダプター統合、セッションコールバックカスタマイズ |
+| **security-headers** | `.claude/skills/security-headers/SKILL.md` | セキュリティヘッダー設定（CSP、HSTS、X-Frame-Options）、CSRF/XSS対策、Cookie属性安全化 |
 ```

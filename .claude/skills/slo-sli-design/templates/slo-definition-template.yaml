@@ -1,0 +1,147 @@
+# SLO定義テンプレート
+
+service_name: "{{SERVICE_NAME}}"
+service_description: "{{SERVICE_DESCRIPTION}}"
+
+# SLO定義
+slos:
+  # SLO 1: 可用性
+  - name: "API可用性"
+    description: "APIリクエストの成功率"
+    sli:
+      type: "availability"
+      measurement:
+        numerator: "HTTPステータスコード2xxまたは3xxのリクエスト数"
+        denominator: "全HTTPリクエスト数"
+        data_source: "Prometheus"
+        query: |
+          sum(rate(http_requests_total{service="{{SERVICE_NAME}}", status=~"2..|3.."}[{{WINDOW}}]))
+          /
+          sum(rate(http_requests_total{service="{{SERVICE_NAME}}"}[{{WINDOW}}]))
+      success_criteria: "HTTPステータスコード 2xx または 3xx"
+      exclusions:
+        - "ヘルスチェックエンドポイント (/health)"
+        - "メトリクスエンドポイント (/metrics)"
+    slo_target: 99.9  # 99.9%
+    measurement_window: "30d"  # 30日間のローリングウィンドウ
+    error_budget:
+      calculation: "(1 - 0.999) * total_requests_30d"
+      policy:
+        - threshold: "> 50%"
+          action: "通常開発速度"
+        - threshold: "25-50%"
+          action: "新機能デプロイ慎重化"
+        - threshold: "10-25%"
+          action: "新機能凍結、信頼性改善優先"
+        - threshold: "< 10%"
+          action: "緊急対応、すべての変更凍結"
+
+  # SLO 2: レイテンシ
+  - name: "APIレイテンシ"
+    description: "APIリクエストの応答時間（P99）"
+    sli:
+      type: "latency"
+      measurement:
+        metric: "P99レイテンシ"
+        data_source: "Prometheus"
+        query: |
+          histogram_quantile(0.99,
+            rate(http_request_duration_seconds_bucket{service="{{SERVICE_NAME}}"}[{{WINDOW}}])
+          )
+      percentile: 99
+    slo_target: 0.5  # 500ms
+    measurement_window: "30d"
+    error_budget:
+      calculation: "Requests with latency > 500ms"
+      policy:
+        - threshold: "> 1% of requests slow"
+          action: "パフォーマンス最適化を優先"
+
+  # SLO 3: エラー率
+  - name: "5xxエラー率"
+    description: "サーバーエラーの発生率"
+    sli:
+      type: "error_rate"
+      measurement:
+        numerator: "HTTPステータスコード5xxのリクエスト数"
+        denominator: "全HTTPリクエスト数"
+        data_source: "Prometheus"
+        query: |
+          sum(rate(http_requests_total{service="{{SERVICE_NAME}}", status=~"5.."}[{{WINDOW}}]))
+          /
+          sum(rate(http_requests_total{service="{{SERVICE_NAME}}"}[{{WINDOW}}]))
+    slo_target: 0.001  # 0.1% (99.9%の成功率)
+    measurement_window: "30d"
+    error_budget:
+      calculation: "(1 - 0.999) * total_requests_30d"
+
+# アラート設定
+alerts:
+  - name: "SLOViolation"
+    condition: "availability_30d < slo_target"
+    severity: "critical"
+    notification:
+      - "slack_channel"
+      - "pagerduty"
+    message: "🔴 SLO違反: 可用性が{{VALUE}}% (目標: {{SLO_TARGET}}%)"
+
+  - name: "ErrorBudgetYellow"
+    condition: "error_budget_remaining < 0.50"
+    severity: "warning"
+    notification:
+      - "slack_channel"
+    message: "⚠️ エラーバジェット残量50%未満"
+
+  - name: "ErrorBudgetCritical"
+    condition: "error_budget_remaining < 0.10"
+    severity: "critical"
+    notification:
+      - "slack_channel"
+      - "pagerduty"
+      - "email_engineering_leadership"
+    message: "🚨 エラーバジェット残量10%未満。緊急対応が必要です。"
+
+  - name: "FastBurn"
+    condition: "burn_rate_1h > 14.4 AND burn_rate_6h > 14.4"
+    severity: "critical"
+    notification:
+      - "pagerduty"
+    message: "🔥 エラーバジェットが急速消費中（2日で枯渇予測）"
+
+# ダッシュボード設定
+dashboard:
+  panels:
+    - name: "SLO Status"
+      type: "stat"
+      query: "availability_30d"
+      thresholds:
+        - color: "green"
+          value: 99.9
+        - color: "red"
+          value: 0
+
+    - name: "Error Budget Remaining"
+      type: "gauge"
+      query: "(error_budget_total - error_count_30d) / error_budget_total * 100"
+      thresholds:
+        - color: "red"
+          value: 0
+        - color: "yellow"
+          value: 25
+        - color: "green"
+          value: 50
+
+    - name: "Error Budget Burn Rate"
+      type: "graph"
+      query: "rate(http_requests_total{status=~'5..'}[1h]) / (slo_error_rate)"
+
+    - name: "Request Success Rate (30d)"
+      type: "graph"
+      query: "availability_30d"
+
+# レビュースケジュール
+review_schedule:
+  daily: "エラーバジェット残量確認"
+  weekly: "SLO達成状況レビュー、トレンド分析"
+  monthly: "月次SLOレポート、インシデント振り返り"
+  quarterly: "SLO妥当性評価、目標値調整検討"
