@@ -1,16 +1,25 @@
 ---
 name: graceful-shutdown-patterns
 description: |
-  Node.jsアプリケーションのグレースフルシャットダウン実装パターン。
-  シグナルハンドリング、リソースクリーンアップ、タイムアウト管理、
-  ファイル監視システムの安全な終了処理を提供。
+  Node.jsアプリケーションのGraceful Shutdown実装を専門とするスキル。
+  Twelve-Factor Appの「廃棄容易性」原則に基づき、優雅なプロセス終了、
+  リソースクリーンアップ、接続ドレイン、タイムアウト処理を設計します。
+
+  専門分野:
+  - シャットダウンシーケンス: 新規リクエスト拒否→完了待機→リソース解放
+  - リソースクリーンアップ: DB接続、キャッシュ、ファイルハンドル、タイマー
+  - 接続ドレイン: HTTPサーバー、WebSocket、キュー接続の優雅な終了
+  - タイムアウト処理: 強制終了までの猶予時間と段階的終了
+  - PM2連携: kill_timeout、wait_ready設定との統合
 
   使用タイミング:
-  - ファイル監視サービスを実装する時
-  - 長時間実行プロセスを管理する時
-  - リソースリークを防止したい時
-  - 本番環境でのデプロイメントを準備する時
-  - Kubernetes/Docker環境での終了処理を実装する時
+  - アプリケーションの終了処理を設計する時
+  - リソースリークを防ぐクリーンアップを実装する時
+  - ゼロダウンタイムデプロイを実現する時
+  - PM2でのgraceful reload設定時
+
+  Use proactively when designing shutdown sequences, implementing
+  resource cleanup, or configuring zero-downtime deployments.
 version: 1.0.0
 ---
 
@@ -18,538 +27,259 @@ version: 1.0.0
 
 ## 概要
 
-このスキルは、Node.jsアプリケーションの安全な終了処理パターンを提供します。ファイル監視システム、HTTPサーバー、データベース接続などのリソースを適切にクリーンアップし、データ損失やリソースリークを防ぎます。
+Graceful Shutdownは、進行中の処理を安全に完了させ、リソースを適切に解放して
+プロセスを終了するパターンです。Twelve-Factor Appの「廃棄容易性」原則に基づきます。
 
----
+**主要な価値**:
+- データ損失の防止
+- 接続の適切な終了
+- ゼロダウンタイムデプロイ
+- リソースリークの防止
 
-## 核心概念
-
-### なぜグレースフルシャットダウンが必要か
+## リソース構造
 
 ```
-❌ 即時終了の問題:
-- 書き込み中のファイルが破損
-- 進行中の処理が中断
-- 開いているコネクションがリーク
-- 一時ファイルが残存
-
-✅ グレースフルシャットダウンの効果:
-- 進行中の処理を完了
-- リソースを適切に解放
-- データ整合性を維持
-- クリーンな状態で終了
+graceful-shutdown-patterns/
+├── SKILL.md
+├── resources/
+│   ├── shutdown-sequence.md
+│   ├── resource-cleanup.md
+│   └── connection-draining.md
+├── scripts/
+│   └── test-graceful-shutdown.mjs
+└── templates/
+    └── graceful-shutdown.template.ts
 ```
 
-### シグナルの種類
+## コマンドリファレンス
 
-| シグナル | トリガー | 推奨動作 |
-|---------|----------|----------|
-| **SIGTERM** | kill, Docker stop | グレースフル終了 |
-| **SIGINT** | Ctrl+C | グレースフル終了 |
-| **SIGQUIT** | Ctrl+\ | コアダンプ付き終了 |
-| **SIGHUP** | ターミナル切断 | 設定リロードまたは終了 |
-| **SIGKILL** | kill -9 | ハンドル不可（即時終了） |
+### リソース読み取り
 
----
+```bash
+# シャットダウンシーケンスガイド
+cat .claude/skills/graceful-shutdown-patterns/resources/shutdown-sequence.md
 
-## 基本パターン
+# リソースクリーンアップガイド
+cat .claude/skills/graceful-shutdown-patterns/resources/resource-cleanup.md
 
-### シンプルなシャットダウンハンドラー
-
-```typescript
-import { EventEmitter } from 'events';
-
-class ShutdownManager extends EventEmitter {
-  private isShuttingDown = false;
-  private cleanupHandlers: (() => Promise<void>)[] = [];
-
-  constructor() {
-    super();
-    this.setupSignalHandlers();
-  }
-
-  private setupSignalHandlers(): void {
-    const signals: NodeJS.Signals[] = ['SIGTERM', 'SIGINT'];
-
-    for (const signal of signals) {
-      process.on(signal, async () => {
-        console.log(`\nReceived ${signal}`);
-        await this.shutdown();
-      });
-    }
-
-    // 未処理エラーでもクリーンアップ
-    process.on('uncaughtException', async (error) => {
-      console.error('Uncaught exception:', error);
-      await this.shutdown(1);
-    });
-
-    process.on('unhandledRejection', async (reason) => {
-      console.error('Unhandled rejection:', reason);
-      await this.shutdown(1);
-    });
-  }
-
-  register(handler: () => Promise<void>): void {
-    this.cleanupHandlers.push(handler);
-  }
-
-  async shutdown(exitCode = 0): Promise<void> {
-    if (this.isShuttingDown) {
-      return;
-    }
-    this.isShuttingDown = true;
-
-    console.log('Starting graceful shutdown...');
-    this.emit('shutdown');
-
-    // 登録順の逆順でクリーンアップ（LIFO）
-    for (const handler of [...this.cleanupHandlers].reverse()) {
-      try {
-        await handler();
-      } catch (error) {
-        console.error('Cleanup error:', error);
-      }
-    }
-
-    console.log('Shutdown complete');
-    process.exit(exitCode);
-  }
-}
-
-// 使用
-const shutdownManager = new ShutdownManager();
-
-shutdownManager.register(async () => {
-  console.log('Closing file watcher...');
-  await watcher.close();
-});
-
-shutdownManager.register(async () => {
-  console.log('Closing database connection...');
-  await db.close();
-});
+# 接続ドレインガイド
+cat .claude/skills/graceful-shutdown-patterns/resources/connection-draining.md
 ```
 
-### タイムアウト付きシャットダウン
+### スクリプト実行
 
-```typescript
-async function shutdownWithTimeout(
-  cleanup: () => Promise<void>,
-  timeoutMs: number = 10000
-): Promise<void> {
-  const timeoutPromise = new Promise<never>((_, reject) => {
-    setTimeout(() => {
-      reject(new Error(`Shutdown timeout after ${timeoutMs}ms`));
-    }, timeoutMs);
-  });
-
-  try {
-    await Promise.race([cleanup(), timeoutPromise]);
-  } catch (error) {
-    console.error('Forced shutdown:', error);
-    process.exit(1);
-  }
-}
-
-// 使用
-process.on('SIGTERM', async () => {
-  await shutdownWithTimeout(async () => {
-    await watcher.close();
-    await db.close();
-  }, 30000); // 30秒タイムアウト
-
-  process.exit(0);
-});
+```bash
+# Graceful Shutdownテスト
+node .claude/skills/graceful-shutdown-patterns/scripts/test-graceful-shutdown.mjs <pid>
 ```
 
----
+### テンプレート参照
 
-## ファイル監視システムのシャットダウン
-
-### Chokidarウォッチャーのクリーンアップ
-
-```typescript
-import chokidar, { FSWatcher } from 'chokidar';
-
-class FileWatcherService {
-  private watcher: FSWatcher | null = null;
-  private pendingOperations = new Set<Promise<void>>();
-  private isShuttingDown = false;
-
-  async start(paths: string[]): Promise<void> {
-    this.watcher = chokidar.watch(paths, {
-      persistent: true,
-      ignoreInitial: true,
-    });
-
-    this.watcher.on('change', (path) => {
-      this.handleFileChange(path);
-    });
-
-    this.watcher.on('ready', () => {
-      console.log('Watcher ready');
-    });
-  }
-
-  private handleFileChange(path: string): void {
-    if (this.isShuttingDown) {
-      return; // シャットダウン中は新しい処理を開始しない
-    }
-
-    const operation = this.processFile(path);
-    this.pendingOperations.add(operation);
-
-    operation.finally(() => {
-      this.pendingOperations.delete(operation);
-    });
-  }
-
-  private async processFile(path: string): Promise<void> {
-    // ファイル処理ロジック
-    console.log(`Processing: ${path}`);
-    await new Promise((resolve) => setTimeout(resolve, 100));
-  }
-
-  async close(): Promise<void> {
-    this.isShuttingDown = true;
-
-    // 1. 新しいイベントの監視を停止
-    if (this.watcher) {
-      await this.watcher.close();
-      this.watcher = null;
-    }
-
-    // 2. 進行中の処理を待機
-    if (this.pendingOperations.size > 0) {
-      console.log(`Waiting for ${this.pendingOperations.size} pending operations...`);
-      await Promise.allSettled([...this.pendingOperations]);
-    }
-
-    console.log('File watcher closed');
-  }
-}
+```bash
+# Graceful Shutdownテンプレート
+cat .claude/skills/graceful-shutdown-patterns/templates/graceful-shutdown.template.ts
 ```
 
----
+## ワークフロー
 
-## リソース管理パターン
+### Phase 1: シグナル受信
 
-### リソースレジストリ
+**対応シグナル**:
+| シグナル | トリガー | 対応 |
+|---------|---------|------|
+| SIGTERM | PM2 stop/restart, kill | Graceful Shutdown開始 |
+| SIGINT | Ctrl+C | Graceful Shutdown開始 |
+| SIGKILL | kill -9 | 即座終了（捕捉不可） |
 
-```typescript
-interface Closable {
-  close(): Promise<void>;
-}
+**シグナルハンドラー設計**:
+```javascript
+let isShuttingDown = false;
 
-class ResourceRegistry {
-  private resources: Map<string, Closable> = new Map();
-
-  register(name: string, resource: Closable): void {
-    this.resources.set(name, resource);
-  }
-
-  unregister(name: string): void {
-    this.resources.delete(name);
-  }
-
-  async closeAll(): Promise<void> {
-    const errors: Error[] = [];
-
-    // 並列でクローズ
-    await Promise.allSettled(
-      Array.from(this.resources.entries()).map(async ([name, resource]) => {
-        try {
-          console.log(`Closing ${name}...`);
-          await resource.close();
-          console.log(`${name} closed`);
-        } catch (error) {
-          errors.push(error as Error);
-          console.error(`Failed to close ${name}:`, error);
-        }
-      })
-    );
-
-    if (errors.length > 0) {
-      throw new AggregateError(errors, 'Some resources failed to close');
-    }
-  }
-}
-
-// 使用
-const registry = new ResourceRegistry();
-registry.register('watcher', fileWatcher);
-registry.register('database', dbConnection);
-registry.register('cache', cacheClient);
-
-process.on('SIGTERM', async () => {
-  await registry.closeAll();
-  process.exit(0);
-});
-```
-
-### 順序付きシャットダウン
-
-```typescript
-interface ShutdownPhase {
-  name: string;
-  priority: number; // 小さいほど先に実行
-  handler: () => Promise<void>;
-}
-
-class OrderedShutdown {
-  private phases: ShutdownPhase[] = [];
-
-  addPhase(phase: ShutdownPhase): void {
-    this.phases.push(phase);
-    this.phases.sort((a, b) => a.priority - b.priority);
-  }
-
-  async execute(): Promise<void> {
-    for (const phase of this.phases) {
-      console.log(`Phase: ${phase.name}`);
-      try {
-        await phase.handler();
-      } catch (error) {
-        console.error(`Phase ${phase.name} failed:`, error);
-        // 続行するか中断するかは要件次第
-      }
-    }
-  }
-}
-
-// 使用
-const shutdown = new OrderedShutdown();
-
-shutdown.addPhase({
-  name: 'Stop accepting new work',
-  priority: 1,
-  handler: async () => {
-    isAcceptingWork = false;
-  },
-});
-
-shutdown.addPhase({
-  name: 'Complete pending operations',
-  priority: 2,
-  handler: async () => {
-    await Promise.allSettled(pendingOperations);
-  },
-});
-
-shutdown.addPhase({
-  name: 'Close file watchers',
-  priority: 3,
-  handler: async () => {
-    await watcher.close();
-  },
-});
-
-shutdown.addPhase({
-  name: 'Close database connections',
-  priority: 4,
-  handler: async () => {
-    await db.close();
-  },
-});
-```
-
----
-
-## Docker/Kubernetes環境
-
-### シグナル伝播
-
-```typescript
-// Dockerでのシグナル処理
-// Dockerfile: CMD ["node", "app.js"] (exec形式を使用)
-
-class ContainerShutdown {
-  private shutdownTimeout: number;
-
-  constructor(options: { shutdownTimeout?: number } = {}) {
-    // Kubernetes: terminationGracePeriodSeconds のデフォルトは30秒
-    this.shutdownTimeout = options.shutdownTimeout ?? 25000;
-    this.setupHandlers();
-  }
-
-  private setupHandlers(): void {
-    let isShuttingDown = false;
-
-    const shutdown = async (signal: string) => {
-      if (isShuttingDown) return;
-      isShuttingDown = true;
-
-      console.log(`Received ${signal}, starting graceful shutdown...`);
-
-      const forceExit = setTimeout(() => {
-        console.error('Forced exit due to timeout');
-        process.exit(1);
-      }, this.shutdownTimeout);
-
-      try {
-        await this.cleanup();
-        clearTimeout(forceExit);
-        console.log('Graceful shutdown complete');
-        process.exit(0);
-      } catch (error) {
-        console.error('Shutdown error:', error);
-        clearTimeout(forceExit);
-        process.exit(1);
-      }
-    };
-
-    process.on('SIGTERM', () => shutdown('SIGTERM'));
-    process.on('SIGINT', () => shutdown('SIGINT'));
-  }
-
-  private async cleanup(): Promise<void> {
-    // アプリケーション固有のクリーンアップ
-  }
-}
-```
-
-### ヘルスチェック統合
-
-```typescript
-import http from 'http';
-
-class HealthAwareShutdown {
-  private isHealthy = true;
-  private isShuttingDown = false;
-  private healthServer: http.Server;
-
-  constructor(port: number = 8080) {
-    this.healthServer = http.createServer((req, res) => {
-      if (req.url === '/health' || req.url === '/readiness') {
-        if (this.isHealthy && !this.isShuttingDown) {
-          res.writeHead(200);
-          res.end('OK');
-        } else {
-          res.writeHead(503);
-          res.end('Service Unavailable');
-        }
-      } else {
-        res.writeHead(404);
-        res.end();
-      }
-    });
-
-    this.healthServer.listen(port);
-  }
-
-  async shutdown(): Promise<void> {
-    // 1. ヘルスチェックを失敗させる（新しいトラフィックを停止）
-    this.isShuttingDown = true;
-
-    // 2. ロードバランサーがトラフィックを停止するまで待機
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-
-    // 3. クリーンアップを実行
-    await this.cleanup();
-
-    // 4. ヘルスサーバーを停止
-    await new Promise<void>((resolve) => {
-      this.healthServer.close(() => resolve());
-    });
-  }
-
-  private async cleanup(): Promise<void> {
-    // アプリケーション固有のクリーンアップ
-  }
-}
-```
-
----
-
-## 判断基準チェックリスト
-
-### 設計時
-
-- [ ] すべてのシグナル（SIGTERM, SIGINT）をハンドルしているか？
-- [ ] タイムアウトを設定しているか？
-- [ ] リソースのクローズ順序を考慮しているか？
-- [ ] 未処理エラーでもクリーンアップが実行されるか？
-
-### 実装時
-
-- [ ] 進行中の処理を完了させているか？
-- [ ] 新しい処理の受付を停止しているか？
-- [ ] すべてのリソースを解放しているか？
-- [ ] エラーが発生してもクリーンアップを継続するか？
-
-### テスト時
-
-- [ ] SIGTERM送信後に正常終了するか？
-- [ ] タイムアウト時に強制終了するか？
-- [ ] リソースリークがないか？
-- [ ] 進行中の処理が完了するか？
-
----
-
-## アンチパターン
-
-### ❌ 避けるべきパターン
-
-```typescript
-// 1. シグナルハンドリングなし
-// プロセスが即時終了し、リソースがリークする
-
-// 2. 同期的なクリーンアップのみ
 process.on('SIGTERM', () => {
-  watcher.close(); // Promiseを待機していない
-  process.exit(0);
-});
-
-// 3. タイムアウトなし
-process.on('SIGTERM', async () => {
-  await infiniteOperation(); // 永遠に終了しない可能性
-  process.exit(0);
-});
-
-// 4. 二重シャットダウン
-process.on('SIGTERM', async () => {
-  await cleanup(); // 2回目の SIGTERM で再度実行される
+  if (isShuttingDown) return;  // 二重実行防止
+  isShuttingDown = true;
+  gracefulShutdown();
 });
 ```
 
-### ✅ 推奨パターン
+**リソース**: `resources/shutdown-sequence.md`
 
-```typescript
-// 1. 適切なシグナルハンドリング
-const signals: NodeJS.Signals[] = ['SIGTERM', 'SIGINT'];
-signals.forEach((signal) => process.on(signal, shutdown));
+### Phase 2: 新規リクエスト拒否
 
-// 2. 非同期クリーンアップを待機
-process.on('SIGTERM', async () => {
-  await watcher.close();
-  process.exit(0);
+**HTTPサーバー**:
+```javascript
+// 新規接続を受け付けない
+server.close(() => {
+  console.log('HTTP server closed');
 });
-
-// 3. タイムアウト付き
-await Promise.race([cleanup(), timeout(30000)]);
-
-// 4. フラグで二重実行を防止
-if (isShuttingDown) return;
-isShuttingDown = true;
 ```
 
----
+**ヘルスチェックエンドポイント**:
+```javascript
+app.get('/health', (req, res) => {
+  if (isShuttingDown) {
+    res.status(503).json({ status: 'shutting_down' });
+  } else {
+    res.json({ status: 'healthy' });
+  }
+});
+```
+
+**判断基準**:
+- [ ] ヘルスチェックはシャットダウン状態を反映するか？
+- [ ] ロードバランサーへの通知は考慮されているか？
+
+### Phase 3: 進行中処理の完了待機
+
+**リクエストカウンター**:
+```javascript
+let activeRequests = 0;
+
+app.use((req, res, next) => {
+  activeRequests++;
+  res.on('finish', () => activeRequests--);
+  next();
+});
+
+async function waitForRequests(timeout = 30000) {
+  const start = Date.now();
+  while (activeRequests > 0) {
+    if (Date.now() - start > timeout) {
+      console.warn(`Timeout: ${activeRequests} requests still active`);
+      break;
+    }
+    await sleep(100);
+  }
+}
+```
+
+**タイムアウト設定**:
+- 短時間リクエスト: 10-15秒
+- DB処理あり: 30秒
+- 長時間処理: 60秒以上
+
+### Phase 4: リソースクリーンアップ
+
+**クリーンアップ優先順位**:
+1. HTTPサーバー（新規接続停止）
+2. 外部サービス接続（API、キュー）
+3. キャッシュ接続（Redis、Memcached）
+4. データベース接続（コネクションプール）
+5. ファイルハンドル
+6. タイマー・インターバル
+
+**クリーンアップパターン**:
+```javascript
+const cleanupFunctions = [];
+
+function registerCleanup(name, fn) {
+  cleanupFunctions.push({ name, fn });
+}
+
+async function cleanup() {
+  for (const { name, fn } of cleanupFunctions.reverse()) {
+    try {
+      await fn();
+      console.log(`Cleanup completed: ${name}`);
+    } catch (error) {
+      console.error(`Cleanup failed: ${name}`, error);
+    }
+  }
+}
+```
+
+**リソース**: `resources/resource-cleanup.md`
+
+### Phase 5: プロセス終了
+
+**終了コード設定**:
+```javascript
+process.exit(0);  // 正常終了
+process.exit(1);  // エラー終了
+```
+
+**タイムアウト強制終了**:
+```javascript
+const timeout = setTimeout(() => {
+  console.error('Graceful shutdown timeout, forcing exit');
+  process.exit(1);
+}, 30000);
+
+// クリーンアップ完了後
+clearTimeout(timeout);
+process.exit(0);
+```
+
+## PM2との統合
+
+### kill_timeout設定
+
+```javascript
+// ecosystem.config.js
+{
+  kill_timeout: 5000  // SIGTERMからSIGKILLまでの待機時間
+}
+```
+
+**推奨値**:
+| シナリオ | kill_timeout |
+|---------|-------------|
+| 軽量API | 3000-5000ms |
+| DB処理あり | 10000-15000ms |
+| 長時間処理 | 30000ms以上 |
+
+### Graceful Reload
+
+```bash
+# ゼロダウンタイム再起動
+pm2 reload ecosystem.config.js
+```
+
+**動作**:
+1. 新プロセス起動
+2. 新プロセスがreadyになるまで待機
+3. 旧プロセスにSIGINT送信
+4. 旧プロセス終了後に完了
+
+### wait_ready設定
+
+```javascript
+// ecosystem.config.js
+{
+  wait_ready: true,
+  listen_timeout: 10000
+}
+
+// アプリケーション側
+server.listen(PORT, () => {
+  process.send && process.send('ready');
+});
+```
+
+## ベストプラクティス
+
+### すべきこと
+
+1. **べき等なシャットダウン**: 二重実行を防止
+2. **タイムアウト設定**: 無限待機を避ける
+3. **ログ出力**: 各フェーズの開始・終了をログ
+4. **優先順位付け**: 重要なリソースから順にクリーンアップ
+
+### 避けるべきこと
+
+1. **同期ブロッキング**: 終了処理での同期I/O
+2. **無限待機**: タイムアウトなしの完了待機
+3. **例外無視**: クリーンアップエラーの握りつぶし
+4. **リソース未解放**: 接続やハンドルの放置
+
+## 変更履歴
+
+| バージョン | 日付 | 変更内容 |
+|-----------|------|---------|
+| 1.0.0 | 2025-11-26 | 初版作成 |
 
 ## 関連スキル
 
-- `.claude/skills/event-driven-file-watching/SKILL.md` - ファイル監視
-- `.claude/skills/nodejs-stream-processing/SKILL.md` - ストリーム処理
-- `.claude/skills/context-optimization/SKILL.md` - パフォーマンス最適化
-
----
-
-## リソース参照
-
-```bash
-# シャットダウンパターン詳細
-cat .claude/skills/graceful-shutdown-patterns/resources/shutdown-strategies.md
-
-# 完全なシャットダウンマネージャーテンプレート
-cat .claude/skills/graceful-shutdown-patterns/templates/shutdown-manager.ts
-```
+- **process-lifecycle-management** (`.claude/skills/process-lifecycle-management/SKILL.md`)
+- **pm2-ecosystem-config** (`.claude/skills/pm2-ecosystem-config/SKILL.md`)
+- **memory-monitoring-strategies** (`.claude/skills/memory-monitoring-strategies/SKILL.md`)

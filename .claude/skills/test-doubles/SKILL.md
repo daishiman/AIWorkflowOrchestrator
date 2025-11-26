@@ -48,6 +48,8 @@ test-doubles/
 │   ├── stub-patterns.md                  # Stubパターン
 │   ├── fake-patterns.md                  # Fakeパターン
 │   └── verification-strategies.md        # 検証戦略
+├── scripts/
+│   └── test-double-analyzer.mjs          # テストダブル分析スクリプト
 └── templates/
     └── test-double-selection.md          # 選択ガイドテンプレート
 ```
@@ -71,6 +73,17 @@ cat .claude/skills/test-doubles/resources/fake-patterns.md
 
 # 検証戦略
 cat .claude/skills/test-doubles/resources/verification-strategies.md
+```
+
+### スクリプト実行
+
+```bash
+# テストダブル分析
+# テストファイルからMock/Stub/Spy使用状況を分析し、改善提案を出力
+node .claude/skills/test-doubles/scripts/test-double-analyzer.mjs <test-file>
+
+# 例
+node .claude/skills/test-doubles/scripts/test-double-analyzer.mjs src/__tests__/user-service.test.ts
 ```
 
 ### テンプレート参照
@@ -187,9 +200,11 @@ it('should call repository with correct id', async () => {
 
 ## 関連スキル
 
-- **tdd-red-green-refactor** (`.claude/skills/tdd-red-green-refactor/SKILL.md`): TDDサイクル
+- **tdd-principles** (`.claude/skills/tdd-principles/SKILL.md`): TDD原則（@unit-tester向け）
+- **tdd-red-green-refactor** (`.claude/skills/tdd-red-green-refactor/SKILL.md`): TDDサイクル実装（@logic-dev向け）
 - **clean-code-practices** (`.claude/skills/clean-code-practices/SKILL.md`): コード品質
 - **refactoring-techniques** (`.claude/skills/refactoring-techniques/SKILL.md`): リファクタリング
+- **vitest-advanced** (`.claude/skills/vitest-advanced/SKILL.md`): Vitestモッキングパターン
 
 ## 参考文献
 
@@ -197,6 +212,22 @@ it('should call repository with correct id', async () => {
   - 第11章: Using Test Doubles
 - **『Growing Object-Oriented Software, Guided by Tests』** Freeman & Pryce著
   - Mockを使ったTDD
+
+---
+
+## 使用上の注意
+
+### このスキルが得意なこと
+- テストダブル5種類（Mock、Stub、Spy、Fake、Dummy）の使い分け判断
+- 適切なテストダブル選択による保守性の高いテスト設計
+- 検証戦略（状態検証 vs 振る舞い検証）の選定
+
+### このスキルが行わないこと
+- Vitest固有のモッキングAPI詳細（→ vitest-advanced）
+- TDDサイクル全体の設計（→ tdd-principles）
+- E2E/統合テストでのモック戦略
+
+---
 
 ## 変更履歴
 

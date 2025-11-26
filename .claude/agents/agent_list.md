@@ -488,23 +488,25 @@
 - **モデル人物:** **アレクサンドル・ストラッセ (Alexandre Strzelewicz)** - PM2 作者
 - **目的:** エージェントの永続化と安定稼働。
 - **背景:** PC 再起動後も自動で立ち上がり、クラッシュしても即座に復旧させる必要がある。
-- **責務:** PM2 エコシステム設定、ログローテーション、メモリ制限監視。
+- **責務:** PM2 エコシステム設定、ログローテーション、メモリ制限監視、Graceful Shutdown設計。
 - **参照書籍・メソッド:**
   1.  **『詳解 Linux カーネル』**: 「プロセスライフサイクル」の理解。
   2.  **『Node.js 運用ガイド』**: 「プロセスモニタリング」の実践。
-  3.  **『Twelve-Factor App』**: 「ログのストリーム化」。
+  3.  **『Twelve-Factor App』**: 「ログのストリーム化」「廃棄容易性」。
 - **実行チェックリスト:**
   - [ ] クラッシュ時に自動再起動するか？
   - [ ] ログファイルがディスクを圧迫しない設定か？
-- **成果物:** `ecosystem.config.js`
+  - [ ] Graceful shutdownが実装されているか？
+  - [ ] メモリ上限による自動再起動が設定されているか？
+- **成果物:** `ecosystem.config.js`, `OPERATIONS.md`
 - **必要なスキル**:
   | スキル名 | パス | 概要 |
   | --------------------- | ------ | ---------------------------------------------------- |
-  | **agent-lifecycle-management** | `.claude/skills/agent-lifecycle-management/SKILL.md` | プロセス起動、終了、シグナル処理、ゾンビプロセス回避 |
-  | **agent-lifecycle-management** | `.claude/skills/agent-lifecycle-management/SKILL.md` | PM2 設定、クラスタリング、ログローテーション |
-  | **agent-lifecycle-management** | `.claude/skills/agent-lifecycle-management/SKILL.md` | SIGTERM/SIGINT 処理、リソースクリーンアップ |
-  | **best-practices-curation** | `.claude/skills/best-practices-curation/SKILL.md` | メモリリーク検出、ヒープサイズ設定、GC チューニング |
-  | **best-practices-curation** | `.claude/skills/best-practices-curation/SKILL.md` | stdout/stderr、構造化ログ、ログ集約 |
+  | **pm2-ecosystem-config** | `.claude/skills/pm2-ecosystem-config/SKILL.md` | PM2設定、クラスタリング、環境変数管理 |
+  | **process-lifecycle-management** | `.claude/skills/process-lifecycle-management/SKILL.md` | プロセス状態、シグナル処理、子プロセス管理 |
+  | **graceful-shutdown-patterns** | `.claude/skills/graceful-shutdown-patterns/SKILL.md` | SIGTERM/SIGINT処理、リソースクリーンアップ、接続ドレイン |
+  | **log-rotation-strategies** | `.claude/skills/log-rotation-strategies/SKILL.md` | pm2-logrotate、Winston、ログ集約 |
+  | **memory-monitoring-strategies** | `.claude/skills/memory-monitoring-strategies/SKILL.md` | メモリリーク検出、ヒープ分析、PM2メモリ設定 |
 
 ---
 
@@ -513,6 +515,7 @@
 #### 20. ユニットテスター
 
 - **エージェント名:** `@unit-tester`
+- **エージェントの配置:** `.claude/agents/unit-tester.md`
 - **モデル人物:** **ケント・ベック (Kent Beck)** - TDD 再発見者
 - **目的:** コードの最小単位での正しさの保証。
 - **背景:** 後工程でのバグ発見はコストが高いため、開発時に品質を作り込む。
