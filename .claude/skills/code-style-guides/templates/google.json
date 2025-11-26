@@ -1,0 +1,17 @@
+{
+  "extends": ["google", "prettier"],
+  "env": {
+    "browser": true,
+    "es2024": true,
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-console": "warn",
+    "prefer-const": "error",
+    "no-var": "error"
+  }
+}

@@ -387,13 +387,13 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                 | 概要                                        |
-| ------------------------ | ------------------------------------------- |
-| **eslint-configuration** | ルール設定、カスタムルール、プラグイン活用  |
-| **prettier-integration** | ESLint との統合、フォーマットルール競合回避 |
-| **static-analysis**      | 循環的複雑度、認知的複雑度、保守性指標      |
-| **code-style-guides**    | Airbnb、Google、Standard スタイルガイド適用 |
-| **commit-hooks**         | Husky、lint-staged、pre-commit 自動化       |
+| スキル名                 | パス | 概要                                        |
+| ------------------------ | ---- | ------------------------------------------- |
+| **eslint-configuration** | `.claude/skills/eslint-configuration/SKILL.md` | ESLintルール設定、パーサー、プラグイン統合、競合解決  |
+| **prettier-integration** | `.claude/skills/prettier-integration/SKILL.md` | Prettier統合、責務分離、エディタ統合、自動フォーマット戦略 |
+| **static-analysis**      | `.claude/skills/static-analysis/SKILL.md` | 循環的複雑度、認知的複雑度、保守性指標、Code Smells検出      |
+| **code-style-guides**    | `.claude/skills/code-style-guides/SKILL.md` | Airbnb、Google、Standard スタイルガイド選択と適用 |
+| **commit-hooks**         | `.claude/skills/commit-hooks/SKILL.md` | Husky、lint-staged統合、pre-commit品質ゲート       |
 ```
 
 ## 23. 認証・認可スペシャリスト
