@@ -404,13 +404,13 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                | 概要                                              |
-| ----------------------- | ------------------------------------------------- |
-| **oauth2-flows**        | Authorization Code Flow、PKCE、Refresh Token      |
-| **session-management**  | Cookie-based、JWT-based、Session Storage          |
-| **rbac-implementation** | Role-Based Access Control、権限管理、ポリシー定義 |
-| **nextauth-patterns**   | NextAuth.js 設定、Adapter、カスタムプロバイダー   |
-| **security-headers**    | CSRF、XSS、Clickjacking 対策、CSP 設定            |
+| スキル名 | パス | 概要 |
+| ----------------------- | ---- | ---- |
+| **oauth2-flows** | `.claude/skills/oauth2-flows/SKILL.md` | Authorization Code Flow、PKCE、Refresh Token、セキュリティベストプラクティス、トークンストレージ戦略 |
+| **session-management** | `.claude/skills/session-management/SKILL.md` | JWT/Database/Hybrid戦略、Cookie属性設定、トークンライフサイクル、セッション固定・ハイジャック対策 |
+| **rbac-implementation** | `.claude/skills/rbac-implementation/SKILL.md` | ロール設計、権限モデル、多層アクセス制御（ミドルウェア/APIルート/データ層）、ポリシーエンジン |
+| **nextauth-patterns** | `.claude/skills/nextauth-patterns/SKILL.md` | NextAuth.js v5設定、プロバイダー設定、Drizzleアダプター統合、セッションコールバック、型安全性 |
+| **security-headers** | `.claude/skills/security-headers/SKILL.md` | CSP、HSTS、X-Frame-Options、Referrer-Policy、CSRF/XSS対策、Cookie属性安全化 |
 ```
 
 ## 24. セキュリティ監査人
@@ -700,4 +700,19 @@
 | **flaky-test-prevention** | `.claude/skills/flaky-test-prevention/SKILL.md` | リトライロジック、明示的待機、非決定性排除 |
 | **visual-regression-testing** | `.claude/skills/visual-regression-testing/SKILL.md` | スクリーンショット比較、CSS アニメーション考慮 |
 | **api-mocking** | `.claude/skills/api-mocking/SKILL.md` | MSW、Nock、モックサーバー構築 |
+```
+
+---
+
+## 新規スキル - 認証・認可関連 (2025-11-26 追加)
+
+以下のスキルは @auth-specialist エージェント軽量化により作成されました:
+
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **oauth2-flows** | `.claude/skills/oauth2-flows/SKILL.md` | OAuth 2.0認可フロー（Authorization Code、PKCE、Refresh Token）、セキュリティベストプラクティス、トークンストレージ戦略 |
+| **session-management** | `.claude/skills/session-management/SKILL.md` | セッション戦略（JWT/Database/Hybrid）、Cookie属性設定、トークンライフサイクル管理、セッション固定・ハイジャック対策 |
+| **rbac-implementation** | `.claude/skills/rbac-implementation/SKILL.md` | ロールベースアクセス制御、ロール設計、権限モデル、多層アクセス制御、ポリシーエンジン構築 |
+| **nextauth-patterns** | `.claude/skills/nextauth-patterns/SKILL.md` | NextAuth.js v5設定パターン、プロバイダー設定、Drizzleアダプター統合、セッションコールバックカスタマイズ |
+| **security-headers** | `.claude/skills/security-headers/SKILL.md` | セキュリティヘッダー設定（CSP、HSTS、X-Frame-Options）、CSRF/XSS対策、Cookie属性安全化 |
 ```
