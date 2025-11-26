@@ -1,0 +1,216 @@
+# アラートルールテンプレート (Prometheus Alertmanager)
+
+groups:
+  - name: "{{SERVICE_NAME}}_alerts"
+    interval: 30s
+
+    rules:
+      # ========================================
+      # Critical Alerts
+      # ========================================
+
+      # SLO違反: 可用性
+      - alert: SLOViolationAvailability
+        expr: |
+          (
+            sum(rate(http_requests_total{service="{{SERVICE_NAME}}", status=~"2..|3.."}[30d]))
+            /
+            sum(rate(http_requests_total{service="{{SERVICE_NAME}}"}[30d]))
+          ) < 0.999
+        for: 5m
+        labels:
+          severity: critical
+          service: "{{SERVICE_NAME}}"
+        annotations:
+          summary: "SLO違反: 可用性が {{ $value | humanizePercentage }} (目標: 99.9%)"
+          description: |
+            過去30日間の可用性がSLO目標を下回っています。
+            即座の対応が必要です。
+
+            現在の可用性: {{ $value | humanizePercentage }}
+            SLO目標: 99.9%
+
+            対応:
+            1. エラーログを確認し、原因を特定
+            2. 最近のデプロイがあればロールバック検討
+            3. 15分以内に改善しない場合はエスカレーション
+
+            詳細:
+            - Dashboard: https://grafana.example.com/d/{{SERVICE_NAME}}-overview
+            - Logs: https://kibana.example.com/app/logs?service={{SERVICE_NAME}}&level=ERROR
+            - Runbook: https://runbooks.example.com/slo-violation
+          runbook_url: "https://runbooks.example.com/slo-violation"
+          dashboard_url: "https://grafana.example.com/d/{{SERVICE_NAME}}-overview"
+
+      # エラー率急増
+      - alert: HighErrorRate
+        expr: |
+          (
+            sum(rate(http_requests_total{service="{{SERVICE_NAME}}", status=~"5.."}[5m]))
+            /
+            sum(rate(http_requests_total{service="{{SERVICE_NAME}}"}[5m]))
+          ) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+          service: "{{SERVICE_NAME}}"
+        annotations:
+          summary: "エラー率急増: {{ $value | humanizePercentage }} (目標: < 1%)"
+          description: |
+            APIエラー率が5%を超えています。
+
+            現在のエラー率: {{ $value | humanizePercentage }}
+            影響: 約{{ $value | humanize }}%のリクエストが失敗
+
+            対応:
+            1. エラーログから原因特定
+            2. 影響範囲の確認
+            3. 必要に応じてロールバック
+
+            詳細:
+            - Logs: https://kibana.example.com/app/logs?service={{SERVICE_NAME}}&level=ERROR&from=now-15m
+            - Dashboard: https://grafana.example.com/d/{{SERVICE_NAME}}-errors
+          runbook_url: "https://runbooks.example.com/high-error-rate"
+
+      # エラーバジェット枯渇警告
+      - alert: ErrorBudgetCritical
+        expr: |
+          (
+            (error_budget_total{service="{{SERVICE_NAME}}"} - error_count_30d{service="{{SERVICE_NAME}}"})
+            /
+            error_budget_total{service="{{SERVICE_NAME}}"}
+          ) < 0.10
+        for: 5m
+        labels:
+          severity: critical
+          service: "{{SERVICE_NAME}}"
+        annotations:
+          summary: "エラーバジェット残量 {{ $value | humanizePercentage }}"
+          description: |
+            エラーバジェットが枯渇寸前です。
+
+            残量: {{ $value | humanizePercentage }}
+            閾値: 10%
+
+            対応:
+            1. すべての新機能デプロイを凍結
+            2. 信頼性改善にフォーカス
+            3. 緊急対策会議を招集
+
+            詳細:
+            - Error Budget Dashboard: https://grafana.example.com/d/error-budget
+          runbook_url: "https://runbooks.example.com/error-budget-critical"
+
+      # ========================================
+      # Warning Alerts
+      # ========================================
+
+      # レイテンシ増加
+      - alert: HighLatency
+        expr: |
+          histogram_quantile(0.99,
+            rate(http_request_duration_seconds_bucket{service="{{SERVICE_NAME}}"}[5m])
+          ) > 0.5
+        for: 10m
+        labels:
+          severity: warning
+          service: "{{SERVICE_NAME}}"
+        annotations:
+          summary: "P99レイテンシ高: {{ $value }}s (目標: < 500ms)"
+          description: |
+            APIレイテンシが増加しています。
+
+            P99レイテンシ: {{ $value }}s
+            目標: < 0.5s
+
+            対応（営業時間内）:
+            1. APMでボトルネック特定
+            2. データベーススロークエリ確認
+            3. キャッシュヒット率確認
+
+            詳細:
+            - APM: https://apm.example.com/services/{{SERVICE_NAME}}
+            - Database: https://grafana.example.com/d/database-performance
+          runbook_url: "https://runbooks.example.com/high-latency"
+
+      # エラーバジェット警告
+      - alert: ErrorBudgetYellow
+        expr: |
+          (
+            (error_budget_total{service="{{SERVICE_NAME}}"} - error_count_30d{service="{{SERVICE_NAME}}"})
+            /
+            error_budget_total{service="{{SERVICE_NAME}}"}
+          ) < 0.50
+        for: 10m
+        labels:
+          severity: warning
+          service: "{{SERVICE_NAME}}"
+        annotations:
+          summary: "エラーバジェット残量 {{ $value | humanizePercentage }}"
+          description: |
+            エラーバジェットが減少中です。
+
+            残量: {{ $value | humanizePercentage }}
+            アクション: 新機能デプロイは慎重に
+
+            対応:
+            1. カナリアリリース期間を延長
+            2. テストカバレッジ強化
+            3. 信頼性改善タスクの優先度を上げる
+          runbook_url: "https://runbooks.example.com/error-budget-yellow"
+
+      # メモリ使用率高
+      - alert: HighMemoryUsage
+        expr: |
+          (
+            node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes
+          ) / node_memory_MemTotal_bytes > 0.85
+        for: 10m
+        labels:
+          severity: warning
+          service: "{{SERVICE_NAME}}"
+        annotations:
+          summary: "メモリ使用率 {{ $value | humanizePercentage }}"
+          description: |
+            メモリ使用率が高くなっています。
+
+            使用率: {{ $value | humanizePercentage }}
+            閾値: 85%
+
+            対応:
+            1. メモリリークチェック
+            2. 不要なプロセス停止
+            3. スケールアウト検討
+          runbook_url: "https://runbooks.example.com/high-memory"
+
+      # ========================================
+      # Fast Burn (急速なエラーバジェット消費)
+      # ========================================
+
+      - alert: FastBurn
+        expr: |
+          (
+            (1 - (sum(rate(http_requests_total{status=~"2..", service="{{SERVICE_NAME}}"}[1h])) / sum(rate(http_requests_total{service="{{SERVICE_NAME}}"}[1h]))))
+            /
+            (1 - 0.999)
+          ) > 14.4
+          and
+          (
+            (1 - (sum(rate(http_requests_total{status=~"2..", service="{{SERVICE_NAME}}"}[6h])) / sum(rate(http_requests_total{service="{{SERVICE_NAME}}"}[6h]))))
+            /
+            (1 - 0.999)
+          ) > 14.4
+        labels:
+          severity: critical
+          service: "{{SERVICE_NAME}}"
+        annotations:
+          summary: "エラーバジェット急速消費（2日で枯渇予測）"
+          description: |
+            エラーバジェットが急速に消費されています。
+            このペースでは2日でバジェット枯渇します。
+
+            対応:
+            1. 即座にエラーログ確認
+            2. 最近のデプロイをロールバック検討
+            3. インシデント対応モード
+          runbook_url: "https://runbooks.example.com/fast-burn"

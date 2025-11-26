@@ -1,0 +1,141 @@
+{
+  "comment": "構造化ログフォーマットの実例集",
+
+  "basic_info_log": {
+    "timestamp": "2025-11-26T10:30:45.123Z",
+    "level": "INFO",
+    "message": "User logged in successfully",
+    "service": "api-server",
+    "environment": "production",
+    "request_id": "550e8400-e29b-41d4-a716-446655440000",
+    "user_id": "user_12345",
+    "session_id": "sess_abc123"
+  },
+
+  "error_log_with_context": {
+    "timestamp": "2025-11-26T10:31:15.456Z",
+    "level": "ERROR",
+    "message": "Database query failed",
+    "service": "api-server",
+    "environment": "production",
+    "request_id": "660e8400-e29b-41d4-a716-446655440001",
+    "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+    "error": {
+      "type": "DatabaseError",
+      "message": "Connection timeout after 5000ms",
+      "code": "ETIMEDOUT",
+      "stack": "Error: Connection timeout\n    at Database.query (database.ts:45)\n    at UserRepository.findById (user-repository.ts:23)"
+    },
+    "context": {
+      "query": "SELECT * FROM users WHERE id = $1",
+      "params": ["user_12345"],
+      "timeout_ms": 5000,
+      "retry_count": 3
+    }
+  },
+
+  "warn_log_with_retry": {
+    "timestamp": "2025-11-26T10:32:00.789Z",
+    "level": "WARN",
+    "message": "External API call failed, retrying",
+    "service": "payment-service",
+    "environment": "production",
+    "request_id": "770e8400-e29b-41d4-a716-446655440002",
+    "context": {
+      "api": "stripe-payment",
+      "endpoint": "/v1/charges",
+      "attempt": 2,
+      "max_attempts": 3,
+      "status_code": 503,
+      "retry_after_seconds": 5
+    }
+  },
+
+  "debug_log": {
+    "timestamp": "2025-11-26T10:32:30.012Z",
+    "level": "DEBUG",
+    "message": "Cache hit for user data",
+    "service": "api-server",
+    "environment": "development",
+    "request_id": "880e8400-e29b-41d4-a716-446655440003",
+    "context": {
+      "cache_key": "user:12345",
+      "ttl_remaining": 3600,
+      "hit_rate": 0.85
+    }
+  },
+
+  "fatal_log": {
+    "timestamp": "2025-11-26T10:33:00.345Z",
+    "level": "FATAL",
+    "message": "Application startup failed",
+    "service": "api-server",
+    "environment": "production",
+    "error": {
+      "type": "StartupError",
+      "message": "Database connection failed after 5 retries",
+      "code": "DB_CONN_FAILED"
+    },
+    "context": {
+      "database_host": "postgres.example.com",
+      "database_port": 5432,
+      "max_retries": 5,
+      "last_error": "ECONNREFUSED"
+    }
+  },
+
+  "business_event_log": {
+    "timestamp": "2025-11-26T10:34:00.678Z",
+    "level": "INFO",
+    "message": "Order completed",
+    "service": "order-service",
+    "environment": "production",
+    "request_id": "990e8400-e29b-41d4-a716-446655440004",
+    "user_id": "user_12345",
+    "event": {
+      "type": "order_completed",
+      "order_id": "ord_abc123",
+      "total_amount": 1234.56,
+      "currency": "USD",
+      "items_count": 3,
+      "payment_method": "credit_card"
+    }
+  },
+
+  "distributed_trace_log": {
+    "timestamp": "2025-11-26T10:35:00.901Z",
+    "level": "INFO",
+    "message": "Microservice communication",
+    "service": "user-service",
+    "environment": "production",
+    "request_id": "aa0e8400-e29b-41d4-a716-446655440005",
+    "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+    "span_id": "00f067aa0ba902b7",
+    "parent_span_id": "00f067aa0ba902b6",
+    "operation": "get_user_profile",
+    "duration_ms": 45,
+    "context": {
+      "upstream_service": "api-gateway",
+      "downstream_service": "database"
+    }
+  },
+
+  "pii_masked_log": {
+    "timestamp": "2025-11-26T10:36:00.234Z",
+    "level": "INFO",
+    "message": "User profile updated",
+    "service": "user-service",
+    "environment": "production",
+    "request_id": "bb0e8400-e29b-41d4-a716-446655440006",
+    "user_id_hash": "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
+    "updated_fields": {
+      "email": "j***e@example.com",
+      "phone": "***-***-***-4567",
+      "address": {
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "***"
+      }
+    }
+  }
+}
