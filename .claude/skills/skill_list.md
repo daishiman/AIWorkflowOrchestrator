@@ -315,11 +315,13 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                | 概要                                                 |
-| ----------------------- | ---------------------------------------------------- |
-| **agent-architecture-patterns** | アーキテクチャパターン、循環依存検出、単一責任原則 |
-| **best-practices-curation** | ベストプラクティスの収集、評価、統合、更新 |
-| **context-optimization** | トークン使用量の最小化と必要情報の効率的抽出 |
+| スキル名                        | パス                                                     | 概要                                                         |
+| ------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------ |
+| **multipart-upload**            | `.claude/skills/multipart-upload/SKILL.md`               | FormData、チャンクアップロード、進捗追跡、チェックサム検証   |
+| **network-resilience**          | `.claude/skills/network-resilience/SKILL.md`             | オフラインキュー、再接続ロジック、状態同期、データ整合性     |
+| **retry-strategies**            | `.claude/skills/retry-strategies/SKILL.md`               | 指数バックオフ、ジッター、サーキットブレーカー               |
+| **multi-agent-systems**         | `.claude/skills/multi-agent-systems/SKILL.md`            | エージェント間連携、ハンドオフプロトコル                     |
+| **agent-architecture-patterns** | `.claude/skills/agent-architecture-patterns/SKILL.md`    | エージェント構造、依存スキル設計パターン                     |
 ```
 
 ## 19. プロセス管理
@@ -652,4 +654,28 @@
 | **github-api-integration**       | GitHub REST/GraphQL API、gh CLI 活用、トークン管理                            |
 | **workflow-templates**           | Organization workflow templates、スターターワークフロー                       |
 | **concurrency-control**          | 同時実行制御(concurrency)、キャンセル戦略(cancel-in-progress)                 |
+```
+
+---
+
+## 共通スキル（複数エージェントで使用）
+
+以下のスキルは、上記の特定エージェントに限らず、複数のエージェントで共有されます。
+
+### WebSocket通信パターン
+
+- **スキル名:** `websocket-patterns`
+- **パス:** `.claude/skills/websocket-patterns/SKILL.md`
+- **バージョン:** v1.0.0
+
+```markdown
+- **概要**: WebSocketによる双方向リアルタイム通信パターン
+
+| リソース名 | パス | 概要 |
+|-----------|------|------|
+| **connection-lifecycle** | `.claude/skills/websocket-patterns/resources/connection-lifecycle.md` | 接続ライフサイクル（open/close/error/message）、状態遷移管理 |
+| **heartbeat-strategies** | `.claude/skills/websocket-patterns/resources/heartbeat-strategies.md` | Ping-Pongによる接続維持と死活監視 |
+| **message-queueing** | `.claude/skills/websocket-patterns/resources/message-queueing.md` | 接続断時のメッセージバッファリングと順序保証送信 |
+
+- **使用エージェント**: @local-sync, @gateway-dev
 ```
