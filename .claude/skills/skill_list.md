@@ -330,11 +330,13 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名              | 概要                                                 |
-| --------------------- | ---------------------------------------------------- |
-| **agent-lifecycle-management** | エージェント起動、実行、終了、状態管理 |
-| **multi-agent-systems** | エージェント間協調、メッセージパッシング |
-| **best-practices-curation** | ベストプラクティスの収集、評価、統合、更新 |
+| スキル名              | パス | 概要                                                 |
+| --------------------- | ---- | ---------------------------------------------------- |
+| **pm2-ecosystem-config** | `.claude/skills/pm2-ecosystem-config/SKILL.md` | PM2設定オプション、クラスタリング、環境変数管理 |
+| **process-lifecycle-management** | `.claude/skills/process-lifecycle-management/SKILL.md` | プロセス状態、シグナル処理、子プロセス管理 |
+| **graceful-shutdown-patterns** | `.claude/skills/graceful-shutdown-patterns/SKILL.md` | シャットダウンシーケンス、リソースクリーンアップ、接続ドレイン |
+| **log-rotation-strategies** | `.claude/skills/log-rotation-strategies/SKILL.md` | pm2-logrotate、Winston、ログ集約、ディスク管理 |
+| **memory-monitoring-strategies** | `.claude/skills/memory-monitoring-strategies/SKILL.md` | メモリメトリクス、リーク検出、ヒープ分析 |
 ```
 
 ## 20. ユニットテスター
