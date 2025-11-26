@@ -1,439 +1,367 @@
 ---
 name: query-optimization
 description: |
-  クエリ実行計画の分析とパフォーマンス最適化による、データベースアクセスの効率化。
-  N+1問題の解決、JOIN戦略、EXPLAIN ANALYZEの活用を提供。
+  Vlad MihaltseaとMarkus Winandの教えに基づくクエリ最適化を専門とするスキル。
+  N+1問題の回避、フェッチ戦略の選択、実行計画分析、インデックス活用などの
+  データベースパフォーマンス最適化手法を提供します。
 
   専門分野:
-  - 実行計画分析: EXPLAIN ANALYZE、コスト見積もり、実行時間分析
-  - N+1問題: 検出と解決パターン、Eager/Lazy Loading
-  - JOIN戦略: Nested Loop、Hash Join、Merge Join の使い分け
-  - Drizzle ORM: with()、クエリビルダー、生SQLの最適化
+  - N+1問題回避: JOIN戦略、バッチフェッチ、データローダーパターン
+  - フェッチ戦略: Eager/Lazy Loading、明示的フェッチの使い分け
+  - 実行計画分析: EXPLAIN ANALYZE、ボトルネック特定、最適化判断
+  - インデックス戦略: 適切なインデックス設計、カーディナリティ考慮
 
   使用タイミング:
-  - クエリパフォーマンス問題の調査時
-  - データ量増加に伴うスローダウン対応時
-  - N+1問題の検出・解決時
-  - 複雑なJOINクエリの最適化時
+  - クエリパフォーマンスが低下している時
+  - N+1問題を検出・解消する時
+  - 複雑なJOINクエリを最適化する時
+  - インデックス設計を検討する時
 
-  Use proactively when investigating query performance issues,
-  resolving N+1 problems, or optimizing complex JOIN queries.
+  Use proactively when dealing with slow queries, N+1 detection,
+  join optimization, or index design decisions.
 version: 1.0.0
 ---
 
-# Query Optimization Skill
-
-## 参照コマンド
-
-```bash
-# 詳細リソース参照
-cat .claude/skills/query-optimization/resources/explain-analyze-guide.md
-
-# チェックリストテンプレート参照
-cat .claude/skills/query-optimization/templates/query-optimization-checklist.md
-
-# N+1問題検出スクリプト実行
-node .claude/skills/query-optimization/scripts/detect-n-plus-one.mjs src/
-```
+# Query Optimization
 
 ## 概要
 
-このスキルは、PostgreSQLクエリのパフォーマンス最適化に関する専門知識を提供します。
-実行計画の分析に基づき、効率的なデータアクセスを実現します。
+このスキルは、Vlad Mihaltseaの『High-Performance Java Persistence』と
+Markus Winandの『SQL Performance Explained』に基づき、
+データベースクエリの最適化手法を提供します。
 
-## EXPLAIN ANALYZE の活用
+**主要な価値**:
+- N+1問題の体系的な検出と解消
+- フェッチ戦略の適切な選択によるパフォーマンス向上
+- 実行計画に基づく根拠のある最適化判断
+- インデックスの効果的な活用
 
-### 基本構文
+**対象ユーザー**:
+- `@repo-dev`エージェント
+- データアクセス層を最適化する開発者
+- パフォーマンス問題を調査する開発者
 
-```sql
-EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)
-SELECT * FROM orders WHERE user_id = 'uuid-here';
+## リソース構造
+
+```
+query-optimization/
+├── SKILL.md                                    # 本ファイル
+├── resources/
+│   ├── n-plus-one-patterns.md                 # N+1問題のパターンと解決策
+│   ├── fetch-strategies.md                    # フェッチ戦略ガイド
+│   ├── execution-plan-analysis.md             # 実行計画分析手法
+│   └── index-strategies.md                    # インデックス設計戦略
+├── scripts/
+│   └── detect-n-plus-one.mjs                  # N+1問題検出スクリプト
+└── templates/
+    └── optimization-checklist.md               # 最適化チェックリスト
 ```
 
-### 出力の読み方
+## コマンドリファレンス
 
-```
-Seq Scan on orders  (cost=0.00..15.00 rows=100 width=200) (actual time=0.010..0.150 loops=1)
-  Filter: (user_id = 'uuid-here'::uuid)
-  Rows Removed by Filter: 900
-  Buffers: shared hit=10
-Planning Time: 0.050 ms
-Execution Time: 0.200 ms
-```
+### リソース読み取り
 
-| 項目 | 説明 |
-|------|------|
-| cost=0.00..15.00 | 開始コスト..総コスト（相対値） |
-| rows=100 | 推定行数 |
-| actual time | 実際の実行時間（ms） |
-| Rows Removed | フィルタで除外された行数 |
-| Buffers: shared hit | キャッシュヒット数 |
+```bash
+# N+1問題パターンと解決策
+cat .claude/skills/query-optimization/resources/n-plus-one-patterns.md
 
-### 問題パターンの検出
+# フェッチ戦略ガイド
+cat .claude/skills/query-optimization/resources/fetch-strategies.md
 
-#### パターン1: Seq Scan（シーケンシャルスキャン）
+# 実行計画分析手法
+cat .claude/skills/query-optimization/resources/execution-plan-analysis.md
 
-```sql
--- 問題: インデックスが使われていない
-Seq Scan on orders  (cost=0.00..15000.00 rows=100 width=200)
-  Filter: (status = 'pending')
-
--- 解決: インデックス追加
-CREATE INDEX idx_orders_status ON orders(status);
+# インデックス設計戦略
+cat .claude/skills/query-optimization/resources/index-strategies.md
 ```
 
-#### パターン2: 大量の Rows Removed
+### スクリプト実行
 
-```sql
--- 問題: 選択性が低い
-Index Scan using idx_orders_status on orders  (actual rows=10)
-  Rows Removed by Index Recheck: 9990
-
--- 解決: より選択性の高いインデックス、複合インデックス
-CREATE INDEX idx_orders_status_date ON orders(status, created_at);
+```bash
+# N+1問題検出
+node .claude/skills/query-optimization/scripts/detect-n-plus-one.mjs <log-file>
 ```
 
-#### パターン3: Nested Loop の過剰使用
+### テンプレート参照
 
-```sql
--- 問題: 大量データでのNested Loop
-Nested Loop  (cost=0.00..1000000.00 rows=10000)
-  -> Seq Scan on orders
-  -> Index Scan on order_items
-
--- 解決: JOINヒント、インデックス最適化
-SET enable_nestloop = off; -- 一時的にHash Joinを強制
+```bash
+# 最適化チェックリスト
+cat .claude/skills/query-optimization/templates/optimization-checklist.md
 ```
 
-## N+1問題の解決
+## いつ使うか
 
-### N+1問題とは
+### シナリオ1: クエリパフォーマンス低下
+**状況**: 特定の操作が遅く、DB負荷が高い
 
+**適用条件**:
+- [ ] レスポンスタイムが許容範囲を超えている
+- [ ] DB負荷が高い
+- [ ] クエリログに大量のクエリが記録されている
+
+**期待される成果**: パフォーマンス改善の具体的な施策
+
+### シナリオ2: N+1問題の疑い
+**状況**: ループ内でDBアクセスが発生している可能性
+
+**適用条件**:
+- [ ] 関連エンティティをループで取得している
+- [ ] クエリ数がデータ件数に比例している
+- [ ] 単純な一覧表示でも大量のクエリが発生
+
+**期待される成果**: N+1問題の特定と解消策
+
+### シナリオ3: JOINクエリの最適化
+**状況**: 複数テーブルを結合するクエリが遅い
+
+**適用条件**:
+- [ ] JOINを含むクエリがある
+- [ ] 結合するテーブルが3つ以上
+- [ ] 実行時間が長い
+
+**期待される成果**: 最適化されたJOIN戦略
+
+## ワークフロー
+
+### Phase 1: 問題の特定
+
+**目的**: パフォーマンス問題の根本原因を特定する
+
+**ステップ**:
+1. **症状の確認**:
+   - レスポンスタイムの測定
+   - クエリログの確認
+   - クエリ数のカウント
+
+2. **N+1問題の検出**:
+   - ループ内のDB呼び出しを探す
+   - クエリ数とデータ件数の相関を確認
+   - クエリパターンの分析
+
+3. **ボトルネックの特定**:
+   - 実行計画の取得
+   - 遅いクエリの特定
+   - リソース使用量の確認
+
+**判断基準**:
+- [ ] 問題のあるクエリが特定されたか？
+- [ ] N+1問題の有無が確認されたか？
+- [ ] ボトルネックの原因が明確か？
+
+**リソース**: `resources/n-plus-one-patterns.md`
+
+### Phase 2: 原因分析
+
+**目的**: 実行計画に基づいて問題の原因を分析する
+
+**ステップ**:
+1. **実行計画の取得**:
+   - EXPLAIN ANALYZEの実行
+   - 実行計画の読み方を理解
+
+2. **問題パターンの識別**:
+   - Seq Scan（フルスキャン）の検出
+   - 不適切なJOIN方法の検出
+   - インデックス未使用の検出
+
+3. **影響度の評価**:
+   - 改善可能性の見積もり
+   - 優先順位の決定
+
+**判断基準**:
+- [ ] 実行計画を正しく解釈できたか？
+- [ ] 問題パターンが識別されたか？
+- [ ] 改善の優先順位が決まったか？
+
+**リソース**: `resources/execution-plan-analysis.md`
+
+### Phase 3: 最適化の実施
+
+**目的**: 特定された問題に対する最適化を実施する
+
+**ステップ**:
+1. **N+1問題の解消**:
+   - JOIN戦略の適用
+   - バッチフェッチの実装
+   - データローダーパターンの導入
+
+2. **フェッチ戦略の最適化**:
+   - Eager/Lazy Loadingの選択
+   - 必要なカラムのみSELECT
+
+3. **インデックスの追加**:
+   - WHERE句の条件に対応
+   - JOIN条件に対応
+   - 複合インデックスの検討
+
+**判断基準**:
+- [ ] N+1問題が解消されたか？
+- [ ] フェッチ戦略が適切か？
+- [ ] インデックスが有効活用されているか？
+
+**リソース**: `resources/fetch-strategies.md`, `resources/index-strategies.md`
+
+### Phase 4: 効果検証
+
+**目的**: 最適化の効果を測定する
+
+**ステップ**:
+1. **パフォーマンス測定**:
+   - レスポンスタイムの再測定
+   - クエリ数の確認
+   - 実行計画の再確認
+
+2. **回帰テスト**:
+   - 既存機能への影響確認
+   - データ整合性の検証
+
+**判断基準**:
+- [ ] パフォーマンスが改善されたか？
+- [ ] 既存機能に影響がないか？
+- [ ] 期待値を満たしているか？
+
+## 核心概念
+
+### N+1問題
+
+**定義**: 1回のクエリでN件のデータを取得後、各データに対して追加クエリが発生する問題
+
+**検出パターン**:
 ```typescript
-// ❌ N+1問題: 1 + N クエリ
-const orders = await db.select().from(ordersTable);
-for (const order of orders) {
-  // N回のクエリ
-  const items = await db.select().from(orderItemsTable)
-    .where(eq(orderItemsTable.orderId, order.id));
+// N+1問題あり
+const workflows = await repository.findAll()  // 1回目
+for (const workflow of workflows) {
+  const steps = await stepRepository.findByWorkflowId(workflow.id)  // N回
 }
+// 合計: 1 + N 回のクエリ
 ```
 
-### 解決パターン
+**解決策**:
+1. **JOIN**: 1回のクエリで関連データを取得
+2. **バッチフェッチ**: IN句で複数IDを一括取得
+3. **データローダー**: 同一リクエスト内のクエリを統合
 
-#### パターン1: Eager Loading（with）
+### フェッチ戦略
 
-```typescript
-// ✅ 1回のJOINクエリ
-const ordersWithItems = await db.query.orders.findMany({
-  with: {
-    items: true, // リレーション自動JOIN
-  },
-});
-```
+| 戦略 | 説明 | 使用場面 |
+|------|------|---------|
+| Eager Loading | 常に関連データを取得 | 常に必要なデータ |
+| Lazy Loading | アクセス時に取得 | 条件により必要 |
+| 明示的フェッチ | メソッドで明示的に取得 | ユースケースごとに異なる |
 
-#### パターン2: Manual JOIN
+### 実行計画の読み方
 
-```typescript
-// ✅ 明示的JOIN
-const ordersWithItems = await db
-  .select({
-    order: orders,
-    item: orderItems,
-  })
-  .from(orders)
-  .leftJoin(orderItems, eq(orders.id, orderItems.orderId));
-```
+**重要な指標**:
+- **Seq Scan**: フルテーブルスキャン（小規模テーブル以外は避ける）
+- **Index Scan**: インデックス使用（推奨）
+- **Nested Loop**: 小規模データセット向け
+- **Hash Join**: 大規模データセット向け
+- **actual time**: 実際の実行時間
 
-#### パターン3: IN クエリ（バッチ取得）
+## ベストプラクティス
 
-```typescript
-// ✅ 2回のクエリで解決
-const ordersList = await db.select().from(orders).where(eq(orders.userId, userId));
-const orderIds = ordersList.map(o => o.id);
+### すべきこと
 
-const itemsList = await db.select().from(orderItems)
-  .where(inArray(orderItems.orderId, orderIds));
+1. **測定してから最適化**:
+   - 推測ではなく測定に基づく
+   - 実行計画を確認する
+   - before/afterで効果を確認
 
-// アプリ側で結合
-const ordersWithItems = ordersList.map(order => ({
-  ...order,
-  items: itemsList.filter(item => item.orderId === order.id),
-}));
-```
+2. **必要なデータのみ取得**:
+   - SELECT * を避ける
+   - 必要なカラムを明示
+   - 必要な行数をLIMIT
 
-### N+1検出チェックリスト
+3. **インデックスを活用**:
+   - WHERE句の条件にインデックス
+   - JOIN条件にインデックス
+   - カーディナリティを考慮
 
-- [ ] ループ内でDBクエリを実行していないか？
-- [ ] リレーションデータを個別に取得していないか？
-- [ ] `with` オプションを使用しているか？
-- [ ] クエリログで同一パターンの連続クエリがないか？
+### 避けるべきこと
 
-## JOIN戦略
+1. **ループ内のクエリ**:
+   - ❌ for文内でDB呼び出し
+   - ✅ 事前に一括取得
 
-### JOINアルゴリズムの比較
+2. **過度なインデックス**:
+   - ❌ すべてのカラムにインデックス
+   - ✅ 実際のクエリパターンに基づく
 
-| アルゴリズム | 特徴 | 最適ケース |
-|-------------|------|-----------|
-| Nested Loop | 小規模データ、インデックス利用 | 片方が小さい |
-| Hash Join | 等価結合、メモリ内処理 | 中規模データ |
-| Merge Join | ソート済みデータ | 大規模データ、範囲結合 |
+3. **推測による最適化**:
+   - ❌ 「遅そう」で最適化
+   - ✅ 測定結果に基づく
 
-### Drizzle ORMでのJOIN
+## トラブルシューティング
 
-```typescript
-// LEFT JOIN
-const result = await db
-  .select()
-  .from(orders)
-  .leftJoin(users, eq(orders.userId, users.id));
+### 問題1: N+1問題が解消されない
 
-// INNER JOIN
-const result = await db
-  .select()
-  .from(orders)
-  .innerJoin(users, eq(orders.userId, users.id));
+**症状**: JOINを追加してもクエリ数が減らない
 
-// 複数テーブルJOIN
-const result = await db
-  .select()
-  .from(orders)
-  .leftJoin(users, eq(orders.userId, users.id))
-  .leftJoin(orderItems, eq(orders.id, orderItems.orderId))
-  .leftJoin(products, eq(orderItems.productId, products.id));
-```
+**原因**: ORMのLazy Loadingが残っている
 
-### JOINパフォーマンス最適化
+**解決策**:
+1. JOINの結果が正しくマッピングされているか確認
+2. 関連プロパティへのアクセス箇所を確認
+3. Eager Loadingを明示的に指定
 
-#### 1. 必要なカラムのみ選択
+### 問題2: インデックスが使用されない
 
-```typescript
-// ❌ 全カラム取得
-const result = await db.select().from(orders).leftJoin(users, eq(orders.userId, users.id));
+**症状**: インデックスがあるのにSeq Scan
 
-// ✅ 必要なカラムのみ
-const result = await db
-  .select({
-    orderId: orders.id,
-    orderTotal: orders.total,
-    userName: users.name,
-  })
-  .from(orders)
-  .leftJoin(users, eq(orders.userId, users.id));
-```
+**原因**:
+- カーディナリティが低い
+- 関数を使用している
+- 型の不一致
 
-#### 2. WHERE句の最適化
+**解決策**:
+1. EXPLAIN ANALYZEで確認
+2. クエリの書き方を見直し
+3. インデックスの再設計
 
-```typescript
-// ❌ JOIN後にフィルタ
-const result = await db
-  .select()
-  .from(orders)
-  .leftJoin(orderItems, eq(orders.id, orderItems.orderId))
-  .where(eq(orders.status, 'pending'));
+### 問題3: JOINが遅い
 
-// ✅ サブクエリで先にフィルタ
-const pendingOrders = db
-  .select()
-  .from(orders)
-  .where(eq(orders.status, 'pending'))
-  .as('pending_orders');
+**症状**: JOINを追加したら逆に遅くなった
 
-const result = await db
-  .select()
-  .from(pendingOrders)
-  .leftJoin(orderItems, eq(pendingOrders.id, orderItems.orderId));
-```
+**原因**:
+- 結果セットが大きすぎる
+- JOINの順序が不適切
+- インデックスが不足
 
-## ページネーション最適化
-
-### オフセットベース（避けるべき）
-
-```typescript
-// ❌ 大規模データで遅い
-const result = await db
-  .select()
-  .from(orders)
-  .orderBy(desc(orders.createdAt))
-  .limit(20)
-  .offset(10000); // 10000行スキップが重い
-```
-
-### カーソルベース（推奨）
-
-```typescript
-// ✅ スケーラブル
-const result = await db
-  .select()
-  .from(orders)
-  .where(lt(orders.createdAt, cursorDate)) // カーソル位置から
-  .orderBy(desc(orders.createdAt))
-  .limit(20);
-
-// 次のカーソル
-const nextCursor = result[result.length - 1]?.createdAt;
-```
-
-### Keyset Pagination
-
-```typescript
-// 複合キーでのカーソル
-const result = await db
-  .select()
-  .from(orders)
-  .where(
-    or(
-      lt(orders.createdAt, cursorDate),
-      and(
-        eq(orders.createdAt, cursorDate),
-        gt(orders.id, cursorId) // 同一日時の場合はIDで
-      )
-    )
-  )
-  .orderBy(desc(orders.createdAt), asc(orders.id))
-  .limit(20);
-```
-
-## 集計クエリの最適化
-
-### COUNT最適化
-
-```typescript
-// ❌ 遅い（全行スキャン）
-const count = await db.select({ count: sql`count(*)` }).from(orders);
-
-// ✅ 条件付きCOUNTにインデックス活用
-const count = await db
-  .select({ count: sql`count(*)` })
-  .from(orders)
-  .where(eq(orders.status, 'pending')); // インデックス対象
-
-// ✅ 概算カウント（大規模テーブル）
-const estimate = await db.execute(sql`
-  SELECT reltuples::bigint AS estimate
-  FROM pg_class WHERE relname = 'orders'
-`);
-```
-
-### GROUP BY最適化
-
-```typescript
-// インデックスの活用
-const salesByCategory = await db
-  .select({
-    categoryId: products.categoryId,
-    total: sql`sum(${orderItems.price} * ${orderItems.quantity})`,
-  })
-  .from(orderItems)
-  .innerJoin(products, eq(orderItems.productId, products.id))
-  .groupBy(products.categoryId);
-
-// カバリングインデックス
-// CREATE INDEX idx_products_category_price ON products(category_id) INCLUDE (price);
-```
-
-## JSONB クエリ最適化
-
-### GINインデックス活用
-
-```typescript
-// ✅ @> 演算子でGINインデックス使用
-const result = await db
-  .select()
-  .from(workflows)
-  .where(sql`${workflows.inputPayload} @> '{"type": "batch"}'`);
-
-// ❌ ->> 演算子はGINインデックス使用不可
-const result = await db
-  .select()
-  .from(workflows)
-  .where(sql`${workflows.inputPayload} ->> 'type' = 'batch'`);
-```
-
-### 式インデックスとの併用
-
-```sql
--- 頻繁に検索する属性に式インデックス
-CREATE INDEX idx_workflows_type ON workflows ((input_payload ->> 'type'));
-```
-
-```typescript
-// 式インデックスが使われる
-const result = await db
-  .select()
-  .from(workflows)
-  .where(sql`${workflows.inputPayload} ->> 'type' = 'batch'`);
-```
-
-## パフォーマンス分析ワークフロー
-
-### 1. 問題の特定
-
-```sql
--- スロークエリログの確認
-SELECT query, calls, mean_time, total_time
-FROM pg_stat_statements
-ORDER BY total_time DESC
-LIMIT 10;
-```
-
-### 2. 実行計画の分析
-
-```sql
-EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)
--- 問題のクエリ
-```
-
-### 3. 改善策の検討
-
-| 問題 | 解決策 |
-|------|--------|
-| Seq Scan | インデックス追加 |
-| Rows Removed 多い | インデックス最適化、条件見直し |
-| Nested Loop 遅い | JOINアルゴリズム変更、インデックス |
-| 大量メモリ使用 | LIMIT追加、バッチ処理 |
-
-### 4. 改善効果の検証
-
-```sql
--- Before/After比較
-EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)
--- 改善後のクエリ
-```
-
-## 設計判断チェックリスト
-
-### クエリ設計時
-
-- [ ] N+1問題がないか確認したか？
-- [ ] 必要なカラムのみ選択しているか？
-- [ ] インデックスが活用されるWHERE句か？
-- [ ] ページネーションはカーソルベースか？
-
-### パフォーマンス問題発生時
-
-- [ ] EXPLAIN ANALYZEで実行計画を確認したか？
-- [ ] Seq Scanの原因を特定したか？
-- [ ] インデックス追加の影響を評価したか？
-- [ ] 改善効果を測定したか？
+**解決策**:
+1. 結果セットのサイズを確認
+2. JOIN条件を見直し
+3. 必要なインデックスを追加
 
 ## 関連スキル
 
-- `.claude/skills/indexing-strategies/SKILL.md` - インデックス設計
-- `.claude/skills/jsonb-optimization/SKILL.md` - JSONB最適化
-- `.claude/skills/transaction-management/SKILL.md` - トランザクション内最適化
+- **repository-pattern** (`.claude/skills/repository-pattern/SKILL.md`): Repositoryパターン設計
+- **transaction-management** (`.claude/skills/transaction-management/SKILL.md`): トランザクション管理
+- **orm-best-practices** (`.claude/skills/orm-best-practices/SKILL.md`): ORM活用
+- **database-migrations** (`.claude/skills/database-migrations/SKILL.md`): マイグレーション管理
 
-## 参照リソース
+## メトリクス
 
-詳細な情報は以下のリソースを参照:
+### クエリパフォーマンス目標
 
-```bash
-# EXPLAIN ANALYZE完全ガイド
-cat .claude/skills/query-optimization/resources/explain-analyze-guide.md
+| 指標 | 目標値 | 警告値 |
+|------|--------|--------|
+| 単純クエリ実行時間 | < 100ms | > 500ms |
+| 複雑クエリ実行時間 | < 500ms | > 2s |
+| N+1クエリ発生 | 0件 | 1件以上 |
+| フルスキャン | 0件（小規模除く） | 1件以上 |
 
-# クエリ最適化チェックリスト
-cat .claude/skills/query-optimization/templates/query-optimization-checklist.md
+## 変更履歴
 
-# N+1問題検出スクリプト
-node .claude/skills/query-optimization/scripts/detect-n-plus-one.mjs src/
-```
+| バージョン | 日付 | 変更内容 |
+|-----------|------|---------|
+| 1.0.0 | 2025-11-25 | 初版作成 - クエリ最適化フレームワーク |
+
+## 参考文献
+
+- **『High-Performance Java Persistence』** Vlad Mihalcea著
+  - Chapter 5: Fetching - フェッチ戦略とN+1問題
+  - Chapter 8: Batch Processing - バッチ処理最適化
+
+- **『SQL Performance Explained』** Markus Winand著
+  - Chapter 2: The WHERE Clause - WHERE句最適化
+  - Chapter 3: Performance and Scalability - JOIN最適化

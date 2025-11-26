@@ -1,423 +1,362 @@
 ---
 name: database-migrations
 description: |
-  安全で可逆的なデータベースマイグレーションの設計と実行。
-  Drizzle Kit、ゼロダウンタイム戦略、ロールバック計画を提供。
+  Drizzle Kitを使用した安全なデータベースマイグレーション管理を専門とするスキル。
+  スキーマ変更の計画、マイグレーション生成、本番適用、
+  ロールバック戦略などの包括的なマイグレーションワークフローを提供します。
 
   専門分野:
-  - Drizzle Kit: generate、push、migrate コマンドの適切な使用
-  - ゼロダウンタイム: 互換性維持、段階的デプロイ
-  - ロールバック: UP/DOWNマイグレーション、復旧手順
-  - データ移行: スキーマ変更とデータ移行の分離
+  - マイグレーション生成: drizzle-kit generateによる自動生成
+  - スキーマ変更: カラム追加、型変更、制約変更
+  - データ移行: スキーマ変更に伴うデータ変換
+  - ロールバック: 問題発生時の安全な復旧
+  - 本番適用: ダウンタイムを最小化する適用戦略
 
   使用タイミング:
-  - スキーマ変更のマイグレーション設計時
-  - 本番環境へのデプロイ計画時
-  - ロールバック手順の策定時
-  - 大規模データ移行の計画時
+  - スキーマを変更する時
+  - マイグレーションを生成・適用する時
+  - 本番環境にデプロイする時
+  - 問題発生時にロールバックする時
 
-  Use proactively when planning schema migrations, designing rollback procedures,
-  or executing production database changes.
+  Use proactively when modifying database schemas,
+  generating migrations, or planning production deployments.
 version: 1.0.0
 ---
 
-# Database Migrations Skill
-
-## 参照コマンド
-
-```bash
-# 詳細リソース参照
-cat .claude/skills/database-migrations/resources/zero-downtime-patterns.md
-
-# チェックリストテンプレート参照
-cat .claude/skills/database-migrations/templates/migration-checklist.md
-
-# ロールバックSQL生成スクリプト実行
-node .claude/skills/database-migrations/scripts/generate-rollback.mjs migrations/0001_example.sql
-```
+# Database Migrations
 
 ## 概要
 
-このスキルは、データベースマイグレーションの設計と実行に関する専門知識を提供します。
-Drizzle Kitを活用し、安全で可逆的なスキーマ変更を実現します。
+このスキルは、Drizzle Kitを使用したデータベースマイグレーション管理のベストプラクティスを提供します。
+安全なスキーマ変更、効率的なマイグレーション生成、そして信頼性の高い本番適用のための
+実践的なガイドラインを提供します。
 
-## Drizzle Kit の基本
+**主要な価値**:
+- スキーマ変更の追跡と管理
+- 安全なマイグレーション適用
+- 問題発生時のロールバック
+- チーム間でのスキーマ同期
 
-### コマンド概要
+**対象ユーザー**:
+- `@repo-dev`エージェント
+- データベーススキーマを管理する開発者
+- 本番デプロイを担当するDevOps
 
-| コマンド | 用途 | 環境 |
-|----------|------|------|
-| `drizzle-kit generate` | マイグレーションSQL生成 | 開発 |
-| `drizzle-kit push` | 即座にスキーマ同期 | 開発 |
-| `drizzle-kit migrate` | マイグレーション適用 | 本番 |
-| `drizzle-kit studio` | GUIでデータ確認 | 開発 |
+## リソース構造
 
-### 設定ファイル
-
-```typescript
-// drizzle.config.ts
-import { defineConfig } from 'drizzle-kit';
-
-export default defineConfig({
-  schema: './src/shared/infrastructure/database/schema.ts',
-  out: './drizzle/migrations',
-  dialect: 'postgresql',
-  dbCredentials: {
-    url: process.env.DATABASE_URL!,
-  },
-  verbose: true,
-  strict: true,
-});
+```
+database-migrations/
+├── SKILL.md                                    # 本ファイル
+├── resources/
+│   ├── drizzle-kit-commands.md                # Drizzle Kitコマンド
+│   ├── migration-strategies.md                 # マイグレーション戦略
+│   ├── schema-change-patterns.md              # スキーマ変更パターン
+│   └── rollback-procedures.md                 # ロールバック手順
+├── scripts/
+│   └── check-migration-safety.mjs             # 安全性チェック
+└── templates/
+    └── migration-plan-template.md              # 計画テンプレート
 ```
 
-### マイグレーションワークフロー
+## コマンドリファレンス
+
+### リソース読み取り
 
 ```bash
-# 1. スキーマ変更
-# schema.ts を編集
+# Drizzle Kitコマンド
+cat .claude/skills/database-migrations/resources/drizzle-kit-commands.md
 
-# 2. マイグレーション生成
-npx drizzle-kit generate
+# マイグレーション戦略
+cat .claude/skills/database-migrations/resources/migration-strategies.md
 
-# 3. マイグレーション確認
-# drizzle/migrations/YYYYMMDDHHMMSS_*.sql を確認
+# スキーマ変更パターン
+cat .claude/skills/database-migrations/resources/schema-change-patterns.md
 
-# 4. 開発環境で適用
-npx drizzle-kit migrate
-
-# 5. 本番環境で適用
-# CI/CDパイプラインで実行
+# ロールバック手順
+cat .claude/skills/database-migrations/resources/rollback-procedures.md
 ```
 
-## マイグレーション設計原則
-
-### 1. 前方互換性の維持
-
-古いアプリケーションバージョンが新しいスキーマで動作可能にする。
-
-```sql
--- ✅ 前方互換: カラム追加（NULL許可 or デフォルト値）
-ALTER TABLE users ADD COLUMN nickname VARCHAR(100);
-ALTER TABLE users ADD COLUMN theme VARCHAR(20) DEFAULT 'light';
-
--- ❌ 非互換: 既存カラム削除（即座に）
-ALTER TABLE users DROP COLUMN legacy_field;
-```
-
-### 2. 後方互換性の維持
-
-新しいアプリケーションバージョンが古いスキーマで動作可能にする。
-
-```sql
--- ✅ 後方互換: 新しいカラムはアプリで任意扱い
--- アプリケーション: nickname ?? 'default'
-
--- ❌ 非互換: 新しい必須カラムを即座に追加
-ALTER TABLE users ADD COLUMN required_field VARCHAR(100) NOT NULL;
-```
-
-### 3. スキーマ変更とデータ移行の分離
-
-```sql
--- マイグレーション1: スキーマ変更のみ
-ALTER TABLE users ADD COLUMN full_name VARCHAR(200);
-
--- マイグレーション2: データ移行（別途実行）
-UPDATE users SET full_name = first_name || ' ' || last_name;
-
--- マイグレーション3: 古いカラム削除（十分な移行期間後）
-ALTER TABLE users DROP COLUMN first_name;
-ALTER TABLE users DROP COLUMN last_name;
-```
-
-## ゼロダウンタイムマイグレーション
-
-### パターン1: Expand-Contract パターン
-
-#### Phase 1: Expand（拡張）
-
-```sql
--- 新しいカラムを追加（NULL許可）
-ALTER TABLE orders ADD COLUMN status_new VARCHAR(20);
-
--- 新しいインデックスをCONCURRENTLYで追加
-CREATE INDEX CONCURRENTLY idx_orders_status_new ON orders(status_new);
-```
-
-#### Phase 2: Migrate（移行）
-
-```sql
--- データ移行（バッチ処理）
-UPDATE orders SET status_new = status WHERE status_new IS NULL LIMIT 10000;
--- 繰り返し実行
-```
-
-#### Phase 3: Contract（収縮）
-
-```sql
--- 古いカラムを削除（十分な移行期間後）
-ALTER TABLE orders DROP COLUMN status;
-ALTER TABLE orders RENAME COLUMN status_new TO status;
-```
-
-### パターン2: 影響の少ない変更
-
-```sql
--- ✅ ダウンタイムなし
-ALTER TABLE users ADD COLUMN bio TEXT;
-ALTER TABLE users ALTER COLUMN name TYPE VARCHAR(500);  -- 拡張のみ
-CREATE INDEX CONCURRENTLY idx_users_email ON users(email);
-
--- ⚠️ ダウンタイムの可能性
-ALTER TABLE users ALTER COLUMN name SET NOT NULL;  -- 既存データ確認必要
-ALTER TABLE users ADD CONSTRAINT chk_status CHECK (status IN ('active', 'inactive'));
-```
-
-### パターン3: インデックス作成
-
-```sql
--- ❌ テーブルロック
-CREATE INDEX idx_large_table ON large_table(column);
-
--- ✅ ロックなし（時間はかかる）
-CREATE INDEX CONCURRENTLY idx_large_table ON large_table(column);
-```
-
-## ロールバック設計
-
-### UP/DOWN マイグレーション
-
-```sql
--- migration_20250126_add_nickname.sql
-
--- UP
-ALTER TABLE users ADD COLUMN nickname VARCHAR(100);
-CREATE INDEX idx_users_nickname ON users(nickname);
-
--- DOWN
-DROP INDEX IF EXISTS idx_users_nickname;
-ALTER TABLE users DROP COLUMN IF EXISTS nickname;
-```
-
-### Drizzle でのロールバック
-
-```typescript
-// 手動ロールバックスクリプト
-import { drizzle } from 'drizzle-orm/neon-http';
-import { sql } from 'drizzle-orm';
-
-async function rollback() {
-  const db = drizzle(process.env.DATABASE_URL!);
-
-  await db.transaction(async (tx) => {
-    // ロールバック操作
-    await tx.execute(sql`ALTER TABLE users DROP COLUMN IF EXISTS nickname`);
-
-    // マイグレーション履歴を更新
-    await tx.execute(sql`
-      DELETE FROM __drizzle_migrations
-      WHERE id = 'migration_20250126_add_nickname'
-    `);
-  });
-}
-```
-
-### ロールバック可能性の評価
-
-| 操作 | ロールバック可能 | 注意点 |
-|------|-----------------|--------|
-| ADD COLUMN (NULL) | ✅ 容易 | DROP COLUMN |
-| ADD COLUMN (NOT NULL) | ⚠️ 条件付き | データ損失なし確認 |
-| DROP COLUMN | ❌ 困難 | データ復旧必要 |
-| RENAME COLUMN | ✅ 容易 | 再度RENAME |
-| ADD INDEX | ✅ 容易 | DROP INDEX |
-| ADD CONSTRAINT | ⚠️ 条件付き | データ修正必要な場合 |
-
-## 本番デプロイ戦略
-
-### 1. Pre-deploy Check
+### テンプレート参照
 
 ```bash
-#!/bin/bash
-# deploy-check.sh
-
-# マイグレーションファイルの確認
-echo "=== Pending Migrations ==="
-npx drizzle-kit check
-
-# 本番DBへの接続テスト
-echo "=== Connection Test ==="
-npx drizzle-kit studio --port 4000 &
-sleep 5
-curl -s http://localhost:4000/health
-kill %1
+# 計画テンプレート
+cat .claude/skills/database-migrations/templates/migration-plan-template.md
 ```
 
-### 2. デプロイ順序
+## いつ使うか
+
+### シナリオ1: 新規カラム追加
+**状況**: 既存テーブルに新しいカラムを追加
+
+**適用条件**:
+- [ ] 新しい属性をデータベースに追加
+- [ ] 既存データへの影響を考慮
+- [ ] デフォルト値の設定が必要
+
+**期待される成果**: 安全なカラム追加マイグレーション
+
+### シナリオ2: 型変更
+**状況**: 既存カラムの型を変更
+
+**適用条件**:
+- [ ] カラムのデータ型を変更
+- [ ] 既存データの変換が必要
+- [ ] ダウンタイムの考慮
+
+**期待される成果**: データを保持した型変更
+
+### シナリオ3: テーブル作成・削除
+**状況**: 新規テーブルの作成または不要テーブルの削除
+
+**適用条件**:
+- [ ] 新しいエンティティの追加
+- [ ] リレーションの設定
+- [ ] インデックスの計画
+
+**期待される成果**: 正しく構成されたテーブル
+
+## ワークフロー
+
+### Phase 1: 変更計画
+
+**目的**: スキーマ変更の影響を分析し計画を立てる
+
+**ステップ**:
+1. **変更内容の明確化**:
+   - 何を変更するか
+   - なぜ変更するか
+   - 影響範囲は何か
+
+2. **リスク評価**:
+   - データ損失の可能性
+   - ダウンタイムの必要性
+   - ロールバック可能性
+
+3. **実行計画**:
+   - マイグレーション順序
+   - 適用タイミング
+   - 検証方法
+
+**判断基準**:
+- [ ] 変更の目的は明確か？
+- [ ] リスクは評価されたか？
+- [ ] ロールバック計画はあるか？
+
+**リソース**: `resources/migration-strategies.md`
+
+### Phase 2: マイグレーション生成
+
+**目的**: Drizzle Kitでマイグレーションを生成
+
+**ステップ**:
+1. **スキーマ変更**:
+   - TypeScriptスキーマファイルを編集
+   - 型定義を更新
+
+2. **マイグレーション生成**:
+   ```bash
+   pnpm drizzle-kit generate
+   ```
+
+3. **生成結果の確認**:
+   - SQLの内容を確認
+   - 意図した変更か検証
+
+**判断基準**:
+- [ ] 生成されたSQLは正しいか？
+- [ ] 破壊的変更はないか？
+- [ ] データ移行が必要か？
+
+**リソース**: `resources/drizzle-kit-commands.md`
+
+### Phase 3: ローカルテスト
+
+**目的**: 本番適用前にローカルで検証
+
+**ステップ**:
+1. **マイグレーション適用**:
+   ```bash
+   pnpm drizzle-kit migrate
+   ```
+
+2. **動作確認**:
+   - アプリケーションの動作テスト
+   - データの整合性確認
+
+3. **ロールバックテスト**:
+   - ロールバック手順の確認
+   - 復旧可能性の検証
+
+**判断基準**:
+- [ ] マイグレーションは成功したか？
+- [ ] アプリケーションは正常動作するか？
+- [ ] ロールバック可能か？
+
+### Phase 4: 本番適用
+
+**目的**: 本番環境に安全にマイグレーションを適用
+
+**ステップ**:
+1. **事前準備**:
+   - バックアップの作成
+   - メンテナンスウィンドウの確保
+
+2. **適用**:
+   - マイグレーション実行
+   - 監視とログ確認
+
+3. **検証**:
+   - アプリケーション動作確認
+   - データ整合性確認
+
+**判断基準**:
+- [ ] バックアップは作成されたか？
+- [ ] マイグレーションは成功したか？
+- [ ] 本番動作は正常か？
+
+**リソース**: `resources/rollback-procedures.md`
+
+## 核心概念
+
+### Drizzle Kitワークフロー
 
 ```
-1. データベースマイグレーション適用
-   ↓
-2. 新バージョンアプリケーションデプロイ（一部）
-   ↓
-3. 動作確認（Canary）
-   ↓
-4. 全インスタンスにデプロイ
-   ↓
-5. 古いスキーマ要素の削除（後日）
+1. スキーマ編集 (TypeScript)
+      ↓
+2. drizzle-kit generate
+      ↓
+3. マイグレーションファイル生成
+      ↓
+4. レビュー & テスト
+      ↓
+5. drizzle-kit migrate
+      ↓
+6. 本番適用
 ```
 
-### 3. CI/CD統合
+### マイグレーションの種類
 
-```yaml
-# .github/workflows/deploy.yml
-jobs:
-  migrate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+| 種類 | リスク | 例 |
+|------|--------|-----|
+| 追加のみ | 低 | カラム追加、テーブル作成 |
+| 制約変更 | 中 | NOT NULL追加、インデックス |
+| 型変更 | 高 | カラム型変更、リネーム |
+| 削除 | 高 | カラム削除、テーブル削除 |
 
-      - name: Run Migrations
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: |
-          npx drizzle-kit migrate
+### 安全な変更パターン
 
-      - name: Verify Migration
-        run: |
-          npx drizzle-kit check
-```
+1. **追加 → デプロイ → 移行 → 削除**
+   - 新カラム追加（nullable）
+   - アプリケーションデプロイ
+   - データ移行
+   - 旧カラム削除
 
-## 大規模データ移行
+2. **段階的移行**
+   - 複数のマイグレーションに分割
+   - 各段階で検証
 
-### バッチ処理パターン
+## ベストプラクティス
 
-```typescript
-async function migrateInBatches(batchSize: number = 10000) {
-  let processedCount = 0;
-  let hasMore = true;
+### すべきこと
 
-  while (hasMore) {
-    const result = await db.execute(sql`
-      UPDATE orders
-      SET status_new = status
-      WHERE status_new IS NULL
-      LIMIT ${batchSize}
-    `);
+1. **マイグレーションの小分け**:
+   - 一度に大きな変更をしない
+   - 独立した変更は別々のマイグレーション
 
-    processedCount += result.rowCount ?? 0;
-    hasMore = (result.rowCount ?? 0) === batchSize;
+2. **本番適用前のテスト**:
+   - ローカル/ステージングで検証
+   - データ量を考慮したテスト
 
-    console.log(`Processed: ${processedCount}`);
+3. **バックアップの確保**:
+   - 適用前に必ずバックアップ
+   - ロールバック手順の確認
 
-    // レート制限
-    await new Promise(resolve => setTimeout(resolve, 100));
-  }
+### 避けるべきこと
 
-  console.log(`Migration complete: ${processedCount} rows`);
-}
-```
+1. **破壊的変更の直接適用**:
+   - ❌ 直接カラム削除
+   - ✅ 段階的な移行
 
-### 進捗監視
+2. **大きなマイグレーション**:
+   - ❌ 多数の変更を一度に
+   - ✅ 小さく分割
 
-```sql
--- 移行進捗の確認
-SELECT
-  COUNT(*) FILTER (WHERE status_new IS NOT NULL) AS migrated,
-  COUNT(*) FILTER (WHERE status_new IS NULL) AS pending,
-  COUNT(*) AS total,
-  ROUND(100.0 * COUNT(*) FILTER (WHERE status_new IS NOT NULL) / COUNT(*), 2) AS percent
-FROM orders;
-```
+3. **テストなしの本番適用**:
+   - ❌ 直接本番に適用
+   - ✅ ステージングで検証
 
-## マイグレーションのベストプラクティス
+## トラブルシューティング
 
-### 命名規則
+### 問題1: マイグレーション失敗
 
-```
-drizzle/migrations/
-├── 0001_YYYYMMDDHHMMSS_create_users_table.sql
-├── 0002_YYYYMMDDHHMMSS_add_users_email_index.sql
-├── 0003_YYYYMMDDHHMMSS_add_orders_table.sql
-└── 0004_YYYYMMDDHHMMSS_add_orders_status_column.sql
-```
+**症状**: マイグレーション適用時にエラー
 
-### マイグレーションファイルの構造
+**原因**:
+- 制約違反
+- 既存データとの不整合
+- 構文エラー
 
-```sql
--- 0004_20250126120000_add_orders_status_column.sql
--- Description: ordersテーブルにstatus列を追加
--- Author: @db-architect
--- Reversible: Yes
+**解決策**:
+1. エラーメッセージを確認
+2. ロールバックを実行
+3. マイグレーションを修正
+4. 再度適用
 
--- Dependencies: 0003_create_orders_table
+### 問題2: データ損失
 
--- === UP ===
-ALTER TABLE orders ADD COLUMN status VARCHAR(20) DEFAULT 'pending';
-CREATE INDEX CONCURRENTLY idx_orders_status ON orders(status);
+**症状**: マイグレーション後にデータが失われた
 
--- === DOWN ===
--- DROP INDEX IF EXISTS idx_orders_status;
--- ALTER TABLE orders DROP COLUMN IF EXISTS status;
-```
+**原因**:
+- 不適切なカラム削除
+- 型変換の失敗
+- CASCADE削除
 
-### トランザクション境界
+**解決策**:
+1. バックアップから復旧
+2. マイグレーションを修正
+3. データ移行ステップを追加
 
-```sql
--- ✅ DDLは個別に実行（PostgreSQL特有）
-ALTER TABLE users ADD COLUMN nickname VARCHAR(100);
--- コミット
+### 問題3: パフォーマンス低下
 
-ALTER TABLE users ADD COLUMN bio TEXT;
--- コミット
+**症状**: マイグレーション後にパフォーマンスが低下
 
--- ❌ 複数DDLをトランザクションで囲まない（ロック競合）
-BEGIN;
-ALTER TABLE users ADD COLUMN nickname VARCHAR(100);
-ALTER TABLE users ADD COLUMN bio TEXT;
-COMMIT;
-```
+**原因**:
+- インデックスの欠如
+- 不適切なインデックス
+- テーブルロック
 
-## 設計判断チェックリスト
-
-### マイグレーション設計時
-
-- [ ] 前方互換性が維持されているか？
-- [ ] 後方互換性が維持されているか？
-- [ ] ロールバック手順が定義されているか？
-- [ ] スキーマ変更とデータ移行が分離されているか？
-
-### 本番デプロイ前
-
-- [ ] 開発・ステージング環境でテスト済みか？
-- [ ] インデックス作成は CONCURRENTLY を使用しているか？
-- [ ] 大規模データ移行はバッチ処理になっているか？
-- [ ] デプロイ手順が文書化されているか？
-
-### デプロイ後
-
-- [ ] マイグレーション成功を確認したか？
-- [ ] アプリケーション動作を確認したか？
-- [ ] パフォーマンス影響を監視しているか？
-- [ ] 古いスキーマ要素の削除スケジュールを立てたか？
+**解決策**:
+1. EXPLAIN ANALYZEで確認
+2. 必要なインデックスを追加
+3. CONCURRENTLY オプションを使用
 
 ## 関連スキル
 
-- `.claude/skills/database-normalization/SKILL.md` - スキーマ設計の基盤
-- `.claude/skills/indexing-strategies/SKILL.md` - インデックスマイグレーション
-- `.claude/skills/transaction-management/SKILL.md` - マイグレーション中のトランザクション
+- **orm-best-practices** (`.claude/skills/orm-best-practices/SKILL.md`): ORM活用
+- **repository-pattern** (`.claude/skills/repository-pattern/SKILL.md`): Repositoryパターン
+- **query-optimization** (`.claude/skills/query-optimization/SKILL.md`): クエリ最適化
+- **transaction-management** (`.claude/skills/transaction-management/SKILL.md`): トランザクション
 
-## 参照リソース
+## メトリクス
 
-詳細な情報は以下のリソースを参照:
+### マイグレーション健全性指標
 
-```bash
-# ゼロダウンタイムマイグレーションパターン
-cat .claude/skills/database-migrations/resources/zero-downtime-patterns.md
+| 指標 | 目標値 | 警告値 |
+|------|--------|--------|
+| マイグレーション成功率 | 100% | < 95% |
+| 平均適用時間 | < 5分 | > 30分 |
+| ロールバック発生率 | < 5% | > 10% |
 
-# マイグレーション実行チェックリスト
-cat .claude/skills/database-migrations/templates/migration-checklist.md
+## 変更履歴
 
-# ロールバックSQL生成スクリプト
-node .claude/skills/database-migrations/scripts/generate-rollback.mjs <migration-file>
-```
+| バージョン | 日付 | 変更内容 |
+|-----------|------|---------|
+| 1.0.0 | 2025-11-26 | 初版作成 - マイグレーション管理フレームワーク |
+
+## 参考文献
+
+- **Drizzle Kit Documentation**
+  - https://orm.drizzle.team/kit-docs
+
+- **PostgreSQL ALTER TABLE**
+  - https://www.postgresql.org/docs/current/sql-altertable.html

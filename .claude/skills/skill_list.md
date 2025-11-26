@@ -265,13 +265,13 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                   | 概要                                                             |
-| -------------------------- | ---------------------------------------------------------------- |
-| **repository-pattern**     | コレクション風インターフェース、ドメイン型返却                   |
-| **query-optimization**     | N+1 問題回避、Eager/Lazy Loading、JOIN 戦略                      |
-| **transaction-management** | ACID 特性、トランザクション境界、ロールバック処理                |
-| **orm-best-practices**     | Drizzle ORM の効率的利用、Raw SQL との使い分け                   |
-| **database-migrations**    | スキーマバージョニング、データマイグレーション、ロールバック計画 |
+| スキル名                   | パス | 概要                                                             |
+| -------------------------- | ---- | ---------------------------------------------------------------- |
+| **repository-pattern**     | `.claude/skills/repository-pattern/SKILL.md` | コレクション風インターフェース、ドメイン型返却                   |
+| **query-optimization**     | `.claude/skills/query-optimization/SKILL.md` | N+1 問題回避、Eager/Lazy Loading、JOIN 戦略                      |
+| **transaction-management** | `.claude/skills/transaction-management/SKILL.md` | ACID 特性、トランザクション境界、ロールバック処理                |
+| **orm-best-practices**     | `.claude/skills/orm-best-practices/SKILL.md` | Drizzle ORM の効率的利用、Raw SQL との使い分け                   |
+| **database-migrations**    | `.claude/skills/database-migrations/SKILL.md` | スキーマバージョニング、データマイグレーション、ロールバック計画 |
 ```
 
 ## 16. DevOps/CI エンジニア

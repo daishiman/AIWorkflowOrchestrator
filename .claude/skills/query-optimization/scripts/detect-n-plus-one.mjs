@@ -1,332 +1,189 @@
 #!/usr/bin/env node
-
 /**
- * detect-n-plus-one.mjs
+ * N+1問題検出スクリプト
  *
- * TypeScript/JavaScriptコードからN+1問題のパターンを検出するスクリプト。
+ * クエリログを分析してN+1問題の可能性があるパターンを検出します。
  *
  * 使用方法:
- *   node detect-n-plus-one.mjs <source-dir>
+ *   node detect-n-plus-one.mjs <query-log-file>
+ *   node detect-n-plus-one.mjs --stdin < query.log
  *
- * 例:
- *   node detect-n-plus-one.mjs src/
+ * 入力形式:
+ *   各行がSQLクエリまたはクエリログ
+ *
+ * 検出パターン:
+ *   - 同一テーブルへの連続SELECT
+ *   - WHERE id = ? 形式の連続クエリ
+ *   - SELECT COUNT が N 回以上連続
  */
 
-import { readFileSync, readdirSync, statSync } from 'fs';
-import { join, extname } from 'path';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
 
-// 色定義
-const colors = {
-  red: '\x1b[31m',
-  yellow: '\x1b[33m',
-  green: '\x1b[32m',
-  blue: '\x1b[34m',
-  cyan: '\x1b[36m',
-  reset: '\x1b[0m',
+// 設定
+const CONFIG = {
+  // N+1と判定するしきい値
+  threshold: 3,
+  // 同一パターンの時間間隔（ミリ秒）
+  timeWindow: 1000,
 };
 
-/**
- * N+1パターンの種類
- */
-const PatternType = {
-  LOOP_QUERY: 'loop_query',
-  FOREACH_QUERY: 'foreach_query',
-  MAP_QUERY: 'map_query',
-  MISSING_WITH: 'missing_with',
-  SEQUENTIAL_FIND: 'sequential_find',
-};
+// 結果の定数
+const WARN = '⚠️';
+const INFO = 'ℹ️';
+const ERROR = '❌';
+const OK = '✅';
 
 /**
- * 問題クラス
+ * クエリログを解析
  */
-class N1Issue {
-  constructor(type, severity, file, line, codeSnippet, suggestion) {
-    this.type = type;
-    this.severity = severity;
-    this.file = file;
-    this.line = line;
-    this.codeSnippet = codeSnippet;
-    this.suggestion = suggestion;
+function parseQueryLog(content) {
+  const lines = content.split('\n').filter(line => line.trim());
+  const queries = [];
+
+  for (const line of lines) {
+    // 基本的なSELECT文を抽出
+    const selectMatch = line.match(/SELECT\s+.*?\s+FROM\s+(\w+)/i);
+    if (selectMatch) {
+      const tableName = selectMatch[1].toLowerCase();
+      const hasWhereId = /WHERE\s+\w*id\s*=\s*[?$\d'"]/i.test(line);
+      const hasWhereIn = /WHERE\s+\w*id\s+IN\s*\(/i.test(line);
+
+      queries.push({
+        original: line.substring(0, 100) + (line.length > 100 ? '...' : ''),
+        table: tableName,
+        hasWhereId,
+        hasWhereIn,
+        type: 'SELECT',
+      });
+    }
   }
+
+  return queries;
 }
 
 /**
- * ディレクトリを再帰的に走査
+ * N+1パターンを検出
  */
-function walkDirectory(dir, extensions = ['.ts', '.js', '.mjs']) {
-  const files = [];
+function detectNPlusOnePatterns(queries) {
+  const patterns = [];
 
-  function walk(currentDir) {
-    const entries = readdirSync(currentDir);
+  // 連続する同一テーブルへのSELECTを検出
+  let currentTable = null;
+  let currentCount = 0;
+  let startIndex = 0;
 
-    for (const entry of entries) {
-      const fullPath = join(currentDir, entry);
-      const stat = statSync(fullPath);
+  for (let i = 0; i < queries.length; i++) {
+    const query = queries[i];
 
-      if (stat.isDirectory()) {
-        if (!entry.startsWith('.') && entry !== 'node_modules' && entry !== 'dist') {
-          walk(fullPath);
-        }
-      } else if (stat.isFile() && extensions.includes(extname(entry))) {
-        files.push(fullPath);
+    if (query.table === currentTable && query.hasWhereId) {
+      currentCount++;
+    } else {
+      // パターン終了、しきい値以上なら記録
+      if (currentCount >= CONFIG.threshold) {
+        patterns.push({
+          type: 'SEQUENTIAL_ID_QUERIES',
+          table: currentTable,
+          count: currentCount,
+          startIndex,
+          endIndex: i - 1,
+          sample: queries[startIndex].original,
+        });
+      }
+
+      // リセット
+      currentTable = query.table;
+      currentCount = query.hasWhereId ? 1 : 0;
+      startIndex = i;
+    }
+  }
+
+  // 最後のパターンをチェック
+  if (currentCount >= CONFIG.threshold) {
+    patterns.push({
+      type: 'SEQUENTIAL_ID_QUERIES',
+      table: currentTable,
+      count: currentCount,
+      startIndex,
+      endIndex: queries.length - 1,
+      sample: queries[startIndex].original,
+    });
+  }
+
+  // テーブル別のクエリ数を集計
+  const tableQueryCounts = {};
+  for (const query of queries) {
+    if (query.hasWhereId) {
+      tableQueryCounts[query.table] = (tableQueryCounts[query.table] || 0) + 1;
+    }
+  }
+
+  // 高頻度テーブルを検出
+  for (const [table, count] of Object.entries(tableQueryCounts)) {
+    if (count >= CONFIG.threshold * 2) {
+      // 既に検出済みでなければ追加
+      const alreadyDetected = patterns.some(
+        p => p.table === table && p.type === 'HIGH_FREQUENCY_TABLE'
+      );
+      if (!alreadyDetected) {
+        patterns.push({
+          type: 'HIGH_FREQUENCY_TABLE',
+          table,
+          count,
+          suggestion: `IN句を使用したバッチフェッチを検討してください`,
+        });
       }
     }
   }
 
-  walk(dir);
-  return files;
+  return patterns;
 }
 
 /**
- * forループ内のDBクエリを検出
+ * レポートを生成
  */
-function detectForLoopQueries(content, filePath) {
-  const issues = [];
-  const lines = content.split('\n');
+function generateReport(queries, patterns) {
+  console.log('\n📊 N+1問題検出レポート');
+  console.log('='.repeat(60));
 
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
+  console.log(`\n${INFO} 分析対象: ${queries.length} クエリ`);
+  console.log(`${INFO} 検出しきい値: ${CONFIG.threshold} 回以上の連続クエリ\n`);
 
-    // for/for-ofループを検出
-    if (/for\s*\(/.test(line) || /for\s+.*\s+of\s+/.test(line)) {
-      // 次の20行以内にawait + DB操作があるか
-      const loopContent = lines.slice(i, Math.min(i + 20, lines.length)).join('\n');
-
-      const dbPatterns = [
-        /await\s+.*\.findFirst\s*\(/,
-        /await\s+.*\.findUnique\s*\(/,
-        /await\s+.*\.findMany\s*\(/,
-        /await\s+.*\.select\s*\(/,
-        /await\s+db\.query\./,
-        /await\s+tx\./,
-      ];
-
-      for (const pattern of dbPatterns) {
-        if (pattern.test(loopContent)) {
-          issues.push(
-            new N1Issue(
-              PatternType.LOOP_QUERY,
-              'error',
-              filePath,
-              i + 1,
-              line.trim().substring(0, 60),
-              'forループ内でDBクエリを実行しています。INクエリまたはJOINに変更してください。'
-            )
-          );
-          break;
-        }
-      }
-    }
-  }
-
-  return issues;
-}
-
-/**
- * forEach/map内のDBクエリを検出
- */
-function detectArrayMethodQueries(content, filePath) {
-  const issues = [];
-  const lines = content.split('\n');
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-
-    // forEach/mapを検出
-    if (/\.forEach\s*\(\s*async/.test(line) || /\.map\s*\(\s*async/.test(line)) {
-      const methodContent = lines.slice(i, Math.min(i + 15, lines.length)).join('\n');
-
-      const dbPatterns = [
-        /await\s+.*\.findFirst/,
-        /await\s+.*\.findUnique/,
-        /await\s+.*\.select/,
-        /await\s+db\./,
-      ];
-
-      for (const pattern of dbPatterns) {
-        if (pattern.test(methodContent)) {
-          const type = line.includes('.forEach') ? PatternType.FOREACH_QUERY : PatternType.MAP_QUERY;
-          issues.push(
-            new N1Issue(
-              type,
-              'error',
-              filePath,
-              i + 1,
-              line.trim().substring(0, 60),
-              `async ${type === PatternType.FOREACH_QUERY ? 'forEach' : 'map'}内でDBクエリを実行しています。Promise.allまたはバッチ取得に変更してください。`
-            )
-          );
-          break;
-        }
-      }
-    }
-  }
-
-  return issues;
-}
-
-/**
- * withオプション未使用を検出
- */
-function detectMissingWith(content, filePath) {
-  const issues = [];
-  const lines = content.split('\n');
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-
-    // findManyを検出
-    if (/\.findMany\s*\(\s*\{/.test(line)) {
-      // 次の10行以内にwithがあるか確認
-      const queryContent = lines.slice(i, Math.min(i + 10, lines.length)).join('\n');
-
-      // 閉じ括弧までを取得
-      const bracketMatch = queryContent.match(/\.findMany\s*\(\s*\{[^}]*\}/s);
-      if (bracketMatch) {
-        const queryBlock = bracketMatch[0];
-
-        // withがなく、後でリレーションデータにアクセスしている可能性
-        if (!queryBlock.includes('with:')) {
-          // その後の行でリレーションアクセスがあるか
-          const afterContent = lines.slice(i + 1, Math.min(i + 30, lines.length)).join('\n');
-          if (/\.\w+\.\w+/.test(afterContent) || /\.items/.test(afterContent) || /\.user/.test(afterContent)) {
-            issues.push(
-              new N1Issue(
-                PatternType.MISSING_WITH,
-                'warning',
-                filePath,
-                i + 1,
-                line.trim().substring(0, 60),
-                'リレーションデータに後でアクセスしている可能性があります。withオプションでEager Loadingを検討してください。'
-              )
-            );
-          }
-        }
-      }
-    }
-  }
-
-  return issues;
-}
-
-/**
- * 連続したfindFirst/findUniqueを検出
- */
-function detectSequentialFinds(content, filePath) {
-  const issues = [];
-  const lines = content.split('\n');
-
-  let findCount = 0;
-  let findStartLine = 0;
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-
-    if (/await\s+.*\.(findFirst|findUnique)\s*\(/.test(line)) {
-      if (findCount === 0) {
-        findStartLine = i + 1;
-      }
-      findCount++;
-
-      // 5行以内に3回以上のfindがある場合は警告
-      if (findCount >= 3) {
-        issues.push(
-          new N1Issue(
-            PatternType.SEQUENTIAL_FIND,
-            'warning',
-            filePath,
-            findStartLine,
-            `連続したfind操作（${findCount}回）`,
-            '複数の連続したfind操作はINクエリまたはJOINでまとめることを検討してください。'
-          )
-        );
-        findCount = 0;
-      }
-    } else if (line.trim() && !line.trim().startsWith('//')) {
-      // 別の処理が入ったらリセット
-      findCount = 0;
-    }
-  }
-
-  return issues;
-}
-
-/**
- * ファイルを分析
- */
-function analyzeFile(filePath) {
-  try {
-    const content = readFileSync(filePath, 'utf-8');
-    const issues = [];
-
-    issues.push(...detectForLoopQueries(content, filePath));
-    issues.push(...detectArrayMethodQueries(content, filePath));
-    issues.push(...detectMissingWith(content, filePath));
-    issues.push(...detectSequentialFinds(content, filePath));
-
-    return issues;
-  } catch (error) {
-    console.error(`${colors.red}ファイル読み込みエラー: ${filePath}${colors.reset}`);
-    return [];
-  }
-}
-
-/**
- * レポートを出力
- */
-function printReport(issues) {
-  console.log('\n' + '='.repeat(60));
-  console.log('N+1問題検出レポート');
-  console.log('='.repeat(60) + '\n');
-
-  if (issues.length === 0) {
-    console.log(`${colors.green}✅ N+1問題は検出されませんでした。${colors.reset}\n`);
+  if (patterns.length === 0) {
+    console.log(`${OK} N+1問題のパターンは検出されませんでした。\n`);
     return;
   }
 
-  // 重要度別にグループ化
-  const errors = issues.filter((i) => i.severity === 'error');
-  const warnings = issues.filter((i) => i.severity === 'warning');
+  console.log(`${WARN} ${patterns.length} 件の潜在的なN+1パターンを検出\n`);
+  console.log('-'.repeat(60));
 
-  console.log(`${colors.cyan}サマリー${colors.reset}`);
-  console.log(`  エラー: ${errors.length}`);
-  console.log(`  警告: ${warnings.length}`);
-  console.log();
+  for (let i = 0; i < patterns.length; i++) {
+    const pattern = patterns[i];
+    console.log(`\n【パターン ${i + 1}】`);
+    console.log(`テーブル: ${pattern.table}`);
+    console.log(`種類: ${pattern.type}`);
+    console.log(`クエリ数: ${pattern.count}`);
 
-  // エラーを表示
-  if (errors.length > 0) {
-    console.log(`\n${colors.red}### エラー (${errors.length}件) ###${colors.reset}\n`);
-    for (const issue of errors) {
-      console.log(`${colors.red}[${issue.type.toUpperCase()}]${colors.reset}`);
-      console.log(`  📁 ${issue.file}:${issue.line}`);
-      console.log(`  📝 ${issue.codeSnippet}`);
-      console.log(`  💡 ${issue.suggestion}`);
-      console.log();
+    if (pattern.sample) {
+      console.log(`サンプル: ${pattern.sample}`);
+    }
+
+    console.log(`\n推奨対応:`);
+    switch (pattern.type) {
+      case 'SEQUENTIAL_ID_QUERIES':
+        console.log(`  1. IN句を使用したバッチフェッチに変更`);
+        console.log(`     例: WHERE id IN (?, ?, ...)`);
+        console.log(`  2. または JOINを使用して1クエリで取得`);
+        break;
+      case 'HIGH_FREQUENCY_TABLE':
+        console.log(`  1. DataLoaderパターンの導入を検討`);
+        console.log(`  2. キャッシュの導入を検討`);
+        break;
     }
   }
 
-  // 警告を表示
-  if (warnings.length > 0) {
-    console.log(`\n${colors.yellow}### 警告 (${warnings.length}件) ###${colors.reset}\n`);
-    for (const issue of warnings) {
-      console.log(`${colors.yellow}[${issue.type.toUpperCase()}]${colors.reset}`);
-      console.log(`  📁 ${issue.file}:${issue.line}`);
-      console.log(`  📝 ${issue.codeSnippet}`);
-      console.log(`  💡 ${issue.suggestion}`);
-      console.log();
-    }
-  }
-
-  // 推奨事項
-  console.log('='.repeat(60));
-  console.log('推奨事項');
-  console.log('='.repeat(60));
-  console.log(`
-1. ループ内のDBクエリをINクエリまたはJOINに変更
-2. async forEach/mapをPromise.allでバッチ処理に変更
-3. withオプションでEager Loadingを使用
-4. 連続したfind操作をまとめる
-`);
+  console.log('\n' + '='.repeat(60));
+  console.log(`\n${ERROR} N+1問題の疑いがあります。修正を検討してください。\n`);
 }
 
 /**
@@ -336,25 +193,39 @@ function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.log('使用方法: node detect-n-plus-one.mjs <source-dir>');
-    console.log('例: node detect-n-plus-one.mjs src/');
+    console.log('使用方法: node detect-n-plus-one.mjs <query-log-file>');
+    console.log('例: node detect-n-plus-one.mjs query.log');
     process.exit(1);
   }
 
-  const sourceDir = args[0];
-  console.log(`\n分析中: ${sourceDir}\n`);
+  let content;
 
-  const files = walkDirectory(sourceDir);
-  console.log(`対象ファイル: ${files.length}件`);
-
-  const allIssues = [];
-
-  for (const file of files) {
-    const issues = analyzeFile(file);
-    allIssues.push(...issues);
+  if (args[0] === '--stdin') {
+    // 標準入力から読み取り
+    content = readFileSync(0, 'utf-8');
+  } else {
+    const filePath = resolve(args[0]);
+    try {
+      content = readFileSync(filePath, 'utf-8');
+    } catch (error) {
+      console.error(`エラー: ファイルを読み取れません: ${filePath}`);
+      process.exit(1);
+    }
   }
 
-  printReport(allIssues);
+  const queries = parseQueryLog(content);
+
+  if (queries.length === 0) {
+    console.log('警告: クエリが検出されませんでした。');
+    console.log('入力形式を確認してください（SELECT文を含む行が必要です）。');
+    process.exit(0);
+  }
+
+  const patterns = detectNPlusOnePatterns(queries);
+  generateReport(queries, patterns);
+
+  // N+1が検出された場合は終了コード1
+  process.exit(patterns.length > 0 ? 1 : 0);
 }
 
 main();

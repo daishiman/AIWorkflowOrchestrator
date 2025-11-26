@@ -1,425 +1,341 @@
 ---
 name: transaction-management
 description: |
-  ACID特性とトランザクション境界の適切な設計による、データ整合性の保証。
-  分離レベル選択、デッドロック回避、Drizzle ORMトランザクションAPIの効果的活用を提供。
+  ACID特性を保証するトランザクション設計と実装を専門とするスキル。
+  トランザクション境界の設定、分離レベルの選択、ロック戦略、
+  ロールバック処理などのデータ整合性保証手法を提供します。
 
   専門分野:
-  - ACID特性: Atomicity、Consistency、Isolation、Durability の保証
-  - 分離レベル: READ COMMITTED、REPEATABLE READ、SERIALIZABLE の選択
-  - ロック戦略: 楽観的ロック vs 悲観的ロック、デッドロック回避
-  - Drizzle ORM: db.transaction() API、ネストトランザクション
+  - ACID特性: 原子性、一貫性、分離性、永続性の保証
+  - トランザクション境界: ビジネス操作単位での適切な境界設定
+  - 分離レベル: READ COMMITTED、SERIALIZABLE等の選択
+  - ロック戦略: 楽観的ロック、悲観的ロックの使い分け
+  - ロールバック処理: エラー時の自動復旧とデータ整合性保持
 
   使用タイミング:
-  - 複数テーブル更新時のデータ整合性設計
-  - 同時実行制御の設計時
-  - デッドロック問題の調査・解決時
-  - パフォーマンスとの整合性トレードオフ判断時
+  - 複数のDB操作をアトミックに実行する時
+  - トランザクション境界を設計する時
+  - 分離レベルを選択する時
+  - ロールバック処理を実装する時
 
-  Use proactively when designing multi-table updates, handling concurrent access,
-  or resolving deadlock issues in database operations.
+  Use proactively when designing transactional operations,
+  implementing rollback handling, or selecting isolation levels.
 version: 1.0.0
 ---
 
-# Transaction Management Skill
-
-## 参照コマンド
-
-```bash
-# 詳細リソース参照
-cat .claude/skills/transaction-management/resources/isolation-levels-detail.md
-
-# チェックリストテンプレート参照
-cat .claude/skills/transaction-management/templates/transaction-design-checklist.md
-
-# 問題検出スクリプト実行
-node .claude/skills/transaction-management/scripts/detect-long-transactions.mjs --code src/
-```
+# Transaction Management
 
 ## 概要
 
-このスキルは、データベーストランザクションの設計と実装に関する専門知識を提供します。
-ACID特性の理解に基づき、データ整合性とパフォーマンスのバランスを実現します。
+このスキルは、データベーストランザクションの設計と実装に関する知識を提供します。
+ACID特性（Atomicity, Consistency, Isolation, Durability）を保証し、
+データの整合性を維持するためのベストプラクティスを提供します。
 
-## ACID特性の理解
+**主要な価値**:
+- 複数のDB操作を一つの論理単位として実行
+- エラー時の自動ロールバックによるデータ整合性保持
+- 並行処理時の競合を適切に管理
+- デッドロックリスクの最小化
 
-### Atomicity（原子性）
+**対象ユーザー**:
+- `@repo-dev`エージェント
+- トランザクション処理を実装する開発者
+- データ整合性を設計するアーキテクト
 
-トランザクション内の操作はすべて成功するか、すべて失敗するか。
-
-```typescript
-// Drizzle ORM
-await db.transaction(async (tx) => {
-  // すべて成功するか、すべてロールバック
-  await tx.insert(orders).values({ userId, total });
-  await tx.update(inventory).set({ stock: sql`stock - 1` }).where(eq(inventory.productId, productId));
-  await tx.insert(orderHistory).values({ orderId, action: 'created' });
-});
-```
-
-### Consistency（一貫性）
-
-トランザクション完了後、データベースは有効な状態を維持。
-
-**実現方法**:
-- 制約（外部キー、CHECK、UNIQUE）
-- トリガー
-- アプリケーション層バリデーション
-
-### Isolation（分離性）
-
-同時実行トランザクションが互いに干渉しない。
-
-### Durability（永続性）
-
-コミットされたトランザクションは永続化される。
-
-## 分離レベルの選択
-
-### PostgreSQL分離レベル
-
-| 分離レベル | Dirty Read | Non-repeatable Read | Phantom Read | 使用場面 |
-|-----------|------------|---------------------|--------------|----------|
-| READ UNCOMMITTED | N/A | 可能 | 可能 | PostgreSQLでは未サポート |
-| READ COMMITTED | 防止 | 可能 | 可能 | デフォルト、一般的な操作 |
-| REPEATABLE READ | 防止 | 防止 | 防止* | 一貫性が必要なレポート |
-| SERIALIZABLE | 防止 | 防止 | 防止 | 金融取引、厳密な整合性 |
-
-*PostgreSQLではREPEATABLE READでPhantom Readも防止
-
-### 選択フローチャート
+## リソース構造
 
 ```
-データ整合性要件は？
-├─ 読み取り専用、最新データ不要
-│   └─ READ COMMITTED（デフォルト）
-│
-├─ 読み取り中にデータが変わると問題
-│   └─ REPEATABLE READ
-│   └─ 例: レポート生成、集計処理
-│
-├─ 厳密な直列化が必要
-│   └─ SERIALIZABLE
-│   └─ 例: 金融取引、在庫管理（競合時）
-│
-└─ パフォーマンス優先、一時的不整合許容
-    └─ READ COMMITTED + アプリ層での補償
+transaction-management/
+├── SKILL.md                                    # 本ファイル
+├── resources/
+│   ├── acid-properties.md                     # ACID特性の詳細
+│   ├── isolation-levels.md                    # 分離レベルガイド
+│   ├── locking-strategies.md                  # ロック戦略
+│   └── rollback-patterns.md                   # ロールバックパターン
+├── scripts/
+│   └── analyze-transaction.mjs                # トランザクション分析
+└── templates/
+    └── transaction-design-template.md          # 設計テンプレート
 ```
 
-### Drizzle ORMでの分離レベル設定
+## コマンドリファレンス
 
-```typescript
-import { sql } from 'drizzle-orm';
+### リソース読み取り
 
-// REPEATABLE READ
-await db.transaction(async (tx) => {
-  await tx.execute(sql`SET TRANSACTION ISOLATION LEVEL REPEATABLE READ`);
-  // トランザクション処理
-}, { isolationLevel: 'repeatable read' });
+```bash
+# ACID特性の詳細
+cat .claude/skills/transaction-management/resources/acid-properties.md
 
-// SERIALIZABLE
-await db.transaction(async (tx) => {
-  // 厳密な整合性が必要な処理
-}, { isolationLevel: 'serializable' });
+# 分離レベルガイド
+cat .claude/skills/transaction-management/resources/isolation-levels.md
+
+# ロック戦略
+cat .claude/skills/transaction-management/resources/locking-strategies.md
+
+# ロールバックパターン
+cat .claude/skills/transaction-management/resources/rollback-patterns.md
 ```
 
-## ロック戦略
+### テンプレート参照
 
-### 楽観的ロック（Optimistic Locking）
-
-競合が少ない場合に推奨。バージョン番号で検出。
-
-```typescript
-// スキーマ定義
-export const products = pgTable('products', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  name: varchar('name', { length: 200 }).notNull(),
-  stock: integer('stock').notNull().default(0),
-  version: integer('version').notNull().default(1), // バージョン番号
-});
-
-// 更新処理
-async function updateStock(productId: string, newStock: number, expectedVersion: number) {
-  const result = await db.update(products)
-    .set({
-      stock: newStock,
-      version: sql`${products.version} + 1`,
-    })
-    .where(and(
-      eq(products.id, productId),
-      eq(products.version, expectedVersion) // 楽観的ロック
-    ))
-    .returning();
-
-  if (result.length === 0) {
-    throw new OptimisticLockError('データが他のユーザーに更新されました');
-  }
-  return result[0];
-}
+```bash
+# 設計テンプレート
+cat .claude/skills/transaction-management/templates/transaction-design-template.md
 ```
 
-### 悲観的ロック（Pessimistic Locking）
+## いつ使うか
 
-競合が多い場合、または整合性が最優先の場合。
+### シナリオ1: 複数テーブルの更新
+**状況**: 関連する複数のテーブルを同時に更新する必要がある
 
-```typescript
-// SELECT FOR UPDATE
-await db.transaction(async (tx) => {
-  // 行をロック
-  const [product] = await tx.execute(
-    sql`SELECT * FROM products WHERE id = ${productId} FOR UPDATE`
-  );
+**適用条件**:
+- [ ] 2つ以上のテーブルを更新
+- [ ] 一部の更新が失敗した場合、全体を取り消す必要がある
+- [ ] データの整合性が重要
 
-  // ロック中に安全に更新
-  await tx.update(products)
-    .set({ stock: product.stock - 1 })
-    .where(eq(products.id, productId));
-});
+**期待される成果**: アトミックな複数テーブル更新
 
-// SELECT FOR UPDATE NOWAIT（即座にエラー）
-await tx.execute(
-  sql`SELECT * FROM products WHERE id = ${productId} FOR UPDATE NOWAIT`
-);
+### シナリオ2: 残高更新操作
+**状況**: 金額やカウンターなど、正確性が重要な値の更新
 
-// SELECT FOR UPDATE SKIP LOCKED（ロック行をスキップ）
-await tx.execute(
-  sql`SELECT * FROM products WHERE status = 'pending' FOR UPDATE SKIP LOCKED LIMIT 10`
-);
+**適用条件**:
+- [ ] 並行アクセスの可能性がある
+- [ ] 更新の順序が重要
+- [ ] 二重更新を防ぐ必要がある
+
+**期待される成果**: 正確で競合のない更新処理
+
+### シナリオ3: ワークフロー状態遷移
+**状況**: 状態遷移と関連操作を一貫して実行
+
+**適用条件**:
+- [ ] 状態遷移と付随操作がある
+- [ ] 途中失敗時のロールバックが必要
+- [ ] 監査ログの記録が必要
+
+**期待される成果**: 一貫した状態遷移処理
+
+## ワークフロー
+
+### Phase 1: トランザクション境界の設計
+
+**目的**: ビジネス操作に基づいた適切な境界を定義
+
+**ステップ**:
+1. **ビジネス操作の特定**:
+   - 論理的に一つの単位となる操作を特定
+   - 「すべて成功」or「すべて失敗」の範囲を定義
+
+2. **境界の決定**:
+   - 最小限の範囲に設定
+   - 長時間実行を避ける（目安: 5秒以内）
+
+3. **例外ハンドリングの設計**:
+   - ロールバック条件の定義
+   - リトライ戦略の検討
+
+**判断基準**:
+- [ ] 境界はビジネス操作と一致しているか？
+- [ ] 長時間実行になっていないか？
+- [ ] 例外発生時の動作が明確か？
+
+**リソース**: `resources/acid-properties.md`
+
+### Phase 2: 分離レベルの選択
+
+**目的**: 要件に適した分離レベルを選択
+
+**ステップ**:
+1. **要件の確認**:
+   - 一貫性の要求レベル
+   - 並行性の要求
+   - パフォーマンス要件
+
+2. **分離レベルの選択**:
+   | レベル | 一貫性 | 並行性 | 用途 |
+   |--------|--------|--------|------|
+   | READ COMMITTED | 中 | 高 | 一般的なCRUD |
+   | REPEATABLE READ | 高 | 中 | レポート |
+   | SERIALIZABLE | 最高 | 低 | 金融処理 |
+
+**判断基準**:
+- [ ] 必要な一貫性レベルを満たすか？
+- [ ] パフォーマンス要件を満たすか？
+
+**リソース**: `resources/isolation-levels.md`
+
+### Phase 3: ロック戦略の決定
+
+**目的**: デッドロックを避けながら必要な整合性を確保
+
+**ステップ**:
+1. **ロック種類の選択**:
+   - **楽観的ロック**: バージョンカラムによる競合検出
+   - **悲観的ロック**: SELECT FOR UPDATEによる排他制御
+
+2. **デッドロック対策**:
+   - ロック取得順序の統一
+   - タイムアウトの設定
+   - リトライロジック
+
+**判断基準**:
+- [ ] 競合頻度に適したロック方式か？
+- [ ] デッドロックリスクが考慮されているか？
+
+**リソース**: `resources/locking-strategies.md`
+
+### Phase 4: 実装とテスト
+
+**目的**: 設計に基づいた実装と検証
+
+**ステップ**:
+1. **実装**:
+   - トランザクション境界の実装
+   - エラーハンドリングの実装
+   - ロールバック処理の実装
+
+2. **テスト**:
+   - 正常系テスト（コミット）
+   - 異常系テスト（ロールバック）
+   - 並行実行テスト
+
+**判断基準**:
+- [ ] 正常系でコミットされるか？
+- [ ] 異常時にロールバックされるか？
+- [ ] 並行実行で問題がないか？
+
+**リソース**: `resources/rollback-patterns.md`
+
+## 核心概念
+
+### ACID特性
+
+| 特性 | 説明 | 実現方法 |
+|------|------|---------|
+| Atomicity（原子性） | 全て成功か全て失敗 | トランザクション |
+| Consistency（一貫性） | 制約を常に満たす | 制約、バリデーション |
+| Isolation（分離性） | 並行実行の独立性 | 分離レベル |
+| Durability（永続性） | コミット後の永続化 | WAL、レプリケーション |
+
+### トランザクション境界の原則
+
+1. **最小範囲**: 必要最小限の操作のみ含める
+2. **短時間**: 5秒以上の長時間実行を避ける
+3. **外部呼び出し回避**: トランザクション内で外部APIを呼ばない
+4. **ネスト最小化**: ネストは2レベルまで
+
+### 分離レベル選択ガイド
+
+```
+一貫性要件を確認
+    │
+    ├─ 厳格な一貫性が必要
+    │   └─ SERIALIZABLE
+    │
+    ├─ 同一トランザクション内で再読み込みが必要
+    │   └─ REPEATABLE READ
+    │
+    └─ 一般的なCRUD
+        └─ READ COMMITTED（デフォルト）
 ```
 
-### ロック戦略の選択
+## ベストプラクティス
 
-| 要因 | 楽観的ロック | 悲観的ロック |
-|------|-------------|-------------|
-| 競合頻度 | 低い | 高い |
-| トランザクション時間 | 長い | 短い |
-| リトライコスト | 低い | 高い |
-| スケーラビリティ | 高い | 低い |
-| 実装複雑度 | 中 | 低 |
+### すべきこと
 
-## デッドロック回避
+1. **楽観的ロックを優先**:
+   - バージョンカラムで競合検出
+   - 競合時にリトライ
 
-### デッドロックの原因
+2. **トランザクションを短く**:
+   - 長時間のロック保持を避ける
+   - バッチ処理は分割
 
-```
-トランザクションA: テーブル1 → テーブル2
-トランザクションB: テーブル2 → テーブル1
-```
+3. **エラーハンドリングを明確に**:
+   - どの例外でロールバックするか明示
+   - リトライ可能なエラーの識別
 
-### 回避パターン
+### 避けるべきこと
 
-#### パターン1: 一貫したロック順序
+1. **トランザクション内での外部呼び出し**:
+   - ❌ API呼び出し、メール送信
+   - ✅ トランザクション後に実行
 
-```typescript
-// ❌ デッドロックの可能性
-async function transferA(fromId: string, toId: string, amount: number) {
-  await db.transaction(async (tx) => {
-    await tx.update(accounts).set({ balance: sql`balance - ${amount}` }).where(eq(accounts.id, fromId));
-    await tx.update(accounts).set({ balance: sql`balance + ${amount}` }).where(eq(accounts.id, toId));
-  });
-}
+2. **長時間トランザクション**:
+   - ❌ 5秒以上の処理
+   - ✅ バッチ分割、非同期処理
 
-// ✅ 常に小さいIDから順にロック
-async function transferSafe(fromId: string, toId: string, amount: number) {
-  const [first, second] = fromId < toId ? [fromId, toId] : [toId, fromId];
-  const [firstAmount, secondAmount] = fromId < toId ? [-amount, amount] : [amount, -amount];
+3. **過度な悲観的ロック**:
+   - ❌ すべてでSELECT FOR UPDATE
+   - ✅ 必要な場合のみ使用
 
-  await db.transaction(async (tx) => {
-    await tx.update(accounts).set({ balance: sql`balance + ${firstAmount}` }).where(eq(accounts.id, first));
-    await tx.update(accounts).set({ balance: sql`balance + ${secondAmount}` }).where(eq(accounts.id, second));
-  });
-}
-```
+## トラブルシューティング
 
-#### パターン2: トランザクション時間の最小化
+### 問題1: デッドロック
 
-```typescript
-// ❌ 長いトランザクション
-await db.transaction(async (tx) => {
-  const data = await fetchExternalAPI(); // 外部API呼び出し
-  await tx.insert(records).values(data);
-});
+**症状**: トランザクションが相互にロック待ち
 
-// ✅ 外部呼び出しはトランザクション外
-const data = await fetchExternalAPI();
-await db.transaction(async (tx) => {
-  await tx.insert(records).values(data);
-});
-```
+**原因**:
+- 異なる順序でのリソースアクセス
+- 長時間のロック保持
 
-#### パターン3: タイムアウト設定
+**解決策**:
+1. ロック取得順序を統一
+2. トランザクションを短く
+3. タイムアウトとリトライを実装
 
-```typescript
-// ステートメントタイムアウト
-await db.execute(sql`SET statement_timeout = '5000'`); // 5秒
+### 問題2: ロストアップデート
 
-// ロックタイムアウト
-await db.execute(sql`SET lock_timeout = '3000'`); // 3秒
-```
+**症状**: 更新が失われる
 
-## トランザクション境界の設計
+**原因**:
+- 適切なロックがない
+- read-modify-write競合
 
-### Repository層でのカプセル化
+**解決策**:
+1. 楽観的ロック（バージョンチェック）
+2. 悲観的ロック（SELECT FOR UPDATE）
 
-```typescript
-class OrderRepository {
-  // 単一操作（暗黙のトランザクション）
-  async findById(id: string): Promise<Order | null> {
-    return await db.query.orders.findFirst({
-      where: eq(orders.id, id),
-    });
-  }
+### 問題3: ロールバック漏れ
 
-  // 複数操作（明示的トランザクション）
-  async createWithItems(order: NewOrder, items: NewOrderItem[]): Promise<Order> {
-    return await db.transaction(async (tx) => {
-      const [created] = await tx.insert(orders).values(order).returning();
+**症状**: エラー後もデータが部分的に更新
 
-      const itemsWithOrderId = items.map(item => ({
-        ...item,
-        orderId: created.id,
-      }));
-      await tx.insert(orderItems).values(itemsWithOrderId);
+**原因**:
+- 例外ハンドリングの漏れ
+- 明示的ロールバックの欠如
 
-      return created;
-    });
-  }
-}
-```
-
-### Service層でのトランザクション管理
-
-```typescript
-class OrderService {
-  constructor(
-    private orderRepo: OrderRepository,
-    private inventoryRepo: InventoryRepository,
-    private db: Database
-  ) {}
-
-  async placeOrder(userId: string, items: CartItem[]): Promise<Order> {
-    return await this.db.transaction(async (tx) => {
-      // 1. 在庫確認と予約
-      for (const item of items) {
-        await this.inventoryRepo.reserveStock(tx, item.productId, item.quantity);
-      }
-
-      // 2. 注文作成
-      const order = await this.orderRepo.create(tx, { userId, items });
-
-      // 3. 決済処理（外部APIは別トランザクション）
-      // 注: 外部APIエラー時は補償トランザクションで対応
-
-      return order;
-    });
-  }
-}
-```
-
-## エラーハンドリング
-
-### リトライパターン
-
-```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries: number = 3,
-  baseDelay: number = 100
-): Promise<T> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (error) {
-      if (isRetryableError(error) && attempt < maxRetries) {
-        const delay = baseDelay * Math.pow(2, attempt - 1); // 指数バックオフ
-        await new Promise(resolve => setTimeout(resolve, delay));
-        continue;
-      }
-      throw error;
-    }
-  }
-  throw new Error('Max retries exceeded');
-}
-
-function isRetryableError(error: unknown): boolean {
-  if (error instanceof Error) {
-    // PostgreSQLのシリアライゼーション失敗
-    return error.message.includes('could not serialize access') ||
-           error.message.includes('deadlock detected');
-  }
-  return false;
-}
-```
-
-### 補償トランザクション（Saga パターン）
-
-```typescript
-class OrderSaga {
-  async execute(order: OrderRequest): Promise<void> {
-    const steps: SagaStep[] = [];
-
-    try {
-      // ステップ1: 在庫予約
-      await this.inventoryService.reserve(order.items);
-      steps.push({ name: 'inventory', compensate: () => this.inventoryService.release(order.items) });
-
-      // ステップ2: 決済
-      const paymentId = await this.paymentService.charge(order.total);
-      steps.push({ name: 'payment', compensate: () => this.paymentService.refund(paymentId) });
-
-      // ステップ3: 注文確定
-      await this.orderService.confirm(order);
-
-    } catch (error) {
-      // 補償トランザクション実行（逆順）
-      for (const step of steps.reverse()) {
-        await step.compensate();
-      }
-      throw error;
-    }
-  }
-}
-```
-
-## 設計判断チェックリスト
-
-### トランザクション設計時
-
-- [ ] トランザクション境界が明確に定義されているか？
-- [ ] 分離レベルが要件に適切か？
-- [ ] 長時間トランザクションがないか？
-- [ ] 外部API呼び出しがトランザクション外か？
-
-### ロック戦略選択時
-
-- [ ] 競合頻度が評価されているか？
-- [ ] 楽観的/悲観的ロックの選択理由が明確か？
-- [ ] デッドロック回避策があるか？
-- [ ] タイムアウト設定が適切か？
-
-### エラーハンドリング
-
-- [ ] リトライ戦略が実装されているか？
-- [ ] 補償トランザクションが必要な場合、設計されているか？
-- [ ] エラーログが十分か？
+**解決策**:
+1. try-catchでロールバック
+2. フレームワークの自動ロールバック活用
 
 ## 関連スキル
 
-- `.claude/skills/database-normalization/SKILL.md` - データ整合性の基盤
-- `.claude/skills/foreign-key-constraints/SKILL.md` - 参照整合性との連携
-- `.claude/skills/query-optimization/SKILL.md` - トランザクション内クエリ最適化
+- **repository-pattern** (`.claude/skills/repository-pattern/SKILL.md`): Repositoryパターン
+- **query-optimization** (`.claude/skills/query-optimization/SKILL.md`): クエリ最適化
+- **orm-best-practices** (`.claude/skills/orm-best-practices/SKILL.md`): ORM活用
+- **database-migrations** (`.claude/skills/database-migrations/SKILL.md`): マイグレーション
 
-## 参照リソース
+## メトリクス
 
-詳細な情報は以下のリソースを参照:
+### トランザクション健全性指標
 
-```bash
-# 分離レベル詳細リファレンス
-cat .claude/skills/transaction-management/resources/isolation-levels-detail.md
+| 指標 | 目標値 | 警告値 |
+|------|--------|--------|
+| 平均トランザクション時間 | < 1秒 | > 5秒 |
+| デッドロック発生率 | 0% | > 0.1% |
+| ロールバック率 | < 5% | > 10% |
 
-# トランザクション設計チェックリスト
-cat .claude/skills/transaction-management/templates/transaction-design-checklist.md
+## 変更履歴
 
-# 長時間トランザクション検出スクリプト
-node .claude/skills/transaction-management/scripts/detect-long-transactions.mjs --code src/
-```
+| バージョン | 日付 | 変更内容 |
+|-----------|------|---------|
+| 1.0.0 | 2025-11-25 | 初版作成 - トランザクション管理フレームワーク |
+
+## 参考文献
+
+- **『High-Performance Java Persistence』** Vlad Mihalcea著
+  - Chapter 8: Transactions and Concurrency Control
+  - Chapter 10: Database Locking
+
+- **PostgreSQL Documentation**
+  - Chapter 13: Concurrency Control
