@@ -1,0 +1,226 @@
+# ═══════════════════════════════════════════════════
+# Git Security - .gitignore Template
+# ═══════════════════════════════════════════════════
+
+# このテンプレートをプロジェクトルート（/）に配置してください
+# プロジェクト固有のパターンを追加することを推奨します
+
+# ═══════════════════════════════════════════════════
+# Environment Variables（環境変数）
+# ═══════════════════════════════════════════════════
+
+# すべての.envファイルを除外
+.env
+.env.local
+.env.*.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.staging
+.env.staging.local
+.env.production
+.env.production.local
+
+# テンプレートファイルは除外しない（Gitコミット可）
+!.env.example
+!.env.template
+!.env.sample
+
+# ═══════════════════════════════════════════════════
+# Secret Files（機密ファイル）
+# ═══════════════════════════════════════════════════
+
+# 秘密鍵・証明書
+*.key
+*.pem
+*.p12
+*.pfx
+*.cer
+*.crt
+*.der
+
+# 認証情報ファイル
+credentials.json
+credentials.yaml
+credentials.yml
+token.json
+token.txt
+.credentials
+.token
+auth.json
+auth.yaml
+
+# Secret専用ディレクトリ
+secrets/
+.secrets/
+private/
+.private/
+
+# ═══════════════════════════════════════════════════
+# SSH & GPG
+# ═══════════════════════════════════════════════════
+
+.ssh/
+*.pub
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+known_hosts
+
+# GPG
+*.gpg
+*.asc
+.gnupg/
+
+# ═══════════════════════════════════════════════════
+# Cloud Provider Specific
+# ═══════════════════════════════════════════════════
+
+# AWS
+.aws/
+aws-credentials
+.boto
+credentials
+
+# GCP (Google Cloud Platform)
+gcp-credentials.json
+service-account.json
+.gcloud/
+application_default_credentials.json
+
+# Azure
+azure-credentials
+.azure/
+
+# ═══════════════════════════════════════════════════
+# Platform Specific（プラットフォーム固有）
+# ═══════════════════════════════════════════════════
+
+# Railway
+.railway/
+
+# Vercel
+.vercel/
+
+# Netlify
+.netlify/
+
+# ═══════════════════════════════════════════════════
+# Development Tools（開発ツール）
+# ═══════════════════════════════════════════════════
+
+# IDEs
+.vscode/settings.json
+.vscode/.ropeproject
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ═══════════════════════════════════════════════════
+# Build Artifacts（ビルド成果物）
+# ═══════════════════════════════════════════════════
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn/
+
+# Build outputs
+dist/
+build/
+out/
+.next/
+.nuxt/
+
+# ═══════════════════════════════════════════════════
+# Logs & Temporary Files（ログ・一時ファイル）
+# ═══════════════════════════════════════════════════
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Temporary
+/tmp/
+*.tmp
+*.temp
+.cache/
+.temp/
+
+# ═══════════════════════════════════════════════════
+# Test & Coverage（テスト・カバレッジ）
+# ═══════════════════════════════════════════════════
+
+coverage/
+.nyc_output/
+.vitest/
+playwright-report/
+test-results/
+
+# ═══════════════════════════════════════════════════
+# Database（データベース）
+# ═══════════════════════════════════════════════════
+
+# SQLite
+*.sqlite
+*.sqlite3
+*.db
+
+# Database dumps
+*.sql
+*.dump
+
+# ═══════════════════════════════════════════════════
+# Project Specific（プロジェクト固有）
+# ═══════════════════════════════════════════════════
+
+# ここにプロジェクト固有のパターンを追加してください
+
+# 例: Local Agent
+# local-agent/logs/
+# local-agent/*.log
+
+# 例: Generated Files
+# generated/
+# auto-generated/
+
+# ═══════════════════════════════════════════════════
+# Security Notes
+# ═══════════════════════════════════════════════════
+
+# このファイルをカスタマイズする際の注意事項:
+#
+# 1. 除外パターンの追加:
+#    - 新しい機密ファイルタイプを発見したら即座に追加
+#    - プロジェクト固有のSecretパスを追加
+#
+# 2. 例外パターン（!pattern）の慎重な使用:
+#    - !.env.exampleのような例外は必要最小限に
+#    - 例外パターンが実際に機密情報を含まないことを確認
+#
+# 3. ディレクトリパターン:
+#    - secrets/（末尾スラッシュ）でディレクトリ全体を除外
+#    - *secrets*で名前に含まれるすべてを除外（広範囲）
+#
+# 4. 検証:
+#    - 追加後は必ずgit status で意図通り動作するか確認
+#    - git add --dry-run .で追加されるファイルを事前確認
+#
+# 5. チーム共有:
+#    - .gitignoreの変更は必ずチームに共有
+#    - 全員が同じパターンを使用することを確認

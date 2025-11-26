@@ -640,6 +640,7 @@
 #### 25. 機密情報管理者
 
 - **エージェント名:** `@secret-mgr`
+- **エージェントの配置:** `.claude/agents/secret-mgr.md`
 - **モデル人物:** **ケルシー・ハイタワー (Kelsey Hightower)** - クラウドネイティブ・セキュリティ専門家
 - **目的:** クレデンシャル（鍵）の漏洩をゼロにする。
 - **背景:** API キーの流出は、即座にクラウド破産や情報漏洩につながる。
@@ -655,11 +656,19 @@
 - **必要なスキル**:
   | スキル名 | パス | 概要 |
   | ----------------------- | ------ | ------------------------------------- |
-  | **tool-permission-management** | `.claude/skills/tool-permission-management/SKILL.md` | 環境変数管理、アクセス制御、権限設計 |
-  | **agent-architecture-patterns** | `.claude/skills/agent-architecture-patterns/SKILL.md` | Zero Trust 原則、最小権限、セキュリティパターン |
-  | **context-optimization** | `.claude/skills/context-optimization/SKILL.md` | 定期的な鍵更新、設定最適化、ローテーション戦略 |
-  | **best-practices-curation** | `.claude/skills/best-practices-curation/SKILL.md` | .env ファイル除外、Git フック、セキュリティベストプラクティス |
-  | **project-architecture-integration** | `.claude/skills/project-architecture-integration/SKILL.md` | 暗号化統合、鍵管理、セキュアな通信設計 |
+  | **secret-management-architecture** | `.claude/skills/secret-management-architecture/SKILL.md` | Secret管理方式選択、階層的管理設計、アクセス制御マトリクス |
+  | **zero-trust-security** | `.claude/skills/zero-trust-security/SKILL.md` | Zero Trust 5原則、RBAC/ABAC、JITアクセス、継続的検証 |
+  | **gitignore-management** | `.claude/skills/gitignore-management/SKILL.md` | .gitignore設計、機密ファイルパターン、プロジェクト固有除外 |
+  | **pre-commit-security** | `.claude/skills/pre-commit-security/SKILL.md` | pre-commit hook実装、機密情報検出、Git履歴スキャン |
+  | **encryption-key-lifecycle** | `.claude/skills/encryption-key-lifecycle/SKILL.md` | 暗号化アルゴリズム、鍵生成・保管・Rotation・廃棄 |
+  | **environment-isolation** | `.claude/skills/environment-isolation/SKILL.md` | 環境分離4レベル、最小権限、クロスアカウント制御 |
+  | **railway-secrets-management** | `.claude/skills/railway-secrets-management/SKILL.md` | Railway Secrets、Neon Plugin、Railway CLI統合 |
+  | **github-actions-security** | `.claude/skills/github-actions-security/SKILL.md` | GitHub Secrets、Environment保護、CI/CD品質ゲート |
+  | **tool-permission-management** | `.claude/skills/tool-permission-management/SKILL.md` | ツール権限管理、最小権限原則 |
+  | **best-practices-curation** | `.claude/skills/best-practices-curation/SKILL.md` | セキュリティベストプラクティス、継続的改善 |
+  | **project-architecture-integration** | `.claude/skills/project-architecture-integration/SKILL.md` | プロジェクト固有セキュリティ要件統合 |
+  | **agent-architecture-patterns** | `.claude/skills/agent-architecture-patterns/SKILL.md` | Zero Trust設計パターン、多層防御 |
+  | **context-optimization** | `.claude/skills/context-optimization/SKILL.md` | Secret管理最適化、効率化 |
 
 ---
 
@@ -1067,7 +1076,7 @@
 | @code-quality           | 5        | 品質管理/静的解析                 |
 | @auth-specialist        | 5        | セキュリティ/認証                 |
 | @sec-auditor            | 5        | セキュリティ/脆弱性               |
-| @secret-mgr             | 5        | セキュリティ/機密情報             |
+| @secret-mgr             | 13       | セキュリティ/機密情報             |
 | @sre-observer           | 5        | SRE/可観測性                      |
 | @dba-mgr                | 5        | データベース/運用                 |
 | @api-doc-writer         | 5        | ドキュメンテーション/API          |
