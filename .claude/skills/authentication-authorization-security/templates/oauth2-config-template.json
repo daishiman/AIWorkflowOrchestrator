@@ -1,0 +1,212 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OAuth 2.0 Configuration Template",
+  "description": "OAuth 2.0/OpenID Connect設定テンプレート。NextAuth.js、Auth0、Keycloak等で使用可能",
+  "type": "object",
+
+  "oauth2Config": {
+    "provider": {
+      "name": "auth-provider-name",
+      "type": "oidc",
+      "issuer": "https://auth.example.com",
+      "authorizationEndpoint": "https://auth.example.com/authorize",
+      "tokenEndpoint": "https://auth.example.com/token",
+      "userInfoEndpoint": "https://auth.example.com/userinfo",
+      "jwksUri": "https://auth.example.com/.well-known/jwks.json"
+    },
+
+    "client": {
+      "clientId": "{{CLIENT_ID}}",
+      "clientSecret": "{{CLIENT_SECRET}}",
+      "redirectUris": [
+        "https://app.example.com/api/auth/callback",
+        "http://localhost:3000/api/auth/callback"
+      ],
+      "postLogoutRedirectUris": [
+        "https://app.example.com",
+        "http://localhost:3000"
+      ],
+      "allowedOrigins": [
+        "https://app.example.com",
+        "http://localhost:3000"
+      ]
+    },
+
+    "flow": {
+      "type": "authorization_code",
+      "pkce": true,
+      "responseType": "code",
+      "responseMode": "query",
+      "grantTypes": [
+        "authorization_code",
+        "refresh_token"
+      ]
+    },
+
+    "scope": {
+      "requested": [
+        "openid",
+        "profile",
+        "email"
+      ],
+      "description": {
+        "openid": "OpenID Connect 必須スコープ",
+        "profile": "ユーザープロフィール情報（名前、画像等）",
+        "email": "メールアドレス",
+        "offline_access": "リフレッシュトークン取得（オフラインアクセス）"
+      }
+    },
+
+    "tokens": {
+      "accessToken": {
+        "lifetime": 3600,
+        "type": "Bearer",
+        "storage": "memory",
+        "autoRefresh": true
+      },
+      "refreshToken": {
+        "lifetime": 2592000,
+        "storage": "httponly_cookie",
+        "rotation": true,
+        "reuseDetection": true
+      },
+      "idToken": {
+        "algorithm": "RS256",
+        "validation": {
+          "issuer": true,
+          "audience": true,
+          "expiration": true,
+          "notBefore": true,
+          "nonce": true
+        }
+      }
+    },
+
+    "session": {
+      "strategy": "jwt",
+      "maxAge": 2592000,
+      "updateAge": 86400,
+      "cookie": {
+        "name": "auth.session-token",
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "lax",
+        "path": "/",
+        "domain": ".example.com"
+      }
+    },
+
+    "security": {
+      "csrf": {
+        "enabled": true,
+        "method": "double_submit_cookie"
+      },
+      "state": {
+        "enabled": true,
+        "length": 32
+      },
+      "nonce": {
+        "enabled": true,
+        "length": 32
+      },
+      "pkce": {
+        "enabled": true,
+        "method": "S256",
+        "codeVerifierLength": 128
+      }
+    },
+
+    "callbacks": {
+      "signIn": "async ({ user, account, profile }) => { return true; }",
+      "jwt": "async ({ token, user, account }) => { return token; }",
+      "session": "async ({ session, token }) => { return session; }",
+      "redirect": "async ({ url, baseUrl }) => { return url.startsWith(baseUrl) ? url : baseUrl; }"
+    },
+
+    "advanced": {
+      "clockTolerance": 30,
+      "refreshTokenRotation": true,
+      "revokeTokensOnSignOut": true,
+      "automaticRefreshBeforeExpiry": 300,
+      "sessionUpdateAge": 86400
+    }
+  },
+
+  "nextAuthExample": {
+    "comment": "NextAuth.js v5 設定例",
+    "config": {
+      "providers": [
+        {
+          "id": "google",
+          "name": "Google",
+          "type": "oauth",
+          "authorization": {
+            "url": "https://accounts.google.com/o/oauth2/v2/auth",
+            "params": {
+              "scope": "openid email profile",
+              "access_type": "offline",
+              "prompt": "consent"
+            }
+          },
+          "token": "https://oauth2.googleapis.com/token",
+          "userinfo": "https://www.googleapis.com/oauth2/v3/userinfo",
+          "clientId": "{{GOOGLE_CLIENT_ID}}",
+          "clientSecret": "{{GOOGLE_CLIENT_SECRET}}"
+        }
+      ],
+      "session": {
+        "strategy": "jwt",
+        "maxAge": 2592000
+      },
+      "jwt": {
+        "secret": "{{JWT_SECRET}}",
+        "encryption": true
+      },
+      "pages": {
+        "signIn": "/auth/signin",
+        "signOut": "/auth/signout",
+        "error": "/auth/error"
+      }
+    }
+  },
+
+  "auth0Example": {
+    "comment": "Auth0 設定例",
+    "config": {
+      "domain": "{{AUTH0_DOMAIN}}",
+      "clientId": "{{AUTH0_CLIENT_ID}}",
+      "clientSecret": "{{AUTH0_CLIENT_SECRET}}",
+      "redirectUri": "https://app.example.com/callback",
+      "scope": "openid profile email",
+      "responseType": "code",
+      "audience": "https://api.example.com",
+      "algorithms": ["RS256"],
+      "clockTolerance": 30
+    }
+  },
+
+  "securityChecklist": {
+    "必須設定": [
+      "PKCE有効化（pkce: true）",
+      "state パラメータ使用（CSRF対策）",
+      "nonce パラメータ使用（リプレイ攻撃対策）",
+      "HTTPS強制（secure: true）",
+      "HttpOnly Cookie（httpOnly: true）",
+      "SameSite属性（sameSite: 'lax' または 'strict'）"
+    ],
+    "推奨設定": [
+      "リフレッシュトークンローテーション（rotation: true）",
+      "トークン再利用検出（reuseDetection: true）",
+      "自動トークンリフレッシュ",
+      "redirect_uri ホワイトリスト",
+      "クロックトレランス設定（30秒程度）"
+    ],
+    "避けるべき設定": [
+      "Implicit Flow使用",
+      "PKCE無効化",
+      "HTTPでの通信許可",
+      "LocalStorageへのトークン保存",
+      "alg: none 許可"
+    ]
+  }
+}

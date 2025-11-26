@@ -1,0 +1,196 @@
+# RBAC ポリシー定義テンプレート
+#
+# このテンプレートを使用して、ロールベースアクセス制御（RBAC）ポリシーを定義します。
+#
+# 使用方法:
+#   1. rolesセクションにロールを定義
+#   2. permissionsセクションに権限を定義
+#   3. userRolesでユーザーにロールを割り当て
+#
+# 原則:
+#   - デフォルト拒否: 明示的に許可されていない限りすべて拒否
+#   - 最小権限: 必要最小限の権限のみ付与
+#   - 職務分離: 単一ロールに過剰な権限を集中させない
+
+# ロール定義
+roles:
+  # 管理者ロール
+  - name: admin
+    description: システム全体の管理者
+    permissions:
+      - users:create
+      - users:read
+      - users:update
+      - users:delete
+      - roles:manage
+      - settings:write
+      - audit_logs:read
+
+  # 編集者ロール
+  - name: editor
+    description: コンテンツの作成・編集が可能
+    permissions:
+      - posts:create
+      - posts:read
+      - posts:update
+      - own_posts:delete  # 自分の投稿のみ削除可能
+      - comments:moderate
+
+  # モデレーターロール
+  - name: moderator
+    description: コンテンツのモデレーション担当
+    permissions:
+      - posts:read
+      - comments:read
+      - comments:update
+      - comments:delete
+      - users:suspend
+
+  # ビューワーロール
+  - name: viewer
+    description: 閲覧のみ可能
+    permissions:
+      - posts:read
+      - comments:read
+
+  # カスタムロール例
+  - name: analyst
+    description: データ分析担当
+    permissions:
+      - analytics:read
+      - reports:generate
+      - export:data
+
+# 権限定義
+permissions:
+  # ユーザー管理
+  - resource: users
+    actions:
+      - create
+      - read
+      - update
+      - delete
+      - suspend
+
+  # 投稿管理
+  - resource: posts
+    actions:
+      - create
+      - read
+      - update
+      - delete
+      - publish
+
+  # 自分の投稿（所有権ベース）
+  - resource: own_posts
+    actions:
+      - delete
+      - update
+
+  # コメント管理
+  - resource: comments
+    actions:
+      - create
+      - read
+      - update
+      - delete
+      - moderate
+
+  # ロール管理
+  - resource: roles
+    actions:
+      - manage  # 作成・更新・削除
+
+  # 設定管理
+  - resource: settings
+    actions:
+      - read
+      - write
+
+  # 分析
+  - resource: analytics
+    actions:
+      - read
+
+  # レポート
+  - resource: reports
+    actions:
+      - generate
+      - export
+
+  # データエクスポート
+  - resource: export
+    actions:
+      - data
+
+  # 監査ログ
+  - resource: audit_logs
+    actions:
+      - read
+
+# ユーザーとロールのマッピング例
+userRoles:
+  - userId: user_001
+    roles:
+      - admin
+
+  - userId: user_002
+    roles:
+      - editor
+
+  - userId: user_003
+    roles:
+      - editor
+      - moderator  # 複数ロール可能
+
+  - userId: user_004
+    roles:
+      - viewer
+
+# ロール階層（オプション）
+roleHierarchy:
+  # Admin は Editor の権限も継承
+  - parent: admin
+    child: editor
+
+  # Editor は Viewer の権限も継承
+  - parent: editor
+    child: viewer
+
+  # Moderator は Viewer の権限も継承
+  - parent: moderator
+    child: viewer
+
+# 動的権限ルール（ABAC要素を組み込む場合）
+dynamicRules:
+  # 勤務時間内のみ編集可能
+  - resource: posts
+    action: update
+    conditions:
+      - type: time_range
+        start: "09:00"
+        end: "17:00"
+      - type: has_role
+        role: editor
+
+  # 自分の部門のドキュメントのみアクセス可能
+  - resource: documents
+    action: read
+    conditions:
+      - type: attribute_match
+        user_attribute: department
+        resource_attribute: department
+
+# 禁止事項（明示的な拒否ルール）
+denialRules:
+  # ゲストは削除操作を一切禁止
+  - role: guest
+    forbidden_actions:
+      - "*:delete"
+
+  # 一般ユーザーはシステム設定変更禁止
+  - role: user
+    forbidden_resources:
+      - settings
+      - roles
+      - system_config

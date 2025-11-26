@@ -689,6 +689,21 @@
 
 ---
 
+## 新規スキル - セキュリティ監査関連 (2025-11-26 追加)
+
+以下のスキルは @sec-auditor エージェント軽量化に伴い作成されました:
+
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **authentication-authorization-security** | `.claude/skills/authentication-authorization-security/SKILL.md` | 認証・認可機構のセキュリティ評価、OAuth 2.0、JWT、RBAC/ABAC |
+| **cryptographic-practices** | `.claude/skills/cryptographic-practices/SKILL.md` | 暗号化アルゴリズム評価、CSPRNG、鍵管理、弱い暗号排除 |
+| **security-configuration-review** | `.claude/skills/security-configuration-review/SKILL.md` | セキュリティヘッダー、CORS、環境変数、CSP設定レビュー |
+| **dependency-security-scanning** | `.claude/skills/dependency-security-scanning/SKILL.md` | 依存関係脆弱性スキャン、npm audit、Snyk、CVE評価 |
+| **code-static-analysis-security** | `.claude/skills/code-static-analysis-security/SKILL.md` | SAST、SQLインジェクション、XSS、コマンドインジェクション検出 |
+| **security-reporting** | `.claude/skills/security-reporting/SKILL.md` | セキュリティレポート生成、リスク評価、アクションプラン策定 |
+
+---
+
 ## 新規スキル - Secret管理関連 (2025-11-26 追加)
 
 以下のスキルは @secret-mgr エージェント専用に作成されました:
