@@ -1,0 +1,126 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SAST Configuration Template",
+  "description": "静的アプリケーションセキュリティテスト（SAST）設定テンプレート",
+
+  "eslintSecurity": {
+    "plugins": ["security", "no-secrets"],
+    "extends": ["plugin:security/recommended"],
+    "rules": {
+      "security/detect-object-injection": "error",
+      "security/detect-non-literal-regexp": "warn",
+      "security/detect-non-literal-fs-filename": "error",
+      "security/detect-eval-with-expression": "error",
+      "security/detect-no-csrf-before-method-override": "error",
+      "security/detect-buffer-noassert": "error",
+      "security/detect-child-process": "warn",
+      "security/detect-disable-mustache-escape": "error",
+      "security/detect-new-buffer": "error",
+      "security/detect-pseudoRandomBytes": "error",
+      "security/detect-possible-timing-attacks": "warn",
+      "security/detect-unsafe-regex": "error",
+      "no-secrets/no-secrets": "error"
+    }
+  },
+
+  "semgrep": {
+    "rules": [
+      "p/owasp-top-ten",
+      "p/security-audit",
+      "p/sql-injection",
+      "p/xss"
+    ],
+    "severity": ["ERROR", "WARNING"],
+    "exclude": [
+      "node_modules/**",
+      "dist/**",
+      "build/**",
+      "test/**",
+      "*.test.js",
+      "*.spec.ts"
+    ],
+    "autofix": false,
+    "output": "json"
+  },
+
+  "scanPatterns": {
+    "sqlInjection": {
+      "pattern": "/(query|exec|raw)\\s*\\(\\s*['\"`].*\\$\\{/",
+      "severity": "critical",
+      "message": "SQLインジェクション: 文字列連結クエリ検出"
+    },
+    "xss": {
+      "pattern": "/\\.innerHTML\\s*=|dangerouslySetInnerHTML/",
+      "severity": "high",
+      "message": "XSS: innerHTML使用検出"
+    },
+    "commandInjection": {
+      "pattern": "/exec(Sync)?\\s*\\(\\s*['\"`].*\\$\\{/",
+      "severity": "critical",
+      "message": "コマンドインジェクション: 文字列連結コマンド検出"
+    },
+    "eval": {
+      "pattern": "/\\beval\\s*\\(|new\\s+Function\\s*\\(/",
+      "severity": "high",
+      "message": "危険な関数: evalまたはnew Function検出"
+    },
+    "hardcodedSecret": {
+      "pattern": "/(apiKey|password|secret)\\s*=\\s*['\"][^'\"]{10,}['\"]/i",
+      "severity": "critical",
+      "message": "ハードコードされたシークレット検出"
+    },
+    "weakCrypto": {
+      "pattern": "/\\b(md5|sha1|des|rc4)\\b/i",
+      "severity": "high",
+      "message": "弱い暗号化アルゴリズム検出"
+    },
+    "mathRandom": {
+      "pattern": "/Math\\.random\\s*\\(/",
+      "severity": "medium",
+      "message": "Math.random()検出（暗号用途には不適）"
+    }
+  },
+
+  "dataFlowAnalysis": {
+    "sources": [
+      "req.body",
+      "req.params",
+      "req.query",
+      "req.headers",
+      "req.cookies"
+    ],
+    "sinks": {
+      "sql": ["db.query", "db.exec", "db.raw"],
+      "command": ["exec", "execSync", "spawn"],
+      "eval": ["eval", "Function", "setTimeout", "setInterval"],
+      "file": ["fs.readFile", "fs.writeFile", "fs.unlink"]
+    },
+    "sanitizers": [
+      "validator.escape",
+      "DOMPurify.sanitize",
+      "parseInt",
+      "parseFloat",
+      "path.basename"
+    ]
+  },
+
+  "reporting": {
+    "format": "json",
+    "outputFile": "sast-report.json",
+    "includeContext": true,
+    "contextLines": 3,
+    "severityThreshold": "medium"
+  },
+
+  "cicd": {
+    "failOn": ["critical", "high"],
+    "warnOn": ["medium"],
+    "ignoreOn": ["low"],
+    "maxAllowedFindings": {
+      "critical": 0,
+      "high": 0,
+      "medium": 5,
+      "low": 20
+    }
+  }
+}

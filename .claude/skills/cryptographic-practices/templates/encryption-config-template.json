@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Encryption Configuration Template",
+  "description": "暗号化設定テンプレート - AES-256-GCM推奨",
+
+  "encryption": {
+    "algorithm": "aes-256-gcm",
+    "keySize": 256,
+    "ivSize": 12,
+    "authTagSize": 16,
+    "keyDerivation": {
+      "algorithm": "pbkdf2",
+      "hashFunction": "sha256",
+      "iterations": 100000,
+      "saltSize": 16
+    }
+  },
+
+  "hashing": {
+    "passwords": {
+      "algorithm": "argon2id",
+      "memoryCost": 65536,
+      "timeCost": 3,
+      "parallelism": 4,
+      "hashLength": 32,
+      "saltLength": 16
+    },
+    "data": {
+      "algorithm": "sha256",
+      "encoding": "hex"
+    }
+  },
+
+  "jwt": {
+    "algorithm": "RS256",
+    "keySize": 4096,
+    "expiresIn": "1h",
+    "issuer": "https://auth.example.com",
+    "audience": "my-api"
+  },
+
+  "tls": {
+    "minVersion": "TLSv1.2",
+    "cipherSuites": [
+      "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+      "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+    ]
+  },
+
+  "keyManagement": {
+    "rotation": {
+      "enabled": true,
+      "intervalDays": 90
+    },
+    "storage": {
+      "type": "kms",
+      "provider": "aws",
+      "region": "us-east-1"
+    }
+  },
+
+  "securityChecklist": [
+    "AES-256-GCM使用（AES-ECB禁止）",
+    "パスワードはargon2id/bcryptでハッシュ化",
+    "CSPRNG使用（Math.random()禁止）",
+    "TLS 1.2以上",
+    "鍵は環境変数またはKMSで管理",
+    "定期的な鍵ローテーション"
+  ]
+}

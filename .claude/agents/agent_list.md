@@ -616,6 +616,7 @@
 #### 24. セキュリティ監査人
 
 - **エージェント名:** `@sec-auditor`
+- **エージェントの配置:** `.claude/agents/sec-auditor.md`
 - **モデル人物:** **ブルース・シュナイアー (Bruce Schneier)** - 暗号・セキュリティの巨人
 - **目的:** システムの脆弱性を排除し、攻撃から守る。
 - **背景:** 攻撃手法は日々進化しており、受け身ではなく能動的な防御が必要。
@@ -633,9 +634,15 @@
   | ------------------------------- | ------ | ------------------------------------------------ |
   | **owasp-top-10** | `.claude/skills/owasp-top-10/SKILL.md` | SQL インジェクション、XSS、CSRF 等の対策 |
   | **vulnerability-scanning** | `.claude/skills/vulnerability-scanning/SKILL.md` | npm audit、Snyk、SAST/DAST ツール活用 |
+  | **authentication-authorization-security** | `.claude/skills/authentication-authorization-security/SKILL.md` | 認証・認可機構のセキュリティ評価、OAuth、JWT、RBAC |
+  | **cryptographic-practices** | `.claude/skills/cryptographic-practices/SKILL.md` | 暗号化アルゴリズム、CSPRNG、鍵管理 |
+  | **security-configuration-review** | `.claude/skills/security-configuration-review/SKILL.md` | セキュリティヘッダー、CORS、環境変数レビュー |
+  | **dependency-security-scanning** | `.claude/skills/dependency-security-scanning/SKILL.md` | 依存関係脆弱性、npm audit、CVE評価 |
+  | **code-static-analysis-security** | `.claude/skills/code-static-analysis-security/SKILL.md` | SQLインジェクション、XSS、コマンドインジェクション検出 |
   | **rate-limiting-strategies** | `.claude/skills/rate-limiting-strategies/SKILL.md` | Token Bucket、Leaky Bucket、Sliding Window |
   | **input-sanitization-advanced** | `.claude/skills/input-sanitization-advanced/SKILL.md` | パラメータタンパリング防止、エンコード処理 |
   | **security-testing** | `.claude/skills/security-testing/SKILL.md` | ペネトレーションテスト、セキュリティテストケース |
+  | **security-reporting** | `.claude/skills/security-reporting/SKILL.md` | セキュリティレポート生成、リスク評価 |
 
 #### 25. 機密情報管理者
 
