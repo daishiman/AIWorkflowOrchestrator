@@ -453,13 +453,13 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                  | 概要                                                   |
-| ------------------------- | ------------------------------------------------------ |
-| **structured-logging**    | JSON 形式ログ、コンテキスト情報、ログレベル            |
-| **observability-pillars** | ログ、メトリクス、トレースの統合                       |
-| **slo-sli-design**        | Service Level Objectives、Error Budget                 |
-| **alert-design**          | アラート閾値設定、通知ルーティング、Alert Fatigue 回避 |
-| **distributed-tracing**   | OpenTelemetry、トレース ID、スパン管理                 |
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **structured-logging** | `.claude/skills/structured-logging/SKILL.md` | JSON 形式ログ、コンテキスト情報、ログレベル、相関ID、PIIマスキング |
+| **observability-pillars** | `.claude/skills/observability-pillars/SKILL.md` | ログ、メトリクス、トレースの統合、OpenTelemetry、サンプリング戦略 |
+| **slo-sli-design** | `.claude/skills/slo-sli-design/SKILL.md` | Service Level Objectives、Error Budget、SLI設計 |
+| **alert-design** | `.claude/skills/alert-design/SKILL.md` | アラート閾値設定、通知ルーティング、Alert Fatigue 回避、適応的閾値 |
+| **distributed-tracing** | `.claude/skills/distributed-tracing/SKILL.md` | OpenTelemetry、トレース ID、スパン管理、W3C Trace Context |
 ```
 
 ## 27. データベース管理者 (DBA)
@@ -700,6 +700,20 @@
 | **flaky-test-prevention** | `.claude/skills/flaky-test-prevention/SKILL.md` | リトライロジック、明示的待機、非決定性排除 |
 | **visual-regression-testing** | `.claude/skills/visual-regression-testing/SKILL.md` | スクリーンショット比較、CSS アニメーション考慮 |
 | **api-mocking** | `.claude/skills/api-mocking/SKILL.md` | MSW、Nock、モックサーバー構築 |
+
+---
+
+## 新規スキル - SRE/オブザーバビリティ関連 (2025-11-26 追加)
+
+以下のスキルは @sre-observer エージェント専用に作成されました:
+
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **structured-logging** | `.claude/skills/structured-logging/SKILL.md` | JSON形式ログ、ログレベル階層、相関ID体系、PIIマスキング、ログスキーマ設計 |
+| **observability-pillars** | `.claude/skills/observability-pillars/SKILL.md` | ログ・メトリクス・トレース三本柱統合、OpenTelemetry、サンプリング戦略、高カーディナリティデータ |
+| **slo-sli-design** | `.claude/skills/slo-sli-design/SKILL.md` | SLI設計、SLO設定フレームワーク、エラーバジェット計算・管理、ダッシュボード可視化 |
+| **alert-design** | `.claude/skills/alert-design/SKILL.md` | アクション可能アラート設計、Alert Fatigue回避、適応的閾値、通知ルーティング |
+| **distributed-tracing** | `.claude/skills/distributed-tracing/SKILL.md` | トレース構造設計、W3C Trace Context、スパン設計、ボトルネック特定 |
 ```
 
 ---
