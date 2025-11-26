@@ -476,11 +476,11 @@
 - **必要なスキル**:
   | スキル名 | パス | 概要 |
   | ----------------------- | ------ | ---------------------------------------------------- |
-  | **multi-agent-systems** | `.claude/skills/multi-agent-systems/SKILL.md` | TCP/IP 基礎、HTTP ステータスコード、タイムアウト設定 |
-  | **multipart-upload** | `.claude/skills/multipart-upload/SKILL.md` | FormData、チャンクアップロード、進捗追跡 |
-  | **multi-agent-systems** | `.claude/skills/multi-agent-systems/SKILL.md` | WebSocket vs SSE vs Long Polling、リアルタイム通信 |
-  | **exponential-backoff** | `.claude/skills/exponential-backoff/SKILL.md` | リトライ戦略、ジッター、最大試行回数 |
-  | **network-resilience** | `.claude/skills/network-resilience/SKILL.md` | オフライン対応、再接続ロジック、データ整合性 |
+  | **multipart-upload** | `.claude/skills/multipart-upload/SKILL.md` | FormData、チャンクアップロード、進捗追跡、チェックサム検証 |
+  | **network-resilience** | `.claude/skills/network-resilience/SKILL.md` | オフラインキュー、再接続ロジック、状態同期、データ整合性 |
+  | **retry-strategies** | `.claude/skills/retry-strategies/SKILL.md` | 指数バックオフ、ジッター、サーキットブレーカー |
+  | **multi-agent-systems** | `.claude/skills/multi-agent-systems/SKILL.md` | エージェント間連携、ハンドオフプロトコル |
+  | **agent-architecture-patterns** | `.claude/skills/agent-architecture-patterns/SKILL.md` | エージェント構造、依存スキル設計パターン |
 
 #### 19. プロセス管理
 
