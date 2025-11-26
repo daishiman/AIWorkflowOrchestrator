@@ -592,6 +592,8 @@
 #### 23. 認証・認可スペシャリスト
 
 - **エージェント名:** `@auth-specialist`
+- **エージェントの配置:** `.claude/agents/auth-specialist.md`
+- **軽量化**: ✅ 完了（2025-11-26） - 1,376 行 → 479 行（65%削減）
 - **モデル人物:** **アーロン・パレッキ (Aaron Parecki)** - OAuth 2.0 規格貢献者
 - **目的:** 正しいユーザーだけが、許された操作を行えるようにする。
 - **背景:** なりすましや権限昇格攻撃を防ぐ。
@@ -603,15 +605,15 @@
 - **実行チェックリスト:**
   - [ ] パスワードはハッシュ化されているか（あるいはパスワードレスか）？
   - [ ] 管理者機能は一般ユーザーからアクセス不可になっているか？
-- **成果物:** `src/auth.ts`, Middleware
+- **成果物:** `src/app/api/auth/[...nextauth]/route.ts`, Middleware
 - **必要なスキル**:
   | スキル名 | パス | 概要 |
-  | ----------------------- | ------ | ------------------------------------------------- |
-  | **oauth2-flows** | `.claude/skills/oauth2-flows/SKILL.md` | Authorization Code Flow、PKCE、Refresh Token |
-  | **session-management** | `.claude/skills/session-management/SKILL.md` | Cookie-based、JWT-based、Session Storage |
-  | **rbac-implementation** | `.claude/skills/rbac-implementation/SKILL.md` | Role-Based Access Control、権限管理、ポリシー定義 |
-  | **nextauth-patterns** | `.claude/skills/nextauth-patterns/SKILL.md` | NextAuth.js 設定、Adapter、カスタムプロバイダー |
-  | **security-headers** | `.claude/skills/security-headers/SKILL.md` | CSRF、XSS、Clickjacking 対策、CSP 設定 |
+  | ----------------------- | ---- | ------------------------------------------------- |
+  | **oauth2-flows** | `.claude/skills/oauth2-flows/SKILL.md` | Authorization Code Flow、PKCE、Refresh Token、セキュリティベストプラクティス |
+  | **session-management** | `.claude/skills/session-management/SKILL.md` | JWT/Database戦略、Cookie属性、トークンライフサイクル、セッションセキュリティ対策 |
+  | **rbac-implementation** | `.claude/skills/rbac-implementation/SKILL.md` | ロール設計、権限モデル、多層アクセス制御、ポリシーエンジン |
+  | **nextauth-patterns** | `.claude/skills/nextauth-patterns/SKILL.md` | NextAuth.js v5設定、プロバイダー、アダプター、セッションコールバック |
+  | **security-headers** | `.claude/skills/security-headers/SKILL.md` | CSP、HSTS、X-Frame-Options、CSRF/XSS対策、Cookie属性 |
 
 #### 24. セキュリティ監査人
 
