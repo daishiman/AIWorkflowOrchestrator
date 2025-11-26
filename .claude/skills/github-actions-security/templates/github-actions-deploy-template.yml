@@ -1,0 +1,303 @@
+name: Deploy to Railway
+
+# ═══════════════════════════════════════════════════
+# Triggers（トリガー設定）
+# ═══════════════════════════════════════════════════
+
+on:
+  push:
+    branches:
+      - main       # → production environment
+      - staging    # → staging environment
+      - develop    # → development environment
+
+  workflow_dispatch:  # 手動実行を許可
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+
+# ═══════════════════════════════════════════════════
+# Environment Variables（ワークフローレベル）
+# ═══════════════════════════════════════════════════
+
+env:
+  NODE_VERSION: '20.x'
+  PNPM_VERSION: '8'
+
+# ═══════════════════════════════════════════════════
+# Jobs
+# ═══════════════════════════════════════════════════
+
+jobs:
+  # ───────────────────────────────────────────────
+  # Gate 1: Secret Scan（機密情報スキャン）
+  # ───────────────────────────────────────────────
+  secret-scan:
+    name: 🔍 Secret Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 全履歴取得
+
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fail on detection
+        if: failure()
+        run: |
+          echo "🚨 Secrets detected in repository!"
+          echo "Please remove secrets and rotate them immediately"
+          exit 1
+
+  # ───────────────────────────────────────────────
+  # Gate 2: Lint & Type Check（静的解析）
+  # ───────────────────────────────────────────────
+  lint:
+    name: 📝 Lint & Type Check
+    runs-on: ubuntu-latest
+    needs: secret-scan
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run ESLint
+        run: pnpm run lint
+
+      - name: Run Type Check
+        run: pnpm run type-check
+
+  # ───────────────────────────────────────────────
+  # Gate 3: Tests（テスト実行）
+  # ───────────────────────────────────────────────
+  test:
+    name: 🧪 Tests
+    runs-on: ubuntu-latest
+    needs: lint
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run unit tests
+        run: pnpm test
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+
+  # ───────────────────────────────────────────────
+  # Gate 4: Build（ビルド検証）
+  # ───────────────────────────────────────────────
+  build:
+    name: 🏗️ Build
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build application
+        run: pnpm run build
+
+      - name: Validate build output
+        run: |
+          if [ ! -d ".next" ] && [ ! -d "dist" ]; then
+            echo "❌ Build output directory not found"
+            exit 1
+          fi
+          echo "✅ Build output validated"
+
+  # ───────────────────────────────────────────────
+  # Deployment: すべてのゲート通過後
+  # ───────────────────────────────────────────────
+  deploy:
+    name: 🚀 Deploy
+    runs-on: ubuntu-latest
+    needs: [secret-scan, lint, test, build]
+
+    # 環境を動的に決定
+    environment:
+      name: ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || github.ref == 'refs/heads/staging' && 'staging' || 'development') }}
+      url: ${{ steps.deploy.outputs.url }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Validate environment
+        run: |
+          echo "Deploying to: ${{ github.environment }}"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+
+      - name: Deploy to Railway
+        id: deploy
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          # Railwayにデプロイ
+          railway up --detach
+
+          # デプロイURL取得（オプション）
+          DEPLOY_URL=$(railway status --json | jq -r '.url')
+          echo "url=$DEPLOY_URL" >> $GITHUB_OUTPUT
+
+      - name: Run migrations
+        if: success()
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          # Railwayでマイグレーション実行
+          railway run pnpm run db:migrate
+
+      - name: Validate deployment
+        if: success()
+        run: |
+          # デプロイ成功確認（ヘルスチェック）
+          DEPLOY_URL="${{ steps.deploy.outputs.url }}"
+          if [ -n "$DEPLOY_URL" ]; then
+            curl -f "$DEPLOY_URL/api/health" || exit 1
+            echo "✅ Deployment health check passed"
+          fi
+
+      - name: Notify success
+        if: success()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -X POST "$DISCORD_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"embeds\": [{
+                \"title\": \"✅ Deployment Successful\",
+                \"description\": \"Deployed to **${{ github.environment }}**\",
+                \"color\": 3066993,
+                \"fields\": [
+                  {\"name\": \"Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true},
+                  {\"name\": \"Commit\", \"value\": \"[\`${GITHUB_SHA:0:7}\`](${{ github.event.head_commit.url }})\", \"inline\": true},
+                  {\"name\": \"Author\", \"value\": \"${{ github.actor }}\", \"inline\": true}
+                ],
+                \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"
+              }]
+            }"
+
+      - name: Notify failure
+        if: failure()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          curl -X POST "$DISCORD_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"embeds\": [{
+                \"title\": \"❌ Deployment Failed\",
+                \"description\": \"Failed to deploy to **${{ github.environment }}**\",
+                \"color\": 15158332,
+                \"fields\": [
+                  {\"name\": \"Branch\", \"value\": \"${{ github.ref_name }}\"},
+                  {\"name\": \"Workflow\", \"value\": \"[View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\"}
+                ],
+                \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"
+              }]
+            }"
+
+# ═══════════════════════════════════════════════════
+# Security Best Practices（このワークフローに適用）
+# ═══════════════════════════════════════════════════
+
+# ✅ 実装済みのセキュリティ対策:
+# 1. 品質ゲート（Secret Scan → Lint → Test → Build → Deploy）
+# 2. 環境分離（environment設定で環境別Secrets使用）
+# 3. Secret露出防止（GitHub Actionsが自動マスク）
+# 4. 本番環境保護（Environment protection rules推奨）
+# 5. 監査証跡（GitHub Actions実行ログ）
+
+# 🔐 追加推奨設定（GitHub Settings）:
+# 1. Branch protection rules（main ブランチ）:
+#    - Require pull request reviews (1+ approvals)
+#    - Require status checks to pass（上記すべてのジョブ）
+#    - Include administrators（管理者も遵守）
+#
+# 2. Environment protection rules（production）:
+#    - Required reviewers: @devops-team
+#    - Wait timer: 5 minutes（誤操作防止）
+#    - Deployment branches: main only
+#
+# 3. Repository settings:
+#    - Allow force pushes: Disabled
+#    - Allow deletions: Disabled
+
+# ═══════════════════════════════════════════════════
+# Customization Guide（カスタマイズガイド）
+# ═══════════════════════════════════════════════════
+
+# このテンプレートをカスタマイズする方法:
+#
+# 1. トリガー調整:
+#    - ブランチ名をプロジェクトに合わせる
+#    - タグベースデプロイを追加（on: push: tags: ['v*']）
+#
+# 2. 環境追加:
+#    - QA環境、DR環境等を追加
+#    - 各環境にGitHub Environment Secretsを設定
+#
+# 3. 通知先変更:
+#    - Discord以外（Slack、Email等）に変更
+#    - 複数通知先を追加
+#
+# 4. ヘルスチェック強化:
+#    - /api/health以外のエンドポイントも確認
+#    - データベース接続確認を追加
+#
+# 5. Rollback機能追加:
+#    - デプロイ失敗時の自動ロールバック
+#    - 前バージョンへの復帰ジョブ

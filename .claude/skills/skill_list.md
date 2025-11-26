@@ -430,20 +430,6 @@
 | **security-testing**            | ペネトレーションテスト、セキュリティテストケース |
 ```
 
-## 25. 機密情報管理者
-
-- **エージェント名:** `@secret-mgr`
-- **エージェントの配置:** `.claude/agents/secret-mgr.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                | 概要                                  |
-| ----------------------- | ------------------------------------- |
-| **tool-permission-management** | ツール権限管理、最小権限原則 |
-| **best-practices-curation** | セキュリティベストプラクティス、コード品質基準 |
-| **project-architecture-integration** | ハイブリッドアーキテクチャ（shared/features）、データベース設計、REST API |
-```
 
 ## 26. ロギング・監視設計者
 
@@ -703,6 +689,23 @@
 
 ---
 
+## 新規スキル - Secret管理関連 (2025-11-26 追加)
+
+以下のスキルは @secret-mgr エージェント専用に作成されました:
+
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **secret-management-architecture** | `.claude/skills/secret-management-architecture/SKILL.md` | Secret管理方式選択、階層的管理設計、アクセス制御マトリクス、Rotation戦略 |
+| **zero-trust-security** | `.claude/skills/zero-trust-security/SKILL.md` | Zero Trust 5原則、RBAC/ABAC実装、JITアクセス、継続的検証、異常検知 |
+| **gitignore-management** | `.claude/skills/gitignore-management/SKILL.md` | .gitignore設計、機密ファイルパターン、プロジェクト固有除外、検証手法 |
+| **pre-commit-security** | `.claude/skills/pre-commit-security/SKILL.md` | pre-commit hook実装、機密情報検出パターン、Git履歴スキャン、git-secrets/gitleaks統合 |
+| **encryption-key-lifecycle** | `.claude/skills/encryption-key-lifecycle/SKILL.md` | 暗号化アルゴリズム選定、鍵生成・保管・使用・Rotation・廃棄の全フェーズ |
+| **environment-isolation** | `.claude/skills/environment-isolation/SKILL.md` | 環境分離4レベル、環境別Secret管理、クロスアカウント制御、データマスキング |
+| **railway-secrets-management** | `.claude/skills/railway-secrets-management/SKILL.md` | Railway Secrets、Variables、Neon Plugin自動注入、Railway CLI、一時ファイルセキュリティ |
+| **github-actions-security** | `.claude/skills/github-actions-security/SKILL.md` | GitHub Secrets、Environment Secrets、ログマスキング、CI/CD品質ゲート統合 |
+
+---
+
 ## 新規スキル - SRE/オブザーバビリティ関連 (2025-11-26 追加)
 
 以下のスキルは @sre-observer エージェント専用に作成されました:
@@ -714,7 +717,6 @@
 | **slo-sli-design** | `.claude/skills/slo-sli-design/SKILL.md` | SLI設計、SLO設定フレームワーク、エラーバジェット計算・管理、ダッシュボード可視化 |
 | **alert-design** | `.claude/skills/alert-design/SKILL.md` | アクション可能アラート設計、Alert Fatigue回避、適応的閾値、通知ルーティング |
 | **distributed-tracing** | `.claude/skills/distributed-tracing/SKILL.md` | トレース構造設計、W3C Trace Context、スパン設計、ボトルネック特定 |
-```
 
 ---
 
