@@ -1,0 +1,205 @@
+---
+name: test-doubles
+description: |
+  テストダブル（Mock、Stub、Fake、Spy）の適切な使い分けを専門とするスキル。
+  外部依存を持つコードの効果的なテスト戦略を提供します。
+
+  専門分野:
+  - テストダブルの種類: Mock、Stub、Fake、Spy、Dummyの使い分け
+  - 依存性分離: 外部依存からのテスト対象の分離
+  - 検証戦略: 振る舞い検証と状態検証の使い分け
+  - モッキングフレームワーク: Vitest、Jest等での実装
+
+  使用タイミング:
+  - 外部依存を持つコードをテストする時
+  - テストダブルの種類選択に迷った時
+  - テストの保守性を改善したい時
+  - 過度なモッキングを避けたい時
+
+  Use proactively when implementing tests with external dependencies.
+version: 1.0.0
+---
+
+# Test Doubles
+
+## 概要
+
+テストダブルは、テスト対象が依存する外部コンポーネントを置き換えるオブジェクトです。
+適切なテストダブルの選択は、テストの品質と保守性に大きく影響します。
+
+**核心原則**:
+- 目的に応じたテストダブルの選択
+- 過度なモッキングの回避
+- テストの意図を明確にする
+
+**対象ユーザー**:
+- ビジネスロジック実装エージェント（@logic-dev）
+- テスト作成者
+- 外部依存を持つコードの開発者
+
+## リソース構造
+
+```
+test-doubles/
+├── SKILL.md                              # 本ファイル
+├── resources/
+│   ├── types-overview.md                 # テストダブルの種類
+│   ├── mock-patterns.md                  # Mockパターン
+│   ├── stub-patterns.md                  # Stubパターン
+│   ├── fake-patterns.md                  # Fakeパターン
+│   └── verification-strategies.md        # 検証戦略
+└── templates/
+    └── test-double-selection.md          # 選択ガイドテンプレート
+```
+
+## コマンドリファレンス
+
+### リソース読み取り
+
+```bash
+# テストダブルの種類
+cat .claude/skills/test-doubles/resources/types-overview.md
+
+# Mockパターン
+cat .claude/skills/test-doubles/resources/mock-patterns.md
+
+# Stubパターン
+cat .claude/skills/test-doubles/resources/stub-patterns.md
+
+# Fakeパターン
+cat .claude/skills/test-doubles/resources/fake-patterns.md
+
+# 検証戦略
+cat .claude/skills/test-doubles/resources/verification-strategies.md
+```
+
+### テンプレート参照
+
+```bash
+# テストダブル選択ガイド
+cat .claude/skills/test-doubles/templates/test-double-selection.md
+```
+
+## テストダブルの種類
+
+### クイックリファレンス
+
+| 種類 | 目的 | 検証方法 | 使用場面 |
+|------|------|---------|---------|
+| Dummy | パラメータ埋め | なし | 使用されない引数 |
+| Stub | 固定値を返す | 状態検証 | 入力の制御 |
+| Spy | 呼び出しを記録 | 振る舞い検証 | 呼び出し確認 |
+| Mock | 期待を検証 | 振る舞い検証 | 相互作用検証 |
+| Fake | 簡易実装 | 状態検証 | 複雑な依存 |
+
+### 選択フロー
+
+```
+依存をテストダブルに置き換える
+  ↓
+[質問] 依存は使用されるか？
+  ├─ No → Dummy
+  └─ Yes ↓
+[質問] 戻り値の制御が必要か？
+  ├─ Yes → Stub
+  └─ No ↓
+[質問] 呼び出しの検証が必要か？
+  ├─ Yes → Mock または Spy
+  └─ No ↓
+[質問] 本物に近い動作が必要か？
+  └─ Yes → Fake
+```
+
+**詳細**: `resources/types-overview.md`
+
+## ベストプラクティス
+
+### すべきこと
+
+1. **目的を明確にする**:
+   - 何をテストしたいのか
+   - どの検証が必要か
+
+2. **最小限のテストダブル**:
+   - 必要な依存のみ置き換え
+   - 過度なモッキングを避ける
+
+3. **適切な検証方法**:
+   - 状態検証: 結果の正しさ
+   - 振る舞い検証: 相互作用の正しさ
+
+### 避けるべきこと
+
+1. **過度なモッキング**:
+   - ❌ すべての依存をモック化
+   - ✅ テストに必要な依存のみ
+
+2. **実装への密結合**:
+   - ❌ 内部実装の詳細を検証
+   - ✅ 公開インターフェースを検証
+
+3. **不必要な振る舞い検証**:
+   - ❌ すべての呼び出しを検証
+   - ✅ 重要な相互作用のみ
+
+## Vitestでの実装
+
+### 基本パターン
+
+```typescript
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+// Stub
+const mockRepository = {
+  findById: vi.fn().mockResolvedValue({ id: '1', name: 'Test' }),
+};
+
+// Spy
+const spyLogger = {
+  log: vi.fn(),
+};
+
+// Mock with expectations
+it('should call repository with correct id', async () => {
+  await service.getUser('user-1');
+  expect(mockRepository.findById).toHaveBeenCalledWith('user-1');
+});
+```
+
+**詳細**: `resources/mock-patterns.md`
+
+## ワークフロー
+
+### テストダブル実装
+
+```
+1. テスト対象の依存を特定
+   ↓
+2. 各依存のテストダブル種類を選択
+   ↓
+3. テストダブルを作成
+   ↓
+4. テストを実装
+   ↓
+5. 検証方法を確認
+   - 状態検証 or 振る舞い検証
+```
+
+## 関連スキル
+
+- **tdd-red-green-refactor** (`.claude/skills/tdd-red-green-refactor/SKILL.md`): TDDサイクル
+- **clean-code-practices** (`.claude/skills/clean-code-practices/SKILL.md`): コード品質
+- **refactoring-techniques** (`.claude/skills/refactoring-techniques/SKILL.md`): リファクタリング
+
+## 参考文献
+
+- **『xUnit Test Patterns』** Gerard Meszaros著
+  - 第11章: Using Test Doubles
+- **『Growing Object-Oriented Software, Guided by Tests』** Freeman & Pryce著
+  - Mockを使ったTDD
+
+## 変更履歴
+
+| バージョン | 日付 | 変更内容 |
+|-----------|------|---------|
+| 1.0.0 | 2025-11-26 | 初版作成 - テストダブルの基礎 |
