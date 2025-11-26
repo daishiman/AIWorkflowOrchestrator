@@ -202,13 +202,13 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                   | 概要                                                                |
-| -------------------------- | ------------------------------------------------------------------- |
-| **refactoring-techniques** | Extract Method、Replace Temp with Query、Introduce Parameter Object |
-| **tdd-red-green-refactor** | テスト駆動開発サイクル、テストファースト                            |
-| **clean-code-practices**   | 意味のある命名、小さな関数、DRY 原則                                |
-| **transaction-script**     | シンプルな手続き型ロジック、適切な粒度                              |
-| **test-doubles**           | Mock, Stub, Fake, Spy の使い分け                                    |
+| スキル名                   | パス | 概要                                                                |
+| -------------------------- | ---- | ------------------------------------------------------------------- |
+| **refactoring-techniques** | `.claude/skills/refactoring-techniques/SKILL.md` | Extract Method、Replace Temp with Query、Introduce Parameter Object |
+| **tdd-red-green-refactor** | `.claude/skills/tdd-red-green-refactor/SKILL.md` | テスト駆動開発サイクル、テストファースト                            |
+| **clean-code-practices**   | `.claude/skills/clean-code-practices/SKILL.md` | 意味のある命名、小さな関数、DRY 原則                                |
+| **transaction-script**     | `.claude/skills/transaction-script/SKILL.md` | シンプルな手続き型ロジック、適切な粒度                              |
+| **test-doubles**           | `.claude/skills/test-doubles/SKILL.md` | Mock, Stub, Fake, Spy の使い分け                                    |
 ```
 
 ## 13. AI プロンプトエンジニア
@@ -336,7 +336,7 @@
 
 | スキル名                    | 概要                                                 |
 | --------------------------- | ---------------------------------------------------- |
-| **tdd-principles**          | Red-Green-Refactor、テストファースト、テスト駆動設計 |
+| **tdd-red-green-refactor**  | Red-Green-Refactor、テストファースト、テスト駆動設計 |
 | **test-doubles**            | Mock、Stub、Spy、Fake の使い分け                     |
 | **vitest-advanced**         | スナップショットテスト、カバレッジ、並列実行         |
 | **boundary-value-analysis** | 境界値テスト、等価分割、異常系網羅                   |
