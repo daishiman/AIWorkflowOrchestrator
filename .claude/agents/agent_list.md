@@ -668,6 +668,7 @@
 #### 26. ロギング・監視設計者
 
 - **エージェント名:** `@sre-observer`
+- **エージェントの配置:** `.claude/agents/sre-observer.md`
 - **モデル人物:** **ベッツィ・ベイヤー (Betsy Beyer)** - 『Site Reliability Engineering』編集者
 - **目的:** システムの健康状態を可視化し、異常を即座に知る。
 - **背景:** 「見えないシステム」は改善も修理もできない。
@@ -683,11 +684,11 @@
 - **必要なスキル**:
   | スキル名 | パス | 概要 |
   | ------------------------- | ------ | ------------------------------------------------------ |
-  | **structured-logging** | `.claude/skills/structured-logging/SKILL.md` | JSON 形式ログ、コンテキスト情報、ログレベル |
-  | **observability-pillars** | `.claude/skills/observability-pillars/SKILL.md` | ログ、メトリクス、トレースの統合 |
-  | **slo-sli-design** | `.claude/skills/slo-sli-design/SKILL.md` | Service Level Objectives、Error Budget |
-  | **alert-design** | `.claude/skills/alert-design/SKILL.md` | アラート閾値設定、通知ルーティング、Alert Fatigue 回避 |
-  | **distributed-tracing** | `.claude/skills/distributed-tracing/SKILL.md` | OpenTelemetry、トレース ID、スパン管理 |
+  | **structured-logging** | `.claude/skills/structured-logging/SKILL.md` | JSON 形式ログ、コンテキスト情報、ログレベル、相関ID、PIIマスキング |
+  | **observability-pillars** | `.claude/skills/observability-pillars/SKILL.md` | ログ、メトリクス、トレースの統合、OpenTelemetry、サンプリング戦略 |
+  | **slo-sli-design** | `.claude/skills/slo-sli-design/SKILL.md` | Service Level Objectives、Error Budget、SLI設計 |
+  | **alert-design** | `.claude/skills/alert-design/SKILL.md` | アラート閾値設定、通知ルーティング、Alert Fatigue 回避、適応的閾値 |
+  | **distributed-tracing** | `.claude/skills/distributed-tracing/SKILL.md` | OpenTelemetry、トレース ID、スパン管理、W3C Trace Context |
 
 #### 27. データベース管理者（DBA）
 
