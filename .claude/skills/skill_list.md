@@ -300,11 +300,15 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                      | 概要                                                             |
-| ----------------------------- | ---------------------------------------------------------------- |
-| **agent-structure-design** | エージェント構造設計、YAML Frontmatter、必須セクション |
-| **agent-architecture-patterns** | アーキテクチャパターン、循環依存検出、単一責任原則 |
-| **context-optimization** | トークン最適化、文書サイズ管理、効率的コミュニケーション |
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **event-driven-file-watching** | `.claude/skills/event-driven-file-watching/SKILL.md` | Chokidarによるファイル監視、Observer Pattern、EventEmitter設計 |
+| **debounce-throttle-patterns** | `.claude/skills/debounce-throttle-patterns/SKILL.md` | イベント最適化、連続発火防止、デバウンス・スロットリング実装 |
+| **file-exclusion-patterns** | `.claude/skills/file-exclusion-patterns/SKILL.md` | .gitignore互換除外パターン、glob pattern、効率的フィルタリング |
+| **nodejs-stream-processing** | `.claude/skills/nodejs-stream-processing/SKILL.md` | ストリーム処理、バックプレッシャー管理、大容量ファイル処理 |
+| **graceful-shutdown-patterns** | `.claude/skills/graceful-shutdown-patterns/SKILL.md` | シグナルハンドリング、リソースクリーンアップ、終了処理 |
+| **file-watcher-security** | `.claude/skills/file-watcher-security/SKILL.md` | パストラバーサル防止、シンボリックリンク検証、サンドボックス |
+| **file-watcher-observability** | `.claude/skills/file-watcher-observability/SKILL.md` | Prometheusメトリクス、構造化ログ、アラート設計 |
 ```
 
 ## 18. ネットワーク同期 (Sync)
