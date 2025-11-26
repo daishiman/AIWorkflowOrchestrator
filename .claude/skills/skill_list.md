@@ -345,13 +345,13 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                    | 概要                                                 |
-| --------------------------- | ---------------------------------------------------- |
-| **tdd-red-green-refactor**  | Red-Green-Refactor、テストファースト、テスト駆動設計 |
-| **test-doubles**            | Mock、Stub、Spy、Fake の使い分け                     |
-| **vitest-advanced**         | スナップショットテスト、カバレッジ、並列実行         |
-| **boundary-value-analysis** | 境界値テスト、等価分割、異常系網羅                   |
-| **test-naming-conventions** | Given-When-Then、Arrange-Act-Assert                  |
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **tdd-principles** | `.claude/skills/tdd-principles/SKILL.md` | Red-Green-Refactorサイクル、テストファースト、小さなステップ |
+| **test-doubles** | `.claude/skills/test-doubles/SKILL.md` | Mock、Stub、Spy、Fake、Dummyの使い分け |
+| **vitest-advanced** | `.claude/skills/vitest-advanced/SKILL.md` | テスト構造、モッキング、非同期テスト、カバレッジ最適化 |
+| **boundary-value-analysis** | `.claude/skills/boundary-value-analysis/SKILL.md` | 境界値テスト、等価分割、エッジケース網羅 |
+| **test-naming-conventions** | `.claude/skills/test-naming-conventions/SKILL.md` | Should形式、Given-When-Then、Arrange-Act-Assert |
 ```
 
 ## 21. E2E テスター
