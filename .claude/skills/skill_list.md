@@ -362,13 +362,13 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                      | 概要                                           |
-| ----------------------------- | ---------------------------------------------- |
-| **playwright-testing**        | ブラウザ自動化、セレクタ戦略、待機戦略         |
-| **test-data-management**      | Seeding、Teardown、テストデータ分離            |
-| **flaky-test-prevention**     | リトライロジック、明示的待機、非決定性排除     |
-| **visual-regression-testing** | スクリーンショット比較、CSS アニメーション考慮 |
-| **api-mocking**               | MSW、Nock、モックサーバー構築                  |
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **playwright-testing** | `.claude/skills/playwright-testing/SKILL.md` | Playwrightブラウザ自動化、セレクタ戦略、待機戦略 |
+| **test-data-management** | `.claude/skills/test-data-management/SKILL.md` | Seeding、Teardown、テストデータ分離 |
+| **flaky-test-prevention** | `.claude/skills/flaky-test-prevention/SKILL.md` | リトライロジック、明示的待機、非決定性排除 |
+| **visual-regression-testing** | `.claude/skills/visual-regression-testing/SKILL.md` | スクリーンショット比較、CSS アニメーション考慮 |
+| **api-mocking** | `.claude/skills/api-mocking/SKILL.md` | MSW、Nock、モックサーバー構築 |
 ```
 
 ## 22. コード品質管理者 (Linter)
@@ -652,4 +652,19 @@
 | **github-api-integration**       | GitHub REST/GraphQL API、gh CLI 活用、トークン管理                            |
 | **workflow-templates**           | Organization workflow templates、スターターワークフロー                       |
 | **concurrency-control**          | 同時実行制御(concurrency)、キャンセル戦略(cancel-in-progress)                 |
+```
+
+---
+
+## 新規スキル - E2Eテスト関連 (2025-11-26 追加)
+
+以下のスキルは @e2e-tester エージェント専用に作成されました:
+
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **playwright-testing** | `.claude/skills/playwright-testing/SKILL.md` | Playwrightブラウザ自動化、セレクタ戦略、待機戦略 |
+| **test-data-management** | `.claude/skills/test-data-management/SKILL.md` | Seeding、Teardown、テストデータ分離 |
+| **flaky-test-prevention** | `.claude/skills/flaky-test-prevention/SKILL.md` | リトライロジック、明示的待機、非決定性排除 |
+| **visual-regression-testing** | `.claude/skills/visual-regression-testing/SKILL.md` | スクリーンショット比較、CSS アニメーション考慮 |
+| **api-mocking** | `.claude/skills/api-mocking/SKILL.md` | MSW、Nock、モックサーバー構築 |
 ```
