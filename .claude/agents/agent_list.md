@@ -450,11 +450,13 @@
 - **必要なスキル**:
   | スキル名 | パス | 概要 |
   | ----------------------------- | ------ | ---------------------------------------------------------------- |
-  | **agent-architecture-patterns** | `.claude/skills/agent-architecture-patterns/SKILL.md` | Observer Pattern、イベントエミッター、非同期処理の設計パターン |
-  | **project-architecture-integration** | `.claude/skills/project-architecture-integration/SKILL.md` | ファイルシステム統合、クロスプラットフォーム対応 |
-  | **context-optimization** | `.claude/skills/context-optimization/SKILL.md` | イベント間引き、連続発火防止、パフォーマンス最適化 |
-  | **best-practices-curation** | `.claude/skills/best-practices-curation/SKILL.md` | 除外ルール設計、パターンマッチング、ベストプラクティス適用 |
-  | **multi-agent-systems** | `.claude/skills/multi-agent-systems/SKILL.md` | ストリーム処理、マルチエージェント間データフロー |
+  | **event-driven-file-watching** | `.claude/skills/event-driven-file-watching/SKILL.md` | Chokidarによるファイル監視、Observer Pattern、EventEmitter設計 |
+  | **debounce-throttle-patterns** | `.claude/skills/debounce-throttle-patterns/SKILL.md` | イベント最適化、連続発火防止、パフォーマンス最適化 |
+  | **file-exclusion-patterns** | `.claude/skills/file-exclusion-patterns/SKILL.md` | .gitignore互換除外パターン、glob pattern、効率的フィルタリング |
+  | **nodejs-stream-processing** | `.claude/skills/nodejs-stream-processing/SKILL.md` | ストリーム処理、バックプレッシャー管理、大容量ファイル処理 |
+  | **graceful-shutdown-patterns** | `.claude/skills/graceful-shutdown-patterns/SKILL.md` | シグナルハンドリング、リソースクリーンアップ、終了処理 |
+  | **file-watcher-security** | `.claude/skills/file-watcher-security/SKILL.md` | パストラバーサル防止、シンボリックリンク検証、サンドボックス |
+  | **file-watcher-observability** | `.claude/skills/file-watcher-observability/SKILL.md` | Prometheusメトリクス、構造化ログ、アラート設計 |
 
 #### 18. ネットワーク同期（シンク）
 
