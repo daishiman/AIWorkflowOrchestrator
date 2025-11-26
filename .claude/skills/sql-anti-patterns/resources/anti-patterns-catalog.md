@@ -1,0 +1,408 @@
+# SQL アンチパターン完全カタログ
+
+## 概要
+
+このリソースは、Bill Karwinの『SQLアンチパターン』に基づく全25のアンチパターンを
+カテゴリ別に整理し、検出方法と解決策を提供します。
+
+---
+
+## カテゴリ1: 論理設計アンチパターン
+
+### 1.1 ジェイウォーク（Jaywalking）
+
+| 項目 | 内容 |
+|------|------|
+| **問題** | カンマ区切り値を単一カラムに格納 |
+| **症状** | FIND_IN_SET、LIKE '%value%' の多用 |
+| **解決** | 交差テーブルによる正規化 |
+| **例外** | なし（常にアンチパターン） |
+
+### 1.2 ナイーブツリー（Naive Trees）
+
+| 項目 | 内容 |
+|------|------|
+| **問題** | 隣接リストのみで階層データを管理 |
+| **症状** | 再帰クエリの複雑さ、深さ制限 |
+| **解決** | 閉包テーブル、経路列挙、入れ子集合 |
+| **例外** | 浅い階層（2-3レベル）のみの場合 |
+
+```sql
+-- 閉包テーブルの例
+CREATE TABLE category_closure (
+  ancestor_id INT REFERENCES categories(id),
+  descendant_id INT REFERENCES categories(id),
+  depth INT,
+  PRIMARY KEY (ancestor_id, descendant_id)
+);
+```
+
+### 1.3 ID Required
+
+| 項目 | 内容 |
+|------|------|
+| **問題** | すべてのテーブルにサロゲートキーを追加 |
+| **症状** | 交差テーブルに不要なID、自然キーの無視 |
+| **解決** | 複合主キー、自然キーの適切な使用 |
+| **例外** | ORMの制約でIDが必要な場合 |
+
+### 1.4 キーレスエントリ（Keyless Entry）
+
+| 項目 | 内容 |
+|------|------|
+| **問題** | 外部キー制約を定義しない |
+| **症状** | 孤立レコード、整合性エラー |
+| **解決** | 外部キー制約の明示的定義 |
+| **例外** | なし（常にアンチパターン） |
+
+### 1.5 EAV（Entity-Attribute-Value）
+
+| 項目 | 内容 |
+|------|------|
+| **問題** | 属性名をデータとして格納 |
+| **症状** | ピボットクエリ、型制約なし |
+| **解決** | 継承、JSONB、適切な正規化 |
+| **例外** | 完全に動的なメタデータ |
+
+### 1.6 ポリモーフィックアソシエーション
+
+| 項目 | 内容 |
+|------|------|
+| **問題** | 型判別カラムで複数テーブルを参照 |
+| **症状** | 外部キー制約なし、複雑なJOIN |
+| **解決** | 共通親テーブル、個別外部キー |
+| **例外** | なし（常にアンチパターン） |
+
+### 1.7 マルチカラムアトリビュート
+
+| 項目 | 内容 |
+|------|------|
+| **問題** | 類似カラムの繰り返し（tag1, tag2, tag3） |
+| **症状** | 検索の複雑さ、上限制限 |
+| **解決** | 従属テーブルへの分離 |
+| **例外** | 固定数の属性（座標など） |
+
+```sql
+-- アンチパターン
+CREATE TABLE products (
+  id INT,
+  tag1 VARCHAR(50),
+  tag2 VARCHAR(50),
+  tag3 VARCHAR(50)  -- 3つ以上は？
+);
+
+-- 解決
+CREATE TABLE product_tags (
+  product_id INT,
+  tag VARCHAR(50),
+  PRIMARY KEY (product_id, tag)
+);
+```
+
+### 1.8 メタデータトリブル
+
+| 項目 | 内容 |
+|------|------|
+| **問題** | テーブル/カラム名にメタデータを埋め込む |
+| **症状** | sales_2023, sales_2024 のようなテーブル |
+| **解決** | 単一テーブル + 日付カラム |
+| **例外** | パーティショニング戦略として意図的な場合 |
+
+```sql
+-- アンチパターン
+CREATE TABLE sales_2023 (...);
+CREATE TABLE sales_2024 (...);
+
+-- 解決
+CREATE TABLE sales (
+  ...
+  sale_date DATE NOT NULL
+) PARTITION BY RANGE (sale_date);
+```
+
+---
+
+## カテゴリ2: 物理設計アンチパターン
+
+### 2.1 ラウンディングエラー
+
+| 項目 | 内容 |
+|------|------|
+| **問題** | 金額にFLOAT/DOUBLEを使用 |
+| **症状** | 計算誤差、合計の不一致 |
+| **解決** | DECIMAL/NUMERIC型の使用 |
+| **例外** | なし（金額は常にDECIMAL） |
+
+```sql
+-- アンチパターン
+price FLOAT  -- 0.1 + 0.2 ≠ 0.3
+
+-- 解決
+price DECIMAL(10, 2)  -- 正確な計算
+```
+
+### 2.2 31フレーバー
+
+| 項目 | 内容 |
+|------|------|
+| **問題** | カラム定義に値の制限を含める |
+| **症状** | ENUM型の乱用、CHECK制約の過剰使用 |
+| **解決** | 参照テーブル |
+| **例外** | 本当に固定の値（曜日、月など） |
+
+```sql
+-- アンチパターン
+status ENUM('pending', 'approved', 'rejected')
+
+-- 解決
+CREATE TABLE order_statuses (
+  id INT PRIMARY KEY,
+  name VARCHAR(50) UNIQUE
+);
+status_id INT REFERENCES order_statuses(id)
+```
+
+### 2.3 ファントムファイル
+
+| 項目 | 内容 |
+|------|------|
+| **問題** | ファイルパスのみをDBに保存 |
+| **症状** | 孤立ファイル、整合性問題 |
+| **解決** | BLOBまたは管理されたストレージ |
+| **例外** | 大規模ファイル、CDN使用時 |
+
+### 2.4 インデックスショットガン
+
+| 項目 | 内容 |
+|------|------|
+| **問題** | すべてのカラムにインデックスを追加 |
+| **症状** | 書き込み遅延、ディスク肥大化 |
+| **解決** | クエリパターンに基づく選択的インデックス |
+| **例外** | なし |
+
+---
+
+## カテゴリ3: クエリアンチパターン
+
+### 3.1 フィア・オブ・ジ・アンノウン
+
+| 項目 | 内容 |
+|------|------|
+| **問題** | NULLを避けるための不適切なデフォルト値 |
+| **症状** | マジック値（-1, '1900-01-01', ''） |
+| **解決** | 適切なNULL使用 |
+| **例外** | なし |
+
+### 3.2 アンビギュアスグループ
+
+| 項目 | 内容 |
+|------|------|
+| **問題** | GROUP BYで非集約カラムを参照 |
+| **症状** | 予期しない結果、移植性問題 |
+| **解決** | すべての非集約カラムをGROUP BYに含める |
+| **例外** | なし |
+
+```sql
+-- アンチパターン
+SELECT customer_id, order_date, MAX(total)
+FROM orders
+GROUP BY customer_id;  -- order_date は？
+
+-- 解決
+SELECT customer_id, order_date, total
+FROM orders o1
+WHERE total = (
+  SELECT MAX(total) FROM orders o2
+  WHERE o2.customer_id = o1.customer_id
+);
+```
+
+### 3.3 ランダムセレクション
+
+| 項目 | 内容 |
+|------|------|
+| **問題** | ORDER BY RAND() で全テーブルソート |
+| **症状** | パフォーマンス劣化 |
+| **解決** | ランダムオフセット、サンプリング |
+| **例外** | 小さいテーブル |
+
+```sql
+-- アンチパターン
+SELECT * FROM products ORDER BY RAND() LIMIT 1;
+
+-- 解決: ランダムオフセット
+SELECT * FROM products
+OFFSET floor(random() * (SELECT COUNT(*) FROM products))
+LIMIT 1;
+
+-- 解決: TABLESAMPLE (PostgreSQL)
+SELECT * FROM products TABLESAMPLE BERNOULLI(1) LIMIT 1;
+```
+
+### 3.4 プア・マンズ・サーチエンジン
+
+| 項目 | 内容 |
+|------|------|
+| **問題** | LIKE '%keyword%' での全文検索 |
+| **症状** | インデックス無効、遅いクエリ |
+| **解決** | 全文検索インデックス |
+| **例外** | 小さいデータセット |
+
+```sql
+-- アンチパターン
+SELECT * FROM posts WHERE content LIKE '%keyword%';
+
+-- 解決: PostgreSQL全文検索
+CREATE INDEX idx_posts_content ON posts USING gin(to_tsvector('english', content));
+SELECT * FROM posts WHERE to_tsvector('english', content) @@ to_tsquery('keyword');
+```
+
+### 3.5 スパゲッティクエリ
+
+| 項目 | 内容 |
+|------|------|
+| **問題** | 過度に複雑な単一クエリ |
+| **症状** | 保守困難、パフォーマンス問題 |
+| **解決** | クエリ分割、CTE、一時テーブル |
+| **例外** | なし |
+
+### 3.6 インプリシットカラム
+
+| 項目 | 内容 |
+|------|------|
+| **問題** | SELECT * の使用 |
+| **症状** | スキーマ変更への脆弱性 |
+| **解決** | 明示的なカラム指定 |
+| **例外** | 対話的クエリ、デバッグ |
+
+---
+
+## カテゴリ4: アプリケーション開発アンチパターン
+
+### 4.1 リーダブルパスワード
+
+| 項目 | 内容 |
+|------|------|
+| **問題** | パスワードを平文または可逆暗号化で保存 |
+| **症状** | セキュリティリスク |
+| **解決** | bcrypt/Argon2によるハッシュ化 |
+| **例外** | なし（常にアンチパターン） |
+
+### 4.2 SQLインジェクション
+
+| 項目 | 内容 |
+|------|------|
+| **問題** | ユーザー入力を直接SQLに埋め込み |
+| **症状** | セキュリティ脆弱性 |
+| **解決** | パラメータ化クエリ、ORM |
+| **例外** | なし（常にアンチパターン） |
+
+### 4.3 シュードキーニートフリーク
+
+| 項目 | 内容 |
+|------|------|
+| **問題** | サロゲートキーの連番を「再利用」 |
+| **症状** | 整合性問題、監査問題 |
+| **解決** | 連番の再利用禁止、UUID使用 |
+| **例外** | なし |
+
+### 4.4 シー・ノー・エビル
+
+| 項目 | 内容 |
+|------|------|
+| **問題** | SQLエラーを無視 |
+| **症状** | サイレント失敗 |
+| **解決** | 適切なエラーハンドリング |
+| **例外** | なし |
+
+### 4.5 ディプロマティックイミュニティ
+
+| 項目 | 内容 |
+|------|------|
+| **問題** | DBの品質管理をバイパス |
+| **症状** | テスト不足、レビュー不足 |
+| **解決** | コードと同様の品質管理 |
+| **例外** | なし |
+
+### 4.6 マジックビーンズ
+
+| 項目 | 内容 |
+|------|------|
+| **問題** | Active Recordへのビジネスロジック混在 |
+| **症状** | テスト困難、関心の混在 |
+| **解決** | レイヤー分離 |
+| **例外** | 単純なCRUD |
+
+---
+
+## アンチパターン検出クエリ集
+
+### ジェイウォーク検出
+
+```sql
+-- カンマを含む可能性のあるカラムを検出
+SELECT table_name, column_name
+FROM information_schema.columns
+WHERE data_type IN ('character varying', 'text')
+  AND (column_name LIKE '%tags%'
+       OR column_name LIKE '%list%'
+       OR column_name LIKE '%items%');
+```
+
+### EAV検出
+
+```sql
+-- EAVパターンの可能性があるテーブルを検出
+SELECT table_name
+FROM information_schema.columns
+WHERE column_name IN ('attribute_name', 'attribute_value', 'key', 'value')
+GROUP BY table_name
+HAVING COUNT(*) >= 2;
+```
+
+### Polymorphic Associations検出
+
+```sql
+-- 型判別カラムの可能性があるものを検出
+SELECT table_name, column_name
+FROM information_schema.columns
+WHERE column_name LIKE '%_type'
+   OR column_name LIKE '%able_type';
+```
+
+### 未使用インデックス検出
+
+```sql
+-- PostgreSQL
+SELECT
+  schemaname || '.' || relname AS table,
+  indexrelname AS index,
+  idx_scan AS times_used
+FROM pg_stat_user_indexes
+WHERE idx_scan = 0
+ORDER BY relname;
+```
+
+---
+
+## 重要度別アンチパターン分類
+
+### 🔴 クリティカル（即修正必須）
+
+1. SQLインジェクション
+2. リーダブルパスワード
+3. キーレスエントリ
+
+### 🟡 高（早期に対処）
+
+1. ジェイウォーク
+2. EAV
+3. ポリモーフィックアソシエーション
+4. ラウンディングエラー
+
+### 🟢 中（計画的に改善）
+
+1. ナイーブツリー
+2. ID Required
+3. インデックスショットガン
+4. スパゲッティクエリ

@@ -1,0 +1,103 @@
+# ===========================================
+# Trivy 設定ファイル
+# ===========================================
+# 配置場所: プロジェクトルートの trivy.yaml
+#
+# 使用方法:
+#   trivy image --config trivy.yaml myapp:latest
+#   trivy fs --config trivy.yaml .
+# ===========================================
+
+# スキャン対象の重大度
+severity:
+  - CRITICAL
+  - HIGH
+  # - MEDIUM  # 必要に応じてコメント解除
+  # - LOW
+
+# 脆弱性タイプ
+vulnerability:
+  type:
+    - os        # OSパッケージの脆弱性
+    - library   # ライブラリの脆弱性
+
+# 修正版がない脆弱性を無視
+ignore-unfixed: true
+
+# 無視ファイル
+ignorefile: .trivyignore
+
+# 出力設定
+format: table
+# format: json  # CI/CD用
+
+# キャッシュ設定
+cache:
+  # キャッシュディレクトリ
+  dir: .trivy-cache
+  # キャッシュの有効期限（時間）
+  ttl: 24h
+
+# データベース設定
+db:
+  # 脆弱性DBの自動更新
+  download-only: false
+  # DBスキップ（オフライン環境用）
+  skip-update: false
+
+# スキャナー設定
+scanners:
+  - vuln        # 脆弱性スキャン
+  - secret      # シークレット検出
+  # - misconfig   # 設定ミス検出（IaC用）
+
+# シークレット検出設定
+secret:
+  # シークレット検出の有効化
+  config: trivy-secret.yaml
+
+# 無視するディレクトリ/ファイル
+skip-dirs:
+  - node_modules
+  - .git
+  - vendor
+  - __pycache__
+  - .cache
+  - dist
+  - build
+
+skip-files:
+  - "**/*.min.js"
+  - "**/*.bundle.js"
+  - "**/package-lock.json"
+  - "**/pnpm-lock.yaml"
+
+# CI/CD用設定
+# 脆弱性が見つかった場合の終了コード
+exit-code: 1
+
+# タイムアウト（分）
+timeout: 10m
+
+# 並列度
+parallel: 4
+
+# ===========================================
+# 環境別設定例
+# ===========================================
+
+# 開発環境用（緩い設定）
+# development:
+#   severity:
+#     - CRITICAL
+#   ignore-unfixed: true
+#   exit-code: 0
+
+# 本番環境用（厳しい設定）
+# production:
+#   severity:
+#     - CRITICAL
+#     - HIGH
+#     - MEDIUM
+#   ignore-unfixed: false
+#   exit-code: 1

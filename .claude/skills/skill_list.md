@@ -220,30 +220,41 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                        | 概要                                                    |
-| ------------------------------- | ------------------------------------------------------- |
-| **prompt-engineering-for-agents** | エージェント向けプロンプト設計、Chain-of-Thought、Few-Shot Learning |
-| **context-optimization**      | コンテキストウィンドウ最適化、トークン削減技術          |
-| **agent-persona-design**           | エージェントペルソナ設計、役割付与、専門性の強化                |
-| **documentation-architecture**           | ドキュメント構造設計、Schema-based Output        |
-| **best-practices-curation**    | ベストプラクティス収集、品質検証、評価基準          |
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **prompt-engineering-for-agents** | `.claude/skills/prompt-engineering-for-agents/SKILL.md` | エージェント向けプロンプト設計、システムプロンプト最適化 |
+| **context-optimization** | `.claude/skills/context-optimization/SKILL.md` | コンテキストウィンドウ最適化、トークン削減技術 |
+| **agent-persona-design** | `.claude/skills/agent-persona-design/SKILL.md` | エージェントペルソナ設計、役割付与、専門性の強化 |
+| **documentation-architecture** | `.claude/skills/documentation-architecture/SKILL.md` | ドキュメント構造設計、階層化 |
+| **best-practices-curation** | `.claude/skills/best-practices-curation/SKILL.md` | ベストプラクティス収集、品質検証、評価基準 |
+| **structured-output-design** | `.claude/skills/structured-output-design/SKILL.md` | JSON Mode、Function Calling、Schema-based Output |
+| **hallucination-prevention** | `.claude/skills/hallucination-prevention/SKILL.md` | 3層防御、パラメータ調整、検証ステップ |
+| **few-shot-learning-patterns** | `.claude/skills/few-shot-learning-patterns/SKILL.md` | 例示設計、Shot数戦略、ドメイン別パターン |
+| **chain-of-thought-reasoning** | `.claude/skills/chain-of-thought-reasoning/SKILL.md` | CoT推論、Self-Consistency、推論パターン |
+| **prompt-testing-evaluation** | `.claude/skills/prompt-testing-evaluation/SKILL.md` | A/Bテスト、評価メトリクス、自動評価 |
+| **prompt-versioning-management** | `.claude/skills/prompt-versioning-management/SKILL.md` | バージョン管理、デプロイ戦略、ロールバック |
 ```
 
 ## 14. DB スキーマ設計
 
 - **エージェント名:** `@db-architect`
 - **エージェントの配置:** `.claude/agents/db-architect.md`
+- **バージョン:** v2.0.0
+- **ステータス:** ✅ 実装完了
 
 ```markdown
 - **必要なスキル**:
 
-| スキル名                    | パス | 概要                                                 |
-| --------------------------- | ---- | ---------------------------------------------------- |
-| **database-normalization**  | `.claude/skills/database-normalization/SKILL.md` | 第 1〜5 正規形、意図的な非正規化                     |
-| **indexing-strategies**     | `.claude/skills/indexing-strategies/SKILL.md` | B-Tree、GiST、GIN インデックス、カーディナリティ考慮 |
-| **sql-anti-patterns**       | `.claude/skills/sql-anti-patterns/SKILL.md` | ジェイウォーク、EAV、Polymorphic Associations 回避   |
-| **jsonb-optimization**      | `.claude/skills/jsonb-optimization/SKILL.md` | JSONB 索引、演算子活用、パフォーマンスチューニング   |
-| **foreign-key-constraints** | `.claude/skills/foreign-key-constraints/SKILL.md` | 参照整合性、CASCADE 設定、パフォーマンス影響         |
+| スキル名                    | パス | 概要 |
+| --------------------------- | ---- | ---- |
+| **database-normalization**  | `.claude/skills/database-normalization/SKILL.md` | 第 1〜5 正規形、BCNF、意図的な非正規化、更新異常回避 |
+| **indexing-strategies**     | `.claude/skills/indexing-strategies/SKILL.md` | B-Tree、GIN、GiST、BRIN インデックス、部分インデックス、式インデックス |
+| **sql-anti-patterns**       | `.claude/skills/sql-anti-patterns/SKILL.md` | ジェイウォーク、EAV、Polymorphic Associations、25種のアンチパターン回避 |
+| **jsonb-optimization**      | `.claude/skills/jsonb-optimization/SKILL.md` | GINインデックス、jsonb_path_ops、@>演算子最適化、Zodスキーマ統合 |
+| **foreign-key-constraints** | `.claude/skills/foreign-key-constraints/SKILL.md` | CASCADE動作戦略、ソフトデリート統合、循環参照回避 |
+| **transaction-management**  | `.claude/skills/transaction-management/SKILL.md` | ACID特性、分離レベル（READ COMMITTED〜SERIALIZABLE）、楽観的/悲観的ロック、デッドロック回避 |
+| **query-optimization**      | `.claude/skills/query-optimization/SKILL.md` | EXPLAIN ANALYZE、N+1問題検出、JOINアルゴリズム選択、インデックスチューニング |
+| **database-migrations**     | `.claude/skills/database-migrations/SKILL.md` | Drizzle Kit、ゼロダウンタイムマイグレーション、ロールバック計画、Expand-Contract |
 ```
 
 ## 15. リポジトリ実装
@@ -271,13 +282,14 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                   | 概要                                                           |
-| -------------------------- | -------------------------------------------------------------- |
-| **ci-cd-pipelines**        | GitHub Actions、デプロイパイプライン設計、ステージング環境     |
-| **infrastructure-as-code** | 構成管理の自動化、環境変数管理、Secret 管理                    |
-| **deployment-strategies**  | Blue-Green Deployment、Canary Release、ロールバック戦略        |
-| **monitoring-alerting**    | ヘルスチェック、ログ集約、メトリクス可視化                     |
-| **docker-best-practices**  | マルチステージビルド、レイヤーキャッシュ、セキュリティスキャン |
+| スキル名                   | パス                                              | 概要                                                           |
+| -------------------------- | ------------------------------------------------- | -------------------------------------------------------------- |
+| **ci-cd-pipelines**        | `.claude/skills/ci-cd-pipelines/SKILL.md`         | GitHub Actions、デプロイパイプライン設計、ステージング環境     |
+| **infrastructure-as-code** | `.claude/skills/infrastructure-as-code/SKILL.md`  | 構成管理の自動化、環境変数管理、Secret 管理                    |
+| **deployment-strategies**  | `.claude/skills/deployment-strategies/SKILL.md`   | Blue-Green Deployment、Canary Release、ロールバック戦略        |
+| **monitoring-alerting**    | `.claude/skills/monitoring-alerting/SKILL.md`     | ヘルスチェック、ログ集約、メトリクス可視化                     |
+| **docker-best-practices**  | `.claude/skills/docker-best-practices/SKILL.md`   | マルチステージビルド、レイヤーキャッシュ、セキュリティスキャン |
+| **security-scanning**      | `.claude/skills/security-scanning/SKILL.md`       | 依存関係脆弱性、コンテナスキャン、SBOM生成、シークレット検出   |
 ```
 
 ## 17. ファイル監視 (Watcher)

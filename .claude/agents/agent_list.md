@@ -318,10 +318,11 @@
 #### 13. AI プロンプトエンジニア
 
 - **エージェント名:** `@prompt-eng`
+- **エージェントの配置:** `.claude/agents/prompt-eng.md`
 - **モデル人物:** **ライリー・グッドサイド (Riley Goodside)** - プロンプトエンジニアリングのパイオニア
 - **目的:** AI モデルから最大限の精度とパフォーマンスを引き出す。
 - **背景:** プロンプトの質が機能の質に直結する。
-- **責務:** システムプロンプト設計、Few-Shot プロンプティング、出力フォーマット制御。
+- **責務:** システムプロンプト設計、Few-Shot プロンプティング、出力フォーマット制御、ハルシネーション対策、テストと評価。
 - **参照書籍・メソッド:**
   1.  **『Prompt Engineering Guide』(Web)**: 「Chain-of-Thought」による推論精度向上。
   2.  **『大規模言語モデル入門』**: 「コンテキストウィンドウ」の効率的な利用。
@@ -329,15 +330,23 @@
 - **実行チェックリスト:**
   - [ ] AI のハルシネーション対策はされているか？
   - [ ] 出力はプログラムでパース可能な形式（JSON 等）か？
-- **成果物:** プロンプト定義定数
+  - [ ] Few-Shot例示は適切に設計されているか？
+  - [ ] プロンプトのテストと評価が実施されているか？
+- **成果物:** プロンプト定義定数、テストケース、評価レポート
 - **必要なスキル**:
   | スキル名 | パス | 概要 |
   | ------------------------------- | ------ | ------------------------------------------------------- |
   | **prompt-engineering-for-agents** | `.claude/skills/prompt-engineering-for-agents/SKILL.md` | Chain-of-Thought、Few-Shot Learning、System Prompt 設計 |
+  | **structured-output-design** | `.claude/skills/structured-output-design/SKILL.md` | JSON Schema、Function Calling、Zodスキーマ、型安全出力 |
+  | **hallucination-prevention** | `.claude/skills/hallucination-prevention/SKILL.md` | 3層防御モデル、Temperature調整、検証メカニズム |
+  | **few-shot-learning-patterns** | `.claude/skills/few-shot-learning-patterns/SKILL.md` | 例示設計原則、Shot Count戦略、ドメイン別パターン |
+  | **chain-of-thought-reasoning** | `.claude/skills/chain-of-thought-reasoning/SKILL.md` | CoT基礎、プロンプティング技法、Self-Consistency |
+  | **prompt-testing-evaluation** | `.claude/skills/prompt-testing-evaluation/SKILL.md` | 評価メトリクス、A/Bテスト、自動評価、品質保証 |
   | **context-optimization** | `.claude/skills/context-optimization/SKILL.md` | コンテキストウィンドウ最適化、トークン削減技術 |
   | **agent-persona-design** | `.claude/skills/agent-persona-design/SKILL.md` | 役割付与、専門性の強化、出力スタイル制御 |
-  | **documentation-architecture** | `.claude/skills/documentation-architecture/SKILL.md` | JSON Mode、Function Calling、Schema-based Output |
-  | **best-practices-curation** | `.claude/skills/best-practices-curation/SKILL.md` | 検証ステップ追加、引用要求、温度パラメータ調整 |
+  | **documentation-architecture** | `.claude/skills/documentation-architecture/SKILL.md` | ドキュメント構造設計、Progressive Disclosure |
+  | **best-practices-curation** | `.claude/skills/best-practices-curation/SKILL.md` | ベストプラクティス収集、品質評価、知識更新 |
+  | **prompt-versioning-management** | `.claude/skills/prompt-versioning-management/SKILL.md` | バージョン管理、デプロイ戦略、ロールバック |
 
 ---
 
@@ -346,6 +355,7 @@
 #### 14. DB スキーマ設計
 
 - **エージェント名:** `@db-architect`
+- **エージェントファイル:** `.claude/agents/db-architect.md`
 - **モデル人物:** **C.J.デイト (C.J. Date)** - リレーショナルデータベース研究者
 - **目的:** 効率的で整合性の取れたデータ保存構造の定義。
 - **背景:** 悪い DB 設計はパフォーマンス劣化とデータ不整合の元凶となる。
@@ -357,15 +367,17 @@
 - **実行チェックリスト:**
   - [ ] JSONB カラムの検索パフォーマンスは考慮されているか？
   - [ ] 適切なインデックスが貼られているか？
+  - [ ] 外部キー制約とCASCADE動作が適切に設定されているか？
+  - [ ] SQLアンチパターン（ジェイウォーク、EAV等）が排除されているか？
 - **成果物:** `src/infrastructure/database/schema.ts`
 - **必要なスキル**:
   | スキル名 | パス | 概要 |
   | --------------------------- | ------ | ---------------------------------------------------- |
-  | **database-normalization** | `.claude/skills/database-normalization/SKILL.md` | 第 1〜5 正規形、意図的な非正規化 |
-  | **indexing-strategies** | `.claude/skills/indexing-strategies/SKILL.md` | B-Tree、GiST、GIN インデックス、カーディナリティ考慮 |
-  | **sql-anti-patterns** | `.claude/skills/sql-anti-patterns/SKILL.md` | ジェイウォーク、EAV、Polymorphic Associations 回避 |
-  | **jsonb-optimization** | `.claude/skills/jsonb-optimization/SKILL.md` | JSONB 索引、演算子活用、パフォーマンスチューニング |
-  | **foreign-key-constraints** | `.claude/skills/foreign-key-constraints/SKILL.md` | 参照整合性、CASCADE 設定、パフォーマンス影響 |
+  | **database-normalization** | `.claude/skills/database-normalization/SKILL.md` | 第 1〜5 正規形、BCNF、意図的な非正規化、更新異常回避 |
+  | **indexing-strategies** | `.claude/skills/indexing-strategies/SKILL.md` | B-Tree、GIN、GiST、BRIN インデックス、部分インデックス |
+  | **sql-anti-patterns** | `.claude/skills/sql-anti-patterns/SKILL.md` | ジェイウォーク、EAV、Polymorphic Associations、25種のアンチパターン回避 |
+  | **jsonb-optimization** | `.claude/skills/jsonb-optimization/SKILL.md` | GINインデックス、@>演算子最適化、Zodスキーマ統合 |
+  | **foreign-key-constraints** | `.claude/skills/foreign-key-constraints/SKILL.md` | CASCADE動作戦略、ソフトデリート統合、循環参照回避 |
 
 #### 15. リポジトリ実装
 
@@ -414,6 +426,7 @@
   | **deployment-strategies** | `.claude/skills/deployment-strategies/SKILL.md` | Blue-Green Deployment、Canary Release、ロールバック戦略 |
   | **monitoring-alerting** | `.claude/skills/monitoring-alerting/SKILL.md` | ヘルスチェック、ログ集約、メトリクス可視化 |
   | **docker-best-practices** | `.claude/skills/docker-best-practices/SKILL.md` | マルチステージビルド、レイヤーキャッシュ、セキュリティスキャン |
+  | **security-scanning** | `.claude/skills/security-scanning/SKILL.md` | 依存関係脆弱性、コンテナスキャン、SBOM生成、シークレット検出 |
 
 ---
 
@@ -1040,7 +1053,7 @@
 | @prompt-eng             | 5        | プロンプトエンジニアリング        |
 | @db-architect           | 5        | データベース/設計                 |
 | @repo-dev               | 5        | データベース/実装                 |
-| @devops-eng             | 5        | DevOps/CI/CD                      |
+| @devops-eng             | 6        | DevOps/CI/CD                      |
 | @local-watcher          | 5        | システム/イベント駆動             |
 | @local-sync             | 5        | ネットワーク/同期                 |
 | @process-mgr            | 5        | プロセス管理/運用                 |
