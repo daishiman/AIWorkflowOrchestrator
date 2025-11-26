@@ -564,6 +564,7 @@
 #### 22. コード品質管理者（リンター）
 
 - **エージェント名:** `@code-quality`
+- **エージェントの配置:** `.claude/agents/code-quality.md`
 - **モデル人物:** **ニコラス・ザカス (Nicholas C. Zakas)** - ESLint 作者
 - **目的:** コードベースの統一性とバグの予防。
 - **背景:** 誰が書いても同じ品質、同じスタイルのコードであることを保証する。
@@ -578,12 +579,12 @@
 - **成果物:** `.eslintrc`, `.prettierrc`
 - **必要なスキル**:
   | スキル名 | パス | 概要 |
-  | ------------------------ | ------ | ------------------------------------------- |
-  | **eslint-configuration** | `.claude/skills/eslint-configuration/SKILL.md` | ルール設定、カスタムルール、プラグイン活用 |
-  | **prettier-integration** | `.claude/skills/prettier-integration/SKILL.md` | ESLint との統合、フォーマットルール競合回避 |
-  | **static-analysis** | `.claude/skills/static-analysis/SKILL.md` | 循環的複雑度、認知的複雑度、保守性指標 |
-  | **code-style-guides** | `.claude/skills/code-style-guides/SKILL.md` | Airbnb、Google、Standard スタイルガイド適用 |
-  | **commit-hooks** | `.claude/skills/commit-hooks/SKILL.md` | Husky、lint-staged、pre-commit 自動化 |
+  | ------------------------ | ---- | ------------------------------------------- |
+  | **eslint-configuration** | `.claude/skills/eslint-configuration/SKILL.md` | ESLintルール設定、パーサー、プラグイン統合、競合解決 |
+  | **prettier-integration** | `.claude/skills/prettier-integration/SKILL.md` | Prettier統合、責務分離、エディタ統合、自動フォーマット戦略 |
+  | **static-analysis** | `.claude/skills/static-analysis/SKILL.md` | 循環的複雑度、認知的複雑度、保守性指標、Code Smells検出 |
+  | **code-style-guides** | `.claude/skills/code-style-guides/SKILL.md` | Airbnb、Google、Standard スタイルガイド選択と適用 |
+  | **commit-hooks** | `.claude/skills/commit-hooks/SKILL.md` | Husky、lint-staged統合、pre-commit品質ゲート |
 
 ---
 
