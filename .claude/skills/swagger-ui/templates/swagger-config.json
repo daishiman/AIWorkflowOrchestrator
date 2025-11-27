@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Swagger UI Configuration Template",
+  "description": "Swagger UI設定テンプレート - 各フィールドをプロジェクトに合わせて調整してください",
+
+  "swagger_ui_config": {
+    "_comment": "Swagger UI メイン設定",
+
+    "url": "/openapi.yaml",
+    "dom_id": "#swagger-ui",
+
+    "display": {
+      "_comment": "表示設定",
+      "docExpansion": "list",
+      "defaultModelsExpandDepth": 1,
+      "defaultModelExpandDepth": 1,
+      "displayOperationId": false,
+      "displayRequestDuration": true,
+      "filter": true,
+      "showExtensions": true,
+      "showCommonExtensions": true
+    },
+
+    "sorting": {
+      "_comment": "ソート設定",
+      "operationsSorter": "alpha",
+      "tagsSorter": "alpha"
+    },
+
+    "interaction": {
+      "_comment": "インタラクション設定",
+      "tryItOutEnabled": true,
+      "supportedSubmitMethods": ["get", "post", "put", "patch", "delete"],
+      "deepLinking": true
+    },
+
+    "authorization": {
+      "_comment": "認証設定",
+      "persistAuthorization": true,
+      "oauth2RedirectUrl": "/oauth2-redirect.html"
+    },
+
+    "validation": {
+      "_comment": "検証設定",
+      "validatorUrl": null,
+      "showMutatedRequest": true
+    }
+  },
+
+  "customization": {
+    "_comment": "カスタマイズ設定",
+
+    "css": {
+      "hideTopbar": true,
+      "primaryColor": "#32329f",
+      "fontFamily": "system-ui, -apple-system, sans-serif"
+    },
+
+    "siteTitle": "API Documentation",
+
+    "branding": {
+      "logo": "/logo.png",
+      "favicon": "/favicon.ico"
+    }
+  },
+
+  "environments": {
+    "_comment": "環境別設定",
+
+    "development": {
+      "tryItOutEnabled": true,
+      "persistAuthorization": true,
+      "preauthorize": {
+        "BearerAuth": "dev-token-placeholder"
+      }
+    },
+
+    "staging": {
+      "tryItOutEnabled": true,
+      "persistAuthorization": true
+    },
+
+    "production": {
+      "tryItOutEnabled": false,
+      "persistAuthorization": false,
+      "supportedSubmitMethods": []
+    }
+  },
+
+  "presets": {
+    "_comment": "プリセット設定",
+
+    "minimal": {
+      "docExpansion": "none",
+      "defaultModelsExpandDepth": -1,
+      "filter": false,
+      "tryItOutEnabled": false
+    },
+
+    "standard": {
+      "docExpansion": "list",
+      "defaultModelsExpandDepth": 1,
+      "filter": true,
+      "tryItOutEnabled": true
+    },
+
+    "full": {
+      "docExpansion": "full",
+      "defaultModelsExpandDepth": 2,
+      "filter": true,
+      "tryItOutEnabled": true,
+      "displayOperationId": true,
+      "showExtensions": true
+    }
+  }
+}
