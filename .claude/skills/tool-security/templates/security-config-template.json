@@ -1,0 +1,282 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Security Configuration Template",
+  "description": "MCPツールおよびAPI統合のセキュリティ設定テンプレート",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "設定バージョン",
+      "default": "1.0.0"
+    },
+    "authentication": {
+      "type": "object",
+      "description": "認証設定",
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": ["api_key", "oauth2", "jwt", "bearer_token"],
+          "description": "認証方式"
+        },
+        "credentials": {
+          "type": "object",
+          "properties": {
+            "source": {
+              "type": "string",
+              "enum": ["environment", "secrets_manager", "vault"],
+              "description": "認証情報の取得元"
+            },
+            "envVar": {
+              "type": "string",
+              "description": "環境変数名（source=environmentの場合）"
+            },
+            "secretPath": {
+              "type": "string",
+              "description": "シークレットパス（source=secrets_manager/vaultの場合）"
+            }
+          },
+          "required": ["source"]
+        },
+        "rotation": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": false
+            },
+            "intervalDays": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 365,
+              "default": 90
+            },
+            "gracePeriodDays": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 30,
+              "default": 7
+            }
+          }
+        }
+      },
+      "required": ["method", "credentials"]
+    },
+    "authorization": {
+      "type": "object",
+      "description": "認可設定",
+      "properties": {
+        "model": {
+          "type": "string",
+          "enum": ["rbac", "abac", "scope_based"],
+          "description": "認可モデル"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "許可されたスコープ"
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "permissions": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": ["name", "permissions"]
+          },
+          "description": "ロール定義（model=rbacの場合）"
+        }
+      },
+      "required": ["model"]
+    },
+    "rateLimiting": {
+      "type": "object",
+      "description": "Rate Limiting設定",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "maxRequests": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "ウィンドウあたりの最大リクエスト数"
+        },
+        "windowMs": {
+          "type": "integer",
+          "minimum": 1000,
+          "description": "ウィンドウサイズ（ミリ秒）"
+        },
+        "backoff": {
+          "type": "object",
+          "properties": {
+            "strategy": {
+              "type": "string",
+              "enum": ["exponential", "linear", "fixed"],
+              "default": "exponential"
+            },
+            "initialDelayMs": {
+              "type": "integer",
+              "minimum": 100,
+              "default": 1000
+            },
+            "maxDelayMs": {
+              "type": "integer",
+              "minimum": 1000,
+              "default": 60000
+            },
+            "maxRetries": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10,
+              "default": 3
+            }
+          }
+        }
+      }
+    },
+    "inputValidation": {
+      "type": "object",
+      "description": "入力検証設定",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "sanitization": {
+          "type": "object",
+          "properties": {
+            "html": {
+              "type": "boolean",
+              "default": true,
+              "description": "HTMLエスケープを有効化"
+            },
+            "sql": {
+              "type": "boolean",
+              "default": true,
+              "description": "SQLパラメータ化を強制"
+            },
+            "path": {
+              "type": "boolean",
+              "default": true,
+              "description": "パストラバーサル防止を有効化"
+            },
+            "command": {
+              "type": "boolean",
+              "default": true,
+              "description": "コマンドインジェクション防止を有効化"
+            }
+          }
+        },
+        "maxLength": {
+          "type": "object",
+          "properties": {
+            "string": {
+              "type": "integer",
+              "default": 10000
+            },
+            "array": {
+              "type": "integer",
+              "default": 1000
+            }
+          }
+        }
+      }
+    },
+    "audit": {
+      "type": "object",
+      "description": "監査ログ設定",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "level": {
+          "type": "string",
+          "enum": ["minimal", "standard", "detailed"],
+          "default": "standard"
+        },
+        "includeRequestBody": {
+          "type": "boolean",
+          "default": false
+        },
+        "includeResponseBody": {
+          "type": "boolean",
+          "default": false
+        },
+        "sensitiveFields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "マスクする機密フィールド名",
+          "default": ["password", "token", "secret", "api_key", "authorization"]
+        },
+        "retention": {
+          "type": "object",
+          "properties": {
+            "days": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 90
+            },
+            "maxSizeMb": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1000
+            }
+          }
+        }
+      }
+    },
+    "network": {
+      "type": "object",
+      "description": "ネットワークセキュリティ設定",
+      "properties": {
+        "allowedIps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "許可されたIPアドレス/CIDR"
+        },
+        "blockedIps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "ブロックされたIPアドレス/CIDR"
+        },
+        "tlsMinVersion": {
+          "type": "string",
+          "enum": ["1.2", "1.3"],
+          "default": "1.2"
+        },
+        "timeout": {
+          "type": "object",
+          "properties": {
+            "connectMs": {
+              "type": "integer",
+              "default": 5000
+            },
+            "readMs": {
+              "type": "integer",
+              "default": 30000
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": ["authentication", "authorization"]
+}

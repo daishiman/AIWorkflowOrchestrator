@@ -1,0 +1,333 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Integration Message Schema Template",
+  "description": "統合メッセージのスキーマテンプレート（CloudEvents準拠）",
+  "type": "object",
+  "definitions": {
+    "baseMessage": {
+      "type": "object",
+      "description": "すべてのメッセージの基底スキーマ",
+      "properties": {
+        "specversion": {
+          "type": "string",
+          "const": "1.0",
+          "description": "CloudEventsバージョン"
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "メッセージの一意識別子"
+        },
+        "type": {
+          "type": "string",
+          "pattern": "^[a-z]+\\.[a-z]+\\.[a-z]+$",
+          "description": "イベントタイプ（例: com.example.order.created）"
+        },
+        "source": {
+          "type": "string",
+          "format": "uri",
+          "description": "イベントソースのURI"
+        },
+        "time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "イベント発生時刻（ISO 8601）"
+        },
+        "datacontenttype": {
+          "type": "string",
+          "default": "application/json",
+          "description": "dataフィールドのコンテンツタイプ"
+        },
+        "dataschema": {
+          "type": "string",
+          "format": "uri",
+          "description": "dataフィールドのスキーマURI"
+        },
+        "subject": {
+          "type": "string",
+          "description": "イベントの対象リソース識別子"
+        }
+      },
+      "required": ["specversion", "id", "type", "source", "time"]
+    },
+    "metadata": {
+      "type": "object",
+      "description": "メッセージメタデータ",
+      "properties": {
+        "correlationId": {
+          "type": "string",
+          "description": "関連するリクエストチェーンの追跡ID"
+        },
+        "causationId": {
+          "type": "string",
+          "description": "このイベントを引き起こしたイベントのID"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "スキーマバージョン"
+        },
+        "retryCount": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "リトライ回数"
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["low", "normal", "high", "critical"],
+          "default": "normal",
+          "description": "メッセージ優先度"
+        },
+        "ttl": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "有効期限（秒）"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "分類タグ"
+        }
+      }
+    },
+    "errorInfo": {
+      "type": "object",
+      "description": "エラー情報",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "エラーコード"
+        },
+        "message": {
+          "type": "string",
+          "description": "エラーメッセージ"
+        },
+        "details": {
+          "type": "object",
+          "description": "追加のエラー詳細"
+        },
+        "retryable": {
+          "type": "boolean",
+          "description": "リトライ可能かどうか"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "エラー発生時刻"
+        }
+      },
+      "required": ["code", "message"]
+    }
+  },
+  "properties": {
+    "specversion": {
+      "$ref": "#/definitions/baseMessage/properties/specversion"
+    },
+    "id": {
+      "$ref": "#/definitions/baseMessage/properties/id"
+    },
+    "type": {
+      "$ref": "#/definitions/baseMessage/properties/type"
+    },
+    "source": {
+      "$ref": "#/definitions/baseMessage/properties/source"
+    },
+    "time": {
+      "$ref": "#/definitions/baseMessage/properties/time"
+    },
+    "datacontenttype": {
+      "$ref": "#/definitions/baseMessage/properties/datacontenttype"
+    },
+    "dataschema": {
+      "$ref": "#/definitions/baseMessage/properties/dataschema"
+    },
+    "subject": {
+      "$ref": "#/definitions/baseMessage/properties/subject"
+    },
+    "metadata": {
+      "$ref": "#/definitions/metadata"
+    },
+    "data": {
+      "type": "object",
+      "description": "イベント固有のペイロード"
+    }
+  },
+  "required": ["specversion", "id", "type", "source", "time", "data"],
+  "examples": [
+    {
+      "_comment": "注文作成イベントの例",
+      "specversion": "1.0",
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "type": "com.example.order.created",
+      "source": "/services/order-service",
+      "time": "2025-11-27T10:30:00.000Z",
+      "datacontenttype": "application/json",
+      "subject": "order-12345",
+      "metadata": {
+        "correlationId": "req-abc-123",
+        "version": 1,
+        "priority": "high"
+      },
+      "data": {
+        "orderId": "order-12345",
+        "customerId": "customer-789",
+        "items": [
+          {
+            "productId": "prod-001",
+            "quantity": 2,
+            "price": 1500
+          }
+        ],
+        "totalAmount": 3000,
+        "currency": "JPY"
+      }
+    },
+    {
+      "_comment": "注文キャンセルイベントの例",
+      "specversion": "1.0",
+      "id": "660f9500-f30c-52e5-b827-557766551111",
+      "type": "com.example.order.cancelled",
+      "source": "/services/order-service",
+      "time": "2025-11-27T11:00:00.000Z",
+      "datacontenttype": "application/json",
+      "subject": "order-12345",
+      "metadata": {
+        "correlationId": "req-abc-123",
+        "causationId": "550e8400-e29b-41d4-a716-446655440000",
+        "version": 1
+      },
+      "data": {
+        "orderId": "order-12345",
+        "reason": "customer_request",
+        "cancelledBy": "customer-789",
+        "refundAmount": 3000
+      }
+    },
+    {
+      "_comment": "エラーイベントの例",
+      "specversion": "1.0",
+      "id": "770a0600-a41d-63f6-c938-668877662222",
+      "type": "com.example.order.failed",
+      "source": "/services/payment-service",
+      "time": "2025-11-27T10:31:00.000Z",
+      "datacontenttype": "application/json",
+      "subject": "order-12345",
+      "metadata": {
+        "correlationId": "req-abc-123",
+        "causationId": "550e8400-e29b-41d4-a716-446655440000",
+        "version": 1,
+        "retryCount": 2
+      },
+      "data": {
+        "orderId": "order-12345",
+        "step": "payment",
+        "error": {
+          "code": "PAYMENT_DECLINED",
+          "message": "Credit card was declined",
+          "retryable": false,
+          "timestamp": "2025-11-27T10:31:00.000Z"
+        }
+      }
+    }
+  ],
+  "additionalSchemas": {
+    "commandMessage": {
+      "description": "コマンドメッセージ用スキーマ",
+      "allOf": [
+        { "$ref": "#" },
+        {
+          "properties": {
+            "type": {
+              "pattern": "^[a-z]+\\.[a-z]+\\.command\\.[a-z]+$"
+            },
+            "data": {
+              "properties": {
+                "command": {
+                  "type": "string",
+                  "description": "実行するコマンド名"
+                },
+                "parameters": {
+                  "type": "object",
+                  "description": "コマンドパラメータ"
+                },
+                "expectedVersion": {
+                  "type": "integer",
+                  "description": "楽観的ロック用のバージョン"
+                }
+              },
+              "required": ["command"]
+            }
+          }
+        }
+      ]
+    },
+    "queryMessage": {
+      "description": "クエリメッセージ用スキーマ",
+      "allOf": [
+        { "$ref": "#" },
+        {
+          "properties": {
+            "type": {
+              "pattern": "^[a-z]+\\.[a-z]+\\.query\\.[a-z]+$"
+            },
+            "data": {
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "description": "クエリ名"
+                },
+                "parameters": {
+                  "type": "object",
+                  "description": "クエリパラメータ"
+                },
+                "pagination": {
+                  "type": "object",
+                  "properties": {
+                    "offset": { "type": "integer", "minimum": 0 },
+                    "limit": { "type": "integer", "minimum": 1, "maximum": 100 }
+                  }
+                }
+              },
+              "required": ["query"]
+            }
+          }
+        }
+      ]
+    },
+    "deadLetterMessage": {
+      "description": "Dead Letter Queue用メッセージスキーマ",
+      "allOf": [
+        { "$ref": "#" },
+        {
+          "properties": {
+            "data": {
+              "properties": {
+                "originalMessage": {
+                  "type": "object",
+                  "description": "元のメッセージ"
+                },
+                "failureReason": {
+                  "$ref": "#/definitions/errorInfo"
+                },
+                "failedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "retryCount": {
+                  "type": "integer"
+                },
+                "sourceQueue": {
+                  "type": "string"
+                }
+              },
+              "required": ["originalMessage", "failureReason", "failedAt"]
+            }
+          }
+        }
+      ]
+    }
+  }
+}
