@@ -779,11 +779,11 @@
 - **必要なスキル**:
   | スキル名 | パス | 概要 |
   |---------|------|------|
-  | **user-centric-writing** | `.claude/skills/user-centric-writing/SKILL.md` | ユーザー視点、タスク指向、平易な言葉 |
-  | **tutorial-design** | `.claude/skills/tutorial-design/SKILL.md` | ステップバイステップ、スクリーンショット活用 |
-  | **troubleshooting-guides** | `.claude/skills/troubleshooting-guides/SKILL.md` | FAQ、エラーメッセージ解説、解決策提示 |
-  | **information-architecture** | `.claude/skills/information-architecture/SKILL.md` | ドキュメント構造、ナビゲーション設計 |
-  | **localization-i18n** | `.claude/skills/localization-i18n/SKILL.md` | 多言語対応、文化的配慮、翻訳管理 |
+  | **user-centric-writing** | `.claude/skills/user-centric-writing/SKILL.md` | ユーザー視点、タスク指向、平易な言葉、Flesch可読性測定 |
+  | **tutorial-design** | `.claude/skills/tutorial-design/SKILL.md` | ステップバイステップ、学習パス設計、完了時間見積もり |
+  | **troubleshooting-guides** | `.claude/skills/troubleshooting-guides/SKILL.md` | 診断フロー、エラー分類、解決策提示 |
+  | **information-architecture** | `.claude/skills/information-architecture/SKILL.md` | 階層設計、ナビゲーション、リンク検証 |
+  | **localization-i18n** | `.claude/skills/localization-i18n/SKILL.md` | 翻訳準備、文化的配慮、i18n対応チェック |
 
 #### 30. 依存パッケージ管理者
 
