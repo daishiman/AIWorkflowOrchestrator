@@ -451,18 +451,20 @@
 ## 27. データベース管理者 (DBA)
 
 - **エージェント名:** `@dba-mgr`
-- **エージェントの配置:** `.claude/agents/dep-mgr.md`
+- **エージェントの配置:** `.claude/agents/dba-mgr.md`
 
 ```markdown
 - **必要なスキル**:
 
-| スキル名                     | 概要                                                      |
-| ---------------------------- | --------------------------------------------------------- |
-| **database-migrations**      | スキーマバージョニング、Up/Down マイグレーション          |
-| **backup-recovery**          | バックアップ戦略、PITR、復旧手順                          |
-| **query-performance-tuning** | EXPLAIN ANALYZE、実行計画最適化、インデックスチューニング |
-| **database-seeding**         | 初期データ投入、テストデータ生成                          |
-| **connection-pooling**       | コネクションプール設定、最大接続数調整                    |
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **database-migrations** | `.claude/skills/database-migrations/SKILL.md` | Drizzle ORM マイグレーション、Up/Down可逆的変更、移行期間パターン |
+| **backup-recovery** | `.claude/skills/backup-recovery/SKILL.md` | 多層防御バックアップ、PITR、RPO/RTO設計、災害復旧計画 |
+| **query-performance-tuning** | `.claude/skills/query-performance-tuning/SKILL.md` | EXPLAIN ANALYZE、インデックス戦略、N+1問題解決 |
+| **database-seeding** | `.claude/skills/database-seeding/SKILL.md` | 環境別Seeding、べき等性設計、ファクトリパターン |
+| **connection-pooling** | `.claude/skills/connection-pooling/SKILL.md` | サーバーレス対応、接続数最適化、タイムアウト設定 |
+| **pgvector-optimization** | `.claude/skills/pgvector-optimization/SKILL.md` | ベクトルDB設計、HNSW/IVFFlat、RAGパターン |
+| **database-monitoring** | `.claude/skills/database-monitoring/SKILL.md` | PostgreSQL統計、スロークエリ監視、アラート設計 |
 ```
 
 ## 28. API ドキュメント作成者
