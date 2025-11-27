@@ -528,11 +528,11 @@
 
 | スキル名 | パス | 概要 |
 |---------|------|------|
-| **git-hooks-concepts** | - | Git Hooks の基本概念 |
-| **claude-code-hooks** | - | Claude Code フックシステム |
-| **automation-scripting** | - | 自動化スクリプト作成 |
-| **linting-formatting-automation** | - | Lint・フォーマット自動化 |
-| **approval-gates** | - | 承認ゲート設計 |
+| **git-hooks-concepts** | `.claude/skills/git-hooks-concepts/SKILL.md` | Git Hooks の基本概念とライフサイクル |
+| **claude-code-hooks** | `.claude/skills/claude-code-hooks/SKILL.md` | Claude Code フックシステム設定 |
+| **automation-scripting** | `.claude/skills/automation-scripting/SKILL.md` | Bash/Node.js 自動化スクリプト作成 |
+| **linting-formatting-automation** | `.claude/skills/linting-formatting-automation/SKILL.md` | ESLint/Prettier 統合とHook実装 |
+| **approval-gates** | `.claude/skills/approval-gates/SKILL.md` | 承認ゲート設計とセキュリティパターン |
 ```
 
 ## 32. コマンド・オーケストレーター
