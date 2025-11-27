@@ -1,0 +1,464 @@
+# OpenAPI 3.1.0 Base Template
+# {{project-name}} API仕様書
+
+openapi: 3.1.0
+
+info:
+  title: "{{project-name}} API"
+  version: "{{api-version}}"
+  description: |
+    {{project-description}}
+
+    ## 概要
+    このAPIは...
+
+    ## 認証
+    すべてのエンドポイント（特記のない限り）はBearer認証が必要です。
+
+    ## レート制限
+    - 一般ユーザー: 100リクエスト/分
+    - 認証済みユーザー: 1000リクエスト/分
+
+    ## エラーハンドリング
+    すべてのエラーレスポンスは統一された形式で返されます。
+
+  termsOfService: https://{{domain}}/terms
+  contact:
+    name: API Support
+    url: https://{{domain}}/support
+    email: api-support@{{domain}}
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.{{domain}}/v1
+    description: Production
+  - url: https://staging-api.{{domain}}/v1
+    description: Staging
+  - url: http://localhost:3000/api/v1
+    description: Development
+
+tags:
+  - name: Authentication
+    description: 認証・認可
+  - name: Users
+    description: ユーザー管理
+  # 追加のタグをここに
+
+paths:
+  # 認証エンドポイント
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: ログイン
+      description: ユーザー認証を行い、アクセストークンを取得します。
+      operationId: login
+      security: []  # 認証不要
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: ログイン成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ヘルスチェック
+  /health:
+    get:
+      tags:
+        - System
+      summary: ヘルスチェック
+      operationId: healthCheck
+      security: []
+      responses:
+        '200':
+          description: サービス正常
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy]
+                  timestamp:
+                    type: string
+                    format: date-time
+
+  # ユーザーエンドポイント（例）
+  /users:
+    get:
+      tags:
+        - Users
+      summary: ユーザー一覧取得
+      operationId: listUsers
+      parameters:
+        - $ref: '#/components/parameters/PageLimit'
+        - $ref: '#/components/parameters/PageOffset'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags:
+        - Users
+      summary: ユーザー作成
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '201':
+          description: 作成成功
+          headers:
+            Location:
+              description: 作成されたリソースのURI
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /users/{userId}:
+    parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: ユーザーID
+
+    get:
+      tags:
+        - Users
+      summary: ユーザー詳細取得
+      operationId: getUserById
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      tags:
+        - Users
+      summary: ユーザー更新
+      operationId: updateUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - Users
+      summary: ユーザー削除
+      operationId: deleteUser
+      responses:
+        '204':
+          description: 削除成功
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        JWT Bearer認証。
+        `Authorization: Bearer <token>` ヘッダーで送信。
+
+  schemas:
+    # 認証
+    AuthTokenResponse:
+      type: object
+      required:
+        - accessToken
+        - tokenType
+        - expiresIn
+      properties:
+        accessToken:
+          type: string
+          description: アクセストークン
+        refreshToken:
+          type: string
+          description: リフレッシュトークン
+        tokenType:
+          type: string
+          enum: [Bearer]
+        expiresIn:
+          type: integer
+          description: 有効期限（秒）
+
+    # ユーザー
+    User:
+      type: object
+      required:
+        - id
+        - email
+        - name
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        role:
+          type: string
+          enum: [admin, user, guest]
+          default: user
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+        updatedAt:
+          type: string
+          format: date-time
+          readOnly: true
+
+    UserInput:
+      type: object
+      required:
+        - email
+        - name
+      properties:
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        role:
+          type: string
+          enum: [admin, user, guest]
+          default: user
+
+    UserUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        role:
+          type: string
+          enum: [admin, user, guest]
+
+    # ページネーション
+    Pagination:
+      type: object
+      required:
+        - total
+        - limit
+        - offset
+        - hasMore
+      properties:
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+        hasMore:
+          type: boolean
+
+    # エラー
+    ErrorResponse:
+      type: object
+      required:
+        - success
+        - error
+      properties:
+        success:
+          type: boolean
+          enum: [false]
+        error:
+          type: object
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+            retryable:
+              type: boolean
+              default: false
+        meta:
+          type: object
+          properties:
+            request_id:
+              type: string
+            timestamp:
+              type: string
+              format: date-time
+
+  parameters:
+    PageLimit:
+      name: limit
+      in: query
+      description: 1ページあたりの件数
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+
+    PageOffset:
+      name: offset
+      in: query
+      description: 開始位置
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+
+  responses:
+    BadRequest:
+      description: リクエストが不正です
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: "VALIDATION_ERROR"
+              message: "入力値が不正です"
+              details:
+                field: "email"
+                reason: "メールアドレスの形式が不正です"
+              retryable: false
+
+    Unauthorized:
+      description: 認証が必要です
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: "AUTH_REQUIRED"
+              message: "認証が必要です"
+              retryable: false
+
+    Forbidden:
+      description: アクセス権限がありません
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    NotFound:
+      description: リソースが見つかりません
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: "RESOURCE_NOT_FOUND"
+              message: "指定されたリソースが見つかりません"
+              retryable: false
+
+    Conflict:
+      description: リソースが競合しています
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    TooManyRequests:
+      description: レート制限超過
+      headers:
+        Retry-After:
+          schema:
+            type: integer
+          description: 再試行までの秒数
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+security:
+  - BearerAuth: []
+
+externalDocs:
+  description: 詳細ドキュメント
+  url: https://docs.{{domain}}

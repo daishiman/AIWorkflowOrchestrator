@@ -1,0 +1,326 @@
+# エンドポイント定義テンプレート
+# 使用方法: 新しいエンドポイントを追加する際のコピー元として使用
+
+# ===== リソースコレクション（/resources） =====
+/{{resources}}:
+  get:
+    tags:
+      - {{ResourceName}}
+    summary: {{ResourceName}}一覧取得
+    description: |
+      {{ResourceName}}の一覧をページネーション付きで取得します。
+
+      **フィルタリング**:
+      クエリパラメータでフィルタリングが可能です。
+
+      **ソート**:
+      `sort`パラメータで並び順を指定できます。
+    operationId: list{{ResourceName}}s
+    parameters:
+      - $ref: '#/components/parameters/PageLimit'
+      - $ref: '#/components/parameters/PageOffset'
+      - name: sort
+        in: query
+        description: ソート順
+        schema:
+          type: string
+          enum: [createdAt, -createdAt, name, -name]
+          default: -createdAt
+      - name: filter[status]
+        in: query
+        description: ステータスでフィルタ
+        schema:
+          type: string
+    responses:
+      '200':
+        description: 成功
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - data
+                - pagination
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/{{ResourceName}}'
+                pagination:
+                  $ref: '#/components/schemas/Pagination'
+            example:
+              data:
+                - id: "550e8400-e29b-41d4-a716-446655440000"
+                  name: "Example"
+                  status: "active"
+                  createdAt: "2025-01-15T10:30:00Z"
+              pagination:
+                total: 100
+                limit: 20
+                offset: 0
+                hasMore: true
+      '401':
+        $ref: '#/components/responses/Unauthorized'
+      '403':
+        $ref: '#/components/responses/Forbidden'
+
+  post:
+    tags:
+      - {{ResourceName}}
+    summary: {{ResourceName}}作成
+    description: |
+      新しい{{ResourceName}}を作成します。
+
+      **必須フィールド**:
+      - `name`: 名前
+
+      **オプションフィールド**:
+      - `description`: 説明
+    operationId: create{{ResourceName}}
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/{{ResourceName}}Input'
+          example:
+            name: "New Resource"
+            description: "A description"
+    responses:
+      '201':
+        description: 作成成功
+        headers:
+          Location:
+            description: 作成されたリソースのURI
+            schema:
+              type: string
+              format: uri
+              example: /api/v1/{{resources}}/550e8400-e29b-41d4-a716-446655440000
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/{{ResourceName}}'
+      '400':
+        $ref: '#/components/responses/BadRequest'
+      '401':
+        $ref: '#/components/responses/Unauthorized'
+      '409':
+        $ref: '#/components/responses/Conflict'
+
+# ===== リソース単体（/resources/{id}） =====
+/{{resources}}/{{{resourceId}}}:
+  parameters:
+    - name: {{resourceId}}
+      in: path
+      required: true
+      description: {{ResourceName}}のID
+      schema:
+        type: string
+        format: uuid
+
+  get:
+    tags:
+      - {{ResourceName}}
+    summary: {{ResourceName}}詳細取得
+    description: 指定されたIDの{{ResourceName}}を取得します。
+    operationId: get{{ResourceName}}ById
+    responses:
+      '200':
+        description: 成功
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/{{ResourceName}}'
+      '401':
+        $ref: '#/components/responses/Unauthorized'
+      '404':
+        $ref: '#/components/responses/NotFound'
+
+  put:
+    tags:
+      - {{ResourceName}}
+    summary: {{ResourceName}}完全更新
+    description: |
+      {{ResourceName}}を完全に置き換えます。
+      すべての必須フィールドを含める必要があります。
+    operationId: replace{{ResourceName}}
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/{{ResourceName}}Input'
+    responses:
+      '200':
+        description: 更新成功
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/{{ResourceName}}'
+      '400':
+        $ref: '#/components/responses/BadRequest'
+      '401':
+        $ref: '#/components/responses/Unauthorized'
+      '404':
+        $ref: '#/components/responses/NotFound'
+
+  patch:
+    tags:
+      - {{ResourceName}}
+    summary: {{ResourceName}}部分更新
+    description: |
+      {{ResourceName}}を部分的に更新します。
+      指定されたフィールドのみ更新されます。
+    operationId: update{{ResourceName}}
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/{{ResourceName}}Update'
+    responses:
+      '200':
+        description: 更新成功
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/{{ResourceName}}'
+      '400':
+        $ref: '#/components/responses/BadRequest'
+      '401':
+        $ref: '#/components/responses/Unauthorized'
+      '404':
+        $ref: '#/components/responses/NotFound'
+
+  delete:
+    tags:
+      - {{ResourceName}}
+    summary: {{ResourceName}}削除
+    description: |
+      指定されたIDの{{ResourceName}}を削除します。
+
+      ⚠️ この操作は取り消せません。
+    operationId: delete{{ResourceName}}
+    responses:
+      '204':
+        description: 削除成功
+      '401':
+        $ref: '#/components/responses/Unauthorized'
+      '404':
+        $ref: '#/components/responses/NotFound'
+
+# ===== ネストされたリソース（/resources/{id}/subresources） =====
+/{{resources}}/{{{resourceId}}}/{{subresources}}:
+  parameters:
+    - name: {{resourceId}}
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  get:
+    tags:
+      - {{ResourceName}}
+    summary: {{SubResourceName}}一覧取得
+    description: 指定された{{ResourceName}}に属する{{SubResourceName}}一覧を取得します。
+    operationId: list{{ResourceName}}{{SubResourceName}}s
+    parameters:
+      - $ref: '#/components/parameters/PageLimit'
+      - $ref: '#/components/parameters/PageOffset'
+    responses:
+      '200':
+        description: 成功
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/{{SubResourceName}}'
+                pagination:
+                  $ref: '#/components/schemas/Pagination'
+      '404':
+        $ref: '#/components/responses/NotFound'
+
+  post:
+    tags:
+      - {{ResourceName}}
+    summary: {{SubResourceName}}追加
+    description: 指定された{{ResourceName}}に{{SubResourceName}}を追加します。
+    operationId: add{{SubResourceName}}To{{ResourceName}}
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/{{SubResourceName}}Input'
+    responses:
+      '201':
+        description: 追加成功
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/{{SubResourceName}}'
+      '404':
+        $ref: '#/components/responses/NotFound'
+
+# ===== アクションエンドポイント（/resources/{id}/action） =====
+/{{resources}}/{{{resourceId}}}/{{action}}:
+  parameters:
+    - name: {{resourceId}}
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  post:
+    tags:
+      - {{ResourceName}}
+    summary: {{ResourceName}}を{{action}}
+    description: |
+      指定された{{ResourceName}}に対して{{action}}アクションを実行します。
+
+      **前提条件**:
+      - ステータスが`active`であること
+
+      **結果**:
+      - ステータスが`{{resultStatus}}`に変更されます
+    operationId: {{action}}{{ResourceName}}
+    requestBody:
+      required: false
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              reason:
+                type: string
+                description: アクション理由
+    responses:
+      '200':
+        description: アクション成功
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/{{ResourceName}}'
+      '400':
+        description: 前提条件エラー
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+            example:
+              success: false
+              error:
+                code: "INVALID_STATE"
+                message: "現在の状態ではこのアクションを実行できません"
+                details:
+                  currentStatus: "completed"
+                  allowedStatuses: ["active", "paused"]
+                retryable: false
+      '404':
+        $ref: '#/components/responses/NotFound'

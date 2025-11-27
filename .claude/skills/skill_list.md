@@ -747,3 +747,17 @@
 | **nextauth-patterns** | `.claude/skills/nextauth-patterns/SKILL.md` | NextAuth.js v5設定パターン、プロバイダー設定、Drizzleアダプター統合、セッションコールバックカスタマイズ |
 | **security-headers** | `.claude/skills/security-headers/SKILL.md` | セキュリティヘッダー設定（CSP、HSTS、X-Frame-Options）、CSRF/XSS対策、Cookie属性安全化 |
 ```
+
+---
+
+## 新規スキル - APIドキュメント関連 (2025-11-27 追加)
+
+以下のスキルは @api-doc-writer エージェント v2.0.0 軽量化に伴い作成されました:
+
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **openapi-specification** | `.claude/skills/openapi-specification/SKILL.md` | OpenAPI 3.x仕様設計、スキーマ定義パターン、セキュリティスキーム、バリデーション |
+| **swagger-ui** | `.claude/skills/swagger-ui/SKILL.md` | Swagger UI/ReDoc設定、Next.js統合、カスタマイズ、CI/CD統合 |
+| **api-versioning** | `.claude/skills/api-versioning/SKILL.md` | バージョニング戦略（URL Path/Header/Query）、非推奨化プロセス、破壊的変更管理 |
+| **request-response-examples** | `.claude/skills/request-response-examples/SKILL.md` | cURL/SDK別サンプル、RFC 7807エラーレスポンス、エラーカタログ |
+| **authentication-docs** | `.claude/skills/authentication-docs/SKILL.md` | OAuth 2.0フロー図解、トークン管理、セキュリティベストプラクティス |

@@ -760,6 +760,7 @@
   | **api-versioning** | `.claude/skills/api-versioning/SKILL.md` | バージョニング戦略、非推奨化、互換性維持 |
   | **request-response-examples** | `.claude/skills/request-response-examples/SKILL.md` | サンプルリクエスト、レスポンス、エラーケース |
   | **authentication-docs** | `.claude/skills/authentication-docs/SKILL.md` | 認証フロー図解、トークン取得手順 |
+  | **api-documentation-best-practices** | `.claude/skills/api-documentation-best-practices/SKILL.md` | APIドキュメント全体のベストプラクティス |
 
 #### 29. ユーザーマニュアル作成者
 
