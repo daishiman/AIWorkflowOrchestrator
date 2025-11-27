@@ -2,7 +2,13 @@
 name: agent-persona-design
 description: |
   エージェントペルソナ設計を専門とするスキル。実在する専門家ベースまたは
-  役割ベースの人格定義により、一貫性と専門性の高いエージェントを設計します。
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/agent-persona-design/resources/expert-modeling-guide.md`: Expert Modeling Guide
+  - `.claude/skills/agent-persona-design/templates/persona-template.md`: ペルソナ設計テンプレート
+  - `.claude/skills/agent-persona-design/scripts/analyze-persona.mjs`: analyze-persona.mjs
 
   専門分野:
   - 専門家モデリング: 実在する専門家の思想・メソッドの移植

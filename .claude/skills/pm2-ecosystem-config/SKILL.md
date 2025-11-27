@@ -5,6 +5,16 @@ description: |
   Alexandre Strzelewiczの思想に基づき、ecosystem.config.js の
   構成、実行モード選択、環境設定、監視設定を体系的に設計します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/pm2-ecosystem-config/resources/config-structure-guide.md`: ecosystem.config.js構造（apps配列、必須/推奨オプション、共通設定）
+  - `.claude/skills/pm2-ecosystem-config/resources/environment-management.md`: env階層設計、env_production分離、機密情報外部化パターン
+  - `.claude/skills/pm2-ecosystem-config/resources/execution-modes.md`: fork vs cluster選択基準、instances数決定、負荷タイプ別最適化
+  - `.claude/skills/pm2-ecosystem-config/scripts/validate-ecosystem.mjs`: ecosystem.config.js構文検証と設定項目の整合性チェック
+  - `.claude/skills/pm2-ecosystem-config/templates/ecosystem.config.template.js`: PM2設定ファイルテンプレート（実行モード、再起動戦略、環境変数含む）
+
   専門分野:
   - ecosystem.config.js設計: apps配列、環境設定、共通オプション
   - 実行モード選択: fork vs cluster、instances数決定
@@ -26,11 +36,12 @@ version: 1.0.0
 
 ## 概要
 
-PM2エコシステム設定は、Node.jsアプリケーションのプロセス管理を
-宣言的に定義するフレームワークです。Alexandre Strzelewiczが設計した
+PM2 エコシステム設定は、Node.js アプリケーションのプロセス管理を
+宣言的に定義するフレームワークです。Alexandre Strzelewicz が設計した
 この設定システムにより、本番環境での安定稼働を実現します。
 
 **主要な価値**:
+
 - 宣言的設定による再現性
 - 環境別設定の分離
 - 実行モードの最適選択
@@ -53,9 +64,9 @@ pm2-ecosystem-config/
 
 ### リソース種別
 
-- **設定構造ガイド** (`resources/config-structure-guide.md`): apps配列、必須/オプション項目
-- **実行モード** (`resources/execution-modes.md`): fork vs cluster、instances数決定
-- **環境管理** (`resources/environment-management.md`): env設定、機密情報管理
+- **設定構造ガイド** (`resources/config-structure-guide.md`): apps 配列、必須/オプション項目
+- **実行モード** (`resources/execution-modes.md`): fork vs cluster、instances 数決定
+- **環境管理** (`resources/environment-management.md`): env 設定、機密情報管理
 
 ## コマンドリファレンス
 
@@ -94,37 +105,41 @@ cp .claude/skills/pm2-ecosystem-config/templates/ecosystem.config.template.js ./
 ### Phase 1: アプリケーション要件の理解
 
 **収集すべき情報**:
+
 - エントリーポイント（script）
 - 実行モード要件（I/O bound vs CPU bound）
 - 環境変数要件
 - リソース制約
 
 **判断基準**:
+
 - [ ] エントリーポイントは明確か？
 - [ ] 負荷特性を理解しているか？
 - [ ] 環境別の要件は把握できたか？
 
 ### Phase 2: 実行モードの決定
 
-**fork vs clusterの選択**:
+**fork vs cluster の選択**:
 
-| 特性 | fork | cluster |
-|-----|------|---------|
-| インスタンス数 | 1 | 複数 |
-| 負荷タイプ | I/O bound | CPU bound |
-| ステート | ステートフル可 | ステートレス必須 |
-| 用途 | ファイル処理、外部API | HTTP/APIサーバー |
+| 特性           | fork                   | cluster           |
+| -------------- | ---------------------- | ----------------- |
+| インスタンス数 | 1                      | 複数              |
+| 負荷タイプ     | I/O bound              | CPU bound         |
+| ステート       | ステートフル可         | ステートレス必須  |
+| 用途           | ファイル処理、外部 API | HTTP/API サーバー |
 
-**instances数の決定**:
-- 自動設定: `"max"` または `0` でCPU数に自動調整
+**instances 数の決定**:
+
+- 自動設定: `"max"` または `0` で CPU 数に自動調整
 - 固定値: 明示的な数値で制御
-- 予約: `-1` でシステム用に1コア確保
+- 予約: `-1` でシステム用に 1 コア確保
 
 **リソース**: `resources/execution-modes.md`
 
 ### Phase 3: 設定ファイルの作成
 
 **必須項目**:
+
 ```javascript
 {
   name: 'app-name',      // プロセス名
@@ -134,6 +149,7 @@ cp .claude/skills/pm2-ecosystem-config/templates/ecosystem.config.template.js ./
 ```
 
 **推奨項目**:
+
 ```javascript
 {
   exec_mode: 'fork',     // または 'cluster'
@@ -149,6 +165,7 @@ cp .claude/skills/pm2-ecosystem-config/templates/ecosystem.config.template.js ./
 ### Phase 4: 環境設定
 
 **環境変数の階層**:
+
 ```javascript
 {
   env: {
@@ -163,6 +180,7 @@ cp .claude/skills/pm2-ecosystem-config/templates/ecosystem.config.template.js ./
 ```
 
 **機密情報の管理**:
+
 - 設定ファイルに直接記載しない
 - `.env` ファイルまたは環境変数マネージャー使用
 - `env_file` オプションでファイル参照
@@ -172,11 +190,13 @@ cp .claude/skills/pm2-ecosystem-config/templates/ecosystem.config.template.js ./
 ### Phase 5: 検証
 
 **構文チェック**:
+
 ```bash
 node -c ecosystem.config.js
 ```
 
-**PM2検証**:
+**PM2 検証**:
+
 ```bash
 pm2 start ecosystem.config.js --dry-run
 ```
@@ -184,22 +204,24 @@ pm2 start ecosystem.config.js --dry-run
 ## ベストプラクティス
 
 ### すべきこと
+
 1. **説明的な命名**: プロジェクト名-コンポーネント名
 2. **ビルド成果物指定**: `./dist/index.js` など
 3. **環境分離**: `env` と `env_production` を分離
 4. **再起動制限**: `max_restarts` で無限ループ防止
 
 ### 避けるべきこと
-1. **機密情報の直接記載**: APIキー、パスワード
+
+1. **機密情報の直接記載**: API キー、パスワード
 2. **絶対パスのハードコード**: 環境依存を避ける
-3. **過大なinstances数**: リソース枯渇の原因
+3. **過大な instances 数**: リソース枯渇の原因
 4. **再起動設定なし**: クラッシュ時に停止
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-26 | 初版作成 |
+| バージョン | 日付       | 変更内容 |
+| ---------- | ---------- | -------- |
+| 1.0.0      | 2025-11-26 | 初版作成 |
 
 ## 関連スキル
 

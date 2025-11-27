@@ -3,36 +3,19 @@ name: self-hosted-runners
 description: |
   GitHub Actions セルフホストランナーの設計と管理。
 
-  以下のような場合に参照してください:
-  - セルフホストランナーのセットアップが必要な場合
-  - カスタムラベルやランナーグループの設計時
-  - プライベート環境でのワークフロー実行が必要な場合
-  - ランナーのセキュリティ強化や分離が必要な場合
-  - エフェメラル（使い捨て）ランナーの実装時
-  - 専用ハードウェアやGPUアクセスが必要な場合
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
 
-  トリガーキーワード: self-hosted, runner setup, custom labels, runner groups,
-  ephemeral runners, runner security, private environment
+  - `.claude/skills/self-hosted-runners/resources/runner-labels.md`: Runner Labelsリソース
+  - `.claude/skills/self-hosted-runners/resources/runner-security.md`: Runner Securityリソース
+  - `.claude/skills/self-hosted-runners/resources/runner-setup.md`: Runner Setupリソース
+
+  - `.claude/skills/self-hosted-runners/templates/runner-workflow.yaml`: Runner Workflowテンプレート
+
+  - `.claude/skills/self-hosted-runners/scripts/check-runner-status.mjs`: Check Runner Statusスクリプト
+
 version: 1.0.0
-related_skills:
-  - .claude/skills/github-actions-syntax/SKILL.md
-  - .claude/skills/workflow-security/SKILL.md
-  - .claude/skills/docker-build-push-action/SKILL.md
-  - .claude/skills/deployment-environments-gha/SKILL.md
-auto_trigger:
-  keywords:
-    - self-hosted
-    - runner setup
-    - custom runner
-    - runner labels
-    - runner groups
-    - ephemeral runner
-    - private runner
-  file_patterns:
-    - "**/.github/workflows/*.yml"
-    - "**/.github/workflows/*.yaml"
-    - "**/runner-setup.sh"
-    - "**/runner-config.yml"
 ---
 
 # Self-Hosted Runners Skill
@@ -71,12 +54,12 @@ node .claude/skills/self-hosted-runners/scripts/check-runner-status.mjs [owner] 
 
 ## ランナータイプ
 
-| タイプ | 用途 | 特徴 |
-|--------|------|------|
-| **永続的** | 長期稼働 | 常時起動、環境維持 |
-| **エフェメラル** | ジョブ毎破棄 | セキュリティ重視 |
-| **コンテナ** | Docker環境 | 分離、スケール |
-| **VM/物理** | 専用HW | GPU、特殊環境 |
+| タイプ           | 用途         | 特徴               |
+| ---------------- | ------------ | ------------------ |
+| **永続的**       | 長期稼働     | 常時起動、環境維持 |
+| **エフェメラル** | ジョブ毎破棄 | セキュリティ重視   |
+| **コンテナ**     | Docker 環境  | 分離、スケール     |
+| **VM/物理**      | 専用 HW      | GPU、特殊環境      |
 
 ## runs-on パターン
 

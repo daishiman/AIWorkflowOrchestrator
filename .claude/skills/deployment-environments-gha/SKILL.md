@@ -1,30 +1,28 @@
 ---
-skill_name: deployment-environments-gha
+name: deployment-environments-gha
+description: |
+  >
+
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/deployment-environments-gha/resources/approval-workflows.md`: 承認者設定、待機タイマー、デプロイゲートの実装パターン
+  - `.claude/skills/deployment-environments-gha/resources/environment-config.md`: 環境設定、保護ルール、シークレット管理の詳細ガイド
+  - `.claude/skills/deployment-environments-gha/templates/deployment-workflow.yaml`: 複数環境への段階的デプロイの実装サンプル
+  - `.claude/skills/deployment-environments-gha/scripts/check-environment.mjs`: 環境ステータスと設定を確認する診断スクリプト
+
+  Use proactively when implementing deployment-environments-gha patterns or solving related problems.
 version: 1.0.0
-description: >
-  GitHub Actionsのデプロイメント環境の設計と管理を支援するスキル。
-  環境固有の設定、保護ルール、承認ワークフロー、シークレット管理を含む。
-  複数環境への段階的デプロイメント、手動承認ゲート、環境変数の分離に対応。
-related_skills:
-  - .claude/skills/github-actions-syntax/SKILL.md
-  - .claude/skills/secrets-management-gha/SKILL.md
-  - .claude/skills/conditional-execution-gha/SKILL.md
-  - .claude/skills/workflow-security/SKILL.md
-tags:
-  - github-actions
-  - deployment
-  - environments
-  - ci-cd
-  - approval-workflows
 ---
 
 # Deployment Environments Skill (GitHub Actions)
 
-GitHub Actionsのデプロイメント環境機能を活用し、安全で管理された複数環境へのデプロイメントを実現するスキル。
+GitHub Actions のデプロイメント環境機能を活用し、安全で管理された複数環境へのデプロイメントを実現するスキル。
 
 ## 使用タイミング
 
-- **複数環境デプロイ**: development/staging/productionへの段階的デプロイ
+- **複数環境デプロイ**: development/staging/production への段階的デプロイ
 - **承認ワークフロー**: 本番環境への手動承認が必要な場合
 - **環境固有設定**: 環境ごとに異なるシークレットや変数を使用
 - **保護ルール適用**: 特定ブランチからのみデプロイ可能にする
@@ -145,9 +143,9 @@ jobs:
     steps:
       - name: Deploy with Environment Secrets
         env:
-          API_KEY: ${{ secrets.API_KEY }}              # 環境固有
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}    # 環境固有
-          DEPLOY_ENV: ${{ vars.DEPLOY_ENV }}           # 環境変数
+          API_KEY: ${{ secrets.API_KEY }} # 環境固有
+          DATABASE_URL: ${{ secrets.DATABASE_URL }} # 環境固有
+          DEPLOY_ENV: ${{ vars.DEPLOY_ENV }} # 環境変数
         run: |
           echo "Deploying with API_KEY to $DEPLOY_ENV"
           ./deploy.sh
@@ -171,8 +169,8 @@ jobs:
 
 ### 主要な保護機能
 
-1. **Required Reviewers**: 手動承認を要求（最大6名のレビュアー）
-2. **Wait Timer**: デプロイ前の待機時間（最大43,200分 = 30日）
+1. **Required Reviewers**: 手動承認を要求（最大 6 名のレビュアー）
+2. **Wait Timer**: デプロイ前の待機時間（最大 43,200 分 = 30 日）
 3. **Deployment Branches**: 特定ブランチからのみデプロイ許可
 4. **Environment Secrets**: 環境専用のシークレット管理
 
@@ -186,28 +184,28 @@ Repository → Settings → Environments → [環境名] → Protection rules
 
 ## 承認ワークフローのパターン
 
-### パターン1: 単一承認者
+### パターン 1: 単一承認者
 
 ```yaml
 # 環境設定で1名のレビュアーを指定
 environment:
-  name: production  # Settings で Required reviewers: 1人設定済み
+  name: production # Settings で Required reviewers: 1人設定済み
 ```
 
-### パターン2: 複数承認者
+### パターン 2: 複数承認者
 
 ```yaml
 # 環境設定で複数のレビュアーを指定
 environment:
-  name: production  # Settings で Required reviewers: 3人設定済み
+  name: production # Settings で Required reviewers: 3人設定済み
 ```
 
-### パターン3: 待機タイマー併用
+### パターン 3: 待機タイマー併用
 
 ```yaml
 # 環境設定で待機時間を追加
 environment:
-  name: production  # Settings で Wait timer: 10分 + Required reviewers設定済み
+  name: production # Settings で Wait timer: 10分 + Required reviewers設定済み
 ```
 
 詳細なパターンと実装例は `resources/approval-workflows.md` を参照してください。
@@ -232,9 +230,9 @@ environment:
 ```yaml
 # 推奨される環境名
 environments:
-  - development  # または dev
-  - staging      # または stage, uat
-  - production   # または prod
+  - development # または dev
+  - staging # または stage, uat
+  - production # または prod
 ```
 
 ### 段階的デプロイメント
@@ -251,15 +249,15 @@ jobs:
 
   deploy-prod:
     needs: deploy-staging
-    environment: production  # 本番は最後
+    environment: production # 本番は最後
 ```
 
-### 環境URLの活用
+### 環境 URL の活用
 
 ```yaml
 environment:
   name: production
-  url: https://prod.example.com  # デプロイメント履歴にリンク表示
+  url: https://prod.example.com # デプロイメント履歴にリンク表示
 ```
 
 ## トラブルシューティング

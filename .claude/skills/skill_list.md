@@ -33,6 +33,9 @@
 | **acceptance-criteria-writing**            | `.claude/skills/acceptance-criteria-writing/SKILL.md`            | Given-When-Then 形式、テスト可能性基準、エッジケースパターン                      |
 | **interview-techniques**                   | `.claude/skills/interview-techniques/SKILL.md`                   | 5W1H フレームワーク、Why 分析（5 Whys）、質問タイプ分類                           |
 | **functional-non-functional-requirements** | `.claude/skills/functional-non-functional-requirements/SKILL.md` | FR/NFR 分類、FURPS+品質モデル、測定可能な目標定義                                 |
+| **requirements-verification**              | `.claude/skills/requirements-verification/SKILL.md`              | 要件の一貫性・完全性・検証可能性の評価、トレーサビリティマトリクス                |
+| **requirements-documentation**             | `.claude/skills/requirements-documentation/SKILL.md`             | 要件文書構造、ハンドオフプロトコル、成果物テンプレート                            |
+| **ambiguity-elimination**                  | `.claude/skills/ambiguity-elimination/SKILL.md`                  | 曖昧性検出・排除パターン、明確化テンプレート                                      |
 ```
 
 ## 3. テクニカルライター
@@ -112,13 +115,14 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                     | パス                                               | 概要                                                         |
-| ---------------------------- | -------------------------------------------------- | ------------------------------------------------------------ |
-| **react-hooks-advanced**     | `.claude/skills/react-hooks-advanced/SKILL.md`     | useEffect, useCallback, useMemo, useReducer の適切な使い分け |
-| **data-fetching-strategies** | `.claude/skills/data-fetching-strategies/SKILL.md` | SWR, React Query、キャッシュ戦略、Optimistic Updates         |
-| **state-lifting**            | `.claude/skills/state-lifting/SKILL.md`            | State Lifting、Context API、Props Drilling 回避              |
-| **custom-hooks-patterns**    | `.claude/skills/custom-hooks-patterns/SKILL.md`    | ロジック再利用、関心の分離                                   |
-| **error-boundary**           | `.claude/skills/error-boundary/SKILL.md`           | Error Boundary 実装、Fallback UI 設計                        |
+| スキル名                           | パス                                                     | 概要                                                         |
+| ---------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------ |
+| **react-hooks-advanced**           | `.claude/skills/react-hooks-advanced/SKILL.md`           | useEffect, useCallback, useMemo, useReducer の適切な使い分け |
+| **data-fetching-strategies**       | `.claude/skills/data-fetching-strategies/SKILL.md`       | SWR, React Query、キャッシュ戦略、Optimistic Updates         |
+| **state-lifting**                  | `.claude/skills/state-lifting/SKILL.md`                  | State Lifting、Context API、Props Drilling 回避              |
+| **custom-hooks-patterns**          | `.claude/skills/custom-hooks-patterns/SKILL.md`          | ロジック再利用、関心の分離                                   |
+| **error-boundary**                 | `.claude/skills/error-boundary/SKILL.md`                 | Error Boundary 実装、Fallback UI 設計                        |
+| **performance-optimization-react** | `.claude/skills/performance-optimization-react/SKILL.md` | React.memo、Profiler、再レンダリング最適化パターン           |
 ```
 
 ## 8. ドメインモデラー
@@ -590,6 +594,7 @@
 
 - **エージェント名:** `@skill-librarian`
 - **エージェントの配置:** `.claude/agents/skill-librarian.md`
+- **バージョン:** v3.0.0 (2025-11-28 リファクタリング)
 
 ```markdown
 - **必要なスキル**:
@@ -601,6 +606,8 @@
 | **documentation-architecture** | `.claude/skills/documentation-architecture/SKILL.md` | ドキュメント構造設計、リソース分割、階層設計                 |
 | **context-optimization**       | `.claude/skills/context-optimization/SKILL.md`       | トークン使用量の最小化と必要情報の効率的抽出                 |
 | **best-practices-curation**    | `.claude/skills/best-practices-curation/SKILL.md`    | ベストプラクティスの収集、評価、統合、更新                   |
+| **skill-librarian-commands**   | `.claude/skills/skill-librarian-commands/SKILL.md`   | スキル管理コマンド・スクリプト参照、バリデーションツール     |
+| **skill-creation-workflow**    | `.claude/skills/skill-creation-workflow/SKILL.md`    | スキル作成・軽量化・改善の3ワークフロー、品質ゲート          |
 ```
 
 ## 35. MCP ツール統合スペシャリスト
@@ -828,6 +835,3 @@
 - **リソース**: `resources/translation-ready-writing.md` - 翻訳準備ライティングガイド
 - **テンプレート**: `templates/multilingual-doc-template.md` - 多言語ドキュメント構造テンプレート
 - **スクリプト**: `scripts/check-translation-ready.mjs` - 翻訳準備度チェック・スコアリング
-
----
-```

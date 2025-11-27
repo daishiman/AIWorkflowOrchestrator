@@ -2,7 +2,25 @@
 name: apple-hig-guidelines
 description: |
   Apple Human Interface Guidelines（HIG）に基づくUI設計原則を専門とするスキル。
-  1978年に誕生した世界最古のデザインシステムの思想と実践的な適用方法を提供します。
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/apple-hig-guidelines/resources/accessibility-specs.md`: HIG アクセシビリティ詳細仕様
+  - `.claude/skills/apple-hig-guidelines/resources/app-icons-specifications.md`: HIG App Icons 仕様書
+  - `.claude/skills/apple-hig-guidelines/resources/component-states.md`: HIG コンポーネント状態定義
+  - `.claude/skills/apple-hig-guidelines/resources/design-themes.md`: HIGの3つのテーマと6つの設計原則
+  - `.claude/skills/apple-hig-guidelines/resources/interaction-patterns.md`: HIG インタラクションパターン
+  - `.claude/skills/apple-hig-guidelines/resources/launch-screens.md`: HIG Launch Screens 仕様書
+  - `.claude/skills/apple-hig-guidelines/resources/layout-grid-system.md`: HIG レイアウト＆グリッドシステム
+  - `.claude/skills/apple-hig-guidelines/resources/notifications.md`: HIG Notifications 仕様書
+  - `.claude/skills/apple-hig-guidelines/resources/platform-specifics.md`: プラットフォーム別HIG対応
+  - `.claude/skills/apple-hig-guidelines/resources/typography-colors.md`: HIGタイポグラフィとカラーシステム
+  - `.claude/skills/apple-hig-guidelines/resources/ui-components.md`: HIG UIコンポーネント仕様
+  - `.claude/skills/apple-hig-guidelines/resources/visual-design-specs.md`: HIG ビジュアルデザイン仕様
+  - `.claude/skills/apple-hig-guidelines/resources/widgets-live-activities.md`: HIG Widgets & Live Activities 仕様書
+  - `.claude/skills/apple-hig-guidelines/templates/hig-design-checklist.md`: Apple HIG設計チェックリスト v1.2.0
+  - `.claude/skills/apple-hig-guidelines/scripts/check-hig-compliance.mjs`: Apple HIG準拠チェックスクリプト v1.2.0
 
   専門分野:
   - 基本理念: Clarity（明瞭性）、Deference（謙譲性）、Depth（深度）

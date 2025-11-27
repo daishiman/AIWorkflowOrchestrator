@@ -1,3 +1,29 @@
+---
+name: authentication-flows
+description: |
+  ## 概要
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/authentication-flows/resources/api-key.md`: API Key Authentication
+  - `.claude/skills/authentication-flows/resources/jwt.md`: JSON Web Token (JWT)
+  - `.claude/skills/authentication-flows/resources/mtls.md`: Mutual TLS (mTLS)
+  - `.claude/skills/authentication-flows/resources/oauth2.md`: OAuth 2.0フロー種別（Authorization Code・PKCE・Client Credentials・Device Code）の実装ガイドとTypeScriptサンプルコード
+  - `.claude/skills/authentication-flows/templates/jwt-service-template.ts`: JWT Service Template
+  - `.claude/skills/authentication-flows/templates/oauth2-client-template.ts`: OAuth 2.0 Client Template
+  - `.claude/skills/authentication-flows/scripts/validate-auth-config.mjs`: Authentication Configuration Validator
+
+  専門分野:
+  - (要追加)
+
+  使用タイミング:
+  - (要追加)
+
+  Use proactively when (要追加).
+version: 1.0.0
+---
+
 # Authentication Flows スキル
 
 ## 概要

@@ -1,36 +1,32 @@
 ---
 name: database-monitoring
-version: 1.0.0
 description: |
-  Database Reliability Engineeringに基づくデータベース監視と可観測性の専門スキル。
-  PostgreSQL統計情報、スロークエリログ、接続数監視、
-  ディスク使用量、レプリケーション遅延などの運用メトリクスを提供します。
+    Database Reliability Engineeringに基づくデータベース監視と可観測性の専門スキル。
+    PostgreSQL統計情報、スロークエリログ、接続数監視、
+    ディスク使用量、レプリケーション遅延などの運用メトリクスを提供します。
+    使用タイミング:
+    - 本番DBの健全性を監視する時
+    - パフォーマンス劣化を検知する時
+    - アラート設定を構築する時
+    - SLI/SLOを設計する時
 
-  使用タイミング:
-  - 本番DBの健全性を監視する時
-  - パフォーマンス劣化を検知する時
-  - アラート設定を構築する時
-  - SLI/SLOを設計する時
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
 
-triggers:
-  - データベース監視設定の構築
-  - 本番環境の健全性確認
-  - パフォーマンス劣化の検知
-  - アラートルール設計
-  - SLI/SLO定義
+  - `.claude/skills/database-monitoring/resources/alerting-strategies.md`: アクション可能なアラート設計とエスカレーションパターン
+  - `.claude/skills/database-monitoring/resources/health-metrics.md`: 監視すべき主要指標と閾値設計ガイドライン
+  - `.claude/skills/database-monitoring/resources/postgresql-statistics.md`: pg_stat_*ビューの活用とクエリパターン
+  - `.claude/skills/database-monitoring/resources/slow-query-logging.md`: スロークエリログ設定と分析手法
+  - `.claude/skills/database-monitoring/templates/alert-rules-template.md`: アラートルール定義テンプレート
+  - `.claude/skills/database-monitoring/templates/monitoring-dashboard-template.md`: Grafanaダッシュボード設計テンプレート
+  - `.claude/skills/database-monitoring/scripts/connection-stats.mjs`: 接続数統計収集スクリプト
+  - `.claude/skills/database-monitoring/scripts/health-check.mjs`: データベース健全性チェックスクリプト
 
-provides:
-  - PostgreSQL統計情報の活用方法
-  - スロークエリログの設定と分析
-  - 健全性メトリクスの定義
-  - アラート設計パターン
-  - Neon/Supabase固有の監視
-
-related_skills:
-  - .claude/skills/query-performance-tuning/SKILL.md
-  - .claude/skills/backup-recovery/SKILL.md
-  - .claude/skills/connection-pooling/SKILL.md
+  Use proactively when implementing database-monitoring patterns or solving related problems.
+version: 1.0.0
 ---
+
 
 # Database Monitoring スキル
 

@@ -1,10 +1,41 @@
+---
+name: http-best-practices
+description: |
+  HTTPプロトコルを正しく効率的に活用するためのベストプラクティス集。
+
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/http-best-practices/resources/status-codes.md`: 2xx/4xx/5xxステータスコードの適切な使い分け
+  - `.claude/skills/http-best-practices/resources/idempotency.md`: 冪等性設計と冪等キー実装
+  - `.claude/skills/http-best-practices/resources/connection-management.md`: Keep-Alive、コネクションプーリング、HTTP/2最適化
+  - `.claude/skills/http-best-practices/resources/headers-best-practices.md`: 標準ヘッダー活用とカスタムヘッダー設計
+
+  専門分野:
+  - HTTPステータスコード: 2xx/4xx/5xx系の適切な使い分けとエラー設計
+  - 冪等性設計: 冪等キー実装とリトライセーフなAPI設計
+  - コネクション管理: Keep-Alive、コネクションプーリング、HTTP/2マルチプレキシング
+  - ヘッダー設計: Content-Type/Accept交渉、キャッシュ制御、カスタムヘッダー
+
+  使用タイミング:
+  - RESTful APIを設計・実装する時
+  - HTTPクライアントを実装する時
+  - API通信のパフォーマンスを最適化する時
+  - エラーハンドリング戦略を設計する時
+
+  Use proactively when designing RESTful APIs, implementing HTTP clients,
+  or optimizing API communication.
+version: 1.0.0
+---
+
 # HTTP Best Practices スキル
 
 ## 概要
 
-HTTPプロトコルを正しく効率的に活用するためのベストプラクティス集。
+HTTP プロトコルを正しく効率的に活用するためのベストプラクティス集。
 ステータスコード、冪等性、コネクション管理、ヘッダー設計など、
-堅牢なAPI通信を実現するための知識を提供します。
+堅牢な API 通信を実現するための知識を提供します。
 
 ## 対象エージェント
 
@@ -14,28 +45,32 @@ HTTPプロトコルを正しく効率的に活用するためのベストプラ�
 
 ## 含まれるリソース
 
-### 1. HTTPステータスコード (resources/status-codes.md)
+### 1. HTTP ステータスコード (resources/status-codes.md)
+
 - 2xx 成功系の適切な使い分け
 - 4xx クライアントエラーの設計
 - 5xx サーバーエラーのハンドリング
 - カスタムエラーレスポンス設計
 
 ### 2. 冪等性設計 (resources/idempotency.md)
-- HTTPメソッドと冪等性
+
+- HTTP メソッドと冪等性
 - 冪等キーの実装
-- リトライセーフなAPI設計
+- リトライセーフな API 設計
 - 重複リクエスト防止
 
 ### 3. コネクション管理 (resources/connection-management.md)
-- Keep-Alive最適化
+
+- Keep-Alive 最適化
 - コネクションプーリング
-- HTTP/2マルチプレキシング
+- HTTP/2 マルチプレキシング
 - コネクションタイムアウト設計
 
 ### 4. ヘッダー設計 (resources/headers-best-practices.md)
+
 - 標準ヘッダーの活用
 - カスタムヘッダー設計
-- Content-Type/Accept交渉
+- Content-Type/Accept 交渉
 - キャッシュ制御ヘッダー
 
 ## ワークフロー
@@ -95,7 +130,7 @@ HTTPプロトコルを正しく効率的に活用するためのベストプラ�
 // 冪等キー実装
 interface IdempotentRequest {
   headers: {
-    'Idempotency-Key': string;  // クライアント生成UUID
+    "Idempotency-Key": string; // クライアント生成UUID
   };
 }
 
@@ -122,14 +157,14 @@ async function handleIdempotentRequest(
 
 ```typescript
 // Node.js HTTPエージェント設定
-import { Agent } from 'http';
+import { Agent } from "http";
 
 const agent = new Agent({
-  keepAlive: true,          // コネクション再利用
-  keepAliveMsecs: 30000,    // Keep-Alive間隔
-  maxSockets: 50,           // 最大同時接続数
-  maxFreeSockets: 10,       // 待機コネクション数
-  timeout: 30000,           // ソケットタイムアウト
+  keepAlive: true, // コネクション再利用
+  keepAliveMsecs: 30000, // Keep-Alive間隔
+  maxSockets: 50, // 最大同時接続数
+  maxFreeSockets: 10, // 待機コネクション数
+  timeout: 30000, // ソケットタイムアウト
 });
 
 // fetch使用時
@@ -142,16 +177,19 @@ const response = await fetch(url, {
 ## 品質チェックリスト
 
 ### 設計時
+
 - [ ] 各エンドポイントに適切なステータスコードが定義されているか？
 - [ ] エラーレスポンス形式が統一されているか？
 - [ ] 冪等でないエンドポイントに冪等キーが実装されているか？
 
 ### 実装時
-- [ ] Content-Type/Acceptが正しく設定されているか？
+
+- [ ] Content-Type/Accept が正しく設定されているか？
 - [ ] タイムアウトが適切に設定されているか？
 - [ ] コネクションプールが設定されているか？
 
 ### 運用時
+
 - [ ] ステータスコード別のメトリクスが収集されているか？
 - [ ] コネクションリークが監視されているか？
 - [ ] エラー率にアラートが設定されているか？
@@ -161,10 +199,10 @@ const response = await fetch(url, {
 - **RFC 7231**: HTTP/1.1 Semantics and Content
 - **RFC 7232**: HTTP/1.1 Conditional Requests
 - **RFC 9110**: HTTP Semantics
-- **『RESTful Web APIs』** Leonard Richardson著
+- **『RESTful Web APIs』** Leonard Richardson 著
 
 ## 関連スキル
 
-- api-client-patterns: APIクライアント実装パターン
+- api-client-patterns: API クライアント実装パターン
 - retry-strategies: リトライ・サーキットブレーカー
 - rate-limiting: レート制限実装

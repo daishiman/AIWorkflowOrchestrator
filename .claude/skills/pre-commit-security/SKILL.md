@@ -4,6 +4,14 @@ description: |
   pre-commit hookセキュリティスキル。機密情報検出パターン、
   git-secrets/gitleaks統合、チーム展開戦略、Git履歴スキャンを提供します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/pre-commit-security/resources/detection-pattern-library.md`: Secret Detection Pattern Library
+  - `.claude/skills/pre-commit-security/scripts/setup-git-security.mjs`: Git Security Setup Script
+  - `.claude/skills/pre-commit-security/templates/pre-commit-hook-template.sh`: Pre-commit Hook Template for Secret Detection
+
   使用タイミング:
   - pre-commit hookを実装する時
   - 機密情報検出パターンを設計する時
@@ -20,8 +28,8 @@ version: 1.0.0
 
 ## 概要
 
-pre-commit hookは、コミット時に自動で機密情報をチェックし、
-Git混入を防ぐ第二防衛線です。このスキルは、効果的なhook実装と
+pre-commit hook は、コミット時に自動で機密情報をチェックし、
+Git 混入を防ぐ第二防衛線です。このスキルは、効果的な hook 実装と
 ツール統合手法を提供します。
 
 ## ツール選択
@@ -29,14 +37,16 @@ Git混入を防ぐ第二防衛線です。このスキルは、効果的なhook�
 ### git-secrets
 
 **特徴**:
-- AWS Labsが開発
-- pre-commit/pre-push hookとして動作
+
+- AWS Labs が開発
+- pre-commit/pre-push hook として動作
 - カスタムパターン追加可能
 - 軽量、高速
 
-**推奨用途**: AWSプロジェクト、シンプルな検出
+**推奨用途**: AWS プロジェクト、シンプルな検出
 
 **インストール**:
+
 ```bash
 # macOS
 brew install git-secrets
@@ -48,6 +58,7 @@ sudo make install
 ```
 
 **セットアップ**:
+
 ```bash
 cd /path/to/repo
 git secrets --install
@@ -64,14 +75,16 @@ git secrets --add --allowed '.env.example'
 ### gitleaks
 
 **特徴**:
+
 - 高速、高精度
-- CI/CD統合が容易
+- CI/CD 統合が容易
 - 詳細なレポート生成（JSON/SARIF）
 - エントロピーベース検出
 
-**推奨用途**: CI/CD統合、詳細レポート必要時
+**推奨用途**: CI/CD 統合、詳細レポート必要時
 
 **設定ファイル** (`.gitleaks.toml`):
+
 ```toml
 title = "gitleaks config"
 
@@ -100,13 +113,15 @@ paths = [
 ### truffleHog
 
 **特徴**:
+
 - エントロピーベース検出（パターン非依存）
-- Git履歴の深層スキャン
+- Git 履歴の深層スキャン
 - 高い検出率（誤検知も多い）
 
 **推奨用途**: 包括的履歴スキャン、初回監査
 
 **実行**:
+
 ```bash
 # Git履歴全体スキャン
 trufflehog git file://. --only-verified
@@ -117,7 +132,7 @@ trufflehog git file://. --since-commit abc123
 
 ## 検出パターン設計
 
-### 汎用Secretパターン
+### 汎用 Secret パターン
 
 ```regex
 # Password
@@ -298,16 +313,16 @@ echo "✅ Git security setup complete"
 # 新規メンバーオンボーディングチェックリスト
 
 - [ ] リポジトリをクローン
-- [ ] `./scripts/setup-git-security.sh` を実行
+- [ ] `.claude/skills/pre-commit-security/scripts/setup-git-security.sh` を実行
 - [ ] `.env.example` をコピーして `.env.local` 作成
 - [ ] テストコミットで hook 動作確認:
       echo "test=secret" > test.txt
       git add test.txt
-      git commit -m "test"  # → ブロックされるはず
+      git commit -m "test" # → ブロックされるはず
 - [ ] test.txt を削除
 ```
 
-## Git履歴スキャン
+## Git 履歴スキャン
 
 ### 全履歴スキャン
 
@@ -349,6 +364,7 @@ done < deleted-files.txt
 ## 実装チェックリスト
 
 ### .gitignore
+
 - [ ] プロジェクトルートに配置されているか？
 - [ ] 環境変数パターンが含まれているか？
 - [ ] Secret ファイルパターンが含まれているか？
@@ -356,21 +372,23 @@ done < deleted-files.txt
 - [ ] プロジェクト固有パターンが追加されているか？
 
 ### pre-commit hook
-- [ ] hook が.git/hooks/pre-commitに配置されているか？
+
+- [ ] hook が.git/hooks/pre-commit に配置されているか？
 - [ ] 実行権限があるか？（chmod +x）
 - [ ] 検出パターンが包括的か？
 - [ ] ホワイトリストが設定されているか？
 - [ ] エラーメッセージが明確か？
 
 ### チーム展開
+
 - [ ] セットアップスクリプトが提供されているか？
 - [ ] オンボーディングプロセスに組み込まれているか？
-- [ ] 全員がhookを有効化しているか確認済みか？
+- [ ] 全員が hook を有効化しているか確認済みか？
 
 ## 関連スキル
 
-- `.claude/skills/gitignore-management/SKILL.md` - .gitignore設計詳細
-- `.claude/skills/github-actions-security/SKILL.md` - CI/CD統合
+- `.claude/skills/gitignore-management/SKILL.md` - .gitignore 設計詳細
+- `.claude/skills/github-actions-security/SKILL.md` - CI/CD 統合
 - `.claude/skills/zero-trust-security/SKILL.md` - アクセス制御
 
 ## リソースファイル
@@ -379,8 +397,8 @@ done < deleted-files.txt
 
 ## スクリプト
 
-- `scripts/setup-git-security.mjs` - Git Security自動セットアップ
+- `scripts/setup-git-security.mjs` - Git Security 自動セットアップ
 
 ## テンプレート
 
-- `templates/pre-commit-hook-template.sh` - pre-commit hookテンプレート
+- `templates/pre-commit-hook-template.sh` - pre-commit hook テンプレート

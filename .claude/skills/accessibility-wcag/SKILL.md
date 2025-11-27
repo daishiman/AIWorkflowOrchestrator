@@ -1,3 +1,35 @@
+---
+name: accessibility-wcag
+description: |
+  Webアクセシビリティ（WCAG）ガイドラインとインクルーシブデザイン実装の専門知識
+
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/accessibility-wcag/resources/aria-patterns.md`: WAI-ARIA実装パターン集（アコーディオン・モーダル・タブ・メニュー・コンボボックス等のウィジェット、ライブリージョン、フォーカス管理）
+  - `.claude/skills/accessibility-wcag/resources/testing-guide.md`: アクセシビリティテストガイド
+  - `.claude/skills/accessibility-wcag/resources/wcag-checklist.md`: WCAGチェックリスト
+  - `.claude/skills/accessibility-wcag/templates/accessible-form-template.tsx`: アクセシブルフォームテンプレート
+  - `.claude/skills/accessibility-wcag/scripts/a11y-audit.mjs`: アクセシビリティ監査スクリプト
+
+  専門分野:
+  - WCAG準拠: レベルA/AA/AAA基準
+  - ARIAパターン: 支援技術対応
+  - キーボードアクセシビリティ: 完全なキーボード操作
+  - スクリーンリーダー対応: 音声読み上げ最適化
+
+  使用タイミング:
+  - アクセシブルなUIコンポーネントを設計する時
+  - WCAG準拠を確認する時
+  - スクリーンリーダー対応を実装する時
+  - アクセシビリティテストを実施する時
+
+  Use proactively when designing accessible UI components, implementing WCAG compliance,
+  or conducting accessibility testing.
+version: 1.0.0
+---
+
 # accessibility-wcag
 
 Webアクセシビリティ（WCAG）ガイドラインとインクルーシブデザイン実装の専門知識

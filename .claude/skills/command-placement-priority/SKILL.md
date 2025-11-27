@@ -5,6 +5,18 @@ description: |
   プロジェクトコマンド、ユーザーコマンド、MCPプロンプトの違い、
   優先順位解決、名前空間の活用を提供します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/command-placement-priority/resources/placement-options.md`: プロジェクト/ユーザー/MCPプロンプトの3つの配置場所の選択基準
+  - `.claude/skills/command-placement-priority/resources/priority-resolution.md`: 同名コマンドが複数存在する場合の実行優先順位（プロジェクト→ユーザー→MCP）
+  - `.claude/skills/command-placement-priority/resources/namespace-strategies.md`: フラット/階層構造と機能別/ツール別/ワークフロー別名前空間設計
+  - `.claude/skills/command-placement-priority/resources/migration-guide.md`: ユーザー→プロジェクト移行とプロジェクト→ユーザーカスタマイズ手順
+  - `.claude/skills/command-placement-priority/templates/user-command-template.md`: 個人用コマンド作成のテンプレート（~/.claude/commands/）
+  - `.claude/skills/command-placement-priority/templates/project-command-template.md`: チーム共有コマンド作成のテンプレート（.claude/commands/）
+  - `.claude/skills/command-placement-priority/scripts/validate-placement.mjs`: コマンド配置の適切性検証と優先順位競合・名前空間重複の検出スクリプト
+
   使用タイミング:
   - コマンドをどこに配置するか決定する時
   - 同名コマンドの優先順位を理解したい時

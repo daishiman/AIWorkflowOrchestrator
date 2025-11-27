@@ -3,6 +3,18 @@ name: api-versioning
 description: |
   APIバージョニング戦略と後方互換性管理を専門とするスキル。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/api-versioning/resources/versioning-strategies.md`: バージョニング方式の比較と選択基準
+  - `.claude/skills/api-versioning/resources/breaking-changes.md`: 破壊的変更の定義と影響範囲管理
+  - `.claude/skills/api-versioning/resources/deprecation-process.md`: 段階的廃止プロセスとHTTPヘッダー活用
+  - `.claude/skills/api-versioning/templates/migration-guide-template.md`: バージョン間移行ガイドテンプレート
+  - `.claude/skills/api-versioning/templates/deprecation-notice-template.md`: 非推奨化通知テンプレート
+  - `.claude/skills/api-versioning/scripts/check-breaking-changes.js`: 破壊的変更検出スクリプト
+  - `.claude/skills/api-versioning/scripts/generate-migration-guide.sh`: 移行ガイド自動生成スクリプト
+
   核心知識:
   - バージョニング方式の選択（URL Path / Header / Query）
   - 破壊的変更の管理と移行戦略

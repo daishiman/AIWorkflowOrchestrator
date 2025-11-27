@@ -2,8 +2,31 @@
 name: risk-management
 description: |
   プロジェクトリスクの識別、評価、軽減戦略の体系的手法。
-  プロアクティブなリスク管理により、プロジェクトの成功確率を
-  最大化し、予期せぬ問題への対応力を強化します。
+  プロアクティブなリスク管理により、プロジェクトの成功確率を最大化します。
+
+  専門分野:
+  - リスク識別: ブレインストーミング、SWOT分析、チェックリスト
+  - リスク分析: 確率・影響度マトリクス、リスクスコアリング、EMV
+  - リスク対応: 回避、軽減、転嫁、受容戦略
+  - リスク監視: 早期警告指標、エスカレーション基準
+
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/risk-management/resources/risk-identification.md`: リスク識別手法（ブレインストーミング、SWOT、チェックリスト、デルファイ法等）の詳細ガイド
+  - `.claude/skills/risk-management/resources/risk-analysis.md`: 確率・影響度マトリクス、EMV分析、モンテカルロシミュレーション等の分析手法詳細
+  - `.claude/skills/risk-management/templates/risk-register.md`: リスクレジスター標準テンプレート（評価、対応策、監視計画含む）
+  - `.claude/skills/risk-management/scripts/calculate-risk-score.mjs`: リスクスコア・EMV自動計算ツール（Node.js実行可能）
+
+  使用タイミング:
+  - プロジェクト開始時のリスク評価
+  - スプリント計画でのリスク特定
+  - アーキテクチャ決定時の影響分析
+  - 変更管理とインパクト評価
+
+  Use proactively when starting projects, making architectural decisions,
+  or identifying potential risks in sprint planning.
 version: 1.0.0
 ---
 

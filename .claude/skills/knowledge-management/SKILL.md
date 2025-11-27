@@ -4,6 +4,21 @@ description: |
   SECIモデル（野中郁次郎）に基づく組織知識の形式知化と共有を専門とするスキル。
   暗黙知を形式知に変換し、体系化することで再利用可能な知識として組織全体で活用可能にします。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/knowledge-management/resources/curation-framework.md`: 知識の収集・評価・統合・更新プロセスと情報源の信頼性評価基準
+  - `.claude/skills/knowledge-management/resources/freshness-strategy.md`: 陳腐化検出メカニズム、更新優先順位、定期レビュースケジュール、自動監視
+  - `.claude/skills/knowledge-management/resources/quality-assurance.md`: 完全性・明確性・再現性の3軸評価、品質スコア算出、検証プロセス
+  - `.claude/skills/knowledge-management/resources/seci-combination.md`: 形式知の統合・体系化プロセス、知識の階層構造設計、参照関係の整理
+  - `.claude/skills/knowledge-management/resources/seci-externalization.md`: 暗黙知の言語化・概念化手法、パターン抽象化、検証可能性の確保
+  - `.claude/skills/knowledge-management/resources/seci-model-details.md`: SECIサイクルの理論的背景、4フェーズの詳細手順、適用事例とパターン
+  - `.claude/skills/knowledge-management/resources/seci-socialization.md`: 暗黙知の源泉特定、情報収集手法、一次情報源の評価基準
+  - `.claude/skills/knowledge-management/scripts/validate-knowledge.mjs`: ドキュメント品質の自動検証（必須セクション、ファイルサイズ、陳腐化チェック）
+  - `.claude/skills/knowledge-management/scripts/validate-knowledge.sh`: 知識ドキュメントの品質検証シェルスクリプト
+  - `.claude/skills/knowledge-management/templates/knowledge-document-template.md`: 標準的な知識文書化テンプレート（SECIモデル準拠）
+
   専門分野:
   - SECI Model適用: 暗黙知→形式知の変換プロセス設計
   - 知識キュレーション: 収集、評価、統合、更新のフレームワーク
@@ -17,7 +32,6 @@ description: |
   - 知識ベースの品質評価や陳腐化チェックを行う時
 
   Use proactively when users need to document tacit knowledge, formalize best practices,
-  or establish knowledge management frameworks.
 version: 1.0.0
 ---
 
@@ -104,10 +118,10 @@ cat .claude/skills/knowledge-management/resources/quality-assurance.md
 node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs <file.md>
 
 # 複数ファイルの一括検証
-node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs ./resources/*.md
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/skills/knowledge-management/resources/*.md
 
 # 例: SECIモデルドキュメントを検証
-node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs ./resources/seci-model-details.md
+node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs .claude/skills/knowledge-management/resources/seci-model-details.md
 ```
 
 ### テンプレート参照

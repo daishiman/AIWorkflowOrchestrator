@@ -6,24 +6,22 @@ description: |
   データフロー分析によるSQLインジェクション、XSS、コマンドインジェクション、
   センシティブデータ露出、危険な関数使用の検出を行います。
 
-  📚 このスキルの使用タイミング:
+  使用タイミング:
   - コードレビュー時のセキュリティチェック
   - SQLインジェクション、XSS検出時
   - センシティブデータ露出の検出時
   - 危険な関数（eval、exec等）使用チェック時
-  - ユーザー入力の取り扱い検証時
-  - データフロー追跡（Source → Sink）時
-
-  🔍 検出対象:
-  - SQLインジェクション（文字列連結クエリ）
-  - XSS（innerHTML、dangerouslySetInnerHTML）
-  - コマンドインジェクション（exec、spawn）
-  - パストラバーサル（ファイル操作）
-  - ハードコードされたシークレット
-  - 危険な関数（eval、Function等）
 
   Use this skill when performing static code analysis, detecting injection vulnerabilities,
   or validating input handling security.
+
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/code-static-analysis-security/resources/injection-patterns.md`: SQL/XSS/コマンドインジェクションの検出パターンと正規表現
+  - `.claude/skills/code-static-analysis-security/scripts/scan-sql-injection.mjs`: SQLインジェクション脆弱性の自動スキャンスクリプト
+  - `.claude/skills/code-static-analysis-security/templates/sast-config-template.json`: ESLint Securityプラグイン等のSAST設定テンプレート
 version: 1.0.0
 related_skills:
   - .claude/skills/owasp-top-10/SKILL.md

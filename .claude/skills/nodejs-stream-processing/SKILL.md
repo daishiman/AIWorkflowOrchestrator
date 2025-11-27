@@ -5,12 +5,20 @@ description: |
   大容量ファイルの効率的処理、メモリ使用量の最適化、
   Readable/Writable/Transform/Duplexストリームの適切な活用方法を提供。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/nodejs-stream-processing/resources/backpressure-guide.md`: バックプレッシャーガイド
+  - `.claude/skills/nodejs-stream-processing/templates/stream-utils.ts`: Readable/Writable/Transform/Duplexストリームの実装パターンとpipeline()による安全なチェーン構築テンプレート
+
   使用タイミング:
   - 大容量ファイル（>10MB）を処理する時
   - メモリ使用量を一定に保ちたい時
   - ファイルアップロード/ダウンロードを実装する時
   - データ変換パイプラインを構築する時
   - バックプレッシャー問題を解決したい時
+
 version: 1.0.0
 ---
 
@@ -18,7 +26,7 @@ version: 1.0.0
 
 ## 概要
 
-このスキルは、Node.jsのストリームAPIを活用した効率的なデータ処理の専門知識を提供します。Ryan Dahlの非同期I/O思想に基づき、大容量データを低メモリで処理するためのパターンを定義します。
+このスキルは、Node.js のストリーム API を活用した効率的なデータ処理の専門知識を提供します。Ryan Dahl の非同期 I/O 思想に基づき、大容量データを低メモリで処理するためのパターンを定義します。
 
 ---
 
@@ -26,22 +34,22 @@ version: 1.0.0
 
 ### ストリームの種類
 
-| 種類 | 目的 | 例 |
-|------|------|-----|
-| **Readable** | データソース | fs.createReadStream, HTTP response |
-| **Writable** | データシンク | fs.createWriteStream, HTTP request |
-| **Duplex** | 読み書き両方 | TCP socket, WebSocket |
-| **Transform** | データ変換 | zlib.createGzip, crypto |
+| 種類          | 目的         | 例                                 |
+| ------------- | ------------ | ---------------------------------- |
+| **Readable**  | データソース | fs.createReadStream, HTTP response |
+| **Writable**  | データシンク | fs.createWriteStream, HTTP request |
+| **Duplex**    | 読み書き両方 | TCP socket, WebSocket              |
+| **Transform** | データ変換   | zlib.createGzip, crypto            |
 
 ### なぜストリームを使うのか
 
 ```typescript
 // ❌ 非効率: 全データをメモリに読み込む
-const data = await fs.promises.readFile('large-file.bin'); // 1GBならメモリ1GB消費
+const data = await fs.promises.readFile("large-file.bin"); // 1GBならメモリ1GB消費
 await uploadToCloud(data);
 
 // ✅ 効率的: ストリームで分割処理
-const readStream = fs.createReadStream('large-file.bin');
+const readStream = fs.createReadStream("large-file.bin");
 readStream.pipe(uploadStream); // 64KB単位で処理、メモリ最小化
 ```
 
@@ -49,76 +57,76 @@ readStream.pipe(uploadStream); // 64KB単位で処理、メモリ最小化
 
 ## 基本パターン
 
-### Readableストリーム
+### Readable ストリーム
 
 ```typescript
-import { createReadStream } from 'fs';
-import type { Readable } from 'stream';
+import { createReadStream } from "fs";
+import type { Readable } from "stream";
 
 // ファイル読み込み
-const fileStream = createReadStream('./large-file.txt', {
-  encoding: 'utf8',
+const fileStream = createReadStream("./large-file.txt", {
+  encoding: "utf8",
   highWaterMark: 64 * 1024, // 64KB chunks
 });
 
 // イベントベース処理
-fileStream.on('data', (chunk: string) => {
+fileStream.on("data", (chunk: string) => {
   console.log(`Received ${chunk.length} bytes`);
 });
 
-fileStream.on('end', () => {
-  console.log('File reading completed');
+fileStream.on("end", () => {
+  console.log("File reading completed");
 });
 
-fileStream.on('error', (error) => {
-  console.error('Read error:', error);
+fileStream.on("error", (error) => {
+  console.error("Read error:", error);
 });
 ```
 
-### Writableストリーム
+### Writable ストリーム
 
 ```typescript
-import { createWriteStream } from 'fs';
+import { createWriteStream } from "fs";
 
-const writeStream = createWriteStream('./output.txt', {
-  encoding: 'utf8',
+const writeStream = createWriteStream("./output.txt", {
+  encoding: "utf8",
   highWaterMark: 16 * 1024, // 16KB buffer
 });
 
 // 書き込み
-const canWrite = writeStream.write('Hello, World!');
+const canWrite = writeStream.write("Hello, World!");
 
 if (!canWrite) {
   // バッファがいっぱい - drainを待機
-  writeStream.once('drain', () => {
+  writeStream.once("drain", () => {
     // 書き込み再開可能
   });
 }
 
 // 終了
 writeStream.end(() => {
-  console.log('Writing completed');
+  console.log("Writing completed");
 });
 ```
 
 ### pipe() によるチェーン
 
 ```typescript
-import { createReadStream, createWriteStream } from 'fs';
-import { createGzip } from 'zlib';
+import { createReadStream, createWriteStream } from "fs";
+import { createGzip } from "zlib";
 
 // 読み込み → 圧縮 → 書き込み
-createReadStream('./input.txt')
+createReadStream("./input.txt")
   .pipe(createGzip())
-  .pipe(createWriteStream('./output.txt.gz'));
+  .pipe(createWriteStream("./output.txt.gz"));
 ```
 
 ### pipeline() による安全なチェーン（推奨）
 
 ```typescript
-import { pipeline } from 'stream/promises';
-import { createReadStream, createWriteStream } from 'fs';
-import { createGzip } from 'zlib';
+import { pipeline } from "stream/promises";
+import { createReadStream, createWriteStream } from "fs";
+import { createGzip } from "zlib";
 
 async function compressFile(input: string, output: string): Promise<void> {
   await pipeline(
@@ -145,26 +153,26 @@ Readable (100MB/s) ──> Buffer (溢れる!) ──> Writable (10MB/s)
 ### 手動制御
 
 ```typescript
-import { createReadStream, createWriteStream } from 'fs';
+import { createReadStream, createWriteStream } from "fs";
 
-const readable = createReadStream('./large-file.bin');
-const writable = createWriteStream('./output.bin');
+const readable = createReadStream("./large-file.bin");
+const writable = createWriteStream("./output.bin");
 
-readable.on('data', (chunk) => {
+readable.on("data", (chunk) => {
   const canWrite = writable.write(chunk);
 
   if (!canWrite) {
     // バッファフル - 読み込みを一時停止
     readable.pause();
 
-    writable.once('drain', () => {
+    writable.once("drain", () => {
       // バッファが空になったら再開
       readable.resume();
     });
   }
 });
 
-readable.on('end', () => {
+readable.on("end", () => {
   writable.end();
 });
 ```
@@ -172,7 +180,7 @@ readable.on('end', () => {
 ### pipeline()による自動制御（推奨）
 
 ```typescript
-import { pipeline } from 'stream/promises';
+import { pipeline } from "stream/promises";
 
 // pipeline()は自動的にバックプレッシャーを処理
 await pipeline(readable, transform, writable);
@@ -180,12 +188,12 @@ await pipeline(readable, transform, writable);
 
 ---
 
-## Transformストリーム
+## Transform ストリーム
 
 ### 基本パターン
 
 ```typescript
-import { Transform, TransformCallback } from 'stream';
+import { Transform, TransformCallback } from "stream";
 
 class UpperCaseTransform extends Transform {
   _transform(
@@ -204,18 +212,18 @@ class UpperCaseTransform extends Transform {
 }
 
 // 使用
-createReadStream('./input.txt')
+createReadStream("./input.txt")
   .pipe(new UpperCaseTransform())
-  .pipe(createWriteStream('./output.txt'));
+  .pipe(createWriteStream("./output.txt"));
 ```
 
 ### 行単位処理
 
 ```typescript
-import { Transform, TransformCallback } from 'stream';
+import { Transform, TransformCallback } from "stream";
 
 class LineProcessor extends Transform {
-  private buffer = '';
+  private buffer = "";
 
   _transform(
     chunk: Buffer,
@@ -223,13 +231,13 @@ class LineProcessor extends Transform {
     callback: TransformCallback
   ): void {
     this.buffer += chunk.toString();
-    const lines = this.buffer.split('\n');
+    const lines = this.buffer.split("\n");
 
     // 最後の不完全な行を保持
-    this.buffer = lines.pop() || '';
+    this.buffer = lines.pop() || "";
 
     for (const line of lines) {
-      this.push(this.processLine(line) + '\n');
+      this.push(this.processLine(line) + "\n");
     }
 
     callback();
@@ -257,8 +265,8 @@ class LineProcessor extends Transform {
 ### 検知 → 読み込み → アップロード
 
 ```typescript
-import { createReadStream } from 'fs';
-import { pipeline } from 'stream/promises';
+import { createReadStream } from "fs";
+import { pipeline } from "stream/promises";
 
 interface FileEvent {
   path: string;
@@ -286,10 +294,10 @@ async function processDetectedFile(event: FileEvent): Promise<void> {
 ### 大容量ファイルの進捗追跡
 
 ```typescript
-import { Transform } from 'stream';
-import { pipeline } from 'stream/promises';
-import { createReadStream } from 'fs';
-import { stat } from 'fs/promises';
+import { Transform } from "stream";
+import { pipeline } from "stream/promises";
+import { createReadStream } from "fs";
+import { stat } from "fs/promises";
 
 class ProgressTracker extends Transform {
   private bytesProcessed = 0;
@@ -327,27 +335,27 @@ async function uploadWithProgress(filePath: string): Promise<void> {
 
 ---
 
-## highWaterMark設定ガイド
+## highWaterMark 設定ガイド
 
 ### 推奨値
 
-| 用途 | highWaterMark | 理由 |
-|------|---------------|------|
-| 小ファイル (<1MB) | 16KB | メモリ効率 |
-| 中ファイル (1-100MB) | 64KB | バランス |
-| 大ファイル (>100MB) | 256KB-1MB | スループット |
-| ネットワーク | 16-64KB | レイテンシ考慮 |
+| 用途                 | highWaterMark | 理由           |
+| -------------------- | ------------- | -------------- |
+| 小ファイル (<1MB)    | 16KB          | メモリ効率     |
+| 中ファイル (1-100MB) | 64KB          | バランス       |
+| 大ファイル (>100MB)  | 256KB-1MB     | スループット   |
+| ネットワーク         | 16-64KB       | レイテンシ考慮 |
 
 ### 設定例
 
 ```typescript
 // ファイル読み込み
-createReadStream('./file.bin', {
+createReadStream("./file.bin", {
   highWaterMark: 64 * 1024, // 64KB
 });
 
 // ファイル書き込み
-createWriteStream('./file.bin', {
+createWriteStream("./file.bin", {
   highWaterMark: 16 * 1024, // 16KB
 });
 ```
@@ -358,14 +366,14 @@ createWriteStream('./file.bin', {
 
 ### 設計時
 
-- [ ] ファイルサイズに対して適切なhighWaterMarkを設定したか？
+- [ ] ファイルサイズに対して適切な highWaterMark を設定したか？
 - [ ] バックプレッシャーの発生可能性を考慮したか？
 - [ ] エラーハンドリングがすべてのストリームに設定されているか？
 
 ### 実装時
 
-- [ ] pipe()ではなくpipeline()を使用しているか？（自動クリーンアップ）
-- [ ] Transform._flush()で残りデータを処理しているか？
+- [ ] pipe()ではなく pipeline()を使用しているか？（自動クリーンアップ）
+- [ ] Transform.\_flush()で残りデータを処理しているか？
 - [ ] ストリームエラーが適切に伝播されるか？
 
 ### テスト時
@@ -387,13 +395,13 @@ readable.pipe(writable);
 
 // 2. 全データをメモリに読み込む
 const chunks: Buffer[] = [];
-readable.on('data', (chunk) => chunks.push(chunk));
-readable.on('end', () => {
+readable.on("data", (chunk) => chunks.push(chunk));
+readable.on("end", () => {
   const data = Buffer.concat(chunks); // メモリ爆発の可能性
 });
 
 // 3. バックプレッシャー無視
-readable.on('data', (chunk) => {
+readable.on("data", (chunk) => {
   writable.write(chunk); // 戻り値をチェックしていない
 });
 ```
@@ -408,11 +416,11 @@ await pipeline(readable, writable);
 await pipeline(readable, transform, writable);
 
 // 3. バックプレッシャー対応
-readable.on('data', (chunk) => {
+readable.on("data", (chunk) => {
   const canWrite = writable.write(chunk);
   if (!canWrite) {
     readable.pause();
-    writable.once('drain', () => readable.resume());
+    writable.once("drain", () => readable.resume());
   }
 });
 ```

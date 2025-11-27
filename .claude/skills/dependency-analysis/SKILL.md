@@ -1,26 +1,35 @@
 ---
 name: dependency-analysis
 description: |
-  ソフトウェアの依存関係分析と循環参照検出を専門とするスキル。
-  依存関係グラフの構築、循環依存の検出、安定度メトリクスの算出により、
-  アーキテクチャの健全性を評価します。
+    ソフトウェアの依存関係分析と循環参照検出を専門とするスキル。
+    依存関係グラフの構築、循環依存の検出、安定度メトリクスの算出により、
+    アーキテクチャの健全性を評価します。
+    専門分野:
+    - 依存関係グラフ構築: インポート文解析、モジュール間依存の可視化
+    - 循環依存検出: 閉路検出アルゴリズム、解消方針の提案
+    - 安定度メトリクス: 求心性（Ca）、遠心性（Ce）、不安定度（I）
+    - パッケージ設計原則: 安定依存の原則（SDP）、安定抽象の原則（SAP）
+    使用タイミング:
+    - モジュール間の依存関係を可視化する時
+    - 循環参照を検出・解消する時
+    - アーキテクチャの安定性を評価する時
+    - リファクタリングの影響範囲を分析する時
+    Use proactively when analyzing dependencies, detecting circular references,
+    or evaluating architecture stability metrics.
 
-  専門分野:
-  - 依存関係グラフ構築: インポート文解析、モジュール間依存の可視化
-  - 循環依存検出: 閉路検出アルゴリズム、解消方針の提案
-  - 安定度メトリクス: 求心性（Ca）、遠心性（Ce）、不安定度（I）
-  - パッケージ設計原則: 安定依存の原則（SDP）、安定抽象の原則（SAP）
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
 
-  使用タイミング:
-  - モジュール間の依存関係を可視化する時
-  - 循環参照を検出・解消する時
-  - アーキテクチャの安定性を評価する時
-  - リファクタリングの影響範囲を分析する時
+  - `.claude/skills/dependency-analysis/resources/circular-dependency.md`: 循環依存の検出アルゴリズムと解消方針パターン
+  - `.claude/skills/dependency-analysis/resources/dependency-graph.md`: 依存関係グラフの構築手法とトポロジカルソート
+  - `.claude/skills/dependency-analysis/resources/stability-metrics.md`: 求心性、遠心性、不安定度、メインシーケンスの詳細解説
+  - `.claude/skills/dependency-analysis/templates/dependency-report.md`: 依存関係分析レポート作成テンプレート
+  - `.claude/skills/dependency-analysis/scripts/analyze-dependencies.mjs`: モジュール依存関係分析と循環検出スクリプト
 
-  Use proactively when analyzing dependencies, detecting circular references,
-  or evaluating architecture stability metrics.
 version: 1.0.0
 ---
+
 
 # Dependency Analysis
 

@@ -1,18 +1,25 @@
 ---
 name: github-actions-security
 description: |
-  GitHub Actionsセキュリティスキル。Repository/Environment Secrets、
-  ログマスキング、品質ゲート統合、CI/CDパイプラインセキュリティを提供します。
+    GitHub Actionsセキュリティスキル。Repository/Environment Secrets、
+    ログマスキング、品質ゲート統合、CI/CDパイプラインセキュリティを提供します。
+    使用タイミング:
+    - GitHub Actionsワークフローのセキュリティを強化する時
+    - Environment Secretsを設定する時
+    - CI/CD品質ゲートを統合する時
+    - Secret露出防止を実装する時
+    - デプロイワークフローを設計する時
+    Use when securing GitHub Actions workflows, configuring environment
+    secrets, implementing quality gates, or preventing secret exposure.
 
-  使用タイミング:
-  - GitHub Actionsワークフローのセキュリティを強化する時
-  - Environment Secretsを設定する時
-  - CI/CD品質ゲートを統合する時
-  - Secret露出防止を実装する時
-  - デプロイワークフローを設計する時
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
 
-  Use when securing GitHub Actions workflows, configuring environment
-  secrets, implementing quality gates, or preventing secret exposure.
+  - `.claude/skills/github-actions-security/resources/workflow-security-patterns.md`: Secret管理・ログマスキング・権限設定のセキュアなワークフローパターン
+  - `.claude/skills/github-actions-security/templates/github-actions-deploy-template.yml`: 環境保護ルール付きデプロイワークフローテンプレート
+
+  Use proactively when implementing github-actions-security patterns or solving related problems.
 version: 1.0.0
 ---
 
@@ -20,25 +27,28 @@ version: 1.0.0
 
 ## 概要
 
-GitHub Actionsは強力なCI/CDプラットフォームですが、適切なセキュリティ設定なしでは
-Secretが露出するリスクがあります。このスキルは、GitHub Actions固有のセキュリティ
-ベストプラクティスとSecret管理手法を提供します。
+GitHub Actions は強力な CI/CD プラットフォームですが、適切なセキュリティ設定なしでは
+Secret が露出するリスクがあります。このスキルは、GitHub Actions 固有のセキュリティ
+ベストプラクティスと Secret 管理手法を提供します。
 
 ## Repository Secrets vs Environment Secrets
 
 ### Repository Secrets
 
 **特徴**:
+
 - すべてのワークフローからアクセス可能
 - 承認不要
 - 環境による制限なし
 
 **用途**:
+
 - ビルド用トークン（DOCKER_USERNAME、DOCKER_PASSWORD）
 - コードカバレッジトークン（CODECOV_TOKEN）
-- 低リスクSecret
+- 低リスク Secret
 
 **設定方法**:
+
 ```
 GitHub Repo
 → Settings
@@ -53,16 +63,19 @@ GitHub Repo
 ### Environment Secrets
 
 **特徴**:
+
 - 特定環境のワークフローのみアクセス
 - 承認・保護ルール設定可能
 - デプロイメントブランチ制限可能
 
 **用途**:
+
 - デプロイ用トークン（RAILWAY_TOKEN）
-- 環境別Secret（DATABASE_URL、API_KEY）
-- 本番通知用Webhook（DISCORD_WEBHOOK_URL）
+- 環境別 Secret（DATABASE_URL、API_KEY）
+- 本番通知用 Webhook（DISCORD_WEBHOOK_URL）
 
 **推奨構成**:
+
 ```
 GitHub Repo → Settings → Environments
 
@@ -97,7 +110,7 @@ GitHub Repo → Settings → Environments
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: production  # Environment Secret使用
+    environment: production # Environment Secret使用
 
     steps:
       - name: Deploy
@@ -129,11 +142,11 @@ jobs:
           railway up --detach
 ```
 
-## Secret露出防止
+## Secret 露出防止
 
 ### 1. 自動ログマスキング
 
-GitHub Actionsは自動的にSecretをマスクしますが、**完全ではありません**。
+GitHub Actions は自動的に Secret をマスクしますが、**完全ではありません**。
 
 ```yaml
 # ✅ 安全: 直接使用はマスクされる
@@ -149,7 +162,7 @@ GitHub Actionsは自動的にSecretをマスクしますが、**完全ではあ�
   # マスクされない可能性
 ```
 
-**対策**: Secretを加工せず直接使用、ファイル化・エンコード禁止
+**対策**: Secret を加工せず直接使用、ファイル化・エンコード禁止
 
 ### 2. デバッグログ制御
 
@@ -157,7 +170,7 @@ GitHub Actionsは自動的にSecretをマスクしますが、**完全ではあ�
 # ❌ 危険: デバッグログ有効でSecret露出リスク
 - name: Deploy
   env:
-    ACTIONS_STEP_DEBUG: true  # 詳細ログ出力
+    ACTIONS_STEP_DEBUG: true # 詳細ログ出力
     SECRET: ${{ secrets.SECRET }}
 
 # ✅ 安全: 本番環境ではデバッグログ無効
@@ -177,7 +190,7 @@ GitHub Actionsは自動的にSecretをマスクしますが、**完全ではあ�
 - uses: actions/upload-artifact@v4
   with:
     name: config
-    path: config.env  # Secret が公開される！
+    path: config.env # Secret が公開される！
 
 # ✅ 安全: Secretはアーティファクトに含めない
 - name: Create config (non-secret only)
@@ -187,10 +200,10 @@ GitHub Actionsは自動的にSecretをマスクしますが、**完全ではあ�
 - uses: actions/upload-artifact@v4
   with:
     name: config
-    path: config.env  # 非機密情報のみ
+    path: config.env # 非機密情報のみ
 ```
 
-### 4. Pull Requestでのフォーク制限
+### 4. Pull Request でのフォーク制限
 
 ```yaml
 on:
@@ -209,13 +222,13 @@ jobs:
 
       - name: Run tests
         env:
-          API_KEY: ${{ secrets.API_KEY }}  # フォークPRでは空
+          API_KEY: ${{ secrets.API_KEY }} # フォークPRでは空
         run: npm test
 ```
 
-## CI/CD品質ゲート統合
+## CI/CD 品質ゲート統合
 
-### 4段階品質ゲート
+### 4 段階品質ゲート
 
 ```yaml
 jobs:
@@ -273,7 +286,7 @@ jobs:
 # ゲート失敗時は後続ジョブをスキップ
 deploy:
   needs: [secret-scan, lint, test, build]
-  if: success()  # すべて成功時のみ実行
+  if: success() # すべて成功時のみ実行
 ```
 
 ## 環境保護ルール
@@ -313,7 +326,7 @@ staging:
 
 ## Secret Rotation 統合
 
-### GitHub Secretsの更新
+### GitHub Secrets の更新
 
 ```bash
 # GitHub CLIを使用（推奨）
@@ -323,7 +336,7 @@ gh secret set RAILWAY_TOKEN --body "new-token-value"
 # Repo → Settings → Secrets → RAILWAY_TOKEN → Update
 ```
 
-### Rotation後の検証
+### Rotation 後の検証
 
 ```yaml
 name: Validate Secrets
@@ -403,27 +416,30 @@ jobs:
 
 ## 実装チェックリスト
 
-### GitHub Secrets設定
-- [ ] Environment Secretsが環境別に分離されているか？
+### GitHub Secrets 設定
+
+- [ ] Environment Secrets が環境別に分離されているか？
 - [ ] 本番環境に保護ルールが設定されているか？
-- [ ] Repository Secretsが低リスクSecretのみか？
+- [ ] Repository Secrets が低リスク Secret のみか？
 
 ### ワークフローセキュリティ
-- [ ] Secretがログに露出しないか？
+
+- [ ] Secret がログに露出しないか？
 - [ ] デバッグログが本番で無効か？
-- [ ] アーティファクトにSecretが含まれないか？
-- [ ] フォークPRでSecretが使用されないか？
+- [ ] アーティファクトに Secret が含まれないか？
+- [ ] フォーク PR で Secret が使用されないか？
 
 ### 品質ゲート
-- [ ] Secret Scanが最初のゲートとして設定されているか？
+
+- [ ] Secret Scan が最初のゲートとして設定されているか？
 - [ ] ゲート失敗時にデプロイがブロックされるか？
 - [ ] すべてのゲート通過後のみデプロイされるか？
 
 ## 関連スキル
 
-- `.claude/skills/railway-secrets-management/SKILL.md` - Railway統合
+- `.claude/skills/railway-secrets-management/SKILL.md` - Railway 統合
 - `.claude/skills/zero-trust-security/SKILL.md` - アクセス制御
-- `.claude/skills/pre-commit-security/SKILL.md` - Secretスキャン
+- `.claude/skills/pre-commit-security/SKILL.md` - Secret スキャン
 - `.claude/skills/environment-isolation/SKILL.md` - 環境分離
 
 ## リソースファイル

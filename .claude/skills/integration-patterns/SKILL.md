@@ -4,11 +4,24 @@ description: |
   MCPサーバーと外部システム間の統合パターンに関する専門知識。
   同期・非同期通信、イベント駆動アーキテクチャ、データ同期パターンの設計指針を提供します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/integration-patterns/resources/async-patterns.md`: Message Queue/Pub-Sub/Sagaパターンの詳細と実装ガイド
+  - `.claude/skills/integration-patterns/resources/event-driven-guide.md`: Event Sourcing/CQRS/Webhookによるイベント駆動設計
+  - `.claude/skills/integration-patterns/resources/sync-patterns.md`: Request-Response/Aggregator/Gatewayパターンの詳細
+  - `.claude/skills/integration-patterns/scripts/review-integration-design.mjs`: 統合設計のアーキテクチャレビューと改善提案
+  - `.claude/skills/integration-patterns/scripts/validate-message-schema.mjs`: メッセージスキーマ定義の検証とバージョン互換性チェック
+  - `.claude/skills/integration-patterns/templates/integration-design-template.md`: 統合パターン選択と設計ドキュメントテンプレート
+  - `.claude/skills/integration-patterns/templates/message-schema-template.json`: イベント/メッセージスキーマ定義テンプレート
+
   使用タイミング:
   - MCPサーバーと外部システムの連携設計時
   - 非同期処理パターンの設計時
   - イベント駆動統合の設計時
   - マルチサービス連携の設計時
+
 version: 1.0.1
 tags: [mcp, integration, async, event-driven, synchronization]
 related_skills:
@@ -21,7 +34,7 @@ related_skills:
 
 ## 概要
 
-MCPサーバーと外部システム間の統合パターンを提供します。同期・非同期通信、イベント駆動アーキテクチャ、データ同期など、様々な統合シナリオに対応した設計パターンを網羅します。
+MCP サーバーと外部システム間の統合パターンを提供します。同期・非同期通信、イベント駆動アーキテクチャ、データ同期など、様々な統合シナリオに対応した設計パターンを網羅します。
 
 ## 統合アーキテクチャ概要
 
@@ -301,15 +314,15 @@ Phase 2: Commit/Rollback
 
 ### 要件別推奨パターン
 
-| 要件 | 推奨パターン |
-|-----|------------|
-| 即時レスポンス必要 | Request-Response |
-| 長時間処理 | Message Queue + Async |
-| 複数サービス連携 | Aggregator / Saga |
-| リアルタイム通知 | Pub/Sub / Webhook |
-| 監査要件 | Event Sourcing |
-| 高スケーラビリティ | CQRS |
-| データ同期 | CDC / Eventual Consistency |
+| 要件               | 推奨パターン               |
+| ------------------ | -------------------------- |
+| 即時レスポンス必要 | Request-Response           |
+| 長時間処理         | Message Queue + Async      |
+| 複数サービス連携   | Aggregator / Saga          |
+| リアルタイム通知   | Pub/Sub / Webhook          |
+| 監査要件           | Event Sourcing             |
+| 高スケーラビリティ | CQRS                       |
+| データ同期         | CDC / Eventual Consistency |
 
 ### 判断フローチャート
 
@@ -371,8 +384,8 @@ node .claude/skills/integration-patterns/scripts/validate-message-schema.mjs <sc
 
 ## 関連スキル
 
-| スキル | 用途 |
-|-------|------|
-| `.claude/skills/mcp-protocol/SKILL.md` | MCPプロトコル基盤 |
-| `.claude/skills/api-connector-design/SKILL.md` | API設計パターン |
-| `.claude/skills/resource-oriented-api/SKILL.md` | リソース設計 |
+| スキル                                          | 用途               |
+| ----------------------------------------------- | ------------------ |
+| `.claude/skills/mcp-protocol/SKILL.md`          | MCP プロトコル基盤 |
+| `.claude/skills/api-connector-design/SKILL.md`  | API 設計パターン   |
+| `.claude/skills/resource-oriented-api/SKILL.md` | リソース設計       |

@@ -4,6 +4,14 @@ description: |
   コマンド引数システム（$ARGUMENTS、位置引数）を専門とするスキル。
   引数の渡し方、検証、デフォルト値、エラーメッセージ設計を提供します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/command-arguments-system/resources/arguments-reference.md`: コマンド引数システム完全リファレンス
+  - `.claude/skills/command-arguments-system/templates/command-with-args.md`: 引数付きコマンドテンプレート
+  - `.claude/skills/command-arguments-system/scripts/validate-arguments.mjs`: $ARGUMENTS・位置引数($1,$2...)・argument-hint整合性・引数検証ロジックの自動検証
+
   使用タイミング:
   - コマンドに引数を追加する時
   - 引数検証ロジックを実装する時

@@ -4,6 +4,16 @@ description: |
   アラート設計とAlert Fatigue回避の専門スキル。
   Mike Julianの『入門 監視』に基づく、アクション可能で過負荷を避けるアラートシステム設計を提供します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/alert-design/resources/actionable-alert-design.md`: アクション可能なアラート設計ガイド
+  - `.claude/skills/alert-design/resources/alert-fatigue-prevention.md`: Alert Fatigue回避戦略と実践手法
+  - `.claude/skills/alert-design/resources/threshold-setting-guide.md`: 統計的根拠に基づく閾値設定ガイド
+  - `.claude/skills/alert-design/templates/alert-rules-template.yaml`: アラートルール定義テンプレート
+  - `.claude/skills/alert-design/scripts/analyze-alert-effectiveness.mjs`: アラート有効性分析スクリプト
+
   使用タイミング:
   - アラートルールと閾値を設計する時
   - Alert Fatigue（アラート疲れ）を回避する時

@@ -2,7 +2,16 @@
 name: boundary-value-analysis
 description: |
   境界値分析と同値分割を専門とするスキル。
-  効果的なテストケース設計で最小限のテストで最大のカバレッジを実現します。
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/boundary-value-analysis/resources/boundary-value-fundamentals.md`: 境界値分析の基本概念と境界値±1の系統的テスト手法の基礎
+  - `.claude/skills/boundary-value-analysis/resources/combination-strategies.md`: 複数パラメータの組み合わせテスト最適化戦略（ペアワイズ・直交表・全組み合わせ）
+  - `.claude/skills/boundary-value-analysis/resources/edge-cases-catalog.md`: 極端な値・空値・NULL・特殊文字・同時実行・タイムアウト等の実践的エッジケースカタログ
+  - `.claude/skills/boundary-value-analysis/resources/equivalence-partitioning.md`: 入力空間を同じ動作のグループに分割し代表値でテストする同値分割技法と有効・無効クラスの設計
+  - `.claude/skills/boundary-value-analysis/templates/test-case-design-template.md`: テストケース設計テンプレート
+  - `.claude/skills/boundary-value-analysis/scripts/boundary-test-generator.mjs`: 境界値テストケース生成スクリプト
 
   専門分野:
   - 境界値分析: 境界値での系統的テスト

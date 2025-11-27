@@ -12,6 +12,14 @@ description: |
 
   Use proactively when documenting commands, adding examples,
   or creating troubleshooting sections.
+
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/command-documentation-patterns/resources/documentation-guide.md`: セルフドキュメンティング構造とMarkdownセクション構成ガイド
+  - `.claude/skills/command-documentation-patterns/scripts/validate-docs.mjs`: コマンドドキュメントの完全性検証スクリプト
+  - `.claude/skills/command-documentation-patterns/templates/command-documentation.md`: description/argument-hint/allowed-toolsを含むコマンドテンプレート
 version: 1.0.0
 ---
 

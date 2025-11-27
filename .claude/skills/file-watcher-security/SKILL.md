@@ -1,26 +1,34 @@
 ---
 name: file-watcher-security
 description: |
-  ファイル監視システムのセキュリティ対策とプロダクション環境での安全な運用パターン。
-  最小権限の原則、Defense in Depth、Fail-Safe Defaultsに基づく多層防御設計を提供。
+    ファイル監視システムのセキュリティ対策とプロダクション環境での安全な運用パターン。
+    最小権限の原則、Defense in Depth、Fail-Safe Defaultsに基づく多層防御設計を提供。
+    専門分野:
+    - パストラバーサル防止: パス正規化、ホワイトリスト検証
+    - シンボリックリンク攻撃対策: realpath検証、TOCTOU防止
+    - リソース枯渇攻撃（DoS）防止: レート制限、クォータ管理
+    - サンドボックス化: プロセス分離、権限降格
+    使用タイミング:
+    - マルチテナント環境でファイル監視を実装する時
+    - 本番環境でのセキュリティ要件を満たす時
+    - パストラバーサルやsymlink攻撃を防ぐ時
+    - セキュリティ監査を実施する時
+    Use when implementing secure file watchers in multi-tenant environments,
+    production systems with high security requirements, or preventing
+    path traversal and symlink attacks.
 
-  専門分野:
-  - パストラバーサル防止: パス正規化、ホワイトリスト検証
-  - シンボリックリンク攻撃対策: realpath検証、TOCTOU防止
-  - リソース枯渇攻撃（DoS）防止: レート制限、クォータ管理
-  - サンドボックス化: プロセス分離、権限降格
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
 
-  使用タイミング:
-  - マルチテナント環境でファイル監視を実装する時
-  - 本番環境でのセキュリティ要件を満たす時
-  - パストラバーサルやsymlink攻撃を防ぐ時
-  - セキュリティ監査を実施する時
+  - `.claude/skills/file-watcher-security/resources/threat-model.md`: 脅威モデリングと攻撃ベクター分析
+  - `.claude/skills/file-watcher-security/templates/secure-watcher.ts`: セキュアなファイル監視の完全実装例
+  - `.claude/skills/file-watcher-security/scripts/security-audit.sh`: セキュリティ監査と検証スクリプト
 
-  Use when implementing secure file watchers in multi-tenant environments,
-  production systems with high security requirements, or preventing
-  path traversal and symlink attacks.
+  Use proactively when implementing file-watcher-security patterns or solving related problems.
 version: 1.0.0
 ---
+
 
 # file-watcher-security
 

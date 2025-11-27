@@ -1,20 +1,29 @@
 ---
 name: cost-optimization-gha
 description: |
-  GitHub Actions ワークフローのコスト最適化戦略。
+    GitHub Actions ワークフローのコスト最適化戦略。
+    専門分野:
+    - 実行時間削減: ジョブ並列化、キャッシング、条件実行
+    - ランナーコスト: ランナー選択、self-hosted vs hosted、スペック最適化
+    - ストレージコスト: アーティファクト管理、保持期間、キャッシュ戦略
+    - 無駄の削減: 不要な実行回避、スケジュール最適化、同時実行制御
+    使用タイミング:
+    - GitHub Actions の実行コストを削減したい時
+    - 月次請求額を最適化したい時
+    - ランナーの使用時間を短縮したい時
+    - ストレージコストを管理する時
+    - 無料枠を効率的に使用したい時
 
-  専門分野:
-  - 実行時間削減: ジョブ並列化、キャッシング、条件実行
-  - ランナーコスト: ランナー選択、self-hosted vs hosted、スペック最適化
-  - ストレージコスト: アーティファクト管理、保持期間、キャッシュ戦略
-  - 無駄の削減: 不要な実行回避、スケジュール最適化、同時実行制御
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
 
-  使用タイミング:
-  - GitHub Actions の実行コストを削減したい時
-  - 月次請求額を最適化したい時
-  - ランナーの使用時間を短縮したい時
-  - ストレージコストを管理する時
-  - 無料枠を効率的に使用したい時
+  - `.claude/skills/cost-optimization-gha/resources/execution-time.md`: 並列化、キャッシング、条件実行による実行時間短縮戦略
+  - `.claude/skills/cost-optimization-gha/resources/runner-costs.md`: ランナータイプ選択、self-hosted活用によるコスト削減手法
+  - `.claude/skills/cost-optimization-gha/templates/optimized-workflow.yaml`: コスト最適化を実装したワークフローの実践例
+  - `.claude/skills/cost-optimization-gha/scripts/estimate-costs.mjs`: ワークフロー実行コストを見積もる計算スクリプト
+
+  Use proactively when implementing cost-optimization-gha patterns or solving related problems.
 version: 1.0.0
 ---
 
@@ -26,14 +35,16 @@ version: 1.0.0
 実行時間の短縮、適切なランナー選択、ストレージ管理を通じてコスト効率を最大化します。
 
 **主要な価値**:
-- 実行コストの30-70%削減
+
+- 実行コストの 30-70%削減
 - 無料枠の効率的な活用
 - ランナー使用時間の最適化
 - ストレージコストの管理
 
 **制約**:
-- 無料枠: パブリックリポジトリは無制限、プライベートは月2000分
-- ストレージ: 500MBまで無料、超過分は$0.008/GB/day
+
+- 無料枠: パブリックリポジトリは無制限、プライベートは月 2000 分
+- ストレージ: 500MB まで無料、超過分は$0.008/GB/day
 - ランナーコスト: Linux ($0.008/分), Windows ($0.016/分), macOS ($0.08/分)
 
 ## リソース構造
@@ -80,25 +91,25 @@ node .claude/skills/cost-optimization-gha/scripts/estimate-costs.mjs <workflow.y
 
 ### コスト削減戦略マトリックス
 
-| 戦略 | 削減効果 | 実装難易度 | 優先度 |
-|------|---------|-----------|--------|
-| **並列ジョブ実行** | 30-50% | 低 | 🔴 高 |
-| **キャッシング** | 40-70% | 低 | 🔴 高 |
-| **条件実行** | 20-80% | 中 | 🟡 中 |
-| **self-hosted ランナー** | 60-100% | 高 | 🟢 低 |
-| **適切なランナー選択** | 10-50% | 低 | 🔴 高 |
-| **アーティファクト最適化** | 5-20% | 低 | 🟡 中 |
-| **同時実行制御** | 10-30% | 低 | 🟡 中 |
+| 戦略                       | 削減効果 | 実装難易度 | 優先度 |
+| -------------------------- | -------- | ---------- | ------ |
+| **並列ジョブ実行**         | 30-50%   | 低         | 🔴 高  |
+| **キャッシング**           | 40-70%   | 低         | 🔴 高  |
+| **条件実行**               | 20-80%   | 中         | 🟡 中  |
+| **self-hosted ランナー**   | 60-100%  | 高         | 🟢 低  |
+| **適切なランナー選択**     | 10-50%   | 低         | 🔴 高  |
+| **アーティファクト最適化** | 5-20%    | 低         | 🟡 中  |
+| **同時実行制御**           | 10-30%   | 低         | 🟡 中  |
 
 ### ランナーコスト比較
 
-| ランナータイプ | 分単価 | 1000分あたり | 使用ケース |
-|-------------|--------|------------|-----------|
-| **Linux (ubuntu-latest)** | $0.008 | $8 | 一般的なCI/CD |
-| **Windows (windows-latest)** | $0.016 | $16 | .NET、Windows専用 |
-| **macOS (macos-latest)** | $0.08 | $80 | iOS/macOSビルド |
-| **macOS (macos-14, M1)** | $0.16 | $160 | 高速macOSビルド |
-| **self-hosted** | $0 | $0 | 高頻度実行 |
+| ランナータイプ               | 分単価 | 1000 分あたり | 使用ケース         |
+| ---------------------------- | ------ | ------------- | ------------------ |
+| **Linux (ubuntu-latest)**    | $0.008 | $8            | 一般的な CI/CD     |
+| **Windows (windows-latest)** | $0.016 | $16           | .NET、Windows 専用 |
+| **macOS (macos-latest)**     | $0.08  | $80           | iOS/macOS ビルド   |
+| **macOS (macos-14, M1)**     | $0.16  | $160          | 高速 macOS ビルド  |
+| **self-hosted**              | $0     | $0            | 高頻度実行         |
 
 ### 実行時間短縮パターン
 
@@ -130,23 +141,24 @@ jobs:
 on:
   push:
     paths:
-      - 'src/**'
-      - 'tests/**'
+      - "src/**"
+      - "tests/**"
   # ドキュメント変更時は実行しない → 無駄な実行を削減
 ```
 
 ### 無料枠最適化
 
-**プライベートリポジトリの無料枠 (月2000分)**:
+**プライベートリポジトリの無料枠 (月 2000 分)**:
 
-| プラン | 無料枠 | Linux換算 | macOS換算 |
-|--------|-------|-----------|-----------|
-| **Free** | 2,000分 | 2,000分 | 250分 |
-| **Pro** | 3,000分 | 3,000分 | 375分 |
-| **Team** | 3,000分 | 3,000分 | 375分 |
-| **Enterprise** | 50,000分 | 50,000分 | 6,250分 |
+| プラン         | 無料枠    | Linux 換算 | macOS 換算 |
+| -------------- | --------- | ---------- | ---------- |
+| **Free**       | 2,000 分  | 2,000 分   | 250 分     |
+| **Pro**        | 3,000 分  | 3,000 分   | 375 分     |
+| **Team**       | 3,000 分  | 3,000 分   | 375 分     |
+| **Enterprise** | 50,000 分 | 50,000 分  | 6,250 分   |
 
 **最適化テクニック**:
+
 - Linux ランナーを優先使用（最もコスト効率が良い）
 - macOS は必要な場合のみ使用
 - self-hosted ランナーで無料枠を節約
@@ -155,21 +167,21 @@ on:
 
 このスキルは以下のスキルと連携して使用します:
 
-| スキル | パス | 関連性 |
-|--------|------|--------|
-| **caching-strategies-gha** | `.claude/skills/caching-strategies-gha/SKILL.md` | キャッシング戦略で実行時間を短縮 |
-| **parallel-jobs-gha** | `.claude/skills/parallel-jobs-gha/SKILL.md` | 並列実行で実行時間を削減 |
-| **conditional-execution-gha** | `.claude/skills/conditional-execution-gha/SKILL.md` | 不要な実行を回避 |
-| **concurrency-control** | `.claude/skills/concurrency-control/SKILL.md` | 同時実行制御で無駄を削減 |
-| **artifact-management-gha** | `.claude/skills/artifact-management-gha/SKILL.md` | ストレージコストを最適化 |
-| **self-hosted-runners** | `.claude/skills/self-hosted-runners/SKILL.md` | ランナーコストを削減 |
-| **matrix-builds** | `.claude/skills/matrix-builds/SKILL.md` | マトリックスビルドで並列化 |
+| スキル                        | パス                                                | 関連性                           |
+| ----------------------------- | --------------------------------------------------- | -------------------------------- |
+| **caching-strategies-gha**    | `.claude/skills/caching-strategies-gha/SKILL.md`    | キャッシング戦略で実行時間を短縮 |
+| **parallel-jobs-gha**         | `.claude/skills/parallel-jobs-gha/SKILL.md`         | 並列実行で実行時間を削減         |
+| **conditional-execution-gha** | `.claude/skills/conditional-execution-gha/SKILL.md` | 不要な実行を回避                 |
+| **concurrency-control**       | `.claude/skills/concurrency-control/SKILL.md`       | 同時実行制御で無駄を削減         |
+| **artifact-management-gha**   | `.claude/skills/artifact-management-gha/SKILL.md`   | ストレージコストを最適化         |
+| **self-hosted-runners**       | `.claude/skills/self-hosted-runners/SKILL.md`       | ランナーコストを削減             |
+| **matrix-builds**             | `.claude/skills/matrix-builds/SKILL.md`             | マトリックスビルドで並列化       |
 
 ## コスト見積もりガイド
 
 ### 月次コスト計算例
 
-**シナリオ**: 1日20回実行、各実行10分のワークフロー
+**シナリオ**: 1 日 20 回実行、各実行 10 分のワークフロー
 
 ```
 基本コスト (Linux):
@@ -193,16 +205,19 @@ on:
 ## ベストプラクティス
 
 1. **ランナー選択の最適化**
-   - デフォルトはLinux (ubuntu-latest)
-   - macOSは必要な場合のみ
-   - Windowsは.NET/Windows専用タスクのみ
+
+   - デフォルトは Linux (ubuntu-latest)
+   - macOS は必要な場合のみ
+   - Windows は.NET/Windows 専用タスクのみ
 
 2. **実行時間の最小化**
+
    - キャッシングを最大限活用
    - 並列ジョブで時間短縮
    - 不要なステップを削除
 
 3. **不要な実行の回避**
+
    - path フィルターで対象ファイル限定
    - 条件式で不要なジョブをスキップ
    - 同時実行制御で重複実行を防止

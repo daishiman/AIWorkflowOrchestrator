@@ -1,3 +1,27 @@
+---
+name: claude-code-hooks
+description: |
+  ## 概要
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/claude-code-hooks/resources/claude-code-guidelines.md`: Claude Code ガイドライン
+  - `.claude/skills/claude-code-hooks/resources/quality-metrics.md`: カバレッジ80%・複雑度10以下・脆弱性0個などの定量的品質基準とメトリクス収集方法
+  - `.claude/skills/claude-code-hooks/templates/claude-commit-template.sh`: !/bin/bash
+  - `.claude/skills/claude-code-hooks/templates/claude-quality-template.sh`: !/bin/bash
+  - `.claude/skills/claude-code-hooks/scripts/validate-claude-quality.mjs`: Claude Code Quality Validation Script
+
+  専門分野:
+  - (要追加)
+
+  使用タイミング:
+  - (要追加)
+
+  Use proactively when (要追加).
+version: 1.0.0
+---
+
 # Claude Code フック実装
 
 ## 概要

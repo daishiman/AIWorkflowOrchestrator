@@ -2,22 +2,21 @@
 name: seo-optimization
 description: |
   Next.js Metadata APIを活用したSEO最適化を専門とするスキル。
-  検索エンジン最適化、OGP設定、構造化データによるリッチリザルトを実現します。
 
-  専門分野:
-  - Metadata API: 静的・動的メタデータの設計と実装
-  - OGP設定: Open Graph Protocol、Twitter Card設定
-  - 構造化データ: JSON-LD、Schema.org対応
-  - サイトマップ/robots: 自動生成、クロール制御
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
 
-  使用タイミング:
-  - ページのメタデータを設計・実装する時
-  - OGP画像やTwitter Cardを設定する時
-  - 構造化データでリッチリザルトを実装する時
-  - サイトマップやrobots.txtを設定する時
+  - `.claude/skills/seo-optimization/resources/metadata-api-guide.md`: Metadata Api Guideリソース
+  - `.claude/skills/seo-optimization/resources/ogp-twitter-cards.md`: Ogp Twitter Cardsリソース
+  - `.claude/skills/seo-optimization/resources/sitemap-robots.md`: Sitemap Robotsリソース
+  - `.claude/skills/seo-optimization/resources/structured-data.md`: Structured Dataリソース
 
-  Use proactively when implementing SEO features, Metadata API,
-  or structured data for rich results.
+  - `.claude/skills/seo-optimization/templates/metadata-template.md`: Metadataテンプレート
+  - `.claude/skills/seo-optimization/templates/structured-data-template.md`: Structured Dataテンプレート
+
+  - `.claude/skills/seo-optimization/scripts/analyze-seo.mjs`: Analyze Seoスクリプト
+
 version: 1.0.0
 ---
 
@@ -25,17 +24,19 @@ version: 1.0.0
 
 ## 概要
 
-このスキルは、Next.js App RouterのMetadata APIを活用したSEO最適化の
+このスキルは、Next.js App Router の Metadata API を活用した SEO 最適化の
 ベストプラクティスを提供します。検索エンジン可視性の向上とソーシャル
 シェア時の表示最適化を実現します。
 
 **核心哲学**:
+
 - **Discoverable**: 検索エンジンに正しく理解されるコンテンツ
 - **Shareable**: ソーシャルメディアで魅力的に表示される
 - **Accessible**: すべてのユーザーとクローラーがアクセス可能
 
 **主要な価値**:
-- Metadata APIによる型安全なメタデータ管理
+
+- Metadata API による型安全なメタデータ管理
 - 動的メタデータ生成による個別ページ最適化
 - 構造化データによるリッチリザルト獲得
 
@@ -93,31 +94,37 @@ cat .claude/skills/seo-optimization/templates/structured-data-template.md
 
 ## いつ使うか
 
-### シナリオ1: ページメタデータ設定
-**状況**: 新しいページにSEOメタデータを設定する
+### シナリオ 1: ページメタデータ設定
+
+**状況**: 新しいページに SEO メタデータを設定する
 
 **適用条件**:
-- [ ] ページのtitle、descriptionが必要
-- [ ] OGP画像の設定が必要
+
+- [ ] ページの title、description が必要
+- [ ] OGP 画像の設定が必要
 - [ ] 検索エンジン表示を最適化したい
 
 **期待される成果**: 検索結果とソーシャルシェアで最適な表示
 
-### シナリオ2: 動的メタデータ生成
+### シナリオ 2: 動的メタデータ生成
+
 **状況**: 動的ルート（[slug]等）のメタデータを生成する
 
 **適用条件**:
+
 - [ ] 動的パラメータに基づくメタデータが必要
-- [ ] データベースやAPIからメタデータを取得
-- [ ] 各ページ固有のOGP画像が必要
+- [ ] データベースや API からメタデータを取得
+- [ ] 各ページ固有の OGP 画像が必要
 
-**期待される成果**: 動的コンテンツに対応したSEO最適化
+**期待される成果**: 動的コンテンツに対応した SEO 最適化
 
-### シナリオ3: リッチリザルト実装
+### シナリオ 3: リッチリザルト実装
+
 **状況**: 検索結果でリッチスニペットを表示したい
 
 **適用条件**:
-- [ ] 記事、製品、FAQなどの構造化データが必要
+
+- [ ] 記事、製品、FAQ などの構造化データが必要
 - [ ] パンくずリストの構造化データが必要
 - [ ] レビュー、評価の表示が必要
 
@@ -125,42 +132,46 @@ cat .claude/skills/seo-optimization/templates/structured-data-template.md
 
 ## 知識領域
 
-### 領域1: Metadata API
+### 領域 1: Metadata API
 
 **静的メタデータ**:
+
 ```typescript
 export const metadata: Metadata = {
-  title: 'Page Title',
-  description: 'Page description...',
-}
+  title: "Page Title",
+  description: "Page description...",
+};
 ```
 
 **動的メタデータ**:
+
 ```typescript
 export async function generateMetadata({ params }): Promise<Metadata> {
-  const data = await fetchData(params.id)
+  const data = await fetchData(params.id);
   return {
     title: data.title,
     description: data.description,
-  }
+  };
 }
 ```
 
 **詳細は**: `resources/metadata-api-guide.md` を参照
 
-### 領域2: OGP/Twitter Card
+### 領域 2: OGP/Twitter Card
 
 **必須設定**:
+
 - `og:title`: ページタイトル
 - `og:description`: 説明文
-- `og:image`: 1200x630pxの画像
+- `og:image`: 1200x630px の画像
 - `twitter:card`: `summary_large_image`
 
 **詳細は**: `resources/ogp-twitter-cards.md` を参照
 
-### 領域3: 構造化データ
+### 領域 3: 構造化データ
 
 **主要なスキーマ**:
+
 - `Article`: ブログ記事、ニュース
 - `Product`: 商品ページ
 - `BreadcrumbList`: パンくずリスト
@@ -168,16 +179,17 @@ export async function generateMetadata({ params }): Promise<Metadata> {
 
 **詳細は**: `resources/structured-data.md` を参照
 
-### 領域4: サイトマップ/robots
+### 領域 4: サイトマップ/robots
 
 **sitemap.ts**:
+
 ```typescript
 export default async function sitemap() {
-  const pages = await getPages()
+  const pages = await getPages();
   return pages.map((page) => ({
     url: `https://example.com${page.path}`,
     lastModified: page.updatedAt,
-  }))
+  }));
 }
 ```
 
@@ -186,42 +198,51 @@ export default async function sitemap() {
 ## ワークフロー
 
 ### Phase 1: 要件分析
-1. SEO目標を確認（検索順位、CTR等）
+
+1. SEO 目標を確認（検索順位、CTR 等）
 2. 対象ページを特定
 3. 競合分析を実施
 
 ### Phase 2: メタデータ設計
+
 1. タイトル戦略を決定
-2. description最適化
-3. OGP画像を準備
+2. description 最適化
+3. OGP 画像を準備
 
 ### Phase 3: 実装
-1. Root Layoutのデフォルトメタデータ
+
+1. Root Layout のデフォルトメタデータ
 2. 各ページの静的/動的メタデータ
 3. 構造化データの追加
 
 ### Phase 4: 検証
+
 1. メタデータの表示確認
-2. OGPプレビュー確認
+2. OGP プレビュー確認
 3. 構造化データテスト
 
 ### Phase 5: 監視
-1. Search Consoleで監視
-2. CTRの改善
+
+1. Search Console で監視
+2. CTR の改善
 3. 定期的な更新
 
 ## 設計原則
 
 ### ユニーク性の原則
-各ページには固有のtitleとdescriptionを設定する。
+
+各ページには固有の title と description を設定する。
 
 ### 階層的継承の原則
-Root Layoutでデフォルトを設定し、子ページで上書きする。
+
+Root Layout でデフォルトを設定し、子ページで上書きする。
 
 ### データ駆動の原則
+
 動的コンテンツには必ず動的メタデータを生成する。
 
 ### 検証の原則
+
 実装後は必ずプレビューと構造化データテストを実行する。
 
 ## 関連スキル
@@ -232,6 +253,6 @@ Root Layoutでデフォルトを設定し、子ページで上書きする。
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版リリース |
+| バージョン | 日付       | 変更内容     |
+| ---------- | ---------- | ------------ |
+| 1.0.0      | 2025-11-25 | 初版リリース |

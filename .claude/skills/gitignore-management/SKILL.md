@@ -1,18 +1,26 @@
 ---
 name: gitignore-management
 description: |
-  .gitignore設計と管理スキル。機密ファイルパターン、プロジェクト固有除外、
-  プラットフォーム別パターン、.gitignore検証手法を提供します。
+    .gitignore設計と管理スキル。機密ファイルパターン、プロジェクト固有除外、
+    プラットフォーム別パターン、.gitignore検証手法を提供します。
+    使用タイミング:
+    - .gitignoreを新規作成する時
+    - .gitignoreに機密パターンを追加する時
+    - プロジェクト固有の除外パターンを設計する時
+    - .gitignoreの完全性を検証する時
+    - Gitignoreベストプラクティスを適用する時
+    Use when designing .gitignore, adding secret patterns,
+    or validating gitignore completeness.
 
-  使用タイミング:
-  - .gitignoreを新規作成する時
-  - .gitignoreに機密パターンを追加する時
-  - プロジェクト固有の除外パターンを設計する時
-  - .gitignoreの完全性を検証する時
-  - Gitignoreベストプラクティスを適用する時
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
 
-  Use when designing .gitignore, adding secret patterns,
-  or validating gitignore completeness.
+  - `.claude/skills/gitignore-management/resources/pattern-library.md`: 機密ファイル、クラウドプロバイダー、プラットフォーム別の除外パターンライブラリ
+  - `.claude/skills/gitignore-management/templates/gitignore-template.txt`: プロジェクト別の.gitignore基本テンプレート
+  - `.claude/skills/gitignore-management/scripts/validate-gitignore.mjs`: .gitignore完全性検証とパターン欠落チェックスクリプト
+
+  Use proactively when implementing gitignore-management patterns or solving related problems.
 version: 1.0.0
 ---
 
@@ -20,12 +28,13 @@ version: 1.0.0
 
 ## 概要
 
-.gitignoreは、機密情報のGit混入を防ぐ第一防衛線です。
-このスキルは、包括的な.gitignore設計と管理手法を提供します。
+.gitignore は、機密情報の Git 混入を防ぐ第一防衛線です。
+このスキルは、包括的な.gitignore 設計と管理手法を提供します。
 
 ## 基本構造
 
 ### 配置場所
+
 **必須**: プロジェクトルート（`/`）に配置
 
 ### 基本セクション構成
@@ -223,7 +232,7 @@ azure-credentials
 
 ## 開発ツール除外
 
-### IDE設定（個人設定のみ除外）
+### IDE 設定（個人設定のみ除外）
 
 ```gitignore
 # VS Code（個人設定のみ）
@@ -248,7 +257,7 @@ azure-credentials
 \#*\#
 ```
 
-### OS固有ファイル
+### OS 固有ファイル
 
 ```gitignore
 # macOS
@@ -294,7 +303,7 @@ local-agent/tmp/
 uploads/tmp/
 ```
 
-## .gitignore検証
+## .gitignore 検証
 
 ### 検証スクリプト
 
@@ -345,11 +354,12 @@ git add --dry-run .env
 
 ## トラブルシューティング
 
-### 問題1: .gitignoreが効かない
+### 問題 1: .gitignore が効かない
 
-**原因**: ファイルが既にGit管理下にある
+**原因**: ファイルが既に Git 管理下にある
 
 **解決策**:
+
 ```bash
 # Git管理から削除（ファイル自体は削除しない）
 git rm --cached .env
@@ -359,11 +369,12 @@ git add .gitignore
 git commit -m "chore: update .gitignore to exclude .env"
 ```
 
-### 問題2: 除外したくないファイルが除外される
+### 問題 2: 除外したくないファイルが除外される
 
 **原因**: パターンが広すぎる
 
 **解決策**:
+
 ```gitignore
 # 広いパターン
 *.log
@@ -376,15 +387,15 @@ git commit -m "chore: update .gitignore to exclude .env"
 
 - [ ] プロジェクトルート（`/`）に配置されているか？
 - [ ] すべての機密ファイルパターンが含まれているか？
-- [ ] .env.exampleが除外されずに.env*が除外されているか？
+- [ ] .env.example が除外されずに.env\*が除外されているか？
 - [ ] プロジェクト固有のパターンが追加されているか？
 - [ ] クラウドプロバイダー固有パターンが含まれているか？
-- [ ] プラットフォーム固有パターン（Railway等）が含まれているか？
+- [ ] プラットフォーム固有パターン（Railway 等）が含まれているか？
 
 ## 関連スキル
 
-- `.claude/skills/pre-commit-security/SKILL.md` - pre-commit hook実装
-- `.claude/skills/secret-management-architecture/SKILL.md` - Secret分類
+- `.claude/skills/pre-commit-security/SKILL.md` - pre-commit hook 実装
+- `.claude/skills/secret-management-architecture/SKILL.md` - Secret 分類
 - `.claude/skills/environment-isolation/SKILL.md` - 環境別設定
 
 ## リソースファイル
@@ -393,7 +404,7 @@ git commit -m "chore: update .gitignore to exclude .env"
 
 ## スクリプト
 
-- `scripts/validate-gitignore.mjs` - .gitignore検証スクリプト
+- `scripts/validate-gitignore.mjs` - .gitignore 検証スクリプト
 
 ## テンプレート
 

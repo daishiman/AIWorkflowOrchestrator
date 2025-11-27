@@ -1,31 +1,31 @@
 ---
-skill_name: reusable-workflows
-version: 1.0.0
+name: reusable-workflows
 description: |
   GitHub Actions再利用可能ワークフローの設計と実装。
   workflow_call イベント、入力/出力/シークレット定義、呼び出しパターン、
   合成設計、継承、チェーンパターンの専門知識を提供。
-triggers:
-  - "再利用可能なワークフロー"
-  - "workflow_call"
-  - "共通ワークフロー"
-  - "ワークフロー合成"
-  - "ワークフローテンプレート"
-related_skills:
-  - ".claude/skills/github-actions-syntax/SKILL.md"
-  - ".claude/skills/github-actions-expressions/SKILL.md"
-  - ".claude/skills/composite-actions/SKILL.md"
-  - ".claude/skills/workflow-templates/SKILL.md"
-tags:
-  - github-actions
-  - reusability
-  - workflow-design
-  - composition
+
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/reusable-workflows/resources/caller-patterns.md`: Caller Patternsリソース
+  - `.claude/skills/reusable-workflows/resources/design-patterns.md`: Design Patternsリソース
+  - `.claude/skills/reusable-workflows/resources/workflow-call-syntax.md`: Workflow Call Syntaxリソース
+
+  - `.claude/skills/reusable-workflows/templates/caller-workflow.yaml`: Caller Workflowテンプレート
+  - `.claude/skills/reusable-workflows/templates/reusable-workflow.yaml`: Reusable Workflowテンプレート
+
+  - `.claude/skills/reusable-workflows/scripts/validate-reusable.mjs`: Validate Reusableスクリプト
+
+  Use proactively when implementing reusable workflows, workflow composition patterns,
+  or standardizing CI/CD processes across multiple projects.
+version: 1.0.0
 ---
 
 # Reusable Workflows Skill
 
-GitHub Actions再利用可能ワークフローの設計と実装の専門知識。
+GitHub Actions 再利用可能ワークフローの設計と実装の専門知識。
 
 ## 📁 Directory Structure
 
@@ -123,7 +123,7 @@ jobs:
   build:
     uses: ./.github/workflows/reusable-build.yml
     with:
-      node-version: '20'
+      node-version: "20"
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -137,12 +137,15 @@ jobs:
 ## 💡 Key Features
 
 ### Input Types
+
 - `string`: テキスト値
 - `boolean`: true/false
 - `number`: 数値
 
 ### Output Propagation
+
 ジョブ出力をワークフロー出力として伝播:
+
 ```yaml
 outputs:
   result:
@@ -150,6 +153,7 @@ outputs:
 ```
 
 ### Secret Inheritance
+
 ```yaml
 # すべてのシークレットを継承
 secrets: inherit
@@ -177,7 +181,7 @@ secrets:
 
 ## 📖 When to Use
 
-- 共通CI/CDパターンの標準化
+- 共通 CI/CD パターンの標準化
 - 複数プロジェクト間でワークフローを共有
 - ワークフローロジックの重複を削減
 - チーム全体で一貫したパイプライン

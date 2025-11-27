@@ -5,6 +5,18 @@ description: |
   トークン効率化、並列実行の活用、モデル選択の最適化、
   実行速度の改善方法を提供します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/command-performance-optimization/resources/execution-speed.md`: キャッシング・早期リターン・遅延実行・バッチ処理による実行速度改善と<5秒目標の測定方法
+  - `.claude/skills/command-performance-optimization/resources/token-optimization.md`: description/本文圧縮で73%削減、不要情報削除と箇条書き活用によるトークン最適化技法
+  - `.claude/skills/command-performance-optimization/resources/model-selection.md`: Haiku(単純)/Sonnet(標準)/Opus(複雑)の選択基準と90%コスト削減のHaiku活用戦略
+  - `.claude/skills/command-performance-optimization/resources/parallel-execution.md`: 独立タスクの並列化条件判定とBranch/Wait/Combineパターンによる並列実行設計
+  - `.claude/skills/command-performance-optimization/templates/optimized-command-template.md`: 最適化コマンドテンプレート
+  - `.claude/skills/command-performance-optimization/templates/parallel-execution-template.md`: 並列実行テンプレート
+  - `.claude/skills/command-performance-optimization/scripts/analyze-performance.mjs`: パフォーマンス分析スクリプト
+
   使用タイミング:
   - コマンドの実行速度を改善したい時
   - トークン使用量を削減したい時

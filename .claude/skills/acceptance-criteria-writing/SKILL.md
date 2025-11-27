@@ -4,6 +4,16 @@ description: |
   Given-When-Then形式によるテスト可能な受け入れ基準の定義スキル。
   要件の完了条件を明確化し、自動テストへの変換を可能にします。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/acceptance-criteria-writing/resources/edge-case-patterns.md`: エッジケースパターン集
+  - `.claude/skills/acceptance-criteria-writing/resources/gwt-patterns.md`: Given-When-Thenパターン集
+  - `.claude/skills/acceptance-criteria-writing/resources/testability-guide.md`: 曖昧な基準を測定可能で検証可能な形に変換する4つの特性（具体性・測定可能性・観測可能性・再現可能性）の実践ガイド
+  - `.claude/skills/acceptance-criteria-writing/templates/acceptance-criteria-template.md`: 受け入れ基準テンプレート
+  - `.claude/skills/acceptance-criteria-writing/scripts/validate-acceptance-criteria.mjs`: 受け入れ基準検証スクリプト
+
   専門分野:
   - Given-When-Then形式: BDD（振る舞い駆動開発）スタイルの基準記述
   - シナリオ設計: 正常系・異常系・境界値の網羅的カバレッジ

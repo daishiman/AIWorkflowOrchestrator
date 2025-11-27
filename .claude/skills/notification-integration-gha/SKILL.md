@@ -8,6 +8,16 @@ description: |
   - チーム連携のための通知チャネル構築時
   - CI/CD結果を外部サービスに送信する時
   - Webhook統合やメッセージフォーマット設計時
+
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/notification-integration-gha/resources/discord-teams.md`: Discord・MS Teams統合ガイド
+  - `.claude/skills/notification-integration-gha/resources/slack-integration.md`: Slack統合詳細ガイド
+  - `.claude/skills/notification-integration-gha/scripts/test-webhook.mjs`: Slack/Discord/TeamsのWebhook URLに対するメッセージ送信テストスクリプト
+  - `.claude/skills/notification-integration-gha/templates/notification-workflow.yaml`: Slack/Discord/Teams/Emailへの成功・失敗通知を含むGitHub Actionsワークフロー実例集
+
 version: 1.0.0
 category: github-actions
 triggers:
@@ -23,7 +33,7 @@ related_skills:
 
 # GitHub Actions Notification Integration Skill
 
-GitHub ActionsからSlack、Discord、MS Teams、Email等への通知統合を提供するスキル。
+GitHub Actions から Slack、Discord、MS Teams、Email 等への通知統合を提供するスキル。
 
 ## ディレクトリ構造
 
@@ -67,13 +77,13 @@ node .claude/skills/notification-integration-gha/scripts/test-webhook.mjs <webho
 
 ## 通知統合パターン
 
-### 1. Slack通知（公式Action使用）
+### 1. Slack 通知（公式 Action 使用）
 
 ```yaml
 - name: Slack Notification
   uses: slackapi/slack-github-action@v1.24.0
   with:
-    channel-id: 'C1234567890'
+    channel-id: "C1234567890"
     slack-message: |
       *${{ github.workflow }}* - ${{ job.status }}
       Repository: ${{ github.repository }}
@@ -83,7 +93,7 @@ node .claude/skills/notification-integration-gha/scripts/test-webhook.mjs <webho
     SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 ```
 
-### 2. Discord通知（Webhook）
+### 2. Discord 通知（Webhook）
 
 ```yaml
 - name: Discord Notification
@@ -101,7 +111,7 @@ node .claude/skills/notification-integration-gha/scripts/test-webhook.mjs <webho
       }'
 ```
 
-### 3. MS Teams通知（Webhook Connector）
+### 3. MS Teams 通知（Webhook Connector）
 
 ```yaml
 - name: MS Teams Notification
@@ -131,8 +141,8 @@ node .claude/skills/notification-integration-gha/scripts/test-webhook.mjs <webho
   if: success()
   uses: slackapi/slack-github-action@v1.24.0
   with:
-    channel-id: 'success-channel'
-    slack-message: '✅ Deployment succeeded!'
+    channel-id: "success-channel"
+    slack-message: "✅ Deployment succeeded!"
   env:
     SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
@@ -140,8 +150,8 @@ node .claude/skills/notification-integration-gha/scripts/test-webhook.mjs <webho
   if: failure()
   uses: slackapi/slack-github-action@v1.24.0
   with:
-    channel-id: 'alert-channel'
-    slack-message: '❌ Deployment failed! @here'
+    channel-id: "alert-channel"
+    slack-message: "❌ Deployment failed! @here"
   env:
     SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 ```
@@ -149,21 +159,25 @@ node .claude/skills/notification-integration-gha/scripts/test-webhook.mjs <webho
 ## 通知設計のベストプラクティス
 
 ### セキュリティ
-- **Webhook URLはSecrets管理**: `${{ secrets.WEBHOOK_URL }}`
-- **トークンは暗号化保存**: GitHub Secretsで管理
+
+- **Webhook URL は Secrets 管理**: `${{ secrets.WEBHOOK_URL }}`
+- **トークンは暗号化保存**: GitHub Secrets で管理
 - **公開リポジトリでの露出防止**: ハードコード禁止
 
 ### メッセージ設計
+
 - **視認性**: 絵文字・色・フォーマットで状態を明示
-- **コンテキスト**: リポジトリ名・ブランチ・コミットSHA・実行者情報
-- **アクション可能**: ログURL・PR URL・デプロイURLをリンク
+- **コンテキスト**: リポジトリ名・ブランチ・コミット SHA・実行者情報
+- **アクション可能**: ログ URL・PR URL・デプロイ URL をリンク
 
 ### 条件制御
+
 - **if: always()**: 成功・失敗問わず通知
 - **if: failure()**: 失敗時のみアラート
 - **if: success()**: 成功時のみ通知
 
 ### リトライとエラーハンドリング
+
 - **continue-on-error: true**: 通知失敗でもワークフロー継続
 - **timeout-minutes**: 長時間ハングアップ防止
 
@@ -171,34 +185,36 @@ node .claude/skills/notification-integration-gha/scripts/test-webhook.mjs <webho
 
 通知統合と併用すると効果的なスキル:
 
-| スキル名 | パス | 概要 |
-|---------|------|------|
-| **github-actions-syntax** | `.claude/skills/github-actions-syntax/SKILL.md` | ワークフロー構文・式・コンテキスト |
-| **secrets-management-gha** | `.claude/skills/secrets-management-gha/SKILL.md` | Webhook URL・トークンの安全な管理 |
-| **conditional-execution-gha** | `.claude/skills/conditional-execution-gha/SKILL.md` | 条件付き通知（成功/失敗時） |
+| スキル名                      | パス                                                | 概要                               |
+| ----------------------------- | --------------------------------------------------- | ---------------------------------- |
+| **github-actions-syntax**     | `.claude/skills/github-actions-syntax/SKILL.md`     | ワークフロー構文・式・コンテキスト |
+| **secrets-management-gha**    | `.claude/skills/secrets-management-gha/SKILL.md`    | Webhook URL・トークンの安全な管理  |
+| **conditional-execution-gha** | `.claude/skills/conditional-execution-gha/SKILL.md` | 条件付き通知（成功/失敗時）        |
 
 ## 使用上の注意
 
 ### このスキルが提供すること
-- Slack/Discord/Teams/Email統合パターン
-- Webhook設定とメッセージフォーマット
+
+- Slack/Discord/Teams/Email 統合パターン
+- Webhook 設定とメッセージフォーマット
 - 条件付き通知（成功/失敗時）
 - セキュリティベストプラクティス
 
 ### このスキルが提供しないこと
-- 通知サービス側のアカウント設定（Slack App作成等）
-- 複雑なメッセージテンプレート言語（Liquid/Handlebars等）
-- カスタムボット実装（Node.js/Python等）
+
+- 通知サービス側のアカウント設定（Slack App 作成等）
+- 複雑なメッセージテンプレート言語（Liquid/Handlebars 等）
+- カスタムボット実装（Node.js/Python 等）
 
 ### 推奨される使用フロー
 
 1. **通知チャネル決定**: Slack/Discord/Teams/Email
-2. **Webhook URL取得**: 各サービスで設定
-3. **GitHub Secretsに保存**: `SLACK_WEBHOOK_URL`等
+2. **Webhook URL 取得**: 各サービスで設定
+3. **GitHub Secrets に保存**: `SLACK_WEBHOOK_URL`等
 4. **テンプレート適用**: `templates/notification-workflow.yaml`参照
 5. **メッセージカスタマイズ**: プロジェクト固有情報追加
 6. **テスト実行**: `scripts/test-webhook.mjs`で動作確認
 
 ---
 
-**詳細な統合手順とメッセージフォーマットは、resourcesディレクトリ内のファイルを参照してください。**
+**詳細な統合手順とメッセージフォーマットは、resources ディレクトリ内のファイルを参照してください。**

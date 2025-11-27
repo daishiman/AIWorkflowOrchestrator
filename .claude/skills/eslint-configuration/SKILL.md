@@ -1,17 +1,31 @@
 ---
 name: eslint-configuration
 description: |
-  ESLintルール設定とカスタマイズの専門知識。
-  プロジェクト品質基準に基づくルールセット選択、パーサー設定、プラグイン統合を行います。
+    ESLintルール設定とカスタマイズの専門知識。
+    プロジェクト品質基準に基づくルールセット選択、パーサー設定、プラグイン統合を行います。
+    使用タイミング:
+    - ESLint設定ファイル（.eslintrc.*）を作成・更新する時
+    - プロジェクトに適したルールセットを選択する時
+    - TypeScript/JavaScript向けパーサー設定が必要な時
+    - プラグイン（React、境界チェック等）を統合する時
+    - Prettierとの競合ルールを解決する時
 
-  使用タイミング:
-  - ESLint設定ファイル（.eslintrc.*）を作成・更新する時
-  - プロジェクトに適したルールセットを選択する時
-  - TypeScript/JavaScript向けパーサー設定が必要な時
-  - プラグイン（React、境界チェック等）を統合する時
-  - Prettierとの競合ルールを解決する時
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/eslint-configuration/resources/parser-configuration.md`: TypeScript/Babelパーサー設定リファレンス
+  - `.claude/skills/eslint-configuration/resources/plugin-integration.md`: React/Import等のプラグイン統合パターン
+  - `.claude/skills/eslint-configuration/resources/rule-selection-guide.md`: ルール選択の判断基準とベストプラクティス
+  - `.claude/skills/eslint-configuration/templates/nextjs.json`: Next.jsプロジェクト用ESLint設定
+  - `.claude/skills/eslint-configuration/templates/react-typescript.json`: React+TypeScript用ESLint設定
+  - `.claude/skills/eslint-configuration/templates/typescript-base.json`: TypeScript基本ESLint設定
+  - `.claude/skills/eslint-configuration/scripts/validate-config.mjs`: ESLint設定の検証スクリプト
+
+  Use proactively when implementing eslint-configuration patterns or solving related problems.
 version: 1.0.0
 ---
+
 
 # ESLint Configuration Skill
 

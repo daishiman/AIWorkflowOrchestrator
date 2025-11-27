@@ -2,8 +2,15 @@
 name: architectural-patterns
 description: |
   エンタープライズアーキテクチャパターン（Hexagonal、Onion、Ports and Adapters等）の
-  適用と評価を専門とするスキル。
-  ドメイン中心設計による保守性とテスト容易性の実現を支援します。
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/architectural-patterns/resources/hexagonal-architecture.md`: ヘキサゴナルアーキテクチャ（Ports and Adapters）
+  - `.claude/skills/architectural-patterns/resources/onion-architecture.md`: オニオンアーキテクチャ（Onion Architecture）
+  - `.claude/skills/architectural-patterns/resources/vertical-slice.md`: 垂直スライスアーキテクチャ（Vertical Slice Architecture）
+  - `.claude/skills/architectural-patterns/templates/pattern-comparison.md`: アーキテクチャパターン比較レポート
+  - `.claude/skills/architectural-patterns/scripts/evaluate-pattern-compliance.mjs`: アーキテクチャパターン準拠評価スクリプト
 
   専門分野:
   - Hexagonal Architecture: ポートとアダプターによる疎結合設計

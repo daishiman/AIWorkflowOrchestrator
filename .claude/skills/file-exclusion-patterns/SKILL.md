@@ -1,18 +1,27 @@
 ---
 name: file-exclusion-patterns
 description: |
-  ファイル監視システムにおける効率的な除外パターン設計の専門知識。
-  .gitignore互換のglob pattern、プラットフォーム固有の一時ファイル除外、
-  パフォーマンス最適化のための早期除外戦略を提供。
+    ファイル監視システムにおける効率的な除外パターン設計の専門知識。
+    .gitignore互換のglob pattern、プラットフォーム固有の一時ファイル除外、
+    パフォーマンス最適化のための早期除外戦略を提供。
+    使用タイミング:
+    - ファイル監視の除外パターンを設計する時
+    - .gitignoreからパターンを抽出・変換する時
+    - 一時ファイル・システムファイルを除外したい時
+    - 監視対象を効率的に絞り込みたい時
+    - クロスプラットフォーム対応の除外設定を行う時
 
-  使用タイミング:
-  - ファイル監視の除外パターンを設計する時
-  - .gitignoreからパターンを抽出・変換する時
-  - 一時ファイル・システムファイルを除外したい時
-  - 監視対象を効率的に絞り込みたい時
-  - クロスプラットフォーム対応の除外設定を行う時
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/file-exclusion-patterns/resources/standard-patterns.md`: 標準除外パターンカタログ（node_modules、.git等）
+  - `.claude/skills/file-exclusion-patterns/templates/pattern-builder.ts`: パターンビルダーとChokidar変換テンプレート
+
+  Use proactively when implementing file-exclusion-patterns patterns or solving related problems.
 version: 1.0.0
 ---
+
 
 # File Exclusion Patterns
 

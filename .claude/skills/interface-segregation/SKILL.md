@@ -6,6 +6,17 @@ description: |
   クライアントが使用しないメソッドへの依存を強制しない、
   小さく焦点を絞ったインターフェース設計を提供します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/interface-segregation/resources/fat-interface-detection.md`: 空実装/例外スロー/条件付き実装による肥大化検出手法
+  - `.claude/skills/interface-segregation/resources/interface-composition.md`: allOf/extends/mixinによる小インターフェース組み合わせパターン
+  - `.claude/skills/interface-segregation/resources/isp-principles.md`: クライアント固有インターフェース分離とSOLID準拠設計
+  - `.claude/skills/interface-segregation/resources/role-interface-design.md`: 役割ベース（IValidatable/IRetryable等）インターフェース設計手法
+  - `.claude/skills/interface-segregation/scripts/analyze-interface.mjs`: インターフェース凝集性とISP違反の自動検出
+  - `.claude/skills/interface-segregation/templates/segregated-interface-template.md`: コア+拡張インターフェース分離設計テンプレート
+
   専門分野:
   - ISP原則: クライアント固有のインターフェース分離
   - Role Interface: 役割ベースのインターフェース設計
@@ -19,7 +30,6 @@ description: |
   - インターフェースの分割を検討する時
 
   Use proactively when designing core interfaces, detecting fat interfaces,
-  or optimizing interface contracts for workflow engines.
 version: 1.0.0
 ---
 
@@ -27,19 +37,21 @@ version: 1.0.0
 
 ## 概要
 
-このスキルは、SOLID原則の一つであるインターフェース分離原則（ISP）に関する知識を提供します。
+このスキルは、SOLID 原則の一つであるインターフェース分離原則（ISP）に関する知識を提供します。
 
-**ISPの定義**: クライアントは、自分が使用しないメソッドに依存することを強制されるべきではない。
+**ISP の定義**: クライアントは、自分が使用しないメソッドに依存することを強制されるべきではない。
 
 **主要な価値**:
+
 - 必要最小限のインターフェースによる疎結合
 - クライアント固有のインターフェースによる柔軟性
 - 肥大化インターフェースの回避
 
 **対象ユーザー**:
+
 - ワークフローエンジンのインターフェースを設計するエージェント
 - 既存インターフェースをリファクタリングする開発者
-- SOLID原則に準拠した設計を行うチーム
+- SOLID 原則に準拠した設計を行うチーム
 
 ## リソース構造
 
@@ -93,7 +105,7 @@ cat .claude/skills/interface-segregation/templates/segregated-interface-template
 
 ## 核心知識
 
-### 1. ISP原則の本質
+### 1. ISP 原則の本質
 
 **問題**: 肥大化したインターフェース（Fat Interface）
 
@@ -134,14 +146,15 @@ IMetricsProvider:
 
 **インターフェースを分離すべき兆候**:
 
-| 兆候 | 説明 |
-|------|------|
-| 空実装 | 一部の実装クラスでメソッドが空 |
-| 例外スロー | `NotImplementedError` が発生 |
-| 条件付き実装 | 特定の条件でのみ機能する |
+| 兆候               | 説明                                     |
+| ------------------ | ---------------------------------------- |
+| 空実装             | 一部の実装クラスでメソッドが空           |
+| 例外スロー         | `NotImplementedError` が発生             |
+| 条件付き実装       | 特定の条件でのみ機能する                 |
 | 異なるクライアント | 異なるクライアントが異なるメソッドを使用 |
 
 **分離のメリット**:
+
 - 実装クラスの負担軽減
 - 変更の影響範囲の限定
 - テストの簡素化
@@ -207,17 +220,18 @@ FullFeaturedExecutor implements
 ### 4. インターフェースの凝集性
 
 **高凝集なインターフェース**:
+
 - 関連するメソッドのみを含む
 - 単一の責任を持つ
 - クライアントが全てのメソッドを使用する
 
 **凝集性の指標**:
 
-| 指標 | 高凝集 | 低凝集 |
-|------|--------|--------|
-| メソッド数 | 1-5個 | 10個以上 |
-| 使用率 | 80%以上 | 50%未満 |
-| 変更頻度 | 同時に変更 | 個別に変更 |
+| 指標       | 高凝集     | 低凝集     |
+| ---------- | ---------- | ---------- |
+| メソッド数 | 1-5 個     | 10 個以上  |
+| 使用率     | 80%以上    | 50%未満    |
+| 変更頻度   | 同時に変更 | 個別に変更 |
 
 ---
 
@@ -230,6 +244,7 @@ FullFeaturedExecutor implements
 3. クライアントごとの依存関係マッピング
 
 **判断基準**:
+
 - [ ] 全クライアントが全メソッドを使用しているか？
 - [ ] 空実装や例外スローがないか？
 - [ ] メソッド間の凝集性は高いか？
@@ -241,6 +256,7 @@ FullFeaturedExecutor implements
 3. 拡張インターフェースの設計
 
 **判断基準**:
+
 - [ ] 各インターフェースは単一の責任を持つか？
 - [ ] インターフェースの命名は役割を反映しているか？
 - [ ] 適切な粒度か（細かすぎず、粗すぎず）？
@@ -252,17 +268,19 @@ FullFeaturedExecutor implements
 3. クライアントコードの更新
 
 **判断基準**:
+
 - [ ] 実装クラスは必要なインターフェースのみ実装しているか？
 - [ ] クライアントは使用するインターフェースのみに依存しているか？
 - [ ] 後方互換性は維持されているか？
 
 ### Phase 4: 検証
 
-1. ISP準拠の確認
+1. ISP 準拠の確認
 2. テストの更新
 3. ドキュメントの更新
 
 **判断基準**:
+
 - [ ] 空実装が排除されたか？
 - [ ] 各インターフェースの凝集性は高いか？
 - [ ] テストカバレッジは維持されているか？
@@ -314,23 +332,23 @@ ISpecialExecutor:
 
 ## 関連スキル
 
-- `.claude/skills/solid-principles/SKILL.md`: SOLID原則全般
+- `.claude/skills/solid-principles/SKILL.md`: SOLID 原則全般
 - `.claude/skills/design-patterns-behavioral/SKILL.md`: 行動パターン
-- `.claude/skills/open-closed-principle/SKILL.md`: OCP準拠設計
-- `.claude/skills/factory-patterns/SKILL.md`: Factory実装
+- `.claude/skills/open-closed-principle/SKILL.md`: OCP 準拠設計
+- `.claude/skills/factory-patterns/SKILL.md`: Factory 実装
 
 ---
 
 ## 参考文献
 
-- **『アジャイルソフトウェア開発の奥義』** Robert C. Martin著
-- **『Clean Architecture』** Robert C. Martin著
-- **『Design Patterns』** Erich Gamma他著
+- **『アジャイルソフトウェア開発の奥義』** Robert C. Martin 著
+- **『Clean Architecture』** Robert C. Martin 著
+- **『Design Patterns』** Erich Gamma 他著
 
 ---
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版リリース - ISP原則、分離設計、ワークフローエンジン適用 |
+| バージョン | 日付       | 変更内容                                                    |
+| ---------- | ---------- | ----------------------------------------------------------- |
+| 1.0.0      | 2025-11-25 | 初版リリース - ISP 原則、分離設計、ワークフローエンジン適用 |

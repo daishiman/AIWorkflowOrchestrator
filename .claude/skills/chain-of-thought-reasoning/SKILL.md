@@ -2,8 +2,15 @@
 name: chain-of-thought-reasoning
 description: |
   Chain-of-Thought（思考の連鎖）推論パターンを提供するスキル。
-  AIに段階的な思考プロセスを明示させることで、複雑な問題の
-  解決精度と説明可能性を向上させます。
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/chain-of-thought-reasoning/resources/cot-fundamentals.md`: Chain-of-Thought 基礎理論
+  - `.claude/skills/chain-of-thought-reasoning/resources/prompting-techniques.md`: CoTプロンプティング技法
+  - `.claude/skills/chain-of-thought-reasoning/resources/reasoning-patterns.md`: 演繹・帰納・類推・仮説検証・分割統治・逆問題・比較分析の7つの推論パターンと適用場面
+  - `.claude/skills/chain-of-thought-reasoning/templates/cot-prompt-templates.md`: CoTプロンプトテンプレート
+  - `.claude/skills/chain-of-thought-reasoning/templates/self-consistency-template.md`: Self-Consistencyテンプレート
 
   専門分野:
   - CoTプロンプティング: 段階的思考の誘導手法

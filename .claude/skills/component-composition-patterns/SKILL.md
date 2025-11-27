@@ -1,3 +1,28 @@
+---
+name: component-composition-patterns
+description: |
+  コンポーネント合成パターンと再利用可能なUI構造設計の専門知識
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/component-composition-patterns/resources/compound-components-guide.md`: Compound Components パターン詳細ガイド
+  - `.claude/skills/component-composition-patterns/resources/polymorphic-components.md`: Polymorphic Components 実装ガイド
+  - `.claude/skills/component-composition-patterns/resources/slot-pattern-guide.md`: Slot Pattern 実装ガイド
+  - `.claude/skills/component-composition-patterns/templates/compound-component-template.tsx`: Compound Component テンプレート
+  - `.claude/skills/component-composition-patterns/templates/polymorphic-component-template.tsx`: Polymorphic Component テンプレート
+  - `.claude/skills/component-composition-patterns/scripts/analyze-composition.mjs`: コンポーネント合成パターン分析スクリプト
+
+  専門分野:
+  - (要追加)
+
+  使用タイミング:
+  - (要追加)
+
+  Use proactively when (要追加).
+version: 1.0.0
+---
+
 # component-composition-patterns
 
 コンポーネント合成パターンと再利用可能なUI構造設計の専門知識

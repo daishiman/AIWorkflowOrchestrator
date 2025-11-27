@@ -4,6 +4,12 @@ description: |
   ビジョンボード作成、OKR設定、プロダクトロードマップ策定の体系的手法。
   長期的な製品戦略を明確化し、チームとステークホルダーの方向性を
   一致させる手法を提供します。
+
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/product-vision/templates/okr-template.md`: OKR (Objectives and Key Results) テンプレート
 version: 1.0.0
 ---
 

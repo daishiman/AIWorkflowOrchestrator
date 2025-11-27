@@ -1,3 +1,35 @@
+---
+name: headless-ui-principles
+description: |
+  ヘッドレスUIアーキテクチャとスタイル非依存コンポーネント設計の専門知識。
+
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/headless-ui-principles/resources/headless-architecture.md`: ヘッドレスアーキテクチャ詳細
+  - `.claude/skills/headless-ui-principles/resources/aria-patterns.md`: WAI-ARIAパターン実装ガイド
+  - `.claude/skills/headless-ui-principles/resources/library-comparison.md`: Radix UI/Headless UI/React Aria/Downshift/Ariakitの特徴・評価・選択ガイド
+  - `.claude/skills/headless-ui-principles/templates/headless-hook-template.ts`: カスタムフックテンプレート
+  - `.claude/skills/headless-ui-principles/templates/headless-component-template.tsx`: コンポーネントテンプレート
+
+  専門分野:
+  - ロジックとプレゼンテーションの分離: 動作とスタイルの完全分離
+  - スタイル非依存設計: Style Agnostic アーキテクチャ
+  - アクセシビリティ組み込み: WAI-ARIA パターン実装
+  - 実装パターン: Custom Hooks、Render Props、Headless Components
+
+  使用タイミング:
+  - カスタムデザインシステムを構築する時
+  - 完全なスタイル制御が必要な時
+  - 再利用可能なUI ロジックを抽出する時
+  - アクセシビリティを確保しながら柔軟性を保ちたい時
+
+  Use proactively when building custom design systems,
+  implementing style-agnostic components, or creating reusable UI logic.
+version: 1.0.0
+---
+
 # headless-ui-principles
 
 ヘッドレスUIアーキテクチャとスタイル非依存コンポーネント設計の専門知識

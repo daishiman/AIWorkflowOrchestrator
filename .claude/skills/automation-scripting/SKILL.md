@@ -1,3 +1,23 @@
+---
+name: automation-scripting
+description: |
+  ## 概要
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/automation-scripting/resources/script-patterns.md`: スクリプトパターン集
+
+  専門分野:
+  - (要追加)
+
+  使用タイミング:
+  - (要追加)
+
+  Use proactively when (要追加).
+version: 1.0.0
+---
+
 # 自動化スクリプティング
 
 ## 概要

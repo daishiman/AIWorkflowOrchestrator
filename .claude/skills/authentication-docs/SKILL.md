@@ -3,6 +3,19 @@ name: authentication-docs
 description: |
   API認証・認可フローの図解とドキュメント化、
   トークン取得手順の明確な説明のための知識とテンプレート
+
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/authentication-docs/resources/oauth2-flows.md`: OAuth 2.0各種フロー(Authorization Code、Client Credentials等)の詳細解説
+  - `.claude/skills/authentication-docs/resources/token-management.md`: トークン取得・更新・有効期限管理
+  - `.claude/skills/authentication-docs/resources/security-best-practices.md`: 認証セキュリティベストプラクティス
+  - `.claude/skills/authentication-docs/templates/auth-quickstart.md`: 認証クイックスタートガイドテンプレート
+  - `.claude/skills/authentication-docs/templates/oauth2-diagrams.md`: OAuth 2.0フローシーケンス図テンプレート(Mermaid形式)
+  - `.claude/skills/authentication-docs/scripts/generate-auth-flow-diagram.sh`: 認証フロー図自動生成スクリプト
+  - `.claude/skills/authentication-docs/scripts/test-auth-endpoint.sh`: 認証エンドポイントテストスクリプト
+
 version: 1.0.0
 ---
 

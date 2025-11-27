@@ -1,18 +1,27 @@
 ---
 name: debounce-throttle-patterns
 description: |
-  イベント駆動システムにおける高頻度イベントの最適化パターン。
-  デバウンス（連続イベントの最後のみ処理）とスロットリング（一定間隔で処理）を
-  適切に使い分け、パフォーマンスとリソース効率を最大化する。
+    イベント駆動システムにおける高頻度イベントの最適化パターン。
+    デバウンス（連続イベントの最後のみ処理）とスロットリング（一定間隔で処理）を
+    適切に使い分け、パフォーマンスとリソース効率を最大化する。
+    使用タイミング:
+    - ファイル監視で連続保存イベントを1回にまとめたい時
+    - 高頻度APIコールを制限したい時
+    - UIイベント（スクロール、リサイズ）を最適化したい時
+    - イベント発火頻度とシステム応答性のトレードオフを検討する時
+    - メモリ使用量を抑えながらイベント処理を行いたい時
 
-  使用タイミング:
-  - ファイル監視で連続保存イベントを1回にまとめたい時
-  - 高頻度APIコールを制限したい時
-  - UIイベント（スクロール、リサイズ）を最適化したい時
-  - イベント発火頻度とシステム応答性のトレードオフを検討する時
-  - メモリ使用量を抑えながらイベント処理を行いたい時
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/debounce-throttle-patterns/resources/implementation-patterns.md`: デバウンス/スロットリングの実装パターンとユースケース別選択基準
+  - `.claude/skills/debounce-throttle-patterns/templates/debounce-throttle.ts`: TypeScriptによるデバウンス/スロットリング実装テンプレート
+
+  Use proactively when implementing debounce-throttle-patterns patterns or solving related problems.
 version: 1.0.0
 ---
+
 
 # Debounce & Throttle Patterns
 

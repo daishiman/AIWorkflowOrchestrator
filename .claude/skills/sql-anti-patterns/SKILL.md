@@ -2,22 +2,17 @@
 name: sql-anti-patterns
 description: |
   Bill Karwinの『SQLアンチパターン』に基づくデータベース設計の落とし穴と解決策。
-  ジェイウォーク、EAV、Polymorphic Associationsなど、実務で遭遇する設計上の問題を予防。
 
-  専門分野:
-  - 論理設計アンチパターン: ジェイウォーク、EAV、Polymorphic Associations
-  - 物理設計アンチパターン: ラウンディングエラー、インデックスショットガン
-  - クエリアンチパターン: ランダム選択、スパゲッティクエリ
-  - アプリケーション開発アンチパターン: マジックビーンズ、パスワード保存
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
 
-  使用タイミング:
-  - スキーマ設計レビュー時
-  - 既存スキーマの問題調査時
-  - 設計決定の妥当性確認時
-  - パフォーマンス問題の原因調査時
+  - `.claude/skills/sql-anti-patterns/resources/anti-patterns-catalog.md`: Anti Patterns Catalogリソース
 
-  Use proactively when reviewing database designs, investigating schema issues,
-  or validating architectural decisions to prevent common mistakes.
+  - `.claude/skills/sql-anti-patterns/templates/schema-review-checklist.md`: Schema Review Checklistテンプレート
+
+  - `.claude/skills/sql-anti-patterns/scripts/detect-anti-patterns.mjs`: Detect Anti Patternsスクリプト
+
 version: 1.0.0
 ---
 
@@ -25,7 +20,7 @@ version: 1.0.0
 
 ## 概要
 
-このスキルは、Bill Karwinの『SQLアンチパターン』に基づく、データベース設計における
+このスキルは、Bill Karwin の『SQL アンチパターン』に基づく、データベース設計における
 一般的な誤りとその解決策を提供します。これらのアンチパターンを認識し、回避することで、
 保守性が高く、パフォーマンスの良いデータベースを設計できます。
 
@@ -45,6 +40,7 @@ CREATE TABLE products (
 ```
 
 **問題点**:
+
 - 特定のタグで検索するのが困難（LIKE '%tag%' は非効率）
 - タグの追加・削除が文字列操作になる
 - 参照整合性を保証できない
@@ -72,8 +68,9 @@ CREATE TABLE product_tags (
 ```
 
 **判断基準**:
+
 - [ ] カンマ区切り値を格納していないか？
-- [ ] VARCHAR/TEXTに複数値を詰め込んでいないか？
+- [ ] VARCHAR/TEXT に複数値を詰め込んでいないか？
 - [ ] FIND_IN_SET や LIKE '%value%' を使用していないか？
 
 ---
@@ -99,7 +96,8 @@ INSERT INTO entity_attributes VALUES
 ```
 
 **問題点**:
-- データ型の制約がない（すべてTEXT）
+
+- データ型の制約がない（すべて TEXT）
 - 必須属性を強制できない
 - 参照整合性が保証できない
 - 集計クエリが複雑になる
@@ -107,7 +105,8 @@ INSERT INTO entity_attributes VALUES
 
 **解決策**: 目的に応じた適切な設計
 
-**解決策1: シングルテーブル継承（属性が少ない場合）**
+**解決策 1: シングルテーブル継承（属性が少ない場合）**
+
 ```sql
 CREATE TABLE products (
   id INT PRIMARY KEY,
@@ -123,7 +122,8 @@ CREATE TABLE products (
 );
 ```
 
-**解決策2: 具象テーブル継承（属性が多い場合）**
+**解決策 2: 具象テーブル継承（属性が多い場合）**
+
 ```sql
 CREATE TABLE products (
   id INT PRIMARY KEY,
@@ -144,7 +144,8 @@ CREATE TABLE electronics (
 );
 ```
 
-**解決策3: JSONB（半構造化データが必要な場合）**
+**解決策 3: JSONB（半構造化データが必要な場合）**
+
 ```sql
 CREATE TABLE products (
   id INT PRIMARY KEY,
@@ -158,6 +159,7 @@ CREATE TABLE products (
 ```
 
 **判断基準**:
+
 - [ ] 属性名をデータとして格納していないか？
 - [ ] ピボットクエリが頻繁に必要か？
 - [ ] データ型の検証ができているか？
@@ -179,12 +181,14 @@ CREATE TABLE comments (
 ```
 
 **問題点**:
+
 - 外部キー制約を定義できない
 - 参照整合性がデータベース層で保証されない
-- JOINが複雑になる
+- JOIN が複雑になる
 - 型の追加時にコード変更が必要
 
-**解決策1: 共通の親テーブル**
+**解決策 1: 共通の親テーブル**
+
 ```sql
 CREATE TABLE commentables (
   id INT PRIMARY KEY,
@@ -208,7 +212,8 @@ CREATE TABLE comments (
 );
 ```
 
-**解決策2: 個別の外部キーカラム**
+**解決策 2: 個別の外部キーカラム**
+
 ```sql
 CREATE TABLE comments (
   id INT PRIMARY KEY,
@@ -225,7 +230,8 @@ CREATE TABLE comments (
 );
 ```
 
-**解決策3: 交差テーブル**
+**解決策 3: 交差テーブル**
+
 ```sql
 CREATE TABLE post_comments (
   post_id INT REFERENCES posts(id),
@@ -241,17 +247,19 @@ CREATE TABLE photo_comments (
 ```
 
 **判断基準**:
+
 - [ ] 型判別カラムを使用していないか？
 - [ ] 外部キー制約が定義されているか？
-- [ ] 参照整合性はDB層で保証されているか？
+- [ ] 参照整合性は DB 層で保証されているか？
 
 ---
 
-### 4. マジックビーンズ（Active Recordの誤用）
+### 4. マジックビーンズ（Active Record の誤用）
 
 **問題**: ビジネスロジックがデータアクセス層に混在
 
 **問題点**:
+
 - テスト困難
 - 関心の分離が崩れる
 - トランザクション管理が複雑化
@@ -288,7 +296,7 @@ class DrizzleOrderRepository implements OrderRepository {
 
 ### 5. ID Required（過剰なサロゲートキー）
 
-**問題**: すべてのテーブルにID列を追加する
+**問題**: すべてのテーブルに ID 列を追加する
 
 ```sql
 -- アンチパターン: 交差テーブルに不要なID
@@ -312,14 +320,15 @@ CREATE TABLE product_tags (
 ```
 
 **判断基準**:
+
 - [ ] 交差テーブルに不要なサロゲートキーがないか？
 - [ ] 自然キーが適切な場合に使用されているか？
 
 ---
 
-### 6. Fear of the Unknown（NULL恐怖症）
+### 6. Fear of the Unknown（NULL 恐怖症）
 
-**問題**: NULLを避けるために不適切なデフォルト値を使用
+**問題**: NULL を避けるために不適切なデフォルト値を使用
 
 ```sql
 -- アンチパターン
@@ -331,11 +340,12 @@ CREATE TABLE users (
 ```
 
 **問題点**:
+
 - 「値がない」と「空の値」の区別ができない
 - マジック値はビジネスロジックを複雑にする
 - 集計が不正確になる可能性
 
-**解決策**: 適切なNULL使用
+**解決策**: 適切な NULL 使用
 
 ```sql
 -- 解決: NULLを適切に使用
@@ -346,9 +356,10 @@ CREATE TABLE users (
 );
 ```
 
-**NULL使用のガイドライン**:
-- **NULLを使うべき場合**: 値が不明、該当なし、未入力
-- **NOT NULLを使うべき場合**: 必須属性、計算に使用、ビジネスルール上必須
+**NULL 使用のガイドライン**:
+
+- **NULL を使うべき場合**: 値が不明、該当なし、未入力
+- **NOT NULL を使うべき場合**: 必須属性、計算に使用、ビジネスルール上必須
 
 ---
 
@@ -358,25 +369,26 @@ CREATE TABLE users (
 
 - [ ] **ジェイウォーク**: カンマ区切り値、配列文字列がないか
 - [ ] **EAV**: attribute_name/attribute_value パターンがないか
-- [ ] **Polymorphic**: type判別カラム + 汎用IDがないか
+- [ ] **Polymorphic**: type 判別カラム + 汎用 ID がないか
 - [ ] **ID Required**: 不要なサロゲートキーがないか
-- [ ] **NULL恐怖症**: 不適切なデフォルト値がないか
+- [ ] **NULL 恐怖症**: 不適切なデフォルト値がないか
 
 ### クエリレビュー時
 
-- [ ] **スパゲッティクエリ**: 過度に複雑なJOINがないか
+- [ ] **スパゲッティクエリ**: 過度に複雑な JOIN がないか
 - [ ] **ランダム選択**: `ORDER BY RAND()` がないか
 - [ ] **インプリシットカラム**: `SELECT *` がないか
 
 ## 関連スキル
 
 - `.claude/skills/database-normalization/SKILL.md` - 正規化によるアンチパターン回避
-- `.claude/skills/jsonb-optimization/SKILL.md` - JSONB でEAV回避
+- `.claude/skills/jsonb-optimization/SKILL.md` - JSONB で EAV 回避
 - `.claude/skills/foreign-key-constraints/SKILL.md` - 参照整合性確保
 
 ## 参照リソース
 
 詳細な情報は以下のリソースを参照:
+
 - `resources/anti-patterns-catalog.md` - 全アンチパターンカタログ
 - `templates/schema-review-checklist.md` - スキーマレビューチェックリスト
 - `scripts/detect-anti-patterns.mjs` - アンチパターン検出スクリプト

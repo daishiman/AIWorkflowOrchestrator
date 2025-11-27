@@ -5,6 +5,17 @@ description: |
   Robert C. Martinの『アジャイルソフトウェア開発の奥義』に基づき、
   拡張に開かれ、修正に閉じた設計を提供します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/open-closed-principle/resources/extension-mechanisms.md`: 拡張メカニズム（Extension Mechanisms）
+  - `.claude/skills/open-closed-principle/resources/ocp-fundamentals.md`: OCP原則の基本（Open-Closed Principle Fundamentals）
+  - `.claude/skills/open-closed-principle/resources/ocp-patterns.md`: OCP準拠パターン（OCP-Compliant Patterns）
+  - `.claude/skills/open-closed-principle/resources/refactoring-to-ocp.md`: OCPへのリファクタリング（Refactoring to OCP）
+  - `.claude/skills/open-closed-principle/scripts/analyze-extensibility.mjs`: コードの拡張性分析とOCP違反検出（switch文・if-elseチェーン・型チェック・フラグパラメータ）
+  - `.claude/skills/open-closed-principle/templates/extension-point-template.md`: Strategy/Template Method/Plugin Registryによる拡張ポイント設計テンプレート
+
   専門分野:
   - OCP原則: 拡張と修正の分離
   - Strategy: 振る舞いの動的交換
@@ -18,7 +29,6 @@ description: |
   - レガシーコードをOCP準拠にリファクタリングする時
 
   Use proactively when designing extension points, adding workflow types,
-  or refactoring for better extensibility.
 version: 1.0.0
 ---
 
@@ -26,16 +36,18 @@ version: 1.0.0
 
 ## 概要
 
-このスキルは、SOLID原則の一つである開放閉鎖原則（OCP）に関する知識を提供します。
+このスキルは、SOLID 原則の一つである開放閉鎖原則（OCP）に関する知識を提供します。
 
-**OCPの定義**: ソフトウェアのエンティティ（クラス、モジュール、関数など）は、拡張に対して開いていて、修正に対して閉じているべきである。
+**OCP の定義**: ソフトウェアのエンティティ（クラス、モジュール、関数など）は、拡張に対して開いていて、修正に対して閉じているべきである。
 
 **主要な価値**:
+
 - 既存コードの安定性維持
 - 新機能追加の容易性
 - リグレッションリスクの低減
 
 **対象ユーザー**:
+
 - ワークフローエンジンの拡張ポイントを設計するエージェント
 - 既存システムに新機能を追加する開発者
 - レガシーコードをリファクタリングするチーム
@@ -92,7 +104,7 @@ cat .claude/skills/open-closed-principle/templates/extension-point-template.md
 
 ## 核心知識
 
-### 1. OCP原則の本質
+### 1. OCP 原則の本質
 
 **問題**: 変更のたびに既存コードを修正
 
@@ -132,15 +144,15 @@ engine.registerExecutor(new NewTypeExecutor())
 
 ### 2. 拡張メカニズム
 
-| メカニズム | 説明 | 使用場面 |
-|-----------|------|---------|
-| **Strategy** | 振る舞いを動的に交換 | アルゴリズムの切り替え |
-| **Template Method** | アルゴリズムの骨格を定義 | 処理フローの共通化 |
-| **Plugin/Registry** | 動的な機能追加 | プラグインシステム |
-| **Decorator** | 機能の動的追加 | 横断的関心事 |
-| **Abstract Factory** | オブジェクトファミリーの生成 | 製品バリエーション |
+| メカニズム           | 説明                         | 使用場面               |
+| -------------------- | ---------------------------- | ---------------------- |
+| **Strategy**         | 振る舞いを動的に交換         | アルゴリズムの切り替え |
+| **Template Method**  | アルゴリズムの骨格を定義     | 処理フローの共通化     |
+| **Plugin/Registry**  | 動的な機能追加               | プラグインシステム     |
+| **Decorator**        | 機能の動的追加               | 横断的関心事           |
+| **Abstract Factory** | オブジェクトファミリーの生成 | 製品バリエーション     |
 
-### 3. ワークフローエンジンでのOCP適用
+### 3. ワークフローエンジンでの OCP 適用
 
 **拡張ポイントの設計**:
 
@@ -191,15 +203,15 @@ registry.register(new NotificationExecutor())
 # 完了！WorkflowEngineのコードは一切変更なし
 ```
 
-### 4. OCP違反の兆候
+### 4. OCP 違反の兆候
 
-| 兆候 | 説明 |
-|------|------|
-| **長いswitch文** | 新しいケースを追加するたびに修正 |
-| **if-elseチェーン** | 条件分岐の追加で既存コードを変更 |
-| **型チェック** | instanceof/typeofによる分岐 |
-| **フラグパラメータ** | ブール値で振る舞いを切り替え |
-| **頻繁な修正** | 機能追加で既存ファイルを頻繁に変更 |
+| 兆候                 | 説明                               |
+| -------------------- | ---------------------------------- |
+| **長い switch 文**   | 新しいケースを追加するたびに修正   |
+| **if-else チェーン** | 条件分岐の追加で既存コードを変更   |
+| **型チェック**       | instanceof/typeof による分岐       |
+| **フラグパラメータ** | ブール値で振る舞いを切り替え       |
+| **頻繁な修正**       | 機能追加で既存ファイルを頻繁に変更 |
 
 ---
 
@@ -212,6 +224,7 @@ registry.register(new NotificationExecutor())
 3. 拡張ポイントを設計
 
 **判断基準**:
+
 - [ ] 新しい機能タイプは追加される可能性があるか？
 - [ ] アルゴリズムは交換される可能性があるか？
 - [ ] 外部システムの統合は増える可能性があるか？
@@ -223,6 +236,7 @@ registry.register(new NotificationExecutor())
 3. 具体的な実装を分離
 
 **判断基準**:
+
 - [ ] インターフェースは安定しているか？
 - [ ] 実装の詳細は隠蔽されているか？
 - [ ] 新しい実装の追加は容易か？
@@ -231,9 +245,10 @@ registry.register(new NotificationExecutor())
 
 1. 適切なパターンを選択（Strategy/Template/Plugin）
 2. 登録/解決メカニズムを実装
-3. 拡張APIを提供
+3. 拡張 API を提供
 
 **判断基準**:
+
 - [ ] 拡張方法は明確か？
 - [ ] 既存コードの修正なしに拡張できるか？
 - [ ] 拡張のドキュメントは十分か？
@@ -245,6 +260,7 @@ registry.register(new NotificationExecutor())
 3. テストの実施
 
 **判断基準**:
+
 - [ ] 新機能追加で既存ファイルの変更は最小限か？
 - [ ] リグレッションテストはパスするか？
 - [ ] 拡張ポイントは適切に機能するか？
@@ -303,21 +319,21 @@ IWorkflowExecutor:
 
 - `.claude/skills/design-patterns-behavioral/SKILL.md`: Strategy, Template Method
 - `.claude/skills/plugin-architecture/SKILL.md`: プラグインアーキテクチャ
-- `.claude/skills/interface-segregation/SKILL.md`: ISP準拠設計
-- `.claude/skills/factory-patterns/SKILL.md`: Factory実装
+- `.claude/skills/interface-segregation/SKILL.md`: ISP 準拠設計
+- `.claude/skills/factory-patterns/SKILL.md`: Factory 実装
 
 ---
 
 ## 参考文献
 
-- **『アジャイルソフトウェア開発の奥義』** Robert C. Martin著
-- **『Clean Architecture』** Robert C. Martin著
-- **『Design Patterns』** Erich Gamma他著
+- **『アジャイルソフトウェア開発の奥義』** Robert C. Martin 著
+- **『Clean Architecture』** Robert C. Martin 著
+- **『Design Patterns』** Erich Gamma 他著
 
 ---
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版リリース - OCP原則、拡張メカニズム、ワークフローエンジン適用 |
+| バージョン | 日付       | 変更内容                                                          |
+| ---------- | ---------- | ----------------------------------------------------------------- |
+| 1.0.0      | 2025-11-25 | 初版リリース - OCP 原則、拡張メカニズム、ワークフローエンジン適用 |

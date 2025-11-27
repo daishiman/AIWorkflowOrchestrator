@@ -5,6 +5,15 @@ description: |
   プロバイダー設定、アダプター統合、セッション戦略、
   コールバックカスタマイズ、型安全性の確保を提供。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/nextauth-patterns/resources/provider-configurations.md`: NextAuth.js Provider Configurations
+  - `.claude/skills/nextauth-patterns/resources/session-callbacks-guide.md`: NextAuth.js Session Callbacks Guide
+  - `.claude/skills/nextauth-patterns/scripts/validate-nextauth-config.mjs`: NextAuth.js設定ファイルの妥当性検証とプロバイダー設定・コールバック実装の検査スクリプト
+  - `.claude/skills/nextauth-patterns/templates/nextauth-config-template.ts`: Google/GitHub OAuth統合・Drizzleアダプター・JWT/Databaseセッション戦略を含むauth.ts設定テンプレート
+
   使用タイミング:
   - NextAuth.jsの初期設定時
   - OAuth 2.0プロバイダー統合時
@@ -19,6 +28,8 @@ description: |
 
   Use when implementing NextAuth.js, configuring authentication providers,
   or customizing authentication flows in Next.js applications.
+
+
 version: 1.0.0
 ---
 

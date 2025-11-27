@@ -1,3 +1,27 @@
+---
+name: artifact-management-gha
+description: |
+  ---
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/artifact-management-gha/resources/download-artifact.md`: Download Artifact 詳細
+  - `.claude/skills/artifact-management-gha/resources/retention-optimization.md`: 保持期間とストレージ最適化
+  - `.claude/skills/artifact-management-gha/resources/upload-artifact.md`: Upload Artifact 詳細
+  - `.claude/skills/artifact-management-gha/templates/artifact-workflow.yaml`: GitHub Actions Artifact Management ワークフロー例
+  - `.claude/skills/artifact-management-gha/scripts/cleanup-artifacts.mjs`: GitHub Actions Artifact Cleanup Script
+
+  専門分野:
+  - (要追加)
+
+  使用タイミング:
+  - (要追加)
+
+  Use proactively when (要追加).
+version: 1.0.0
+---
+
 # Artifact Management (GitHub Actions)
 
 ---

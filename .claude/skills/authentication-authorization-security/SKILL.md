@@ -6,27 +6,29 @@ description: |
   認証メカニズム、セッション管理、アクセス制御、JWT/トークンセキュリティの
   包括的な評価基準と実装ガイダンスを提供します。
 
-  📚 このスキルの使用タイミング:
+  使用タイミング:
   - 認証システムのセキュリティレビュー時
   - OAuth/OpenID Connect実装の評価時
   - セッション管理とトークンセキュリティの設計時
   - アクセス制御（RBAC/ABAC）の実装評価時
   - JWT署名アルゴリズムとトークン管理の検証時
-  - パスワードポリシーとハッシュ化の評価時
-  - 多要素認証（MFA）の実装レビュー時
-  - 権限昇格脆弱性の検出時
-
-  🔍 評価対象:
-  - パスワードポリシーと強度要件
-  - ハッシュアルゴリズム（bcrypt, argon2, scrypt）
-  - セッション管理（トークン生成、有効期限、再生成）
-  - OAuth 2.0/OpenID Connectフロー選択
-  - アクセス制御モデル（RBAC, ABAC, ACL）
-  - JWT署名とトークンライフサイクル
-  - 垂直・水平権限昇格防止
 
   Use this skill when reviewing authentication code, designing authorization systems,
   or validating token security implementations.
+
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/authentication-authorization-security/resources/access-control-models.md`: RBAC/ABAC/ACLアクセス制御モデルの詳細比較と選択基準
+  - `.claude/skills/authentication-authorization-security/resources/jwt-security-checklist.md`: JWT署名アルゴリズム選択とトークンセキュリティ検証項目
+  - `.claude/skills/authentication-authorization-security/resources/oauth2-flow-comparison.md`: OAuth 2.0フロー（Authorization Code、PKCE等）の選択決定ツリー
+  - `.claude/skills/authentication-authorization-security/resources/password-hashing-guide.md`: bcrypt/argon2/scryptハッシュアルゴリズムの設定と実装ガイド
+  - `.claude/skills/authentication-authorization-security/resources/session-management-patterns.md`: サーバーサイドセッションとCookie属性のセキュリティパターン
+  - `.claude/skills/authentication-authorization-security/scripts/analyze-auth-endpoints.mjs`: 認証エンドポイントのセキュリティ分析スクリプト
+  - `.claude/skills/authentication-authorization-security/scripts/check-token-security.mjs`: JWTトークンセキュリティ検証スクリプト
+  - `.claude/skills/authentication-authorization-security/scripts/validate-session-config.mjs`: セッション設定のセキュリティ検証スクリプト
+  - `.claude/skills/authentication-authorization-security/templates/session-security-checklist.md`: セッション管理セキュリティチェックリストテンプレート
 version: 1.0.0
 related_skills:
   - .claude/skills/owasp-top-10/SKILL.md

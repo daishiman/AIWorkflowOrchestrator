@@ -5,6 +5,16 @@ description: |
   設計原則を専門とするスキル。単一責任の原則、創発的複雑性、階層的組織化により、
   効果的なマルチエージェントシステムを設計します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/agent-architecture-patterns/resources/pattern-catalog.md`: 4つのアーキテクチャパターン（オーケストレーター・ワーカー、ハブアンドスポーク、パイプライン、ステートマシン）の詳細カタログと選択ガイド
+  - `.claude/skills/agent-architecture-patterns/templates/orchestrator-worker-template.md`: オーケストレーター・ワーカーテンプレート
+  - `.claude/skills/agent-architecture-patterns/templates/pipeline-template.md`: パイプラインテンプレート
+  - `.claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs`: アーキテクチャ検証スクリプト (Node.js)
+  - `.claude/skills/agent-architecture-patterns/scripts/validate-architecture.sh`: アーキテクチャ検証スクリプト (Shell)
+
   専門分野:
   - アーキテクチャパターン: オーケストレーター・ワーカー、ハブアンドスポーク、パイプライン、ステートマシン
   - 設計原則: 単一機能、創発的複雑性、階層的組織、制約による最適化、コンテキスト分離
@@ -352,7 +362,7 @@ cp .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-temp
 2. **階層の妥当性**:
    ```bash
    # エージェント間の依存関係を可視化
-   ./scripts/analyze-agent-structure.sh
+   .claude/skills/agent-architecture-patterns/scripts/analyze-agent-structure.sh
    ```
 
 3. **制約の明確性**:

@@ -1,3 +1,25 @@
+---
+name: composite-actions
+description: |
+  ---
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/composite-actions/resources/action-syntax.md`: Composite Action 構文リファレンス
+  - `.claude/skills/composite-actions/resources/best-practices.md`: Composite Actions ベストプラクティス
+  - `.claude/skills/composite-actions/scripts/validate-action.mjs`: Composite Action Validator
+
+  専門分野:
+  - (要追加)
+
+  使用タイミング:
+  - (要追加)
+
+  Use proactively when (要追加).
+version: 1.0.0
+---
+
 # Composite Actions
 
 ---
@@ -162,7 +184,7 @@ steps:
         echo "DRY RUN mode"
         exit 0
       fi
-      ./scripts/deploy.sh "${{ inputs.environment }}"
+      .claude/skills/composite-actions/scripts/deploy.sh "${{ inputs.environment }}"
 ```
 
 ### 条件付き実行
@@ -171,7 +193,7 @@ steps:
 steps:
   - name: Production only
     if: inputs.environment == 'prod'
-    run: ./scripts/prod-checks.sh
+    run: .claude/skills/composite-actions/scripts/prod-checks.sh
     shell: bash
 ```
 

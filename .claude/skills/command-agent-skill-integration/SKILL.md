@@ -5,6 +5,19 @@ description: |
   三位一体の概念、コマンド→エージェント起動パターン、コマンド→スキル参照パターン、
   複合ワークフローの設計を提供します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/command-agent-skill-integration/resources/trinity-architecture.md`: コマンド・エージェント・スキル三位一体アーキテクチャ
+  - `.claude/skills/command-agent-skill-integration/resources/command-to-agent-patterns.md`: コマンドからエージェント呼び出しパターン
+  - `.claude/skills/command-agent-skill-integration/resources/command-to-skill-patterns.md`: コマンドからスキル参照パターン
+  - `.claude/skills/command-agent-skill-integration/resources/composite-workflows.md`: 複合ワークフロー設計
+  - `.claude/skills/command-agent-skill-integration/templates/agent-invocation-template.md`: エージェント起動テンプレート
+  - `.claude/skills/command-agent-skill-integration/templates/skill-reference-template.md`: スキル参照テンプレート
+  - `.claude/skills/command-agent-skill-integration/templates/composite-workflow-template.md`: 複合ワークフローテンプレート
+  - `.claude/skills/command-agent-skill-integration/scripts/validate-integration.mjs`: エージェント参照・スキル参照・連携パターンの正確性検証とTrinity Architectureの統合チェック
+
   使用タイミング:
   - コマンドからエージェントを起動したい時
   - コマンド内でスキルを参照したい時

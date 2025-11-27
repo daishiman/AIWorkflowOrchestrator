@@ -5,6 +5,16 @@ description: |
   Embedding格納、類似度検索、インデックス戦略、
   RAGシステムでのベクトルDB活用を専門とします。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/pgvector-optimization/resources/vector-basics.md`: pgvectorセットアップ、基本スキーマ、距離関数の基礎知識
+  - `.claude/skills/pgvector-optimization/resources/index-strategies.md`: IVFFlat/HNSWインデックス選択ガイドとパラメータ設定
+  - `.claude/skills/pgvector-optimization/resources/rag-patterns.md`: RAGアーキテクチャ、チャンキング戦略、ハイブリッド検索実装
+  - `.claude/skills/pgvector-optimization/scripts/benchmark-vector-search.mjs`: ベクトル検索レイテンシ・精度測定ベンチマーク
+  - `.claude/skills/pgvector-optimization/templates/vector-schema-template.ts`: Drizzle ORMでのpgvectorスキーマ定義テンプレート
+
   専門分野:
   - ベクトル格納: Embeddingの効率的な格納と管理
   - 類似度検索: コサイン類似度、L2距離、内積検索
@@ -28,20 +38,22 @@ version: 1.0.0
 
 ## 概要
 
-このスキルは、PostgreSQLのpgvector拡張を使用した
+このスキルは、PostgreSQL の pgvector 拡張を使用した
 ベクトル検索の実装と最適化に関する知識を提供します。
-RAGシステムやセマンティック検索の構築に必要な技術を網羅します。
+RAG システムやセマンティック検索の構築に必要な技術を網羅します。
 
 **主要な価値**:
+
 - 高速なベクトル類似度検索
-- スケーラブルなEmbedding管理
-- LLMアプリケーションとの統合
+- スケーラブルな Embedding 管理
+- LLM アプリケーションとの統合
 
 **対象ユーザー**:
+
 - `@dba-mgr`エージェント
-- AIエンジニア
+- AI エンジニア
 - バックエンド開発者
-- MLエンジニア
+- ML エンジニア
 
 ## リソース構造
 
@@ -82,30 +94,36 @@ node .claude/skills/pgvector-optimization/scripts/benchmark-vector-search.mjs
 
 ## いつ使うか
 
-### シナリオ1: RAGシステム構築
+### シナリオ 1: RAG システム構築
+
 **状況**: ドキュメント検索や質問応答システムを構築する
 
 **適用条件**:
-- [ ] Embeddingモデルが選択されている
+
+- [ ] Embedding モデルが選択されている
 - [ ] 検索対象ドキュメントがある
 - [ ] 検索精度の要件が明確
 
-**期待される成果**: 高速で精度の高いRAG検索
+**期待される成果**: 高速で精度の高い RAG 検索
 
-### シナリオ2: セマンティック検索
+### シナリオ 2: セマンティック検索
+
 **状況**: キーワード検索を超えた意味的検索を実装する
 
 **適用条件**:
+
 - [ ] 検索対象データがある
-- [ ] Embedding生成のAPIがある
-- [ ] 検索UIがある
+- [ ] Embedding 生成の API がある
+- [ ] 検索 UI がある
 
 **期待される成果**: 意味的に類似したコンテンツの検索
 
-### シナリオ3: パフォーマンス最適化
+### シナリオ 3: パフォーマンス最適化
+
 **状況**: ベクトル検索が遅い、または精度が低い
 
 **適用条件**:
+
 - [ ] 現在のパフォーマンス指標がある
 - [ ] データ量が把握できている
 - [ ] インデックスの状態を確認できる
@@ -116,10 +134,12 @@ node .claude/skills/pgvector-optimization/scripts/benchmark-vector-search.mjs
 
 ### Phase 1: セットアップ
 
-**目的**: pgvector環境を準備する
+**目的**: pgvector 環境を準備する
 
 **ステップ**:
+
 1. **拡張のインストール**:
+
    ```sql
    CREATE EXTENSION IF NOT EXISTS vector;
    ```
@@ -134,7 +154,8 @@ node .claude/skills/pgvector-optimization/scripts/benchmark-vector-search.mjs
    ```
 
 **判断基準**:
-- [ ] pgvector拡張がインストールされているか？
+
+- [ ] pgvector 拡張がインストールされているか？
 - [ ] 適切な次元数が選択されているか？
 - [ ] ストレージ要件を満たせるか？
 
@@ -145,7 +166,9 @@ node .claude/skills/pgvector-optimization/scripts/benchmark-vector-search.mjs
 **目的**: 検索パフォーマンスを最適化する
 
 **ステップ**:
+
 1. **インデックスタイプの選択**:
+
    - IVFFlat: 高速構築、中程度の精度
    - HNSW: 高精度、メモリ使用量大
 
@@ -158,6 +181,7 @@ node .claude/skills/pgvector-optimization/scripts/benchmark-vector-search.mjs
    ```
 
 **判断基準**:
+
 - [ ] データ量に適したインデックスか？
 - [ ] 精度要件を満たせるか？
 - [ ] 構築時間は許容範囲か？
@@ -169,9 +193,11 @@ node .claude/skills/pgvector-optimization/scripts/benchmark-vector-search.mjs
 **目的**: 類似度検索を高速化する
 
 **ステップ**:
+
 1. **適切な距離関数の選択**:
+
    - コサイン類似度: 正規化されたベクトル
-   - L2距離: ユークリッド距離
+   - L2 距離: ユークリッド距離
    - 内積: 高速だが正規化が必要
 
 2. **検索パラメータの調整**:
@@ -180,6 +206,7 @@ node .claude/skills/pgvector-optimization/scripts/benchmark-vector-search.mjs
    ```
 
 **判断基準**:
+
 - [ ] 適切な距離関数を選んでいるか？
 - [ ] 検索パラメータは調整済みか？
 - [ ] 精度と速度のバランスは適切か？
@@ -190,81 +217,87 @@ node .claude/skills/pgvector-optimization/scripts/benchmark-vector-search.mjs
 
 ### ベクトル次元数
 
-| モデル | 次元数 | 用途 |
-|--------|--------|------|
-| OpenAI text-embedding-3-small | 1536 | 汎用 |
-| OpenAI text-embedding-3-large | 3072 | 高精度 |
-| Cohere embed-v3 | 1024 | 多言語 |
-| sentence-transformers | 384-768 | オープンソース |
+| モデル                        | 次元数  | 用途           |
+| ----------------------------- | ------- | -------------- |
+| OpenAI text-embedding-3-small | 1536    | 汎用           |
+| OpenAI text-embedding-3-large | 3072    | 高精度         |
+| Cohere embed-v3               | 1024    | 多言語         |
+| sentence-transformers         | 384-768 | オープンソース |
 
 ### 距離関数
 
-| 関数 | オペレータ | 用途 |
-|------|-----------|------|
-| コサイン距離 | `<=>` | 正規化済みベクトル（推奨） |
-| L2距離 | `<->` | ユークリッド空間 |
-| 内積 | `<#>` | 高速（負の値に注意） |
+| 関数         | オペレータ | 用途                       |
+| ------------ | ---------- | -------------------------- |
+| コサイン距離 | `<=>`      | 正規化済みベクトル（推奨） |
+| L2 距離      | `<->`      | ユークリッド空間           |
+| 内積         | `<#>`      | 高速（負の値に注意）       |
 
 ### インデックスタイプ
 
-| タイプ | 精度 | 速度 | メモリ | 構築時間 |
-|--------|------|------|--------|---------|
-| なし | 100% | 遅い | 低い | なし |
-| IVFFlat | 中 | 中 | 低い | 短い |
-| HNSW | 高 | 速い | 高い | 長い |
+| タイプ  | 精度 | 速度 | メモリ | 構築時間 |
+| ------- | ---- | ---- | ------ | -------- |
+| なし    | 100% | 遅い | 低い   | なし     |
+| IVFFlat | 中   | 中   | 低い   | 短い     |
+| HNSW    | 高   | 速い | 高い   | 長い     |
 
 ## ベストプラクティス
 
 ### すべきこと
 
 1. **ベクトルを正規化する**:
+
    ```typescript
    // 保存前に正規化
    function normalize(vector: number[]): number[] {
      const magnitude = Math.sqrt(vector.reduce((sum, v) => sum + v * v, 0));
-     return vector.map(v => v / magnitude);
+     return vector.map((v) => v / magnitude);
    }
    ```
 
-2. **HNSWインデックスを使用する**:
+2. **HNSW インデックスを使用する**:
+
    - 大規模データで高精度
    - 検索パラメータで調整可能
 
-3. **バッチ処理でEmbeddingを生成**:
+3. **バッチ処理で Embedding を生成**:
    ```typescript
    // 一括生成
    const embeddings = await openai.embeddings.create({
-     input: documents,  // 配列で渡す
-     model: 'text-embedding-3-small',
+     input: documents, // 配列で渡す
+     model: "text-embedding-3-small",
    });
    ```
 
 ### 避けるべきこと
 
 1. **インデックスなしの大規模検索**:
-   - ❌ 100万行のフルスキャン
+
+   - ❌ 100 万行のフルスキャン
    - ✅ 適切なインデックスを作成
 
 2. **次元数の不一致**:
-   - ❌ 1536次元と3072次元の混在
+
+   - ❌ 1536 次元と 3072 次元の混在
    - ✅ 統一された次元数
 
-3. **毎回のEmbedding生成**:
-   - ❌ 同じテキストを何度もEmbed
-   - ✅ Embeddingをキャッシュ
+3. **毎回の Embedding 生成**:
+   - ❌ 同じテキストを何度も Embed
+   - ✅ Embedding をキャッシュ
 
 ## トラブルシューティング
 
-### 問題1: 検索が遅い
+### 問題 1: 検索が遅い
 
 **症状**: ベクトル検索に数秒かかる
 
 **原因**:
+
 - インデックスがない
 - インデックスパラメータが不適切
-- データ量に対してef_searchが高すぎる
+- データ量に対して ef_search が高すぎる
 
 **解決策**:
+
 ```sql
 -- インデックスを確認
 SELECT indexname, indexdef FROM pg_indexes
@@ -275,16 +308,18 @@ CREATE INDEX CONCURRENTLY idx_documents_embedding
 ON documents USING hnsw (embedding vector_cosine_ops);
 ```
 
-### 問題2: 精度が低い
+### 問題 2: 精度が低い
 
 **症状**: 期待した結果が返ってこない
 
 **原因**:
-- ef_searchが低すぎる
-- IVFFlatのlistsが多すぎる
-- Embeddingモデルの問題
+
+- ef_search が低すぎる
+- IVFFlat の lists が多すぎる
+- Embedding モデルの問題
 
 **解決策**:
+
 ```sql
 -- ef_searchを増やす
 SET hnsw.ef_search = 200;
@@ -295,15 +330,17 @@ ORDER BY embedding <=> query_embedding
 LIMIT 10;
 ```
 
-### 問題3: メモリ不足
+### 問題 3: メモリ不足
 
 **症状**: インデックス作成時にメモリエラー
 
 **原因**:
-- HNSWのmパラメータが高すぎる
+
+- HNSW の m パラメータが高すぎる
 - データ量が多すぎる
 
 **解決策**:
+
 ```sql
 -- mを下げる（デフォルト16）
 CREATE INDEX ON documents
@@ -325,18 +362,18 @@ WITH (lists = 100);
 
 ### ベクトル検索パフォーマンス指標
 
-| 指標 | 目標値 | 警告値 |
-|------|--------|--------|
-| 検索レイテンシ | < 100ms | > 500ms |
-| 精度（Recall@10） | > 95% | < 90% |
-| インデックスサイズ | - | データの2倍超 |
-| 構築時間 | < 1時間 | > 4時間 |
+| 指標               | 目標値   | 警告値          |
+| ------------------ | -------- | --------------- |
+| 検索レイテンシ     | < 100ms  | > 500ms         |
+| 精度（Recall@10）  | > 95%    | < 90%           |
+| インデックスサイズ | -        | データの 2 倍超 |
+| 構築時間           | < 1 時間 | > 4 時間        |
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-27 | 初版作成 - pgVector最適化 |
+| バージョン | 日付       | 変更内容                   |
+| ---------- | ---------- | -------------------------- |
+| 1.0.0      | 2025-11-27 | 初版作成 - pgVector 最適化 |
 
 ## 参考文献
 

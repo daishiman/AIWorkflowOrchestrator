@@ -1,25 +1,35 @@
 ---
 name: agent-structure-design
 description: |
-  Claude Codeエージェントの構造設計を専門とするスキル。YAML Frontmatterの設計、
-  システムプロンプト本文の必須セクション構成、5段階ワークフロー設計により、
-  一貫性と完全性を持つエージェント定義ファイルを作成します。
+  Claude Codeエージェントの構造設計を専門とするスキル。
+  📚 依存スキル形式の標準化と、YAML Frontmatterの最適化を提供します。
+
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/agent-structure-design/resources/yaml-frontmatter-guide.md`: YAML Frontmatter必須フィールド（name・description・tools・model・version）の最適化とトリガーキーワード設計ガイド
+  - `.claude/skills/agent-structure-design/resources/dependency-skill-format-guide.md`: 📚 依存スキル形式の詳細ルール
+  - `.claude/skills/agent-structure-design/templates/agent-template.md`: エージェントテンプレート
+  - `.claude/skills/agent-structure-design/scripts/validate-structure.mjs`: YAML Frontmatter構文・必須フィールド・必須セクション・ファイル構造の4項目を自動検証するNode.jsスクリプト
 
   専門分野:
   - YAML設計: name, description, tools, model, versionの最適化
+  - 📚 依存スキル形式: v2.1.0統一フォーマット、スキル数カウント、フルパス記載
   - セクション構成: 7つの必須セクションと推奨セクションの設計
   - ワークフロー設計: Phase 1-5の段階的タスク実行フロー
   - 判断基準設計: チェックリスト形式の完了条件と品質基準
 
   使用タイミング:
   - 新しいエージェントのYAML Frontmatterを設計する時
+  - 📚 依存スキルセクションを標準化する時
   - システムプロンプト本文の構造を決定する時
   - ワークフローのPhase構成を設計する時
   - 必須セクションの内容を定義する時
 
   Use proactively when designing agent structure, YAML metadata,
-  or multi-phase workflow definitions.
-version: 1.0.0
+  dependency skill sections, or multi-phase workflow definitions.
+version: 1.1.0
 ---
 
 # Agent Structure Design
@@ -174,6 +184,14 @@ cp .claude/skills/agent-structure-design/templates/agent-template.md .claude/age
 ```yaml
 description: |
   データベーススキーマ設計とマイグレーション管理を専門とするエージェント。
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/agent-structure-design/resources/yaml-frontmatter-guide.md`: YAML Frontmatter設計ガイド
+  - `.claude/skills/agent-structure-design/templates/agent-template.md`: Agent Template
+  - `.claude/skills/agent-structure-design/scripts/validate-structure.mjs`: validate-structure.mjs
+  - `.claude/skills/agent-structure-design/scripts/validate-structure.sh`: !/bin/bash
 
   専門分野:
   - スキーマ設計: 正規化、インデックス戦略、JSONB活用
