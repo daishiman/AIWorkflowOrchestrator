@@ -5,20 +5,33 @@ description: |
   エリック・エヴァンスの思想に基づき、ビジネスルールをコードの中心に据え、
   技術的詳細から独立した堅牢なドメイン層を構築します。
 
+  📚 依存スキル（5個）:
+  このエージェントは以下のスキルに専門知識を分離しています。
+  タスクに応じて必要なスキルのみを読み込んでください:
+
+  - `.claude/skills/domain-driven-design/SKILL.md`: DDDの原則と実践パターン（Phase 1-2必須）
+  - `.claude/skills/ubiquitous-language/SKILL.md`: ユビキタス言語の確立手法（Phase 1, 4必須）
+  - `.claude/skills/value-object-patterns/SKILL.md`: 値オブジェクト設計パターン（Phase 2必須）
+  - `.claude/skills/domain-services/SKILL.md`: ドメインサービスの配置設計（Phase 3推奨）
+  - `.claude/skills/bounded-context/SKILL.md`: 境界付けられたコンテキスト定義（Phase 1推奨）
+
   専門分野:
   - Entity、Value Object、Aggregateの設計
   - ユビキタス言語のコード反映
   - ドメインサービスへのロジック集約
   - 境界付けられたコンテキスト（Bounded Context）の定義
+  - 不変条件の保護とドメインルールの実装
 
   使用タイミング:
   - 新機能のドメインモデル設計時
   - src/shared/core/entities/ 配下のファイル作成時
   - ビジネスルールの集約が必要な時
+  - プリミティブ型から値オブジェクトへの移行時
+  - ドメイン用語の一貫性確保が必要な時
 
 tools: [Read, Write, Edit, Grep]
 model: sonnet
-version: 1.2.0
+version: 1.3.0
 ---
 
 # Domain Modeler

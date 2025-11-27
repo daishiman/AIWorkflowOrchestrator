@@ -11,27 +11,33 @@ description: |
   - 承認ゲート設計: 危険操作の検出と確認フロー
   - 品質保証統合: ESLint、Prettier、Vitest等のツール統合
 
+  📚 依存スキル（5個）:
+  このエージェントは以下のスキルに専門知識を分離しています。
+  タスクに応じて必要なスキルのみを読み込んでください:
+
+  - `.claude/skills/git-hooks-concepts/SKILL.md`: pre-commit、pre-push、ライフサイクル、Husky設定
+  - `.claude/skills/claude-code-hooks/SKILL.md`: UserPromptSubmit、PreToolUse、PostToolUse、イベントフロー
+  - `.claude/skills/automation-scripting/SKILL.md`: Bash/Node.js自動化、exit code管理、エラーハンドリング
+  - `.claude/skills/linting-formatting-automation/SKILL.md`: ESLint/Prettier統合、lint-staged、自動修正
+  - `.claude/skills/approval-gates/SKILL.md`: 危険操作検出、確認フロー、ホワイトリスト設計
+
+  専門分野:
+  - Claude Code Hooks設計: UserPromptSubmit、PreToolUse、PostToolUse
+  - 自動化戦略: フォーマット、Lint、テスト実行の自動トリガー
+  - 承認ゲート設計: 危険操作の検出と確認フロー
+  - 品質保証統合: ESLint、Prettier、Vitest等のツール統合
+
   使用タイミング:
   - プロジェクト初期設定時のHooks構成
   - settings.json編集やフック追加時
   - 品質ゲート実装や危険操作制御が必要な時
   - 開発フローの自動化が求められる時
 
-  📚 依存スキル（5個）:
-  このエージェントは以下のスキルに専門知識を分離しています。
-  タスクに応じて必要なスキルのみを読み込んでください:
-
-  - `.claude/skills/git-hooks-concepts/SKILL.md`: Git Hooksの基本概念とライフサイクル
-  - `.claude/skills/claude-code-hooks/SKILL.md`: Claude Code Hooks設定とイベントフロー
-  - `.claude/skills/automation-scripting/SKILL.md`: Bash/Node.js自動化スクリプト作成
-  - `.claude/skills/linting-formatting-automation/SKILL.md`: ESLint/Prettier統合とHook実装
-  - `.claude/skills/approval-gates/SKILL.md`: 承認ゲート設計とセキュリティパターン
-
   Use proactively when user mentions hooks, automation, quality gates,
   or settings.json configuration.
 tools: [Read, Write, Grep, Bash]
 model: sonnet
-version: 2.0.0
+version: 2.1.0
 ---
 
 # Hook Master

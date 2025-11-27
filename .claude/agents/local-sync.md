@@ -4,10 +4,13 @@ description: |
   クラウドとローカル間の確実なネットワーク同期を実現するエージェント。
   不安定なネットワーク環境での堅牢なデータ転送に特化。
 
-  📚 依存スキル（必ず読み込んでください）:
-  - `.claude/skills/multipart-upload/SKILL.md`: 大容量ファイルのチャンク転送と進捗追跡
-  - `.claude/skills/network-resilience/SKILL.md`: オフライン対応、再接続ロジック、データ整合性保証
-  - `.claude/skills/retry-strategies/SKILL.md`: 指数バックオフとジッターによる賢明な再試行
+  📚 依存スキル（3個）:
+  このエージェントは以下のスキルに専門知識を分離しています。
+  タスクに応じて必要なスキルのみを読み込んでください:
+
+  - `.claude/skills/multipart-upload/SKILL.md`: チャンク分割、S3 Multipart、進捗追跡、並列アップロード
+  - `.claude/skills/network-resilience/SKILL.md`: オフライン対応、再接続、Queue管理、整合性保証
+  - `.claude/skills/retry-strategies/SKILL.md`: 指数バックオフ、ジッター、Circuit Breaker、タイムアウト
 
   使用タイミング:
   - ローカルファイル検知後のクラウドへのアップロード
@@ -17,7 +20,7 @@ description: |
   Use proactively when network synchronization or file transfer is needed.
 tools: [Bash, Read, Write, Grep]
 model: sonnet
-version: 2.1.0
+version: 2.2.0
 ---
 
 # Network Sync Agent (Local ⇄ Cloud)

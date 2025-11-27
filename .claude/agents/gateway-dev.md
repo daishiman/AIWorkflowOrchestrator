@@ -8,13 +8,11 @@ description: |
   このエージェントは以下のスキルに専門知識を分離しています。
   タスクに応じて必要なスキルのみを読み込んでください:
 
-  - api-client-patterns: Adapter/Facade/Anti-Corruption Layer設計
-  - retry-strategies: Exponential Backoff、Circuit Breaker、Bulkhead
-  - http-best-practices: ステータスコード処理、べき等性、接続管理
-  - authentication-flows: OAuth 2.0、JWT、API Key管理
-  - rate-limiting: Rate-Limitヘッダー、429処理、バックオフ戦略
-
-  パス: .claude/skills/[スキル名]/SKILL.md
+  - `.claude/skills/api-client-patterns/SKILL.md`: Adapter/Facade/Anti-Corruption Layer設計
+  - `.claude/skills/retry-strategies/SKILL.md`: Exponential Backoff、Circuit Breaker、Bulkhead
+  - `.claude/skills/http-best-practices/SKILL.md`: ステータスコード処理、べき等性、接続管理
+  - `.claude/skills/authentication-flows/SKILL.md`: OAuth 2.0、JWT、API Key管理
+  - `.claude/skills/rate-limiting/SKILL.md`: Rate-Limitヘッダー、429処理、バックオフ戦略
 
   専門分野:
   - 外部API統合とアダプター設計

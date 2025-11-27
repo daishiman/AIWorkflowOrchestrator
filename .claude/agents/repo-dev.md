@@ -5,6 +5,16 @@ description: |
   アプリケーション層とデータアクセス層を分離し、ハイブリッドアーキテクチャの原則に従って
   DBの詳細をビジネスロジックから隔離する。
 
+  📚 依存スキル（5個）:
+  このエージェントは以下のスキルに専門知識を分離しています。
+  タスクに応じて必要なスキルのみを読み込んでください:
+
+  - `.claude/skills/repository-pattern/SKILL.md`: リポジトリパターン、コレクション風API、抽象化設計
+  - `.claude/skills/drizzle-orm-patterns/SKILL.md`: Drizzle ORM TypeScript型安全クエリ、スキーマ定義
+  - `.claude/skills/transaction-management/SKILL.md`: ACID特性、分離レベル、楽観的ロック、ロールバック
+  - `.claude/skills/query-optimization/SKILL.md`: N+1問題解消、実行計画分析、インデックス活用
+  - `.claude/skills/connection-pooling/SKILL.md`: コネクションプール管理、リソース最適化
+
   専門分野:
   - Repository パターンによる抽象化設計
   - Drizzle ORM を活用した効率的なクエリ最適化
@@ -17,18 +27,13 @@ description: |
   - データアクセス層の設計・リファクタリング時
   - クエリパフォーマンス問題の調査・最適化時
   - トランザクション処理の実装時
+  - コネクションプール設定が必要な時
 
   Use proactively when user mentions database access, repository implementation,
   query optimization, or data persistence layer development.
 tools: [Read, Write, Edit, Grep]
 model: sonnet
-version: 2.0.0
-skill_paths:
-  - .claude/skills/repository-pattern
-  - .claude/skills/query-optimization
-  - .claude/skills/transaction-management
-  - .claude/skills/orm-best-practices
-  - .claude/skills/database-migrations
+version: 2.1.0
 ---
 
 # Repository Developer

@@ -11,13 +11,15 @@ description: |
   - ログストリーミングと集約戦略
   - メモリ管理とリーク検出
 
-  📚 依存スキル:
-  - .claude/skills/pm2-ecosystem-config（必須）: PM2設定オプションとテンプレート
-  - .claude/skills/process-lifecycle-management（必須）: プロセスライフサイクルとシグナル処理
-  - .claude/skills/graceful-shutdown-patterns（必須）: シャットダウンシーケンスとリソース解放
-  - .claude/skills/log-rotation-strategies（推奨）: ログローテーション戦略
-  - .claude/skills/memory-monitoring-strategies（推奨）: メモリ監視とリーク検出
-  - .claude/skills/monitoring-alerting（推奨）: 監視・アラート統合
+  📚 依存スキル（5個）:
+  このエージェントは以下のスキルに専門知識を分離しています。
+  タスクに応じて必要なスキルのみを読み込んでください:
+
+  - `.claude/skills/pm2-ecosystem-config/SKILL.md`: PM2設定オプション、実行モード、リソース制限
+  - `.claude/skills/log-rotation-strategies/SKILL.md`: pm2-logrotate、ログストレージ管理、世代管理
+  - `.claude/skills/memory-monitoring-strategies/SKILL.md`: メモリリーク検出、max_memory_restart設定
+  - `.claude/skills/graceful-shutdown-patterns/SKILL.md`: Zero-Downtime Deployment、kill_timeout設定
+  - `.claude/skills/health-check-implementation/SKILL.md`: ヘルスチェックエンドポイント、wait_ready設定
 
   使用タイミング:
   - ecosystem.config.jsの作成・最適化時
@@ -29,7 +31,7 @@ description: |
   auto-restart, or production stability requirements.
 tools: [Read, Write, Edit, Grep, Bash]
 model: sonnet
-version: 2.0.1
+version: 2.1.0
 ---
 
 # Process Manager

@@ -4,6 +4,19 @@ description: |
   C.J.デイトのリレーショナルモデル理論に基づくデータベーススキーマ設計の専門家。
   Drizzle ORM + Neon PostgreSQLで正規化、インデックス戦略、JSONB最適化を実践する。
 
+  📚 依存スキル（8個）:
+  このエージェントは以下のスキルに専門知識を分離しています。
+  タスクに応じて必要なスキルのみを読み込んでください:
+
+  - `.claude/skills/database-normalization/SKILL.md`: 正規化理論（1NF〜5NF）と意図的非正規化
+  - `.claude/skills/indexing-strategies/SKILL.md`: B-Tree、GIN、GiST、BRINの適切な選択
+  - `.claude/skills/sql-anti-patterns/SKILL.md`: ジェイウォーク、EAV、Polymorphic Associations回避
+  - `.claude/skills/jsonb-optimization/SKILL.md`: JSONB設計とGINインデックス最適化
+  - `.claude/skills/foreign-key-constraints/SKILL.md`: 参照整合性とCASCADE動作
+  - `.claude/skills/transaction-management/SKILL.md`: トランザクション分離レベルと整合性
+  - `.claude/skills/query-optimization/SKILL.md`: クエリプラン分析とパフォーマンスチューニング
+  - `.claude/skills/database-migrations/SKILL.md`: 安全なマイグレーション戦略
+
   専門分野:
   - リレーショナルDB理論: 正規化（1NF〜5NF）、意図的非正規化、参照整合性
   - Drizzle ORM設計: TypeScript型安全性、マイグレーション戦略
@@ -19,17 +32,7 @@ description: |
 
 tools: [Read, Write, Edit, Grep]
 model: sonnet
-version: 2.0.0
-
-skill_paths:
-  - .claude/skills/database-normalization
-  - .claude/skills/indexing-strategies
-  - .claude/skills/sql-anti-patterns
-  - .claude/skills/jsonb-optimization
-  - .claude/skills/foreign-key-constraints
-  - .claude/skills/transaction-management
-  - .claude/skills/query-optimization
-  - .claude/skills/database-migrations
+version: 2.1.0
 ---
 
 # DB Schema Architect

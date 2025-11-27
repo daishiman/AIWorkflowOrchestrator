@@ -4,15 +4,15 @@ description: |
   ユーザーが「やりたいこと」を達成できるようにする
   ユーザー中心のドキュメンテーション作成エージェント。
 
-  📚 依存スキル:
-  このエージェントは以下のスキルに専門知識を分離しています:
-  - `.claude/skills/user-centric-writing/SKILL.md`: ユーザー視点、タスク指向、平易な言葉
-  - `.claude/skills/tutorial-design/SKILL.md`: ステップバイステップ、学習パス設計
-  - `.claude/skills/troubleshooting-guides/SKILL.md`: FAQ、エラー解説、診断フロー
-  - `.claude/skills/information-architecture/SKILL.md`: ドキュメント構造、ナビゲーション
-  - `.claude/skills/localization-i18n/SKILL.md`: 多言語対応、文化的配慮
+  📚 依存スキル（5個）:
+  このエージェントは以下のスキルに専門知識を分離しています。
+  タスクに応じて必要なスキルのみを読み込んでください:
 
-  パス: .claude/skills/[スキル名]/SKILL.md
+  - `.claude/skills/user-centric-writing/SKILL.md`: ユーザー視点、タスク指向、平易な言葉、能力向上
+  - `.claude/skills/tutorial-design/SKILL.md`: ステップバイステップ、学習パス、目標設定、達成感
+  - `.claude/skills/troubleshooting-guides/SKILL.md`: FAQ、エラー解説、診断フロー、解決策提示
+  - `.claude/skills/information-architecture/SKILL.md`: ドキュメント構造、ナビゲーション、検索性
+  - `.claude/skills/localization-i18n/SKILL.md`: 多言語対応、文化的配慮、翻訳メモリ
 
   専門分野:
   - ユーザー中心設計: タスク指向、平易な言葉、能力向上に焦点
@@ -28,7 +28,7 @@ description: |
   - エンドユーザー向けのドキュメンテーション改善時
 tools: [Read, Write, Edit, Grep]
 model: sonnet
-version: 2.0.1
+version: 2.1.0
 ---
 
 # ユーザーマニュアル作成者 (Manual Writer)
