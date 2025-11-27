@@ -1,26 +1,28 @@
 ---
 name: database-migrations
 description: |
-  Drizzle Kitを使用した安全なデータベースマイグレーション管理を専門とするスキル。
-  スキーマ変更の計画、マイグレーション生成、本番適用、
-  ロールバック戦略などの包括的なマイグレーションワークフローを提供します。
+  スコット・アンブラーの『Refactoring Databases』に基づく、安全で可逆的なデータベースマイグレーション管理スキル。
+  Drizzle Kitを使用したスキーマ変更の計画、マイグレーション生成、本番適用、
+  ロールバック戦略、および移行期間（Transition Period）を含む包括的なワークフローを提供します。
 
   専門分野:
-  - マイグレーション生成: drizzle-kit generateによる自動生成
-  - スキーマ変更: カラム追加、型変更、制約変更
-  - データ移行: スキーマ変更に伴うデータ変換
-  - ロールバック: 問題発生時の安全な復旧
-  - 本番適用: ダウンタイムを最小化する適用戦略
+  - 進化的スキーマ設計: 段階的変更による安全なスキーマ進化
+  - Up/Downマイグレーション: すべての変更は可逆的であること
+  - 移行期間パターン: 新旧スキーマの共存による段階的移行
+  - ゼロダウンタイム: オンラインマイグレーション戦略
+  - ロールバック設計: 問題発生時の安全な復旧
 
   使用タイミング:
   - スキーマを変更する時
   - マイグレーションを生成・適用する時
+  - 破壊的変更に移行期間を設ける時
   - 本番環境にデプロイする時
   - 問題発生時にロールバックする時
 
   Use proactively when modifying database schemas,
-  generating migrations, or planning production deployments.
-version: 1.0.0
+  generating migrations, designing transition periods,
+  or planning production deployments.
+version: 1.1.0
 ---
 
 # Database Migrations
@@ -51,11 +53,15 @@ database-migrations/
 │   ├── drizzle-kit-commands.md                # Drizzle Kitコマンド
 │   ├── migration-strategies.md                 # マイグレーション戦略
 │   ├── schema-change-patterns.md              # スキーマ変更パターン
-│   └── rollback-procedures.md                 # ロールバック手順
+│   ├── rollback-procedures.md                 # ロールバック手順
+│   ├── transition-period-patterns.md          # 移行期間パターン（新旧スキーマ共存）
+│   └── zero-downtime-patterns.md              # ゼロダウンタイムマイグレーション
 ├── scripts/
-│   └── check-migration-safety.mjs             # 安全性チェック
+│   ├── check-migration-safety.mjs             # 安全性チェック
+│   └── generate-rollback.mjs                  # ロールバックSQL生成
 └── templates/
-    └── migration-plan-template.md              # 計画テンプレート
+    ├── migration-plan-template.md             # 計画テンプレート
+    └── migration-checklist.md                 # マイグレーションチェックリスト
 ```
 
 ## コマンドリファレンス
@@ -74,6 +80,22 @@ cat .claude/skills/database-migrations/resources/schema-change-patterns.md
 
 # ロールバック手順
 cat .claude/skills/database-migrations/resources/rollback-procedures.md
+
+# 移行期間パターン（新旧スキーマ共存）
+cat .claude/skills/database-migrations/resources/transition-period-patterns.md
+
+# ゼロダウンタイムマイグレーション
+cat .claude/skills/database-migrations/resources/zero-downtime-patterns.md
+```
+
+### スクリプト実行
+
+```bash
+# マイグレーション安全性チェック
+node .claude/skills/database-migrations/scripts/check-migration-safety.mjs <migration.sql>
+
+# ロールバックSQL自動生成
+node .claude/skills/database-migrations/scripts/generate-rollback.mjs <migration.sql>
 ```
 
 ### テンプレート参照
@@ -81,6 +103,9 @@ cat .claude/skills/database-migrations/resources/rollback-procedures.md
 ```bash
 # 計画テンプレート
 cat .claude/skills/database-migrations/templates/migration-plan-template.md
+
+# マイグレーションチェックリスト
+cat .claude/skills/database-migrations/templates/migration-checklist.md
 ```
 
 ## いつ使うか

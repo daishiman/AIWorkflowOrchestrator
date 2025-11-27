@@ -451,18 +451,20 @@
 ## 27. データベース管理者 (DBA)
 
 - **エージェント名:** `@dba-mgr`
-- **エージェントの配置:** `.claude/agents/dep-mgr.md`
+- **エージェントの配置:** `.claude/agents/dba-mgr.md`
 
 ```markdown
 - **必要なスキル**:
 
-| スキル名                     | 概要                                                      |
-| ---------------------------- | --------------------------------------------------------- |
-| **database-migrations**      | スキーマバージョニング、Up/Down マイグレーション          |
-| **backup-recovery**          | バックアップ戦略、PITR、復旧手順                          |
-| **query-performance-tuning** | EXPLAIN ANALYZE、実行計画最適化、インデックスチューニング |
-| **database-seeding**         | 初期データ投入、テストデータ生成                          |
-| **connection-pooling**       | コネクションプール設定、最大接続数調整                    |
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **database-migrations** | `.claude/skills/database-migrations/SKILL.md` | Drizzle ORM マイグレーション、Up/Down可逆的変更、移行期間パターン |
+| **backup-recovery** | `.claude/skills/backup-recovery/SKILL.md` | 多層防御バックアップ、PITR、RPO/RTO設計、災害復旧計画 |
+| **query-performance-tuning** | `.claude/skills/query-performance-tuning/SKILL.md` | EXPLAIN ANALYZE、インデックス戦略、N+1問題解決 |
+| **database-seeding** | `.claude/skills/database-seeding/SKILL.md` | 環境別Seeding、べき等性設計、ファクトリパターン |
+| **connection-pooling** | `.claude/skills/connection-pooling/SKILL.md` | サーバーレス対応、接続数最適化、タイムアウト設定 |
+| **pgvector-optimization** | `.claude/skills/pgvector-optimization/SKILL.md` | ベクトルDB設計、HNSW/IVFFlat、RAGパターン |
+| **database-monitoring** | `.claude/skills/database-monitoring/SKILL.md` | PostgreSQL統計、スロークエリ監視、アラート設計 |
 ```
 
 ## 28. API ドキュメント作成者
@@ -507,13 +509,13 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                           | 概要                                               |
-| ---------------------------------- | -------------------------------------------------- |
-| **semantic-versioning**            | Major、Minor、Patch バージョン理解、破壊的変更対応 |
-| **dependency-auditing**            | npm audit、脆弱性スキャン、依存関係グラフ分析      |
-| **lock-file-management**           | package-lock.json、yarn.lock、依存固定             |
-| **upgrade-strategies**             | 段階的アップグレード、互換性テスト                 |
-| **monorepo-dependency-management** | Workspace、パッケージ共有、バージョン統一          |
+| スキル名                           | パス | 概要                                               |
+| ---------------------------------- | ---- | -------------------------------------------------- |
+| **semantic-versioning**            | `.claude/skills/semantic-versioning/SKILL.md` | Major、Minor、Patch バージョン理解、破壊的変更対応 |
+| **dependency-auditing**            | `.claude/skills/dependency-auditing/SKILL.md` | npm/pnpm audit、CVSS評価、脆弱性スキャン      |
+| **lock-file-management**           | `.claude/skills/lock-file-management/SKILL.md` | pnpm-lock.yaml、整合性検証、競合解決             |
+| **upgrade-strategies**             | `.claude/skills/upgrade-strategies/SKILL.md` | 段階的アップグレード、TDD統合、ロールバック                 |
+| **monorepo-dependency-management** | `.claude/skills/monorepo-dependency-management/SKILL.md` | pnpm Workspace、バージョン同期、影響分析          |
 ```
 
 ## 31. フック構成管理者
@@ -752,7 +754,7 @@
 
 ## 新規スキル - APIドキュメント関連 (2025-11-27 追加)
 
-以下のスキルは @api-doc-writer エージェント v2.0.0 軽量化に伴い作成されました:
+以下のスキルは @api-doc-writer エージェント v2.1.0 軽量化に伴い作成されました:
 
 | スキル名 | パス | 概要 |
 |---------|------|------|
@@ -761,3 +763,49 @@
 | **api-versioning** | `.claude/skills/api-versioning/SKILL.md` | バージョニング戦略（URL Path/Header/Query）、非推奨化プロセス、破壊的変更管理 |
 | **request-response-examples** | `.claude/skills/request-response-examples/SKILL.md` | cURL/SDK別サンプル、RFC 7807エラーレスポンス、エラーカタログ |
 | **authentication-docs** | `.claude/skills/authentication-docs/SKILL.md` | OAuth 2.0フロー図解、トークン管理、セキュリティベストプラクティス |
+
+---
+
+## 新規スキル - ユーザーマニュアル作成関連 (2025-11-27 追加)
+
+以下のスキルは @manual-writer エージェント軽量化（v2.0.0）により作成されました:
+
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **user-centric-writing** | `.claude/skills/user-centric-writing/SKILL.md` | ユーザー中心ライティング、Kathy Sierraの5原則、タスク指向、平易な言葉、Flesch可読性測定スクリプト |
+| **tutorial-design** | `.claude/skills/tutorial-design/SKILL.md` | チュートリアル設計、3段階学習パスモデル、ステップバイステップ構造、完了時間見積もりスクリプト |
+| **troubleshooting-guides** | `.claude/skills/troubleshooting-guides/SKILL.md` | 診断フロー設計、エラー分類体系（1000-5999）、FAQ構造設計、解決策優先度付け |
+| **information-architecture** | `.claude/skills/information-architecture/SKILL.md` | ドキュメント階層設計、3クリックルール、ナビゲーションパターン、サイトマップテンプレート、リンク検証スクリプト |
+| **localization-i18n** | `.claude/skills/localization-i18n/SKILL.md` | 国際化対応、翻訳しやすい文章設計、多言語ディレクトリ構造、文化的配慮、翻訳準備度チェックスクリプト |
+
+### スキル詳細
+
+#### user-centric-writing
+- **パス**: `.claude/skills/user-centric-writing/SKILL.md`
+- **リソース**: `resources/plain-language-guide.md` - 平易な言葉ガイド、技術用語→日常語変換辞書
+- **テンプレート**: `templates/persona-template.md` - ユーザーペルソナ定義テンプレート
+- **スクリプト**: `scripts/measure-readability.mjs` - Flesch Reading Ease スコア測定
+
+#### tutorial-design
+- **パス**: `.claude/skills/tutorial-design/SKILL.md`
+- **リソース**: `resources/learning-path-design.md` - 学習パス設計ガイド（レベル1-3構造）
+- **テンプレート**: `templates/tutorial-template.md` - 標準チュートリアルテンプレート
+- **スクリプト**: `scripts/estimate-completion-time.mjs` - チュートリアル完了時間見積もり
+
+#### troubleshooting-guides
+- **パス**: `.claude/skills/troubleshooting-guides/SKILL.md`
+- **リソース**: `resources/problem-classification.md` - 問題分類とエスカレーションフロー
+- **テンプレート**: `templates/diagnosis-flow-template.md` - 診断フローチャートテンプレート
+- **テンプレート**: `templates/error-explanation-template.md` - エラー解説テンプレート
+
+#### information-architecture
+- **パス**: `.claude/skills/information-architecture/SKILL.md`
+- **リソース**: `resources/navigation-patterns.md` - ナビゲーション設計パターン集
+- **テンプレート**: `templates/sitemap-template.md` - サイトマップ設計テンプレート
+- **スクリプト**: `scripts/validate-links.mjs` - 内部リンク整合性検証
+
+#### localization-i18n
+- **パス**: `.claude/skills/localization-i18n/SKILL.md`
+- **リソース**: `resources/translation-ready-writing.md` - 翻訳準備ライティングガイド
+- **テンプレート**: `templates/multilingual-doc-template.md` - 多言語ドキュメント構造テンプレート
+- **スクリプト**: `scripts/check-translation-ready.mjs` - 翻訳準備度チェック・スコアリング
