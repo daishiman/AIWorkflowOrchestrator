@@ -1,43 +1,99 @@
-# Rate Limiting スキル
+---
+name: rate-limiting
+description: |
+  Rate Limitingとクォータ管理のベストプラクティスを提供します。
+  外部APIのレート制限を適切に処理し、サーバー側・クライアント側両方の
+  観点からRate Limitingを実装するためのパターンを提供します。
+
+  専門分野:
+  - レート制限アルゴリズム: Token Bucket、Leaky Bucket、Sliding Window
+  - クライアント側対応: 429レスポンス処理、Retry-After、バックオフ戦略
+  - サーバー側実装: ミドルウェア設計、分散レート制限、Redis実装
+  - クォータ管理: 使用量追跡、クォータアラート、階層型制限
+
+  使用タイミング:
+  - APIのRate Limiting設計時
+  - DoS/DDoS攻撃対策の実装時
+  - 外部APIクライアントの実装時
+  - クォータ管理システムの設計時
+
+  Use proactively when designing API rate limiting, implementing DoS protection,
+  or building external API clients that need to handle rate limits.
+version: 1.1.0
+related_skills:
+  - .claude/skills/retry-strategies/SKILL.md
+  - .claude/skills/http-best-practices/SKILL.md
+  - .claude/skills/api-client-patterns/SKILL.md
+---
+
+# Rate Limiting
 
 ## 概要
 
-外部APIのレート制限を適切に処理し、クライアント側でも
-レート制限を実装するためのパターンとベストプラクティスを提供します。
-サーバー側・クライアント側両方の観点をカバーします。
+このスキルは、Rate Limitingとクォータ管理のベストプラクティスを提供します。
+外部APIのレート制限を適切に処理し、サーバー側・クライアント側両方の観点から
+Rate Limitingを実装するためのパターンを提供します。
 
-## 対象エージェント
+**主要な価値**:
+- DoS/DDoS攻撃からの保護
+- サービス品質の維持
+- リソースの公平な配分
+- コスト管理と予測可能性
 
-- @gateway-dev
-- @backend-architect
-- @performance-engineer
+**対象ユーザー**:
+- @sec-auditor: セキュリティ監査時のRate Limiting評価
+- @gateway-dev: APIゲートウェイのRate Limiting設計
+- @backend-architect: バックエンドサービスのRate Limiting実装
 
-## 含まれるリソース
+## リソース構造
 
-### 1. レート制限アルゴリズム (resources/algorithms.md)
-- Token Bucket
-- Leaky Bucket
-- Fixed Window
-- Sliding Window Log
-- Sliding Window Counter
+```
+rate-limiting/
+├── SKILL.md                              # 本ファイル（概要とワークフロー）
+├── resources/
+│   ├── algorithms.md                     # レート制限アルゴリズム詳細
+│   ├── client-handling.md                # クライアント側対応パターン
+│   ├── server-implementation.md          # サーバー側実装パターン
+│   └── quota-management.md               # クォータ管理詳細
+├── scripts/
+│   └── simulate-rate-limit.mjs           # レート制限シミュレーションスクリプト
+└── templates/
+    └── rate-limiter-template.ts          # Rate Limiterテンプレート
+```
 
-### 2. クライアント側対応 (resources/client-handling.md)
-- 429レスポンス処理
-- Retry-Afterヘッダー
-- バックオフ戦略
-- キュー管理
+## コマンドリファレンス
 
-### 3. サーバー側実装 (resources/server-implementation.md)
-- ミドルウェア設計
-- 分散レート制限
-- Redisベースの実装
-- グレースフルデグラデーション
+このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
 
-### 4. クォータ管理 (resources/quota-management.md)
-- 使用量追跡
-- クォータアラート
-- 階層型制限
-- バースト許容
+### リソース読み取り
+
+```bash
+# レート制限アルゴリズム詳細
+cat .claude/skills/rate-limiting/resources/algorithms.md
+
+# クライアント側対応パターン
+cat .claude/skills/rate-limiting/resources/client-handling.md
+
+# サーバー側実装パターン
+cat .claude/skills/rate-limiting/resources/server-implementation.md
+
+# クォータ管理詳細
+cat .claude/skills/rate-limiting/resources/quota-management.md
+```
+
+### スクリプト実行
+
+```bash
+# レート制限シミュレーション
+node .claude/skills/rate-limiting/scripts/simulate-rate-limit.mjs <config-file>
+```
+
+### テンプレート参照
+
+```bash
+# Rate Limiterテンプレート
+cat .claude/skills/rate-limiting/templates/rate-limiter-template.ts
+```
 
 ## ワークフロー
 
@@ -209,6 +265,6 @@ const key = req.user?.id || req.ip;
 
 ## 関連スキル
 
-- retry-strategies: リトライ・サーキットブレーカー
-- http-best-practices: HTTPベストプラクティス
-- api-client-patterns: APIクライアント実装パターン
+- `.claude/skills/retry-strategies/SKILL.md`: リトライ・サーキットブレーカー
+- `.claude/skills/http-best-practices/SKILL.md`: HTTPベストプラクティス
+- `.claude/skills/api-client-patterns/SKILL.md`: APIクライアント実装パターン

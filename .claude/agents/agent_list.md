@@ -635,16 +635,13 @@
 - **必要なスキル**:
   | スキル名 | パス | 概要 |
   | ------------------------------- | ------ | ------------------------------------------------ |
-  | **owasp-top-10** | `.claude/skills/owasp-top-10/SKILL.md` | SQL インジェクション、XSS、CSRF 等の対策 |
-  | **vulnerability-scanning** | `.claude/skills/vulnerability-scanning/SKILL.md` | npm audit、Snyk、SAST/DAST ツール活用 |
   | **authentication-authorization-security** | `.claude/skills/authentication-authorization-security/SKILL.md` | 認証・認可機構のセキュリティ評価、OAuth、JWT、RBAC |
   | **cryptographic-practices** | `.claude/skills/cryptographic-practices/SKILL.md` | 暗号化アルゴリズム、CSPRNG、鍵管理 |
   | **security-configuration-review** | `.claude/skills/security-configuration-review/SKILL.md` | セキュリティヘッダー、CORS、環境変数レビュー |
   | **dependency-security-scanning** | `.claude/skills/dependency-security-scanning/SKILL.md` | 依存関係脆弱性、npm audit、CVE評価 |
   | **code-static-analysis-security** | `.claude/skills/code-static-analysis-security/SKILL.md` | SQLインジェクション、XSS、コマンドインジェクション検出 |
-  | **rate-limiting-strategies** | `.claude/skills/rate-limiting-strategies/SKILL.md` | Token Bucket、Leaky Bucket、Sliding Window |
-  | **input-sanitization-advanced** | `.claude/skills/input-sanitization-advanced/SKILL.md` | パラメータタンパリング防止、エンコード処理 |
-  | **security-testing** | `.claude/skills/security-testing/SKILL.md` | ペネトレーションテスト、セキュリティテストケース |
+  | **rate-limiting** | `.claude/skills/rate-limiting/SKILL.md` | Token Bucket、Leaky Bucket、Sliding Window |
+  | **input-sanitization** | `.claude/skills/input-sanitization/SKILL.md` | パラメータタンパリング防止、エンコード処理 |
   | **security-reporting** | `.claude/skills/security-reporting/SKILL.md` | セキュリティレポート生成、リスク評価 |
 
 #### 25. 機密情報管理者
@@ -1091,7 +1088,7 @@
 | @e2e-tester             | 5        | テスト/E2E                        |
 | @code-quality           | 5        | 品質管理/静的解析                 |
 | @auth-specialist        | 5        | セキュリティ/認証                 |
-| @sec-auditor            | 5        | セキュリティ/脆弱性               |
+| @sec-auditor            | 8        | セキュリティ/脆弱性               |
 | @secret-mgr             | 13       | セキュリティ/機密情報             |
 | @sre-observer           | 5        | SRE/可観測性                      |
 | @dba-mgr                | 7        | データベース/運用                 |

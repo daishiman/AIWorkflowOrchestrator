@@ -421,13 +421,16 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                        | 概要                                             |
-| ------------------------------- | ------------------------------------------------ |
-| **owasp-top-10**                | SQL インジェクション、XSS、CSRF 等の対策         |
-| **vulnerability-scanning**      | npm audit、Snyk、SAST/DAST ツール活用            |
-| **rate-limiting-strategies**    | Token Bucket、Leaky Bucket、Sliding Window       |
-| **input-sanitization-advanced** | パラメータタンパリング防止、エンコード処理       |
-| **security-testing**            | ペネトレーションテスト、セキュリティテストケース |
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **authentication-authorization-security** | `.claude/skills/authentication-authorization-security/SKILL.md` | 認証・認可機構のセキュリティ評価、OAuth、JWT、RBAC |
+| **cryptographic-practices** | `.claude/skills/cryptographic-practices/SKILL.md` | 暗号化アルゴリズム、CSPRNG、鍵管理 |
+| **security-configuration-review** | `.claude/skills/security-configuration-review/SKILL.md` | セキュリティヘッダー、CORS、環境変数レビュー |
+| **dependency-security-scanning** | `.claude/skills/dependency-security-scanning/SKILL.md` | 依存関係脆弱性、npm audit、CVE評価 |
+| **code-static-analysis-security** | `.claude/skills/code-static-analysis-security/SKILL.md` | SQLインジェクション、XSS、コマンドインジェクション検出 |
+| **rate-limiting** | `.claude/skills/rate-limiting/SKILL.md` | Token Bucket、Leaky Bucket、Sliding Window |
+| **input-sanitization** | `.claude/skills/input-sanitization/SKILL.md` | パラメータタンパリング防止、エンコード処理 |
+| **security-reporting** | `.claude/skills/security-reporting/SKILL.md` | セキュリティレポート生成、リスク評価 |
 ```
 
 
