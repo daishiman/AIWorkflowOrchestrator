@@ -1,0 +1,382 @@
+name: Debug Workflow
+
+# このテンプレートは、デバッグログを有効化した診断用ワークフローです。
+# エラーが発生したワークフローの調査に使用してください。
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+  workflow_dispatch:  # 手動実行可能
+
+# デバッグログを有効化するには、リポジトリシークレットに以下を設定:
+# - ACTIONS_STEP_DEBUG=true
+# - ACTIONS_RUNNER_DEBUG=true (より詳細、大量のログ)
+
+jobs:
+  debug-basic:
+    name: Basic Diagnostics
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Enable debug logging
+        run: |
+          echo "::debug::Debug logging is enabled"
+          echo "Step debug: ${{ secrets.ACTIONS_STEP_DEBUG }}"
+          echo "Runner debug: ${{ secrets.ACTIONS_RUNNER_DEBUG }}"
+
+      - name: Dump all contexts
+        run: |
+          echo "::group::GitHub Context"
+          echo '${{ toJSON(github) }}'
+          echo "::endgroup::"
+
+          echo "::group::Env Context"
+          echo '${{ toJSON(env) }}'
+          echo "::endgroup::"
+
+          echo "::group::Job Context"
+          echo '${{ toJSON(job) }}'
+          echo "::endgroup::"
+
+          echo "::group::Runner Context"
+          echo '${{ toJSON(runner) }}'
+          echo "::endgroup::"
+
+      - name: System information
+        run: |
+          echo "::group::OS Information"
+          cat /etc/os-release
+          uname -a
+          echo "::endgroup::"
+
+          echo "::group::Resources"
+          echo "CPU cores: $(nproc)"
+          free -h
+          df -h
+          echo "::endgroup::"
+
+          echo "::group::Network"
+          ip addr show || ifconfig
+          echo "::endgroup::"
+
+      - name: Installed tools
+        run: |
+          echo "::group::Language Runtimes"
+          echo "Node.js: $(node --version)"
+          echo "npm: $(npm --version)"
+          echo "Python: $(python --version 2>&1)"
+          echo "pip: $(pip --version 2>&1)"
+          echo "::endgroup::"
+
+          echo "::group::Build Tools"
+          echo "Git: $(git --version)"
+          echo "Docker: $(docker --version)"
+          echo "Docker Compose: $(docker-compose --version)"
+          echo "::endgroup::"
+
+      - name: Environment variables
+        run: |
+          echo "::group::GitHub Variables"
+          env | grep GITHUB_ | sort
+          echo "::endgroup::"
+
+          echo "::group::Runner Variables"
+          env | grep RUNNER_ | sort
+          echo "::endgroup::"
+
+  debug-permissions:
+    name: Permission Diagnostics
+    runs-on: ubuntu-latest
+
+    # 権限を明示的に設定
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: read
+
+    steps:
+      - name: Check GitHub token permissions
+        run: |
+          echo "::group::Token Info"
+          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+               https://api.github.com/user
+          echo "::endgroup::"
+
+          echo "::group::Rate Limit"
+          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+               https://api.github.com/rate_limit
+          echo "::endgroup::"
+
+      - name: Repository access test
+        run: |
+          echo "::group::Repository Info"
+          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+               https://api.github.com/repos/${{ github.repository }}
+          echo "::endgroup::"
+
+  debug-cache:
+    name: Cache Diagnostics
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Check cache directories
+        run: |
+          echo "::group::npm cache"
+          npm cache verify
+          du -sh ~/.npm 2>/dev/null || echo "No npm cache"
+          echo "::endgroup::"
+
+      - name: Cache key information
+        run: |
+          echo "::group::Cache Keys"
+          echo "OS: ${{ runner.os }}"
+          echo "Package lock hash: ${{ hashFiles('**/package-lock.json') }}"
+          echo "::endgroup::"
+
+      - name: Test cache
+        uses: actions/cache@v4
+        id: test-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Cache result
+        run: |
+          echo "::group::Cache Status"
+          echo "Cache hit: ${{ steps.test-cache.outputs.cache-hit }}"
+          echo "Cache matched key: ${{ steps.test-cache.outputs.cache-matched-key }}"
+          echo "::endgroup::"
+
+  debug-network:
+    name: Network Diagnostics
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: DNS and connectivity
+        run: |
+          echo "::group::DNS Configuration"
+          cat /etc/resolv.conf
+          echo "::endgroup::"
+
+          echo "::group::DNS Lookup"
+          nslookup github.com || echo "nslookup failed"
+          dig github.com || echo "dig failed"
+          echo "::endgroup::"
+
+          echo "::group::Connectivity Tests"
+          ping -c 3 github.com || echo "ping failed"
+          curl -I https://github.com
+          curl -I https://api.github.com
+          echo "::endgroup::"
+
+      - name: Port and connections
+        run: |
+          echo "::group::Listening Ports"
+          ss -tuln || netstat -tuln
+          echo "::endgroup::"
+
+          echo "::group::Active Connections"
+          ss -ant | grep ESTAB || netstat -ant | grep ESTABLISHED
+          echo "::endgroup::"
+
+  debug-failure-simulation:
+    name: Failure Handling Diagnostics
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Intentional failure
+        id: fail-step
+        run: |
+          echo "::debug::This step will fail intentionally"
+          exit 1
+        continue-on-error: true
+
+      - name: Check failure status
+        run: |
+          echo "::group::Step Status"
+          echo "Outcome: ${{ steps.fail-step.outcome }}"
+          echo "Conclusion: ${{ steps.fail-step.conclusion }}"
+          echo "::endgroup::"
+
+      - name: Diagnostic on failure
+        if: steps.fail-step.outcome == 'failure'
+        run: |
+          echo "::group::System State After Failure"
+          df -h
+          free -h
+          ps aux --sort=-%mem | head -10
+          echo "::endgroup::"
+
+          echo "::group::Environment Dump"
+          env | sort
+          echo "::endgroup::"
+
+  debug-timeout:
+    name: Timeout Diagnostics
+    runs-on: ubuntu-latest
+    timeout-minutes: 5  # ジョブ全体のタイムアウト
+
+    steps:
+      - name: Quick task
+        timeout-minutes: 1  # ステップごとのタイムアウト
+        run: |
+          echo "This task completes quickly"
+          sleep 5
+
+      - name: Check timing
+        run: |
+          echo "::group::Timing Information"
+          echo "Started at: $(date)"
+          echo "Job timeout: 5 minutes"
+          echo "::endgroup::"
+
+  debug-artifacts:
+    name: Artifact Diagnostics
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create debug artifacts
+        run: |
+          mkdir -p debug-output
+
+          # システム情報
+          uname -a > debug-output/system-info.txt
+          free -h > debug-output/memory.txt
+          df -h > debug-output/disk.txt
+
+          # 環境変数
+          env | sort > debug-output/environment.txt
+
+          # ネットワーク
+          ip addr show > debug-output/network.txt 2>&1 || ifconfig > debug-output/network.txt 2>&1
+
+      - name: Upload debug artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-diagnostics
+          path: debug-output/
+          retention-days: 7
+          if-no-files-found: error
+
+      - name: Verify artifacts
+        run: |
+          echo "::group::Artifact Contents"
+          ls -lah debug-output/
+          echo "::endgroup::"
+
+          echo "::group::Artifact Sizes"
+          du -h debug-output/*
+          echo "::endgroup::"
+
+  debug-matrix:
+    name: Matrix Build Diagnostics
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [18, 20]
+      fail-fast: false  # 他のジョブを継続
+
+    steps:
+      - name: Environment info
+        run: |
+          echo "OS: ${{ matrix.os }}"
+          echo "Node: ${{ matrix.node }}"
+          echo "Runner OS: ${{ runner.os }}"
+          echo "Runner Arch: ${{ runner.arch }}"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Verify Node.js
+        run: |
+          node --version
+          npm --version
+
+  debug-secrets:
+    name: Secrets Diagnostics
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Test secret availability
+        run: |
+          echo "::group::Secret Status"
+
+          # シークレットは自動的にマスクされる
+          if [ -n "${{ secrets.GITHUB_TOKEN }}" ]; then
+            echo "GITHUB_TOKEN: available (masked)"
+          else
+            echo "GITHUB_TOKEN: not available"
+          fi
+
+          # カスタムシークレットのチェック（存在する場合）
+          if [ -n "${{ secrets.ACTIONS_STEP_DEBUG }}" ]; then
+            echo "ACTIONS_STEP_DEBUG: available"
+          else
+            echo "ACTIONS_STEP_DEBUG: not set"
+          fi
+
+          echo "::endgroup::"
+
+      - name: Test secret masking
+        run: |
+          echo "::group::Masking Test"
+
+          # この出力は自動的にマスクされる
+          echo "Token length: ${#GITHUB_TOKEN}"
+
+          # カスタム値をマスク
+          SENSITIVE_VALUE="secret123"
+          echo "::add-mask::$SENSITIVE_VALUE"
+          echo "Masked value: $SENSITIVE_VALUE"
+
+          echo "::endgroup::"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  debug-summary:
+    name: Debug Summary
+    runs-on: ubuntu-latest
+    needs: [debug-basic, debug-permissions, debug-cache, debug-network, debug-artifacts]
+    if: always()
+
+    steps:
+      - name: Generate summary
+        run: |
+          echo "# Debug Workflow Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Job Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Basic Diagnostics: ${{ needs.debug-basic.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Permission Diagnostics: ${{ needs.debug-permissions.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Cache Diagnostics: ${{ needs.debug-cache.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Network Diagnostics: ${{ needs.debug-network.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Artifact Diagnostics: ${{ needs.debug-artifacts.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Workflow Info" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Run ID: ${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Run Number: ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Actor: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Event: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Ref: ${{ github.ref }}" >> $GITHUB_STEP_SUMMARY

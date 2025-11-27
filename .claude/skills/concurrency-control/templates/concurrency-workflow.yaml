@@ -1,0 +1,465 @@
+# GitHub Actions Concurrency Control Templates
+
+# ============================================================================
+# 1. 本番デプロイメント（順次実行）
+# ============================================================================
+production-deploy-sequential:
+  name: Production Deploy (Sequential)
+
+  on:
+    push:
+      branches: [main]
+
+  # すべてのデプロイを順次実行（キャンセルなし）
+  concurrency:
+    group: production-deploy
+    cancel-in-progress: false
+
+  jobs:
+    deploy:
+      runs-on: ubuntu-latest
+      environment:
+        name: production
+        url: https://example.com
+
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Deploy to production
+          run: |
+            echo "Deploying to production..."
+            ./scripts/deploy.sh production
+
+        - name: Verify deployment
+          run: |
+            echo "Verifying deployment..."
+            ./scripts/verify.sh production
+
+# ============================================================================
+# 2. PR ビルド（最新のみ実行）
+# ============================================================================
+pr-build-latest-only:
+  name: PR Build (Latest Only)
+
+  on:
+    pull_request:
+
+  # 新しいコミットで古いビルドをキャンセル
+  concurrency:
+    group: pr-build-${{ github.ref }}
+    cancel-in-progress: true
+
+  jobs:
+    build:
+      runs-on: ubuntu-latest
+
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Build
+          run: npm run build
+
+        - name: Test
+          run: npm test
+
+# ============================================================================
+# 3. 環境ベースの並行実行制御
+# ============================================================================
+environment-based-concurrency:
+  name: Deploy to Multiple Environments
+
+  on:
+    push:
+      branches: [main, develop]
+
+  jobs:
+    deploy:
+      runs-on: ubuntu-latest
+      strategy:
+        matrix:
+          environment: [development, staging, production]
+
+      # 環境ごとに独立したキュー
+      concurrency:
+        group: deploy-${{ matrix.environment }}
+        cancel-in-progress: ${{ matrix.environment != 'production' }}
+
+      environment:
+        name: ${{ matrix.environment }}
+
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Deploy to ${{ matrix.environment }}
+          run: |
+            echo "Deploying to ${{ matrix.environment }}..."
+            ./scripts/deploy.sh ${{ matrix.environment }}
+
+# ============================================================================
+# 4. 条件付き並行実行制御
+# ============================================================================
+conditional-concurrency:
+  name: Deploy with Conditional Concurrency
+
+  on:
+    push:
+      branches: ['**']
+
+  # main ブランチは順次、その他は最新のみ
+  concurrency:
+    group: deploy-${{ github.ref }}
+    cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+  jobs:
+    deploy:
+      runs-on: ubuntu-latest
+
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Determine environment
+          id: env
+          run: |
+            if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+              echo "environment=production" >> $GITHUB_OUTPUT
+            else
+              echo "environment=staging" >> $GITHUB_OUTPUT
+            fi
+
+        - name: Deploy
+          run: |
+            echo "Deploying to ${{ steps.env.outputs.environment }}..."
+            ./scripts/deploy.sh ${{ steps.env.outputs.environment }}
+
+# ============================================================================
+# 5. ジョブレベルの並行実行制御
+# ============================================================================
+job-level-concurrency:
+  name: Multi-Job with Different Concurrency
+
+  on: [push]
+
+  jobs:
+    # テストは最新のみ実行
+    test:
+      runs-on: ubuntu-latest
+      concurrency:
+        group: test-${{ github.ref }}
+        cancel-in-progress: true
+
+      steps:
+        - uses: actions/checkout@v4
+        - name: Run tests
+          run: npm test
+
+    # デプロイは順次実行
+    deploy:
+      needs: test
+      runs-on: ubuntu-latest
+      concurrency:
+        group: production-deploy
+        cancel-in-progress: false
+
+      steps:
+        - uses: actions/checkout@v4
+        - name: Deploy
+          run: ./scripts/deploy.sh
+
+# ============================================================================
+# 6. データベースマイグレーション（排他制御）
+# ============================================================================
+database-migration:
+  name: Database Migration
+
+  on:
+    workflow_dispatch:
+
+  # マイグレーションは絶対に同時実行させない
+  concurrency:
+    group: db-migration
+    cancel-in-progress: false
+
+  jobs:
+    migrate:
+      runs-on: ubuntu-latest
+      environment: production
+
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Wait for active migrations
+          run: |
+            echo "Checking for active migrations..."
+            ACTIVE=$(gh api repos/${{ github.repository }}/actions/runs \
+              --jq '[.workflow_runs[] | select(.status == "in_progress" and .name == "Database Migration")] | length')
+            echo "Active migrations: $ACTIVE"
+
+        - name: Run migration
+          run: |
+            echo "Running database migration..."
+            ./scripts/migrate.sh
+
+        - name: Verify migration
+          run: |
+            echo "Verifying migration..."
+            ./scripts/verify-migration.sh
+
+# ============================================================================
+# 7. リリース作成（順次実行）
+# ============================================================================
+release-creation:
+  name: Create Release
+
+  on:
+    push:
+      tags:
+        - 'v*'
+
+  # リリースは順次作成（タグの競合を防止）
+  concurrency:
+    group: create-release
+    cancel-in-progress: false
+
+  jobs:
+    release:
+      runs-on: ubuntu-latest
+
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Check tag uniqueness
+          run: |
+            TAG_NAME=${GITHUB_REF#refs/tags/}
+            if gh release view "$TAG_NAME" &>/dev/null; then
+              echo "Release $TAG_NAME already exists"
+              exit 1
+            fi
+
+        - name: Build artifacts
+          run: |
+            echo "Building release artifacts..."
+            npm run build
+
+        - name: Create GitHub Release
+          uses: softprops/action-gh-release@v1
+          with:
+            files: dist/*
+            generate_release_notes: true
+
+# ============================================================================
+# 8. 複数ワークフローの協調制御
+# ============================================================================
+coordinated-workflows:
+  name: Coordinated Deploy
+
+  on:
+    workflow_dispatch:
+
+  # 複数のワークフローで同じグループを使用
+  concurrency:
+    group: shared-deploy-group
+    cancel-in-progress: false
+
+  jobs:
+    deploy:
+      runs-on: ubuntu-latest
+
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Check other workflows
+          run: |
+            echo "Checking for other active workflows in the same group..."
+            ACTIVE=$(gh api repos/${{ github.repository }}/actions/runs \
+              --jq '[.workflow_runs[] | select(.status == "in_progress")] | length')
+            echo "Active workflows: $ACTIVE"
+
+        - name: Deploy
+          run: ./scripts/deploy.sh
+
+# ============================================================================
+# 9. デプロイキューの実装
+# ============================================================================
+deployment-queue:
+  name: Deployment Queue
+
+  on:
+    push:
+      branches: [main]
+
+  concurrency:
+    group: production-deploy-queue
+    cancel-in-progress: false
+
+  jobs:
+    queue-info:
+      runs-on: ubuntu-latest
+      outputs:
+        position: ${{ steps.queue.outputs.position }}
+
+      steps:
+        - name: Get queue position
+          id: queue
+          run: |
+            POSITION=$(gh api repos/${{ github.repository }}/actions/runs \
+              --jq '[.workflow_runs[] | select(.status == "queued" or .status == "in_progress")] | length')
+            echo "position=$POSITION" >> $GITHUB_OUTPUT
+            echo "Queue position: $POSITION"
+
+    deploy:
+      needs: queue-info
+      runs-on: ubuntu-latest
+      environment: production
+
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Log queue position
+          run: |
+            echo "Starting deployment (queue position was: ${{ needs.queue-info.outputs.position }})"
+
+        - name: Deploy
+          run: ./scripts/deploy.sh
+
+# ============================================================================
+# 10. レースコンディション防止（タイムスタンプ検証）
+# ============================================================================
+race-condition-prevention:
+  name: Deploy with Race Condition Prevention
+
+  on:
+    push:
+      branches: [main]
+
+  concurrency:
+    group: production-deploy
+    cancel-in-progress: false
+
+  jobs:
+    deploy:
+      runs-on: ubuntu-latest
+      environment: production
+
+      steps:
+        - uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
+
+        - name: Check if commit is latest
+          id: check-latest
+          run: |
+            LATEST_SHA=$(git ls-remote origin ${{ github.ref }} | cut -f1)
+            CURRENT_SHA=${{ github.sha }}
+
+            echo "Latest SHA: $LATEST_SHA"
+            echo "Current SHA: $CURRENT_SHA"
+
+            if [ "$LATEST_SHA" != "$CURRENT_SHA" ]; then
+              echo "::warning::Not the latest commit. Skipping deployment."
+              echo "skip=true" >> $GITHUB_OUTPUT
+            else
+              echo "skip=false" >> $GITHUB_OUTPUT
+            fi
+
+        - name: Deploy
+          if: steps.check-latest.outputs.skip != 'true'
+          run: |
+            echo "Deploying to production..."
+            ./scripts/deploy.sh production
+
+        - name: Skipped deployment
+          if: steps.check-latest.outputs.skip == 'true'
+          run: |
+            echo "Deployment skipped due to newer commit"
+
+# ============================================================================
+# 11. エクスポネンシャルバックオフリトライ
+# ============================================================================
+retry-with-backoff:
+  name: Deploy with Retry
+
+  on:
+    push:
+      branches: [main]
+
+  concurrency:
+    group: production-deploy
+    cancel-in-progress: false
+
+  jobs:
+    deploy:
+      runs-on: ubuntu-latest
+
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Deploy with exponential backoff
+          run: |
+            MAX_RETRIES=5
+            RETRY_COUNT=0
+
+            while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+              if ./scripts/deploy.sh; then
+                echo "Deployment successful"
+                exit 0
+              fi
+
+              RETRY_COUNT=$((RETRY_COUNT + 1))
+              WAIT_TIME=$((2 ** RETRY_COUNT))
+
+              echo "Deployment failed. Retry $RETRY_COUNT/$MAX_RETRIES in ${WAIT_TIME}s..."
+              sleep $WAIT_TIME
+            done
+
+            echo "::error::Max retries reached. Deployment failed."
+            exit 1
+
+# ============================================================================
+# 12. 並行実行モニタリング
+# ============================================================================
+concurrency-monitoring:
+  name: Deploy with Monitoring
+
+  on:
+    push:
+      branches: [main]
+
+  concurrency:
+    group: production-deploy
+    cancel-in-progress: false
+
+  jobs:
+    deploy:
+      runs-on: ubuntu-latest
+
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Monitor concurrent deployments
+          run: |
+            CONCURRENT=$(gh api repos/${{ github.repository }}/actions/runs \
+              --jq '[.workflow_runs[] | select(.status == "in_progress" and .name == "${{ github.workflow }}")] | length')
+
+            echo "Current concurrent deployments: $CONCURRENT"
+
+            if [ "$CONCURRENT" -gt 1 ]; then
+              echo "::warning::Multiple concurrent deployments detected: $CONCURRENT"
+            fi
+
+        - name: Deploy
+          run: ./scripts/deploy.sh
+
+        - name: Record deployment
+          if: always()
+          run: |
+            cat << EOF > deployment-record.json
+            {
+              "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+              "sha": "${{ github.sha }}",
+              "ref": "${{ github.ref }}",
+              "actor": "${{ github.actor }}",
+              "run_id": "${{ github.run_id }}",
+              "status": "${{ job.status }}"
+            }
+            EOF
+            cat deployment-record.json

@@ -1,0 +1,390 @@
+name: GitHub API Integration Examples
+
+on:
+  workflow_dispatch:
+    inputs:
+      api_type:
+        description: 'API type to demonstrate'
+        required: true
+        type: choice
+        options:
+          - gh-cli
+          - rest-curl
+          - graphql
+          - octokit
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  # =====================================================
+  # gh CLI Examples
+  # =====================================================
+  gh-cli-examples:
+    if: inputs.api_type == 'gh-cli'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create issue with gh CLI
+        run: |
+          gh issue create \
+            --title "Deployment Report - ${{ github.run_number }}" \
+            --body "Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --label "automated,deployment" \
+            --assignee "${{ github.actor }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: List and label PRs
+        run: |
+          # Get open PRs
+          prs=$(gh pr list --state open --json number,title --limit 10)
+
+          # Label PRs based on title prefix
+          echo "$prs" | jq -r '.[] | select(.title | startswith("feat:")) | .number' | while read pr; do
+            gh pr edit $pr --add-label "enhancement"
+          done
+
+          echo "$prs" | jq -r '.[] | select(.title | startswith("fix:")) | .number' | while read pr; do
+            gh pr edit $pr --add-label "bug"
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create release with gh CLI
+        run: |
+          # Create a tag
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a v${{ github.run_number }} -m "Release v${{ github.run_number }}"
+          git push origin v${{ github.run_number }}
+
+          # Create release
+          gh release create v${{ github.run_number }} \
+            --title "Release v${{ github.run_number }}" \
+            --notes "Automated release from workflow run ${{ github.run_id }}" \
+            --draft
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # =====================================================
+  # REST API with curl Examples
+  # =====================================================
+  rest-curl-examples:
+    if: inputs.api_type == 'rest-curl'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create issue via REST API
+        run: |
+          response=$(curl -s -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }}/issues \
+            -d '{
+              "title": "REST API Test - Run ${{ github.run_number }}",
+              "body": "Created via REST API",
+              "labels": ["automated", "api-test"]
+            }')
+
+          issue_number=$(echo "$response" | jq -r '.number')
+          echo "Created issue #$issue_number"
+
+      - name: Add comment to issue
+        run: |
+          # Find the latest issue
+          latest_issue=$(curl -s \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/issues?state=open&per_page=1" \
+            | jq -r '.[0].number')
+
+          # Add comment
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }}/issues/$latest_issue/comments \
+            -d '{
+              "body": "This is an automated comment from workflow run ${{ github.run_id }}"
+            }'
+
+      - name: Trigger repository dispatch
+        run: |
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }}/dispatches \
+            -d '{
+              "event_type": "custom-event",
+              "client_payload": {
+                "workflow_run_id": "${{ github.run_id }}",
+                "triggered_by": "${{ github.actor }}"
+              }
+            }'
+
+  # =====================================================
+  # GraphQL API Examples
+  # =====================================================
+  graphql-examples:
+    if: inputs.api_type == 'graphql'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get PR information via GraphQL
+        id: get_prs
+        run: |
+          result=$(gh api graphql -f query='
+            query($owner: String!, $repo: String!) {
+              repository(owner: $owner, name: $repo) {
+                pullRequests(first: 10, states: OPEN) {
+                  totalCount
+                  nodes {
+                    number
+                    title
+                    author { login }
+                    reviewDecision
+                    commits(last: 1) {
+                      nodes {
+                        commit {
+                          statusCheckRollup {
+                            state
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ' -F owner=${{ github.repository_owner }} \
+            -F repo=${{ github.event.repository.name }})
+
+          echo "pr_data=$result" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create issue via GraphQL mutation
+        run: |
+          gh api graphql -f query='
+            mutation($repositoryId: ID!, $title: String!, $body: String!) {
+              createIssue(input: {
+                repositoryId: $repositoryId
+                title: $title
+                body: $body
+              }) {
+                issue {
+                  number
+                  url
+                }
+              }
+            }
+          ' -F repositoryId=${{ github.event.repository.node_id }} \
+            -F title="GraphQL API Test - Run ${{ github.run_number }}" \
+            -F body="Created via GraphQL mutation"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get commit history via GraphQL
+        run: |
+          gh api graphql -f query='
+            query($owner: String!, $repo: String!, $branch: String!) {
+              repository(owner: $owner, name: $repo) {
+                ref(qualifiedName: $branch) {
+                  target {
+                    ... on Commit {
+                      history(first: 10) {
+                        nodes {
+                          oid
+                          messageHeadline
+                          author {
+                            name
+                            date
+                          }
+                          additions
+                          deletions
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ' -F owner=${{ github.repository_owner }} \
+            -F repo=${{ github.event.repository.name }} \
+            -F branch="refs/heads/main" \
+            | jq '.data.repository.ref.target.history.nodes'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # =====================================================
+  # Octokit (Node.js) Examples
+  # =====================================================
+  octokit-examples:
+    if: inputs.api_type == 'octokit'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Octokit
+        run: |
+          cat > package.json << 'EOF'
+          {
+            "type": "module",
+            "dependencies": {
+              "@octokit/rest": "^20.0.0"
+            }
+          }
+          EOF
+          npm install
+
+      - name: Run Octokit script
+        run: |
+          cat > github-api.mjs << 'EOF'
+          import { Octokit } from '@octokit/rest';
+
+          const octokit = new Octokit({
+            auth: process.env.GITHUB_TOKEN
+          });
+
+          const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
+
+          async function main() {
+            // Create issue
+            const { data: issue } = await octokit.issues.create({
+              owner,
+              repo,
+              title: `Octokit Test - Run ${process.env.GITHUB_RUN_NUMBER}`,
+              body: 'Created via Octokit',
+              labels: ['automated', 'octokit']
+            });
+            console.log(`Created issue #${issue.number}: ${issue.html_url}`);
+
+            // List PRs
+            const { data: prs } = await octokit.pulls.list({
+              owner,
+              repo,
+              state: 'open',
+              per_page: 5
+            });
+            console.log(`\nOpen PRs: ${prs.length}`);
+            prs.forEach(pr => {
+              console.log(`  #${pr.number}: ${pr.title}`);
+            });
+
+            // Get repository info
+            const { data: repoInfo } = await octokit.repos.get({
+              owner,
+              repo
+            });
+            console.log(`\nRepository: ${repoInfo.full_name}`);
+            console.log(`Stars: ${repoInfo.stargazers_count}`);
+            console.log(`Forks: ${repoInfo.forks_count}`);
+          }
+
+          main().catch(console.error);
+          EOF
+
+          node github-api.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_RUN_NUMBER: ${{ github.run_number }}
+
+  # =====================================================
+  # Advanced: Auto Label PRs based on files
+  # =====================================================
+  auto-label-prs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto label PRs based on changed files
+        run: |
+          # Get all open PRs
+          prs=$(gh pr list --state open --json number --limit 100 | jq -r '.[].number')
+
+          for pr in $prs; do
+            # Get changed files
+            files=$(gh pr view $pr --json files --jq '.files[].path')
+
+            # Label based on file paths
+            if echo "$files" | grep -q "^src/"; then
+              gh pr edit $pr --add-label "backend"
+            fi
+
+            if echo "$files" | grep -q "^frontend/"; then
+              gh pr edit $pr --add-label "frontend"
+            fi
+
+            if echo "$files" | grep -q "^docs/"; then
+              gh pr edit $pr --add-label "documentation"
+            fi
+
+            if echo "$files" | grep -q "test"; then
+              gh pr edit $pr --add-label "tests"
+            fi
+
+            # Label based on file count
+            file_count=$(echo "$files" | wc -l)
+            if [ $file_count -gt 20 ]; then
+              gh pr edit $pr --add-label "large-change"
+            fi
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # =====================================================
+  # Advanced: Auto close stale issues
+  # =====================================================
+  close-stale-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close stale issues
+        run: |
+          # Get issues older than 30 days with "stale" label
+          stale_date=$(date -d '30 days ago' --iso-8601)
+
+          gh issue list \
+            --state open \
+            --label "stale" \
+            --json number,updatedAt \
+            --jq ".[] | select(.updatedAt < \"$stale_date\") | .number" \
+            | while read issue; do
+              gh issue close $issue \
+                --comment "Closing this issue due to inactivity. Please reopen if this is still relevant." \
+                --reason "not_planned"
+              echo "Closed issue #$issue"
+            done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # =====================================================
+  # Advanced: Generate release notes
+  # =====================================================
+  generate-release-notes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate and create release
+        run: |
+          # Get latest tag
+          latest_tag=$(gh api repos/${{ github.repository }}/releases/latest --jq '.tag_name')
+          new_tag="v${{ github.run_number }}"
+
+          # Generate release notes
+          notes=$(gh api repos/${{ github.repository }}/releases/generate-notes \
+            -f tag_name="$new_tag" \
+            -f target_commitish="main" \
+            -f previous_tag_name="$latest_tag" \
+            --jq '.body')
+
+          # Create release
+          gh release create "$new_tag" \
+            --title "Release $new_tag" \
+            --notes "$notes" \
+            --draft
+
+          echo "Created draft release: $new_tag"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

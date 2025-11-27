@@ -1,0 +1,548 @@
+# Multi-Environment Deployment Workflow Templates
+
+# ============================================================
+# Template 1: Basic Multi-Environment Deployment
+# ============================================================
+# 用途: Development → Staging → Production の段階的デプロイ
+# 特徴: 各環境で環境固有のシークレットと変数を使用
+
+name: Basic Multi-Environment Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  # Development環境（developブランチから自動デプロイ）
+  deploy-development:
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    environment:
+      name: development
+      url: https://dev.example.com
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Deploy to Development
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DEPLOY_ENV: ${{ vars.DEPLOY_ENV }}
+        run: |
+          echo "Deploying to $DEPLOY_ENV environment"
+          npm ci
+          npm run build
+          npm run deploy:dev
+
+  # Staging環境（mainブランチから自動デプロイ）
+  deploy-staging:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://staging.example.com
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Deploy to Staging
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DEPLOY_ENV: ${{ vars.DEPLOY_ENV }}
+        run: |
+          echo "Deploying to $DEPLOY_ENV environment"
+          npm ci
+          npm run build
+          npm run deploy:staging
+
+  # Production環境（Staging成功後、手動承認でデプロイ）
+  deploy-production:
+    needs: deploy-staging
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://example.com
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Deploy to Production
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DEPLOY_ENV: ${{ vars.DEPLOY_ENV }}
+        run: |
+          echo "Deploying to $DEPLOY_ENV environment"
+          npm ci
+          npm run build
+          npm run deploy:prod
+
+---
+
+# ============================================================
+# Template 2: Approval Workflow with Wait Timer
+# ============================================================
+# 用途: 承認 + 待機タイマーを組み合わせた安全なデプロイ
+# 特徴: Staging後に自動待機、その後手動承認でProduction
+
+name: Approval with Wait Timer
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://staging.example.com
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Staging
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+        run: |
+          echo "Deploying to staging..."
+          ./deploy.sh staging
+
+      - name: Run Smoke Tests
+        run: |
+          echo "Running smoke tests on staging..."
+          npm run test:smoke
+
+  deploy-production:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    environment:
+      name: production  # Settings: Wait timer 10分 + Required reviewers 2名
+      url: https://example.com
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Production
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+        run: |
+          echo "Deploying to production after wait and approval..."
+          ./deploy.sh production
+
+      - name: Verify Deployment
+        run: |
+          echo "Verifying production deployment..."
+          npm run test:e2e:prod
+
+---
+
+# ============================================================
+# Template 3: Multi-Region Deployment
+# ============================================================
+# 用途: 複数リージョンへの並列デプロイ
+# 特徴: 各リージョンで独立した承認プロセス
+
+name: Multi-Region Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to deploy'
+        required: true
+        type: string
+
+jobs:
+  deploy-us-east:
+    runs-on: ubuntu-latest
+    environment:
+      name: production-us-east
+      url: https://us-east.example.com
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.version }}
+
+      - name: Deploy to US East
+        env:
+          AWS_REGION: us-east-1
+          API_KEY: ${{ secrets.API_KEY }}
+        run: |
+          echo "Deploying version ${{ github.event.inputs.version }} to US East"
+          ./deploy-aws.sh us-east-1
+
+  deploy-us-west:
+    runs-on: ubuntu-latest
+    environment:
+      name: production-us-west
+      url: https://us-west.example.com
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.version }}
+
+      - name: Deploy to US West
+        env:
+          AWS_REGION: us-west-2
+          API_KEY: ${{ secrets.API_KEY }}
+        run: |
+          echo "Deploying version ${{ github.event.inputs.version }} to US West"
+          ./deploy-aws.sh us-west-2
+
+  deploy-eu-west:
+    runs-on: ubuntu-latest
+    environment:
+      name: production-eu-west
+      url: https://eu-west.example.com
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.version }}
+
+      - name: Deploy to EU West
+        env:
+          AWS_REGION: eu-west-1
+          API_KEY: ${{ secrets.API_KEY }}
+        run: |
+          echo "Deploying version ${{ github.event.inputs.version }} to EU West"
+          ./deploy-aws.sh eu-west-1
+
+---
+
+# ============================================================
+# Template 4: Canary Deployment
+# ============================================================
+# 用途: カナリアデプロイメント（段階的トラフィック増加）
+# 特徴: Canary → 50% → Full の段階的ロールアウト
+
+name: Canary Deployment
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy-canary:
+    runs-on: ubuntu-latest
+    environment:
+      name: production-canary  # Settings: Wait timer 30分
+      url: https://canary.example.com
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Canary (10% traffic)
+        env:
+          TRAFFIC_PERCENTAGE: 10
+          API_KEY: ${{ secrets.API_KEY }}
+        run: |
+          echo "Deploying canary with $TRAFFIC_PERCENTAGE% traffic"
+          ./deploy-canary.sh 10
+
+      - name: Monitor Canary Metrics
+        run: |
+          echo "Monitoring canary for 30 minutes..."
+          # Wait timer が自動的に30分待機
+
+  deploy-half:
+    needs: deploy-canary
+    runs-on: ubuntu-latest
+    environment:
+      name: production-half  # Settings: Wait timer 60分
+      url: https://example.com
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Increase to 50% traffic
+        env:
+          TRAFFIC_PERCENTAGE: 50
+          API_KEY: ${{ secrets.API_KEY }}
+        run: |
+          echo "Increasing traffic to $TRAFFIC_PERCENTAGE%"
+          ./deploy-canary.sh 50
+
+  deploy-full:
+    needs: deploy-half
+    runs-on: ubuntu-latest
+    environment:
+      name: production  # Settings: Required reviewers
+      url: https://example.com
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to 100% traffic
+        env:
+          TRAFFIC_PERCENTAGE: 100
+          API_KEY: ${{ secrets.API_KEY }}
+        run: |
+          echo "Deploying to 100% traffic"
+          ./deploy-canary.sh 100
+
+---
+
+# ============================================================
+# Template 5: Database Migration with Approval
+# ============================================================
+# 用途: データベースマイグレーションを含む安全なデプロイ
+# 特徴: DB → Backend → Frontend の順次承認デプロイ
+
+name: Database Migration Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      migration-version:
+        description: 'Migration version'
+        required: true
+
+jobs:
+  migrate-database:
+    runs-on: ubuntu-latest
+    environment:
+      name: production-database
+      url: https://db-console.example.com
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Database Migration
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: |
+          echo "Running migration version ${{ github.event.inputs.migration-version }}"
+          npm run migrate:up
+
+      - name: Verify Migration
+        run: |
+          echo "Verifying migration..."
+          npm run migrate:verify
+
+  deploy-backend:
+    needs: migrate-database
+    runs-on: ubuntu-latest
+    environment:
+      name: production-backend
+      url: https://api.example.com
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy Backend
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          echo "Deploying backend..."
+          ./deploy-backend.sh
+
+      - name: Health Check
+        run: |
+          curl -f https://api.example.com/health || exit 1
+
+  deploy-frontend:
+    needs: deploy-backend
+    runs-on: ubuntu-latest
+    environment:
+      name: production-frontend
+      url: https://example.com
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy Frontend
+        env:
+          API_ENDPOINT: https://api.example.com
+        run: |
+          echo "Deploying frontend..."
+          npm run build
+          ./deploy-frontend.sh
+
+---
+
+# ============================================================
+# Template 6: Conditional Environment Selection
+# ============================================================
+# 用途: ブランチやタグに応じた動的な環境選択
+# 特徴: 単一ワークフローで複数環境に対応
+
+name: Conditional Environment Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'release/**'
+    tags:
+      - 'v*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{
+      (github.ref_type == 'tag' && 'production') ||
+      (github.ref == 'refs/heads/main' && 'staging') ||
+      (github.ref == 'refs/heads/develop' && 'development') ||
+      (startsWith(github.ref, 'refs/heads/release/') && 'release')
+    }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Determine Environment
+        id: env
+        run: |
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            echo "environment=production" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "environment=staging" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
+            echo "environment=development" >> $GITHUB_OUTPUT
+          else
+            echo "environment=release" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Deploy
+        env:
+          ENVIRONMENT: ${{ steps.env.outputs.environment }}
+          API_KEY: ${{ secrets.API_KEY }}
+        run: |
+          echo "Deploying to $ENVIRONMENT environment"
+          ./deploy.sh $ENVIRONMENT
+
+---
+
+# ============================================================
+# Template 7: Rollback Workflow
+# ============================================================
+# 用途: 以前のバージョンへのロールバック
+# 特徴: 手動トリガーで承認付きロールバック
+
+name: Rollback Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to rollback'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      version:
+        description: 'Version to rollback to'
+        required: true
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.version }}
+
+      - name: Confirm Rollback
+        run: |
+          echo "Rolling back ${{ github.event.inputs.environment }} to version ${{ github.event.inputs.version }}"
+          echo "Current version: $(cat VERSION)"
+
+      - name: Execute Rollback
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          ./deploy.sh ${{ github.event.inputs.environment }}
+
+      - name: Verify Rollback
+        run: |
+          echo "Verifying rollback..."
+          npm run test:smoke
+
+      - name: Notify Team
+        if: always()
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "Rollback to ${{ github.event.inputs.version }} on ${{ github.event.inputs.environment }}: ${{ job.status }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+---
+
+# ============================================================
+# Environment Settings Reference
+# ============================================================
+
+# Development環境:
+#   Protection rules: なし
+#   Deployment branches: All branches
+#   Secrets:
+#     - API_KEY: dev-api-key
+#     - DATABASE_URL: postgres://dev.example.com/db
+#   Variables:
+#     - DEPLOY_ENV: development
+
+# Staging環境:
+#   Protection rules:
+#     - Wait timer: 5分
+#   Deployment branches: main, develop
+#   Secrets:
+#     - API_KEY: staging-api-key
+#     - DATABASE_URL: postgres://staging.example.com/db
+#   Variables:
+#     - DEPLOY_ENV: staging
+
+# Production環境:
+#   Protection rules:
+#     - Required reviewers: DevOps Team (2名)
+#     - Wait timer: 10分
+#   Deployment branches: main, tags (v*)
+#   Secrets:
+#     - API_KEY: prod-api-key
+#     - DATABASE_URL: postgres://prod.example.com/db
+#   Variables:
+#     - DEPLOY_ENV: production
+
+# Production-Canary環境:
+#   Protection rules:
+#     - Wait timer: 30分
+#   Deployment branches: main
+#   Secrets: production環境と同じ
+#   Variables:
+#     - DEPLOY_ENV: production-canary
+#     - TRAFFIC_PERCENTAGE: 10

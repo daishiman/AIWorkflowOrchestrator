@@ -1,0 +1,175 @@
+# Generic CI Workflow Template
+# 汎用的なCI（Continuous Integration）ワークフローテンプレート
+#
+# カスタマイズポイント:
+# - トリガー条件 (on:)
+# - ランタイムバージョン (setup-* actions)
+# - ビルド・テストコマンド (run:)
+# - キャッシュ設定
+
+name: CI
+
+on:
+  push:
+    branches: [$default-branch]  # メインブランチ（main/master）を指定
+    paths-ignore:               # ドキュメント変更時はスキップ
+      - '**.md'
+      - 'docs/**'
+  pull_request:
+    branches: [$default-branch]
+
+# 同一ブランチでの並行実行を制御
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 言語に応じたセットアップ（以下から選択）
+
+      # Node.js の場合
+      # - name: Setup Node.js
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: '20'
+      #     cache: 'npm'  # or 'yarn', 'pnpm'
+
+      # Python の場合
+      # - name: Setup Python
+      #   uses: actions/setup-python@v5
+      #   with:
+      #     python-version: '3.11'
+      #     cache: 'pip'
+
+      # Go の場合
+      # - name: Setup Go
+      #   uses: actions/setup-go@v5
+      #   with:
+      #     go-version: '1.22'
+      #     cache: true
+
+      - name: Install dependencies
+        run: |
+          # プロジェクトに応じたインストールコマンド
+          # npm ci
+          # pip install -r requirements.txt
+          # go mod download
+          echo "Install dependencies here"
+
+      - name: Run linter
+        run: |
+          # プロジェクトに応じたlintコマンド
+          # npm run lint
+          # flake8 .
+          # golangci-lint run
+          echo "Run linter here"
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: lint  # lintが成功してから実行
+
+    # 複数バージョンでテストする場合
+    # strategy:
+    #   matrix:
+    #     version: [18, 20, 22]  # Node.js
+    #     # version: ['3.9', '3.10', '3.11']  # Python
+    #     # version: ['1.20', '1.21', '1.22']  # Go
+
+    # データベース等の外部サービスが必要な場合
+    # services:
+    #   postgres:
+    #     image: postgres:15
+    #     env:
+    #       POSTGRES_PASSWORD: postgres
+    #     options: >-
+    #       --health-cmd pg_isready
+    #       --health-interval 10s
+    #       --health-timeout 5s
+    #       --health-retries 5
+    #     ports:
+    #       - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 言語に応じたセットアップ（lintジョブと同様）
+
+      - name: Install dependencies
+        run: |
+          # プロジェクトに応じたインストールコマンド
+          echo "Install dependencies here"
+
+      - name: Run tests
+        run: |
+          # プロジェクトに応じたテストコマンド
+          # npm test
+          # pytest
+          # go test ./...
+          echo "Run tests here"
+
+      # カバレッジレポート生成（オプション）
+      # - name: Upload coverage to Codecov
+      #   uses: codecov/codecov-action@v4
+      #   with:
+      #     token: ${{ secrets.CODECOV_TOKEN }}
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: test  # テストが成功してから実行
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 言語に応じたセットアップ
+
+      - name: Install dependencies
+        run: |
+          echo "Install dependencies here"
+
+      - name: Build project
+        run: |
+          # プロジェクトに応じたビルドコマンド
+          # npm run build
+          # python setup.py build
+          # go build -v ./...
+          echo "Build project here"
+
+      # ビルド成果物のアップロード（オプション）
+      # - name: Upload build artifacts
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: build-artifacts
+      #     path: |
+      #       dist/
+      #       build/
+      #     retention-days: 7
+
+  # セキュリティスキャン（オプション）
+  # security:
+  #   name: Security Scan
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #
+  #     - name: Run Trivy vulnerability scanner
+  #       uses: aquasecurity/trivy-action@master
+  #       with:
+  #         scan-type: 'fs'
+  #         scan-ref: '.'
+  #         format: 'sarif'
+  #         output: 'trivy-results.sarif'
+  #
+  #     - name: Upload Trivy results to GitHub Security
+  #       uses: github/codeql-action/upload-sarif@v3
+  #       with:
+  #         sarif_file: 'trivy-results.sarif'

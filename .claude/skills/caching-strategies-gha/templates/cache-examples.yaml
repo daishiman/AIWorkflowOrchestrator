@@ -1,0 +1,514 @@
+# GitHub Actions キャッシュ設定例集
+
+# =============================================================================
+# Node.js プロジェクト
+# =============================================================================
+
+# --- pnpm + Next.js + Turbopack ---
+name: Next.js with pnpm
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm  # setup-nodeの統合キャッシュ
+
+      # 追加の pnpm ストアキャッシュ
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      # Next.js ビルドキャッシュ
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: |
+            .next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
+            ${{ runner.os }}-nextjs-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Test
+        run: pnpm test
+
+# =============================================================================
+# Python プロジェクト
+# =============================================================================
+
+# --- Poetry + pytest ---
+name: Python with Poetry
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11', '3.12']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # Poetry インストールキャッシュ
+      - name: Cache Poetry installation
+        uses: actions/cache@v4
+        with:
+          path: ~/.local
+          key: poetry-${{ runner.os }}-${{ matrix.python-version }}
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      # Poetry 依存関係キャッシュ
+      - name: Cache Poetry dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pypoetry
+            .venv
+          key: ${{ runner.os }}-poetry-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-${{ matrix.python-version }}-
+
+      - name: Install dependencies
+        run: poetry install --no-interaction
+
+      - name: Run tests
+        run: poetry run pytest --cov
+
+# =============================================================================
+# Rust プロジェクト
+# =============================================================================
+
+# --- Cargo + sccache ---
+name: Rust with sccache
+on: [push, pull_request]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTC_WRAPPER: sccache
+  SCCACHE_DIR: ${{ github.workspace }}/.sccache
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      # Cargo 依存関係キャッシュ
+      - name: Cache Cargo dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      # sccache コンパイルキャッシュ
+      - name: Cache sccache
+        uses: actions/cache@v4
+        with:
+          path: .sccache
+          key: ${{ runner.os }}-sccache-${{ hashFiles('**/Cargo.lock') }}-${{ hashFiles('**/*.rs') }}
+          restore-keys: |
+            ${{ runner.os }}-sccache-${{ hashFiles('**/Cargo.lock') }}-
+            ${{ runner.os }}-sccache-
+
+      - name: Install sccache
+        run: |
+          cargo install sccache --locked || true
+
+      - name: Build
+        run: cargo build --release
+
+      - name: Test
+        run: cargo test --release
+
+      - name: Show sccache stats
+        run: sccache --show-stats
+
+# =============================================================================
+# Go プロジェクト
+# =============================================================================
+
+# --- Go Modules ---
+name: Go with Modules
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+          cache: true  # setup-go統合キャッシュ
+
+      # 追加のビルドキャッシュ
+      - name: Cache Go build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Test
+        run: go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
+
+# =============================================================================
+# Docker ビルド
+# =============================================================================
+
+# --- BuildKit キャッシュ ---
+name: Docker Build with Cache
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Docker レイヤーキャッシュ
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: myapp:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+      # キャッシュ肥大化防止
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+# =============================================================================
+# モノレポ（複数言語）
+# =============================================================================
+
+# --- Turborepo + pnpm ---
+name: Monorepo with Turborepo
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      # Turborepo キャッシュ
+      - name: Cache Turbo build
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build all packages
+        run: pnpm turbo build
+
+      - name: Test all packages
+        run: pnpm turbo test
+
+# =============================================================================
+# マトリックスビルド
+# =============================================================================
+
+# --- クロスプラットフォーム ---
+name: Cross-platform Build
+on: [push, pull_request]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: [18, 20]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      # OS/Node バージョン別キャッシュ
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ matrix.os }}-node${{ matrix.node }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ matrix.os }}-node${{ matrix.node }}-
+            ${{ matrix.os }}-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test
+
+# =============================================================================
+# 高度な最適化
+# =============================================================================
+
+# --- 多層キャッシュ戦略 ---
+name: Multi-layer Cache Strategy
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Layer 1: システムレベルのツール（変更頻度: 極低）
+      - name: Cache system tools
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.local/bin
+            ~/.cargo/bin
+          key: ${{ runner.os }}-tools-v1
+
+      # Layer 2: 依存関係（変更頻度: 低）
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-deps-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-deps-
+
+      # Layer 3: ビルド成果物（変更頻度: 中）
+      - name: Cache build outputs
+        uses: actions/cache@v4
+        with:
+          path: dist
+          key: ${{ runner.os }}-build-${{ hashFiles('src/**') }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+
+      # Layer 4: テストキャッシュ（変更頻度: 高）
+      - name: Cache test results
+        uses: actions/cache@v4
+        with:
+          path: .jest-cache
+          key: ${{ runner.os }}-jest-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-jest-
+
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+
+# --- 条件付きキャッシュ保存 ---
+name: Conditional Cache Save
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # PRではキャッシュを復元のみ
+      - name: Restore cache
+        if: github.event_name == 'pull_request'
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+          lookup-only: true
+
+      # mainブランチではキャッシュを保存
+      - name: Cache with save
+        if: github.ref == 'refs/heads/main'
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
+
+      - run: npm ci
+      - run: npm run build
+
+# --- 並列ジョブでのキャッシュ共有 ---
+name: Parallel Jobs with Shared Cache
+on: [push, pull_request]
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # セットアップジョブでキャッシュを作成
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: deps-${{ github.run_id }}-${{ hashFiles('**/package-lock.json') }}
+
+      - run: npm ci
+
+  test:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        shard: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v4
+
+      # テストジョブではキャッシュを復元のみ
+      - name: Restore dependencies
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: deps-${{ github.run_id }}-${{ hashFiles('**/package-lock.json') }}
+          lookup-only: true
+
+      - run: npm test -- --shard=${{ matrix.shard }}/4
+
+# =============================================================================
+# トラブルシューティング・デバッグ
+# =============================================================================
+
+# --- キャッシュデバッグ ---
+name: Cache Debugging
+on: [push, pull_request]
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # キャッシュキーのデバッグ情報
+      - name: Debug cache key
+        run: |
+          echo "OS: ${{ runner.os }}"
+          echo "Lock file exists: $(test -f package-lock.json && echo 'yes' || echo 'no')"
+          echo "Lock file hash: ${{ hashFiles('**/package-lock.json') }}"
+          echo "Expected key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}"
+
+      - name: Cache npm
+        id: cache-npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      # キャッシュ結果の出力
+      - name: Cache results
+        run: |
+          echo "Cache hit: ${{ steps.cache-npm.outputs.cache-hit }}"
+          echo "Matched key: ${{ steps.cache-npm.outputs.cache-matched-key }}"
+          echo "Primary key: ${{ steps.cache-npm.outputs.cache-primary-key }}"
+
+      # キャッシュディレクトリの確認
+      - name: Check cache directory
+        run: |
+          if [ -d ~/.npm ]; then
+            echo "Cache directory exists"
+            echo "Size: $(du -sh ~/.npm | cut -f1)"
+            echo "Files: $(find ~/.npm -type f | wc -l)"
+          else
+            echo "Cache directory does not exist"
+          fi
+
+      - run: npm ci
+
+      # キャッシュ後のサイズ確認
+      - name: Cache size after install
+        run: |
+          echo "npm cache size: $(du -sh ~/.npm | cut -f1)"
+          echo "node_modules size: $(du -sh node_modules | cut -f1)"

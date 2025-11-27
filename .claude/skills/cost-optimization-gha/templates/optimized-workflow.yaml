@@ -1,0 +1,470 @@
+# コスト最適化ワークフロー例
+
+## 基本的な最適化ワークフロー
+
+```yaml
+name: Optimized CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'package.json'
+      - 'package-lock.json'
+  pull_request:
+    branches: [main]
+
+# 同時実行制御で重複実行を防止
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # 変更検出ジョブ
+  check-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      src-changed: ${{ steps.filter.outputs.src }}
+      docs-changed: ${{ steps.filter.outputs.docs }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            src:
+              - 'src/**'
+              - 'tests/**'
+            docs:
+              - 'docs/**'
+              - '*.md'
+
+  # Lint とテストを並列実行
+  lint:
+    needs: check-changes
+    if: needs.check-changes.outputs.src-changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Run linter
+        run: npm run lint
+
+  test:
+    needs: check-changes
+    if: needs.check-changes.outputs.src-changed == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [18, 20, 22]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'npm'
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Run tests
+        run: npm test -- --maxWorkers=4
+
+      - name: Upload coverage (only for Node 20)
+        if: matrix.node == '20'
+        uses: codecov/codecov-action@v3
+
+  # ビルドは Linux でのみ実行
+  build:
+    needs: [lint, test]
+    if: needs.check-changes.outputs.src-changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Cache build
+        uses: actions/cache@v4
+        with:
+          path: |
+            .next/cache
+            dist/
+          key: ${{ runner.os }}-build-${{ hashFiles('src/**') }}
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 7
+
+  # デプロイは main ブランチのみ
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+      - run: echo "Deploy to production"
+```
+
+## クロスプラットフォーム最適化
+
+```yaml
+name: Cross-platform Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  # 開発環境: Linux のみ
+  build-dev:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+
+  # 本番環境: 全 OS だが段階的
+  build-linux:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-linux
+          path: dist/
+
+  build-windows:
+    needs: build-linux
+    if: github.event_name == 'push' && success()
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci
+      - run: npm test
+
+  build-macos:
+    needs: build-linux
+    if: github.event_name == 'push' && success()
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci
+      - run: npm test
+```
+
+## Docker ビルド最適化
+
+```yaml
+name: Docker Build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Dockerfile'
+      - 'src/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: user/app:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          # GitHub Actions キャッシュを使用
+          # ビルド時間を 80% 短縮
+```
+
+## モノレポ最適化
+
+```yaml
+name: Monorepo CI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  # 変更されたパッケージを検出
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.filter.outputs.changes }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            package-a:
+              - 'packages/a/**'
+            package-b:
+              - 'packages/b/**'
+            package-c:
+              - 'packages/c/**'
+
+  # 変更されたパッケージのみビルド
+  build:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.packages != '[]'
+    strategy:
+      matrix:
+        package: ${{ fromJSON(needs.detect-changes.outputs.packages) }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build ${{ matrix.package }}
+        run: |
+          cd packages/${{ matrix.package }}
+          npm ci
+          npm run build
+          npm test
+```
+
+## Self-hosted ランナー活用
+
+```yaml
+name: Self-hosted Optimization
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  # PR: self-hosted (無料)
+  build-pr:
+    if: github.event_name == 'pull_request'
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+
+  # 本番: GitHub-hosted (信頼性重視)
+  build-prod:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+      - run: npm run deploy
+```
+
+## テスト分割による並列化
+
+```yaml
+name: Parallel Testing
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        shard: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Run test shard ${{ matrix.shard }}
+        run: npm test -- --shard=${{ matrix.shard }}/4
+
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.shard }}
+          path: coverage/
+          retention-days: 1
+
+  # カバレッジを統合
+  coverage:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: coverage-*
+          path: coverage/
+      - name: Merge coverage
+        run: npx nyc merge coverage/ coverage/final.json
+      - uses: codecov/codecov-action@v3
+        with:
+          files: coverage/final.json
+```
+
+## コスト監視付きワークフロー
+
+```yaml
+name: Cost-Aware CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  estimate-cost:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Estimate workflow cost
+        run: |
+          echo "Estimating cost for this workflow..."
+          node .github/scripts/estimate-cost.js
+
+  build:
+    needs: estimate-cost
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Record start time
+        run: echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
+
+      - name: Build
+        run: npm run build
+
+      - name: Calculate cost
+        if: always()
+        run: |
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - START_TIME))
+          COST=$(echo "scale=4; $DURATION / 60 * 0.008" | bc)
+          echo "Duration: ${DURATION}s"
+          echo "Estimated cost: \$${COST}"
+          echo "cost=$COST" >> $GITHUB_OUTPUT
+```
+
+## 最適化チェックリスト
+
+各ワークフローで確認すべき項目:
+
+```yaml
+# ✅ 最適化チェックリスト
+
+# 1. ランナー選択
+runs-on: ubuntu-latest  # ✅ Linux を優先
+
+# 2. キャッシング
+- uses: actions/cache@v4  # ✅ 依存関係をキャッシュ
+
+# 3. 並列実行
+strategy:
+  matrix:  # ✅ マトリックスビルド
+
+# 4. 条件実行
+on:
+  push:
+    paths:  # ✅ パスフィルター
+
+# 5. 同時実行制御
+concurrency:
+  cancel-in-progress: true  # ✅ 重複実行を防止
+
+# 6. アーティファクト管理
+retention-days: 7  # ✅ 保持期間を最小化
+
+# 7. 早期終了
+if: success()  # ✅ 前ジョブ成功時のみ
+
+# 8. 効率的なインストール
+run: npm ci --prefer-offline --no-audit  # ✅ 高速インストール
+```
+
+## コスト削減効果
+
+このテンプレートを使用した場合の典型的な削減効果:
+
+| 項目 | 最適化前 | 最適化後 | 削減率 |
+|------|---------|---------|--------|
+| **実行時間** | 15分 | 5分 | 67% |
+| **月間実行回数** | 600回 | 240回 | 60% |
+| **月間コスト** | $72 | $9.6 | 87% |
+
+累積削減効果: **70-90%** のコスト削減が可能

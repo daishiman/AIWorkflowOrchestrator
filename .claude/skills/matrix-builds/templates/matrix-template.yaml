@@ -1,0 +1,454 @@
+# GitHub Actions マトリックスビルド テンプレート集
+
+# ═══════════════════════════════════════════════════════════════
+# 1. 基本的なマルチOS/バージョンマトリックス
+# ═══════════════════════════════════════════════════════════════
+
+name: Basic Matrix Build
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Test (OS:${{ matrix.os }} Node:${{ matrix.node }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [18, 20, 22]
+        # 3 OS × 3 Node = 9ジョブ
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          flags: ${{ matrix.os }}-node${{ matrix.node }}
+
+---
+
+# ═══════════════════════════════════════════════════════════════
+# 2. include/excludeを使った高度なマトリックス
+# ═══════════════════════════════════════════════════════════════
+
+name: Advanced Matrix
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [18, 20, 22]
+
+        include:
+          # Ubuntu + Node 22に実験的機能追加
+          - os: ubuntu-latest
+            node: 22
+            experimental: true
+
+          # macOS ARM64サポート
+          - os: macos-14
+            node: 22
+            arch: arm64
+
+        exclude:
+          # Windows + Node 18は除外（サポート終了）
+          - os: windows-latest
+            node: 18
+
+          # macOS + Node 18も除外
+          - os: macos-latest
+            node: 18
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        continue-on-error: ${{ matrix.experimental == true }}
+        run: npm test
+
+      - name: ARM64 specific tests
+        if: matrix.arch == 'arm64'
+        run: npm run test:arm64
+
+---
+
+# ═══════════════════════════════════════════════════════════════
+# 3. モノレポ用マトリックス（パッケージ別）
+# ═══════════════════════════════════════════════════════════════
+
+name: Monorepo Matrix
+
+on:
+  push:
+    paths:
+      - 'packages/**'
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: [18, 20, 22]
+        package: [api, web, cli, sdk]
+        # 2 OS × 3 Node × 4 Package = 24ジョブ
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test ${{ matrix.package }}
+        working-directory: packages/${{ matrix.package }}
+        run: npm test
+
+      - name: Build ${{ matrix.package }}
+        working-directory: packages/${{ matrix.package }}
+        run: npm run build
+
+---
+
+# ═══════════════════════════════════════════════════════════════
+# 4. ブラウザテストマトリックス
+# ═══════════════════════════════════════════════════════════════
+
+name: Browser Matrix
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        browser: [chrome, firefox, edge]
+        node: [20]
+        include:
+          # Safariはmacosのみ
+          - os: macos-latest
+            browser: safari
+            node: 20
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Run E2E tests on ${{ matrix.browser }}
+        run: npx playwright test --project=${{ matrix.browser }}
+
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.browser }}
+          path: test-results/
+
+---
+
+# ═══════════════════════════════════════════════════════════════
+# 5. 動的マトリックス（変更ファイルベース）
+# ═══════════════════════════════════════════════════════════════
+
+name: Dynamic Matrix
+
+on: [pull_request]
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      services: ${{ steps.filter.outputs.services }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed services
+        id: filter
+        run: |
+          CHANGED=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} \
+            | grep '^services/' \
+            | cut -d'/' -f2 \
+            | sort -u \
+            | jq -R -s -c 'split("\n")[:-1]')
+
+          if [ "$CHANGED" = "[]" ]; then
+            CHANGED='["api","web"]'
+          fi
+
+          echo "services=$CHANGED" >> $GITHUB_OUTPUT
+          echo "Changed services: $CHANGED"
+
+  test:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.services != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: ${{ fromJSON(needs.detect-changes.outputs.services) }}
+        node: [18, 20, 22]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Test ${{ matrix.service }}
+        run: |
+          cd services/${{ matrix.service }}
+          npm ci
+          npm test
+
+---
+
+# ═══════════════════════════════════════════════════════════════
+# 6. 環境別デプロイマトリックス
+# ═══════════════════════════════════════════════════════════════
+
+name: Deploy Matrix
+
+on:
+  push:
+    branches: [main, develop]
+
+jobs:
+  setup-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            MATRIX='{"environment":["staging","production"],"region":["us-east-1","eu-west-1"]}'
+          else
+            MATRIX='{"environment":["development"],"region":["us-east-1"]}'
+          fi
+          echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+
+  deploy:
+    needs: setup-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1  # デプロイは順次実行
+      matrix: ${{ fromJSON(needs.setup-matrix.outputs.matrix) }}
+    environment:
+      name: ${{ matrix.environment }}
+      url: https://${{ matrix.region }}.${{ matrix.environment }}.example.com
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to ${{ matrix.environment }} (${{ matrix.region }})
+        run: |
+          echo "Deploying to ${{ matrix.environment }} in ${{ matrix.region }}"
+          # デプロイスクリプト実行
+
+---
+
+# ═══════════════════════════════════════════════════════════════
+# 7. データベースマトリックス
+# ═══════════════════════════════════════════════════════════════
+
+name: Database Matrix
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        db:
+          - {type: postgres, version: '14', port: 5432}
+          - {type: postgres, version: '15', port: 5433}
+          - {type: postgres, version: '16', port: 5434}
+          - {type: mysql, version: '8.0', port: 3306}
+          - {type: mysql, version: '8.3', port: 3307}
+
+    services:
+      database:
+        image: ${{ matrix.db.type }}:${{ matrix.db.version }}
+        ports:
+          - ${{ matrix.db.port }}:${{ matrix.db.type == 'postgres' && 5432 || 3306 }}
+        env:
+          POSTGRES_PASSWORD: postgres
+          MYSQL_ROOT_PASSWORD: mysql
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests against ${{ matrix.db.type }} ${{ matrix.db.version }}
+        env:
+          DATABASE_URL: ${{ matrix.db.type }}://root:${{ matrix.db.type == 'postgres' && 'postgres' || 'mysql' }}@localhost:${{ matrix.db.port }}/test
+        run: npm test
+
+---
+
+# ═══════════════════════════════════════════════════════════════
+# 8. パフォーマンステストマトリックス（並列度制限）
+# ═══════════════════════════════════════════════════════════════
+
+name: Performance Matrix
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # 毎日2:00 UTC
+
+jobs:
+  benchmark:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      max-parallel: 2  # リソース節約のため2並列まで
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        workload: [light, medium, heavy]
+        # 3 OS × 3 Workload = 9ジョブ（2並列）
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ${{ matrix.workload }} benchmark
+        run: npm run benchmark:${{ matrix.workload }}
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-${{ matrix.os }}-${{ matrix.workload }}
+          path: benchmark-results/
+
+---
+
+# ═══════════════════════════════════════════════════════════════
+# 9. 依存関係バージョンマトリックス
+# ═══════════════════════════════════════════════════════════════
+
+name: Dependency Matrix
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [18, 20, 22]
+        react: ['17', '18', '19']
+        exclude:
+          # Node 18はReact 19非対応
+          - node: 18
+            react: '19'
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install React ${{ matrix.react }}
+        run: npm install react@${{ matrix.react }} react-dom@${{ matrix.react }}
+
+      - name: Run tests
+        run: npm test
+
+---
+
+# ═══════════════════════════════════════════════════════════════
+# 10. コンテナイメージビルドマトリックス
+# ═══════════════════════════════════════════════════════════════
+
+name: Container Matrix
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform:
+          - linux/amd64
+          - linux/arm64
+          - linux/arm/v7
+        base-image:
+          - alpine
+          - debian
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build ${{ matrix.base-image }} for ${{ matrix.platform }}
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: ${{ matrix.platform }}
+          build-args: |
+            BASE_IMAGE=${{ matrix.base-image }}
+          tags: myapp:${{ matrix.base-image }}-${{ matrix.platform }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

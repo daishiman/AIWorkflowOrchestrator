@@ -1,0 +1,416 @@
+# GitHub Actions 条件付き実行のサンプルワークフロー
+
+name: Conditional Execution Examples
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'src/**'
+      - 'package.json'
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, labeled]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+      run_tests:
+        description: 'Run tests'
+        type: boolean
+        default: true
+
+jobs:
+  # ========================================
+  # ステータス関数の使用例
+  # ========================================
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload build artifacts (常に実行)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist/
+          retention-days: 7
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        id: test
+        run: npm test
+
+      - name: Upload test results (成功時のみ)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results/
+
+      - name: Upload coverage report (成功時のみ)
+        if: success()
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage/coverage-final.json
+
+      - name: Notify on failure (失敗時のみ)
+        if: failure()
+        run: |
+          echo "::error::Tests failed! Check the logs for details."
+          curl -X POST ${{ secrets.SLACK_WEBHOOK }} \
+            -H 'Content-Type: application/json' \
+            -d '{"text":"❌ Tests failed in ${{ github.repository }}"}'
+
+      - name: Cleanup (常に実行、キャンセル時を除く)
+        if: always() && !cancelled()
+        run: |
+          echo "Cleaning up test environment..."
+          docker-compose down || true
+
+  # ========================================
+  # ブランチ/イベントによる条件分岐
+  # ========================================
+
+  deploy-dev:
+    needs: [build, test]
+    # develop ブランチへの push のみ
+    if: |
+      github.ref == 'refs/heads/develop' &&
+      github.event_name == 'push' &&
+      needs.build.result == 'success' &&
+      needs.test.result == 'success'
+    runs-on: ubuntu-latest
+    environment: development
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist/
+
+      - name: Deploy to dev
+        run: |
+          echo "Deploying to development environment..."
+          npm run deploy:dev
+
+  deploy-prod:
+    needs: [build, test]
+    # main ブランチへの push のみ
+    if: |
+      github.ref == 'refs/heads/main' &&
+      github.event_name == 'push' &&
+      needs.build.result == 'success' &&
+      needs.test.result == 'success'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist/
+
+      - name: Deploy to production
+        run: |
+          echo "Deploying to production environment..."
+          npm run deploy:prod
+
+      - name: Create release
+        if: success()
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: Release ${{ github.run_number }}
+          draft: false
+          prerelease: false
+
+  # ========================================
+  # PR ラベルによる条件分岐
+  # ========================================
+
+  e2e-tests:
+    # PR に "test:e2e" ラベルが付いている場合のみ実行
+    if: |
+      github.event_name == 'pull_request' &&
+      contains(github.event.pull_request.labels.*.name, 'test:e2e')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run E2E tests
+        run: npm run test:e2e
+
+      - name: Upload E2E results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-results
+          path: e2e-results/
+
+  performance-tests:
+    # PR に "test:perf" ラベルが付いている場合のみ実行
+    if: |
+      github.event_name == 'pull_request' &&
+      contains(github.event.pull_request.labels.*.name, 'test:perf')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run performance tests
+        run: npm run test:perf
+
+      - name: Comment performance results
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const results = fs.readFileSync('perf-results.json', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## Performance Test Results\n\`\`\`json\n${results}\n\`\`\``
+            });
+
+  # ========================================
+  # workflow_dispatch 入力による条件分岐
+  # ========================================
+
+  manual-test:
+    # workflow_dispatch で run_tests が true の場合のみ実行
+    if: github.event_name == 'workflow_dispatch' && inputs.run_tests == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npm test
+
+  manual-deploy:
+    needs: manual-test
+    # workflow_dispatch イベントで、テストがスキップまたは成功の場合に実行
+    if: |
+      github.event_name == 'workflow_dispatch' &&
+      (needs.manual-test.result == 'success' || needs.manual-test.result == 'skipped')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to selected environment
+        run: |
+          case "${{ inputs.environment }}" in
+            development)
+              echo "Deploying to development..."
+              npm run deploy:dev
+              ;;
+            staging)
+              echo "Deploying to staging..."
+              npm run deploy:staging
+              ;;
+            production)
+              echo "Deploying to production..."
+              npm run deploy:prod
+              ;;
+          esac
+
+  # ========================================
+  # マトリックスビルドでの条件分岐
+  # ========================================
+
+  cross-platform-test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [18, 20]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      # Ubuntu + Node 20 の場合のみ追加テストを実行
+      - name: Run integration tests
+        if: matrix.os == 'ubuntu-latest' && matrix.node == '20'
+        run: npm run test:integration
+
+      # Windows 以外で実行
+      - name: Run Unix-specific tests
+        if: matrix.os != 'windows-latest'
+        run: ./run-unix-tests.sh
+
+      # macOS のみ
+      - name: Run macOS-specific tests
+        if: matrix.os == 'macos-latest'
+        run: ./run-macos-tests.sh
+
+  # ========================================
+  # 複雑な依存関係の例
+  # ========================================
+
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm audit
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npm run lint
+
+  final-deploy:
+    needs: [build, test, security-scan, lint]
+    # すべての前提ジョブが成功し、main ブランチへの push の場合のみ
+    if: |
+      always() &&
+      needs.build.result == 'success' &&
+      needs.test.result == 'success' &&
+      needs.security-scan.result == 'success' &&
+      needs.lint.result == 'success' &&
+      github.ref == 'refs/heads/main' &&
+      github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "All checks passed! Ready to deploy."
+      - run: npm run deploy:prod
+
+  # ========================================
+  # PR マージ検出
+  # ========================================
+
+  post-merge-cleanup:
+    # PR がマージされてクローズした場合のみ実行
+    if: |
+      github.event_name == 'pull_request' &&
+      github.event.action == 'closed' &&
+      github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cleanup preview environment
+        run: |
+          echo "Cleaning up preview environment for PR #${{ github.event.pull_request.number }}"
+          ./cleanup-preview.sh ${{ github.event.pull_request.number }}
+
+      - name: Update project board
+        uses: actions/github-script@v7
+        with:
+          script: |
+            console.log('Moving card to "Done" column...');
+            // Project board API calls here
+
+  # ========================================
+  # シークレット存在チェック
+  # ========================================
+
+  optional-deploy:
+    needs: [build, test]
+    # デプロイトークンが設定されている場合のみ実行
+    if: |
+      needs.build.result == 'success' &&
+      needs.test.result == 'success' &&
+      secrets.DEPLOY_TOKEN != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy with token
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+        run: |
+          echo "Deploying with authentication..."
+          npm run deploy
+
+  # ========================================
+  # 失敗時のデバッグログ収集
+  # ========================================
+
+  debug-on-failure:
+    needs: [test]
+    # テストが失敗した場合のみ実行
+    if: failure() && needs.test.result == 'failure'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Collect debug information
+        run: |
+          mkdir -p debug-logs
+          docker logs test-container > debug-logs/docker.log || true
+          npm run test -- --verbose > debug-logs/test-verbose.log || true
+          cat package.json > debug-logs/package.json
+
+      - name: Upload debug logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-logs-${{ github.run_id }}
+          path: debug-logs/
+          retention-days: 7

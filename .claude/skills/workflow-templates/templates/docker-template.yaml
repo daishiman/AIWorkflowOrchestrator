@@ -1,0 +1,248 @@
+# Docker Build and Push Workflow Template
+# Dockerイメージのビルドとレジストリへのプッシュを行うワークフローテンプレート
+#
+# 対応レジストリ: Docker Hub, GitHub Container Registry (GHCR), Amazon ECR, Google GCR
+# 最適化機能: マルチステージビルド、BuildKitキャッシュ、マルチプラットフォームビルド
+
+name: Docker Build and Push
+
+on:
+  push:
+    branches: [main, develop]
+    tags: ['v*']  # セマンティックバージョンタグ（v1.0.0等）
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  # レジストリとイメージ名の設定（プロジェクトに応じて変更）
+  REGISTRY: ghcr.io  # or docker.io, or <aws_account_id>.dkr.ecr.<region>.amazonaws.com
+  IMAGE_NAME: ${{ github.repository }}  # owner/repo 形式
+
+# 同一ブランチでの並行実行を制御
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+
+    # GitHub Container Registryへのプッシュに必要な権限
+    permissions:
+      contents: read
+      packages: write
+      id-token: write  # OIDC認証用（AWS ECR等で必要）
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Docker Buildxのセットアップ（BuildKit機能を有効化）
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: |
+            image=moby/buildkit:latest
+            network=host
+
+      # QEMUのセットアップ（マルチプラットフォームビルド用）
+      # - name: Set up QEMU
+      #   uses: docker/setup-qemu-action@v3
+      #   with:
+      #     platforms: linux/amd64,linux/arm64
+
+      # === GitHub Container Registry (GHCR) の場合 ===
+      - name: Log in to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # === Docker Hub の場合 ===
+      # - name: Log in to Docker Hub
+      #   if: github.event_name != 'pull_request'
+      #   uses: docker/login-action@v3
+      #   with:
+      #     username: ${{ secrets.DOCKER_USERNAME }}
+      #     password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # === Amazon ECR の場合 ===
+      # - name: Configure AWS credentials
+      #   if: github.event_name != 'pull_request'
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+      #     aws-region: us-east-1
+      #
+      # - name: Log in to Amazon ECR
+      #   if: github.event_name != 'pull_request'
+      #   uses: aws-actions/amazon-ecr-login@v2
+
+      # === Google Container Registry (GCR) の場合 ===
+      # - name: Authenticate to Google Cloud
+      #   if: github.event_name != 'pull_request'
+      #   uses: google-github-actions/auth@v2
+      #   with:
+      #     credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+      #
+      # - name: Set up Cloud SDK
+      #   uses: google-github-actions/setup-gcloud@v2
+      #
+      # - name: Configure Docker to use gcloud as a credential helper
+      #   run: gcloud auth configure-docker
+
+      # イメージメタデータの抽出（タグ生成）
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            # ブランチ名タグ（例: main, develop）
+            type=ref,event=branch
+            # PRタグ（例: pr-123）
+            type=ref,event=pr
+            # セマンティックバージョンタグ（例: 1.0.0, 1.0, 1）
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            # コミットSHAタグ（例: sha-1234567）
+            type=sha,prefix=sha-
+            # latestタグ（mainブランチのみ）
+            type=raw,value=latest,enable={{is_default_branch}}
+          labels: |
+            org.opencontainers.image.title=${{ github.repository }}
+            org.opencontainers.image.description=Docker image for ${{ github.repository }}
+            org.opencontainers.image.vendor=${{ github.repository_owner }}
+
+      # Dockerイメージのビルドとプッシュ
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile  # Dockerfileのパス
+          push: ${{ github.event_name != 'pull_request' }}  # PRではプッシュしない
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+          # マルチプラットフォームビルド（必要に応じて有効化）
+          # platforms: linux/amd64,linux/arm64
+
+          # BuildKitキャッシュの有効化（ビルド高速化）
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+          # ビルド引数の設定
+          build-args: |
+            NODE_ENV=production
+            BUILD_DATE=${{ github.event.head_commit.timestamp }}
+            VCS_REF=${{ github.sha }}
+
+          # ビルドシークレットの注入（ARG + secretsファイル方式）
+          # secrets: |
+          #   "npm_token=${{ secrets.NPM_TOKEN }}"
+
+      # イメージスキャン（セキュリティ脆弱性チェック）
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'  # 脆弱性が見つかった場合は失敗
+
+      # スキャン結果をGitHub Security タブにアップロード
+      - name: Upload Trivy results to GitHub Security
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      # イメージ署名（Cosignを使用）
+      # - name: Install Cosign
+      #   uses: sigstore/cosign-installer@v3
+      #
+      # - name: Sign the Docker image
+      #   env:
+      #     COSIGN_EXPERIMENTAL: "true"
+      #   run: |
+      #     cosign sign --yes ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+      # ビルド情報の出力
+      - name: Output image details
+        run: |
+          echo "Image tags:"
+          echo "${{ steps.meta.outputs.tags }}"
+          echo ""
+          echo "Image labels:"
+          echo "${{ steps.meta.outputs.labels }}"
+
+  # イメージテスト（オプション）
+  test:
+    name: Test Docker Image
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # ローカルでイメージをビルド（テスト用）
+      - name: Build test image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          load: true
+          tags: test-image:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # コンテナ起動テスト
+      - name: Run container tests
+        run: |
+          # コンテナを起動
+          docker run -d --name test-container -p 8080:8080 test-image:latest
+
+          # ヘルスチェック（アプリケーションに応じて調整）
+          sleep 10
+          curl -f http://localhost:8080/health || exit 1
+
+          # コンテナログの確認
+          docker logs test-container
+
+          # コンテナ停止
+          docker stop test-container
+
+  # 通知（デプロイ成功/失敗）
+  notify:
+    name: Notify
+    runs-on: ubuntu-latest
+    needs: build
+    if: always() && github.event_name != 'pull_request'
+    steps:
+      - name: Notify build status
+        run: |
+          if [ "${{ needs.build.result }}" == "success" ]; then
+            echo "✅ Docker image build successful"
+          else
+            echo "❌ Docker image build failed"
+          fi
+
+      # Slack通知の例
+      # - name: Notify Slack
+      #   uses: slackapi/slack-github-action@v1
+      #   with:
+      #     payload: |
+      #       {
+      #         "text": "Docker build ${{ needs.build.result }}: ${{ github.repository }}"
+      #       }
+      #   env:
+      #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

@@ -1,0 +1,215 @@
+# Generic CD (Continuous Deployment) Workflow Template
+# 汎用的なCD（Continuous Deployment）ワークフローテンプレート
+#
+# カスタマイズポイント:
+# - デプロイトリガー (on:)
+# - デプロイ先環境（AWS, GCP, Azure, Vercel等）
+# - デプロイコマンド
+# - 通知設定
+
+name: CD
+
+on:
+  push:
+    branches:
+      - main        # 本番デプロイ
+      - staging     # ステージングデプロイ（オプション）
+    tags:
+      - 'v*'        # バージョンタグでのリリース
+
+  # 手動実行オプション
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+# 本番環境への同時デプロイを防ぐ
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false  # デプロイは中断しない
+
+jobs:
+  # ビルドジョブ（CDワークフロー内で実行する場合）
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 言語に応じたセットアップとビルド
+      # - uses: actions/setup-node@v4
+      #   with:
+      #     node-version: '20'
+      #     cache: 'npm'
+      # - run: npm ci
+      # - run: npm run build
+
+      - name: Build application
+        run: |
+          echo "Build application here"
+
+      # ビルド成果物のアップロード
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            dist/
+            build/
+          retention-days: 7
+
+  # デプロイジョブ
+  deploy:
+    name: Deploy to ${{ github.event.inputs.environment || 'production' }}
+    runs-on: ubuntu-latest
+    needs: build
+
+    # 環境設定（GitHub Environments機能を使用）
+    environment:
+      name: ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}
+      url: https://${{ steps.deploy.outputs.url }}  # デプロイ後のURL
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ビルド成果物のダウンロード
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: ./dist
+
+      # デプロイ先に応じた認証・設定
+      #
+      # === AWS S3 + CloudFront の場合 ===
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws-region: us-east-1
+      #
+      # - name: Deploy to S3
+      #   run: |
+      #     aws s3 sync ./dist s3://${{ secrets.S3_BUCKET }} --delete
+      #     aws cloudfront create-invalidation --distribution-id ${{ secrets.CF_DISTRIBUTION_ID }} --paths "/*"
+      #
+      # === Vercel の場合 ===
+      # - name: Deploy to Vercel
+      #   uses: amondnet/vercel-action@v25
+      #   with:
+      #     vercel-token: ${{ secrets.VERCEL_TOKEN }}
+      #     vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+      #     vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+      #     vercel-args: '--prod'
+      #
+      # === Netlify の場合 ===
+      # - name: Deploy to Netlify
+      #   uses: nwtgck/actions-netlify@v2
+      #   with:
+      #     publish-dir: './dist'
+      #     production-branch: main
+      #     production-deploy: true
+      #   env:
+      #     NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      #     NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      #
+      # === Docker Image Push + Kubernetes の場合 ===
+      # - name: Build and push Docker image
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     push: true
+      #     tags: ${{ secrets.REGISTRY }}/${{ secrets.IMAGE_NAME }}:${{ github.sha }}
+      #
+      # - name: Deploy to Kubernetes
+      #   run: |
+      #     kubectl set image deployment/${{ secrets.DEPLOYMENT_NAME }} \
+      #       ${{ secrets.CONTAINER_NAME }}=${{ secrets.REGISTRY }}/${{ secrets.IMAGE_NAME }}:${{ github.sha }}
+
+      - name: Deploy application
+        id: deploy
+        run: |
+          echo "Deploy application here"
+          echo "url=example.com" >> $GITHUB_OUTPUT
+
+  # ヘルスチェック（デプロイ後の検証）
+  health-check:
+    name: Health Check
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - name: Wait for deployment
+        run: sleep 30
+
+      - name: Check application health
+        run: |
+          # デプロイ先のヘルスチェックエンドポイントを確認
+          # curl -f https://example.com/health || exit 1
+          echo "Health check passed"
+
+      # E2Eテスト実行（オプション）
+      # - name: Run E2E tests
+      #   run: |
+      #     npx playwright test --config=playwright.config.prod.ts
+
+  # 通知ジョブ（デプロイ成功/失敗の通知）
+  notify:
+    name: Notify
+    runs-on: ubuntu-latest
+    needs: [deploy, health-check]
+    if: always()  # 成功・失敗に関わらず実行
+    steps:
+      # Slack通知の例
+      # - name: Notify Slack
+      #   uses: slackapi/slack-github-action@v1
+      #   with:
+      #     payload: |
+      #       {
+      #         "text": "Deployment ${{ needs.deploy.result }}: ${{ github.repository }}",
+      #         "blocks": [
+      #           {
+      #             "type": "section",
+      #             "text": {
+      #               "type": "mrkdwn",
+      #               "text": "*Deployment Status*: ${{ needs.deploy.result }}\n*Repository*: ${{ github.repository }}\n*Branch*: ${{ github.ref_name }}\n*Commit*: ${{ github.sha }}"
+      #             }
+      #           }
+      #         ]
+      #       }
+      #   env:
+      #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      # Discord通知の例
+      # - name: Notify Discord
+      #   uses: sarisia/actions-status-discord@v1
+      #   with:
+      #     webhook: ${{ secrets.DISCORD_WEBHOOK }}
+      #     title: "Deployment ${{ needs.deploy.result }}"
+      #     description: "Deployed ${{ github.repository }} to production"
+      #     color: ${{ needs.deploy.result == 'success' && '0x00ff00' || '0xff0000' }}
+
+      - name: Notify deployment status
+        run: |
+          echo "Deployment result: ${{ needs.deploy.result }}"
+          echo "Health check result: ${{ needs.health-check.result }}"
+
+  # ロールバック用ジョブ（失敗時の自動ロールバック）
+  # rollback:
+  #   name: Rollback
+  #   runs-on: ubuntu-latest
+  #   needs: [deploy, health-check]
+  #   if: failure()  # いずれかのジョブが失敗した場合のみ実行
+  #   steps:
+  #     - name: Rollback deployment
+  #       run: |
+  #         echo "Rolling back to previous version"
+  #         # kubectl rollout undo deployment/${{ secrets.DEPLOYMENT_NAME }}
+  #         # aws s3 sync s3://${{ secrets.BACKUP_BUCKET }} s3://${{ secrets.S3_BUCKET }}

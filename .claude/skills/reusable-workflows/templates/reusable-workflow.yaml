@@ -1,0 +1,162 @@
+# Reusable Workflow Template
+# 再利用可能なワークフローのテンプレート
+
+name: Reusable Workflow Template
+
+on:
+  workflow_call:
+    # === INPUTS ===
+    inputs:
+      # String input with description
+      environment:
+        description: 'Target environment (development|staging|production)'
+        required: true
+        type: string
+
+      # Boolean input with default
+      debug-mode:
+        description: 'Enable debug logging'
+        required: false
+        type: boolean
+        default: false
+
+      # Number input with default
+      timeout-minutes:
+        description: 'Job timeout in minutes'
+        required: false
+        type: number
+        default: 30
+
+      # Optional string with default
+      node-version:
+        description: 'Node.js version to use'
+        required: false
+        type: string
+        default: '20'
+
+    # === OUTPUTS ===
+    outputs:
+      # Output from job
+      build-id:
+        description: "Unique build identifier"
+        value: ${{ jobs.main-job.outputs.build-id }}
+
+      # Output from step
+      result:
+        description: "Execution result"
+        value: ${{ jobs.main-job.outputs.result }}
+
+      # Composite output
+      artifact-url:
+        description: "URL to download artifact"
+        value: ${{ jobs.main-job.outputs.artifact-url }}
+
+    # === SECRETS ===
+    secrets:
+      # Required secret
+      API_TOKEN:
+        required: true
+        description: 'API authentication token'
+
+      # Optional secret
+      SENTRY_DSN:
+        required: false
+        description: 'Sentry error tracking DSN'
+
+# === JOBS ===
+jobs:
+  main-job:
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+
+    # Define outputs for this job
+    outputs:
+      build-id: ${{ steps.generate-id.outputs.id }}
+      result: ${{ steps.execute.outputs.result }}
+      artifact-url: ${{ steps.upload.outputs.artifact-url }}
+
+    steps:
+      # 1. Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Setup environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: 'npm'
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.API_TOKEN }}
+
+      # 4. Generate unique ID
+      - name: Generate build ID
+        id: generate-id
+        run: |
+          BUILD_ID="build-${{ github.run_number }}-$(date +%s)"
+          echo "id=${BUILD_ID}" >> $GITHUB_OUTPUT
+          echo "Generated build ID: ${BUILD_ID}"
+
+      # 5. Execute main task
+      - name: Execute task
+        id: execute
+        run: |
+          echo "Environment: ${{ inputs.environment }}"
+          echo "Debug mode: ${{ inputs.debug-mode }}"
+
+          # Your main logic here
+          npm run build
+
+          # Set output
+          echo "result=success" >> $GITHUB_OUTPUT
+        env:
+          NODE_ENV: ${{ inputs.environment }}
+          DEBUG: ${{ inputs.debug-mode }}
+
+      # 6. Conditional step based on input
+      - name: Debug output
+        if: inputs.debug-mode == true
+        run: |
+          echo "=== Debug Information ==="
+          echo "Build ID: ${{ steps.generate-id.outputs.id }}"
+          echo "Environment: ${{ inputs.environment }}"
+          echo "Node version: ${{ inputs.node-version }}"
+
+      # 7. Upload artifact
+      - name: Upload build artifact
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ steps.generate-id.outputs.id }}
+          path: dist/
+          retention-days: 7
+
+      # 8. Optional step with secret
+      - name: Send to monitoring
+        if: secrets.SENTRY_DSN != ''
+        run: |
+          echo "Sending build info to monitoring..."
+          # Your monitoring logic here
+        env:
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+
+  # Optional: Additional job
+  post-process:
+    needs: main-job
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Post-process
+        run: |
+          echo "Main job result: ${{ needs.main-job.outputs.result }}"
+          echo "Build ID: ${{ needs.main-job.outputs.build-id }}"
+
+      - name: Cleanup
+        if: failure()
+        run: |
+          echo "Performing cleanup after failure..."
