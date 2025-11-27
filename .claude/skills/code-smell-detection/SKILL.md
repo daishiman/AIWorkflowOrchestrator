@@ -2,7 +2,15 @@
 name: code-smell-detection
 description: |
   コードスメル（悪臭）とアーキテクチャアンチパターンの検出を専門とするスキル。
-  保守性を低下させる構造的問題を体系的に特定し、リファクタリング方針を提案します。
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/code-smell-detection/resources/architecture-antipatterns.md`: アーキテクチャ・アンチパターン
+  - `.claude/skills/code-smell-detection/resources/class-smells.md`: クラス関連のコードスメル
+  - `.claude/skills/code-smell-detection/resources/method-smells.md`: メソッド関連のコードスメル
+  - `.claude/skills/code-smell-detection/templates/code-smell-report.md`: コードスメル検出レポート
+  - `.claude/skills/code-smell-detection/scripts/detect-code-smells.mjs`: コードスメル検出スクリプト
 
   専門分野:
   - クラススメル: God Object、Feature Envy、Data Class

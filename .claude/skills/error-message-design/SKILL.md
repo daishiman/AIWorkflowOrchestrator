@@ -1,26 +1,36 @@
 ---
 name: error-message-design
 description: |
-  ユーザーフレンドリーなエラーメッセージの設計を専門とするスキル。
-  エラーコード体系、多言語対応（i18n）、アクション指向のメッセージ設計を
-  通じて、ユーザー体験を向上させます。
+    ユーザーフレンドリーなエラーメッセージの設計を専門とするスキル。
+    エラーコード体系、多言語対応（i18n）、アクション指向のメッセージ設計を
+    通じて、ユーザー体験を向上させます。
+    専門分野:
+    - エラーコード体系: 階層的コード、カテゴリ分類
+    - メッセージ設計: アクション指向、コンテキスト考慮
+    - i18n対応: 多言語化、文化的配慮
+    - 開発者向けエラー: デバッグ情報、スタックトレース
+    使用タイミング:
+    - バリデーションエラーメッセージの設計時
+    - APIエラーレスポンスの設計時
+    - 多言語対応のエラーシステム構築時
+    - ユーザー向け/開発者向けエラーの分離時
+    Use proactively when designing validation error messages,
+    API error responses, or building i18n-ready error systems.
 
-  専門分野:
-  - エラーコード体系: 階層的コード、カテゴリ分類
-  - メッセージ設計: アクション指向、コンテキスト考慮
-  - i18n対応: 多言語化、文化的配慮
-  - 開発者向けエラー: デバッグ情報、スタックトレース
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
 
-  使用タイミング:
-  - バリデーションエラーメッセージの設計時
-  - APIエラーレスポンスの設計時
-  - 多言語対応のエラーシステム構築時
-  - ユーザー向け/開発者向けエラーの分離時
+  - `.claude/skills/error-message-design/resources/api-error-responses.md`: RFC 7807準拠のAPIエラーレスポンス設計
+  - `.claude/skills/error-message-design/resources/error-code-system.md`: 階層的エラーコード体系とカテゴリ分類
+  - `.claude/skills/error-message-design/resources/i18n-error-handling.md`: 多言語対応エラーメッセージの実装
+  - `.claude/skills/error-message-design/resources/user-friendly-messages.md`: アクション指向のユーザーフレンドリーメッセージ
+  - `.claude/skills/error-message-design/templates/error-system-template.ts`: エラーシステム実装テンプレート
+  - `.claude/skills/error-message-design/scripts/validate-error-messages.mjs`: エラーメッセージの検証スクリプト
 
-  Use proactively when designing validation error messages,
-  API error responses, or building i18n-ready error systems.
 version: 1.0.0
 ---
+
 
 # Error Message Design
 

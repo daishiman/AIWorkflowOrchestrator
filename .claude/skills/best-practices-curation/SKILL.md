@@ -2,8 +2,14 @@
 name: best-practices-curation
 description: |
   ベストプラクティスの収集、評価、統合、更新を体系的に行うスキル。
-  情報源の信頼性評価、品質スコアリング、陳腐化防止により、
-  高品質なベストプラクティス知識ベースを維持します。
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/best-practices-curation/resources/information-source-evaluation.md`: 一次・二次・三次情報源の分類と信頼性評価基準、優先順位付けと採用判断の実践ガイド
+  - `.claude/skills/best-practices-curation/resources/integration-strategies.md`: 4つの統合パターン（追加型・強化型・置換型・統合型）と重複排除戦略、知識統合のベストプラクティス
+  - `.claude/skills/best-practices-curation/resources/quality-scoring.md`: 品質スコアリングガイド
+  - `.claude/skills/best-practices-curation/templates/evaluation-checklist.md`: ベストプラクティス評価チェックリスト
 
   専門分野:
   - 情報収集: 一次/二次/三次情報源の特定と収集

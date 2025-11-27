@@ -5,6 +5,14 @@ description: |
   ハイブリッドアーキテクチャ（shared/features）、データベース設計、REST API、
   テスト戦略、エラーハンドリング、CI/CDの原則をエージェント設計に統合します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/project-architecture-integration/resources/hybrid-architecture-guide.md`: Hybrid Architecture Guide
+  - `.claude/skills/project-architecture-integration/scripts/check-architecture-compliance.mjs`: check-architecture-compliance.mjs
+  - `.claude/skills/project-architecture-integration/templates/architecture-compliance-checklist.md`: アーキテクチャ準拠チェックリスト
+
   専門分野:
   - ハイブリッドアーキテクチャ: shared/features構造、依存関係ルール、機能追加ワークフロー
   - データベース設計: JSONB活用、トランザクション、pgvector、インデックス戦略

@@ -1,16 +1,25 @@
 ---
 name: event-driven-file-watching
 description: |
-  Ryan Dahlのイベント駆動・非同期I/O思想に基づくファイルシステム監視の専門知識。
-  Chokidarライブラリを中心に、Observer Patternによる効率的なファイル変更検知、
-  クロスプラットフォーム対応、EventEmitterによる疎結合な通知システムを提供。
+    Ryan Dahlのイベント駆動・非同期I/O思想に基づくファイルシステム監視の専門知識。
+    Chokidarライブラリを中心に、Observer Patternによる効率的なファイル変更検知、
+    クロスプラットフォーム対応、EventEmitterによる疎結合な通知システムを提供。
+    使用タイミング:
+    - Chokidarによるファイル監視システムを設計・実装する時
+    - Observer Patternでイベント通知を設計する時
+    - ファイルシステムイベントのハンドリングを実装する時
+    - クロスプラットフォーム対応の監視設定を決定する時
+    - 監視方式（native fsevents vs polling）を選択する時
 
-  使用タイミング:
-  - Chokidarによるファイル監視システムを設計・実装する時
-  - Observer Patternでイベント通知を設計する時
-  - ファイルシステムイベントのハンドリングを実装する時
-  - クロスプラットフォーム対応の監視設定を決定する時
-  - 監視方式（native fsevents vs polling）を選択する時
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/event-driven-file-watching/resources/chokidar-config-reference.md`: Chokidar設定オプションとクロスプラットフォーム対応ガイド
+  - `.claude/skills/event-driven-file-watching/resources/event-emitter-patterns.md`: EventEmitterによるObserver Patternとイベント通知システムの実装
+  - `.claude/skills/event-driven-file-watching/templates/watcher-template.ts`: ファイル監視システム実装テンプレート
+
+  Use proactively when implementing event-driven-file-watching patterns or solving related problems.
 version: 1.0.0
 ---
 
@@ -18,7 +27,7 @@ version: 1.0.0
 
 ## 概要
 
-このスキルは、Node.jsにおけるイベント駆動型ファイル監視の設計と実装に関する専門知識を提供します。Ryan Dahlが提唱する非同期I/Oモデルに基づき、効率的で信頼性の高い監視システムを構築するための原則とパターンを定義します。
+このスキルは、Node.js におけるイベント駆動型ファイル監視の設計と実装に関する専門知識を提供します。Ryan Dahl が提唱する非同期 I/O モデルに基づき、効率的で信頼性の高い監視システムを構築するための原則とパターンを定義します。
 
 ---
 
@@ -26,21 +35,22 @@ version: 1.0.0
 
 ### 1. イベント駆動アーキテクチャの原則
 
-**Ryan Dahlの設計原則**:
-1. **非同期ファースト**: すべてのI/O操作は非同期APIを使用
+**Ryan Dahl の設計原則**:
+
+1. **非同期ファースト**: すべての I/O 操作は非同期 API を使用
 2. **シンプル・コア**: 監視コアは最小限、複雑な処理は外部委譲
 3. **イベント駆動**: 状態変化はイベントとして表現（push > poll）
 4. **エラー伝播**: エラーは隠蔽せず明示的に伝播
 
-### 2. Chokidarの選択根拠
+### 2. Chokidar の選択根拠
 
-| 技術 | 特性 | 推奨度 |
-|------|------|--------|
-| **Chokidar** | クロスプラットフォーム、安定性、豊富な設定 | ✅ 推奨 |
-| fs.watch | ネイティブAPI、プラットフォーム依存、不安定 | ⚠️ 限定的 |
-| fs.watchFile | polling方式、高CPU、遅延 | ❌ 非推奨 |
+| 技術         | 特性                                         | 推奨度    |
+| ------------ | -------------------------------------------- | --------- |
+| **Chokidar** | クロスプラットフォーム、安定性、豊富な設定   | ✅ 推奨   |
+| fs.watch     | ネイティブ API、プラットフォーム依存、不安定 | ⚠️ 限定的 |
+| fs.watchFile | polling 方式、高 CPU、遅延                   | ❌ 非推奨 |
 
-### 3. Observer Patternの適用
+### 3. Observer Pattern の適用
 
 ```typescript
 // 基本構造
@@ -63,7 +73,7 @@ class FileWatcher extends EventEmitter {
 
 ---
 
-## Chokidar設定ガイド
+## Chokidar 設定ガイド
 
 ### 基本設定パラメータ
 
@@ -108,14 +118,10 @@ const devConfig: ChokidarOptions = {
   ignoreInitial: true,
   awaitWriteFinish: {
     stabilityThreshold: 100,
-    pollInterval: 50
+    pollInterval: 50,
   },
   usePolling: false, // ネイティブfsevents使用
-  ignored: [
-    '**/node_modules/**',
-    '**/.git/**',
-    '**/dist/**'
-  ]
+  ignored: ["**/node_modules/**", "**/.git/**", "**/dist/**"],
 };
 
 // 本番環境（NFS/Docker volumes）
@@ -124,14 +130,11 @@ const prodConfig: ChokidarOptions = {
   ignoreInitial: true,
   awaitWriteFinish: {
     stabilityThreshold: 500,
-    pollInterval: 100
+    pollInterval: 100,
   },
   usePolling: true, // ネットワークFS向け
   interval: 1000,
-  ignored: [
-    '**/node_modules/**',
-    '**/.git/**'
-  ]
+  ignored: ["**/node_modules/**", "**/.git/**"],
 };
 ```
 
@@ -141,16 +144,16 @@ const prodConfig: ChokidarOptions = {
 
 ### イベントタイプと用途
 
-| イベント | 発火条件 | 典型的なハンドリング |
-|----------|----------|----------------------|
-| `add` | ファイル追加 | 同期キュー追加 |
-| `change` | ファイル変更 | 差分同期 |
-| `unlink` | ファイル削除 | リモート削除通知 |
-| `addDir` | ディレクトリ追加 | ディレクトリ構造同期 |
-| `unlinkDir` | ディレクトリ削除 | リモート削除 |
-| `ready` | 初期スキャン完了 | 監視準備完了通知 |
-| `error` | エラー発生 | エラーログ・リカバリー |
-| `raw` | 低レベルイベント | デバッグ用 |
+| イベント    | 発火条件         | 典型的なハンドリング   |
+| ----------- | ---------------- | ---------------------- |
+| `add`       | ファイル追加     | 同期キュー追加         |
+| `change`    | ファイル変更     | 差分同期               |
+| `unlink`    | ファイル削除     | リモート削除通知       |
+| `addDir`    | ディレクトリ追加 | ディレクトリ構造同期   |
+| `unlinkDir` | ディレクトリ削除 | リモート削除           |
+| `ready`     | 初期スキャン完了 | 監視準備完了通知       |
+| `error`     | エラー発生       | エラーログ・リカバリー |
+| `raw`       | 低レベルイベント | デバッグ用             |
 
 ### ハンドラー実装パターン
 
@@ -162,11 +165,11 @@ type ReadyHandler = () => void;
 
 // イベント登録の模範例
 watcher
-  .on('add', (path, stats) => this.emit('fileAdded', { path, stats }))
-  .on('change', (path, stats) => this.emit('fileChanged', { path, stats }))
-  .on('unlink', path => this.emit('fileRemoved', { path }))
-  .on('error', error => this.emit('error', error))
-  .on('ready', () => this.emit('ready'));
+  .on("add", (path, stats) => this.emit("fileAdded", { path, stats }))
+  .on("change", (path, stats) => this.emit("fileChanged", { path, stats }))
+  .on("unlink", (path) => this.emit("fileRemoved", { path }))
+  .on("error", (error) => this.emit("error", error))
+  .on("ready", () => this.emit("ready"));
 ```
 
 ---
@@ -176,15 +179,15 @@ watcher
 ### 設計時
 
 - [ ] 監視対象ディレクトリのファイルシステムタイプを確認したか？（ローカル/NFS/Docker）
-- [ ] 除外パターンは.gitignoreと整合しているか？
+- [ ] 除外パターンは.gitignore と整合しているか？
 - [ ] 書き込み完了待機の閾値は対象ファイルサイズに適しているか？
 - [ ] イベントリスナー数の上限を設定したか？（メモリリーク防止）
 
 ### 実装時
 
-- [ ] すべてのI/O操作が非同期APIを使用しているか？
-- [ ] errorイベントのハンドラーが登録されているか？
-- [ ] graceful shutdown時にwatcher.close()が呼ばれるか？
+- [ ] すべての I/O 操作が非同期 API を使用しているか？
+- [ ] error イベントのハンドラーが登録されているか？
+- [ ] graceful shutdown 時に watcher.close()が呼ばれるか？
 - [ ] リソースリーク防止策が実装されているか？
 
 ### テスト時
@@ -195,12 +198,12 @@ watcher
 
 ---
 
-## TypeScript型定義
+## TypeScript 型定義
 
 ```typescript
 // ファイルイベント構造
 interface FileEvent {
-  type: 'add' | 'change' | 'unlink';
+  type: "add" | "change" | "unlink";
   path: string;
   stats?: fs.Stats;
   timestamp: string; // ISO8601
@@ -220,7 +223,7 @@ interface WatcherConfig {
 
 // エラー情報
 interface WatcherError {
-  code: string;      // EACCES, ENOENT等
+  code: string; // EACCES, ENOENT等
   message: string;
   path?: string;
   recoverable: boolean;

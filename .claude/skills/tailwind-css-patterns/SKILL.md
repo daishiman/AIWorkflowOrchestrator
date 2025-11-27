@@ -1,18 +1,43 @@
+---
+name: tailwind-css-patterns
+description: |
+  Tailwind CSSを活用した効率的で保守性の高いスタイリングパターンの専門知識。
+  Class Variance Authority (CVA)、Tailwind Merge、レスポンシブデザイン、
+  ダークモード対応の実装パターンを提供します。
+
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/tailwind-css-patterns/resources/cva-guide.md`: CVA Guideリソース
+  - `.claude/skills/tailwind-css-patterns/resources/dark-mode-guide.md`: Dark Mode Guideリソース
+  - `.claude/skills/tailwind-css-patterns/resources/responsive-patterns.md`: Responsive Patternsリソース
+
+  - `.claude/skills/tailwind-css-patterns/templates/component-variants-template.tsx`: Component Variantsテンプレート
+  - `.claude/skills/tailwind-css-patterns/templates/tailwind-config-template.js`: Tailwind Configテンプレート
+
+  - `.claude/skills/tailwind-css-patterns/scripts/analyze-tailwind.mjs`: Analyze Tailwindスクリプト
+
+  Use proactively when implementing Tailwind CSS styling patterns, component variants,
+  or responsive design systems.
+version: 1.0.0
+---
+
 # tailwind-css-patterns
 
-Tailwind CSSを活用した効率的で保守性の高いスタイリングパターンの専門知識
-
----
+Tailwind CSS を活用した効率的で保守性の高いスタイリングパターンの専門知識
 
 ## 概要
 
 ### 目的
-Tailwind CSSのユーティリティファーストアプローチを最大限活用し、
-一貫性のある保守しやすいUIスタイリングを実現するパターンを提供する。
+
+Tailwind CSS のユーティリティファーストアプローチを最大限活用し、
+一貫性のある保守しやすい UI スタイリングを実現するパターンを提供する。
 
 ### 対象者
+
 - フロントエンドエンジニア
-- UIコンポーネント開発者
+- UI コンポーネント開発者
 - デザインシステム実装者
 
 ---
@@ -24,29 +49,29 @@ Tailwind CSSのユーティリティファーストアプローチを最大限�
 コンポーネントのバリアント管理に最適なパターン。
 
 ```tsx
-import { cva, type VariantProps } from 'class-variance-authority';
+import { cva, type VariantProps } from "class-variance-authority";
 
 const button = cva(
   // ベーススタイル
-  'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2',
+  "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2",
   {
     variants: {
       variant: {
-        primary: 'bg-blue-600 text-white hover:bg-blue-700',
-        secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300',
-        outline: 'border border-gray-300 bg-transparent hover:bg-gray-100',
-        ghost: 'hover:bg-gray-100',
-        destructive: 'bg-red-600 text-white hover:bg-red-700',
+        primary: "bg-blue-600 text-white hover:bg-blue-700",
+        secondary: "bg-gray-200 text-gray-900 hover:bg-gray-300",
+        outline: "border border-gray-300 bg-transparent hover:bg-gray-100",
+        ghost: "hover:bg-gray-100",
+        destructive: "bg-red-600 text-white hover:bg-red-700",
       },
       size: {
-        sm: 'h-8 px-3 text-sm',
-        md: 'h-10 px-4 text-base',
-        lg: 'h-12 px-6 text-lg',
+        sm: "h-8 px-3 text-sm",
+        md: "h-10 px-4 text-base",
+        lg: "h-12 px-6 text-lg",
       },
     },
     defaultVariants: {
-      variant: 'primary',
-      size: 'md',
+      variant: "primary",
+      size: "md",
     },
   }
 );
@@ -59,13 +84,13 @@ type ButtonProps = VariantProps<typeof button>;
 クラスの競合を解決し、安全にマージ。
 
 ```tsx
-import { twMerge } from 'tailwind-merge';
+import { twMerge } from "tailwind-merge";
 
 // 競合するクラスは後者が優先
-twMerge('px-4 py-2', 'px-6');  // → 'py-2 px-6'
+twMerge("px-4 py-2", "px-6"); // → 'py-2 px-6'
 
 // clsxと組み合わせ
-import clsx from 'clsx';
+import clsx from "clsx";
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -73,10 +98,10 @@ function cn(...inputs: ClassValue[]) {
 
 // 使用例
 cn(
-  'base-class',
-  isActive && 'active-class',
-  { 'conditional-class': condition },
-  className  // 外部からのクラスで上書き可能
+  "base-class",
+  isActive && "active-class",
+  { "conditional-class": condition },
+  className // 外部からのクラスで上書き可能
 );
 ```
 
@@ -215,27 +240,30 @@ module.exports = {
 
 ```tsx
 const buttonVariants = cva(
-  'inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-        destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
-        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        ghost: 'hover:bg-accent hover:text-accent-foreground',
-        link: 'text-primary underline-offset-4 hover:underline',
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive:
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline:
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
-        default: 'h-10 px-4 py-2',
-        sm: 'h-9 rounded-md px-3',
-        lg: 'h-11 rounded-md px-8',
-        icon: 'h-10 w-10',
+        default: "h-10 px-4 py-2",
+        sm: "h-9 rounded-md px-3",
+        lg: "h-11 rounded-md px-8",
+        icon: "h-10 w-10",
       },
     },
     defaultVariants: {
-      variant: 'default',
-      size: 'default',
+      variant: "default",
+      size: "default",
     },
   }
 );
@@ -247,7 +275,7 @@ const buttonVariants = cva(
 const Card = ({ className, ...props }) => (
   <div
     className={cn(
-      'rounded-lg border bg-card text-card-foreground shadow-sm',
+      "rounded-lg border bg-card text-card-foreground shadow-sm",
       className
     )}
     {...props}
@@ -255,14 +283,11 @@ const Card = ({ className, ...props }) => (
 );
 
 const CardHeader = ({ className, ...props }) => (
-  <div
-    className={cn('flex flex-col space-y-1.5 p-6', className)}
-    {...props}
-  />
+  <div className={cn("flex flex-col space-y-1.5 p-6", className)} {...props} />
 );
 
 const CardContent = ({ className, ...props }) => (
-  <div className={cn('p-6 pt-0', className)} {...props} />
+  <div className={cn("p-6 pt-0", className)} {...props} />
 );
 ```
 
@@ -275,11 +300,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       <input
         type={type}
         className={cn(
-          'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background',
-          'file:border-0 file:bg-transparent file:text-sm file:font-medium',
-          'placeholder:text-muted-foreground',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-          'disabled:cursor-not-allowed disabled:opacity-50',
+          "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background",
+          "file:border-0 file:bg-transparent file:text-sm file:font-medium",
+          "placeholder:text-muted-foreground",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+          "disabled:cursor-not-allowed disabled:opacity-50",
           className
         )}
         ref={ref}
@@ -298,38 +323,32 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
 ```javascript
 module.exports = {
-  darkMode: 'class',
-  content: [
-    './src/**/*.{js,ts,jsx,tsx}',
-    './components/**/*.{js,ts,jsx,tsx}',
-  ],
+  darkMode: "class",
+  content: ["./src/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
   theme: {
     container: {
       center: true,
-      padding: '1rem',
+      padding: "1rem",
     },
     extend: {
       colors: {
-        border: 'hsl(var(--border))',
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
+        border: "hsl(var(--border))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
         },
         // ...
       },
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
     },
   },
-  plugins: [
-    require('@tailwindcss/forms'),
-    require('@tailwindcss/typography'),
-  ],
+  plugins: [require("@tailwindcss/forms"), require("@tailwindcss/typography")],
 };
 ```
 
@@ -337,7 +356,7 @@ module.exports = {
 
 ## リソース
 
-- `resources/cva-guide.md` - CVA詳細ガイド
+- `resources/cva-guide.md` - CVA 詳細ガイド
 - `resources/responsive-patterns.md` - レスポンシブデザインパターン
 - `resources/dark-mode-guide.md` - ダークモード実装ガイド
 - `templates/tailwind-config-template.js` - 設定ファイルテンプレート

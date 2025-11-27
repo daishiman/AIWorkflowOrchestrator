@@ -2,8 +2,29 @@
 name: {{agent-name}}
 description: |
   {{agent_description}}
+  {{expert_philosophy_brief}}
 
-  {{skill_dependency_section}}
+  📚 依存スキル（{{skill_count}}個）:
+  このエージェントは以下のスキルに専門知識を分離しています。
+  タスクに応じて必要なスキルのみを読み込んでください:
+
+  - `.claude/skills/{{skill-name-1}}/SKILL.md`: {{skill_1_description_20_40_chars}}
+  - `.claude/skills/{{skill-name-2}}/SKILL.md`: {{skill_2_description_20_40_chars}}
+  - `.claude/skills/{{skill-name-3}}/SKILL.md`: {{skill_3_description_20_40_chars}}
+
+  専門分野:
+  - {{specialty_1}}: {{specialty_1_details}}
+  - {{specialty_2}}: {{specialty_2_details}}
+  - {{specialty_3}}: {{specialty_3_details}}
+
+  使用タイミング:
+  - {{use_case_1}}
+  - {{use_case_2}}
+  - {{use_case_3}}
+  - {{use_case_4}}
+  - {{use_case_5}}
+
+  Use proactively when {{english_trigger_keywords}}.
 
 tools: [{{tools_list}}]
 model: {{model}}

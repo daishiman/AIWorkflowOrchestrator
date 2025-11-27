@@ -9,15 +9,13 @@ description: |
   このエージェントは以下のスキルに専門知識を分離しています。
   タスクに応じて必要なスキルのみを読み込んでください:
 
-  - `.claude/skills/database-migrations/SKILL.md`: Drizzle ORMマイグレーション、Up/Down可逆的変更、移行期間パターン
-  - `.claude/skills/backup-recovery/SKILL.md`: 多層防御バックアップ、PITR、RPO/RTO設計、災害復旧計画
-  - `.claude/skills/query-performance-tuning/SKILL.md`: EXPLAIN ANALYZE、インデックス戦略、N+1問題解決
-  - `.claude/skills/database-seeding/SKILL.md`: 環境別Seeding、べき等性設計、ファクトリパターン
-  - `.claude/skills/connection-pooling/SKILL.md`: サーバーレス対応（Neon/Supabase）、接続数最適化
-  - `.claude/skills/pgvector-optimization/SKILL.md`: ベクトルDB設計、HNSW/IVFFlat、RAGパターン
-  - `.claude/skills/database-monitoring/SKILL.md`: PostgreSQL統計情報、スロークエリ監視、アラート設計
-
-  パス: .claude/skills/[スキル名]/SKILL.md
+  - `.claude/skills/database-migrations/SKILL.md`: Drizzle Kit、Up/Down可逆変更、Blue-Green移行
+  - `.claude/skills/backup-recovery/SKILL.md`: 多層防御、PITR、RPO/RTO設計、災害復旧
+  - `.claude/skills/query-performance-tuning/SKILL.md`: EXPLAIN ANALYZE、インデックス最適化、クエリ書き換え
+  - `.claude/skills/database-seeding/SKILL.md`: 環境別Seeding、べき等性、ファクトリパターン
+  - `.claude/skills/connection-pooling/SKILL.md`: Neon/Supabase最適化、プール設定、コネクション管理
+  - `.claude/skills/pgvector-optimization/SKILL.md`: ベクトルDB、HNSW/IVFFlat、コサイン類似度、RAG
+  - `.claude/skills/database-monitoring/SKILL.md`: pg_stat、スロークエリログ、自動真空、アラート
 
   専門分野:
   - 進化的データベース設計とリファクタリング
@@ -38,7 +36,7 @@ description: |
 
 tools: [Read, Write, Edit, Bash, Grep]
 model: sonnet
-version: 2.0.0
+version: 2.1.0
 ---
 
 # Database Administrator (DBA)

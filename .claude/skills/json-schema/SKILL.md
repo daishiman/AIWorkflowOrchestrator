@@ -5,6 +5,17 @@ description: |
   API仕様の定義、OpenAPI連携、バリデーションルールの標準化を通じて、
   相互運用性の高いデータ構造を設計します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/json-schema/resources/json-schema-basics.md`: Draft 2020-12準拠の型システム、$ref参照、required/additionalProperties基礎
+  - `.claude/skills/json-schema/resources/openapi-integration.md`: OpenAPI 3.0/3.1のJSON Schema互換性、components定義、リクエスト/レスポンス分離
+  - `.claude/skills/json-schema/resources/schema-composition.md`: allOf/oneOf/anyOfによるスキーマ継承と多態性実装パターン
+  - `.claude/skills/json-schema/resources/validation-keywords.md`: 型別バリデーションキーワード（minLength/pattern/minimum/format等）リファレンス
+  - `.claude/skills/json-schema/scripts/validate-json-schema.mjs`: JSON Schemaの構文検証とDraft仕様準拠チェック
+  - `.claude/skills/json-schema/templates/api-schema-template.json`: OpenAPI components/schemasセクション作成テンプレート
+
   専門分野:
   - JSON Schema: Draft 2020-12準拠、バリデーションキーワード
   - OpenAPI連携: Swagger/OpenAPI 3.x統合
@@ -18,7 +29,6 @@ description: |
   - ドキュメント生成のためのスキーマ定義時
 
   Use proactively when defining OpenAPI specifications,
-  external data exchange formats, or language-agnostic validation rules.
 version: 1.0.0
 ---
 
@@ -26,19 +36,21 @@ version: 1.0.0
 
 ## 概要
 
-このスキルは、JSON Schema仕様に基づくスキーマ設計のベストプラクティスを提供します。
-OpenAPI連携、スキーマの再利用、高度なバリデーションパターンを通じて、
+このスキルは、JSON Schema 仕様に基づくスキーマ設計のベストプラクティスを提供します。
+OpenAPI 連携、スキーマの再利用、高度なバリデーションパターンを通じて、
 相互運用性の高いデータ構造を設計します。
 
 **主要な価値**:
+
 - 言語非依存のスキーマ定義
-- OpenAPI/Swagger連携
+- OpenAPI/Swagger 連携
 - ドキュメント自動生成の基盤
 - 相互運用性の確保
 
 **対象ユーザー**:
+
 - スキーマ定義を行うエージェント（@schema-def）
-- API設計者
+- API 設計者
 - システム間連携を担当するエンジニア
 
 ## リソース構造
@@ -91,39 +103,45 @@ cat .claude/skills/json-schema/templates/api-schema-template.json
 
 ## いつ使うか
 
-### シナリオ1: OpenAPI仕様の定義
-**状況**: RESTful APIの仕様をOpenAPI形式で定義する
+### シナリオ 1: OpenAPI 仕様の定義
+
+**状況**: RESTful API の仕様を OpenAPI 形式で定義する
 
 **適用条件**:
-- [ ] API仕様書を作成する必要がある
-- [ ] Swaggerドキュメントを生成したい
+
+- [ ] API 仕様書を作成する必要がある
+- [ ] Swagger ドキュメントを生成したい
 - [ ] クライアントコードを自動生成したい
 
-**期待される成果**: 完全なOpenAPI仕様書
+**期待される成果**: 完全な OpenAPI 仕様書
 
-### シナリオ2: 外部システム連携
+### シナリオ 2: 外部システム連携
+
 **状況**: 外部システムとのデータ交換フォーマットを定義する
 
 **適用条件**:
+
 - [ ] 異なる言語/プラットフォーム間でデータをやり取りする
 - [ ] 標準化されたフォーマットが必要
 - [ ] バリデーションルールを共有したい
 
-**期待される成果**: 相互運用可能なJSON Schema
+**期待される成果**: 相互運用可能な JSON Schema
 
-### シナリオ3: 設定ファイルスキーマ
+### シナリオ 3: 設定ファイルスキーマ
+
 **状況**: アプリケーションの設定ファイルのスキーマを定義する
 
 **適用条件**:
+
 - [ ] 設定ファイルのバリデーションが必要
-- [ ] IDEでの補完機能を提供したい
+- [ ] IDE での補完機能を提供したい
 - [ ] ドキュメントを自動生成したい
 
-**期待される成果**: 設定ファイル用JSON Schema
+**期待される成果**: 設定ファイル用 JSON Schema
 
 ## 基本概念
 
-### JSON Schemaの構造
+### JSON Schema の構造
 
 ```json
 {
@@ -221,10 +239,7 @@ cat .claude/skills/json-schema/templates/api-schema-template.json
     { "$ref": "#/$defs/paypal" }
   ],
 
-  "anyOf": [
-    { "type": "string" },
-    { "type": "number" }
-  ]
+  "anyOf": [{ "type": "string" }, { "type": "number" }]
 }
 ```
 
@@ -252,39 +267,42 @@ cat .claude/skills/json-schema/templates/api-schema-template.json
 ## 判断基準チェックリスト
 
 ### スキーマ設計時
-- [ ] $schemaと$idを指定しているか？
-- [ ] titleとdescriptionを記載しているか？
-- [ ] requiredを適切に指定しているか？
-- [ ] additionalPropertiesを考慮しているか？
+
+- [ ] $schemaと$id を指定しているか？
+- [ ] title と description を記載しているか？
+- [ ] required を適切に指定しているか？
+- [ ] additionalProperties を考慮しているか？
 
 ### 再利用性確保時
-- [ ] 共通の定義を$defsにまとめているか？
-- [ ] 適切な粒度で分割しているか？
-- [ ] 外部参照は相対パスか絶対URIか？
 
-### OpenAPI連携時
-- [ ] componentsセクションに配置しているか？
+- [ ] 共通の定義を$defs にまとめているか？
+- [ ] 適切な粒度で分割しているか？
+- [ ] 外部参照は相対パスか絶対 URI か？
+
+### OpenAPI 連携時
+
+- [ ] components セクションに配置しているか？
 - [ ] nullable vs type: ["...", "null"]の選択は適切か？
-- [ ] discriminatorを使用すべきか？
+- [ ] discriminator を使用すべきか？
 
 ## JSON Schema vs Zod
 
-| 観点 | JSON Schema | Zod |
-|-----|-------------|-----|
-| 言語 | 言語非依存 | TypeScript |
-| 実行時 | バリデーションのみ | バリデーション + 変換 |
-| 型推論 | 外部ツール必要 | 自動 |
-| OpenAPI | ネイティブサポート | zod-to-openapi必要 |
-| ユースケース | API仕様、設定ファイル | TypeScriptアプリ |
+| 観点         | JSON Schema            | Zod                   |
+| ------------ | ---------------------- | --------------------- |
+| 言語         | 言語非依存             | TypeScript            |
+| 実行時       | バリデーションのみ     | バリデーション + 変換 |
+| 型推論       | 外部ツール必要         | 自動                  |
+| OpenAPI      | ネイティブサポート     | zod-to-openapi 必要   |
+| ユースケース | API 仕様、設定ファイル | TypeScript アプリ     |
 
 ## 関連スキル
 
-- `.claude/skills/zod-validation/SKILL.md` - Zodバリデーション
+- `.claude/skills/zod-validation/SKILL.md` - Zod バリデーション
 - `.claude/skills/type-safety-patterns/SKILL.md` - 型安全性パターン
 - `.claude/skills/error-message-design/SKILL.md` - エラーメッセージ設計
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版リリース - JSON Schema設計の基本を網羅 |
+| バージョン | 日付       | 変更内容                                    |
+| ---------- | ---------- | ------------------------------------------- |
+| 1.0.0      | 2025-11-25 | 初版リリース - JSON Schema 設計の基本を網羅 |

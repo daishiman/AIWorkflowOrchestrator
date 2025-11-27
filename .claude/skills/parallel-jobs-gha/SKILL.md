@@ -3,12 +3,14 @@ name: parallel-jobs-gha
 description: |
   GitHub Actionsの並列ジョブ実行とジョブ依存関係管理のスキル。
 
-  **使用タイミング**:
-  - ワークフロー実行時間を短縮したい時
-  - ジョブ間の依存関係を定義する時
-  - ジョブ間でデータを受け渡す時
-  - 条件付き並列実行を設計する時
-  - 複雑なジョブグラフを最適化する時
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/parallel-jobs-gha/resources/data-passing.md`: ジョブ間のデータ受け渡し手法（outputs、artifacts、cache活用パターン）
+  - `.claude/skills/parallel-jobs-gha/resources/job-dependencies.md`: needs構文による依存関係グラフと実行順序制御パターン
+  - `.claude/skills/parallel-jobs-gha/scripts/visualize-deps.mjs`: ワークフロー内ジョブ依存関係をMermaid形式で可視化
+  - `.claude/skills/parallel-jobs-gha/templates/parallel-workflow.yaml`: 並列実行、依存関係、データ共有を含むGitHub Actionsワークフローテンプレート
 version: 1.0.0
 triggers:
   - needs キーワード
@@ -27,7 +29,7 @@ related_skills:
 
 # GitHub Actions Parallel Jobs Skill
 
-GitHub Actionsでの並列ジョブ実行とジョブ依存関係管理の専門知識を提供します。
+GitHub Actions での並列ジョブ実行とジョブ依存関係管理の専門知識を提供します。
 
 ## ディレクトリ構造
 
@@ -138,11 +140,11 @@ jobs:
       - run: npm run deploy
 ```
 
-deployは両方のテストジョブの完了を待ちます。
+deploy は両方のテストジョブの完了を待ちます。
 
 ## ジョブ間データ受け渡し
 
-### Outputs使用
+### Outputs 使用
 
 ```yaml
 jobs:
@@ -161,7 +163,7 @@ jobs:
       - run: echo "Deploying ${{ needs.version.outputs.app_version }}"
 ```
 
-### Artifacts使用
+### Artifacts 使用
 
 ```yaml
 jobs:
@@ -213,15 +215,15 @@ jobs:
 
 ## パフォーマンス最適化のヒント
 
-1. **独立タスクを並列化**: lint、test、buildなどの独立したタスクは並列実行
-2. **適切なneeds設定**: 不要な依存関係を作らない
-3. **Matrixと組み合わせ**: 複数環境テストを並列化
-4. **Artifactsを最小化**: 必要なファイルのみをアップロード
+1. **独立タスクを並列化**: lint、test、build などの独立したタスクは並列実行
+2. **適切な needs 設定**: 不要な依存関係を作らない
+3. **Matrix と組み合わせ**: 複数環境テストを並列化
+4. **Artifacts を最小化**: 必要なファイルのみをアップロード
 5. **キャッシュ活用**: 共通依存関係はキャッシュで共有
 
 ## よくある使用パターン
 
-### CI/CDパイプライン
+### CI/CD パイプライン
 
 ```
 Build → Test (unit, integration, e2e) → Deploy (staging | production)
@@ -255,21 +257,21 @@ Code Lint | Docs Build → Deploy Docs
 
 ### ジョブが並列実行されない
 
-**原因**: 不要なneeds依存関係が設定されている
+**原因**: 不要な needs 依存関係が設定されている
 
-**解決**: needsを削除し、本当に必要な依存関係のみ保持
+**解決**: needs を削除し、本当に必要な依存関係のみ保持
 
 ### データが受け渡せない
 
-**原因**: outputs設定の誤り、またはartifactsの未アップロード
+**原因**: outputs 設定の誤り、または artifacts の未アップロード
 
-**解決**: resources/data-passing.mdの正しいパターンを参照
+**解決**: resources/data-passing.md の正しいパターンを参照
 
 ### 依存関係が複雑で理解できない
 
 **原因**: ジョブグラフが複雑化
 
-**解決**: scripts/visualize-deps.mjsで依存関係を可視化
+**解決**: scripts/visualize-deps.mjs で依存関係を可視化
 
 ---
 

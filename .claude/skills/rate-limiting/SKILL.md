@@ -5,6 +5,17 @@ description: |
   外部APIのレート制限を適切に処理し、サーバー側・クライアント側両方の
   観点からRate Limitingを実装するためのパターンを提供します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/rate-limiting/resources/algorithms.md`: Rate Limiting Algorithms（レート制限アルゴリズム）
+  - `.claude/skills/rate-limiting/resources/client-handling.md`: Client-Side Rate Limit Handling（クライアント側のレート制限対応）
+  - `.claude/skills/rate-limiting/resources/quota-management.md`: Quota Management（クォータ管理）
+  - `.claude/skills/rate-limiting/resources/server-implementation.md`: Server-Side Rate Limiting（サーバー側レート制限）
+  - `.claude/skills/rate-limiting/scripts/simulate-rate-limit.mjs`: Rate Limit Simulation Tool
+  - `.claude/skills/rate-limiting/templates/rate-limiter-template.ts`: Rate Limiter Template
+
   専門分野:
   - レート制限アルゴリズム: Token Bucket、Leaky Bucket、Sliding Window
   - クライアント側対応: 429レスポンス処理、Retry-After、バックオフ戦略
@@ -30,20 +41,22 @@ related_skills:
 
 ## 概要
 
-このスキルは、Rate Limitingとクォータ管理のベストプラクティスを提供します。
-外部APIのレート制限を適切に処理し、サーバー側・クライアント側両方の観点から
-Rate Limitingを実装するためのパターンを提供します。
+このスキルは、Rate Limiting とクォータ管理のベストプラクティスを提供します。
+外部 API のレート制限を適切に処理し、サーバー側・クライアント側両方の観点から
+Rate Limiting を実装するためのパターンを提供します。
 
 **主要な価値**:
-- DoS/DDoS攻撃からの保護
+
+- DoS/DDoS 攻撃からの保護
 - サービス品質の維持
 - リソースの公平な配分
 - コスト管理と予測可能性
 
 **対象ユーザー**:
-- @sec-auditor: セキュリティ監査時のRate Limiting評価
-- @gateway-dev: APIゲートウェイのRate Limiting設計
-- @backend-architect: バックエンドサービスのRate Limiting実装
+
+- @sec-auditor: セキュリティ監査時の Rate Limiting 評価
+- @gateway-dev: API ゲートウェイの Rate Limiting 設計
+- @backend-architect: バックエンドサービスの Rate Limiting 実装
 
 ## リソース構造
 
@@ -121,13 +134,13 @@ cat .claude/skills/rate-limiting/templates/rate-limiter-template.ts
 
 ## アルゴリズム選択ガイド
 
-| アルゴリズム | 特徴 | 適用場面 |
-|------------|------|---------|
-| Token Bucket | バースト許容、柔軟 | 一般的なAPI |
-| Leaky Bucket | 均一なレート、シンプル | ストリーム処理 |
-| Fixed Window | 実装が簡単 | 低トラフィック |
-| Sliding Window Log | 正確、メモリ大 | 厳密な制限 |
-| Sliding Window Counter | バランス良い | スケーラブル |
+| アルゴリズム           | 特徴                   | 適用場面       |
+| ---------------------- | ---------------------- | -------------- |
+| Token Bucket           | バースト許容、柔軟     | 一般的な API   |
+| Leaky Bucket           | 均一なレート、シンプル | ストリーム処理 |
+| Fixed Window           | 実装が簡単             | 低トラフィック |
+| Sliding Window Log     | 正確、メモリ大         | 厳密な制限     |
+| Sliding Window Counter | バランス良い           | スケーラブル   |
 
 ## ベストプラクティス
 
@@ -157,7 +170,7 @@ async function fetchWithRateLimit(url: string): Promise<Response> {
   const response = await fetch(url);
 
   if (response.status === 429) {
-    const retryAfter = response.headers.get('Retry-After');
+    const retryAfter = response.headers.get("Retry-After");
     const waitTime = retryAfter ? parseInt(retryAfter, 10) * 1000 : 60000;
 
     console.log(`Rate limited. Waiting ${waitTime}ms...`);
@@ -174,10 +187,7 @@ async function fetchWithRateLimit(url: string): Promise<Response> {
 
 ```typescript
 // Expressミドルウェア例
-function rateLimit(options: {
-  windowMs: number;
-  max: number;
-}) {
+function rateLimit(options: { windowMs: number; max: number }) {
   const store = new Map<string, { count: number; resetAt: number }>();
 
   return (req: Request, res: Response, next: NextFunction) => {
@@ -194,9 +204,9 @@ function rateLimit(options: {
     if (record.count >= options.max) {
       setHeaders(res, options.max, 0, record.resetAt);
       const retryAfter = Math.ceil((record.resetAt - now) / 1000);
-      res.setHeader('Retry-After', retryAfter);
+      res.setHeader("Retry-After", retryAfter);
       return res.status(429).json({
-        error: { code: 'RATE_LIMIT_EXCEEDED', retryAfter },
+        error: { code: "RATE_LIMIT_EXCEEDED", retryAfter },
       });
     }
 
@@ -210,16 +220,19 @@ function rateLimit(options: {
 ## 品質チェックリスト
 
 ### 設計時
+
 - [ ] 適切なアルゴリズムを選択したか？
 - [ ] レート制限値は妥当か？
 - [ ] バースト許容が必要か検討したか？
 
 ### 実装時
+
 - [ ] 標準的なヘッダーを返しているか？
 - [ ] 分散環境で正しく動作するか？
 - [ ] エラーレスポンスが適切か？
 
 ### 運用時
+
 - [ ] レート制限のヒット率をモニタリングしているか？
 - [ ] 異常なパターンを検出できるか？
 - [ ] 制限値の調整が可能か？
@@ -261,10 +274,10 @@ const key = req.user?.id || req.ip;
 
 - **RFC 6585**: Additional HTTP Status Codes (429)
 - **IETF Draft**: RateLimit Header Fields for HTTP
-- **『Building Microservices』** Sam Newman著
+- **『Building Microservices』** Sam Newman 著
 
 ## 関連スキル
 
 - `.claude/skills/retry-strategies/SKILL.md`: リトライ・サーキットブレーカー
-- `.claude/skills/http-best-practices/SKILL.md`: HTTPベストプラクティス
-- `.claude/skills/api-client-patterns/SKILL.md`: APIクライアント実装パターン
+- `.claude/skills/http-best-practices/SKILL.md`: HTTP ベストプラクティス
+- `.claude/skills/api-client-patterns/SKILL.md`: API クライアント実装パターン

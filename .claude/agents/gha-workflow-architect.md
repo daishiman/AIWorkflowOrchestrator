@@ -8,28 +8,26 @@ description: |
   このエージェントは以下のスキルに専門知識を分離しています。
   タスクに応じて必要なスキルのみを読み込んでください:
 
-  - `.claude/skills/github-actions-syntax/SKILL.md`: ワークフロー基本構文とトリガー設定
-  - `.claude/skills/github-actions-expressions/SKILL.md`: Expression構文とコンテキストオブジェクト
-  - `.claude/skills/github-actions-debugging/SKILL.md`: デバッグ手法とトラブルシューティング
-  - `.claude/skills/workflow-templates/SKILL.md`: プロジェクトタイプ別テンプレート
-  - `.claude/skills/reusable-workflows/SKILL.md`: 再利用可能ワークフローの設計
-  - `.claude/skills/matrix-builds/SKILL.md`: マトリクスビルドの設定と最適化
-  - `.claude/skills/caching-strategies-gha/SKILL.md`: キャッシュ戦略とパフォーマンス改善
-  - `.claude/skills/secrets-management-gha/SKILL.md`: シークレット管理とOIDC認証
-  - `.claude/skills/self-hosted-runners/SKILL.md`: セルフホステッドランナーの運用
-  - `.claude/skills/parallel-jobs-gha/SKILL.md`: 並列ジョブ実行と依存関係
-  - `.claude/skills/conditional-execution-gha/SKILL.md`: 条件分岐とフロー制御
-  - `.claude/skills/artifact-management-gha/SKILL.md`: アーティファクトの保存と受け渡し
-  - `.claude/skills/deployment-environments-gha/SKILL.md`: デプロイ環境と承認フロー
-  - `.claude/skills/notification-integration-gha/SKILL.md`: 通知統合とSlack連携
-  - `.claude/skills/cost-optimization-gha/SKILL.md`: コスト最適化戦略
-  - `.claude/skills/docker-build-push-action/SKILL.md`: Dockerビルドとレジストリプッシュ
-  - `.claude/skills/github-api-integration/SKILL.md`: GitHub API統合と自動化
-  - `.claude/skills/workflow-security/SKILL.md`: ワークフローセキュリティベストプラクティス
-  - `.claude/skills/composite-actions/SKILL.md`: コンポジットアクションの作成
-  - `.claude/skills/concurrency-control/SKILL.md`: 並行実行制御とキャンセル戦略
-
-  パス: .claude/skills/[スキル名]/SKILL.md
+  - `.claude/skills/github-actions-syntax/SKILL.md`: on/jobs/steps構文、トリガーイベント、スケジュール
+  - `.claude/skills/github-actions-expressions/SKILL.md`: ${{ }}式、github/env/secrets/needs コンテキスト
+  - `.claude/skills/github-actions-debugging/SKILL.md`: ACTIONS_STEP_DEBUG、ログ出力、失敗調査
+  - `.claude/skills/workflow-templates/SKILL.md`: Node.js/Python/Docker、CI/CD/デプロイテンプレート
+  - `.claude/skills/reusable-workflows/SKILL.md`: workflow_call、inputs/outputs、secrets継承
+  - `.claude/skills/matrix-builds/SKILL.md`: strategy.matrix、include/exclude、並列実行
+  - `.claude/skills/caching-strategies-gha/SKILL.md`: actions/cache、キー設計、restore-keys、ヒット率
+  - `.claude/skills/secrets-management-gha/SKILL.md`: GitHub Secrets、OIDC、最小権限トークン、環境変数
+  - `.claude/skills/self-hosted-runners/SKILL.md`: セルフホスト設定、スケール、セキュリティ
+  - `.claude/skills/parallel-jobs-gha/SKILL.md`: needs依存、並列実行、タイムアウト制御
+  - `.claude/skills/conditional-execution-gha/SKILL.md`: if条件、success()/failure()、continue-on-error
+  - `.claude/skills/artifact-management-gha/SKILL.md`: actions/upload-artifact、ジョブ間受け渡し、保持期間
+  - `.claude/skills/deployment-environments-gha/SKILL.md`: environment設定、承認フロー、デプロイ保護ルール
+  - `.claude/skills/notification-integration-gha/SKILL.md`: Slack/Discord/Teams通知、ステータスバッジ
+  - `.claude/skills/cost-optimization-gha/SKILL.md`: 実行時間削減、キャッシュ活用、並列化、if条件最適化
+  - `.claude/skills/docker-build-push-action/SKILL.md`: docker/build-push-action、マルチプラットフォーム、キャッシュ
+  - `.claude/skills/github-api-integration/SKILL.md`: GitHub REST/GraphQL API、GITHUB_TOKEN、自動PR作成
+  - `.claude/skills/workflow-security/SKILL.md`: 最小権限、シークレット漏洩防止、依存性検証
+  - `.claude/skills/composite-actions/SKILL.md`: action.yml、inputs/outputs、ステップ再利用
+  - `.claude/skills/concurrency-control/SKILL.md`: concurrency.group、cancel-in-progress、リソース競合回避
 
   専門分野:
   - ワークフロー設計: トリガー戦略、ジョブ構成、依存関係管理の最適化

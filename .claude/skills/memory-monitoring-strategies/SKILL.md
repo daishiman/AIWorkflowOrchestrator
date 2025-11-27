@@ -4,6 +4,16 @@ description: |
   Node.jsアプリケーションのメモリ監視とリーク検出を専門とするスキル。
   PM2、V8ヒープ分析、メモリプロファイリングを活用した効率的なメモリ管理を設計します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/memory-monitoring-strategies/resources/heap-analysis.md`: heapdump取得、Chrome DevTools分析、スナップショット比較、リーク原因特定
+  - `.claude/skills/memory-monitoring-strategies/resources/leak-detection.md`: リーク兆候の検出、継続的増加パターン、GC効果測定、原因診断手法
+  - `.claude/skills/memory-monitoring-strategies/resources/memory-metrics.md`: RSS/heapUsed/heapTotal/external各メトリクス説明、警告閾値設定
+  - `.claude/skills/memory-monitoring-strategies/scripts/memory-monitor.mjs`: メモリ使用量のリアルタイム監視（PID/PM2アプリ指定、閾値アラート）
+  - `.claude/skills/memory-monitoring-strategies/templates/memory-tracker.template.ts`: PM2カスタムメトリクス実装テンプレート（TypeScript、io.metric活用）
+
   専門分野:
   - メモリ監視: ヒープ使用量、RSS、外部メモリの追跡
   - リーク検出: メモリリークの特定と診断手法
@@ -17,7 +27,6 @@ description: |
   - ヒープ分析を行う時
 
   Use proactively when configuring memory monitoring, investigating leaks,
-  or optimizing memory usage in Node.js applications.
 version: 1.0.0
 ---
 
@@ -25,13 +34,14 @@ version: 1.0.0
 
 ## 概要
 
-メモリ監視は、Node.jsアプリケーションの安定性とパフォーマンスを
+メモリ監視は、Node.js アプリケーションの安定性とパフォーマンスを
 維持するための重要な運用プラクティスです。メモリリークの早期検出と
 適切なリソース管理を実現します。
 
 **主要な価値**:
+
 - メモリリークの早期検出
-- OOMクラッシュの防止
+- OOM クラッシュの防止
 - パフォーマンスの最適化
 - リソース使用量の可視化
 
@@ -84,7 +94,8 @@ cat .claude/skills/memory-monitoring-strategies/templates/memory-tracker.templat
 
 ### Phase 1: メトリクス理解
 
-**Node.jsメモリメトリクス**:
+**Node.js メモリメトリクス**:
+
 ```javascript
 const usage = process.memoryUsage();
 // {
@@ -100,15 +111,16 @@ const usage = process.memoryUsage();
 | メトリクス | 説明 | 警告閾値 |
 |-----------|------|---------|
 | RSS | 物理メモリ総使用量 | 500MB-1GB |
-| heapUsed | JSオブジェクトメモリ | ヒープの80% |
-| heapTotal | V8ヒープ確保量 | 継続的増加 |
+| heapUsed | JS オブジェクトメモリ | ヒープの 80% |
+| heapTotal | V8 ヒープ確保量 | 継続的増加 |
 | external | ネイティブオブジェクト | 異常な増加 |
 
 **リソース**: `resources/memory-metrics.md`
 
-### Phase 2: PM2メモリ設定
+### Phase 2: PM2 メモリ設定
 
-**max_memory_restart設定**:
+**max_memory_restart 設定**:
+
 ```javascript
 // ecosystem.config.js
 {
@@ -127,6 +139,7 @@ const usage = process.memoryUsage();
 ### Phase 3: メモリ監視実装
 
 **基本監視**:
+
 ```javascript
 setInterval(() => {
   const usage = process.memoryUsage();
@@ -138,50 +151,55 @@ setInterval(() => {
 }, 30000);
 ```
 
-**PM2カスタムメトリクス**:
+**PM2 カスタムメトリクス**:
+
 ```javascript
-const io = require('@pm2/io');
+const io = require("@pm2/io");
 
 io.metric({
-  name: 'Heap Used',
+  name: "Heap Used",
   value: () => {
     const usage = process.memoryUsage();
     return Math.round(usage.heapUsed / 1024 / 1024);
-  }
+  },
 });
 ```
 
 ### Phase 4: リーク検出
 
 **リーク兆候**:
-- heapUsedの継続的増加
-- GC後もメモリが解放されない
-- 長時間運用でRSS増加
+
+- heapUsed の継続的増加
+- GC 後もメモリが解放されない
+- 長時間運用で RSS 増加
 
 **検出手法**:
+
 1. 定期的なメモリスナップショット
-2. heapdumpによる詳細分析
-3. Chrome DevToolsでの可視化
+2. heapdump による詳細分析
+3. Chrome DevTools での可視化
 
 **リソース**: `resources/leak-detection.md`
 
 ### Phase 5: ヒープ分析
 
-**heapdump取得**:
+**heapdump 取得**:
+
 ```javascript
-const heapdump = require('heapdump');
+const heapdump = require("heapdump");
 
 // 手動トリガー
-heapdump.writeSnapshot('/tmp/heap-' + Date.now() + '.heapsnapshot');
+heapdump.writeSnapshot("/tmp/heap-" + Date.now() + ".heapsnapshot");
 
 // シグナルトリガー
-process.on('SIGUSR2', () => {
+process.on("SIGUSR2", () => {
   heapdump.writeSnapshot();
 });
 ```
 
 **分析手順**:
-1. Chrome DevToolsを開く
+
+1. Chrome DevTools を開く
 2. Memory → Load からスナップショット読み込み
 3. Summary/Comparison ビューで分析
 
@@ -193,21 +211,21 @@ process.on('SIGUSR2', () => {
 
 1. **定期監視**: メモリ使用量を継続的に追跡
 2. **閾値アラート**: 危険値に達したら通知
-3. **GC監視**: GC頻度と効果を追跡
+3. **GC 監視**: GC 頻度と効果を追跡
 4. **ベースライン設定**: 正常時のメモリ使用量を把握
 
 ### 避けるべきこと
 
 1. **グローバル変数蓄積**: 不要なグローバルキャッシュ
-2. **イベントリスナーリーク**: removeListenerの漏れ
+2. **イベントリスナーリーク**: removeListener の漏れ
 3. **クロージャリーク**: 不要な参照の保持
-4. **バッファ蓄積**: 未解放のBuffer/ArrayBuffer
+4. **バッファ蓄積**: 未解放の Buffer/ArrayBuffer
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-26 | 初版作成 |
+| バージョン | 日付       | 変更内容 |
+| ---------- | ---------- | -------- |
+| 1.0.0      | 2025-11-26 | 初版作成 |
 
 ## 関連スキル
 

@@ -5,6 +5,16 @@ description: |
   ケント・ベックの『テスト駆動開発』に基づき、Red-Green-Refactorサイクルを
   徹底し、開発時に品質を作り込む。
 
+  📚 依存スキル（5個）:
+  このエージェントは以下のスキルに専門知識を分離しています。
+  タスクに応じて必要なスキルのみを読み込んでください:
+
+  - `.claude/skills/tdd-principles/SKILL.md`: Red-Green-Refactorサイクル、テストファースト、小さなステップ
+  - `.claude/skills/test-doubles/SKILL.md`: Mock、Stub、Spy、Fakeの使い分け、モック戦略
+  - `.claude/skills/vitest-advanced/SKILL.md`: スナップショット、カバレッジ、並列実行、モック機能
+  - `.claude/skills/boundary-value-analysis/SKILL.md`: 境界値テスト、等価分割、異常系網羅、エッジケース
+  - `.claude/skills/test-naming-conventions/SKILL.md`: Given-When-Then、should + 動詞、Arrange-Act-Assert
+
   専門分野:
   - TDD原則: Red-Green-Refactorサイクル、テストファースト
   - テストダブル: Mock、Stub、Spy、Fakeの適切な使い分け
@@ -17,20 +27,14 @@ description: |
   - バグ修正時の再現テスト作成
   - レガシーコード改善時の安全網構築
   - テストカバレッジ向上が必要な時
+  - テストダブルの選択に迷う時
 
   Use proactively when user mentions test creation, TDD, unit testing,
   or quality assurance needs.
 
 tools: [Read, Write, Edit, Grep, Bash]
 model: sonnet
-version: 2.0.0
-
-skill_paths:
-  - .claude/skills/tdd-principles/SKILL.md
-  - .claude/skills/test-doubles/SKILL.md
-  - .claude/skills/vitest-advanced/SKILL.md
-  - .claude/skills/boundary-value-analysis/SKILL.md
-  - .claude/skills/test-naming-conventions/SKILL.md
+version: 2.1.0
 ---
 
 # Unit Tester
@@ -98,12 +102,7 @@ cat .claude/skills/test-naming-conventions/SKILL.md
 - 高速フィードバックの原則: テストは高速に実行
 - 独立性の原則: 各テストは独立して実行可能
 
-**参照スキル**:
-- `.claude/skills/tdd-principles/SKILL.md`: Red-Green-Refactorサイクルの詳細
-- `.claude/skills/test-doubles/SKILL.md`: Mock/Stub/Spy/Fakeの使い分け
-- `.claude/skills/test-doubles/SKILL.md`: Vitestの高度な活用
-- `.claude/skills/test-doubles/SKILL.md`: 境界値分析と等価分割
-- `.claude/skills/test-naming-conventions/SKILL.md`: テスト命名規約
+**参照スキル**: 📚 依存スキルセクションを参照してください
 
 ## タスク実行フロー
 

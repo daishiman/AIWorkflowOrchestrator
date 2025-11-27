@@ -1,19 +1,30 @@
 ---
 name: github-actions-syntax
 description: |
-  GitHub Actions ワークフロー構文の完全リファレンス。
+    GitHub Actions ワークフロー構文の完全リファレンス。
+    専門分野:
+    - ワークフロー構文: YAML構造、イベントトリガー、ジョブ・ステップ定義
+    - トリガー設計: push/pull_request/schedule/workflow_dispatch/workflow_call
+    - 権限管理: permissions設定、最小権限の原則
+    - 実行制御: concurrency、条件分岐、デフォルト設定
+    使用タイミング:
+    - ワークフローファイル(.github/workflows/*.yml)を作成・編集する時
+    - イベントトリガーを設定する時
+    - ジョブやステップの構文エラーを解決する時
+    - パーミッション、環境変数、条件分岐を設定する時
 
-  専門分野:
-  - ワークフロー構文: YAML構造、イベントトリガー、ジョブ・ステップ定義
-  - トリガー設計: push/pull_request/schedule/workflow_dispatch/workflow_call
-  - 権限管理: permissions設定、最小権限の原則
-  - 実行制御: concurrency、条件分岐、デフォルト設定
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
 
-  使用タイミング:
-  - ワークフローファイル(.github/workflows/*.yml)を作成・編集する時
-  - イベントトリガーを設定する時
-  - ジョブやステップの構文エラーを解決する時
-  - パーミッション、環境変数、条件分岐を設定する時
+  - `.claude/skills/github-actions-syntax/resources/event-triggers.md`: push/pull_request/schedule/workflow_dispatch等のイベントトリガー詳細
+  - `.claude/skills/github-actions-syntax/resources/jobs-and-steps.md`: ジョブ・ステップ定義とランナー環境選択ガイド
+  - `.claude/skills/github-actions-syntax/resources/permissions-and-env.md`: permissions設定と環境変数管理の詳細
+  - `.claude/skills/github-actions-syntax/resources/workflow-syntax-reference.md`: GitHub Actions YAML構文完全リファレンス
+  - `.claude/skills/github-actions-syntax/templates/workflow-template.yaml`: 基本CI/CDワークフローテンプレート
+  - `.claude/skills/github-actions-syntax/scripts/validate-workflow.mjs`: ワークフロー構文検証スクリプト
+
+  Use proactively when implementing github-actions-syntax patterns or solving related problems.
 version: 1.0.0
 ---
 
@@ -21,12 +32,13 @@ version: 1.0.0
 
 ## 概要
 
-このスキルは、GitHub Actions ワークフローファイルのYAML構文を体系的に提供します。
+このスキルは、GitHub Actions ワークフローファイルの YAML 構文を体系的に提供します。
 ワークフローの基本構造からイベントトリガー、ジョブ・ステップ定義、権限管理まで網羅します。
 
 **主要な価値**:
+
 - ワークフロー構文の正確な理解と適用
-- トリガー設計による効率的なCI/CD
+- トリガー設計による効率的な CI/CD
 - 最小権限の原則に基づくセキュアな設定
 
 ## リソース構造
@@ -103,23 +115,23 @@ jobs:
 
 ### 主要なイベントトリガー
 
-| イベント | 説明 | 主な用途 |
-|---------|------|---------|
-| `push` | コミットのプッシュ | CI/CD、テスト実行 |
-| `pull_request` | PR作成・更新 | コードレビュー、テスト |
-| `workflow_dispatch` | 手動トリガー | オンデマンド実行 |
-| `schedule` | cron スケジュール | 定期実行 |
-| `workflow_call` | 他ワークフローから呼び出し | 再利用可能ワークフロー |
+| イベント            | 説明                       | 主な用途               |
+| ------------------- | -------------------------- | ---------------------- |
+| `push`              | コミットのプッシュ         | CI/CD、テスト実行      |
+| `pull_request`      | PR 作成・更新              | コードレビュー、テスト |
+| `workflow_dispatch` | 手動トリガー               | オンデマンド実行       |
+| `schedule`          | cron スケジュール          | 定期実行               |
+| `workflow_call`     | 他ワークフローから呼び出し | 再利用可能ワークフロー |
 
 ### 主要なパーミッション
 
-| スコープ | 説明 |
-|---------|------|
-| `contents` | リポジトリコンテンツ読み書き |
-| `pull-requests` | PR操作 |
-| `packages` | GitHub Packages公開 |
-| `deployments` | デプロイ管理 |
-| `issues` | Issue操作 |
+| スコープ        | 説明                         |
+| --------------- | ---------------------------- |
+| `contents`      | リポジトリコンテンツ読み書き |
+| `pull-requests` | PR 操作                      |
+| `packages`      | GitHub Packages 公開         |
+| `deployments`   | デプロイ管理                 |
+| `issues`        | Issue 操作                   |
 
 ## ワークフロー
 
@@ -174,6 +186,6 @@ jobs:
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-27 | 初版作成 |
+| バージョン | 日付       | 変更内容 |
+| ---------- | ---------- | -------- |
+| 1.0.0      | 2025-11-27 | 初版作成 |

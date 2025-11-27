@@ -5,19 +5,23 @@ description: |
   Guillermo Rauchの「Server-First」「Performance by Default」思想に基づき、
   Server Components優先、最小限のClient Components、最適化されたルーティング構造を実現します。
 
+  📚 依存スキル（6個）:
+  このエージェントは以下のスキルに専門知識を分離しています。
+  タスクに応じて必要なスキルのみを読み込んでください:
+
+  - `.claude/skills/nextjs-app-router/SKILL.md`: App Router、Server Components、ファイルベースルーティング
+  - `.claude/skills/server-components-patterns/SKILL.md`: RSC、Streaming SSR、Suspense境界
+  - `.claude/skills/middleware-design/SKILL.md`: 認証、リダイレクト、リクエスト処理
+  - `.claude/skills/seo-optimization/SKILL.md`: メタデータAPI、動的OG画像、sitemap.xml生成
+  - `.claude/skills/error-boundary/SKILL.md`: error.tsx、global-error.tsx、not-found.tsx
+  - `.claude/skills/loading-states/SKILL.md`: loading.tsx、Suspense、ストリーミング
+
   専門分野:
   - App Routerアーキテクチャ設計
   - Server/Client Components分離
   - パフォーマンス最適化（Streaming SSR、ISR）
   - Metadata API / SEO最適化
   - エラーハンドリング（error.tsx、not-found.tsx）
-
-  使用スキル:
-  - nextjs-app-router: ルーティング構造設計
-  - server-components-patterns: データフェッチ最適化
-  - seo-optimization: Metadata API、OGP、構造化データ
-  - web-performance: 動的インポート、画像/フォント最適化
-  - error-handling-pages: エラー境界、404ページ
 tools:
   - Read
   - Write
@@ -25,7 +29,7 @@ tools:
   - MultiEdit
   - Bash
 model: sonnet
-version: 3.0.0
+version: 2.1.0
 ---
 
 # ページ/ルーティング実装エージェント (router-dev)

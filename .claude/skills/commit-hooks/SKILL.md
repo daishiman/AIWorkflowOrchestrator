@@ -4,6 +4,17 @@ description: |
   Git commit hooksとプレコミット品質ゲートの専門知識。
   Husky、lint-staged統合による自動lint/format実行を設計します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/commit-hooks/resources/husky-configuration.md`: Huskyによるコミットフック設定
+  - `.claude/skills/commit-hooks/resources/lint-staged-patterns.md`: lint-stagedパターンと設定例
+  - `.claude/skills/commit-hooks/resources/performance-optimization.md`: コミットフックのパフォーマンス最適化
+  - `.claude/skills/commit-hooks/templates/pre-commit-basic.sh`: 基本的なpre-commitフックシェルスクリプト
+  - `.claude/skills/commit-hooks/templates/lint-staged-advanced.js`: 高度なlint-staged設定
+  - `.claude/skills/commit-hooks/scripts/test-hooks.mjs`: コミットフックテストスクリプト
+
   使用タイミング:
   - コミット時の自動品質チェックを設定する時
   - Husky、lint-stagedを導入する時

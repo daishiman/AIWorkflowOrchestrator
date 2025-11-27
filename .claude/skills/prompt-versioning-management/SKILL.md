@@ -5,6 +5,16 @@ description: |
   バージョン管理、デプロイ戦略、ロールバック、変更追跡により、
   本番環境で安全かつ効率的なプロンプト運用を実現します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/prompt-versioning-management/resources/deployment-patterns.md`: Blue-Green、Canary、Feature Flagなどのデプロイ戦略と実装手順
+  - `.claude/skills/prompt-versioning-management/resources/rollback-procedures.md`: 即座・段階的ロールバック手順とフォールバック設計パターン
+  - `.claude/skills/prompt-versioning-management/resources/versioning-strategies.md`: セマンティックバージョニング、変更分類、依存関係管理の詳細
+  - `.claude/skills/prompt-versioning-management/templates/changelog-template.md`: 変更ログテンプレート
+  - `.claude/skills/prompt-versioning-management/templates/deployment-checklist.md`: デプロイチェックリスト
+
   専門分野:
   - バージョン管理: セマンティックバージョニング、変更履歴、差分管理
   - デプロイ戦略: Blue-Green、Canary、段階的ロールアウト
@@ -23,10 +33,11 @@ version: 1.0.0
 
 ## 概要
 
-プロンプトのライフサイクル全体（作成→テスト→デプロイ→監視→改善→廃止）を
+プロンプトのライフサイクル全体（作成 → テスト → デプロイ → 監視 → 改善 → 廃止）を
 体系的に管理するためのスキルです。
 
 **核心概念**:
+
 - **バージョン管理**: プロンプトの変更を追跡可能な形で記録
 - **デプロイ管理**: 安全にプロンプトを本番環境に適用
 - **ロールバック**: 問題発生時の迅速な復旧
@@ -38,11 +49,11 @@ version: 1.0.0
 
 詳細な知識は以下のリソースを参照してください:
 
-| リソース | パス | 内容 |
-|---------|------|------|
+| リソース           | パス                                 | 内容                                   |
+| ------------------ | ------------------------------------ | -------------------------------------- |
 | バージョニング戦略 | `resources/versioning-strategies.md` | セマンティックバージョニング、変更分類 |
-| デプロイパターン | `resources/deployment-patterns.md` | Blue-Green、Canary、段階的ロールアウト |
-| ロールバック手順 | `resources/rollback-procedures.md` | ロールバック戦略、フォールバック設計 |
+| デプロイパターン   | `resources/deployment-patterns.md`   | Blue-Green、Canary、段階的ロールアウト |
+| ロールバック手順   | `resources/rollback-procedures.md`   | ロールバック戦略、フォールバック設計   |
 
 ---
 
@@ -60,13 +71,13 @@ PATCH: バグ修正、微調整（ハルシネーション修正、精度改善�
 
 ### 変更分類
 
-| 変更タイプ | バージョン | 例 |
-|-----------|----------|-----|
-| 出力スキーマ変更 | MAJOR | JSON構造の変更 |
-| 新機能追加 | MINOR | 新しいタスクタイプのサポート |
-| Few-Shot例の追加 | MINOR | 精度向上のための例示追加 |
-| 文言調整 | PATCH | 指示の明確化 |
-| パラメータ調整 | PATCH | Temperature微調整 |
+| 変更タイプ        | バージョン | 例                           |
+| ----------------- | ---------- | ---------------------------- |
+| 出力スキーマ変更  | MAJOR      | JSON 構造の変更              |
+| 新機能追加        | MINOR      | 新しいタスクタイプのサポート |
+| Few-Shot 例の追加 | MINOR      | 精度向上のための例示追加     |
+| 文言調整          | PATCH      | 指示の明確化                 |
+| パラメータ調整    | PATCH      | Temperature 微調整           |
 
 ---
 
@@ -105,10 +116,10 @@ Phase 4: 100% → 新バージョン
 
 ```yaml
 rollback_triggers:
-  - error_rate > 5%           # エラー率閾値超過
-  - latency_p95 > 3000ms      # レイテンシ閾値超過
-  - hallucination_rate > 10%  # ハルシネーション率超過
-  - user_complaints > 10      # ユーザー苦情件数
+  - error_rate > 5% # エラー率閾値超過
+  - latency_p95 > 3000ms # レイテンシ閾値超過
+  - hallucination_rate > 10% # ハルシネーション率超過
+  - user_complaints > 10 # ユーザー苦情件数
 ```
 
 ### ロールバック手順
@@ -153,9 +164,9 @@ rollback_triggers:
 
 ## テンプレート参照
 
-| テンプレート | パス | 用途 |
-|------------|------|------|
-| 変更ログ | `templates/changelog-template.md` | バージョン履歴の記録 |
+| テンプレート           | パス                                | 用途                   |
+| ---------------------- | ----------------------------------- | ---------------------- |
+| 変更ログ               | `templates/changelog-template.md`   | バージョン履歴の記録   |
 | デプロイチェックリスト | `templates/deployment-checklist.md` | デプロイ前後の確認事項 |
 
 ---
@@ -179,13 +190,13 @@ cat .claude/skills/prompt-versioning-management/templates/deployment-checklist.m
 
 ### バージョン管理
 
-1. **すべての変更にバージョンを付与**: 微調整でもPATCHバージョンを更新
+1. **すべての変更にバージョンを付与**: 微調整でも PATCH バージョンを更新
 2. **変更ログを必ず記録**: 何を、なぜ、いつ変更したかを明記
-3. **破壊的変更は事前通知**: MAJOR変更は影響範囲を事前に周知
+3. **破壊的変更は事前通知**: MAJOR 変更は影響範囲を事前に周知
 
 ### デプロイ管理
 
-1. **段階的ロールアウト**: いきなり100%にしない
+1. **段階的ロールアウト**: いきなり 100%にしない
 2. **ロールバック準備**: デプロイ前に復旧手順を確認
 3. **メトリクス監視**: デプロイ後は集中監視期間を設ける
 
@@ -199,16 +210,16 @@ cat .claude/skills/prompt-versioning-management/templates/deployment-checklist.m
 
 ## 関連スキル
 
-| スキル名 | 関係性 |
-|---------|--------|
+| スキル名                  | 関係性                         |
+| ------------------------- | ------------------------------ |
 | prompt-testing-evaluation | テスト結果に基づくデプロイ判断 |
-| hallucination-prevention | ロールバック条件の定義 |
-| structured-output-design | 破壊的変更の判定基準 |
+| hallucination-prevention  | ロールバック条件の定義         |
+| structured-output-design  | 破壊的変更の判定基準           |
 
 ---
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-26 | 初版作成 |
+| バージョン | 日付       | 変更内容 |
+| ---------- | ---------- | -------- |
+| 1.0.0      | 2025-11-26 | 初版作成 |

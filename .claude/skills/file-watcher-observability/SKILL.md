@@ -1,25 +1,33 @@
 ---
 name: file-watcher-observability
 description: |
-  ファイル監視システムの可観測性（Observability）設計と実装。
-  Metrics、Logs、Tracesの3本柱に基づくPrometheus/Grafana統合パターンを提供。
+    ファイル監視システムの可観測性（Observability）設計と実装。
+    Metrics、Logs、Tracesの3本柱に基づくPrometheus/Grafana統合パターンを提供。
+    専門分野:
+    - Prometheusメトリクス: Counter, Gauge, Histogram設計
+    - 構造化ログ: JSON形式、ログレベル管理、トレースID
+    - アラート設計: 閾値設定、アラートマネージャー、通知チャネル
+    - ダッシュボード: Grafana可視化、パネル設計
+    使用タイミング:
+    - 本番環境でのファイル監視のパフォーマンス監視が必要な時
+    - SLA遵守のための定量的測定が必要な時
+    - 障害の根本原因分析（RCA）を実施する時
+    - キャパシティプランニングのデータ収集時
+    Use when monitoring file watcher performance in production,
+    measuring SLA compliance, or conducting root cause analysis.
 
-  専門分野:
-  - Prometheusメトリクス: Counter, Gauge, Histogram設計
-  - 構造化ログ: JSON形式、ログレベル管理、トレースID
-  - アラート設計: 閾値設定、アラートマネージャー、通知チャネル
-  - ダッシュボード: Grafana可視化、パネル設計
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
 
-  使用タイミング:
-  - 本番環境でのファイル監視のパフォーマンス監視が必要な時
-  - SLA遵守のための定量的測定が必要な時
-  - 障害の根本原因分析（RCA）を実施する時
-  - キャパシティプランニングのデータ収集時
+  - `.claude/skills/file-watcher-observability/resources/grafana-dashboard.json`: Grafanaダッシュボード設定（イベントレート、レイテンシ、メモリ使用量パネル）
+  - `.claude/skills/file-watcher-observability/templates/metrics-collector.ts`: Prometheusメトリクス収集の完全実装テンプレート
+  - `.claude/skills/file-watcher-observability/scripts/health-check.sh`: ファイル監視システムの健全性チェックスクリプト
 
-  Use when monitoring file watcher performance in production,
-  measuring SLA compliance, or conducting root cause analysis.
+  Use proactively when implementing file-watcher-observability patterns or solving related problems.
 version: 1.0.0
 ---
+
 
 # file-watcher-observability
 

@@ -4,6 +4,18 @@ description: |
   Infrastructure as Codeの原則に基づく構成管理の自動化を専門とするスキル。
   環境変数管理、Secret管理、Railway統合を中心に、再現可能なインフラ構成を実現します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/infrastructure-as-code/resources/environment-variables.md`: 環境変数の分類（機密/環境固有/共通）と管理場所の設計パターン
+  - `.claude/skills/infrastructure-as-code/resources/iac-principles.md`: IaCの4原則（宣言的定義/べき等性/バージョン管理/不変インフラ）
+  - `.claude/skills/infrastructure-as-code/resources/railway-integration.md`: railway.json構成、Neon Plugin連携、環境変数設定の詳細
+  - `.claude/skills/infrastructure-as-code/resources/secrets-management.md`: GitHub Secrets/Railway Secretsによるセキュアなクレデンシャル管理
+  - `.claude/skills/infrastructure-as-code/scripts/validate-env.mjs`: .env.exampleと実際の環境変数の検証
+  - `.claude/skills/infrastructure-as-code/templates/env-example-template.txt`: .env.exampleファイル作成テンプレート
+  - `.claude/skills/infrastructure-as-code/templates/railway-json-template.json`: railway.json（ビルド/デプロイ構成）テンプレート
+
   専門分野:
   - 宣言的構成管理: あるべき状態をコードで定義
   - 環境変数設計: 開発/ステージング/本番環境の構成管理
@@ -17,7 +29,6 @@ description: |
   - ローカル開発環境とクラウド環境を同期する時
 
   Use proactively when users need to manage environment variables,
-  configure Railway deployments, or implement infrastructure as code practices.
 version: 1.0.0
 ---
 
@@ -25,17 +36,19 @@ version: 1.0.0
 
 ## 概要
 
-このスキルは、Kief Morrisの『Infrastructure as Code』の原則に基づき、
+このスキルは、Kief Morris の『Infrastructure as Code』の原則に基づき、
 インフラストラクチャ構成をコードとして管理し、再現可能で一貫性のある環境を実現します。
 
 **主要な価値**:
+
 - インフラ構成の宣言的定義と自動化
 - 環境間の構成差分の最小化
-- セキュアなSecret管理
+- セキュアな Secret 管理
 - 変更の追跡と監査可能性
 
 **対象ユーザー**:
-- Railway上でアプリケーションをデプロイするDevOps
+
+- Railway 上でアプリケーションをデプロイする DevOps
 - 環境変数管理を最適化したい開発者
 - インフラ構成のコード化を実現したいチーム
 
@@ -93,50 +106,55 @@ cat .claude/skills/infrastructure-as-code/templates/env-example-template.txt
 
 ## いつ使うか
 
-### シナリオ1: Railway構成の設計
+### シナリオ 1: Railway 構成の設計
 
-**状況**: 新しいプロジェクトをRailwayにデプロイしたい
+**状況**: 新しいプロジェクトを Railway にデプロイしたい
 
 **適用条件**:
-- [ ] Next.js/Node.jsアプリケーション
-- [ ] GitHub連携でのデプロイ
+
+- [ ] Next.js/Node.js アプリケーション
+- [ ] GitHub 連携でのデプロイ
 - [ ] 環境変数の設定が必要
 
-**期待される成果**: 再現可能なrailway.json構成
+**期待される成果**: 再現可能な railway.json 構成
 
-### シナリオ2: 環境変数管理の最適化
+### シナリオ 2: 環境変数管理の最適化
 
 **状況**: 開発/ステージング/本番で環境変数がバラバラ
 
 **適用条件**:
+
 - [ ] 複数環境が存在
 - [ ] 環境ごとの設定差分が管理困難
-- [ ] Secret漏洩リスクがある
+- [ ] Secret 漏洩リスクがある
 
 **期待される成果**: 一元管理された環境変数戦略
 
-### シナリオ3: ローカル開発環境の同期
+### シナリオ 3: ローカル開発環境の同期
 
 **状況**: ローカルと本番で動作が異なる
 
 **適用条件**:
+
 - [ ] 環境変数の設定漏れがある
-- [ ] .envファイルの手動管理
+- [ ] .env ファイルの手動管理
 - [ ] 本番環境との乖離
 
-**期待される成果**: Railway CLIによる環境同期
+**期待される成果**: Railway CLI による環境同期
 
 ## ワークフロー
 
 ### Phase 1: 現状分析と要件定義
 
-**目的**: 現在のインフラ構成を理解し、IaC化の要件を定義
+**目的**: 現在のインフラ構成を理解し、IaC 化の要件を定義
 
 **ステップ**:
+
 1. **現在の構成確認**:
-   - 使用中のサービス（Railway, Neon等）
+
+   - 使用中のサービス（Railway, Neon 等）
    - 環境変数の一覧
-   - Secret情報の所在
+   - Secret 情報の所在
 
 2. **環境の特定**:
    - 開発環境
@@ -144,9 +162,10 @@ cat .claude/skills/infrastructure-as-code/templates/env-example-template.txt
    - 本番環境
 
 **判断基準**:
+
 - [ ] すべてのサービスが特定されているか？
 - [ ] 環境変数が一覧化されているか？
-- [ ] Secret情報の管理方法が把握されているか？
+- [ ] Secret 情報の管理方法が把握されているか？
 
 **リソース**: `resources/iac-principles.md`
 
@@ -155,42 +174,48 @@ cat .claude/skills/infrastructure-as-code/templates/env-example-template.txt
 **目的**: 環境変数の分類と管理戦略を設計
 
 **ステップ**:
+
 1. **変数の分類**:
+
    - 機密情報（Secret）: API Key, Token
    - 環境固有: DATABASE_URL, API_ENDPOINT
    - 共通設定: NODE_ENV, LOG_LEVEL
 
 2. **管理場所の決定**:
-   - GitHub Secrets: CI/CD用
+   - GitHub Secrets: CI/CD 用
    - Railway Variables: デプロイ用
    - .env.example: ドキュメント用
 
 **判断基準**:
+
 - [ ] すべての変数が分類されているか？
 - [ ] 管理場所が決定しているか？
-- [ ] .env.exampleが更新されているか？
+- [ ] .env.example が更新されているか？
 
 **リソース**: `resources/environment-variables.md`
 
-### Phase 3: Railway構成の実装
+### Phase 3: Railway 構成の実装
 
-**目的**: railway.jsonによる宣言的構成
+**目的**: railway.json による宣言的構成
 
 **ステップ**:
-1. **railway.json作成**:
+
+1. **railway.json 作成**:
+
    - ビルドコマンド設定
    - スタートコマンド設定
    - 再起動ポリシー設定
 
 2. **環境変数の設定**:
-   - Neon Plugin連携（DATABASE_URL）
-   - Railway Secrets設定
-   - Railway Variables設定
+   - Neon Plugin 連携（DATABASE_URL）
+   - Railway Secrets 設定
+   - Railway Variables 設定
 
 **判断基準**:
-- [ ] railway.jsonが作成されているか？
-- [ ] 環境変数がRailwayに設定されているか？
-- [ ] Neon連携が構成されているか？
+
+- [ ] railway.json が作成されているか？
+- [ ] 環境変数が Railway に設定されているか？
+- [ ] Neon 連携が構成されているか？
 
 **リソース**: `resources/railway-integration.md`
 
@@ -199,23 +224,26 @@ cat .claude/skills/infrastructure-as-code/templates/env-example-template.txt
 **目的**: 構成の検証とメンテナンス可能なドキュメント作成
 
 **ステップ**:
+
 1. **動作検証**:
+
    - ローカル開発での動作確認
-   - Railway CLI経由での変数確認
+   - Railway CLI 経由での変数確認
    - デプロイ動作確認
 
 2. **ドキュメント更新**:
-   - .env.example更新
-   - README更新
+   - .env.example 更新
+   - README 更新
    - 変更履歴記録
 
 **判断基準**:
+
 - [ ] ローカルと本番で同一動作か？
 - [ ] ドキュメントが最新か？
 
 ## 核心知識
 
-### IaCの4原則
+### IaC の 4 原則
 
 1. **宣言的定義**: あるべき状態をコードで記述
 2. **べき等性**: 何度実行しても同じ結果
@@ -224,13 +252,13 @@ cat .claude/skills/infrastructure-as-code/templates/env-example-template.txt
 
 ### 環境変数の分類
 
-| 種別 | 例 | 管理場所 |
-|------|-----|---------|
-| 機密情報 | API_KEY, DB_PASSWORD | GitHub Secrets, Railway Secrets |
-| 環境固有 | DATABASE_URL, API_ENDPOINT | Railway Variables |
-| 共通設定 | NODE_ENV, LOG_LEVEL | railway.json, .env |
+| 種別     | 例                         | 管理場所                        |
+| -------- | -------------------------- | ------------------------------- |
+| 機密情報 | API_KEY, DB_PASSWORD       | GitHub Secrets, Railway Secrets |
+| 環境固有 | DATABASE_URL, API_ENDPOINT | Railway Variables               |
+| 共通設定 | NODE_ENV, LOG_LEVEL        | railway.json, .env              |
 
-### Railway構成要素
+### Railway 構成要素
 
 ```json
 {
@@ -251,24 +279,27 @@ cat .claude/skills/infrastructure-as-code/templates/env-example-template.txt
 
 ### すべきこと
 
-1. **Secretはコードに含めない**:
+1. **Secret はコードに含めない**:
+
    - ✅ 環境変数経由で注入
-   - ✅ .env.exampleにダミー値
-   - ✅ .gitignoreに.envを追加
+   - ✅ .env.example にダミー値
+   - ✅ .gitignore に.env を追加
 
 2. **環境差分を最小化**:
+
    - ✅ 同一構成を全環境に適用
    - ✅ 環境固有設定は環境変数で
-   - ✅ Railway CLIでローカルと同期
+   - ✅ Railway CLI でローカルと同期
 
 3. **構成をコード管理**:
-   - ✅ railway.jsonをリポジトリに含める
-   - ✅ 変更はPR経由でレビュー
+   - ✅ railway.json をリポジトリに含める
+   - ✅ 変更は PR 経由でレビュー
    - ✅ 変更履歴を追跡
 
 ### 避けるべきこと
 
-1. **ハードコードSecret**:
+1. **ハードコード Secret**:
+
    - ❌ コード内に直接記述
    - ❌ コミット履歴に残す
    - ❌ ログに出力
@@ -280,49 +311,55 @@ cat .claude/skills/infrastructure-as-code/templates/env-example-template.txt
 
 ## トラブルシューティング
 
-### 問題1: ローカルと本番で動作が異なる
+### 問題 1: ローカルと本番で動作が異なる
 
 **症状**: ローカルでは動作するが、本番で動作しない
 
 **原因**:
+
 - 環境変数の設定漏れ
 - 環境変数の値が異なる
 
 **解決策**:
-1. Railway CLIで環境変数を確認
-2. .env.exampleと比較
+
+1. Railway CLI で環境変数を確認
+2. .env.example と比較
 3. 不足分を設定
 
-### 問題2: Secret漏洩の疑い
+### 問題 2: Secret 漏洩の疑い
 
-**症状**: APIキーやトークンがログに出力された
+**症状**: API キーやトークンがログに出力された
 
 **原因**:
-- 環境変数をechoしている
+
+- 環境変数を echo している
 - エラーメッセージに含まれている
 
 **解決策**:
-1. 即座にSecretをローテーション
+
+1. 即座に Secret をローテーション
 2. コードから直接参照を排除
 3. ログ出力を見直し
 
-### 問題3: デプロイが失敗する
+### 問題 3: デプロイが失敗する
 
-**症状**: Railway上でビルドまたは起動が失敗
+**症状**: Railway 上でビルドまたは起動が失敗
 
 **原因**:
+
 - 環境変数の未設定
-- railway.jsonの構文エラー
+- railway.json の構文エラー
 - ビルドコマンドの誤り
 
 **解決策**:
-1. Railway Logsで詳細確認
+
+1. Railway Logs で詳細確認
 2. 環境変数一覧を確認
-3. railway.jsonを検証
+3. railway.json を検証
 
 ## 関連スキル
 
-- **ci-cd-pipelines** (`.claude/skills/ci-cd-pipelines/SKILL.md`): CI/CDパイプライン設計
+- **ci-cd-pipelines** (`.claude/skills/ci-cd-pipelines/SKILL.md`): CI/CD パイプライン設計
 - **deployment-strategies** (`.claude/skills/deployment-strategies/SKILL.md`): デプロイ戦略
 - **monitoring-alerting** (`.claude/skills/monitoring-alerting/SKILL.md`): モニタリング
 
@@ -336,19 +373,20 @@ cat .claude/skills/infrastructure-as-code/templates/env-example-template.txt
 
 **目標**: 100%（すべての変更がコード経由）
 
-### Secret漏洩インシデント
+### Secret 漏洩インシデント
 
-**目標**: 0件
+**目標**: 0 件
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版作成 - Railway統合とIaC原則 |
+| バージョン | 日付       | 変更内容                           |
+| ---------- | ---------- | ---------------------------------- |
+| 1.0.0      | 2025-11-25 | 初版作成 - Railway 統合と IaC 原則 |
 
 ## 参考文献
 
-- **『Infrastructure as Code』** Kief Morris著
+- **『Infrastructure as Code』** Kief Morris 著
+
   - Chapter 1: What Is Infrastructure as Code?
   - Chapter 6: Building Servers as Code
 

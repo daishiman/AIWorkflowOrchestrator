@@ -4,6 +4,16 @@ description: |
   Node.jsアプリケーションのログローテーション戦略を専門とするスキル。
   PM2、logrotate、Winston等を活用した効率的なログ管理を設計します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/log-rotation-strategies/resources/log-aggregation.md`: 集中ログ管理オプション（ELK/Datadog/CloudWatch/Loki）、サービス選定基準
+  - `.claude/skills/log-rotation-strategies/resources/pm2-logrotate-guide.md`: pm2-logrotate設定、max_size/retain/compress、ecosystem.config.js統合
+  - `.claude/skills/log-rotation-strategies/resources/rotation-patterns.md`: サイズベース・時間ベース・ハイブリッド方式の選択基準と実装パターン
+  - `.claude/skills/log-rotation-strategies/scripts/analyze-log-usage.mjs`: ログ使用量分析（ディレクトリサイズ、世代数、圧縮率）
+  - `.claude/skills/log-rotation-strategies/templates/winston-rotation.template.ts`: Winston DailyRotateFile設定テンプレート（TypeScript）
+
   専門分野:
   - PM2ログ管理: pm2-logrotate、ログファイル設定、自動ローテーション
   - ログフォーマット: 構造化ログ、JSON形式、タイムスタンプ
@@ -17,7 +27,6 @@ description: |
   - PM2ログ設定を行う時
 
   Use proactively when configuring log rotation, optimizing disk usage,
-  or standardizing log formats across applications.
 version: 1.0.0
 ---
 
@@ -30,6 +39,7 @@ version: 1.0.0
 リソース効率を最適化します。
 
 **主要な価値**:
+
 - ディスク容量の効率的管理
 - ログの長期保持と検索性
 - アプリケーションパフォーマンスの維持
@@ -91,15 +101,17 @@ cat .claude/skills/log-rotation-strategies/templates/winston-rotation.template.t
 | ハイブリッド | サイズ+時間 | 大規模本番環境 |
 
 **判断基準**:
-- [ ] 1日あたりの予想ログ量は？
+
+- [ ] 1 日あたりの予想ログ量は？
 - [ ] 必要な保持期間は？
 - [ ] ディスク容量の制約は？
 
 **リソース**: `resources/rotation-patterns.md`
 
-### Phase 2: PM2ログ設定
+### Phase 2: PM2 ログ設定
 
-**pm2-logrotate設定**:
+**pm2-logrotate 設定**:
+
 ```bash
 # インストール
 pm2 install pm2-logrotate
@@ -109,6 +121,7 @@ pm2 conf pm2-logrotate
 ```
 
 **主要設定項目**:
+
 ```bash
 pm2 set pm2-logrotate:max_size 10M      # ファイルサイズ上限
 pm2 set pm2-logrotate:retain 7          # 保持世代数
@@ -116,7 +129,8 @@ pm2 set pm2-logrotate:compress true     # 圧縮有効化
 pm2 set pm2-logrotate:rotateInterval '0 0 * * *'  # 毎日0時
 ```
 
-**ecosystem.config.js設定**:
+**ecosystem.config.js 設定**:
+
 ```javascript
 {
   error_file: './logs/error.log',
@@ -131,30 +145,32 @@ pm2 set pm2-logrotate:rotateInterval '0 0 * * *'  # 毎日0時
 
 ### Phase 3: アプリケーションログ
 
-**Winstonローテーション**:
+**Winston ローテーション**:
+
 ```javascript
-const winston = require('winston');
-require('winston-daily-rotate-file');
+const winston = require("winston");
+require("winston-daily-rotate-file");
 
 const transport = new winston.transports.DailyRotateFile({
-  filename: 'logs/app-%DATE%.log',
-  datePattern: 'YYYY-MM-DD',
-  maxSize: '20m',
-  maxFiles: '14d',
-  compress: true
+  filename: "logs/app-%DATE%.log",
+  datePattern: "YYYY-MM-DD",
+  maxSize: "20m",
+  maxFiles: "14d",
+  compress: true,
 });
 ```
 
-**Pinoローテーション**:
-```javascript
-const pino = require('pino');
-const rfs = require('rotating-file-stream');
+**Pino ローテーション**:
 
-const stream = rfs.createStream('app.log', {
-  size: '10M',
-  interval: '1d',
-  compress: 'gzip',
-  path: './logs'
+```javascript
+const pino = require("pino");
+const rfs = require("rotating-file-stream");
+
+const stream = rfs.createStream("app.log", {
+  size: "10M",
+  interval: "1d",
+  compress: "gzip",
+  path: "./logs",
 });
 
 const logger = pino(stream);
@@ -162,7 +178,8 @@ const logger = pino(stream);
 
 ### Phase 4: システムレベルローテーション
 
-**logrotate設定** (`/etc/logrotate.d/myapp`):
+**logrotate 設定** (`/etc/logrotate.d/myapp`):
+
 ```
 /var/log/myapp/*.log {
     daily
@@ -180,9 +197,9 @@ const logger = pino(stream);
 | オプション | 説明 |
 |-----------|------|
 | daily | 毎日ローテーション |
-| rotate 7 | 7世代保持 |
-| compress | gzip圧縮 |
-| delaycompress | 1世代後に圧縮 |
+| rotate 7 | 7 世代保持 |
+| compress | gzip 圧縮 |
+| delaycompress | 1 世代後に圧縮 |
 | copytruncate | ログを切り詰め（再起動不要） |
 
 ### Phase 5: ログ集約
@@ -191,9 +208,9 @@ const logger = pino(stream);
 | サービス | 特徴 |
 |---------|------|
 | ELK Stack | オンプレミス、高度な分析 |
-| Datadog | SaaS、APM統合 |
-| CloudWatch | AWS統合、低コスト |
-| Loki | Grafana統合、軽量 |
+| Datadog | SaaS、APM 統合 |
+| CloudWatch | AWS 統合、低コスト |
+| Loki | Grafana 統合、軽量 |
 
 **リソース**: `resources/log-aggregation.md`
 
@@ -201,23 +218,23 @@ const logger = pino(stream);
 
 ### すべきこと
 
-1. **構造化ログ**: JSON形式でログを出力し、解析を容易に
-2. **ログレベル活用**: debug/info/warn/errorを適切に使い分け
-3. **タイムスタンプ統一**: ISO8601形式でタイムゾーン明示
-4. **圧縮有効化**: 古いログはgzip圧縮でディスク節約
+1. **構造化ログ**: JSON 形式でログを出力し、解析を容易に
+2. **ログレベル活用**: debug/info/warn/error を適切に使い分け
+3. **タイムスタンプ統一**: ISO8601 形式でタイムゾーン明示
+4. **圧縮有効化**: 古いログは gzip 圧縮でディスク節約
 
 ### 避けるべきこと
 
 1. **無制限ログ**: サイズ・世代制限なしのログ設定
-2. **console.log依存**: 本番環境での生console.log使用
+2. **console.log 依存**: 本番環境での生 console.log 使用
 3. **機密情報ログ**: パスワード、トークン等のログ出力
-4. **同期ログ**: 高負荷時のブロッキングI/O
+4. **同期ログ**: 高負荷時のブロッキング I/O
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-26 | 初版作成 |
+| バージョン | 日付       | 変更内容 |
+| ---------- | ---------- | -------- |
+| 1.0.0      | 2025-11-26 | 初版作成 |
 
 ## 関連スキル
 

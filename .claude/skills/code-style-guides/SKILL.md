@@ -4,6 +4,18 @@ description: |
   業界標準コードスタイルガイドの選択と適用の専門知識。
   Airbnb、Google、Standard等のスタイルガイド適用とカスタマイズを行います。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/code-style-guides/resources/style-guide-comparison.md`: 主要スタイルガイド(Airbnb、Google、Standard)の比較
+  - `.claude/skills/code-style-guides/resources/customization-patterns.md`: スタイルガイドのカスタマイズパターン
+  - `.claude/skills/code-style-guides/resources/migration-strategies.md`: スタイルガイド移行戦略
+  - `.claude/skills/code-style-guides/templates/airbnb-base.json`: Airbnbスタイルベース設定
+  - `.claude/skills/code-style-guides/templates/google.json`: Googleスタイル設定
+  - `.claude/skills/code-style-guides/templates/standard.json`: Standardスタイル設定
+  - `.claude/skills/code-style-guides/scripts/detect-style.mjs`: プロジェクトのコードスタイル自動検出スクリプト
+
   使用タイミング:
   - プロジェクトのスタイルガイドを選択する時
   - 既存コードパターンに基づいてスタイルを決定する時

@@ -5,6 +5,18 @@ description: |
   ユーザー明示起動、モデル自動起動（SlashCommand Tool）、Extended Thinkingトリガー、
   実行フローの完全図解を提供します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/command-activation-mechanisms/resources/slashcommand-tool-guide.md`: SlashCommandツール詳細ガイド
+  - `.claude/skills/command-activation-mechanisms/resources/user-explicit-activation.md`: ユーザー明示的起動パターン
+  - `.claude/skills/command-activation-mechanisms/resources/execution-flow-diagrams.md`: コマンド実行フロー図解
+  - `.claude/skills/command-activation-mechanisms/resources/extended-thinking-triggers.md`: Extended Thinkingトリガー設計
+  - `.claude/skills/command-activation-mechanisms/templates/auto-invocation-template.md`: 自動起動コマンドテンプレート
+  - `.claude/skills/command-activation-mechanisms/templates/extended-thinking-template.md`: Extended Thinking活用テンプレート
+  - `.claude/skills/command-activation-mechanisms/scripts/validate-activation.mjs`: 起動メカニズム検証スクリプト
+
   使用タイミング:
   - SlashCommand Toolによる自動起動を理解したい時
   - Extended Thinkingを活用したい時

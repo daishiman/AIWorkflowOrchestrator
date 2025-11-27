@@ -5,6 +5,14 @@ description: |
   引数検証、事前チェック、ロールバック機能、ユーザー確認、
   親切なエラーメッセージの設計を提供します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/command-error-handling/resources/error-patterns.md`: エラーハンドリングパターン集
+  - `.claude/skills/command-error-handling/templates/command-with-error-handling.md`: エラーハンドリング付きコマンドテンプレート
+  - `.claude/skills/command-error-handling/scripts/validate-error-handling.mjs`: エラーハンドリング検証スクリプト
+
   使用タイミング:
   - 堅牢なエラー処理を実装する時
   - ロールバック機能が必要な時

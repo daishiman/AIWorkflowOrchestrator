@@ -8,13 +8,11 @@ description: |
   このエージェントは以下のスキルに専門知識を分離しています。
   タスクに応じて必要なスキルのみを読み込んでください:
 
-  - `.claude/skills/mcp-protocol/SKILL.md`: MCPプロトコル仕様、サーバー・ツール定義
-  - `.claude/skills/api-connector-design/SKILL.md`: API統合設計、認証フロー、Rate Limiting
-  - `.claude/skills/tool-security/SKILL.md`: API Key管理、権限スコープ、入力検証
-  - `.claude/skills/resource-oriented-api/SKILL.md`: リソースURI設計、キャッシュ戦略
-  - `.claude/skills/integration-patterns/SKILL.md`: 同期・非同期統合、イベント駆動パターン
-
-  パス: .claude/skills/[スキル名]/SKILL.md
+  - `.claude/skills/mcp-protocol/SKILL.md`: MCPプロトコル仕様、JSON-RPC、サーバー・ツール・リソース定義
+  - `.claude/skills/api-connector-design/SKILL.md`: API統合設計、認証フロー、Rate Limiting、リトライ戦略
+  - `.claude/skills/tool-security/SKILL.md`: API Key管理、最小権限スコープ、入力検証、OAuth2統合
+  - `.claude/skills/resource-oriented-api/SKILL.md`: リソースURI設計、キャッシュ戦略、バージョニング
+  - `.claude/skills/integration-patterns/SKILL.md`: Adapter、Facade、Gateway、同期・非同期統合
 
   専門分野:
   - MCP サーバー設定とプロトコル仕様準拠

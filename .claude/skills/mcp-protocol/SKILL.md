@@ -4,11 +4,24 @@ description: |
   Model Context Protocol (MCP) の標準仕様とツール定義パターンに関する専門知識。
   MCPプロトコルの構造、サーバー設定、ツール定義、パラメータスキーマ設計を提供します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/mcp-protocol/resources/config-examples.md`: command/url/stdio接続方式の実例、環境変数マッピング、複数サーバー設定
+  - `.claude/skills/mcp-protocol/resources/mcp-specification.md`: プロトコル仕様、ツール定義構造、inputSchema設計、エラーコード体系
+  - `.claude/skills/mcp-protocol/resources/troubleshooting.md`: 接続エラー診断、タイムアウト対応、レスポンス形式不正の解決
+  - `.claude/skills/mcp-protocol/scripts/validate-mcp-config.mjs`: MCP設定ファイルの自動検証（構文、必須フィールド、環境変数）
+  - `.claude/skills/mcp-protocol/scripts/validate-tool-schema.mjs`: ツール定義スキーマの検証（JSON Schema準拠、型安全性）
+  - `.claude/skills/mcp-protocol/templates/server-config-template.json`: MCPサーバー設定テンプレート（command/args/env構造）
+  - `.claude/skills/mcp-protocol/templates/tool-definition-template.json`: ツール定義テンプレート（name/description/inputSchema）
+
   使用タイミング:
   - MCPサーバーの新規設定が必要な時
   - ツール定義のYAML/JSON構造を設計する時
   - MCPプロトコル仕様への準拠を確認する時
   - claude_mcp_config.jsonの設計・検証時
+
 version: 1.0.1
 tags: [mcp, protocol, tool-definition, configuration]
 related_skills:
@@ -20,11 +33,11 @@ related_skills:
 
 ## 概要
 
-Model Context Protocol (MCP) は、AIシステムが外部ツールやデータソースと標準化された方法で対話するためのプロトコル仕様です。このスキルは、MCPプロトコルの構造、設定方法、ベストプラクティスを提供します。
+Model Context Protocol (MCP) は、AI システムが外部ツールやデータソースと標準化された方法で対話するためのプロトコル仕様です。このスキルは、MCP プロトコルの構造、設定方法、ベストプラクティスを提供します。
 
 ## コアコンセプト
 
-### 1. MCPアーキテクチャ
+### 1. MCP アーキテクチャ
 
 ```
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
@@ -36,7 +49,7 @@ Model Context Protocol (MCP) は、AIシステムが外部ツールやデータ�
         │  (標準化)             │  (REST/GraphQL等)     │
 ```
 
-### 2. MCPサーバー定義構造
+### 2. MCP サーバー定義構造
 
 ```json
 {
@@ -53,21 +66,23 @@ Model Context Protocol (MCP) は、AIシステムが外部ツールやデータ�
 ```
 
 **必須フィールド**:
-- `command`: 実行コマンド（npx, node, python等）
+
+- `command`: 実行コマンド（npx, node, python 等）
 - `args`: コマンド引数
 
 **オプションフィールド**:
+
 - `env`: 環境変数マッピング
 - `cwd`: 作業ディレクトリ
 - `disabled`: 無効化フラグ
 
 ### 3. 接続方式
 
-| 方式 | 説明 | ユースケース |
-|-----|------|-------------|
-| **command** | ローカルプロセス起動 | npx、node、python等 |
-| **url** | リモートHTTP/WebSocket | クラウドサービス接続 |
-| **stdio** | 標準入出力 | カスタムプロセス |
+| 方式        | 説明                    | ユースケース         |
+| ----------- | ----------------------- | -------------------- |
+| **command** | ローカルプロセス起動    | npx、node、python 等 |
+| **url**     | リモート HTTP/WebSocket | クラウドサービス接続 |
+| **stdio**   | 標準入出力              | カスタムプロセス     |
 
 ### 4. ツール定義仕様
 
@@ -92,13 +107,13 @@ Model Context Protocol (MCP) は、AIシステムが外部ツールやデータ�
 
 ### 型定義
 
-| 型 | JSON Schema | 例 |
-|---|-------------|---|
-| 文字列 | `"type": "string"` | ファイルパス、URL |
-| 数値 | `"type": "number"` | 数量、ID |
-| 真偽値 | `"type": "boolean"` | フラグ |
-| 配列 | `"type": "array"` | リスト |
-| オブジェクト | `"type": "object"` | 複合データ |
+| 型           | JSON Schema         | 例                |
+| ------------ | ------------------- | ----------------- |
+| 文字列       | `"type": "string"`  | ファイルパス、URL |
+| 数値         | `"type": "number"`  | 数量、ID          |
+| 真偽値       | `"type": "boolean"` | フラグ            |
+| 配列         | `"type": "array"`   | リスト            |
+| オブジェクト | `"type": "object"`  | 複合データ        |
 
 ### バリデーション制約
 
@@ -126,9 +141,9 @@ Model Context Protocol (MCP) は、AIシステムが外部ツールやデータ�
 
 ## 設計時の判断基準
 
-### MCPサーバー設計チェックリスト
+### MCP サーバー設計チェックリスト
 
-- [ ] サーバー名はkebab-case命名規則に従っているか？
+- [ ] サーバー名は kebab-case 命名規則に従っているか？
 - [ ] 接続方式（command/url）は適切に選択されているか？
 - [ ] 環境変数は安全に管理されているか？
 - [ ] タイムアウト設定は適切か？
@@ -145,13 +160,13 @@ Model Context Protocol (MCP) は、AIシステムが外部ツールやデータ�
 
 ### エラーコード体系
 
-| コード範囲 | カテゴリ | 説明 |
-|-----------|---------|------|
-| -32700 | Parse Error | JSONパースエラー |
-| -32600 | Invalid Request | リクエスト形式不正 |
-| -32601 | Method Not Found | メソッド未定義 |
-| -32602 | Invalid Params | パラメータ不正 |
-| -32603 | Internal Error | 内部エラー |
+| コード範囲 | カテゴリ         | 説明               |
+| ---------- | ---------------- | ------------------ |
+| -32700     | Parse Error      | JSON パースエラー  |
+| -32600     | Invalid Request  | リクエスト形式不正 |
+| -32601     | Method Not Found | メソッド未定義     |
+| -32602     | Invalid Params   | パラメータ不正     |
+| -32603     | Internal Error   | 内部エラー         |
 
 ### リトライ戦略
 
@@ -191,9 +206,9 @@ node .claude/skills/mcp-protocol/scripts/validate-tool-schema.mjs <tool-def.json
 
 ## 関連スキル
 
-| スキル | 用途 |
-|-------|------|
-| `.claude/skills/api-connector-design/SKILL.md` | API統合パターン |
-| `.claude/skills/tool-security/SKILL.md` | セキュリティ設定 |
-| `.claude/skills/resource-oriented-api/SKILL.md` | リソース設計 |
-| `.claude/skills/integration-patterns/SKILL.md` | 統合パターン |
+| スキル                                          | 用途             |
+| ----------------------------------------------- | ---------------- |
+| `.claude/skills/api-connector-design/SKILL.md`  | API 統合パターン |
+| `.claude/skills/tool-security/SKILL.md`         | セキュリティ設定 |
+| `.claude/skills/resource-oriented-api/SKILL.md` | リソース設計     |
+| `.claude/skills/integration-patterns/SKILL.md`  | 統合パターン     |

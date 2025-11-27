@@ -5,6 +5,14 @@ description: |
   System Prompt設計、Few-Shot Examples、Role Prompting技術により、
   高品質なエージェント動作を実現します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/prompt-engineering-for-agents/resources/system-prompt-patterns.md`: System Prompt Patterns
+  - `.claude/skills/prompt-engineering-for-agents/scripts/analyze-prompt.mjs`: analyze-prompt.mjs
+  - `.claude/skills/prompt-engineering-for-agents/templates/prompt-template.md`: プロンプト設計テンプレート
+
   専門分野:
   - System Prompt設計: 構造化と明確性
   - Role Prompting: 役割付与による性能向上

@@ -5,6 +5,14 @@ description: |
   動詞ベース命名、kebab-case、名前空間の活用、
   発見可能性の高い命名設計を提供します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/command-naming-conventions/resources/naming-rules.md`: kebab-case形式・動詞ベース命名・2-4語の長さ制限と一貫性保持の基本ルールと命名パターン集
+  - `.claude/skills/command-naming-conventions/templates/naming-checklist.md`: kebab-case確認・動詞開始・3-20文字範囲・目的推測可能性・重複回避の5項目チェックリスト
+  - `.claude/skills/command-naming-conventions/scripts/validate-naming.mjs`: 命名規則検証スクリプト
+
   使用タイミング:
   - コマンド名を決定する時
   - 名前空間構造を設計する時

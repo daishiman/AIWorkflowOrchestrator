@@ -5,6 +5,15 @@ description: |
   スキル参照、コマンド連携、エージェント間協調のプロトコルを定義し、
   循環依存を防ぎながら効果的なマルチエージェントシステムを構築します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/agent-dependency-design/resources/dependency-patterns.md`: 4種類の依存関係（スキル・エージェント・コマンド・ツール）のパターンと標準ハンドオフプロトコル（JSON形式）、循環依存検出・解消策
+  - `.claude/skills/agent-dependency-design/templates/handoff-protocol-template.json`: ハンドオフプロトコルテンプレート
+  - `.claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs`: 循環依存検出スクリプト (Node.js)
+  - `.claude/skills/agent-dependency-design/scripts/check-circular-deps.sh`: 循環依存検出スクリプト (Shell)
+
   専門分野:
   - スキル参照設計: Mandatory起動プロトコル、相対パス管理、参照タイミング
   - コマンド連携設計: 実行マトリクス、期待動作定義
@@ -211,7 +220,7 @@ cat .claude/skills/[skill-name]/SKILL.md
 
 **検出方法**:
 ```bash
-./scripts/detect-circular-dependencies.sh
+.claude/skills/agent-dependency-design/scripts/detect-circular-dependencies.sh
 ```
 
 **循環パターンの例**:

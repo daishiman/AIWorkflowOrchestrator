@@ -4,6 +4,17 @@ description: |
   外部APIとの統合設計パターンに関する専門知識。
   RESTful API、GraphQL、WebSocket等の統合設計と実装指針を提供します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/api-connector-design/resources/authentication-flows.md`: OAuth 2.0、API Key、JWTなどの認証フロー詳細
+  - `.claude/skills/api-connector-design/resources/error-handling-patterns.md`: API統合におけるエラーハンドリングパターン
+  - `.claude/skills/api-connector-design/resources/rate-limiting-strategies.md`: Rate Limiting対策とリトライ戦略
+  - `.claude/skills/api-connector-design/templates/api-client-template.ts`: APIクライアント実装テンプレート
+  - `.claude/skills/api-connector-design/templates/auth-config-template.json`: 認証設定ファイルテンプレート
+  - `.claude/skills/api-connector-design/scripts/test-api-connection.mjs`: API接続テストスクリプト
+
   使用タイミング:
   - 外部API（Google Drive, Slack, GitHub等）との統合設計時
   - 認証フロー（OAuth 2.0, API Key等）の実装設計時

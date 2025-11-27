@@ -1,26 +1,35 @@
 ---
 name: context-optimization
 description: |
-  トークン使用量の最小化と必要情報の効率的抽出を専門とするスキル。
-  遅延読み込み、インデックス駆動設計、圧縮と精錬により、
-  コンテキストウィンドウを最適活用します。
+    トークン使用量の最小化と必要情報の効率的抽出を専門とするスキル。
+    遅延読み込み、インデックス駆動設計、圧縮と精錬により、
+    コンテキストウィンドウを最適活用します。
+    専門分野:
+    - 遅延読み込み: 必要な時に必要な情報のみロード
+    - インデックス設計: 目次駆動、効率的なナビゲーション
+    - 圧縮と精錬: 冗長性排除、本質的情報の抽出
+    - トークン見積もり: 使用量の予測と最適化
+    使用タイミング:
+    - トークン使用量を削減する必要がある時
+    - 大量の情報を効率的に提供したい時
+    - コンテキスト汚染を防ぎたい時
+    - 情報アクセスを最適化する時
+    Use proactively when optimizing token usage, implementing lazy loading,
+    or minimizing context pollution.
 
-  専門分野:
-  - 遅延読み込み: 必要な時に必要な情報のみロード
-  - インデックス設計: 目次駆動、効率的なナビゲーション
-  - 圧縮と精錬: 冗長性排除、本質的情報の抽出
-  - トークン見積もり: 使用量の予測と最適化
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
 
-  使用タイミング:
-  - トークン使用量を削減する必要がある時
-  - 大量の情報を効率的に提供したい時
-  - コンテキスト汚染を防ぎたい時
-  - 情報アクセスを最適化する時
+  - `.claude/skills/context-optimization/resources/compression-techniques.md`: 冗長性排除と本質的情報抽出のテクニック
+  - `.claude/skills/context-optimization/resources/index-driven-design.md`: 目次駆動の効率的なナビゲーション設計
+  - `.claude/skills/context-optimization/resources/lazy-loading-patterns.md`: 必要時のみロードする遅延読み込みパターン
+  - `.claude/skills/context-optimization/scripts/estimate-tokens.mjs`: トークン使用量の自動計算スクリプト
+  - `.claude/skills/context-optimization/scripts/estimate-tokens.sh`: トークン使用量の自動計算スクリプト（シェル版）
 
-  Use proactively when optimizing token usage, implementing lazy loading,
-  or minimizing context pollution.
 version: 1.0.0
 ---
+
 
 # Context Optimization
 

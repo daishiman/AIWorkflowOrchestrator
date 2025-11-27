@@ -2,7 +2,18 @@
 name: backup-recovery
 description: |
   『Database Reliability Engineering』に基づく、データ損失を許さない堅牢なバックアップ・復旧戦略スキル。
-  多層防御モデル、PITR（Point-in-Time Recovery）、RPO/RTO設計、復旧手順の確立を専門とします。
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/backup-recovery/resources/backup-strategy-layers.md`: 多層防御バックアップ戦略
+  - `.claude/skills/backup-recovery/resources/disaster-recovery-planning.md`: 災害復旧計画（DR計画）ガイド
+  - `.claude/skills/backup-recovery/resources/neon-backup-guide.md`: Neonバックアップガイド
+  - `.claude/skills/backup-recovery/resources/recovery-procedures.md`: 3つのシナリオ別復旧手順（行単位誤削除・テーブル復旧・DB全体復旧）とPITR・エクスポート・整合性確認の実践ガイド
+  - `.claude/skills/backup-recovery/resources/rpo-rto-design.md`: RPO/RTO設計ガイド
+  - `.claude/skills/backup-recovery/templates/backup-policy-template.md`: バックアップポリシー
+  - `.claude/skills/backup-recovery/templates/recovery-runbook-template.md`: 緊急連絡先・接続情報・復旧手順・チェックリストを含む実践的な復旧作業マニュアルテンプレート
+  - `.claude/skills/backup-recovery/scripts/verify-backup.mjs`: バックアップ検証スクリプト
 
   専門分野:
   - バックアップ戦略設計: 多層防御モデル（自動・PITR・検証・オフサイト）

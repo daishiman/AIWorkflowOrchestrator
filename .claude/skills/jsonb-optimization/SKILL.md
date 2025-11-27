@@ -4,6 +4,14 @@ description: |
   PostgreSQLのJSONB型を活用した柔軟なデータ構造設計とパフォーマンス最適化。
   GINインデックス、演算子の効率的使用、スキーマ検証の統合を提供。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/jsonb-optimization/resources/jsonb-operators-reference.md`: @>/</>/->/->>/#>/#>>演算子の使い分けとGINインデックス活用
+  - `.claude/skills/jsonb-optimization/scripts/analyze-jsonb-usage.mjs`: JSONB使用状況分析とリレーショナル分離推奨の自動判定
+  - `.claude/skills/jsonb-optimization/templates/jsonb-schema-design.md`: JSONB構造設計テンプレート（GINインデックス/CHECK制約/Zodスキーマ統合）
+
   専門分野:
   - JSONB設計判断: リレーショナル vs JSONB の適切な選択
   - GINインデックス: jsonb_path_ops vs デフォルト、部分インデックス
@@ -17,7 +25,6 @@ description: |
   - JSONB構造の検証ルール策定時
 
   Use proactively when designing JSONB columns, optimizing JSONB queries,
-  or implementing validation for semi-structured data.
 version: 1.0.0
 ---
 
@@ -25,35 +32,39 @@ version: 1.0.0
 
 ## 概要
 
-このスキルは、PostgreSQLのJSONB型を効果的に活用するための専門知識を提供します。
-柔軟性とパフォーマンスのバランスを取りながら、適切なユースケースでJSONBを使用する判断基準を学びます。
+このスキルは、PostgreSQL の JSONB 型を効果的に活用するための専門知識を提供します。
+柔軟性とパフォーマンスのバランスを取りながら、適切なユースケースで JSONB を使用する判断基準を学びます。
 
-## JSONB使用の判断基準
+## JSONB 使用の判断基準
 
-### JSONBが適切なケース
+### JSONB が適切なケース
 
 1. **半構造化データ**
-   - 外部APIのレスポンス保存
+
+   - 外部 API のレスポンス保存
    - イベントペイロード
    - 設定オプション
 
 2. **スキーマの柔軟性が必要**
+
    - 属性が頻繁に追加・変更される
    - エンティティごとに異なる属性セット
    - 将来の拡張性が重要
 
 3. **疎な属性**
-   - 多くのNULL値を含む属性群
+   - 多くの NULL 値を含む属性群
    - オプショナルなメタデータ
 
-### JSONBを避けるべきケース
+### JSONB を避けるべきケース
 
 1. **頻繁な検索・ソート対象**
-   - WHERE句で常に使用される属性
-   - ORDER BY対象の属性
-   - 集計・GROUP BY対象
+
+   - WHERE 句で常に使用される属性
+   - ORDER BY 対象の属性
+   - 集計・GROUP BY 対象
 
 2. **参照整合性が必要**
+
    - 他テーブルへの外部キー関係
    - マスターデータへの参照
 
@@ -61,7 +72,7 @@ version: 1.0.0
    - 個別属性の頻繁な更新
    - 競合の可能性が高い属性
 
-## GINインデックス設計
+## GIN インデックス設計
 
 ### インデックスタイプの選択
 
@@ -72,13 +83,14 @@ CREATE INDEX gin_data ON table USING gin(data);
 ```
 
 **サポート演算子**:
+
 - `@>` : 含む
 - `<@` : 含まれる
 - `?` : キー存在
 - `?|` : いずれかのキー存在
 - `?&` : すべてのキー存在
-- `@?` : JSONパス存在
-- `@@` : JSONパス述語
+- `@?` : JSON パス存在
+- `@@` : JSON パス述語
 
 #### jsonb_path_ops
 
@@ -87,48 +99,54 @@ CREATE INDEX gin_data_path ON table USING gin(data jsonb_path_ops);
 ```
 
 **サポート演算子**（限定的）:
+
 - `@>` : 含む
-- `@?` : JSONパス存在
-- `@@` : JSONパス述語
+- `@?` : JSON パス存在
+- `@@` : JSON パス述語
 
 **比較**:
 
-| 特性 | デフォルト | jsonb_path_ops |
-|------|-----------|----------------|
-| インデックスサイズ | 大 | 小（約1/3） |
-| @> 検索速度 | 速い | より速い |
-| ? 演算子 | 使用可能 | 使用不可 |
-| キー存在検査 | 可能 | 不可 |
+| 特性               | デフォルト | jsonb_path_ops |
+| ------------------ | ---------- | -------------- |
+| インデックスサイズ | 大         | 小（約 1/3）   |
+| @> 検索速度        | 速い       | より速い       |
+| ? 演算子           | 使用可能   | 使用不可       |
+| キー存在検査       | 可能       | 不可           |
 
 **選択指針**:
+
 - `@>` のみ使用 → `jsonb_path_ops`
 - キー存在検査が必要 → デフォルト
 
 ### Drizzle ORM での定義
 
 ```typescript
-import { index, pgTable, jsonb, uuid } from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
+import { index, pgTable, jsonb, uuid } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 
-export const workflows = pgTable('workflows', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  inputPayload: jsonb('input_payload'),
-  outputPayload: jsonb('output_payload'),
-  metadata: jsonb('metadata'),
-}, (table) => ({
-  // デフォルトGIN（キー存在検査が必要な場合）
-  metadataGinIdx: index('gin_workflows_metadata')
-    .on(table.metadata)
-    .using(sql`gin`),
+export const workflows = pgTable(
+  "workflows",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    inputPayload: jsonb("input_payload"),
+    outputPayload: jsonb("output_payload"),
+    metadata: jsonb("metadata"),
+  },
+  (table) => ({
+    // デフォルトGIN（キー存在検査が必要な場合）
+    metadataGinIdx: index("gin_workflows_metadata")
+      .on(table.metadata)
+      .using(sql`gin`),
 
-  // jsonb_path_ops（@>のみ使用する場合）
-  inputPayloadGinIdx: index('gin_workflows_input_payload')
-    .on(table.inputPayload)
-    .using(sql`gin (input_payload jsonb_path_ops)`),
-}));
+    // jsonb_path_ops（@>のみ使用する場合）
+    inputPayloadGinIdx: index("gin_workflows_input_payload")
+      .on(table.inputPayload)
+      .using(sql`gin (input_payload jsonb_path_ops)`),
+  })
+);
 ```
 
-## JSONB演算子の効率的使用
+## JSONB 演算子の効率的使用
 
 ### 包含演算子（@>）
 
@@ -139,9 +157,10 @@ WHERE input_payload @> '{"type": "batch", "priority": "high"}';
 ```
 
 **パフォーマンス特性**:
-- GINインデックスで高速検索
+
+- GIN インデックスで高速検索
 - トップレベルと深いパスの両方で使用可能
-- 複数条件を1つの@>で結合するのが効率的
+- 複数条件を 1 つの@>で結合するのが効率的
 
 ### キー存在演算子（?、?|、?&）
 
@@ -158,7 +177,7 @@ SELECT * FROM workflows WHERE metadata ?& array['status', 'progress'];
 
 **注意**: `jsonb_path_ops` では使用不可
 
-### JSONパス演算子（@?、@@）
+### JSON パス演算子（@?、@@）
 
 ```sql
 -- パス存在チェック
@@ -187,12 +206,13 @@ SELECT input_payload #>> '{items,0,name}' FROM workflows;
 ```
 
 **インデックス使用の注意**:
-- `->>`/`#>>` での検索はGINインデックスを使用しない
+
+- `->>`/`#>>` での検索は GIN インデックスを使用しない
 - 頻繁に検索する属性は通常カラムへの分離を検討
 
 ## スキーマ検証の統合
 
-### データベース層での検証（CHECK制約）
+### データベース層での検証（CHECK 制約）
 
 ```sql
 -- 基本型検証
@@ -217,17 +237,21 @@ CHECK (jsonb_typeof(input_payload -> 'type') = 'string');
 ### アプリケーション層での検証（Zod）
 
 ```typescript
-import { z } from 'zod';
+import { z } from "zod";
 
 // JSONB構造のZodスキーマ
 export const InputPayloadSchema = z.object({
-  type: z.enum(['batch', 'realtime', 'scheduled']),
+  type: z.enum(["batch", "realtime", "scheduled"]),
   source: z.string().min(1),
-  priority: z.enum(['low', 'medium', 'high']).optional(),
-  items: z.array(z.object({
-    name: z.string(),
-    quantity: z.number().positive(),
-  })).optional(),
+  priority: z.enum(["low", "medium", "high"]).optional(),
+  items: z
+    .array(
+      z.object({
+        name: z.string(),
+        quantity: z.number().positive(),
+      })
+    )
+    .optional(),
   metadata: z.record(z.string(), z.unknown()).optional(),
 });
 
@@ -257,7 +281,7 @@ class WorkflowRepository {
 
 ## パフォーマンス最適化パターン
 
-### パターン1: 頻繁に検索する属性の分離
+### パターン 1: 頻繁に検索する属性の分離
 
 ```sql
 -- 問題: JSONB内の属性で頻繁に検索
@@ -275,7 +299,7 @@ CREATE TABLE workflows (
 CREATE INDEX idx_workflows_status ON workflows (status);
 ```
 
-### パターン2: 部分インデックス
+### パターン 2: 部分インデックス
 
 ```sql
 -- 特定条件でのみインデックスを作成
@@ -284,7 +308,7 @@ ON workflows USING gin(input_payload)
 WHERE status = 'active';
 ```
 
-### パターン3: 式インデックス
+### パターン 3: 式インデックス
 
 ```sql
 -- 特定のJSONBパスにB-Treeインデックス
@@ -296,7 +320,7 @@ SELECT * FROM workflows
 WHERE input_payload ->> 'type' = 'batch';
 ```
 
-### パターン4: 計算済みカラム（Generated Column）
+### パターン 4: 計算済みカラム（Generated Column）
 
 ```sql
 -- PostgreSQL 12+
@@ -309,30 +333,31 @@ CREATE INDEX idx_workflows_type ON workflows (workflow_type);
 
 ## 設計判断チェックリスト
 
-### JSONB使用時
+### JSONB 使用時
 
-- [ ] なぜJSONBを選択したか明確か？
+- [ ] なぜ JSONB を選択したか明確か？
 - [ ] 頻繁に検索される属性は通常カラムに分離したか？
-- [ ] 適切なGINインデックスが設定されているか？
-- [ ] スキーマ検証（Zod + CHECK制約）が設定されているか？
-- [ ] JSONB構造がドキュメント化されているか？
+- [ ] 適切な GIN インデックスが設定されているか？
+- [ ] スキーマ検証（Zod + CHECK 制約）が設定されているか？
+- [ ] JSONB 構造がドキュメント化されているか？
 
 ### パフォーマンス確認
 
-- [ ] EXPLAIN ANALYZEでインデックス使用を確認したか？
+- [ ] EXPLAIN ANALYZE でインデックス使用を確認したか？
 - [ ] @> 演算子を優先的に使用しているか？
 - [ ] ->> での検索は最小限か？
 - [ ] 必要に応じて式インデックスを検討したか？
 
 ## 関連スキル
 
-- `.claude/skills/indexing-strategies/SKILL.md` - GINインデックス詳細
+- `.claude/skills/indexing-strategies/SKILL.md` - GIN インデックス詳細
 - `.claude/skills/database-normalization/SKILL.md` - JSONB vs 正規化の判断
-- `.claude/skills/sql-anti-patterns/SKILL.md` - EAVパターン回避
+- `.claude/skills/sql-anti-patterns/SKILL.md` - EAV パターン回避
 
 ## 参照リソース
 
 詳細な情報は以下のリソースを参照:
-- `resources/jsonb-operators-reference.md` - JSONB演算子詳細リファレンス
-- `templates/jsonb-schema-design.md` - JSONB構造設計テンプレート
-- `scripts/analyze-jsonb-usage.mjs` - JSONB使用分析スクリプト
+
+- `resources/jsonb-operators-reference.md` - JSONB 演算子詳細リファレンス
+- `templates/jsonb-schema-design.md` - JSONB 構造設計テンプレート
+- `scripts/analyze-jsonb-usage.mjs` - JSONB 使用分析スクリプト

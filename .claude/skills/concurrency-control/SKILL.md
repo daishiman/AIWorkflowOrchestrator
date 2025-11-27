@@ -1,29 +1,21 @@
 ---
 name: concurrency-control
+description: |
+  >
+
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/concurrency-control/resources/concurrency-syntax.md`: groupとcancel-in-progressの詳細構文リファレンス
+  - `.claude/skills/concurrency-control/resources/race-conditions.md`: レースコンディション防止パターンとベストプラクティス
+  - `.claude/skills/concurrency-control/templates/concurrency-workflow.yaml`: 並行実行制御のワークフロー実装例
+  - `.claude/skills/concurrency-control/scripts/check-concurrency.mjs`: 並行実行設定の検証スクリプト
+
+  Use proactively when implementing concurrency-control patterns or solving related problems.
 version: 1.0.0
-description: >
-  GitHub Actions ワークフローの並行実行制御を提供します。
-  以下の場合に参照:
-  - 同時実行を防ぐ必要がある時（デプロイ、リリース、データベースマイグレーション）
-  - キューベースの実行順序を保証したい時（cancel-in-progress: false）
-  - 進行中のジョブをキャンセルしたい時（cancel-in-progress: true）
-  - 環境ごとに並行実行を制御したい時（production、staging）
-  - レースコンディションを防ぎたい時（状態競合、リソース競合）
-  - ワークフロー実行のスロットリングが必要な時（リソース保護、コスト最適化）
-
-dependencies:
-  - .claude/skills/github-actions-syntax/SKILL.md
-  - .claude/skills/deployment-environments-gha/SKILL.md
-  - .claude/skills/workflow-security/SKILL.md
-
-tags:
-  - github-actions
-  - concurrency
-  - workflow-control
-  - deployment
-  - race-conditions
-  - queue-management
 ---
+
 
 # Concurrency Control Skill
 

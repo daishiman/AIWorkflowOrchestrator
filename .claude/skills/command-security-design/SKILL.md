@@ -5,6 +5,14 @@ description: |
   allowed-toolsによるツール制限、disable-model-invocationによる自動実行防止、
   機密情報保護の実装方法を提供します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/command-security-design/resources/security-guidelines.md`: セキュリティガイドライン
+  - `.claude/skills/command-security-design/templates/secure-command.md`: セキュアコマンドテンプレート
+  - `.claude/skills/command-security-design/scripts/audit-security.mjs`: セキュリティ監査スクリプト
+
   使用タイミング:
   - 破壊的な操作を行うコマンドを作成する時
   - ツール使用を制限したい時

@@ -1,46 +1,50 @@
 ---
 name: dependency-security-scanning
 description: |
-  依存関係の脆弱性スキャンとSCA（Software Composition Analysis）のベストプラクティスを提供します。
-  npm audit、Snyk、OSSスキャンツールを使用した既知脆弱性の検出、
-  CVE評価、CVSS スコアリング、修正可能性の評価、推移的依存関係の分析を行います。
+    依存関係の脆弱性スキャンとSCA（Software Composition Analysis）のベストプラクティスを提供します。
+    npm audit、Snyk、OSSスキャンツールを使用した既知脆弱性の検出、
+    CVE評価、CVSS スコアリング、修正可能性の評価、推移的依存関係の分析を行います。
+    📚 このスキルの使用タイミング:
+    - 依存関係の脆弱性スキャン時
+    - package.json、requirements.txt等のレビュー時
+    - CI/CDパイプラインへのセキュリティスキャン統合時
+    - 既知のCVE（Common Vulnerabilities and Exposures）チェック時
+    - ライブラリアップグレード計画時
+    - Supply Chain攻撃リスク評価時
+    🔍 評価対象:
+    - 直接依存関係の脆弱性
+    - 推移的依存関係（間接依存）の脆弱性
+    - CVSS スコアとリスク評価
+    - 修正バージョンの利用可能性
+    - ライセンスコンプライアンス
+    Use this skill when running dependency audits, reviewing package updates,
+    or integrating security scanning into CI/CD pipelines.
 
-  📚 このスキルの使用タイミング:
-  - 依存関係の脆弱性スキャン時
-  - package.json、requirements.txt等のレビュー時
-  - CI/CDパイプラインへのセキュリティスキャン統合時
-  - 既知のCVE（Common Vulnerabilities and Exposures）チェック時
-  - ライブラリアップグレード計画時
-  - Supply Chain攻撃リスク評価時
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
 
-  🔍 評価対象:
-  - 直接依存関係の脆弱性
-  - 推移的依存関係（間接依存）の脆弱性
-  - CVSS スコアとリスク評価
-  - 修正バージョンの利用可能性
-  - ライセンスコンプライアンス
+  - `.claude/skills/dependency-security-scanning/resources/cve-evaluation-guide.md`: CVE識別子の理解とCVSSスコアリングの評価ガイド
+  - `.claude/skills/dependency-security-scanning/templates/dependency-audit-report-template.md`: 依存関係監査レポートの標準テンプレート
+  - `.claude/skills/dependency-security-scanning/scripts/run-dependency-scan.mjs`: 依存関係の脆弱性スキャンを実行する自動化スクリプト
 
-  Use this skill when running dependency audits, reviewing package updates,
-  or integrating security scanning into CI/CD pipelines.
+  Use proactively when implementing dependency-security-scanning patterns or solving related problems.
 version: 1.0.0
-related_skills:
-  - .claude/skills/owasp-top-10/SKILL.md
-  - .claude/skills/security-reporting/SKILL.md
-  - .claude/skills/ci-cd-pipelines/SKILL.md
 ---
 
 # Dependency Security Scanning
 
 ## スキル概要
 
-依存関係のセキュリティスキャンとSoftware Composition Analysis（SCA）の専門知識を提供します。
+依存関係のセキュリティスキャンと Software Composition Analysis（SCA）の専門知識を提供します。
 
 **専門分野**:
-- npm audit、Snyk等のツール活用
+
+- npm audit、Snyk 等のツール活用
 - CVE（Common Vulnerabilities and Exposures）評価
 - CVSS（Common Vulnerability Scoring System）スコアリング
 - 推移的依存関係の脆弱性分析
-- Supply Chain攻撃リスク評価
+- Supply Chain 攻撃リスク評価
 
 ---
 
@@ -49,7 +53,7 @@ related_skills:
 ### Node.js/JavaScript
 
 **ツール比較**:
-| ツール | カバレッジ | 速度 | CI/CD統合 | 無料プラン | 推奨度 |
+| ツール | カバレッジ | 速度 | CI/CD 統合 | 無料プラン | 推奨度 |
 |-------|----------|------|----------|----------|-------|
 | **npm audit** | 中 | 高速 | ✅ | ✅ | ✅ 基本 |
 | **pnpm audit** | 中 | 高速 | ✅ | ✅ | ✅ 基本 |
@@ -59,6 +63,7 @@ related_skills:
 | **npm-check** | 中 | 高速 | ⚠️ | ✅ | ⚠️ 補助 |
 
 **実行例**:
+
 ```bash
 # npm audit
 npm audit --json > audit-report.json
@@ -79,11 +84,13 @@ snyk monitor  # 継続的監視
 ### Python
 
 **ツール**:
-- `pip-audit`: pip専用監査ツール
-- `safety`: PyPI脆弱性DB
+
+- `pip-audit`: pip 専用監査ツール
+- `safety`: PyPI 脆弱性 DB
 - `Snyk`: 多言語対応
 
 **実行例**:
+
 ```bash
 # pip-audit
 pip-audit --format json > audit-report.json
@@ -98,7 +105,8 @@ safety check --json
 
 ### npm audit 出力構造
 
-**JSON形式**:
+**JSON 形式**:
+
 ```json
 {
   "vulnerabilities": {
@@ -130,6 +138,7 @@ safety check --json
 ```
 
 **重要フィールド**:
+
 - `severity`: 重要度（info、low、moderate、high、critical）
 - `isDirect`: 直接依存 vs 推移的依存
 - `fixAvailable`: 修正バージョンの有無
@@ -140,6 +149,7 @@ safety check --json
 ### CVSS スコアリング
 
 **スコア範囲**:
+
 ```
 0.0: None
 0.1-3.9: Low
@@ -149,11 +159,13 @@ safety check --json
 ```
 
 **ベクトル文字列例**:
+
 ```
 CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
 ```
 
 **要素**:
+
 - AV（Attack Vector）: ネットワーク、隣接、ローカル
 - AC（Attack Complexity）: 低、高
 - PR（Privileges Required）: なし、低、高
@@ -161,8 +173,9 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
 - C/I/A（Confidentiality/Integrity/Availability Impact）
 
 **判断基準**:
-- [ ] CVSS 7.0以上（High/Critical）は優先修正対象か？
-- [ ] Attack Vector: Networkの脆弱性は重視されているか？
+
+- [ ] CVSS 7.0 以上（High/Critical）は優先修正対象か？
+- [ ] Attack Vector: Network の脆弱性は重視されているか？
 
 ---
 
@@ -171,6 +184,7 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
 ### 直接依存関係
 
 **修正パターン**:
+
 ```bash
 # 直接依存パッケージのアップグレード
 npm install package-name@latest
@@ -180,6 +194,7 @@ npm install package-name@2.0.0
 ```
 
 **判断**:
+
 - fixAvailable: true → 自動修正可能
 - isSemVerMajor: true → 破壊的変更の可能性
 
@@ -190,8 +205,9 @@ npm install package-name@2.0.0
 **問題**: 間接的な依存関係の脆弱性
 
 **修正アプローチ**:
+
 1. **親パッケージのアップグレード**: 親が新しいバージョンで修正済み依存を使用
-2. **npm override**: package.jsonでバージョンを強制
+2. **npm override**: package.json でバージョンを強制
    ```json
    {
      "overrides": {
@@ -202,9 +218,10 @@ npm install package-name@2.0.0
 3. **代替パッケージ**: 親パッケージを別のものに置き換え
 
 **判断基準**:
+
 - [ ] 推移的依存関係も含めてスキャンしているか？
 - [ ] 親パッケージのアップグレード計画があるか？
-- [ ] overrideの使用は文書化されているか？
+- [ ] override の使用は文書化されているか？
 
 ---
 
@@ -213,6 +230,7 @@ npm install package-name@2.0.0
 ### リスクマトリクス
 
 **計算式**:
+
 ```
 リスクスコア = CVSS スコア × 悪用可能性 × 影響範囲
 
@@ -228,6 +246,7 @@ npm install package-name@2.0.0
 ```
 
 **優先順位**:
+
 ```
 1. Critical + 既知のエクスプロイト + 本番環境 → 即座に修正
 2. High + PoC存在 + 本番環境 → 早期修正（1週間以内）
@@ -236,14 +255,15 @@ npm install package-name@2.0.0
 ```
 
 **判断基準**:
-- [ ] Critical/High脆弱性は即座に修正計画があるか？
-- [ ] devDependenciesの脆弱性は適切に評価されているか？
+
+- [ ] Critical/High 脆弱性は即座に修正計画があるか？
+- [ ] devDependencies の脆弱性は適切に評価されているか？
 
 ---
 
-## 5. CI/CD統合
+## 5. CI/CD 統合
 
-### GitHub Actions例
+### GitHub Actions 例
 
 ```yaml
 name: Security Scan
@@ -259,7 +279,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: "18"
 
       - name: Install dependencies
         run: npm ci
@@ -277,22 +297,25 @@ jobs:
 ```
 
 **判断基準**:
+
 - [ ] プルリクエストでスキャンが自動実行されるか？
-- [ ] Critical/High脆弱性でビルドが失敗するか？
+- [ ] Critical/High 脆弱性でビルドが失敗するか？
 - [ ] スキャン結果がレビュー可能な形式で保存されるか？
 
 ---
 
-## 6. Supply Chain攻撃対策
+## 6. Supply Chain 攻撃対策
 
 ### リスク
 
 **攻撃パターン**:
-- 正規パッケージの侵害（maintainer乗っ取り）
+
+- 正規パッケージの侵害（maintainer 乗っ取り）
 - Typosquatting（名前類似パッケージ）
 - 依存関係混入（正規パッケージに悪意ある依存追加）
 
 **検出**:
+
 ```bash
 # パッケージの信頼性チェック
 npm view package-name
@@ -301,8 +324,9 @@ npm view package-name
 ```
 
 **対策**:
+
 - [ ] lock file（package-lock.json）使用で依存固定
-- [ ] npm ci使用（npm installではなく）
+- [ ] npm ci 使用（npm install ではなく）
 - [ ] 信頼できるレジストリのみ使用
 - [ ] パッケージ署名検証（npm v7+）
 
@@ -311,16 +335,19 @@ npm view package-name
 ## リソース・スクリプト・テンプレート
 
 ### リソース
-- `resources/cve-evaluation-guide.md`: CVE評価ガイド
+
+- `resources/cve-evaluation-guide.md`: CVE 評価ガイド
 - `resources/dependency-update-strategy.md`: 依存更新戦略
 - `resources/supply-chain-security.md`: サプライチェーンセキュリティ
 
 ### スクリプト
+
 - `scripts/run-dependency-scan.mjs`: 依存関係スキャン実行
 - `scripts/analyze-audit-results.mjs`: 監査結果分析
 - `scripts/check-outdated-packages.mjs`: 古いパッケージチェック
 
 ### テンプレート
+
 - `templates/dependency-audit-report-template.md`: 監査レポートテンプレート
 - `templates/vulnerability-triage-template.md`: 脆弱性トリアージテンプレート
 
@@ -330,13 +357,14 @@ npm view package-name
 
 - `.claude/skills/owasp-top-10/SKILL.md`: A06（脆弱で古いコンポーネント）
 - `.claude/skills/security-reporting/SKILL.md`: レポート生成
-- `.claude/skills/ci-cd-pipelines/SKILL.md`: CI/CD統合
+- `.claude/skills/ci-cd-pipelines/SKILL.md`: CI/CD 統合
 
 ---
 
 ## 変更履歴
 
 ### v1.0.0 (2025-11-26)
+
 - 初版リリース
-- @sec-auditorエージェントから依存関係スキャン知識を抽出
-- npm audit、Snyk、CVE評価、Supply Chain攻撃対策を定義
+- @sec-auditor エージェントから依存関係スキャン知識を抽出
+- npm audit、Snyk、CVE 評価、Supply Chain 攻撃対策を定義

@@ -1,19 +1,28 @@
 ---
 name: conditional-execution-gha
 description: |
-  GitHub Actions 条件付き実行の完全ガイド。
+    GitHub Actions 条件付き実行の完全ガイド。
+    専門分野:
+    - if条件: ステータス関数、式構文、論理演算子
+    - イベントフィルタリング: パス/ブランチ/タグフィルター、イベントベース条件
+    - ジョブ/ステップ制御: 条件付きスキップ、失敗時実行、クリーンアップステップ
+    - コンテキスト活用: github/needs/secrets/matrix コンテキストによる動的制御
+    使用タイミング:
+    - ジョブやステップを特定条件下でのみ実行したい時
+    - 失敗時のクリーンアップ/通知を実装する時
+    - ブランチ/パス/イベント別に実行を制御する時
+    - マトリックスビルドの一部を条件付きで実行する時
 
-  専門分野:
-  - if条件: ステータス関数、式構文、論理演算子
-  - イベントフィルタリング: パス/ブランチ/タグフィルター、イベントベース条件
-  - ジョブ/ステップ制御: 条件付きスキップ、失敗時実行、クリーンアップステップ
-  - コンテキスト活用: github/needs/secrets/matrix コンテキストによる動的制御
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
 
-  使用タイミング:
-  - ジョブやステップを特定条件下でのみ実行したい時
-  - 失敗時のクリーンアップ/通知を実装する時
-  - ブランチ/パス/イベント別に実行を制御する時
-  - マトリックスビルドの一部を条件付きで実行する時
+  - `.claude/skills/conditional-execution-gha/resources/event-filtering.md`: イベント、パス、ブランチ、タグフィルターの詳細設定パターン
+  - `.claude/skills/conditional-execution-gha/resources/if-conditions.md`: if構文、ステータス関数、式評価の完全リファレンス
+  - `.claude/skills/conditional-execution-gha/templates/conditional-workflow.yaml`: 条件付き実行を使用したワークフローのサンプル実装
+  - `.claude/skills/conditional-execution-gha/scripts/analyze-conditions.mjs`: 条件式の分析と最適化を行う自動化スクリプト
+
+  Use proactively when implementing conditional-execution-gha patterns or solving related problems.
 version: 1.0.0
 ---
 
@@ -25,6 +34,7 @@ version: 1.0.0
 if 条件、イベントフィルタリング、ステータス関数を活用した効率的なワークフロー制御を実現します。
 
 **主要な価値**:
+
 - ステータス関数による柔軟な実行制御
 - イベント/パス/ブランチフィルタリングによるトリガー最適化
 - 失敗時処理とクリーンアップの実装
@@ -62,27 +72,27 @@ node .claude/skills/conditional-execution-gha/scripts/analyze-conditions.mjs <wo
 
 ## ステータス関数
 
-| 関数 | 前ステップ成功 | 前ステップ失敗 | 前ステップスキップ | キャンセル時 |
-|------|--------------|--------------|------------------|------------|
-| `success()` | ✅ 実行 | ❌ スキップ | ❌ スキップ | ❌ スキップ |
-| `always()` | ✅ 実行 | ✅ 実行 | ✅ 実行 | ❌ スキップ |
-| `failure()` | ❌ スキップ | ✅ 実行 | ❌ スキップ | ❌ スキップ |
-| `cancelled()` | ❌ スキップ | ❌ スキップ | ❌ スキップ | ✅ 実行 |
+| 関数          | 前ステップ成功 | 前ステップ失敗 | 前ステップスキップ | キャンセル時 |
+| ------------- | -------------- | -------------- | ------------------ | ------------ |
+| `success()`   | ✅ 実行        | ❌ スキップ    | ❌ スキップ        | ❌ スキップ  |
+| `always()`    | ✅ 実行        | ✅ 実行        | ✅ 実行            | ❌ スキップ  |
+| `failure()`   | ❌ スキップ    | ✅ 実行        | ❌ スキップ        | ❌ スキップ  |
+| `cancelled()` | ❌ スキップ    | ❌ スキップ    | ❌ スキップ        | ✅ 実行      |
 
 ## 一般的な if パターン
 
-| パターン | 条件式 | 用途 |
-|---------|-------|------|
-| **成功時のみ** | `if: success()` | 前のステップがすべて成功した場合 |
-| **常に実行** | `if: always()` | 前のステップの結果に関係なく実行 |
-| **失敗時のみ** | `if: failure()` | いずれかのステップが失敗した場合 |
-| **キャンセル時** | `if: cancelled()` | ワークフローがキャンセルされた場合 |
-| **mainブランチ** | `if: github.ref == 'refs/heads/main'` | mainブランチでのみ実行 |
-| **PRのみ** | `if: github.event_name == 'pull_request'` | PRイベントでのみ実行 |
-| **特定ラベル** | `if: contains(github.event.pull_request.labels.*.name, 'deploy')` | 特定ラベル付きPRのみ |
-| **依存ジョブ成功** | `if: needs.build.result == 'success'` | 依存ジョブが成功した場合 |
-| **シークレット存在** | `if: secrets.API_KEY != ''` | シークレットが設定されている場合 |
-| **マトリックス条件** | `if: matrix.os == 'ubuntu-latest'` | マトリックスの特定値のみ |
+| パターン             | 条件式                                                            | 用途                               |
+| -------------------- | ----------------------------------------------------------------- | ---------------------------------- |
+| **成功時のみ**       | `if: success()`                                                   | 前のステップがすべて成功した場合   |
+| **常に実行**         | `if: always()`                                                    | 前のステップの結果に関係なく実行   |
+| **失敗時のみ**       | `if: failure()`                                                   | いずれかのステップが失敗した場合   |
+| **キャンセル時**     | `if: cancelled()`                                                 | ワークフローがキャンセルされた場合 |
+| **main ブランチ**    | `if: github.ref == 'refs/heads/main'`                             | main ブランチでのみ実行            |
+| **PR のみ**          | `if: github.event_name == 'pull_request'`                         | PR イベントでのみ実行              |
+| **特定ラベル**       | `if: contains(github.event.pull_request.labels.*.name, 'deploy')` | 特定ラベル付き PR のみ             |
+| **依存ジョブ成功**   | `if: needs.build.result == 'success'`                             | 依存ジョブが成功した場合           |
+| **シークレット存在** | `if: secrets.API_KEY != ''`                                       | シークレットが設定されている場合   |
+| **マトリックス条件** | `if: matrix.os == 'ubuntu-latest'`                                | マトリックスの特定値のみ           |
 
 ## 条件式の構文
 
@@ -138,8 +148,8 @@ if: endsWith(github.ref, '-beta')
 ```yaml
 on:
   push:
-    branches: [main, 'releases/**']
-    branches-ignore: ['feature/**']
+    branches: [main, "releases/**"]
+    branches-ignore: ["feature/**"]
 ```
 
 ### パスフィルター
@@ -147,8 +157,8 @@ on:
 ```yaml
 on:
   push:
-    paths: ['src/**', 'package.json']
-    paths-ignore: ['*.md', 'docs/**']
+    paths: ["src/**", "package.json"]
+    paths-ignore: ["*.md", "docs/**"]
 ```
 
 ### タグフィルター
@@ -156,7 +166,7 @@ on:
 ```yaml
 on:
   push:
-    tags: ['v*.*.*', '!v*.*.*-beta']
+    tags: ["v*.*.*", "!v*.*.*-beta"]
 ```
 
 ## 実践的なパターン
@@ -212,12 +222,12 @@ steps:
 
 ## 関連スキル
 
-| スキル名 | パス | 関連性 |
-|---------|------|-------|
-| **github-actions-syntax** | `.claude/skills/github-actions-syntax/SKILL.md` | ワークフロー構文の基礎 |
-| **github-actions-expressions** | `.claude/skills/github-actions-expressions/SKILL.md` | 式構文とコンテキスト |
-| **concurrency-control** | `.claude/skills/concurrency-control/SKILL.md` | 並行実行制御 |
-| **matrix-builds** | `.claude/skills/matrix-builds/SKILL.md` | マトリックス戦略 |
+| スキル名                       | パス                                                 | 関連性                 |
+| ------------------------------ | ---------------------------------------------------- | ---------------------- |
+| **github-actions-syntax**      | `.claude/skills/github-actions-syntax/SKILL.md`      | ワークフロー構文の基礎 |
+| **github-actions-expressions** | `.claude/skills/github-actions-expressions/SKILL.md` | 式構文とコンテキスト   |
+| **concurrency-control**        | `.claude/skills/concurrency-control/SKILL.md`        | 並行実行制御           |
+| **matrix-builds**              | `.claude/skills/matrix-builds/SKILL.md`              | マトリックス戦略       |
 
 ---
 

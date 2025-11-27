@@ -5,6 +5,17 @@ description: |
   XSS、SQLインジェクション、コマンドインジェクションなどの攻撃を防止し、
   安全なデータ処理を実現します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/input-sanitization/resources/command-injection-prevention.md`: execFileによるシェルコマンド実行と許可リスト検証パターン
+  - `.claude/skills/input-sanitization/resources/file-upload-security.md`: MIMEタイプ検証、パストラバーサル対策、サイズ制限実装
+  - `.claude/skills/input-sanitization/resources/sql-injection-prevention.md`: パラメータ化クエリとORMによるSQLインジェクション防止
+  - `.claude/skills/input-sanitization/resources/xss-prevention.md`: HTMLエスケープ、CSP、DOMベースXSS対策の実装パターン
+  - `.claude/skills/input-sanitization/scripts/scan-vulnerabilities.mjs`: コードベースのXSS/SQLインジェクション脆弱性スキャン
+  - `.claude/skills/input-sanitization/templates/sanitization-utils.ts`: 入力検証とサニタイズユーティリティ関数テンプレート
+
   専門分野:
   - XSS防止: HTMLエスケープ、CSP、サニタイザー
   - SQLインジェクション対策: パラメータ化クエリ、ORM活用
@@ -18,7 +29,6 @@ description: |
   - ファイルアップロード機能を実装する際
 
   Use proactively when handling user input, designing API endpoints,
-  or implementing file upload functionality.
 version: 1.0.0
 ---
 
@@ -27,17 +37,19 @@ version: 1.0.0
 ## 概要
 
 このスキルは、ユーザー入力のサニタイズとセキュリティ対策のベストプラクティスを提供します。
-XSS、SQLインジェクション、コマンドインジェクションなどの一般的な攻撃ベクトルから
+XSS、SQL インジェクション、コマンドインジェクションなどの一般的な攻撃ベクトルから
 アプリケーションを保護するための具体的なパターンと実装方法を解説します。
 
 **主要な価値**:
+
 - 一般的な攻撃ベクトルからの保護
 - セキュアコーディングパターンの標準化
-- OWASP Top 10への対応
+- OWASP Top 10 への対応
 
 **対象ユーザー**:
+
 - スキーマ定義を行うエージェント（@schema-def）
-- APIエンドポイントを設計する開発者
+- API エンドポイントを設計する開発者
 - セキュリティを重視するチーム
 
 ## リソース構造
@@ -90,30 +102,36 @@ cat .claude/skills/input-sanitization/templates/sanitization-utils.ts
 
 ## いつ使うか
 
-### シナリオ1: Webフォームの実装
+### シナリオ 1: Web フォームの実装
+
 **状況**: ユーザー入力を受け付けるフォームを実装する
 
 **適用条件**:
+
 - [ ] ユーザーからテキスト入力を受け付ける
 - [ ] 入力データをデータベースに保存する
 - [ ] 入力データを画面に表示する可能性がある
 
-**期待される成果**: XSSとSQLインジェクションを防止した安全なフォーム
+**期待される成果**: XSS と SQL インジェクションを防止した安全なフォーム
 
-### シナリオ2: APIエンドポイントの設計
-**状況**: 外部からのリクエストを受け付けるAPIを設計する
+### シナリオ 2: API エンドポイントの設計
+
+**状況**: 外部からのリクエストを受け付ける API を設計する
 
 **適用条件**:
+
 - [ ] リクエストボディを処理する
 - [ ] クエリパラメータを使用する
 - [ ] パスパラメータを使用する
 
-**期待される成果**: 入力検証とサニタイズが適切に実装されたAPI
+**期待される成果**: 入力検証とサニタイズが適切に実装された API
 
-### シナリオ3: ファイルアップロード機能
+### シナリオ 3: ファイルアップロード機能
+
 **状況**: ユーザーがファイルをアップロードできる機能を実装する
 
 **適用条件**:
+
 - [ ] ユーザーがファイルを選択してアップロードする
 - [ ] ファイルをサーバーに保存する
 - [ ] ファイルを他のユーザーに提供する可能性がある
@@ -134,25 +152,25 @@ function validateEmail(email: string): boolean {
 // サニタイズ（Sanitization）: 入力から危険な要素を除去/エスケープ
 function sanitizeHtml(input: string): string {
   return input
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;");
 }
 
 // 両方を組み合わせる
 function processUserInput(email: string): string {
   // 1. 検証
   if (!validateEmail(email)) {
-    throw new Error('Invalid email format');
+    throw new Error("Invalid email format");
   }
   // 2. サニタイズ（表示用）
   return sanitizeHtml(email);
 }
 ```
 
-### XSS対策の基本
+### XSS 対策の基本
 
 ```typescript
 // ❌ 危険: 直接HTMLに挿入
@@ -172,59 +190,62 @@ element.innerHTML = escapeHtml(userInput);
 <div>{userInput}</div>
 ```
 
-### SQLインジェクション対策
+### SQL インジェクション対策
 
 ```typescript
 // ❌ 危険: 文字列連結
 const query = `SELECT * FROM users WHERE id = '${userId}'`;
 
 // ✅ 安全: パラメータ化クエリ
-const query = 'SELECT * FROM users WHERE id = $1';
+const query = "SELECT * FROM users WHERE id = $1";
 const result = await db.query(query, [userId]);
 
 // ✅ 安全: ORMを使用
 const user = await prisma.user.findUnique({
-  where: { id: userId }
+  where: { id: userId },
 });
 ```
 
 ### コマンドインジェクション対策
 
 ```typescript
-import { execFile } from 'child_process';
+import { execFile } from "child_process";
 
 // ❌ 危険: exec + 文字列連結
 exec(`ls -la ${userInput}`);
 
 // ✅ 安全: execFile + 引数配列
-execFile('ls', ['-la', userInput], (error, stdout) => {
+execFile("ls", ["-la", userInput], (error, stdout) => {
   // 処理
 });
 
 // ✅ より安全: 許可リストで検証
-const allowedCommands = ['list', 'status', 'help'];
+const allowedCommands = ["list", "status", "help"];
 if (!allowedCommands.includes(userInput)) {
-  throw new Error('Invalid command');
+  throw new Error("Invalid command");
 }
 ```
 
 ## 判断基準チェックリスト
 
 ### 入力処理時
+
 - [ ] 入力の型と形式を検証しているか？
 - [ ] 入力の長さを制限しているか？
 - [ ] 特殊文字を適切にエスケープしているか？
 - [ ] 許可リスト（ホワイトリスト）アプローチを使用しているか？
 
 ### データベース操作時
-- [ ] パラメータ化クエリまたはORMを使用しているか？
-- [ ] 入力値を直接SQLに連結していないか？
+
+- [ ] パラメータ化クエリまたは ORM を使用しているか？
+- [ ] 入力値を直接 SQL に連結していないか？
 - [ ] 適切な権限のデータベースユーザーを使用しているか？
 
 ### ファイル操作時
+
 - [ ] ファイル名をサニタイズしているか？
 - [ ] パストラバーサル攻撃を防いでいるか？
-- [ ] MIMEタイプを検証しているか？
+- [ ] MIME タイプを検証しているか？
 - [ ] ファイルサイズを制限しているか？
 
 ## セキュリティ原則
@@ -251,12 +272,12 @@ if (!allowedCommands.includes(userInput)) {
 
 ## 関連スキル
 
-- `.claude/skills/zod-validation/SKILL.md` - Zodバリデーション
+- `.claude/skills/zod-validation/SKILL.md` - Zod バリデーション
 - `.claude/skills/type-safety-patterns/SKILL.md` - 型安全性パターン
 - `.claude/skills/error-message-design/SKILL.md` - エラーメッセージ設計
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版リリース - 入力サニタイズの基本を網羅 |
+| バージョン | 日付       | 変更内容                                  |
+| ---------- | ---------- | ----------------------------------------- |
+| 1.0.0      | 2025-11-25 | 初版リリース - 入力サニタイズの基本を網羅 |

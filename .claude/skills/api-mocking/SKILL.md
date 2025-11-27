@@ -2,7 +2,14 @@
 name: api-mocking
 description: |
   E2EテストにおけるAPI モック技術。
-  外部依存の排除、テスト安定化、エラーケースシミュレーションを提供します。
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/api-mocking/resources/mock-patterns.md`: APIモックパターン
+  - `.claude/skills/api-mocking/resources/msw-integration-guide.md`: MSW（Mock Service Worker）統合ガイド
+  - `.claude/skills/api-mocking/templates/mock-handler-template.ts`: MSWモックハンドラーテンプレート
+  - `.claude/skills/api-mocking/scripts/generate-mock-handlers.mjs`: MSWモックハンドラー自動生成スクリプト
 
   専門分野:
   - Playwright Route Mocking: route.fulfill()による柔軟なレスポンス制御

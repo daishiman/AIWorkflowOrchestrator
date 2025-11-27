@@ -2,7 +2,18 @@
 name: api-documentation-best-practices
 description: |
   OpenAPI、Swagger、RESTful APIドキュメンテーションのベストプラクティスを提供する専門スキル。
-  開発者が迷わずAPIを利用できる、明確で完全なAPIドキュメントを作成します。
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/api-documentation-best-practices/resources/authentication-docs.md`: 認証ドキュメント作成
+  - `.claude/skills/api-documentation-best-practices/resources/endpoint-design.md`: エンドポイント設計パターン
+  - `.claude/skills/api-documentation-best-practices/resources/error-documentation.md`: エラードキュメンテーション
+  - `.claude/skills/api-documentation-best-practices/resources/openapi-guide.md`: OpenAPI 3.x詳細ガイド
+  - `.claude/skills/api-documentation-best-practices/resources/request-response-examples.md`: リクエスト/レスポンス例
+  - `.claude/skills/api-documentation-best-practices/templates/endpoint-template.md`: [エンドポイント名]
+  - `.claude/skills/api-documentation-best-practices/templates/openapi-template.yaml`: openapi: 3.0.3
+  - `.claude/skills/api-documentation-best-practices/scripts/validate-openapi.mjs`: OpenAPI仕様バリデーションスクリプト
 
   専門分野:
   - OpenAPI仕様: OpenAPI 3.x、スキーマ定義、コンポーネント再利用

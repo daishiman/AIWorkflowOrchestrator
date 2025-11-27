@@ -2,8 +2,13 @@
 name: agent-validation-testing
 description: |
   エージェントの検証とテストケース設計を専門とするスキル。
-  構文検証、テストケース作成、最終検証により、
-  エージェントの正確性と信頼性を保証します。
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/agent-validation-testing/resources/test-case-patterns.md`: Test Case Patterns
+  - `.claude/skills/agent-validation-testing/templates/test-case-template.json`: "$schema": "https://json-schema.org/draft/2020-12/schema",
+  - `.claude/skills/agent-validation-testing/scripts/validate-agent.mjs`: validate-agent.mjs
 
   専門分野:
   - 構文検証: YAML/Markdown構文チェック、パス検証
@@ -59,7 +64,7 @@ agent-validation-testing/
 
 #### YAML構文検証
 ```bash
-./scripts/validate-yaml.sh .claude/agents/[agent-name].md
+.claude/skills/agent-validation-testing/scripts/validate-yaml.sh .claude/agents/[agent-name].md
 ```
 
 **チェック内容**:
@@ -70,7 +75,7 @@ agent-validation-testing/
 
 #### Markdown構文検証
 ```bash
-./scripts/validate-markdown.sh .claude/agents/[agent-name].md
+.claude/skills/agent-validation-testing/scripts/validate-markdown.sh .claude/agents/[agent-name].md
 ```
 
 **チェック内容**:

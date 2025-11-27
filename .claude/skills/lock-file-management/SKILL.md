@@ -4,6 +4,17 @@ description: |
   ロックファイル（pnpm-lock.yaml、package-lock.json等）の整合性管理と
   依存関係の再現性確保を専門とするスキル。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/lock-file-management/resources/ci-cd-optimization.md`: frozen-lockfile設定、キャッシュ戦略、ビルド時間短縮、並列インストール
+  - `.claude/skills/lock-file-management/resources/conflict-resolution.md`: マージコンフリクト解決手順、再生成戦略、両立性確保の方法
+  - `.claude/skills/lock-file-management/resources/integrity-verification.md`: package.json同期確認、整合性ハッシュ検証、依存ツリー検証、自動チェックスクリプト
+  - `.claude/skills/lock-file-management/resources/lock-file-formats.md`: pnpm/npm/yarn各形式の構造、バージョン履歴、形式間比較、移行ガイド
+  - `.claude/skills/lock-file-management/scripts/verify-lock-integrity.mjs`: ロックファイル整合性の自動検証（PM検出、同期確認、詳細レポート）
+  - `.claude/skills/lock-file-management/templates/lockfile-troubleshooting-template.md`: ロックファイル問題のトラブルシューティング手順テンプレート
+
   専門分野:
   - ロックファイル形式: 各パッケージマネージャーのロックファイル仕様
   - 整合性確認: ロックファイルとpackage.jsonの同期状態検証
@@ -17,7 +28,6 @@ description: |
   - 新しい環境でのセットアップ手順を確立する時
 
   Use proactively when resolving lock file conflicts,
-  debugging reproducibility issues, or optimizing CI/CD dependency installation.
 version: 1.0.0
 ---
 
@@ -32,13 +42,15 @@ version: 1.0.0
 再現するための重要な役割を果たします。
 
 **主要な価値**:
+
 - 開発・ステージング・本番環境間での依存関係の一貫性
 - ビルドの再現性による問題の早期発見
 - 依存関係の意図しない変更の防止
 
 **対象ユーザー**:
+
 - 依存関係を管理するエージェント（@dep-mgr）
-- DevOpsエンジニア
+- DevOps エンジニア
 - プロジェクトのセットアップを行う開発者
 
 ## リソース構造
@@ -96,49 +108,54 @@ cat .claude/skills/lock-file-management/templates/lockfile-troubleshooting-templ
 
 ## いつ使うか
 
-### シナリオ1: ロックファイルのマージコンフリクト
+### シナリオ 1: ロックファイルのマージコンフリクト
 
-**状況**: git mergeやrebase時にロックファイルでコンフリクトが発生
+**状況**: git merge や rebase 時にロックファイルでコンフリクトが発生
 
 **適用条件**:
-- [ ] pnpm-lock.yamlまたはpackage-lock.jsonでコンフリクトが発生
+
+- [ ] pnpm-lock.yaml または package-lock.json でコンフリクトが発生
 - [ ] 複数のブランチで依存関係が変更された
 - [ ] マージ後に依存関係が正しくインストールされない
 
 **期待される成果**: 正常に解決されたロックファイルと動作確認
 
-### シナリオ2: 環境間の再現性問題
+### シナリオ 2: 環境間の再現性問題
 
-**状況**: ローカルとCI/CD、または開発者間で依存関係の挙動が異なる
+**状況**: ローカルと CI/CD、または開発者間で依存関係の挙動が異なる
 
 **適用条件**:
-- [ ] ローカルでは動作するがCIでは失敗する
+
+- [ ] ローカルでは動作するが CI では失敗する
 - [ ] 他の開発者の環境で問題が発生する
 - [ ] 「私の環境では動く」問題が発生
 
 **期待される成果**: 環境間で一貫した依存関係のインストール
 
-### シナリオ3: CI/CDの最適化
+### シナリオ 3: CI/CD の最適化
 
-**状況**: 依存関係のインストール時間が長く、CIのパフォーマンスを改善したい
+**状況**: 依存関係のインストール時間が長く、CI のパフォーマンスを改善したい
 
 **適用条件**:
-- [ ] CIの実行時間の大部分が依存関係インストールに費やされている
+
+- [ ] CI の実行時間の大部分が依存関係インストールに費やされている
 - [ ] キャッシュが効果的に機能していない
 - [ ] 不必要な依存関係の再インストールが発生している
 
-**期待される成果**: 最適化されたCI設定とキャッシュ戦略
+**期待される成果**: 最適化された CI 設定とキャッシュ戦略
 
 ## パッケージマネージャー別ロックファイル
 
 ### pnpm (pnpm-lock.yaml)
 
 **特徴**:
-- YAML形式で人間が読みやすい
+
+- YAML 形式で人間が読みやすい
 - 厳格な依存関係解決
 - コンテンツアドレス可能なストレージ
 
 **推奨設定**:
+
 ```yaml
 # .npmrc
 auto-install-peers=true
@@ -146,6 +163,7 @@ strict-peer-dependencies=false
 ```
 
 **インストールコマンド**:
+
 ```bash
 # 開発環境
 pnpm install
@@ -160,11 +178,13 @@ pnpm install --prod --frozen-lockfile
 ### npm (package-lock.json)
 
 **特徴**:
-- JSON形式
-- npm v7以降でワークスペースをサポート
+
+- JSON 形式
+- npm v7 以降でワークスペースをサポート
 - 広く普及
 
 **推奨設定**:
+
 ```
 # .npmrc
 package-lock=true
@@ -172,6 +192,7 @@ save-exact=true
 ```
 
 **インストールコマンド**:
+
 ```bash
 # 開発環境
 npm install
@@ -186,11 +207,13 @@ npm ci --production
 ### yarn (yarn.lock)
 
 **特徴**:
+
 - カスタム形式
 - PnP（Plug'n'Play）モードをサポート
 - 確定的な解決
 
 **インストールコマンド**:
+
 ```bash
 # 開発環境
 yarn install
@@ -209,14 +232,16 @@ yarn install --production --immutable
 **目的**: 現在のロックファイルの状態を把握する
 
 **ステップ**:
+
 1. ロックファイルの存在確認
-2. package.jsonとの整合性確認
+2. package.json との整合性確認
 3. 最終更新日時の確認
 4. 異常なパターンの検出
 
 **判断基準**:
+
 - [ ] ロックファイルが存在するか？
-- [ ] package.jsonの依存関係と整合しているか？
+- [ ] package.json の依存関係と整合しているか？
 - [ ] 古すぎるロックファイルではないか？
 
 ### Phase 2: 問題の診断
@@ -224,12 +249,14 @@ yarn install --production --immutable
 **目的**: 発生している問題の根本原因を特定する
 
 **ステップ**:
+
 1. エラーメッセージの分析
 2. 依存関係ツリーの確認
 3. バージョン競合の特定
 4. 環境固有の問題の切り分け
 
 **判断基準**:
+
 - [ ] エラーの種類を特定したか？
 - [ ] 影響を受けるパッケージを特定したか？
 - [ ] 問題が環境固有かどうか判断したか？
@@ -239,12 +266,14 @@ yarn install --production --immutable
 **目的**: 問題を安全に解決する
 
 **ステップ**:
+
 1. バックアップの作成
 2. 適切な修正方法の選択
 3. 修正の適用
 4. 動作確認
 
 **判断基準**:
+
 - [ ] 修正前のバックアップがあるか？
 - [ ] 適切な修正方法を選択したか？
 - [ ] テストで動作確認したか？
@@ -254,14 +283,16 @@ yarn install --production --immutable
 **目的**: 修正が正しく行われたことを確認し、記録する
 
 **ステップ**:
+
 1. 全テストの実行
-2. CI環境での確認
+2. CI 環境での確認
 3. 変更内容の文書化
 4. チームへの共有
 
 **判断基準**:
+
 - [ ] 全テストが通過したか？
-- [ ] CIが正常に動作するか？
+- [ ] CI が正常に動作するか？
 - [ ] 変更内容を文書化したか？
 
 ## ベストプラクティス
@@ -269,11 +300,13 @@ yarn install --production --immutable
 ### すべきこと
 
 1. **ロックファイルを常にコミット**:
+
    - ロックファイルはバージョン管理に含める
-   - .gitignoreに追加しない
+   - .gitignore に追加しない
    - 変更時は意図的にレビュー
 
-2. **CI環境では厳格モードを使用**:
+2. **CI 環境では厳格モードを使用**:
+
    - `pnpm install --frozen-lockfile`
    - `npm ci`
    - `yarn install --immutable`
@@ -286,10 +319,12 @@ yarn install --production --immutable
 ### 避けるべきこと
 
 1. **ロックファイルの手動編集**:
-   - ❌ 直接YAMLやJSONを編集
+
+   - ❌ 直接 YAML や JSON を編集
    - ✅ パッケージマネージャーのコマンドを使用
 
 2. **ロックファイルを無視したインストール**:
+
    - ❌ `--no-lockfile`オプションの使用
    - ✅ ロックファイルを尊重したインストール
 
@@ -299,16 +334,18 @@ yarn install --production --immutable
 
 ## トラブルシューティング
 
-### 問題1: "lockfile out of sync" エラー
+### 問題 1: "lockfile out of sync" エラー
 
-**症状**: package.jsonとロックファイルが同期していない
+**症状**: package.json とロックファイルが同期していない
 
 **原因**:
-- package.jsonを手動で編集した
+
+- package.json を手動で編集した
 - 部分的なインストールが行われた
 - 異なるパッケージマネージャーが使用された
 
 **解決策**:
+
 ```bash
 # pnpm
 pnpm install
@@ -320,11 +357,12 @@ npm install
 yarn install
 ```
 
-### 問題2: マージコンフリクト
+### 問題 2: マージコンフリクト
 
-**症状**: git merge時にロックファイルでコンフリクト発生
+**症状**: git merge 時にロックファイルでコンフリクト発生
 
 **解決策**:
+
 ```bash
 # 1. package.jsonのコンフリクトを先に解決
 
@@ -341,11 +379,12 @@ git add .
 git commit -m "chore: resolve lock file conflict"
 ```
 
-### 問題3: "unable to resolve dependency tree" エラー
+### 問題 3: "unable to resolve dependency tree" エラー
 
 **症状**: ピア依存の競合でインストールが失敗
 
 **解決策**:
+
 ```bash
 # pnpm: 設定で緩和
 # .npmrc
@@ -363,18 +402,20 @@ npm install --legacy-peer-deps
 }
 ```
 
-### 問題4: CIでのみインストールが失敗
+### 問題 4: CI でのみインストールが失敗
 
-**症状**: ローカルでは成功するがCIで失敗
+**症状**: ローカルでは成功するが CI で失敗
 
 **原因**:
+
 - キャッシュの問題
-- Node.jsバージョンの不一致
-- OSの違い
+- Node.js バージョンの不一致
+- OS の違い
 
 **解決策**:
+
 1. キャッシュをクリア
-2. Node.jsバージョンを明示的に指定
+2. Node.js バージョンを明示的に指定
 3. 同一のコマンドを使用しているか確認
 4. `--frozen-lockfile`を使用しているか確認
 
@@ -389,20 +430,22 @@ npm install --legacy-peer-deps
 ### ロックファイル管理の効果測定
 
 **測定指標**:
-- ロックファイル関連のCIエラー発生率
+
+- ロックファイル関連の CI エラー発生率
 - コンフリクト解決にかかる平均時間
 - 環境間の再現性問題の発生率
 
 **目標値**:
-- CIエラー率: <1%
-- コンフリクト解決時間: <15分
-- 再現性問題: 月間0件
+
+- CI エラー率: <1%
+- コンフリクト解決時間: <15 分
+- 再現性問題: 月間 0 件
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-27 | 初版作成 - ロックファイル管理フレームワーク |
+| バージョン | 日付       | 変更内容                                    |
+| ---------- | ---------- | ------------------------------------------- |
+| 1.0.0      | 2025-11-27 | 初版作成 - ロックファイル管理フレームワーク |
 
 ## 参考文献
 

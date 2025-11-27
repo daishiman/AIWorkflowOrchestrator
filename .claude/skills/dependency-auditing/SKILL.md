@@ -1,23 +1,32 @@
 ---
 name: dependency-auditing
 description: |
-  セキュリティ脆弱性の検出、評価、対応戦略を専門とするスキル。
-  CVE/GHSA識別子の理解、重大度評価（CVSS）、修正優先度の決定方法論を提供します。
+    セキュリティ脆弱性の検出、評価、対応戦略を専門とするスキル。
+    CVE/GHSA識別子の理解、重大度評価（CVSS）、修正優先度の決定方法論を提供します。
+    専門分野:
+    - 脆弱性検出: npm audit、pnpm audit等のツール活用
+    - 重大度評価: CVSSスコアに基づくリスク分類
+    - 修正優先度決定: ビジネス影響と技術的影響の評価
+    - パッチ戦略: 安全なアップグレードパスの特定
+    使用タイミング:
+    - 依存関係のセキュリティ監査を実施する時
+    - 脆弱性レポートを評価する時
+    - セキュリティパッチの適用優先度を決定する時
+    - CI/CDパイプラインにセキュリティチェックを統合する時
+    Use proactively when conducting security audits,
+    evaluating vulnerability reports, or determining patch priorities.
 
-  専門分野:
-  - 脆弱性検出: npm audit、pnpm audit等のツール活用
-  - 重大度評価: CVSSスコアに基づくリスク分類
-  - 修正優先度決定: ビジネス影響と技術的影響の評価
-  - パッチ戦略: 安全なアップグレードパスの特定
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
 
-  使用タイミング:
-  - 依存関係のセキュリティ監査を実施する時
-  - 脆弱性レポートを評価する時
-  - セキュリティパッチの適用優先度を決定する時
-  - CI/CDパイプラインにセキュリティチェックを統合する時
+  - `.claude/skills/dependency-auditing/resources/ci-cd-integration.md`: CI/CDパイプラインへのセキュリティスキャン統合パターン
+  - `.claude/skills/dependency-auditing/resources/cvss-scoring-guide.md`: CVSS重大度評価とリスク分類の詳細ガイド
+  - `.claude/skills/dependency-auditing/resources/remediation-strategies.md`: 脆弱性修正とパッチ適用の戦略的アプローチ
+  - `.claude/skills/dependency-auditing/resources/vulnerability-detection.md`: 脆弱性検出ツールの活用方法と比較
+  - `.claude/skills/dependency-auditing/templates/vulnerability-assessment-template.md`: 脆弱性評価の標準化されたレポートテンプレート
+  - `.claude/skills/dependency-auditing/scripts/security-audit.mjs`: 包括的なセキュリティ監査を実行する自動化スクリプト
 
-  Use proactively when conducting security audits,
-  evaluating vulnerability reports, or determining patch priorities.
 version: 1.0.0
 ---
 
@@ -32,14 +41,16 @@ version: 1.0.0
 自動化されたツールと人間の判断を組み合わせた包括的なアプローチが必要です。
 
 **主要な価値**:
+
 - 脆弱性の早期発見による被害防止
 - リスクベースの優先順位付けによる効率的な対応
 - 継続的なセキュリティ監視体制の構築
 
 **対象ユーザー**:
+
 - 依存関係を管理するエージェント（@dep-mgr）
 - セキュリティを担当するエンジニア
-- DevSecOpsチーム
+- DevSecOps チーム
 
 ## リソース構造
 
@@ -96,34 +107,37 @@ cat .claude/skills/dependency-auditing/templates/vulnerability-assessment-templa
 
 ## いつ使うか
 
-### シナリオ1: 定期セキュリティ監査
+### シナリオ 1: 定期セキュリティ監査
 
 **状況**: プロジェクトの依存関係を定期的に監査したい
 
 **適用条件**:
-- [ ] 最後の監査から1週間以上経過
+
+- [ ] 最後の監査から 1 週間以上経過
 - [ ] 新しい依存関係が追加された
 - [ ] セキュリティポリシーでの定期監査要件がある
 
 **期待される成果**: 脆弱性レポートと対応計画
 
-### シナリオ2: 脆弱性アラート対応
+### シナリオ 2: 脆弱性アラート対応
 
 **状況**: セキュリティアドバイザリーやアラートを受け取った
 
 **適用条件**:
+
 - [ ] 依存関係に関するセキュリティアラートを受信
-- [ ] GitHub Dependabotからの通知がある
+- [ ] GitHub Dependabot からの通知がある
 - [ ] 外部からの脆弱性報告を受けた
 
 **期待される成果**: 影響評価と修正優先度の決定
 
-### シナリオ3: CI/CDパイプライン統合
+### シナリオ 3: CI/CD パイプライン統合
 
 **状況**: 継続的なセキュリティチェックを自動化したい
 
 **適用条件**:
-- [ ] CI/CDパイプラインが構築されている
+
+- [ ] CI/CD パイプラインが構築されている
 - [ ] 自動化されたセキュリティゲートが必要
 - [ ] セキュリティ基準の継続的な遵守が必要
 
@@ -134,13 +148,15 @@ cat .claude/skills/dependency-auditing/templates/vulnerability-assessment-templa
 ### Critical (CVSS 9.0-10.0)
 
 **特徴**:
+
 - リモートコード実行（RCE）の可能性
 - 認証バイパス
 - 特権エスカレーション
 
-**対応優先度**: 🔴 即座（24時間以内）
+**対応優先度**: 🔴 即座（24 時間以内）
 
 **推奨アプローチ**:
+
 1. 影響を受けるシステムの即時評価
 2. 一時的な緩和策の適用（可能な場合）
 3. パッチの即時適用またはアップグレード
@@ -149,13 +165,15 @@ cat .claude/skills/dependency-auditing/templates/vulnerability-assessment-templa
 ### High (CVSS 7.0-8.9)
 
 **特徴**:
+
 - 機密データの漏洩
 - サービス拒否攻撃（DoS）
 - クロスサイトスクリプティング（XSS）
 
-**対応優先度**: 🟠 緊急（72時間以内）
+**対応優先度**: 🟠 緊急（72 時間以内）
 
 **推奨アプローチ**:
+
 1. 影響範囲の詳細調査
 2. 利用可能なパッチの確認
 3. テスト環境での検証
@@ -164,13 +182,15 @@ cat .claude/skills/dependency-auditing/templates/vulnerability-assessment-templa
 ### Medium (CVSS 4.0-6.9)
 
 **特徴**:
+
 - 限定的な情報漏洩
 - ローカル特権エスカレーション
 - 部分的なサービス影響
 
-**対応優先度**: 🟡 計画的（1-2週間以内）
+**対応優先度**: 🟡 計画的（1-2 週間以内）
 
 **推奨アプローチ**:
+
 1. 次回の定期メンテナンスで対応
 2. 依存関係更新計画に組み込み
 3. リスク軽減策の検討
@@ -178,6 +198,7 @@ cat .claude/skills/dependency-auditing/templates/vulnerability-assessment-templa
 ### Low (CVSS 0.1-3.9)
 
 **特徴**:
+
 - 軽微な情報漏洩
 - 攻撃困難または影響限定的
 - 特定の条件でのみ発生
@@ -185,6 +206,7 @@ cat .claude/skills/dependency-auditing/templates/vulnerability-assessment-templa
 **対応優先度**: 🟢 通常（次回リリースまで）
 
 **推奨アプローチ**:
+
 1. 次回の依存関係更新時に対応
 2. リスク受容の判断も検討
 3. モニタリングの継続
@@ -193,20 +215,20 @@ cat .claude/skills/dependency-auditing/templates/vulnerability-assessment-templa
 
 ### パッケージマネージャー内蔵ツール
 
-| ツール | コマンド | 出力形式 |
-|-------|---------|---------|
-| npm | `npm audit` | テキスト/JSON |
-| pnpm | `pnpm audit` | テキスト/JSON |
-| yarn | `yarn audit` | テキスト/JSON |
+| ツール | コマンド     | 出力形式      |
+| ------ | ------------ | ------------- |
+| npm    | `npm audit`  | テキスト/JSON |
+| pnpm   | `pnpm audit` | テキスト/JSON |
+| yarn   | `yarn audit` | テキスト/JSON |
 
 ### サードパーティツール
 
-| ツール | 特徴 | 用途 |
-|-------|-----|-----|
-| Snyk | 商用グレード、豊富なDB | エンタープライズ |
-| OWASP Dependency-Check | オープンソース、多言語対応 | CI/CD統合 |
-| Trivy | コンテナ＋依存関係、高速 | Docker環境 |
-| Grype | 軽量、SBOM対応 | コンテナセキュリティ |
+| ツール                 | 特徴                       | 用途                 |
+| ---------------------- | -------------------------- | -------------------- |
+| Snyk                   | 商用グレード、豊富な DB    | エンタープライズ     |
+| OWASP Dependency-Check | オープンソース、多言語対応 | CI/CD 統合           |
+| Trivy                  | コンテナ＋依存関係、高速   | Docker 環境          |
+| Grype                  | 軽量、SBOM 対応            | コンテナセキュリティ |
 
 ## ワークフロー
 
@@ -215,11 +237,13 @@ cat .claude/skills/dependency-auditing/templates/vulnerability-assessment-templa
 **目的**: プロジェクトの依存関係に存在する脆弱性を特定
 
 **ステップ**:
+
 1. パッケージマネージャーの監査コマンドを実行
 2. 検出された脆弱性のリストを取得
 3. 各脆弱性の詳細情報を収集
 
 **判断基準**:
+
 - [ ] 監査コマンドが正常に実行されたか？
 - [ ] 全ての依存関係（直接・間接）がスキャンされたか？
 - [ ] 結果が最新のデータベースに基づいているか？
@@ -229,13 +253,15 @@ cat .claude/skills/dependency-auditing/templates/vulnerability-assessment-templa
 **目的**: 検出された脆弱性のビジネス影響を評価
 
 **ステップ**:
-1. CVSSスコアに基づく重大度分類
+
+1. CVSS スコアに基づく重大度分類
 2. 攻撃可能性の評価（エクスプロイト有無）
 3. プロジェクト固有の影響評価
 4. 優先順位の決定
 
 **判断基準**:
-- [ ] 各脆弱性のCVSSスコアを確認したか？
+
+- [ ] 各脆弱性の CVSS スコアを確認したか？
 - [ ] 既知のエクスプロイトが存在するか？
 - [ ] 脆弱なコードが実際に使用されているか？
 - [ ] ビジネスへの影響度を評価したか？
@@ -245,12 +271,14 @@ cat .claude/skills/dependency-auditing/templates/vulnerability-assessment-templa
 **目的**: 各脆弱性に対する適切な対応策を決定
 
 **ステップ**:
+
 1. 利用可能なパッチ/アップグレードの確認
 2. 修正による影響範囲の評価
 3. 修正計画の策定
 4. 一時的な緩和策の検討
 
 **判断基準**:
+
 - [ ] パッチが利用可能か？
 - [ ] アップグレードパスが明確か？
 - [ ] 破壊的変更の有無を確認したか？
@@ -261,12 +289,14 @@ cat .claude/skills/dependency-auditing/templates/vulnerability-assessment-templa
 **目的**: 脆弱性を安全に修正し、システムの健全性を確認
 
 **ステップ**:
+
 1. テスト環境での修正適用
 2. 回帰テストの実行
 3. 本番環境への適用
 4. 修正後の再監査
 
 **判断基準**:
+
 - [ ] 修正後に脆弱性が解消されたか？
 - [ ] 新たな脆弱性が導入されていないか？
 - [ ] システムが正常に動作しているか？
@@ -277,27 +307,31 @@ cat .claude/skills/dependency-auditing/templates/vulnerability-assessment-templa
 ### すべきこと
 
 1. **定期的な監査**:
+
    - 最低週次での自動監査
    - 依存関係変更時の即時監査
    - リリース前の必須監査
 
 2. **多層的なセキュリティ**:
+
    - 複数のツールを組み合わせる
    - 手動レビューと自動化の併用
    - 深い依存関係まで検査
 
 3. **迅速な対応**:
-   - Critical/Highは即時対応
+   - Critical/High は即時対応
    - セキュリティアラートの即時通知設定
    - インシデント対応プロセスの整備
 
 ### 避けるべきこと
 
 1. **脆弱性の無視**:
+
    - ❌ 「うちには関係ない」と決めつける
    - ✅ 影響範囲を正確に評価してから判断
 
 2. **過度な依存**:
+
    - ❌ 自動ツールだけに頼る
    - ✅ 手動レビューと組み合わせる
 
@@ -307,39 +341,43 @@ cat .claude/skills/dependency-auditing/templates/vulnerability-assessment-templa
 
 ## トラブルシューティング
 
-### 問題1: 誤検知（False Positive）
+### 問題 1: 誤検知（False Positive）
 
 **症状**: 実際には影響を受けない脆弱性が報告される
 
 **原因**:
+
 - 脆弱なコードパスが実行されない
 - 環境固有の条件が満たされない
 - 古い脆弱性データベース
 
 **解決策**:
+
 1. 脆弱なコードの使用状況を確認
 2. 環境条件を評価
 3. ツールのデータベースを更新
 4. 必要に応じて例外リストに追加（文書化必須）
 
-### 問題2: パッチが利用できない
+### 問題 2: パッチが利用できない
 
 **症状**: 脆弱性が報告されるが、修正版がリリースされていない
 
 **対応**:
-1. 一時的な緩和策を検討（WAF設定、入力検証強化等）
+
+1. 一時的な緩和策を検討（WAF 設定、入力検証強化等）
 2. 代替パッケージへの移行を検討
 3. パッケージメンテナーへの報告/催促
 4. リスクを文書化し、モニタリングを強化
 
-### 問題3: 依存関係の競合
+### 問題 3: 依存関係の競合
 
 **症状**: パッチを適用すると他の依存関係と競合する
 
 **解決策**:
+
 1. 競合の原因となるパッケージを特定
 2. 両方を更新できるバージョンを探す
-3. 必要に応じてoverrides/resolutionsを使用
+3. 必要に応じて overrides/resolutions を使用
 4. 長期的にはモジュール構成の見直し
 
 ## 関連スキル
@@ -353,22 +391,24 @@ cat .claude/skills/dependency-auditing/templates/vulnerability-assessment-templa
 ### セキュリティ監査の効果測定
 
 **測定指標**:
+
 - 脆弱性検出から修正までの平均時間（MTTR）
-- Critical/High脆弱性の残存数
+- Critical/High 脆弱性の残存数
 - 監査カバレッジ率
 - 誤検知率
 
 **目標値**:
-- Critical MTTR: <24時間
-- High MTTR: <72時間
-- 残存Critical/High: 0件
+
+- Critical MTTR: <24 時間
+- High MTTR: <72 時間
+- 残存 Critical/High: 0 件
 - 監査カバレッジ: 100%
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-27 | 初版作成 - セキュリティ監査フレームワーク |
+| バージョン | 日付       | 変更内容                                  |
+| ---------- | ---------- | ----------------------------------------- |
+| 1.0.0      | 2025-11-27 | 初版作成 - セキュリティ監査フレームワーク |
 
 ## 参考文献
 

@@ -5,6 +5,16 @@ description: |
   マーティン・ファウラーの思想に基づき、可読性が高くテスト容易な
   業務処理コードを実装します。
 
+  📚 依存スキル（5個）:
+  このエージェントは以下のスキルに専門知識を分離しています。
+  タスクに応じて必要なスキルのみを読み込んでください:
+
+  - `.claude/skills/refactoring-techniques/SKILL.md`: リファクタリング技法とコードスメル検出
+  - `.claude/skills/tdd-red-green-refactor/SKILL.md`: テスト駆動開発とRed-Green-Refactorサイクル
+  - `.claude/skills/clean-code-practices/SKILL.md`: Clean Codeプラクティスと命名規約
+  - `.claude/skills/transaction-script/SKILL.md`: トランザクションスクリプトパターンとExecutor実装
+  - `.claude/skills/test-doubles/SKILL.md`: テストダブル選択とモック戦略
+
   専門分野:
   - Executorクラスの実装とビジネスロジックのコーディング
   - リファクタリング技術による可読性向上
@@ -17,13 +27,11 @@ description: |
   - ビジネスロジックのリファクタリング時
   - 複雑な業務処理の実装時
   - データ加工・計算処理の実装時
-
-  Use proactively when implementing business logic, executors,
-  or refactoring complex code for better readability.
+  - テスト容易な設計が必要な時
 
 tools: [Read, Write, Edit, Grep]
 model: sonnet
-version: 2.0.0
+version: 2.1.0
 ---
 
 # Logic Developer

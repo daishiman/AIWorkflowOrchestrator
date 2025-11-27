@@ -5,6 +5,17 @@ description: |
   A/Bテスト、評価メトリクス、自動化されたプロンプト品質保証により、
   本番環境で信頼性の高いプロンプトを実現します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/prompt-testing-evaluation/resources/ab-testing-guide.md`: プロンプトA/Bテスト設計（サンプルサイズ、メトリクス、成功基準）
+  - `.claude/skills/prompt-testing-evaluation/resources/automated-evaluation.md`: LLM-as-a-Judge、自動スコアリング、回帰テスト自動化手法
+  - `.claude/skills/prompt-testing-evaluation/resources/evaluation-metrics.md`: 精度、一貫性、完全性、レイテンシ、コスト等の定量評価指標
+  - `.claude/skills/prompt-testing-evaluation/scripts/prompt-evaluator.mjs`: Prompt Evaluator Script
+  - `.claude/skills/prompt-testing-evaluation/templates/evaluation-rubric.md`: 評価ルーブリックテンプレート
+  - `.claude/skills/prompt-testing-evaluation/templates/test-case-template.md`: テストケーステンプレート
+
   専門分野:
   - A/Bテスト: 複数プロンプトの比較評価
   - 評価メトリクス: 精度、一貫性、レイテンシ、コスト

@@ -5,6 +5,15 @@ description: |
   最小権限の原則に基づくロール体系設計、多層アクセス制御、
   権限チェックロジック、ポリシーエンジン構築を提供。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/rbac-implementation/resources/multi-layer-access-control.md`: 多層アクセス制御の設計
+  - `.claude/skills/rbac-implementation/resources/role-permission-design.md`: ロール・権限設計ガイド
+  - `.claude/skills/rbac-implementation/scripts/validate-rbac-config.mjs`: RBAC設定検証スクリプト
+  - `.claude/skills/rbac-implementation/templates/rbac-middleware-template.ts`: RBAC Middleware Template
+
   使用タイミング:
   - ロールと権限の体系を設計する時
   - アクセス制御を多層で実装する時（ミドルウェア、APIルート、データ層）
@@ -27,12 +36,14 @@ version: 1.0.0
 ## スキル概要
 
 **コアドメイン**:
+
 - ロールと権限の設計
 - 多層アクセス制御
 - 権限チェックロジック
 - ポリシーエンジン
 
 **設計原則**:
+
 - 最小権限の原則
 - 職務分離
 - Defense in Depth（多層防御）
@@ -41,27 +52,30 @@ version: 1.0.0
 
 ### ロール粒度の決定
 
-**3層ロールモデル（推奨）**:
+**3 層ロールモデル（推奨）**:
+
 ```typescript
 enum Role {
-  ADMIN = 'ADMIN',     // 管理者: 全機能アクセス
-  USER = 'USER',       // 一般ユーザー: 基本機能
-  GUEST = 'GUEST',     // ゲスト: 読み取りのみ
+  ADMIN = "ADMIN", // 管理者: 全機能アクセス
+  USER = "USER", // 一般ユーザー: 基本機能
+  GUEST = "GUEST", // ゲスト: 読み取りのみ
 }
 ```
 
-**5層ロールモデル（詳細制御）**:
+**5 層ロールモデル（詳細制御）**:
+
 ```typescript
 enum Role {
-  SUPER_ADMIN = 'SUPER_ADMIN',   // システム管理者
-  ADMIN = 'ADMIN',               // 組織管理者
-  MANAGER = 'MANAGER',           // マネージャー
-  USER = 'USER',                 // 一般ユーザー
-  GUEST = 'GUEST',               // ゲスト
+  SUPER_ADMIN = "SUPER_ADMIN", // システム管理者
+  ADMIN = "ADMIN", // 組織管理者
+  MANAGER = "MANAGER", // マネージャー
+  USER = "USER", // 一般ユーザー
+  GUEST = "GUEST", // ゲスト
 }
 ```
 
 **判断基準**:
+
 - 組織構造と業務フローに基づく
 - 過度に複雑にしない（保守性）
 - 将来的な拡張性を考慮
@@ -69,33 +83,37 @@ enum Role {
 ### 権限モデル設計
 
 **リソースベース権限（CRUD）**:
+
 ```typescript
 type Permission =
-  | 'user:create'
-  | 'user:read'
-  | 'user:update'
-  | 'user:delete'
-  | 'workflow:create'
-  | 'workflow:read'
-  | 'workflow:update'
-  | 'workflow:delete'
-  | 'admin:access';
+  | "user:create"
+  | "user:read"
+  | "user:update"
+  | "user:delete"
+  | "workflow:create"
+  | "workflow:read"
+  | "workflow:update"
+  | "workflow:delete"
+  | "admin:access";
 ```
 
 **ロール・権限マッピング**:
+
 ```typescript
 const rolePermissions: Record<Role, Permission[]> = {
   ADMIN: [
-    'user:create', 'user:read', 'user:update', 'user:delete',
-    'workflow:create', 'workflow:read', 'workflow:update', 'workflow:delete',
-    'admin:access',
+    "user:create",
+    "user:read",
+    "user:update",
+    "user:delete",
+    "workflow:create",
+    "workflow:read",
+    "workflow:update",
+    "workflow:delete",
+    "admin:access",
   ],
-  USER: [
-    'workflow:create', 'workflow:read', 'workflow:update',
-  ],
-  GUEST: [
-    'workflow:read',
-  ],
+  USER: ["workflow:create", "workflow:read", "workflow:update"],
+  GUEST: ["workflow:read"],
 };
 ```
 
@@ -112,13 +130,13 @@ export async function middleware(request: NextRequest) {
 
   // 未認証チェック
   if (!session) {
-    return NextResponse.redirect(new URL('/login', request.url));
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   // 管理者ルート保護
-  if (request.nextUrl.pathname.startsWith('/admin')) {
-    if (session.role !== 'ADMIN') {
-      return new NextResponse('Forbidden', { status: 403 });
+  if (request.nextUrl.pathname.startsWith("/admin")) {
+    if (session.role !== "ADMIN") {
+      return new NextResponse("Forbidden", { status: 403 });
     }
   }
 
@@ -126,11 +144,11 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/admin/:path*', '/api/:path*'],
+  matcher: ["/dashboard/:path*", "/admin/:path*", "/api/:path*"],
 };
 ```
 
-### Layer 2: APIルート（詳細チェック）
+### Layer 2: API ルート（詳細チェック）
 
 **目的**: エンドポイントレベルの権限検証
 
@@ -140,8 +158,8 @@ export async function POST(request: Request) {
   const session = await getSession();
 
   // 権限チェック
-  if (!hasPermission(session, 'user:create')) {
-    return new Response('Forbidden', { status: 403 });
+  if (!hasPermission(session, "user:create")) {
+    return new Response("Forbidden", { status: 403 });
   }
 
   // 処理続行
@@ -166,7 +184,7 @@ export async function updateWorkflow(
 
   // 所有権チェック
   if (workflow.userId !== userId) {
-    throw new ForbiddenError('You do not own this workflow');
+    throw new ForbiddenError("You do not own this workflow");
   }
 
   return await db.workflows.update(workflowId, data);
@@ -209,7 +227,7 @@ export function evaluatePolicy(context: PolicyContext): boolean {
   // リソース所有権チェック
   if (context.resource && context.resource.ownerId !== context.user.id) {
     // 管理者は例外
-    if (context.user.role !== 'ADMIN') {
+    if (context.user.role !== "ADMIN") {
       return false;
     }
   }
@@ -241,9 +259,9 @@ node .claude/skills/rbac-implementation/scripts/validate-rbac-config.mjs <config
 ## 実装ワークフロー
 
 1. **ロール体系設計**: 組織構造に基づくロール定義
-2. **権限モデル設計**: CRUD操作とビジネスアクション権限
+2. **権限モデル設計**: CRUD 操作とビジネスアクション権限
 3. **ロール・権限マッピング**: 最小権限の原則
-4. **多層制御実装**: ミドルウェア、APIルート、データ層
+4. **多層制御実装**: ミドルウェア、API ルート、データ層
 5. **テスト**: 権限チェックの正常系・異常系
 
 ## 判断基準
@@ -257,11 +275,11 @@ node .claude/skills/rbac-implementation/scripts/validate-rbac-config.mjs <config
 
 1. **最小権限**: ユーザーは必要最小限の権限のみ
 2. **職務分離**: 権限の過度な集中を防ぐ
-3. **多層防御**: ミドルウェア + APIルート + データ層
+3. **多層防御**: ミドルウェア + API ルート + データ層
 4. **動的検証**: 権限変更が即座に反映
 
 ## バージョン履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-26 | 初版リリース - RBAC実装パターン |
+| バージョン | 日付       | 変更内容                         |
+| ---------- | ---------- | -------------------------------- |
+| 1.0.0      | 2025-11-26 | 初版リリース - RBAC 実装パターン |

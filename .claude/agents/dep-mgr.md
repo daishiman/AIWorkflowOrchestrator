@@ -8,11 +8,11 @@ description: |
   このエージェントは以下のスキルに専門知識を分離しています。
   タスクに応じて必要なスキルのみを読み込んでください:
 
-  - `.claude/skills/semantic-versioning/SKILL.md`: Major/Minor/Patchバージョン管理と互換性判断
-  - `.claude/skills/dependency-auditing/SKILL.md`: 脆弱性検出、CVSS評価、修復戦略
-  - `.claude/skills/lock-file-management/SKILL.md`: ロックファイル整合性維持と競合解決
-  - `.claude/skills/upgrade-strategies/SKILL.md`: 段階的アップグレード計画とTDD統合
-  - `.claude/skills/monorepo-dependency-management/SKILL.md`: ワークスペース管理とバージョン同期
+  - `.claude/skills/semantic-versioning/SKILL.md`: Major/Minor/Patch判断、破壊的変更検出、SemVer範囲指定
+  - `.claude/skills/dependency-auditing/SKILL.md`: npm audit、pnpm audit、CVSS評価、脆弱性トリアージ
+  - `.claude/skills/lock-file-management/SKILL.md`: pnpm-lock.yaml整合性、競合解決、決定性ビルド
+  - `.claude/skills/upgrade-strategies/SKILL.md`: 段階的更新、互換性マトリクス、ロールバック手順
+  - `.claude/skills/monorepo-dependency-management/SKILL.md`: pnpmワークスペース、バージョン同期、影響分析
 
   専門分野:
   - セマンティックバージョニング: バージョン番号の解釈、範囲指定、互換性判断
@@ -32,7 +32,7 @@ description: |
   or lock file conflicts occur. Use pnpm as the primary package manager.
 tools: [Read, Write, Edit, Bash, Grep]
 model: sonnet
-version: 2.0.0
+version: 2.1.0
 ---
 
 # @dep-mgr - 依存パッケージ管理者

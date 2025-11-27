@@ -1,24 +1,32 @@
 ---
 name: flaky-test-prevention
 description: |
-  フレーキー（不安定）なテストを防止する技術。
-  非決定性の排除、リトライロジック、安定性向上パターンを提供します。
+    フレーキー（不安定）なテストを防止する技術。
+    非決定性の排除、リトライロジック、安定性向上パターンを提供します。
+    専門分野:
+    - 非決定性排除: 時刻依存、ランダム性、外部API依存の制御とモック化
+    - リトライロジック: 自動リトライ、カスタムリトライ、段階的バックオフ設計
+    - 待機戦略最適化: 固定時間待機禁止、条件ベース待機パターン
+    - デバッグ容易性: 失敗時の診断情報自動収集（スクリーンショット、トレース）
+    使用タイミング:
+    - テストが時々失敗する時
+    - テスト実行結果が不安定な時
+    - 並列実行時の問題が発生する時
+    - 固定時間待機を排除する必要がある時
+    - 非決定的要素（時刻、ランダム性）を制御する時
+    Use proactively when tests exhibit intermittent failures, implementing retry logic,
+    or eliminating non-deterministic test behavior.
 
-  専門分野:
-  - 非決定性排除: 時刻依存、ランダム性、外部API依存の制御とモック化
-  - リトライロジック: 自動リトライ、カスタムリトライ、段階的バックオフ設計
-  - 待機戦略最適化: 固定時間待機禁止、条件ベース待機パターン
-  - デバッグ容易性: 失敗時の診断情報自動収集（スクリーンショット、トレース）
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
 
-  使用タイミング:
-  - テストが時々失敗する時
-  - テスト実行結果が不安定な時
-  - 並列実行時の問題が発生する時
-  - 固定時間待機を排除する必要がある時
-  - 非決定的要素（時刻、ランダム性）を制御する時
+  - `.claude/skills/flaky-test-prevention/resources/non-determinism-patterns.md`: 時刻依存・ランダム性・外部API依存の非決定的要素の制御パターン
+  - `.claude/skills/flaky-test-prevention/resources/retry-strategies.md`: 自動リトライ・段階的バックオフ・カスタムリトライロジックの設計
+  - `.claude/skills/flaky-test-prevention/resources/stability-checklist.md`: テスト安定性確認チェックリストと診断ガイド
+  - `.claude/skills/flaky-test-prevention/templates/stable-test-template.ts`: 安定性を考慮したテスト実装テンプレート
+  - `.claude/skills/flaky-test-prevention/scripts/detect-flaky-tests.mjs`: フレーキーテスト検出スクリプト
 
-  Use proactively when tests exhibit intermittent failures, implementing retry logic,
-  or eliminating non-deterministic test behavior.
 version: 1.0.0
 ---
 
@@ -32,9 +40,10 @@ version: 1.0.0
 
 ### 1. 非決定性の排除
 
-**原因**: 時刻依存、ランダム性、外部API
+**原因**: 時刻依存、ランダム性、外部 API
 
 **解決策**:
+
 ```typescript
 // ❌ 非決定的
 const now = new Date();
@@ -60,7 +69,7 @@ test.describe.configure({ retries: 2 });
 
 // 個別操作リトライ
 await expect(async () => {
-  const response = await page.request.get('/api/status');
+  const response = await page.request.get("/api/status");
   expect(response.status()).toBe(200);
 }).toPass({ timeout: 10000, intervals: [1000, 2000, 5000] });
 ```
@@ -73,47 +82,47 @@ await page.waitForTimeout(3000);
 
 // ✅ 条件ベース待機
 await page.waitForSelector('[data-testid="loaded"]');
-await expect(page.getByText('Ready')).toBeVisible();
+await expect(page.getByText("Ready")).toBeVisible();
 ```
 
 ## 実装パターン
 
-### パターン1: 安定性確保パターン
+### パターン 1: 安定性確保パターン
 
 ```typescript
-test('安定したテスト', async ({ page }) => {
+test("安定したテスト", async ({ page }) => {
   // ページロード待機
-  await page.goto('/', { waitUntil: 'networkidle' });
+  await page.goto("/", { waitUntil: "networkidle" });
 
   // 要素の安定性確認
   await page.waitForSelector('[data-testid="button"]', {
-    state: 'visible',
-    timeout: 5000
+    state: "visible",
+    timeout: 5000,
   });
 
   // アクション実行
-  await page.getByTestId('button').click();
+  await page.getByTestId("button").click();
 
   // 結果待機
-  await expect(page.getByText('Success')).toBeVisible({ timeout: 10000 });
+  await expect(page.getByText("Success")).toBeVisible({ timeout: 10000 });
 });
 ```
 
-### パターン2: 外部依存の分離
+### パターン 2: 外部依存の分離
 
 ```typescript
 test.beforeEach(async ({ context }) => {
   // 外部APIをモック
-  await context.route('**/api.external.com/**', route => {
+  await context.route("**/api.external.com/**", (route) => {
     route.fulfill({
       status: 200,
-      body: JSON.stringify({ data: 'mocked' })
+      body: JSON.stringify({ data: "mocked" }),
     });
   });
 });
 ```
 
-### パターン3: アニメーション無効化
+### パターン 3: アニメーション無効化
 
 ```typescript
 // playwright.config.ts
@@ -121,15 +130,15 @@ export default {
   use: {
     // CSSアニメーション無効化
     launchOptions: {
-      args: ['--disable-animations']
-    }
-  }
+      args: ["--disable-animations"],
+    },
+  },
 };
 
 // またはCSS注入
 test.beforeEach(async ({ page }) => {
   await page.addStyleTag({
-    content: '* { transition: none !important; animation: none !important; }'
+    content: "* { transition: none !important; animation: none !important; }",
   });
 });
 ```
@@ -139,14 +148,16 @@ test.beforeEach(async ({ page }) => {
 ### DO（推奨）
 
 1. **自動リトライ使用**:
+
 ```typescript
 test.describe.configure({ retries: process.env.CI ? 2 : 0 });
 ```
 
 2. **非決定性の排除**:
+
 ```typescript
 // 時刻固定
-await page.clock.install({ time: new Date('2024-01-01') });
+await page.clock.install({ time: new Date("2024-01-01") });
 
 // ランダム性排除
 await page.addInitScript(() => {
@@ -155,9 +166,10 @@ await page.addInitScript(() => {
 ```
 
 3. **デバッグ情報収集**:
+
 ```typescript
 test.afterEach(async ({ page }, testInfo) => {
-  if (testInfo.status !== 'passed') {
+  if (testInfo.status !== "passed") {
     await page.screenshot({ path: `failure-${testInfo.title}.png` });
   }
 });
@@ -166,7 +178,7 @@ test.afterEach(async ({ page }, testInfo) => {
 ### DON'T（非推奨）
 
 1. **固定時間待機を使用しない**
-2. **外部APIに直接依存しない**
+2. **外部 API に直接依存しない**
 3. **アニメーションを無視しない**
 
 ## 関連スキル

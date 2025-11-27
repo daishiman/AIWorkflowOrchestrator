@@ -5,6 +5,14 @@ description: |
   起動、実行、状態管理、終了、バージョニング、メンテナンスにより、
   エージェントの継続的な品質を保証します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/agent-lifecycle-management/resources/versioning-guide.md`: バージョニングガイド
+  - `.claude/skills/agent-lifecycle-management/templates/lifecycle-template.md`: ライフサイクルテンプレート
+  - `.claude/skills/agent-lifecycle-management/scripts/check-lifecycle.mjs`: ライフサイクル検証スクリプト
+
   専門分野:
   - 起動プロトコル: 初期化、依存関係の確認
   - 実行管理: 状態追跡、進捗監視

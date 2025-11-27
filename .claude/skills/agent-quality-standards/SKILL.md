@@ -2,8 +2,13 @@
 name: agent-quality-standards
 description: |
   エージェント品質基準と検証プロセスを専門とするスキル。
-  完了条件の設計、品質メトリクスの定義、エラーハンドリング戦略により、
-  高品質で信頼性の高いエージェントを保証します。
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/agent-quality-standards/resources/quality-metrics.md`: Quality Metrics
+  - `.claude/skills/agent-quality-standards/templates/quality-checklist-template.md`: Quality Checklist Template
+  - `.claude/skills/agent-quality-standards/scripts/calculate-quality-score.mjs`: calculate-quality-score.mjs
 
   専門分野:
   - 完了条件設計: Phase毎チェックリスト、最終完了条件、品質ゲート

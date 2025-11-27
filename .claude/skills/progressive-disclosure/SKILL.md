@@ -5,6 +5,19 @@ description: |
   メタデータ→本文→リソースの段階的な情報提供により、必要な時に必要な知識だけを
   ロードし、スキル発動信頼性を最大化します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/progressive-disclosure/resources/commitment-mechanism.md`: コミットメントメカニズム設計ガイド
+  - `.claude/skills/progressive-disclosure/resources/metadata-design.md`: メタデータ設計ガイド
+  - `.claude/skills/progressive-disclosure/resources/skill-activation-optimization.md`: スキル発動最適化ガイド
+  - `.claude/skills/progressive-disclosure/resources/three-layer-model.md`: 3層開示モデル詳細ガイド
+  - `.claude/skills/progressive-disclosure/resources/token-efficiency-strategies.md`: 遅延読み込み、インデックス駆動設計によるトークン使用量60-80%削減手法
+  - `.claude/skills/progressive-disclosure/scripts/calculate-token-usage.mjs`: Token Usage Calculator for Claude Code Skills
+  - `.claude/skills/progressive-disclosure/scripts/calculate-token-usage.sh`: File Size Checker for Claude Code Skills
+  - `.claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml`: skill-metadata-template設定ファイル
+
   専門分野:
   - 3層開示モデル: メタデータ層、本文層、リソース層の設計原則
   - トークン効率化: 段階的ロード、遅延読み込み、コンテキスト最小化

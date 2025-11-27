@@ -2,26 +2,29 @@
 name: resource-oriented-api
 description: |
   MCPのリソース指向API設計パターンに関する専門知識。
-  ファイル、データベース、外部サービスをリソースとして抽象化し、
-  一貫したAPIインターフェースを提供するための設計指針を提供します。
 
-  使用タイミング:
-  - MCPリソースの設計時
-  - データアクセスパターンの統一設計時
-  - リソースURIスキームの設計時
-  - キャッシュ戦略の検討時
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/resource-oriented-api/resources/caching-strategies.md`: Caching Strategiesリソース
+  - `.claude/skills/resource-oriented-api/resources/resource-transformation.md`: Resource Transformationリソース
+  - `.claude/skills/resource-oriented-api/resources/uri-scheme-guide.md`: Uri Scheme Guideリソース
+
+  - `.claude/skills/resource-oriented-api/templates/resource-definition-template.json`: Resource Definitionテンプレート
+  - `.claude/skills/resource-oriented-api/templates/resource-provider-template.ts`: Resource Providerテンプレート
+
+  - `.claude/skills/resource-oriented-api/scripts/validate-resource-definition.mjs`: Validate Resource Definitionスクリプト
+  - `.claude/skills/resource-oriented-api/scripts/validate-uri.mjs`: Validate Uriスクリプト
+
 version: 1.0.1
-tags: [mcp, resource, api-design, uri-scheme, caching]
-related_skills:
-  - .claude/skills/mcp-protocol/SKILL.md
-  - .claude/skills/api-connector-design/SKILL.md
 ---
 
 # Resource Oriented API スキル
 
 ## 概要
 
-MCPにおけるリソース指向API設計の専門知識を提供します。ファイル、データベース、外部サービスなど様々なデータソースを統一的なリソースとして扱い、一貫性のあるアクセスパターンを実現します。
+MCP におけるリソース指向 API 設計の専門知識を提供します。ファイル、データベース、外部サービスなど様々なデータソースを統一的なリソースとして扱い、一貫性のあるアクセスパターンを実現します。
 
 ## リソースモデル
 
@@ -45,9 +48,9 @@ MCPにおけるリソース指向API設計の専門知識を提供します。�
 └─────────────────────────────────────────────────────┘
 ```
 
-## 1. リソースURIスキーム
+## 1. リソース URI スキーム
 
-### 標準URIフォーマット
+### 標準 URI フォーマット
 
 ```
 scheme://authority/path?query#fragment
@@ -61,16 +64,16 @@ memory://session/context
 
 ### スキーム別設計指針
 
-| スキーム | 用途 | 例 |
-|---------|------|-----|
-| `file://` | ローカルファイル | `file:///home/user/doc.md` |
-| `db://` | データベースレコード | `db://mysql/users/123` |
-| `git://` | Gitリポジトリ | `git://repo/branch/path` |
-| `memory://` | セッションメモリ | `memory://session/vars` |
-| `http://` | 外部API | `http://api.example.com/data` |
-| `custom://` | カスタムソース | `custom://provider/resource` |
+| スキーム    | 用途                 | 例                            |
+| ----------- | -------------------- | ----------------------------- |
+| `file://`   | ローカルファイル     | `file:///home/user/doc.md`    |
+| `db://`     | データベースレコード | `db://mysql/users/123`        |
+| `git://`    | Git リポジトリ       | `git://repo/branch/path`      |
+| `memory://` | セッションメモリ     | `memory://session/vars`       |
+| `http://`   | 外部 API             | `http://api.example.com/data` |
+| `custom://` | カスタムソース       | `custom://provider/resource`  |
 
-### URI正規化ルール
+### URI 正規化ルール
 
 ```
 1. パス正規化
@@ -94,21 +97,21 @@ memory://session/context
 
 ```typescript
 interface Resource {
-  uri: string;           // 一意識別子
-  name: string;          // 人間可読な名前
-  description?: string;  // 説明
-  mimeType?: string;     // コンテンツタイプ
+  uri: string; // 一意識別子
+  name: string; // 人間可読な名前
+  description?: string; // 説明
+  mimeType?: string; // コンテンツタイプ
 }
 
 interface ResourceContent {
   uri: string;
   mimeType?: string;
-  text?: string;         // テキストコンテンツ
-  blob?: string;         // Base64バイナリ
+  text?: string; // テキストコンテンツ
+  blob?: string; // Base64バイナリ
 }
 
 interface ResourceTemplate {
-  uriTemplate: string;   // URIテンプレート
+  uriTemplate: string; // URIテンプレート
   name: string;
   description?: string;
   mimeType?: string;
@@ -209,13 +212,13 @@ template_resource:
 
 ### キャッシュ制御
 
-| 戦略 | TTL | 用途 |
-|------|-----|------|
-| `no-cache` | 0 | 常に最新データが必要 |
-| `short` | 1分 | 頻繁に更新されるデータ |
-| `medium` | 5分 | 通常のデータ |
-| `long` | 1時間 | 安定したデータ |
-| `persistent` | 永続 | 静的リソース |
+| 戦略         | TTL    | 用途                   |
+| ------------ | ------ | ---------------------- |
+| `no-cache`   | 0      | 常に最新データが必要   |
+| `short`      | 1 分   | 頻繁に更新されるデータ |
+| `medium`     | 5 分   | 通常のデータ           |
+| `long`       | 1 時間 | 安定したデータ         |
+| `persistent` | 永続   | 静的リソース           |
 
 ### 無効化パターン
 
@@ -224,25 +227,25 @@ template_resource:
 cache.set(uri, content, { ttl: 300000 }); // 5分
 
 // イベントベース無効化
-onResourceUpdate(uri => {
+onResourceUpdate((uri) => {
   cache.invalidate(uri);
 });
 
 // パターンベース無効化
-cache.invalidatePattern('db://postgres/users/*');
+cache.invalidatePattern("db://postgres/users/*");
 ```
 
 ## 5. エラーハンドリング
 
 ### リソースエラーコード
 
-| コード | 意味 | 対応 |
-|-------|------|------|
-| `ResourceNotFound` | リソースが存在しない | 404相当 |
-| `ResourceAccessDenied` | アクセス権限なし | 403相当 |
-| `ResourceUnavailable` | 一時的に利用不可 | リトライ |
-| `ResourceInvalid` | 無効なURI形式 | クライアントエラー |
-| `ResourceTimeout` | タイムアウト | リトライ |
+| コード                 | 意味                 | 対応               |
+| ---------------------- | -------------------- | ------------------ |
+| `ResourceNotFound`     | リソースが存在しない | 404 相当           |
+| `ResourceAccessDenied` | アクセス権限なし     | 403 相当           |
+| `ResourceUnavailable`  | 一時的に利用不可     | リトライ           |
+| `ResourceInvalid`      | 無効な URI 形式      | クライアントエラー |
+| `ResourceTimeout`      | タイムアウト         | リトライ           |
 
 ### エラーレスポンス形式
 
@@ -261,7 +264,7 @@ cache.invalidatePattern('db://postgres/users/*');
 
 ## 6. 設計チェックリスト
 
-### URI設計
+### URI 設計
 
 - [ ] スキームは明確で一貫している？
 - [ ] パスは階層的で予測可能？
@@ -270,8 +273,8 @@ cache.invalidatePattern('db://postgres/users/*');
 
 ### リソース定義
 
-- [ ] 一意のURIが割り当てられている？
-- [ ] mimeTypeは正確に指定？
+- [ ] 一意の URI が割り当てられている？
+- [ ] mimeType は正確に指定？
 - [ ] 説明は十分に明確？
 - [ ] 必要な機能（read/list/subscribe）が定義？
 
@@ -279,7 +282,7 @@ cache.invalidatePattern('db://postgres/users/*');
 
 - [ ] キャッシュ戦略は適切？
 - [ ] 無効化メカニズムは実装？
-- [ ] TTLは妥当な値？
+- [ ] TTL は妥当な値？
 
 ### エラー処理
 
@@ -291,7 +294,7 @@ cache.invalidatePattern('db://postgres/users/*');
 
 詳細なパターンとガイドについては以下を参照:
 
-- **URIスキーム設計ガイド**: `cat .claude/skills/resource-oriented-api/resources/uri-scheme-guide.md`
+- **URI スキーム設計ガイド**: `cat .claude/skills/resource-oriented-api/resources/uri-scheme-guide.md`
 - **キャッシュ戦略ガイド**: `cat .claude/skills/resource-oriented-api/resources/caching-strategies.md`
 - **リソース変換パターン**: `cat .claude/skills/resource-oriented-api/resources/resource-transformation.md`
 
@@ -312,7 +315,7 @@ node .claude/skills/resource-oriented-api/scripts/validate-resource-definition.m
 
 ## 関連スキル
 
-| スキル | 用途 |
-|-------|------|
-| `.claude/skills/mcp-protocol/SKILL.md` | MCPプロトコル基盤 |
-| `.claude/skills/api-connector-design/SKILL.md` | API設計パターン |
+| スキル                                         | 用途               |
+| ---------------------------------------------- | ------------------ |
+| `.claude/skills/mcp-protocol/SKILL.md`         | MCP プロトコル基盤 |
+| `.claude/skills/api-connector-design/SKILL.md` | API 設計パターン   |

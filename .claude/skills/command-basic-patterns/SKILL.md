@@ -5,6 +5,14 @@ description: |
   シンプル指示型、ステップバイステップ型、条件分岐型、ファイル参照型の
   選択基準と実装例を提供します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/command-basic-patterns/resources/pattern-selection-guide.md`: 基本パターン選択ガイド
+  - `.claude/skills/command-basic-patterns/templates/step-by-step-template.md`: ステップバイステップコマンドテンプレート
+  - `.claude/skills/command-basic-patterns/scripts/validate-patterns.mjs`: パターン検証スクリプト
+
   使用タイミング:
   - コマンドの複雑度に応じたパターンを選択する時
   - 既存コマンドのパターンを理解したい時

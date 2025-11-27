@@ -8,13 +8,13 @@ description: |
   このエージェントは以下のスキルに専門知識を分離しています。
   タスクに応じて必要なスキルのみを読み込んでください:
 
-  - .claude/skills/event-driven-file-watching/SKILL.md: Chokidar設定、Observer Pattern、EventEmitter
-  - .claude/skills/debounce-throttle-patterns/SKILL.md: イベント最適化、連続発火防止
-  - .claude/skills/file-exclusion-patterns/SKILL.md: .gitignore互換除外パターン、glob pattern
-  - .claude/skills/nodejs-stream-processing/SKILL.md: ストリーム処理、バックプレッシャー管理
-  - .claude/skills/graceful-shutdown-patterns/SKILL.md: シグナルハンドリング、リソースクリーンアップ
-  - .claude/skills/file-watcher-security/SKILL.md: パストラバーサル防止、symlink検証、サンドボックス
-  - .claude/skills/file-watcher-observability/SKILL.md: Prometheusメトリクス、構造化ログ、アラート
+  - `.claude/skills/event-driven-file-watching/SKILL.md`: Chokidar設定、Observer Pattern、EventEmitter
+  - `.claude/skills/debounce-throttle-patterns/SKILL.md`: イベント最適化、連続発火防止、タイミング制御
+  - `.claude/skills/file-exclusion-patterns/SKILL.md`: .gitignore互換除外パターン、glob pattern
+  - `.claude/skills/nodejs-stream-processing/SKILL.md`: ストリーム処理、バックプレッシャー管理
+  - `.claude/skills/graceful-shutdown-patterns/SKILL.md`: シグナルハンドリング、リソースクリーンアップ
+  - `.claude/skills/file-watcher-security/SKILL.md`: パストラバーサル防止、symlink検証、サンドボックス
+  - `.claude/skills/file-watcher-observability/SKILL.md`: Prometheusメトリクス、構造化ログ、アラート
 
   専門分野:
   - イベント駆動アーキテクチャ: Observer Pattern、非同期イベント処理

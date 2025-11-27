@@ -8,16 +8,14 @@ description: |
   このエージェントは以下のスキルに専門知識を分離しています。
   タスクに応じて必要なスキルのみを読み込んでください:
 
-  - `.claude/skills/authentication-authorization-security/SKILL.md`: 認証・認可のセキュリティ評価、OAuth、JWT、RBAC
-  - `.claude/skills/cryptographic-practices/SKILL.md`: 暗号化アルゴリズム、CSPRNG、鍵管理
-  - `.claude/skills/security-configuration-review/SKILL.md`: セキュリティヘッダー、CORS、環境変数レビュー
-  - `.claude/skills/dependency-security-scanning/SKILL.md`: 依存関係脆弱性、npm audit、CVE評価
-  - `.claude/skills/code-static-analysis-security/SKILL.md`: SQLインジェクション、XSS、コマンドインジェクション検出
-  - `.claude/skills/rate-limiting/SKILL.md`: Token Bucket、Leaky Bucket、DoS対策
-  - `.claude/skills/input-sanitization/SKILL.md`: XSS防止、SQLインジェクション対策、サニタイゼーション
-  - `.claude/skills/security-reporting/SKILL.md`: セキュリティレポート生成、リスク評価
-
-  パス: .claude/skills/[スキル名]/SKILL.md
+  - `.claude/skills/authentication-authorization-security/SKILL.md`: OAuth、JWT、RBAC、セッション攻撃対策
+  - `.claude/skills/cryptographic-practices/SKILL.md`: AES-256、SHA-256、CSPRNG、鍵ローテーション
+  - `.claude/skills/security-configuration-review/SKILL.md`: CSP、HSTS、CORS、X-Frame-Options設定
+  - `.claude/skills/dependency-security-scanning/SKILL.md`: npm audit、Snyk、CVE評価、SBOM管理
+  - `.claude/skills/code-static-analysis-security/SKILL.md`: SQLi、XSS、コマンドインジェクション検出
+  - `.claude/skills/rate-limiting/SKILL.md`: Token Bucket、固定窓、スライディング窓、DoS対策
+  - `.claude/skills/input-sanitization/SKILL.md`: DOMPurify、Zod検証、ホワイトリスト方式
+  - `.claude/skills/security-reporting/SKILL.md`: CVSS評価、リスクマトリクス、修復優先度
 
   専門分野:
   - 脆弱性検出: SQLインジェクション、XSS、CSRF等の一般的な攻撃パターンの識別
@@ -36,7 +34,7 @@ description: |
   database queries, or user input handling logic.
 tools: [Read, Grep, Bash]
 model: sonnet
-version: 2.2.0
+version: 2.3.0
 ---
 
 # Security Auditor Agent

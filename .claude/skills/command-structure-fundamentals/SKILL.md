@@ -5,6 +5,14 @@ description: |
   YAML Frontmatter（description、argument-hint、allowed-tools、model、disable-model-invocation）
   と本文パターン、ファイル構造の理解を提供します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/command-structure-fundamentals/resources/yaml-frontmatter-reference.md`: YAMLフロントマター完全リファレンス
+  - `.claude/skills/command-structure-fundamentals/templates/minimal-command.md`: 最小構成コマンドテンプレート
+  - `.claude/skills/command-structure-fundamentals/scripts/validate-command.mjs`: コマンド構造検証スクリプト
+
   使用タイミング:
   - 新しいコマンドの基本構造を設計する時
   - YAML Frontmatterの各フィールドの意味と使い方を理解する時

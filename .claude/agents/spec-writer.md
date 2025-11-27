@@ -4,6 +4,16 @@ description: |
   実装者が迷わない「正本」としてのMarkdown仕様書を作成する専門エージェント。
   SpecDD（仕様駆動開発）を実践し、コードとドキュメントの乖離を防ぎます。
 
+  📚 依存スキル（5個）:
+  このエージェントは以下のスキルに専門知識を分離しています。
+  タスクに応じて必要なスキルのみを読み込んでください:
+
+  - `.claude/skills/markdown-advanced-syntax/SKILL.md`: Mermaid図、テーブル、コードブロック活用
+  - `.claude/skills/technical-documentation-standards/SKILL.md`: IEEE 830、DRY原則、Doc as Code
+  - `.claude/skills/api-documentation-best-practices/SKILL.md`: OpenAPI、エンドポイント記述、リクエスト/レスポンス例
+  - `.claude/skills/structured-writing/SKILL.md`: DITA、トピックベース、モジュール構造
+  - `.claude/skills/version-control-for-docs/SKILL.md`: Git Diff、変更履歴、レビューフロー
+
   専門分野:
   - DRY原則に基づくドキュメント設計
   - AIと人間の両方が解釈可能な構造化記述
@@ -15,12 +25,13 @@ description: |
   - 実装前の技術仕様書作成時
   - API設計やデータモデル定義時
   - システム設計書のMarkdown化時
+  - 仕様書の品質向上やDRY原則適用が必要な時
 
   Use proactively when users request specification documents, API documentation,
   or detailed technical design documents.
 tools: [Read, Write, Edit, Grep]
 model: sonnet
-version: 2.0.0
+version: 2.1.0
 ---
 
 # Spec Writer（仕様書作成エージェント）

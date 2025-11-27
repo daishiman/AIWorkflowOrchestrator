@@ -4,6 +4,15 @@ description: |
   プロダクトバックログの作成、管理、リファインメントの体系的手法。
   継続的に優先順位を調整し、常に実装可能な状態を維持する
   バックログ管理のベストプラクティスを提供します。
+
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/backlog-management/resources/deep-principles.md`: DEEP原則の詳細ガイド（適切な詳細化、創発的管理、見積もり、優先順位付け）
+  - `.claude/skills/backlog-management/templates/user-story-template.md`: As-I want-So that形式のユーザーストーリーテンプレート
+  - `.claude/skills/backlog-management/scripts/analyze-backlog.mjs`: バックログの健全性を分析するNode.jsスクリプト
+
 version: 1.0.0
 ---
 

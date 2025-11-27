@@ -2,21 +2,19 @@
 name: transaction-script
 description: |
   マーティン・ファウラーのPofEAAに基づくトランザクションスクリプトパターンを専門とするスキル。
-  シンプルな手続き型ロジックでビジネストランザクションを実現します。
 
-  専門分野:
-  - トランザクションスクリプトパターン: 手続き型のビジネスロジック組織化
-  - サービス層との連携: プレゼンテーション層との分離
-  - ドメインモデルとの使い分け: 複雑さに応じたパターン選択
-  - 適切な粒度: スクリプトの責任範囲
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
 
-  使用タイミング:
-  - シンプルなビジネスロジックを実装する時
-  - CRUD操作の拡張を行う時
-  - ドメインモデルが過剰と感じる場合
-  - 既存システムの手続き型ロジックを整理する時
+  - `.claude/skills/transaction-script/resources/domain-model-comparison.md`: Domain Model Comparisonリソース
+  - `.claude/skills/transaction-script/resources/executor-pattern.md`: Executor Patternリソース
+  - `.claude/skills/transaction-script/resources/pattern-overview.md`: Pattern Overviewリソース
 
-  Use proactively when implementing simple business logic or organizing procedural code.
+  - `.claude/skills/transaction-script/templates/executor-template.md`: Executorテンプレート
+
+  - `.claude/skills/transaction-script/scripts/analyze-executor.mjs`: Analyze Executorスクリプト
+
 version: 1.0.0
 ---
 
@@ -28,13 +26,15 @@ version: 1.0.0
 解説したビジネスロジック組織化パターンです。一つのスクリプト（手続き）で一つのビジネストランザクションを実現します。
 
 **核心原則**:
+
 - 一つのリクエストに対して一つのスクリプト
 - 手続き型のシンプルなロジック
 - 理解しやすく変更しやすい
 
 **対象ユーザー**:
+
 - ビジネスロジック実装エージェント（@logic-dev）
-- シンプルなCRUD操作を実装する開発者
+- シンプルな CRUD 操作を実装する開発者
 - 既存の手続き型コードを整理したい開発者
 
 ## リソース構造
@@ -88,6 +88,7 @@ cat .claude/skills/transaction-script/templates/executor-template.md
 各トランザクションは独立したスクリプト（関数/メソッド）として実装されます。
 
 **典型的な流れ**:
+
 1. 入力の検証
 2. データの取得（リポジトリ経由）
 3. ビジネスロジックの実行
@@ -97,7 +98,7 @@ cat .claude/skills/transaction-script/templates/executor-template.md
 ### 利点
 
 - **シンプル**: 理解しやすい手続き型
-- **直接的**: リクエストと処理の1対1対応
+- **直接的**: リクエストと処理の 1 対 1 対応
 - **変更容易**: 影響範囲が限定的
 - **デバッグ容易**: 処理フローが明確
 
@@ -112,7 +113,7 @@ cat .claude/skills/transaction-script/templates/executor-template.md
 ### トランザクションスクリプトが適切な場合
 
 - [ ] ビジネスロジックがシンプル
-- [ ] CRUD操作が中心
+- [ ] CRUD 操作が中心
 - [ ] ドメインモデルが不要または過剰
 - [ ] チームが手続き型に慣れている
 - [ ] 短期プロジェクト
@@ -126,12 +127,12 @@ cat .claude/skills/transaction-script/templates/executor-template.md
 
 **詳細**: `resources/domain-model-comparison.md`
 
-## Executorパターン
+## Executor パターン
 
 ### 概要
 
 プロジェクト固有のトランザクションスクリプト実装パターンです。
-各機能のビジネスロジックをExecutorクラスとして実装します。
+各機能のビジネスロジックを Executor クラスとして実装します。
 
 ### 構造
 
@@ -195,10 +196,12 @@ interface IWorkflowExecutor {
 ### すべきこと
 
 1. **一つのスクリプトは一つのトランザクション**:
+
    - 責任を明確に
    - 関数名でトランザクションを表現
 
 2. **共通ロジックの抽出**:
+
    - 重複を発見したら共通関数に
    - ただし早すぎる抽象化は避ける
 
@@ -209,10 +212,12 @@ interface IWorkflowExecutor {
 ### 避けるべきこと
 
 1. **巨大なスクリプト**:
-   - ❌ 100行を超えるスクリプト
+
+   - ❌ 100 行を超えるスクリプト
    - ✅ 適切に分割して呼び出し
 
 2. **過度な抽象化**:
+
    - ❌ シンプルなロジックに複雑なパターンを適用
    - ✅ シンプルさを維持
 
@@ -229,11 +234,11 @@ interface IWorkflowExecutor {
 ## 参考文献
 
 - **『Patterns of Enterprise Application Architecture』** マーティン・ファウラー著
-  - 第9章: Domain Logic Patterns
-  - Transaction Script (110-115ページ)
+  - 第 9 章: Domain Logic Patterns
+  - Transaction Script (110-115 ページ)
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版作成 - PofEAAのトランザクションスクリプト |
+| バージョン | 日付       | 変更内容                                       |
+| ---------- | ---------- | ---------------------------------------------- |
+| 1.0.0      | 2025-11-25 | 初版作成 - PofEAA のトランザクションスクリプト |

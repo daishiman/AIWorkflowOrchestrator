@@ -1,29 +1,30 @@
 ---
-skill_name: secrets-management-gha
+name: secrets-management-gha
 description: |
   GitHub Actionsワークフローでの安全な秘密情報管理。
   リポジトリシークレット、環境シークレット、組織シークレット、Dependabotシークレットの使用方法、
   OIDCによるクラウドプロバイダー認証、シークレットローテーション、監査ベストプラクティスを提供。
-  Secretsコンテキストアクセスパターン、環境変数での安全な使用、シークレット漏洩防止戦略を含む。
+
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/secrets-management-gha/resources/oidc-authentication.md`: OIDC Authenticationリソース
+  - `.claude/skills/secrets-management-gha/resources/secret-best-practices.md`: Secret Best Practicesリソース
+  - `.claude/skills/secrets-management-gha/resources/secret-types.md`: Secret Typesリソース
+
+  - `.claude/skills/secrets-management-gha/templates/oidc-examples.yaml`: OIDC Examplesテンプレート
+
+  - `.claude/skills/secrets-management-gha/scripts/check-secret-usage.mjs`: Check Secret Usageスクリプト
+
+  Use proactively when implementing GitHub Actions workflows with secret management,
+  OIDC authentication, or secure credential handling.
 version: 1.0.0
-trigger_keywords:
-  - "GitHub Actions secrets"
-  - "OIDC authentication"
-  - "secrets context"
-  - "environment secrets"
-  - "workload identity"
-  - "secrets rotation"
-  - "Dependabot secrets"
-  - "secret security"
-related_skills:
-  - .claude/skills/workflow-security/SKILL.md
-  - .claude/skills/deployment-environments-gha/SKILL.md
-  - .claude/skills/github-api-integration/SKILL.md
 ---
 
 # GitHub Actions Secrets Management
 
-GitHub Actionsワークフローでの秘密情報の安全な管理と使用方法。
+GitHub Actions ワークフローでの秘密情報の安全な管理と使用方法。
 
 ## ディレクトリ構造
 
@@ -72,25 +73,29 @@ node .claude/skills/secrets-management-gha/scripts/check-secret-usage.mjs <workf
 ## シークレットタイプ概要
 
 ### 1. リポジトリシークレット
+
 - スコープ: 単一リポジトリのすべてのワークフロー
 - 設定場所: Settings → Secrets and variables → Actions
 - アクセス: `${{ secrets.SECRET_NAME }}`
 
 ### 2. 環境シークレット
-- スコープ: 特定の環境（production, staging等）
+
+- スコープ: 特定の環境（production, staging 等）
 - 保護ルール: レビュー要求、待機タイマー、デプロイブランチ制限
 - アクセス: `environment`キー指定が必要
 
 ### 3. 組織シークレット
+
 - スコープ: 組織内の複数リポジトリ
 - 可視性: 選択したリポジトリまたはすべて
 - 優先順位: リポジトリ > 環境 > 組織
 
-### 4. Dependabotシークレット
-- スコープ: Dependabotワークフロー専用
+### 4. Dependabot シークレット
+
+- スコープ: Dependabot ワークフロー専用
 - 用途: プライベートレジストリ認証
 
-## Secretsコンテキストアクセスパターン
+## Secrets コンテキストアクセスパターン
 
 ### 基本アクセス
 
@@ -123,15 +128,17 @@ jobs:
     SECRET: ${{ secrets.OPTIONAL_SECRET }}
 ```
 
-## OIDC認証（概要）
+## OIDC 認証（概要）
 
 ### メリット
+
 - ✅ 長期認証情報不要
 - ✅ 自動ローテーション
 - ✅ きめ細かいアクセス制御
 - ✅ 監査証跡
 
 ### サポートクラウド
+
 - AWS (AssumeRoleWithWebIdentity)
 - GCP (Workload Identity Federation)
 - Azure (Workload Identity Federation)
@@ -143,7 +150,7 @@ jobs:
 jobs:
   deploy:
     permissions:
-      id-token: write  # OIDC トークン要求
+      id-token: write # OIDC トークン要求
       contents: read
     steps:
       - uses: aws-actions/configure-aws-credentials@v4
@@ -155,25 +162,29 @@ jobs:
 ## セキュリティベストプラクティス（概要）
 
 ### 最小権限の原則
+
 ```yaml
 permissions:
   contents: read
-  id-token: write  # 必要な権限のみ
+  id-token: write # 必要な権限のみ
 ```
 
 ### シークレット漏洩防止
+
 - ❌ `echo ${{ secrets.SECRET }}`（ログに表示される）
 - ✅ 環境変数経由でのみ使用
-- ✅ GitHub自動マスキング機能を信頼
+- ✅ GitHub 自動マスキング機能を信頼
 
 ### ローテーション戦略
-- 定期的なシークレット更新（90日推奨）
-- OIDC使用で自動ローテーション
+
+- 定期的なシークレット更新（90 日推奨）
+- OIDC 使用で自動ローテーション
 - 監査ログレビュー
 
 ## セキュリティ考慮事項
 
 ### 避けるべきパターン
+
 ```yaml
 # ❌ シークレットをログ出力
 - run: echo ${{ secrets.API_KEY }}
@@ -188,6 +199,7 @@ on: pull_request  # フォークからアクセス可能
 ```
 
 ### 推奨パターン
+
 ```yaml
 # ✅ 環境変数経由
 - run: ./deploy.sh
@@ -208,13 +220,13 @@ permissions:
 
 - **workflow-security** (`.claude/skills/workflow-security/SKILL.md`): 全体的なワークフローセキュリティ戦略
 - **deployment-environments-gha** (`.claude/skills/deployment-environments-gha/SKILL.md`): 環境ベースのデプロイ保護
-- **github-api-integration** (`.claude/skills/github-api-integration/SKILL.md`): API経由のシークレット管理
+- **github-api-integration** (`.claude/skills/github-api-integration/SKILL.md`): API 経由のシークレット管理
 
 ## 詳細情報
 
 各トピックの詳細は、対応するリソースファイルを参照してください:
 
 1. **シークレットタイプと優先順位**: `resources/secret-types.md`
-2. **OIDC認証設定**: `resources/oidc-authentication.md`
+2. **OIDC 認証設定**: `resources/oidc-authentication.md`
 3. **セキュリティベストプラクティス**: `resources/secret-best-practices.md`
 4. **実装例**: `templates/oidc-examples.yaml`

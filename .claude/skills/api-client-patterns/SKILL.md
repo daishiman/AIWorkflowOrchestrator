@@ -2,8 +2,17 @@
 name: api-client-patterns
 description: |
   外部API統合における構造的パターンと腐敗防止層（Anti-Corruption Layer）の設計を専門とするスキル。
-  サム・ニューマンの『Building Microservices』の思想に基づき、外部システムの変更から
-  内部ドメインを保護する境界設計を提供します。
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/api-client-patterns/resources/adapter-pattern.md`: Adapter Pattern for API Clients
+  - `.claude/skills/api-client-patterns/resources/anti-corruption-layer.md`: Anti-Corruption Layer (腐敗防止層)
+  - `.claude/skills/api-client-patterns/resources/data-transformer-patterns.md`: Data Transformer Patterns
+  - `.claude/skills/api-client-patterns/resources/facade-pattern.md`: Facade Pattern for API Integration
+  - `.claude/skills/api-client-patterns/templates/api-client-template.ts`: API Client Template
+  - `.claude/skills/api-client-patterns/templates/transformer-template.ts`: Data Transformer Template
+  - `.claude/skills/api-client-patterns/scripts/validate-api-client.mjs`: API Client Structure Validator
 
   専門分野:
   - Adapter Pattern: 外部APIインターフェースを内部で使いやすい形に変換

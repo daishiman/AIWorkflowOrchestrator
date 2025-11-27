@@ -2,7 +2,16 @@
 name: clean-code-practices
 description: |
   ロバート・C・マーティン（Uncle Bob）の『Clean Code』に基づくコード品質プラクティスを専門とするスキル。
-  意味のある命名、小さな関数、DRY原則を適用して可読性の高いコードを実現します。
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/clean-code-practices/resources/comments-and-documentation.md`: コメントとドキュメンテーション
+  - `.claude/skills/clean-code-practices/resources/dry-principle.md`: DRY原則（Do Not Repeat Yourself）
+  - `.claude/skills/clean-code-practices/resources/meaningful-names.md`: 意図を明確にする命名・発音しやすい名前・検索しやすい名前の原則と変数/関数/クラス/ブール値の品詞別命名規則
+  - `.claude/skills/clean-code-practices/resources/small-functions.md`: 5-10行の理想サイズ・単一責任原則・抽象度の統一・パラメータ3つ以下の関数設計ガイドライン
+  - `.claude/skills/clean-code-practices/templates/code-review-checklist.md`: コードレビューチェックリスト
+  - `.claude/skills/clean-code-practices/scripts/measure-code-quality.mjs`: コード品質測定スクリプト
 
   専門分野:
   - 意味のある命名: 変数、関数、クラスの命名規則

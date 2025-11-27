@@ -4,6 +4,12 @@ description: |
   Railway Secrets管理スキル。Railway環境グループ、Variables vs Secrets、
   Neon Plugin自動注入、Railway CLI統合、一時ファイルセキュリティを提供します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/railway-secrets-management/resources/railway-secrets-guide.md`: Railway Secrets 詳細ガイド
+
   使用タイミング:
   - RailwayプロジェクトのSecret管理を設計する時
   - Railway環境グループを設定する時
@@ -20,28 +26,31 @@ version: 1.0.0
 
 ## 概要
 
-Railwayは、環境変数を暗号化して保存し、デプロイ時にアプリケーションに注入する
-Secrets管理機能を提供します。このスキルは、Railway固有の機能を最大限活用した
-セキュアなSecret管理を実現します。
+Railway は、環境変数を暗号化して保存し、デプロイ時にアプリケーションに注入する
+Secrets 管理機能を提供します。このスキルは、Railway 固有の機能を最大限活用した
+セキュアな Secret 管理を実現します。
 
 ## Railway Secrets vs Variables
 
 ### Secrets（機密情報）
 
 **特徴**:
+
 - 暗号化保存
-- UI上でマスク表示（***）
+- UI 上でマスク表示（\*\*\*）
 - 監査ログ記録
 - アクセス制限可能
 
 **用途**:
-- APIキー（OPENAI_API_KEY、STRIPE_SECRET_KEY）
+
+- API キー（OPENAI_API_KEY、STRIPE_SECRET_KEY）
 - データベースパスワード（DATABASE_URL）
 - 暗号化キー（NEXTAUTH_SECRET）
 - OAuth Client Secret
 - Webhook URL（DISCORD_WEBHOOK_URL）
 
 **設定方法**:
+
 ```
 Railway Dashboard
 → Project
@@ -57,20 +66,22 @@ Railway Dashboard
 ### Variables（非機密設定）
 
 **特徴**:
+
 - 平文保存
-- UI上で表示可能
+- UI 上で表示可能
 - 監査ログなし
 
 **用途**:
+
 - アプリケーション名（APP_NAME）
 - ログレベル（LOG_LEVEL）
 - 機能フラグ（ENABLE_FEATURE_X）
-- 公開URL（API_BASE_URL）
+- 公開 URL（API_BASE_URL）
 - ポート番号（PORT）
 
 **重要**: 機密情報は必ず「Mark as secret」をチェック
 
-## Railway環境グループ管理
+## Railway 環境グループ管理
 
 ### 環境の作成
 
@@ -126,7 +137,7 @@ Project: MyApp
         - DATABASE_URL=<auto-injected>
 ```
 
-### Railway CLIでの環境変数管理
+### Railway CLI での環境変数管理
 
 ```bash
 # 環境選択
@@ -161,6 +172,7 @@ Railway Dashboard
 ```
 
 **自動注入される環境変数**:
+
 ```bash
 DATABASE_URL=postgresql://user:password@ep-xxx.neon.tech/dbname?sslmode=require
 DATABASE_PRIVATE_URL=postgresql://user:password@internal-xxx.neon.tech/dbname
@@ -171,12 +183,14 @@ POSTGRES_HOST=ep-xxx.neon.tech
 ```
 
 **メリット**:
-- 環境毎に自動分離（dev/staging/prodで別DBインスタンス）
-- 手動設定不要
-- SSL/TLS自動有効化
-- Rotation時の自動更新
 
-**.env.exampleへの記載**:
+- 環境毎に自動分離（dev/staging/prod で別 DB インスタンス）
+- 手動設定不要
+- SSL/TLS 自動有効化
+- Rotation 時の自動更新
+
+**.env.example への記載**:
+
 ```bash
 # Database（Neon Plugin自動注入）
 # ローカル開発: railway run npm run dev で自動注入
@@ -188,7 +202,8 @@ DATABASE_URL=postgresql://user:password@localhost:5432/mydb_dev
 
 ### ローカル開発フロー
 
-**方法1: railway run（推奨）**
+**方法 1: railway run（推奨）**
+
 ```bash
 # Railwayから環境変数を注入して実行
 railway run npm run dev
@@ -199,7 +214,8 @@ railway run npm run dev
 # - 環境選択が明示的
 ```
 
-**方法2: ローカル.env（非推奨）**
+**方法 2: ローカル.env（非推奨）**
+
 ```bash
 # Railway Secretsをローカルファイルにダウンロード
 railway variables --json | jq -r 'to_entries | .[] | "\(.key)=\(.value)"' > .env.local
@@ -213,9 +229,10 @@ railway variables --json | jq -r 'to_entries | .[] | "\(.key)=\(.value)"' > .env
 rm .env.local
 ```
 
-### Railway Tokenセキュリティ
+### Railway Token セキュリティ
 
-**Token取得**:
+**Token 取得**:
+
 ```
 Railway Dashboard
 → Account Settings
@@ -228,7 +245,8 @@ Railway Dashboard
 → Create
 ```
 
-**Token保存**（GitHub Secrets）:
+**Token 保存**（GitHub Secrets）:
+
 ```
 GitHub Repo
 → Settings
@@ -239,7 +257,8 @@ GitHub Repo
 → Add secret
 ```
 
-**Rotation（90日毎）**:
+**Rotation（90 日毎）**:
+
 ```bash
 # 1. Railway Dashboardで新Token生成
 # 2. GitHub SecretsのRAILWAY_TOKENを更新
@@ -249,27 +268,27 @@ GitHub Repo
 
 ## Railway Logs セキュリティ
 
-### ログへのSecret露出防止
+### ログへの Secret 露出防止
 
 ```typescript
 // ❌ 危険: SecretをログにNO出力
-console.log('API Key:', process.env.OPENAI_API_KEY);
+console.log("API Key:", process.env.OPENAI_API_KEY);
 // Railway Logs に露出！
 
 // ✅ 安全: Secretをマスク
-console.log('API Key: ***');
+console.log("API Key: ***");
 
 // ✅ 安全: 構造化ログでSecretを除外
 logger.info({
-  event: 'api_call',
-  endpoint: '/api/chat',
+  event: "api_call",
+  endpoint: "/api/chat",
   // api_key は含めない
   user_id: userId,
   timestamp: new Date(),
 });
 ```
 
-### Railway Logsでの事後確認
+### Railway Logs での事後確認
 
 ```
 Railway Dashboard
@@ -293,14 +312,16 @@ Railway Dashboard
 ### /tmp ディレクトリの揮発性
 
 **Railway の仕様**:
-- `/tmp`ディレクトリは**再デプロイ時に完全削除**される
-- 永続化が必要なデータは外部ストレージ使用（S3、Cloudinary等）
 
-**Secretの一時保存禁止**:
+- `/tmp`ディレクトリは**再デプロイ時に完全削除**される
+- 永続化が必要なデータは外部ストレージ使用（S3、Cloudinary 等）
+
+**Secret の一時保存禁止**:
+
 ```typescript
 // ❌ 危険: Secretをファイルに保存
-import fs from 'fs';
-fs.writeFileSync('/tmp/api-key.txt', process.env.API_KEY);
+import fs from "fs";
+fs.writeFileSync("/tmp/api-key.txt", process.env.API_KEY);
 
 // ✅ 安全: Secretはメモリ内のみ
 const apiKey = process.env.API_KEY;
@@ -310,14 +331,14 @@ const apiKey = process.env.API_KEY;
 ### アップロードファイルのスキャン
 
 ```typescript
-import { Readable } from 'stream';
+import { Readable } from "stream";
 
 class UploadSecurityScanner {
   private secretPatterns = [
-    /sk-proj-[a-zA-Z0-9]{48}/,  // OpenAI
-    /sk_live_[0-9a-zA-Z]{24,}/,  // Stripe
-    /-----BEGIN .* PRIVATE KEY-----/,  // Private Key
-    /AKIA[0-9A-Z]{16}/,  // AWS Access Key
+    /sk-proj-[a-zA-Z0-9]{48}/, // OpenAI
+    /sk_live_[0-9a-zA-Z]{24,}/, // Stripe
+    /-----BEGIN .* PRIVATE KEY-----/, // Private Key
+    /AKIA[0-9A-Z]{16}/, // AWS Access Key
   ];
 
   async scanFile(file: File): Promise<void> {
@@ -326,7 +347,7 @@ class UploadSecurityScanner {
     for (const pattern of this.secretPatterns) {
       if (pattern.test(content)) {
         throw new Error(
-          'Uploaded file contains potential secret - upload rejected'
+          "Uploaded file contains potential secret - upload rejected"
         );
       }
     }
@@ -334,7 +355,7 @@ class UploadSecurityScanner {
 }
 
 // Uploadエンドポイントで使用
-app.post('/api/upload', async (req, res) => {
+app.post("/api/upload", async (req, res) => {
   const file = req.file;
 
   // Secret スキャン
@@ -370,7 +391,7 @@ production-green（新バージョン）
 5. production-blueを監視期間保持
 ```
 
-### ローリングアップデート（Secret Rotation時）
+### ローリングアップデート（Secret Rotation 時）
 
 ```bash
 # Phase 1: 新Secretを追加
@@ -388,34 +409,38 @@ railway variables delete API_KEY_OLD
 
 ## 実装チェックリスト
 
-### Railway設定
+### Railway 設定
+
 - [ ] すべての機密情報が「Mark as secret」されているか？
-- [ ] 環境グループが3つ設定されているか？（dev/staging/prod）
-- [ ] Neon Pluginが各環境に設定されているか？
-- [ ] Variables（非機密）とSecrets（機密）が適切に分類されているか？
+- [ ] 環境グループが 3 つ設定されているか？（dev/staging/prod）
+- [ ] Neon Plugin が各環境に設定されているか？
+- [ ] Variables（非機密）と Secrets（機密）が適切に分類されているか？
 
 ### Railway CLI
-- [ ] Railway Tokenが安全に保管されているか？（GitHub Secrets）
-- [ ] Token権限が最小化されているか？（Deploy only）
-- [ ] TokenのRotationスケジュールがあるか？（90日）
+
+- [ ] Railway Token が安全に保管されているか？（GitHub Secrets）
+- [ ] Token 権限が最小化されているか？（Deploy only）
+- [ ] Token の Rotation スケジュールがあるか？（90 日）
 - [ ] `railway variables`でダウンロードしたファイルが即座に削除されるか？
 
 ### ログセキュリティ
-- [ ] ログ出力にSecretが含まれないか？
-- [ ] Railway Logsで定期的にSecret露出をチェックしているか？
-- [ ] 構造化ログでSecretフィールドが除外されているか？
+
+- [ ] ログ出力に Secret が含まれないか？
+- [ ] Railway Logs で定期的に Secret 露出をチェックしているか？
+- [ ] 構造化ログで Secret フィールドが除外されているか？
 
 ### 一時ファイル
-- [ ] /tmpディレクトリへのSecret保存を避けているか？
+
+- [ ] /tmp ディレクトリへの Secret 保存を避けているか？
 - [ ] アップロードファイルがスキャンされているか？
 - [ ] 永続化が必要なデータは外部ストレージ使用か？
 
 ## 関連スキル
 
-- `.claude/skills/github-actions-security/SKILL.md` - GitHub Actions統合
+- `.claude/skills/github-actions-security/SKILL.md` - GitHub Actions 統合
 - `.claude/skills/environment-isolation/SKILL.md` - 環境分離戦略
-- `.claude/skills/secret-management-architecture/SKILL.md` - Secret管理アーキテクチャ
+- `.claude/skills/secret-management-architecture/SKILL.md` - Secret 管理アーキテクチャ
 
 ## リソースファイル
 
-- `resources/railway-secrets-guide.md` - Railway Secrets詳細ガイド
+- `resources/railway-secrets-guide.md` - Railway Secrets 詳細ガイド

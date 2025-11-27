@@ -1,28 +1,37 @@
 ---
 name: connection-pooling
 description: |
-  データベース接続プール管理の専門スキル。
-  サーバーレス環境での接続管理、Neon/Supabaseの接続プーリング、
-  高負荷時の接続最適化を専門とします。
+    データベース接続プール管理の専門スキル。
+    サーバーレス環境での接続管理、Neon/Supabaseの接続プーリング、
+    高負荷時の接続最適化を専門とします。
+    専門分野:
+    - 接続プール設計: 環境に応じた最適なプール設定
+    - サーバーレス対応: Neon/Supabaseでの接続管理
+    - Drizzle ORM統合: DrizzleでのDB接続設定
+    - 障害対策: 接続エラーハンドリングとリトライ
+    - 監視: 接続状態の監視とアラート
+    使用タイミング:
+    - 新規プロジェクトでDB接続を設定する時
+    - 接続プールのサイジングを決める時
+    - サーバーレス環境での接続問題を解決する時
+    - 接続エラーが頻発する時
+    - 高負荷時の接続最適化が必要な時
+    Use proactively when setting up database connections,
+    troubleshooting connection issues, or optimizing for serverless.
 
-  専門分野:
-  - 接続プール設計: 環境に応じた最適なプール設定
-  - サーバーレス対応: Neon/Supabaseでの接続管理
-  - Drizzle ORM統合: DrizzleでのDB接続設定
-  - 障害対策: 接続エラーハンドリングとリトライ
-  - 監視: 接続状態の監視とアラート
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
 
-  使用タイミング:
-  - 新規プロジェクトでDB接続を設定する時
-  - 接続プールのサイジングを決める時
-  - サーバーレス環境での接続問題を解決する時
-  - 接続エラーが頻発する時
-  - 高負荷時の接続最適化が必要な時
+  - `.claude/skills/connection-pooling/resources/error-handling.md`: 接続エラーのハンドリングとリトライ戦略
+  - `.claude/skills/connection-pooling/resources/pool-sizing-guide.md`: 環境別プールサイズ設定と計算式
+  - `.claude/skills/connection-pooling/resources/serverless-connections.md`: Neon/Supabaseでのサーバーレス接続管理
+  - `.claude/skills/connection-pooling/templates/drizzle-config-template.ts`: Drizzle ORM接続設定テンプレート
+  - `.claude/skills/connection-pooling/scripts/check-connections.mjs`: 接続状態の確認と診断スクリプト
 
-  Use proactively when setting up database connections,
-  troubleshooting connection issues, or optimizing for serverless.
 version: 1.0.0
 ---
+
 
 # Connection Pooling
 

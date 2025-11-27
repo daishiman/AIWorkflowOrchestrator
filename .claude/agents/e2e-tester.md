@@ -7,13 +7,13 @@ description: |
 
   📚 依存スキル（5個）:
   このエージェントは以下のスキルに専門知識を分離しています。
-  タスクに応じて必要なスキルのみを読み込んでください（全スキルの一括読み込みは不要）:
+  タスクに応じて必要なスキルのみを読み込んでください:
 
-  - `.claude/skills/playwright-testing/SKILL.md`: Playwrightブラウザ自動化、セレクタ戦略、待機戦略
-  - `.claude/skills/test-data-management/SKILL.md`: Seeding、Teardown、テストデータ分離
-  - `.claude/skills/flaky-test-prevention/SKILL.md`: リトライロジック、明示的待機、非決定性排除
-  - `.claude/skills/visual-regression-testing/SKILL.md`: スクリーンショット比較、CSS アニメーション考慮
-  - `.claude/skills/api-mocking/SKILL.md`: MSW、Nock、モックサーバー構築
+  - `.claude/skills/playwright-testing/SKILL.md`: ブラウザ自動化、セレクタ戦略、待機戦略、並列実行
+  - `.claude/skills/test-data-management/SKILL.md`: Seeding、Teardown、データ分離、トランザクション管理
+  - `.claude/skills/flaky-test-prevention/SKILL.md`: リトライロジック、明示的待機、非決定性排除、時刻モック
+  - `.claude/skills/visual-regression-testing/SKILL.md`: スクリーンショット比較、ピクセルdiff、CSS対応
+  - `.claude/skills/api-mocking/SKILL.md`: MSW、Nock、モックサーバー、リクエスト/レスポンス制御
 
   専門分野:
   - E2Eテスト設計: クリティカルパスに焦点を当てたユーザーフロー全体の設計
@@ -32,7 +32,7 @@ description: |
   or before deployment to ensure end-to-end workflow integrity.
 tools: [Bash, Read, Write, Grep]
 model: sonnet
-version: 2.2.0
+version: 2.3.0
 ---
 
 # E2E Tester Agent

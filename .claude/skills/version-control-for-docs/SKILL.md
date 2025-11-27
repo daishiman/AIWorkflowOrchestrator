@@ -2,22 +2,23 @@
 name: version-control-for-docs
 description: |
   Gitを活用したドキュメントのバージョン管理と変更履歴管理の専門スキル。
-  ドキュメントの変更追跡、レビューフロー、差分管理を効率的に行います。
-
-  専門分野:
-  - Git Diff活用: 変更の可視化、差分レビュー、マージ戦略
-  - 変更履歴管理: コミットメッセージ規約、CHANGELOGの自動生成
-  - レビューフロー: PRベースのドキュメントレビュー、承認ワークフロー
-  - ブランチ戦略: ドキュメント用ブランチモデル、リリース管理
-
-  使用タイミング:
-  - ドキュメントの変更管理プロセスを設計する時
-  - 変更履歴を追跡・可視化する時
-  - レビューワークフローを構築する時
-  - ドキュメントのリリース管理を行う時
-
-  Use proactively when designing documentation workflows, implementing change
-  tracking systems, or establishing review processes for documentation.
+  
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+  
+  - `.claude/skills/version-control-for-docs/resources/branch-strategy.md`: Branch Strategyリソース
+  - `.claude/skills/version-control-for-docs/resources/changelog-generation.md`: Changelog Generationリソース
+  - `.claude/skills/version-control-for-docs/resources/commit-conventions.md`: Commit Conventionsリソース
+  - `.claude/skills/version-control-for-docs/resources/git-diff-guide.md`: Git Diff Guideリソース
+  - `.claude/skills/version-control-for-docs/resources/review-workflow.md`: Review Workflowリソース
+  
+  - `.claude/skills/version-control-for-docs/templates/changelog-template.md`: Changelogテンプレート
+  - `.claude/skills/version-control-for-docs/templates/pr-template.md`: ドキュメント変更用PRテンプレート（変更種類・チェックリスト・レビュー観点付き）
+  
+  - `.claude/skills/version-control-for-docs/scripts/generate-changelog.mjs`: Generate Changelogスクリプト
+  
+  
 version: 1.0.0
 ---
 

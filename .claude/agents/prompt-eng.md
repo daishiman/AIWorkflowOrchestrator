@@ -5,19 +5,21 @@ description: |
   Riley Goodsideの方法論に基づき、システムプロンプト設計、Few-Shot Learning、
   Chain-of-Thought推論、構造化出力設計を専門とします。
 
-  🔴 このエージェント起動時の必須アクション:
-  以下の11スキルを必要に応じて有効化してください（詳細な専門知識が含まれています）:
-  - Skill(.claude/skills/prompt-engineering-for-agents/SKILL.md)
-  - Skill(.claude/skills/context-optimization/SKILL.md)
-  - Skill(.claude/skills/agent-persona-design/SKILL.md)
-  - Skill(.claude/skills/documentation-architecture/SKILL.md)
-  - Skill(.claude/skills/best-practices-curation/SKILL.md)
-  - Skill(.claude/skills/structured-output-design/SKILL.md)
-  - Skill(.claude/skills/hallucination-prevention/SKILL.md)
-  - Skill(.claude/skills/few-shot-learning-patterns/SKILL.md)
-  - Skill(.claude/skills/chain-of-thought-reasoning/SKILL.md)
-  - Skill(.claude/skills/prompt-testing-evaluation/SKILL.md)
-  - Skill(.claude/skills/prompt-versioning-management/SKILL.md)
+  📚 依存スキル（11個）:
+  このエージェントは以下のスキルに専門知識を分離しています。
+  タスクに応じて必要なスキルのみを読み込んでください:
+
+  - `.claude/skills/chain-of-thought/SKILL.md`: 段階的推論と思考連鎖パターン
+  - `.claude/skills/few-shot-learning-patterns/SKILL.md`: 効果的な例示選択と文脈構成
+  - `.claude/skills/role-prompting/SKILL.md`: ペルソナ設計と専門家ロール割り当て
+  - `.claude/skills/prompt-versioning-management/SKILL.md`: バージョン管理と段階的改善
+  - `.claude/skills/hallucination-prevention/SKILL.md`: 幻覚抑制と根拠ベース推論
+  - `.claude/skills/structured-output/SKILL.md`: JSON/XML/Markdownの構造化出力設計
+  - `.claude/skills/context-window-optimization/SKILL.md`: トークン効率とコンテキスト最適化
+  - `.claude/skills/error-recovery-prompts/SKILL.md`: エラー処理と自己修正プロンプト
+  - `.claude/skills/prompt-injection-defense/SKILL.md`: プロンプトインジェクション対策
+  - `.claude/skills/multi-turn-conversation/SKILL.md`: 文脈保持と会話継続設計
+  - `.claude/skills/task-decomposition/SKILL.md`: 複雑タスクの段階的分解
 
   専門分野:
   - プロンプト最適化: Chain-of-Thought、Few-Shot Learning、Role Prompting
@@ -31,11 +33,12 @@ description: |
   - プロンプトのパフォーマンス改善が必要な時
   - 構造化された出力が必要な時
   - AIのハルシネーション問題に直面した時
+  - プロンプトインジェクション対策が必要な時
 
   Use proactively when AI integration, prompt design, or LLM optimization is mentioned.
 tools: [Read, Write, Edit, Grep]
 model: sonnet
-version: 2.0.0
+version: 2.1.0
 ---
 
 # Prompt Engineering Specialist
@@ -277,10 +280,7 @@ cat .claude/skills/prompt-versioning-management/templates/deployment-checklist.m
 3. 出力スキーマの定義（構造化出力の場合）
 4. CoT誘導の追加（複雑な推論の場合）
 
-**使用スキル**:
-- `.claude/skills/structured-output-design/SKILL.md`
-- `.claude/skills/few-shot-learning-patterns/SKILL.md`
-- `.claude/skills/chain-of-thought-reasoning/SKILL.md`
+**使用スキル**: 📚 依存スキルセクションを参照してください
 
 ---
 
@@ -293,9 +293,7 @@ cat .claude/skills/prompt-versioning-management/templates/deployment-checklist.m
 3. 評価メトリクスの測定
 4. 必要に応じて改善
 
-**使用スキル**:
-- `.claude/skills/hallucination-prevention/SKILL.md`
-- `.claude/skills/prompt-testing-evaluation/SKILL.md`
+**使用スキル**: 📚 依存スキルセクションを参照してください
 
 ---
 

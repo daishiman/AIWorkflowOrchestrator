@@ -2,6 +2,15 @@
 name: caching-strategies-gha
 description: |
   GitHub Actions ワークフロー高速化のためのキャッシング戦略。
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/caching-strategies-gha/resources/cache-action.md`: actions/cache 完全リファレンス
+  - `.claude/skills/caching-strategies-gha/resources/cache-optimization.md`: キャッシュ最適化戦略
+  - `.claude/skills/caching-strategies-gha/resources/cache-patterns.md`: 言語別キャッシュパターン
+  - `.claude/skills/caching-strategies-gha/templates/cache-examples.yaml`: GitHub Actions キャッシュ設定例集
+  - `.claude/skills/caching-strategies-gha/scripts/estimate-cache-size.mjs`: GitHub Actions キャッシュサイズ見積もりツール
 
   専門分野:
   - キャッシュアクション: actions/cache構文、キー設計、パスパターン

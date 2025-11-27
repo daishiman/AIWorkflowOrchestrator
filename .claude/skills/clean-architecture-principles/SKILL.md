@@ -2,8 +2,15 @@
 name: clean-architecture-principles
 description: |
   ロバート・C・マーティン（Uncle Bob）の『Clean Architecture』に基づく
-  アーキテクチャ原則と依存関係ルールを専門とするスキル。
-  ビジネスロジックを技術的詳細から隔離し、保守性とテスト容易性を実現します。
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/clean-architecture-principles/resources/dependency-rule.md`: 内側→外側依存の禁止ルール、インポート文・型参照・継承での違反検出と対処法
+  - `.claude/skills/clean-architecture-principles/resources/hybrid-architecture-mapping.md`: ハイブリッドアーキテクチャへのマッピング
+  - `.claude/skills/clean-architecture-principles/resources/layer-structure.md`: Entities・Use Cases・Interface Adapters・Frameworksの4層構造と各層の責務・依存制約・チェックリスト
+  - `.claude/skills/clean-architecture-principles/templates/architecture-review-checklist.md`: アーキテクチャレビューチェックリスト
+  - `.claude/skills/clean-architecture-principles/scripts/check-layer-violation.mjs`: Clean Architecture レイヤー違反検出スクリプト
 
   専門分野:
   - 依存関係ルール: 依存の方向は常に「外側から内側へ」のみ

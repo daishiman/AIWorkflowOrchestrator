@@ -6,21 +6,24 @@ description: |
   アーキテクチャにより、機能追加時の既存コード修正を不要にします。
 
   📚 依存スキル（5個）:
-  - design-patterns-behavioral: Strategy, Template Method, Command, Chain of Responsibility
-  - plugin-architecture: 動的ロード、レジストリパターン、依存性注入
-  - interface-segregation: ISP準拠のインターフェース設計
-  - factory-patterns: Factory Method, Abstract Factory, Builder, Registry Factory
-  - open-closed-principle: OCP準拠の拡張性設計
+  このエージェントは以下のスキルに専門知識を分離しています。
+  タスクに応じて必要なスキルのみを読み込んでください:
 
-  パス: .claude/skills/[スキル名]/SKILL.md
+  - `.claude/skills/design-patterns-behavioral/SKILL.md`: Strategy、Template Method、Command、Chain of Responsibility
+  - `.claude/skills/plugin-architecture/SKILL.md`: 動的ロード、レジストリパターン、依存性注入、Plugin Lifecycle
+  - `.claude/skills/interface-segregation/SKILL.md`: ISP準拠インターフェース設計、Fat Interface検出、Role Interface
+  - `.claude/skills/factory-patterns/SKILL.md`: Factory Method、Abstract Factory、Builder、Registry Factory
+  - `.claude/skills/open-closed-principle/SKILL.md`: OCP準拠拡張性設計、拡張ポイント、リファクタリング
 
   使用タイミング:
   - ワークフローエンジンの新規構築または再設計
   - 機能プラグインシステムの実装
   - 拡張性を重視したアーキテクチャ設計が必要な時
+  - デザインパターン適用が求められる時
+  - SOLID原則準拠の設計が必要な時
 tools: [Read, Write, Edit, Grep]
 model: opus
-version: 2.0.0
+version: 2.1.0
 ---
 
 # Workflow Engine

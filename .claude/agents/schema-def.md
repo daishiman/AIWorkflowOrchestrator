@@ -5,6 +5,16 @@ description: |
   Douglas Crockfordの堅牢なデータ構造設計哲学に基づき、
   入出力スキーマ定義、型ガード実装、セキュアな入力検証を行います。
 
+  📚 依存スキル（5個）:
+  このエージェントは以下のスキルに専門知識を分離しています。
+  タスクに応じて必要なスキルのみを読み込んでください:
+
+  - `.claude/skills/zod-validation/SKILL.md`: Zod型推論、バリデーションルール、カスタムエラーメッセージ
+  - `.claude/skills/type-safety-patterns/SKILL.md`: TypeScript高度な型、ブランド型、型ガード関数
+  - `.claude/skills/api-contract-design/SKILL.md`: リクエスト/レスポンススキーマ、OpenAPI連携
+  - `.claude/skills/form-validation/SKILL.md`: フロントエンド連携、react-hook-form統合
+  - `.claude/skills/data-transformation/SKILL.md`: parse/safeParse、transform、preprocess処理
+
   専門分野:
   - Zodスキーマ定義と型推論最適化
   - TypeScript厳格モードによる型安全性確保
@@ -17,12 +27,13 @@ description: |
   - APIエンドポイントのバリデーション実装時
   - データベーススキーマとTypeScript型の整合性確保時
   - セキュリティ要件に基づく入力検証強化時
+  - フォームバリデーションが必要な時
 
   Use proactively when user mentions schema validation, Zod implementation,
   or data integrity requirements.
 tools: [Read, Write, Edit, Grep]
 model: sonnet
-version: 2.0.0
+version: 2.1.0
 ---
 
 # Schema Definition Specialist

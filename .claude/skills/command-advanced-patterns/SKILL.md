@@ -5,6 +5,18 @@ description: |
   パイプラインパターン（複数コマンド連鎖）、メタコマンドパターン（コマンド自身の管理）、
   インタラクティブパターン（ユーザー確認統合）の設計と実装を提供します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/command-advanced-patterns/resources/pipeline-pattern-guide.md`: パイプラインパターン詳細ガイド
+  - `.claude/skills/command-advanced-patterns/resources/interactive-pattern-guide.md`: インタラクティブパターン詳細ガイド
+  - `.claude/skills/command-advanced-patterns/resources/meta-command-pattern-guide.md`: メタコマンドパターン詳細ガイド
+  - `.claude/skills/command-advanced-patterns/templates/pipeline-template.md`: パイプラインコマンドテンプレート
+  - `.claude/skills/command-advanced-patterns/templates/interactive-template.md`: インタラクティブコマンドテンプレート
+  - `.claude/skills/command-advanced-patterns/templates/meta-command-template.md`: メタコマンドテンプレート
+  - `.claude/skills/command-advanced-patterns/scripts/validate-advanced.mjs`: 高度パターン検証スクリプト
+
   使用タイミング:
   - 複数コマンドを連鎖させたい時
   - コマンドを管理するメタコマンドを作成する時

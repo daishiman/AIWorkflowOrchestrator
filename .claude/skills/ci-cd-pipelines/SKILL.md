@@ -2,7 +2,19 @@
 name: ci-cd-pipelines
 description: |
   ジーン・キムのDevOps原則に基づくCI/CDパイプライン設計と実装を専門とするスキル。
-  GitHub Actionsを中心に、継続的インテグレーション/デリバリーの自動化を実現します。
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/ci-cd-pipelines/resources/caching-strategies.md`: pnpm/npm/yarn依存関係キャッシュ、Next.js/Turboビルドキャッシュの実装パターンと10GB制限対策
+  - `.claude/skills/ci-cd-pipelines/resources/github-actions-syntax.md`: GitHub Actions構文リファレンス
+  - `.claude/skills/ci-cd-pipelines/resources/parallelization.md`: 並列化とマトリクスビルド
+  - `.claude/skills/ci-cd-pipelines/resources/pipeline-patterns.md`: パイプラインアーキテクチャパターン
+  - `.claude/skills/ci-cd-pipelines/resources/quality-gates.md`: 静的チェック・テスト・セキュリティの3層品質ゲートとブランチ保護設定パターン
+  - `.claude/skills/ci-cd-pipelines/templates/ci-workflow-template.yml`: CI Workflow Template
+  - `.claude/skills/ci-cd-pipelines/templates/deploy-workflow-template.yml`: Deploy Workflow Template
+  - `.claude/skills/ci-cd-pipelines/templates/reusable-workflow-template.yml`: Reusable Workflow Template
+  - `.claude/skills/ci-cd-pipelines/scripts/validate-workflow.mjs`: GitHub Actions Workflow Validator
 
   専門分野:
   - GitHub Actions設計: ワークフロー構文、トリガー設定、ジョブ構成

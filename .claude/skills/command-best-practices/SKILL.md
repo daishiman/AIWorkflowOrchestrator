@@ -5,6 +5,15 @@ description: |
   単一責任原則、組み合わせ可能性、冪等性の原則、
   DRYの適用、保守性の高い設計を提供します。
 
+  📚 リソース参照:
+  このスキルには以下のリソースが含まれています。
+  必要に応じて該当するリソースを参照してください:
+
+  - `.claude/skills/command-best-practices/resources/single-responsibility-principle.md`: 1コマンド=1責任の原則、複数責任検出基準（「〜と〜」「異なるタイミング実行」）とリファクタリング手法
+  - `.claude/skills/command-best-practices/resources/composability-principle.md`: 合成可能性原則の適用
+  - `.claude/skills/command-best-practices/templates/best-practice-checklist.md`: ベストプラクティスチェックリスト
+  - `.claude/skills/command-best-practices/scripts/check-best-practices.mjs`: ベストプラクティス検証スクリプト
+
   使用タイミング:
   - コマンド設計の原則を確認したい時
   - 既存コマンドをリファクタリングする時
