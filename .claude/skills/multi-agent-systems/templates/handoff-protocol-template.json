@@ -1,0 +1,212 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Multi-Agent Handoff Protocol Template",
+  "description": "エージェント間のハンドオフプロトコル標準テンプレート",
+  "version": "1.0.0",
+
+  "handoff_protocol": {
+    "from_agent": "{{from_agent_name}}",
+    "to_agent": "{{to_agent_name}}",
+    "status": "completed | partial | failed",
+    "timestamp": "{{ISO8601_timestamp}}",
+
+    "summary": {
+      "task_description": "実施したタスクの概要",
+      "outcome": "タスクの結果",
+      "key_findings": [
+        "発見事項1",
+        "発見事項2"
+      ]
+    },
+
+    "artifacts": {
+      "created_files": [
+        {
+          "path": "path/to/file",
+          "description": "ファイルの説明",
+          "type": "code | config | documentation | test"
+        }
+      ],
+      "modified_files": [
+        {
+          "path": "path/to/file",
+          "changes_summary": "変更内容の概要"
+        }
+      ]
+    },
+
+    "context": {
+      "key_decisions": [
+        {
+          "decision": "決定内容",
+          "rationale": "理由",
+          "alternatives_considered": ["代替案1", "代替案2"]
+        }
+      ],
+      "unresolved_issues": [
+        {
+          "issue": "未解決の問題",
+          "severity": "high | medium | low",
+          "suggested_approach": "推奨アプローチ"
+        }
+      ],
+      "next_steps": [
+        {
+          "action": "次のアクション",
+          "priority": "high | medium | low",
+          "assigned_to": "担当エージェント（オプション）"
+        }
+      ],
+      "assumptions": [
+        "前提条件1",
+        "前提条件2"
+      ]
+    },
+
+    "metadata": {
+      "duration": "実行時間（例: 5m30s）",
+      "model_used": "使用モデル（例: sonnet）",
+      "token_count": 0,
+      "tool_calls": [
+        {
+          "tool": "使用したツール",
+          "count": 0
+        }
+      ]
+    }
+  },
+
+  "collaboration_patterns": {
+    "delegation": {
+      "description": "上位エージェントから下位エージェントへのタスク委譲",
+      "diagram": "Orchestrator → Worker1, Worker2",
+      "use_case": "複雑なタスクを分割して処理",
+      "example": {
+        "orchestrator": "task-orchestrator",
+        "workers": ["code-implementer", "test-writer", "doc-writer"]
+      }
+    },
+    "chaining": {
+      "description": "エージェントが順次処理を引き継ぐ",
+      "diagram": "Agent1 → Agent2 → Agent3",
+      "use_case": "パイプライン処理、段階的な加工",
+      "example": {
+        "chain": ["analyzer", "designer", "implementer", "reviewer"]
+      }
+    },
+    "parallel": {
+      "description": "複数エージェントが独立して並行実行",
+      "diagram": "Agent1 ┐\nAgent2 ├→ Aggregator\nAgent3 ┘",
+      "use_case": "独立したサブタスクの同時処理",
+      "example": {
+        "parallel_agents": ["frontend-dev", "backend-dev", "test-writer"],
+        "aggregator": "integration-coordinator"
+      }
+    },
+    "feedback": {
+      "description": "後続エージェントが前段に結果をフィードバック",
+      "diagram": "Agent1 ⇄ Agent2",
+      "use_case": "反復的な改善、相互レビュー",
+      "example": {
+        "primary": "code-writer",
+        "reviewer": "code-reviewer",
+        "max_iterations": 3
+      }
+    }
+  },
+
+  "dependency_definition": {
+    "agent_name": "{{agent_name}}",
+    "dependencies": {
+      "prerequisites": [
+        {
+          "agent": "前提エージェント名",
+          "required_output": "必要な出力",
+          "optional": false
+        }
+      ],
+      "successors": [
+        {
+          "agent": "後続エージェント名",
+          "receives": "渡すデータ/成果物"
+        }
+      ],
+      "parallel": [
+        {
+          "agent": "並行エージェント名",
+          "shared_resource": "共有リソース（あれば）"
+        }
+      ],
+      "subagents": [
+        {
+          "agent": "サブエージェント名",
+          "purpose": "委譲目的",
+          "model": "使用モデル（オプション）"
+        }
+      ]
+    }
+  },
+
+  "examples": {
+    "simple_handoff": {
+      "from_agent": "requirements-analyst",
+      "to_agent": "system-architect",
+      "status": "completed",
+      "timestamp": "2025-11-27T10:30:00Z",
+      "summary": {
+        "task_description": "要件の抽出と優先順位付け",
+        "outcome": "12個の機能要件と5個の非機能要件を特定",
+        "key_findings": [
+          "認証システムが最優先",
+          "パフォーマンス要件は応答時間200ms以下"
+        ]
+      },
+      "artifacts": {
+        "created_files": [
+          {
+            "path": "docs/requirements/functional-requirements.md",
+            "description": "機能要件一覧",
+            "type": "documentation"
+          }
+        ],
+        "modified_files": []
+      },
+      "context": {
+        "key_decisions": [
+          {
+            "decision": "認証にJWTを使用",
+            "rationale": "スケーラビリティとステートレス性",
+            "alternatives_considered": ["セッションベース認証", "OAuth2のみ"]
+          }
+        ],
+        "unresolved_issues": [
+          {
+            "issue": "レート制限の閾値が未決定",
+            "severity": "medium",
+            "suggested_approach": "ベンチマーク後に決定"
+          }
+        ],
+        "next_steps": [
+          {
+            "action": "システムアーキテクチャ設計",
+            "priority": "high",
+            "assigned_to": "system-architect"
+          }
+        ],
+        "assumptions": [
+          "ユーザー数は初期10,000人を想定",
+          "マイクロサービスアーキテクチャを採用"
+        ]
+      },
+      "metadata": {
+        "duration": "15m20s",
+        "model_used": "sonnet",
+        "token_count": 25000,
+        "tool_calls": [
+          { "tool": "Read", "count": 8 },
+          { "tool": "Write", "count": 3 }
+        ]
+      }
+    }
+  }
+}

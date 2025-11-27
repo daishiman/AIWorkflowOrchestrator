@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agent Test Case Template",
+  "description": "エージェントのテストケース定義テンプレート",
+  "type": "object",
+  "required": ["test_id", "type", "name", "input", "expected_output", "success_criteria"],
+  "properties": {
+    "test_id": {
+      "type": "string",
+      "pattern": "^TC[0-9]{3}$",
+      "description": "テストケースID（例：TC001）",
+      "examples": ["TC001", "TC002", "TC003"]
+    },
+    "type": {
+      "type": "string",
+      "enum": ["normal", "edge", "error"],
+      "description": "テストタイプ（normal: 正常系, edge: エッジケース, error: 異常系）"
+    },
+    "name": {
+      "type": "string",
+      "description": "テストケース名",
+      "examples": ["基本的な動作テスト", "入力値境界テスト", "エラーハンドリングテスト"]
+    },
+    "description": {
+      "type": "string",
+      "description": "テストケースの詳細説明"
+    },
+    "preconditions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "前提条件のリスト",
+      "examples": [["依存スキルがロード済み", "プロジェクト構造が存在"]]
+    },
+    "input": {
+      "type": "object",
+      "required": ["task"],
+      "properties": {
+        "task": {
+          "type": "string",
+          "description": "テスト対象のタスク/入力"
+        },
+        "context": {
+          "type": "object",
+          "description": "追加のコンテキスト情報"
+        },
+        "parameters": {
+          "type": "object",
+          "description": "パラメータ設定"
+        }
+      }
+    },
+    "expected_behavior": {
+      "type": "string",
+      "description": "期待される動作の説明"
+    },
+    "expected_output": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["completed", "partial", "failed", "escalated"],
+          "description": "期待される完了ステータス"
+        },
+        "artifacts": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "期待される成果物のリスト"
+        },
+        "messages": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "期待されるメッセージ/ログ"
+        }
+      }
+    },
+    "success_criteria": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "description": "成功基準のリスト（すべて満たす必要あり）",
+      "examples": [["全Phaseが完了", "成果物が生成される", "エラーがない"]]
+    },
+    "cleanup": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "テスト後のクリーンアップ手順"
+    },
+    "notes": {
+      "type": "string",
+      "description": "追加のメモ/注意事項"
+    }
+  },
+  "examples": [
+    {
+      "test_id": "TC001",
+      "type": "normal",
+      "name": "基本的なエージェント作成テスト",
+      "description": "標準的なエージェント作成フローのテスト",
+      "preconditions": [
+        "meta-agent-designerが利用可能",
+        "必要なスキルがロード済み"
+      ],
+      "input": {
+        "task": "コードレビューエージェントを作成",
+        "context": {
+          "project_type": "TypeScript",
+          "scope": "単一ファイルレビュー"
+        }
+      },
+      "expected_behavior": "5段階ワークフローに従ってエージェントを設計",
+      "expected_output": {
+        "status": "completed",
+        "artifacts": [".claude/agents/code-reviewer.md"]
+      },
+      "success_criteria": [
+        "エージェントファイルが作成される",
+        "YAML Frontmatterが完全",
+        "全必須セクションが含まれる",
+        "品質スコア7点以上"
+      ]
+    },
+    {
+      "test_id": "TC002",
+      "type": "edge",
+      "name": "複雑な依存関係を持つエージェント作成",
+      "description": "多数のスキル依存を持つエージェントの作成テスト",
+      "input": {
+        "task": "オーケストレーターエージェントを作成",
+        "context": {
+          "dependencies": 5,
+          "sub_agents": 3
+        }
+      },
+      "expected_behavior": "依存関係を適切に解決しながらエージェントを設計",
+      "expected_output": {
+        "status": "completed",
+        "artifacts": [".claude/agents/orchestrator.md"]
+      },
+      "success_criteria": [
+        "循環依存がない",
+        "すべての依存スキルが参照可能",
+        "ハンドオフプロトコルが定義されている"
+      ]
+    },
+    {
+      "test_id": "TC003",
+      "type": "error",
+      "name": "無効な入力のエラーハンドリング",
+      "description": "不完全な要件でのエラー処理テスト",
+      "input": {
+        "task": "エージェントを作成",
+        "context": {}
+      },
+      "expected_behavior": "明確化のための質問を行う",
+      "expected_output": {
+        "status": "escalated",
+        "messages": ["エージェントの目的を明確にしてください"]
+      },
+      "success_criteria": [
+        "エスカレーションが発生",
+        "適切な質問が提示される",
+        "不完全な状態で実装を開始しない"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,180 @@
+# ツール権限設定テンプレート
+#
+# このテンプレートは、エージェントのツール権限を設定するためのものです。
+# エージェントの役割に応じて適切なセクションを使用してください。
+#
+# 使用方法:
+#   1. エージェントの役割に応じたツールカテゴリを選択
+#   2. 必要なセキュリティ設定を追加
+#   3. YAMLをエージェントファイルのFrontmatterに統合
+
+# ═══════════════════════════════════════════════════════════
+# カテゴリ1: 読み取り専用（分析・レビュー・監査）
+# リスク: 低
+# ═══════════════════════════════════════════════════════════
+read_only:
+  tools: [Read, Grep, Glob]
+  # パス制限は不要（読み取りのみ）
+  use_cases:
+    - コードレビュー
+    - セキュリティ監査
+    - 品質評価
+    - ドキュメント分析
+
+# ═══════════════════════════════════════════════════════════
+# カテゴリ2: 読み書き（実装・生成・変換）
+# リスク: 中
+# ═══════════════════════════════════════════════════════════
+read_write:
+  tools: [Read, Write, Edit, Grep]
+  # パス制限: 必須
+  write_allowed_paths:
+    - ".claude/agents/**/*.md"
+    - ".claude/skills/**/*.md"
+    - "src/**/*.ts"
+    - "tests/**/*.ts"
+  write_forbidden_paths:
+    - ".env"
+    - "**/*.key"
+    - "**/*.pem"
+    - ".git/**"
+    - "node_modules/**"
+  use_cases:
+    - 機能実装
+    - ファイル生成
+    - コード変換
+    - テスト作成
+
+# ═══════════════════════════════════════════════════════════
+# カテゴリ3: オーケストレーター（マルチエージェント調整）
+# リスク: 中
+# ═══════════════════════════════════════════════════════════
+orchestrator:
+  tools: [Task, Read]
+  # パス制限は不要
+  use_cases:
+    - 複雑タスクの統括
+    - マルチエージェント調整
+    - プロジェクト管理
+    - ワークフロー制御
+
+# ═══════════════════════════════════════════════════════════
+# カテゴリ4: フル権限（デプロイ・インフラ管理）
+# リスク: 高
+# ═══════════════════════════════════════════════════════════
+full_access:
+  tools: [Bash, Read, Write, Edit, Task]
+  # パス制限: 必須
+  write_allowed_paths:
+    - ".github/**/*.yml"
+    - "scripts/**/*.sh"
+    - "docker-compose*.yml"
+  write_forbidden_paths:
+    - ".env"
+    - "**/*.key"
+    - "**/*.pem"
+    - "**/*.p12"
+    - "credentials/**"
+  # 承認要求: 推奨
+  approval_required_for:
+    - "rm *"
+    - "git push"
+    - "npm publish"
+    - "docker push"
+  # Bash制限
+  approved_commands:
+    - "ls"
+    - "find"
+    - "grep"
+    - "git status"
+    - "git diff"
+    - "npm run"
+    - "pnpm run"
+  forbidden_commands:
+    - "rm -rf"
+    - "sudo"
+    - "curl | sh"
+    - "wget | sh"
+    - "chmod 777"
+    - "git push --force"
+  use_cases:
+    - CI/CDパイプライン
+    - インフラ管理
+    - 運用自動化
+    - デプロイ実行
+
+# ═══════════════════════════════════════════════════════════
+# セキュリティ設定（すべてのカテゴリに推奨）
+# ═══════════════════════════════════════════════════════════
+security_settings:
+  # センシティブファイルの保護
+  sensitive_files:
+    - ".env"
+    - ".env.*"
+    - "**/*.key"
+    - "**/*.pem"
+    - "**/*.p12"
+    - "**/credentials*"
+    - "**/secrets*"
+
+  # ログ記録
+  logging:
+    level: INFO
+    include_timestamps: true
+    mask_sensitive_data: true
+
+  # エラーハンドリング
+  error_handling:
+    max_retries: 3
+    backoff_strategy: exponential
+    escalation_on_failure: true
+
+# ═══════════════════════════════════════════════════════════
+# 使用例
+# ═══════════════════════════════════════════════════════════
+example_agent:
+  # YAML Frontmatterに統合する形式
+  yaml_frontmatter: |
+    ---
+    name: example-agent
+    description: |
+      サンプルエージェント
+    tools: [Read, Write, Edit, Grep]
+    model: sonnet
+    version: 1.0.0
+    ---
+
+  # エージェント本文内のツール使用方針セクション
+  tool_policy_section: |
+    ## ツール使用方針
+
+    ### Read
+    **使用条件**:
+    - プロジェクトファイルの読み取り
+    - 既存コードの調査
+
+    **対象ファイルパターン**:
+    - `src/**/*.ts`
+    - `docs/**/*.md`
+
+    ### Write
+    **使用条件**:
+    - 新規ファイルの作成
+
+    **作成可能ファイルパターン**:
+    - `src/features/**/*.ts`
+
+    **禁止事項**:
+    - センシティブファイル（.env, *.key）の変更
+
+    ### Edit
+    **使用条件**:
+    - 既存ファイルの修正
+
+    **対象ファイルパターン**:
+    - `src/**/*.ts`
+
+    ### Grep
+    **使用条件**:
+    - パターン検索
+    - コード調査

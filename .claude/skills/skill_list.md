@@ -778,6 +778,23 @@
 | **information-architecture** | `.claude/skills/information-architecture/SKILL.md` | ドキュメント階層設計、3クリックルール、ナビゲーションパターン、サイトマップテンプレート、リンク検証スクリプト |
 | **localization-i18n** | `.claude/skills/localization-i18n/SKILL.md` | 国際化対応、翻訳しやすい文章設計、多言語ディレクトリ構造、文化的配慮、翻訳準備度チェックスクリプト |
 
+---
+
+## 新規スキル - Meta-Agent Designer関連 (2025-11-27 追加)
+
+以下のスキルは @meta-agent-designer エージェント v2.1.0 に伴い、スクリプトとテンプレートが追加されました:
+
+| スキル名 | パス | 追加コンポーネント |
+|---------|------|-------------------|
+| **agent-quality-standards** | `.claude/skills/agent-quality-standards/SKILL.md` | `scripts/calculate-quality-score.mjs` - 品質スコア算出 |
+| **agent-validation-testing** | `.claude/skills/agent-validation-testing/SKILL.md` | `scripts/validate-agent.mjs`, `templates/test-case-template.json` |
+| **project-architecture-integration** | `.claude/skills/project-architecture-integration/SKILL.md` | `scripts/check-architecture-compliance.mjs`, `templates/architecture-compliance-checklist.md` |
+| **agent-persona-design** | `.claude/skills/agent-persona-design/SKILL.md` | `scripts/analyze-persona.mjs`, `templates/persona-template.md` |
+| **tool-permission-management** | `.claude/skills/tool-permission-management/SKILL.md` | `scripts/analyze-permissions.mjs`, `templates/permission-template.yaml` |
+| **multi-agent-systems** | `.claude/skills/multi-agent-systems/SKILL.md` | `scripts/analyze-collaboration.mjs`, `templates/handoff-protocol-template.json` |
+| **prompt-engineering-for-agents** | `.claude/skills/prompt-engineering-for-agents/SKILL.md` | `scripts/analyze-prompt.mjs`, `templates/prompt-template.md` |
+| **agent-lifecycle-management** | `.claude/skills/agent-lifecycle-management/SKILL.md` | `scripts/check-lifecycle.mjs`, `templates/lifecycle-template.md` |
+
 ### スキル詳細
 
 #### user-centric-writing
