@@ -507,13 +507,13 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                           | 概要                                               |
-| ---------------------------------- | -------------------------------------------------- |
-| **semantic-versioning**            | Major、Minor、Patch バージョン理解、破壊的変更対応 |
-| **dependency-auditing**            | npm audit、脆弱性スキャン、依存関係グラフ分析      |
-| **lock-file-management**           | package-lock.json、yarn.lock、依存固定             |
-| **upgrade-strategies**             | 段階的アップグレード、互換性テスト                 |
-| **monorepo-dependency-management** | Workspace、パッケージ共有、バージョン統一          |
+| スキル名                           | パス | 概要                                               |
+| ---------------------------------- | ---- | -------------------------------------------------- |
+| **semantic-versioning**            | `.claude/skills/semantic-versioning/SKILL.md` | Major、Minor、Patch バージョン理解、破壊的変更対応 |
+| **dependency-auditing**            | `.claude/skills/dependency-auditing/SKILL.md` | npm/pnpm audit、CVSS評価、脆弱性スキャン      |
+| **lock-file-management**           | `.claude/skills/lock-file-management/SKILL.md` | pnpm-lock.yaml、整合性検証、競合解決             |
+| **upgrade-strategies**             | `.claude/skills/upgrade-strategies/SKILL.md` | 段階的アップグレード、TDD統合、ロールバック                 |
+| **monorepo-dependency-management** | `.claude/skills/monorepo-dependency-management/SKILL.md` | pnpm Workspace、バージョン同期、影響分析          |
 ```
 
 ## 31. フック構成管理者
