@@ -1,0 +1,496 @@
+# GitHub Actions Parallel Jobs - Template Examples
+
+# Example 1: Basic Parallel CI/CD Pipeline
+name: Parallel CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # Phase 1: Independent parallel jobs
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - run: npm run lint
+
+  type-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - run: npm run type-check
+
+  # Phase 2: Build (depends on quality checks)
+  build:
+    needs: [lint, type-check]
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - run: npm run build
+
+      - id: version
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  # Phase 3: Parallel tests (depends on build)
+  test-unit:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - run: npm run test:unit
+
+  test-integration:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - run: npm run test:integration
+
+  test-e2e:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - run: npm run test:e2e
+
+  # Phase 4: Deploy (depends on all tests)
+  deploy-staging:
+    needs: [test-unit, test-integration, test-e2e, build]
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - run: |
+          echo "Deploying version ${{ needs.build.outputs.version }} to staging"
+          # Deploy commands here
+
+  deploy-production:
+    needs: [test-unit, test-integration, test-e2e, build]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://example.com
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - run: |
+          echo "Deploying version ${{ needs.build.outputs.version }} to production"
+          # Deploy commands here
+
+---
+
+# Example 2: Multi-platform Build with Aggregation
+name: Multi-platform Build
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  # Prepare build matrix
+  matrix-prep:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        run: |
+          echo 'matrix={"include":[
+            {"os":"ubuntu-latest","target":"linux-x64"},
+            {"os":"windows-latest","target":"win-x64"},
+            {"os":"macos-latest","target":"osx-x64"}
+          ]}' >> $GITHUB_OUTPUT
+
+  # Build on multiple platforms in parallel
+  build:
+    needs: matrix-prep
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix: ${{ fromJson(needs.matrix-prep.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm ci
+      - run: npm run build -- --target=${{ matrix.target }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.target }}
+          path: dist/
+
+  # Aggregate all builds
+  aggregate:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Download all artifacts
+      - uses: actions/download-artifact@v4
+
+      - run: |
+          echo "Aggregating builds..."
+          mkdir -p releases
+          mv build-*/* releases/
+          ls -R releases/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: all-platforms
+          path: releases/
+
+---
+
+# Example 3: Complex Dependency Graph
+name: Complex Pipeline
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  # Install dependencies (shared)
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+  # Build frontend
+  build-frontend:
+    needs: install
+    runs-on: ubuntu-latest
+    outputs:
+      hash: ${{ steps.hash.outputs.hash }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      - run: npm run build:frontend
+
+      - id: hash
+        run: echo "hash=$(sha256sum dist/frontend/main.js | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frontend
+          path: dist/frontend/
+
+  # Build backend
+  build-backend:
+    needs: install
+    runs-on: ubuntu-latest
+    outputs:
+      hash: ${{ steps.hash.outputs.hash }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      - run: npm run build:backend
+
+      - id: hash
+        run: echo "hash=$(sha256sum dist/backend/server.js | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: backend
+          path: dist/backend/
+
+  # Test frontend
+  test-frontend:
+    needs: build-frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: frontend
+          path: dist/frontend/
+      - run: npm run test:frontend
+
+  # Test backend
+  test-backend:
+    needs: build-backend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: backend
+          path: dist/backend/
+      - run: npm run test:backend
+
+  # Integration test (needs both frontend and backend)
+  test-integration:
+    needs: [build-frontend, build-backend]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: frontend
+          path: dist/frontend/
+      - uses: actions/download-artifact@v4
+        with:
+          name: backend
+          path: dist/backend/
+      - run: npm run test:integration
+
+  # Security scan (parallel with tests)
+  security-scan:
+    needs: [build-frontend, build-backend]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm audit
+      - run: npm run scan:security
+
+  # Deploy (needs all tests to pass)
+  deploy:
+    needs: [test-frontend, test-backend, test-integration, security-scan, build-frontend, build-backend]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: frontend
+          path: dist/frontend/
+      - uses: actions/download-artifact@v4
+        with:
+          name: backend
+          path: dist/backend/
+
+      - run: |
+          echo "Frontend hash: ${{ needs.build-frontend.outputs.hash }}"
+          echo "Backend hash: ${{ needs.build-backend.outputs.hash }}"
+          # Deploy commands here
+
+---
+
+# Example 4: Conditional Parallel Execution
+name: Conditional Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+
+jobs:
+  # Analyze changes
+  analyze-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend-changed: ${{ steps.filter.outputs.frontend }}
+      backend-changed: ${{ steps.filter.outputs.backend }}
+      docs-changed: ${{ steps.filter.outputs.docs }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'src/frontend/**'
+            backend:
+              - 'src/backend/**'
+            docs:
+              - 'docs/**'
+
+  # Conditional jobs based on changes
+  build-frontend:
+    needs: analyze-changes
+    if: needs.analyze-changes.outputs.frontend-changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm run build:frontend
+
+  build-backend:
+    needs: analyze-changes
+    if: needs.analyze-changes.outputs.backend-changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm run build:backend
+
+  build-docs:
+    needs: analyze-changes
+    if: needs.analyze-changes.outputs.docs-changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm run build:docs
+
+  # Deploy only changed components
+  deploy-frontend:
+    needs: [analyze-changes, build-frontend]
+    if: |
+      always() &&
+      needs.analyze-changes.outputs.frontend-changed == 'true' &&
+      needs.build-frontend.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploy frontend"
+
+  deploy-backend:
+    needs: [analyze-changes, build-backend]
+    if: |
+      always() &&
+      needs.analyze-changes.outputs.backend-changed == 'true' &&
+      needs.build-backend.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploy backend"
+
+  deploy-docs:
+    needs: [analyze-changes, build-docs]
+    if: |
+      always() &&
+      needs.analyze-changes.outputs.docs-changed == 'true' &&
+      needs.build-docs.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploy docs"
+
+---
+
+# Example 5: Failure Handling with always()
+name: Robust Pipeline
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.test.outputs.status }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: test
+        run: |
+          if npm test; then
+            echo "status=success" >> $GITHUB_OUTPUT
+          else
+            echo "status=failure" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+  # Always run report, even if test fails
+  generate-report:
+    needs: test
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          echo "Test status: ${{ needs.test.outputs.status }}"
+          npm run report:generate
+
+  # Notify on failure
+  notify-failure:
+    needs: test
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Test failed! Sending notification..."
+          # Send notification
+
+  # Deploy only on success
+  deploy:
+    needs: test
+    if: success() && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "Deploy to production"
+
+  # Cleanup always runs
+  cleanup:
+    needs: [test, generate-report, notify-failure, deploy]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Cleanup resources"

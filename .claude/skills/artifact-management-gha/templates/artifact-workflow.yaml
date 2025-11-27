@@ -1,0 +1,469 @@
+# GitHub Actions Artifact Management ワークフロー例
+
+## 基本的なビルド→テスト→デプロイパイプライン
+
+```yaml
+name: Build and Deploy
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ github.sha }}
+          path: |
+            dist/
+            !dist/**/*.map
+          retention-days: 7
+          if-no-files-found: error
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ github.sha }}
+          path: dist/
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Upload test coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ github.sha }}
+          path: coverage/
+          retention-days: 14
+
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ github.sha }}
+          path: dist/
+
+      - name: Deploy to production
+        run: |
+          echo "Deploying to production..."
+          # デプロイコマンド
+```
+
+## マトリックスビルド with アーティファクト
+
+```yaml
+name: Multi-Platform Build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [18, 20]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload platform-specific build
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.os }}-node${{ matrix.node }}
+          path: dist/
+          retention-days: 7
+
+  test-all-builds:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: build-*
+          path: ./all-builds
+
+      - name: Test all builds
+        run: |
+          echo "Testing all platform builds:"
+          ls -R all-builds/
+```
+
+## リリースパッケージング
+
+```yaml
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install and build
+        run: |
+          npm ci
+          npm run build
+
+      - name: Create release package
+        run: |
+          tar czf release-${{ github.ref_name }}.tar.gz dist/
+          zip -r release-${{ github.ref_name }}.zip dist/
+
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ github.ref_name }}
+          path: |
+            release-*.tar.gz
+            release-*.zip
+          retention-days: 90  # リリースは長期保持
+          if-no-files-found: error
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            release-*.tar.gz
+            release-*.zip
+```
+
+## デバッグログ収集（失敗時のみ）
+
+```yaml
+name: Debug Build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup environment
+        run: |
+          npm ci
+          npm run build 2>&1 | tee build.log
+
+      - name: Upload debug logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-logs-${{ github.run_id }}
+          path: |
+            build.log
+            **/*.log
+            !node_modules/**
+          retention-days: 3
+          compression-level: 9
+
+      - name: Upload system info
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: system-info-${{ github.run_id }}
+          path: |
+            /tmp/system-info.txt
+          retention-days: 3
+        continue-on-error: true
+```
+
+## PRプレビュービルド
+
+```yaml
+name: PR Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build preview
+        run: |
+          npm ci
+          npm run build
+
+      - name: Upload PR preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-preview-${{ github.event.pull_request.number }}
+          path: dist/
+          retention-days: 7
+
+      - name: Comment preview link
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `🚀 Preview build available!\n\nRun ID: ${{ github.run_id }}\nArtifact: pr-preview-${{ github.event.pull_request.number }}`
+            })
+```
+
+## 複数アーティファクトの統合
+
+```yaml
+name: Integration Build
+
+on: [push]
+
+jobs:
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build frontend
+        run: npm run build:frontend
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frontend
+          path: dist/frontend/
+
+  build-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build backend
+        run: npm run build:backend
+      - uses: actions/upload-artifact@v4
+        with:
+          name: backend
+          path: dist/backend/
+
+  build-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build docs
+        run: npm run build:docs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: docs
+          path: dist/docs/
+
+  package:
+    needs: [build-frontend, build-backend, build-docs]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist/
+
+      - name: Create complete package
+        run: |
+          tar czf complete-build.tar.gz dist/
+
+      - name: Upload complete package
+        uses: actions/upload-artifact@v4
+        with:
+          name: complete-build
+          path: complete-build.tar.gz
+          retention-days: 14
+```
+
+## クロスワークフローアーティファクトアクセス
+
+```yaml
+# .github/workflows/build.yml
+name: Build
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: latest-build
+          path: dist/
+          retention-days: 30
+
+---
+
+# .github/workflows/deploy.yml
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_run_id:
+        description: 'Build workflow run ID'
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build from another workflow
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh run download ${{ github.event.inputs.build_run_id }} \
+            --repo ${{ github.repository }} \
+            --name latest-build
+
+      - name: Deploy
+        run: ./deploy.sh
+```
+
+## ストレージ最適化例
+
+```yaml
+name: Optimized Build
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        run: npm run build
+
+      - name: Optimize artifacts
+        run: |
+          # ソースマップ削除
+          find dist -name "*.map" -delete
+
+          # テストファイル削除
+          find dist -name "*.test.js" -delete
+
+          # 圧縮
+          tar czf optimized-build.tar.gz dist/
+
+      - name: Check size
+        run: |
+          SIZE=$(du -sm optimized-build.tar.gz | cut -f1)
+          echo "Artifact size: ${SIZE}MB"
+
+          if [ $SIZE -gt 50 ]; then
+            echo "::warning::Artifact exceeds 50MB"
+          fi
+
+      - name: Upload optimized build
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: optimized-build.tar.gz
+          compression-level: 0  # 既に圧縮済み
+          retention-days: 7
+```
+
+## 条件付きアーティファクト保存
+
+```yaml
+name: Conditional Artifacts
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: npm run build
+
+      # mainブランチのみ長期保持
+      - name: Upload production build
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: prod-build-${{ github.sha }}
+          path: dist/
+          retention-days: 30
+
+      # その他は短期保持
+      - name: Upload dev build
+        if: github.ref != 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dev-build-${{ github.sha }}
+          path: dist/
+          retention-days: 3
+
+      # 失敗時のみデバッグ情報
+      - name: Upload debug info
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-${{ github.run_id }}
+          path: |
+            **/*.log
+            !node_modules/**
+          retention-days: 1
+```

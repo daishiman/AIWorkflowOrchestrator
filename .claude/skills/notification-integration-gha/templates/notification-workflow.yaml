@@ -1,0 +1,492 @@
+# GitHub Actions 通知ワークフロー実例集
+
+# ============================================
+# 1. Slack通知（公式Action）
+# ============================================
+name: Slack Notification Example
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-and-notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build application
+        run: |
+          echo "Building application..."
+          npm install
+          npm run build
+
+      - name: Run tests
+        run: npm test
+
+      - name: Notify Slack on success
+        if: success()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: 'C1234567890'
+          slack-message: |
+            ✅ *Deployment Succeeded*
+            *Repository*: ${{ github.repository }}
+            *Branch*: ${{ github.ref_name }}
+            *Commit*: `${{ github.sha }}`
+            *Author*: ${{ github.actor }}
+            <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Workflow>
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Notify Slack on failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: 'C_ALERT_CHANNEL'
+          slack-message: |
+            ❌ *Build Failed* <!here>
+            *Repository*: ${{ github.repository }}
+            *Branch*: ${{ github.ref_name }}
+            *Author*: ${{ github.actor }}
+            <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Logs>
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+---
+
+# ============================================
+# 2. Discord通知（Webhook）
+# ============================================
+name: Discord Notification Example
+
+on:
+  push:
+    branches: [main]
+  release:
+    types: [published]
+
+jobs:
+  deploy-and-notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy application
+        run: |
+          echo "Deploying to production..."
+          # デプロイロジック
+
+      - name: Send Discord notification
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            COLOR=3066993
+            EMOJI="✅"
+            MESSAGE="Production deployment succeeded!"
+          else
+            COLOR=15158332
+            EMOJI="❌"
+            MESSAGE="Production deployment failed! @everyone"
+          fi
+
+          curl -X POST "${{ secrets.DISCORD_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"content\": \"$EMOJI **$MESSAGE**\",
+              \"embeds\": [{
+                \"title\": \"${{ github.workflow }}\",
+                \"description\": \"Deployment to production environment\",
+                \"color\": $COLOR,
+                \"fields\": [
+                  {\"name\": \"Repository\", \"value\": \"${{ github.repository }}\", \"inline\": true},
+                  {\"name\": \"Branch\", \"value\": \"${{ github.ref_name }}\", \"inline\": true},
+                  {\"name\": \"Commit\", \"value\": \"\`${{ github.sha }}\`\", \"inline\": false},
+                  {\"name\": \"Author\", \"value\": \"${{ github.actor }}\", \"inline\": true},
+                  {\"name\": \"Status\", \"value\": \"${{ job.status }}\", \"inline\": true}
+                ],
+                \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)\",
+                \"footer\": {
+                  \"text\": \"GitHub Actions\",
+                  \"icon_url\": \"https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png\"
+                }
+              }],
+              \"components\": [{
+                \"type\": 1,
+                \"components\": [{
+                  \"type\": 2,
+                  \"style\": 5,
+                  \"label\": \"View Workflow\",
+                  \"url\": \"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
+                }]
+              }]
+            }"
+
+---
+
+# ============================================
+# 3. MS Teams通知（Adaptive Card）
+# ============================================
+name: Teams Notification Example
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 9 * * 1'  # 毎週月曜9時
+
+jobs:
+  report-and-notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate report
+        id: report
+        run: |
+          echo "test_count=120" >> $GITHUB_OUTPUT
+          echo "passed=115" >> $GITHUB_OUTPUT
+          echo "failed=5" >> $GITHUB_OUTPUT
+
+      - name: Send Teams notification
+        run: |
+          curl -X POST "${{ secrets.TEAMS_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "type": "message",
+              "attachments": [{
+                "contentType": "application/vnd.microsoft.card.adaptive",
+                "content": {
+                  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                  "type": "AdaptiveCard",
+                  "version": "1.4",
+                  "body": [
+                    {
+                      "type": "TextBlock",
+                      "text": "📊 Weekly Test Report",
+                      "weight": "Bolder",
+                      "size": "Large"
+                    },
+                    {
+                      "type": "FactSet",
+                      "facts": [
+                        {"title": "Repository", "value": "${{ github.repository }}"},
+                        {"title": "Total Tests", "value": "${{ steps.report.outputs.test_count }}"},
+                        {"title": "Passed", "value": "${{ steps.report.outputs.passed }}"},
+                        {"title": "Failed", "value": "${{ steps.report.outputs.failed }}"}
+                      ]
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "type": "Action.OpenUrl",
+                      "title": "View Details",
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                  ]
+                }
+              }]
+            }'
+
+---
+
+# ============================================
+# 4. 複数サービス統合（Slack + Discord + Teams）
+# ============================================
+name: Multi-Service Notification
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy-with-notifications:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy application
+        id: deploy
+        run: |
+          echo "Deploying..."
+          echo "deploy_url=https://my-app.com" >> $GITHUB_OUTPUT
+
+      - name: Send notifications to all services
+        if: always()
+        run: |
+          STATUS="${{ job.status }}"
+          DEPLOY_URL="${{ steps.deploy.outputs.deploy_url }}"
+
+          # Slack notification
+          curl -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"text\": \"Deployment $STATUS\",
+              \"blocks\": [{
+                \"type\": \"section\",
+                \"text\": {
+                  \"type\": \"mrkdwn\",
+                  \"text\": \"*Status*: $STATUS\n*URL*: $DEPLOY_URL\"
+                }
+              }]
+            }" &
+
+          # Discord notification
+          curl -X POST "${{ secrets.DISCORD_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"content\": \"Deployment $STATUS\",
+              \"embeds\": [{
+                \"title\": \"Deployment Report\",
+                \"color\": 3066993,
+                \"fields\": [{\"name\": \"URL\", \"value\": \"$DEPLOY_URL\"}]
+              }]
+            }" &
+
+          # Teams notification
+          curl -X POST "${{ secrets.TEAMS_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"@type\": \"MessageCard\",
+              \"themeColor\": \"0078D4\",
+              \"title\": \"Deployment $STATUS\",
+              \"sections\": [{
+                \"facts\": [{\"name\": \"URL\", \"value\": \"$DEPLOY_URL\"}]
+              }]
+            }" &
+
+          wait
+
+---
+
+# ============================================
+# 5. スレッド型通知（進行状況更新）
+# ============================================
+name: Thread-based Notification
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  progressive-deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Initial notification
+        id: slack_init
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: 'C1234567890'
+          slack-message: '🔄 Deployment started...'
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build
+        run: npm run build
+
+      - name: Update - Build complete
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: 'C1234567890'
+          update-ts: ${{ steps.slack_init.outputs.ts }}
+          slack-message: |
+            ✅ Build completed
+            🔄 Running tests...
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Test
+        run: npm test
+
+      - name: Update - Tests complete
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: 'C1234567890'
+          update-ts: ${{ steps.slack_init.outputs.ts }}
+          slack-message: |
+            ✅ Build completed
+            ✅ Tests passed
+            🔄 Deploying...
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Deploy
+        run: echo "Deploying..."
+
+      - name: Final notification
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: 'C1234567890'
+          update-ts: ${{ steps.slack_init.outputs.ts }}
+          slack-message: |
+            ✅ Build completed
+            ✅ Tests passed
+            ✅ Deployment completed
+            🎉 *All steps successful!*
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+---
+
+# ============================================
+# 6. 条件付き通知（ブランチ・環境別）
+# ============================================
+name: Conditional Notifications
+
+on:
+  push:
+    branches: [main, develop, staging]
+  pull_request:
+
+jobs:
+  deploy-with-conditional-notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy
+        run: echo "Deploying to ${{ github.ref_name }}"
+
+      - name: Notify production channel
+        if: github.ref == 'refs/heads/main'
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: 'C_PRODUCTION'
+          slack-message: '🚀 Production deployment completed'
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Notify staging channel
+        if: github.ref == 'refs/heads/staging'
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: 'C_STAGING'
+          slack-message: '🧪 Staging deployment completed'
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Notify development channel
+        if: github.ref == 'refs/heads/develop'
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: 'C_DEVELOPMENT'
+          slack-message: '🔧 Development deployment completed'
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Notify PR review channel
+        if: github.event_name == 'pull_request'
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          channel-id: 'C_PR_REVIEWS'
+          slack-message: |
+            📝 *Pull Request Update*
+            *PR #${{ github.event.pull_request.number }}*: ${{ github.event.pull_request.title }}
+            *Author*: ${{ github.event.pull_request.user.login }}
+            <${{ github.event.pull_request.html_url }}|View PR>
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+---
+
+# ============================================
+# 7. エラーハンドリングとリトライ
+# ============================================
+name: Notification with Error Handling
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy-with-retry:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy
+        run: echo "Deploying..."
+
+      - name: Primary notification with retry
+        id: primary_notify
+        uses: nick-fields/retry@v2
+        continue-on-error: true
+        with:
+          timeout_minutes: 2
+          max_attempts: 3
+          retry_wait_seconds: 10
+          command: |
+            curl -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
+              -H "Content-Type: application/json" \
+              -d '{"text": "Deployment completed"}'
+
+      - name: Fallback notification (Discord)
+        if: steps.primary_notify.outcome == 'failure'
+        run: |
+          curl -X POST "${{ secrets.DISCORD_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "content": "⚠️ Primary notification failed - Deployment completed (via fallback)"
+            }'
+
+      - name: Final status report
+        if: always()
+        run: |
+          echo "Primary notification: ${{ steps.primary_notify.outcome }}"
+          echo "Deployment status: ${{ job.status }}"
+
+---
+
+# ============================================
+# 8. カスタムEmail通知（SendGrid）
+# ============================================
+name: Email Notification via SendGrid
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # 毎週日曜0時
+  workflow_dispatch:
+
+jobs:
+  weekly-report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate report
+        id: report
+        run: |
+          echo "report_data=Weekly summary: 50 commits, 20 PRs merged" >> $GITHUB_OUTPUT
+
+      - name: Send email report
+        run: |
+          curl -X POST "https://api.sendgrid.com/v3/mail/send" \
+            -H "Authorization: Bearer ${{ secrets.SENDGRID_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "personalizations": [{
+                "to": [
+                  {"email": "team@example.com"},
+                  {"email": "manager@example.com"}
+                ]
+              }],
+              "from": {"email": "noreply@example.com", "name": "GitHub Actions"},
+              "subject": "Weekly Repository Report - ${{ github.repository }}",
+              "content": [{
+                "type": "text/html",
+                "value": "<html><body><h2>📊 Weekly Report</h2><p><strong>Repository:</strong> ${{ github.repository }}</p><p><strong>Summary:</strong> ${{ steps.report.outputs.report_data }}</p><p><a href=\"${{ github.server_url }}/${{ github.repository }}\">View Repository</a></p></body></html>"
+              }]
+            }'

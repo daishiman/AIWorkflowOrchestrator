@@ -1,0 +1,222 @@
+# Caller Workflow Template
+# 再利用可能ワークフローを呼び出す側のテンプレート
+
+name: Caller Workflow Example
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  # === BASIC CALL ===
+  basic-call:
+    name: Basic workflow call
+    uses: ./.github/workflows/reusable-workflow.yml
+    with:
+      environment: 'development'
+      node-version: '20'
+      debug-mode: true
+    secrets:
+      API_TOKEN: ${{ secrets.API_TOKEN }}
+
+  # === DYNAMIC INPUTS ===
+  dynamic-call:
+    name: Call with dynamic inputs
+    uses: ./.github/workflows/reusable-workflow.yml
+    with:
+      # Use GitHub context
+      environment: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+
+      # Use workflow input
+      node-version: ${{ inputs.node-version || env.NODE_VERSION }}
+
+      # Conditional boolean
+      debug-mode: ${{ github.event_name == 'pull_request' }}
+
+      # Dynamic timeout
+      timeout-minutes: ${{ github.ref_name == 'main' && 60 || 30 }}
+    secrets: inherit
+
+  # === MATRIX STRATEGY ===
+  matrix-call:
+    name: Matrix workflow calls
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: [development, staging, production]
+        node-version: [18, 20, 22]
+        include:
+          # Special configuration for production
+          - environment: production
+            requires-approval: true
+        exclude:
+          # Skip specific combinations
+          - environment: production
+            node-version: 18
+
+    uses: ./.github/workflows/reusable-workflow.yml
+    with:
+      environment: ${{ matrix.environment }}
+      node-version: ${{ matrix.node-version }}
+    secrets:
+      API_TOKEN: ${{ secrets.API_TOKEN }}
+
+  # === USING OUTPUTS ===
+  use-outputs:
+    name: Use workflow outputs
+    needs: basic-call
+    runs-on: ubuntu-latest
+    steps:
+      - name: Display outputs
+        run: |
+          echo "Build ID: ${{ needs.basic-call.outputs.build-id }}"
+          echo "Result: ${{ needs.basic-call.outputs.result }}"
+          echo "Artifact URL: ${{ needs.basic-call.outputs.artifact-url }}"
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ needs.basic-call.outputs.build-id }}
+          path: ./downloads
+
+  # === CONDITIONAL CALL ===
+  conditional-call:
+    name: Conditional workflow call
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/reusable-workflow.yml
+    with:
+      environment: 'production'
+      node-version: '20'
+      debug-mode: false
+    secrets:
+      API_TOKEN: ${{ secrets.PROD_API_TOKEN }}
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+
+  # === PARALLEL CALLS ===
+  parallel-1:
+    name: Parallel call 1
+    uses: ./.github/workflows/reusable-workflow.yml
+    with:
+      environment: 'staging'
+      node-version: '20'
+
+  parallel-2:
+    name: Parallel call 2
+    uses: ./.github/workflows/reusable-workflow.yml
+    with:
+      environment: 'staging'
+      node-version: '22'
+
+  # Wait for parallel calls
+  aggregate-results:
+    name: Aggregate parallel results
+    needs: [parallel-1, parallel-2]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Compare results
+        run: |
+          echo "Parallel 1 - Build ID: ${{ needs.parallel-1.outputs.build-id }}"
+          echo "Parallel 2 - Build ID: ${{ needs.parallel-2.outputs.build-id }}"
+
+  # === CHAINED CALLS ===
+  stage-1-build:
+    name: Stage 1 - Build
+    uses: ./.github/workflows/reusable-build.yml
+    with:
+      node-version: '20'
+    secrets: inherit
+
+  stage-2-test:
+    name: Stage 2 - Test
+    needs: stage-1-build
+    uses: ./.github/workflows/reusable-test.yml
+    with:
+      build-id: ${{ needs.stage-1-build.outputs.build-id }}
+    secrets: inherit
+
+  stage-3-deploy:
+    name: Stage 3 - Deploy
+    needs: [stage-1-build, stage-2-test]
+    if: needs.stage-2-test.outputs.passed == 'true'
+    uses: ./.github/workflows/reusable-deploy.yml
+    with:
+      build-id: ${{ needs.stage-1-build.outputs.build-id }}
+      environment: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+    secrets: inherit
+
+  # === REMOTE WORKFLOW CALL ===
+  remote-call:
+    name: Call workflow from another repo
+    uses: octocat/shared-workflows/.github/workflows/build.yml@v1.2.3
+    with:
+      environment: 'production'
+    secrets:
+      API_TOKEN: ${{ secrets.API_TOKEN }}
+
+  # === WITH PERMISSIONS ===
+  permission-call:
+    name: Call with specific permissions
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    uses: ./.github/workflows/reusable-publish.yml
+    with:
+      environment: 'production'
+    secrets: inherit
+
+  # === WITH ENVIRONMENT ===
+  environment-call:
+    name: Call with environment protection
+    environment:
+      name: production
+      url: https://example.com
+    uses: ./.github/workflows/reusable-deploy.yml
+    with:
+      environment: 'production'
+    secrets: inherit
+
+  # === WITH CONCURRENCY ===
+  concurrent-call:
+    name: Call with concurrency control
+    concurrency:
+      group: deploy-${{ github.ref }}
+      cancel-in-progress: false
+    uses: ./.github/workflows/reusable-deploy.yml
+    with:
+      environment: 'production'
+    secrets: inherit
+
+  # === CONTINUE ON ERROR ===
+  optional-call:
+    name: Optional workflow call
+    continue-on-error: true
+    uses: ./.github/workflows/reusable-optional-check.yml
+    with:
+      environment: 'development'
+
+  # === NOTIFICATION ===
+  notify:
+    name: Send notification
+    needs: [stage-1-build, stage-2-test, stage-3-deploy]
+    if: always()
+    uses: ./.github/workflows/reusable-notify.yml
+    with:
+      status: ${{ job.status }}
+      build-id: ${{ needs.stage-1-build.outputs.build-id }}
+    secrets:
+      SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}

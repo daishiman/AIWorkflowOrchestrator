@@ -1,0 +1,467 @@
+# Self-Hosted Runner Workflow Templates
+
+# ============================================
+# 基本的なセルフホストランナーワークフロー
+# ============================================
+
+basic-self-hosted:
+  name: Basic Self-Hosted Build
+  on:
+    push:
+      branches: [main]
+    pull_request:
+      branches: [main]
+
+  jobs:
+    build:
+      runs-on: self-hosted
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Setup environment
+          run: |
+            node --version
+            npm --version
+
+        - name: Install dependencies
+          run: npm ci
+
+        - name: Build
+          run: npm run build
+
+        - name: Test
+          run: npm test
+
+# ============================================
+# カスタムラベルによるターゲティング
+# ============================================
+
+custom-labels:
+  name: Custom Label Targeting
+  on: [push]
+
+  jobs:
+    gpu-training:
+      runs-on: [self-hosted, linux, gpu, cuda-11]
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Train ML model
+          run: python train.py --gpu
+
+    high-memory-build:
+      runs-on: [self-hosted, linux, high-memory]
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Build with high memory
+          run: ./memory-intensive-build.sh
+
+# ============================================
+# 環境別デプロイメント
+# ============================================
+
+environment-deploy:
+  name: Environment-based Deployment
+  on:
+    push:
+      branches: [main, staging, develop]
+
+  jobs:
+    deploy-production:
+      if: github.ref == 'refs/heads/main'
+      runs-on: [self-hosted, production, internal-network]
+      environment: production
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Deploy to production
+          run: |
+            echo "Deploying to production..."
+            ./deploy-prod.sh
+
+    deploy-staging:
+      if: github.ref == 'refs/heads/staging'
+      runs-on: [self-hosted, staging]
+      environment: staging
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Deploy to staging
+          run: |
+            echo "Deploying to staging..."
+            ./deploy-staging.sh
+
+# ============================================
+# マトリクス戦略
+# ============================================
+
+matrix-runners:
+  name: Matrix with Self-Hosted Runners
+  on: [push]
+
+  jobs:
+    test:
+      strategy:
+        matrix:
+          runner:
+            - [self-hosted, linux, x64]
+            - [self-hosted, windows, x64]
+            - [self-hosted, macos, arm64]
+          node: [18, 20]
+      runs-on: ${{ matrix.runner }}
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Setup Node.js
+          uses: actions/setup-node@v4
+          with:
+            node-version: ${{ matrix.node }}
+
+        - name: Run tests
+          run: npm test
+
+# ============================================
+# エフェメラルランナー（セキュリティ重視）
+# ============================================
+
+ephemeral-secure:
+  name: Ephemeral Runner Build
+  on:
+    pull_request:
+      branches: [main]
+
+  jobs:
+    secure-build:
+      runs-on: [self-hosted, ephemeral, isolated]
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Security scan
+          run: |
+            npm audit
+            npm run lint:security
+
+        - name: Build in isolated environment
+          run: npm run build
+
+        - name: Test
+          run: npm test
+
+        # エフェメラルランナーは自動的にクリーンアップされる
+
+# ============================================
+# Docker ビルドとプッシュ
+# ============================================
+
+docker-build-push:
+  name: Docker Build on Self-Hosted
+  on:
+    push:
+      branches: [main]
+      tags: ['v*']
+
+  jobs:
+    build:
+      runs-on: [self-hosted, linux, docker-enabled]
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v3
+
+        - name: Log in to registry
+          uses: docker/login-action@v3
+          with:
+            registry: ghcr.io
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
+
+        - name: Build and push
+          uses: docker/build-push-action@v5
+          with:
+            context: .
+            push: true
+            tags: |
+              ghcr.io/${{ github.repository }}:latest
+              ghcr.io/${{ github.repository }}:${{ github.sha }}
+            cache-from: type=local,src=/tmp/.buildx-cache
+            cache-to: type=local,dest=/tmp/.buildx-cache-new
+
+# ============================================
+# 内部ネットワークアクセス
+# ============================================
+
+internal-network:
+  name: Internal Network Access
+  on: [push]
+
+  jobs:
+    access-internal:
+      runs-on: [self-hosted, internal-network, vpn-enabled]
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Access internal API
+          run: |
+            curl http://internal-api.company.local/health
+            curl http://internal-db.company.local:5432
+
+        - name: Run integration tests
+          run: npm run test:integration
+
+# ============================================
+# GPU を使用した機械学習
+# ============================================
+
+gpu-ml-training:
+  name: GPU ML Training
+  on:
+    push:
+      branches: [main]
+      paths:
+        - 'models/**'
+        - 'training/**'
+
+  jobs:
+    train:
+      runs-on: [self-hosted, linux, gpu, cuda-11.8, tesla-v100]
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Setup Python
+          uses: actions/setup-python@v5
+          with:
+            python-version: '3.11'
+
+        - name: Install dependencies
+          run: |
+            pip install -r requirements.txt
+            pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+
+        - name: Verify GPU
+          run: |
+            nvidia-smi
+            python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}')"
+
+        - name: Train model
+          run: python train.py --gpu --epochs 100
+
+        - name: Upload model
+          uses: actions/upload-artifact@v4
+          with:
+            name: trained-model
+            path: models/trained/*.pth
+
+# ============================================
+# 並列ジョブ実行
+# ============================================
+
+parallel-jobs:
+  name: Parallel Jobs on Self-Hosted
+  on: [push]
+
+  jobs:
+    lint:
+      runs-on: [self-hosted, standard]
+      steps:
+        - uses: actions/checkout@v4
+        - run: npm run lint
+
+    test-unit:
+      runs-on: [self-hosted, standard]
+      steps:
+        - uses: actions/checkout@v4
+        - run: npm run test:unit
+
+    test-integration:
+      runs-on: [self-hosted, high-memory]
+      steps:
+        - uses: actions/checkout@v4
+        - run: npm run test:integration
+
+    test-e2e:
+      runs-on: [self-hosted, high-memory]
+      steps:
+        - uses: actions/checkout@v4
+        - run: npm run test:e2e
+
+    build:
+      needs: [lint, test-unit, test-integration, test-e2e]
+      runs-on: [self-hosted, standard]
+      steps:
+        - uses: actions/checkout@v4
+        - run: npm run build
+
+# ============================================
+# キャッシュ活用（ローカルキャッシュ）
+# ============================================
+
+cache-optimization:
+  name: Cache Optimization
+  on: [push]
+
+  jobs:
+    build:
+      runs-on: [self-hosted, linux, ssd]
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Cache Node modules
+          uses: actions/cache@v4
+          with:
+            path: ~/.npm
+            key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+            restore-keys: |
+              ${{ runner.os }}-node-
+
+        - name: Cache build artifacts
+          uses: actions/cache@v4
+          with:
+            path: |
+              .next/cache
+              dist/
+            key: ${{ runner.os }}-build-${{ github.sha }}
+            restore-keys: |
+              ${{ runner.os }}-build-
+
+        - name: Install dependencies
+          run: npm ci
+
+        - name: Build
+          run: npm run build
+
+# ============================================
+# 条件付きランナー選択
+# ============================================
+
+conditional-runner:
+  name: Conditional Runner Selection
+  on:
+    push:
+      branches: [main, develop]
+
+  jobs:
+    deploy:
+      runs-on: |
+        ${{
+          github.ref == 'refs/heads/main' &&
+          fromJSON('["self-hosted", "linux", "production", "high-security"]') ||
+          fromJSON('["self-hosted", "linux", "staging"]')
+        }}
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Deploy
+          run: |
+            if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+              echo "Deploying to production..."
+              ./deploy-prod.sh
+            else
+              echo "Deploying to staging..."
+              ./deploy-staging.sh
+            fi
+
+# ============================================
+# セキュリティスキャン
+# ============================================
+
+security-scan:
+  name: Security Scan
+  on:
+    pull_request:
+      branches: [main]
+    schedule:
+      - cron: '0 0 * * 0'  # 週次
+
+  jobs:
+    scan:
+      runs-on: [self-hosted, ephemeral, isolated, scanner]
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Run security audit
+          run: |
+            npm audit --audit-level=moderate
+            npm run lint:security
+
+        - name: SAST scan
+          run: |
+            # 静的解析ツール実行
+            ./run-sast-scan.sh
+
+        - name: Dependency check
+          run: |
+            # 依存関係の脆弱性チェック
+            ./check-dependencies.sh
+
+        - name: Upload results
+          if: always()
+          uses: actions/upload-artifact@v4
+          with:
+            name: security-scan-results
+            path: security-reports/
+
+# ============================================
+# マルチステージビルド
+# ============================================
+
+multi-stage:
+  name: Multi-Stage Build
+  on:
+    push:
+      branches: [main]
+
+  jobs:
+    build:
+      runs-on: [self-hosted, build-server, high-cpu]
+      outputs:
+        version: ${{ steps.version.outputs.version }}
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Get version
+          id: version
+          run: echo "version=$(cat VERSION)" >> $GITHUB_OUTPUT
+
+        - name: Build
+          run: npm run build
+
+        - name: Upload artifacts
+          uses: actions/upload-artifact@v4
+          with:
+            name: build-artifacts
+            path: dist/
+
+    test:
+      needs: build
+      runs-on: [self-hosted, test-server, standard]
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Download artifacts
+          uses: actions/download-artifact@v4
+          with:
+            name: build-artifacts
+            path: dist/
+
+        - name: Run tests
+          run: npm test
+
+    deploy:
+      needs: [build, test]
+      runs-on: [self-hosted, deploy-server, internal-network]
+      environment: production
+      steps:
+        - uses: actions/checkout@v4
+
+        - name: Download artifacts
+          uses: actions/download-artifact@v4
+          with:
+            name: build-artifacts
+            path: dist/
+
+        - name: Deploy
+          run: |
+            echo "Deploying version ${{ needs.build.outputs.version }}"
+            ./deploy.sh

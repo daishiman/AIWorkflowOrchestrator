@@ -1,0 +1,318 @@
+# Node.js CI/CD Workflow Template
+# Node.jsプロジェクト専用のCI/CDワークフローテンプレート
+#
+# 対応パッケージマネージャー: npm, pnpm, yarn
+# 自動検出: ロックファイルに基づいてパッケージマネージャーを判定
+
+name: Node.js CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# 同一ブランチでの並行実行を制御
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    outputs:
+      package-manager: ${{ steps.detect.outputs.manager }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # パッケージマネージャーの自動検出
+      - name: Detect package manager
+        id: detect
+        run: |
+          if [ -f "pnpm-lock.yaml" ]; then
+            echo "manager=pnpm" >> $GITHUB_OUTPUT
+          elif [ -f "yarn.lock" ]; then
+            echo "manager=yarn" >> $GITHUB_OUTPUT
+          elif [ -f "package-lock.json" ]; then
+            echo "manager=npm" >> $GITHUB_OUTPUT
+          else
+            echo "manager=npm" >> $GITHUB_OUTPUT
+          fi
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # pnpmのセットアップ（pnpm使用時のみ）
+      - name: Setup pnpm
+        if: needs.setup.outputs.package-manager == 'pnpm'
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'  # プロジェクトに応じて変更
+          cache: ${{ needs.setup.outputs.package-manager }}
+
+      - name: Install dependencies
+        run: |
+          case "${{ needs.setup.outputs.package-manager }}" in
+            npm)
+              npm ci
+              ;;
+            pnpm)
+              pnpm install --frozen-lockfile
+              ;;
+            yarn)
+              yarn install --frozen-lockfile
+              ;;
+          esac
+
+      - name: Run linter
+        run: |
+          case "${{ needs.setup.outputs.package-manager }}" in
+            npm) npm run lint ;;
+            pnpm) pnpm lint ;;
+            yarn) yarn lint ;;
+          esac
+
+      # TypeScript型チェック（オプション）
+      - name: Type check
+        run: |
+          case "${{ needs.setup.outputs.package-manager }}" in
+            npm) npm run type-check || echo "No type-check script" ;;
+            pnpm) pnpm type-check || echo "No type-check script" ;;
+            yarn) yarn type-check || echo "No type-check script" ;;
+          esac
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: [setup, lint]
+
+    # 複数Node.jsバージョンでのテスト
+    strategy:
+      matrix:
+        node-version: [18, 20, 22]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        if: needs.setup.outputs.package-manager == 'pnpm'
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: ${{ needs.setup.outputs.package-manager }}
+
+      - name: Install dependencies
+        run: |
+          case "${{ needs.setup.outputs.package-manager }}" in
+            npm) npm ci ;;
+            pnpm) pnpm install --frozen-lockfile ;;
+            yarn) yarn install --frozen-lockfile ;;
+          esac
+
+      - name: Run tests
+        run: |
+          case "${{ needs.setup.outputs.package-manager }}" in
+            npm) npm test ;;
+            pnpm) pnpm test ;;
+            yarn) yarn test ;;
+          esac
+
+      # カバレッジレポート（Node.js 20のみ）
+      - name: Upload coverage to Codecov
+        if: matrix.node-version == 20
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [setup, test]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        if: needs.setup.outputs.package-manager == 'pnpm'
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: ${{ needs.setup.outputs.package-manager }}
+
+      - name: Install dependencies
+        run: |
+          case "${{ needs.setup.outputs.package-manager }}" in
+            npm) npm ci ;;
+            pnpm) pnpm install --frozen-lockfile ;;
+            yarn) yarn install --frozen-lockfile ;;
+          esac
+
+      - name: Build project
+        run: |
+          case "${{ needs.setup.outputs.package-manager }}" in
+            npm) npm run build ;;
+            pnpm) pnpm build ;;
+            yarn) yarn build ;;
+          esac
+
+      # ビルド成果物のアップロード
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            dist/
+            .next/
+            out/
+            build/
+          retention-days: 7
+
+  # E2Eテスト（オプション）
+  e2e:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: [setup, build]
+    if: github.event_name == 'pull_request'  # PRの場合のみ実行
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        if: needs.setup.outputs.package-manager == 'pnpm'
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: ${{ needs.setup.outputs.package-manager }}
+
+      - name: Install dependencies
+        run: |
+          case "${{ needs.setup.outputs.package-manager }}" in
+            npm) npm ci ;;
+            pnpm) pnpm install --frozen-lockfile ;;
+            yarn) yarn install --frozen-lockfile ;;
+          esac
+
+      # Playwrightのインストール
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run E2E tests
+        run: |
+          case "${{ needs.setup.outputs.package-manager }}" in
+            npm) npm run test:e2e ;;
+            pnpm) pnpm test:e2e ;;
+            yarn) yarn test:e2e ;;
+          esac
+
+      # E2Eテスト結果のアップロード
+      - name: Upload E2E test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  # セキュリティスキャン
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        if: needs.setup.outputs.package-manager == 'pnpm'
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: ${{ needs.setup.outputs.package-manager }}
+
+      # 脆弱性監査
+      - name: Run security audit
+        run: |
+          case "${{ needs.setup.outputs.package-manager }}" in
+            npm) npm audit --audit-level=high ;;
+            pnpm) pnpm audit --audit-level=high ;;
+            yarn) yarn audit --level high ;;
+          esac
+
+  # デプロイ（mainブランチのみ）
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: [setup, build]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: production
+      url: https://example.com
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: ./dist
+
+      # デプロイ処理（プラットフォームに応じて選択）
+      #
+      # === Vercel の場合 ===
+      # - name: Deploy to Vercel
+      #   uses: amondnet/vercel-action@v25
+      #   with:
+      #     vercel-token: ${{ secrets.VERCEL_TOKEN }}
+      #     vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+      #     vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+      #     vercel-args: '--prod'
+      #
+      # === Netlify の場合 ===
+      # - name: Deploy to Netlify
+      #   uses: nwtgck/actions-netlify@v2
+      #   with:
+      #     publish-dir: './dist'
+      #     production-branch: main
+      #     production-deploy: true
+      #   env:
+      #     NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      #     NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+      - name: Deploy application
+        run: |
+          echo "Deploy to production"

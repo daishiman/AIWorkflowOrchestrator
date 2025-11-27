@@ -1,0 +1,202 @@
+# Composite Action Template
+# このテンプレートをコピーして、カスタムComposite Actionを作成してください
+
+name: 'Action Name'
+description: 'Action description - what this action does'
+
+# Optional: Author information
+# author: 'Your Name or Organization'
+
+# Optional: Branding for GitHub Marketplace
+# branding:
+#   icon: 'activity'  # Feather icon name
+#   color: 'blue'     # blue, green, yellow, orange, red, purple, gray-dark
+
+# Input parameters
+inputs:
+  # Required input example
+  environment:
+    description: 'Deployment environment (dev, staging, prod)'
+    required: true
+
+  # Optional input with default
+  dry-run:
+    description: 'Run in dry-run mode without making actual changes'
+    required: false
+    default: 'false'
+
+  # Optional input
+  working-directory:
+    description: 'Working directory for the action'
+    required: false
+    default: '.'
+
+  # Advanced: Deprecated input
+  # old-parameter:
+  #   description: 'Old parameter (deprecated)'
+  #   required: false
+  #   deprecationMessage: 'Use new-parameter instead. Will be removed in v2.0.0'
+
+# Output parameters
+outputs:
+  result:
+    description: 'Result of the action execution'
+    value: ${{ steps.execute.outputs.result }}
+
+  success:
+    description: 'Whether the action succeeded'
+    value: ${{ steps.execute.outputs.success }}
+
+  duration:
+    description: 'Execution duration in seconds'
+    value: ${{ steps.measure.outputs.duration }}
+
+# Action implementation
+runs:
+  using: 'composite'
+  steps:
+    # Step 1: Validate inputs
+    - name: Validate inputs
+      shell: bash
+      run: |
+        set -e
+
+        echo "::group::Input Validation"
+
+        # Validate required inputs
+        if [ -z "${{ inputs.environment }}" ]; then
+          echo "::error::environment input is required"
+          exit 1
+        fi
+
+        # Validate enum values
+        VALID_ENVS="dev staging prod"
+        if ! echo "$VALID_ENVS" | grep -w "${{ inputs.environment }}" > /dev/null; then
+          echo "::error::Invalid environment: ${{ inputs.environment }}"
+          echo "::error::Must be one of: $VALID_ENVS"
+          exit 1
+        fi
+
+        echo "✓ Environment: ${{ inputs.environment }}"
+        echo "✓ Dry Run: ${{ inputs.dry-run }}"
+        echo "✓ Working Directory: ${{ inputs.working-directory }}"
+
+        echo "::endgroup::"
+
+    # Step 2: Setup environment
+    - name: Setup environment
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        set -e
+
+        echo "::group::Environment Setup"
+
+        # Set environment variables for subsequent steps
+        echo "DEPLOY_ENV=${{ inputs.environment }}" >> $GITHUB_ENV
+        echo "DRY_RUN=${{ inputs.dry-run }}" >> $GITHUB_ENV
+        echo "ACTION_START_TIME=$(date +%s)" >> $GITHUB_ENV
+
+        echo "Environment configured"
+        echo "::endgroup::"
+
+    # Step 3: Execute main action logic
+    - name: Execute action
+      id: execute
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        set -e
+
+        echo "::group::Action Execution"
+
+        # Main action logic here
+        echo "Executing action for environment: $DEPLOY_ENV"
+
+        if [ "$DRY_RUN" = "true" ]; then
+          echo "::notice::Running in DRY RUN mode - no changes will be made"
+
+          # Dry run logic
+          echo "Would execute: ./deploy.sh $DEPLOY_ENV"
+
+          echo "result=dry-run-success" >> $GITHUB_OUTPUT
+          echo "success=true" >> $GITHUB_OUTPUT
+        else
+          echo "Executing actual deployment..."
+
+          # Actual execution logic
+          # Example: Call external script
+          # if ! "${{ github.action_path }}/scripts/deploy.sh" "$DEPLOY_ENV"; then
+          #   echo "::error::Deployment failed"
+          #   echo "result=failed" >> $GITHUB_OUTPUT
+          #   echo "success=false" >> $GITHUB_OUTPUT
+          #   exit 1
+          # fi
+
+          echo "result=success" >> $GITHUB_OUTPUT
+          echo "success=true" >> $GITHUB_OUTPUT
+        fi
+
+        echo "::endgroup::"
+
+    # Step 4: Measure execution time
+    - name: Measure duration
+      id: measure
+      if: always()
+      shell: bash
+      run: |
+        END_TIME=$(date +%s)
+        DURATION=$((END_TIME - ACTION_START_TIME))
+
+        echo "duration=$DURATION" >> $GITHUB_OUTPUT
+        echo "::notice::Execution took $DURATION seconds"
+
+    # Step 5: Cleanup (always runs)
+    - name: Cleanup
+      if: always()
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        echo "::group::Cleanup"
+
+        # Cleanup logic here
+        # Example: Remove temporary files
+        # rm -f temp_*
+
+        echo "Cleanup completed"
+        echo "::endgroup::"
+
+    # Step 6: Summary
+    - name: Action summary
+      if: always()
+      shell: bash
+      run: |
+        echo "::group::Summary"
+        echo "Environment: $DEPLOY_ENV"
+        echo "Dry Run: $DRY_RUN"
+        echo "Result: ${{ steps.execute.outputs.result }}"
+        echo "Success: ${{ steps.execute.outputs.success }}"
+        echo "Duration: ${{ steps.measure.outputs.duration }}s"
+        echo "::endgroup::"
+
+# Usage example (place in workflow):
+#
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+#
+#       - name: Run custom action
+#         id: custom
+#         uses: ./.github/actions/my-action  # Path to this action
+#         with:
+#           environment: 'staging'
+#           dry-run: 'false'
+#           working-directory: '.'
+#
+#       - name: Check result
+#         run: |
+#           echo "Result: ${{ steps.custom.outputs.result }}"
+#           echo "Success: ${{ steps.custom.outputs.success }}"
+#           echo "Duration: ${{ steps.custom.outputs.duration }}s"

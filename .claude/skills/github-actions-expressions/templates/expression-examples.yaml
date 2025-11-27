@@ -1,0 +1,475 @@
+# GitHub Actions Expression Examples
+# 頻出パターンのテンプレート集
+
+# =============================================================================
+# ブランチ条件
+# =============================================================================
+
+branch_conditions:
+  # メインブランチのみ
+  main_only: |
+    if: github.ref == 'refs/heads/main'
+
+  # ブランチ名のみで判定
+  main_by_name: |
+    if: github.ref_name == 'main'
+
+  # 複数ブランチ
+  main_or_develop: |
+    if: |
+      github.ref == 'refs/heads/main' ||
+      github.ref == 'refs/heads/develop'
+
+  # feature/* ブランチ
+  feature_branches: |
+    if: startsWith(github.ref, 'refs/heads/feature/')
+
+  # release/* ブランチ
+  release_branches: |
+    if: startsWith(github.ref, 'refs/heads/release/')
+
+  # main以外のブランチ
+  not_main: |
+    if: github.ref != 'refs/heads/main'
+
+# =============================================================================
+# タグ条件
+# =============================================================================
+
+tag_conditions:
+  # すべてのタグ
+  any_tag: |
+    if: github.ref_type == 'tag'
+
+  # vで始まるタグ（セマンティックバージョニング）
+  version_tags: |
+    if: startsWith(github.ref, 'refs/tags/v')
+
+  # 本番リリースタグ（プレリリース除外）
+  production_tags: |
+    if: |
+      startsWith(github.ref, 'refs/tags/v') &&
+      !contains(github.ref, '-alpha') &&
+      !contains(github.ref, '-beta') &&
+      !contains(github.ref, '-rc')
+
+  # プレリリースタグ
+  prerelease_tags: |
+    if: |
+      startsWith(github.ref, 'refs/tags/v') &&
+      (contains(github.ref, '-alpha') ||
+       contains(github.ref, '-beta') ||
+       contains(github.ref, '-rc'))
+
+# =============================================================================
+# イベントタイプ条件
+# =============================================================================
+
+event_conditions:
+  # Pushイベント
+  push_only: |
+    if: github.event_name == 'push'
+
+  # Pull Requestイベント
+  pr_only: |
+    if: github.event_name == 'pull_request'
+
+  # PushまたはPull Request
+  push_or_pr: |
+    if: |
+      github.event_name == 'push' ||
+      github.event_name == 'pull_request'
+
+  # PRが開かれた時
+  pr_opened: |
+    if: |
+      github.event_name == 'pull_request' &&
+      github.event.action == 'opened'
+
+  # PRが同期（更新）された時
+  pr_synchronized: |
+    if: |
+      github.event_name == 'pull_request' &&
+      github.event.action == 'synchronize'
+
+  # 手動トリガー
+  manual_trigger: |
+    if: github.event_name == 'workflow_dispatch'
+
+  # スケジュール実行
+  scheduled: |
+    if: github.event_name == 'schedule'
+
+# =============================================================================
+# PRラベル条件
+# =============================================================================
+
+pr_label_conditions:
+  # 単一ラベル
+  has_deploy_label: |
+    if: contains(github.event.pull_request.labels.*.name, 'deploy')
+
+  # ラベル除外
+  not_wip: |
+    if: |
+      github.event_name == 'pull_request' &&
+      !contains(github.event.pull_request.labels.*.name, 'wip')
+
+  # 複数ラベル（AND）
+  approved_and_ready: |
+    if: |
+      contains(github.event.pull_request.labels.*.name, 'approved') &&
+      contains(github.event.pull_request.labels.*.name, 'ready-to-merge')
+
+  # 複数ラベル（OR）
+  deploy_or_hotfix: |
+    if: |
+      contains(github.event.pull_request.labels.*.name, 'deploy') ||
+      contains(github.event.pull_request.labels.*.name, 'hotfix')
+
+  # 複雑な組み合わせ
+  ready_to_merge: |
+    if: |
+      github.event_name == 'pull_request' &&
+      contains(github.event.pull_request.labels.*.name, 'approved') &&
+      !contains(github.event.pull_request.labels.*.name, 'wip') &&
+      !contains(github.event.pull_request.labels.*.name, 'do-not-merge')
+
+# =============================================================================
+# コミットメッセージ条件
+# =============================================================================
+
+commit_message_conditions:
+  # [skip ci] 除外
+  skip_ci_check: |
+    if: |
+      !contains(github.event.head_commit.message, '[skip ci]') &&
+      !contains(github.event.head_commit.message, '[ci skip]')
+
+  # [deploy] キーワード検出
+  deploy_keyword: |
+    if: contains(github.event.head_commit.message, '[deploy]')
+
+  # Conventional Commits - feat
+  feat_commit: |
+    if: startsWith(github.event.head_commit.message, 'feat:')
+
+  # Conventional Commits - fix
+  fix_commit: |
+    if: startsWith(github.event.head_commit.message, 'fix:')
+
+  # 強制デプロイ
+  force_deploy: |
+    if: |
+      contains(github.event.head_commit.message, '[force-deploy]') ||
+      contains(github.event.head_commit.message, '[deploy-force]')
+
+# =============================================================================
+# ステップ結果条件
+# =============================================================================
+
+step_status_conditions:
+  # 前ステップ成功時
+  on_success: |
+    if: success()
+
+  # 前ステップ失敗時
+  on_failure: |
+    if: failure()
+
+  # 常に実行
+  always_run: |
+    if: always()
+
+  # キャンセル時
+  on_cancelled: |
+    if: cancelled()
+
+  # 成功かつmainブランチ
+  success_on_main: |
+    if: success() && github.ref == 'refs/heads/main'
+
+  # 失敗時かつ強制デプロイフラグ
+  failure_with_force: |
+    if: |
+      failure() &&
+      contains(github.event.head_commit.message, '[force-deploy]')
+
+# =============================================================================
+# ステップ出力条件
+# =============================================================================
+
+step_output_conditions:
+  # ステップ出力の存在確認
+  check_output_exists: |
+    if: steps.check.outputs.result != null
+
+  # ステップ出力の値確認
+  check_output_value: |
+    if: steps.check.outputs.result == 'success'
+
+  # 複数ステップ出力の組み合わせ
+  multiple_outputs: |
+    if: |
+      steps.build.outputs.status == 'success' &&
+      steps.test.outputs.coverage > 80
+
+  # ステップの結論チェック
+  step_conclusion: |
+    if: steps.test.conclusion == 'success'
+
+# =============================================================================
+# マトリクス条件
+# =============================================================================
+
+matrix_conditions:
+  # Ubuntu専用
+  ubuntu_only: |
+    if: matrix.os == 'ubuntu-latest'
+
+  # Windows専用
+  windows_only: |
+    if: matrix.os == 'windows-latest'
+
+  # macOS専用
+  macos_only: |
+    if: matrix.os == 'macos-latest'
+
+  # 特定Nodeバージョン
+  node_20_only: |
+    if: matrix.node == 20
+
+  # Node 18以上
+  node_18_or_higher: |
+    if: matrix.node >= 18
+
+  # 組み合わせ条件
+  ubuntu_with_node_20: |
+    if: |
+      matrix.os == 'ubuntu-latest' &&
+      matrix.node == 20
+
+  # 特定組み合わせの除外
+  exclude_windows_node_16: |
+    if: |
+      !(matrix.os == 'windows-latest' && matrix.node == 16)
+
+# =============================================================================
+# 依存ジョブ条件
+# =============================================================================
+
+needs_conditions:
+  # 依存ジョブ成功時
+  deploy_on_success: |
+    if: needs.build.result == 'success'
+
+  # 複数ジョブ成功時
+  all_jobs_success: |
+    if: |
+      needs.build.result == 'success' &&
+      needs.test.result == 'success'
+
+  # いずれかのジョブが失敗
+  any_job_failed: |
+    if: |
+      needs.build.result == 'failure' ||
+      needs.test.result == 'failure'
+
+  # ジョブ出力の活用
+  use_job_output: |
+    if: needs.setup.outputs.should-deploy == 'true'
+
+  # ジョブ失敗時のロールバック
+  rollback_on_failure: |
+    if: |
+      always() &&
+      needs.deploy.result == 'failure'
+
+# =============================================================================
+# シークレット・環境変数条件
+# =============================================================================
+
+secrets_env_conditions:
+  # シークレット存在確認
+  check_secret: |
+    if: secrets.DEPLOY_TOKEN != null
+
+  # 複数シークレット確認
+  check_aws_secrets: |
+    if: |
+      secrets.AWS_ACCESS_KEY_ID != null &&
+      secrets.AWS_SECRET_ACCESS_KEY != null
+
+  # 環境変数による分岐
+  check_env_var: |
+    if: env.DEPLOY_ENV == 'production'
+
+  # 設定変数（vars）の確認
+  check_vars: |
+    if: vars.ENABLE_FEATURE_X == 'true'
+
+# =============================================================================
+# 複雑な組み合わせ条件
+# =============================================================================
+
+complex_conditions:
+  # 本番デプロイの完全な条件
+  production_deploy: |
+    if: |
+      github.ref == 'refs/heads/main' &&
+      github.event_name == 'push' &&
+      !contains(github.event.head_commit.message, '[skip deploy]') &&
+      secrets.DEPLOY_TOKEN != null &&
+      success()
+
+  # PR承認後のデプロイプレビュー
+  pr_deploy_preview: |
+    if: |
+      github.event_name == 'pull_request' &&
+      contains(github.event.pull_request.labels.*.name, 'approved') &&
+      !contains(github.event.pull_request.labels.*.name, 'wip') &&
+      secrets.PREVIEW_DEPLOY_TOKEN != null
+
+  # リリースタグの本番デプロイ
+  release_deploy: |
+    if: |
+      github.ref_type == 'tag' &&
+      startsWith(github.ref, 'refs/tags/v') &&
+      !contains(github.ref, '-alpha') &&
+      !contains(github.ref, '-beta') &&
+      secrets.PRODUCTION_DEPLOY_KEY != null
+
+  # マルチファクター条件
+  multi_factor: |
+    if: |
+      (
+        github.event_name == 'push' &&
+        github.ref == 'refs/heads/main'
+      ) ||
+      (
+        github.event_name == 'pull_request' &&
+        contains(github.event.pull_request.labels.*.name, 'deploy-preview')
+      ) ||
+      (
+        github.event_name == 'workflow_dispatch' &&
+        inputs.force-deploy == true
+      )
+
+# =============================================================================
+# 実用的なワークフロー例
+# =============================================================================
+
+workflow_examples:
+  # 段階的デプロイ
+  staged_deployment: |
+    name: Staged Deployment
+    on: [push, pull_request]
+
+    jobs:
+      build:
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v4
+          - run: npm ci
+          - run: npm run build
+
+      test:
+        needs: build
+        if: success()
+        runs-on: ubuntu-latest
+        steps:
+          - run: npm test
+
+      deploy-staging:
+        needs: [build, test]
+        if: |
+          github.ref == 'refs/heads/develop' &&
+          needs.test.result == 'success'
+        runs-on: ubuntu-latest
+        steps:
+          - run: npm run deploy-staging
+
+      deploy-production:
+        needs: [build, test]
+        if: |
+          github.ref == 'refs/heads/main' &&
+          needs.test.result == 'success' &&
+          secrets.PROD_DEPLOY_KEY != null
+        runs-on: ubuntu-latest
+        steps:
+          - run: npm run deploy-production
+
+  # マトリクステストと条件付きデプロイ
+  matrix_test_deploy: |
+    name: Matrix Test and Deploy
+    on: [push, pull_request]
+
+    jobs:
+      test:
+        strategy:
+          matrix:
+            os: [ubuntu-latest, windows-latest, macos-latest]
+            node: [16, 18, 20]
+        runs-on: ${{ matrix.os }}
+        steps:
+          - uses: actions/checkout@v4
+          - uses: actions/setup-node@v4
+            with:
+              node-version: ${{ matrix.node }}
+          - run: npm ci
+          - run: npm test
+
+          # Ubuntu + Node 20でのみ追加テスト
+          - if: |
+              matrix.os == 'ubuntu-latest' &&
+              matrix.node == 20
+            run: npm run integration-test
+
+      deploy:
+        needs: test
+        if: |
+          github.ref == 'refs/heads/main' &&
+          needs.test.result == 'success'
+        runs-on: ubuntu-latest
+        steps:
+          - run: npm run deploy
+
+# =============================================================================
+# デバッグ用の式
+# =============================================================================
+
+debug_expressions:
+  # コンテキストのダンプ
+  dump_github_context: |
+    - name: Dump GitHub context
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      run: echo "$GITHUB_CONTEXT"
+
+  # イベントペイロードのダンプ
+  dump_event: |
+    - name: Dump event
+      run: cat ${{ github.event_path }}
+
+  # すべてのコンテキストをダンプ
+  dump_all_contexts: |
+    - name: Dump contexts
+      run: |
+        echo "GitHub: ${{ toJSON(github) }}"
+        echo "Job: ${{ toJSON(job) }}"
+        echo "Steps: ${{ toJSON(steps) }}"
+        echo "Runner: ${{ toJSON(runner) }}"
+        echo "Strategy: ${{ toJSON(strategy) }}"
+        echo "Matrix: ${{ toJSON(matrix) }}"
+
+  # 条件評価のテスト
+  test_conditions: |
+    - name: Test conditions
+      run: |
+        echo "Ref: ${{ github.ref }}"
+        echo "Ref name: ${{ github.ref_name }}"
+        echo "Ref type: ${{ github.ref_type }}"
+        echo "Event: ${{ github.event_name }}"
+        echo "Actor: ${{ github.actor }}"
+        echo "Is main: ${{ github.ref == 'refs/heads/main' }}"
+        echo "Is tag: ${{ github.ref_type == 'tag' }}"
