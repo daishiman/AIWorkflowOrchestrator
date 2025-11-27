@@ -747,3 +747,49 @@
 | **nextauth-patterns** | `.claude/skills/nextauth-patterns/SKILL.md` | NextAuth.js v5設定パターン、プロバイダー設定、Drizzleアダプター統合、セッションコールバックカスタマイズ |
 | **security-headers** | `.claude/skills/security-headers/SKILL.md` | セキュリティヘッダー設定（CSP、HSTS、X-Frame-Options）、CSRF/XSS対策、Cookie属性安全化 |
 ```
+
+---
+
+## 新規スキル - ユーザーマニュアル作成関連 (2025-11-27 追加)
+
+以下のスキルは @manual-writer エージェント軽量化（v2.0.0）により作成されました:
+
+| スキル名 | パス | 概要 |
+|---------|------|------|
+| **user-centric-writing** | `.claude/skills/user-centric-writing/SKILL.md` | ユーザー中心ライティング、Kathy Sierraの5原則、タスク指向、平易な言葉、Flesch可読性測定スクリプト |
+| **tutorial-design** | `.claude/skills/tutorial-design/SKILL.md` | チュートリアル設計、3段階学習パスモデル、ステップバイステップ構造、完了時間見積もりスクリプト |
+| **troubleshooting-guides** | `.claude/skills/troubleshooting-guides/SKILL.md` | 診断フロー設計、エラー分類体系（1000-5999）、FAQ構造設計、解決策優先度付け |
+| **information-architecture** | `.claude/skills/information-architecture/SKILL.md` | ドキュメント階層設計、3クリックルール、ナビゲーションパターン、サイトマップテンプレート、リンク検証スクリプト |
+| **localization-i18n** | `.claude/skills/localization-i18n/SKILL.md` | 国際化対応、翻訳しやすい文章設計、多言語ディレクトリ構造、文化的配慮、翻訳準備度チェックスクリプト |
+
+### スキル詳細
+
+#### user-centric-writing
+- **パス**: `.claude/skills/user-centric-writing/SKILL.md`
+- **リソース**: `resources/plain-language-guide.md` - 平易な言葉ガイド、技術用語→日常語変換辞書
+- **テンプレート**: `templates/persona-template.md` - ユーザーペルソナ定義テンプレート
+- **スクリプト**: `scripts/measure-readability.mjs` - Flesch Reading Ease スコア測定
+
+#### tutorial-design
+- **パス**: `.claude/skills/tutorial-design/SKILL.md`
+- **リソース**: `resources/learning-path-design.md` - 学習パス設計ガイド（レベル1-3構造）
+- **テンプレート**: `templates/tutorial-template.md` - 標準チュートリアルテンプレート
+- **スクリプト**: `scripts/estimate-completion-time.mjs` - チュートリアル完了時間見積もり
+
+#### troubleshooting-guides
+- **パス**: `.claude/skills/troubleshooting-guides/SKILL.md`
+- **リソース**: `resources/problem-classification.md` - 問題分類とエスカレーションフロー
+- **テンプレート**: `templates/diagnosis-flow-template.md` - 診断フローチャートテンプレート
+- **テンプレート**: `templates/error-explanation-template.md` - エラー解説テンプレート
+
+#### information-architecture
+- **パス**: `.claude/skills/information-architecture/SKILL.md`
+- **リソース**: `resources/navigation-patterns.md` - ナビゲーション設計パターン集
+- **テンプレート**: `templates/sitemap-template.md` - サイトマップ設計テンプレート
+- **スクリプト**: `scripts/validate-links.mjs` - 内部リンク整合性検証
+
+#### localization-i18n
+- **パス**: `.claude/skills/localization-i18n/SKILL.md`
+- **リソース**: `resources/translation-ready-writing.md` - 翻訳準備ライティングガイド
+- **テンプレート**: `templates/multilingual-doc-template.md` - 多言語ドキュメント構造テンプレート
+- **スクリプト**: `scripts/check-translation-ready.mjs` - 翻訳準備度チェック・スコアリング
