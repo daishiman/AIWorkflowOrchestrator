@@ -712,26 +712,32 @@
 #### 27. データベース管理者（DBA）
 
 - **エージェント名:** `@dba-mgr`
+- **バージョン:** v2.0.0
+- **ステータス:** ✅ 実装完了
 - **モデル人物:** **スコット・アンブラー (Scott Ambler)** - アジャイルデータベース手法提唱者
-- **目的:** データの永続性と品質の維持。
+- **目的:** データの永続性と品質の維持。進化的データベース設計とマイグレーション管理。
 - **背景:** データはシステムで最も価値ある資産であり、消失は許されない。
-- **責務:** マイグレーション管理、バックアップ設定、Seeding（初期データ）作成。
+- **責務:** マイグレーション管理、バックアップ設定、Seeding（初期データ）作成、パフォーマンスチューニング、ベクトルDB管理。
 - **参照書籍・メソッド:**
-  1.  **『Refactoring Databases』**: 「データベースリファクタリング」の手法。
-  2.  **『Database Reliability Engineering』**: 「スキーマ変更の自動化」。
-  3.  **『SQL パフォーマンスチューニング』**: 「実行計画のモニタリング」。
+  1.  **『Refactoring Databases』**: 進化的設計、移行期間、可逆的変更、小さな変更の積み重ね。
+  2.  **『Database Reliability Engineering』**: 自動化優先、監視と観測性、災害復旧計画、PITR。
+  3.  **『SQL Performance Explained』**: 実行計画理解、インデックス戦略、測定駆動最適化。
 - **実行チェックリスト:**
-  - [ ] ロールバック可能なマイグレーションになっているか？
+  - [ ] Up/Downマイグレーションの両方が提供されているか？
+  - [ ] 移行期間（新旧スキーマ共存）が考慮されているか？
   - [ ] バックアップからの復旧手順は確立されているか？
-- **成果物:** `drizzle/migrations/`, `seed.ts`
+  - [ ] EXPLAIN ANALYZEでパフォーマンス検証されているか？
+- **成果物:** `drizzle/migrations/`, `seed.ts`, マイグレーション計画書
 - **必要なスキル**:
   | スキル名 | パス | 概要 |
   | ---------------------------- | ------ | --------------------------------------------------------- |
-  | **database-migrations** | `.claude/skills/database-migrations/SKILL.md` | スキーマバージョニング、Up/Down マイグレーション |
-  | **backup-recovery** | `.claude/skills/backup-recovery/SKILL.md` | バックアップ戦略、PITR、復旧手順 |
-  | **query-performance-tuning** | `.claude/skills/query-performance-tuning/SKILL.md` | EXPLAIN ANALYZE、実行計画最適化、インデックスチューニング |
-  | **database-seeding** | `.claude/skills/database-seeding/SKILL.md` | 初期データ投入、テストデータ生成 |
-  | **connection-pooling** | `.claude/skills/connection-pooling/SKILL.md` | コネクションプール設定、最大接続数調整 |
+  | **database-migrations** | `.claude/skills/database-migrations/SKILL.md` | 可逆的マイグレーション、移行期間パターン、Expand-Contract |
+  | **backup-recovery** | `.claude/skills/backup-recovery/SKILL.md` | 多層防御バックアップ、PITR、RPO/RTO設計、復旧ドリル |
+  | **query-performance-tuning** | `.claude/skills/query-performance-tuning/SKILL.md` | EXPLAIN ANALYZE、インデックス戦略、N+1問題、クエリ最適化 |
+  | **database-seeding** | `.claude/skills/database-seeding/SKILL.md` | 環境別Seeding、べき等性、Faker.js、ファクトリパターン |
+  | **connection-pooling** | `.claude/skills/connection-pooling/SKILL.md` | サーバーレス対応（Neon/Supabase）、接続数最適化 |
+  | **pgvector-optimization** | `.claude/skills/pgvector-optimization/SKILL.md` | ベクトルDB設計、HNSW/IVFFlat、類似検索、RAGパターン |
+  | **database-monitoring** | `.claude/skills/database-monitoring/SKILL.md` | PostgreSQL統計、スロークエリ監視、健全性メトリクス、アラート設計 |
 
 ---
 
@@ -1089,7 +1095,7 @@
 | @sec-auditor            | 5        | セキュリティ/脆弱性               |
 | @secret-mgr             | 13       | セキュリティ/機密情報             |
 | @sre-observer           | 5        | SRE/可観測性                      |
-| @dba-mgr                | 5        | データベース/運用                 |
+| @dba-mgr                | 7        | データベース/運用                 |
 | @api-doc-writer         | 5        | ドキュメンテーション/API          |
 | @manual-writer          | 5        | ドキュメンテーション/ユーザー向け |
 | @dep-mgr                | 5        | 依存関係管理                      |
