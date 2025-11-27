@@ -1101,7 +1101,7 @@
 | @manual-writer          | 5        | ドキュメンテーション/ユーザー向け |
 | @dep-mgr                | 5        | 依存関係管理                      |
 | @hook-master            | 5        | 自動化/フック                     |
-| @command-arch           | 5        | オーケストレーション              |
+| @command-arch           | 13       | オーケストレーション              |
 | @meta-agent-designer    | 12       | メタシステム/エージェント設計     |
 | @skill-librarian        | 5        | ナレッジマネジメント              |
 | @mcp-integrator         | 5        | MCP 統合/外部連携                 |
