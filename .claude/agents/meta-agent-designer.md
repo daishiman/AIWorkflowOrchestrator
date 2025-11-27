@@ -9,18 +9,18 @@ description: |
   このエージェントは以下のスキルに専門知識を分離しています。
   タスクに応じて必要なスキルのみを読み込んでください（全スキルの一括読み込みは不要）:
 
-  - agent-architecture-patterns: アーキテクチャパターン選択
-  - agent-structure-design: YAML Frontmatter・ワークフロー設計
-  - agent-dependency-design: 依存関係・ハンドオフ設計
-  - agent-quality-standards: 品質基準・メトリクス
-  - agent-validation-testing: テストケース・検証
-  - agent-template-patterns: エージェントテンプレート
-  - project-architecture-integration: プロジェクト固有設計
-  - agent-persona-design: ペルソナ・役割定義
-  - tool-permission-management: ツール権限・セキュリティ
-  - multi-agent-systems: マルチエージェント協調
-  - prompt-engineering-for-agents: System Prompt設計
-  - agent-lifecycle-management: ライフサイクル・バージョン管理
+  - `.claude/skills/agent-architecture-patterns/SKILL.md`: アーキテクチャパターン選択
+  - `.claude/skills/agent-structure-design/SKILL.md`: YAML Frontmatter・ワークフロー設計
+  - `.claude/skills/agent-dependency-design/SKILL.md`: 依存関係・ハンドオフ設計
+  - `.claude/skills/agent-quality-standards/SKILL.md`: 品質基準・メトリクス
+  - `.claude/skills/agent-validation-testing/SKILL.md`: テストケース・検証
+  - `.claude/skills/agent-template-patterns:/SKILL.md` エージェントテンプレート
+  - `.claude/skills/project-architecture-integration/SKILL.md`: プロジェクト固有設計
+  - `.claude/skills/agent-persona-design/SKILL.md`: ペルソナ・役割定義
+  - `.claude/skills/tool-permission-management/SKILL.md`: ツール権限・セキュリティ
+  - `.claude/skills/multi-agent-systems/SKILL.md`: マルチエージェント協調
+  - `.claude/skills/prompt-engineering-for-agents/SKILL.md`: System Prompt設計
+  - `.claude/skills/agent-lifecycle-management/SKILL.md`: ライフサイクル・バージョン管理
 
   パス: .claude/skills/[スキル名]/SKILL.md
 
@@ -42,7 +42,7 @@ description: |
   or optimizing Claude Code workflow automation.
 tools: [Read, Write, Grep, Bash]
 model: sonnet
-version: 2.0.0
+version: 2.1.0
 ---
 
 # Meta-Agent Designer
@@ -126,6 +126,30 @@ node .claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs <age
 # アーキテクチャパターン検証
 node .claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs <agent_file.md>
 
+# エージェント総合検証
+node .claude/skills/agent-validation-testing/scripts/validate-agent.mjs <agent_file.md>
+
+# 品質スコア算出
+node .claude/skills/agent-quality-standards/scripts/calculate-quality-score.mjs <agent_file.md>
+
+# ペルソナ設計分析
+node .claude/skills/agent-persona-design/scripts/analyze-persona.mjs <agent_file.md>
+
+# ツール権限分析
+node .claude/skills/tool-permission-management/scripts/analyze-permissions.mjs <agent_file.md>
+
+# マルチエージェント協調分析
+node .claude/skills/multi-agent-systems/scripts/analyze-collaboration.mjs <agent_file.md>
+
+# プロンプト設計分析
+node .claude/skills/prompt-engineering-for-agents/scripts/analyze-prompt.mjs <agent_file.md>
+
+# ライフサイクル管理確認
+node .claude/skills/agent-lifecycle-management/scripts/check-lifecycle.mjs <agent_file.md>
+
+# アーキテクチャ準拠チェック
+node .claude/skills/project-architecture-integration/scripts/check-architecture-compliance.mjs <agent_file.md>
+
 # 例: 作成したエージェントの検証
 node .claude/skills/agent-structure-design/scripts/validate-structure.mjs .claude/agents/new-agent.md
 ```
@@ -147,6 +171,27 @@ cat .claude/skills/agent-quality-standards/templates/quality-checklist-template.
 
 # ハンドオフプロトコルテンプレート
 cat .claude/skills/agent-dependency-design/templates/handoff-protocol-template.json
+
+# テストケーステンプレート
+cat .claude/skills/agent-validation-testing/templates/test-case-template.json
+
+# アーキテクチャ準拠チェックリスト
+cat .claude/skills/project-architecture-integration/templates/architecture-compliance-checklist.md
+
+# ペルソナ設計テンプレート
+cat .claude/skills/agent-persona-design/templates/persona-template.md
+
+# ツール権限設定テンプレート
+cat .claude/skills/tool-permission-management/templates/permission-template.yaml
+
+# ハンドオフプロトコルテンプレート（マルチエージェント用）
+cat .claude/skills/multi-agent-systems/templates/handoff-protocol-template.json
+
+# プロンプト設計テンプレート
+cat .claude/skills/prompt-engineering-for-agents/templates/prompt-template.md
+
+# ライフサイクル管理テンプレート
+cat .claude/skills/agent-lifecycle-management/templates/lifecycle-template.md
 ```
 
 ### リソース参照（詳細知識が必要な場合）
@@ -546,32 +591,6 @@ cat .claude/skills/agent-quality-standards/resources/quality-metrics.md
 
 ---
 
-## 依存関係
-
-### 依存スキル（必須）
-
-このエージェントは以下のスキルに依存します:
-
-| スキル名 | 参照タイミング | 内容 |
-|---------|--------------|------|
-| **agent-architecture-patterns** | Phase 1, 2 | アーキテクチャパターン、設計原則 |
-| **agent-structure-design** | Phase 2 | YAML設計、セクション構成 |
-| **agent-dependency-design** | Phase 3 | 依存関係、ハンドオフプロトコル |
-| **agent-quality-standards** | Phase 4 | 品質基準、エラーハンドリング |
-| **agent-validation-testing** | Phase 5 | 検証、テストケース |
-| **agent-template-patterns** | Phase 2, 5 | テンプレート、抽象度バランス |
-| **project-architecture-integration** | Phase 5 | プロジェクト固有設計原則 |
-| **agent-persona-design** | Phase 1 | ペルソナ設計 |
-| **tool-permission-management** | Phase 2 | ツール権限管理 |
-| **multi-agent-systems** | Phase 3 | マルチエージェント協調 |
-| **prompt-engineering-for-agents** | Phase 2 | プロンプト最適化 |
-| **agent-lifecycle-management** | Phase 4, 5 | ライフサイクル管理 |
-
-**重要**: これらのスキルの詳細知識は、元のエージェント定義から分離されています。
-各Phaseで該当するスキルを参照して、詳細な知識とガイダンスを取得してください。
-
----
-
 ## 実行プロトコル
 
 ### エージェント設計の基本フロー
@@ -640,14 +659,3 @@ cat .claude/skills/agent-quality-standards/resources/quality-metrics.md
 - **@command-arch**: コマンドの作成（このエージェントはコマンド実行のみ）
 - **@meta-agent-designer**: エージェントの作成（本エージェント）
 - **実装系エージェント**: 実際のコード実装（このエージェントは設計のみ）
-
----
-
-## 変更履歴
-
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 2.0.0 | 2025-11-24 | 大規模リファクタリング - 12スキルへの知識分離、skill-librarian形式への統一、70%軽量化（1,669行→520行） |
-| 1.1.1 | 2025-11-23 | ハイブリッドアーキテクチャの説明を概念的に再構成 |
-| 1.1.0 | 2025-11-22 | 抽象度の最適化とプロジェクト固有設計原則の統合 |
-| 1.0.0 | 2025-11-21 | 初版リリース |
