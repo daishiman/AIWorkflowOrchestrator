@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "_comment": "API Authentication Configuration Template",
+  "_version": "1.0.0",
+
+  "authentication": {
+    "type": "{{AUTH_TYPE}}",
+
+    "_supported_types": ["api_key", "oauth2", "jwt", "basic"],
+
+    "api_key": {
+      "header_name": "{{HEADER_NAME}}",
+      "header_prefix": "{{HEADER_PREFIX}}",
+      "env_variable": "{{ENV_VARIABLE}}"
+    },
+
+    "oauth2": {
+      "client_id_env": "{{CLIENT_ID_ENV}}",
+      "client_secret_env": "{{CLIENT_SECRET_ENV}}",
+      "authorization_url": "{{AUTHORIZATION_URL}}",
+      "token_url": "{{TOKEN_URL}}",
+      "redirect_uri": "{{REDIRECT_URI}}",
+      "scopes": ["{{SCOPE_1}}", "{{SCOPE_2}}"],
+      "grant_type": "{{GRANT_TYPE}}",
+      "pkce_enabled": true
+    },
+
+    "jwt": {
+      "secret_env": "{{JWT_SECRET_ENV}}",
+      "algorithm": "{{ALGORITHM}}",
+      "issuer": "{{ISSUER}}",
+      "audience": "{{AUDIENCE}}",
+      "expiration": "{{EXPIRATION}}"
+    },
+
+    "basic": {
+      "username_env": "{{USERNAME_ENV}}",
+      "password_env": "{{PASSWORD_ENV}}"
+    }
+  },
+
+  "_examples": {
+    "github_api_key": {
+      "type": "api_key",
+      "api_key": {
+        "header_name": "Authorization",
+        "header_prefix": "Bearer ",
+        "env_variable": "GITHUB_TOKEN"
+      }
+    },
+
+    "google_oauth2": {
+      "type": "oauth2",
+      "oauth2": {
+        "client_id_env": "GOOGLE_CLIENT_ID",
+        "client_secret_env": "GOOGLE_CLIENT_SECRET",
+        "authorization_url": "https://accounts.google.com/o/oauth2/v2/auth",
+        "token_url": "https://oauth2.googleapis.com/token",
+        "redirect_uri": "http://localhost:3000/callback",
+        "scopes": [
+          "https://www.googleapis.com/auth/drive.readonly",
+          "https://www.googleapis.com/auth/userinfo.email"
+        ],
+        "grant_type": "authorization_code",
+        "pkce_enabled": true
+      }
+    },
+
+    "slack_bot": {
+      "type": "api_key",
+      "api_key": {
+        "header_name": "Authorization",
+        "header_prefix": "Bearer ",
+        "env_variable": "SLACK_BOT_TOKEN"
+      }
+    },
+
+    "custom_jwt": {
+      "type": "jwt",
+      "jwt": {
+        "secret_env": "JWT_SECRET",
+        "algorithm": "HS256",
+        "issuer": "my-app",
+        "audience": "api-server",
+        "expiration": "1h"
+      }
+    }
+  },
+
+  "_env_example": {
+    "_comment": "Add these to your .env file",
+    "GITHUB_TOKEN": "ghp_xxxxxxxxxxxx",
+    "GOOGLE_CLIENT_ID": "1234567890.apps.googleusercontent.com",
+    "GOOGLE_CLIENT_SECRET": "GOCSPX-xxxxxxxxxx",
+    "SLACK_BOT_TOKEN": "xoxb-xxxxxxxxxxxx",
+    "JWT_SECRET": "your-super-secret-key"
+  },
+
+  "_security_notes": [
+    "Never commit actual credentials to version control",
+    "Use environment variables or secret management services",
+    "Rotate credentials regularly",
+    "Use minimum required scopes",
+    "Enable PKCE for OAuth2 when possible"
+  ]
+}

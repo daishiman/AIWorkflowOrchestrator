@@ -1,0 +1,295 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Audit Log Schema",
+  "description": "MCPツールおよびAPI操作の監査ログスキーマ",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ログエントリの一意識別子"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "イベント発生時刻（ISO 8601形式）"
+    },
+    "level": {
+      "type": "string",
+      "enum": ["DEBUG", "INFO", "WARN", "ERROR", "CRITICAL"],
+      "description": "ログレベル"
+    },
+    "event": {
+      "type": "object",
+      "description": "イベント情報",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "api_call",
+            "authentication",
+            "authorization",
+            "rate_limit",
+            "validation_error",
+            "security_violation",
+            "configuration_change",
+            "key_rotation"
+          ],
+          "description": "イベントタイプ"
+        },
+        "action": {
+          "type": "string",
+          "description": "実行されたアクション"
+        },
+        "result": {
+          "type": "string",
+          "enum": ["success", "failure", "blocked", "rate_limited"],
+          "description": "結果"
+        }
+      },
+      "required": ["type", "action", "result"]
+    },
+    "actor": {
+      "type": "object",
+      "description": "アクター（操作実行者）情報",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["user", "service", "system"],
+          "description": "アクタータイプ"
+        },
+        "id": {
+          "type": "string",
+          "description": "アクター識別子"
+        },
+        "name": {
+          "type": "string",
+          "description": "アクター名"
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "アクターのロール"
+        }
+      },
+      "required": ["type", "id"]
+    },
+    "resource": {
+      "type": "object",
+      "description": "対象リソース情報",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "リソースタイプ（例: file, api, database）"
+        },
+        "id": {
+          "type": "string",
+          "description": "リソース識別子"
+        },
+        "path": {
+          "type": "string",
+          "description": "リソースパス"
+        }
+      },
+      "required": ["type"]
+    },
+    "request": {
+      "type": "object",
+      "description": "リクエスト情報",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "リクエストID"
+        },
+        "method": {
+          "type": "string",
+          "description": "HTTPメソッドまたは操作タイプ"
+        },
+        "endpoint": {
+          "type": "string",
+          "description": "エンドポイントまたはツール名"
+        },
+        "parameters": {
+          "type": "object",
+          "description": "リクエストパラメータ（機密情報はマスク）"
+        },
+        "headers": {
+          "type": "object",
+          "description": "リクエストヘッダー（機密情報はマスク）"
+        }
+      }
+    },
+    "response": {
+      "type": "object",
+      "description": "レスポンス情報",
+      "properties": {
+        "status": {
+          "type": "integer",
+          "description": "HTTPステータスコードまたは結果コード"
+        },
+        "durationMs": {
+          "type": "integer",
+          "description": "処理時間（ミリ秒）"
+        },
+        "size": {
+          "type": "integer",
+          "description": "レスポンスサイズ（バイト）"
+        }
+      }
+    },
+    "context": {
+      "type": "object",
+      "description": "コンテキスト情報",
+      "properties": {
+        "sessionId": {
+          "type": "string",
+          "description": "セッションID"
+        },
+        "correlationId": {
+          "type": "string",
+          "description": "相関ID（リクエストチェーン追跡用）"
+        },
+        "environment": {
+          "type": "string",
+          "enum": ["development", "staging", "production"],
+          "description": "実行環境"
+        },
+        "service": {
+          "type": "string",
+          "description": "サービス名"
+        },
+        "version": {
+          "type": "string",
+          "description": "サービスバージョン"
+        }
+      }
+    },
+    "network": {
+      "type": "object",
+      "description": "ネットワーク情報",
+      "properties": {
+        "clientIp": {
+          "type": "string",
+          "description": "クライアントIPアドレス"
+        },
+        "userAgent": {
+          "type": "string",
+          "description": "User-Agent"
+        },
+        "protocol": {
+          "type": "string",
+          "description": "プロトコル（例: https, wss）"
+        }
+      }
+    },
+    "security": {
+      "type": "object",
+      "description": "セキュリティ関連情報",
+      "properties": {
+        "authMethod": {
+          "type": "string",
+          "description": "使用された認証方式"
+        },
+        "keyId": {
+          "type": "string",
+          "description": "使用されたAPIキーID（マスク済み）"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "リクエストで使用されたスコープ"
+        },
+        "violations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "違反タイプ"
+              },
+              "detail": {
+                "type": "string",
+                "description": "違反詳細"
+              },
+              "severity": {
+                "type": "string",
+                "enum": ["low", "medium", "high", "critical"],
+                "description": "深刻度"
+              }
+            }
+          },
+          "description": "検出されたセキュリティ違反"
+        }
+      }
+    },
+    "error": {
+      "type": "object",
+      "description": "エラー情報（エラー発生時のみ）",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "エラーコード"
+        },
+        "message": {
+          "type": "string",
+          "description": "エラーメッセージ"
+        },
+        "stack": {
+          "type": "string",
+          "description": "スタックトレース（開発環境のみ）"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "追加メタデータ",
+      "additionalProperties": true
+    }
+  },
+  "required": ["id", "timestamp", "level", "event", "actor"],
+  "examples": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "timestamp": "2025-11-27T10:30:00.000Z",
+      "level": "INFO",
+      "event": {
+        "type": "api_call",
+        "action": "create_issue",
+        "result": "success"
+      },
+      "actor": {
+        "type": "service",
+        "id": "mcp-github-server",
+        "name": "GitHub MCP Server"
+      },
+      "resource": {
+        "type": "repository",
+        "id": "owner/repo",
+        "path": "/repos/owner/repo/issues"
+      },
+      "request": {
+        "id": "req-abc-123",
+        "method": "POST",
+        "endpoint": "github_create_issue"
+      },
+      "response": {
+        "status": 201,
+        "durationMs": 450
+      },
+      "context": {
+        "environment": "production",
+        "service": "mcp-integrator"
+      },
+      "security": {
+        "authMethod": "bearer_token",
+        "keyId": "ghp_xxxx...xxxx",
+        "scopes": ["repo:write"]
+      }
+    }
+  ]
+}

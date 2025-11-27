@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "_comment": "MCP Server Configuration Template",
+  "_version": "1.0.0",
+
+  "mcpServers": {
+    "{{SERVER_NAME}}": {
+      "_description": "{{SERVER_DESCRIPTION}}",
+
+      "command": "{{COMMAND}}",
+      "args": [
+        "{{ARG_1}}",
+        "{{ARG_2}}"
+      ],
+
+      "env": {
+        "{{ENV_VAR_1}}": "${{{ENV_VAR_1}}}",
+        "{{ENV_VAR_2}}": "${{{ENV_VAR_2}}}"
+      },
+
+      "cwd": "{{WORKING_DIRECTORY}}",
+
+      "timeout": 30000,
+
+      "disabled": false
+    }
+  },
+
+  "_template_instructions": {
+    "SERVER_NAME": "サーバー識別名（kebab-case）",
+    "SERVER_DESCRIPTION": "サーバーの用途説明",
+    "COMMAND": "実行コマンド（npx, node, python等）",
+    "ARG_1": "コマンド引数1",
+    "ARG_2": "コマンド引数2",
+    "ENV_VAR_1": "環境変数名1",
+    "ENV_VAR_2": "環境変数名2",
+    "WORKING_DIRECTORY": "作業ディレクトリパス（オプション）"
+  },
+
+  "_examples": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/workspace"]
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    "custom-python": {
+      "command": "python",
+      "args": ["-m", "my_mcp_server"],
+      "cwd": "/path/to/server"
+    }
+  },
+
+  "_validation_rules": {
+    "server_name": {
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "kebab-case形式、小文字で開始"
+    },
+    "command": {
+      "allowed": ["npx", "node", "python", "python3", "docker", "deno"],
+      "description": "許可されたコマンドのみ使用可能"
+    },
+    "timeout": {
+      "min": 1000,
+      "max": 300000,
+      "default": 30000,
+      "description": "ミリ秒単位、1秒〜5分"
+    }
+  }
+}

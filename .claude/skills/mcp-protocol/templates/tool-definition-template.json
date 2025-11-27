@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "_comment": "MCP Tool Definition Template",
+  "_version": "1.0.0",
+
+  "tool_definition": {
+    "name": "{{TOOL_NAME}}",
+    "description": "{{TOOL_DESCRIPTION}}",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "{{PARAM_1_NAME}}": {
+          "type": "{{PARAM_1_TYPE}}",
+          "description": "{{PARAM_1_DESCRIPTION}}"
+        },
+        "{{PARAM_2_NAME}}": {
+          "type": "{{PARAM_2_TYPE}}",
+          "description": "{{PARAM_2_DESCRIPTION}}",
+          "default": "{{PARAM_2_DEFAULT}}"
+        }
+      },
+      "required": ["{{PARAM_1_NAME}}"]
+    }
+  },
+
+  "_template_instructions": {
+    "TOOL_NAME": "ツール名（snake_case推奨）",
+    "TOOL_DESCRIPTION": "ツールの機能を明確に説明",
+    "PARAM_X_NAME": "パラメータ名",
+    "PARAM_X_TYPE": "型（string, number, boolean, array, object）",
+    "PARAM_X_DESCRIPTION": "パラメータの説明",
+    "PARAM_X_DEFAULT": "デフォルト値（任意パラメータの場合）"
+  },
+
+  "_examples": {
+    "file_read": {
+      "name": "file_read",
+      "description": "指定されたパスのファイル内容を読み取ります",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "読み取るファイルの絶対パス"
+          },
+          "encoding": {
+            "type": "string",
+            "description": "文字エンコーディング",
+            "default": "utf-8",
+            "enum": ["utf-8", "ascii", "base64"]
+          }
+        },
+        "required": ["path"]
+      }
+    },
+    "api_request": {
+      "name": "api_request",
+      "description": "外部APIにHTTPリクエストを送信します",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "リクエスト先URL",
+            "format": "uri"
+          },
+          "method": {
+            "type": "string",
+            "description": "HTTPメソッド",
+            "enum": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+            "default": "GET"
+          },
+          "headers": {
+            "type": "object",
+            "description": "リクエストヘッダー",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "body": {
+            "type": "object",
+            "description": "リクエストボディ（POST/PUT/PATCH用）"
+          },
+          "timeout": {
+            "type": "number",
+            "description": "タイムアウト（ミリ秒）",
+            "default": 30000,
+            "minimum": 1000,
+            "maximum": 120000
+          }
+        },
+        "required": ["url"]
+      }
+    },
+    "database_query": {
+      "name": "database_query",
+      "description": "データベースに対してSQLクエリを実行します",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "実行するSQLクエリ"
+          },
+          "params": {
+            "type": "array",
+            "description": "プリペアドステートメントのパラメータ",
+            "items": {
+              "type": ["string", "number", "boolean", "null"]
+            }
+          },
+          "database": {
+            "type": "string",
+            "description": "ターゲットデータベース名"
+          }
+        },
+        "required": ["query"]
+      }
+    }
+  },
+
+  "_type_reference": {
+    "string": {
+      "constraints": ["minLength", "maxLength", "pattern", "format", "enum"]
+    },
+    "number": {
+      "constraints": ["minimum", "maximum", "exclusiveMinimum", "exclusiveMaximum", "multipleOf"]
+    },
+    "integer": {
+      "constraints": ["minimum", "maximum"]
+    },
+    "boolean": {
+      "constraints": []
+    },
+    "array": {
+      "constraints": ["items", "minItems", "maxItems", "uniqueItems"]
+    },
+    "object": {
+      "constraints": ["properties", "required", "additionalProperties"]
+    }
+  },
+
+  "_format_reference": {
+    "date-time": "ISO 8601 日時",
+    "date": "ISO 8601 日付",
+    "time": "ISO 8601 時刻",
+    "email": "メールアドレス",
+    "uri": "URI",
+    "uuid": "UUID",
+    "ipv4": "IPv4アドレス",
+    "ipv6": "IPv6アドレス"
+  }
+}

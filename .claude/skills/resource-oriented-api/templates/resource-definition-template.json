@@ -1,0 +1,303 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MCP Resource Definition Template",
+  "description": "MCPリソース定義のテンプレート",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "リソース定義バージョン",
+      "default": "1.0.0"
+    },
+    "resources": {
+      "type": "array",
+      "description": "静的リソース定義",
+      "items": {
+        "type": "object",
+        "properties": {
+          "uri": {
+            "type": "string",
+            "description": "リソースの一意識別子URI"
+          },
+          "name": {
+            "type": "string",
+            "description": "人間可読なリソース名"
+          },
+          "description": {
+            "type": "string",
+            "description": "リソースの説明"
+          },
+          "mimeType": {
+            "type": "string",
+            "description": "コンテンツのMIMEタイプ",
+            "examples": [
+              "text/plain",
+              "application/json",
+              "text/markdown",
+              "application/octet-stream"
+            ]
+          },
+          "metadata": {
+            "type": "object",
+            "description": "追加メタデータ",
+            "properties": {
+              "created": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "modified": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "size": {
+                "type": "integer",
+                "description": "サイズ（バイト）"
+              },
+              "author": {
+                "type": "string"
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "required": ["uri", "name"]
+      }
+    },
+    "resourceTemplates": {
+      "type": "array",
+      "description": "動的リソーステンプレート定義",
+      "items": {
+        "type": "object",
+        "properties": {
+          "uriTemplate": {
+            "type": "string",
+            "description": "URIテンプレート（RFC 6570準拠）",
+            "examples": [
+              "file:///{path}",
+              "db://postgres/{database}/{table}/{id}",
+              "api://github/repos/{owner}/{repo}/issues/{number}"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "description": "テンプレート名"
+          },
+          "description": {
+            "type": "string",
+            "description": "テンプレートの説明"
+          },
+          "mimeType": {
+            "type": "string",
+            "description": "生成されるコンテンツのMIMEタイプ"
+          },
+          "parameters": {
+            "type": "array",
+            "description": "テンプレートパラメータ定義",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "パラメータ名"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "パラメータの説明"
+                },
+                "required": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "type": {
+                  "type": "string",
+                  "enum": ["string", "number", "boolean"],
+                  "default": "string"
+                },
+                "pattern": {
+                  "type": "string",
+                  "description": "バリデーション正規表現"
+                },
+                "default": {
+                  "description": "デフォルト値"
+                },
+                "examples": {
+                  "type": "array",
+                  "description": "値の例"
+                }
+              },
+              "required": ["name"]
+            }
+          }
+        },
+        "required": ["uriTemplate", "name"]
+      }
+    },
+    "caching": {
+      "type": "object",
+      "description": "キャッシュ設定",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "defaultTtl": {
+          "type": "integer",
+          "description": "デフォルトTTL（秒）",
+          "default": 300
+        },
+        "rules": {
+          "type": "array",
+          "description": "パターン別キャッシュルール",
+          "items": {
+            "type": "object",
+            "properties": {
+              "pattern": {
+                "type": "string",
+                "description": "URIパターン（glob形式）"
+              },
+              "ttl": {
+                "type": "integer",
+                "description": "TTL（秒）"
+              },
+              "strategy": {
+                "type": "string",
+                "enum": ["no-cache", "cache-first", "stale-while-revalidate"],
+                "default": "cache-first"
+              }
+            },
+            "required": ["pattern", "ttl"]
+          }
+        }
+      }
+    },
+    "subscriptions": {
+      "type": "object",
+      "description": "リソース変更通知設定",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "patterns": {
+          "type": "array",
+          "description": "監視対象パターン",
+          "items": {
+            "type": "object",
+            "properties": {
+              "pattern": {
+                "type": "string",
+                "description": "URIパターン"
+              },
+              "events": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": ["created", "updated", "deleted"]
+                },
+                "default": ["updated"]
+              },
+              "debounceMs": {
+                "type": "integer",
+                "description": "デバウンス間隔（ミリ秒）",
+                "default": 1000
+              }
+            },
+            "required": ["pattern"]
+          }
+        }
+      }
+    },
+    "access": {
+      "type": "object",
+      "description": "アクセス制御設定",
+      "properties": {
+        "defaultPolicy": {
+          "type": "string",
+          "enum": ["allow", "deny"],
+          "default": "allow"
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "pattern": {
+                "type": "string",
+                "description": "URIパターン"
+              },
+              "operations": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": ["read", "list", "subscribe"]
+                }
+              },
+              "policy": {
+                "type": "string",
+                "enum": ["allow", "deny"]
+              },
+              "roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "許可されたロール"
+              }
+            },
+            "required": ["pattern", "operations", "policy"]
+          }
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "version": "1.0.0",
+      "resources": [
+        {
+          "uri": "file:///config/app.json",
+          "name": "Application Configuration",
+          "description": "Main application configuration file",
+          "mimeType": "application/json"
+        }
+      ],
+      "resourceTemplates": [
+        {
+          "uriTemplate": "db://postgres/users/{userId}",
+          "name": "User Record",
+          "description": "Individual user record from database",
+          "mimeType": "application/json",
+          "parameters": [
+            {
+              "name": "userId",
+              "description": "User ID",
+              "required": true,
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "caching": {
+        "enabled": true,
+        "defaultTtl": 300,
+        "rules": [
+          {
+            "pattern": "file:///config/*",
+            "ttl": 3600,
+            "strategy": "cache-first"
+          },
+          {
+            "pattern": "db://*/users/*",
+            "ttl": 60,
+            "strategy": "stale-while-revalidate"
+          }
+        ]
+      }
+    }
+  ]
+}
