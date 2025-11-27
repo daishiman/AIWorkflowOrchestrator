@@ -42,7 +42,8 @@
       "Bash(do echo \"\")",
       "Bash(.claude/skills/context-optimization/scripts/estimate-tokens.sh:*)",
       "Bash(.claude/skills/progressive-disclosure/scripts/calculate-token-usage.sh .claude/skills/progressive-disclosure)",
-      "Bash(git stash pop:*)"
+      "Bash(git stash pop:*)",
+      "Bash(for file in /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.claude/agents/*.md)"
     ],
     "deny": [],
     "ask": []
