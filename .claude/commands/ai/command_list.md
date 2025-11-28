@@ -22,17 +22,34 @@
 ## 1. プロジェクト初期化・セットアップ
 
 ### `/ai:init-project`
-- **目的**: 新規プロジェクトの完全な初期化
-- **引数**: `[project-name]` - プロジェクト名
-- **使用エージェント**: @product-manager, @req-analyst, @arch-police
+- **目的**: 新規プロジェクトの完全な初期化（ビジョン→要件→アーキテクチャの3段階）
+- **引数**: `[project-name]` - プロジェクト名（オプション、未指定時はインタラクティブ）
+- **使用エージェント**:
+  - `.claude/agents/product-manager.md`: プロジェクトゴール・ロードマップ・OKR定義
+  - `.claude/agents/req-analyst.md`: 要件整理・ユースケース・受け入れ基準作成
+  - `.claude/agents/arch-police.md`: アーキテクチャ方針・レイヤー構造・依存関係ルール確立
 - **フロー**:
-  1. @product-manager: プロジェクトゴールとロードマップ定義
-  2. @req-analyst: 初期要件の整理
-  3. @arch-police: アーキテクチャ方針の確立
-- **成果物**: プロジェクト構造、CLAUDE.md、初期ドキュメント
+  1. Phase 1: プロジェクト名・タイプ・技術スタック確認
+  2. Phase 2: product-manager起動 → ビジョン・ロードマップ・初期バックログ作成
+  3. Phase 3: req-analyst起動 → 要件化（機能/非機能）・ユースケース・受け入れ基準定義
+  4. Phase 4: arch-police起動 → アーキテクチャスタイル選定・レイヤー構造・ADR作成
+  5. Phase 5: ディレクトリ構造生成（ハイブリッド: shared + features + app）
+  6. Phase 6: 設定ファイル生成（package.json, tsconfig.json, eslint.config.js, railway.json, .env.example, CLAUDE.md）
+  7. Phase 7: 完了報告とNext Steps提示
+- **成果物**:
+  - **要件**: docs/00-requirements/{master_system_design,functional,non-functional,use-cases,acceptance-criteria}.md
+  - **アーキテクチャ**: docs/10-architecture/{overview,layer-structure,dependency-rules}.md + docs/99-adr/001-hybrid-architecture.md
+  - **設定**: package.json, tsconfig.json, eslint.config.js, .env.example, railway.json, .gitignore
+  - **構造**: src/{shared/{core,infrastructure},features,app}, local-agent/, tests/, .github/workflows/, .claude/CLAUDE.md
+- **参照スキル**:
+  - **product-manager**: agile-project-management, user-story-mapping, product-vision, prioritization-frameworks, metrics-tracking
+  - **req-analyst**: requirements-triage, ambiguity-elimination, use-case-modeling, acceptance-criteria-writing, functional-non-functional-requirements
+  - **arch-police**: clean-architecture-principles, solid-principles, dependency-analysis, architectural-patterns
 - **設定**:
-  - `model: opus` (高度な計画が必要)
-  - `allowed-tools: Bash, Read, Write, Task`
+  - `model: opus` (高度な計画と3エージェント調整が必要)
+  - `allowed-tools: [Task, Read, Write, Bash(mkdir*|git init*)]`
+  - **トークン見積もり**: 約20-30K（3エージェント起動 + ドキュメント生成）
+- **トリガーキーワード**: init, initialize, setup, new project, 新規プロジェクト, 初期化
 
 ### `/ai:scaffold-project`
 - **目的**: プロジェクトディレクトリ構造の自動生成
