@@ -69,14 +69,19 @@ version: 1.3.0
 
 ## タスク実行ワークフロー
 
+### Phase 0: プロジェクト仕様の理解
+1. `docs/00-requirements/master_system_design.md` 第6章（コアインターフェース仕様）を参照
+2. IWorkflowExecutor、IRepository、ExecutionContextの要件確認
+3. 第5.2.3章（workflows テーブル）でエンティティ構造を理解
+
 ### Phase 1: ドメイン理解
 1. 要件・仕様書の分析
 2. 既存ドメインモデルの確認
-3. ユビキタス言語の抽出
+3. ユビキタス言語の抽出（master_system_design.md 第14章用語集を参照）
 
 ### Phase 2: モデル設計
 1. Entity/ValueObject/Aggregateの識別
-2. 不変条件の定義
+2. 不変条件の定義（master_system_design.md 第6章のバリデーション要件を反映）
 3. ドメインサービスの特定
 
 ### Phase 3: 実装
