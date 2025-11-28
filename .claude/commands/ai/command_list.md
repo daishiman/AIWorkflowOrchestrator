@@ -185,14 +185,54 @@
 - **トリガーキーワード**: requirements, stakeholder, ヒアリング, 要件整理, インタビュー, 仕様駆動
 
 ### `/ai:create-user-stories`
-- **目的**: ユーザーストーリーとアクセプタンスクライテリアの作成
-- **引数**: `[feature-name]` - 機能名
-- **使用エージェント**: @product-manager, @req-analyst
-- **スキル活用**: user-story-mapping, acceptance-criteria-writing
-- **成果物**: docs/00-requirements/user-stories.md
+- **目的**: ユーザーストーリーとアクセプタンスクライテリアの作成（INVEST原則準拠、Given-When-Then形式）
+- **引数**: `[feature-name]` - 機能名（オプション、未指定時はインタラクティブ）
+- **使用エージェント**:
+  - `.claude/agents/product-manager.md`: Phase 1 - ユーザーストーリーマッピング、優先順位付け、MVP定義
+  - `.claude/agents/req-analyst.md`: Phase 2 - 受け入れ基準定義、要件検証、品質保証
+- **スキル活用**（エージェントが必要時に参照）:
+  - **product-manager**: user-story-mapping, backlog-management, prioritization-frameworks, estimation-techniques
+  - **req-analyst**: acceptance-criteria-writing, functional-non-functional-requirements, requirements-verification, use-case-modeling
+- **フロー**:
+  1. Phase 1 (@product-manager):
+     - master_system_design.md参照（ハイブリッド構造、TDD原則）
+     - ペルソナとユーザージャーニー定義
+     - エピック分割と垂直スライス設計
+     - MoSCoW分類、価値評価、ストーリーポイント見積もり
+     - MVPスコープ特定
+  2. Phase 2 (@req-analyst):
+     - Given-When-Then形式で受け入れ基準作成
+     - 正常系・異常系・境界値シナリオ網羅
+     - ユースケースフロー構造化
+     - 一貫性・完全性・検証可能性チェック
+     - プロジェクト固有制約反映（TDD、ハイブリッド構造）
+  3. Phase 3: ドキュメント統合と引き継ぎ
+     - user-stories.md作成（ストーリーマップ + 受け入れ基準）
+     - 用語集更新
+     - 次フェーズ連携情報（テスト作成、詳細仕様、実装）
+- **成果物**:
+  - `docs/00-requirements/user-stories.md`（ユーザーストーリー + 受け入れ基準）
+  - 優先順位付けされたバックログ
+  - MVP定義とリリース計画
+  - 次フェーズへの引き継ぎ情報（テストファイルパス、カバレッジ目標）
 - **設定**:
-  - `model: opus`
-  - `allowed-tools: Read, Write(docs/**)`
+  - `model: opus`（2エージェント調整、価値評価、受け入れ基準定義の複雑な判断が必要）
+  - `allowed-tools: [Task, Read, Write(docs/00-requirements/**), Grep]`
+    - Task: 2エージェント起動用
+    - Read: master_system_design.md、既存要件確認用
+    - Write(docs/00-requirements/**): ユーザーストーリー作成用（パス制限）
+    - Grep: 既存ストーリー検索・重複チェック用
+  - **トークン見積もり**: 約15-20K（2エージェント起動 + ドキュメント生成）
+- **品質基準**:
+  - INVEST原則準拠率: 100%
+  - 受け入れ基準網羅性: >95%（正常系・異常系・境界値）
+  - 要件品質スコア: >80%
+  - 曖昧性: 0%
+- **プロジェクト固有考慮**:
+  - [ ] TDD準拠（受け入れ基準 → テスト → 実装の順序明記）
+  - [ ] ハイブリッド構造（shared/ vs features/の責務を反映）
+  - [ ] 技術スタック制約（Next.js 15, TypeScript strict, Drizzle ORM）
+- **トリガーキーワード**: user stories, acceptance criteria, ユーザーストーリー, 受け入れ基準, backlog, バックログ, MVP, INVEST
 
 ### `/ai:define-use-cases`
 - **目的**: ユースケース図とシナリオの作成

@@ -488,6 +488,53 @@ cat .claude/skills/risk-management/templates/risk-register-template.md
 
 ---
 
+## プロジェクト固有の理解
+
+### 参照すべきドキュメント
+
+**システム設計仕様書**: `docs/00-requirements/master_system_design.md`
+- **ハイブリッドアーキテクチャ**（shared/features構造）
+  - shared/: 共通インフラ（AI、DB、Discord）
+  - features/: 機能ごとの垂直スライス（1機能=1フォルダ）
+- **データベース設計原則**（JSONB活用、UUID主キー、ソフトデリート、トランザクション管理）
+- **REST API設計**（/api/v1/バージョニング、エラーハンドリング、レート制限）
+- **テスト戦略**（TDD必須、テストピラミッド、カバレッジ60%以上）
+- **技術スタック**:
+  - パッケージマネージャー: pnpm 9.x（npm禁止）
+  - フレームワーク: Next.js 15.x（App Router、RSC）
+  - 言語: TypeScript 5.x（strict mode必須）
+  - ORM: Drizzle 0.39.x（型安全なSQL）
+  - テスト: Vitest 2.x（ユニット）、Playwright（E2E）
+  - デプロイ: Railway（Nixpacks、Git連携自動デプロイ）
+  - プロセス管理: PM2（ローカルエージェント、autorestart、500M制限）
+
+### ユーザーストーリー作成時の考慮点
+
+**ハイブリッドアーキテクチャの反映**:
+- [ ] ストーリーが features/ の垂直スライス設計に適合しているか？
+  - 1機能 = 1フォルダ（schema.ts、executor.ts、__tests__/）
+  - 機能間の独立性が保たれているか？
+- [ ] 共通インフラ（AI、DB、Discord）は shared/infrastructure/ から利用する前提か？
+- [ ] 新しい機能は features/registry.ts への1行登録で完了するか？
+
+**TDD準拠の確認**:
+- [ ] 受け入れ基準が先に定義されているか？
+- [ ] ストーリーポイント見積もりがTDDサイクル（Red-Green-Refactor）を含んでいるか？
+- [ ] テストファイルパス（features/[機能名]/__tests__/executor.test.ts）が明示されているか？
+
+**技術スタック制約の反映**:
+- [ ] TypeScript strict モードで型安全性が確保される設計か？
+- [ ] Drizzle ORM による型推論を活用する設計か？
+- [ ] Next.js App Router（RSC、Server Actions）の制約を考慮しているか？
+- [ ] Railway デプロイメント（Nixpacks、環境変数、ボリューム）の制約を考慮しているか？
+
+**非機能要件の考慮**:
+- [ ] パフォーマンス要件（応答時間、スループット）が定量化されているか？
+- [ ] セキュリティ要件（認証、認可、入力検証）が含まれているか？
+- [ ] エラーハンドリング（リトライ戦略、サーキットブレーカー）が考慮されているか？
+
+---
+
 ## 使用上の注意
 
 ### このエージェントが得意なこと

@@ -273,11 +273,94 @@ cat .claude/skills/acceptance-criteria-writing/templates/acceptance-criteria-tem
    - ❌ 「SQLクエリを実行」
    - ✅ 「データが保存される」
 
+## プロジェクト固有の適用
+
+### TDD準拠の受け入れ基準
+
+**このプロジェクトではTDD（Test-Driven Development）が必須**:
+
+**受け入れ基準 → テストコード変換の例**:
+```
+受け入れ基準（Given-When-Then）:
+---
+Given: ユーザーが有効なYouTube URLを入力
+When: /summarize コマンドを実行
+Then:
+- 動画の要約が返される
+- 応答時間が30秒以内
+- 要約文字数が500-1000字
+
+↓ 直接変換 ↓
+
+Vitestテストコード（features/youtube-summarize/__tests__/executor.test.ts）:
+---
+describe('YouTubeSummarizeExecutor', () => {
+  it('should return summary when valid URL', async () => {
+    // Given
+    const input = { url: 'https://youtube.com/watch?v=xxx' };
+
+    // When
+    const result = await executor.execute(input, context);
+
+    // Then
+    expect(result.summary).toBeDefined();
+    expect(result.summary.length).toBeGreaterThanOrEqual(500);
+    expect(result.summary.length).toBeLessThanOrEqual(1000);
+  });
+});
+```
+
+### ハイブリッドアーキテクチャの反映
+
+**features/ 垂直スライスに対応した基準**:
+```
+機能: YouTube動画要約
+配置: features/youtube-summarize/
+
+受け入れ基準:
+- [ ] schema.ts で Zod バリデーションが定義されている
+- [ ] executor.ts で IWorkflowExecutor を実装している
+- [ ] shared/infrastructure/ai/ から AI クライアントを取得している
+- [ ] __tests__/executor.test.ts でカバレッジ60%以上を達成している
+- [ ] features/registry.ts に1行登録で有効化される
+```
+
+### 技術スタック制約の反映
+
+**Zod + TypeScript strict による型安全性**:
+```
+受け入れ基準に含めるべき項目:
+- [ ] 入力スキーマが Zod で定義されている（inputSchema）
+- [ ] 出力スキーマが Zod で定義されている（outputSchema）
+- [ ] TypeScript strict mode でコンパイルエラーがゼロ
+- [ ] any 型の使用がゼロ（unknown または具体的な型を使用）
+```
+
+**Vitest によるテスト要件**:
+```
+受け入れ基準に含めるべきテスト条件:
+- [ ] 正常系テスト（Happy Path）が存在
+- [ ] 異常系テスト（エラーケース）が存在
+- [ ] 境界値テスト（最小値・最大値・境界±1）が存在
+- [ ] モックによる外部依存の分離（AI API、DB、Discord）
+- [ ] カバレッジ60%以上を達成
+```
+
+**Railway デプロイメント制約**:
+```
+非機能要件に含めるべき項目:
+- [ ] 環境変数による設定（DATABASE_URL、AI API キー等）
+- [ ] 一時ファイルは /tmp ディレクトリに保存（再デプロイで削除）
+- [ ] 長時間処理（>30秒）の場合は非同期処理
+- [ ] ログは構造化JSON形式（Railway Logs互換）
+```
+
 ## 関連スキル
 
 - **requirements-engineering** (`.claude/skills/requirements-engineering/SKILL.md`): 要件工学
 - **use-case-modeling** (`.claude/skills/use-case-modeling/SKILL.md`): ユースケース
 - **functional-non-functional-requirements** (`.claude/skills/functional-non-functional-requirements/SKILL.md`): 要件分類
+- **tdd-principles** (`.claude/skills/tdd-principles/SKILL.md`): TDD実践、Red-Green-Refactor
 
 ## メトリクス
 
