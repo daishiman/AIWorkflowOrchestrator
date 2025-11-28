@@ -34,7 +34,14 @@
   - `model: opus` (高度な計画が必要)
   - `allowed-tools: Bash, Read, Write, Task`
 
-### `/ai:scaffold-project`
+#### `/ai:scaffold-project`
+- **目的**: プロジェクトディレクトリ構造の自動生成
+- **引数**: `[template-type]` - テンプレートタイプ(nextjs/react/node等)
+- **使用エージェント**: @command-arch
+- **成果物**: src/, tests/, docs/, .github/
+- **設定**:
+  - `model: sonnet`
+  - `allowed-tools: Bash(mkdir*|npx*), Write`## `/ai:scaffold-project`
 - **目的**: プロジェクトディレクトリ構造の自動生成
 - **引数**: `[template-type]` - テンプレートタイプ(nextjs/react/node等)
 - **使用エージェント**: @command-arch
