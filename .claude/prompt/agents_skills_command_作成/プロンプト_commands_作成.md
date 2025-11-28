@@ -27,6 +27,8 @@ commandは次の階層化に作成して。
   - `model: opus` (複雑なヒアリング分析)
   - `allowed-tools: Read, Write(docs/**)`
 """
+@docs/00-requirements/master_system_design.md
+この内容を反映さしてください。これらはエージェン・トスキルにも同様です。エージェント・スキルにもこれらの内容を反映されているか確認しておいてください。エージェント・スキルも改善実用であれば、改善すること
 
 メタ情報のdescription には、参照するエージェントとスキルを記述すること
 例:
