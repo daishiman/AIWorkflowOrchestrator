@@ -82,12 +82,29 @@
 
 ### `/ai:init-git-workflow`
 - **目的**: Gitワークフローとブランチ戦略の確立
-- **引数**: `[strategy]` - ブランチ戦略(git-flow/github-flow/trunk-based)
-- **使用エージェント**: @hook-master
-- **成果物**: .git/, .gitignore, Git hooks
+- **引数**: `[strategy]` - ブランチ戦略(git-flow/github-flow/trunk-based)、未指定時は対話的に選択
+- **使用エージェント**: `.claude/agents/hook-master.md`
+- **依存スキル**:
+  - `.claude/skills/git-hooks-concepts/SKILL.md`: Git Hook基本概念、ライフサイクル
+  - `.claude/skills/claude-code-hooks/SKILL.md`: Claude Code Hook設計（UserPromptSubmit、PreToolUse、PostToolUse）
+  - `.claude/skills/automation-scripting/SKILL.md`: Bash/Node.js自動化スクリプト実装
+  - `.claude/skills/linting-formatting-automation/SKILL.md`: ESLint/Prettier統合、lint-staged設定
+- **フロー**:
+  1. ブランチ戦略確認（引数または対話）
+  2. 現状Git設定分析（git status、branch確認）
+  3. `.claude/agents/hook-master.md` エージェント起動
+     - ブランチ戦略に基づくGit Hooks設計・実装
+     - .gitignore最適化
+     - Claude Code Hooks統合（UserPromptSubmit、PreToolUse、PostToolUse）
+     - 自動化スクリプト実装（Lint、Format、Commit検証）
+     - settings.json へのHooks設定統合
+  4. 設定ファイル検証
+  5. Git Hooks動作テスト
+- **成果物**: .gitignore、.claude/hooks/（Hookスクリプト）、.claude/settings.json（Hooks設定）、ブランチ戦略ドキュメント
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Bash(git*), Write`
+  - `allowed-tools: [Task, Bash(git*), Read, Write, Grep]`
+  - `argument-hint: "[strategy]"`
 
 ---
 
