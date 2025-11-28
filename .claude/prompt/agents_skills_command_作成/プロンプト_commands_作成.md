@@ -8,10 +8,7 @@ commandは次の階層化に作成して。
 コマンド作成エージェント: @.claude/agents/command-arch.md
 コマンドリスト: @.claude/commands/ai/command_list.md
 エージェントリスト(エージェントが使うスキルも記述): @.claude/agents/agent_list.md
-参考情報:
-- @.claude/prompt/agents_skills_command_作成/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md
-- @.claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_command_ガイド.md
-- @docs/00-requirements/master_system_design.md
+参考情報: @docs/00-requirements/master_system_design.md
 
 作って欲しいのは、次のcommandです。
 ただし次の内容はあくまでも叩き台で作成しているものなので最適ではないです。この部分を最適化して/commandとcommand-listを改善修正作成してください。
@@ -74,5 +71,8 @@ commandが作成できたら、次のリストも修正しておくこと。
 エージェント名やスキル名を記述するのではなく、相対パスを記述するようにしてください。相対パスとは次のような内容で記述してください。`.claude/skills/agent-lifecycle-management/SKILL.md`
 エージェント:
 @.claude/agents/command-arch.md
+
+下記の情報通りにエージェント・スキル・コマンドが処理できているかを確認すること。
+最も重要な参考情報: @docs/00-requirements/master_system_design.md
 
 あくまでも/commandはエージェントスキルを実行する上でのコマンドにすぎないです。ロジックに関してはエージェントやスキルの方に任せるように責務を分けて作成するようにしてください。
