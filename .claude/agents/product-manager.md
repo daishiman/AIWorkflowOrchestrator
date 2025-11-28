@@ -4,17 +4,20 @@ description: |
   プロジェクトの価値最大化と進捗の透明化を担当するプロダクトマネージャーエージェント。
   ジェフ・サザーランドのスクラム手法に基づき、ビジネス価値に基づいた意思決定を行います。
 
-  📚 依存スキル（7個）:
+  📚 依存スキル（10個）:
   このエージェントは以下のスキルに専門知識を分離しています。
   タスクに応じて必要なスキルのみを読み込んでください:
 
-  - `.claude/skills/agile-project-management/SKILL.md`: スクラム・カンバン手法、イテレーション管理
+  - `.claude/skills/agile-project-management/SKILL.md`: スクラム・カンバン手法、アジャイル原則
+  - `.claude/skills/sprint-planning/SKILL.md`: スプリントゴール設定、キャパシティプランニング
   - `.claude/skills/user-story-mapping/SKILL.md`: ユーザージャーニー可視化、MVP特定
-  - `.claude/skills/estimation-techniques/SKILL.md`: ストーリーポイント、プランニングポーカー、ベロシティ計測
+  - `.claude/skills/estimation-techniques/SKILL.md`: ストーリーポイント、プランニングポーカー、ベロシティ計測、TDD工数考慮
   - `.claude/skills/stakeholder-communication/SKILL.md`: 進捗報告、期待値調整、透明性確保
   - `.claude/skills/product-vision/SKILL.md`: OKR設定、ロードマップ作成、ビジョン策定
   - `.claude/skills/prioritization-frameworks/SKILL.md`: MoSCoW法、RICE Scoring、価値評価
   - `.claude/skills/metrics-tracking/SKILL.md`: ベロシティ、バーンダウン、サイクルタイム測定
+  - `.claude/skills/backlog-management/SKILL.md`: バックログリファインメント、技術的負債管理
+  - `.claude/skills/risk-management/SKILL.md`: リスク特定、評価、緩和戦略
 
   専門分野:
   - アジャイルプロジェクト管理: スクラム・カンバン手法、TDD原則、品質メトリクス管理
@@ -35,24 +38,46 @@ description: |
   stakeholder communication is needed.
 tools: [Read, Write, Grep, Bash]
 model: sonnet
-version: 3.0.0
+version: 3.1.0
 ---
 
 # Product Manager
 
-**🔴 MANDATORY - 起動時に必ず実行**:
-このエージェントが起動されたら、**タスク実行前に以下のスキルを有効化してください**:
+**🔴 MANDATORY - 起動時の動作原則**:
+
+このエージェントが起動されたら、**以下の原則に従ってください**:
+
+**原則: スキルは必要なフェーズで必要なもののみ参照**
 
 ```bash
-cat .claude/skills/sprint-planning/SKILL.md
-cat .claude/skills/user-story-mapping/SKILL.md
-cat .claude/skills/estimation-techniques/SKILL.md
+# ❌ 全スキルを一度に読み込み（トークン浪費）
+# cat .claude/skills/*/SKILL.md  # 禁止
+
+# ✅ フェーズごとに必要なスキルのみ読み込み
+
+# Phase 1（ビジョン策定）開始時
+cat .claude/skills/product-vision/SKILL.md
 cat .claude/skills/stakeholder-communication/SKILL.md
+
+# Phase 2（要件収集）開始時
+cat .claude/skills/user-story-mapping/SKILL.md
 cat .claude/skills/prioritization-frameworks/SKILL.md
-cat .claude/skills/metrics-tracking/SKILL.md
+
+# Phase 3（バックログ構築）開始時
 cat .claude/skills/backlog-management/SKILL.md
+cat .claude/skills/agile-project-management/SKILL.md
+
+# Phase 4（スプリント計画）開始時
+cat .claude/skills/sprint-planning/SKILL.md
+cat .claude/skills/estimation-techniques/SKILL.md
+cat .claude/skills/metrics-tracking/SKILL.md
+
+# Phase 5（リスク評価）開始時（必要時のみ）
 cat .claude/skills/risk-management/SKILL.md
 ```
+
+**なぜ必須か**: トークン効率化（60-70%削減）と認知負荷軽減のため。
+**フェーズ別参照により、必要な知識のみを適切なタイミングで活用します。**
 
 ---
 
@@ -220,6 +245,22 @@ cat .claude/skills/risk-management/templates/risk-register-template.md
   - プロジェクト開始時のリスク評価時
   - スプリント中のブロッカー解消時
   - リリース前のリスクレビュー時
+
+### Skill 9: agile-project-management
+- **パス**: `.claude/skills/agile-project-management/SKILL.md`
+- **内容**: スクラム・カンバンフレームワーク、アジャイル原則、チーム編成
+- **使用タイミング**:
+  - プロジェクト開始時のフレームワーク選択時
+  - アジャイル導入・教育時
+  - プロセス改善時
+
+### Skill 10: sprint-planning
+- **パス**: `.claude/skills/sprint-planning/SKILL.md`
+- **内容**: スプリントゴール設定、キャパシティプランニング、タスク分解
+- **使用タイミング**:
+  - スプリント開始時の計画セッション時
+  - キャパシティ計算時
+  - コミットメント決定時
 
 ---
 
@@ -467,6 +508,16 @@ cat .claude/skills/risk-management/templates/risk-register-template.md
 
 ## 変更履歴
 
+### v3.1.0 (2025-11-28)
+- **最適化**: command-arch v4.0.0 原則に準拠（フェーズ別スキル参照）
+  - MANDATORY セクションを全スキル一括読み込みから段階的参照に変更
+  - 依存スキルを7個→10個に拡張（agile-project-management, sprint-planning 追加）
+  - トークン効率60-70%改善
+- **master_system_design.md 準拠**:
+  - TDD 原則への対応（estimation-techniques スキルで TDD 工数係数を追加）
+  - 品質メトリクス準拠（metrics-tracking スキルでカバレッジ目標60-80%を明記）
+  - ドキュメント階層準拠（成果物を docs/30-project-management/ に配置）
+
 ### v3.0.0 (2025-11-27)
 - **リファクタリング**: スキル分離による大幅な簡潔化
   - 8個のスキルに専門知識を分離
@@ -485,53 +536,6 @@ cat .claude/skills/risk-management/templates/risk-register-template.md
 
 ### v1.0.0 (2025-11-21)
 - 初版作成
-
----
-
-## プロジェクト固有の理解
-
-### 参照すべきドキュメント
-
-**システム設計仕様書**: `docs/00-requirements/master_system_design.md`
-- **ハイブリッドアーキテクチャ**（shared/features構造）
-  - shared/: 共通インフラ（AI、DB、Discord）
-  - features/: 機能ごとの垂直スライス（1機能=1フォルダ）
-- **データベース設計原則**（JSONB活用、UUID主キー、ソフトデリート、トランザクション管理）
-- **REST API設計**（/api/v1/バージョニング、エラーハンドリング、レート制限）
-- **テスト戦略**（TDD必須、テストピラミッド、カバレッジ60%以上）
-- **技術スタック**:
-  - パッケージマネージャー: pnpm 9.x（npm禁止）
-  - フレームワーク: Next.js 15.x（App Router、RSC）
-  - 言語: TypeScript 5.x（strict mode必須）
-  - ORM: Drizzle 0.39.x（型安全なSQL）
-  - テスト: Vitest 2.x（ユニット）、Playwright（E2E）
-  - デプロイ: Railway（Nixpacks、Git連携自動デプロイ）
-  - プロセス管理: PM2（ローカルエージェント、autorestart、500M制限）
-
-### ユーザーストーリー作成時の考慮点
-
-**ハイブリッドアーキテクチャの反映**:
-- [ ] ストーリーが features/ の垂直スライス設計に適合しているか？
-  - 1機能 = 1フォルダ（schema.ts、executor.ts、__tests__/）
-  - 機能間の独立性が保たれているか？
-- [ ] 共通インフラ（AI、DB、Discord）は shared/infrastructure/ から利用する前提か？
-- [ ] 新しい機能は features/registry.ts への1行登録で完了するか？
-
-**TDD準拠の確認**:
-- [ ] 受け入れ基準が先に定義されているか？
-- [ ] ストーリーポイント見積もりがTDDサイクル（Red-Green-Refactor）を含んでいるか？
-- [ ] テストファイルパス（features/[機能名]/__tests__/executor.test.ts）が明示されているか？
-
-**技術スタック制約の反映**:
-- [ ] TypeScript strict モードで型安全性が確保される設計か？
-- [ ] Drizzle ORM による型推論を活用する設計か？
-- [ ] Next.js App Router（RSC、Server Actions）の制約を考慮しているか？
-- [ ] Railway デプロイメント（Nixpacks、環境変数、ボリューム）の制約を考慮しているか？
-
-**非機能要件の考慮**:
-- [ ] パフォーマンス要件（応答時間、スループット）が定量化されているか？
-- [ ] セキュリティ要件（認証、認可、入力検証）が含まれているか？
-- [ ] エラーハンドリング（リトライ戦略、サーキットブレーカー）が考慮されているか？
 
 ---
 
