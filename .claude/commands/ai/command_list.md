@@ -70,14 +70,31 @@
 ## 2. 要件定義・仕様策定
 
 ### `/ai:gather-requirements`
-- **目的**: ステークホルダーへのヒアリングと要件整理
-- **引数**: `[stakeholder-name]` - ステークホルダー名(オプション)
-- **使用エージェント**: @req-analyst
-- **スキル活用**: requirements-engineering, interview-techniques
-- **成果物**: docs/00-requirements/requirements.md
+- **目的**: ステークホルダーへのヒアリングと要件整理（**Specification-Driven Development**の起点）
+- **引数**: `[stakeholder-name]` - ステークホルダー名(オプション、未指定時は汎用質問)
+- **使用エージェント**: `.claude/agents/req-analyst.md`
+- **スキル活用**（フェーズ別）:
+  - **Phase 1**: `.claude/skills/interview-techniques/SKILL.md`, `.claude/skills/requirements-engineering/SKILL.md`
+  - **Phase 2-5**: エージェント内で8つの依存スキルを自動参照（requirements-triage, ambiguity-elimination等）
+- **フロー**:
+  1. Phase 1: エージェント起動と準備（**master_system_design.md**の参照必須）
+  2. Phase 2: プロジェクト固有制約の確認（TDD、Clean Architecture、ハイブリッド構造）
+  3. Phase 3: 要件収集実行（ソクラテス式質問、5W1H分析）
+  4. Phase 4: 成果物生成（**プロジェクト用語・制約を含む**構造化要件書）
+  5. Phase 5: TDDフロー準備（テストファイルパス、詳細仕様への連携）
+- **成果物**:
+  - `docs/00-requirements/requirements.md`（要件ドキュメント、曖昧性0・完全性>95%）
+  - **プロジェクト制約セクション**（TDD必須、ハイブリッド構造、技術スタック）
+  - **用語集**（workflows, executor, registry, shared/, features/）
+  - **次フェーズ連携情報**（詳細仕様、テスト作成、Executor実装への引き継ぎ）
 - **設定**:
-  - `model: opus` (複雑なヒアリング分析)
-  - `allowed-tools: Read, Write(docs/**)`
+  - `model: opus` (複雑なヒアリング分析と曖昧性除去の判断が必要)
+  - `allowed-tools: Read(docs/**), Write(docs/00-requirements/**)`（ドキュメント作成に必要な最小権限）
+- **プロジェクト固有の考慮**:
+  - [ ] TDD準拠（仕様 → テスト → 実装の順序を要件に明記）
+  - [ ] ハイブリッド構造（shared/ と features/ の責務を要件に反映）
+  - [ ] 用語集（workflows, executor, registry等を必ず定義）
+- **トリガーキーワード**: requirements, stakeholder, ヒアリング, 要件整理, インタビュー, 仕様駆動
 
 ### `/ai:create-user-stories`
 - **目的**: ユーザーストーリーとアクセプタンスクライテリアの作成

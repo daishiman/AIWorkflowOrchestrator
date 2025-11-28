@@ -53,7 +53,40 @@
 | [KPI名] | [目標] | [測定方法] |
 
 ### 3.3 制約
-- **技術制約**: [使用技術、プラットフォーム]
+
+#### 技術スタック制約
+- **フロントエンド**: Next.js 15.x (App Router), React, TypeScript 5.x
+- **バックエンド**: Node.js 22.x LTS
+- **データベース**: Neon (PostgreSQL + pgvector), Drizzle ORM
+- **AI統合**: Vercel AI SDK 4.x (OpenAI, Anthropic, Google, xAI対応)
+- **外部連携**: discord.js 14.x, googleapis
+- **デプロイ**: Railway (Nixpacks), GitHub Actions
+- **パッケージマネージャー**: pnpm 9.x
+- **テスト**: Vitest 2.x, Playwright
+
+#### アーキテクチャ制約（必須遵守）
+- **Clean Architecture原則**: 依存関係は外→内（Infrastructure → Application → Domain）
+- **ハイブリッド構造**:
+  - 共通インフラ: `src/shared/core/` (ドメインルール、外部依存ゼロ)
+  - 共通サービス: `src/shared/infrastructure/` (DB, AI, Discord等の共通接続)
+  - 機能プラグイン: `src/features/[機能名]/` (垂直スライス、機能間依存禁止)
+  - API層: `src/app/` (Next.js App Router)
+- **依存関係ルール**: ESLint boundaries プラグインで強制
+- **機能独立性**: features/ 内の各機能は相互依存禁止、共通インフラのみ利用可
+
+#### 開発プロセス制約（必須遵守）
+- **Specification-Driven Development**: 仕様書（本ドキュメント）を正本とし、実装はその変換結果
+- **TDD必須**: すべての機能追加は以下の順序で実施
+  1. 仕様書作成（`docs/20-specifications/features/[機能名].md`）
+  2. テスト作成（`features/[機能名]/__tests__/executor.test.ts`）
+  3. Red（テスト失敗確認）
+  4. スキーマ定義（`schema.ts`）
+  5. Executor実装（`executor.ts`）
+  6. Green（テストパス確認）
+  7. Refactor（コード改善）
+- **テストピラミッド**: 静的テスト（100%） > ユニットテスト（60%+） > 統合テスト（主要フロー） > E2E（クリティカルパス）
+
+#### その他の制約
 - **スケジュール制約**: [リリース予定日、マイルストーン]
 - **予算制約**: [予算上限、リソース制約]
 - **法規制**: [準拠すべき法規制、標準]
@@ -179,10 +212,39 @@
 
 ## 8. 用語集
 
+### 8.1 プロジェクト固有の用語（必須定義）
+
 | 用語 | 定義 | 補足 |
 |------|------|------|
-| [用語1] | [定義] | [補足説明] |
-| [用語2] | [定義] | [補足説明] |
+| **Workflow** | システムが実行する一連の処理単位 | DBの`workflows`テーブルに対応、type識別子で機能を特定 |
+| **Executor** | Workflowを実行するクラス | `IWorkflowExecutor`インターフェースを実装、features/各機能に配置 |
+| **Registry** | type文字列とExecutorクラスの対応表 | `features/registry.ts`で管理、新機能追加時に登録 |
+| **Local Agent** | PC上で動作するファイル監視・同期プログラム | PM2で常駐、Chokidarでファイル監視、Railway APIと通信 |
+| **ハイブリッドアーキテクチャ** | shared（共通インフラ）とfeatures（機能プラグイン）を組み合わせた構造 | 垂直スライスと水平レイヤーの両立 |
+| **垂直スライス** | 機能ごとに必要な全要素（schema, executor, tests）を1フォルダに集約する設計手法 | features/各機能で適用 |
+| **shared/core/** | 複数機能で共有するドメインルール（エンティティ、インターフェース、エラー） | 外部依存ゼロ、純粋なビジネスロジック |
+| **shared/infrastructure/** | 複数機能で共有する外部サービス接続（DB, AI, Discord） | 共通インフラ、features/から利用 |
+| **pgvector** | PostgreSQLのベクトル検索拡張 | AI埋め込みベクトルの保存と類似検索、Neonでネイティブサポート |
+| **JSONB** | PostgreSQLの柔軟なJSON型カラム | workflows.input_payload/output_payloadで使用、スキーマレス設計 |
+| **TDD** | Test-Driven Development（テスト駆動開発） | 仕様書 → テスト → 実装の順序を必須とする開発手法 |
+
+### 8.2 技術用語
+
+| 用語 | 定義 | 補足 |
+|------|------|------|
+| **Neon** | Serverless PostgreSQL | 自動スケーリング、Railway統合 |
+| **Railway** | 本システムのホスティング環境 | Nixpacksビルダー、Git連動デプロイ |
+| **Nixpacks** | Railwayのビルダー | Dockerfile不要、自動コンテナ化 |
+| **構造化ログ** | JSON形式のログ | request_id/workflow_id/user_idで追跡可能 |
+| **一時ストレージ** | Railwayの/tmpディレクトリ | 再デプロイ時に削除、永続化不要 |
+| **ソフトデリート** | deleted_atカラムで論理削除する手法 | 物理削除せず、データ復旧可能 |
+| **サーキットブレーカー** | 外部API障害時に一時的に呼び出しを遮断し、システム全体を保護するパターン | 将来対応、連続5回失敗で回路オープン |
+
+### 8.3 カスタム用語（プロジェクト固有で追加）
+
+| 用語 | 定義 | 補足 |
+|------|------|------|
+| [用語名] | [定義] | [補足説明] |
 
 ---
 
