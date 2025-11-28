@@ -68,17 +68,51 @@
   - `allowed-tools: Bash(mkdir*|npx*), Write`
 
 ### `/ai:setup-dev-env`
-- **目的**: 開発環境の完全セットアップ
+- **目的**: プロジェクト開発環境の完全セットアップ（master_system_design.md準拠）
 - **引数**: なし
-- **使用エージェント**: @devops-eng, @dep-mgr, @hook-master
+- **使用エージェント**:
+  - `.claude/agents/dep-mgr.md`: Phase 1 - pnpm依存関係・基本設定
+  - `.claude/agents/hook-master.md`: Phase 2 - Hooks・品質ツール統合
+  - `.claude/agents/devops-eng.md`: Phase 3 - Docker・Railway・PM2統合
 - **フロー**:
-  1. @dep-mgr: package.json作成、依存関係インストール
-  2. @hook-master: Git hooks、Claude Code hooks設定
-  3. @devops-eng: Docker、環境変数設定
-- **成果物**: package.json, .env.example, hooks設定
+  1. Phase 1 (@dep-mgr):
+     - package.json作成（pnpm 9.x、Node.js 22.x指定）
+     - pnpm-workspace.yaml作成（モノレポ）
+     - tsconfig.json作成（strict: true、paths: @/*）
+     - pnpmインストール、セキュリティ監査
+  2. Phase 2 (@hook-master):
+     - Git hooks（.husky/pre-commit、.husky/pre-push）
+     - Claude Code hooks（settings.json）
+     - eslint.config.js（Flat Config、eslint-plugin-boundaries）
+     - .prettierrc（singleQuote、semi、tabWidth: 2）
+     - vitest.config.ts（**/__tests__/**/*.test.ts、coverage: 60%）
+     - lint-staged設定（package.json内）
+  3. Phase 3 (@devops-eng):
+     - railway.json（Nixpacks、pnpm build/start）
+     - Dockerfile（マルチステージビルド）
+     - docker-compose.yml（Next.js + PostgreSQL）
+     - .env.example（DATABASE_URL、AI APIキー、DISCORD_TOKEN等）
+     - drizzle.config.ts（schema、migrations）
+     - local-agent/ecosystem.config.js（PM2、autorestart、500M制限）
+- **スキル活用**:
+  - Phase 1: semantic-versioning, lock-file-management, monorepo-dependency-management
+  - Phase 2: git-hooks-concepts, claude-code-hooks, linting-formatting-automation
+  - Phase 3: docker-best-practices, infrastructure-as-code
+- **成果物**（計18ファイル）:
+  - Phase 1: package.json, pnpm-workspace.yaml, tsconfig.json, pnpm-lock.yaml
+  - Phase 2: .husky/*, settings.json, eslint.config.js, .prettierrc, vitest.config.ts, lint-staged
+  - Phase 3: railway.json, Dockerfile, docker-compose.yml, .env.example, drizzle.config.ts, ecosystem.config.js, .dockerignore
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Bash(npm*|pnpm*), Read, Write`
+  - `allowed-tools: [Task, Read, Write, Bash(pnpm*)]`（pnpm専用、npm禁止）
+- **プロジェクト要件準拠**:
+  - pnpm 9.x必須、Node.js 22.x LTS
+  - TypeScript strict モード、@/*パスエイリアス
+  - ESLint 9.x Flat Config + boundaries plugin
+  - Vitest 2.x、カバレッジ60%目標
+  - Railway Nixpacks、Railway CLI統合
+  - PM2（local-agent、autorestart、500M制限）
+- **トリガーキーワード**: setup, environment, dev-env, 開発環境, 初期化, pnpm, railway
 
 ### `/ai:init-git-workflow`
 - **目的**: Gitワークフローとブランチ戦略の確立
