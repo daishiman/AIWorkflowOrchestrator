@@ -235,14 +235,34 @@
 - **トリガーキーワード**: user stories, acceptance criteria, ユーザーストーリー, 受け入れ基準, backlog, バックログ, MVP, INVEST
 
 ### `/ai:define-use-cases`
-- **目的**: ユースケース図とシナリオの作成
-- **引数**: `[actor-name]` - アクター名
-- **使用エージェント**: @req-analyst
-- **スキル活用**: use-case-modeling
-- **成果物**: docs/00-requirements/use-cases.md
+- **目的**: ユースケース図とシナリオの作成（アクターとシステムの対話を構造化）
+- **引数**: `[actor-name]` - アクター名（オプション、未指定時は全アクター対象）
+- **使用エージェント**: `.claude/agents/req-analyst.md` - Phase 2でユースケースモデリング実行
+- **依存スキル**（req-analystが必要時に参照）:
+  - **Phase 1（アクター特定）**: `.claude/skills/use-case-modeling/SKILL.md`, `.claude/skills/use-case-modeling/resources/actor-identification.md`
+  - **Phase 2（フロー設計）**: `.claude/skills/use-case-modeling/resources/scenario-patterns.md`, `.claude/skills/use-case-modeling/resources/use-case-relationships.md`
+  - **Phase 3（テンプレート）**: `.claude/skills/use-case-modeling/templates/use-case-template.md`
+  - **Phase 4（検証）**: `.claude/skills/use-case-modeling/scripts/validate-use-case.mjs`, `.claude/skills/requirements-verification/SKILL.md`
+- **フロー**:
+  1. Phase 1: プロジェクトコンテキスト理解、既存ユースケース確認
+  2. Phase 2: req-analyst起動 → アクター特定 → ゴール定義 → フロー設計（基本・代替・例外）→ シナリオ検証
+  3. Phase 3: ユースケースファイル生成、品質検証、完了報告
+- **成果物**:
+  - `docs/00-requirements/use-cases.md`（ユースケース定義書）
+  - フォーマット: UC-XXX形式、基本フロー・代替フロー・例外フロー完備
+  - 品質基準: フロー網羅性>95%、品質スコア平均8点以上
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Read, Write(docs/**)`
+  - `model: sonnet`（標準的なドキュメント作成タスク）
+  - `allowed-tools: [Task, Read, Write(docs/00-requirements/**), Grep]`
+    • Task: req-analystエージェント起動用
+    • Read: 既存要件・プロジェクト設計書参照用
+    • Write(docs/00-requirements/**): ユースケース文書生成用（パス制限）
+    • Grep: 既存ユースケースの重複チェック・整合性確認用
+- **プロジェクト要件準拠**（master_system_design.md 第1.5節）:
+  - [ ] ハイブリッド構造（shared/features）に基づくアクター分離
+  - [ ] TDD原則（ユースケース → テスト → 実装）の起点となる記述
+  - [ ] Clean Architecture の依存関係ルール（app → features → shared）を反映
+- **トリガーキーワード**: use-case, ユースケース, シナリオ, アクター, フロー設計, 対話設計
 
 ### `/ai:write-spec`
 - **目的**: 実装可能な詳細仕様書の作成
