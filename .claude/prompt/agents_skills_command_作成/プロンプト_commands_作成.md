@@ -11,45 +11,24 @@ commandは次の階層化に作成して。
 参考情報:
 - @.claude/prompt/agents_skills_command_作成/プロンプト_Claude_Code_agents_skills_command_ジェネレータ.md
 - @.claude/prompt/agents_skills_command_作成/ナレッジ_Claude_Code_command_ガイド.md
+- @docs/00-requirements/master_system_design.md
 
 作って欲しいのは、次のcommandです。
 ただし次の内容はあくまでも叩き台で作成しているものなので最適ではないです。この部分を最適化して/commandとcommand-listを改善修正作成してください。
 下記のたたき台を元に作成して。
 """
-@.claude/commands/ai/create-command.md
-### `/ai:create-command`
-- **目的**: 新しいスラッシュコマンド（.claude/commands/*.md）の作成
-- **引数**: `[command-name]` - コマンド名（オプション、未指定時はインタラクティブ）
-- **使用エージェント**: @command-arch
-- **スキル活用**:
-  - command-structure-fundamentals: YAML Frontmatter設計
-  - command-arguments-system: 引数システム設計
-  - command-security-design: セキュリティレビュー
-  - command-basic-patterns: 実装パターン選択
-  - command-advanced-patterns: 高度なパターン（必要時）
-  - command-agent-skill-integration: エージェント・スキル統合
-  - command-activation-mechanisms: 自動起動設計
-  - command-error-handling: エラーハンドリング設計
-  - command-naming-conventions: 命名決定
-  - command-documentation-patterns: ドキュメンテーション作成
-  - command-placement-priority: ファイル配置決定
-  - command-best-practices: 設計原則確認
-  - command-performance-optimization: 最適化
-- **フロー**:
-  1. @command-arch: Phase 1 - 要件収集と初期分析
-  2. @command-arch: Phase 2 - コマンド設計（命名、Frontmatter、パターン選択、引数設計）
-  3. @command-arch: Phase 3 - エラーハンドリングとセキュリティレビュー
-  4. @command-arch: Phase 4 - ドキュメンテーションと例の作成
-  5. @command-arch: Phase 5 - ベストプラクティス確認と最適化
-- **成果物**:
-  - .claude/commands/*.md（完全なYAML Frontmatter + Markdown本文）
-  - 充実したドキュメンテーション
-  - 使用例とトラブルシューティングガイド
+### `/ai:gather-requirements`
+- **目的**: ステークホルダーへのヒアリングと要件整理
+- **引数**: `[stakeholder-name]` - ステークホルダー名(オプション)
+- **使用エージェント**: @req-analyst
+- **スキル活用**: requirements-engineering, interview-techniques
+- **成果物**: docs/00-requirements/requirements.md
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: [Read, Write(.claude/commands/**)]`
-  - **品質基準**: 単一責任原則、組み合わせ可能性、冪等性、セキュリティベストプラクティス
+  - `model: opus` (複雑なヒアリング分析)
+  - `allowed-tools: Read, Write(docs/**)`
 """
+@docs/00-requirements/master_system_design.md
+この内容を反映さしてください。これらはエージェン・トスキルにも同様です。エージェント・スキルにもこれらの内容を反映されているか確認しておいてください。エージェント・スキルも改善実用であれば、改善すること
 
 メタ情報のdescription には、参照するエージェントとスキルを記述すること
 例:
