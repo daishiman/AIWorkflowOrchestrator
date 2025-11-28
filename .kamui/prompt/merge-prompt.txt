@@ -744,7 +744,4 @@ pnpm test --coverage
 ## システム仕様参照
 
 本プロジェクトの詳細な仕様は以下を参照:
-- **マスター設計書**: `docs/00-requirements/master_system_design.md`
-- **エージェント定義**: `.claude/agents/agent_list.md`
-- **プロジェクトメモリ**: `.claude/memory.md`
-- **コーディング規約**: `.claude/rules.md`
+- **マスター設計書**: `docs/00-requirements/master_system_design.md` 
