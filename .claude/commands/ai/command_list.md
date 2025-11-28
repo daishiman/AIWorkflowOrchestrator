@@ -826,37 +826,39 @@
   - **品質基準**: SECIモデル、Progressive Disclosure、500行以内、相対パス参照、トークン効率
 
 ### `/ai:create-command`
-- **目的**: 新しいスラッシュコマンド（.claude/commands/*.md）の作成
+- **目的**: 新しいスラッシュコマンド（.claude/commands/[機能]/*.md）の作成
 - **引数**: `[command-name]` - コマンド名（オプション、未指定時はインタラクティブ）
-- **使用エージェント**: @command-arch
-- **スキル活用**:
-  - command-structure-fundamentals: YAML Frontmatter設計
-  - command-arguments-system: 引数システム設計
-  - command-security-design: セキュリティレビュー
-  - command-basic-patterns: 実装パターン選択
-  - command-advanced-patterns: 高度なパターン（必要時）
-  - command-agent-skill-integration: エージェント・スキル統合
-  - command-activation-mechanisms: 自動起動設計
-  - command-error-handling: エラーハンドリング設計
-  - command-naming-conventions: 命名決定
-  - command-documentation-patterns: ドキュメンテーション作成
-  - command-placement-priority: ファイル配置決定
-  - command-best-practices: 設計原則確認
-  - command-performance-optimization: 最適化
+- **起動エージェント**:
+  - `.claude/agents/command-arch.md`: スラッシュコマンド作成専門エージェント（Phase 2で起動）
+- **利用可能スキル**（タスクに応じてcommand-archエージェントが必要時に参照）:
+  - **Phase 1（要件収集・分析時）**: command-naming-conventions, command-placement-priority
+  - **Phase 2（設計時）**: command-structure-fundamentals, command-arguments-system, command-basic-patterns, command-advanced-patterns（必要時）, command-activation-mechanisms（必要時）
+  - **Phase 3（セキュリティ時）**: command-security-design, command-error-handling
+  - **Phase 4（ドキュメント時）**: command-documentation-patterns, command-best-practices
+  - **Phase 5（最適化時）**: command-performance-optimization, command-agent-skill-integration（必要時）
 - **フロー**:
-  1. @command-arch: Phase 1 - 要件収集と初期分析
-  2. @command-arch: Phase 2 - コマンド設計（命名、Frontmatter、パターン選択、引数設計）
-  3. @command-arch: Phase 3 - エラーハンドリングとセキュリティレビュー
-  4. @command-arch: Phase 4 - ドキュメンテーションと例の作成
-  5. @command-arch: Phase 5 - ベストプラクティス確認と最適化
+  1. Phase 1: コマンド名の確認と準備（$ARGUMENTSまたはインタラクティブ）
+  2. Phase 2: `.claude/agents/command-arch.md` エージェント起動
+     - Phase 1: 要件収集と初期分析
+     - Phase 2: コマンド設計（命名、Frontmatter、パターン選択、引数設計）
+     - Phase 3: エラーハンドリングとセキュリティレビュー
+     - Phase 4: ドキュメンテーションと品質保証
+     - Phase 5: 統合と引き継ぎ
+  3. Phase 3: 検証と完了報告
 - **成果物**:
-  - .claude/commands/*.md（完全なYAML Frontmatter + Markdown本文）
+  - `.claude/commands/*.md`（完全なYAML Frontmatter + Markdown本文）
   - 充実したドキュメンテーション
   - 使用例とトラブルシューティングガイド
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: [Read, Write(.claude/commands/**)]`
+  - `argument-hint`: オプション引数1つ（未指定時はインタラクティブ）
+  - `allowed-tools`: [Task, Read, Write(.claude/commands/**), Grep, Glob]
+    • Task: エージェント起動用
+    • Read: 既存コマンド/スキル参照確認用
+    • Write(.claude/commands/**): コマンドファイル生成用（制限付き）
+    • Grep, Glob: 既存パターン検索・重複チェック用
+  - `model: sonnet`（標準的なコマンド作成タスク）
   - **品質基準**: 単一責任原則、組み合わせ可能性、冪等性、セキュリティベストプラクティス
+  - **動的最適化**: エージェントが生成するコマンドの argument-hint, allowed-tools, model はタスクに応じて最適化
 
 ### `/ai:setup-hooks`
 - **目的**: Claude Code hooksの設定

@@ -113,28 +113,83 @@ Detailed instructions for Claude to execute this command.
 - `description`: コマンドの説明（**必須**）
 - 本文: Claudeへの指示
 
-### 完全版構成
+### ハブ特化型構成（推奨：エージェント・スキル呼び出し用）
 
 ```markdown
 ---
 description: |
-  Detailed description (4-8 lines recommended)
-  This is the PRIMARY signal for SlashCommand Tool to select this command.
-  Include trigger keywords, use cases, and expected outcomes.
-argument-hint: [arg1] [arg2] [--flag]
+  [1行目: コマンドの目的]
+
+  [2-3行目: 起動するエージェントとその役割]
+
+  🤖 起動エージェント:
+  - `.claude/agents/[agent-name].md`: [役割]（[起動タイミング]）
+
+  📚 利用可能スキル（タスクに応じてエージェントが必要時に参照）:
+  **Phase 1（[状況]時）:** [スキル名リスト]
+  **Phase 2（[状況]時）:** [スキル名リスト]
+
+  ⚙️ このコマンドの設定:
+  - argument-hint: [引数設計の根拠]
+  - allowed-tools: [ツールセット + 用途]
+  - model: [選択理由]
+
+  トリガーキーワード: [キーワード]
+argument-hint: "[args]"
+allowed-tools: [Task, Read, Write([path]/**)]
+model: sonnet
+---
+
+# [コマンドタイトル]
+
+## 目的
+[1-2文で簡潔に]
+
+## エージェント起動フロー
+
+### Phase 1: 準備
+- 引数処理
+- コンテキスト確認
+
+### Phase 2: エージェント起動
+Task ツールで `[エージェントパス]` を起動
+
+**エージェントへの依頼:**
+- [やること]（必要時: [スキルパス]）
+- [やること]（必須: [スキルパス]）
+
+**期待成果物:**
+- [成果物]
+
+### Phase 3: 検証と報告
+- 成果物確認
+- 完了報告
+
+## 使用例
+[1-2個の具体例]
+```
+
+**ハブ特化型の特徴**:
+- ✅ エージェント起動に特化（詳細はエージェントに委譲）
+- ✅ スキルは条件付き参照（トークン効率）
+- ✅ 簡潔な本文（3フェーズのみ）
+- ❌ 詳細な実装手順は記述しない
+- ❌ スキル内容の重複は避ける
+
+### 従来型構成（レガシー：直接実行用）
+
+```markdown
+---
+description: Detailed description
+argument-hint: [arg1] [arg2]
 allowed-tools: Bash(git*), Read, Write(src/**)
-model: claude-sonnet-4-5-20250929
-disable-model-invocation: false
+model: sonnet
 ---
 
 # Command Title
 
 ## Purpose
-What this command does and why it exists
-
-## Prerequisites
-- Required environment
-- Dependencies
+What this command does
 
 ## Execution Steps
 1. Step 1
@@ -142,18 +197,15 @@ What this command does and why it exists
 3. Step 3
 
 ## Examples
-Usage examples here
+Usage examples
 
 ## Error Handling
 How to handle failures
 ```
 
-**推奨セクション**:
-- Purpose: コマンドの目的
-- Prerequisites: 前提条件
-- Execution Steps: 実行手順
-- Examples: 使用例
-- Error Handling: エラーハンドリング
+**従来型の用途**:
+- エージェントを使わない直接実行コマンド
+- シンプルな自動化（Bash スクリプト相当）
 
 ## YAML Frontmatter フィールド
 
@@ -174,6 +226,14 @@ description: |
 ```
 
 **ベストプラクティス**:
+
+**ハブ特化型（エージェント起動コマンド）**:
+- 🤖 起動エージェント: 相対パス + 役割 + 起動タイミング
+- 📚 利用可能スキル: フェーズ別・条件付き（「必要時」明記）
+- ⚙️ 設定根拠: argument-hint, allowed-tools, model の選択理由を記述
+- トリガーキーワード: 自然言語での起動キーワード
+
+**従来型（直接実行コマンド）**:
 - 4-8行の詳細な説明
 - トリガーキーワードを含める
 - 使用タイミングを明記
@@ -219,13 +279,102 @@ allowed-tools: |
   Write(src/**)
 ```
 
-**セキュリティ利用例**:
-```yaml
-# 読み取り専用コマンド
-allowed-tools: Read, Grep
+**利用可能な全ツール（Claude Code 公式）**:
 
-# 特定ディレクトリのみ書き込み可能
-allowed-tools: Read, Write(tests/**), Bash(npm test)
+```yaml
+# コアツール
+- Task: サブエージェント起動
+- Read: ファイル読み取り
+- Write: ファイル書き込み（新規作成・上書き）
+- Edit: ファイル編集（部分置換）
+- Grep: コンテンツ検索
+- Glob: ファイルパターン検索
+- Bash: シェルコマンド実行
+
+# その他のツール
+- WebSearch: Web検索
+- WebFetch: URL取得
+- TodoWrite: タスク管理
+- AskUserQuestion: ユーザーへ質問
+- Skill: スキル実行
+- SlashCommand: コマンド実行
+- NotebookEdit: Jupyter編集
+- BashOutput: バックグラウンドBash出力取得
+- KillShell: バックグラウンドBash終了
+```
+
+**最小権限パターン（ハブ特化型）**:
+
+```yaml
+# パターン1: エージェント起動のみ（最小）
+allowed-tools: [Task, Read]
+用途: シンプルなエージェント委譲、既存ファイル確認のみ
+例: /ai:analyze, /ai:review
+
+# パターン2: ファイル生成あり（制限付き書き込み）
+allowed-tools: [Task, Read, Write(.claude/[特定パス]/**)]
+用途: .claude/ ディレクトリ内の生成、特定パスへの書き込み制限
+例: /ai:create-agent, /ai:create-skill, /ai:create-command
+
+# パターン3: 検索・パターン確認あり
+allowed-tools: [Task, Read, Grep, Glob, Write([パス]/**)]
+用途: 既存パターン確認、重複チェック、ファイル生成
+例: /ai:refactor, /ai:optimize
+
+# パターン4: 編集操作あり
+allowed-tools: [Task, Read, Edit, Grep, Glob]
+用途: 既存ファイルの部分編集、パターン検索
+例: /ai:fix-bugs, /ai:update-docs
+
+# パターン5: Bash実行あり（制限付き）
+allowed-tools: [Task, Read, Bash(git*), Write([パス]/**)]
+用途: Git操作、バージョン管理
+例: /ai:commit, /ai:create-pr
+
+# パターン6: パッケージ管理
+allowed-tools: [Task, Read, Bash(npm*|pnpm*|yarn*), Write(package.json)]
+用途: 依存関係管理、パッケージインストール
+例: /ai:add-dependency, /ai:update-dependencies
+
+# パターン7: ビルド・テスト実行
+allowed-tools: [Task, Read, Bash(npm run*|pnpm*), Edit]
+用途: ビルド、テスト実行、結果に基づく修正
+例: /ai:build, /ai:test, /ai:lint
+
+# パターン8: 複合ワークフロー（制限付きフルアクセス）
+allowed-tools: [Task, Read, Write(src/**|docs/**), Edit, Bash(git*|npm*), Grep, Glob]
+用途: 複数フェーズの統合ワークフロー、複数ディレクトリへのアクセス
+例: /ai:full-feature-development, /ai:prepare-release
+```
+
+**セキュリティ原則**:
+```yaml
+# ✅ 良い例：最小権限
+allowed-tools: [Task, Read, Write(.claude/commands/**)]
+理由: 必要なツールのみ、パス制限あり、破壊的操作なし
+
+# ⚠️ 注意が必要：部分的な権限拡大
+allowed-tools: [Task, Read, Edit, Bash(npm test)]
+理由: Edit は慎重に、Bash は制限付きコマンドのみ
+
+# ❌ 悪い例：過剰な権限
+allowed-tools: [Bash, Read, Write, Edit, Task, Grep, Glob]
+理由: すべてのツール、制限なし、Bash で任意のコマンド実行可能
+```
+
+**パス制限の重要性**:
+```yaml
+# ✅ 推奨：特定パスのみ
+Write(.claude/commands/**)    # .claude/commands/ 配下のみ
+Write(src/features/**)         # src/features/ 配下のみ
+Write(docs/**)                 # docs/ 配下のみ
+
+# ⚠️ 広範囲：慎重に
+Write(src/**)                  # src/ 全体
+Write(**)                      # プロジェクト全体（避けるべき）
+
+# ❌ 制限なし：禁止
+Write                          # どこでも書き込み可能（危険）
 ```
 
 ### model（オプション）
