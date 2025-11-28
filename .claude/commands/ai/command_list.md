@@ -205,14 +205,38 @@
   - `allowed-tools: Read, Write(docs/**)`
 
 ### `/ai:write-spec`
-- **目的**: 実装可能な詳細仕様書の作成
-- **引数**: `[feature-name]` - 機能名
-- **使用エージェント**: @spec-writer
-- **スキル活用**: markdown-advanced-syntax, technical-documentation-standards
-- **成果物**: docs/20-specifications/*.md
+- **目的**: 実装可能な詳細仕様書の作成（**Specification-Driven Development**の一環）
+- **引数**: `[feature-name]` - 機能名（オプション、未指定時はインタラクティブ）
+- **使用エージェント**: `.claude/agents/spec-writer.md`
+- **スキル活用**（フェーズ別、spec-writerが必要時に参照）:
+  - **Phase 1**: `.claude/skills/markdown-advanced-syntax/SKILL.md` - Markdown記法
+  - **Phase 2**: `.claude/skills/technical-documentation-standards/SKILL.md` - 技術文書標準
+  - **Phase 3**: `.claude/skills/api-documentation-best-practices/SKILL.md` - API仕様パターン（API機能の場合）
+  - **Phase 4**: `.claude/skills/use-case-modeling/SKILL.md` - ユースケース記述（必要時）
+- **フロー**:
+  1. Phase 1: 機能名の確認（引数または対話的）
+  2. Phase 2: spec-writer エージェント起動
+     - master_system_design.md 参照（プロジェクト制約確認）
+     - 既存要件書参照（requirements.md）
+     - 詳細仕様書作成（Markdown形式）
+     - TDD準拠テスト要件明記
+     - スキーマ定義、インターフェース要件記述
+  3. Phase 3: 検証と完了報告（master_system_design.md 制約反映確認）
+- **成果物**:
+  - `docs/20-specifications/features/[feature-name].md`（詳細仕様書）
+  - **プロジェクト固有制約セクション**（TDD必須、ハイブリッド構造、技術スタック）
+  - **テストファイルパス**、**Zodスキーマ定義**、**IWorkflowExecutor要件**
+  - **次フェーズ連携情報**（実装、テスト作成への引き継ぎ）
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Read, Write(docs/**)`
+  - `model: sonnet`（標準的な仕様書作成タスク）
+  - `allowed-tools: [Task, Read, Write(docs/**)]`（spec-writerエージェント起動、ドキュメント作成に必要な最小権限）
+- **プロジェクト固有の考慮**:
+  - [ ] TDD準拠（仕様 → テスト → 実装の順序を明記）
+  - [ ] ハイブリッド構造（shared/ と features/ の責務を仕様に反映）
+  - [ ] Zodスキーマ（入出力定義を仕様に含める）
+  - [ ] IWorkflowExecutor（機能プラグインの場合、インターフェース実装要件を明記）
+  - [ ] 用語集（workflows, executor, registry等を仕様で使用）
+- **トリガーキーワード**: spec, specification, 仕様書, 詳細仕様, 実装仕様, 設計書
 
 ### `/ai:estimate-project`
 - **目的**: プロジェクト規模の見積もり
