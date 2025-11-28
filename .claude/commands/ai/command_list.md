@@ -186,33 +186,53 @@
 
 ### `/ai:create-user-stories`
 - **目的**: ユーザーストーリーとアクセプタンスクライテリアの作成
-- **引数**: `[feature-name]` - 機能名
-- **使用エージェント**: @product-manager, @req-analyst
-- **スキル活用**: user-story-mapping, acceptance-criteria-writing
-- **成果物**: docs/00-requirements/user-stories.md
+- **引数**: `[feature-name]` - 機能名（オプション、未指定時はインタラクティブ）
+- **使用エージェント**:
+  - `.claude/agents/product-manager.md`: ユーザーストーリーマッピング作成
+  - `.claude/agents/req-analyst.md`: アクセプタンスクライテリア定義
+- **スキル活用**:
+  - **product-manager**: user-story-mapping（必須）, product-vision, prioritization-frameworks
+  - **req-analyst**: acceptance-criteria-writing（必須）, requirements-triage, ambiguity-elimination
+- **フロー**:
+  1. Phase 1: 機能名確認、既存要件の確認（docs/00-requirements/、master_system_design.md）
+  2. Phase 2: product-manager起動 → ユーザーストーリーマッピング作成（As a-I want-so that形式、ストーリーポイント見積もり）
+  3. Phase 3: req-analyst起動 → アクセプタンスクライテリア定義（Given-When-Then形式、測定可能な受け入れ基準）
+  4. Phase 4: 成果物生成と検証
+- **成果物**: `docs/00-requirements/user-stories.md`（ユーザーストーリー一覧、アクセプタンスクライテリア、ストーリーポイント見積もり、優先順位情報）
 - **設定**:
-  - `model: opus`
-  - `allowed-tools: Read, Write(docs/**)`
+  - `model: opus`（2エージェント調整が必要）
+  - `allowed-tools: [Task, Read, Write(docs/**)]`
+- **トリガーキーワード**: user stories, acceptance criteria, ユーザーストーリー, 受け入れ基準
 
 ### `/ai:define-use-cases`
 - **目的**: ユースケース図とシナリオの作成
-- **引数**: `[actor-name]` - アクター名
-- **使用エージェント**: @req-analyst
-- **スキル活用**: use-case-modeling
-- **成果物**: docs/00-requirements/use-cases.md
+- **引数**: `[actor-name]` - アクター名（オプション、未指定時はインタラクティブ）
+- **使用エージェント**: `.claude/agents/req-analyst.md`
+- **スキル活用**: use-case-modeling（必須）, requirements-triage, functional-non-functional-requirements
+- **フロー**:
+  1. Phase 1: アクター名確認、既存要件の確認（docs/00-requirements/、既存アクター定義との整合性）
+  2. Phase 2: req-analyst起動 → ユースケース図作成（Mermaid形式）、各ユースケースのシナリオ定義、主要・代替シナリオの明確化、事前条件・事後条件の定義
+  3. Phase 3: 成果物生成と検証（アクター定義、ユースケース間関係、シナリオ具体性、master_system_design.md整合性）
+- **成果物**: `docs/00-requirements/use-cases.md`（ユースケース図Mermaid、アクター定義一覧、各ユースケース詳細シナリオ、主要・代替・例外フロー、事前条件・事後条件）
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Read, Write(docs/**)`
+  - `allowed-tools: [Task, Read, Write(docs/**)]`
+- **トリガーキーワード**: use case, ユースケース, アクター, シナリオ
 
 ### `/ai:write-spec`
-- **目的**: 実装可能な詳細仕様書の作成
-- **引数**: `[feature-name]` - 機能名
-- **使用エージェント**: @spec-writer
-- **スキル活用**: markdown-advanced-syntax, technical-documentation-standards
-- **成果物**: docs/20-specifications/*.md
+- **目的**: 実装可能な詳細仕様書の作成（TDD準拠、テストケース定義を含む）
+- **引数**: `[feature-name]` - 機能名（オプション、未指定時はインタラクティブ）
+- **使用エージェント**: `.claude/agents/spec-writer.md`
+- **スキル活用**: markdown-advanced-syntax（必須）, technical-documentation-standards（必須）, api-documentation-best-practices（API仕様の場合）, progressive-disclosure（複雑仕様の場合）
+- **フロー**:
+  1. Phase 1: 機能名確認、既存要件読み込み（docs/00-requirements/、user-stories.md、use-cases.md、master_system_design.md制約事項）
+  2. Phase 2: spec-writer起動 → 詳細仕様書作成（実装可能レベル、TDD準拠テストケース、API設計、データモデル設計、エラーハンドリング、パフォーマンス要件）
+  3. Phase 3: 成果物生成と検証（エッジケースカバー、テストケース明確性、エラーハンドリング網羅性、master_system_design.md準拠、TDDフロー実現可能性）
+- **成果物**: `docs/20-specifications/${feature-name}.md`（機能概要・スコープ、API仕様OpenAPI/Markdown、データモデル定義Drizzle ORM準拠、ビジネスロジック詳細、エラーハンドリング仕様、テストケース定義TDD準拠、パフォーマンス要件・制約、セキュリティ考慮事項、実装例・コードスニペット）
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Read, Write(docs/**)`
+  - `allowed-tools: [Task, Read, Write(docs/**)]`
+- **トリガーキーワード**: specification, spec, 仕様書, 詳細仕様, 実装仕様
 
 ### `/ai:estimate-project`
 - **目的**: プロジェクト規模の見積もりと予測可能な計画の策定
