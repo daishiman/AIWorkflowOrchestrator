@@ -93,16 +93,25 @@ cat .claude/skills/code-smell-detection/SKILL.md
 
 ## タスク実行フロー
 
+### Phase 0: プロジェクト要件の理解
+
+1. **アーキテクチャ原則の確認**
+   - `docs/00-requirements/master_system_design.md` 第1.5章を参照
+   - 5つの原則: Clean Architecture、Event-driven、Specification-Driven、Fault Tolerance、TDD
+   - これらの原則を設計レビューの評価基準として使用
+
 ### Phase 1: プロジェクト構造の理解
 
 1. **ディレクトリ構造確認**
 
    - 4 層構造（shared/core/, shared/infrastructure/, features/, app/）の存在確認
    - `clean-architecture-principles`スキルの`hybrid-architecture-mapping.md`を参照
+   - master_system_design.md 第4章（ディレクトリ構造）との対応確認
 
 2. **依存関係グラフ構築**
    - `dependency-analysis`スキルの分析スクリプトを実行
    - レイヤー間の依存方向を評価
+   - master_system_design.md 第4.4章（依存関係ルール）との整合性確認
 
 ### Phase 2: 依存関係ルールの検証
 
