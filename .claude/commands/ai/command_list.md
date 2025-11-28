@@ -229,14 +229,33 @@
 ## 3. 設計・アーキテクチャ
 
 ### `/ai:design-architecture`
-- **目的**: システム全体のアーキテクチャ設計
-- **引数**: `[architecture-style]` - アーキテクチャスタイル(clean/hexagonal/onion)
-- **使用エージェント**: @arch-police, @domain-modeler
-- **スキル活用**: clean-architecture-principles, domain-driven-design
-- **成果物**: docs/30-architecture/system-design.md
+- **目的**: システム全体のアーキテクチャ設計（ハイブリッド構造準拠）
+- **引数**: `[architecture-style]` - アーキテクチャスタイル(clean/hexagonal/onion)、未指定時はプロジェクト要件から自動選択
+- **使用エージェント**:
+  - `.claude/agents/arch-police.md`: Phase 1-2 - アーキテクチャレビュー、依存関係分析、SOLID原則適用
+  - `.claude/agents/domain-modeler.md`: Phase 3-4 - ドメインモデル設計、ユビキタス言語確立
+- **スキル活用**（エージェントが必要時に参照）:
+  - **arch-police**: `.claude/skills/clean-architecture-principles/SKILL.md`, `.claude/skills/architectural-patterns/SKILL.md`, `.claude/skills/solid-principles/SKILL.md`, `.claude/skills/dependency-analysis/SKILL.md`
+  - **domain-modeler**: `.claude/skills/domain-driven-design/SKILL.md`, `.claude/skills/ubiquitous-language/SKILL.md`, `.claude/skills/bounded-context/SKILL.md`, `.claude/skills/value-object-patterns/SKILL.md`, `.claude/skills/domain-services/SKILL.md`
+- **参照仕様書**: `docs/00-requirements/master_system_design.md` 第5章（アーキテクチャ設計詳細）、第4章（ディレクトリ構造）
+- **フロー**:
+  1. Phase 0: 準備と`master_system_design.md`確認
+  2. Phase 1-2: arch-police起動 → 現状分析、依存関係グラフ構築、SOLID原則適用、ADR作成
+  3. Phase 3-4: domain-modeler起動（並列） → ユビキタス言語確立、ドメインモデル設計、値オブジェクト設計
+  4. Phase 5: 統合 → システム全体設計書作成、実装ガイドライン提供
+- **成果物**:
+  - `docs/10-architecture/system-design.md`: システムアーキテクチャ全体設計書
+  - `docs/10-architecture/layer-structure.md`: レイヤー構造定義
+  - `docs/10-architecture/dependency-rules.md`: 依存関係ルール
+  - `docs/10-architecture/domain-model.md`: ドメインモデル設計書
+  - `docs/10-architecture/ubiquitous-language.md`: ドメイン用語集
+  - `docs/99-adr/002-architecture-principles.md`: アーキテクチャ原則ADR
 - **設定**:
-  - `model: opus`
-  - `allowed-tools: Read, Write(docs/**), Task`
+  - `model: opus`（複雑な設計判断と2エージェント調整が必要）
+  - `allowed-tools: [Task, Read, Write(docs/**), Grep, Glob]`
+  - **並列実行**: Phase 1とPhase 3を並列実行可能（約40%時間短縮）
+  - **トークン見積もり**: 約25-35K（2エージェント起動 + 複数ドキュメント生成）
+- **トリガーキーワード**: architecture, design, アーキテクチャ, システム設計, clean architecture, DDD
 
 ### `/ai:review-architecture`
 - **目的**: アーキテクチャレビューと依存関係チェック
