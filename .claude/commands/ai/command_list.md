@@ -185,128 +185,58 @@
 - **トリガーキーワード**: requirements, stakeholder, ヒアリング, 要件整理, インタビュー, 仕様駆動
 
 ### `/ai:create-user-stories`
-- **目的**: ユーザーストーリーとアクセプタンスクライテリアの作成（INVEST原則準拠、Given-When-Then形式）
-- **引数**: `[feature-name]` - 機能名（オプション、未指定時はインタラクティブ）
-- **使用エージェント**:
-  - `.claude/agents/product-manager.md`: Phase 1 - ユーザーストーリーマッピング、優先順位付け、MVP定義
-  - `.claude/agents/req-analyst.md`: Phase 2 - 受け入れ基準定義、要件検証、品質保証
-- **スキル活用**（エージェントが必要時に参照）:
-  - **product-manager**: user-story-mapping, backlog-management, prioritization-frameworks, estimation-techniques
-  - **req-analyst**: acceptance-criteria-writing, functional-non-functional-requirements, requirements-verification, use-case-modeling
-- **フロー**:
-  1. Phase 1 (@product-manager):
-     - master_system_design.md参照（ハイブリッド構造、TDD原則）
-     - ペルソナとユーザージャーニー定義
-     - エピック分割と垂直スライス設計
-     - MoSCoW分類、価値評価、ストーリーポイント見積もり
-     - MVPスコープ特定
-  2. Phase 2 (@req-analyst):
-     - Given-When-Then形式で受け入れ基準作成
-     - 正常系・異常系・境界値シナリオ網羅
-     - ユースケースフロー構造化
-     - 一貫性・完全性・検証可能性チェック
-     - プロジェクト固有制約反映（TDD、ハイブリッド構造）
-  3. Phase 3: ドキュメント統合と引き継ぎ
-     - user-stories.md作成（ストーリーマップ + 受け入れ基準）
-     - 用語集更新
-     - 次フェーズ連携情報（テスト作成、詳細仕様、実装）
-- **成果物**:
-  - `docs/00-requirements/user-stories.md`（ユーザーストーリー + 受け入れ基準）
-  - 優先順位付けされたバックログ
-  - MVP定義とリリース計画
-  - 次フェーズへの引き継ぎ情報（テストファイルパス、カバレッジ目標）
-- **設定**:
-  - `model: opus`（2エージェント調整、価値評価、受け入れ基準定義の複雑な判断が必要）
-  - `allowed-tools: [Task, Read, Write(docs/00-requirements/**), Grep]`
-    - Task: 2エージェント起動用
-    - Read: master_system_design.md、既存要件確認用
-    - Write(docs/00-requirements/**): ユーザーストーリー作成用（パス制限）
-    - Grep: 既存ストーリー検索・重複チェック用
-  - **トークン見積もり**: 約15-20K（2エージェント起動 + ドキュメント生成）
-- **品質基準**:
-  - INVEST原則準拠率: 100%
-  - 受け入れ基準網羅性: >95%（正常系・異常系・境界値）
-  - 要件品質スコア: >80%
-  - 曖昧性: 0%
-- **プロジェクト固有考慮**:
-  - [ ] TDD準拠（受け入れ基準 → テスト → 実装の順序明記）
-  - [ ] ハイブリッド構造（shared/ vs features/の責務を反映）
-  - [ ] 技術スタック制約（Next.js 15, TypeScript strict, Drizzle ORM）
-- **トリガーキーワード**: user stories, acceptance criteria, ユーザーストーリー, 受け入れ基準, backlog, バックログ, MVP, INVEST
-
-### `/ai:define-use-cases`
-- **目的**: ユースケース図とシナリオの作成（アクターとシステムの対話を構造化）
-- **引数**: `[actor-name]` - アクター名（オプション、未指定時は全アクター対象）
-- **使用エージェント**: `.claude/agents/req-analyst.md` - Phase 2でユースケースモデリング実行
-- **依存スキル**（req-analystが必要時に参照）:
-  - **Phase 1（アクター特定）**: `.claude/skills/use-case-modeling/SKILL.md`, `.claude/skills/use-case-modeling/resources/actor-identification.md`
-  - **Phase 2（フロー設計）**: `.claude/skills/use-case-modeling/resources/scenario-patterns.md`, `.claude/skills/use-case-modeling/resources/use-case-relationships.md`
-  - **Phase 3（テンプレート）**: `.claude/skills/use-case-modeling/templates/use-case-template.md`
-  - **Phase 4（検証）**: `.claude/skills/use-case-modeling/scripts/validate-use-case.mjs`, `.claude/skills/requirements-verification/SKILL.md`
-- **フロー**:
-  1. Phase 1: プロジェクトコンテキスト理解、既存ユースケース確認
-  2. Phase 2: req-analyst起動 → アクター特定 → ゴール定義 → フロー設計（基本・代替・例外）→ シナリオ検証
-  3. Phase 3: ユースケースファイル生成、品質検証、完了報告
-- **成果物**:
-  - `docs/00-requirements/use-cases.md`（ユースケース定義書）
-  - フォーマット: UC-XXX形式、基本フロー・代替フロー・例外フロー完備
-  - 品質基準: フロー網羅性>95%、品質スコア平均8点以上
-- **設定**:
-  - `model: sonnet`（標準的なドキュメント作成タスク）
-  - `allowed-tools: [Task, Read, Write(docs/00-requirements/**), Grep]`
-    • Task: req-analystエージェント起動用
-    • Read: 既存要件・プロジェクト設計書参照用
-    • Write(docs/00-requirements/**): ユースケース文書生成用（パス制限）
-    • Grep: 既存ユースケースの重複チェック・整合性確認用
-- **プロジェクト要件準拠**（master_system_design.md 第1.5節）:
-  - [ ] ハイブリッド構造（shared/features）に基づくアクター分離
-  - [ ] TDD原則（ユースケース → テスト → 実装）の起点となる記述
-  - [ ] Clean Architecture の依存関係ルール（app → features → shared）を反映
-- **トリガーキーワード**: use-case, ユースケース, シナリオ, アクター, フロー設計, 対話設計
-
-### `/ai:write-spec`
-- **目的**: 実装可能な詳細仕様書の作成（**Specification-Driven Development**の一環）
-- **引数**: `[feature-name]` - 機能名（オプション、未指定時はインタラクティブ）
-- **使用エージェント**: `.claude/agents/spec-writer.md`
-- **スキル活用**（フェーズ別、spec-writerが必要時に参照）:
-  - **Phase 1**: `.claude/skills/markdown-advanced-syntax/SKILL.md` - Markdown記法
-  - **Phase 2**: `.claude/skills/technical-documentation-standards/SKILL.md` - 技術文書標準
-  - **Phase 3**: `.claude/skills/api-documentation-best-practices/SKILL.md` - API仕様パターン（API機能の場合）
-  - **Phase 4**: `.claude/skills/use-case-modeling/SKILL.md` - ユースケース記述（必要時）
-- **フロー**:
-  1. Phase 1: 機能名の確認（引数または対話的）
-  2. Phase 2: spec-writer エージェント起動
-     - master_system_design.md 参照（プロジェクト制約確認）
-     - 既存要件書参照（requirements.md）
-     - 詳細仕様書作成（Markdown形式）
-     - TDD準拠テスト要件明記
-     - スキーマ定義、インターフェース要件記述
-  3. Phase 3: 検証と完了報告（master_system_design.md 制約反映確認）
-- **成果物**:
-  - `docs/20-specifications/features/[feature-name].md`（詳細仕様書）
-  - **プロジェクト固有制約セクション**（TDD必須、ハイブリッド構造、技術スタック）
-  - **テストファイルパス**、**Zodスキーマ定義**、**IWorkflowExecutor要件**
-  - **次フェーズ連携情報**（実装、テスト作成への引き継ぎ）
-- **設定**:
-  - `model: sonnet`（標準的な仕様書作成タスク）
-  - `allowed-tools: [Task, Read, Write(docs/**)]`（spec-writerエージェント起動、ドキュメント作成に必要な最小権限）
-- **プロジェクト固有の考慮**:
-  - [ ] TDD準拠（仕様 → テスト → 実装の順序を明記）
-  - [ ] ハイブリッド構造（shared/ と features/ の責務を仕様に反映）
-  - [ ] Zodスキーマ（入出力定義を仕様に含める）
-  - [ ] IWorkflowExecutor（機能プラグインの場合、インターフェース実装要件を明記）
-  - [ ] 用語集（workflows, executor, registry等を仕様で使用）
-- **トリガーキーワード**: spec, specification, 仕様書, 詳細仕様, 実装仕様, 設計書
-
-### `/ai:estimate-project`
-- **目的**: プロジェクト規模の見積もり
-- **引数**: なし
-- **使用エージェント**: @product-manager
-- **スキル活用**: estimation-techniques, metrics-tracking
-- **成果物**: 見積もりレポート、ストーリーポイント
+- **目的**: ユーザーストーリーとアクセプタンスクライテリアの作成
+- **引数**: `[feature-name]` - 機能名
+- **使用エージェント**: @product-manager, @req-analyst
+- **スキル活用**: user-story-mapping, acceptance-criteria-writing
+- **成果物**: docs/00-requirements/user-stories.md
 - **設定**:
   - `model: opus`
   - `allowed-tools: Read, Write(docs/**)`
+
+### `/ai:define-use-cases`
+- **目的**: ユースケース図とシナリオの作成
+- **引数**: `[actor-name]` - アクター名
+- **使用エージェント**: @req-analyst
+- **スキル活用**: use-case-modeling
+- **成果物**: docs/00-requirements/use-cases.md
+- **設定**:
+  - `model: sonnet`
+  - `allowed-tools: Read, Write(docs/**)`
+
+### `/ai:write-spec`
+- **目的**: 実装可能な詳細仕様書の作成
+- **引数**: `[feature-name]` - 機能名
+- **使用エージェント**: @spec-writer
+- **スキル活用**: markdown-advanced-syntax, technical-documentation-standards
+- **成果物**: docs/20-specifications/*.md
+- **設定**:
+  - `model: sonnet`
+  - `allowed-tools: Read, Write(docs/**)`
+
+### `/ai:estimate-project`
+- **目的**: プロジェクト規模の見積もりと予測可能な計画の策定
+- **引数**: なし（プロジェクトドキュメントから自動収集）
+- **使用エージェント**: `.claude/agents/product-manager.md`（Phase 1で起動）
+- **スキル活用**（フェーズ別）:
+  - **Phase 1**: user-story-mapping, backlog-management
+  - **Phase 2**: estimation-techniques（必須）, metrics-tracking（必須）
+  - **Phase 3**: risk-management, prioritization-frameworks
+  - **Phase 4**: stakeholder-communication
+- **フロー**:
+  1. Phase 1: プロジェクトドキュメント分析（要件・仕様・バックログ確認）
+  2. Phase 2: 見積もり実行（ストーリーポイント集計、ベロシティ推定、リリース予測）
+  3. Phase 3: リスク評価（不確実性定量化、リスク調整、バッファ戦略）
+  4. Phase 4: 見積もりレポート生成（総合レポート、ストーリーポイント集計、ベロシティ予測、リスク評価）
+- **成果物**:
+  - `docs/30-project-management/estimates/project-estimate-report.md`（総合レポート、信頼区間付き）
+  - `docs/30-project-management/estimates/story-points-summary.md`（ストーリーポイント集計表）
+  - `docs/30-project-management/estimates/velocity-forecast.md`（ベロシティ予測、楽観的・現実的・悲観的）
+  - `docs/30-project-management/estimates/risk-assessment.md`（リスク評価とバッファ戦略）
+- **設定**:
+  - `model: opus`（複雑な見積もり分析と予測計算が必要）
+  - `allowed-tools: [Task, Read, Write(docs/**), Grep]`
+- **トリガーキーワード**: estimate, estimation, 見積もり, 規模, ストーリーポイント, ベロシティ, リリース予測
 
 ---
 
