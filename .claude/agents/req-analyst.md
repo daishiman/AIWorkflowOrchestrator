@@ -410,15 +410,50 @@ node .claude/skills/requirements-documentation/scripts/generate-traceability-mat
 ### 参照すべきドキュメント
 
 **システム設計仕様書**: `docs/00-requirements/master_system_design.md`
-- ハイブリッドアーキテクチャ（shared/features構造）
-- データベース設計原則（JSONB、トランザクション）
-- REST API設計（バージョニング、エラーハンドリング）
-- テスト戦略（TDD、テストピラミッド）
+- **ハイブリッドアーキテクチャ**（shared/features構造）
+  - shared/core/: ドメイン共通要素（entities, interfaces, errors）
+  - shared/infrastructure/: 共通インフラ（database, ai, discord, storage）
+  - features/: 機能ごとの垂直スライス（schema.ts, executor.ts, __tests__/）
+- **データベース設計原則**（JSONB活用、UUID主キー、ソフトデリート、インデックス戦略、トランザクション管理）
+- **REST API設計**（/api/v1/バージョニング、HTTPステータスコード、エラーレスポンス形式、レート制限、CORS）
+- **テスト戦略**（TDD必須、テストピラミッド、カバレッジ60%以上、Given-When-Then形式）
+- **技術スタック**:
+  - パッケージマネージャー: pnpm 9.x（npm禁止、frozen-lockfile）
+  - フレームワーク: Next.js 15.x（App Router、RSC、Server Actions）
+  - 言語: TypeScript 5.x（strict mode、noUnusedLocals、パスエイリアス @/*）
+  - ORM: Drizzle 0.39.x（型推論、マイグレーション管理）
+  - バリデーション: Zod 3.x（スキーマファースト設計）
+  - テスト: Vitest 2.x（ユニット、カバレッジ60%）、Playwright（E2E、クリティカルパス）
+  - デプロイ: Railway（Nixpacks、Git連携、環境変数グループ）
+  - プロセス管理: PM2（ローカルエージェント、autorestart、max_memory_restart: 500M）
 
-**要件定義時の考慮点**:
-- [ ] 要件はプロジェクトのアーキテクチャ原則（shared/features）に適合しているか？
-- [ ] 非機能要件が技術スタック（Next.js 15, TypeScript, Drizzle）を考慮しているか？
-- [ ] 受け入れ基準がテスト戦略（Vitest, Playwright）と整合しているか？
+### 受け入れ基準定義時の考慮点
+
+**TDD準拠の必須化**:
+- [ ] すべての機能要件に Given-When-Then 形式の受け入れ基準があるか？
+- [ ] 受け入れ基準がテストファイルパス（features/[機能名]/__tests__/executor.test.ts）と紐付いているか？
+- [ ] 正常系・異常系・境界値のシナリオが網羅されているか？
+- [ ] 受け入れ基準から直接 Vitest テストコードに変換可能か？
+- [ ] E2E テスト対象（クリティカルパス）が明示されているか？
+
+**ハイブリッドアーキテクチャの反映**:
+- [ ] 機能要件が features/ の垂直スライス設計に適合しているか？
+  - 1機能 = 1フォルダ（schema.ts、executor.ts、__tests__/）
+  - IWorkflowExecutor インターフェースの実装を前提としているか？
+- [ ] 共通インフラ（AI、DB、Discord）の利用が shared/infrastructure/ からの import を前提としているか？
+- [ ] 機能登録が features/registry.ts への1行追加で完了する設計か？
+
+**技術スタック制約の反映**:
+- [ ] TypeScript strict モードで型エラーが発生しない設計か？
+- [ ] Zod スキーマによる入力検証が受け入れ基準に含まれているか？
+- [ ] Drizzle ORM のトランザクション管理が考慮されているか？
+- [ ] Next.js App Router（RSC、Server Actions）の制約を考慮しているか？
+
+**非機能要件の定量化**:
+- [ ] パフォーマンス要件が測定可能か？（例: 応答時間<200ms、スループット>100req/s）
+- [ ] セキュリティ要件が具体的か？（例: Zod検証、SQLインジェクション対策、レート制限）
+- [ ] エラーハンドリングが明確か？（例: リトライ3回、指数バックオフ、サーキットブレーカー）
+- [ ] スケーラビリティ要件が Railway 制約を考慮しているか？
 
 ---
 

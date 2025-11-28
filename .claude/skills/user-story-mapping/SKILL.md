@@ -208,10 +208,42 @@ MVP定義:
 エピック: 検索機能
 ↓
 - 基本検索 (単純)
-- 詳細検索 (複雑)
+- 詳細検索 (複雡)
 - 高速検索 (キャッシュ)
 - リアルタイム検索
 ```
+
+### パターン 6: 垂直スライス分割（プロジェクト固有）
+
+**このプロジェクトのハイブリッドアーキテクチャ対応**:
+
+```
+エピック: AI ワークフロー実行機能
+↓ 垂直スライスで分割（features/[機能名]/）
+- YouTube動画要約（features/youtube-summarize/）
+  - schema.ts: 入出力スキーマ（Zod）
+  - executor.ts: IWorkflowExecutor実装
+  - __tests__/executor.test.ts: TDDテスト
+- 議事録文字起こし（features/meeting-transcribe/）
+  - schema.ts
+  - executor.ts
+  - __tests__/executor.test.ts
+- [新機能]（features/新機能名/）
+  - 同じ構造を繰り返し
+```
+
+**垂直スライスの利点**:
+- ✅ 1機能 = 1フォルダで完結（認知負荷削減）
+- ✅ 機能追加・削除が高速（フォルダごと操作）
+- ✅ 機能間の独立性確保（相互依存禁止）
+- ✅ テストの局所化（__tests__/ で完結）
+- ✅ Registry登録のみで有効化（features/registry.ts）
+
+**共通インフラの分離**:
+- shared/infrastructure/ai/: 全機能で共有する AI クライアント
+- shared/infrastructure/database/: 全機能で共有する DB 接続
+- shared/infrastructure/discord/: 全機能で共有する Discord Bot
+- shared/core/: ドメイン共通要素（IWorkflowExecutor, WorkflowError等）
 
 ## ストーリーテンプレート集
 
