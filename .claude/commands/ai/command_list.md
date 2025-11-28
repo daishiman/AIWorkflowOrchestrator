@@ -35,13 +35,33 @@
   - `allowed-tools: Bash, Read, Write, Task`
 
 ### `/ai:scaffold-project`
-- **目的**: プロジェクトディレクトリ構造の自動生成
-- **引数**: `[template-type]` - テンプレートタイプ(nextjs/react/node等)
-- **使用エージェント**: @command-arch
-- **成果物**: src/, tests/, docs/, .github/
+- **目的**: プロジェクト設計書に準拠したハイブリッドアーキテクチャの完全な構造生成
+- **引数**: `[template-type]` - hybrid-mvp（このプロジェクト専用）
+- **使用エージェント**: なし（設計書準拠の直接実行）
+- **参照スキル**:
+  - `.claude/skills/clean-architecture-principles/SKILL.md`: Clean Architecture、依存関係ルール
+  - `.claude/skills/architectural-patterns/SKILL.md`: ハイブリッドアーキテクチャパターン
+  - `.claude/skills/code-style-guides/SKILL.md`: ディレクトリ命名規則
+  - `.claude/skills/best-practices-curation/SKILL.md`: プロジェクト構成ベストプラクティス
+- **設計書参照**:
+  - `docs/00-requirements/master_system_design.md`: 第4章（ディレクトリ構造）、第2章（設定要件）、第5章（依存関係）、第12章（Railway/GHA）
+- **フロー**:
+  1. 設計書参照（master_system_design.md 第4.3節）
+  2. 既存構造チェック
+  3. ハイブリッドディレクトリ構造作成（shared/core, shared/infrastructure, features, app, local-agent）
+  4. 設定ファイル作成（tsconfig strict, eslint.config.js Flat Config + boundaries, prettier, vitest, drizzle, railway.json, pnpm-workspace.yaml, .env.example）
+  5. GitHub Actions ワークフロー作成（ci.yml, deploy.yml, reusable-test.yml, README.md）
+  6. コアファイルテンプレート作成（entities, interfaces, errors, registry, schema, ecosystem.config.js）
+  7. .gitignore、README作成
+  8. 構造検証と設計書準拠チェック
+- **成果物**:
+  - **ディレクトリ**: .claude/, docs/, src/shared/core/, src/shared/infrastructure/, src/features/, src/app/, local-agent/, .github/workflows/
+  - **設定ファイル**: tsconfig.json, eslint.config.js, .prettierrc, vitest.config.ts, drizzle.config.ts, railway.json, pnpm-workspace.yaml, .env.example
+  - **コアファイル**: workflow.ts, IWorkflowExecutor.ts, WorkflowError.ts, registry.ts, schema.ts, ecosystem.config.js
+  - **ワークフロー**: ci.yml, deploy.yml, reusable-test.yml
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Bash(mkdir*|npx*), Write`
+  - `model: sonnet`（構造化タスク）
+  - `allowed-tools: Bash(mkdir*), Write, Read`（ディレクトリ作成、ファイル生成、既存確認）
 
 ### `/ai:setup-dev-env`
 - **目的**: 開発環境の完全セットアップ
