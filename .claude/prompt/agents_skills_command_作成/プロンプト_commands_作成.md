@@ -14,15 +14,15 @@ commandは次の階層化に作成して。
 ただし次の内容はあくまでも叩き台で作成しているものなので最適ではないです。この部分を最適化して/commandとcommand-listを改善修正作成してください。
 下記のたたき台を元に作成して。
 """
-### `/ai:gather-requirements`
-- **目的**: ステークホルダーへのヒアリングと要件整理
-- **引数**: `[stakeholder-name]` - ステークホルダー名(オプション)
-- **使用エージェント**: @req-analyst
-- **スキル活用**: requirements-engineering, interview-techniques
-- **成果物**: docs/00-requirements/requirements.md
+### `/ai:design-domain-model`
+- **目的**: ドメインモデルの設計
+- **引数**: `[domain-name]` - ドメイン名
+- **使用エージェント**: @domain-modeler
+- **スキル活用**: domain-driven-design, ubiquitous-language, bounded-context
+- **成果物**: src/core/entities/, ドメインモデル図
 - **設定**:
-  - `model: opus` (複雑なヒアリング分析)
-  - `allowed-tools: Read, Write(docs/**)`
+  - `model: opus`
+  - `allowed-tools: Read, Write(src/core/**|docs/**)`
 """
 @docs/00-requirements/master_system_design.md
 この内容を反映さしてください。これらはエージェン・トスキルにも同様です。エージェント・スキルにもこれらの内容を反映されているか確認しておいてください。エージェント・スキルも改善実用であれば、改善すること
