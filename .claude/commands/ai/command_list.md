@@ -324,14 +324,31 @@
 ## 4. フロントエンド開発
 
 ### `/ai:create-component`
-- **目的**: Reactコンポーネントの作成(Atomic Design準拠)
+- **目的**: Reactコンポーネント（Atomic Design準拠）の作成
 - **引数**: `[component-name] [type]` - コンポーネント名と種類(atom/molecule/organism)
-- **使用エージェント**: @ui-designer
-- **スキル活用**: atomic-design, component-composition, accessibility-wcag
-- **成果物**: src/components/ui/*.tsx
+- **使用エージェント**: `.claude/agents/ui-designer.md`
+- **スキル活用**（ui-designerが必要時に参照）:
+  - **必須（Phase 1-2）**: `.claude/skills/design-system-architecture/SKILL.md`, `.claude/skills/component-composition-patterns/SKILL.md`, `.claude/skills/headless-ui-principles/SKILL.md`, `.claude/skills/tailwind-css-patterns/SKILL.md`
+  - **必須（Phase 3）**: `.claude/skills/accessibility-wcag/SKILL.md`
+  - **推奨（Apple向け）**: `.claude/skills/apple-hig-guidelines/SKILL.md`
+- **フロー**:
+  1. Phase 1: 引数確認とコンテキスト収集（コンポーネント名、種類、配置場所）
+  2. Phase 2: ui-designer起動 → デザインシステム確認 → Compositionパターン適用 → WCAG準拠実装 → Tailwind CSSスタイリング → テスト作成
+  3. Phase 3: 検証と報告（TypeScript型チェック、アクセシビリティスコア、テスト結果）
+- **成果物**:
+  - src/app/components/${component-name}.tsx または src/features/*/components/
+  - __tests__/${component-name}.test.tsx（カバレッジ80%目標）
+  - Storybook（オプション）: ${component-name}.stories.tsx
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Read, Write(src/components/**), Edit`
+  - `allowed-tools: [Task, Read, Write(src/app/**|src/features/**), Edit, Grep]`
+- **プロジェクト準拠**:
+  - Clean Architecture（依存関係: app/ → features/ → shared/）
+  - Next.js App Router（"use client"、Server/Client分離）
+  - Zodバリデーション、TypeScript strict mode
+  - デザイントークン活用、Compositionパターン
+  - WCAG 2.1 AA準拠、カラーコントラスト4.5:1以上
+- **トリガーキーワード**: component, ui, react, atomic-design, アクセシビリティ
 
 ### `/ai:create-page`
 - **目的**: Next.js App Routerページの作成
