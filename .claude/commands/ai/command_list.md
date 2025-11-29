@@ -280,14 +280,29 @@
 - **トリガーキーワード**: architecture, design, アーキテクチャ, システム設計, clean architecture, DDD
 
 ### `/ai:review-architecture`
-- **目的**: アーキテクチャレビューと依存関係チェック
-- **引数**: なし
-- **使用エージェント**: @arch-police
-- **スキル活用**: dependency-analysis, code-smell-detection
-- **成果物**: アーキテクチャレビューレポート
+- **目的**: 既存プロジェクトのアーキテクチャを分析し、Clean Architecture原則違反、SOLID原則遵守状況、循環依存、コードスメルを検出
+- **引数**: `[scope]` - 分析スコープ（オプション、デフォルトは`src/`全体）
+- **使用エージェント**:
+  - `.claude/agents/arch-police.md`: アーキテクチャ監視専門エージェント
+- **スキル活用**:
+  - **Phase 1（構造分析 - 必須）**:
+    - `.claude/skills/clean-architecture-principles/SKILL.md`: 依存関係ルール、レイヤー構造、ハイブリッドアーキテクチャマッピング
+    - `.claude/skills/dependency-analysis/SKILL.md`: 依存グラフ構築、循環依存検出、安定度メトリクス
+  - **Phase 2（原則評価 - 必須）**:
+    - `.claude/skills/solid-principles/SKILL.md`: SRP, OCP, LSP, ISP, DIP の評価基準と検出パターン
+  - **Phase 3（品質分析 - 推奨）**:
+    - `.claude/skills/code-smell-detection/SKILL.md`: クラス/メソッドスメル、アーキテクチャアンチパターン
+    - `.claude/skills/architectural-patterns/SKILL.md`: Hexagonal, Onion, Vertical Slice パターン評価
+- **参照仕様書**:
+  - `docs/00-requirements/master_system_design.md`: 第1.5章（アーキテクチャ原則）、第4章（ディレクトリ構造）、第4.4章（依存関係ルール）
+- **成果物**:
+  - `docs/10-architecture/review-report.md`: アーキテクチャレビューレポート（優先度付き問題リスト、是正方針、メトリクスダッシュボード）
 - **設定**:
-  - `model: opus`
-  - `allowed-tools: Read, Grep, Glob, Write(docs/**)`
+  - `model: sonnet`（標準的なレビュータスク）
+  - `allowed-tools: [Task, Read, Grep, Glob, Write(docs/**)]`
+  - **実行フロー**: Phase 1（構造分析）→ Phase 2（原則評価）→ Phase 3（品質分析）→ Phase 4（レポート生成）
+  - **トークン見積もり**: 約15-25K（1エージェント起動 + 5スキル参照 + レポート生成）
+- **トリガーキーワード**: architecture review, アーキテクチャレビュー, 依存関係, SOLID, clean architecture, コードスメル
 
 ### `/ai:design-domain-model`
 - **目的**: ドメインモデルの設計
