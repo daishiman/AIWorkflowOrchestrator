@@ -315,14 +315,33 @@
   - `allowed-tools: Read, Write(src/core/**|docs/**)`
 
 ### `/ai:design-api`
-- **目的**: REST API設計とエンドポイント定義
-- **引数**: `[resource-name]` - リソース名
-- **使用エージェント**: @gateway-dev, @api-doc-writer
-- **スキル活用**: api-client-patterns, openapi-specification
-- **成果物**: openapi.yaml, API設計書
+- **目的**: REST API設計とOpenAPI 3.x仕様書の作成（エンドポイント定義、認証設計、スキーマ生成）
+- **引数**: `[resource-name]` - リソース名（オプション、未指定時はインタラクティブ）
+- **使用エージェント**:
+  - `.claude/agents/gateway-dev.md`: Phase 1 - API設計パターン分析、エンドポイント設計
+  - `.claude/agents/api-doc-writer.md`: Phase 2 - OpenAPI仕様書生成、ドキュメント作成
+- **スキル活用**（エージェントが必要時に参照）:
+  - **gateway-dev**: `.claude/skills/api-client-patterns/SKILL.md`, `.claude/skills/http-best-practices/SKILL.md`
+  - **api-doc-writer**: `.claude/skills/openapi-specification/SKILL.md`, `.claude/skills/swagger-ui/SKILL.md`, `.claude/skills/api-documentation-best-practices/SKILL.md`, `.claude/skills/request-response-examples/SKILL.md`
+- **フロー**:
+  1. Phase 0: 引数確認、master_system_design.md第8章参照、既存パターン確認
+  2. Phase 1: gateway-dev起動 → API設計（master_system_design.md第8章準拠）
+  3. Phase 2: api-doc-writer起動 → OpenAPI 3.x仕様書生成
+  4. Phase 3: 整合性チェック、完了報告
+- **成果物**:
+  - `docs/20-specifications/api-design-$ARGUMENTS.md`: API設計書
+  - `openapi.yaml`: OpenAPI 3.x仕様書
+  - `docs/20-specifications/api-documentation-$ARGUMENTS.md`: 詳細ドキュメント（cURL例、SDK例）
+  - `src/app/api/[resource]/route.ts`: Next.js実装ガイド（オプション）
+- **プロジェクト要件準拠**:
+  - REST API 設計原則（master_system_design.md 第8章）
+  - APIバージョニング: URL パスベース（/api/v1/...）
+  - HTTPステータスコード規約、エラーレスポンス形式、ページネーション実装
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Read, Write`
+  - `allowed-tools: [Task, Read, Write(docs/**|openapi.yaml), Grep]`
+  - **トークン見積もり**: 約15-25K（2エージェント起動 + ドキュメント生成）
+- **トリガーキーワード**: api, design, endpoint, openapi, swagger, REST, エンドポイント設計, API仕様書
 
 ### `/ai:design-database`
 - **目的**: データベーススキーマ設計
