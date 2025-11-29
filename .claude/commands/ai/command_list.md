@@ -717,13 +717,27 @@
 
 ### `/ai:optimize-prompts`
 - **目的**: AIプロンプトの最適化
-- **引数**: `[prompt-file]` - プロンプトファイルパス
-- **使用エージェント**: @prompt-eng
-- **スキル活用**: prompt-engineering-for-agents, context-optimization
-- **成果物**: 最適化されたプロンプト定義
+- **引数**: `[prompt-file]` - プロンプトファイルパス（オプション、未指定時は対話形式）
+- **使用エージェント**:
+  - `.claude/agents/prompt-eng.md`: プロンプトエンジニアリング専門エージェント
+- **フロー**:
+  1. Phase 1: 要件分析（プロンプトの目的と期待出力の理解）
+  2. Phase 2: 設計と実装（役割定義、Few-Shot例示、出力スキーマ、CoT誘導）
+  3. Phase 3: 品質保証（ハルシネーション対策、テスト実行、評価メトリクス測定）
+- **参照スキル**:
+  - **Phase 1**: prompt-engineering-for-agents（プロンプト設計基本原則）
+  - **Phase 2**: few-shot-learning-patterns（例示設計）, chain-of-thought-reasoning（段階的推論）, structured-output-design（JSON Schema、Zod）
+  - **Phase 3**: hallucination-prevention（3層防御モデル）, prompt-testing-evaluation（A/Bテスト）, context-optimization（トークン効率）
+- **成果物**:
+  - 最適化されたプロンプト定義
+  - 評価レポート（改善前後の比較）
+  - テストケース、changelog
 - **設定**:
-  - `model: opus`
-  - `allowed-tools: Read, Edit`
+  - `model: opus`（高度なプロンプト最適化タスク）
+  - `allowed-tools: Task, Read, Edit, Grep`
+  - **トークン見積もり**: 約8-12K
+- **トリガーキーワード**: prompt, AI, optimization, hallucination, few-shot, chain-of-thought
+
 
 ---
 
@@ -731,23 +745,107 @@
 
 ### `/ai:create-db-schema`
 - **目的**: Drizzle ORMスキーマの作成
-- **引数**: `[table-name]` - テーブル名
-- **使用エージェント**: @db-architect
-- **スキル活用**: database-normalization, jsonb-optimization, foreign-key-constraints
-- **成果物**: src/infrastructure/database/schema.ts
+- **引数**: `[table-name]` - テーブル名（オプション、未指定時は対話形式）
+- **使用エージェント**:
+  - `.claude/agents/db-architect.md`: データベーススキーマ設計専門エージェント
+- **フロー**:
+  1. Phase 1: 要件理解（システム設計書、既存スキーマ、アクセスパターン特定）
+  2. Phase 2: スキーマ設計（論理設計、JSONB構造、物理実装）
+  3. Phase 3: インデックス設計（インデックス候補、タイプ選択、複合インデックス）
+  4. Phase 4: 制約設計（外部キー、CHECK制約）
+  5. Phase 5: 検証（アンチパターンチェック、スキーマドキュメント）
+- **参照スキル**:
+  - **Phase 1**: master_system_design.md参照
+  - **Phase 2**: database-normalization（正規化理論）, jsonb-optimization（JSONB設計）
+  - **Phase 3**: indexing-strategies（B-Tree、GIN、GiST、BRIN）
+  - **Phase 4**: foreign-key-constraints（CASCADE動作）, transaction-management（ACID特性）
+  - **Phase 5**: sql-anti-patterns（アンチパターン検出）, query-optimization（クエリ最適化）
+- **成果物**:
+  - src/shared/infrastructure/database/schema.ts（スキーマ定義）
+  - docs/database/schema-design.md（設計ドキュメント）
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Read, Write(src/infrastructure/database/**), Edit`
+  - `model: sonnet`（標準的なスキーマ設計タスク）
+  - `allowed-tools: Task, Read, Write(src/shared/infrastructure/database/**|docs/database/**), Edit, Grep`
+  - **トークン見積もり**: 約6-10K
+- **トリガーキーワード**: schema, database, table, Drizzle, normalization, JSONB
 
 ### `/ai:create-migration`
 - **目的**: データベースマイグレーションファイル作成
-- **引数**: `[migration-name]` - マイグレーション名
-- **使用エージェント**: @dba-mgr
-- **スキル活用**: database-migrations
-- **成果物**: drizzle/migrations/*.sql
+- **引数**: `[migration-name]` - マイグレーション名（オプション、未指定時は対話形式）
+- **使用エージェント**:
+  - `.claude/agents/dba-mgr.md`: データベース管理専門エージェント
+- **フロー**:
+  1. Phase 1: スキーマ分析（既存スキーマ、マイグレーション履歴、設計書参照）
+  2. Phase 2: マイグレーション設計（変更戦略、Up/Down設計、インデックス設計）
+  3. Phase 3: 実装とテスト（Drizzleスキーマ更新、マイグレーション生成、ロールバックテスト）
+  4. Phase 4: 信頼性保証（バックアップ確認、EXPLAIN ANALYZE、整合性検証）
+  5. Phase 5: デプロイと監視（CI/CD統合、本番計画、ドキュメント更新）
+- **参照スキル**:
+  - **Phase 2**: database-migrations（Up/Down設計、移行期間パターン、Zero-Downtime）
+  - **Phase 4**: backup-recovery（バックアップ確認）, query-performance-tuning（EXPLAIN ANALYZE）
+- **成果物**:
+  - drizzle/migrations/YYYYMMDDHHMMSS_<migration-name>.sql
+  - docs/database/migration-plan-<migration-name>.md
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Bash(pnpm drizzle*), Read, Write(drizzle/**)`
+  - `model: sonnet`（標準的なマイグレーションタスク）
+  - `allowed-tools: Task, Read, Write(drizzle/**|docs/**), Bash(pnpm drizzle*), Grep`
+  - **トークン見積もり**: 約5-8K
+- **トリガーキーワード**: migration, schema-change, rollback, Up/Down, Drizzle
+
+### `/ai:optimize-queries`
+- **目的**: データベースクエリの最適化
+- **引数**: `[file-path]` - 対象ファイルパス（オプション、未指定時は対話形式）
+- **使用エージェント**:
+  - `.claude/agents/repo-dev.md`: Repository実装専門エージェント（クエリ最適化）
+  - `.claude/agents/dba-mgr.md`: データベース管理専門エージェント（パフォーマンスチューニング）
+- **フロー**:
+  1. repo-dev起動時:
+     - Phase 1: コンテキスト理解（スキーマ、既存Repository、クエリパターン）
+     - Phase 2: クエリ戦略設計（N+1解消、SELECT最適化）
+     - Phase 3: Repository実装（クエリビルダー、トランザクション最適化）
+     - Phase 4: 検証（パフォーマンステスト、N+1解消確認）
+  2. dba-mgr起動時:
+     - Phase 1: スキーマ分析（既存インデックス、アクセスパターン）
+     - Phase 2: パフォーマンスチューニング（EXPLAIN ANALYZE、インデックス最適化、クエリ書き換え）
+     - Phase 3: 検証（改善後のEXPLAIN ANALYZE、メトリクス測定）
+- **参照スキル**:
+  - **repo-dev**: query-optimization（N+1検出、実行計画分析）, orm-best-practices（クエリビルダー）
+  - **dba-mgr**: query-performance-tuning（EXPLAIN ANALYZE、クエリ書き換え）, indexing-strategies（B-Tree、GIN最適化）
+- **成果物**:
+  - 最適化されたクエリ実装
+  - パフォーマンスレポート（改善前後の比較）
+  - インデックス追加提案（必要な場合）
+- **設定**:
+  - `model: sonnet`（標準的なクエリ最適化タスク）
+  - `allowed-tools: Task, Read, Edit, Bash(pnpm drizzle-kit studio|pnpm test), Grep`
+  - **トークン見積もり**: 約6-10K
+- **トリガーキーワード**: query, optimization, N+1, EXPLAIN, performance, slow-query
+
+### `/ai:setup-db-backup`
+- **目的**: バックアップ・リカバリ戦略の設定
+- **引数**: `[backup-schedule]` - バックアップスケジュール(daily/hourly、未指定時は対話形式)
+- **使用エージェント**:
+  - `.claude/agents/dba-mgr.md`: データベース管理専門エージェント
+- **フロー**:
+  1. Phase 1: 要件定義（RPO/RTO確認、バックアップ頻度決定、保持期間設計）
+  2. Phase 2: 多層防御モデル設計（自動バックアップ、定期スナップショット、検証、オフサイト保存）
+  3. Phase 3: 復旧手順書作成（復旧手順文書化、復旧ドリルスケジュール、エスカレーションパス）
+  4. Phase 4: CI/CD統合（GitHub Actions統合、アラート設定）
+  5. Phase 5: 監視とアラート（バックアップ監視、ディスク使用量、復旧テスト自動実行）
+- **参照スキル**:
+  - **Phase 2**: backup-recovery（多層防御モデル、PITR、災害復旧計画）
+  - **Phase 5**: database-monitoring（バックアップ監視、アラート設計）
+- **成果物**:
+  - scripts/backup/daily-snapshot.sh（バックアップスクリプト）
+  - scripts/backup/verify-backup.sh（検証スクリプト）
+  - docs/database/backup-policy.md（バックアップポリシー）
+  - docs/database/recovery-runbook.md（復旧手順書）
+  - .github/workflows/database-backup.yml（CI/CD統合）
+- **設定**:
+  - `model: sonnet`（標準的なバックアップ設定タスク）
+  - `allowed-tools: Task, Read, Write(scripts/**|docs/**), Bash, Grep`
+  - **トークン見積もり**: 約6-10K
+- **トリガーキーワード**: backup, recovery, disaster, PITR, RPO, RTO, restoration
 
 ### `/ai:create-repository`
 - **目的**: Repositoryパターン実装（インターフェース + 実装）
@@ -796,26 +894,6 @@
   - `allowed-tools: Task, Read, Write(src/shared/infrastructure/database/**), Bash(pnpm*|drizzle-kit*|node*)`
   - **トークン見積もり**: 約8-12K（dba-mgr起動 + Seed実装 + テスト実行）
 - **トリガーキーワード**: seed, seeding, 初期データ, テストデータ, マスターデータ
-
-### `/ai:optimize-queries`
-- **目的**: データベースクエリの最適化
-- **引数**: `[file-path]` - 対象ファイルパス
-- **使用エージェント**: @repo-dev, @dba-mgr
-- **スキル活用**: query-optimization, query-performance-tuning
-- **成果物**: 最適化されたクエリ
-- **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Read, Edit, Bash(pnpm drizzle-kit studio)`
-
-### `/ai:setup-db-backup`
-- **目的**: バックアップ・リカバリ戦略の設定
-- **引数**: `[backup-schedule]` - バックアップスケジュール(daily/hourly)
-- **使用エージェント**: @dba-mgr
-- **スキル活用**: backup-recovery
-- **成果物**: バックアップスクリプト、復旧手順書
-- **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Bash, Write(scripts/**|docs/**)`
 
 ---
 
