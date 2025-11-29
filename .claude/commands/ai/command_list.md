@@ -750,14 +750,28 @@
   - `allowed-tools: Bash(pnpm drizzle*), Read, Write(drizzle/**)`
 
 ### `/ai:create-repository`
-- **目的**: Repositoryパターン実装
-- **引数**: `[entity-name]` - エンティティ名
-- **使用エージェント**: @repo-dev
-- **スキル活用**: repository-pattern, query-optimization, transaction-management
-- **成果物**: src/infrastructure/repositories/*.ts
+- **目的**: Repositoryパターン実装（インターフェース + 実装）
+- **引数**: `[entity-name]` - エンティティ名（オプション、未指定時はインタラクティブ）
+- **使用エージェント**:
+  - `.claude/agents/repo-dev.md`: Repositoryパターン実装専門エージェント
+- **フロー**:
+  1. Phase 1: コンテキスト理解（スキーマ・既存Repository確認）
+  2. Phase 2: Repository設計（インターフェース設計、クエリ戦略）
+  3. Phase 3: Repository実装（CRUD実装、トランザクション、クエリ最適化）
+  4. Phase 4: 検証（テスト作成、パフォーマンス検証、アーキテクチャ遵守確認）
+- **参照スキル**:
+  - **Phase 1-2**: repository-pattern（設計原則、インターフェース設計）, orm-best-practices（Drizzleスキーマ確認）, query-optimization（N+1解消）
+  - **Phase 3**: repository-pattern（実装パターン、エンティティマッピング）, transaction-management（ACID・楽観的ロック）, orm-best-practices（クエリビルダー）
+  - **Phase 4**: query-optimization（実行計画分析）, connection-pooling（リソース最適化、必要時）
+- **成果物**:
+  - `src/shared/core/interfaces/I[EntityName]Repository.ts`: Repositoryインターフェース
+  - `src/shared/infrastructure/database/repositories/[EntityName]Repository.ts`: Repository実装
+  - `src/shared/infrastructure/database/repositories/__tests__/[EntityName]Repository.test.ts`: ユニットテスト（推奨）
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Read, Write(src/infrastructure/repositories/**), Edit`
+  - `model: opus`（標準的なRepository実装タスク）
+  - `allowed-tools: Task, Read, Write(src/shared/**), Edit, Grep`（エージェント起動、Repository生成、既存確認）
+  - **トークン見積もり**: 約5-8K（repo-devエージェント起動 + スキル参照 + ファイル生成）
+- **トリガーキーワード**: repository, data access, データアクセス, CRUD, ORM
 
 ### `/ai:seed-database`
 - **目的**: 初期データ・テストデータの投入

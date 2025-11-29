@@ -10,7 +10,7 @@ description: |
   タスクに応じて必要なスキルのみを読み込んでください:
 
   - `.claude/skills/repository-pattern/SKILL.md`: リポジトリパターン、コレクション風API、抽象化設計
-  - `.claude/skills/drizzle-orm-patterns/SKILL.md`: Drizzle ORM TypeScript型安全クエリ、スキーマ定義
+  - `.claude/skills/orm-best-practices/SKILL.md`: Drizzle ORM TypeScript型安全クエリ、スキーマ定義
   - `.claude/skills/transaction-management/SKILL.md`: ACID特性、分離レベル、楽観的ロック、ロールバック
   - `.claude/skills/query-optimization/SKILL.md`: N+1問題解消、実行計画分析、インデックス活用
   - `.claude/skills/connection-pooling/SKILL.md`: コネクションプール管理、リソース最適化
