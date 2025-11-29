@@ -1379,95 +1379,148 @@
 ## 10. CI/CD・デプロイ
 
 ### `/ai:create-ci-workflow`
-- **目的**: CI(継続的インテグレーション)ワークフローの作成
-- **引数**: `[workflow-type]` - ワークフロータイプ(test/lint/build)
-- **使用エージェント**: @gha-workflow-architect
-- **スキル活用**: github-actions-syntax, matrix-builds, caching-strategies-gha
-- **成果物**: .github/workflows/ci.yml
+- **目的**: CI(継続的インテグレーション)ワークフローの作成（テスト・Lint・ビルド）
+- **引数**: `[workflow-type]` - ワークフロータイプ(test/lint/build、オプション)
+- **起動エージェント**:
+  - `.claude/agents/gha-workflow-architect.md` - GitHub Actions専門エージェント（Phase 2で起動）
+- **参照スキル**（gha-workflow-architectが必要時に参照）:
+  - **Phase 1**: `.claude/skills/github-actions-syntax/SKILL.md`（ワークフロー構文）
+  - **Phase 2**: `.claude/skills/matrix-builds/SKILL.md`（マトリックスビルド）、`.claude/skills/caching-strategies-gha/SKILL.md`（依存関係キャッシュ）
+  - **Phase 4**: `.claude/skills/github-actions-best-practices/SKILL.md`（ベストプラクティス）
+- **成果物**: `.github/workflows/ci.yml`（TypeScript型チェック、ESLint、Vitest、Next.jsビルド）
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Read, Write(.github/workflows/**)`
+  - `allowed-tools: [Task, Read, Write(.github/workflows/**)]`
+- **トリガーキーワード**: CI, continuous integration, workflow, GitHub Actions, テスト自動化
 
 ### `/ai:create-cd-workflow`
-- **目的**: CD(継続的デプロイ)ワークフローの作成
-- **引数**: `[environment]` - 環境(staging/production)
-- **使用エージェント**: @gha-workflow-architect, @devops-eng
-- **スキル活用**: deployment-environments-gha, deployment-strategies
-- **成果物**: .github/workflows/deploy.yml
+- **目的**: CD(継続的デプロイ)ワークフローの作成（Railway自動デプロイ統合）
+- **引数**: `[environment]` - 環境(staging/production、オプション)
+- **起動エージェント**:
+  - `.claude/agents/gha-workflow-architect.md` - GitHub Actions専門エージェント（Phase 2で起動）
+  - `.claude/agents/devops-eng.md` - DevOps専門エージェント（Phase 3で起動、Railway統合）
+- **参照スキル**（エージェントが必要時に参照）:
+  - **Phase 1**: `.claude/skills/deployment-environments-gha/SKILL.md`（GitHub Environments、承認フロー）
+  - **Phase 2**: `.claude/skills/railway-integration/SKILL.md`（Railway CLI、自動デプロイ）
+  - **Phase 3**: `.claude/skills/deployment-strategies/SKILL.md`（Blue-Green、Canary）
+  - **Phase 4**: `.claude/skills/github-actions-best-practices/SKILL.md`（セキュリティ、通知）
+- **成果物**: `.github/workflows/deploy.yml`（Railway自動デプロイ、Discord通知）
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Read, Write(.github/workflows/**)`
+  - `allowed-tools: [Task, Read, Write(.github/workflows/**)]`
+- **トリガーキーワード**: CD, deploy, continuous deployment, Railway, デプロイ自動化
 
 ### `/ai:create-reusable-workflow`
-- **目的**: 再利用可能なワークフローの作成
-- **引数**: `[workflow-name]` - ワークフロー名
-- **使用エージェント**: @gha-workflow-architect
-- **スキル活用**: reusable-workflows
-- **成果物**: .github/workflows/reusable-*.yml
+- **目的**: 再利用可能なワークフローの作成（モノレポ対応、パラメータ化）
+- **引数**: `[workflow-name]` - ワークフロー名（必須）
+- **起動エージェント**:
+  - `.claude/agents/gha-workflow-architect.md` - GitHub Actions専門エージェント（Phase 2で起動）
+- **参照スキル**（gha-workflow-architectが必要時に参照）:
+  - **Phase 1**: `.claude/skills/reusable-workflows/SKILL.md`（再利用可能ワークフロー設計）
+  - **Phase 2**: `.claude/skills/workflow-templates/SKILL.md`（テンプレート、パラメータ化）
+  - **Phase 4**: `.claude/skills/github-actions-best-practices/SKILL.md`（DRY原則）
+- **成果物**: `.github/workflows/reusable-*.yml`（パラメータ化された再利用可能ワークフロー）
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Read, Write(.github/workflows/reusable-**)`
+  - `allowed-tools: [Task, Read, Write(.github/workflows/reusable-**)]`
+- **トリガーキーワード**: reusable workflow, template, モジュール化, 再利用
 
 ### `/ai:create-composite-action`
-- **目的**: カスタムコンポジットアクションの作成
-- **引数**: `[action-name]` - アクション名
-- **使用エージェント**: @gha-workflow-architect
-- **スキル活用**: composite-actions
-- **成果物**: .github/actions/*/action.yml
+- **目的**: カスタムコンポジットアクションの作成（複雑な処理の再利用）
+- **引数**: `[action-name]` - アクション名（必須）
+- **起動エージェント**:
+  - `.claude/agents/gha-workflow-architect.md` - GitHub Actions専門エージェント（Phase 2で起動）
+- **参照スキル**（gha-workflow-architectが必要時に参照）:
+  - **Phase 1**: `.claude/skills/composite-actions/SKILL.md`（コンポジットアクション設計）
+  - **Phase 2**: `.claude/skills/github-actions-syntax/SKILL.md`（アクション構文）
+  - **Phase 4**: `.claude/skills/github-actions-best-practices/SKILL.md`（入力検証、エラーハンドリング）
+- **成果物**: `.github/actions/[action-name]/action.yml`（再利用可能なコンポジットアクション）
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Write(.github/actions/**)`
+  - `allowed-tools: [Task, Read, Write(.github/actions/**)]`
+- **トリガーキーワード**: composite action, custom action, アクション作成
 
 ### `/ai:optimize-ci-performance`
-- **目的**: CI/CDパイプラインの高速化
-- **引数**: `[workflow-file]` - 対象ワークフローファイル
-- **使用エージェント**: @gha-workflow-architect
-- **スキル活用**: cost-optimization-gha, parallel-jobs-gha, caching-strategies-gha
-- **成果物**: 最適化されたワークフロー
+- **目的**: CI/CDパイプラインの高速化（並列実行、キャッシュ最適化）
+- **引数**: `[workflow-file]` - 対象ワークフローファイル（オプション）
+- **起動エージェント**:
+  - `.claude/agents/gha-workflow-architect.md` - GitHub Actions専門エージェント（Phase 2で起動）
+- **参照スキル**（gha-workflow-architectが必要時に参照）:
+  - **Phase 1**: `.claude/skills/parallel-jobs-gha/SKILL.md`（並列ジョブ設計）
+  - **Phase 2**: `.claude/skills/caching-strategies-gha/SKILL.md`（依存関係キャッシュ）
+  - **Phase 5**: `.claude/skills/cost-optimization-gha/SKILL.md`（実行時間短縮、コスト削減）
+- **成果物**: 最適化されたワークフローファイル（並列実行、キャッシュ戦略）
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Read, Edit`
+  - `allowed-tools: [Task, Read, Edit(.github/workflows/**)]`
+- **トリガーキーワード**: optimize, performance, 高速化, CI最適化
 
 ### `/ai:setup-deployment-environments`
-- **目的**: ステージング・本番環境の設定
+- **目的**: GitHub Environmentsとステージング・本番環境の設定（承認フロー付き）
 - **引数**: なし
-- **使用エージェント**: @devops-eng, @gha-workflow-architect
-- **スキル活用**: deployment-environments-gha, infrastructure-as-code
-- **成果物**: 環境設定、承認フロー
+- **起動エージェント**:
+  - `.claude/agents/devops-eng.md` - DevOps専門エージェント（Phase 1で起動）
+  - `.claude/agents/gha-workflow-architect.md` - GitHub Actions専門エージェント（Phase 2で起動、承認フロー設計）
+- **参照スキル**（エージェントが必要時に参照）:
+  - **Phase 1**: `.claude/skills/deployment-environments-gha/SKILL.md`（GitHub Environments、保護ルール）
+  - **Phase 2**: `.claude/skills/infrastructure-as-code/SKILL.md`（環境設定コード化）
+  - **Phase 3**: `.claude/skills/github-actions-security/SKILL.md`（Secret管理、承認フロー）
+- **成果物**: GitHub Environments設定（staging/production）、承認フロー、環境変数設定ガイド
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Read, Write(.github/**|docs/**)`
+  - `allowed-tools: [Task, Read, Write(.github/**|docs/**)]`
+- **トリガーキーワード**: environments, staging, production, 承認フロー, デプロイ環境
 
 ### `/ai:setup-docker`
-- **目的**: Dockerコンテナ化
-- **引数**: `[service-name]` - サービス名
-- **使用エージェント**: @devops-eng
-- **スキル活用**: docker-best-practices
-- **成果物**: Dockerfile, docker-compose.yml
+- **目的**: Dockerコンテナ化設定（Dockerfile、docker-compose.yml）
+- **引数**: `[service-name]` - サービス名（オプション）
+- **起動エージェント**:
+  - `.claude/agents/devops-eng.md` - DevOps専門エージェント（Phase 2で起動）
+- **参照スキル**（devops-engが必要時に参照）:
+  - **Phase 1**: `.claude/skills/docker-best-practices/SKILL.md`（マルチステージビルド、レイヤーキャッシュ）
+  - **Phase 2**: `.claude/skills/infrastructure-as-code/SKILL.md`（docker-compose設計）
+  - **Phase 3**: `.claude/skills/container-security/SKILL.md`（イメージスキャン、最小権限）
+- **成果物**: `Dockerfile`（マルチステージビルド）、`docker-compose.yml`（Next.js + PostgreSQL）、`.dockerignore`
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Read, Write`
+  - `allowed-tools: [Task, Read, Write]`
+- **トリガーキーワード**: Docker, container, コンテナ化, docker-compose
 
 ### `/ai:deploy-staging`
-- **目的**: ステージング環境へのデプロイ
-- **引数**: `[--dry-run]` - ドライランフラグ(オプション)
-- **使用エージェント**: @devops-eng, @gha-workflow-architect
-- **フロー**: ビルド → テスト → デプロイ → ヘルスチェック
-- **成果物**: デプロイ済みアプリケーション
+- **目的**: ステージング環境への自動デプロイ（ドライラン対応）
+- **引数**: `[--dry-run]` - ドライランフラグ（オプション）
+- **起動エージェント**:
+  - `.claude/agents/devops-eng.md` - DevOps専門エージェント（Phase 1で起動、デプロイ実行）
+  - `.claude/agents/gha-workflow-architect.md` - GitHub Actions専門エージェント（Phase 2で起動、ワークフロートリガー）
+- **参照スキル**（エージェントが必要時に参照）:
+  - **Phase 1**: `.claude/skills/railway-integration/SKILL.md`（Railway CLI、デプロイコマンド）
+  - **Phase 2**: `.claude/skills/deployment-strategies/SKILL.md`（デプロイフロー、ヘルスチェック）
+  - **Phase 3**: `.claude/skills/rollback-strategies/SKILL.md`（ロールバック準備）
+- **実行フロー**: ビルド → テスト → デプロイ → ヘルスチェック
+- **成果物**: デプロイ済みアプリケーション（ステージング環境）、デプロイレポート
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Bash(gh*), Read`
+  - `allowed-tools: [Task, Read, Bash(gh*), Bash(railway*)]`
+- **トリガーキーワード**: deploy staging, ステージングデプロイ, 検証環境
 
 ### `/ai:deploy-production`
-- **目的**: 本番環境へのデプロイ(承認フロー付き)
+- **目的**: 本番環境への承認フロー付きデプロイ（手動承認必須、最高品質）
 - **引数**: なし
-- **使用エージェント**: @devops-eng, @gha-workflow-architect
-- **フロー**: 承認 → ビルド → テスト → デプロイ → 監視
-- **成果物**: 本番デプロイ
+- **起動エージェント**:
+  - `.claude/agents/devops-eng.md` - DevOps専門エージェント（Phase 1で起動、デプロイレポート作成）
+  - `.claude/agents/gha-workflow-architect.md` - GitHub Actions専門エージェント（Phase 2で起動、承認フロー実行）
+- **参照スキル**（エージェントが必要時に参照）:
+  - **Phase 1**: `.claude/skills/deployment-strategies/SKILL.md`（本番デプロイ戦略、Blue-Green）
+  - **Phase 2**: `.claude/skills/railway-integration/SKILL.md`（Railway本番デプロイ）
+  - **Phase 3**: `.claude/skills/monitoring-strategies/SKILL.md`（デプロイ後監視）
+  - **Phase 4**: `.claude/skills/rollback-strategies/SKILL.md`（ロールバック計画）
+- **実行フロー**: 承認 → ビルド → テスト → デプロイ → 監視
+- **成果物**: 本番デプロイ、デプロイレポート、監視設定
 - **設定**:
-  - `model: opus`
-  - `allowed-tools: Bash(gh*), Read`
-  - `disable-model-invocation: true` (安全のため手動のみ)
+  - `model: opus`（本番環境のため最高品質）
+  - `allowed-tools: [Task, Read, Bash(gh*), Bash(railway*)]`
+  - **disable-model-invocation: true**（安全のため手動承認必須）
+- **トリガーキーワード**: deploy production, 本番デプロイ, production release
 
 ---
 
