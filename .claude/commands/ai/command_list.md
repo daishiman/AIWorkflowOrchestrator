@@ -1528,97 +1528,119 @@
 
 ### `/ai:generate-api-docs`
 - **目的**: API仕様書の自動生成
-- **引数**: `[source-path]` - ソースコードパス
-- **使用エージェント**: @api-doc-writer
-- **スキル活用**: openapi-specification, swagger-ui
-- **成果物**: openapi.yaml, Swagger UI
+- **引数**: `[source-path]` - ソースコードパス（オプション、デフォルト: src/app/api）
+- **使用エージェント**: `.claude/agents/api-doc-writer.md`
+- **スキル活用**:
+  - Phase 1: openapi-specification, api-versioning
+  - Phase 2: openapi-specification, request-response-examples
+  - Phase 3: authentication-docs, api-documentation-best-practices
+  - Phase 4: swagger-ui
+- **成果物**: openapi.yaml, Swagger UI, 統合ガイド、認証ドキュメント
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Read, Write(docs/**|openapi.yaml)`
+  - `allowed-tools: Task, Read, Write(openapi.yaml|docs/api/**), Grep`
 
 ### `/ai:write-user-manual`
-- **目的**: ユーザーマニュアルの作成
-- **引数**: `[target-audience]` - 対象読者(beginner/advanced/admin)
-- **使用エージェント**: @manual-writer
-- **スキル活用**: user-centric-writing, tutorial-design
-- **成果物**: docs/user-manual.md
+- **目的**: ユーザー中心のマニュアル・チュートリアルの作成
+- **引数**: `[target-audience]` - 対象読者レベル(beginner/advanced/admin、オプション)
+- **使用エージェント**: `.claude/agents/manual-writer.md`
+- **スキル活用**:
+  - Phase 1: information-architecture
+  - Phase 2: user-centric-writing, tutorial-design
+  - Phase 3: troubleshooting-guides
+  - Phase 5: localization-i18n（必要時）
+- **成果物**: ユーザーガイド、クイックスタート、チュートリアル、FAQ
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Read, Write(docs/**)`
+  - `allowed-tools: Task, Read, Write(docs/manual/**|docs/tutorials/**), Edit, Grep`
 
 ### `/ai:create-troubleshooting-guide`
-- **目的**: トラブルシューティングガイドの作成
+- **目的**: トラブルシューティングガイドとFAQの作成
 - **引数**: なし
-- **使用エージェント**: @manual-writer
-- **スキル活用**: troubleshooting-guides
-- **成果物**: docs/troubleshooting.md
+- **使用エージェント**: `.claude/agents/manual-writer.md`
+- **スキル活用**: troubleshooting-guides（必須）、user-centric-writing、information-architecture
+- **成果物**: トラブルシューティングガイド、FAQ（10項目以上）
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Read, Write(docs/**)`
+  - `allowed-tools: Task, Read, Write(docs/manual/troubleshooting.md|docs/manual/faq.md), Grep`
 
 ### `/ai:generate-changelog`
-- **目的**: CHANGELOG.mdの自動生成
-- **引数**: `[from-tag] [to-tag]` - バージョン範囲(オプション)
-- **使用エージェント**: @spec-writer
-- **フロー**: Git履歴から変更をグループ化
+- **目的**: Git履歴からCHANGELOG.mdを自動生成
+- **引数**: `[from-tag] [to-tag]` - バージョン範囲（オプション）
+- **使用エージェント**: `.claude/agents/spec-writer.md`
+- **スキル活用**: markdown-advanced-syntax, version-control-for-docs, structured-writing
+- **フロー**: Git履歴から変更をグループ化、Keep a Changelog準拠
 - **成果物**: CHANGELOG.md
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Bash(git log*), Read, Write(CHANGELOG.md)|Edit`
+  - `allowed-tools: Task, Bash(git log*|git tag*|git diff*), Read, Write(CHANGELOG.md), Edit`
 
 ### `/ai:update-readme`
-- **目的**: README.mdの更新
+- **目的**: README.mdの更新と保守
 - **引数**: なし
-- **使用エージェント**: @spec-writer, @manual-writer
-- **スキル活用**: markdown-advanced-syntax
-- **成果物**: README.md
+- **使用エージェント**: `.claude/agents/spec-writer.md`（技術部分）、`.claude/agents/manual-writer.md`（ユーザー向け部分）
+- **スキル活用**: markdown-advanced-syntax, structured-writing, user-centric-writing, tutorial-design
+- **成果物**: 更新されたREADME.md（概要、クイックスタート、セットアップ、アーキテクチャ）
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Read, Edit`
+  - `allowed-tools: Task, Read, Edit`
 
 ---
 
 ## 12. 運用・監視
 
 ### `/ai:setup-logging`
-- **目的**: 構造化ロギングの実装
-- **引数**: `[log-level]` - ログレベル(debug/info/warn/error)
-- **使用エージェント**: @sre-observer
-- **スキル活用**: structured-logging, observability-pillars
-- **成果物**: ロギング設定、ログ出力実装
+- **目的**: 構造化ロギングシステムの設計と実装
+- **引数**: `[log-level]` - デフォルトログレベル(debug/info/warn/error、オプション)
+- **使用エージェント**: `.claude/agents/sre-observer.md`
+- **スキル活用**:
+  - Phase 1: structured-logging, observability-pillars
+  - Phase 3: structured-logging（必須）, distributed-tracing
+- **成果物**: logger.ts、ログ設定、ロギングガイド（master_system_design.md 2.2章準拠）
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Read, Write(src/**), Edit`
+  - `allowed-tools: Task, Read, Write(src/shared/infrastructure/logging/**|config/logging.*), Edit, Grep`
 
 ### `/ai:setup-monitoring`
-- **目的**: 監視・アラートの設定
-- **引数**: `[service-name]` - サービス名
-- **使用エージェント**: @sre-observer
-- **スキル活用**: slo-sli-design, alert-design, distributed-tracing
-- **成果物**: 監視設定、アラートルール
+- **目的**: 監視・アラートシステムの設計と設定
+- **引数**: `[service-name]` - 監視対象サービス名（オプション）
+- **使用エージェント**: `.claude/agents/sre-observer.md`
+- **スキル活用**:
+  - Phase 2: slo-sli-design（必須）
+  - Phase 4: alert-design（必須）, slo-sli-design
+  - 補助: observability-pillars, distributed-tracing
+- **成果物**: SLO/SLI定義、アラートルール、ダッシュボード設計、ランブック
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Read, Write`
+  - `allowed-tools: Task, Read, Write(config/monitoring.*|docs/observability/**), Grep`
 
 ### `/ai:setup-local-agent`
-- **目的**: ローカルエージェントのセットアップ
+- **目的**: ローカルエージェント（ファイル監視）のセットアップ
 - **引数**: なし
-- **使用エージェント**: @local-watcher, @local-sync, @process-mgr
-- **スキル活用**: multi-agent-systems, agent-lifecycle-management
-- **成果物**: local-agent/, ecosystem.config.js
+- **使用エージェント**:
+  - `.claude/agents/local-watcher.md`: ファイル監視専門
+  - `.claude/agents/local-sync.md`: クラウド同期専門（補助）
+  - `.claude/agents/process-mgr.md`: PM2プロセス管理専門（補助）
+- **スキル活用**:
+  - local-watcher: event-driven-file-watching（必須）, debounce-throttle-patterns, file-exclusion-patterns
+  - 補助: pm2-ecosystem-config, graceful-shutdown-patterns, file-watcher-security
+- **成果物**: local-agent/（watcher.ts, sync.ts, ecosystem.config.js等、master_system_design.md 9章準拠）
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Bash, Read, Write(local-agent/**)`
+  - `allowed-tools: Task, Bash, Read, Write(local-agent/**)`
 
 ### `/ai:manage-dependencies`
-- **目的**: 依存パッケージの管理・更新
-- **引数**: `[--upgrade-strategy]` - 更新戦略(patch/minor/major)
-- **使用エージェント**: @dep-mgr
-- **スキル活用**: semantic-versioning, dependency-auditing, upgrade-strategies
-- **成果物**: 更新されたpackage.json
+- **目的**: 依存パッケージの管理・更新・セキュリティ監査
+- **引数**: `[--upgrade-strategy]` - 更新戦略(patch/minor/major、オプション)
+- **使用エージェント**: `.claude/agents/dep-mgr.md`
+- **スキル活用**:
+  - 常時: semantic-versioning, dependency-auditing
+  - 更新時: upgrade-strategies, lock-file-management
+  - モノレポ時: monorepo-dependency-management
+- **成果物**: セキュリティレポート、更新計画、更新されたpackage.json
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Bash(npm*|pnpm*), Read, Edit`
+  - `allowed-tools: Task, Bash(pnpm*|npm*), Read, Edit`
 
 ---
 
