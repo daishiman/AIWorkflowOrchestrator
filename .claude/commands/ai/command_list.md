@@ -344,14 +344,42 @@
   - `allowed-tools: Read, Write(src/app/**), Edit`
 
 ### `/ai:setup-state-management`
-- **目的**: 状態管理の実装(SWR/React Query)
-- **引数**: `[library]` - ライブラリ(swr/react-query)
-- **使用エージェント**: @state-manager
-- **スキル活用**: data-fetching-strategies, custom-hooks-patterns
-- **成果物**: src/hooks/, カスタムフック
+- **目的**: React状態管理ライブラリ（SWR/React Query）の完全セットアップと実装
+- **引数**: `[library]` - ライブラリ(swr/react-query)、未指定時は要件分析に基づき推奨
+- **使用エージェント**: `.claude/agents/state-manager.md`（Phase 2で起動）
+- **スキル活用**（フェーズ別、state-managerが必要時に参照）:
+  - **Phase 1（分析時）**: react-hooks-advanced, data-fetching-strategies, state-lifting
+  - **Phase 2（設計時）**: data-fetching-strategies（必須）, custom-hooks-patterns（必須）
+  - **Phase 3（実装時）**: custom-hooks-patterns（必須）, react-hooks-advanced（必須）
+  - **Phase 4（エラー処理時）**: error-boundary, data-fetching-strategies（非同期エラー）
+  - **Phase 5（最適化時）**: performance-optimization-react（必要時）
+- **フロー**:
+  1. Phase 1: ライブラリ確認と要件分析（既存パターン、技術スタック）
+  2. Phase 2: state-manager起動 → Phase 1（状態要件分析）→ Phase 2（アーキテクチャ設計）→ Phase 3（Hooks実装）→ Phase 4（エラーハンドリング）→ Phase 5（最適化・テスト戦略）
+  3. Phase 3: 検証と報告（TypeScript型チェック、テスト戦略提示）
+- **成果物**:
+  - `src/hooks/` または `src/app/`: カスタムフック（ハイブリッド構造準拠）
+  - `package.json`: pnpmで依存追加
+  - Context実装（必要時）
+  - Error Boundary（必要時）
+  - テスト戦略設計（TDD、@unit-testerに引き継ぎ）
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Bash(npm*), Read, Write(src/hooks/**)`
+  - `model: sonnet`（標準的な状態管理実装タスク）
+  - `allowed-tools: [Task, Read, Write(src/hooks/**|src/app/**), Bash(pnpm add*), Edit]`
+    • Task: state-managerエージェント起動用
+    • Read: package.json確認、既存パターン確認用
+    • Write(src/hooks/**|src/app/**): カスタムフック・Context作成用（ハイブリッド構造準拠）
+    • Bash(pnpm add*): 依存関係追加用（pnpm専用、npm禁止）
+    • Edit: 既存ファイル修正用
+  - **トークン見積もり**: 約8-12K（エージェント起動 + カスタムフック実装 + テスト戦略設計）
+- **プロジェクト固有制約**:
+  - [ ] pnpm 9.x必須（npm禁止）
+  - [ ] TypeScript strict mode、@/*パスエイリアス
+  - [ ] TDD原則（仕様→テスト→実装）、Vitest 2.x
+  - [ ] ハイブリッド構造（shared/、features/、app/）に配置
+    - 機能固有フック: features/[機能名]/hooks/
+    - 共通フック: shared/ または app/ 配下
+- **トリガーキーワード**: state management, data fetching, SWR, React Query, hooks, 状態管理
 
 ### `/ai:create-custom-hook`
 - **目的**: 再利用可能なカスタムフックの作成
