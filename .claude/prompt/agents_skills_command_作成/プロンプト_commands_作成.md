@@ -14,15 +14,69 @@ commandは次の階層化に作成して。
 ただし次の内容はあくまでも叩き台で作成しているものなので最適ではないです。この部分を最適化して/commandとcommand-listを改善修正作成してください。
 下記のたたき台を元に作成して。
 """
-### `/ai:design-domain-model`
-- **目的**: ドメインモデルの設計
-- **引数**: `[domain-name]` - ドメイン名
-- **使用エージェント**: @domain-modeler
-- **スキル活用**: domain-driven-design, ubiquitous-language, bounded-context
-- **成果物**: src/core/entities/, ドメインモデル図
+## 9. セキュリティ
+
+### `/ai:security-audit`
+- **目的**: 包括的セキュリティ監査
+- **引数**: `[scope]` - スコープ(all/auth/api/database)
+- **使用エージェント**: @sec-auditor, @auth-specialist, @secret-mgr
+- **スキル活用**: owasp-top-10, vulnerability-scanning
+- **成果物**: セキュリティレポート
 - **設定**:
   - `model: opus`
-  - `allowed-tools: Read, Write(src/core/**|docs/**)`
+  - `allowed-tools: Read, Grep, Bash(npm audit), Write(docs/**)`
+
+### `/ai:setup-auth`
+- **目的**: 認証・認可システムの実装
+- **引数**: `[provider]` - 認証プロバイダー(github/google/credentials)
+- **使用エージェント**: @auth-specialist
+- **スキル活用**: oauth2-flows, rbac-implementation, nextauth-patterns
+- **成果物**: src/auth.ts, Middleware
+- **設定**:
+  - `model: sonnet`
+  - `allowed-tools: Bash(npm install*), Read, Write(src/**), Edit`
+
+### `/ai:scan-vulnerabilities`
+- **目的**: 脆弱性スキャン
+- **引数**: なし
+- **使用エージェント**: @sec-auditor, @dep-mgr
+- **スキル活用**: vulnerability-scanning, dependency-auditing
+- **成果物**: npm audit結果、脆弱性レポート
+- **設定**:
+  - `model: sonnet`
+  - `allowed-tools: Bash(npm audit|pnpm audit), Write(docs/**)`
+
+### `/ai:setup-rate-limiting`
+- **目的**: レート制限の実装
+- **引数**: `[rate-limit]` - レート制限値(例: 100/hour)
+- **使用エージェント**: @sec-auditor, @gateway-dev
+- **スキル活用**: rate-limiting-strategies
+- **成果物**: レート制限ミドルウェア
+- **設定**:
+  - `model: sonnet`
+  - `allowed-tools: Read, Write(src/**), Edit`
+
+### `/ai:manage-secrets`
+- **目的**: 機密情報の安全な管理
+- **引数**: なし
+- **使用エージェント**: @secret-mgr
+- **スキル活用**: tool-permission-management, best-practices-curation, project-architecture-integration
+- **成果物**: .env.example, Secret管理手順書
+- **設定**:
+  - `model: sonnet`
+  - `allowed-tools: Read, Write(.env.example|docs/**)`
+  - `disable-model-invocation: false`
+
+### `/ai:rotate-secrets`
+- **目的**: APIキー・シークレットのローテーション
+- **引数**: `[secret-name]` - シークレット名
+- **使用エージェント**: @secret-mgr
+- **スキル活用**: tool-permission-management, best-practices-curation
+- **成果物**: ローテーションスクリプト
+- **設定**:
+  - `model: sonnet`
+  - `allowed-tools: Bash, Write(scripts/**)`
+  - `disable-model-invocation: true` (安全のため手動のみ)
 """
 @docs/00-requirements/master_system_design.md
 この内容を反映さしてください。これらはエージェン・トスキルにも同様です。エージェント・スキルにもこれらの内容を反映されているか確認しておいてください。エージェント・スキルも改善実用であれば、改善すること
