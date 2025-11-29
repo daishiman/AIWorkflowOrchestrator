@@ -354,14 +354,43 @@
   - `allowed-tools: Bash(npm*), Read, Write(src/hooks/**)`
 
 ### `/ai:create-custom-hook`
-- **目的**: 再利用可能なカスタムフックの作成
-- **引数**: `[hook-name]` - フック名(use〜形式)
-- **使用エージェント**: @state-manager
-- **スキル活用**: custom-hooks-patterns, react-hooks-advanced
-- **成果物**: src/hooks/use*.ts
+- **目的**: 再利用可能なReactカスタムフックを設計・実装（TDD準拠、ハイブリッド構造対応）
+- **引数**: `[hook-name]` - フック名（オプション、use〜形式推奨、未指定時はインタラクティブ）
+- **使用エージェント**:
+  - `.claude/agents/state-manager.md`: React状態管理専門エージェント（Phase 1で起動）
+- **スキル活用**（state-managerエージェントが必要時に参照）:
+  - **Phase 1（分析時）**: `.claude/skills/custom-hooks-patterns/SKILL.md`（必須）, `.claude/skills/react-hooks-advanced/SKILL.md`
+  - **Phase 2（設計時）**: `.claude/skills/custom-hooks-patterns/SKILL.md`（必須）, `.claude/skills/state-lifting/SKILL.md`
+  - **Phase 3（実装時）**: `.claude/skills/custom-hooks-patterns/SKILL.md`（必須）, `.claude/skills/react-hooks-advanced/SKILL.md`
+  - **Phase 4（テスト時）**: `.claude/skills/custom-hooks-patterns/SKILL.md`（必須）
+- **フロー**:
+  1. Phase 0: 引数確認（フック名、目的、配置先）
+  2. Phase 1: state-manager起動 → フック抽出基準評価、既存コード分析
+  3. Phase 2: インターフェース設計、状態配置決定（機能固有 or 共通）
+  4. Phase 3: カスタムフック実装、型安全性確保（TypeScript strict mode）
+  5. Phase 4: テスト戦略設計（TDDサイクル準備、Vitest使用）
+  6. Phase 5: 検証と完了報告
+- **成果物**:
+  - カスタムフックファイル（`use${HookName}.ts`）
+  - 配置パス:
+    - 機能固有: `src/features/[機能名]/hooks/`
+    - 共通: `src/hooks/`
+  - テスト戦略ドキュメント（テストケース定義、モック戦略）
+  - 使用例ドキュメント（API説明、型定義）
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Read, Write(src/hooks/**), Edit`
+  - `model: sonnet`（標準的な実装タスク）
+  - `allowed-tools: [Task, Read, Write(src/hooks/**|src/features/*/hooks/**), Edit, Grep]`
+    - Task: state-managerエージェント起動用
+    - Read: 既存フック・コンポーネント分析用
+    - Write(パス制限): カスタムフック作成用
+    - Edit: 既存フック改善用
+    - Grep: パターン検索用
+- **プロジェクト固有の考慮**:
+  - [ ] TDD準拠（テスト作成 → 実装 → リファクタリング）
+  - [ ] ハイブリッド構造（依存関係ルール: app → features → shared/infrastructure → shared/core）
+  - [ ] 型安全性（TypeScript strict mode、@ts-ignore禁止）
+  - [ ] カバレッジ（ユニットテスト60%以上を目標）
+- **トリガーキーワード**: custom hook, use〜, カスタムフック, ロジック抽出, 再利用
 
 ### `/ai:setup-design-system`
 - **目的**: デザインシステムとTailwind設定
