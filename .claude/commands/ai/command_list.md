@@ -334,14 +334,38 @@
   - `allowed-tools: Read, Write(src/components/**), Edit`
 
 ### `/ai:create-page`
-- **目的**: Next.js App Routerページの作成
-- **引数**: `[route-path]` - ルートパス(例: /dashboard/settings)
-- **使用エージェント**: @router-dev
-- **スキル活用**: nextjs-app-router, server-components-patterns, seo-optimization
-- **成果物**: src/app/**/*.tsx
+- **目的**: Next.js App Routerのページ（page.tsx）を作成（Server Components優先、パフォーマンス最適化、Metadata API統合）
+- **引数**: `[route-path]` - ルートパス（必須、例: /dashboard, /products/[id], /settings/profile）
+- **使用エージェント**: `.claude/agents/router-dev.md` - Next.js App Router専門エージェント（Phase 2で起動）
+- **スキル活用**（フェーズ別、router-devエージェントが必要時に参照）:
+  - **Phase 1（ルーティング設計時）**: `.claude/skills/nextjs-app-router/SKILL.md`, `.claude/skills/server-components-patterns/SKILL.md`
+  - **Phase 2（実装時）**: `.claude/skills/nextjs-app-router/SKILL.md`（必須）, `.claude/skills/server-components-patterns/SKILL.md`（必須）
+  - **Phase 3（最適化時）**: `.claude/skills/seo-optimization/SKILL.md`（必要時）, `.claude/skills/web-performance/SKILL.md`（必要時）
+  - **Phase 4（エラー対応時）**: `.claude/skills/error-boundary/SKILL.md`（必要時）, `.claude/skills/data-fetching-strategies/SKILL.md`（ローディング状態、必要時）
+- **フロー**:
+  1. Phase 1: 引数確認とルーティング分析（既存構造確認、動的セグメント判定、レンダリング戦略選定）
+  2. Phase 2: router-dev起動 → Phase 1（ルーティング構造設計）→ Phase 2（Server/Client Components実装）→ Phase 3（パフォーマンス最適化、必要時）→ Phase 4（Metadata API / SEO設定、必要時）
+  3. Phase 3: 検証と報告（Server Components優先、TypeScript型チェック、レイアウト整合性、パフォーマンス基準）
+- **成果物**:
+  - `src/app/${ルートパス}/page.tsx`（Server Component）
+  - `src/app/${ルートパス}/loading.tsx`（必要時、非同期データフェッチ時）
+  - `src/app/${ルートパス}/error.tsx`（必要時）
+  - 動的メタデータ設定（必要時、SEO最適化）
+  - Client Components（必要最小限、分離ファイル）
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Read, Write(src/app/**), Edit`
+  - `model: sonnet`（標準的なページ作成タスク）
+  - `allowed-tools: [Task, Read, Write(src/app/**), Edit, Grep, Glob]`
+    • Task: router-devエージェント起動用
+    • Read: 既存ページ・レイアウト確認用
+    • Write(src/app/**): ページファイル生成用（App Routerパス制限）
+    • Edit: 既存ファイル編集用（レイアウト、設定等）
+    • Grep, Glob: 既存ルーティング構造確認用
+- **プロジェクト要件準拠**:
+  - ハイブリッドアーキテクチャ: features/ とのデータ連携（Repository パターン）
+  - TypeScript strict モード必須
+  - TDD準拠（ページ作成後にテスト追加を推奨）
+  - パフォーマンス目標（LCP < 2.5s、CLS < 0.1）
+- **トリガーキーワード**: page, route, Next.js, App Router, ページ作成
 
 ### `/ai:setup-state-management`
 - **目的**: 状態管理の実装(SWR/React Query)
