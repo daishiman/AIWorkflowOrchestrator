@@ -900,67 +900,130 @@
 ## 7. テスト
 
 ### `/ai:generate-unit-tests`
-- **目的**: ユニットテストの自動生成
-- **引数**: `[target-file]` - テスト対象ファイルパス
-- **使用エージェント**: @unit-tester
-- **スキル活用**: tdd-principles, vitest-advanced, boundary-value-analysis
-- **成果物**: __tests__/*.test.ts
+- **目的**: ユニットテストの自動生成（TDD原則・境界値分析）
+- **引数**: `[target-file]` - テスト対象ファイルパス（必須）
+- **起動エージェント**:
+  - `.claude/agents/unit-tester.md` - ユニットテスト作成専門
+- **参照スキル**（unit-testerが必要時に参照）:
+  - **Phase 1**: `.claude/skills/tdd-principles/SKILL.md`, `.claude/skills/test-doubles/SKILL.md`
+  - **Phase 2**: `.claude/skills/vitest-advanced/SKILL.md`, `.claude/skills/boundary-value-analysis/SKILL.md`, `.claude/skills/test-naming-conventions/SKILL.md`
+  - **Phase 3**: `.claude/skills/test-doubles/SKILL.md`（カバレッジ最適化）
+- **成果物**:
+  - `src/features/[機能名]/__tests__/[target-name].test.ts`
+  - カバレッジレポート（>60%、重要ロジック>80%）
+  - Red-Green-Refactorサイクル実践済み
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Read, Write(__tests__/**), Edit`
+  - `model: opus`（テスト設計タスク）
+  - `allowed-tools: [Task, Read, Write(__tests__/**/*.test.ts), Edit, Bash(vitest*|pnpm test*), Grep]`
+- **トリガーキーワード**: unit test, test generation, TDD, coverage, テスト作成
 
 ### `/ai:generate-e2e-tests`
-- **目的**: E2Eテストシナリオの作成
-- **引数**: `[user-flow]` - ユーザーフロー名
-- **使用エージェント**: @e2e-tester
-- **スキル活用**: playwright-testing, test-data-management
-- **成果物**: tests/*.spec.ts
+- **目的**: E2Eテストシナリオの自動作成（Playwright・フレーキー防止）
+- **引数**: `[user-flow]` - ユーザーフロー名（必須）
+- **起動エージェント**:
+  - `.claude/agents/e2e-tester.md` - E2Eテスト作成専門
+- **参照スキル**（e2e-testerが必要時に参照）:
+  - **Phase 1**: `.claude/skills/playwright-testing/SKILL.md`
+  - **Phase 2**: `.claude/skills/test-data-management/SKILL.md`, `.claude/skills/api-mocking/SKILL.md`
+  - **Phase 3**: `.claude/skills/playwright-testing/SKILL.md`
+  - **Phase 4**: `.claude/skills/flaky-test-prevention/SKILL.md`, `.claude/skills/visual-regression-testing/SKILL.md`
+  - **Phase 5**: 全スキル統合
+- **成果物**:
+  - `tests/[user-flow-name].spec.ts`（Playwrightテスト）
+  - テストデータFixture（`tests/fixtures/`）
+  - 安定性保証済みE2Eテストコード（フレーキー防止済み）
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Read, Write(tests/**), Edit`
+  - `model: opus`（E2Eテスト設計タスク）
+  - `allowed-tools: [Task, Read, Write(tests/**/*.spec.ts), Edit, Bash(pnpm test*|playwright*), Grep]`
+- **トリガーキーワード**: e2e test, integration test, user flow, playwright, E2Eテスト
 
 ### `/ai:run-all-tests`
-- **目的**: 全テストスイートの実行
-- **引数**: `[--coverage]` - カバレッジ出力フラグ(オプション)
-- **使用エージェント**: @unit-tester, @e2e-tester
-- **フロー**:
-  1. ユニットテスト実行
-  2. E2Eテスト実行
-  3. カバレッジレポート生成
-- **成果物**: テスト結果、カバレッジレポート
+- **目的**: 全テストスイート（ユニット + E2E）の統合実行
+- **引数**: `[--coverage]` - カバレッジレポート生成フラグ（オプション）
+- **起動エージェント**:
+  - `.claude/agents/unit-tester.md` - ユニットテスト実行とカバレッジ測定
+  - `.claude/agents/e2e-tester.md` - E2Eテスト実行と統合動作確認
+- **参照スキル**（各エージェントが必要時に参照）:
+  - **unit-tester**: `.claude/skills/vitest-advanced/SKILL.md`（カバレッジ測定、並列実行最適化）
+  - **e2e-tester**: `.claude/skills/playwright-testing/SKILL.md`（並列実行、CI/CD統合）
+- **実行フロー**:
+  1. ユニットテスト実行（並列実行）
+  2. E2Eテスト実行（Playwright）
+  3. 統合レポート生成（カバレッジ統合）
+- **成果物**:
+  - ユニットテスト結果サマリー
+  - E2Eテスト結果サマリー
+  - カバレッジレポート（--coverage指定時）
+  - 統合テストレポート
 - **設定**:
-  - `model: haiku` (シンプルな実行)
-  - `allowed-tools: Bash(npm test*|pnpm test*), Read`
+  - `model: sonnet`（シンプルなテスト実行タスク）
+  - `allowed-tools: [Task, Bash(pnpm test*|vitest*|playwright*), Read, Write(docs/**)]`
+- **トリガーキーワード**: run tests, all tests, test suite, CI, テスト実行
 
 ### `/ai:tdd-cycle`
-- **目的**: TDDサイクル(Red-Green-Refactor)の実行
-- **引数**: `[feature-name]` - 機能名
-- **使用エージェント**: @unit-tester, @logic-dev
-- **スキル活用**: tdd-red-green-refactor, test-doubles
-- **成果物**: テスト + 実装コード
+- **目的**: TDDサイクル（Red-Green-Refactor）の自動実行
+- **引数**: `[feature-name]` - 機能名（必須）
+- **起動エージェント**:
+  - `.claude/agents/unit-tester.md` - テストファースト実装（Redフェーズ）
+  - `.claude/agents/logic-dev.md` - 最小実装とリファクタリング（Green/Refactorフェーズ）
+- **参照スキル**（各エージェントが必要時に参照）:
+  - **unit-tester Phase (Red)**: `.claude/skills/tdd-principles/SKILL.md`, `.claude/skills/test-doubles/SKILL.md`, `.claude/skills/vitest-advanced/SKILL.md`
+  - **logic-dev Phase (Green/Refactor)**: `.claude/skills/tdd-red-green-refactor/SKILL.md`, `.claude/skills/clean-code-practices/SKILL.md`, `.claude/skills/refactoring-techniques/SKILL.md`
+- **実行フロー**:
+  1. Red: 失敗するテスト作成（unit-tester）
+  2. Green: テストを通す最小実装（logic-dev）
+  3. Refactor: コード改善（logic-dev）
+- **成果物**:
+  - `__tests__/[feature-name].test.ts`（テストコード）
+  - `src/features/[feature-name]/executor.ts`（実装コード）
+  - Red-Green-Refactorサイクル完了済みコード
+  - カバレッジレポート（>80%）
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Read, Write, Edit, Bash(npm test*)`
+  - `model: sonnet`（TDD実践タスク）
+  - `allowed-tools: [Task, Read, Write(__tests__/**/*.test.ts, src/features/**), Edit, Bash(pnpm test*|vitest*), Grep]`
+- **トリガーキーワード**: TDD, test-driven, red green refactor, テスト駆動
 
 ### `/ai:create-test-fixtures`
-- **目的**: テストデータ・フィクスチャの作成
-- **引数**: `[fixture-type]` - フィクスチャタイプ(user/post/product等)
-- **使用エージェント**: @unit-tester, @e2e-tester
-- **スキル活用**: test-data-management
-- **成果物**: tests/fixtures/*.ts
+- **目的**: テストデータ・フィクスチャの自動作成（型安全・並列実行対応）
+- **引数**: `[fixture-type]` - フィクスチャタイプ（user/post/product等、必須）
+- **起動エージェント**:
+  - `.claude/agents/unit-tester.md` - ユニットテスト用Fixture作成
+  - `.claude/agents/e2e-tester.md` - E2Eテスト用Fixture作成（Seeding、Teardown戦略含む）
+- **参照スキル**（各エージェントが必要時に参照）:
+  - **unit-tester**: `.claude/skills/test-doubles/SKILL.md`（Fixture パターン）
+  - **e2e-tester**: `.claude/skills/test-data-management/SKILL.md`（Seeding戦略、データ分離技術、クリーンアップパターン）
+- **成果物**:
+  - `tests/fixtures/[fixture-type].ts`（E2Eテスト用）
+  - `src/features/[機能名]/__tests__/fixtures/[fixture-type].ts`（ユニットテスト用）
+  - 型安全なFixture関数（TypeScript型推論付き）
+  - データ分離戦略適用済み（並列実行対応）
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Write(tests/fixtures/**)`
+  - `model: sonnet`（データ設計タスク）
+  - `allowed-tools: [Task, Read, Write(tests/fixtures/**/*.ts, src/features/**/__tests__/fixtures/**), Grep]`
+- **トリガーキーワード**: fixture, test data, seeding, テストデータ, フィクスチャ
 
 ### `/ai:fix-flaky-tests`
-- **目的**: 不安定なテストの修正
-- **引数**: `[test-file]` - 対象テストファイル
-- **使用エージェント**: @e2e-tester
-- **スキル活用**: flaky-test-prevention
-- **成果物**: 安定化されたテスト
+- **目的**: 不安定なテスト（フレーキーテスト）の検出と修正
+- **引数**: `[test-file]` - 対象テストファイルパス（必須）
+- **起動エージェント**:
+  - `.claude/agents/e2e-tester.md` - フレーキーテスト防止専門
+- **参照スキル**（e2e-testerが必要時に参照）:
+  - **Phase 1**: `.claude/skills/flaky-test-prevention/SKILL.md`（非決定性パターン、安定性チェックリスト）
+  - **Phase 2**: `.claude/skills/playwright-testing/SKILL.md`（待機戦略）, `.claude/skills/flaky-test-prevention/SKILL.md`（リトライ戦略）
+  - **Phase 3**: `.claude/skills/flaky-test-prevention/SKILL.md`（連続実行テスト、並列実行確認）
+- **実行フロー**:
+  1. フレーキー検出（固定時間待機、非決定的要素）
+  2. 修正実装（明示的待機、時刻モック、外部APIモック）
+  3. 安定性検証（連続実行10回、並列実行確認）
+- **成果物**:
+  - 安定化されたテストコード（非決定性排除済み）
+  - 明示的待機戦略適用済み
+  - リトライロジック最適化済み
+  - 連続実行テスト結果（10回連続成功確認）
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Read, Edit, Bash(npm test*)`
+  - `model: sonnet`（テスト安定化タスク）
+  - `allowed-tools: [Task, Read, Edit, Bash(pnpm test*|playwright*), Grep]`
+- **トリガーキーワード**: flaky test, unstable test, 不安定なテスト, フレーキー
 
 ---
 
@@ -973,7 +1036,7 @@
 - **スキル活用**: eslint-configuration
 - **成果物**: Lintレポート
 - **設定**:
-  - `model: haiku`
+  - `model: sonnet`
   - `allowed-tools: Bash(npm run lint*|pnpm lint*), Edit`
 
 ### `/ai:format`
@@ -983,7 +1046,7 @@
 - **スキル活用**: prettier-integration
 - **成果物**: フォーマット済みコード
 - **設定**:
-  - `model: haiku`
+  - `model: sonnet`
   - `allowed-tools: Bash(npx prettier*), Edit`
 
 ### `/ai:analyze-code-quality`
@@ -1490,7 +1553,7 @@
 |--------|--------------|------|
 | **opus** | 12 | 高度な計画、複雑な分析、マルチエージェント調整 |
 | **sonnet** | 36 | 標準的な実装、ドキュメント作成、テスト |
-| **haiku** | 2 | シンプルな実行(lint, format) |
+| **sonnet** | 2 | シンプルな実行(lint, format) |
 
 ### allowed-tools設定パターン
 
@@ -1627,7 +1690,7 @@ disable-model-invocation: true
 ---
 description: [シンプルな操作の説明]
 allowed-tools: Bash([特定コマンド]), Read
-model: haiku
+model: sonnet
 ---
 ```
 
@@ -1669,7 +1732,7 @@ model: opus
 - **使用エージェント**: なし
 - **成果物**: マージ済みブランチ
 - **設定**:
-  - `model: haiku`
+  - `model: sonnet`
   - `allowed-tools: Bash(gh pr*|git*)`
 
 ### `/ai:tag-release`
@@ -1692,7 +1755,7 @@ model: opus
 - **スキル活用**: dependency-auditing
 - **成果物**: 更新されたpackage.json
 - **設定**:
-  - `model: haiku`
+  - `model: sonnet`
   - `allowed-tools: Bash(npm install*|pnpm add*), Read, Edit`
 
 ### `/ai:update-dependencies`
@@ -1746,7 +1809,7 @@ model: opus
 - **スキル活用**: prettier-integration
 - **成果物**: .prettierrc
 - **設定**:
-  - `model: haiku`
+  - `model: sonnet`
   - `allowed-tools: Write(.prettierrc*)`
 
 ### `/ai:setup-typescript`
@@ -1910,7 +1973,7 @@ model: opus
 |--------|-----------|------|
 | opus | 16 | 20% |
 | sonnet | 61 | 77% |
-| haiku | 2 | 3% |
+| sonnet | 2 | 3% |
 
 ### 全エージェント活用確認
 
