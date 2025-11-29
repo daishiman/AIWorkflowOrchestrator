@@ -590,14 +590,21 @@
 ## 5. バックエンド開発
 
 ### `/ai:create-entity`
-- **目的**: ドメインエンティティの作成
-- **引数**: `[entity-name]` - エンティティ名
-- **使用エージェント**: @domain-modeler
-- **スキル活用**: domain-driven-design, value-object-patterns
-- **成果物**: src/core/entities/*.ts
+- **目的**: ドメインエンティティの作成（DDD準拠）
+- **引数**: `[entity-name]` - エンティティ名（オプション、未指定時はインタラクティブ）
+- **使用エージェント**: `.claude/agents/domain-modeler.md`
+- **スキル活用**（domain-modelerエージェントが必要時に自動参照）:
+  - **Phase 1-2（必須）**: `.claude/skills/domain-driven-design/SKILL.md`, `.claude/skills/ubiquitous-language/SKILL.md`, `.claude/skills/value-object-patterns/SKILL.md`
+  - **Phase 3（推奨）**: `.claude/skills/domain-services/SKILL.md`, `.claude/skills/bounded-context/SKILL.md`
+- **フロー**:
+  1. Phase 1: domain-modelerエージェント起動 → 要件収集（エンティティ名、ドメイン責務、ユビキタス言語）
+  2. Phase 2: スキル参照によるモデル設計（Entity/ValueObject識別、不変条件定義、ドメインサービス特定）
+  3. Phase 3: 成果物生成と検証（Clean Architecture準拠、用語一貫性、既存エンティティとの整合性）
+- **成果物**: `src/shared/core/entities/[EntityName].ts`（TypeScript型定義、バリデーションロジック、ドメインルール）
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Read, Write(src/core/**), Edit`
+  - `model: sonnet`（標準的なドメインモデル設計タスク）
+  - `allowed-tools: [Task, Read, Write(src/shared/core/**), Edit, Grep]`（最小権限、パス制限）
+- **トリガーキーワード**: entity, domain, ドメインエンティティ, DDD
 
 ### `/ai:create-executor`
 - **目的**: ワークフローExecutorの実装
