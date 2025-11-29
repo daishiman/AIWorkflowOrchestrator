@@ -630,14 +630,30 @@
   - `allowed-tools: Read, Write(src/infrastructure/**), Edit`
 
 ### `/ai:create-schema`
-- **目的**: Zodスキーマ定義の作成
-- **引数**: `[schema-name]` - スキーマ名
-- **使用エージェント**: @schema-def
-- **スキル活用**: zod-validation, type-safety-patterns, input-sanitization
-- **成果物**: schema.ts
+- **目的**: Zodスキーマ定義の作成（Zod 3.x + TypeScript 5.x準拠）
+- **引数**: `[schema-name]` - スキーマ名（例: user, auth/login-request）（オプション、未指定時はインタラクティブ）
+- **使用エージェント**:
+  - `.claude/agents/schema-def.md`: スキーマ定義専門エージェント（Zod設計、型推論、バリデーション）
+- **フロー**:
+  1. Phase 1: 対象スキーマ確認、既存スキーマ・ドメインモデル分析
+  2. Phase 2: schema-def起動 → Zodスキーマ設計（基本スキーマ、カスタムバリデーション、型推論）
+  3. Phase 3: セキュリティ・サニタイゼーション（XSS/SQLi/コマンドインジェクション防止）
+  4. Phase 4: テスト作成（スキーマテスト、エッジケース、エラーメッセージ検証）
+  5. Phase 5: 統合・ドキュメント化（型エクスポート、API/フォーム連携）
+- **成果物**:
+  - `features/[feature]/schema.ts`（Zodスキーマ定義）
+  - `features/[feature]/schema.test.ts`（スキーマテスト）
+  - 型エクスポート（`z.infer<typeof schema>`）
+- **参照スキル**:
+  - **Phase 2**: `.claude/skills/zod-validation/SKILL.md`, `.claude/skills/type-safety-patterns/SKILL.md`
+  - **Phase 3**: `.claude/skills/input-sanitization/SKILL.md`
+  - **Phase 5（必要時）**: `.claude/skills/api-contract-design/SKILL.md`, `.claude/skills/form-validation/SKILL.md`
+- **設計書参照**:
+  - `docs/00-requirements/master_system_design.md`: 第2.1節（入力バリデーション原則）
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Read, Write(src/**/*.schema.ts), Edit`
+  - `model: sonnet`（構造化スキーマ設計タスク）
+  - `allowed-tools: [Task, Read, Write(src/**/*.schema.ts|features/**/*.schema.ts), Edit, Grep, Glob]`
+- **トリガーキーワード**: schema, zod, validation, バリデーション, スキーマ, 型定義, input validation
 
 ### `/ai:optimize-prompts`
 - **目的**: AIプロンプトの最適化
