@@ -665,14 +665,29 @@
 - **トリガーキーワード**: business logic, executor, implement, 実装, ビジネスロジック, TDD
 
 ### `/ai:create-api-gateway`
-- **目的**: 外部API統合ゲートウェイの実装
-- **引数**: `[api-name]` - API名(discord/slack/openai等)
-- **使用エージェント**: @gateway-dev
-- **スキル活用**: api-client-patterns, retry-strategies, http-best-practices
-- **成果物**: src/infrastructure/*/client.ts
+- **目的**: 外部API統合ゲートウェイの実装（Discord、Slack、OpenAI等）
+- **引数**: `[api-name]` - API名（例: discord, slack, openai, stripe）
+- **使用エージェント**: `.claude/agents/gateway-dev.md`
+- **スキル活用**（gateway-devエージェントが参照）:
+  - Phase 2: `.claude/skills/api-client-patterns/SKILL.md`（Adapter、Facade、Anti-Corruption Layer）
+  - Phase 3: `.claude/skills/http-best-practices/SKILL.md`（ステータスコード、べき等性）、`.claude/skills/authentication-flows/SKILL.md`（OAuth 2.0、JWT、API Key）
+  - Phase 4: `.claude/skills/retry-strategies/SKILL.md`（Exponential Backoff、Circuit Breaker）、`.claude/skills/rate-limiting/SKILL.md`（429処理、バックオフ戦略）
+- **成果物**:
+  - `src/shared/infrastructure/[api-name]/client.ts` - APIクライアント実装
+  - `src/shared/infrastructure/[api-name]/transformer.ts` - データ変換層（腐敗防止層）
+  - `src/shared/infrastructure/[api-name]/__tests__/` - テスト（カバレッジ85%以上）
+  - `.env.example` - 環境変数設定例追加
+- **プロジェクト制約** (master_system_design.md準拠):
+  - ハイブリッドアーキテクチャ: shared/infrastructure配下に配置
+  - Clean Architecture: 依存関係は Infrastructure → Core
+  - 腐敗防止層（Anti-Corruption Layer）必須
+  - リトライ戦略、サーキットブレーカー、タイムアウト必須実装
+  - テストカバレッジ85%以上
+  - 認証情報は環境変数で管理（.env禁止、ハードコード禁止）
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Read, Write(src/infrastructure/**), Edit`
+  - `model: opus` (複雑なアーキテクチャ設計、セキュリティ設計が必要)
+  - `allowed-tools: [Read, Write, Grep, Bash]`（エージェント起動、実装、テスト実行）
+- **トリガーキーワード**: api, gateway, integration, 外部連携, Discord, Slack, OpenAI
 
 ### `/ai:create-schema`
 - **目的**: Zodスキーマ定義の作成
