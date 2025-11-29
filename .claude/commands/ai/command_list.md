@@ -513,14 +513,37 @@
 - **トリガーキーワード**: design-system, tailwind, デザイントークン, スタイル設定, UI基盤
 
 ### `/ai:optimize-frontend-performance`
-- **目的**: フロントエンドパフォーマンス最適化
-- **引数**: `[target-page]` - 対象ページパス(オプション)
-- **使用エージェント**: @router-dev
-- **スキル活用**: web-performance
-- **成果物**: 最適化されたコンポーネント、動的インポート
+- **目的**: Next.jsフロントエンドのパフォーマンス最適化（Core Web Vitals改善）
+- **引数**: `[target-page]` - 対象ページパス（オプション、未指定時は全体最適化）
+- **使用エージェント**:
+  - `.claude/agents/router-dev.md`: Next.js App Router専門エージェント（Phase 2で起動）
+- **スキル活用**（router-devエージェントが必要時に参照）:
+  - **Phase 1（分析時）**: `.claude/skills/web-performance/SKILL.md`（必須）
+  - **Phase 2（最適化時）**: `.claude/skills/nextjs-app-router/SKILL.md`, `.claude/skills/server-components-patterns/SKILL.md`
+  - **Phase 3（検証時）**: `.claude/skills/web-performance/SKILL.md`（必須）
+- **フロー**:
+  1. Phase 1: 現状分析（バンドルサイズ、画像・フォント使用状況）
+  2. Phase 2: router-dev起動 → web-performanceスキル参照 → 最適化実装
+     - 画像を next/image で最適化（priority設定含む）
+     - フォントを next/font で最適化（display: swap）
+     - 重いコンポーネントを動的インポート
+     - Code Splitting適用（条件付きコンポーネント）
+     - Streaming SSRとSuspense境界追加
+  3. Phase 3: 検証（ビルド再実行、バンドルサイズ比較、Core Web Vitals目標値チェック）
+- **成果物**:
+  - 最適化されたコンポーネント（next/image、next/font適用）
+  - 動的インポート実装（重いコンポーネント、条件付きUI）
+  - loading.tsx追加（非同期ページ）
+  - ビルドサイズ削減レポート
+  - Core Web Vitals改善レポート（LCP ≤2.5s、FID ≤100ms、CLS ≤0.1）
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Read, Edit, Bash(npm run build)`
+  - `model: sonnet`（標準的なパフォーマンス最適化タスク）
+  - `allowed-tools: [Task, Read, Edit, Bash(npm run build)]`
+    • Task: router-devエージェント起動用
+    • Read: 既存コンポーネント・ページ確認用
+    • Edit: 最適化コード適用用
+    • Bash(npm run build): ビルド検証・バンドル分析用
+- **トリガーキーワード**: performance, optimize, frontend, パフォーマンス, 最適化, LCP, Core Web Vitals
 
 ---
 
