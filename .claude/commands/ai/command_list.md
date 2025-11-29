@@ -774,14 +774,28 @@
 - **トリガーキーワード**: repository, data access, データアクセス, CRUD, ORM
 
 ### `/ai:seed-database`
-- **目的**: 初期データ・テストデータの投入
-- **引数**: `[environment]` - 環境(development/test/production)
-- **使用エージェント**: @dba-mgr
-- **スキル活用**: database-seeding
-- **成果物**: seed.ts
+- **目的**: データベース初期データ投入（開発・テスト・本番環境対応）
+- **引数**: `[environment]` - 環境(development/test/production、未指定時は development)
+- **使用エージェント**:
+  - `.claude/agents/dba-mgr.md`: データベース管理専門エージェント（Phase 3で起動）
+- **フロー**:
+  1. Phase 1: コンテキスト理解（環境確認、スキーマ確認、既存Seed確認）
+  2. Phase 2: dba-mgr起動（環境別シーディング戦略、べき等性、ファクトリパターン）
+  3. Phase 3: dba-mgr実行（Phase 1: スキーマ分析 → Phase 3: Seed実装 → Phase 4: 信頼性保証）
+  4. Phase 4: 完了報告とNext Steps提示
+- **スキル活用**:
+  - **必須**: `.claude/skills/database-seeding/SKILL.md`（環境別Seeding、べき等性、ファクトリパターン）
+  - **推奨**: database-migrations（スキーマ確認）、test-data-management（テストデータ生成）
+- **設計書参照**: `docs/00-requirements/master_system_design.md` 第5.2.3節（workflows テーブル）、第2.4節（テスト戦略）
+- **成果物**:
+  - `src/shared/infrastructure/database/seed.ts`: メインSeedファイル
+  - `src/shared/infrastructure/database/seeds/`: 環境別Seedディレクトリ（必要時）
+  - package.json scripts（seed:dev, seed:test, seed:prod）
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Bash(pnpm*), Read, Write`
+  - `model: sonnet`（構造化データ投入タスク）
+  - `allowed-tools: Task, Read, Write(src/shared/infrastructure/database/**), Bash(pnpm*|drizzle-kit*|node*)`
+  - **トークン見積もり**: 約8-12K（dba-mgr起動 + Seed実装 + テスト実行）
+- **トリガーキーワード**: seed, seeding, 初期データ, テストデータ, マスターデータ
 
 ### `/ai:optimize-queries`
 - **目的**: データベースクエリの最適化
