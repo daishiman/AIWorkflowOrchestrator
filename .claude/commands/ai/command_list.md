@@ -497,14 +497,20 @@
 - **トリガーキーワード**: custom hook, use〜, カスタムフック, ロジック抽出, 再利用
 
 ### `/ai:setup-design-system`
-- **目的**: デザインシステムとTailwind設定
-- **引数**: なし
-- **使用エージェント**: @ui-designer
-- **スキル活用**: design-systems, tailwind-css-patterns
-- **成果物**: tailwind.config.ts, デザイントークン
+- **目的**: デザインシステム基盤とTailwind CSS設定の完全セットアップ（デザイントークン体系、Tailwind設定、コンポーネント規約の統合構築）
+- **引数**: なし（インタラクティブ設定推奨）
+- **使用エージェント**: `.claude/agents/ui-designer.md`（UI設計・デザインシステム専門エージェント）
+- **スキル活用**（ui-designerエージェントが必要時に参照）:
+  - **デザインシステム基盤（必須）**: `.claude/skills/design-system-architecture/SKILL.md`（デザイントークン管理、3層モデル）、`.claude/skills/tailwind-css-patterns/SKILL.md`（Tailwind設定、CVA、ダークモード）
+  - **コンポーネント設計（推奨）**: `.claude/skills/component-composition-patterns/SKILL.md`、`.claude/skills/headless-ui-principles/SKILL.md`
+  - **品質（必須）**: `.claude/skills/accessibility-wcag/SKILL.md`（WCAG 2.1 AA準拠）、`.claude/skills/apple-hig-guidelines/SKILL.md`（Apple向け製品の場合）
+- **成果物**: tailwind.config.ts（デザイントークン統合、ダークモード設定）、src/styles/globals.css（CSS変数、トークン定義）、src/styles/tokens/（トークン定義ファイル群）、package.json（Tailwind CSS、CVA、関連パッケージ）
+- **プロジェクト準拠**: master_system_design.md 第4章（ハイブリッド構造: src/app/, src/features/）、第2章（TypeScript strict、ESLint統合）、第5章（Clean Architecture依存関係）
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Bash(npm*), Read, Write, Edit`
+  - `model: sonnet`（設定ファイル生成・パッケージ管理タスク）
+  - `allowed-tools: [Bash(pnpm*), Read, Write, Edit]`（pnpm専用、設定ファイル読み書き）
+  - **トークン見積もり**: 約8-12K（設定生成、トークン定義、ドキュメント作成）
+- **トリガーキーワード**: design-system, tailwind, デザイントークン, スタイル設定, UI基盤
 
 ### `/ai:optimize-frontend-performance`
 - **目的**: フロントエンドパフォーマンス最適化
