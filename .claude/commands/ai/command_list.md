@@ -607,14 +607,31 @@
 - **トリガーキーワード**: entity, domain, ドメインエンティティ, DDD
 
 ### `/ai:create-executor`
-- **目的**: ワークフローExecutorの実装
-- **引数**: `[workflow-name]` - ワークフロー名
-- **使用エージェント**: @workflow-engine, @logic-dev
-- **スキル活用**: design-patterns-behavioral, plugin-architecture
-- **成果物**: src/features/*/executor.ts
+- **目的**: 新しいワークフロー機能のExecutor実装作成（src/features/[workflow-name]/executor.ts）
+- **引数**: `[workflow-name]` - ワークフロー名（オプション、未指定時はインタラクティブ）
+- **使用エージェント**:
+  - `.claude/agents/logic-dev.md`: ビジネスロジック実装専門エージェント（Phase 2で起動）
+- **フロー**:
+  1. Phase 1: ワークフロー名・機能目的・入出力スキーマの確認
+  2. Phase 2: logic-dev起動 → executor.ts実装（TDD Red-Green-Refactorサイクル）
+  3. Phase 3: 成果物確認（executor.ts、テストファイル、テストパス確認）
+- **成果物**:
+  - `src/features/{workflow-name}/executor.ts` - IWorkflowExecutor実装
+  - `src/features/{workflow-name}/__tests__/executor.test.ts` - Vitestテスト
+- **参照スキル**（logic-devが必要時に参照）:
+  - `.claude/skills/tdd-red-green-refactor/SKILL.md`: TDD Red-Green-Refactorサイクル（Phase 1）
+  - `.claude/skills/transaction-script/SKILL.md`: トランザクションスクリプトパターン（Phase 2）
+  - `.claude/skills/clean-code-practices/SKILL.md`: Clean Codeプラクティス（Phase 2）
+  - `.claude/skills/refactoring-techniques/SKILL.md`: リファクタリング技法（Phase 3）
+  - `.claude/skills/test-doubles/SKILL.md`: テストダブル選択（Phase 1）
+- **設計書参照**:
+  - `docs/00-requirements/master_system_design.md`: 第5.2節（Executor責務）、第6.1節（IWorkflowExecutorインターフェース）、第11節（機能追加手順）
+  - `docs/20-specifications/features/{workflow-name}.md`: 機能仕様（存在する場合）
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Read, Write(src/features/**), Edit`
+  - `model: opus`（標準的な実装タスク）
+  - `allowed-tools: [Task, Read, Write(src/features/**), Grep]`（logic-dev起動、既存パターン参照、executor.ts生成、パターン検索）
+  - **トークン見積もり**: 約5-8K（logic-dev起動 + 実装 + テスト）
+- **トリガーキーワード**: executor, workflow, ビジネスロジック, 機能実装, TDD
 
 ### `/ai:implement-business-logic`
 - **目的**: ビジネスロジックの実装
