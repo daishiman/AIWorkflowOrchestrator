@@ -305,14 +305,26 @@
 - **トリガーキーワード**: architecture review, アーキテクチャレビュー, 依存関係, SOLID, clean architecture, コードスメル
 
 ### `/ai:design-domain-model`
-- **目的**: ドメインモデルの設計
-- **引数**: `[domain-name]` - ドメイン名
-- **使用エージェント**: @domain-modeler
-- **スキル活用**: domain-driven-design, ubiquitous-language, bounded-context
-- **成果物**: src/core/entities/, ドメインモデル図
+- **目的**: ドメイン駆動設計（DDD）に基づくドメインモデルの設計
+- **引数**: `[domain-name]` - ドメイン名（オプション、未指定時はインタラクティブ）
+- **使用エージェント**: `.claude/agents/domain-modeler.md`
+- **スキル活用**（エージェントが必要時に自動参照）:
+  - **必須（Phase 1-2）**: `.claude/skills/domain-driven-design/SKILL.md`, `.claude/skills/ubiquitous-language/SKILL.md`, `.claude/skills/value-object-patterns/SKILL.md`
+  - **推奨（Phase 3-4）**: `.claude/skills/domain-services/SKILL.md`, `.claude/skills/bounded-context/SKILL.md`
+- **フロー**:
+  1. Phase 1: プロジェクト仕様確認（master_system_design.md 第6章、第14章）、ドメイン名確認
+  2. Phase 2: domain-modeler 起動 → ビジネスルール抽出、Entity/ValueObject/Aggregate識別、ユビキタス言語確立
+  3. Phase 3: 成果物検証と報告
+- **成果物**:
+  - `src/shared/core/entities/[domain-name].ts`: Entity/Aggregate定義
+  - `src/shared/core/entities/[domain-name]/*.ts`: ValueObject群
+  - `docs/10-architecture/domain-model.md`: ドメインモデル設計書（Mermaid図含む）
+  - `docs/10-architecture/ubiquitous-language.md`: ドメイン用語集更新
+  - `docs/99-adr/00X-domain-[domain-name].md`: 設計判断のADR
 - **設定**:
-  - `model: opus`
-  - `allowed-tools: Read, Write(src/core/**|docs/**)`
+  - `model: opus`（複雑なドメインモデル設計とビジネスルール抽出が必要）
+  - `allowed-tools: [Task, Read, Write(src/shared/core/**|docs/**), Edit, Grep]`
+- **トリガーキーワード**: domain, DDD, entity, value object, aggregate, ドメインモデル, エンティティ, 値オブジェクト, ユビキタス言語
 
 ### `/ai:design-api`
 - **目的**: REST API設計とOpenAPI 3.x仕様書の作成（エンドポイント定義、認証設計、スキーマ生成）
