@@ -634,14 +634,35 @@
 - **トリガーキーワード**: executor, workflow, ビジネスロジック, 機能実装, TDD
 
 ### `/ai:implement-business-logic`
-- **目的**: ビジネスロジックの実装
-- **引数**: `[logic-name]` - ロジック名
-- **使用エージェント**: @logic-dev
-- **スキル活用**: refactoring-techniques, clean-code-practices, tdd-red-green-refactor
-- **成果物**: ビジネスロジック実装
+- **目的**: ビジネスロジック実装（TDD準拠のExecutorクラス実装）
+- **引数**: `[logic-name]` - ロジック名（例: youtube-summarize, meeting-transcribe）
+- **使用エージェント**: `.claude/agents/logic-dev.md`（ビジネスロジック実装専門）
+- **スキル活用**（logic-devエージェントがフェーズに応じて参照）:
+  - **Phase 2（TDD実装時）**:
+    - `.claude/skills/tdd-red-green-refactor/SKILL.md`: Red-Green-Refactorサイクル
+    - `.claude/skills/transaction-script/SKILL.md`: Executorパターン実装
+    - `.claude/skills/test-doubles/SKILL.md`: テストダブル選択
+  - **Phase 3（リファクタリング時）**:
+    - `.claude/skills/refactoring-techniques/SKILL.md`: コードスメル検出・改善
+    - `.claude/skills/clean-code-practices/SKILL.md`: 命名・関数設計
+- **参照仕様書**:
+  - `docs/00-requirements/master_system_design.md`: 第5章（ハイブリッドアーキテクチャ）、第6章（IWorkflowExecutor）
+- **フロー**:
+  1. Phase 1: 引数確認、仕様書・スキーマ参照
+  2. Phase 2: logic-devエージェント起動 → TDD実装（Red-Green-Refactor）
+  3. Phase 3: テスト実行、実装サマリー報告
+- **成果物**:
+  - `src/features/[logic-name]/executor.ts`: IWorkflowExecutor準拠の実装
+  - `src/features/[logic-name]/__tests__/executor.test.ts`: ユニットテスト（Vitest）
+  - `src/features/[logic-name]/schema.ts`: 入出力スキーマ（Zod）※未存在の場合
+- **品質基準**:
+  - テストカバレッジ: 80%以上
+  - 関数の長さ: 30行以下
+  - 循環的複雑度: 10以下
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Read, Write(src/**), Edit, Task`
+  - `model: opus`
+  - `allowed-tools: [Task, Read, Write(src/features/**), Edit, Grep, Glob, Bash(pnpm test*)]`
+- **トリガーキーワード**: business logic, executor, implement, 実装, ビジネスロジック, TDD
 
 ### `/ai:create-api-gateway`
 - **目的**: 外部API統合ゲートウェイの実装
