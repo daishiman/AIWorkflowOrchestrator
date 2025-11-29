@@ -1184,66 +1184,195 @@
 ## 9. セキュリティ
 
 ### `/ai:security-audit`
-- **目的**: 包括的セキュリティ監査
-- **引数**: `[scope]` - スコープ(all/auth/api/database)
-- **使用エージェント**: @sec-auditor, @auth-specialist, @secret-mgr
-- **スキル活用**: owasp-top-10, vulnerability-scanning
-- **成果物**: セキュリティレポート
+- **目的**: 包括的セキュリティ監査（OWASP Top 10準拠、CVSSスコアリング）
+- **引数**: `[scope]` - スコープ(all/auth/api/database、デフォルト: all)
+- **起動エージェント**:
+  - `.claude/agents/sec-auditor.md` - セキュリティスキャンと脆弱性評価（メイン）
+  - `.claude/agents/auth-specialist.md` - 認証・認可機構の詳細レビュー
+  - `.claude/agents/secret-mgr.md` - 機密情報漏洩チェック
+- **参照スキル**（各エージェントが必要時に参照）:
+  - **Phase 1**: `.claude/skills/code-static-analysis-security/SKILL.md`（SQLインジェクション・XSS検出）、`.claude/skills/input-sanitization/SKILL.md`（入力検証評価）
+  - **Phase 2**: `.claude/skills/dependency-security-scanning/SKILL.md`（npm audit、CVE評価）、`.claude/skills/authentication-authorization-security/SKILL.md`（認証・認可レビュー）、`.claude/skills/cryptographic-practices/SKILL.md`（暗号化実装評価）
+  - **Phase 3**: `.claude/skills/security-reporting/SKILL.md`（リスクスコアリング、CVSSスコア）、`.claude/skills/rate-limiting/SKILL.md`（DoS対策評価）
+- **実行フロー**:
+  1. スコープ確認（all/auth/api/database）と監査対象ファイル特定
+  2. 依存関係脆弱性スキャン（npm audit、CVE番号抽出）
+  3. コード静的解析（SQLi、XSS、コマンドインジェクション検出）
+  4. セキュリティ設定レビュー（CORS、CSP、HSTS、セキュリティヘッダー）
+  5. 認証・認可機構の詳細評価（OAuth、JWT、セッション管理）
+  6. 暗号化実装の評価（AES-256、bcrypt、鍵管理）
+  7. リスクスコア算出（CVSS v3.1、影響度・攻撃可能性評価）
+  8. 包括的セキュリティレポート生成（Critical/High/Medium/Low分類）
+  9. 修正推奨事項とアクションプラン提示
+- **成果物**:
+  - `docs/security/audit-report-[YYYYMMDD].md`（包括的セキュリティ診断レポート）
+  - OWASP Top 10 チェックリスト（各項目の評価結果）
+  - CVE脆弱性リスト（依存関係の脆弱性詳細）
+  - 修正推奨事項（Before/After、実装ステップ付き）
+  - アクションプラン（優先度、担当、期限）
+  - Rate Limiting設定推奨（必要な場合）
 - **設定**:
-  - `model: opus`
-  - `allowed-tools: Read, Grep, Bash(npm audit), Write(docs/**)`
+  - `model: opus`（高度なセキュリティ分析とリスク評価）
+  - `allowed-tools: [Task, Read, Grep, Bash(npm audit*|pnpm audit*), Write(docs/**)]`
+- **トリガーキーワード**: security audit, vulnerability, OWASP, セキュリティ監査, 脆弱性診断, penetration test
 
 ### `/ai:setup-auth`
-- **目的**: 認証・認可システムの実装
-- **引数**: `[provider]` - 認証プロバイダー(github/google/credentials)
-- **使用エージェント**: @auth-specialist
-- **スキル活用**: oauth2-flows, rbac-implementation, nextauth-patterns
-- **成果物**: src/auth.ts, Middleware
+- **目的**: 認証・認可システムの完全実装（NextAuth.js/Passport.js、OAuth 2.0、RBAC）
+- **引数**: `[provider]` - 認証プロバイダー(github/google/credentials、デフォルト: credentials)
+- **起動エージェント**:
+  - `.claude/agents/auth-specialist.md` - OAuth 2.0とNextAuth.js専門
+- **参照スキル**（auth-specialistが必要時に参照）:
+  - **Phase 1**: `.claude/skills/oauth2-flows/SKILL.md`（Authorization Code Flow、PKCE）、`.claude/skills/nextauth-patterns/SKILL.md`（NextAuth.js設定パターン）
+  - **Phase 2**: `.claude/skills/session-management/SKILL.md`（JWT/Database Session戦略）、`.claude/skills/rbac-implementation/SKILL.md`（ロール設計、権限マトリクス）
+  - **Phase 3**: `.claude/skills/security-headers/SKILL.md`（CSP、HSTS、CSRF対策）
+- **実行フロー**:
+  1. 認証プロバイダーの選択確認（GitHub OAuth、Google OAuth、Credentials）
+  2. Next.js環境確認（App Router/Pages Router、バージョン確認）
+  3. NextAuth.js/Passport.jsの自動判定とインストール
+  4. 認証設定ファイル作成（`src/auth.ts`、プロバイダー設定）
+  5. OAuth 2.0フロー実装（Authorization Code Flow + PKCE）
+  6. セッション戦略実装（JWT/Database選択、トークンライフサイクル）
+  7. RBAC実装（ロール定義、権限チェックミドルウェア）
+  8. セキュリティヘッダー設定（CSP、HSTS、X-Frame-Options、CSRF対策）
+  9. 認証ミドルウェア実装（`src/middleware.ts`、保護ルート設定）
+  10. テストとドキュメント生成
+- **成果物**:
+  - `src/auth.ts`（NextAuth.js/Passport.js設定）
+  - `src/middleware.ts`（認証ミドルウェア、保護ルート）
+  - `src/lib/rbac.ts`（RBAC実装、権限チェック関数）
+  - `.env.example`更新（OAuth Client ID/Secret）
+  - `docs/security/auth-setup-guide.md`（認証システム利用ガイド）
+  - テストケース（`__tests__/auth.test.ts`）
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Bash(npm install*), Read, Write(src/**), Edit`
+  - `model: sonnet`（バランス型、認証実装タスク）
+  - `allowed-tools: [Task, Bash(pnpm add*|npm install*), Read, Write(src/**, .env.example, docs/**), Edit]`
+- **トリガーキーワード**: auth, authentication, authorization, OAuth, NextAuth, login, session, 認証, 認可
 
 ### `/ai:scan-vulnerabilities`
-- **目的**: 脆弱性スキャン
+- **目的**: 依存関係の脆弱性スキャン（npm audit、CVE評価、修正優先順位付け）
 - **引数**: なし
-- **使用エージェント**: @sec-auditor, @dep-mgr
-- **スキル活用**: vulnerability-scanning, dependency-auditing
-- **成果物**: npm audit結果、脆弱性レポート
+- **起動エージェント**:
+  - `.claude/agents/sec-auditor.md` - 脆弱性評価とリスク分析
+  - `.claude/agents/dep-mgr.md` - 依存関係アップデート推奨
+- **参照スキル**（各エージェントが必要時に参照）:
+  - **Phase 1**: `.claude/skills/dependency-security-scanning/SKILL.md`（npm audit、Snyk、CVE評価）
+  - **Phase 2**: `.claude/skills/security-reporting/SKILL.md`（リスクスコアリング、優先順位付け）
+  - **Phase 3**: `.claude/skills/semantic-versioning/SKILL.md`（依存関係アップデート戦略）
+- **実行フロー**:
+  1. パッケージマネージャー検出（pnpm/npm/yarn）
+  2. `pnpm audit`/`npm audit --json`実行
+  3. 脆弱性の抽出とCVE番号特定
+  4. 重大度分類（Critical/High/Medium/Low）
+  5. 修正可能/不可能の判定
+  6. リスクスコア算出（影響度 × 攻撃可能性）
+  7. 修正優先順位決定（即座対応、短期、中期）
+  8. アップデートコマンド生成（`pnpm update`、バージョン指定）
+  9. 包括的脆弱性レポート生成
+- **成果物**:
+  - `docs/security/vulnerability-scan-[YYYYMMDD].md`（脆弱性スキャンレポート）
+  - CVE脆弱性リスト（CVE番号、重大度、影響範囲）
+  - 修正可能パッケージリスト（アップデートコマンド付き）
+  - 修正不可能パッケージの代替案
+  - アクションプラン（優先順位、期限）
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Bash(npm audit|pnpm audit), Write(docs/**)`
+  - `model: sonnet`（スキャンと分析タスク）
+  - `allowed-tools: [Task, Bash(pnpm audit*|npm audit*), Read, Write(docs/**)]`
+- **トリガーキーワード**: vulnerability scan, npm audit, CVE, 脆弱性スキャン, dependency audit
 
 ### `/ai:setup-rate-limiting`
-- **目的**: レート制限の実装
-- **引数**: `[rate-limit]` - レート制限値(例: 100/hour)
-- **使用エージェント**: @sec-auditor, @gateway-dev
-- **スキル活用**: rate-limiting-strategies
-- **成果物**: レート制限ミドルウェア
+- **目的**: レート制限の実装（Token Bucket/Sliding Window、DoS/ブルートフォース対策）
+- **引数**: `[rate-limit]` - レート制限値（例: 100/hour, 10/minute、デフォルト: 100/hour）
+- **起動エージェント**:
+  - `.claude/agents/sec-auditor.md` - Rate Limiting戦略設計
+  - `.claude/agents/gateway-dev.md` - ミドルウェア実装
+- **参照スキル**（各エージェントが必要時に参照）:
+  - **Phase 1**: `.claude/skills/rate-limiting/SKILL.md`（Token Bucket、Sliding Window、固定窓アルゴリズム）
+  - **Phase 2**: `.claude/skills/api-gateway-patterns/SKILL.md`（ミドルウェア設計）
+  - **Phase 3**: `.claude/skills/error-handling/SKILL.md`（429エラーレスポンス設計）
+- **実行フロー**:
+  1. レート制限値のパース（100/hour → 100リクエスト/1時間）
+  2. アルゴリズム選択（Token Bucket/Sliding Window/固定窓）
+  3. ストレージ選択（Redis/In-Memory、本番環境はRedis推奨）
+  4. ミドルウェア実装（`src/middleware/rateLimit.ts`）
+  5. エンドポイント別設定（API: 厳格、静的: 緩和）
+  6. 429エラーレスポンス実装（Retry-After ヘッダー付き）
+  7. テストケース作成（バースト攻撃シミュレーション）
+  8. モニタリング設定（レート制限ヒット数、ブロック数）
+  9. ドキュメント生成
+- **成果物**:
+  - `src/middleware/rateLimit.ts`（Rate Limitingミドルウェア）
+  - `src/lib/rateLimiter.ts`（Token Bucket/Sliding Window実装）
+  - 429エラーレスポンス実装（Retry-Afterヘッダー）
+  - `__tests__/rateLimit.test.ts`（テストケース、バースト攻撃シミュレーション）
+  - `docs/security/rate-limiting-guide.md`（設定ガイド、エンドポイント別設定）
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Read, Write(src/**), Edit`
+  - `model: sonnet`（ミドルウェア実装タスク）
+  - `allowed-tools: [Task, Read, Write(src/**, __tests__/**), Edit]`
+- **トリガーキーワード**: rate limit, throttle, DoS, brute force, レート制限, 流量制限, API制限
 
 ### `/ai:manage-secrets`
-- **目的**: 機密情報の安全な管理
+- **目的**: 機密情報の安全な管理（Git混入防止、.env.example生成、型安全なアクセス）
 - **引数**: なし
-- **使用エージェント**: @secret-mgr
-- **スキル活用**: tool-permission-management, best-practices-curation, project-architecture-integration
-- **成果物**: .env.example, Secret管理手順書
+- **起動エージェント**:
+  - `.claude/agents/secret-mgr.md` - Secret管理専門（Zero Trust原則）
+- **参照スキル**（secret-mgrが必要時に参照）:
+  - **Phase 1**: `.claude/skills/secret-management-architecture/SKILL.md`（Secret分類、階層設計）、`.claude/skills/pre-commit-security/SKILL.md`（Git混入防止）
+  - **Phase 2**: `.claude/skills/gitignore-management/SKILL.md`（.gitignore設計）、`.claude/skills/environment-isolation/SKILL.md`（環境分離）
+  - **Phase 3**: `.claude/skills/railway-secrets-management/SKILL.md`（Railway Secrets）、`.claude/skills/github-actions-security/SKILL.md`（GitHub Actions Secrets）
+- **実行フロー**:
+  1. プロジェクト全体のSecretスキャン（ハードコードされたAPIキー、パスワード検出）
+  2. Git履歴スキャン（過去のコミットに機密情報がないか確認）
+  3. Secret分類（重要度: Critical/High/Medium/Low、スコープ: Global/Environment/Service）
+  4. `.gitignore`更新（.env、.env.*、credentials.json等）
+  5. `.env.example`生成（全環境変数定義、値は空/ダミー）
+  6. pre-commit hook設定（git-secrets/detect-secrets）
+  7. 型安全な環境変数アクセス実装（Zod検証、型定義）
+  8. Railway/GitHub Actions Secrets設定ガイド生成
+  9. Secret管理手順書作成
+- **成果物**:
+  - `.env.example`（全環境変数定義、値は空/ダミー）
+  - `.gitignore`更新（機密情報パターン追加）
+  - `src/lib/env.ts`（型安全な環境変数アクセス、Zod検証）
+  - `.husky/pre-commit`（git-secrets/detect-secrets統合）
+  - `docs/security/secret-management.md`（Secret管理手順書）
+  - Railway/GitHub Actions Secrets設定ガイド
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Read, Write(.env.example|docs/**)`
-  - `disable-model-invocation: false`
+  - `model: sonnet`（Secret管理タスク）
+  - `allowed-tools: [Task, Read, Grep, Write(.env.example, .gitignore, src/lib/**, .husky/**, docs/**)]`
+  - `disable-model-invocation: false`（通常実行、Secretの読み取り/書き込みあり）
+- **トリガーキーワード**: secrets, environment variables, API keys, credentials, 機密情報, シークレット管理, .env
 
 ### `/ai:rotate-secrets`
-- **目的**: APIキー・シークレットのローテーション
-- **引数**: `[secret-name]` - シークレット名
-- **使用エージェント**: @secret-mgr
-- **スキル活用**: tool-permission-management, best-practices-curation
-- **成果物**: ローテーションスクリプト
+- **目的**: APIキー・シークレットのローテーション（手動実行必須、ロールバック対応）
+- **引数**: `[secret-name]` - シークレット名（例: OPENAI_API_KEY、DATABASE_PASSWORD）
+- **起動エージェント**:
+  - `.claude/agents/secret-mgr.md` - Secret Rotation専門（Zero Trust原則）
+- **参照スキル**（secret-mgrが必要時に参照）:
+  - **Phase 1**: `.claude/skills/encryption-key-lifecycle/SKILL.md`（鍵ローテーション、Key Derivation）
+  - **Phase 2**: `.claude/skills/railway-secrets-management/SKILL.md`（Railway Secrets更新）、`.claude/skills/github-actions-security/SKILL.md`（GitHub Actions Secrets更新）
+  - **Phase 3**: `.claude/skills/zero-trust-security/SKILL.md`（アクセス制御、監査ログ）
+- **実行フロー**:
+  1. シークレット名の検証と影響範囲特定
+  2. 現在の値のバックアップ生成
+  3. 新しいシークレット値の生成（暗号学的に安全な乱数）
+  4. ローテーションスクリプト生成（`scripts/rotate-secret-[secret-name].sh`）
+  5. ロールバックスクリプト生成（`scripts/rollback-secret-[secret-name].sh`）
+  6. Railway/GitHub Actions Secrets更新手順書生成
+  7. 影響を受けるサービスのリスト生成（再起動必要なサービス）
+  8. 手動実行手順書作成（チェックリスト付き）
+  9. 監査ログ記録
+- **成果物**:
+  - `scripts/rotate-secret-[secret-name].sh`（ローテーションスクリプト、手動実行必須）
+  - `scripts/rollback-secret-[secret-name].sh`（ロールバックスクリプト）
+  - `docs/security/secret-rotation-[secret-name]-guide.md`（手動実行手順書）
+  - 影響を受けるサービスリスト（再起動必要なサービス）
+  - Railway/GitHub Actions Secrets更新手順
+  - 監査ログ（`logs/secret-rotation-[timestamp].log`）
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Bash, Write(scripts/**)`
-  - `disable-model-invocation: true` (安全のため手動のみ)
+  - `model: sonnet`（スクリプト生成タスク）
+  - `allowed-tools: [Task, Bash, Write(scripts/**, docs/**, logs/**)]`
+  - **disable-model-invocation: true**（安全のため手動実行のみ、自動実行禁止）
+- **トリガーキーワード**: rotate secrets, key rotation, secret rotation, シークレットローテーション, 鍵ローテーション, APIキー更新
 
 ---
 
