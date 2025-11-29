@@ -344,14 +344,43 @@
 - **トリガーキーワード**: api, design, endpoint, openapi, swagger, REST, エンドポイント設計, API仕様書
 
 ### `/ai:design-database`
-- **目的**: データベーススキーマ設計
-- **引数**: `[table-name]` - テーブル名(オプション)
-- **使用エージェント**: @db-architect
-- **スキル活用**: database-normalization, indexing-strategies
-- **成果物**: ER図、スキーマ定義
+- **目的**: データベーススキーマ設計（Drizzle ORM + Neon PostgreSQL準拠）
+- **引数**: `[table-name]` - テーブル名（オプション、未指定時は全スキーマ設計）
+- **使用エージェント**: `.claude/agents/db-architect.md`
+- **スキル活用**（フェーズ別、エージェントが必要時に参照）:
+  - **Phase 1（要件理解時）**: なし（既存スキーマ分析のみ）
+  - **Phase 2（スキーマ設計時）**: `.claude/skills/database-normalization/SKILL.md`（必須）, `.claude/skills/jsonb-optimization/SKILL.md`（JSONB使用時）
+  - **Phase 3（インデックス設計時）**: `.claude/skills/indexing-strategies/SKILL.md`（必須）
+  - **Phase 4（制約設計時）**: `.claude/skills/foreign-key-constraints/SKILL.md`（必須）, `.claude/skills/transaction-management/SKILL.md`（必要時）
+  - **Phase 5（検証時）**: `.claude/skills/sql-anti-patterns/SKILL.md`（必須）, `.claude/skills/database-migrations/SKILL.md`（マイグレーション実行時）
+- **フロー**:
+  1. Phase 1: db-architect起動 → 要件理解（master_system_design.md第5.2節、既存schema.ts確認、アクセスパターン特定）
+  2. Phase 2: スキーマ設計 → 3NF正規化、JSONB構造設計、Drizzle ORM型安全定義、ソフトデリート対応
+  3. Phase 3: インデックス設計 → 外部キー索引、GINインデックス（JSONB）、複合インデックス、部分インデックス
+  4. Phase 4: 制約設計 → 外部キー制約、CASCADE動作、CHECK制約、JSONB基本検証
+  5. Phase 5: 検証・ドキュメント → SQLアンチパターンチェック、マイグレーション計画、設計文書化
+- **成果物**:
+  - `docs/database/er-diagram.md`（ER図Mermaid形式、エンティティ関係、カーディナリティ、制約可視化）
+  - `src/shared/infrastructure/database/schema.ts`（Drizzleテーブル定義、外部キー、インデックス、制約）
+  - `drizzle/migrations/YYYYMMDD_HHMMSS_description.sql`（マイグレーションスクリプト、SQL、インデックス作成）
+  - `docs/database/indexing-strategy.md`（インデックス戦略、クエリ最適化ガイドライン、非正規化文書）
+- **設計原則準拠**（master_system_design.md 第5.2節）:
+  - [ ] 第3正規形準拠（意図的非正規化は文書化）
+  - [ ] UUID主キー、created_at/updated_at必須
+  - [ ] ソフトデリート（deleted_at）対応
+  - [ ] 全外部キーにインデックスと制約
+  - [ ] JSONB構造にGINインデックス
+  - [ ] トランザクション境界明確化
+  - [ ] マイグレーションロールバック可能
 - **設定**:
-  - `model: sonnet`
-  - `allowed-tools: Read, Write(docs/**|src/infrastructure/database/**)`
+  - `model: opus`（構造化設計タスク）
+  - `allowed-tools: [Task, Read, Write(docs/**|src/shared/infrastructure/database/**|drizzle/migrations/**), Grep]`
+    • Task: db-architectエージェント起動用
+    • Read: 既存スキーマ・設計書確認用
+    • Write(制限付き): スキーマ・ドキュメント・マイグレーション生成用
+    • Grep: アクセスパターン分析、アンチパターン検索用
+  - **トークン見積もり**: 約8-12K（エージェント起動 + スキーマ生成 + ドキュメント作成）
+- **トリガーキーワード**: database design, schema, table, ER diagram, データベース設計, スキーマ, テーブル, 正規化
 
 ---
 
