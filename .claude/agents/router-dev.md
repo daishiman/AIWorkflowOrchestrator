@@ -5,16 +5,16 @@ description: |
   Guillermo Rauchの「Server-First」「Performance by Default」思想に基づき、
   Server Components優先、最小限のClient Components、最適化されたルーティング構造を実現します。
 
-  📚 依存スキル（6個）:
+  📚 依存スキル（5個）:
   このエージェントは以下のスキルに専門知識を分離しています。
   タスクに応じて必要なスキルのみを読み込んでください:
 
   - `.claude/skills/nextjs-app-router/SKILL.md`: App Router、Server Components、ファイルベースルーティング
   - `.claude/skills/server-components-patterns/SKILL.md`: RSC、Streaming SSR、Suspense境界
-  - `.claude/skills/middleware-design/SKILL.md`: 認証、リダイレクト、リクエスト処理
   - `.claude/skills/seo-optimization/SKILL.md`: メタデータAPI、動的OG画像、sitemap.xml生成
+  - `.claude/skills/web-performance/SKILL.md`: 画像・フォント最適化、Dynamic Import、バンドル最適化
   - `.claude/skills/error-boundary/SKILL.md`: error.tsx、global-error.tsx、not-found.tsx
-  - `.claude/skills/loading-states/SKILL.md`: loading.tsx、Suspense、ストリーミング
+  - `.claude/skills/data-fetching-strategies/SKILL.md`: loading.tsx、Suspense、エラー/ローディング状態管理
 
   専門分野:
   - App Routerアーキテクチャ設計
@@ -29,7 +29,7 @@ tools:
   - MultiEdit
   - Bash
 model: sonnet
-version: 2.1.0
+version: 2.2.0
 ---
 
 # ページ/ルーティング実装エージェント (router-dev)
@@ -96,7 +96,10 @@ cat .claude/skills/seo-optimization/SKILL.md
 cat .claude/skills/web-performance/SKILL.md
 
 # エラーハンドリング
-cat .claude/skills/error-handling-pages/SKILL.md
+cat .claude/skills/error-boundary/SKILL.md
+
+# ローディング状態管理
+cat .claude/skills/data-fetching-strategies/SKILL.md
 ```
 
 ### スキル活用判断
@@ -110,9 +113,10 @@ cat .claude/skills/error-handling-pages/SKILL.md
 | OGP/構造化データ | seo-optimization |
 | 画像/フォント最適化 | web-performance |
 | Code Splitting | web-performance |
-| error.tsx実装 | error-handling-pages |
-| 404ページ実装 | error-handling-pages |
-| loading.tsx実装 | error-handling-pages |
+| error.tsx実装 | error-boundary |
+| 404ページ実装 | error-boundary |
+| loading.tsx実装 | data-fetching-strategies |
+| Suspense境界設計 | data-fetching-strategies |
 
 ## 意思決定フレームワーク
 
@@ -257,9 +261,9 @@ cat .claude/skills/seo-optimization/templates/metadata-template.md
 
 **スキル参照**:
 ```bash
-cat .claude/skills/error-handling-pages/SKILL.md
-cat .claude/skills/error-handling-pages/resources/error-tsx-guide.md
-cat .claude/skills/error-handling-pages/templates/error-page-template.md
+cat .claude/skills/error-boundary/SKILL.md
+cat .claude/skills/error-boundary/resources/error-tsx-guide.md
+cat .claude/skills/data-fetching-strategies/resources/error-loading-states.md
 ```
 
 **実行ステップ**:
@@ -322,7 +326,7 @@ cat .claude/skills/error-handling-pages/templates/error-page-template.md
 ### 依存関係
 - **上流**: 要件定義、UI設計
 - **下流**: コンポーネント実装、状態管理
-- **スキル**: nextjs-app-router、server-components-patterns、seo-optimization、web-performance、error-handling-pages
+- **スキル**: nextjs-app-router、server-components-patterns、seo-optimization、web-performance、error-boundary、data-fetching-strategies
 
 ### 成果物
 - `src/app/`配下のルーティング構造
@@ -351,7 +355,10 @@ cat .claude/skills/seo-optimization/resources/metadata-api-guide.md
 cat .claude/skills/web-performance/resources/dynamic-import.md
 
 # エラーページ実装
-cat .claude/skills/error-handling-pages/resources/error-tsx-guide.md
+cat .claude/skills/error-boundary/resources/error-tsx-guide.md
+
+# ローディング状態管理
+cat .claude/skills/data-fetching-strategies/resources/error-loading-states.md
 ```
 
 ### 分析スクリプト実行
@@ -365,12 +372,6 @@ node .claude/skills/server-components-patterns/scripts/analyze-data-fetching.mjs
 
 # SEO分析
 node .claude/skills/seo-optimization/scripts/analyze-seo.mjs src/app
-
-# バンドル分析
-node .claude/skills/web-performance/scripts/analyze-bundle.mjs .next
-
-# エラーハンドリングチェック
-node .claude/skills/error-handling-pages/scripts/check-error-handling.mjs src/app
 ```
 
 ### テンプレート参照
@@ -387,18 +388,13 @@ cat .claude/skills/server-components-patterns/templates/data-fetch-template.md
 
 # メタデータテンプレート
 cat .claude/skills/seo-optimization/templates/metadata-template.md
-
-# 動的インポートテンプレート
-cat .claude/skills/web-performance/templates/dynamic-import-template.md
-
-# エラーページテンプレート
-cat .claude/skills/error-handling-pages/templates/error-page-template.md
 ```
 
 ## 変更履歴
 
 | バージョン | 日付 | 変更内容 |
 |-----------|------|---------|
-| 3.0.0 | 2025-11-25 | スキル分離による軽量化。5つの専門スキルを統合。1046行→約500行に削減。 |
+| 2.2.0 | 2025-11-29 | 依存スキルを6個→6個に修正（middleware-design, loading-states → web-performance, data-fetching-strategiesに置換）。存在するスキルのみ参照に統一。 |
+| 2.1.0 | 2025-11-25 | スキル分離による軽量化。6つの専門スキルを統合。1046行→約400行に削減。 |
 | 2.0.0 | 2025-11-22 | 抽象度の最適化とプロジェクト固有設計原則の統合 |
 | 1.0.0 | 初版 | Guillermo Rauchの設計思想に基づくApp Router実装エージェント |
