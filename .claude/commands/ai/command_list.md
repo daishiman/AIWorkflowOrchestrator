@@ -740,14 +740,25 @@
   - `allowed-tools: Read, Write(src/infrastructure/database/**), Edit`
 
 ### `/ai:create-migration`
-- **目的**: データベースマイグレーションファイル作成
-- **引数**: `[migration-name]` - マイグレーション名
-- **使用エージェント**: @dba-mgr
-- **スキル活用**: database-migrations
-- **成果物**: drizzle/migrations/*.sql
+- **目的**: データベースマイグレーションファイル作成（Drizzle Kit 0.39.x準拠）
+- **引数**: `[migration-name]` - マイグレーション名（オプション、未指定時はインタラクティブ）
+- **使用エージェント**: `.claude/agents/dba-mgr.md`
+- **スキル活用**（フェーズ別、エージェントが必要時に参照）:
+  - **Phase 1（スキーマ分析時）**: なし（既存スキーマ・マイグレーション履歴分析のみ）
+  - **Phase 2（マイグレーション設計時）**: database-migrations（必須）, query-performance-tuning（インデックス追加時）
+  - **Phase 3（実装時）**: database-seeding（初期データ投入時）, connection-pooling（接続設定変更時）
+  - **Phase 4（信頼性保証時）**: backup-recovery（必須）, query-performance-tuning（必須）
+  - **Phase 5（デプロイ時）**: database-migrations（必須）, database-monitoring（本番監視設定時）
+- **成果物**:
+  - `src/shared/infrastructure/database/schema.ts`（スキーマ更新）
+  - `drizzle/migrations/YYYYMMDD_HHMMSS_*.sql`（Up/Downマイグレーション）
+  - `docs/database/migration-plan-[name].md`（マイグレーション計画書）
+  - `src/shared/infrastructure/database/seed.ts`（初期データ投入、必要時）
 - **設定**:
   - `model: sonnet`
-  - `allowed-tools: Bash(pnpm drizzle*), Read, Write(drizzle/**)`
+  - `allowed-tools: [Task, Read, Write(drizzle/migrations/**), Bash(pnpm drizzle*), Grep]`
+  - **トークン見積もり**: 約20-35K（エージェント起動 + スキル参照 + マイグレーション生成）
+- **トリガーキーワード**: migration, schema change, migrate, rollback, マイグレーション, スキーマ変更, ロールバック
 
 ### `/ai:create-repository`
 - **目的**: Repositoryパターン実装（インターフェース + 実装）
