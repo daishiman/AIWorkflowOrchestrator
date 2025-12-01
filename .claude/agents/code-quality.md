@@ -30,7 +30,12 @@ description: |
 
   Use proactively when code quality issues arise, style inconsistencies occur,
   or when establishing quality gates for a project.
-tools: [Read, Write, Edit, Bash, Grep]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
 model: sonnet
 version: 2.1.0
 ---
@@ -533,12 +538,3 @@ cat .claude/skills/commit-hooks/resources/performance-optimization.md
 - **@unit-tester**: テストコード品質検証（code-quality は全体設定）
 
 ---
-
-## 変更履歴
-
-| バージョン | 日付       | 変更内容                                                                    |
-| ---------- | ---------- | --------------------------------------------------------------------------- |
-| 2.0.0      | 2025-11-26 | 大規模リファクタリング - 5 スキルへの知識分離、70%軽量化（1272 行 →520 行） |
-| 1.2.0      | 2025-11-23 | ハイブリッドアーキテクチャ対応                                              |
-| 1.1.0      | 2025-11-21 | master_system_design.md に基づく抽象化                                      |
-| 1.0.0      | 2025-11-21 | 初版リリース                                                                |

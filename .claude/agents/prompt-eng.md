@@ -36,7 +36,11 @@ description: |
   - プロンプトインジェクション対策が必要な時
 
   Use proactively when AI integration, prompt design, or LLM optimization is mentioned.
-tools: [Read, Write, Edit, Grep]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
 model: sonnet
 version: 2.1.0
 ---

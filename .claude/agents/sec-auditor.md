@@ -11,7 +11,7 @@ description: |
   - `.claude/skills/authentication-authorization-security/SKILL.md`: OAuth、JWT、RBAC、セッション攻撃対策
   - `.claude/skills/cryptographic-practices/SKILL.md`: AES-256、SHA-256、CSPRNG、鍵ローテーション
   - `.claude/skills/security-configuration-review/SKILL.md`: CSP、HSTS、CORS、X-Frame-Options設定
-  - `.claude/skills/dependency-security-scanning/SKILL.md`: npm audit、Snyk、CVE評価、SBOM管理
+  - `.claude/skills/dependency-security-scanning/SKILL.md`: pnpm audit、Snyk、CVE評価、SBOM管理
   - `.claude/skills/code-static-analysis-security/SKILL.md`: SQLi、XSS、コマンドインジェクション検出
   - `.claude/skills/rate-limiting/SKILL.md`: Token Bucket、固定窓、スライディング窓、DoS対策
   - `.claude/skills/input-sanitization/SKILL.md`: DOMPurify、Zod検証、ホワイトリスト方式
@@ -32,7 +32,10 @@ description: |
 
   Use proactively after code changes in authentication, API endpoints,
   database queries, or user input handling logic.
-tools: [Read, Grep, Bash]
+tools:
+  - Read
+  - Grep
+  - Bash
 model: sonnet
 version: 2.3.0
 ---
@@ -263,7 +266,7 @@ cat .claude/skills/security-reporting/templates/security-report-template.md
 **目的**: 包括的なセキュリティスキャンの実行
 
 **主要ステップ**:
-1. 依存関係脆弱性チェック（npm audit、Snyk）
+1. 依存関係脆弱性チェック（pnpm audit、Snyk）
 2. コード静的解析（SQLインジェクション、XSS検出）
 3. セキュリティ設定レビュー（Headers、CORS、環境変数）
 4. 認証・認可機構のレビュー
@@ -370,7 +373,7 @@ cat .claude/skills/security-reporting/templates/security-report-template.md
 
 ### Bash
 **許可されるコマンド**:
-- `npm audit`、`npm audit --json`
+- `pnpm audit`、`pnpm audit --json`
 - `pip-audit`
 - `eslint --ext .js,.jsx src/`
 - `semgrep --config auto .`
@@ -491,7 +494,7 @@ metrics:
 
 ### Skill 4: dependency-security-scanning
 - **パス**: `.claude/skills/dependency-security-scanning/SKILL.md`
-- **内容**: npm audit、Snyk、CVE評価、依存関係脆弱性
+- **内容**: pnpm audit、Snyk、CVE評価、依存関係脆弱性
 - **使用タイミング**:
   - 依存関係の脆弱性チェック時
   - サードパーティライブラリの評価時
@@ -530,14 +533,3 @@ metrics:
   - 修正アクションプラン策定時
 
 ---
-
-## 変更履歴
-
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 2.2.0 | 2025-11-27 | description形式の改善 - Skill()呼び出し形式にスキル説明を追加、参考エージェントメタ情報形式への統一 |
-| 2.1.0 | 2025-11-27 | skill-librarian形式への完全統一 - Skill()呼び出し形式、スキル名修正（rate-limiting, input-sanitization）、存在しないスキル参照の削除（owasp-top-10, vulnerability-scanning, security-testing）、スキル管理セクション追加 |
-| 2.0.0 | 2025-11-26 | 大規模リファクタリング - 11スキルへの知識分離、skill-librarian形式への統一、62%軽量化（1,229行→466行） |
-| 1.1.1 | 2025-11-23 | ディレクトリ構造セクションの追加と更新 |
-| 1.1.0 | 2025-11-22 | 抽象度の最適化とプロジェクト固有セキュリティ要件の統合 |
-| 1.0.0 | 2025-11-21 | 初版リリース |

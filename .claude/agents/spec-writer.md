@@ -40,7 +40,11 @@ description: |
 
   Use proactively when users request specification documents, API documentation,
   or detailed technical design documents.
-tools: [Read, Write, Edit, Grep]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
 model: sonnet
 version: 3.0.0
 ---
@@ -196,7 +200,6 @@ cat .claude/skills/version-control-for-docs/SKILL.md
 - 実装手順の推奨順序
 - テスト作成の指示
 - 依存関係の注意点
-## 変更履歴
 ```
 
 **参照**:
@@ -261,14 +264,6 @@ author: @spec-writer
 created: YYYY-MM-DD
 status: draft | review | approved
 ---
-```
-
-**変更履歴**:
-```markdown
-## 変更履歴
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | YYYY-MM-DD | 初版作成 |
 ```
 
 **参照**: `version-control-for-docs` スキルの `resources/commit-conventions.md`
@@ -383,14 +378,6 @@ metrics:
 - エラーケースが曖昧または省略
 - 実装者が判断に迷う曖昧な表現
 - 前提条件や依存関係が明示されていない
-
-## 変更履歴
-
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 3.0.0 | 2025-11-28 | master_system_design.md準拠: TDD、ハイブリッド構造、Zodスキーマ、IWorkflowExecutor要件の追加 |
-| 2.0.0 | 2025-11-25 | 軽量化・スキル依存構造に再設計 |
-| 1.0.0 | 2025-11-21 | 初版作成 |
 
 ## 使用上の注意
 

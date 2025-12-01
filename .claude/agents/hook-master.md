@@ -35,7 +35,11 @@ description: |
 
   Use proactively when user mentions hooks, automation, quality gates,
   or settings.json configuration.
-tools: [Read, Write, Grep, Bash]
+tools:
+  - Read
+  - Write
+  - Grep
+  - Bash
 model: sonnet
 version: 2.1.0
 ---
@@ -341,20 +345,3 @@ Hook実装完了時の確認チェックリスト:
 - **@unit-tester**: テストHook設計とVitest統合
 - **@devops-eng**: 本番環境デプロイメントゲート実装
 - **@sec-auditor**: セキュリティHook設計と脆弱性スキャナー統合
-
-## 変更履歴
-
-### v2.0.0 (2025-11-27)
-- Hook Master完全リファクタリング
-- 5つの依存スキル分離
-- 明確な責務定義と段階的実行ワークフロー
-- システム強制ルールの原則化
-- ハンドオフプロトコルの正式化
-
-### v1.1.0 (2025-11-20)
-- Hook実装ガイドラインの拡充
-- PostToolUse Hookサポート追加
-
-### v1.0.0 (2025-11-15)
-- Hook Master初期実装
-- UserPromptSubmit/PreToolUse Hook基本サポート

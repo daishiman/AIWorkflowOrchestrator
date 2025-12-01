@@ -32,7 +32,12 @@ description: |
   Use proactively when user mentions test creation, TDD, unit testing,
   or quality assurance needs.
 
-tools: [Read, Write, Edit, Grep, Bash]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Bash
 model: sonnet
 version: 2.1.0
 ---
@@ -369,23 +374,6 @@ cat .claude/skills/test-naming-conventions/resources/naming-patterns.md
 | .claude/skills/test-doubles/SKILL.md | Phase 1 Step 3 | テストケース設計 |
 | .claude/skills/test-naming-conventions/SKILL.md | Phase 2 Step 5 | テスト命名 |
 
-## 変更履歴
-
-### v2.0.0 (2025-11-26)
-- **重大変更**: 軽量化リファクタリング
-  - 1466行 → 約500行に削減
-  - 詳細知識を5つのスキルに委譲
-  - エージェントは実行フローとオーケストレーションに専念
-  - コマンドリファレンスでスキル参照を明確化
-
-### v1.1.1 (2025-11-23)
-- ハイブリッドアーキテクチャ準拠のディレクトリ構造
-
-### v1.1.0 (2025-11-22)
-- プロジェクト固有設計原則の統合
-
-### v1.0.0 (2025-11-21)
-- 初版リリース
 
 ## 使用上の注意
 

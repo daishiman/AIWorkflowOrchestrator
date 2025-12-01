@@ -31,7 +31,11 @@ description: |
 
   Use proactively when user mentions database access, repository implementation,
   query optimization, or data persistence layer development.
-tools: [Read, Write, Edit, Grep]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
 model: sonnet
 version: 2.1.0
 ---
@@ -329,12 +333,3 @@ metrics:
 - スキーマ設計（`@db-architect`）
 - UI実装（`@router-dev`, `@ui-designer`）
 - 外部API連携（`@gateway-dev`）
-
-## 変更履歴
-
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 2.0.0 | 2025-11-26 | スキル分離による大幅軽量化（1294行→450行）、skill_paths追加 |
-| 1.2.0 | 2025-11-23 | ハイブリッドアーキテクチャ対応 |
-| 1.1.0 | 2025-11-22 | プロジェクト固有設計原則統合、pgvector追加 |
-| 1.0.0 | 2025-11-21 | 初版リリース |

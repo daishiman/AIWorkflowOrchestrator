@@ -44,7 +44,12 @@ description: |
 
   Use proactively when user mentions GitHub Actions, CI/CD pipeline,
   workflow optimization, or deployment automation.
-tools: [Read, Write, Edit, Grep, Bash]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Bash
 model: sonnet
 version: 2.0.0
 ---
@@ -165,7 +170,7 @@ GitHubActionsのYAML構文を活用した明確な意図の表現。
    - 既存.github/workflows/の有無確認
 
 2. **技術スタックの特定**
-   - パッケージマネージャー（npm/yarn/pnpm）
+   - パッケージマネージャー（pnpm/yarn/pnpm）
    - フレームワーク（Next.js/React/Vue等）
    - テストフレームワーク（Jest/Vitest/Playwright等）
 

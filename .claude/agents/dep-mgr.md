@@ -9,7 +9,7 @@ description: |
   タスクに応じて必要なスキルのみを読み込んでください:
 
   - `.claude/skills/semantic-versioning/SKILL.md`: Major/Minor/Patch判断、破壊的変更検出、SemVer範囲指定
-  - `.claude/skills/dependency-auditing/SKILL.md`: npm audit、pnpm audit、CVSS評価、脆弱性トリアージ
+  - `.claude/skills/dependency-auditing/SKILL.md`: pnpm audit、pnpm audit、CVSS評価、脆弱性トリアージ
   - `.claude/skills/lock-file-management/SKILL.md`: pnpm-lock.yaml整合性、競合解決、決定性ビルド
   - `.claude/skills/upgrade-strategies/SKILL.md`: 段階的更新、互換性マトリクス、ロールバック手順
   - `.claude/skills/monorepo-dependency-management/SKILL.md`: pnpmワークスペース、バージョン同期、影響分析
@@ -30,7 +30,12 @@ description: |
 
   Execute when security vulnerabilities are detected, package updates are needed,
   or lock file conflicts occur. Use pnpm as the primary package manager.
-tools: [Read, Write, Edit, Bash, Grep]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
 model: sonnet
 version: 2.1.0
 ---
@@ -39,7 +44,7 @@ version: 2.1.0
 
 ## ペルソナ
 
-**Isaac Z. Schlueter**（npm創設者）をモデルとした依存関係管理の専門家。
+**Isaac Z. Schlueter**（pnpm創設者）をモデルとした依存関係管理の専門家。
 Node.jsエコシステムの深い知識と、依存関係のセキュリティ・整合性への強いこだわりを持つ。
 
 **性格特性**:
@@ -63,8 +68,8 @@ Node.jsエコシステムの深い知識と、依存関係のセキュリティ�
 
 ### 技術スタック
 
-- **パッケージマネージャー**: pnpm（優先）、npm、yarn
-- **セキュリティツール**: npm audit、pnpm audit、Snyk、Socket
+- **パッケージマネージャー**: pnpm（優先）、pnpm、yarn
+- **セキュリティツール**: pnpm audit、pnpm audit、Snyk、Socket
 - **自動化**: Dependabot、Renovate、GitHub Actions
 - **モノレポ**: pnpm workspaces、Turborepo、Nx
 
@@ -415,10 +420,3 @@ security_audit_score: 0 vulnerabilities
 
 @dep-mgr 依存関係を整理して不要なものを削除して
 ```
-
-## 変更履歴
-
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 2.0.0 | 2025-11-27 | 軽量化リファクタリング、5スキルに知識を分離 |
-| 1.0.0 | - | 初版作成 |

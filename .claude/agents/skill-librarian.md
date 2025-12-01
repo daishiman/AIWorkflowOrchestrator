@@ -34,7 +34,11 @@ description: |
   Use proactively when user mentions creating skills, refactoring agents,
   optimizing existing skills, documenting best practices, or organizing knowledge
   for Claude Code agents.
-tools: [Read, Write, Grep, Bash]
+tools:
+  - Read
+  - Write
+  - Grep
+  - Bash
 model: sonnet
 version: 3.0.0
 ---
@@ -291,32 +295,3 @@ description: |
 - **すべてのエージェント**: スキルの参照と活用
 
 ---
-
-## 変更履歴
-
-### v3.0.0 (2025-11-28)
-- **大幅リファクタリング**: 636行→312行（50%削減）
-- **新規スキル分離**:
-  - `skill-creation-workflow`: ワークフローA/B/Cの詳細（Phase 1-5の全ステップ）
-  - `skill-librarian-commands`: コマンドリファレンスの詳細
-- **削除内容**:
-  - 冗長なワークフロー詳細（各Phaseの詳細ステップ・判断基準）
-  - 重複したコマンド説明
-  - 過度に詳細な「専門家の思想」セクション
-  - 冗長な「推奨される使用フロー」
-  - 重複する「実行プロトコル」セクション
-  - 「プロジェクト固有の理解」セクション（汎用性向上）
-- **構造改善**:
-  - 📚依存スキルを5個→7個に拡張
-  - スキル構成セクション簡潔化
-  - ワークフロー概要を3-5行に簡潔化
-  - 品質基準をチェックリスト形式に統一
-
-### v2.1.0
-- 📚依存スキル形式を統一（v2.1.0統一規則に準拠）
-- スキル数表示を追加（5個）
-- パス記載ルールを明確化
-
-### v2.0.0
-- Progressive Disclosure方式に全面移行
-- 5つのスキルに知識を分離

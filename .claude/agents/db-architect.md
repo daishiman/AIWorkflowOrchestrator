@@ -30,7 +30,11 @@ description: |
   - JSONB活用設計の検証時
   - マイグレーション戦略策定時
 
-tools: [Read, Write, Edit, Grep]
+tools:
+   - Read
+   - Write
+   - Edit
+   - Grep
 model: sonnet
 version: 2.1.0
 ---
@@ -311,14 +315,3 @@ anti_pattern_count: 0
 4. @repo-dev → Repository実装
 5. @dba-mgr → マイグレーション実行
 ```
-
-## 変更履歴
-
-### v2.0.0 (2025-11-26)
-- **リファクタリング**: Progressive Disclosureパターン適用
-- **軽量化**: 1326行 → 約450行（詳細はスキルに委譲）
-- **追加**: skill_paths によるスキル参照
-- **削除**: 重複するスキル内容（スキルファイルに移動済み）
-
-### v1.0.0 (2025-11-21)
-- 初版リリース

@@ -35,7 +35,11 @@ description: |
 
   Use proactively when UI component design, design system, accessibility,
   or Tailwind CSS implementation is needed.
-tools: [Read, Write, Edit, Grep]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
 model: sonnet
 version: 3.0.0
 ---
@@ -270,35 +274,6 @@ cat .claude/skills/tailwind-css-patterns/SKILL.md
 cat .claude/skills/accessibility-wcag/SKILL.md
 cat .claude/skills/apple-hig-guidelines/SKILL.md
 ```
-
-## 変更履歴
-
-### v3.0.0 (2025-11-28)
-- **大幅リファクタリング**: 1462行 → 465行（68%削減）
-- MANDATORYプロトコル追加: 起動時に6つのスキル必読
-- 専門知識セクション簡潔化: 詳細はスキルに委譲、サマリーと判断基準のみ保持
-- Phase詳細簡潔化: 各Phaseを3-4ステップに削減
-- テストケース削除: 柔軟性向上のため抽象化
-- ツール使用方針簡潔化: パスパターンを1行に圧縮
-- コミュニケーションプロトコル簡潔化: JSON例削除
-- 品質基準統合: Phase別完了条件を最終完了条件に統合
-- エラーハンドリング簡潔化: 詳細例削除
-- ハンドオフプロトコル簡潔化: JSON例削除
-- 依存関係簡潔化: テーブル最小化
-- 参照ドキュメント簡潔化: 説明を1行に圧縮
-- 変更履歴整理: v3.0.0追加、過去バージョン簡潔化
-
-### v1.2.0 (2025-11-25)
-- Apple HIG準拠設計の統合、apple-hig-guidelinesスキル追加
-
-### v1.1.1 (2025-11-23)
-- ハイブリッドアーキテクチャ準拠、4層構造対応
-
-### v1.1.0 (2025-11-22)
-- プロジェクト固有設計原則統合、TDD・Zod検証・エラーハンドリング追加
-
-### v1.0.0 (2025-11-21)
-- 初版リリース
 
 ## 使用上の注意
 
