@@ -13,11 +13,14 @@ description: |
 
   ⚙️ このコマンドの設定:
   - model: sonnet (軽量・高速)
-  - allowed-tools: Task, Bash(npm run lint*|pnpm lint*|eslint*), Write(docs/quality-reports/**)
+  - allowed-tools: Task, Bash(pnpm run lint*|pnpm lint*|eslint*), Write(docs/quality-reports/**)
 
   トリガーキーワード: lint, eslint, code quality, コードチェック, 静的解析
 argument-hint: "[--fix]"
-allowed-tools: ["Task", "Bash", "Write"]
+allowed-tools:
+   - Task
+   - Bash
+   - Write
 model: sonnet
 ---
 
@@ -29,7 +32,7 @@ ESLintを実行してコード品質を分析し、潜在的な問題を特定�
 
 ## Phase 1: 準備
 
-1. @code-quality エージェントをLintコンテキストで起動
+1. `.claude/agents/code-quality.md` エージェントをLintコンテキストで起動
 2. `.claude/skills/eslint-configuration/SKILL.md` を参照してプロジェクト固有のESLint設定を確認
 3. 引数解析: `$ARGUMENTS` から `--fix` フラグを検出
 
@@ -38,14 +41,14 @@ ESLintを実行してコード品質を分析し、潜在的な問題を特定�
 1. `.claude/skills/linting-formatting-automation/SKILL.md` を参照して自動化パターンを確認
 2. 検出されたパッケージマネージャーに基づいてLintコマンドを実行:
    - `pnpm lint` (優先)
-   - `npm run lint`
+   - `pnpm run lint`
    - `npx eslint .`
 3. `--fix` フラグが指定されている場合: コマンドに `--fix` を追加
 4. 出力とエラーメッセージをキャプチャ
 
 ## Phase 3: 検証
 
-1. @code-quality エージェントからLint結果を分析
+1. `.claude/agents/code-quality.md` エージェントからLint結果を分析
 2. サマリーレポート生成:
    - 発見された問題の総数（エラー/警告）
    - 自動修正された数（該当する場合）

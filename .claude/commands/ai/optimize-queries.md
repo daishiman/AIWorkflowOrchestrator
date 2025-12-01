@@ -27,7 +27,12 @@ description: |
 
   トリガーキーワード: query, optimization, N+1, EXPLAIN, performance, slow-query
 argument-hint: "[file-path]"
-allowed-tools: [Task, Read, Edit, Bash(pnpm drizzle-kit studio|pnpm test), Grep]
+allowed-tools:
+  - Task
+  - Read
+  - Edit
+  - Bash(pnpm drizzle-kit studio|pnpm test)
+  - Grep
 model: sonnet
 ---
 
@@ -70,12 +75,12 @@ model: sonnet
 ```
 対象に応じてエージェントを選択:
 
-1. Repository実装の最適化 → @repo-dev エージェント起動
+1. Repository実装の最適化 → `.claude/agents/repo-dev.md` エージェント起動
    - Drizzle ORMクエリの書き換え
    - N+1問題の検出と解消
    - フェッチ戦略の改善
 
-2. データベース側のチューニング → @dba-mgr エージェント起動
+2. データベース側のチューニング → `.claude/agents/dba-mgr.md` エージェント起動
    - EXPLAIN ANALYZE分析
    - インデックス追加/変更
    - スロークエリログ分析

@@ -1,5 +1,40 @@
 ---
-description: "機密情報（APIキー、シークレット、環境変数）を安全に管理し、ハードコードされたシークレットを検出して適切な管理手法を実装します"
+description: |
+  機密情報（APIキー、シークレット、環境変数）を安全に管理し、
+  ハードコードされたシークレットを検出して適切な管理手法を実装します。
+
+  🤖 起動エージェント:
+  - Phase 1-3: `.claude/agents/secret-mgr.md` - 機密情報管理専門エージェント
+
+  📚 利用可能スキル（secret-mgrエージェントが参照）:
+  - `.claude/skills/secret-management-architecture/SKILL.md` - Secret管理方式選択、アクセス制御
+  - `.claude/skills/zero-trust-security/SKILL.md` - Zero Trust 5原則、RBAC/ABAC
+  - `.claude/skills/gitignore-management/SKILL.md` - .gitignore設計、機密ファイルパターン
+  - `.claude/skills/pre-commit-security/SKILL.md` - pre-commit hook、機密情報検出
+  - `.claude/skills/encryption-key-lifecycle/SKILL.md` - 暗号化、鍵生成・保管・Rotation
+  - `.claude/skills/environment-isolation/SKILL.md` - 環境分離、最小権限
+  - `.claude/skills/railway-secrets-management/SKILL.md` - Railway Secrets、Neon Plugin
+  - `.claude/skills/github-actions-security/SKILL.md` - GitHub Secrets、Environment保護
+
+  ⚙️ このコマンドの設定:
+  - argument-hint: なし（プロジェクト全体を分析）
+  - allowed-tools: シークレット管理とファイル操作用
+    • Read: コードスキャン、環境変数ファイル確認用
+    • Write: .env.example、設定ファイル生成用
+    • Grep: ハードコードシークレット検出用
+  - model: sonnet（標準的なシークレット管理タスク）
+
+  📋 成果物:
+  - `.env.example`（環境変数テンプレート）
+  - 更新された`.gitignore`
+  - シークレット管理手順書
+
+  🎯 検出対象:
+  - ハードコードされたAPIキー・パスワード・トークン
+  - 環境変数の不適切な管理
+  - .gitignore漏れ
+
+  トリガーキーワード: secret management, 機密情報管理, API key, 環境変数, .env, シークレット検出, credentials
 allowed-tools:
   - Read
   - Write
@@ -33,7 +68,7 @@ disable-model-invocation: false
 
 **エージェント起動**:
 ```
-@secret-mgr を起動し、以下を依頼:
+`.claude/agents/secret-mgr.md` を起動し、以下を依頼:
 - プロジェクト構造の分析
 - 既存のシークレット管理手法の確認
 - ハードコードされたシークレットのスキャン
@@ -67,7 +102,7 @@ disable-model-invocation: false
 
 **エージェント起動**:
 ```
-@secret-mgr を起動し、以下を依頼:
+`.claude/agents/secret-mgr.md` を起動し、以下を依頼:
 - .env.example テンプレートの作成
 - 検出されたシークレットの環境変数化
 - .gitignore の更新
@@ -134,7 +169,7 @@ SENDGRID_API_KEY=SG...
 
 **エージェント起動**:
 ```
-@secret-mgr を起動し、以下を依頼:
+`.claude/agents/secret-mgr.md` を起動し、以下を依頼:
 - シークレット管理手順書の作成
 - ローカル開発セットアップガイドの生成
 - CI/CD環境でのシークレット管理ガイド

@@ -36,7 +36,11 @@ description: |
 
   トリガーキーワード: run tests, all tests, test suite, CI, テスト実行
 argument-hint: "[--coverage]"
-allowed-tools: [Task, Bash(pnpm test*|vitest*|playwright*), Read, Write(docs/**)]
+allowed-tools:
+  - Task
+  - Bash(pnpm test*|vitest*|playwright*
+  - Read
+  - Write(docs/**)
 model: sonnet
 ---
 

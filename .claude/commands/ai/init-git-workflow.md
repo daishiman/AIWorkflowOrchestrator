@@ -5,9 +5,9 @@ description: |
   Git Hooks設定、ブランチ戦略の実装、自動化スクリプトの構成を行います。
 
   🤖 起動エージェント:
-  - `.claude/agents/hook-master.md`: Claude Code Hooks実装・Git Hooks設計専門エージェント
+  - `.claude/agents/hook-master.md` - Claude Code Hooks実装・Git Hooks設計専門
 
-  📚 依存スキル（エージェントが必要時に参照）:
+  📚 利用可能スキル（hook-masterエージェントが参照）:
   - `.claude/skills/git-hooks-concepts/SKILL.md`: Git Hook基本概念、ライフサイクル、Husky設定
   - `.claude/skills/claude-code-hooks/SKILL.md`: UserPromptSubmit、PreToolUse、PostToolUse設計
   - `.claude/skills/automation-scripting/SKILL.md`: Bash/Node.js自動化スクリプト実装
@@ -25,7 +25,12 @@ description: |
 
   トリガーキーワード: git workflow, branch strategy, git-flow, github-flow, hooks, automation
 argument-hint: "[strategy]"
-allowed-tools: [Task, Bash(git*), Read, Write, Grep]
+allowed-tools:
+  - Task
+  - Bash(git*)
+  - Read
+  - Write
+  - Grep
 model: sonnet
 ---
 

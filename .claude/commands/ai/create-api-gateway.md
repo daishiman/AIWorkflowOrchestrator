@@ -9,9 +9,9 @@ description: |
   - `.claude/agents/gateway-dev.md`: 外部連携ゲートウェイ開発専門エージェント（Phase 2で起動）
 
   📚 利用可能スキル（タスクに応じてgateway-devエージェントが必要時に参照）:
-  **Phase 2（設計時）:** api-client-patterns
-  **Phase 3（実装時）:** http-best-practices, authentication-flows
-  **Phase 4（信頼性時）:** retry-strategies, rate-limiting
+  **Phase 2（設計時）:** `.claude/skills/api-client-patterns/SKILL.md`
+  **Phase 3（実装時）:** `.claude/skills/http-best-practices/SKILL.md`, `.claude/skills/authentication-flows/SKILL.md`
+  **Phase 4（信頼性時）:** `.claude/skills/retry-strategies/SKILL.md`, `.claude/skills/rate-limiting/SKILL.md`
 
   ⚙️ このコマンドの設定:
   - argument-hint: 必須引数1つ（API名: discord, slack, openai等）

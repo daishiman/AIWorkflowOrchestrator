@@ -8,7 +8,45 @@ description: |
   必要なすべてのコンポーネントを一度に作成し、適切な依存関係とハンドオフを
   確立します。
 
-  使用シナリオ:
+  🤖 起動エージェント（Phase別）:
+  - Phase 1: `.claude/agents/skill-librarian.md` - スキル作成（知識基盤の構築）
+  - Phase 2: `.claude/agents/meta-agent-designer.md` - エージェント作成（実行エンジン構築）
+  - Phase 3: `.claude/agents/command-arch.md` - コマンド作成（UIインターフェース構築）
+
+  📚 利用可能スキル（各エージェントが参照）:
+  **skill-librarian用:**
+  - `.claude/skills/knowledge-management/SKILL.md` - SECIモデル知識変換
+  - `.claude/skills/progressive-disclosure/SKILL.md` - 3層開示モデル
+  - `.claude/skills/documentation-architecture/SKILL.md` - ドキュメント構造設計
+
+  **meta-agent-designer用:**
+  - `.claude/skills/agent-architecture-patterns/SKILL.md` - アーキテクチャパターン選択
+  - `.claude/skills/agent-structure-design/SKILL.md` - YAML Frontmatter設計
+  - `.claude/skills/agent-persona-design/SKILL.md` - ペルソナ・役割定義
+  - `.claude/skills/multi-agent-systems/SKILL.md` - マルチエージェント協調
+
+  **command-arch用:**
+  - `.claude/skills/command-structure-fundamentals/SKILL.md` - コマンド基本構造
+  - `.claude/skills/command-agent-skill-integration/SKILL.md` - エージェント・スキル統合
+  - `.claude/skills/command-best-practices/SKILL.md` - コマンドベストプラクティス
+
+  ⚙️ このコマンドの設定:
+  - argument-hint: "[domain-name]"（ドメイン名: 例 performance-optimization）
+  - allowed-tools: 3エージェント起動と全コンポーネント生成用
+    • Task: 3エージェント起動用
+    • Read: 既存コンポーネント参照用
+    • Write(.claude/**): エージェント・コマンド・スキル生成用
+    • Grep: パターン検索用
+    • Bash: 検証スクリプト実行用
+  - model: opus（複雑な3コンポーネント統合設計が必要）
+
+  📋 成果物:
+  - `.claude/skills/[domain-name]/SKILL.md`（知識基盤）
+  - `.claude/agents/[domain-name].md`（実行エンジン）
+  - `.claude/commands/ai/[domain-name].md`（UIインターフェース）
+  - 統合検証レポート
+
+  🎯 使用シナリオ:
   - 新しい専門分野の完全な統合（例: パフォーマンス最適化、セキュリティ監査）
   - 複雑なワークフローの自動化システム構築
   - マルチエージェント協調システムの新規構築
@@ -16,7 +54,12 @@ description: |
 
   トリガーキーワード: agent-command-skill, エージェント・コマンド・スキル作成, 統合作成, システム構築, 専門分野追加
 argument-hint: "[domain-name]"
-allowed-tools: [Task, Read, Write(.claude/**), Grep, Bash]
+allowed-tools:
+   - Task
+   - Read
+   - Write(.claude/**)
+   - Grep
+   - Bash
 model: opus
 ---
 
@@ -35,13 +78,13 @@ model: opus
 Phase 0: 統合設計（全体アーキテクチャ決定）
   ↓
 Phase 1: スキル作成（知識基盤の構築）
-  @skill-librarian による暗黙知の形式知化
+  `.claude/agents/skill-librarian.md` による暗黙知の形式知化
   ↓
 Phase 2: エージェント作成（実行エンジンの構築）
-  @meta-agent-designer によるペルソナ設計とワークフロー定義
+  `.claude/agents/meta-agent-designer.md` によるペルソナ設計とワークフロー定義
   ↓
 Phase 3: コマンド作成（ユーザーインターフェースの構築）
-  @command-arch による統合インターフェース設計
+  `.claude/agents/command-arch.md` による統合インターフェース設計
   ↓
 Phase 4: 統合検証（依存関係とハンドオフの確認）
   ↓
@@ -92,7 +135,7 @@ Phase 5: ドキュメント生成（使用ガイドとテストケース作成�
 知識基盤を構築します。エージェントが参照する形式知を体系化します。
 
 #### 使用エージェント
-@skill-librarian（SECIモデルによる暗黙知→形式知変換）
+`.claude/agents/skill-librarian.md` - SECIモデルによる暗黙知→形式知変換
 
 #### アクション
 
@@ -138,7 +181,7 @@ Phase 5: ドキュメント生成（使用ガイドとテストケース作成�
 実行エンジンを構築します。Phase 1で作成したスキルを参照するエージェントを作成します。
 
 #### 使用エージェント
-@meta-agent-designer（マービン・ミンスキーの『心の社会』に基づく設計）
+`.claude/agents/meta-agent-designer.md` - マービン・ミンスキーの『心の社会』に基づく設計
 
 #### アクション
 
@@ -196,7 +239,7 @@ Phase 5: ドキュメント生成（使用ガイドとテストケース作成�
 ユーザーインターフェースを構築します。Phase 2で作成したエージェントを起動するコマンドを作成します。
 
 #### 使用エージェント
-@command-arch（コマンド構造とセキュリティ設計）
+`.claude/agents/command-arch.md` - コマンド構造とセキュリティ設計
 
 #### アクション
 
@@ -380,7 +423,7 @@ Task ツールで @[domain-name] エージェントを起動し、以下を依�
 
 #### 3. コマンド: `.claude/commands/ai/performance-optimization.md`
 - 引数: `[target-component]` - 対象コンポーネント（frontend/backend/database）
-- エージェント起動: @performance-optimization
+- エージェント起動: `.claude/agents/performance-optimization.md`
 - セキュリティ: Read、Bash（プロファイラー実行）権限
 
 ## 実行プロトコル
@@ -417,15 +460,15 @@ Task ツールで @[domain-name] エージェントを起動し、以下を依�
 ### 3. Phase 1-3: コンポーネント作成
 
 ```
-Task ツールで @skill-librarian を起動
+Task ツールで `.claude/agents/skill-librarian.md` を起動
   ↓
 スキル作成完了
   ↓
-Task ツールで @meta-agent-designer を起動
+Task ツールで `.claude/agents/meta-agent-designer.md` を起動
   ↓
 エージェント作成完了（スキル参照を含む）
   ↓
-Task ツールで @command-arch を起動
+Task ツールで `.claude/agents/command-arch.md` を起動
   ↓
 コマンド作成完了（エージェント起動ロジックを含む）
 ```
@@ -654,15 +697,15 @@ grep -r "description" .claude/commands/ai/*.md
 ## 参照
 
 ### エージェント
-- @skill-librarian: `.claude/agents/skill-librarian.md`
-- @meta-agent-designer: `.claude/agents/meta-agent-designer.md`
-- @command-arch: `.claude/agents/command-arch.md`
+- `.claude/agents/skill-librarian.md` - 知識体系化・スキル作成専門
+- `.claude/agents/meta-agent-designer.md` - エージェント設計・ペルソナ定義専門
+- `.claude/agents/command-arch.md` - コマンド構造とセキュリティ設計専門
 
 ### スキル
-- knowledge-management: `.claude/skills/knowledge-management/SKILL.md`
-- progressive-disclosure: `.claude/skills/progressive-disclosure/SKILL.md`
-- agent-architecture-patterns: `.claude/skills/agent-architecture-patterns/SKILL.md`
-- command-structure-fundamentals: `.claude/skills/command-structure-fundamentals/SKILL.md`
+- `.claude/skills/knowledge-management/SKILL.md` - SECIモデル知識変換
+- `.claude/skills/progressive-disclosure/SKILL.md` - 3層開示モデル
+- `.claude/skills/agent-architecture-patterns/SKILL.md` - アーキテクチャパターン選択
+- `.claude/skills/command-structure-fundamentals/SKILL.md` - コマンド基本構造
 
 ### コマンド
 - /ai:create-agent: `.claude/commands/ai/create-agent.md`
@@ -671,7 +714,7 @@ grep -r "description" .claude/commands/ai/*.md
 
 ## 注意事項
 
-- このコマンドは3つのエージェント（@skill-librarian、@meta-agent-designer、@command-arch）を順番に起動します
+- このコマンドは3つのエージェント（`.claude/agents/skill-librarian.md`、`.claude/agents/meta-agent-designer.md`、`.claude/agents/command-arch.md`）を順番に起動します
 - 各Phaseは前のPhaseに依存するため、順序を守ることが重要です
 - 対話的に要件を収集するため、完了まで60-90分程度かかる場合があります
 - model: opus を使用（複雑な統合設計が必要）

@@ -30,7 +30,11 @@ description: |
 
   トリガーキーワード: api, design, endpoint, openapi, swagger, REST, エンドポイント設計, API仕様書
 argument-hint: "[resource-name]"
-allowed-tools: [Task, Read, Write(docs/**|openapi.yaml), Grep]
+allowed-tools:
+  - Task
+  - Read
+  - Write(docs/**|openapi.yaml)
+  - Grep
 model: sonnet
 ---
 

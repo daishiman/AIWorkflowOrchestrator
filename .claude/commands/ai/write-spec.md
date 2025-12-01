@@ -28,7 +28,10 @@ description: |
 
   トリガーキーワード: spec, specification, 仕様書, 詳細仕様, 実装仕様, 設計書
 argument-hint: "[feature-name]"
-allowed-tools: [Task, Read, Write(docs/**)]
+allowed-tools:
+   - Task
+   - Read
+   - Write(docs/**)
 model: sonnet
 ---
 

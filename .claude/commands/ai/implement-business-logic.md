@@ -32,7 +32,14 @@ description: |
 
   トリガーキーワード: business logic, executor, implement, 実装, ビジネスロジック, TDD
 argument-hint: "[logic-name]"
-allowed-tools: [Task, Read, Write(src/features/**), Edit, Grep, Glob, Bash(pnpm test*)]
+allowed-tools:
+   - Task
+   - Read
+   - Write(src/features/**)
+   - Edit
+   - Grep
+   - Glob
+   - Bash(pnpm test*)
 model: opus
 ---
 

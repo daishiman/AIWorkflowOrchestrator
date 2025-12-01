@@ -40,7 +40,13 @@ description: |
 
   トリガーキーワード: e2e test, integration test, user flow, playwright, E2Eテスト
 argument-hint: "[user-flow]"
-allowed-tools: [Task, Read, Write(tests/**/*.spec.ts), Edit, Bash(pnpm test*|playwright*), Grep]
+allowed-tools:
+  - Task
+  - Read
+  - Write(tests/**/*.spec.ts)
+  - Edit
+  - Bash(pnpm test*|playwright*)
+  - Grep
 model: opus
 ---
 

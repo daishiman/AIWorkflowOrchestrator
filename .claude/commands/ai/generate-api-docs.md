@@ -23,7 +23,11 @@ description: |
 
   トリガーキーワード: api, documentation, openapi, swagger, endpoint
 argument-hint: "[source-path]"
-allowed-tools: [Task, Read, Write(openapi.yaml|docs/api/**), Grep]
+allowed-tools:
+  - Task
+  - Read
+  - Write(openapi.yaml|docs/api/**)
+  - Grep
 model: sonnet
 ---
 
@@ -48,10 +52,10 @@ model: sonnet
 grep -r "export async function" $SOURCE_PATH
 ```
 
-### Phase 2: @api-doc-writer エージェント起動
+### Phase 2: api-doc-writer エージェント起動
 
 ```typescript
-@api-doc-writer を起動し、以下を依頼:
+`.claude/agents/api-doc-writer.md` を起動し、以下を依頼:
 
 **タスク**: API仕様書の自動生成
 **入力情報**:

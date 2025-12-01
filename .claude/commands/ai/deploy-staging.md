@@ -53,7 +53,7 @@ model: sonnet
 
 2. **ビルド前チェック**
    - 依存関係の整合性確認
-   - テストの実行（`npm test` または `pnpm test`）
+   - テストの実行（`pnpm test` または `pnpm test`）
    - Lint・型チェックの実行
 
 3. **デプロイ戦略の決定**
@@ -74,7 +74,7 @@ model: sonnet
 以下のデプロイフローを実行してください:
 
 1. **ビルド実行**
-   - `npm run build` または `pnpm build`
+   - `pnpm run build` または `pnpm build`
    - ビルド成果物の確認
 
 2. **Railway デプロイ**

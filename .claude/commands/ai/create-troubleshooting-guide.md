@@ -21,7 +21,11 @@ description: |
 
   トリガーキーワード: troubleshooting, faq, error, problem, issue
 argument-hint: ""
-allowed-tools: [Task, Read, Write(docs/manual/troubleshooting.md|docs/manual/faq.md), Grep]
+allowed-tools:
+  - Task
+  - Read
+  - Write(docs/manual/troubleshooting.md|docs/manual/faq.md)
+  - Grep
 model: sonnet
 ---
 
@@ -48,10 +52,10 @@ grep -r "error" src/shared/core/errors/
 cat docs/manual/faq.md 2>/dev/null || echo "No existing FAQ"
 ```
 
-### Phase 2: @manual-writer エージェント起動
+### Phase 2: manual-writer エージェント起動
 
 ```typescript
-@manual-writer を起動し、以下を依頼:
+`.claude/agents/manual-writer.md` を起動し、以下を依頼:
 
 **タスク**: トラブルシューティングガイドとFAQの作成
 **フォーカス**: troubleshooting-guidesスキルを中心に活用

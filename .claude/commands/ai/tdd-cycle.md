@@ -46,7 +46,13 @@ description: |
 
   トリガーキーワード: TDD, test-driven, red green refactor, テスト駆動
 argument-hint: "[feature-name]"
-allowed-tools: [Task, Read, Write(__tests__/**/*.test.ts, src/features/**), Edit, Bash(pnpm test*|vitest*), Grep]
+allowed-tools:
+  - Task
+  - Read
+  - Write(__tests__/**/*.test.ts, src/features/**)
+  - Edit
+  - Bash(pnpm test*|vitest*)
+  - Grep
 model: opus
 ---
 

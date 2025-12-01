@@ -1,5 +1,36 @@
 ---
-description: "プロジェクトの依存関係とコードベースをスキャンし、既知の脆弱性を検出してレポートを生成します"
+description: |
+  プロジェクトの依存関係とコードベースをスキャンし、
+  既知の脆弱性（CVE）を検出してレポートを生成します。
+
+  🤖 起動エージェント:
+  - Phase 1-2: `.claude/agents/sec-auditor.md` - セキュリティ監査専門
+  - Phase 2: `.claude/agents/dep-mgr.md` - 依存関係脆弱性分析
+
+  📚 利用可能スキル（エージェントが参照）:
+  **sec-auditor用:**
+  - `.claude/skills/code-static-analysis-security/SKILL.md` - コード脆弱性パターン検出
+  - `.claude/skills/dependency-security-scanning/SKILL.md` - 依存関係脆弱性、CVE評価
+  - `.claude/skills/security-reporting/SKILL.md` - セキュリティレポート生成
+
+  **dep-mgr用:**
+  - `.claude/skills/dependency-auditing/SKILL.md` - pnpm audit解析、CVSS スコア
+  - `.claude/skills/semantic-versioning/SKILL.md` - 脆弱性修正バージョン特定
+
+  ⚙️ このコマンドの設定:
+  - argument-hint: なし（プロジェクト全体をスキャン）
+  - allowed-tools: 脆弱性スキャンとレポート生成用
+    • Read: 設定ファイル、コード確認用
+    • Bash: pnpm audit、pnpm audit実行用
+    • Write: 脆弱性レポート生成用
+  - model: sonnet（標準的なスキャンタスク）
+
+  📋 成果物:
+  - `docs/security/vulnerability-report.md`（脆弱性レポート）
+  - 脆弱性一覧（Critical/High/Medium/Low）
+  - 修正アクションプラン
+
+  トリガーキーワード: vulnerability scan, 脆弱性スキャン, pnpm audit, pnpm audit, CVE検出
 allowed-tools:
   - Read
   - Bash
@@ -11,7 +42,7 @@ model: sonnet
 
 **目的**: プロジェクトの依存関係とコードベースを包括的にスキャンし、既知の脆弱性（CVE）を検出してレポートを生成します。
 
-**トリガーキーワード**: vulnerability scan, 脆弱性スキャン, dependency audit, npm audit, pnpm audit, セキュリティチェック, CVE検出, 依存関係監査
+**トリガーキーワード**: vulnerability scan, 脆弱性スキャン, dependency audit, pnpm audit, pnpm audit, セキュリティチェック, CVE検出, 依存関係監査
 
 ---
 
@@ -32,9 +63,9 @@ model: sonnet
 
 **エージェント起動**:
 ```
-@sec-auditor を起動し、以下を依頼:
+`.claude/agents/sec-auditor.md` を起動し、以下を依頼:
 - プロジェクト構造の分析
-- パッケージマネージャーの特定（npm/pnpm/yarn）
+- パッケージマネージャーの特定（pnpm/pnpm/yarn）
 - package.json/package-lock.json の存在確認
 - スキャン範囲の決定
 ```
@@ -54,10 +85,10 @@ model: sonnet
 
 **エージェント起動**:
 ```
-@sec-auditor と @dep-mgr を起動し、以下を依頼:
+`.claude/agents/sec-auditor.md` と `.claude/agents/dep-mgr.md` を起動し、以下を依頼:
 
 【依存関係スキャン】
-- npm audit または pnpm audit の実行
+- pnpm audit または pnpm audit の実行
 - 脆弱性の重大度分類（Critical/High/Medium/Low）
 - 影響範囲の特定
 - スキル参照: `.claude/skills/dependency-auditing/SKILL.md`
@@ -70,9 +101,9 @@ model: sonnet
 
 **実行コマンド例**:
 ```bash
-# npm の場合
-npm audit --json > audit-results.json
-npm audit
+# pnpm の場合
+pnpm audit --json > audit-results.json
+pnpm audit
 
 # pnpm の場合
 pnpm audit --json > audit-results.json
@@ -95,7 +126,7 @@ yarn audit
 
 **エージェント起動**:
 ```
-@sec-auditor を起動し、以下を依頼:
+`.claude/agents/sec-auditor.md` を起動し、以下を依頼:
 - スキャン結果の集約・分析
 - 重大度別の脆弱性分類
 - 修正可能な脆弱性の自動修正提案
@@ -122,7 +153,7 @@ yarn audit
   - 次のアクションプラン
 
 - `scripts/fix-vulnerabilities.sh` (オプション):
-  - 自動修正スクリプト（npm audit fix 等）
+  - 自動修正スクリプト（pnpm audit fix 等）
 
 ---
 
@@ -156,7 +187,7 @@ yarn audit
 ### Critical: `lodash` - Prototype Pollution (CVE-2023-XXXXX)
 - **影響バージョン**: 4.17.15
 - **修正バージョン**: 4.17.21
-- **修正方法**: `npm update lodash`
+- **修正方法**: `pnpm update lodash`
 
 ## 手動対応が必要（12件）
 
@@ -167,7 +198,7 @@ yarn audit
 
 ## 次のアクションプラン
 
-1. Critical脆弱性の即時修正（npm audit fix）
+1. Critical脆弱性の即時修正（pnpm audit fix）
 2. High脆弱性の回避策実装
 3. 1週間以内にパッチ適用の確認
 ```

@@ -12,17 +12,17 @@ description: |
 
   📚 利用可能スキル（各エージェントが必要時に参照）:
 
-  **Phase 1 (@dep-mgr) - pnpm依存関係:**
+  **Phase 1 (dep-mgr) - pnpm依存関係:**
   - `.claude/skills/semantic-versioning/SKILL.md`: SemVer範囲指定、互換性判断
   - `.claude/skills/lock-file-management/SKILL.md`: pnpm-lock.yaml整合性、決定性ビルド
   - `.claude/skills/monorepo-dependency-management/SKILL.md`: pnpm-workspace.yaml設定
 
-  **Phase 2 (@hook-master) - Hooks統合:**
+  **Phase 2 (hook-master) - Hooks統合:**
   - `.claude/skills/git-hooks-concepts/SKILL.md`: pre-commit、pre-push（Husky）
   - `.claude/skills/claude-code-hooks/SKILL.md`: UserPromptSubmit、PreToolUse、PostToolUse
   - `.claude/skills/linting-formatting-automation/SKILL.md`: lint-staged、ESLint/Prettier自動化
 
-  **Phase 3 (@devops-eng) - 環境構成:**
+  **Phase 3 (devops-eng) - 環境構成:**
   - `.claude/skills/docker-best-practices/SKILL.md`: Dockerfile（マルチステージ）、docker-compose.yml
   - `.claude/skills/infrastructure-as-code/SKILL.md`: Railway CLI、railway.json、環境変数管理
 
@@ -46,7 +46,11 @@ description: |
   - PM2設定（local-agent用、ecosystem.config.js）
 
   トリガーキーワード: setup, environment, dev-env, 開発環境, 初期化, pnpm
-allowed-tools: [Task, Read, Write, Bash(pnpm*)]
+allowed-tools:
+   - Task
+   - Read
+   - Write
+   - Bash(pnpm*)
 model: sonnet
 ---
 

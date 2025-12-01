@@ -30,7 +30,13 @@ description: |
 
   トリガーキーワード: page, route, Next.js, App Router, ページ作成
 argument-hint: "[route-path]"
-allowed-tools: [Task, Read, Write(src/app/**), Edit, Grep, Glob]
+allowed-tools:
+  - Task
+  - Read
+  - Write(src/app/**)
+  - Edit
+  - Grep
+  - Glob
 model: sonnet
 ---
 

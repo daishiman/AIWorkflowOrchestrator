@@ -6,10 +6,9 @@ description: |
   MVP向けに最適化された構造（shared/core + shared/infrastructure + features）を作成し、
   TypeScript strict mode、ESLint Flat Config、Vitest、Drizzle、Railway設定を含みます。
 
-  🤖 起動エージェント:
-  - なし（設計書準拠の構造化タスクのため直接実行）
+  🤖 起動エージェント: なし（設計書準拠の構造化タスクのため直接実行）
 
-  📚 参照スキル:
+  📚 利用可能スキル（直接参照）:
   - `.claude/skills/clean-architecture-principles/SKILL.md`: Clean Architecture、依存関係ルール
   - `.claude/skills/architectural-patterns/SKILL.md`: ハイブリッドアーキテクチャパターン
   - `.claude/skills/code-style-guides/SKILL.md`: ディレクトリ命名規則
@@ -28,7 +27,10 @@ description: |
 
   トリガーキーワード: scaffold, init, setup, project-structure, hybrid-architecture, MVP, テンプレート
 argument-hint: "[template-type]"
-allowed-tools: [Bash(mkdir*), Write, Read]
+allowed-tools:
+  - Bash(mkdir*)
+  - Write
+  - Read
 model: sonnet
 ---
 

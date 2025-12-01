@@ -26,7 +26,11 @@ description: |
 
   トリガーキーワード: seed, seeding, 初期データ, テストデータ, マスターデータ
 argument-hint: "[environment]"
-allowed-tools: [Task, Read, Write(src/shared/infrastructure/database/**), Bash(pnpm*|drizzle-kit*|node*)]
+allowed-tools:
+  - Task
+  - Read
+  - Write(src/shared/infrastructure/database/**)
+  - Bash(pnpm*|drizzle-kit*|node*)
 model: sonnet
 ---
 
@@ -86,7 +90,7 @@ model: sonnet
 
 ### Phase 2: エージェント起動と依頼
 
-**@dba-mgr エージェント起動**:
+**`.claude/agents/dba-mgr.md` エージェント起動**:
 
 ```
 あなたは Database Administrator (DBA) です。

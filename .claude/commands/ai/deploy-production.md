@@ -86,7 +86,7 @@ disable-model-invocation: true
 以下の本番デプロイフローを実行してください:
 
 1. **本番ビルド実行**
-   - `NODE_ENV=production npm run build` または `pnpm build`
+   - `NODE_ENV=production pnpm run build` または `pnpm build`
    - ビルド成果物の検証
    - バンドルサイズの確認
 

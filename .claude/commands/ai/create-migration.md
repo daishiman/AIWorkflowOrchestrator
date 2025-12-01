@@ -27,7 +27,12 @@ description: |
 
   トリガーキーワード: migration, schema-change, rollback, Up/Down, Drizzle
 argument-hint: "[migration-name]"
-allowed-tools: [Task, Read, Write(drizzle/**|docs/**), Bash(pnpm drizzle*), Grep]
+allowed-tools:
+  - Task
+  - Read
+  - Write(drizzle/**|docs/**)
+  - Bash(pnpm drizzle*)
+  - Grep
 model: sonnet
 ---
 

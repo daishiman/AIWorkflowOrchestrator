@@ -20,7 +20,12 @@ description: |
 
   トリガーキーワード: changelog, release notes, version, git history
 argument-hint: "[from-tag] [to-tag]"
-allowed-tools: [Task, Bash(git log*|git tag*|git diff*), Read, Write(CHANGELOG.md), Edit]
+allowed-tools:
+  - Task
+  - Bash(git log*|git tag*|git diff*)
+  - Read
+  - Write(CHANGELOG.md)
+  - Edit
 model: sonnet
 ---
 
@@ -54,10 +59,10 @@ else
 fi
 ```
 
-### Phase 2: @spec-writer エージェント起動
+### Phase 2: spec-writer エージェント起動
 
 ```typescript
-@spec-writer を起動し、以下を依頼:
+`.claude/agents/spec-writer.md` を起動し、以下を依頼:
 
 **タスク**: CHANGELOG.mdの自動生成
 **フォーカス**: version-control-for-docsスキルを活用

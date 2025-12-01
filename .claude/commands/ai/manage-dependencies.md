@@ -15,14 +15,18 @@ description: |
   - argument-hint: 更新戦略（patch/minor/major、オプション）
   - allowed-tools: エージェント起動とパッケージ管理用
     • Task: dep-mgrエージェント起動
-    • Bash(pnpm*|npm*): パッケージマネージャー操作
+    • Bash(pnpm*|pnpm*): パッケージマネージャー操作
     • Read: package.json、pnpm-lock.yaml
     • Edit: package.json更新
   - model: sonnet（依存管理タスク）
 
   トリガーキーワード: dependencies, package, update, security, audit, vulnerability
 argument-hint: "[--upgrade-strategy]"
-allowed-tools: [Task, Bash(pnpm*|npm*), Read, Edit]
+allowed-tools:
+  - Task
+  - Bash(pnpm*)
+  - Read
+  - Edit
 model: sonnet
 ---
 
@@ -57,10 +61,10 @@ pnpm outdated
 cat package.json | grep -E '"name"|"version"|"dependencies"'
 ```
 
-### Phase 2: @dep-mgr エージェント起動
+### Phase 2: dep-mgr エージェント起動
 
 ```typescript
-@dep-mgr を起動し、以下を依頼:
+`.claude/agents/dep-mgr.md` を起動し、以下を依頼:
 
 **タスク**: 依存パッケージの監査と更新計画
 **フォーカス**: dependency-auditing, semantic-versioning, upgrade-strategies

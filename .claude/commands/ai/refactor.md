@@ -14,11 +14,16 @@ description: |
 
   ⚙️ このコマンドの設定:
   - model: sonnet (コード変更タスク)
-  - allowed-tools: Task, Read, Edit, MultiEdit, Bash(npm test*|pnpm test*)
+  - allowed-tools: Task, Read, Edit, MultiEdit, Bash(pnpm test*|pnpm test*)
 
   トリガーキーワード: refactor, improve, clean code, リファクタリング, 改善, コード整理
 argument-hint: "<target-file>"
-allowed-tools: ["Task", "Read", "Edit", "MultiEdit", "Bash"]
+allowed-tools:
+   - Task
+   - Read
+   - Edit
+   - MultiEdit
+   - Bash
 model: sonnet
 ---
 
@@ -30,36 +35,36 @@ model: sonnet
 
 ## Phase 1: 分析
 
-1. @logic-dev エージェントをリファクタリングコンテキストで起動
+1. `.claude/agents/logic-dev.md` エージェントをリファクタリングコンテキストで起動
 2. `.claude/skills/code-smell-detection/SKILL.md` を参照して問題特定を行う
 3. `.claude/skills/clean-code-practices/SKILL.md` を参照して品質基準を確認
 4. 引数解析: `$1` でターゲットファイルパスを取得（必須）
-5. @logic-dev エージェントから現在の状態を分析:
+5. `.claude/agents/logic-dev.md` エージェントから現在の状態を分析:
    - Code Smellsを特定（長いメソッド、重複コード、複雑な条件分岐）
    - SOLID原則違反を検出
    - テストカバレッジの可用性を評価
-6. @arch-police エージェントにアーキテクチャ上の懸念を相談
+6. `.claude/agents/arch-police.md` エージェントにアーキテクチャ上の懸念を相談
 
 ## Phase 2: 実装
 
 1. `.claude/skills/refactoring-techniques/SKILL.md` を参照して技法選択を行う
-2. @logic-dev エージェントにリファクタリング実行を委譲:
+2. `.claude/agents/logic-dev.md` エージェントにリファクタリング実行を委譲:
    - 適切な技法を適用（Extract Method、Replace Conditional with Polymorphism等）
    - 単一責任原則を維持
    - 命名の明確性を改善
    - 複雑度とネストを削減
 3. Edit/MultiEditを使用してコード変換を実行
-4. 各リファクタリングステップ後にテストを実行: `pnpm test` または `npm test`
+4. 各リファクタリングステップ後にテストを実行: `pnpm test` または `pnpm test`
 5. テストが失敗した場合はロールバック、テストが通るまで反復
 
 ## Phase 3: 検証
 
 1. `.claude/skills/clean-code-practices/SKILL.md` を参照して品質チェックリストを確認
-2. @arch-police エージェントで検証:
+2. `.claude/agents/arch-police.md` エージェントで検証:
    - アーキテクチャの整合性が維持されているか
    - デザインパターンが正しく適用されているか
    - 新しい技術的負債が導入されていないか
-3. @logic-dev エージェントから最終検証:
+3. `.claude/agents/logic-dev.md` エージェントから最終検証:
    - すべてのテストが通過しているか
    - コード複雑度が削減されているか
    - 可読性が改善されているか

@@ -26,7 +26,13 @@ description: |
 
   トリガーキーワード: schema, zod, validation, バリデーション, スキーマ, 型定義, input validation
 argument-hint: "[schema-name]"
-allowed-tools: [Task, Read, Write(src/**/*.schema.ts|features/**/*.schema.ts), Edit, Grep, Glob]
+allowed-tools:
+  - Task
+  - Read
+  - Write(src/**/*.schema.ts|features/**/*.schema.ts)
+  - Edit
+  - Grep
+  - Glob
 model: sonnet
 ---
 

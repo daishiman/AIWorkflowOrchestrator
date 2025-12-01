@@ -17,7 +17,12 @@ description: |
 
   トリガーキーワード: code quality, analyze, metrics, complexity, 品質分析, メトリクス, 複雑度
 argument-hint: "[directory]"
-allowed-tools: ["Task", "Grep", "Glob", "Bash", "Write"]
+allowed-tools:
+   - Task
+   - Grep
+   - Glob
+   - Bash
+   - Write"
 model: sonnet
 ---
 
@@ -29,7 +34,7 @@ model: sonnet
 
 ## Phase 1: 準備
 
-1. @code-quality エージェントを分析コンテキストで起動
+1. `.claude/agents/code-quality.md` エージェントを分析コンテキストで起動
 2. `.claude/skills/static-analysis/SKILL.md` を参照して分析フレームワークを確認
 3. 引数解析: `$1` でターゲットディレクトリを取得（デフォルト: `src/`）
 4. Globパターンを使用してファイルスコープを特定
@@ -38,7 +43,7 @@ model: sonnet
 
 1. `.claude/skills/code-smell-detection/SKILL.md` を参照して検出パターンを確認
 2. `.claude/skills/code-style-guides/SKILL.md` を参照してスタイル準拠を確認
-3. @code-quality エージェントに多次元分析を委譲:
+3. `.claude/agents/code-quality.md` エージェントに多次元分析を委譲:
    - 循環的複雑度メトリクス
    - コード重複検出
    - Code Smells特定（長いメソッド、God Class等）
@@ -50,7 +55,7 @@ model: sonnet
 ## Phase 3: 検証とレポート生成
 
 1. `.claude/skills/static-analysis/SKILL.md` を参照してレポート構造を確認
-2. @code-quality エージェントから分析結果を集約
+2. `.claude/agents/code-quality.md` エージェントから分析結果を集約
 3. `docs/quality-reports/quality-analysis-[timestamp].md` に包括的レポート生成:
    - エグゼクティブサマリー（総合品質スコア）
    - ファイル/モジュール別の複雑度メトリクス
