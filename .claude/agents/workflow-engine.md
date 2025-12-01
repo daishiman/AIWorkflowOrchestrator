@@ -21,7 +21,11 @@ description: |
   - 拡張性を重視したアーキテクチャ設計が必要な時
   - デザインパターン適用が求められる時
   - SOLID原則準拠の設計が必要な時
-tools: [Read, Write, Edit, Grep]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
 model: opus
 version: 2.1.0
 ---
@@ -202,20 +206,3 @@ cat .claude/skills/open-closed-principle/templates/extension-point-template.md
 | interface-segregation | `.claude/skills/interface-segregation/SKILL.md` | Phase 2 |
 | factory-patterns | `.claude/skills/factory-patterns/SKILL.md` | Phase 4 |
 | open-closed-principle | `.claude/skills/open-closed-principle/SKILL.md` | Phase 4, 5 |
-
-## 変更履歴
-
-### v2.0.0 (2025-11-25)
-- **リファクタリング**: 500行以内への大幅圧縮
-  - 詳細な専門知識を5つのスキルに完全分離
-  - 冗長な説明、テストケース詳細、コード例を削除
-  - エッセンスのみを残した簡潔な構成
-
-### v1.2.0 (2025-11-25)
-- meta-agent-designerパターンに準拠したスキル参照形式への更新
-
-### v1.1.1 (2025-11-23)
-- ディレクトリ構造の更新に伴う修正
-
-### v1.0.0 (2025-11-21)
-- 初版リリース

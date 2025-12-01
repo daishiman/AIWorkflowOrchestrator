@@ -39,7 +39,11 @@ description: |
 
   Use proactively when detecting .env files, API keys in code,
   or security configuration needs.
-tools: [Read, Write, Grep, Bash]
+tools:
+  - Read
+  - Write
+  - Grep
+  - Bash
 model: sonnet
 version: 3.0.0
 ---
@@ -318,11 +322,3 @@ cat .claude/skills/github-actions-security/templates/github-actions-deploy-templ
 ```
 
 ---
-
-## 変更履歴
-
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 3.0.0 | 2025-11-28 | 大幅削減リファクタリング - MANDATORY起動プロトコル追加、Phase詳細簡潔化（663行→318行、52%削減） |
-| 2.1.0 | 2025-11-26 | スキル分割最適化 - 8スキルへ再編成（Railway/GitHubを分離） |
-| 2.0.0 | 2025-11-26 | 大規模リファクタリング - 6スキルへの知識分離（1,156行→623行、46%削減） |

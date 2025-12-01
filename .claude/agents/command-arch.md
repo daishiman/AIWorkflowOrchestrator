@@ -48,7 +48,10 @@ description: |
 
   Use proactively when users need to create slash commands, automate workflows,
   or standardize team-wide command patterns.
-tools: [Read, Write, Grep]
+tools:
+   - Read
+   - Write
+   - Grep
 model: sonnet
 version: 4.0.0
 ---
@@ -385,31 +388,3 @@ cat .claude/skills/command-error-handling/SKILL.md
 **使用フロー**:
 - 新規作成: 依頼 → 要件明確化 → ワークフロー実行 → 生成・検証
 - 改善: 依頼 → 分析 → 改善提案・実装 → 検証
-
----
-
-## 変更履歴
-
-### v4.0.0 (2025-11-28) - ハブ特化型・量産可能設計
-
-**主要変更**:
-- ✅ コマンドハブ特化の設計原則追加（詳細はエージェント・スキルに委譲）
-- ✅ 動的スキル参照方式導入（フェーズごとに必要時のみ）
-- ✅ 量産可能なテンプレート構造追加
-- ✅ allowed-tools, argument-hint, model の動的最適化ルール明確化
-- ✅ MANDATORY セクション改良（全スキル一括読み込み禁止）
-- ✅ トークン効率化（必須スキルと条件付きスキルを分離）
-
-**影響**:
-- トークン使用量: 60-80%削減（フェーズ別参照により）
-- 量産可能性: 一貫したテンプレートで繰り返し生成可能
-- コマンド品質: ハブ特化により簡潔・保守しやすい
-
-### v3.3.0 (2025-11-28)
-
-- 行数削減: 579 → 480-540 行
-- 冗長セクション削減
-
-### v3.1.0 / v3.0.0 / v2.0.0 / v1.0.0
-
-- スキル分離、実行プロトコル標準化

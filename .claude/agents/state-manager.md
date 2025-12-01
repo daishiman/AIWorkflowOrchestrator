@@ -31,7 +31,11 @@ description: |
 
   Use proactively when user mentions state management, data fetching,
   re-rendering issues, or React performance optimization.
-tools: [Read, Write, Edit, Grep]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
 model: sonnet
 version: 3.0.0
 ---
@@ -440,30 +444,3 @@ cat .claude/skills/performance-optimization-react/SKILL.md
 - **@state-manager**: 状態管理の実装（本エージェント）
 
 ---
-
-## 変更履歴
-
-### v3.0.0 (2025-11-27)
-- **破壊的変更**: 詳細知識を6つのスキルに完全分離
-  - `react-hooks-advanced`: Hooks最適化パターン
-  - `data-fetching-strategies`: データフェッチ戦略
-  - `state-lifting`: 状態配置設計
-  - `custom-hooks-patterns`: カスタムフック設計
-  - `error-boundary`: エラーハンドリング
-  - `performance-optimization-react`: パフォーマンス最適化
-- エージェント本体を400-500行に削減（1432行 → 約480行、削減率66.5%）
-- **MANDATORY起動プロトコル**追加（スキル読み込み必須化）
-- コマンドリファレンス追加（スキルアクセス方法明記）
-- ワークフロー概要化（詳細はスキルに移動）
-
-### v1.2.0 (2025-11-23)
-- テスト駆動開発（TDD）サイクル追加
-- Vitestテスト戦略設計セクション追加
-- ステップ12をテスト戦略設計に変更（実装は@unit-testerに委譲）
-
-### v1.1.1 (2025-11-23)
-- description修正（YAML Frontmatter）
-- 依存スキル記述追加
-
-### v1.1.0 (2025-11-21)
-- 初版リリース（専門知識統合版）

@@ -13,7 +13,11 @@ description: |
   - security-headers: CSP、HSTS、X-Frame-Options、CSRF対策
 
   パス: .claude/skills/[スキル名]/SKILL.md
-tools: [Read, Write, Edit, Grep]
+tools:
+   - Read
+   - Write
+   - Edit
+   - Grep
 model: sonnet
 version: 3.0.0
 ---
@@ -421,26 +425,3 @@ OAuth 2.0とNextAuth.jsを用いた堅牢な認証・認可システムが実装
 - [ ] Cookie属性を安全に設定する必要がある
 
 ---
-
-## 変更履歴
-
-### v3.0.0 (2025-11-28)
-- @skill-librarian/@meta-agent-designerフォーマットに準拠
-- 604行→400行（約34%削減）
-- Phase詳細ステップを簡潔化
-- 冗長な説明と繰り返しを削除
-- 「使用上の注意」「依存関係」セクションを削除
-- ツール使用方針を簡潔化
-- YAML description形式をv2.1.0統一フォーマットに準拠
-
-### v2.1.0
-- 依存スキル形式をv2.1.0統一フォーマットに準拠
-- コマンドリファレンスセクションを追加
-- スキル管理セクションを詳細化
-
-### v2.0.0
-- 5個のスキルに専門知識を分離
-- OAuth 2.0フロー実装の強化
-
-### v1.0.0
-- 初期リリース

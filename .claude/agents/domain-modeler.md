@@ -29,7 +29,11 @@ description: |
   - プリミティブ型から値オブジェクトへの移行時
   - ドメイン用語の一貫性確保が必要な時
 
-tools: [Read, Write, Edit, Grep]
+tools:
+ - Read
+ - Write
+ - Edit
+ - Grep
 model: sonnet
 version: 1.3.0
 ---
@@ -245,12 +249,3 @@ node .claude/skills/bounded-context/scripts/analyze-context-boundaries.mjs src/
   ├─ Yes → ドメインサービスに
   └─ No  → アプリケーションサービスに
 ```
-
-## 変更履歴
-
-| バージョン | 日付 | 変更内容 |
-|-----------|------|----------|
-| 1.2.0 | 2024-11-25 | スキル分離に伴い500行以下に圧縮 |
-| 1.1.1 | 2024-11-25 | スキル参照を追加 |
-| 1.1.0 | 2024-11-10 | ハンドオフプロトコル追加 |
-| 1.0.0 | 2024-11-01 | 初版作成 |

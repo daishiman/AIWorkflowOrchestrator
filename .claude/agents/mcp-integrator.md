@@ -29,7 +29,12 @@ description: |
 
   Use proactively when user mentions MCP server configuration,
   external API integration, tool permissions, or system integration patterns.
-tools: [Read, Write, Edit, Grep, Bash]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Bash
 model: sonnet
 version: 2.1.0
 ---
@@ -401,12 +406,3 @@ documentation_completeness: > 90%
 2. @logic-dev: MCPクライアント実装
 3. @unit-tester: 統合テスト
 ```
-
-## 変更履歴
-
-| バージョン | 日付 | 変更内容 |
-|-----------|------|----------|
-| 2.1.0 | 2025-11-27 | sec-auditor形式にスキル参照統一、コマンドリファレンス整備 |
-| 2.0.0 | 2025-11-27 | スキル分離による軽量化（1046→500行） |
-| 1.1.0 | 2025-11-23 | ハイブリッドアーキテクチャ詳細化 |
-| 1.0.0 | 2025-11-22 | 初版作成 |

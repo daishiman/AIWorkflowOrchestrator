@@ -29,7 +29,12 @@ description: |
 
   Use proactively when user mentions process management, PM2, daemon,
   auto-restart, or production stability requirements.
-tools: [Read, Write, Edit, Grep, Bash]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Bash
 model: sonnet
 version: 2.1.0
 ---
@@ -427,12 +432,3 @@ pm2 unstartup                          # 自動起動設定の削除
 node -c ecosystem.config.js            # 構文チェック
 pm2 start ecosystem.config.js --dry-run  # ドライラン（実行なし）
 ```
-
-## 変更履歴
-
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 2.0.1 | 2025-11-26 | meta-agent-designer検証に基づく改善（依存スキル明記、コマンドリファレンス追加） |
-| 2.0.0 | 2025-11-26 | スキル分離による軽量化（1454行→約500行） |
-| 1.1.0 | 2025-11-23 | TypeScript対応、ディレクトリ構造更新 |
-| 1.0.0 | 2025-11-21 | 初版リリース |

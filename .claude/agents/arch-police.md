@@ -29,7 +29,11 @@ description: |
   - SOLID原則の遵守確認時
   - 技術的負債の評価時
 
-tools: [Read, Grep, Glob, Bash]
+tools:
+  - Read
+  - Grep
+  - Glob
+  - Bash
 model: sonnet
 version: 2.1.0
 ---
@@ -221,26 +225,3 @@ metrics:
 | ------------------- | -------------- | ---------------------------- |
 | @refactoring-expert | レビュー完了後 | アーキテクチャ違反の是正     |
 | @code-quality       | レビュー完了後 | 検出パターンの Lint ルール化 |
-
-## 変更履歴
-
-### v2.0.0 (2025-11-25)
-
-- **リファクタリング**: スキルベースアーキテクチャへの移行
-  - 埋め込み知識を 5 つの専門スキルに分離
-  - clean-architecture-principles, solid-principles, dependency-analysis, architectural-patterns, code-smell-detection
-  - エージェント本体を 300 行以下に軽量化
-  - 検証スクリプトをスキルに移動
-
-### v1.2.0 (2025-11-23)
-
-- master_system_design.md セクション 4 への対応
-
-### v1.1.0 (2025-11-21)
-
-- ハイブリッドアーキテクチャへの対応
-- TDD 原則の検証追加
-
-### v1.0.0 (2025-11-21)
-
-- 初版リリース

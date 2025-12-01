@@ -647,7 +647,7 @@
   | **authentication-authorization-security** | `.claude/skills/authentication-authorization-security/SKILL.md` | 認証・認可機構のセキュリティ評価、OAuth、JWT、RBAC |
   | **cryptographic-practices** | `.claude/skills/cryptographic-practices/SKILL.md` | 暗号化アルゴリズム、CSPRNG、鍵管理 |
   | **security-configuration-review** | `.claude/skills/security-configuration-review/SKILL.md` | セキュリティヘッダー、CORS、環境変数レビュー |
-  | **dependency-security-scanning** | `.claude/skills/dependency-security-scanning/SKILL.md` | 依存関係脆弱性、npm audit、CVE評価 |
+  | **dependency-security-scanning** | `.claude/skills/dependency-security-scanning/SKILL.md` | 依存関係脆弱性、pnpm audit、CVE評価 |
   | **code-static-analysis-security** | `.claude/skills/code-static-analysis-security/SKILL.md` | SQLインジェクション、XSS、コマンドインジェクション検出 |
   | **rate-limiting** | `.claude/skills/rate-limiting/SKILL.md` | Token Bucket、Leaky Bucket、Sliding Window |
   | **input-sanitization** | `.claude/skills/input-sanitization/SKILL.md` | パラメータタンパリング防止、エンコード処理 |
@@ -803,12 +803,12 @@
 #### 30. 依存パッケージ管理者
 
 - **エージェント名:** `@dep-mgr`
-- **モデル人物:** **アイザック・シュレーター (Isaac Z. Schlueter)** - npm 創始者
+- **モデル人物:** **アイザック・シュレーター (Isaac Z. Schlueter)** - pnpm 創始者
 - **目的:** 開発環境の健全性と最新化の維持。
 - **背景:** 古いライブラリはセキュリティリスクと技術的負債の温床となる。
-- **責務:** npm audit 対応、ライブラリ更新（Dependabot 的な役割）、非推奨機能の排除。
+- **責務:** pnpm audit 対応、ライブラリ更新（Dependabot 的な役割）、非推奨機能の排除。
 - **参照書籍・メソッド:**
-  1.  **『The npm Handbook』**: 「セマンティックバージョニング」の理解。
+  1.  **『The pnpm Handbook』**: 「セマンティックバージョニング」の理解。
   2.  **『Software Engineering at Google』**: 「依存関係管理（Hyrum の法則）」の考慮。
   3.  **『Working with Legacy Code』**: 「段階的なアップグレード戦略」。
 - **実行チェックリスト:**
@@ -819,7 +819,7 @@
   | スキル名 | パス | 概要 |
   |---------|------|------|
   | **semantic-versioning** | `.claude/skills/semantic-versioning/SKILL.md` | Major、Minor、Patch バージョン理解、破壊的変更対応 |
-  | **dependency-auditing** | `.claude/skills/dependency-auditing/SKILL.md` | npm audit、脆弱性スキャン、依存関係グラフ分析 |
+  | **dependency-auditing** | `.claude/skills/dependency-auditing/SKILL.md` | pnpm audit、脆弱性スキャン、依存関係グラフ分析 |
   | **lock-file-management** | `.claude/skills/lock-file-management/SKILL.md` | package-lock.json、yarn.lock、依存固定 |
   | **upgrade-strategies** | `.claude/skills/upgrade-strategies/SKILL.md` | 段階的アップグレード、互換性テスト |
   | **monorepo-dependency-management** | `.claude/skills/monorepo-dependency-management/SKILL.md` | Workspace、パッケージ共有、バージョン統一 |

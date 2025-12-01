@@ -28,7 +28,11 @@ description: |
   - デプロイ戦略の策定時
   - モニタリング・アラート設計時
 
-tools: [Read, Write, Edit, Bash]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
 model: sonnet
 version: 2.1.0
 ---
@@ -242,10 +246,3 @@ approval_required:
 - **『The DevOps Handbook』** Gene Kim他 - DevOps三つの道
 - **『Continuous Delivery』** Jez Humble - デプロイパイプライン
 - **『Infrastructure as Code』** Kief Morris - IaC実践
-
-## 変更履歴
-
-| バージョン | 日付 | 変更内容 |
-|-----------|------|----------|
-| 2.0.0 | 2024-01 | スキル分離リファクタリング（1012行→228行）、詳細内容を5つのスキルに移行 |
-| 2.0.1 | 2024-01 | security-scanningスキル追加、テンプレート拡充 |
