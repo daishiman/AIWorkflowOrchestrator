@@ -251,7 +251,7 @@ fi
 if [ ! -d "node_modules" ]; then
   echo "❌ Error: Dependencies not installed"
   echo ""
-  echo "Please run: npm install"
+  echo "Please run: pnpm install"
   exit 1
 fi
 ```
@@ -265,24 +265,24 @@ fi
 Run tests and quality checks:
 ```bash
 echo "🧪 Running tests..."
-if ! npm test; then
+if ! pnpm test; then
   echo ""
   echo "❌ Error: Tests failed"
   echo ""
   echo "Please fix failing tests before deployment"
   echo ""
   echo "To see detailed test output:"
-  echo "  npm test -- --verbose"
+  echo "  pnpm test -- --verbose"
   exit 1
 fi
 
 echo "📝 Running linter..."
-if ! npm run lint; then
+if ! pnpm run lint; then
   echo ""
   echo "❌ Error: Lint checks failed"
   echo ""
   echo "To auto-fix some issues:"
-  echo "  npm run lint -- --fix"
+  echo "  pnpm run lint -- --fix"
   exit 1
 fi
 ```
@@ -299,7 +299,7 @@ Execute and verify each step:
 ```bash
 # Build
 echo "🏗️  Building..."
-if ! npm run build; then
+if ! pnpm run build; then
   echo "❌ Build failed"
   exit 1
 fi
@@ -380,7 +380,7 @@ echo "✅ Backup created: $BACKUP_TAG"
 ```bash
 set -e  # Exit on error
 
-if ! npm run build; then
+if ! pnpm run build; then
   echo "❌ Build failed, no rollback needed"
   exit 1
 fi

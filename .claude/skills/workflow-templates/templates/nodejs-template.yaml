@@ -1,7 +1,7 @@
 # Node.js CI/CD Workflow Template
 # Node.jsプロジェクト専用のCI/CDワークフローテンプレート
 #
-# 対応パッケージマネージャー: npm, pnpm, yarn
+# 対応パッケージマネージャー: pnpm, pnpm, yarn
 # 自動検出: ロックファイルに基づいてパッケージマネージャーを判定
 
 name: Node.js CI/CD
@@ -37,9 +37,9 @@ jobs:
           elif [ -f "yarn.lock" ]; then
             echo "manager=yarn" >> $GITHUB_OUTPUT
           elif [ -f "package-lock.json" ]; then
-            echo "manager=npm" >> $GITHUB_OUTPUT
+            echo "manager=pnpm" >> $GITHUB_OUTPUT
           else
-            echo "manager=npm" >> $GITHUB_OUTPUT
+            echo "manager=pnpm" >> $GITHUB_OUTPUT
           fi
 
   lint:
@@ -66,8 +66,8 @@ jobs:
       - name: Install dependencies
         run: |
           case "${{ needs.setup.outputs.package-manager }}" in
-            npm)
-              npm ci
+            pnpm)
+              pnpm ci
               ;;
             pnpm)
               pnpm install --frozen-lockfile
@@ -80,7 +80,7 @@ jobs:
       - name: Run linter
         run: |
           case "${{ needs.setup.outputs.package-manager }}" in
-            npm) npm run lint ;;
+            pnpm) pnpm run lint ;;
             pnpm) pnpm lint ;;
             yarn) yarn lint ;;
           esac
@@ -89,7 +89,7 @@ jobs:
       - name: Type check
         run: |
           case "${{ needs.setup.outputs.package-manager }}" in
-            npm) npm run type-check || echo "No type-check script" ;;
+            pnpm) pnpm run type-check || echo "No type-check script" ;;
             pnpm) pnpm type-check || echo "No type-check script" ;;
             yarn) yarn type-check || echo "No type-check script" ;;
           esac
@@ -123,7 +123,7 @@ jobs:
       - name: Install dependencies
         run: |
           case "${{ needs.setup.outputs.package-manager }}" in
-            npm) npm ci ;;
+            pnpm) pnpm ci ;;
             pnpm) pnpm install --frozen-lockfile ;;
             yarn) yarn install --frozen-lockfile ;;
           esac
@@ -131,7 +131,7 @@ jobs:
       - name: Run tests
         run: |
           case "${{ needs.setup.outputs.package-manager }}" in
-            npm) npm test ;;
+            pnpm) pnpm test ;;
             pnpm) pnpm test ;;
             yarn) yarn test ;;
           esac
@@ -166,7 +166,7 @@ jobs:
       - name: Install dependencies
         run: |
           case "${{ needs.setup.outputs.package-manager }}" in
-            npm) npm ci ;;
+            pnpm) pnpm ci ;;
             pnpm) pnpm install --frozen-lockfile ;;
             yarn) yarn install --frozen-lockfile ;;
           esac
@@ -174,7 +174,7 @@ jobs:
       - name: Build project
         run: |
           case "${{ needs.setup.outputs.package-manager }}" in
-            npm) npm run build ;;
+            pnpm) pnpm run build ;;
             pnpm) pnpm build ;;
             yarn) yarn build ;;
           esac
@@ -216,7 +216,7 @@ jobs:
       - name: Install dependencies
         run: |
           case "${{ needs.setup.outputs.package-manager }}" in
-            npm) npm ci ;;
+            pnpm) pnpm ci ;;
             pnpm) pnpm install --frozen-lockfile ;;
             yarn) yarn install --frozen-lockfile ;;
           esac
@@ -228,7 +228,7 @@ jobs:
       - name: Run E2E tests
         run: |
           case "${{ needs.setup.outputs.package-manager }}" in
-            npm) npm run test:e2e ;;
+            pnpm) pnpm run test:e2e ;;
             pnpm) pnpm test:e2e ;;
             yarn) yarn test:e2e ;;
           esac
@@ -267,7 +267,7 @@ jobs:
       - name: Run security audit
         run: |
           case "${{ needs.setup.outputs.package-manager }}" in
-            npm) npm audit --audit-level=high ;;
+            pnpm) pnpm audit --audit-level=high ;;
             pnpm) pnpm audit --audit-level=high ;;
             yarn) yarn audit --level high ;;
           esac

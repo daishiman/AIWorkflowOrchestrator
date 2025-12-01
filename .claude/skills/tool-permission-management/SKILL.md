@@ -106,7 +106,7 @@ approval_required: true
 approval_required_for:
   - "rm *"
   - "git push"
-  - "npm publish"
+  - "pnpm publish"
 ```
 
 ### Phase 4: Bash 制限

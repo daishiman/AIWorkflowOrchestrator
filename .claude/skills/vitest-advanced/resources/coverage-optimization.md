@@ -273,8 +273,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-      - run: npm ci
-      - run: npm run test:coverage
+      - run: pnpm ci
+      - run: pnpm run test:coverage
 
       # Codecovにアップロード
       - uses: codecov/codecov-action@v4

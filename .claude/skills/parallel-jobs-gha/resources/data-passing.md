@@ -103,7 +103,7 @@ jobs:
 
       - id: coverage
         run: |
-          COVERAGE=$(npm test -- --coverage | grep "All files" | awk '{print $10}')
+          COVERAGE=$(pnpm test -- --coverage | grep "All files" | awk '{print $10}')
           echo "percentage=$COVERAGE" >> $GITHUB_OUTPUT
 
       - id: files
@@ -113,7 +113,7 @@ jobs:
 
       - id: test
         run: |
-          if npm test; then
+          if pnpm test; then
             echo "status=passed" >> $GITHUB_OUTPUT
           else
             echo "status=failed" >> $GITHUB_OUTPUT
@@ -139,7 +139,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm run build
+      - run: pnpm run build
 
       - uses: actions/upload-artifact@v4
         with:
@@ -157,7 +157,7 @@ jobs:
           name: dist
           path: dist/
 
-      - run: npm test
+      - run: pnpm test
 ```
 
 ### 複数Artifactsの受け渡し
@@ -168,7 +168,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm run build
+      - run: pnpm run build
 
       # ビルド成果物
       - uses: actions/upload-artifact@v4
@@ -197,7 +197,7 @@ jobs:
           name: build-output
           path: dist/
 
-      - run: npm run deploy
+      - run: pnpm run deploy
 
   report:
     needs: build
@@ -208,7 +208,7 @@ jobs:
           name: coverage-report
           path: coverage/
 
-      - run: npm run report:coverage
+      - run: pnpm run report:coverage
 ```
 
 ### Artifactのパス指定
@@ -219,7 +219,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm run build
+      - run: pnpm run build
 
       # 特定ファイルのみアップロード
       - uses: actions/upload-artifact@v4
@@ -248,7 +248,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm run build
+      - run: pnpm run build
 
       # 短期間保持（7日）
       - uses: actions/upload-artifact@v4
@@ -283,7 +283,7 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - run: npm run build
+      - run: pnpm run build
 
       - uses: actions/upload-artifact@v4
         with:
@@ -319,7 +319,7 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
       - if: steps.cache.outputs.cache-hit != 'true'
-        run: npm ci
+        run: pnpm ci
 
   build:
     needs: dependencies
@@ -333,7 +333,7 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
-      - run: npm run build
+      - run: pnpm run build
 
       # Artifactでビルド成果物を共有
       - uses: actions/upload-artifact@v4
@@ -359,7 +359,7 @@ jobs:
           name: dist
           path: dist/
 
-      - run: npm test
+      - run: pnpm test
 ```
 
 ### パターン3: 条件付きArtifactダウンロード
@@ -370,7 +370,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm run build
+      - run: pnpm run build
 
       - uses: actions/upload-artifact@v4
         with:
@@ -387,7 +387,7 @@ jobs:
           name: dist
           path: dist/
 
-      - run: npm run deploy:staging
+      - run: pnpm run deploy:staging
 
   deploy-production:
     needs: build
@@ -399,7 +399,7 @@ jobs:
           name: dist
           path: dist/
 
-      - run: npm run deploy:production
+      - run: pnpm run deploy:production
 ```
 
 ### パターン4: Outputsによる動的Artifact名
@@ -419,7 +419,7 @@ jobs:
           NAME="build-v${VERSION}-${GITHUB_SHA::7}"
           echo "name=$NAME" >> $GITHUB_OUTPUT
 
-      - run: npm run build
+      - run: pnpm run build
 
       - uses: actions/upload-artifact@v4
         with:
@@ -435,7 +435,7 @@ jobs:
           name: ${{ needs.build.outputs.artifact-name }}
           path: dist/
 
-      - run: npm run deploy
+      - run: pnpm run deploy
 ```
 
 ## ベストプラクティス
@@ -531,7 +531,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm run build
+      - run: pnpm run build
 
       # 圧縮してからアップロード
       - run: tar -czf dist.tar.gz dist/
@@ -550,7 +550,7 @@ jobs:
           name: dist-compressed
 
       - run: tar -xzf dist.tar.gz
-      - run: npm run deploy
+      - run: pnpm run deploy
 ```
 
 ### 2. 並列Artifactアップロード
@@ -561,7 +561,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm run build
+      - run: pnpm run build
 
       # 並列アップロード（GitHub Actionsが自動的に並列化）
       - uses: actions/upload-artifact@v4

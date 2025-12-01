@@ -56,7 +56,7 @@ jobs:
         run: pnpm test
 ```
 
-### npm + GitHub Actions
+### pnpm + GitHub Actions
 
 ```yaml
 name: CI
@@ -74,16 +74,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       - name: Test
-        run: npm test
+        run: pnpm test
 ```
 
 ### yarn + GitHub Actions

@@ -157,7 +157,11 @@ description: |
   Use proactively when user mentions creating skills, refactoring agents,
   optimizing existing skills, documenting best practices, or organizing knowledge
   for Claude Code agents.
-tools: [Read, Write, Grep, Bash]
+tools:
+  - Read
+  - Write
+  - Grep
+  - Bash
 model: sonnet
 version: 2.1.0
 ---
@@ -205,7 +209,11 @@ description: |
 
   Use proactively when creating or optimizing GitHub Actions workflows,
   implementing CI/CD pipelines, improving security, or reducing execution costs.
-tools: [Read, Write, Grep, Bash]
+tools:
+  - Read
+  - Write
+  - Grep
+  - Bash
 model: sonnet
 version: 2.0.0
 ---

@@ -50,7 +50,7 @@
 
 ### 使用ツール
 
-- npm audit / Snyk（依存関係スキャン）
+- pnpm audit / Snyk（依存関係スキャン）
 - ESLint security plugin（静的解析）
 - 手動コードレビュー（OWASP Top 10基準）
 - {{ADDITIONAL_TOOLS}}
@@ -127,7 +127,7 @@
 
 ```bash
 # 直接依存関係
-npm install {{PACKAGE_NAME}}@{{FIXED_VERSION}}
+pnpm install {{PACKAGE_NAME}}@{{FIXED_VERSION}}
 
 # 推移的依存関係（package.jsonに追加）
 {
@@ -221,14 +221,14 @@ app.post('/api/login', loginLimiter, loginHandler);
 
 ```yaml
 # .github/workflows/security.yml
-- run: npm audit --audit-level=moderate
+- run: pnpm audit --audit-level=moderate
 - run: npx eslint --ext .js,.ts src/
 - uses: snyk/actions/node@master
 ```
 
 ### 定期監査
 
-- 週次: npm audit
+- 週次: pnpm audit
 - 月次: 包括的スキャン
 - 四半期: 外部ペネトレーションテスト（推奨）
 

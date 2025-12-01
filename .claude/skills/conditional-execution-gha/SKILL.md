@@ -102,7 +102,7 @@ node .claude/skills/conditional-execution-gha/scripts/analyze-conditions.mjs <wo
 # ステップレベル
 - name: Deploy
   if: github.ref == 'refs/heads/main'
-  run: npm run deploy
+  run: pnpm run deploy
 
 # ジョブレベル
 deploy:

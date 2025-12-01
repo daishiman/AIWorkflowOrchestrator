@@ -131,12 +131,17 @@ description: |
 
   ⚙️ このコマンドの設定:
   - argument-hint: [引数設計の根拠]
-  - allowed-tools: [ツールセット + 用途]
+  - allowed-tools:
+    - [ツールセット]
+    - [ツールセット]
   - model: [選択理由]
 
   トリガーキーワード: [キーワード]
 argument-hint: "[args]"
-allowed-tools: [Task, Read, Write([path]/**)]
+allowed-tools:
+  - Task
+  - Read
+  - Write([path]/**)
 model: sonnet
 ---
 
@@ -266,7 +271,7 @@ argument-hint: [issue-number] [priority]
 allowed-tools: ToolName, ToolName, ...
 
 # パターンマッチング
-allowed-tools: Bash(git*), Bash(npm*)
+allowed-tools: Bash(git*), Bash(pnpm*)
 
 # パス制限
 allowed-tools: Write(src/**/*.js), Read(*.md)
@@ -307,42 +312,76 @@ allowed-tools: |
 
 ```yaml
 # パターン1: エージェント起動のみ（最小）
-allowed-tools: [Task, Read]
+allowed-tools:
+  - Task
+  - Read
 用途: シンプルなエージェント委譲、既存ファイル確認のみ
 例: /ai:analyze, /ai:review
 
 # パターン2: ファイル生成あり（制限付き書き込み）
-allowed-tools: [Task, Read, Write(.claude/[特定パス]/**)]
+allowed-tools:
+  - Task
+  - Read
+  - Write(.claude/[特定パス]/**)
 用途: .claude/ ディレクトリ内の生成、特定パスへの書き込み制限
 例: /ai:create-agent, /ai:create-skill, /ai:create-command
 
 # パターン3: 検索・パターン確認あり
-allowed-tools: [Task, Read, Grep, Glob, Write([パス]/**)]
+allowed-tools:
+  - Task
+  - Read
+  - Grep
+  - Glob
+  - Write([パス]/**)
 用途: 既存パターン確認、重複チェック、ファイル生成
 例: /ai:refactor, /ai:optimize
 
 # パターン4: 編集操作あり
-allowed-tools: [Task, Read, Edit, Grep, Glob]
+allowed-tools:
+  - Task
+  - Read
+  - Edit
+  - Grep
+  - Glob
 用途: 既存ファイルの部分編集、パターン検索
 例: /ai:fix-bugs, /ai:update-docs
 
 # パターン5: Bash実行あり（制限付き）
-allowed-tools: [Task, Read, Bash(git*), Write([パス]/**)]
+allowed-tools:
+  - Task
+  - Read
+  - Bash(git*)
+  - Write([パス]/**)
 用途: Git操作、バージョン管理
 例: /ai:commit, /ai:create-pr
 
 # パターン6: パッケージ管理
-allowed-tools: [Task, Read, Bash(npm*|pnpm*|yarn*), Write(package.json)]
+allowed-tools:
+  - Task
+  - Read
+  - Bash(pnpm*)
+  - Write(package.json)
 用途: 依存関係管理、パッケージインストール
 例: /ai:add-dependency, /ai:update-dependencies
 
 # パターン7: ビルド・テスト実行
-allowed-tools: [Task, Read, Bash(npm run*|pnpm*), Edit]
+allowed-tools:
+  - Task
+  - Read
+  - Bash(pnpm*)
+  - Edit
 用途: ビルド、テスト実行、結果に基づく修正
 例: /ai:build, /ai:test, /ai:lint
 
 # パターン8: 複合ワークフロー（制限付きフルアクセス）
-allowed-tools: [Task, Read, Write(src/**|docs/**), Edit, Bash(git*|npm*), Grep, Glob]
+allowed-tools:
+  - Task
+  - Read
+  - Write(src/**|docs/**)
+  - Edit
+  - Bash(git*|pnpm*)
+  - Grep
+  - Glob
 用途: 複数フェーズの統合ワークフロー、複数ディレクトリへのアクセス
 例: /ai:full-feature-development, /ai:prepare-release
 ```
@@ -350,15 +389,29 @@ allowed-tools: [Task, Read, Write(src/**|docs/**), Edit, Bash(git*|npm*), Grep, 
 **セキュリティ原則**:
 ```yaml
 # ✅ 良い例：最小権限
-allowed-tools: [Task, Read, Write(.claude/commands/**)]
+allowed-tools:
+  - Task
+  - Read
+  - Write(.claude/commands/**)
 理由: 必要なツールのみ、パス制限あり、破壊的操作なし
 
 # ⚠️ 注意が必要：部分的な権限拡大
-allowed-tools: [Task, Read, Edit, Bash(npm test)]
+allowed-tools:
+  - Task
+  - Read
+  - Edit
+  - Bash(pnpm test)
 理由: Edit は慎重に、Bash は制限付きコマンドのみ
 
 # ❌ 悪い例：過剰な権限
-allowed-tools: [Bash, Read, Write, Edit, Task, Grep, Glob]
+allowed-tools:
+  - Bash
+  - Read
+  - Write
+  - Edit
+  - Task
+  - Grep
+  - Glob
 理由: すべてのツール、制限なし、Bash で任意のコマンド実行可能
 ```
 

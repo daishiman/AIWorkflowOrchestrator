@@ -72,7 +72,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm test
+      - run: pnpm test
 ```
 
 **生成されるジョブ**:

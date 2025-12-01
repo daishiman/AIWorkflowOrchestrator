@@ -245,7 +245,7 @@ jobs:
       group: test-${{ github.ref }}
       cancel-in-progress: true
     steps:
-      - run: npm test
+      - run: pnpm test
 
   deploy:
     runs-on: ubuntu-latest

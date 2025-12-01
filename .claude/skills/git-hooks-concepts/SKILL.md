@@ -147,7 +147,7 @@ wait
 ### 3. タイムアウト設定
 
 ```bash
-timeout 30s npm test || exit 1
+timeout 30s pnpm test || exit 1
 ```
 
 ## トラブルシューティング

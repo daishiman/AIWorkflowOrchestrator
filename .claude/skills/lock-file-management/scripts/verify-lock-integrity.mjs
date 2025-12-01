@@ -60,7 +60,7 @@ function detectPackageManager() {
   } else if (existsSync('yarn.lock')) {
     return { name: 'yarn', lockfile: 'yarn.lock' };
   } else if (existsSync('package-lock.json')) {
-    return { name: 'npm', lockfile: 'package-lock.json' };
+    return { name: 'pnpm', lockfile: 'package-lock.json' };
   }
   return null;
 }
@@ -89,7 +89,7 @@ function getLockfileInfo(pm) {
     if (packagesMatch) {
       packageCount = (content.match(/^\s{2}[^\s]/gm) || []).length;
     }
-  } else if (pm.name === 'npm') {
+  } else if (pm.name === 'pnpm') {
     const lock = JSON.parse(content);
     version = String(lock.lockfileVersion || 'unknown');
     packageCount = Object.keys(lock.packages || lock.dependencies || {}).length;
@@ -111,7 +111,7 @@ function getLockfileInfo(pm) {
 function checkSync(pm) {
   const commands = {
     pnpm: 'pnpm install --frozen-lockfile --dry-run 2>&1',
-    npm: 'npm ci --dry-run 2>&1',
+    pnpm: 'pnpm ci --dry-run 2>&1',
     yarn: 'yarn install --immutable --check-cache 2>&1'
   };
 
@@ -185,7 +185,7 @@ function autoFix(pm) {
     // ロックファイルを再生成
     const installCommand = {
       pnpm: 'pnpm install',
-      npm: 'npm install',
+      pnpm: 'pnpm install',
       yarn: 'yarn install'
     };
 

@@ -9,11 +9,11 @@
 ```yaml
 steps:
   - name: Build
-    run: npm run build
+    run: pnpm run build
 
   - name: Deploy (成功時のみ)
     if: success()
-    run: npm run deploy
+    run: pnpm run deploy
 ```
 
 **挙動**:
@@ -29,7 +29,7 @@ steps:
 ```yaml
 steps:
   - name: Run tests
-    run: npm test
+    run: pnpm test
 
   - name: Upload logs (常に実行)
     if: always()
@@ -52,7 +52,7 @@ steps:
 ```yaml
 steps:
   - name: Run tests
-    run: npm test
+    run: pnpm test
 
   - name: Notify on failure
     if: failure()
@@ -74,7 +74,7 @@ steps:
 ```yaml
 steps:
   - name: Long running task
-    run: npm run heavy-task
+    run: pnpm run heavy-task
 
   - name: Cleanup on cancel
     if: cancelled()
@@ -160,7 +160,7 @@ if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/Main'
 
 - name: Deploy if coverage is good
   if: steps.coverage_check.outputs.pass == 'true'
-  run: npm run deploy
+  run: pnpm run deploy
 ```
 
 ### 論理演算子
@@ -261,7 +261,7 @@ steps:
   # Ubuntu + Node 20 の組み合わせでのみ実行
   - name: Integration tests
     if: matrix.os == 'ubuntu-latest' && matrix.node == '20'
-    run: npm run test:integration
+    run: pnpm run test:integration
 
   # Windows 以外で実行
   - name: Unix-specific tests
@@ -345,19 +345,19 @@ deploy-dev:
   if: github.ref == 'refs/heads/develop'
   runs-on: ubuntu-latest
   steps:
-    - run: npm run deploy:dev
+    - run: pnpm run deploy:dev
 
 deploy-staging:
   if: startsWith(github.ref, 'refs/heads/release/')
   runs-on: ubuntu-latest
   steps:
-    - run: npm run deploy:staging
+    - run: pnpm run deploy:staging
 
 deploy-prod:
   if: github.ref == 'refs/heads/main'
   runs-on: ubuntu-latest
   steps:
-    - run: npm run deploy:prod
+    - run: pnpm run deploy:prod
 ```
 
 ### 失敗時の詳細ログ収集
@@ -366,14 +366,14 @@ deploy-prod:
 steps:
   - name: Run tests
     id: tests
-    run: npm test
+    run: pnpm test
 
   - name: Collect debug logs on failure
     if: failure() && steps.tests.conclusion == 'failure'
     run: |
       mkdir -p debug-logs
       docker logs my-container > debug-logs/container.log
-      npm run test -- --verbose > debug-logs/test-verbose.log
+      pnpm run test -- --verbose > debug-logs/test-verbose.log
 
   - name: Upload debug logs
     if: failure()
@@ -417,11 +417,11 @@ jobs:
 steps:
   - name: Run e2e tests
     if: contains(github.event.pull_request.labels.*.name, 'test:e2e')
-    run: npm run test:e2e
+    run: pnpm run test:e2e
 
   - name: Run performance tests
     if: contains(github.event.pull_request.labels.*.name, 'test:perf')
-    run: npm run test:perf
+    run: pnpm run test:perf
 
   - name: Auto-merge
     if: |
@@ -437,11 +437,11 @@ steps:
 ```yaml
 # これらは同じ
 - name: Deploy
-  run: npm run deploy
+  run: pnpm run deploy
 
 - name: Deploy
   if: success()
-  run: npm run deploy
+  run: pnpm run deploy
 ```
 
 ### 2. 複雑な条件は読みやすく

@@ -644,11 +644,11 @@ steps:
   # 複数行
   - run: |
       echo "Building..."
-      npm install
-      npm run build
+      pnpm install
+      pnpm run build
 
   # 複数コマンド (1行)
-  - run: npm install && npm run build
+  - run: pnpm install && pnpm run build
 ```
 
 ### shell
@@ -681,7 +681,7 @@ steps:
 
 ```yaml
 steps:
-  - run: npm install
+  - run: pnpm install
     working-directory: ./frontend
 ```
 
@@ -1073,7 +1073,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: npm test
+      - run: pnpm test
 
   deploy:
     needs: test

@@ -157,7 +157,7 @@ POSTGRES_DB=dbname
 
 **方法1: Railway CLI使用（推奨）**
 ```bash
-railway run npm run dev
+railway run pnpm run dev
 # DATABASE_URLが自動注入される
 ```
 

@@ -204,8 +204,8 @@ CVSSスコアに加えて、以下を評価:
 ### コマンドラインツール
 
 ```bash
-# cvss-calculator npm パッケージ
-npm install -g cvss-calculator
+# cvss-calculator pnpm パッケージ
+pnpm install -g cvss-calculator
 cvss-calculator "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
 ```
 

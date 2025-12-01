@@ -18,8 +18,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: npm ci
-      - run: npm run lint
+      - run: pnpm ci
+      - run: pnpm run lint
 
   type-check:
     runs-on: ubuntu-latest
@@ -28,8 +28,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: npm ci
-      - run: npm run type-check
+      - run: pnpm ci
+      - run: pnpm run type-check
 
   # Phase 2: Build (depends on quality checks)
   build:
@@ -42,8 +42,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: npm ci
-      - run: npm run build
+      - run: pnpm ci
+      - run: pnpm run build
 
       - id: version
         run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
@@ -62,12 +62,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: npm ci
+      - run: pnpm ci
       - uses: actions/download-artifact@v4
         with:
           name: dist
           path: dist/
-      - run: npm run test:unit
+      - run: pnpm run test:unit
 
   test-integration:
     needs: build
@@ -77,12 +77,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: npm ci
+      - run: pnpm ci
       - uses: actions/download-artifact@v4
         with:
           name: dist
           path: dist/
-      - run: npm run test:integration
+      - run: pnpm run test:integration
 
   test-e2e:
     needs: build
@@ -92,12 +92,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: npm ci
+      - run: pnpm ci
       - uses: actions/download-artifact@v4
         with:
           name: dist
           path: dist/
-      - run: npm run test:e2e
+      - run: pnpm run test:e2e
 
   # Phase 4: Deploy (depends on all tests)
   deploy-staging:
@@ -167,8 +167,8 @@ jobs:
         with:
           node-version: '20'
 
-      - run: npm ci
-      - run: npm run build -- --target=${{ matrix.target }}
+      - run: pnpm ci
+      - run: pnpm run build -- --target=${{ matrix.target }}
 
       - uses: actions/upload-artifact@v4
         with:
@@ -214,7 +214,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: npm ci
+      - run: pnpm ci
       - uses: actions/cache@v4
         with:
           path: node_modules
@@ -232,7 +232,7 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      - run: npm run build:frontend
+      - run: pnpm run build:frontend
 
       - id: hash
         run: echo "hash=$(sha256sum dist/frontend/main.js | cut -d' ' -f1)" >> $GITHUB_OUTPUT
@@ -254,7 +254,7 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      - run: npm run build:backend
+      - run: pnpm run build:backend
 
       - id: hash
         run: echo "hash=$(sha256sum dist/backend/server.js | cut -d' ' -f1)" >> $GITHUB_OUTPUT
@@ -278,7 +278,7 @@ jobs:
         with:
           name: frontend
           path: dist/frontend/
-      - run: npm run test:frontend
+      - run: pnpm run test:frontend
 
   # Test backend
   test-backend:
@@ -294,7 +294,7 @@ jobs:
         with:
           name: backend
           path: dist/backend/
-      - run: npm run test:backend
+      - run: pnpm run test:backend
 
   # Integration test (needs both frontend and backend)
   test-integration:
@@ -314,7 +314,7 @@ jobs:
         with:
           name: backend
           path: dist/backend/
-      - run: npm run test:integration
+      - run: pnpm run test:integration
 
   # Security scan (parallel with tests)
   security-scan:
@@ -322,8 +322,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm audit
-      - run: npm run scan:security
+      - run: pnpm audit
+      - run: pnpm run scan:security
 
   # Deploy (needs all tests to pass)
   deploy:
@@ -383,7 +383,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm run build:frontend
+      - run: pnpm run build:frontend
 
   build-backend:
     needs: analyze-changes
@@ -391,7 +391,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm run build:backend
+      - run: pnpm run build:backend
 
   build-docs:
     needs: analyze-changes
@@ -399,7 +399,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm run build:docs
+      - run: pnpm run build:docs
 
   # Deploy only changed components
   deploy-frontend:
@@ -450,7 +450,7 @@ jobs:
       - uses: actions/checkout@v4
       - id: test
         run: |
-          if npm test; then
+          if pnpm test; then
             echo "status=success" >> $GITHUB_OUTPUT
           else
             echo "status=failure" >> $GITHUB_OUTPUT
@@ -466,7 +466,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: |
           echo "Test status: ${{ needs.test.outputs.status }}"
-          npm run report:generate
+          pnpm run report:generate
 
   # Notify on failure
   notify-failure:

@@ -74,7 +74,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
-      - run: npm ci
+      - run: pnpm ci
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 ```

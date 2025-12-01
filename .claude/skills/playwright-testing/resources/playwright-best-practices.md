@@ -342,7 +342,7 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Install Playwright
         run: npx playwright install --with-deps

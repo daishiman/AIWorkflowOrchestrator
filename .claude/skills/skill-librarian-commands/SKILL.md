@@ -23,7 +23,9 @@ description: |
   Use proactively when Skill Librarian needs to validate skill quality,
   calculate token usage, analyze document structure, access detailed resources,
   or use templates for file creation.
-tools: [Bash, Read]
+tools:
+  - Bash
+  - Read
 tags: [skill-librarian, commands, scripts, resources, templates]
 version: 1.0.0
 ---
@@ -303,7 +305,11 @@ description: |
   - シチュエーション3
 
   Use proactively when [英語の発動条件].
-tools: [Read, Write, Grep, Bash]
+tools:
+ - Read
+ - Write
+ - Grep
+ - Bash
 tags: [tag1, tag2, tag3]
 version: 1.0.0
 ---
@@ -465,7 +471,7 @@ node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs <sk
 brew install node
 
 # Ubuntu
-sudo apt install nodejs npm
+sudo apt install nodejs pnpm
 ```
 
 ### リソースが見つからない

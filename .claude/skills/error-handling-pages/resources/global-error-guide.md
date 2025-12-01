@@ -345,8 +345,8 @@ export default function RootLayout({ children }) {
 ### 本番ビルドでのテスト
 
 ```bash
-npm run build
-npm run start
+pnpm run build
+pnpm run start
 # 別ターミナルでエラーを発生させるリクエストを送信
 ```
 

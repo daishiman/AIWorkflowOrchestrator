@@ -227,7 +227,7 @@ sequenceDiagram
 sequenceDiagram
     ...
 </div>
-<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/pnpm/mermaid/dist/mermaid.min.js"></script>
 <script>mermaid.initialize({startOnLoad:true});</script>
 ```
 

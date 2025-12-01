@@ -4,8 +4,8 @@
  * Chokidar向けの除外パターンを構築するためのユーティリティ
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
 // ============================================================
 // 型定義
@@ -40,89 +40,77 @@ export interface PatternConfig {
 
 const PATTERNS = {
   packageManagers: [
-    '**/node_modules/**',
-    '**/package-lock.json',
-    '**/yarn.lock',
-    '**/pnpm-lock.yaml',
-    '**/__pycache__/**',
-    '**/*.pyc',
-    '**/venv/**',
-    '**/.venv/**',
-    '**/vendor/**',
+    "**/node_modules/**",
+    "**/package-lock.json",
+    "**/yarn.lock",
+    "**/pnpm-lock.yaml",
+    "**/__pycache__/**",
+    "**/*.pyc",
+    "**/venv/**",
+    "**/.venv/**",
+    "**/vendor/**",
   ],
 
-  vcs: [
-    '**/.git/**',
-    '**/.svn/**',
-    '**/.hg/**',
-  ],
+  vcs: ["**/.git/**", "**/.svn/**", "**/.hg/**"],
 
   buildArtifacts: [
-    '**/dist/**',
-    '**/build/**',
-    '**/out/**',
-    '**/.next/**',
-    '**/.nuxt/**',
-    '**/.output/**',
-    '**/coverage/**',
-    '**/.turbo/**',
-    '**/.cache/**',
+    "**/dist/**",
+    "**/build/**",
+    "**/out/**",
+    "**/.next/**",
+    "**/.nuxt/**",
+    "**/.output/**",
+    "**/coverage/**",
+    "**/.turbo/**",
+    "**/.cache/**",
   ],
 
   tempFiles: [
-    '**/*.swp',
-    '**/*.swo',
-    '**/*~',
-    '**/.#*',
-    '**/#*#',
-    '**/~$*',
-    '**/*.tmp',
-    '**/*.temp',
-    '**/*.bak',
-    '**/*.backup',
+    "**/*.swp",
+    "**/*.swo",
+    "**/*~",
+    "**/.#*",
+    "**/#*#",
+    "**/~$*",
+    "**/*.tmp",
+    "**/*.temp",
+    "**/*.bak",
+    "**/*.backup",
   ],
 
   platformFiles: {
-    darwin: [
-      '**/.DS_Store',
-      '**/.AppleDouble',
-      '**/.LSOverride',
-      '**/._*',
-    ],
+    darwin: ["**/.DS_Store", "**/.AppleDouble", "**/.LSOverride", "**/._*"],
     win32: [
-      '**/Thumbs.db',
-      '**/ehthumbs.db',
-      '**/Desktop.ini',
-      '**/$RECYCLE.BIN/**',
+      "**/Thumbs.db",
+      "**/ehthumbs.db",
+      "**/Desktop.ini",
+      "**/$RECYCLE.BIN/**",
     ],
-    linux: [
-      '**/.directory',
-      '**/*~',
-    ],
+    linux: ["**/.directory", "**/*~"],
   },
 
   ideFiles: [
-    '**/.idea/**',
-    '**/.vscode/**',
-    '**/*.sublime-*',
-    '**/.project',
-    '**/.classpath',
-    '**/.settings/**',
+    "**/.idea/**",
+    "**/.vscode/**",
+    "**/*.sublime-*",
+    "**/.project",
+    "**/.classpath",
+    "**/.settings/**",
   ],
 
   logFiles: [
-    '**/*.log',
-    '**/logs/**',
-    '**/npm-debug.log*',
-    '**/yarn-debug.log*',
-    '**/yarn-error.log*',
+    "**/*.log",
+    "**/logs/**",
+    "**/pnpm-debug.log*",
+    "**/yarn-debug.log*",
+    "**/yarn-error.log*",
   ],
 
   testArtifacts: [
-    '**/coverage/**',
-    '**/.nyc_output/**',
-    '**/test-results/**',
-    '**/playwright-report/**',
+    "**/coverage/**",
+    "**/.nyc_output/**",
+    "**/test-results/**",
+    "**/playwright-report/**",
   ],
 };
 
@@ -232,7 +220,9 @@ export class ExclusionPatternBuilder {
   addPlatformFiles(platform?: NodeJS.Platform): this {
     const targetPlatform = platform || process.platform;
     const patterns =
-      PATTERNS.platformFiles[targetPlatform as keyof typeof PATTERNS.platformFiles] || [];
+      PATTERNS.platformFiles[
+        targetPlatform as keyof typeof PATTERNS.platformFiles
+      ] || [];
     patterns.forEach((p) => this.patterns.add(p));
     return this;
   }
@@ -280,7 +270,7 @@ export class ExclusionPatternBuilder {
 
   addFromGitignore(gitignorePath: string): this {
     try {
-      const content = fs.readFileSync(gitignorePath, 'utf-8');
+      const content = fs.readFileSync(gitignorePath, "utf-8");
       const patterns = this.parseGitignore(content);
       patterns.forEach((p) => this.patterns.add(p));
     } catch (error) {
@@ -291,19 +281,19 @@ export class ExclusionPatternBuilder {
 
   private parseGitignore(content: string): string[] {
     return content
-      .split('\n')
+      .split("\n")
       .map((line) => line.trim())
-      .filter((line) => line && !line.startsWith('#') && !line.startsWith('!'))
+      .filter((line) => line && !line.startsWith("#") && !line.startsWith("!"))
       .map((pattern) => {
         // 先頭の/を削除
-        let p = pattern.replace(/^\//, '');
+        let p = pattern.replace(/^\//, "");
         // ディレクトリ指定の場合
-        if (p.endsWith('/')) {
-          p = p.slice(0, -1) + '/**';
+        if (p.endsWith("/")) {
+          p = p.slice(0, -1) + "/**";
         }
         // **/プレフィックスがない場合は追加
-        if (!p.startsWith('**/')) {
-          p = '**/' + p;
+        if (!p.startsWith("**/")) {
+          p = "**/" + p;
         }
         return p;
       });
@@ -333,7 +323,7 @@ export class ExclusionPatternBuilder {
     }
 
     // ホワイトリストがある場合は関数形式で返す
-    const minimatch = require('minimatch');
+    const minimatch = require("minimatch");
     return (filePath: string) => {
       // ホワイトリストにマッチする場合は除外しない
       for (const whitelistPattern of this.whitelist) {
@@ -374,7 +364,7 @@ export function getProductionExclusionPatterns(): string[] {
  * プロジェクトルートから.gitignoreを読み込んで除外パターンを生成
  */
 export function buildPatternsFromProject(projectRoot: string): string[] {
-  const gitignorePath = path.join(projectRoot, '.gitignore');
+  const gitignorePath = path.join(projectRoot, ".gitignore");
   return ExclusionPatternBuilder.forDevelopment()
     .addFromGitignore(gitignorePath)
     .build();

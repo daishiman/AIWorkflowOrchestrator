@@ -236,7 +236,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install Railway CLI
-        run: npm i -g @railway/cli
+        run: pnpm i -g @railway/cli
 
       - name: Deploy
         env:

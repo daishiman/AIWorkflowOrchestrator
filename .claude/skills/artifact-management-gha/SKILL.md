@@ -157,7 +157,7 @@ path: |
 jobs:
   build:
     steps:
-      - run: npm run build
+      - run: pnpm run build
       - uses: actions/upload-artifact@v4
         with:
           name: dist
@@ -169,7 +169,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: dist
-      - run: npm test
+      - run: pnpm test
 
   deploy:
     needs: test

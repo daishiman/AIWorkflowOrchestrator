@@ -17,7 +17,11 @@ description: |
   - [具体的なシチュエーション3]
 
   Use proactively when [English activation condition].
-tools: [Read, Write, Grep, Bash]
+tools:
+  - Read
+  - Write
+  - Grep
+  - Bash
 tags: [tag1, tag2, tag3]
 version: 1.0.0
 ---

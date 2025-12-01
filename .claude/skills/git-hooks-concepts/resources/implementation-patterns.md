@@ -62,7 +62,7 @@ exit 0
 # pre-push: テスト実行
 
 echo "Running unit tests..."
-npm test -- --bail
+pnpm test -- --bail
 
 if [ $? -ne 0 ]; then
   echo "❌ Tests failed"
@@ -125,7 +125,7 @@ exit 0
 # pre-push: ビルド成功確認
 
 echo "Building project..."
-npm run build
+pnpm run build
 
 if [ $? -ne 0 ]; then
   echo "❌ Build failed"
@@ -150,7 +150,7 @@ if git diff --cached | grep -E "(api_key|secret_key|password)" > /dev/null; then
 fi
 
 # 依存関係の脆弱性確認
-npm audit --audit-level=moderate
+pnpm audit --audit-level=moderate
 
 if [ $? -ne 0 ]; then
   echo "⚠️  Security vulnerabilities detected"

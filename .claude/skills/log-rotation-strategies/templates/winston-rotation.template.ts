@@ -5,7 +5,7 @@
  * 構造化ログ、複数トランスポート、環境別設定をサポート。
  *
  * 使用方法:
- *   1. 依存関係をインストール: npm install winston winston-daily-rotate-file
+ *   1. 依存関係をインストール: pnpm install winston winston-daily-rotate-file
  *   2. このファイルをプロジェクトにコピー
  *   3. 設定をカスタマイズ
  *
@@ -15,15 +15,15 @@
  * logger.info('Application started', { port: 3000 });
  */
 
-import winston from 'winston';
-import DailyRotateFile from 'winston-daily-rotate-file';
-import path from 'path';
+import winston from "winston";
+import DailyRotateFile from "winston-daily-rotate-file";
+import path from "path";
 
 // ============================================================
 // 型定義
 // ============================================================
 
-type LogLevel = 'error' | 'warn' | 'info' | 'http' | 'debug';
+type LogLevel = "error" | "warn" | "info" | "http" | "debug";
 
 interface LoggerConfig {
   /** サービス名 */
@@ -64,18 +64,18 @@ interface LogMeta {
 // ============================================================
 
 const defaults: Required<LoggerConfig> = {
-  service: 'app',
-  environment: process.env.NODE_ENV || 'development',
-  logDir: './logs',
-  level: 'info',
+  service: "app",
+  environment: process.env.NODE_ENV || "development",
+  logDir: "./logs",
+  level: "info",
   json: true,
   console: true,
   file: true,
   rotation: {
-    maxSize: '20m',
-    maxFiles: '14d',
+    maxSize: "20m",
+    maxFiles: "14d",
     compress: true,
-    datePattern: 'YYYY-MM-DD',
+    datePattern: "YYYY-MM-DD",
   },
 };
 
@@ -87,7 +87,7 @@ const defaults: Required<LoggerConfig> = {
  * タイムスタンプフォーマット
  */
 const timestampFormat = winston.format.timestamp({
-  format: 'YYYY-MM-DDTHH:mm:ss.SSSZ',
+  format: "YYYY-MM-DDTHH:mm:ss.SSSZ",
 });
 
 /**
@@ -123,9 +123,8 @@ const consoleFormat = winston.format.combine(
   timestampFormat,
   winston.format.colorize({ all: true }),
   winston.format.printf(({ timestamp, level, message, service, ...meta }) => {
-    const metaStr = Object.keys(meta).length > 0
-      ? ` ${JSON.stringify(meta)}`
-      : '';
+    const metaStr =
+      Object.keys(meta).length > 0 ? ` ${JSON.stringify(meta)}` : "";
     return `${timestamp} [${service}] ${level}: ${message}${metaStr}`;
   })
 );
@@ -149,11 +148,12 @@ function createConsoleTransport(level: LogLevel): winston.transport {
  */
 function createFileTransport(
   config: Required<LoggerConfig>,
-  logType: 'combined' | 'error'
+  logType: "combined" | "error"
 ): DailyRotateFile {
-  const filename = logType === 'error'
-    ? path.join(config.logDir, 'error-%DATE%.log')
-    : path.join(config.logDir, 'app-%DATE%.log');
+  const filename =
+    logType === "error"
+      ? path.join(config.logDir, "error-%DATE%.log")
+      : path.join(config.logDir, "app-%DATE%.log");
 
   return new DailyRotateFile({
     filename,
@@ -161,7 +161,7 @@ function createFileTransport(
     maxSize: config.rotation.maxSize,
     maxFiles: config.rotation.maxFiles,
     zippedArchive: config.rotation.compress,
-    level: logType === 'error' ? 'error' : config.level,
+    level: logType === "error" ? "error" : config.level,
     format: jsonFormat,
     // 監査ファイル
     auditFile: path.join(config.logDir, `audit-${logType}.json`),
@@ -202,9 +202,9 @@ export function createLogger(options: LoggerConfig): winston.Logger {
   // ファイルトランスポート
   if (config.file) {
     // 全ログ
-    transports.push(createFileTransport(config, 'combined'));
+    transports.push(createFileTransport(config, "combined"));
     // エラーログ（別ファイル）
-    transports.push(createFileTransport(config, 'error'));
+    transports.push(createFileTransport(config, "error"));
   }
 
   const logger = winston.createLogger({
@@ -219,7 +219,7 @@ export function createLogger(options: LoggerConfig): winston.Logger {
     exceptionHandlers: config.file
       ? [
           new DailyRotateFile({
-            filename: path.join(config.logDir, 'exceptions-%DATE%.log'),
+            filename: path.join(config.logDir, "exceptions-%DATE%.log"),
             datePattern: config.rotation.datePattern,
             maxFiles: config.rotation.maxFiles,
             zippedArchive: config.rotation.compress,
@@ -229,7 +229,7 @@ export function createLogger(options: LoggerConfig): winston.Logger {
     rejectionHandlers: config.file
       ? [
           new DailyRotateFile({
-            filename: path.join(config.logDir, 'rejections-%DATE%.log'),
+            filename: path.join(config.logDir, "rejections-%DATE%.log"),
             datePattern: config.rotation.datePattern,
             maxFiles: config.rotation.maxFiles,
             zippedArchive: config.rotation.compress,
@@ -265,7 +265,7 @@ export function createRequestLogger(
 export function setLogLevel(logger: winston.Logger, level: LogLevel): void {
   logger.level = level;
   logger.transports.forEach((transport) => {
-    if (transport.level !== 'error') {
+    if (transport.level !== "error") {
       transport.level = level;
     }
   });
@@ -276,12 +276,12 @@ export function setLogLevel(logger: winston.Logger, level: LogLevel): void {
  * シグナルでログレベルを切り替え
  */
 export function enableDynamicLogLevel(logger: winston.Logger): void {
-  process.on('SIGUSR2', () => {
-    const newLevel = logger.level === 'info' ? 'debug' : 'info';
+  process.on("SIGUSR2", () => {
+    const newLevel = logger.level === "info" ? "debug" : "info";
     setLogLevel(logger, newLevel as LogLevel);
   });
 
-  logger.info('Dynamic log level enabled (send SIGUSR2 to toggle)');
+  logger.info("Dynamic log level enabled (send SIGUSR2 to toggle)");
 }
 
 // ============================================================
@@ -297,19 +297,25 @@ export function enableDynamicLogLevel(logger: winston.Logger): void {
 export function createHttpLogger(logger: winston.Logger) {
   return (
     req: { method: string; url: string; headers: Record<string, string> },
-    res: { statusCode: number; on: (event: string, handler: () => void) => void },
+    res: {
+      statusCode: number;
+      on: (event: string, handler: () => void) => void;
+    },
     next: () => void
   ) => {
     const start = Date.now();
-    const requestId = req.headers['x-request-id'] || generateRequestId();
+    const requestId = req.headers["x-request-id"] || generateRequestId();
 
-    res.on('finish', () => {
+    res.on("finish", () => {
       const duration = Date.now() - start;
-      const level = res.statusCode >= 500 ? 'error'
-        : res.statusCode >= 400 ? 'warn'
-        : 'http';
+      const level =
+        res.statusCode >= 500
+          ? "error"
+          : res.statusCode >= 400
+          ? "warn"
+          : "http";
 
-      logger.log(level, 'HTTP Request', {
+      logger.log(level, "HTTP Request", {
         requestId,
         method: req.method,
         url: req.url,

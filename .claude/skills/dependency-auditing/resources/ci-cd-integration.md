@@ -68,20 +68,20 @@ on:
     branches: [main]
 
 jobs:
-  npm-audit:
+  pnpm-audit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v2
       - run: pnpm install --frozen-lockfile
-      - name: Run npm audit
+      - name: Run pnpm audit
         run: |
-          pnpm audit --json > npm-audit.json || true
-          cat npm-audit.json
+          pnpm audit --json > pnpm-audit.json || true
+          cat pnpm-audit.json
       - uses: actions/upload-artifact@v4
         with:
-          name: npm-audit
-          path: npm-audit.json
+          name: pnpm-audit
+          path: pnpm-audit.json
 
   snyk-scan:
     runs-on: ubuntu-latest
@@ -111,7 +111,7 @@ jobs:
           sarif_file: 'trivy-results.sarif'
 
   aggregate-results:
-    needs: [npm-audit, snyk-scan, trivy-scan]
+    needs: [pnpm-audit, snyk-scan, trivy-scan]
     runs-on: ubuntu-latest
     if: always()
     steps:
@@ -185,7 +185,7 @@ jobs:
 # .github/dependabot.yml
 version: 2
 updates:
-  - package-ecosystem: "npm"
+  - package-ecosystem: "pnpm"
     directory: "/"
     schedule:
       interval: "daily"
@@ -266,7 +266,7 @@ security-audit:
   image: node:20
 
   before_script:
-    - npm install -g pnpm
+    - pnpm install -g pnpm
     - pnpm install --frozen-lockfile
 
   script:
@@ -322,11 +322,11 @@ pipeline {
 
         stage('Security Audit') {
             parallel {
-                stage('npm audit') {
+                stage('pnpm audit') {
                     steps {
                         sh '''
-                            pnpm audit --json > npm-audit.json || true
-                            cat npm-audit.json
+                            pnpm audit --json > pnpm-audit.json || true
+                            cat pnpm-audit.json
                         '''
                     }
                 }
@@ -344,7 +344,7 @@ pipeline {
         stage('Evaluate Results') {
             steps {
                 script {
-                    def auditResult = readJSON file: 'npm-audit.json'
+                    def auditResult = readJSON file: 'pnpm-audit.json'
                     def criticalCount = auditResult.metadata?.vulnerabilities?.critical ?: 0
 
                     if (criticalCount > 0) {

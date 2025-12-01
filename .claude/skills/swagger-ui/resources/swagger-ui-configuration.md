@@ -36,9 +36,9 @@
 ### npm方式
 
 ```bash
-npm install swagger-ui-react
+pnpm install swagger-ui-react
 # または
-npm install swagger-ui-express  # Express用
+pnpm install swagger-ui-express  # Express用
 ```
 
 ---

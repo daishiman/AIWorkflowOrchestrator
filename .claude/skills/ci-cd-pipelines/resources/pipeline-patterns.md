@@ -259,12 +259,12 @@ jobs:
 jobs:
   all-in-one:
     steps:
-      - run: npm install
-      - run: npm run lint
-      - run: npm run type-check
-      - run: npm run build
-      - run: npm run test
-      - run: npm run deploy
+      - run: pnpm install
+      - run: pnpm run lint
+      - run: pnpm run type-check
+      - run: pnpm run build
+      - run: pnpm run test
+      - run: pnpm run deploy
 ```
 
 ✅ **推奨**:

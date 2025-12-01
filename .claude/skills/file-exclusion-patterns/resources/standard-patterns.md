@@ -13,7 +13,7 @@
 **/pnpm-lock.yaml
 **/.pnpm-store/**
 **/.yarn/**
-**/.npm/**
+**/.pnpm/**
 ```
 
 #### Python
@@ -305,7 +305,7 @@
 **/*.log
 **/logs/**
 **/*.log.*
-**/npm-debug.log*
+**/pnpm-debug.log*
 **/yarn-debug.log*
 **/yarn-error.log*
 **/pnpm-debug.log*

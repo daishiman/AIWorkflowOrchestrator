@@ -31,10 +31,10 @@ if (!existsSync(packageJsonPath)) {
 }
 
 try {
-  // npm audit実行
-  console.log(`${colors.cyan}npm audit実行中...${colors.reset}\n`);
+  // pnpm audit実行
+  console.log(`${colors.cyan}pnpm audit実行中...${colors.reset}\n`);
 
-  const result = execSync('npm audit --json', {
+  const result = execSync('pnpm audit --json', {
     cwd: projectDir,
     encoding: 'utf-8'
   });
@@ -55,7 +55,7 @@ try {
     console.log(`${colors.green}✅ 脆弱性は検出されませんでした${colors.reset}\n`);
   } else {
     console.log(`${colors.yellow}検出された脆弱性: ${total}件${colors.reset}`);
-    console.log(`\n詳細: npm audit で確認してください\n`);
+    console.log(`\n詳細: pnpm audit で確認してください\n`);
 
     if ((meta.critical || 0) > 0 || (meta.high || 0) > 0) {
       console.log(`${colors.red}⚠️  Critical/High脆弱性が存在します。即座に対応してください${colors.reset}\n`);
@@ -64,7 +64,7 @@ try {
   }
 } catch (error) {
   if (error.status === 1) {
-    // npm auditは脆弱性検出時にexit code 1を返す
+    // pnpm auditは脆弱性検出時にexit code 1を返す
     console.log(`${colors.yellow}脆弱性が検出されました${colors.reset}\n`);
   } else {
     console.error(`${colors.red}エラー: ${error.message}${colors.reset}`);

@@ -311,7 +311,7 @@ DROP TABLE IF EXISTS new_users;
 **対応**:
 ```bash
 # キャッシュクリア
-railway run -- npm run cache:clear
+railway run -- pnpm run cache:clear
 
 # 環境変数確認
 railway variables

@@ -403,12 +403,6 @@ describe('YouTubeSummarizeExecutor', () => {
 - 網羅性 (0-10)
 **目標**: 平均8点以上
 
-## 変更履歴
-
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版作成 |
-
 ## 参考文献
 
 - **『Specification by Example』** Gojko Adzic著

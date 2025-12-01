@@ -4,7 +4,7 @@ description: |
     セキュリティ脆弱性の検出、評価、対応戦略を専門とするスキル。
     CVE/GHSA識別子の理解、重大度評価（CVSS）、修正優先度の決定方法論を提供します。
     専門分野:
-    - 脆弱性検出: npm audit、pnpm audit等のツール活用
+    - 脆弱性検出: pnpm audit、pnpm audit等のツール活用
     - 重大度評価: CVSSスコアに基づくリスク分類
     - 修正優先度決定: ビジネス影響と技術的影響の評価
     - パッチ戦略: 安全なアップグレードパスの特定
@@ -217,7 +217,7 @@ cat .claude/skills/dependency-auditing/templates/vulnerability-assessment-templa
 
 | ツール | コマンド     | 出力形式      |
 | ------ | ------------ | ------------- |
-| npm    | `npm audit`  | テキスト/JSON |
+| pnpm    | `pnpm audit`  | テキスト/JSON |
 | pnpm   | `pnpm audit` | テキスト/JSON |
 | yarn   | `yarn audit` | テキスト/JSON |
 
@@ -415,4 +415,4 @@ cat .claude/skills/dependency-auditing/templates/vulnerability-assessment-templa
 - **NVD (National Vulnerability Database)**: https://nvd.nist.gov/
 - **CVSS Calculator**: https://www.first.org/cvss/calculator/3.1
 - **GitHub Advisory Database**: https://github.com/advisories
-- **npm Security Advisories**: https://www.npmjs.com/advisories
+- **pnpm Security Advisories**: https://www.npmjs.com/advisories

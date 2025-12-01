@@ -17,7 +17,7 @@ notetoolbar: srs
 
 **作成対象**: [ ] エージェント / [ ] スキル / [ ] スラッシュコマンド / [ ] 3つセット
 
-**プロンプト名**: 
+**プロンプト名**:
 - 例（エージェント）: 「Robert Martin Clean Architectエージェント作成プロンプト」
 - 例（スキル）: 「DDD戦略的設計スキル作成プロンプト」
 - 例（コマンド）: 「Git Conventional Commitコマンド作成プロンプト」
@@ -244,17 +244,20 @@ notetoolbar: srs
 name: {{agent-identifier}}
 description: |
   {{詳細な説明（4-8行）}}
-  
+
   専門分野:
   - {{domain1}}: {{detail}}
   - {{domain2}}: {{detail}}
-  
+
   使用タイミング:
   - {{trigger1}}
   - {{trigger2}}
-  
+
   Use proactively when {{condition}}
-tools: [{{Bash, Read, Write, Edit, Search, Task}}]
+tools:
+  - {{tool}}
+  - {{tool}}
+  - {{tool}}
 model: {{opus|sonnet|haiku}}
 version: {{1.0.0}}
 ---
@@ -291,7 +294,7 @@ version: {{1.0.0}}
 
 #### 『{{Book Title 1}}』
 - **概要**: {{2-3文で要約}}
-- **核心概念**: 
+- **核心概念**:
   1. {{concept1}}
   2. {{concept2}}
   3. {{concept3}}
@@ -622,14 +625,6 @@ metrics:
 ### テストケース2-3
 （同様の構造）
 
-## 変更履歴
-
-### v{{version}} ({{date}})
-- **追加**: {{added features}}
-- **変更**: {{changed features}}
-- **修正**: {{bug fixes}}
-- **削除**: {{removed features}}
-
 ## 参照ドキュメント
 
 ### 内部ドキュメント
@@ -652,15 +647,15 @@ metrics:
 name: {{skill-identifier}}
 description: |
   {{スキルの詳細説明（3-6行）}}
-  
+
   専門分野:
   - {{area1}}
   - {{area2}}
-  
+
   使用タイミング:
   - {{when1}}
   - {{when2}}
-  
+
   Proactive: {{プロアクティブ条件}}
 version: {{1.0.0}}
 ---
@@ -787,7 +782,7 @@ python scripts/{{script1}}.py --{{option}} {{value}}
 
 **原因**: {{cause}}
 
-**解決策**: 
+**解決策**:
 1. {{solution step 1}}
 2. {{solution step 2}}
 
@@ -840,7 +835,7 @@ python scripts/{{script1}}.py --{{option}} {{value}}
 ### @{{agent-1}}
 **理由**: {{reason}}
 
-**使用方法**: 
+**使用方法**:
 ```bash
 # エージェント起動時に自動的に本スキルを参照
 @{{agent-1}} {{task}}
@@ -857,12 +852,6 @@ python scripts/{{script1}}.py --{{option}} {{value}}
 ### 参考文献
 - 『{{Book Title}}』{{Author}} 著、{{Publisher}}、{{Year}}年
   - 関連章: 第{{chapter}}章
-
-## 変更履歴
-
-### v{{version}} ({{date}})
-- {{changes}}
-```
 
 ---
 
@@ -1130,12 +1119,6 @@ trap 'echo "Error on line $LINENO"' ERR
 
 ### 問題2-3
 （同様の構造）
-
-## 変更履歴
-
-### v{{version}} ({{date}})
-- {{changes}}
-```
 
 ---
 
@@ -1751,19 +1734,21 @@ description: |
   クリーンアーキテクチャの原則に基づいてコードレビューを実施します。
   Robert C. Martin（Uncle Bob）の思想に従い、依存関係の方向性、
   関心の分離、SOLID原則の遵守をチェックします。
-  
+
   専門分野:
   - 依存関係分析: アーキテクチャ層間の依存関係方向の検証
   - SOLID原則チェック: 単一責任、開放閉鎖、リスコフ置換等の確認
   - 関心の分離: ビジネスロジックとインフラの分離検証
-  
+
   使用タイミング:
   - コードレビュー時
   - アーキテクチャリファクタリング時
   - 新機能追加前の設計レビュー時
-  
+
   Use proactively after file edits in src/domain/, src/application/, src/infrastructure/
-tools: [Read, Search]
+tools:
+  - Read
+  - Search
 model: opus
 version: 1.0.0
 ---
@@ -1811,11 +1796,11 @@ version: 1.0.0
 ### 思想の基盤となる書籍
 
 #### 『Clean Architecture』（クリーンアーキテクチャ）
-- **概要**: 
+- **概要**:
   ソフトウェアアーキテクチャの原理原則を体系的に解説。
   ビジネスルールを中心に置き、フレームワークやデータベースなどの
   詳細を外側の層に追いやる同心円モデルを提唱。
-  
+
 - **核心概念**:
   1. **依存関係の方向性**: 内側（ビジネスルール）は外側（詳細）を知らない
   2. **境界の明確化**: 層間のインターフェースを通じた疎結合
@@ -1827,24 +1812,24 @@ version: 1.0.0
   - 依存関係の方向を自動チェック
   - 層間の境界違反を検出
   - ビジネスルールの純粋性を検証
-  
+
 - **参照スキル**: `clean-architecture-patterns`
   ```bash
   cat .claude/skills/clean-architecture-patterns/SKILL.md
   ```
-  
+
 - **参照コマンド**: `/analyze-dependencies`
 
 #### 『Clean Code』（クリーンコード）
-- **概要**: 
+- **概要**:
   読みやすく保守しやすいコードの書き方を解説。
   命名、関数、コメント、フォーマット等の原則を提示。
-  
+
 - **核心概念**:
   1. **意味のある名前**: 変数・関数名から意図が明確に分かる
   2. **小さな関数**: 1つの関数は1つのことをする
   3. **コメントよりコード**: 自己文書化されたコード
-  
+
 - **本エージェントへの適用**:
   - 命名規則の品質チェック
   - 関数の単一責任確認
@@ -1858,19 +1843,19 @@ version: 1.0.0
 
 Robert C. Martinが提唱する以下の原則を遵守:
 
-1. **依存関係逆転の原則（DIP）**: 
+1. **依存関係逆転の原則（DIP）**:
    詳細が抽象に依存する。具象クラスではなくインターフェースに依存。
-   
-2. **境界の明確化**: 
+
+2. **境界の明確化**:
    アーキテクチャの層間に明確な境界を設け、インターフェースで接続。
-   
-3. **ビジネスルールの保護**: 
+
+3. **ビジネスルールの保護**:
    ドメイン層はフレームワーク、データベース、UIから完全に独立。
-   
-4. **テスト駆動の設計**: 
+
+4. **テスト駆動の設計**:
    テスト可能な構造こそが良い設計。依存性注入を活用。
-   
-5. **単一責任の原則（SRP）**: 
+
+5. **単一責任の原則（SRP）**:
    クラス/モジュールを変更する理由は1つだけ。
 
 ## 専門知識
@@ -1950,7 +1935,7 @@ git diff --name-only HEAD~1 HEAD
 cat .claude/skills/clean-architecture-patterns/resources/layer-identification.md
 ```
 
-**期待される出力**: 
+**期待される出力**:
 ```json
 {
   "src/domain/user.ts": "Entities",
@@ -2176,7 +2161,7 @@ rg "^class " src/
 - [ ] 全問題に優先度が付与されている
 - [ ] 参考文献の引用がある
 
-**成功の定義**: 
+**成功の定義**:
 アーキテクチャ違反が明確に特定され、クリーンアーキテクチャ原則に
 基づいた具体的な修正提案が提供されていること。
 
@@ -2243,7 +2228,7 @@ export class User {
 > Source code dependencies must point only inward, toward higher-level policies.
 > (Clean Architecture, Chapter 17)
 
-**Impact**: 
+**Impact**:
 - Domain logic is no longer independent
 - Cannot test domain without infrastructure
 - Violates the core principle of Clean Architecture
@@ -2275,21 +2260,13 @@ export class UserRepository implements IUserRepository {
 **Reference**: Clean Architecture, Chapter 17 "Boundaries: Drawing Lines"
 ```
 
-**成功基準**: 
+**成功基準**:
 - 違反が検出される
 - 修正提案にBefore/Afterコードがある
 - 参考文献の引用がある
 
 ### テストケース2-3
 （同様の構造で他のテストケースを記述）
-
-## 変更履歴
-
-### v1.0.0 (2025-11-01)
-- **追加**: 初版リリース
-  - クリーンアーキテクチャチェック機能
-  - SOLID原則チェック機能
-  - 修正提案生成機能
 
 ## 参照ドキュメント
 

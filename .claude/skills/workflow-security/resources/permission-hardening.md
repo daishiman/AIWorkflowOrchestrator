@@ -51,8 +51,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@a81bbbf8298c0fa03ea29cdc473d45769f953675
-      - run: npm install
-      - run: npm test
+      - run: pnpm install
+      - run: pnpm test
 ```
 
 **理由**: ソースコード読み取り以外不要。攻撃者がトークンを盗んでも読み取り専用。
@@ -75,7 +75,7 @@ jobs:
     steps:
       - uses: actions/checkout@a81bbbf8298c0fa03ea29cdc473d45769f953675
       - name: Test coverage
-        run: npm test -- --coverage
+        run: pnpm test -- --coverage
       - name: Comment PR
         uses: actions/github-script@v7
         with:
@@ -108,7 +108,7 @@ jobs:
     steps:
       - uses: actions/checkout@a81bbbf8298c0fa03ea29cdc473d45769f953675
       - name: Build
-        run: npm run build
+        run: pnpm run build
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
@@ -117,7 +117,7 @@ jobs:
 
 ### パターン4: パッケージ公開
 
-**ユースケース**: npm、Docker、Maven公開
+**ユースケース**: pnpm、Docker、Maven公開
 
 ```yaml
 name: Publish
@@ -135,9 +135,9 @@ jobs:
     steps:
       - uses: actions/checkout@a81bbbf8298c0fa03ea29cdc473d45769f953675
       - name: Build
-        run: npm run build
+        run: pnpm run build
       - name: Publish to GitHub Packages
-        run: npm publish
+        run: pnpm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -166,7 +166,7 @@ jobs:
     steps:
       - uses: actions/checkout@a81bbbf8298c0fa03ea29cdc473d45769f953675
       - name: Build
-        run: npm run build
+        run: pnpm run build
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
@@ -262,7 +262,7 @@ permissions:
 jobs:
   test:
     steps:
-      - run: npm test  # 読み取りのみで十分
+      - run: pnpm test  # 読み取りのみで十分
 ```
 
 **攻撃**: 依存関係の脆弱性を悪用してコミット、Issue作成。
@@ -279,7 +279,7 @@ jobs:
   build:
     steps:
       - uses: actions/checkout@v4
-      - run: npm install  # 攻撃者のpackage.jsonが実行される
+      - run: pnpm install  # 攻撃者のpackage.jsonが実行される
 ```
 
 **攻撃**: `package.json`の`postinstall`スクリプトでリポジトリ改ざん。
@@ -296,7 +296,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.base_ref }}  # ベースブランチのコード
-      - run: npm install  # 信頼できるコード
+      - run: pnpm install  # 信頼できるコード
 ```
 
 ## リポジトリ設定の推奨事項

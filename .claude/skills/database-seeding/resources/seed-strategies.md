@@ -189,8 +189,8 @@ export async function runSeeds(db: Database, options: SeedOptions) {
 }
 
 // 使用例
-// npm run seed -- --master --development
-// npm run seed -- --reset --master
+// pnpm run seed -- --master --development
+// pnpm run seed -- --reset --master
 ```
 
 ### 戦略3: 増分シード

@@ -80,17 +80,17 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - run: npm run lint
+      - run: pnpm run lint
 
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: npm test
+      - run: pnpm test
 
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: npm run build
+      - run: pnpm run build
 ```
 
 すべてのジョブが同時に開始されます。
@@ -102,19 +102,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: npm run build
+      - run: pnpm run build
 
   test:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - run: npm test
+      - run: pnpm test
 
   deploy:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - run: npm run deploy
+      - run: pnpm run deploy
 ```
 
 依存関係チェーン: build → test → deploy
@@ -126,18 +126,18 @@ jobs:
   unit-tests:
     runs-on: ubuntu-latest
     steps:
-      - run: npm run test:unit
+      - run: pnpm run test:unit
 
   integration-tests:
     runs-on: ubuntu-latest
     steps:
-      - run: npm run test:integration
+      - run: pnpm run test:integration
 
   deploy:
     needs: [unit-tests, integration-tests]
     runs-on: ubuntu-latest
     steps:
-      - run: npm run deploy
+      - run: pnpm run deploy
 ```
 
 deploy は両方のテストジョブの完了を待ちます。
@@ -170,7 +170,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: npm run build
+      - run: pnpm run build
       - uses: actions/upload-artifact@v4
         with:
           name: dist
@@ -184,7 +184,7 @@ jobs:
         with:
           name: dist
           path: dist/
-      - run: npm test
+      - run: pnpm test
 ```
 
 ## 条件付き並列実行
@@ -196,7 +196,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: npm test
+      - run: pnpm test
 
   deploy-staging:
     needs: test

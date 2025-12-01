@@ -16,25 +16,44 @@ import { resolve } from 'path';
 const TOOL_CATEGORIES = {
   read_only: {
     name: '読み取り専用',
-    tools: ['Read', 'Grep', 'Glob'],
+    tools:
+      - Read
+      - Grep
+      - Glob
+    ,
     risk: 'low',
     description: '分析、レビュー、監査'
   },
   read_write: {
     name: '読み書き',
-    tools: ['Read', 'Write', 'Edit', 'Grep', 'MultiEdit'],
+    tools:
+      - Read
+      - Write
+      - Edit
+      - Grep
+      - MultiEdit
+    ,
     risk: 'medium',
     description: '実装、生成、変換'
   },
   orchestrator: {
     name: 'オーケストレーター',
-    tools: ['Task', 'Read'],
+    tools:
+      - Task
+      - Read
+    ,
     risk: 'medium',
     description: 'マルチエージェント調整'
   },
   full_access: {
     name: 'フル権限',
-    tools: ['Bash', 'Read', 'Write', 'Edit', 'Task'],
+      tools:
+      - Bash
+      - Read
+      - Write
+      - Edit
+      - Task
+    ,
     risk: 'high',
     description: 'デプロイ、インフラ管理'
   }
@@ -42,7 +61,7 @@ const TOOL_CATEGORIES = {
 
 const DANGEROUS_COMMANDS = [
   'rm -rf', 'sudo', 'curl | sh', 'wget | sh', 'chmod 777',
-  'git push --force', 'npm publish', 'DROP TABLE', 'DELETE FROM'
+  'git push --force', 'pnpm publish', 'DROP TABLE', 'DELETE FROM'
 ];
 
 const SENSITIVE_PATHS = [

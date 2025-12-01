@@ -167,7 +167,7 @@ on:
       setup-command:
         required: false
         type: string
-        default: 'npm ci'
+        default: 'pnpm ci'
       coverage-required:
         required: false
         type: boolean
@@ -190,7 +190,7 @@ jobs:
       # Template: Coverage
       - name: Check coverage
         if: inputs.coverage-required
-        run: npm run coverage:check
+        run: pnpm run coverage:check
 ```
 
 ```yaml
@@ -203,7 +203,7 @@ jobs:
   test:
     uses: ./.github/workflows/template-test.yml
     with:
-      test-command: 'npm run test:unit'
+      test-command: 'pnpm run test:unit'
       coverage-required: true
 ```
 
@@ -217,8 +217,8 @@ jobs:
   test:
     uses: ./.github/workflows/template-test.yml
     with:
-      setup-command: 'npm ci && npx playwright install'
-      test-command: 'npm run test:e2e'
+      setup-command: 'pnpm ci && npx playwright install'
+      test-command: 'pnpm run test:e2e'
       coverage-required: false
 ```
 

@@ -143,16 +143,16 @@ COPY package*.json ./
 
 # 開発依存関係インストール
 FROM base AS development
-RUN npm ci
+RUN pnpm ci
 
 # ビルドステージ
 FROM development AS build
 COPY . .
-RUN npm run build
+RUN pnpm run build
 
 # 本番ステージ（最終イメージ）
 FROM base AS production
-RUN npm ci --production
+RUN pnpm ci --production
 COPY --from=build /app/dist ./dist
 CMD ["node", "dist/index.js"]
 ```
@@ -177,7 +177,7 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN \
 
 RUN --mount=type=secret,id=NPM_TOKEN \
     echo "//registry.npmjs.org/:_authToken=$(cat /run/secrets/NPM_TOKEN)" > ~/.npmrc && \
-    npm ci
+    pnpm ci
 ```
 
 ### SSHエージェント転送
@@ -459,13 +459,13 @@ WORKDIR /app
 COPY package*.json ./
 
 # 3. 依存関係インストール（キャッシュ効果大）
-RUN npm ci
+RUN pnpm ci
 
 # 4. ソースコードコピー（変更頻度高）
 COPY . .
 
 # 5. ビルド
-RUN npm run build
+RUN pnpm run build
 
 # 6. 起動コマンド
 CMD ["node", "dist/index.js"]

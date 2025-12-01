@@ -57,22 +57,22 @@ log_error() {
 
 main() {
   colors
-  
+
   log_step "Cleaning previous builds..."
   rm -rf dist/ build/
-  
+
   log_step "Installing dependencies..."
-  npm install
-  
+  pnpm install
+
   log_step "Running tests..."
-  npm test || { log_error "Tests failed"; exit 1; }
-  
+  pnpm test || { log_error "Tests failed"; exit 1; }
+
   log_step "Building..."
-  npm run build || { log_error "Build failed"; exit 1; }
-  
+  pnpm run build || { log_error "Build failed"; exit 1; }
+
   log_step "Verifying output..."
   [ -f "dist/index.js" ] || { log_error "Build output not found"; exit 1; }
-  
+
   log_step "Build successful!"
 }
 
@@ -89,7 +89,7 @@ set -euo pipefail
 run_task() {
   local task_name=$1
   local task_cmd=$2
-  
+
   echo "Starting $task_name..."
   eval "$task_cmd"
   echo "Completed $task_name"
@@ -97,18 +97,18 @@ run_task() {
 
 main() {
   # バックグラウンドで実行
-  run_task "Linting" "npm run lint" &
+  run_task "Linting" "pnpm run lint" &
   LINT_PID=$!
-  
-  run_task "Type Check" "npm run type-check" &
+
+  run_task "Type Check" "pnpm run type-check" &
   TYPE_PID=$!
-  
-  run_task "Tests" "npm test" &
+
+  run_task "Tests" "pnpm test" &
   TEST_PID=$!
-  
+
   # すべて完了待機
   wait $LINT_PID $TYPE_PID $TEST_PID
-  
+
   echo "All tasks completed successfully"
 }
 
@@ -124,19 +124,19 @@ set -euo pipefail
 
 load_env() {
   local env_file=$1
-  
+
   if [ ! -f "$env_file" ]; then
     echo "Error: $env_file not found" >&2
     return 1
   fi
-  
+
   # shellcheck disable=SC1090
   source "$env_file"
 }
 
 validate_env() {
   local required_vars=("DATABASE_URL" "API_KEY" "SECRET_TOKEN")
-  
+
   for var in "${required_vars[@]}"; do
     if [ -z "${!var:-}" ]; then
       echo "Error: $var not set" >&2
@@ -147,10 +147,10 @@ validate_env() {
 
 main() {
   local env=${1:-.env}
-  
+
   load_env "$env"
   validate_env
-  
+
   echo "Environment validated: $env"
 }
 
@@ -167,7 +167,7 @@ set -euo pipefail
 process_files() {
   local pattern=$1
   local processor=$2
-  
+
   find . -type f -name "$pattern" | while read -r file; do
     echo "Processing: $file"
     $processor "$file"
@@ -177,7 +177,7 @@ process_files() {
 main() {
   # TypeScriptファイルをコンパイル
   process_files "*.ts" "tsc"
-  
+
   # JSONファイルをバリデート
   process_files "*.json" "jq . > /dev/null"
 }
@@ -195,27 +195,27 @@ set -euo pipefail
 create_release_branch() {
   local version=$1
   local branch="release/$version"
-  
+
   git checkout -b "$branch"
   git push origin "$branch"
-  
+
   echo "Release branch created: $branch"
 }
 
 merge_and_tag() {
   local version=$1
-  
+
   git tag -a "v$version" -m "Release $version"
   git push origin "v$version"
-  
+
   echo "Tagged as v$version"
 }
 
 main() {
   local version=${1:-}
-  
+
   [ -z "$version" ] && { echo "Usage: $0 <version>"; exit 1; }
-  
+
   create_release_branch "$version"
   merge_and_tag "$version"
 }
@@ -232,17 +232,17 @@ set -euo pipefail
 
 check_tests() {
   echo "Running tests..."
-  npm test || return 1
+  pnpm test || return 1
 }
 
 check_build() {
   echo "Building..."
-  npm run build || return 1
+  pnpm run build || return 1
 }
 
 check_security() {
   echo "Security audit..."
-  npm audit --production || return 1
+  pnpm audit --production || return 1
 }
 
 check_version() {
@@ -252,14 +252,14 @@ check_version() {
 
 main() {
   local checks=(check_tests check_build check_security check_version)
-  
+
   for check in "${checks[@]}"; do
     if ! $check; then
       echo "Check failed: $check" >&2
       return 1
     fi
   done
-  
+
   echo "All pre-deployment checks passed"
 }
 
@@ -277,15 +277,15 @@ rotate_logs() {
   local log_dir=$1
   local max_size=$2
   local max_files=$3
-  
+
   find "$log_dir" -name "*.log" | while read -r log_file; do
     local size=$(stat -f%z "$log_file" 2>/dev/null || stat -c%s "$log_file")
-    
+
     if [ "$size" -gt "$max_size" ]; then
       mv "$log_file" "${log_file}.$(date +%s)"
     fi
   done
-  
+
   # 古いログを削除
   find "$log_dir" -name "*.log.*" -mtime +"$max_files" -delete
 }
@@ -319,7 +319,7 @@ log_error() { echo "[ERROR] $*" >&2; }
 function my_function() {
   local arg1=$1
   local arg2=${2:-default}
-  
+
   # 処理
 }
 

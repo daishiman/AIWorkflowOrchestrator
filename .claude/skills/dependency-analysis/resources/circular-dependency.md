@@ -225,7 +225,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-      - run: npm install -g madge
+      - run: pnpm install -g madge
       - run: madge src/ --circular --warning
         # 循環依存があれば失敗
 ```

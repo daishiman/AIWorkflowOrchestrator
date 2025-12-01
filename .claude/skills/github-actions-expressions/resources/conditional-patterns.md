@@ -17,7 +17,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - run: npm run deploy
+      - run: pnpm run deploy
 
 # パターン2: ブランチ名のみで判定
 jobs:
@@ -25,7 +25,7 @@ jobs:
     if: github.ref_name == 'main'
     runs-on: ubuntu-latest
     steps:
-      - run: npm run deploy
+      - run: pnpm run deploy
 ```
 
 ### 複数ブランチで実行
@@ -57,11 +57,11 @@ jobs:
 
 # release/* ブランチ
 - if: startsWith(github.ref, 'refs/heads/release/')
-  run: npm run build-release
+  run: pnpm run build-release
 
 # hotfix/* ブランチ
 - if: startsWith(github.ref, 'refs/heads/hotfix/')
-  run: npm run hotfix-deploy
+  run: pnpm run hotfix-deploy
 ```
 
 ### ブランチ除外
@@ -69,13 +69,13 @@ jobs:
 ```yaml
 # main以外のブランチで実行
 - if: github.ref != 'refs/heads/main'
-  run: npm run test
+  run: pnpm run test
 
 # feature/*ブランチを除外
 - if: |
     !startsWith(github.ref, 'refs/heads/feature/') &&
     github.ref == 'refs/heads/develop'
-  run: npm run integration-test
+  run: pnpm run integration-test
 ```
 
 ## タグベースの条件付き実行
@@ -108,13 +108,13 @@ jobs:
     startsWith(github.ref, 'refs/tags/v') &&
     !contains(github.ref, '-alpha') &&
     !contains(github.ref, '-beta')
-  run: npm run release-production
+  run: pnpm run release-production
 
 # プレリリースタグ
 - if: |
     startsWith(github.ref, 'refs/tags/v') &&
     (contains(github.ref, '-alpha') || contains(github.ref, '-beta'))
-  run: npm run release-prerelease
+  run: pnpm run release-prerelease
 ```
 
 ## イベントタイプベースの条件付き実行
@@ -124,17 +124,17 @@ jobs:
 ```yaml
 # Pushイベント
 - if: github.event_name == 'push'
-  run: npm run deploy
+  run: pnpm run deploy
 
 # Pull Requestイベント
 - if: github.event_name == 'pull_request'
-  run: npm run pr-check
+  run: pnpm run pr-check
 
 # 複数イベント
 - if: |
     github.event_name == 'push' ||
     github.event_name == 'workflow_dispatch'
-  run: npm run manual-trigger-allowed
+  run: pnpm run manual-trigger-allowed
 ```
 
 ### Pull Requestの詳細条件
@@ -150,13 +150,13 @@ jobs:
 - if: |
     github.event_name == 'pull_request' &&
     github.event.action == 'synchronize'
-  run: npm run incremental-test
+  run: pnpm run incremental-test
 
 # PRがマージ可能な時
 - if: |
     github.event_name == 'pull_request' &&
     github.event.pull_request.mergeable == true
-  run: npm run pre-merge-check
+  run: pnpm run pre-merge-check
 ```
 
 ## ラベルベースの条件付き実行
@@ -166,13 +166,13 @@ jobs:
 ```yaml
 # "deploy"ラベルが付いている
 - if: contains(github.event.pull_request.labels.*.name, 'deploy')
-  run: npm run deploy-preview
+  run: pnpm run deploy-preview
 
 # "skip-ci"ラベルが付いていない
 - if: |
     github.event_name == 'pull_request' &&
     !contains(github.event.pull_request.labels.*.name, 'skip-ci')
-  run: npm test
+  run: pnpm test
 ```
 
 ### 複数ラベルの組み合わせ
@@ -182,13 +182,13 @@ jobs:
 - if: |
     contains(github.event.pull_request.labels.*.name, 'approved') &&
     contains(github.event.pull_request.labels.*.name, 'ready-to-merge')
-  run: npm run pre-merge-validation
+  run: pnpm run pre-merge-validation
 
 # "deploy" かつ "wip"ではない
 - if: |
     contains(github.event.pull_request.labels.*.name, 'deploy') &&
     !contains(github.event.pull_request.labels.*.name, 'wip')
-  run: npm run deploy
+  run: pnpm run deploy
 ```
 
 ## コミットメッセージベースの条件付き実行
@@ -200,11 +200,11 @@ jobs:
 - if: |
     !contains(github.event.head_commit.message, '[skip ci]') &&
     !contains(github.event.head_commit.message, '[ci skip]')
-  run: npm test
+  run: pnpm test
 
 # [deploy] を含む場合デプロイ
 - if: contains(github.event.head_commit.message, '[deploy]')
-  run: npm run deploy
+  run: pnpm run deploy
 
 # Conventional Commits
 - if: startsWith(github.event.head_commit.message, 'feat:')
@@ -223,7 +223,7 @@ jobs:
       github.ref == 'refs/heads/main' &&
       contains(github.event.head_commit.message, 'release:')
     )
-  run: npm run force-deploy
+  run: pnpm run force-deploy
 ```
 
 ## ステップ結果ベースの条件付き実行
@@ -233,15 +233,15 @@ jobs:
 ```yaml
 steps:
   - id: build
-    run: npm run build
+    run: pnpm run build
 
   # ビルド成功時のみテスト
   - if: success()
-    run: npm test
+    run: pnpm test
 
   # ビルド失敗時のみクリーンアップ
   - if: failure()
-    run: npm run clean
+    run: pnpm run clean
 
   # 常に実行
   - if: always()
@@ -261,7 +261,7 @@ steps:
       fi
 
   - if: steps.check-changes.outputs.HAS_CHANGES == 'true'
-    run: npm run build
+    run: pnpm run build
 
   # 複数ステップ出力の組み合わせ
   - id: version
@@ -270,7 +270,7 @@ steps:
   - if: |
       steps.check-changes.outputs.HAS_CHANGES == 'true' &&
       startsWith(steps.version.outputs.VERSION, '2.')
-    run: npm run migrate-v2
+    run: pnpm run migrate-v2
 ```
 
 ### ステップの結論による分岐
@@ -279,7 +279,7 @@ steps:
 steps:
   - id: test
     continue-on-error: true
-    run: npm test
+    run: pnpm test
 
   - if: steps.test.conclusion == 'success'
     run: echo "All tests passed"
@@ -287,7 +287,7 @@ steps:
   - if: steps.test.conclusion == 'failure'
     run: |
       echo "Tests failed, but continuing..."
-      npm run generate-report
+      pnpm run generate-report
 ```
 
 ## マトリクスベースの条件付き実行
@@ -313,13 +313,13 @@ jobs:
 
       # 特定バージョンのみ追加テスト
       - if: matrix.node == 20
-        run: npm run future-compat-test
+        run: pnpm run future-compat-test
 
       # 複数条件
       - if: |
           matrix.os == 'ubuntu-latest' &&
           matrix.node >= 18
-        run: npm run integration-test
+        run: pnpm run integration-test
 ```
 
 ### マトリクス除外パターン
@@ -336,7 +336,7 @@ jobs:
       # Windows + Node 16 の組み合わせをスキップ
       - if: |
           !(matrix.os == 'windows-latest' && matrix.node == 16)
-        run: npm test
+        run: pnpm test
 ```
 
 ## 依存ジョブの結果による条件付き実行
@@ -357,7 +357,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - run: npm test
+      - run: pnpm test
 
   deploy:
     needs: [build, test]
@@ -367,7 +367,7 @@ jobs:
       needs.test.result == 'success'
     runs-on: ubuntu-latest
     steps:
-      - run: npm run deploy
+      - run: pnpm run deploy
 
   cleanup:
     needs: [build, test, deploy]
@@ -383,7 +383,7 @@ jobs:
     if: needs.deploy.result == 'failure'
     runs-on: ubuntu-latest
     steps:
-      - run: npm run rollback
+      - run: pnpm run rollback
 ```
 
 ### ジョブ出力の活用
@@ -408,7 +408,7 @@ jobs:
     if: needs.setup.outputs.should-deploy == 'true'
     runs-on: ubuntu-latest
     steps:
-      - run: npm run deploy
+      - run: pnpm run deploy
 ```
 
 ## ファイル変更ベースの条件付き実行
@@ -431,10 +431,10 @@ steps:
       fi
 
   - if: steps.check-files.outputs.SRC_CHANGED == 'true'
-    run: npm run build
+    run: pnpm run build
 
   - if: steps.check-files.outputs.DOCS_CHANGED == 'true'
-    run: npm run build-docs
+    run: pnpm run build-docs
 ```
 
 ### パスフィルターとの組み合わせ
@@ -454,7 +454,7 @@ jobs:
       github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - run: npm run build
+      - run: pnpm run build
 ```
 
 ## 環境変数・シークレットベースの条件付き実行
@@ -488,10 +488,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - if: env.DEPLOY_ENV == 'production'
-        run: npm run deploy-production
+        run: pnpm run deploy-production
 
       - if: env.DEPLOY_ENV == 'staging'
-        run: npm run deploy-staging
+        run: pnpm run deploy-staging
 ```
 
 ### 設定変数（vars）の活用
@@ -499,10 +499,10 @@ jobs:
 ```yaml
 steps:
   - if: vars.ENABLE_FEATURE_X == 'true'
-    run: npm run feature-x-test
+    run: pnpm run feature-x-test
 
   - if: vars.DEPLOY_ENVIRONMENT == 'production'
-    run: npm run production-deploy
+    run: pnpm run production-deploy
 ```
 
 ## 時間ベースの条件付き実行
@@ -521,11 +521,11 @@ jobs:
     steps:
       # スケジュール実行時のみフルテスト
       - if: github.event_name == 'schedule'
-        run: npm run test:full
+        run: pnpm run test:full
 
       # Push時は差分テスト
       - if: github.event_name == 'push'
-        run: npm run test:incremental
+        run: pnpm run test:incremental
 ```
 
 ## 複雑な条件パターン
@@ -546,7 +546,7 @@ jobs:
       github.event_name == 'workflow_dispatch' &&
       inputs.force-deploy == true
     )
-  run: npm run deploy
+  run: pnpm run deploy
 ```
 
 ### 複数ファクターの組み合わせ
@@ -561,7 +561,7 @@ jobs:
       secrets.DEPLOY_TOKEN != null
     runs-on: ubuntu-latest
     steps:
-      - run: npm run deploy
+      - run: pnpm run deploy
 ```
 
 ## ベストプラクティス
@@ -618,11 +618,11 @@ jobs:
     github.ref == 'refs/heads/main' &&
     secrets.DEPLOY_TOKEN != null &&
     success()
-  run: npm run deploy
+  run: pnpm run deploy
 
 # エラー時のフォールバック
 - if: failure()
-  run: npm run rollback
+  run: pnpm run rollback
 ```
 
 ### 4. テストしやすい条件

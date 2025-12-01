@@ -3,7 +3,7 @@
  *
  * 使用方法:
  * 1. このファイルを app/api-docs/page.tsx にコピー
- * 2. npm install swagger-ui-react
+ * 2. pnpm install swagger-ui-react
  * 3. public/openapi.yaml に仕様書を配置
  */
 

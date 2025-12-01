@@ -259,13 +259,13 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Validate tokens
-        run: npm run tokens:validate
+        run: pnpm run tokens:validate
 
       - name: Build tokens
-        run: npm run tokens:build
+        run: pnpm run tokens:build
 
       - name: Create PR with changes
         uses: peter-evans/create-pull-request@v5
@@ -283,7 +283,7 @@ jobs:
     "tokens:pull": "tokens-studio pull",
     "tokens:validate": "node scripts/validate-tokens.mjs",
     "tokens:build": "style-dictionary build",
-    "tokens:sync": "npm run tokens:pull && npm run tokens:validate && npm run tokens:build"
+    "tokens:sync": "pnpm run tokens:pull && pnpm run tokens:validate && pnpm run tokens:build"
   }
 }
 ```
@@ -334,7 +334,7 @@ jobs:
 
 **解決策**:
 ```bash
-npm run tokens:sync
+pnpm run tokens:sync
 git diff tokens/
 ```
 
@@ -348,7 +348,7 @@ git diff tokens/
 
 **解決策**:
 ```bash
-npm run tokens:validate
+pnpm run tokens:validate
 # エラー箇所を確認して修正
 ```
 
@@ -362,7 +362,7 @@ npm run tokens:validate
 
 **解決策**:
 ```bash
-npm run tokens:build
+pnpm run tokens:build
 # tailwind.config.jsを確認
 # 開発サーバーを再起動
 ```

@@ -131,16 +131,16 @@ jobs:
 # dependabot.yml
 version: 2
 registries:
-  npm-registry:
-    type: npm-registry
+  pnpm-registry:
+    type: pnpm-registry
     url: https://registry.npmjs.org
     token: ${{ secrets.NPM_TOKEN }}  # Dependabotシークレット
 
 updates:
-  - package-ecosystem: npm
+  - package-ecosystem: pnpm
     directory: "/"
     registries:
-      - npm-registry
+      - pnpm-registry
 ```
 
 **ユースケース**:
@@ -271,9 +271,9 @@ jobs:
 # ✅ プライベートレジストリアクセスはDependabotシークレット
 # dependabot.yml
 registries:
-  private-npm:
-    type: npm-registry
-    url: https://npm.pkg.github.com
+  private-pnpm:
+    type: pnpm-registry
+    url: https://pnpm.pkg.github.com
     token: ${{ secrets.GH_PACKAGE_TOKEN }}
 ```
 

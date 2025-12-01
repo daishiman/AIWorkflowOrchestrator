@@ -205,7 +205,7 @@ jq . claude_mcp_config.json
 
 ```bash
 # パッケージの確認
-npm list @modelcontextprotocol/sdk
+pnpm list @modelcontextprotocol/sdk
 ```
 
 ## 7. 緊急対応

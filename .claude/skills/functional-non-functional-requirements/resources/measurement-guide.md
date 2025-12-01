@@ -131,7 +131,7 @@ MTTR = 総ダウンタイム / 障害発生回数
 |-----|-------|-----|
 | SAST | SonarQube, Snyk, CodeQL | 静的コード分析 |
 | DAST | OWASP ZAP, Burp Suite | 動的分析 |
-| 依存関係チェック | npm audit, Dependabot | ライブラリ脆弱性 |
+| 依存関係チェック | pnpm audit, Dependabot | ライブラリ脆弱性 |
 | ペネトレーションテスト | 専門業者 | 総合セキュリティ検証 |
 
 **CI/CDでの自動チェック例**:
