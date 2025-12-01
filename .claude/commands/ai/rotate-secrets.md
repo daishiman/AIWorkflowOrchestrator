@@ -1,6 +1,38 @@
 ---
-description: "APIキーやシークレットを安全にローテーション（更新）し、古いシークレットの無効化と新しいシークレットの設定を支援します"
-argument-hint: "[secret-name] - ローテーション対象のシークレット名（例: DATABASE_URL, API_KEY）"
+description: |
+  APIキーやシークレットを安全にローテーション（更新）し、
+  古いシークレットの無効化と新しいシークレットの設定を支援します。
+
+  🤖 起動エージェント:
+  - Phase 1-3: `.claude/agents/secret-mgr.md` - 機密情報ローテーション専門
+
+  📚 利用可能スキル（secret-mgrエージェントが参照）:
+  - `.claude/skills/encryption-key-lifecycle/SKILL.md` - 鍵生成・保管・Rotation・廃棄
+  - `.claude/skills/zero-trust-security/SKILL.md` - JITアクセス、継続的検証
+  - `.claude/skills/environment-isolation/SKILL.md` - 環境分離、クロスアカウント制御
+  - `.claude/skills/railway-secrets-management/SKILL.md` - Railway Secrets更新
+  - `.claude/skills/github-actions-security/SKILL.md` - GitHub Secrets更新
+  - `.claude/skills/project-architecture-integration/SKILL.md` - 依存関係分析
+
+  ⚙️ このコマンドの設定:
+  - argument-hint: "[secret-name]"（ローテーション対象: DATABASE_URL, API_KEY等）
+  - allowed-tools: シークレットローテーション用
+    • Read: 使用箇所特定、依存サービス確認用
+    • Write: 更新スクリプト、手順書生成用
+    • Bash: 検証スクリプト実行用
+  - model: sonnet（標準的なローテーションタスク）
+  - disable-model-invocation: true（手動確認必須）
+
+  📋 成果物:
+  - ローテーション計画書
+  - 更新スクリプト（手動実行用）
+  - ロールバック手順
+
+  ⚠️ 重要: disable-model-invocation: true により、AIによる自動実行は行われません。
+  生成されるスクリプトを手動で確認・実行してください。
+
+  トリガーキーワード: secret rotation, キーローテーション, パスワード変更, API key rotation, 鍵更新
+argument-hint: "[secret-name]"
 allowed-tools:
   - Read
   - Write
@@ -49,7 +81,7 @@ disable-model-invocation: true
 
 **エージェント起動**:
 ```
-@secret-mgr を起動し、以下を依頼:
+`.claude/agents/secret-mgr.md` を起動し、以下を依頼:
 - 対象シークレット: $1
 - 対象シークレットの使用箇所特定
 - 依存サービスの確認
@@ -89,7 +121,7 @@ disable-model-invocation: true
 
 **エージェント起動**:
 ```
-@secret-mgr を起動し、以下を依頼:
+`.claude/agents/secret-mgr.md` を起動し、以下を依頼:
 - ローテーションスクリプトの生成
 - 検証スクリプトの生成
 - ロールバックスクリプトの生成
@@ -139,7 +171,7 @@ echo "Phase 5: 古いシークレットを無効化しています..."
 
 **エージェント起動**:
 ```
-@secret-mgr を起動し、以下を依頼:
+`.claude/agents/secret-mgr.md` を起動し、以下を依頼:
 - 実行手順書の作成
 - チェックリストの生成
 - トラブルシューティングガイドの作成

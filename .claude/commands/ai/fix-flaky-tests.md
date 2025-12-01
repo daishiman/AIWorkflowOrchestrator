@@ -37,7 +37,12 @@ description: |
 
   トリガーキーワード: flaky test, unstable test, 不安定なテスト, フレーキー
 argument-hint: "[test-file]"
-allowed-tools: [Task, Read, Edit, Bash(pnpm test*|playwright*), Grep]
+allowed-tools:
+   - Task
+   - Read
+   - Edit
+   - Bash(pnpm test*|playwright*)
+   - Grep
 model: sonnet
 ---
 

@@ -23,7 +23,11 @@ description: |
 
   トリガーキーワード: local agent, file watching, chokidar, pm2, local sync
 argument-hint: ""
-allowed-tools: [Task, Bash, Read, Write(local-agent/**)]
+allowed-tools:
+  - Task
+  - Bash
+  - Read
+  - Write(local-agent/**)
 model: sonnet
 ---
 
@@ -53,9 +57,9 @@ ls -la local-agent/ 2>/dev/null || echo "No existing local-agent"
 
 **並列起動** - 以下の3エージェントを同時に起動:
 
-#### 2-1. @local-watcher エージェント起動
+#### 2-1. `.claude/agents/local-watcher.md` エージェント起動
 ```typescript
-@local-watcher を起動し、以下を依頼:
+`.claude/agents/local-watcher.md` を起動し、以下を依頼:
 
 **タスク**: ファイル監視システムの実装
 **フォーカス**: event-driven-file-watching, debounce-throttle-patterns
@@ -74,9 +78,9 @@ ls -la local-agent/ 2>/dev/null || echo "No existing local-agent"
 - イベント: add, change（unlink除外）
 ```
 
-#### 2-2. @local-sync エージェント起動
+#### 2-2. `.claude/agents/local-sync.md` エージェント起動
 ```typescript
-@local-sync を起動し、以下を依頼:
+`.claude/agents/local-sync.md` を起動し、以下を依頼:
 
 **タスク**: クラウドAPI連携実装
 **期待成果物**:
@@ -91,9 +95,9 @@ ls -la local-agent/ 2>/dev/null || echo "No existing local-agent"
 - POLL_INTERVAL_MS: ポーリング間隔（デフォルト: 30000ms）
 ```
 
-#### 2-3. @process-mgr エージェント起動
+#### 2-3. `.claude/agents/process-mgr.md` エージェント起動
 ```typescript
-@process-mgr を起動し、以下を依頼:
+`.claude/agents/process-mgr.md` を起動し、以下を依頼:
 
 **タスク**: PM2設定とプロセス管理
 **期待成果物**:

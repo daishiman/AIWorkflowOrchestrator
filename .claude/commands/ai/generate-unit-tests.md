@@ -38,7 +38,13 @@ description: |
 
   トリガーキーワード: unit test, test generation, TDD, coverage, テスト作成
 argument-hint: "[target-file]"
-allowed-tools: [Task, Read, Write(__tests__/**/*.test.ts), Edit, Bash(vitest*|pnpm test*), Grep]
+allowed-tools:
+  - Task
+  - Read
+  - Write(__tests__/**/*.test.ts)
+  - Edit
+  - Bash(vitest*|pnpm test*)
+  - Grep
 model: opus
 ---
 

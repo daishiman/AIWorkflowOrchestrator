@@ -35,7 +35,12 @@ description: |
 
   トリガーキーワード: architecture review, アーキテクチャレビュー, 依存関係, SOLID, clean architecture, コードスメル
 argument-hint: "[scope]"
-allowed-tools: [Task, Read, Grep, Glob, Write(docs/**)]
+allowed-tools:
+  - Task
+  - Read
+  - Grep
+  - Glob
+  - Write(docs/**)
 model: sonnet
 ---
 
@@ -59,7 +64,7 @@ model: sonnet
    - 第4章: ディレクトリ構造（ハイブリッドアーキテクチャ）
    - 第4.4章: 依存関係ルール（app → features → shared/infrastructure → shared/core）
 
-### Phase 1: @arch-policeエージェント起動
+### Phase 1: `.claude/agents/arch-police.md` エージェント起動
 
 **アーキテクチャレビュー実行**:
 

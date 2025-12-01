@@ -22,7 +22,11 @@ description: |
 
   トリガーキーワード: monitoring, alert, slo, sli, dashboard, observability
 argument-hint: "[service-name]"
-allowed-tools: [Task, Read, Write(config/monitoring.*|docs/observability/**), Grep]
+allowed-tools:
+  - Task
+  - Read
+  - Write(config/monitoring.*|docs/observability/**)
+  - Grep
 model: sonnet
 ---
 
@@ -54,10 +58,10 @@ grep -r "metric\|measure" src/
 cat docs/00-requirements/master_system_design.md | grep -A 20 "workflows"
 ```
 
-### Phase 2: @sre-observer エージェント起動
+### Phase 2: sre-observer エージェント起動
 
 ```typescript
-@sre-observer を起動し、以下を依頼:
+`.claude/agents/sre-observer.md` を起動し、以下を依頼:
 
 **タスク**: 監視・アラートシステムの設計と設定
 **フォーカス**: slo-sli-design, alert-designスキルを中心に活用

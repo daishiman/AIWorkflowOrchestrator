@@ -28,7 +28,12 @@ description: |
 
   トリガーキーワード: backup, recovery, disaster, PITR, RPO, RTO, restoration
 argument-hint: "[backup-schedule]"
-allowed-tools: [Task, Read, Write(scripts/**|docs/**), Bash, Grep]
+allowed-tools:
+   - Task
+   - Read
+   - Write(scripts/**|docs/**)
+   - Bash
+   - Grep
 model: sonnet
 ---
 

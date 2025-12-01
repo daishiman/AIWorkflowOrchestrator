@@ -21,7 +21,10 @@ description: |
 
   トリガーキーワード: readme, project overview, documentation
 argument-hint: ""
-allowed-tools: [Task, Read, Edit]
+allowed-tools:
+  - Task
+  - Read
+  - Edit
 model: sonnet
 ---
 
@@ -53,10 +56,10 @@ ls -la src/features/
 cat .env.example 2>/dev/null || echo "No .env.example"
 ```
 
-### Phase 2: @spec-writer エージェント起動（技術部分）
+### Phase 2: spec-writer エージェント起動（技術部分）
 
 ```typescript
-@spec-writer を起動し、以下を依頼:
+`.claude/agents/spec-writer.md` を起動し、以下を依頼:
 
 **タスク**: README.md の技術セクション更新
 **フォーカス**: markdown-advanced-syntax, structured-writing
@@ -73,10 +76,10 @@ cat .env.example 2>/dev/null || echo "No .env.example"
 - 既存README.md
 ```
 
-### Phase 3: @manual-writer エージェント起動（ユーザー向け部分）
+### Phase 3: manual-writer エージェント起動（ユーザー向け部分）
 
 ```typescript
-@manual-writer を起動し、以下を依頼:
+`.claude/agents/manual-writer.md` を起動し、以下を依頼:
 
 **タスク**: README.md のユーザー向けセクション更新
 **フォーカス**: user-centric-writing, tutorial-design

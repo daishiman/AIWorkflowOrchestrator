@@ -36,7 +36,11 @@ description: |
 
   トリガーキーワード: fixture, test data, seeding, テストデータ, フィクスチャ
 argument-hint: "[fixture-type]"
-allowed-tools: [Task, Read, Write(tests/fixtures/**/*.ts, src/features/**/__tests__/fixtures/**), Grep]
+allowed-tools:
+  - Task
+  - Read
+  - Write(tests/fixtures/**/*.ts, src/features/**/__tests__/fixtures/**)
+  - Grep
 model: opus
 ---
 

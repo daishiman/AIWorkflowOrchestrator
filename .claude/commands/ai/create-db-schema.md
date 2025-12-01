@@ -27,7 +27,12 @@ description: |
 
   トリガーキーワード: schema, database, table, Drizzle, normalization, JSONB
 argument-hint: "[table-name]"
-allowed-tools: [Task, Read, Write(src/shared/infrastructure/database/**|docs/database/**), Edit, Grep]
+allowed-tools:
+  - Task
+  - Read
+  - Write(src/shared/infrastructure/database/**|docs/database/**)
+  - Edit
+  - Grep
 model: sonnet
 ---
 

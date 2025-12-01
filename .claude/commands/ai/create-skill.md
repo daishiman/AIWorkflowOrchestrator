@@ -7,9 +7,44 @@ description: |
   500行以内の本文、適切なリソース分割、メタデータ設計により、
   トークン効率と知識スケーラビリティを両立した再利用可能な知識を形式知化します。
 
+  🤖 起動エージェント:
+  - Phase 1-4: `.claude/agents/skill-librarian.md` - 知識体系化・スキル作成専門
+
+  📚 利用可能スキル（skill-librarianエージェントが参照）:
+  - `.claude/skills/knowledge-management/SKILL.md` - SECIモデルによる暗黙知→形式知変換
+  - `.claude/skills/progressive-disclosure/SKILL.md` - 3層開示モデル、スキル発動最適化
+  - `.claude/skills/documentation-architecture/SKILL.md` - トピック分割、階層設計
+  - `.claude/skills/context-optimization/SKILL.md` - トークン効率化、段階的ロード
+  - `.claude/skills/best-practices-curation/SKILL.md` - 知識の収集、更新、陳腐化防止
+  - `.claude/skills/skill-creation-workflow/SKILL.md` - 5フェーズスキル作成ワークフロー
+
+  ⚙️ このコマンドの設定:
+  - argument-hint: "[skill-name]"（スキル名）
+  - allowed-tools: スキル設計とファイル生成用
+    • Read: 既存スキル・ベストプラクティス参照用
+    • Write(.claude/skills/**): スキルファイル生成用
+    • Grep: パターン検索・既存知識調査用
+    • Bash: 検証スクリプト実行用
+  - model: opus（複雑な知識体系化が必要）
+
+  📋 成果物:
+  - `.claude/skills/[skill-name]/SKILL.md`（500行以内のスキル本文）
+  - `.claude/skills/[skill-name]/resources/`（詳細リソース）
+  - `.claude/skills/[skill-name]/scripts/`（自動化スクリプト、必要時）
+  - `.claude/skills/[skill-name]/templates/`（テンプレート、必要時）
+
+  🎯 設計原則:
+  - SECIモデル（共同化→表出化→連結化→内面化）
+  - Progressive Disclosure（段階的開示）
+  - 500行以内制限
+
   トリガーキーワード: skill, スキル作成, 知識体系化, ベストプラクティス, 形式知化
 argument-hint: "[skill-name]"
-allowed-tools: [Read, Write(.claude/skills/**), Grep, Bash]
+allowed-tools:
+   - Read
+   - Write(.claude/skills/**)
+   - Grep
+   - Bash
 model: opus
 ---
 
@@ -24,7 +59,7 @@ skill-librarian エージェントを起動し、SECIモデルに基づいた実
 
 ### 1. エージェント起動
 
-専門エージェント @skill-librarian を起動します。
+専門エージェント `.claude/agents/skill-librarian.md` を起動します。
 このエージェントは以下の5つのスキルを活用します:
 
 - **knowledge-management**: SECIモデルによる暗黙知→形式知変換
@@ -35,7 +70,7 @@ skill-librarian エージェントを起動し、SECIモデルに基づいた実
 
 ### 2. SECIモデルに基づくワークフロー
 
-@skill-librarian は以下のワークフローでスキルを作成します:
+`.claude/agents/skill-librarian.md` は以下のワークフローでスキルを作成します:
 
 ```
 Phase 1: Socialization（共同化）
@@ -142,7 +177,7 @@ version: 1.0.0
 
 ## エージェント起動
 
-このコマンドは @skill-librarian エージェントを起動します。
+このコマンドは `.claude/agents/skill-librarian.md` エージェントを起動します。
 
 ### 起動手順
 
@@ -156,19 +191,19 @@ version: 1.0.0
 ユーザーに対話的にスキル名を質問します
 ```
 
-2. **@skill-librarian エージェントを起動**
+2. **skill-librarian エージェントを起動**
 
 以下の指示で Task ツールを使用してエージェントを起動します:
 
 ```
-Task ツールで @skill-librarian エージェントを起動し、新しいスキルを作成してください。
+Task ツールで `.claude/agents/skill-librarian.md` エージェントを起動し、新しいスキルを作成してください。
 
 コンテキスト:
 - スキル名: ${スキル名}
 - 既存のスキル構造を確認済み
 - プロジェクトの知識体系を理解済み
 
-@skill-librarian エージェントに以下を依頼:
+`.claude/agents/skill-librarian.md` エージェントに以下を依頼:
 
 【Phase 1: Socialization（共同化）】
 1. ユーザーから暗黙知を収集
@@ -327,8 +362,8 @@ Task ツールで @skill-librarian エージェントを起動し、新しいス
 
 ## 注意事項
 
-- このコマンド自体は @skill-librarian を起動するだけです
-- 実際のスキル作成は @skill-librarian エージェントが担当します
+- このコマンド自体は `.claude/agents/skill-librarian.md` を起動するだけです
+- 実際のスキル作成は `.claude/agents/skill-librarian.md` エージェントが担当します
 - SECIモデルに基づいた対話的なプロセスのため、時間がかかる場合があります
 - model: opus を使用（高度な知識体系化が必要）
 - SKILL.md本文は必ず500行以内に収めます

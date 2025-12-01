@@ -22,7 +22,12 @@ description: |
 
   トリガーキーワード: logging, log, json, structured, correlation id
 argument-hint: "[log-level]"
-allowed-tools: [Task, Read, Write(src/shared/infrastructure/logging/**|config/logging.*), Edit, Grep]
+allowed-tools:
+  - Task
+  - Read
+  - Write(src/shared/infrastructure/logging/**|config/logging.*)
+  - Edit
+  - Grep
 model: sonnet
 ---
 
@@ -55,10 +60,10 @@ grep -r "console.log\|console.error" src/
 cat docs/00-requirements/master_system_design.md | grep -A 30 "## 2.2 ロギング仕様"
 ```
 
-### Phase 2: @sre-observer エージェント起動
+### Phase 2: sre-observer エージェント起動
 
 ```typescript
-@sre-observer を起動し、以下を依頼:
+`.claude/agents/sre-observer.md` を起動し、以下を依頼:
 
 **タスク**: 構造化ロギングシステムの設計と実装
 **フォーカス**: structured-loggingスキルを中心に活用

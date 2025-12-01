@@ -1,6 +1,40 @@
 ---
-description: "認証・認可システムを実装します。OAuth 2.0（GitHub/Google）またはCredentials認証をサポートし、NextAuth.jsまたはPassport.jsベースの実装を提供します"
-argument-hint: "[provider: github|google|credentials] - 認証プロバイダー（デフォルト: credentials）"
+description: |
+  認証・認可システムを実装します。OAuth 2.0（GitHub/Google）または
+  Credentials認証をサポートし、NextAuth.jsまたはPassport.jsベースの実装を提供します。
+
+  🤖 起動エージェント:
+  - Phase 1-3: `.claude/agents/auth-specialist.md` - 認証・認可実装専門
+
+  📚 利用可能スキル（auth-specialistエージェントが参照）:
+  - `.claude/skills/oauth2-flows/SKILL.md` - Authorization Code Flow、PKCE、Refresh Token
+  - `.claude/skills/session-management/SKILL.md` - JWT/Database戦略、Cookie属性、トークンライフサイクル
+  - `.claude/skills/rbac-implementation/SKILL.md` - ロール設計、権限モデル、ポリシーエンジン
+  - `.claude/skills/nextauth-patterns/SKILL.md` - NextAuth.js v5設定、プロバイダー、アダプター
+  - `.claude/skills/security-headers/SKILL.md` - CSP、HSTS、X-Frame-Options、CSRF/XSS対策
+
+  ⚙️ このコマンドの設定:
+  - argument-hint: "[provider: github|google|credentials]"（認証プロバイダー、デフォルト: credentials）
+  - allowed-tools: 認証システム実装用
+    • Read: プロジェクト構造確認、既存認証確認用
+    • Write: 認証設定、APIルート生成用
+    • Edit: 既存ファイル修正用
+    • Bash: パッケージインストール、型チェック用
+  - model: sonnet（標準的な認証実装タスク）
+
+  📋 成果物:
+  - `src/app/api/auth/[...nextauth]/route.ts`（認証APIルート）
+  - `src/middleware.ts`（認証ミドルウェア）
+  - `.env.example`（環境変数テンプレート）
+  - 認証設定ドキュメント
+
+  🎯 サポートプロバイダー:
+  - credentials: ユーザー名/パスワード認証
+  - github: GitHub OAuth 2.0
+  - google: Google OAuth 2.0
+
+  トリガーキーワード: authentication, authorization, 認証実装, OAuth, NextAuth, ログイン
+argument-hint: "[provider: github|google|credentials]"
 allowed-tools:
   - Read
   - Write
@@ -40,7 +74,7 @@ model: sonnet
 
 **エージェント起動**:
 ```
-@auth-specialist を起動し、以下を依頼:
+`.claude/agents/auth-specialist.md` を起動し、以下を依頼:
 - プロバイダー: $1 (デフォルト: credentials)
 - プロジェクト構造の分析（Next.js/Express/Fastify等）
 - 既存認証実装の確認
@@ -64,7 +98,7 @@ model: sonnet
 
 **エージェント起動**:
 ```
-@auth-specialist を起動し、以下を依頼:
+`.claude/agents/auth-specialist.md` を起動し、以下を依頼:
 - 依存関係のインストール
 - 認証設定ファイルの作成
 - 認証API/ルートの実装
@@ -113,7 +147,7 @@ model: sonnet
 
 **エージェント起動**:
 ```
-@auth-specialist を起動し、以下を依頼:
+`.claude/agents/auth-specialist.md` を起動し、以下を依頼:
 - 実装の検証（型チェック、lint）
 - セキュリティレビュー
 - セットアップガイド作成
@@ -142,8 +176,8 @@ model: sonnet
 
 - [ ] 認証関連ファイルが適切に生成されている
 - [ ] .env.example が作成されている
-- [ ] TypeScript型エラーがない（`npm run type-check`）
-- [ ] Lintエラーがない（`npm run lint`）
+- [ ] TypeScript型エラーがない（`pnpm run type-check`）
+- [ ] Lintエラーがない（`pnpm run lint`）
 - [ ] セットアップガイドが `docs/auth/` に生成されている
 - [ ] セキュリティベストプラクティスが適用されている
 

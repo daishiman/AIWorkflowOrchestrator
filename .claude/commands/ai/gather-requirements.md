@@ -13,12 +13,13 @@ description: |
   **Phase 2-5（明確化・構造化・文書化・検証・レビュー）:**
   - エージェント内の8つの依存スキル（requirements-triage, ambiguity-elimination等）を自動参照
 
-  ⚙️ このコマンドの設定:
-  - argument-hint: "[stakeholder-name]（オプション: ヒアリング対象者、省略時は汎用質問セット）"
-  - allowed-tools: Read(docs/**), Write(docs/00-requirements/**)
-  - model: opus（複雑なヒアリング分析と曖昧性除去の判断が必要）
-
   トリガーキーワード: 要件定義、ヒアリング、要求分析、requirements gathering
+  ⚙️ このコマンドの設定:
+argument-hint: "[stakeholder-name]"
+allowed-tools:
+  - Read(docs/**)
+  - Write(docs/00-requirements/**)
+model: opus
 ---
 
 # /ai:gather-requirements
@@ -27,7 +28,7 @@ description: |
 
 ### 1.1 Requirements Analystの起動
 ```bash
-# @req-analyst エージェントのロード
+# `.claude/agents/req-analyst.md` エージェントのロード
 cat .claude/agents/req-analyst.md
 ```
 
@@ -56,7 +57,7 @@ cat docs/00-requirements/master_system_design.md
 ## Phase 2: 要件収集の実行
 
 ### 2.1 ステークホルダーヒアリング
-**実行**: `@req-analyst` が以下を実施
+**実行**: `.claude/agents/req-analyst.md` が以下を実施
 1. interview-techniquesスキルに基づくヒアリング実施
 2. 5W1H質問法による網羅的要求収集
 3. Why分析（5回のWhy繰り返し）による根本ニーズ発見
@@ -68,7 +69,7 @@ cat docs/00-requirements/master_system_design.md
 **成果物**: 初期要求リスト（MoSCoW分類付き）
 
 ### 2.2 要件の明確化と構造化
-**実行**: `@req-analyst` が以下を実施（Phase 2-4）
+**実行**: `.claude/agents/req-analyst.md` が以下を実施（Phase 2-4）
 1. 曖昧性検出と除去（「速い」→「応答時間<200ms」）
 2. 機能要件（FR）と非機能要件（NFR）への分離
 3. ユースケースと受け入れ基準の定義
@@ -124,9 +125,9 @@ cat docs/00-requirements/master_system_design.md
 
 ### ハンドオフ準備
 次フェーズへの引き継ぎ:
-- **設計フェーズ**: `/ai:design-system` または `@spec-writer` へハンドオフ
-- **ドメインモデリング**: `@domain-modeler` との並行作業検討
-- **テスト戦略**: `@test-strategist` へ要件の引き継ぎ
+- **設計フェーズ**: `/ai:design-system` または `.claude/agents/spec-writer.md` へハンドオフ
+- **ドメインモデリング**: `.claude/agents/domain-modeler.md` との並行作業検討
+- **テスト戦略**: `.claude/agents/unit-tester.md` へ要件の引き継ぎ
 
 ---
 

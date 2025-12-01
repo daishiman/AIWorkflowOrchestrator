@@ -6,9 +6,9 @@ description: |
   Entity、ValueObject、Aggregate、ドメインサービスを識別し、ユビキタス言語を確立します。
 
   🤖 起動エージェント:
-  - `.claude/agents/domain-modeler.md`: ドメインモデル設計専門エージェント
+  - `.claude/agents/domain-modeler.md` - ドメインモデル設計専門エージェント
 
-  📚 エージェントが活用するスキル（必要時に自動参照）:
+  📚 利用可能スキル（domain-modelerエージェントが参照）:
   **必須スキル（Phase 1-2）:**
   - `.claude/skills/domain-driven-design/SKILL.md`: DDD原則と実践パターン
   - `.claude/skills/ubiquitous-language/SKILL.md`: ユビキタス言語確立手法
@@ -39,7 +39,12 @@ description: |
   domain, DDD, entity, value object, aggregate, ドメインモデル, エンティティ, 値オブジェクト, ユビキタス言語
 
 argument-hint: "[domain-name]"
-allowed-tools: [Task, Read, Write(src/shared/core/**|docs/**), Edit, Grep]
+allowed-tools:
+- Task
+- Read
+- Write(src/shared/core/**|docs/**)
+- Edit
+- Grep
 model: opus
 ---
 
@@ -63,7 +68,7 @@ model: opus
 
 3. **エージェント起動と委譲**
    ```
-   @domain-modeler
+   `.claude/agents/domain-modeler.md` を起動
 
    依頼内容:
    - ドメイン「$ARGUMENTS」のモデル設計

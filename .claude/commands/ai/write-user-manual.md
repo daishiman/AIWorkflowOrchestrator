@@ -24,7 +24,12 @@ description: |
 
   トリガーキーワード: manual, tutorial, guide, user, documentation
 argument-hint: "[target-audience]"
-allowed-tools: [Task, Read, Write(docs/manual/**|docs/tutorials/**), Edit, Grep]
+allowed-tools:
+  - Task
+  - Read
+  - Write(docs/manual/**|docs/tutorials/**)
+  - Edit
+  - Grep
 model: sonnet
 ---
 
@@ -55,10 +60,10 @@ ls -la docs/
 grep -r "description:" src/features/*/schema.ts
 ```
 
-### Phase 2: @manual-writer エージェント起動
+### Phase 2: manual-writer エージェント起動
 
 ```typescript
-@manual-writer を起動し、以下を依頼:
+`.claude/agents/manual-writer.md` を起動し、以下を依頼:
 
 **タスク**: ユーザーマニュアルとチュートリアルの作成
 **入力情報**:

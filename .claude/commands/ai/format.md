@@ -16,7 +16,10 @@ description: |
 
   トリガーキーワード: format, prettier, フォーマット, 整形, code style
 argument-hint: "[target-pattern]"
-allowed-tools: ["Task", "Bash", "Edit"]
+allowed-tools:
+   - Task
+   - Bash
+   - Edit
 model: sonnet
 ---
 
@@ -28,7 +31,7 @@ Prettierを実行してコードベース全体に一貫したコードフォー
 
 ## Phase 1: 準備
 
-1. @code-quality エージェントをフォーマットコンテキストで起動
+1. `.claude/agents/code-quality.md` エージェントをフォーマットコンテキストで起動
 2. `.claude/skills/prettier-integration/SKILL.md` を参照して設定パターンを確認
 3. 引数解析: `$1` でターゲットパターンを取得（デフォルト: すべてのサポートファイル）
 
@@ -45,7 +48,7 @@ Prettierを実行してコードベース全体に一貫したコードフォー
 
 ## Phase 3: 検証
 
-1. @code-quality エージェントからフォーマット結果を分析
+1. `.claude/agents/code-quality.md` エージェントからフォーマット結果を分析
 2. サマリー生成:
    - フォーマットされたファイル数
    - 影響を受けたファイルパス

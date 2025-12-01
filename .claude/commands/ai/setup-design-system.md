@@ -42,7 +42,11 @@ description: |
   - master_system_design.md 第5章: Clean Architecture依存関係ルール
 
   トリガーキーワード: design-system, tailwind, デザイントークン, スタイル設定, UI基盤
-allowed-tools: [Bash(pnpm*), Read, Write, Edit]
+allowed-tools:
+  - Bash(pnpm*)
+  - Read
+  - Write
+  - Edit
 model: sonnet
 ---
 

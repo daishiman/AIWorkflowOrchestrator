@@ -32,7 +32,12 @@ description: |
 
   トリガーキーワード: component, ui, react, atomic-design, アクセシビリティ, デザインシステム
 argument-hint: "[component-name] [type]"
-allowed-tools: [Task, Read, Write(src/app/**|src/features/**), Edit, Grep]
+allowed-tools:
+  - Task
+  - Read
+  - Write(src/app/**|src/features/**)
+  - Edit
+  - Grep
 model: sonnet
 ---
 
@@ -138,5 +143,5 @@ Task ツールで `.claude/agents/ui-designer.md` を起動:
 1. `/ai:create-component` → UIコンポーネント作成
 2. アクセシビリティテスト実行（axe-core等）
 3. 必要に応じて `/ai:create-page` でページ統合
-4. 状態管理必要時は `@state-manager` 連携
-5. E2Eテスト作成（`@e2e-tester`）
+4. 状態管理必要時は `.claude/agents/state-manager.md` 連携
+5. E2Eテスト作成（`.claude/agents/e2e-tester.md`）
