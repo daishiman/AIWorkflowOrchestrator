@@ -110,7 +110,7 @@ steps:
   - name: Build
     env:
       DEBUG: true
-    run: npm run build
+    run: pnpm run build
 ```
 
 ## デフォルト環境変数

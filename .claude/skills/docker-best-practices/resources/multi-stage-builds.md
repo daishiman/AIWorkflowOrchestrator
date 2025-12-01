@@ -29,7 +29,7 @@
 FROM node:20 AS builder
 WORKDIR /app
 COPY . .
-RUN npm ci && npm run build
+RUN pnpm ci && pnpm run build
 
 # 実行ステージ
 FROM node:20-alpine

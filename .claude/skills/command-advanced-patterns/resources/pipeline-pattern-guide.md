@@ -113,7 +113,7 @@ If build fails:
 Execute: `/security-scan build_artifacts`
 
 Checks:
-- Dependency vulnerabilities (npm audit)
+- Dependency vulnerabilities (pnpm audit)
 - OWASP checks
 - License compliance
 

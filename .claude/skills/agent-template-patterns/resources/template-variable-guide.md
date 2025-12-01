@@ -74,7 +74,10 @@ name: {{agent_name}}
 description: |
   {{agent_description}}
 
-tools: [{{tools_list}}]
+tools:
+  - {{tools_list}}
+  - {{tools_list}}
+  - {{tools_list}}
 model: {{model}}
 version: {{version}}
 ---
@@ -110,7 +113,10 @@ name: code-reviewer
 description: |
   コード品質を検証し、改善提案を提供するエージェント。
 
-tools: [Read, Grep, Write]
+tools:
+  - Read
+  - Grep
+  - Write
 model: sonnet
 version: 1.0.0
 ---

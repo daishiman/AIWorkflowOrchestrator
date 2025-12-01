@@ -6,13 +6,13 @@
  * 使用方法:
  *   1. このファイルを seeds/ ディレクトリにコピー
  *   2. テーブル名とデータを更新
- *   3. npm run seed で実行
+ *   3. pnpm run seed で実行
  */
 
-import { faker } from '@faker-js/faker/locale/ja';
-import { db } from '../db'; // プロジェクトのDB設定に合わせて変更
-import { users, roles, orders, orderItems } from '../db/schema'; // スキーマをインポート
-import { sql } from 'drizzle-orm';
+import { faker } from "@faker-js/faker/locale/ja";
+import { db } from "../db"; // プロジェクトのDB設定に合わせて変更
+import { users, roles, orders, orderItems } from "../db/schema"; // スキーマをインポート
+import { sql } from "drizzle-orm";
 
 // =============================================================================
 // 設定
@@ -47,8 +47,10 @@ faker.seed(12345);
 // =============================================================================
 
 function getConfig() {
-  const env = process.env.NODE_ENV || 'development';
-  return SEED_CONFIG[env as keyof typeof SEED_CONFIG] || SEED_CONFIG.development;
+  const env = process.env.NODE_ENV || "development";
+  return (
+    SEED_CONFIG[env as keyof typeof SEED_CONFIG] || SEED_CONFIG.development
+  );
 }
 
 function generateMany<T>(count: number, generator: (index: number) => T): T[] {
@@ -60,13 +62,18 @@ function generateMany<T>(count: number, generator: (index: number) => T): T[] {
 // =============================================================================
 
 const MASTER_ROLES = [
-  { id: 1, name: 'admin', displayName: '管理者', permissions: ['*'] },
-  { id: 2, name: 'editor', displayName: '編集者', permissions: ['read', 'write'] },
-  { id: 3, name: 'viewer', displayName: '閲覧者', permissions: ['read'] },
+  { id: 1, name: "admin", displayName: "管理者", permissions: ["*"] },
+  {
+    id: 2,
+    name: "editor",
+    displayName: "編集者",
+    permissions: ["read", "write"],
+  },
+  { id: 3, name: "viewer", displayName: "閲覧者", permissions: ["read"] },
 ];
 
 async function seedRoles() {
-  console.log('  Seeding roles...');
+  console.log("  Seeding roles...");
 
   for (const role of MASTER_ROLES) {
     await db
@@ -93,10 +100,10 @@ async function seedRoles() {
 function generateUser(index: number) {
   return {
     id: index + 1,
-    email: index === 0 ? 'admin@example.com' : faker.internet.email(),
+    email: index === 0 ? "admin@example.com" : faker.internet.email(),
     name: faker.person.fullName(),
     roleId: index === 0 ? 1 : faker.helpers.arrayElement([2, 3]),
-    password: 'hashed_password_placeholder', // 実際は bcrypt などでハッシュ
+    password: "hashed_password_placeholder", // 実際は bcrypt などでハッシュ
     createdAt: faker.date.past({ years: 1 }),
     updatedAt: new Date(),
   };
@@ -106,7 +113,12 @@ function generateOrder(userId: number, index: number) {
   return {
     id: userId * 100 + index + 1,
     userId,
-    status: faker.helpers.arrayElement(['pending', 'processing', 'completed', 'cancelled']),
+    status: faker.helpers.arrayElement([
+      "pending",
+      "processing",
+      "completed",
+      "cancelled",
+    ]),
     totalAmount: 0, // アイテム追加後に計算
     shippingAddress: faker.location.streetAddress(),
     createdAt: faker.date.recent({ days: 90 }),
@@ -163,7 +175,10 @@ async function seedOrdersAndItems(userList: ReturnType<typeof generateUser>[]) {
       );
 
       // 合計金額を計算
-      order.totalAmount = itemData.reduce((sum, item) => sum + item.subtotal, 0);
+      order.totalAmount = itemData.reduce(
+        (sum, item) => sum + item.subtotal,
+        0
+      );
 
       await db.insert(orders).values(order).onConflictDoNothing();
       await db.insert(orderItems).values(itemData).onConflictDoNothing();
@@ -184,39 +199,47 @@ async function seedOrdersAndItems(userList: ReturnType<typeof generateUser>[]) {
 export const TEST_FIXTURES = {
   // 注文を持つユーザー
   userWithOrders: {
-    user: { id: 9001, email: 'test-with-orders@example.com', name: 'Test User 1' },
+    user: {
+      id: 9001,
+      email: "test-with-orders@example.com",
+      name: "Test User 1",
+    },
     orders: [
-      { id: 90001, status: 'pending', totalAmount: 1000 },
-      { id: 90002, status: 'completed', totalAmount: 2500 },
+      { id: 90001, status: "pending", totalAmount: 1000 },
+      { id: 90002, status: "completed", totalAmount: 2500 },
     ],
   },
 
   // 注文を持たないユーザー
   userWithoutOrders: {
-    user: { id: 9002, email: 'test-no-orders@example.com', name: 'Test User 2' },
+    user: {
+      id: 9002,
+      email: "test-no-orders@example.com",
+      name: "Test User 2",
+    },
     orders: [],
   },
 
   // キャンセルされた注文
   cancelledOrder: {
     orderId: 90003,
-    status: 'cancelled',
-    cancelReason: 'customer_request',
+    status: "cancelled",
+    cancelReason: "customer_request",
   },
 };
 
 async function seedTestFixtures() {
-  console.log('  Seeding test fixtures...');
+  console.log("  Seeding test fixtures...");
 
   // テストユーザー
   for (const fixture of Object.values(TEST_FIXTURES)) {
-    if ('user' in fixture) {
+    if ("user" in fixture) {
       await db
         .insert(users)
         .values({
           ...fixture.user,
           roleId: 3,
-          password: 'test_password_hash',
+          password: "test_password_hash",
           createdAt: new Date(),
           updatedAt: new Date(),
         })
@@ -232,30 +255,32 @@ async function seedTestFixtures() {
 // =============================================================================
 
 async function seedMaster() {
-  console.log('\n📦 Seeding master data...');
+  console.log("\n📦 Seeding master data...");
   await seedRoles();
 }
 
 async function seedDevelopment() {
-  console.log('\n🔧 Seeding development data...');
+  console.log("\n🔧 Seeding development data...");
   const userList = await seedUsers();
   await seedOrdersAndItems(userList);
 }
 
 async function seedTest() {
-  console.log('\n🧪 Seeding test fixtures...');
+  console.log("\n🧪 Seeding test fixtures...");
   await seedTestFixtures();
 }
 
-export async function runSeeds(options: {
-  master?: boolean;
-  development?: boolean;
-  test?: boolean;
-} = {}) {
+export async function runSeeds(
+  options: {
+    master?: boolean;
+    development?: boolean;
+    test?: boolean;
+  } = {}
+) {
   const { master = true, development = false, test = false } = options;
 
-  console.log('🚀 Starting seed process...');
-  console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log("🚀 Starting seed process...");
+  console.log(`   Environment: ${process.env.NODE_ENV || "development"}`);
 
   try {
     if (master) {
@@ -270,21 +295,21 @@ export async function runSeeds(options: {
       await seedTest();
     }
 
-    console.log('\n✅ All seeds completed successfully');
+    console.log("\n✅ All seeds completed successfully");
   } catch (error) {
-    console.error('\n❌ Seed failed:', error);
+    console.error("\n❌ Seed failed:", error);
     throw error;
   }
 }
 
 // CLIから直接実行された場合
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const env = process.env.NODE_ENV || 'development';
+  const env = process.env.NODE_ENV || "development";
 
   runSeeds({
     master: true,
-    development: env === 'development',
-    test: env === 'test',
+    development: env === "development",
+    test: env === "test",
   })
     .then(() => process.exit(0))
     .catch(() => process.exit(1));

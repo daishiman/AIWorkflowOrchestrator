@@ -339,15 +339,15 @@ Only execute if there are actual changes
 
 ```markdown
 # deploy-staging.md
-1. Run tests: `npm test`
-2. Run lint: `npm run lint`
-3. Build: `npm run build`
+1. Run tests: `pnpm test`
+2. Run lint: `pnpm run lint`
+3. Build: `pnpm run build`
 4. Deploy to staging
 
 # deploy-production.md
-1. Run tests: `npm test`
-2. Run lint: `npm run lint`
-3. Build: `npm run build`
+1. Run tests: `pnpm test`
+2. Run lint: `pnpm run lint`
+3. Build: `pnpm run build`
 4. Deploy to production
 ```
 
@@ -358,9 +358,9 @@ Only execute if there are actual changes
 ---
 description: Pre-deployment checks
 ---
-1. Run tests: `npm test`
-2. Run lint: `npm run lint`
-3. Build: `npm run build`
+1. Run tests: `pnpm test`
+2. Run lint: `pnpm run lint`
+3. Build: `pnpm run build`
 
 # deploy-staging.md
 Execute `/pre-deploy`

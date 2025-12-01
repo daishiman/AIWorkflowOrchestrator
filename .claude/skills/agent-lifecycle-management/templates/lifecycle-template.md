@@ -33,38 +33,6 @@ version: MAJOR.MINOR.PATCH
 
 ---
 
-## 2. 変更履歴テンプレート
-
-```markdown
-## 変更履歴
-
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| {{version}} | {{date}} | {{description}} |
-
-### v{{major}}.{{minor}}.{{patch}} ({{date}})
-
-#### 追加
-- {{added-feature-1}}
-- {{added-feature-2}}
-
-#### 変更
-- {{changed-feature-1}}
-
-#### 非推奨
-- {{deprecated-feature-1}}
-
-#### 削除
-- {{removed-feature-1}}
-
-#### 修正
-- {{fixed-bug-1}}
-
-#### セキュリティ
-- {{security-fix-1}}
-```
-
----
 
 ## 3. 廃止予定管理
 

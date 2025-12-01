@@ -105,7 +105,7 @@ type DependencyType =
 
 ```bash
 # インストール
-npm install -g madge
+pnpm install -g madge
 
 # 依存グラフ生成
 madge src/ --image graph.svg
@@ -121,7 +121,7 @@ madge src/ --json > dependencies.json
 
 ```bash
 # インストール
-npm install -g dependency-cruiser
+pnpm install -g dependency-cruiser
 
 # ルール設定初期化
 depcruise --init

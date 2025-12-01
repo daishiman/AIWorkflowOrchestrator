@@ -345,7 +345,7 @@ strategy:
 steps:
   - name: テスト実行
     continue-on-error: ${{ matrix.experimental == true }}
-    run: npm test
+    run: pnpm test
 ```
 
 **動作**: Node 22（experimental）の失敗はジョブ失敗としない

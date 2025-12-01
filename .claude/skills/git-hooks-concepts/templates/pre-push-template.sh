@@ -15,21 +15,21 @@ echo -e "${YELLOW}Running pre-push checks...${NC}"
 
 # テスト実行
 echo -e "${YELLOW}Running tests...${NC}"
-if ! npm test; then
+if ! pnpm test; then
   echo -e "${RED}❌ Tests failed${NC}"
   exit 1
 fi
 
 # ビルド確認
 echo -e "${YELLOW}Building project...${NC}"
-if ! npm run build; then
+if ! pnpm run build; then
   echo -e "${RED}❌ Build failed${NC}"
   exit 1
 fi
 
 # Linting確認
 echo -e "${YELLOW}Running linter...${NC}"
-if ! npm run lint; then
+if ! pnpm run lint; then
   echo -e "${RED}❌ Linting failed${NC}"
   exit 1
 fi

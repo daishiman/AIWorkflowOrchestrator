@@ -125,7 +125,7 @@ export OAUTH_CLIENT_SECRET="your_client_secret"
 ### 3. 設定をテストする
 
 ```bash
-npm run test:auth
+pnpm run test:auth
 ```
 
 ## 結果

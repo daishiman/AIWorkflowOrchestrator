@@ -417,5 +417,5 @@ cat .claude/skills/semantic-versioning/templates/upgrade-assessment-template.md
 ## 参考文献
 
 - **Semantic Versioning 2.0.0**: https://semver.org/
-- **npm semver**: https://docs.npmjs.com/cli/v6/using-npm/semver
-- **node-semver**: https://github.com/npm/node-semver
+- **pnpm semver**: https://docs.npmjs.com/cli/v6/using-pnpm/semver
+- **node-semver**: https://github.com/pnpm/node-semver

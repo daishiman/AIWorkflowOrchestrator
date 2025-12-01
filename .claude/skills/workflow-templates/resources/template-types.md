@@ -64,7 +64,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'  # プロジェクトに応じて変更
-          cache: 'npm'
+          cache: 'pnpm'
 ```
 
 ```yaml
@@ -116,10 +116,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run build --if-present
-      - run: npm test
+          cache: 'pnpm'
+      - run: pnpm ci
+      - run: pnpm run build --if-present
+      - run: pnpm test
 ```
 
 **Python**:
@@ -192,7 +192,7 @@ jobs:
    - マトリックスビルドの範囲
 
 3. **依存関係管理**:
-   - パッケージマネージャーの選択（npm/yarn/pnpm）
+   - パッケージマネージャーの選択（pnpm/yarn/pnpm）
    - キャッシュ戦略
 
 4. **テストコマンド**:
@@ -222,9 +222,9 @@ inputs:
     description: 'Node.js version'
     required: true
   package-manager:
-    description: 'Package manager (npm/yarn/pnpm)'
+    description: 'Package manager (pnpm/yarn/pnpm)'
     required: false
-    default: 'npm'
+    default: 'pnpm'
 
 runs:
   using: composite
@@ -239,7 +239,7 @@ runs:
       shell: bash
       run: |
         case "${{ inputs.package-manager }}" in
-          npm) npm ci ;;
+          pnpm) pnpm ci ;;
           yarn) yarn install --frozen-lockfile ;;
           pnpm) pnpm install --frozen-lockfile ;;
         esac
@@ -286,12 +286,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
-      - run: npm ci
+      - run: pnpm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: npm test
+      - run: pnpm test
       - if: ${{ inputs.run-e2e }}
-        run: npm run test:e2e
+        run: pnpm run test:e2e
 ```
 
 **呼び出し側**:

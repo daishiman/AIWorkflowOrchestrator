@@ -29,18 +29,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: npm run build
+      - run: pnpm run build
 
   lint:
     runs-on: ubuntu-latest
     steps:
-      - run: npm run lint
+      - run: pnpm run lint
 
   test:
     needs: [build, lint]  # 両方の完了を待機
     runs-on: ubuntu-latest
     steps:
-      - run: npm test
+      - run: pnpm test
 ```
 
 **実行順序**: (build, lint) → test
@@ -52,25 +52,25 @@ jobs:
   install:
     runs-on: ubuntu-latest
     steps:
-      - run: npm ci
+      - run: pnpm ci
 
   build:
     needs: install
     runs-on: ubuntu-latest
     steps:
-      - run: npm run build
+      - run: pnpm run build
 
   test:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - run: npm test
+      - run: pnpm test
 
   deploy:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - run: npm run deploy
+      - run: pnpm run deploy
 ```
 
 **実行順序**: install → build → test → deploy
@@ -293,14 +293,14 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: npm test
+      - run: pnpm test
 
   deploy:
     needs: test
     if: success()  # testが成功した場合のみ
     runs-on: ubuntu-latest
     steps:
-      - run: npm run deploy
+      - run: pnpm run deploy
 ```
 
 **用途**: デプロイ、リリース作成
@@ -312,7 +312,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: npm test
+      - run: pnpm test
 
   notify-failure:
     needs: test
@@ -331,7 +331,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: npm test
+      - run: pnpm test
 
   deploy-prod:
     needs: test
@@ -359,13 +359,13 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - run: npm run lint
+      - run: pnpm run lint
 
   test:
     needs: lint  # 不要な依存関係
     runs-on: ubuntu-latest
     steps:
-      - run: npm test
+      - run: pnpm test
 ```
 
 ✅ **良い例**: 独立したジョブは並列化
@@ -375,12 +375,12 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - run: npm run lint
+      - run: pnpm run lint
 
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: npm test
+      - run: pnpm test
 ```
 
 ### 2. 論理的なグルーピング
@@ -392,33 +392,33 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: npm run build
+      - run: pnpm run build
 
   # 並列テストグループ
   test-unit:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - run: npm run test:unit
+      - run: pnpm run test:unit
 
   test-integration:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - run: npm run test:integration
+      - run: pnpm run test:integration
 
   test-e2e:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - run: npm run test:e2e
+      - run: pnpm run test:e2e
 
   # すべてのテスト完了後にデプロイ
   deploy:
     needs: [test-unit, test-integration, test-e2e]
     runs-on: ubuntu-latest
     steps:
-      - run: npm run deploy
+      - run: pnpm run deploy
 ```
 
 ### 3. クリティカルパスの最適化
@@ -431,30 +431,30 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: npm run build  # 5分
+      - run: pnpm run build  # 5分
 
   test:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - run: npm test  # 3分
+      - run: pnpm test  # 3分
 
   deploy:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - run: npm run deploy  # 2分
+      - run: pnpm run deploy  # 2分
 
   # 非クリティカルパス（並列実行）
   lint:
     runs-on: ubuntu-latest
     steps:
-      - run: npm run lint  # 1分
+      - run: pnpm run lint  # 1分
 
   docs:
     runs-on: ubuntu-latest
     steps:
-      - run: npm run docs  # 2分
+      - run: pnpm run docs  # 2分
 ```
 
 **合計実行時間**: 10分（クリティカルパス）、lintとdocsは並列実行
@@ -467,21 +467,21 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - run: npm run lint
+      - run: pnpm run lint
 
   # lintが成功した場合のみ実行
   build:
     needs: lint
     runs-on: ubuntu-latest
     steps:
-      - run: npm run build
+      - run: pnpm run build
 
   # buildが成功した場合のみ実行
   test:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - run: npm test
+      - run: pnpm test
 ```
 
 **利点**: lintが失敗した場合、buildとtestはスキップされ、リソースを節約
@@ -539,7 +539,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: npm test
+      - run: pnpm test
 
   debug:
     needs: test
@@ -559,7 +559,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30  # 30分でタイムアウト
     steps:
-      - run: npm test
+      - run: pnpm test
 ```
 
 ---

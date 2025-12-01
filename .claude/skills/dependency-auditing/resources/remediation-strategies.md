@@ -35,7 +35,7 @@ pnpm update lodash --save
 }
 ```
 
-**推移的依存の場合（npm）**:
+**推移的依存の場合（pnpm）**:
 ```json
 // package.json
 {

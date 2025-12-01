@@ -187,7 +187,7 @@ COPY secrets/ /app/secrets/
 # ビルド時のみ使用するシークレット（イメージに残らない）
 RUN --mount=type=secret,id=npm_token \
     NPM_TOKEN=$(cat /run/secrets/npm_token) \
-    npm install
+    pnpm install
 
 # ビルドコマンド
 # DOCKER_BUILDKIT=1 docker build --secret id=npm_token,src=./npm_token.txt .
@@ -221,9 +221,9 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --only=production
+RUN pnpm ci --only=production
 COPY . .
-RUN npm run build
+RUN pnpm run build
 
 # 本番ステージ（最小イメージ）
 FROM gcr.io/distroless/nodejs20-debian12

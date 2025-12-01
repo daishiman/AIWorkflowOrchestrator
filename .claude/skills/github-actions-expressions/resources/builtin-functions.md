@@ -197,7 +197,7 @@ join(array, separator)
 - name: Run with multiple args
   run: |
     args="${{ join(matrix.test-files, ' ') }}"
-    npm test $args
+    pnpm test $args
 ```
 
 ### toJSON
@@ -333,7 +333,7 @@ hashFiles(pattern, ...)
 # キャッシュキーの生成
 - uses: actions/cache@v3
   with:
-    path: ~/.npm
+    path: ~/.pnpm
     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
 # 複数ファイルのハッシュ
@@ -349,7 +349,7 @@ hashFiles(pattern, ...)
   run: echo "HASH=${{ hashFiles('src/**/*.ts', 'src/**/*.tsx') }}" >> $GITHUB_OUTPUT
 
 - if: steps.check-changes.outputs.HASH != ''
-  run: npm run build
+  run: pnpm run build
 
 # 環境変数として使用
 - env:
@@ -384,7 +384,7 @@ success()
 ```yaml
 # 成功時のみ実行
 - if: success()
-  run: npm run deploy
+  run: pnpm run deploy
 
 # デフォルト動作（省略可能）
 - run: echo "This runs only if previous steps succeeded"
@@ -505,15 +505,15 @@ cancelled()
 ```yaml
 steps:
   - name: Run tests
-    run: npm test
+    run: pnpm test
 
   - name: Deploy (success only)
     if: success()
-    run: npm run deploy
+    run: pnpm run deploy
 
   - name: Rollback (failure only)
     if: failure()
-    run: npm run rollback
+    run: pnpm run rollback
 
   - name: Cleanup (always)
     if: always()
@@ -559,7 +559,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-      - run: npm test
+      - run: pnpm test
 ```
 
 ### 複雑な条件分岐
@@ -569,7 +569,7 @@ jobs:
   if: |
     (success() && github.ref == 'refs/heads/main') ||
     (failure() && contains(github.event.head_commit.message, '[force-deploy]'))
-  run: npm run deploy
+  run: pnpm run deploy
 
 - name: Multi-factor check
   if: |
@@ -587,7 +587,7 @@ jobs:
   uses: actions/cache@v3
   with:
     path: |
-      ~/.npm
+      ~/.pnpm
       ~/.cache
     key: ${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('**/package-lock.json') }}
     restore-keys: |

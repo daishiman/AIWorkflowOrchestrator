@@ -175,8 +175,8 @@ Add export to `src/components/index.ts`
 ## Step 4: Verify
 Run tests and type checking:
 ```bash
-npm test -- $ARGUMENTS
-npm run typecheck
+pnpm test -- $ARGUMENTS
+pnpm run typecheck
 ```
 ```
 
@@ -216,9 +216,9 @@ Determine target environment from $ARGUMENTS:
 - Else → Error
 
 ## Pre-deployment Checks
-1. Run tests: `npm test`
-2. Run linter: `npm run lint`
-3. Build: `npm run build`
+1. Run tests: `pnpm test`
+2. Run linter: `pnpm run lint`
+3. Build: `pnpm run build`
 
 ## Deployment Steps
 

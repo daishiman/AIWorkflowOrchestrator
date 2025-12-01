@@ -12,7 +12,7 @@
   with:
     # キャッシュするディレクトリ（必須）
     path: |
-      ~/.npm
+      ~/.pnpm
       node_modules
 
     # プライマリキー（必須）
@@ -40,7 +40,7 @@
 # キャッシュヒット判定
 - name: Install dependencies
   if: steps.cache-dependencies.outputs.cache-hit != 'true'
-  run: npm ci
+  run: pnpm ci
 ```
 
 ## パラメーター詳細
@@ -51,13 +51,13 @@
 
 **単一パス:**
 ```yaml
-path: ~/.npm
+path: ~/.pnpm
 ```
 
 **複数パス:**
 ```yaml
 path: |
-  ~/.npm
+  ~/.pnpm
   ~/.cache
   node_modules
 ```
@@ -126,8 +126,8 @@ restore-keys: |
 ```yaml
 # ✅ 良い例: 段階的フォールバック
 restore-keys: |
-  ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-  ${{ runner.os }}-npm-
+  ${{ runner.os }}-pnpm-${{ hashFiles('**/package-lock.json') }}
+  ${{ runner.os }}-pnpm-
   ${{ runner.os }}-
 
 # ❌ 悪い例: フォールバックなし（ロックファイル変更時にヒットしない）
@@ -194,26 +194,26 @@ save-always: true
 
 ```yaml
 - uses: actions/cache@v4
-  id: cache-npm
+  id: cache-pnpm
   with:
-    path: ~/.npm
+    path: ~/.pnpm
     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
 # 出力値の使用
 - name: Check cache hit
-  run: echo "Cache hit: ${{ steps.cache-npm.outputs.cache-hit }}"
+  run: echo "Cache hit: ${{ steps.cache-pnpm.outputs.cache-hit }}"
   # 'true' または 'false'
 
 - name: Install only if cache miss
-  if: steps.cache-npm.outputs.cache-hit != 'true'
-  run: npm ci
+  if: steps.cache-pnpm.outputs.cache-hit != 'true'
+  run: pnpm ci
 
 - name: Show matched key
-  run: echo "Matched key: ${{ steps.cache-npm.outputs.cache-matched-key }}"
+  run: echo "Matched key: ${{ steps.cache-pnpm.outputs.cache-matched-key }}"
   # マッチしたキー文字列（restore-keys含む）
 
 - name: Show primary key
-  run: echo "Primary key: ${{ steps.cache-npm.outputs.cache-primary-key }}"
+  run: echo "Primary key: ${{ steps.cache-pnpm.outputs.cache-primary-key }}"
   # 指定したkeyパラメーターの値
 ```
 
@@ -241,7 +241,7 @@ path: |
 # すべてのnode_modulesをキャッシュ
 path: |
   **/node_modules
-  ~/.npm
+  ~/.pnpm
 
 # .nextキャッシュのみ
 path: .next/cache
@@ -273,15 +273,15 @@ path: |
 - uses: actions/cache@v4
   if: github.ref == 'refs/heads/main'
   with:
-    path: ~/.npm
-    key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+    path: ~/.pnpm
+    key: ${{ runner.os }}-pnpm-${{ hashFiles('**/package-lock.json') }}
 
 # PR では復元のみ
 - uses: actions/cache@v4
   if: github.event_name == 'pull_request'
   with:
-    path: ~/.npm
-    key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+    path: ~/.pnpm
+    key: ${{ runner.os }}-pnpm-${{ hashFiles('**/package-lock.json') }}
     lookup-only: true
 ```
 
@@ -320,11 +320,11 @@ path: |
 
 ```yaml
 # キャッシュ1: パッケージマネージャーのキャッシュディレクトリ
-- name: Cache npm
+- name: Cache pnpm
   uses: actions/cache@v4
   with:
-    path: ~/.npm
-    key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+    path: ~/.pnpm
+    key: ${{ runner.os }}-pnpm-${{ hashFiles('**/package-lock.json') }}
 
 # キャッシュ2: node_modules（完全な依存関係ツリー）
 - name: Cache node_modules
@@ -382,7 +382,7 @@ path: |
   run: |
     echo "Cache key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}"
     echo "Lock file hash: ${{ hashFiles('**/package-lock.json') }}"
-    ls -la ~/.npm || echo "npm cache directory not found"
+    ls -la ~/.pnpm || echo "pnpm cache directory not found"
 ```
 
 ### キャッシュサイズが大きすぎる

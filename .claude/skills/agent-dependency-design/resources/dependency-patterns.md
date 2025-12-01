@@ -21,7 +21,9 @@ description: |
   以下のスキルを必ず有効化してください:
   Skill(.claude/skills/skill-name/SKILL.md)
 
-tools: [Read, Write]
+tools:
+  - Read
+  - Write
 model: sonnet
 version: 1.0.0
 ---
@@ -84,7 +86,12 @@ version: 1.0.0
 
 **パターン**:
 ```yaml
-tools: [Read, Write, Edit, Grep, Bash]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Bash
 ```
 
 **ベストプラクティス**:
@@ -238,9 +245,3 @@ Agent A ⇄ Agent B  ❌
 3. **過度な依存**: 不要な依存の追加
 4. **絶対パス**: プロジェクト固有の絶対パス
 5. **独自フォーマット**: ハンドオフに独自形式を使用
-
-## 変更履歴
-
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-24 | 初版作成 |

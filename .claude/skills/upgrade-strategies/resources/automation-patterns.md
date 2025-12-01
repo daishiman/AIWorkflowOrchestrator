@@ -14,7 +14,7 @@
 version: 2
 
 updates:
-  - package-ecosystem: "npm"
+  - package-ecosystem: "pnpm"
     directory: "/"
     schedule:
       interval: "daily"
@@ -66,7 +66,7 @@ updates:
 ```yaml
 # .github/dependabot.yml (続き)
 updates:
-  - package-ecosystem: "npm"
+  - package-ecosystem: "pnpm"
     directory: "/"
     schedule:
       interval: "daily"

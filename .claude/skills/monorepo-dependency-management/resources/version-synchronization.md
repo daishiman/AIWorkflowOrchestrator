@@ -259,7 +259,7 @@ catalogs:
 # .github/dependabot.yml
 version: 2
 updates:
-  - package-ecosystem: "npm"
+  - package-ecosystem: "pnpm"
     directory: "/"
     schedule:
       interval: "weekly"

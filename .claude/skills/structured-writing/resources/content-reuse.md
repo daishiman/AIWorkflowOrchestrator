@@ -42,7 +42,7 @@ MyProduct™
 ## 前提条件
 
 - Node.js 18以上
-- npm 9以上
+- pnpm 9以上
 - Git
 
 <!-- 使用 -->

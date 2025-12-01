@@ -110,7 +110,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm test
+      - run: pnpm test
 ```
 
 ### 主要なイベントトリガー

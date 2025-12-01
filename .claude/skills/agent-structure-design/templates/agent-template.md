@@ -15,7 +15,10 @@ description: |
 
   {{dependency_section}}
 
-tools: [{{tools_list}}]
+tools:
+  - {{tools_list}}
+  - {{tools_list}}
+  - {{tools_list}}
 model: {{model}}
 version: {{version}}
 {{optional_fields}}
@@ -160,7 +163,10 @@ name: code-reviewer
 description: |
   コード品質を検証し、改善提案を提供するエージェント。
 
-tools: [Read, Grep, Write]
+tools:
+  - Read
+  - Grep
+  - Write
 model: sonnet
 version: 1.0.0
 ---
@@ -191,7 +197,11 @@ description: |
   Skill(.claude/skills/agent-architecture-patterns/SKILL.md)
   Skill(.claude/skills/agent-structure-design/SKILL.md)
 
-tools: [Read, Write, Edit, Task]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Task
 model: sonnet
 version: 2.0.0
 ---

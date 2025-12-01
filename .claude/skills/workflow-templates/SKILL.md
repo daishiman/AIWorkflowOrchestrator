@@ -79,7 +79,7 @@ node .claude/skills/workflow-templates/scripts/generate-workflow.mjs nodejs .git
 
 | プロジェクトタイプ | 推奨テンプレート                        | 主要機能                                   |
 | ------------------ | --------------------------------------- | ------------------------------------------ |
-| **Node.js**        | `nodejs-template.yaml`                  | npm/pnpm/yarn、キャッシング、Lint/Test     |
+| **Node.js**        | `nodejs-template.yaml`                  | pnpm/pnpm/yarn、キャッシング、Lint/Test     |
 | **Python**         | `ci-template.yaml`                      | pip/poetry、仮想環境、pytest               |
 | **Docker**         | `docker-template.yaml`                  | ビルド最適化、レジストリプッシュ、スキャン |
 | **Go/Rust**        | `ci-template.yaml`                      | 言語ツールチェーン、テスト、ビルド         |
@@ -95,7 +95,7 @@ node .claude/skills/workflow-templates/scripts/generate-workflow.mjs nodejs .git
 
 ## 🔍 プロジェクトタイプ別要点
 
-**Node.js**: パッケージマネージャー自動検出 (npm/pnpm/yarn)、依存関係キャッシング
+**Node.js**: パッケージマネージャー自動検出 (pnpm/pnpm/yarn)、依存関係キャッシング
 **Python**: 仮想環境管理 (pip/poetry)、依存関係キャッシング
 **Docker**: マルチステージビルド、BuildKit キャッシュ、セキュリティスキャン
 

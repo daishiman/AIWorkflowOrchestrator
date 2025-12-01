@@ -79,7 +79,7 @@ npx tsc --noEmit || {
 ```bash
 #!/bin/bash
 # テストカバレッジが低下していないか確認
-COVERAGE=$(npm run test:coverage 2>&1 | grep "Coverage" | awk '{print $2}')
+COVERAGE=$(pnpm run test:coverage 2>&1 | grep "Coverage" | awk '{print $2}')
 THRESHOLD=80
 if [ ${COVERAGE%\%} -lt $THRESHOLD ]; then
   echo "❌ Coverage below threshold: $COVERAGE < $THRESHOLD%"
@@ -91,7 +91,7 @@ fi
 ```bash
 #!/bin/bash
 # Claude生成コードのセキュリティチェック
-npm audit --production || exit 1
+pnpm audit --production || exit 1
 grep -r "TODO\|FIXME\|HACK" src/ && exit 1
 ```
 

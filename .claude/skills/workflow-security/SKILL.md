@@ -118,7 +118,7 @@ uses: actions/checkout@a81bbbf8298c0fa03ea29cdc473d45769f953675  # v4.1.1
 on: pull_request_target
 steps:
   - uses: actions/checkout@v4
-  - run: npm test  # 攻撃者のコード実行
+  - run: pnpm test  # 攻撃者のコード実行
 
 # ✅ 安全: ベースブランチのコードのみ
 on: pull_request_target

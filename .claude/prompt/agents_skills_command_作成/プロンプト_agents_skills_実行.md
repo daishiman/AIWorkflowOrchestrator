@@ -178,7 +178,10 @@ description: |
 
   Use proactively after code changes in authentication, API endpoints,
   database queries, or user input handling logic.
-tools: [Read, Grep, Bash]
+tools:
+  - Read
+  - Grep
+  - Bash
 model: sonnet
 version: 2.0.0
 ---

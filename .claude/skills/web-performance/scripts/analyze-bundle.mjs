@@ -25,7 +25,7 @@ class BundleAnalyzer {
   analyze() {
     if (!fs.existsSync(this.buildDir)) {
       console.error(`Error: Build directory not found: ${this.buildDir}`);
-      console.log('Run `npm run build` first to generate the build output.');
+      console.log('Run `pnpm run build` first to generate the build output.');
       process.exit(1);
     }
 

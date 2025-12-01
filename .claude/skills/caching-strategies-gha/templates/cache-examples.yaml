@@ -316,23 +316,23 @@ jobs:
           node-version: ${{ matrix.node }}
 
       # OS/Node バージョン別キャッシュ
-      - name: Cache npm dependencies
+      - name: Cache pnpm dependencies
         uses: actions/cache@v4
         with:
-          path: ~/.npm
+          path: ~/.pnpm
           key: ${{ matrix.os }}-node${{ matrix.node }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ matrix.os }}-node${{ matrix.node }}-
             ${{ matrix.os }}-
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       - name: Test
-        run: npm test
+        run: pnpm test
 
 # =============================================================================
 # 高度な最適化
@@ -384,9 +384,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-jest-
 
-      - run: npm ci
-      - run: npm run build
-      - run: npm test
+      - run: pnpm ci
+      - run: pnpm run build
+      - run: pnpm test
 
 # --- 条件付きキャッシュ保存 ---
 name: Conditional Cache Save
@@ -415,8 +415,8 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
 
-      - run: npm ci
-      - run: npm run build
+      - run: pnpm ci
+      - run: pnpm run build
 
 # --- 並列ジョブでのキャッシュ共有 ---
 name: Parallel Jobs with Shared Cache
@@ -435,7 +435,7 @@ jobs:
           path: node_modules
           key: deps-${{ github.run_id }}-${{ hashFiles('**/package-lock.json') }}
 
-      - run: npm ci
+      - run: pnpm ci
 
   test:
     needs: setup
@@ -454,7 +454,7 @@ jobs:
           key: deps-${{ github.run_id }}-${{ hashFiles('**/package-lock.json') }}
           lookup-only: true
 
-      - run: npm test -- --shard=${{ matrix.shard }}/4
+      - run: pnpm test -- --shard=${{ matrix.shard }}/4
 
 # =============================================================================
 # トラブルシューティング・デバッグ
@@ -476,39 +476,39 @@ jobs:
           echo "OS: ${{ runner.os }}"
           echo "Lock file exists: $(test -f package-lock.json && echo 'yes' || echo 'no')"
           echo "Lock file hash: ${{ hashFiles('**/package-lock.json') }}"
-          echo "Expected key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}"
+          echo "Expected key: ${{ runner.os }}-pnpm-${{ hashFiles('**/package-lock.json') }}"
 
-      - name: Cache npm
-        id: cache-npm
+      - name: Cache pnpm
+        id: cache-pnpm
         uses: actions/cache@v4
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          path: ~/.pnpm
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-npm-
+            ${{ runner.os }}-pnpm-
 
       # キャッシュ結果の出力
       - name: Cache results
         run: |
-          echo "Cache hit: ${{ steps.cache-npm.outputs.cache-hit }}"
-          echo "Matched key: ${{ steps.cache-npm.outputs.cache-matched-key }}"
-          echo "Primary key: ${{ steps.cache-npm.outputs.cache-primary-key }}"
+          echo "Cache hit: ${{ steps.cache-pnpm.outputs.cache-hit }}"
+          echo "Matched key: ${{ steps.cache-pnpm.outputs.cache-matched-key }}"
+          echo "Primary key: ${{ steps.cache-pnpm.outputs.cache-primary-key }}"
 
       # キャッシュディレクトリの確認
       - name: Check cache directory
         run: |
-          if [ -d ~/.npm ]; then
+          if [ -d ~/.pnpm ]; then
             echo "Cache directory exists"
-            echo "Size: $(du -sh ~/.npm | cut -f1)"
-            echo "Files: $(find ~/.npm -type f | wc -l)"
+            echo "Size: $(du -sh ~/.pnpm | cut -f1)"
+            echo "Files: $(find ~/.pnpm -type f | wc -l)"
           else
             echo "Cache directory does not exist"
           fi
 
-      - run: npm ci
+      - run: pnpm ci
 
       # キャッシュ後のサイズ確認
       - name: Cache size after install
         run: |
-          echo "npm cache size: $(du -sh ~/.npm | cut -f1)"
+          echo "pnpm cache size: $(du -sh ~/.pnpm | cut -f1)"
           echo "node_modules size: $(du -sh node_modules | cut -f1)"

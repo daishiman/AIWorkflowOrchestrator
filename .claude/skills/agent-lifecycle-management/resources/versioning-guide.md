@@ -36,10 +36,16 @@ major.minor.patch
 **例**:
 ```yaml
 # 変更前: v1.5.3
-tools: [Read, Grep, Write]
+tools:
+  - Read
+  - Grep
+  - Write
 
 # 変更後: v2.0.0（破壊的変更）
-tools: [Read, Grep, MultiEdit]  # Write削除、MultiEdit追加
+tools:
+  - Read
+  - Grep
+  - MultiEdit
 ```
 
 ### Minor バージョンアップ（機能追加）
@@ -56,10 +62,15 @@ tools: [Read, Grep, MultiEdit]  # Write削除、MultiEdit追加
 **例**:
 ```yaml
 # 変更前: v1.5.3
-tools: [Read, Grep]
+tools:
+  - Read
+  - Grep
 
 # 変更後: v1.6.0（機能追加）
-tools: [Read, Grep, Glob]  # Glob追加（既存ツールはそのまま）
+tools:
+  - Read
+  - Grep
+  - Glob
 ```
 
 ### Patch バージョンアップ（バグ修正）
@@ -110,18 +121,6 @@ tools: [Read, Grep, Glob]  # Glob追加（既存ツールはそのまま）
 name: my-agent
 version: 1.6.0  # ← ここを更新
 ---
-```
-
-### 3. 変更履歴の記録
-
-```markdown
-## 変更履歴
-
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.6.0 | 2025-11-24 | 機能追加: Globツール追加、Phase 4追加 |
-| 1.5.4 | 2025-11-23 | バグ修正: Phase 2のステップ順序修正 |
-| 1.5.3 | 2025-11-22 | ドキュメント修正: ベストプラクティス追加 |
 ```
 
 ### 4. Git コミット
@@ -278,9 +277,3 @@ version: 1.5.0
 3. **破壊的変更の隠蔽**: Minorで破壊的変更を導入
 4. **Gitタグなし**: バージョン追跡が困難
 5. **依存バージョン未指定**: 互換性問題のリスク
-
-## 変更履歴
-
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-24 | 初版作成 |

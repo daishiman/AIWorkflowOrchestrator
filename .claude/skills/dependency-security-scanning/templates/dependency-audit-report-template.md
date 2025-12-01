@@ -54,7 +54,7 @@
 **修正方法**:
 ```bash
 # アップグレード
-npm install {{PACKAGE_NAME}}@{{FIXED_VERSION}}
+pnpm install {{PACKAGE_NAME}}@{{FIXED_VERSION}}
 
 # または package.json で指定
 "{{PACKAGE_NAME}}": "^{{FIXED_VERSION}}"
@@ -95,11 +95,11 @@ npm install {{PACKAGE_NAME}}@{{FIXED_VERSION}}
 | パッケージ | 経由 | CVSS | 修正方法 |
 |----------|------|------|---------|
 | {{PKG1}} | {{PARENT1}} | {{SCORE1}} | 親パッケージアップグレード |
-| {{PKG2}} | {{PARENT2}} | {{SCORE2}} | npm override使用 |
+| {{PKG2}} | {{PARENT2}} | {{SCORE2}} | pnpm override使用 |
 
 **推奨アクション**:
 1. 親パッケージのアップグレード確認
-2. npm overrideまたはresolutionsの使用
+2. pnpm overrideまたはresolutionsの使用
 3. 代替パッケージへの移行検討
 
 ---
@@ -110,7 +110,7 @@ npm install {{PACKAGE_NAME}}@{{FIXED_VERSION}}
 
 | パッケージ | CVE | 修正バージョン | コマンド |
 |----------|-----|-------------|---------|
-| {{PKG}} | {{CVE}} | {{VERSION}} | `npm install {{PKG}}@{{VERSION}}` |
+| {{PKG}} | {{CVE}} | {{VERSION}} | `pnpm install {{PKG}}@{{VERSION}}` |
 
 ### P1: 1週間以内（High、本番環境）
 
@@ -137,7 +137,7 @@ npm install {{PACKAGE_NAME}}@{{FIXED_VERSION}}
 ### 推奨事項
 
 - [ ] lock file（package-lock.json）を使用
-- [ ] npm ci 使用（npm install ではなく）
+- [ ] pnpm ci 使用（pnpm install ではなく）
 - [ ] 信頼できるレジストリのみ使用
 - [ ] パッケージ署名検証
 
@@ -178,12 +178,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: npm audit --audit-level=moderate
+      - run: pnpm audit --audit-level=moderate
 ```
 
 ### 定期監査
 
-- [ ] 週次: npm audit実行
+- [ ] 週次: pnpm audit実行
 - [ ] 月次: Snyk スキャン
 - [ ] 四半期: 包括的セキュリティ監査
 

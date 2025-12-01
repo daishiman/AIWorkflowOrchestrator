@@ -381,7 +381,7 @@ curl -X <METHOD> \
     node-version: '20'
 
 - name: Install Octokit
-  run: npm install @octokit/rest
+  run: pnpm install @octokit/rest
 
 - name: Run script
   run: node scripts/github-api.js

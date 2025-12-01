@@ -38,7 +38,10 @@ description: |
   - security-analyzer: セキュリティ分析
   - performance-profiler: パフォーマンス分析
 
-tools: [Task, Read, Grep]
+tools:
+  - Task
+  - Read
+  - Grep
 ---
 ```
 

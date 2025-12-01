@@ -97,7 +97,7 @@ ENABLE_DISCORD_NOTIFICATIONS=false
 #    - GitHub Actions: リポジトリSettings → Secrets and variables → Actions
 #
 # 4. ローカル開発でのRailway Secrets同期（オプション）:
-#    railway run npm run dev
+#    railway run pnpm run dev
 #
 # 5. セキュリティ注意事項:
 #    - .envファイルは絶対にGitにコミットしないでください

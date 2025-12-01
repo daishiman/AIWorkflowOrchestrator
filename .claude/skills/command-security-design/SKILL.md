@@ -107,7 +107,7 @@ command-security-design/
 allowed-tools: ToolName, ToolName, ...
 
 # パターンマッチング
-allowed-tools: Bash(git*), Bash(npm*)
+allowed-tools: Bash(git*), Bash(pnpm*)
 
 # パス制限
 allowed-tools: Write(src/**/*.js), Read(*.md)
@@ -163,7 +163,7 @@ This command can only execute git commands.
 ```yaml
 ---
 description: Generate test files
-allowed-tools: Read, Write(tests/**), Bash(npm test)
+allowed-tools: Read, Write(tests/**), Bash(pnpm test)
 ---
 
 # Test Generator
@@ -173,7 +173,7 @@ Generate test files in tests/ directory only.
 ## Security
 - Can read any file
 - Can only write to tests/ directory
-- Can run npm test command
+- Can run pnpm test command
 ```
 
 ## disable-model-invocation による保護

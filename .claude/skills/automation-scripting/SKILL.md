@@ -34,7 +34,7 @@ version: 1.0.0
 | 用途 | 言語 | 理由 |
 |------|------|------|
 | Gitフック | Bash | 標準搭載 |
-| ビルド | Node.js/npm | フロントエンドエコシステム |
+| ビルド | Node.js/pnpm | フロントエンドエコシステム |
 | データ処理 | Python | 豊富なライブラリ |
 | システム管理 | Bash | OS統合 |
 
@@ -58,7 +58,7 @@ if [ ! -d "src" ]; then
 fi
 
 # 実行
-npm run build
+pnpm run build
 
 # 検証
 if [ ! -f "dist/index.js" ]; then
@@ -103,10 +103,10 @@ echo "All tasks completed"
 #!/bin/bash
 # 自動ビルド・最適化
 
-npm run clean
-npm run build
-npm run optimize
-npm run test
+pnpm run clean
+pnpm run build
+pnpm run optimize
+pnpm run test
 ```
 
 ### パターン2: デプロイスクリプト

@@ -14,7 +14,7 @@ echo -e "${YELLOW}Checking Claude Code Quality Metrics${NC}"
 
 # 1. テストカバレッジ確認
 echo -e "${YELLOW}Checking test coverage...${NC}"
-COVERAGE=$(npm test -- --coverage --silent 2>/dev/null | grep "Lines" | awk '{print $(NF-1)}' | tr -d '%' || echo "0")
+COVERAGE=$(pnpm test -- --coverage --silent 2>/dev/null | grep "Lines" | awk '{print $(NF-1)}' | tr -d '%' || echo "0")
 
 if (( $(echo "$COVERAGE < 80" | bc -l) )); then
   echo -e "${RED}❌ Coverage below threshold: ${COVERAGE}% < 80%${NC}"
@@ -24,7 +24,7 @@ echo -e "${GREEN}✅ Coverage OK: ${COVERAGE}%${NC}"
 
 # 2. セキュリティ監査
 echo -e "${YELLOW}Running security audit...${NC}"
-if ! npm audit --production 2>/dev/null; then
+if ! pnpm audit --production 2>/dev/null; then
   echo -e "${RED}⚠️ Security vulnerabilities detected${NC}"
   # exit 1 (許可可能に設定)
 fi

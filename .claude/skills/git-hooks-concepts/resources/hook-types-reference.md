@@ -84,9 +84,9 @@ curl -X POST -d "message: New commit" $SLACK_WEBHOOK
 ```bash
 #!/bin/bash
 # テスト実行
-npm test || exit 1
+pnpm test || exit 1
 # ビルド確認
-npm run build || exit 1
+pnpm run build || exit 1
 exit 0
 ```
 

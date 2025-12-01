@@ -138,7 +138,7 @@ on:
       # 必須シークレット
       NPM_TOKEN:
         required: true
-        description: 'NPM registry token'
+        description: 'pnpm registry token'
 
       # オプショナルシークレット
       SENTRY_DSN:
@@ -154,7 +154,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy with token
-        run: npm publish
+        run: pnpm publish
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -223,7 +223,7 @@ on:
     secrets:
       NPM_TOKEN:
         required: true
-        description: 'NPM authentication token'
+        description: 'pnpm authentication token'
 
       CODECOV_TOKEN:
         required: false
@@ -242,15 +242,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
         env:
           NODE_ENV: ${{ inputs.environment }}
 
@@ -283,7 +283,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Download build
         uses: actions/download-artifact@v4
@@ -294,7 +294,7 @@ jobs:
       - name: Run tests
         id: test
         run: |
-          npm test -- --coverage
+          pnpm test -- --coverage
           RESULT=$?
           COVERAGE=$(cat coverage/coverage-summary.json | jq '.total.lines.pct')
 

@@ -70,7 +70,7 @@ function collectErrorContext(error: Error, errorInfo?: ErrorInfo): ErrorReport {
 
 ```typescript
 // インストール
-// npm install @sentry/react
+// pnpm install @sentry/react
 
 import * as Sentry from '@sentry/react';
 
@@ -122,7 +122,7 @@ function App() {
 ### Bugsnag
 
 ```typescript
-// npm install @bugsnag/js @bugsnag/plugin-react
+// pnpm install @bugsnag/js @bugsnag/plugin-react
 
 import Bugsnag from '@bugsnag/js';
 import BugsnagPluginReact from '@bugsnag/plugin-react';

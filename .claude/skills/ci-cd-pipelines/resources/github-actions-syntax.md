@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest        # 実行環境
     steps:                        # ステップ配列
       - uses: actions/checkout@v4 # アクション使用
-      - run: npm install          # コマンド実行
+      - run: pnpm install          # コマンド実行
 ```
 
 ## トリガー設定詳細
@@ -160,8 +160,8 @@ steps:
   - name: Multi-line script
     run: |
       echo "Step 1"
-      npm install
-      npm run build
+      pnpm install
+      pnpm run build
 ```
 
 ### シェル指定
@@ -191,7 +191,7 @@ jobs:
       - name: Build
         env:
           API_URL: https://api.example.com  # ステップレベル
-        run: npm run build
+        run: pnpm run build
 ```
 
 ### シークレット参照

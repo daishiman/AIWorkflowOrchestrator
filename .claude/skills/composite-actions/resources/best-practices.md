@@ -184,7 +184,7 @@ steps:
     uses: actions/setup-node@v4
     with:
       node-version: ${{ inputs.node-version }}
-      cache: 'npm'  # npmキャッシュを有効化
+      cache: 'pnpm'  # npmキャッシュを有効化
 
   - name: Cache dependencies
     id: cache
@@ -192,14 +192,14 @@ steps:
     with:
       path: |
         node_modules
-        .npm
+        .pnpm
       key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
       restore-keys: |
         ${{ runner.os }}-node-
 
   - name: Install
     if: steps.cache.outputs.cache-hit != 'true'
-    run: npm ci
+    run: pnpm ci
     shell: bash
 ```
 
@@ -222,7 +222,7 @@ steps:
 
   - name: Build
     if: steps.check.outputs.build-needed == 'true'
-    run: npm run build
+    run: pnpm run build
     shell: bash
 
   - name: Use cached build

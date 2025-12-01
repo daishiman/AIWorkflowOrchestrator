@@ -249,7 +249,7 @@ ENV API_KEY=secret123
 WORKDIR /app
 
 # ❌ RUN cd は避ける（スコープが限定される）
-RUN cd /app && npm install
+RUN cd /app && pnpm install
 ```
 
 ## Node.js 固有の最適化
@@ -265,12 +265,12 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile --prod
 ```
 
-### npm 設定
+### pnpm 設定
 
 ```dockerfile
 # 依存関係インストール
 COPY package.json package-lock.json ./
-RUN npm ci --only=production
+RUN pnpm ci --only=production
 ```
 
 ### Next.js 固有

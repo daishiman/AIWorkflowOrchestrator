@@ -97,7 +97,7 @@ node .claude/skills/caching-strategies-gha/scripts/estimate-cache-size.mjs <dire
 - name: Cache dependencies
   uses: actions/cache@v4
   with:
-    path: ~/.npm
+    path: ~/.pnpm
     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
     restore-keys: |
       ${{ runner.os }}-node-
@@ -107,7 +107,7 @@ node .claude/skills/caching-strategies-gha/scripts/estimate-cache-size.mjs <dire
 
 | 言語/ツール | キャッシュパス | キーパターン |
 |-----------|--------------|------------|
-| **Node.js (npm)** | `~/.npm` | `${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}` |
+| **Node.js (pnpm)** | `~/.pnpm` | `${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}` |
 | **Node.js (pnpm)** | `~/.pnpm-store` | `${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}` |
 | **Python (pip)** | `~/.cache/pip` | `${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}` |
 | **Go** | `~/go/pkg/mod` | `${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}` |
@@ -136,7 +136,7 @@ node .claude/skills/caching-strategies-gha/scripts/estimate-cache-size.mjs <dire
 ### Phase 1: キャッシュ要件の特定
 
 1. **キャッシュ対象の特定**
-   - 依存関係: npm, pip, cargo等のパッケージマネージャー
+   - 依存関係: pnpm, pip, cargo等のパッケージマネージャー
    - ビルド成果物: target/, dist/, .next/等
    - ツールバイナリ: ダウンロードした実行ファイル
 

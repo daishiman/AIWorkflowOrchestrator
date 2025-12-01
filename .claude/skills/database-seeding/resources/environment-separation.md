@@ -377,14 +377,14 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Run seeds
         env:
           NODE_ENV: ${{ github.event.inputs.environment }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          npm run seed -- --type ${{ github.event.inputs.seed_type }}
+          pnpm run seed -- --type ${{ github.event.inputs.seed_type }}
 ```
 
 ## チェックリスト

@@ -5,7 +5,7 @@
  *
  * Usage:
  *   node estimate-cache-size.mjs <directory>
- *   node estimate-cache-size.mjs ~/.npm
+ *   node estimate-cache-size.mjs ~/.pnpm
  *   node estimate-cache-size.mjs node_modules
  *
  * Features:
@@ -254,7 +254,7 @@ Usage:
   node estimate-cache-size.mjs <directory>
 
 Examples:
-  node estimate-cache-size.mjs ~/.npm
+  node estimate-cache-size.mjs ~/.pnpm
   node estimate-cache-size.mjs node_modules
   node estimate-cache-size.mjs target/
   node estimate-cache-size.mjs .next/cache

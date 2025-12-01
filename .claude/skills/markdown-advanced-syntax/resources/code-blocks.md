@@ -64,7 +64,7 @@ async function getUser(id: string): Promise<User> {
 
 - 関数名: `getUserById()`
 - ファイル名: `package.json`
-- コマンド: `npm install`
+- コマンド: `pnpm install`
 
 ## ベストプラクティス
 

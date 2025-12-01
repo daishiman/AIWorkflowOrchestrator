@@ -15,10 +15,10 @@ GitHub Actions のキャッシュを最大限に活用するための最適化�
 
 ```yaml
 # ✅ 良い例: ロックファイルのハッシュを使用
-key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+key: ${{ runner.os }}-pnpm-${{ hashFiles('**/package-lock.json') }}
 
 # ❌ 悪い例: 静的キー（依存関係更新を検出できない）
-key: ${{ runner.os }}-npm-v1
+key: ${{ runner.os }}-pnpm-v1
 ```
 
 **メリット:**
@@ -217,8 +217,8 @@ jobs:
 # main ブランチのみキャッシュを保存
 - uses: actions/cache@v4
   with:
-    path: ~/.npm
-    key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+    path: ~/.pnpm
+    key: ${{ runner.os }}-pnpm-${{ hashFiles('**/package-lock.json') }}
     save-always: ${{ github.ref == 'refs/heads/main' }}
 ```
 
@@ -249,7 +249,7 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
-      - run: npm ci
+      - run: pnpm ci
 
   test:
     needs: setup
@@ -264,7 +264,7 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
           lookup-only: true  # 復元のみ
-      - run: npm test -- --shard=${{ matrix.shard }}/4
+      - run: pnpm test -- --shard=${{ matrix.shard }}/4
 ```
 
 ## トラブルシューティング
@@ -278,12 +278,12 @@ jobs:
   run: |
     echo "OS: ${{ runner.os }}"
     echo "Lock file hash: ${{ hashFiles('**/package-lock.json') }}"
-    echo "Expected key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}"
+    echo "Expected key: ${{ runner.os }}-pnpm-${{ hashFiles('**/package-lock.json') }}"
 
 - name: Check cache directory
   run: |
-    ls -la ~/.npm || echo "Cache directory not found"
-    du -sh ~/.npm || echo "Cache directory empty"
+    ls -la ~/.pnpm || echo "Cache directory not found"
+    du -sh ~/.pnpm || echo "Cache directory empty"
 ```
 
 #### 原因と対策
@@ -303,8 +303,8 @@ jobs:
 - uses: actions/cache@v4
   id: cache
   with:
-    path: ~/.npm
-    key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+    path: ~/.pnpm
+    key: ${{ runner.os }}-pnpm-${{ hashFiles('**/package-lock.json') }}
 
 - name: Show cache info
   run: |
@@ -317,7 +317,7 @@ jobs:
 
 ```yaml
 # バージョン番号を追加して強制リフレッシュ
-key: ${{ runner.os }}-npm-v2-${{ hashFiles('**/package-lock.json') }}
+key: ${{ runner.os }}-pnpm-v2-${{ hashFiles('**/package-lock.json') }}
 ```
 
 ### 問題3: キャッシュサイズが大きすぎる
@@ -326,12 +326,12 @@ key: ${{ runner.os }}-npm-v2-${{ hashFiles('**/package-lock.json') }}
 
 ```bash
 # ローカルでサイズを確認
-du -sh ~/.npm
+du -sh ~/.pnpm
 du -sh node_modules
 du -sh target/
 
 # 詳細な内訳
-du -sh ~/.npm/* | sort -hr | head -20
+du -sh ~/.pnpm/* | sort -hr | head -20
 ```
 
 #### 対策
@@ -364,8 +364,8 @@ path: |
 ```yaml
 - name: Cleanup before cache
   run: |
-    # npm の不要なキャッシュを削除
-    npm cache clean --force
+    # pnpm の不要なキャッシュを削除
+    pnpm cache clean --force
 
     # Cargo の古いビルド成果物を削除
     cargo clean -p my-package
@@ -400,8 +400,8 @@ path: |
 ```yaml
 # より多くのフォールバックオプション
 restore-keys: |
-  ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}-
-  ${{ runner.os }}-npm-
+  ${{ runner.os }}-pnpm-${{ hashFiles('**/package-lock.json') }}-
+  ${{ runner.os }}-pnpm-
   ${{ runner.os }}-
 ```
 
@@ -441,7 +441,7 @@ restore-keys: |
     echo "- Matched key: ${{ steps.cache.outputs.cache-matched-key }}" >> $GITHUB_STEP_SUMMARY
 
     # サイズ情報
-    CACHE_SIZE=$(du -sh ~/.npm | cut -f1)
+    CACHE_SIZE=$(du -sh ~/.pnpm | cut -f1)
     echo "- Cache size: $CACHE_SIZE" >> $GITHUB_STEP_SUMMARY
 
     # ヒット率計算（複数実行から）
@@ -499,13 +499,13 @@ key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
 ✅ **restore-keys で段階的フォールバック**
 ```yaml
 restore-keys: |
-  ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}-
-  ${{ runner.os }}-npm-
+  ${{ runner.os }}-pnpm-${{ hashFiles('**/package-lock.json') }}-
+  ${{ runner.os }}-pnpm-
 ```
 
 ✅ **キャッシュサイズを監視**
 ```yaml
-- run: du -sh ~/.npm
+- run: du -sh ~/.pnpm
 ```
 
 ✅ **バージョニングで強制リフレッシュ**

@@ -176,7 +176,7 @@ cat .claude/skills/github-actions-expressions/templates/expression-examples.yaml
 
 # 複数条件の組み合わせ
 - if: success() && github.ref == 'refs/heads/main'
-  run: npm run deploy
+  run: pnpm run deploy
 ```
 
 ## ワークフローにおける式の使用フェーズ
@@ -226,7 +226,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - if: success()
-        run: npm run deploy
+        run: pnpm run deploy
 ```
 
 ### ステップ出力の活用

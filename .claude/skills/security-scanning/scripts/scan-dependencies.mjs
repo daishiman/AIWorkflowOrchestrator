@@ -3,7 +3,7 @@
 /**
  * 依存関係脆弱性スキャンスクリプト
  *
- * pnpm/npm auditを実行し、結果を解析してレポートを出力します。
+ * pnpm/pnpm auditを実行し、結果を解析してレポートを出力します。
  *
  * 使用方法:
  *   node scan-dependencies.mjs
@@ -66,7 +66,7 @@ function detectPackageManager() {
     return 'yarn';
   }
   if (existsSync('package-lock.json')) {
-    return 'npm';
+    return 'pnpm';
   }
   return null;
 }
@@ -74,7 +74,7 @@ function detectPackageManager() {
 function runAudit(packageManager, severity, jsonOutput) {
   const commands = {
     pnpm: `pnpm audit --audit-level=${severity}${jsonOutput ? ' --json' : ''}`,
-    npm: `npm audit --audit-level=${severity}${jsonOutput ? ' --json' : ''}`,
+    pnpm: `pnpm audit --audit-level=${severity}${jsonOutput ? ' --json' : ''}`,
     yarn: `yarn audit --level ${severity}${jsonOutput ? ' --json' : ''}`,
   };
 
@@ -100,7 +100,7 @@ function parseAuditOutput(output, packageManager) {
   try {
     const data = JSON.parse(output);
 
-    if (packageManager === 'pnpm' || packageManager === 'npm') {
+    if (packageManager === 'pnpm' || packageManager === 'pnpm') {
       return {
         vulnerabilities: data.metadata?.vulnerabilities || {},
         advisories: data.advisories || {},

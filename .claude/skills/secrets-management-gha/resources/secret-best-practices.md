@@ -129,7 +129,7 @@ env:
 ```yaml
 # ✅ ビルド成果物のみアップロード
 - name: Build
-  run: npm run build
+  run: pnpm run build
   env:
     API_KEY: ${{ secrets.API_KEY }}
 

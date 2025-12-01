@@ -16,7 +16,10 @@ description: |
   🔴 パイプラインフロー:
   {{stage_1_name}} → {{stage_2_name}} → {{stage_3_name}}
 
-tools: [Task, Read, Write]
+tools:
+  - Task
+  - Read
+  - Write
 model: {{model}}
 version: 1.0.0
 ---
@@ -113,7 +116,10 @@ description: |
   🔴 パイプラインフロー:
   data-extraction → data-transformation → data-loading
 
-tools: [Task, Read, Write]
+tools:
+  - Task
+  - Read
+  - Write
 model: sonnet
 version: 1.0.0
 ---

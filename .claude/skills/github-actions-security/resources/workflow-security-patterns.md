@@ -37,7 +37,7 @@ jobs:
       - uses: actions/checkout@v4
       - env:
           API_KEY: ${{ secrets.API_KEY }}  # フォークPRでは空
-        run: npm test
+        run: pnpm test
 ```
 
 ### パターン3: 依存関係の固定（Pinning）
@@ -166,12 +166,12 @@ jobs:
   lint:
     needs: secret-scan  # secret-scan成功後のみ
     steps:
-      - run: npm run lint
+      - run: pnpm run lint
 
   test:
     needs: lint  # lint成功後のみ
     steps:
-      - run: npm test
+      - run: pnpm test
 
   deploy:
     needs: [secret-scan, lint, test]  # すべて成功後のみ

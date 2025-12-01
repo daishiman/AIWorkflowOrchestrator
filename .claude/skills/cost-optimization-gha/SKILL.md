@@ -130,7 +130,7 @@ jobs:
 ```yaml
 - uses: actions/cache@v4
   with:
-    path: ~/.npm
+    path: ~/.pnpm
     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
     # 依存関係インストール時間を80%削減
 ```

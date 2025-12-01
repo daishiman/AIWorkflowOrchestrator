@@ -6,7 +6,7 @@
 
 | プロジェクトタイプ | テンプレート | キャッシング | テストコマンド | ビルド成果物 |
 |-------------------|-------------|-------------|---------------|-------------|
-| **Node.js (npm)** | `nodejs-template.yaml` | `~/.npm` | `npm test` | `dist/`, `build/` |
+| **Node.js (pnpm)** | `nodejs-template.yaml` | `~/.pnpm` | `pnpm test` | `dist/`, `build/` |
 | **Node.js (pnpm)** | `nodejs-template.yaml` | `~/.pnpm-store` | `pnpm test` | `dist/`, `build/` |
 | **Node.js (yarn)** | `nodejs-template.yaml` | `~/.yarn` | `yarn test` | `dist/`, `build/` |
 | **Python (pip)** | `ci-template.yaml` | `~/.cache/pip` | `pytest` | `dist/`, `*.whl` |
@@ -29,14 +29,14 @@ if [ -f "pnpm-lock.yaml" ]; then
 elif [ -f "yarn.lock" ]; then
   PKG_MANAGER="yarn"
 elif [ -f "package-lock.json" ]; then
-  PKG_MANAGER="npm"
+  PKG_MANAGER="pnpm"
 fi
 ```
 
 ### npm使用時
 
 ```yaml
-name: Node.js CI (npm)
+name: Node.js CI (pnpm)
 
 on: [push, pull_request]
 
@@ -53,19 +53,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Run linter
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Run tests
-        run: npm test
+        run: pnpm test
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 ```
 
 ### pnpm使用時
@@ -380,9 +380,9 @@ jobs:
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci
+RUN pnpm ci
 COPY . .
-RUN npm run build
+RUN pnpm run build
 
 FROM node:20-alpine AS runner
 WORKDIR /app

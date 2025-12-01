@@ -24,7 +24,10 @@
 ```yaml
 ---
 name: code-reviewer
-tools: [Read, Grep, Glob]
+tools:
+  - Read
+  - Grep
+  - Glob
 ---
 ```
 
@@ -48,7 +51,11 @@ tools: [Read, Grep, Glob]
 ```yaml
 ---
 name: feature-implementer
-tools: [Read, Write, Edit, Grep]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
 write_allowed_paths:
   - "src/features/**/*.ts"
   - "tests/**/*.test.ts"
@@ -77,7 +84,10 @@ write_forbidden_paths:
 ```yaml
 ---
 name: project-orchestrator
-tools: [Task, Read, Grep]
+tools:
+  - Task
+  - Read
+  - Grep
 ---
 ```
 
@@ -102,7 +112,12 @@ tools: [Task, Read, Grep]
 ```yaml
 ---
 name: deployment-manager
-tools: [Bash, Read, Write, Edit, Task]
+tools:
+  - Bash
+  - Read
+  - Write
+  - Edit
+  - Task
 write_allowed_paths:
   - "deploy/**"
   - ".github/workflows/**"
@@ -214,7 +229,7 @@ approval_required: true
 approval_required_for:
   - "rm *"
   - "git push"
-  - "npm publish"
+  - "pnpm publish"
   - "terraform apply"
 ```
 
@@ -226,7 +241,10 @@ approval_required_for:
 ---
 name: documentation-analyzer
 description: ドキュメント分析専門エージェント
-tools: [Read, Grep, Glob]
+tools:
+  - Read
+  - Grep
+  - Glob
 model: sonnet
 ---
 ```
@@ -239,7 +257,11 @@ model: sonnet
 ---
 name: feature-implementer
 description: 機能実装専門エージェント
-tools: [Read, Write, Edit, Grep]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
 model: sonnet
 write_allowed_paths:
   - "src/features/**/*.ts"
@@ -258,7 +280,12 @@ write_forbidden_paths:
 ---
 name: deployment-manager
 description: デプロイメント管理エージェント
-tools: [Bash, Read, Write, Edit, Task]
+tools:
+  - Bash
+  - Read
+  - Write
+  - Edit
+  Task
 model: sonnet
 write_allowed_paths:
   - "deploy/**"

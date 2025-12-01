@@ -78,7 +78,7 @@ const errorPatterns = {
   },
   dependency: {
     patterns: [
-      /npm err!/i,
+      /pnpm err!/i,
       /pip install error/i,
       /no matching distribution found/i,
       /404 not found.*registry/i,

@@ -19,7 +19,10 @@ description: |
   - {{worker_2_name}}
   - {{worker_3_name}}
 
-tools: [Task, Read, Grep]
+tools:
+  - Task
+  - Read
+  - Grep
 model: {{model}}
 version: 1.0.0
 ---
@@ -106,7 +109,10 @@ description: |
   - security-analyzer
   - performance-profiler
 
-tools: [Task, Read, Grep]
+tools:
+  - Task
+  - Read
+  - Grep
 model: sonnet
 version: 1.0.0
 ---

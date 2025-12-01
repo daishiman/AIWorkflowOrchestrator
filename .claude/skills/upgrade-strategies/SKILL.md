@@ -492,4 +492,4 @@ pnpm prettier --check .
 
 - **Dependabot**: https://docs.github.com/en/code-security/dependabot
 - **Renovate**: https://docs.renovatebot.com/
-- **npm update**: https://docs.npmjs.com/cli/v10/commands/npm-update
+- **pnpm update**: https://docs.npmjs.com/cli/v10/commands/pnpm-update

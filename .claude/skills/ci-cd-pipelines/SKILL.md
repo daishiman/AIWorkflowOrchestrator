@@ -6,7 +6,7 @@ description: |
   このスキルには以下のリソースが含まれています。
   必要に応じて該当するリソースを参照してください:
 
-  - `.claude/skills/ci-cd-pipelines/resources/caching-strategies.md`: pnpm/npm/yarn依存関係キャッシュ、Next.js/Turboビルドキャッシュの実装パターンと10GB制限対策
+  - `.claude/skills/ci-cd-pipelines/resources/caching-strategies.md`: pnpm/pnpm/yarn依存関係キャッシュ、Next.js/Turboビルドキャッシュの実装パターンと10GB制限対策
   - `.claude/skills/ci-cd-pipelines/resources/github-actions-syntax.md`: GitHub Actions構文リファレンス
   - `.claude/skills/ci-cd-pipelines/resources/parallelization.md`: 並列化とマトリクスビルド
   - `.claude/skills/ci-cd-pipelines/resources/pipeline-patterns.md`: パイプラインアーキテクチャパターン
@@ -156,7 +156,7 @@ cat .claude/skills/ci-cd-pipelines/templates/reusable-workflow-template.yml
 
 **ステップ**:
 1. **プロジェクト構造分析**:
-   - パッケージマネージャーの特定（pnpm/npm/yarn）
+   - パッケージマネージャーの特定（pnpm/pnpm/yarn）
    - テストフレームワークの特定（Vitest/Jest/Playwright）
    - ビルドシステムの特定（Next.js/Vite等）
 

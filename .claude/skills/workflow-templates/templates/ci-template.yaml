@@ -38,7 +38,7 @@ jobs:
       #   uses: actions/setup-node@v4
       #   with:
       #     node-version: '20'
-      #     cache: 'npm'  # or 'yarn', 'pnpm'
+      #     cache: 'pnpm'  # or 'yarn', 'pnpm'
 
       # Python の場合
       # - name: Setup Python
@@ -57,7 +57,7 @@ jobs:
       - name: Install dependencies
         run: |
           # プロジェクトに応じたインストールコマンド
-          # npm ci
+          # pnpm ci
           # pip install -r requirements.txt
           # go mod download
           echo "Install dependencies here"
@@ -65,7 +65,7 @@ jobs:
       - name: Run linter
         run: |
           # プロジェクトに応じたlintコマンド
-          # npm run lint
+          # pnpm run lint
           # flake8 .
           # golangci-lint run
           echo "Run linter here"
@@ -110,7 +110,7 @@ jobs:
       - name: Run tests
         run: |
           # プロジェクトに応じたテストコマンド
-          # npm test
+          # pnpm test
           # pytest
           # go test ./...
           echo "Run tests here"
@@ -139,7 +139,7 @@ jobs:
       - name: Build project
         run: |
           # プロジェクトに応じたビルドコマンド
-          # npm run build
+          # pnpm run build
           # python setup.py build
           # go build -v ./...
           echo "Build project here"

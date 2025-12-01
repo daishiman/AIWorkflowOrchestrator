@@ -27,7 +27,7 @@
 ### Jest + jest-axe
 
 ```bash
-npm install jest-axe @types/jest-axe --save-dev
+pnpm install jest-axe @types/jest-axe --save-dev
 ```
 
 ```tsx
@@ -305,10 +305,10 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Run accessibility tests
-        run: npm run test:a11y
+        run: pnpm run test:a11y
 
       - name: Run Playwright a11y tests
         run: npx playwright test e2e/accessibility.spec.ts
@@ -321,7 +321,7 @@ jobs:
 {
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint && npm run test:a11y"
+      "pre-commit": "pnpm run lint && pnpm run test:a11y"
     }
   }
 }

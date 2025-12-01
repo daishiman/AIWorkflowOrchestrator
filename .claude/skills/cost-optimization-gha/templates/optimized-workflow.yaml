@@ -53,13 +53,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci --prefer-offline --no-audit
+        run: pnpm ci --prefer-offline --no-audit
 
       - name: Run linter
-        run: npm run lint
+        run: pnpm run lint
 
   test:
     needs: check-changes
@@ -75,21 +75,21 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Cache dependencies
         uses: actions/cache@v4
         with:
-          path: ~/.npm
+          path: ~/.pnpm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
 
       - name: Install dependencies
-        run: npm ci --prefer-offline --no-audit
+        run: pnpm ci --prefer-offline --no-audit
 
       - name: Run tests
-        run: npm test -- --maxWorkers=4
+        run: pnpm test -- --maxWorkers=4
 
       - name: Upload coverage (only for Node 20)
         if: matrix.node == '20'
@@ -107,7 +107,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Cache build
         uses: actions/cache@v4
@@ -118,10 +118,10 @@ jobs:
           key: ${{ runner.os }}-build-${{ hashFiles('src/**') }}
 
       - name: Install dependencies
-        run: npm ci --prefer-offline --no-audit
+        run: pnpm ci --prefer-offline --no-audit
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -159,9 +159,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm ci
-      - run: npm run build
-      - run: npm test
+      - run: pnpm ci
+      - run: pnpm run build
+      - run: pnpm test
 
   # 本番環境: 全 OS だが段階的
   build-linux:
@@ -172,10 +172,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run build
-      - run: npm test
+          cache: 'pnpm'
+      - run: pnpm ci
+      - run: pnpm run build
+      - run: pnpm test
       - uses: actions/upload-artifact@v4
         with:
           name: dist-linux
@@ -190,9 +190,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
-      - run: npm ci
-      - run: npm test
+          cache: 'pnpm'
+      - run: pnpm ci
+      - run: pnpm test
 
   build-macos:
     needs: build-linux
@@ -203,9 +203,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
-      - run: npm ci
-      - run: npm test
+          cache: 'pnpm'
+      - run: pnpm ci
+      - run: pnpm test
 ```
 
 ## Docker ビルド最適化
@@ -288,9 +288,9 @@ jobs:
       - name: Build ${{ matrix.package }}
         run: |
           cd packages/${{ matrix.package }}
-          npm ci
-          npm run build
-          npm test
+          pnpm ci
+          pnpm run build
+          pnpm test
 ```
 
 ## Self-hosted ランナー活用
@@ -309,9 +309,9 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
-      - run: npm ci
-      - run: npm run build
-      - run: npm test
+      - run: pnpm ci
+      - run: pnpm run build
+      - run: pnpm test
 
   # 本番: GitHub-hosted (信頼性重視)
   build-prod:
@@ -319,10 +319,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm ci
-      - run: npm run build
-      - run: npm test
-      - run: npm run deploy
+      - run: pnpm ci
+      - run: pnpm run build
+      - run: pnpm test
+      - run: pnpm run deploy
 ```
 
 ## テスト分割による並列化
@@ -347,13 +347,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci --prefer-offline
+        run: pnpm ci --prefer-offline
 
       - name: Run test shard ${{ matrix.shard }}
-        run: npm test -- --shard=${{ matrix.shard }}/4
+        run: pnpm test -- --shard=${{ matrix.shard }}/4
 
       - name: Upload coverage
         uses: actions/upload-artifact@v4
@@ -408,7 +408,7 @@ jobs:
         run: echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       - name: Calculate cost
         if: always()
@@ -454,7 +454,7 @@ retention-days: 7  # ✅ 保持期間を最小化
 if: success()  # ✅ 前ジョブ成功時のみ
 
 # 8. 効率的なインストール
-run: npm ci --prefer-offline --no-audit  # ✅ 高速インストール
+run: pnpm ci --prefer-offline --no-audit  # ✅ 高速インストール
 ```
 
 ## コスト削減効果

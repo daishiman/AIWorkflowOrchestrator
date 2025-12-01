@@ -26,8 +26,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-      - run: npm ci
-      - run: npm test
+      - run: pnpm ci
+      - run: pnpm test
 
 # 9つのジョブが並列実行（3 OS × 3 Node versions）
 # 連続実行: 90分 → 並列実行: 10分
@@ -41,20 +41,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm run lint
+      - run: pnpm run lint
 
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm test
+      - run: pnpm test
 
   build:
     runs-on: ubuntu-latest
     needs: [lint, test]
     steps:
       - uses: actions/checkout@v4
-      - run: npm run build
+      - run: pnpm run build
 
 # lint と test が並列実行
 # 連続実行: 15分 → 並列実行: 10分
@@ -70,13 +70,13 @@ jobs:
 - name: Cache Node.js dependencies
   uses: actions/cache@v4
   with:
-    path: ~/.npm
+    path: ~/.pnpm
     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
     restore-keys: |
       ${{ runner.os }}-node-
 
 - name: Install dependencies
-  run: npm ci
+  run: pnpm ci
 
 # キャッシュヒット時: 2分 → 10秒 (83%短縮)
 ```
@@ -93,7 +93,7 @@ jobs:
     key: ${{ runner.os }}-build-${{ hashFiles('src/**') }}
 
 - name: Build
-  run: npm run build
+  run: pnpm run build
 
 # キャッシュヒット時: 5分 → 30秒 (90%短縮)
 ```
@@ -178,19 +178,19 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Lint (fastest)
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Type check (fast)
-        run: npm run typecheck
+        run: pnpm run typecheck
 
       - name: Unit tests (medium)
-        run: npm run test:unit
+        run: pnpm run test:unit
 
       - name: Integration tests (slow)
-        run: npm run test:integration
+        run: pnpm run test:integration
 
       - name: E2E tests (slowest)
-        run: npm run test:e2e
+        run: pnpm run test:e2e
 
 # エラー時に早期終了 → 無駄な実行を回避
 ```
@@ -203,7 +203,7 @@ jobs:
   # ...
 
 - name: Install dependencies
-  run: npm ci --prefer-offline --no-audit
+  run: pnpm ci --prefer-offline --no-audit
   # --prefer-offline: キャッシュ優先
   # --no-audit: セキュリティ監査をスキップ（別ジョブで実行）
   # 30%高速化
@@ -217,7 +217,7 @@ jobs:
 
 ```yaml
 - name: Run tests
-  run: npm test -- --maxWorkers=4
+  run: pnpm test -- --maxWorkers=4
   # デフォルト: 1ワーカー (10分)
   # 4ワーカー: (3分) → 70%短縮
 ```
@@ -233,9 +233,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm ci
+      - run: pnpm ci
       - name: Run test shard
-        run: npm test -- --shard=${{ matrix.shard }}/4
+        run: pnpm test -- --shard=${{ matrix.shard }}/4
 
 # 40分のテストを4つに分割 → 10分
 ```
@@ -257,7 +257,7 @@ jobs:
 
 - name: Run tests
   if: steps.changed-files.outputs.any_changed == 'true'
-  run: npm test
+  run: pnpm test
 
 # ソースコード変更がない場合はテストをスキップ
 ```
@@ -272,7 +272,7 @@ jobs:
     key: test-${{ hashFiles('src/**', 'tests/**') }}
 
 - name: Run tests
-  run: npm test -- --cache --cacheDirectory=.jest-cache
+  run: pnpm test -- --cache --cacheDirectory=.jest-cache
 
 # 変更がないテストはスキップ
 ```
@@ -287,7 +287,7 @@ jobs:
     echo "Start time: $(date +%s)" >> $GITHUB_ENV
 
 - name: Your workflow steps
-  run: npm test
+  run: pnpm test
 
 - name: Report execution time
   if: always()
@@ -331,9 +331,9 @@ on:
 ```yaml
 - name: Profile build
   run: |
-    time npm run build
-    time npm run test
-    time npm run lint
+    time pnpm run build
+    time pnpm run test
+    time pnpm run lint
 
 # 最も時間がかかるステップを特定して最適化
 ```
@@ -359,7 +359,7 @@ runs-on: ubuntu-latest-4-cores
 - name: Debug cache
   run: |
     echo "Cache key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}"
-    ls -la ~/.npm
+    ls -la ~/.pnpm
 
 # キーが一致しているか確認
 # パスが正しいか確認

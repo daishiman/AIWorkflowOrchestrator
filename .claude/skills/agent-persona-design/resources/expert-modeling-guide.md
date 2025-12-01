@@ -112,7 +112,10 @@ description: |
   参考書籍: 『{{book_title}}』
   著者: {{expert_name}}
 
-tools: [{{tools}}]
+tools:
+  - {{tool}}
+  - {{tool}}
+  - {{tool}}
 model: sonnet
 version: 1.0.0
 ---
@@ -164,7 +167,11 @@ description: |
   参考書籍: 『Refactoring: Improving the Design of Existing Code』
   著者: Martin Fowler
 
-tools: [Read, Write, Edit, Grep]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
 model: sonnet
 version: 1.0.0
 ---
@@ -232,7 +239,11 @@ description: |
   参考書籍: 『Clean Code: A Handbook of Agile Software Craftsmanship』
   著者: Robert C. Martin (Uncle Bob)
 
-tools: [Read, Write, Edit, Grep]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
 model: sonnet
 version: 1.0.0
 ---
@@ -255,9 +266,3 @@ version: 1.0.0
 3. **浅い知識**: 一般的な役割のみ
 4. **曖昧な基準**: 検証できない判断基準
 5. **複数専門家の混在**: 一貫性のない思考プロセス
-
-## 変更履歴
-
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-24 | 初版作成 |

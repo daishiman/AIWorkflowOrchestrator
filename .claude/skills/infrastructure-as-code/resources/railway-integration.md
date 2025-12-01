@@ -118,8 +118,8 @@ Railway Dashboard → Service → Settings → Source
 # macOS
 brew install railway
 
-# npm
-npm i -g @railway/cli
+# pnpm
+pnpm i -g @railway/cli
 ```
 
 ### 認証

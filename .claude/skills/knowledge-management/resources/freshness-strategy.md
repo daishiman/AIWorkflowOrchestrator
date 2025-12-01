@@ -280,7 +280,7 @@ grep -r "request.isUnauthenticated" .claude/skills/  # 廃止されたAPI
 
 **トリガー2: セキュリティアドバイザリ**
 ```
-npm audit結果
+pnpm audit結果
 → 脆弱性を含む知識を特定
 → 即座に更新
 → チーム全体に通知

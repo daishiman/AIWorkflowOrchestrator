@@ -227,15 +227,15 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Run unit tests (常に実行)
-        run: npm test
+        run: pnpm test
 
       - name: Run e2e tests (ラベル付き時のみ)
         if: contains(github.event.pull_request.labels.*.name, 'test:e2e')
-        run: npm run test:e2e
+        run: pnpm run test:e2e
 
       - name: Run performance tests (ラベル付き時のみ)
         if: contains(github.event.pull_request.labels.*.name, 'test:perf')
-        run: npm run test:perf
+        run: pnpm run test:perf
 ```
 
 ### イベントアクションによる条件分岐
@@ -259,7 +259,7 @@ jobs:
 
       - name: Run tests (同期時のみ)
         if: github.event.action == 'synchronize'
-        run: npm test
+        run: pnpm test
 ```
 
 ### PRマージ検出
@@ -306,7 +306,7 @@ jobs:
 
       - name: Build frontend
         if: steps.frontend_changed.outputs.changed == 'true'
-        run: npm run build:frontend
+        run: pnpm run build:frontend
 
   backend:
     runs-on: ubuntu-latest
@@ -326,7 +326,7 @@ jobs:
 
       - name: Build backend
         if: steps.backend_changed.outputs.changed == 'true'
-        run: npm run build:backend
+        run: pnpm run build:backend
 ```
 
 ### 環境別デプロイメント
@@ -392,7 +392,7 @@ jobs:
 
       - name: Lint code
         if: steps.code_changed.outputs.changed == 'true'
-        run: npm run lint
+        run: pnpm run lint
 
   lint-docs:
     runs-on: ubuntu-latest
@@ -410,7 +410,7 @@ jobs:
 
       - name: Lint markdown
         if: steps.docs_changed.outputs.changed == 'true'
-        run: npm run lint:md
+        run: pnpm run lint:md
 ```
 
 ## 外部アクションを使った高度なフィルタリング
@@ -450,14 +450,14 @@ jobs:
     if: needs.detect-changes.outputs.frontend == 'true'
     runs-on: ubuntu-latest
     steps:
-      - run: npm run test:frontend
+      - run: pnpm run test:frontend
 
   test-backend:
     needs: detect-changes
     if: needs.detect-changes.outputs.backend == 'true'
     runs-on: ubuntu-latest
     steps:
-      - run: npm run test:backend
+      - run: pnpm run test:backend
 ```
 
 ## schedule イベントでの条件分岐
@@ -505,7 +505,7 @@ jobs:
     if: inputs.skip_tests == false
     runs-on: ubuntu-latest
     steps:
-      - run: npm test
+      - run: pnpm test
 
   deploy:
     needs: test
@@ -575,8 +575,8 @@ jobs:
   required-checks:
     runs-on: ubuntu-latest
     steps:
-      - run: npm test
-      - run: npm run lint
+      - run: pnpm test
+      - run: pnpm run lint
 ```
 
 **GitHub設定**: main ブランチに required-checks を必須ステータスチェックとして設定。

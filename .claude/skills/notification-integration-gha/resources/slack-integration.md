@@ -283,7 +283,7 @@ jobs:
     SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
 - name: Build step
-  run: npm run build
+  run: pnpm run build
 
 - name: Update thread
   uses: slackapi/slack-github-action@v1.24.0
@@ -295,7 +295,7 @@ jobs:
     SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
 - name: Deploy step
-  run: npm run deploy
+  run: pnpm run deploy
 
 - name: Final update
   uses: slackapi/slack-github-action@v1.24.0

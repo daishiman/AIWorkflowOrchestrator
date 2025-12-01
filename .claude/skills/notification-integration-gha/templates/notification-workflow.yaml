@@ -21,11 +21,11 @@ jobs:
       - name: Build application
         run: |
           echo "Building application..."
-          npm install
-          npm run build
+          pnpm install
+          pnpm run build
 
       - name: Run tests
-        run: npm test
+        run: pnpm test
 
       - name: Notify Slack on success
         if: success()
@@ -292,7 +292,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       - name: Update - Build complete
         uses: slackapi/slack-github-action@v1.24.0
@@ -306,7 +306,7 @@ jobs:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
       - name: Test
-        run: npm test
+        run: pnpm test
 
       - name: Update - Tests complete
         uses: slackapi/slack-github-action@v1.24.0

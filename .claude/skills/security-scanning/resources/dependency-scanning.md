@@ -9,7 +9,7 @@ Node.jsプロジェクトの依存関係に含まれる既知の脆弱性を検�
 | ツール | 特徴 | コスト |
 |-------|------|--------|
 | pnpm audit | pnpm組み込み、高速 | 無料 |
-| npm audit | npm組み込み | 無料 |
+| pnpm audit | npm組み込み | 無料 |
 | Snyk | 詳細な修正提案、PR自動作成 | 無料枠あり |
 | Dependabot | GitHub統合、自動PR | 無料 |
 
@@ -54,27 +54,27 @@ pnpm audit --prod
   continue-on-error: false
 ```
 
-## npm audit
+## pnpm audit
 
 ### 基本使用法
 
 ```bash
 # 監査実行
-npm audit
+pnpm audit
 
 # 自動修正（可能な場合）
-npm audit fix
+pnpm audit fix
 
 # 強制修正（破壊的変更を許容）
-npm audit fix --force
+pnpm audit fix --force
 
 # JSON出力
-npm audit --json
+pnpm audit --json
 ```
 
 ### 注意点
 
-- `npm audit fix --force`は破壊的変更を引き起こす可能性あり
+- `pnpm audit fix --force`は破壊的変更を引き起こす可能性あり
 - pnpmプロジェクトでは`pnpm audit`を使用
 
 ## Snyk
@@ -83,7 +83,7 @@ npm audit --json
 
 ```bash
 # インストール
-npm install -g snyk
+pnpm install -g snyk
 
 # 認証
 snyk auth
@@ -117,7 +117,7 @@ snyk test
 # .github/dependabot.yml
 version: 2
 updates:
-  - package-ecosystem: "npm"
+  - package-ecosystem: "pnpm"
     directory: "/"
     schedule:
       interval: "weekly"
@@ -162,7 +162,7 @@ GitHub Settings → Security → Dependabot alerts を有効化
 
 ## 例外管理
 
-### .nsprc（npm audit）
+### .nsprc（pnpm audit）
 
 ```json
 {

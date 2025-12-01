@@ -370,15 +370,15 @@ workflow_examples:
         runs-on: ubuntu-latest
         steps:
           - uses: actions/checkout@v4
-          - run: npm ci
-          - run: npm run build
+          - run: pnpm ci
+          - run: pnpm run build
 
       test:
         needs: build
         if: success()
         runs-on: ubuntu-latest
         steps:
-          - run: npm test
+          - run: pnpm test
 
       deploy-staging:
         needs: [build, test]
@@ -387,7 +387,7 @@ workflow_examples:
           needs.test.result == 'success'
         runs-on: ubuntu-latest
         steps:
-          - run: npm run deploy-staging
+          - run: pnpm run deploy-staging
 
       deploy-production:
         needs: [build, test]
@@ -397,7 +397,7 @@ workflow_examples:
           secrets.PROD_DEPLOY_KEY != null
         runs-on: ubuntu-latest
         steps:
-          - run: npm run deploy-production
+          - run: pnpm run deploy-production
 
   # マトリクステストと条件付きデプロイ
   matrix_test_deploy: |
@@ -416,14 +416,14 @@ workflow_examples:
           - uses: actions/setup-node@v4
             with:
               node-version: ${{ matrix.node }}
-          - run: npm ci
-          - run: npm test
+          - run: pnpm ci
+          - run: pnpm test
 
           # Ubuntu + Node 20でのみ追加テスト
           - if: |
               matrix.os == 'ubuntu-latest' &&
               matrix.node == 20
-            run: npm run integration-test
+            run: pnpm run integration-test
 
       deploy:
         needs: test
@@ -432,7 +432,7 @@ workflow_examples:
           needs.test.result == 'success'
         runs-on: ubuntu-latest
         steps:
-          - run: npm run deploy
+          - run: pnpm run deploy
 
 # =============================================================================
 # デバッグ用の式

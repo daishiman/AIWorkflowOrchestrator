@@ -156,9 +156,9 @@ jobs:
 FROM node:20-alpine
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci
+RUN pnpm ci
 COPY . .
-RUN npm run build
+RUN pnpm run build
 CMD ["node", "dist/index.js"]
 ```
 
