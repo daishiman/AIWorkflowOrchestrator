@@ -314,11 +314,33 @@
 | 技術 | バージョン | 採用理由 |
 |------|-----------|----------|
 | **Vitest** | 2.x | Vite互換、ESM対応、高速、Jest互換API |
-| **Playwright** | 最新 | クロスブラウザ、APIテスト、自動待機 |
-| **ESLint** | 9.x | Flat Config、プラグイン豊富 |
+| **@testing-library/react** | 最新 | ユーザー視点テスト、ベストプラクティス、RTL推奨パターン |
+| **@testing-library/user-event** | 最新 | 実ユーザー操作シミュレーション |
+| **Playwright** | 最新 | クロスブラウザ、APIテスト、自動待機、E2Eテスト |
+| **@axe-core/playwright** | 最新 | WCAG 2.1 AA準拠の自動アクセシビリティテスト |
+| **jest-axe** | 最新 | Vitest統合アクセシビリティテスト |
+| **Chromatic** | 最新 | ビジュアルリグレッションテスト（Storybook統合） |
+| **MSW** | 最新 | Mock Service Worker、型安全なAPIモック |
+| **ESLint** | 9.x | Flat Config、プラグイン豊富、境界チェック |
 | **Prettier** | 3.x | デファクトスタンダード、ESLint統合 |
 
-### 3.8 Infrastructure
+### 3.8 Frontend & Desktop Stack
+
+| 技術 | バージョン | 採用理由 |
+|------|-----------|----------|
+| **React** | 18.x | Server Components、Suspense、Concurrent Features |
+| **Electron** | 最新 | クロスプラットフォームデスクトップアプリ |
+| **electron-builder** | 最新 | マルチプラットフォームビルド、コード署名、インストーラー生成 |
+| **electron-updater** | 最新 | 自動更新システム（stable/beta/alphaチャネル対応） |
+| **Vite** | 5.x | 高速ビルド、HMR、ESM対応 |
+| **Tailwind CSS** | 3.x | ユーティリティファースト、Design Tokens統合 |
+| **shadcn/ui** | 最新 | Headless UIコンポーネント、アクセシビリティ対応、カスタマイズ可能 |
+| **Radix UI** | 最新 | Headless Primitives、ARIA対応、キーボードナビゲーション |
+| **Zustand** | 最新 | 軽量状態管理、React Context補完 |
+| **Jotai** | 最新 | Atomic状態管理、React Suspense統合 |
+| **Storybook** | 8.x | コンポーネントカタログ、ビジュアルテスト、ドキュメンテーション |
+
+### 3.9 Infrastructure
 
 | 技術 | 採用理由 |
 |------|----------|
@@ -328,36 +350,65 @@
 
 ---
 
-## 4. ディレクトリ構造（MVP - ハイブリッドアプローチ）
+## 4. ディレクトリ構造（モノレポ - Web/Desktop統合）
 
 ### 4.1 設計方針
 
-**ハイブリッド構造の採用理由**:
-- **shared**: 複数機能で使う共通インフラ（AI、DB、Discord）を集約
+**モノレポ構造の採用理由**:
+- **packages/shared**: Web/Desktop共通のUIコンポーネント、ビジネスロジック、型定義を集約
+- **apps/web**: Next.js Webアプリケーション（App Router、Server Components）
+- **apps/desktop**: Electronデスクトップアプリケーション（Main/Renderer/Preload分離）
 - **features**: 機能ごとの垂直スライス、1フォルダで完結
-- **MVP 効率**: 機能追加・削除が高速、認知負荷を削減
+- **コード再利用**: 最大限のコード共有により、変更容易性と一貫性を実現
+- **独立デプロイ**: Web（Railway）とDesktop（GitHub Releases）を独立して管理
 
-### 4.2 ルート構造
+### 4.2 ルート構造（モノレポ）
 
 ```text
 root/
-├── .claude/                            # AI開発アシスタント設定
+├── .claude/                            # AI開発アシスタント設定（41エージェント、114コマンド、241スキル）
 ├── docs/                               # 仕様書 (Single Source of Truth)
-├── src/                                # Next.js アプリケーション
+├── packages/                           # 共有パッケージ
+│   └── shared/                         # Web/Desktop共通コード
+│       ├── ui/                         # UIコンポーネント（Design System）
+│       ├── core/                       # ドメイン共通要素
+│       └── infrastructure/             # 共通インフラ
+├── apps/                               # アプリケーション
+│   ├── web/                            # Next.js Webアプリ
+│   └── desktop/                        # Electronデスクトップアプリ
 ├── local-agent/                        # ローカルエージェント
 ├── .github/                            # CI/CD
 └── 設定ファイル群
 ```
 
-### 4.3 詳細構造
+### 4.3 詳細構造（モノレポ完全版）
 
 ```text
 root/
 ├── .claude/
 │   ├── memory.md                       # プロジェクトの文脈・経緯
 │   ├── rules.md                        # コーディング規約
-│   ├── agents/                         # エージェント定義
-│   └── commands/                       # カスタムコマンド
+│   ├── agents/                         # エージェント定義（41エージェント）
+│   │   ├── agent_list.md               # エージェント一覧
+│   │   ├── frontend-tester.md          # フロントエンドテスト統合
+│   │   ├── electron-devops.md          # Electronビルド・配布統合（v2.0.0）
+│   │   └── [その他38エージェント]
+│   ├── commands/                       # カスタムコマンド（114コマンド）
+│   │   ├── ai/
+│   │   │   ├── generate-component-tests.md    # コンポーネントテスト生成
+│   │   │   ├── setup-electron-updater.md      # Electron自動更新
+│   │   │   ├── run-accessibility-audit.md     # a11y監査
+│   │   │   └── [その他111コマンド]
+│   │   └── sc/                         # ショートカットコマンド
+│   └── skills/                         # スキル定義（241スキル）
+│       ├── frontend-testing/           # フロントエンドテスト（新規）
+│       │   ├── SKILL.md
+│       │   ├── resources/              # 6リソースファイル
+│       │   ├── templates/              # 4テンプレート
+│       │   └── scripts/                # 3スクリプト
+│       ├── electron-packaging/         # Electronパッケージング
+│       ├── electron-distribution/      # Electron配布
+│       └── [その他238スキル]
 │
 ├── docs/
 │   ├── 00-requirements/                # 要件定義書
@@ -367,69 +418,215 @@ root/
 │   │   └── features/                   # 各機能の仕様
 │   └── 99-adr/                         # アーキテクチャ決定記録
 │
-├── src/
-│   ├── shared/                         # [共通インフラ層]
-│   │   ├── core/                       # ドメイン共通要素
-│   │   │   ├── entities/               # 共通エンティティ
-│   │   │   │   ├── workflow.ts         # Workflow型定義
-│   │   │   │   └── index.ts
-│   │   │   ├── interfaces/             # 共通インターフェース
-│   │   │   │   ├── IWorkflowExecutor.ts
-│   │   │   │   └── IRepository.ts
-│   │   │   └── errors/                 # エラークラス
-│   │   │       ├── WorkflowError.ts
-│   │   │       └── index.ts
-│   │   │
-│   │   └── infrastructure/             # 共通インフラ
-│   │       ├── database/               # DB接続（全機能共通）
-│   │       │   ├── db.ts               # Neon接続
-│   │       │   ├── schema.ts           # Drizzleスキーマ
-│   │       │   └── repositories/       # Repository実装
-│   │       ├── ai/                     # AI SDK（全機能共通）
-│   │       │   ├── client.ts           # 統一AIクライアント
-│   │       │   └── providers/          # プロバイダー設定
-│   │       │       ├── openai.ts
-│   │       │       ├── anthropic.ts
-│   │       │       ├── google.ts
-│   │       │       └── xai.ts
-│   │       ├── discord/                # Discord Bot（全機能共通）
-│   │       │   ├── client.ts           # Bot初期化
-│   │       │   ├── events/             # イベントハンドラー
-│   │       │   └── commands/           # スラッシュコマンド
-│   │       └── storage/                # ファイルストレージ
+├── packages/                           # [モノレポ共有パッケージ]
+│   └── shared/
+│       ├── package.json
+│       ├── tsconfig.json
+│       │
+│       ├── ui/                         # Web/Desktop共通UIコンポーネント
+│       │   ├── primitives/             # Primitives層（Radix UI ベース）
+│       │   │   ├── Button/
+│       │   │   │   ├── Button.tsx
+│       │   │   │   ├── Button.test.tsx
+│       │   │   │   ├── Button.stories.tsx
+│       │   │   │   └── index.ts
+│       │   │   ├── Input/
+│       │   │   ├── Checkbox/
+│       │   │   ├── Radio/
+│       │   │   └── [その他Primitives]
+│       │   │
+│       │   ├── patterns/               # Patterns層（Primitives組み合わせ）
+│       │   │   ├── Card/
+│       │   │   │   ├── Card.tsx
+│       │   │   │   ├── Card.test.tsx
+│       │   │   │   └── Card.stories.tsx
+│       │   │   ├── Dialog/
+│       │   │   ├── Dropdown/
+│       │   │   └── [その他Patterns]
+│       │   │
+│       │   ├── features/               # Features層（業務固有UI）
+│       │   │   ├── WorkflowCard/
+│       │   │   ├── StatusBadge/
+│       │   │   └── [業務コンポーネント]
+│       │   │
+│       │   ├── templates/              # Templates層（ページレイアウト）
+│       │   │   ├── DashboardLayout/
+│       │   │   ├── AuthLayout/
+│       │   │   └── [その他Layout]
+│       │   │
+│       │   ├── tokens/                 # Design Tokens（3層構造）
+│       │   │   ├── global.ts           # Layer 1: グローバルトークン
+│       │   │   ├── alias.ts            # Layer 2: エイリアストークン
+│       │   │   └── component.ts        # Layer 3: コンポーネントトークン
+│       │   │
+│       │   └── __tests__/              # UIコンポーネント統合テスト
+│       │       ├── unit/               # ユニットテスト（40%）
+│       │       ├── component/          # コンポーネントテスト（40% - RTL）
+│       │       ├── integration/        # 統合テスト（15%）
+│       │       ├── e2e/                # E2Eテスト（5% - Playwright）
+│       │       ├── visual/             # ビジュアルリグレッション（Chromatic）
+│       │       └── a11y/               # アクセシビリティ（axe-core）
+│       │
+│       ├── core/                       # ドメイン共通要素
+│       │   ├── entities/               # 共通エンティティ
+│       │   │   ├── workflow.ts         # Workflow型定義
+│       │   │   ├── user.ts
+│       │   │   └── index.ts
+│       │   ├── interfaces/             # 共通インターフェース
+│       │   │   ├── IWorkflowExecutor.ts
+│       │   │   ├── IRepository.ts
+│       │   │   └── index.ts
+│       │   ├── hooks/                  # カスタムReact Hooks（共通）
+│       │   │   ├── useWorkflow.ts
+│       │   │   ├── useAuth.ts
+│       │   │   ├── __tests__/
+│       │   │   └── index.ts
+│       │   └── errors/                 # エラークラス
+│       │       ├── WorkflowError.ts
+│       │       ├── ValidationError.ts
+│       │       └── index.ts
+│       │
+│       └── infrastructure/             # 共通インフラ
+│           ├── database/               # DB接続（全機能共通）
+│           │   ├── db.ts               # Neon接続
+│           │   ├── schema.ts           # Drizzleスキーマ
+│           │   ├── migrations/         # マイグレーション
+│           │   └── repositories/       # Repository実装
+│           │       ├── WorkflowRepository.ts
+│           │       └── index.ts
+│           ├── ai/                     # AI SDK（全機能共通）
+│           │   ├── client.ts           # 統一AIクライアント
+│           │   └── providers/          # プロバイダー設定
+│           │       ├── openai.ts
+│           │       ├── anthropic.ts
+│           │       ├── google.ts
+│           │       └── xai.ts
+│           ├── discord/                # Discord Bot（全機能共通）
+│           │   ├── client.ts           # Bot初期化
+│           │   ├── events/             # イベントハンドラー
+│           │   │   ├── messageCreate.ts
+│           │   │   └── interactionCreate.ts
+│           │   └── commands/           # スラッシュコマンド
+│           │       ├── summarize.ts
+│           │       └── status.ts
+│           └── storage/                # ファイルストレージ
+│               ├── local.ts
+│               └── s3.ts (将来)
+│
+├── apps/                               # [アプリケーション]
 │   │
-│   ├── features/                       # [機能プラグイン - 垂直スライス]
-│   │   ├── registry.ts                 # 機能レジストリ（全機能の登録）
+│   ├── web/                            # Next.js Webアプリケーション
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   ├── next.config.js
+│   │   ├── tailwind.config.ts
+│   │   ├── vitest.config.ts
 │   │   │
-│   │   ├── youtube-summarize/          # 機能例1: YouTube要約
-│   │   │   ├── schema.ts               # 入出力スキーマ（Zod）
-│   │   │   ├── executor.ts             # ビジネスロジック実装
-│   │   │   └── __tests__/              # この機能のテスト
-│   │   │       └── executor.test.ts
-│   │   │
-│   │   ├── meeting-transcribe/         # 機能例2: 議事録文字起こし
-│   │   │   ├── schema.ts
-│   │   │   ├── executor.ts
-│   │   │   └── __tests__/
-│   │   │
-│   │   └── [feature-name]/             # 新機能追加パターン
-│   │       ├── schema.ts               # この機能の入出力定義
-│   │       ├── executor.ts             # この機能のロジック
-│   │       └── __tests__/              # この機能のテスト
+│   │   └── src/
+│   │       ├── features/               # 機能プラグイン（垂直スライス）
+│   │       │   ├── registry.ts         # 機能レジストリ
+│   │       │   │
+│   │       │   ├── youtube-summarize/  # YouTube要約機能
+│   │       │   │   ├── schema.ts
+│   │       │   │   ├── executor.ts
+│   │       │   │   └── __tests__/
+│   │       │   │       └── executor.test.ts
+│   │       │   │
+│   │       │   ├── meeting-transcribe/ # 議事録文字起こし
+│   │       │   │   ├── schema.ts
+│   │       │   │   ├── executor.ts
+│   │       │   │   └── __tests__/
+│   │       │   │
+│   │       │   └── [feature-name]/     # 新機能追加パターン
+│   │       │       ├── schema.ts
+│   │       │       ├── executor.ts
+│   │       │       └── __tests__/
+│   │       │
+│   │       └── app/                    # Next.js App Router
+│   │           ├── layout.tsx          # ルートレイアウト
+│   │           ├── page.tsx            # ダッシュボード
+│   │           ├── globals.css
+│   │           │
+│   │           ├── api/                # API Routes
+│   │           │   ├── v1/
+│   │           │   │   ├── workflows/
+│   │           │   │   │   ├── route.ts       # POST /api/v1/workflows
+│   │           │   │   │   └── [id]/
+│   │           │   │   │       └── route.ts   # GET/PATCH/DELETE
+│   │           │   │   └── health/
+│   │           │   │       └── route.ts
+│   │           │   ├── webhook/        # 外部トリガー受信
+│   │           │   │   └── generic/
+│   │           │   │       └── route.ts
+│   │           │   └── agent/          # ローカルAgent連携
+│   │           │       ├── upload/
+│   │           │       │   └── route.ts
+│   │           │       └── poll/
+│   │           │           └── route.ts
+│   │           │
+│   │           └── (dashboard)/        # ダッシュボードページ（将来）
+│   │               ├── workflows/
+│   │               └── settings/
 │   │
-│   └── app/                            # [Presentation Layer]
-│       ├── api/
-│       │   ├── webhook/                # 外部トリガー受信
-│       │   │   └── generic/
-│       │   │       └── route.ts
-│       │   ├── agent/                  # ローカルAgent連携
-│       │   │   ├── upload/
-│       │   │   │   └── route.ts
-│       │   │   └── poll/
-│       │   │       └── route.ts
-│       │   └── health/                 # ヘルスチェック
-│       │       └── route.ts
-│       └── page.tsx                    # ダッシュボード（任意）
+│   └── desktop/                        # Electronデスクトップアプリケーション
+│       ├── package.json
+│       ├── tsconfig.json
+│       ├── electron-builder.yml        # ビルド・パッケージング設定
+│       ├── forge.config.js             # Electron Forge設定（代替）
+│       ├── vite.config.ts              # Viteビルド設定
+│       │
+│       └── src/
+│           ├── main/                   # Main Process（Node.js環境）
+│           │   ├── index.ts            # エントリーポイント
+│           │   │
+│           │   ├── services/           # サービス層
+│           │   │   ├── updateService.ts      # electron-updater統合
+│           │   │   ├── windowService.ts      # ウィンドウ管理
+│           │   │   ├── workflowService.ts    # ワークフロー実行
+│           │   │   └── index.ts
+│           │   │
+│           │   ├── ipc/                # IPC Handlers
+│           │   │   ├── workflow.ts     # workflow:* チャネル
+│           │   │   ├── update.ts       # update:* チャネル
+│           │   │   ├── file.ts         # file:* チャネル
+│           │   │   └── index.ts
+│           │   │
+│           │   └── config/             # Main設定
+│           │       ├── window.ts       # BrowserWindow設定
+│           │       └── security.ts     # セキュリティ設定
+│           │
+│           ├── preload/                # Preload Scripts（セキュリティ境界）
+│           │   ├── index.ts            # メインPreload
+│           │   ├── types.ts            # electronAPI型定義
+│           │   └── contextBridge.ts    # contextBridge定義
+│           │
+│           └── renderer/               # Renderer Process（Chromium環境）
+│               ├── index.html          # HTMLエントリー
+│               ├── main.tsx            # Reactエントリーポイント
+│               ├── App.tsx             # ルートコンポーネント
+│               ├── vite-env.d.ts       # Vite型定義
+│               │
+│               ├── pages/              # ページコンポーネント
+│               │   ├── Dashboard.tsx
+│               │   ├── Workflows.tsx
+│               │   └── Settings.tsx
+│               │
+│               ├── components/         # Renderer固有コンポーネント
+│               │   ├── UpdateNotification.tsx
+│               │   ├── TitleBar.tsx    # カスタムタイトルバー（macOS/Windows）
+│               │   └── [その他]
+│               │
+│               ├── hooks/              # Electron固有フック
+│               │   ├── useElectronAPI.ts     # IPC通信フック
+│               │   ├── useAutoUpdate.ts      # 自動更新フック
+│               │   └── index.ts
+│               │
+│               ├── store/              # 状態管理（Zustand/Jotai）
+│               │   ├── workflowStore.ts
+│               │   └── settingsStore.ts
+│               │
+│               └── styles/             # グローバルスタイル
+│                   └── globals.css
 │
 ├── local-agent/
 │   ├── package.json
@@ -438,81 +635,246 @@ root/
 │   ├── src/
 │   │   ├── index.ts                    # エントリーポイント
 │   │   ├── config.ts                   # 環境設定
-│   │   ├── watcher.ts                  # ファイル監視
+│   │   ├── watcher.ts                  # Chokidarファイル監視
 │   │   └── sync.ts                     # API通信
 │   └── __tests__/
+│       └── watcher.test.ts
 │
 ├── .github/
 │   └── workflows/
-│       ├── ci.yml                      # PR時のCI
-│       ├── deploy.yml                  # デプロイ通知
+│       ├── ci.yml                      # PR時のCI（型チェック、lint、テスト）
+│       ├── deploy.yml                  # Railway自動デプロイ通知
+│       ├── build-electron.yml          # Electronビルド（マルチプラットフォーム）
+│       ├── release-electron.yml        # Electronリリース（GitHub Releases）
+│       ├── test-frontend.yml           # フロントエンドテスト専用
+│       ├── accessibility-audit.yml     # アクセシビリティ監査
 │       ├── reusable-test.yml           # 再利用可能ワークフロー
 │       └── README.md                   # ワークフロー可視化
 │
-├── package.json
+├── tests/                              # E2Eテスト（Playwright）
+│   ├── e2e/
+│   │   ├── web/                        # Web E2E
+│   │   │   ├── workflow-execution.spec.ts
+│   │   │   └── auth.spec.ts
+│   │   └── desktop/                    # Desktop E2E
+│   │       ├── window-management.spec.ts
+│   │       └── auto-update.spec.ts
+│   └── a11y/                           # アクセシビリティテスト
+│       └── accessibility.test.ts
+│
+├── package.json                        # ルートpackage.json（ワークスペース定義）
 ├── pnpm-workspace.yaml                 # モノレポ設定
-├── tsconfig.json
+├── tsconfig.json                       # ベースTypeScript設定
 ├── eslint.config.js                    # ESLint設定（Flat Config）
 ├── .prettierrc                         # Prettier設定
-├── vitest.config.ts
-├── drizzle.config.ts
+├── vitest.config.ts                    # Vitestベース設定
+├── playwright.config.ts                # Playwright E2E設定
+├── drizzle.config.ts                   # Drizzle設定
 ├── railway.json                        # Railway設定
-├── .env.example
+├── .env.example                        # 環境変数テンプレート
 ├── .gitignore
 └── README.md
 ```
 
-### 4.4 レイヤー間の依存関係ルール
+### 4.4 モノレポ構造の詳細説明
+
+#### packages/shared/ui/ - デザインシステム（4層コンポーネント）
+
+**設計方針**: Atomic Design + Design Tokens による再利用性と保守性の最大化
+
+**Layer 1: Primitives（プリミティブ層）**
+- **責務**: 基本的なUI要素（Button, Input, Checkbox等）
+- **技術**: Radix UI（Headless UI）ベース、完全なアクセシビリティ対応
+- **テスト**: ユニットテスト + RTLコンポーネントテスト + axe-core
+- **例**: `Button/`, `Input/`, `Checkbox/`, `Radio/`, `Select/`, `Slider/`
+
+**Layer 2: Patterns（パターン層）**
+- **責務**: Primitivesを組み合わせた複合コンポーネント
+- **技術**: shadcn/ui パターン、カスタムロジック
+- **テスト**: コンポーネントテスト + インタラクションテスト
+- **例**: `Card/`, `Dialog/`, `Dropdown/`, `Tabs/`, `Tooltip/`, `Popover/`
+
+**Layer 3: Features（フィーチャー層）**
+- **責務**: 業務固有のUIコンポーネント
+- **技術**: PatternsとPrimitivesを組み合わせ
+- **テスト**: 統合テスト + E2Eテスト
+- **例**: `WorkflowCard/`, `StatusBadge/`, `ExecutionTimeline/`, `AIProviderSelector/`
+
+**Layer 4: Templates（テンプレート層）**
+- **責務**: ページ全体のレイアウト
+- **技術**: Next.js App Router layouts、Electron window layouts
+- **テスト**: E2Eテスト
+- **例**: `DashboardLayout/`, `AuthLayout/`, `SettingsLayout/`
+
+#### packages/shared/ui/tokens/ - Design Tokens（3層構造）
+
+**Layer 1: Global Tokens（グローバルトークン）**
+```typescript
+// global.ts
+export const globalTokens = {
+  color: {
+    blue: { 500: '#3b82f6', 600: '#2563eb' },
+    gray: { 100: '#f3f4f6', 900: '#111827' }
+  },
+  spacing: { 1: '0.25rem', 2: '0.5rem', 4: '1rem' },
+  fontSize: { sm: '0.875rem', base: '1rem', lg: '1.125rem' }
+};
+```
+
+**Layer 2: Alias Tokens（エイリアストークン）**
+```typescript
+// alias.ts
+export const aliasTokens = {
+  color: {
+    primary: globalTokens.color.blue[500],
+    secondary: globalTokens.color.gray[600],
+    error: globalTokens.color.red[500]
+  }
+};
+```
+
+**Layer 3: Component Tokens（コンポーネントトークン）**
+```typescript
+// component.ts
+export const componentTokens = {
+  button: {
+    primary: {
+      background: aliasTokens.color.primary,
+      text: globalTokens.color.white
+    }
+  }
+};
+```
+
+#### apps/desktop/ - Electron構造詳細
+
+**Main Process（Node.js環境）**:
+- **役割**: システムAPI、IPC、ウィンドウ管理、自動更新
+- **セキュリティ**: Node.js全APIアクセス可能、Renderer から完全分離
+- **構成**:
+  - `services/`: ビジネスロジック（UpdateService, WindowService）
+  - `ipc/`: IPCハンドラー（型安全なチャネル定義）
+  - `config/`: BrowserWindow設定、セキュリティ設定
+
+**Preload Scripts（セキュリティ境界）**:
+- **役割**: RendererとMain間の安全なブリッジ
+- **セキュリティ**: contextBridge経由で制限されたAPIのみ公開
+- **型安全**: electronAPI の TypeScript型定義
+
+**Renderer Process（Chromium環境）**:
+- **役割**: React UI、ユーザーインタラクション
+- **セキュリティ**: sandbox有効、nodeIntegration無効、contextIsolation有効
+- **構成**:
+  - `pages/`: ページコンポーネント
+  - `components/`: Electron固有UI（TitleBar等）
+  - `hooks/`: IPC通信フック（useElectronAPI, useAutoUpdate）
+  - `store/`: クライアント状態管理（Zustand/Jotai）
+
+#### レイヤー間の依存関係ルール
 
 ```mermaid
 graph TB
-    A[app/] --> B[features/]
-    B --> C[shared/infrastructure/]
-    C --> D[shared/core/]
+    A[apps/web/app/] --> B[apps/web/features/]
+    A2[apps/desktop/renderer/] --> B
+    B --> C[packages/shared/infrastructure/]
+    C --> D[packages/shared/core/]
+    A --> E[packages/shared/ui/]
+    A2 --> E
+    E --> D
 
     style D fill:#e1f5e1
     style C fill:#fff4e1
     style B fill:#e1f0ff
     style A fill:#ffe1f0
+    style A2 fill:#ffe1f0
+    style E fill:#f0e1ff
 ```
 
 **依存方向**:
-- `app/` → `features/` → `shared/infrastructure/` → `shared/core/`
-- 逆方向の依存は禁止（ESLint で強制）
+- `apps/web/app/` → `features/` → `packages/shared/infrastructure/` → `packages/shared/core/`
+- `apps/desktop/renderer/` → `features/` → `packages/shared/infrastructure/` → `packages/shared/core/`
+- `apps/*/` → `packages/shared/ui/` → `packages/shared/core/`
+- 逆方向の依存は禁止（ESLint `eslint-plugin-boundaries` で強制）
 
 **各層の責務**:
-- `shared/core/`: ビジネスルール、エンティティ定義（外部依存ゼロ）
-- `shared/infrastructure/`: 外部サービス接続（DB、AI、Discord）
-- `features/`: 機能ごとのビジネスロジック、1機能＝1フォルダ
-- `app/`: HTTPエンドポイント、Next.js App Router
+- `packages/shared/core/`: ビジネスルール、エンティティ定義（外部依存ゼロ）
+- `packages/shared/infrastructure/`: 外部サービス接続（DB、AI、Discord）
+- `packages/shared/ui/`: Web/Desktop共通UIコンポーネント、Design Tokens
+- `apps/web/features/`: Web固有の機能ロジック
+- `apps/web/app/`: Next.js App Router、API Routes
+- `apps/desktop/src/`: Electron Main/Preload/Renderer（3プロセス分離）
+
+#### pnpm-workspace.yaml 設定
+
+```yaml
+packages:
+  - 'packages/*'
+  - 'apps/*'
+  - 'local-agent'
+```
+
+#### パッケージ間の依存関係
+
+```json
+// apps/web/package.json
+{
+  "dependencies": {
+    "@repo/shared": "workspace:*"  // packages/shared を参照
+  }
+}
+
+// apps/desktop/package.json
+{
+  "dependencies": {
+    "@repo/shared": "workspace:*"  // 同じパッケージを参照
+  }
+}
+```
 
 ---
 
-## 5. アーキテクチャ設計詳細（ハイブリッドアプローチ）
+## 5. アーキテクチャ設計詳細（モノレポ統合アプローチ）
 
-### 5.1 ハイブリッドアーキテクチャの適用
+### 5.1 モノレポアーキテクチャの適用
 
-#### レイヤー定義（MVP最適化）
+#### レイヤー定義（Web/Desktop統合）
 
-| レイヤー | ディレクトリ | 責務 | 依存許可 |
-|----------|-------------|------|----------|
-| **共通ドメイン** | `src/shared/core/` | 共通エンティティ、インターフェース定義 | なし（外部依存ゼロ） |
-| **共通インフラ** | `src/shared/infrastructure/` | DB、AI、Discord等の共通サービス | shared/core のみ |
-| **機能プラグイン** | `src/features/[機能名]/` | 機能ごとのビジネスロジック | shared/core, shared/infrastructure |
-| **API層** | `src/app/` | HTTPエンドポイント、Next.js App Router | すべて |
+| レイヤー | ディレクトリ | 責務 | 依存許可 | 共有範囲 |
+|----------|-------------|------|----------|---------|
+| **共通ドメイン** | `packages/shared/core/` | 共通エンティティ、インターフェース定義 | なし（外部依存ゼロ） | Web + Desktop |
+| **共通UI** | `packages/shared/ui/` | UIコンポーネント、Design Tokens | shared/core のみ | Web + Desktop |
+| **共通インフラ** | `packages/shared/infrastructure/` | DB、AI、Discord等の共通サービス | shared/core のみ | Web + Desktop |
+| **機能プラグイン** | `apps/web/features/` | 機能ごとのビジネスロジック | shared/* | Web専用 |
+| **Web API層** | `apps/web/app/` | HTTPエンドポイント、Next.js App Router | すべて | Web専用 |
+| **Desktop Main** | `apps/desktop/src/main/` | システムAPI、IPC、ウィンドウ管理 | shared/infrastructure, shared/core | Desktop専用 |
+| **Desktop Renderer** | `apps/desktop/src/renderer/` | React UI、クライアント状態管理 | shared/ui, shared/core | Desktop専用 |
 
-#### 依存関係ルール
+#### 依存関係ルール（モノレポ版）
 
 ```
-app/ → features/ → shared/infrastructure/ → shared/core/
-  ↓       ↓              ↓                      ↓
- API    機能ロジック    外部サービス           ビジネスルール
+apps/web/app/ → apps/web/features/ → packages/shared/infrastructure/ → packages/shared/core/
+     ↓                                          ↓
+packages/shared/ui/ ←─────────────────────────┘
+
+apps/desktop/renderer/ → packages/shared/ui/ → packages/shared/core/
+     ↓
+apps/desktop/main/ → packages/shared/infrastructure/ → packages/shared/core/
 ```
 
-- **内側から外側への依存禁止**: shared/core は外部依存ゼロ
-- **機能の独立性**: features/各機能 は相互依存禁止
-- **共通インフラの活用**: AI、DB、Discord は shared/infrastructure から import
+**主要原則**:
+- **内側から外側への依存禁止**: `packages/shared/core/` は外部依存ゼロ
+- **機能の独立性**: `features/` 各機能は相互依存禁止
+- **共通コードの活用**: UI、ビジネスロジック、インフラを `packages/shared/` で共有
+- **プラットフォーム分離**: Web固有（apps/web）とDesktop固有（apps/desktop）を明確に分離
 - **ESLint 強制**: `eslint-plugin-boundaries` で違反を CI でブロック
+
+#### モノレポ構造の利点
+
+1. **コード再利用**: UIコンポーネント、ビジネスロジック、型定義をWeb/Desktopで共有
+2. **一貫性**: 同一のDesign TokensとコンポーネントによりUI/UXを統一
+3. **変更容易性**: 1箇所の変更が両プラットフォームに反映
+4. **独立デプロイ**: Web（Railway）とDesktop（GitHub Releases）を独立して管理
+5. **テスト効率**: 共通コンポーネントのテストを一度だけ実装
 
 #### 機能追加の具体例
 
@@ -1270,10 +1632,25 @@ railway run pnpm dev
 | **Local Agent** | PC上で動作するファイル監視・同期プログラム |
 | **Railway** | 本システムのホスティング環境 |
 | **Nixpacks** | Railwayのビルダー |
+| **モノレポ** | 複数のパッケージ/アプリを1つのリポジトリで管理する構造（pnpm workspaces使用） |
 | **ハイブリッドアーキテクチャ** | 共通インフラ（shared）と機能プラグイン（features）を組み合わせた構造 |
 | **垂直スライス** | 機能ごとに必要な全要素を1フォルダに集約する設計手法 |
-| **shared** | 複数機能で共有する共通インフラ層（core, infrastructure） |
+| **packages/shared** | Web/Desktop共通コード（ui, core, infrastructure） |
+| **apps/web** | Next.js Webアプリケーション（App Router、Server Components） |
+| **apps/desktop** | Electronデスクトップアプリケーション（Main/Preload/Renderer） |
 | **features** | 機能ごとの独立したビジネスロジック層 |
+| **Design Tokens** | デザイン要素を抽象化した変数（色、サイズ、フォント等）の3層構造 |
+| **Headless UI** | スタイルを持たないロジックのみのUIコンポーネント（Radix UI） |
+| **Atomic Design** | 4層コンポーネント階層（Primitives/Patterns/Features/Templates） |
+| **RTL** | React Testing Library、ユーザー視点のコンポーネントテスト |
+| **axe-core** | アクセシビリティ自動テストエンジン（WCAG 2.1 AA準拠） |
+| **Main Process** | Electronのメインプロセス（Node.js環境、システムAPI） |
+| **Renderer Process** | Electronのレンダラープロセス（Chromium環境、sandboxed） |
+| **Preload Scripts** | RendererとMain間のセキュアなブリッジ（contextBridge） |
+| **contextBridge** | Rendererに安全にAPIを公開するElectronの仕組み |
+| **contextIsolation** | RendererとPreloadのコンテキスト分離（セキュリティ必須設定） |
+| **electron-builder** | Electronアプリのビルド・パッケージング・配布ツール |
+| **electron-updater** | Electron自動更新システム（GitHub Releases/S3対応） |
 | **pgvector** | PostgreSQL のベクトル検索拡張、AI 埋め込みベクトルの保存と類似検索 |
 | **JSONB** | PostgreSQL の柔軟なJSON型カラム、スキーマレス設計に活用 |
 | **構造化ログ** | JSON形式のログ、request_id/workflow_id/user_idを含む追跡可能なログ |
@@ -1286,11 +1663,33 @@ railway run pnpm dev
 
 ## 15. 参考資料 (References)
 
+### バックエンド
 - Next.js: https://nextjs.org/docs/app
 - Drizzle ORM: https://orm.drizzle.team
 - Vercel AI SDK: https://sdk.vercel.ai/docs
 - discord.js: https://discord.js.org
 - Railway: https://docs.railway.app
+
+### フロントエンド・UI
+- React: https://react.dev
+- Tailwind CSS: https://tailwindcss.com/docs
+- shadcn/ui: https://ui.shadcn.com
+- Radix UI: https://www.radix-ui.com/primitives/docs
+- Design Tokens: https://design-tokens.github.io/community-group/format/
+- Storybook: https://storybook.js.org
+
+### テスト
+- Vitest: https://vitest.dev
+- React Testing Library: https://testing-library.com/react
+- Playwright: https://playwright.dev
+- axe-core: https://github.com/dequelabs/axe-core
+- Chromatic: https://www.chromatic.com/docs
+- MSW: https://mswjs.io
+
+### Electron
+- Electron: https://www.electronjs.org/docs/latest
+- electron-builder: https://www.electron.build
+- electron-updater: https://www.electron.build/auto-update
 
 ---
 
@@ -1305,3 +1704,4 @@ railway run pnpm dev
 | 5.0 | 2025-11-21 | REST API設計原則の追加（バージョニング、HTTPステータスコード、ページネーション、レート制限、CORS等）、データベース設計原則の追加（トランザクション管理、マイグレーション、ベクトルDB/pgvector対応） | @api-doc-writer, @gateway-dev, @db-architect, @dba-mgr |
 | 5.1 | 2025-11-21 | GitHub Actions を要件ベースに変更（YAML削除）、ロギング仕様追加、ファイルストレージ戦略追加、設定ファイル基本要件追加、テスト戦略追加（TDD、テストピラミッド） | @spec-writer, @sre-observer, @devops-eng, @unit-tester, @e2e-tester |
 | 5.2 | 2025-11-21 | 全36エージェント検証による矛盾修正: deleted_atカラム追加、状態遷移図追加、ESLint Flat Config統一、サーキットブレーカー閾値追加 | 全36エージェント |
+| **6.0** | **2025-12-02** | **フロントエンド/デスクトップ完全統合**: モノレポ構造詳細追加（packages/shared構造、apps/web、apps/desktop）、4層コンポーネント階層詳細、Design Tokens 3層構造、Electron 3プロセス分離詳細、フロントエンドテストピラミッド（Vitest+RTL+Playwright+axe-core）、技術スタック拡充（React, Electron, Tailwind, shadcn/ui, Radix UI, Storybook, Chromatic, MSW）、エージェント追加（@frontend-tester v1.0.0）、エージェント統合（@electron-devops v2.0.0）、コマンド追加（/ai:generate-component-tests, /ai:setup-electron-updater, /ai:run-accessibility-audit）、スキル追加（frontend-testing）、用語集拡充（モノレポ、Design Tokens、Electron関連15用語）| @frontend-tester, @electron-devops, @spec-writer |
