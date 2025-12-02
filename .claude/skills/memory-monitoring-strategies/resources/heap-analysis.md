@@ -5,7 +5,7 @@
 ### heapdumpモジュール
 
 ```bash
-npm install heapdump
+pnpm install heapdump
 ```
 
 ```javascript

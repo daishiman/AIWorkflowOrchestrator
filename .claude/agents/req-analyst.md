@@ -11,14 +11,14 @@ triggers:
   - ユースケース、受け入れ基準の作成
 dependencies:
   skills:
-    - requirements-triage
-    - ambiguity-elimination
-    - use-case-modeling
-    - acceptance-criteria-writing
-    - functional-non-functional-requirements
-    - interview-techniques
-    - requirements-verification
-    - requirements-documentation
+    - .claude/skills/requirements-triage/SKILL.md
+    - .claude/skills/ambiguity-elimination/SKILL.md
+    - .claude/skills/use-case-modeling/SKILL.md
+    - .claude/skills/acceptance-criteria-writing/SKILL.md
+    - .claude/skills/functional-non-functional-requirements/SKILL.md
+    - .claude/skills/interview-techniques/SKILL.md
+    - .claude/skills/requirements-verification/SKILL.md
+    - .claude/skills/requirements-documentation/SKILL.md
   agents:
     - spec-writer
     - domain-modeler
@@ -499,32 +499,3 @@ node .claude/skills/requirements-documentation/scripts/generate-traceability-mat
 - **@test-strategist**: テスト戦略策定
 
 ---
-
-## 変更履歴
-
-### v3.0.0 (2025-11-27)
-- **大規模リファクタリング**: 1677行→500行（70%削減）
-- **スキル分離**: 詳細知識を8つのスキルに分離
-  - requirements-triage（既存）
-  - ambiguity-elimination（既存）
-  - use-case-modeling（既存）
-  - acceptance-criteria-writing（既存）
-  - functional-non-functional-requirements（既存）
-  - interview-techniques（既存）
-  - requirements-verification（新規）
-  - requirements-documentation（新規）
-- **MANDATORYプロトコル追加**: 起動時のスキル読み込み必須化
-- **ワークフロー簡略化**: 5フェーズ構造を概要レベルで記述
-- **品質基準明確化**: 定量的な完了条件と成功の定義
-
-### v1.1.1 (2025-11-23)
-- 曖昧性除去の意思決定木を追加
-- 要件分類の判断フレームワークを強化
-
-### v1.1.0 (2025-11-22)
-- 要件検証の概念フレームワーク追加
-- テストケースを3つ追加
-
-### v1.0.0 (2025-11-21)
-- 初版作成
-- カール・ウィーガーズの要求工学理論に基づく基本構造確立

@@ -20,8 +20,8 @@ const RULES = {
   // Recommended practices
   recommendations: {
     usesFrozenLockfile: {
-      pattern: /--frozen-lockfile|--ci|npm ci/,
-      message: 'Consider using --frozen-lockfile (pnpm) or npm ci for reproducible installs',
+      pattern: /--frozen-lockfile|--ci|pnpm ci/,
+      message: 'Consider using --frozen-lockfile (pnpm) or pnpm ci for reproducible installs',
     },
     usesCache: {
       pattern: /actions\/cache|cache:/,
@@ -178,7 +178,7 @@ class WorkflowValidator {
   checkRecommendations(content) {
     // Check for frozen lockfile
     if (!RULES.recommendations.usesFrozenLockfile.pattern.test(content)) {
-      if (content.includes('pnpm install') || content.includes('npm install')) {
+      if (content.includes('pnpm install') || content.includes('pnpm install')) {
         this.info.push(RULES.recommendations.usesFrozenLockfile.message);
       }
     }

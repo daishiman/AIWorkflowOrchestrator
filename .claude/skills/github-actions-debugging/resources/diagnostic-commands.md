@@ -168,7 +168,7 @@
   run: |
     echo "::group::Node.js"
     node --version || echo "Node.js not found"
-    npm --version || echo "npm not found"
+    pnpm --version || echo "pnpm not found"
     echo "::endgroup::"
 
     echo "::group::Python"
@@ -398,9 +398,9 @@
 ```yaml
 - name: Check Cache Directories
   run: |
-    echo "::group::npm cache"
-    npm cache verify
-    du -sh ~/.npm
+    echo "::group::pnpm cache"
+    pnpm cache verify
+    du -sh ~/.pnpm
     echo "::endgroup::"
 
     echo "::group::pip cache"
@@ -495,11 +495,11 @@
 - name: Performance Measurement
   run: |
     echo "::group::Build Time"
-    time npm run build
+    time pnpm run build
     echo "::endgroup::"
 
     echo "::group::Test Time"
-    time npm test
+    time pnpm test
     echo "::endgroup::"
 ```
 
@@ -514,7 +514,7 @@
     echo "::endgroup::"
 
     # タスク実行
-    npm run build
+    pnpm run build
 
     echo "::group::After Task"
     free -h
@@ -568,7 +568,7 @@
 ```yaml
 - name: Run task
   id: task
-  run: npm run build
+  run: pnpm run build
   continue-on-error: true
 
 - name: Diagnostic on failure

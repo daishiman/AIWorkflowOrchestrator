@@ -63,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build
-        run: npm run build
+        run: pnpm run build
       - uses: actions/upload-artifact@v4
         with:
           name: dist
@@ -78,7 +78,7 @@ jobs:
           name: dist
           path: ./dist
       - name: Test
-        run: npm test
+        run: pnpm test
 ```
 
 ### 複数ジョブ依存
@@ -159,7 +159,7 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - name: Build
-        run: npm run build
+        run: pnpm run build
       - uses: actions/upload-artifact@v4
         with:
           name: build-${{ matrix.os }}
@@ -315,7 +315,7 @@ jobs:
 
 - name: Build if artifact not found
   if: steps.check-artifact.outcome == 'failure'
-  run: npm run build
+  run: pnpm run build
 ```
 
 ### エラー: "Permission denied"

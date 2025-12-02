@@ -40,7 +40,11 @@ description: |
 
   トリガーキーワード: use-case, ユースケース, シナリオ, アクター, フロー設計, 対話設計
 argument-hint: "[actor-name]"
-allowed-tools: [Task, Read, Write(docs/00-requirements/**), Grep]
+allowed-tools:
+  - Task
+  - Read
+  - Write(docs/00-requirements/**)
+  - Grep
 model: sonnet
 ---
 

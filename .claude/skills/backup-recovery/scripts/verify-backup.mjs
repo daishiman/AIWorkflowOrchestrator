@@ -39,7 +39,7 @@ function checkNeonCli() {
     return true;
   } catch {
     console.log('⚠️  Neon CLI が見つかりません');
-    console.log('   インストール: npm install -g neonctl');
+    console.log('   インストール: pnpm install -g neonctl');
     return false;
   }
 }

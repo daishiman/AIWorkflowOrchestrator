@@ -59,15 +59,15 @@ function showHelp() {
 function detectPackageManager() {
   if (existsSync('pnpm-lock.yaml')) return 'pnpm';
   if (existsSync('yarn.lock')) return 'yarn';
-  if (existsSync('package-lock.json')) return 'npm';
-  return 'npm';
+  if (existsSync('package-lock.json')) return 'pnpm';
+  return 'pnpm';
 }
 
 // 古いパッケージの取得
 function getOutdatedPackages(pm) {
   const commands = {
     pnpm: 'pnpm outdated --format json 2>/dev/null || echo "{}"',
-    npm: 'npm outdated --json 2>/dev/null || echo "{}"',
+    pnpm: 'pnpm outdated --json 2>/dev/null || echo "{}"',
     yarn: 'yarn outdated --json 2>/dev/null || echo "{}"'
   };
 
@@ -83,7 +83,7 @@ function getOutdatedPackages(pm) {
 function getVulnerabilities(pm) {
   const commands = {
     pnpm: 'pnpm audit --json 2>/dev/null || echo "{}"',
-    npm: 'npm audit --json 2>/dev/null || echo "{}"',
+    pnpm: 'pnpm audit --json 2>/dev/null || echo "{}"',
     yarn: 'yarn audit --json 2>/dev/null || echo "{}"'
   };
 

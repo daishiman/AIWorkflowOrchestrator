@@ -25,7 +25,12 @@ description: |
 
   トリガーキーワード: command, slash-command, コマンド作成, workflow, 自動化
 argument-hint: "[command-name]"
-allowed-tools: [Task, Read, Write(.claude/commands/**), Grep, Glob]
+allowed-tools:
+  - Task
+  - Read
+  - Write(.claude/commands/**)
+  - Grep
+  - Glob
 model: sonnet
 ---
 

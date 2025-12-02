@@ -32,7 +32,12 @@ description: |
 
   トリガーキーワード: custom hook, use〜, カスタムフック, ロジック抽出, 再利用
 argument-hint: "[hook-name]"
-allowed-tools: [Task, Read, Write(src/hooks/**|src/features/*/hooks/**), Edit, Grep]
+allowed-tools:
+  - Task
+  - Read
+  - Write(src/hooks/**|src/features/*/hooks/**)
+  - Edit
+  - Grep
 model: sonnet
 ---
 
@@ -59,7 +64,7 @@ model: sonnet
 
 **エージェント起動**:
 ```
-@state-manager を起動:
+`.claude/agents/state-manager.md` を起動:
 - 目的: カスタムフック「${hook-name}」の設計・実装
 - 要求成果物:
   1. フック抽出基準評価（custom-hooks-patterns/resources/extraction-criteria.md参照）
@@ -164,7 +169,7 @@ A: インタラクティブモードで確認します。フック名と目的�
 A: 既存フックのパスを指定すると、state-managerが分析・改善提案を行います。
 
 ### Q: テスト実装は？
-A: このコマンドはテスト戦略の設計まで。実装は`/ai:generate-unit-tests`または`@unit-tester`に委譲します。
+A: このコマンドはテスト戦略の設計まで。実装は`/ai:generate-unit-tests`または`.claude/agents/unit-tester.md`に委譲します。
 
 ---
 

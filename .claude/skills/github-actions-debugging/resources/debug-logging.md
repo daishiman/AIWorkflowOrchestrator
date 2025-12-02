@@ -183,7 +183,7 @@ gh secret set ACTIONS_RUNNER_DEBUG --body "true"
 ```yaml
 - name: Run tests
   id: test
-  run: npm test
+  run: pnpm test
   continue-on-error: true
 
 - name: Debug on failure
@@ -226,7 +226,7 @@ gh secret set ACTIONS_RUNNER_DEBUG --body "true"
   run: |
     echo "::group::Node.js"
     node --version
-    npm --version
+    pnpm --version
     echo "::endgroup::"
 
     echo "::group::Docker"

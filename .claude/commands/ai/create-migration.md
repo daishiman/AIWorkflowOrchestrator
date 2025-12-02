@@ -1,114 +1,196 @@
 ---
 description: |
-  データベースマイグレーションファイル作成(Drizzle Kit 0.39.x準拠)。
+  データベースマイグレーションファイル作成を行う専門コマンド。
 
-  安全で可逆的なUp/Downマイグレーション設計、移行期間パターン、ロールバック戦略を含む完全なマイグレーション管理を実行します。
+  スコット・アンブラーのアジャイルデータベース手法に基づき、可逆的マイグレーション（Up/Down）、
+  移行期間パターン、Blue-Green移行戦略を適用して、安全なスキーマ変更を実現します。
 
   🤖 起動エージェント:
-  - `.claude/agents/dba-mgr.md`: データベース管理専門エージェント(Phase 1で起動)
+  - `.claude/agents/dba-mgr.md`: データベース管理専門エージェント
 
-  📚 利用可能スキル(フェーズ別、dba-mgrエージェントが必要時に参照):
-  **Phase 1(スキーマ分析時):** なし(既存スキーマ・マイグレーション履歴分析のみ)
-  **Phase 2(マイグレーション設計時):** database-migrations(必須), query-performance-tuning(インデックス追加時)
-  **Phase 3(実装時):** database-seeding(初期データ投入時), connection-pooling(接続設定変更時)
-  **Phase 4(信頼性保証時):** backup-recovery(必須), query-performance-tuning(必須)
-  **Phase 5(デプロイ時):** database-migrations(必須), database-monitoring(本番監視設定時)
+  📚 利用可能スキル（タスクに応じてdba-mgrエージェントが必要時に参照）:
+  **Phase 1（分析時）:** 既存スキーマ・マイグレーション履歴の確認
+  **Phase 2（設計時）:** database-migrations（Up/Down設計、移行期間パターン、Zero-Downtime）
+  **Phase 3（実装時）:** Drizzle Kit マイグレーション生成
+  **Phase 4（信頼性保証時）:** backup-recovery（バックアップ確認）、query-performance-tuning（EXPLAIN ANALYZE）
+  **Phase 5（デプロイ時）:** CI/CD統合、本番適用計画
 
   ⚙️ このコマンドの設定:
-  - argument-hint: オプション引数1つ(未指定時はインタラクティブ)
-  - allowed-tools: エージェント起動と最小限のマイグレーション実行用
+  - argument-hint: オプション引数1つ（マイグレーション名、未指定時は対話形式）
+  - allowed-tools: エージェント起動とマイグレーション操作用
     • Task: dba-mgrエージェント起動用
-    • Read: 既存スキーマ・マイグレーション履歴確認用
-    • Write(drizzle/migrations/**): マイグレーション成果物書き込み専用(パス制限)
-    • Bash(pnpm drizzle*): Drizzle Kitコマンド実行のみ(パターン制限)
-    • Grep: スキーマ分析・インデックス検索用
-  - model: sonnet(構造化マイグレーション設計タスク)
+    • Read: スキーマ・履歴参照用
+    • Write(drizzle/**|docs/**): マイグレーション・ドキュメント生成用（パス制限）
+    • Bash(pnpm drizzle*): Drizzle Kitコマンド実行用
+    • Grep: 既存パターン検索用
+  - model: sonnet（標準的なマイグレーションタスク）
 
-  トリガーキーワード: migration, schema change, migrate, rollback, マイグレーション, スキーマ変更, ロールバック
+  トリガーキーワード: migration, schema-change, rollback, Up/Down, Drizzle
 argument-hint: "[migration-name]"
-allowed-tools: [Task, Read, Write(drizzle/migrations/**), Bash(pnpm drizzle*), Grep]
-model: opus
+allowed-tools:
+  - Task
+  - Read
+  - Write(drizzle/**|docs/**)
+  - Bash(pnpm drizzle*)
+  - Grep
+model: sonnet
 ---
 
 # データベースマイグレーション作成コマンド
 
-## Phase 1: 準備とコンテキスト収集
+## 目的
 
-**対象マイグレーション**: `$ARGUMENTS`(未指定時はインタラクティブに質問)
+Drizzle ORMを使用して、以下の原則に基づくマイグレーションを作成します:
 
-**必須参照**:
-- `docs/00-requirements/master_system_design.md` 第5.2節(データベース設計原則、トランザクション管理、マイグレーション原則)
-- `src/shared/infrastructure/database/schema.ts`(既存スキーマパターン)
-- `drizzle/migrations/`(マイグレーション履歴)
+- **可逆性**: すべての変更はロールバック可能（Up/Down必須）
+- **進化的設計**: スキーマは段階的に進化、大規模一括変更を避ける
+- **移行期間**: 破壊的変更は新旧スキーマの共存期間を設ける
+- **自動化**: バックアップ、マイグレーション、テストをCI/CDに統合
 
----
+## 使用方法
 
-## Phase 2: dba-mgrエージェント起動
-
-`.claude/agents/dba-mgr.md` を以下のパラメータで起動:
-
-**入力情報**:
-- 対象: `$ARGUMENTS` または対話的に決定
-- 技術スタック: Drizzle ORM 0.39.x + Neon PostgreSQL
-- スキーマ配置: `src/shared/infrastructure/database/schema.ts`
-- マイグレーション配置: `drizzle/migrations/`
-
-**実行依頼内容**:
-1. スキーマ分析(既存テーブル構造、関係性、インデックス、マイグレーション履歴)
-2. マイグレーション設計(Up/Down両方必須、移行期間パターン、インデックス戦略)
-3. 実装とテスト(Drizzleスキーマ更新、マイグレーション生成、Seed実装、ロールバックテスト)
-4. 信頼性保証(バックアップ確認、パフォーマンステスト、EXPLAIN ANALYZE検証)
-5. デプロイと監視(CI/CD統合、本番マイグレーション計画、監視設定)
-
-**エージェントが参照するスキル**(Progressive Disclosure方式):
-- `.claude/skills/database-migrations/SKILL.md`(Phase 2, 3, 5: マイグレーション設計・実装・デプロイ時)
-- `.claude/skills/backup-recovery/SKILL.md`(Phase 4: バックアップ確認時)
-- `.claude/skills/query-performance-tuning/SKILL.md`(Phase 2, 4: インデックス設計・パフォーマンステスト時)
-- その他必要に応じて: database-seeding, connection-pooling, database-monitoring
-
----
-
-## Phase 3: 成果物の確認
-
-**期待される成果物**:
-- `src/shared/infrastructure/database/schema.ts`(スキーマ更新)
-- `drizzle/migrations/YYYYMMDD_HHMMSS_*.sql`(UpマイグレーションSQL)
-- `drizzle/migrations/YYYYMMDD_HHMMSS_*_down.sql`(DownマイグレーションSQL)
-- `docs/database/migration-plan-[name].md`(マイグレーション計画書)
-- `src/shared/infrastructure/database/seed.ts`(初期データ投入、必要時)
-
-**設計原則準拠チェック**(master_system_design.md 第5.2節):
-- ✅ Up/Down両方のマイグレーション提供(可逆性保証)
-- ✅ ローカル環境でのテスト成功(up → down → up)
-- ✅ バックアップ戦略確立(変更前バックアップ必須)
-- ✅ パフォーマンステスト完了(EXPLAIN ANALYZE検証)
-- ✅ CI/CDパイプライン統合(drizzle:migrate実行)
-- ✅ ドキュメント更新(スキーマ変更内容、影響範囲)
-- ✅ ACID特性遵守(トランザクション内実行)
-- ✅ インデックス戦略適用(全外部キー、GIN索引)
-
----
-
-**使用例**:
+### 基本的な使用（対話形式）
 
 ```bash
-# 基本マイグレーション作成
-/ai:create-migration add-user-role-column
-
-# テーブル追加マイグレーション
-/ai:create-migration create-notifications-table
-
-# インデックス追加マイグレーション
-/ai:create-migration add-index-workflows-status
-
-# 移行期間パターン(破壊的変更)
-/ai:create-migration rename-column-with-transition
-
-# インタラクティブモード
 /ai:create-migration
 ```
 
-**関連コマンド**:
-- `/ai:design-database` - スキーマ設計(マイグレーション前提)
-- `/ai:optimize-queries` - クエリ最適化(パフォーマンステスト後)
-- `/ai:create-schema` - Zodスキーマ定義(入力バリデーション連携)
+対話形式でマイグレーション作成の要件をヒアリングします。
+
+### マイグレーション名指定
+
+```bash
+/ai:create-migration add-workflow-retry-count
+```
+
+特定のマイグレーションを作成します。
+
+## 実行フロー
+
+### Phase 1: 起動準備
+
+**dba-mgr エージェントを起動**:
+
+```
+@.claude/agents/dba-mgr.md を起動し、以下を依頼:
+
+1. マイグレーション名が指定されている場合:
+   - 変更内容の確認
+   - 既存スキーマへの影響分析
+
+2. マイグレーション名が未指定の場合:
+   - インタラクティブに要件をヒアリング
+   - スキーマ変更の目的と範囲を理解
+```
+
+### Phase 2: マイグレーション設計・実装
+
+**dba-mgr エージェントが Phase 1〜5 を実行**:
+
+**Phase 1: スキーマ分析とコンテキスト理解**
+- スキーマ定義読み取り（`src/shared/infrastructure/database/schema.ts`）
+- マイグレーション履歴確認（`drizzle/**/*.sql`）
+- 設計書参照（`docs/00-requirements/master_system_design.md`）
+
+**Phase 2: マイグレーション設計**（database-migrations スキル参照）
+- 変更戦略立案（追加、変更、削除、移行期間パターン）
+- Up/Down両方設計（可逆性保証）
+- インデックス設計（パフォーマンス影響評価）
+- 破壊的変更の場合は移行期間設計
+
+**Phase 3: 実装とテスト**
+- Drizzleスキーマ更新（`schema.ts`）
+- マイグレーション生成（Drizzle Kit）
+  ```bash
+  pnpm drizzle-kit generate
+  ```
+- ローカルテスト実行
+  ```bash
+  pnpm drizzle-kit push
+  ```
+- ロールバックテスト（Downマイグレーション検証）
+
+**Phase 4: 信頼性保証**
+- バックアップ確認（backup-recovery スキル参照）
+- パフォーマンステスト（query-performance-tuning スキル参照）
+  ```sql
+  EXPLAIN (ANALYZE, BUFFERS) SELECT ...
+  ```
+- データ整合性検証
+
+**Phase 5: デプロイと監視**
+- CI/CD統合（GitHub Actions等）
+- 本番マイグレーション計画策定
+- ドキュメント更新
+
+### Phase 3: 成果物
+
+**dba-mgr エージェントが以下を提供**:
+
+```
+成果物:
+- drizzle/migrations/YYYYMMDDHHMMSS_<migration-name>.sql（マイグレーションSQL）
+- docs/database/migration-plan-<migration-name>.md（マイグレーション計画書）
+- ロールバック手順書
+```
+
+## 期待される成果物
+
+### マイグレーションSQL例
+
+```sql
+-- drizzle/migrations/20250128120000_add_workflow_retry_count.sql
+
+-- Up Migration
+ALTER TABLE workflows ADD COLUMN retry_count INTEGER NOT NULL DEFAULT 0;
+
+-- インデックス追加（パフォーマンス考慮）
+CREATE INDEX idx_workflows_retry_count ON workflows(retry_count) WHERE retry_count > 0;
+
+-- Down Migration (ロールバック用)
+-- DROP INDEX idx_workflows_retry_count;
+-- ALTER TABLE workflows DROP COLUMN retry_count;
+```
+
+### マイグレーション計画書例
+
+```markdown
+# マイグレーション計画: add_workflow_retry_count
+
+## 変更概要
+- テーブル: workflows
+- 追加カラム: retry_count (INTEGER, NOT NULL, DEFAULT 0)
+
+## Up/Down確認
+- [x] Up マイグレーション作成済み
+- [x] Down マイグレーション作成済み（コメント化）
+
+## パフォーマンス影響
+- 既存レコード数: 1,000件
+- 推定実行時間: < 5秒
+- ロック時間: 最小（DEFAULT値あり）
+
+## ロールバック手順
+1. Downマイグレーション実行
+2. データ整合性確認
+3. アプリケーション再デプロイ
+
+## テスト結果
+- [x] ローカルテスト成功
+- [x] ロールバックテスト成功
+- [x] EXPLAIN ANALYZE確認済み
+```
+
+## 注意事項
+
+- **詳細な設計・実装**: すべてのマイグレーションロジックは dba-mgr エージェントと各スキルが実行
+- **コマンドの役割**: エージェント起動と要件の受け渡しのみ
+- **可逆性必須**: Down マイグレーションが提供されていない変更は承認しない
+- **本番環境**: 直接的なSQL実行は禁止、マイグレーション経由のみ
+- **破壊的変更**: DROP TABLE、DROP COLUMN等はユーザー確認必須
+
+## 関連コマンド
+
+- `/ai:create-db-schema`: スキーマ設計後にマイグレーション作成
+- `/ai:setup-db-backup`: マイグレーション前にバックアップ確認
+- `/ai:optimize-queries`: マイグレーション後のクエリ最適化

@@ -25,13 +25,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Run tests
-        run: npm test
+        run: pnpm test
 
       - name: Upload coverage
         uses: codecov/codecov-action@v4
@@ -84,15 +84,15 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Run tests
         continue-on-error: ${{ matrix.experimental == true }}
-        run: npm test
+        run: pnpm test
 
       - name: ARM64 specific tests
         if: matrix.arch == 'arm64'
-        run: npm run test:arm64
+        run: pnpm run test:arm64
 
 ---
 
@@ -122,18 +122,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Test ${{ matrix.package }}
         working-directory: packages/${{ matrix.package }}
-        run: npm test
+        run: pnpm test
 
       - name: Build ${{ matrix.package }}
         working-directory: packages/${{ matrix.package }}
-        run: npm run build
+        run: pnpm run build
 
 ---
 
@@ -167,7 +167,7 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Install Playwright
         run: npx playwright install --with-deps ${{ matrix.browser }}
@@ -236,8 +236,8 @@ jobs:
       - name: Test ${{ matrix.service }}
         run: |
           cd services/${{ matrix.service }}
-          npm ci
-          npm test
+          pnpm ci
+          pnpm test
 
 ---
 
@@ -323,12 +323,12 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Run tests against ${{ matrix.db.type }} ${{ matrix.db.version }}
         env:
           DATABASE_URL: ${{ matrix.db.type }}://root:${{ matrix.db.type == 'postgres' && 'postgres' || 'mysql' }}@localhost:${{ matrix.db.port }}/test
-        run: npm test
+        run: pnpm test
 
 ---
 
@@ -359,10 +359,10 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Run ${{ matrix.workload }} benchmark
-        run: npm run benchmark:${{ matrix.workload }}
+        run: pnpm run benchmark:${{ matrix.workload }}
 
       - name: Upload results
         uses: actions/upload-artifact@v4
@@ -400,13 +400,13 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Install React ${{ matrix.react }}
-        run: npm install react@${{ matrix.react }} react-dom@${{ matrix.react }}
+        run: pnpm install react@${{ matrix.react }} react-dom@${{ matrix.react }}
 
       - name: Run tests
-        run: npm test
+        run: pnpm test
 
 ---
 

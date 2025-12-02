@@ -24,16 +24,16 @@ jobs:
       - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8  # v4.0.2
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Run tests
-        run: npm test
+        run: pnpm test
 
       - name: Run linter
-        run: npm run lint
+        run: pnpm run lint
 
 ---
 
@@ -59,8 +59,8 @@ jobs:
         with:
           node-version: '20'
 
-      - run: npm ci
-      - run: npm test -- --coverage
+      - run: pnpm ci
+      - run: pnpm test -- --coverage
 
       - name: Comment coverage
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea  # v7.0.1
@@ -150,8 +150,8 @@ jobs:
         with:
           node-version: '20'
 
-      - run: npm ci
-      - run: npm run build
+      - run: pnpm ci
+      - run: pnpm run build
 
       - name: Generate changelog
         id: changelog
@@ -183,10 +183,10 @@ on:
 permissions:
   contents: read
   packages: write  # GitHub Packages公開
-  id-token: write  # npm provenance
+  id-token: write  # pnpm provenance
 
 jobs:
-  publish-npm:
+  publish-pnpm:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
@@ -196,11 +196,11 @@ jobs:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
 
-      - run: npm ci
-      - run: npm run build
+      - run: pnpm ci
+      - run: pnpm run build
 
       # ✅ provenance付きで公開（供給源証明）
-      - run: npm publish --provenance --access public
+      - run: pnpm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -244,8 +244,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
-      - run: npm ci
-      - run: npm run build
+      - run: pnpm ci
+      - run: pnpm run build
       - uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392  # v4.0.0
         with:
           name: dist
@@ -379,7 +379,7 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
-          npm install -g vercel
+          pnpm install -g vercel
           vercel --prod --token=$VERCEL_TOKEN
 
 ---
@@ -400,14 +400,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
-      - run: npm test
+      - run: pnpm test
 
   build:
     # ワークフローレベルを継承
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
-      - run: npm run build
+      - run: pnpm run build
 
   release:
     # ジョブレベルで権限昇格
@@ -419,4 +419,4 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
-      - run: npm run release
+      - run: pnpm run release

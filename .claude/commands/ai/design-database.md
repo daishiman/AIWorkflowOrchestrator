@@ -25,7 +25,11 @@ description: |
 
   トリガーキーワード: database design, schema, table, ER diagram, データベース設計, スキーマ, テーブル, 正規化
 argument-hint: "[table-name]"
-allowed-tools: [Task, Read, Write(docs/**|src/shared/infrastructure/database/**|drizzle/migrations/**), Grep]
+allowed-tools:
+  - Task
+  - Read
+  - Write(docs/**|src/shared/infrastructure/database/**|drizzle/migrations/**)
+  - Grep
 model: opus
 ---
 

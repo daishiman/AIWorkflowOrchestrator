@@ -35,15 +35,15 @@ class QualityValidator {
 
   validateCoverage() {
     log.info('Validating test coverage...');
-    
+
     try {
-      const output = execSync('npm test -- --coverage --json 2>/dev/null', {
+      const output = execSync('pnpm test -- --coverage --json 2>/dev/null', {
         encoding: 'utf-8',
       });
-      
+
       const coverage = JSON.parse(output);
       const lineCoverage = coverage.total.lines.pct;
-      
+
       if (lineCoverage < this.coverageThreshold) {
         this.results.failed.push(
           `Coverage ${lineCoverage}% below threshold ${this.coverageThreshold}%`
@@ -61,7 +61,7 @@ class QualityValidator {
 
   validateTypeScript() {
     log.info('Validating TypeScript...');
-    
+
     try {
       execSync('npx tsc --noEmit', { stdio: 'ignore' });
       this.results.passed.push('TypeScript: OK');
@@ -74,7 +74,7 @@ class QualityValidator {
 
   validateLinting() {
     log.info('Validating ESLint...');
-    
+
     try {
       execSync('npx eslint src/ --max-warnings 0', { stdio: 'ignore' });
       this.results.passed.push('ESLint: OK');
@@ -87,9 +87,9 @@ class QualityValidator {
 
   validateSecurityAudit() {
     log.info('Running security audit...');
-    
+
     try {
-      execSync('npm audit --production 2>/dev/null', { stdio: 'ignore' });
+      execSync('pnpm audit --production 2>/dev/null', { stdio: 'ignore' });
       this.results.passed.push('Security: OK');
       log.success('Security: OK');
     } catch (error) {
@@ -100,15 +100,15 @@ class QualityValidator {
 
   validateComplexity() {
     log.info('Checking code complexity...');
-    
+
     try {
       const output = execSync('npx eslint src/ --format=json 2>/dev/null', {
         encoding: 'utf-8',
       });
-      
+
       const results = JSON.parse(output);
       let maxComplexity = 0;
-      
+
       for (const file of results) {
         for (const msg of file.messages) {
           if (msg.ruleId === 'complexity') {
@@ -117,7 +117,7 @@ class QualityValidator {
           }
         }
       }
-      
+
       if (maxComplexity > 10) {
         this.results.failed.push(`Complexity ${maxComplexity} exceeds threshold`);
         log.error(`Complexity: ${maxComplexity} > 10`);
@@ -132,9 +132,9 @@ class QualityValidator {
 
   validateTests() {
     log.info('Validating tests...');
-    
+
     try {
-      execSync('npm test -- --bail', { stdio: 'ignore' });
+      execSync('pnpm test -- --bail', { stdio: 'ignore' });
       this.results.passed.push('Tests: All passed');
       log.success('Tests: All passed');
     } catch (error) {
@@ -145,14 +145,14 @@ class QualityValidator {
 
   runAllValidations() {
     log.info('Starting Claude Code Quality Validation\n');
-    
+
     this.validateTypeScript();
     this.validateLinting();
     this.validateCoverage();
     this.validateComplexity();
     this.validateSecurityAudit();
     this.validateTests();
-    
+
     this.printSummary();
   }
 
@@ -160,24 +160,24 @@ class QualityValidator {
     console.log('\n' + '='.repeat(50));
     console.log('Quality Validation Summary');
     console.log('='.repeat(50));
-    
+
     if (this.results.passed.length > 0) {
       console.log(`\n${colors.green}Passed:${colors.reset}`);
       this.results.passed.forEach(p => console.log(`  ✅ ${p}`));
     }
-    
+
     if (this.results.warnings.length > 0) {
       console.log(`\n${colors.yellow}Warnings:${colors.reset}`);
       this.results.warnings.forEach(w => console.log(`  ⚠️ ${w}`));
     }
-    
+
     if (this.results.failed.length > 0) {
       console.log(`\n${colors.red}Failed:${colors.reset}`);
       this.results.failed.forEach(f => console.log(`  ❌ ${f}`));
     }
-    
+
     console.log('\n' + '='.repeat(50));
-    
+
     if (this.results.failed.length > 0) {
       process.exit(1);
     }

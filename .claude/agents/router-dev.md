@@ -389,12 +389,3 @@ cat .claude/skills/server-components-patterns/templates/data-fetch-template.md
 # メタデータテンプレート
 cat .claude/skills/seo-optimization/templates/metadata-template.md
 ```
-
-## 変更履歴
-
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 2.2.0 | 2025-11-29 | 依存スキルを6個→6個に修正（middleware-design, loading-states → web-performance, data-fetching-strategiesに置換）。存在するスキルのみ参照に統一。 |
-| 2.1.0 | 2025-11-25 | スキル分離による軽量化。6つの専門スキルを統合。1046行→約400行に削減。 |
-| 2.0.0 | 2025-11-22 | 抽象度の最適化とプロジェクト固有設計原則の統合 |
-| 1.0.0 | 初版 | Guillermo Rauchの設計思想に基づくApp Router実装エージェント |

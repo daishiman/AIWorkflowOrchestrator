@@ -36,7 +36,12 @@ description: |
 
   トリガーキーワード: state management, data fetching, SWR, React Query, hooks, 状態管理
 argument-hint: "[library]"
-allowed-tools: [Task, Read, Write(src/hooks/**|src/app/**), Bash(pnpm add*), Edit]
+allowed-tools:
+  - Task
+  - Read
+  - Write(src/hooks/**|src/app/**)
+  - Bash(pnpm add*)
+  - Edit
 model: sonnet
 ---
 
@@ -98,7 +103,7 @@ Task ツールで `.claude/agents/state-manager.md` を起動:
 - `package.json`: SWR/React Query依存追加（pnpm）
 - Context実装（必要に応じて）
 - Error Boundary（必要に応じて）
-- テスト戦略設計（TDD、@unit-testerに引き継ぎ）
+- テスト戦略設計（TDD、`.claude/agents/unit-tester.md` に引き継ぎ）
 
 ### Phase 3: 検証と報告
 

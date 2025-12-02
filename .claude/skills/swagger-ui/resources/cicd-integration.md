@@ -24,10 +24,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install Redocly CLI
-        run: npm install -g @redocly/cli
+        run: pnpm install -g @redocly/cli
 
       - name: Lint OpenAPI spec
         run: redocly lint openapi.yaml
@@ -73,7 +73,7 @@ jobs:
           node-version: '20'
 
       - name: Install Redocly CLI
-        run: npm install -g @redocly/cli
+        run: pnpm install -g @redocly/cli
 
       - name: Build docs
         run: |
@@ -125,8 +125,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install -g @redocly/cli
-          npm install -g swagger-ui-dist
+          pnpm install -g @redocly/cli
+          pnpm install -g swagger-ui-dist
 
       - name: Create docs directory
         run: mkdir -p docs/{swagger,redoc}
@@ -136,7 +136,7 @@ jobs:
 
       - name: Build Swagger UI
         run: |
-          cp -r $(npm root -g)/swagger-ui-dist/* docs/swagger/
+          cp -r $(pnpm root -g)/swagger-ui-dist/* docs/swagger/
           cat > docs/swagger/index.html << 'EOF'
           <!DOCTYPE html>
           <html>
@@ -270,7 +270,7 @@ decorators:
 
 ```json
 {
-  "buildCommand": "npm run build:docs",
+  "buildCommand": "pnpm run build:docs",
   "outputDirectory": "docs",
   "rewrites": [
     { "source": "/api-docs", "destination": "/docs/index.html" },
@@ -294,7 +294,7 @@ decorators:
 ```json
 {
   "scripts": {
-    "build:docs": "npm run build:redoc && npm run build:swagger",
+    "build:docs": "pnpm run build:redoc && pnpm run build:swagger",
     "build:redoc": "redocly build-docs openapi.yaml -o docs/redoc/index.html",
     "build:swagger": "scripts/build-swagger.sh",
     "lint:openapi": "redocly lint openapi.yaml",
@@ -316,7 +316,7 @@ WORKDIR /app
 COPY openapi.yaml .
 COPY redocly.yaml .
 
-RUN npm install -g @redocly/cli
+RUN pnpm install -g @redocly/cli
 RUN mkdir -p docs && redocly build-docs openapi.yaml -o docs/index.html
 
 FROM nginx:alpine
@@ -382,8 +382,8 @@ plugins:
   - '@semantic-release/release-notes-generator'
   - '@semantic-release/changelog'
   - - '@semantic-release/exec'
-    - prepareCmd: 'npm run sync-version'
-  - '@semantic-release/npm'
+    - prepareCmd: 'pnpm run sync-version'
+  - '@semantic-release/pnpm'
   - '@semantic-release/git'
 ```
 
@@ -411,7 +411,7 @@ jobs:
           node-version: '20'
 
       - name: Install Redocly CLI
-        run: npm install -g @redocly/cli
+        run: pnpm install -g @redocly/cli
 
       - name: Lint OpenAPI
         run: redocly lint openapi.yaml

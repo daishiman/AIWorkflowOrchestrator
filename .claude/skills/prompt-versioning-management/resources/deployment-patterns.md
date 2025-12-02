@@ -294,7 +294,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run prompt tests
-        run: npm run test:prompts
+        run: pnpm run test:prompts
 
   deploy-staging:
     needs: test
@@ -304,7 +304,7 @@ jobs:
         run: ./scripts/deploy-prompt.sh staging
 
       - name: Run A/B tests
-        run: npm run test:ab
+        run: pnpm run test:ab
 
   deploy-production:
     needs: deploy-staging

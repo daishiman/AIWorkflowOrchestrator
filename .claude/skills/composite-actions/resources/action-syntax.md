@@ -234,11 +234,11 @@ steps:
       node-version: ${{ inputs.node-version }}
 
   - name: 'Install'
-    run: npm ci
+    run: pnpm ci
     shell: bash
 
   - name: 'Test'
-    run: npm test
+    run: pnpm test
     shell: bash
 ```
 
@@ -347,7 +347,7 @@ steps:
     env:
       NODE_ENV: production
       API_URL: https://api.example.com
-    run: npm run build
+    run: pnpm run build
     shell: bash
 
   # 永続的な環境変数
@@ -509,12 +509,12 @@ steps:
 
   - name: 'Install dependencies'
     if: steps.check.outputs.has-package-json == 'true'
-    run: npm ci
+    run: pnpm ci
     shell: bash
 
   - name: 'Build'
     if: steps.check.outputs.has-package-json == 'true'
-    run: npm run build
+    run: pnpm run build
     shell: bash
 ```
 
@@ -552,7 +552,7 @@ steps:
 2. **id を使ってステップを識別**
    ```yaml
    - id: build
-     run: npm run build
+     run: pnpm run build
      shell: bash
    ```
 

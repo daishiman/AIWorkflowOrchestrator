@@ -122,28 +122,44 @@ description: |
 
 #### 読み取り専用
 ```yaml
-tools: [Read, Grep, Glob]
+tools:
+  - Read
+  - Grep
+  - Glob
 ```
 **用途**: 分析、レビュー、監査エージェント
 **特徴**: 副作用なし、安全性が高い
 
 #### 実装系
 ```yaml
-tools: [Read, Write, Edit, Grep]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
 ```
 **用途**: 機能実装、ファイル生成エージェント
 **特徴**: ファイル操作可能、パス制限必須
 
 #### オーケストレーター
 ```yaml
-tools: [Task, Read]
+tools:
+  - Task
+  - Read
 ```
 **用途**: マルチエージェント調整、プロジェクト管理
 **特徴**: 他エージェントへの委譲可能
 
 #### フル権限
 ```yaml
-tools: [Bash, Read, Write, Edit, Grep, Glob, Task]
+tools:
+  - Bash
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Task
 ```
 **用途**: デプロイ、マイグレーション、システム管理
 **特徴**: 承認要求推奨、リスクが高い
@@ -218,7 +234,11 @@ description: |
   - スキーマ変更をレビューする時
 
   Use proactively when designing database schemas or creating migrations.
-tools: [Read, Write, Edit, Grep]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
 model: sonnet
 version: 1.0.0
 ---
@@ -261,12 +281,21 @@ description: |
 ### 3. tools の過剰な権限
 ❌ **悪い例**:
 ```yaml
-tools: [Bash, Read, Write, Edit, Grep, Glob, Task]  # 分析エージェントなのに
+tools:
+  - Bash
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Task
 ```
 
 ✅ **良い例**:
 ```yaml
-tools: [Read, Grep]  # 分析エージェントに必要最小限
+tools:
+  - Read
+  - Grep  # 分析エージェントに必要最小限
 ```
 
 ---

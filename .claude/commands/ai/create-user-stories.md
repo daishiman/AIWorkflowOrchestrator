@@ -33,7 +33,11 @@ description: |
 
   トリガーキーワード: user stories, acceptance criteria, ユーザーストーリー, 受け入れ基準, backlog, バックログ, MVP
 argument-hint: "[feature-name]"
-allowed-tools: [Task, Read, Write(docs/00-requirements/**), Grep]
+allowed-tools:
+   - Task
+   - Read
+   - Write(docs/00-requirements/**)
+   - Grep
 model: opus
 ---
 
@@ -41,7 +45,7 @@ model: opus
 
 ## Phase 1: プロダクト価値とストーリーマッピング
 
-**@product-manager を起動し、以下を実行:**
+**`.claude/agents/product-manager.md` を起動し、以下を実行:**
 
 1. **プロジェクト設計書の参照**:
    - `docs/00-requirements/master_system_design.md` を読み込み
@@ -77,7 +81,7 @@ model: opus
 
 ## Phase 2: 受け入れ基準定義と検証
 
-**@req-analyst を起動し、以下を実行:**
+**`.claude/agents/req-analyst.md` を起動し、以下を実行:**
 
 1. **Phase 1成果物の引き継ぎ**:
    - product-managerが作成したユーザーストーリーを確認
@@ -126,7 +130,7 @@ model: opus
 
 3. **次フェーズへの引き継ぎ**:
    - テスト作成への連携情報（テストファイルパス、カバレッジ目標）
-   - 詳細仕様書作成への連携情報（@spec-writer への引き継ぎ事項）
+   - 詳細仕様書作成への連携情報（`.claude/agents/spec-writer.md` への引き継ぎ事項）
    - 実装フェーズへの連携情報（Executor実装、Registry登録）
 
 **完了条件チェックリスト**:

@@ -20,13 +20,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -56,10 +56,10 @@ jobs:
           path: dist/
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Run tests
-        run: npm test
+        run: pnpm test
 
       - name: Upload test coverage
         uses: actions/upload-artifact@v4
@@ -111,7 +111,7 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       - name: Upload platform-specific build
         uses: actions/upload-artifact@v4
@@ -159,8 +159,8 @@ jobs:
 
       - name: Install and build
         run: |
-          npm ci
-          npm run build
+          pnpm ci
+          pnpm run build
 
       - name: Create release package
         run: |
@@ -200,8 +200,8 @@ jobs:
 
       - name: Setup environment
         run: |
-          npm ci
-          npm run build 2>&1 | tee build.log
+          pnpm ci
+          pnpm run build 2>&1 | tee build.log
 
       - name: Upload debug logs
         if: failure()
@@ -243,8 +243,8 @@ jobs:
 
       - name: Build preview
         run: |
-          npm ci
-          npm run build
+          pnpm ci
+          pnpm run build
 
       - name: Upload PR preview
         uses: actions/upload-artifact@v4
@@ -278,7 +278,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build frontend
-        run: npm run build:frontend
+        run: pnpm run build:frontend
       - uses: actions/upload-artifact@v4
         with:
           name: frontend
@@ -289,7 +289,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build backend
-        run: npm run build:backend
+        run: pnpm run build:backend
       - uses: actions/upload-artifact@v4
         with:
           name: backend
@@ -300,7 +300,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build docs
-        run: npm run build:docs
+        run: pnpm run build:docs
       - uses: actions/upload-artifact@v4
         with:
           name: docs
@@ -343,7 +343,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build
-        run: npm run build
+        run: pnpm run build
       - uses: actions/upload-artifact@v4
         with:
           name: latest-build
@@ -392,7 +392,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       - name: Optimize artifacts
         run: |
@@ -436,7 +436,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       # mainブランチのみ長期保持
       - name: Upload production build

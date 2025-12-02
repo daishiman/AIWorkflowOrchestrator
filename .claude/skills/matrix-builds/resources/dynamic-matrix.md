@@ -81,7 +81,7 @@ jobs:
       - name: ${{ matrix.service }}のテスト
         run: |
           cd services/${{ matrix.service }}
-          npm test
+          pnpm test
 ```
 
 **動作**:
@@ -188,7 +188,7 @@ jobs:
           node-version: ${{ matrix.node }}
       - name: Test ${{ matrix.service }}
         working-directory: ${{ matrix.working-directory }}
-        run: npm test
+        run: pnpm test
 ```
 
 ---
@@ -343,7 +343,7 @@ jobs:
       - name: Test ${{ matrix.package }}
         run: |
           cd packages/${{ matrix.package }}
-          npm test
+          pnpm test
 ```
 
 **動作**:

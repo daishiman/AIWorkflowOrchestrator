@@ -208,7 +208,7 @@ jobs:
       - if: vars.ENABLE_CACHE == 'true'
         uses: actions/cache@v3
         with:
-          path: ~/.npm
+          path: ~/.pnpm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 ```
 
@@ -263,7 +263,7 @@ steps:
       echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
   - id: build
-    run: npm run build
+    run: pnpm run build
 
   - name: Use version
     if: success()
@@ -434,7 +434,7 @@ jobs:
 
       - name: Extra test
         if: matrix.extra == true
-        run: npm run extra-test
+        run: pnpm run extra-test
 
       - name: Display matrix values
         run: |

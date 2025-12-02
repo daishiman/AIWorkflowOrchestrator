@@ -19,7 +19,7 @@ description: |
   - `.claude/skills/cryptographic-practices/SKILL.md`: 暗号化、ハッシュ、鍵管理
   - `.claude/skills/session-management-security/SKILL.md`: セッション固定、hijacking対策
   - `.claude/skills/api-security/SKILL.md`: REST API、GraphQL、認証ヘッダー
-  - `.claude/skills/dependency-security-scanning/SKILL.md`: npm audit、Snyk、SBOM
+  - `.claude/skills/dependency-security-scanning/SKILL.md`: pnpm audit、Snyk、SBOM
   - `.claude/skills/code-injection-prevention/SKILL.md`: SQL、Command、XPath Injection対策
   - `.claude/skills/code-static-analysis-security/SKILL.md`: ESLint security、Semgrep
   - `.claude/skills/security-configuration-review/SKILL.md`: CORS、CSP、HTTPS設定

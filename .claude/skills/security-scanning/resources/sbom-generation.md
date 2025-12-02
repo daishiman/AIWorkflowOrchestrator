@@ -57,16 +57,16 @@ trivy image --format cyclonedx myapp:latest > sbom.cdx.json
 trivy image --format json --output result.json myapp:latest
 ```
 
-### @cyclonedx/cyclonedx-npm
+### @cyclonedx/cyclonedx-pnpm
 
 Node.js専用のCycloneDX生成。
 
 ```bash
 # インストール
-npm install -g @cyclonedx/cyclonedx-npm
+pnpm install -g @cyclonedx/cyclonedx-pnpm
 
 # 生成
-cyclonedx-npm --output-file sbom.json
+cyclonedx-pnpm --output-file sbom.json
 ```
 
 ## GitHub Actions統合
@@ -156,7 +156,7 @@ jobs:
       "type": "library",
       "name": "express",
       "version": "4.18.2",
-      "purl": "pkg:npm/express@4.18.2",
+      "purl": "pkg:pnpm/express@4.18.2",
       "licenses": [
         {
           "license": {

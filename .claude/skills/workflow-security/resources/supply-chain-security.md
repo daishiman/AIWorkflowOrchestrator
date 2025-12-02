@@ -97,8 +97,8 @@ updates:
     schedule:
       interval: "weekly"
 
-  # npm
-  - package-ecosystem: "npm"
+  # pnpm
+  - package-ecosystem: "pnpm"
     directory: "/"
     schedule:
       interval: "daily"
@@ -288,8 +288,8 @@ deny:
     TCPDUMP_PID=$!
 
     # ワークフロー実行
-    npm install
-    npm test
+    pnpm install
+    pnpm test
 
     # tcpdump停止
     sudo kill $TCPDUMP_PID
@@ -402,8 +402,8 @@ jobs:
 ```yaml
 - name: Check for compromised dependencies
   run: |
-    # npm audit
-    npm audit --audit-level=high
+    # pnpm audit
+    pnpm audit --audit-level=high
 
     # 不審なネットワーク通信
     if netstat -an | grep ESTABLISHED | grep -v 'github.com\|npmjs.org'; then

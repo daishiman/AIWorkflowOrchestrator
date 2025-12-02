@@ -7,7 +7,7 @@
 | 報告日 | <!-- 例: 2025-11-27 --> |
 | 報告者 | <!-- 例: @dep-mgr --> |
 | プロジェクト | <!-- 例: my-project --> |
-| パッケージマネージャー | <!-- pnpm / npm / yarn --> |
+| パッケージマネージャー | <!-- pnpm / pnpm / yarn --> |
 | PMバージョン | <!-- 例: pnpm 9.0.0 --> |
 | Node.jsバージョン | <!-- 例: 20.10.0 --> |
 
@@ -56,8 +56,8 @@ wc -l pnpm-lock.yaml 2>/dev/null || wc -l package-lock.json 2>/dev/null
 # pnpm
 pnpm install --frozen-lockfile --dry-run
 
-# npm
-npm ci --dry-run
+# pnpm
+pnpm ci --dry-run
 
 # yarn
 yarn install --immutable --check-cache
@@ -84,7 +84,7 @@ pnpm why <package-name>
 
 ```bash
 node --version
-pnpm --version  # または npm --version / yarn --version
+pnpm --version  # または pnpm --version / yarn --version
 ```
 
 **結果**:

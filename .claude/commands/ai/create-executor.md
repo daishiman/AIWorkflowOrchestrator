@@ -24,7 +24,11 @@ description: |
 
   トリガーキーワード: executor, workflow, ビジネスロジック, 機能実装
 argument-hint: "[workflow-name]"
-allowed-tools: [Task, Read, Write(src/features/**), Grep]
+allowed-tools:
+  - Task
+  - Read
+  - Write(src/features/**)
+  - Grep
 model: opus
 ---
 
@@ -49,9 +53,7 @@ model: opus
 
 **エージェントへの依頼内容**:
 ```
-@logic-dev
-
-以下のワークフローのExecutor実装を作成してください:
+`.claude/agents/logic-dev.md` エージェントを起動し、以下のワークフローのExecutor実装を作成してください:
 
 - ワークフロー名: $1 または{ユーザー入力}
 - 成果物パス: src/features/$1/executor.ts

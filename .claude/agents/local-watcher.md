@@ -29,7 +29,12 @@ description: |
 
   Use proactively when user mentions file watching, directory monitoring,
   chokidar implementation, or event-driven file system operations.
-tools: [Read, Write, Edit, Bash, Grep]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
 model: sonnet
 version: 2.1.0
 ---
@@ -209,17 +214,3 @@ interface FileEvent {
 - ビジネスロジックの実装
 
 ---
-
-## 変更履歴
-
-### v2.1.0 (2025-11-26)
-- **追加**: file-watcher-security, file-watcher-observability スキル
-- **改善**: frontmatterに依存スキル情報を追加
-- **簡素化**: 冗長な記述を削除、スキルへの委譲を徹底
-
-### v2.0.0 (2025-11-26)
-- **追加**: 5つの専門スキルへの参照を統合
-- **改善**: Progressive Disclosure構造の適用
-
-### v1.0.0 (2025-11-21)
-- **追加**: 初版リリース

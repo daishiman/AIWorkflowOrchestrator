@@ -2,7 +2,7 @@
 name: dependency-security-scanning
 description: |
     依存関係の脆弱性スキャンとSCA（Software Composition Analysis）のベストプラクティスを提供します。
-    npm audit、Snyk、OSSスキャンツールを使用した既知脆弱性の検出、
+    pnpm audit、Snyk、OSSスキャンツールを使用した既知脆弱性の検出、
     CVE評価、CVSS スコアリング、修正可能性の評価、推移的依存関係の分析を行います。
     📚 このスキルの使用タイミング:
     - 依存関係の脆弱性スキャン時
@@ -40,7 +40,7 @@ version: 1.0.0
 
 **専門分野**:
 
-- npm audit、Snyk 等のツール活用
+- pnpm audit、Snyk 等のツール活用
 - CVE（Common Vulnerabilities and Exposures）評価
 - CVSS（Common Vulnerability Scoring System）スコアリング
 - 推移的依存関係の脆弱性分析
@@ -55,24 +55,24 @@ version: 1.0.0
 **ツール比較**:
 | ツール | カバレッジ | 速度 | CI/CD 統合 | 無料プラン | 推奨度 |
 |-------|----------|------|----------|----------|-------|
-| **npm audit** | 中 | 高速 | ✅ | ✅ | ✅ 基本 |
+| **pnpm audit** | 中 | 高速 | ✅ | ✅ | ✅ 基本 |
 | **pnpm audit** | 中 | 高速 | ✅ | ✅ | ✅ 基本 |
 | **yarn audit** | 中 | 高速 | ✅ | ✅ | ✅ 基本 |
 | **Snyk** | 高 | 中速 | ✅ | ✅ | ✅ 推奨 |
 | **Dependabot** | 中 | - | ✅ | ✅ | ✅ GitHub |
-| **npm-check** | 中 | 高速 | ⚠️ | ✅ | ⚠️ 補助 |
+| **pnpm-check** | 中 | 高速 | ⚠️ | ✅ | ⚠️ 補助 |
 
 **実行例**:
 
 ```bash
-# npm audit
-npm audit --json > audit-report.json
+# pnpm audit
+pnpm audit --json > audit-report.json
 
 # 重要度フィルタ
-npm audit --audit-level=moderate
+pnpm audit --audit-level=moderate
 
 # 自動修正
-npm audit fix
+pnpm audit fix
 
 # Snyk
 snyk test --json > snyk-report.json
@@ -103,7 +103,7 @@ safety check --json
 
 ## 2. スキャン結果の解析
 
-### npm audit 出力構造
+### pnpm audit 出力構造
 
 **JSON 形式**:
 
@@ -187,10 +187,10 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
 
 ```bash
 # 直接依存パッケージのアップグレード
-npm install package-name@latest
+pnpm install package-name@latest
 
 # または特定バージョン
-npm install package-name@2.0.0
+pnpm install package-name@2.0.0
 ```
 
 **判断**:
@@ -207,7 +207,7 @@ npm install package-name@2.0.0
 **修正アプローチ**:
 
 1. **親パッケージのアップグレード**: 親が新しいバージョンで修正済み依存を使用
-2. **npm override**: package.json でバージョンを強制
+2. **pnpm override**: package.json でバージョンを強制
    ```json
    {
      "overrides": {
@@ -282,10 +282,10 @@ jobs:
           node-version: "18"
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
-      - name: Run npm audit
-        run: npm audit --audit-level=moderate
+      - name: Run pnpm audit
+        run: pnpm audit --audit-level=moderate
         continue-on-error: true
 
       - name: Snyk Security Scan
@@ -318,7 +318,7 @@ jobs:
 
 ```bash
 # パッケージの信頼性チェック
-npm view package-name
+pnpm view package-name
 
 # 最終更新、maintainer、ダウンロード数を確認
 ```
@@ -326,9 +326,9 @@ npm view package-name
 **対策**:
 
 - [ ] lock file（package-lock.json）使用で依存固定
-- [ ] npm ci 使用（npm install ではなく）
+- [ ] pnpm ci 使用（pnpm install ではなく）
 - [ ] 信頼できるレジストリのみ使用
-- [ ] パッケージ署名検証（npm v7+）
+- [ ] パッケージ署名検証（pnpm v7+）
 
 ---
 
@@ -367,4 +367,4 @@ npm view package-name
 
 - 初版リリース
 - @sec-auditor エージェントから依存関係スキャン知識を抽出
-- npm audit、Snyk、CVE 評価、Supply Chain 攻撃対策を定義
+- pnpm audit、Snyk、CVE 評価、Supply Chain 攻撃対策を定義

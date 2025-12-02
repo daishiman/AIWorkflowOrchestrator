@@ -7,19 +7,19 @@
 
 ## Node.js
 
-### npm
+### pnpm
 
 ```yaml
-- name: Cache npm dependencies
+- name: Cache pnpm dependencies
   uses: actions/cache@v4
   with:
-    path: ~/.npm
-    key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+    path: ~/.pnpm
+    key: ${{ runner.os }}-pnpm-${{ hashFiles('**/package-lock.json') }}
     restore-keys: |
-      ${{ runner.os }}-npm-
+      ${{ runner.os }}-pnpm-
 
 - name: Install dependencies
-  run: npm ci
+  run: pnpm ci
 ```
 
 **node_modules を直接キャッシュする場合:**
@@ -28,13 +28,13 @@
 - uses: actions/cache@v4
   with:
     path: |
-      ~/.npm
+      ~/.pnpm
       node_modules
     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
     restore-keys: |
       ${{ runner.os }}-node-
 
-- run: npm ci --prefer-offline
+- run: pnpm ci --prefer-offline
 ```
 
 ### Yarn (Classic)
@@ -558,15 +558,15 @@
   uses: actions/cache@v4
   with:
     path: |
-      ~/.npm
+      ~/.pnpm
       ${{ github.workspace }}/.next/cache
     key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
     restore-keys: |
       ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
       ${{ runner.os }}-nextjs-
 
-- run: npm ci
-- run: npm run build
+- run: pnpm ci
+- run: pnpm run build
 ```
 
 ### Nuxt.js
@@ -583,8 +583,8 @@
     restore-keys: |
       ${{ runner.os }}-nuxt-
 
-- run: npm ci
-- run: npm run build
+- run: pnpm ci
+- run: pnpm run build
 ```
 
 ### Vite
@@ -594,14 +594,14 @@
   uses: actions/cache@v4
   with:
     path: |
-      ~/.npm
+      ~/.pnpm
       node_modules/.vite
     key: ${{ runner.os }}-vite-${{ hashFiles('**/package-lock.json') }}
     restore-keys: |
       ${{ runner.os }}-vite-
 
-- run: npm ci
-- run: npm run build
+- run: pnpm ci
+- run: pnpm run build
 ```
 
 ## ベストプラクティス
@@ -627,8 +627,8 @@ restore-keys: |
 # Layer 1: パッケージマネージャーキャッシュ（変更頻度: 低）
 - uses: actions/cache@v4
   with:
-    path: ~/.npm
-    key: npm-cache-${{ hashFiles('**/package-lock.json') }}
+    path: ~/.pnpm
+    key: pnpm-cache-${{ hashFiles('**/package-lock.json') }}
 
 # Layer 2: node_modules（変更頻度: 中）
 - uses: actions/cache@v4

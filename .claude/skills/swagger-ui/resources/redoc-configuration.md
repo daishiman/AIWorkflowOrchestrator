@@ -26,9 +26,9 @@
 ### npm方式
 
 ```bash
-npm install redoc
+pnpm install redoc
 # React用
-npm install @redocly/reference-docs  # 有料版
+pnpm install @redocly/reference-docs  # 有料版
 ```
 
 ### React統合
@@ -389,7 +389,7 @@ export default function DocsPage() {
 
 ```bash
 # インストール
-npm install -g @redocly/cli
+pnpm install -g @redocly/cli
 
 # HTML生成
 redocly build-docs openapi.yaml -o docs/index.html

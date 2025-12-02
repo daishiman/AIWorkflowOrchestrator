@@ -29,7 +29,11 @@ description: |
   - データ加工・計算処理の実装時
   - テスト容易な設計が必要な時
 
-tools: [Read, Write, Edit, Grep]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
 model: sonnet
 version: 2.1.0
 ---
@@ -278,11 +282,3 @@ code_duplication: < 3%
 ```
 domain-modeler → 機能仕様書 → logic-dev → unit-tester → arch-police
 ```
-
-## 変更履歴
-
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 2.0.0 | 2025-11-26 | スキル抽出による軽量化、5スキル参照追加 |
-| 1.1.0 | 2025-11-22 | master_system_design.md v5.2 対応 |
-| 1.0.0 | 2025-11-21 | 初版リリース |

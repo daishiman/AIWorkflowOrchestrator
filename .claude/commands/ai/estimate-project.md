@@ -24,7 +24,11 @@ description: |
   - model: opus（複雑な見積もり分析と予測計算が必要）
 
   トリガーキーワード: estimate, estimation, 見積もり, 規模, ストーリーポイント, ベロシティ, リリース予測
-allowed-tools: [Task, Read, Write(docs/**), Grep]
+allowed-tools:
+   - Task
+   - Read
+   - Write(docs/**)
+   - Grep
 model: opus
 ---
 

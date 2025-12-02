@@ -275,7 +275,7 @@ Creates component
 Next steps:
 1. cd src/components/UserProfile
 2. Review generated files
-3. npm test -- UserProfile
+3. pnpm test -- UserProfile
 ```
 ```
 
@@ -287,7 +287,7 @@ Next steps:
 
 ### Environment
 - Node.js >= 18.0.0
-- npm >= 9.0.0
+- pnpm >= 9.0.0
 
 ### Dependencies
 - React >= 18.0.0
@@ -434,17 +434,17 @@ A component with this name already exists in the project.
 
 Run through this checklist:
 
-- [ ] Is TypeScript installed? `npm list typescript`
+- [ ] Is TypeScript installed? `pnpm list typescript`
 - [ ] Is tsconfig.json valid? `npx tsc --noEmit`
 - [ ] Are all imports correct? Check file paths
 - [ ] Is the component exported? Check `index.ts`
-- [ ] Are tests passing? `npm test -- [ComponentName]`
+- [ ] Are tests passing? `pnpm test -- [ComponentName]`
 
 If all checked and still failing:
 ```bash
 # Clear cache and rebuild
 rm -rf node_modules/.cache
-npm run build
+pnpm run build
 ```
 ```
 

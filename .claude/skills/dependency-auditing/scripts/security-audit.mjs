@@ -63,9 +63,9 @@ function detectPackageManager() {
   } else if (existsSync('yarn.lock')) {
     return 'yarn';
   } else if (existsSync('package-lock.json')) {
-    return 'npm';
+    return 'pnpm';
   }
-  return 'npm'; // デフォルト
+  return 'pnpm'; // デフォルト
 }
 
 // 監査コマンドの構築
@@ -73,7 +73,7 @@ function buildAuditCommand(pm, options) {
   const commands = {
     pnpm: ['pnpm', 'audit'],
     yarn: ['yarn', 'audit'],
-    npm: ['npm', 'audit']
+    pnpm: ['pnpm', 'audit']
   };
 
   const cmd = commands[pm];
@@ -85,13 +85,13 @@ function buildAuditCommand(pm, options) {
   if (options.prod) {
     if (pm === 'pnpm') {
       cmd.push('--prod');
-    } else if (pm === 'npm') {
+    } else if (pm === 'pnpm') {
       cmd.push('--production');
     }
   }
 
   if (options.level !== 'low') {
-    if (pm === 'npm' || pm === 'pnpm') {
+    if (pm === 'pnpm' || pm === 'pnpm') {
       cmd.push(`--audit-level=${options.level}`);
     } else if (pm === 'yarn') {
       cmd.push(`--level=${options.level}`);
@@ -106,7 +106,7 @@ function parseAuditResult(output, pm) {
   try {
     const result = JSON.parse(output);
 
-    if (pm === 'npm' || pm === 'pnpm') {
+    if (pm === 'pnpm' || pm === 'pnpm') {
       return {
         vulnerabilities: result.metadata?.vulnerabilities || {},
         advisories: result.advisories || {},
@@ -202,7 +202,7 @@ function runAutoFix(pm) {
 
   const fixCommands = {
     pnpm: 'pnpm audit --fix',
-    npm: 'npm audit fix',
+    pnpm: 'pnpm audit fix',
     yarn: 'yarn audit fix'
   };
 

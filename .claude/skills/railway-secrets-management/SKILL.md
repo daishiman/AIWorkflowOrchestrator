@@ -193,7 +193,7 @@ POSTGRES_HOST=ep-xxx.neon.tech
 
 ```bash
 # Database（Neon Plugin自動注入）
-# ローカル開発: railway run npm run dev で自動注入
+# ローカル開発: railway run pnpm run dev で自動注入
 # または docker-compose up でローカルPostgreSQL使用
 DATABASE_URL=postgresql://user:password@localhost:5432/mydb_dev
 ```
@@ -206,7 +206,7 @@ DATABASE_URL=postgresql://user:password@localhost:5432/mydb_dev
 
 ```bash
 # Railwayから環境変数を注入して実行
-railway run npm run dev
+railway run pnpm run dev
 
 # メリット:
 # - ファイルに保存しない（メモリ内注入）

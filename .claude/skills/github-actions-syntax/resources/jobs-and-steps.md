@@ -144,7 +144,7 @@ steps:
     with:
       node-version: '20'
       cache: 'pnpm'
-      registry-url: 'https://npm.pkg.github.com'
+      registry-url: 'https://pnpm.pkg.github.com'
 ```
 
 ### run (コマンド実行)
@@ -158,8 +158,8 @@ steps:
     run: |
       echo "Step 1"
       echo "Step 2"
-      npm install
-      npm test
+      pnpm install
+      pnpm test
 
   - name: With shell
     shell: bash
@@ -184,7 +184,7 @@ steps:
 ```yaml
 steps:
   - name: Build frontend
-    run: npm run build
+    run: pnpm run build
     working-directory: ./frontend
 
   - name: Build backend

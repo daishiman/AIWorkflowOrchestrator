@@ -135,9 +135,3 @@ node .claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs <age
 # アーキテクチャ検証（agent-architecture-patternsスキルのスクリプトを使用）
 node .claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs <agent_file.md>
 ```
-
-## 変更履歴
-
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-24 | 初版作成 |

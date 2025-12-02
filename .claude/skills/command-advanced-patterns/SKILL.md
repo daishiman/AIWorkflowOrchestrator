@@ -378,7 +378,7 @@ Wait for user selection: $PROJECT_TYPE
 ## Step 3: Configuration
 Based on $PROJECT_TYPE, ask:
 - Project name
-- Package manager (npm/yarn/pnpm)
+- Package manager (pnpm/yarn/pnpm)
 - Testing framework (Jest/Vitest/None)
 - Linter (ESLint/Biome/None)
 

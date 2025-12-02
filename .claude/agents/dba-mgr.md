@@ -34,7 +34,12 @@ description: |
   - ベクトル検索機能（セマンティック検索）の実装時
   - 本番DB監視・アラート設計時
 
-tools: [Read, Write, Edit, Bash, Grep]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
 model: sonnet
 version: 2.1.0
 ---
@@ -425,19 +430,3 @@ cat src/shared/infrastructure/database/schema.ts
 ```
 @db-architect → @dba-mgr → ローカルテスト → CI/CD統合 → ステージング → 本番 → @repo-dev
 ```
-
-## 変更履歴
-
-### v2.0.0 (2025-11-27)
-- **リファクタリング**: 詳細知識をスキルに抽出し、エージェントを軽量化
-  - 6つの専門スキルへの参照構造に変更
-  - 1,140行 → 約500行に削減（56%削減）
-  - 知識領域の詳細をスキルに移動
-  - ワークフローを概要レベルに圧縮
-
-### v1.1.0 (2025-11-22)
-- master_system_design.md準拠による改善
-- ベクトルDB（pgvector）設計の知識領域を追加
-
-### v1.0.0 (2025-11-21)
-- 初版リリース

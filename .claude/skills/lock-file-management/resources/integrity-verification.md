@@ -19,13 +19,13 @@ pnpm install --lockfile-only
 git diff pnpm-lock.yaml
 ```
 
-**npm**:
+**pnpm**:
 ```bash
-# 同期チェック（npm ci は厳格）
-npm ci
+# 同期チェック（pnpm ci は厳格）
+pnpm ci
 
 # 手動での確認
-npm install --package-lock-only
+pnpm install --package-lock-only
 git diff package-lock.json
 ```
 
@@ -44,8 +44,8 @@ yarn install --immutable --check-cache
 # pnpm: 自動的にintegrityを検証
 pnpm install
 
-# npm: SRIハッシュを検証
-npm ci
+# pnpm: SRIハッシュを検証
+pnpm ci
 
 # 手動でのハッシュ確認
 sha512sum node_modules/lodash/lodash.js
@@ -78,14 +78,14 @@ import { existsSync, readFileSync } from 'fs';
 function detectPackageManager() {
   if (existsSync('pnpm-lock.yaml')) return 'pnpm';
   if (existsSync('yarn.lock')) return 'yarn';
-  if (existsSync('package-lock.json')) return 'npm';
+  if (existsSync('package-lock.json')) return 'pnpm';
   return null;
 }
 
 function verifyLockfileSync(pm) {
   const commands = {
     pnpm: 'pnpm install --frozen-lockfile --dry-run',
-    npm: 'npm ci --dry-run',
+    pnpm: 'pnpm ci --dry-run',
     yarn: 'yarn install --immutable --check-cache'
   };
 
@@ -127,7 +127,7 @@ function getLockfileInfo(pm) {
     const versionMatch = lock.match(/lockfileVersion: ['"]?([^'"\n]+)/);
     return { version: versionMatch?.[1] };
   }
-  if (pm === 'npm') {
+  if (pm === 'pnpm') {
     const lock = JSON.parse(readFileSync('package-lock.json', 'utf8'));
     return { version: lock.lockfileVersion };
   }
@@ -168,7 +168,7 @@ function main() {
   console.log('=== Dependency Integrity Report ===\n');
 
   const pm = existsSync('pnpm-lock.yaml') ? 'pnpm' :
-             existsSync('package-lock.json') ? 'npm' :
+             existsSync('package-lock.json') ? 'pnpm' :
              existsSync('yarn.lock') ? 'yarn' : null;
 
   if (!pm) {

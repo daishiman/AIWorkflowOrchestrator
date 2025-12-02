@@ -41,7 +41,12 @@ description: |
 
   トリガーキーワード: architecture, design, アーキテクチャ, 設計, clean architecture, DDD
 argument-hint: "[architecture-style]"
-allowed-tools: [Task, Read, Write(docs/**), Grep, Glob]
+allowed-tools:
+  - Task
+  - Read
+  - Write(docs/**)
+  - Grep
+  - Glob
 model: opus
 ---
 
@@ -66,7 +71,7 @@ model: opus
 
 ### Phase 1: アーキテクチャレビューと現状分析
 
-**@arch-policeエージェント起動** - 並列実行1
+**`.claude/agents/arch-police.md` エージェント起動** - 並列実行1
 
 ```
 タスク: 現状のプロジェクト構造をレビューし、アーキテクチャ基盤を分析してください。
@@ -100,7 +105,7 @@ model: opus
 
 ### Phase 2: SOLID原則とアーキテクチャ原則の適用
 
-**@arch-policeエージェント継続** - 連続実行
+**`.claude/agents/arch-police.md` エージェント継続** - 連続実行
 
 ```
 タスク: SOLID原則に基づくアーキテクチャ原則を適用し、設計ガイドラインを策定してください。
@@ -123,7 +128,7 @@ model: opus
 
 ### Phase 3: ドメインモデル設計
 
-**@domain-modelerエージェント起動** - 並列実行2
+**`.claude/agents/domain-modeler.md` エージェント起動** - 並列実行2
 
 ```
 タスク: DDD原則に基づくドメインモデルを設計してください。
@@ -158,7 +163,7 @@ model: opus
 
 ### Phase 4: 詳細ドメイン設計
 
-**@domain-modelerエージェント継続** - 連続実行
+**`.claude/agents/domain-modeler.md` エージェント継続** - 連続実行
 
 ```
 タスク: 値オブジェクトとドメインサービスの詳細設計を行ってください。

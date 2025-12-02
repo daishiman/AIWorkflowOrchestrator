@@ -178,7 +178,10 @@
 ---
 name: agent-name
 description: エージェントの説明と用途
-tools: [Bash, Read, Write]
+tools:
+  - Bash
+  - Read
+  Write
 model: sonnet
 ---
 
@@ -267,7 +270,11 @@ description: |
 #### tools（オプション）
 
 ```yaml
-tools: [Bash, Read, Write, Search]
+tools:
+  - Bash
+  - Read
+  - Write
+  - Search
 ```
 
 - **利用可能ツール一覧**:
@@ -283,13 +290,24 @@ tools: [Bash, Read, Write, Search]
 
 ```yaml
 # セキュリティ重視のエージェント（読み取り専用）
-tools: [Bash, Read, Search]
+tools:
+  - Bash
+  - Read
+  - Search
 
 # 実装エージェント（フル権限）
-tools: [Bash, Read, Write, Edit, Search, Task]
+tools:
+  - Bash
+  - Read
+  - Write
+  - Edit
+  - Search
+  - Task
 
 # オーケストレーター（委譲専門）
-tools: [Task, Read]
+tools:
+  - Task
+  - Read
 ```
 
 #### model（オプション）
@@ -404,7 +422,7 @@ model: sonnet # または opus, haiku
 3. テストコードの作成
    - 使用ツール: Write
    - フレームワーク: プロジェクト標準に従う
-   - 実行: `npm test` で失敗を確認（RED 状態）
+   - 実行: `pnpm test` で失敗を確認（RED 状態）
 
 ### フェーズ 2: 実装（GREEN）
 
@@ -930,7 +948,9 @@ secure-coding-practices スキル参照で修正推奨生成
 ---
 name: commit-message-generator
 description: Git commit message generator following Conventional Commits
-tools: [Bash, Read]
+tools:
+  - Bash
+  - Read
 model: sonnet
 ---
 
@@ -960,7 +980,10 @@ Conventional Commits 仕様に従ったコミットメッセージを生成
 ---
 name: feature-orchestrator
 description: Coordinates full feature development lifecycle
-tools: [Task, Read, Write]
+tools:
+  - Task
+  - Read
+  - Write
 model: opus
 ---
 
@@ -1024,7 +1047,11 @@ model: opus
 ---
 name: deployment-workflow-agent
 description: Manages deployment workflow with state transitions
-tools: [Bash, Read, Write, Task]
+tools:
+  - Bash
+  - Read
+  - Write
+  - Task
 model: sonnet
 ---
 
@@ -1093,7 +1120,10 @@ ERROR ← ERROR ← ERROR ← ERROR ← ROLLBACK ← ROLLBACK
 ---
 name: pattern-recognition-agent
 description: Learns from past code patterns and suggests improvements
-tools: [Read, Search, Write]
+tools:
+  - Read
+  - Search
+  - Write
 model: opus
 ---
 
@@ -1346,7 +1376,9 @@ Use proactively after any file edit in src/ or api/ directories.
 
 ```markdown
 読み取り専用エージェント:
-tools: [Read, Search]
+tools:
+  - Read
+  - Search
 例:
 
 - code-reviewer-agent
@@ -1354,14 +1386,23 @@ tools: [Read, Search]
 - metrics-analyzer-agent
 
 読み書きエージェント（制限付き）:
-tools: [Read, Write, Search]
+tools:
+  - Read
+  - Write
+  - Search
 write_paths: ["src/**/*.test.js", "tests/**"]
 例:
 
 - test-generator-agent
 
 フル権限エージェント:
-tools: [Bash, Read, Write, Edit, Search, Task]
+tools:
+  - Bash
+  - Read
+  - Write
+  - Edit
+  - Search
+  - Task
 approval_required: true
 例:
 
@@ -1369,7 +1410,9 @@ approval_required: true
 - database-migration-agent
 
 委譲専門エージェント:
-tools: [Task, Read]
+tools:
+  - Task
+  - Read
 例:
 
 - orchestrator-agent
@@ -1477,7 +1520,9 @@ description: Test an agent in isolation
 ---
 name: debug-wrapper-agent
 description: Wraps any agent with debug logging
-tools: [Task, Write]
+tools:
+  - Task
+  - Write
 ---
 
 # Debug Wrapper
@@ -1611,7 +1656,8 @@ fi
 
 ## 原則2: Path Restriction
 ```yaml
-tools: [Write]
+tools:
+  - Write
 write_allowed_paths:
   - "src/**/*.test.js"
   - "tests/**"
@@ -1628,7 +1674,8 @@ write_forbidden_paths:
 危険な操作は承認必須
 
 ```yaml
-tools: [Bash]
+tools:
+  - Bash
 approval_required_for:
   - commands_matching: "rm -rf"
   - commands_matching: "sudo"

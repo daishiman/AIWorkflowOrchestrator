@@ -192,7 +192,7 @@ steps:
 
   - name: 実験的ビルド専用
     if: matrix.experimental == true
-    run: npm run test:experimental
+    run: pnpm run test:experimental
 ```
 
 ---
@@ -224,7 +224,7 @@ steps:
   - uses: actions/setup-node@v4
     with:
       node-version: ${{ matrix.node }}
-      cache: "npm" # マトリックス別にキャッシュ
+      cache: "pnpm" # マトリックス別にキャッシュ
 ```
 
 ---

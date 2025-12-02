@@ -29,7 +29,10 @@ description: |
 
   Use proactively when user mentions logging, monitoring, observability,
   SLO, SLI, alerting, or distributed tracing.
-tools: [Read, Write, Grep]
+tools:
+  - Read
+  - Write
+  - Grep
 model: sonnet
 version: 3.0.0
 ---
@@ -420,12 +423,3 @@ mean_time_to_resolve: < 30 minutes    # 問題解決までの平均時間
 - **@performance-engineer**: パフォーマンスメトリクス深掘り分析、ボトルネック特定
 
 ---
-
-## 変更履歴
-
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 2.1.0 | 2025-11-27 | MANDATORYプロトコル実装、詳細削減による軽量化（613行→378行、38%削減） |
-| 2.0.0 | 2025-11-26 | 大規模リファクタリング - 5スキルへの知識分離、50%軽量化（1,085行→613行） |
-| 1.1.0 | 2025-11-22 | 抽象度の最適化とプロジェクト固有設計原則の統合 |
-| 1.0.0 | 2025-11-21 | 初版リリース |

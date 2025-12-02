@@ -200,9 +200,9 @@ After that, parse the contents. Finally, validate the parsed data.
 
 ```markdown
 ## Execution
-1. Run linter: `npm run lint`
-2. Run tests: `npm test`
-3. Run type check: `npm run typecheck`
+1. Run linter: `pnpm run lint`
+2. Run tests: `pnpm test`
+3. Run type check: `pnpm run typecheck`
 
 Total time: 5 + 10 + 3 = 18 seconds
 ```
@@ -213,9 +213,9 @@ Total time: 5 + 10 + 3 = 18 seconds
 ## Execution
 Run checks in parallel:
 ```bash
-npm run lint & \
-npm test & \
-npm run typecheck & \
+pnpm run lint & \
+pnpm test & \
+pnpm run typecheck & \
 wait
 ```
 

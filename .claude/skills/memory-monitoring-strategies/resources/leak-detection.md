@@ -207,7 +207,7 @@ function doAsyncWork() {
 ### heapdump
 
 ```bash
-npm install heapdump
+pnpm install heapdump
 ```
 
 ```javascript
@@ -226,7 +226,7 @@ process.on('SIGUSR2', () => {
 ### memwatch-next
 
 ```bash
-npm install @airbnb/node-memwatch
+pnpm install @airbnb/node-memwatch
 ```
 
 ```javascript
@@ -250,7 +250,7 @@ memwatch.on('stats', (stats) => {
 ### clinic.js
 
 ```bash
-npm install -g clinic
+pnpm install -g clinic
 ```
 
 ```bash

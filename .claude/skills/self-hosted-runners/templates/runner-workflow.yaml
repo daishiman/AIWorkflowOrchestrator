@@ -21,16 +21,16 @@ basic-self-hosted:
         - name: Setup environment
           run: |
             node --version
-            npm --version
+            pnpm --version
 
         - name: Install dependencies
-          run: npm ci
+          run: pnpm ci
 
         - name: Build
-          run: npm run build
+          run: pnpm run build
 
         - name: Test
-          run: npm test
+          run: pnpm test
 
 # ============================================
 # カスタムラベルによるターゲティング
@@ -119,7 +119,7 @@ matrix-runners:
             node-version: ${{ matrix.node }}
 
         - name: Run tests
-          run: npm test
+          run: pnpm test
 
 # ============================================
 # エフェメラルランナー（セキュリティ重視）
@@ -139,14 +139,14 @@ ephemeral-secure:
 
         - name: Security scan
           run: |
-            npm audit
-            npm run lint:security
+            pnpm audit
+            pnpm run lint:security
 
         - name: Build in isolated environment
-          run: npm run build
+          run: pnpm run build
 
         - name: Test
-          run: npm test
+          run: pnpm test
 
         # エフェメラルランナーは自動的にクリーンアップされる
 
@@ -208,7 +208,7 @@ internal-network:
             curl http://internal-db.company.local:5432
 
         - name: Run integration tests
-          run: npm run test:integration
+          run: pnpm run test:integration
 
 # ============================================
 # GPU を使用した機械学習
@@ -266,32 +266,32 @@ parallel-jobs:
       runs-on: [self-hosted, standard]
       steps:
         - uses: actions/checkout@v4
-        - run: npm run lint
+        - run: pnpm run lint
 
     test-unit:
       runs-on: [self-hosted, standard]
       steps:
         - uses: actions/checkout@v4
-        - run: npm run test:unit
+        - run: pnpm run test:unit
 
     test-integration:
       runs-on: [self-hosted, high-memory]
       steps:
         - uses: actions/checkout@v4
-        - run: npm run test:integration
+        - run: pnpm run test:integration
 
     test-e2e:
       runs-on: [self-hosted, high-memory]
       steps:
         - uses: actions/checkout@v4
-        - run: npm run test:e2e
+        - run: pnpm run test:e2e
 
     build:
       needs: [lint, test-unit, test-integration, test-e2e]
       runs-on: [self-hosted, standard]
       steps:
         - uses: actions/checkout@v4
-        - run: npm run build
+        - run: pnpm run build
 
 # ============================================
 # キャッシュ活用（ローカルキャッシュ）
@@ -310,7 +310,7 @@ cache-optimization:
         - name: Cache Node modules
           uses: actions/cache@v4
           with:
-            path: ~/.npm
+            path: ~/.pnpm
             key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
             restore-keys: |
               ${{ runner.os }}-node-
@@ -326,10 +326,10 @@ cache-optimization:
               ${{ runner.os }}-build-
 
         - name: Install dependencies
-          run: npm ci
+          run: pnpm ci
 
         - name: Build
-          run: npm run build
+          run: pnpm run build
 
 # ============================================
 # 条件付きランナー選択
@@ -382,8 +382,8 @@ security-scan:
 
         - name: Run security audit
           run: |
-            npm audit --audit-level=moderate
-            npm run lint:security
+            pnpm audit --audit-level=moderate
+            pnpm run lint:security
 
         - name: SAST scan
           run: |
@@ -425,7 +425,7 @@ multi-stage:
           run: echo "version=$(cat VERSION)" >> $GITHUB_OUTPUT
 
         - name: Build
-          run: npm run build
+          run: pnpm run build
 
         - name: Upload artifacts
           uses: actions/upload-artifact@v4
@@ -446,7 +446,7 @@ multi-stage:
             path: dist/
 
         - name: Run tests
-          run: npm test
+          run: pnpm test
 
     deploy:
       needs: [build, test]

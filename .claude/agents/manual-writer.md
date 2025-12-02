@@ -26,7 +26,11 @@ description: |
   - チュートリアルやハウツー記事を作成する時
   - トラブルシューティングガイドやFAQを整備する時
   - エンドユーザー向けのドキュメンテーション改善時
-tools: [Read, Write, Edit, Grep]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
 model: sonnet
 version: 2.1.0
 ---
@@ -276,25 +280,3 @@ node .claude/skills/localization-i18n/scripts/check-translation-ready.mjs docs/
 - 開発者向けのAPI仕様書作成（@api-doc-writerの担当）
 - 技術的詳細の実装解説
 - システムアーキテクチャの説明（@system-architectの担当）
-
-## 変更履歴
-
-### v2.0.0 (2025-11-27)
-- **軽量化**: 1347行から約480行へ削減
-- **スキル分離**: 詳細知識を5つの専門スキルに委譲
-  - user-centric-writing
-  - tutorial-design
-  - troubleshooting-guides
-  - information-architecture
-  - localization-i18n
-- **構造改善**: Progressive Disclosure パターン適用
-- **保守性向上**: 各スキルの独立した更新が可能に
-
-### v1.2.0 (2025-11-23)
-- プロジェクトディレクトリ構造への準拠改善
-
-### v1.1.0 (2025-11-22)
-- 抽象度の最適化と概念要素の強化
-
-### v1.0.0 (2025-11-21)
-- 初版リリース

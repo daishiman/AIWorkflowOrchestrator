@@ -24,7 +24,7 @@ jest --coverage --collectCoverageFrom="src/**/*.ts"
 
 計測ツール:
 ```bash
-npm install --save-dev eslint-plugin-sonarjs
+pnpm install --save-dev eslint-plugin-sonarjs
 # ESLintで自動計測
 ```
 
@@ -38,7 +38,7 @@ Low: <5個
 
 計測方法:
 ```bash
-npm audit --production
+pnpm audit --production
 npx sonarqube-scanner
 ```
 
@@ -76,8 +76,8 @@ major更新可能: <10個
 
 計測:
 ```bash
-npm audit
-npm outdated
+pnpm audit
+pnpm outdated
 ```
 
 ### 秘密情報検出
@@ -141,16 +141,16 @@ TODO/FIXME: <5個
 ```bash
 #!/bin/bash
 echo "=== Coverage ==="
-npm test -- --coverage
+pnpm test -- --coverage
 
 echo "=== Complexity ==="
 npx eslint src/ --format json | grep "complexity"
 
 echo "=== Security Audit ==="
-npm audit
+pnpm audit
 
 echo "=== Build Performance ==="
-time npm run build
+time pnpm run build
 
 echo "=== Bundle Size ==="
 npx webpack-bundle-analyzer dist/stats.json
@@ -161,10 +161,10 @@ npx webpack-bundle-analyzer dist/stats.json
 # GitHub Actions例
 - name: Run Quality Metrics
   run: |
-    npm run test:coverage
-    npm run lint
-    npm audit --production
-    npm run build
+    pnpm run test:coverage
+    pnpm run lint
+    pnpm audit --production
+    pnpm run build
 ```
 
 ## メトリクス目標値
@@ -198,7 +198,7 @@ npx webpack-bundle-analyzer dist/stats.json
 ### 自動検出
 ```bash
 # 前回比較
-COVERAGE_CURRENT=$(npm test -- --coverage --silent | grep Total | awk '{print $4}')
+COVERAGE_CURRENT=$(pnpm test -- --coverage --silent | grep Total | awk '{print $4}')
 COVERAGE_PREV=$(git show HEAD:coverage.json | jq '.total.lines.pct')
 
 if [ $COVERAGE_CURRENT < $COVERAGE_PREV ]; then

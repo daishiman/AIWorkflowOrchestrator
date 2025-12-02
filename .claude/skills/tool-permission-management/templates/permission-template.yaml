@@ -13,7 +13,10 @@
 # リスク: 低
 # ═══════════════════════════════════════════════════════════
 read_only:
-  tools: [Read, Grep, Glob]
+  tools:
+    - Read
+    - Grep
+    - Glob
   # パス制限は不要（読み取りのみ）
   use_cases:
     - コードレビュー
@@ -26,7 +29,11 @@ read_only:
 # リスク: 中
 # ═══════════════════════════════════════════════════════════
 read_write:
-  tools: [Read, Write, Edit, Grep]
+  tools:
+    - Read
+    - Write
+    - Edit
+    - Grep
   # パス制限: 必須
   write_allowed_paths:
     - ".claude/agents/**/*.md"
@@ -50,7 +57,9 @@ read_write:
 # リスク: 中
 # ═══════════════════════════════════════════════════════════
 orchestrator:
-  tools: [Task, Read]
+  tools:
+    - Task
+    - Read
   # パス制限は不要
   use_cases:
     - 複雑タスクの統括
@@ -63,7 +72,12 @@ orchestrator:
 # リスク: 高
 # ═══════════════════════════════════════════════════════════
 full_access:
-  tools: [Bash, Read, Write, Edit, Task]
+  tools:
+    - Bash
+    - Read
+    - Write
+    - Edit
+    - Task
   # パス制限: 必須
   write_allowed_paths:
     - ".github/**/*.yml"
@@ -79,7 +93,7 @@ full_access:
   approval_required_for:
     - "rm *"
     - "git push"
-    - "npm publish"
+    - "pnpm publish"
     - "docker push"
   # Bash制限
   approved_commands:
@@ -88,7 +102,7 @@ full_access:
     - "grep"
     - "git status"
     - "git diff"
-    - "npm run"
+    - "pnpm run"
     - "pnpm run"
   forbidden_commands:
     - "rm -rf"
@@ -139,7 +153,11 @@ example_agent:
     name: example-agent
     description: |
       サンプルエージェント
-    tools: [Read, Write, Edit, Grep]
+    tools:
+      - Read
+      - Write
+      - Edit
+      - Grep
     model: sonnet
     version: 1.0.0
     ---

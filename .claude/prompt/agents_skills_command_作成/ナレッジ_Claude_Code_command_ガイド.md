@@ -156,7 +156,7 @@ CLAUDE.mdを使うべき時:
 SlashCommand Tool が起動できるのは:
   ✓ カスタムコマンド（.claude/commands/）
   ✗ ビルトインコマンド（/compact, /init等）
-  
+
 条件:
   - description frontmatter が必須
   - disable-model-invocation: true の場合は起動不可
@@ -288,7 +288,7 @@ allowed-tools: Bash(git*), Read, Write(src/**), Search
 allowed-tools: ToolName, ToolName, ...
 
 # パターンマッチング
-allowed-tools: Bash(git*), Bash(npm*)
+allowed-tools: Bash(git*), Bash(pnpm*)
 
 # パス制限
 allowed-tools: Write(src/**/*.js), Read(*.md)
@@ -312,7 +312,7 @@ allowed-tools: Read, Search
 allowed-tools: Bash(git*)
 
 # 特定ディレクトリのみ書き込み可能
-allowed-tools: Read, Write(tests/**), Bash(npm test)
+allowed-tools: Read, Write(tests/**), Bash(pnpm test)
 ```
 
 #### model（オプション）
@@ -424,8 +424,8 @@ Add export to `src/components/index.ts`
 ## Step 4: Verify
 Run tests and type checking:
 ```bash
-npm test -- $ARGUMENTS
-npm run typecheck
+pnpm test -- $ARGUMENTS
+pnpm run typecheck
 ````
 
 ````
@@ -443,13 +443,13 @@ Environment: $ARGUMENTS
 ## Environment Detection
 Determine target environment from $ARGUMENTS:
 - If "staging" → Deploy to staging
-- If "production" → Deploy to production  
+- If "production" → Deploy to production
 - Else → Error
 
 ## Pre-deployment Checks
-1. Run tests: `npm test`
-2. Run linter: `npm run lint`
-3. Build: `npm run build`
+1. Run tests: `pnpm test`
+2. Run linter: `pnpm run lint`
+3. Build: `pnpm run build`
 
 ## Deployment Steps
 
@@ -685,7 +685,7 @@ Test pattern: $ARGUMENTS (default: all tests)
 ## Determine Pattern
 ```bash
 PATTERN="${$ARGUMENTS:-**/*.test.js}"
-npm test -- "$PATTERN"
+pnpm test -- "$PATTERN"
 ````
 
 ````
@@ -911,7 +911,7 @@ Run based on environment:
 ## Deployment
 
 ```bash
-npm run build
+pnpm run build
 aws s3 sync dist/ s3://$BUCKET/
 aws cloudfront create-invalidation --distribution-id $CLOUDFRONT
 ```
@@ -992,7 +992,7 @@ aws s3 sync s3://$BUCKET/ s3://$BUCKET-backup-$(date +%Y%m%d)/
 
 ```bash
 set -e  # Exit on error
-npm run build
+pnpm run build
 aws s3 sync dist/ s3://$BUCKET/
 ```
 
@@ -1005,10 +1005,10 @@ RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" $HEALTH_URL)
 if [ "$RESPONSE" != "200" ]; then
   echo "❌ Health check failed (HTTP $RESPONSE)"
   echo "🔄 Rolling back..."
-  
+
   # Rollback
   aws s3 sync s3://$BUCKET-backup-$(date +%Y%m%d)/ s3://$BUCKET/
-  
+
   echo "✅ Rollback complete"
   exit 1
 fi
@@ -1058,7 +1058,10 @@ Create `.claude/commands/$ARGUMENTS.md`:
 ---
 description: [user-provided description]
 argument-hint: [user-provided args]
-allowed-tools: [user-provided tools]
+allowed-tools:
+  - [user-provided tools]
+  - [user-provided tools]
+  - [user-provided tools]
 ---
 
 # [Command Name]
@@ -1369,7 +1372,7 @@ This command will:
 [動詞] + [対象] + [方法] + [用途/タイミング]
 
 例:
-"Create React component with TypeScript and tests. 
+"Create React component with TypeScript and tests.
 Use when scaffolding new UI components."
 ```
 
@@ -1500,14 +1503,14 @@ fi
 
 ```bash
 # Check tests pass
-if ! npm test; then
+if ! pnpm test; then
   echo "❌ Error: Tests failed"
   echo "Fix tests before deploying"
   exit 1
 fi
 
 # Check build succeeds
-if ! npm run build; then
+if ! pnpm run build; then
   echo "❌ Error: Build failed"
   exit 1
 fi
@@ -1573,7 +1576,7 @@ This command reads from:
 
 ### Issue: Command fails with "X not found"
 
-**Solution**: Install X with `npm install X`
+**Solution**: Install X with `pnpm install X`
 
 ### Issue: Permission denied
 
@@ -1678,7 +1681,7 @@ description: Create component
 ## Step 1: Component Structure
 Reference: @docs/react-components.md (500 tokens)
 
-## Step 2: TypeScript Types  
+## Step 2: TypeScript Types
 Reference: @docs/typescript-interfaces.md (300 tokens)
 
 ## Step 3: Tests
@@ -1700,9 +1703,9 @@ Total: 120s
 
 # 速い（並列実行）
 ```bash
-npm test &
-npm run lint &
-npm run build &
+pnpm test &
+pnpm run lint &
+pnpm run build &
 wait
 ````
 
@@ -1738,14 +1741,14 @@ Message: $ARGUMENTS
 # .claude/commands/test/full.md
 ---
 description: Run complete test suite with coverage
-allowed-tools: Bash(npm*), Bash(jest*)
+allowed-tools: Bash(pnpm*), Bash(jest*)
 ---
 
 # Full Test Suite
 
-1. Unit tests: `npm test`
-2. Integration: `npm run test:integration`
-3. Coverage: `npm run test:coverage`
+1. Unit tests: `pnpm test`
+2. Integration: `pnpm run test:integration`
+3. Coverage: `pnpm run test:coverage`
 4. Report generation
 ```
 

@@ -58,7 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ```bash
 # インストール
-npm install -g conventional-changelog-cli
+pnpm install -g conventional-changelog-cli
 
 # Changelog生成
 conventional-changelog -p angular -i CHANGELOG.md -s

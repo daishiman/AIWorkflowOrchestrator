@@ -223,7 +223,7 @@ jobs:
       - name: Run tests
         env:
           API_KEY: ${{ secrets.API_KEY }} # フォークPRでは空
-        run: npm test
+        run: pnpm test
 ```
 
 ## CI/CD 品質ゲート統合
@@ -247,9 +247,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run type-check
+      - run: pnpm ci
+      - run: pnpm run lint
+      - run: pnpm run type-check
 
   # Gate 3: Tests
   test:
@@ -257,8 +257,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm ci
-      - run: npm test
+      - run: pnpm ci
+      - run: pnpm test
 
   # Gate 4: Build
   build:
@@ -266,8 +266,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm ci
-      - run: npm run build
+      - run: pnpm ci
+      - run: pnpm run build
 
   # すべてのゲート通過後のみデプロイ
   deploy:
@@ -354,7 +354,7 @@ jobs:
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          npm install -g @railway/cli
+          pnpm install -g @railway/cli
           railway status || exit 1
           echo "✅ RAILWAY_TOKEN is valid"
 

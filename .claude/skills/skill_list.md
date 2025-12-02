@@ -430,7 +430,7 @@
 | **authentication-authorization-security** | `.claude/skills/authentication-authorization-security/SKILL.md` | 認証・認可機構のセキュリティ評価、OAuth、JWT、RBAC |
 | **cryptographic-practices** | `.claude/skills/cryptographic-practices/SKILL.md` | 暗号化アルゴリズム、CSPRNG、鍵管理 |
 | **security-configuration-review** | `.claude/skills/security-configuration-review/SKILL.md` | セキュリティヘッダー、CORS、環境変数レビュー |
-| **dependency-security-scanning** | `.claude/skills/dependency-security-scanning/SKILL.md` | 依存関係脆弱性、npm audit、CVE評価 |
+| **dependency-security-scanning** | `.claude/skills/dependency-security-scanning/SKILL.md` | 依存関係脆弱性、pnpm audit、CVE評価 |
 | **code-static-analysis-security** | `.claude/skills/code-static-analysis-security/SKILL.md` | SQLインジェクション、XSS、コマンドインジェクション検出 |
 | **rate-limiting** | `.claude/skills/rate-limiting/SKILL.md` | Token Bucket、Leaky Bucket、Sliding Window |
 | **input-sanitization** | `.claude/skills/input-sanitization/SKILL.md` | パラメータタンパリング防止、エンコード処理 |
@@ -518,7 +518,7 @@
 | スキル名                           | パス                                                     | 概要                                               |
 | ---------------------------------- | -------------------------------------------------------- | -------------------------------------------------- |
 | **semantic-versioning**            | `.claude/skills/semantic-versioning/SKILL.md`            | Major、Minor、Patch バージョン理解、破壊的変更対応 |
-| **dependency-auditing**            | `.claude/skills/dependency-auditing/SKILL.md`            | npm/pnpm audit、CVSS 評価、脆弱性スキャン          |
+| **dependency-auditing**            | `.claude/skills/dependency-auditing/SKILL.md`            | pnpm/pnpm audit、CVSS 評価、脆弱性スキャン          |
 | **lock-file-management**           | `.claude/skills/lock-file-management/SKILL.md`           | pnpm-lock.yaml、整合性検証、競合解決               |
 | **upgrade-strategies**             | `.claude/skills/upgrade-strategies/SKILL.md`             | 段階的アップグレード、TDD 統合、ロールバック       |
 | **monorepo-dependency-management** | `.claude/skills/monorepo-dependency-management/SKILL.md` | pnpm Workspace、バージョン同期、影響分析           |
@@ -708,7 +708,7 @@
 | **authentication-authorization-security** | `.claude/skills/authentication-authorization-security/SKILL.md` | 認証・認可機構のセキュリティ評価、OAuth 2.0、JWT、RBAC/ABAC   |
 | **cryptographic-practices**               | `.claude/skills/cryptographic-practices/SKILL.md`               | 暗号化アルゴリズム評価、CSPRNG、鍵管理、弱い暗号排除          |
 | **security-configuration-review**         | `.claude/skills/security-configuration-review/SKILL.md`         | セキュリティヘッダー、CORS、環境変数、CSP 設定レビュー        |
-| **dependency-security-scanning**          | `.claude/skills/dependency-security-scanning/SKILL.md`          | 依存関係脆弱性スキャン、npm audit、Snyk、CVE 評価             |
+| **dependency-security-scanning**          | `.claude/skills/dependency-security-scanning/SKILL.md`          | 依存関係脆弱性スキャン、pnpm audit、Snyk、CVE 評価             |
 | **code-static-analysis-security**         | `.claude/skills/code-static-analysis-security/SKILL.md`         | SAST、SQL インジェクション、XSS、コマンドインジェクション検出 |
 | **security-reporting**                    | `.claude/skills/security-reporting/SKILL.md`                    | セキュリティレポート生成、リスク評価、アクションプラン策定    |
 

@@ -150,7 +150,7 @@ function getRecommendedApproach(changeType, riskLevel) {
 // npmレジストリからパッケージ情報を取得
 function getPackageInfo(packageName) {
   try {
-    const result = execSync(`npm view ${packageName} --json`, {
+    const result = execSync(`pnpm view ${packageName} --json`, {
       encoding: 'utf8',
       timeout: 30000
     });

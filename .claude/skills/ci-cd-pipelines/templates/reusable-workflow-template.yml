@@ -38,7 +38,7 @@ on:
         default: 80
     secrets:
       NPM_TOKEN:
-        description: 'NPM token for private packages'
+        description: 'pnpm token for private packages'
         required: false
 
 jobs:

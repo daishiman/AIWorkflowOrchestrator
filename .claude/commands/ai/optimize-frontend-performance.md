@@ -19,12 +19,16 @@ description: |
     • Task: router-devエージェント起動用
     • Read: 既存コンポーネント・ページ確認用
     • Edit: 最適化コード適用用
-    • Bash(npm run build): ビルド検証・バンドル分析用
+    • Bash(pnpm run build): ビルド検証・バンドル分析用
   - model: sonnet（標準的なパフォーマンス最適化タスク）
 
   トリガーキーワード: performance, optimize, frontend, パフォーマンス, 最適化, LCP, Core Web Vitals
 argument-hint: "[target-page]"
-allowed-tools: [Task, Read, Edit, Bash(npm run build)]
+allowed-tools:
+  - Task
+  - Read
+  - Edit
+  - Bash(pnpm run build)
 model: sonnet
 ---
 
@@ -51,7 +55,7 @@ model: sonnet
 **現状分析:**
 - 既存コンポーネント構造の確認
 - 画像・フォント使用状況のチェック
-- バンドルサイズの初期測定（`npm run build`実行）
+- バンドルサイズの初期測定（`pnpm run build`実行）
 
 ### Phase 2: router-dev エージェント起動
 
@@ -81,7 +85,7 @@ Phase 3（パフォーマンス最適化）のワークフローを実行:
    - Streaming SSRとSuspense境界追加（必要に応じて）
 
 4. **検証:**
-   - ビルド再実行（`npm run build`）
+   - ビルド再実行（`pnpm run build`）
    - バンドルサイズ比較
    - Core Web Vitals目標値チェック（LCP ≤2.5s、FID ≤100ms、CLS ≤0.1）
 

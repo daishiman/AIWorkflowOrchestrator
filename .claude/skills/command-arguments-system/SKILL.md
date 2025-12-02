@@ -251,7 +251,7 @@ Test pattern: $ARGUMENTS (default: all tests)
 ## Determine Pattern
 ```bash
 PATTERN="${$ARGUMENTS:-**/*.test.js}"
-npm test -- "$PATTERN"
+pnpm test -- "$PATTERN"
 ```
 ```
 

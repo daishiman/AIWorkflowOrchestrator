@@ -31,7 +31,11 @@ description: |
 
   Use proactively when user mentions schema validation, Zod implementation,
   or data integrity requirements.
-tools: [Read, Write, Edit, Grep]
+tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
 model: sonnet
 version: 2.1.0
 ---
@@ -415,25 +419,6 @@ cat docs/00-requirements/master_system_design.md
 - 『JavaScript: The Good Parts』Douglas Crockford著
 - 『Fluent Python』Luciano Ramalho著
 - 『Web API: The Good Parts』水野貴明著
-
-## 変更履歴
-
-### v2.0.0 (2025-11-25)
-- **リファクタリング**: スキル参照方式に移行し1326行→500行に軽量化
-- **追加**: 5つの専門スキルへの参照統合
-  - zod-validation
-  - type-safety-patterns
-  - input-sanitization
-  - error-message-design
-  - json-schema
-- **改善**: ワークフローを簡潔化しスキル参照で補完
-
-### v1.0.1 (2025-11-23)
-- ディレクトリ構造の説明を更新
-- 知識領域5「ハイブリッドアーキテクチャとの統合」を詳細化
-
-### v1.0.0 (2025-11-22)
-- 初版リリース
 
 ## 使用上の注意
 

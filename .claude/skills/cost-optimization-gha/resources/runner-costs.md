@@ -71,7 +71,7 @@ jobs:
   build:
     runs-on: ubuntu-latest  # 最安
     steps:
-      - run: npm run build
+      - run: pnpm run build
       - uses: actions/upload-artifact@v4
         with:
           name: dist
@@ -85,7 +85,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/download-artifact@v4
-      - run: npm test
+      - run: pnpm test
 
 # ビルド: Linux ($0.08)
 # テスト: 3 OS ($0.08 + $0.16 + $0.80 = $1.04)
@@ -131,7 +131,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest  # 4 CPU, 16GB
     steps:
-      - run: npm run lint
+      - run: pnpm run lint
     # 実行時間: 2分
     # コスト: $0.016
 ```
@@ -143,7 +143,7 @@ jobs:
   build:
     runs-on: ubuntu-latest-8-cores  # 8 CPU, 32GB
     steps:
-      - run: npm run build
+      - run: pnpm run build
     # 標準ランナー: 10分 × $0.008/分 = $0.08
     # 大型ランナー: 4分 × $0.032/分 = $0.128
     # → 標準ランナーの方が安い
@@ -190,8 +190,8 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
-      - run: npm ci
-      - run: npm run build
+      - run: pnpm ci
+      - run: pnpm run build
 
 # コスト: $0 (インフラコストのみ)
 ```
@@ -259,7 +259,7 @@ jobs:
   test-linux:
     runs-on: ubuntu-latest
     steps:
-      - run: npm test
+      - run: pnpm test
 
   test-other:
     needs: test-linux
@@ -269,7 +269,7 @@ jobs:
         os: [windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - run: npm test
+      - run: pnpm test
 
 # Linux でエラーがあれば早期終了
 # Windows/macOS の無駄な実行を回避
@@ -295,8 +295,8 @@ jobs:
     runs-on: ubuntu-latest  # 最も効率的
     steps:
       - uses: actions/cache@v4  # キャッシングで時間短縮
-      - run: npm ci
-      - run: npm run build
+      - run: pnpm ci
+      - run: pnpm run build
 
   # 有料実行を最小化
   test-expensive:

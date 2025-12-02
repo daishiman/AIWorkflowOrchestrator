@@ -18,7 +18,11 @@ description: |
   - ネットワーク障害からの自動復旧
 
   Use proactively when network synchronization or file transfer is needed.
-tools: [Bash, Read, Write, Grep]
+tools:
+  - Bash
+  - Read
+  - Write
+  - Grep
 model: sonnet
 version: 2.2.0
 ---
@@ -207,7 +211,7 @@ cat .claude/skills/retry-strategies/SKILL.md
 **Phase 5 完了条件**:
 - [ ] ユニットテストが実装され、カバレッジ80%以上
 - [ ] E2Eテストが実装され、通過している
-- [ ] `npm test` がエラーなく完了する
+- [ ] `pnpm test` がエラーなく完了する
 - [ ] `tsc --noEmit` が型エラーなく完了する
 
 ## エラーハンドリング
@@ -239,7 +243,7 @@ cat .claude/skills/retry-strategies/SKILL.md
 ## ツール使用方針
 
 ### Bash
-- npmスクリプト実行（`npm test`, `npm run build`）
+- pnpmスクリプト実行（`pnpm test`, `pnpm run build`）
 - TypeScriptビルド確認（`tsc --noEmit`）
 - ヘルスチェック（`curl -s https://api/health`）
 
@@ -341,33 +345,6 @@ metrics:
 - **『Site Reliability Engineering』** Google SRE著
   - Chapter 21: Handling Overload
   - Chapter 22: Addressing Cascading Failures
-
-## 変更履歴
-
-### v2.1.0 (2025-11-26)
-- **追加**: Mandatory起動プロトコル（スキル読み込み必須化）
-- **追加**: 各Phase完了条件チェックリスト
-- **改善**: YAML descriptionに依存スキル明示
-- **改善**: @meta-agent-designerと@skill-librarianによる検証済み
-
-### v2.0.0 (2025-11-26)
-- **リファクタリング**: スキルへの知識委譲による軽量化
-  - multipart-uploadスキル新設による詳細技術の分離
-  - network-resilienceスキル新設によるオフライン対応の分離
-  - retry-strategiesスキルとの連携強化
-  - 1076行 → 約350行へ大幅削減
-- **追加**: 依存スキルセクション
-- **追加**: コマンドリファレンスセクション
-
-### v1.1.1 (2025-11-23)
-- ディレクトリ構造のハイブリッドアーキテクチャへの対応
-
-### v1.1.0 (2025-11-22)
-- master_system_design.md (v5.2) への対応
-- TDD原則の統合
-
-### v1.0.0 (2025-11-21)
-- 初版リリース
 
 ## 使用上の注意
 

@@ -34,7 +34,9 @@
 ```yaml
 orchestrator:
   name: project-orchestrator
-  tools: [Task, Read]
+  tools:
+  - Task
+  - Read
   workflow:
     - タスク分析と分割
     - ワーカーへの委譲
@@ -43,11 +45,18 @@ orchestrator:
 
 workers:
   - name: code-generator
-    tools: [Read, Write, Edit]
+    tools:
+      - Read
+      - Write
+      - Edit
   - name: test-runner
-    tools: [Bash, Read]
+    tools:
+  - Bash
+  - Read
   - name: documenter
-    tools: [Read, Write]
+    tools:
+      - Read
+      - Write
 ```
 
 ### アンチパターン
@@ -91,7 +100,9 @@ workers:
 ```yaml
 hub:
   name: data-hub
-  tools: [Read, Write]
+  tools:
+  - Read
+  - Write
   responsibilities:
     - 共通データの管理
     - アクセス制御

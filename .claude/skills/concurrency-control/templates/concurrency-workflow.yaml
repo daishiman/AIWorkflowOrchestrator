@@ -57,10 +57,10 @@ pr-build-latest-only:
         - uses: actions/checkout@v4
 
         - name: Build
-          run: npm run build
+          run: pnpm run build
 
         - name: Test
-          run: npm test
+          run: pnpm test
 
 # ============================================================================
 # 3. 環境ベースの並行実行制御
@@ -150,7 +150,7 @@ job-level-concurrency:
       steps:
         - uses: actions/checkout@v4
         - name: Run tests
-          run: npm test
+          run: pnpm test
 
     # デプロイは順次実行
     deploy:
@@ -238,7 +238,7 @@ release-creation:
         - name: Build artifacts
           run: |
             echo "Building release artifacts..."
-            npm run build
+            pnpm run build
 
         - name: Create GitHub Release
           uses: softprops/action-gh-release@v1

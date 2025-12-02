@@ -4,11 +4,11 @@ description: |
   プロジェクトゴール定義、初期要件整理、アーキテクチャ方針確立を自動化します。
 
   🤖 起動エージェント（起動順）:
-  1. `.claude/agents/product-manager.md`: プロジェクトゴール・ロードマップ定義
-  2. `.claude/agents/req-analyst.md`: 初期要件の整理と受け入れ基準作成
-  3. `.claude/agents/arch-police.md`: アーキテクチャ方針の確立とレイヤー構造設計
+  - Phase 1: `.claude/agents/product-manager.md` - プロジェクトゴール・ロードマップ定義
+  - Phase 2: `.claude/agents/req-analyst.md` - 初期要件の整理と受け入れ基準作成
+  - Phase 3: `.claude/agents/arch-police.md` - アーキテクチャ方針の確立とレイヤー構造設計
 
-  📚 各エージェントが参照するスキル:
+  📚 利用可能スキル（各エージェントが参照）:
 
   **product-manager エージェント:**
   - `.claude/skills/agile-project-management/SKILL.md`: スクラム・カンバン手法
@@ -41,7 +41,11 @@ description: |
 
   トリガーキーワード: init, initialize, setup, new project, 新規プロジェクト, 初期化
 argument-hint: "[project-name]"
-allowed-tools: [Task, Read, Write, Bash(mkdir*|git init*)]
+allowed-tools:
+  - Task
+  - Read
+  - Write
+  - Bash(mkdir*|git init*)
 model: opus
 ---
 
@@ -78,11 +82,11 @@ Task ツールで `.claude/agents/product-manager.md` を起動:
 - 初期バックログ（優先順位付き）
 
 参照スキル（エージェントが自動参照）:
-- agile-project-management
-- user-story-mapping
-- product-vision
-- prioritization-frameworks
-- metrics-tracking
+- `.claude/skills/agile-project-management/SKILL.md` - スクラム・カンバン手法
+- `.claude/skills/user-story-mapping/SKILL.md` - ユーザージャーニー可視化
+- `.claude/skills/product-vision/SKILL.md` - OKR設定、ロードマップ作成
+- `.claude/skills/prioritization-frameworks/SKILL.md` - MoSCoW法、RICE Scoring
+- `.claude/skills/metrics-tracking/SKILL.md` - ベロシティ、バーンダウン測定
 ```
 
 **期待成果物:**
@@ -120,11 +124,11 @@ master_system_design.md との整合性:
 - Section 2.5: 設定ファイル要件を反映
 
 参照スキル（エージェントが自動参照）:
-- requirements-triage
-- ambiguity-elimination
-- use-case-modeling
-- acceptance-criteria-writing
-- functional-non-functional-requirements
+- `.claude/skills/requirements-triage/SKILL.md` - MoSCoW分類、優先順位付け
+- `.claude/skills/ambiguity-elimination/SKILL.md` - 曖昧性除去パターン
+- `.claude/skills/use-case-modeling/SKILL.md` - ユースケース構造化
+- `.claude/skills/acceptance-criteria-writing/SKILL.md` - Given-When-Then基準
+- `.claude/skills/functional-non-functional-requirements/SKILL.md` - 要件分類
 ```
 
 **期待成果物:**
@@ -162,10 +166,10 @@ master_system_design.md との整合性:
 - Section 5.1: ハイブリッドアーキテクチャ原則に準拠
 
 参照スキル（エージェントが自動参照）:
-- clean-architecture-principles
-- solid-principles
-- dependency-analysis
-- architectural-patterns
+- `.claude/skills/clean-architecture-principles/SKILL.md` - レイヤー構造、依存関係ルール
+- `.claude/skills/solid-principles/SKILL.md` - SRP, OCP, LSP, ISP, DIP
+- `.claude/skills/dependency-analysis/SKILL.md` - 依存グラフ構築
+- `.claude/skills/architectural-patterns/SKILL.md` - Hexagonal, Onion パターン
 ```
 
 **期待成果物:**

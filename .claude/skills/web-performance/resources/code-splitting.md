@@ -116,7 +116,7 @@ module.exports = withBundleAnalyzer({
 
 ```bash
 # バンドル分析を実行
-ANALYZE=true npm run build
+ANALYZE=true pnpm run build
 ```
 
 ### 分析結果の読み方

@@ -115,8 +115,8 @@ Thumbs.db
 ```gitignore
 # Node.js
 node_modules/
-npm-debug.log*
-.npm
+pnpm-debug.log*
+.pnpm
 
 # Build
 dist/

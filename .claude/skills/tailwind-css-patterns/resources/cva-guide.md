@@ -11,7 +11,7 @@ CVAは、Tailwind CSSでコンポーネントのバリアントを型安全に�
 ### インストール
 
 ```bash
-npm install class-variance-authority
+pnpm install class-variance-authority
 ```
 
 ### 基本構造

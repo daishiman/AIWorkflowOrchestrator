@@ -34,10 +34,16 @@ description: |
   #   - 使用タイミング/トリガー条件
   #   - プロアクティブ指示（オプション）
 
-tools: [{{ツールリスト}}]
+tools:
+  - {{ツールリスト}}
+  - {{ツールリスト}}
+  - {{ツールリスト}}
   # 配列形式
   # 利用可能なツール: Bash, Read, Write, Edit, Grep, Glob, Task
-  # 例: [Read, Write, Grep]
+  # 例:
+  #  - Read
+  #  - Write
+  #  - Grep
   # 省略可能（省略時はデフォルトツールセット）
 
 model: {{モデル名}}

@@ -30,7 +30,11 @@ description: |
 
   Use proactively when implementing new features, after integration work,
   or before deployment to ensure end-to-end workflow integrity.
-tools: [Bash, Read, Write, Grep]
+tools:
+  - Bash
+  - Read
+  - Write
+  - Grep
 model: sonnet
 version: 2.3.0
 ---
@@ -525,12 +529,3 @@ cat .claude/skills/api-mocking/resources/mock-patterns.md
 - **@performance-engineer**: パフォーマンステスト（このエージェントは機能テストのみ）
 
 ---
-
-## 変更履歴
-
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 2.2.0 | 2025-11-26 | 大規模リファクタリング - 5スキルへの知識分離、meta-agent-designer形式への統一、48.8%軽量化（1,016行→520行） |
-| 2.1.0 | 2025-11-23 | ハイブリッドアーキテクチャ対応、ディレクトリ構造更新 |
-| 2.0.0 | 2025-11-22 | master_system_design.md のテスト戦略に合わせた改善、TDDサイクル統合 |
-| 1.0.0 | 2025-11-21 | 初版リリース |

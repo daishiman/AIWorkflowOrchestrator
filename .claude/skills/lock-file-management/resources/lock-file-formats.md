@@ -63,7 +63,7 @@ snapshots:
 | 6.0 | pnpm 8.x | スナップショット導入 |
 | 5.4 | pnpm 7.x | インポーター形式の改善 |
 
-## package-lock.json (npm)
+## package-lock.json (pnpm)
 
 ### 構造
 
@@ -104,9 +104,9 @@ snapshots:
 
 | lockfileVersion | npmバージョン | 主な変更 |
 |-----------------|---------------|---------|
-| 3 | npm 9.x | package形式のみ、依存関係削除 |
-| 2 | npm 7.x-8.x | packagesとdependencies両方 |
-| 1 | npm 5.x-6.x | 従来の階層形式 |
+| 3 | pnpm 9.x | package形式のみ、依存関係削除 |
+| 2 | pnpm 7.x-8.x | packagesとdependencies両方 |
+| 1 | pnpm 5.x-6.x | 従来の階層形式 |
 
 ### 特徴
 
@@ -136,9 +136,9 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"lodash@npm:^4.17.21":
+"lodash@pnpm:^4.17.21":
   version: 4.17.21
-  resolution: "lodash@npm:4.17.21"
+  resolution: "lodash@pnpm:4.17.21"
   checksum: 10c0/d8cbea072bb08655bb4c989da...
   languageName: node
   linkType: hard
@@ -163,10 +163,10 @@ __metadata:
 
 ## 移行ガイド
 
-### npm → pnpm
+### pnpm → pnpm
 
 ```bash
-# 1. npm の依存をクリーン
+# 1. pnpm の依存をクリーン
 rm -rf node_modules package-lock.json
 
 # 2. pnpm でインストール
@@ -187,14 +187,14 @@ pnpm import  # yarn.lock から変換
 pnpm install
 ```
 
-### pnpm → npm
+### pnpm → pnpm
 
 ```bash
 # 1. pnpm の依存をクリーン
 rm -rf node_modules pnpm-lock.yaml
 
-# 2. npm でインストール
-npm install
+# 2. pnpm でインストール
+pnpm install
 ```
 
 ## チェックリスト

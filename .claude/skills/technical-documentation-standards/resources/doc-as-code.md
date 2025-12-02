@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm run docs:build
+      - run: pnpm run docs:build
 ```
 
 ## ディレクトリ構造

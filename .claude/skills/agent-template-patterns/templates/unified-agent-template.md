@@ -26,7 +26,11 @@ description: |
 
   Use proactively when {{english_trigger_keywords}}.
 
-tools: [{{tools_list}}]
+tools:
+  - {{tools_list}}
+  - {{tools_list}}
+  - {{tools_list}}
+  - {{tools_list}}
 model: {{model}}
 version: 1.0.0
 {{optional_fields}}

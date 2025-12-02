@@ -11,7 +11,7 @@ description: |
   - `.claude/skills/lock-file-management/resources/ci-cd-optimization.md`: frozen-lockfile設定、キャッシュ戦略、ビルド時間短縮、並列インストール
   - `.claude/skills/lock-file-management/resources/conflict-resolution.md`: マージコンフリクト解決手順、再生成戦略、両立性確保の方法
   - `.claude/skills/lock-file-management/resources/integrity-verification.md`: package.json同期確認、整合性ハッシュ検証、依存ツリー検証、自動チェックスクリプト
-  - `.claude/skills/lock-file-management/resources/lock-file-formats.md`: pnpm/npm/yarn各形式の構造、バージョン履歴、形式間比較、移行ガイド
+  - `.claude/skills/lock-file-management/resources/lock-file-formats.md`: pnpm/pnpm/yarn各形式の構造、バージョン履歴、形式間比較、移行ガイド
   - `.claude/skills/lock-file-management/scripts/verify-lock-integrity.mjs`: ロックファイル整合性の自動検証（PM検出、同期確認、詳細レポート）
   - `.claude/skills/lock-file-management/templates/lockfile-troubleshooting-template.md`: ロックファイル問題のトラブルシューティング手順テンプレート
 
@@ -175,12 +175,12 @@ pnpm install --frozen-lockfile
 pnpm install --prod --frozen-lockfile
 ```
 
-### npm (package-lock.json)
+### pnpm (package-lock.json)
 
 **特徴**:
 
 - JSON 形式
-- npm v7 以降でワークスペースをサポート
+- pnpm v7 以降でワークスペースをサポート
 - 広く普及
 
 **推奨設定**:
@@ -195,13 +195,13 @@ save-exact=true
 
 ```bash
 # 開発環境
-npm install
+pnpm install
 
 # CI環境（クリーンインストール）
-npm ci
+pnpm ci
 
 # 本番環境
-npm ci --production
+pnpm ci --production
 ```
 
 ### yarn (yarn.lock)
@@ -308,7 +308,7 @@ yarn install --production --immutable
 2. **CI 環境では厳格モードを使用**:
 
    - `pnpm install --frozen-lockfile`
-   - `npm ci`
+   - `pnpm ci`
    - `yarn install --immutable`
 
 3. **定期的な更新**:
@@ -350,8 +350,8 @@ yarn install --production --immutable
 # pnpm
 pnpm install
 
-# npm
-npm install
+# pnpm
+pnpm install
 
 # yarn
 yarn install
@@ -390,8 +390,8 @@ git commit -m "chore: resolve lock file conflict"
 # .npmrc
 strict-peer-dependencies=false
 
-# npm: legacy peer depsモード
-npm install --legacy-peer-deps
+# pnpm: legacy peer depsモード
+pnpm install --legacy-peer-deps
 
 # または特定バージョンを強制
 # package.json
@@ -450,5 +450,5 @@ npm install --legacy-peer-deps
 ## 参考文献
 
 - **pnpm documentation**: https://pnpm.io/
-- **npm package-lock.json**: https://docs.npmjs.com/cli/v10/configuring-npm/package-lock-json
+- **pnpm package-lock.json**: https://docs.npmjs.com/cli/v10/configuring-pnpm/package-lock-json
 - **yarn.lock**: https://yarnpkg.com/configuration/yarnrc

@@ -651,7 +651,7 @@ cat resources/api-integration.md
 **サポートされる言語:**
 
 - Python（PyPI からパッケージインストール可能）
-- JavaScript/Node.js（npm からパッケージインストール可能）
+- JavaScript/Node.js（pnpm からパッケージインストール可能）
 - Bash/Shell
 - その他（システムにインストール済みの言語）
 
@@ -1063,7 +1063,7 @@ description: Guide TDD workflow with Red-Green-Refactor cycle
 2. **テスト実行**
 
    ```bash
-   npm test  # 成功を確認
+   pnpm test  # 成功を確認
    ```
 
 ### Phase 3: REFACTOR（リファクタリング）
@@ -1078,16 +1078,16 @@ description: Guide TDD workflow with Red-Green-Refactor cycle
 
    ```bash
    # リンター実行
-   npm run lint
+   pnpm run lint
 
    # カバレッジ確認
-   npm run coverage
+   pnpm run coverage
    ```
 
 3. **最終検証**
 
    ```bash
-   npm test  # 引き続きパスすることを確認
+   pnpm test  # 引き続きパスすることを確認
    ```
 
 ## ベストプラクティス
@@ -1745,49 +1745,6 @@ PATCH: バグ修正
 - パフォーマンス改善
 ```
 
-#### 変更ログの記録
-
-````markdown
-# SKILL.md 内に記載
-
-## 変更履歴
-
-### v2.1.0 (2025-11-15)
-
-**追加**
-
-- 新しいリソース: `resources/advanced-patterns.md`
-- スクリプト: `scripts/batch_process.py`
-
-**改善**
-
-- エラーメッセージをより詳細に
-- パフォーマンス向上（30%高速化）
-
-**修正**
-
-- バグ: Unicode 文字の処理エラー
-
-### v2.0.0 (2025-10-01) - 破壊的変更
-
-**変更**
-
-- API 構造の刷新
-- `old_function()` を `new_function()` に置換
-
-**削除**
-
-- 非推奨だった `legacy_mode`
-
-**マイグレーション**
-
-```bash
-# 旧バージョンから移行するには:
-cat resources/migration-guide.md
-```
-````
-
-````
 
 ### 6.7 パフォーマンス最適化
 
@@ -2200,7 +2157,7 @@ EOF
 
 ```bash
 # CLIインストール（グローバル）
-npm install -g claude-skills-cli
+pnpm install -g claude-skills-cli
 
 # または、プロジェクトローカル
 pnpm add -D claude-skills-cli
@@ -2449,7 +2406,7 @@ git clone https://github.com/spences10/svelte-claude-skills.git
 cd svelte-claude-skills/scripts
 
 # 必要な依存関係をインストール
-npm install
+pnpm install
 
 # テスト実行（要: ANTHROPIC_API_KEY）
 export ANTHROPIC_API_KEY=sk-ant-api03-your-key-here

@@ -39,9 +39,9 @@ jobs:
           DEPLOY_ENV: ${{ vars.DEPLOY_ENV }}
         run: |
           echo "Deploying to $DEPLOY_ENV environment"
-          npm ci
-          npm run build
-          npm run deploy:dev
+          pnpm ci
+          pnpm run build
+          pnpm run deploy:dev
 
   # Staging環境（mainブランチから自動デプロイ）
   deploy-staging:
@@ -67,9 +67,9 @@ jobs:
           DEPLOY_ENV: ${{ vars.DEPLOY_ENV }}
         run: |
           echo "Deploying to $DEPLOY_ENV environment"
-          npm ci
-          npm run build
-          npm run deploy:staging
+          pnpm ci
+          pnpm run build
+          pnpm run deploy:staging
 
   # Production環境（Staging成功後、手動承認でデプロイ）
   deploy-production:
@@ -96,9 +96,9 @@ jobs:
           DEPLOY_ENV: ${{ vars.DEPLOY_ENV }}
         run: |
           echo "Deploying to $DEPLOY_ENV environment"
-          npm ci
-          npm run build
-          npm run deploy:prod
+          pnpm ci
+          pnpm run build
+          pnpm run deploy:prod
 
 ---
 
@@ -134,7 +134,7 @@ jobs:
       - name: Run Smoke Tests
         run: |
           echo "Running smoke tests on staging..."
-          npm run test:smoke
+          pnpm run test:smoke
 
   deploy-production:
     needs: deploy-staging
@@ -156,7 +156,7 @@ jobs:
       - name: Verify Deployment
         run: |
           echo "Verifying production deployment..."
-          npm run test:e2e:prod
+          pnpm run test:e2e:prod
 
 ---
 
@@ -340,12 +340,12 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
           echo "Running migration version ${{ github.event.inputs.migration-version }}"
-          npm run migrate:up
+          pnpm run migrate:up
 
       - name: Verify Migration
         run: |
           echo "Verifying migration..."
-          npm run migrate:verify
+          pnpm run migrate:verify
 
   deploy-backend:
     needs: migrate-database
@@ -384,7 +384,7 @@ jobs:
           API_ENDPOINT: https://api.example.com
         run: |
           echo "Deploying frontend..."
-          npm run build
+          pnpm run build
           ./deploy-frontend.sh
 
 ---
@@ -489,7 +489,7 @@ jobs:
       - name: Verify Rollback
         run: |
           echo "Verifying rollback..."
-          npm run test:smoke
+          pnpm run test:smoke
 
       - name: Notify Team
         if: always()

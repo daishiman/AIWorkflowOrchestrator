@@ -40,13 +40,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       - name: Upload build artifacts (常に実行)
         if: always()
@@ -67,11 +67,11 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Run tests
         id: test
-        run: npm test
+        run: pnpm test
 
       - name: Upload test results (成功時のみ)
         if: success()
@@ -126,7 +126,7 @@ jobs:
       - name: Deploy to dev
         run: |
           echo "Deploying to development environment..."
-          npm run deploy:dev
+          pnpm run deploy:dev
 
   deploy-prod:
     needs: [build, test]
@@ -150,7 +150,7 @@ jobs:
       - name: Deploy to production
         run: |
           echo "Deploying to production environment..."
-          npm run deploy:prod
+          pnpm run deploy:prod
 
       - name: Create release
         if: success()
@@ -182,10 +182,10 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Run E2E tests
-        run: npm run test:e2e
+        run: pnpm run test:e2e
 
       - name: Upload E2E results
         if: always()
@@ -209,10 +209,10 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Run performance tests
-        run: npm run test:perf
+        run: pnpm run test:perf
 
       - name: Comment performance results
         if: always()
@@ -238,8 +238,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm ci
-      - run: npm test
+      - run: pnpm ci
+      - run: pnpm test
 
   manual-deploy:
     needs: manual-test
@@ -256,15 +256,15 @@ jobs:
           case "${{ inputs.environment }}" in
             development)
               echo "Deploying to development..."
-              npm run deploy:dev
+              pnpm run deploy:dev
               ;;
             staging)
               echo "Deploying to staging..."
-              npm run deploy:staging
+              pnpm run deploy:staging
               ;;
             production)
               echo "Deploying to production..."
-              npm run deploy:prod
+              pnpm run deploy:prod
               ;;
           esac
 
@@ -287,15 +287,15 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
 
       - name: Run tests
-        run: npm test
+        run: pnpm test
 
       # Ubuntu + Node 20 の場合のみ追加テストを実行
       - name: Run integration tests
         if: matrix.os == 'ubuntu-latest' && matrix.node == '20'
-        run: npm run test:integration
+        run: pnpm run test:integration
 
       # Windows 以外で実行
       - name: Run Unix-specific tests
@@ -315,14 +315,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm audit
+      - run: pnpm audit
 
   lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm ci
-      - run: npm run lint
+      - run: pnpm ci
+      - run: pnpm run lint
 
   final-deploy:
     needs: [build, test, security-scan, lint]
@@ -339,7 +339,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: echo "All checks passed! Ready to deploy."
-      - run: npm run deploy:prod
+      - run: pnpm run deploy:prod
 
   # ========================================
   # PR マージ検出
@@ -387,7 +387,7 @@ jobs:
           DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
         run: |
           echo "Deploying with authentication..."
-          npm run deploy
+          pnpm run deploy
 
   # ========================================
   # 失敗時のデバッグログ収集
@@ -405,7 +405,7 @@ jobs:
         run: |
           mkdir -p debug-logs
           docker logs test-container > debug-logs/docker.log || true
-          npm run test -- --verbose > debug-logs/test-verbose.log || true
+          pnpm run test -- --verbose > debug-logs/test-verbose.log || true
           cat package.json > debug-logs/package.json
 
       - name: Upload debug logs

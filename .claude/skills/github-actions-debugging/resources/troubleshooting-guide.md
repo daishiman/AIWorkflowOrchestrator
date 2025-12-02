@@ -107,11 +107,11 @@ Cache not found for input keys: ...
 - name: Cache dependencies
   uses: actions/cache@v4
   with:
-    path: ~/.npm
+    path: ~/.pnpm
     # ハッシュが一致するか確認
-    key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+    key: ${{ runner.os }}-pnpm-${{ hashFiles('**/package-lock.json') }}
     restore-keys: |
-      ${{ runner.os }}-npm-
+      ${{ runner.os }}-pnpm-
 ```
 
 **原因B: キャッシュの有効期限切れ**
@@ -123,10 +123,10 @@ Cache not found for input keys: ...
 - name: Cache with fallback
   uses: actions/cache@v4
   with:
-    path: ~/.npm
-    key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+    path: ~/.pnpm
+    key: ${{ runner.os }}-pnpm-${{ hashFiles('**/package-lock.json') }}
     restore-keys: |
-      ${{ runner.os }}-npm-
+      ${{ runner.os }}-pnpm-
       ${{ runner.os }}-
 ```
 
@@ -136,7 +136,7 @@ Cache not found for input keys: ...
 
 ```yaml
 # Node.js
-path: ~/.npm
+path: ~/.pnpm
 # または
 path: node_modules
 
@@ -167,9 +167,9 @@ Cache size exceeded limit of 10GB
   with:
     # 必要最小限のみキャッシュ
     path: |
-      ~/.npm
-      !~/.npm/_logs
-    key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+      ~/.pnpm
+      !~/.pnpm/_logs
+    key: ${{ runner.os }}-pnpm-${{ hashFiles('**/package-lock.json') }}
 ```
 
 **解決策B: 複数のキャッシュに分割**
@@ -220,14 +220,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
   test:
     needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Test
-        run: npm test
+        run: pnpm test
 ```
 
 ### 3.2 ステップタイムアウト
@@ -237,11 +237,11 @@ jobs:
 ```yaml
 - name: Install dependencies
   timeout-minutes: 10
-  run: npm install
+  run: pnpm install
 
 - name: Run tests
   timeout-minutes: 30
-  run: npm test
+  run: pnpm test
 ```
 
 ### 3.3 ネットワークタイムアウト
@@ -249,7 +249,7 @@ jobs:
 **エラーメッセージ**:
 ```
 curl: (28) Operation timed out
-npm ERR! network request timed out
+pnpm ERR! network request timed out
 ```
 
 **解決策**: リトライ処理を追加
@@ -335,7 +335,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Test without secrets
-        run: npm test
+        run: pnpm test
 ```
 
 ## 5. チェックアウトエラー
@@ -377,19 +377,19 @@ Error: Repository not found
 
 **エラーメッセージ**:
 ```
-npm ERR! 404 Not Found
+pnpm ERR! 404 Not Found
 pip install error: No matching distribution found
 ```
 
 **解決策A: レジストリを確認**
 
 ```yaml
-- name: Configure npm registry
+- name: Configure pnpm registry
   run: |
     echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
 - name: Install dependencies
-  run: npm install
+  run: pnpm install
 ```
 
 **解決策B: バージョンを固定**
@@ -397,7 +397,7 @@ pip install error: No matching distribution found
 ```yaml
 - name: Install specific version
   run: |
-    npm install react@18.2.0
+    pnpm install react@18.2.0
     pip install requests==2.28.0
 ```
 
@@ -410,10 +410,10 @@ pip install error: No matching distribution found
   uses: actions/setup-node@v4
   with:
     node-version: '20.x'
-    cache: 'npm'
+    cache: 'pnpm'
 
 - name: Install dependencies
-  run: npm ci
+  run: pnpm ci
 ```
 
 ## 7. ビルドエラー
@@ -430,7 +430,7 @@ JavaScript heap out of memory
 
 ```yaml
 - name: Build with more memory
-  run: NODE_OPTIONS="--max_old_space_size=4096" npm run build
+  run: NODE_OPTIONS="--max_old_space_size=4096" pnpm run build
   env:
     NODE_OPTIONS: --max_old_space_size=4096
 ```
@@ -443,7 +443,7 @@ jobs:
     runs-on: ubuntu-latest-large  # GitHub Enterpriseで利用可能
     steps:
       - name: Build
-        run: npm run build
+        run: pnpm run build
 ```
 
 ### 7.2 ディスク容量不足
@@ -464,7 +464,7 @@ No space left on device
     df -h
 
 - name: Build
-  run: npm run build
+  run: pnpm run build
 ```
 
 ## 8. アーティファクトエラー
@@ -482,7 +482,7 @@ Error: Unable to upload artifact
 
 ```yaml
 - name: Build
-  run: npm run build
+  run: pnpm run build
 
 - name: Check artifact
   run: |

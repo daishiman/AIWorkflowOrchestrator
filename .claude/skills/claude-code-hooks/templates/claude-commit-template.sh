@@ -33,7 +33,7 @@ echo -e "${GREEN}✅ ESLint OK${NC}"
 
 # 3. テスト実行
 echo -e "${YELLOW}Running tests...${NC}"
-if ! npm test -- --bail 2>&1; then
+if ! pnpm test -- --bail 2>&1; then
   echo -e "${RED}❌ Tests failed${NC}"
   exit 1
 fi

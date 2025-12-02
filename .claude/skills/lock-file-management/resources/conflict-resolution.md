@@ -101,7 +101,7 @@ pnpm audit
 pnpm test
 ```
 
-### npm
+### pnpm
 
 ```bash
 # 1. package.jsonのコンフリクトを解決
@@ -112,11 +112,11 @@ rm package-lock.json
 rm -rf node_modules
 
 # 4. 再インストール
-npm install
+pnpm install
 
 # 5. 確認
-npm audit
-npm test
+pnpm audit
+pnpm test
 ```
 
 ### yarn

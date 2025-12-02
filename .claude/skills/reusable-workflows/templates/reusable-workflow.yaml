@@ -85,11 +85,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
-          cache: 'npm'
+          cache: 'pnpm'
 
       # 3. Install dependencies
       - name: Install dependencies
-        run: npm ci
+        run: pnpm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.API_TOKEN }}
 
@@ -109,7 +109,7 @@ jobs:
           echo "Debug mode: ${{ inputs.debug-mode }}"
 
           # Your main logic here
-          npm run build
+          pnpm run build
 
           # Set output
           echo "result=success" >> $GITHUB_OUTPUT

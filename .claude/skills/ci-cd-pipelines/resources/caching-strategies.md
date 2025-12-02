@@ -43,17 +43,17 @@
 - `~/.pnpm-store` をキャッシュ
 - `actions/setup-node` が自動管理
 
-### npm キャッシュ
+### pnpm キャッシュ
 
 ```yaml
-- name: Setup Node.js with npm cache
+- name: Setup Node.js with pnpm cache
   uses: actions/setup-node@v4
   with:
     node-version: 22
-    cache: 'npm'
+    cache: 'pnpm'
 
 - name: Install dependencies
-  run: npm ci
+  run: pnpm ci
 ```
 
 ### yarn キャッシュ

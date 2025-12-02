@@ -24,7 +24,11 @@ description: |
   Use proactively when creating new skills, refactoring agents,
   improving existing skills, or checking detailed phase procedures
   and quality criteria.
-tools: [Read, Write, Grep, Bash]
+tools:
+  - Read
+  - Write
+  - Grep
+  - Bash
 tags: [workflow, skill-creation, agent-refactoring, quality-assurance]
 version: 1.0.0
 ---
