@@ -1110,48 +1110,67 @@
   |---------|------|------|
   | **electron-security-hardening** | `.claude/skills/electron-security-hardening/SKILL.md` | サンドボックス、CSP、IPC安全性 |
 
-#### 40. Electron Builder
+#### 40. Electron DevOps（ビルド・配布統合）
 
-- **エージェント名:** `@electron-builder`
-- **エージェントの配置:** `.claude/agents/electron-builder.md`
-- **バージョン:** v1.0.0 (2025-12-02 新規作成)
-- **モデル人物:** **develar** - electron-builder 作者
-- **目的:** Electronアプリケーションのビルド・パッケージング・コード署名。
-- **背景:** 各プラットフォーム（macOS/Windows/Linux）で異なるビルド設定、コード署名、インストーラー形式が必要。
-- **責務:** electron-builder設定、コード署名、アイコン生成、CI/CDビルドパイプライン。
+- **エージェント名:** `@electron-devops`
+- **エージェントの配置:** `.claude/agents/electron-devops.md`
+- **バージョン:** v2.0.0 (2025-12-02 統合)
+- **統合元:** `@electron-builder` + `@electron-release`を統合
+- **モデル人物:** **develar** (electron-builder作者) + **Shelley Vohr** (Electron Release Coordinator)
+- **目的:** Electronアプリケーションのビルド・パッケージング・配布・自動更新を一貫して管理。
+- **背景:** ビルドから配布までの一貫したパイプラインにより、効率的なリリース管理を実現。
+- **責務:**
+  - electron-builder設定、コード署名、アイコン生成
+  - electron-updater設定、配布チャネル管理
+  - CI/CDビルド・リリースパイプライン
 - **参照書籍・メソッド:**
   1. **『electron-builder Documentation』**: ビルド設定とpublish設定。
-  2. **『Apple Developer Documentation』**: コード署名とNotarization。
-  3. **『Authenticode』**: Windowsコード署名。
+  2. **『electron-updater Documentation』**: 自動更新設定。
+  3. **『Apple Developer Documentation』**: コード署名とNotarization。
+  4. **『Semantic Versioning』**: バージョン管理戦略。
 - **実行チェックリスト:**
   - [ ] すべての対象プラットフォームでビルドが成功するか？
   - [ ] コード署名が正しく設定されているか？
-  - [ ] アイコンが各プラットフォーム要件を満たしているか？
-- **成果物:** `electron-builder.yml`, `build/entitlements.mac.plist`, `.github/workflows/build.yml`
+  - [ ] 自動更新が署名済みビルドでテストされているか？
+  - [ ] リリースチャネル（stable/beta）が設定されているか？
+- **成果物:** `electron-builder.yml`, `src/main/services/updateService.ts`, `.github/workflows/release.yml`
 - **必要なスキル**:
   | スキル名 | パス | 概要 |
   |---------|------|------|
   | **electron-packaging** | `.claude/skills/electron-packaging/SKILL.md` | electron-builder、コード署名、アイコン |
+  | **electron-distribution** | `.claude/skills/electron-distribution/SKILL.md` | 自動更新、リリースチャネル、配布 |
 
-#### 41. Electron Release Manager
+---
 
-- **エージェント名:** `@electron-release`
-- **エージェントの配置:** `.claude/agents/electron-release.md`
+### チーム 13：フロントエンドテスト（フロントエンドテストチーム）
+
+#### 41. フロントエンドテスター
+
+- **エージェント名:** `@frontend-tester`
+- **エージェントの配置:** `.claude/agents/frontend-tester.md`
 - **バージョン:** v1.0.0 (2025-12-02 新規作成)
-- **モデル人物:** **Shelley Vohr** - Electron Release Coordinator
-- **目的:** Electronアプリケーションの配布・自動更新機能の実装。
-- **背景:** デスクトップアプリはWeb と異なり、ユーザーへの更新配布が課題。自動更新機能が必須。
-- **責務:** electron-updater設定、配布チャネル設定、リリースワークフロー構築。
+- **モデル人物:** **Kent C. Dodds** - Testing Library 作者
+- **目的:** フロントエンドテスト戦略の統合管理と高品質なテスト自動化。
+- **背景:** コンポーネントテスト、ビジュアルテスト、アクセシビリティテスト、E2Eテストを体系的に管理する専門家が必要。
+- **責務:**
+  - コンポーネントテスト（Vitest + React Testing Library）
+  - ビジュアルリグレッションテスト（Chromatic/Percy + Storybook）
+  - アクセシビリティテスト（axe-core + WCAG 2.1 AA）
+  - E2Eテスト（Playwright Web/Electron）
+  - モック戦略（MSW）
+  - テストカバレッジ80%+達成
 - **参照書籍・メソッド:**
-  1. **『electron-updater Documentation』**: 自動更新設定。
-  2. **『Semantic Versioning』**: バージョン管理戦略。
-  3. **『Release Engineering』**: リリース自動化とチャネル管理。
+  1. **『Testing Library Documentation』**: テストベストプラクティス。
+  2. **『Vitest Documentation』**: 高速テストフレームワーク。
+  3. **『Playwright Documentation』**: クロスブラウザE2Eテスト。
+  4. **『axe-core Documentation』**: アクセシビリティ自動テスト。
 - **実行チェックリスト:**
-  - [ ] 自動更新が署名済みビルドでテストされているか？
-  - [ ] 更新進捗がUIに表示されるか？
-  - [ ] リリースチャネル（stable/beta）が設定されているか？
-- **成果物:** `src/main/services/updateService.ts`, `.github/workflows/release.yml`, `CHANGELOG.md`
+  - [ ] コンポーネントテストがすべてパスしているか？
+  - [ ] ビジュアルテストがセットアップされているか？
+  - [ ] アクセシビリティテストがWCAG 2.1 AA準拠か？
+  - [ ] テストカバレッジが80%以上か？
+- **成果物:** `**/*.test.tsx`, `**/*.stories.tsx`, `tests/a11y/`, `__tests__/e2e/`
 - **必要なスキル**:
   | スキル名 | パス | 概要 |
   |---------|------|------|
-  | **electron-distribution** | `.claude/skills/electron-distribution/SKILL.md` | 自動更新、リリースチャネル、配布 |
+  | **frontend-testing** | `.claude/skills/frontend-testing/SKILL.md` | テストピラミッド、Vitest、RTL、Chromatic、axe-core、Playwright |
