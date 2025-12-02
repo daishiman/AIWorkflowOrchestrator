@@ -1,0 +1,203 @@
+# ==========================================
+# electron-builder 設定テンプレート
+#
+# このファイルをプロジェクトルートにコピーして使用
+# ==========================================
+
+# アプリケーション識別情報
+appId: com.yourcompany.yourapp
+productName: Your App Name
+copyright: Copyright © 2024 Your Company
+
+# ==========================================
+# ディレクトリ設定
+# ==========================================
+directories:
+  output: dist
+  buildResources: build
+
+# ==========================================
+# ファイル設定
+# ==========================================
+files:
+  # 含めるファイル
+  - "dist/**/*"
+  - "package.json"
+
+  # 除外するファイル
+  - "!**/*.{ts,tsx,map}"
+  - "!**/*.d.ts"
+  - "!**/node_modules/*/{CHANGELOG.md,README.md,readme.md}"
+  - "!**/node_modules/.bin"
+  - "!**/*.md"
+  - "!**/LICENSE*"
+  - "!**/.eslintrc*"
+  - "!**/.prettier*"
+  - "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}"
+
+# ==========================================
+# ASAR設定
+# ==========================================
+asar: true
+asarUnpack:
+  # ネイティブモジュールはunpack
+  - "**/*.node"
+  - "**/node_modules/sharp/**"
+  - "**/node_modules/better-sqlite3/**"
+
+# ==========================================
+# 公開設定
+# ==========================================
+publish:
+  - provider: github
+    owner: your-username
+    repo: your-repo
+    releaseType: release
+
+# ==========================================
+# macOS設定
+# ==========================================
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+    - target: zip
+      arch:
+        - x64
+        - arm64
+
+  category: public.app-category.developer-tools
+  darkModeSupport: true
+
+  # 署名設定
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  identity: "Developer ID Application: Your Name (TEAM_ID)"
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+
+  # 使用説明文字列
+  extendInfo:
+    NSDocumentsFolderUsageDescription: "ドキュメントフォルダにアクセスします"
+    NSDownloadsFolderUsageDescription: "ダウンロードフォルダにアクセスします"
+
+# DMG設定
+dmg:
+  sign: false
+  contents:
+    - x: 130
+      y: 220
+    - x: 410
+      y: 220
+      type: link
+      path: /Applications
+  background: build/dmg-background.png
+  window:
+    width: 540
+    height: 380
+
+# ==========================================
+# Windows設定
+# ==========================================
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+        - ia32
+    - target: portable
+      arch:
+        - x64
+
+  # 署名設定
+  sign: ./scripts/sign.js
+  # certificateFile: ${env.WIN_CERT_FILE}
+  # certificatePassword: ${env.WIN_CERT_PASSWORD}
+
+  # アイコン
+  icon: build/icon.ico
+
+  # ファイル関連付け（オプション）
+  # fileAssociations:
+  #   - ext: yourext
+  #     name: Your File Type
+  #     description: Your Application File
+  #     icon: build/file-icon.ico
+
+# NSIS設定
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  installerIcon: build/icon.ico
+  uninstallerIcon: build/icon.ico
+  # installerHeader: build/installer-header.bmp
+  # installerSidebar: build/installer-sidebar.bmp
+  license: LICENSE.txt
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Your App Name
+
+# ==========================================
+# Linux設定
+# ==========================================
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+    - target: deb
+      arch:
+        - x64
+    - target: rpm
+      arch:
+        - x64
+
+  category: Development
+  maintainer: maintainer@yourcompany.com
+  vendor: Your Company
+  icon: build/icons
+
+  desktop:
+    Name: Your App Name
+    Comment: Your application description
+    Categories: Development;Utility;
+
+# AppImage設定
+appImage:
+  systemIntegration: ask
+  license: LICENSE.txt
+
+# Deb設定
+deb:
+  depends:
+    - libnotify4
+    - libappindicator3-1
+  # afterInstall: build/scripts/postinst.sh
+  # afterRemove: build/scripts/postrm.sh
+
+# ==========================================
+# 公証設定（macOS）
+# ==========================================
+afterSign: scripts/notarize.js
+
+# ==========================================
+# npmリビルド設定
+# ==========================================
+npmRebuild: true
+nodeGypRebuild: false
+
+# ==========================================
+# 追加設定
+# ==========================================
+
+# 圧縮レベル（0-9、高いほど小さいが遅い）
+compression: normal
+
+# ビルド番号
+# buildVersion: ${env.BUILD_NUMBER}
+
+# アーティファクト名
+artifactName: "${productName}-${version}-${os}-${arch}.${ext}"

@@ -1035,3 +1035,123 @@
   | **github-api-integration** | `.claude/skills/github-api-integration/SKILL.md` | GitHub API、gh CLI |
   | **workflow-templates** | `.claude/skills/workflow-templates/SKILL.md` | ワークフローテンプレート |
   | **concurrency-control** | `.claude/skills/concurrency-control/SKILL.md` | 同時実行制御 |
+
+---
+
+### チーム 12：Electronデスクトップアプリ開発（Electronチーム）
+
+#### 37. Electron アーキテクト
+
+- **エージェント名:** `@electron-architect`
+- **エージェントの配置:** `.claude/agents/electron-architect.md`
+- **バージョン:** v1.0.0 (2025-12-02 新規作成)
+- **モデル人物:** **Felix Rieseberg** - Slack Electron アーキテクト
+- **目的:** Electronアプリケーションのセキュアで保守性の高いアーキテクチャ設計。
+- **背景:** Electronはセキュリティリスクが高く、Main/Renderer/Preloadの適切な分離設計が必須。
+- **責務:** プロセスモデル設計、IPC設計、contextBridge設計、プロジェクト構造策定。
+- **参照書籍・メソッド:**
+  1. **『Electron Documentation』**: 公式セキュリティベストプラクティス。
+  2. **『Building Cross-Platform Desktop Apps』**: プロセスモデルとIPC設計。
+  3. **『Clean Architecture』**: 依存関係の方向性とレイヤー分離。
+- **実行チェックリスト:**
+  - [ ] contextIsolation: true が設定されているか？
+  - [ ] nodeIntegration: false が設定されているか？
+  - [ ] IPCチャネルは型安全に設計されているか？
+- **成果物:** `src/main/index.ts`, `src/preload/index.ts`, `src/shared/ipc-types.ts`
+- **必要なスキル**:
+  | スキル名 | パス | 概要 |
+  |---------|------|------|
+  | **electron-architecture** | `.claude/skills/electron-architecture/SKILL.md` | Main/Renderer分離、IPC設計、コンテキストブリッジ |
+
+#### 38. Electron UI Developer
+
+- **エージェント名:** `@electron-ui-dev`
+- **エージェントの配置:** `.claude/agents/electron-ui-dev.md`
+- **バージョン:** v1.0.0 (2025-12-02 新規作成)
+- **モデル人物:** **Zeke Sikelianos** - Electron Core Team
+- **目的:** デスクトップ特有のUI要素（ウィンドウ、メニュー、トレイ等）の実装。
+- **背景:** WebとデスクトップのUIは異なる。ネイティブUIパターンとアクセシビリティの両立が必要。
+- **責務:** BrowserWindow管理、メニュー実装、ダイアログ、通知、トレイ、カスタムタイトルバー。
+- **参照書籍・メソッド:**
+  1. **『Electron Documentation』**: BrowserWindow API、Menu API。
+  2. **『Apple Human Interface Guidelines』**: macOSネイティブUI規約。
+  3. **『Windows UI Guidelines』**: Windowsネイティブパターン。
+- **実行チェックリスト:**
+  - [ ] ウィンドウ状態が永続化されているか？
+  - [ ] キーボードショートカットが設定されているか？
+  - [ ] プラットフォーム差異が考慮されているか？
+- **成果物:** `src/main/window.ts`, `src/main/menu.ts`, `src/main/tray.ts`
+- **必要なスキル**:
+  | スキル名 | パス | 概要 |
+  |---------|------|------|
+  | **electron-ui-patterns** | `.claude/skills/electron-ui-patterns/SKILL.md` | BrowserWindow、メニュー、ダイアログ、トレイ |
+  | **accessibility-wcag** | `.claude/skills/accessibility-wcag/SKILL.md` | WCAG準拠、ARIAパターン |
+
+#### 39. Electron Security Engineer
+
+- **エージェント名:** `@electron-security`
+- **エージェントの配置:** `.claude/agents/electron-security.md`
+- **バージョン:** v1.0.0 (2025-12-02 新規作成)
+- **モデル人物:** **Samuel Attard** - Electron Security Team
+- **目的:** Electronアプリケーションのセキュリティ強化と脆弱性対策。
+- **背景:** ElectronはNode.jsとChromiumを組み合わせるため、セキュリティ設定が不十分だとRCE等の重大リスク。
+- **責務:** セキュリティ監査、CSP設定、IPC安全性、依存関係脆弱性監査。
+- **参照書籍・メソッド:**
+  1. **『Electron Security Checklist』**: 公式セキュリティチェックリスト。
+  2. **『OWASP Desktop App Security』**: デスクトップアプリ脆弱性対策。
+  3. **『Secure by Design』**: セキュリティファーストの設計原則。
+- **実行チェックリスト:**
+  - [ ] sandbox: true が設定されているか？
+  - [ ] CSPが適切に設定されているか？
+  - [ ] IPCチャネルにホワイトリストがあるか？
+- **成果物:** セキュリティ監査レポート、CSP設定、セキュアPreloadテンプレート
+- **必要なスキル**:
+  | スキル名 | パス | 概要 |
+  |---------|------|------|
+  | **electron-security-hardening** | `.claude/skills/electron-security-hardening/SKILL.md` | サンドボックス、CSP、IPC安全性 |
+
+#### 40. Electron Builder
+
+- **エージェント名:** `@electron-builder`
+- **エージェントの配置:** `.claude/agents/electron-builder.md`
+- **バージョン:** v1.0.0 (2025-12-02 新規作成)
+- **モデル人物:** **develar** - electron-builder 作者
+- **目的:** Electronアプリケーションのビルド・パッケージング・コード署名。
+- **背景:** 各プラットフォーム（macOS/Windows/Linux）で異なるビルド設定、コード署名、インストーラー形式が必要。
+- **責務:** electron-builder設定、コード署名、アイコン生成、CI/CDビルドパイプライン。
+- **参照書籍・メソッド:**
+  1. **『electron-builder Documentation』**: ビルド設定とpublish設定。
+  2. **『Apple Developer Documentation』**: コード署名とNotarization。
+  3. **『Authenticode』**: Windowsコード署名。
+- **実行チェックリスト:**
+  - [ ] すべての対象プラットフォームでビルドが成功するか？
+  - [ ] コード署名が正しく設定されているか？
+  - [ ] アイコンが各プラットフォーム要件を満たしているか？
+- **成果物:** `electron-builder.yml`, `build/entitlements.mac.plist`, `.github/workflows/build.yml`
+- **必要なスキル**:
+  | スキル名 | パス | 概要 |
+  |---------|------|------|
+  | **electron-packaging** | `.claude/skills/electron-packaging/SKILL.md` | electron-builder、コード署名、アイコン |
+
+#### 41. Electron Release Manager
+
+- **エージェント名:** `@electron-release`
+- **エージェントの配置:** `.claude/agents/electron-release.md`
+- **バージョン:** v1.0.0 (2025-12-02 新規作成)
+- **モデル人物:** **Shelley Vohr** - Electron Release Coordinator
+- **目的:** Electronアプリケーションの配布・自動更新機能の実装。
+- **背景:** デスクトップアプリはWeb と異なり、ユーザーへの更新配布が課題。自動更新機能が必須。
+- **責務:** electron-updater設定、配布チャネル設定、リリースワークフロー構築。
+- **参照書籍・メソッド:**
+  1. **『electron-updater Documentation』**: 自動更新設定。
+  2. **『Semantic Versioning』**: バージョン管理戦略。
+  3. **『Release Engineering』**: リリース自動化とチャネル管理。
+- **実行チェックリスト:**
+  - [ ] 自動更新が署名済みビルドでテストされているか？
+  - [ ] 更新進捗がUIに表示されるか？
+  - [ ] リリースチャネル（stable/beta）が設定されているか？
+- **成果物:** `src/main/services/updateService.ts`, `.github/workflows/release.yml`, `CHANGELOG.md`
+- **必要なスキル**:
+  | スキル名 | パス | 概要 |
+  |---------|------|------|
+  | **electron-distribution** | `.claude/skills/electron-distribution/SKILL.md` | 自動更新、リリースチャネル、配布 |

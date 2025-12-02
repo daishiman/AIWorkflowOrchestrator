@@ -1530,6 +1530,136 @@
 
 ---
 
+## 21. Electron デスクトップアプリ開発
+
+### `/ai:design-electron-app`
+
+- **目的**: Electronアプリケーションのアーキテクチャ設計（Main/Renderer/Preload分離、IPC設計）
+- **引数**: `[app-name]` - アプリケーション名（オプション）
+- **起動エージェント**:
+  - `.claude/agents/electron-architect.md` - Electronアーキテクチャ設計専門
+- **参照スキル**（electron-architectが必要時に参照）:
+  - `.claude/skills/electron-architecture/SKILL.md`（Main/Renderer分離、IPC設計、コンテキストブリッジ）
+- **実行フロー**:
+  1. アプリケーション要件の把握
+  2. プロセス間通信の必要性分析
+  3. プロジェクトディレクトリ構造の設計
+  4. Main/Renderer/Preloadの責務定義
+  5. IPCチャネル設計と型定義
+  6. Preload API設計
+- **成果物**:
+  - `src/main/index.ts`（Mainプロセスエントリーポイント）
+  - `src/preload/index.ts`（Preloadスクリプト）
+  - `src/shared/ipc-types.ts`（IPC型定義）
+  - プロジェクトディレクトリ構造
+- **設定**:
+  - `model: sonnet`
+  - `allowed-tools: Task, Read, Write(src/**|electron-builder.yml), Edit, Grep, Glob`
+- **トリガーキーワード**: electron, デスクトップアプリ, architecture, 設計, main process, renderer
+
+### `/ai:create-electron-window`
+
+- **目的**: ElectronウィンドウとネイティブUI要素の実装（BrowserWindow、メニュー、トレイ）
+- **引数**: `[window-type]` - ウィンドウタイプ（main/settings/dialog/tray）
+- **起動エージェント**:
+  - `.claude/agents/electron-ui-dev.md` - Electron UI実装専門
+- **参照スキル**（electron-ui-devが必要時に参照）:
+  - `.claude/skills/electron-ui-patterns/SKILL.md`（BrowserWindow、メニュー、ダイアログ、トレイ）
+  - `.claude/skills/accessibility-wcag/SKILL.md`（WCAG準拠、ARIAパターン）
+- **実行フロー**:
+  1. ウィンドウ要件の把握（サイズ、リサイズ、最大化等）
+  2. BrowserWindow設定の設計
+  3. ウィンドウ状態永続化の実装
+  4. アプリケーションメニュー作成（必要時）
+  5. カスタムタイトルバー実装（必要時）
+  6. システムトレイ実装（必要時）
+- **成果物**:
+  - `src/main/window.ts`（ウィンドウ管理）
+  - `src/main/menu.ts`（メニュー定義）
+  - `src/main/tray.ts`（トレイ、必要時）
+  - `src/renderer/components/TitleBar.tsx`（カスタムタイトルバー、必要時）
+- **設定**:
+  - `model: sonnet`
+  - `allowed-tools: Task, Read, Write(src/**), Edit, Grep, Glob`
+- **トリガーキーワード**: electron, window, menu, dialog, tray, titlebar, ウィンドウ
+
+### `/ai:secure-electron-app`
+
+- **目的**: Electronアプリケーションのセキュリティ強化（サンドボックス、CSP、IPC安全性）
+- **引数**: `[scope]` - 監査スコープ（full/config/ipc/csp/deps）
+- **起動エージェント**:
+  - `.claude/agents/electron-security.md` - Electronセキュリティ専門
+- **参照スキル**（electron-securityが必要時に参照）:
+  - `.claude/skills/electron-security-hardening/SKILL.md`（サンドボックス、CSP、IPC安全性）
+- **実行フロー**:
+  1. BrowserWindow設定の監査
+  2. Preloadスクリプトのセキュリティレビュー
+  3. IPCハンドラーの入力検証確認
+  4. CSPポリシーの設計と実装
+  5. 依存関係の脆弱性監査（npm audit）
+  6. セキュリティレポート生成
+- **成果物**:
+  - セキュリティ監査レポート
+  - CSP設定（`src/main/security/csp.ts`）
+  - セキュアPreloadテンプレート
+  - セキュリティチェックリスト
+- **設定**:
+  - `model: sonnet`
+  - `allowed-tools: Task, Read, Write(src/**|.claude/docs/**), Edit, Grep, Glob, Bash`
+- **トリガーキーワード**: electron, security, セキュリティ, csp, sandbox, 脆弱性
+
+### `/ai:build-electron-app`
+
+- **目的**: Electronアプリケーションのビルド・パッケージング設定（electron-builder、コード署名）
+- **引数**: `[platform]` - 対象プラットフォーム（mac/win/linux/all）
+- **起動エージェント**:
+  - `.claude/agents/electron-builder.md` - Electronビルド専門
+- **参照スキル**（electron-builderが必要時に参照）:
+  - `.claude/skills/electron-packaging/SKILL.md`（electron-builder、コード署名、アイコン）
+- **実行フロー**:
+  1. 対象プラットフォームの確認
+  2. electron-builder.yml作成/更新
+  3. プラットフォーム固有設定（macOS/Windows/Linux）
+  4. コード署名設定（必要時）
+  5. アイコン設定
+  6. CI/CDワークフロー作成（必要時）
+- **成果物**:
+  - `electron-builder.yml`（ビルド設定）
+  - `build/entitlements.mac.plist`（macOSエンタイトルメント）
+  - `scripts/notarize.js`（Notarization設定）
+  - `.github/workflows/build.yml`（CI/CDワークフロー）
+- **設定**:
+  - `model: sonnet`
+  - `allowed-tools: Task, Read, Write(electron-builder.yml|build/**|scripts/**|.github/**), Edit, Grep, Glob, Bash`
+- **トリガーキーワード**: electron, build, package, installer, dmg, nsis, appimage
+
+### `/ai:release-electron-app`
+
+- **目的**: Electronアプリケーションの配布・自動更新設定（electron-updater、GitHub Releases）
+- **引数**: `[action]` - アクション（setup/publish/version）
+- **起動エージェント**:
+  - `.claude/agents/electron-release.md` - Electronリリース専門
+- **参照スキル**（electron-releaseが必要時に参照）:
+  - `.claude/skills/electron-distribution/SKILL.md`（自動更新、リリースチャネル、配布）
+- **実行フロー**:
+  1. 配布方法の選択（GitHub/S3/ストア）
+  2. electron-updater設定
+  3. UpdateServiceクラス実装
+  4. 配布先設定
+  5. リリースワークフロー作成
+  6. CHANGELOG生成
+- **成果物**:
+  - `src/main/services/updateService.ts`（更新サービス）
+  - `electron-builder.yml`（publish設定追加）
+  - `.github/workflows/release.yml`（リリースワークフロー）
+  - `CHANGELOG.md`
+- **設定**:
+  - `model: sonnet`
+  - `allowed-tools: Task, Read, Write(src/**|electron-builder.yml|.github/**|CHANGELOG.md), Edit, Grep, Glob, Bash`
+- **トリガーキーワード**: electron, release, update, 自動更新, 配布, publish
+
+---
+
 ## 🔧 allowed-tools 詳細パターン
 
 ### Read 専用(分析・レビューコマンド)

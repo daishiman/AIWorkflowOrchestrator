@@ -835,3 +835,109 @@
 - **リソース**: `resources/translation-ready-writing.md` - 翻訳準備ライティングガイド
 - **テンプレート**: `templates/multilingual-doc-template.md` - 多言語ドキュメント構造テンプレート
 - **スクリプト**: `scripts/check-translation-ready.mjs` - 翻訳準備度チェック・スコアリング
+
+---
+
+## 新規スキル - Electronデスクトップアプリ開発関連 (2025-12-02 追加)
+
+以下のスキルは Electron チーム（@electron-architect, @electron-ui-dev, @electron-security, @electron-builder, @electron-release）エージェント用に作成されました:
+
+### 37. Electron アーキテクト
+
+- **エージェント名:** `@electron-architect`
+- **エージェントの配置:** `.claude/agents/electron-architect.md`
+
+```markdown
+- **必要なスキル**:
+
+| スキル名                    | パス                                              | 概要                                                               |
+| --------------------------- | ------------------------------------------------- | ------------------------------------------------------------------ |
+| **electron-architecture**   | `.claude/skills/electron-architecture/SKILL.md`   | Main/Renderer分離、IPC設計、contextBridge、プロジェクト構造        |
+```
+
+### 38. Electron UI Developer
+
+- **エージェント名:** `@electron-ui-dev`
+- **エージェントの配置:** `.claude/agents/electron-ui-dev.md`
+
+```markdown
+- **必要なスキル**:
+
+| スキル名                 | パス                                           | 概要                                                                |
+| ------------------------ | ---------------------------------------------- | ------------------------------------------------------------------- |
+| **electron-ui-patterns** | `.claude/skills/electron-ui-patterns/SKILL.md` | BrowserWindow管理、メニュー、ダイアログ、通知、トレイ、カスタムUI   |
+| **accessibility-wcag**   | `.claude/skills/accessibility-wcag/SKILL.md`   | WCAG準拠、ARIAパターン、キーボードナビゲーション                    |
+```
+
+### 39. Electron Security Engineer
+
+- **エージェント名:** `@electron-security`
+- **エージェントの配置:** `.claude/agents/electron-security.md`
+
+```markdown
+- **必要なスキル**:
+
+| スキル名                          | パス                                                    | 概要                                                            |
+| --------------------------------- | ------------------------------------------------------- | --------------------------------------------------------------- |
+| **electron-security-hardening**   | `.claude/skills/electron-security-hardening/SKILL.md`   | サンドボックス、CSP設定、IPC安全性、依存関係脆弱性監査          |
+```
+
+### 40. Electron Builder
+
+- **エージェント名:** `@electron-builder`
+- **エージェントの配置:** `.claude/agents/electron-builder.md`
+
+```markdown
+- **必要なスキル**:
+
+| スキル名                | パス                                          | 概要                                                              |
+| ----------------------- | --------------------------------------------- | ----------------------------------------------------------------- |
+| **electron-packaging**  | `.claude/skills/electron-packaging/SKILL.md`  | electron-builder設定、コード署名、アイコン生成、インストーラー    |
+```
+
+### 41. Electron Release Manager
+
+- **エージェント名:** `@electron-release`
+- **エージェントの配置:** `.claude/agents/electron-release.md`
+
+```markdown
+- **必要なスキル**:
+
+| スキル名                  | パス                                            | 概要                                                               |
+| ------------------------- | ----------------------------------------------- | ------------------------------------------------------------------ |
+| **electron-distribution** | `.claude/skills/electron-distribution/SKILL.md` | electron-updater、自動更新、リリースチャネル、GitHub Releases/S3配布 |
+```
+
+### Electronスキル詳細
+
+#### electron-architecture
+- **パス**: `.claude/skills/electron-architecture/SKILL.md`
+- **リソース**: `resources/process-model.md` - Main/Renderer/Preloadプロセスモデル
+- **リソース**: `resources/ipc-patterns.md` - IPC通信パターン（invoke/handle、send/on）
+- **テンプレート**: `templates/main-process.ts` - Mainプロセスエントリーポイント
+- **テンプレート**: `templates/preload.ts` - セキュアなPreloadスクリプト
+- **スクリプト**: `scripts/analyze-ipc.mjs` - IPCチャネル分析・可視化
+
+#### electron-ui-patterns
+- **パス**: `.claude/skills/electron-ui-patterns/SKILL.md`
+- **リソース**: `resources/window-management.md` - BrowserWindow管理パターン
+- **リソース**: `resources/native-ui.md` - ネイティブUI要素（メニュー、ダイアログ、トレイ）
+- **テンプレート**: `templates/frameless-window.ts` - カスタムタイトルバー付きウィンドウ
+
+#### electron-security-hardening
+- **パス**: `.claude/skills/electron-security-hardening/SKILL.md`
+- **リソース**: `resources/csp-configuration.md` - Content Security Policy設定ガイド
+- **テンプレート**: `templates/secure-preload.ts` - セキュアなPreloadテンプレート
+- **スクリプト**: `scripts/security-audit.mjs` - セキュリティ設定監査スクリプト
+
+#### electron-packaging
+- **パス**: `.claude/skills/electron-packaging/SKILL.md`
+- **リソース**: `resources/code-signing.md` - コード署名ガイド（macOS/Windows）
+- **テンプレート**: `templates/electron-builder.yml` - electron-builder設定テンプレート
+- **スクリプト**: `scripts/generate-icons.mjs` - マルチプラットフォームアイコン生成
+
+#### electron-distribution
+- **パス**: `.claude/skills/electron-distribution/SKILL.md`
+- **リソース**: `resources/auto-update.md` - 自動更新実装ガイド
+- **テンプレート**: `templates/update-server.ts` - カスタム更新サーバーテンプレート
+- **スクリプト**: `scripts/release-helper.mjs` - リリース自動化ヘルパー
