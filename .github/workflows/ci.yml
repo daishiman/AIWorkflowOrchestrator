@@ -134,11 +134,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build all packages
-        run: pnpm build
+      - name: Build shared package
+        run: pnpm --filter @repo/shared build
+
+      - name: Build desktop app
+        run: pnpm --filter @repo/desktop build
 
       - name: Verify build artifacts
         run: |
-          # 共有パッケージのビルド確認
           test -d packages/shared/dist || exit 1
           echo "✅ Shared package built successfully"
+          test -d apps/desktop/out || exit 1
+          echo "✅ Desktop app built successfully"
