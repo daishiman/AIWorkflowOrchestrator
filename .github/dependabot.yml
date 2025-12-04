@@ -43,12 +43,22 @@ updates:
           - "electron"
           - "electron-*"
           - "@electron-toolkit/*"
-    # Vite 7は electron-vite が未対応のため一時的に無視
+    # 互換性の問題があるパッケージを一時的に無視
     ignore:
+      # Vite 7は electron-vite が未対応
       - dependency-name: "vite"
         versions: [">=7.0.0"]
       - dependency-name: "@vitejs/plugin-react"
         versions: [">=5.0.0"]
+      # React 19は electron-vite/testing-library が未対応
+      - dependency-name: "react"
+        versions: [">=19.0.0"]
+      - dependency-name: "react-dom"
+        versions: [">=19.0.0"]
+      - dependency-name: "@types/react"
+        versions: [">=19.0.0"]
+      - dependency-name: "@types/react-dom"
+        versions: [">=19.0.0"]
 
   # GitHub Actions 更新
   - package-ecosystem: "github-actions"
