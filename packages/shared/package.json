@@ -32,7 +32,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "drizzle-orm": "^0.39.0",
+    "drizzle-orm": "^0.44.7",
     "zod": "^4.1.13",
     "date-fns": "^4.1.0"
   },
