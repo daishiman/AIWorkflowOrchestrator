@@ -13,7 +13,6 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "references": [{ "path": "./packages/shared" }, { "path": "./apps/desktop" }],
   "include": [],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "packages", "apps"]
 }

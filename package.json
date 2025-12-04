@@ -16,7 +16,7 @@
     "test:coverage": "pnpm -r test:coverage",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "typecheck": "tsc --build --noEmit",
+    "typecheck": "pnpm --filter @repo/shared typecheck && pnpm --filter @repo/desktop typecheck",
     "clean": "pnpm -r exec rm -rf dist out node_modules/.vite",
     "prepare": "husky"
   },
