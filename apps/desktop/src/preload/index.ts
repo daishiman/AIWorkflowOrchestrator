@@ -1,17 +1,17 @@
-import { contextBridge, ipcRenderer } from 'electron';
+import { contextBridge, ipcRenderer } from "electron";
 
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object
 export const electronAPI = {
   // App info
-  getVersion: (): string => process.env.npm_package_version || '1.0.0',
+  getVersion: (): string => process.env.npm_package_version || "1.0.0",
 
   // Platform info
   platform: process.platform,
 
   // IPC communication (type-safe channels will be added here)
   invoke: (channel: string, ...args: unknown[]): Promise<unknown> => {
-    const validChannels = ['app:getVersion', 'db:query'];
+    const validChannels = ["app:getVersion", "db:query"];
     if (validChannels.includes(channel)) {
       return ipcRenderer.invoke(channel, ...args);
     }
@@ -20,12 +20,14 @@ export const electronAPI = {
 
   on: (
     channel: string,
-    callback: (...args: unknown[]) => void
+    callback: (...args: unknown[]) => void,
   ): (() => void) => {
-    const validChannels = ['app:update-available', 'app:update-downloaded'];
+    const validChannels = ["app:update-available", "app:update-downloaded"];
     if (validChannels.includes(channel)) {
-      const subscription = (_event: Electron.IpcRendererEvent, ...args: unknown[]): void =>
-        callback(...args);
+      const subscription = (
+        _event: Electron.IpcRendererEvent,
+        ...args: unknown[]
+      ): void => callback(...args);
       ipcRenderer.on(channel, subscription);
       return () => ipcRenderer.removeListener(channel, subscription);
     }
@@ -36,11 +38,11 @@ export const electronAPI = {
 // Use contextBridge APIs to expose Electron APIs to renderer
 if (process.contextIsolated) {
   try {
-    contextBridge.exposeInMainWorld('electronAPI', electronAPI);
+    contextBridge.exposeInMainWorld("electronAPI", electronAPI);
   } catch (error) {
-    console.error('Failed to expose electronAPI:', error);
+    console.error("Failed to expose electronAPI:", error);
   }
 } else {
-  // @ts-expect-error window.electronAPI is defined in preload
+  // @ts-ignore window.electronAPI is defined in preload
   window.electronAPI = electronAPI;
 }

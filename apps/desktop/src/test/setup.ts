@@ -1,8 +1,9 @@
-import '@testing-library/jest-dom';
+import "@testing-library/jest-dom";
+import { vi } from "vitest";
 
 // グローバルモック
 // Electronのモジュールをモック
-vi.mock('electron', () => ({
+vi.mock("electron", () => ({
   ipcRenderer: {
     invoke: vi.fn(),
     on: vi.fn(),
