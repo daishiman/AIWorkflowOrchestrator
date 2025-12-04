@@ -1,0 +1,4 @@
+cflags:
+  - -std=c++20
+cxxflags:
+  - -std=c++20

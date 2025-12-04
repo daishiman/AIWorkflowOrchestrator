@@ -1,0 +1,42 @@
+appId: com.aiworkflow.orchestrator
+productName: AI Workflow Orchestrator
+directories:
+  buildResources: resources
+  output: dist
+files:
+  - out/**/*
+  - '!**/*.map'
+asarUnpack:
+  - resources/**
+  - node_modules/better-sqlite3/**
+mac:
+  category: public.app-category.productivity
+  artifactName: ${productName}-${version}-${arch}.${ext}
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+    - target: zip
+      arch:
+        - x64
+        - arm64
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: zip
+      arch:
+        - x64
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+linux:
+  target:
+    - AppImage
+    - deb
+  category: Utility
+publish:
+  provider: github
+  releaseType: draft
