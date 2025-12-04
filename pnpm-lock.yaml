@@ -107,7 +107,7 @@ importers:
         version: 18.3.7(@types/react@18.3.27)
       '@vitejs/plugin-react':
         specifier: ^4.3.4
-        version: 4.7.0(vite@5.4.21(@types/node@22.19.1))
+        version: 4.7.0(vite@6.4.1(@types/node@22.19.1)(jiti@1.21.7)(yaml@2.8.2))
       '@vitest/coverage-v8':
         specifier: ^2.1.9
         version: 2.1.9(vitest@2.1.9(@types/node@22.19.1)(happy-dom@20.0.11)(jsdom@27.2.0))
@@ -122,7 +122,7 @@ importers:
         version: 26.0.12(electron-builder-squirrel-windows@26.0.12)
       electron-vite:
         specifier: ^4.0.1
-        version: 4.0.1(vite@5.4.21(@types/node@22.19.1))
+        version: 4.0.1(vite@6.4.1(@types/node@22.19.1)(jiti@1.21.7)(yaml@2.8.2))
       happy-dom:
         specifier: ^20.0.11
         version: 20.0.11
@@ -136,8 +136,8 @@ importers:
         specifier: ^5.7.2
         version: 5.9.3
       vite:
-        specifier: ^5.4.11
-        version: 5.4.21(@types/node@22.19.1)
+        specifier: ^6.4.1
+        version: 6.4.1(@types/node@22.19.1)(jiti@1.21.7)(yaml@2.8.2)
       vitest:
         specifier: ^2.1.9
         version: 2.1.9(@types/node@22.19.1)(happy-dom@20.0.11)(jsdom@27.2.0)
@@ -3389,6 +3389,46 @@ packages:
       terser:
         optional: true
 
+  vite@6.4.1:
+    resolution: {integrity: sha512-+Oxm7q9hDoLMyJOYfUYBuHQo+dkAloi33apOPP56pzj+vsdJDzr+j1NISE5pyaAuKL4A3UD34qd0lx5+kfKp2g==}
+    engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^18.0.0 || ^20.0.0 || >=22.0.0
+      jiti: '>=1.21.0'
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      sass-embedded: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.16.0
+      tsx: ^4.8.1
+      yaml: ^2.4.2
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      jiti:
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      sass-embedded:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+      tsx:
+        optional: true
+      yaml:
+        optional: true
+
   vitest@2.1.9:
     resolution: {integrity: sha512-MSmPM9REYqDGBI8439mA4mWhV5sKmDlBKWIYbA3lRb2PTHACE0mgKwA8yQ2xq9vxDTuk4iPrECBAEW2aoFXY0Q==}
     engines: {node: ^18.0.0 || >=20.0.0}
@@ -4444,7 +4484,7 @@ snapshots:
       '@typescript-eslint/types': 8.48.1
       eslint-visitor-keys: 4.2.1
 
-  '@vitejs/plugin-react@4.7.0(vite@5.4.21(@types/node@22.19.1))':
+  '@vitejs/plugin-react@4.7.0(vite@6.4.1(@types/node@22.19.1)(jiti@1.21.7)(yaml@2.8.2))':
     dependencies:
       '@babel/core': 7.28.5
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.5)
@@ -4452,7 +4492,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.27
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
-      vite: 5.4.21(@types/node@22.19.1)
+      vite: 6.4.1(@types/node@22.19.1)(jiti@1.21.7)(yaml@2.8.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -5152,7 +5192,7 @@ snapshots:
 
   electron-to-chromium@1.5.264: {}
 
-  electron-vite@4.0.1(vite@5.4.21(@types/node@22.19.1)):
+  electron-vite@4.0.1(vite@6.4.1(@types/node@22.19.1)(jiti@1.21.7)(yaml@2.8.2)):
     dependencies:
       '@babel/core': 7.28.5
       '@babel/plugin-transform-arrow-functions': 7.27.1(@babel/core@7.28.5)
@@ -5160,7 +5200,7 @@ snapshots:
       esbuild: 0.25.12
       magic-string: 0.30.21
       picocolors: 1.1.1
-      vite: 5.4.21(@types/node@22.19.1)
+      vite: 6.4.1(@types/node@22.19.1)(jiti@1.21.7)(yaml@2.8.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -6897,6 +6937,20 @@ snapshots:
     optionalDependencies:
       '@types/node': 22.19.1
       fsevents: 2.3.3
+
+  vite@6.4.1(@types/node@22.19.1)(jiti@1.21.7)(yaml@2.8.2):
+    dependencies:
+      esbuild: 0.25.12
+      fdir: 6.5.0(picomatch@4.0.3)
+      picomatch: 4.0.3
+      postcss: 8.5.6
+      rollup: 4.53.3
+      tinyglobby: 0.2.15
+    optionalDependencies:
+      '@types/node': 22.19.1
+      fsevents: 2.3.3
+      jiti: 1.21.7
+      yaml: 2.8.2
 
   vitest@2.1.9(@types/node@22.19.1)(happy-dom@20.0.11)(jsdom@27.2.0):
     dependencies:
