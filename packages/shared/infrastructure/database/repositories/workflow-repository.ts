@@ -1,9 +1,14 @@
-import { eq, sql, count } from 'drizzle-orm';
-import type { DbClient } from '../client';
-import type { IWorkflowRepository } from '../../../core/interfaces';
-import { Workflow } from '../../../core/entities';
-import { workflows, type WorkflowRecord } from '../schema';
-import type { PaginationParams, PaginatedResult, WorkflowStatus, WorkflowType } from '../../../types';
+import { eq, count } from "drizzle-orm";
+import type { DbClient } from "../client";
+import type { IWorkflowRepository } from "../../../core/interfaces";
+import { Workflow } from "../../../core/entities";
+import { workflows, type WorkflowRecord } from "../schema";
+import type {
+  PaginationParams,
+  PaginatedResult,
+  WorkflowStatus,
+  WorkflowType,
+} from "../../../types";
 
 /**
  * ワークフローリポジトリ実装
@@ -51,7 +56,7 @@ export class WorkflowRepository implements IWorkflowRepository {
     const result = await this.db
       .select()
       .from(workflows)
-      .where(eq(workflows.status, 'active'));
+      .where(eq(workflows.status, "active"));
 
     return result.map((r) => this.toEntity(r));
   }
@@ -94,7 +99,7 @@ export class WorkflowRepository implements IWorkflowRepository {
       record.triggerPath,
       record.status as WorkflowStatus,
       new Date(record.createdAt),
-      new Date(record.updatedAt)
+      new Date(record.updatedAt),
     );
   }
 

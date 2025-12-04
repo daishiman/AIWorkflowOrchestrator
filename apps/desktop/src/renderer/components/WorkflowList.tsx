@@ -1,9 +1,7 @@
-import { useState, useEffect } from 'react';
-
 interface Workflow {
   id: string;
   name: string;
-  status: 'active' | 'inactive';
+  status: "active" | "inactive";
   triggerPath: string | null;
   createdAt: string;
 }
@@ -49,7 +47,7 @@ export function WorkflowList({
             <div className="flex items-center gap-2">
               <span
                 className={`inline-block w-2 h-2 rounded-full ${
-                  workflow.status === 'active' ? 'bg-green-500' : 'bg-gray-400'
+                  workflow.status === "active" ? "bg-green-500" : "bg-gray-400"
                 }`}
               />
               <h3 className="font-medium text-gray-900">{workflow.name}</h3>
@@ -65,12 +63,12 @@ export function WorkflowList({
               <button
                 onClick={() => onToggleStatus(workflow.id)}
                 className={`px-3 py-1 text-sm rounded ${
-                  workflow.status === 'active'
-                    ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
-                    : 'bg-green-100 text-green-800 hover:bg-green-200'
+                  workflow.status === "active"
+                    ? "bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
+                    : "bg-green-100 text-green-800 hover:bg-green-200"
                 }`}
               >
-                {workflow.status === 'active' ? '停止' : '開始'}
+                {workflow.status === "active" ? "停止" : "開始"}
               </button>
             )}
             {onDelete && (
