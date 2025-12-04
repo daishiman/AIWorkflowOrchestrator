@@ -1,76 +1,22 @@
-# Dependabot 設定 - 自動依存関係更新
+# Dependabot 設定 - セキュリティアラートのみ
 # https://docs.github.com/en/code-security/dependabot
+#
+# バージョン更新PRは無効化（open-pull-requests-limit: 0）
+# セキュリティ脆弱性が検出された場合のみDependabotがPRを作成
+# 手動更新: pnpm audit / pnpm update
 
 version: 2
 updates:
-  # npm パッケージ更新
+  # npm - セキュリティ更新のみ
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "Asia/Tokyo"
-    open-pull-requests-limit: 5
-    commit-message:
-      prefix: "deps"
-      include: "scope"
-    labels:
-      - "dependencies"
-      - "automated"
-    groups:
-      # 開発依存関係をグループ化
-      dev-dependencies:
-        patterns:
-          - "@types/*"
-          - "typescript"
-          - "vitest"
-          - "@vitest/*"
-          - "eslint*"
-          - "prettier"
-        update-types:
-          - "minor"
-          - "patch"
-      # テストフレームワーク
-      testing:
-        patterns:
-          - "@testing-library/*"
-          - "jsdom"
-          - "playwright*"
-      # Electron関連
-      electron:
-        patterns:
-          - "electron"
-          - "electron-*"
-          - "@electron-toolkit/*"
-    # 互換性の問題があるパッケージを一時的に無視
-    ignore:
-      # Vite 7は electron-vite が未対応
-      - dependency-name: "vite"
-        versions: [">=7.0.0"]
-      - dependency-name: "@vitejs/plugin-react"
-        versions: [">=5.0.0"]
-      # React 19は electron-vite/testing-library が未対応
-      - dependency-name: "react"
-        versions: [">=19.0.0"]
-      - dependency-name: "react-dom"
-        versions: [">=19.0.0"]
-      - dependency-name: "@types/react"
-        versions: [">=19.0.0"]
-      - dependency-name: "@types/react-dom"
-        versions: [">=19.0.0"]
+    open-pull-requests-limit: 0
 
-  # GitHub Actions 更新
+  # GitHub Actions - セキュリティ更新のみ
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "Asia/Tokyo"
-    open-pull-requests-limit: 3
-    commit-message:
-      prefix: "ci"
-    labels:
-      - "ci"
-      - "automated"
+    open-pull-requests-limit: 0
