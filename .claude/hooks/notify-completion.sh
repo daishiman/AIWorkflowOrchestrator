@@ -10,14 +10,15 @@ INPUT=$(cat)
 
 # macOSの場合のみ実行
 if [[ "$(uname)" == "Darwin" ]]; then
-  # 音声通知
-  say "クロードコードの処理が完了しました" &
+  # デスクトップ通知（バックグラウンドでOK - 即時完了）
+  osascript -e 'display notification "処理が完了しました" with title "Claude Code" sound name "Glass"' &
 
-  # 効果音（オプション）
+  # 効果音（短い音なのでバックグラウンドでOK）
   afplay /System/Library/Sounds/Glass.aiff &
 
-  # デスクトップ通知
-  osascript -e 'display notification "処理が完了しました" with title "Claude Code" sound name "Glass"' &
+  # 音声通知（フォアグラウンドで実行し、完了を待つ）
+  # バックグラウンドにするとスクリプト終了時に中断される
+  say "クロードコードの処理が完了しました"
 fi
 
 # Linuxの場合
@@ -29,7 +30,7 @@ if [[ "$(uname)" == "Linux" ]]; then
 
   # espeak/festival等がある場合
   if command -v espeak &> /dev/null; then
-    espeak "Claude Code processing completed" &
+    espeak "Claude Code processing completed"
   fi
 fi
 

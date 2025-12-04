@@ -1,5 +1,12 @@
 import { contextBridge, ipcRenderer } from "electron";
 
+// Type declaration for window.electronAPI
+declare global {
+  interface Window {
+    electronAPI: typeof electronAPI;
+  }
+}
+
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object
 export const electronAPI = {
@@ -43,6 +50,5 @@ if (process.contextIsolated) {
     console.error("Failed to expose electronAPI:", error);
   }
 } else {
-  // @ts-ignore window.electronAPI is defined in preload
   window.electronAPI = electronAPI;
 }

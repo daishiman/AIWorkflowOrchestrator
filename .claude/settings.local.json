@@ -145,7 +145,7 @@
           {
             "type": "command",
             "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/notify-completion.sh",
-            "timeout": 10
+            "timeout": 30
           }
         ]
       }
