@@ -83,8 +83,39 @@ src/features/[新機能名]/
 
 ---
 
+## 11.5 タスク実行仕様書との連携
+
+複雑な機能追加や大規模なプラグイン開発を行う場合は、タスク実行仕様書を作成してから開発を開始することを推奨する。
+
+### 仕様書生成の流れ
+
+```mermaid
+graph LR
+    A[タスク受領] --> B[仕様書生成]
+    B --> C[Phase 0: 要件定義]
+    C --> D[Phase 1: 設計]
+    D --> E[Phase 2-4: TDDサイクル]
+    E --> F[Phase 5: 品質保証]
+    F --> G[完了]
+```
+
+### コマンド・エージェント・スキルの選定
+
+タスク実行時には以下を参照してツールを選定する：
+
+| 参照ファイル | 用途 |
+|-------------|------|
+| `.claude/commands/ai/command_list.md` | /ai:コマンドの選定 |
+| `.claude/agents/agent_list.md` | エージェントの選定 |
+| `.claude/skills/skill_list.md` | スキルの選定 |
+
+詳細は [タスク実行仕様書生成ガイド](./14-task-workflow-specification.md) を参照。
+
+---
+
 ## 関連ドキュメント
 
 - [コアインターフェース仕様](./06-core-interfaces.md)
 - [アーキテクチャ設計](./05-architecture.md)
 - [ディレクトリ構造](./04-directory-structure.md)
+- [タスク実行仕様書生成ガイド](./14-task-workflow-specification.md)

@@ -43,9 +43,124 @@
       "Bash(.claude/skills/context-optimization/scripts/estimate-tokens.sh:*)",
       "Bash(.claude/skills/progressive-disclosure/scripts/calculate-token-usage.sh .claude/skills/progressive-disclosure)",
       "Bash(git stash pop:*)",
-      "Bash(for file in /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.claude/agents/*.md)"
+      "Bash(for file in /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.claude/agents/*.md)",
+      "Bash(git pull:*)",
+      "mcp__sequential-thinking__sequentialthinking",
+      "Bash(pnpm install)",
+      "Bash(pnpm --filter @repo/desktop add chokidar)",
+      "Bash(pnpm --filter @repo/desktop add:*)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm --filter @repo/shared build:*)",
+      "Bash(pnpm --filter @repo/shared test:run:*)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm exec husky:*)",
+      "Bash(pnpm --filter @repo/shared test:coverage:*)",
+      "Bash(pnpm test:all:*)",
+      "Bash(jobs:*)",
+      "Bash(pnpm --filter @repo/desktop test:run:*)",
+      "Bash(find .husky -type f -exec echo \"=== {} ===\" ; -exec cat {} ;)",
+      "Bash(git config:*)",
+      "Bash(pnpm exec lint-staged:*)",
+      "Bash(pnpm list:*)",
+      "Bash(.husky/_/pre-commit)",
+      "Bash(pnpm --filter @repo/desktop remove:*)"
     ],
     "deny": [],
     "ask": []
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/security-check.sh",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/backup-create.sh",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/security-check.sh",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/dangerous-command-check.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/auto-format.sh",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/auto-lint.sh",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/type-check.sh",
+            "timeout": 60
+          },
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/auto-test.sh",
+            "timeout": 120
+          }
+        ]
+      },
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/operation-log.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/notify-completion.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/session-init.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
   }
 }
