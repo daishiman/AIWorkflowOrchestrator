@@ -43,6 +43,12 @@ updates:
           - "electron"
           - "electron-*"
           - "@electron-toolkit/*"
+    # Vite 7は electron-vite が未対応のため一時的に無視
+    ignore:
+      - dependency-name: "vite"
+        versions: [">=7.0.0"]
+      - dependency-name: "@vitejs/plugin-react"
+        versions: [">=5.0.0"]
 
   # GitHub Actions 更新
   - package-ecosystem: "github-actions"
