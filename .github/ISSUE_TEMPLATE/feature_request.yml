@@ -1,0 +1,61 @@
+name: 機能リクエスト
+description: 新機能や改善を提案する
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        機能リクエストありがとうございます。
+        できるだけ詳しく情報を記入してください。
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 解決したい課題
+      description: どのような問題を解決したいですか？
+      placeholder: "〜をする時に、〜が不便です..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: 提案する解決策
+      description: どのような機能や改善を希望しますか？
+      placeholder: "〜できるようになれば..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 代替案
+      description: 他に検討した解決策があれば教えてください
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 優先度（あなたの感覚で）
+      options:
+        - 高（日常的に困っている）
+        - 中（あれば便利）
+        - 低（将来的にあればいい）
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: 追加情報
+      description: スクリーンショット、モックアップ、参考リンクなど
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: 確認事項
+      options:
+        - label: 既存のIssueを検索し、重複がないことを確認しました
+          required: true

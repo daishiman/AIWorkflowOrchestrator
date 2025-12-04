@@ -1,0 +1,60 @@
+# Dependabot 設定 - 自動依存関係更新
+# https://docs.github.com/en/code-security/dependabot
+
+version: 2
+updates:
+  # npm パッケージ更新
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "automated"
+    groups:
+      # 開発依存関係をグループ化
+      dev-dependencies:
+        patterns:
+          - "@types/*"
+          - "typescript"
+          - "vitest"
+          - "@vitest/*"
+          - "eslint*"
+          - "prettier"
+        update-types:
+          - "minor"
+          - "patch"
+      # テストフレームワーク
+      testing:
+        patterns:
+          - "@testing-library/*"
+          - "jsdom"
+          - "playwright*"
+      # Electron関連
+      electron:
+        patterns:
+          - "electron"
+          - "electron-*"
+          - "@electron-toolkit/*"
+
+  # GitHub Actions 更新
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "ci"
+    labels:
+      - "ci"
+      - "automated"

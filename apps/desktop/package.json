@@ -9,13 +9,18 @@
     "build": "electron-vite build",
     "preview": "electron-vite preview",
     "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "package": "electron-builder --config electron-builder.yml",
     "package:mac": "electron-builder --mac --config electron-builder.yml",
     "package:win": "electron-builder --win --config electron-builder.yml"
   },
   "dependencies": {
     "@electron-toolkit/utils": "^3.0.0",
+    "@repo/shared": "workspace:*",
     "better-sqlite3": "^12.5.0",
+    "chokidar": "^5.0.0",
     "drizzle-orm": "^0.39.0",
     "electron-log": "^5.2.4",
     "electron-store": "^10.0.0",
@@ -25,18 +30,23 @@
     "zustand": "^5.0.2"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
     "@types/better-sqlite3": "^7.6.13",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-v8": "^2.1.9",
     "autoprefixer": "^10.4.20",
     "electron": "^39.2.4",
     "electron-builder": "^26.0.0",
     "electron-vite": "^2.3.0",
+    "happy-dom": "^20.0.11",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.2",
-    "vite": "^5.4.11"
+    "vite": "^5.4.11",
+    "vitest": "^2.1.9"
   },
   "engines": {
     "node": ">=22.0.0"

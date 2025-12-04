@@ -1,0 +1,91 @@
+name: バグ報告
+description: バグや不具合を報告する
+title: "[Bug]: "
+labels: ["bug", "triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        バグ報告ありがとうございます。
+        できるだけ詳しく情報を記入してください。
+
+  - type: textarea
+    id: description
+    attributes:
+      label: バグの説明
+      description: 発生している問題を説明してください
+      placeholder: 何が起きていますか？
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 再現手順
+      description: バグを再現する手順を記述してください
+      placeholder: |
+        1. '...' へ移動
+        2. '...' をクリック
+        3. '...' までスクロール
+        4. エラーが表示される
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期待される動作
+      description: 本来どのように動作すべきですか？
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 実際の動作
+      description: 実際にはどのように動作しましたか？
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: プラットフォーム
+      description: どの環境で発生しましたか？
+      options:
+        - macOS (Desktop App)
+        - Windows (Desktop App)
+        - Web (Browser)
+        - その他
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: バージョン
+      description: アプリのバージョン（分かる場合）
+      placeholder: "v1.0.0"
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: ログ・エラーメッセージ
+      description: 関連するログやエラーメッセージがあれば貼り付けてください
+      render: shell
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: 追加情報
+      description: その他、関連する情報があれば記入してください
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: 確認事項
+      options:
+        - label: 既存のIssueを検索し、重複がないことを確認しました
+          required: true
