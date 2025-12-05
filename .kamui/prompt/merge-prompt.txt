@@ -1,5 +1,34 @@
 現在の差分を最適な粒度でブランチ作成→コミット→プルリクエスト作成→コメント追加→メインブランチへマージしてください。
-マージ時は明示的に実行し、完了後はリモートブランチを削除してローカルのメインブランチをプルしてください。
+
+## ⚠️ 重要: CI/CD完了待機ルール
+
+**マージ前に必ずCI/CDの完了を待つこと。**
+
+### マージフロー
+1. PR作成後、`gh pr checks <PR番号>` でCIステータスを確認
+2. **全てのチェックが `pass` になるまで待機**（polling間隔: 30秒〜1分）
+3. 1つでも `pending` や `in_progress` がある場合は待機を継続
+4. 全チェック完了後にマージを実行
+5. マージ完了後、リモートブランチを削除してローカルのmainブランチをプル
+
+### CI待機の実装例
+```bash
+# CIステータス確認（全てpassになるまで繰り返す）
+gh pr checks <PR番号> --repo <owner>/<repo>
+
+# 期待する出力例（全てpass）:
+# Lint         pass    1m35s
+# Type Check   pass    1m38s
+# Test         pass    1m52s
+# Security     pass    1m38s
+# Build Check  pass    2m10s
+```
+
+### 待機中の対応
+- `pending` / `in_progress` → 30秒〜1分後に再確認
+- `fail` → エラー内容を確認し、修正コミットをプッシュ
+- 5分以上経過しても完了しない場合 → ユーザーに状況を報告
+
 詳細は下記のドキュメントの必要箇所を参照してください。
 Worktreeがない場合は、通常のプルリクフローでOK。
 
@@ -264,21 +293,50 @@ git push
 
 ## 4. マージ＆同期
 
-### 4.1 PR マージ
+### 4.1 CI/CD 完了待機（必須）
+
+**⚠️ マージ前に必ずCI/CDの完了を確認すること**
+
+```bash
+# CIステータス確認
+gh pr checks <PR番号> --repo daishiman/AIWorkflowOrchestrator
+
+# 全てのチェックが pass になるまで待機
+# pending/in_progress がある場合は30秒〜1分後に再確認
+```
+
+**待機ループの実装**:
+```bash
+# 30秒間隔でCIステータスを確認（最大10回）
+for i in {1..10}; do
+  echo "=== CI確認 ($i/10) ==="
+  gh pr checks <PR番号> 2>&1
+  if gh pr checks <PR番号> 2>&1 | grep -qE "(pending|in_progress)"; then
+    echo "CI実行中... 30秒後に再確認"
+    sleep 30
+  else
+    echo "CI完了"
+    break
+  fi
+done
+```
+
+### 4.2 PR マージ
 
 **GitHub Web UI でマージ（推奨）**:
 1. PR ページを開く
 2. レビュー承認を確認
-3. CI（GitHub Actions）が全てパスしていることを確認
+3. **CI（GitHub Actions）が全てパスしていることを確認** ← 必須
 4. "Squash and merge" をクリック
 5. "Delete branch" にチェック
 
-**CLI からマージ**（緊急時のみ）:
+**CLI からマージ**（CI完了確認後のみ）:
 ```bash
-gh pr merge --squash --delete-branch
+# CI完了を確認してからマージ
+gh pr checks <PR番号> && gh pr merge --squash --delete-branch
 ```
 
-### 4.2 ローカル main ブランチ更新
+### 4.3 ローカル main ブランチ更新
 
 ```bash
 # メインリポジトリに戻る
@@ -294,7 +352,7 @@ git pull origin main
 git log --oneline -5
 ```
 
-### 4.3 ワークツリー削除
+### 4.4 ワークツリー削除
 
 ```bash
 # worktree 削除
@@ -873,10 +931,13 @@ pnpm test --coverage
 - [ ] README が更新されている（必要に応じて）
 
 ### マージ前
-- [ ] CI（GitHub Actions）が全てパスしている
+- [ ] **CI（GitHub Actions）が全てパスしている** ← 最重要！pending/in_progressがある場合は待機
+- [ ] `gh pr checks <PR番号>` で全チェックが `pass` であることを確認
 - [ ] コードレビューが完了している
 - [ ] テストが全て通っている
 - [ ] 破壊的変更がドキュメント化されている
+
+⚠️ **CI完了前のマージは禁止**: 必ず全てのチェックが完了してからマージすること
 
 ### マージ後
 - [ ] main ブランチを pull
