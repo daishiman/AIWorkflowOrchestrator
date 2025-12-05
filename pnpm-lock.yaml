@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  restore-cursor>signal-exit: ^3.0.7
+
 importers:
   .:
     devDependencies:
@@ -11164,7 +11167,7 @@ snapshots:
   restore-cursor@5.1.0:
     dependencies:
       onetime: 7.0.0
-      signal-exit: 4.1.0
+      signal-exit: 3.0.7
 
   retry@0.12.0: {}
 

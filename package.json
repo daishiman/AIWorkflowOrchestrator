@@ -47,6 +47,9 @@
       "better-sqlite3",
       "electron",
       "esbuild"
-    ]
+    ],
+    "overrides": {
+      "restore-cursor>signal-exit": "^3.0.7"
+    }
   }
 }

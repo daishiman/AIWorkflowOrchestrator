@@ -1,212 +1,87 @@
-現在の差分を最適な粒度でブランチ作成→コミット→プルリクエスト作成→コメント追加→メインブランチへマージしてください。
+# Git Workflow Guide - 差分からPRまで
 
-## ⚠️ 重要: CI/CD完了待機ルール
+現在の差分を最適な粒度でブランチ作成→コミット→プルリクエスト作成→PRコメント追加まで実施してください。
 
-**マージ前に必ずCI/CDの完了を待つこと。**
+## 🎯 推奨エージェント
 
-### マージフロー
-1. PR作成後、`gh pr checks <PR番号>` でCIステータスを確認
-2. **全てのチェックが `pass` になるまで待機**（polling間隔: 30秒〜1分）
-3. 1つでも `pending` や `in_progress` がある場合は待機を継続
-4. 全チェック完了後にマージを実行
-5. マージ完了後、リモートブランチを削除してローカルのmainブランチをプル
-
-### CI待機の実装例
-```bash
-# CIステータス確認（全てpassになるまで繰り返す）
-gh pr checks <PR番号> --repo <owner>/<repo>
-
-# 期待する出力例（全てpass）:
-# Lint         pass    1m35s
-# Type Check   pass    1m38s
-# Test         pass    1m52s
-# Security     pass    1m38s
-# Build Check  pass    2m10s
-```
-
-### 待機中の対応
-- `pending` / `in_progress` → 30秒〜1分後に再確認
-- `fail` → エラー内容を確認し、修正コミットをプッシュ
-- 5分以上経過しても完了しない場合 → ユーザーに状況を報告
-
-詳細は下記のドキュメントの必要箇所を参照してください。
-Worktreeがない場合は、通常のプルリクフローでOK。
-
-# Git Worktree 完全ワークフローガイド
-
-🎯 **エージェント選定**: このドキュメントで Git 操作を行う際は、必ず `.claude/agents/agent_list.md` から最適なエージェントを選定してください。
+Git操作を行う際は、`.claude/agents/agent_list.md` から最適なエージェントを選定してください。
 
 **推奨エージェント**:
-- **@command-arch**: ワークフロー定型化、コマンドオーケストレーション
 - **@devops-eng**: Git/CI/CD、GitHub Actions、デプロイフロー
+- **@command-arch**: ワークフロー定型化、コマンドオーケストレーション
 - **@prompt-eng**: コミットメッセージ・PR本文の自動生成
 
 ---
 
-## 📋 目次
+## ⚠️ 重要: マージは手動実行
 
-1. [プロジェクト情報](#プロジェクト情報)
-2. [ワークフロー全体図](#ワークフロー全体図)
-3. [新規タスク開始](#1-新規タスク開始)
-4. [開発サイクル](#2-開発サイクル)
-5. [プルリクエスト作成](#3-プルリクエスト作成)
-6. [マージ＆同期](#4-マージ同期)
-7. [コミットメッセージ規約](#コミットメッセージ規約-conventional-commits)
-8. [PR テンプレート](#pr-テンプレート)
-9. [Pre-commit Hooks & CI/CD](#pre-commit-hooks--cicd)
-10. [トラブルシューティング](#トラブルシューティング)
-11. [コマンドリファレンス](#コマンドリファレンス)
+**PRマージはユーザーが手動で実行します。**
+
+### AIの役割
+1. 差分分析 → ブランチ作成・コミット
+2. PR本文を生成してPR作成
+3. PR作成後、追加の補足コメントを投稿（変更の詳細や注意点等）
+4. CI/CDステータス確認（`gh pr checks <PR番号>`）
+5. CI完了後、ユーザーに「GitHub UIでマージ可能です」と報告
+
+### ユーザーの役割
+- GitHub Web UIで最終確認してマージ実行
+- マージ後、必要に応じてワークツリー削除
 
 ---
 
 ## プロジェクト情報
 
-### 現在のプロジェクト
-- **リポジトリルート**: `/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator`
+- **リポジトリ**: `/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator`
 - **メインブランチ**: `main`
-- **ワークツリー格納先**: `.worktrees/`
-- **プロジェクト種別**: Universal AI Workflow Orchestrator（Next.js + TypeScript）
-
-### 技術スタック
-- **フレームワーク**: Next.js 15.x (App Router) / Electron (Desktop)
-- **言語**: TypeScript 5.x (Strict Mode)
-- **パッケージマネージャー**: pnpm 10.x (モノレポ構成)
-- **データベース**: Neon (PostgreSQL) / SQLite (Desktop)
-- **ORM**: Drizzle ORM
-- **AI**: Vercel AI SDK (OpenAI, Anthropic, Google, xAI)
-- **デプロイ**: Railway / GitHub Releases (Desktop)
-- **CI/CD**: GitHub Actions
-- **品質管理**: husky + lint-staged (pre-commit hooks)
-- **依存関係管理**: Dependabot (自動更新)
+- **パッケージマネージャー**: pnpm（必須）
+- **技術スタック**: Next.js 15 / TypeScript 5 / Electron / Drizzle ORM
+- **CI/CD**: GitHub Actions（lint/typecheck/test/security/build）
+- **Pre-commit**: husky + lint-staged（ESLint/Prettier自動実行）
 
 ---
 
-## ワークフロー全体図
+## ワークフロー
 
-```mermaid
-graph TB
-    A[1. 新規タスク開始] --> B[worktree 作成]
-    B --> C[2. 開発サイクル]
-    C --> D[実装 → テスト → コミット]
-    D --> E{追加変更?}
-    E -->|Yes| C
-    E -->|No| F[3. プルリクエスト]
-    F --> G[push → PR 作成]
-    G --> H[レビュー]
-    H --> I{修正必要?}
-    I -->|Yes| C
-    I -->|No| J[4. マージ＆同期]
-    J --> K[PR マージ]
-    K --> L[main pull]
-    L --> M[worktree 削除]
-    M --> N[完了]
+### 1. ブランチ作成
 
-    style A fill:#e1f5e1
-    style F fill:#fff4e1
-    style J fill:#e1f0ff
-    style N fill:#ffe1f0
+#### Worktreeを使う場合（推奨）
+
+```bash
+TASK_NAME="feature/task-name"
+WORKTREE_DIR=".worktrees/${TASK_NAME##*/}"
+git worktree add "${WORKTREE_DIR}" -b "${TASK_NAME}" main
+cd "${WORKTREE_DIR}"
 ```
 
----
+#### 通常のブランチ作成
 
-## 1. 新規タスク開始
-
-### 1.1 ワークツリー作成
-
-**基本コマンド**:
 ```bash
-# 変数設定
-TASK_NAME="feature/your-task-name"  # 例: feature/add-youtube-summarize
-WORKTREE_DIR=".worktrees/${TASK_NAME##*/}"
-
-# メインブランチから worktree 作成
-cd /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator
-git worktree add "${WORKTREE_DIR}" -b "${TASK_NAME}" main
-
-# worktree に移動
-cd "${WORKTREE_DIR}"
-
-# 現在の状態確認
-git status
-git branch
+TASK_NAME="feature/task-name"
+git checkout -b "${TASK_NAME}" main
 ```
 
 **ブランチ命名規則**:
-- `feature/機能名` - 新機能追加
+- `feature/機能名` - 新機能
 - `fix/バグ名` - バグ修正
 - `refactor/対象` - リファクタリング
-- `docs/対象` - ドキュメント更新
+- `docs/対象` - ドキュメント
 - `test/対象` - テスト追加
 
-### 1.2 安全性チェック
+### 2. コミット
 
+**コミット前チェック**（自動実行される場合は省略可）:
 ```bash
-# ブランチが正しく作成されたか確認
-git branch --show-current  # TASK_NAME と一致すること
-
-# リモート同期状態確認
-git fetch origin main
-git status
+pnpm typecheck && pnpm lint && pnpm test
 ```
 
----
-
-## 2. 開発サイクル
-
-### 2.1 実装作業
-
-**TDD（Test-Driven Development）推奨フロー**:
-1. **Red**: テストを先に書く（失敗を確認）
-2. **Green**: 最小限の実装でテストをパスさせる
-3. **Refactor**: コードをリファクタリング
-
-**実装前チェック**:
+**コミット実行**:
 ```bash
-# 依存関係インストール（初回のみ）
-pnpm install
-
-# 開発サーバー起動
-pnpm dev
-
-# テスト監視モード（別ターミナル）
-pnpm test --watch
-```
-
-### 2.2 段階的コミット
-
-**コミット前の品質チェック**:
-```bash
-# 型チェック
-pnpm typecheck
-
-# Lint チェック
-pnpm lint
-
-# テスト実行
-pnpm test
-
-# ビルド確認
-pnpm build
-```
-
-**コミット実行**（詳細は [コミットメッセージ規約](#コミットメッセージ規約-conventional-commits) 参照）:
-```bash
-# 変更確認
-git status
-git diff
-
-# ステージング
 git add .
-
-# コミット（Conventional Commits 形式）
 git commit -m "$(cat <<'EOF'
-feat(features): Add YouTube summarize workflow
+<type>(<scope>): <subject>
 
-- Whisper API integration for transcription
-- AI-powered summary generation
-- Discord notification support
-
-Closes #42
+<body>
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -215,102 +90,148 @@ EOF
 )"
 ```
 
-**複数回の実装 → コミットを繰り返し可能**
+**Conventional Commits タイプ**:
+- `feat` - 新機能
+- `fix` - バグ修正
+- `refactor` - リファクタリング
+- `docs` - ドキュメント
+- `test` - テスト
+- `chore` - その他（依存関係更新等）
+- `ci` - CI/CD
 
----
+**スコープ例**: `features`, `shared`, `api`, `db`, `docs`, `infra`, `config`
 
-## 3. プルリクエスト作成
+### 3. PR作成とコメント追加
 
-### 3.1 リモートへ Push
+**ステップ1: PR作成**
 
 ```bash
-# 初回 push (upstream 設定含む)
 git push -u origin "${TASK_NAME}"
 
-# 2回目以降
-git push
-```
-
-### 3.2 PR 作成（gh CLI 使用）
-
-**基本的な PR 作成**:
-```bash
-gh pr create --title "feat(features): Add YouTube summarize workflow" --body "$(cat <<'EOF'
+gh pr create --title "<type>(<scope>): <subject>" --body "$(cat <<'EOF'
 ## 概要
-YouTube動画のURLから自動要約を生成するワークフロー機能を追加します。
+
+<!-- この PR の目的と背景を記述 -->
 
 ## 変更内容
-- YouTube動画要約Executor の実装
-- 入出力スキーマ定義（Zod）
-- Registry への登録
-- ユニットテスト追加（カバレッジ80%達成）
+
+<!-- 主な変更点をリストアップ -->
+-
+-
+-
+
+## 変更タイプ
+
+<!-- 該当するものにチェック -->
+- [ ] 🐛 バグ修正 (bug fix)
+- [ ] ✨ 新機能 (new feature)
+- [ ] 🔨 リファクタリング (refactoring)
+- [ ] 📝 ドキュメント (documentation)
+- [ ] 🧪 テスト (test)
+- [ ] 🔧 設定変更 (configuration)
+- [ ] 🚀 CI/CD (continuous integration)
 
 ## テスト
-- [x] ユニットテスト実行（`pnpm test`）
-- [x] 型チェック実行（`pnpm typecheck`）
-- [x] ESLint チェック実行（`pnpm lint`）
-- [x] ビルド確認（`pnpm build`）
-- [x] 手動テスト実施
 
-## 関連Issue
-Closes #42
+<!-- 実施したテストにチェック -->
+- [ ] ユニットテスト実行 (`pnpm test`)
+- [ ] 型チェック実行 (`pnpm typecheck`)
+- [ ] ESLint チェック実行 (`pnpm lint`)
+- [ ] ビルド確認 (`pnpm build`)
+- [ ] 手動テスト実施
+
+## 関連 Issue
+
+<!-- 関連するIssue番号 -->
+Closes #
+
+## 破壊的変更
+
+<!-- 破壊的変更がある場合は詳細を記述 -->
+- [ ] この PR には破壊的変更が含まれます
+
+<!-- 破壊的変更の詳細 -->
+
+## スクリーンショット
+
+<!-- UI変更がある場合は添付 -->
+
+## チェックリスト
+
+- [ ] コードが既存のスタイルに従っている
+- [ ] 必要に応じてドキュメントを更新した
+- [ ] 新規・変更機能にテストを追加した
+- [ ] すべてのテストがローカルで成功する
+- [ ] Pre-commit hooks が成功する
+
+## その他
+
+<!-- 追加情報や補足事項 -->
+
+---
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 EOF
 )" --base main
 ```
 
-**PR テンプレート詳細**: [PR テンプレート](#pr-テンプレート) を参照
+**ステップ2: PRコメント追加**
 
-### 3.3 PR 確認
-
-```bash
-# PR 一覧確認
-gh pr list
-
-# 自分の PR 詳細表示
-gh pr view
-
-# ブラウザで開く
-gh pr view --web
-```
-
-### 3.4 レビュー対応
+PR作成後、追加の補足コメントを投稿します。
 
 ```bash
-# レビューコメントに対応して修正
-# ... ファイル編集 ...
+# PR番号を取得
+PR_NUMBER=$(gh pr view --json number -q .number)
 
-# 追加コミット
-git add .
-git commit -m "fix: address review comments - improve error handling"
-git push
+# コメント投稿
+gh pr comment "${PR_NUMBER}" --body "$(cat <<'EOF'
+## 📝 実装の詳細
 
-# PR は自動的に更新される
-```
+<!-- 変更の技術的詳細や設計判断の理由 -->
+
+## ⚠️ レビュー時の注意点
+
+<!-- レビュアーが確認すべき重要なポイント -->
+
+## 🔍 テスト方法
+
+<!-- 動作確認の手順や再現方法 -->
+
+## 📚 参考資料
+
+<!-- 関連ドキュメントやIssue、外部リンク等 -->
 
 ---
 
-## 4. マージ＆同期
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+EOF
+)"
+```
 
-### 4.1 CI/CD 完了待機（必須）
+**コメント生成のガイドライン**:
+- **実装の詳細**: アーキテクチャ変更、技術選定の理由、トレードオフ等
+- **注意点**: 破壊的変更、パフォーマンス影響、セキュリティ考慮事項等
+- **テスト方法**: 手動テストの手順、エッジケースの確認方法
+- **参考資料**: 関連Issue、設計ドキュメント、外部記事等
 
-**⚠️ マージ前に必ずCI/CDの完了を確認すること**
+コメントは差分の内容に応じて具体的に記述してください。
+
+### 4. CI/CD完了確認
+
+**必須**: マージ前にCIが全て完了していることを確認
 
 ```bash
 # CIステータス確認
-gh pr checks <PR番号> --repo daishiman/AIWorkflowOrchestrator
+gh pr checks <PR番号>
 
 # 全てのチェックが pass になるまで待機
-# pending/in_progress がある場合は30秒〜1分後に再確認
+# pending/in_progress がある場合は待機継続
 ```
 
-**待機ループの実装**:
+**待機ループ例**:
 ```bash
-# 30秒間隔でCIステータスを確認（最大10回）
 for i in {1..10}; do
-  echo "=== CI確認 ($i/10) ==="
-  gh pr checks <PR番号> 2>&1
+  gh pr checks <PR番号>
   if gh pr checks <PR番号> 2>&1 | grep -qE "(pending|in_progress)"; then
     echo "CI実行中... 30秒後に再確認"
     sleep 30
@@ -321,91 +242,129 @@ for i in {1..10}; do
 done
 ```
 
-### 4.2 PR マージ
+### 5. マージ（手動）
 
-**GitHub Web UI でマージ（推奨）**:
-1. PR ページを開く
-2. レビュー承認を確認
-3. **CI（GitHub Actions）が全てパスしていることを確認** ← 必須
-4. "Squash and merge" をクリック
-5. "Delete branch" にチェック
+**AIはここまで**:
+- CI完了を確認
+- ユーザーに「GitHub UIでマージ可能です」と報告
 
-**CLI からマージ**（CI完了確認後のみ）:
-```bash
-# CI完了を確認してからマージ
-gh pr checks <PR番号> && gh pr merge --squash --delete-branch
-```
+**ユーザーが実行**:
+1. GitHub Web UIで PR を開く
+2. CI結果を最終確認（全て ✅ pass）
+3. 「Squash and merge」クリック
+4. 「Delete branch」にチェック
 
-### 4.3 ローカル main ブランチ更新
+### 6. マージ後の同期（必要に応じて）
 
 ```bash
-# メインリポジトリに戻る
 cd /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator
-
-# main ブランチに切り替え
 git checkout main
-
-# リモートから最新を取得
 git pull origin main
 
-# 状態確認
-git log --oneline -5
-```
-
-### 4.4 ワークツリー削除
-
-```bash
-# worktree 削除
+# Worktreeを使っていた場合のみ
 git worktree remove "${WORKTREE_DIR}"
-
-# 完全に削除されたか確認
-git worktree list
-
-# リモートブランチも削除済みか確認
 git fetch --prune
-git branch -a
 ```
 
 ---
 
-## コミットメッセージ規約 (Conventional Commits)
+## トラブルシューティング
 
-### 基本形式
+### CIが失敗した場合
+```bash
+# ローカルで再現
+pnpm typecheck  # 型エラー
+pnpm lint       # Lint
+pnpm test       # テスト
+pnpm build      # ビルド
 
+# 修正後
+git add .
+git commit -m "fix: resolve CI errors"
+git push
 ```
-<type>(<scope>): <subject>
 
-<body>
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-
-Co-Authored-By: Claude <noreply@anthropic.com>
+### Worktreeが削除できない場合
+```bash
+git worktree remove --force "${WORKTREE_DIR}"
+# or
+rm -rf "${WORKTREE_DIR}" && git worktree prune
 ```
 
-### タイプ一覧
+### 未コミット変更がある場合
+```bash
+git stash push -m "一時保存"
+# 作業後
+git stash pop
+```
 
-| タイプ | 説明 | 使用例 |
-|--------|------|--------|
-| **feat** | 新機能追加 | `feat(features): Add YouTube summarize workflow` |
-| **fix** | バグ修正 | `fix(executor): Handle timeout error in AI processing` |
-| **refactor** | リファクタリング | `refactor(shared): Extract common AI client logic` |
-| **docs** | ドキュメント | `docs(specs): Update workflow execution flow diagram` |
-| **test** | テスト | `test(features): Add unit tests for YouTube summarize` |
-| **chore** | その他 | `chore(deps): Update Drizzle ORM to 0.39.x` |
-| **ci** | CI/CD | `ci(actions): Add TypeScript type check to CI` |
+### マージ競合が発生した場合
+```bash
+# main の最新を取り込む
+git fetch origin main
+git merge origin/main
 
-### スコープ一覧
+# 競合解決
+# ... ファイルを手動編集 ...
+git add .
+git commit -m "merge: resolve conflicts with main branch"
+git push
+```
 
-| スコープ | 対象 | 説明 |
-|---------|------|------|
-| **features** | `src/features/` | 機能プラグイン |
-| **shared** | `src/shared/` | 共通インフラ |
-| **local-agent** | `local-agent/` | ローカルエージェント |
-| **api** | `src/app/api/` | API エンドポイント |
-| **db** | `src/shared/infrastructure/database/` | データベース |
-| **docs** | `docs/` | ドキュメント |
-| **infra** | `railway.json` 等 | インフラ設定 |
-| **config** | `tsconfig.json` 等 | 設定ファイル |
+### 間違ったブランチで作業してしまった場合
+```bash
+# 正しいブランチを作成
+git checkout -b correct-branch-name
+
+# 変更をコミット
+git add .
+git commit -m "fix: move changes to correct branch"
+
+# 間違ったブランチは削除
+git branch -D wrong-branch-name
+```
+
+### コミットメッセージを修正したい場合
+```bash
+# 最新のコミットメッセージを修正（push前のみ）
+git commit --amend
+
+# push済みの場合は新しいコミットを追加
+git commit -m "docs: fix typo in previous commit message"
+```
+
+---
+
+## 安全性チェックリスト
+
+### コミット前
+- [ ] `git status` で変更内容確認
+- [ ] `git diff` で差分確認
+- [ ] テスト/型チェック/Lint 実行（Pre-commit hookが自動実行）
+
+### PR作成前
+- [ ] コミットメッセージが Conventional Commits 形式
+- [ ] Claude Code署名が含まれている
+- [ ] セルフレビュー実施
+
+### マージ前（ユーザー確認）
+- [ ] **CI（GitHub Actions）が全て pass** ← 最重要
+- [ ] `gh pr checks <PR番号>` で全チェック完了確認
+- [ ] pending/in_progress がないこと
+
+---
+
+## コミットメッセージ規約詳細
+
+### コミットメッセージのルール
+
+- ✅ subject は50文字以内を推奨
+- ✅ subject は現在形・命令形で記述（"Add" not "Added"）
+- ✅ body は72文字で改行を推奨
+- ✅ 複数の変更は複数のコミットに分割
+- ✅ Claude Code署名は必須
+- ❌ "fix", "update", "changes" のみのメッセージは禁止
+- ❌ 日本語のみのメッセージは避ける（英語推奨）
 
 ### コミット例
 
@@ -439,515 +398,9 @@ Related to #38
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```
 
-#### 例3: ドキュメント更新
-```
-docs(specs): Update database schema specification
-
-- Add deleted_at column to workflows table
-- Detail index design section
-- Add state transition diagram
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-
-Co-Authored-By: Claude <noreply@anthropic.com>
-```
-
-### コミットメッセージのルール
-
-- ✅ subject は50文字以内を推奨
-- ✅ subject は現在形・命令形で記述（"Add" not "Added"）
-- ✅ body は72文字で改行を推奨
-- ✅ 複数の変更は複数のコミットに分割
-- ✅ Claude Code署名は必須
-- ❌ "fix", "update", "changes" のみのメッセージは禁止
-- ❌ 日本語のみのメッセージは避ける（英語推奨）
-
----
-
-## PR テンプレート
-
-### PR タイトル形式
-
-Conventional Commits と同じ形式:
-```
-<type>(<scope>): <subject>
-```
-
-例:
-- `feat(features): Add YouTube summarize workflow`
-- `fix(executor): Handle AI API timeout gracefully`
-- `docs(specs): Update database schema specification`
-
-### PR 本文テンプレート
-
-```markdown
-## 概要
-この PR の目的と背景を記述
-
-## 変更内容
-- 主な変更点1
-- 主な変更点2
-- 主な変更点3
-
-## 変更タイプ
-
-- [ ] 🐛 バグ修正 (bug fix)
-- [ ] ✨ 新機能 (new feature)
-- [ ] 🔨 リファクタリング (refactoring)
-- [ ] 📝 ドキュメント (documentation)
-- [ ] 🧪 テスト (test)
-- [ ] 🔧 設定変更 (configuration)
-- [ ] 🚀 CI/CD (continuous integration)
-
-## テスト
-- [ ] ユニットテスト実行（`pnpm test`）
-- [ ] 型チェック実行（`pnpm typecheck`）
-- [ ] ESLint チェック実行（`pnpm lint`）
-- [ ] ビルド確認（`pnpm build`）
-- [ ] 手動テスト実施
-
-## 関連Issue
-Closes #123
-Related to #456
-
-## 破壊的変更
-なし / ある場合は詳細を記述
-- [ ] この PR には破壊的変更が含まれます
-
-## スクリーンショット（該当する場合）
-[画像を添付]
-
-## チェックリスト
-
-- [ ] コードが既存のスタイルに従っている
-- [ ] 必要に応じてドキュメントを更新した
-- [ ] 新規・変更機能にテストを追加した
-- [ ] すべてのテストがローカルで成功する
-- [ ] Pre-commit hooks が成功する
-
-## その他
-追加情報や補足事項
-
----
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-```
-
-### PR 作成例
-
-#### 例1: 新機能追加PR
-
-**タイトル**:
-```
-feat(features): Add YouTube summarize workflow
-```
-
-**本文**:
-```markdown
-## 概要
-YouTube動画のURLから自動要約を生成するワークフロー機能を追加します。
-Discord経由で動画URLを送信すると、AIが要約とキーポイントを抽出して返信します。
-
-## 変更内容
-- YouTube動画要約Executor の実装（`features/youtube-summarize/`）
-- 入出力スキーマ定義（Zod）
-- Registry への登録
-- ユニットテスト追加（カバレッジ80%達成）
-- 仕様書作成（`docs/20-specifications/features/youtube-summarize.md`）
-
-## 変更タイプ
-
-- [ ] 🐛 バグ修正 (bug fix)
-- [ ] ✨ 新機能 (new feature)
-- [ ] 🔨 リファクタリング (refactoring)
-- [ ] 📝 ドキュメント (documentation)
-- [ ] 🧪 テスト (test)
-- [ ] 🔧 設定変更 (configuration)
-- [ ] 🚀 CI/CD (continuous integration)
-
-## テスト
-- [x] ユニットテスト実行（`pnpm test`） - 全テストパス
-- [x] 型チェック実行（`pnpm typecheck`） - エラーなし
-- [x] ESLint チェック実行（`pnpm lint`） - 警告なし
-- [x] ビルド確認（`pnpm build`） - 成功
-- [x] 手動テスト実施 - Discord Bot 経由で動作確認
-
-## 関連Issue
-Closes #42
-
-## 破壊的変更
-なし
-
-## 動作確認
-- テスト動画URL: https://www.youtube.com/watch?v=example
-- 処理時間: 約15秒
-- 出力例: 要約300文字、キーポイント5項目
-
----
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-```
-
-#### 例2: バグ修正PR
-
-**タイトル**:
-```
-fix(executor): Handle AI API timeout gracefully
-```
-
-**本文**:
-```markdown
-## 概要
-AI API のタイムアウト時にシステム全体がクラッシュする問題を修正します。
-エクスポネンシャルバックオフによるリトライロジックを実装し、最大3回までリトライします。
-
-## 変更内容
-- タイムアウトエラーのハンドリング追加
-- リトライロジック実装（指数バックオフ）
-- エラーログの詳細化
-- workflows テーブルの retry_count 更新処理
-- 関連するユニットテストの追加
-
-## テスト
-- [x] ユニットテスト実行（`pnpm test`） - 新規テスト5件追加
-- [x] 型チェック実行（`pnpm typecheck`） - エラーなし
-- [x] ESLint チェック実行（`pnpm lint`） - 警告なし
-- [x] ビルド確認（`pnpm build`） - 成功
-- [x] 手動テスト実施 - タイムアウト発生時のリトライ動作確認
-
-## 関連Issue
-Closes #38
-
-## 破壊的変更
-なし
-
-## 追加情報
-- リトライ間隔: 1秒 → 2秒 → 4秒
-- 最大リトライ回数: 3回
-- タイムアウト閾値: 30秒
-
----
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-```
-
----
-
-## Pre-commit Hooks & CI/CD
-
-### Pre-commit Hooks（husky + lint-staged）
-
-コミット時に自動で品質チェックが実行されます。
-
-#### 仕組み
-
-```
-git commit 実行
-    ↓
-.husky/pre-commit が呼び出される
-    ↓
-lint-staged が実行される
-    ↓
-ステージされたファイルに ESLint/Prettier 適用
-    ↓
-成功 → コミット完了
-失敗 → コミット中止（エラー修正が必要）
-```
-
-#### 設定ファイル
-
-| ファイル | 役割 |
-|----------|------|
-| `.husky/pre-commit` | Git hook - `pnpm exec lint-staged` を実行 |
-| `.lintstagedrc.json` | lint-staged 設定 - 対象ファイルと実行コマンド |
-
-#### lint-staged 設定内容
-
-```json
-{
-  "*.{js,jsx,ts,tsx}": ["eslint --fix", "prettier --write"],
-  "*.{json,md,yml,yaml}": ["prettier --write"]
-}
-```
-
-#### トラブルシューティング
-
-```bash
-# フックが動作しない場合
-chmod +x .husky/pre-commit
-chmod +x .husky/_/h
-git config core.hooksPath .husky
-
-# husky を再初期化
-pnpm exec husky init
-
-# lint-staged を手動実行（デバッグ用）
-pnpm exec lint-staged --verbose
-```
-
-### CI/CD パイプライン
-
-#### CI ワークフロー（`.github/workflows/ci.yml`）
-
-| ジョブ | 内容 | 実行条件 |
-|--------|------|----------|
-| **lint** | ESLint チェック | 常時 |
-| **typecheck** | TypeScript 型チェック | 常時 |
-| **test** | Vitest テスト実行 + カバレッジ | 常時 |
-| **security** | `pnpm audit` 脆弱性スキャン | 常時 |
-| **build** | ビルド検証 | lint/typecheck/test 成功後 |
-
-**特徴**:
-- **Concurrency 制御**: 同一ブランチの古いワークフローを自動キャンセル
-- **pnpm キャッシュ**: 依存関係インストールを高速化
-- **並列実行**: lint/typecheck/test/security を同時実行
-
-#### CD ワークフロー（`.github/workflows/release-desktop.yml`）
-
-| トリガー | 動作 |
-|----------|------|
-| `v*` タグ push | 自動リリース（macOS ビルド → GitHub Releases） |
-| 手動実行 | バージョン指定でドラフトリリース作成 |
-
-**特徴**:
-- **コード署名なし**: MVP 向けコスト削減（将来対応予定）
-- **macOS のみ**: 無料 tier での最適化
-
-### Dependabot（`.github/dependabot.yml`）
-
-週次で依存関係を自動更新する PR を作成します。
-
-| 対象 | 頻度 | グループ化 |
-|------|------|-----------|
-| npm パッケージ | 週1回（月曜 09:00 JST） | dev-dependencies, testing, electron |
-| GitHub Actions | 週1回（月曜 09:00 JST） | - |
-
-**PR ラベル**: `dependencies`, `automated`, `ci`
-
-### ローカル品質チェック
-
-コミット前に手動で実行する場合:
-
-```bash
-# 全チェック実行
-pnpm typecheck && pnpm lint && pnpm test && pnpm build
-
-# 個別実行
-pnpm lint          # ESLint
-pnpm typecheck     # TypeScript
-pnpm test          # Vitest
-pnpm test:coverage # カバレッジ付き
-
-# 自動修正
-pnpm lint --fix    # ESLint 自動修正
-pnpm format        # Prettier 全ファイル
-```
-
----
-
-## トラブルシューティング
-
-### 5.1 未コミットの変更がある場合
-
-```bash
-# 変更を一時退避
-git stash push -m "作業中の変更を一時保存"
-
-# 後で復元
-git stash pop
-```
-
-### 5.2 マージ競合が発生した場合
-
-```bash
-# main の最新を取り込む
-git fetch origin main
-git merge origin/main
-
-# 競合解決
-# ... ファイルを手動編集 ...
-git add .
-git commit -m "merge: resolve conflicts with main branch"
-git push
-```
-
-### 5.3 worktree が削除できない場合
-
-```bash
-# 強制削除
-git worktree remove --force "${WORKTREE_DIR}"
-
-# それでも削除できない場合
-rm -rf "${WORKTREE_DIR}"
-git worktree prune
-```
-
-### 5.4 間違ったブランチで作業してしまった場合
-
-```bash
-# 正しいブランチを作成
-git checkout -b correct-branch-name
-
-# 変更をコミット
-git add .
-git commit -m "fix: move changes to correct branch"
-
-# 間違ったブランチは削除
-git branch -D wrong-branch-name
-```
-
-### 5.5 コミットメッセージを修正したい場合
-
-```bash
-# 最新のコミットメッセージを修正（push前のみ）
-git commit --amend
-
-# push済みの場合は新しいコミットを追加
-git commit -m "docs: fix typo in previous commit message"
-```
-
-### 5.6 CI が失敗した場合
-
-```bash
-# ローカルでエラーを再現
-pnpm typecheck  # 型エラー確認
-pnpm lint       # Lint エラー確認
-pnpm test       # テスト失敗確認
-pnpm build      # ビルドエラー確認
-
-# 修正後
-git add .
-git commit -m "fix: resolve CI errors"
-git push
-```
-
----
-
-## コマンドリファレンス
-
-### ワンライナーコマンド集
-
-#### 新規タスク開始（全自動）
-```bash
-TASK_NAME="feature/task-name" && WORKTREE_DIR=".worktrees/${TASK_NAME##*/}" && cd /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator && git worktree add "${WORKTREE_DIR}" -b "${TASK_NAME}" main && cd "${WORKTREE_DIR}" && git status
-```
-
-#### コミット & Push（高速）
-```bash
-git add . && git commit -m "feat: 変更内容" && git push
-```
-
-#### PR 作成（簡易版）
-```bash
-gh pr create --fill --base main
-```
-
-#### マージ後のクリーンアップ（全自動）
-```bash
-WORKTREE_DIR=".worktrees/task-name" && cd /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator && git checkout main && git pull origin main && git worktree remove "${WORKTREE_DIR}" && git fetch --prune && git worktree list
-```
-
-### 状態確認コマンド
-
-```bash
-# すべての worktree 一覧
-git worktree list
-
-# 現在のブランチとコミット状態
-git status && git log --oneline -3
-
-# リモートとの差分確認
-git fetch origin main && git log --oneline main..origin/main
-
-# PR 状態確認
-gh pr status
-```
-
-### 品質チェックコマンド
-
-```bash
-# 全チェック実行（PR前に必須）
-pnpm typecheck && pnpm lint && pnpm test && pnpm build
-
-# テスト監視モード
-pnpm test --watch
-
-# カバレッジ確認
-pnpm test --coverage
-```
-
----
-
-## ベストプラクティス
-
-### 1. ブランチ命名規則
-- `feature/機能名` - 新機能追加
-- `fix/バグ名` - バグ修正
-- `refactor/対象` - リファクタリング
-- `docs/対象` - ドキュメント更新
-
-### 2. コミットサイズ
-- 1 コミット = 1 論理的変更
-- 変更ファイル数は 10 ファイル以内が理想
-- 大きな変更は複数コミットに分割
-
-### 3. PR サイズ
-- 1 PR = 1 機能/修正
-- 変更ファイル数は 20 ファイル以内が理想
-- 大きな機能は複数 PR に分割
-
-### 4. レビューフロー
-- セルフレビューを最初に実施
-- CI/CD チェックが通ってから依頼
-- レビューコメントには必ず返信
-
-### 5. コミットタイミング
-- 機能単位でこまめにコミット
-- テストが通る状態でコミット
-- リファクタリングは別コミット
-
----
-
-## 安全性チェックリスト
-
-### コミット前
-- [ ] `git status` で変更内容を確認
-- [ ] `git diff` で差分を確認
-- [ ] テストが通ることを確認（`pnpm test`）
-- [ ] 型チェックが通ることを確認（`pnpm typecheck`）
-- [ ] Lint エラーがないことを確認（`pnpm lint`）
-- [ ] ※ Pre-commit hook (husky) により ESLint/Prettier は自動実行される
-
-### Push前
-- [ ] コミットメッセージが Conventional Commits 形式
-- [ ] Claude Code署名が含まれている
-- [ ] ブランチ名が命名規則に従っている
-- [ ] ビルドが成功することを確認（`pnpm build`）
-
-### PR作成前
-- [ ] セルフレビュー実施
-- [ ] 仕様書が更新されている（機能追加の場合）
-- [ ] テストカバレッジが維持されている
-- [ ] README が更新されている（必要に応じて）
-
-### マージ前
-- [ ] **CI（GitHub Actions）が全てパスしている** ← 最重要！pending/in_progressがある場合は待機
-- [ ] `gh pr checks <PR番号>` で全チェックが `pass` であることを確認
-- [ ] コードレビューが完了している
-- [ ] テストが全て通っている
-- [ ] 破壊的変更がドキュメント化されている
-
-⚠️ **CI完了前のマージは禁止**: 必ず全てのチェックが完了してからマージすること
-
-### マージ後
-- [ ] main ブランチを pull
-- [ ] worktree を削除
-- [ ] リモートブランチが削除されていることを確認
-- [ ] `git fetch --prune` でクリーンアップ
-
 ---
 
 ## システム仕様参照
 
-本プロジェクトの詳細な仕様は以下を参照:
+詳細は以下を参照:
 - **マスター設計書**: `docs/00-requirements/master_system_design.md`
