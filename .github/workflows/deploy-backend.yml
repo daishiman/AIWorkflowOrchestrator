@@ -71,7 +71,7 @@ jobs:
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          railway link ${{ secrets.RAILWAY_PROJECT_ID }} --environment production || true
+          railway link --project-id ${{ secrets.RAILWAY_PROJECT_ID }} --environment production || true
           railway up --service backend --detach
 
       - name: Wait for deployment
