@@ -21,10 +21,12 @@ SELECT extversion FROM pg_extension WHERE extname = 'vector';
 ### Neon/Supabaseでの有効化
 
 **Neon**:
+
 - ダッシュボードで自動的に利用可能
 - SQLで `CREATE EXTENSION vector;`
 
 **Supabase**:
+
 - ダッシュボード → Extensions → vector を有効化
 - または `CREATE EXTENSION vector;`
 
@@ -56,14 +58,21 @@ CREATE TABLE document_chunks (
 ### Drizzleでのスキーマ定義
 
 ```typescript
-import { pgTable, serial, text, vector, jsonb, timestamp } from 'drizzle-orm/pg-core';
+import {
+  pgTable,
+  serial,
+  text,
+  vector,
+  jsonb,
+  timestamp,
+} from "drizzle-orm/pg-core";
 
-export const documents = pgTable('documents', {
-  id: serial('id').primaryKey(),
-  content: text('content').notNull(),
-  metadata: jsonb('metadata').default({}),
-  embedding: vector('embedding', { dimensions: 1536 }),
-  createdAt: timestamp('created_at').defaultNow(),
+export const documents = pgTable("documents", {
+  id: serial("id").primaryKey(),
+  content: text("content").notNull(),
+  metadata: jsonb("metadata").default({}),
+  embedding: vector("embedding", { dimensions: 1536 }),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 ```
 
@@ -71,16 +80,16 @@ export const documents = pgTable('documents', {
 
 ### 主要なEmbeddingモデル
 
-| プロバイダー | モデル | 次元数 | 特徴 |
-|-------------|--------|--------|------|
-| OpenAI | text-embedding-3-small | 1536 | コスト効率、汎用 |
-| OpenAI | text-embedding-3-large | 3072 | 高精度 |
-| OpenAI | text-embedding-ada-002 | 1536 | レガシー |
-| Cohere | embed-english-v3.0 | 1024 | 英語特化 |
-| Cohere | embed-multilingual-v3.0 | 1024 | 多言語対応 |
-| Voyage | voyage-2 | 1024 | 高性能 |
-| local | all-MiniLM-L6-v2 | 384 | 軽量 |
-| local | all-mpnet-base-v2 | 768 | バランス型 |
+| プロバイダー | モデル                  | 次元数 | 特徴             |
+| ------------ | ----------------------- | ------ | ---------------- |
+| OpenAI       | text-embedding-3-small  | 1536   | コスト効率、汎用 |
+| OpenAI       | text-embedding-3-large  | 3072   | 高精度           |
+| OpenAI       | text-embedding-ada-002  | 1536   | レガシー         |
+| Cohere       | embed-english-v3.0      | 1024   | 英語特化         |
+| Cohere       | embed-multilingual-v3.0 | 1024   | 多言語対応       |
+| Voyage       | voyage-2                | 1024   | 高性能           |
+| local        | all-MiniLM-L6-v2        | 384    | 軽量             |
+| local        | all-mpnet-base-v2       | 768    | バランス型       |
 
 ### 次元数の選択
 
@@ -112,6 +121,7 @@ LIMIT 5;
 ```
 
 **特徴**:
+
 - 正規化されたベクトルに最適
 - 方向の類似性を測定
 - 長さの影響を受けない
@@ -129,6 +139,7 @@ LIMIT 5;
 ```
 
 **特徴**:
+
 - 幾何学的な距離
 - ベクトルの長さも考慮
 - 画像特徴量などに適する
@@ -147,6 +158,7 @@ LIMIT 5;
 ```
 
 **特徴**:
+
 - 最も高速
 - 正規化されたベクトルではコサインと同等
 - MIPSアルゴリズムに使用
@@ -158,10 +170,8 @@ LIMIT 5;
 ```typescript
 // 正規化関数
 function normalize(vector: number[]): number[] {
-  const magnitude = Math.sqrt(
-    vector.reduce((sum, v) => sum + v * v, 0)
-  );
-  return vector.map(v => v / magnitude);
+  const magnitude = Math.sqrt(vector.reduce((sum, v) => sum + v * v, 0));
+  return vector.map((v) => v / magnitude);
 }
 
 // 使用例
@@ -233,13 +243,13 @@ LIMIT 10;
 ## Drizzleでのクエリ
 
 ```typescript
-import { sql } from 'drizzle-orm';
-import { db } from './db';
-import { documents } from './schema';
+import { sql } from "drizzle-orm";
+import { db } from "./db";
+import { documents } from "./schema";
 
 // 類似度検索
 async function searchSimilar(queryEmbedding: number[], limit = 10) {
-  const embedding = `[${queryEmbedding.join(',')}]`;
+  const embedding = `[${queryEmbedding.join(",")}]`;
 
   return db
     .select({
@@ -256,9 +266,9 @@ async function searchSimilar(queryEmbedding: number[], limit = 10) {
 async function searchWithFilter(
   queryEmbedding: number[],
   category: string,
-  limit = 10
+  limit = 10,
 ) {
-  const embedding = `[${queryEmbedding.join(',')}]`;
+  const embedding = `[${queryEmbedding.join(",")}]`;
 
   return db
     .select()
@@ -272,16 +282,19 @@ async function searchWithFilter(
 ## チェックリスト
 
 ### セットアップ時
+
 - [ ] pgvector拡張がインストールされているか？
 - [ ] 適切な次元数を選択したか？
 - [ ] ベクトルカラムが作成されているか？
 
 ### データ投入時
+
 - [ ] Embeddingを正規化しているか？
 - [ ] 次元数が一致しているか？
 - [ ] NULL値の処理を考慮しているか？
 
 ### クエリ時
+
 - [ ] 適切な距離関数を選択しているか？
 - [ ] インデックスを作成しているか？
 - [ ] フィルタを適切に使用しているか？

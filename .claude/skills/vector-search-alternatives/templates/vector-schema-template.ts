@@ -17,8 +17,8 @@ import {
   integer,
   index,
   uniqueIndex,
-} from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
+} from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 
 // =============================================================================
 // カスタム型定義（pgvector用）
@@ -28,7 +28,7 @@ import { sql } from 'drizzle-orm';
  * ベクトル型のカスタム定義
  * Drizzleの標準型にない場合に使用
  */
-import { customType } from 'drizzle-orm/pg-core';
+import { customType } from "drizzle-orm/pg-core";
 
 const vector = customType<{
   data: number[];
@@ -39,13 +39,13 @@ const vector = customType<{
     return `vector(${config?.dimensions || 1536})`;
   },
   toDriver(value) {
-    return `[${value.join(',')}]`;
+    return `[${value.join(",")}]`;
   },
   fromDriver(value) {
     // "[0.1,0.2,...]" -> [0.1, 0.2, ...]
     return value
       .substring(1, value.length - 1)
-      .split(',')
+      .split(",")
       .map(Number);
   },
 });
@@ -59,42 +59,44 @@ const vector = customType<{
  * RAGシステムでの検索対象
  */
 export const documents = pgTable(
-  'documents',
+  "documents",
   {
-    id: serial('id').primaryKey(),
+    id: serial("id").primaryKey(),
 
     // コンテンツ
-    title: text('title'),
-    content: text('content').notNull(),
+    title: text("title"),
+    content: text("content").notNull(),
 
     // Embedding（OpenAI text-embedding-3-small: 1536次元）
-    embedding: vector('embedding', { dimensions: 1536 }),
+    embedding: vector("embedding", { dimensions: 1536 }),
 
     // メタデータ
-    metadata: jsonb('metadata').$type<{
-      source?: string;
-      category?: string;
-      tags?: string[];
-      author?: string;
-      language?: string;
-      [key: string]: unknown;
-    }>().default({}),
+    metadata: jsonb("metadata")
+      .$type<{
+        source?: string;
+        category?: string;
+        tags?: string[];
+        author?: string;
+        language?: string;
+        [key: string]: unknown;
+      }>()
+      .default({}),
 
     // タイムスタンプ
-    createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
   },
   (table) => ({
     // HNSWインデックス（推奨）
-    embeddingIdx: index('idx_documents_embedding')
+    embeddingIdx: index("idx_documents_embedding")
       .on(table.embedding)
       .using(sql`hnsw (embedding vector_cosine_ops)`),
 
     // メタデータ検索用GINインデックス
-    metadataIdx: index('idx_documents_metadata')
+    metadataIdx: index("idx_documents_metadata")
       .on(table.metadata)
       .using(sql`gin`),
-  })
+  }),
 );
 
 // =============================================================================
@@ -106,45 +108,49 @@ export const documents = pgTable(
  * 大きなドキュメントを分割して格納
  */
 export const documentChunks = pgTable(
-  'document_chunks',
+  "document_chunks",
   {
-    id: serial('id').primaryKey(),
+    id: serial("id").primaryKey(),
 
     // 親ドキュメントへの参照
-    documentId: integer('document_id')
-      .references(() => documents.id, { onDelete: 'cascade' })
+    documentId: integer("document_id")
+      .references(() => documents.id, { onDelete: "cascade" })
       .notNull(),
 
     // チャンク情報
-    chunkIndex: integer('chunk_index').notNull(),
-    content: text('content').notNull(),
+    chunkIndex: integer("chunk_index").notNull(),
+    content: text("content").notNull(),
 
     // チャンクのEmbedding
-    embedding: vector('embedding', { dimensions: 1536 }),
+    embedding: vector("embedding", { dimensions: 1536 }),
 
     // チャンク固有のメタデータ
-    metadata: jsonb('metadata').$type<{
-      startChar?: number;
-      endChar?: number;
-      tokenCount?: number;
-      [key: string]: unknown;
-    }>().default({}),
+    metadata: jsonb("metadata")
+      .$type<{
+        startChar?: number;
+        endChar?: number;
+        tokenCount?: number;
+        [key: string]: unknown;
+      }>()
+      .default({}),
 
-    createdAt: timestamp('created_at').defaultNow(),
+    createdAt: timestamp("created_at").defaultNow(),
   },
   (table) => ({
     // ユニーク制約
-    uniqueChunk: uniqueIndex('idx_chunks_unique')
-      .on(table.documentId, table.chunkIndex),
+    uniqueChunk: uniqueIndex("idx_chunks_unique").on(
+      table.documentId,
+      table.chunkIndex,
+    ),
 
     // HNSWインデックス
-    embeddingIdx: index('idx_chunks_embedding')
+    embeddingIdx: index("idx_chunks_embedding")
       .on(table.embedding)
       .using(sql`hnsw (embedding vector_cosine_ops)`),
 
     // ドキュメントIDでの検索用
-    documentIdx: index('idx_chunks_document').on(table.documentId),
-  })
+    documentIdx: index("idx_chunks_document").on(table.documentId),
+  }),
 );
 
 // =============================================================================
@@ -156,29 +162,29 @@ export const documentChunks = pgTable(
  * 同じテキストのEmbedding再生成を防ぐ
  */
 export const embeddingCache = pgTable(
-  'embedding_cache',
+  "embedding_cache",
   {
-    id: serial('id').primaryKey(),
+    id: serial("id").primaryKey(),
 
     // テキストのハッシュ（ルックアップ用）
-    textHash: text('text_hash').notNull().unique(),
+    textHash: text("text_hash").notNull().unique(),
 
     // Embeddingモデル情報
-    model: text('model').notNull().default('text-embedding-3-small'),
-    dimensions: integer('dimensions').notNull().default(1536),
+    model: text("model").notNull().default("text-embedding-3-small"),
+    dimensions: integer("dimensions").notNull().default(1536),
 
     // Embedding
-    embedding: vector('embedding', { dimensions: 1536 }).notNull(),
+    embedding: vector("embedding", { dimensions: 1536 }).notNull(),
 
     // キャッシュメタデータ
-    createdAt: timestamp('created_at').defaultNow(),
-    lastUsedAt: timestamp('last_used_at').defaultNow(),
-    useCount: integer('use_count').default(1),
+    createdAt: timestamp("created_at").defaultNow(),
+    lastUsedAt: timestamp("last_used_at").defaultNow(),
+    useCount: integer("use_count").default(1),
   },
   (table) => ({
-    hashIdx: index('idx_cache_hash').on(table.textHash),
-    modelIdx: index('idx_cache_model').on(table.model),
-  })
+    hashIdx: index("idx_cache_hash").on(table.textHash),
+    modelIdx: index("idx_cache_model").on(table.model),
+  }),
 );
 
 // =============================================================================
@@ -198,7 +204,7 @@ export type NewEmbeddingCache = typeof embeddingCache.$inferInsert;
 // ヘルパー関数
 // =============================================================================
 
-import { db } from './db'; // プロジェクトのDB設定に合わせて変更
+import { db } from "./db"; // プロジェクトのDB設定に合わせて変更
 
 /**
  * 類似ドキュメントを検索
@@ -206,9 +212,9 @@ import { db } from './db'; // プロジェクトのDB設定に合わせて変更
 export async function searchSimilarDocuments(
   queryEmbedding: number[],
   limit = 10,
-  threshold = 0.7
+  threshold = 0.7,
 ) {
-  const embeddingStr = `[${queryEmbedding.join(',')}]`;
+  const embeddingStr = `[${queryEmbedding.join(",")}]`;
 
   return db.execute(sql`
     SELECT
@@ -234,9 +240,9 @@ export async function searchWithMetadataFilter(
     category?: string;
     tags?: string[];
   },
-  limit = 10
+  limit = 10,
 ) {
-  const embeddingStr = `[${queryEmbedding.join(',')}]`;
+  const embeddingStr = `[${queryEmbedding.join(",")}]`;
 
   let query = sql`
     SELECT
@@ -267,14 +273,11 @@ export async function searchWithMetadataFilter(
  */
 export async function insertDocumentWithChunks(
   doc: NewDocument,
-  chunks: { content: string; embedding: number[] }[]
+  chunks: { content: string; embedding: number[] }[],
 ) {
   return db.transaction(async (tx) => {
     // ドキュメントを挿入
-    const [insertedDoc] = await tx
-      .insert(documents)
-      .values(doc)
-      .returning();
+    const [insertedDoc] = await tx.insert(documents).values(doc).returning();
 
     // チャンクを挿入
     if (chunks.length > 0) {
@@ -284,7 +287,7 @@ export async function insertDocumentWithChunks(
           chunkIndex: index,
           content: chunk.content,
           embedding: chunk.embedding,
-        }))
+        })),
       );
     }
 

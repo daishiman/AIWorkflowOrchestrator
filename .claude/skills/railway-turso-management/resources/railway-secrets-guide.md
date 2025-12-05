@@ -10,18 +10,21 @@ Secrets管理機能を提供します。
 ### Secrets（機密情報）
 
 **特徴**:
+
 - 暗号化保存
-- UI上でマスク表示（***）
+- UI上でマスク表示（\*\*\*）
 - 監査ログ記録
 - アクセス制限可能
 
 **用途**:
+
 - APIキー
 - データベースパスワード
 - 暗号化キー
 - OAuth Client Secret
 
 **設定方法**:
+
 ```
 Railway Dashboard
 → Project
@@ -37,17 +40,20 @@ Railway Dashboard
 ### Variables（非機密設定）
 
 **特徴**:
+
 - 平文保存
 - UI上で表示可能
 - 監査ログなし
 
 **用途**:
+
 - アプリケーション名
 - ログレベル
 - 機能フラグ
 - 公開URL
 
 **設定方法**:
+
 ```
 Railway Dashboard
 → Variables
@@ -76,6 +82,7 @@ Railway Dashboard
 ### 環境別変数設定
 
 **方法1: UI から手動設定**
+
 ```
 Environment: production
 → Variables
@@ -84,6 +91,7 @@ Environment: production
 ```
 
 **方法2: Railway CLI から設定**
+
 ```bash
 # 環境選択
 railway environment
@@ -101,6 +109,7 @@ railway variables delete API_KEY
 ### 環境間のSecret分離
 
 **重要原則**:
+
 - 環境間でSecretを共有しない
 - 各環境に個別の値を設定
 - 環境名をSecret名に含めない（環境グループで分離）
@@ -126,6 +135,7 @@ railway variables delete API_KEY
 ### Neon Plugin のセットアップ
 
 **手順**:
+
 ```
 1. Railway Dashboard → Project → Plugins
 2. Neon Postgres を検索
@@ -135,6 +145,7 @@ railway variables delete API_KEY
 ```
 
 **自動注入される環境変数**:
+
 ```bash
 DATABASE_URL=postgresql://user:password@ep-xxx.neon.tech/dbname?sslmode=require
 DATABASE_PRIVATE_URL=postgresql://user:password@internal-xxx.neon.tech/dbname
@@ -144,24 +155,28 @@ POSTGRES_DB=dbname
 ```
 
 **メリット**:
+
 - 環境毎に自動分離（dev/staging/prodで別DB）
 - 手動設定不要
 - Rotation時の自動更新
 - SSL/TLS自動有効化
 
 **注意点**:
+
 - ローカル開発ではNeon Pluginは使用されない
 - ローカルは`railway run`で注入 or 手動`.env.local`
 
 ### ローカル開発でのNeon DB接続
 
 **方法1: Railway CLI使用（推奨）**
+
 ```bash
 railway run pnpm run dev
 # DATABASE_URLが自動注入される
 ```
 
 **方法2: ローカルPostgreSQL（開発専用）**
+
 ```bash
 # docker-compose.yml
 services:
@@ -184,15 +199,15 @@ DATABASE_URL=postgresql://dev:devpass@localhost:5432/myapp_dev
 
 ```typescript
 // ❌ 危険: Secretをログ出力
-console.log('API Key:', process.env.API_KEY);  // Railway Logsに露出！
+console.log("API Key:", process.env.API_KEY); // Railway Logsに露出！
 
 // ✅ 安全: Secretをログ出力しない
-console.log('API Key: ***');  // マスク表示
+console.log("API Key: ***"); // マスク表示
 
 // ✅ 安全: 構造化ログでSecretを除外
 logger.info({
-  event: 'api_call',
-  endpoint: '/api/data',
+  event: "api_call",
+  endpoint: "/api/data",
   // api_key は含めない
 });
 ```
@@ -200,6 +215,7 @@ logger.info({
 ### Railway Logs 検索
 
 **Secretが誤って露出していないかチェック**:
+
 ```
 Railway Dashboard
 → Project
@@ -215,17 +231,19 @@ Railway Dashboard
 ### /tmp ディレクトリの揮発性
 
 **Railway の仕様**:
+
 - `/tmp`ディレクトリは再デプロイ時に削除される
 - 永続化が必要なデータは外部ストレージ使用
 
 **Secretの一時保存禁止**:
+
 ```typescript
 // ❌ 危険: Secretをファイルに保存
-import fs from 'fs';
-fs.writeFileSync('/tmp/api-key.txt', process.env.API_KEY);  // 危険！
+import fs from "fs";
+fs.writeFileSync("/tmp/api-key.txt", process.env.API_KEY); // 危険！
 
 // ✅ 安全: Secretはメモリ内のみ
-const apiKey = process.env.API_KEY;  // メモリ内変数として使用
+const apiKey = process.env.API_KEY; // メモリ内変数として使用
 ```
 
 ### アップロードファイルのスキャン
@@ -237,14 +255,16 @@ class FileUploadSecurity {
 
     // Secret パターンスキャン
     const secretPatterns = [
-      /sk-proj-[a-zA-Z0-9]{48}/,  // OpenAI
-      /sk_live_[0-9a-zA-Z]{24,}/,  // Stripe
-      /-----BEGIN .* PRIVATE KEY-----/,  // Private Key
+      /sk-proj-[a-zA-Z0-9]{48}/, // OpenAI
+      /sk_live_[0-9a-zA-Z]{24,}/, // Stripe
+      /-----BEGIN .* PRIVATE KEY-----/, // Private Key
     ];
 
     for (const pattern of secretPatterns) {
       if (pattern.test(content)) {
-        throw new Error('Uploaded file contains potential secret - upload rejected');
+        throw new Error(
+          "Uploaded file contains potential secret - upload rejected",
+        );
       }
     }
   }
@@ -288,23 +308,27 @@ railway variables delete API_KEY_OLD
 ## 実装チェックリスト
 
 ### Railway設定
+
 - [ ] すべての機密情報が「Mark as secret」されているか？
 - [ ] 環境グループが3つ設定されているか？（dev/staging/prod）
 - [ ] Neon Pluginが各環境に設定されているか？
 - [ ] 本番環境のSecret変更ログが記録されているか？
 
 ### GitHub Actions統合
+
 - [ ] RAILWAY_TOKENがGitHub Secretsに保存されているか？
 - [ ] 環境別Secretsが適切に設定されているか？
 - [ ] 本番環境デプロイに承認が必要か？
 - [ ] SecretがCI/CDログに露出していないか？
 
 ### ローカル開発
+
 - [ ] `railway run`でSecrets注入されているか？
 - [ ] `.env.local`が.gitignoreに含まれているか？
 - [ ] ローカルDBが本番DBと分離されているか？
 
 ### セキュリティ
+
 - [ ] ログにSecretが露出していないか？
 - [ ] /tmpディレクトリにSecretを保存していないか？
 - [ ] アップロードファイルがスキャンされているか？

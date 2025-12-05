@@ -249,16 +249,16 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                    | パス                                              | 概要                                                                                         |
-| --------------------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| **database-normalization**  | `.claude/skills/database-normalization/SKILL.md`  | 第 1〜5 正規形、BCNF、意図的な非正規化、更新異常回避                                         |
-| **indexing-strategies**     | `.claude/skills/indexing-strategies/SKILL.md`     | B-Tree、GIN、GiST、BRIN インデックス、部分インデックス、式インデックス                       |
-| **sql-anti-patterns**       | `.claude/skills/sql-anti-patterns/SKILL.md`       | ジェイウォーク、EAV、Polymorphic Associations、25 種のアンチパターン回避                     |
-| **jsonb-optimization**      | `.claude/skills/jsonb-optimization/SKILL.md`      | GIN インデックス、jsonb_path_ops、@>演算子最適化、Zod スキーマ統合                           |
-| **foreign-key-constraints** | `.claude/skills/foreign-key-constraints/SKILL.md` | CASCADE 動作戦略、ソフトデリート統合、循環参照回避                                           |
-| **transaction-management**  | `.claude/skills/transaction-management/SKILL.md`  | ACID 特性、分離レベル（READ COMMITTED〜SERIALIZABLE）、楽観的/悲観的ロック、デッドロック回避 |
-| **query-optimization**      | `.claude/skills/query-optimization/SKILL.md`      | EXPLAIN ANALYZE、N+1 問題検出、JOIN アルゴリズム選択、インデックスチューニング               |
-| **database-migrations**     | `.claude/skills/database-migrations/SKILL.md`     | Drizzle Kit、ゼロダウンタイムマイグレーション、ロールバック計画、Expand-Contract             |
+| スキル名                    | パス                                              | 概要                                                                             |
+| --------------------------- | ------------------------------------------------- | -------------------------------------------------------------------------------- |
+| **database-normalization**  | `.claude/skills/database-normalization/SKILL.md`  | 第 1〜5 正規形、BCNF、意図的な非正規化、更新異常回避                             |
+| **indexing-strategies**     | `.claude/skills/indexing-strategies/SKILL.md`     | B-Tree インデックス、部分インデックス、式インデックス、カバリングインデックス    |
+| **sql-anti-patterns**       | `.claude/skills/sql-anti-patterns/SKILL.md`       | ジェイウォーク、EAV、Polymorphic Associations、25 種のアンチパターン回避         |
+| **json-optimization**       | `.claude/skills/json-optimization/SKILL.md`       | JSON 式インデックス戦略、JSON 関数最適化、Zod スキーマ統合、SQLite/Turso 対応    |
+| **foreign-key-constraints** | `.claude/skills/foreign-key-constraints/SKILL.md` | CASCADE 動作戦略、ソフトデリート統合、循環参照回避                               |
+| **transaction-management**  | `.claude/skills/transaction-management/SKILL.md`  | ACID 特性、分離レベル、楽観的/悲観的ロック、デッドロック回避                     |
+| **query-optimization**      | `.claude/skills/query-optimization/SKILL.md`      | EXPLAIN QUERY PLAN、N+1 問題検出、JOIN 最適化、インデックスチューニング          |
+| **database-migrations**     | `.claude/skills/database-migrations/SKILL.md`     | Drizzle Kit、ゼロダウンタイムマイグレーション、ロールバック計画、Expand-Contract |
 ```
 
 ## 15. リポジトリ実装
@@ -425,16 +425,16 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名 | パス | 概要 |
-|---------|------|------|
-| **authentication-authorization-security** | `.claude/skills/authentication-authorization-security/SKILL.md` | 認証・認可機構のセキュリティ評価、OAuth、JWT、RBAC |
-| **cryptographic-practices** | `.claude/skills/cryptographic-practices/SKILL.md` | 暗号化アルゴリズム、CSPRNG、鍵管理 |
-| **security-configuration-review** | `.claude/skills/security-configuration-review/SKILL.md` | セキュリティヘッダー、CORS、環境変数レビュー |
-| **dependency-security-scanning** | `.claude/skills/dependency-security-scanning/SKILL.md` | 依存関係脆弱性、pnpm audit、CVE評価 |
-| **code-static-analysis-security** | `.claude/skills/code-static-analysis-security/SKILL.md` | SQLインジェクション、XSS、コマンドインジェクション検出 |
-| **rate-limiting** | `.claude/skills/rate-limiting/SKILL.md` | Token Bucket、Leaky Bucket、Sliding Window |
-| **input-sanitization** | `.claude/skills/input-sanitization/SKILL.md` | パラメータタンパリング防止、エンコード処理 |
-| **security-reporting** | `.claude/skills/security-reporting/SKILL.md` | セキュリティレポート生成、リスク評価 |
+| スキル名                                  | パス                                                            | 概要                                                   |
+| ----------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------ |
+| **authentication-authorization-security** | `.claude/skills/authentication-authorization-security/SKILL.md` | 認証・認可機構のセキュリティ評価、OAuth、JWT、RBAC     |
+| **cryptographic-practices**               | `.claude/skills/cryptographic-practices/SKILL.md`               | 暗号化アルゴリズム、CSPRNG、鍵管理                     |
+| **security-configuration-review**         | `.claude/skills/security-configuration-review/SKILL.md`         | セキュリティヘッダー、CORS、環境変数レビュー           |
+| **dependency-security-scanning**          | `.claude/skills/dependency-security-scanning/SKILL.md`          | 依存関係脆弱性、pnpm audit、CVE評価                    |
+| **code-static-analysis-security**         | `.claude/skills/code-static-analysis-security/SKILL.md`         | SQLインジェクション、XSS、コマンドインジェクション検出 |
+| **rate-limiting**                         | `.claude/skills/rate-limiting/SKILL.md`                         | Token Bucket、Leaky Bucket、Sliding Window             |
+| **input-sanitization**                    | `.claude/skills/input-sanitization/SKILL.md`                    | パラメータタンパリング防止、エンコード処理             |
+| **security-reporting**                    | `.claude/skills/security-reporting/SKILL.md`                    | セキュリティレポート生成、リスク評価                   |
 ```
 
 ## 26. ロギング・監視設計者
@@ -462,15 +462,15 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                     | パス                                               | 概要                                                               |
-| ---------------------------- | -------------------------------------------------- | ------------------------------------------------------------------ |
-| **database-migrations**      | `.claude/skills/database-migrations/SKILL.md`      | Drizzle ORM マイグレーション、Up/Down 可逆的変更、移行期間パターン |
-| **backup-recovery**          | `.claude/skills/backup-recovery/SKILL.md`          | 多層防御バックアップ、PITR、RPO/RTO 設計、災害復旧計画             |
-| **query-performance-tuning** | `.claude/skills/query-performance-tuning/SKILL.md` | EXPLAIN ANALYZE、インデックス戦略、N+1 問題解決                    |
-| **database-seeding**         | `.claude/skills/database-seeding/SKILL.md`         | 環境別 Seeding、べき等性設計、ファクトリパターン                   |
-| **connection-pooling**       | `.claude/skills/connection-pooling/SKILL.md`       | サーバーレス対応、接続数最適化、タイムアウト設定                   |
-| **pgvector-optimization**    | `.claude/skills/pgvector-optimization/SKILL.md`    | ベクトル DB 設計、HNSW/IVFFlat、RAG パターン                       |
-| **database-monitoring**      | `.claude/skills/database-monitoring/SKILL.md`      | PostgreSQL 統計、スロークエリ監視、アラート設計                    |
+| スキル名                       | パス                                                 | 概要                                                               |
+| ------------------------------ | ---------------------------------------------------- | ------------------------------------------------------------------ |
+| **database-migrations**        | `.claude/skills/database-migrations/SKILL.md`        | Drizzle ORM マイグレーション、Up/Down 可逆的変更、移行期間パターン |
+| **backup-recovery**            | `.claude/skills/backup-recovery/SKILL.md`            | 多層防御バックアップ、RPO/RTO 設計、災害復旧計画（Turso レプリカ） |
+| **query-performance-tuning**   | `.claude/skills/query-performance-tuning/SKILL.md`   | EXPLAIN QUERY PLAN、インデックス戦略、N+1 問題解決、SQLite 最適化  |
+| **database-seeding**           | `.claude/skills/database-seeding/SKILL.md`           | 環境別 Seeding、べき等性設計、ファクトリパターン                   |
+| **connection-pooling**         | `.claude/skills/connection-pooling/SKILL.md`         | libSQL 接続プーリング、サーバーレス対応、タイムアウト設定          |
+| **vector-search-alternatives** | `.claude/skills/vector-search-alternatives/SKILL.md` | ベクトル検索代替案、類似度検索、RAG パターン（外部サービス統合）   |
+| **database-monitoring**        | `.claude/skills/database-monitoring/SKILL.md`        | SQLite/Turso 統計、スロークエリ監視、アラート設計                  |
 ```
 
 ## 28. API ドキュメント作成者
@@ -518,7 +518,7 @@
 | スキル名                           | パス                                                     | 概要                                               |
 | ---------------------------------- | -------------------------------------------------------- | -------------------------------------------------- |
 | **semantic-versioning**            | `.claude/skills/semantic-versioning/SKILL.md`            | Major、Minor、Patch バージョン理解、破壊的変更対応 |
-| **dependency-auditing**            | `.claude/skills/dependency-auditing/SKILL.md`            | pnpm/pnpm audit、CVSS 評価、脆弱性スキャン          |
+| **dependency-auditing**            | `.claude/skills/dependency-auditing/SKILL.md`            | pnpm/pnpm audit、CVSS 評価、脆弱性スキャン         |
 | **lock-file-management**           | `.claude/skills/lock-file-management/SKILL.md`           | pnpm-lock.yaml、整合性検証、競合解決               |
 | **upgrade-strategies**             | `.claude/skills/upgrade-strategies/SKILL.md`             | 段階的アップグレード、TDD 統合、ロールバック       |
 | **monorepo-dependency-management** | `.claude/skills/monorepo-dependency-management/SKILL.md` | pnpm Workspace、バージョン同期、影響分析           |
@@ -708,7 +708,7 @@
 | **authentication-authorization-security** | `.claude/skills/authentication-authorization-security/SKILL.md` | 認証・認可機構のセキュリティ評価、OAuth 2.0、JWT、RBAC/ABAC   |
 | **cryptographic-practices**               | `.claude/skills/cryptographic-practices/SKILL.md`               | 暗号化アルゴリズム評価、CSPRNG、鍵管理、弱い暗号排除          |
 | **security-configuration-review**         | `.claude/skills/security-configuration-review/SKILL.md`         | セキュリティヘッダー、CORS、環境変数、CSP 設定レビュー        |
-| **dependency-security-scanning**          | `.claude/skills/dependency-security-scanning/SKILL.md`          | 依存関係脆弱性スキャン、pnpm audit、Snyk、CVE 評価             |
+| **dependency-security-scanning**          | `.claude/skills/dependency-security-scanning/SKILL.md`          | 依存関係脆弱性スキャン、pnpm audit、Snyk、CVE 評価            |
 | **code-static-analysis-security**         | `.claude/skills/code-static-analysis-security/SKILL.md`         | SAST、SQL インジェクション、XSS、コマンドインジェクション検出 |
 | **security-reporting**                    | `.claude/skills/security-reporting/SKILL.md`                    | セキュリティレポート生成、リスク評価、アクションプラン策定    |
 
@@ -726,7 +726,7 @@
 | **pre-commit-security**            | `.claude/skills/pre-commit-security/SKILL.md`            | pre-commit hook 実装、機密情報検出パターン、Git 履歴スキャン、git-secrets/gitleaks 統合 |
 | **encryption-key-lifecycle**       | `.claude/skills/encryption-key-lifecycle/SKILL.md`       | 暗号化アルゴリズム選定、鍵生成・保管・使用・Rotation・廃棄の全フェーズ                  |
 | **environment-isolation**          | `.claude/skills/environment-isolation/SKILL.md`          | 環境分離 4 レベル、環境別 Secret 管理、クロスアカウント制御、データマスキング           |
-| **railway-secrets-management**     | `.claude/skills/railway-secrets-management/SKILL.md`     | Railway Secrets、Variables、Neon Plugin 自動注入、Railway CLI、一時ファイルセキュリティ |
+| **railway-turso-management**       | `.claude/skills/railway-turso-management/SKILL.md`       | Railway Secrets、Variables、Turso統合、Railway CLI、一時ファイルセキュリティ            |
 | **github-actions-security**        | `.claude/skills/github-actions-security/SKILL.md`        | GitHub Secrets、Environment Secrets、ログマスキング、CI/CD 品質ゲート統合               |
 
 ---
@@ -757,7 +757,7 @@
 | **nextauth-patterns**   | `.claude/skills/nextauth-patterns/SKILL.md`   | NextAuth.js v5 設定パターン、プロバイダー設定、Drizzle アダプター統合、セッションコールバックカスタマイズ               |
 | **security-headers**    | `.claude/skills/security-headers/SKILL.md`    | セキュリティヘッダー設定（CSP、HSTS、X-Frame-Options）、CSRF/XSS 対策、Cookie 属性安全化                                |
 
-```
+````
 
 ---
 
@@ -853,7 +853,7 @@
 | スキル名                    | パス                                              | 概要                                                               |
 | --------------------------- | ------------------------------------------------- | ------------------------------------------------------------------ |
 | **electron-architecture**   | `.claude/skills/electron-architecture/SKILL.md`   | Main/Renderer分離、IPC設計、contextBridge、プロジェクト構造        |
-```
+````
 
 ### 38. Electron UI Developer
 
@@ -863,10 +863,10 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                 | パス                                           | 概要                                                                |
-| ------------------------ | ---------------------------------------------- | ------------------------------------------------------------------- |
-| **electron-ui-patterns** | `.claude/skills/electron-ui-patterns/SKILL.md` | BrowserWindow管理、メニュー、ダイアログ、通知、トレイ、カスタムUI   |
-| **accessibility-wcag**   | `.claude/skills/accessibility-wcag/SKILL.md`   | WCAG準拠、ARIAパターン、キーボードナビゲーション                    |
+| スキル名                 | パス                                           | 概要                                                              |
+| ------------------------ | ---------------------------------------------- | ----------------------------------------------------------------- |
+| **electron-ui-patterns** | `.claude/skills/electron-ui-patterns/SKILL.md` | BrowserWindow管理、メニュー、ダイアログ、通知、トレイ、カスタムUI |
+| **accessibility-wcag**   | `.claude/skills/accessibility-wcag/SKILL.md`   | WCAG準拠、ARIAパターン、キーボードナビゲーション                  |
 ```
 
 ### 39. Electron Security Engineer
@@ -877,9 +877,9 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                          | パス                                                    | 概要                                                            |
-| --------------------------------- | ------------------------------------------------------- | --------------------------------------------------------------- |
-| **electron-security-hardening**   | `.claude/skills/electron-security-hardening/SKILL.md`   | サンドボックス、CSP設定、IPC安全性、依存関係脆弱性監査          |
+| スキル名                        | パス                                                  | 概要                                                   |
+| ------------------------------- | ----------------------------------------------------- | ------------------------------------------------------ |
+| **electron-security-hardening** | `.claude/skills/electron-security-hardening/SKILL.md` | サンドボックス、CSP設定、IPC安全性、依存関係脆弱性監査 |
 ```
 
 ### 40. Electron Builder
@@ -890,9 +890,9 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                | パス                                          | 概要                                                              |
-| ----------------------- | --------------------------------------------- | ----------------------------------------------------------------- |
-| **electron-packaging**  | `.claude/skills/electron-packaging/SKILL.md`  | electron-builder設定、コード署名、アイコン生成、インストーラー    |
+| スキル名               | パス                                         | 概要                                                           |
+| ---------------------- | -------------------------------------------- | -------------------------------------------------------------- |
+| **electron-packaging** | `.claude/skills/electron-packaging/SKILL.md` | electron-builder設定、コード署名、アイコン生成、インストーラー |
 ```
 
 ### 41. Electron Release Manager
@@ -903,14 +903,15 @@
 ```markdown
 - **必要なスキル**:
 
-| スキル名                  | パス                                            | 概要                                                               |
-| ------------------------- | ----------------------------------------------- | ------------------------------------------------------------------ |
+| スキル名                  | パス                                            | 概要                                                                 |
+| ------------------------- | ----------------------------------------------- | -------------------------------------------------------------------- |
 | **electron-distribution** | `.claude/skills/electron-distribution/SKILL.md` | electron-updater、自動更新、リリースチャネル、GitHub Releases/S3配布 |
 ```
 
 ### Electronスキル詳細
 
 #### electron-architecture
+
 - **パス**: `.claude/skills/electron-architecture/SKILL.md`
 - **リソース**: `resources/process-model.md` - Main/Renderer/Preloadプロセスモデル
 - **リソース**: `resources/ipc-patterns.md` - IPC通信パターン（invoke/handle、send/on）
@@ -919,24 +920,28 @@
 - **スクリプト**: `scripts/analyze-ipc.mjs` - IPCチャネル分析・可視化
 
 #### electron-ui-patterns
+
 - **パス**: `.claude/skills/electron-ui-patterns/SKILL.md`
 - **リソース**: `resources/window-management.md` - BrowserWindow管理パターン
 - **リソース**: `resources/native-ui.md` - ネイティブUI要素（メニュー、ダイアログ、トレイ）
 - **テンプレート**: `templates/frameless-window.ts` - カスタムタイトルバー付きウィンドウ
 
 #### electron-security-hardening
+
 - **パス**: `.claude/skills/electron-security-hardening/SKILL.md`
 - **リソース**: `resources/csp-configuration.md` - Content Security Policy設定ガイド
 - **テンプレート**: `templates/secure-preload.ts` - セキュアなPreloadテンプレート
 - **スクリプト**: `scripts/security-audit.mjs` - セキュリティ設定監査スクリプト
 
 #### electron-packaging
+
 - **パス**: `.claude/skills/electron-packaging/SKILL.md`
 - **リソース**: `resources/code-signing.md` - コード署名ガイド（macOS/Windows）
 - **テンプレート**: `templates/electron-builder.yml` - electron-builder設定テンプレート
 - **スクリプト**: `scripts/generate-icons.mjs` - マルチプラットフォームアイコン生成
 
 #### electron-distribution
+
 - **パス**: `.claude/skills/electron-distribution/SKILL.md`
 - **リソース**: `resources/auto-update.md` - 自動更新実装ガイド
 - **テンプレート**: `templates/update-server.ts` - カスタム更新サーバーテンプレート

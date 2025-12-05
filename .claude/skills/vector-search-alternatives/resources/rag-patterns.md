@@ -41,27 +41,27 @@
 
 ```typescript
 interface ChunkConfig {
-  maxTokens: number;      // チャンクの最大トークン数
-  overlap: number;        // オーバーラップトークン数
-  separator: string;      // 分割セパレータ
+  maxTokens: number; // チャンクの最大トークン数
+  overlap: number; // オーバーラップトークン数
+  separator: string; // 分割セパレータ
 }
 
 const configs = {
   // 短いドキュメント向け
-  short: { maxTokens: 256, overlap: 32, separator: '\n\n' },
+  short: { maxTokens: 256, overlap: 32, separator: "\n\n" },
 
   // 一般的なドキュメント向け
-  standard: { maxTokens: 512, overlap: 64, separator: '\n\n' },
+  standard: { maxTokens: 512, overlap: 64, separator: "\n\n" },
 
   // 長いドキュメント向け
-  long: { maxTokens: 1024, overlap: 128, separator: '\n\n' },
+  long: { maxTokens: 1024, overlap: 128, separator: "\n\n" },
 };
 
 function chunkDocument(text: string, config: ChunkConfig): string[] {
   const chunks: string[] = [];
   const paragraphs = text.split(config.separator);
 
-  let currentChunk = '';
+  let currentChunk = "";
   let currentTokens = 0;
 
   for (const paragraph of paragraphs) {
@@ -91,14 +91,14 @@ function chunkDocument(text: string, config: ChunkConfig): string[] {
 ### Embedding生成
 
 ```typescript
-import { OpenAI } from 'openai';
+import { OpenAI } from "openai";
 
 const openai = new OpenAI();
 
 // 単一テキストのEmbedding
 async function getEmbedding(text: string): Promise<number[]> {
   const response = await openai.embeddings.create({
-    model: 'text-embedding-3-small',
+    model: "text-embedding-3-small",
     input: text,
   });
   return response.data[0].embedding;
@@ -113,10 +113,10 @@ async function getEmbeddings(texts: string[]): Promise<number[][]> {
   for (let i = 0; i < texts.length; i += BATCH_SIZE) {
     const batch = texts.slice(i, i + BATCH_SIZE);
     const response = await openai.embeddings.create({
-      model: 'text-embedding-3-small',
+      model: "text-embedding-3-small",
       input: batch,
     });
-    embeddings.push(...response.data.map(d => d.embedding));
+    embeddings.push(...response.data.map((d) => d.embedding));
   }
 
   return embeddings;
@@ -128,11 +128,11 @@ async function getEmbeddings(texts: string[]): Promise<number[][]> {
 ### 基本的な類似度検索
 
 ```typescript
-import { sql } from 'drizzle-orm';
+import { sql } from "drizzle-orm";
 
 async function search(query: string, limit = 5) {
   const queryEmbedding = await getEmbedding(query);
-  const embeddingStr = `[${queryEmbedding.join(',')}]`;
+  const embeddingStr = `[${queryEmbedding.join(",")}]`;
 
   const results = await db
     .select({
@@ -153,7 +153,7 @@ async function search(query: string, limit = 5) {
 ```typescript
 async function hybridSearch(query: string, limit = 5) {
   const queryEmbedding = await getEmbedding(query);
-  const embeddingStr = `[${queryEmbedding.join(',')}]`;
+  const embeddingStr = `[${queryEmbedding.join(",")}]`;
 
   // ベクトル類似度 + 全文検索スコアの組み合わせ
   const results = await db.execute(sql`
@@ -188,10 +188,10 @@ interface SearchOptions {
 async function searchWithFilters(
   query: string,
   options: SearchOptions,
-  limit = 5
+  limit = 5,
 ) {
   const queryEmbedding = await getEmbedding(query);
-  const embeddingStr = `[${queryEmbedding.join(',')}]`;
+  const embeddingStr = `[${queryEmbedding.join(",")}]`;
 
   let sqlQuery = sql`
     SELECT id, content,
@@ -230,7 +230,7 @@ async function searchWithFilters(
 function buildContext(results: SearchResult[]): string {
   return results
     .map((r, i) => `[Document ${i + 1}]\n${r.content}`)
-    .join('\n\n---\n\n');
+    .join("\n\n---\n\n");
 }
 
 // プロンプトテンプレート
@@ -253,16 +253,16 @@ Answer:`;
 async function rerankResults(
   query: string,
   documents: string[],
-  topN = 3
+  topN = 3,
 ): Promise<number[]> {
   const response = await cohere.rerank({
-    model: 'rerank-english-v2.0',
+    model: "rerank-english-v2.0",
     query,
     documents,
     topN,
   });
 
-  return response.results.map(r => r.index);
+  return response.results.map((r) => r.index);
 }
 
 // 使用例
@@ -273,12 +273,12 @@ async function searchWithRerank(query: string) {
   // 2. リランキング
   const rerankedIndices = await rerankResults(
     query,
-    initialResults.map(r => r.content),
-    5
+    initialResults.map((r) => r.content),
+    5,
   );
 
   // 3. リランク順に並べ替え
-  return rerankedIndices.map(i => initialResults[i]);
+  return rerankedIndices.map((i) => initialResults[i]);
 }
 ```
 
@@ -289,14 +289,15 @@ async function searchWithRerank(query: string) {
 ```typescript
 async function generateAnswer(query: string, context: string): Promise<string> {
   const response = await openai.chat.completions.create({
-    model: 'gpt-4-turbo-preview',
+    model: "gpt-4-turbo-preview",
     messages: [
       {
-        role: 'system',
-        content: 'You are a helpful assistant. Answer questions based on the provided context. If the answer cannot be found in the context, say so.',
+        role: "system",
+        content:
+          "You are a helpful assistant. Answer questions based on the provided context. If the answer cannot be found in the context, say so.",
       },
       {
-        role: 'user',
+        role: "user",
         content: `Context:\n${context}\n\nQuestion: ${query}`,
       },
     ],
@@ -304,7 +305,7 @@ async function generateAnswer(query: string, context: string): Promise<string> {
     max_tokens: 1000,
   });
 
-  return response.choices[0].message.content || '';
+  return response.choices[0].message.content || "";
 }
 ```
 
@@ -313,13 +314,13 @@ async function generateAnswer(query: string, context: string): Promise<string> {
 ```typescript
 async function* streamAnswer(
   query: string,
-  context: string
+  context: string,
 ): AsyncGenerator<string> {
   const stream = await openai.chat.completions.create({
-    model: 'gpt-4-turbo-preview',
+    model: "gpt-4-turbo-preview",
     messages: [
-      { role: 'system', content: 'Answer based on the context.' },
-      { role: 'user', content: `Context:\n${context}\n\nQuestion: ${query}` },
+      { role: "system", content: "Answer based on the context." },
+      { role: "user", content: `Context:\n${context}\n\nQuestion: ${query}` },
     ],
     stream: true,
   });
@@ -358,9 +359,12 @@ async function ragQuery(query: string): Promise<RAGResult> {
 }
 
 // 使用例
-const result = await ragQuery('What is the main feature of the product?');
-console.log('Answer:', result.answer);
-console.log('Sources:', result.sources.map(s => s.id));
+const result = await ragQuery("What is the main feature of the product?");
+console.log("Answer:", result.answer);
+console.log(
+  "Sources:",
+  result.sources.map((s) => s.id),
+);
 ```
 
 ## パフォーマンス最適化
@@ -369,7 +373,7 @@ console.log('Sources:', result.sources.map(s => s.id));
 
 ```typescript
 // Redis等を使用したキャッシュ
-import { Redis } from 'ioredis';
+import { Redis } from "ioredis";
 
 const redis = new Redis();
 const CACHE_TTL = 60 * 60 * 24; // 24時間
@@ -380,7 +384,10 @@ async function getCachedEmbedding(text: string): Promise<number[] | null> {
   return cached ? JSON.parse(cached) : null;
 }
 
-async function cacheEmbedding(text: string, embedding: number[]): Promise<void> {
+async function cacheEmbedding(
+  text: string,
+  embedding: number[],
+): Promise<void> {
   const key = `embedding:${hashText(text)}`;
   await redis.setex(key, CACHE_TTL, JSON.stringify(embedding));
 }
@@ -398,14 +405,16 @@ async function getEmbeddingWithCache(text: string): Promise<number[]> {
 ### バッチインジェスト
 
 ```typescript
-async function ingestDocuments(documents: { content: string; metadata: any }[]) {
+async function ingestDocuments(
+  documents: { content: string; metadata: any }[],
+) {
   const BATCH_SIZE = 100;
 
   for (let i = 0; i < documents.length; i += BATCH_SIZE) {
     const batch = documents.slice(i, i + BATCH_SIZE);
 
     // Embeddingをバッチ生成
-    const embeddings = await getEmbeddings(batch.map(d => d.content));
+    const embeddings = await getEmbeddings(batch.map((d) => d.content));
 
     // DBにバッチ挿入
     await db.insert(documentsTable).values(
@@ -413,7 +422,7 @@ async function ingestDocuments(documents: { content: string; metadata: any }[]) 
         content: doc.content,
         metadata: doc.metadata,
         embedding: embeddings[j],
-      }))
+      })),
     );
 
     console.log(`Processed ${i + batch.length}/${documents.length}`);
@@ -424,18 +433,21 @@ async function ingestDocuments(documents: { content: string; metadata: any }[]) 
 ## チェックリスト
 
 ### RAG構築時
+
 - [ ] チャンキング戦略を決めたか？
 - [ ] Embeddingモデルを選択したか？
 - [ ] インデックスを作成したか？
 - [ ] 検索の精度をテストしたか？
 
 ### パフォーマンス最適化時
+
 - [ ] Embeddingをキャッシュしているか？
 - [ ] バッチ処理を使用しているか？
 - [ ] 適切なインデックスパラメータか？
 - [ ] レイテンシを測定したか？
 
 ### 品質改善時
+
 - [ ] リランキングを検討したか？
 - [ ] ハイブリッド検索を検討したか？
 - [ ] フィルタリングは適切か？
