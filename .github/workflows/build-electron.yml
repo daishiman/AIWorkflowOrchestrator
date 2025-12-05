@@ -1,22 +1,25 @@
-name: Release Desktop
+name: Build Electron App
 
 on:
   push:
-    tags:
-      - "v*"
-  workflow_dispatch:
-    inputs:
-      version:
-        description: "Version (e.g., 1.0.0)"
-        required: false
+    branches: [main, develop]
+    paths:
+      - "apps/desktop/**"
+      - "packages/shared/**"
+      - ".github/workflows/build-electron.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "apps/desktop/**"
+      - "packages/shared/**"
 
 concurrency:
-  group: release-${{ github.ref }}
-  cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   # ===================
-  # macOS Release (Intel)
+  # macOS Build (Intel)
   # ===================
   build-macos-x64:
     name: Build macOS (Intel)
@@ -43,33 +46,22 @@ jobs:
       - name: Build desktop app
         run: pnpm --filter @repo/desktop build
 
-      - name: Package and Sign
+      - name: Package (without signing)
         run: pnpm --filter @repo/desktop package:mac
         env:
-          CI: true
-          # macOS Code Signing
-          CSC_LINK: ${{ secrets.CSC_LINK }}
-          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
-          # macOS Notarization
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          # GitHub Token for publish
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: false
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: desktop-macos-x64
+          name: electron-macos-x64
           path: |
             apps/desktop/dist/*.dmg
             apps/desktop/dist/*.zip
-            apps/desktop/dist/*.blockmap
-            apps/desktop/dist/latest-mac.yml
-          if-no-files-found: error
+          if-no-files-found: warn
 
   # ===================
-  # macOS Release (Apple Silicon)
+  # macOS Build (Apple Silicon)
   # ===================
   build-macos-arm64:
     name: Build macOS (Apple Silicon)
@@ -96,29 +88,22 @@ jobs:
       - name: Build desktop app
         run: pnpm --filter @repo/desktop build
 
-      - name: Package and Sign
+      - name: Package (without signing)
         run: pnpm --filter @repo/desktop package:mac
         env:
-          CI: true
-          CSC_LINK: ${{ secrets.CSC_LINK }}
-          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: false
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: desktop-macos-arm64
+          name: electron-macos-arm64
           path: |
             apps/desktop/dist/*.dmg
             apps/desktop/dist/*.zip
-            apps/desktop/dist/*.blockmap
-          if-no-files-found: error
+          if-no-files-found: warn
 
   # ===================
-  # Windows Release
+  # Windows Build
   # ===================
   build-windows:
     name: Build Windows
@@ -145,27 +130,20 @@ jobs:
       - name: Build desktop app
         run: pnpm --filter @repo/desktop build
 
-      - name: Package
+      - name: Package (without signing)
         run: pnpm --filter @repo/desktop package:win
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Windows Code Signing (optional)
-          # WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
-          # WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: desktop-windows-x64
+          name: electron-windows-x64
           path: |
             apps/desktop/dist/*.exe
             apps/desktop/dist/*.zip
-            apps/desktop/dist/*.blockmap
-            apps/desktop/dist/latest.yml
-          if-no-files-found: error
+          if-no-files-found: warn
 
   # ===================
-  # Linux Release
+  # Linux Build
   # ===================
   build-linux:
     name: Build Linux
@@ -194,52 +172,12 @@ jobs:
 
       - name: Package
         run: pnpm --filter @repo/desktop package
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: desktop-linux-x64
+          name: electron-linux-x64
           path: |
             apps/desktop/dist/*.AppImage
             apps/desktop/dist/*.deb
-            apps/desktop/dist/latest-linux.yml
-          if-no-files-found: error
-
-  # ===================
-  # Create GitHub Release
-  # ===================
-  release:
-    name: Create Release
-    needs: [build-macos-x64, build-macos-arm64, build-windows, build-linux]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: dist
-          merge-multiple: true
-
-      - name: List artifacts
-        run: ls -laR dist/
-
-      - name: Create Release (Tag)
-        uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: dist/*
-          generate_release_notes: true
-          draft: true
-          prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }}
-
-      - name: Create Release (Manual)
-        uses: softprops/action-gh-release@v2
-        if: github.event_name == 'workflow_dispatch'
-        with:
-          tag_name: v${{ github.event.inputs.version || '0.0.0' }}
-          files: dist/*
-          generate_release_notes: true
-          draft: true
+          if-no-files-found: warn

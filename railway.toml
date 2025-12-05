@@ -1,0 +1,19 @@
+# Railway Configuration for AIWorkflowOrchestrator Backend
+# https://docs.railway.com/reference/config-as-code
+
+[build]
+builder = "nixpacks"
+buildCommand = "pnpm install && pnpm --filter @repo/shared build && pnpm --filter @repo/backend build"
+
+[deploy]
+startCommand = "pnpm --filter @repo/backend start"
+healthcheckPath = "/health"
+healthcheckTimeout = 100
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
+
+# SQLite永続化用ボリューム（オプション1を選択した場合）
+# volumes = ["/data"]
+
+[deploy.envs]
+NODE_ENV = "production"

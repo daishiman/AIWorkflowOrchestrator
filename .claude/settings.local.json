@@ -63,7 +63,8 @@
       "Bash(pnpm exec lint-staged:*)",
       "Bash(pnpm list:*)",
       "Bash(.husky/_/pre-commit)",
-      "Bash(pnpm --filter @repo/desktop remove:*)"
+      "Bash(pnpm --filter @repo/desktop remove:*)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": []
