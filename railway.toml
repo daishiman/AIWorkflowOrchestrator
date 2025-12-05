@@ -3,11 +3,12 @@
 
 [build]
 builder = "nixpacks"
-buildCommand = "pnpm install && pnpm --filter @repo/shared build && pnpm --filter @repo/backend build"
+# --ignore-scripts: better-sqlite3のネイティブビルドをスキップ（バックエンドはTurso/libsqlを使用）
+buildCommand = "pnpm install --ignore-scripts && pnpm --filter @repo/shared build && pnpm --filter @repo/backend build"
 
 [deploy]
 startCommand = "pnpm --filter @repo/backend start"
-healthcheckPath = "/health"
+healthcheckPath = "/api/health"
 healthcheckTimeout = 100
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
