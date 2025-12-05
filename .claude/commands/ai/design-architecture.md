@@ -61,10 +61,12 @@ model: opus
 ### Phase 0: 準備と確認
 
 **引数処理**:
+
 - `$ARGUMENTS` が指定されている場合: `$1` をアーキテクチャスタイルとして使用（clean/hexagonal/onion）
 - 未指定の場合: プロジェクト要件とmaster_system_design.mdに基づいて最適スタイルを選択
 
 **プロジェクト仕様確認**:
+
 1. `docs/00-requirements/master_system_design.md` の第5章を参照
 2. ハイブリッド構造（shared/core, shared/infrastructure, features, app）の理解
 3. 既存のアーキテクチャ設計書（`docs/10-architecture/`）の確認
@@ -194,6 +196,7 @@ model: opus
 4. 次フェーズ（実装）への引き継ぎ準備
 
 **最終成果物**:
+
 - `docs/10-architecture/system-design.md`: システムアーキテクチャ全体設計書
 - `docs/10-architecture/implementation-guide.md`: 実装ガイドライン
 - `docs/99-adr/`: アーキテクチャ決定記録（ADR）群
@@ -211,23 +214,28 @@ graph LR
 ```
 
 **並列実行**:
+
 - Phase 1（arch-police）と Phase 3（domain-modeler）は並列実行可能
 
 **連続実行**:
+
 - Phase 1 → Phase 2（arch-police内での依存関係）
 - Phase 3 → Phase 4（domain-modeler内での依存関係）
 
 ## アーキテクチャスタイル選択ガイド
 
 **clean** (デフォルト):
+
 - 用途: 標準的なレイヤードアーキテクチャ
 - 特徴: 依存関係ルールが明確、学習コスト低
 
 **hexagonal**:
+
 - 用途: 外部サービス統合が多いシステム
 - 特徴: ポート&アダプターパターン、テスタビリティ高
 
 **onion**:
+
 - 用途: ドメイン駆動設計を重視
 - 特徴: ドメイン層の独立性が最大
 
@@ -238,12 +246,13 @@ graph LR
 - [ ] 各層の責務定義が明確
 - [ ] ESLintによる依存関係強制（eslint-plugin-boundaries）
 - [ ] TDD原則との整合性（テスタビリティ）
-- [ ] スキーマレス設計（JSONB活用）への対応
-- [ ] pgvectorによるベクトル検索への対応
+- [ ] スキーマレス設計（JSON活用）への対応
+- [ ] ベクトル検索への対応（必要に応じてvector extension）
 
 ## 品質基準
 
 **完了条件**:
+
 - [ ] システム全体のアーキテクチャ設計書が作成されている
 - [ ] 依存関係ルールが明確に定義されている
 - [ ] ドメインモデルが設計されている
@@ -252,6 +261,7 @@ graph LR
 - [ ] 実装ガイドラインが提供されている
 
 **品質メトリクス**:
+
 - アーキテクチャ原則の遵守率: > 95%
 - ドメイン用語の一貫性: 100%
 - 依存関係ルール違反: 0件
@@ -259,10 +269,13 @@ graph LR
 ## トラブルシューティング
 
 **問題**: アーキテクチャスタイルの選択が困難
+
 - **対処**: master_system_design.mdの要件を優先し、cleanアーキテクチャをデフォルト使用
 
 **問題**: 既存コードとの整合性が取れない
+
 - **対処**: arch-policeによる現状分析を先行実施、段階的移行計画を策定
 
 **問題**: ドメインモデルの境界が不明確
+
 - **対処**: domain-modelerのbounded-contextスキルを活用、ステークホルダーヒアリング実施

@@ -56,6 +56,7 @@ model: opus
 プロジェクト名: $ARGUMENTS
 
 引数未指定の場合:
+
 - ユーザーに対話的にプロジェクト名を質問
 - プロジェクトタイプ（Web/Mobile/Backend）を確認
 - 主要技術スタック（言語・フレームワーク）を確認
@@ -90,6 +91,7 @@ Task ツールで `.claude/agents/product-manager.md` を起動:
 ```
 
 **期待成果物:**
+
 - プロジェクトビジョン文書
 - 3-6ヶ月ロードマップ
 - OKR定義
@@ -132,6 +134,7 @@ master_system_design.md との整合性:
 ```
 
 **期待成果物:**
+
 - 機能要件仕様書（ワークフロー実行、Discord連携等）
 - 非機能要件仕様書（認証、TLS、ログ、TDD戦略）
 - ユースケース定義（基本・代替・例外フロー）
@@ -173,6 +176,7 @@ master_system_design.md との整合性:
 ```
 
 **期待成果物:**
+
 - ハイブリッドアーキテクチャ概要（shared + features）
 - レイヤー構造定義（依存方向の明示）
 - ESLint boundaries 設定
@@ -227,7 +231,7 @@ Write: .claude/CLAUDE.md
 - アーキテクチャ原則（Section 1.5: Clean Architecture、Event-driven、TDD）
 - ディレクトリ構造（Section 4.3: ハイブリッド構造）
 - 依存関係ルール（Section 4.4: app → features → shared/infrastructure → shared/core）
-- 技術スタック（Section 3.x: Next.js 15.x, TypeScript 5.x, pnpm, Drizzle, Neon）
+- 技術スタック（Section 3.x: Next.js 15.x, TypeScript 5.x, pnpm, Drizzle, Turso）
 - 開発ワークフロー（Section 2.4: TDD, Red-Green-Refactor）
 - 品質基準（Section 2.4: カバレッジ60%以上）
 ```
@@ -285,7 +289,8 @@ Write: eslint.config.js
 Write: .env.example
 
 内容（Section 13.1 準拠）:
-- DATABASE_URL=（Neon接続文字列）
+- TURSO_DATABASE_URL=（Turso接続文字列）
+- TURSO_AUTH_TOKEN=（Turso認証トークン）
 - OPENAI_API_KEY=
 - ANTHROPIC_API_KEY=
 - GOOGLE_AI_API_KEY=
@@ -347,7 +352,7 @@ Write: railway.json
 - Framework: Next.js 15.x (App Router)
 - Language: TypeScript 5.x (strict mode)
 - Package Manager: pnpm 9.x
-- Database: Neon (Serverless PostgreSQL) + Drizzle ORM
+- Database: Turso (Serverless SQLite) + Drizzle ORM
 - AI: Vercel AI SDK 4.x (OpenAI, Anthropic, Google, xAI)
 - Integration: discord.js 14.x
 - Testing: Vitest 2.x, Playwright

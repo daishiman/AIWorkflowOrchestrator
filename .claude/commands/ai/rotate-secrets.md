@@ -56,6 +56,7 @@ disable-model-invocation: true
   - 必須: 対象を明示することで誤操作を防止
 
 **使用例**:
+
 ```bash
 /ai:rotate-secrets DATABASE_URL
 /ai:rotate-secrets API_SECRET_KEY
@@ -80,6 +81,7 @@ disable-model-invocation: true
 ### Phase 1: 準備・影響範囲分析
 
 **エージェント起動**:
+
 ```
 `.claude/agents/secret-mgr.md` を起動し、以下を依頼:
 - 対象シークレット: $1
@@ -90,11 +92,13 @@ disable-model-invocation: true
 ```
 
 **スキル参照** (Phase 1):
+
 - `.claude/skills/tool-permission-management/SKILL.md`: シークレット権限管理
 - `.claude/skills/best-practices-curation/SKILL.md`: ローテーションベストプラクティス
 - `.claude/skills/project-architecture-integration/SKILL.md`: 依存関係分析
 
 **分析内容**:
+
 ```
 【使用箇所の特定】
 - コード内での参照箇所
@@ -111,6 +115,7 @@ disable-model-invocation: true
 ```
 
 **期待成果物**:
+
 - 影響範囲分析レポート
 - ローテーション計画
 - ロールバック手順
@@ -120,6 +125,7 @@ disable-model-invocation: true
 ### Phase 2: ローテーションスクリプト生成
 
 **エージェント起動**:
+
 ```
 `.claude/agents/secret-mgr.md` を起動し、以下を依頼:
 - ローテーションスクリプトの生成
@@ -129,10 +135,12 @@ disable-model-invocation: true
 ```
 
 **スキル参照** (Phase 2):
+
 - `.claude/skills/tool-permission-management/SKILL.md`: 安全なシークレット管理
 - `.claude/skills/best-practices-curation/SKILL.md`: ローテーション手順
 
 **生成スクリプト**:
+
 ```bash
 # scripts/rotate-secret-<secret-name>.sh
 #!/bin/bash
@@ -161,6 +169,7 @@ echo "Phase 5: 古いシークレットを無効化しています..."
 ```
 
 **期待成果物**:
+
 - `scripts/rotate-secret-<secret-name>.sh`: ローテーションスクリプト
 - `scripts/verify-secret-<secret-name>.sh`: 検証スクリプト
 - `scripts/rollback-secret-<secret-name>.sh`: ロールバックスクリプト
@@ -170,6 +179,7 @@ echo "Phase 5: 古いシークレットを無効化しています..."
 ### Phase 3: 実行ガイド生成
 
 **エージェント起動**:
+
 ```
 `.claude/agents/secret-mgr.md` を起動し、以下を依頼:
 - 実行手順書の作成
@@ -179,9 +189,11 @@ echo "Phase 5: 古いシークレットを無効化しています..."
 ```
 
 **スキル参照** (Phase 3):
+
 - `.claude/skills/best-practices-curation/SKILL.md`: 運用ベストプラクティス
 
 **成果物**:
+
 - `docs/security/rotation-guide-<secret-name>.md`: 実行ガイド
   - **事前準備チェックリスト**
   - **ローテーション手順（ステップバイステップ）**
@@ -194,43 +206,48 @@ echo "Phase 5: 古いシークレットを無効化しています..."
 
 ## 📝 実行手順書の例
 
-```markdown
-# DATABASE_URL ローテーション実行ガイド
+````markdown
+# TURSO_AUTH_TOKEN ローテーション実行ガイド
 
 ## 事前準備チェックリスト
 
 - [ ] データベースのバックアップ取得完了
-- [ ] メンテナンス時間の確保（推定: 15分）
+- [ ] メンテナンス時間の確保（推定: 10分）
 - [ ] ロールバック手順の確認完了
 - [ ] 関係者への通知完了
 
 ## ローテーション手順
 
-### Step 1: 新しいパスワード生成
-```bash
-# 安全なランダムパスワードを生成
-openssl rand -base64 32
-```
+### Step 1: 新しいトークン生成
 
-### Step 2: データベースパスワード更新
-```sql
-ALTER USER myuser WITH PASSWORD 'new-password';
+```bash
+# Turso CLIで新しい認証トークンを生成
+turso db tokens create [db-name]
 ```
+````
+
+### Step 2: トークンのコピー
+
+トークンは一度しか表示されないため、安全な場所にコピーしてください。
 
 ### Step 3: 環境変数の更新
+
 ```bash
 # .env.production を編集
-DATABASE_URL=postgresql://myuser:new-password@localhost:5432/mydb
+TURSO_DATABASE_URL=libsql://my-db-prod.turso.io
+TURSO_AUTH_TOKEN=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9...
 ```
 
 ### Step 4: アプリケーション再起動
+
 ```bash
 pm2 restart app
 ```
 
 ### Step 5: 接続確認
+
 ```bash
-./scripts/verify-secret-DATABASE_URL.sh
+./scripts/verify-secret-TURSO_AUTH_TOKEN.sh
 ```
 
 ## 検証手順
@@ -243,10 +260,12 @@ pm2 restart app
 ## ロールバック手順
 
 問題が発生した場合:
+
 ```bash
 ./scripts/rollback-secret-DATABASE_URL.sh
 ```
-```
+
+````
 
 ---
 
@@ -283,7 +302,7 @@ pm2 restart app
 
 | シークレットタイプ | 推奨頻度 | 重要度 |
 |------------------|---------|-------|
-| データベースパスワード | 90日 | Critical |
+| Turso認証トークン | 90日 | Critical |
 | API Secret Key | 180日 | High |
 | JWT Secret | 180日 | High |
 | OAuth Client Secret | 180日 | High |
@@ -317,13 +336,16 @@ pm2 restart app
 **解決策**: ロールバックスクリプトを実行
 ```bash
 ./scripts/rollback-secret-<secret-name>.sh
-```
+````
 
 ### 問題: データベース接続エラー
+
 **解決策**:
-1. DATABASE_URL の形式を確認
-2. ユーザー権限を確認
+
+1. TURSO_DATABASE_URL の形式を確認（libsql://で始まるか）
+2. TURSO_AUTH_TOKEN が有効か確認
 3. ネットワーク接続を確認
 
 ### 問題: CI/CDパイプラインが失敗
+
 **解決策**: CI/CD環境の環境変数を更新し忘れていないか確認

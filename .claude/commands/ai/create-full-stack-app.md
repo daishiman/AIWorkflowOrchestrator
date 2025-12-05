@@ -93,6 +93,7 @@ model: opus
 ### Phase 1: アプリ名と機能の確認
 
 **引数解析**:
+
 ```bash
 # アプリ名（必須）
 app-name: "$1"
@@ -109,12 +110,14 @@ features: "$2"（例: auth,dashboard,api）
 **使用エージェント**: `.claude/agents/domain-modeler.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 アプリケーション「${app-name}」のドメインモデルを設計してください。
 
 **機能リスト**: ${features}
 
 **要件**:
+
 1. エンティティ設計（`src/shared/core/entities/`）
 2. バリューオブジェクト設計
 3. 集約の境界決定（Bounded Context）
@@ -122,11 +125,13 @@ features: "$2"（例: auth,dashboard,api）
 5. ユビキタス言語の定義（用語集）
 
 **スキル参照**:
+
 - `.claude/skills/bounded-context/SKILL.md`
 - `.claude/skills/ubiquitous-language/SKILL.md`
 - `.claude/skills/clean-architecture-principles/SKILL.md`
 
 **成果物**:
+
 - `src/shared/core/entities/*.ts`（エンティティ）
 - `src/shared/core/interfaces/*.ts`（インターフェース）
 - ドメインモデル図（Mermaid）
@@ -138,12 +143,14 @@ features: "$2"（例: auth,dashboard,api）
 **使用エージェント**: `.claude/agents/db-architect.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 アプリケーション「${app-name}」のデータベースを設計してください。
 
 **入力**: Phase 2のドメインモデル
 
 **要件**:
+
 1. スキーマ設計（`src/shared/infrastructure/database/schema.ts`）:
    - Drizzle ORM使用
    - UUID主キー
@@ -156,15 +163,18 @@ features: "$2"（例: auth,dashboard,api）
 5. マイグレーション設計
 
 **プロジェクト構造**:
+
 - `src/shared/infrastructure/database/schema.ts`（Drizzleスキーマ）
 - `drizzle/migrations/`（マイグレーションSQL）
 
 **スキル参照**:
+
 - `.claude/skills/database-normalization/SKILL.md`
 - `.claude/skills/indexing-strategies/SKILL.md`
 - `.claude/skills/foreign-key-constraints/SKILL.md`
 
 **成果物**:
+
 - `src/shared/infrastructure/database/schema.ts`
 - `drizzle/migrations/0001_initial_schema.sql`
 - ER図（Mermaid）
@@ -175,26 +185,31 @@ features: "$2"（例: auth,dashboard,api）
 **使用エージェント**: `.claude/agents/repo-dev.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 アプリケーション「${app-name}」のRepositoryを実装してください。
 
 **入力**: Phase 3のDBスキーマ
 
 **要件**:
+
 1. IRepository インターフェース実装
 2. CRUD操作実装（create, findById, findMany, update, delete）
 3. トランザクション管理
 4. エラーハンドリング（DB接続エラー、制約違反等）
 
 **プロジェクト構造**:
+
 - `src/shared/infrastructure/database/repositories/`
 
 **スキル参照**:
+
 - `.claude/skills/repository-pattern/SKILL.md`
 - `.claude/skills/transaction-management/SKILL.md`
 - `.claude/skills/query-optimization/SKILL.md`
 
 **成果物**:
+
 - `src/shared/infrastructure/database/repositories/*.ts`（各エンティティのRepository）
 ```
 
@@ -203,12 +218,14 @@ features: "$2"（例: auth,dashboard,api）
 **使用エージェント**: `.claude/agents/gateway-dev.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 アプリケーション「${app-name}」のAPI Gatewayを設計してください。
 
 **入力**: Phase 2のドメインモデル、Phase 4のRepository
 
 **要件**:
+
 1. エンドポイント設計（RESTful、`/api/v1/`）:
    - POST /api/v1/[resource]: リソース作成
    - GET /api/v1/[resource]/{id}: リソース取得
@@ -222,14 +239,17 @@ features: "$2"（例: auth,dashboard,api）
 5. レート制限（必要時）
 
 **プロジェクト構造**:
+
 - `src/app/api/v1/[resource]/route.ts`（Next.js Route Handlers）
 
 **スキル参照**:
+
 - `.claude/skills/http-best-practices/SKILL.md`
 - `.claude/skills/rest-api-design/SKILL.md`
 - `.claude/skills/zod-validation/SKILL.md`
 
 **成果物**:
+
 - `src/app/api/v1/*/route.ts`（API Routes）
 - API仕様書（OpenAPI形式、オプション）
 ```
@@ -239,10 +259,12 @@ features: "$2"（例: auth,dashboard,api）
 **使用エージェント**: `.claude/agents/router-dev.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 アプリケーション「${app-name}」のページとルーティングを実装してください。
 
 **要件**:
+
 1. ディレクトリベースルーティング（App Router）
 2. Layout/Page の責務分離
 3. Server Components 優先、Client Components 最小化
@@ -251,17 +273,20 @@ features: "$2"（例: auth,dashboard,api）
 6. ローディング状態（loading.tsx）
 
 **プロジェクト構造**:
+
 - `src/app/layout.tsx`（Root Layout）
 - `src/app/page.tsx`（Home Page）
 - `src/app/[route]/page.tsx`（各ページ）
 - `src/app/error.tsx`、`src/app/not-found.tsx`
 
 **スキル参照**:
+
 - `.claude/skills/nextjs-app-router/SKILL.md`
 - `.claude/skills/server-components-patterns/SKILL.md`
 - `.claude/skills/seo-optimization/SKILL.md`
 
 **成果物**:
+
 - `src/app/**/*.tsx`（Layout、Page、Error Handling）
 ```
 
@@ -270,12 +295,14 @@ features: "$2"（例: auth,dashboard,api）
 **使用エージェント**: `.claude/agents/ui-designer.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 アプリケーション「${app-name}」のUIコンポーネントを実装してください。
 
 **機能リスト**: ${features}
 
 **要件**:
+
 1. デザインシステム基盤:
    - Tailwind CSS設定
    - デザイントークン定義
@@ -290,15 +317,18 @@ features: "$2"（例: auth,dashboard,api）
 4. エラー状態・ローディング状態
 
 **プロジェクト構造**:
+
 - `src/app/components/ui/`（基本コンポーネント）
 - `src/app/components/${feature}/`（機能別コンポーネント）
 
 **スキル参照**:
+
 - `.claude/skills/component-composition-patterns/SKILL.md`
 - `.claude/skills/accessibility-wcag/SKILL.md`
 - `.claude/skills/tailwind-css-patterns/SKILL.md`
 
 **成果物**:
+
 - `src/app/components/ui/*.tsx`（基本コンポーネント）
 - `src/app/components/${feature}/*.tsx`（機能コンポーネント）
 - `tailwind.config.ts`（デザイントークン）
@@ -309,10 +339,12 @@ features: "$2"（例: auth,dashboard,api）
 **使用エージェント**: `.claude/agents/state-manager.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 アプリケーション「${app-name}」の状態管理を実装してください。
 
 **要件**:
+
 1. データフェッチ戦略（SWR または React Query）
 2. カスタムフック設計
 3. エラー状態・ローディング状態管理
@@ -320,15 +352,18 @@ features: "$2"（例: auth,dashboard,api）
 5. キャッシュ戦略
 
 **プロジェクト構造**:
+
 - `src/hooks/`（カスタムフック）
 - `src/app/providers.tsx`（SWR/ReactQuery Provider）
 
 **スキル参照**:
+
 - `.claude/skills/data-fetching-strategies/SKILL.md`
 - `.claude/skills/custom-hooks-patterns/SKILL.md`
 - `.claude/skills/state-lifting/SKILL.md`
 
 **成果物**:
+
 - `src/hooks/use${Feature}.ts`（カスタムフック）
 - `src/app/providers.tsx`（Provider設定）
 ```
@@ -336,6 +371,7 @@ features: "$2"（例: auth,dashboard,api）
 ### Phase 9: 統合・検証
 
 **実行内容**:
+
 1. ディレクトリ構造検証（4.3章準拠）
 2. 依存関係検証（ESLint boundaries plugin）
 3. 型チェック（`pnpm typecheck`）
@@ -345,38 +381,46 @@ features: "$2"（例: auth,dashboard,api）
 ### Phase 10: 完了報告
 
 **完了報告**:
+
 ```markdown
 ## フルスタックアプリケーション完成: ${app-name}
 
 ### アーキテクチャ構成
+
 - Presentation層: Next.js App Router、React Server Components
 - Application層: API Gateway、ワークフローエンジン
 - Domain層: エンティティ、ドメインロジック
 - Infrastructure層: Drizzle ORM、Repository、外部API連携
 
 ### 成果物
+
 ✅ フロントエンド:
-  - src/app/**/*.tsx（Page、Layout、Error Handling）
-  - src/app/components/（UIコンポーネント、デザインシステム）
-  - src/hooks/（カスタムフック、データフェッチ）
+
+- src/app/\*_/_.tsx（Page、Layout、Error Handling）
+- src/app/components/（UIコンポーネント、デザインシステム）
+- src/hooks/（カスタムフック、データフェッチ）
 
 ✅ バックエンド:
-  - src/shared/core/entities/（エンティティ）
-  - src/shared/infrastructure/database/（スキーマ、Repository）
-  - src/features/（機能プラグイン）
-  - src/app/api/v1/（API Routes）
+
+- src/shared/core/entities/（エンティティ）
+- src/shared/infrastructure/database/（スキーマ、Repository）
+- src/features/（機能プラグイン）
+- src/app/api/v1/（API Routes）
 
 ✅ データベース:
-  - src/shared/infrastructure/database/schema.ts（Drizzleスキーマ）
-  - drizzle/migrations/（マイグレーションSQL）
+
+- src/shared/infrastructure/database/schema.ts（Drizzleスキーマ）
+- drizzle/migrations/（マイグレーションSQL）
 
 ### 品質指標
+
 - 型チェック: ✅ strict モード、エラーなし
 - ビルド: ✅ 成功
 - テスト: カバレッジ XX%
 - アクセシビリティ: ✅ WCAG 2.1準拠
 
 ### Next Steps
+
 1. 環境変数設定（.env）
 2. データベースマイグレーション実行（`pnpm db:push`）
 3. 開発サーバー起動（`pnpm dev`）
@@ -417,6 +461,7 @@ graph TB
 ```
 
 **レイヤー責務**:
+
 - **Domain層**（`src/shared/core/`）: ビジネスルール、エンティティ定義（外部依存ゼロ）
 - **Infrastructure層**（`src/shared/infrastructure/`）: DB、AI、Discord等の外部サービス接続
 - **Application層**（`src/features/`）: 機能ごとのビジネスロジック（垂直スライス）
@@ -424,16 +469,16 @@ graph TB
 
 ## 技術スタック（master_system_design.md 3章準拠）
 
-| レイヤー | 技術 | バージョン |
-|---------|------|-----------|
-| **Framework** | Next.js | 15.x（App Router） |
-| **Language** | TypeScript | 5.x（strict モード） |
-| **Database** | Neon（PostgreSQL） | - |
-| **ORM** | Drizzle | 0.39.x |
-| **Validation** | Zod | 3.x |
-| **UI** | Tailwind CSS | 3.x |
-| **State** | SWR / React Query | 最新 |
-| **Testing** | Vitest | 2.x |
+| レイヤー       | 技術              | バージョン           |
+| -------------- | ----------------- | -------------------- |
+| **Framework**  | Next.js           | 15.x（App Router）   |
+| **Language**   | TypeScript        | 5.x（strict モード） |
+| **Database**   | Turso（SQLite）   | -                    |
+| **ORM**        | Drizzle           | 0.39.x               |
+| **Validation** | Zod               | 3.x                  |
+| **UI**         | Tailwind CSS      | 3.x                  |
+| **State**      | SWR / React Query | 最新                 |
+| **Testing**    | Vitest            | 2.x                  |
 
 ## トラブルシューティング
 
@@ -442,6 +487,7 @@ graph TB
 **原因**: 型エラー、インポート不正
 
 **解決策**:
+
 ```bash
 # 型チェック
 pnpm typecheck
@@ -458,6 +504,7 @@ pnpm build
 **原因**: Clean Architecture違反（app ← features等）
 
 **解決策**:
+
 ```bash
 # ESLint boundaries plugin で検出
 pnpm lint
@@ -470,6 +517,7 @@ pnpm lint
 **原因**: テストケース不足、モック不正
 
 **解決策**:
+
 - Phase 7（unit-tester）で網羅的テスト作成
 - 外部依存を適切にモック化
 - TDDサイクル実践（Red-Green-Refactor）
@@ -486,7 +534,7 @@ export default async function Page() {
 }
 
 // ❌ 間違い: 不要なClient Component
-'use client';
+("use client");
 export default function Page() {
   // サーバーで実行可能な処理
 }
@@ -505,6 +553,7 @@ src/features/${feature-name}/
 ## 参照
 
 ### エージェント
+
 - router-dev: `.claude/agents/router-dev.md`
 - ui-designer: `.claude/agents/ui-designer.md`
 - state-manager: `.claude/agents/state-manager.md`
