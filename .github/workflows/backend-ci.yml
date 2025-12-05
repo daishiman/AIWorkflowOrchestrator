@@ -1,0 +1,56 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/backend/**"
+      - "packages/shared/**"
+      - ".github/workflows/backend-ci.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "apps/backend/**"
+      - "packages/shared/**"
+  workflow_dispatch: # 手動トリガーを許可
+
+# 同時実行制御
+concurrency:
+  group: backend-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # CI: ビルド・テスト・品質チェック
+  ci:
+    name: Validate Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build shared package
+        run: pnpm --filter @repo/shared build
+
+      - name: Build backend
+        run: pnpm --filter @repo/backend build
+
+      - name: Run backend tests
+        run: pnpm --filter @repo/backend test:run
+
+      - name: Type check
+        run: pnpm --filter @repo/backend typecheck
+
+      - name: Lint
+        run: pnpm --filter @repo/backend lint

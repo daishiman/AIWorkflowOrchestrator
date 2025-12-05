@@ -686,9 +686,31 @@ GitHubにプッシュすると自動的にデプロイが開始されます。
 
 ---
 
-## Part 10: GitHub Secrets設定（CI/CD用）
+## Part 10: デプロイ方法の選択
 
-### RAILWAY_TOKENとは？
+### 推奨: Railway GitHub連携による自動デプロイ
+
+**このプロジェクトでは Railway側の GitHub Integration を使用します。**
+
+詳細な設定手順は以下を参照:
+
+- **[Railway GitHub連携設定ガイド](./railway-github-integration-setup.md)** ← 推奨
+
+**メリット**:
+
+- ✅ 設定がシンプル（GitHub Secrets不要）
+- ✅ Railway UIでデプロイログを一元管理
+- ✅ ロールバックが簡単
+- ✅ GitHub Actionsは品質チェック（CI）のみに専念
+
+---
+
+## Part 11: GitHub Secrets設定（旧方式・非推奨）
+
+> **注意**: 以下はGitHub ActionsからRailway CLIで直接デプロイする旧方式です。
+> 現在は **Part 10のRailway GitHub連携** を推奨します。
+
+### RAILWAY_TOKENとは？（参考）
 
 **RAILWAY_TOKEN**は、GitHub ActionsからRailwayにデプロイするための認証トークンです。
 
