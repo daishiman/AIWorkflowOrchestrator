@@ -51,6 +51,7 @@ model: sonnet
 ### Phase 1: 環境変数の分析
 
 **コードベーススキャン**:
+
 ```bash
 # 環境変数の使用箇所を検索
 grep -r "process.env" src/
@@ -67,19 +68,24 @@ fi
 **使用エージェント**: `.claude/agents/secret-mgr.md`
 
 **エージェントへの依頼内容**:
-```markdown
+
+````markdown
 .env.exampleファイルを作成してください。
 
 **入力**:
+
 - 環境変数使用箇所: ${grep result}
 - 既存.env（存在する場合）: ${cat .env}
 - プロジェクトタイプ: Next.js 15.x
 
 **要件**:
+
 1. 環境変数の分類:
+
    ```bash
    # === データベース ===
-   DATABASE_URL=postgresql://user:password@host:5432/dbname
+   TURSO_DATABASE_URL=libsql://[db-name]-[org-name].turso.io
+   TURSO_AUTH_TOKEN=your-turso-auth-token-here
 
    # === AI API ===
    ANTHROPIC_API_KEY=your-anthropic-api-key-here
@@ -92,6 +98,7 @@ fi
    # === 外部サービス ===
    DISCORD_BOT_TOKEN=your-discord-bot-token
    ```
+````
 
 2. セキュリティ要件:
    - ✅ 本番の機密情報は含めない
@@ -100,23 +107,32 @@ fi
    - ✅ 必須変数には `# Required` マーク
 
 3. 命名規則:
-   - 大文字スネークケース: `DATABASE_URL`
+   - 大文字スネークケース: `TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN`
    - Next.js公開変数: `NEXT_PUBLIC_` プレフィックス
    - 環境別変数: `DEV_`, `PROD_` プレフィックス（必要時）
 
 4. ドキュメント生成（`docs/environment-setup.md`）:
+
    ```markdown
    # 環境変数設定ガイド
 
    ## 必須環境変数
 
-   ### DATABASE_URL
-   - **説明**: PostgreSQL接続文字列
-   - **形式**: `postgresql://user:password@host:5432/dbname`
-   - **取得方法**: Neon.techでプロジェクト作成
-   - **例**: `postgresql://user:pass@ep-cool-forest-123456.us-east-2.aws.neon.tech/neondb`
+   ### TURSO_DATABASE_URL
+
+   - **説明**: Turso SQLite接続文字列
+   - **形式**: `libsql://[db-name]-[org-name].turso.io`
+   - **取得方法**: Turso.techでプロジェクト作成
+   - **例**: `libsql://my-db-username.turso.io`
+
+   ### TURSO_AUTH_TOKEN
+
+   - **説明**: Turso認証トークン
+   - **取得方法**: Turso CLIで `turso db tokens create [db-name]` を実行
+   - **形式**: `eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9...`
 
    ### ANTHROPIC_API_KEY
+
    - **説明**: Anthropic Claude APIキー
    - **取得方法**: https://console.anthropic.com/ でAPI Key作成
    - **権限**: API access
@@ -127,13 +143,16 @@ fi
    ```
 
 **スキル参照**:
+
 - `.claude/skills/environment-variables-best-practices/SKILL.md`
 - `.claude/skills/secret-management/SKILL.md`
 
 **成果物**:
+
 - .env.example
 - docs/environment-setup.md
-```
+
+````
 
 ### Phase 3: 完了報告
 
@@ -153,7 +172,7 @@ fi
 1. .env.exampleをコピー: `cp .env.example .env`
 2. 実際の値を設定: 各API Keyを取得して設定
 3. .gitignore確認: `.env`が除外されているか確認
-```
+````
 
 ## 使用例
 
@@ -164,6 +183,7 @@ fi
 ```
 
 自動実行:
+
 1. コードベーススキャン（環境変数使用箇所）
 2. 環境変数分類
 3. .env.example生成
@@ -178,7 +198,8 @@ fi
 # ===================================================================
 
 # === データベース（必須） ===
-DATABASE_URL=postgresql://user:password@host:5432/dbname
+TURSO_DATABASE_URL=libsql://[db-name]-[org-name].turso.io
+TURSO_AUTH_TOKEN=your-turso-auth-token-here
 
 # === AI API（必須、いずれか1つ以上） ===
 ANTHROPIC_API_KEY=your-anthropic-api-key-here
@@ -206,7 +227,7 @@ LINE_CHANNEL_ACCESS_TOKEN=your-line-channel-access-token
 
 ## 設定ガイド例
 
-```markdown
+````markdown
 # 環境変数設定ガイド
 
 ## セットアップ手順
@@ -215,22 +236,33 @@ LINE_CHANNEL_ACCESS_TOKEN=your-line-channel-access-token
    ```bash
    cp .env.example .env
    ```
+````
 
 2. **必須変数の設定**:
    下記の必須変数を実際の値に置き換えてください。
 
-### DATABASE_URL（必須）
+### TURSO_DATABASE_URL（必須）
 
-- **説明**: PostgreSQL接続文字列（Neon.tech推奨）
+- **説明**: Turso SQLite接続文字列（Turso.tech推奨）
 - **取得方法**:
-  1. https://neon.tech/ でアカウント作成
-  2. プロジェクト作成
-  3. 接続文字列をコピー（Dashboard → Connection String）
-- **形式**: `postgresql://user:password@host:5432/dbname`
+  1. https://turso.tech/ でアカウント作成
+  2. データベース作成: `turso db create [db-name]`
+  3. 接続文字列を取得: `turso db show [db-name]`
+- **形式**: `libsql://[db-name]-[org-name].turso.io`
 - **例**:
   ```
-  DATABASE_URL=postgresql://neondb_owner:abc123@ep-cool-forest-123456.us-east-2.aws.neon.tech/neondb?sslmode=require
+  TURSO_DATABASE_URL=libsql://my-db-username.turso.io
   ```
+
+### TURSO_AUTH_TOKEN（必須）
+
+- **説明**: Turso認証トークン
+- **取得方法**:
+  1. Turso CLIで認証トークンを作成: `turso db tokens create [db-name]`
+  2. トークンをコピー（一度しか表示されない）
+- **形式**: `eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9...`
+- **権限**: データベースアクセス
+- **注意**: 本番環境では制限付きトークンを使用
 
 ### ANTHROPIC_API_KEY（必須）
 
@@ -251,7 +283,8 @@ LINE_CHANNEL_ACCESS_TOKEN=your-line-channel-access-token
 ✅ API Keyは定期的にローテーション
 ❌ `.env`をGitHubにコミットしない
 ❌ Slackやメールで平文送信しない
-```
+
+````
 
 ## トラブルシューティング
 
@@ -266,13 +299,14 @@ NEXT_PUBLIC_API_URL=https://api.example.com
 
 # ❌ 間違い: プレフィックスなし（サーバーサイドのみ）
 API_URL=https://api.example.com  # クライアントで使用不可
-```
+````
 
 ### .envと.env.exampleの乖離
 
 **原因**: 環境変数追加時に.env.exampleの更新漏れ
 
 **解決策**:
+
 ```bash
 # 定期的に同期確認
 diff <(grep -v "^#" .env | grep -v "^$" | cut -d= -f1 | sort) \
@@ -304,11 +338,13 @@ git commit -m "docs(env): add ANTHROPIC_API_KEY"
 
 ```bash
 # .env.development（ローカル開発）
-DATABASE_URL=postgresql://localhost:5432/dev
+TURSO_DATABASE_URL=file:local.db
+TURSO_AUTH_TOKEN=  # ローカルファイルの場合は不要
 LOG_LEVEL=debug
 
 # .env.production（本番環境、Railway等で設定）
-DATABASE_URL=postgresql://neon-host/prod
+TURSO_DATABASE_URL=libsql://my-db-prod.turso.io
+TURSO_AUTH_TOKEN=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9...
 LOG_LEVEL=info
 ```
 

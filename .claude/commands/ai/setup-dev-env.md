@@ -47,10 +47,10 @@ description: |
 
   トリガーキーワード: setup, environment, dev-env, 開発環境, 初期化, pnpm
 allowed-tools:
-   - Task
-   - Read
-   - Write
-   - Bash(pnpm*)
+  - Task
+  - Read
+  - Write
+  - Bash(pnpm*)
 model: sonnet
 ---
 
@@ -169,9 +169,9 @@ Docker環境、Railway統合、PM2設定を完全構成してください。
    - Stage 3: 本番実行（最小イメージ）
 3. docker-compose.yml作成（開発環境用）
    - Next.js サービス
-   - PostgreSQL サービス（Neon互換）
+   - SQLite サービス（Turso互換）
 4. .env.example作成（環境変数テンプレート）
-   - DATABASE_URL、OPENAI_API_KEY、ANTHROPIC_API_KEY等
+   - TURSO_DATABASE_URL、TURSO_AUTH_TOKEN、OPENAI_API_KEY、ANTHROPIC_API_KEY等
    - DISCORD_TOKEN、AGENT_SECRET_KEY
 5. drizzle.config.ts作成
    - schema: src/shared/infrastructure/database/schema.ts
@@ -239,7 +239,7 @@ Phase 2:
 Phase 3:
 - railway.json（Nixpacks、pnpm）
 - Dockerfile（マルチステージビルド）
-- docker-compose.yml（Next.js + PostgreSQL）
+- docker-compose.yml（Next.js + SQLite/Turso）
 - .env.example（全必須環境変数）
 - drizzle.config.ts（schema、migrations設定）
 - local-agent/ecosystem.config.js（PM2、autorestart、500M制限）
@@ -257,6 +257,7 @@ Phase 3:
 ## エラーハンドリング
 
 各Phaseでエラーが発生した場合:
+
 1. エラーメッセージを表示
 2. 該当エージェントに再試行を依頼
 3. 3回失敗した場合はユーザーに報告し、手動対応を提案

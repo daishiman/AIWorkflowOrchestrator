@@ -25,16 +25,16 @@ const query = `SELECT * FROM users WHERE id = '${userId}'`;
 
 ## パラメータ化クエリ
 
-### PostgreSQL (pg)
+### SQLite (better-sqlite3)
 
 ```typescript
-import { Pool } from 'pg';
+import Database from "better-sqlite3";
 
-const pool = new Pool();
+const db = new Database("mydb.sqlite");
 
 // ✅ パラメータ化クエリ
 async function getUserById(userId: string): Promise<User | null> {
-  const query = 'SELECT * FROM users WHERE id = $1';
+  const query = "SELECT * FROM users WHERE id = $1";
   const result = await pool.query(query, [userId]);
   return result.rows[0] || null;
 }
@@ -51,7 +51,7 @@ async function searchUsers(name: string, email: string): Promise<User[]> {
 
 // ✅ IN句
 async function getUsersByIds(ids: string[]): Promise<User[]> {
-  const placeholders = ids.map((_, i) => `$${i + 1}`).join(', ');
+  const placeholders = ids.map((_, i) => `$${i + 1}`).join(", ");
   const query = `SELECT * FROM users WHERE id IN (${placeholders})`;
   const result = await pool.query(query, ids);
   return result.rows;
@@ -61,49 +61,53 @@ async function getUsersByIds(ids: string[]): Promise<User[]> {
 ### MySQL
 
 ```typescript
-import mysql from 'mysql2/promise';
+import mysql from "mysql2/promise";
 
 const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'user',
-  password: 'password',
-  database: 'mydb',
+  host: "localhost",
+  user: "user",
+  password: "password",
+  database: "mydb",
 });
 
 // ✅ プレースホルダー使用
 async function getUserById(userId: string): Promise<User | null> {
-  const [rows] = await pool.execute(
-    'SELECT * FROM users WHERE id = ?',
-    [userId]
-  );
+  const [rows] = await pool.execute("SELECT * FROM users WHERE id = ?", [
+    userId,
+  ]);
   return (rows as User[])[0] || null;
 }
 
 // ✅ 名前付きプレースホルダー
-async function createUser(user: { name: string; email: string }): Promise<void> {
-  await pool.execute(
-    'INSERT INTO users (name, email) VALUES (?, ?)',
-    [user.name, user.email]
-  );
+async function createUser(user: {
+  name: string;
+  email: string;
+}): Promise<void> {
+  await pool.execute("INSERT INTO users (name, email) VALUES (?, ?)", [
+    user.name,
+    user.email,
+  ]);
 }
 ```
 
 ### SQLite
 
 ```typescript
-import Database from 'better-sqlite3';
+import Database from "better-sqlite3";
 
-const db = new Database('mydb.sqlite');
+const db = new Database("mydb.sqlite");
 
 // ✅ プレースホルダー
 function getUserById(userId: string): User | undefined {
-  const stmt = db.prepare('SELECT * FROM users WHERE id = ?');
+  const stmt = db.prepare("SELECT * FROM users WHERE id = ?");
   return stmt.get(userId) as User | undefined;
 }
 
 // ✅ 名前付きパラメータ
 function createUser(user: { name: string; email: string }): void {
-  const stmt = db.prepare('INSERT INTO users (name, email) VALUES (@name, @email)');
+  const stmt = db.prepare(
+    "INSERT INTO users (name, email) VALUES (@name, @email)",
+  );
   stmt.run(user);
 }
 ```
@@ -113,7 +117,7 @@ function createUser(user: { name: string; email: string }): void {
 ### Prisma
 
 ```typescript
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -154,11 +158,16 @@ async function customQuery(userId: string): Promise<User[]> {
 ### Drizzle ORM
 
 ```typescript
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { eq, like, and } from 'drizzle-orm';
-import { users } from './schema';
+import { drizzle } from "drizzle-orm/libsql";
+import { eq, like, and } from "drizzle-orm";
+import { users } from "./schema";
+import { createClient } from "@libsql/client";
 
-const db = drizzle(pool);
+const client = createClient({
+  url: process.env.TURSO_DATABASE_URL!,
+  authToken: process.env.TURSO_AUTH_TOKEN!,
+});
+const db = drizzle(client);
 
 // ✅ 安全: 型安全なクエリ
 async function getUserById(userId: string): Promise<User | undefined> {
@@ -178,13 +187,13 @@ async function searchUsers(name: string, email: string): Promise<User[]> {
 ### TypeORM
 
 ```typescript
-import { DataSource, Repository } from 'typeorm';
-import { User } from './entities/User';
+import { DataSource, Repository } from "typeorm";
+import { User } from "./entities/User";
 
 // ✅ 安全: Repository APIを使用
 async function getUserById(
   repo: Repository<User>,
-  userId: string
+  userId: string,
 ): Promise<User | null> {
   return repo.findOne({ where: { id: userId } });
 }
@@ -192,21 +201,21 @@ async function getUserById(
 // ✅ 安全: QueryBuilderでパラメータ化
 async function searchUsers(
   repo: Repository<User>,
-  name: string
+  name: string,
 ): Promise<User[]> {
   return repo
-    .createQueryBuilder('user')
-    .where('user.name LIKE :name', { name: `%${name}%` })
+    .createQueryBuilder("user")
+    .where("user.name LIKE :name", { name: `%${name}%` })
     .getMany();
 }
 
 // ⚠️ 注意: query()は手動でパラメータ化
 async function customQuery(
   dataSource: DataSource,
-  userId: string
+  userId: string,
 ): Promise<User[]> {
   // ✅ 安全: パラメータ配列を使用
-  return dataSource.query('SELECT * FROM users WHERE id = $1', [userId]);
+  return dataSource.query("SELECT * FROM users WHERE id = $1", [userId]);
 }
 ```
 
@@ -216,7 +225,7 @@ async function customQuery(
 
 ```typescript
 // ✅ ソートカラムの許可リスト
-const ALLOWED_SORT_COLUMNS = ['name', 'email', 'created_at'] as const;
+const ALLOWED_SORT_COLUMNS = ["name", "email", "created_at"] as const;
 type SortColumn = (typeof ALLOWED_SORT_COLUMNS)[number];
 
 function isSortColumn(column: string): column is SortColumn {
@@ -225,7 +234,7 @@ function isSortColumn(column: string): column is SortColumn {
 
 async function getUsers(
   sortBy: string,
-  order: 'ASC' | 'DESC' = 'ASC'
+  order: "ASC" | "DESC" = "ASC",
 ): Promise<User[]> {
   // カラム名を検証
   if (!isSortColumn(sortBy)) {
@@ -280,7 +289,8 @@ async function searchUsers(filters: SearchFilters): Promise<User[]> {
     params.push(filters.maxAge);
   }
 
-  const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+  const whereClause =
+    conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
   const query = `SELECT * FROM users ${whereClause}`;
 
   const result = await pool.query(query, params);
@@ -288,30 +298,26 @@ async function searchUsers(filters: SearchFilters): Promise<User[]> {
 }
 ```
 
-## ストアドプロシージャ
+## ビューの活用
 
-```typescript
-// PostgreSQL ストアドプロシージャ
-// CREATE FUNCTION get_user_by_id(user_id UUID)
-// RETURNS TABLE(id UUID, name TEXT, email TEXT)
-// LANGUAGE plpgsql
-// AS $$
-// BEGIN
-//   RETURN QUERY SELECT u.id, u.name, u.email FROM users u WHERE u.id = user_id;
-// END;
-// $$;
+```sql
+-- SQLite/Tursoではストアドプロシージャの代わりにビューを使用
+CREATE VIEW active_users AS
+SELECT id, name, email, created_at
+FROM users
+WHERE status = 'active';
 
-// ✅ ストアドプロシージャを呼び出し
-async function getUserById(userId: string): Promise<User | null> {
-  const result = await pool.query('SELECT * FROM get_user_by_id($1)', [userId]);
-  return result.rows[0] || null;
+-- TypeScript
+async function getActiveUsers(): Promise<User[]> {
+  const result = await client.execute("SELECT * FROM active_users");
+  return result.rows as User[];
 }
 ```
 
 ## 入力検証
 
 ```typescript
-import { z } from 'zod';
+import { z } from "zod";
 
 // ✅ Zodで入力を検証
 const UserIdSchema = z.string().uuid();
@@ -322,7 +328,9 @@ async function getUserByEmail(rawEmail: string): Promise<User | null> {
   const email = EmailSchema.parse(rawEmail);
 
   // 検証済みの値でクエリ実行
-  const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+  const result = await pool.query("SELECT * FROM users WHERE email = $1", [
+    email,
+  ]);
   return result.rows[0] || null;
 }
 
@@ -344,7 +352,7 @@ async function searchUsers(params: unknown): Promise<User[]> {
 
 ```typescript
 // ❌ 危険: 詳細なエラー情報を返す
-app.get('/user/:id', async (req, res) => {
+app.get("/user/:id", async (req, res) => {
   try {
     const user = await getUserById(req.params.id);
     res.json(user);
@@ -355,35 +363,41 @@ app.get('/user/:id', async (req, res) => {
 });
 
 // ✅ 安全: 一般的なエラーメッセージを返す
-app.get('/user/:id', async (req, res) => {
+app.get("/user/:id", async (req, res) => {
   try {
     const user = await getUserById(req.params.id);
     res.json(user);
   } catch (error) {
     // ログには詳細を記録
-    console.error('Database error:', error);
+    console.error("Database error:", error);
     // クライアントには一般的なメッセージ
-    res.status(500).json({ error: 'An error occurred' });
+    res.status(500).json({ error: "An error occurred" });
   }
 });
 ```
 
 ## データベース権限
 
-```sql
--- アプリケーション用の制限付きユーザーを作成
-CREATE USER app_user WITH PASSWORD 'secure_password';
+```typescript
+// SQLite/Tursoでは認証トークンレベルで権限管理
+// Tursoダッシュボードでトークンの権限を設定:
+// - Read-only: 読み取り専用
+// - Full access: すべての操作が可能
 
--- 必要最小限の権限のみ付与
-GRANT SELECT, INSERT, UPDATE, DELETE ON users TO app_user;
-GRANT SELECT, INSERT ON audit_logs TO app_user;
+// アプリケーションでは適切なトークンを使用
+const readOnlyClient = createClient({
+  url: process.env.TURSO_DATABASE_URL!,
+  authToken: process.env.TURSO_READONLY_TOKEN!,
+});
 
--- 危険な権限は付与しない
--- GRANT DROP, ALTER, CREATE, TRUNCATE は付与しない
+const fullAccessClient = createClient({
+  url: process.env.TURSO_DATABASE_URL!,
+  authToken: process.env.TURSO_AUTH_TOKEN!,
+});
 ```
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版リリース |
+| バージョン | 日付       | 変更内容     |
+| ---------- | ---------- | ------------ |
+| 1.0.0      | 2025-11-25 | 初版リリース |

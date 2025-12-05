@@ -7,15 +7,15 @@
 
 ## HTTPメソッドと冪等性
 
-| メソッド | 冪等 | 安全 | 説明 |
-|---------|------|------|------|
-| GET | ✅ | ✅ | リソース取得（副作用なし） |
-| HEAD | ✅ | ✅ | ヘッダーのみ取得 |
-| OPTIONS | ✅ | ✅ | サポートメソッド取得 |
-| PUT | ✅ | ❌ | リソースの完全置換 |
-| DELETE | ✅ | ❌ | リソース削除 |
-| POST | ❌ | ❌ | リソース作成・アクション実行 |
-| PATCH | ❌ | ❌ | リソースの部分更新 |
+| メソッド | 冪等 | 安全 | 説明                         |
+| -------- | ---- | ---- | ---------------------------- |
+| GET      | ✅   | ✅   | リソース取得（副作用なし）   |
+| HEAD     | ✅   | ✅   | ヘッダーのみ取得             |
+| OPTIONS  | ✅   | ✅   | サポートメソッド取得         |
+| PUT      | ✅   | ❌   | リソースの完全置換           |
+| DELETE   | ✅   | ❌   | リソース削除                 |
+| POST     | ❌   | ❌   | リソース作成・アクション実行 |
+| PATCH    | ❌   | ❌   | リソースの部分更新           |
 
 ### 冪等 vs 安全
 
@@ -36,15 +36,15 @@ POST /users       → 毎回新しいユーザーを作成（冪等ではない�
 // クライアント側
 const idempotencyKey = crypto.randomUUID();
 
-const response = await fetch('/api/payments', {
-  method: 'POST',
+const response = await fetch("/api/payments", {
+  method: "POST",
   headers: {
-    'Content-Type': 'application/json',
-    'Idempotency-Key': idempotencyKey,
+    "Content-Type": "application/json",
+    "Idempotency-Key": idempotencyKey,
   },
   body: JSON.stringify({
     amount: 1000,
-    currency: 'JPY',
+    currency: "JPY",
   }),
 });
 
@@ -59,7 +59,7 @@ if (!response.ok && isRetryable(response.status)) {
 ```typescript
 interface IdempotencyRecord {
   key: string;
-  status: 'processing' | 'completed' | 'failed';
+  status: "processing" | "completed" | "failed";
   requestHash: string;
   response?: {
     statusCode: number;
@@ -77,7 +77,7 @@ class IdempotencyService {
   async execute<T>(
     key: string,
     requestHash: string,
-    handler: () => Promise<T>
+    handler: () => Promise<T>,
   ): Promise<{ isNew: boolean; result: T }> {
     // 既存レコードをチェック
     const existing = this.store.get(key);
@@ -86,17 +86,17 @@ class IdempotencyService {
       // リクエスト内容が異なる場合はエラー
       if (existing.requestHash !== requestHash) {
         throw new ConflictError(
-          'Idempotency key already used with different request'
+          "Idempotency key already used with different request",
         );
       }
 
       // 処理中の場合は待機
-      if (existing.status === 'processing') {
-        throw new ConflictError('Request is already being processed');
+      if (existing.status === "processing") {
+        throw new ConflictError("Request is already being processed");
       }
 
       // 完了済みの場合はキャッシュを返す
-      if (existing.status === 'completed' && existing.response) {
+      if (existing.status === "completed" && existing.response) {
         return { isNew: false, result: existing.response.body as T };
       }
     }
@@ -104,7 +104,7 @@ class IdempotencyService {
     // 新規処理開始
     const record: IdempotencyRecord = {
       key,
-      status: 'processing',
+      status: "processing",
       requestHash,
       createdAt: new Date(),
       expiresAt: new Date(Date.now() + this.ttl),
@@ -115,7 +115,7 @@ class IdempotencyService {
       const result = await handler();
 
       // 成功を記録
-      record.status = 'completed';
+      record.status = "completed";
       record.response = {
         statusCode: 200,
         body: result,
@@ -125,7 +125,7 @@ class IdempotencyService {
       return { isNew: true, result };
     } catch (error) {
       // 失敗を記録
-      record.status = 'failed';
+      record.status = "failed";
       throw error;
     }
   }
@@ -135,24 +135,24 @@ class IdempotencyService {
 ### Express.js ミドルウェア
 
 ```typescript
-import { Request, Response, NextFunction } from 'express';
-import crypto from 'crypto';
+import { Request, Response, NextFunction } from "express";
+import crypto from "crypto";
 
 const idempotencyService = new IdempotencyService();
 
 function idempotencyMiddleware(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void {
-  const idempotencyKey = req.headers['idempotency-key'] as string | undefined;
+  const idempotencyKey = req.headers["idempotency-key"] as string | undefined;
 
   // POSTリクエストでキーが必須
-  if (req.method === 'POST' && !idempotencyKey) {
+  if (req.method === "POST" && !idempotencyKey) {
     res.status(400).json({
       error: {
-        code: 'IDEMPOTENCY_KEY_REQUIRED',
-        message: 'Idempotency-Key header is required for POST requests',
+        code: "IDEMPOTENCY_KEY_REQUIRED",
+        message: "Idempotency-Key header is required for POST requests",
       },
     });
     return;
@@ -165,13 +165,15 @@ function idempotencyMiddleware(
 
   // リクエストハッシュを生成
   const requestHash = crypto
-    .createHash('sha256')
-    .update(JSON.stringify({
-      method: req.method,
-      path: req.path,
-      body: req.body,
-    }))
-    .digest('hex');
+    .createHash("sha256")
+    .update(
+      JSON.stringify({
+        method: req.method,
+        path: req.path,
+        body: req.body,
+      }),
+    )
+    .digest("hex");
 
   // コンテキストに保存
   req.idempotency = { key: idempotencyKey, requestHash };
@@ -245,15 +247,15 @@ POST /api/accounts/123/transactions
 ```sql
 -- 冪等キーテーブル
 CREATE TABLE idempotency_keys (
-  key VARCHAR(255) PRIMARY KEY,
-  request_hash VARCHAR(64) NOT NULL,
-  status VARCHAR(20) NOT NULL DEFAULT 'processing',
+  key TEXT PRIMARY KEY,
+  request_hash TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'processing',
   response_status INTEGER,
-  response_body JSONB,
-  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  expires_at TIMESTAMP NOT NULL,
+  response_body TEXT,  -- JSON stored as TEXT
+  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  expires_at INTEGER NOT NULL,
 
-  CONSTRAINT valid_status CHECK (status IN ('processing', 'completed', 'failed'))
+  CHECK (status IN ('processing', 'completed', 'failed'))
 );
 
 -- 定期クリーンアップ
@@ -261,11 +263,11 @@ CREATE INDEX idx_idempotency_expires ON idempotency_keys(expires_at);
 
 -- トランザクションID（業務レベル）
 CREATE TABLE transactions (
-  id VARCHAR(255) PRIMARY KEY,  -- クライアント指定ID
-  account_id VARCHAR(255) NOT NULL,
-  type VARCHAR(50) NOT NULL,
-  amount DECIMAL(15,2) NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  id TEXT PRIMARY KEY,  -- クライアント指定ID
+  account_id TEXT NOT NULL,
+  type TEXT NOT NULL,
+  amount REAL NOT NULL,
+  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
 
   UNIQUE(id)  -- 重複防止
 );
@@ -283,17 +285,20 @@ interface VersionedEntity {
 async function updateWithOptimisticLock(
   id: string,
   expectedVersion: number,
-  newData: unknown
+  newData: unknown,
 ): Promise<VersionedEntity> {
-  const result = await db.query(`
+  const result = await db.query(
+    `
     UPDATE entities
     SET data = $1, version = version + 1
     WHERE id = $2 AND version = $3
     RETURNING *
-  `, [newData, id, expectedVersion]);
+  `,
+    [newData, id, expectedVersion],
+  );
 
   if (result.rowCount === 0) {
-    throw new ConflictError('Entity was modified by another request');
+    throw new ConflictError("Entity was modified by another request");
   }
 
   return result.rows[0];
@@ -320,7 +325,7 @@ function generateIdempotencyKey(request: {
   params: unknown;
 }): string {
   const content = JSON.stringify(request);
-  return crypto.createHash('sha256').update(content).digest('hex');
+  return crypto.createHash("sha256").update(content).digest("hex");
 }
 ```
 
@@ -330,7 +335,7 @@ function generateIdempotencyKey(request: {
 // ユーザー + タイムスタンプ + ランダム
 function generateUserScopedKey(userId: string): string {
   const timestamp = Date.now().toString(36);
-  const random = crypto.randomBytes(8).toString('hex');
+  const random = crypto.randomBytes(8).toString("hex");
   return `${userId}:${timestamp}:${random}`;
 }
 ```
@@ -338,16 +343,19 @@ function generateUserScopedKey(userId: string): string {
 ## チェックリスト
 
 ### 設計時
+
 - [ ] どのエンドポイントに冪等性が必要か特定したか？
 - [ ] 冪等キーの形式とTTLを決定したか？
 - [ ] 競合時の動作を定義したか？
 
 ### 実装時
+
 - [ ] 冪等キーのストレージを選択したか（Redis、DB）？
 - [ ] 処理中状態のハンドリングを実装したか？
 - [ ] リクエスト内容の整合性チェックを実装したか？
 
 ### 運用時
+
 - [ ] 期限切れキーのクリーンアップが設定されているか？
 - [ ] 冪等キーのヒット率をモニタリングしているか？
 - [ ] ストレージ容量を監視しているか？

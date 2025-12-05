@@ -12,28 +12,30 @@ ACID特性の原子性を実現する重要な機能。
 **概念**: 例外発生時にフレームワーク/ORMが自動でロールバック
 
 **実装**:
+
 ```typescript
 // Drizzle ORM の自動ロールバック
 async function createWorkflow(data: WorkflowInput) {
   // トランザクション内で例外が発生すると自動ロールバック
   await db.transaction(async (tx) => {
-    const [workflow] = await tx.insert(workflows).values(data).returning()
+    const [workflow] = await tx.insert(workflows).values(data).returning();
 
     if (!workflow) {
-      throw new Error('Failed to create workflow')  // 自動ロールバック
+      throw new Error("Failed to create workflow"); // 自動ロールバック
     }
 
     await tx.insert(workflowHistory).values({
       workflowId: workflow.id,
-      action: 'CREATED',
-    })
+      action: "CREATED",
+    });
 
     // トランザクション終了時に自動コミット
-  })
+  });
 }
 ```
 
 **メリット**:
+
 - 明示的なロールバック呼び出しが不要
 - 例外処理漏れを防止
 - コードがシンプル
@@ -43,34 +45,41 @@ async function createWorkflow(data: WorkflowInput) {
 **概念**: 条件に基づいて手動でロールバックを実行
 
 **実装**:
+
 ```typescript
 async function processOrder(orderId: string) {
-  const client = await pool.connect()
+  const client = await pool.connect();
 
   try {
-    await client.query('BEGIN')
+    await client.query("BEGIN");
 
-    const order = await client.query('SELECT * FROM orders WHERE id = $1', [orderId])
+    const order = await client.query("SELECT * FROM orders WHERE id = $1", [
+      orderId,
+    ]);
 
-    if (order.rows[0].status === 'CANCELLED') {
-      await client.query('ROLLBACK')  // 明示的ロールバック
-      return { success: false, reason: 'Order already cancelled' }
+    if (order.rows[0].status === "CANCELLED") {
+      await client.query("ROLLBACK"); // 明示的ロールバック
+      return { success: false, reason: "Order already cancelled" };
     }
 
-    await client.query('UPDATE orders SET status = $1 WHERE id = $2', ['PROCESSING', orderId])
-    await client.query('COMMIT')
+    await client.query("UPDATE orders SET status = $1 WHERE id = $2", [
+      "PROCESSING",
+      orderId,
+    ]);
+    await client.query("COMMIT");
 
-    return { success: true }
+    return { success: true };
   } catch (error) {
-    await client.query('ROLLBACK')  // エラー時も明示的ロールバック
-    throw error
+    await client.query("ROLLBACK"); // エラー時も明示的ロールバック
+    throw error;
   } finally {
-    client.release()
+    client.release();
   }
 }
 ```
 
 **使用場面**:
+
 - ビジネスロジックに基づく条件付きロールバック
 - 低レベルDBアクセス
 - 細かい制御が必要な場合
@@ -82,33 +91,35 @@ async function processOrder(orderId: string) {
 **概念**: トランザクション内に復帰ポイントを設定し、部分ロールバックを可能にする
 
 **実装**:
+
 ```typescript
 async function batchProcess(items: Item[]) {
   await db.transaction(async (tx) => {
     for (const item of items) {
       // セーブポイント設定
-      await tx.execute(sql`SAVEPOINT item_${item.id}`)
+      await tx.execute(sql`SAVEPOINT item_${item.id}`);
 
       try {
-        await processItem(tx, item)
+        await processItem(tx, item);
       } catch (error) {
         // セーブポイントまでロールバック
-        await tx.execute(sql`ROLLBACK TO SAVEPOINT item_${item.id}`)
+        await tx.execute(sql`ROLLBACK TO SAVEPOINT item_${item.id}`);
 
         // エラーを記録して継続
         await tx.insert(processErrors).values({
           itemId: item.id,
           error: error.message,
-        })
+        });
       }
     }
 
     // 成功した処理はコミットされる
-  })
+  });
 }
 ```
 
 **使用場面**:
+
 - バッチ処理で一部失敗を許容
 - 部分的な処理継続が必要
 - エラーをログに残しつつ処理を続行
@@ -117,23 +128,27 @@ async function batchProcess(items: Item[]) {
 
 **概念**: トランザクション内で別のトランザクションを開始（実際はセーブポイント）
 
-**注意**: PostgreSQLはネストトランザクションを直接サポートしない。
+**注意**: SQLiteはネストトランザクションを直接サポートしない。
 セーブポイントで同様の効果を実現。
 
 **実装**:
+
 ```typescript
-async function nestedOperation(tx: Transaction) {
+async function nestedOperation(db: Database) {
   // 擬似ネストトランザクション（実際はセーブポイント）
-  const savepoint = `nested_${Date.now()}`
-  await tx.execute(sql`SAVEPOINT ${sql.identifier(savepoint)}`)
+  const savepoint = `nested_${Date.now()}`;
+  await db.run(`SAVEPOINT ${savepoint}`);
 
   try {
     // ネスト内の操作
-    await tx.update(accounts).set({ ... }).where(...)
-    await tx.execute(sql`RELEASE SAVEPOINT ${sql.identifier(savepoint)}`)
+    await db.run("UPDATE accounts SET balance = ? WHERE id = ?", [
+      newBalance,
+      accountId,
+    ]);
+    await db.run(`RELEASE SAVEPOINT ${savepoint}`);
   } catch (error) {
-    await tx.execute(sql`ROLLBACK TO SAVEPOINT ${sql.identifier(savepoint)}`)
-    throw error
+    await db.run(`ROLLBACK TO SAVEPOINT ${savepoint}`);
+    throw error;
   }
 }
 ```
@@ -149,27 +164,27 @@ async function nestedOperation(tx: Transaction) {
 
 ```typescript
 interface SagaStep<T> {
-  execute: (context: T) => Promise<void>
-  compensate: (context: T) => Promise<void>
+  execute: (context: T) => Promise<void>;
+  compensate: (context: T) => Promise<void>;
 }
 
 class Saga<T> {
-  private steps: SagaStep<T>[] = []
-  private executedSteps: SagaStep<T>[] = []
+  private steps: SagaStep<T>[] = [];
+  private executedSteps: SagaStep<T>[] = [];
 
   addStep(step: SagaStep<T>): this {
-    this.steps.push(step)
-    return this
+    this.steps.push(step);
+    return this;
   }
 
   async execute(context: T): Promise<void> {
     for (const step of this.steps) {
       try {
-        await step.execute(context)
-        this.executedSteps.push(step)
+        await step.execute(context);
+        this.executedSteps.push(step);
       } catch (error) {
-        await this.rollback(context)
-        throw error
+        await this.rollback(context);
+        throw error;
       }
     }
   }
@@ -178,10 +193,10 @@ class Saga<T> {
     // 逆順で補償を実行
     for (const step of this.executedSteps.reverse()) {
       try {
-        await step.compensate(context)
+        await step.compensate(context);
       } catch (compensateError) {
         // 補償失敗をログに記録
-        console.error('Compensation failed:', compensateError)
+        console.error("Compensation failed:", compensateError);
       }
     }
   }
@@ -242,34 +257,49 @@ try {
 
 ```typescript
 async function safeTransaction<T>(
-  operation: (tx: Transaction) => Promise<T>
+  operation: (tx: Transaction) => Promise<T>,
 ): Promise<Result<T, TransactionError>> {
   try {
-    const result = await db.transaction(operation)
-    return { success: true, data: result }
+    const result = await db.transaction(operation);
+    return { success: true, data: result };
   } catch (error) {
     // 自動ロールバック済み
     return {
       success: false,
       error: categorizeError(error),
-    }
+    };
   }
 }
 
 function categorizeError(error: unknown): TransactionError {
-  const pgError = error as { code?: string }
+  const sqliteError = error as { code?: string; message?: string };
 
-  switch (pgError.code) {
-    case '23505':  // unique_violation
-      return { type: 'DUPLICATE', message: 'Record already exists' }
-    case '23503':  // foreign_key_violation
-      return { type: 'REFERENCE', message: 'Referenced record not found' }
-    case '40001':  // serialization_failure
-      return { type: 'SERIALIZATION', message: 'Transaction conflict', retryable: true }
-    case '40P01':  // deadlock_detected
-      return { type: 'DEADLOCK', message: 'Deadlock detected', retryable: true }
+  switch (sqliteError.code) {
+    case "SQLITE_CONSTRAINT":
+      if (sqliteError.message?.includes("UNIQUE")) {
+        return { type: "DUPLICATE", message: "Record already exists" };
+      }
+      if (sqliteError.message?.includes("FOREIGN KEY")) {
+        return { type: "REFERENCE", message: "Referenced record not found" };
+      }
+      return { type: "CONSTRAINT", message: "Constraint violation" };
+    case "SQLITE_BUSY":
+      return {
+        type: "BUSY",
+        message: "Database is locked",
+        retryable: true,
+      };
+    case "SQLITE_LOCKED":
+      return {
+        type: "LOCKED",
+        message: "Table is locked",
+        retryable: true,
+      };
     default:
-      return { type: 'UNKNOWN', message: error.message }
+      return {
+        type: "UNKNOWN",
+        message: sqliteError.message || "Unknown error",
+      };
   }
 }
 ```
@@ -279,27 +309,27 @@ function categorizeError(error: unknown): TransactionError {
 ```typescript
 async function transactionWithRetry<T>(
   operation: (tx: Transaction) => Promise<T>,
-  options: { maxRetries?: number; backoff?: number } = {}
+  options: { maxRetries?: number; backoff?: number } = {},
 ): Promise<T> {
-  const { maxRetries = 3, backoff = 100 } = options
+  const { maxRetries = 3, backoff = 100 } = options;
 
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
-      return await db.transaction(operation)
+      return await db.transaction(operation);
     } catch (error) {
-      const categorized = categorizeError(error)
+      const categorized = categorizeError(error);
 
       if (!categorized.retryable || attempt >= maxRetries) {
-        throw error
+        throw error;
       }
 
       // Exponential backoff with jitter
-      const delay = backoff * Math.pow(2, attempt) + Math.random() * 50
-      await sleep(delay)
+      const delay = backoff * Math.pow(2, attempt) + Math.random() * 50;
+      await sleep(delay);
     }
   }
 
-  throw new Error('Max retries exceeded')
+  throw new Error("Max retries exceeded");
 }
 ```
 
@@ -309,25 +339,25 @@ async function transactionWithRetry<T>(
 
 ```typescript
 async function operationWithCleanup() {
-  const tempFiles: string[] = []
+  const tempFiles: string[] = [];
 
   try {
     await db.transaction(async (tx) => {
       // ファイルを作成
-      const filePath = await createTempFile()
-      tempFiles.push(filePath)
+      const filePath = await createTempFile();
+      tempFiles.push(filePath);
 
       // DB操作
-      await tx.insert(files).values({ path: filePath })
+      await tx.insert(files).values({ path: filePath });
 
       // さらに処理...
-    })
+    });
   } catch (error) {
     // トランザクション失敗時、作成したファイルを削除
     for (const file of tempFiles) {
-      await fs.unlink(file).catch(() => {})
+      await fs.unlink(file).catch(() => {});
     }
-    throw error
+    throw error;
   }
 }
 ```

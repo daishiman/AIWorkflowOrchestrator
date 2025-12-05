@@ -10,7 +10,7 @@ description: |
 
   - `.claude/skills/infrastructure-as-code/resources/environment-variables.md`: 環境変数の分類（機密/環境固有/共通）と管理場所の設計パターン
   - `.claude/skills/infrastructure-as-code/resources/iac-principles.md`: IaCの4原則（宣言的定義/べき等性/バージョン管理/不変インフラ）
-  - `.claude/skills/infrastructure-as-code/resources/railway-integration.md`: railway.json構成、Neon Plugin連携、環境変数設定の詳細
+  - `.claude/skills/infrastructure-as-code/resources/railway-integration.md`: railway.json構成、Turso統合、環境変数設定の詳細
   - `.claude/skills/infrastructure-as-code/resources/secrets-management.md`: GitHub Secrets/Railway Secretsによるセキュアなクレデンシャル管理
   - `.claude/skills/infrastructure-as-code/scripts/validate-env.mjs`: .env.exampleと実際の環境変数の検証
   - `.claude/skills/infrastructure-as-code/templates/env-example-template.txt`: .env.exampleファイル作成テンプレート
@@ -151,8 +151,7 @@ cat .claude/skills/infrastructure-as-code/templates/env-example-template.txt
 **ステップ**:
 
 1. **現在の構成確認**:
-
-   - 使用中のサービス（Railway, Neon 等）
+   - 使用中のサービス（Railway, Turso 等）
    - 環境変数の一覧
    - Secret 情報の所在
 
@@ -176,7 +175,6 @@ cat .claude/skills/infrastructure-as-code/templates/env-example-template.txt
 **ステップ**:
 
 1. **変数の分類**:
-
    - 機密情報（Secret）: API Key, Token
    - 環境固有: DATABASE_URL, API_ENDPOINT
    - 共通設定: NODE_ENV, LOG_LEVEL
@@ -201,13 +199,12 @@ cat .claude/skills/infrastructure-as-code/templates/env-example-template.txt
 **ステップ**:
 
 1. **railway.json 作成**:
-
    - ビルドコマンド設定
    - スタートコマンド設定
    - 再起動ポリシー設定
 
 2. **環境変数の設定**:
-   - Neon Plugin 連携（DATABASE_URL）
+   - Turso 統合（TURSO_DATABASE_URL, TURSO_AUTH_TOKEN）
    - Railway Secrets 設定
    - Railway Variables 設定
 
@@ -215,7 +212,7 @@ cat .claude/skills/infrastructure-as-code/templates/env-example-template.txt
 
 - [ ] railway.json が作成されているか？
 - [ ] 環境変数が Railway に設定されているか？
-- [ ] Neon 連携が構成されているか？
+- [ ] Turso 統合が構成されているか？
 
 **リソース**: `resources/railway-integration.md`
 
@@ -226,7 +223,6 @@ cat .claude/skills/infrastructure-as-code/templates/env-example-template.txt
 **ステップ**:
 
 1. **動作検証**:
-
    - ローカル開発での動作確認
    - Railway CLI 経由での変数確認
    - デプロイ動作確認
@@ -252,11 +248,11 @@ cat .claude/skills/infrastructure-as-code/templates/env-example-template.txt
 
 ### 環境変数の分類
 
-| 種別     | 例                         | 管理場所                        |
-| -------- | -------------------------- | ------------------------------- |
-| 機密情報 | API_KEY, DB_PASSWORD       | GitHub Secrets, Railway Secrets |
-| 環境固有 | DATABASE_URL, API_ENDPOINT | Railway Variables               |
-| 共通設定 | NODE_ENV, LOG_LEVEL        | railway.json, .env              |
+| 種別     | 例                               | 管理場所                        |
+| -------- | -------------------------------- | ------------------------------- |
+| 機密情報 | API_KEY, TURSO_AUTH_TOKEN        | GitHub Secrets, Railway Secrets |
+| 環境固有 | TURSO_DATABASE_URL, API_ENDPOINT | Railway Variables               |
+| 共通設定 | NODE_ENV, LOG_LEVEL              | railway.json, .env              |
 
 ### Railway 構成要素
 
@@ -280,13 +276,11 @@ cat .claude/skills/infrastructure-as-code/templates/env-example-template.txt
 ### すべきこと
 
 1. **Secret はコードに含めない**:
-
    - ✅ 環境変数経由で注入
    - ✅ .env.example にダミー値
    - ✅ .gitignore に.env を追加
 
 2. **環境差分を最小化**:
-
    - ✅ 同一構成を全環境に適用
    - ✅ 環境固有設定は環境変数で
    - ✅ Railway CLI でローカルと同期
@@ -299,7 +293,6 @@ cat .claude/skills/infrastructure-as-code/templates/env-example-template.txt
 ### 避けるべきこと
 
 1. **ハードコード Secret**:
-
    - ❌ コード内に直接記述
    - ❌ コミット履歴に残す
    - ❌ ログに出力
@@ -386,7 +379,6 @@ cat .claude/skills/infrastructure-as-code/templates/env-example-template.txt
 ## 参考文献
 
 - **『Infrastructure as Code』** Kief Morris 著
-
   - Chapter 1: What Is Infrastructure as Code?
   - Chapter 6: Building Servers as Code
 

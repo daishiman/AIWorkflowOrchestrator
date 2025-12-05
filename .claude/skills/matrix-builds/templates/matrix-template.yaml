@@ -25,7 +25,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm ci
@@ -39,7 +39,6 @@ jobs:
           flags: ${{ matrix.os }}-node${{ matrix.node }}
 
 ---
-
 # ═══════════════════════════════════════════════════════════════
 # 2. include/excludeを使った高度なマトリックス
 # ═══════════════════════════════════════════════════════════════
@@ -95,7 +94,6 @@ jobs:
         run: pnpm run test:arm64
 
 ---
-
 # ═══════════════════════════════════════════════════════════════
 # 3. モノレポ用マトリックス（パッケージ別）
 # ═══════════════════════════════════════════════════════════════
@@ -105,7 +103,7 @@ name: Monorepo Matrix
 on:
   push:
     paths:
-      - 'packages/**'
+      - "packages/**"
 
 jobs:
   test:
@@ -122,7 +120,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm ci
@@ -136,7 +134,6 @@ jobs:
         run: pnpm run build
 
 ---
-
 # ═══════════════════════════════════════════════════════════════
 # 4. ブラウザテストマトリックス
 # ═══════════════════════════════════════════════════════════════
@@ -183,7 +180,6 @@ jobs:
           path: test-results/
 
 ---
-
 # ═══════════════════════════════════════════════════════════════
 # 5. 動的マトリックス（変更ファイルベース）
 # ═══════════════════════════════════════════════════════════════
@@ -240,7 +236,6 @@ jobs:
           pnpm test
 
 ---
-
 # ═══════════════════════════════════════════════════════════════
 # 6. 環境別デプロイマトリックス
 # ═══════════════════════════════════════════════════════════════
@@ -270,7 +265,7 @@ jobs:
     needs: setup-matrix
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 1  # デプロイは順次実行
+      max-parallel: 1 # デプロイは順次実行
       matrix: ${{ fromJSON(needs.setup-matrix.outputs.matrix) }}
     environment:
       name: ${{ matrix.environment }}
@@ -285,7 +280,6 @@ jobs:
           # デプロイスクリプト実行
 
 ---
-
 # ═══════════════════════════════════════════════════════════════
 # 7. データベースマトリックス
 # ═══════════════════════════════════════════════════════════════
@@ -301,20 +295,8 @@ jobs:
       fail-fast: false
       matrix:
         db:
-          - {type: postgres, version: '14', port: 5432}
-          - {type: postgres, version: '15', port: 5433}
-          - {type: postgres, version: '16', port: 5434}
-          - {type: mysql, version: '8.0', port: 3306}
-          - {type: mysql, version: '8.3', port: 3307}
-
-    services:
-      database:
-        image: ${{ matrix.db.type }}:${{ matrix.db.version }}
-        ports:
-          - ${{ matrix.db.port }}:${{ matrix.db.type == 'postgres' && 5432 || 3306 }}
-        env:
-          POSTGRES_PASSWORD: postgres
-          MYSQL_ROOT_PASSWORD: mysql
+          - { type: sqlite, version: "file", url: "file:./test.db" }
+          - { type: turso, version: "remote", url: "libsql://test-db.turso.io" }
 
     steps:
       - uses: actions/checkout@v4
@@ -325,13 +307,13 @@ jobs:
       - name: Install dependencies
         run: pnpm ci
 
-      - name: Run tests against ${{ matrix.db.type }} ${{ matrix.db.version }}
+      - name: Run tests against ${{ matrix.db.type }} (${{ matrix.db.version }})
         env:
-          DATABASE_URL: ${{ matrix.db.type }}://root:${{ matrix.db.type == 'postgres' && 'postgres' || 'mysql' }}@localhost:${{ matrix.db.port }}/test
+          TURSO_DATABASE_URL: ${{ matrix.db.url }}
+          TURSO_AUTH_TOKEN: ${{ matrix.db.type == 'turso' && secrets.TURSO_AUTH_TOKEN || '' }}
         run: pnpm test
 
 ---
-
 # ═══════════════════════════════════════════════════════════════
 # 8. パフォーマンステストマトリックス（並列度制限）
 # ═══════════════════════════════════════════════════════════════
@@ -340,13 +322,13 @@ name: Performance Matrix
 
 on:
   schedule:
-    - cron: '0 2 * * *'  # 毎日2:00 UTC
+    - cron: "0 2 * * *" # 毎日2:00 UTC
 
 jobs:
   benchmark:
     runs-on: ${{ matrix.os }}
     strategy:
-      max-parallel: 2  # リソース節約のため2並列まで
+      max-parallel: 2 # リソース節約のため2並列まで
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         workload: [light, medium, heavy]
@@ -371,7 +353,6 @@ jobs:
           path: benchmark-results/
 
 ---
-
 # ═══════════════════════════════════════════════════════════════
 # 9. 依存関係バージョンマトリックス
 # ═══════════════════════════════════════════════════════════════
@@ -387,11 +368,11 @@ jobs:
       fail-fast: false
       matrix:
         node: [18, 20, 22]
-        react: ['17', '18', '19']
+        react: ["17", "18", "19"]
         exclude:
           # Node 18はReact 19非対応
           - node: 18
-            react: '19'
+            react: "19"
 
     steps:
       - uses: actions/checkout@v4
@@ -409,7 +390,6 @@ jobs:
         run: pnpm test
 
 ---
-
 # ═══════════════════════════════════════════════════════════════
 # 10. コンテナイメージビルドマトリックス
 # ═══════════════════════════════════════════════════════════════

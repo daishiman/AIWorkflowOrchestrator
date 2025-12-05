@@ -31,7 +31,8 @@ declare -A PATTERNS=(
   ["GitHub Token"]='(ghp|github_pat)_[a-zA-Z0-9]{36,}'
 
   # Connection Strings
-  ["PostgreSQL Connection"]='postgresql://[^:]+:[^@]+@[^/]+'
+  ["Turso Connection"]='libsql://[^:]+:[^@]+@[^/]+'
+  ["Turso Auth Token"]='eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+'
   ["MySQL Connection"]='mysql://[^:]+:[^@]+@[^/]+'
   ["MongoDB Connection"]='mongodb(\+srv)?://[^:]+:[^@]+'
 

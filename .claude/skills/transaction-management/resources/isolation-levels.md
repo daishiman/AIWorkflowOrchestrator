@@ -1,252 +1,334 @@
-# 分離レベルガイド
+# 分離レベルガイド（SQLite版）
 
 ## 分離レベルとは
 
-並行実行されるトランザクションがどの程度互いの影響を受けるかを定義する設定。
-高い分離レベルほど一貫性が高いが、並行性とパフォーマンスが低下する。
+SQLiteでは、トランザクションモードによって並行実行されるトランザクションがどの程度互いの影響を受けるかを定義します。
+SQLiteは**データベースレベルのロック**を使用し、PostgreSQLなどの行レベルロックとは異なるアプローチを取ります。
 
-## 並行性の問題
+## SQLiteの特徴
 
-### Dirty Read（ダーティリード）
+### デフォルトの分離性
 
-**定義**: 他のトランザクションがまだコミットしていないデータを読み取る
+- SQLiteは本質的に**SERIALIZABLE**分離レベルを実装
+- すべてのトランザクションは順番に実行されたかのように動作
+- Dirty Read、Non-Repeatable Read、Phantom Readはすべて防止される
 
-**例**:
-```
-トランザクションA: UPDATE accounts SET balance = 0 WHERE id = 1
-トランザクションB: SELECT balance FROM accounts WHERE id = 1  → 0 を読む
-トランザクションA: ROLLBACK
-→ トランザクションBは無効なデータ（0）を使用してしまう
-```
+### データベースレベルロック
 
-### Non-Repeatable Read（非再現読み取り）
+- **5段階のロックレベル**: UNLOCKED → SHARED → RESERVED → PENDING → EXCLUSIVE
+- 複数の読み取りトランザクションが同時実行可能
+- 書き込みトランザクションは排他的
 
-**定義**: 同一トランザクション内で同じクエリが異なる結果を返す
+## トランザクションモード
 
-**例**:
-```
-トランザクションA: SELECT balance FROM accounts WHERE id = 1  → 100
-トランザクションB: UPDATE accounts SET balance = 50 WHERE id = 1; COMMIT
-トランザクションA: SELECT balance FROM accounts WHERE id = 1  → 50
-→ 同じクエリなのに結果が異なる
-```
-
-### Phantom Read（ファントムリード）
-
-**定義**: 同一トランザクション内で、検索条件に合う行数が変化する
-
-**例**:
-```
-トランザクションA: SELECT * FROM orders WHERE user_id = 1  → 3件
-トランザクションB: INSERT INTO orders (user_id, ...) VALUES (1, ...); COMMIT
-トランザクションA: SELECT * FROM orders WHERE user_id = 1  → 4件
-→ 「幽霊」のように新しい行が出現
-```
-
-## 分離レベル詳細
-
-### READ UNCOMMITTED
+### DEFERRED（デフォルト）
 
 **特徴**:
-- 最も低い分離レベル
-- 他のトランザクションの未コミットデータも読める
-- ほとんど使用されない
 
-**発生する問題**: Dirty Read, Non-Repeatable Read, Phantom Read
+- トランザクション開始時にロックを取得しない
+- 最初の読み取り操作でSHAREDロックを取得
+- 最初の書き込み操作でRESERVEDロックを取得
+- 読み取り優先
 
-**使用場面**: ほぼなし（PostgreSQLでは READ COMMITTED と同じ動作）
-
-### READ COMMITTED（推奨デフォルト）
-
-**特徴**:
-- PostgreSQLのデフォルト
-- コミット済みデータのみ読める
-- ほとんどのユースケースに適切
-
-**発生する問題**: Non-Repeatable Read, Phantom Read
+**発生する問題**: なし（SERIALIZABLE分離レベル）
 
 **使用場面**:
+
 - 一般的なCRUD操作
+- 読み取りが多いアプリケーション
 - Webアプリケーションの大半
-- パフォーマンスと一貫性のバランスが必要な場合
 
 **設定**:
+
 ```sql
-SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+BEGIN DEFERRED TRANSACTION;
+-- または単に
+BEGIN;
 ```
 
-### REPEATABLE READ
+**TypeScript例**:
+
+```typescript
+// DEFERREDはデフォルト
+await db.transaction(async (tx) => {
+  const user = await tx.query.users.findFirst({
+    where: eq(users.id, userId),
+  });
+  await tx
+    .update(users)
+    .set({ lastLogin: new Date() })
+    .where(eq(users.id, userId));
+});
+```
+
+### IMMEDIATE
 
 **特徴**:
-- 同一トランザクション内での再読み込みが一貫
-- PostgreSQLではスナップショット分離
-- レポート生成に適切
 
-**発生する問題**: Phantom Read（PostgreSQLでは防止）
+- トランザクション開始時に即座にRESERVEDロックを取得
+- 他のトランザクションによる書き込みを防止
+- 読み取りは他のトランザクションから可能
+- 書き込み優先、早期ロック取得
+
+**発生する問題**: なし（SERIALIZABLE分離レベル）
 
 **使用場面**:
-- 複数回の読み取りで一貫性が必要な場合
-- レポート生成
-- 集計処理
+
+- 書き込みが予想される操作
+- ロック競合を早期に検出したい場合
+- 書き込みトランザクションの優先度が高い場合
 
 **設定**:
+
 ```sql
-SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+BEGIN IMMEDIATE TRANSACTION;
 ```
 
-### SERIALIZABLE
+**TypeScript例**:
+
+```typescript
+// Drizzle ORMでは明示的なSQLで指定
+await db.transaction(async (tx) => {
+  await tx.execute(sql`BEGIN IMMEDIATE`);
+
+  const [product] = await tx
+    .select()
+    .from(products)
+    .where(eq(products.id, productId));
+  if (product.stock < quantity) {
+    throw new InsufficientStockError();
+  }
+  await tx
+    .update(products)
+    .set({ stock: product.stock - quantity })
+    .where(eq(products.id, productId));
+});
+```
+
+### EXCLUSIVE
 
 **特徴**:
-- 最も高い分離レベル
-- トランザクションが順番に実行されたかのように動作
-- シリアライゼーションエラーが発生する可能性
 
-**発生する問題**: なし（すべて防止）
+- トランザクション開始時に即座にEXCLUSIVEロックを取得
+- 他のすべてのトランザクション（読み取り含む）をブロック
+- 最も厳格な分離
+- データベース全体を独占
+
+**発生する問題**: なし（SERIALIZABLE分離レベル）
 
 **使用場面**:
-- 金融処理
-- 厳密な整合性が必要な場合
-- 在庫管理の重要な操作
+
+- データベース構造の変更
+- 一貫性チェック
+- バックアップ操作
+- **通常のアプリケーション処理では推奨されない**
 
 **設定**:
+
 ```sql
-SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+BEGIN EXCLUSIVE TRANSACTION;
 ```
 
-## 分離レベル選択ガイド
+**TypeScript例**:
+
+```typescript
+// EXCLUSIVEは特殊な状況でのみ使用
+await db.transaction(async (tx) => {
+  await tx.execute(sql`BEGIN EXCLUSIVE`);
+
+  // データベース全体の整合性チェック
+  await performDatabaseIntegrityCheck(tx);
+});
+```
+
+## トランザクションモード選択ガイド
 
 ### 選択フローチャート
 
 ```
 要件を確認
     │
-    ├─ 金融処理や厳密な整合性が必要
-    │   └─ SERIALIZABLE
-    │       └─ 注意: シリアライゼーションエラー対策が必要
+    ├─ データベース全体の独占が必要
+    │   └─ EXCLUSIVE
+    │       └─ 注意: すべてのアクセスをブロックする
     │
-    ├─ レポート生成、集計処理
-    │   └─ REPEATABLE READ
-    │       └─ 同一データの一貫した読み取りが保証
+    ├─ 書き込みが確実に発生する
+    │   └─ IMMEDIATE
+    │       └─ 早期にRESERVEDロックを取得
     │
-    └─ 一般的なCRUD
-        └─ READ COMMITTED（デフォルト）
-            └─ バランスの取れた選択
+    └─ 読み取りが多い、または書き込みが不確実
+        └─ DEFERRED（デフォルト）
+            └─ 必要になってからロックを取得
 ```
 
 ### 比較表
 
-| 分離レベル | 一貫性 | 並行性 | デッドロックリスク | 推奨用途 |
-|-----------|--------|--------|------------------|---------|
-| READ UNCOMMITTED | 最低 | 最高 | 低 | 使用しない |
-| READ COMMITTED | 中 | 高 | 低 | 一般CRUD |
-| REPEATABLE READ | 高 | 中 | 中 | レポート |
-| SERIALIZABLE | 最高 | 低 | 高 | 金融処理 |
+| トランザクションモード | 初期ロック | 並行性 | ロック競合リスク | 推奨用途               |
+| ---------------------- | ---------- | ------ | ---------------- | ---------------------- |
+| DEFERRED               | なし       | 最高   | 低               | 一般CRUD（デフォルト） |
+| IMMEDIATE              | RESERVED   | 中     | 中               | 書き込み確実           |
+| EXCLUSIVE              | EXCLUSIVE  | 最低   | 高               | DB管理操作のみ         |
+
+## WALモードによる並行性向上
+
+### WAL（Write-Ahead Logging）モード
+
+**概要**:
+
+- 書き込みを別ファイル（WAL）に記録
+- 読み取りと書き込みの並行実行が可能
+- デフォルトのロールバックジャーナルより高速
+
+**有効化**:
+
+```sql
+PRAGMA journal_mode=WAL;
+```
+
+**メリット**:
+
+- 読み取りが書き込みをブロックしない
+- 書き込みが読み取りをブロックしない（コミット時を除く）
+- パフォーマンスの大幅な向上
+
+**デメリット**:
+
+- 複数ファイルの管理（main DB、WAL、SHM）
+- ネットワークファイルシステムでは非推奨
+
+**設定例**:
+
+```typescript
+// アプリケーション起動時に設定
+await db.execute(sql`PRAGMA journal_mode=WAL`);
+await db.execute(sql`PRAGMA busy_timeout=5000`); // 5秒のタイムアウト
+```
+
+## Busy Timeout（ビジータイムアウト）
+
+### 概要
+
+SQLiteでロックが取得できない場合、エラーを返す代わりに待機する時間を設定できます。
+
+### 設定方法
+
+```sql
+PRAGMA busy_timeout=5000; -- 5秒待機
+```
+
+```typescript
+// アプリケーション初期化時
+await db.execute(sql`PRAGMA busy_timeout=5000`);
+
+// トランザクション内で使用
+await db.transaction(async (tx) => {
+  // ロックが取れない場合、最大5秒待機
+  await tx
+    .update(accounts)
+    .set({ balance: newBalance })
+    .where(eq(accounts.id, accountId));
+});
+```
+
+### 推奨設定
+
+- Webアプリケーション: 3000-5000ms
+- バッチ処理: 10000-30000ms
+- リアルタイムアプリ: 1000-2000ms
 
 ## 実装パターン
 
-### READ COMMITTED での実装
+### DEFERRED での実装
 
 ```typescript
-// 通常の操作（デフォルトの分離レベル）
+// 通常の操作（デフォルト）
 async function updateWorkflowStatus(id: string, status: string) {
   await db.transaction(async (tx) => {
-    await tx.update(workflows).set({ status }).where(eq(workflows.id, id))
-  })
+    await tx.update(workflows).set({ status }).where(eq(workflows.id, id));
+  });
 }
 ```
 
-### REPEATABLE READ での実装
+### IMMEDIATE での実装
 
 ```typescript
-// レポート生成（スナップショット一貫性が必要）
-async function generateReport() {
-  return await db.transaction(
-    async (tx) => {
-      const users = await tx.select().from(users)
-      const orders = await tx.select().from(orders)
-      // 両方のクエリが同じ時点のデータを参照
-      return combineReport(users, orders)
-    },
-    { isolationLevel: 'repeatable read' }
-  )
-}
-```
-
-### SERIALIZABLE での実装
-
-```typescript
-// 在庫更新（厳密な整合性が必要）
+// 書き込み確実な操作
 async function reserveInventory(productId: string, quantity: number) {
-  // リトライロジック付き
-  for (let attempt = 0; attempt < 3; attempt++) {
-    try {
-      return await db.transaction(
-        async (tx) => {
-          const [product] = await tx.select().from(products).where(eq(products.id, productId))
-          if (product.stock < quantity) {
-            throw new InsufficientStockError()
-          }
-          await tx.update(products).set({ stock: product.stock - quantity }).where(eq(products.id, productId))
-          await tx.insert(reservations).values({ productId, quantity })
-        },
-        { isolationLevel: 'serializable' }
-      )
-    } catch (error) {
-      if (isSerializationError(error) && attempt < 2) {
-        continue  // リトライ
-      }
-      throw error
+  return await db.transaction(async (tx) => {
+    // IMPROVEDロックを早期取得
+    await tx.execute(sql`BEGIN IMMEDIATE`);
+
+    const [product] = await tx
+      .select()
+      .from(products)
+      .where(eq(products.id, productId));
+    if (product.stock < quantity) {
+      throw new InsufficientStockError();
     }
-  }
+    await tx
+      .update(products)
+      .set({ stock: product.stock - quantity })
+      .where(eq(products.id, productId));
+    await tx.insert(reservations).values({ productId, quantity });
+  });
 }
 ```
 
-## SERIALIZABLE使用時の注意
-
-### シリアライゼーションエラー
-
-**発生条件**: 並行トランザクションが競合し、シリアライズ可能な順序が見つからない
-
-**対策**:
-1. リトライロジックを実装
-2. Exponential Backoffを使用
-3. 最大リトライ回数を設定
+### EXCLUSIVE での実装（稀）
 
 ```typescript
-async function withSerializableRetry<T>(
+// データベース整合性チェック（管理操作）
+async function performDatabaseMaintenance() {
+  return await db.transaction(async (tx) => {
+    await tx.execute(sql`BEGIN EXCLUSIVE`);
+
+    // データベース全体の操作
+    await tx.execute(sql`VACUUM`);
+    await tx.execute(sql`ANALYZE`);
+  });
+}
+```
+
+## Busy状態のハンドリング
+
+### リトライロジック付きトランザクション
+
+```typescript
+async function transactionWithRetry<T>(
   operation: () => Promise<T>,
-  maxRetries = 3
+  maxRetries = 3,
 ): Promise<T> {
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
-      return await operation()
+      return await operation();
     } catch (error) {
-      if (isSerializationError(error) && attempt < maxRetries) {
-        await sleep(Math.pow(2, attempt) * 100)  // Exponential backoff
-        continue
+      if (isBusyError(error) && attempt < maxRetries) {
+        await sleep(Math.pow(2, attempt) * 100); // Exponential backoff
+        continue;
       }
-      throw error
+      throw error;
     }
   }
-  throw new Error('Max retries exceeded')
+  throw new Error("Max retries exceeded");
 }
 
-function isSerializationError(error: unknown): boolean {
-  return (error as any)?.code === '40001'  // PostgreSQL serialization failure
+function isBusyError(error: unknown): boolean {
+  return (error as any)?.code === "SQLITE_BUSY";
 }
 ```
 
 ## チェックリスト
 
-### 分離レベル選択時
+### トランザクションモード選択時
 
-- [ ] 必要な一貫性レベルは何か？
-- [ ] 並行性の要求は何か？
-- [ ] パフォーマンス要件を満たすか？
-- [ ] エラーハンドリング（特にSERIALIZABLE）は考慮されているか？
+- [ ] 書き込みが確実に発生するか？（YES → IMMEDIATE）
+- [ ] 読み取りが多いか？（YES → DEFERRED）
+- [ ] データベース全体の独占が必要か？（YES → EXCLUSIVE、稀）
+- [ ] WALモードが有効か？
 
 ### 実装時
 
-- [ ] 適切な分離レベルが設定されているか？
-- [ ] SERIALIZABLEの場合、リトライロジックがあるか？
-- [ ] デッドロック対策があるか？
+- [ ] 適切なトランザクションモードが設定されているか？
+- [ ] busy_timeoutが設定されているか？
+- [ ] Busyエラーのリトライロジックがあるか？
+- [ ] WALモードの有効化を検討したか？

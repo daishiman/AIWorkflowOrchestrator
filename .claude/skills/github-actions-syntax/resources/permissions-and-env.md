@@ -53,21 +53,21 @@ permissions: write-all
 
 ## パーミッションスコープ一覧
 
-| スコープ | 説明 | 用途 |
-|---------|------|------|
-| `actions` | GitHub Actions | ワークフロー管理、アーティファクト削除 |
-| `checks` | チェック | ステータスチェック作成・更新 |
-| `contents` | リポジトリ | コード読み書き、リリース作成 |
-| `deployments` | デプロイ | デプロイメント作成・管理 |
-| `discussions` | ディスカッション | ディスカッション管理 |
-| `id-token` | OIDC | クラウドプロバイダー認証 |
-| `issues` | Issue | Issue作成・編集・クローズ |
-| `packages` | パッケージ | GitHub Packages読み書き |
-| `pages` | Pages | GitHub Pages管理 |
-| `pull-requests` | PR | PR作成・編集・マージ |
-| `repository-projects` | プロジェクト | プロジェクト管理 |
-| `security-events` | セキュリティ | コードスキャン結果 |
-| `statuses` | ステータス | コミットステータス更新 |
+| スコープ              | 説明             | 用途                                   |
+| --------------------- | ---------------- | -------------------------------------- |
+| `actions`             | GitHub Actions   | ワークフロー管理、アーティファクト削除 |
+| `checks`              | チェック         | ステータスチェック作成・更新           |
+| `contents`            | リポジトリ       | コード読み書き、リリース作成           |
+| `deployments`         | デプロイ         | デプロイメント作成・管理               |
+| `discussions`         | ディスカッション | ディスカッション管理                   |
+| `id-token`            | OIDC             | クラウドプロバイダー認証               |
+| `issues`              | Issue            | Issue作成・編集・クローズ              |
+| `packages`            | パッケージ       | GitHub Packages読み書き                |
+| `pages`               | Pages            | GitHub Pages管理                       |
+| `pull-requests`       | PR               | PR作成・編集・マージ                   |
+| `repository-projects` | プロジェクト     | プロジェクト管理                       |
+| `security-events`     | セキュリティ     | コードスキャン結果                     |
+| `statuses`            | ステータス       | コミットステータス更新                 |
 
 ## 権限レベル
 
@@ -115,21 +115,21 @@ steps:
 
 ## デフォルト環境変数
 
-| 変数名 | 説明 |
-|--------|------|
-| `GITHUB_REPOSITORY` | オーナー/リポジトリ名 |
-| `GITHUB_REF` | 参照（refs/heads/main等） |
-| `GITHUB_SHA` | コミットSHA |
-| `GITHUB_ACTOR` | トリガーしたユーザー |
-| `GITHUB_WORKFLOW` | ワークフロー名 |
-| `GITHUB_RUN_ID` | 実行ID |
-| `GITHUB_RUN_NUMBER` | 実行番号 |
-| `GITHUB_JOB` | ジョブID |
-| `GITHUB_ACTION` | アクションID |
-| `GITHUB_EVENT_NAME` | イベント名 |
-| `GITHUB_WORKSPACE` | ワークスペースパス |
-| `RUNNER_OS` | ランナーOS |
-| `RUNNER_ARCH` | ランナーアーキテクチャ |
+| 変数名              | 説明                      |
+| ------------------- | ------------------------- |
+| `GITHUB_REPOSITORY` | オーナー/リポジトリ名     |
+| `GITHUB_REF`        | 参照（refs/heads/main等） |
+| `GITHUB_SHA`        | コミットSHA               |
+| `GITHUB_ACTOR`      | トリガーしたユーザー      |
+| `GITHUB_WORKFLOW`   | ワークフロー名            |
+| `GITHUB_RUN_ID`     | 実行ID                    |
+| `GITHUB_RUN_NUMBER` | 実行番号                  |
+| `GITHUB_JOB`        | ジョブID                  |
+| `GITHUB_ACTION`     | アクションID              |
+| `GITHUB_EVENT_NAME` | イベント名                |
+| `GITHUB_WORKSPACE`  | ワークスペースパス        |
+| `RUNNER_OS`         | ランナーOS                |
+| `RUNNER_ARCH`       | ランナーアーキテクチャ    |
 
 ## シークレットの使用
 
@@ -141,7 +141,8 @@ jobs:
       - name: Deploy
         env:
           API_KEY: ${{ secrets.API_KEY }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
         run: ./deploy.sh
 ```
 

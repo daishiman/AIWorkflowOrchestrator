@@ -20,16 +20,20 @@
 - INSERT/UPDATE/DELETEの遅延
 - メンテナンスコスト
 
-## インデックス種類（PostgreSQL）
+## インデックス種類（SQLite）
 
-### B-Treeインデックス（デフォルト）
+SQLiteは **B-Treeインデックスのみ** をサポートします。
+
+### B-Treeインデックス
 
 **特徴**:
-- 最も一般的
+
+- SQLiteの唯一のインデックスタイプ
 - 等価条件（=）、範囲条件（<, >, BETWEEN）に有効
 - ソートに使用可能
 
 **適用場面**:
+
 - 主キー、外部キー
 - 等価・範囲検索のWHERE句
 - ORDER BY
@@ -39,33 +43,16 @@ CREATE INDEX idx_workflows_status ON workflows(status);
 CREATE INDEX idx_workflows_created_at ON workflows(created_at DESC);
 ```
 
-### GINインデックス
-
-**特徴**:
-- 複数の値を含むデータ型に最適
-- JSONB、配列、全文検索向け
-
-**適用場面**:
-- JSONBカラムの検索
-- 配列の要素検索
-- 全文検索
-
-```sql
--- JSONB用
-CREATE INDEX idx_workflows_input_payload ON workflows USING GIN(input_payload);
-
--- JSONB特定キー用
-CREATE INDEX idx_workflows_input_type ON workflows USING GIN((input_payload -> 'type'));
-```
-
 ### 複合インデックス
 
 **特徴**:
+
 - 複数カラムを含む
 - カラムの順序が重要
 - 左端から順に使用される
 
 **適用場面**:
+
 - 複数カラムでの検索
 - 複数カラムでのソート
 
@@ -77,11 +64,13 @@ CREATE INDEX idx_workflows_user_status ON workflows(user_id, status);
 ### 部分インデックス
 
 **特徴**:
+
 - 条件を満たす行のみインデックス化
 - サイズが小さい
 - 特定のクエリに最適化
 
 **適用場面**:
+
 - 特定の値のみ頻繁に検索
 - NULL以外のみ検索
 - ステータスフィルタ
@@ -100,10 +89,12 @@ WHERE status = 'PENDING';
 **定義**: カーディナリティ = ユニークな値の数
 
 **原則**:
+
 - 高カーディナリティのカラムはインデックスに適する
 - 低カーディナリティのカラムは単独インデックスに不適
 
 **例**:
+
 ```
 ✅ user_id（高カーディナリティ）
 ❌ is_active（低カーディナリティ: true/false のみ）
@@ -115,12 +106,14 @@ WHERE status = 'PENDING';
 **定義**: 選択性 = マッチする行数 / 全行数
 
 **原則**:
+
 - 選択性が高い（マッチが少ない）条件にインデックス
 - 選択性が低い条件はインデックスが使われない可能性
 
 ### 3. 複合インデックスの順序
 
 **原則**:
+
 - 等価条件のカラムを先に
 - 範囲条件のカラムを後に
 - カーディナリティが高いカラムを先に
@@ -189,52 +182,53 @@ CREATE INDEX idx_workflows_user_status ON workflows(user_id, status);
 -- 作成日時（降順ソート用）
 CREATE INDEX idx_workflows_created_at_desc ON workflows(created_at DESC);
 
--- 論理削除対応
-CREATE INDEX idx_workflows_deleted_at ON workflows(deleted_at)
+-- 論理削除対応（部分インデックス）
+CREATE INDEX idx_workflows_active ON workflows(id)
 WHERE deleted_at IS NULL;
 
--- JSONB検索（input_payload）
-CREATE INDEX idx_workflows_input_payload ON workflows USING GIN(input_payload);
+-- JSON検索（式インデックス）
+CREATE INDEX idx_workflows_input_type ON workflows(json_extract(input_payload, '$.type'));
 ```
 
 ## インデックスの監視
 
-### 使用状況の確認
+### インデックス一覧の確認
 
 ```sql
-SELECT
-  schemaname,
-  tablename,
-  indexname,
-  idx_scan,
-  idx_tup_read
-FROM pg_stat_user_indexes
-ORDER BY idx_scan DESC;
+-- テーブルのインデックス一覧
+SELECT name, sql
+FROM sqlite_master
+WHERE type = 'index' AND tbl_name = 'workflows'
+ORDER BY name;
 ```
 
-### 未使用インデックスの検出
+### インデックス詳細の確認
 
 ```sql
-SELECT
-  schemaname,
-  tablename,
-  indexname
-FROM pg_stat_user_indexes
-WHERE idx_scan = 0
-  AND indexname NOT LIKE '%_pkey'
-ORDER BY tablename;
+-- インデックスのカラム情報
+PRAGMA index_list('workflows');
+
+-- 特定インデックスの詳細
+PRAGMA index_info('idx_workflows_status');
+
+-- インデックスが使用するカラム
+PRAGMA index_xinfo('idx_workflows_status');
 ```
 
-### インデックスサイズの確認
+### テーブルとインデックスのサイズ
 
 ```sql
+-- データベース全体のページ数確認
+PRAGMA page_count;
+PRAGMA page_size;
+
+-- テーブル情報
 SELECT
-  tablename,
-  indexname,
-  pg_size_pretty(pg_relation_size(indexname::regclass)) as size
-FROM pg_indexes
-WHERE schemaname = 'public'
-ORDER BY pg_relation_size(indexname::regclass) DESC;
+  name,
+  type
+FROM sqlite_master
+WHERE type IN ('table', 'index')
+ORDER BY type, name;
 ```
 
 ## アンチパターン
@@ -242,27 +236,32 @@ ORDER BY pg_relation_size(indexname::regclass) DESC;
 ### 1. 過剰なインデックス
 
 **問題**:
+
 - 書き込み性能の低下
 - ストレージの浪費
 - メンテナンスコスト増大
 
 **対策**:
+
 - 実際のクエリパターンに基づく
 - 未使用インデックスを定期的に削除
 
 ### 2. 低カーディナリティの単独インデックス
 
 **問題**:
+
 - インデックスが使用されない
 - フルスキャンより遅くなる可能性
 
 **対策**:
+
 - 複合インデックスの一部として使用
 - 部分インデックスを検討
 
 ### 3. 関数を使用した条件
 
 **問題**:
+
 ```sql
 -- インデックスが使用されない
 WHERE LOWER(email) = 'test@example.com'
@@ -270,6 +269,7 @@ WHERE DATE(created_at) = '2025-01-01'
 ```
 
 **対策**:
+
 - 式インデックスを作成
 - クエリを書き換え
 

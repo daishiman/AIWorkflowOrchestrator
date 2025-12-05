@@ -84,7 +84,6 @@
   - `.claude/agents/product-manager.md`
   - `.claude/agents/req-analyst.md`
 - **スキル活用**:
-
   - **product-manager**: `.claude/skills/user-story-mapping/SKILL.md`（必須）, `.claude/skills/product-vision/SKILL.md`, `.claude/skills/prioritization-frameworks/SKILL.md`
   - **req-analyst**: `.claude/skills/acceptance-criteria-writing/SKILL.md`（必須）, `.claude/skills/requirements-triage/SKILL.md`, `.claude/skills/ambiguity-elimination/SKILL.md`
 
@@ -120,7 +119,6 @@
 - **引数**: なし（プロジェクトドキュメントから自動収集）
 - **使用エージェント**: `.claude/agents/product-manager.md`（Phase 1 で起動）
 - **スキル活用**（フェーズ別）:
-
   - **Phase 1**: `.claude/skills/user-story-mapping/SKILL.md`, `.claude/skills/backlog-management/SKILL.md`
   - **Phase 2**: `.claude/skills/estimation-techniques/SKILL.md`（必須）, `.claude/skills/metrics-tracking/SKILL.md`（必須）
   - **Phase 3**: `.claude/skills/risk-management/SKILL.md`, `.claude/skills/prioritization-frameworks/SKILL.md`
@@ -142,7 +140,6 @@
   - `.claude/agents/arch-police.md`
   - `.claude/agents/domain-modeler.md`
 - **スキル活用**（エージェントが必要時に参照）:
-
   - **arch-police**: `.claude/skills/clean-architecture-principles/SKILL.md`, `.claude/skills/architectural-patterns/SKILL.md`, `.claude/skills/solid-principles/SKILL.md`, `.claude/skills/dependency-analysis/SKILL.md`
   - **domain-modeler**: `.claude/skills/domain-driven-design/SKILL.md`, `.claude/skills/ubiquitous-language/SKILL.md`, `.claude/skills/bounded-context/SKILL.md`, `.claude/skills/value-object-patterns/SKILL.md`, `.claude/skills/domain-services/SKILL.md`
 
@@ -157,7 +154,6 @@
 - **使用エージェント**:
   - `.claude/agents/arch-police.md`
 - **スキル活用**:
-
   - **Phase 1（構造分析 - 必須）**:
     - `.claude/skills/clean-architecture-principles/SKILL.md`: 依存関係ルール、レイヤー構造、ハイブリッドアーキテクチャマッピング
     - `.claude/skills/dependency-analysis/SKILL.md`: 依存グラフ構築、循環依存検出、安定度メトリクス
@@ -177,7 +173,6 @@
 - **引数**: `[domain-name]` - ドメイン名（オプション、未指定時はインタラクティブ）
 - **使用エージェント**: `.claude/agents/domain-modeler.md`
 - **スキル活用**（エージェントが必要時に自動参照）:
-
   - **必須（Phase 1-2）**: `.claude/skills/domain-driven-design/SKILL.md`, `.claude/skills/ubiquitous-language/SKILL.md`, `.claude/skills/value-object-patterns/SKILL.md`
   - **推奨（Phase 3-4）**: `.claude/skills/domain-services/SKILL.md`, `.claude/skills/bounded-context/SKILL.md`
 
@@ -193,7 +188,6 @@
   - `.claude/agents/gateway-dev.md`
   - `.claude/agents/api-doc-writer.md`
 - **スキル活用**（エージェントが必要時に参照）:
-
   - **gateway-dev**: `.claude/skills/api-client-patterns/SKILL.md`, `.claude/skills/http-best-practices/SKILL.md`
   - **api-doc-writer**: `.claude/skills/openapi-specification/SKILL.md`, `.claude/skills/swagger-ui/SKILL.md`, `.claude/skills/api-documentation-best-practices/SKILL.md`, `.claude/skills/request-response-examples/SKILL.md`
 
@@ -203,13 +197,12 @@
 
 ### `/ai:design-database`
 
-- **目的**: データベーススキーマ設計（Drizzle ORM + Neon PostgreSQL 準拠）
+- **目的**: データベーススキーマ設計（Drizzle ORM + Turso SQLite 準拠）
 - **引数**: `[table-name]` - テーブル名（オプション、未指定時は全スキーマ設計）
 - **使用エージェント**: `.claude/agents/db-architect.md`
 - **スキル活用**（フェーズ別、エージェントが必要時に参照）:
-
   - **Phase 1（要件理解時）**: なし（既存スキーマ分析のみ）
-  - **Phase 2（スキーマ設計時）**: `.claude/skills/database-normalization/SKILL.md`（必須）, `.claude/skills/jsonb-optimization/SKILL.md`（JSONB 使用時）
+  - **Phase 2（スキーマ設計時）**: `.claude/skills/database-normalization/SKILL.md`（必須）, `.claude/skills/json-optimization/SKILL.md`（JSON 使用時）
   - **Phase 3（インデックス設計時）**: `.claude/skills/indexing-strategies/SKILL.md`（必須）
   - **Phase 4（制約設計時）**: `.claude/skills/foreign-key-constraints/SKILL.md`（必須）, `.claude/skills/transaction-management/SKILL.md`（必要時）
   - **Phase 5（検証時）**: `.claude/skills/sql-anti-patterns/SKILL.md`（必須）, `.claude/skills/database-migrations/SKILL.md`（マイグレーション実行時）
@@ -228,7 +221,6 @@
 - **引数**: `[component-name] [type]` - コンポーネント名と種類(atom/molecule/organism)
 - **使用エージェント**: `.claude/agents/ui-designer.md`
 - **スキル活用**（ui-designer が必要時に参照）:
-
   - **必須（Phase 1-2）**: `.claude/skills/design-system-architecture/SKILL.md`, `.claude/skills/component-composition-patterns/SKILL.md`, `.claude/skills/headless-ui-principles/SKILL.md`, `.claude/skills/tailwind-css-patterns/SKILL.md`
   - **必須（Phase 3）**: `.claude/skills/accessibility-wcag/SKILL.md`
   - **推奨（Apple 向け）**: `.claude/skills/apple-hig-guidelines/SKILL.md`
@@ -243,7 +235,6 @@
 - **引数**: `[route-path]` - ルートパス（必須、例: /dashboard, /products/[id], /settings/profile）
 - **使用エージェント**: `.claude/agents/router-dev.md` - Next.js App Router 専門エージェント（Phase 2 で起動）
 - **スキル活用**（フェーズ別、router-dev エージェントが必要時に参照）:
-
   - **Phase 1（ルーティング設計時）**: `.claude/skills/nextjs-app-router/SKILL.md`, `.claude/skills/server-components-patterns/SKILL.md`
   - **Phase 2（実装時）**: `.claude/skills/nextjs-app-router/SKILL.md`（必須）, `.claude/skills/server-components-patterns/SKILL.md`（必須）
   - **Phase 3（最適化時）**: `.claude/skills/seo-optimization/SKILL.md`（必要時）, `.claude/skills/web-performance/SKILL.md`（必要時）
@@ -259,7 +250,6 @@
 - **引数**: `[library]` - ライブラリ(swr/react-query)、未指定時は要件分析に基づき推奨
 - **使用エージェント**: `.claude/agents/state-manager.md`（Phase 2 で起動）
 - **スキル活用**（フェーズ別、state-manager が必要時に参照）:
-
   - **Phase 1（分析時）**: `.claude/skills/react-hooks-advanced/SKILL.md`, `.claude/skills/data-fetching-strategies/SKILL.md`, `.claude/skills/state-lifting/SKILL.md`
   - **Phase 2（設計時）**: `.claude/skills/data-fetching-strategies/SKILL.md`（必須）, `.claude/skills/custom-hooks-patterns/SKILL.md`（必須）
   - **Phase 3（実装時）**: `.claude/skills/custom-hooks-patterns/SKILL.md`（必須）, `.claude/skills/react-hooks-advanced/SKILL.md`（必須）
@@ -277,7 +267,6 @@
 - **使用エージェント**:
   - `.claude/agents/state-manager.md`
 - **スキル活用**（state-manager エージェントが必要時に参照）:
-
   - **Phase 1（分析時）**: `.claude/skills/custom-hooks-patterns/SKILL.md`（必須）, `.claude/skills/react-hooks-advanced/SKILL.md`
   - **Phase 2（設計時）**: `.claude/skills/custom-hooks-patterns/SKILL.md`（必須）, `.claude/skills/state-lifting/SKILL.md`
   - **Phase 3（実装時）**: `.claude/skills/custom-hooks-patterns/SKILL.md`（必須）, `.claude/skills/react-hooks-advanced/SKILL.md`
@@ -293,7 +282,6 @@
 - **引数**: なし（インタラクティブ設定推奨）
 - **使用エージェント**: `.claude/agents/ui-designer.md`（UI 設計・デザインシステム専門エージェント）
 - **スキル活用**（ui-designer エージェントが必要時に参照）:
-
   - **デザインシステム基盤（必須）**: `.claude/skills/design-system-architecture/SKILL.md`（デザイントークン管理、3 層モデル）、`.claude/skills/tailwind-css-patterns/SKILL.md`（Tailwind 設定、CVA、ダークモード）
   - **コンポーネント設計（推奨）**: `.claude/skills/component-composition-patterns/SKILL.md`、`.claude/skills/headless-ui-principles/SKILL.md`
   - **品質（必須）**: `.claude/skills/accessibility-wcag/SKILL.md`（WCAG 2.1 AA 準拠）、`.claude/skills/apple-hig-guidelines/SKILL.md`（Apple 向け製品の場合）
@@ -309,7 +297,6 @@
 - **使用エージェント**:
   - `.claude/agents/router-dev.md`
 - **スキル活用**（router-dev エージェントが必要時に参照）:
-
   - **Phase 1（分析時）**: `.claude/skills/web-performance/SKILL.md`（必須）
   - **Phase 2（最適化時）**: `.claude/skills/nextjs-app-router/SKILL.md`, `.claude/skills/server-components-patterns/SKILL.md`
   - **Phase 3（検証時）**: `.claude/skills/web-performance/SKILL.md`（必須）
@@ -328,7 +315,6 @@
 - **引数**: `[entity-name]` - エンティティ名（オプション、未指定時はインタラクティブ）
 - **使用エージェント**: `.claude/agents/domain-modeler.md`
 - **スキル活用**（domain-modeler エージェントが必要時に自動参照）:
-
   - **Phase 1-2（必須）**: `.claude/skills/domain-driven-design/SKILL.md`, `.claude/skills/ubiquitous-language/SKILL.md`, `.claude/skills/value-object-patterns/SKILL.md`
   - **Phase 3（推奨）**: `.claude/skills/domain-services/SKILL.md`, `.claude/skills/bounded-context/SKILL.md`
 
@@ -341,7 +327,6 @@
 - **目的**: 新しいワークフロー機能の Executor 実装作成（src/features/[workflow-name]/executor.ts）
 - **引数**: `[workflow-name]` - ワークフロー名（オプション、未指定時はインタラクティブ）
 - **使用エージェント**:
-
   - `.claude/agents/logic-dev.md`
 
 - **model**: opus
@@ -354,7 +339,6 @@
 - **引数**: `[logic-name]` - ロジック名（例: youtube-summarize, meeting-transcribe）
 - **使用エージェント**: `.claude/agents/logic-dev.md`（ビジネスロジック実装専門）
 - **スキル活用**（logic-dev エージェントがフェーズに応じて参照）:
-
   - **Phase 2（TDD 実装時）**:
     - `.claude/skills/tdd-red-green-refactor/SKILL.md`: Red-Green-Refactor サイクル
     - `.claude/skills/transaction-script/SKILL.md`: Executor パターン実装
@@ -373,7 +357,6 @@
 - **引数**: `[api-name]` - API 名（例: discord, slack, openai, stripe）
 - **使用エージェント**: `.claude/agents/gateway-dev.md`
 - **スキル活用**（gateway-dev エージェントが参照）:
-
   - Phase 2: `.claude/skills/api-client-patterns/SKILL.md`（Adapter、Facade、Anti-Corruption Layer）
   - Phase 3: `.claude/skills/http-best-practices/SKILL.md`（ステータスコード、べき等性）、`.claude/skills/authentication-flows/SKILL.md`（OAuth 2.0、JWT、API Key）
   - Phase 4: `.claude/skills/retry-strategies/SKILL.md`（Exponential Backoff、Circuit Breaker）、`.claude/skills/rate-limiting/SKILL.md`（429 処理、バックオフ戦略）
@@ -387,7 +370,6 @@
 - **目的**: Zod スキーマ定義の作成（Zod 3.x + TypeScript 5.x 準拠）
 - **引数**: `[schema-name]` - スキーマ名（例: user, auth/login-request）（オプション、未指定時はインタラクティブ）
 - **使用エージェント**:
-
   - `.claude/agents/schema-def.md`
 
 - **model**: sonnet
@@ -399,7 +381,6 @@
 - **目的**: AI プロンプトの最適化
 - **引数**: `[prompt-file]` - プロンプトファイルパス（オプション、未指定時は対話形式）
 - **使用エージェント**:
-
   - `.claude/agents/prompt-eng.md`
 
 - **model**: opus
@@ -415,19 +396,17 @@
 - **目的**: Drizzle ORM スキーマの作成
 - **引数**: `[table-name]` - テーブル名（オプション、未指定時は対話形式）
 - **使用エージェント**:
-
   - `.claude/agents/db-architect.md`
 
 - **model**: sonnet
 
-- **トリガーキーワード**: schema, database, table, Drizzle, normalization, JSONB
+- **トリガーキーワード**: schema, database, table, Drizzle, normalization, JSON
 
 ### `/ai:create-migration`
 
 - **目的**: データベースマイグレーションファイル作成
 - **引数**: `[migration-name]` - マイグレーション名（オプション、未指定時は対話形式）
 - **使用エージェント**:
-
   - `.claude/agents/dba-mgr.md`
 
 - **model**: sonnet
@@ -439,7 +418,6 @@
 - **目的**: データベースクエリの最適化
 - **引数**: `[file-path]` - 対象ファイルパス（オプション、未指定時は対話形式）
 - **使用エージェント**:
-
   - `.claude/agents/repo-dev.md`
   - `.claude/agents/dba-mgr.md`
 
@@ -452,7 +430,6 @@
 - **目的**: バックアップ・リカバリ戦略の設定
 - **引数**: `[backup-schedule]` - バックアップスケジュール(daily/hourly、未指定時は対話形式)
 - **使用エージェント**:
-
   - `.claude/agents/dba-mgr.md`
 
 - **model**: sonnet
@@ -464,7 +441,6 @@
 - **目的**: Repository パターン実装（インターフェース + 実装）
 - **引数**: `[entity-name]` - エンティティ名（オプション、未指定時はインタラクティブ）
 - **使用エージェント**:
-
   - `.claude/agents/repo-dev.md`
 
 - **model**: opus
@@ -476,11 +452,9 @@
 - **目的**: データベース初期データ投入（開発・テスト・本番環境対応）
 - **引数**: `[environment]` - 環境(development/test/production、未指定時は development)
 - **使用エージェント**:
-
   - `.claude/agents/dba-mgr.md`
 
 - **スキル活用**:
-
   - **必須**: `.claude/skills/database-seeding/SKILL.md`（環境別 Seeding、べき等性、ファクトリパターン）
   - **推奨**: database-migrations（スキーマ確認）、test-data-management（テストデータ生成）
 
@@ -497,7 +471,6 @@
 - **目的**: ユニットテストの自動生成（TDD 原則・境界値分析）
 - **引数**: `[target-file]` - テスト対象ファイルパス（必須）
 - **起動エージェント**:
-
   - `.claude/agents/unit-tester.md`
 
 - **model**: opus
@@ -509,7 +482,6 @@
 - **目的**: E2E テストシナリオの自動作成（Playwright・フレーキー防止）
 - **引数**: `[user-flow]` - ユーザーフロー名（必須）
 - **起動エージェント**:
-
   - `.claude/agents/e2e-tester.md`
 
 - **model**: opus
@@ -521,7 +493,6 @@
 - **目的**: 全テストスイート（ユニット + E2E）の統合実行
 - **引数**: `[--coverage]` - カバレッジレポート生成フラグ（オプション）
 - **起動エージェント**:
-
   - `.claude/agents/unit-tester.md` - ユニットテスト実行とカバレッジ測定
   - `.claude/agents/e2e-tester.md`
 
@@ -534,7 +505,6 @@
 - **目的**: TDD サイクル（Red-Green-Refactor）の自動実行
 - **引数**: `[feature-name]` - 機能名（必須）
 - **起動エージェント**:
-
   - `.claude/agents/unit-tester.md` - テストファースト実装（Red フェーズ）
   - `.claude/agents/logic-dev.md` - 最小実装とリファクタリング（Green/Refactor フェーズ）
 
@@ -547,7 +517,6 @@
 - **目的**: テストデータ・フィクスチャの自動作成（型安全・並列実行対応）
 - **引数**: `[fixture-type]` - フィクスチャタイプ（user/post/product 等、必須）
 - **起動エージェント**:
-
   - `.claude/agents/unit-tester.md` - ユニットテスト用 Fixture 作成
   - `.claude/agents/e2e-tester.md` - E2E テスト用 Fixture 作成（Seeding、Teardown 戦略含む）
 
@@ -560,7 +529,6 @@
 - **目的**: 不安定なテスト（フレーキーテスト）の検出と修正
 - **引数**: `[test-file]` - 対象テストファイルパス（必須）
 - **起動エージェント**:
-
   - `.claude/agents/e2e-tester.md`
 
 - **model**: sonnet
@@ -599,8 +567,8 @@
   - `allowed-tools:
     - Task
     - Read
-    - Bash(pnpm run lint*|pnpm lint*|eslint*)
-    - Write(docs/quality-reports/**)`
+    - Bash(pnpm run lint*|pnpm lint*|eslint\*)
+    - Write(docs/quality-reports/\*\*)`
 - トリガーキーワード: lint, eslint, code check, コードチェック, 構文エラー, 静的解析
 
 ### `/ai:format`
@@ -667,7 +635,7 @@
     - Grep
     - Glob
     - Bash
-    - Write(docs/quality-reports/**)
+    - Write(docs/quality-reports/\*\*)
 - トリガーキーワード: analyze, quality, metrics, complexity, 品質分析, メトリクス, 複雑度, 保守性
 
 ### `/ai:setup-pre-commit`
@@ -746,7 +714,7 @@
     - Read
     - Edit
     - MultiEdit
-    - Bash(pnpm test*)
+    - Bash(pnpm test\*)
 - トリガーキーワード: refactor, improve, clean code, リファクタリング, 改善, コード整理, SOLID
 
 ---
@@ -758,7 +726,6 @@
 - **目的**: 包括的セキュリティ監査（OWASP Top 10 準拠、CVSS スコアリング）
 - **引数**: `[scope]` - スコープ(all/auth/api/database、デフォルト: all)
 - **起動エージェント**:
-
   - `.claude/agents/sec-auditor.md` - セキュリティスキャンと脆弱性評価（メイン）
   - `.claude/agents/auth-specialist.md`
   - `.claude/agents/secret-mgr.md`
@@ -772,7 +739,6 @@
 - **目的**: 認証・認可システムの完全実装（NextAuth.js/Passport.js、OAuth 2.0、RBAC）
 - **引数**: `[provider]` - 認証プロバイダー(github/google/credentials、デフォルト: credentials)
 - **起動エージェント**:
-
   - `.claude/agents/auth-specialist.md` - OAuth 2.0 と NextAuth.js 専門
 
 - **model**: sonnet
@@ -784,7 +750,6 @@
 - **目的**: 依存関係の脆弱性スキャン（npm audit、CVE 評価、修正優先順位付け）
 - **引数**: なし
 - **起動エージェント**:
-
   - `.claude/agents/sec-auditor.md`
   - `.claude/agents/dep-mgr.md`
 
@@ -797,7 +762,6 @@
 - **目的**: レート制限の実装（Token Bucket/Sliding Window、DoS/ブルートフォース対策）
 - **引数**: `[rate-limit]` - レート制限値（例: 100/hour, 10/minute、デフォルト: 100/hour）
 - **起動エージェント**:
-
   - `.claude/agents/sec-auditor.md` - Rate Limiting 戦略設計
   - `.claude/agents/gateway-dev.md` - ミドルウェア実装
 
@@ -810,7 +774,6 @@
 - **目的**: 機密情報の安全な管理（Git 混入防止、.env.example 生成、型安全なアクセス）
 - **引数**: なし
 - **起動エージェント**:
-
   - `.claude/agents/secret-mgr.md` - Secret 管理専門（Zero Trust 原則）
 
 - **model**: sonnet
@@ -822,7 +785,6 @@
 - **目的**: API キー・シークレットのローテーション（手動実行必須、ロールバック対応）
 - **引数**: `[secret-name]` - シークレット名（例: OPENAI_API_KEY、DATABASE_PASSWORD）
 - **起動エージェント**:
-
   - `.claude/agents/secret-mgr.md` - Secret Rotation 専門（Zero Trust 原則）
 
 - **model**: sonnet
@@ -838,7 +800,6 @@
 - **目的**: CI(継続的インテグレーション)ワークフローの作成（テスト・Lint・ビルド）
 - **引数**: `[workflow-type]` - ワークフロータイプ(test/lint/build、オプション)
 - **起動エージェント**:
-
   - `.claude/agents/gha-workflow-architect.md` - GitHub Actions 専門エージェント（Phase 2 で起動）
 
 - **model**: sonnet
@@ -850,7 +811,6 @@
 - **目的**: CD(継続的デプロイ)ワークフローの作成（Railway 自動デプロイ統合）
 - **引数**: `[environment]` - 環境(staging/production、オプション)
 - **起動エージェント**:
-
   - `.claude/agents/gha-workflow-architect.md` - GitHub Actions 専門エージェント（Phase 2 で起動）
   - `.claude/agents/devops-eng.md` - DevOps 専門エージェント（Phase 3 で起動、Railway 統合）
 
@@ -863,7 +823,6 @@
 - **目的**: 再利用可能なワークフローの作成（モノレポ対応、パラメータ化）
 - **引数**: `[workflow-name]` - ワークフロー名（必須）
 - **起動エージェント**:
-
   - `.claude/agents/gha-workflow-architect.md` - GitHub Actions 専門エージェント（Phase 2 で起動）
 
 - **model**: sonnet
@@ -875,7 +834,6 @@
 - **目的**: カスタムコンポジットアクションの作成（複雑な処理の再利用）
 - **引数**: `[action-name]` - アクション名（必須）
 - **起動エージェント**:
-
   - `.claude/agents/gha-workflow-architect.md` - GitHub Actions 専門エージェント（Phase 2 で起動）
 
 - **model**: sonnet
@@ -887,7 +845,6 @@
 - **目的**: CI/CD パイプラインの高速化（並列実行、キャッシュ最適化）
 - **引数**: `[workflow-file]` - 対象ワークフローファイル（オプション）
 - **起動エージェント**:
-
   - `.claude/agents/gha-workflow-architect.md` - GitHub Actions 専門エージェント（Phase 2 で起動）
 
 - **model**: sonnet
@@ -899,7 +856,6 @@
 - **目的**: GitHub Environments とステージング・本番環境の設定（承認フロー付き）
 - **引数**: なし
 - **起動エージェント**:
-
   - `.claude/agents/devops-eng.md` - DevOps 専門エージェント（Phase 1 で起動）
   - `.claude/agents/gha-workflow-architect.md` - GitHub Actions 専門エージェント（Phase 2 で起動、承認フロー設計）
 
@@ -912,7 +868,6 @@
 - **目的**: Docker コンテナ化設定（Dockerfile、docker-compose.yml）
 - **引数**: `[service-name]` - サービス名（オプション）
 - **起動エージェント**:
-
   - `.claude/agents/devops-eng.md` - DevOps 専門エージェント（Phase 2 で起動）
 
 - **model**: sonnet
@@ -924,7 +879,6 @@
 - **目的**: ステージング環境への自動デプロイ（ドライラン対応）
 - **引数**: `[--dry-run]` - ドライランフラグ（オプション）
 - **起動エージェント**:
-
   - `.claude/agents/devops-eng.md` - DevOps 専門エージェント（Phase 1 で起動、デプロイ実行）
   - `.claude/agents/gha-workflow-architect.md` - GitHub Actions 専門エージェント（Phase 2 で起動、ワークフロートリガー）
 
@@ -937,7 +891,6 @@
 - **目的**: 本番環境への承認フロー付きデプロイ（手動承認必須、最高品質）
 - **引数**: なし
 - **起動エージェント**:
-
   - `.claude/agents/devops-eng.md` - DevOps 専門エージェント（Phase 1 で起動、デプロイレポート作成）
   - `.claude/agents/gha-workflow-architect.md` - GitHub Actions 専門エージェント（Phase 2 で起動、承認フロー実行）
 
@@ -955,7 +908,6 @@
 - **引数**: `[source-path]` - ソースコードパス（オプション、デフォルト: src/app/api）
 - **使用エージェント**: `.claude/agents/api-doc-writer.md`
 - **スキル活用**:
-
   - Phase 1: `.claude/skills/openapi-specification/SKILL.md`, `.claude/skills/api-versioning/SKILL.md`
   - Phase 2: `.claude/skills/openapi-specification/SKILL.md`, `.claude/skills/request-response-examples/SKILL.md`
   - Phase 3: authentication-docs, `.claude/skills/api-documentation-best-practices/SKILL.md`
@@ -971,7 +923,6 @@
 - **引数**: `[target-audience]` - 対象読者レベル(beginner/advanced/admin、オプション)
 - **使用エージェント**: `.claude/agents/manual-writer.md`
 - **スキル活用**:
-
   - Phase 1: `.claude/skills/information-architecture/SKILL.md`
   - Phase 2: `.claude/skills/user-centric-writing/SKILL.md`, `.claude/skills/tutorial-design/SKILL.md`
   - Phase 3: `.claude/skills/troubleshooting-guides/SKILL.md`
@@ -1024,7 +975,6 @@
 - **引数**: `[log-level]` - デフォルトログレベル(debug/info/warn/error、オプション)
 - **使用エージェント**: `.claude/agents/sre-observer.md`
 - **スキル活用**:
-
   - Phase 1: `.claude/skills/structured-logging/SKILL.md`, `.claude/skills/observability-pillars/SKILL.md`
   - Phase 3: `.claude/skills/structured-logging/SKILL.md`（必須）, `.claude/skills/distributed-tracing/SKILL.md`
 
@@ -1038,7 +988,6 @@
 - **引数**: `[service-name]` - 監視対象サービス名（オプション）
 - **使用エージェント**: `.claude/agents/sre-observer.md`
 - **スキル活用**:
-
   - Phase 2: `.claude/skills/slo-sli-design/SKILL.md`（必須）
   - Phase 4: `.claude/skills/alert-design/SKILL.md`（必須）, `.claude/skills/slo-sli-design/SKILL.md`
   - 補助: `.claude/skills/observability-pillars/SKILL.md`, `.claude/skills/distributed-tracing/SKILL.md`
@@ -1056,7 +1005,6 @@
   - `.claude/agents/local-sync.md`
   - `.claude/agents/process-mgr.md`
 - **スキル活用**:
-
   - local-watcher: `.claude/skills/event-driven-file-watching/SKILL.md`（必須）, `.claude/skills/debounce-throttle-patterns/SKILL.md`, `.claude/skills/file-exclusion-patterns/SKILL.md`
   - 補助: `.claude/skills/pm2-ecosystem-config/SKILL.md`, `.claude/skills/graceful-shutdown-patterns/SKILL.md`, `.claude/skills/file-watcher-security/SKILL.md`
 
@@ -1070,7 +1018,6 @@
 - **引数**: `[--upgrade-strategy]` - 更新戦略(patch/minor/major、オプション)
 - **使用エージェント**: `.claude/agents/dep-mgr.md`
 - **スキル活用**:
-
   - 常時: `.claude/skills/semantic-versioning/SKILL.md`, `.claude/skills/dependency-auditing/SKILL.md`
   - 更新時: `.claude/skills/upgrade-strategies/SKILL.md`, `.claude/skills/lock-file-management/SKILL.md`
   - モノレポ時: `.claude/skills/monorepo-dependency-management/SKILL.md`
@@ -1089,7 +1036,6 @@
 - **引数**: `[domain-name]` - ドメイン名（オプション、未指定時はインタラクティブ）
 - **使用エージェント**: `.claude/agents/skill-librarian.md`, `.claude/agents/meta-agent-designer.md`, `.claude/agents/command-arch.md`
 - **スキル活用**:
-
   - **知識層(スキル)**: `.claude/skills/knowledge-management/SKILL.md`, `.claude/skills/progressive-disclosure/SKILL.md`, `.claude/skills/documentation-architecture/SKILL.md`, `.claude/skills/context-optimization/SKILL.md`, `.claude/skills/best-practices-curation/SKILL.md`
   - **実行層(エージェント)**: `.claude/skills/agent-architecture-patterns/SKILL.md`, `.claude/skills/agent-structure-design/SKILL.md`, `.claude/skills/agent-persona-design/SKILL.md`, `.claude/skills/tool-permission-management/SKILL.md`, `.claude/skills/agent-dependency-design/SKILL.md`, `.claude/skills/multi-agent-systems/SKILL.md`, `.claude/skills/project-architecture-integration/SKILL.md`, `.claude/skills/agent-quality-standards/SKILL.md`, `.claude/skills/agent-validation-testing/SKILL.md`, `.claude/skills/prompt-engineering-for-agents/SKILL.md`, `.claude/skills/agent-template-patterns/SKILL.md`, `.claude/skills/agent-lifecycle-management/SKILL.md`
   - **UI 層(コマンド)**: `.claude/skills/command-structure-fundamentals/SKILL.md`, `.claude/skills/command-arguments-system/SKILL.md`, `.claude/skills/command-security-design/SKILL.md`, `.claude/skills/command-basic-patterns/SKILL.md`, `.claude/skills/command-advanced-patterns/SKILL.md`, `.claude/skills/command-agent-skill-integration/SKILL.md`, `.claude/skills/command-activation-mechanisms/SKILL.md`, `.claude/skills/command-error-handling/SKILL.md`, `.claude/skills/command-naming-conventions/SKILL.md`, `.claude/skills/command-documentation-patterns/SKILL.md`, `.claude/skills/command-placement-priority/SKILL.md`, `.claude/skills/command-best-practices/SKILL.md`, `.claude/skills/command-performance-optimization/SKILL.md`
@@ -1099,7 +1045,7 @@
   - `allowed-tools:
     - Task
     - Read
-    - Write(.claude/**)
+    - Write(.claude/\*\*)
     - Grep
     - Bash
 - **使用シナリオ**: 新しい専門分野の完全な統合、複雑なワークフローの自動化システム構築、マルチエージェント協調システムの新規構築、プロジェクト固有のベストプラクティス体系化
@@ -1110,7 +1056,6 @@
 - **引数**: `[agent-name] [specialty]` - エージェント名と専門分野（両方オプション、未指定時はインタラクティブ）
 - **使用エージェント**: `.claude/agents/meta-agent-designer.md`
 - **スキル活用**（タスクに応じて必要なスキルのみ読み込み）:
-
   - **コア設計**: `.claude/skills/agent-architecture-patterns/SKILL.md`, `.claude/skills/agent-structure-design/SKILL.md`, `.claude/skills/agent-persona-design/SKILL.md`, `.claude/skills/tool-permission-management/SKILL.md`
   - **統合・協調**: `.claude/skills/agent-dependency-design/SKILL.md`, `.claude/skills/multi-agent-systems/SKILL.md`, `.claude/skills/project-architecture-integration/SKILL.md`
   - **品質・検証**: `.claude/skills/agent-quality-standards/SKILL.md`, `.claude/skills/agent-validation-testing/SKILL.md`, `.claude/skills/prompt-engineering-for-agents/SKILL.md`
@@ -1120,7 +1065,7 @@
   - `model: opus`（高度なペルソナ設計が必要）
   - `allowed-tools:
     - Read
-    - Write(.claude/agents/**)
+    - Write(.claude/agents/\*\*)
     - Grep
     - Bash
   ### `/ai:create-skill`
@@ -1128,7 +1073,6 @@
 - **引数**: `[skill-name]` - スキル名（オプション、未指定時はインタラクティブ）
 - **使用エージェント**: `.claude/agents/skill-librarian.md`
 - **主要スキル**（エージェントが参照）:
-
   - `.claude/skills/knowledge-management/SKILL.md` - SECI モデルによる暗黙知 → 形式知変換
   - `.claude/skills/progressive-disclosure/SKILL.md` - 3 層開示モデル（メタデータ → 本文 → リソース）
   - `.claude/skills/documentation-architecture/SKILL.md` - トピック分割、階層設計、リソース最適化
@@ -1139,7 +1083,7 @@
   - `model: opus`（高度な知識体系化が必要）
   - `allowed-tools:
     - Read
-    - Write(.claude/skills/**)
+    - Write(.claude/skills/\*\*)
     - Grep
     - Bash
   ### `/ai:create-command`
@@ -1148,7 +1092,6 @@
 - **起動エージェント**:
   - `.claude/agents/command-arch.md`
 - **利用可能スキル**（タスクに応じて command-arch エージェントが必要時に参照）:
-
   - **Phase 1（要件収集・分析時）**: `.claude/skills/command-naming-conventions/SKILL.md`, `.claude/skills/command-placement-priority/SKILL.md`
   - **Phase 2（設計時）**: `.claude/skills/command-structure-fundamentals/SKILL.md`, `.claude/skills/command-arguments-system/SKILL.md`, `.claude/skills/command-basic-patterns/SKILL.md`, `.claude/skills/command-advanced-patterns/SKILL.md`（必要時）, `.claude/skills/command-activation-mechanisms/SKILL.md`（必要時）
   - **Phase 3（セキュリティ時）**: `.claude/skills/command-security-design/SKILL.md`, `.claude/skills/command-error-handling/SKILL.md`
@@ -1168,7 +1111,6 @@
 - **引数**: `[hook-type]` - フックタイプ(PreToolUse/PostToolUse/Stop 等)
 - **使用エージェント**: `.claude/agents/hook-master.md`
 - **主要スキル**（エージェントが参照）:
-
   - `.claude/skills/claude-code-hooks/SKILL.md` - Claude Code Hooks
   - `.claude/skills/automation-scripting/SKILL.md` - 自動化スクリプト実装
 
@@ -1182,7 +1124,6 @@
 - **引数**: `[mcp-server-name]` - MCP サーバー名
 - **使用エージェント**: `.claude/agents/mcp-integrator.md`
 - **主要スキル**（エージェントが参照）:
-
   - `.claude/skills/mcp-protocol/SKILL.md` - MCP プロトコル
   - `.claude/skills/tool-security/SKILL.md` - ツールセキュリティ
 
@@ -1196,7 +1137,6 @@
 - **引数**: なし
 - **使用エージェント**: `.claude/agents/skill-librarian.md`, `.claude/agents/prompt-eng.md`
 - **主要スキル**（エージェントが参照）:
-
   - `.claude/skills/context-optimization/SKILL.md` - コンテキスト最適化
   - `.claude/skills/progressive-disclosure/SKILL.md` - 段階的開示
 
@@ -1213,7 +1153,6 @@
 - **目的**: 機能の完全な開発サイクル
 - **引数**: `[feature-name]` - 機能名
 - **使用エージェント**:
-
   - `.claude/agents/product-manager.md`, `.claude/agents/req-analyst.md`, `.claude/agents/spec-writer.md`
   - `.claude/agents/domain-modeler.md`, `.claude/agents/ui-designer.md`, `.claude/agents/logic-dev.md`
   - `.claude/agents/unit-tester.md`, `.claude/agents/code-quality.md`, `.claude/agents/sec-auditor.md`
@@ -1227,7 +1166,6 @@
 - **目的**: フルスタックアプリケーションの構築
 - **引数**: `[app-name] [--features]` - アプリ名と機能リスト
 - **使用エージェント**:
-
   - `.claude/agents/router-dev.md`, `.claude/agents/ui-designer.md`, `.claude/agents/state-manager.md`
   - `.claude/agents/domain-modeler.md`, `.claude/agents/db-architect.md`, `.claude/agents/repo-dev.md`, `.claude/agents/gateway-dev.md`
 
@@ -1240,7 +1178,6 @@
 - **目的**: リリース準備の完全自動化
 - **引数**: `[version]` - バージョン番号(semver 形式)
 - **使用エージェント**:
-
   - `.claude/agents/unit-tester.md`, `.claude/agents/code-quality.md`, `.claude/agents/sec-auditor.md`
   - `.claude/agents/spec-writer.md`, `.claude/agents/devops-eng.md`
 
@@ -1253,7 +1190,6 @@
 - **目的**: 包括的なコードレビュー
 - **引数**: `[target-path]` - レビュー対象パス
 - **使用エージェント**:
-
   - `.claude/agents/arch-police.md`, `.claude/agents/code-quality.md`, `.claude/agents/sec-auditor.md`, `.claude/agents/logic-dev.md`
 
 - **設定**:
@@ -1265,7 +1201,6 @@
 - **目的**: 新規開発者のオンボーディング
 - **引数**: `[developer-role]` - 開発者の役割(frontend/backend/fullstack)
 - **使用エージェント**:
-
   - `.claude/agents/manual-writer.md`, `.claude/agents/meta-agent-designer.md`, `.claude/agents/skill-librarian.md`
 
 - **設定**:

@@ -5,17 +5,21 @@
 ### テーブル定義
 
 ```typescript
-import { pgTable, text, timestamp, uuid, integer, boolean, jsonb } from 'drizzle-orm/pg-core'
+import { sqliteTable, text, integer, sql } from "drizzle-orm/sqlite-core";
 
 // 基本的なテーブル定義
-export const workflows = pgTable('workflows', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  name: text('name').notNull(),
-  description: text('description'),
-  status: text('status').notNull().default('DRAFT'),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
-  updatedAt: timestamp('updated_at').notNull().defaultNow(),
-})
+export const workflows = sqliteTable("workflows", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name").notNull(),
+  description: text("description"),
+  status: text("status").notNull().default("DRAFT"),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .notNull()
+    .default(sql`(unixepoch())`),
+  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .notNull()
+    .default(sql`(unixepoch())`),
+});
 ```
 
 ## カラム型の選択
@@ -23,80 +27,80 @@ export const workflows = pgTable('workflows', {
 ### 文字列型
 
 ```typescript
-// 固定長が分かっている場合
-char('code', { length: 3 }).notNull()  // 国コードなど
+// SQLiteでは文字列は全てtext型
+text("name").notNull();
+text("description"); // nullable
 
-// 可変長文字列
-varchar('name', { length: 255 }).notNull()  // 長さ制限あり
-text('description')  // 長さ制限なし
-
-// 列挙型（PostgreSQL enum）
-export const statusEnum = pgEnum('workflow_status', ['DRAFT', 'ACTIVE', 'COMPLETED', 'ARCHIVED'])
-// テーブルで使用
-status: statusEnum('status').notNull().default('DRAFT')
+// 列挙型（text型で制約チェック）
+// SQLiteにはネイティブenumがないため、textとCHECK制約を使用
+status: text("status", {
+  enum: ["DRAFT", "ACTIVE", "COMPLETED", "ARCHIVED"],
+})
+  .notNull()
+  .default("DRAFT");
 ```
 
 ### 数値型
 
 ```typescript
-// 整数
-integer('count').notNull().default(0)
-smallint('priority').notNull()
-bigint('large_count', { mode: 'number' })  // modeでTypeScript型を指定
+// 整数（SQLiteのINTEGER）
+integer("count").notNull().default(0);
+integer("priority").notNull();
 
-// 小数
-real('rating')  // 単精度
-doublePrecision('price')  // 倍精度
-numeric('amount', { precision: 10, scale: 2 })  // 金額など正確な値
+// 大きな整数（bigintモード）
+integer("large_count", { mode: "number" });
+
+// 小数（SQLiteのREAL）
+real("rating");
+real("price");
+
+// 金額は整数（セント単位）で保存することを推奨
+integer("amount_cents").notNull(); // $12.34 → 1234
 ```
 
 ### 日時型
 
 ```typescript
-// タイムスタンプ
-timestamp('created_at').notNull().defaultNow()  // タイムゾーンなし
-timestamp('created_at', { withTimezone: true }).notNull().defaultNow()  // タイムゾーンあり
+// タイムスタンプ（Unix時間: 整数秒）
+integer("created_at", { mode: "timestamp" })
+  .notNull()
+  .default(sql`(unixepoch())`);
 
-// 日付のみ
-date('birth_date')
+// タイムスタンプ（Unix時間: ミリ秒）
+integer("created_at", { mode: "timestamp_ms" }).notNull();
 
-// 時刻のみ
-time('start_time')
-
-// 間隔
-interval('duration')
+// ISO 8601文字列として保存
+text("created_at")
+  .notNull()
+  .default(sql`(datetime('now'))`);
 ```
 
 ### JSON型
 
 ```typescript
-// JSON（検証なし）
-json('metadata')
+// JSON（text型として保存、{ mode: 'json' }で自動パース）
+text("metadata", { mode: "json" });
 
-// JSONB（推奨：インデックス可能）
-jsonb('config')
-
-// 型付きJSONB
+// 型付きJSON
 interface WorkflowConfig {
-  retryCount: number
-  timeout: number
-  notifications: boolean
+  retryCount: number;
+  timeout: number;
+  notifications: boolean;
 }
-jsonb('config').$type<WorkflowConfig>()
+text("config", { mode: "json" }).$type<WorkflowConfig>();
 ```
 
 ### その他の型
 
 ```typescript
-// UUID
-uuid('id').primaryKey().defaultRandom()
+// 主キー（自動インクリメント整数）
+id: integer("id").primaryKey({ autoIncrement: true });
 
-// Boolean
-boolean('is_active').notNull().default(true)
+// Boolean（SQLiteでは0/1の整数）
+integer("is_active", { mode: "boolean" }).notNull().default(true);
 
-// 配列
-text('tags').array()  // text[]
-integer('scores').array()  // integer[]
+// Blob（バイナリデータ）
+blob("file_data", { mode: "buffer" });
 ```
 
 ## 制約の定義
@@ -104,55 +108,73 @@ integer('scores').array()  // integer[]
 ### 主キー
 
 ```typescript
-// 単一カラム主キー
-id: uuid('id').primaryKey().defaultRandom()
+// 単一カラム主キー（自動インクリメント）
+id: integer("id").primaryKey({ autoIncrement: true });
 
 // 複合主キー
-export const workflowSteps = pgTable('workflow_steps', {
-  workflowId: uuid('workflow_id').notNull(),
-  stepNumber: integer('step_number').notNull(),
-  // ...
-}, (table) => ({
-  pk: primaryKey({ columns: [table.workflowId, table.stepNumber] }),
-}))
+export const workflowSteps = sqliteTable(
+  "workflow_steps",
+  {
+    workflowId: integer("workflow_id").notNull(),
+    stepNumber: integer("step_number").notNull(),
+    // ...
+  },
+  (table) => ({
+    pk: primaryKey({ columns: [table.workflowId, table.stepNumber] }),
+  }),
+);
 ```
 
 ### 外部キー
 
 ```typescript
-export const workflowSteps = pgTable('workflow_steps', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  workflowId: uuid('workflow_id')
+export const workflowSteps = sqliteTable("workflow_steps", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  workflowId: integer("workflow_id")
     .notNull()
-    .references(() => workflows.id, { onDelete: 'cascade' }),
+    .references(() => workflows.id, { onDelete: "cascade" }),
   // ...
-})
+});
 ```
 
 ### 一意制約
 
 ```typescript
-export const users = pgTable('users', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  email: text('email').notNull().unique(),  // 単一カラム
-  // ...
-}, (table) => ({
-  // 複合一意制約
-  uniqueOrgEmail: unique('unique_org_email').on(table.organizationId, table.email),
-}))
+export const users = sqliteTable(
+  "users",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    email: text("email").notNull().unique(), // 単一カラム
+    // ...
+  },
+  (table) => ({
+    // 複合一意制約
+    uniqueOrgEmail: unique("unique_org_email").on(
+      table.organizationId,
+      table.email,
+    ),
+  }),
+);
 ```
 
 ### チェック制約
 
 ```typescript
-import { check, sql } from 'drizzle-orm'
+import { check, sql } from "drizzle-orm";
 
-export const accounts = pgTable('accounts', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  balance: numeric('balance', { precision: 10, scale: 2 }).notNull().default('0'),
-}, (table) => ({
-  balancePositive: check('balance_positive', sql`${table.balance} >= 0`),
-}))
+export const accounts = sqliteTable(
+  "accounts",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    balance: integer("balance_cents").notNull().default(0), // セント単位
+  },
+  (table) => ({
+    balancePositive: check(
+      "balance_positive",
+      sql`${table.balance_cents} >= 0`,
+    ),
+  }),
+);
 ```
 
 ## インデックス定義
@@ -160,54 +182,77 @@ export const accounts = pgTable('accounts', {
 ### 基本インデックス
 
 ```typescript
-import { index } from 'drizzle-orm/pg-core'
+import { index } from "drizzle-orm/sqlite-core";
 
-export const workflows = pgTable('workflows', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  status: text('status').notNull(),
-  userId: uuid('user_id').notNull(),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
-}, (table) => ({
-  statusIdx: index('workflows_status_idx').on(table.status),
-  userIdIdx: index('workflows_user_id_idx').on(table.userId),
-}))
+export const workflows = sqliteTable(
+  "workflows",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    status: text("status").notNull(),
+    userId: integer("user_id").notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`),
+  },
+  (table) => ({
+    statusIdx: index("workflows_status_idx").on(table.status),
+    userIdIdx: index("workflows_user_id_idx").on(table.userId),
+  }),
+);
 ```
 
 ### 複合インデックス
 
 ```typescript
-export const workflows = pgTable('workflows', {
-  // ...columns
-}, (table) => ({
-  // よく一緒に検索されるカラム
-  userStatusIdx: index('workflows_user_status_idx').on(table.userId, table.status),
-}))
+export const workflows = sqliteTable(
+  "workflows",
+  {
+    // ...columns
+  },
+  (table) => ({
+    // よく一緒に検索されるカラム
+    userStatusIdx: index("workflows_user_status_idx").on(
+      table.userId,
+      table.status,
+    ),
+  }),
+);
 ```
 
 ### 部分インデックス
 
 ```typescript
-export const workflows = pgTable('workflows', {
-  // ...columns
-}, (table) => ({
-  // アクティブなワークフローのみインデックス
-  activeIdx: index('workflows_active_idx')
-    .on(table.status)
-    .where(sql`${table.status} = 'ACTIVE'`),
-}))
+export const workflows = sqliteTable(
+  "workflows",
+  {
+    // ...columns
+  },
+  (table) => ({
+    // アクティブなワークフローのみインデックス
+    activeIdx: index("workflows_active_idx")
+      .on(table.status)
+      .where(sql`${table.status} = 'ACTIVE'`),
+  }),
+);
 ```
 
-### GINインデックス（JSONB用）
+### JSON検索用インデックス
 
 ```typescript
-export const workflows = pgTable('workflows', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  metadata: jsonb('metadata'),
-}, (table) => ({
-  metadataIdx: index('workflows_metadata_idx')
-    .on(table.metadata)
-    .using('gin'),
-}))
+// SQLiteではJSON関数を使用したインデックス
+export const workflows = sqliteTable(
+  "workflows",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    metadata: text("metadata", { mode: "json" }),
+  },
+  (table) => ({
+    // JSON内の特定フィールドにインデックス
+    metadataTypeIdx: index("workflows_metadata_type_idx").on(
+      sql`json_extract(${table.metadata}, '$.type')`,
+    ),
+  }),
+);
 ```
 
 ## 型推論の活用
@@ -215,30 +260,30 @@ export const workflows = pgTable('workflows', {
 ### テーブルからの型推論
 
 ```typescript
-import { InferSelectModel, InferInsertModel } from 'drizzle-orm'
+import { InferSelectModel, InferInsertModel } from "drizzle-orm";
 
 // SELECT結果の型
-export type Workflow = InferSelectModel<typeof workflows>
-// → { id: string, name: string, description: string | null, ... }
+export type Workflow = InferSelectModel<typeof workflows>;
+// → { id: number, name: string, description: string | null, ... }
 
 // INSERT用の型
-export type NewWorkflow = InferInsertModel<typeof workflows>
-// → { id?: string, name: string, description?: string | null, ... }
+export type NewWorkflow = InferInsertModel<typeof workflows>;
+// → { id?: number, name: string, description?: string | null, ... }
 ```
 
 ### カスタム型の定義
 
 ```typescript
 // 部分的な型
-export type WorkflowSummary = Pick<Workflow, 'id' | 'name' | 'status'>
+export type WorkflowSummary = Pick<Workflow, "id" | "name" | "status">;
 
 // 更新用の型
-export type WorkflowUpdate = Partial<Omit<Workflow, 'id' | 'createdAt'>>
+export type WorkflowUpdate = Partial<Omit<Workflow, "id" | "createdAt">>;
 
 // 関連を含む型
 export type WorkflowWithSteps = Workflow & {
-  steps: WorkflowStep[]
-}
+  steps: WorkflowStep[];
+};
 ```
 
 ## 共通カラムパターン
@@ -248,40 +293,44 @@ export type WorkflowWithSteps = Workflow & {
 ```typescript
 // 再利用可能なタイムスタンプカラム
 const timestamps = {
-  createdAt: timestamp('created_at').notNull().defaultNow(),
-  updatedAt: timestamp('updated_at').notNull().defaultNow(),
-}
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .notNull()
+    .default(sql`(unixepoch())`),
+  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .notNull()
+    .default(sql`(unixepoch())`),
+};
 
-export const workflows = pgTable('workflows', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  name: text('name').notNull(),
+export const workflows = sqliteTable("workflows", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name").notNull(),
   ...timestamps,
-})
+});
 ```
 
 ### ソフトデリートパターン
 
 ```typescript
 const softDelete = {
-  deletedAt: timestamp('deleted_at'),
-}
+  deletedAt: integer("deleted_at", { mode: "timestamp" }),
+};
 
-export const workflows = pgTable('workflows', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  name: text('name').notNull(),
+export const workflows = sqliteTable("workflows", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name").notNull(),
   ...timestamps,
   ...softDelete,
-})
+});
 ```
 
 ### 監査カラム
 
 ```typescript
 const audit = {
-  createdBy: uuid('created_by').notNull(),
-  updatedBy: uuid('updated_by'),
+  createdBy: integer("created_by").notNull(),
+  updatedBy: integer("updated_by"),
   ...timestamps,
-}
+};
 ```
 
 ## ベストプラクティス
@@ -289,49 +338,56 @@ const audit = {
 ### すべきこと
 
 1. **明示的なnullability**:
+
    ```typescript
    // ✅ 明示的
-   name: text('name').notNull()
-   description: text('description')  // nullableは暗黙
+   name: text("name").notNull();
+   description: text("description"); // nullableは暗黙
    ```
 
 2. **デフォルト値の設定**:
+
    ```typescript
    // ✅ 適切なデフォルト
-   status: text('status').notNull().default('DRAFT')
-   createdAt: timestamp('created_at').notNull().defaultNow()
+   status: text("status").notNull().default("DRAFT");
+   createdAt: integer("created_at", { mode: "timestamp" })
+     .notNull()
+     .default(sql`(unixepoch())`);
    ```
 
-3. **型付きJSONB**:
+3. **型付きJSON**:
    ```typescript
    // ✅ 型情報を付与
-   config: jsonb('config').$type<ConfigType>()
+   config: text("config", { mode: "json" }).$type<ConfigType>();
    ```
 
 ### 避けるべきこと
 
 1. **text型の濫用**:
+
    ```typescript
    // ❌ すべてtext
-   status: text('status')
+   status: text("status");
 
-   // ✅ enumを使用
-   status: statusEnum('status').notNull()
+   // ✅ enumオプションを使用
+   status: text("status", { enum: ["DRAFT", "ACTIVE"] }).notNull();
    ```
 
 2. **インデックスの過剰設定**:
+
    ```typescript
    // ❌ すべてのカラムにインデックス
    // ✅ クエリパターンに基づいて必要なものだけ
    ```
 
 3. **不要なnullable**:
+
    ```typescript
    // ❌ デフォルトでnullable
-   name: text('name')
+   name: text("name");
 
    // ✅ 必要な場合のみnullable
-   name: text('name').notNull()
+   name: text("name").notNull();
    ```
 
 ## チェックリスト
@@ -340,12 +396,12 @@ const audit = {
 
 - [ ] すべてのカラムに適切な型があるか？
 - [ ] nullabilityは正しく設定されているか？
-- [ ] 主キーは適切か？（UUID推奨）
+- [ ] 主キーは適切か？（自動インクリメント整数推奨）
 - [ ] 外部キーの参照アクションは正しいか？
 - [ ] 必要なインデックスがあるか？
 
 ### 型安全性
 
 - [ ] InferSelectModel/InferInsertModelを使用しているか？
-- [ ] JSONBカラムに型情報があるか？
+- [ ] JSONカラムに型情報があるか？
 - [ ] カスタム型が必要な箇所で定義されているか？

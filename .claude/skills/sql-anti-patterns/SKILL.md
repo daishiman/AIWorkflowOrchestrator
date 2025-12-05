@@ -33,7 +33,7 @@ version: 1.0.0
 ```sql
 -- アンチパターン
 CREATE TABLE products (
-  id INT PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   name VARCHAR(100),
   tags VARCHAR(500)  -- "electronics,sale,featured"
 );
@@ -51,18 +51,18 @@ CREATE TABLE products (
 ```sql
 -- 解決: 交差テーブルを使用
 CREATE TABLE products (
-  id INT PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   name VARCHAR(100)
 );
 
 CREATE TABLE tags (
-  id INT PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   name VARCHAR(50) UNIQUE
 );
 
 CREATE TABLE product_tags (
-  product_id INT REFERENCES products(id),
-  tag_id INT REFERENCES tags(id),
+  product_id INTEGER REFERENCES products(id),
+  tag_id INTEGER REFERENCES tags(id),
   PRIMARY KEY (product_id, tag_id)
 );
 ```
@@ -82,7 +82,7 @@ CREATE TABLE product_tags (
 ```sql
 -- アンチパターン
 CREATE TABLE entity_attributes (
-  entity_id INT,
+  entity_id INTEGER,
   attribute_name VARCHAR(100),
   attribute_value TEXT,
   PRIMARY KEY (entity_id, attribute_name)
@@ -109,7 +109,7 @@ INSERT INTO entity_attributes VALUES
 
 ```sql
 CREATE TABLE products (
-  id INT PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   type VARCHAR(50) NOT NULL,
   -- 共通属性
   name VARCHAR(100) NOT NULL,
@@ -117,8 +117,8 @@ CREATE TABLE products (
   -- タイプ別属性（NULL許可）
   color VARCHAR(50),      -- 衣類用
   size VARCHAR(20),       -- 衣類用
-  wattage INT,            -- 電化製品用
-  voltage INT             -- 電化製品用
+  wattage INTEGER,        -- 電化製品用
+  voltage INTEGER         -- 電化製品用
 );
 ```
 
@@ -126,35 +126,37 @@ CREATE TABLE products (
 
 ```sql
 CREATE TABLE products (
-  id INT PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
   price DECIMAL(10,2) NOT NULL
 );
 
 CREATE TABLE clothing (
-  id INT PRIMARY KEY REFERENCES products(id),
+  id INTEGER PRIMARY KEY REFERENCES products(id),
   color VARCHAR(50),
   size VARCHAR(20)
 );
 
 CREATE TABLE electronics (
-  id INT PRIMARY KEY REFERENCES products(id),
-  wattage INT,
-  voltage INT
+  id INTEGER PRIMARY KEY REFERENCES products(id),
+  wattage INTEGER,
+  voltage INTEGER
 );
 ```
 
-**解決策 3: JSONB（半構造化データが必要な場合）**
+**解決策 3: JSON（半構造化データが必要な場合）**
 
 ```sql
 CREATE TABLE products (
-  id INT PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   type VARCHAR(50) NOT NULL,
   name VARCHAR(100) NOT NULL,
   price DECIMAL(10,2) NOT NULL,
-  attributes JSONB  -- タイプ別の追加属性
+  attributes TEXT  -- JSON形式でタイプ別の追加属性を格納
 );
 
+-- SQLite JSON1拡張で型検証とクエリが可能
+-- SELECT json_extract(attributes, '$.color') FROM products;
 -- Zodスキーマで型検証
 ```
 
@@ -173,10 +175,10 @@ CREATE TABLE products (
 ```sql
 -- アンチパターン
 CREATE TABLE comments (
-  id INT PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   content TEXT,
   commentable_type VARCHAR(50),  -- 'Post', 'Photo', 'Video'
-  commentable_id INT              -- posts.id, photos.id, videos.id のいずれか
+  commentable_id INTEGER          -- posts.id, photos.id, videos.id のいずれか
 );
 ```
 
@@ -191,23 +193,23 @@ CREATE TABLE comments (
 
 ```sql
 CREATE TABLE commentables (
-  id INT PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   type VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE posts (
-  id INT PRIMARY KEY REFERENCES commentables(id),
+  id INTEGER PRIMARY KEY REFERENCES commentables(id),
   title VARCHAR(200)
 );
 
 CREATE TABLE photos (
-  id INT PRIMARY KEY REFERENCES commentables(id),
+  id INTEGER PRIMARY KEY REFERENCES commentables(id),
   url VARCHAR(500)
 );
 
 CREATE TABLE comments (
-  id INT PRIMARY KEY,
-  commentable_id INT REFERENCES commentables(id),
+  id INTEGER PRIMARY KEY,
+  commentable_id INTEGER REFERENCES commentables(id),
   content TEXT
 );
 ```
@@ -216,16 +218,16 @@ CREATE TABLE comments (
 
 ```sql
 CREATE TABLE comments (
-  id INT PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   content TEXT,
-  post_id INT REFERENCES posts(id),
-  photo_id INT REFERENCES photos(id),
-  video_id INT REFERENCES videos(id),
+  post_id INTEGER REFERENCES posts(id),
+  photo_id INTEGER REFERENCES photos(id),
+  video_id INTEGER REFERENCES videos(id),
   -- 1つだけNOT NULLになるようにCHECK制約
   CONSTRAINT single_parent CHECK (
-    (post_id IS NOT NULL)::INT +
-    (photo_id IS NOT NULL)::INT +
-    (video_id IS NOT NULL)::INT = 1
+    (CASE WHEN post_id IS NOT NULL THEN 1 ELSE 0 END +
+     CASE WHEN photo_id IS NOT NULL THEN 1 ELSE 0 END +
+     CASE WHEN video_id IS NOT NULL THEN 1 ELSE 0 END) = 1
   )
 );
 ```
@@ -234,14 +236,14 @@ CREATE TABLE comments (
 
 ```sql
 CREATE TABLE post_comments (
-  post_id INT REFERENCES posts(id),
-  comment_id INT REFERENCES comments(id),
+  post_id INTEGER REFERENCES posts(id),
+  comment_id INTEGER REFERENCES comments(id),
   PRIMARY KEY (post_id, comment_id)
 );
 
 CREATE TABLE photo_comments (
-  photo_id INT REFERENCES photos(id),
-  comment_id INT REFERENCES comments(id),
+  photo_id INTEGER REFERENCES photos(id),
+  comment_id INTEGER REFERENCES comments(id),
   PRIMARY KEY (photo_id, comment_id)
 );
 ```
@@ -272,7 +274,7 @@ class Order {
   calculateTotal(): Money {
     return this.items.reduce(
       (sum, item) => sum.add(item.subtotal()),
-      Money.zero()
+      Money.zero(),
     );
   }
 }
@@ -301,9 +303,9 @@ class DrizzleOrderRepository implements OrderRepository {
 ```sql
 -- アンチパターン: 交差テーブルに不要なID
 CREATE TABLE product_tags (
-  id INT PRIMARY KEY AUTO_INCREMENT,  -- 不要
-  product_id INT,
-  tag_id INT,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,  -- 不要
+  product_id INTEGER,
+  tag_id INTEGER,
   UNIQUE (product_id, tag_id)
 );
 ```
@@ -313,8 +315,8 @@ CREATE TABLE product_tags (
 ```sql
 -- 解決: 複合主キー
 CREATE TABLE product_tags (
-  product_id INT REFERENCES products(id),
-  tag_id INT REFERENCES tags(id),
+  product_id INTEGER REFERENCES products(id),
+  tag_id INTEGER REFERENCES tags(id),
   PRIMARY KEY (product_id, tag_id)
 );
 ```
@@ -333,7 +335,7 @@ CREATE TABLE product_tags (
 ```sql
 -- アンチパターン
 CREATE TABLE users (
-  id INT PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   middle_name VARCHAR(100) DEFAULT '',  -- NULLの代わりに空文字
   birth_date DATE DEFAULT '1900-01-01'  -- NULLの代わりにマジック値
 );
@@ -350,7 +352,7 @@ CREATE TABLE users (
 ```sql
 -- 解決: NULLを適切に使用
 CREATE TABLE users (
-  id INT PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   middle_name VARCHAR(100),  -- NULL = ミドルネームなし
   birth_date DATE            -- NULL = 生年月日不明
 );
@@ -382,7 +384,7 @@ CREATE TABLE users (
 ## 関連スキル
 
 - `.claude/skills/database-normalization/SKILL.md` - 正規化によるアンチパターン回避
-- `.claude/skills/jsonb-optimization/SKILL.md` - JSONB で EAV 回避
+- `.claude/skills/json-sqlite-patterns/SKILL.md` - SQLite JSON1拡張で EAV 回避
 - `.claude/skills/foreign-key-constraints/SKILL.md` - 参照整合性確保
 
 ## 参照リソース

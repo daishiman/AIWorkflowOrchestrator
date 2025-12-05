@@ -57,7 +57,7 @@
           },
           "example": [
             "マイクロサービスアーキテクチャを採用",
-            "PostgreSQL使用"
+            "SQLite (Turso)使用"
           ]
         },
         "unresolved_issues": {
@@ -66,9 +66,7 @@
           "items": {
             "type": "string"
           },
-          "example": [
-            "認証方式の最終決定"
-          ]
+          "example": ["認証方式の最終決定"]
         },
         "next_steps": {
           "type": "array",
@@ -76,10 +74,7 @@
           "items": {
             "type": "string"
           },
-          "example": [
-            "アーキテクチャ図の作成",
-            "技術スタック選定"
-          ]
+          "example": ["アーキテクチャ図の作成", "技術スタック選定"]
         }
       }
     },

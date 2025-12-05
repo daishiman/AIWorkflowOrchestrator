@@ -31,26 +31,30 @@ Environment Settings:
 デプロイ前に指定したレビュアーの承認を必須化します。
 
 **設定方法**:
+
 ```
 Environment Settings → Required reviewers → Add up to 6 reviewers
 ```
 
 **選択可能な対象**:
+
 - Individual users（個別ユーザー）
 - Teams（チーム全体）
 
 **承認プロセス**:
+
 1. ワークフローが環境に到達すると一時停止
 2. 指定されたレビュアーに通知
 3. レビュアーがApprove/Rejectを選択
 4. Approve後にジョブ続行
 
 **YAML例**:
+
 ```yaml
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: production  # Settings で Required reviewers 設定済み
+    environment: production # Settings で Required reviewers 設定済み
 
     steps:
       - name: Deploy
@@ -58,6 +62,7 @@ jobs:
 ```
 
 **通知場所**:
+
 - Actions タブ → 該当ワークフロー → "Review deployments" ボタン
 - Email通知（設定による）
 
@@ -66,21 +71,24 @@ jobs:
 デプロイ前に自動的に待機時間を設定します。
 
 **設定方法**:
+
 ```
 Environment Settings → Wait timer → Set delay (0-43,200 minutes)
 ```
 
 **使用例**:
+
 - **10分待機**: 即座のロールバック猶予期間
 - **30分待機**: ピーク時間外のデプロイ
 - **24時間待機**: 週末デプロイの事前スケジュール
 
 **YAML例**:
+
 ```yaml
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: production  # Settings で Wait timer: 10分 設定済み
+    environment: production # Settings で Wait timer: 10分 設定済み
 
     steps:
       - name: Deploy after wait
@@ -88,6 +96,7 @@ jobs:
 ```
 
 **注意点**:
+
 - タイマーは承認前に開始
 - Required reviewers と併用可能（タイマー後に承認待ち）
 
@@ -96,6 +105,7 @@ jobs:
 特定のブランチからのみデプロイを許可します。
 
 **設定方法**:
+
 ```
 Environment Settings → Deployment branches
 ```
@@ -115,6 +125,7 @@ Environment Settings → Deployment branches
    - カスタムデプロイフローに対応
 
 **パターン例**:
+
 ```
 Production:     main, release/*
 Staging:        main, develop, release/*
@@ -122,17 +133,19 @@ Development:    All branches
 ```
 
 **YAML との連携**:
+
 ```yaml
 on:
   push:
-    branches: [main]  # mainブランチのみトリガー
+    branches: [main] # mainブランチのみトリガー
 
 jobs:
   deploy:
-    environment: production  # mainからのみデプロイ許可
+    environment: production # mainからのみデプロイ許可
 ```
 
 **エラー例**:
+
 ```
 Error: Environment protection rules prevent deployment from branch 'feature/new'
 Required: main, release/*
@@ -157,6 +170,7 @@ Environment Settings → Environment secrets → Add secret
 ```
 
 **例**:
+
 ```
 Secret name: API_KEY
 Secret value: prod-api-key-12345
@@ -173,7 +187,7 @@ jobs:
     steps:
       - name: Deploy with Secret
         env:
-          API_KEY: ${{ secrets.API_KEY }}  # 環境シークレットを使用
+          API_KEY: ${{ secrets.API_KEY }} # 環境シークレットを使用
         run: |
           echo "Using API_KEY from production environment"
           ./deploy.sh
@@ -190,16 +204,18 @@ jobs:
     steps:
       - name: Use Dev Secrets
         env:
-          API_KEY: ${{ secrets.API_KEY }}        # dev-api-key
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}  # dev-db-url
+          API_KEY: ${{ secrets.API_KEY }} # dev-api-key
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }} # libsql://dev-db.turso.io
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }} # dev-auth-token
 
   deploy-prod:
     environment: production
     steps:
       - name: Use Prod Secrets
         env:
-          API_KEY: ${{ secrets.API_KEY }}        # prod-api-key
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}  # prod-db-url
+          API_KEY: ${{ secrets.API_KEY }} # prod-api-key
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }} # libsql://prod-db.turso.io
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }} # prod-auth-token
 ```
 
 **シークレット設定例**:
@@ -207,15 +223,18 @@ jobs:
 ```
 Development環境:
   API_KEY: dev-key-abc123
-  DATABASE_URL: postgres://dev.example.com/db
+  TURSO_DATABASE_URL: libsql://dev-db.turso.io
+  TURSO_AUTH_TOKEN: eyJhbGc...dev
 
 Staging環境:
   API_KEY: stage-key-xyz789
-  DATABASE_URL: postgres://staging.example.com/db
+  TURSO_DATABASE_URL: libsql://staging-db.turso.io
+  TURSO_AUTH_TOKEN: eyJhbGc...staging
 
 Production環境:
   API_KEY: prod-key-secure456
-  DATABASE_URL: postgres://prod.example.com/db
+  TURSO_DATABASE_URL: libsql://prod-db.turso.io
+  TURSO_AUTH_TOKEN: eyJhbGc...prod
 ```
 
 ## Environment Variables
@@ -229,6 +248,7 @@ Environment Settings → Environment variables → Add variable
 ```
 
 **例**:
+
 ```
 Variable name: DEPLOY_ENV
 Variable value: production
@@ -245,19 +265,19 @@ jobs:
     steps:
       - name: Use Environment Variable
         env:
-          DEPLOY_ENV: ${{ vars.DEPLOY_ENV }}  # "production"
+          DEPLOY_ENV: ${{ vars.DEPLOY_ENV }} # "production"
         run: |
           echo "Deploying to environment: $DEPLOY_ENV"
 ```
 
 ### Secrets vs Variables
 
-| 項目 | Secrets | Variables |
-|-----|---------|-----------|
-| **用途** | 機密情報 | 非機密設定 |
-| **表示** | マスク表示 | 平文表示 |
-| **例** | API keys, passwords | Environment names, URLs |
-| **アクセス** | `${{ secrets.NAME }}` | `${{ vars.NAME }}` |
+| 項目         | Secrets               | Variables               |
+| ------------ | --------------------- | ----------------------- |
+| **用途**     | 機密情報              | 非機密設定              |
+| **表示**     | マスク表示            | 平文表示                |
+| **例**       | API keys, passwords   | Environment names, URLs |
+| **アクセス** | `${{ secrets.NAME }}` | `${{ vars.NAME }}`      |
 
 ## 環境URL
 
@@ -342,6 +362,7 @@ jobs:
 ### 各環境の Settings 設定
 
 **Development**:
+
 ```
 Protection rules: なし
 Deployment branches: All branches
@@ -350,6 +371,7 @@ Variables: DEPLOY_ENV=development
 ```
 
 **Staging**:
+
 ```
 Protection rules:
   - Wait timer: 5 minutes
@@ -359,6 +381,7 @@ Variables: DEPLOY_ENV=staging
 ```
 
 **Production**:
+
 ```
 Protection rules:
   - Required reviewers: 2人（DevOps team）
@@ -395,6 +418,7 @@ Settings → Environments → [環境名] → Delete environment
 **原因**: 環境を使用したワークフローが未実行
 
 **解決**:
+
 ```yaml
 # 最初のワークフロー実行で環境が自動作成される
 environment: new-environment
@@ -403,6 +427,7 @@ environment: new-environment
 ### シークレットが解決されない
 
 **原因1**: 環境名の不一致
+
 ```yaml
 # NG: 環境名が違う
 environment: prod
@@ -423,6 +448,7 @@ Settings → Environments → [環境名] → Secrets で確認
 **原因**: レビュアーとして指定されていない
 
 **確認方法**:
+
 1. Settings → Environments → [環境名] → Required reviewers
 2. 自分のユーザー名またはチームが含まれているか確認
 
@@ -431,6 +457,7 @@ Settings → Environments → [環境名] → Secrets で確認
 **原因**: Deployment branches で許可されていない
 
 **解決**:
+
 ```
 Settings → Environments → [環境名] → Deployment branches
 → Selected branches に対象ブランチを追加

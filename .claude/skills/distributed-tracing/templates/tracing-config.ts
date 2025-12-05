@@ -5,25 +5,25 @@
  * 基本設定とヘルパー関数を提供します。
  */
 
-import { NodeSDK } from '@opentelemetry/sdk-node';
-import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
-import { Resource } from '@opentelemetry/resources';
-import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
-import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
-import { trace, context, SpanStatusCode } from '@opentelemetry/api';
-import crypto from 'crypto';
+import { NodeSDK } from "@opentelemetry/sdk-node";
+import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
+import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
+import { Resource } from "@opentelemetry/resources";
+import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
+import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base";
+import { trace, context, SpanStatusCode } from "@opentelemetry/api";
+import crypto from "crypto";
 
 // ============================================================
 // Configuration
 // ============================================================
 
 const TRACING_CONFIG = {
-  serviceName: process.env.SERVICE_NAME || 'api-server',
-  serviceVersion: process.env.SERVICE_VERSION || '1.0.0',
-  environment: process.env.NODE_ENV || 'development',
-  jaegerUrl: process.env.JAEGER_URL || 'http://localhost:14268/api/traces',
-  samplingRate: parseFloat(process.env.TRACING_SAMPLING_RATE || '0.01')
+  serviceName: process.env.SERVICE_NAME || "api-server",
+  serviceVersion: process.env.SERVICE_VERSION || "1.0.0",
+  environment: process.env.NODE_ENV || "development",
+  jaegerUrl: process.env.JAEGER_URL || "http://localhost:14268/api/traces",
+  samplingRate: parseFloat(process.env.TRACING_SAMPLING_RATE || "0.01"),
 };
 
 // ============================================================
@@ -32,12 +32,12 @@ const TRACING_CONFIG = {
 
 export function generateTraceId(): string {
   // 16バイト = 32文字Hex
-  return crypto.randomBytes(16).toString('hex');
+  return crypto.randomBytes(16).toString("hex");
 }
 
 export function generateSpanId(): string {
   // 8バイト = 16文字Hex
-  return crypto.randomBytes(8).toString('hex');
+  return crypto.randomBytes(8).toString("hex");
 }
 
 // ============================================================
@@ -55,7 +55,7 @@ export interface TraceContext {
 export function parseTraceParent(traceparent: string): TraceContext | null {
   if (!traceparent) return null;
 
-  const parts = traceparent.split('-');
+  const parts = traceparent.split("-");
   if (parts.length !== 4) return null;
 
   const [version, traceId, parentId, flags] = parts;
@@ -66,17 +66,17 @@ export function parseTraceParent(traceparent: string): TraceContext | null {
     traceId,
     parentId,
     flags: flagsNum,
-    sampled: (flagsNum & 1) === 1
+    sampled: (flagsNum & 1) === 1,
   };
 }
 
 export function generateTraceParent(
   traceId: string,
   spanId: string,
-  sampled: boolean
+  sampled: boolean,
 ): string {
-  const version = '00';
-  const flags = sampled ? '01' : '00';
+  const version = "00";
+  const flags = sampled ? "01" : "00";
   return `${version}-${traceId}-${spanId}-${flags}`;
 }
 
@@ -87,11 +87,12 @@ export function generateTraceParent(
 const resource = new Resource({
   [SemanticResourceAttributes.SERVICE_NAME]: TRACING_CONFIG.serviceName,
   [SemanticResourceAttributes.SERVICE_VERSION]: TRACING_CONFIG.serviceVersion,
-  [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: TRACING_CONFIG.environment
+  [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]:
+    TRACING_CONFIG.environment,
 });
 
 const traceExporter = new OTLPTraceExporter({
-  url: `${TRACING_CONFIG.jaegerUrl}/v1/traces`
+  url: `${TRACING_CONFIG.jaegerUrl}/v1/traces`,
 });
 
 const sdk = new NodeSDK({
@@ -99,21 +100,21 @@ const sdk = new NodeSDK({
   spanProcessor: new BatchSpanProcessor(traceExporter),
   instrumentations: [
     getNodeAutoInstrumentations({
-      '@opentelemetry/instrumentation-http': { enabled: true },
-      '@opentelemetry/instrumentation-express': { enabled: true },
-      '@opentelemetry/instrumentation-pg': { enabled: true }
-    })
-  ]
+      "@opentelemetry/instrumentation-http": { enabled: true },
+      "@opentelemetry/instrumentation-express": { enabled: true },
+      "@opentelemetry/instrumentation-sqlite3": { enabled: true },
+    }),
+  ],
 });
 
 export async function startTracing(): Promise<void> {
   await sdk.start();
-  console.log('✅ Distributed tracing initialized');
+  console.log("✅ Distributed tracing initialized");
 }
 
 export async function shutdownTracing(): Promise<void> {
   await sdk.shutdown();
-  console.log('✅ Distributed tracing shutdown');
+  console.log("✅ Distributed tracing shutdown");
 }
 
 // ============================================================
@@ -126,7 +127,7 @@ export async function shutdownTracing(): Promise<void> {
 export async function withSpan<T>(
   name: string,
   fn: (span: any) => Promise<T>,
-  attributes?: Record<string, string | number | boolean>
+  attributes?: Record<string, string | number | boolean>,
 ): Promise<T> {
   const tracer = trace.getTracer(TRACING_CONFIG.serviceName);
 
@@ -143,7 +144,7 @@ export async function withSpan<T>(
     } catch (error) {
       span.setStatus({
         code: SpanStatusCode.ERROR,
-        message: error.message
+        message: error.message,
       });
       span.recordException(error);
       throw error;
@@ -164,7 +165,7 @@ export function getTraceContext() {
   return {
     trace_id: spanContext.traceId,
     span_id: spanContext.spanId,
-    sampled: (spanContext.traceFlags & 1) === 1
+    sampled: (spanContext.traceFlags & 1) === 1,
   };
 }
 
@@ -177,11 +178,11 @@ export function getTracingHeaders(): Record<string, string> {
 
   const spanContext = span.spanContext();
   return {
-    'traceparent': generateTraceParent(
+    traceparent: generateTraceParent(
       spanContext.traceId,
       spanContext.spanId,
-      (spanContext.traceFlags & 1) === 1
-    )
+      (spanContext.traceFlags & 1) === 1,
+    ),
   };
 }
 

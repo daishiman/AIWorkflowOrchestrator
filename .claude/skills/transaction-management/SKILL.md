@@ -131,12 +131,10 @@ cat .claude/skills/transaction-management/templates/transaction-design-template.
 **ステップ**:
 
 1. **ビジネス操作の特定**:
-
    - 論理的に一つの単位となる操作を特定
    - 「すべて成功」or「すべて失敗」の範囲を定義
 
 2. **境界の決定**:
-
    - 最小限の範囲に設定
    - 長時間実行を避ける（目安: 5 秒以内）
 
@@ -159,7 +157,6 @@ cat .claude/skills/transaction-management/templates/transaction-design-template.
 **ステップ**:
 
 1. **要件の確認**:
-
    - 一貫性の要求レベル
    - 並行性の要求
    - パフォーマンス要件
@@ -167,9 +164,9 @@ cat .claude/skills/transaction-management/templates/transaction-design-template.
 2. **分離レベルの選択**:
    | レベル | 一貫性 | 並行性 | 用途 |
    |--------|--------|--------|------|
-   | READ COMMITTED | 中 | 高 | 一般的な CRUD |
-   | REPEATABLE READ | 高 | 中 | レポート |
-   | SERIALIZABLE | 最高 | 低 | 金融処理 |
+   | DEFERRED | 低 | 最高 | 一般的な CRUD（デフォルト） |
+   | IMMEDIATE | 中 | 中 | 書き込み優先 |
+   | EXCLUSIVE | 最高 | 低 | 厳密な整合性 |
 
 **判断基準**:
 
@@ -185,7 +182,6 @@ cat .claude/skills/transaction-management/templates/transaction-design-template.
 **ステップ**:
 
 1. **ロック種類の選択**:
-
    - **楽観的ロック**: バージョンカラムによる競合検出
    - **悲観的ロック**: SELECT FOR UPDATE による排他制御
 
@@ -208,7 +204,6 @@ cat .claude/skills/transaction-management/templates/transaction-design-template.
 **ステップ**:
 
 1. **実装**:
-
    - トランザクション境界の実装
    - エラーハンドリングの実装
    - ロールバック処理の実装
@@ -230,12 +225,12 @@ cat .claude/skills/transaction-management/templates/transaction-design-template.
 
 ### ACID 特性
 
-| 特性                  | 説明               | 実現方法              |
-| --------------------- | ------------------ | --------------------- |
-| Atomicity（原子性）   | 全て成功か全て失敗 | トランザクション      |
-| Consistency（一貫性） | 制約を常に満たす   | 制約、バリデーション  |
-| Isolation（分離性）   | 並行実行の独立性   | 分離レベル            |
-| Durability（永続性）  | コミット後の永続化 | WAL、レプリケーション |
+| 特性                  | 説明               | 実現方法                   |
+| --------------------- | ------------------ | -------------------------- |
+| Atomicity（原子性）   | 全て成功か全て失敗 | トランザクション           |
+| Consistency（一貫性） | 制約を常に満たす   | 制約、バリデーション       |
+| Isolation（分離性）   | 並行実行の独立性   | トランザクションモード     |
+| Durability（永続性）  | コミット後の永続化 | WAL（Write-Ahead Logging） |
 
 ### トランザクション境界の原則
 
@@ -249,14 +244,14 @@ cat .claude/skills/transaction-management/templates/transaction-design-template.
 ```
 一貫性要件を確認
     │
-    ├─ 厳格な一貫性が必要
-    │   └─ SERIALIZABLE
+    ├─ 厳格な一貫性が必要（単一書き込みのみ）
+    │   └─ EXCLUSIVE
     │
-    ├─ 同一トランザクション内で再読み込みが必要
-    │   └─ REPEATABLE READ
+    ├─ 書き込み優先（早期ロック取得）
+    │   └─ IMMEDIATE
     │
-    └─ 一般的なCRUD
-        └─ READ COMMITTED（デフォルト）
+    └─ 一般的なCRUD（読み取り優先）
+        └─ DEFERRED（デフォルト）
 ```
 
 ## ベストプラクティス
@@ -264,12 +259,10 @@ cat .claude/skills/transaction-management/templates/transaction-design-template.
 ### すべきこと
 
 1. **楽観的ロックを優先**:
-
    - バージョンカラムで競合検出
    - 競合時にリトライ
 
 2. **トランザクションを短く**:
-
    - 長時間のロック保持を避ける
    - バッチ処理は分割
 
@@ -280,12 +273,10 @@ cat .claude/skills/transaction-management/templates/transaction-design-template.
 ### 避けるべきこと
 
 1. **トランザクション内での外部呼び出し**:
-
    - ❌ API 呼び出し、メール送信
    - ✅ トランザクション後に実行
 
 2. **長時間トランザクション**:
-
    - ❌ 5 秒以上の処理
    - ✅ バッチ分割、非同期処理
 
@@ -363,10 +354,7 @@ cat .claude/skills/transaction-management/templates/transaction-design-template.
 
 ## 参考文献
 
-- **『High-Performance Java Persistence』** Vlad Mihalcea 著
-
-  - Chapter 8: Transactions and Concurrency Control
-  - Chapter 10: Database Locking
-
-- **PostgreSQL Documentation**
-  - Chapter 13: Concurrency Control
+- **SQLite Documentation**
+  - Transactions: https://www.sqlite.org/lang_transaction.html
+  - Locking and Concurrency: https://www.sqlite.org/lockingv3.html
+  - Write-Ahead Logging: https://www.sqlite.org/wal.html

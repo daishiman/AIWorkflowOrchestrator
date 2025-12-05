@@ -25,16 +25,15 @@ const CONFIG = {
 // 検証パターン
 const PATTERNS = {
   // テーブル定義
-  tableDefinition: /export\s+const\s+(\w+)\s*=\s*pgTable\s*\(/g,
+  tableDefinition: /export\s+const\s+(\w+)\s*=\s*sqliteTable\s*\(/g,
 
   // カラム定義
   columns: {
-    uuid: /uuid\s*\(['"`](\w+)['"`]\)/g,
-    text: /text\s*\(['"`](\w+)['"`]\)/g,
     integer: /integer\s*\(['"`](\w+)['"`]\)/g,
-    timestamp: /timestamp\s*\(['"`](\w+)['"`]\)/g,
-    boolean: /boolean\s*\(['"`](\w+)['"`]\)/g,
-    jsonb: /jsonb\s*\(['"`](\w+)['"`]\)/g,
+    text: /text\s*\(['"`](\w+)['"`]\)/g,
+    real: /real\s*\(['"`](\w+)['"`]\)/g,
+    blob: /blob\s*\(['"`](\w+)['"`]\)/g,
+    json: /text\s*\(['"`](\w+)['"`]\)[^,]*mode\s*:\s*['"`]json['"`]/g,
   },
 
   // 制約
@@ -107,8 +106,8 @@ function extractTables(content) {
 function extractColumns(content, tableName) {
   const columns = [];
   const tableRegex = new RegExp(
-    `const\\s+${tableName}\\s*=\\s*pgTable\\s*\\([^{]*\\{([^}]+)\\}`,
-    "s"
+    `const\\s+${tableName}\\s*=\\s*sqliteTable\\s*\\([^{]*\\{([^}]+)\\}`,
+    "s",
   );
   const tableMatch = content.match(tableRegex);
 
@@ -124,7 +123,7 @@ function extractColumns(content, tableName) {
       const columnDef = columnContent.substring(
         match.index,
         columnContent.indexOf(",", match.index + 100) + 1 ||
-          columnContent.length
+          columnContent.length,
       );
 
       columns.push({
@@ -149,8 +148,7 @@ function extractColumns(content, tableName) {
  */
 function extractRelations(content) {
   const relations = [];
-  const regex =
-    /export\s+const\s+(\w+)Relations\s*=\s*relations\s*\(\s*(\w+)/g;
+  const regex = /export\s+const\s+(\w+)Relations\s*=\s*relations\s*\(\s*(\w+)/g;
   let match;
 
   while ((match = regex.exec(content)) !== null) {
@@ -186,23 +184,23 @@ function validateSchema(content, filePath) {
       });
     }
 
-    // 2. UUIDの主キー推奨
+    // 2. 主キーの型チェック（SQLiteではintegerまたはtextを推奨）
     const pkColumn = columns.find((c) => c.isPrimaryKey);
-    if (pkColumn && pkColumn.type !== "uuid") {
+    if (pkColumn && !["integer", "text"].includes(pkColumn.type)) {
       issues.push({
-        type: "NON_UUID_PRIMARY_KEY",
+        type: "NON_STANDARD_PRIMARY_KEY",
         severity: "WARNING",
         table: table.tableName,
-        message: `テーブル ${table.tableName} の主キーがUUID型ではありません（現在: ${pkColumn.type}）`,
+        message: `テーブル ${table.tableName} の主キーが推奨型ではありません（現在: ${pkColumn.type}、推奨: integer or text）`,
       });
     }
 
     // 3. タイムスタンプカラムの確認
     const hasCreatedAt = columns.some(
-      (c) => c.name === "created_at" || c.name === "createdAt"
+      (c) => c.name === "created_at" || c.name === "createdAt",
     );
     const hasUpdatedAt = columns.some(
-      (c) => c.name === "updated_at" || c.name === "updatedAt"
+      (c) => c.name === "updated_at" || c.name === "updatedAt",
     );
 
     if (!hasCreatedAt) {
@@ -226,7 +224,10 @@ function validateSchema(content, filePath) {
     // 4. text型のnotNull推奨
     const textColumns = columns.filter((c) => c.type === "text");
     for (const col of textColumns) {
-      if (!col.isNotNull && !["description", "note", "memo"].includes(col.name.toLowerCase())) {
+      if (
+        !col.isNotNull &&
+        !["description", "note", "memo"].includes(col.name.toLowerCase())
+      ) {
         issues.push({
           type: "TEXT_WITHOUT_NOT_NULL",
           severity: "INFO",
@@ -237,14 +238,14 @@ function validateSchema(content, filePath) {
       }
     }
 
-    // 5. JSONBの型付け確認
-    const jsonbColumns = columns.filter((c) => c.type === "jsonb");
-    if (jsonbColumns.length > 0) {
+    // 5. JSONの型付け確認
+    const jsonColumns = columns.filter((c) => c.type === "json");
+    if (jsonColumns.length > 0) {
       info.push({
-        type: "JSONB_COLUMNS",
+        type: "JSON_COLUMNS",
         table: table.tableName,
-        columns: jsonbColumns.map((c) => c.name),
-        message: `${table.tableName} にJSONBカラムがあります。$type<T>()で型付けを推奨`,
+        columns: jsonColumns.map((c) => c.name),
+        message: `${table.tableName} にJSONカラムがあります。text({ mode: 'json' }).$type<T>()で型付けを推奨`,
       });
     }
 
@@ -374,9 +375,9 @@ function printReport(report) {
       console.log(`   📝 ${info.table}: ${info.columnCount}カラム`);
     }
 
-    // JSONB警告
-    const jsonbInfos = file.info.filter((i) => i.type === "JSONB_COLUMNS");
-    for (const info of jsonbInfos) {
+    // JSON警告
+    const jsonInfos = file.info.filter((i) => i.type === "JSON_COLUMNS");
+    for (const info of jsonInfos) {
       console.log(`   ℹ️  ${info.message}`);
     }
 
@@ -405,14 +406,16 @@ function printReport(report) {
     if (report.summary.byType.NO_PRIMARY_KEY > 0) {
       console.log("  • すべてのテーブルに主キーを定義してください");
     }
-    if (report.summary.byType.NON_UUID_PRIMARY_KEY > 0) {
-      console.log("  • 主キーにはUUID型の使用を推奨します");
+    if (report.summary.byType.NON_STANDARD_PRIMARY_KEY > 0) {
+      console.log("  • 主キーにはinteger型またはtext型の使用を推奨します");
     }
     if (report.summary.byType.NO_CREATED_AT > 0) {
       console.log("  • created_at カラムの追加を検討してください");
     }
     if (report.summary.byType.SELECT_STAR > 0) {
-      console.log("  • SELECT * の代わりに必要なカラムを明示的に指定してください");
+      console.log(
+        "  • SELECT * の代わりに必要なカラムを明示的に指定してください",
+      );
     }
   }
 
@@ -426,7 +429,9 @@ function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.log("使用方法: node validate-schema.mjs <schema-file-or-directory>");
+    console.log(
+      "使用方法: node validate-schema.mjs <schema-file-or-directory>",
+    );
     console.log("");
     console.log("オプション:");
     console.log("  --json    JSON形式で出力");
@@ -437,7 +442,9 @@ function main() {
   const jsonOutput = args.includes("--json");
 
   if (!fs.existsSync(target)) {
-    console.error(`エラー: ファイルまたはディレクトリが存在しません: ${target}`);
+    console.error(
+      `エラー: ファイルまたはディレクトリが存在しません: ${target}`,
+    );
     process.exit(1);
   }
 
@@ -450,7 +457,7 @@ function main() {
     walkDirectory(target, (filePath) => {
       if (filePath.includes("schema") || filePath.includes("tables")) {
         const content = fs.readFileSync(filePath, "utf-8");
-        if (content.includes("pgTable")) {
+        if (content.includes("sqliteTable")) {
           const validation = validateSchema(content, filePath);
           if (validation.tables.length > 0) {
             results.push({ filePath, validation });

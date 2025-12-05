@@ -9,7 +9,11 @@
   "mcpServers": {
     "filesystem": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/allowed/dir"]
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/path/to/allowed/dir"
+      ]
     }
   }
 }
@@ -100,37 +104,50 @@
 
 ## 3. データベース連携設定
 
-### PostgreSQL
-
-```json
-{
-  "mcpServers": {
-    "postgres": {
-      "command": "npx",
-      "args": ["-y", "@mcp/postgres-server"],
-      "env": {
-        "POSTGRES_HOST": "${DB_HOST}",
-        "POSTGRES_PORT": "${DB_PORT}",
-        "POSTGRES_USER": "${DB_USER}",
-        "POSTGRES_PASSWORD": "${DB_PASSWORD}",
-        "POSTGRES_DATABASE": "${DB_NAME}"
-      }
-    }
-  }
-}
-```
-
-### SQLite
+### SQLite（ローカル）
 
 ```json
 {
   "mcpServers": {
     "sqlite": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sqlite", "/path/to/database.db"]
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sqlite",
+        "/path/to/database.db"
+      ]
     }
   }
 }
+```
+
+### Turso（libSQL）
+
+```json
+{
+  "mcpServers": {
+    "turso": {
+      "command": "npx",
+      "args": ["-y", "@turso/mcp-server"],
+      "env": {
+        "TURSO_DATABASE_URL": "${TURSO_DATABASE_URL}",
+        "TURSO_AUTH_TOKEN": "${TURSO_AUTH_TOKEN}"
+      }
+    }
+  }
+}
+```
+
+**環境変数設定例:**
+
+```bash
+# .env
+# Local SQLite file
+TURSO_DATABASE_URL=file:/path/to/local.db
+
+# Or Turso cloud
+TURSO_DATABASE_URL=libsql://your-db.turso.io
+TURSO_AUTH_TOKEN=your-auth-token
 ```
 
 ## 4. 複数サーバー構成
@@ -232,26 +249,30 @@
 
 ```javascript
 // server.js
-const { Server } = require('@modelcontextprotocol/sdk/server/index.js');
-const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio.js');
+const { Server } = require("@modelcontextprotocol/sdk/server/index.js");
+const {
+  StdioServerTransport,
+} = require("@modelcontextprotocol/sdk/server/stdio.js");
 
 const server = new Server({
-  name: 'custom-server',
-  version: '1.0.0'
+  name: "custom-server",
+  version: "1.0.0",
 });
 
-server.setRequestHandler('tools/list', async () => ({
-  tools: [{
-    name: 'custom_tool',
-    description: 'Custom tool description',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        input: { type: 'string' }
+server.setRequestHandler("tools/list", async () => ({
+  tools: [
+    {
+      name: "custom_tool",
+      description: "Custom tool description",
+      inputSchema: {
+        type: "object",
+        properties: {
+          input: { type: "string" },
+        },
+        required: ["input"],
       },
-      required: ['input']
-    }
-  }]
+    },
+  ],
 }));
 
 const transport = new StdioServerTransport();

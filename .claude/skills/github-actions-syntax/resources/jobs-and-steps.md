@@ -5,7 +5,7 @@
 ```yaml
 jobs:
   job-id:
-    name: 'Job Display Name'
+    name: "Job Display Name"
     runs-on: ubuntu-latest
     timeout-minutes: 30
     continue-on-error: false
@@ -104,21 +104,12 @@ jobs:
 jobs:
   test:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: test
-          POSTGRES_PASSWORD: test
-          POSTGRES_DB: testdb
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+    # SQLite/Tursoの場合はサービスコンテナ不要、環境変数のみで接続
+    # env:
+    #   TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+    #   TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
 
+    services:
       redis:
         image: redis:7
         ports:
@@ -142,9 +133,9 @@ steps:
   - name: Setup Node.js
     uses: actions/setup-node@v4
     with:
-      node-version: '20'
-      cache: 'pnpm'
-      registry-url: 'https://pnpm.pkg.github.com'
+      node-version: "20"
+      cache: "pnpm"
+      registry-url: "https://pnpm.pkg.github.com"
 ```
 
 ### run (コマンド実行)
@@ -170,13 +161,13 @@ steps:
 
 ### shell オプション
 
-| shell | 説明 |
-|-------|------|
-| `bash` | Bashシェル |
-| `pwsh` | PowerShell Core |
-| `python` | Python実行 |
-| `sh` | POSIX シェル |
-| `cmd` | Windows cmd |
+| shell        | 説明               |
+| ------------ | ------------------ |
+| `bash`       | Bashシェル         |
+| `pwsh`       | PowerShell Core    |
+| `python`     | Python実行         |
+| `sh`         | POSIX シェル       |
+| `cmd`        | Windows cmd        |
 | `powershell` | Windows PowerShell |
 
 ### working-directory

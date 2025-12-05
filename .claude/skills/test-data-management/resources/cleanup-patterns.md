@@ -42,10 +42,10 @@
 
 ```typescript
 // tests/basic-cleanup.spec.ts
-import { test, expect } from '@playwright/test';
-import { ApiSeeder } from './helpers/api-seeder';
+import { test, expect } from "@playwright/test";
+import { ApiSeeder } from "./helpers/api-seeder";
 
-test.describe('基本的なクリーンアップ', () => {
+test.describe("基本的なクリーンアップ", () => {
   let seeder: ApiSeeder;
   let createdUserIds: string[] = [];
 
@@ -67,15 +67,15 @@ test.describe('基本的なクリーンアップ', () => {
     await seeder.dispose();
   });
 
-  test('ユーザー登録フロー', async ({ page }) => {
+  test("ユーザー登録フロー", async ({ page }) => {
     const user = await seeder.createUser({
-      email: 'newuser@test.com',
-      name: 'New User',
+      email: "newuser@test.com",
+      name: "New User",
     });
     createdUserIds.push(user.id);
 
     await page.goto(`/users/${user.id}`);
-    await expect(page.locator('h1')).toContainText('New User');
+    await expect(page.locator("h1")).toContainText("New User");
   });
 });
 ```
@@ -91,8 +91,8 @@ Playwrightのfixture機能を使用して、自動的にクリーンアップを
 
 ```typescript
 // tests/fixtures/cleanup-fixtures.ts
-import { test as base } from '@playwright/test';
-import { ApiSeeder } from '../helpers/api-seeder';
+import { test as base } from "@playwright/test";
+import { ApiSeeder } from "../helpers/api-seeder";
 
 type CleanupFixture = {
   autoCleanupSeeder: ApiSeeder & { createdResources: Map<string, string[]> };
@@ -110,18 +110,18 @@ export const test = base.extend<CleanupFixture>({
     const originalCreateUser = seeder.createUser.bind(seeder);
     seeder.createUser = async (userData) => {
       const user = await originalCreateUser(userData);
-      const ids = createdResources.get('users') || [];
+      const ids = createdResources.get("users") || [];
       ids.push(user.id);
-      createdResources.set('users', ids);
+      createdResources.set("users", ids);
       return user;
     };
 
     const originalCreateProject = seeder.createProject.bind(seeder);
     seeder.createProject = async (projectData) => {
       const project = await originalCreateProject(projectData);
-      const ids = createdResources.get('projects') || [];
+      const ids = createdResources.get("projects") || [];
       ids.push(project.id);
-      createdResources.set('projects', ids);
+      createdResources.set("projects", ids);
       return project;
     };
 
@@ -129,7 +129,7 @@ export const test = base.extend<CleanupFixture>({
     await use(Object.assign(seeder, { createdResources }));
 
     // 自動クリーンアップ（逆順で削除）
-    const projectIds = createdResources.get('projects') || [];
+    const projectIds = createdResources.get("projects") || [];
     for (const id of projectIds.reverse()) {
       try {
         await seeder.deleteProject(id);
@@ -138,7 +138,7 @@ export const test = base.extend<CleanupFixture>({
       }
     }
 
-    const userIds = createdResources.get('users') || [];
+    const userIds = createdResources.get("users") || [];
     for (const id of userIds.reverse()) {
       try {
         await seeder.deleteUser(id);
@@ -151,33 +151,33 @@ export const test = base.extend<CleanupFixture>({
   },
 });
 
-export { expect } from '@playwright/test';
+export { expect } from "@playwright/test";
 ```
 
 ### 使用例
 
 ```typescript
 // tests/auto-cleanup.spec.ts
-import { test, expect } from './fixtures/cleanup-fixtures';
+import { test, expect } from "./fixtures/cleanup-fixtures";
 
-test('ユーザーとプロジェクト作成（自動クリーンアップ）', async ({
+test("ユーザーとプロジェクト作成（自動クリーンアップ）", async ({
   page,
   autoCleanupSeeder,
 }) => {
   // データ作成（IDの追跡は不要）
   const user = await autoCleanupSeeder.createUser({
-    email: 'user@test.com',
-    name: 'Test User',
+    email: "user@test.com",
+    name: "Test User",
   });
 
   const project = await autoCleanupSeeder.createProject({
-    name: 'Test Project',
-    description: 'Auto cleanup test',
+    name: "Test Project",
+    description: "Auto cleanup test",
     ownerId: user.id,
   });
 
   await page.goto(`/projects/${project.id}`);
-  await expect(page.locator('h1')).toContainText('Test Project');
+  await expect(page.locator("h1")).toContainText("Test Project");
 
   // テスト終了後、自動的にproject → userの順で削除される
 });
@@ -194,16 +194,16 @@ test('ユーザーとプロジェクト作成（自動クリーンアップ）',
 
 ```typescript
 // tests/helpers/transaction-seeder.ts
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
+import { drizzle } from "drizzle-orm/libsql";
+import { createClient } from "@libsql/client";
 
 export class TransactionSeeder {
-  private client: ReturnType<typeof postgres>;
+  private client: ReturnType<typeof createClient>;
   private db: ReturnType<typeof drizzle>;
-  private transactionClient?: ReturnType<typeof postgres>;
+  private transactionClient?: ReturnType<typeof createClient>;
 
   constructor() {
-    this.client = postgres(process.env.DATABASE_URL!);
+    this.client = createClient({ url: process.env.DATABASE_URL! });
     this.db = drizzle(this.client);
   }
 
@@ -211,8 +211,8 @@ export class TransactionSeeder {
    * トランザクション開始
    */
   async beginTransaction() {
-    this.transactionClient = postgres(process.env.DATABASE_URL!, { max: 1 });
-    await this.transactionClient`BEGIN`;
+    this.transactionClient = createClient({ url: process.env.DATABASE_URL! });
+    await this.transactionClient.execute("BEGIN");
   }
 
   /**
@@ -220,27 +220,26 @@ export class TransactionSeeder {
    */
   async rollback() {
     if (this.transactionClient) {
-      await this.transactionClient`ROLLBACK`;
-      await this.transactionClient.end();
+      await this.transactionClient.execute("ROLLBACK");
+      this.transactionClient.close();
       this.transactionClient = undefined;
     }
   }
 
   async createUser(userData: any) {
     if (!this.transactionClient) {
-      throw new Error('Transaction not started');
+      throw new Error("Transaction not started");
     }
-    const [user] = await this.transactionClient`
-      INSERT INTO users (email, name, password_hash)
-      VALUES (${userData.email}, ${userData.name}, 'test_hash')
-      RETURNING *
-    `;
-    return user;
+    const result = await this.transactionClient.execute({
+      sql: "INSERT INTO users (email, name, password_hash) VALUES (?, ?, ?) RETURNING *",
+      args: [userData.email, userData.name, "test_hash"],
+    });
+    return result.rows[0];
   }
 
   async dispose() {
     await this.rollback();
-    await this.client.end();
+    this.client.close();
   }
 }
 ```
@@ -249,10 +248,10 @@ export class TransactionSeeder {
 
 ```typescript
 // tests/transaction-cleanup.spec.ts
-import { test, expect } from '@playwright/test';
-import { TransactionSeeder } from './helpers/transaction-seeder';
+import { test, expect } from "@playwright/test";
+import { TransactionSeeder } from "./helpers/transaction-seeder";
 
-test.describe('トランザクションベースのクリーンアップ', () => {
+test.describe("トランザクションベースのクリーンアップ", () => {
   let seeder: TransactionSeeder;
 
   test.beforeEach(async () => {
@@ -265,15 +264,15 @@ test.describe('トランザクションベースのクリーンアップ', () =>
     await seeder.dispose();
   });
 
-  test('ユーザー作成（自動ロールバック）', async ({ page }) => {
+  test("ユーザー作成（自動ロールバック）", async ({ page }) => {
     const user = await seeder.createUser({
-      email: 'rollback@test.com',
-      name: 'Rollback User',
+      email: "rollback@test.com",
+      name: "Rollback User",
     });
 
     // テスト実行
     await page.goto(`/users/${user.id}`);
-    await expect(page.locator('h1')).toContainText('Rollback User');
+    await expect(page.locator("h1")).toContainText("Rollback User");
 
     // テスト終了後、自動的にロールバックされる
   });
@@ -293,28 +292,28 @@ test.describe('トランザクションベースのクリーンアップ', () =>
 
 ```typescript
 // db/schema.ts（Drizzle ORM）
-import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 
-export const users = pgTable('users', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  email: text('email').notNull().unique(),
-  name: text('name').notNull(),
+export const users = sqliteTable("users", {
+  id: text("id").primaryKey(),
+  email: text("email").notNull().unique(),
+  name: text("name").notNull(),
 });
 
-export const projects = pgTable('projects', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  name: text('name').notNull(),
-  ownerId: uuid('owner_id')
+export const projects = sqliteTable("projects", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  ownerId: text("owner_id")
     .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }), // カスケード削除
+    .references(() => users.id, { onDelete: "cascade" }), // カスケード削除
 });
 
-export const tasks = pgTable('tasks', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  title: text('title').notNull(),
-  projectId: uuid('project_id')
+export const tasks = sqliteTable("tasks", {
+  id: text("id").primaryKey(),
+  title: text("title").notNull(),
+  projectId: text("project_id")
     .notNull()
-    .references(() => projects.id, { onDelete: 'cascade' }), // カスケード削除
+    .references(() => projects.id, { onDelete: "cascade" }), // カスケード削除
 });
 ```
 
@@ -322,9 +321,9 @@ export const tasks = pgTable('tasks', {
 
 ```typescript
 // tests/helpers/cascade-seeder.ts
-import { drizzle } from 'drizzle-orm/postgres-js';
-import { users } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { drizzle } from "drizzle-orm/libsql";
+import { users } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 export class CascadeSeeder {
   private db: ReturnType<typeof drizzle>;
@@ -380,20 +379,26 @@ export class TaggedSeeder {
   }
 
   async createUser(userData: any) {
-    const user = await this.db.insert(users).values({
-      ...userData,
-      email: `${this.testTag}_${userData.email}`, // タグをプレフィックスとして付与
-      tags: [this.testTag], // タグ配列カラムがある場合
-    }).returning();
+    const user = await this.db
+      .insert(users)
+      .values({
+        ...userData,
+        email: `${this.testTag}_${userData.email}`, // タグをプレフィックスとして付与
+        tags: [this.testTag], // タグ配列カラムがある場合
+      })
+      .returning();
     return user;
   }
 
   async createProject(projectData: any) {
-    const project = await this.db.insert(projects).values({
-      ...projectData,
-      name: `${this.testTag}_${projectData.name}`,
-      tags: [this.testTag],
-    }).returning();
+    const project = await this.db
+      .insert(projects)
+      .values({
+        ...projectData,
+        name: `${this.testTag}_${projectData.name}`,
+        tags: [this.testTag],
+      })
+      .returning();
     return project;
   }
 
@@ -402,8 +407,12 @@ export class TaggedSeeder {
    */
   async cleanup() {
     // タグを含むすべてのレコードを削除
-    await this.db.delete(projects).where(arrayContains(projects.tags, [this.testTag]));
-    await this.db.delete(users).where(arrayContains(users.tags, [this.testTag]));
+    await this.db
+      .delete(projects)
+      .where(arrayContains(projects.tags, [this.testTag]));
+    await this.db
+      .delete(users)
+      .where(arrayContains(users.tags, [this.testTag]));
 
     // または、email/nameにタグが含まれるものを削除
     await this.db.delete(users).where(like(users.email, `${this.testTag}_%`));
@@ -430,7 +439,7 @@ export class TaggedSeeder {
 
 ```typescript
 // tests/fixtures/isolated-data.ts
-import { test as base } from '@playwright/test';
+import { test as base } from "@playwright/test";
 
 type IsolatedDataFixture = {
   uniquePrefix: string;
@@ -499,11 +508,12 @@ export const test = base.extend<IsolatedDataFixture>({
 **原因**: 削除順序が正しくない（子レコード → 親レコードの順で削除していない）
 
 **解決策**:
+
 ```typescript
 // 正しい削除順序
-await seeder.deleteTasks(taskIds);       // 孫
+await seeder.deleteTasks(taskIds); // 孫
 await seeder.deleteProjects(projectIds); // 子
-await seeder.deleteUsers(userIds);       // 親
+await seeder.deleteUsers(userIds); // 親
 ```
 
 ---
@@ -513,10 +523,11 @@ await seeder.deleteUsers(userIds);       // 親
 **症状**: テスト時間の大半がクリーンアップに費やされる
 
 **解決策**:
+
 ```typescript
 // 並列削除
 await Promise.all([
-  ...taskIds.map(id => seeder.deleteTask(id)),
+  ...taskIds.map((id) => seeder.deleteTask(id)),
   // ただし、外部キー制約がある場合は段階的に並列化
 ]);
 
@@ -531,17 +542,15 @@ await this.db.delete(tasks).where(inArray(tasks.id, taskIds));
 **症状**: テストデータが蓄積し、他のテストに影響
 
 **解決策**:
+
 ```typescript
 // テストタグを使用して定期的に全クリーンアップ
 test.afterAll(async () => {
   // 古いテストデータ（1時間以上前）を削除
   const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-  await db.delete(users).where(
-    and(
-      like(users.email, 'test_%'),
-      lt(users.createdAt, oneHourAgo)
-    )
-  );
+  await db
+    .delete(users)
+    .where(and(like(users.email, "test_%"), lt(users.createdAt, oneHourAgo)));
 });
 ```
 
@@ -573,6 +582,7 @@ test.afterAll(async () => {
 プロジェクトの特性に応じて、適切なパターンを選択し、並列実行とデータ分離を考慮してください。
 
 **推奨アプローチ**:
+
 1. Fixtureベースの自動クリーンアップから始める
 2. 並列実行を考慮して一意のプレフィックス/タグを使用
 3. 外部キー制約を活用したカスケード削除を検討

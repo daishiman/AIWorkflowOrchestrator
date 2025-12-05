@@ -6,6 +6,7 @@
 ドメインエンティティ（ビジネスロジック形式）間の変換を担当します。
 
 **目的**:
+
 - ドメイン層をDBスキーマから独立させる
 - 型安全な変換を保証する
 - 変換ロジックを一箇所に集約する
@@ -19,16 +20,16 @@
 ```typescript
 // DBレコード
 interface DbWorkflow {
-  id: string
-  name: string
-  status: string
+  id: string;
+  name: string;
+  status: string;
 }
 
 // ドメインエンティティ
 interface Workflow {
-  id: string
-  name: string
-  status: WorkflowStatus  // Enum型
+  id: string;
+  name: string;
+  status: WorkflowStatus; // Enum型
 }
 
 // マッピング
@@ -36,7 +37,7 @@ const toEntity = (record: DbWorkflow): Workflow => ({
   id: record.id,
   name: record.name,
   status: record.status as WorkflowStatus,
-})
+});
 ```
 
 ### 2. 名前変換マッピング
@@ -46,18 +47,18 @@ DBとドメインで命名規則が異なる場合:
 ```typescript
 // DB: snake_case
 interface DbWorkflow {
-  workflow_id: string
-  created_at: string
-  updated_at: string
-  is_active: number  // 0 or 1
+  workflow_id: string;
+  created_at: string;
+  updated_at: string;
+  is_active: number; // 0 or 1
 }
 
 // ドメイン: camelCase
 interface Workflow {
-  id: string
-  createdAt: Date
-  updatedAt: Date
-  isActive: boolean
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  isActive: boolean;
 }
 
 // マッピング
@@ -66,7 +67,7 @@ const toEntity = (record: DbWorkflow): Workflow => ({
   createdAt: new Date(record.created_at),
   updatedAt: new Date(record.updated_at),
   isActive: record.is_active === 1,
-})
+});
 ```
 
 ### 3. 構造変換マッピング
@@ -76,22 +77,22 @@ const toEntity = (record: DbWorkflow): Workflow => ({
 ```typescript
 // DB: フラット構造
 interface DbOrder {
-  id: string
-  shipping_address_street: string
-  shipping_address_city: string
-  shipping_address_zip: string
+  id: string;
+  shipping_address_street: string;
+  shipping_address_city: string;
+  shipping_address_zip: string;
 }
 
 // ドメイン: 階層構造
 interface Order {
-  id: string
-  shippingAddress: Address
+  id: string;
+  shippingAddress: Address;
 }
 
 interface Address {
-  street: string
-  city: string
-  zipCode: string
+  street: string;
+  city: string;
+  zipCode: string;
 }
 
 // マッピング
@@ -102,41 +103,41 @@ const toEntity = (record: DbOrder): Order => ({
     city: record.shipping_address_city,
     zipCode: record.shipping_address_zip,
   },
-})
+});
 ```
 
-### 4. JOSONBマッピング
+### 4. JSONマッピング
 
-柔軟なスキーマを持つフィールド:
+柔軟なスキーマを持つフィールド（SQLiteではtext({ mode: 'json' })を使用）:
 
 ```typescript
-// DB: JSONB
+// DB: JSON (text({ mode: 'json' }))
 interface DbWorkflow {
-  id: string
-  input_payload: string | null  // JSON文字列
-  output_payload: string | null
-  metadata: unknown  // JSONB型
+  id: string;
+  input_payload: string | null; // JSON文字列
+  output_payload: string | null;
+  metadata: unknown; // text({ mode: 'json' })型
 }
 
 // ドメイン: 型付きオブジェクト
 interface Workflow {
-  id: string
-  inputPayload: InputPayload | null
-  outputPayload: OutputPayload | null
-  metadata: WorkflowMetadata
+  id: string;
+  inputPayload: InputPayload | null;
+  outputPayload: OutputPayload | null;
+  metadata: WorkflowMetadata;
 }
 
 // マッピング
 const toEntity = (record: DbWorkflow): Workflow => ({
   id: record.id,
   inputPayload: record.input_payload
-    ? JSON.parse(record.input_payload) as InputPayload
+    ? (JSON.parse(record.input_payload) as InputPayload)
     : null,
   outputPayload: record.output_payload
-    ? JSON.parse(record.output_payload) as OutputPayload
+    ? (JSON.parse(record.output_payload) as OutputPayload)
     : null,
   metadata: record.metadata as WorkflowMetadata,
-})
+});
 
 const toRecord = (entity: Workflow): Partial<DbWorkflow> => ({
   id: entity.id,
@@ -147,7 +148,7 @@ const toRecord = (entity: Workflow): Partial<DbWorkflow> => ({
     ? JSON.stringify(entity.outputPayload)
     : null,
   metadata: entity.metadata,
-})
+});
 ```
 
 ## 型変換パターン
@@ -156,40 +157,45 @@ const toRecord = (entity: Workflow): Partial<DbWorkflow> => ({
 
 ```typescript
 // DB → ドメイン
-createdAt: new Date(record.created_at)
+// SQLiteではinteger（Unix timestamp）またはtext（ISO文字列）を使用
+createdAt: new Date(record.created_at); // integerまたはtextから変換
 
 // ドメイン → DB
-created_at: entity.createdAt.toISOString()
+// integer型の場合
+created_at: entity.createdAt.getTime();
+// またはtext型の場合
+created_at: entity.createdAt.toISOString();
 ```
 
 ### Enum型
 
 ```typescript
 // DB → ドメイン（文字列 → Enum）
-status: record.status as WorkflowStatus
+status: record.status as WorkflowStatus;
 
 // ドメイン → DB（Enum → 文字列）
-status: entity.status  // TypeScriptのEnumは文字列としてそのまま使用可能
+status: entity.status; // TypeScriptのEnumは文字列としてそのまま使用可能
 ```
 
 ### Boolean型
 
 ```typescript
 // DB: 数値（0/1） → ドメイン: boolean
-isActive: record.is_active === 1
+// SQLiteにはboolean型がないため、integerで0/1を使用
+isActive: record.is_active === 1;
 
 // ドメイン: boolean → DB: 数値
-is_active: entity.isActive ? 1 : 0
+is_active: entity.isActive ? 1 : 0;
 ```
 
 ### Nullable型
 
 ```typescript
 // DB nullable → ドメイン optional
-description: record.description ?? undefined
+description: record.description ?? undefined;
 
 // ドメイン optional → DB nullable
-description: entity.description ?? null
+description: entity.description ?? null;
 ```
 
 ## Null/Undefined処理
@@ -212,8 +218,8 @@ const toEntity = (record: DbRecord): Entity => ({
   description: record.description || undefined,
 
   // nullを許容するフィールド
-  nullableField: record.nullable_field,  // そのまま
-})
+  nullableField: record.nullable_field, // そのまま
+});
 
 // ドメイン → DB
 const toRecord = (entity: Entity): Partial<DbRecord> => ({
@@ -222,7 +228,7 @@ const toRecord = (entity: Entity): Partial<DbRecord> => ({
 
   // 明示的にnullを設定しない（undefinedのまま）
   // → UPDATEで該当フィールドを更新しない
-})
+});
 ```
 
 ## 関連エンティティのマッピング
@@ -235,11 +241,8 @@ const toEntity = (record: DbOrder): Order => ({
   id: record.id,
   // Value Objectとして構築
   price: new Money(record.price_amount, record.price_currency),
-  period: new DateRange(
-    new Date(record.start_date),
-    new Date(record.end_date)
-  ),
-})
+  period: new DateRange(new Date(record.start_date), new Date(record.end_date)),
+});
 ```
 
 ### 2. 1対1関連
@@ -247,11 +250,11 @@ const toEntity = (record: DbOrder): Order => ({
 ```typescript
 // JOINで取得した関連データ
 interface DbWorkflowWithUser {
-  id: string
-  name: string
-  user_id: string
-  user_name: string
-  user_email: string
+  id: string;
+  name: string;
+  user_id: string;
+  user_name: string;
+  user_email: string;
 }
 
 const toEntity = (record: DbWorkflowWithUser): WorkflowWithUser => ({
@@ -262,7 +265,7 @@ const toEntity = (record: DbWorkflowWithUser): WorkflowWithUser => ({
     name: record.user_name,
     email: record.user_email,
   },
-})
+});
 ```
 
 ### 3. 1対多関連
@@ -270,14 +273,14 @@ const toEntity = (record: DbWorkflowWithUser): WorkflowWithUser => ({
 ```typescript
 // 別クエリで取得した関連データを組み合わせ
 const findWithSteps = async (id: string): Promise<WorkflowWithSteps> => {
-  const workflow = await this.findById(id)
-  const steps = await this.stepRepository.findByWorkflowId(id)
+  const workflow = await this.findById(id);
+  const steps = await this.stepRepository.findByWorkflowId(id);
 
   return {
     ...workflow,
     steps,
-  }
-}
+  };
+};
 ```
 
 ## マッピングチェックリスト
@@ -309,6 +312,7 @@ const findWithSteps = async (id: string): Promise<WorkflowWithSteps> => {
 **原因**: DBスキーマとドメイン型の乖離
 
 **解決策**:
+
 1. DBスキーマ型を正確に定義
 2. 変換関数で明示的に型変換
 3. 必要に応じて型ガードを追加
@@ -320,6 +324,7 @@ const findWithSteps = async (id: string): Promise<WorkflowWithSteps> => {
 **原因**: Nullable処理の漏れ
 
 **解決策**:
+
 1. DBスキーマのNullable定義を確認
 2. オプショナルチェーン（?.）を使用
 3. Nullish coalescing（??）でデフォルト値を設定
@@ -331,6 +336,7 @@ const findWithSteps = async (id: string): Promise<WorkflowWithSteps> => {
 **原因**: toRecordで一部フィールドが未マッピング
 
 **解決策**:
+
 1. すべてのフィールドがマッピングされているか確認
 2. 部分更新時はspread演算子で既存値を保持
 3. テストで往復変換（round-trip）を検証

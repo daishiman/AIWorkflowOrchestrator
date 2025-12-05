@@ -51,16 +51,16 @@
 - 成果物: `docs/00-requirements/*.md`
 - 必要なスキル:
 
-  | スキル名 | パス | 概要 |
-  |---------|------|------|
-  | requirements-engineering | `.claude/skills/requirements-engineering/SKILL.md` | Karl Wiegers方法論、MoSCoW優先度、曖昧性検出、トリアージフレームワーク |
-  | use-case-modeling | `.claude/skills/use-case-modeling/SKILL.md` | アクター識別、シナリオパターン、ユースケース関係（include/extend/generalization） |
-  | acceptance-criteria-writing | `.claude/skills/acceptance-criteria-writing/SKILL.md` | Given-When-Then形式、テスト可能性基準、エッジケースパターン |
-  | interview-techniques | `.claude/skills/interview-techniques/SKILL.md` | 5W1Hフレームワーク、Why分析（5 Whys）、質問タイプ分類 |
-  | functional-non-functional-requirements | `.claude/skills/functional-non-functional-requirements/SKILL.md` | FR/NFR分類、FURPS+品質モデル、測定可能な目標定義 |
-  | requirements-verification | `.claude/skills/requirements-verification/SKILL.md` | 要件の一貫性・完全性・検証可能性評価、トレーサビリティマトリクス |
-  | requirements-documentation | `.claude/skills/requirements-documentation/SKILL.md` | 要件文書構造、ハンドオフプロトコル、成果物テンプレート |
-  | ambiguity-elimination | `.claude/skills/ambiguity-elimination/SKILL.md` | 曖昧性検出・排除パターン、明確化テンプレート |
+  | スキル名                               | パス                                                             | 概要                                                                              |
+  | -------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+  | requirements-engineering               | `.claude/skills/requirements-engineering/SKILL.md`               | Karl Wiegers方法論、MoSCoW優先度、曖昧性検出、トリアージフレームワーク            |
+  | use-case-modeling                      | `.claude/skills/use-case-modeling/SKILL.md`                      | アクター識別、シナリオパターン、ユースケース関係（include/extend/generalization） |
+  | acceptance-criteria-writing            | `.claude/skills/acceptance-criteria-writing/SKILL.md`            | Given-When-Then形式、テスト可能性基準、エッジケースパターン                       |
+  | interview-techniques                   | `.claude/skills/interview-techniques/SKILL.md`                   | 5W1Hフレームワーク、Why分析（5 Whys）、質問タイプ分類                             |
+  | functional-non-functional-requirements | `.claude/skills/functional-non-functional-requirements/SKILL.md` | FR/NFR分類、FURPS+品質モデル、測定可能な目標定義                                  |
+  | requirements-verification              | `.claude/skills/requirements-verification/SKILL.md`              | 要件の一貫性・完全性・検証可能性評価、トレーサビリティマトリクス                  |
+  | requirements-documentation             | `.claude/skills/requirements-documentation/SKILL.md`             | 要件文書構造、ハンドオフプロトコル、成果物テンプレート                            |
+  | ambiguity-elimination                  | `.claude/skills/ambiguity-elimination/SKILL.md`                  | 曖昧性検出・排除パターン、明確化テンプレート                                      |
 
 #### 3. テクニカルライター（仕様書作成者）
 
@@ -239,11 +239,11 @@
 - 参照スキル:
   | スキル名 | パス | 概要 |
   | ------------------------------ | ------------------------------------------------ | ------------------------------------------------ |
-  | design-patterns-behavioral | `.claude/skills/design-patterns-behavioral/SKILL.md` | Strategy, Template Method, Command, Observer     |
-  | plugin-architecture        | `.claude/skills/plugin-architecture/SKILL.md` | 動的ロード、レジストリパターン、依存性注入        |
-  | interface-segregation      | `.claude/skills/interface-segregation/SKILL.md` | ISP準拠、ロールベースインターフェース設計         |
-  | factory-patterns           | `.claude/skills/factory-patterns/SKILL.md` | Factory Method, Abstract Factory, Builder, Registry |
-  | open-closed-principle      | `.claude/skills/open-closed-principle/SKILL.md` | 拡張ポイント設計、OCPへのリファクタリング         |
+  | design-patterns-behavioral | `.claude/skills/design-patterns-behavioral/SKILL.md` | Strategy, Template Method, Command, Observer |
+  | plugin-architecture | `.claude/skills/plugin-architecture/SKILL.md` | 動的ロード、レジストリパターン、依存性注入 |
+  | interface-segregation | `.claude/skills/interface-segregation/SKILL.md` | ISP準拠、ロールベースインターフェース設計 |
+  | factory-patterns | `.claude/skills/factory-patterns/SKILL.md` | Factory Method, Abstract Factory, Builder, Registry |
+  | open-closed-principle | `.claude/skills/open-closed-principle/SKILL.md` | 拡張ポイント設計、OCPへのリファクタリング |
 
 #### 10. 外部連携ゲートウェイ
 
@@ -367,13 +367,13 @@
 - モデル人物: C.J.デイト (C.J. Date) - リレーショナルデータベース研究者
 - 目的: 効率的で整合性の取れたデータ保存構造の定義。
 - 背景: 悪い DB 設計はパフォーマンス劣化とデータ不整合の元凶となる。
-- 責務: Drizzle Schema 定義、インデックス設計、JSONB 活用設計。
+- 責務: Drizzle Schema 定義、インデックス設計、JSON 活用設計（SQLite JSON1拡張）。
 - 参照書籍・メソッド:
   1.  『データベース実践講義』: 「正規化」と「意図的な非正規化」の使い分け。
   2.  『SQL アンチパターン』: 「ジェイウォーク（信号無視）」等のアンチパターン回避。
   3.  『リレーショナルデータベース入門』: 「外部キー制約」による参照整合性確保。
 - 実行チェックリスト:
-  - [ ] JSONB カラムの検索パフォーマンスは考慮されているか？
+  - [ ] JSON カラムの検索パフォーマンスは考慮されているか？
   - [ ] 適切なインデックスが貼られているか？
   - [ ] 外部キー制約とCASCADE動作が適切に設定されているか？
   - [ ] SQLアンチパターン（ジェイウォーク、EAV等）が排除されているか？
@@ -382,9 +382,9 @@
   | スキル名 | パス | 概要 |
   | --------------------------- | ------ | ---------------------------------------------------- |
   | database-normalization | `.claude/skills/database-normalization/SKILL.md` | 第 1〜5 正規形、BCNF、意図的な非正規化、更新異常回避 |
-  | indexing-strategies | `.claude/skills/indexing-strategies/SKILL.md` | B-Tree、GIN、GiST、BRIN インデックス、部分インデックス |
+  | indexing-strategies | `.claude/skills/indexing-strategies/SKILL.md` | B-Tree、部分インデックス、式インデックス（SQLite） |
   | sql-anti-patterns | `.claude/skills/sql-anti-patterns/SKILL.md` | ジェイウォーク、EAV、Polymorphic Associations、25種のアンチパターン回避 |
-  | jsonb-optimization | `.claude/skills/jsonb-optimization/SKILL.md` | GINインデックス、@>演算子最適化、Zodスキーマ統合 |
+  | json-optimization | `.claude/skills/json-optimization/SKILL.md` | SQLite JSON1拡張、json_extract、Zodスキーマ統合 |
   | foreign-key-constraints | `.claude/skills/foreign-key-constraints/SKILL.md` | CASCADE動作戦略、ソフトデリート統合、循環参照回避 |
 
 #### 15. リポジトリ実装
@@ -679,7 +679,7 @@
   | pre-commit-security | `.claude/skills/pre-commit-security/SKILL.md` | pre-commit hook実装、機密情報検出、Git履歴スキャン |
   | encryption-key-lifecycle | `.claude/skills/encryption-key-lifecycle/SKILL.md` | 暗号化アルゴリズム、鍵生成・保管・Rotation・廃棄 |
   | environment-isolation | `.claude/skills/environment-isolation/SKILL.md` | 環境分離4レベル、最小権限、クロスアカウント制御 |
-  | railway-secrets-management | `.claude/skills/railway-secrets-management/SKILL.md` | Railway Secrets、Neon Plugin、Railway CLI統合 |
+  | railway-secrets-management | `.claude/skills/railway-secrets-management/SKILL.md` | Railway Secrets、Turso統合、Railway CLI統合 |
   | github-actions-security | `.claude/skills/github-actions-security/SKILL.md` | GitHub Secrets、Environment保護、CI/CD品質ゲート |
   | tool-permission-management | `.claude/skills/tool-permission-management/SKILL.md` | ツール権限管理、最小権限原則 |
   | best-practices-curation | `.claude/skills/best-practices-curation/SKILL.md` | セキュリティベストプラクティス、継続的改善 |
@@ -743,9 +743,8 @@
   | backup-recovery | `.claude/skills/backup-recovery/SKILL.md` | 多層防御バックアップ、PITR、RPO/RTO設計、復旧ドリル |
   | query-performance-tuning | `.claude/skills/query-performance-tuning/SKILL.md` | EXPLAIN ANALYZE、インデックス戦略、N+1問題、クエリ最適化 |
   | database-seeding | `.claude/skills/database-seeding/SKILL.md` | 環境別Seeding、べき等性、Faker.js、ファクトリパターン |
-  | connection-pooling | `.claude/skills/connection-pooling/SKILL.md` | サーバーレス対応（Neon/Supabase）、接続数最適化 |
-  | pgvector-optimization | `.claude/skills/pgvector-optimization/SKILL.md` | ベクトルDB設計、HNSW/IVFFlat、類似検索、RAGパターン |
-  | database-monitoring | `.claude/skills/database-monitoring/SKILL.md` | PostgreSQL統計、スロークエリ監視、健全性メトリクス、アラート設計 |
+  | connection-pooling | `.claude/skills/connection-pooling/SKILL.md` | libSQL接続管理、Turso Embedded Replicas、接続最適化 |
+  | database-monitoring | `.claude/skills/database-monitoring/SKILL.md` | SQLite統計、スロークエリ監視、健全性メトリクス、アラート設計 |
 
 ---
 
@@ -869,21 +868,21 @@
   - [ ] 処理の途中で失敗した場合のリカバリは考慮されているか？
 - 成果物: `.claude/commands/*.md`
 - 必要なスキル:
-| スキル名 | パス | 概要 |
-|---------|------|------|
-| command-structure-fundamentals | `.claude/skills/command-structure-fundamentals/SKILL.md` | コマンド基本構造 |
-| command-arguments-system | `.claude/skills/command-arguments-system/SKILL.md` | 引数システム |
-| command-security-design | `.claude/skills/command-security-design/SKILL.md` | セキュリティ設計 |
-| command-basic-patterns | `.claude/skills/command-basic-patterns/SKILL.md` | 基本パターン |
-| command-advanced-patterns | `.claude/skills/command-advanced-patterns/SKILL.md` | 高度なパターン |
-| command-agent-skill-integration | `.claude/skills/command-agent-skill-integration/SKILL.md` | エージェント・スキル統合 |
-| command-activation-mechanisms | `.claude/skills/command-activation-mechanisms/SKILL.md` | 起動メカニズム |
-| command-error-handling | `.claude/skills/command-error-handling/SKILL.md` | エラーハンドリング |
-| command-naming-conventions | `.claude/skills/command-naming-conventions/SKILL.md` | 命名規則 |
-| command-documentation-patterns | `.claude/skills/command-documentation-patterns/SKILL.md` | ドキュメンテーション |
-| command-placement-priority | `.claude/skills/command-placement-priority/SKILL.md` | 配置と優先順位 |
-| command-best-practices | `.claude/skills/command-best-practices/SKILL.md` | ベストプラクティス |
-| command-performance-optimization | `.claude/skills/command-performance-optimization/SKILL.md` | パフォーマンス最適化 |
+  | スキル名 | パス | 概要 |
+  |---------|------|------|
+  | command-structure-fundamentals | `.claude/skills/command-structure-fundamentals/SKILL.md` | コマンド基本構造 |
+  | command-arguments-system | `.claude/skills/command-arguments-system/SKILL.md` | 引数システム |
+  | command-security-design | `.claude/skills/command-security-design/SKILL.md` | セキュリティ設計 |
+  | command-basic-patterns | `.claude/skills/command-basic-patterns/SKILL.md` | 基本パターン |
+  | command-advanced-patterns | `.claude/skills/command-advanced-patterns/SKILL.md` | 高度なパターン |
+  | command-agent-skill-integration | `.claude/skills/command-agent-skill-integration/SKILL.md` | エージェント・スキル統合 |
+  | command-activation-mechanisms | `.claude/skills/command-activation-mechanisms/SKILL.md` | 起動メカニズム |
+  | command-error-handling | `.claude/skills/command-error-handling/SKILL.md` | エラーハンドリング |
+  | command-naming-conventions | `.claude/skills/command-naming-conventions/SKILL.md` | 命名規則 |
+  | command-documentation-patterns | `.claude/skills/command-documentation-patterns/SKILL.md` | ドキュメンテーション |
+  | command-placement-priority | `.claude/skills/command-placement-priority/SKILL.md` | 配置と優先順位 |
+  | command-best-practices | `.claude/skills/command-best-practices/SKILL.md` | ベストプラクティス |
+  | command-performance-optimization | `.claude/skills/command-performance-optimization/SKILL.md` | パフォーマンス最適化 |
 
 #### 33. メタ・エージェント設計者
 

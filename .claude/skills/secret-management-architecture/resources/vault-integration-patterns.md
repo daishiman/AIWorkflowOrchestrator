@@ -10,13 +10,15 @@ HashiCorp Vaultは、エンタープライズグレードのSecret管理ソリ�
 ### パターン1: Direct API Integration
 
 **構成**:
+
 ```
 Application → Vault API → Secret取得
 ```
 
 **実装例**:
+
 ```typescript
-import * as vault from 'node-vault';
+import * as vault from "node-vault";
 
 class VaultSecretManager {
   private client: vault.client;
@@ -45,6 +47,7 @@ class VaultSecretManager {
 ### パターン2: Vault Agent Sidecar
 
 **構成**:
+
 ```
 Application → Vault Agent (local) → Vault Server
 ```
@@ -55,6 +58,7 @@ Application → Vault Agent (local) → Vault Server
 ### パターン3: Secrets Injection at Boot
 
 **構成**:
+
 ```
 Init Container → Vault → Secret取得 → 環境変数注入 → Application起動
 ```
@@ -88,25 +92,27 @@ path "secret/data/prod/app/*" {
 ### データベース認証情報の動的生成
 
 **設定**:
+
 ```hcl
 # Vault DB Secret Engine設定
-vault write database/config/my-postgresql-database \
-  plugin_name=postgresql-database-plugin \
+vault write database/config/my-sqlite-database \
+  plugin_name=sqlite-database-plugin \
   allowed_roles="readonly,readwrite" \
-  connection_url="postgresql://{{username}}:{{password}}@postgres:5432/mydb"
+  connection_url="libsql://{{username}}:{{password}}@turso.io/mydb"
 
 # ロール定義
 vault write database/roles/readonly \
-  db_name=my-postgresql-database \
-  creation_statements="CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}' IN ROLE readonly;" \
+  db_name=my-sqlite-database \
+  creation_statements="-- SQLite does not support traditional roles, use table-level permissions" \
   default_ttl="1h" \
   max_ttl="24h"
 ```
 
 **使用**:
+
 ```typescript
 // 動的認証情報の取得（1時間有効）
-const dbCreds = await vault.read('database/creds/readonly');
+const dbCreds = await vault.read("database/creds/readonly");
 const { username, password } = dbCreds.data;
 
 // 自動的に1時間後に無効化される
@@ -130,6 +136,7 @@ vault audit enable syslog tag="vault" facility="LOCAL7"
 ### 監査ログ分析
 
 すべてのSecretアクセスが記録される:
+
 - アクセス日時
 - 要求者（認証トークンID）
 - アクセスしたSecretパス
@@ -165,6 +172,7 @@ class ResilientVaultManager {
 ## 設計判断基準
 
 ### Vault導入を検討すべき条件
+
 - [ ] Secret数が50個を超える
 - [ ] 環境数が5個以上ある
 - [ ] 動的Secret生成が必要
@@ -173,6 +181,7 @@ class ResilientVaultManager {
 - [ ] コンプライアンス要件（SOC2、HIPAA等）がある
 
 ### Vault導入を避けるべき条件
+
 - [ ] 小規模プロジェクト（開発者5名未満）
 - [ ] Secret数が20個未満
 - [ ] シンプルな環境変数管理で十分

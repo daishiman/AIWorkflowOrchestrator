@@ -2,103 +2,164 @@
 
 ## よくある接続エラー
 
-### 1. 接続枯渇
+### 1. 認証エラー
 
 ```
-Error: too many connections for role "xxx"
-Error: remaining connection slots are reserved for replication
-Error: sorry, too many clients already
+Error: UNAUTHORIZED: Invalid authentication token
+Error: JWT token expired
+Error: Authentication failed
 ```
 
 **原因**:
-- プールサイズ超過
-- 接続リーク
-- 急激な負荷増加
+
+- TURSO_AUTH_TOKENが無効または期限切れ
+- 環境変数が正しく設定されていない
+- トークンの権限が不足
 
 **対処**:
+
 ```typescript
-// 接続タイムアウトとリトライを設定
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  max: 20,
-  connectionTimeoutMillis: 5000,
-  idleTimeoutMillis: 30000,
+import { createClient } from "@libsql/client";
+
+// トークンの検証
+function validateAuth() {
+  const url = process.env.TURSO_DATABASE_URL;
+  const token = process.env.TURSO_AUTH_TOKEN;
+
+  if (!url || !token) {
+    throw new Error("Missing TURSO credentials");
+  }
+
+  // URLフォーマットの確認
+  if (!url.startsWith("libsql://") && !url.startsWith("file://")) {
+    throw new Error("Invalid TURSO_DATABASE_URL format");
+  }
+
+  return { url, token };
+}
+
+// 安全なクライアント作成
+const { url, token } = validateAuth();
+const client = createClient({
+  url,
+  authToken: token,
 });
-
-// 待機中の接続を監視
-pool.on('connect', () => console.log('New connection'));
-pool.on('remove', () => console.log('Connection removed'));
 ```
 
-### 2. 接続タイムアウト
+### 2. ネットワークエラー
 
 ```
-Error: Connection terminated due to connection timeout
-Error: Connection terminated unexpectedly
-Error: timeout expired
+Error: Network request failed
+Error: Failed to fetch
+Error: ECONNREFUSED
 ```
 
 **原因**:
-- ネットワーク遅延
-- サーバー過負荷
+
+- インターネット接続の問題
+- Tursoサービスのダウンタイム
 - ファイアウォール設定
 
 **対処**:
+
 ```typescript
-const pool = new Pool({
-  connectionTimeoutMillis: 10000,  // 接続タイムアウト
-  query_timeout: 30000,            // クエリタイムアウト
-  statement_timeout: 30000,        // ステートメントタイムアウト
+import { createClient } from "@libsql/client";
+
+// タイムアウト付きクライアント
+const client = createClient({
+  url: process.env.TURSO_DATABASE_URL!,
+  authToken: process.env.TURSO_AUTH_TOKEN!,
+  // libSQLクライアントは内部でタイムアウトを管理
 });
-```
 
-### 3. 認証エラー
-
-```
-Error: password authentication failed for user "xxx"
-Error: no pg_hba.conf entry for host "xxx"
-Error: FATAL: database "xxx" does not exist
-```
-
-**原因**:
-- 接続情報の誤り
-- 権限設定の問題
-- データベースが存在しない
-
-**対処**:
-```typescript
-// 接続前に環境変数を検証
-function validateDatabaseUrl(url: string): boolean {
-  try {
-    const parsed = new URL(url);
-    return (
-      parsed.protocol === 'postgresql:' &&
-      parsed.hostname &&
-      parsed.pathname.length > 1
-    );
-  } catch {
-    return false;
+// リトライ付き実行
+async function executeWithRetry(query: string, maxRetries = 3) {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await client.execute(query);
+    } catch (error) {
+      if (i === maxRetries - 1) throw error;
+      await sleep(Math.pow(2, i) * 1000); // 指数バックオフ
+    }
   }
 }
 ```
 
-### 4. SSL/TLS エラー
+### 3. 同期エラー（組み込みレプリカ使用時）
 
 ```
-Error: The server does not support SSL connections
-Error: SSL connection is required
-Error: self signed certificate
+Error: Sync failed
+Error: Unable to sync local replica
+Error: Replica out of sync
 ```
+
+**原因**:
+
+- ネットワーク不安定
+- リモートDBへの接続問題
+- ローカルストレージ不足
 
 **対処**:
+
 ```typescript
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: process.env.NODE_ENV === 'production',
-    // 開発環境では自己署名証明書を許可
-  },
+const client = createClient({
+  url: "file:///tmp/local.db",
+  syncUrl: process.env.TURSO_DATABASE_URL!,
+  authToken: process.env.TURSO_AUTH_TOKEN!,
+  syncInterval: 60,
 });
+
+// 手動同期とエラーハンドリング
+async function syncWithErrorHandling() {
+  try {
+    await client.sync();
+    console.log("Sync successful");
+  } catch (error) {
+    console.error("Sync failed:", error);
+    // フォールバック: リモートDBを直接使用
+    return createClient({
+      url: process.env.TURSO_DATABASE_URL!,
+      authToken: process.env.TURSO_AUTH_TOKEN!,
+    });
+  }
+}
+```
+
+### 4. クエリエラー
+
+```
+Error: SQLITE_ERROR: SQL error or missing database
+Error: SQLITE_CONSTRAINT: constraint failed
+Error: SQLITE_BUSY: database is locked
+```
+
+**原因**:
+
+- SQLシンタックスエラー
+- 制約違反
+- トランザクション競合
+
+**対処**:
+
+```typescript
+async function safeExecute(query: string) {
+  try {
+    return await client.execute(query);
+  } catch (error: any) {
+    // エラータイプに応じた処理
+    if (error.message.includes("SQLITE_CONSTRAINT")) {
+      console.error("Constraint violation:", error);
+      // 制約違反の処理
+    } else if (error.message.includes("SQLITE_BUSY")) {
+      console.error("Database locked, retrying...");
+      // リトライ
+      await sleep(100);
+      return safeExecute(query);
+    } else {
+      throw error;
+    }
+  }
+}
 ```
 
 ## リトライ戦略
@@ -122,7 +183,7 @@ const defaultRetryConfig: RetryConfig = {
 
 async function withRetry<T>(
   operation: () => Promise<T>,
-  config: RetryConfig = defaultRetryConfig
+  config: RetryConfig = defaultRetryConfig,
 ): Promise<T> {
   let lastError: Error | undefined;
   let delay = config.initialDelayMs;
@@ -134,7 +195,9 @@ async function withRetry<T>(
       lastError = error as Error;
 
       if (attempt < config.maxRetries && isRetryable(error)) {
-        console.log(`Retry attempt ${attempt + 1}/${config.maxRetries}, waiting ${delay}ms`);
+        console.log(
+          `Retry attempt ${attempt + 1}/${config.maxRetries}, waiting ${delay}ms`,
+        );
         await sleep(delay);
         delay = Math.min(delay * config.factor, config.maxDelayMs);
       }
@@ -147,21 +210,22 @@ async function withRetry<T>(
 function isRetryable(error: unknown): boolean {
   if (error instanceof Error) {
     const retryableMessages = [
-      'connection refused',
-      'timeout',
-      'too many connections',
-      'connection terminated',
-      'network',
+      "connection refused",
+      "timeout",
+      "network",
+      "fetch failed",
+      "econnrefused",
+      "sync failed",
     ];
-    return retryableMessages.some(msg =>
-      error.message.toLowerCase().includes(msg)
+    return retryableMessages.some((msg) =>
+      error.message.toLowerCase().includes(msg),
     );
   }
   return false;
 }
 
 function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 ```
 
@@ -179,9 +243,9 @@ const result = await withRetry(async () => {
 
 ```typescript
 enum CircuitState {
-  CLOSED = 'CLOSED',     // 正常
-  OPEN = 'OPEN',         // 遮断
-  HALF_OPEN = 'HALF_OPEN', // 回復確認中
+  CLOSED = "CLOSED", // 正常
+  OPEN = "OPEN", // 遮断
+  HALF_OPEN = "HALF_OPEN", // 回復確認中
 }
 
 class CircuitBreaker {
@@ -199,7 +263,7 @@ class CircuitBreaker {
       if (this.shouldAttemptReset()) {
         this.state = CircuitState.HALF_OPEN;
       } else {
-        throw new Error('Circuit breaker is OPEN');
+        throw new Error("Circuit breaker is OPEN");
       }
     }
 
@@ -229,7 +293,9 @@ class CircuitBreaker {
 
     if (this.failureCount >= this.failureThreshold) {
       this.state = CircuitState.OPEN;
-      console.error(`Circuit breaker OPENED after ${this.failureCount} failures`);
+      console.error(
+        `Circuit breaker OPENED after ${this.failureCount} failures`,
+      );
     }
   }
 
@@ -250,7 +316,7 @@ async function queryWithCircuitBreaker() {
       return await db.select().from(users);
     });
   } catch (error) {
-    if (error.message === 'Circuit breaker is OPEN') {
+    if (error.message === "Circuit breaker is OPEN") {
       // フォールバック処理
       return getCachedUsers();
     }
@@ -265,26 +331,26 @@ async function queryWithCircuitBreaker() {
 
 ```typescript
 enum ErrorCategory {
-  CONNECTION = 'CONNECTION',
-  AUTHENTICATION = 'AUTHENTICATION',
-  TIMEOUT = 'TIMEOUT',
-  QUERY = 'QUERY',
-  UNKNOWN = 'UNKNOWN',
+  CONNECTION = "CONNECTION",
+  AUTHENTICATION = "AUTHENTICATION",
+  TIMEOUT = "TIMEOUT",
+  QUERY = "QUERY",
+  UNKNOWN = "UNKNOWN",
 }
 
 function categorizeError(error: Error): ErrorCategory {
   const message = error.message.toLowerCase();
 
-  if (message.includes('connection') || message.includes('refused')) {
+  if (message.includes("connection") || message.includes("refused")) {
     return ErrorCategory.CONNECTION;
   }
-  if (message.includes('authentication') || message.includes('password')) {
+  if (message.includes("authentication") || message.includes("password")) {
     return ErrorCategory.AUTHENTICATION;
   }
-  if (message.includes('timeout')) {
+  if (message.includes("timeout")) {
     return ErrorCategory.TIMEOUT;
   }
-  if (message.includes('syntax') || message.includes('query')) {
+  if (message.includes("syntax") || message.includes("query")) {
     return ErrorCategory.QUERY;
   }
   return ErrorCategory.UNKNOWN;
@@ -302,7 +368,10 @@ interface ErrorLog {
   context?: Record<string, unknown>;
 }
 
-function logDatabaseError(error: Error, context?: Record<string, unknown>): void {
+function logDatabaseError(
+  error: Error,
+  context?: Record<string, unknown>,
+): void {
   const log: ErrorLog = {
     timestamp: new Date(),
     category: categorizeError(error),
@@ -315,8 +384,10 @@ function logDatabaseError(error: Error, context?: Record<string, unknown>): void
   console.error(JSON.stringify(log));
 
   // 重大なエラーはアラート
-  if (log.category === ErrorCategory.CONNECTION ||
-      log.category === ErrorCategory.AUTHENTICATION) {
+  if (
+    log.category === ErrorCategory.CONNECTION ||
+    log.category === ErrorCategory.AUTHENTICATION
+  ) {
     sendAlert(log);
   }
 }
@@ -328,7 +399,7 @@ function logDatabaseError(error: Error, context?: Record<string, unknown>): void
 
 ```typescript
 interface HealthCheckResult {
-  status: 'healthy' | 'unhealthy';
+  status: "healthy" | "unhealthy";
   latencyMs: number;
   error?: string;
   timestamp: Date;
@@ -338,18 +409,18 @@ async function checkDatabaseHealth(): Promise<HealthCheckResult> {
   const start = Date.now();
 
   try {
-    await db.execute(sql`SELECT 1`);
+    await client.execute("SELECT 1");
 
     return {
-      status: 'healthy',
+      status: "healthy",
       latencyMs: Date.now() - start,
       timestamp: new Date(),
     };
   } catch (error) {
     return {
-      status: 'unhealthy',
+      status: "unhealthy",
       latencyMs: Date.now() - start,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : "Unknown error",
       timestamp: new Date(),
     };
   }
@@ -358,8 +429,8 @@ async function checkDatabaseHealth(): Promise<HealthCheckResult> {
 // 定期ヘルスチェック
 setInterval(async () => {
   const health = await checkDatabaseHealth();
-  if (health.status === 'unhealthy') {
-    console.error('Database health check failed:', health);
+  if (health.status === "unhealthy") {
+    console.error("Database health check failed:", health);
   }
 }, 30000); // 30秒ごと
 ```
@@ -371,31 +442,37 @@ setInterval(async () => {
 export async function GET() {
   const dbHealth = await checkDatabaseHealth();
 
-  return new Response(JSON.stringify({
-    database: dbHealth,
-    timestamp: new Date().toISOString(),
-  }), {
-    status: dbHealth.status === 'healthy' ? 200 : 503,
-    headers: { 'Content-Type': 'application/json' },
-  });
+  return new Response(
+    JSON.stringify({
+      database: dbHealth,
+      timestamp: new Date().toISOString(),
+    }),
+    {
+      status: dbHealth.status === "healthy" ? 200 : 503,
+      headers: { "Content-Type": "application/json" },
+    },
+  );
 }
 ```
 
 ## チェックリスト
 
 ### エラーハンドリング実装時
+
 - [ ] リトライ戦略を実装したか？
 - [ ] 指数バックオフを使用しているか？
 - [ ] リトライ可能なエラーを定義したか？
 - [ ] タイムアウトを設定したか？
 
 ### 監視設定時
+
 - [ ] エラーログが構造化されているか？
 - [ ] エラーカテゴリが分類されているか？
 - [ ] アラートが設定されているか？
 - [ ] ヘルスチェックがあるか？
 
 ### 障害対応時
+
 - [ ] サーキットブレーカーが機能するか？
 - [ ] フォールバック処理があるか？
 - [ ] 障害の影響範囲を限定できるか？

@@ -5,90 +5,84 @@
 データベースがクエリを実行する際の具体的な処理手順。
 最適化判断の根拠となる重要な情報を提供する。
 
-## PostgreSQL: EXPLAIN ANALYZE
+## SQLite: EXPLAIN QUERY PLAN
 
 ### 基本的な使い方
 
 ```sql
--- 推定値のみ
-EXPLAIN SELECT * FROM workflows WHERE status = 'PENDING';
+-- クエリの実行計画を表示
+EXPLAIN QUERY PLAN SELECT * FROM workflows WHERE status = 'PENDING';
 
--- 実際の実行結果を含む（推奨）
-EXPLAIN ANALYZE SELECT * FROM workflows WHERE status = 'PENDING';
-
--- 詳細情報を含む
-EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)
+-- 詳細な実行計画（SQLiteは常に実際の実行は行わない）
+EXPLAIN QUERY PLAN
 SELECT * FROM workflows WHERE status = 'PENDING';
 ```
 
 ### 出力の読み方
 
 ```
-Seq Scan on workflows  (cost=0.00..12.50 rows=100 width=256) (actual time=0.015..0.089 rows=85 loops=1)
-  Filter: (status = 'PENDING')
-  Rows Removed by Filter: 15
-Planning Time: 0.123 ms
-Execution Time: 0.112 ms
+QUERY PLAN
+|--SCAN TABLE workflows
+   USING INDEX idx_workflows_status (status=?)
 ```
 
 **構成要素**:
-- `Seq Scan`: スキャン方法
-- `cost=0.00..12.50`: 推定コスト（開始..終了）
-- `rows=100`: 推定行数
-- `actual time=0.015..0.089`: 実際の実行時間（ミリ秒）
-- `rows=85`: 実際の行数
-- `loops=1`: ループ回数
+
+- `SCAN TABLE`: テーブルスキャン（フルスキャン）
+- `SEARCH TABLE`: インデックスを使用した検索
+- `USING INDEX`: 使用されるインデックス名
+- `USING COVERING INDEX`: カバリングインデックス（最速）
+- ツリー構造で実行順序を表示（上から下、内側から外側）
 
 ## スキャン方法
 
-### Seq Scan（シーケンシャルスキャン）
+### SCAN TABLE（フルテーブルスキャン）
 
 **説明**: テーブル全体を先頭から順にスキャン
 
 **特徴**:
+
 - インデックスを使用しない
 - 小規模テーブルでは効率的
 - 大規模テーブルでは遅い
 
 **出現時の対応**:
+
 ```
-Seq Scan on large_table ...
+SCAN TABLE large_table
 ```
+
 → インデックスの追加を検討
 
-### Index Scan
+### SEARCH TABLE（インデックス使用）
 
 **説明**: インデックスを使用して行を特定
 
 **特徴**:
+
 - 選択性が高い条件で効率的
-- テーブルへのランダムアクセスが発生
+- B-Treeインデックスを使用
 
 **望ましい状態**:
+
 ```
-Index Scan using idx_workflows_status on workflows ...
+SEARCH TABLE workflows USING INDEX idx_workflows_status (status=?)
 ```
 
-### Index Only Scan
+### USING COVERING INDEX（カバリングインデックス）
 
 **説明**: インデックスのみで結果を返却（最速）
 
 **特徴**:
+
 - テーブルへのアクセスが不要
-- カバリングインデックスが必要
+- 必要なすべてのカラムがインデックスに含まれる
 
 **最も効率的**:
+
 ```
-Index Only Scan using idx_workflows_status_name on workflows ...
+SEARCH TABLE workflows USING COVERING INDEX idx_workflows_status_name
 ```
-
-### Bitmap Index Scan
-
-**説明**: インデックスからビットマップを作成してスキャン
-
-**特徴**:
-- 中程度の選択性で使用
-- 複数インデックスの組み合わせが可能
 
 ## JOIN方法
 
@@ -97,6 +91,7 @@ Index Only Scan using idx_workflows_status_name on workflows ...
 **説明**: 外側テーブルの各行に対して内側テーブルを検索
 
 **適用場面**:
+
 - 小規模なテーブル同士
 - 内側テーブルにインデックスがある場合
 
@@ -111,6 +106,7 @@ Nested Loop  (cost=... rows=...)
 **説明**: 小さいテーブルからハッシュテーブルを作成して結合
 
 **適用場面**:
+
 - 大規模なテーブル同士
 - 等価条件での結合
 
@@ -126,6 +122,7 @@ Hash Join  (cost=... rows=...)
 **説明**: ソートされたデータを順番に結合
 
 **適用場面**:
+
 - 大規模データ
 - ソート済みまたはインデックスがある場合
 
@@ -137,75 +134,87 @@ Merge Join  (cost=... rows=...)
 
 ## 問題パターンと対策
 
-### 問題1: 大規模テーブルのSeq Scan
+### 問題1: 大規模テーブルのSCAN TABLE
 
 **検出**:
+
 ```
-Seq Scan on workflows  (cost=0.00..15000.00 rows=1000000 ...)
+SCAN TABLE workflows
 ```
 
 **原因**:
+
 - インデックスがない
 - インデックスが使用されない条件
 
 **対策**:
+
 1. 適切なインデックスを追加
 2. WHERE句の条件を見直し
 3. 関数使用を避ける
 
-### 問題2: 大量の行が除外される
+### 問題2: インデックスが使用されない
 
 **検出**:
+
 ```
-Rows Removed by Filter: 999900
+SCAN TABLE workflows
 ```
+
+（SEARCH TABLE ではなく SCAN TABLE が表示される）
 
 **原因**:
-- フィルタがインデックスで処理されていない
+
+- インデックスが存在しない
+- クエリオプティマイザーがフルスキャンを選択
 
 **対策**:
-1. フィルタ条件に対応するインデックスを追加
-2. クエリの書き換え
+
+1. 適切なインデックスを追加
+2. 統計情報を更新（ANALYZE）
+3. クエリの書き換え
 
 ### 問題3: 不適切なJOIN方法
 
 **検出**:
+
 ```
-Nested Loop  (cost=0.00..1500000.00 rows=1000000 ...)
-  -> Seq Scan on large_table_a
-  -> Seq Scan on large_table_b
+SCAN TABLE large_table_a
+SCAN TABLE large_table_b
 ```
 
 **原因**:
+
 - JOIN条件にインデックスがない
 - 統計情報が古い
 
 **対策**:
+
 1. JOIN条件のカラムにインデックスを追加
 2. `ANALYZE`で統計情報を更新
 3. クエリの書き換え
 
-### 問題4: 推定値と実際の乖離
+### 問題4: 複数テーブルスキャン
 
 **検出**:
-```
-(rows=100) (actual ... rows=100000 ...)
-```
+
+複数の `SCAN TABLE` が表示される
 
 **原因**:
-- 統計情報が古い
-- 相関のある条件
+
+- 複数テーブルでインデックスが不足
 
 **対策**:
-1. `ANALYZE`で統計情報を更新
-2. `CREATE STATISTICS`で相関情報を追加
+
+1. 各テーブルの結合キーにインデックスを追加
+2. 統計情報の更新
 
 ## 実行計画分析チェックリスト
 
 ### 基本チェック
 
-- [ ] Seq Scanが大規模テーブルで発生していないか？
-- [ ] 推定行数と実際の行数に大きな乖離がないか？
+- [ ] SCAN TABLEが大規模テーブルで発生していないか？
+- [ ] インデックスが適切に使用されているか（SEARCH TABLE）？
 - [ ] 適切なJOIN方法が選択されているか？
 
 ### インデックス活用チェック
@@ -216,9 +225,8 @@ Nested Loop  (cost=0.00..1500000.00 rows=1000000 ...)
 
 ### パフォーマンスチェック
 
-- [ ] 実行時間は許容範囲内か？
-- [ ] バッファヒット率は高いか？
-- [ ] 一時ファイルが使用されていないか？
+- [ ] クエリプランは最適化されているか？
+- [ ] 不要なテーブルスキャンはないか？
 
 ## ツールとコマンド
 
@@ -236,36 +244,29 @@ ANALYZE;
 
 ```sql
 -- テーブルのインデックス一覧
-\di workflows*
+SELECT name, sql FROM sqlite_master
+WHERE type = 'index' AND tbl_name = 'workflows';
 
--- インデックスの使用状況
-SELECT
-  schemaname,
-  tablename,
-  indexname,
-  idx_scan,
-  idx_tup_read,
-  idx_tup_fetch
-FROM pg_stat_user_indexes
-WHERE tablename = 'workflows';
+-- 特定インデックスの詳細
+PRAGMA index_info('idx_workflows_status');
+
+-- インデックスリスト
+PRAGMA index_list('workflows');
 ```
 
-### キャッシュの確認
+### テーブル情報の確認
 
 ```sql
--- バッファキャッシュのヒット率
-SELECT
-  relname,
-  heap_blks_read,
-  heap_blks_hit,
-  round(heap_blks_hit::numeric / (heap_blks_hit + heap_blks_read), 4) as hit_ratio
-FROM pg_statio_user_tables
-WHERE heap_blks_read > 0;
+-- テーブル構造確認
+PRAGMA table_info('workflows');
+
+-- データベース統計
+SELECT name, rootpage FROM sqlite_master WHERE type = 'table';
 ```
 
 ## 最適化の優先順位
 
-1. **Seq Scanの解消**: インデックス追加
+1. **SCAN TABLEの解消**: インデックス追加
 2. **JOIN方法の最適化**: インデックス追加、統計更新
-3. **推定値の改善**: 統計情報の更新
+3. **統計情報の更新**: ANALYZE実行
 4. **SELECT句の最適化**: 必要なカラムのみ取得

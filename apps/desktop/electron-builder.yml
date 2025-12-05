@@ -1,17 +1,30 @@
 appId: com.aiworkflow.orchestrator
 productName: AI Workflow Orchestrator
+copyright: Copyright © 2024 AIWorkflowOrchestrator
+
 directories:
-  buildResources: resources
+  buildResources: build
   output: dist
+
 files:
   - out/**/*
-  - '!**/*.map'
+  - "!**/*.map"
+  - "!**/*.ts"
+
 asarUnpack:
   - resources/**
   - node_modules/better-sqlite3/**
+
+# ===================
+# macOS Configuration
+# ===================
 mac:
   category: public.app-category.productivity
   artifactName: ${productName}-${version}-${arch}.${ext}
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
   target:
     - target: dmg
       arch:
@@ -21,7 +34,24 @@ mac:
       arch:
         - x64
         - arm64
+
+# macOS公証（CI環境で自動実行）
+afterSign: scripts/notarize.mjs
+
+dmg:
+  contents:
+    - x: 130
+      y: 220
+    - x: 410
+      y: 220
+      type: link
+      path: /Applications
+
+# ===================
+# Windows Configuration
+# ===================
 win:
+  artifactName: ${productName}-${version}-${arch}.${ext}
   target:
     - target: nsis
       arch:
@@ -29,14 +59,31 @@ win:
     - target: zip
       arch:
         - x64
+
 nsis:
   oneClick: false
+  perMachine: false
   allowToChangeInstallationDirectory: true
+  deleteAppDataOnUninstall: false
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+
+# ===================
+# Linux Configuration
+# ===================
 linux:
+  artifactName: ${productName}-${version}-${arch}.${ext}
   target:
     - AppImage
     - deb
   category: Utility
+  desktop:
+    StartupWMClass: ai-workflow-orchestrator
+
+# ===================
+# Auto-Update (GitHub Releases)
+# ===================
 publish:
   provider: github
   releaseType: draft
+  publishAutoUpdate: true

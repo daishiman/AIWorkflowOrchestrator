@@ -1,129 +1,158 @@
-# スキーマ変更パターン
+# スキーマ変更パターン (SQLite)
 
 ## カラム操作
 
 ### カラム追加
 
 **Nullable カラム（推奨）**:
+
 ```typescript
 // スキーマ
 description: text('description'),
 
 // SQL
-ALTER TABLE "workflows" ADD COLUMN "description" text;
+ALTER TABLE "workflows" ADD COLUMN "description" TEXT;
 ```
 
 **NOT NULL カラム（デフォルト値必須）**:
+
 ```typescript
 // スキーマ
 priority: integer('priority').notNull().default(0),
 
 // SQL
-ALTER TABLE "workflows" ADD COLUMN "priority" integer NOT NULL DEFAULT 0;
+ALTER TABLE "workflows" ADD COLUMN "priority" INTEGER NOT NULL DEFAULT 0;
 ```
 
 **既存データへの影響がある場合**:
+
 ```sql
 -- Step 1: Nullable で追加
-ALTER TABLE "workflows" ADD COLUMN "owner_id" uuid;
+ALTER TABLE "workflows" ADD COLUMN "owner_id" TEXT;
 
 -- Step 2: データ移行
 UPDATE "workflows" SET "owner_id" = "created_by_id";
 
 -- Step 3: NOT NULL 追加
-ALTER TABLE "workflows" ALTER COLUMN "owner_id" SET NOT NULL;
+-- SQLite注意: ALTER COLUMN はサポートされていません
+-- テーブル再作成が必要（後述のテーブル再作成パターン参照）
 
 -- Step 4: 外部キー追加
-ALTER TABLE "workflows"
-ADD CONSTRAINT "workflows_owner_id_fkey"
-FOREIGN KEY ("owner_id") REFERENCES "users"("id");
+-- SQLite注意: ALTER TABLE で外部キーは追加できません
+-- テーブル作成時に定義するか、テーブル再作成が必要
 ```
 
 ### カラム削除
 
-**安全な削除手順**:
+**SQLite制限**: SQLiteは `DROP COLUMN` をサポートしていません（3.35.0以降はサポート）。
+古いバージョンの場合はテーブル再作成が必要です。
+
+**3.35.0以降の削除手順**:
 
 ```sql
 -- 1. アプリケーションでの使用を停止（デプロイ）
 
--- 2. 非推奨マーク（オプション）
-COMMENT ON COLUMN "workflows"."legacy_field" IS 'DEPRECATED: Remove after 2024-02-01';
-
--- 3. 削除
+-- 2. 削除（3.35.0+）
 ALTER TABLE "workflows" DROP COLUMN "legacy_field";
 ```
 
-**CASCADE 削除（依存関係がある場合）**:
+**3.35.0未満の削除手順（テーブル再作成）**:
+
 ```sql
--- 制約も一緒に削除
-ALTER TABLE "workflows" DROP COLUMN "category_id" CASCADE;
+-- 1. 新テーブル作成（不要なカラムを除く）
+CREATE TABLE "workflows_new" (
+  "id" TEXT PRIMARY KEY,
+  "name" TEXT NOT NULL,
+  "status" TEXT NOT NULL
+  -- legacy_field は含めない
+);
+
+-- 2. データコピー
+INSERT INTO "workflows_new" SELECT "id", "name", "status" FROM "workflows";
+
+-- 3. 旧テーブル削除
+DROP TABLE "workflows";
+
+-- 4. テーブル名変更
+ALTER TABLE "workflows_new" RENAME TO "workflows";
+
+-- 5. インデックス再作成
+CREATE INDEX "workflows_status_idx" ON "workflows" ("status");
 ```
 
 ### カラム型変更
 
-**互換性のある変更**:
-```sql
--- varchar -> text（安全）
-ALTER TABLE "users" ALTER COLUMN "name" TYPE text;
+**SQLite制限**: SQLiteは `ALTER COLUMN TYPE` をサポートしていません。
+テーブル再作成が必要です。
 
--- integer -> bigint（安全）
-ALTER TABLE "counters" ALTER COLUMN "value" TYPE bigint;
+**型変更パターン（テーブル再作成）**:
+
+```sql
+-- 1. 新テーブル作成（新しい型で）
+CREATE TABLE "users_new" (
+  "id" TEXT PRIMARY KEY,
+  "name" TEXT NOT NULL,  -- 元は VARCHAR だったが TEXT に
+  "email" TEXT UNIQUE NOT NULL
+);
+
+-- 2. データコピー（型変換）
+INSERT INTO "users_new" SELECT "id", "name", "email" FROM "users";
+
+-- 3. 旧テーブル削除
+DROP TABLE "users";
+
+-- 4. テーブル名変更
+ALTER TABLE "users_new" RENAME TO "users";
+
+-- 5. インデックス/トリガー再作成
+CREATE INDEX "users_email_idx" ON "users" ("email");
 ```
 
-**互換性のない変更（データ変換必要）**:
-```sql
--- text -> integer
-ALTER TABLE "settings" ALTER COLUMN "value" TYPE integer USING "value"::integer;
+**安全な型変更パターン（新カラムアプローチ）**:
 
--- 注意: 変換できない値があるとエラー
-```
-
-**安全な型変更パターン**:
 ```sql
 -- 1. 新カラム追加
-ALTER TABLE "products" ADD COLUMN "price_decimal" numeric(10, 2);
+ALTER TABLE "products" ADD COLUMN "price_decimal" REAL;
 
 -- 2. データ変換
-UPDATE "products" SET "price_decimal" = "price"::numeric(10, 2);
+UPDATE "products" SET "price_decimal" = CAST("price" AS REAL) / 100.0;
 
--- 3. 制約追加
-ALTER TABLE "products" ALTER COLUMN "price_decimal" SET NOT NULL;
-
--- 4. アプリケーション更新後、旧カラム削除
-ALTER TABLE "products" DROP COLUMN "price";
-ALTER TABLE "products" RENAME COLUMN "price_decimal" TO "price";
+-- 3. アプリケーション更新後、テーブル再作成で旧カラム削除
+-- （3.35.0未満の場合はテーブル再作成、3.35.0+はDROP COLUMN）
 ```
 
 ### カラム名変更
 
 **直接リネーム**:
+
 ```sql
 ALTER TABLE "users" RENAME COLUMN "name" TO "full_name";
 ```
 
 **安全なリネーム（ダウンタイムなし）**:
+
 ```sql
 -- 1. 新カラム追加
-ALTER TABLE "users" ADD COLUMN "full_name" text;
+ALTER TABLE "users" ADD COLUMN "full_name" TEXT;
 
 -- 2. トリガーで同期（書き込み時）
-CREATE OR REPLACE FUNCTION sync_name_columns()
-RETURNS TRIGGER AS $$
-BEGIN
-  IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
-    IF NEW."name" IS DISTINCT FROM OLD."name" THEN
-      NEW."full_name" := NEW."name";
-    ELSIF NEW."full_name" IS DISTINCT FROM OLD."full_name" THEN
-      NEW."name" := NEW."full_name";
-    END IF;
-  END IF;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
 CREATE TRIGGER sync_name_trigger
-BEFORE INSERT OR UPDATE ON "users"
-FOR EACH ROW EXECUTE FUNCTION sync_name_columns();
+AFTER INSERT ON "users"
+BEGIN
+  UPDATE "users" SET "full_name" = NEW."name" WHERE "id" = NEW."id";
+END;
+
+CREATE TRIGGER sync_name_update_trigger
+AFTER UPDATE OF "name" ON "users"
+BEGIN
+  UPDATE "users" SET "full_name" = NEW."name" WHERE "id" = NEW."id";
+END;
+
+CREATE TRIGGER sync_fullname_update_trigger
+AFTER UPDATE OF "full_name" ON "users"
+BEGIN
+  UPDATE "users" SET "name" = NEW."full_name" WHERE "id" = NEW."id";
+END;
 
 -- 3. 既存データ移行
 UPDATE "users" SET "full_name" = "name";
@@ -131,74 +160,133 @@ UPDATE "users" SET "full_name" = "name";
 -- 4. アプリケーションを新カラムに移行
 
 -- 5. トリガー削除
-DROP TRIGGER sync_name_trigger ON "users";
-DROP FUNCTION sync_name_columns();
+DROP TRIGGER IF EXISTS sync_name_trigger;
+DROP TRIGGER IF EXISTS sync_name_update_trigger;
+DROP TRIGGER IF EXISTS sync_fullname_update_trigger;
 
--- 6. 旧カラム削除
-ALTER TABLE "users" DROP COLUMN "name";
+-- 6. 旧カラム削除（テーブル再作成）
+-- （3.35.0+の場合は DROP COLUMN 可能）
 ```
 
 ### デフォルト値変更
 
-```sql
--- デフォルト値の設定
-ALTER TABLE "workflows" ALTER COLUMN "status" SET DEFAULT 'DRAFT';
+**SQLite制限**: SQLiteは `ALTER COLUMN SET/DROP DEFAULT` をサポートしていません。
+テーブル再作成が必要です。
 
--- デフォルト値の削除
-ALTER TABLE "workflows" ALTER COLUMN "status" DROP DEFAULT;
+```sql
+-- テーブル再作成でデフォルト値を変更
+CREATE TABLE "workflows_new" (
+  "id" TEXT PRIMARY KEY,
+  "name" TEXT NOT NULL,
+  "status" TEXT NOT NULL DEFAULT 'DRAFT'  -- デフォルト値を追加/変更
+);
+
+INSERT INTO "workflows_new" SELECT * FROM "workflows";
+DROP TABLE "workflows";
+ALTER TABLE "workflows_new" RENAME TO "workflows";
 ```
 
 ## 制約操作
 
 ### NOT NULL 追加
 
-```sql
--- 既存データにNULLがない場合
-ALTER TABLE "users" ALTER COLUMN "email" SET NOT NULL;
+**SQLite制限**: SQLiteは `ALTER COLUMN SET NOT NULL` をサポートしていません。
+テーブル再作成が必要です。
 
--- 既存データにNULLがある場合
+```sql
+-- 既存データにNULLがある場合は先に修正
 UPDATE "users" SET "email" = 'unknown@example.com' WHERE "email" IS NULL;
-ALTER TABLE "users" ALTER COLUMN "email" SET NOT NULL;
+
+-- テーブル再作成でNOT NULL追加
+CREATE TABLE "users_new" (
+  "id" TEXT PRIMARY KEY,
+  "name" TEXT NOT NULL,
+  "email" TEXT NOT NULL  -- NOT NULL を追加
+);
+
+INSERT INTO "users_new" SELECT * FROM "users";
+DROP TABLE "users";
+ALTER TABLE "users_new" RENAME TO "users";
 ```
 
 ### NOT NULL 削除
 
+**SQLite制限**: テーブル再作成が必要です。
+
 ```sql
-ALTER TABLE "users" ALTER COLUMN "bio" DROP NOT NULL;
+CREATE TABLE "users_new" (
+  "id" TEXT PRIMARY KEY,
+  "name" TEXT NOT NULL,
+  "bio" TEXT  -- NOT NULL を削除
+);
+
+INSERT INTO "users_new" SELECT * FROM "users";
+DROP TABLE "users";
+ALTER TABLE "users_new" RENAME TO "users";
 ```
 
 ### 一意制約追加
+
+**SQLite注意**: 一意制約は `CREATE UNIQUE INDEX` で追加できますが、
+名前付き制約として追加する場合はテーブル再作成が必要です。
 
 ```sql
 -- 重複チェック
 SELECT "email", COUNT(*) FROM "users" GROUP BY "email" HAVING COUNT(*) > 1;
 
--- 重複解消後に追加
-ALTER TABLE "users" ADD CONSTRAINT "users_email_unique" UNIQUE ("email");
+-- インデックスで追加（推奨）
+CREATE UNIQUE INDEX "users_email_unique" ON "users" ("email");
+
+-- または、テーブル再作成で制約追加
+CREATE TABLE "users_new" (
+  "id" TEXT PRIMARY KEY,
+  "name" TEXT NOT NULL,
+  "email" TEXT UNIQUE NOT NULL
+);
 ```
 
 ### 外部キー追加
+
+**SQLite制限**: SQLiteは `ALTER TABLE ADD CONSTRAINT FOREIGN KEY` をサポートしていません。
+テーブル作成時に定義するか、テーブル再作成が必要です。
 
 ```sql
 -- データ整合性チェック
 SELECT * FROM "orders" WHERE "user_id" NOT IN (SELECT "id" FROM "users");
 
--- 不整合データ処理後に追加
-ALTER TABLE "orders"
-ADD CONSTRAINT "orders_user_id_fkey"
-FOREIGN KEY ("user_id") REFERENCES "users"("id")
-ON DELETE CASCADE;
+-- 外部キーを有効化（必須）
+PRAGMA foreign_keys = ON;
+
+-- テーブル再作成で外部キー追加
+CREATE TABLE "orders_new" (
+  "id" TEXT PRIMARY KEY,
+  "user_id" TEXT NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
+  "total" REAL NOT NULL
+);
+
+INSERT INTO "orders_new" SELECT * FROM "orders";
+DROP TABLE "orders";
+ALTER TABLE "orders_new" RENAME TO "orders";
 ```
 
 ### チェック制約追加
+
+**SQLite制限**: テーブル再作成が必要です。
 
 ```sql
 -- 既存データ検証
 SELECT * FROM "products" WHERE "price" < 0;
 
--- 制約追加
-ALTER TABLE "products"
-ADD CONSTRAINT "products_price_positive" CHECK ("price" >= 0);
+-- テーブル再作成でチェック制約追加
+CREATE TABLE "products_new" (
+  "id" TEXT PRIMARY KEY,
+  "name" TEXT NOT NULL,
+  "price" REAL NOT NULL CHECK ("price" >= 0)
+);
+
+INSERT INTO "products_new" SELECT * FROM "products";
+DROP TABLE "products";
+ALTER TABLE "products_new" RENAME TO "products";
 ```
 
 ## インデックス操作
@@ -206,39 +294,41 @@ ADD CONSTRAINT "products_price_positive" CHECK ("price" >= 0);
 ### インデックス追加
 
 **通常の追加**:
+
 ```sql
 CREATE INDEX "users_email_idx" ON "users" ("email");
 ```
 
-**並列追加（大規模テーブル）**:
-```sql
--- トランザクション外で実行
-CREATE INDEX CONCURRENTLY "users_email_idx" ON "users" ("email");
-```
-
 **複合インデックス**:
+
 ```sql
 CREATE INDEX "workflows_user_status_idx" ON "workflows" ("user_id", "status");
 ```
 
-**部分インデックス**:
+**部分インデックス（WHERE句）**:
+
 ```sql
 CREATE INDEX "workflows_active_idx" ON "workflows" ("status")
 WHERE "deleted_at" IS NULL;
 ```
 
-**GINインデックス（JSONB用）**:
+**式インデックス**:
+
 ```sql
-CREATE INDEX "workflows_metadata_idx" ON "workflows" USING GIN ("metadata");
+-- 小文字変換インデックス
+CREATE INDEX "users_email_lower_idx" ON "users" (LOWER("email"));
 ```
+
+**SQLite注意**: SQLiteは `CONCURRENTLY` をサポートしていません。
+また、`GIN` や `GIST` などのインデックスタイプもサポートしていません。
 
 ### インデックス削除
 
 ```sql
 DROP INDEX "users_email_idx";
 
--- CONCURRENTLY オプション
-DROP INDEX CONCURRENTLY "users_email_idx";
+-- または IF EXISTS で安全に削除
+DROP INDEX IF EXISTS "users_email_idx";
 ```
 
 ## テーブル操作
@@ -246,42 +336,40 @@ DROP INDEX CONCURRENTLY "users_email_idx";
 ### テーブル作成
 
 ```sql
+-- 外部キーを有効化（必須）
+PRAGMA foreign_keys = ON;
+
 CREATE TABLE "notifications" (
-  "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  "user_id" uuid NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
-  "type" text NOT NULL,
-  "message" text NOT NULL,
-  "read" boolean NOT NULL DEFAULT false,
-  "created_at" timestamp NOT NULL DEFAULT now()
+  "id" TEXT PRIMARY KEY,
+  "user_id" TEXT NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
+  "type" TEXT NOT NULL,
+  "message" TEXT NOT NULL,
+  "read" INTEGER NOT NULL DEFAULT 0,  -- SQLiteはBOOLEANをINTEGERとして扱う
+  "created_at" TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
 CREATE INDEX "notifications_user_id_idx" ON "notifications" ("user_id");
-CREATE INDEX "notifications_unread_idx" ON "notifications" ("user_id", "read") WHERE NOT "read";
+CREATE INDEX "notifications_unread_idx" ON "notifications" ("user_id", "read") WHERE "read" = 0;
 ```
 
 ### テーブル削除
 
-```sql
--- 依存関係の確認
-SELECT
-  tc.table_name,
-  kcu.column_name,
-  ccu.table_name AS foreign_table_name,
-  ccu.column_name AS foreign_column_name
-FROM information_schema.table_constraints AS tc
-JOIN information_schema.key_column_usage AS kcu
-  ON tc.constraint_name = kcu.constraint_name
-JOIN information_schema.constraint_column_usage AS ccu
-  ON ccu.constraint_name = tc.constraint_name
-WHERE constraint_type = 'FOREIGN KEY'
-  AND ccu.table_name = 'table_to_delete';
+**SQLite注意**: SQLiteは `information_schema` をサポートしていません。
+依存関係確認には `pragma_foreign_key_list` を使用します。
 
--- 外部キー削除後にテーブル削除
+```sql
+-- 外部キー依存関係の確認
+PRAGMA foreign_key_list('table_to_delete');
+
+-- テーブル削除
 DROP TABLE "old_table";
 
--- CASCADE で依存関係ごと削除
-DROP TABLE "old_table" CASCADE;
+-- IF EXISTS で安全に削除
+DROP TABLE IF EXISTS "old_table";
 ```
+
+**SQLite注意**: SQLiteは `CASCADE` オプションをサポートしていません。
+依存テーブルは手動で削除する必要があります。
 
 ### テーブル名変更
 
@@ -291,67 +379,77 @@ ALTER TABLE "old_name" RENAME TO "new_name";
 
 ## 列挙型操作
 
-### PostgreSQL ENUM
+### TEXT型での列挙（推奨）
 
-**作成**:
+**SQLite注意**: SQLiteは `ENUM` 型をサポートしていません。
+`TEXT` 型 + `CHECK` 制約で実装します。
+
 ```sql
-CREATE TYPE "workflow_status" AS ENUM ('DRAFT', 'ACTIVE', 'COMPLETED', 'ARCHIVED');
+-- チェック制約で制限（テーブル作成時）
+CREATE TABLE "workflows" (
+  "id" TEXT PRIMARY KEY,
+  "name" TEXT NOT NULL,
+  "status" TEXT NOT NULL CHECK ("status" IN ('DRAFT', 'ACTIVE', 'COMPLETED', 'ARCHIVED')),
+  DEFAULT 'DRAFT'
+);
+
+-- 値の追加（テーブル再作成が必要）
+CREATE TABLE "workflows_new" (
+  "id" TEXT PRIMARY KEY,
+  "name" TEXT NOT NULL,
+  "status" TEXT NOT NULL CHECK ("status" IN ('DRAFT', 'ACTIVE', 'COMPLETED', 'ARCHIVED', 'PAUSED', 'CANCELLED')),
+  DEFAULT 'DRAFT'
+);
+
+INSERT INTO "workflows_new" SELECT * FROM "workflows";
+DROP TABLE "workflows";
+ALTER TABLE "workflows_new" RENAME TO "workflows";
 ```
 
-**値の追加**:
-```sql
-ALTER TYPE "workflow_status" ADD VALUE 'PAUSED';
+## テーブル再作成パターン
 
--- 特定位置に追加
-ALTER TYPE "workflow_status" ADD VALUE 'PAUSED' BEFORE 'COMPLETED';
-```
+**SQLite制限のまとめ**: 以下の操作はテーブル再作成が必要です：
 
-**注意**: PostgreSQL ENUMから値を削除することはできない。
-削除が必要な場合は、TEXT型への移行を検討。
+- カラム削除（3.35.0未満）
+- カラム型変更
+- NOT NULL追加/削除
+- デフォルト値変更
+- 外部キー追加
+- チェック制約追加
 
-### TEXT型での列挙
-
-```sql
--- チェック制約で制限
-ALTER TABLE "workflows"
-ADD CONSTRAINT "workflows_status_check"
-CHECK ("status" IN ('DRAFT', 'ACTIVE', 'COMPLETED', 'ARCHIVED', 'PAUSED'));
-
--- 値の追加（制約を再作成）
-ALTER TABLE "workflows" DROP CONSTRAINT "workflows_status_check";
-ALTER TABLE "workflows"
-ADD CONSTRAINT "workflows_status_check"
-CHECK ("status" IN ('DRAFT', 'ACTIVE', 'COMPLETED', 'ARCHIVED', 'PAUSED', 'CANCELLED'));
-```
-
-## パーティショニング
-
-### レンジパーティション
+**テーブル再作成の基本手順**:
 
 ```sql
--- パーティション親テーブル
-CREATE TABLE "events" (
-  "id" uuid NOT NULL DEFAULT gen_random_uuid(),
-  "created_at" timestamp NOT NULL,
-  "data" jsonb
-) PARTITION BY RANGE ("created_at");
+-- 1. 外部キー無効化（一時的）
+PRAGMA foreign_keys = OFF;
 
--- パーティション追加
-CREATE TABLE "events_2024_01" PARTITION OF "events"
-FOR VALUES FROM ('2024-01-01') TO ('2024-02-01');
+-- 2. トランザクション開始
+BEGIN TRANSACTION;
 
-CREATE TABLE "events_2024_02" PARTITION OF "events"
-FOR VALUES FROM ('2024-02-01') TO ('2024-03-01');
-```
+-- 3. 新テーブル作成（新しいスキーマで）
+CREATE TABLE "table_new" (
+  -- 新しいスキーマ定義
+);
 
-### パーティション削除
+-- 4. データコピー
+INSERT INTO "table_new" SELECT * FROM "table";
 
-```sql
--- パーティションを切り離し
-ALTER TABLE "events" DETACH PARTITION "events_2023_01";
+-- 5. 旧テーブル削除
+DROP TABLE "table";
 
--- 削除
-DROP TABLE "events_2023_01";
+-- 6. テーブル名変更
+ALTER TABLE "table_new" RENAME TO "table";
+
+-- 7. インデックス再作成
+CREATE INDEX "idx_name" ON "table" ("column");
+
+-- 8. トリガー再作成（必要に応じて）
+
+-- 9. コミット
+COMMIT;
+
+-- 10. 外部キー再有効化
+PRAGMA foreign_keys = ON;
 ```
 
 ## チェックリスト

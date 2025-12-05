@@ -10,19 +10,19 @@
  *   node validate-env.mjs .env.example .env.local
  */
 
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync } from "fs";
 
 function parseEnvFile(filePath) {
   if (!existsSync(filePath)) {
     return null;
   }
 
-  const content = readFileSync(filePath, 'utf-8');
+  const content = readFileSync(filePath, "utf-8");
   const variables = new Map();
 
-  for (const line of content.split('\n')) {
+  for (const line of content.split("\n")) {
     // Skip empty lines and comments
-    if (!line.trim() || line.trim().startsWith('#')) {
+    if (!line.trim() || line.trim().startsWith("#")) {
       continue;
     }
 
@@ -50,17 +50,33 @@ function categorizeVariables(variables) {
   };
 
   for (const key of variables.keys()) {
-    if (key.includes('DATABASE') || key.includes('DB_')) {
+    if (
+      key.includes("TURSO") ||
+      key.includes("DATABASE") ||
+      key.includes("DB_")
+    ) {
       categories.database.push(key);
-    } else if (key.includes('OPENAI') || key.includes('ANTHROPIC') || key.includes('AI_')) {
+    } else if (
+      key.includes("OPENAI") ||
+      key.includes("ANTHROPIC") ||
+      key.includes("AI_")
+    ) {
       categories.ai.push(key);
-    } else if (key.includes('DISCORD')) {
+    } else if (key.includes("DISCORD")) {
       categories.discord.push(key);
-    } else if (key.includes('AUTH') || key.includes('JWT') || key.includes('SESSION')) {
+    } else if (
+      key.includes("AUTH") ||
+      key.includes("JWT") ||
+      key.includes("SESSION")
+    ) {
       categories.auth.push(key);
-    } else if (key.startsWith('NEXT_PUBLIC_')) {
+    } else if (key.startsWith("NEXT_PUBLIC_")) {
       categories.public.push(key);
-    } else if (key.includes('NODE_ENV') || key.includes('PORT') || key.includes('LOG')) {
+    } else if (
+      key.includes("NODE_ENV") ||
+      key.includes("PORT") ||
+      key.includes("LOG")
+    ) {
       categories.app.push(key);
     } else {
       categories.other.push(key);
@@ -74,11 +90,11 @@ function main() {
   const args = process.argv.slice(2);
 
   if (args.length < 2) {
-    console.log('Usage: node validate-env.mjs <template.env> <actual.env>');
-    console.log('');
-    console.log('Examples:');
-    console.log('  node validate-env.mjs .env.example .env');
-    console.log('  node validate-env.mjs .env.example .env.local');
+    console.log("Usage: node validate-env.mjs <template.env> <actual.env>");
+    console.log("");
+    console.log("Examples:");
+    console.log("  node validate-env.mjs .env.example .env");
+    console.log("  node validate-env.mjs .env.example .env.local");
     process.exit(1);
   }
 
@@ -103,7 +119,7 @@ function main() {
   console.log(`\n📋 Validating environment variables`);
   console.log(`   Template: ${templatePath}`);
   console.log(`   Actual: ${actualPath}`);
-  console.log('─'.repeat(50));
+  console.log("─".repeat(50));
 
   // Find missing variables
   const missing = [];
@@ -148,10 +164,10 @@ function main() {
   }
 
   // Summary
-  console.log('\n' + '═'.repeat(50));
+  console.log("\n" + "═".repeat(50));
 
   if (missing.length === 0) {
-    console.log('✅ All required environment variables are set!');
+    console.log("✅ All required environment variables are set!");
     process.exit(0);
   } else {
     console.log(`❌ ${missing.length} required variable(s) missing`);

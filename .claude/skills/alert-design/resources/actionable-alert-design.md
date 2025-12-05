@@ -5,11 +5,13 @@
 ### 1. 問題の明確化
 
 **含めるべき情報**:
+
 - 何が問題か（エラー率、レイテンシ、リソース枯渇等）
 - 現在値と目標値
 - 影響範囲（全体、特定サービス、特定ユーザー等）
 
 **良い例**:
+
 ```
 🚨 API Error Rate: 5.2% (目標: < 1%)
 影響: /api/orders エンドポイント、全ユーザー
@@ -17,6 +19,7 @@
 ```
 
 **悪い例**:
+
 ```
 ❌ Error detected
 （何のエラーか不明）
@@ -25,11 +28,13 @@
 ### 2. 影響範囲の明示
 
 **含めるべき情報**:
+
 - 影響を受けるユーザー数または割合
 - 影響を受けるサービス/機能
 - ビジネスインパクト
 
 **例**:
+
 ```
 影響:
 - 影響ユーザー: 約1,500人/分
@@ -40,11 +45,13 @@
 ### 3. 対応手順の提供
 
 **ランブックへのリンク**:
+
 ```
 Runbook: https://runbooks.example.com/api-high-error-rate
 ```
 
 **ランブック内容**:
+
 1. 症状の確認方法
 2. 原因の切り分け手順
 3. 対応アクション（ステップバイステップ）
@@ -54,6 +61,7 @@ Runbook: https://runbooks.example.com/api-high-error-rate
 ### 4. 診断情報へのアクセス
 
 **リンク提供**:
+
 ```
 Dashboard: https://grafana.example.com/d/api-overview
 Logs: https://kibana.example.com/app/logs?q=level:ERROR+AND+service:api
@@ -61,6 +69,7 @@ Traces: https://jaeger.example.com/search?service=api&limit=20
 ```
 
 **クエリパラメータ**:
+
 - 時刻範囲を自動設定
 - サービス名でフィルタ
 - request_idで絞り込み
@@ -68,6 +77,7 @@ Traces: https://jaeger.example.com/search?service=api&limit=20
 ### 5. エスカレーション基準
 
 **条件と通知先**:
+
 ```
 即座対応（15分以内）:
   → PagerDuty（オンコール担当者）
@@ -132,7 +142,7 @@ Traces: https://jaeger.example.com/search?service=api&limit=20
 
 対応:
 1. APMダッシュボードでボトルネック特定
-2. データベーススロークエリを確認
+2. SQLiteスロークエリを確認
 3. キャッシュヒット率を確認
 
 詳細:
@@ -148,11 +158,13 @@ Traces: https://jaeger.example.com/search?service=api&limit=20
 **原則**: 少ないほど良い
 
 **実践**:
+
 - チームあたり10-20個のアラートに制限
 - 3ヶ月間発火しないアラートは削除
 - 誤検知率 > 20%のアラートは削除または調整
 
 **レビュープロセス**:
+
 ```
 月次レビュー:
 1. 各アラートの発火回数を集計
@@ -164,6 +176,7 @@ Traces: https://jaeger.example.com/search?service=api&limit=20
 ### 戦略2: 適応的閾値
 
 **固定閾値の問題**:
+
 ```
 CPU使用率 > 80% でアラート
 → 深夜（トラフィック少）: 誤検知
@@ -171,12 +184,14 @@ CPU使用率 > 80% でアラート
 ```
 
 **適応的閾値**:
+
 ```
 # 過去1週間の同時刻帯の平均+2σ
 threshold = avg_last_week_same_hour + 2 * stddev
 ```
 
 **実装例**:
+
 ```
 # Prometheusクエリ
 (
@@ -189,20 +204,23 @@ threshold = avg_last_week_same_hour + 2 * stddev
 ### 戦略3: アラート集約
 
 **時間窓集約**:
+
 ```
 5分間に10回発火 → 1件の通知に集約
 ```
 
 **根本原因集約**:
+
 ```
 同一根本原因（例: データベース停止）で複数サービスアラート
 → 1件の「データベース停止」アラートに集約
 ```
 
 **実装**（Prometheus Alertmanager）:
+
 ```yaml
 route:
-  group_by: ['alertname', 'service']
+  group_by: ["alertname", "service"]
   group_wait: 30s
   group_interval: 5m
   repeat_interval: 4h
@@ -217,10 +235,11 @@ route:
 5分間継続した場合のみアラート発火
 
 **実装**:
+
 ```yaml
 alert: HighErrorRate
 expr: error_rate > 0.01
-for: 5m  # 5分間継続した場合のみ
+for: 5m # 5分間継続した場合のみ
 ```
 
 ## 通知ルーティング設計
@@ -228,6 +247,7 @@ for: 5m  # 5分間継続した場合のみ
 ### 重要度別ルーティング
 
 **Critical**:
+
 ```
 通知先:
   1. PagerDuty（即座の電話/SMS）
@@ -242,6 +262,7 @@ for: 5m  # 5分間継続した場合のみ
 ```
 
 **Warning**:
+
 ```
 通知先:
   1. Slack #alerts チャネル
@@ -256,6 +277,7 @@ for: 5m  # 5分間継続した場合のみ
 ```
 
 **Info**:
+
 ```
 通知先:
   1. Slack #system-events チャネル（低優先度）
@@ -268,11 +290,13 @@ for: 5m  # 5分間継続した場合のみ
 ### オンコール負荷管理
 
 **目標**:
+
 - 営業時間外のCriticalアラート: 週2回以下
 - 誤検知率: < 5%
 - 対応時間: 平均15分以内
 
 **負荷軽減策**:
+
 1. 営業時間外アラートを最小化
 2. 自動復旧機能の実装
 3. ランブックの整備
@@ -301,4 +325,5 @@ for: 5m  # 5分間継続した場合のみ
 ## 参照
 
 このスキルを使用するエージェント:
+
 - `@sre-observer` - ロギング・監視設計者 (.claude/agents/sre-observer.md:981)

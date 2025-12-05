@@ -5,9 +5,10 @@
 # DO NOT commit .env.local to version control
 
 # ===========================================
-# Database (Auto-injected by Railway Neon Plugin)
+# Database (Turso SQLite)
 # ===========================================
-DATABASE_URL=postgresql://user:password@host:5432/dbname
+TURSO_DATABASE_URL=libsql://your-database.turso.io
+TURSO_AUTH_TOKEN=your-turso-auth-token
 
 # ===========================================
 # AI API Keys

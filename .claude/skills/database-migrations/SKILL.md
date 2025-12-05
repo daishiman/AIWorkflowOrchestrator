@@ -38,22 +38,30 @@ description: |
 version: 1.1.0
 ---
 
-
 # Database Migrations
 
 ## 概要
 
-このスキルは、Drizzle Kitを使用したデータベースマイグレーション管理のベストプラクティスを提供します。
+このスキルは、SQLite/Turso + Drizzle Kitを使用したデータベースマイグレーション管理のベストプラクティスを提供します。
 安全なスキーマ変更、効率的なマイグレーション生成、そして信頼性の高い本番適用のための
 実践的なガイドラインを提供します。
 
 **主要な価値**:
+
 - スキーマ変更の追跡と管理
 - 安全なマイグレーション適用
 - 問題発生時のロールバック
 - チーム間でのスキーマ同期
+- SQLite特有の制約への対応
+
+**SQLite特有の考慮事項**:
+
+- ALTER TABLE の制限（カラム削除、型変更の制約）
+- トランザクション内でのDDL制限
+- Tursoのブランチとレプリケーション機能
 
 **対象ユーザー**:
+
 - `@repo-dev`エージェント
 - データベーススキーマを管理する開発者
 - 本番デプロイを担当するDevOps
@@ -125,9 +133,11 @@ cat .claude/skills/database-migrations/templates/migration-checklist.md
 ## いつ使うか
 
 ### シナリオ1: 新規カラム追加
+
 **状況**: 既存テーブルに新しいカラムを追加
 
 **適用条件**:
+
 - [ ] 新しい属性をデータベースに追加
 - [ ] 既存データへの影響を考慮
 - [ ] デフォルト値の設定が必要
@@ -135,9 +145,11 @@ cat .claude/skills/database-migrations/templates/migration-checklist.md
 **期待される成果**: 安全なカラム追加マイグレーション
 
 ### シナリオ2: 型変更
+
 **状況**: 既存カラムの型を変更
 
 **適用条件**:
+
 - [ ] カラムのデータ型を変更
 - [ ] 既存データの変換が必要
 - [ ] ダウンタイムの考慮
@@ -145,9 +157,11 @@ cat .claude/skills/database-migrations/templates/migration-checklist.md
 **期待される成果**: データを保持した型変更
 
 ### シナリオ3: テーブル作成・削除
+
 **状況**: 新規テーブルの作成または不要テーブルの削除
 
 **適用条件**:
+
 - [ ] 新しいエンティティの追加
 - [ ] リレーションの設定
 - [ ] インデックスの計画
@@ -161,6 +175,7 @@ cat .claude/skills/database-migrations/templates/migration-checklist.md
 **目的**: スキーマ変更の影響を分析し計画を立てる
 
 **ステップ**:
+
 1. **変更内容の明確化**:
    - 何を変更するか
    - なぜ変更するか
@@ -177,6 +192,7 @@ cat .claude/skills/database-migrations/templates/migration-checklist.md
    - 検証方法
 
 **判断基準**:
+
 - [ ] 変更の目的は明確か？
 - [ ] リスクは評価されたか？
 - [ ] ロールバック計画はあるか？
@@ -188,20 +204,25 @@ cat .claude/skills/database-migrations/templates/migration-checklist.md
 **目的**: Drizzle Kitでマイグレーションを生成
 
 **ステップ**:
+
 1. **スキーマ変更**:
    - TypeScriptスキーマファイルを編集
    - 型定義を更新
+   - SQLite制約を考慮（ALTER TABLE制限）
 
 2. **マイグレーション生成**:
+
    ```bash
-   pnpm drizzle-kit generate
+   pnpm drizzle-kit generate:sqlite
    ```
 
 3. **生成結果の確認**:
    - SQLの内容を確認
    - 意図した変更か検証
+   - SQLiteで実行可能なSQLか確認
 
 **判断基準**:
+
 - [ ] 生成されたSQLは正しいか？
 - [ ] 破壊的変更はないか？
 - [ ] データ移行が必要か？
@@ -213,20 +234,27 @@ cat .claude/skills/database-migrations/templates/migration-checklist.md
 **目的**: 本番適用前にローカルで検証
 
 **ステップ**:
+
 1. **マイグレーション適用**:
+
    ```bash
+   pnpm drizzle-kit push:sqlite
+   # または
    pnpm drizzle-kit migrate
    ```
 
 2. **動作確認**:
    - アプリケーションの動作テスト
    - データの整合性確認
+   - SQLiteファイルの整合性チェック
 
 3. **ロールバックテスト**:
    - ロールバック手順の確認
    - 復旧可能性の検証
+   - SQLiteデータベースファイルのバックアップ確認
 
 **判断基準**:
+
 - [ ] マイグレーションは成功したか？
 - [ ] アプリケーションは正常動作するか？
 - [ ] ロールバック可能か？
@@ -236,6 +264,7 @@ cat .claude/skills/database-migrations/templates/migration-checklist.md
 **目的**: 本番環境に安全にマイグレーションを適用
 
 **ステップ**:
+
 1. **事前準備**:
    - バックアップの作成
    - メンテナンスウィンドウの確保
@@ -249,6 +278,7 @@ cat .claude/skills/database-migrations/templates/migration-checklist.md
    - データ整合性確認
 
 **判断基準**:
+
 - [ ] バックアップは作成されたか？
 - [ ] マイグレーションは成功したか？
 - [ ] 本番動作は正常か？
@@ -262,25 +292,25 @@ cat .claude/skills/database-migrations/templates/migration-checklist.md
 ```
 1. スキーマ編集 (TypeScript)
       ↓
-2. drizzle-kit generate
+2. drizzle-kit generate:sqlite
       ↓
 3. マイグレーションファイル生成
       ↓
-4. レビュー & テスト
+4. レビュー & SQLite制約チェック
       ↓
-5. drizzle-kit migrate
+5. drizzle-kit push:sqlite または migrate
       ↓
-6. 本番適用
+6. 本番適用 (Turso sync)
 ```
 
 ### マイグレーションの種類
 
-| 種類 | リスク | 例 |
-|------|--------|-----|
-| 追加のみ | 低 | カラム追加、テーブル作成 |
-| 制約変更 | 中 | NOT NULL追加、インデックス |
-| 型変更 | 高 | カラム型変更、リネーム |
-| 削除 | 高 | カラム削除、テーブル削除 |
+| 種類     | リスク | 例                         |
+| -------- | ------ | -------------------------- |
+| 追加のみ | 低     | カラム追加、テーブル作成   |
+| 制約変更 | 中     | NOT NULL追加、インデックス |
+| 型変更   | 高     | カラム型変更、リネーム     |
+| 削除     | 高     | カラム削除、テーブル削除   |
 
 ### 安全な変更パターン
 
@@ -331,11 +361,13 @@ cat .claude/skills/database-migrations/templates/migration-checklist.md
 **症状**: マイグレーション適用時にエラー
 
 **原因**:
+
 - 制約違反
 - 既存データとの不整合
 - 構文エラー
 
 **解決策**:
+
 1. エラーメッセージを確認
 2. ロールバックを実行
 3. マイグレーションを修正
@@ -346,11 +378,13 @@ cat .claude/skills/database-migrations/templates/migration-checklist.md
 **症状**: マイグレーション後にデータが失われた
 
 **原因**:
+
 - 不適切なカラム削除
 - 型変換の失敗
 - CASCADE削除
 
 **解決策**:
+
 1. バックアップから復旧
 2. マイグレーションを修正
 3. データ移行ステップを追加
@@ -360,14 +394,36 @@ cat .claude/skills/database-migrations/templates/migration-checklist.md
 **症状**: マイグレーション後にパフォーマンスが低下
 
 **原因**:
+
 - インデックスの欠如
 - 不適切なインデックス
-- テーブルロック
+- データベースファイルの断片化
 
 **解決策**:
-1. EXPLAIN ANALYZEで確認
+
+1. EXPLAIN QUERY PLANで確認
 2. 必要なインデックスを追加
-3. CONCURRENTLY オプションを使用
+3. VACUUMでデータベース最適化
+   ```sql
+   VACUUM;
+   ```
+
+### 問題4: SQLite ALTER TABLE制限
+
+**症状**: カラム削除・型変更ができない
+
+**原因**:
+
+- SQLiteのALTER TABLE制限
+
+**解決策**:
+
+1. テーブル再作成パターンを使用
+   - 新テーブル作成
+   - データコピー
+   - 旧テーブル削除
+   - 新テーブルをリネーム
+2. Drizzle Kitの自動生成を確認
 
 ## 関連スキル
 
@@ -380,22 +436,25 @@ cat .claude/skills/database-migrations/templates/migration-checklist.md
 
 ### マイグレーション健全性指標
 
-| 指標 | 目標値 | 警告値 |
-|------|--------|--------|
-| マイグレーション成功率 | 100% | < 95% |
-| 平均適用時間 | < 5分 | > 30分 |
-| ロールバック発生率 | < 5% | > 10% |
+| 指標                   | 目標値 | 警告値 |
+| ---------------------- | ------ | ------ |
+| マイグレーション成功率 | 100%   | < 95%  |
+| 平均適用時間           | < 5分  | > 30分 |
+| ロールバック発生率     | < 5%   | > 10%  |
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-26 | 初版作成 - マイグレーション管理フレームワーク |
+| バージョン | 日付       | 変更内容                                      |
+| ---------- | ---------- | --------------------------------------------- |
+| 1.0.0      | 2025-11-26 | 初版作成 - マイグレーション管理フレームワーク |
 
 ## 参考文献
 
 - **Drizzle Kit Documentation**
   - https://orm.drizzle.team/kit-docs
 
-- **PostgreSQL ALTER TABLE**
-  - https://www.postgresql.org/docs/current/sql-altertable.html
+- **SQLite ALTER TABLE**
+  - https://www.sqlite.org/lang_altertable.html
+
+- **Turso Documentation**
+  - https://docs.turso.tech/

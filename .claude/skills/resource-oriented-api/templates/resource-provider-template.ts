@@ -48,7 +48,7 @@ interface TemplateParameter {
   name: string;
   description?: string;
   required?: boolean;
-  type?: 'string' | 'number' | 'boolean';
+  type?: "string" | "number" | "boolean";
   default?: unknown;
 }
 
@@ -57,7 +57,7 @@ interface TemplateParameter {
  */
 interface ResourceUpdate {
   uri: string;
-  event: 'created' | 'updated' | 'deleted';
+  event: "created" | "updated" | "deleted";
   timestamp: Date;
 }
 
@@ -101,7 +101,7 @@ abstract class BaseResourceProvider implements ResourceProvider {
   supportsUri(uri: string): boolean {
     try {
       const url = new URL(uri);
-      return this.schemes.includes(url.protocol.replace(':', ''));
+      return this.schemes.includes(url.protocol.replace(":", ""));
     } catch {
       return false;
     }
@@ -119,7 +119,7 @@ abstract class BaseResourceProvider implements ResourceProvider {
    */
   protected expandTemplate(
     template: string,
-    params: Record<string, unknown>
+    params: Record<string, unknown>,
   ): string {
     return template.replace(/\{(\w+)\}/g, (_, key) => {
       const value = params[key];
@@ -143,8 +143,8 @@ abstract class BaseResourceProvider implements ResourceProvider {
  * ファイルシステムリソースプロバイダー
  */
 class FileSystemProvider extends BaseResourceProvider {
-  name = 'filesystem';
-  schemes = ['file'];
+  name = "filesystem";
+  schemes = ["file"];
 
   private basePath: string;
   private allowedExtensions: string[];
@@ -153,11 +153,11 @@ class FileSystemProvider extends BaseResourceProvider {
     super();
     this.basePath = options.basePath;
     this.allowedExtensions = options.allowedExtensions || [
-      '.txt',
-      '.md',
-      '.json',
-      '.yaml',
-      '.yml',
+      ".txt",
+      ".md",
+      ".json",
+      ".yaml",
+      ".yml",
     ];
   }
 
@@ -169,8 +169,8 @@ class FileSystemProvider extends BaseResourceProvider {
     // 例: 静的リソース
     resources.push({
       uri: `file://${this.basePath}/config.json`,
-      name: 'Configuration',
-      mimeType: 'application/json',
+      name: "Configuration",
+      mimeType: "application/json",
     });
 
     return resources;
@@ -180,14 +180,14 @@ class FileSystemProvider extends BaseResourceProvider {
     return [
       {
         uriTemplate: `file://${this.basePath}/{path}`,
-        name: 'File',
-        description: 'Read any file in the base directory',
+        name: "File",
+        description: "Read any file in the base directory",
         parameters: [
           {
-            name: 'path',
-            description: 'Relative path to the file',
+            name: "path",
+            description: "Relative path to the file",
             required: true,
-            type: 'string',
+            type: "string",
           },
         ],
       },
@@ -201,7 +201,7 @@ class FileSystemProvider extends BaseResourceProvider {
     // セキュリティ: パストラバーサル防止
     const normalizedPath = this.normalizePath(filePath);
     if (!normalizedPath.startsWith(this.basePath)) {
-      throw new Error('Access denied: path traversal detected');
+      throw new Error("Access denied: path traversal detected");
     }
 
     // 実装: ファイルを読み取り
@@ -221,25 +221,23 @@ class FileSystemProvider extends BaseResourceProvider {
 
   private normalizePath(path: string): string {
     // パスを正規化してパストラバーサルを防止
-    const resolved = require('path').resolve(this.basePath, path);
+    const resolved = require("path").resolve(this.basePath, path);
     return resolved;
   }
 
   private getMimeType(path: string): string {
-    const ext = path.split('.').pop()?.toLowerCase();
+    const ext = path.split(".").pop()?.toLowerCase();
     const mimeTypes: Record<string, string> = {
-      json: 'application/json',
-      md: 'text/markdown',
-      txt: 'text/plain',
-      yaml: 'application/x-yaml',
-      yml: 'application/x-yaml',
+      json: "application/json",
+      md: "text/markdown",
+      txt: "text/plain",
+      yaml: "application/x-yaml",
+      yml: "application/x-yaml",
     };
-    return mimeTypes[ext || ''] || 'application/octet-stream';
+    return mimeTypes[ext || ""] || "application/octet-stream";
   }
 
-  subscribeToUpdates(
-    callback: (update: ResourceUpdate) => void
-  ): () => void {
+  subscribeToUpdates(callback: (update: ResourceUpdate) => void): () => void {
     // 実装: ファイル変更監視（fs.watch等）
     // const watcher = fs.watch(this.basePath, { recursive: true }, (event, filename) => {
     //   callback({
@@ -264,8 +262,8 @@ class FileSystemProvider extends BaseResourceProvider {
  * データベースリソースプロバイダー
  */
 class DatabaseProvider extends BaseResourceProvider {
-  name = 'database';
-  schemes = ['db'];
+  name = "database";
+  schemes = ["db"];
 
   private connectionString: string;
 
@@ -278,16 +276,16 @@ class DatabaseProvider extends BaseResourceProvider {
     // 実装: データベースのテーブル一覧を取得
     return [
       {
-        uri: 'db://postgres/users',
-        name: 'Users Table',
-        description: 'User records',
-        mimeType: 'application/json',
+        uri: "db://sqlite/users",
+        name: "Users Table",
+        description: "User records",
+        mimeType: "application/json",
       },
       {
-        uri: 'db://postgres/posts',
-        name: 'Posts Table',
-        description: 'Blog posts',
-        mimeType: 'application/json',
+        uri: "db://sqlite/posts",
+        name: "Posts Table",
+        description: "Blog posts",
+        mimeType: "application/json",
       },
     ];
   }
@@ -295,36 +293,36 @@ class DatabaseProvider extends BaseResourceProvider {
   async listResourceTemplates(): Promise<ResourceTemplate[]> {
     return [
       {
-        uriTemplate: 'db://postgres/{table}',
-        name: 'Table Records',
-        description: 'All records from a table',
-        mimeType: 'application/json',
+        uriTemplate: "db://sqlite/{table}",
+        name: "Table Records",
+        description: "All records from a table",
+        mimeType: "application/json",
         parameters: [
           {
-            name: 'table',
-            description: 'Table name',
+            name: "table",
+            description: "Table name",
             required: true,
-            type: 'string',
+            type: "string",
           },
         ],
       },
       {
-        uriTemplate: 'db://postgres/{table}/{id}',
-        name: 'Single Record',
-        description: 'Single record by ID',
-        mimeType: 'application/json',
+        uriTemplate: "db://sqlite/{table}/{id}",
+        name: "Single Record",
+        description: "Single record by ID",
+        mimeType: "application/json",
         parameters: [
           {
-            name: 'table',
-            description: 'Table name',
+            name: "table",
+            description: "Table name",
             required: true,
-            type: 'string',
+            type: "string",
           },
           {
-            name: 'id',
-            description: 'Record ID',
+            name: "id",
+            description: "Record ID",
             required: true,
-            type: 'number',
+            type: "number",
           },
         ],
       },
@@ -333,7 +331,7 @@ class DatabaseProvider extends BaseResourceProvider {
 
   async readResource(uri: string): Promise<ResourceContent[]> {
     const url = this.parseUri(uri);
-    const pathParts = url.pathname.split('/').filter(Boolean);
+    const pathParts = url.pathname.split("/").filter(Boolean);
 
     const table = pathParts[0];
     const id = pathParts[1];
@@ -343,16 +341,16 @@ class DatabaseProvider extends BaseResourceProvider {
 
     // 例: ダミーデータ
     const data = id
-      ? { id: Number(id), name: 'Example', table }
+      ? { id: Number(id), name: "Example", table }
       : [
-          { id: 1, name: 'Item 1' },
-          { id: 2, name: 'Item 2' },
+          { id: 1, name: "Item 1" },
+          { id: 2, name: "Item 2" },
         ];
 
     return [
       {
         uri,
-        mimeType: 'application/json',
+        mimeType: "application/json",
         text: JSON.stringify(data, null, 2),
       },
     ];
@@ -384,7 +382,7 @@ class ResourceProviderRegistry {
   getProvider(uri: string): ResourceProvider | undefined {
     try {
       const url = new URL(uri);
-      const scheme = url.protocol.replace(':', '');
+      const scheme = url.protocol.replace(":", "");
       return this.providers.get(scheme);
     } catch {
       return undefined;
@@ -447,7 +445,7 @@ registry.register(new FileSystemProvider({
 }));
 
 registry.register(new DatabaseProvider(
-  'postgres://user:pass@localhost:5432/mydb'
+  'libsql://token@turso.io/mydb'
 ));
 
 // リソース一覧を取得

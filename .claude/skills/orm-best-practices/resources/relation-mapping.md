@@ -5,8 +5,8 @@
 ### リレーション定義
 
 ```typescript
-import { relations } from 'drizzle-orm'
-import { workflows, workflowSteps, users } from './tables'
+import { relations } from "drizzle-orm";
+import { workflows, workflowSteps, users } from "./tables";
 
 // Workflowのリレーション
 export const workflowRelations = relations(workflows, ({ one, many }) => ({
@@ -17,7 +17,7 @@ export const workflowRelations = relations(workflows, ({ one, many }) => ({
   }),
   // 一対多: Workflow -> WorkflowSteps
   steps: many(workflowSteps),
-}))
+}));
 
 // WorkflowStepのリレーション
 export const workflowStepRelations = relations(workflowSteps, ({ one }) => ({
@@ -26,21 +26,21 @@ export const workflowStepRelations = relations(workflowSteps, ({ one }) => ({
     fields: [workflowSteps.workflowId],
     references: [workflows.id],
   }),
-}))
+}));
 
 // Userのリレーション
 export const userRelations = relations(users, ({ many }) => ({
   // 一対多: User -> Workflows
   workflows: many(workflows),
-}))
+}));
 ```
 
 ### リレーションの種類
 
-| 種類 | 定義 | 説明 |
-|------|------|------|
-| one | `one(table, { fields, references })` | 多対一、一対一 |
-| many | `many(table)` | 一対多 |
+| 種類 | 定義                                 | 説明           |
+| ---- | ------------------------------------ | -------------- |
+| one  | `one(table, { fields, references })` | 多対一、一対一 |
+| many | `many(table)`                        | 一対多         |
 
 ## リレーションクエリ
 
@@ -50,9 +50,9 @@ export const userRelations = relations(users, ({ many }) => ({
 // 関連データを含めて取得
 const workflowsWithSteps = await db.query.workflows.findMany({
   with: {
-    steps: true,  // すべてのステップを含める
+    steps: true, // すべてのステップを含める
   },
-})
+});
 
 // 結果の型
 // Array<{
@@ -70,12 +70,12 @@ const workflowsWithDetails = await db.query.workflows.findMany({
   with: {
     steps: {
       with: {
-        actions: true,  // ステップのアクションも取得
+        actions: true, // ステップのアクションも取得
       },
     },
     user: true,
   },
-})
+});
 ```
 
 ### カラム選択
@@ -97,7 +97,7 @@ const workflowSummaries = await db.query.workflows.findMany({
       },
     },
   },
-})
+});
 ```
 
 ### フィルタリング
@@ -105,20 +105,20 @@ const workflowSummaries = await db.query.workflows.findMany({
 ```typescript
 // 親テーブルのフィルタリング
 const activeWorkflows = await db.query.workflows.findMany({
-  where: eq(workflows.status, 'ACTIVE'),
+  where: eq(workflows.status, "ACTIVE"),
   with: {
     steps: true,
   },
-})
+});
 
 // 関連テーブルのフィルタリング
 const workflowsWithActiveSteps = await db.query.workflows.findMany({
   with: {
     steps: {
-      where: eq(workflowSteps.status, 'ACTIVE'),
+      where: eq(workflowSteps.status, "ACTIVE"),
     },
   },
-})
+});
 ```
 
 ### ソートと制限
@@ -130,10 +130,10 @@ const recentWorkflows = await db.query.workflows.findMany({
   with: {
     steps: {
       orderBy: [asc(workflowSteps.stepNumber)],
-      limit: 5,  // 最初の5ステップのみ
+      limit: 5, // 最初の5ステップのみ
     },
   },
-})
+});
 ```
 
 ## エンティティマッピング
@@ -142,30 +142,30 @@ const recentWorkflows = await db.query.workflows.findMany({
 
 ```typescript
 // DBレコード型（Drizzle推論）
-type WorkflowRecord = InferSelectModel<typeof workflows>
-type WorkflowStepRecord = InferSelectModel<typeof workflowSteps>
+type WorkflowRecord = InferSelectModel<typeof workflows>;
+type WorkflowStepRecord = InferSelectModel<typeof workflowSteps>;
 
 // ドメインエンティティ
 interface Workflow {
-  id: string
-  name: string
-  description: string | null
-  status: WorkflowStatus
-  steps: WorkflowStep[]
-  createdAt: Date
-  updatedAt: Date
+  id: string;
+  name: string;
+  description: string | null;
+  status: WorkflowStatus;
+  steps: WorkflowStep[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 interface WorkflowStep {
-  id: string
-  stepNumber: number
-  name: string
-  config: StepConfig
+  id: string;
+  stepNumber: number;
+  name: string;
+  config: StepConfig;
 }
 
 // マッピング関数
 function toWorkflowEntity(
-  record: WorkflowRecord & { steps?: WorkflowStepRecord[] }
+  record: WorkflowRecord & { steps?: WorkflowStepRecord[] },
 ): Workflow {
   return {
     id: record.id,
@@ -175,7 +175,7 @@ function toWorkflowEntity(
     steps: (record.steps ?? []).map(toWorkflowStepEntity),
     createdAt: record.createdAt,
     updatedAt: record.updatedAt,
-  }
+  };
 }
 
 function toWorkflowStepEntity(record: WorkflowStepRecord): WorkflowStep {
@@ -184,7 +184,7 @@ function toWorkflowStepEntity(record: WorkflowStepRecord): WorkflowStep {
     stepNumber: record.stepNumber,
     name: record.name,
     config: record.config as StepConfig,
-  }
+  };
 }
 ```
 
@@ -192,30 +192,36 @@ function toWorkflowStepEntity(record: WorkflowStepRecord): WorkflowStep {
 
 ```typescript
 // 新規作成用
-type NewWorkflowRecord = InferInsertModel<typeof workflows>
+type NewWorkflowRecord = InferInsertModel<typeof workflows>;
 
-function toNewWorkflowRecord(entity: Omit<Workflow, 'id' | 'createdAt' | 'updatedAt'>): NewWorkflowRecord {
+function toNewWorkflowRecord(
+  entity: Omit<Workflow, "id" | "createdAt" | "updatedAt">,
+): NewWorkflowRecord {
   return {
     name: entity.name,
     description: entity.description,
     status: entity.status,
     // id, createdAt, updatedAtはDB側で設定
-  }
+  };
 }
 
 // 更新用
-type WorkflowUpdate = Partial<Pick<Workflow, 'name' | 'description' | 'status'>>
+type WorkflowUpdate = Partial<
+  Pick<Workflow, "name" | "description" | "status">
+>;
 
-function toWorkflowUpdateRecord(update: WorkflowUpdate): Partial<WorkflowRecord> {
-  const record: Partial<WorkflowRecord> = {}
+function toWorkflowUpdateRecord(
+  update: WorkflowUpdate,
+): Partial<WorkflowRecord> {
+  const record: Partial<WorkflowRecord> = {};
 
-  if (update.name !== undefined) record.name = update.name
-  if (update.description !== undefined) record.description = update.description
-  if (update.status !== undefined) record.status = update.status
+  if (update.name !== undefined) record.name = update.name;
+  if (update.description !== undefined) record.description = update.description;
+  if (update.status !== undefined) record.status = update.status;
 
-  record.updatedAt = new Date()
+  record.updatedAt = new Date();
 
-  return record
+  return record;
 }
 ```
 
@@ -226,46 +232,49 @@ function toWorkflowUpdateRecord(update: WorkflowUpdate): Partial<WorkflowRecord>
 ```typescript
 // スネークケース（DB）→ キャメルケース（TS）
 function snakeToCamel(obj: Record<string, any>): Record<string, any> {
-  const result: Record<string, any> = {}
+  const result: Record<string, any> = {};
   for (const [key, value] of Object.entries(obj)) {
-    const camelKey = key.replace(/_([a-z])/g, (_, c) => c.toUpperCase())
-    result[camelKey] = value
+    const camelKey = key.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+    result[camelKey] = value;
   }
-  return result
+  return result;
 }
 
 // キャメルケース（TS）→ スネークケース（DB）
 function camelToSnake(obj: Record<string, any>): Record<string, any> {
-  const result: Record<string, any> = {}
+  const result: Record<string, any> = {};
   for (const [key, value] of Object.entries(obj)) {
-    const snakeKey = key.replace(/[A-Z]/g, c => '_' + c.toLowerCase())
-    result[snakeKey] = value
+    const snakeKey = key.replace(/[A-Z]/g, (c) => "_" + c.toLowerCase());
+    result[snakeKey] = value;
   }
-  return result
+  return result;
 }
 ```
 
-### JSONBマッピング
+### JSONマッピング
 
 ```typescript
-// 型付きJSONBの変換
+// 型付きJSONの変換（SQLiteではtext({ mode: 'json' })を使用）
 interface StepConfig {
-  retryCount: number
-  timeout: number
-  inputs: Record<string, unknown>
+  retryCount: number;
+  timeout: number;
+  inputs: Record<string, unknown>;
 }
 
-function parseStepConfig(jsonb: unknown): StepConfig {
-  if (!jsonb || typeof jsonb !== 'object') {
-    return { retryCount: 0, timeout: 30000, inputs: {} }
+function parseStepConfig(json: unknown): StepConfig {
+  if (!json || typeof json !== "object") {
+    return { retryCount: 0, timeout: 30000, inputs: {} };
   }
 
-  const obj = jsonb as Record<string, unknown>
+  const obj = json as Record<string, unknown>;
   return {
-    retryCount: typeof obj.retryCount === 'number' ? obj.retryCount : 0,
-    timeout: typeof obj.timeout === 'number' ? obj.timeout : 30000,
-    inputs: typeof obj.inputs === 'object' ? obj.inputs as Record<string, unknown> : {},
-  }
+    retryCount: typeof obj.retryCount === "number" ? obj.retryCount : 0,
+    timeout: typeof obj.timeout === "number" ? obj.timeout : 30000,
+    inputs:
+      typeof obj.inputs === "object"
+        ? (obj.inputs as Record<string, unknown>)
+        : {},
+  };
 }
 
 function serializeStepConfig(config: StepConfig): Record<string, unknown> {
@@ -273,7 +282,7 @@ function serializeStepConfig(config: StepConfig): Record<string, unknown> {
     retryCount: config.retryCount,
     timeout: config.timeout,
     inputs: config.inputs,
-  }
+  };
 }
 ```
 
@@ -283,9 +292,9 @@ function serializeStepConfig(config: StepConfig): Record<string, unknown> {
 // null変換パターン
 function mapNullable<T, U>(
   value: T | null | undefined,
-  mapper: (v: T) => U
+  mapper: (v: T) => U,
 ): U | null {
-  return value != null ? mapper(value) : null
+  return value != null ? mapper(value) : null;
 }
 
 // 使用例
@@ -293,10 +302,10 @@ function toEntity(record: WorkflowRecord): Workflow {
   return {
     id: record.id,
     name: record.name,
-    description: record.description,  // null許容
-    completedAt: mapNullable(record.completedAt, d => new Date(d)),
+    description: record.description, // null許容
+    completedAt: mapNullable(record.completedAt, (d) => new Date(d)),
     // ...
-  }
+  };
 }
 ```
 
@@ -306,7 +315,9 @@ function toEntity(record: WorkflowRecord): Workflow {
 
 ```typescript
 // 常に関連データを取得
-async function getWorkflowWithAllRelations(id: string): Promise<Workflow | null> {
+async function getWorkflowWithAllRelations(
+  id: string,
+): Promise<Workflow | null> {
   const result = await db.query.workflows.findFirst({
     where: eq(workflows.id, id),
     with: {
@@ -315,9 +326,9 @@ async function getWorkflowWithAllRelations(id: string): Promise<Workflow | null>
       },
       user: true,
     },
-  })
+  });
 
-  return result ? toWorkflowEntity(result) : null
+  return result ? toWorkflowEntity(result) : null;
 }
 ```
 
@@ -329,23 +340,23 @@ class WorkflowRepository {
   async findById(id: string): Promise<Workflow | null> {
     const result = await db.query.workflows.findFirst({
       where: eq(workflows.id, id),
-    })
-    return result ? toWorkflowEntity(result) : null
+    });
+    return result ? toWorkflowEntity(result) : null;
   }
 
   async loadSteps(workflow: Workflow): Promise<WorkflowStep[]> {
     const steps = await db.query.workflowSteps.findMany({
       where: eq(workflowSteps.workflowId, workflow.id),
       orderBy: [asc(workflowSteps.stepNumber)],
-    })
-    return steps.map(toWorkflowStepEntity)
+    });
+    return steps.map(toWorkflowStepEntity);
   }
 }
 
 // 使用
-const workflow = await repo.findById(id)
+const workflow = await repo.findById(id);
 if (workflow && needSteps) {
-  workflow.steps = await repo.loadSteps(workflow)
+  workflow.steps = await repo.loadSteps(workflow);
 }
 ```
 
@@ -354,26 +365,26 @@ if (workflow && needSteps) {
 ```typescript
 // 複数ワークフローのステップを一括取得
 async function loadStepsForWorkflows(workflows: Workflow[]): Promise<void> {
-  if (workflows.length === 0) return
+  if (workflows.length === 0) return;
 
-  const workflowIds = workflows.map(w => w.id)
+  const workflowIds = workflows.map((w) => w.id);
 
   const allSteps = await db.query.workflowSteps.findMany({
     where: inArray(workflowSteps.workflowId, workflowIds),
     orderBy: [asc(workflowSteps.stepNumber)],
-  })
+  });
 
   // ワークフローIDでグループ化
-  const stepsByWorkflow = new Map<string, WorkflowStep[]>()
+  const stepsByWorkflow = new Map<string, WorkflowStep[]>();
   for (const step of allSteps) {
-    const steps = stepsByWorkflow.get(step.workflowId) ?? []
-    steps.push(toWorkflowStepEntity(step))
-    stepsByWorkflow.set(step.workflowId, steps)
+    const steps = stepsByWorkflow.get(step.workflowId) ?? [];
+    steps.push(toWorkflowStepEntity(step));
+    stepsByWorkflow.set(step.workflowId, steps);
   }
 
   // 各ワークフローにステップを設定
   for (const workflow of workflows) {
-    workflow.steps = stepsByWorkflow.get(workflow.id) ?? []
+    workflow.steps = stepsByWorkflow.get(workflow.id) ?? [];
   }
 }
 ```
@@ -384,11 +395,11 @@ async function loadStepsForWorkflows(workflows: Workflow[]): Promise<void> {
 
 ```typescript
 // スキーマ
-export const workflows = pgTable('workflows', { ... })
-export const tags = pgTable('tags', { ... })
-export const workflowTags = pgTable('workflow_tags', {
-  workflowId: uuid('workflow_id').notNull().references(() => workflows.id),
-  tagId: uuid('tag_id').notNull().references(() => tags.id),
+export const workflows = sqliteTable('workflows', { ... })
+export const tags = sqliteTable('tags', { ... })
+export const workflowTags = sqliteTable('workflow_tags', {
+  workflowId: integer('workflow_id').notNull().references(() => workflows.id),
+  tagId: integer('tag_id').notNull().references(() => tags.id),
 }, (table) => ({
   pk: primaryKey({ columns: [table.workflowId, table.tagId] }),
 }))
@@ -418,13 +429,13 @@ const workflowsWithTags = await db.query.workflows.findMany({
       },
     },
   },
-})
+});
 
 // フラット化
-const mapped = workflowsWithTags.map(w => ({
+const mapped = workflowsWithTags.map((w) => ({
   ...w,
-  tags: w.workflowTags.map(wt => wt.tag),
-}))
+  tags: w.workflowTags.map((wt) => wt.tag),
+}));
 ```
 
 ## チェックリスト
@@ -439,7 +450,7 @@ const mapped = workflowsWithTags.map(w => ({
 
 - [ ] 双方向変換が一貫しているか？
 - [ ] null処理が適切か？
-- [ ] JSONB型の変換があるか？
+- [ ] JSON型の変換があるか？
 
 ### パフォーマンス
 

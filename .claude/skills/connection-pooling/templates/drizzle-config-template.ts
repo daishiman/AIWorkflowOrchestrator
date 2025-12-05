@@ -1,127 +1,143 @@
 /**
- * Drizzle ORM 接続設定テンプレート
+ * Drizzle ORM 接続設定テンプレート (Turso/libSQL)
  *
  * このファイルをコピーして、プロジェクトに合わせて設定してください。
  *
  * 対応環境:
- * - Neon (Serverless PostgreSQL)
- * - Supabase
- * - Self-hosted PostgreSQL
+ * - Turso (Edge-hosted SQLite)
+ * - Local SQLite
+ * - Embedded Replicas
  * - Vercel Edge / Cloudflare Workers
  */
 
-import { drizzle } from 'drizzle-orm/neon-serverless';
-import { drizzle as drizzleHttp } from 'drizzle-orm/neon-http';
-import { neon, Pool } from '@neondatabase/serverless';
-import * as schema from './schema';
+import { drizzle } from "drizzle-orm/libsql";
+import { createClient } from "@libsql/client";
+import type { Client } from "@libsql/client";
+import * as schema from "./schema";
 
 // =============================================================================
 // 環境設定
 // =============================================================================
 
-type Environment = 'development' | 'staging' | 'production' | 'test';
+type Environment = "development" | "staging" | "production" | "test";
 
-interface PoolConfig {
-  max: number;
-  min: number;
-  idleTimeoutMillis: number;
-  connectionTimeoutMillis: number;
+interface ReplicaConfig {
+  syncUrl: string;
+  authToken: string;
+  syncInterval: number; // 秒単位
 }
 
-const poolConfigs: Record<Environment, PoolConfig> = {
-  development: {
-    max: 5,
-    min: 1,
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 5000,
-  },
-  test: {
-    max: 3,
-    min: 1,
-    idleTimeoutMillis: 10000,
-    connectionTimeoutMillis: 5000,
-  },
+const replicaConfigs: Record<Environment, ReplicaConfig | null> = {
+  development: null, // ローカルファイルのみ
+  test: null, // テスト用ローカル
   staging: {
-    max: 20,
-    min: 5,
-    idleTimeoutMillis: 60000,
-    connectionTimeoutMillis: 10000,
+    syncUrl: process.env.TURSO_DATABASE_URL!,
+    authToken: process.env.TURSO_AUTH_TOKEN!,
+    syncInterval: 30, // 30秒ごとに同期
   },
   production: {
-    max: 50,
-    min: 10,
-    idleTimeoutMillis: 120000,
-    connectionTimeoutMillis: 15000,
+    syncUrl: process.env.TURSO_DATABASE_URL!,
+    authToken: process.env.TURSO_AUTH_TOKEN!,
+    syncInterval: 60, // 1分ごとに同期
   },
 };
 
 function getEnvironment(): Environment {
-  const env = process.env.NODE_ENV || 'development';
-  if (['development', 'staging', 'production', 'test'].includes(env)) {
+  const env = process.env.NODE_ENV || "development";
+  if (["development", "staging", "production", "test"].includes(env)) {
     return env as Environment;
   }
-  return 'development';
-}
-
-function getPoolConfig(): PoolConfig {
-  return poolConfigs[getEnvironment()];
+  return "development";
 }
 
 // =============================================================================
 // 接続URL
 // =============================================================================
 
-// 直接接続（マイグレーション用）
-const DATABASE_URL_DIRECT = process.env.DATABASE_URL_DIRECT || process.env.DATABASE_URL;
+const TURSO_DATABASE_URL = process.env.TURSO_DATABASE_URL;
+const TURSO_AUTH_TOKEN = process.env.TURSO_AUTH_TOKEN;
 
-// プーラー経由接続（アプリケーション用）
-const DATABASE_URL = process.env.DATABASE_URL;
-
-if (!DATABASE_URL) {
-  throw new Error('DATABASE_URL environment variable is not set');
+if (!TURSO_DATABASE_URL || !TURSO_AUTH_TOKEN) {
+  throw new Error(
+    "TURSO_DATABASE_URL and TURSO_AUTH_TOKEN environment variables are required",
+  );
 }
 
 // =============================================================================
-// 接続パターン 1: WebSocket (Lambda, 長いコネクション向け)
+// 接続パターン 1: リモート接続のみ（シンプル）
 // =============================================================================
 
-let pool: Pool | null = null;
+let remoteClient: Client | null = null;
 
-function getPool(): Pool {
-  if (!pool) {
-    const config = getPoolConfig();
-    pool = new Pool({
-      connectionString: DATABASE_URL,
-      ...config,
-    });
-
-    // 接続イベントのロギング
-    pool.on('connect', () => {
-      console.log('[DB] New connection established');
-    });
-
-    pool.on('error', (err) => {
-      console.error('[DB] Pool error:', err);
-    });
-
-    pool.on('remove', () => {
-      console.log('[DB] Connection removed from pool');
+function getRemoteClient(): Client {
+  if (!remoteClient) {
+    remoteClient = createClient({
+      url: TURSO_DATABASE_URL!,
+      authToken: TURSO_AUTH_TOKEN!,
     });
   }
-  return pool;
+  return remoteClient;
 }
 
-// WebSocket接続を使用するDrizzleインスタンス
-export const dbWebSocket = drizzle(getPool(), { schema });
+// リモート接続を使用するDrizzleインスタンス
+export const dbRemote = drizzle(getRemoteClient(), { schema });
 
 // =============================================================================
-// 接続パターン 2: HTTP (Edge Functions, Cloudflare Workers向け)
+// 接続パターン 2: 組み込みレプリカ（超高速読み取り）
 // =============================================================================
 
-const sql = neon(DATABASE_URL);
+let replicaClient: Client | null = null;
 
-// HTTP接続を使用するDrizzleインスタンス
-export const dbHttp = drizzleHttp(sql, { schema });
+function getReplicaClient(): Client {
+  if (!replicaClient) {
+    const env = getEnvironment();
+    const replicaConfig = replicaConfigs[env];
+
+    if (replicaConfig) {
+      // 本番/ステージング: 組み込みレプリカを使用
+      replicaClient = createClient({
+        url: "file:///tmp/local-replica.db", // ローカルレプリカ
+        syncUrl: replicaConfig.syncUrl,
+        authToken: replicaConfig.authToken,
+        syncInterval: replicaConfig.syncInterval,
+      });
+
+      console.log(
+        `[DB] Embedded replica enabled (sync every ${replicaConfig.syncInterval}s)`,
+      );
+    } else {
+      // 開発/テスト: リモート接続のみ
+      replicaClient = createClient({
+        url: TURSO_DATABASE_URL!,
+        authToken: TURSO_AUTH_TOKEN!,
+      });
+
+      console.log("[DB] Using remote connection (no replica)");
+    }
+  }
+  return replicaClient;
+}
+
+// レプリカを使用するDrizzleインスタンス
+export const dbReplica = drizzle(getReplicaClient(), { schema });
+
+// =============================================================================
+// 接続パターン 3: Edge環境用（Vercel Edge/Cloudflare Workers）
+// =============================================================================
+
+/**
+ * Edge環境用のクライアント作成
+ * @libsql/client/web を使用すること
+ */
+export function createEdgeClient() {
+  // Edge環境では @libsql/client/web をimportする
+  // import { createClient } from '@libsql/client/web';
+
+  return createClient({
+    url: TURSO_DATABASE_URL!,
+    authToken: TURSO_AUTH_TOKEN!,
+  });
+}
 
 // =============================================================================
 // 環境に応じた自動選択
@@ -130,19 +146,27 @@ export const dbHttp = drizzleHttp(sql, { schema });
 /**
  * 実行環境に応じて最適な接続を選択
  *
- * - Edge環境: HTTP接続
- * - Node.js環境: WebSocket接続
+ * - 本番/ステージング: レプリカ接続（高速読み取り）
+ * - 開発/テスト: リモート接続（シンプル）
+ * - Edge環境: Edge用クライアント
  */
 export function getDb() {
   // Edge環境の検出
-  const isEdge = typeof globalThis.EdgeRuntime !== 'undefined' ||
-                 typeof (globalThis as any).WebSocketPair !== 'undefined';
+  const isEdge =
+    typeof globalThis.EdgeRuntime !== "undefined" ||
+    typeof (globalThis as any).WebSocketPair !== "undefined";
 
   if (isEdge) {
-    return dbHttp;
+    return drizzle(createEdgeClient(), { schema });
   }
 
-  return dbWebSocket;
+  // 環境に応じてレプリカまたはリモートを選択
+  const env = getEnvironment();
+  if (env === "production" || env === "staging") {
+    return dbReplica; // レプリカで高速化
+  }
+
+  return dbRemote; // 開発/テスト用シンプル接続
 }
 
 // デフォルトエクスポート
@@ -153,26 +177,64 @@ export const db = getDb();
 // =============================================================================
 
 export async function checkDatabaseHealth(): Promise<{
-  status: 'healthy' | 'unhealthy';
+  status: "healthy" | "unhealthy";
   latencyMs: number;
   error?: string;
+  replicaSync?: {
+    enabled: boolean;
+    lastSync?: Date;
+  };
 }> {
   const start = Date.now();
 
   try {
+    const client = getReplicaClient();
+
     // シンプルなクエリで接続確認
-    await sql`SELECT 1`;
+    await client.execute("SELECT 1");
+
+    // レプリカ情報の取得
+    const env = getEnvironment();
+    const replicaConfig = replicaConfigs[env];
 
     return {
-      status: 'healthy',
+      status: "healthy",
       latencyMs: Date.now() - start,
+      replicaSync: {
+        enabled: replicaConfig !== null,
+        lastSync: replicaConfig ? new Date() : undefined,
+      },
     };
   } catch (error) {
     return {
-      status: 'unhealthy',
+      status: "unhealthy",
       latencyMs: Date.now() - start,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : "Unknown error",
     };
+  }
+}
+
+// =============================================================================
+// 手動同期（レプリカ使用時）
+// =============================================================================
+
+/**
+ * レプリカを手動で同期
+ * 重要な更新直後に即座に同期したい場合に使用
+ */
+export async function syncReplica(): Promise<void> {
+  const client = getReplicaClient();
+
+  if ("sync" in client && typeof client.sync === "function") {
+    try {
+      await client.sync();
+      console.log("[DB] Manual replica sync completed");
+    } catch (error) {
+      console.error("[DB] Replica sync failed:", error);
+      throw error;
+    }
+  } else {
+    console.warn("[DB] Replica sync not available (using remote connection)");
   }
 }
 
@@ -184,21 +246,41 @@ export async function checkDatabaseHealth(): Promise<{
  * アプリケーション終了時に接続をクローズ
  */
 export async function closeConnections(): Promise<void> {
-  if (pool) {
-    await pool.end();
-    pool = null;
-    console.log('[DB] Connection pool closed');
+  const promises: Promise<void>[] = [];
+
+  if (remoteClient && "close" in remoteClient) {
+    promises.push(
+      (remoteClient.close as () => Promise<void>)().then(() => {
+        console.log("[DB] Remote connection closed");
+        remoteClient = null;
+      }),
+    );
   }
+
+  if (
+    replicaClient &&
+    replicaClient !== remoteClient &&
+    "close" in replicaClient
+  ) {
+    promises.push(
+      (replicaClient.close as () => Promise<void>)().then(() => {
+        console.log("[DB] Replica connection closed");
+        replicaClient = null;
+      }),
+    );
+  }
+
+  await Promise.all(promises);
 }
 
 // プロセス終了時のクリーンアップ
-if (typeof process !== 'undefined') {
-  process.on('SIGINT', async () => {
+if (typeof process !== "undefined") {
+  process.on("SIGINT", async () => {
     await closeConnections();
     process.exit(0);
   });
 
-  process.on('SIGTERM', async () => {
+  process.on("SIGTERM", async () => {
     await closeConnections();
     process.exit(0);
   });
@@ -219,14 +301,13 @@ if (typeof process !== 'undefined') {
  * export default {
  *   schema: './src/db/schema.ts',
  *   out: './drizzle',
- *   driver: 'pg',
+ *   driver: 'turso',
  *   dbCredentials: {
- *     connectionString: process.env.DATABASE_URL_DIRECT!,
+ *     url: process.env.TURSO_DATABASE_URL!,
+ *     authToken: process.env.TURSO_AUTH_TOKEN!,
  *   },
  * } satisfies Config;
  * ```
- *
- * 注意: マイグレーションには直接接続(DATABASE_URL_DIRECT)を使用
  */
 
 // =============================================================================
@@ -255,4 +336,11 @@ await db.transaction(async (tx) => {
   await tx.insert(users).values({ name: 'User 1' });
   await tx.insert(users).values({ name: 'User 2' });
 });
+
+// レプリカ手動同期（重要な更新後）
+await syncReplica();
+
+// ヘルスチェック
+const health = await checkDatabaseHealth();
+console.log('Database status:', health.status);
 */

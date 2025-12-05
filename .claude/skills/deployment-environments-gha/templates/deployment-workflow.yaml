@@ -30,12 +30,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Deploy to Development
         env:
           API_KEY: ${{ secrets.API_KEY }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
           DEPLOY_ENV: ${{ vars.DEPLOY_ENV }}
         run: |
           echo "Deploying to $DEPLOY_ENV environment"
@@ -58,12 +59,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Deploy to Staging
         env:
           API_KEY: ${{ secrets.API_KEY }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
           DEPLOY_ENV: ${{ vars.DEPLOY_ENV }}
         run: |
           echo "Deploying to $DEPLOY_ENV environment"
@@ -87,12 +89,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Deploy to Production
         env:
           API_KEY: ${{ secrets.API_KEY }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
           DEPLOY_ENV: ${{ vars.DEPLOY_ENV }}
         run: |
           echo "Deploying to $DEPLOY_ENV environment"
@@ -101,7 +104,6 @@ jobs:
           pnpm run deploy:prod
 
 ---
-
 # ============================================================
 # Template 2: Approval Workflow with Wait Timer
 # ============================================================
@@ -140,7 +142,7 @@ jobs:
     needs: deploy-staging
     runs-on: ubuntu-latest
     environment:
-      name: production  # Settings: Wait timer 10分 + Required reviewers 2名
+      name: production # Settings: Wait timer 10分 + Required reviewers 2名
       url: https://example.com
 
     steps:
@@ -159,7 +161,6 @@ jobs:
           pnpm run test:e2e:prod
 
 ---
-
 # ============================================================
 # Template 3: Multi-Region Deployment
 # ============================================================
@@ -172,7 +173,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to deploy'
+        description: "Version to deploy"
         required: true
         type: string
 
@@ -235,7 +236,6 @@ jobs:
           ./deploy-aws.sh eu-west-1
 
 ---
-
 # ============================================================
 # Template 4: Canary Deployment
 # ============================================================
@@ -252,7 +252,7 @@ jobs:
   deploy-canary:
     runs-on: ubuntu-latest
     environment:
-      name: production-canary  # Settings: Wait timer 30分
+      name: production-canary # Settings: Wait timer 30分
       url: https://canary.example.com
 
     steps:
@@ -275,7 +275,7 @@ jobs:
     needs: deploy-canary
     runs-on: ubuntu-latest
     environment:
-      name: production-half  # Settings: Wait timer 60分
+      name: production-half # Settings: Wait timer 60分
       url: https://example.com
 
     steps:
@@ -293,7 +293,7 @@ jobs:
     needs: deploy-half
     runs-on: ubuntu-latest
     environment:
-      name: production  # Settings: Required reviewers
+      name: production # Settings: Required reviewers
       url: https://example.com
 
     steps:
@@ -308,7 +308,6 @@ jobs:
           ./deploy-canary.sh 100
 
 ---
-
 # ============================================================
 # Template 5: Database Migration with Approval
 # ============================================================
@@ -321,7 +320,7 @@ on:
   workflow_dispatch:
     inputs:
       migration-version:
-        description: 'Migration version'
+        description: "Migration version"
         required: true
 
 jobs:
@@ -336,8 +335,8 @@ jobs:
 
       - name: Run Database Migration
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
         run: |
           echo "Running migration version ${{ github.event.inputs.migration-version }}"
           pnpm run migrate:up
@@ -360,7 +359,8 @@ jobs:
       - name: Deploy Backend
         env:
           API_KEY: ${{ secrets.API_KEY }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
         run: |
           echo "Deploying backend..."
           ./deploy-backend.sh
@@ -388,7 +388,6 @@ jobs:
           ./deploy-frontend.sh
 
 ---
-
 # ============================================================
 # Template 6: Conditional Environment Selection
 # ============================================================
@@ -402,19 +401,14 @@ on:
     branches:
       - main
       - develop
-      - 'release/**'
+      - "release/**"
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{
-      (github.ref_type == 'tag' && 'production') ||
-      (github.ref == 'refs/heads/main' && 'staging') ||
-      (github.ref == 'refs/heads/develop' && 'development') ||
-      (startsWith(github.ref, 'refs/heads/release/') && 'release')
-    }}
+    environment: ${{ (github.ref_type == 'tag' && 'production') || (github.ref == 'refs/heads/main' && 'staging') || (github.ref == 'refs/heads/develop' && 'development') || (startsWith(github.ref, 'refs/heads/release/') && 'release') }}
 
     steps:
       - uses: actions/checkout@v4
@@ -441,7 +435,6 @@ jobs:
           ./deploy.sh $ENVIRONMENT
 
 ---
-
 # ============================================================
 # Template 7: Rollback Workflow
 # ============================================================
@@ -454,14 +447,14 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment to rollback'
+        description: "Environment to rollback"
         required: true
         type: choice
         options:
           - staging
           - production
       version:
-        description: 'Version to rollback to'
+        description: "Version to rollback to"
         required: true
 
 jobs:
@@ -482,7 +475,8 @@ jobs:
       - name: Execute Rollback
         env:
           API_KEY: ${{ secrets.API_KEY }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
         run: |
           ./deploy.sh ${{ github.event.inputs.environment }}
 
@@ -503,7 +497,6 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 ---
-
 # ============================================================
 # Environment Settings Reference
 # ============================================================
@@ -513,7 +506,8 @@ jobs:
 #   Deployment branches: All branches
 #   Secrets:
 #     - API_KEY: dev-api-key
-#     - DATABASE_URL: postgres://dev.example.com/db
+#     - TURSO_DATABASE_URL: libsql://dev-db.turso.io
+#     - TURSO_AUTH_TOKEN: eyJhbGc...dev
 #   Variables:
 #     - DEPLOY_ENV: development
 
@@ -523,7 +517,8 @@ jobs:
 #   Deployment branches: main, develop
 #   Secrets:
 #     - API_KEY: staging-api-key
-#     - DATABASE_URL: postgres://staging.example.com/db
+#     - TURSO_DATABASE_URL: libsql://staging-db.turso.io
+#     - TURSO_AUTH_TOKEN: eyJhbGc...staging
 #   Variables:
 #     - DEPLOY_ENV: staging
 
@@ -534,7 +529,8 @@ jobs:
 #   Deployment branches: main, tags (v*)
 #   Secrets:
 #     - API_KEY: prod-api-key
-#     - DATABASE_URL: postgres://prod.example.com/db
+#     - TURSO_DATABASE_URL: libsql://prod-db.turso.io
+#     - TURSO_AUTH_TOKEN: eyJhbGc...prod
 #   Variables:
 #     - DEPLOY_ENV: production
 

@@ -33,23 +33,23 @@ pnpm add @opentelemetry/exporter-metrics-otlp-http
 #### 基本設定
 
 ```typescript
-import { NodeSDK } from '@opentelemetry/sdk-node';
-import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
-import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
+import { NodeSDK } from "@opentelemetry/sdk-node";
+import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
+import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
+import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http";
 
 const sdk = new NodeSDK({
-  serviceName: 'api-server',
+  serviceName: "api-server",
   traceExporter: new OTLPTraceExporter({
-    url: 'http://otel-collector:4318/v1/traces'
+    url: "http://otel-collector:4318/v1/traces",
   }),
   metricReader: new PeriodicExportingMetricReader({
     exporter: new OTLPMetricExporter({
-      url: 'http://otel-collector:4318/v1/metrics'
+      url: "http://otel-collector:4318/v1/metrics",
     }),
-    exportIntervalMillis: 60000 // 1分ごと
+    exportIntervalMillis: 60000, // 1分ごと
   }),
-  instrumentations: [getNodeAutoInstrumentations()]
+  instrumentations: [getNodeAutoInstrumentations()],
 });
 
 sdk.start();
@@ -60,9 +60,10 @@ sdk.start();
 ### 対象ライブラリ
 
 自動計装が利用可能な主要ライブラリ:
+
 - HTTP/HTTPS
 - Express, Fastify, Koa
-- Database (PostgreSQL, MySQL, MongoDB)
+- Database (SQLite, Turso/libSQL)
 - Redis
 - AWS SDK
 - gRPC
@@ -70,17 +71,17 @@ sdk.start();
 ### 有効化方法
 
 ```typescript
-import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
+import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
 
 const sdk = new NodeSDK({
   instrumentations: [
     getNodeAutoInstrumentations({
-      '@opentelemetry/instrumentation-http': { enabled: true },
-      '@opentelemetry/instrumentation-express': { enabled: true },
-      '@opentelemetry/instrumentation-pg': { enabled: true },
-      '@opentelemetry/instrumentation-redis': { enabled: true }
-    })
-  ]
+      "@opentelemetry/instrumentation-http": { enabled: true },
+      "@opentelemetry/instrumentation-express": { enabled: true },
+      "@opentelemetry/instrumentation-sqlite3": { enabled: true },
+      "@opentelemetry/instrumentation-redis": { enabled: true },
+    }),
+  ],
 });
 ```
 
@@ -89,17 +90,17 @@ const sdk = new NodeSDK({
 ### スパンの作成
 
 ```typescript
-import { trace } from '@opentelemetry/api';
+import { trace } from "@opentelemetry/api";
 
 async function processOrder(orderId: string) {
-  const tracer = trace.getTracer('order-service');
-  const span = tracer.startSpan('process_order');
+  const tracer = trace.getTracer("order-service");
+  const span = tracer.startSpan("process_order");
 
   try {
     // スパン属性の設定
     span.setAttributes({
-      'order.id': orderId,
-      'order.status': 'processing'
+      "order.id": orderId,
+      "order.status": "processing",
     });
 
     // ビジネスロジック
@@ -113,7 +114,7 @@ async function processOrder(orderId: string) {
     // エラー記録
     span.setStatus({
       code: SpanStatusCode.ERROR,
-      message: error.message
+      message: error.message,
     });
     span.recordException(error);
     throw error;
@@ -127,19 +128,21 @@ async function processOrder(orderId: string) {
 
 ```typescript
 async function processOrder(orderId: string) {
-  const tracer = trace.getTracer('order-service');
+  const tracer = trace.getTracer("order-service");
 
-  return tracer.startActiveSpan('process_order', async (parentSpan) => {
+  return tracer.startActiveSpan("process_order", async (parentSpan) => {
     // 子スパン1: 注文取得
-    await tracer.startActiveSpan('fetch_order', async (span) => {
-      const order = await database.query('SELECT * FROM orders WHERE id = $1', [orderId]);
-      span.setAttributes({ 'order.total': order.total });
+    await tracer.startActiveSpan("fetch_order", async (span) => {
+      const order = await database.query("SELECT * FROM orders WHERE id = $1", [
+        orderId,
+      ]);
+      span.setAttributes({ "order.total": order.total });
       span.end();
       return order;
     });
 
     // 子スパン2: 決済処理
-    await tracer.startActiveSpan('charge_payment', async (span) => {
+    await tracer.startActiveSpan("charge_payment", async (span) => {
       await paymentGateway.charge(order);
       span.end();
     });
@@ -154,7 +157,7 @@ async function processOrder(orderId: string) {
 ### ログにトレースコンテキストを含める
 
 ```typescript
-import { trace, context } from '@opentelemetry/api';
+import { trace, context } from "@opentelemetry/api";
 
 function getTraceContext() {
   const span = trace.getActiveSpan();
@@ -164,20 +167,21 @@ function getTraceContext() {
   return {
     trace_id: spanContext.traceId,
     span_id: spanContext.spanId,
-    trace_flags: spanContext.traceFlags
+    trace_flags: spanContext.traceFlags,
   };
 }
 
 // ロガーに統合
-logger.info('Order processed', {
+logger.info("Order processed", {
   ...getTraceContext(),
-  order_id: 'ord_123'
+  order_id: "ord_123",
 });
 ```
 
 ### W3C Trace Context
 
 **トレースコンテキストヘッダー**:
+
 ```
 traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
              |   |                                |                |
@@ -189,15 +193,17 @@ traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
 ### ヘッドベースサンプリング
 
 **リクエスト受信時に決定**:
+
 ```typescript
 const sdk = new NodeSDK({
-  sampler: new TraceIdRatioBasedSampler(0.01) // 1%サンプリング
+  sampler: new TraceIdRatioBasedSampler(0.01), // 1%サンプリング
 });
 ```
 
 ### テールベースサンプリング
 
 **リクエスト完了後に決定**:
+
 ```
 完了後の条件:
 - エラーが発生 → 100%記録
@@ -206,19 +212,20 @@ const sdk = new NodeSDK({
 ```
 
 **実装**（OTel Collectorで設定）:
+
 ```yaml
 processors:
   tail_sampling:
     policies:
       - name: errors
         type: status_code
-        status_code: {status_codes: [ERROR]}
+        status_code: { status_codes: [ERROR] }
       - name: slow_requests
         type: latency
-        latency: {threshold_ms: 1000}
+        latency: { threshold_ms: 1000 }
       - name: random_sampling
         type: probabilistic
-        probabilistic: {sampling_percentage: 1}
+        probabilistic: { sampling_percentage: 1 }
 ```
 
 ## メトリクス収集
@@ -228,18 +235,18 @@ processors:
 **用途**: 増加のみの累積値（リクエスト数、エラー数等）
 
 ```typescript
-import { metrics } from '@opentelemetry/api';
+import { metrics } from "@opentelemetry/api";
 
-const meter = metrics.getMeter('api-server');
-const requestCounter = meter.createCounter('http_requests_total', {
-  description: 'Total HTTP requests'
+const meter = metrics.getMeter("api-server");
+const requestCounter = meter.createCounter("http_requests_total", {
+  description: "Total HTTP requests",
 });
 
 // リクエストごとにインクリメント
 requestCounter.add(1, {
   method: req.method,
   path: req.path,
-  status: res.statusCode
+  status: res.statusCode,
 });
 ```
 
@@ -248,8 +255,8 @@ requestCounter.add(1, {
 **用途**: 増減する現在値（メモリ使用量、アクティブ接続数等）
 
 ```typescript
-const activeConnections = meter.createObservableGauge('active_connections', {
-  description: 'Current number of active connections'
+const activeConnections = meter.createObservableGauge("active_connections", {
+  description: "Current number of active connections",
 });
 
 activeConnections.addCallback((observableResult) => {
@@ -263,9 +270,9 @@ activeConnections.addCallback((observableResult) => {
 **用途**: 値の分布（レイテンシ、リクエストサイズ等）
 
 ```typescript
-const requestDuration = meter.createHistogram('http_request_duration_seconds', {
-  description: 'HTTP request duration',
-  unit: 'seconds'
+const requestDuration = meter.createHistogram("http_request_duration_seconds", {
+  description: "HTTP request duration",
+  unit: "seconds",
 });
 
 // リクエストごとに記録
@@ -275,7 +282,7 @@ const duration = (Date.now() - startTime) / 1000;
 requestDuration.record(duration, {
   method: req.method,
   path: req.path,
-  status: res.statusCode
+  status: res.statusCode,
 });
 ```
 

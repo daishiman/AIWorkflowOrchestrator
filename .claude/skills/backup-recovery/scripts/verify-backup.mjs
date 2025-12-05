@@ -10,36 +10,39 @@
  *
  * 使用方法:
  *   node verify-backup.mjs --check-connection
- *   node verify-backup.mjs --verify-branches
+ *   node verify-backup.mjs --verify-databases
  *   node verify-backup.mjs --test-pitr "2024-01-15T10:00:00Z"
  *   node verify-backup.mjs --full-report
  */
 
-import { execSync } from 'child_process';
+import { execSync } from "child_process";
 
 // 設定
 const CONFIG = {
-  // Neon CLI コマンドの有無を確認
-  neonCliAvailable: false,
-  // データベース接続文字列（環境変数から取得）
-  databaseUrl: process.env.DATABASE_URL || '',
+  // Turso CLI コマンドの有無を確認
+  tursoCliAvailable: false,
+  // データベース接続情報（環境変数から取得）
+  databaseUrl: process.env.TURSO_DATABASE_URL || "",
+  authToken: process.env.TURSO_AUTH_TOKEN || "",
   // 検証対象のテーブル
-  criticalTables: ['users', 'orders', 'transactions'],
+  criticalTables: ["users", "orders", "transactions"],
   // バックアップ保持期間（日）
   retentionDays: 7,
 };
 
 /**
- * Neon CLIの利用可能性をチェック
+ * Turso CLIの利用可能性をチェック
  */
-function checkNeonCli() {
+function checkTursoCli() {
   try {
-    execSync('neon --version', { stdio: 'pipe' });
-    CONFIG.neonCliAvailable = true;
+    execSync("turso --version", { stdio: "pipe" });
+    CONFIG.tursoCliAvailable = true;
     return true;
   } catch {
-    console.log('⚠️  Neon CLI が見つかりません');
-    console.log('   インストール: pnpm install -g neonctl');
+    console.log("⚠️  Turso CLI が見つかりません");
+    console.log(
+      "   インストール: curl -sSfL https://get.tur.so/install.sh | bash",
+    );
     return false;
   }
 }
@@ -48,17 +51,20 @@ function checkNeonCli() {
  * データベース接続をテスト
  */
 async function checkConnection() {
-  console.log('\n📡 接続チェック...');
+  console.log("\n📡 接続チェック...");
 
   if (!CONFIG.databaseUrl) {
-    console.log('❌ DATABASE_URL が設定されていません');
+    console.log("❌ TURSO_DATABASE_URL が設定されていません");
     return false;
   }
 
+  if (!CONFIG.authToken) {
+    console.log("⚠️  TURSO_AUTH_TOKEN が設定されていません");
+  }
+
   try {
-    // 簡易的な接続テスト（実際のプロジェクトでは適切なDBクライアントを使用）
-    console.log('✅ DATABASE_URL が設定されています');
-    console.log(`   URL: ${CONFIG.databaseUrl.substring(0, 30)}...`);
+    console.log("✅ TURSO_DATABASE_URL が設定されています");
+    console.log(`   URL: ${CONFIG.databaseUrl.substring(0, 40)}...`);
     return true;
   } catch (error) {
     console.log(`❌ 接続エラー: ${error.message}`);
@@ -67,34 +73,70 @@ async function checkConnection() {
 }
 
 /**
- * Neonブランチ一覧を取得
+ * Tursoデータベース一覧を取得
  */
-function verifyBranches() {
-  console.log('\n🌿 ブランチ検証...');
+function verifyDatabases() {
+  console.log("\n🗄️  データベース検証...");
 
-  if (!CONFIG.neonCliAvailable) {
-    console.log('⚠️  Neon CLI が利用できないためスキップ');
+  if (!CONFIG.tursoCliAvailable) {
+    console.log("⚠️  Turso CLI が利用できないためスキップ");
     return null;
   }
 
   try {
-    const output = execSync('neon branches list --output json', {
-      encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'pipe']
+    const output = execSync("turso db list --json", {
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
     });
 
-    const branches = JSON.parse(output);
+    const databases = JSON.parse(output);
 
-    console.log(`✅ ${branches.length} 個のブランチを検出`);
+    console.log(`✅ ${databases.length} 個のデータベースを検出`);
 
-    branches.forEach(branch => {
-      const status = branch.current_state === 'ready' ? '✅' : '⚠️';
-      console.log(`   ${status} ${branch.name} (${branch.id})`);
+    databases.forEach((db) => {
+      const status = db.is_schema ? "✅" : "⚠️";
+      console.log(
+        `   ${status} ${db.Name} (Region: ${db.primaryRegion || "N/A"})`,
+      );
     });
 
-    return branches;
+    return databases;
   } catch (error) {
-    console.log(`❌ ブランチ取得エラー: ${error.message}`);
+    console.log(`❌ データベース取得エラー: ${error.message}`);
+    return null;
+  }
+}
+
+/**
+ * スナップショット一覧を取得
+ */
+function verifySnapshots(dbName) {
+  console.log(`\n📸 スナップショット検証: ${dbName}`);
+
+  if (!CONFIG.tursoCliAvailable) {
+    console.log("⚠️  Turso CLI が利用できないためスキップ");
+    return null;
+  }
+
+  try {
+    const output = execSync(`turso db snapshots list ${dbName} --json`, {
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
+    });
+
+    const snapshots = JSON.parse(output);
+
+    console.log(`✅ ${snapshots.length} 個のスナップショットを検出`);
+
+    snapshots.slice(0, 5).forEach((snapshot) => {
+      console.log(
+        `   📸 ${snapshot.name} (${new Date(snapshot.timestamp).toLocaleString()})`,
+      );
+    });
+
+    return snapshots;
+  } catch (error) {
+    console.log(`⚠️  スナップショット取得エラー: ${error.message}`);
     return null;
   }
 }
@@ -102,22 +144,22 @@ function verifyBranches() {
 /**
  * PITR（Point-in-Time Recovery）の可能性をテスト
  */
-function testPitr(timestamp) {
+function testPitr(timestamp, dbName = "main") {
   console.log(`\n⏱️  PITR テスト: ${timestamp}`);
 
-  if (!CONFIG.neonCliAvailable) {
-    console.log('⚠️  Neon CLI が利用できないためスキップ');
+  if (!CONFIG.tursoCliAvailable) {
+    console.log("⚠️  Turso CLI が利用できないためスキップ");
     return false;
   }
 
   try {
-    // ドライランでブランチ作成をシミュレート
-    console.log('   ブランチ作成をシミュレート中...');
+    // ドライランでデータベース作成をシミュレート
+    console.log("   データベース作成をシミュレート中...");
 
     // 実際のコマンド（ドライランモード）:
-    // neon branches create --name pitr_test_${Date.now()} --from main@${timestamp} --dry-run
+    // turso db create pitr_test_${Date.now()} --from-db ${dbName} --timestamp ${timestamp} --dry-run
 
-    console.log('✅ PITR が利用可能です');
+    console.log("✅ PITR が利用可能です");
     console.log(`   復旧可能時点: ${timestamp}`);
     return true;
   } catch (error) {
@@ -130,16 +172,17 @@ function testPitr(timestamp) {
  * バックアップ健全性レポートを生成
  */
 function generateFullReport() {
-  console.log('\n📊 バックアップ健全性レポート');
-  console.log('================================');
+  console.log("\n📊 バックアップ健全性レポート");
+  console.log("================================");
   console.log(`生成日時: ${new Date().toISOString()}`);
 
   const report = {
     timestamp: new Date().toISOString(),
     checks: {
       connection: false,
-      neonCli: false,
-      branches: null,
+      tursoCli: false,
+      databases: null,
+      snapshots: null,
       pitr: false,
     },
     recommendations: [],
@@ -148,23 +191,35 @@ function generateFullReport() {
   // 接続チェック
   report.checks.connection = checkConnection();
 
-  // Neon CLI チェック
-  report.checks.neonCli = checkNeonCli();
+  // Turso CLI チェック
+  report.checks.tursoCli = checkTursoCli();
 
-  // ブランチ検証
-  if (report.checks.neonCli) {
-    report.checks.branches = verifyBranches();
+  // データベース検証
+  if (report.checks.tursoCli) {
+    report.checks.databases = verifyDatabases();
 
-    // バックアップブランチの確認
-    if (report.checks.branches) {
-      const backupBranches = report.checks.branches.filter(b =>
-        b.name.includes('backup') || b.name.includes('recovery')
+    // バックアップデータベースの確認
+    if (report.checks.databases) {
+      const backupDbs = report.checks.databases.filter(
+        (db) => db.Name.includes("backup") || db.Name.includes("recovery"),
       );
 
-      if (backupBranches.length === 0) {
+      if (backupDbs.length === 0) {
         report.recommendations.push(
-          '定期的なバックアップブランチの作成を推奨します'
+          "定期的なバックアップデータベースの作成を推奨します",
         );
+      }
+
+      // 本番データベースのスナップショット確認
+      const mainDb = report.checks.databases.find((db) => db.Name === "main");
+      if (mainDb) {
+        report.checks.snapshots = verifySnapshots("main");
+
+        if (report.checks.snapshots && report.checks.snapshots.length === 0) {
+          report.recommendations.push(
+            "スナップショットが見つかりません。PITR機能を有効化してください",
+          );
+        }
       }
     }
   }
@@ -174,9 +229,9 @@ function generateFullReport() {
   report.checks.pitr = testPitr(yesterday);
 
   // 推奨事項
-  console.log('\n📝 推奨事項:');
+  console.log("\n📝 推奨事項:");
   if (report.recommendations.length === 0) {
-    console.log('   ✅ 現時点で推奨事項はありません');
+    console.log("   ✅ 現時点で推奨事項はありません");
   } else {
     report.recommendations.forEach((rec, i) => {
       console.log(`   ${i + 1}. ${rec}`);
@@ -184,8 +239,8 @@ function generateFullReport() {
   }
 
   // サマリー
-  console.log('\n📋 サマリー:');
-  const passed = Object.values(report.checks).filter(v => v === true).length;
+  console.log("\n📋 サマリー:");
+  const passed = Object.values(report.checks).filter((v) => v === true).length;
   const total = Object.keys(report.checks).length;
   console.log(`   合格: ${passed}/${total}`);
 
@@ -197,24 +252,27 @@ function generateFullReport() {
  */
 function showHelp() {
   console.log(`
-バックアップ検証スクリプト
+バックアップ検証スクリプト (Turso版)
 
 使用方法:
   node verify-backup.mjs [オプション]
 
 オプション:
   --check-connection    データベース接続をテスト
-  --verify-branches     Neonブランチを検証
+  --verify-databases    Tursoデータベースを検証
+  --verify-snapshots    スナップショットを検証
   --test-pitr <時刻>    PITR復旧可能性をテスト
   --full-report         完全な健全性レポートを生成
   --help               このヘルプを表示
 
 環境変数:
-  DATABASE_URL         データベース接続文字列
+  TURSO_DATABASE_URL   データベース接続URL
+  TURSO_AUTH_TOKEN     認証トークン
 
 例:
   node verify-backup.mjs --full-report
   node verify-backup.mjs --test-pitr "2024-01-15T10:00:00Z"
+  node verify-backup.mjs --verify-snapshots
 `);
 }
 
@@ -222,35 +280,40 @@ function showHelp() {
 function main() {
   const args = process.argv.slice(2);
 
-  if (args.length === 0 || args.includes('--help')) {
+  if (args.length === 0 || args.includes("--help")) {
     showHelp();
     process.exit(0);
   }
 
-  console.log('🔍 バックアップ検証を開始...');
+  console.log("🔍 バックアップ検証を開始...");
 
-  // Neon CLI チェック
-  checkNeonCli();
+  // Turso CLI チェック
+  checkTursoCli();
 
-  if (args.includes('--check-connection')) {
+  if (args.includes("--check-connection")) {
     checkConnection();
   }
 
-  if (args.includes('--verify-branches')) {
-    verifyBranches();
+  if (args.includes("--verify-databases")) {
+    verifyDatabases();
   }
 
-  if (args.includes('--test-pitr')) {
-    const timestampIndex = args.indexOf('--test-pitr') + 1;
+  if (args.includes("--verify-snapshots")) {
+    const dbName = args[args.indexOf("--verify-snapshots") + 1] || "main";
+    verifySnapshots(dbName);
+  }
+
+  if (args.includes("--test-pitr")) {
+    const timestampIndex = args.indexOf("--test-pitr") + 1;
     const timestamp = args[timestampIndex] || new Date().toISOString();
     testPitr(timestamp);
   }
 
-  if (args.includes('--full-report')) {
+  if (args.includes("--full-report")) {
     generateFullReport();
   }
 
-  console.log('\n✅ 検証完了');
+  console.log("\n✅ 検証完了");
 }
 
 main();

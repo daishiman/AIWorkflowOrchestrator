@@ -32,6 +32,7 @@ class XxxRepository implements IXxxRepository {
 Repository内部にプライベートな変換関数を定義:
 
 **DB → ドメインエンティティ（toEntity）**:
+
 ```typescript
 // 概念構造
 private toEntity(record: DbRecord): DomainEntity {
@@ -39,9 +40,9 @@ private toEntity(record: DbRecord): DomainEntity {
     id: record.id,
     // フィールドマッピング
     status: record.status as DomainStatus,
-    // JSONB → オブジェクト
+    // JSON → オブジェクト（SQLiteではtext({ mode: 'json' })を使用）
     config: record.config_json ? JSON.parse(record.config_json) : null,
-    // タイムスタンプ変換
+    // タイムスタンプ変換（SQLiteではintegerまたはtext）
     createdAt: new Date(record.created_at),
     updatedAt: new Date(record.updated_at),
   }
@@ -49,15 +50,16 @@ private toEntity(record: DbRecord): DomainEntity {
 ```
 
 **ドメインエンティティ → DB（toRecord）**:
+
 ```typescript
 private toRecord(entity: DomainEntity): Partial<DbRecord> {
   return {
     id: entity.id,
     status: entity.status,
-    // オブジェクト → JSONB
+    // オブジェクト → JSON（SQLiteではtext({ mode: 'json' })を使用）
     config_json: entity.config ? JSON.stringify(entity.config) : null,
-    // Date → ISO文字列（DBに応じて）
-    updated_at: new Date().toISOString(),
+    // Date → タイムスタンプ（SQLiteではintegerまたはtext）
+    updated_at: Date.now(), // or new Date().toISOString()
   }
 }
 ```
@@ -65,6 +67,7 @@ private toRecord(entity: DomainEntity): Partial<DbRecord> {
 ### 2. マッピングの注意点
 
 **Null/Undefined処理**:
+
 ```typescript
 // DB nullable → ドメイン optional
 private toEntity(record: DbRecord): DomainEntity {
@@ -78,14 +81,15 @@ private toEntity(record: DbRecord): DomainEntity {
 ```
 
 **型変換**:
+
 ```typescript
 // 文字列 → Enum
 status: record.status as WorkflowStatus,
 
-// 数値 → Boolean
+// 数値 → Boolean（SQLiteではintegerで0/1を使用）
 isActive: record.is_active === 1,
 
-// JSONB → 型付きオブジェクト
+// JSON → 型付きオブジェクト（SQLiteではtext({ mode: 'json' })を使用）
 metadata: record.metadata as Metadata,
 ```
 
@@ -96,7 +100,9 @@ metadata: record.metadata as Metadata,
 ```typescript
 async add(entity: Workflow): Promise<Workflow> {
   // 1. ID生成（必要に応じて）
-  const id = entity.id || generateUUID()
+  // SQLiteではinteger主キーにAUTOINCREMENTを使用するか、
+  // text主キーにULIDやUUIDを使用
+  const id = entity.id || generateId()
 
   // 2. レコード作成
   const record = this.toRecord({ ...entity, id })
@@ -115,6 +121,7 @@ async add(entity: Workflow): Promise<Workflow> {
 ### Read（取得）
 
 **単一取得**:
+
 ```typescript
 async findById(id: string): Promise<Workflow | null> {
   const records = await this.db
@@ -128,6 +135,7 @@ async findById(id: string): Promise<Workflow | null> {
 ```
 
 **複数取得**:
+
 ```typescript
 async findAll(): Promise<Workflow[]> {
   const records = await this.db
@@ -139,6 +147,7 @@ async findAll(): Promise<Workflow[]> {
 ```
 
 **条件検索**:
+
 ```typescript
 async findByStatus(status: WorkflowStatus): Promise<Workflow[]> {
   const records = await this.db
@@ -177,6 +186,7 @@ async update(entity: Workflow): Promise<Workflow> {
 ### Delete（削除）
 
 **物理削除**:
+
 ```typescript
 async remove(entity: Workflow): Promise<void> {
   await this.db
@@ -186,6 +196,7 @@ async remove(entity: Workflow): Promise<void> {
 ```
 
 **論理削除（ソフトデリート）**:
+
 ```typescript
 async remove(entity: Workflow): Promise<void> {
   await this.db
@@ -202,25 +213,31 @@ async remove(entity: Workflow): Promise<void> {
 ```typescript
 // 基底エラー
 class RepositoryError extends Error {
-  constructor(message: string, public readonly cause?: Error) {
-    super(message)
-    this.name = 'RepositoryError'
+  constructor(
+    message: string,
+    public readonly cause?: Error,
+  ) {
+    super(message);
+    this.name = "RepositoryError";
   }
 }
 
 // エンティティ未発見
 class EntityNotFoundError extends RepositoryError {
   constructor(public readonly entityId: string) {
-    super(`Entity with id ${entityId} not found`)
-    this.name = 'EntityNotFoundError'
+    super(`Entity with id ${entityId} not found`);
+    this.name = "EntityNotFoundError";
   }
 }
 
 // 一意制約違反
 class UniqueConstraintError extends RepositoryError {
-  constructor(public readonly field: string, public readonly value: string) {
-    super(`Unique constraint violated for ${field}: ${value}`)
-    this.name = 'UniqueConstraintError'
+  constructor(
+    public readonly field: string,
+    public readonly value: string,
+  ) {
+    super(`Unique constraint violated for ${field}: ${value}`);
+    this.name = "UniqueConstraintError";
   }
 }
 ```
@@ -246,9 +263,10 @@ async add(entity: Workflow): Promise<Workflow> {
 }
 
 private isUniqueConstraintError(error: unknown): boolean {
-  // PostgreSQLの場合: error.code === '23505'
-  // 実際のエラーコードはDBに依存
-  return (error as any)?.code === '23505'
+  // SQLiteの場合: error.code === 'SQLITE_CONSTRAINT_UNIQUE' または 'SQLITE_CONSTRAINT'
+  // libSQLでも同様のエラーコード
+  const code = (error as any)?.code;
+  return code === 'SQLITE_CONSTRAINT_UNIQUE' || code === 'SQLITE_CONSTRAINT'
 }
 ```
 
@@ -283,40 +301,58 @@ private isUniqueConstraintError(error: unknown): boolean {
 ### 単体テスト構造
 
 ```typescript
-describe('WorkflowRepository', () => {
+describe("WorkflowRepository", () => {
   // セットアップ
   beforeEach(async () => {
     // テストデータのセットアップ
-  })
+  });
 
   afterEach(async () => {
     // クリーンアップ
-  })
+  });
 
   // CRUD操作テスト
-  describe('add', () => {
-    it('新しいエンティティを追加できる', async () => { /* ... */ })
-    it('一意制約違反時にエラーをスローする', async () => { /* ... */ })
-  })
+  describe("add", () => {
+    it("新しいエンティティを追加できる", async () => {
+      /* ... */
+    });
+    it("一意制約違反時にエラーをスローする", async () => {
+      /* ... */
+    });
+  });
 
-  describe('findById', () => {
-    it('存在するエンティティを取得できる', async () => { /* ... */ })
-    it('存在しないIDでnullを返す', async () => { /* ... */ })
-  })
+  describe("findById", () => {
+    it("存在するエンティティを取得できる", async () => {
+      /* ... */
+    });
+    it("存在しないIDでnullを返す", async () => {
+      /* ... */
+    });
+  });
 
-  describe('update', () => {
-    it('エンティティを更新できる', async () => { /* ... */ })
-    it('存在しないエンティティでエラーをスローする', async () => { /* ... */ })
-  })
+  describe("update", () => {
+    it("エンティティを更新できる", async () => {
+      /* ... */
+    });
+    it("存在しないエンティティでエラーをスローする", async () => {
+      /* ... */
+    });
+  });
 
-  describe('remove', () => {
-    it('エンティティを削除できる', async () => { /* ... */ })
-  })
+  describe("remove", () => {
+    it("エンティティを削除できる", async () => {
+      /* ... */
+    });
+  });
 
   // ドメイン固有メソッドテスト
-  describe('findByStatus', () => {
-    it('指定ステータスのエンティティを取得できる', async () => { /* ... */ })
-    it('該当なしで空配列を返す', async () => { /* ... */ })
-  })
-})
+  describe("findByStatus", () => {
+    it("指定ステータスのエンティティを取得できる", async () => {
+      /* ... */
+    });
+    it("該当なしで空配列を返す", async () => {
+      /* ... */
+    });
+  });
+});
 ```

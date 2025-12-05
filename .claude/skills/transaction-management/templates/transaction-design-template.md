@@ -14,10 +14,10 @@
 
 ### 関連エンティティ
 
-| エンティティ | テーブル | 操作 | 説明 |
-|-------------|---------|------|------|
-| {{entity1}} | {{table1}} | INSERT/UPDATE/DELETE | {{description1}} |
-| {{entity2}} | {{table2}} | INSERT/UPDATE/DELETE | {{description2}} |
+| エンティティ | テーブル   | 操作                 | 説明             |
+| ------------ | ---------- | -------------------- | ---------------- |
+| {{entity1}}  | {{table1}} | INSERT/UPDATE/DELETE | {{description1}} |
+| {{entity2}}  | {{table2}} | INSERT/UPDATE/DELETE | {{description2}} |
 
 ## トランザクション境界
 
@@ -44,30 +44,30 @@
 
 ## 分離レベル
 
-### 選択した分離レベル
+### 選択したトランザクションモード
 
-- [ ] READ COMMITTED（デフォルト）
-- [ ] REPEATABLE READ
-- [ ] SERIALIZABLE
+- [ ] BEGIN DEFERRED（デフォルト）
+- [ ] BEGIN IMMEDIATE
+- [ ] BEGIN EXCLUSIVE
 
 ### 選択理由
 
-{{isolation_level_reason}}
+{{transaction_mode_reason}}
 
 ### 発生しうる問題
 
-| 問題 | 発生可能性 | 影響 | 対策 |
-|------|-----------|------|------|
-| Dirty Read | 防止 | - | - |
+| 問題                | 発生可能性         | 影響          | 対策              |
+| ------------------- | ------------------ | ------------- | ----------------- |
+| Dirty Read          | 防止               | -             | -                 |
 | Non-Repeatable Read | {{nr_possibility}} | {{nr_impact}} | {{nr_mitigation}} |
-| Phantom Read | {{pr_possibility}} | {{pr_impact}} | {{pr_mitigation}} |
+| Phantom Read        | {{pr_possibility}} | {{pr_impact}} | {{pr_mitigation}} |
 
 ## ロック戦略
 
 ### 選択したロック方式
 
 - [ ] 楽観的ロック（バージョンカラム）
-- [ ] 悲観的ロック（SELECT FOR UPDATE）
+- [ ] 悲観的ロック（BEGIN IMMEDIATE）
 - [ ] 混合（通常は楽観的、特定操作のみ悲観的）
 
 ### バージョンカラム（楽観的ロックの場合）
@@ -80,15 +80,16 @@ interface {{EntityName}} {
 }
 ```
 
-### FOR UPDATE対象（悲観的ロックの場合）
+### トランザクションモード（悲観的ロックの場合）
 
-| テーブル | 条件 | ロックモード |
-|---------|------|------------|
-| {{table}} | {{condition}} | FOR UPDATE / FOR SHARE |
+| 操作タイプ     | トランザクションモード | 理由                   |
+| -------------- | ---------------------- | ---------------------- |
+| 通常の書き込み | BEGIN IMMEDIATE        | 書き込み競合を早期検出 |
+| 大量データ処理 | BEGIN EXCLUSIVE        | 排他的アクセスが必要   |
 
-### デッドロック対策
+### SQLITE_BUSY対策
 
-- [ ] ロック順序の統一（ID昇順）
+- [ ] busy_timeout設定
 - [ ] タイムアウト設定
 - [ ] リトライロジック
 
@@ -96,22 +97,22 @@ interface {{EntityName}} {
 
 ### エラー分類
 
-| エラータイプ | PostgreSQLコード | 対応 | リトライ |
-|-------------|-----------------|------|---------|
-| 一意制約違反 | 23505 | 重複エラー返却 | ❌ |
-| 外部キー違反 | 23503 | 参照エラー返却 | ❌ |
-| シリアライゼーション失敗 | 40001 | リトライ | ✅ |
-| デッドロック | 40P01 | リトライ | ✅ |
+| エラータイプ       | SQLiteコード      | 対応           | リトライ |
+| ------------------ | ----------------- | -------------- | -------- |
+| 一意制約違反       | SQLITE_CONSTRAINT | 重複エラー返却 | ❌       |
+| 外部キー違反       | SQLITE_CONSTRAINT | 参照エラー返却 | ❌       |
+| データベースロック | SQLITE_BUSY       | リトライ       | ✅       |
+| テーブルロック     | SQLITE_LOCKED     | リトライ       | ✅       |
 
 ### リトライ設定
 
 ```typescript
 const RETRY_CONFIG = {
   maxRetries: 3,
-  initialDelay: 100,  // ms
+  initialDelay: 100, // ms
   backoffMultiplier: 2,
   jitter: true,
-}
+};
 ```
 
 ## ロールバック戦略
@@ -129,10 +130,10 @@ const RETRY_CONFIG = {
 
 ### 補償トランザクション（分散システムの場合）
 
-| ステップ | 正常操作 | 補償操作 |
-|---------|---------|---------|
-| 1 | {{step1_execute}} | {{step1_compensate}} |
-| 2 | {{step2_execute}} | {{step2_compensate}} |
+| ステップ | 正常操作          | 補償操作             |
+| -------- | ----------------- | -------------------- |
+| 1        | {{step1_execute}} | {{step1_compensate}} |
+| 2        | {{step2_execute}} | {{step2_compensate}} |
 
 ## 実装コード
 
@@ -184,8 +185,6 @@ export async function {{operationName}}(
         success: true,
         data: {{result}},
       }
-    }, {
-      isolationLevel: '{{isolation_level}}',
     })
   }, RETRY_CONFIG)
 }

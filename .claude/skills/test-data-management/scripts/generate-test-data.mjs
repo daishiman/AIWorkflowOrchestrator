@@ -18,8 +18,8 @@
  *   node generate-test-data.mjs --type project --count 10 --format ts --output projects.ts
  */
 
-import { randomUUID } from 'crypto';
-import { writeFileSync } from 'fs';
+import { randomUUID } from "crypto";
+import { writeFileSync } from "fs";
 
 class TestDataGenerator {
   constructor(uniquePrefix = null) {
@@ -65,9 +65,9 @@ class TestDataGenerator {
     return {
       id: this.generateId(),
       email: this.generateEmail(`user${index}`),
-      name: this.generateName('Test User', index),
-      passwordHash: 'hashed_test_password_123',
-      role: ['admin', 'developer', 'viewer'][Math.floor(Math.random() * 3)],
+      name: this.generateName("Test User", index),
+      passwordHash: "hashed_test_password_123",
+      role: ["admin", "developer", "viewer"][Math.floor(Math.random() * 3)],
       emailVerified: Math.random() > 0.3 ? this.generateRecentDate() : null,
       createdAt: this.generateRecentDate(),
       updatedAt: this.generateRecentDate(),
@@ -78,10 +78,10 @@ class TestDataGenerator {
    * プロジェクトデータを生成
    */
   generateProject(index, ownerId = null) {
-    const statuses = ['planning', 'active', 'on_hold', 'completed', 'archived'];
+    const statuses = ["planning", "active", "on_hold", "completed", "archived"];
     return {
       id: this.generateId(),
-      name: this.generateName('Test Project', index),
+      name: this.generateName("Test Project", index),
       description: `Automated test project created at ${this.uniquePrefix}`,
       ownerId: ownerId || this.generateId(),
       status: statuses[Math.floor(Math.random() * statuses.length)],
@@ -97,11 +97,11 @@ class TestDataGenerator {
    * タスクデータを生成
    */
   generateTask(index, projectId = null, assigneeId = null) {
-    const priorities = ['low', 'medium', 'high', 'urgent'];
-    const statuses = ['todo', 'in_progress', 'review', 'done'];
+    const priorities = ["low", "medium", "high", "urgent"];
+    const statuses = ["todo", "in_progress", "review", "done"];
     return {
       id: this.generateId(),
-      title: this.generateName('Test Task', index),
+      title: this.generateName("Test Task", index),
       description: `Automated test task for ${this.uniquePrefix}`,
       projectId: projectId || this.generateId(),
       assigneeId: assigneeId || this.generateId(),
@@ -123,13 +123,13 @@ class TestDataGenerator {
     const data = [];
     for (let i = 1; i <= count; i++) {
       switch (type) {
-        case 'user':
+        case "user":
           data.push(this.generateUser(i));
           break;
-        case 'project':
+        case "project":
           data.push(this.generateProject(i));
           break;
-        case 'task':
+        case "task":
           data.push(this.generateTask(i));
           break;
         default:
@@ -155,16 +155,16 @@ class TestDataGenerator {
     output += `// Generated at: ${new Date().toISOString()}\n\n`;
     output += `export const test${typeName}s = `;
     output += JSON.stringify(data, null, 2);
-    output += ' as const;\n\n';
+    output += " as const;\n\n";
     output += `export type Test${typeName} = typeof test${typeName}s[number];\n`;
     return output;
   }
 
   /**
-   * SQLフォーマットで出力（PostgreSQL INSERT文）
+   * SQLフォーマットで出力（SQLite INSERT文）
    */
   formatAsSql(data, type) {
-    if (data.length === 0) return '';
+    if (data.length === 0) return "";
 
     const tableName = `${type}s`;
     const keys = Object.keys(data[0]);
@@ -174,17 +174,17 @@ class TestDataGenerator {
     for (const record of data) {
       const values = keys.map((key) => {
         const value = record[key];
-        if (value === null) return 'NULL';
-        if (typeof value === 'string') return `'${value.replace(/'/g, "''")}'`;
-        if (typeof value === 'number') return value;
-        if (typeof value === 'boolean') return value ? 'TRUE' : 'FALSE';
+        if (value === null) return "NULL";
+        if (typeof value === "string") return `'${value.replace(/'/g, "''")}'`;
+        if (typeof value === "number") return value;
+        if (typeof value === "boolean") return value ? 1 : 0;
         if (Array.isArray(value))
-          return `ARRAY[${value.map((v) => `'${v}'`).join(', ')}]`;
+          return `'${JSON.stringify(value).replace(/'/g, "''")}'`;
         return `'${JSON.stringify(value).replace(/'/g, "''")}'`;
       });
 
-      sql += `INSERT INTO ${tableName} (${keys.join(', ')})\n`;
-      sql += `VALUES (${values.join(', ')});\n\n`;
+      sql += `INSERT INTO ${tableName} (${keys.join(", ")})\n`;
+      sql += `VALUES (${values.join(", ")});\n\n`;
     }
 
     return sql;
@@ -195,31 +195,31 @@ class TestDataGenerator {
 function parseArgs() {
   const args = process.argv.slice(2);
   const options = {
-    type: 'user',
+    type: "user",
     count: 1,
     output: null,
-    format: 'json',
+    format: "json",
     uniquePrefix: null,
   };
 
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
-      case '--type':
+      case "--type":
         options.type = args[++i];
         break;
-      case '--count':
+      case "--count":
         options.count = parseInt(args[++i], 10);
         break;
-      case '--output':
+      case "--output":
         options.output = args[++i];
         break;
-      case '--format':
+      case "--format":
         options.format = args[++i];
         break;
-      case '--unique-prefix':
+      case "--unique-prefix":
         options.uniquePrefix = args[++i];
         break;
-      case '--help':
+      case "--help":
         printHelp();
         process.exit(0);
       default:
@@ -265,13 +265,13 @@ function main() {
     // フォーマット
     let output;
     switch (options.format) {
-      case 'json':
+      case "json":
         output = generator.formatAsJson(data);
         break;
-      case 'ts':
+      case "ts":
         output = generator.formatAsTypeScript(data, options.type);
         break;
-      case 'sql':
+      case "sql":
         output = generator.formatAsSql(data, options.type);
         break;
       default:
@@ -280,8 +280,10 @@ function main() {
 
     // 出力
     if (options.output) {
-      writeFileSync(options.output, output, 'utf-8');
-      console.log(`✅ Generated ${options.count} ${options.type}(s) → ${options.output}`);
+      writeFileSync(options.output, output, "utf-8");
+      console.log(
+        `✅ Generated ${options.count} ${options.type}(s) → ${options.output}`,
+      );
     } else {
       console.log(output);
     }

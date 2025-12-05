@@ -8,17 +8,17 @@
  * 使用方法:
  *   node validate-uri.mjs <uri>
  *   node validate-uri.mjs "file:///path/to/file.txt"
- *   node validate-uri.mjs "db://postgres/users/123"
+ *   node validate-uri.mjs "db://sqlite/users/123"
  */
 
 const uri = process.argv[2];
 
 if (!uri) {
-  console.log('使用方法: node validate-uri.mjs <uri>');
-  console.log('');
-  console.log('例:');
+  console.log("使用方法: node validate-uri.mjs <uri>");
+  console.log("");
+  console.log("例:");
   console.log('  node validate-uri.mjs "file:///home/user/doc.txt"');
-  console.log('  node validate-uri.mjs "db://postgres/mydb/users"');
+  console.log('  node validate-uri.mjs "db://sqlite/mydb/users"');
   console.log('  node validate-uri.mjs "git://origin/main/README.md"');
   process.exit(1);
 }
@@ -26,7 +26,15 @@ if (!uri) {
 /**
  * サポートされているスキーム
  */
-const SUPPORTED_SCHEMES = ['file', 'db', 'git', 'memory', 'http', 'https', 'custom'];
+const SUPPORTED_SCHEMES = [
+  "file",
+  "db",
+  "git",
+  "memory",
+  "http",
+  "https",
+  "custom",
+];
 
 /**
  * スキーム別バリデーションルール
@@ -35,38 +43,38 @@ const schemeRules = {
   file: {
     requiresPath: true,
     pathPattern: /^\/.*$/,
-    description: 'ローカルファイルシステム'
+    description: "ローカルファイルシステム",
   },
   db: {
     requiresPath: true,
     pathPattern: /^\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)?$/,
-    description: 'データベースリソース',
-    pathFormat: '/database/table[/id]'
+    description: "データベースリソース",
+    pathFormat: "/database/table[/id]",
   },
   git: {
     requiresPath: true,
     pathPattern: /^\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+\/.+$/,
-    description: 'Gitリポジトリ',
-    pathFormat: '/remote/branch/path'
+    description: "Gitリポジトリ",
+    pathFormat: "/remote/branch/path",
   },
   memory: {
     requiresPath: true,
     pathPattern: /^\/[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*$/,
-    description: 'メモリ/セッションデータ',
-    pathFormat: '/scope/key'
+    description: "メモリ/セッションデータ",
+    pathFormat: "/scope/key",
   },
   http: {
     requiresHost: true,
-    description: 'HTTP API'
+    description: "HTTP API",
   },
   https: {
     requiresHost: true,
-    description: 'HTTPS API'
+    description: "HTTPS API",
   },
   custom: {
     requiresPath: true,
-    description: 'カスタムプロバイダー'
-  }
+    description: "カスタムプロバイダー",
+  },
 };
 
 /**
@@ -87,11 +95,13 @@ function validateUri(uri) {
   }
 
   // 2. スキーム検証
-  const scheme = parsed.protocol.replace(':', '');
+  const scheme = parsed.protocol.replace(":", "");
   info.scheme = scheme;
 
   if (!SUPPORTED_SCHEMES.includes(scheme)) {
-    warnings.push(`未知のスキーム: ${scheme}（サポート: ${SUPPORTED_SCHEMES.join(', ')}）`);
+    warnings.push(
+      `未知のスキーム: ${scheme}（サポート: ${SUPPORTED_SCHEMES.join(", ")}）`,
+    );
   }
 
   const rules = schemeRules[scheme];
@@ -103,7 +113,7 @@ function validateUri(uri) {
   info.path = parsed.pathname;
 
   if (rules?.requiresPath && !parsed.pathname) {
-    errors.push('パスが必要です');
+    errors.push("パスが必要です");
   }
 
   if (rules?.pathPattern && !rules.pathPattern.test(parsed.pathname)) {
@@ -115,7 +125,7 @@ function validateUri(uri) {
 
   // 4. ホスト検証
   if (rules?.requiresHost && !parsed.host) {
-    errors.push('ホスト名が必要です');
+    errors.push("ホスト名が必要です");
   }
   if (parsed.host) {
     info.host = parsed.host;
@@ -129,7 +139,7 @@ function validateUri(uri) {
   const normalized = normalizeUri(parsed);
   if (normalized !== uri) {
     info.normalizedUri = normalized;
-    warnings.push('URIは正規化されていません');
+    warnings.push("URIは正規化されていません");
   }
 
   // 7. クエリパラメータ
@@ -146,7 +156,7 @@ function validateUri(uri) {
     valid: errors.length === 0,
     errors,
     warnings,
-    info
+    info,
   };
 }
 
@@ -157,22 +167,26 @@ function checkSecurityIssues(parsed) {
   const warnings = [];
 
   // パストラバーサル
-  if (parsed.pathname.includes('..')) {
+  if (parsed.pathname.includes("..")) {
     warnings.push('⚠️  パストラバーサルの可能性: ".." が含まれています');
   }
 
   // 認証情報の露出
   if (parsed.username || parsed.password) {
-    warnings.push('⚠️  URIに認証情報が含まれています');
+    warnings.push("⚠️  URIに認証情報が含まれています");
   }
 
   // ローカルホスト以外のfileスキーム
-  if (parsed.protocol === 'file:' && parsed.host && parsed.host !== 'localhost') {
-    warnings.push('⚠️  fileスキームで外部ホストが指定されています');
+  if (
+    parsed.protocol === "file:" &&
+    parsed.host &&
+    parsed.host !== "localhost"
+  ) {
+    warnings.push("⚠️  fileスキームで外部ホストが指定されています");
   }
 
   // 非標準ポート
-  if (parsed.port && !['80', '443', '8080'].includes(parsed.port)) {
+  if (parsed.port && !["80", "443", "8080"].includes(parsed.port)) {
     warnings.push(`ℹ️  非標準ポートが使用されています: ${parsed.port}`);
   }
 
@@ -191,20 +205,20 @@ function normalizeUri(parsed) {
 
   // パス正規化
   let path = parsed.pathname
-    .replace(/\/+/g, '/')      // 重複スラッシュ
-    .replace(/\/\.\//g, '/')   // /./
-    .replace(/\/+$/, '');       // 末尾スラッシュ
+    .replace(/\/+/g, "/") // 重複スラッシュ
+    .replace(/\/\.\//g, "/") // /./
+    .replace(/\/+$/, ""); // 末尾スラッシュ
 
-  normalized += path || '/';
+  normalized += path || "/";
 
   // クエリパラメータソート
   if (parsed.search) {
     const params = [...parsed.searchParams.entries()]
-      .filter(([_, v]) => v !== '')
+      .filter(([_, v]) => v !== "")
       .sort(([a], [b]) => a.localeCompare(b));
 
     if (params.length > 0) {
-      normalized += '?' + new URLSearchParams(params).toString();
+      normalized += "?" + new URLSearchParams(params).toString();
     }
   }
 
@@ -219,12 +233,12 @@ function normalizeUri(parsed) {
  * 結果を表示
  */
 function displayResults(result) {
-  console.log('\n🔍 URI検証結果\n');
+  console.log("\n🔍 URI検証結果\n");
   console.log(`URI: ${uri}`);
-  console.log('─'.repeat(50));
+  console.log("─".repeat(50));
 
   // 基本情報
-  console.log('\n📋 基本情報:');
+  console.log("\n📋 基本情報:");
   console.log(`   スキーム: ${result.info.scheme}`);
   if (result.info.schemeDescription) {
     console.log(`   タイプ: ${result.info.schemeDescription}`);
@@ -242,14 +256,14 @@ function displayResults(result) {
 
   // エラー
   if (result.errors.length > 0) {
-    console.log('\n❌ エラー:');
-    result.errors.forEach(e => console.log(`   - ${e}`));
+    console.log("\n❌ エラー:");
+    result.errors.forEach((e) => console.log(`   - ${e}`));
   }
 
   // 警告
   if (result.warnings.length > 0) {
-    console.log('\n⚠️  警告:');
-    result.warnings.forEach(w => console.log(`   - ${w}`));
+    console.log("\n⚠️  警告:");
+    result.warnings.forEach((w) => console.log(`   - ${w}`));
   }
 
   // 推奨情報
@@ -262,11 +276,11 @@ function displayResults(result) {
   }
 
   // 最終判定
-  console.log('\n' + '─'.repeat(50));
+  console.log("\n" + "─".repeat(50));
   if (result.valid) {
-    console.log('✅ URIは有効です');
+    console.log("✅ URIは有効です");
   } else {
-    console.log('❌ URIは無効です');
+    console.log("❌ URIは無効です");
   }
 }
 

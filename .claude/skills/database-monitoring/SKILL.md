@@ -2,7 +2,7 @@
 name: database-monitoring
 description: |
     Database Reliability Engineeringに基づくデータベース監視と可観測性の専門スキル。
-    PostgreSQL統計情報、スロークエリログ、接続数監視、
+    SQLite/Turso統計情報、スロークエリログ、接続数監視、
     ディスク使用量、レプリケーション遅延などの運用メトリクスを提供します。
     使用タイミング:
     - 本番DBの健全性を監視する時
@@ -16,7 +16,7 @@ description: |
 
   - `.claude/skills/database-monitoring/resources/alerting-strategies.md`: アクション可能なアラート設計とエスカレーションパターン
   - `.claude/skills/database-monitoring/resources/health-metrics.md`: 監視すべき主要指標と閾値設計ガイドライン
-  - `.claude/skills/database-monitoring/resources/postgresql-statistics.md`: pg_stat_*ビューの活用とクエリパターン
+  - `.claude/skills/database-monitoring/resources/sqlite-statistics.md`: SQLite/Turso統計情報の活用とクエリパターン
   - `.claude/skills/database-monitoring/resources/slow-query-logging.md`: スロークエリログ設定と分析手法
   - `.claude/skills/database-monitoring/templates/alert-rules-template.md`: アラートルール定義テンプレート
   - `.claude/skills/database-monitoring/templates/monitoring-dashboard-template.md`: Grafanaダッシュボード設計テンプレート
@@ -27,23 +27,22 @@ description: |
 version: 1.0.0
 ---
 
-
 # Database Monitoring スキル
 
 ## 概要
 
-Database Reliability Engineering の原則に基づき、PostgreSQLデータベースの
+Database Reliability Engineering の原則に基づき、SQLite/Tursoデータベースの
 健全性監視、パフォーマンス追跡、アラート設計を体系化したスキルです。
 
 ### このスキルが提供するもの
 
-| カテゴリ | 内容 |
-|---------|------|
-| 統計情報活用 | pg_stat_* ビューの読み方と活用 |
-| スロークエリ監視 | ログ設定、分析、最適化トリガー |
-| 健全性メトリクス | 監視すべき主要指標と閾値設計 |
-| アラート設計 | アクション可能なアラートルール |
-| プラットフォーム固有 | Neon/Supabase の監視機能活用 |
+| カテゴリ             | 内容                                   |
+| -------------------- | -------------------------------------- |
+| 統計情報活用         | PRAGMA統計とsqlite_stat テーブルの活用 |
+| スロークエリ監視     | ログ設定、分析、最適化トリガー         |
+| 健全性メトリクス     | 監視すべき主要指標と閾値設計           |
+| アラート設計         | アクション可能なアラートルール         |
+| プラットフォーム固有 | Turso の監視機能活用                   |
 
 ## ワークフロー
 
@@ -52,40 +51,44 @@ Database Reliability Engineering の原則に基づき、PostgreSQLデータベ�
 **目的**: 何を監視すべきかを明確化
 
 **実行内容**:
+
 1. ビジネス要件からSLI/SLOを導出
 2. 重要なデータベース操作を特定
 3. 監視対象メトリクスを選定
 4. アラート閾値の初期設定
 
 **完了条件**:
+
 - [ ] SLI（Service Level Indicators）が定義されている
 - [ ] 監視対象メトリクスリストが作成されている
 - [ ] アラート優先度が分類されている
 
 ### Phase 2: メトリクス収集の設定
 
-**目的**: PostgreSQL統計情報を活用した監視基盤構築
+**目的**: SQLite/Turso統計情報を活用した監視基盤構築
 
 **実行内容**:
-1. pg_stat_statements の有効化
+
+1. クエリログの有効化（アプリケーションレベル）
 2. スロークエリログの設定
 3. 統計情報収集間隔の最適化
 4. メトリクスエクスポーターの設定（必要に応じて）
 
-**重要な統計ビュー**:
+**重要な統計情報源**:
 
-| ビュー | 用途 |
-|--------|------|
-| pg_stat_activity | アクティブ接続とクエリ状態 |
-| pg_stat_statements | クエリ統計（実行回数、時間） |
-| pg_stat_user_tables | テーブル統計（スキャン、更新） |
-| pg_stat_user_indexes | インデックス使用状況 |
-| pg_stat_bgwriter | バックグラウンド書き込み統計 |
+| 情報源               | 用途                     |
+| -------------------- | ------------------------ |
+| PRAGMA database_list | データベース接続状態     |
+| PRAGMA table_info    | テーブル構造とメタデータ |
+| PRAGMA index_list    | インデックス一覧         |
+| sqlite_stat1/stat4   | クエリプランナー統計     |
+| PRAGMA page_count    | データベースサイズ統計   |
 
 **完了条件**:
-- [ ] pg_stat_statements が有効化されている
+
+- [ ] クエリログが有効化されている
 - [ ] スロークエリログが設定されている
-- [ ] 主要ビューへのクエリが準備されている
+- [ ] 主要PRAGMA統計へのクエリが準備されている
 
 ### Phase 3: アラート設計
 
@@ -93,11 +96,11 @@ Database Reliability Engineering の原則に基づき、PostgreSQLデータベ�
 
 **アラートレベル定義**:
 
-| レベル | 条件 | 対応 |
-|--------|------|------|
-| Critical | データ損失リスク、サービス停止 | 即座にオンコール対応 |
-| Warning | パフォーマンス劣化、リソース逼迫 | 営業時間内に対応 |
-| Info | 傾向変化、注意喚起 | 次回スプリントで検討 |
+| レベル   | 条件                             | 対応                 |
+| -------- | -------------------------------- | -------------------- |
+| Critical | データ損失リスク、サービス停止   | 即座にオンコール対応 |
+| Warning  | パフォーマンス劣化、リソース逼迫 | 営業時間内に対応     |
+| Info     | 傾向変化、注意喚起               | 次回スプリントで検討 |
 
 **主要アラートパターン**:
 
@@ -118,6 +121,7 @@ Database Reliability Engineering の原則に基づき、PostgreSQLデータベ�
    - Critical: 60秒以上の遅延
 
 **完了条件**:
+
 - [ ] アラートルールが定義されている
 - [ ] 通知ルーティングが設定されている
 - [ ] エスカレーションパスが明確
@@ -149,6 +153,7 @@ Database Reliability Engineering の原則に基づき、PostgreSQLデータベ�
    - タイムアウト
 
 **完了条件**:
+
 - [ ] ダッシュボードが構築されている
 - [ ] リフレッシュ間隔が適切
 - [ ] 関係者がアクセス可能
@@ -173,33 +178,34 @@ Database Reliability Engineering の原則に基づき、PostgreSQLデータベ�
    - 月次でアラート発火頻度を分析
    - 閾値の調整とルールの整理
 
-### Neon/Supabase 固有の考慮事項
+### Turso 固有の考慮事項
 
-**Neon**:
-- コンピュートの自動スケーリングを考慮
-- ブランチ間のメトリクス分離
-- コールドスタート時間の監視
+**Turso**:
 
-**Supabase**:
-- Realtime接続数の監視
-- Storage使用量の追跡
-- Edge Functions実行時間
+- libSQL HTTP接続とWebSocketの監視
+- エッジロケーション別のレイテンシ追跡
+- レプリケーション遅延の監視
+- データベースブランチ間の同期状態確認
+- 読み取り専用レプリカの負荷分散状況
 
 ## チェックリスト
 
 ### 監視設定時
-- [ ] pg_stat_statements が有効か？
+
+- [ ] クエリログが有効か？
 - [ ] スロークエリログの閾値は適切か？
 - [ ] 接続数の上限監視があるか？
 - [ ] ディスク使用量監視があるか？
 
 ### アラート設計時
+
 - [ ] アラートにアクション定義があるか？
 - [ ] エスカレーションパスが明確か？
 - [ ] 重複アラートの抑制があるか？
 - [ ] テスト環境でアラートテストしたか？
 
 ### 運用時
+
 - [ ] ダッシュボードを定期確認しているか？
 - [ ] アラート発火時の対応が迅速か？
 - [ ] 月次でメトリクス傾向をレビューしているか？
@@ -210,8 +216,8 @@ Database Reliability Engineering の原則に基づき、PostgreSQLデータベ�
 詳細な知識が必要な場合:
 
 ```bash
-# PostgreSQL統計情報の詳細
-cat .claude/skills/database-monitoring/resources/postgresql-statistics.md
+# SQLite/Turso統計情報の詳細
+cat .claude/skills/database-monitoring/resources/sqlite-statistics.md
 
 # スロークエリログの設定と分析
 cat .claude/skills/database-monitoring/resources/slow-query-logging.md
@@ -245,8 +251,8 @@ cat .claude/skills/database-monitoring/templates/alert-rules-template.md
 
 ## 関連スキル
 
-| スキル | 関係性 |
-|--------|--------|
+| スキル                   | 関係性                     |
+| ------------------------ | -------------------------- |
 | query-performance-tuning | スロークエリ検出後の最適化 |
-| backup-recovery | 障害検知時の復旧対応 |
-| connection-pooling | 接続数問題の解決 |
+| backup-recovery          | 障害検知時の復旧対応       |
+| connection-pooling       | 接続数問題の解決           |

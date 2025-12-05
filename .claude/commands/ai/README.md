@@ -1,4 +1,4 @@
-#  全コマンド・全オプション完全ガイド
+# 全コマンド・全オプション完全ガイド
 
 ## 📋 **全 24 コマンドの詳細使用方法**
 
@@ -1898,7 +1898,7 @@ Vectorを活用した高性能ベクトルデータベース管理を実行す�
 **ベクトルDB管理統括チーム（18エージェント）**
 
 - **vector-database-specialist**
-  (総合リーダー): ベクトルDB設計、埋め込み戦略、検索最適化、pgvector統合
+  (総合リーダー): ベクトルDB設計、埋め込み戦略、検索最適化、vector extensions統合
 - **database-administrator** (DB リーダー): libSQL
   Vector統合、インデックス管理、ストレージ最適化、データベース設計
 - **prompt-engineering-specialist**: プロンプト埋め込み生成、類似度基準定義、プロンプト品質評価
@@ -2032,7 +2032,7 @@ Vectorを活用した高性能ベクトルデータベース管理を実行す�
 # シンプルな移行
 
 # ゼロダウンタイム移行
-/ai:data:migrate postgres-14 postgres-16 --zero-downtime
+/ai:data:migrate sqlite-local turso-prod --zero-downtime
 # ダウンタイムなし
 
 # 検証付き移行
@@ -2206,7 +2206,7 @@ Vectorを活用した高性能ベクトルデータベース管理を実行す�
 
 ```yaml
 # .github/workflows/shared-setup-python.yml
-name: '共有Python環境セットアップ'
+name: "共有Python環境セットアップ"
 on:
   workflow_call:
     inputs:

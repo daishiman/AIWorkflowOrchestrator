@@ -52,26 +52,25 @@ version: 1.0.0
 
 ```typescript
 import {
-  pgTable,
-  uuid,
-  varchar,
-  timestamp,
+  sqliteTable,
+  integer,
+  text,
   foreignKey,
-} from "drizzle-orm/pg-core";
+} from "drizzle-orm/sqlite-core";
 
 // 親テーブル
-export const users = pgTable("users", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  name: varchar("name", { length: 100 }).notNull(),
+export const users = sqliteTable("users", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name", { length: 100 }).notNull(),
 });
 
 // 子テーブル
-export const orders = pgTable("orders", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id")
+export const orders = sqliteTable("orders", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userId: integer("user_id")
     .notNull()
     .references(() => users.id),
-  status: varchar("status", { length: 20 }).notNull(),
+  status: text("status", { length: 20 }).notNull(),
 });
 ```
 
@@ -84,7 +83,7 @@ export const orders = pgTable("orders", {
 **動作**: 親削除時に子も自動削除
 
 ```typescript
-userId: uuid("user_id")
+userId: integer("user_id")
   .notNull()
   .references(() => users.id, { onDelete: "cascade" });
 ```
@@ -105,7 +104,7 @@ userId: uuid("user_id")
 **動作**: 親削除時に子の外部キーを NULL に設定
 
 ```typescript
-categoryId: uuid("category_id").references(() => categories.id, {
+categoryId: integer("category_id").references(() => categories.id, {
   onDelete: "set null",
 });
 ```
@@ -126,7 +125,7 @@ categoryId: uuid("category_id").references(() => categories.id, {
 **動作**: 子が存在する場合、親削除を禁止
 
 ```typescript
-userId: uuid("user_id")
+userId: integer("user_id")
   .notNull()
   .references(() => users.id, { onDelete: "restrict" });
 ```
@@ -147,7 +146,7 @@ userId: uuid("user_id")
 **動作**: RESTRICT と類似（トランザクション終了時にチェック）
 
 ```typescript
-userId: uuid("user_id")
+userId: integer("user_id")
   .notNull()
   .references(() => users.id, { onDelete: "no action" });
 ```
@@ -164,7 +163,7 @@ userId: uuid("user_id")
 **動作**: 親の主キー更新時に子の外部キーも自動更新
 
 ```typescript
-userId: uuid("user_id")
+userId: integer("user_id")
   .notNull()
   .references(() => users.id, { onUpdate: "cascade" });
 ```
@@ -208,33 +207,33 @@ userId: uuid("user_id")
 
 ```typescript
 // スキーマ
-export const users = pgTable("users", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  deletedAt: timestamp("deleted_at"),
+export const users = sqliteTable("users", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  deletedAt: integer("deleted_at", { mode: "timestamp" }),
 });
 
-export const orders = pgTable("orders", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id")
+export const orders = sqliteTable("orders", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userId: integer("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "restrict" }),
-  deletedAt: timestamp("deleted_at"),
+  deletedAt: integer("deleted_at", { mode: "timestamp" }),
 });
 
 // アプリケーション層
 class UserService {
-  async softDelete(userId: string) {
+  async softDelete(userId: number) {
     await db.transaction(async (tx) => {
       // 関連レコードをソフトデリート
       await tx
         .update(orders)
-        .set({ deletedAt: new Date() })
+        .set({ deletedAt: Date.now() })
         .where(eq(orders.userId, userId));
 
       // ユーザーをソフトデリート
       await tx
         .update(users)
-        .set({ deletedAt: new Date() })
+        .set({ deletedAt: Date.now() })
         .where(eq(users.id, userId));
     });
   }
@@ -246,21 +245,21 @@ class UserService {
 ```sql
 -- アクティブテーブル（CASCADE DELETE可能）
 CREATE TABLE users (
-  id UUID PRIMARY KEY,
-  name VARCHAR(100) NOT NULL
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL
 );
 
 CREATE TABLE orders (
-  id UUID PRIMARY KEY,
-  user_id UUID REFERENCES users(id) ON DELETE CASCADE
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- 履歴テーブル（外部キーなし）
 CREATE TABLE orders_history (
-  id UUID PRIMARY KEY,
-  original_order_id UUID,  -- 参照のみ、制約なし
-  user_id UUID,            -- 参照のみ、制約なし
-  archived_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  original_order_id INTEGER,  -- 参照のみ、制約なし
+  user_id INTEGER,            -- 参照のみ、制約なし
+  archived_at INTEGER NOT NULL DEFAULT (unixepoch())
 );
 ```
 
@@ -268,18 +267,18 @@ CREATE TABLE orders_history (
 
 ```typescript
 // アクティブレコードのみインデックス
-export const users = pgTable(
+export const users = sqliteTable(
   "users",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
-    email: varchar("email", { length: 255 }).notNull(),
-    deletedAt: timestamp("deleted_at"),
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    email: text("email", { length: 255 }).notNull(),
+    deletedAt: integer("deleted_at", { mode: "timestamp" }),
   },
   (table) => ({
     activeEmailIdx: index("idx_users_active_email")
       .on(table.email)
       .where(sql`deleted_at IS NULL`),
-  })
+  }),
 );
 ```
 
@@ -299,10 +298,10 @@ users → departments → managers → users
 
 ```typescript
 // 階層構造（部門の親子関係）
-export const departments = pgTable("departments", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  name: varchar("name", { length: 100 }).notNull(),
-  parentId: uuid("parent_id").references(() => departments.id),
+export const departments = sqliteTable("departments", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name", { length: 100 }).notNull(),
+  parentId: integer("parent_id").references(() => departments.id),
 });
 ```
 
@@ -310,19 +309,19 @@ export const departments = pgTable("departments", {
 
 ```typescript
 // 循環を避けるため、管理関係を別テーブルに
-export const departments = pgTable("departments", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  name: varchar("name", { length: 100 }).notNull(),
+export const departments = sqliteTable("departments", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name", { length: 100 }).notNull(),
 });
 
-export const users = pgTable("users", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  departmentId: uuid("department_id").references(() => departments.id),
+export const users = sqliteTable("users", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  departmentId: integer("department_id").references(() => departments.id),
 });
 
-export const departmentManagers = pgTable("department_managers", {
-  departmentId: uuid("department_id").references(() => departments.id),
-  managerId: uuid("manager_id").references(() => users.id),
+export const departmentManagers = sqliteTable("department_managers", {
+  departmentId: integer("department_id").references(() => departments.id),
+  managerId: integer("manager_id").references(() => users.id),
   primary: primaryKey({ columns: [departmentId, managerId] }),
 });
 ```
@@ -330,11 +329,11 @@ export const departmentManagers = pgTable("department_managers", {
 #### パターン 3: NULL 許可による打破
 
 ```typescript
-export const departments = pgTable("departments", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  name: varchar("name", { length: 100 }).notNull(),
+export const departments = sqliteTable("departments", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name", { length: 100 }).notNull(),
   // 初期作成時はNULL、後で設定
-  managerId: uuid("manager_id").references(() => users.id),
+  managerId: integer("manager_id").references(() => users.id),
 });
 ```
 
@@ -365,7 +364,7 @@ export const orders = pgTable(
     })
       .onDelete("restrict")
       .onUpdate("cascade"),
-  })
+  }),
 );
 ```
 

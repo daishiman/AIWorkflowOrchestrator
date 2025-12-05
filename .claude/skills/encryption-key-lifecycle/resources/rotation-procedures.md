@@ -12,25 +12,25 @@ class SecretRotationOrchestrator {
     let newSecret: string;
 
     switch (this.getSecretType(secretName)) {
-      case 'database_password':
-        newSecret = crypto.randomBytes(32).toString('base64');
+      case "database_password":
+        newSecret = crypto.randomBytes(32).toString("base64");
         break;
 
-      case 'api_key':
+      case "api_key":
         // サービスプロバイダーで新キー生成
         newSecret = await this.providerAPI.createNewKey(secretName);
         break;
 
-      case 'encryption_key':
-        newSecret = crypto.randomBytes(32).toString('hex');
+      case "encryption_key":
+        newSecret = crypto.randomBytes(32).toString("hex");
         break;
 
       default:
-        newSecret = crypto.randomBytes(32).toString('base64');
+        newSecret = crypto.randomBytes(32).toString("base64");
     }
 
     await this.auditLog.record({
-      event: 'rotation_phase_1_complete',
+      event: "rotation_phase_1_complete",
       secret_name: secretName,
       timestamp: new Date(),
     });
@@ -50,12 +50,13 @@ async phase2_enableBothSecrets(
 ): Promise<void> {
   console.log(`Phase 2: Enabling both secrets for ${secretName}`);
 
-  // データベースの場合: 新ユーザー作成
+  // データベースの場合: 新トークン作成（Turso）
   if (this.isDatabase(secretName)) {
-    await this.db.execute(`
-      CREATE USER app_user_new WITH PASSWORD '${newSecret}';
-      GRANT ALL PRIVILEGES ON DATABASE mydb TO app_user_new;
-    `);
+    const newToken = await this.tursoAPI.createToken({
+      database: process.env.TURSO_DATABASE_NAME,
+      expiration: '90d',
+    });
+    newSecret = newToken;
   }
 
   // APIキーの場合: 両方のキーを環境変数に設定
@@ -107,12 +108,11 @@ async phase3_migrateToNewSecret(secretName: string): Promise<void> {
 async phase4_deprecateOldSecret(secretName: string): Promise<void> {
   console.log(`Phase 4: Deprecating old secret`);
 
-  // データベースの場合: 旧ユーザーを読み取り専用に
+  // データベースの場合: 旧トークンを監視モードに（削除は後で）
   if (this.isDatabase(secretName)) {
-    await this.db.execute(`
-      REVOKE ALL PRIVILEGES ON DATABASE mydb FROM app_user_old;
-      GRANT SELECT ON ALL TABLES IN SCHEMA public TO app_user_old;
-    `);
+    // Tursoの場合、トークンは完全に有効か無効かのみ
+    // 監視期間は新トークンの動作確認のため
+    console.log('Old token will be revoked after monitoring period');
   }
 
   // APIキーの場合: 旧キーをread-onlyに（可能であれば）
@@ -141,9 +141,9 @@ async phase5_deleteOldSecret(secretName: string): Promise<void> {
     throw new Error(`Old secret still in use: ${oldSecretUsage} accesses detected`);
   }
 
-  // データベースの場合: 旧ユーザー削除
+  // データベースの場合: 旧トークン無効化（Turso）
   if (this.isDatabase(secretName)) {
-    await this.db.execute(`DROP USER IF EXISTS app_user_old;`);
+    await this.tursoAPI.revokeToken(oldToken);
   }
 
   // 旧Secret削除
@@ -162,31 +162,32 @@ async phase5_deleteOldSecret(secretName: string): Promise<void> {
 
 ## Rotationタイプ別手順
 
-### データベースパスワードRotation
+### データベーストークンRotation（Turso）
 
 ```typescript
-class DatabasePasswordRotation {
+class DatabaseTokenRotation {
   async rotate(): Promise<void> {
-    // 1. 新パスワード生成
-    const newPassword = crypto.randomBytes(32).toString('base64');
+    // 1. 新トークン生成（Turso CLI/APIで）
+    const newToken = await this.tursoAPI.createToken({
+      database: "mydb",
+      expiration: "90d",
+    });
 
-    // 2. 新ユーザー作成
-    await this.db.execute(`
-      CREATE USER app_user_new WITH PASSWORD '${newPassword}';
-      GRANT ALL PRIVILEGES ON DATABASE mydb TO app_user_new;
-    `);
+    // 2. 接続文字列更新
+    const newConnectionString = `libsql://${process.env.TURSO_DATABASE_NAME}-${process.env.TURSO_ORG}.turso.io`;
+    await this.secretManager.set("TURSO_DATABASE_URL_NEW", newConnectionString);
+    await this.secretManager.set("TURSO_AUTH_TOKEN_NEW", newToken);
 
-    // 3. 接続文字列更新
-    const newConnectionString = `postgresql://app_user_new:${newPassword}@host/db`;
-    await this.secretManager.set('DATABASE_URL_NEW', newConnectionString);
-
-    // 4. アプリケーション再起動（ローリング）
+    // 3. アプリケーション再起動（ローリング）
     await this.rollingRestart();
 
-    // 5. 旧ユーザー削除（24時間後）
-    setTimeout(async () => {
-      await this.db.execute(`DROP USER app_user_old;`);
-    }, 24 * 60 * 60 * 1000);
+    // 4. 旧トークン無効化（24時間後）
+    setTimeout(
+      async () => {
+        await this.tursoAPI.revokeToken(oldToken);
+      },
+      24 * 60 * 60 * 1000,
+    );
   }
 }
 ```
@@ -251,7 +252,7 @@ class RotationRollback {
     }
 
     await this.auditLog.record({
-      event: 'rotation_rollback',
+      event: "rotation_rollback",
       secret_name: secretName,
       phase: phase,
       timestamp: new Date(),
@@ -265,20 +266,20 @@ class RotationRollback {
 ### Cronベーススケジューリング
 
 ```typescript
-import cron from 'node-cron';
+import cron from "node-cron";
 
 class AutoRotationScheduler {
   setupSchedule(): void {
     // Critical Secrets: 30日毎（毎月1日）
-    cron.schedule('0 0 1 * *', async () => {
-      await this.rotateSecret('DATABASE_PASSWORD_PROD');
-      await this.rotateSecret('STRIPE_SECRET_KEY');
+    cron.schedule("0 0 1 * *", async () => {
+      await this.rotateSecret("TURSO_AUTH_TOKEN_PROD");
+      await this.rotateSecret("STRIPE_SECRET_KEY");
     });
 
     // High Secrets: 90日毎（四半期初日）
-    cron.schedule('0 0 1 */3 *', async () => {
-      await this.rotateSecret('OPENAI_API_KEY');
-      await this.rotateSecret('NEXTAUTH_SECRET');
+    cron.schedule("0 0 1 */3 *", async () => {
+      await this.rotateSecret("OPENAI_API_KEY");
+      await this.rotateSecret("NEXTAUTH_SECRET");
     });
   }
 
@@ -297,17 +298,20 @@ class AutoRotationScheduler {
 ## チェックリスト
 
 ### Rotation実行前
+
 - [ ] ロールバック手順が明確か？
 - [ ] バックアップが取得されているか？
 - [ ] 監視体制が整っているか？
 - [ ] チームに事前通知したか？
 
 ### Rotation実行中
+
 - [ ] 各Phaseが正常に完了しているか？
 - [ ] アプリケーションが正常に動作しているか？
 - [ ] エラーログを監視しているか？
 
 ### Rotation実行後
+
 - [ ] 新Secretで正常に動作しているか？
 - [ ] 旧Secretへのアクセスがゼロか？
 - [ ] 監査ログが記録されているか？

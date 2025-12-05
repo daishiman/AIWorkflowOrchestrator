@@ -1,54 +1,78 @@
-# Drizzle Kit コマンドリファレンス
+# Drizzle Kit コマンドリファレンス (SQLite/Turso)
 
 ## 基本設定
 
-### drizzle.config.ts
+### drizzle.config.ts (SQLite/Turso)
 
 ```typescript
-import { defineConfig } from 'drizzle-kit'
+import { defineConfig } from "drizzle-kit";
 
 export default defineConfig({
-  schema: './src/db/schema/index.ts',
-  out: './drizzle',
-  dialect: 'postgresql',
+  schema: "./src/db/schema/index.ts",
+  out: "./drizzle",
+  dialect: "sqlite",
   dbCredentials: {
-    url: process.env.DATABASE_URL!,
+    url: process.env.DATABASE_URL!, // file:./local.db または libsql://...
   },
   // オプション
   verbose: true,
   strict: true,
-})
+});
+```
+
+### Turso用の設定例
+
+```typescript
+import { defineConfig } from "drizzle-kit";
+
+export default defineConfig({
+  schema: "./src/db/schema/index.ts",
+  out: "./drizzle",
+  dialect: "sqlite",
+  dbCredentials: {
+    url: process.env.TURSO_DATABASE_URL!,
+    authToken: process.env.TURSO_AUTH_TOKEN,
+  },
+  verbose: true,
+  strict: true,
+});
 ```
 
 ### 設定オプション
 
-| オプション | 説明 | 例 |
-|-----------|------|-----|
-| schema | スキーマファイルのパス | `./src/db/schema/index.ts` |
-| out | 出力ディレクトリ | `./drizzle` |
-| dialect | データベース種類 | `postgresql`, `mysql`, `sqlite` |
-| dbCredentials | 接続情報 | `{ url: '...' }` |
-| verbose | 詳細ログ | `true` |
-| strict | 厳格モード | `true` |
+| オプション    | 説明                   | 例                                                                              |
+| ------------- | ---------------------- | ------------------------------------------------------------------------------- |
+| schema        | スキーマファイルのパス | `./src/db/schema/index.ts`                                                      |
+| out           | 出力ディレクトリ       | `./drizzle`                                                                     |
+| dialect       | データベース種類       | `sqlite`                                                                        |
+| dbCredentials | 接続情報               | `{ url: 'file:./local.db' }` または `{ url: 'libsql://...', authToken: '...' }` |
+| verbose       | 詳細ログ               | `true`                                                                          |
+| strict        | 厳格モード             | `true`                                                                          |
 
 ## 主要コマンド
 
-### drizzle-kit generate
+### drizzle-kit generate:sqlite
 
-マイグレーションファイルを生成する。
+SQLite用のマイグレーションファイルを生成する。
 
 ```bash
 # 基本
-pnpm drizzle-kit generate
+pnpm drizzle-kit generate:sqlite
 
 # 名前を指定
-pnpm drizzle-kit generate --name add_user_email
+pnpm drizzle-kit generate:sqlite --name add_user_email
 
 # カスタム設定ファイル
-pnpm drizzle-kit generate --config ./custom-drizzle.config.ts
+pnpm drizzle-kit generate:sqlite --config ./custom-drizzle.config.ts
 ```
 
+**SQLite特有の注意**:
+
+- ALTER TABLEの制限により、カラム削除や型変更は自動的にテーブル再作成パターンで生成される
+- 生成されたSQLを確認し、意図した動作かチェックすること
+
 **出力例**:
+
 ```
 drizzle/
 ├── 0000_initial_schema.sql
@@ -84,6 +108,7 @@ pnpm drizzle-kit push --force
 ```
 
 **使用場面**:
+
 - 開発初期の素早いイテレーション
 - プロトタイピング
 
@@ -98,6 +123,7 @@ pnpm drizzle-kit pull
 ```
 
 **使用場面**:
+
 - 既存データベースからDrizzleスキーマを生成
 - リバースエンジニアリング
 
@@ -113,6 +139,7 @@ pnpm drizzle-kit studio --port 4000
 ```
 
 **機能**:
+
 - データの閲覧・編集
 - SQLクエリの実行
 - スキーマの確認
@@ -163,9 +190,9 @@ pnpm drizzle-kit drop
 
 ```typescript
 // drizzle.config.ts
-import { defineConfig } from 'drizzle-kit'
+import { defineConfig } from "drizzle-kit";
 
-const env = process.env.NODE_ENV || 'development'
+const env = process.env.NODE_ENV || "development";
 
 const configs = {
   development: {
@@ -177,14 +204,14 @@ const configs = {
   production: {
     url: process.env.DATABASE_URL,
   },
-}
+};
 
 export default defineConfig({
-  schema: './src/db/schema/index.ts',
-  out: './drizzle',
-  dialect: 'postgresql',
+  schema: "./src/db/schema/index.ts",
+  out: "./drizzle",
+  dialect: "postgresql",
   dbCredentials: configs[env],
-})
+});
 ```
 
 ### 環境別実行

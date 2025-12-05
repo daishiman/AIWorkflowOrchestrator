@@ -14,6 +14,7 @@ Root Span (API Gateway)
 ```
 
 **親子関係の表現**:
+
 - Parent Span ID: 親スパンの識別子
 - Root Span: Parent Span ID = null
 
@@ -30,6 +31,7 @@ Time →
 ```
 
 **重要な観察**:
+
 - Child 2.1 と Child 2.2 は連続（直列）
 - 合計時間: 10ms + 70ms + 20ms = 100ms
 - ボトルネック: Child 2 (70ms)
@@ -43,16 +45,16 @@ Time →
 ```typescript
 span.setAttributes({
   // HTTP標準属性
-  'http.method': 'POST',
-  'http.url': 'https://api.example.com/orders',
-  'http.status_code': 200,
-  'http.request_content_length': 1234,
-  'http.response_content_length': 5678,
+  "http.method": "POST",
+  "http.url": "https://api.example.com/orders",
+  "http.status_code": 200,
+  "http.request_content_length": 1234,
+  "http.response_content_length": 5678,
 
   // ネットワーク属性
-  'net.peer.name': 'api.example.com',
-  'net.peer.port': 443,
-  'net.transport': 'ip_tcp'
+  "net.peer.name": "api.example.com",
+  "net.peer.port": 443,
+  "net.transport": "ip_tcp",
 });
 ```
 
@@ -61,15 +63,15 @@ span.setAttributes({
 ```typescript
 span.setAttributes({
   // データベース標準属性
-  'db.system': 'postgresql',
-  'db.name': 'orders_db',
-  'db.statement': 'SELECT * FROM orders WHERE id = $1',
-  'db.operation': 'SELECT',
-  'db.sql.table': 'orders',
+  "db.system": "sqlite",
+  "db.name": "orders_db",
+  "db.statement": "SELECT * FROM orders WHERE id = ?",
+  "db.operation": "SELECT",
+  "db.sql.table": "orders",
 
   // 接続情報
-  'db.connection_string': 'postgresql://localhost:5432',
-  'db.user': 'app_user'
+  "db.connection_string": "libsql://localhost:8080",
+  "db.user": "app_user",
 });
 ```
 
@@ -78,36 +80,38 @@ span.setAttributes({
 ```typescript
 span.setAttributes({
   // メッセージング標準属性
-  'messaging.system': 'rabbitmq',
-  'messaging.destination': 'order-processing',
-  'messaging.destination_kind': 'queue',
-  'messaging.operation': 'publish',
-  'messaging.message_id': 'msg_12345'
+  "messaging.system": "rabbitmq",
+  "messaging.destination": "order-processing",
+  "messaging.destination_kind": "queue",
+  "messaging.operation": "publish",
+  "messaging.message_id": "msg_12345",
 });
 ```
 
 ### カスタム属性
 
 **ビジネス情報**:
+
 ```typescript
 span.setAttributes({
   // ビジネス属性
-  'user.id': 'user_12345',
-  'order.id': 'ord_abc123',
-  'order.total_amount': 1234.56,
-  'order.items_count': 3,
-  'payment.method': 'credit_card'
+  "user.id": "user_12345",
+  "order.id": "ord_abc123",
+  "order.total_amount": 1234.56,
+  "order.items_count": 3,
+  "payment.method": "credit_card",
 });
 ```
 
 **診断情報**:
+
 ```typescript
 span.setAttributes({
   // 診断属性
-  'cache.hit': true,
-  'retry.count': 2,
-  'circuit_breaker.state': 'closed',
-  'feature_flag.enabled': true
+  "cache.hit": true,
+  "retry.count": 2,
+  "circuit_breaker.state": "closed",
+  "feature_flag.enabled": true,
 });
 ```
 
@@ -118,26 +122,27 @@ span.setAttributes({
 **目的**: サービス間の呼び出しを追跡
 
 **実装**:
+
 ```typescript
 // サービスA → サービスB の呼び出し
 async function callServiceB() {
-  const tracer = trace.getTracer('service-a');
+  const tracer = trace.getTracer("service-a");
 
-  return tracer.startActiveSpan('call_service_b', async (span) => {
+  return tracer.startActiveSpan("call_service_b", async (span) => {
     span.setAttributes({
-      'rpc.service': 'service-b',
-      'rpc.method': 'getUser',
-      'peer.service': 'service-b'
+      "rpc.service": "service-b",
+      "rpc.method": "getUser",
+      "peer.service": "service-b",
     });
 
-    const response = await fetch('http://service-b/api/user', {
+    const response = await fetch("http://service-b/api/user", {
       headers: {
-        'traceparent': generateTraceParent(span.spanContext())
-      }
+        traceparent: generateTraceParent(span.spanContext()),
+      },
     });
 
     span.setAttributes({
-      'http.status_code': response.status
+      "http.status_code": response.status,
     });
 
     span.end();
@@ -151,21 +156,24 @@ async function callServiceB() {
 **目的**: データベースクエリを追跡
 
 **実装**:
+
 ```typescript
 async function fetchUser(userId: string) {
-  const tracer = trace.getTracer('user-service');
+  const tracer = trace.getTracer("user-service");
 
-  return tracer.startActiveSpan('db_query_user', async (span) => {
+  return tracer.startActiveSpan("db_query_user", async (span) => {
     span.setAttributes({
-      'db.system': 'postgresql',
-      'db.operation': 'SELECT',
-      'db.sql.table': 'users',
-      'db.statement': 'SELECT * FROM users WHERE id = $1',
-      'user.id': userId
+      "db.system": "sqlite",
+      "db.operation": "SELECT",
+      "db.sql.table": "users",
+      "db.statement": "SELECT * FROM users WHERE id = ?",
+      "user.id": userId,
     });
 
     try {
-      const result = await database.query('SELECT * FROM users WHERE id = $1', [userId]);
+      const result = await database.query("SELECT * FROM users WHERE id = ?", [
+        userId,
+      ]);
       span.setStatus({ code: SpanStatusCode.OK });
       return result.rows[0];
     } catch (error) {
@@ -184,16 +192,17 @@ async function fetchUser(userId: string) {
 **目的**: 非同期ジョブやメッセージキューを追跡
 
 **実装**:
+
 ```typescript
 // メッセージ送信
 async function publishMessage(queueName: string, message: any) {
-  const tracer = trace.getTracer('api-service');
+  const tracer = trace.getTracer("api-service");
 
-  return tracer.startActiveSpan('publish_message', async (span) => {
+  return tracer.startActiveSpan("publish_message", async (span) => {
     span.setAttributes({
-      'messaging.system': 'rabbitmq',
-      'messaging.destination': queueName,
-      'messaging.operation': 'publish'
+      "messaging.system": "rabbitmq",
+      "messaging.destination": queueName,
+      "messaging.operation": "publish",
     });
 
     // トレースコンテキストをメッセージに含める
@@ -202,8 +211,8 @@ async function publishMessage(queueName: string, message: any) {
       ...message,
       _trace_context: {
         trace_id: traceContext.traceId,
-        span_id: traceContext.spanId
-      }
+        span_id: traceContext.spanId,
+      },
     });
 
     span.end();
@@ -212,23 +221,29 @@ async function publishMessage(queueName: string, message: any) {
 
 // メッセージ受信
 async function consumeMessage(message: any) {
-  const tracer = trace.getTracer('worker-service');
+  const tracer = trace.getTracer("worker-service");
 
   // トレースコンテキストを復元
   const traceContext = message._trace_context;
 
   // 新しいスパンを作成（親スパンを引き継ぐ）
-  return tracer.startActiveSpan('consume_message', {
-    links: [{
-      context: {
-        traceId: traceContext.trace_id,
-        spanId: traceContext.span_id
-      }
-    }]
-  }, async (span) => {
-    await processMessage(message);
-    span.end();
-  });
+  return tracer.startActiveSpan(
+    "consume_message",
+    {
+      links: [
+        {
+          context: {
+            traceId: traceContext.trace_id,
+            spanId: traceContext.span_id,
+          },
+        },
+      ],
+    },
+    async (span) => {
+      await processMessage(message);
+      span.end();
+    },
+  );
 }
 ```
 
@@ -237,12 +252,14 @@ async function consumeMessage(message: any) {
 ### Jaeger UI
 
 **機能**:
+
 - トレース検索（トレースID、サービス名、タグ等）
 - トレース詳細表示（Gantt Chart形式）
 - サービス依存関係グラフ
 - レイテンシ分布
 
 **画面構成**:
+
 ```
 [Search] トレースID、サービス、操作名で検索
    ↓
@@ -257,6 +274,7 @@ async function consumeMessage(message: any) {
 ### サービスマップ
 
 **依存関係グラフ**:
+
 ```
 API Gateway
   ↓
@@ -268,6 +286,7 @@ Database    Notification Service
 ```
 
 **用途**:
+
 - サービス間の呼び出し関係を可視化
 - ボトルネックサービスを特定
 - 外部依存の影響を評価
@@ -279,6 +298,7 @@ Database    Notification Service
 **定義**: トレース全体の処理時間に最も影響するスパンの連鎖
 
 **例**:
+
 ```
 Trace Duration: 500ms
 
@@ -295,6 +315,7 @@ API Gateway (10ms)
 ### レイテンシ分析
 
 **スパン別レイテンシ**:
+
 ```
 Span 1: API Gateway        10ms  (2%)
 Span 2: Order Service      40ms  (8%)
@@ -304,6 +325,7 @@ Span 5: Notification       20ms  (4%)
 ```
 
 **改善優先度**:
+
 1. Database Query (80%削減で大幅改善)
 2. Order Service (8%削減)
 3. その他 (影響小)
@@ -330,4 +352,5 @@ Span 5: Notification       20ms  (4%)
 ## 参照
 
 このスキルを使用するエージェント:
+
 - `@sre-observer` - ロギング・監視設計者 (.claude/agents/sre-observer.md:982)

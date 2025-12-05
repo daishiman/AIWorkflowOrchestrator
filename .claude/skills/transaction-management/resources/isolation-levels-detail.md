@@ -1,30 +1,31 @@
-# PostgreSQL 分離レベル詳細リファレンス
+# SQLite トランザクションモード詳細リファレンス
 
 ## 概要
 
-PostgreSQLの4つの分離レベルの詳細な動作と、各レベルで発生する/防止される現象について解説します。
+SQLiteのトランザクションモードの詳細な動作と、各モードで発生する/防止される現象について解説します。
 
 ---
 
-## 分離レベル比較表
+## トランザクションモード比較表
 
-| 分離レベル | Dirty Read | Non-repeatable Read | Phantom Read | Serialization Anomaly |
-|-----------|------------|---------------------|--------------|----------------------|
-| READ UNCOMMITTED* | 防止 | 可能 | 可能 | 可能 |
-| READ COMMITTED | 防止 | 可能 | 可能 | 可能 |
-| REPEATABLE READ | 防止 | 防止 | 防止 | 可能 |
-| SERIALIZABLE | 防止 | 防止 | 防止 | 防止 |
+| トランザクションモード | Dirty Read | Non-repeatable Read | Phantom Read | ロック取得タイミング   |
+| ---------------------- | ---------- | ------------------- | ------------ | ---------------------- |
+| BEGIN DEFERRED         | 防止       | 可能                | 可能         | 最初のSELECT時         |
+| BEGIN IMMEDIATE        | 防止       | 防止                | 防止         | トランザクション開始時 |
+| BEGIN EXCLUSIVE        | 防止       | 防止                | 防止         | トランザクション開始時 |
 
-*PostgreSQLではREAD UNCOMMITTEDはREAD COMMITTEDと同じ動作
+**注意**: SQLiteは常にシリアライズ可能な動作を保証します。
 
 ---
 
-## 1. READ COMMITTED（デフォルト）
+## 1. BEGIN DEFERRED（デフォルト）
 
 ### 動作
 
-- 各ステートメント実行時に、その時点でコミットされたデータのみを参照
-- 同一トランザクション内でも、ステートメントごとに異なる結果が得られる可能性
+- トランザクション開始時はロックを取得しない
+- 最初のSELECT時に共有ロック取得
+- 最初のINSERT/UPDATE/DELETE時に予約ロックから排他ロックへアップグレード
+- 他のトランザクションの影響を受ける可能性がある
 
 ### 発生する現象
 
@@ -32,10 +33,11 @@ PostgreSQLの4つの分離レベルの詳細な動作と、各レベルで発生
 
 ```sql
 -- トランザクション A
-BEGIN;
+BEGIN; -- DEFERRED
 SELECT balance FROM accounts WHERE id = 1;  -- 結果: 1000
 
 -- トランザクション B（この間に実行）
+BEGIN IMMEDIATE;
 UPDATE accounts SET balance = 500 WHERE id = 1;
 COMMIT;
 
@@ -44,221 +46,258 @@ SELECT balance FROM accounts WHERE id = 1;  -- 結果: 500（変わった！）
 COMMIT;
 ```
 
-#### Phantom Read（ファントムリード）
-
-```sql
--- トランザクション A
-BEGIN;
-SELECT COUNT(*) FROM orders WHERE status = 'pending';  -- 結果: 10
-
--- トランザクション B（この間に実行）
-INSERT INTO orders (status) VALUES ('pending');
-COMMIT;
-
--- トランザクション A（続き）
-SELECT COUNT(*) FROM orders WHERE status = 'pending';  -- 結果: 11（増えた！）
-COMMIT;
-```
-
 ### 使用場面
 
-- 一般的なCRUD操作
-- 厳密な一貫性が不要な読み取り
-- 短時間のトランザクション
+- 読み取り専用トランザクション
+- 書き込みの可能性が低い場合
+- 軽量なトランザクション
 
-### Drizzle ORM例
-
-```typescript
-// READ COMMITTEDはデフォルト
-await db.transaction(async (tx) => {
-  const user = await tx.query.users.findFirst({
-    where: eq(users.id, userId),
-  });
-  // 他のトランザクションがuserを更新する可能性がある
-  await tx.update(users).set({ lastLogin: new Date() }).where(eq(users.id, userId));
-});
-```
-
----
-
-## 2. REPEATABLE READ
-
-### 動作
-
-- トランザクション開始時点のスナップショットを使用
-- 同一トランザクション内では常に同じデータが見える
-- 更新競合時はエラー（シリアライゼーション失敗）
-
-### 防止される現象
-
-```sql
--- トランザクション A
-BEGIN ISOLATION LEVEL REPEATABLE READ;
-SELECT balance FROM accounts WHERE id = 1;  -- 結果: 1000
-
--- トランザクション B（この間に実行）
-UPDATE accounts SET balance = 500 WHERE id = 1;
-COMMIT;
-
--- トランザクション A（続き）
-SELECT balance FROM accounts WHERE id = 1;  -- 結果: 1000（変わらない！）
-COMMIT;
-```
-
-### シリアライゼーション失敗
-
-```sql
--- トランザクション A
-BEGIN ISOLATION LEVEL REPEATABLE READ;
-SELECT * FROM accounts WHERE id = 1;  -- balance: 1000
-UPDATE accounts SET balance = balance - 100 WHERE id = 1;
-
--- トランザクション B（Aより先にコミット）
-UPDATE accounts SET balance = balance + 200 WHERE id = 1;
-COMMIT;
-
--- トランザクション A（続き）
-COMMIT;  -- ERROR: could not serialize access due to concurrent update
-```
-
-### 使用場面
-
-- レポート生成（一貫したスナップショット）
-- 複数クエリで一貫性が必要な読み取り
-- バッチ処理
-
-### Drizzle ORM例
+### TypeScript例
 
 ```typescript
-await db.transaction(async (tx) => {
-  // トランザクション開始時点のスナップショット
-}, { isolationLevel: 'repeatable read' });
-```
+// BEGIN DEFERREDはデフォルト
+async function getWorkflow(id: string) {
+  await db.run("BEGIN"); // デフォルトでDEFERRED
 
----
-
-## 3. SERIALIZABLE
-
-### 動作
-
-- 完全な直列化を保証
-- 同時実行トランザクションが順番に実行されたかのように振る舞う
-- SSI（Serializable Snapshot Isolation）により実装
-
-### 防止される現象
-
-#### Serialization Anomaly（直列化異常）
-
-```sql
--- 例: 会計残高の合計が常に一定であるべき制約
-
--- トランザクション A（口座1から口座2へ100円送金）
-BEGIN ISOLATION LEVEL SERIALIZABLE;
-UPDATE accounts SET balance = balance - 100 WHERE id = 1;
-UPDATE accounts SET balance = balance + 100 WHERE id = 2;
-COMMIT;
-
--- トランザクション B（同時に口座2から口座1へ50円送金）
-BEGIN ISOLATION LEVEL SERIALIZABLE;
-UPDATE accounts SET balance = balance - 50 WHERE id = 2;
-UPDATE accounts SET balance = balance + 50 WHERE id = 1;
-COMMIT;
-
--- SERIALIZABLEでは、一方がシリアライゼーション失敗でロールバック
--- 合計残高の整合性が保たれる
-```
-
-### 使用場面
-
-- 金融取引
-- 在庫管理（競合が多い場合）
-- 厳密な整合性が必要なビジネスロジック
-
-### Drizzle ORM例
-
-```typescript
-async function transferFunds(fromId: string, toId: string, amount: number) {
-  return await withRetry(async () => {
-    return await db.transaction(async (tx) => {
-      const [from] = await tx.select().from(accounts).where(eq(accounts.id, fromId));
-
-      if (from.balance < amount) {
-        throw new Error('Insufficient funds');
-      }
-
-      await tx.update(accounts).set({ balance: sql`balance - ${amount}` }).where(eq(accounts.id, fromId));
-      await tx.update(accounts).set({ balance: sql`balance + ${amount}` }).where(eq(accounts.id, toId));
-
-      return { success: true };
-    }, { isolationLevel: 'serializable' });
-  }, 3); // リトライ3回
+  try {
+    const workflow = await db.get("SELECT * FROM workflows WHERE id = ?", [id]);
+    await db.run("COMMIT");
+    return workflow;
+  } catch (error) {
+    await db.run("ROLLBACK");
+    throw error;
+  }
 }
 ```
 
 ---
 
-## 分離レベル選択フローチャート
+## 2. BEGIN IMMEDIATE
 
+### 動作
+
+- トランザクション開始時に予約ロックを取得
+- 他の書き込みトランザクションをブロック
+- 読み取りトランザクションは継続可能
+- 書き込み時に排他ロックへアップグレード
+
+### 防止される現象
+
+```sql
+-- トランザクション A
+BEGIN IMMEDIATE;
+SELECT balance FROM accounts WHERE id = 1;  -- 結果: 1000
+
+-- トランザクション B（この間に実行を試みる）
+BEGIN IMMEDIATE; -- SQLITE_BUSYエラーで待機
+
+-- トランザクション A（続き）
+UPDATE accounts SET balance = 500 WHERE id = 1;
+SELECT balance FROM accounts WHERE id = 1;  -- 結果: 500（一貫性保持）
+COMMIT;
+
+-- トランザクション B（Aのコミット後に実行可能）
+-- ...
 ```
-トランザクション要件は？
-│
-├─ 読み取り専用、一貫性不要
-│   └─ READ COMMITTED
-│
-├─ 読み取り専用、スナップショット一貫性が必要
-│   └─ REPEATABLE READ
-│   └─ 例: レポート生成、バッチ読み取り
-│
-├─ 更新あり、競合少ない
-│   └─ READ COMMITTED + 楽観的ロック
-│   └─ 例: 一般的なCRUD
-│
-├─ 更新あり、競合多い
-│   ├─ 整合性最優先
-│   │   └─ SERIALIZABLE + リトライ
-│   │   └─ 例: 金融取引
-│   │
-│   └─ パフォーマンス優先
-│       └─ READ COMMITTED + 悲観的ロック（SELECT FOR UPDATE）
-│       └─ 例: 在庫管理
-│
-└─ 複雑な制約（複数テーブル間の整合性）
-    └─ SERIALIZABLE
-    └─ 例: 会計システム
+
+### 使用場面
+
+- 書き込みを含むトランザクション（推奨）
+- 一貫性が重要な操作
+- 書き込み競合を早期に検出したい場合
+
+### TypeScript例
+
+```typescript
+async function updateWorkflow(id: string, data: Partial<Workflow>) {
+  await db.run("BEGIN IMMEDIATE"); // 予約ロック取得
+
+  try {
+    const workflow = await db.get("SELECT * FROM workflows WHERE id = ?", [id]);
+
+    if (!workflow) {
+      await db.run("ROLLBACK");
+      throw new Error("Workflow not found");
+    }
+
+    await db.run("UPDATE workflows SET name = ?, updated_at = ? WHERE id = ?", [
+      data.name,
+      new Date(),
+      id,
+    ]);
+
+    await db.run("COMMIT");
+  } catch (error) {
+    await db.run("ROLLBACK");
+    throw error;
+  }
+}
 ```
 
 ---
 
-## パフォーマンス影響
+## 3. BEGIN EXCLUSIVE
 
-| 分離レベル | オーバーヘッド | ロック競合 | リトライ頻度 |
-|-----------|---------------|-----------|-------------|
-| READ COMMITTED | 低 | 低 | 低 |
-| REPEATABLE READ | 中 | 中 | 中 |
-| SERIALIZABLE | 高 | 高 | 高 |
+### 動作
 
-### SERIALIZABLE使用時の注意
+- トランザクション開始時に排他ロックを取得
+- すべての読み取り・書き込みトランザクションをブロック
+- 最も厳格なロックモード
+- 大量の書き込み処理に適している
+
+### 使用場面
+
+- 大量データの一括更新
+- データベースメンテナンス
+- スキーマ変更
+- バックアップ処理
+
+### TypeScript例
 
 ```typescript
-// リトライが必須
-async function withRetry<T>(fn: () => Promise<T>, maxRetries: number): Promise<T> {
-  for (let i = 0; i < maxRetries; i++) {
+async function batchImport(records: Record[]) {
+  await db.run("BEGIN EXCLUSIVE"); // 排他ロック取得
+
+  try {
+    for (const record of records) {
+      await db.run(
+        "INSERT INTO workflows (id, name, created_at) VALUES (?, ?, ?)",
+        [record.id, record.name, new Date()],
+      );
+    }
+
+    await db.run("COMMIT");
+  } catch (error) {
+    await db.run("ROLLBACK");
+    throw error;
+  }
+}
+```
+
+---
+
+## WALモード（Write-Ahead Logging）
+
+### 概要
+
+WALモードはSQLiteのジャーナルモードの一つで、並行性を大幅に向上させます。
+
+### 動作
+
+- 書き込みは別ファイル（WALファイル）に記録
+- 読み取りと書き込みがブロックしない
+- 読み取りトランザクションは一貫したスナップショットを参照
+
+### 設定
+
+```sql
+PRAGMA journal_mode = WAL;
+```
+
+### メリット
+
+- 読み取りと書き込みの並行性向上
+- 読み取りトランザクションが書き込みをブロックしない
+- パフォーマンス向上
+
+### デメリット
+
+- 複数ファイルの管理が必要（DB、WAL、SHM）
+- ネットワークファイルシステムでは使用不可
+
+### TypeScript例
+
+```typescript
+async function enableWAL(db: Database) {
+  await db.run("PRAGMA journal_mode = WAL");
+  await db.run("PRAGMA busy_timeout = 5000");
+
+  console.log("WAL mode enabled");
+}
+
+// WALモードでの並行処理
+async function concurrentOperations() {
+  // 読み取りと書き込みが同時に実行可能
+  const readPromise = db.get("SELECT COUNT(*) FROM workflows");
+  const writePromise = db.run(
+    "INSERT INTO workflows (id, name) VALUES (?, ?)",
+    [uuid(), "New Workflow"],
+  );
+
+  const [readResult, writeResult] = await Promise.all([
+    readPromise,
+    writePromise,
+  ]);
+}
+```
+
+---
+
+## トランザクションモード選択フローチャート
+
+```
+トランザクション要件は？
+│
+├─ 読み取りのみ
+│   └─ BEGIN DEFERRED
+│   └─ 例: レポート生成、データ参照
+│
+├─ 書き込みあり、競合少ない
+│   └─ BEGIN IMMEDIATE（推奨）
+│   └─ 例: 一般的なCRUD操作
+│
+├─ 書き込みあり、競合多い
+│   └─ BEGIN IMMEDIATE + リトライロジック
+│   └─ 例: 高負荷アプリケーション
+│
+├─ 大量の書き込み
+│   └─ BEGIN EXCLUSIVE
+│   └─ 例: バッチ処理、データインポート
+│
+└─ 高い並行性が必要
+    └─ WALモード + BEGIN IMMEDIATE
+    └─ 例: マルチユーザーアプリケーション
+```
+
+---
+
+## SQLITE_BUSY対策
+
+### 問題
+
+複数のトランザクションが同時に書き込みを試みるとSQLITE_BUSYエラーが発生します。
+
+### 対策
+
+#### 1. busy_timeout設定
+
+```sql
+PRAGMA busy_timeout = 5000; -- 5秒待機
+```
+
+#### 2. リトライロジック
+
+```typescript
+async function withBusyRetry<T>(
+  operation: () => Promise<T>,
+  maxRetries = 3,
+): Promise<T> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
-      return await fn();
+      return await operation();
     } catch (error) {
-      if (isSerializationError(error) && i < maxRetries - 1) {
-        await delay(Math.pow(2, i) * 100); // 指数バックオフ
+      if (
+        ((error as any)?.code === "SQLITE_BUSY" ||
+          (error as any)?.code === "SQLITE_LOCKED") &&
+        attempt < maxRetries
+      ) {
+        await sleep(Math.pow(2, attempt) * 100 + Math.random() * 50);
         continue;
       }
       throw error;
     }
   }
-  throw new Error('Max retries exceeded');
-}
-
-function isSerializationError(error: unknown): boolean {
-  return error instanceof Error &&
-    error.message.includes('could not serialize access');
+  throw new Error("Max retries exceeded");
 }
 ```
 
@@ -266,8 +305,83 @@ function isSerializationError(error: unknown): boolean {
 
 ## ベストプラクティス
 
-1. **デフォルトはREAD COMMITTED**: 多くのケースで十分
-2. **レポート生成にはREPEATABLE READ**: 一貫したスナップショット
-3. **SERIALIZABLEは慎重に**: リトライロジック必須
-4. **楽観的ロックと組み合わせ**: 低分離レベルでも整合性確保
-5. **トランザクション時間を最小化**: 競合とデッドロックを減らす
+1. **書き込み時はBEGIN IMMEDIATE**: 競合を早期に検出
+2. **WALモード有効化**: 並行性が重要な場合
+3. **busy_timeout設定**: SQLITE_BUSYエラーを軽減
+4. **リトライロジック実装**: 高負荷時の信頼性向上
+5. **トランザクション時間を最小化**: ロック時間を短くする
+6. **適切なインデックス**: クエリパフォーマンスを向上
+
+---
+
+## パフォーマンス影響
+
+| モード          | 読み取り並行性 | 書き込み並行性 | 適用場面       |
+| --------------- | -------------- | -------------- | -------------- |
+| BEGIN DEFERRED  | 高             | 低             | 読み取り専用   |
+| BEGIN IMMEDIATE | 高             | 低             | 通常の書き込み |
+| BEGIN EXCLUSIVE | なし           | なし           | 大量書き込み   |
+| WAL + IMMEDIATE | 非常に高       | 中             | 高並行性アプリ |
+
+---
+
+## 実践例：ワークフロー管理システム
+
+```typescript
+// WALモード初期化
+await db.run("PRAGMA journal_mode = WAL");
+await db.run("PRAGMA busy_timeout = 5000");
+
+// 読み取り専用操作
+async function listWorkflows() {
+  // DEFERREDで十分
+  await db.run("BEGIN");
+  try {
+    const workflows = await db.all("SELECT * FROM workflows");
+    await db.run("COMMIT");
+    return workflows;
+  } catch (error) {
+    await db.run("ROLLBACK");
+    throw error;
+  }
+}
+
+// 書き込み操作（推奨パターン）
+async function createWorkflow(data: WorkflowInput) {
+  return await withBusyRetry(async () => {
+    await db.run("BEGIN IMMEDIATE");
+
+    try {
+      const result = await db.run(
+        "INSERT INTO workflows (id, name, created_at) VALUES (?, ?, ?)",
+        [uuid(), data.name, new Date()],
+      );
+
+      await db.run("COMMIT");
+      return result;
+    } catch (error) {
+      await db.run("ROLLBACK");
+      throw error;
+    }
+  });
+}
+
+// 大量データインポート
+async function bulkImport(workflows: WorkflowInput[]) {
+  await db.run("BEGIN EXCLUSIVE");
+
+  try {
+    for (const workflow of workflows) {
+      await db.run(
+        "INSERT INTO workflows (id, name, created_at) VALUES (?, ?, ?)",
+        [uuid(), workflow.name, new Date()],
+      );
+    }
+
+    await db.run("COMMIT");
+  } catch (error) {
+    await db.run("ROLLBACK");
+    throw error;
+  }
+}
+```

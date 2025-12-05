@@ -4,15 +4,18 @@
 
 > 「A. 上位モジュールは下位モジュールに依存してはならない。両者とも抽象に依存すべきである。
 > B. 抽象は詳細に依存してはならない。詳細が抽象に依存すべきである。」
+>
 > - Robert C. Martin
 
 ## 核心概念
 
 ### 依存の「逆転」
+
 - 従来: 上位モジュール → 下位モジュール（具象に依存）
 - 逆転後: 上位モジュール → 抽象 ← 下位モジュール（抽象に依存）
 
 ### 目的
+
 - **柔軟性**: 実装の差し替えが容易
 - **テスタビリティ**: モックやスタブの注入が可能
 - **独立性**: 上位ポリシーが下位の詳細から分離
@@ -42,12 +45,12 @@ class UserService {
   }
 
   getUsers(): User[] {
-    return this.database.query('SELECT * FROM users');
+    return this.database.query("SELECT * FROM users");
   }
 }
 
 // 問題:
-// 1. MySQLからPostgreSQLへの変更が困難
+// 1. MySQLからSQLiteへの変更が困難
 // 2. テスト時にモックに差し替えられない
 // 3. UserServiceがデータベースの詳細を知っている
 ```
@@ -80,8 +83,8 @@ class MySQLUserRepository implements UserRepository {
   constructor(private db: Database) {}
 
   findAll(): User[] {
-    const rows = this.db.query('SELECT * FROM users');
-    return rows.map(row => new User(row.id, row.name));
+    const rows = this.db.query("SELECT * FROM users");
+    return rows.map((row) => new User(row.id, row.name));
   }
 
   findById(id: string): User | null {
@@ -122,7 +125,7 @@ class OrderService {
   constructor(
     private orderRepository: OrderRepository,
     private paymentGateway: PaymentGateway,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
   ) {}
 }
 ```
@@ -223,11 +226,11 @@ src/
 
 ### 命名規約
 
-| パターン | 例 |
-|---------|---|
-| I-プレフィックス | `IUserRepository` |
-| -able/-ible サフィックス | `Saveable`, `Readable` |
-| 抽象名 | `UserRepository` (実装: `MySQLUserRepository`) |
+| パターン                 | 例                                             |
+| ------------------------ | ---------------------------------------------- |
+| I-プレフィックス         | `IUserRepository`                              |
+| -able/-ible サフィックス | `Saveable`, `Readable`                         |
+| 抽象名                   | `UserRepository` (実装: `MySQLUserRepository`) |
 
 ## チェックリスト
 

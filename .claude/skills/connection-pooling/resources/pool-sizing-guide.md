@@ -1,225 +1,255 @@
-# 接続プールサイジングガイド
+# Turso/libSQL 接続管理ガイド
 
 ## 基本原則
 
-### PostgreSQLの推奨式
+### libSQLの接続モデル
+
+libSQLはSQLiteベースのため、従来のPostgreSQLのような接続プール管理は不要です。
+代わりに、以下の2つの接続モデルがあります：
 
 ```
-最適接続数 = (コア数 * 2) + 有効スピンドル数
-```
+1. リモート接続（Turso Cloud）
+   - HTTPSベースの接続
+   - 接続プール不要
+   - 自動スケーリング
 
-**例**:
-- 4コアサーバー、SSD: `(4 * 2) + 1 = 9 接続`
-- 8コアサーバー、RAID-10 HDD: `(8 * 2) + 4 = 20 接続`
+2. Embedded Replicas
+   - ローカルSQLiteファイル
+   - クラウドとの双方向同期
+   - ネットワーク不要で高速
+```
 
 ### サーバーレス環境での考慮
 
-サーバーレスでは、インスタンス数が動的に変化するため：
+サーバーレスでは、Embedded Replicasが推奨されます：
 
 ```
-プール合計 = インスタンス数 × インスタンスあたりの接続数 ≤ DB最大接続数
+読み取り: ローカルファイル（超高速）
+書き込み: ローカル → クラウドへ非同期同期
 ```
 
-**Neonの場合**:
-- Free: 最大100接続
-- Pro: 最大500接続（プランによる）
+**Tursoの場合**:
 
-**Supabaseの場合**:
-- Free: 最大60接続（15 direct + 45 pooled）
-- Pro: より多くの接続
+- 同時接続数の制限なし（Embedded Replicas使用時）
+- クラウド接続: 自動スケーリング
+- 同期は非同期で実行
 
 ## 環境別設定
 
 ### 開発環境
 
 ```typescript
-const devPool = {
-  max: 5,              // 最大接続数
-  min: 1,              // 最小接続数
-  idleTimeoutMillis: 30000,  // 30秒でアイドル接続を解放
-  connectionTimeoutMillis: 5000,
-};
+import { createClient } from "@libsql/client";
+
+// ローカルファイルのみ（同期なし）
+const devClient = createClient({
+  url: "file:dev.db",
+});
 ```
 
 **理由**:
-- 開発者は少数
-- リソース節約
-- 素早いフィードバック
+
+- ローカルファイルで高速
+- ネットワーク不要
+- 開発に集中できる
 
 ### ステージング環境
 
 ```typescript
-const stagingPool = {
-  max: 20,
-  min: 5,
-  idleTimeoutMillis: 60000,
-  connectionTimeoutMillis: 10000,
-};
+// Embedded Replicas（同期あり）
+const stagingClient = createClient({
+  url: "file:staging.db",
+  syncUrl: process.env.TURSO_DATABASE_URL,
+  authToken: process.env.TURSO_AUTH_TOKEN,
+  syncInterval: 300, // 5分ごとに同期
+});
 ```
 
 **理由**:
-- 本番に近い設定
-- パフォーマンステスト可能
-- 中程度のリソース
+
+- ローカル読み取りで高速
+- クラウド同期でデータ永続化
+- 本番に近い動作確認
 
 ### 本番環境
 
 ```typescript
-const prodPool = {
-  max: 50,            // 負荷に応じて調整
-  min: 10,            // 常時接続を維持
-  idleTimeoutMillis: 120000,
-  connectionTimeoutMillis: 15000,
-};
+// Embedded Replicas（頻繁な同期）
+const prodClient = createClient({
+  url: "file:prod.db",
+  syncUrl: process.env.TURSO_DATABASE_URL,
+  authToken: process.env.TURSO_AUTH_TOKEN,
+  syncInterval: 60, // 1分ごとに同期
+  syncOnWrite: true, // 書き込み時に即座に同期
+  readYourWrites: true, // 自分の書き込みを即座に読み取り
+});
 ```
 
 **理由**:
-- 高負荷対応
-- 接続確立のオーバーヘッド削減
-- 安定したパフォーマンス
 
-## プールモードの選択
+- 最高速の読み取りパフォーマンス
+- 書き込みも即座に同期
+- 高可用性と低レイテンシの両立
 
-### Transaction Mode（推奨）
+## 同期戦略の選択
 
-```yaml
-mode: transaction
+### 定期同期（推奨）
 
-特徴:
-  - トランザクション完了後に接続を解放
-  - 接続の効率的な共有
-  - ほとんどのWebアプリケーションに最適
-
-注意点:
-  - PREPARE / EXECUTE は使用不可
-  - セッション変数は保持されない
-  - LISTEN / NOTIFY は使用不可
+```typescript
+const client = createClient({
+  url: "file:local.db",
+  syncUrl: process.env.TURSO_DATABASE_URL,
+  authToken: process.env.TURSO_AUTH_TOKEN,
+  syncInterval: 60, // 60秒ごとに同期
+});
 ```
 
-### Session Mode
+**特徴**:
 
-```yaml
-mode: session
+- 定期的にクラウドと同期
+- 読み取りは常にローカルから高速
+- バッテリー効率的
 
-特徴:
-  - セッション全体で接続を保持
-  - すべてのPostgreSQL機能が使用可能
-  - 長いトランザクションに適切
+**推奨用途**: 一般的なWebアプリケーション
 
-注意点:
-  - 接続効率が低い
-  - より多くの接続が必要
-  - コスト増加
+### 書き込み時同期
+
+```typescript
+const client = createClient({
+  url: "file:local.db",
+  syncUrl: process.env.TURSO_DATABASE_URL,
+  authToken: process.env.TURSO_AUTH_TOKEN,
+  syncOnWrite: true, // 書き込み時に即座に同期
+});
 ```
 
-### Statement Mode
+**特徴**:
 
-```yaml
-mode: statement
+- 書き込み直後にクラウドへ同期
+- データの永続性が高い
+- やや書き込みレイテンシ増加
 
-特徴:
-  - ステートメント単位で接続を解放
-  - 最も効率的な接続共有
-  - 単純なクエリに最適
+**推奨用途**: データ整合性が重要なアプリケーション
 
-注意点:
-  - トランザクションは使用不可
-  - 非常に限定的な用途
+### 手動同期
+
+```typescript
+const client = createClient({
+  url: "file:local.db",
+  syncUrl: process.env.TURSO_DATABASE_URL,
+  authToken: process.env.TURSO_AUTH_TOKEN,
+  // syncIntervalを指定しない
+});
+
+// 必要に応じて手動同期
+await client.sync();
 ```
 
-## サイジングの計算例
+**特徴**:
+
+- 完全なコントロール
+- 最小限のネットワーク使用
+- 同期タイミングを自由に制御
+
+**推奨用途**: オフラインファーストアプリ、バッチ処理
+
+## 設定例
 
 ### Webアプリケーション
 
-```yaml
-想定:
-  - 同時ユーザー: 1000人
-  - リクエスト/秒: 100
-  - 平均クエリ時間: 50ms
-  - DBサーバー: 4コア
+```typescript
+import { createClient } from "@libsql/client";
 
-計算:
-  # 同時に必要な接続数
-  同時クエリ数 = リクエスト/秒 × 平均クエリ時間
-              = 100 × 0.05秒
-              = 5 接続
+// Embedded Replicasで高速化
+const client = createClient({
+  url: "file:app.db",
+  syncUrl: process.env.TURSO_DATABASE_URL,
+  authToken: process.env.TURSO_AUTH_TOKEN,
+  syncInterval: 60, // 1分ごとに同期
+  syncOnWrite: true, // 書き込み時に即座に同期
+});
 
-  # 余裕を持たせる（2-3倍）
-  推奨接続数 = 5 × 3 = 15 接続
-
-設定:
-  max: 20
-  min: 5
+// 想定:
+// - 同時ユーザー: 1000人
+// - リクエスト/秒: 100
+// - 平均クエリ時間: <1ms（ローカルSQLite）
+//
+// Embedded Replicasを使用するため、
+// 接続数の心配は不要！
 ```
 
-### サーバーレス（Lambda）
+### サーバーレス（Lambda/Edge）
 
-```yaml
-想定:
-  - 最大同時Lambda: 100インスタンス
-  - DB最大接続: 100
-  - プーラー使用: はい（Neon Pooler）
+```typescript
+// Lambda関数でEmbedded Replicasを使用
+import { createClient } from "@libsql/client";
 
-計算:
-  # プーラーなしの場合
-  必要接続 = 100 Lambda × 1 接続/Lambda = 100 接続（上限到達）
+let client: any = null;
 
-  # プーラーありの場合
-  Lambdaあたり1接続でもプーラーが共有
+export const handler = async (event: any) => {
+  // クライアントをキャッシュ
+  if (!client) {
+    client = createClient({
+      url: "file:lambda.db",
+      syncUrl: process.env.TURSO_DATABASE_URL,
+      authToken: process.env.TURSO_AUTH_TOKEN,
+    });
+  }
 
-設定:
-  # プーラー経由
-  max: 1-2（Lambda側）
-  # DB側
-  max_connections: 100（プーラーで管理）
+  // ローカルファイルから超高速で読み取り
+  const result = await client.execute("SELECT * FROM users");
+  return result;
+};
+
+// メリット:
+// - コールドスタート時もローカルファイルアクセスで高速
+// - 接続プールの管理不要
+// - 自動的にクラウドと同期
 ```
 
 ### マイクロサービス
 
-```yaml
-想定:
-  - サービス数: 5
-  - インスタンス/サービス: 3
-  - DB最大接続: 100
+```typescript
+// 各サービスでEmbedded Replicasを使用
+const serviceClient = createClient({
+  url: "file:service.db",
+  syncUrl: process.env.TURSO_DATABASE_URL,
+  authToken: process.env.TURSO_AUTH_TOKEN,
+  syncInterval: 30, // 30秒ごとに同期
+});
 
-計算:
-  # サービスあたりの接続数
-  接続/サービス = 100 / 5 = 20 接続
-
-  # インスタンスあたり
-  接続/インスタンス = 20 / 3 ≈ 6-7 接続
-
-設定:
-  各サービス:
-    max: 7
-    min: 2
+// メリット:
+// - サービス間で接続を共有する必要なし
+// - 各サービスが独立したローカルレプリカを持つ
+// - サービスのスケールアウトが容易
 ```
 
-## 動的スケーリング
+## 同期戦略の動的調整
 
-### 負荷に応じた調整
+### 負荷に応じた同期間隔の調整
 
 ```typescript
-// 動的プールサイジング（概念）
-function calculatePoolSize(metrics: {
-  activeConnections: number;
-  waitingRequests: number;
-  avgQueryTime: number;
+// 動的同期間隔調整
+function adjustSyncInterval(metrics: {
+  writeFrequency: number; // 書き込み頻度（回/分）
+  networkLatency: number; // ネットワークレイテンシ（ms）
+  dataFreshness: number; // 必要なデータ鮮度（秒）
 }) {
-  const baseSize = 10;
-  const utilizationFactor = metrics.activeConnections / currentMax;
-
-  if (utilizationFactor > 0.8 || metrics.waitingRequests > 5) {
-    // プールサイズを増加
-    return Math.min(currentMax * 1.5, MAX_ALLOWED);
+  // 書き込みが頻繁な場合は同期間隔を短く
+  if (metrics.writeFrequency > 10) {
+    return { syncInterval: 30, syncOnWrite: true };
   }
 
-  if (utilizationFactor < 0.3 && metrics.waitingRequests === 0) {
-    // プールサイズを減少
-    return Math.max(currentMax * 0.7, MIN_ALLOWED);
+  // レイテンシが高い場合は同期間隔を長く
+  if (metrics.networkLatency > 200) {
+    return { syncInterval: 300, syncOnWrite: false };
   }
 
-  return currentMax;
+  // データ鮮度要件に基づく調整
+  return {
+    syncInterval: Math.max(metrics.dataFreshness, 60),
+    syncOnWrite: metrics.dataFreshness < 30,
+  };
 }
 ```
 
@@ -227,54 +257,60 @@ function calculatePoolSize(metrics: {
 
 ### 監視すべきメトリクス
 
-| メトリクス | 説明 | 閾値 |
-|-----------|------|------|
-| pool_size | 現在のプールサイズ | - |
-| active_connections | アクティブ接続数 | < max * 0.8 |
-| idle_connections | アイドル接続数 | > min |
-| waiting_clients | 待機中クライアント | 0 |
-| total_connections | 累計接続数 | - |
-| connection_errors | 接続エラー数 | 0 |
+| メトリクス        | 説明                 | 閾値       |
+| ----------------- | -------------------- | ---------- |
+| sync_lag          | 同期遅延（秒）       | < 60       |
+| sync_failures     | 同期失敗回数         | 0          |
+| local_db_size     | ローカルDBサイズ     | -          |
+| query_latency     | クエリレイテンシ     | < 10ms     |
+| sync_bandwidth    | 同期帯域幅使用量     | -          |
+| replica_freshness | レプリカの鮮度（秒） | < 同期間隔 |
 
 ### アラート設定例
 
 ```yaml
 alerts:
-  - name: high_connection_usage
-    condition: active_connections / max > 0.9
+  - name: high_sync_lag
+    condition: sync_lag > 300
     severity: warning
     action: notify_team
+    description: 同期遅延が5分を超えています
 
-  - name: connection_exhaustion
-    condition: active_connections >= max AND waiting_clients > 0
+  - name: sync_failure
+    condition: sync_failures > 3 in 10 minutes
     severity: critical
     action: notify_oncall
+    description: 同期が連続で失敗しています
 
-  - name: connection_errors
-    condition: connection_errors > 10 per minute
-    severity: critical
-    action: notify_oncall
+  - name: replica_stale
+    condition: replica_freshness > sync_interval * 2
+    severity: warning
+    action: notify_team
+    description: レプリカが古くなっています
 ```
 
 ## チェックリスト
 
 ### 初期設定時
+
 - [ ] 環境タイプ（開発/ステージング/本番）を確認
-- [ ] DBの最大接続数を確認
-- [ ] インスタンス数を把握
-- [ ] プーラーの使用を検討
-- [ ] タイムアウト値を設定
+- [ ] Turso DatabaseのURLとトークンを取得
+- [ ] Embedded Replicasの使用を検討
+- [ ] 同期間隔を設定
+- [ ] 同期戦略を選択（定期/書き込み時/手動）
 
 ### パフォーマンス調整時
-- [ ] 接続使用率を監視
-- [ ] 待機リクエストを確認
-- [ ] クエリ時間を分析
-- [ ] 接続エラーを確認
-- [ ] 必要に応じてサイズ調整
+
+- [ ] 同期遅延を監視
+- [ ] クエリレイテンシを確認
+- [ ] ローカルDBサイズを確認
+- [ ] 同期エラーを確認
+- [ ] 必要に応じて同期間隔を調整
 
 ### 障害対応時
-- [ ] 現在の接続数を確認
-- [ ] アイドル接続を特定
-- [ ] 長時間クエリを確認
-- [ ] 必要に応じて接続を切断
-- [ ] 根本原因を分析
+
+- [ ] 同期状態を確認
+- [ ] ネットワーク接続を確認
+- [ ] 認証トークンの有効性を確認
+- [ ] ローカルDBの整合性を確認
+- [ ] 必要に応じて手動同期を実行

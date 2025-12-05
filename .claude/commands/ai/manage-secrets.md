@@ -13,7 +13,7 @@ description: |
   - `.claude/skills/pre-commit-security/SKILL.md` - pre-commit hook、機密情報検出
   - `.claude/skills/encryption-key-lifecycle/SKILL.md` - 暗号化、鍵生成・保管・Rotation
   - `.claude/skills/environment-isolation/SKILL.md` - 環境分離、最小権限
-  - `.claude/skills/railway-secrets-management/SKILL.md` - Railway Secrets、Neon Plugin
+  - `.claude/skills/railway-secrets-management/SKILL.md` - Railway Secrets、Turso Plugin
   - `.claude/skills/github-actions-security/SKILL.md` - GitHub Secrets、Environment保護
 
   ⚙️ このコマンドの設定:
@@ -56,6 +56,7 @@ disable-model-invocation: false
 引数なし（プロジェクト全体を分析）
 
 **使用例**:
+
 ```bash
 /ai:manage-secrets
 ```
@@ -67,6 +68,7 @@ disable-model-invocation: false
 ### Phase 1: 準備・スキャン
 
 **エージェント起動**:
+
 ```
 `.claude/agents/secret-mgr.md` を起動し、以下を依頼:
 - プロジェクト構造の分析
@@ -76,11 +78,13 @@ disable-model-invocation: false
 ```
 
 **スキル参照** (Phase 1):
+
 - `.claude/skills/project-architecture-integration/SKILL.md`: プロジェクト構造理解
 - `.claude/skills/tool-permission-management/SKILL.md`: 権限管理パターン
 - `.claude/skills/best-practices-curation/SKILL.md`: シークレット管理ベストプラクティス
 
 **スキャン対象パターン**:
+
 ```regex
 # 検出パターン例
 - API keys: /api[_-]?key\s*=\s*['"][^'"]+['"]/gi
@@ -88,10 +92,12 @@ disable-model-invocation: false
 - Tokens: /token\s*=\s*['"][^'"]+['"]/gi
 - Private keys: /-----BEGIN (RSA |)PRIVATE KEY-----/
 - AWS credentials: /AKIA[0-9A-Z]{16}/
-- Database URLs: /postgres:\/\/[^'"]+/gi
+- Database URLs: /libsql:\/\/[^'"]+/gi
+- Turso tokens: /eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/
 ```
 
 **期待成果物**:
+
 - ハードコードされたシークレットのリスト
 - 既存の環境変数ファイル分析結果
 - シークレット管理の改善提案
@@ -101,6 +107,7 @@ disable-model-invocation: false
 ### Phase 2: シークレット管理実装
 
 **エージェント起動**:
+
 ```
 `.claude/agents/secret-mgr.md` を起動し、以下を依頼:
 - .env.example テンプレートの作成
@@ -110,11 +117,13 @@ disable-model-invocation: false
 ```
 
 **スキル参照** (Phase 2):
+
 - `.claude/skills/tool-permission-management/SKILL.md`: 権限分離パターン
 - `.claude/skills/best-practices-curation/SKILL.md`: セキュリティベストプラクティス
 - `.claude/skills/project-architecture-integration/SKILL.md`: プロジェクト統合
 
 **実装内容**:
+
 ```
 【.env.example の作成】
 - すべての必要な環境変数をリストアップ
@@ -136,13 +145,15 @@ disable-model-invocation: false
 ```
 
 **環境変数の分類**:
+
 ```
 【Public環境変数】
 NEXT_PUBLIC_API_URL=https://api.example.com
 NEXT_PUBLIC_APP_NAME=MyApp
 
 【Private環境変数】
-DATABASE_URL=postgresql://...
+TURSO_DATABASE_URL=libsql://[db-name]-[org-name].turso.io
+TURSO_AUTH_TOKEN=<your-turso-token>
 API_SECRET_KEY=<your-secret-key>
 JWT_SECRET=<your-jwt-secret>
 
@@ -158,6 +169,7 @@ SENDGRID_API_KEY=SG...
 ```
 
 **期待成果物**:
+
 - `.env.example`: 環境変数テンプレート
 - `.gitignore`: 更新版
 - `src/config/env.ts` または `src/env.mjs`: 型安全な環境変数アクセス
@@ -168,6 +180,7 @@ SENDGRID_API_KEY=SG...
 ### Phase 3: ドキュメント生成・検証
 
 **エージェント起動**:
+
 ```
 `.claude/agents/secret-mgr.md` を起動し、以下を依頼:
 - シークレット管理手順書の作成
@@ -177,10 +190,12 @@ SENDGRID_API_KEY=SG...
 ```
 
 **スキル参照** (Phase 3):
+
 - `.claude/skills/best-practices-curation/SKILL.md`: 運用ベストプラクティス
 - `.claude/skills/tool-permission-management/SKILL.md`: 権限管理
 
 **成果物**:
+
 - `docs/security/secret-management.md`: シークレット管理手順書
   - 環境変数の設定方法
   - .envファイルのセットアップ
@@ -209,6 +224,7 @@ SENDGRID_API_KEY=SG...
 - [ ] Grepで再スキャンしてシークレットが残っていないことを確認
 
 **再スキャンコマンド**:
+
 ```bash
 # APIキーの検出
 grep -r "api[_-]key.*=.*['\"]" src/
@@ -233,9 +249,11 @@ grep -r "token.*=.*['\"]" src/
 ## 🎓 参考資料
 
 **エージェント仕様**:
+
 - `.claude/agents/secret-mgr.md`: シークレット管理エージェント
 
 **スキル仕様**:
+
 - `.claude/skills/tool-permission-management/SKILL.md`: 権限管理
 - `.claude/skills/best-practices-curation/SKILL.md`: セキュリティベストプラクティス
 - `.claude/skills/project-architecture-integration/SKILL.md`: プロジェクト統合
@@ -245,6 +263,7 @@ grep -r "token.*=.*['\"]" src/
 ## 🔒 セキュリティベストプラクティス
 
 ### DO's ✅
+
 - 環境変数で管理
 - .env ファイルを .gitignore に追加
 - .env.example でテンプレート提供
@@ -253,6 +272,7 @@ grep -r "token.*=.*['\"]" src/
 - 最小権限の原則
 
 ### DON'Ts ❌
+
 - ハードコードされたシークレット
 - コミット履歴にシークレットを含める
 - .env ファイルをGitに追加
@@ -265,6 +285,7 @@ grep -r "token.*=.*['\"]" src/
 ## 🚨 緊急対応
 
 **シークレットがGitに含まれている場合**:
+
 1. 即座にシークレットを無効化・ローテーション
 2. Git履歴から削除（`git filter-branch` または BFG Repo-Cleaner）
 3. 全チームメンバーに通知
@@ -272,6 +293,7 @@ grep -r "token.*=.*['\"]" src/
 5. 再発防止策の実施
 
 **参考コマンド**:
+
 ```bash
 # 次のコマンドで /ai:rotate-secrets を実行してください
 /ai:rotate-secrets <secret-name>

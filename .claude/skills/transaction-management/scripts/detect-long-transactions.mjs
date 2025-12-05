@@ -3,39 +3,38 @@
 /**
  * detect-long-transactions.mjs
  *
- * PostgreSQLで実行中の長時間トランザクションを検出するスクリプト。
+ * SQLiteで実行中の長時間トランザクションを検出するスクリプト。
  * 設定ファイルやコードから潜在的な問題パターンも検出します。
  *
  * 使用方法:
- *   node detect-long-transactions.mjs [--db <connection-string>] [--code <source-dir>]
+ *   node detect-long-transactions.mjs [--code <source-dir>]
  *
  * 例:
  *   node detect-long-transactions.mjs --code src/
- *   node detect-long-transactions.mjs --db postgresql://localhost/mydb
  */
 
-import { readFileSync, readdirSync, statSync } from 'fs';
-import { join, extname } from 'path';
+import { readFileSync, readdirSync, statSync } from "fs";
+import { join, extname } from "path";
 
 // 色定義
 const colors = {
-  red: '\x1b[31m',
-  yellow: '\x1b[33m',
-  green: '\x1b[32m',
-  blue: '\x1b[34m',
-  cyan: '\x1b[36m',
-  reset: '\x1b[0m',
+  red: "\x1b[31m",
+  yellow: "\x1b[33m",
+  green: "\x1b[32m",
+  blue: "\x1b[34m",
+  cyan: "\x1b[36m",
+  reset: "\x1b[0m",
 };
 
 /**
  * 問題パターン
  */
 const ProblemPatterns = {
-  EXTERNAL_CALL_IN_TX: 'external_call_in_transaction',
-  LONG_LOOP_IN_TX: 'long_loop_in_transaction',
-  NO_TIMEOUT: 'no_timeout_setting',
-  MISSING_RETRY: 'missing_retry_logic',
-  NESTED_TRANSACTION: 'nested_transaction',
+  EXTERNAL_CALL_IN_TX: "external_call_in_transaction",
+  LONG_LOOP_IN_TX: "long_loop_in_transaction",
+  NO_TIMEOUT: "no_timeout_setting",
+  MISSING_RETRY: "missing_retry_logic",
+  NESTED_TRANSACTION: "nested_transaction",
 };
 
 /**
@@ -55,7 +54,7 @@ class TransactionIssue {
 /**
  * ディレクトリを再帰的に走査
  */
-function walkDirectory(dir, extensions = ['.ts', '.js', '.mjs']) {
+function walkDirectory(dir, extensions = [".ts", ".js", ".mjs"]) {
   const files = [];
 
   function walk(currentDir) {
@@ -66,7 +65,11 @@ function walkDirectory(dir, extensions = ['.ts', '.js', '.mjs']) {
       const stat = statSync(fullPath);
 
       if (stat.isDirectory()) {
-        if (!entry.startsWith('.') && entry !== 'node_modules' && entry !== 'dist') {
+        if (
+          !entry.startsWith(".") &&
+          entry !== "node_modules" &&
+          entry !== "dist"
+        ) {
           walk(fullPath);
         }
       } else if (stat.isFile() && extensions.includes(extname(entry))) {
@@ -84,7 +87,7 @@ function walkDirectory(dir, extensions = ['.ts', '.js', '.mjs']) {
  */
 function detectExternalCallsInTransaction(content, filePath) {
   const issues = [];
-  const lines = content.split('\n');
+  const lines = content.split("\n");
 
   let inTransaction = false;
   let transactionStart = 0;
@@ -94,7 +97,7 @@ function detectExternalCallsInTransaction(content, filePath) {
     const line = lines[i];
 
     // トランザクション開始を検出
-    if (line.includes('db.transaction') || line.includes('.transaction(')) {
+    if (line.includes("db.transaction") || line.includes(".transaction(")) {
       inTransaction = true;
       transactionStart = i + 1;
       braceCount = 0;
@@ -122,12 +125,12 @@ function detectExternalCallsInTransaction(content, filePath) {
           issues.push(
             new TransactionIssue(
               ProblemPatterns.EXTERNAL_CALL_IN_TX,
-              'error',
+              "error",
               filePath,
               i + 1,
               `トランザクション内で外部呼び出しを検出: ${line.trim().substring(0, 50)}...`,
-              '外部API呼び出しはトランザクション外に移動してください。'
-            )
+              "外部API呼び出しはトランザクション外に移動してください。",
+            ),
           );
         }
       }
@@ -147,7 +150,7 @@ function detectExternalCallsInTransaction(content, filePath) {
  */
 function detectLoopsInTransaction(content, filePath) {
   const issues = [];
-  const lines = content.split('\n');
+  const lines = content.split("\n");
 
   let inTransaction = false;
   let transactionStart = 0;
@@ -155,7 +158,7 @@ function detectLoopsInTransaction(content, filePath) {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
 
-    if (line.includes('db.transaction') || line.includes('.transaction(')) {
+    if (line.includes("db.transaction") || line.includes(".transaction(")) {
       inTransaction = true;
       transactionStart = i + 1;
     }
@@ -164,24 +167,28 @@ function detectLoopsInTransaction(content, filePath) {
       // ループパターン（DB操作を含む可能性）
       if (/for\s*\(|\.forEach\s*\(|\.map\s*\(|while\s*\(/.test(line)) {
         // 次の数行でDBオペレーションがあるか確認
-        const nextLines = lines.slice(i, Math.min(i + 10, lines.length)).join('\n');
-        if (/await\s+.*\.(insert|update|delete|select|execute)/.test(nextLines)) {
+        const nextLines = lines
+          .slice(i, Math.min(i + 10, lines.length))
+          .join("\n");
+        if (
+          /await\s+.*\.(insert|update|delete|select|execute)/.test(nextLines)
+        ) {
           issues.push(
             new TransactionIssue(
               ProblemPatterns.LONG_LOOP_IN_TX,
-              'warning',
+              "warning",
               filePath,
               i + 1,
-              'トランザクション内でループによるDB操作を検出',
-              'バッチ処理（INSERT ... VALUES (...), (...)）の使用を検討してください。'
-            )
+              "トランザクション内でループによるDB操作を検出",
+              "バッチ処理（INSERT ... VALUES (...), (...)）の使用を検討してください。",
+            ),
           );
         }
       }
     }
 
     // 簡易的なトランザクション終了検出
-    if (inTransaction && line.includes('});') && i > transactionStart + 2) {
+    if (inTransaction && line.includes("});") && i > transactionStart + 2) {
       inTransaction = false;
     }
   }
@@ -195,22 +202,32 @@ function detectLoopsInTransaction(content, filePath) {
 function detectMissingRetry(content, filePath) {
   const issues = [];
 
-  // SERIALIZABLEを使用しているがリトライがない
-  if (content.includes("isolationLevel: 'serializable'") ||
-      content.includes('SERIALIZABLE')) {
-    if (!content.includes('retry') && !content.includes('Retry') && !content.includes('RETRY')) {
-      const lines = content.split('\n');
+  // BEGIN IMMEDIATEまたはBEGIN EXCLUSIVEを使用しているがリトライがない
+  if (
+    content.includes("BEGIN IMMEDIATE") ||
+    content.includes("BEGIN EXCLUSIVE")
+  ) {
+    if (
+      !content.includes("retry") &&
+      !content.includes("Retry") &&
+      !content.includes("RETRY") &&
+      !content.includes("SQLITE_BUSY")
+    ) {
+      const lines = content.split("\n");
       for (let i = 0; i < lines.length; i++) {
-        if (lines[i].includes('serializable') || lines[i].includes('SERIALIZABLE')) {
+        if (
+          lines[i].includes("BEGIN IMMEDIATE") ||
+          lines[i].includes("BEGIN EXCLUSIVE")
+        ) {
           issues.push(
             new TransactionIssue(
               ProblemPatterns.MISSING_RETRY,
-              'warning',
+              "warning",
               filePath,
               i + 1,
-              'SERIALIZABLE分離レベル使用時にリトライロジックが見つかりません',
-              'シリアライゼーション失敗時のリトライロジックを実装してください。'
-            )
+              "書き込みトランザクション使用時にリトライロジックが見つかりません",
+              "SQLITE_BUSY/SQLITE_LOCKEDエラー時のリトライロジックを実装してください。",
+            ),
           );
           break;
         }
@@ -228,19 +245,25 @@ function detectMissingTimeout(content, filePath) {
   const issues = [];
 
   // トランザクションがあるがタイムアウト設定がない
-  if (content.includes('db.transaction') || content.includes('.transaction(')) {
-    if (!content.includes('statement_timeout') &&
-        !content.includes('lock_timeout') &&
-        !content.includes('timeout')) {
+  if (
+    content.includes("BEGIN") ||
+    content.includes("db.transaction") ||
+    content.includes(".transaction(")
+  ) {
+    if (
+      !content.includes("busy_timeout") &&
+      !content.includes("timeout") &&
+      !content.includes("PRAGMA busy_timeout")
+    ) {
       issues.push(
         new TransactionIssue(
           ProblemPatterns.NO_TIMEOUT,
-          'info',
+          "info",
           filePath,
           1,
-          'トランザクションにタイムアウト設定が見つかりません',
-          'statement_timeout または lock_timeout の設定を検討してください。'
-        )
+          "トランザクションにbusy_timeout設定が見つかりません",
+          "PRAGMA busy_timeout の設定を検討してください（例: PRAGMA busy_timeout = 5000）。",
+        ),
       );
     }
   }
@@ -257,10 +280,10 @@ function analyzeCode(sourceDir) {
 
   for (const file of files) {
     try {
-      const content = readFileSync(file, 'utf-8');
+      const content = readFileSync(file, "utf-8");
 
       // トランザクションコードが含まれるファイルのみ分析
-      if (!content.includes('transaction') && !content.includes('BEGIN')) {
+      if (!content.includes("transaction") && !content.includes("BEGIN")) {
         continue;
       }
 
@@ -280,26 +303,28 @@ function analyzeCode(sourceDir) {
  * レポートを出力
  */
 function printReport(issues) {
-  console.log('\n' + '='.repeat(60));
-  console.log('トランザクション問題検出レポート');
-  console.log('='.repeat(60) + '\n');
+  console.log("\n" + "=".repeat(60));
+  console.log("トランザクション問題検出レポート");
+  console.log("=".repeat(60) + "\n");
 
   if (issues.length === 0) {
-    console.log(`${colors.green}✅ 問題は検出されませんでした。${colors.reset}\n`);
+    console.log(
+      `${colors.green}✅ 問題は検出されませんでした。${colors.reset}\n`,
+    );
     return;
   }
 
   // 重要度別にグループ化
   const grouped = {
-    error: issues.filter((i) => i.severity === 'error'),
-    warning: issues.filter((i) => i.severity === 'warning'),
-    info: issues.filter((i) => i.severity === 'info'),
+    error: issues.filter((i) => i.severity === "error"),
+    warning: issues.filter((i) => i.severity === "warning"),
+    info: issues.filter((i) => i.severity === "info"),
   };
 
   const severityLabels = {
-    error: { label: 'エラー', color: colors.red },
-    warning: { label: '警告', color: colors.yellow },
-    info: { label: '情報', color: colors.blue },
+    error: { label: "エラー", color: colors.red },
+    warning: { label: "警告", color: colors.yellow },
+    info: { label: "情報", color: colors.blue },
   };
 
   console.log(`${colors.cyan}サマリー${colors.reset}`);
@@ -325,15 +350,16 @@ function printReport(issues) {
   }
 
   // 推奨事項
-  console.log('='.repeat(60));
-  console.log('推奨事項');
-  console.log('='.repeat(60));
+  console.log("=".repeat(60));
+  console.log("推奨事項");
+  console.log("=".repeat(60));
   console.log(`
 1. 外部API呼び出しはトランザクション外に移動
 2. ループ内のDB操作はバッチ処理に変更
-3. SERIALIZABLE使用時はリトライロジックを実装
-4. 適切なタイムアウト設定を追加
+3. BEGIN IMMEDIATE/EXCLUSIVE使用時はリトライロジックを実装
+4. PRAGMA busy_timeout設定を追加（推奨: 5000ms）
 5. トランザクション時間を最小化
+6. WALモードの有効化を検討（並行性向上）
 `);
 }
 
@@ -346,15 +372,17 @@ function main() {
   let sourceDir = null;
 
   for (let i = 0; i < args.length; i++) {
-    if (args[i] === '--code' && args[i + 1]) {
+    if (args[i] === "--code" && args[i + 1]) {
       sourceDir = args[i + 1];
       i++;
     }
   }
 
   if (!sourceDir) {
-    console.log('使用方法: node detect-long-transactions.mjs --code <source-dir>');
-    console.log('例: node detect-long-transactions.mjs --code src/');
+    console.log(
+      "使用方法: node detect-long-transactions.mjs --code <source-dir>",
+    );
+    console.log("例: node detect-long-transactions.mjs --code src/");
     process.exit(1);
   }
 

@@ -79,7 +79,7 @@
             "description": "URIテンプレート（RFC 6570準拠）",
             "examples": [
               "file:///{path}",
-              "db://postgres/{database}/{table}/{id}",
+              "db://sqlite/{database}/{table}/{id}",
               "api://github/repos/{owner}/{repo}/issues/{number}"
             ]
           },
@@ -268,7 +268,7 @@
       ],
       "resourceTemplates": [
         {
-          "uriTemplate": "db://postgres/users/{userId}",
+          "uriTemplate": "db://sqlite/users/{userId}",
           "name": "User Record",
           "description": "Individual user record from database",
           "mimeType": "application/json",

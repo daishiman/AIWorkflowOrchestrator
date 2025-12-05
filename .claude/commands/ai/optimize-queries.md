@@ -12,8 +12,8 @@ description: |
 
   📚 利用可能スキル（タスクに応じてエージェントが必要時に参照）:
   **分析フェーズ（repo-dev）:** query-optimization（N+1検出、実行計画分析）
-  **チューニングフェーズ（dba-mgr）:** query-performance-tuning（EXPLAIN ANALYZE、インデックス最適化、クエリ書き換え）
-  **検証フェーズ（dba-mgr）:** indexing-strategies（B-Tree、GIN最適化）、connection-pooling（コネクション最適化）
+  **チューニングフェーズ（dba-mgr）:** query-performance-tuning（EXPLAIN QUERY PLAN、インデックス最適化、クエリ書き換え）
+  **検証フェーズ（dba-mgr）:** indexing-strategies（B-Tree最適化、SQLite制約考慮）、connection-pooling（コネクション最適化）
 
   ⚙️ このコマンドの設定:
   - argument-hint: オプション引数1つ（対象ファイルパス、未指定時は対話形式）
@@ -43,10 +43,10 @@ model: sonnet
 以下の観点からデータベースクエリを最適化します:
 
 - **N+1問題解消**: 複数回のクエリを1回のJOINに統合
-- **実行計画分析**: EXPLAIN ANALYZEによるボトルネック特定
+- **実行計画分析**: EXPLAIN QUERY PLANによるボトルネック特定
 - **インデックス活用**: 適切なインデックス使用の確認と提案
 - **クエリ書き換え**: 効率的なSQL生成パターンへの変更
-- **フェッチ戦略**: 必要なデータのみ取得（SELECT *回避）
+- **フェッチ戦略**: 必要なデータのみ取得（SELECT \*回避）
 
 ## 使用方法
 
@@ -91,17 +91,24 @@ model: sonnet
 **repo-dev エージェントが以下を実行**:
 
 **Phase 1: コンテキスト理解**
+
 - スキーマ確認（`schema.ts`）
 - 既存Repository調査
 - クエリパターン分析
 
 **Phase 2: クエリ戦略設計**（query-optimization スキル参照）
+
 - N+1問題検出
+
   ```typescript
   // ❌ Before: N+1問題
   const workflows = await db.select().from(workflows).all();
   for (const wf of workflows) {
-    const user = await db.select().from(users).where(eq(users.id, wf.user_id)).get();
+    const user = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, wf.user_id))
+      .get();
   }
 
   // ✅ After: JOIN使用
@@ -113,23 +120,30 @@ model: sonnet
   ```
 
 - 必要なデータのみ取得
+
   ```typescript
   // ❌ Before: SELECT *
   const workflows = await db.select().from(workflows).all();
 
   // ✅ After: 必要なカラムのみ
   const workflows = await db
-    .select({ id: workflows.id, type: workflows.type, status: workflows.status })
+    .select({
+      id: workflows.id,
+      type: workflows.type,
+      status: workflows.status,
+    })
     .from(workflows)
     .all();
   ```
 
 **Phase 3: Repository実装**（orm-best-practices スキル参照）
+
 - クエリビルダーパターン適用
 - トランザクション最適化
 - エラーハンドリング改善
 
 **Phase 4: 検証**
+
 - パフォーマンステスト実行
 - N+1問題が解消されたことを確認
 
@@ -138,13 +152,16 @@ model: sonnet
 **dba-mgr エージェントが以下を実行**:
 
 **Phase 1: スキーマ分析**
+
 - 既存インデックス確認
 - アクセスパターン分析
 
 **Phase 2: パフォーマンスチューニング**（query-performance-tuning スキル参照）
-- EXPLAIN ANALYZE実行
+
+- EXPLAIN QUERY PLAN実行
+
   ```sql
-  EXPLAIN (ANALYZE, BUFFERS)
+  EXPLAIN QUERY PLAN
   SELECT w.id, w.type, w.status, u.name
   FROM workflows w
   LEFT JOIN users u ON w.user_id = u.id
@@ -152,14 +169,15 @@ model: sonnet
   ```
 
 - インデックス最適化（indexing-strategies スキル参照）
+
   ```sql
   -- 複合インデックス追加（高選択性カラムを先頭）
   CREATE INDEX idx_workflows_status_created_at
   ON workflows(status, created_at DESC);
 
-  -- JSONB検索用GINインデックス
-  CREATE INDEX idx_workflows_input_payload_gin
-  ON workflows USING GIN(input_payload);
+  -- JSON検索用インデックス（SQLiteの制約内で最適化）
+  CREATE INDEX idx_workflows_input_payload
+  ON workflows(json_extract(input_payload, '$.key'));
   ```
 
 - クエリ書き換え提案
@@ -168,7 +186,8 @@ model: sonnet
   - ウィンドウ関数の活用
 
 **Phase 3: 検証**
-- 改善後のEXPLAIN ANALYZE確認
+
+- 改善後のEXPLAIN QUERY PLAN確認
 - パフォーマンスメトリクス測定
 
 ### Phase 4: 成果物
@@ -187,38 +206,42 @@ model: sonnet
 
 ### パフォーマンスレポート例
 
-```markdown
+````markdown
 # クエリ最適化レポート: WorkflowRepository
 
 ## 最適化前
+
 - クエリ実行時間: 1,200ms
 - 発行クエリ数: 101回（N+1問題）
-- 使用インデックス: なし（Seq Scan）
+- 使用インデックス: なし（Table Scan）
 
 ## 最適化後
+
 - クエリ実行時間: 45ms（96%改善）
 - 発行クエリ数: 1回（JOIN使用）
 - 使用インデックス: idx_workflows_status
 
 ## 適用した最適化
+
 1. N+1問題解消（JOIN統合）
 2. SELECT句の最適化（必要なカラムのみ）
 3. インデックス活用（status カラム）
 
-## EXPLAIN ANALYZE結果
+## EXPLAIN QUERY PLAN結果
+
 ```sql
-Index Scan using idx_workflows_status on workflows
-  (cost=0.42..8.44 rows=1 width=123) (actual time=0.015..0.018 rows=1 loops=1)
-Planning Time: 0.125 ms
-Execution Time: 0.045 ms
+SEARCH workflows USING INDEX idx_workflows_status (status=?)
+  (rows=1)
 ```
+````
+
 ```
 
 ## 注意事項
 
 - **詳細な最適化**: すべての最適化ロジックはエージェントと各スキルが実行
 - **コマンドの役割**: エージェント起動と対象の受け渡しのみ
-- **測定駆動**: 推測ではなく EXPLAIN ANALYZE に基づいて最適化
+- **測定駆動**: 推測ではなく EXPLAIN QUERY PLAN に基づいて最適化
 - **回帰テスト**: 最適化後は必ずテストを実行
 
 ## 関連コマンド
@@ -226,3 +249,4 @@ Execution Time: 0.045 ms
 - `/ai:create-db-schema`: スキーマ設計時にインデックス戦略を検討
 - `/ai:create-migration`: インデックス追加をマイグレーションに反映
 - `/ai:test`: 最適化後のテスト実行
+```
