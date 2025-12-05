@@ -11,14 +11,14 @@ on:
       - main
       - develop
     paths:
-      - 'src/**'
-      - 'tests/**'
-      - 'package.json'
-      - 'package-lock.json'
+      - "src/**"
+      - "tests/**"
+      - "package.json"
+      - "package-lock.json"
     # Exclude documentation changes
     paths-ignore:
-      - '**.md'
-      - 'docs/**'
+      - "**.md"
+      - "docs/**"
 
   # Trigger on pull requests to main
   pull_request:
@@ -33,22 +33,22 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Deployment environment'
+        description: "Deployment environment"
         required: true
-        default: 'staging'
+        default: "staging"
         type: choice
         options:
           - staging
           - production
       skip-tests:
-        description: 'Skip tests'
+        description: "Skip tests"
         required: false
         type: boolean
         default: false
 
   # Scheduled trigger (every day at midnight UTC)
   schedule:
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
 
 # Global environment variables
 env:
@@ -88,8 +88,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'pnpm'
+          node-version: "18"
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm ci
@@ -127,34 +127,22 @@ jobs:
             coverage: true
 
     # Service containers
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: test
-          POSTGRES_PASSWORD: test
-          POSTGRES_DB: testdb
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-
-      redis:
-        image: redis:7
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 6379:6379
+    # SQLite/Tursoの場合はサービスコンテナ不要、環境変数のみで接続
+    # services:
+    #   redis:
+    #     image: redis:7
+    #     options: >-
+    #       --health-cmd "redis-cli ping"
+    #       --health-interval 10s
+    #       --health-timeout 5s
+    #       --health-retries 5
+    #     ports:
+    #       - 6379:6379
 
     env:
-      DATABASE_URL: postgresql://test:test@localhost:5432/testdb
-      REDIS_URL: redis://localhost:6379
+      TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+      TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+      # REDIS_URL: redis://localhost:6379
 
     steps:
       - name: Checkout code
@@ -164,7 +152,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm ci
@@ -206,8 +194,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'pnpm'
+          node-version: "18"
+          cache: "pnpm"
 
       - name: Get package version
         id: package-version
@@ -261,15 +249,15 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
+          scan-type: "fs"
+          scan-ref: "."
+          format: "sarif"
+          output: "trivy-results.sarif"
 
       - name: Upload Trivy results to GitHub Security
         uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: "trivy-results.sarif"
 
       - name: pnpm audit
         run: pnpm audit --audit-level=moderate

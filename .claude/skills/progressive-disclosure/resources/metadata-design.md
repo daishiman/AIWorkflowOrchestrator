@@ -14,32 +14,36 @@
 **命名規則**: kebab-case
 
 **パターン**:
+
 - `[domain]-[topic]`: database-design, api-integration
 - `[framework]-[feature]`: react-hooks, nextjs-routing
 - `[tool]-[function]`: git-workflow, docker-optimization
 
 **制約**:
+
 - 最大64文字
 - 英数字とハイフンのみ
 - 先頭・末尾はハイフンNG
 
 **判断基準**:
+
 - [ ] ドメインが明確か？
 - [ ] トピックが具体的か？
 - [ ] 検索しやすいか？
 - [ ] 他のスキルと区別できるか？
 
 **例**:
+
 ```yaml
 ✅ 良い例:
-- react-hooks
-- database-schema-design
-- api-error-handling
+  - react-hooks
+  - database-schema-design
+  - api-error-handling
 
 ❌ 避けるべき:
-- react（広すぎる）
-- hooks（ドメイン不明）
-- db-design-patterns-and-optimization（長すぎる）
+  - react（広すぎる）
+  - hooks（ドメイン不明）
+  - db-design-patterns-and-optimization（長すぎる）
 ```
 
 ---
@@ -49,55 +53,63 @@
 **構造**: 4つのセクション
 
 **セクション1: 概要（1-2文）**
+
 ```yaml
 [スキルの核心的機能を簡潔に記述]
 [対象となる技術スタックや操作を明示]
 ```
 
 **例**:
+
 ```yaml
 React Hooks（useState、useEffect、useCallback、useMemo）の実装と最適化を専門とするスキル。
 不要な再レンダリングの防止とパフォーマンス最適化を提供します。
 ```
 
 **セクション2: 専門分野（2-4項目）**
+
 ```yaml
 専門分野:
-- [領域1]: [具体的な内容]
-- [領域2]: [具体的な内容]
+  - [領域1]: [具体的な内容]
+  - [領域2]: [具体的な内容]
 ```
 
 **例**:
+
 ```yaml
 専門分野:
-- 状態管理: useState、useReducer、状態の持ち上げ
-- 副作用管理: useEffect、依存配列、クリーンアップ
-- パフォーマンス最適化: useCallback、useMemo、React.memo
+  - 状態管理: useState、useReducer、状態の持ち上げ
+  - 副作用管理: useEffect、依存配列、クリーンアップ
+  - パフォーマンス最適化: useCallback、useMemo、React.memo
 ```
 
 **セクション3: 使用タイミング（3-6項目）**
+
 ```yaml
 使用タイミング:
-- [具体的なシナリオ1]
-- [具体的なシナリオ2]
-- [具体的なシナリオ3]
+  - [具体的なシナリオ1]
+  - [具体的なシナリオ2]
+  - [具体的なシナリオ3]
 ```
 
 **例**:
+
 ```yaml
 使用タイミング:
-- React Hooksを実装する時
-- useEffectの依存配列を設計する時
-- 不要な再レンダリングを防ぐ時
-- カスタムフックを作成する時
+  - React Hooksを実装する時
+  - useEffectの依存配列を設計する時
+  - 不要な再レンダリングを防ぐ時
+  - カスタムフックを作成する時
 ```
 
 **セクション4: プロアクティブ指示（オプション）**
+
 ```yaml
 Use proactively when [自動発動条件].
 ```
 
 **例**:
+
 ```yaml
 Use proactively when implementing React components with hooks,
 optimizing rendering performance, or creating custom hooks.
@@ -112,6 +124,7 @@ optimizing rendering performance, or creating custom hooks.
 **形式**: セマンティックバージョニング（major.minor.patch）
 
 **バージョニング基準**:
+
 ```
 major: 破壊的変更、構造の大幅変更
 minor: 新しいリソース追加、機能拡張
@@ -119,6 +132,7 @@ patch: バグ修正、タイポ修正
 ```
 
 **例**:
+
 ```yaml
 version: 1.0.0  # 初版
 version: 1.1.0  # リソース追加
@@ -136,34 +150,39 @@ version: 2.0.0  # 構造変更
 **キーワードタイプ**:
 
 **技術名**:
+
 - フレームワーク: React、Next.js、Vue
 - ライブラリ: Drizzle、Zod、SWR
 - 言語: TypeScript、Python
 
 **操作**:
+
 - 動詞: 設計、実装、最適化、テスト
 - 名詞: スキーマ、API、コンポーネント
 
 **概念**:
+
 - パターン: Repository、Strategy、Observer
 - 原則: SOLID、DRY、KISS
 
 **選定基準**:
+
 - [ ] ユーザーが使いそうなワードか？
 - [ ] 一意性があるか（他スキルと区別できる）？
 - [ ] 複数のバリエーションを含むか？
 
 **例**:
+
 ```yaml
 トピック: データベース設計
 
 キーワード候補:
-- 技術名: PostgreSQL, Drizzle ORM, SQL
+- 技術名: SQLite, Turso, Drizzle ORM, SQL
 - 操作: スキーマ設計, マイグレーション, クエリ最適化
 - 概念: 正規化, インデックス, トランザクション
 
 選定:
-"PostgreSQL"（✅ 一意性高）
+"SQLite"（✅ 一意性高）
 "スキーマ設計"（✅ 明確な操作）
 "正規化"（✅ 重要概念）
 ```
@@ -175,22 +194,25 @@ version: 2.0.0  # 構造変更
 **原則**: 抽象的なシナリオではなく、具体的な作業を記述
 
 **抽象的（避けるべき）**:
+
 ```yaml
 使用タイミング:
-- 適切な時に使用
-- 必要に応じて参照
+  - 適切な時に使用
+  - 必要に応じて参照
 ```
 
 **具体的（推奨）**:
+
 ```yaml
 使用タイミング:
-- データベーススキーマを設計する時
-- Drizzleマイグレーションファイルを作成する時
-- インデックスを追加・最適化する時
-- クエリのパフォーマンスを改善する時
+  - データベーススキーマを設計する時
+  - Drizzleマイグレーションファイルを作成する時
+  - インデックスを追加・最適化する時
+  - クエリのパフォーマンスを改善する時
 ```
 
 **具体化のテクニック**:
+
 1. **動詞の使用**: 「〇〇する時」
 2. **対象の明示**: 「何を」〇〇するか
 3. **文脈の提供**: 「どのような状況で」
@@ -202,18 +224,20 @@ version: 2.0.0  # 構造変更
 **目的**: 誤発動を防ぎ、発動の精度を高める
 
 **パターン**:
+
 ```yaml
 使用タイミング:
-- [シナリオ1]
-- [シナリオ2]
-- [シナリオ3]
+  - [シナリオ1]
+  - [シナリオ2]
+  - [シナリオ3]
 
 ただし以下の場合は除く:
-- [除外シナリオ1]
-- [除外シナリオ2]
+  - [除外シナリオ1]
+  - [除外シナリオ2]
 ```
 
 **例**:
+
 ```yaml
 name: unit-testing
 description: |
@@ -249,12 +273,14 @@ SKILL.md本文: 行数 × 6トークン/行 ≈ 500行 × 6 = 3,000トークン
 ### 削減戦略
 
 **戦略1: SKILL.mdの500行厳守**
+
 ```
 500行超過の場合 → リソースに分割
 削減効果: 超過分 × 6トークン/行
 ```
 
 **戦略2: リソースの遅延読み込み**
+
 ```
 全リソース一括ロード: 15,100トークン
 必要なリソースのみ: 3,100トークン（1リソースのみの場合）
@@ -262,6 +288,7 @@ SKILL.md本文: 行数 × 6トークン/行 ≈ 500行 × 6 = 3,000トークン
 ```
 
 **戦略3: 冗長性の排除**
+
 ```
 重複した説明: 削除
 他スキルへの参照: リンクで代替

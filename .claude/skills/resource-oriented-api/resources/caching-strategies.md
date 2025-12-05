@@ -59,23 +59,23 @@
 
 ### リソースタイプ別TTL
 
-| リソースタイプ | 推奨TTL | 理由 |
-|---------------|---------|------|
-| 静的ファイル（JS/CSS） | 1時間〜1日 | 変更頻度低 |
-| 設定ファイル | 5分〜1時間 | 再起動で更新 |
-| ユーザーデータ | 1分〜5分 | 頻繁に更新可能 |
-| リアルタイムデータ | 10秒〜1分 | 即時性重要 |
-| APIレスポンス | 1分〜5分 | Rate Limit考慮 |
-| セッションデータ | 30分〜24時間 | セキュリティ考慮 |
+| リソースタイプ         | 推奨TTL      | 理由             |
+| ---------------------- | ------------ | ---------------- |
+| 静的ファイル（JS/CSS） | 1時間〜1日   | 変更頻度低       |
+| 設定ファイル           | 5分〜1時間   | 再起動で更新     |
+| ユーザーデータ         | 1分〜5分     | 頻繁に更新可能   |
+| リアルタイムデータ     | 10秒〜1分    | 即時性重要       |
+| APIレスポンス          | 1分〜5分     | Rate Limit考慮   |
+| セッションデータ       | 30分〜24時間 | セキュリティ考慮 |
 
 ### 動的TTL計算
 
 ```typescript
 interface CachePolicy {
-  baseTtl: number;      // 基本TTL（ミリ秒）
-  maxTtl: number;       // 最大TTL
-  minTtl: number;       // 最小TTL
-  volatility: number;   // 変動係数（0-1）
+  baseTtl: number; // 基本TTL（ミリ秒）
+  maxTtl: number; // 最大TTL
+  minTtl: number; // 最小TTL
+  volatility: number; // 変動係数（0-1）
 }
 
 function calculateTtl(policy: CachePolicy, accessCount: number): number {
@@ -83,7 +83,8 @@ function calculateTtl(policy: CachePolicy, accessCount: number): number {
   const frequencyFactor = Math.min(accessCount / 100, 1);
 
   // 高アクセス = 長いTTL（キャッシュヒット率向上）
-  const dynamicTtl = policy.baseTtl * (1 + frequencyFactor * (1 - policy.volatility));
+  const dynamicTtl =
+    policy.baseTtl * (1 + frequencyFactor * (1 - policy.volatility));
 
   return Math.max(policy.minTtl, Math.min(policy.maxTtl, dynamicTtl));
 }
@@ -100,7 +101,7 @@ class TtlCache {
   set(key: string, value: any, ttlMs: number): void {
     this.cache.set(key, {
       value,
-      expiresAt: Date.now() + ttlMs
+      expiresAt: Date.now() + ttlMs,
     });
   }
 
@@ -132,12 +133,12 @@ class EventDrivenCache {
 
   private setupListeners(): void {
     // リソース更新イベントでキャッシュ無効化
-    this.eventEmitter.on('resource:updated', (uri: string) => {
+    this.eventEmitter.on("resource:updated", (uri: string) => {
       this.invalidate(uri);
     });
 
     // リソース削除イベントでキャッシュ無効化
-    this.eventEmitter.on('resource:deleted', (uri: string) => {
+    this.eventEmitter.on("resource:deleted", (uri: string) => {
       this.invalidate(uri);
     });
   }
@@ -187,11 +188,11 @@ class TaggedCache {
 }
 
 // 使用例
-cache.set('user:123', userData, ['users', 'user:123']);
-cache.set('user:456', userData, ['users', 'user:456']);
+cache.set("user:123", userData, ["users", "user:123"]);
+cache.set("user:456", userData, ["users", "user:456"]);
 
 // 全ユーザーキャッシュを無効化
-cache.invalidateByTag('users');
+cache.invalidateByTag("users");
 ```
 
 ## 4. キャッシュ戦略パターン
@@ -327,15 +328,15 @@ class CacheWarmer {
       uris.map(async (uri) => {
         const data = await fetchFromOrigin(uri);
         cache.set(uri, data, TTL);
-      })
+      }),
     );
   }
 
   async warmCriticalResources(): Promise<void> {
     const criticalUris = [
-      'file:///config/app.json',
-      'db://postgres/users',
-      'memory://session/defaults'
+      "file:///config/app.json",
+      "db://sqlite/users",
+      "memory://session/defaults",
     ];
     await this.warmCache(criticalUris);
   }
@@ -356,7 +357,7 @@ class DistributedCache {
   }
 
   private subscribeToInvalidations(): void {
-    this.pubsub.subscribe('cache:invalidate', (message) => {
+    this.pubsub.subscribe("cache:invalidate", (message) => {
       const { uri, timestamp } = message;
       this.localCache.delete(uri);
     });
@@ -367,9 +368,9 @@ class DistributedCache {
     this.localCache.delete(uri);
 
     // 他のノードに通知
-    await this.pubsub.publish('cache:invalidate', {
+    await this.pubsub.publish("cache:invalidate", {
       uri,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   }
 }
@@ -394,7 +395,7 @@ class MonitoredCache {
     misses: 0,
     evictions: 0,
     size: 0,
-    memoryUsage: 0
+    memoryUsage: 0,
   };
 
   get(key: string): any {

@@ -65,7 +65,7 @@ app.use(
     frameguard: { action: "deny" },
     noSniff: true,
     xssFilter: true,
-  })
+  }),
 );
 ```
 
@@ -192,7 +192,7 @@ app.post(
       blockedUri: report["blocked-uri"],
     });
     res.status(204).end();
-  }
+  },
 );
 ```
 
@@ -219,7 +219,7 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
     maxAge: 86400, // プリフライトキャッシュ: 24時間
-  })
+  }),
 );
 ```
 
@@ -279,7 +279,7 @@ auth.json
 
 ```bash
 # ✅ 明確な命名
-DATABASE_URL=postgresql://...
+TURSO_DATABASE_URL=libsql://...
 JWT_SECRET=...
 API_KEY_OPENAI=...
 ENCRYPTION_KEY=...
@@ -303,13 +303,14 @@ PASSWORD=...
 
 ```javascript
 // ビルド時チェック
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL is not set");
+if (!process.env.TURSO_DATABASE_URL) {
+  throw new Error("TURSO_DATABASE_URL is not set");
 }
 
 // 必須環境変数リスト
 const requiredEnvVars = [
-  "DATABASE_URL",
+  "TURSO_DATABASE_URL",
+  "TURSO_AUTH_TOKEN",
   "JWT_SECRET",
   "SESSION_SECRET",
   "OPENAI_API_KEY",

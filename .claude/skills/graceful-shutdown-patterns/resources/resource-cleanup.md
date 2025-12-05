@@ -2,69 +2,64 @@
 
 ## クリーンアップ対象一覧
 
-| カテゴリ | リソース | クリーンアップ方法 |
-|---------|---------|-------------------|
-| ネットワーク | HTTPサーバー | server.close() |
-| ネットワーク | WebSocket | ws.close() |
-| ネットワーク | TCP接続 | socket.destroy() |
-| データ | DBコネクション | pool.end() |
-| データ | Redisクライアント | client.quit() |
-| データ | ファイルハンドル | fs.close() |
-| 非同期 | タイマー | clearTimeout/Interval |
-| 非同期 | イベントリスナー | removeAllListeners |
-| プロセス | 子プロセス | child.kill() |
+| カテゴリ     | リソース          | クリーンアップ方法    |
+| ------------ | ----------------- | --------------------- |
+| ネットワーク | HTTPサーバー      | server.close()        |
+| ネットワーク | WebSocket         | ws.close()            |
+| ネットワーク | TCP接続           | socket.destroy()      |
+| データ       | DBコネクション    | pool.end()            |
+| データ       | Redisクライアント | client.quit()         |
+| データ       | ファイルハンドル  | fs.close()            |
+| 非同期       | タイマー          | clearTimeout/Interval |
+| 非同期       | イベントリスナー  | removeAllListeners    |
+| プロセス     | 子プロセス        | child.kill()          |
 
 ## データベース接続のクリーンアップ
 
-### PostgreSQL (pg)
+### SQLite (better-sqlite3)
 
 ```javascript
-const { Pool } = require('pg');
-const pool = new Pool(config);
+const Database = require("better-sqlite3");
+const db = new Database("database.db");
 
 async function cleanupDatabase() {
   // 進行中のクエリを待機
-  await pool.end();
-  console.log('PostgreSQL pool closed');
+  db.close();
+  console.log("SQLite database closed");
 }
 ```
 
-### MySQL (mysql2)
+### Turso (libSQL)
 
 ```javascript
-const mysql = require('mysql2/promise');
-const pool = mysql.createPool(config);
+import { createClient } from "@libsql/client";
 
-async function cleanupDatabase() {
-  await pool.end();
-  console.log('MySQL pool closed');
-}
-```
-
-### MongoDB
-
-```javascript
-const { MongoClient } = require('mongodb');
-const client = new MongoClient(uri);
+const client = createClient({
+  url: process.env.TURSO_URL || "libsql://your-db.turso.io",
+  authToken: process.env.TURSO_AUTH_TOKEN,
+});
 
 async function cleanupDatabase() {
   await client.close();
-  console.log('MongoDB connection closed');
+  console.log("Turso connection closed");
 }
 ```
 
-### Drizzle ORM
+### Drizzle ORM with Turso
 
 ```javascript
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
+import { drizzle } from "drizzle-orm/libsql";
+import { createClient } from "@libsql/client";
 
-const pool = new Pool(config);
-const db = drizzle(pool);
+const client = createClient({
+  url: process.env.TURSO_URL || "libsql://your-db.turso.io",
+  authToken: process.env.TURSO_AUTH_TOKEN,
+});
+const db = drizzle(client);
 
 async function cleanupDatabase() {
-  await pool.end();
-  console.log('Drizzle/PostgreSQL pool closed');
+  await client.close();
+  console.log("Drizzle/Turso connection closed");
 }
 ```
 
@@ -73,13 +68,13 @@ async function cleanupDatabase() {
 ### Redis (ioredis)
 
 ```javascript
-const Redis = require('ioredis');
+const Redis = require("ioredis");
 const redis = new Redis(config);
 
 async function cleanupRedis() {
   // 保留中のコマンドを完了
   await redis.quit();
-  console.log('Redis connection closed gracefully');
+  console.log("Redis connection closed gracefully");
 }
 
 // 強制切断が必要な場合
@@ -95,7 +90,7 @@ const cluster = new Redis.Cluster(nodes, options);
 
 async function cleanupRedisCluster() {
   await cluster.quit();
-  console.log('Redis Cluster connections closed');
+  console.log("Redis Cluster connections closed");
 }
 ```
 
@@ -104,7 +99,7 @@ async function cleanupRedisCluster() {
 ### RabbitMQ (amqplib)
 
 ```javascript
-const amqp = require('amqplib');
+const amqp = require("amqplib");
 
 let connection;
 let channel;
@@ -113,13 +108,13 @@ async function cleanupRabbitMQ() {
   // チャンネルを先に閉じる
   if (channel) {
     await channel.close();
-    console.log('RabbitMQ channel closed');
+    console.log("RabbitMQ channel closed");
   }
 
   // 接続を閉じる
   if (connection) {
     await connection.close();
-    console.log('RabbitMQ connection closed');
+    console.log("RabbitMQ connection closed");
   }
 }
 ```
@@ -127,13 +122,13 @@ async function cleanupRabbitMQ() {
 ### Bull Queue
 
 ```javascript
-const Queue = require('bull');
-const queue = new Queue('my-queue');
+const Queue = require("bull");
+const queue = new Queue("my-queue");
 
 async function cleanupBullQueue() {
   // 処理中のジョブを待機
   await queue.close();
-  console.log('Bull queue closed');
+  console.log("Bull queue closed");
 }
 ```
 
@@ -142,7 +137,7 @@ async function cleanupBullQueue() {
 ### Express
 
 ```javascript
-const express = require('express');
+const express = require("express");
 const app = express();
 let server;
 
@@ -167,11 +162,11 @@ async function cleanupServer() {
     // 新規接続を停止
     server.close((err) => {
       if (err) {
-        console.error('Server close error:', err);
+        console.error("Server close error:", err);
         reject(err);
         return;
       }
-      console.log('HTTP server closed');
+      console.log("HTTP server closed");
       resolve();
     });
 
@@ -184,13 +179,13 @@ async function cleanupServer() {
 ### HTTP/2
 
 ```javascript
-const http2 = require('http2');
+const http2 = require("http2");
 const server = http2.createSecureServer(options);
 
 async function cleanupHttp2Server() {
   return new Promise((resolve) => {
     server.close(() => {
-      console.log('HTTP/2 server closed');
+      console.log("HTTP/2 server closed");
       resolve();
     });
   });
@@ -202,21 +197,21 @@ async function cleanupHttp2Server() {
 ### ws
 
 ```javascript
-const WebSocket = require('ws');
+const WebSocket = require("ws");
 const wss = new WebSocket.Server({ server });
 
 async function cleanupWebSocket() {
   // すべてのクライアントに切断を通知
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
-      client.close(1001, 'Server shutting down');
+      client.close(1001, "Server shutting down");
     }
   });
 
   // サーバーを閉じる
   return new Promise((resolve) => {
     wss.close(() => {
-      console.log('WebSocket server closed');
+      console.log("WebSocket server closed");
       resolve();
     });
   });
@@ -226,7 +221,7 @@ async function cleanupWebSocket() {
 ### Socket.IO
 
 ```javascript
-const { Server } = require('socket.io');
+const { Server } = require("socket.io");
 const io = new Server(httpServer);
 
 async function cleanupSocketIO() {
@@ -235,7 +230,7 @@ async function cleanupSocketIO() {
 
   // サーバーを閉じる
   await io.close();
-  console.log('Socket.IO server closed');
+  console.log("Socket.IO server closed");
 }
 ```
 
@@ -276,11 +271,11 @@ class TimerRegistry {
   }
 
   clearAll() {
-    this.timeouts.forEach(id => clearTimeout(id));
-    this.intervals.forEach(id => clearInterval(id));
+    this.timeouts.forEach((id) => clearTimeout(id));
+    this.intervals.forEach((id) => clearInterval(id));
     this.timeouts.clear();
     this.intervals.clear();
-    console.log('All timers cleared');
+    console.log("All timers cleared");
   }
 }
 
@@ -290,7 +285,7 @@ const timers = new TimerRegistry();
 ## ファイルハンドルのクリーンアップ
 
 ```javascript
-const fs = require('fs').promises;
+const fs = require("fs").promises;
 const openFiles = new Set();
 
 async function openFile(path, flags) {
@@ -304,28 +299,29 @@ async function cleanupFiles() {
 
   for (const handle of openFiles) {
     promises.push(
-      handle.close()
+      handle
+        .close()
         .then(() => openFiles.delete(handle))
-        .catch(err => console.error('File close error:', err))
+        .catch((err) => console.error("File close error:", err)),
     );
   }
 
   await Promise.all(promises);
-  console.log('All file handles closed');
+  console.log("All file handles closed");
 }
 ```
 
 ## 子プロセスのクリーンアップ
 
 ```javascript
-const { spawn } = require('child_process');
+const { spawn } = require("child_process");
 const children = new Set();
 
 function spawnChild(command, args) {
   const child = spawn(command, args);
   children.add(child);
 
-  child.on('exit', () => {
+  child.on("exit", () => {
     children.delete(child);
   });
 
@@ -336,21 +332,23 @@ async function cleanupChildren() {
   const promises = [];
 
   for (const child of children) {
-    promises.push(new Promise((resolve) => {
-      child.on('exit', resolve);
-      child.kill('SIGTERM');
+    promises.push(
+      new Promise((resolve) => {
+        child.on("exit", resolve);
+        child.kill("SIGTERM");
 
-      // タイムアウト後に強制終了
-      setTimeout(() => {
-        if (!child.killed) {
-          child.kill('SIGKILL');
-        }
-      }, 5000);
-    }));
+        // タイムアウト後に強制終了
+        setTimeout(() => {
+          if (!child.killed) {
+            child.kill("SIGKILL");
+          }
+        }, 5000);
+      }),
+    );
   }
 
   await Promise.all(promises);
-  console.log('All child processes terminated');
+  console.log("All child processes terminated");
 }
 ```
 

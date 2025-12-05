@@ -77,8 +77,7 @@
       "code": "DB_CONN_FAILED"
     },
     "context": {
-      "database_host": "postgres.example.com",
-      "database_port": 5432,
+      "database_url": "libsql://example.turso.io",
       "max_retries": 5,
       "last_error": "ECONNREFUSED"
     }

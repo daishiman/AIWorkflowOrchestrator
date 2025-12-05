@@ -9,7 +9,7 @@
 #   docker compose logs -f   # View logs
 # =============================================
 
-version: '3.8'
+version: "3.8"
 
 services:
   # =============================================
@@ -19,12 +19,15 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: runner  # Use 'builder' for development
+      target: runner # Use 'builder' for development
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=development
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/myapp
+      # Local SQLite file
+      - TURSO_DATABASE_URL=file:/app/data/local.db
+      # For Turso cloud: libsql://your-db.turso.io
+      - TURSO_AUTH_TOKEN=${TURSO_AUTH_TOKEN}
       - REDIS_URL=redis://redis:6379
       # Add more environment variables as needed
       # - API_KEY=${API_KEY}
@@ -35,9 +38,9 @@ services:
       - .:/app
       # Preserve node_modules from container
       - /app/node_modules
+      # SQLite database files
+      - sqlite_data:/app/data
     depends_on:
-      db:
-        condition: service_healthy
       redis:
         condition: service_started
     healthcheck:
@@ -46,28 +49,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-    restart: unless-stopped
-
-  # =============================================
-  # PostgreSQL Database
-  # =============================================
-  db:
-    image: postgres:16-alpine
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: myapp
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      # Optional: Init scripts
-      # - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
     restart: unless-stopped
 
   # =============================================
@@ -88,17 +69,14 @@ services:
     restart: unless-stopped
 
   # =============================================
-  # Optional: pgAdmin (Database GUI)
+  # Optional: Turso CLI (For cloud management)
   # =============================================
-  # pgadmin:
-  #   image: dpage/pgadmin4:latest
-  #   ports:
-  #     - "8080:80"
+  # turso-cli:
+  #   image: ghcr.io/tursodatabase/turso-cli:latest
   #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: admin@example.com
-  #     PGADMIN_DEFAULT_PASSWORD: admin
-  #   depends_on:
-  #     - db
+  #     - TURSO_API_TOKEN=${TURSO_API_TOKEN}
+  #   volumes:
+  #     - sqlite_data:/data
   #   restart: unless-stopped
 
   # =============================================
@@ -128,7 +106,7 @@ services:
 # Volumes
 # =============================================
 volumes:
-  postgres_data:
+  sqlite_data:
     driver: local
   redis_data:
     driver: local

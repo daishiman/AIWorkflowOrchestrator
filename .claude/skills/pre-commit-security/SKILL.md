@@ -178,8 +178,8 @@ https://discord\.com/api/webhooks/\d+/[a-zA-Z0-9_-]+
 ### 接続文字列パターン
 
 ```regex
-# PostgreSQL
-postgresql://[^:]+:[^@]+@[^/]+
+# SQLite/Turso
+libsql://[^:]+:[^@]+@[^/]+
 
 # MySQL
 mysql://[^:]+:[^@]+@[^/]+

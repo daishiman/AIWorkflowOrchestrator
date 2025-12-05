@@ -138,18 +138,19 @@ on:
   push:
     branches:
       - main
-      - 'releases/**'
-      - '!experimental'
+      - "releases/**"
+      - "!experimental"
     tags:
       - v*.*.*
     paths:
-      - 'src/**'
-      - '!src/docs/**'
+      - "src/**"
+      - "!src/docs/**"
     paths-ignore:
-      - '**.md'
+      - "**.md"
 ```
 
 **フィルター**:
+
 - `branches`: ブランチフィルター
 - `branches-ignore`: 除外ブランチフィルター
 - `tags`: タグフィルター
@@ -172,10 +173,11 @@ on:
     branches:
       - main
     paths:
-      - 'src/**'
+      - "src/**"
 ```
 
 **types**:
+
 - `assigned`, `unassigned`
 - `labeled`, `unlabeled`
 - `opened`, `edited`, `closed`, `reopened`
@@ -194,25 +196,26 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Deployment environment'
+        description: "Deployment environment"
         required: true
-        default: 'staging'
+        default: "staging"
         type: choice
         options:
           - staging
           - production
       version:
-        description: 'Version to deploy'
+        description: "Version to deploy"
         required: false
         type: string
       enable-debug:
-        description: 'Enable debug mode'
+        description: "Enable debug mode"
         required: false
         type: boolean
         default: false
 ```
 
 **input types**:
+
 - `string`: 文字列入力
 - `choice`: 選択肢
 - `boolean`: チェックボックス
@@ -226,14 +229,15 @@ cronスケジュールでトリガーします。
 on:
   schedule:
     # 毎日 UTC 0:00
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
     # 毎週月曜日 9:00
-    - cron: '0 9 * * MON'
+    - cron: "0 9 * * MON"
     # 毎月1日 0:00
-    - cron: '0 0 1 * *'
+    - cron: "0 0 1 * *"
 ```
 
 **cron構文**:
+
 ```
 ┌───────────── 分 (0 - 59)
 │ ┌───────────── 時 (0 - 23)
@@ -357,6 +361,7 @@ jobs:
 ```
 
 **GitHub-hostedランナー**:
+
 - `ubuntu-latest` (ubuntu-22.04)
 - `ubuntu-22.04`
 - `ubuntu-20.04`
@@ -430,6 +435,7 @@ jobs:
 ```
 
 **環境設定**:
+
 - 承認フロー
 - シークレット
 - 保護ルール
@@ -488,6 +494,7 @@ jobs:
 ```
 
 **strategy設定**:
+
 - `matrix`: マトリックス定義
 - `fail-fast`: 1つ失敗で全停止 (デフォルト: true)
 - `max-parallel`: 最大並列数
@@ -543,19 +550,12 @@ jobs:
 ```yaml
 jobs:
   test:
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+    # SQLite/Tursoの場合はサービスコンテナ不要、環境変数のみで接続
+    # env:
+    #   TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+    #   TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
 
+    services:
       redis:
         image: redis:7
         ports:
@@ -668,6 +668,7 @@ steps:
 ```
 
 **利用可能なシェル**:
+
 - `bash`
 - `pwsh` (PowerShell Core)
 - `python`
@@ -851,6 +852,7 @@ steps:
 ```
 
 **主要プロパティ**:
+
 - `github.repository`: リポジトリ名 (owner/repo)
 - `github.ref`: ブランチまたはタグ参照
 - `github.sha`: コミットSHA
@@ -903,6 +905,7 @@ steps:
 ```
 
 **runner.os値**:
+
 - `Linux`
 - `Windows`
 - `macOS`
@@ -974,15 +977,15 @@ on:
       - develop
 
       # ワイルドカード
-      - 'releases/**'
-      - 'feature/*'
+      - "releases/**"
+      - "feature/*"
 
       # 除外
-      - '!experimental'
+      - "!experimental"
 
       # 複数パターン
-      - 'releases/**'
-      - '!releases/old/**'
+      - "releases/**"
+      - "!releases/old/**"
 ```
 
 ### パスフィルター
@@ -992,20 +995,20 @@ on:
   push:
     paths:
       # 特定ディレクトリ
-      - 'src/**'
-      - 'tests/**'
+      - "src/**"
+      - "tests/**"
 
       # 特定ファイル
-      - 'package.json'
-      - 'package-lock.json'
+      - "package.json"
+      - "package-lock.json"
 
       # パターン
-      - '**.js'
-      - '**.ts'
+      - "**.js"
+      - "**.ts"
 
       # 除外
-      - '!src/docs/**'
-      - '!**.md'
+      - "!src/docs/**"
+      - "!**.md"
 ```
 
 ### タグフィルター
@@ -1015,12 +1018,12 @@ on:
   push:
     tags:
       # セマンティックバージョン
-      - 'v*.*.*'
-      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - "v*.*.*"
+      - "v[0-9]+.[0-9]+.[0-9]+"
 
       # プレリリース
-      - 'v*.*.*-alpha.*'
-      - 'v*.*.*-beta.*'
+      - "v*.*.*-alpha.*"
+      - "v*.*.*-beta.*"
 ```
 
 ### ワイルドカードパターン
@@ -1110,6 +1113,7 @@ jobs:
 このリファレンスは、GitHub Actions ワークフロー構文の完全な仕様を提供します。
 
 **重要なポイント**:
+
 1. YAML構文の正確性 (インデント、引用符)
 2. 式評価の理解 (コンテキスト変数、関数)
 3. フィルターパターンの活用

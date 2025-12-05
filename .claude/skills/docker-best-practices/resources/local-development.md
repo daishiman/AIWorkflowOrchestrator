@@ -11,7 +11,7 @@ docker-composeを使用したローカル開発環境の構築方法を説明し
 
 ```yaml
 # docker-compose.yml
-version: '3.8'
+version: "3.8"
 
 services:
   app:
@@ -56,7 +56,7 @@ docker compose exec app sh
 
 ```yaml
 # docker-compose.yml
-version: '3.8'
+version: "3.8"
 
 services:
   app:
@@ -67,10 +67,10 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=development
-      - WATCHPACK_POLLING=true  # ファイル監視（Docker環境用）
+      - WATCHPACK_POLLING=true # ファイル監視（Docker環境用）
     volumes:
       - .:/app
-      - /app/node_modules  # node_modulesはコンテナ内のものを使用
+      - /app/node_modules # node_modulesはコンテナ内のものを使用
     command: pnpm dev
 ```
 
@@ -98,7 +98,7 @@ CMD ["pnpm", "dev"]
 
 ```yaml
 # docker-compose.yml
-version: '3.8'
+version: "3.8"
 
 services:
   app:
@@ -109,33 +109,18 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=development
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/myapp
+      - TURSO_DATABASE_URL=file:/app/data/local.db
+      # For Turso cloud: libsql://your-db.turso.io
+      - TURSO_AUTH_TOKEN=${TURSO_AUTH_TOKEN}
       - REDIS_URL=redis://redis:6379
     volumes:
       - .:/app
       - /app/node_modules
+      - sqlite_data:/app/data # SQLite database files
     depends_on:
-      db:
-        condition: service_healthy
       redis:
         condition: service_started
     command: pnpm dev
-
-  db:
-    image: postgres:16-alpine
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: myapp
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
 
   redis:
     image: redis:7-alpine
@@ -145,7 +130,7 @@ services:
       - redis_data:/data
 
 volumes:
-  postgres_data:
+  sqlite_data: # For local SQLite files
   redis_data:
 ```
 
@@ -153,7 +138,7 @@ volumes:
 
 ```yaml
 # docker-compose.yml (共通)
-version: '3.8'
+version: "3.8"
 
 services:
   app:
@@ -166,7 +151,7 @@ services:
 
 ```yaml
 # docker-compose.dev.yml (開発用オーバーライド)
-version: '3.8'
+version: "3.8"
 
 services:
   app:
@@ -182,7 +167,7 @@ services:
 
 ```yaml
 # docker-compose.prod.yml (本番用オーバーライド)
-version: '3.8'
+version: "3.8"
 
 services:
   app:
@@ -193,6 +178,7 @@ services:
 ```
 
 **使用方法**:
+
 ```bash
 # 開発
 docker compose -f docker-compose.yml -f docker-compose.dev.yml up
@@ -215,7 +201,11 @@ services:
 
 ```bash
 # .env.local
-DATABASE_URL=postgresql://postgres:postgres@db:5432/myapp
+# Local SQLite file
+TURSO_DATABASE_URL=file:/app/data/local.db
+# Or Turso cloud connection
+# TURSO_DATABASE_URL=libsql://your-db.turso.io
+TURSO_AUTH_TOKEN=your-auth-token
 REDIS_URL=redis://redis:6379
 API_KEY=dev-api-key
 ```
@@ -244,24 +234,25 @@ volumes:
 
 ```yaml
 services:
-  db:
+  app:
     volumes:
-      # 名前付きボリューム（永続化）
-      - postgres_data:/var/lib/postgresql/data
+      # 名前付きボリューム（SQLite DBファイル永続化）
+      - sqlite_data:/app/data
 
 volumes:
-  postgres_data:
+  sqlite_data:
 ```
 
 ### 初期化スクリプト
 
 ```yaml
 services:
-  db:
+  app:
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      # 初期化SQL
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - sqlite_data:/app/data
+      # 初期化SQL（Drizzle/Prismaマイグレーション推奨）
+      - ./migrations:/app/migrations:ro
+    command: sh -c "pnpm db:migrate && pnpm dev"
 ```
 
 ## ヘルスチェック
@@ -275,13 +266,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-
-  db:
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
 ```
 
 ## ネットワーク
@@ -295,31 +279,44 @@ services:
       - frontend
       - backend
 
-  db:
+  redis:
     networks:
       - backend
 
 networks:
   frontend:
   backend:
-    internal: true  # 外部からアクセス不可
+    internal: true # 外部からアクセス不可
 ```
 
 ## 便利なツール
 
-### pgAdmin（PostgreSQL GUI）
+### SQLite Browser（Database GUI - ホストで実行）
+
+```bash
+# macOS
+brew install --cask db-browser-for-sqlite
+
+# Linux
+sudo apt install sqlitebrowser
+
+# Windows
+# https://sqlitebrowser.org/dl/ からダウンロード
+
+# Usage: Open ./data/local.db from mounted volume
+```
+
+### Turso CLI（Turso cloud管理）
 
 ```yaml
 services:
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    ports:
-      - "8080:80"
+  turso-cli:
+    image: ghcr.io/tursodatabase/turso-cli:latest
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    depends_on:
-      - db
+      - TURSO_API_TOKEN=${TURSO_API_TOKEN}
+    volumes:
+      - ./data:/data
+    command: turso db shell your-db-name
 ```
 
 ### Redis Commander
@@ -343,8 +340,8 @@ services:
   mailhog:
     image: mailhog/mailhog:latest
     ports:
-      - "1025:1025"  # SMTP
-      - "8025:8025"  # Web UI
+      - "1025:1025" # SMTP
+      - "8025:8025" # Web UI
 ```
 
 ## Makefile 統合
@@ -374,9 +371,9 @@ logs:
 shell:
 	docker compose exec app sh
 
-# DBコンテナに入る
+# SQLiteシェル（Turso CLI）
 db-shell:
-	docker compose exec db psql -U postgres -d myapp
+	docker compose exec app sh -c "npx turso db shell file:data/local.db"
 
 # 再ビルド
 rebuild:
@@ -403,10 +400,11 @@ seed:
 **症状**: ホットリロードが動作しない
 
 **対応**:
+
 ```yaml
 environment:
-  - WATCHPACK_POLLING=true  # webpack
-  - CHOKIDAR_USEPOLLING=true  # chokidar
+  - WATCHPACK_POLLING=true # webpack
+  - CHOKIDAR_USEPOLLING=true # chokidar
 ```
 
 ### node_modules の問題
@@ -414,6 +412,7 @@ environment:
 **症状**: 依存関係エラー
 
 **対応**:
+
 ```bash
 # ボリュームを削除して再ビルド
 docker compose down -v
@@ -425,6 +424,7 @@ docker compose up --build
 **症状**: ポートが使用中エラー
 
 **対応**:
+
 ```bash
 # 使用中のポートを確認
 lsof -i :3000
@@ -439,6 +439,7 @@ ports:
 **症状**: ファイル書き込みエラー
 
 **対応**:
+
 ```yaml
 # ユーザーIDを合わせる
 user: "${UID:-1000}:${GID:-1000}"

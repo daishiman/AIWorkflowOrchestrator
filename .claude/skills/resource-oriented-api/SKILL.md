@@ -57,7 +57,7 @@ scheme://authority/path?query#fragment
 
 例:
 file:///project/src/main.ts
-db://postgres/users?id=123
+db://sqlite/users?id=123
 git://repo/main/README.md
 memory://session/context
 ```
@@ -67,7 +67,7 @@ memory://session/context
 | スキーム    | 用途                 | 例                            |
 | ----------- | -------------------- | ----------------------------- |
 | `file://`   | ローカルファイル     | `file:///home/user/doc.md`    |
-| `db://`     | データベースレコード | `db://mysql/users/123`        |
+| `db://`     | データベースレコード | `db://sqlite/users/123`       |
 | `git://`    | Git リポジトリ       | `git://repo/branch/path`      |
 | `memory://` | セッションメモリ     | `memory://session/vars`       |
 | `http://`   | 外部 API             | `http://api.example.com/data` |
@@ -132,7 +132,7 @@ file_resource:
 
 # データベースリソース
 database_resource:
-  uri: "db://postgres/users"
+  uri: "db://sqlite/users"
   name: "User Records"
   mimeType: "application/json"
   capabilities:
@@ -232,7 +232,7 @@ onResourceUpdate((uri) => {
 });
 
 // パターンベース無効化
-cache.invalidatePattern("db://postgres/users/*");
+cache.invalidatePattern("db://sqlite/users/*");
 ```
 
 ## 5. エラーハンドリング

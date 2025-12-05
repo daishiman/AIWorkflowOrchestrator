@@ -22,10 +22,11 @@ PORT=3000
 # Database Configuration
 # ═══════════════════════════════════════════════════
 
-# データベース接続（開発環境用）
-# 本番環境: Railway Secretsから自動注入（Neon Plugin）
-# ローカル開発: docker-compose upで起動するローカルPostgreSQLを使用
-DATABASE_URL=postgresql://user:password@localhost:5432/mydb_dev
+# Tursoデータベース接続（開発環境用）
+# 本番環境: Railway Secretsから自動注入（Turso Plugin）
+# ローカル開発: Turso CLI（turso dev）またはローカルlibSQLサーバーを使用
+TURSO_DATABASE_URL=libsql://mydb.turso.io
+TURSO_AUTH_TOKEN=eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.example-token
 
 # ═══════════════════════════════════════════════════
 # External API Keys
@@ -110,6 +111,7 @@ ENABLE_DISCORD_NOTIFICATIONS=false
 ### 1. 自己文書化
 
 各環境変数には以下を含める:
+
 - **用途説明**: 何に使用するか
 - **取得方法**: どこで値を取得するか
 - **環境別の扱い**: 開発環境と本番環境の違い
@@ -118,6 +120,7 @@ ENABLE_DISCORD_NOTIFICATIONS=false
 ### 2. セキュリティ警告
 
 機密情報には必ず警告を含める:
+
 ```bash
 # 🚨 WARNING: 本番環境では必ず異なる値を使用してください
 # 🚨 WARNING: この値は.gitignoreで除外されています（Gitコミット禁止）
@@ -126,6 +129,7 @@ ENABLE_DISCORD_NOTIFICATIONS=false
 ### 3. 実例値の提供
 
 開発者がすぐに使える実例値を提供:
+
 - 本物のAPIキーは含めない
 - "example-"プレフィックスで明示
 - 形式が明確にわかる値
@@ -133,6 +137,7 @@ ENABLE_DISCORD_NOTIFICATIONS=false
 ### 4. グループ化
 
 関連する環境変数をセクションで整理:
+
 - Application Configuration
 - Database Configuration
 - External API Keys
@@ -175,6 +180,7 @@ ENABLE_DISCORD_NOTIFICATIONS=false
 ## 検証チェックリスト
 
 ### 作成時
+
 - [ ] すべての必須環境変数が含まれているか？
 - [ ] 機密情報（本物のAPIキー等）が一切含まれていないか？
 - [ ] 各変数に用途説明が記載されているか？
@@ -183,9 +189,10 @@ ENABLE_DISCORD_NOTIFICATIONS=false
 - [ ] セットアップガイドが含まれているか？
 
 ### 配置時
+
 - [ ] プロジェクトルート（`/`）に配置されているか？
 - [ ] Gitにコミットされているか？（.env.exampleはコミット可）
-- [ ] .gitignoreに.env*（.env.example除く）が含まれているか？
+- [ ] .gitignoreに.env\*（.env.example除く）が含まれているか？
 - [ ] READMEで.env.exampleの存在が言及されているか？
 
 ## トラブルシューティング
@@ -194,6 +201,7 @@ ENABLE_DISCORD_NOTIFICATIONS=false
 
 **原因**: .env.exampleの説明不足
 **解決策**:
+
 - 取得方法URLを追加
 - セットアップガイドを充実
 - スクリーンショット追加（docs/ディレクトリ）
@@ -202,6 +210,7 @@ ENABLE_DISCORD_NOTIFICATIONS=false
 
 **原因**: テンプレート作成時のミス
 **解決策**:
+
 - 即座に.env.exampleから削除
 - Gitコミット履歴から削除（`git filter-branch`）
 - 本番Secretを即座にRotation
@@ -210,6 +219,7 @@ ENABLE_DISCORD_NOTIFICATIONS=false
 
 **原因**: .env.exampleとRailway/GitHub Secrets名の不一致
 **解決策**:
+
 - Secret名の完全一致を確認
 - 大文字小文字を統一
 - Railway Variables vs Secretsの使い分けを明確化

@@ -25,7 +25,7 @@
 
 ```typescript
 // tests/helpers/api-seeder.ts
-import { request, APIRequestContext } from '@playwright/test';
+import { request, APIRequestContext } from "@playwright/test";
 
 export class ApiSeeder {
   private apiContext: APIRequestContext;
@@ -40,33 +40,29 @@ export class ApiSeeder {
     this.apiContext = await request.newContext({
       baseURL: this.baseURL,
       extraHTTPHeaders: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
   }
 
   async authenticate(email: string, password: string) {
-    const response = await this.apiContext.post('/api/auth/login', {
+    const response = await this.apiContext.post("/api/auth/login", {
       data: { email, password },
     });
     const data = await response.json();
     this.authToken = data.token;
   }
 
-  async createUser(userData: {
-    email: string;
-    name: string;
-    role?: string;
-  }) {
+  async createUser(userData: { email: string; name: string; role?: string }) {
     const uniqueEmail = `${Date.now()}_${userData.email}`;
-    const response = await this.apiContext.post('/api/users', {
+    const response = await this.apiContext.post("/api/users", {
       headers: {
         Authorization: `Bearer ${this.authToken}`,
       },
       data: {
         ...userData,
         email: uniqueEmail,
-        password: 'Test1234!', // テスト用固定パスワード
+        password: "Test1234!", // テスト用固定パスワード
       },
     });
 
@@ -83,7 +79,7 @@ export class ApiSeeder {
     ownerId: string;
   }) {
     const uniqueName = `${Date.now()}_${projectData.name}`;
-    const response = await this.apiContext.post('/api/projects', {
+    const response = await this.apiContext.post("/api/projects", {
       headers: {
         Authorization: `Bearer ${this.authToken}`,
       },
@@ -110,23 +106,23 @@ export class ApiSeeder {
 
 ```typescript
 // tests/project-management.spec.ts
-import { test, expect } from '@playwright/test';
-import { ApiSeeder } from './helpers/api-seeder';
+import { test, expect } from "@playwright/test";
+import { ApiSeeder } from "./helpers/api-seeder";
 
-test.describe('プロジェクト管理', () => {
+test.describe("プロジェクト管理", () => {
   let seeder: ApiSeeder;
   let testUser: any;
 
   test.beforeEach(async () => {
     seeder = new ApiSeeder(process.env.BASE_URL!);
     await seeder.initialize();
-    await seeder.authenticate('admin@test.com', 'AdminPass123!');
+    await seeder.authenticate("admin@test.com", "AdminPass123!");
 
     // テストユーザー作成
     testUser = await seeder.createUser({
-      email: 'testuser@example.com',
-      name: 'Test User',
-      role: 'developer',
+      email: "testuser@example.com",
+      name: "Test User",
+      role: "developer",
     });
   });
 
@@ -134,15 +130,15 @@ test.describe('プロジェクト管理', () => {
     await seeder.dispose();
   });
 
-  test('新規プロジェクトを作成できる', async ({ page }) => {
+  test("新規プロジェクトを作成できる", async ({ page }) => {
     const project = await seeder.createProject({
-      name: 'Test Project',
-      description: 'E2E Test Project',
+      name: "Test Project",
+      description: "E2E Test Project",
       ownerId: testUser.id,
     });
 
     await page.goto(`/projects/${project.id}`);
-    await expect(page.locator('h1')).toContainText('Test Project');
+    await expect(page.locator("h1")).toContainText("Test Project");
   });
 });
 ```
@@ -173,18 +169,18 @@ test.describe('プロジェクト管理', () => {
 
 ```typescript
 // tests/helpers/db-seeder.ts
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import { users, projects, projectMembers } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { drizzle } from "drizzle-orm/libsql";
+import { createClient } from "@libsql/client";
+import { users, projects, projectMembers } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 export class DbSeeder {
   private db: ReturnType<typeof drizzle>;
-  private client: ReturnType<typeof postgres>;
+  private client: ReturnType<typeof createClient>;
   private createdRecords: { table: string; id: string }[] = [];
 
   constructor() {
-    this.client = postgres(process.env.DATABASE_URL!);
+    this.client = createClient({ url: process.env.DATABASE_URL! });
     this.db = drizzle(this.client);
   }
 
@@ -199,13 +195,13 @@ export class DbSeeder {
       .values({
         email: uniqueEmail,
         name: userData.name,
-        passwordHash: userData.passwordHash || 'hashed_test_password',
+        passwordHash: userData.passwordHash || "hashed_test_password",
         emailVerified: new Date(),
         createdAt: new Date(),
       })
       .returning();
 
-    this.createdRecords.push({ table: 'users', id: user.id });
+    this.createdRecords.push({ table: "users", id: user.id });
     return user;
   }
 
@@ -221,19 +217,19 @@ export class DbSeeder {
         name: uniqueName,
         description: projectData.description,
         ownerId: projectData.ownerId,
-        status: 'active',
+        status: "active",
         createdAt: new Date(),
       })
       .returning();
 
-    this.createdRecords.push({ table: 'projects', id: project.id });
+    this.createdRecords.push({ table: "projects", id: project.id });
     return project;
   }
 
   async addProjectMember(data: {
     projectId: string;
     userId: string;
-    role: 'owner' | 'admin' | 'member';
+    role: "owner" | "admin" | "member";
   }) {
     const [member] = await this.db
       .insert(projectMembers)
@@ -246,7 +242,7 @@ export class DbSeeder {
       .returning();
 
     this.createdRecords.push({
-      table: 'projectMembers',
+      table: "projectMembers",
       id: `${member.projectId}_${member.userId}`,
     });
     return member;
@@ -260,13 +256,13 @@ export class DbSeeder {
     for (const record of this.createdRecords.reverse()) {
       try {
         switch (record.table) {
-          case 'users':
+          case "users":
             await this.db.delete(users).where(eq(users.id, record.id));
             break;
-          case 'projects':
+          case "projects":
             await this.db.delete(projects).where(eq(projects.id, record.id));
             break;
-          case 'projectMembers':
+          case "projectMembers":
             // 複合キーの場合は特別な処理が必要
             break;
         }
@@ -279,7 +275,7 @@ export class DbSeeder {
 
   async dispose() {
     await this.cleanup();
-    await this.client.end();
+    this.client.close();
   }
 }
 ```
@@ -288,10 +284,10 @@ export class DbSeeder {
 
 ```typescript
 // tests/project-members.spec.ts
-import { test, expect } from '@playwright/test';
-import { DbSeeder } from './helpers/db-seeder';
+import { test, expect } from "@playwright/test";
+import { DbSeeder } from "./helpers/db-seeder";
 
-test.describe('プロジェクトメンバー管理', () => {
+test.describe("プロジェクトメンバー管理", () => {
   let seeder: DbSeeder;
   let owner: any;
   let project: any;
@@ -301,20 +297,20 @@ test.describe('プロジェクトメンバー管理', () => {
 
     // オーナーとプロジェクトを直接作成
     owner = await seeder.createUser({
-      email: 'owner@test.com',
-      name: 'Project Owner',
+      email: "owner@test.com",
+      name: "Project Owner",
     });
 
     project = await seeder.createProject({
-      name: 'Test Project',
-      description: 'DB Seeded Project',
+      name: "Test Project",
+      description: "DB Seeded Project",
       ownerId: owner.id,
     });
 
     await seeder.addProjectMember({
       projectId: project.id,
       userId: owner.id,
-      role: 'owner',
+      role: "owner",
     });
   });
 
@@ -322,11 +318,11 @@ test.describe('プロジェクトメンバー管理', () => {
     await seeder.dispose();
   });
 
-  test('プロジェクトメンバーを追加できる', async ({ page }) => {
+  test("プロジェクトメンバーを追加できる", async ({ page }) => {
     // 新しいメンバーを作成
     const member = await seeder.createUser({
-      email: 'member@test.com',
-      name: 'New Member',
+      email: "member@test.com",
+      name: "New Member",
     });
 
     // ブラウザでメンバー追加UI操作
@@ -366,22 +362,22 @@ Playwrightのfixture機能を使用して、テストデータのセットアッ
 
 ```typescript
 // tests/fixtures/data-fixtures.ts
-import { test as base } from '@playwright/test';
-import { ApiSeeder } from '../helpers/api-seeder';
-import { DbSeeder } from '../helpers/db-seeder';
+import { test as base } from "@playwright/test";
+import { ApiSeeder } from "../helpers/api-seeder";
+import { DbSeeder } from "../helpers/db-seeder";
 
 type DataFixtures = {
   apiSeeder: ApiSeeder;
   dbSeeder: DbSeeder;
-  testUser: Awaited<ReturnType<ApiSeeder['createUser']>>;
-  testProject: Awaited<ReturnType<ApiSeeder['createProject']>>;
+  testUser: Awaited<ReturnType<ApiSeeder["createUser"]>>;
+  testProject: Awaited<ReturnType<ApiSeeder["createProject"]>>;
 };
 
 export const test = base.extend<DataFixtures>({
   apiSeeder: async ({}, use) => {
     const seeder = new ApiSeeder(process.env.BASE_URL!);
     await seeder.initialize();
-    await seeder.authenticate('admin@test.com', 'AdminPass123!');
+    await seeder.authenticate("admin@test.com", "AdminPass123!");
     await use(seeder);
     await seeder.dispose();
   },
@@ -394,9 +390,9 @@ export const test = base.extend<DataFixtures>({
 
   testUser: async ({ apiSeeder }, use) => {
     const user = await apiSeeder.createUser({
-      email: 'testuser@example.com',
-      name: 'Test User',
-      role: 'developer',
+      email: "testuser@example.com",
+      name: "Test User",
+      role: "developer",
     });
     await use(user);
     // クリーンアップはapiSeederのdisposeで処理
@@ -404,8 +400,8 @@ export const test = base.extend<DataFixtures>({
 
   testProject: async ({ apiSeeder, testUser }, use) => {
     const project = await apiSeeder.createProject({
-      name: 'Test Project',
-      description: 'Fixture Test Project',
+      name: "Test Project",
+      description: "Fixture Test Project",
       ownerId: testUser.id,
     });
     await use(project);
@@ -413,35 +409,35 @@ export const test = base.extend<DataFixtures>({
   },
 });
 
-export { expect } from '@playwright/test';
+export { expect } from "@playwright/test";
 ```
 
 ### 使用例
 
 ```typescript
 // tests/project-workflow.spec.ts
-import { test, expect } from './fixtures/data-fixtures';
+import { test, expect } from "./fixtures/data-fixtures";
 
 // testUser, testProjectは自動的にセットアップされる
-test('プロジェクトのワークフローをテストする', async ({
+test("プロジェクトのワークフローをテストする", async ({
   page,
   testUser,
   testProject,
 }) => {
   // すでにユーザーとプロジェクトが存在する状態でテスト開始
   await page.goto(`/projects/${testProject.id}`);
-  await expect(page.locator('h1')).toContainText(testProject.name);
+  await expect(page.locator("h1")).toContainText(testProject.name);
 
   // タスク追加
   await page.click('button:has-text("タスク追加")');
-  await page.fill('input[name="title"]', 'New Task');
+  await page.fill('input[name="title"]', "New Task");
   await page.click('button:has-text("保存")');
 
-  await expect(page.locator('text=New Task')).toBeVisible();
+  await expect(page.locator("text=New Task")).toBeVisible();
 });
 
 // 必要に応じて追加のデータを作成
-test('複数プロジェクトの管理', async ({
+test("複数プロジェクトの管理", async ({
   page,
   apiSeeder,
   testUser,
@@ -449,14 +445,14 @@ test('複数プロジェクトの管理', async ({
 }) => {
   // 既存のtestProjectに加えて、追加のプロジェクトを作成
   const project2 = await apiSeeder.createProject({
-    name: 'Second Project',
-    description: 'Additional Project',
+    name: "Second Project",
+    description: "Additional Project",
     ownerId: testUser.id,
   });
 
-  await page.goto('/projects');
-  await expect(page.locator('text=' + testProject.name)).toBeVisible();
-  await expect(page.locator('text=' + project2.name)).toBeVisible();
+  await page.goto("/projects");
+  await expect(page.locator("text=" + testProject.name)).toBeVisible();
+  await expect(page.locator("text=" + project2.name)).toBeVisible();
 });
 ```
 
@@ -478,11 +474,11 @@ test('複数プロジェクトの管理', async ({
 
 ## 戦略比較とユースケース
 
-| 戦略 | 速度 | 現実性 | 柔軟性 | 推奨ユースケース |
-|------|------|--------|--------|------------------|
-| **API Seeding** | 🐢 遅い | ⭐⭐⭐ 高い | ⭐⭐ 中 | エンドツーエンドの統合テスト、認証フロー検証 |
-| **DB Seeding** | 🚀 高速 | ⭐ 低い | ⭐⭐⭐ 高い | 複雑な初期状態、パフォーマンステスト |
-| **Fixture** | 🚄 中〜高速 | ⭐⭐ 中 | ⭐⭐⭐ 高い | 再利用可能なテストセットアップ、並列実行 |
+| 戦略            | 速度        | 現実性      | 柔軟性      | 推奨ユースケース                             |
+| --------------- | ----------- | ----------- | ----------- | -------------------------------------------- |
+| **API Seeding** | 🐢 遅い     | ⭐⭐⭐ 高い | ⭐⭐ 中     | エンドツーエンドの統合テスト、認証フロー検証 |
+| **DB Seeding**  | 🚀 高速     | ⭐ 低い     | ⭐⭐⭐ 高い | 複雑な初期状態、パフォーマンステスト         |
+| **Fixture**     | 🚄 中〜高速 | ⭐⭐ 中     | ⭐⭐⭐ 高い | 再利用可能なテストセットアップ、並列実行     |
 
 ### 推奨アプローチ
 

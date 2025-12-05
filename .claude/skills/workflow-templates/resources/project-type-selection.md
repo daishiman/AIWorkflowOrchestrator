@@ -4,17 +4,17 @@
 
 ## 選択マトリックス
 
-| プロジェクトタイプ | テンプレート | キャッシング | テストコマンド | ビルド成果物 |
-|-------------------|-------------|-------------|---------------|-------------|
-| **Node.js (pnpm)** | `nodejs-template.yaml` | `~/.pnpm` | `pnpm test` | `dist/`, `build/` |
-| **Node.js (pnpm)** | `nodejs-template.yaml` | `~/.pnpm-store` | `pnpm test` | `dist/`, `build/` |
-| **Node.js (yarn)** | `nodejs-template.yaml` | `~/.yarn` | `yarn test` | `dist/`, `build/` |
-| **Python (pip)** | `ci-template.yaml` | `~/.cache/pip` | `pytest` | `dist/`, `*.whl` |
-| **Python (poetry)** | `ci-template.yaml` | `~/.cache/pypoetry` | `poetry run pytest` | `dist/` |
-| **Go** | `ci-template.yaml` | `~/go/pkg/mod` | `go test ./...` | バイナリファイル |
-| **Rust** | `ci-template.yaml` | `~/.cargo` | `cargo test` | `target/release/` |
-| **Docker** | `docker-template.yaml` | Docker layer cache | - | イメージ |
-| **Mono-repo** | カスタム + `matrix-builds` | プロジェクト別 | 複数 | 複数 |
+| プロジェクトタイプ  | テンプレート               | キャッシング        | テストコマンド      | ビルド成果物      |
+| ------------------- | -------------------------- | ------------------- | ------------------- | ----------------- |
+| **Node.js (pnpm)**  | `nodejs-template.yaml`     | `~/.pnpm`           | `pnpm test`         | `dist/`, `build/` |
+| **Node.js (pnpm)**  | `nodejs-template.yaml`     | `~/.pnpm-store`     | `pnpm test`         | `dist/`, `build/` |
+| **Node.js (yarn)**  | `nodejs-template.yaml`     | `~/.yarn`           | `yarn test`         | `dist/`, `build/` |
+| **Python (pip)**    | `ci-template.yaml`         | `~/.cache/pip`      | `pytest`            | `dist/`, `*.whl`  |
+| **Python (poetry)** | `ci-template.yaml`         | `~/.cache/pypoetry` | `poetry run pytest` | `dist/`           |
+| **Go**              | `ci-template.yaml`         | `~/go/pkg/mod`      | `go test ./...`     | バイナリファイル  |
+| **Rust**            | `ci-template.yaml`         | `~/.cargo`          | `cargo test`        | `target/release/` |
+| **Docker**          | `docker-template.yaml`     | Docker layer cache  | -                   | イメージ          |
+| **Mono-repo**       | カスタム + `matrix-builds` | プロジェクト別      | 複数                | 複数              |
 
 ---
 
@@ -53,7 +53,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm ci
@@ -93,7 +93,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -128,7 +128,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
+          cache: "yarn"
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
@@ -156,7 +156,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Turborepo/Nxのキャッシュに必要
+          fetch-depth: 0 # Turborepo/Nxのキャッシュに必要
 
       - uses: pnpm/action-setup@v4
         with:
@@ -164,8 +164,8 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
 
       - run: pnpm install --frozen-lockfile
 
@@ -194,7 +194,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12']
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
     steps:
       - uses: actions/checkout@v4
 
@@ -202,7 +202,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          cache: 'pip'
+          cache: "pip"
 
       - name: Install dependencies
         run: |
@@ -239,7 +239,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12']
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
     steps:
       - uses: actions/checkout@v4
 
@@ -284,28 +284,18 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_DB: test_db
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
+    # SQLite/Tursoの場合はサービスコンテナ不要
     env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+      TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+      TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+      # ローカルSQLiteの場合:
+      # DATABASE_URL: file:./test.db
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-          cache: 'pip'
+          python-version: "3.11"
+          cache: "pip"
       - run: pip install -r requirements.txt
       - run: python manage.py migrate
       - run: python manage.py test
@@ -323,7 +313,7 @@ name: Docker Build and Push
 on:
   push:
     branches: [main]
-    tags: ['v*']
+    tags: ["v*"]
   pull_request:
     branches: [main]
 
@@ -406,7 +396,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go-version: ['1.20', '1.21', '1.22']
+        go-version: ["1.20", "1.21", "1.22"]
     steps:
       - uses: actions/checkout@v4
 
@@ -492,11 +482,13 @@ jobs:
 ### フロントエンドフレームワーク
 
 **React/Vue/Angular**:
+
 - E2Eテスト (Playwright/Cypress)
 - ビルド成果物の静的ホスティング (GitHub Pages/Vercel)
 - バンドルサイズ分析
 
 **Next.js/Nuxt**:
+
 - SSR/SSGビルド検証
 - 環境変数の管理
 - Vercel/Netlifyへのデプロイ統合
@@ -504,30 +496,31 @@ jobs:
 ### バックエンドフレームワーク
 
 **Express/Fastify**:
+
 - APIテスト (Supertest)
 - データベースマイグレーション
 - コンテナイメージビルド
 
 **Django/Flask**:
-- データベースサービス (PostgreSQL/MySQL)
+
+- データベースサービス (SQLite/Turso)
 - 静的ファイル収集
 - セキュリティチェック (Bandit)
 
 ### データベース依存
 
-**PostgreSQL/MySQL必要**:
+**SQLite/Turso接続**:
+
 ```yaml
-services:
-  postgres:
-    image: postgres:15
-    env:
-      POSTGRES_PASSWORD: postgres
-    options: >-
-      --health-cmd pg_isready
-      --health-interval 10s
+env:
+  TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+  TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+  # ローカルSQLiteの場合:
+  # DATABASE_URL: file:./test.db
 ```
 
 **Redis必要**:
+
 ```yaml
 services:
   redis:

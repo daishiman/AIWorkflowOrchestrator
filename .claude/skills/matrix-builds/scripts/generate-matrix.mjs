@@ -9,8 +9,8 @@
  *   node generate-matrix.mjs --custom matrix-config.json
  */
 
-import { readFileSync, existsSync } from 'fs';
-import { parseArgs } from 'util';
+import { readFileSync, existsSync } from "fs";
+import { parseArgs } from "util";
 
 // ═══════════════════════════════════════════════════════════════
 // プリセット設定
@@ -18,47 +18,40 @@ import { parseArgs } from 'util';
 
 const PRESETS = {
   basic: {
-    os: ['ubuntu-latest', 'windows-latest', 'macos-latest'],
-    node: [18, 20, 22]
+    os: ["ubuntu-latest", "windows-latest", "macos-latest"],
+    node: [18, 20, 22],
   },
 
   minimal: {
-    os: ['ubuntu-latest'],
-    node: [20]
+    os: ["ubuntu-latest"],
+    node: [20],
   },
 
-  'cross-platform': {
-    os: ['ubuntu-latest', 'windows-latest', 'macos-latest'],
+  "cross-platform": {
+    os: ["ubuntu-latest", "windows-latest", "macos-latest"],
     node: [20],
-    include: [
-      { os: 'macos-14', node: 20, arch: 'arm64' }
-    ]
+    include: [{ os: "macos-14", node: 20, arch: "arm64" }],
   },
 
   monorepo: {
-    os: ['ubuntu-latest', 'windows-latest'],
+    os: ["ubuntu-latest", "windows-latest"],
     node: [18, 20, 22],
-    package: ['api', 'web', 'cli', 'sdk']
+    package: ["api", "web", "cli", "sdk"],
   },
 
   browser: {
-    os: ['ubuntu-latest'],
+    os: ["ubuntu-latest"],
     node: [20],
-    browser: ['chrome', 'firefox', 'edge'],
-    include: [
-      { os: 'macos-latest', node: 20, browser: 'safari' }
-    ]
+    browser: ["chrome", "firefox", "edge"],
+    include: [{ os: "macos-latest", node: 20, browser: "safari" }],
   },
 
   database: {
     db: [
-      { type: 'postgres', version: '14', port: 5432 },
-      { type: 'postgres', version: '15', port: 5433 },
-      { type: 'postgres', version: '16', port: 5434 },
-      { type: 'mysql', version: '8.0', port: 3306 },
-      { type: 'mysql', version: '8.3', port: 3307 }
-    ]
-  }
+      { type: "sqlite", version: "file", url: "file:./test.db" },
+      { type: "turso", version: "remote", url: "libsql://test-db.turso.io" },
+    ],
+  },
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -69,18 +62,18 @@ function parseArguments() {
   try {
     const { values } = parseArgs({
       options: {
-        os: { type: 'string' },
-        node: { type: 'string' },
-        browser: { type: 'string' },
-        package: { type: 'string' },
-        preset: { type: 'string' },
-        custom: { type: 'string' },
-        'fail-fast': { type: 'boolean', default: false },
-        'max-parallel': { type: 'string' },
-        include: { type: 'string' },
-        exclude: { type: 'string' },
-        help: { type: 'boolean' }
-      }
+        os: { type: "string" },
+        node: { type: "string" },
+        browser: { type: "string" },
+        package: { type: "string" },
+        preset: { type: "string" },
+        custom: { type: "string" },
+        "fail-fast": { type: "boolean", default: false },
+        "max-parallel": { type: "string" },
+        include: { type: "string" },
+        exclude: { type: "string" },
+        help: { type: "boolean" },
+      },
     });
 
     if (values.help) {
@@ -90,7 +83,7 @@ function parseArguments() {
 
     return values;
   } catch (error) {
-    console.error('Error parsing arguments:', error.message);
+    console.error("Error parsing arguments:", error.message);
     showHelp();
     process.exit(1);
   }
@@ -106,7 +99,9 @@ function generateMatrix(args) {
   // プリセット使用
   if (args.preset) {
     if (!PRESETS[args.preset]) {
-      throw new Error(`Unknown preset: ${args.preset}. Available: ${Object.keys(PRESETS).join(', ')}`);
+      throw new Error(
+        `Unknown preset: ${args.preset}. Available: ${Object.keys(PRESETS).join(", ")}`,
+      );
     }
     matrix = { ...PRESETS[args.preset] };
   }
@@ -115,25 +110,25 @@ function generateMatrix(args) {
     if (!existsSync(args.custom)) {
       throw new Error(`Custom file not found: ${args.custom}`);
     }
-    const content = readFileSync(args.custom, 'utf8');
+    const content = readFileSync(args.custom, "utf8");
     matrix = JSON.parse(content);
   }
   // 個別オプション
   else {
     if (args.os) {
-      matrix.os = args.os.split(',').map(s => s.trim());
+      matrix.os = args.os.split(",").map((s) => s.trim());
     }
     if (args.node) {
-      matrix.node = args.node.split(',').map(v => {
+      matrix.node = args.node.split(",").map((v) => {
         const num = parseInt(v.trim(), 10);
         return isNaN(num) ? v.trim() : num;
       });
     }
     if (args.browser) {
-      matrix.browser = args.browser.split(',').map(s => s.trim());
+      matrix.browser = args.browser.split(",").map((s) => s.trim());
     }
     if (args.package) {
-      matrix.package = args.package.split(',').map(s => s.trim());
+      matrix.package = args.package.split(",").map((s) => s.trim());
     }
   }
 
@@ -165,18 +160,18 @@ function generateMatrix(args) {
 function generateWorkflow(matrix, args) {
   const workflow = {
     strategy: {
-      matrix
-    }
+      matrix,
+    },
   };
 
   // fail-fast設定
-  if (args['fail-fast'] !== undefined) {
-    workflow.strategy['fail-fast'] = args['fail-fast'];
+  if (args["fail-fast"] !== undefined) {
+    workflow.strategy["fail-fast"] = args["fail-fast"];
   }
 
   // max-parallel設定
-  if (args['max-parallel']) {
-    workflow.strategy['max-parallel'] = parseInt(args['max-parallel'], 10);
+  if (args["max-parallel"]) {
+    workflow.strategy["max-parallel"] = parseInt(args["max-parallel"], 10);
   }
 
   return workflow;
@@ -187,11 +182,13 @@ function generateWorkflow(matrix, args) {
 // ═══════════════════════════════════════════════════════════════
 
 function calculateStats(matrix) {
-  const dimensions = Object.keys(matrix).filter(k => !['include', 'exclude'].includes(k));
+  const dimensions = Object.keys(matrix).filter(
+    (k) => !["include", "exclude"].includes(k),
+  );
 
   // 基本ジョブ数
   let jobCount = 1;
-  dimensions.forEach(dim => {
+  dimensions.forEach((dim) => {
     if (Array.isArray(matrix[dim])) {
       jobCount *= matrix[dim].length;
     }
@@ -205,9 +202,9 @@ function calculateStats(matrix) {
   // includeで追加される組み合わせ
   if (matrix.include && Array.isArray(matrix.include)) {
     // includeが既存組み合わせにプロパティ追加するだけか、新規組み合わせか判定
-    const newCombinations = matrix.include.filter(inc => {
+    const newCombinations = matrix.include.filter((inc) => {
       // すべてのdimensionが含まれているかチェック
-      return dimensions.every(dim => inc.hasOwnProperty(dim));
+      return dimensions.every((dim) => inc.hasOwnProperty(dim));
     });
     jobCount += newCombinations.length;
   }
@@ -218,7 +215,7 @@ function calculateStats(matrix) {
     baseJobs: jobCount,
     excluded: matrix.exclude?.length || 0,
     included: matrix.include?.length || 0,
-    totalJobs: jobCount
+    totalJobs: jobCount,
   };
 }
 
@@ -284,7 +281,9 @@ function main() {
     const matrix = generateMatrix(args);
 
     if (Object.keys(matrix).length === 0) {
-      console.error('Error: No matrix configuration provided. Use --preset, --custom, or individual options.');
+      console.error(
+        "Error: No matrix configuration provided. Use --preset, --custom, or individual options.",
+      );
       showHelp();
       process.exit(1);
     }
@@ -299,36 +298,42 @@ function main() {
     console.log(JSON.stringify(matrix));
 
     // 統計情報（stderr経由でGitHub Actions Summaryへ）
-    console.error('\n=== Matrix Statistics ===');
-    console.error(`Dimensions: ${stats.dimensions} (${stats.dimensionNames.join(', ')})`);
+    console.error("\n=== Matrix Statistics ===");
+    console.error(
+      `Dimensions: ${stats.dimensions} (${stats.dimensionNames.join(", ")})`,
+    );
     console.error(`Total Jobs: ${stats.totalJobs}`);
     if (stats.excluded > 0) console.error(`Excluded: ${stats.excluded}`);
     if (stats.included > 0) console.error(`Included: ${stats.included}`);
-    if (args['max-parallel']) console.error(`Max Parallel: ${args['max-parallel']}`);
-    console.error('=========================\n');
+    if (args["max-parallel"])
+      console.error(`Max Parallel: ${args["max-parallel"]}`);
+    console.error("=========================\n");
 
     // ワークフロー例（stderr経由）
-    console.error('Example workflow usage:');
-    console.error('```yaml');
-    console.error('jobs:');
-    console.error('  generate-matrix:');
-    console.error('    runs-on: ubuntu-latest');
-    console.error('    outputs:');
-    console.error('      matrix: ${{ steps.set-matrix.outputs.matrix }}');
-    console.error('    steps:');
-    console.error('      - id: set-matrix');
-    console.error('        run: |');
-    console.error(`          MATRIX=$(node generate-matrix.mjs ${process.argv.slice(2).join(' ')})`);
+    console.error("Example workflow usage:");
+    console.error("```yaml");
+    console.error("jobs:");
+    console.error("  generate-matrix:");
+    console.error("    runs-on: ubuntu-latest");
+    console.error("    outputs:");
+    console.error("      matrix: ${{ steps.set-matrix.outputs.matrix }}");
+    console.error("    steps:");
+    console.error("      - id: set-matrix");
+    console.error("        run: |");
+    console.error(
+      `          MATRIX=$(node generate-matrix.mjs ${process.argv.slice(2).join(" ")})`,
+    );
     console.error('          echo "matrix=$MATRIX" >> $GITHUB_OUTPUT');
-    console.error('');
-    console.error('  test:');
-    console.error('    needs: generate-matrix');
-    console.error('    strategy:');
-    console.error('      matrix: ${{ fromJSON(needs.generate-matrix.outputs.matrix) }}');
-    console.error('```');
-
+    console.error("");
+    console.error("  test:");
+    console.error("    needs: generate-matrix");
+    console.error("    strategy:");
+    console.error(
+      "      matrix: ${{ fromJSON(needs.generate-matrix.outputs.matrix) }}",
+    );
+    console.error("```");
   } catch (error) {
-    console.error('Error:', error.message);
+    console.error("Error:", error.message);
     process.exit(1);
   }
 }

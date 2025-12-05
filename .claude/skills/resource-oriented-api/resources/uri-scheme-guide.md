@@ -29,8 +29,8 @@ scheme://[authority]/path[?query][#fragment]
   scheme: "db"
   format: "db://type/database/table[/id]"
   例:
-    - "db://postgres/mydb/users"
-    - "db://postgres/mydb/users/123"
+    - "db://sqlite/mydb/users"
+    - "db://sqlite/mydb/users/123"
     - "db://sqlite/data.db/records"
 
 Git リポジトリ:
@@ -111,27 +111,22 @@ HTTP API:
 ### 用途別設計
 
 ```yaml
-フィルタリング:
-  ?status=active
+フィルタリング: ?status=active
   ?type=issue&state=open
   ?created_after=2025-01-01
 
-ソート:
-  ?sort=created_at&order=desc
-  ?sort=-updated_at  # マイナス記号で降順
+ソート: ?sort=created_at&order=desc
+  ?sort=-updated_at # マイナス記号で降順
 
-ページネーション:
-  ?page=1&per_page=20
+ページネーション: ?page=1&per_page=20
   ?offset=0&limit=20
   ?cursor=eyJpZCI6MTIzfQ==
 
-フィールド選択:
-  ?fields=id,name,email
+フィールド選択: ?fields=id,name,email
   ?include=author,comments
   ?exclude=password,secret
 
-検索:
-  ?q=search+term
+検索: ?q=search+term
   ?search=keyword
 ```
 
@@ -208,11 +203,11 @@ JSON ポインタ:
 
 ```javascript
 // 正しいエンコーディング
-const uri = `file:///docs/${encodeURIComponent('日本語ファイル')}.md`;
+const uri = `file:///docs/${encodeURIComponent("日本語ファイル")}.md`;
 // 結果: "file:///docs/%E6%97%A5%E6%9C%AC%E8%AA%9E%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB.md"
 
 // デコーディング
-const decoded = decodeURIComponent('%E6%97%A5%E6%9C%AC%E8%AA%9E');
+const decoded = decodeURIComponent("%E6%97%A5%E6%9C%AC%E8%AA%9E");
 // 結果: "日本語"
 ```
 
@@ -255,22 +250,22 @@ function normalizeUri(uri) {
 
   // パス正規化
   const path = url.pathname
-    .replace(/\/+/g, '/')      // 重複スラッシュ
-    .replace(/\/\.\//g, '/')   // /./
-    .replace(/\/[^/]+\/\.\.\//g, '/') // /../
-    .replace(/\/+$/, '');       // 末尾スラッシュ
+    .replace(/\/+/g, "/") // 重複スラッシュ
+    .replace(/\/\.\//g, "/") // /./
+    .replace(/\/[^/]+\/\.\.\//g, "/") // /../
+    .replace(/\/+$/, ""); // 末尾スラッシュ
 
-  normalized += path || '/';
+  normalized += path || "/";
 
   // クエリパラメータソート
   if (url.search) {
     const params = new URLSearchParams(url.search);
     const sorted = [...params.entries()]
-      .filter(([_, v]) => v !== '')
+      .filter(([_, v]) => v !== "")
       .sort(([a], [b]) => a.localeCompare(b));
 
     if (sorted.length > 0) {
-      normalized += '?' + new URLSearchParams(sorted).toString();
+      normalized += "?" + new URLSearchParams(sorted).toString();
     }
   }
 
@@ -288,7 +283,7 @@ function validatePath(basePath, userPath) {
 
   // ベースパス外へのアクセスを禁止
   if (!resolved.startsWith(basePath)) {
-    throw new Error('Path traversal detected');
+    throw new Error("Path traversal detected");
   }
 
   return resolved;
@@ -298,11 +293,11 @@ function validatePath(basePath, userPath) {
 ### 許可されたスキームの制限
 
 ```javascript
-const ALLOWED_SCHEMES = ['file', 'db', 'memory', 'git'];
+const ALLOWED_SCHEMES = ["file", "db", "memory", "git"];
 
 function validateScheme(uri) {
   const url = new URL(uri);
-  const scheme = url.protocol.replace(':', '');
+  const scheme = url.protocol.replace(":", "");
 
   if (!ALLOWED_SCHEMES.includes(scheme)) {
     throw new Error(`Scheme not allowed: ${scheme}`);
@@ -316,16 +311,16 @@ function validateScheme(uri) {
 
 ```javascript
 // 悪い例: ユーザー入力を直接結合
-const badUri = `db://postgres/users/${userId}`; // userId = "../admin"
+const badUri = `db://sqlite/users/${userId}`; // userId = "../admin"
 
 // 良い例: 適切なバリデーションとエンコーディング
 function buildResourceUri(table, id) {
   // IDのバリデーション
   if (!/^[a-zA-Z0-9_-]+$/.test(id)) {
-    throw new Error('Invalid ID format');
+    throw new Error("Invalid ID format");
   }
 
-  return `db://postgres/${encodeURIComponent(table)}/${encodeURIComponent(id)}`;
+  return `db://sqlite/${encodeURIComponent(table)}/${encodeURIComponent(id)}`;
 }
 ```
 

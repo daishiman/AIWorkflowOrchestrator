@@ -11,6 +11,7 @@
 **定義**: エージェントが専門知識を得るためにスキルを参照する関係
 
 **パターン**:
+
 ```yaml
 ---
 name: my-agent
@@ -30,6 +31,7 @@ version: 1.0.0
 ```
 
 **ベストプラクティス**:
+
 - ✅ 相対パスを使用（`.claude/skills/[name]/SKILL.md`）
 - ✅ 🔴マークで必須スキルを強調
 - ✅ Bashコマンドで明示的に読み込み
@@ -41,21 +43,27 @@ version: 1.0.0
 **定義**: エージェントが他のエージェントにタスクを委譲する関係
 
 **パターン**:
+
 ```markdown
 ## 依存エージェント
 
 ### 前提エージェント
+
 このエージェントの前に実行すべきエージェント:
+
 - **requirements-analyst**: 要件分析
 - **architecture-designer**: アーキテクチャ設計
 
 ### 後続エージェント
+
 このエージェントの後に実行されるエージェント:
+
 - **code-implementer**: コード実装
 - **test-writer**: テスト作成
 ```
 
 **ベストプラクティス**:
+
 - ✅ 前提・後続・並行・サブの4種類を明確に区別
 - ✅ 依存理由を記述
 - ✅ 循環依存を避ける
@@ -66,16 +74,19 @@ version: 1.0.0
 **定義**: エージェントがスラッシュコマンドを使用する関係
 
 **パターン**:
+
 ```markdown
 ## コマンド統合
 
 このエージェントは以下のコマンドと統合されています:
+
 - `/design`: アーキテクチャ設計を開始
 - `/implement`: 実装フェーズに移行
 - `/review`: レビューを実行
 ```
 
 **ベストプラクティス**:
+
 - ✅ コマンドの目的を明確に記述
 - ✅ コマンドファイルへのパスを記載
 - ❌ コマンド実装をエージェントに含めない
@@ -85,6 +96,7 @@ version: 1.0.0
 **定義**: エージェントが特定のツールに依存する関係
 
 **パターン**:
+
 ```yaml
 tools:
   - Read
@@ -95,18 +107,19 @@ tools:
 ```
 
 **ベストプラクティス**:
+
 - ✅ 必要最小限のツールのみ選択
 - ✅ 役割に応じたツール選択
 - ❌ 不要なツールを含めない
 
 ## 依存関係マトリックス
 
-| エージェントタイプ | スキル依存 | エージェント依存 | コマンド依存 | ツール依存 |
-|------------------|-----------|----------------|-------------|-----------|
-| **Analyzer** | 高 | 低 | 中 | [Read, Grep, Glob] |
-| **Implementer** | 中 | 中 | 中 | [Read, Write, Edit] |
-| **Orchestrator** | 低 | 高 | 高 | [Task, Read] |
-| **Deployer** | 中 | 低 | 高 | [Bash, Read, Write] |
+| エージェントタイプ | スキル依存 | エージェント依存 | コマンド依存 | ツール依存          |
+| ------------------ | ---------- | ---------------- | ------------ | ------------------- |
+| **Analyzer**       | 高         | 低               | 中           | [Read, Grep, Glob]  |
+| **Implementer**    | 中         | 中               | 中           | [Read, Write, Edit] |
+| **Orchestrator**   | 低         | 高               | 高           | [Task, Read]        |
+| **Deployer**       | 中         | 低               | 高           | [Bash, Read, Write] |
 
 ## 依存関係図の記法
 
@@ -164,22 +177,14 @@ Agent A ⇄ Agent B  ❌
   "to_agent": "architecture-designer",
   "status": "completed",
   "summary": "要件分析完了。機能要件5件、非機能要件3件を特定",
-  "artifacts": [
-    ".claude/docs/requirements.md",
-    ".claude/docs/user-stories.md"
-  ],
+  "artifacts": [".claude/docs/requirements.md", ".claude/docs/user-stories.md"],
   "context": {
     "key_decisions": [
       "マイクロサービスアーキテクチャを採用",
-      "PostgreSQL使用"
+      "SQLite (Turso)使用"
     ],
-    "unresolved_issues": [
-      "認証方式の最終決定"
-    ],
-    "next_steps": [
-      "アーキテクチャ図の作成",
-      "技術スタック選定"
-    ]
+    "unresolved_issues": ["認証方式の最終決定"],
+    "next_steps": ["アーキテクチャ図の作成", "技術スタック選定"]
   },
   "metadata": {
     "duration": "15m30s",
@@ -191,21 +196,21 @@ Agent A ⇄ Agent B  ❌
 
 ### フィールド説明
 
-| フィールド | 必須 | 説明 |
-|-----------|------|------|
-| `from_agent` | ✓ | 送信元エージェント名 |
-| `to_agent` | ✓ | 送信先エージェント名 |
-| `status` | ✓ | `completed`, `partial`, `failed` |
-| `summary` | ✓ | 実施内容のサマリー（1-2文） |
-| `artifacts` | ✓ | 生成された成果物のパスリスト |
-| `context` | ✓ | コンテキスト情報 |
-| `context.key_decisions` |  | 主要な決定事項 |
-| `context.unresolved_issues` |  | 未解決の課題 |
-| `context.next_steps` |  | 次のステップ |
-| `metadata` |  | メタデータ |
-| `metadata.duration` |  | 実行時間 |
-| `metadata.model_used` |  | 使用モデル |
-| `metadata.token_count` |  | トークン数 |
+| フィールド                  | 必須 | 説明                             |
+| --------------------------- | ---- | -------------------------------- |
+| `from_agent`                | ✓    | 送信元エージェント名             |
+| `to_agent`                  | ✓    | 送信先エージェント名             |
+| `status`                    | ✓    | `completed`, `partial`, `failed` |
+| `summary`                   | ✓    | 実施内容のサマリー（1-2文）      |
+| `artifacts`                 | ✓    | 生成された成果物のパスリスト     |
+| `context`                   | ✓    | コンテキスト情報                 |
+| `context.key_decisions`     |      | 主要な決定事項                   |
+| `context.unresolved_issues` |      | 未解決の課題                     |
+| `context.next_steps`        |      | 次のステップ                     |
+| `metadata`                  |      | メタデータ                       |
+| `metadata.duration`         |      | 実行時間                         |
+| `metadata.model_used`       |      | 使用モデル                       |
+| `metadata.token_count`      |      | トークン数                       |
 
 ## 循環依存の検出
 
