@@ -48,6 +48,11 @@ tmp/
 temp/
 *.tmp
 
+# Next.js
+.next/
+out/
+next-env.d.ts
+
 # Kamui (workflow tool)
 .kamui/
 
