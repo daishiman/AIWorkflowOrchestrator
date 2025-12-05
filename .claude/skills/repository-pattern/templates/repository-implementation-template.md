@@ -67,7 +67,7 @@ export class {{EntityName}}Repository implements I{{EntityName}}Repository {
       .insert({{tableName}})
       .values({
         ...record,
-        id: entity.id || crypto.randomUUID(),
+        id: entity.id || crypto.randomINTEGER(),
         created_at: new Date().toISOString(),
       })
       .returning()
@@ -176,13 +176,13 @@ export class {{EntityName}}Repository implements I{{EntityName}}Repository {
 
 ## 変数置換ガイド
 
-| 変数 | 説明 | 例 |
-|------|------|-----|
-| `{{EntityName}}` | エンティティ名（PascalCase） | `Workflow` |
-| `{{tableName}}` | Drizzleテーブル変数名 | `workflowsTable` |
-| `{{EntityName}}Id` | ID型 | `WorkflowId` |
-| `{{EntityName}}Status` | ステータスEnum | `WorkflowStatus` |
-| `{{EntityName}}Record` | DBレコード型 | `WorkflowRecord` |
+| 変数                   | 説明                         | 例               |
+| ---------------------- | ---------------------------- | ---------------- |
+| `{{EntityName}}`       | エンティティ名（PascalCase） | `Workflow`       |
+| `{{tableName}}`        | Drizzleテーブル変数名        | `workflowsTable` |
+| `{{EntityName}}Id`     | ID型                         | `WorkflowId`     |
+| `{{EntityName}}Status` | ステータスEnum               | `WorkflowStatus` |
+| `{{EntityName}}Record` | DBレコード型                 | `WorkflowRecord` |
 
 ## 論理削除対応版
 
@@ -233,7 +233,7 @@ export class {{EntityName}}Repository implements I{{EntityName}}Repository {
         .insert({{tableName}})
         .values({
           ...record,
-          id: entity.id || crypto.randomUUID(),
+          id: entity.id || crypto.randomINTEGER(),
           created_at: new Date().toISOString(),
         })
         .returning()
@@ -264,7 +264,7 @@ export class {{EntityName}}Repository implements I{{EntityName}}Repository {
   }
 
   private isUniqueConstraintError(error: unknown): boolean {
-    return (error as any)?.code === '23505'  // PostgreSQL unique violation
+    return (error as any)?.code === '23505'  // SQLite unique violation
   }
 }
 ```

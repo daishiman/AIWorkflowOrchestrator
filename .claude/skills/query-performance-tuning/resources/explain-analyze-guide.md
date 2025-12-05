@@ -1,250 +1,301 @@
-# EXPLAIN ANALYZEガイド
+# EXPLAIN QUERY PLANガイド
 
 ## 基本構文
 
 ```sql
--- 基本的なEXPLAIN
-EXPLAIN SELECT * FROM users WHERE id = 1;
+-- 基本的なEXPLAIN QUERY PLAN
+EXPLAIN QUERY PLAN SELECT * FROM users WHERE id = 1;
 
--- 実際の実行時間を取得
-EXPLAIN ANALYZE SELECT * FROM users WHERE id = 1;
-
--- 詳細情報を取得（推奨）
-EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)
+-- 実行時間を測定
+.timer on
 SELECT * FROM users WHERE id = 1;
 
--- JSON形式で出力（プログラムでの解析用）
-EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)
+-- 詳細情報を取得（推奨パターン）
+.eqp on
+.timer on
 SELECT * FROM users WHERE id = 1;
 ```
 
 ## オプション一覧
 
-| オプション | 説明 | 推奨 |
-|-----------|------|------|
-| ANALYZE | 実際に実行して時間を測定 | ✅ |
-| BUFFERS | バッファ使用量を表示 | ✅ |
-| COSTS | コスト見積もりを表示 | デフォルトON |
-| TIMING | ノードごとの時間を表示 | デフォルトON |
-| VERBOSE | 追加情報を表示 | 必要時のみ |
-| FORMAT | 出力形式(TEXT/JSON/YAML/XML) | TEXT |
+| コマンド           | 説明                             | 推奨       |
+| ------------------ | -------------------------------- | ---------- |
+| EXPLAIN QUERY PLAN | クエリ実行計画を表示             | ✅         |
+| .timer on          | 実行時間を測定                   | ✅         |
+| .eqp on            | クエリ実行時に自動的にプラン表示 | 開発時     |
+| .eqp full          | より詳細なプラン表示             | 必要時のみ |
 
 ## 実行計画の読み方
 
 ### 基本構造
 
 ```
-                                    QUERY PLAN
---------------------------------------------------------------------------------
- Index Scan using users_email_idx on users  (cost=0.28..8.30 rows=1 width=100)
-   Index Cond: (email = 'user@example.com'::text)
-   Buffers: shared hit=3
- Planning Time: 0.085 ms
- Execution Time: 0.035 ms
+QUERY PLAN
+|--SEARCH TABLE users USING INDEX idx_users_email (email=?)
+```
+
+または
+
+```
+--SCAN TABLE users
 ```
 
 ### 各要素の解説
 
 ```
-Index Scan using users_email_idx on users
-│         │                       │
-│         │                       └─ 対象テーブル
-│         └─ 使用インデックス
-└─ 操作種類
+SEARCH TABLE users USING INDEX idx_users_email (email=?)
+  │      │           │          │
+  │      │           │          └─ 使用されるインデックス名と検索条件
+  │      │           └─ インデックスを使用
+  │      └─ 対象テーブル
+  └─ 操作種類（SEARCH = インデックス使用、SCAN = フルスキャン）
 
-(cost=0.28..8.30 rows=1 width=100)
-       │     │      │       │
-       │     │      │       └─ 行の推定バイト幅
-       │     │      └─ 推定行数
-       │     └─ 全行取得までのコスト
-       └─ 最初の行取得までのコスト
-
-(actual time=0.015..0.016 rows=1 loops=1)
-              │       │      │      │
-              │       │      │      └─ 繰り返し回数
-              │       │      └─ 実際の行数
-              │       └─ 全行取得までの時間(ms)
-              └─ 最初の行取得までの時間(ms)
+SCAN TABLE users
+  │      │
+  │      └─ 対象テーブル
+  └─ フルテーブルスキャン
 ```
 
 ## スキャン種類
 
-### Seq Scan（シーケンシャルスキャン）
+### SCAN TABLE（フルテーブルスキャン）
 
 ```sql
-EXPLAIN ANALYZE SELECT * FROM users WHERE name LIKE '%test%';
+EXPLAIN QUERY PLAN SELECT * FROM users WHERE name LIKE '%test%';
 ```
 
 ```
-Seq Scan on users  (cost=0.00..35.50 rows=10 width=100)
-  Filter: (name ~~ '%test%'::text)
-  Rows Removed by Filter: 990
+SCAN TABLE users
 ```
 
 **特徴**:
+
 - テーブル全体を読み込む
 - 小さいテーブルでは最適な場合も
 - LIKE '%...' はインデックスを使えない
+- 大量データでは避けるべき
 
-### Index Scan（インデックススキャン）
+### SEARCH (インデックススキャン)
 
 ```sql
-EXPLAIN ANALYZE SELECT * FROM users WHERE email = 'user@example.com';
+EXPLAIN QUERY PLAN SELECT * FROM users WHERE email = 'user@example.com';
 ```
 
 ```
-Index Scan using users_email_idx on users  (cost=0.28..8.30 rows=1 width=100)
-  Index Cond: (email = 'user@example.com'::text)
+SEARCH TABLE users USING INDEX idx_users_email (email=?)
 ```
 
 **特徴**:
+
 - インデックスを使用してテーブルにアクセス
 - 選択性が高い場合に効率的
 - インデックスとテーブルの両方を読む
 
-### Index Only Scan（インデックスオンリースキャン）
+### SEARCH (カバリングインデックス)
 
 ```sql
-EXPLAIN ANALYZE SELECT email FROM users WHERE email = 'user@example.com';
+EXPLAIN QUERY PLAN SELECT email FROM users WHERE email = 'user@example.com';
 ```
 
 ```
-Index Only Scan using users_email_idx on users  (cost=0.28..4.30 rows=1 width=50)
-  Index Cond: (email = 'user@example.com'::text)
-  Heap Fetches: 0
+SEARCH TABLE users USING COVERING INDEX idx_users_email (email=?)
 ```
 
 **特徴**:
+
 - インデックスのみでクエリを完結
 - テーブルアクセス不要（最も効率的）
-- Heap Fetches: 0 が理想
+- SELECT句のカラムがすべてインデックスに含まれる
 
-### Bitmap Scan（ビットマップスキャン）
+### USE TEMP B-TREE（一時インデックス）
 
 ```sql
-EXPLAIN ANALYZE SELECT * FROM orders WHERE user_id IN (1, 2, 3, 4, 5);
+EXPLAIN QUERY PLAN SELECT * FROM users ORDER BY created_at;
 ```
 
 ```
-Bitmap Heap Scan on orders  (cost=4.35..15.68 rows=5 width=100)
-  Recheck Cond: (user_id = ANY ('{1,2,3,4,5}'::integer[]))
-  ->  Bitmap Index Scan on orders_user_id_idx  (cost=0.00..4.35 rows=5 width=0)
-        Index Cond: (user_id = ANY ('{1,2,3,4,5}'::integer[]))
+SCAN TABLE users
+USE TEMP B-TREE FOR ORDER BY
 ```
 
 **特徴**:
-- 中程度の選択性で効率的
-- 複数インデックスの組み合わせが可能
-- 2段階：Index Scan → Heap Scan
+
+- ソートのために一時的なインデックスを作成
+- パフォーマンス低下の原因になりうる
+- 適切なインデックス追加で回避可能
+
+### AUTOMATIC INDEX（自動インデックス）
+
+```sql
+EXPLAIN QUERY PLAN
+SELECT * FROM users u
+JOIN orders o ON u.id = o.user_id;
+```
+
+```
+SCAN TABLE users
+SEARCH TABLE orders USING AUTOMATIC COVERING INDEX (user_id=?)
+```
+
+**特徴**:
+
+- SQLiteが自動的に作成する一時インデックス
+- パフォーマンス改善の機会を示唆
+- 永続的なインデックス作成を検討すべき
 
 ## JOIN操作
 
-### Nested Loop
+### Nested Loop (基本パターン)
+
+```sql
+EXPLAIN QUERY PLAN
+SELECT u.*, o.*
+FROM users u
+JOIN orders o ON u.id = o.user_id;
+```
 
 ```
-Nested Loop  (cost=0.28..16.60 rows=10 width=200)
-  ->  Seq Scan on users  (cost=0.00..1.10 rows=10 width=100)
-  ->  Index Scan using orders_user_id_idx on orders  (cost=0.28..1.55 rows=1 width=100)
-        Index Cond: (user_id = users.id)
+SCAN TABLE users AS u
+SEARCH TABLE orders AS o USING INDEX idx_orders_user_id (user_id=?)
 ```
 
 **特徴**:
+
+- SQLiteの基本的なJOIN実装
 - 外側テーブルの各行に対して内側をスキャン
-- 小さいテーブル同士、または内側にインデックスがある場合に効率的
-- loops値に注意（N+1問題の指標）
+- 内側にインデックスがあると効率的
 
-### Hash Join
+### 複数テーブルJOIN
+
+```sql
+EXPLAIN QUERY PLAN
+SELECT u.*, o.*, p.*
+FROM users u
+JOIN orders o ON u.id = o.user_id
+JOIN products p ON o.product_id = p.id;
+```
 
 ```
-Hash Join  (cost=1.25..2.53 rows=10 width=200)
-  Hash Cond: (orders.user_id = users.id)
-  ->  Seq Scan on orders  (cost=0.00..1.10 rows=10 width=100)
-  ->  Hash  (cost=1.10..1.10 rows=10 width=100)
-        ->  Seq Scan on users  (cost=0.00..1.10 rows=10 width=100)
-```
-
-**特徴**:
-- 一方のテーブルでハッシュテーブルを構築
-- 大きなテーブル同士のJOINに効率的
-- メモリ使用量に注意
-
-### Merge Join
-
-```
-Merge Join  (cost=2.25..4.50 rows=10 width=200)
-  Merge Cond: (users.id = orders.user_id)
-  ->  Index Scan using users_pkey on users  (cost=0.28..12.29 rows=10 width=100)
-  ->  Index Scan using orders_user_id_idx on orders  (cost=0.28..12.29 rows=10 width=100)
+SCAN TABLE users AS u
+SEARCH TABLE orders AS o USING INDEX idx_orders_user_id (user_id=?)
+SEARCH TABLE products AS p USING INDEX sqlite_autoindex_products_1 (id=?)
 ```
 
 **特徴**:
-- 両テーブルがソート済みの場合に効率的
-- 大きなテーブルで効果的
-- ORDER BYと相性が良い
 
-## バッファ情報の読み方
+- JOIN順序が実行計画に影響
+- 最初のテーブルは通常SCANされる
+- 後続テーブルはインデックスでSEARCHされる
+
+## 実行時間の測定
+
+### .timer on の使用
+
+```sql
+.timer on
+SELECT * FROM users WHERE email = 'user@example.com';
+```
+
+出力例:
 
 ```
-Buffers: shared hit=100 read=20
-                 │       │
-                 │       └─ ディスクから読み込んだブロック数
-                 └─ キャッシュヒットしたブロック数
+Run Time: real 0.001 user 0.000428 sys 0.000171
 ```
 
-| 指標 | 意味 | 目指すべき状態 |
-|------|------|--------------|
-| shared hit | キャッシュヒット | 高いほど良い |
-| shared read | ディスク読み込み | 低いほど良い |
-| temp read/written | 一時ファイル | 0が理想 |
+| 指標 | 意味                      | 目安           |
+| ---- | ------------------------- | -------------- |
+| real | 実際の経過時間            | 主要な改善指標 |
+| user | CPU時間（ユーザーモード） | 計算負荷の指標 |
+| sys  | CPU時間（システムモード） | I/O負荷の指標  |
 
 ## よくある問題パターン
 
-### 1. 統計情報の不一致
+### 1. インデックスが使われない
 
 ```
-Seq Scan on users  (cost=0.00..35.50 rows=1 width=100)
-  Filter: (status = 'active'::text)
-  Rows Removed by Filter: 9999
+SCAN TABLE users
 ```
 
-**問題**: rows=1 と予測したが実際は10000行
-**解決**: `ANALYZE users;` で統計情報を更新
+**問題**: インデックスがあるのにSCAN TABLE
+**原因**:
 
-### 2. 非効率なソート
+- 統計情報が古い（ANALYZE未実行）
+- WHERE句に関数を適用
+- データ型の不一致
+- 小さいテーブル（フルスキャンの方が高速）
 
-```
-Sort  (cost=100.00..102.50 rows=1000 width=100)
-  Sort Key: created_at
-  Sort Method: external merge  Disk: 1024kB
-```
+**解決**:
 
-**問題**: メモリ不足でディスクソート
-**解決**: work_memの増加、またはインデックス追加
+```sql
+-- 統計情報の更新
+ANALYZE;
 
-### 3. 多すぎるloops
-
-```
-Index Scan using orders_user_id_idx on orders  (cost=0.28..8.30 rows=1 width=100)
-  (actual time=0.020..0.025 rows=1 loops=10000)
+-- インデックスの確認
+SELECT * FROM sqlite_master WHERE type = 'index' AND tbl_name = 'users';
 ```
 
-**問題**: 10000回のIndex Scan（N+1問題）
-**解決**: JOINまたはIN句に書き換え
+### 2. USE TEMP B-TREE
+
+```
+SCAN TABLE users
+USE TEMP B-TREE FOR ORDER BY
+```
+
+**問題**: ソートのための一時インデックス作成
+**解決**: ORDER BYカラムにインデックスを追加
+
+```sql
+CREATE INDEX idx_users_created ON users(created_at);
+```
+
+### 3. AUTOMATIC INDEX
+
+```
+SEARCH TABLE orders USING AUTOMATIC COVERING INDEX (user_id=?)
+```
+
+**問題**: 自動作成インデックスに依存
+**解決**: 永続的なインデックスを作成
+
+```sql
+CREATE INDEX idx_orders_user_id ON orders(user_id);
+```
+
+### 4. 複雑なJOIN順序
+
+```
+SCAN TABLE large_table
+SEARCH TABLE small_table USING INDEX ...
+```
+
+**問題**: 大きいテーブルを先にスキャン
+**解決**: FROM句の順序を変更、またはサブクエリで絞り込み
+
+```sql
+-- 小さいテーブルを先に
+SELECT * FROM small_table s
+JOIN large_table l ON s.id = l.small_id;
+```
 
 ## チェックリスト
 
 ### 分析時
-- [ ] ANALYZE, BUFFERSオプションを使用しているか？
+
+- [ ] EXPLAIN QUERY PLANを使用しているか？
+- [ ] .timer onで実行時間を測定しているか？
 - [ ] 本番データまたは類似のデータ量で実行しているか？
 - [ ] 複数回実行してキャッシュ効果を確認したか？
 
 ### 解釈時
-- [ ] rows（推定）とactual rows（実際）の乖離を確認したか？
-- [ ] Seq Scanが適切かどうか判断したか？
-- [ ] loopsの値をチェックしたか？
-- [ ] Buffers readが多すぎないか確認したか？
+
+- [ ] SCANではなくSEARCHが使われているか？
+- [ ] AUTOMATIC INDEXが表示されていないか？
+- [ ] USE TEMP B-TREEが必要以上に使われていないか？
+- [ ] JOIN順序は適切か？
 
 ### 改善後
-- [ ] 改善前後のEXPLAIN ANALYZEを比較したか？
+
+- [ ] 改善前後のEXPLAIN QUERY PLANを比較したか？
 - [ ] 実行時間が改善したか？
 - [ ] 他のクエリへの影響がないか確認したか？
+- [ ] ANALYZEを実行して統計情報を更新したか？

@@ -1,86 +1,140 @@
 # スロークエリログ設定と分析
 
-## PostgreSQL スロークエリログ設定
+## SQLite/Turso スロークエリログ設定
 
-### 基本設定
+### アプリケーションレベルでのログ設定
 
-```sql
--- postgresql.conf または ALTER SYSTEM で設定
-ALTER SYSTEM SET log_min_duration_statement = '1000';  -- 1秒以上
-ALTER SYSTEM SET log_statement = 'none';  -- ddl, mod, all から選択
-ALTER SYSTEM SET log_duration = 'off';
-ALTER SYSTEM SET log_lock_waits = 'on';
-ALTER SYSTEM SET deadlock_timeout = '1s';
+SQLiteにはPostgreSQLのような組み込みスロークエリログがないため、
+アプリケーションレベルでクエリ実行時間を記録します。
 
--- 設定を反映
-SELECT pg_reload_conf();
+```javascript
+// libSQL/Tursoクライアントでのスロークエリログ実装例
+import { createClient } from "@libsql/client";
+
+class MonitoredClient {
+  constructor(config, slowQueryThreshold = 1000) {
+    this.client = createClient(config);
+    this.slowQueryThreshold = slowQueryThreshold;
+  }
+
+  async execute(query, params) {
+    const startTime = Date.now();
+    try {
+      const result = await this.client.execute(query, params);
+      const duration = Date.now() - startTime;
+
+      if (duration > this.slowQueryThreshold) {
+        this.logSlowQuery(query, duration, params);
+      }
+
+      return result;
+    } catch (error) {
+      const duration = Date.now() - startTime;
+      this.logQueryError(query, duration, error);
+      throw error;
+    }
+  }
+
+  logSlowQuery(query, duration, params) {
+    console.warn("Slow query detected", {
+      query: query.substring(0, 200),
+      duration_ms: duration,
+      params,
+      timestamp: new Date().toISOString(),
+    });
+  }
+}
 ```
 
-### 推奨設定値
+### 推奨閾値
 
-| 環境 | log_min_duration_statement | 説明 |
-|------|---------------------------|------|
-| 開発 | 100ms | 積極的に検出 |
-| ステージング | 500ms | 本番に近い設定 |
-| 本番 | 1000ms | ノイズを抑制 |
-| 調査時 | 0（全クエリ） | 一時的に有効化 |
+| 環境         | スロークエリ閾値 | 説明           |
+| ------------ | ---------------- | -------------- |
+| 開発         | 100ms            | 積極的に検出   |
+| ステージング | 500ms            | 本番に近い設定 |
+| 本番         | 1000ms           | ノイズを抑制   |
+| 調査時       | 0（全クエリ）    | 一時的に有効化 |
 
-## Neon での設定
+## Turso での設定
 
-Neon はマネージドサービスのため、設定方法が異なります。
+Tursoはマネージドサービスのため、アプリケーションレベルでの監視が主となります。
 
-```sql
--- プロジェクト設定で log_min_duration_statement を設定
--- Neon Console > Project Settings > Database から設定
+```javascript
+// Tursoクライアントでの監視実装
+import { createClient } from "@libsql/client";
 
--- 現在の設定確認
-SHOW log_min_duration_statement;
+const client = createClient({
+  url: process.env.TURSO_DATABASE_URL,
+  authToken: process.env.TURSO_AUTH_TOKEN,
+});
+
+// クエリラッパーでのロギング
+async function monitoredQuery(sql, params = []) {
+  const start = performance.now();
+  try {
+    const result = await client.execute(sql, params);
+    const duration = performance.now() - start;
+
+    if (duration > 1000) {
+      // Turso Analytics APIまたはログサービスへ送信
+      await sendMetrics({
+        type: "slow_query",
+        duration,
+        query: sql.substring(0, 200),
+        timestamp: Date.now(),
+      });
+    }
+
+    return result;
+  } catch (error) {
+    // エラーログも記録
+    throw error;
+  }
+}
 ```
 
-**Neon での注意点**:
-- コンピュートが自動スケールするため、コールドスタート時間も考慮
-- ログは Neon Console のメトリクスで確認
-- pg_stat_statements で詳細分析可能
+**Turso での注意点**:
 
-## Supabase での設定
-
-```sql
--- Supabase Dashboard > Database > Extensions
--- pg_stat_statements を有効化
-
--- スロークエリの確認
-SELECT
-  query,
-  calls,
-  mean_exec_time,
-  total_exec_time
-FROM pg_stat_statements
-WHERE mean_exec_time > 1000  -- 1秒以上
-ORDER BY mean_exec_time DESC;
-```
-
-**Supabase での注意点**:
-- PostgreSQL ログは Database > Logs で確認
-- 詳細設定は Connection Pooler 経由の場合、制限あり
-- Edge Functions からの DB アクセスも監視対象
+- エッジロケーションによるレイテンシの違いを考慮
+- レプリケーション遅延がクエリパフォーマンスに影響する場合がある
+- Turso Analyticsダッシュボードで全体的な傾向を確認可能
 
 ## ログ分析パターン
 
-### 頻出スロークエリの特定
+### 頻出スロークエリの特定（アプリケーションレベル）
 
-```sql
--- pg_stat_statements から分析
-SELECT
-  substring(query, 1, 100) AS query_short,
-  calls,
-  round(total_exec_time::numeric, 2) AS total_ms,
-  round(mean_exec_time::numeric, 2) AS mean_ms,
-  round(stddev_exec_time::numeric, 2) AS stddev_ms,
-  rows
-FROM pg_stat_statements
-WHERE mean_exec_time > 100  -- 100ms以上
-ORDER BY total_exec_time DESC
-LIMIT 20;
+```javascript
+// スロークエリ統計の集計
+class QueryAnalyzer {
+  constructor() {
+    this.queryStats = new Map();
+  }
+
+  recordQuery(query, duration) {
+    const key = query.substring(0, 100);
+    const stats = this.queryStats.get(key) || {
+      query: key,
+      calls: 0,
+      totalDuration: 0,
+      maxDuration: 0,
+      durations: [],
+    };
+
+    stats.calls++;
+    stats.totalDuration += duration;
+    stats.maxDuration = Math.max(stats.maxDuration, duration);
+    stats.durations.push(duration);
+
+    this.queryStats.set(key, stats);
+  }
+
+  getSlowQueries(threshold = 100) {
+    return Array.from(this.queryStats.values())
+      .filter((s) => s.totalDuration / s.calls > threshold)
+      .sort((a, b) => b.totalDuration - a.totalDuration)
+      .slice(0, 20);
+  }
+}
 ```
 
 ### 時間帯別分析
@@ -88,29 +142,29 @@ LIMIT 20;
 ```sql
 -- 時間帯別のスロークエリ傾向（ログから）
 SELECT
-  date_trunc('hour', log_time) AS hour,
+  strftime('%Y-%m-%d %H:00:00', log_time) AS hour,
   COUNT(*) AS slow_query_count,
   AVG(duration_ms) AS avg_duration
 FROM slow_query_log  -- カスタムログテーブル
-GROUP BY date_trunc('hour', log_time)
+GROUP BY strftime('%Y-%m-%d %H:00:00', log_time)
 ORDER BY hour;
 ```
 
 ### クエリパターン分類
 
 ```sql
--- クエリタイプ別の分析
+-- クエリタイプ別の分析(カスタムログテーブルから)
 SELECT
   CASE
-    WHEN query ILIKE 'SELECT%' THEN 'SELECT'
-    WHEN query ILIKE 'INSERT%' THEN 'INSERT'
-    WHEN query ILIKE 'UPDATE%' THEN 'UPDATE'
-    WHEN query ILIKE 'DELETE%' THEN 'DELETE'
+    WHEN query LIKE 'SELECT%' THEN 'SELECT'
+    WHEN query LIKE 'INSERT%' THEN 'INSERT'
+    WHEN query LIKE 'UPDATE%' THEN 'UPDATE'
+    WHEN query LIKE 'DELETE%' THEN 'DELETE'
     ELSE 'OTHER'
   END AS query_type,
   COUNT(*) AS count,
-  round(AVG(mean_exec_time)::numeric, 2) AS avg_ms
-FROM pg_stat_statements
+  ROUND(AVG(duration_ms), 2) AS avg_ms
+FROM slow_query_log
 GROUP BY query_type
 ORDER BY avg_ms DESC;
 ```
@@ -121,24 +175,25 @@ ORDER BY avg_ms DESC;
 
 ```javascript
 // scripts/detect-slow-queries.mjs
-async function detectSlowQueries(client, thresholdMs = 1000) {
-  const result = await client.query(`
+// SQLite/Tursoではアプリケーションレベルでの監視が必要
+async function detectSlowQueries(db, thresholdMs = 1000) {
+  // カスタムログテーブルから取得
+  const stmt = db.prepare(`
     SELECT
-      pid,
-      usename,
       query,
-      EXTRACT(EPOCH FROM (NOW() - query_start)) * 1000 AS duration_ms
-    FROM pg_stat_activity
-    WHERE state = 'active'
-      AND query NOT LIKE '%pg_stat_activity%'
-      AND query_start < NOW() - INTERVAL '${thresholdMs} milliseconds'
+      duration_ms,
+      timestamp
+    FROM slow_query_log
+    WHERE duration_ms > ?
+      AND timestamp > datetime('now', '-1 hour')
+    ORDER BY duration_ms DESC
+    LIMIT 20
   `);
 
-  return result.rows.map(row => ({
-    pid: row.pid,
-    user: row.usename,
+  return stmt.all(thresholdMs).map((row) => ({
     query: row.query.substring(0, 200),
-    durationMs: Math.round(row.duration_ms)
+    durationMs: row.duration_ms,
+    timestamp: row.timestamp,
   }));
 }
 ```
@@ -150,14 +205,14 @@ async function notifySlowQuery(slowQueries) {
   if (slowQueries.length === 0) return;
 
   await fetch(process.env.WEBHOOK_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      alert: 'slow_queries_detected',
+      alert: "slow_queries_detected",
       count: slowQueries.length,
       queries: slowQueries,
-      timestamp: new Date().toISOString()
-    })
+      timestamp: new Date().toISOString(),
+    }),
   });
 }
 ```
@@ -167,12 +222,12 @@ async function notifySlowQuery(slowQueries) {
 スロークエリを検出したら:
 
 1. **即座の対応**
-   - クエリがまだ実行中なら、影響を評価
-   - 必要に応じて `pg_cancel_backend(pid)` で停止
+   - クエリの影響範囲を評価
+   - 必要に応じてアプリケーション再起動で対処
 
 2. **分析**
-   - `EXPLAIN ANALYZE` で実行計画を確認
-   - インデックス不足、統計情報の古さをチェック
+   - `EXPLAIN QUERY PLAN` で実行計画を確認
+   - インデックス不足、テーブルスキャンをチェック
 
 3. **最適化**
    - query-performance-tuning スキルを参照

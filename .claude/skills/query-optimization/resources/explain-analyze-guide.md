@@ -1,36 +1,29 @@
-# EXPLAIN ANALYZE 完全ガイド
+# EXPLAIN QUERY PLAN 完全ガイド
 
 ## 概要
 
-PostgreSQLの`EXPLAIN ANALYZE`は、クエリの実行計画と実際のパフォーマンスを分析するための最も重要なツールです。
+SQLiteの`EXPLAIN QUERY PLAN`は、クエリの実行計画を分析するための最も重要なツールです。
 
 ---
 
 ## 基本構文
 
 ```sql
-EXPLAIN [オプション] クエリ;
+EXPLAIN QUERY PLAN クエリ;
 ```
 
-### オプション一覧
-
-| オプション | 説明 | デフォルト |
-|-----------|------|-----------|
-| ANALYZE | 実際にクエリを実行して時間を計測 | OFF |
-| BUFFERS | バッファ使用状況を表示 | OFF |
-| COSTS | コスト見積もりを表示 | ON |
-| TIMING | 各ノードの時間を表示 | ON（ANALYZE時） |
-| FORMAT | 出力形式（TEXT/JSON/XML/YAML） | TEXT |
-| VERBOSE | 追加情報を表示 | OFF |
-
-### 推奨コマンド
+### 使用例
 
 ```sql
--- 最も詳細な分析
-EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT) SELECT ...;
+-- 基本的な使い方
+EXPLAIN QUERY PLAN SELECT * FROM workflows WHERE status = 'PENDING';
 
--- JSON形式（プログラム処理用）
-EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) SELECT ...;
+-- JOINを含むクエリ
+EXPLAIN QUERY PLAN
+SELECT w.*, u.name
+FROM workflows w
+LEFT JOIN users u ON u.id = w.user_id
+WHERE w.status = 'PENDING';
 ```
 
 ---
@@ -40,272 +33,186 @@ EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) SELECT ...;
 ### 基本構造
 
 ```
-Seq Scan on users  (cost=0.00..15.00 rows=100 width=200) (actual time=0.010..0.150 loops=1)
-  Filter: (status = 'active')
-  Rows Removed by Filter: 50
-  Buffers: shared hit=10
-Planning Time: 0.050 ms
-Execution Time: 0.200 ms
+QUERY PLAN
+|--SEARCH TABLE workflows USING INDEX idx_workflows_status (status=?)
 ```
 
 ### 各項目の意味
 
-#### コスト（cost）
+#### SCAN TABLE（フルテーブルスキャン）
 
 ```
-cost=開始コスト..総コスト
+SCAN TABLE users
 ```
 
-- **開始コスト**: 最初の行を返すまでのコスト
-- **総コスト**: すべての行を返すまでのコスト
-- **単位**: シーケンシャルI/O = 1.0（相対値）
+- テーブル全体を読み込む
+- インデックスを使用しない
+- 大規模テーブルでは避けるべき
 
-#### 行数（rows）
-
-```
-rows=100
-```
-
-- プランナーが推定した返却行数
-- 実際の行数と大きく異なる場合は統計情報の更新が必要
-
-#### 幅（width）
+#### SEARCH TABLE（インデックス使用）
 
 ```
-width=200
+SEARCH TABLE workflows USING INDEX idx_workflows_status (status=?)
 ```
 
-- 各行の平均バイト数
+- インデックスを使用した検索
+- 効率的なアクセス方法
+- 推奨される状態
 
-#### 実際の時間（actual time）
-
-```
-actual time=0.010..0.150
-```
-
-- **開始時間**: 最初の行を返すまでの時間（ms）
-- **終了時間**: すべての行を返すまでの時間（ms）
-
-#### ループ回数（loops）
+#### USING COVERING INDEX（カバリングインデックス）
 
 ```
-loops=1
+SEARCH TABLE workflows USING COVERING INDEX idx_workflows_status_name
 ```
 
-- そのノードが実行された回数
-- Nested Loopでは外側の行数分ループ
+- インデックスのみで結果を返す
+- テーブルアクセス不要
+- 最も効率的
 
 ---
 
 ## スキャンタイプ
 
-### Seq Scan（シーケンシャルスキャン）
+### SCAN TABLE（テーブルスキャン）
 
 ```
-Seq Scan on large_table  (cost=0.00..100000.00 rows=5000000 width=100)
+SCAN TABLE large_table
 ```
 
 **特徴**:
+
 - テーブル全体を読み込む
-- 大量行の取得には効率的
 - 少量行の取得には非効率
+- 大量行の取得には許容される場合も
 
 **対策**:
+
 - インデックス追加
 - WHERE条件の見直し
 
-### Index Scan（インデックススキャン）
+### SEARCH TABLE（インデックススキャン）
 
 ```
-Index Scan using idx_users_email on users  (cost=0.42..8.44 rows=1 width=200)
-  Index Cond: (email = 'test@example.com'::text)
+SEARCH TABLE users USING INDEX idx_users_email (email=?)
 ```
 
 **特徴**:
+
 - インデックスを使用して行を検索
-- ランダムI/Oが発生
 - 選択性が高い場合に効率的
+- B-Treeインデックスを使用
 
-### Index Only Scan（インデックスオンリースキャン）
-
-```
-Index Only Scan using idx_users_email on users  (cost=0.42..4.44 rows=1 width=50)
-  Index Cond: (email = 'test@example.com'::text)
-  Heap Fetches: 0
-```
-
-**特徴**:
-- インデックスのみで結果を返す
-- テーブルへのアクセスなし
-- Heap Fetches = 0 が理想
-
-**条件**:
-- SELECT句のカラムがすべてインデックスに含まれる
-- VACUUMで可視性マップが更新されている
-
-### Bitmap Scan
+### AUTOMATIC INDEX
 
 ```
-Bitmap Heap Scan on orders  (cost=10.00..500.00 rows=1000 width=100)
-  Recheck Cond: (status = 'pending')
-  ->  Bitmap Index Scan on idx_orders_status  (cost=0.00..9.75 rows=1000 width=0)
-        Index Cond: (status = 'pending')
+USE TEMP B-TREE FOR ORDER BY
 ```
 
 **特徴**:
-- 複数インデックスを組み合わせ可能
-- 中規模の行数取得に効率的
-- シーケンシャルI/Oに変換
+
+- SQLiteが自動的に一時インデックスを作成
+- ORDER BYやGROUP BYで発生
+- 永続的なインデックス追加を検討すべき
 
 ---
 
 ## JOINアルゴリズム
 
-### Nested Loop
+SQLiteは主にNested Loop Joinを使用します。
+
+### 基本的なJOIN
 
 ```
-Nested Loop  (cost=0.42..100.00 rows=100 width=200)
-  ->  Seq Scan on orders  (cost=0.00..10.00 rows=10 width=100)
-  ->  Index Scan using idx_users_id on users  (cost=0.42..9.00 rows=10 width=100)
-        Index Cond: (id = orders.user_id)
+QUERY PLAN
+|--SCAN TABLE orders
+`--SEARCH TABLE users USING INDEX idx_users_id (id=?)
 ```
 
 **特徴**:
-- 外側テーブルの各行に対して内側テーブルを検索
-- 小規模テーブル同士のJOINに適する
+
+- 外側テーブル（orders）の各行に対して
+- 内側テーブル（users）をインデックスで検索
 - 内側にインデックスがあると効率的
 
-### Hash Join
+### 最適化されたJOIN
 
 ```
-Hash Join  (cost=20.00..500.00 rows=1000 width=200)
-  Hash Cond: (orders.user_id = users.id)
-  ->  Seq Scan on orders  (cost=0.00..300.00 rows=10000 width=100)
-  ->  Hash  (cost=15.00..15.00 rows=500 width=100)
-        ->  Seq Scan on users  (cost=0.00..15.00 rows=500 width=100)
+QUERY PLAN
+|--SEARCH TABLE orders USING INDEX idx_orders_user_id (user_id=?)
+`--SEARCH TABLE users USING INDEX idx_users_id (id=?)
 ```
 
 **特徴**:
-- 小さい方のテーブルでハッシュテーブルを構築
-- 等価結合のみ対応
-- 中規模テーブルに適する
 
-### Merge Join
+- 両テーブルでインデックスを使用
+- 最も効率的な状態
+
+### 非効率なJOIN
 
 ```
-Merge Join  (cost=100.00..200.00 rows=1000 width=200)
-  Merge Cond: (orders.user_id = users.id)
-  ->  Sort  (cost=50.00..55.00 rows=1000 width=100)
-        Sort Key: orders.user_id
-        ->  Seq Scan on orders  (cost=0.00..30.00 rows=1000 width=100)
-  ->  Sort  (cost=50.00..55.00 rows=500 width=100)
-        Sort Key: users.id
-        ->  Seq Scan on users  (cost=0.00..15.00 rows=500 width=100)
+QUERY PLAN
+|--SCAN TABLE orders
+`--SCAN TABLE users
 ```
 
-**特徴**:
-- 両テーブルをソートしてマージ
-- 大規模テーブルに適する
-- ソート済みインデックスがあると効率的
+**問題**:
+
+- 両テーブルでフルスキャン
+- パフォーマンスが悪い
+
+**対策**:
+
+- JOIN条件のカラムにインデックスを追加
 
 ---
 
 ## 問題パターンと対策
 
-### パターン1: Seq Scan（大規模テーブル）
+### パターン1: SCAN TABLE（大規模テーブル）
 
 **問題**:
+
 ```
-Seq Scan on orders  (cost=0.00..100000.00 rows=1000000 width=100)
-  Filter: (status = 'pending')
-  Rows Removed by Filter: 999000
+SCAN TABLE orders
 ```
 
 **対策**:
+
 ```sql
 CREATE INDEX idx_orders_status ON orders(status);
 ```
 
-### パターン2: 推定行数と実際の行数の乖離
+### パターン2: AUTOMATIC INDEX発生
 
 **問題**:
+
 ```
-Index Scan using idx_users_status  (rows=10) (actual rows=10000)
+USE TEMP B-TREE FOR ORDER BY
 ```
 
 **対策**:
-```sql
--- 統計情報の更新
-ANALYZE users;
 
--- より詳細な統計
-ALTER TABLE users ALTER COLUMN status SET STATISTICS 1000;
-ANALYZE users;
+```sql
+-- ORDER BY に対応するインデックス追加
+CREATE INDEX idx_orders_created_at ON orders(created_at DESC);
 ```
 
-### パターン3: Sort（メモリ不足）
+### パターン3: JOIN条件にインデックスなし
 
 **問題**:
+
 ```
-Sort  (cost=1000.00..1050.00 rows=20000 width=100)
-  Sort Key: created_at
-  Sort Method: external merge  Disk: 2000kB  -- ディスクソート！
+|--SCAN TABLE orders
+`--SCAN TABLE users
 ```
 
 **対策**:
-```sql
--- work_memの増加
-SET work_mem = '256MB';
-
--- またはインデックス追加
-CREATE INDEX idx_orders_created_at ON orders(created_at);
-```
-
-### パターン4: Nested Loop（大規模）
-
-**問題**:
-```
-Nested Loop  (actual time=0.100..10000.000 rows=1000000 loops=1)
-  ->  Seq Scan on orders  (actual rows=10000)
-  ->  Index Scan on users  (actual rows=100 loops=10000)  -- 10000回ループ！
-```
-
-**対策**:
-```sql
--- Hash Joinを促す
-SET enable_nestloop = off;
-
--- またはインデックス最適化
-```
-
----
-
-## バッファ分析
-
-### BUFFERSオプション
 
 ```sql
-EXPLAIN (ANALYZE, BUFFERS) SELECT ...;
+-- 結合キーにインデックス追加
+CREATE INDEX idx_orders_user_id ON orders(user_id);
+CREATE INDEX idx_users_id ON users(id);  -- 主キーには自動作成済みの場合も
 ```
-
-### 出力例
-
-```
-Buffers: shared hit=100 read=50 dirtied=10 written=5
-```
-
-| 項目 | 説明 |
-|------|------|
-| shared hit | キャッシュヒット数 |
-| shared read | ディスク読み込み数 |
-| shared dirtied | 変更されたブロック数 |
-| shared written | 書き込まれたブロック数 |
-
-### 分析ポイント
-
-- **hit率**: hit / (hit + read) が高いほど良い
-- **readが多い**: バッファプールが小さい or ワーキングセットが大きい
-- **dirtied/written**: 更新操作の影響
 
 ---
 
@@ -314,7 +221,7 @@ Buffers: shared hit=100 read=50 dirtied=10 written=5
 ### ステップ1: 現状把握
 
 ```sql
-EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)
+EXPLAIN QUERY PLAN
 SELECT * FROM orders
 WHERE user_id = 'uuid-here' AND status = 'pending'
 ORDER BY created_at DESC
@@ -323,15 +230,14 @@ LIMIT 10;
 
 ### ステップ2: 問題特定
 
-- Seq Scan があるか？
-- 推定行数と実際の行数が乖離しているか？
-- Sort がディスクを使用しているか？
-- Nested Loop が大量にループしているか？
+- SCAN TABLE があるか？
+- インデックスが使用されているか（SEARCH TABLE）？
+- AUTOMATIC INDEX が発生しているか？
 
 ### ステップ3: 改善策実行
 
 ```sql
--- インデックス追加
+-- 複合インデックス追加
 CREATE INDEX idx_orders_user_status_date
 ON orders(user_id, status, created_at DESC);
 
@@ -343,7 +249,7 @@ ANALYZE orders;
 
 ```sql
 -- 改善後のクエリ
-EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)
+EXPLAIN QUERY PLAN
 SELECT * FROM orders
 WHERE user_id = 'uuid-here' AND status = 'pending'
 ORDER BY created_at DESC
@@ -354,31 +260,131 @@ LIMIT 10;
 
 ## 便利なクエリ
 
-### スロークエリの特定
+### インデックス一覧
 
 ```sql
-SELECT query, calls, mean_time, total_time
-FROM pg_stat_statements
-ORDER BY total_time DESC
-LIMIT 10;
+SELECT name, sql
+FROM sqlite_master
+WHERE type = 'index' AND tbl_name = 'orders';
 ```
 
-### インデックス使用率
+### テーブル情報
 
 ```sql
+-- テーブル構造
+PRAGMA table_info('orders');
+
+-- インデックス一覧
+PRAGMA index_list('orders');
+
+-- インデックス詳細
+PRAGMA index_info('idx_orders_status');
+```
+
+### データベース統計
+
+```sql
+-- テーブルサイズ
 SELECT
-  schemaname, tablename, indexrelname,
-  idx_scan, idx_tup_read, idx_tup_fetch
-FROM pg_stat_user_indexes
-ORDER BY idx_scan DESC;
+  name,
+  (SELECT COUNT(*) FROM sqlite_master WHERE type = 'index' AND tbl_name = name) as index_count
+FROM sqlite_master
+WHERE type = 'table';
 ```
 
-### テーブル統計
+---
+
+## SQLiteの特徴
+
+### インデックスタイプ
+
+SQLiteは **B-Treeインデックスのみ** をサポート:
+
+- 単一カラムインデックス
+- 複合インデックス
+- 部分インデックス
+- 式インデックス
+- UNIQUE制約
+
+### クエリオプティマイザー
+
+- コストベースオプティマイザー
+- ANALYZEによる統計情報を使用
+- 自動インデックス選択
+
+### 制限事項
+
+- ハッシュインデックスなし
+- ビットマップインデックスなし
+- 実行時統計なし（EXPLAIN QUERY PLANは推定のみ）
+
+---
+
+## ベストプラクティス
+
+### 1. 定期的なANALYZE
 
 ```sql
-SELECT
-  relname, n_live_tup, n_dead_tup,
-  last_vacuum, last_analyze
-FROM pg_stat_user_tables
-ORDER BY n_live_tup DESC;
+-- 統計情報を最新に保つ
+ANALYZE;
 ```
+
+### 2. 適切なインデックス設計
+
+- WHERE句の条件カラム
+- JOIN条件のカラム
+- ORDER BY/GROUP BYのカラム
+
+### 3. クエリプラン確認の習慣化
+
+新しいクエリを書いたら必ず `EXPLAIN QUERY PLAN` で確認
+
+### 4. 複合インデックスの活用
+
+```sql
+-- 等価条件を先に、範囲条件を後に
+CREATE INDEX idx_orders_user_status_date
+ON orders(user_id, status, created_at);
+```
+
+---
+
+## トラブルシューティング
+
+### インデックスが使用されない
+
+**原因**:
+
+- カーディナリティが低い
+- 統計情報が古い
+- クエリ条件が不適切
+
+**対策**:
+
+1. ANALYZEで統計更新
+2. インデックス設計見直し
+3. クエリ書き換え
+
+### AUTOMATIC INDEX頻発
+
+**原因**:
+
+- 適切な永続インデックスがない
+
+**対策**:
+
+```sql
+CREATE INDEX ON 対象テーブル(対象カラム);
+```
+
+### JOIN が遅い
+
+**原因**:
+
+- 結合キーにインデックスなし
+- テーブルスキャン発生
+
+**対策**:
+
+1. 両テーブルの結合キーにインデックス追加
+2. WHERE条件の最適化

@@ -21,14 +21,21 @@ ACIDは、データベーストランザクションの信頼性を保証する4
 ### 実現方法
 
 **トランザクションの使用**:
+
 ```typescript
 // 概念的な実装
 async function transferMoney(from: string, to: string, amount: number) {
   await db.transaction(async (tx) => {
-    await tx.update(accounts).set({ balance: sql`balance - ${amount}` }).where(eq(accounts.id, from))
-    await tx.update(accounts).set({ balance: sql`balance + ${amount}` }).where(eq(accounts.id, to))
+    await tx
+      .update(accounts)
+      .set({ balance: sql`balance - ${amount}` })
+      .where(eq(accounts.id, from));
+    await tx
+      .update(accounts)
+      .set({ balance: sql`balance + ${amount}` })
+      .where(eq(accounts.id, to));
     // どちらかが失敗すれば両方ロールバック
-  })
+  });
 }
 ```
 
@@ -54,6 +61,7 @@ async function transferMoney(from: string, to: string, amount: number) {
 ### 実現方法
 
 **データベース制約**:
+
 ```sql
 -- 外部キー制約
 ALTER TABLE orders ADD CONSTRAINT fk_user
@@ -69,10 +77,11 @@ UNIQUE (email);
 ```
 
 **アプリケーションバリデーション**:
+
 ```typescript
 // トランザクション前のバリデーション
 if (account.balance < amount) {
-  throw new InsufficientFundsError()
+  throw new InsufficientFundsError();
 }
 ```
 
@@ -97,12 +106,12 @@ if (account.balance < amount) {
 
 ### 分離レベル
 
-| レベル | Dirty Read | Non-Repeatable Read | Phantom Read |
-|--------|------------|---------------------|--------------|
-| READ UNCOMMITTED | 発生 | 発生 | 発生 |
-| READ COMMITTED | 防止 | 発生 | 発生 |
-| REPEATABLE READ | 防止 | 防止 | 発生 |
-| SERIALIZABLE | 防止 | 防止 | 防止 |
+| レベル           | Dirty Read | Non-Repeatable Read | Phantom Read |
+| ---------------- | ---------- | ------------------- | ------------ |
+| READ UNCOMMITTED | 発生       | 発生                | 発生         |
+| READ COMMITTED   | 防止       | 発生                | 発生         |
+| REPEATABLE READ  | 防止       | 防止                | 発生         |
+| SERIALIZABLE     | 防止       | 防止                | 防止         |
 
 ### チェックリスト
 
@@ -126,11 +135,13 @@ if (account.balance < amount) {
 ### 実現方法
 
 **データベースレベル**:
+
 - Write-Ahead Logging (WAL)
 - チェックポイント
 - レプリケーション
 
 **アプリケーションレベル**:
+
 - コミット確認後に次処理へ
 - 同期書き込みの使用
 
@@ -171,13 +182,13 @@ async function safeTransaction() {
   try {
     await db.transaction(async (tx) => {
       // 操作...
-    })
+    });
     // コミット成功後の処理
-    await sendNotification()
+    await sendNotification();
   } catch (error) {
     // 自動ロールバック済み
-    logger.error('Transaction failed', error)
-    throw error
+    logger.error("Transaction failed", error);
+    throw error;
   }
 }
 ```

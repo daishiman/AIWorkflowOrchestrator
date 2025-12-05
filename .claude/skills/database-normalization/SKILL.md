@@ -55,8 +55,8 @@ version: 1.0.0
 -- 違反: 繰り返しグループ
 CREATE TABLE orders (
   id INT,
-  customer_name VARCHAR(100),
-  items VARCHAR(500)  -- "item1,item2,item3" のような値
+  customer_name TEXT(100),
+  items TEXT(500)  -- "item1,item2,item3" のような値
 );
 ```
 
@@ -65,14 +65,14 @@ CREATE TABLE orders (
 ```sql
 -- 正規化: 関連テーブルに分離
 CREATE TABLE orders (
-  id INT PRIMARY KEY,
-  customer_name VARCHAR(100)
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  customer_name TEXT(100)
 );
 
 CREATE TABLE order_items (
-  id INT PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   order_id INT REFERENCES orders(id),
-  item_name VARCHAR(100)
+  item_name TEXT(100)
 );
 ```
 
@@ -93,7 +93,7 @@ CREATE TABLE order_items (
 CREATE TABLE order_items (
   order_id INT,
   product_id INT,
-  product_name VARCHAR(100),  -- product_id のみに依存
+  product_name TEXT(100),  -- product_id のみに依存
   quantity INT,
   PRIMARY KEY (order_id, product_id)
 );
@@ -104,8 +104,8 @@ CREATE TABLE order_items (
 ```sql
 -- 正規化: 部分従属を分離
 CREATE TABLE products (
-  id INT PRIMARY KEY,
-  name VARCHAR(100)
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT(100)
 );
 
 CREATE TABLE order_items (
@@ -130,10 +130,10 @@ CREATE TABLE order_items (
 ```sql
 -- 違反: 推移関数従属
 CREATE TABLE employees (
-  id INT PRIMARY KEY,
-  name VARCHAR(100),
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT(100),
   department_id INT,
-  department_name VARCHAR(100)  -- department_id を経由した推移従属
+  department_name TEXT(100)  -- department_id を経由した推移従属
 );
 ```
 
@@ -142,13 +142,13 @@ CREATE TABLE employees (
 ```sql
 -- 正規化: 推移従属を分離
 CREATE TABLE departments (
-  id INT PRIMARY KEY,
-  name VARCHAR(100)
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT(100)
 );
 
 CREATE TABLE employees (
-  id INT PRIMARY KEY,
-  name VARCHAR(100),
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT(100),
   department_id INT REFERENCES departments(id)
 );
 ```
@@ -177,8 +177,8 @@ CREATE TABLE employees (
 -- 違反: 多値従属性
 CREATE TABLE employee_skills_projects (
   employee_id INT,
-  skill VARCHAR(50),
-  project VARCHAR(50),
+  skill TEXT(50),
+  project TEXT(50),
   PRIMARY KEY (employee_id, skill, project)
 );
 -- スキルとプロジェクトは独立しているが、組み合わせを保存
@@ -190,13 +190,13 @@ CREATE TABLE employee_skills_projects (
 -- 正規化: 多値従属を分離
 CREATE TABLE employee_skills (
   employee_id INT,
-  skill VARCHAR(50),
+  skill TEXT(50),
   PRIMARY KEY (employee_id, skill)
 );
 
 CREATE TABLE employee_projects (
   employee_id INT,
-  project VARCHAR(50),
+  project TEXT(50),
   PRIMARY KEY (employee_id, project)
 );
 ```
@@ -234,10 +234,10 @@ CREATE TABLE employee_projects (
 ```sql
 -- 非正規化: 合計金額を事前計算
 CREATE TABLE orders (
-  id INT PRIMARY KEY,
-  subtotal DECIMAL(10,2),
-  tax DECIMAL(10,2),
-  total DECIMAL(10,2)  -- 計算済み: subtotal + tax
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  subtotal REAL(10,2),
+  tax REAL(10,2),
+  total REAL(10,2)  -- 計算済み: subtotal + tax
 );
 ```
 
@@ -246,10 +246,10 @@ CREATE TABLE orders (
 ```sql
 -- 非正規化: 履歴保持のため顧客名を複製
 CREATE TABLE orders (
-  id INT PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   customer_id INT,
-  customer_name VARCHAR(100),  -- 注文時点の名前を保存
-  created_at TIMESTAMPTZ
+  customer_name TEXT(100),  -- 注文時点の名前を保存
+  created_at INTEGER
 );
 ```
 
@@ -260,7 +260,7 @@ CREATE TABLE orders (
 CREATE TABLE daily_sales_summary (
   date DATE PRIMARY KEY,
   total_orders INT,
-  total_revenue DECIMAL(12,2)
+  total_revenue REAL(12,2)
 );
 ```
 

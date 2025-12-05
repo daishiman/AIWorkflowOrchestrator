@@ -1,351 +1,348 @@
-# パフォーマンス監視クエリ集
+# パフォーマンス監視クエリ集 (SQLite)
 
-## pg_stat_statements
+## データベース情報
 
-### セットアップ
-
-```sql
--- 拡張の有効化
-CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
-
--- postgresql.conf に追加（再起動必要）
--- shared_preload_libraries = 'pg_stat_statements'
--- pg_stat_statements.track = all
-```
-
-### 遅いクエリのトップ10
+### 基本情報
 
 ```sql
-SELECT
-  substring(query, 1, 100) AS query_preview,
-  calls,
-  round(total_exec_time::numeric, 2) AS total_time_ms,
-  round(mean_exec_time::numeric, 2) AS avg_time_ms,
-  round(stddev_exec_time::numeric, 2) AS stddev_ms,
-  rows
-FROM pg_stat_statements
-ORDER BY mean_exec_time DESC
-LIMIT 10;
-```
+-- データベースバージョン
+SELECT sqlite_version();
 
-### 最も呼び出されるクエリ
+-- データベースサイズ
+SELECT page_count * page_size as size_bytes
+FROM pragma_page_count(), pragma_page_size();
 
-```sql
-SELECT
-  substring(query, 1, 100) AS query_preview,
-  calls,
-  round(total_exec_time::numeric, 2) AS total_time_ms,
-  round((total_exec_time / calls)::numeric, 2) AS avg_time_ms
-FROM pg_stat_statements
-ORDER BY calls DESC
-LIMIT 10;
-```
+-- ページサイズ
+PRAGMA page_size;
 
-### 合計実行時間が長いクエリ
+-- キャッシュサイズ
+PRAGMA cache_size;
 
-```sql
-SELECT
-  substring(query, 1, 100) AS query_preview,
-  calls,
-  round(total_exec_time::numeric, 2) AS total_time_ms,
-  round((total_exec_time / SUM(total_exec_time) OVER () * 100)::numeric, 2) AS pct_total
-FROM pg_stat_statements
-ORDER BY total_exec_time DESC
-LIMIT 10;
-```
+-- ジャーナルモード
+PRAGMA journal_mode;
 
-### 統計のリセット
-
-```sql
--- 統計をリセット
-SELECT pg_stat_statements_reset();
+-- 同期モード
+PRAGMA synchronous;
 ```
 
 ## テーブル統計
 
-### テーブルサイズ
+### すべてのテーブル一覧
 
 ```sql
 SELECT
-  schemaname,
-  relname AS table_name,
-  pg_size_pretty(pg_total_relation_size(relid)) AS total_size,
-  pg_size_pretty(pg_relation_size(relid)) AS table_size,
-  pg_size_pretty(pg_indexes_size(relid)) AS indexes_size,
-  n_live_tup AS live_rows,
-  n_dead_tup AS dead_rows,
-  round(100.0 * n_dead_tup / NULLIF(n_live_tup + n_dead_tup, 0), 2) AS dead_ratio
-FROM pg_stat_user_tables
-ORDER BY pg_total_relation_size(relid) DESC
-LIMIT 20;
+  name,
+  type
+FROM sqlite_master
+WHERE type = 'table'
+  AND name NOT LIKE 'sqlite_%'
+ORDER BY name;
 ```
 
-### シーケンシャルスキャンが多いテーブル
+### テーブル情報とインデックス数
 
 ```sql
 SELECT
-  schemaname,
-  relname AS table_name,
-  seq_scan,
-  seq_tup_read,
-  idx_scan,
-  CASE WHEN seq_scan > 0
-    THEN round(seq_tup_read::numeric / seq_scan, 2)
-    ELSE 0
-  END AS avg_seq_rows,
-  n_live_tup AS live_rows
-FROM pg_stat_user_tables
-WHERE seq_scan > 0
-ORDER BY seq_tup_read DESC
-LIMIT 20;
+  m.name as table_name,
+  COUNT(CASE WHEN i.type = 'index' AND i.name NOT LIKE 'sqlite_%' THEN 1 END) as index_count
+FROM sqlite_master m
+LEFT JOIN sqlite_master i ON i.tbl_name = m.name AND i.type = 'index'
+WHERE m.type = 'table'
+  AND m.name NOT LIKE 'sqlite_%'
+GROUP BY m.name
+ORDER BY m.name;
 ```
 
-### インデックス使用率
+### テーブルスキーマ
 
 ```sql
-SELECT
-  schemaname,
-  relname AS table_name,
-  idx_scan,
-  seq_scan,
-  CASE WHEN (idx_scan + seq_scan) > 0
-    THEN round(100.0 * idx_scan / (idx_scan + seq_scan), 2)
-    ELSE 0
-  END AS index_usage_pct,
-  n_live_tup AS live_rows
-FROM pg_stat_user_tables
-WHERE n_live_tup > 1000
-ORDER BY index_usage_pct ASC
-LIMIT 20;
+-- 特定テーブルのカラム情報
+PRAGMA table_info(users);
+
+-- CREATE文の確認
+SELECT sql
+FROM sqlite_master
+WHERE type = 'table' AND name = 'users';
 ```
 
 ## インデックス統計
 
-### 未使用インデックス
+### すべてのインデックス
 
 ```sql
 SELECT
-  schemaname,
-  relname AS table_name,
-  indexrelname AS index_name,
-  idx_scan AS times_used,
-  pg_size_pretty(pg_relation_size(indexrelid)) AS index_size
-FROM pg_stat_user_indexes
-WHERE idx_scan = 0
-  AND indexrelname NOT LIKE '%_pkey'
-ORDER BY pg_relation_size(indexrelid) DESC;
+  name as index_name,
+  tbl_name as table_name,
+  sql
+FROM sqlite_master
+WHERE type = 'index'
+  AND name NOT LIKE 'sqlite_%'
+ORDER BY tbl_name, name;
 ```
 
-### インデックス効率
+### テーブル別インデックス一覧
 
 ```sql
 SELECT
-  schemaname,
-  relname AS table_name,
-  indexrelname AS index_name,
-  idx_scan,
-  idx_tup_read,
-  idx_tup_fetch,
-  CASE WHEN idx_scan > 0
-    THEN round(idx_tup_read::numeric / idx_scan, 2)
-    ELSE 0
-  END AS avg_rows_per_scan
-FROM pg_stat_user_indexes
-ORDER BY idx_scan DESC
-LIMIT 20;
+  m.name as table_name,
+  i.name as index_name,
+  i.sql
+FROM sqlite_master m
+INNER JOIN sqlite_master i ON i.tbl_name = m.name
+WHERE m.type = 'table'
+  AND i.type = 'index'
+  AND m.name NOT LIKE 'sqlite_%'
+  AND i.name NOT LIKE 'sqlite_%'
+ORDER BY m.name, i.name;
 ```
 
-### インデックスサイズ
+### インデックスの詳細情報
 
 ```sql
-SELECT
-  schemaname,
-  relname AS table_name,
-  indexrelname AS index_name,
-  pg_size_pretty(pg_relation_size(indexrelid)) AS index_size,
-  idx_scan
-FROM pg_stat_user_indexes
-ORDER BY pg_relation_size(indexrelid) DESC
-LIMIT 20;
+-- インデックスのカラム情報
+PRAGMA index_info(idx_users_email);
+
+-- インデックスが使用されているか確認（クエリプランで）
+EXPLAIN QUERY PLAN
+SELECT * FROM users WHERE email = 'test@example.com';
 ```
 
-## 接続とロック
+## 統計情報（sqlite_stat1）
 
-### アクティブな接続
+### テーブル統計
 
 ```sql
-SELECT
-  datname AS database,
-  usename AS user,
-  client_addr,
-  state,
-  query_start,
-  NOW() - query_start AS duration,
-  substring(query, 1, 100) AS query_preview
-FROM pg_stat_activity
-WHERE state != 'idle'
-  AND pid != pg_backend_pid()
-ORDER BY query_start;
+-- ANALYZE実行後に利用可能
+SELECT * FROM sqlite_stat1
+WHERE tbl LIKE 'users%';
+
+-- 統計情報の更新
+ANALYZE;
 ```
 
-### 長時間実行中のクエリ
+## データベース整合性
+
+### 整合性チェック
 
 ```sql
-SELECT
-  pid,
-  usename AS user,
-  state,
-  NOW() - query_start AS duration,
-  substring(query, 1, 200) AS query
-FROM pg_stat_activity
-WHERE state != 'idle'
-  AND query_start < NOW() - INTERVAL '5 minutes'
-ORDER BY query_start;
+-- データベース全体の整合性チェック
+PRAGMA integrity_check;
+
+-- 高速チェック（サンプリング）
+PRAGMA quick_check;
+
+-- 外部キー制約チェック
+PRAGMA foreign_key_check;
+
+-- 特定テーブルの外部キー制約チェック
+PRAGMA foreign_key_check(users);
 ```
 
-### ロック待ち
+## パフォーマンス設定
+
+### 現在の設定確認
 
 ```sql
-SELECT
-  blocked.pid AS blocked_pid,
-  blocked.usename AS blocked_user,
-  blocking.pid AS blocking_pid,
-  blocking.usename AS blocking_user,
-  blocked.query AS blocked_query,
-  blocking.query AS blocking_query
-FROM pg_stat_activity blocked
-JOIN pg_stat_activity blocking ON blocking.pid = ANY(pg_blocking_pids(blocked.pid))
-WHERE cardinality(pg_blocking_pids(blocked.pid)) > 0;
+-- 主要な設定一覧
+PRAGMA cache_size;         -- キャッシュサイズ（ページ数）
+PRAGMA page_size;          -- ページサイズ（バイト）
+PRAGMA journal_mode;       -- ジャーナルモード（WAL推奨）
+PRAGMA synchronous;        -- 同期モード（1=NORMAL推奨）
+PRAGMA temp_store;         -- 一時テーブル保存場所（2=MEMORY推奨）
+PRAGMA mmap_size;          -- メモリマップサイズ
+PRAGMA auto_vacuum;        -- 自動VACUUM設定
 ```
 
-### テーブルロック状況
+### パフォーマンス設定の最適化
 
 ```sql
-SELECT
-  locktype,
-  relation::regclass,
-  mode,
-  granted,
-  pid,
-  substring(query, 1, 100) AS query
-FROM pg_locks l
-JOIN pg_stat_activity a ON l.pid = a.pid
-WHERE relation IS NOT NULL
-  AND NOT granted
-ORDER BY relation;
+-- 推奨設定
+PRAGMA journal_mode = WAL;        -- Write-Ahead Loggingで同時実行性向上
+PRAGMA synchronous = NORMAL;      -- バランスの取れた同期モード
+PRAGMA cache_size = 10000;        -- キャッシュサイズを増加（10000ページ = 約40MB）
+PRAGMA temp_store = MEMORY;       -- 一時データをメモリに保存
+PRAGMA mmap_size = 268435456;     -- メモリマップを256MBに設定
+
+-- 設定の永続化（毎回実行が必要）
+-- アプリケーション起動時に実行
 ```
 
-## キャッシュ効率
+## VACUUM と最適化
 
-### バッファキャッシュヒット率
+### データベースの最適化
 
 ```sql
-SELECT
-  datname AS database,
-  round(100.0 * blks_hit / NULLIF(blks_hit + blks_read, 0), 2) AS cache_hit_ratio
-FROM pg_stat_database
-WHERE datname = current_database();
+-- 通常のVACUUM（データベースファイルを圧縮）
+VACUUM;
+
+-- テーブル名とページ数の確認
+PRAGMA page_count;
+
+-- VACUUMが必要かどうかの判断
+-- フラグメンテーションが多い場合にVACUUMを実行
+PRAGMA freelist_count;  -- 未使用ページ数
 ```
 
-### テーブル別キャッシュ効率
+### AUTO VACUUM設定
 
 ```sql
-SELECT
-  schemaname,
-  relname AS table_name,
-  heap_blks_read,
-  heap_blks_hit,
-  round(100.0 * heap_blks_hit / NULLIF(heap_blks_hit + heap_blks_read, 0), 2) AS cache_hit_ratio
-FROM pg_statio_user_tables
-WHERE heap_blks_read + heap_blks_hit > 0
-ORDER BY heap_blks_read DESC
-LIMIT 20;
+-- 現在の設定確認
+PRAGMA auto_vacuum;
+
+-- 設定変更（0=OFF, 1=FULL, 2=INCREMENTAL）
+-- 注: 既存データベースでは即座に有効にならない
+PRAGMA auto_vacuum = FULL;
+VACUUM;  -- 設定を有効化
 ```
 
-## VACUUM状況
+## クエリ最適化
 
-### 最後のVACUUM実行
+### EXPLAIN QUERY PLAN
 
 ```sql
-SELECT
-  schemaname,
-  relname AS table_name,
-  last_vacuum,
-  last_autovacuum,
-  last_analyze,
-  last_autoanalyze,
-  n_dead_tup,
-  n_live_tup
-FROM pg_stat_user_tables
-ORDER BY n_dead_tup DESC
-LIMIT 20;
+-- クエリプランの確認
+EXPLAIN QUERY PLAN
+SELECT * FROM users WHERE email = 'test@example.com';
+
+-- 複雑なクエリのプラン
+EXPLAIN QUERY PLAN
+SELECT u.*, o.*
+FROM users u
+JOIN orders o ON u.id = o.user_id
+WHERE u.is_active = 1
+ORDER BY o.created_at DESC;
 ```
 
-### VACUUMが必要なテーブル
+### クエリ実行時間測定
 
 ```sql
-SELECT
-  schemaname,
-  relname AS table_name,
-  n_dead_tup,
-  n_live_tup,
-  round(100.0 * n_dead_tup / NULLIF(n_live_tup, 0), 2) AS dead_ratio,
-  last_autovacuum
-FROM pg_stat_user_tables
-WHERE n_dead_tup > 1000
-ORDER BY n_dead_tup DESC;
+-- タイマーを有効化
+.timer on
+
+-- クエリを実行
+SELECT COUNT(*) FROM users;
+
+-- 出力例:
+-- Run Time: real 0.001 user 0.000428 sys 0.000171
 ```
 
-## レプリケーション
+## トランザクションとロック
 
-### レプリカ遅延（プライマリで実行）
+### トランザクション状態
 
 ```sql
-SELECT
-  client_addr,
-  state,
-  sent_lsn,
-  write_lsn,
-  flush_lsn,
-  replay_lsn,
-  pg_wal_lsn_diff(sent_lsn, replay_lsn) AS replay_lag_bytes
-FROM pg_stat_replication;
+-- 現在のトランザクション状態
+-- SQLiteには専用のクエリがないため、アプリケーションレベルで管理
 ```
 
-## ダッシュボード用サマリー
+### ロックモード確認
+
+```sql
+-- データベースのロック状態
+PRAGMA locking_mode;
+
+-- WALモードのチェックポイント情報
+PRAGMA wal_checkpoint;
+```
+
+## メモリ使用状況
+
+### メモリ統計
+
+```sql
+-- 現在のメモリ使用量（バイト）
+SELECT * FROM pragma_page_count() * (SELECT * FROM pragma_page_size());
+
+-- キャッシュ使用状況
+-- SQLiteには詳細なメモリ統計がない
+-- OSレベルのツール（ps, top等）を使用
+```
+
+## データベースファイル情報
+
+### ファイルサイズ
+
+```sql
+-- データベースのページ数とサイズ
+SELECT
+  (SELECT * FROM pragma_page_count()) as page_count,
+  (SELECT * FROM pragma_page_size()) as page_size,
+  (SELECT * FROM pragma_page_count()) * (SELECT * FROM pragma_page_size()) as database_size_bytes;
+
+-- WALファイルのサイズ
+-- OSコマンドで確認: ls -lh database.db-wal
+```
+
+## 監視ダッシュボード用サマリー
 
 ### 総合ヘルスチェック
 
 ```sql
-WITH stats AS (
-  SELECT
-    (SELECT round(100.0 * blks_hit / NULLIF(blks_hit + blks_read, 0), 2)
-     FROM pg_stat_database WHERE datname = current_database()) AS cache_hit_ratio,
-    (SELECT COUNT(*) FROM pg_stat_activity WHERE state != 'idle') AS active_connections,
-    (SELECT COUNT(*) FROM pg_stat_activity WHERE state = 'idle') AS idle_connections,
-    (SELECT COUNT(*) FROM pg_locks WHERE NOT granted) AS blocked_queries,
-    (SELECT COUNT(*) FROM pg_stat_activity
-     WHERE state != 'idle' AND query_start < NOW() - INTERVAL '5 minutes') AS long_running
-)
-SELECT * FROM stats;
+-- データベース基本情報
+SELECT
+  sqlite_version() as version,
+  (SELECT * FROM pragma_page_count()) as page_count,
+  (SELECT * FROM pragma_page_size()) as page_size,
+  (SELECT * FROM pragma_freelist_count()) as freelist_count,
+  (SELECT * FROM pragma_cache_size()) as cache_size,
+  (SELECT * FROM pragma_journal_mode()) as journal_mode,
+  (SELECT * FROM pragma_synchronous()) as synchronous;
+```
+
+### テーブルとインデックスのサマリー
+
+```sql
+SELECT
+  (SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%') as table_count,
+  (SELECT COUNT(*) FROM sqlite_master WHERE type = 'index' AND name NOT LIKE 'sqlite_%') as index_count,
+  (SELECT COUNT(*) FROM sqlite_master WHERE type = 'trigger') as trigger_count,
+  (SELECT COUNT(*) FROM sqlite_master WHERE type = 'view') as view_count;
 ```
 
 ## チェックリスト
 
 ### 日次監視
-- [ ] 遅いクエリのトップ10を確認
-- [ ] アクティブ接続数を確認
-- [ ] キャッシュヒット率を確認
-- [ ] 長時間実行クエリがないか確認
+
+- [ ] データベースサイズの確認
+- [ ] PRAGMA integrity_checkの実行
+- [ ] アプリケーションログでの遅いクエリ確認
 
 ### 週次監視
-- [ ] 未使用インデックスを確認
-- [ ] テーブル/インデックスサイズの推移を確認
-- [ ] dead_tupが多いテーブルを確認
-- [ ] シーケンシャルスキャンが多いテーブルを確認
+
+- [ ] 未使用インデックスの確認
+- [ ] PRAGMA freelist_countで未使用ページ確認
+- [ ] WALファイルサイズの確認
 
 ### 月次レビュー
-- [ ] pg_stat_statementsの統計をレビュー
-- [ ] インデックス戦略を見直し
-- [ ] VACUUM設定を確認
-- [ ] パフォーマンスレポートを作成
+
+- [ ] ANALYZEの実行
+- [ ] VACUUMの必要性確認
+- [ ] データベース設定の見直し
+- [ ] パフォーマンスレポートの作成
+
+## 注意事項
+
+### SQLiteの制限とTursoでの対応
+
+SQLiteには以下のような制限がありますが、Tursoでは一部補完されています:
+
+- **クエリ統計機能なし**: 組み込みのクエリ統計機能がない
+  - 解決策: アプリケーションレベルでログ・計測
+  - Turso: ダッシュボードで一部の統計情報を提供
+
+- **リアルタイム統計なし**: 実行中のクエリやロック情報を直接取得できない
+  - 解決策: WALモードで同時実行性を向上、アプリケーションで監視
+  - Turso: 分散環境で自動的にWALモードを管理
+
+- **詳細なメモリ統計なし**: メモリ使用量の詳細情報がない
+  - 解決策: OSレベルのツールを使用（ローカル環境）
+  - Turso: クラウド環境でリソース管理を自動化
+
+### 推奨監視手法
+
+1. **アプリケーションログ**: クエリ実行時間をアプリケーションで計測
+2. **EXPLAIN QUERY PLAN**: 定期的にクエリプランを確認
+3. **ANALYZE**: データ変更後に定期実行
+4. **integrity_check**: 定期的な整合性チェック
+5. **VACUUM**: フラグメンテーション解消のため定期実行
+6. **Tursoダッシュボード**: クラウド環境でのメトリクス確認（クエリ数、レイテンシ、レプリカ同期状態）

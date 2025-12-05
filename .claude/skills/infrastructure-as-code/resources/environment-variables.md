@@ -6,31 +6,32 @@
 
 外部に漏洩してはならない情報。
 
-| 変数名 | 用途 | 管理場所 |
-|--------|------|---------|
-| `DATABASE_URL` | DB接続文字列 | Railway (Neon Plugin) |
-| `OPENAI_API_KEY` | OpenAI API | Railway Secrets |
-| `ANTHROPIC_API_KEY` | Anthropic API | Railway Secrets |
-| `DISCORD_TOKEN` | Discordボット | Railway Secrets |
-| `DISCORD_WEBHOOK_URL` | Webhook通知 | GitHub Secrets |
+| 変数名                | 用途              | 管理場所          |
+| --------------------- | ----------------- | ----------------- |
+| `TURSO_DATABASE_URL`  | Turso接続URL      | Railway Variables |
+| `TURSO_AUTH_TOKEN`    | Turso認証トークン | Railway Secrets   |
+| `OPENAI_API_KEY`      | OpenAI API        | Railway Secrets   |
+| `ANTHROPIC_API_KEY`   | Anthropic API     | Railway Secrets   |
+| `DISCORD_TOKEN`       | Discordボット     | Railway Secrets   |
+| `DISCORD_WEBHOOK_URL` | Webhook通知       | GitHub Secrets    |
 
 ### 2. 環境固有設定 (Environment-Specific)
 
 環境ごとに異なる設定値。
 
-| 変数名 | 開発 | ステージング | 本番 |
-|--------|------|-------------|------|
-| `NODE_ENV` | development | staging | production |
-| `API_BASE_URL` | localhost | staging.app.com | app.com |
-| `LOG_LEVEL` | debug | info | warn |
+| 変数名         | 開発        | ステージング    | 本番       |
+| -------------- | ----------- | --------------- | ---------- |
+| `NODE_ENV`     | development | staging         | production |
+| `API_BASE_URL` | localhost   | staging.app.com | app.com    |
+| `LOG_LEVEL`    | debug       | info            | warn       |
 
 ### 3. 共通設定 (Common)
 
 全環境で同一の設定。
 
-| 変数名 | 値 | 説明 |
-|--------|-----|------|
-| `TZ` | UTC | タイムゾーン |
+| 変数名 | 値   | 説明                   |
+| ------ | ---- | ---------------------- |
+| `TZ`   | UTC  | タイムゾーン           |
 | `PORT` | 3000 | アプリケーションポート |
 
 ## 命名規則
@@ -44,12 +45,12 @@ UPPER_SNAKE_CASE を使用
 
 ### プレフィックス
 
-| プレフィックス | 用途 | 例 |
-|---------------|------|-----|
-| `DB_` | データベース関連 | `DB_HOST`, `DB_PORT` |
-| `DISCORD_` | Discord関連 | `DISCORD_TOKEN`, `DISCORD_CLIENT_ID` |
-| `OPENAI_` | OpenAI関連 | `OPENAI_API_KEY` |
-| `NEXT_PUBLIC_` | クライアント公開 | `NEXT_PUBLIC_API_URL` |
+| プレフィックス | 用途             | 例                                   |
+| -------------- | ---------------- | ------------------------------------ |
+| `DB_`          | データベース関連 | `DB_HOST`, `DB_PORT`                 |
+| `DISCORD_`     | Discord関連      | `DISCORD_TOKEN`, `DISCORD_CLIENT_ID` |
+| `OPENAI_`      | OpenAI関連       | `OPENAI_API_KEY`                     |
+| `NEXT_PUBLIC_` | クライアント公開 | `NEXT_PUBLIC_API_URL`                |
 
 ### Next.js の特殊変数
 
@@ -76,6 +77,7 @@ env:
 ```
 
 **設定場所**:
+
 ```
 Repository → Settings → Secrets and variables → Actions
 ```
@@ -93,23 +95,26 @@ railway variables
 ```
 
 **設定場所**:
+
 ```
 Railway Dashboard → Service → Variables
 ```
 
-### Railway Plugins
+### Turso統合
 
-**用途**: 統合サービス（自動注入）
+**用途**: Turso SQLiteデータベース接続
 
 ```
-Neon Plugin → DATABASE_URL を自動設定
+TURSO_DATABASE_URL → libsql:// で始まる接続URL
+TURSO_AUTH_TOKEN → Turso認証トークン
 ```
 
 ### .env ファイル（ローカル開発）
 
 ```bash
 # .env.local（Gitに含めない）
-DATABASE_URL=postgresql://...
+TURSO_DATABASE_URL=libsql://...
+TURSO_AUTH_TOKEN=...
 OPENAI_API_KEY=sk-...
 ```
 
@@ -119,9 +124,10 @@ OPENAI_API_KEY=sk-...
 
 ```bash
 # ===========================================
-# Database (Neon Plugin で自動設定)
+# Database (Turso SQLite)
 # ===========================================
-DATABASE_URL=postgresql://user:password@host:5432/dbname
+TURSO_DATABASE_URL=libsql://your-database.turso.io
+TURSO_AUTH_TOKEN=your-turso-auth-token
 
 # ===========================================
 # AI API Keys
@@ -158,7 +164,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 railway variables
 
 # 特定の変数を確認
-railway variables get DATABASE_URL
+railway variables get TURSO_DATABASE_URL
 ```
 
 ### 環境変数をロードしてローカル実行
@@ -188,8 +194,8 @@ railway variables set KEY1=value1 KEY2=value2
 ```typescript
 // config.ts
 const config = {
-  apiUrl: process.env.API_URL || 'http://localhost:3000',
-  logLevel: process.env.LOG_LEVEL || 'debug',
+  apiUrl: process.env.API_URL || "http://localhost:3000",
+  logLevel: process.env.LOG_LEVEL || "debug",
 };
 ```
 
@@ -218,11 +224,13 @@ Railway Project
 ### やるべきこと
 
 1. **Secretは環境変数で注入**:
+
    ```typescript
    const apiKey = process.env.API_KEY;
    ```
 
 2. **.gitignore に追加**:
+
    ```gitignore
    .env
    .env.local
@@ -238,12 +246,14 @@ Railway Project
 ### やってはいけないこと
 
 1. **コードにハードコード**:
+
    ```typescript
    // ❌ 絶対にやらない
    const apiKey = "sk-1234567890";
    ```
 
 2. **ログに出力**:
+
    ```typescript
    // ❌ 危険
    console.log(`API Key: ${process.env.API_KEY}`);
@@ -261,4 +271,4 @@ Railway Project
 - [ ] 機密情報がコードにハードコードされていないか？
 - [ ] .env.example が最新か？
 - [ ] 環境ごとの変数が適切に分離されているか？
-- [ ] NEXT_PUBLIC_ の使用が適切か？
+- [ ] NEXT*PUBLIC* の使用が適切か？

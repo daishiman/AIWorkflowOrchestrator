@@ -218,7 +218,7 @@ function analyzeTransactionBlock(block) {
 
   // 5. ロールバック処理の確認
   const hasRollback = PATTERNS.rollbackPatterns.some((p) =>
-    p.test(block.content)
+    p.test(block.content),
   );
   if (!hasRollback) {
     issues.push({
@@ -256,7 +256,7 @@ function analyzeTransactionBlock(block) {
 
   // 8. セーブポイントの検出
   const hasSavepoint = PATTERNS.savepointPatterns.some((p) =>
-    p.test(block.content)
+    p.test(block.content),
   );
   if (hasSavepoint) {
     info.push({
@@ -385,7 +385,7 @@ function printReport(report) {
     }
     if (report.summary.byType.EXCEPTION_SWALLOWING > 0) {
       console.log(
-        "  • 例外を再スローしてトランザクションのロールバックを確保してください"
+        "  • 例外を再スローしてトランザクションのロールバックを確保してください",
       );
     }
     if (report.summary.byType.LONG_TRANSACTION > 0) {

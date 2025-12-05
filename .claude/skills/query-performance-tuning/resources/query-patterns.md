@@ -25,19 +25,19 @@ LIMIT 100;
 SELECT * FROM orders
 WHERE user_id IN (SELECT id FROM users LIMIT 100);
 
--- 配列を使用（PostgreSQL）
+-- 複数値の効率的検索
 SELECT * FROM orders
-WHERE user_id = ANY(ARRAY[1, 2, 3, ...]);
+WHERE user_id IN (1, 2, 3, ...);
 ```
 
-### EXPLAIN ANALYZEでの検出
+### EXPLAIN QUERY PLANでの検出
 
 ```
-Index Scan using orders_user_id_idx on orders
-  (actual time=0.020..0.025 rows=1 loops=100)
-                                        ↑
-                                    loops=100 は危険信号
+SEARCH TABLE orders USING INDEX idx_orders_user_id (user_id=?)
 ```
+
+注: SQLiteのEXPLAIN QUERY PLANはloops情報を提供しないため、
+アプリケーションレベルでクエリ数を監視する必要があります。
 
 ## ページネーション
 
@@ -89,26 +89,26 @@ SELECT COUNT(*) FROM orders WHERE status = 'pending';
 ### 解決策
 
 ```sql
--- 推定値で十分な場合
-SELECT reltuples::bigint AS estimated_count
-FROM pg_class
-WHERE relname = 'orders';
+-- SQLiteでは推定値を取得する直接的な方法はない
+-- sqlite_stat1テーブルから推定可能（ANALYZE後）
+SELECT stat FROM sqlite_stat1
+WHERE tbl = 'orders' AND idx IS NULL;
 
 -- 最近の正確な値をキャッシュ
 -- 集計テーブルを使用
 
 -- COUNT(1) vs COUNT(*)
--- PostgreSQLでは同じ性能
+-- SQLiteでは同じ性能
 ```
 
 ### 条件付きCOUNTの最適化
 
 ```sql
--- 複数条件のカウントを1クエリで
+-- 複数条件のカウントを1クエリで（SQLite方式）
 SELECT
-  COUNT(*) FILTER (WHERE status = 'pending') AS pending_count,
-  COUNT(*) FILTER (WHERE status = 'completed') AS completed_count,
-  COUNT(*) FILTER (WHERE status = 'cancelled') AS cancelled_count
+  SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS pending_count,
+  SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) AS completed_count,
+  SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) AS cancelled_count
 FROM orders;
 ```
 
@@ -135,15 +135,15 @@ INNER JOIN orders o ON u.id = o.user_id;
 
 ### 選択指針
 
-| パターン | 適切な場合 |
-|---------|-----------|
-| EXISTS | サブクエリの結果が大きい場合 |
-| IN | サブクエリの結果が小さい場合 |
-| JOIN | 両テーブルのデータが必要な場合 |
+| パターン | 適切な場合                     |
+| -------- | ------------------------------ |
+| EXISTS   | サブクエリの結果が大きい場合   |
+| IN       | サブクエリの結果が小さい場合   |
+| JOIN     | 両テーブルのデータが必要な場合 |
 
 ```sql
 -- 大量データではEXISTSが効率的なことが多い
--- PostgreSQLは多くの場合同等に最適化するが、確認は必要
+-- SQLiteでも適切なインデックスがあれば効率的に最適化される
 ```
 
 ## NOT IN vs NOT EXISTS vs LEFT JOIN
@@ -184,15 +184,26 @@ SELECT * FROM users WHERE name LIKE '%test%';
 -- 前方一致はインデックス使用可能
 SELECT * FROM users WHERE name LIKE 'test%';
 
--- 全文検索（大量データの場合）
-CREATE INDEX idx_users_name_gin ON users USING GIN(to_tsvector('simple', name));
-SELECT * FROM users
-WHERE to_tsvector('simple', name) @@ to_tsquery('simple', 'test');
+-- 全文検索（大量データの場合）FTS5仮想テーブルを使用
+CREATE VIRTUAL TABLE users_fts USING fts5(name, content=users, content_rowid=id);
 
--- pg_trgm拡張（部分一致検索）
-CREATE EXTENSION pg_trgm;
-CREATE INDEX idx_users_name_trgm ON users USING GIN(name gin_trgm_ops);
-SELECT * FROM users WHERE name ILIKE '%test%';
+-- トリガーで同期
+CREATE TRIGGER users_fts_insert AFTER INSERT ON users BEGIN
+  INSERT INTO users_fts(rowid, name) VALUES (new.id, new.name);
+END;
+
+CREATE TRIGGER users_fts_update AFTER UPDATE ON users BEGIN
+  UPDATE users_fts SET name = new.name WHERE rowid = old.id;
+END;
+
+CREATE TRIGGER users_fts_delete AFTER DELETE ON users BEGIN
+  DELETE FROM users_fts WHERE rowid = old.id;
+END;
+
+-- 全文検索の実行
+SELECT u.* FROM users u
+JOIN users_fts ON users_fts.rowid = u.id
+WHERE users_fts MATCH 'test';
 ```
 
 ## OR条件
@@ -213,8 +224,8 @@ SELECT * FROM users WHERE email = 'a@example.com'
 UNION
 SELECT * FROM users WHERE name = 'test';
 
--- または複数インデックスのBitmap Scan（自動）
--- PostgreSQLは自動で最適化することが多い
+-- SQLiteもOR条件を自動で最適化することがあるが、
+-- 複雑なOR条件ではUNIONの方が効率的な場合が多い
 ```
 
 ## 集約クエリ
@@ -270,8 +281,16 @@ VALUES
   ...
   ('User 1000', 'user1000@example.com');
 
--- COPY（最速）
-COPY users (name, email) FROM '/path/to/file.csv' CSV HEADER;
+-- トランザクション内でバッチ実行（最速）
+BEGIN TRANSACTION;
+INSERT INTO users (name, email) VALUES ('User 1', 'user1@example.com');
+INSERT INTO users (name, email) VALUES ('User 2', 'user2@example.com');
+-- ...
+COMMIT;
+
+-- または .import コマンド（sqlite3 CLI）
+-- .mode csv
+-- .import /path/to/file.csv users
 ```
 
 ### 大量UPDATE
@@ -308,25 +327,23 @@ WHERE id IN (
   LIMIT 10000
 );
 
--- または
-WITH deleted AS (
-  DELETE FROM logs
-  WHERE ctid IN (
-    SELECT ctid FROM logs
-    WHERE created_at < '2023-01-01'
-    LIMIT 10000
-  )
-  RETURNING id
-)
-SELECT COUNT(*) FROM deleted;
+-- トランザクションで分割実行
+BEGIN TRANSACTION;
+DELETE FROM logs WHERE created_at < '2023-01-01' LIMIT 10000;
+COMMIT;
+
+-- 注: SQLiteにはctid（物理行ID）がないため、
+-- rowidまたは主キーを使用する
 ```
 
 ## チェックリスト
 
 ### クエリ最適化時
-- [ ] EXPLAIN ANALYZEで実行計画を確認したか？
+
+- [ ] EXPLAIN QUERY PLANで実行計画を確認したか？
 - [ ] N+1問題がないか確認したか？
 - [ ] ページネーションはカーソルベースか？
 - [ ] OR条件の効率を確認したか？
 - [ ] サブクエリの選択（EXISTS/IN/JOIN）は適切か？
 - [ ] バッチ処理で分割しているか？
+- [ ] WALモードを有効にしているか？

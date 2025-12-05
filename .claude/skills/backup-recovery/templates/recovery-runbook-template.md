@@ -2,24 +2,24 @@
 
 ## 文書情報
 
-| 項目 | 内容 |
-|------|------|
-| 対象システム | [システム名] |
-| 作成日 | YYYY-MM-DD |
-| 最終テスト | YYYY-MM-DD |
-| 次回テスト予定 | YYYY-MM-DD |
-| 担当者 | [担当者名] |
+| 項目           | 内容         |
+| -------------- | ------------ |
+| 対象システム   | [システム名] |
+| 作成日         | YYYY-MM-DD   |
+| 最終テスト     | YYYY-MM-DD   |
+| 次回テスト予定 | YYYY-MM-DD   |
+| 担当者         | [担当者名]   |
 
 ## クイックリファレンス
 
 ### 緊急連絡先
 
-| 役割 | 名前 | 連絡先 | 対応時間 |
-|------|------|--------|---------|
-| プライマリオンコール | [名前] | [電話/Slack] | 24/7 |
-| セカンダリオンコール | [名前] | [電話/Slack] | 24/7 |
-| DBA | [名前] | [電話/Slack] | 営業時間 |
-| 技術リード | [名前] | [電話/Slack] | 営業時間 |
+| 役割                    | 名前   | 連絡先       | 対応時間   |
+| ----------------------- | ------ | ------------ | ---------- |
+| プライマリオンコール    | [名前] | [電話/Slack] | 24/7       |
+| セカンダリオンコール    | [名前] | [電話/Slack] | 24/7       |
+| DBA                     | [名前] | [電話/Slack] | 営業時間   |
+| 技術リード              | [名前] | [電話/Slack] | 営業時間   |
 | CTO（エスカレーション） | [名前] | [電話/Slack] | 緊急時のみ |
 
 ### 重要な接続情報
@@ -27,9 +27,10 @@
 ```yaml
 # 本番環境
 production:
-  database_url: ${DATABASE_URL}
-  neon_project_id: [プロジェクトID]
-  region: [リージョン]
+  turso_database_url: ${TURSO_DATABASE_URL}
+  turso_auth_token: ${TURSO_AUTH_TOKEN}
+  organization: [組織名]
+  database_name: [DB名]
 
 # バックアップ
 backup:
@@ -42,11 +43,13 @@ backup:
 ## シナリオ1: 行単位の誤削除
 
 ### 概要
+
 - **影響度**: 低〜中
 - **想定復旧時間**: 15分〜1時間
 - **必要権限**: データベース読み書き権限
 
 ### 前提条件
+
 - [ ] 削除されたレコードのIDまたは条件が特定できている
 - [ ] 削除時刻が概ね特定できている
 - [ ] PITRが有効である
@@ -61,6 +64,7 @@ backup:
 ```
 
 確認事項:
+
 - [ ] 影響を受けるレコード数
 - [ ] 関連テーブルへの影響
 - [ ] ビジネスへの影響度
@@ -68,13 +72,14 @@ backup:
 #### Step 2: 復旧ブランチ作成（5分）
 
 ```bash
-# Neonの場合
-neon branches create \
-  --name recovery_$(date +%Y%m%d_%H%M%S) \
-  --from main@[削除前の時刻]
+# Tursoの場合
+turso db create \
+  recovery_$(date +%Y%m%d_%H%M%S) \
+  --from-db main --timestamp [削除前の時刻]
 
 # 接続情報を取得
-neon connection-string --branch [ブランチ名]
+turso db show [ブランチ名] --url
+turso db tokens create [ブランチ名]
 ```
 
 #### Step 3: データ抽出（10分）
@@ -118,6 +123,7 @@ SELECT COUNT(*) FROM [テーブル名] WHERE [条件];
 ```
 
 ### 完了チェックリスト
+
 - [ ] データが正しく復元された
 - [ ] アプリケーションが正常動作している
 - [ ] 関連データの整合性が保たれている
@@ -129,11 +135,13 @@ SELECT COUNT(*) FROM [テーブル名] WHERE [条件];
 ## シナリオ2: テーブル復旧
 
 ### 概要
+
 - **影響度**: 中〜高
 - **想定復旧時間**: 30分〜2時間
 - **必要権限**: データベース管理者権限
 
 ### 前提条件
+
 - [ ] 影響を受けるテーブルが特定できている
 - [ ] 復旧時点が決定している
 - [ ] アプリケーションへの影響が評価されている
@@ -152,6 +160,7 @@ REVOKE ALL ON [テーブル名] FROM [アプリケーションロール];
 ```
 
 関係者への通知:
+
 - [ ] 技術リードに報告
 - [ ] 影響を受けるチームに通知
 - [ ] 必要に応じてステータスページを更新
@@ -160,22 +169,22 @@ REVOKE ALL ON [テーブル名] FROM [アプリケーションロール];
 
 ```bash
 # 障害発生前の時点からブランチ作成
-neon branches create \
-  --name recovery_table_$(date +%Y%m%d) \
-  --from main@[復旧時点]
+turso db create \
+  recovery_table_$(date +%Y%m%d) \
+  --from-db main --timestamp [復旧時点]
 ```
 
 #### Step 3: テーブルデータのエクスポート（15分）
 
 ```bash
 # 復旧ブランチからテーブルをエクスポート
-pg_dump \
-  -h [復旧ブランチホスト] \
-  -U [ユーザー] \
-  -d [データベース] \
-  -t [テーブル名] \
-  --data-only \
-  -f /tmp/table_backup.sql
+turso db dump recovery_table_$(date +%Y%m%d) > /tmp/table_backup.sql
+
+# または特定テーブルのみ
+turso db shell recovery_table_$(date +%Y%m%d) \
+  ".mode insert [テーブル名]" \
+  ".output /tmp/table_backup.sql" \
+  "SELECT * FROM [テーブル名]"
 ```
 
 #### Step 4: 本番への復元（30分）
@@ -217,6 +226,7 @@ GRANT ALL ON [テーブル名] TO [アプリケーションロール];
 ```
 
 ### 完了チェックリスト
+
 - [ ] テーブルデータが完全に復元された
 - [ ] 外部キー整合性が保たれている
 - [ ] アプリケーションが正常動作している
@@ -229,11 +239,13 @@ GRANT ALL ON [テーブル名] TO [アプリケーションロール];
 ## シナリオ3: フル復旧
 
 ### 概要
+
 - **影響度**: 重大
 - **想定復旧時間**: 2〜8時間
 - **必要権限**: インフラ管理者権限
 
 ### 前提条件
+
 - [ ] 障害の原因が特定または隔離されている
 - [ ] 復旧時点が決定している
 - [ ] 経営層への報告が完了している
@@ -254,6 +266,7 @@ GRANT ALL ON [テーブル名] TO [アプリケーションロール];
 ```
 
 通知先:
+
 - [ ] Slackの障害チャンネル
 - [ ] ステータスページ
 - [ ] 関係者へのメール
@@ -262,7 +275,8 @@ GRANT ALL ON [テーブル名] TO [アプリケーションロール];
 
 ```bash
 # 利用可能なバックアップを確認
-neon branches list --show-timestamps
+turso db list
+turso db snapshots list main
 
 # 最適な復旧ポイントを選択
 # 考慮事項:
@@ -275,24 +289,25 @@ neon branches list --show-timestamps
 
 ```bash
 # 指定時点から新しいブランチを作成
-neon branches create \
-  --name production_restored \
-  --from main@[復旧時点]
+turso db create \
+  production_restored \
+  --from-db main --timestamp [復旧時点]
 
 # 接続情報を取得
-neon connection-string --branch production_restored
+turso db show production_restored --url
+turso db tokens create production_restored
 ```
 
 #### Step 4: データ検証（60分）
 
 ```sql
--- 新環境に接続
-\c [新環境接続文字列]
+-- 新環境に接続（turso db shell production_restored）
 
 -- 全テーブルのレコード数確認
-SELECT schemaname, relname, n_live_tup
-FROM pg_stat_user_tables
-ORDER BY n_live_tup DESC;
+SELECT name, COUNT(*) as row_count
+FROM sqlite_master
+WHERE type='table' AND name NOT LIKE 'sqlite_%'
+GROUP BY name;
 
 -- クリティカルデータの確認
 SELECT COUNT(*) FROM users;
@@ -307,7 +322,8 @@ SELECT * FROM users ORDER BY created_at DESC LIMIT 10;
 
 ```bash
 # 環境変数の更新
-export DATABASE_URL="[新環境接続文字列]"
+export TURSO_DATABASE_URL=$(turso db show production_restored --url)
+export TURSO_AUTH_TOKEN=$(turso db tokens create production_restored)
 
 # アプリケーションの再起動
 # （デプロイ方法によって異なる）
@@ -328,6 +344,7 @@ verification_checklist:
 ```
 
 ### 完了チェックリスト
+
 - [ ] データベースが完全に復旧した
 - [ ] アプリケーションが正常動作している
 - [ ] ユーザーがサービスを利用できる
@@ -345,35 +362,42 @@ verification_checklist:
 # インシデントレポート
 
 ## 概要
+
 - **発生日時**: YYYY-MM-DD HH:MM
 - **復旧完了**: YYYY-MM-DD HH:MM
 - **影響時間**: X時間Y分
 - **影響範囲**: [影響を受けたサービス/ユーザー数]
 
 ## タイムライン
-| 時刻 | イベント |
-|------|---------|
+
+| 時刻  | イベント |
+| ----- | -------- |
 | HH:MM | 障害検出 |
 | HH:MM | 対応開始 |
 | HH:MM | 復旧完了 |
 
 ## 根本原因
+
 [根本原因の説明]
 
 ## 対応内容
+
 [実施した対応の詳細]
 
 ## データ影響
+
 - 損失データ: [あり/なし]
 - RPO達成: [はい/いいえ]
 - RTO達成: [はい/いいえ]
 
 ## 再発防止策
+
 1. [対策1]
 2. [対策2]
 3. [対策3]
 
 ## 担当者
+
 - 対応者: [名前]
 - レビュー者: [名前]
 ```
@@ -384,14 +408,15 @@ verification_checklist:
 
 ### よくある問題と対処法
 
-| 問題 | 対処法 |
-|------|--------|
-| 接続できない | 接続文字列、ファイアウォール、VPNを確認 |
-| 権限エラー | 適切なロールでログインしているか確認 |
-| ディスク容量不足 | 不要なブランチ/バックアップを削除 |
-| 復旧に時間がかかる | 並列処理、増分復旧を検討 |
+| 問題               | 対処法                                  |
+| ------------------ | --------------------------------------- |
+| 接続できない       | 接続文字列、ファイアウォール、VPNを確認 |
+| 権限エラー         | 適切なロールでログインしているか確認    |
+| ディスク容量不足   | 不要なブランチ/バックアップを削除       |
+| 復旧に時間がかかる | 並列処理、増分復旧を検討                |
 
 ### 関連ドキュメント
+
 - [バックアップポリシー](./backup-policy-template.md)
 - [DR計画](../resources/disaster-recovery-planning.md)
 - [RPO/RTO設計](../resources/rpo-rto-design.md)

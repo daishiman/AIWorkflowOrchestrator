@@ -6,36 +6,35 @@
  *   node health-check.mjs
  *
  * 環境変数:
- *   DATABASE_URL: PostgreSQL接続文字列
+ *   DATABASE_URL: libSQL/Turso接続文字列
  *
  * 出力:
- *   - 接続数統計
- *   - キャッシュヒット率
+ *   - 接続プール統計
+ *   - キャッシュ使用率
  *   - スロークエリ数
- *   - ディスク使用量
- *   - デッド行比率
+ *   - データベースサイズ
+ *   - WAL統計
  */
 
-import pg from "pg";
-const { Client } = pg;
+import { createClient } from "@libsql/client";
 
 const THRESHOLDS = {
   connectionWarning: 0.8,
   connectionCritical: 0.95,
   cacheHitWarning: 0.95,
   cacheHitCritical: 0.9,
-  deadTuplesWarning: 0.1,
-  deadTuplesCritical: 0.3,
+  walPagesWarning: 1000,
+  walPagesCritical: 5000,
   slowQueryThresholdSec: 5,
 };
 
 async function runHealthCheck() {
-  const client = new Client({
-    connectionString: process.env.DATABASE_URL,
+  const client = createClient({
+    url: process.env.DATABASE_URL,
+    authToken: process.env.DATABASE_AUTH_TOKEN,
   });
 
   try {
-    await client.connect();
     console.log("🔍 データベース健全性チェック開始\n");
 
     const results = {
@@ -44,25 +43,25 @@ async function runHealthCheck() {
       checks: [],
     };
 
-    // 1. 接続数チェック
-    const connectionCheck = await checkConnections(client);
+    // 1. 接続プールチェック
+    const connectionCheck = await checkConnectionPool(client);
     results.checks.push(connectionCheck);
 
-    // 2. キャッシュヒット率チェック
-    const cacheCheck = await checkCacheHitRatio(client);
+    // 2. キャッシュ使用率チェック
+    const cacheCheck = await checkCacheUsage(client);
     results.checks.push(cacheCheck);
 
     // 3. スロークエリチェック
     const slowQueryCheck = await checkSlowQueries(client);
     results.checks.push(slowQueryCheck);
 
-    // 4. ディスク使用量チェック
-    const diskCheck = await checkDiskUsage(client);
-    results.checks.push(diskCheck);
+    // 4. データベースサイズチェック
+    const sizeCheck = await checkDatabaseSize(client);
+    results.checks.push(sizeCheck);
 
-    // 5. デッド行チェック
-    const deadTuplesCheck = await checkDeadTuples(client);
-    results.checks.push(deadTuplesCheck);
+    // 5. WAL統計チェック
+    const walCheck = await checkWALStats(client);
+    results.checks.push(walCheck);
 
     // 全体ステータス判定
     if (results.checks.some((c) => c.status === "critical")) {
@@ -76,23 +75,24 @@ async function runHealthCheck() {
 
     return results;
   } finally {
-    await client.end();
+    client.close();
   }
 }
 
-async function checkConnections(client) {
-  const result = await client.query(`
+async function checkConnectionPool(client) {
+  // Note: libSQLではアプリケーションレベルで接続プールを管理
+  // ここでは仮のメトリクスチェックを示す
+  const result = await client.execute(`
     SELECT
-      COUNT(*) FILTER (WHERE state = 'active') AS active,
-      COUNT(*) FILTER (WHERE state = 'idle') AS idle,
-      COUNT(*) FILTER (WHERE state = 'idle in transaction') AS idle_in_tx,
-      COUNT(*) AS total,
-      (SELECT setting::int FROM pg_settings WHERE name = 'max_connections') AS max_conn
-    FROM pg_stat_activity
+      COUNT(*) AS connection_count
+    FROM connection_metrics
+    WHERE timestamp >= datetime('now', '-1 minute')
   `);
 
-  const row = result.rows[0];
-  const ratio = row.total / row.max_conn;
+  // デフォルト最大接続数（環境に応じて調整）
+  const maxConnections = parseInt(process.env.MAX_CONNECTIONS || "100");
+  const currentConnections = result.rows[0]?.connection_count || 0;
+  const ratio = currentConnections / maxConnections;
 
   let status = "healthy";
   if (ratio >= THRESHOLDS.connectionCritical) {
@@ -102,28 +102,32 @@ async function checkConnections(client) {
   }
 
   return {
-    name: "接続数",
+    name: "接続プール",
     status,
     details: {
-      active: parseInt(row.active),
-      idle: parseInt(row.idle),
-      idleInTransaction: parseInt(row.idle_in_tx),
-      total: parseInt(row.total),
-      maxConnections: parseInt(row.max_conn),
+      currentConnections,
+      maxConnections,
       usagePercent: (ratio * 100).toFixed(1),
+      note: "アプリケーションレベルで追跡",
     },
   };
 }
 
-async function checkCacheHitRatio(client) {
-  const result = await client.query(`
+async function checkCacheUsage(client) {
+  // PRAGMA cache_sizeを取得
+  const cacheResult = await client.execute("PRAGMA cache_size");
+  const cacheSize = cacheResult.rows[0]?.cache_size || 0;
+
+  // アプリケーションメトリクスからキャッシュヒット率を取得
+  const metricsResult = await client.execute(`
     SELECT
-      ROUND(100.0 * SUM(heap_blks_hit) /
-        NULLIF(SUM(heap_blks_hit) + SUM(heap_blks_read), 0), 2) AS cache_hit_pct
-    FROM pg_statio_user_tables
+      ROUND(100.0 * cache_hits / NULLIF(cache_hits + cache_misses, 0), 2) AS cache_hit_pct
+    FROM cache_metrics
+    WHERE timestamp >= datetime('now', '-5 minutes')
+    LIMIT 1
   `);
 
-  const cacheHitPct = parseFloat(result.rows[0].cache_hit_pct) || 100;
+  const cacheHitPct = parseFloat(metricsResult.rows[0]?.cache_hit_pct) || 100;
   const ratio = cacheHitPct / 100;
 
   let status = "healthy";
@@ -134,9 +138,10 @@ async function checkCacheHitRatio(client) {
   }
 
   return {
-    name: "キャッシュヒット率",
+    name: "キャッシュ使用率",
     status,
     details: {
+      cacheSize,
       cacheHitPercent: cacheHitPct,
       target: "99%以上推奨",
     },
@@ -144,17 +149,15 @@ async function checkCacheHitRatio(client) {
 }
 
 async function checkSlowQueries(client) {
-  const result = await client.query(
-    `
+  // アプリケーションメトリクスから追跡
+  const result = await client.execute(`
     SELECT COUNT(*) AS count
-    FROM pg_stat_activity
-    WHERE state = 'active'
-      AND query_start < NOW() - INTERVAL '${THRESHOLDS.slowQueryThresholdSec} seconds'
-      AND query NOT LIKE '%pg_stat_activity%'
-  `
-  );
+    FROM query_metrics
+    WHERE execution_time_ms > ${THRESHOLDS.slowQueryThresholdSec * 1000}
+      AND timestamp >= datetime('now', '-5 minutes')
+  `);
 
-  const count = parseInt(result.rows[0].count);
+  const count = parseInt(result.rows[0]?.count || 0);
 
   let status = "healthy";
   if (count > 5) {
@@ -169,70 +172,66 @@ async function checkSlowQueries(client) {
     details: {
       currentSlowQueries: count,
       thresholdSeconds: THRESHOLDS.slowQueryThresholdSec,
+      note: "アプリケーションレベルで追跡",
     },
   };
 }
 
-async function checkDiskUsage(client) {
-  const result = await client.query(`
-    SELECT
-      pg_size_pretty(pg_database_size(current_database())) AS db_size,
-      pg_database_size(current_database()) AS db_size_bytes
-  `);
+async function checkDatabaseSize(client) {
+  // PRAGMA page_countとpage_sizeからサイズを計算
+  const pageCountResult = await client.execute("PRAGMA page_count");
+  const pageSizeResult = await client.execute("PRAGMA page_size");
 
-  const row = result.rows[0];
+  const pageCount = pageCountResult.rows[0]?.page_count || 0;
+  const pageSize = pageSizeResult.rows[0]?.page_size || 0;
+  const sizeBytes = pageCount * pageSize;
+  const sizeMB = (sizeBytes / 1024 / 1024).toFixed(2);
 
   return {
-    name: "ディスク使用量",
-    status: "healthy", // 閾値判定にはシステム全体の情報が必要
+    name: "データベースサイズ",
+    status: "healthy",
     details: {
-      databaseSize: row.db_size,
-      databaseSizeBytes: parseInt(row.db_size_bytes),
+      databaseSize: `${sizeMB} MB`,
+      databaseSizeBytes: sizeBytes,
+      pageCount,
+      pageSize,
     },
   };
 }
 
-async function checkDeadTuples(client) {
-  const result = await client.query(`
+async function checkWALStats(client) {
+  // PRAGMA wal_checkpointでWAL統計を取得
+  const walResult = await client.execute("PRAGMA wal_checkpoint(PASSIVE)");
+
+  // アプリケーションメトリクスからWAL統計を取得
+  const metricsResult = await client.execute(`
     SELECT
-      relname,
-      n_dead_tup,
-      n_live_tup,
-      CASE
-        WHEN n_live_tup + n_dead_tup > 0
-        THEN round(100.0 * n_dead_tup / (n_live_tup + n_dead_tup), 2)
-        ELSE 0
-      END AS dead_pct
-    FROM pg_stat_user_tables
-    WHERE n_dead_tup > 1000
-    ORDER BY n_dead_tup DESC
-    LIMIT 5
+      wal_pages,
+      wal_size_bytes
+    FROM wal_metrics
+    WHERE timestamp >= datetime('now', '-1 minute')
+    ORDER BY timestamp DESC
+    LIMIT 1
   `);
 
-  const tablesWithHighDeadTuples = result.rows.filter(
-    (r) => r.dead_pct > THRESHOLDS.deadTuplesWarning * 100
-  );
+  const walPages = metricsResult.rows[0]?.wal_pages || 0;
+  const walSizeBytes = metricsResult.rows[0]?.wal_size_bytes || 0;
 
   let status = "healthy";
-  if (
-    tablesWithHighDeadTuples.some(
-      (t) => t.dead_pct > THRESHOLDS.deadTuplesCritical * 100
-    )
-  ) {
+  if (walPages > THRESHOLDS.walPagesCritical) {
     status = "critical";
-  } else if (tablesWithHighDeadTuples.length > 0) {
+  } else if (walPages > THRESHOLDS.walPagesWarning) {
     status = "warning";
   }
 
   return {
-    name: "デッド行",
+    name: "WAL統計",
     status,
     details: {
-      tablesNeedingVacuum: result.rows.map((r) => ({
-        table: r.relname,
-        deadTuples: parseInt(r.n_dead_tup),
-        deadPercent: parseFloat(r.dead_pct),
-      })),
+      walPages,
+      walSizeBytes,
+      walSizeMB: (walSizeBytes / 1024 / 1024).toFixed(2),
+      note: "定期的なチェックポイントを推奨",
     },
   };
 }
@@ -244,7 +243,9 @@ function printResults(results) {
     critical: "🚨",
   };
 
-  console.log(`全体ステータス: ${statusEmoji[results.status]} ${results.status.toUpperCase()}\n`);
+  console.log(
+    `全体ステータス: ${statusEmoji[results.status]} ${results.status.toUpperCase()}\n`,
+  );
   console.log("─".repeat(50));
 
   for (const check of results.checks) {

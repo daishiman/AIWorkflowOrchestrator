@@ -22,11 +22,13 @@ Infrastructure as Code (IaC) は、インフラストラクチャ構成をコー
 ```
 
 **利点**:
+
 - 意図が明確
 - 実装詳細の隠蔽
 - 自動的な差分適用
 
 **vs 命令的**:
+
 ```bash
 # 命令的: 手順を記述（避けるべき）
 railway up
@@ -43,10 +45,11 @@ railway variables set KEY=value
   railway_variable:
     name: NODE_ENV
     value: production
-    state: present  # 存在しなければ作成、存在すれば確認
+    state: present # 存在しなければ作成、存在すれば確認
 ```
 
 **利点**:
+
 - 安全な再実行
 - エラー復旧が容易
 - 自動化に適合
@@ -69,6 +72,7 @@ git log --oneline railway.json
 ```
 
 **利点**:
+
 - 変更履歴の追跡
 - 差分レビュー（PR）
 - ロールバック可能
@@ -89,6 +93,7 @@ git log --oneline railway.json
 ```
 
 **利点**:
+
 - 構成ドリフトの防止
 - 再現可能な環境
 - 一貫したデプロイ
@@ -97,19 +102,19 @@ git log --oneline railway.json
 
 ### 構成ファイル
 
-| ファイル | 役割 | 例 |
-|---------|------|-----|
-| railway.json | デプロイ構成 | ビルド/起動コマンド |
-| .env.example | 変数テンプレート | 必要な環境変数一覧 |
-| Dockerfile | コンテナ定義 | 実行環境 |
+| ファイル     | 役割             | 例                  |
+| ------------ | ---------------- | ------------------- |
+| railway.json | デプロイ構成     | ビルド/起動コマンド |
+| .env.example | 変数テンプレート | 必要な環境変数一覧  |
+| Dockerfile   | コンテナ定義     | 実行環境            |
 
 ### 環境変数
 
-| 種別 | 管理場所 | 例 |
-|------|---------|-----|
-| Secret | Railway Secrets | API_KEY, DB_PASSWORD |
-| 環境固有 | Railway Variables | DATABASE_URL |
-| 共通 | railway.json | NODE_ENV |
+| 種別     | 管理場所          | 例                        |
+| -------- | ----------------- | ------------------------- |
+| Secret   | Railway Secrets   | API_KEY, TURSO_AUTH_TOKEN |
+| 環境固有 | Railway Variables | TURSO_DATABASE_URL        |
+| 共通     | railway.json      | NODE_ENV                  |
 
 ### ワークフロー
 
@@ -163,7 +168,7 @@ railway.json 読み込み
    ↓
 2. Railway Project Variables
    ↓
-3. Plugin 注入 (Neon DATABASE_URL等)
+3. Plugin 注入 (Turso DATABASE_URL等)
    ↓
 4. デフォルト値 (railway.json)
 ```
@@ -214,11 +219,13 @@ git commit -m "feat: Add IaC configuration"
 ### 1. 管理画面依存
 
 ❌ **避けるべき**:
+
 ```
 Railway Dashboard → Settings → Variables → 手動設定
 ```
 
 ✅ **推奨**:
+
 ```bash
 # コードで管理
 railway variables set KEY=value
@@ -228,6 +235,7 @@ railway variables set KEY=value
 ### 2. 構成ドリフト
 
 ❌ **避けるべき**:
+
 ```
 本番環境のみ手動で変更
 → ローカルや他環境と乖離
@@ -235,6 +243,7 @@ railway variables set KEY=value
 ```
 
 ✅ **推奨**:
+
 ```
 コード変更 → PR → レビュー → 全環境に適用
 ```
@@ -242,11 +251,13 @@ railway variables set KEY=value
 ### 3. Secret のハードコード
 
 ❌ **避けるべき**:
+
 ```javascript
 const apiKey = "sk-1234567890abcdef";
 ```
 
 ✅ **推奨**:
+
 ```javascript
 const apiKey = process.env.API_KEY;
 ```

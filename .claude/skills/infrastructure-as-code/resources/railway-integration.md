@@ -28,21 +28,21 @@ Git統合により、プッシュするだけで自動デプロイが可能。
 
 #### build セクション
 
-| 項目 | 説明 | 例 |
-|------|------|-----|
-| `builder` | ビルダータイプ | `NIXPACKS`, `DOCKERFILE` |
-| `buildCommand` | ビルドコマンド | `pnpm install && pnpm build` |
+| 項目            | 説明             | 例                           |
+| --------------- | ---------------- | ---------------------------- |
+| `builder`       | ビルダータイプ   | `NIXPACKS`, `DOCKERFILE`     |
+| `buildCommand`  | ビルドコマンド   | `pnpm install && pnpm build` |
 | `watchPatterns` | 変更監視パターン | `["src/**", "package.json"]` |
 
 #### deploy セクション
 
-| 項目 | 説明 | 例 |
-|------|------|-----|
-| `startCommand` | 起動コマンド | `pnpm start` |
-| `restartPolicyType` | 再起動ポリシー | `ON_FAILURE`, `ALWAYS`, `NEVER` |
-| `restartPolicyMaxRetries` | 最大リトライ回数 | `10` |
-| `healthcheckPath` | ヘルスチェックパス | `/api/health` |
-| `healthcheckTimeout` | タイムアウト秒数 | `30` |
+| 項目                      | 説明               | 例                              |
+| ------------------------- | ------------------ | ------------------------------- |
+| `startCommand`            | 起動コマンド       | `pnpm start`                    |
+| `restartPolicyType`       | 再起動ポリシー     | `ON_FAILURE`, `ALWAYS`, `NEVER` |
+| `restartPolicyMaxRetries` | 最大リトライ回数   | `10`                            |
+| `healthcheckPath`         | ヘルスチェックパス | `/api/health`                   |
+| `healthcheckTimeout`      | タイムアウト秒数   | `30`                            |
 
 ### Next.js プロジェクト用設定
 
@@ -105,6 +105,7 @@ develop ブランチ → Staging 環境
 ```
 
 **設定方法**:
+
 ```
 Railway Dashboard → Service → Settings → Source
 → Branch の指定
@@ -184,25 +185,30 @@ railway logs --limit 100
 railway up
 ```
 
-## Neon Plugin 統合
+## Turso統合
 
 ### 設定方法
 
-```
-Railway Dashboard → Service → Plugins → Add Plugin → Neon
+Tursoは外部のSQLiteサービスとして統合します。
+
+```bash
+# Turso CLIでデータベース作成
+turso db create my-database
+
+# 接続URLを取得
+turso db show my-database --url
+
+# 認証トークンを取得
+turso db tokens create my-database
 ```
 
-### 自動注入される変数
+### 必要な環境変数
+
+Railway Variablesに以下を設定:
 
 ```
-DATABASE_URL=postgresql://user:password@host:5432/dbname
-```
-
-### 接続プーリング
-
-```
-Neon Dashboard → Connection pooling → Enable
-→ プーリングURLが DATABASE_URL に設定される
+TURSO_DATABASE_URL=libsql://my-database-[user].turso.io
+TURSO_AUTH_TOKEN=eyJ... (認証トークン)
 ```
 
 ### マイグレーション実行
@@ -252,11 +258,13 @@ railway environment staging
 **症状**: Railwayでビルドが失敗する
 
 **確認項目**:
+
 1. buildCommand が正しいか
 2. package.json の scripts が存在するか
 3. 依存関係がすべて含まれているか
 
 **解決策**:
+
 ```bash
 # ローカルでビルドを確認
 pnpm install --frozen-lockfile
@@ -268,11 +276,13 @@ pnpm build
 **症状**: ビルドは成功するが起動しない
 
 **確認項目**:
+
 1. startCommand が正しいか
 2. 環境変数が設定されているか
 3. ポートが正しく設定されているか
 
 **解決策**:
+
 ```bash
 # ログを確認
 railway logs
@@ -286,11 +296,13 @@ railway variables
 **症状**: 設定した環境変数がアプリに反映されない
 
 **確認項目**:
+
 1. 変数名が正しいか
 2. デプロイが完了しているか
 3. ビルド時変数かランタイム変数か
 
 **解決策**:
+
 ```bash
 # 変数を確認
 railway variables

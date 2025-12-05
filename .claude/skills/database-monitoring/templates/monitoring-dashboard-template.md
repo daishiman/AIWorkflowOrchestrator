@@ -13,49 +13,61 @@
 ### 1. 概要パネル（トップ行）
 
 #### 1.1 データベースステータス
+
 ```
 タイプ: Stat Panel
-データソース: PostgreSQL
+データソース: SQLite/Turso
 クエリ:
-  SELECT CASE
-    WHEN pg_is_in_recovery() THEN 'Replica'
-    ELSE 'Primary'
-  END AS role
+  SELECT
+    CASE
+      WHEN (SELECT value FROM pragma_database_list WHERE name = 'main') LIKE '%replica%'
+      THEN 'Replica'
+      ELSE 'Primary'
+    END AS role
 
 表示: 単一値 + 色分け（Primary=緑, Replica=青）
 ```
 
 #### 1.2 接続数ゲージ
+
 ```
 タイプ: Gauge
 クエリ:
+  -- libSQL固有: 現在の接続数をアプリケーションレベルで追跡
   SELECT
-    COUNT(*)::float / (SELECT setting::int FROM pg_settings WHERE name = 'max_connections') * 100
-  FROM pg_stat_activity
+    current_connections::float / max_connections * 100 AS connection_pct
+  FROM connection_metrics
 
 閾値:
   - 0-80%: 緑
   - 80-95%: 黄
   - 95-100%: 赤
+
+注: SQLiteは接続数制限がないため、アプリケーション側で追跡が必要
 ```
 
 #### 1.3 データベースサイズ
+
 ```
 タイプ: Stat Panel
 クエリ:
-  SELECT pg_size_pretty(pg_database_size(current_database()))
+  SELECT
+    ROUND(page_count * page_size / 1024.0 / 1024.0, 2) || ' MB' AS db_size
+  FROM pragma_page_count(), pragma_page_size()
 
 表示: 単一値
 ```
 
 #### 1.4 トランザクション/秒
+
 ```
 タイプ: Stat Panel
 クエリ:
+  -- アプリケーションレベルで追跡したメトリクスから取得
   SELECT
-    xact_commit + xact_rollback AS tps
-  FROM pg_stat_database
-  WHERE datname = current_database()
+    commits_per_sec + rollbacks_per_sec AS tps
+  FROM transaction_metrics
+  WHERE timestamp >= datetime('now', '-1 minute')
 
 表示: 単一値 + スパークライン
 ```
@@ -65,9 +77,11 @@
 ### 2. パフォーマンスパネル（2行目）
 
 #### 2.1 クエリ実行時間分布
+
 ```
 タイプ: Histogram
 クエリ:
+  -- アプリケーションレベルで追跡したクエリメトリクスから取得
   SELECT
     CASE
       WHEN mean_exec_time < 10 THEN '< 10ms'
@@ -76,31 +90,39 @@
       ELSE '> 1s'
     END AS bucket,
     COUNT(*) AS count
-  FROM pg_stat_statements
+  FROM query_metrics
   GROUP BY bucket
 
 表示: 棒グラフ、色分け
 ```
 
 #### 2.2 スロークエリ数推移
+
 ```
 タイプ: Time Series
 クエリ:
-  -- メトリクス収集が必要（Prometheus/TimescaleDB）
-  SELECT time, slow_query_count FROM metrics
-  WHERE time > NOW() - INTERVAL '24 hours'
+  -- アプリケーションメトリクスから収集
+  SELECT timestamp, slow_query_count FROM query_metrics
+  WHERE timestamp >= datetime('now', '-24 hours')
 
 表示: 線グラフ、閾値線表示
 ```
 
 #### 2.3 キャッシュヒット率
+
 ```
 タイプ: Gauge
 クエリ:
+  -- PRAGMA cache_sizeとアプリケーションメトリクスから計算
   SELECT
-    ROUND(100.0 * SUM(heap_blks_hit) /
-      NULLIF(SUM(heap_blks_hit) + SUM(heap_blks_read), 0), 2)
-  FROM pg_statio_user_tables
+    ROUND(100.0 * cache_hits / NULLIF(cache_hits + cache_misses, 0), 2) AS cache_hit_pct
+  FROM (
+    SELECT
+      cache_hits,
+      cache_misses
+    FROM cache_metrics
+    WHERE timestamp >= datetime('now', '-5 minutes')
+  )
 
 閾値:
   - 99-100%: 緑
@@ -113,50 +135,61 @@
 ### 3. リソースパネル（3行目）
 
 #### 3.1 接続状態内訳
+
 ```
 タイプ: Pie Chart
 クエリ:
+  -- アプリケーションレベルで追跡した接続状態
   SELECT state, COUNT(*) AS count
-  FROM pg_stat_activity
-  WHERE pid != pg_backend_pid()
+  FROM connection_state_metrics
+  WHERE timestamp >= datetime('now', '-1 minute')
   GROUP BY state
 
 表示: 円グラフ、凡例付き
 色:
   - active: 緑
   - idle: 青
-  - idle in transaction: 黄
-  - idle in transaction (aborted): 赤
+  - in_transaction: 黄
+  - error: 赤
+
+注: SQLiteは接続プーリングがアプリケーション管理のため、
+    アプリケーション側で状態を追跡する必要があります
 ```
 
 #### 3.2 テーブルサイズTop 10
+
 ```
 タイプ: Bar Gauge
 クエリ:
   SELECT
-    relname,
-    pg_total_relation_size(relid) AS size
-  FROM pg_stat_user_tables
-  ORDER BY size DESC
+    name AS table_name,
+    pgsize AS size_bytes
+  FROM dbstat
+  WHERE name NOT LIKE 'sqlite_%'
+  GROUP BY name
+  ORDER BY SUM(pgsize) DESC
   LIMIT 10
 
 表示: 横棒グラフ
 ```
 
 #### 3.3 インデックス使用率
+
 ```
 タイプ: Table
 クエリ:
+  -- アプリケーションメトリクスから追跡
   SELECT
-    relname AS table,
-    idx_scan AS index_scans,
-    seq_scan AS seq_scans,
-    CASE WHEN idx_scan + seq_scan > 0
-      THEN ROUND(100.0 * idx_scan / (idx_scan + seq_scan), 1)
+    table_name AS table,
+    index_scans,
+    seq_scans,
+    CASE WHEN index_scans + seq_scans > 0
+      THEN ROUND(100.0 * index_scans / (index_scans + seq_scans), 1)
       ELSE 100
     END AS index_usage_pct
-  FROM pg_stat_user_tables
-  ORDER BY seq_scan DESC
+  FROM table_scan_metrics
+  WHERE timestamp >= datetime('now', '-1 hour')
+  ORDER BY seq_scans DESC
   LIMIT 10
 
 表示: テーブル、条件付き書式
@@ -166,41 +199,53 @@
 
 ### 4. エラー・アラートパネル（4行目）
 
-#### 4.1 デッドロック発生
+#### 4.1 書き込み競合エラー
+
 ```
 タイプ: Stat Panel
 クエリ:
-  SELECT deadlocks FROM pg_stat_database
-  WHERE datname = current_database()
+  -- アプリケーションレベルで追跡したSQLITE_BUSY/SQLITE_LOCKEDエラー
+  SELECT COUNT(*) AS error_count
+  FROM error_metrics
+  WHERE error_type IN ('SQLITE_BUSY', 'SQLITE_LOCKED')
+    AND timestamp >= datetime('now', '-5 minutes')
 
 表示: 単一値、0以外は赤
 ```
 
 #### 4.2 ロック待機中クエリ
+
 ```
 タイプ: Table
 クエリ:
+  -- アプリケーションレベルで追跡したロック待機
   SELECT
-    blocked.pid,
-    blocked.usename,
-    substring(blocked.query, 1, 50) AS query,
-    EXTRACT(EPOCH FROM (NOW() - blocked.query_start)) AS wait_sec
-  FROM pg_stat_activity blocked
-  JOIN pg_stat_activity blocking
-    ON blocking.pid = ANY(pg_blocking_pids(blocked.pid))
+    query_id,
+    query_text,
+    wait_duration_sec
+  FROM lock_wait_metrics
+  WHERE status = 'waiting'
+    AND timestamp >= datetime('now', '-5 minutes')
+  ORDER BY wait_duration_sec DESC
   LIMIT 5
 
 表示: テーブル
+
+注: SQLiteはシンプルなファイルロックモデルのため、
+    アプリケーション側でタイムアウトと待機を追跡します
 ```
 
-#### 4.3 レプリケーション遅延（該当する場合）
+#### 4.3 レプリケーション遅延（Tursoの場合）
+
 ```
 タイプ: Time Series
 クエリ:
+  -- Turso固有: プライマリとレプリカ間の同期遅延
   SELECT
-    client_addr,
-    EXTRACT(EPOCH FROM replay_lag) AS lag_sec
-  FROM pg_stat_replication
+    replica_location,
+    replication_lag_ms
+  FROM turso_replication_metrics
+  WHERE timestamp >= datetime('now', '-1 hour')
 
 表示: 線グラフ、閾値線
 ```
@@ -210,6 +255,7 @@
 ## アラートルール
 
 ### Critical アラート
+
 ```yaml
 - name: connection_critical
   condition: connections_pct > 95
@@ -223,6 +269,7 @@
 ```
 
 ### Warning アラート
+
 ```yaml
 - name: connection_warning
   condition: connections_pct > 80
@@ -239,15 +286,19 @@
 
 ## カスタマイズガイド
 
-### Neon 向け調整
-- コンピュートアクティブ時間パネルを追加
-- ブランチ別メトリクスのフィルタを追加
-- コールドスタート監視パネルを追加
+### Turso 向け調整
 
-### Supabase 向け調整
-- Realtime 接続数パネルを追加
-- Storage 使用量パネルを追加
-- Edge Functions メトリクスパネルを追加
+- エッジロケーション別レプリケーション遅延パネルを追加
+- グローバル読み取りレイテンシーマップを追加
+- プライマリ-レプリカ同期ステータスパネルを追加
+- WALフレーム同期メトリクスパネルを追加
+
+### ローカルSQLite 向け調整
+
+- ファイルI/Oパフォーマンスパネルを追加
+- VACUUMとANALYZE実行履歴パネルを追加
+- ページキャッシュヒット率パネルを追加
+- ジャーナルモード設定パネルを追加
 
 ---
 

@@ -2,7 +2,7 @@
 
 ## 概要
 
-このドキュメントでは、PostgreSQLの外部キー制約におけるCASCADE動作パターンを
+このドキュメントでは、SQLiteの外部キー制約におけるCASCADE動作パターンを
 詳細に解説します。各パターンの特性、適用場面、実装例を提供します。
 
 ---
@@ -15,8 +15,8 @@
 
 ```sql
 CREATE TABLE orders (
-  id UUID PRIMARY KEY,
-  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
 ```
 
@@ -27,19 +27,20 @@ CREATE TABLE orders (
 親が子を「所有」している関係。親の存在が子の存在理由。
 
 **例**:
+
 - ユーザー → セッション
 - 注文 → 注文明細
 - 投稿 → 投稿画像
 
 ```typescript
 // Drizzle ORM
-export const sessions = pgTable('sessions', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id')
+export const sessions = sqliteTable("sessions", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userId: integer("user_id")
     .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
-  token: varchar('token', { length: 255 }).notNull(),
-  expiresAt: timestamp('expires_at').notNull(),
+    .references(() => users.id, { onDelete: "cascade" }),
+  token: text("token", { length: 255 }).notNull(),
+  expiresAt: integer("expires_at").notNull(),
 });
 ```
 
@@ -48,18 +49,19 @@ export const sessions = pgTable('sessions', {
 子のライフサイクルが親に完全依存する関係。
 
 **例**:
+
 - ワークフロー → ワークフローステップ
 - フォーム → フォームフィールド
 - プロジェクト → プロジェクト設定
 
 ```typescript
-export const workflowSteps = pgTable('workflow_steps', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  workflowId: uuid('workflow_id')
+export const workflowSteps = sqliteTable("workflow_steps", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  workflowId: integer("workflow_id")
     .notNull()
-    .references(() => workflows.id, { onDelete: 'cascade' }),
-  stepOrder: integer('step_order').notNull(),
-  action: varchar('action', { length: 100 }).notNull(),
+    .references(() => workflows.id, { onDelete: "cascade" }),
+  stepOrder: integer("step_order").notNull(),
+  action: text("action", { length: 100 }).notNull(),
 });
 ```
 
@@ -75,6 +77,7 @@ users → orders → order_items → item_logs
 ```
 
 **対策**:
+
 1. 削除前に影響範囲を確認するクエリを実行
 2. バッチ処理で分割削除
 3. 深い階層ではソフトデリートを検討
@@ -101,21 +104,23 @@ SELECT table_name, COUNT(*) FROM affected GROUP BY table_name;
 
 ```typescript
 // ❌ 監査ログが消えてしまう
-export const auditLogs = pgTable('audit_logs', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id')
-    .references(() => users.id, { onDelete: 'cascade' }), // 危険！
-  action: varchar('action', { length: 100 }).notNull(),
-  createdAt: timestamp('created_at').defaultNow(),
+export const auditLogs = sqliteTable("audit_logs", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userId: integer("user_id").references(() => users.id, {
+    onDelete: "cascade",
+  }), // 危険！
+  action: text("action", { length: 100 }).notNull(),
+  createdAt: integer("created_at").defaultNow(),
 });
 
 // ✅ SET NULLまたはRESTRICTを使用
-export const auditLogs = pgTable('audit_logs', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id')
-    .references(() => users.id, { onDelete: 'set null' }),
-  action: varchar('action', { length: 100 }).notNull(),
-  createdAt: timestamp('created_at').defaultNow(),
+export const auditLogs = sqliteTable("audit_logs", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userId: integer("user_id").references(() => users.id, {
+    onDelete: "set null",
+  }),
+  action: text("action", { length: 100 }).notNull(),
+  createdAt: integer("created_at").defaultNow(),
 });
 ```
 
@@ -129,8 +134,8 @@ export const auditLogs = pgTable('audit_logs', {
 
 ```sql
 CREATE TABLE products (
-  id UUID PRIMARY KEY,
-  category_id UUID REFERENCES categories(id) ON DELETE SET NULL
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  category_id INTEGER REFERENCES categories(id) ON DELETE SET NULL
 );
 ```
 
@@ -141,16 +146,18 @@ CREATE TABLE products (
 関連が必須ではなく、親削除後も子が独立して意味を持つ。
 
 **例**:
+
 - 商品 → カテゴリ（未分類として継続）
 - タスク → 担当者（未割当として継続）
 - 記事 → 執筆者（匿名として継続）
 
 ```typescript
-export const products = pgTable('products', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  name: varchar('name', { length: 200 }).notNull(),
-  categoryId: uuid('category_id')
-    .references(() => categories.id, { onDelete: 'set null' }),
+export const products = sqliteTable("products", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name", { length: 200 }).notNull(),
+  categoryId: integer("category_id").references(() => categories.id, {
+    onDelete: "set null",
+  }),
   // categoryIdはNULL許可（必須ではない）
 });
 ```
@@ -160,15 +167,16 @@ export const products = pgTable('products', {
 削除された親への参照を「不明」として記録したい場合。
 
 ```typescript
-export const comments = pgTable('comments', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  postId: uuid('post_id')
+export const comments = sqliteTable("comments", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  postId: integer("post_id")
     .notNull()
-    .references(() => posts.id, { onDelete: 'cascade' }),
-  authorId: uuid('author_id')
-    .references(() => users.id, { onDelete: 'set null' }),
+    .references(() => posts.id, { onDelete: "cascade" }),
+  authorId: integer("author_id").references(() => users.id, {
+    onDelete: "set null",
+  }),
   // 投稿削除 → コメント削除、ユーザー削除 → 匿名コメントとして保持
-  content: text('content').notNull(),
+  content: text("content").notNull(),
 });
 ```
 
@@ -203,13 +211,14 @@ type ProductWithCategory = {
 
 ```typescript
 // ❌ NOT NULLカラムにSET NULLは使用不可
-categoryId: uuid('category_id')
-  .notNull()  // これがあるとSET NULLは機能しない
-  .references(() => categories.id, { onDelete: 'set null' })
+categoryId: integer("category_id")
+  .notNull() // これがあるとSET NULLは機能しない
+  .references(() => categories.id, { onDelete: "set null" });
 
 // ✅ NULL許可である必要がある
-categoryId: uuid('category_id')
-  .references(() => categories.id, { onDelete: 'set null' })
+categoryId: integer("category_id").references(() => categories.id, {
+  onDelete: "set null",
+});
 ```
 
 ---
@@ -219,12 +228,12 @@ categoryId: uuid('category_id')
 ### 3.1 動作概要
 
 子レコードが存在する場合、親レコードの削除を禁止します。
-これはPostgreSQLのデフォルト動作です。
+これはSQLiteの推奨される動作の一つです。
 
 ```sql
 CREATE TABLE orders (
-  id UUID PRIMARY KEY,
-  user_id UUID NOT NULL REFERENCES users(id) ON DELETE RESTRICT
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE RESTRICT
 );
 ```
 
@@ -235,6 +244,7 @@ CREATE TABLE orders (
 削除前にビジネスロジックでの処理が必要な場合。
 
 **例**:
+
 - 顧客削除前に注文履歴のアーカイブ
 - プロジェクト削除前にファイルのバックアップ
 - ユーザー削除前に資産の移管
@@ -263,18 +273,18 @@ class UserService {
 物理削除を禁止し、論理削除のみを許可したい場合。
 
 ```typescript
-export const users = pgTable('users', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  email: varchar('email', { length: 255 }).notNull(),
-  deletedAt: timestamp('deleted_at'),  // ソフトデリート用
+export const users = sqliteTable("users", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  email: text("email", { length: 255 }).notNull(),
+  deletedAt: integer("deleted_at"), // ソフトデリート用
 });
 
-export const orders = pgTable('orders', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id')
+export const orders = sqliteTable("orders", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userId: integer("user_id")
     .notNull()
-    .references(() => users.id, { onDelete: 'restrict' }),
-  deletedAt: timestamp('deleted_at'),
+    .references(() => users.id, { onDelete: "restrict" }),
+  deletedAt: integer("deleted_at"),
 });
 
 // ソフトデリート実装
@@ -284,12 +294,14 @@ class UserService {
 
     await db.transaction(async (tx) => {
       // 関連レコードをソフトデリート
-      await tx.update(orders)
+      await tx
+        .update(orders)
         .set({ deletedAt: now })
         .where(and(eq(orders.userId, userId), isNull(orders.deletedAt)));
 
       // ユーザーをソフトデリート
-      await tx.update(users)
+      await tx
+        .update(users)
         .set({ deletedAt: now })
         .where(eq(users.id, userId));
     });
@@ -311,13 +323,14 @@ class UserService {
 ### 4.1 動作概要
 
 RESTRICTと類似していますが、チェックのタイミングが異なります。
+
 - RESTRICT: 即座にチェック
 - NO ACTION: トランザクション終了時にチェック
 
 ```sql
 CREATE TABLE orders (
-  id UUID PRIMARY KEY,
-  user_id UUID NOT NULL REFERENCES users(id) ON DELETE NO ACTION
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE NO ACTION
 );
 ```
 
@@ -345,12 +358,12 @@ COMMIT;  -- ここで制約チェック
 
 ### 4.3 RESTRICTとの違い
 
-| 特性 | RESTRICT | NO ACTION |
-|------|----------|-----------|
-| チェックタイミング | 即座 | トランザクション終了時 |
-| DEFERRABLE対応 | 不可 | 可能 |
-| 一時的違反 | 不可 | 可能（DEFERRABLE時） |
-| デフォルト動作 | PostgreSQLの真のデフォルト | SQL標準 |
+| 特性               | RESTRICT     | NO ACTION              |
+| ------------------ | ------------ | ---------------------- |
+| チェックタイミング | 即座         | トランザクション終了時 |
+| DEFERRABLE対応     | 不可         | 可能                   |
+| 一時的違反         | 不可         | 可能（DEFERRABLE時）   |
+| デフォルト動作     | SQLiteで推奨 | SQL標準                |
 
 ---
 
@@ -362,8 +375,8 @@ COMMIT;  -- ここで制約チェック
 
 ```sql
 CREATE TABLE products (
-  id UUID PRIMARY KEY,
-  category_id UUID DEFAULT 'default-category-uuid'
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  category_id INTEGER DEFAULT 1
     REFERENCES categories(id) ON DELETE SET DEFAULT
 );
 ```
@@ -376,14 +389,14 @@ CREATE TABLE products (
 
 ```typescript
 // デフォルトカテゴリを事前に作成
-const DEFAULT_CATEGORY_ID = '00000000-0000-0000-0000-000000000001';
+const DEFAULT_CATEGORY_ID = 1;
 
-export const products = pgTable('products', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  name: varchar('name', { length: 200 }).notNull(),
-  categoryId: uuid('category_id')
+export const products = sqliteTable("products", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name", { length: 200 }).notNull(),
+  categoryId: integer("category_id")
     .default(DEFAULT_CATEGORY_ID)
-    .references(() => categories.id, { onDelete: 'set default' }),
+    .references(() => categories.id, { onDelete: "set default" }),
 });
 ```
 
@@ -405,8 +418,8 @@ export const products = pgTable('products', {
 
 ```sql
 CREATE TABLE orders (
-  id UUID PRIMARY KEY,
-  user_id UUID NOT NULL REFERENCES users(id) ON UPDATE CASCADE
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON UPDATE CASCADE
 );
 ```
 
@@ -417,25 +430,26 @@ CREATE TABLE orders (
 **主キーの更新は一般的に推奨されません**。
 
 代替案:
-1. **UUIDを使用**: 変更不要の永続的識別子
+
+1. **AUTO INCREMENTを使用**: 変更不要の永続的識別子
 2. **サロゲートキー**: 自然キーとは別の技術的ID
 3. **論理キーの分離**: 変更可能な値は別カラムに
 
 ```typescript
-// ✅ 推奨: UUIDで主キー更新不要
-export const users = pgTable('users', {
-  id: uuid('id').primaryKey().defaultRandom(),  // 不変
-  email: varchar('email', { length: 255 }).notNull().unique(),  // 変更可能
+// ✅ 推奨: AUTO INCREMENTで主キー更新不要
+export const users = sqliteTable("users", {
+  id: integer("id").primaryKey({ autoIncrement: true }), // 不変
+  email: text("email", { length: 255 }).notNull().unique(), // 変更可能
 });
 
 // ON UPDATE CASCADEは保険として設定
-export const orders = pgTable('orders', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id')
+export const orders = sqliteTable("orders", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userId: integer("user_id")
     .notNull()
     .references(() => users.id, {
-      onDelete: 'restrict',
-      onUpdate: 'cascade',  // 万が一の更新に備える
+      onDelete: "restrict",
+      onUpdate: "cascade", // 万が一の更新に備える
     }),
 });
 ```
@@ -446,46 +460,45 @@ export const orders = pgTable('orders', {
 
 ### 7.1 標準的な組み合わせ
 
-| ユースケース | ON DELETE | ON UPDATE | 説明 |
-|-------------|-----------|-----------|------|
-| 所有関係 | CASCADE | CASCADE | 完全な依存関係 |
-| オプショナル参照 | SET NULL | CASCADE | 関連はオプショナル |
-| 重要データ | RESTRICT | CASCADE | 削除は明示的に |
-| 監査ログ | SET NULL | CASCADE | 履歴を保持 |
-| マスターデータ参照 | RESTRICT | CASCADE | マスター保護 |
+| ユースケース       | ON DELETE | ON UPDATE | 説明               |
+| ------------------ | --------- | --------- | ------------------ |
+| 所有関係           | CASCADE   | CASCADE   | 完全な依存関係     |
+| オプショナル参照   | SET NULL  | CASCADE   | 関連はオプショナル |
+| 重要データ         | RESTRICT  | CASCADE   | 削除は明示的に     |
+| 監査ログ           | SET NULL  | CASCADE   | 履歴を保持         |
+| マスターデータ参照 | RESTRICT  | CASCADE   | マスター保護       |
 
 ### 7.2 Drizzle ORM での定義例
 
 ```typescript
 // 所有関係（強い依存）
-export const orderItems = pgTable('order_items', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  orderId: uuid('order_id')
+export const orderItems = sqliteTable("order_items", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  orderId: integer("order_id")
     .notNull()
     .references(() => orders.id, {
-      onDelete: 'cascade',
-      onUpdate: 'cascade',
+      onDelete: "cascade",
+      onUpdate: "cascade",
     }),
 });
 
 // オプショナル参照
-export const tasks = pgTable('tasks', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  assigneeId: uuid('assignee_id')
-    .references(() => users.id, {
-      onDelete: 'set null',
-      onUpdate: 'cascade',
-    }),
+export const tasks = sqliteTable("tasks", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  assigneeId: integer("assignee_id").references(() => users.id, {
+    onDelete: "set null",
+    onUpdate: "cascade",
+  }),
 });
 
 // 重要データ（ソフトデリート想定）
-export const invoices = pgTable('invoices', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  customerId: uuid('customer_id')
+export const invoices = sqliteTable("invoices", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  customerId: integer("customer_id")
     .notNull()
     .references(() => customers.id, {
-      onDelete: 'restrict',
-      onUpdate: 'cascade',
+      onDelete: "restrict",
+      onUpdate: "cascade",
     }),
 });
 ```
@@ -499,6 +512,7 @@ export const invoices = pgTable('invoices', {
 大量の子レコードがある場合、CASCADE削除はパフォーマンスに影響します。
 
 **対策**:
+
 1. バッチ削除
 2. 削除前の子レコード数確認
 3. オフピーク時の実行
@@ -507,7 +521,8 @@ export const invoices = pgTable('invoices', {
 // 大量削除の安全な実装
 async function safeDeleteUser(userId: string) {
   // 1. 影響範囲の確認
-  const orderCount = await db.select({ count: count() })
+  const orderCount = await db
+    .select({ count: count() })
     .from(orders)
     .where(eq(orders.userId, userId));
 
@@ -517,20 +532,20 @@ async function safeDeleteUser(userId: string) {
     let deleted = 0;
 
     while (deleted < orderCount[0].count) {
-      await db.delete(orderItems)
+      await db
+        .delete(orderItems)
         .where(
           inArray(
             orderItems.orderId,
-            db.select({ id: orders.id })
+            db
+              .select({ id: orders.id })
               .from(orders)
               .where(eq(orders.userId, userId))
-              .limit(batchSize)
-          )
+              .limit(batchSize),
+          ),
         );
 
-      await db.delete(orders)
-        .where(eq(orders.userId, userId))
-        .limit(batchSize);
+      await db.delete(orders).where(eq(orders.userId, userId)).limit(batchSize);
 
       deleted += batchSize;
     }
@@ -546,15 +561,19 @@ async function safeDeleteUser(userId: string) {
 外部キーカラムにはインデックスが必須です。
 
 ```typescript
-export const orders = pgTable('orders', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id')
-    .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
-}, (table) => ({
-  // 外部キーインデックス（パフォーマンスのため必須）
-  userIdIdx: index('idx_orders_user_id').on(table.userId),
-}));
+export const orders = sqliteTable(
+  "orders",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    userId: integer("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+  },
+  (table) => ({
+    // 外部キーインデックス（パフォーマンスのため必須）
+    userIdIdx: index("idx_orders_user_id").on(table.userId),
+  }),
+);
 ```
 
 ---

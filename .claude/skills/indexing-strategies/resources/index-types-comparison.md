@@ -1,27 +1,9 @@
-# PostgreSQL インデックスタイプ詳細比較
+# SQLite インデックス最適化技法
 
 ## 概要
 
-PostgreSQL は複数のインデックスタイプを提供し、それぞれ異なるユースケースに最適化されています。
-このリソースでは、各インデックスタイプの詳細な特性と選択基準を解説します。
-
----
-
-## インデックスタイプ比較表
-
-| 特性 | B-Tree | GIN | GiST | BRIN | Hash |
-|------|--------|-----|------|------|------|
-| **等価検索** | ◎ | ○ | ○ | △ | ◎ |
-| **範囲検索** | ◎ | × | ○ | ◎ | × |
-| **配列/JSONB** | × | ◎ | △ | × | × |
-| **全文検索** | × | ◎ | ○ | × | × |
-| **地理データ** | × | × | ◎ | × | × |
-| **ソート** | ◎ | × | × | × | × |
-| **インデックスサイズ** | 中 | 大 | 中 | 小 | 小 |
-| **更新コスト** | 低 | 高 | 中 | 低 | 低 |
-| **大規模テーブル** | ○ | △ | ○ | ◎ | ○ |
-
-◎: 非常に適している, ○: 適している, △: 条件付き, ×: 不適
+SQLite は B-Tree インデックスのみをサポートしますが、式インデックス、部分インデックス、カバリングインデックスなどの強力な機能を提供します。
+このリソースでは、SQLite インデックスの詳細な特性と最適化技法を解説します。
 
 ---
 
@@ -29,7 +11,7 @@ PostgreSQL は複数のインデックスタイプを提供し、それぞれ異
 
 ### 内部構造
 
-B-Treeは平衡木構造で、すべての葉ノードが同じ深さにあります。
+SQLite の B-Tree は平衡木構造で、すべての葉ノードが同じ深さにあります。
 
 ```
         [Root Node]
@@ -41,284 +23,369 @@ B-Treeは平衡木構造で、すべての葉ノードが同じ深さにあり�
 
 ### サポートする演算子
 
-| 演算子 | 説明 | 例 |
-|--------|------|-----|
-| `=` | 等価 | `WHERE id = 123` |
-| `<` | より小さい | `WHERE age < 30` |
-| `<=` | 以下 | `WHERE price <= 100` |
-| `>` | より大きい | `WHERE created_at > '2024-01-01'` |
-| `>=` | 以上 | `WHERE score >= 80` |
-| `BETWEEN` | 範囲 | `WHERE date BETWEEN '2024-01-01' AND '2024-12-31'` |
-| `IS NULL` | NULL検査 | `WHERE deleted_at IS NULL` |
-| `IS NOT NULL` | NOT NULL検査 | `WHERE email IS NOT NULL` |
-| `LIKE` | 前方一致のみ | `WHERE name LIKE 'John%'` |
+| 演算子         | 説明             | 例                                                |
+| -------------- | ---------------- | ------------------------------------------------- |
+| `=`            | 等価             | `WHERE id = 123`                                  |
+| `<`            | より小さい       | `WHERE age < 30`                                  |
+| `<=`           | 以下             | `WHERE price <= 100`                              |
+| `>`            | より大きい       | `WHERE created_at > 1704067200`                   |
+| `>=`           | 以上             | `WHERE score >= 80`                               |
+| `BETWEEN`      | 範囲             | `WHERE date BETWEEN 1704067200 AND 1735689600`    |
+| `IS NULL`      | NULL 検査        | `WHERE deleted_at IS NULL`                        |
+| `IS NOT NULL`  | NOT NULL 検査    | `WHERE email IS NOT NULL`                         |
+| `LIKE`         | 前方一致のみ     | `WHERE name LIKE 'John%'`                         |
+| `IN`           | リスト内         | `WHERE status IN ('active', 'pending')`           |
+| `GLOB`         | パターンマッチ   | `WHERE filename GLOB '*.txt'`                     |
+| `json_extract` | JSON フィールド  | `WHERE json_extract(data, '$.status') = 'active'` |
+| `json_type`    | JSON 型チェック  | `WHERE json_type(data, '$.field') = 'text'`       |
+| `LOWER/UPPER`  | 大文字小文字変換 | `WHERE LOWER(email) = 'test@example.com'`         |
 
 ### 最適化オプション
 
+SQLite では CREATE INDEX 文で以下のオプションが使用できます：
+
 ```sql
--- 降順インデックス（DESC ソートが頻繁な場合）
+-- 降順インデックス
 CREATE INDEX idx_orders_created_desc ON orders (created_at DESC);
 
--- NULLS FIRST/LAST
-CREATE INDEX idx_users_deleted ON users (deleted_at NULLS LAST);
+-- 複合インデックス（昇順と降順の混在可能）
+CREATE INDEX idx_orders_user_created
+ON orders (user_id ASC, created_at DESC);
 
--- フィルファクター調整（更新頻度が高いテーブル）
-CREATE INDEX idx_sessions_token ON sessions (token) WITH (fillfactor = 80);
+-- UNIQUE インデックス
+CREATE UNIQUE INDEX uniq_users_email ON users (email);
 ```
 
 ---
 
-## GIN インデックス詳細
+## 式インデックス（Expression Indexes）
 
-### 内部構造
+### 概要
 
-GIN（Generalized Inverted Index）は転置インデックス構造で、値からキーへのマッピングを保持します。
+式インデックスは、カラムの値そのものではなく、式の結果にインデックスを作成します。
+これにより、複雑な WHERE 条件を高速化できます。
 
-```
-値 → [キーのリスト]
-"tag1" → [row1, row3, row5, row8]
-"tag2" → [row2, row3, row6]
-"tag3" → [row1, row4, row7]
-```
-
-### サポートする演算子（JSONB）
-
-| 演算子 | 説明 | 例 |
-|--------|------|-----|
-| `@>` | 含む | `WHERE data @> '{"status": "active"}'` |
-| `<@` | 含まれる | `WHERE '{"a": 1}' <@ data` |
-| `?` | キー存在 | `WHERE data ? 'email'` |
-| `?\|` | いずれかのキー | `WHERE data ?\| array['a', 'b']` |
-| `?&` | すべてのキー | `WHERE data ?& array['a', 'b']` |
-| `@?` | JSONパス存在 | `WHERE data @? '$.items[*]'` |
-| `@@` | JSONパス述語 | `WHERE data @@ '$.price > 100'` |
-
-### GINオプション
+### JSON フィールドへのインデックス
 
 ```sql
--- 高速更新（デフォルト: 有効）
--- 書き込みパフォーマンス向上、検索時にペンディングリストを走査
-CREATE INDEX gin_data ON table USING gin(data) WITH (fastupdate = on);
+-- JSON内の特定フィールドへのインデックス
+CREATE INDEX idx_workflows_payload_status
+ON workflows(json_extract(input_payload, '$.status'));
 
--- ペンディングリストサイズ制限
-CREATE INDEX gin_data ON table USING gin(data)
-WITH (fastupdate = on, gin_pending_list_limit = 4MB);
+-- 使用例
+SELECT * FROM workflows
+WHERE json_extract(input_payload, '$.status') = 'completed';
+-- → idx_workflows_payload_status が使用される
 ```
 
-### jsonb_path_ops vs デフォルト
+### 大文字小文字を区別しない検索
 
 ```sql
--- デフォルト: すべてのJSONB演算子をサポート
-CREATE INDEX gin_data_default ON table USING gin(data);
+-- メールアドレスの小文字変換インデックス
+CREATE INDEX idx_users_email_lower
+ON users(LOWER(email));
 
--- jsonb_path_ops: @> 演算子に特化（サイズ小、検索高速）
-CREATE INDEX gin_data_path ON table USING gin(data jsonb_path_ops);
+-- 使用例
+SELECT * FROM users
+WHERE LOWER(email) = LOWER('Test@Example.com');
+-- → idx_users_email_lower が使用される
 ```
 
-| 特性 | デフォルト | jsonb_path_ops |
-|------|-----------|----------------|
-| サポート演算子 | すべて | @>, @?, @@ のみ |
-| インデックスサイズ | 大 | 小（約1/3） |
-| 検索速度 | 速い | より速い |
-| キー存在検査（?） | 可能 | 不可 |
+### 計算結果へのインデックス
+
+```sql
+-- 税込価格の計算結果へのインデックス
+CREATE INDEX idx_orders_total_with_tax
+ON orders(price * (1 + tax_rate));
+
+-- 日付の年月へのインデックス
+CREATE INDEX idx_logs_year_month
+ON logs(strftime('%Y-%m', created_at));
+
+-- 文字列の一部へのインデックス
+CREATE INDEX idx_users_domain
+ON users(substr(email, instr(email, '@') + 1));
+```
+
+### 式インデックスの制約
+
+- **決定的な式のみ**: random()、datetime('now') などの非決定的関数は使用不可
+- **パフォーマンス**: 式の計算コストが高い場合、INSERT/UPDATE が遅くなる
+- **メンテナンス**: 式が変更されるとインデックスの再作成が必要
 
 ---
 
-## GiST インデックス詳細
+## 部分インデックス（Partial Indexes）
 
-### 内部構造
+### 概要
 
-GiST（Generalized Search Tree）は、データを階層的に分割する汎用検索木です。
+WHERE 句で指定した条件を満たす行のみにインデックスを作成する機能です。
+インデックスサイズを削減し、特定条件のクエリを高速化できます。
 
-### 主な用途
-
-#### 1. 地理データ（PostGIS）
+### アクティブレコードのみインデックス
 
 ```sql
--- 地理インデックス
-CREATE INDEX gist_locations ON locations USING gist(geom);
+-- 削除されていないユーザーのみ
+CREATE INDEX idx_users_active_email
+ON users(email) WHERE deleted_at IS NULL;
 
--- 近傍検索
-SELECT * FROM locations
-WHERE ST_DWithin(geom, ST_MakePoint(139.7, 35.6)::geography, 1000);
+-- 使用例（インデックスが使用される）
+SELECT * FROM users
+WHERE email = 'test@example.com'
+  AND deleted_at IS NULL;
+
+-- 使用例（インデックスは使用されない）
+SELECT * FROM users
+WHERE email = 'test@example.com';
+-- deleted_at IS NULL の条件がないため、部分インデックスは使用されない
 ```
 
-#### 2. 範囲型
+### 特定ステータスのみインデックス
 
 ```sql
--- 日付範囲
-CREATE TABLE events (
-  id INT PRIMARY KEY,
-  during TSRANGE
+-- 完了していない注文のみ
+CREATE INDEX idx_orders_pending
+ON orders(user_id, created_at)
+WHERE status IN ('pending', 'processing');
+
+-- アクティブなワークフローのみ
+CREATE INDEX idx_workflows_active
+ON workflows(user_id, updated_at)
+WHERE status != 'completed' AND deleted_at IS NULL;
+```
+
+### 最近のデータのみインデックス
+
+```sql
+-- 最近30日のログのみ
+CREATE INDEX idx_logs_recent
+ON logs(user_id, action)
+WHERE created_at > unixepoch('now', '-30 days');
+
+-- 今年のデータのみ
+CREATE INDEX idx_events_this_year
+ON events(category, created_at)
+WHERE created_at >= unixepoch(strftime('%Y-01-01', 'now'));
+```
+
+### 部分インデックスの利点
+
+| 利点                 | 説明                                          |
+| -------------------- | --------------------------------------------- |
+| **サイズ削減**       | 全体の 10-20%の行のみインデックス化で大幅削減 |
+| **更新速度向上**     | 条件外の行の更新時はインデックス更新不要      |
+| **読み取り速度向上** | 小さいインデックスは検索が高速                |
+| **選択性向上**       | 特定条件に特化することで選択性が向上          |
+
+---
+
+## カバリングインデックス
+
+### 概要
+
+クエリに必要なすべてのカラムをインデックスに含めることで、
+テーブル本体へのアクセスを不要にする最適化技法です。
+
+### 基本パターン
+
+```sql
+-- user_id で検索し、email も取得するクエリ
+SELECT email FROM users WHERE user_id = 123;
+
+-- カバリングインデックス（user_id と email を含む）
+CREATE INDEX idx_users_id_email ON users (user_id, email);
+
+-- EXPLAIN QUERY PLAN の結果:
+-- SEARCH users USING COVERING INDEX idx_users_id_email (user_id=?)
+```
+
+### 複合カバリングインデックス
+
+```sql
+-- 注文一覧を取得するクエリ
+SELECT order_id, total, status
+FROM orders
+WHERE user_id = 123
+ORDER BY created_at DESC;
+
+-- カバリングインデックス
+CREATE INDEX idx_orders_user_covering
+ON orders (user_id, created_at DESC, order_id, total, status);
+
+-- すべてのカラムがインデックスに含まれるため、テーブル本体は不要
+```
+
+### カバリングインデックスの設計指針
+
+1. **検索カラムを先頭に**: WHERE 句のカラムを最初に配置
+2. **ソートカラムを次に**: ORDER BY のカラムを配置
+3. **取得カラムを最後に**: SELECT リストのカラムを配置
+
+```sql
+-- パターン: WHERE → ORDER BY → SELECT
+CREATE INDEX idx_covering
+ON table_name (
+  where_column1,      -- WHERE 句で使用
+  where_column2,      -- WHERE 句で使用
+  order_by_column,    -- ORDER BY で使用
+  select_column1,     -- SELECT リストで使用
+  select_column2      -- SELECT リストで使用
 );
-
-CREATE INDEX gist_events_during ON events USING gist(during);
-
--- 重複検索
-SELECT * FROM events WHERE during && '[2024-01-01, 2024-02-01)';
 ```
-
-#### 3. 全文検索（tsvector）
-
-```sql
-CREATE INDEX gist_posts_search ON posts USING gist(to_tsvector('japanese', content));
-```
-
-### GiST vs GIN（全文検索）
-
-| 特性 | GiST | GIN |
-|------|------|-----|
-| 更新速度 | 速い | 遅い |
-| 検索速度 | 遅い | 速い |
-| インデックスサイズ | 小 | 大 |
-| 推奨用途 | 更新頻繁 | 検索頻繁 |
 
 ---
 
-## BRIN インデックス詳細
+## WITHOUT ROWID テーブル
 
-### 内部構造
+### 概要
 
-BRIN（Block Range Index）は、ブロック範囲ごとに最小/最大値を保持します。
-
-```
-Block 0-127:   min=2024-01-01, max=2024-01-05
-Block 128-255: min=2024-01-05, max=2024-01-10
-Block 256-383: min=2024-01-10, max=2024-01-15
-...
-```
+WITHOUT ROWID は、主キーをクラスター化インデックスとして使用する最適化テーブルです。
+ROWID を持たないため、主キーでソートされた状態で格納されます。
 
 ### 適用条件
 
-1. **物理的順序**: データが挿入順または特定の順序で物理配置されている
-2. **大規模テーブル**: 数百万行以上
-3. **範囲検索**: 等価検索より範囲検索が多い
+- 主キーが明示的に定義されている
+- 主キーでの検索・範囲検索が多い
+- テーブルサイズが小〜中規模（数十万行程度）
 
-### 設計考慮事項
-
-```sql
--- pages_per_range の調整
--- デフォルト: 128ページ
--- 小さい値: より精密、サイズ大
--- 大きい値: より粗い、サイズ小
-CREATE INDEX brin_logs ON logs USING brin(created_at)
-WITH (pages_per_range = 64);
-
--- autosummarize（自動サマリー更新）
-CREATE INDEX brin_logs ON logs USING brin(created_at)
-WITH (autosummarize = on);
-```
-
-### BRIN vs B-Tree（時系列データ）
-
-| テーブルサイズ | B-Tree サイズ | BRIN サイズ | 検索速度差 |
-|--------------|--------------|------------|-----------|
-| 100万行 | ~25MB | ~48KB | B-Tree 2x速 |
-| 1000万行 | ~250MB | ~480KB | B-Tree 1.5x速 |
-| 1億行 | ~2.5GB | ~4.8MB | 同等〜BRIN有利 |
-
----
-
-## Hash インデックス
-
-### 特性
-
-- 等価検索（=）のみサポート
-- PostgreSQL 10以降でWALログ対応
-- B-Treeより若干高速な等価検索
-- 範囲検索、ソートは不可
-
-### 使用場面
+### 使用例
 
 ```sql
--- 長い文字列の等価検索
-CREATE INDEX hash_long_text ON table USING hash(very_long_column);
+-- キャッシュテーブル（key での検索が主な用途）
+CREATE TABLE cache (
+  key TEXT PRIMARY KEY,
+  value TEXT,
+  expires_at INTEGER
+) WITHOUT ROWID;
 
--- UUIDの等価検索（ただしB-Treeでも十分）
-CREATE INDEX hash_uuid ON table USING hash(id);
+-- セッションテーブル
+CREATE TABLE sessions (
+  session_id TEXT PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  created_at INTEGER NOT NULL,
+  expires_at INTEGER NOT NULL
+) WITHOUT ROWID;
+
+-- 設定テーブル
+CREATE TABLE config (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL,
+  updated_at INTEGER NOT NULL
+) WITHOUT ROWID;
 ```
+
+### パフォーマンス特性
+
+| 特性           | WITHOUT ROWID | 通常テーブル |
+| -------------- | ------------- | ------------ |
+| 主キー検索     | 高速          | 高速         |
+| 範囲検索       | 非常に高速    | 中速         |
+| テーブルサイズ | 小            | 中           |
+| INSERT 速度    | 中速          | 高速         |
 
 ### 注意点
 
-- 範囲検索やソートが必要な場合は使用不可
-- 多くの場合、B-Treeで十分
-- 使用前にベンチマーク推奨
+- 主キーが長い場合（複合主キーなど）、サイズが増大する可能性
+- 主キー以外での検索には別途インデックスが必要
+- INTEGER PRIMARY KEY AUTOINCREMENT は使用不可
 
 ---
 
-## インデックス選択フローチャート
+## インデックス最適化フローチャート
 
 ```
-データ型は？
-├─ スカラー型（int, varchar, timestamp等）
-│   ├─ 等価検索のみ？
-│   │   ├─ Yes: Hash（または B-Tree）
-│   │   └─ No: B-Tree
-│   └─ 大規模時系列？
-│       ├─ Yes: BRIN
-│       └─ No: B-Tree
+クエリの特性は？
+├─ WHERE 句のカラム数
+│   ├─ 1カラム: 単一カラムインデックス
+│   ├─ 2+カラム: 複合インデックス（選択性順）
+│   └─ 式を使用: 式インデックス検討
 │
-├─ JSONB
-│   ├─ @> のみ？
-│   │   ├─ Yes: GIN (jsonb_path_ops)
-│   │   └─ No: GIN (デフォルト)
-│   └─ 更新頻繁？
-│       └─ fastupdate = on
+├─ 特定条件のみ頻繁に検索？
+│   ├─ Yes: 部分インデックス
+│   └─ No: 標準インデックス
 │
-├─ 配列型
-│   └─ GIN
+├─ SELECT リストに多くのカラム？
+│   ├─ 3カラム以下: カバリングインデックス検討
+│   └─ 4カラム以上: 別途評価（サイズとのトレードオフ）
 │
-├─ 地理データ
-│   └─ GiST (PostGIS)
+├─ JSON フィールドを検索？
+│   └─ json_extract() の式インデックス
 │
-├─ 範囲型
-│   └─ GiST
+├─ 大文字小文字を区別しない？
+│   └─ LOWER(column) の式インデックス
 │
-└─ 全文検索
-    ├─ 更新頻繁？
-    │   ├─ Yes: GiST
-    │   └─ No: GIN
-    └─ 検索頻繁？
-        ├─ Yes: GIN
-        └─ No: GiST
+└─ 主キーでの検索が主？
+    └─ WITHOUT ROWID テーブル検討
 ```
 
 ---
 
 ## パフォーマンス測定ガイド
 
-### インデックス作成時間の見積もり
+### ANALYZE の実行
 
 ```sql
--- テーブルサイズの確認
-SELECT pg_size_pretty(pg_relation_size('table_name'));
+-- 全テーブルの統計情報を更新
+ANALYZE;
 
--- インデックス作成（CONCURRENTLY オプションでロック最小化）
-CREATE INDEX CONCURRENTLY idx_name ON table_name (column);
+-- 統計情報の確認
+SELECT * FROM sqlite_stat1;
+SELECT * FROM sqlite_stat4;
 ```
 
 ### インデックスサイズの確認
 
 ```sql
+-- ページサイズの確認
+PRAGMA page_size;
+
+-- インデックスのページ数
 SELECT
-  indexname,
-  pg_size_pretty(pg_relation_size(indexrelid)) AS index_size
-FROM pg_stat_user_indexes
-WHERE schemaname = 'public'
-ORDER BY pg_relation_size(indexrelid) DESC;
+  name,
+  pgsize * (SELECT page_count FROM dbstat WHERE name = 'idx_name') AS size_bytes
+FROM sqlite_master
+WHERE type = 'index' AND name = 'idx_name';
 ```
 
 ### クエリパフォーマンスの比較
 
 ```sql
 -- インデックス使用前
-EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)
-SELECT * FROM table WHERE condition;
+EXPLAIN QUERY PLAN
+SELECT * FROM users WHERE email = 'test@example.com';
 
--- インデックス作成後
-CREATE INDEX idx_test ON table (column);
+-- インデックス作成
+CREATE INDEX idx_users_email ON users(email);
 
--- 再度実行して比較
-EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)
-SELECT * FROM table WHERE condition;
+-- インデックス使用後
+EXPLAIN QUERY PLAN
+SELECT * FROM users WHERE email = 'test@example.com';
+
+-- 実際の実行時間測定（.timer on を事前に実行）
+.timer on
+SELECT * FROM users WHERE email = 'test@example.com';
 ```
+
+---
+
+## まとめ
+
+### SQLite インデックス戦略
+
+1. **基本は B-Tree**: すべてのインデックスは B-Tree
+2. **式インデックス**: JSON、文字列変換、計算結果に活用
+3. **部分インデックス**: アクティブレコード、特定ステータスに特化
+4. **カバリングインデックス**: 頻繁なクエリを最適化
+5. **WITHOUT ROWID**: 主キー検索が主な用途のテーブルに適用
+
+### 選択基準
+
+| ユースケース           | 推奨アプローチ                  |
+| ---------------------- | ------------------------------- |
+| 等価検索               | 標準 B-Tree インデックス        |
+| 範囲検索               | 標準 B-Tree インデックス        |
+| JSON 検索              | json_extract() の式インデックス |
+| 大小文字無視検索       | LOWER() の式インデックス        |
+| アクティブレコードのみ | 部分インデックス                |
+| 頻繁なクエリ最適化     | カバリングインデックス          |
+| キャッシュテーブル     | WITHOUT ROWID                   |

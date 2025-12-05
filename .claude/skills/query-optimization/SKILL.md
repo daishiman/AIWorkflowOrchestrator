@@ -9,8 +9,8 @@ description: |
   このスキルには以下のリソースが含まれています。
   必要に応じて該当するリソースを参照してください:
 
-  - `.claude/skills/query-optimization/resources/execution-plan-analysis.md`: EXPLAIN ANALYZEの読み方、スキャン方法、JOIN方法、問題パターン検出
-  - `.claude/skills/query-optimization/resources/explain-analyze-guide.md`: EXPLAIN ANALYZE 完全ガイド
+  - `.claude/skills/query-optimization/resources/execution-plan-analysis.md`: EXPLAIN QUERY PLANの読み方、スキャン方法、JOIN方法、問題パターン検出
+  - `.claude/skills/query-optimization/resources/explain-analyze-guide.md`: EXPLAIN QUERY PLAN 完全ガイド
   - `.claude/skills/query-optimization/resources/fetch-strategies.md`: Eager/Lazy/明示的フェッチの使い分けとSELECT句最適化手法
   - `.claude/skills/query-optimization/resources/index-strategies.md`: インデックス設計戦略
   - `.claude/skills/query-optimization/resources/n-plus-one-patterns.md`: N+1問題パターンと解決策
@@ -151,13 +151,11 @@ cat .claude/skills/query-optimization/templates/optimization-checklist.md
 **ステップ**:
 
 1. **症状の確認**:
-
    - レスポンスタイムの測定
    - クエリログの確認
    - クエリ数のカウント
 
 2. **N+1 問題の検出**:
-
    - ループ内の DB 呼び出しを探す
    - クエリ数とデータ件数の相関を確認
    - クエリパターンの分析
@@ -182,12 +180,10 @@ cat .claude/skills/query-optimization/templates/optimization-checklist.md
 **ステップ**:
 
 1. **実行計画の取得**:
-
-   - EXPLAIN ANALYZE の実行
+   - EXPLAIN QUERY PLAN の実行
    - 実行計画の読み方を理解
 
 2. **問題パターンの識別**:
-
    - Seq Scan（フルスキャン）の検出
    - 不適切な JOIN 方法の検出
    - インデックス未使用の検出
@@ -211,13 +207,11 @@ cat .claude/skills/query-optimization/templates/optimization-checklist.md
 **ステップ**:
 
 1. **N+1 問題の解消**:
-
    - JOIN 戦略の適用
    - バッチフェッチの実装
    - データローダーパターンの導入
 
 2. **フェッチ戦略の最適化**:
-
    - Eager/Lazy Loading の選択
    - 必要なカラムのみ SELECT
 
@@ -241,7 +235,6 @@ cat .claude/skills/query-optimization/templates/optimization-checklist.md
 **ステップ**:
 
 1. **パフォーマンス測定**:
-
    - レスポンスタイムの再測定
    - クエリ数の確認
    - 実行計画の再確認
@@ -302,13 +295,11 @@ for (const workflow of workflows) {
 ### すべきこと
 
 1. **測定してから最適化**:
-
    - 推測ではなく測定に基づく
    - 実行計画を確認する
    - before/after で効果を確認
 
 2. **必要なデータのみ取得**:
-
    - SELECT \* を避ける
    - 必要なカラムを明示
    - 必要な行数を LIMIT
@@ -321,12 +312,10 @@ for (const workflow of workflows) {
 ### 避けるべきこと
 
 1. **ループ内のクエリ**:
-
    - ❌ for 文内で DB 呼び出し
    - ✅ 事前に一括取得
 
 2. **過度なインデックス**:
-
    - ❌ すべてのカラムにインデックス
    - ✅ 実際のクエリパターンに基づく
 
@@ -407,7 +396,6 @@ for (const workflow of workflows) {
 ## 参考文献
 
 - **『High-Performance Java Persistence』** Vlad Mihalcea 著
-
   - Chapter 5: Fetching - フェッチ戦略と N+1 問題
   - Chapter 8: Batch Processing - バッチ処理最適化
 

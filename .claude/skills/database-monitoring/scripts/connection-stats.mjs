@@ -10,11 +10,11 @@
  *   --count: 収集回数、デフォルト: 無限（Ctrl+Cで停止）
  *
  * 環境変数:
- *   DATABASE_URL: PostgreSQL接続文字列
+ *   DATABASE_URL: libSQL/Turso接続文字列
+ *   DATABASE_AUTH_TOKEN: Turso認証トークン（必要な場合）
  */
 
-import pg from "pg";
-const { Client } = pg;
+import { createClient } from "@libsql/client";
 
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -37,53 +37,60 @@ function parseArgs() {
 }
 
 async function collectConnectionStats(client) {
-  const result = await client.query(`
+  // アプリケーションレベルで追跡された接続メトリクス
+  const result = await client.execute(`
     SELECT
       state,
-      usename,
-      application_name,
-      client_addr,
+      app_name,
       COUNT(*) AS count,
-      MAX(EXTRACT(EPOCH FROM (NOW() - backend_start))) AS max_connection_age_sec,
-      MAX(EXTRACT(EPOCH FROM (NOW() - query_start))) AS max_query_duration_sec
-    FROM pg_stat_activity
-    WHERE pid != pg_backend_pid()
-    GROUP BY state, usename, application_name, client_addr
+      MAX((julianday('now') - julianday(connected_at)) * 86400) AS max_connection_age_sec,
+      MAX((julianday('now') - julianday(query_start)) * 86400) AS max_query_duration_sec
+    FROM connection_metrics
+    WHERE timestamp >= datetime('now', '-1 minute')
+    GROUP BY state, app_name
     ORDER BY count DESC
   `);
 
-  const summary = await client.query(`
+  const summary = await client.execute(`
     SELECT
       COUNT(*) FILTER (WHERE state = 'active') AS active,
       COUNT(*) FILTER (WHERE state = 'idle') AS idle,
-      COUNT(*) FILTER (WHERE state = 'idle in transaction') AS idle_in_tx,
-      COUNT(*) FILTER (WHERE state = 'idle in transaction (aborted)') AS idle_in_tx_aborted,
+      COUNT(*) FILTER (WHERE state = 'in_transaction') AS idle_in_tx,
+      COUNT(*) FILTER (WHERE state = 'error') AS idle_in_tx_aborted,
       COUNT(*) AS total,
-      (SELECT setting::int FROM pg_settings WHERE name = 'max_connections') AS max_conn
-    FROM pg_stat_activity
-    WHERE pid != pg_backend_pid()
+      ${parseInt(process.env.MAX_CONNECTIONS || "100")} AS max_conn
+    FROM connection_metrics
+    WHERE timestamp >= datetime('now', '-1 minute')
   `);
 
   return {
     timestamp: new Date().toISOString(),
-    summary: summary.rows[0],
+    summary: summary.rows[0] || {
+      active: 0,
+      idle: 0,
+      idle_in_tx: 0,
+      idle_in_tx_aborted: 0,
+      total: 0,
+      max_conn: parseInt(process.env.MAX_CONNECTIONS || "100"),
+    },
     byStateUserApp: result.rows,
   };
 }
 
 async function collectWaitingConnections(client) {
-  const result = await client.query(`
+  // アプリケーションレベルで追跡されたロック待機情報
+  const result = await client.execute(`
     SELECT
-      blocked.pid AS blocked_pid,
-      blocked.usename AS blocked_user,
-      substring(blocked.query, 1, 50) AS blocked_query,
-      blocking.pid AS blocking_pid,
-      blocking.usename AS blocking_user,
-      EXTRACT(EPOCH FROM (NOW() - blocked.query_start)) AS wait_duration_sec
-    FROM pg_stat_activity blocked
-    JOIN pg_stat_activity blocking
-      ON blocking.pid = ANY(pg_blocking_pids(blocked.pid))
-    WHERE blocked.pid != blocked.pid
+      query_id AS blocked_pid,
+      user_name AS blocked_user,
+      substr(query_text, 1, 50) AS blocked_query,
+      blocking_query_id AS blocking_pid,
+      blocking_user AS blocking_user,
+      (julianday('now') - julianday(wait_start)) * 86400 AS wait_duration_sec
+    FROM lock_wait_metrics
+    WHERE status = 'waiting'
+      AND timestamp >= datetime('now', '-5 minutes')
+    ORDER BY wait_duration_sec DESC
     LIMIT 10
   `);
 
@@ -96,7 +103,7 @@ function printStats(stats, waitingConnections) {
 
   console.clear();
   console.log("═".repeat(60));
-  console.log(" PostgreSQL 接続統計モニター");
+  console.log(" SQLite/Turso 接続統計モニター");
   console.log("═".repeat(60));
   console.log(`\n時刻: ${stats.timestamp}\n`);
 
@@ -107,7 +114,9 @@ function printStats(stats, waitingConnections) {
   console.log(`  トランザクション内アイドル: ${s.idle_in_tx}`);
   console.log(`  中断トランザクション:     ${s.idle_in_tx_aborted}`);
   console.log(`  ─────────────────────────`);
-  console.log(`  合計:                    ${s.total} / ${s.max_conn} (${usagePct}%)`);
+  console.log(
+    `  合計:                    ${s.total} / ${s.max_conn} (${usagePct}%)`,
+  );
 
   // 使用率バー
   const barWidth = 40;
@@ -128,8 +137,8 @@ function printStats(stats, waitingConnections) {
   console.log("\n【アプリケーション別接続数】");
   const byApp = {};
   for (const row of stats.byStateUserApp) {
-    const app = row.application_name || "(unknown)";
-    byApp[app] = (byApp[app] || 0) + parseInt(row.count);
+    const app = row.app_name || "(unknown)";
+    byApp[app] = (byApp[app] || 0) + parseInt(row.count || 0);
   }
   Object.entries(byApp)
     .sort((a, b) => b[1] - a[1])
@@ -145,23 +154,24 @@ function printStats(stats, waitingConnections) {
       console.log(
         `  PID ${wc.blocked_pid} (${wc.blocked_user}) → ` +
           `待機 ${wc.wait_duration_sec?.toFixed(1)}秒 ← ` +
-          `PID ${wc.blocking_pid} (${wc.blocking_user})`
+          `PID ${wc.blocking_pid} (${wc.blocking_user})`,
       );
     });
   }
 
   console.log("\n" + "─".repeat(60));
   console.log("Ctrl+C で終了");
+  console.log("注: SQLiteではアプリケーションレベルで接続を追跡");
 }
 
 async function main() {
   const options = parseArgs();
-  const client = new Client({
-    connectionString: process.env.DATABASE_URL,
+  const client = createClient({
+    url: process.env.DATABASE_URL,
+    authToken: process.env.DATABASE_AUTH_TOKEN,
   });
 
   try {
-    await client.connect();
     console.log("データベースに接続しました...\n");
 
     let count = 0;
@@ -173,7 +183,7 @@ async function main() {
       count++;
       if (count < options.count) {
         await new Promise((resolve) =>
-          setTimeout(resolve, options.interval * 1000)
+          setTimeout(resolve, options.interval * 1000),
         );
       }
     }
@@ -181,7 +191,7 @@ async function main() {
     console.error("❌ エラー:", err.message);
     process.exit(1);
   } finally {
-    await client.end();
+    client.close();
   }
 }
 

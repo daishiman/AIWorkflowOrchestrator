@@ -124,9 +124,13 @@ const SHARED_API_KEY = "sk-proj-same-key-for-all";
 const config = {
   development: {
     apiKey: process.env.OPENAI_API_KEY_DEV,
+    databaseUrl: process.env.TURSO_DATABASE_URL_DEV,
+    databaseToken: process.env.TURSO_AUTH_TOKEN_DEV,
   },
   production: {
     apiKey: process.env.OPENAI_API_KEY_PROD,
+    databaseUrl: process.env.TURSO_DATABASE_URL_PROD,
+    databaseToken: process.env.TURSO_AUTH_TOKEN_PROD,
   },
 };
 
@@ -167,7 +171,7 @@ class EnvironmentValidator {
 async function requestProductionAccess(
   userId: string,
   duration: number,
-  justification: string
+  justification: string,
 ): Promise<AccessGrant> {
   const approval = await sendApprovalRequest(
     {
@@ -176,7 +180,7 @@ async function requestProductionAccess(
       duration,
       justification,
     },
-    "security-admin"
+    "security-admin",
   );
 
   if (!approval.approved) {
