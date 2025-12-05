@@ -62,11 +62,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install Railway CLI
+        uses: railwayapp/setup-railway@v1
+
       - name: Deploy to Railway
-        uses: bervProject/railway-deploy@main
-        with:
-          railway_token: ${{ secrets.RAILWAY_TOKEN }}
-          service: backend
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway up --service backend --detach
 
       - name: Wait for deployment
         run: sleep 30
