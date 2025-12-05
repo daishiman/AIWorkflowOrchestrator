@@ -3,8 +3,10 @@
 
 [build]
 builder = "nixpacks"
-# --ignore-scripts: better-sqlite3のネイティブビルドをスキップ（バックエンドはTurso/libsqlを使用）
-buildCommand = "pnpm install --ignore-scripts && pnpm --filter @repo/shared build && pnpm --filter @repo/backend build"
+# better-sqlite3のネイティブビルドをスキップ（バックエンドはTurso/libsqlを使用）
+# nixPacksはinstallとbuildを分けて実行するため、installCommandも指定が必要
+installCommand = "pnpm install --ignore-scripts"
+buildCommand = "pnpm --filter @repo/shared build && pnpm --filter @repo/backend build"
 
 [deploy]
 startCommand = "pnpm --filter @repo/backend start"
