@@ -22,6 +22,11 @@ description: |
   - コミットフック統合（Husky、lint-staged）
   - クリーンアーキテクチャ依存関係ルール強制
 
+  参照書籍・メソッド:
+  1.  『Maintainable JavaScript』: 「スタイルガイド」の重要性。
+  2.  『Refactoring JavaScript』: 「複雑度（Cyclomatic Complexity）」の低減。
+  3.  『Clean Code』: 「可読性は機能である」という哲学の適用。
+
   使用タイミング:
   - プロジェクト初期のlinter/formatter設定時
   - コード品質基準の見直しや強化時
@@ -37,7 +42,6 @@ tools:
   - Bash
   - Grep
 model: sonnet
-version: 2.1.0
 ---
 
 # Code Quality Manager

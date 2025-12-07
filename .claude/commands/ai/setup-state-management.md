@@ -42,7 +42,7 @@ allowed-tools:
   - Write(src/hooks/**|src/app/**)
   - Bash(pnpm add*)
   - Edit
-model: sonnet
+model: opus
 ---
 
 # React状態管理セットアップ
@@ -60,11 +60,13 @@ model: sonnet
 ライブラリ: "$ARGUMENTS"
 
 引数未指定の場合:
+
 1. プロジェクト要件を分析（データ更新頻度、リアルタイム性、複雑性）
 2. ユーザーに推奨ライブラリを提示（SWR/React Query）
 3. 選択を確認
 
 引数指定の場合:
+
 - swr: SWRセットアップ
 - react-query: React Queryセットアップ
 ```
@@ -78,6 +80,7 @@ Task ツールで `.claude/agents/state-manager.md` を起動:
 ライブラリ: ${選択されたライブラリ}
 
 依頼内容:
+
 - Phase 1: 状態要件の分析（既存パターン、技術スタック確認）
 - Phase 2: 状態アーキテクチャの設計（State Lifting、データフェッチ戦略）
 - Phase 3: Hooks/カスタムフックの実装（ロジック抽出、型安全性）
@@ -85,6 +88,7 @@ Task ツールで `.claude/agents/state-manager.md` を起動:
 - Phase 5: 最適化と検証（パフォーマンス測定、テスト戦略設計）
 
 プロジェクト固有制約:
+
 - pnpm 9.x使用（npm禁止）
 - TypeScript strict mode
 - TDD原則適用（テスト→実装）
@@ -92,6 +96,7 @@ Task ツールで `.claude/agents/state-manager.md` を起動:
 - Vitest 2.x、カバレッジ60%以上目標
 
 必須スキル参照（state-managerが自動参照）:
+
 1. data-fetching-strategies: ライブラリ選択基準、キャッシュ戦略
 2. custom-hooks-patterns: カスタムフック設計、再利用性
 3. react-hooks-advanced: 依存配列、メモ化最適化
@@ -99,6 +104,7 @@ Task ツールで `.claude/agents/state-manager.md` を起動:
 ```
 
 **期待成果物:**
+
 - `src/hooks/` または `src/app/`: カスタムフック（ハイブリッド構造準拠）
 - `package.json`: SWR/React Query依存追加（pnpm）
 - Context実装（必要に応じて）

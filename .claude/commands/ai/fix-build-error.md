@@ -32,7 +32,7 @@ allowed-tools:
   - Bash(pnpm run build*)
   - Read
   - Edit
-model: sonnet
+model: opus
 ---
 
 # ビルドエラー修正
@@ -61,12 +61,14 @@ cat build-error.log
 **使用エージェント**: `.claude/agents/devops-eng.md`
 
 **依頼内容**:
+
 ```markdown
 ビルドエラーを修正してください。
 
 **ビルドログ**: ${cat build-error.log}
 
 **要件**:
+
 1. エラー種別の特定
 2. 修正実施
 3. ビルド再実行
@@ -82,9 +84,11 @@ cat build-error.log
 ## ビルドエラー修正完了
 
 ### 修正内容
+
 ${fix_summary}
 
 ### ビルド結果
+
 ✅ ビルド成功
 ```
 

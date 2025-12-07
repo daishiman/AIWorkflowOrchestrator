@@ -38,7 +38,7 @@ allowed-tools:
   - Grep
   - Glob
   - Bash
-model: sonnet
+model: opus
 ---
 
 # Electronセキュリティ強化
@@ -55,6 +55,7 @@ model: sonnet
 監査スコープ: "$ARGUMENTS"（full/config/ipc/csp/deps）
 
 引数未指定の場合:
+
 - デフォルトでfull（完全監査）を実行
 - または、対話的にスコープを選択
 ```
@@ -68,6 +69,7 @@ Task ツールで `.claude/agents/electron-security.md` を起動:
 監査スコープ: ${scope}
 
 依頼内容:
+
 - BrowserWindowセキュリティ設定の監査
 - Preloadスクリプトのセキュリティレビュー
 - IPCハンドラーの入力検証確認
@@ -76,23 +78,27 @@ Task ツールで `.claude/agents/electron-security.md` を起動:
 
 監査項目:
 【Critical】
+
 - contextIsolation: true
 - nodeIntegration: false
 - ipcRenderer直接公開なし
 - require公開なし
 
 【High】
+
 - sandbox: true
 - CSP設定
 - IPCホワイトリスト
 - 入力バリデーション
 
 【Medium】
+
 - webviewTag無効
 - will-navigate制限
 - 依存関係の脆弱性
 
 成果物:
+
 - セキュリティ監査レポート
 - 問題点と修正提案
 - CSP設定ファイル（必要時）
@@ -102,24 +108,26 @@ Task ツールで `.claude/agents/electron-security.md` を起動:
 ### Phase 3: 確認と次のステップ
 
 **期待成果物:**
+
 - セキュリティ監査レポート
 - 修正が必要な項目リスト
 - 推奨設定
 
 **次のステップ案内:**
+
 - 問題が見つかった場合は修正を実施
 - `/ai:build-electron-app`: ビルド設定
 - `/ai:release-electron-app`: 配布設定
 
 ## スコープ説明
 
-| スコープ | 説明 | 監査内容 |
-|----------|------|----------|
-| full | 完全監査 | すべての項目 |
-| config | 設定監査 | webPreferences、BrowserWindow |
-| ipc | IPC監査 | チャネル、入力検証、Preload |
-| csp | CSP監査 | Content Security Policy |
-| deps | 依存関係監査 | npm audit |
+| スコープ | 説明         | 監査内容                      |
+| -------- | ------------ | ----------------------------- |
+| full     | 完全監査     | すべての項目                  |
+| config   | 設定監査     | webPreferences、BrowserWindow |
+| ipc      | IPC監査      | チャネル、入力検証、Preload   |
+| csp      | CSP監査      | Content Security Policy       |
+| deps     | 依存関係監査 | npm audit                     |
 
 ## 使用例
 

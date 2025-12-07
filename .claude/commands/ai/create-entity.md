@@ -31,7 +31,7 @@ allowed-tools:
   - Write(src/shared/core/**)
   - Edit
   - Grep
-model: sonnet
+model: opus
 ---
 
 # Domain Entity Creation Command
@@ -55,6 +55,7 @@ model: sonnet
 **1.2 引数がない場合の対話的収集**
 
 引数 `$1` が空の場合、domain-modeler が以下を対話的に収集:
+
 - エンティティ名
 - ドメイン責務
 - ユビキタス言語との整合性確認
@@ -64,22 +65,26 @@ model: sonnet
 domain-modeler エージェントが以下のスキルを参照しながら設計:
 
 **必須スキル（Phase 1-2）:**
+
 - `.claude/skills/domain-driven-design/SKILL.md`: DDD基礎と設計原則
 - `.claude/skills/ubiquitous-language/SKILL.md`: 用語一貫性チェック
 - `.claude/skills/value-object-patterns/SKILL.md`: 値オブジェクト設計
 
 **推奨スキル（Phase 3）:**
+
 - `.claude/skills/domain-services/SKILL.md`: ドメインサービス分離パターン（必要時）
 - `.claude/skills/bounded-context/SKILL.md`: 境界づけられたコンテキスト検証
 
 ## Phase 3: 成果物生成と検証
 
 **期待成果物:**
+
 - `src/shared/core/entities/[EntityName].ts`: エンティティ実装
 - TypeScript型定義、バリデーションロジック、ドメインルール
 - ユニットテストテンプレート（推奨）
 
 **検証項目（domain-modelerが実施）:**
+
 - Clean Architecture準拠（外部依存なし）
 - ユビキタス言語との一貫性
 - 既存エンティティとの命名・構造整合性
@@ -88,5 +93,6 @@ domain-modeler エージェントが以下のスキルを参照しながら設�
 ---
 
 **注記:**
+
 - このコマンドは **ハブ専用** です。詳細な設計・実装は domain-modeler エージェントに完全委譲されます。
 - すべてのドメインロジック、実装パターン、品質保証は参照スキルに定義されています。

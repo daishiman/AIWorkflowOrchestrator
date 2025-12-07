@@ -33,7 +33,7 @@ allowed-tools:
   - Edit
   - Bash(pnpm drizzle-kit studio|pnpm test)
   - Grep
-model: sonnet
+model: opus
 ---
 
 # データベースクエリ最適化コマンド

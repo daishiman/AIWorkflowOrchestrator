@@ -33,7 +33,7 @@ allowed-tools:
   - Write(src/shared/infrastructure/database/**|docs/database/**)
   - Edit
   - Grep
-model: sonnet
+model: opus
 ---
 
 # データベーススキーマ作成コマンド

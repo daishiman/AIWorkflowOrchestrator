@@ -30,7 +30,7 @@ allowed-tools:
   - Bash(tsc*)
   - Read
   - Edit
-model: sonnet
+model: opus
 ---
 
 # TypeScript型エラー修正
@@ -58,12 +58,14 @@ fi
 **使用エージェント**: `.claude/agents/schema-def.md`
 
 **依頼内容**:
+
 ```markdown
 型エラーを修正してください。
 
 **エラーログ**: ${cat type-errors.log}
 
 **要件**:
+
 1. 型エラーの特定
 2. 適切な型定義で修正
 3. 型チェック再実行
@@ -79,10 +81,12 @@ fi
 ## 型エラー修正完了
 
 ### 修正サマリー
+
 - エラー数: ${error_count}件
 - 修正ファイル: ${file_count}件
 
 ### 型チェック結果
+
 ✅ エラーなし
 ```
 

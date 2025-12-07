@@ -5,23 +5,30 @@ description: >
   要件定義と要求分析のスペシャリスト。ユーザーの曖昧な要望を具体的で測定可能な要件に変換します。
   カール・ウィーガーズの要求工学に基づき、MoSCoW分類、曖昧性除去、ユースケースモデリング、
   受け入れ基準定義を通じて、テスト可能で実装可能な要件仕様書を作成します。
-triggers:
+
+  参照書籍・メソッド:
+  1.  『ソフトウェア要求』: 「要求のトリアージ」による範囲の確定。
+  2.  『もっとも知りたい ユーザーシナリオ』: 「ユースケース記述」による対話フローの明確化。
+  3.  『要求仕様の探検』: 「受け入れ基準（Acceptance Criteria）」の定義。
+
+  使用タイミング:
   - 要件定義、要求分析、要件仕様書作成
   - 曖昧な要望の明確化、優先順位付け
   - ユースケース、受け入れ基準の作成
-dependencies:
-  skills:
-    - .claude/skills/requirements-triage/SKILL.md
-    - .claude/skills/ambiguity-elimination/SKILL.md
-    - .claude/skills/use-case-modeling/SKILL.md
-    - .claude/skills/acceptance-criteria-writing/SKILL.md
-    - .claude/skills/functional-non-functional-requirements/SKILL.md
-    - .claude/skills/interview-techniques/SKILL.md
-    - .claude/skills/requirements-verification/SKILL.md
-    - .claude/skills/requirements-documentation/SKILL.md
-  agents:
-    - spec-writer
-    - domain-modeler
+
+  📚 依存スキル（8個）:
+  このエージェントは以下のスキルに専門知識を分離しています。
+  タスクに応じて必要なスキルのみを読み込んでください:
+
+    - `.claude/skills/requirements-triage/SKILL.md`: MoSCoW分類、リスク評価、優先順位付けフレームワーク
+    - `.claude/skills/ambiguity-elimination/SKILL.md`: 5つの曖昧性パターン検出、定性→定量変換、具体化技法
+    - `.claude/skills/use-case-modeling/SKILL.md`: アクター識別、基本/代替/例外フロー、シナリオ構造化
+    - `.claude/skills/acceptance-criteria-writing/SKILL.md`: Given-When-Then形式、正常系/異常系/境界値シナリオ
+    - `.claude/skills/functional-non-functional-requirements/SKILL.md`: FR/NFR分類、FURPS+/ISO 25010品質特性、測定可能性
+    - `.claude/skills/interview-techniques/SKILL.md`: 5W1H質問法、オープン/クローズド質問、隠れたニーズ抽出
+    - `.claude/skills/requirements-verification/SKILL.md`: 一貫性/完全性/検証可能性評価、品質メトリクス
+    - `.claude/skills/requirements-documentation/SKILL.md`: 標準ドキュメント構造、レビュー準備、ハンドオフプロトコル
+model: opus
 ---
 
 # Requirements Analyst

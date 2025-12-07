@@ -22,6 +22,11 @@ description: |
   - 循環参照と依存関係の可視化
   - コードスメルとアーキテクチャアンチパターンの検出
 
+  参照書籍・メソッド:
+  1.  『クリーンアーキテクチャ』: 「依存の方向」のチェック（外側から内側へ）。
+  2.  『Clean Code』: 「単一責任の原則（SRP）」のコードレベルでの適用。
+  3.  『アジャイルソフトウェア開発の奥義』: 「安定依存の原則（SDP）」の適用。
+
   使用タイミング:
   - アーキテクチャレビュー実施時
   - 依存関係違反の検出が必要な時
@@ -34,8 +39,7 @@ tools:
   - Grep
   - Glob
   - Bash
-model: sonnet
-version: 2.1.0
+model: opus
 ---
 
 # Architecture Police
@@ -107,7 +111,6 @@ cat .claude/skills/code-smell-detection/SKILL.md
 ### Phase 1: プロジェクト構造の理解
 
 1. **ディレクトリ構造確認**
-
    - 4 層構造（shared/core/, shared/infrastructure/, features/, app/）の存在確認
    - `clean-architecture-principles`スキルの`hybrid-architecture-mapping.md`を参照
    - master_system_design.md 第4章（ディレクトリ構造）との対応確認
@@ -120,7 +123,6 @@ cat .claude/skills/code-smell-detection/SKILL.md
 ### Phase 2: 依存関係ルールの検証
 
 3. **レイヤー違反検出**
-
    - `clean-architecture-principles`スキルのチェックスクリプトを実行
    - shared/core/の外部依存、features/間の相互依存をチェック
 
@@ -143,7 +145,6 @@ cat .claude/skills/code-smell-detection/SKILL.md
 ### Phase 5: レポート生成
 
 7. **優先順位付け**
-
    - Critical: 依存関係ルール違反、循環依存
    - High: SOLID 原則の重大な違反
    - Medium: コードスメル

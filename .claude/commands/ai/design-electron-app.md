@@ -36,7 +36,7 @@ allowed-tools:
   - Edit
   - Grep
   - Glob
-model: sonnet
+model: opus
 ---
 
 # Electronアプリ アーキテクチャ設計
@@ -54,6 +54,7 @@ model: sonnet
 
 引数未指定の場合:
 ユーザーに対話的に以下を質問:
+
 - アプリケーション名
 - 主な機能・用途
 - 対象プラットフォーム（macOS/Windows/Linux）
@@ -69,12 +70,14 @@ Task ツールで `.claude/agents/electron-architect.md` を起動:
 アプリケーション名: ${app-name}
 
 依頼内容:
+
 - Electronアプリケーションのアーキテクチャ設計
 - Main/Renderer/Preloadプロセスの責務分離
 - IPCチャネル設計と型定義
 - セキュリティ設定（contextIsolation、sandbox）
 
 必須要件:
+
 1. contextIsolation: true
 2. nodeIntegration: false
 3. sandbox: true（推奨）
@@ -82,6 +85,7 @@ Task ツールで `.claude/agents/electron-architect.md` を起動:
 5. Preloadでの最小限API公開
 
 成果物:
+
 - src/main/index.ts
 - src/preload/index.ts
 - src/shared/ipc-types.ts
@@ -91,12 +95,14 @@ Task ツールで `.claude/agents/electron-architect.md` を起動:
 ### Phase 3: 確認と次のステップ
 
 **期待成果物:**
+
 - Mainプロセスエントリーポイント
 - Preloadスクリプト
 - IPC型定義
 - ディレクトリ構造
 
 **次のステップ案内:**
+
 - `/ai:create-electron-window`: ウィンドウ/UI実装
 - `/ai:secure-electron-app`: セキュリティ強化
 - `/ai:build-electron-app`: ビルド設定
