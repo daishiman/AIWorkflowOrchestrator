@@ -2,15 +2,55 @@
 
 このディレクトリには、プロジェクトのCI/CDワークフローが含まれています。
 
+## ワークフロー構成図
+
+```mermaid
+flowchart TB
+    subgraph Triggers["トリガー"]
+        PR[PR作成/更新]
+        PUSH[main push]
+        TAG[タグ push v*]
+    end
+
+    subgraph CI["CI Pipeline"]
+        LINT[Lint]
+        TYPE[Typecheck]
+        TEST[Test]
+        SEC[Security Audit]
+        BUILD[Build Check]
+    end
+
+    subgraph CD["CD Pipeline"]
+        BACKEND_CD[Backend Deploy]
+        WEB_CD[Web Deploy]
+        DESKTOP_BUILD[Desktop Build]
+    end
+
+    subgraph Notify["通知"]
+        DISCORD[Discord Webhook]
+    end
+
+    PR --> LINT & TYPE & TEST & SEC
+    LINT & TYPE & TEST --> BUILD
+
+    PUSH -->|apps/backend/**| BACKEND_CD
+    PUSH -->|apps/web/**| WEB_CD
+    TAG --> DESKTOP_BUILD
+
+    BACKEND_CD --> DISCORD
+    WEB_CD --> DISCORD
+```
+
 ## ワークフロー一覧
 
 ### CI/CD
 
-| ワークフロー            | トリガー                         | 説明                                 |
-| ----------------------- | -------------------------------- | ------------------------------------ |
-| **ci.yml**              | Push/PR to main                  | Lint、TypeCheck、Test、Buildの実行   |
-| **deploy-backend.yml**  | Push to main (`apps/backend/**`) | Railwayへのバックエンドデプロイ      |
-| **release-desktop.yml** | Tag push (`v*`)                  | Electronデスクトップアプリのリリース |
+| ワークフロー            | トリガー                         | 説明                                          |
+| ----------------------- | -------------------------------- | --------------------------------------------- |
+| **ci.yml**              | Push/PR to main                  | Lint、TypeCheck、Test、Buildの実行            |
+| **backend-ci.yml**      | Push to main (`apps/backend/**`) | Railwayへのバックエンドデプロイ + Discord通知 |
+| **web-cd.yml**          | Push to main (`apps/web/**`)     | RailwayへのWebデプロイ + Discord通知          |
+| **release-desktop.yml** | Tag push (`v*`)                  | Electronデスクトップアプリのリリース          |
 
 ### メンテナンス
 
@@ -19,17 +59,47 @@
 | **stale.yml**      | スケジュール（日次） | 古いIssue/PRの管理 |
 | **auto-label.yml** | Issue/PR作成時       | 自動ラベル付け     |
 
+## 品質ゲート
+
+| チェック       | 必須 | 失敗時       |
+| -------------- | ---- | ------------ |
+| Lint           | ✅   | PRマージ不可 |
+| Typecheck      | ✅   | PRマージ不可 |
+| Test           | ✅   | PRマージ不可 |
+| Build          | ✅   | PRマージ不可 |
+| Security Audit | ❌   | 警告のみ     |
+
+## ローカル検証
+
+```bash
+# フルチェック
+./scripts/validate-ci.sh
+
+# クイックチェック
+./scripts/validate-ci.sh --quick
+```
+
+### Git Hooks（自動実行）
+
+| Hook       | タイミング | 内容                  |
+| ---------- | ---------- | --------------------- |
+| pre-commit | コミット前 | lint-staged           |
+| pre-push   | プッシュ前 | lint, typecheck, test |
+
+スキップ: `git push --no-verify`
+
 ## セットアップ手順
 
 ### 1. GitHub Secretsの設定
 
-#### バックエンドデプロイ用
+#### CI/CDデプロイ用
 
-| Secret名             | 必須 | 取得方法                                                                                                                  |
-| -------------------- | ---- | ------------------------------------------------------------------------------------------------------------------------- |
-| `RAILWAY_TOKEN`      | ✅   | [Railwayガイド Part 10.1](../../docs/30-workflows/deployment/setup-guide-railway-backend.md#step-101-railway-tokenを取得) |
-| `RAILWAY_PROJECT_ID` | 推奨 | Railwayダッシュボード → Settings → General                                                                                |
-| `RAILWAY_DOMAIN`     | 推奨 | 例: `your-app-production.up.railway.app`                                                                                  |
+| Secret名              | 必須 | 用途                                     |
+| --------------------- | ---- | ---------------------------------------- |
+| `RAILWAY_TOKEN`       | ✅   | Railway CLIデプロイ認証                  |
+| `RAILWAY_DOMAIN`      | ✅   | バックエンドヘルスチェックURL            |
+| `RAILWAY_WEB_DOMAIN`  | ❌   | Webヘルスチェック URL（web未デプロイ時） |
+| `DISCORD_WEBHOOK_URL` | ❌   | デプロイ成功/失敗の通知                  |
 
 #### デスクトップリリース用
 

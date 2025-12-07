@@ -1,17 +1,12 @@
-name: Backend CI/CD
+name: Web CD
 
 on:
   push:
     branches: [main]
     paths:
-      - "apps/backend/**"
+      - "apps/web/**"
       - "packages/shared/**"
-      - ".github/workflows/backend-ci.yml"
-  pull_request:
-    branches: [main]
-    paths:
-      - "apps/backend/**"
-      - "packages/shared/**"
+      - ".github/workflows/web-cd.yml"
   workflow_dispatch:
 
 # 最小権限の原則
@@ -20,7 +15,7 @@ permissions:
   deployments: write
 
 concurrency:
-  group: backend-cicd-${{ github.ref }}
+  group: web-cd-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -36,7 +31,7 @@ jobs:
         uses: pnpm/action-setup@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: "pnpm"
@@ -47,17 +42,14 @@ jobs:
       - name: Build shared package
         run: pnpm --filter @repo/shared build
 
-      - name: Build backend
-        run: pnpm --filter @repo/backend build
-
-      - name: Run backend tests
-        run: pnpm --filter @repo/backend test:run
+      - name: Build web app
+        run: pnpm --filter @repo/web build
 
       - name: Type check
-        run: pnpm --filter @repo/backend typecheck
+        run: pnpm --filter @repo/web typecheck
 
       - name: Lint
-        run: pnpm --filter @repo/backend lint
+        run: pnpm --filter @repo/web lint
 
   deploy:
     name: Deploy to Railway
@@ -78,19 +70,20 @@ jobs:
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          echo "🚀 Deploying to Railway..."
-          railway up --service backend --detach
+          echo "🚀 Deploying web app to Railway..."
+          railway up --service web --detach
           echo "✅ Deployment triggered successfully"
 
       - name: Wait for deployment
         run: sleep 30
 
       - name: Health check
+        id: healthcheck
         env:
-          RAILWAY_DOMAIN: ${{ secrets.RAILWAY_DOMAIN }}
+          WEB_DOMAIN: ${{ secrets.RAILWAY_WEB_DOMAIN }}
         run: |
-          if [ -z "$RAILWAY_DOMAIN" ]; then
-            echo "⚠️  RAILWAY_DOMAIN が設定されていません。ヘルスチェックをスキップします。"
+          if [ -z "$WEB_DOMAIN" ]; then
+            echo "⚠️  RAILWAY_WEB_DOMAIN が設定されていません。ヘルスチェックをスキップします。"
             exit 0
           fi
 
@@ -100,9 +93,8 @@ jobs:
           while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
             echo "ヘルスチェック試行 $((RETRY_COUNT + 1))/$MAX_RETRIES..."
 
-            if curl -f -s "https://${RAILWAY_DOMAIN}/api/health" > /dev/null; then
+            if curl -f -s "https://${WEB_DOMAIN}" > /dev/null; then
               echo "✅ デプロイ成功！"
-              curl -s "https://${RAILWAY_DOMAIN}/api/health" | jq .
               exit 0
             fi
 
@@ -119,7 +111,7 @@ jobs:
         with:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
           status: success
-          service: backend
+          service: web
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
@@ -129,7 +121,7 @@ jobs:
         with:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
           status: failure
-          service: backend
+          service: web
           error_message: "Deployment or health check failed"
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
