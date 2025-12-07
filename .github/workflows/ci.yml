@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [main]
 
+# 最小権限の原則
+permissions:
+  contents: read
+  pull-requests: read
+
 # 同時実行制御: 同じブランチの古いワークフローをキャンセル
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -15,6 +20,7 @@ jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -37,6 +43,7 @@ jobs:
   typecheck:
     name: Type Check
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -62,6 +69,7 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -94,6 +102,7 @@ jobs:
   security:
     name: Security Audit
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -117,6 +126,7 @@ jobs:
   build:
     name: Build Check
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: [lint, typecheck, test]
     steps:
       - name: Checkout
