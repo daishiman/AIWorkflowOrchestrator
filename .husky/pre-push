@@ -1,0 +1,39 @@
+#!/bin/sh
+# pre-push hook: プッシュ前にCI相当のチェックを実行
+# --no-verify オプションでスキップ可能
+
+echo "🔍 Running pre-push CI validation..."
+
+# 高速モードで検証（ビルドはスキップ）
+# フルチェックが必要な場合は ./scripts/validate-ci.sh を直接実行
+
+# 1. Lint チェック
+echo "📝 Checking lint..."
+if ! pnpm lint; then
+    echo "❌ Lint failed. Push aborted."
+    echo "💡 Fix lint errors or use 'git push --no-verify' to skip."
+    exit 1
+fi
+
+# 2. TypeScript 型チェック
+echo "🔧 Checking types..."
+if ! pnpm --filter @repo/shared build > /dev/null 2>&1; then
+    echo "❌ Shared package build failed. Push aborted."
+    exit 1
+fi
+
+if ! pnpm typecheck; then
+    echo "❌ Type check failed. Push aborted."
+    echo "💡 Fix type errors or use 'git push --no-verify' to skip."
+    exit 1
+fi
+
+# 3. テスト実行
+echo "🧪 Running tests..."
+if ! pnpm --filter @repo/shared test:run && pnpm --filter @repo/desktop test:run; then
+    echo "❌ Tests failed. Push aborted."
+    echo "💡 Fix failing tests or use 'git push --no-verify' to skip."
+    exit 1
+fi
+
+echo "✅ All pre-push checks passed!"
