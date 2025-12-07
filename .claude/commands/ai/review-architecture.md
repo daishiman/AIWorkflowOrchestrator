@@ -41,7 +41,7 @@ allowed-tools:
   - Grep
   - Glob
   - Write(docs/**)
-model: sonnet
+model: opus
 ---
 
 # アーキテクチャレビュー

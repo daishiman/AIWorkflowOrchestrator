@@ -40,7 +40,7 @@ allowed-tools:
   - Read
   - Bash
   - Write(docs/**)
-model: sonnet
+model: opus
 ---
 
 # パフォーマンス分析
@@ -63,16 +63,19 @@ fi
 ### Phase 2-4: エージェント起動（対象別）
 
 **frontend分析** (router-dev):
+
 - Core Web Vitals測定
 - Bundle Size分析
 - Next.js最適化チェック
 
 **backend分析** (logic-dev):
+
 - API Response Time測定
 - メモリプロファイリング
 - 非効率ロジック検出
 
 **database分析** (dba-mgr):
+
 - スロークエリ検出
 - インデックス効率評価
 - N+1クエリ検出
@@ -83,11 +86,13 @@ fi
 ## パフォーマンス分析完了
 
 ### ボトルネック検出
+
 - Critical: ${critical_count}件
 - High: ${high_count}件
 - Medium: ${medium_count}件
 
 ### 最適化提案
+
 [最適化アクション一覧]
 
 レポート: docs/performance/analysis-report.md

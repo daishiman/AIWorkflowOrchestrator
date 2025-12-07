@@ -38,7 +38,7 @@ allowed-tools:
   - Write(src/hooks/**|src/features/*/hooks/**)
   - Edit
   - Grep
-model: sonnet
+model: opus
 ---
 
 # Reactカスタムフック作成コマンド
@@ -50,10 +50,12 @@ model: sonnet
 ### Phase 0: 準備と引数確認
 
 **入力**:
+
 - `$ARGUMENTS`: フック名（オプション、`use〜`形式推奨）
 - インタラクティブ: 未指定時にフック名と目的を確認
 
 **確認項目**:
+
 - [ ] フック名は`use`で始まるか？
 - [ ] 実装目的は明確か？
 - [ ] 配置先ディレクトリは決定されているか？（機能固有 or 共通）
@@ -63,6 +65,7 @@ model: sonnet
 ### Phase 1: state-managerエージェント起動
 
 **エージェント起動**:
+
 ```
 `.claude/agents/state-manager.md` を起動:
 - 目的: カスタムフック「${hook-name}」の設計・実装
@@ -75,12 +78,14 @@ model: sonnet
 ```
 
 **エージェントの実行内容**:
+
 1. **Phase 1（分析）**: 既存コード分析、抽出基準評価
 2. **Phase 2（設計）**: インターフェース設計、状態配置決定
 3. **Phase 3（実装）**: カスタムフック実装、型安全性確保
 4. **Phase 4（テスト）**: テスト戦略設計、TDDサイクル準備
 
 **期待する出力**:
+
 - カスタムフックファイル（`use${HookName}.ts`）
 - 配置パス（`src/hooks/` または `src/features/[機能名]/hooks/`）
 - テスト戦略ドキュメント（テストケース定義、モック戦略）
@@ -91,6 +96,7 @@ model: sonnet
 ### Phase 2: 検証と完了報告
 
 **検証項目**:
+
 - [ ] カスタムフックファイルが作成されたか？
 - [ ] 型定義は完全か（TypeScript strict mode準拠）？
 - [ ] テスト戦略は明確か（TDDサイクル対応）？
@@ -98,6 +104,7 @@ model: sonnet
 - [ ] ハイブリッド構造の依存関係ルールを守っているか？
 
 **完了報告**:
+
 - 作成されたファイルパスの一覧
 - テスト戦略の概要
 - Next Steps（テスト実装、統合作業等）
@@ -109,11 +116,13 @@ model: sonnet
 ### 配置判断基準
 
 **機能固有フック（`src/features/[機能名]/hooks/`）**:
+
 - その機能でのみ使用される
 - 機能固有のビジネスロジックを含む
 - 例: `useYouTubeSummarize`, `useMeetingTranscribe`
 
 **共通フック（`src/hooks/`）**:
+
 - 複数機能で再利用される
 - 汎用的なロジック（UI、データフェッチ、ユーティリティ）
 - 例: `useDebounce`, `useLocalStorage`, `useFetch`
@@ -125,6 +134,7 @@ app/ → features/ → shared/infrastructure/ → shared/core/
 ```
 
 **カスタムフックが依存可能**:
+
 - ✅ shared/core（エンティティ、インターフェース）
 - ✅ shared/infrastructure（AI、DB、Discord等の共通サービス）
 - ✅ 他のカスタムフック（同レベルまたは下位層）
@@ -163,12 +173,15 @@ src/features/youtube-summarize/
 ## トラブルシューティング
 
 ### Q: フック名を指定しなかった場合は？
+
 A: インタラクティブモードで確認します。フック名と目的を対話的に収集します。
 
 ### Q: 既存フックの改善は？
+
 A: 既存フックのパスを指定すると、state-managerが分析・改善提案を行います。
 
 ### Q: テスト実装は？
+
 A: このコマンドはテスト戦略の設計まで。実装は`/ai:generate-unit-tests`または`.claude/agents/unit-tester.md`に委譲します。
 
 ---
@@ -177,7 +190,7 @@ A: このコマンドはテスト戦略の設計まで。実装は`/ai:generate-
 
 ```typescript
 // src/hooks/useDebounce.ts
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 /**
  * 値の変更を遅延させるカスタムフック
@@ -204,21 +217,21 @@ export function useDebounce<T>(value: T, delay: number): T {
 
 ```typescript
 // __tests__/useDebounce.test.ts
-import { renderHook, waitFor } from '@testing-library/react';
-import { useDebounce } from '../useDebounce';
+import { renderHook, waitFor } from "@testing-library/react";
+import { useDebounce } from "../useDebounce";
 
-describe('useDebounce', () => {
-  it('should debounce value changes', async () => {
+describe("useDebounce", () => {
+  it("should debounce value changes", async () => {
     const { result, rerender } = renderHook(
       ({ value, delay }) => useDebounce(value, delay),
-      { initialProps: { value: 'initial', delay: 500 } }
+      { initialProps: { value: "initial", delay: 500 } },
     );
 
-    expect(result.current).toBe('initial');
+    expect(result.current).toBe("initial");
 
-    rerender({ value: 'updated', delay: 500 });
+    rerender({ value: "updated", delay: 500 });
 
-    await waitFor(() => expect(result.current).toBe('updated'), {
+    await waitFor(() => expect(result.current).toBe("updated"), {
       timeout: 600,
     });
   });

@@ -38,7 +38,7 @@ allowed-tools:
   - Write(src/app/**|src/features/**)
   - Edit
   - Grep
-model: sonnet
+model: opus
 ---
 
 # Reactコンポーネント作成
@@ -57,10 +57,11 @@ model: sonnet
 
 引数未指定の場合:
 ユーザーに対話的に以下を質問:
+
 - コンポーネント名
 - Atomic Designレベル（atom/molecule/organism）
 - 用途・機能概要
-- 配置場所（app/components/ or features/*/components/）
+- 配置場所（app/components/ or features/\*/components/）
 ```
 
 ### Phase 2: ui-designer エージェント起動
@@ -73,13 +74,15 @@ Task ツールで `.claude/agents/ui-designer.md` を起動:
 種類: ${atom/molecule/organism}
 
 依頼内容:
+
 - プロジェクト設計書（master_system_design.md）準拠のUIコンポーネント作成
 - デザインシステム基盤確認とCompositionパターン適用
 - WCAG 2.1 AA準拠のアクセシビリティ統合
 - TypeScript strict mode + Tailwind CSSスタイリング
-- テスト作成（__tests__/、カバレッジ80%目標）
+- テスト作成（**tests**/、カバレッジ80%目標）
 
 必須要件:
+
 1. Clean Architecture準拠（依存関係: app/ → features/ → shared/）
 2. Next.js App Router対応（"use client"、Server/Client分離）
 3. Zodバリデーション（フォーム等の入力検証）
@@ -90,12 +93,14 @@ Task ツールで `.claude/agents/ui-designer.md` を起動:
 8. カラーコントラスト4.5:1以上、ダークモード対応
 
 成果物の配置:
-- コンポーネント: src/app/components/${component-name}.tsx または src/features/*/components/
-- テスト: 同階層/__tests__/${component-name}.test.tsx
+
+- コンポーネント: src/app/components/${component-name}.tsx または src/features/\*/components/
+- テスト: 同階層/**tests**/${component-name}.test.tsx
 - Storybook（オプション）: ${component-name}.stories.tsx
 ```
 
 **期待成果物:**
+
 - TypeScript strict mode準拠のReactコンポーネント
 - Zod検証スキーマ（必要に応じて）
 - アクセシビリティ完備（WCAG 2.1 AA）
@@ -140,6 +145,7 @@ Task ツールで `.claude/agents/ui-designer.md` を起動:
 ## 後続ワークフロー
 
 コンポーネント作成後の推奨フロー:
+
 1. `/ai:create-component` → UIコンポーネント作成
 2. アクセシビリティテスト実行（axe-core等）
 3. 必要に応じて `/ai:create-page` でページ統合

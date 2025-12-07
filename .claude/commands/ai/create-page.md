@@ -37,7 +37,7 @@ allowed-tools:
   - Edit
   - Grep
   - Glob
-model: sonnet
+model: opus
 ---
 
 # Next.js App Routerページ作成
@@ -54,16 +54,18 @@ model: sonnet
 ルートパス: "$ARGUMENTS"
 
 引数未指定の場合:
-  ユーザーに対話的にルートパスを質問
-  例: /dashboard, /products/[id], /settings/profile
+ユーザーに対話的にルートパスを質問
+例: /dashboard, /products/[id], /settings/profile
 
 検証:
-  - ルートパスがスラッシュで始まること
-  - 動的セグメント（[slug]等）の適切な使用
-  - 既存ルーティング構造との整合性
+
+- ルートパスがスラッシュで始まること
+- 動的セグメント（[slug]等）の適切な使用
+- 既存ルーティング構造との整合性
 ```
 
 **既存構造確認（並列実行）:**
+
 ```bash
 # 既存のルーティング構造を確認
 Glob: src/app/**/page.tsx
@@ -83,45 +85,52 @@ Task ツールで `.claude/agents/router-dev.md` を起動:
 ルートパス: ${ルートパス}
 
 依頼内容:
-  **Phase 1: ルーティング構造設計**
-  - ルートパス解析（静的/動的セグメント判定）
-  - 必要なディレクトリ構造の決定
-  - レンダリング戦略の選定（Static/Dynamic/ISR/Streaming）
-  - スキル参照: `.claude/skills/nextjs-app-router/SKILL.md`
+**Phase 1: ルーティング構造設計**
 
-  **Phase 2: Server/Client Components実装**
-  - page.tsx の作成（Server Component優先）
-  - データフェッチ戦略の実装
-  - 必要に応じてClient Componentを分離
-  - スキル参照: `.claude/skills/server-components-patterns/SKILL.md`
-  - テンプレート: `.claude/skills/nextjs-app-router/templates/page-template.md`
+- ルートパス解析（静的/動的セグメント判定）
+- 必要なディレクトリ構造の決定
+- レンダリング戦略の選定（Static/Dynamic/ISR/Streaming）
+- スキル参照: `.claude/skills/nextjs-app-router/SKILL.md`
 
-  **Phase 3: パフォーマンス最適化（必要時）**
-  - next/image、next/font の活用
-  - loading.tsx の追加（非同期データフェッチ時）
-  - Suspense境界の設計
-  - スキル参照: `.claude/skills/web-performance/SKILL.md`（必要時）
+**Phase 2: Server/Client Components実装**
 
-  **Phase 4: Metadata API / SEO設定（必要時）**
-  - 動的メタデータの実装
-  - OGP画像とTwitter Cardの設定
-  - スキル参照: `.claude/skills/seo-optimization/SKILL.md`（必要時）
-  - テンプレート: `.claude/skills/seo-optimization/templates/metadata-template.md`
+- page.tsx の作成（Server Component優先）
+- データフェッチ戦略の実装
+- 必要に応じてClient Componentを分離
+- スキル参照: `.claude/skills/server-components-patterns/SKILL.md`
+- テンプレート: `.claude/skills/nextjs-app-router/templates/page-template.md`
+
+**Phase 3: パフォーマンス最適化（必要時）**
+
+- next/image、next/font の活用
+- loading.tsx の追加（非同期データフェッチ時）
+- Suspense境界の設計
+- スキル参照: `.claude/skills/web-performance/SKILL.md`（必要時）
+
+**Phase 4: Metadata API / SEO設定（必要時）**
+
+- 動的メタデータの実装
+- OGP画像とTwitter Cardの設定
+- スキル参照: `.claude/skills/seo-optimization/SKILL.md`（必要時）
+- テンプレート: `.claude/skills/seo-optimization/templates/metadata-template.md`
 
 必須要件:
-  1. Server Componentsをデフォルトとする（"use client"は最小限）
-  2. TypeScript strict モード準拠（型安全性確保）
-  3. master_system_design.md のディレクトリ構造に準拠
-  4. 既存のレイアウト階層と整合性を保つ
-  5. パフォーマンス指標目標（LCP < 2.5s、CLS < 0.1）
+
+1. Server Componentsをデフォルトとする（"use client"は最小限）
+2. TypeScript strict モード準拠（型安全性確保）
+3. master_system_design.md のディレクトリ構造に準拠
+4. 既存のレイアウト階層と整合性を保つ
+5. パフォーマンス指標目標（LCP < 2.5s、CLS < 0.1）
 
 プロジェクト固有制約:
-  - ハイブリッドアーキテクチャ: src/features/ からデータ取得時は Repository パターン使用
-  - データフェッチ: src/shared/infrastructure/database/ 経由
-  - AIクライアント: src/shared/infrastructure/ai/ 経由
+
+- ハイブリッドアーキテクチャ: src/features/ からデータ取得時は Repository パターン使用
+- データフェッチ: src/shared/infrastructure/database/ 経由
+- AIクライアント: src/shared/infrastructure/ai/ 経由
 ```
 
 **期待成果物:**
+
 - `src/app/${ルートパス}/page.tsx`（Server Component）
 - `src/app/${ルートパス}/loading.tsx`（必要時）
 - `src/app/${ルートパス}/error.tsx`（必要時）
@@ -131,27 +140,31 @@ Task ツールで `.claude/agents/router-dev.md` を起動:
 ### Phase 3: 検証と報告
 
 **自動検証（router-devエージェント内で実行）:**
+
 - [ ] Server Componentsがデフォルトで使用されている
 - [ ] TypeScript型エラーがない
 - [ ] 既存レイアウトとの整合性が取れている
 - [ ] パフォーマンスベストプラクティスに準拠
 
 **完了報告:**
+
 ```markdown
 ✅ ページ作成完了
 
 作成ファイル:
-  - src/app/${ルートパス}/page.tsx
-  - src/app/${ルートパス}/loading.tsx（必要時）
-  - その他生成ファイル
+
+- src/app/${ルートパス}/page.tsx
+- src/app/${ルートパス}/loading.tsx（必要時）
+- その他生成ファイル
 
 レンダリング戦略: ${選択された戦略}
 使用スキル: ${参照したスキル一覧}
 
 Next Steps（推奨）:
-  1. TDDに基づくテスト作成（テストファースト未実施の場合）
-  2. E2Eテスト追加（Playwright）
-  3. SEO確認（必要に応じて）
+
+1. TDDに基づくテスト作成（テストファースト未実施の場合）
+2. E2Eテスト追加（Playwright）
+3. SEO確認（必要に応じて）
 ```
 
 ## 使用例

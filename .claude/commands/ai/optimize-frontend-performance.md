@@ -29,7 +29,7 @@ allowed-tools:
   - Read
   - Edit
   - Bash(pnpm run build)
-model: sonnet
+model: opus
 ---
 
 # フロントエンドパフォーマンス最適化
@@ -53,6 +53,7 @@ model: sonnet
 ```
 
 **現状分析:**
+
 - 既存コンポーネント構造の確認
 - 画像・フォント使用状況のチェック
 - バンドルサイズの初期測定（`pnpm run build`実行）
@@ -90,6 +91,7 @@ Phase 3（パフォーマンス最適化）のワークフローを実行:
    - Core Web Vitals目標値チェック（LCP ≤2.5s、FID ≤100ms、CLS ≤0.1）
 
 必須要件:
+
 1. 画像には必ず next/image を使用、width/height指定必須
 2. フォントには必ず next/font を使用、display: swap推奨
 3. 動的インポートには loading fallback を設定
@@ -98,6 +100,7 @@ Phase 3（パフォーマンス最適化）のワークフローを実行:
 ```
 
 **期待成果物:**
+
 - 最適化されたコンポーネント（next/image、next/font適用）
 - 動的インポート実装（重いコンポーネント、条件付きUI）
 - loading.tsx追加（非同期ページ）

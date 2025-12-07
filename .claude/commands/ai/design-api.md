@@ -35,7 +35,7 @@ allowed-tools:
   - Read
   - Write(docs/**|openapi.yaml)
   - Grep
-model: sonnet
+model: opus
 ---
 
 # API設計コマンド - REST API & OpenAPI仕様書生成
@@ -83,6 +83,7 @@ REST APIエンドポイント設計（master_system_design.md第8章準拠）
 ```
 
 **gateway-dev が参照するスキル**（必要時のみ）:
+
 - `.claude/skills/api-client-patterns/SKILL.md`
 - `.claude/skills/http-best-practices/SKILL.md`
 
@@ -111,6 +112,7 @@ OpenAPI 3.x仕様書とドキュメント生成
 ```
 
 **api-doc-writer が参照するスキル**（必要時のみ）:
+
 - `.claude/skills/openapi-specification/SKILL.md`
 - `.claude/skills/swagger-ui/SKILL.md`
 - `.claude/skills/api-documentation-best-practices/SKILL.md`
@@ -129,34 +131,40 @@ OpenAPI 3.x仕様書とドキュメント生成
 ## 使用例
 
 ### 基本的な使用（引数あり）
+
 ```bash
 /ai:design-api users
 ```
+
 → Usersリソースの完全なAPI設計 + OpenAPI仕様書生成
 
 ### インタラクティブモード（引数なし）
+
 ```bash
 /ai:design-api
 ```
+
 → リソース名、CRUD要件、認証設計を対話的に確認
 
 ### 複数リソース設計
+
 ```bash
 /ai:design-api tasks
 /ai:design-api projects
 ```
+
 → 各リソースごとに独立したAPI設計
 
 ---
 
 ## 成果物一覧
 
-| ファイル | 内容 | 生成フェーズ |
-|---------|------|-------------|
-| `docs/20-specifications/api-design-$ARGUMENTS.md` | API設計書（エンドポイント一覧、認証、エラーハンドリング） | Phase 1 |
-| `openapi.yaml` | OpenAPI 3.x仕様書（完全なスキーマ定義） | Phase 2 |
-| `docs/20-specifications/api-documentation-$ARGUMENTS.md` | 詳細ドキュメント（cURL例、SDK例） | Phase 2 |
-| `src/app/api/[resource]/route.ts` | Next.js実装ガイド（オプション） | Phase 1 |
+| ファイル                                                 | 内容                                                      | 生成フェーズ |
+| -------------------------------------------------------- | --------------------------------------------------------- | ------------ |
+| `docs/20-specifications/api-design-$ARGUMENTS.md`        | API設計書（エンドポイント一覧、認証、エラーハンドリング） | Phase 1      |
+| `openapi.yaml`                                           | OpenAPI 3.x仕様書（完全なスキーマ定義）                   | Phase 2      |
+| `docs/20-specifications/api-documentation-$ARGUMENTS.md` | 詳細ドキュメント（cURL例、SDK例）                         | Phase 2      |
+| `src/app/api/[resource]/route.ts`                        | Next.js実装ガイド（オプション）                           | Phase 1      |
 
 ---
 

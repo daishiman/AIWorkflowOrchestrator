@@ -19,12 +19,12 @@ description: |
   トリガーキーワード: refactor, improve, clean code, リファクタリング, 改善, コード整理
 argument-hint: "<target-file>"
 allowed-tools:
-   - Task
-   - Read
-   - Edit
-   - MultiEdit
-   - Bash
-model: sonnet
+  - Task
+  - Read
+  - Edit
+  - MultiEdit
+  - Bash
+model: opus
 ---
 
 # コードリファクタリング
