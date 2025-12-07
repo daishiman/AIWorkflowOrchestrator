@@ -14,6 +14,11 @@ on:
       - "packages/shared/**"
   workflow_dispatch:
 
+# 最小権限の原則
+permissions:
+  contents: read
+  deployments: write
+
 concurrency:
   group: backend-cicd-${{ github.ref }}
   cancel-in-progress: false
@@ -22,6 +27,7 @@ jobs:
   ci:
     name: Validate Build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -56,6 +62,7 @@ jobs:
   deploy:
     name: Deploy to Railway
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: ci
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment:
@@ -79,8 +86,9 @@ jobs:
         run: sleep 30
 
       - name: Health check
+        env:
+          RAILWAY_DOMAIN: ${{ secrets.RAILWAY_DOMAIN }}
         run: |
-          RAILWAY_DOMAIN="${{ secrets.RAILWAY_DOMAIN }}"
           if [ -z "$RAILWAY_DOMAIN" ]; then
             echo "⚠️  RAILWAY_DOMAIN が設定されていません。ヘルスチェックをスキップします。"
             exit 0
@@ -104,3 +112,24 @@ jobs:
 
           echo "❌ ヘルスチェック失敗"
           exit 1
+
+      - name: Notify Success
+        if: success()
+        uses: ./.github/actions/discord-notify
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          status: success
+          service: backend
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+      - name: Notify Failure
+        if: failure()
+        uses: ./.github/actions/discord-notify
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          status: failure
+          service: backend
+          error_message: "Deployment or health check failed"
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
