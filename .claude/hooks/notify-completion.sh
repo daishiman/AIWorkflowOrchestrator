@@ -16,9 +16,11 @@ if [[ "$(uname)" == "Darwin" ]]; then
   # 効果音（短い音なのでバックグラウンドでOK）
   afplay /System/Library/Sounds/Glass.aiff &
 
-  # 音声通知（フォアグラウンドで実行し、完了を待つ）
-  # バックグラウンドにするとスクリプト終了時に中断される
-  say "クロードコードの処理が完了しました"
+  # 音声通知（独立プロセスとして実行）
+  # nohup + & + disown で親プロセス終了後も継続実行
+  # 出力を /dev/null にリダイレクトして nohup.out 作成を防止
+  nohup say "クロードコードの処理が完了しました" > /dev/null 2>&1 &
+  disown
 fi
 
 # Linuxの場合
@@ -28,9 +30,10 @@ if [[ "$(uname)" == "Linux" ]]; then
     notify-send "Claude Code" "処理が完了しました" &
   fi
 
-  # espeak/festival等がある場合
+  # espeak/festival等がある場合（独立プロセスとして実行）
   if command -v espeak &> /dev/null; then
-    espeak "Claude Code processing completed"
+    nohup espeak -v ja "クロードコードの処理が完了しました" > /dev/null 2>&1 &
+    disown
   fi
 fi
 

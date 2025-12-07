@@ -1,148 +1,225 @@
-# アーキテクチャ設計 (Architecture)
+# アーキテクチャ設計
 
 > 本ドキュメントは統合システム設計仕様書の一部です。
 > マスタードキュメント: [master_system_design.md](./master_system_design.md)
 
-## 5.1 モノレポアーキテクチャの適用
+---
 
-### レイヤー定義（Web/Desktop統合）
+## 5.1 モノレポアーキテクチャ
 
-| レイヤー         | ディレクトリ                      | 責務                                   | 依存許可                           | 共有範囲      |
-| ---------------- | --------------------------------- | -------------------------------------- | ---------------------------------- | ------------- |
-| 共通ドメイン     | `packages/shared/core/`           | 共通エンティティ、インターフェース定義 | なし（外部依存ゼロ）               | Web + Desktop |
-| 共通UI           | `packages/shared/ui/`             | UIコンポーネント、Design Tokens        | shared/core のみ                   | Web + Desktop |
-| 共通インフラ     | `packages/shared/infrastructure/` | DB、AI、Discord等の共通サービス        | shared/core のみ                   | Web + Desktop |
-| 機能プラグイン   | `apps/web/features/`              | 機能ごとのビジネスロジック             | shared/\*                          | Web専用       |
-| Web API層        | `apps/web/app/`                   | HTTPエンドポイント、Next.js App Router | すべて                             | Web専用       |
-| Desktop Main     | `apps/desktop/src/main/`          | システムAPI、IPC、ウィンドウ管理       | shared/infrastructure, shared/core | Desktop専用   |
-| Desktop Renderer | `apps/desktop/src/renderer/`      | React UI、クライアント状態管理         | shared/ui, shared/core             | Desktop専用   |
+### 5.1.1 レイヤー定義
 
-### 依存関係ルール（モノレポ版）
+| レイヤー         | ディレクトリ                    | 責務                                   | 依存許可                           | 共有範囲      |
+| ---------------- | ------------------------------- | -------------------------------------- | ---------------------------------- | ------------- |
+| 共通ドメイン     | packages/shared/core/           | 共通エンティティ、インターフェース定義 | なし（外部依存ゼロ）               | Web + Desktop |
+| 共通UI           | packages/shared/ui/             | UIコンポーネント、Design Tokens        | shared/core のみ                   | Web + Desktop |
+| 共通インフラ     | packages/shared/infrastructure/ | DB、AI、Discord等の共通サービス        | shared/core のみ                   | Web + Desktop |
+| 機能プラグイン   | apps/web/features/              | 機能ごとのビジネスロジック             | shared/\*                          | Web専用       |
+| Web API層        | apps/web/app/                   | HTTPエンドポイント、Next.js App Router | すべて                             | Web専用       |
+| Desktop Main     | apps/desktop/src/main/          | システムAPI、IPC、ウィンドウ管理       | shared/infrastructure, shared/core | Desktop専用   |
+| Desktop Renderer | apps/desktop/src/renderer/      | React UI、クライアント状態管理         | shared/ui, shared/core             | Desktop専用   |
 
-```mermaid
-flowchart TD
-    subgraph "apps/web"
-        WEB_APP["apps/web/app/"]
-        WEB_FEATURES["apps/web/features/"]
-    end
+### 5.1.2 依存関係ルール
 
-    subgraph "apps/desktop"
-        DESKTOP_MAIN["apps/desktop/main/"]
-        DESKTOP_RENDERER["apps/desktop/renderer/"]
-    end
+**依存の方向**（以下の方向のみ許可、逆方向は禁止）:
 
-    subgraph "packages/shared"
-        SHARED_UI["packages/shared/ui/"]
-        SHARED_INFRA["packages/shared/infrastructure/"]
-        SHARED_CORE["packages/shared/core/"]
-    end
+| 依存元                          | 依存先                                                 |
+| ------------------------------- | ------------------------------------------------------ |
+| apps/web/app/                   | apps/web/features/, packages/shared/\*                 |
+| apps/web/features/              | packages/shared/infrastructure/, packages/shared/core/ |
+| apps/desktop/renderer/          | packages/shared/ui/, packages/shared/core/             |
+| apps/desktop/main/              | packages/shared/infrastructure/, packages/shared/core/ |
+| packages/shared/infrastructure/ | packages/shared/core/                                  |
+| packages/shared/ui/             | packages/shared/core/                                  |
+| packages/shared/core/           | なし（外部依存ゼロ）                                   |
 
-    WEB_APP --> WEB_FEATURES
-    WEB_FEATURES --> SHARED_INFRA
-    WEB_FEATURES --> SHARED_CORE
-    SHARED_INFRA --> SHARED_CORE
-    SHARED_UI --> SHARED_CORE
+**違反検出**:
 
-    DESKTOP_RENDERER --> SHARED_UI
-    DESKTOP_RENDERER --> SHARED_CORE
-    DESKTOP_MAIN --> SHARED_INFRA
-    DESKTOP_MAIN --> SHARED_CORE
-```
+- ESLint eslint-plugin-boundaries を使用して依存関係違反をCIでブロックする
+- PRマージ条件として依存関係チェックを必須とする
 
-### 主要原則
+### 5.1.3 主要原則
 
-| 原則                     | 説明                                                         |
-| ------------------------ | ------------------------------------------------------------ |
-| 内側から外側への依存禁止 | `packages/shared/core/` は外部依存ゼロ                       |
-| 機能の独立性             | `features/` 各機能は相互依存禁止                             |
-| 共通コードの活用         | UI、ビジネスロジック、インフラを `packages/shared/` で共有   |
-| プラットフォーム分離     | Web固有（apps/web）とDesktop固有（apps/desktop）を明確に分離 |
-| ESLint 強制              | `eslint-plugin-boundaries` で違反を CI でブロック            |
+| 原則                     | 説明                                                             |
+| ------------------------ | ---------------------------------------------------------------- |
+| 内側から外側への依存禁止 | packages/shared/core/ は外部依存ゼロを維持する                   |
+| 機能の独立性             | features/ 各機能は相互依存禁止とする                             |
+| 共通コードの活用         | UI、ビジネスロジック、インフラを packages/shared/ で共有する     |
+| プラットフォーム分離     | Web固有（apps/web）とDesktop固有（apps/desktop）を明確に分離する |
 
-### モノレポ構造の利点
+### 5.1.4 モノレポ構造の利点
 
-1. **コード再利用**: UIコンポーネント、ビジネスロジック、型定義をWeb/Desktopで共有
-2. **一貫性**: 同一のDesign TokensとコンポーネントによりUI/UXを統一
-3. **変更容易性**: 1箇所の変更が両プラットフォームに反映
-4. **独立デプロイ**: Web（Railway）とDesktop（GitHub Releases）を独立して管理
-5. **テスト効率**: 共通コンポーネントのテストを一度だけ実装
-
-### 機能追加の具体例（YouTube要約機能）
-
-YouTube要約機能を追加する場合の実装フロー：
-
-**ステップ1: スキーマ定義**
-
-- `features/youtube-summarize/schema.ts` にZodスキーマを定義
-- 入力フィールド: `url`（URL型、必須）、`language`（列挙型、デフォルト'ja'）
-- 出力フィールド: `summary`（文字列）、`keyPoints`（文字列配列）
-
-**ステップ2: Executor実装**
-
-- `features/youtube-summarize/executor.ts` に `IWorkflowExecutor` 実装
-- `type` プロパティに 'YOUTUBE_SUMMARIZE' を設定
-- `execute` メソッドで入力バリデーション → AI処理 → 出力バリデーション
-
-**ステップ3: Registry登録**
-
-- `features/registry.ts` にエグゼキューターを追加
-- `['YOUTUBE_SUMMARIZE', new YouTubeSummarizeExecutor()]` を登録
-
-**この構造の利点**:
-
-- 機能追加は `features/新機能/` フォルダ作成のみ
-- AI クライアントは shared/infrastructure/ai から取得（重複なし）
-- テストは `features/新機能/__tests__/` で完結
-- 削除はフォルダごと可能
-- 機能間の独立性により他機能への影響ゼロ
+| 利点         | 説明                                                          |
+| ------------ | ------------------------------------------------------------- |
+| コード再利用 | UIコンポーネント、ビジネスロジック、型定義をWeb/Desktopで共有 |
+| 一貫性       | 同一のDesign TokensとコンポーネントによりUI/UXを統一          |
+| 変更容易性   | 1箇所の変更が両プラットフォームに反映                         |
+| 独立デプロイ | Web（Railway）とDesktop（GitHub Releases）を独立して管理      |
+| テスト効率   | 共通コンポーネントのテストを一度だけ実装                      |
 
 ---
 
-## 5.2 データベース設計原則
+## 5.2 機能追加パターン
 
-### 5.2.1 リレーショナルDB設計方針
+### 5.2.1 新機能追加の手順
 
-#### 基本原則
+新しいワークフロー機能を追加する場合の手順を以下に示す。
+
+**ステップ1: フォルダ作成**
+
+- apps/web/src/features/に新しい機能名のフォルダを作成する
+- フォルダ名はケバブケース（例: youtube-summarize）を使用する
+
+**ステップ2: スキーマ定義**
+
+- schema.ts ファイルに入出力スキーマを定義する
+- Zodを使用して型安全なバリデーションを実装する
+- 入力フィールドと出力フィールドを明確に分離する
+
+**ステップ3: Executor実装**
+
+- executor.ts ファイルに IWorkflowExecutor インターフェースを実装する
+- type プロパティにワークフロー識別子を設定する
+- execute メソッドで入力バリデーション、処理、出力バリデーションを行う
+
+**ステップ4: テスト作成**
+
+- executor.test.ts ファイルにユニットテストを作成する
+- 正常系、異常系、境界値のテストケースを網羅する
+
+**ステップ5: Registry登録**
+
+- features/registry.ts にエグゼキューターを登録する
+- ワークフロータイプとエグゼキューターのマッピングを追加する
+
+**ステップ6: API Route作成（必要な場合）**
+
+- apps/web/src/app/api/v1/に対応するルートを作成する
+
+### 5.2.2 機能構成のベストプラクティス
+
+**必須ファイル**:
+
+| ファイル         | 役割                      |
+| ---------------- | ------------------------- |
+| schema.ts        | 入出力スキーマ定義（Zod） |
+| executor.ts      | ビジネスロジック実装      |
+| executor.test.ts | ユニットテスト            |
+
+**オプションファイル**:
+
+| ファイル/フォルダ | 用途                       |
+| ----------------- | -------------------------- |
+| api.ts            | 機能固有のAPIハンドラー    |
+| hooks/            | 機能固有のReact Hooks      |
+| components/       | 機能固有のUIコンポーネント |
+
+### 5.2.3 この構造の利点
+
+| 利点                 | 説明                                              |
+| -------------------- | ------------------------------------------------- |
+| 変更の局所化         | 機能追加は新規フォルダ作成のみで完結              |
+| 削除の容易性         | フォルダごと削除すれば機能を除去可能              |
+| 影響範囲の限定       | 機能間の独立性により他機能への影響ゼロ            |
+| テストの同居         | 実装とテストが同じ場所にあり管理しやすい          |
+| 共通インフラの再利用 | AIクライアント等は shared/infrastructure から取得 |
+
+---
+
+## 5.3 データベース設計原則
+
+### 5.3.1 基本原則
 
 | 原則           | 説明                                                                    |
 | -------------- | ----------------------------------------------------------------------- |
 | 正規化         | 第3正規形までを基本とし、パフォーマンス上必要な場合のみ意図的な非正規化 |
-| JSONB活用      | 柔軟なスキーマが必要な箇所（workflow の input/output）は JSONB を使用   |
+| JSON活用       | 柔軟なスキーマが必要な箇所（workflow の input/output）は JSON 型を使用  |
 | UUID主キー     | 分散システム対応、推測不可能性、セキュリティ向上                        |
-| タイムスタンプ | `created_at`, `updated_at` を全テーブルに必須                           |
-| ソフトデリート | 物理削除ではなく `deleted_at` カラムによる論理削除を推奨                |
+| タイムスタンプ | created_at, updated_at を全テーブルに必須                               |
+| ソフトデリート | 物理削除ではなく deleted_at カラムによる論理削除を推奨                  |
 
-#### トランザクション管理
+### 5.3.2 トランザクション管理
 
 | 設定項目             | 値             | 説明                                       |
 | -------------------- | -------------- | ------------------------------------------ |
-| ACID特性             | 必須           | すべての DB 操作はトランザクション内で実行 |
-| 分離レベル           | READ COMMITTED | デフォルト、必要に応じて SERIALIZABLE      |
+| ACID特性             | 必須           | すべてのDB操作はトランザクション内で実行   |
+| 分離レベル           | READ COMMITTED | デフォルト設定（SQLiteはSERIALIZABLE相当） |
 | ロック戦略           | 楽観的ロック   | バージョニング優先、悲観的ロックは最小限   |
-| トランザクション境界 | Repository     | Repository パターンでカプセル化            |
+| トランザクション境界 | Repository     | Repositoryパターンでカプセル化             |
 
-#### インデックス戦略
+### 5.3.3 インデックス戦略
 
-| 対象             | 説明                                          |
-| ---------------- | --------------------------------------------- |
-| 検索条件         | WHERE 句で頻繁に使用するカラムにインデックス  |
-| 外部キー         | 全外部キーにインデックス（JOIN 性能向上）     |
-| 複合インデックス | 複数カラムでの検索は複合インデックス          |
-| JSONB索引        | GIN インデックスで JSONB カラムの検索を高速化 |
-| カーディナリティ | 選択性の高いカラムを優先                      |
+| 対象             | 説明                                        |
+| ---------------- | ------------------------------------------- |
+| 検索条件         | WHERE句で頻繁に使用するカラムにインデックス |
+| 外部キー         | 全外部キーにインデックス（JOIN性能向上）    |
+| 複合インデックス | 複数カラムでの検索は複合インデックス        |
+| カーディナリティ | 選択性の高いカラムを優先                    |
 
-#### マイグレーション原則
+### 5.3.4 マイグレーション原則
 
-| 原則             | 説明                                                  |
-| ---------------- | ----------------------------------------------------- |
-| バージョン管理   | すべてのスキーマ変更は Drizzle マイグレーションで管理 |
-| ロールバック可能 | UP/DOWN マイグレーションを必ず定義                    |
-| データ移行分離   | スキーマ変更とデータ移行を分離（安全性向上）          |
-| 本番適用         | ダウンタイムを最小化（オンラインマイグレーション）    |
+| 原則             | 説明                                                |
+| ---------------- | --------------------------------------------------- |
+| バージョン管理   | すべてのスキーマ変更はDrizzleマイグレーションで管理 |
+| ロールバック可能 | UP/DOWNマイグレーションを必ず定義                   |
+| データ移行分離   | スキーマ変更とデータ移行を分離（安全性向上）        |
+| 本番適用         | ダウンタイムを最小化（オンラインマイグレーション）  |
 
-### 5.2.2 ベクトル検索設計（将来拡張）
+---
 
-#### 採用方針
+## 5.4 workflowsテーブル設計
+
+### 5.4.1 カラム定義
+
+| カラム名       | データ型       | NULL | デフォルト     | 説明                         |
+| -------------- | -------------- | ---- | -------------- | ---------------------------- |
+| id             | TEXT (UUID)    | NO   | 自動生成       | 主キー                       |
+| type           | TEXT           | NO   | -              | ワークフロー識別子           |
+| user_id        | TEXT           | NO   | -              | 実行ユーザーID               |
+| status         | TEXT           | NO   | PENDING        | 実行状態                     |
+| input_payload  | TEXT (JSON)    | YES  | 空オブジェクト | 入力データ（柔軟なスキーマ） |
+| output_payload | TEXT (JSON)    | YES  | NULL           | 出力データ（柔軟なスキーマ） |
+| error_log      | TEXT           | YES  | NULL           | エラー詳細                   |
+| retry_count    | INTEGER        | NO   | 0              | リトライ回数                 |
+| created_at     | TEXT (ISO8601) | NO   | 現在時刻       | 作成日時                     |
+| updated_at     | TEXT (ISO8601) | NO   | 現在時刻       | 更新日時                     |
+| completed_at   | TEXT (ISO8601) | YES  | NULL           | 完了日時                     |
+| deleted_at     | TEXT (ISO8601) | YES  | NULL           | 削除日時（ソフトデリート）   |
+
+### 5.4.2 status列の値と状態遷移
+
+| 値         | 説明       | 遷移元            | 遷移条件                                            |
+| ---------- | ---------- | ----------------- | --------------------------------------------------- |
+| PENDING    | 実行待ち   | 初期状態          | ワークフロー作成時                                  |
+| PROCESSING | 実行中     | PENDING, RETRYING | Executor実行開始時                                  |
+| COMPLETED  | 正常完了   | PROCESSING        | Executor正常終了時                                  |
+| FAILED     | 失敗       | PROCESSING        | Executor異常終了時                                  |
+| RETRYING   | リトライ中 | FAILED            | retry_count < MAX_RETRY_COUNT かつ retryable エラー |
+
+**状態遷移の流れ**:
+
+1. ワークフロー作成 → PENDING
+2. 実行開始 → PROCESSING
+3. 成功時 → COMPLETED（終了状態）
+4. 失敗時 → FAILED
+5. リトライ可能な場合 → RETRYING → PROCESSING
+6. リトライ上限到達 → FAILED（終了状態）
+
+### 5.4.3 インデックス設計
+
+| インデックス名            | カラム          | 用途                       |
+| ------------------------- | --------------- | -------------------------- |
+| idx_workflows_status      | status          | ステータス別検索           |
+| idx_workflows_user_id     | user_id         | ユーザー別検索             |
+| idx_workflows_type_status | type, status    | タイプ＆ステータス複合検索 |
+| idx_workflows_created_at  | created_at DESC | 時系列ソート               |
+| idx_workflows_deleted_at  | deleted_at      | ソフトデリート対応         |
+
+---
+
+## 5.5 ベクトル検索設計（将来拡張）
+
+### 5.5.1 採用方針
 
 | 方針 | 説明                                                           |
 | ---- | -------------------------------------------------------------- |
@@ -150,61 +227,86 @@ YouTube要約機能を追加する場合の実装フロー：
 | 将来 | 必要に応じて外部ベクトルDBサービス（Pinecone、Qdrant等）を検討 |
 | 理由 | Turso/libSQLはベクトル検索未対応、DB統一を優先                 |
 
-> **注意**: ベクトル検索が必要になった場合は、リレーショナルデータ（Turso）とベクトルデータ（専用サービス）を分離する設計を推奨
+### 5.5.2 将来の実装方針
 
-### 5.2.3 workflows テーブル（主要エンティティ）
+ベクトル検索が必要になった場合の対応方針:
 
-#### カラム定義
+| 方針           | 説明                                                                |
+| -------------- | ------------------------------------------------------------------- |
+| DB分離         | リレーショナルデータ（Turso）とベクトルデータ（専用サービス）を分離 |
+| サービス候補   | Pinecone（マネージド）、Qdrant（セルフホスト可）、Supabase Vector   |
+| 同期戦略       | リレーショナルDBの更新をトリガーにベクトルDBを更新                  |
+| クエリパターン | ベクトル検索でID取得 → リレーショナルDBで詳細取得                   |
 
-| カラム名         | データ型     | NULL | デフォルト          | 説明                         |
-| ---------------- | ------------ | ---- | ------------------- | ---------------------------- |
-| `id`             | UUID         | NO   | `gen_random_uuid()` | 主キー                       |
-| `type`           | VARCHAR(50)  | NO   | -                   | ワークフロー識別子           |
-| `user_id`        | VARCHAR(100) | NO   | -                   | 実行ユーザーID               |
-| `status`         | ENUM         | NO   | `'PENDING'`         | 実行状態                     |
-| `input_payload`  | JSONB        | YES  | `'{}'`              | 入力データ（柔軟なスキーマ） |
-| `output_payload` | JSONB        | YES  | `NULL`              | 出力データ（柔軟なスキーマ） |
-| `error_log`      | TEXT         | YES  | `NULL`              | エラー詳細                   |
-| `retry_count`    | INTEGER      | NO   | `0`                 | リトライ回数                 |
-| `created_at`     | TIMESTAMPTZ  | NO   | `NOW()`             | 作成日時                     |
-| `updated_at`     | TIMESTAMPTZ  | NO   | `NOW()`             | 更新日時                     |
-| `completed_at`   | TIMESTAMPTZ  | YES  | `NULL`              | 完了日時                     |
-| `deleted_at`     | TIMESTAMPTZ  | YES  | `NULL`              | 削除日時（ソフトデリート）   |
+---
 
-#### status ENUM 値
+## 5.6 オフライン・同期アーキテクチャ
 
-| 値           | 説明       | 遷移元            | 遷移条件                                            |
-| ------------ | ---------- | ----------------- | --------------------------------------------------- |
-| `PENDING`    | 実行待ち   | 初期状態          | ワークフロー作成時                                  |
-| `PROCESSING` | 実行中     | PENDING, RETRYING | Executor実行開始時                                  |
-| `COMPLETED`  | 正常完了   | PROCESSING        | Executor正常終了時                                  |
-| `FAILED`     | 失敗       | PROCESSING        | Executor異常終了時                                  |
-| `RETRYING`   | リトライ中 | FAILED            | retry_count < MAX_RETRY_COUNT かつ retryable エラー |
+### 5.6.1 Turso Embedded Replicasの活用
 
-#### 状態遷移図
+| 項目       | 説明                                                               |
+| ---------- | ------------------------------------------------------------------ |
+| クラウドDB | Turso（libSQL）をプライマリDBとして使用                            |
+| ローカルDB | Embedded Replicasとしてローカルにレプリカを保持                    |
+| 同期方式   | クラウドからローカルへの非同期レプリケーション                     |
+| 書き込み   | オンライン時はクラウドに直接書き込み、オフライン時はローカルキュー |
 
-```mermaid
-stateDiagram-v2
-    [*] --> PENDING: ワークフロー作成
-    PENDING --> PROCESSING: 実行開始
-    PROCESSING --> COMPLETED: 成功
-    PROCESSING --> FAILED: 失敗
-    FAILED --> RETRYING: リトライ可能 & 上限未満
-    RETRYING --> PROCESSING: リトライ実行
-    FAILED --> [*]: リトライ上限到達
-    COMPLETED --> [*]: 完了
-```
+### 5.6.2 オフライン時の動作
 
-#### インデックス設計
+| 操作     | オフライン時の動作                           |
+| -------- | -------------------------------------------- |
+| 読み取り | ローカルレプリカから読み取り（即座に応答）   |
+| 書き込み | ローカルキューに保存、オンライン復帰時に同期 |
+| 検索     | ローカルインデックスを使用                   |
+| 状態表示 | UI上でオフライン状態を明示                   |
 
-| インデックス名                | カラム              | 用途                                           |
-| ----------------------------- | ------------------- | ---------------------------------------------- |
-| `idx_workflows_status`        | `status`            | ステータス別検索                               |
-| `idx_workflows_user_id`       | `user_id`           | ユーザー別検索                                 |
-| `idx_workflows_type_status`   | `type, status`      | タイプ＆ステータス複合検索                     |
-| `idx_workflows_created_at`    | `created_at DESC`   | 時系列ソート                                   |
-| `idx_workflows_input_payload` | `input_payload` GIN | JSONB 検索高速化                               |
-| `idx_workflows_deleted_at`    | `deleted_at`        | ソフトデリート対応（WHERE deleted_at IS NULL） |
+### 5.6.3 同期コンフリクト解決
+
+| 戦略             | 説明                                       |
+| ---------------- | ------------------------------------------ |
+| Last-Write-Wins  | タイムスタンプベースで最新の書き込みを優先 |
+| 適用対象         | 設定変更、ステータス更新など単純な更新     |
+| コンフリクト検出 | バージョン番号またはタイムスタンプで検出   |
+| 手動解決         | 複雑なコンフリクトはユーザーに選択を委ねる |
+
+---
+
+## 5.7 セキュリティアーキテクチャ
+
+### 5.7.1 レイヤー別セキュリティ
+
+| レイヤー           | セキュリティ対策                                   |
+| ------------------ | -------------------------------------------------- |
+| API層              | 認証・認可チェック、レート制限、入力バリデーション |
+| アプリケーション層 | ビジネスルールに基づくアクセス制御                 |
+| インフラ層         | 暗号化通信、機密情報の安全な保存                   |
+| データ層           | パラメータ化クエリ、最小権限の原則                 |
+
+### 5.7.2 認証フロー
+
+**Web（Discord OAuth）**:
+
+1. ユーザーがDiscordログインボタンをクリック
+2. Discord認可画面でユーザーが許可
+3. コールバックでアクセストークン取得
+4. セッションCookie発行
+5. 以降のリクエストはセッションで認証
+
+**Local Agent（APIキー）**:
+
+1. 環境変数にAGENT_SECRET_KEYを設定
+2. リクエストヘッダーにキーを含めて送信
+3. サーバー側でキーを検証
+4. 一致しない場合は401エラー
+
+### 5.7.3 データ保護
+
+| 対象              | 保護方法                                 |
+| ----------------- | ---------------------------------------- |
+| APIキー（DB保存） | AES-256-GCMで暗号化後に保存              |
+| セッション        | HttpOnly、Secure、SameSite属性付きCookie |
+| 通信              | TLS 1.3による暗号化                      |
+| ローカルファイル  | Electron safeStorage APIを使用           |
 
 ---
 
@@ -214,3 +316,5 @@ stateDiagram-v2
 - [ディレクトリ構造](./04-directory-structure.md)
 - [コアインターフェース仕様](./06-core-interfaces.md)
 - [エラーハンドリング仕様](./07-error-handling.md)
+- [データベース設計](./15-database-design.md)
+- [セキュリティガイドライン](./17-security-guidelines.md)

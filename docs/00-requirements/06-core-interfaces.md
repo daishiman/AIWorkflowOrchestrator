@@ -1,54 +1,219 @@
-# コアインターフェース仕様 (Core Interface Specification)
+# コアインターフェース仕様
 
 > 本ドキュメントは統合システム設計仕様書の一部です。
 > マスタードキュメント: [master_system_design.md](./master_system_design.md)
+
+---
 
 ## 6.1 IWorkflowExecutor インターフェース
 
 すべての機能プラグインが実装すべきインターフェース。
 
-### プロパティ
+### 6.1.1 プロパティ
 
-| プロパティ | 型 | 説明 |
-|------------|------|------|
-| `type` | `string` | ワークフロータイプ識別子（例: `'YOUTUBE_SUMMARIZE'`） |
-| `displayName` | `string` | 表示名（例: `'YouTube動画要約'`） |
-| `description` | `string` | 機能説明 |
-| `inputSchema` | `ZodSchema` | 入力バリデーションスキーマ |
-| `outputSchema` | `ZodSchema` | 出力バリデーションスキーマ |
+| プロパティ   | 型        | 必須 | 説明                                              |
+| ------------ | --------- | ---- | ------------------------------------------------- |
+| type         | string    | 必須 | ワークフロータイプ識別子（例: YOUTUBE_SUMMARIZE） |
+| displayName  | string    | 必須 | 表示名（例: YouTube動画要約）                     |
+| description  | string    | 必須 | 機能説明（ユーザー向け）                          |
+| inputSchema  | ZodSchema | 必須 | 入力バリデーションスキーマ                        |
+| outputSchema | ZodSchema | 必須 | 出力バリデーションスキーマ                        |
 
-### メソッド
+### 6.1.2 メソッド
 
-| メソッド | シグネチャ | 説明 |
-|----------|-----------|------|
-| `execute` | `(input: Input, context: ExecutionContext) => Promise<Output>` | メイン実行処理 |
-| `validate` | `(input: unknown) => Result<Input, ValidationError>` | 入力検証（オプション） |
-| `canRetry` | `(error: Error) => boolean` | リトライ可否判定（オプション） |
+| メソッド | 戻り値  | 必須 | 説明                                                   |
+| -------- | ------- | ---- | ------------------------------------------------------ |
+| execute  | Promise | 必須 | メイン実行処理。入力を受け取り、処理結果を返す         |
+| validate | Result  | 任意 | カスタム入力検証。スキーマ以上の検証が必要な場合に実装 |
+| canRetry | boolean | 任意 | リトライ可否判定。エラーに応じてリトライすべきか判断   |
+| onCancel | Promise | 任意 | キャンセル時のクリーンアップ処理                       |
 
-### ExecutionContext
+### 6.1.3 ExecutionContext
 
-| フィールド | 型 | 説明 |
-|------------|------|------|
-| `workflowId` | `string` | ワークフローID |
-| `userId` | `string` | 実行ユーザーID |
-| `logger` | `Logger` | 構造化ロガー |
-| `abortSignal` | `AbortSignal` | キャンセルシグナル |
+Executor実行時に渡されるコンテキスト情報。
+
+| フィールド  | 型          | 説明                                           |
+| ----------- | ----------- | ---------------------------------------------- |
+| workflowId  | string      | 実行中のワークフローID                         |
+| userId      | string      | 実行ユーザーID                                 |
+| logger      | Logger      | 構造化ロガー（ワークフローIDが自動付与される） |
+| abortSignal | AbortSignal | キャンセルシグナル                             |
+| retryCount  | number      | 現在のリトライ回数（0から開始）                |
+| startedAt   | Date        | 実行開始時刻                                   |
+
+### 6.1.4 execute メソッドの実装指針
+
+**入力処理**:
+
+- inputSchemaで定義したスキーマによる自動バリデーションが行われる
+- 追加の検証が必要な場合はvalidateメソッドを実装する
+- バリデーションエラーはValidationErrorとしてスローする
+
+**メイン処理**:
+
+- 長時間処理の場合はabortSignalを定期的にチェックする
+- 進捗ログはloggerを通じて出力する
+- 外部API呼び出しには適切なタイムアウトを設定する
+
+**出力処理**:
+
+- outputSchemaに準拠したオブジェクトを返す
+- 部分的な結果を返す場合もスキーマに準拠させる
 
 ---
 
 ## 6.2 IRepository インターフェース
 
-データアクセスの抽象化。
+データアクセスの抽象化。各エンティティごとに実装する。
 
-### メソッド
+### 6.2.1 基本メソッド
 
-| メソッド | シグネチャ | 説明 |
-|----------|-----------|------|
-| `create` | `(data: CreateDTO) => Promise<Entity>` | エンティティ作成 |
-| `findById` | `(id: string) => Promise<Entity \| null>` | ID検索 |
-| `findMany` | `(filter: FilterDTO) => Promise<Entity[]>` | 複数検索 |
-| `update` | `(id: string, data: UpdateDTO) => Promise<Entity>` | 更新 |
-| `delete` | `(id: string) => Promise<void>` | 削除 |
+| メソッド | 戻り値                     | 説明                                             |
+| -------- | -------------------------- | ------------------------------------------------ |
+| create   | Promise Entity             | エンティティ作成。IDは自動生成                   |
+| findById | Promise Entity または null | ID検索。見つからない場合はnull                   |
+| findMany | Promise Entity配列         | 条件検索。フィルタ、ソート、ページネーション対応 |
+| update   | Promise Entity             | 更新。存在しない場合はエラー                     |
+| delete   | Promise void               | 削除。ソフトデリートの場合はdeleted_atを設定     |
+
+### 6.2.2 追加メソッド（任意）
+
+| メソッド | 戻り値                     | 用途                               |
+| -------- | -------------------------- | ---------------------------------- |
+| findOne  | Promise Entity または null | 条件に合う最初の1件を取得          |
+| count    | Promise number             | 条件に合う件数を取得               |
+| exists   | Promise boolean            | 条件に合うレコードが存在するか確認 |
+| upsert   | Promise Entity             | 存在すれば更新、なければ作成       |
+
+### 6.2.3 トランザクション対応
+
+| 項目         | 説明                                      |
+| ------------ | ----------------------------------------- |
+| 単一操作     | 自動的にトランザクション内で実行される    |
+| 複数操作     | withTransactionメソッドを使用してまとめる |
+| ロールバック | エラー発生時は自動的にロールバック        |
+
+---
+
+## 6.3 Result型
+
+成功・失敗を明示的に表現する型。例外を使わないエラーハンドリングに使用。
+
+### 6.3.1 構造
+
+| バリアント | フィールド               | 説明               |
+| ---------- | ------------------------ | ------------------ |
+| Success    | success: true, data: T   | 成功時のデータ     |
+| Failure    | success: false, error: E | 失敗時のエラー情報 |
+
+### 6.3.2 使用場面
+
+| 場面             | 推奨                                       |
+| ---------------- | ------------------------------------------ |
+| バリデーション   | Result型を使用（失敗が想定される操作）     |
+| ビジネスロジック | Result型を使用（エラーを呼び出し元に伝播） |
+| 外部API呼び出し  | 例外をキャッチしてResult型に変換           |
+| UI層             | Result型のisSuccessをチェックして分岐      |
+
+---
+
+## 6.4 Logger インターフェース
+
+構造化ログ出力のためのインターフェース。
+
+### 6.4.1 メソッド
+
+| メソッド | 用途                                         |
+| -------- | -------------------------------------------- |
+| debug    | 開発時のデバッグ情報（本番では出力されない） |
+| info     | 正常な処理の記録                             |
+| warn     | 注意が必要だが処理は継続可能な状況           |
+| error    | エラー発生時（スタックトレース付き）         |
+
+### 6.4.2 ログ出力項目
+
+| 項目       | 説明                                   |
+| ---------- | -------------------------------------- |
+| timestamp  | ISO8601形式のタイムスタンプ            |
+| level      | ログレベル（debug/info/warn/error）    |
+| message    | ログメッセージ                         |
+| workflowId | 関連するワークフローID（あれば）       |
+| userId     | 関連するユーザーID（あれば）           |
+| requestId  | リクエストID（あれば）                 |
+| context    | 追加のコンテキスト情報（オブジェクト） |
+| error      | エラー情報（errorレベル時）            |
+
+### 6.4.3 ログレベル別出力
+
+| 環境 | debug | info | warn | error |
+| ---- | ----- | ---- | ---- | ----- |
+| 開発 | 出力  | 出力 | 出力 | 出力  |
+| 本番 | 抑制  | 出力 | 出力 | 出力  |
+
+---
+
+## 6.5 IAIClient インターフェース
+
+AIプロバイダーへのアクセスを抽象化するインターフェース。
+
+### 6.5.1 メソッド
+
+| メソッド | 戻り値              | 説明                     |
+| -------- | ------------------- | ------------------------ |
+| chat     | Promise Response    | チャット形式のリクエスト |
+| complete | Promise Response    | 補完形式のリクエスト     |
+| stream   | AsyncIterator Chunk | ストリーミングレスポンス |
+
+### 6.5.2 対応プロバイダー
+
+| プロバイダー | 識別子    | 特徴                  |
+| ------------ | --------- | --------------------- |
+| OpenAI       | openai    | GPT-4o、GPT-4 Turbo等 |
+| Anthropic    | anthropic | Claude 3.5 Sonnet等   |
+| Google       | google    | Gemini 1.5 Pro等      |
+| xAI          | xai       | Grok等                |
+
+### 6.5.3 共通オプション
+
+| オプション   | 型          | 説明                    |
+| ------------ | ----------- | ----------------------- |
+| model        | string      | 使用するモデル名        |
+| maxTokens    | number      | 最大トークン数          |
+| temperature  | number      | 応答のランダム性（0-1） |
+| systemPrompt | string      | システムプロンプト      |
+| abortSignal  | AbortSignal | キャンセルシグナル      |
+
+---
+
+## 6.6 IFileWatcher インターフェース
+
+ファイルシステム監視のためのインターフェース（Local Agent用）。
+
+### 6.6.1 メソッド
+
+| メソッド | 戻り値 | 説明                   |
+| -------- | ------ | ---------------------- |
+| watch    | void   | 監視開始               |
+| stop     | void   | 監視停止               |
+| onEvent  | void   | イベントハンドラー登録 |
+
+### 6.6.2 監視イベント
+
+| イベント | 発火タイミング |
+| -------- | -------------- |
+| add      | ファイル追加時 |
+| change   | ファイル変更時 |
+| unlink   | ファイル削除時 |
+| error    | エラー発生時   |
+
+### 6.6.3 監視対象の設定
+
+| 設定項目       | 説明                                    |
+| -------------- | --------------------------------------- |
+| path           | 監視対象ディレクトリのパス              |
+| patterns       | 監視するファイルパターン（glob形式）    |
+| ignorePatterns | 除外するファイルパターン                |
+| debounceMs     | イベント発火の間隔（デフォルト: 300ms） |
 
 ---
 
@@ -57,3 +222,4 @@
 - [アーキテクチャ設計](./05-architecture.md)
 - [エラーハンドリング仕様](./07-error-handling.md)
 - [プラグイン開発手順](./11-plugin-development.md)
+- [ローカルエージェント仕様](./09-local-agent.md)
