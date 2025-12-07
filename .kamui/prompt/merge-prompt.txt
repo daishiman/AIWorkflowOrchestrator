@@ -371,30 +371,30 @@ git commit -m "docs: fix typo in previous commit message"
 
 #### 例1: 新機能追加
 ```
-feat(features): Add meeting transcribe workflow
+feat(features): 会議文字起こしワークフローを追加
 
-- Whisper API integration for audio transcription
-- Timestamped meeting notes generation
-- Discord notification support
+- 音声文字起こしのためのWhisper API統合
+- タイムスタンプ付き議事録の生成機能
+- Discord通知のサポート
 
 Closes #42
 
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
+🤖 [Claude Code](https://claude.com/claude-code)で生成
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```
 
 #### 例2: バグ修正
 ```
-fix(executor): Handle AI API timeout gracefully
+fix(executor): AI APIタイムアウトを適切に処理
 
-- Implement retry logic with exponential backoff
-- Improve error messages
-- Add detailed logging
+- 指数バックオフを使用した再試行ロジックの実装
+- エラーメッセージの改善
+- 詳細なロギングの追加
 
 Related to #38
 
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
+🤖 [Claude Code](https://claude.com/claude-code)で生成
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```

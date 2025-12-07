@@ -1,5 +1,5 @@
 {
-  "timestamp": 1765101968971,
+  "timestamp": 1765108141153,
   "models": [
     {
       "id": "codex",
@@ -21,8 +21,8 @@
       "id": "claude",
       "label": "Claude",
       "available": true,
-      "version": "2.0.60",
-      "rawOutput": "2.0.60 (Claude Code)",
+      "version": "2.0.61",
+      "rawOutput": "2.0.61 (Claude Code)",
       "error": null,
       "latestVersion": "2.0.60",
       "latestSource": "command",
