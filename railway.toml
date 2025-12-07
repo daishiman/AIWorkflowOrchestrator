@@ -20,3 +20,7 @@ restartPolicyMaxRetries = 3
 
 [deploy.envs]
 NODE_ENV = "production"
+
+# Nixpacks のデフォルト動作を上書き（package.json の start スクリプトを使用しない）
+[nixpacks]
+startCommand = "node apps/backend/.next/standalone/apps/backend/server.js"
