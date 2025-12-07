@@ -6,16 +6,16 @@
 
 Git操作を行う際は、`.claude/agents/agent_list.md` から最適なエージェントを選定してください。
 
-**推奨エージェント**:
-- **@devops-eng**: Git/CI/CD、GitHub Actions、デプロイフロー
-- **@command-arch**: ワークフロー定型化、コマンドオーケストレーション
-- **@prompt-eng**: コミットメッセージ・PR本文の自動生成
+推奨エージェント:
+- @devops-eng: Git/CI/CD、GitHub Actions、デプロイフロー
+- @command-arch: ワークフロー定型化、コマンドオーケストレーション
+- @prompt-eng: コミットメッセージ・PR本文の自動生成
 
 ---
 
 ## ⚠️ 重要: マージは手動実行
 
-**PRマージはユーザーが手動で実行します。**
+PRマージはユーザーが手動で実行します。
 
 ### AIの役割
 1. 差分分析 → ブランチ作成・コミット
@@ -23,6 +23,7 @@ Git操作を行う際は、`.claude/agents/agent_list.md` から最適なエー�
 3. PR作成後、追加の補足コメントを投稿（変更の詳細や注意点等）
 4. CI/CDステータス確認（`gh pr checks <PR番号>`）
 5. CI完了後、ユーザーに「GitHub UIでマージ可能です」と報告
+6. .kamui配下のファイルもPRに上げる
 
 ### ユーザーの役割
 - GitHub Web UIで最終確認してマージ実行
@@ -32,12 +33,12 @@ Git操作を行う際は、`.claude/agents/agent_list.md` から最適なエー�
 
 ## プロジェクト情報
 
-- **リポジトリ**: `/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator`
-- **メインブランチ**: `main`
-- **パッケージマネージャー**: pnpm（必須）
-- **技術スタック**: Next.js 15 / TypeScript 5 / Electron / Drizzle ORM
-- **CI/CD**: GitHub Actions（lint/typecheck/test/security/build）
-- **Pre-commit**: husky + lint-staged（ESLint/Prettier自動実行）
+- リポジトリ: `/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator`
+- メインブランチ: `main`
+- パッケージマネージャー: pnpm（必須）
+- 技術スタック: Next.js 15 / TypeScript 5 / Electron / Drizzle ORM
+- CI/CD: GitHub Actions（lint/typecheck/test/security/build）
+- Pre-commit: husky + lint-staged（ESLint/Prettier自動実行）
 
 ---
 
@@ -61,7 +62,7 @@ TASK_NAME="feature/task-name"
 git checkout -b "${TASK_NAME}" main
 ```
 
-**ブランチ命名規則**:
+ブランチ命名規則:
 - `feature/機能名` - 新機能
 - `fix/バグ名` - バグ修正
 - `refactor/対象` - リファクタリング
@@ -70,12 +71,12 @@ git checkout -b "${TASK_NAME}" main
 
 ### 2. コミット
 
-**コミット前チェック**（自動実行される場合は省略可）:
+コミット前チェック（自動実行される場合は省略可）:
 ```bash
 pnpm typecheck && pnpm lint && pnpm test
 ```
 
-**コミット実行**:
+コミット実行:
 ```bash
 git add .
 git commit -m "$(cat <<'EOF'
@@ -90,7 +91,7 @@ EOF
 )"
 ```
 
-**Conventional Commits タイプ**:
+Conventional Commits タイプ:
 - `feat` - 新機能
 - `fix` - バグ修正
 - `refactor` - リファクタリング
@@ -99,11 +100,11 @@ EOF
 - `chore` - その他（依存関係更新等）
 - `ci` - CI/CD
 
-**スコープ例**: `features`, `shared`, `api`, `db`, `docs`, `infra`, `config`
+スコープ例: `features`, `shared`, `api`, `db`, `docs`, `infra`, `config`
 
 ### 3. PR作成とコメント追加
 
-**ステップ1: PR作成**
+ステップ1: PR作成
 
 ```bash
 git push -u origin "${TASK_NAME}"
@@ -175,7 +176,7 @@ EOF
 )" --base main
 ```
 
-**ステップ2: PRコメント追加**
+ステップ2: PRコメント追加
 
 PR作成後、追加の補足コメントを投稿します。
 
@@ -208,17 +209,17 @@ EOF
 )"
 ```
 
-**コメント生成のガイドライン**:
-- **実装の詳細**: アーキテクチャ変更、技術選定の理由、トレードオフ等
-- **注意点**: 破壊的変更、パフォーマンス影響、セキュリティ考慮事項等
-- **テスト方法**: 手動テストの手順、エッジケースの確認方法
-- **参考資料**: 関連Issue、設計ドキュメント、外部記事等
+コメント生成のガイドライン:
+- 実装の詳細: アーキテクチャ変更、技術選定の理由、トレードオフ等
+- 注意点: 破壊的変更、パフォーマンス影響、セキュリティ考慮事項等
+- テスト方法: 手動テストの手順、エッジケースの確認方法
+- 参考資料: 関連Issue、設計ドキュメント、外部記事等
 
 コメントは差分の内容に応じて具体的に記述してください。
 
 ### 4. CI/CD完了確認
 
-**必須**: マージ前にCIが全て完了していることを確認
+必須: マージ前にCIが全て完了していることを確認
 
 ```bash
 # CIステータス確認
@@ -228,7 +229,7 @@ gh pr checks <PR番号>
 # pending/in_progress がある場合は待機継続
 ```
 
-**待機ループ例**:
+待機ループ例:
 ```bash
 for i in {1..10}; do
   gh pr checks <PR番号>
@@ -244,11 +245,11 @@ done
 
 ### 5. マージ（手動）
 
-**AIはここまで**:
+AIはここまで:
 - CI完了を確認
 - ユーザーに「GitHub UIでマージ可能です」と報告
 
-**ユーザーが実行**:
+ユーザーが実行:
 1. GitHub Web UIで PR を開く
 2. CI結果を最終確認（全て ✅ pass）
 3. 「Squash and merge」クリック
@@ -348,7 +349,7 @@ git commit -m "docs: fix typo in previous commit message"
 - [ ] セルフレビュー実施
 
 ### マージ前（ユーザー確認）
-- [ ] **CI（GitHub Actions）が全て pass** ← 最重要
+- [ ] CI（GitHub Actions）が全て pass ← 最重要
 - [ ] `gh pr checks <PR番号>` で全チェック完了確認
 - [ ] pending/in_progress がないこと
 
@@ -363,8 +364,8 @@ git commit -m "docs: fix typo in previous commit message"
 - ✅ body は72文字で改行を推奨
 - ✅ 複数の変更は複数のコミットに分割
 - ✅ Claude Code署名は必須
+- ✅ 日本語のみのメッセージ（英語禁止）
 - ❌ "fix", "update", "changes" のみのメッセージは禁止
-- ❌ 日本語のみのメッセージは避ける（英語推奨）
 
 ### コミット例
 
@@ -403,4 +404,4 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 ## システム仕様参照
 
 詳細は以下を参照:
-- **マスター設計書**: `docs/00-requirements/master_system_design.md`
+- マスター設計書: `docs/00-requirements/master_system_design.md`

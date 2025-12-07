@@ -53,8 +53,5 @@ temp/
 out/
 next-env.d.ts
 
-# Kamui (workflow tool)
-.kamui/
-
 # Worktrees
 .worktrees/
