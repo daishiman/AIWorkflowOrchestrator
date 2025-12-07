@@ -1,0 +1,127 @@
+name: Web CD
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/web/**"
+      - "packages/shared/**"
+      - ".github/workflows/web-cd.yml"
+  workflow_dispatch:
+
+# 最小権限の原則
+permissions:
+  contents: read
+  deployments: write
+
+concurrency:
+  group: web-cd-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  ci:
+    name: Validate Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build shared package
+        run: pnpm --filter @repo/shared build
+
+      - name: Build web app
+        run: pnpm --filter @repo/web build
+
+      - name: Type check
+        run: pnpm --filter @repo/web typecheck
+
+      - name: Lint
+        run: pnpm --filter @repo/web lint
+
+  deploy:
+    name: Deploy to Railway
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: ci
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          echo "🚀 Deploying web app to Railway..."
+          railway up --service web --detach
+          echo "✅ Deployment triggered successfully"
+
+      - name: Wait for deployment
+        run: sleep 30
+
+      - name: Health check
+        id: healthcheck
+        env:
+          WEB_DOMAIN: ${{ secrets.RAILWAY_WEB_DOMAIN }}
+        run: |
+          if [ -z "$WEB_DOMAIN" ]; then
+            echo "⚠️  RAILWAY_WEB_DOMAIN が設定されていません。ヘルスチェックをスキップします。"
+            exit 0
+          fi
+
+          MAX_RETRIES=10
+          RETRY_COUNT=0
+
+          while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+            echo "ヘルスチェック試行 $((RETRY_COUNT + 1))/$MAX_RETRIES..."
+
+            if curl -f -s "https://${WEB_DOMAIN}" > /dev/null; then
+              echo "✅ デプロイ成功！"
+              exit 0
+            fi
+
+            RETRY_COUNT=$((RETRY_COUNT + 1))
+            sleep 10
+          done
+
+          echo "❌ ヘルスチェック失敗"
+          exit 1
+
+      - name: Notify Success
+        if: success()
+        uses: ./.github/actions/discord-notify
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          status: success
+          service: web
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+      - name: Notify Failure
+        if: failure()
+        uses: ./.github/actions/discord-notify
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          status: failure
+          service: web
+          error_message: "Deployment or health check failed"
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
