@@ -1,0 +1,11 @@
+[phases.setup]
+nixPkgs = ["nodejs_22", "pnpm-10_x", "python3", "gcc", "gnumake"]
+
+[phases.install]
+cmds = ["pnpm install --frozen-lockfile"]
+
+[phases.build]
+cmds = ["pnpm --filter @repo/shared build", "pnpm --filter @repo/backend build"]
+
+[start]
+cmd = "pnpm --filter @repo/backend start"
