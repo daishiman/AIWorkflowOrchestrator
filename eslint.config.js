@@ -20,6 +20,7 @@ export default tseslint.config(
       "scripts/**",
       "**/*.mjs",
       "pnpm-lock.yaml",
+      "**/next-env.d.ts",
     ],
   },
   {
