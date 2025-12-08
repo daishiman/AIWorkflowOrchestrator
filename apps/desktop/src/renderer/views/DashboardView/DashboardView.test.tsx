@@ -44,9 +44,9 @@ describe("DashboardView", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     const { useAppStore } = await import("../../store");
-    vi.mocked(useAppStore).mockImplementation(
-      (selector: (state: unknown) => unknown) => selector(createMockState()),
-    );
+    vi.mocked(useAppStore).mockImplementation(((
+      selector: (state: ReturnType<typeof createMockState>) => unknown,
+    ) => selector(createMockState())) as never);
   });
 
   describe("レンダリング", () => {
@@ -112,10 +112,9 @@ describe("DashboardView", () => {
   describe("ローディング状態", () => {
     it("ローディング中は読み込み中と表示する", async () => {
       const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation(
-        (selector: (state: unknown) => unknown) =>
-          selector(createMockState({ isLoading: true })),
-      );
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) => selector(createMockState({ isLoading: true }))) as never);
 
       render(<DashboardView />);
       expect(screen.getByText("読み込み中...")).toBeInTheDocument();
@@ -125,10 +124,9 @@ describe("DashboardView", () => {
   describe("空状態", () => {
     it("アクティビティがない場合はメッセージを表示する", async () => {
       const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation(
-        (selector: (state: unknown) => unknown) =>
-          selector(createMockState({ activityFeed: [] })),
-      );
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) => selector(createMockState({ activityFeed: [] }))) as never);
 
       render(<DashboardView />);
       expect(

@@ -49,9 +49,9 @@ describe("EditorView", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     const { useAppStore } = await import("../../store");
-    vi.mocked(useAppStore).mockImplementation(
-      (selector: (state: unknown) => unknown) => selector(createMockState()),
-    );
+    vi.mocked(useAppStore).mockImplementation(((
+      selector: (state: ReturnType<typeof createMockState>) => unknown,
+    ) => selector(createMockState())) as never);
   });
 
   describe("レンダリング", () => {
@@ -83,9 +83,12 @@ describe("EditorView", () => {
     it("ファイルクリックでsetSelectedFileを呼び出す", async () => {
       const mockSetSelectedFile = vi.fn();
       const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation((selector) =>
-        selector(createMockState({ setSelectedFile: mockSetSelectedFile })),
-      );
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) =>
+        selector(
+          createMockState({ setSelectedFile: mockSetSelectedFile }),
+        )) as never);
 
       render(<EditorView />);
       const guideItem = screen.getByRole("treeitem", { name: /guide\.md/ });
@@ -104,9 +107,12 @@ describe("EditorView", () => {
     it("内容変更でsetEditorContentを呼び出す", async () => {
       const mockSetEditorContent = vi.fn();
       const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation((selector) =>
-        selector(createMockState({ setEditorContent: mockSetEditorContent })),
-      );
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) =>
+        selector(
+          createMockState({ setEditorContent: mockSetEditorContent }),
+        )) as never);
 
       render(<EditorView />);
       const textarea = screen.getByRole("textbox");
@@ -129,9 +135,9 @@ describe("EditorView", () => {
 
     it("変更がある場合は有効になる", async () => {
       const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation((selector) =>
-        selector(createMockState({ hasUnsavedChanges: true })),
-      );
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) => selector(createMockState({ hasUnsavedChanges: true }))) as never);
 
       render(<EditorView />);
       const saveButton = screen.getByRole("button", { name: "保存" });
@@ -141,14 +147,15 @@ describe("EditorView", () => {
     it("クリックでmarkAsSavedを呼び出す", async () => {
       const mockMarkAsSaved = vi.fn();
       const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation((selector) =>
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) =>
         selector(
           createMockState({
             hasUnsavedChanges: true,
             markAsSaved: mockMarkAsSaved,
           }),
-        ),
-      );
+        )) as never);
 
       render(<EditorView />);
       const saveButton = screen.getByRole("button", { name: "保存" });
@@ -160,9 +167,9 @@ describe("EditorView", () => {
   describe("未保存インジケーター", () => {
     it("変更がある場合にインジケーターを表示する", async () => {
       const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation((selector) =>
-        selector(createMockState({ hasUnsavedChanges: true })),
-      );
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) => selector(createMockState({ hasUnsavedChanges: true }))) as never);
 
       render(<EditorView />);
       expect(screen.getByLabelText("未保存の変更あり")).toBeInTheDocument();
@@ -172,14 +179,15 @@ describe("EditorView", () => {
   describe("ファイル未選択状態", () => {
     it("ファイルが選択されていない場合にメッセージを表示する", async () => {
       const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation((selector) =>
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) =>
         selector(
           createMockState({
             selectedFile: null,
             editorContent: "",
           }),
-        ),
-      );
+        )) as never);
 
       render(<EditorView />);
       expect(
@@ -194,9 +202,9 @@ describe("EditorView", () => {
   describe("空状態", () => {
     it("ファイルがない場合はメッセージを表示する", async () => {
       const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation((selector) =>
-        selector(createMockState({ fileTree: [] })),
-      );
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) => selector(createMockState({ fileTree: [] }))) as never);
 
       render(<EditorView />);
       expect(screen.getByText("ファイルがありません")).toBeInTheDocument();

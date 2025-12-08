@@ -61,9 +61,9 @@ describe("GraphView", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     const { useAppStore } = await import("../../store");
-    vi.mocked(useAppStore).mockImplementation((selector) =>
-      selector(createMockState()),
-    );
+    vi.mocked(useAppStore).mockImplementation(((
+      selector: (state: ReturnType<typeof createMockState>) => unknown,
+    ) => selector(createMockState())) as never);
   });
 
   describe("レンダリング", () => {
@@ -99,9 +99,12 @@ describe("GraphView", () => {
     it("ノードクリックでsetSelectedNodeを呼び出す", async () => {
       const mockSetSelectedNode = vi.fn();
       const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation((selector) =>
-        selector(createMockState({ setSelectedNode: mockSetSelectedNode })),
-      );
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) =>
+        selector(
+          createMockState({ setSelectedNode: mockSetSelectedNode }),
+        )) as never);
 
       render(<GraphView />);
       const selectButton = screen.getByText("Select Node 1");
@@ -111,9 +114,9 @@ describe("GraphView", () => {
 
     it("選択されたノードの詳細を表示する", async () => {
       const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation((selector) =>
-        selector(createMockState({ selectedNodeId: "1" })),
-      );
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) => selector(createMockState({ selectedNodeId: "1" }))) as never);
 
       render(<GraphView />);
       expect(screen.getByText("ノード詳細")).toBeInTheDocument();
@@ -123,9 +126,9 @@ describe("GraphView", () => {
 
     it("接続数を表示する", async () => {
       const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation((selector) =>
-        selector(createMockState({ selectedNodeId: "1" })),
-      );
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) => selector(createMockState({ selectedNodeId: "1" }))) as never);
 
       render(<GraphView />);
       expect(screen.getByText("接続数")).toBeInTheDocument();
@@ -136,9 +139,9 @@ describe("GraphView", () => {
   describe("空状態", () => {
     it("ノードがない場合はメッセージを表示する", async () => {
       const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation((selector) =>
-        selector(createMockState({ graphNodes: [] })),
-      );
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) => selector(createMockState({ graphNodes: [] }))) as never);
 
       render(<GraphView />);
       expect(

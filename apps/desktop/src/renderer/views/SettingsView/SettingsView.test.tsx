@@ -28,9 +28,9 @@ describe("SettingsView", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     const { useAppStore } = await import("../../store");
-    vi.mocked(useAppStore).mockImplementation((selector) =>
-      selector(createMockState()),
-    );
+    vi.mocked(useAppStore).mockImplementation(((
+      selector: (state: ReturnType<typeof createMockState>) => unknown,
+    ) => selector(createMockState())) as never);
   });
 
   describe("レンダリング", () => {
@@ -69,9 +69,9 @@ describe("SettingsView", () => {
     it("APIキー変更でsetApiKeyを呼び出す", async () => {
       const mockSetApiKey = vi.fn();
       const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation((selector) =>
-        selector(createMockState({ setApiKey: mockSetApiKey })),
-      );
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) => selector(createMockState({ setApiKey: mockSetApiKey }))) as never);
 
       render(<SettingsView />);
       const input = screen.getByPlaceholderText("sk-...");
@@ -99,11 +99,12 @@ describe("SettingsView", () => {
     it("自動同期トグルでsetAutoSyncEnabledを呼び出す", async () => {
       const mockSetAutoSyncEnabled = vi.fn();
       const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation((selector) =>
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) =>
         selector(
           createMockState({ setAutoSyncEnabled: mockSetAutoSyncEnabled }),
-        ),
-      );
+        )) as never);
 
       render(<SettingsView />);
       const checkbox = screen.getByRole("checkbox", {

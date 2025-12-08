@@ -119,15 +119,15 @@ describe("ChatView", () => {
     it("入力値があれば送信ボタンクリックでaddMessageを呼び出す", async () => {
       const mockAddMessage = vi.fn();
       const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation(
-        (selector: (state: unknown) => unknown) =>
-          selector(
-            createMockState({
-              chatInput: "テストメッセージ",
-              addMessage: mockAddMessage,
-            }),
-          ),
-      );
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) =>
+        selector(
+          createMockState({
+            chatInput: "テストメッセージ",
+            addMessage: mockAddMessage,
+          }),
+        )) as never);
 
       render(<ChatView />);
       const sendButton = screen.getByRole("button", { name: "送信" });
@@ -139,10 +139,9 @@ describe("ChatView", () => {
   describe("ローディング状態", () => {
     it("送信中は送信ボタンが無効化される", async () => {
       const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation(
-        (selector: (state: unknown) => unknown) =>
-          selector(createMockState({ isSending: true })),
-      );
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) => selector(createMockState({ isSending: true }))) as never);
 
       render(<ChatView />);
       const sendButton = screen.getByRole("button", { name: "送信" });
@@ -153,10 +152,9 @@ describe("ChatView", () => {
   describe("空状態", () => {
     it("メッセージがない場合は案内を表示する", async () => {
       const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation(
-        (selector: (state: unknown) => unknown) =>
-          selector(createMockState({ chatMessages: [] })),
-      );
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) => selector(createMockState({ chatMessages: [] }))) as never);
 
       render(<ChatView />);
       expect(
@@ -168,10 +166,12 @@ describe("ChatView", () => {
   describe("RAGモード", () => {
     it("RAG無効時は通常モードと表示する", async () => {
       const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation(
-        (selector: (state: unknown) => unknown) =>
-          selector(createMockState({ ragConnectionStatus: "disconnected" })),
-      );
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) =>
+        selector(
+          createMockState({ ragConnectionStatus: "disconnected" }),
+        )) as never);
 
       render(<ChatView />);
       expect(screen.getByText("通常モード")).toBeInTheDocument();
