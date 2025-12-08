@@ -19,49 +19,7 @@ concurrency:
 
 jobs:
   # ===================
-  # macOS Build (Intel)
-  # ===================
-  build-macos-x64:
-    name: Build macOS (Intel)
-    runs-on: macos-13
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Build shared package
-        run: pnpm --filter @repo/shared build
-
-      - name: Build desktop app
-        run: pnpm --filter @repo/desktop build
-
-      - name: Package (without signing)
-        run: pnpm --filter @repo/desktop package:mac
-        env:
-          CSC_IDENTITY_AUTO_DISCOVERY: false
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: electron-macos-x64
-          path: |
-            apps/desktop/dist/*.dmg
-            apps/desktop/dist/*.zip
-          if-no-files-found: warn
-
-  # ===================
-  # macOS Build (Apple Silicon)
+  # macOS Build (Apple Silicon) - ACTIVE
   # ===================
   build-macos-arm64:
     name: Build macOS (Apple Silicon)
@@ -102,82 +60,129 @@ jobs:
             apps/desktop/dist/*.zip
           if-no-files-found: warn
 
-  # ===================
-  # Windows Build
-  # ===================
-  build-windows:
-    name: Build Windows
-    runs-on: windows-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # ===========================================================================
+  # DISABLED BUILDS - 将来的に再有効化可能
+  # 再有効化する場合は、各ジョブのコメントを解除してください
+  # ===========================================================================
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+  # ---------------------------------------------------------------------------
+  # macOS Build (Intel) - DISABLED
+  # ---------------------------------------------------------------------------
+  # build-macos-x64:
+  #   name: Build macOS (Intel)
+  #   runs-on: macos-13
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Setup pnpm
+  #       uses: pnpm/action-setup@v4
+  #
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: "22"
+  #         cache: "pnpm"
+  #
+  #     - name: Install dependencies
+  #       run: pnpm install
+  #
+  #     - name: Build shared package
+  #       run: pnpm --filter @repo/shared build
+  #
+  #     - name: Build desktop app
+  #       run: pnpm --filter @repo/desktop build
+  #
+  #     - name: Package (without signing)
+  #       run: pnpm --filter @repo/desktop package:mac
+  #       env:
+  #         CSC_IDENTITY_AUTO_DISCOVERY: false
+  #
+  #     - name: Upload artifact
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: electron-macos-x64
+  #         path: |
+  #           apps/desktop/dist/*.dmg
+  #           apps/desktop/dist/*.zip
+  #         if-no-files-found: warn
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: "pnpm"
+  # ---------------------------------------------------------------------------
+  # Windows Build - DISABLED
+  # ---------------------------------------------------------------------------
+  # build-windows:
+  #   name: Build Windows
+  #   runs-on: windows-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Setup pnpm
+  #       uses: pnpm/action-setup@v4
+  #
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: "22"
+  #         cache: "pnpm"
+  #
+  #     - name: Install dependencies
+  #       run: pnpm install
+  #
+  #     - name: Build shared package
+  #       run: pnpm --filter @repo/shared build
+  #
+  #     - name: Build desktop app
+  #       run: pnpm --filter @repo/desktop build
+  #
+  #     - name: Package (without signing)
+  #       run: pnpm --filter @repo/desktop package:win
+  #
+  #     - name: Upload artifact
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: electron-windows-x64
+  #         path: |
+  #           apps/desktop/dist/*.exe
+  #           apps/desktop/dist/*.zip
+  #         if-no-files-found: warn
 
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Build shared package
-        run: pnpm --filter @repo/shared build
-
-      - name: Build desktop app
-        run: pnpm --filter @repo/desktop build
-
-      - name: Package (without signing)
-        run: pnpm --filter @repo/desktop package:win
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: electron-windows-x64
-          path: |
-            apps/desktop/dist/*.exe
-            apps/desktop/dist/*.zip
-          if-no-files-found: warn
-
-  # ===================
-  # Linux Build
-  # ===================
-  build-linux:
-    name: Build Linux
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Build shared package
-        run: pnpm --filter @repo/shared build
-
-      - name: Build desktop app
-        run: pnpm --filter @repo/desktop build
-
-      - name: Package
-        run: pnpm --filter @repo/desktop package
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: electron-linux-x64
-          path: |
-            apps/desktop/dist/*.AppImage
-            apps/desktop/dist/*.deb
-          if-no-files-found: warn
+  # ---------------------------------------------------------------------------
+  # Linux Build - DISABLED
+  # ---------------------------------------------------------------------------
+  # build-linux:
+  #   name: Build Linux
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Setup pnpm
+  #       uses: pnpm/action-setup@v4
+  #
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: "22"
+  #         cache: "pnpm"
+  #
+  #     - name: Install dependencies
+  #       run: pnpm install
+  #
+  #     - name: Build shared package
+  #       run: pnpm --filter @repo/shared build
+  #
+  #     - name: Build desktop app
+  #       run: pnpm --filter @repo/desktop build
+  #
+  #     - name: Package
+  #       run: pnpm --filter @repo/desktop package
+  #
+  #     - name: Upload artifact
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: electron-linux-x64
+  #         path: |
+  #           apps/desktop/dist/*.AppImage
+  #           apps/desktop/dist/*.deb
+  #         if-no-files-found: warn
