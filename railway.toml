@@ -9,7 +9,7 @@ installCommand = "pnpm install --ignore-scripts"
 buildCommand = "pnpm --filter @repo/shared build && pnpm --filter @repo/backend build"
 
 [deploy]
-startCommand = "node apps/backend/.next/standalone/apps/backend/server.js"
+startCommand = "HOSTNAME=0.0.0.0 PORT=3000 node apps/backend/.next/standalone/apps/backend/server.js"
 healthcheckPath = "/api/health"
 healthcheckTimeout = 100
 restartPolicyType = "on_failure"
@@ -23,4 +23,4 @@ NODE_ENV = "production"
 
 # Nixpacks のデフォルト動作を上書き（package.json の start スクリプトを使用しない）
 [nixpacks]
-startCommand = "node apps/backend/.next/standalone/apps/backend/server.js"
+startCommand = "HOSTNAME=0.0.0.0 PORT=3000 node apps/backend/.next/standalone/apps/backend/server.js"
