@@ -76,6 +76,15 @@ export const createSettingsSlice: StateCreator<
 
   setThemeMode: async (mode: ThemeMode) => {
     try {
+      // Guard: Skip IPC if electronAPI is not available (e.g., browser dev mode)
+      if (!window.electronAPI?.theme?.set) {
+        // Fallback for browser mode
+        const resolvedTheme: ResolvedTheme = mode === "system" ? "dark" : mode;
+        set({ themeMode: mode, resolvedTheme });
+        applyThemeToDOM(resolvedTheme);
+        return;
+      }
+
       // Call IPC to save and get resolved theme
       const response = await window.electronAPI.theme.set({ mode });
 
@@ -116,6 +125,14 @@ export const createSettingsSlice: StateCreator<
 
   initializeTheme: async () => {
     try {
+      // Guard: Skip IPC if electronAPI is not available (e.g., browser dev mode)
+      if (!window.electronAPI?.theme?.get) {
+        // Use defaults for browser mode
+        const state = get();
+        applyThemeToDOM(state.resolvedTheme);
+        return;
+      }
+
       const response = await window.electronAPI.theme.get();
 
       if (response.success && response.data) {

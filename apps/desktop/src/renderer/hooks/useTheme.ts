@@ -31,6 +31,11 @@ export function useTheme(): UseThemeReturn {
 
   // Monitor system theme changes
   useEffect(() => {
+    // Guard: Skip if electronAPI is not available (e.g., browser dev mode)
+    if (!window.electronAPI?.theme?.onSystemChanged) {
+      return;
+    }
+
     // Register listener for system theme changes
     const unsubscribe = window.electronAPI.theme.onSystemChanged((event) => {
       // Only update if we're in system mode
