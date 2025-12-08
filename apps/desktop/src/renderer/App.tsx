@@ -1,20 +1,82 @@
+import React from "react";
+import { useAppStore, useCurrentView, useResponsiveMode } from "./store";
+import { AppDock } from "./components/organisms/AppDock";
+import { DynamicIsland } from "./components/molecules/DynamicIsland";
+import { DashboardView } from "./views/DashboardView";
+import { EditorView } from "./views/EditorView";
+import { ChatView } from "./views/ChatView";
+import { GraphView } from "./views/GraphView";
+import { SettingsView } from "./views/SettingsView";
+import type { ViewType } from "./components/organisms/AppDock";
+
 function App(): JSX.Element {
+  const currentView = useCurrentView();
+  const responsiveMode = useResponsiveMode();
+  const setCurrentView = useAppStore((state) => state.setCurrentView);
+  const dynamicIsland = useAppStore((state) => state.dynamicIsland);
+  const hideDynamicIsland = useAppStore((state) => state.hideDynamicIsland);
+
+  const handleViewChange = (view: ViewType) => {
+    setCurrentView(view);
+  };
+
+  const renderView = () => {
+    switch (currentView) {
+      case "dashboard":
+        return <DashboardView />;
+      case "editor":
+        return <EditorView />;
+      case "chat":
+        return <ChatView />;
+      case "graph":
+        return <GraphView />;
+      case "settings":
+        return <SettingsView />;
+      default:
+        return <DashboardView />;
+    }
+  };
+
+  const isDesktop = responsiveMode === "desktop";
+
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      <header className="border-b border-gray-800 px-6 py-4">
-        <h1 className="text-xl font-semibold">AI Workflow Orchestrator</h1>
-      </header>
-      <main className="p-6">
-        <div className="rounded-lg bg-gray-800 p-6">
-          <h2 className="mb-4 text-lg font-medium">Dashboard</h2>
-          <p className="text-gray-400">
-            Welcome to AI Workflow Orchestrator. Development environment is ready.
-          </p>
-          <p className="mt-4 text-sm text-gray-500">
-            Platform: {window.electronAPI?.platform || 'unknown'}
-          </p>
+    <div className="h-screen w-screen overflow-hidden bg-[#0a0a0a] text-white flex">
+      {/* App Dock - Left side on desktop, bottom on mobile */}
+      {isDesktop ? (
+        <AppDock
+          currentView={currentView}
+          onViewChange={handleViewChange}
+          mode="desktop"
+        />
+      ) : null}
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Dynamic Island */}
+        <div className="flex justify-center pt-4 pb-2">
+          <DynamicIsland
+            status={dynamicIsland.status}
+            message={dynamicIsland.message}
+            visible={dynamicIsland.visible}
+            progress={dynamicIsland.progress}
+            onHide={hideDynamicIsland}
+          />
         </div>
-      </main>
+
+        {/* View Content */}
+        <main className="flex-1 overflow-auto p-6">{renderView()}</main>
+      </div>
+
+      {/* Mobile Bottom Navigation */}
+      {!isDesktop ? (
+        <div className="fixed bottom-0 left-0 right-0">
+          <AppDock
+            currentView={currentView}
+            onViewChange={handleViewChange}
+            mode="mobile"
+          />
+        </div>
+      ) : null}
     </div>
   );
 }

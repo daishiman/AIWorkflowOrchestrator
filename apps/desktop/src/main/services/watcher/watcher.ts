@@ -1,7 +1,7 @@
-import chokidar, { type FSWatcher } from 'chokidar';
-import { EventEmitter } from 'events';
+import chokidar, { type FSWatcher } from "chokidar";
+import { EventEmitter } from "events";
 
-export type FileEventType = 'add' | 'change' | 'unlink';
+export type FileEventType = "add" | "change" | "unlink";
 
 export interface FileEvent {
   type: FileEventType;
@@ -17,12 +17,12 @@ export interface WatcherConfig {
 }
 
 const DEFAULT_IGNORED = [
-  '**/node_modules/**',
-  '**/.git/**',
-  '**/dist/**',
-  '**/out/**',
-  '**/*.log',
-  '**/.DS_Store',
+  "**/node_modules/**",
+  "**/.git/**",
+  "**/dist/**",
+  "**/out/**",
+  "**/*.log",
+  "**/.DS_Store",
 ];
 
 /**
@@ -62,13 +62,13 @@ export class FileWatcher extends EventEmitter {
     });
 
     this.watcher
-      .on('add', (path) => this.handleEvent('add', path))
-      .on('change', (path) => this.handleEvent('change', path))
-      .on('unlink', (path) => this.handleEvent('unlink', path))
-      .on('error', (error) => this.emit('error', error))
-      .on('ready', () => {
+      .on("add", (path) => this.handleEvent("add", path))
+      .on("change", (path) => this.handleEvent("change", path))
+      .on("unlink", (path) => this.handleEvent("unlink", path))
+      .on("error", (error) => this.emit("error", error))
+      .on("ready", () => {
         this.isRunning = true;
-        this.emit('ready');
+        this.emit("ready");
       });
   }
 
@@ -83,7 +83,7 @@ export class FileWatcher extends EventEmitter {
     await this.watcher.close();
     this.watcher = null;
     this.isRunning = false;
-    this.emit('stopped');
+    this.emit("stopped");
   }
 
   /**
@@ -106,7 +106,7 @@ export class FileWatcher extends EventEmitter {
       path,
       timestamp: new Date(),
     };
-    this.emit('file', event);
+    this.emit("file", event);
     this.emit(type, event);
   }
 }
