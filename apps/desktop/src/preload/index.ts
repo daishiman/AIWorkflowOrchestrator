@@ -20,6 +20,8 @@ import type {
   FileChangedEvent,
   WindowResizedEvent,
   MenuActionEvent,
+  ThemeSetRequest,
+  ThemeSystemChangedEvent,
 } from "./types";
 
 // Type-safe invoke wrapper
@@ -105,6 +107,18 @@ const electronAPI: ElectronAPI = {
     getVersion: () => safeInvoke(IPC_CHANNELS.APP_GET_VERSION),
     onMenuAction: (callback: (event: MenuActionEvent) => void) =>
       safeOn<MenuActionEvent>(IPC_CHANNELS.APP_MENU_ACTION, callback),
+  },
+
+  theme: {
+    get: () => safeInvoke(IPC_CHANNELS.THEME_GET),
+    set: (request: ThemeSetRequest) =>
+      safeInvoke(IPC_CHANNELS.THEME_SET, request),
+    getSystem: () => safeInvoke(IPC_CHANNELS.THEME_GET_SYSTEM),
+    onSystemChanged: (callback: (event: ThemeSystemChangedEvent) => void) =>
+      safeOn<ThemeSystemChangedEvent>(
+        IPC_CHANNELS.THEME_SYSTEM_CHANGED,
+        callback,
+      ),
   },
 };
 
