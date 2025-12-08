@@ -55,3 +55,6 @@ next-env.d.ts
 
 # Worktrees
 .worktrees/
+
+# Test Coverage
+coverage/
