@@ -268,6 +268,46 @@ export interface MenuActionEvent {
   action: MenuAction;
 }
 
+// Theme operations
+export type ThemeMode = "light" | "dark" | "system";
+export type ResolvedTheme = "light" | "dark";
+
+export interface ThemeGetResponse {
+  success: boolean;
+  data?: {
+    mode: ThemeMode;
+    resolvedTheme: ResolvedTheme;
+  };
+  error?: string;
+}
+
+export interface ThemeSetRequest {
+  mode: ThemeMode;
+}
+
+export interface ThemeSetResponse {
+  success: boolean;
+  data?: {
+    mode: ThemeMode;
+    resolvedTheme: ResolvedTheme;
+  };
+  error?: string;
+}
+
+export interface ThemeGetSystemResponse {
+  success: boolean;
+  data?: {
+    isDark: boolean;
+    resolvedTheme: ResolvedTheme;
+  };
+  error?: string;
+}
+
+export interface ThemeSystemChangedEvent {
+  isDark: boolean;
+  resolvedTheme: ResolvedTheme;
+}
+
 // ElectronAPI interface
 export interface ElectronAPI {
   file: {
@@ -316,6 +356,15 @@ export interface ElectronAPI {
   app: {
     getVersion: () => Promise<AppGetVersionResponse>;
     onMenuAction: (callback: (event: MenuActionEvent) => void) => () => void;
+  };
+
+  theme: {
+    get: () => Promise<ThemeGetResponse>;
+    set: (request: ThemeSetRequest) => Promise<ThemeSetResponse>;
+    getSystem: () => Promise<ThemeGetSystemResponse>;
+    onSystemChanged: (
+      callback: (event: ThemeSystemChangedEvent) => void,
+    ) => () => void;
   };
 }
 

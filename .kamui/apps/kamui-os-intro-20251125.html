@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAMUI OS とは - 完全版</title>
+    <link rel="stylesheet" href="./kamui-os-intro-1732171200.css">
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">スライド一覧</div>
+                <div class="sidebar-actions">
+                    <button id="downloadAllBtn" aria-label="全スライドをダウンロード" title="全スライドをダウンロード">
+                        <span class="download-icon" aria-hidden="true"></span>
+                    </button>
+                    <button id="toggleSidebar" aria-label="サイドバーを折りたたむ" aria-expanded="true">
+                        <span class="chevron">◀</span>
+                    </button>
+                </div>
+            </div>
+            <p class="sidebar-caption">クリックでスライドへ移動</p>
+            <ul class="slide-list" id="slideList" aria-label="スライド一覧"></ul>
+        </aside>
+
+        <main class="slides-area">
+            <div class="progress">
+                <span id="slideNumber">1 / 5</span>
+            </div>
+
+            <div class="slide-container">
+                <!-- Slide 1-5 -->
+                <div class="slide active">
+                    <img src="https://v3b.fal.media/files/b/panda/w56KXNnWKsTelwQLFUe66.png" alt="KAMUI OS とは - タイトル">
+                </div>
+
+                <div class="slide">
+                    <img src="https://v3b.fal.media/files/b/penguin/z_8BgnSmt-C4zRAK3UQ2w.png" alt="KAMUI OS とは？">
+                </div>
+
+                <div class="slide">
+                    <img src="https://v3b.fal.media/files/b/elephant/PnO9qTgouRKGU1WUvkZun.png" alt="主要機能">
+                </div>
+
+                <div class="slide">
+                    <img src="https://v3b.fal.media/files/b/lion/MJiYEFnnkBKcKGnFTSyHX.png" alt="システムアーキテクチャ">
+                </div>
+
+                <div class="slide">
+                    <img src="https://v3b.fal.media/files/b/panda/Lr1B9tmtWmuRsZIDcw6kP.png" alt="ユースケース">
+                </div>
+            </div>
+
+            <div class="navigation">
+                <button class="nav-btn" id="prevBtn">◀</button>
+                <button class="nav-btn" id="nextBtn">▶</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="./kamui-os-intro-1732171200.js"></script>
+</body>
+</html>

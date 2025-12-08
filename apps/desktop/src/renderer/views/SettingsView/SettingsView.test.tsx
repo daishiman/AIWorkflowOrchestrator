@@ -2,6 +2,17 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { SettingsView } from "./index";
 
+// Mock useTheme hook
+const mockSetTheme = vi.fn();
+vi.mock("../../hooks/useTheme", () => ({
+  useTheme: () => ({
+    themeMode: "system" as const,
+    resolvedTheme: "dark" as const,
+    setTheme: mockSetTheme,
+    isDark: true,
+  }),
+}));
+
 // Mock store state - flat structure matching actual store
 const createMockState = (overrides = {}) => ({
   // SettingsSlice

@@ -36,6 +36,12 @@ export const IPC_CHANNELS = {
   // App operations
   APP_GET_VERSION: "app:get-version",
   APP_MENU_ACTION: "app:menu-action",
+
+  // Theme operations
+  THEME_GET: "theme:get",
+  THEME_SET: "theme:set",
+  THEME_GET_SYSTEM: "theme:get-system",
+  THEME_SYSTEM_CHANGED: "theme:system-changed",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -60,10 +66,16 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.DASHBOARD_GET_ACTIVITY,
   IPC_CHANNELS.WINDOW_GET_STATE,
   IPC_CHANNELS.APP_GET_VERSION,
+  // Theme channels
+  IPC_CHANNELS.THEME_GET,
+  IPC_CHANNELS.THEME_SET,
+  IPC_CHANNELS.THEME_GET_SYSTEM,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [
   IPC_CHANNELS.FILE_CHANGED,
   IPC_CHANNELS.WINDOW_RESIZED,
   IPC_CHANNELS.APP_MENU_ACTION,
+  // Theme channels
+  IPC_CHANNELS.THEME_SYSTEM_CHANGED,
 ];

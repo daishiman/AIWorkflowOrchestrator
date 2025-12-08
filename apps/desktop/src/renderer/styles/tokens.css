@@ -167,33 +167,44 @@
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* ===== Light Mode ===== */
-@media (prefers-color-scheme: light) {
-  :root:not(.dark) {
-    --bg-primary: #ffffff;
-    --bg-secondary: var(--color-slate-50);
-    --bg-tertiary: var(--color-slate-100);
-    --bg-elevated: rgba(0, 0, 0, 0.02);
-    --bg-glass: rgba(0, 0, 0, 0.05);
+/* ===== Light Theme (data-theme="light") ===== */
+[data-theme="light"] {
+  color-scheme: light;
 
-    --text-primary: var(--color-slate-900);
-    --text-secondary: var(--color-slate-600);
-    --text-muted: var(--color-slate-400);
-    --text-inverse: var(--color-slate-50);
+  --bg-primary: #ffffff;
+  --bg-secondary: var(--color-slate-50);
+  --bg-tertiary: var(--color-slate-100);
+  --bg-elevated: rgba(0, 0, 0, 0.02);
+  --bg-glass: rgba(0, 0, 0, 0.05);
 
-    --border-default: var(--color-slate-200);
-    --border-emphasis: var(--color-slate-300);
-    --border-subtle: rgba(0, 0, 0, 0.1);
+  --text-primary: var(--color-slate-900);
+  --text-secondary: var(--color-slate-600);
+  --text-muted: var(--color-slate-400);
+  --text-inverse: var(--color-slate-50);
 
-    --status-primary: var(--color-blue-600);
-    --status-success: var(--color-green-600);
-    --status-error: var(--color-red-600);
-  }
+  --border-default: var(--color-slate-200);
+  --border-emphasis: var(--color-slate-300);
+  --border-subtle: rgba(0, 0, 0, 0.1);
+
+  --status-primary: var(--color-blue-600);
+  --status-success: var(--color-green-600);
+  --status-error: var(--color-red-600);
 }
 
-/* Force dark mode class */
-.dark {
+/* ===== Dark Theme (data-theme="dark") ===== */
+[data-theme="dark"] {
   color-scheme: dark;
+}
+
+/* ===== Theme Transition ===== */
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+  transition:
+    background-color var(--duration-normal) var(--ease-default),
+    border-color var(--duration-normal) var(--ease-default),
+    color var(--duration-fast) var(--ease-default) !important;
 }
 
 /* ===== Glass Morphism Utilities ===== */
