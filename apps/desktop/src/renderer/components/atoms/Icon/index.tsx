@@ -7,6 +7,8 @@ import {
   Network,
   Aperture,
   User,
+  UserPlus,
+  LogIn,
   Folder,
   FolderOpen,
   FileText,
@@ -14,6 +16,7 @@ import {
   Menu,
   X,
   Check,
+  CheckCircle,
   Loader2,
   Send,
   RefreshCw,
@@ -37,6 +40,8 @@ export type IconName =
   | "network"
   | "aperture"
   | "user"
+  | "user-plus"
+  | "log-in"
   | "folder"
   | "folder-open"
   | "file-text"
@@ -44,6 +49,7 @@ export type IconName =
   | "menu"
   | "x"
   | "check"
+  | "check-circle"
   | "loader-2"
   | "send"
   | "refresh-cw"
@@ -73,6 +79,8 @@ const iconMap: Record<IconName, LucideIcon> = {
   network: Network,
   aperture: Aperture,
   user: User,
+  "user-plus": UserPlus,
+  "log-in": LogIn,
   folder: Folder,
   "folder-open": FolderOpen,
   "file-text": FileText,
@@ -80,6 +88,7 @@ const iconMap: Record<IconName, LucideIcon> = {
   menu: Menu,
   x: X,
   check: Check,
+  "check-circle": CheckCircle,
   "loader-2": Loader2,
   send: Send,
   "refresh-cw": RefreshCw,

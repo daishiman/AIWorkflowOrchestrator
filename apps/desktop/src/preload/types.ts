@@ -296,6 +296,10 @@ export interface AuthSession {
 export interface AuthState {
   authenticated: boolean;
   user?: AuthUser;
+  tokens?: {
+    accessToken: string;
+    refreshToken: string;
+  };
   error?: string;
   isOffline?: boolean;
 }
