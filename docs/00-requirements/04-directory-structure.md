@@ -176,16 +176,46 @@
 
 ### 4.5.3 renderer/（React UI）
 
-| パス        | 役割                       |
-| ----------- | -------------------------- |
-| App.tsx     | アプリルート               |
-| index.tsx   | エントリーポイント         |
-| pages/      | ページコンポーネント       |
-| components/ | Electron固有コンポーネント |
-| hooks/      | IPC通信フック              |
-| store/      | 状態管理（Zustand）        |
+| パス        | 役割                        |
+| ----------- | --------------------------- |
+| App.tsx     | アプリルート                |
+| main.tsx    | エントリーポイント          |
+| views/      | 画面コンポーネント          |
+| components/ | Atomic Designコンポーネント |
+| hooks/      | IPC通信フック               |
+| store/      | 状態管理（Zustand）         |
+| styles/     | CSS/Design Tokens           |
+| utils/      | ユーティリティ関数          |
 
-### 4.5.4 Electron 3プロセスモデル
+### 4.5.4 renderer/components/（Atomic Design）
+
+| パス       | 役割                                         |
+| ---------- | -------------------------------------------- |
+| atoms/     | 基本UI要素（Button、Input、Icon、Badge等）   |
+| molecules/ | 複合要素（Tooltip、NavIcon、FileTreeItem等） |
+| organisms/ | 機能単位（AppDock、Sidebar、GlassPanel等）   |
+
+### 4.5.5 renderer/views/（画面構成）
+
+| パス           | 役割                                   |
+| -------------- | -------------------------------------- |
+| DashboardView/ | ダッシュボード（統計・アクティビティ） |
+| EditorView/    | エディタ（ファイルツリー・編集）       |
+| ChatView/      | AIチャット                             |
+| GraphView/     | ナレッジグラフ                         |
+| SettingsView/  | 設定画面                               |
+
+### 4.5.6 renderer/store/（Zustand状態管理）
+
+| パス               | 役割                               |
+| ------------------ | ---------------------------------- |
+| index.ts           | 統合ストア（createAppStore）       |
+| slices/            | 機能別スライス                     |
+| slices/uiSlice     | UI状態（ビュー、ウィンドウサイズ） |
+| slices/editorSlice | エディタ状態（ファイル、フォルダ） |
+| slices/chatSlice   | チャット状態（メッセージ、入力）   |
+
+### 4.5.7 Electron 3プロセスモデル
 
 | プロセス | 環境                      | 役割             |
 | -------- | ------------------------- | ---------------- |
