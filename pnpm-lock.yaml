@@ -63,7 +63,7 @@ importers:
         version: link:../../packages/shared
       next:
         specifier: ^15.1.2
-        version: 15.5.7(@babel/core@7.28.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 15.5.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -88,7 +88,7 @@ importers:
         version: 18.3.7(@types/react@18.3.27)
       "@vitejs/plugin-react":
         specifier: ^4.3.4
-        version: 4.7.0(vite@5.4.21(@types/node@22.19.1))
+        version: 4.7.0(vite@6.4.1(@types/node@22.19.1)(jiti@1.21.7)(yaml@2.8.2))
       "@vitest/coverage-v8":
         specifier: ^2.1.9
         version: 2.1.9(vitest@2.1.9(@types/node@22.19.1)(happy-dom@20.0.11)(jsdom@27.2.0))
@@ -119,6 +119,9 @@ importers:
       chokidar:
         specifier: ^5.0.0
         version: 5.0.0
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       drizzle-orm:
         specifier: ^0.39.0
         version: 0.39.3(@types/better-sqlite3@7.6.13)(better-sqlite3@12.5.0)
@@ -131,6 +134,9 @@ importers:
       electron-updater:
         specifier: ^6.6.2
         version: 6.6.2
+      lucide-react:
+        specifier: ^0.556.0
+        version: 0.556.0(react@18.3.1)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -2968,6 +2974,13 @@ packages:
       }
     engines: { node: ">=0.8" }
 
+  clsx@2.1.1:
+    resolution:
+      {
+        integrity: sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==,
+      }
+    engines: { node: ">=6" }
+
   color-convert@2.0.1:
     resolution:
       {
@@ -5125,6 +5138,14 @@ packages:
         integrity: sha512-jumlc0BIUrS3qJGgIkWZsyfAM7NCWiBcCDhnd+3NNM5KbBmLTgHVfWBcg6W+rLUsIpzpERPsvwUP7CckAQSOoA==,
       }
     engines: { node: ">=12" }
+
+  lucide-react@0.556.0:
+    resolution:
+      {
+        integrity: sha512-iOb8dRk7kLaYBZhR2VlV1CeJGxChBgUthpSP8wom9jfj79qovgG6qcSdiy6vkoREKPnbUYzJsCn4o4PtG3Iy+A==,
+      }
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   lz-string@1.5.0:
     resolution:
@@ -8549,18 +8570,6 @@ snapshots:
   "@unrs/resolver-binding-win32-x64-msvc@1.11.1":
     optional: true
 
-  "@vitejs/plugin-react@4.7.0(vite@5.4.21(@types/node@22.19.1))":
-    dependencies:
-      "@babel/core": 7.28.5
-      "@babel/plugin-transform-react-jsx-self": 7.27.1(@babel/core@7.28.5)
-      "@babel/plugin-transform-react-jsx-source": 7.27.1(@babel/core@7.28.5)
-      "@rolldown/pluginutils": 1.0.0-beta.27
-      "@types/babel__core": 7.20.5
-      react-refresh: 0.17.0
-      vite: 5.4.21(@types/node@22.19.1)
-    transitivePeerDependencies:
-      - supports-color
-
   "@vitejs/plugin-react@4.7.0(vite@6.4.1(@types/node@22.19.1)(jiti@1.21.7)(yaml@2.8.2))":
     dependencies:
       "@babel/core": 7.28.5
@@ -9101,6 +9110,8 @@ snapshots:
       mimic-response: 1.0.1
 
   clone@1.0.4: {}
+
+  clsx@2.1.1: {}
 
   color-convert@2.0.1:
     dependencies:
@@ -10604,6 +10615,10 @@ snapshots:
 
   lru-cache@7.18.3: {}
 
+  lucide-react@0.556.0(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+
   lz-string@1.5.0: {}
 
   magic-string@0.30.21:
@@ -10762,7 +10777,7 @@ snapshots:
 
   neo-async@2.6.2: {}
 
-  next@15.5.7(@babel/core@7.28.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  next@15.5.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       "@next/env": 15.5.7
       "@swc/helpers": 0.5.15
@@ -10770,7 +10785,7 @@ snapshots:
       postcss: 8.4.31
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      styled-jsx: 5.1.6(@babel/core@7.28.5)(react@18.3.1)
+      styled-jsx: 5.1.6(react@18.3.1)
     optionalDependencies:
       "@next/swc-darwin-arm64": 15.5.7
       "@next/swc-darwin-x64": 15.5.7
@@ -11542,12 +11557,10 @@ snapshots:
 
   stubborn-utils@1.0.2: {}
 
-  styled-jsx@5.1.6(@babel/core@7.28.5)(react@18.3.1):
+  styled-jsx@5.1.6(react@18.3.1):
     dependencies:
       client-only: 0.0.1
       react: 18.3.1
-    optionalDependencies:
-      "@babel/core": 7.28.5
 
   sucrase@3.35.1:
     dependencies:

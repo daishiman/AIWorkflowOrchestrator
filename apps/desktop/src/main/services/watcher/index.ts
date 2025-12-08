@@ -1,1 +1,6 @@
-export { FileWatcher, type FileEvent, type FileEventType, type WatcherConfig } from './watcher';
+export {
+  FileWatcher,
+  type FileEvent,
+  type FileEventType,
+  type WatcherConfig,
+} from "./watcher";

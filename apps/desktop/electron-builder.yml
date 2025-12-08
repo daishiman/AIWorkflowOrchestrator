@@ -77,13 +77,13 @@ linux:
     - AppImage
     - deb
   category: Utility
-  desktop:
-    StartupWMClass: ai-workflow-orchestrator
+  executableName: ai-workflow-orchestrator
 
 # ===================
 # Auto-Update (GitHub Releases)
 # ===================
-publish:
-  provider: github
-  releaseType: draft
-  publishAutoUpdate: true
+# Note: publish configuration moved to release workflow to avoid PR build issues
+# publish:
+#   provider: github
+#   releaseType: draft
+#   publishAutoUpdate: true

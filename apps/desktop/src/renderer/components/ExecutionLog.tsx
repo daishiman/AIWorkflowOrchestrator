@@ -1,6 +1,6 @@
 interface LogEntry {
   id: string;
-  level: 'debug' | 'info' | 'warn' | 'error';
+  level: "debug" | "info" | "warn" | "error";
   message: string;
   createdAt: string;
 }
@@ -11,17 +11,17 @@ interface ExecutionLogProps {
 }
 
 const levelColors = {
-  debug: 'text-gray-500',
-  info: 'text-blue-600',
-  warn: 'text-yellow-600',
-  error: 'text-red-600',
+  debug: "text-gray-500",
+  info: "text-blue-600",
+  warn: "text-yellow-600",
+  error: "text-red-600",
 };
 
 const levelBgColors = {
-  debug: 'bg-gray-100',
-  info: 'bg-blue-100',
-  warn: 'bg-yellow-100',
-  error: 'bg-red-100',
+  debug: "bg-gray-100",
+  info: "bg-blue-100",
+  warn: "bg-yellow-100",
+  error: "bg-red-100",
 };
 
 export function ExecutionLog({ logs, loading = false }: ExecutionLogProps) {
@@ -66,9 +66,9 @@ export function ExecutionLog({ logs, loading = false }: ExecutionLogProps) {
 
 function formatTime(isoString: string): string {
   const date = new Date(isoString);
-  return date.toLocaleTimeString('ja-JP', {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
+  return date.toLocaleTimeString("ja-JP", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
   });
 }
