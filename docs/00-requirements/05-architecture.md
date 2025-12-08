@@ -294,9 +294,58 @@
 
 ---
 
-## 5.8 セキュリティアーキテクチャ
+## 5.8 認証アーキテクチャ（Supabase + Electron）
 
-### 5.8.1 レイヤー別セキュリティ
+### 5.8.1 認証基盤
+
+| 項目             | 技術選定                | 説明                            |
+| ---------------- | ----------------------- | ------------------------------- |
+| 認証サービス     | Supabase Auth           | OAuth 2.0 PKCE フロー対応       |
+| 対応プロバイダー | Google, GitHub, Discord | ソーシャルログイン              |
+| トークン管理     | Electron SafeStorage    | OS キーチェーンによる暗号化保存 |
+| セッション管理   | Supabase Session        | JWT ベース、自動リフレッシュ    |
+
+### 5.8.2 プロセス間責務分離
+
+| プロセス     | 責務                                        | ファイル                            |
+| ------------ | ------------------------------------------- | ----------------------------------- |
+| Main Process | Supabase 連携、トークン管理、IPC ハンドラー | authHandlers.ts, profileHandlers.ts |
+| Preload      | contextBridge による安全な API 公開         | preload/index.ts                    |
+| Renderer     | 認証状態管理（Zustand）、UI                 | authSlice.ts, AccountSection.tsx    |
+
+### 5.8.3 カスタムプロトコル認証フロー
+
+```
+1. Renderer: login(provider) 呼び出し
+2. Main: Supabase OAuth URL 生成、外部ブラウザで開く
+3. ブラウザ: OAuth 認証完了
+4. Supabase: aiworkflow://auth/callback#access_token=xxx にリダイレクト
+5. Main: カスタムプロトコルでコールバック受信
+6. Main: トークンを SafeStorage に保存
+7. Main → Renderer: auth:state-changed イベント送信
+8. Renderer: 認証状態を更新
+```
+
+### 5.8.4 IPCチャネル（認証）
+
+| チャネル                | 方向            | 用途                 |
+| ----------------------- | --------------- | -------------------- |
+| `auth:login`            | Renderer → Main | OAuth ログイン開始   |
+| `auth:logout`           | Renderer → Main | ログアウト           |
+| `auth:get-session`      | Renderer → Main | セッション取得       |
+| `auth:refresh`          | Renderer → Main | トークンリフレッシュ |
+| `auth:check-online`     | Renderer → Main | オンライン状態確認   |
+| `auth:state-changed`    | Main → Renderer | 認証状態変更通知     |
+| `profile:get`           | Renderer → Main | プロフィール取得     |
+| `profile:update`        | Renderer → Main | プロフィール更新     |
+| `profile:get-providers` | Renderer → Main | 連携プロバイダー一覧 |
+| `profile:link-provider` | Renderer → Main | 新規プロバイダー連携 |
+
+---
+
+## 5.9 セキュリティアーキテクチャ
+
+### 5.9.1 レイヤー別セキュリティ
 
 | レイヤー           | セキュリティ対策                                   |
 | ------------------ | -------------------------------------------------- |

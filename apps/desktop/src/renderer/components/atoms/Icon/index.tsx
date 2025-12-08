@@ -25,6 +25,8 @@ import {
   Sun,
   Moon,
   Monitor,
+  Pencil,
+  WifiOff,
   type LucideIcon,
 } from "lucide-react";
 
@@ -52,7 +54,9 @@ export type IconName =
   | "pause"
   | "sun"
   | "moon"
-  | "monitor";
+  | "monitor"
+  | "pencil"
+  | "wifi-off";
 
 export interface IconProps extends React.SVGAttributes<SVGElement> {
   name: IconName;
@@ -87,6 +91,8 @@ const iconMap: Record<IconName, LucideIcon> = {
   sun: Sun,
   moon: Moon,
   monitor: Monitor,
+  pencil: Pencil,
+  "wifi-off": WifiOff,
 };
 
 export const Icon = forwardRef<SVGSVGElement, IconProps>(

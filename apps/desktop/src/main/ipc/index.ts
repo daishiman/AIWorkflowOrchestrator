@@ -6,6 +6,13 @@ import { registerGraphHandlers } from "./graphHandlers";
 import { registerAIHandlers } from "./aiHandlers";
 import { registerWindowHandlers, sendMenuAction } from "./windowHandlers";
 import { registerThemeHandlers, setupThemeWatcher } from "./themeHandlers";
+import { registerAuthHandlers } from "./authHandlers";
+import { registerProfileHandlers } from "./profileHandlers";
+import {
+  getSupabaseClient,
+  createSecureStorage,
+  createProfileCache,
+} from "../infrastructure";
 
 /**
  * Register all IPC handlers
@@ -25,6 +32,20 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
 
   // Setup theme watcher to broadcast system theme changes
   setupThemeWatcher(nativeTheme, () => BrowserWindow.getAllWindows());
+
+  // Register auth and profile handlers (only if Supabase is configured)
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const secureStorage = createSecureStorage();
+    const profileCache = createProfileCache();
+
+    registerAuthHandlers(mainWindow, supabase, secureStorage);
+    registerProfileHandlers(supabase, profileCache);
+  } else {
+    console.warn(
+      "[IPC] Auth and profile handlers not registered - Supabase not configured",
+    );
+  }
 }
 
 // Re-export for menu actions

@@ -272,6 +272,154 @@ export interface MenuActionEvent {
 export type ThemeMode = "light" | "dark" | "system";
 export type ResolvedTheme = "light" | "dark";
 
+// Auth operations
+export type OAuthProvider = "google" | "github" | "discord";
+
+export interface AuthUser {
+  id: string;
+  email: string;
+  displayName: string | null;
+  avatarUrl: string | null;
+  provider: OAuthProvider;
+  createdAt: string;
+  lastSignInAt: string;
+}
+
+export interface AuthSession {
+  user: AuthUser;
+  accessToken: string;
+  refreshToken: string;
+  expiresAt: number;
+  isOffline: boolean;
+}
+
+export interface AuthState {
+  authenticated: boolean;
+  user?: AuthUser;
+  error?: string;
+  isOffline?: boolean;
+}
+
+export interface AuthLoginRequest {
+  provider: OAuthProvider;
+}
+
+export interface AuthLoginResponse {
+  success: boolean;
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface AuthLogoutResponse {
+  success: boolean;
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface AuthGetSessionResponse {
+  success: boolean;
+  data?: AuthSession | null;
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface AuthRefreshResponse {
+  success: boolean;
+  data?: AuthSession;
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface AuthCheckOnlineResponse {
+  success: boolean;
+  data?: {
+    online: boolean;
+  };
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+// Profile operations
+export type UserPlan = "free" | "pro" | "enterprise";
+
+export interface UserProfile {
+  id: string;
+  displayName: string;
+  email: string;
+  avatarUrl: string | null;
+  plan: UserPlan;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProfileUpdateFields {
+  displayName?: string;
+  avatarUrl?: string | null;
+}
+
+export interface LinkedProvider {
+  provider: OAuthProvider;
+  providerId: string;
+  email: string;
+  displayName: string | null;
+  avatarUrl: string | null;
+  linkedAt: string;
+}
+
+export interface ProfileGetResponse {
+  success: boolean;
+  data?: UserProfile;
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface ProfileUpdateRequest {
+  updates: ProfileUpdateFields;
+}
+
+export interface ProfileUpdateResponse {
+  success: boolean;
+  data?: UserProfile;
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface ProfileGetProvidersResponse {
+  success: boolean;
+  data?: LinkedProvider[];
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface ProfileLinkProviderRequest {
+  provider: OAuthProvider;
+}
+
+export interface ProfileLinkProviderResponse {
+  success: boolean;
+  data?: LinkedProvider;
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
 export interface ThemeGetResponse {
   success: boolean;
   data?: {
@@ -365,6 +513,24 @@ export interface ElectronAPI {
     onSystemChanged: (
       callback: (event: ThemeSystemChangedEvent) => void,
     ) => () => void;
+  };
+
+  auth: {
+    login: (request: AuthLoginRequest) => Promise<AuthLoginResponse>;
+    logout: () => Promise<AuthLogoutResponse>;
+    getSession: () => Promise<AuthGetSessionResponse>;
+    refresh: () => Promise<AuthRefreshResponse>;
+    checkOnline: () => Promise<AuthCheckOnlineResponse>;
+    onAuthStateChanged: (callback: (state: AuthState) => void) => () => void;
+  };
+
+  profile: {
+    get: () => Promise<ProfileGetResponse>;
+    update: (request: ProfileUpdateRequest) => Promise<ProfileUpdateResponse>;
+    getProviders: () => Promise<ProfileGetProvidersResponse>;
+    linkProvider: (
+      request: ProfileLinkProviderRequest,
+    ) => Promise<ProfileLinkProviderResponse>;
   };
 }
 

@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from "react";
 import clsx from "clsx";
 import { SettingsCard } from "../../components/organisms/SettingsCard";
+import { AccountSection } from "../../components/organisms/AccountSection";
 import { FormField } from "../../components/molecules/FormField";
 import { ThemeSelector } from "../../components/molecules/ThemeSelector";
 import { Input } from "../../components/atoms/Input";
@@ -70,6 +71,17 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
 
       {/* Settings Content */}
       <main className="flex-1 p-6 space-y-6">
+        {/* Account Settings */}
+        <section role="region" aria-labelledby="account-settings-heading">
+          <SettingsCard
+            title="アカウント"
+            description="ログインとプロフィール管理"
+            id="account-settings-heading"
+          >
+            <AccountSection />
+          </SettingsCard>
+        </section>
+
         {/* API Settings */}
         <section role="region" aria-labelledby="api-settings-heading">
           <SettingsCard

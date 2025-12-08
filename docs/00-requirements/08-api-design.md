@@ -251,9 +251,79 @@
 
 ---
 
-## 8.11 エンドポイント命名規則
+## 8.11 Desktop IPC API（認証・プロフィール）
 
-### 8.11.1 命名パターン
+### 8.11.1 認証 IPC チャネル
+
+Electron Desktop アプリでは、IPC 通信で認証機能を提供する。
+
+| チャネル            | 用途                 | Request                       | Response                           |
+| ------------------- | -------------------- | ----------------------------- | ---------------------------------- |
+| `auth:login`        | OAuth ログイン開始   | `{ provider: OAuthProvider }` | `IPCResponse<void>`                |
+| `auth:logout`       | ログアウト           | なし                          | `IPCResponse<void>`                |
+| `auth:get-session`  | セッション取得       | なし                          | `IPCResponse<AuthSession>`         |
+| `auth:refresh`      | トークンリフレッシュ | なし                          | `IPCResponse<AuthSession>`         |
+| `auth:check-online` | オンライン状態確認   | なし                          | `IPCResponse<{ online: boolean }>` |
+
+### 8.11.2 プロフィール IPC チャネル
+
+| チャネル                | 用途                 | Request                            | Response                        |
+| ----------------------- | -------------------- | ---------------------------------- | ------------------------------- |
+| `profile:get`           | プロフィール取得     | なし                               | `IPCResponse<UserProfile>`      |
+| `profile:update`        | プロフィール更新     | `{ updates: ProfileUpdateFields }` | `IPCResponse<UserProfile>`      |
+| `profile:get-providers` | 連携プロバイダー一覧 | なし                               | `IPCResponse<LinkedProvider[]>` |
+| `profile:link-provider` | 新規プロバイダー連携 | `{ provider: OAuthProvider }`      | `IPCResponse<LinkedProvider>`   |
+
+### 8.11.3 イベントチャネル（Main → Renderer）
+
+| チャネル             | 用途             | Payload                                           |
+| -------------------- | ---------------- | ------------------------------------------------- |
+| `auth:state-changed` | 認証状態変更通知 | `{ authenticated: boolean; tokens?: AuthTokens }` |
+
+### 8.11.4 型定義
+
+```typescript
+type OAuthProvider = "google" | "github" | "discord";
+
+interface AuthSession {
+  user: AuthUser;
+  accessToken: string;
+  refreshToken: string;
+  expiresAt: number;
+  isOffline: boolean;
+}
+
+interface UserProfile {
+  id: string;
+  displayName: string;
+  email: string;
+  avatarUrl: string | null;
+  plan: "free" | "pro" | "enterprise";
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface LinkedProvider {
+  provider: OAuthProvider;
+  providerId: string;
+  email: string | null;
+  displayName: string | null;
+  avatarUrl: string | null;
+  linkedAt: string;
+}
+
+interface IPCResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: { code: string; message: string };
+}
+```
+
+---
+
+## 8.12 エンドポイント命名規則
+
+### 8.12.1 命名パターン
 
 | パターン     | 例                           | 説明             |
 | ------------ | ---------------------------- | ---------------- |
@@ -262,7 +332,7 @@
 | サブリソース | /api/v1/workflows/{id}/steps | 親子関係         |
 | アクション   | /api/v1/workflows/{id}/retry | 動詞が必要な操作 |
 
-### 8.11.2 禁止パターン
+### 8.12.2 禁止パターン
 
 | パターン                 | 理由              | 正しい例               |
 | ------------------------ | ----------------- | ---------------------- |
