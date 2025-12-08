@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import type { Stats } from "node:fs";
 import { ipcMain } from "electron";
 
 // Mock electron modules
@@ -38,7 +39,7 @@ describe("fileHandlers", () => {
     handlers = new Map();
 
     // Capture registered handlers
-    vi.mocked(ipcMain.handle).mockImplementation(
+    (ipcMain.handle as ReturnType<typeof vi.fn>).mockImplementation(
       (channel: string, handler: (...args: unknown[]) => Promise<unknown>) => {
         handlers.set(channel, handler);
       },
@@ -65,13 +66,10 @@ describe("fileHandlers", () => {
     it("許可されたパスでファイルツリーを取得する", async () => {
       const handler = handlers.get(IPC_CHANNELS.FILE_GET_TREE)!;
 
-      vi.mocked(fs.readdir).mockResolvedValue([
-        { name: "file.ts", isDirectory: () => false } as unknown as fs.Dirent,
-        {
-          name: "folder",
-          isDirectory: () => true,
-        } as unknown as fs.Dirent,
-      ] as unknown as fs.Dirent[]);
+      (fs.readdir as ReturnType<typeof vi.fn>).mockResolvedValue([
+        { name: "file.ts", isDirectory: () => false },
+        { name: "folder", isDirectory: () => true },
+      ]);
 
       const result = await handler(
         {},
@@ -107,14 +105,11 @@ describe("fileHandlers", () => {
     it("隠しファイルとnode_modulesをスキップする", async () => {
       const handler = handlers.get(IPC_CHANNELS.FILE_GET_TREE)!;
 
-      vi.mocked(fs.readdir).mockResolvedValue([
-        { name: ".hidden", isDirectory: () => false } as unknown as fs.Dirent,
-        {
-          name: "node_modules",
-          isDirectory: () => true,
-        } as unknown as fs.Dirent,
-        { name: "src", isDirectory: () => true } as unknown as fs.Dirent,
-      ] as unknown as fs.Dirent[]);
+      (fs.readdir as ReturnType<typeof vi.fn>).mockResolvedValue([
+        { name: ".hidden", isDirectory: () => false },
+        { name: "node_modules", isDirectory: () => true },
+        { name: "src", isDirectory: () => true },
+      ]);
 
       const result = (await handler(
         {},
@@ -160,7 +155,7 @@ describe("fileHandlers", () => {
       vi.mocked(fs.stat).mockResolvedValue({
         size: 12,
         mtime: new Date("2024-01-15T10:00:00"),
-      } as fs.Stats);
+      } as Stats);
 
       const result = await handler(
         {},
@@ -205,7 +200,7 @@ describe("fileHandlers", () => {
       vi.mocked(fs.stat).mockResolvedValue({
         size: 12,
         mtime: new Date(),
-      } as fs.Stats);
+      } as Stats);
 
       const result = (await handler(
         {},

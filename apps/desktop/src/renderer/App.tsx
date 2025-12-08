@@ -14,7 +14,6 @@ function App(): JSX.Element {
   const responsiveMode = useResponsiveMode();
   const setCurrentView = useAppStore((state) => state.setCurrentView);
   const dynamicIsland = useAppStore((state) => state.dynamicIsland);
-  const hideDynamicIsland = useAppStore((state) => state.hideDynamicIsland);
 
   const handleViewChange = (view: ViewType) => {
     setCurrentView(view);
@@ -58,8 +57,6 @@ function App(): JSX.Element {
             status={dynamicIsland.status}
             message={dynamicIsland.message}
             visible={dynamicIsland.visible}
-            progress={dynamicIsland.progress}
-            onHide={hideDynamicIsland}
           />
         </div>
 

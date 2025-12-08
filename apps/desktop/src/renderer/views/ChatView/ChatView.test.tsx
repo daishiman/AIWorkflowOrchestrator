@@ -139,7 +139,7 @@ describe("ChatView", () => {
   describe("ローディング状態", () => {
     it("送信中は送信ボタンが無効化される", async () => {
       const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation(
+      vi.mocked(useAppStore).mockImplementation((
         (selector: (state: unknown) => unknown) =>
           selector(createMockState({ isSending: true })),
       );
@@ -153,7 +153,7 @@ describe("ChatView", () => {
   describe("空状態", () => {
     it("メッセージがない場合は案内を表示する", async () => {
       const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation(
+      vi.mocked(useAppStore).mockImplementation((
         (selector: (state: unknown) => unknown) =>
           selector(createMockState({ chatMessages: [] })),
       );
@@ -168,7 +168,7 @@ describe("ChatView", () => {
   describe("RAGモード", () => {
     it("RAG無効時は通常モードと表示する", async () => {
       const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation(
+      vi.mocked(useAppStore).mockImplementation((
         (selector: (state: unknown) => unknown) =>
           selector(createMockState({ ragConnectionStatus: "disconnected" })),
       );

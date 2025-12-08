@@ -29,7 +29,7 @@ describe("EmptyState", () => {
 
   describe("アイコン", () => {
     it("アイコンを表示する", () => {
-      render(<EmptyState title="データがありません" icon="file" />);
+      render(<EmptyState title="データがありません" icon="file-text" />);
       expect(screen.getByText("データがありません")).toBeInTheDocument();
     });
   });

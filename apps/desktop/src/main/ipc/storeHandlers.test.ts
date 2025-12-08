@@ -49,7 +49,7 @@ describe("storeHandlers", () => {
     handlers = new Map();
 
     // Capture registered handlers
-    vi.mocked(ipcMain.handle).mockImplementation(
+    (ipcMain.handle as ReturnType<typeof vi.fn>).mockImplementation(
       (channel: string, handler: (...args: unknown[]) => Promise<unknown>) => {
         handlers.set(channel, handler);
       },
