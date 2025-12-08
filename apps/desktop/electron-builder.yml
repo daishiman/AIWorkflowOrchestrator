@@ -25,6 +25,13 @@ mac:
   gatekeeperAssess: false
   entitlements: build/entitlements.mac.plist
   entitlementsInherit: build/entitlements.mac.plist
+  # カスタムプロトコル aiworkflow:// を登録
+  extendInfo:
+    CFBundleURLTypes:
+      - CFBundleURLSchemes:
+          - aiworkflow
+        CFBundleURLName: com.aiworkflow.auth
+        CFBundleTypeRole: Viewer
   target:
     - target: dmg
       arch:
@@ -78,6 +85,9 @@ linux:
     - deb
   category: Utility
   executableName: ai-workflow-orchestrator
+  # カスタムプロトコル aiworkflow:// を登録
+  mimeTypes:
+    - x-scheme-handler/aiworkflow
 
 # ===================
 # Auto-Update (GitHub Releases)

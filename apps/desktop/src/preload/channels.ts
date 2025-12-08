@@ -42,6 +42,29 @@ export const IPC_CHANNELS = {
   THEME_SET: "theme:set",
   THEME_GET_SYSTEM: "theme:get-system",
   THEME_SYSTEM_CHANGED: "theme:system-changed",
+
+  // Auth operations
+  AUTH_LOGIN: "auth:login",
+  AUTH_LOGOUT: "auth:logout",
+  AUTH_GET_SESSION: "auth:get-session",
+  AUTH_REFRESH: "auth:refresh",
+  AUTH_STATE_CHANGED: "auth:state-changed",
+  AUTH_CHECK_ONLINE: "auth:check-online",
+
+  // Profile operations
+  PROFILE_GET: "profile:get",
+  PROFILE_UPDATE: "profile:update",
+  PROFILE_GET_PROVIDERS: "profile:get-providers",
+  PROFILE_LINK_PROVIDER: "profile:link-provider",
+
+  // Avatar operations
+  AVATAR_UPLOAD: "avatar:upload",
+  AVATAR_USE_PROVIDER: "avatar:use-provider",
+  AVATAR_REMOVE: "avatar:remove",
+
+  // Settings operations (user-specific)
+  USER_SETTINGS_GET: "settings:get",
+  USER_SETTINGS_UPDATE: "settings:update",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -70,6 +93,24 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.THEME_GET,
   IPC_CHANNELS.THEME_SET,
   IPC_CHANNELS.THEME_GET_SYSTEM,
+  // Auth channels
+  IPC_CHANNELS.AUTH_LOGIN,
+  IPC_CHANNELS.AUTH_LOGOUT,
+  IPC_CHANNELS.AUTH_GET_SESSION,
+  IPC_CHANNELS.AUTH_REFRESH,
+  IPC_CHANNELS.AUTH_CHECK_ONLINE,
+  // Profile channels
+  IPC_CHANNELS.PROFILE_GET,
+  IPC_CHANNELS.PROFILE_UPDATE,
+  IPC_CHANNELS.PROFILE_GET_PROVIDERS,
+  IPC_CHANNELS.PROFILE_LINK_PROVIDER,
+  // Avatar channels
+  IPC_CHANNELS.AVATAR_UPLOAD,
+  IPC_CHANNELS.AVATAR_USE_PROVIDER,
+  IPC_CHANNELS.AVATAR_REMOVE,
+  // Settings channels
+  IPC_CHANNELS.USER_SETTINGS_GET,
+  IPC_CHANNELS.USER_SETTINGS_UPDATE,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [
@@ -78,4 +119,6 @@ export const ALLOWED_ON_CHANNELS: readonly string[] = [
   IPC_CHANNELS.APP_MENU_ACTION,
   // Theme channels
   IPC_CHANNELS.THEME_SYSTEM_CHANGED,
+  // Auth channels
+  IPC_CHANNELS.AUTH_STATE_CHANGED,
 ];

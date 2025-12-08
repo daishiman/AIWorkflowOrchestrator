@@ -13,6 +13,13 @@ vi.mock("../../hooks/useTheme", () => ({
   }),
 }));
 
+// Mock AccountSection to avoid complex auth state dependencies
+vi.mock("../../components/organisms/AccountSection", () => ({
+  AccountSection: () => (
+    <div data-testid="account-section">AccountSection Mock</div>
+  ),
+}));
+
 // Mock store state - flat structure matching actual store
 const createMockState = (overrides = {}) => ({
   // SettingsSlice
@@ -149,7 +156,25 @@ describe("SettingsView", () => {
     });
   });
 
+  describe("アカウント設定", () => {
+    it("アカウントセクションを表示する", () => {
+      render(<SettingsView />);
+      expect(screen.getByText("アカウント")).toBeInTheDocument();
+    });
+
+    it("AccountSectionコンポーネントをレンダリングする", () => {
+      render(<SettingsView />);
+      expect(screen.getByTestId("account-section")).toBeInTheDocument();
+    });
+  });
+
   describe("アクセシビリティ", () => {
+    it("アカウント設定セクションにaria-labelledbyを持つ", () => {
+      render(<SettingsView />);
+      const section = screen.getByRole("region", { name: /アカウント/ });
+      expect(section).toBeInTheDocument();
+    });
+
     it("API設定セクションにaria-labelledbyを持つ", () => {
       render(<SettingsView />);
       const section = screen.getByRole("region", { name: /API設定/ });

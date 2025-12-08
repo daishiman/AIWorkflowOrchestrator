@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAppStore, useCurrentView, useResponsiveMode } from "./store";
 import { AppDock } from "./components/organisms/AppDock";
 import { DynamicIsland } from "./components/molecules/DynamicIsland";
@@ -13,6 +13,12 @@ import type { ViewType } from "./components/organisms/AppDock";
 function App(): JSX.Element {
   // Initialize theme on app startup (restores from electron-store)
   useThemeInitializer();
+
+  // Initialize auth on app startup
+  const initializeAuth = useAppStore((state) => state.initializeAuth);
+  useEffect(() => {
+    initializeAuth();
+  }, [initializeAuth]);
   const currentView = useCurrentView();
   const responsiveMode = useResponsiveMode();
   const setCurrentView = useAppStore((state) => state.setCurrentView);
