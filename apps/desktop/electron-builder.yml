@@ -88,8 +88,6 @@ linux:
   # カスタムプロトコル aiworkflow:// を登録
   mimeTypes:
     - x-scheme-handler/aiworkflow
-  desktop:
-    MimeType: x-scheme-handler/aiworkflow
 
 # ===================
 # Auto-Update (GitHub Releases)
