@@ -1,0 +1,214 @@
+/**
+ * Design Tokens - CSS Variables
+ * Spatial Design System CSS変数定義
+ */
+
+:root {
+  /* ===== Primitive Colors ===== */
+  /* Slate */
+  --color-slate-50: #f8fafc;
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-300: #cbd5e1;
+  --color-slate-400: #94a3b8;
+  --color-slate-500: #64748b;
+  --color-slate-600: #475569;
+  --color-slate-700: #334155;
+  --color-slate-800: #1e293b;
+  --color-slate-900: #0f172a;
+  --color-slate-950: #020617;
+
+  /* Blue (Primary) */
+  --color-blue-50: #eff6ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-200: #bfdbfe;
+  --color-blue-300: #93c5fd;
+  --color-blue-400: #60a5fa;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
+  --color-blue-800: #1e40af;
+  --color-blue-900: #1e3a8a;
+
+  /* Green (Success) */
+  --color-green-400: #4ade80;
+  --color-green-500: #22c55e;
+  --color-green-600: #16a34a;
+
+  /* Amber (Warning) */
+  --color-amber-400: #fbbf24;
+  --color-amber-500: #f59e0b;
+
+  /* Red (Error) */
+  --color-red-400: #f87171;
+  --color-red-500: #ef4444;
+  --color-red-600: #dc2626;
+
+  /* Sky (Info) */
+  --color-sky-400: #38bdf8;
+  --color-sky-500: #0ea5e9;
+
+  /* macOS System Colors */
+  --color-macos-blue: #0a84ff;
+  --color-macos-green: #30d158;
+  --color-macos-orange: #ff9f0a;
+  --color-macos-red: #ff453a;
+  --color-macos-yellow: #ffd60a;
+  --color-macos-pink: #ff375f;
+  --color-macos-purple: #bf5af2;
+  --color-macos-teal: #64d2ff;
+  --color-macos-indigo: #5e5ce6;
+
+  /* ===== Semantic Colors (Dark Mode - Default) ===== */
+  /* Background */
+  --bg-primary: var(--color-slate-900);
+  --bg-secondary: var(--color-slate-800);
+  --bg-tertiary: var(--color-slate-700);
+  --bg-elevated: rgba(255, 255, 255, 0.05);
+  --bg-glass: rgba(255, 255, 255, 0.1);
+
+  /* Text */
+  --text-primary: var(--color-slate-50);
+  --text-secondary: var(--color-slate-400);
+  --text-muted: var(--color-slate-500);
+  --text-inverse: var(--color-slate-900);
+
+  /* Border */
+  --border-default: var(--color-slate-700);
+  --border-emphasis: var(--color-slate-600);
+  --border-subtle: rgba(255, 255, 255, 0.1);
+
+  /* Status */
+  --status-primary: var(--color-macos-blue);
+  --status-primary-hover: var(--color-blue-400);
+  --status-success: var(--color-green-500);
+  --status-success-hover: var(--color-green-400);
+  --status-warning: var(--color-amber-500);
+  --status-warning-hover: var(--color-amber-400);
+  --status-error: var(--color-red-500);
+  --status-error-hover: var(--color-red-400);
+  --status-info: var(--color-sky-500);
+  --status-info-hover: var(--color-sky-400);
+
+  /* ===== Spacing (8px Grid) ===== */
+  --spacing-0: 0px;
+  --spacing-0-5: 2px;
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-8: 32px;
+  --spacing-10: 40px;
+  --spacing-12: 48px;
+  --spacing-16: 64px;
+
+  /* ===== Typography ===== */
+  --font-sans: "Inter", "Noto Sans JP", "Hiragino Sans", sans-serif;
+  --font-mono: "JetBrains Mono", "Source Code Pro", "Noto Sans Mono", monospace;
+
+  /* Font Size */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+
+  /* Line Height */
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.75;
+
+  /* ===== Effects ===== */
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-default: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+  --radius-window: 10px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-default:
+    0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg:
+    0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl:
+    0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+  /* Backdrop Blur */
+  --blur-sm: blur(4px);
+  --blur-default: blur(8px);
+  --blur-md: blur(12px);
+  --blur-lg: blur(16px);
+  --blur-xl: blur(24px);
+
+  /* Transitions */
+  --duration-instant: 0ms;
+  --duration-fast: 100ms;
+  --duration-default: 200ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* ===== Light Mode ===== */
+@media (prefers-color-scheme: light) {
+  :root:not(.dark) {
+    --bg-primary: #ffffff;
+    --bg-secondary: var(--color-slate-50);
+    --bg-tertiary: var(--color-slate-100);
+    --bg-elevated: rgba(0, 0, 0, 0.02);
+    --bg-glass: rgba(0, 0, 0, 0.05);
+
+    --text-primary: var(--color-slate-900);
+    --text-secondary: var(--color-slate-600);
+    --text-muted: var(--color-slate-400);
+    --text-inverse: var(--color-slate-50);
+
+    --border-default: var(--color-slate-200);
+    --border-emphasis: var(--color-slate-300);
+    --border-subtle: rgba(0, 0, 0, 0.1);
+
+    --status-primary: var(--color-blue-600);
+    --status-success: var(--color-green-600);
+    --status-error: var(--color-red-600);
+  }
+}
+
+/* Force dark mode class */
+.dark {
+  color-scheme: dark;
+}
+
+/* ===== Glass Morphism Utilities ===== */
+.glass-panel {
+  background: var(--bg-glass);
+  backdrop-filter: var(--blur-md);
+  -webkit-backdrop-filter: var(--blur-md);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+}
+
+.glass-panel-heavy {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: var(--blur-xl);
+  -webkit-backdrop-filter: var(--blur-xl);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-lg);
+}
