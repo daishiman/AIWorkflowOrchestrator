@@ -77,8 +77,7 @@ linux:
     - AppImage
     - deb
   category: Utility
-  desktop:
-    StartupWMClass: ai-workflow-orchestrator
+  executableName: ai-workflow-orchestrator
 
 # ===================
 # Auto-Update (GitHub Releases)
