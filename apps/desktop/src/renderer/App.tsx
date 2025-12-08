@@ -7,9 +7,12 @@ import { EditorView } from "./views/EditorView";
 import { ChatView } from "./views/ChatView";
 import { GraphView } from "./views/GraphView";
 import { SettingsView } from "./views/SettingsView";
+import { useThemeInitializer } from "./hooks/useThemeInitializer";
 import type { ViewType } from "./components/organisms/AppDock";
 
 function App(): JSX.Element {
+  // Initialize theme on app startup (restores from electron-store)
+  useThemeInitializer();
   const currentView = useCurrentView();
   const responsiveMode = useResponsiveMode();
   const setCurrentView = useAppStore((state) => state.setCurrentView);

@@ -2,11 +2,13 @@ import React, { useState, useCallback } from "react";
 import clsx from "clsx";
 import { SettingsCard } from "../../components/organisms/SettingsCard";
 import { FormField } from "../../components/molecules/FormField";
+import { ThemeSelector } from "../../components/molecules/ThemeSelector";
 import { Input } from "../../components/atoms/Input";
 import { Checkbox } from "../../components/atoms/Checkbox";
 import { Button } from "../../components/atoms/Button";
 import { ErrorDisplay } from "../../components/atoms/ErrorDisplay";
 import { useAppStore } from "../../store";
+import { useTheme } from "../../hooks/useTheme";
 
 export interface SettingsViewProps {
   className?: string;
@@ -21,11 +23,13 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
     (state) => state.setAutoSyncEnabled,
   );
 
+  // Theme from useTheme hook
+  const { themeMode, setTheme } = useTheme();
+
   // Local state
   const [isLoading] = useState(false);
   const [error] = useState<string | null>(null);
   const [ragEnabled, setRagEnabled] = useState(false);
-  const [theme, setTheme] = useState<"light" | "dark" | "system">("dark");
 
   const handleApiKeyChange = useCallback(
     (value: string) => {
@@ -122,33 +126,13 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
             description="テーマとディスプレイ設定"
             id="appearance-settings-heading"
           >
-            <FormField label="テーマ">
-              <div className="flex gap-2">
-                <Button
-                  variant={theme === "light" ? "primary" : "secondary"}
-                  size="sm"
-                  onClick={() => setTheme("light")}
-                  disabled={isLoading}
-                >
-                  ライト
-                </Button>
-                <Button
-                  variant={theme === "dark" ? "primary" : "secondary"}
-                  size="sm"
-                  onClick={() => setTheme("dark")}
-                  disabled={isLoading}
-                >
-                  ダーク
-                </Button>
-                <Button
-                  variant={theme === "system" ? "primary" : "secondary"}
-                  size="sm"
-                  onClick={() => setTheme("system")}
-                  disabled={isLoading}
-                >
-                  システム
-                </Button>
-              </div>
+            <FormField label="テーマ" htmlFor="theme-label">
+              <ThemeSelector
+                value={themeMode}
+                onChange={setTheme}
+                disabled={isLoading}
+                aria-labelledby="theme-label"
+              />
             </FormField>
           </SettingsCard>
         </section>

@@ -22,6 +22,9 @@ import {
   ChevronDown,
   Play,
   Pause,
+  Sun,
+  Moon,
+  Monitor,
   type LucideIcon,
 } from "lucide-react";
 
@@ -46,7 +49,10 @@ export type IconName =
   | "chevron-right"
   | "chevron-down"
   | "play"
-  | "pause";
+  | "pause"
+  | "sun"
+  | "moon"
+  | "monitor";
 
 export interface IconProps extends React.SVGAttributes<SVGElement> {
   name: IconName;
@@ -78,6 +84,9 @@ const iconMap: Record<IconName, LucideIcon> = {
   "chevron-down": ChevronDown,
   play: Play,
   pause: Pause,
+  sun: Sun,
+  moon: Moon,
+  monitor: Monitor,
 };
 
 export const Icon = forwardRef<SVGSVGElement, IconProps>(

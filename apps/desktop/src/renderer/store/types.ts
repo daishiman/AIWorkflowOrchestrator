@@ -87,3 +87,7 @@ export interface WindowSize {
 
 // RAG接続状態型
 export type RagConnectionStatus = "connected" | "disconnected" | "error";
+
+// テーマ型
+export type ThemeMode = "light" | "dark" | "system";
+export type ResolvedTheme = "light" | "dark";
