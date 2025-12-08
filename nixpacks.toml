@@ -8,4 +8,4 @@ cmds = ["pnpm install --frozen-lockfile"]
 cmds = ["pnpm --filter @repo/shared build", "pnpm --filter @repo/backend build"]
 
 [start]
-cmd = "cd apps/backend && node .next/standalone/apps/backend/server.js"
+cmd = "cd apps/backend && HOSTNAME=0.0.0.0 PORT=3000 node .next/standalone/apps/backend/server.js"
