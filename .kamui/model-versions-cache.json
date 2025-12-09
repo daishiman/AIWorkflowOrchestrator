@@ -1,5 +1,5 @@
 {
-  "timestamp": 1765259859964,
+  "timestamp": 1765266126113,
   "models": [
     {
       "id": "codex",
@@ -36,17 +36,17 @@
     {
       "id": "gemini",
       "label": "Gemini",
-      "available": true,
-      "version": "0.13.0",
-      "rawOutput": "0.13.0",
-      "error": null,
+      "available": false,
+      "version": null,
+      "rawOutput": null,
+      "error": "Command failed: gemini --version\n",
       "latestVersion": "0.19.4",
       "latestSource": "command",
       "latestMeta": {
         "command": "npm",
         "args": ["view", "@google/gemini-cli", "version"]
       },
-      "updateAvailable": true,
+      "updateAvailable": false,
       "latestFetchedAt": 1765248896136
     }
   ]

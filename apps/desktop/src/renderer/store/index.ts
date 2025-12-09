@@ -121,7 +121,8 @@ export const useActivityFeed = () => useAppStore((state) => state.activityFeed);
 export const useIsAuthenticated = () =>
   useAppStore((state) => state.isAuthenticated);
 export const useAuthUser = () => useAppStore((state) => state.authUser);
-export const useAuthSession = () => useAppStore((state) => state.session);
+export const useSessionExpiresAt = () =>
+  useAppStore((state) => state.sessionExpiresAt);
 export const useUserProfile = () => useAppStore((state) => state.profile);
 export const useLinkedProviders = () =>
   useAppStore((state) => state.linkedProviders);
