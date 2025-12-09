@@ -341,6 +341,35 @@
 | `profile:get-providers` | Renderer → Main | 連携プロバイダー一覧 |
 | `profile:link-provider` | Renderer → Main | 新規プロバイダー連携 |
 
+### 5.8.5 認証UIコンポーネント
+
+| コンポーネント | 層       | 責務                                   | ファイル                                |
+| -------------- | -------- | -------------------------------------- | --------------------------------------- |
+| AuthGuard      | HOC      | 認証状態によるルーティング制御         | components/AuthGuard/index.tsx          |
+| LoadingScreen  | molecule | 認証確認中のローディング画面表示       | components/AuthGuard/LoadingScreen.tsx  |
+| AuthView       | view     | ログイン画面表示（OAuthボタン配置）    | views/AuthView/index.tsx                |
+| AccountSection | organism | アカウント設定UI（プロフィール・連携） | components/organisms/AccountSection/    |
+| ProviderIcon   | atom     | OAuthプロバイダーアイコン表示          | components/atoms/ProviderIcon/index.tsx |
+
+### 5.8.6 認証状態遷移
+
+```mermaid
+stateDiagram-v2
+    [*] --> Checking: アプリ起動
+    Checking --> Authenticated: セッション復元成功
+    Checking --> Unauthenticated: セッションなし
+    Unauthenticated --> Authenticated: ログイン成功
+    Authenticated --> Unauthenticated: ログアウト
+```
+
+**状態と表示の対応**:
+
+| 状態            | AuthGuard表示内容 | 説明                   |
+| --------------- | ----------------- | ---------------------- |
+| checking        | LoadingScreen     | セッション確認中       |
+| authenticated   | children          | 認証済み（メインUI）   |
+| unauthenticated | AuthView          | 未認証（ログイン画面） |
+
 ---
 
 ## 5.9 セキュリティアーキテクチャ

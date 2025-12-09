@@ -768,10 +768,23 @@ apps/desktop/
 │       │   └── types.ts
 │       ├── hooks/
 │       │   └── useAuth.ts             # 認証フック
+│       ├── views/
+│       │   └── AuthView/
+│       │       ├── index.tsx          # ログイン画面ビュー
+│       │       └── AuthView.test.tsx  # テスト
 │       └── components/
-│           └── molecules/
-│               ├── OAuthButtons.tsx
-│               └── UserProfileEditor.tsx
+│           ├── AuthGuard/
+│           │   ├── index.tsx          # 認証ガードHOC
+│           │   ├── LoadingScreen.tsx  # ローディング画面
+│           │   ├── types.ts           # 型定義
+│           │   └── AuthGuard.test.tsx # テスト
+│           ├── atoms/
+│           │   └── ProviderIcon/
+│           │       └── index.tsx      # OAuthプロバイダーアイコン
+│           └── organisms/
+│               └── AccountSection/
+│                   ├── index.tsx      # アカウント設定セクション
+│                   └── AccountSection.test.tsx
 
 packages/shared/
 ├── core/
