@@ -3,9 +3,11 @@
 ## 1. 設計概要
 
 ### 1.1 目的
+
 開発者がコマンド1つで環境構築を完了できる自動化スクリプトを設計する。冪等性、エラーハンドリング、進捗表示を備えた堅牢なスクリプトを実現する。
 
 ### 1.2 設計方針
+
 - **冪等性**: 同じ状態から何度実行しても同じ結果
 - **非破壊的**: 既存の環境を壊さない
 - **透明性**: すべての操作をログに記録
@@ -35,14 +37,14 @@ scripts/
 
 ### 2.2 スクリプト責務分離
 
-| スクリプト | 責務 | 言語 |
-|-----------|------|------|
-| setup-dev-environment.sh | メイン処理、フロー制御 | Bash |
-| verify-dependencies.mjs | 依存関係検証、バージョンチェック | Node.js |
-| lib/colors.sh | 色付き出力、視覚的フィードバック | Bash |
-| lib/logger.sh | ログ記録、ファイル出力 | Bash |
-| lib/validators.sh | バージョン検証、存在確認 | Bash |
-| lib/installers.sh | 各ツールのインストールロジック | Bash |
+| スクリプト               | 責務                             | 言語    |
+| ------------------------ | -------------------------------- | ------- |
+| setup-dev-environment.sh | メイン処理、フロー制御           | Bash    |
+| verify-dependencies.mjs  | 依存関係検証、バージョンチェック | Node.js |
+| lib/colors.sh            | 色付き出力、視覚的フィードバック | Bash    |
+| lib/logger.sh            | ログ記録、ファイル出力           | Bash    |
+| lib/validators.sh        | バージョン検証、存在確認         | Bash    |
+| lib/installers.sh        | 各ツールのインストールロジック   | Bash    |
 
 ---
 
@@ -51,6 +53,7 @@ scripts/
 ### 3.1 ユーティリティ関数（lib/colors.sh）
 
 **関数一覧**:
+
 - `print_header()`: ヘッダー表示
 - `print_success()`: 成功メッセージ（緑色）
 - `print_error()`: エラーメッセージ（赤色）
@@ -59,6 +62,7 @@ scripts/
 - `print_progress()`: 進捗表示
 
 **設計原則**:
+
 - ANSI カラーコードを使用
 - カラー無効化オプション（`--no-color`）対応
 - パイプ出力時は自動的に色を無効化
@@ -66,6 +70,7 @@ scripts/
 ### 3.2 ログ関数（lib/logger.sh）
 
 **関数一覧**:
+
 - `log_info()`: 情報ログ
 - `log_warn()`: 警告ログ
 - `log_error()`: エラーログ
@@ -73,6 +78,7 @@ scripts/
 - `init_log_file()`: ログファイル初期化
 
 **ログフォーマット**:
+
 ```
 [2025-12-03 10:30:15] [INFO] Node.js v22.12.0 がインストールされています
 [2025-12-03 10:30:16] [WARN] pnpm が見つかりません。インストールを実行します。
@@ -80,6 +86,7 @@ scripts/
 ```
 
 **ログファイル**:
+
 - パス: `logs/setup-YYYYMMDD-HHmmss.log`
 - ローテーション: なし（手動削除）
 - サイズ制限: なし
@@ -87,6 +94,7 @@ scripts/
 ### 3.3 バリデーション関数（lib/validators.sh）
 
 **関数一覧**:
+
 - `validate_platform()`: プラットフォーム検証
 - `validate_disk_space()`: ディスク容量検証
 - `validate_network()`: ネットワーク接続検証
@@ -95,6 +103,7 @@ scripts/
 - `check_version_match()`: バージョン一致確認
 
 **バリデーションロジック**:
+
 ```
 validate_version(command, expected_major, expected_minor):
   1. コマンド実行してバージョン取得
@@ -107,6 +116,7 @@ validate_version(command, expected_major, expected_minor):
 ### 3.4 インストーラー関数（lib/installers.sh）
 
 **関数一覧**:
+
 - `install_homebrew()`: Homebrewインストール
 - `install_nodejs()`: Node.jsインストール
 - `enable_pnpm()`: pnpm有効化
@@ -115,6 +125,7 @@ validate_version(command, expected_major, expected_minor):
 - `rebuild_native_modules()`: ネイティブモジュール再ビルド
 
 **設計原則**:
+
 - 各関数は独立して実行可能
 - 既にインストール済みの場合はスキップ
 - エラー時は詳細なメッセージを返す
@@ -267,12 +278,14 @@ get_error_message() {
 **ファイルパス**: `.setup-state.json`
 
 **構造**:
+
 - platform: 検出されたプラットフォーム
 - steps: 各ステップの状態
 - timestamp: 最終更新時刻
 - version: スクリプトバージョン
 
 **操作**:
+
 - 読み込み: `read_state()`
 - 書き込み: `write_state(step, status)`
 - リセット: `reset_state()`
@@ -331,6 +344,7 @@ retry_command() {
 - ロックファイル待機
 
 **リトライ不可**:
+
 - バージョン不一致（明示的なエラー）
 - 権限エラー（ユーザー介入が必要）
 - ディスク容量不足（環境の問題）
@@ -378,19 +392,23 @@ rollback() {
 ### 10.1 並列化の可能性
 
 **並列化不可**（依存関係のため）:
+
 - すべてのインストールステップは順次実行が必須
 
 **並列化可能**（将来的な最適化）:
+
 - 検証スクリプトの複数項目チェック
 - ドキュメントの並列ダウンロード
 
 ### 10.2 バックグラウンド処理
 
 **対象**:
+
 - Homebrewのバックグラウンド更新（`brew update`）
 - ログファイルの非同期書き込み
 
 **非対象**:
+
 - インストール処理（フォアグラウンドで進捗表示が必要）
 
 ---
@@ -401,14 +419,29 @@ rollback() {
 
 ```javascript
 const verifications = [
-  { name: 'Node.js', command: 'node', version: /^v(22|24)\./, required: true },
-  { name: 'pnpm', command: 'pnpm', version: /^10\./, required: true },
-  { name: 'Electron', package: 'electron', version: /^39\./, required: true },
-  { name: 'TypeScript', package: 'typescript', version: /^5\./, required: true },
-  { name: 'better-sqlite3', package: 'better-sqlite3', loadTest: true, required: true },
-  { name: 'Vitest', package: 'vitest', version: /^2\./, required: true },
-  { name: 'React', package: 'react', version: /^18\./, required: true },
-  { name: 'Drizzle', package: 'drizzle-orm', version: /^0\.39\./, required: true },
+  { name: "Node.js", command: "node", version: /^v(22|24)\./, required: true },
+  { name: "pnpm", command: "pnpm", version: /^10\./, required: true },
+  { name: "Electron", package: "electron", version: /^39\./, required: true },
+  {
+    name: "TypeScript",
+    package: "typescript",
+    version: /^5\./,
+    required: true,
+  },
+  {
+    name: "better-sqlite3",
+    package: "better-sqlite3",
+    loadTest: true,
+    required: true,
+  },
+  { name: "Vitest", package: "vitest", version: /^2\./, required: true },
+  { name: "React", package: "react", version: /^18\./, required: true },
+  {
+    name: "Drizzle",
+    package: "drizzle-orm",
+    version: /^0\.39\./,
+    required: true,
+  },
 ];
 ```
 
@@ -465,21 +498,21 @@ async function verifyDependency(dep) {
 
 ### 12.1 コマンドラインオプション
 
-| オプション | 説明 | デフォルト |
-|-----------|------|-----------|
-| `--no-color` | 色付き出力を無効化 | false |
-| `--verbose` | 詳細ログを表示 | false |
-| `--skip-verify` | 最終検証をスキップ | false |
-| `--force` | 既存ツールを再インストール | false |
-| `--dry-run` | 実際のインストールを行わない | false |
+| オプション      | 説明                         | デフォルト |
+| --------------- | ---------------------------- | ---------- |
+| `--no-color`    | 色付き出力を無効化           | false      |
+| `--verbose`     | 詳細ログを表示               | false      |
+| `--skip-verify` | 最終検証をスキップ           | false      |
+| `--force`       | 既存ツールを再インストール   | false      |
+| `--dry-run`     | 実際のインストールを行わない | false      |
 
 ### 12.2 環境変数
 
-| 変数名 | 説明 | デフォルト |
-|--------|------|-----------|
-| `SETUP_LOG_DIR` | ログ出力ディレクトリ | `./logs` |
-| `SETUP_SKIP_HOMEBREW` | Homebrewをスキップ | false |
-| `SETUP_NODE_VERSION` | Node.jsバージョン | 22 |
+| 変数名                | 説明                 | デフォルト |
+| --------------------- | -------------------- | ---------- |
+| `SETUP_LOG_DIR`       | ログ出力ディレクトリ | `./logs`   |
+| `SETUP_SKIP_HOMEBREW` | Homebrewをスキップ   | false      |
+| `SETUP_NODE_VERSION`  | Node.jsバージョン    | 22         |
 
 ---
 
@@ -488,6 +521,7 @@ async function verifyDependency(dep) {
 ### 13.1 ユニットテスト（lib関数）
 
 **テスト対象**:
+
 - `validate_version()`: バージョン検証ロジック
 - `check_command_exists()`: コマンド存在確認
 - `get_error_message()`: エラーメッセージ取得
@@ -497,12 +531,14 @@ async function verifyDependency(dep) {
 ### 13.2 統合テスト
 
 **テストシナリオ**:
+
 1. 全ツール未インストール状態からのフルインストール
 2. 一部ツールがインストール済みの状態でのスキップ
 3. バージョン不一致の検出とアップグレード
 4. エラー発生時のロールバック
 
 **テスト環境**:
+
 - Docker コンテナ（クリーンな環境）
 - CI/CD（GitHub Actions）
 
@@ -580,11 +616,13 @@ esac
 ### 16.1 確認プロンプト
 
 **確認が必要な操作**:
+
 - Homebrewのインストール（初回のみ）
 - Xcode CLTのインストール（ダウンロード時間が長い）
 - ロールバックの実行
 
 **自動実行**:
+
 - バージョンアップグレード
 - 依存関係インストール
 - ネイティブモジュール再ビルド
@@ -607,6 +645,7 @@ fi
 **ファイル**: `logs/setup-YYYYMMDD-HHmmss.log`
 
 **内容**:
+
 - 実行開始時刻
 - 各ステップの開始・完了時刻
 - インストールされたツールとバージョン
@@ -619,6 +658,7 @@ fi
 **ファイル**: `environment-info.md`
 
 **内容**:
+
 - プラットフォーム情報
 - インストールされたツール一覧
 - バージョン情報
@@ -652,10 +692,12 @@ fi
 ## 19. 依存関係
 
 ### 19.1 前提条件
+
 - T-01-1（セットアップフロー設計）が完了している
 - Phase 0の要件定義が完了している
 
 ### 19.2 後続タスク
+
 - T-02-1（依存関係検証テスト作成）
 - T-03-1（セットアップスクリプト実装）
 
@@ -676,6 +718,6 @@ fi
 
 ## 更新履歴
 
-| バージョン | 日付 | 変更内容 | 作成者 |
-|-----------|------|----------|--------|
-| 1.0.0 | 2025-12-03 | 初版作成 | @devops-eng |
+| バージョン | 日付       | 変更内容 | 作成者      |
+| ---------- | ---------- | -------- | ----------- |
+| 1.0.0      | 2025-12-03 | 初版作成 | @devops-eng |

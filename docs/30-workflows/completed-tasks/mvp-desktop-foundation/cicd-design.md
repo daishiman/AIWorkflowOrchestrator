@@ -9,19 +9,19 @@ MVP では**無料枠のみ**を使用し、コストを $0 に抑える。
 
 ## コスト方針
 
-| 項目 | 方針 | 理由 |
-|------|------|------|
-| ランナー | ubuntu-latest（CI）、macos-latest（CD） | 無料枠で利用可能 |
-| ビルド対象 | macOS のみ | Windows/Linux は CI 時間消費 |
-| コード署名 | なし | 有料証明書が必要 |
-| E2E テスト | CI では実行しない | 時間消費が大きい |
+| 項目       | 方針                                    | 理由                         |
+| ---------- | --------------------------------------- | ---------------------------- |
+| ランナー   | ubuntu-latest（CI）、macos-latest（CD） | 無料枠で利用可能             |
+| ビルド対象 | macOS のみ                              | Windows/Linux は CI 時間消費 |
+| コード署名 | なし                                    | 有料証明書が必要             |
+| E2E テスト | CI では実行しない                       | 時間消費が大きい             |
 
 ### GitHub Actions 無料枠
 
-| リポジトリ | 無料枠 |
-|-----------|--------|
-| Public | 無制限 |
-| Private | 2,000分/月（macOS は 10x 消費） |
+| リポジトリ | 無料枠                          |
+| ---------- | ------------------------------- |
+| Public     | 無制限                          |
+| Private    | 2,000分/月（macOS は 10x 消費） |
 
 **推奨**: Public リポジトリで運用
 
@@ -49,9 +49,9 @@ graph LR
 
 ### トリガー
 
-| イベント | 対象 |
-|---------|------|
-| push | main ブランチ |
+| イベント     | 対象                 |
+| ------------ | -------------------- |
+| push         | main ブランチ        |
 | pull_request | main ブランチへの PR |
 
 ### ジョブ構成
@@ -74,8 +74,8 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'pnpm'
+          node-version: "22"
+          cache: "pnpm"
       - run: pnpm install
       - run: pnpm lint
 
@@ -86,8 +86,8 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'pnpm'
+          node-version: "22"
+          cache: "pnpm"
       - run: pnpm install
       - run: pnpm typecheck
 
@@ -98,20 +98,20 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'pnpm'
+          node-version: "22"
+          cache: "pnpm"
       - run: pnpm install
       - run: pnpm test
 ```
 
 ### 実行時間目標
 
-| ジョブ | 目標時間 |
-|--------|---------|
-| lint | 1分以内 |
-| typecheck | 1分以内 |
-| test | 3分以内 |
-| **合計** | **5分以内** |
+| ジョブ    | 目標時間    |
+| --------- | ----------- |
+| lint      | 1分以内     |
+| typecheck | 1分以内     |
+| test      | 3分以内     |
+| **合計**  | **5分以内** |
 
 ---
 
@@ -119,10 +119,10 @@ jobs:
 
 ### トリガー
 
-| イベント | 対象 |
-|---------|------|
-| push tags | v* パターン |
-| workflow_dispatch | 手動実行 |
+| イベント          | 対象         |
+| ----------------- | ------------ |
+| push tags         | v\* パターン |
+| workflow_dispatch | 手動実行     |
 
 ### ジョブ構成
 
@@ -133,11 +133,11 @@ name: Release Desktop
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version (e.g., 1.0.0)'
+        description: "Version (e.g., 1.0.0)"
         required: true
 
 jobs:
@@ -150,8 +150,8 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'pnpm'
+          node-version: "22"
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install
@@ -208,7 +208,7 @@ mac:
   target:
     - target: dmg
       arch:
-        - universal  # Intel + Apple Silicon
+        - universal # Intel + Apple Silicon
   # コード署名なし（MVP）
   identity: null
 
@@ -223,11 +223,11 @@ mac:
 
 ## ブランチ保護ルール
 
-| ルール | 設定 |
-|--------|------|
-| Require status checks | lint, typecheck, test |
-| Require branches up to date | Yes |
-| Require pull request | Yes（main への直接 push 禁止） |
+| ルール                      | 設定                           |
+| --------------------------- | ------------------------------ |
+| Require status checks       | lint, typecheck, test          |
+| Require branches up to date | Yes                            |
+| Require pull request        | Yes（main への直接 push 禁止） |
 
 ---
 
@@ -237,13 +237,13 @@ MVP では不要（コード署名なし）。
 
 ### 将来（有料化後）
 
-| シークレット | 用途 |
-|-------------|------|
-| APPLE_ID | Apple Developer アカウント |
-| APPLE_PASSWORD | アプリ固有パスワード |
-| APPLE_TEAM_ID | チーム ID |
-| CSC_LINK | 証明書（Base64） |
-| CSC_KEY_PASSWORD | 証明書パスワード |
+| シークレット     | 用途                       |
+| ---------------- | -------------------------- |
+| APPLE_ID         | Apple Developer アカウント |
+| APPLE_PASSWORD   | アプリ固有パスワード       |
+| APPLE_TEAM_ID    | チーム ID                  |
+| CSC_LINK         | 証明書（Base64）           |
+| CSC_KEY_PASSWORD | 証明書パスワード           |
 
 ---
 
@@ -280,10 +280,10 @@ graph LR
 
 ### GitHub Actions の監視項目
 
-| 項目 | 閾値 |
-|------|------|
-| CI 成功率 | 90% 以上 |
-| CI 実行時間 | 5分以内 |
+| 項目        | 閾値     |
+| ----------- | -------- |
+| CI 成功率   | 90% 以上 |
+| CI 実行時間 | 5分以内  |
 | CD 実行時間 | 15分以内 |
 
 ### アラート
@@ -294,10 +294,10 @@ MVP ではなし（GitHub の通知機能で対応）。
 
 ## 将来の拡張
 
-| 機能 | 優先度 | 備考 |
-|------|--------|------|
-| Windows ビルド | 中 | macos-latest → windows-latest 追加 |
-| Linux ビルド | 低 | ubuntu-latest で AppImage |
-| コード署名 | 中 | Apple/Microsoft 証明書 |
-| 自動バージョニング | 低 | semantic-release |
-| E2E テスト CI | 低 | Playwright ワークフロー追加 |
+| 機能               | 優先度 | 備考                               |
+| ------------------ | ------ | ---------------------------------- |
+| Windows ビルド     | 中     | macos-latest → windows-latest 追加 |
+| Linux ビルド       | 低     | ubuntu-latest で AppImage          |
+| コード署名         | 中     | Apple/Microsoft 証明書             |
+| 自動バージョニング | 低     | semantic-release                   |
+| E2E テスト CI      | 低     | Playwright ワークフロー追加        |

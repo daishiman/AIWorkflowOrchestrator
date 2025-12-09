@@ -5,11 +5,13 @@
 このガイドは、Electronデスクトップアプリケーション開発のための環境構築手順を説明します。
 
 ### 対象読者
+
 - Electronアプリの開発を始める開発者
 - プロジェクトに新しく参加する開発者
 - 環境を再構築する必要がある開発者
 
 ### 所要時間
+
 - 自動セットアップ: 約30分
 - 手動セットアップ: 約45-60分
 
@@ -28,6 +30,7 @@ cd /path/to/AIWorkflowOrchestrator
 ```
 
 スクリプトは以下を自動的に実行します:
+
 1. Homebrewのインストール
 2. Node.js 22.x LTSのインストール
 3. pnpmの有効化
@@ -41,12 +44,14 @@ cd /path/to/AIWorkflowOrchestrator
 ## 前提条件
 
 ### システム要件
+
 - **OS**: macOS 10.15 (Catalina) 以降
 - **ディスク容量**: 10GB以上の空き容量
 - **メモリ**: 8GB以上推奨
 - **ネットワーク**: インターネット接続（初回のみ）
 
 ### 必要な権限
+
 - 管理者権限（一部ツールのインストールで必要）
 - App Storeへのアクセス（Xcode Command Line Tools用）
 
@@ -65,6 +70,7 @@ Homebrewは、macOS用のパッケージマネージャーです。
 ```
 
 **確認**:
+
 ```bash
 brew --version
 # 出力例: Homebrew 4.x.x
@@ -79,6 +85,7 @@ brew install node
 ```
 
 **確認**:
+
 ```bash
 node --version
 # 出力例: v22.12.0
@@ -88,6 +95,7 @@ npm --version
 ```
 
 **代替方法（nvm使用）**:
+
 ```bash
 # nvmをインストール
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
@@ -107,6 +115,7 @@ corepack prepare pnpm@latest --activate
 ```
 
 **確認**:
+
 ```bash
 pnpm --version
 # 出力例: 10.24.0
@@ -123,6 +132,7 @@ xcode-select --install
 ダイアログが表示されたら「インストール」をクリックします。
 
 **確認**:
+
 ```bash
 xcode-select -p
 # 出力例: /Library/Developer/CommandLineTools
@@ -144,6 +154,7 @@ pnpm install --frozen-lockfile
 **所要時間**: 3-5分
 
 **確認**:
+
 ```bash
 ls node_modules
 # node_modules/ ディレクトリが存在する
@@ -158,6 +169,7 @@ pnpm exec electron-rebuild
 ```
 
 **確認**:
+
 ```bash
 node -e "require('better-sqlite3')"
 # エラーが表示されなければ成功
@@ -172,6 +184,7 @@ node scripts/verify-dependencies.mjs
 ```
 
 **成功時の出力**:
+
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 依存関係検証結果
@@ -215,11 +228,11 @@ vim .env
 
 ### 必須環境変数
 
-| 変数名 | 説明 | 例 |
-|--------|------|-----|
-| NODE_ENV | 環境タイプ | development |
+| 変数名        | 説明               | 例            |
+| ------------- | ------------------ | ------------- |
+| NODE_ENV      | 環境タイプ         | development   |
 | DATABASE_PATH | SQLiteファイルパス | ./data/app.db |
-| LOG_LEVEL | ログレベル | debug |
+| LOG_LEVEL     | ログレベル         | debug         |
 
 ---
 
@@ -265,6 +278,6 @@ A: 初回は時間がかかります。2回目以降はキャッシュが使わ�
 
 ## 更新履歴
 
-| バージョン | 日付 | 変更内容 | 作成者 |
-|-----------|------|----------|--------|
-| 1.0.0 | 2025-12-03 | 初版作成 | @manual-writer |
+| バージョン | 日付       | 変更内容 | 作成者         |
+| ---------- | ---------- | -------- | -------------- |
+| 1.0.0      | 2025-12-03 | 初版作成 | @manual-writer |
