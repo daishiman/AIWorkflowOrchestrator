@@ -477,7 +477,8 @@ describe("authSlice", () => {
 
       await store.login("google");
 
-      expect(store.authError).toBe("Network error");
+      // handleAuthError converts "Network error" to Japanese message
+      expect(store.authError).toBe("ネットワーク接続を確認してください");
       expect(store.isLoading).toBe(false);
     });
 
@@ -581,7 +582,8 @@ describe("authSlice", () => {
 
       await store.initializeAuth();
 
-      expect(store.authError).toBe("Unexpected error");
+      // handleAuthError converts unknown errors to Japanese message
+      expect(store.authError).toBe("予期しないエラーが発生しました");
     });
 
     it("should handle session response without data", async () => {
@@ -680,7 +682,8 @@ describe("authSlice", () => {
 
       await store.updateProfile({ displayName: "New Name" });
 
-      expect(store.authError).toBe("Network error");
+      // handleAuthError converts "Network error" to Japanese message
+      expect(store.authError).toBe("ネットワーク接続を確認してください");
       expect(store.isLoading).toBe(false);
     });
 
@@ -770,7 +773,8 @@ describe("authSlice", () => {
 
       await store.linkProvider("github");
 
-      expect(store.authError).toBe("Network error");
+      // handleAuthError converts "Network error" to Japanese message
+      expect(store.authError).toBe("ネットワーク接続を確認してください");
       expect(store.isLoading).toBe(false);
     });
   });

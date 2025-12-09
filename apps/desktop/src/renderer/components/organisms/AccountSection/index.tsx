@@ -8,12 +8,25 @@ import { ProviderIcon } from "../../atoms/ProviderIcon";
 import { GlassPanel } from "../GlassPanel";
 import type { OAuthProvider } from "../../../../preload/types";
 
+/**
+ * AccountSectionコンポーネントのProps
+ */
 export interface AccountSectionProps {
+  /** 追加のCSSクラス */
   className?: string;
 }
 
+/**
+ * 認証操作の結果タイプ
+ *
+ * - `new_registration`: 新規登録
+ * - `login`: 既存アカウントでのログイン
+ */
 type AuthResultType = "new_registration" | "login" | null;
 
+/**
+ * 利用可能な認証プロバイダー一覧
+ */
 const PROVIDERS: { id: OAuthProvider; name: string; icon: string }[] = [
   { id: "google", name: "Google", icon: "google" },
   { id: "github", name: "GitHub", icon: "github" },
@@ -21,9 +34,19 @@ const PROVIDERS: { id: OAuthProvider; name: string; icon: string }[] = [
 ];
 
 /**
- * アカウント設定セクション
- * - 未認証時: OAuthログインボタン表示
- * - 認証済み時: プロフィール表示・編集、ログアウト、プロバイダー連携
+ * アカウント管理セクション
+ *
+ * ユーザーのアカウント情報を表示し、以下の機能を提供する:
+ * - プロフィール情報の表示（アバター、名前、メール）
+ * - ソーシャルアカウント連携状態の表示と管理
+ * - ログアウト機能
+ *
+ * @component
+ * @example
+ * ```tsx
+ * // 設定画面での使用
+ * <AccountSection className="mt-4" />
+ * ```
  */
 export const AccountSection: React.FC<AccountSectionProps> = ({
   className,
