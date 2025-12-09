@@ -127,7 +127,7 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
     setAuthError(null);
   }, [setAuthError]);
 
-  const displayName = profile?.displayName ?? authUser?.displayName ?? "User";
+  const displayName = profile?.displayName || authUser?.displayName || "User";
   const email = profile?.email ?? authUser?.email ?? "";
   const avatarUrl = profile?.avatarUrl ?? authUser?.avatarUrl ?? null;
   const plan = profile?.plan ?? "free";
