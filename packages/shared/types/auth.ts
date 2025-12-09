@@ -134,7 +134,19 @@ export const PROFILE_ERROR_CODES = {
   UPDATE_FAILED: "profile/update-failed",
   PROVIDERS_FAILED: "profile/providers-failed",
   LINK_FAILED: "profile/link-failed",
+  UNLINK_FAILED: "profile/unlink-failed",
   VALIDATION_FAILED: "profile/validation-failed",
+} as const;
+
+export const AVATAR_ERROR_CODES = {
+  UPLOAD_FAILED: "avatar/upload-failed",
+  UPLOAD_CANCELLED: "avatar/upload-cancelled",
+  USE_PROVIDER_FAILED: "avatar/use-provider-failed",
+  PROVIDER_NOT_LINKED: "avatar/provider-not-linked",
+  NO_PROVIDER_AVATAR: "avatar/no-provider-avatar",
+  REMOVE_FAILED: "avatar/remove-failed",
+  FILE_TOO_LARGE: "avatar/file-too-large",
+  INVALID_FILE_TYPE: "avatar/invalid-file-type",
 } as const;
 
 // === バリデーション ===

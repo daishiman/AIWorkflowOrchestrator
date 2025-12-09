@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import clsx from "clsx";
 import { useAppStore } from "../../../store";
 import { Button } from "../../atoms/Button";
@@ -7,6 +7,15 @@ import { Icon } from "../../atoms/Icon";
 import { ProviderIcon } from "../../atoms/ProviderIcon";
 import { GlassPanel } from "../GlassPanel";
 import type { OAuthProvider } from "../../../../preload/types";
+
+/**
+ * 確認ダイアログの状態
+ */
+interface ConfirmDialogState {
+  isOpen: boolean;
+  type: "unlink" | "remove-avatar" | null;
+  provider?: OAuthProvider;
+}
 
 /**
  * AccountSectionコンポーネントのProps
@@ -62,12 +71,22 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
   const logout = useAppStore((state) => state.logout);
   const updateProfile = useAppStore((state) => state.updateProfile);
   const linkProvider = useAppStore((state) => state.linkProvider);
+  const unlinkProvider = useAppStore((state) => state.unlinkProvider);
+  const uploadAvatar = useAppStore((state) => state.uploadAvatar);
+  const useProviderAvatar = useAppStore((state) => state.useProviderAvatar);
+  const removeAvatar = useAppStore((state) => state.removeAvatar);
   const setAuthError = useAppStore((state) => state.setAuthError);
 
   const [isEditing, setIsEditing] = useState(false);
   const [editDisplayName, setEditDisplayName] = useState("");
   const [authResult, setAuthResult] = useState<AuthResultType>(null);
   const [previousAuthState, setPreviousAuthState] = useState(isAuthenticated);
+  const [isAvatarMenuOpen, setIsAvatarMenuOpen] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState<ConfirmDialogState>({
+    isOpen: false,
+    type: null,
+  });
+  const avatarMenuRef = useRef<HTMLDivElement>(null);
 
   // 認証状態が変わったときに新規登録かログインかを判定
   useEffect(() => {
@@ -89,6 +108,26 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
     }
     setPreviousAuthState(isAuthenticated);
   }, [isAuthenticated, authUser, previousAuthState]);
+
+  // アバターメニュー外クリックで閉じる
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        avatarMenuRef.current &&
+        !avatarMenuRef.current.contains(event.target as Node)
+      ) {
+        setIsAvatarMenuOpen(false);
+      }
+    };
+
+    if (isAvatarMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isAvatarMenuOpen]);
 
   const handleStartEdit = useCallback(() => {
     setEditDisplayName(profile?.displayName ?? authUser?.displayName ?? "");
@@ -126,6 +165,61 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
   const handleCloseError = useCallback(() => {
     setAuthError(null);
   }, [setAuthError]);
+
+  // 連携解除ハンドラー（確認ダイアログを表示）
+  const handleUnlinkProvider = useCallback((provider: OAuthProvider) => {
+    setConfirmDialog({
+      isOpen: true,
+      type: "unlink",
+      provider,
+    });
+  }, []);
+
+  // 連携解除確定
+  const handleConfirmUnlink = useCallback(() => {
+    if (confirmDialog.provider) {
+      unlinkProvider(confirmDialog.provider);
+    }
+    setConfirmDialog({ isOpen: false, type: null });
+  }, [confirmDialog.provider, unlinkProvider]);
+
+  // アバターメニュー操作
+  const handleToggleAvatarMenu = useCallback(() => {
+    setIsAvatarMenuOpen((prev) => !prev);
+  }, []);
+
+  const handleUploadAvatar = useCallback(() => {
+    uploadAvatar();
+    setIsAvatarMenuOpen(false);
+  }, [uploadAvatar]);
+
+  const handleUseProviderAvatar = useCallback(
+    (provider: OAuthProvider) => {
+      useProviderAvatar(provider);
+      setIsAvatarMenuOpen(false);
+    },
+    [useProviderAvatar],
+  );
+
+  // アバター削除ハンドラー（確認ダイアログを表示）
+  const handleRemoveAvatarClick = useCallback(() => {
+    setConfirmDialog({
+      isOpen: true,
+      type: "remove-avatar",
+    });
+    setIsAvatarMenuOpen(false);
+  }, []);
+
+  // アバター削除確定
+  const handleConfirmRemoveAvatar = useCallback(() => {
+    removeAvatar();
+    setConfirmDialog({ isOpen: false, type: null });
+  }, [removeAvatar]);
+
+  // 確認ダイアログキャンセル
+  const handleCancelConfirm = useCallback(() => {
+    setConfirmDialog({ isOpen: false, type: null });
+  }, []);
 
   const displayName = profile?.displayName || authUser?.displayName || "User";
   const email = profile?.email ?? authUser?.email ?? "";
@@ -260,8 +354,8 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
           {/* Profile Card */}
           <GlassPanel radius="md" blur="md" className="p-6">
             <div className="flex items-start gap-4">
-              {/* Avatar */}
-              <div className="flex-shrink-0">
+              {/* Avatar with Edit Button */}
+              <div className="flex-shrink-0 relative" ref={avatarMenuRef}>
                 {avatarUrl ? (
                   <img
                     src={avatarUrl}
@@ -271,6 +365,68 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                 ) : (
                   <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center">
                     <Icon name="user" size={32} className="text-white/40" />
+                  </div>
+                )}
+                {/* Avatar Edit Button */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleToggleAvatarMenu}
+                  aria-label="アバターを編集"
+                  className="absolute -bottom-1 -right-1 w-6 h-6 !p-0 rounded-full bg-white/20 hover:bg-white/30"
+                >
+                  <Icon name="pencil" size={12} />
+                </Button>
+                {/* Avatar Edit Menu */}
+                {isAvatarMenuOpen && (
+                  <div
+                    role="menu"
+                    className="absolute top-full left-0 mt-2 w-48 bg-[#1a1a1a] border border-white/10 rounded-lg shadow-lg z-50"
+                  >
+                    <button
+                      role="menuitem"
+                      onClick={handleUploadAvatar}
+                      className="w-full px-4 py-2 text-left text-sm text-white hover:bg-white/10 flex items-center gap-2"
+                    >
+                      <Icon name="upload" size={14} />
+                      アップロード
+                    </button>
+                    {/* Provider Avatar Options */}
+                    {linkedProviders
+                      .filter((p) => p.avatarUrl)
+                      .map((provider) => (
+                        <button
+                          key={provider.provider}
+                          role="menuitem"
+                          onClick={() =>
+                            handleUseProviderAvatar(
+                              provider.provider as OAuthProvider,
+                            )
+                          }
+                          className="w-full px-4 py-2 text-left text-sm text-white hover:bg-white/10 flex items-center gap-2"
+                        >
+                          <ProviderIcon
+                            provider={provider.provider as OAuthProvider}
+                            size={14}
+                          />
+                          {provider.provider}のアバターを使用
+                        </button>
+                      ))}
+                    {/* Remove Avatar Option */}
+                    <button
+                      role="menuitem"
+                      onClick={handleRemoveAvatarClick}
+                      disabled={!avatarUrl}
+                      className={clsx(
+                        "w-full px-4 py-2 text-left text-sm flex items-center gap-2",
+                        avatarUrl
+                          ? "text-red-400 hover:bg-red-500/10"
+                          : "text-white/30 cursor-not-allowed",
+                      )}
+                    >
+                      <Icon name="trash-2" size={14} />
+                      アバターを削除
+                    </button>
                   </div>
                 )}
               </div>
@@ -319,7 +475,7 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                         variant="ghost"
                         size="sm"
                         onClick={handleStartEdit}
-                        aria-label="編集"
+                        aria-label="名前を編集"
                       >
                         <Icon name="pencil" size={14} />
                       </Button>
@@ -360,9 +516,28 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                       )}
                     </div>
                   </div>
-                  <div className="flex items-center gap-1 text-green-400">
-                    <Icon name="check-circle" size={16} />
-                    <span className="text-sm">登録済み</span>
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 text-green-400">
+                      <Icon name="check-circle" size={16} />
+                      <span className="text-sm">登録済み</span>
+                    </div>
+                    {/* 連携解除ボタン - 複数プロバイダー連携時のみ表示 */}
+                    {linkedProviders.length > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() =>
+                          handleUnlinkProvider(
+                            provider.provider as OAuthProvider,
+                          )
+                        }
+                        disabled={isLoading}
+                        aria-label={`${provider.provider}の連携を解除`}
+                        className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                      >
+                        解除
+                      </Button>
+                    )}
                   </div>
                 </div>
               ))}
@@ -397,6 +572,46 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
             ログアウト
           </Button>
         </>
+      )}
+
+      {/* 確認ダイアログ */}
+      {confirmDialog.isOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]">
+          <GlassPanel radius="lg" blur="md" className="p-6 max-w-md mx-4">
+            <div className="text-center space-y-4">
+              <Icon
+                name="alert-triangle"
+                size={48}
+                className="mx-auto text-yellow-400"
+              />
+              <h3 className="text-lg font-semibold text-white">
+                {confirmDialog.type === "unlink"
+                  ? "連携解除の確認"
+                  : "アバター削除の確認"}
+              </h3>
+              <p className="text-white/60 text-sm">
+                {confirmDialog.type === "unlink"
+                  ? `${confirmDialog.provider}との連携を本当に連携を解除しますか？`
+                  : "アバターを本当に削除しますか？"}
+              </p>
+              <div className="flex gap-3 justify-center">
+                <Button variant="ghost" onClick={handleCancelConfirm}>
+                  キャンセル
+                </Button>
+                <Button
+                  variant="danger"
+                  onClick={
+                    confirmDialog.type === "unlink"
+                      ? handleConfirmUnlink
+                      : handleConfirmRemoveAvatar
+                  }
+                >
+                  {confirmDialog.type === "unlink" ? "解除する" : "削除する"}
+                </Button>
+              </div>
+            </div>
+          </GlassPanel>
+        </div>
       )}
     </section>
   );

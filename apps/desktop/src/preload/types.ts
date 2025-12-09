@@ -424,6 +424,53 @@ export interface ProfileLinkProviderResponse {
   };
 }
 
+export interface ProfileUnlinkProviderRequest {
+  provider: OAuthProvider;
+}
+
+export interface ProfileUnlinkProviderResponse {
+  success: boolean;
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+// Avatar operations
+export interface AvatarUploadResponse {
+  success: boolean;
+  data?: {
+    avatarUrl: string;
+  };
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface AvatarUseProviderRequest {
+  provider: OAuthProvider;
+}
+
+export interface AvatarUseProviderResponse {
+  success: boolean;
+  data?: {
+    avatarUrl: string;
+  };
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface AvatarRemoveResponse {
+  success: boolean;
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
 export interface ThemeGetResponse {
   success: boolean;
   data?: {
@@ -535,6 +582,17 @@ export interface ElectronAPI {
     linkProvider: (
       request: ProfileLinkProviderRequest,
     ) => Promise<ProfileLinkProviderResponse>;
+    unlinkProvider: (
+      request: ProfileUnlinkProviderRequest,
+    ) => Promise<ProfileUnlinkProviderResponse>;
+  };
+
+  avatar: {
+    upload: () => Promise<AvatarUploadResponse>;
+    useProvider: (
+      request: AvatarUseProviderRequest,
+    ) => Promise<AvatarUseProviderResponse>;
+    remove: () => Promise<AvatarRemoveResponse>;
   };
 }
 

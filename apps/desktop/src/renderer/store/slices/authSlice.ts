@@ -23,6 +23,8 @@ const AUTH_ERROR_MESSAGES: Record<AuthErrorCode, string> = {
   PROVIDER_ERROR: "認証プロバイダーとの接続に失敗しました",
   PROFILE_UPDATE_FAILED: "プロフィールの更新に失敗しました",
   LINK_PROVIDER_FAILED: "アカウント連携に失敗しました",
+  DATABASE_ERROR:
+    "データベースエラーが発生しました。しばらく時間をおいて再試行してください",
   UNKNOWN: "予期しないエラーが発生しました",
 };
 
@@ -34,6 +36,19 @@ const AUTH_ERROR_MESSAGES: Record<AuthErrorCode, string> = {
  */
 const detectErrorCode = (message: string): AuthErrorCode => {
   const lowerMessage = message.toLowerCase();
+
+  // データベース/スキーマエラーの検出
+  if (
+    lowerMessage.includes("database") ||
+    lowerMessage.includes("schema") ||
+    lowerMessage.includes("table") ||
+    lowerMessage.includes("relation") ||
+    lowerMessage.includes("column") ||
+    lowerMessage.includes("constraint") ||
+    lowerMessage.includes("sql")
+  ) {
+    return "DATABASE_ERROR";
+  }
 
   if (
     lowerMessage.includes("network") ||
@@ -126,6 +141,10 @@ export interface AuthSlice {
   fetchProfile: () => Promise<void>;
   fetchLinkedProviders: () => Promise<void>;
   linkProvider: (provider: OAuthProvider) => Promise<void>;
+  unlinkProvider: (provider: OAuthProvider) => Promise<void>;
+  uploadAvatar: () => Promise<void>;
+  useProviderAvatar: (provider: OAuthProvider) => Promise<void>;
+  removeAvatar: () => Promise<void>;
   setAuthError: (error: string | null) => void;
   clearAuth: () => void;
 }
@@ -449,6 +468,163 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
       set({
         isLoading: false,
         authError: handleAuthError(error, "LINK_PROVIDER_FAILED"),
+      });
+    }
+  },
+
+  unlinkProvider: async (provider: OAuthProvider) => {
+    const { linkedProviders } = get();
+
+    // 最後のプロバイダーは連携解除できない
+    if (linkedProviders.length <= 1) {
+      set({
+        authError: "最後の認証プロバイダーは解除できません",
+        isLoading: false,
+      });
+      return;
+    }
+
+    set({ isLoading: true, authError: null });
+
+    try {
+      if (!window.electronAPI?.profile?.unlinkProvider) {
+        set({ isLoading: false });
+        return;
+      }
+
+      const response = await window.electronAPI.profile.unlinkProvider({
+        provider,
+      });
+
+      if (response.success) {
+        set((state) => ({
+          linkedProviders: state.linkedProviders.filter(
+            (p) => p.provider !== provider,
+          ),
+          isLoading: false,
+        }));
+        // 成功後に最新のプロバイダー情報を再取得してUIを確実に更新
+        get().fetchLinkedProviders();
+      } else {
+        set({
+          isLoading: false,
+          authError: response.error?.message ?? "連携解除に失敗しました",
+        });
+      }
+    } catch (error) {
+      set({
+        isLoading: false,
+        authError: handleAuthError(error, "LINK_PROVIDER_FAILED"),
+      });
+    }
+  },
+
+  uploadAvatar: async () => {
+    set({ isLoading: true, authError: null });
+
+    try {
+      if (!window.electronAPI?.avatar?.upload) {
+        set({ isLoading: false });
+        return;
+      }
+
+      const response = await window.electronAPI.avatar.upload();
+
+      if (response.success && response.data) {
+        set((state) => ({
+          profile: state.profile
+            ? { ...state.profile, avatarUrl: response.data!.avatarUrl }
+            : null,
+          isLoading: false,
+        }));
+      } else {
+        set({
+          isLoading: false,
+          authError:
+            response.error?.message ?? "アバターのアップロードに失敗しました",
+        });
+      }
+    } catch (error) {
+      set({
+        isLoading: false,
+        authError: handleAuthError(error, "PROFILE_UPDATE_FAILED"),
+      });
+    }
+  },
+
+  useProviderAvatar: async (provider: OAuthProvider) => {
+    const { linkedProviders } = get();
+
+    // 連携していないプロバイダーは使用できない
+    const linkedProvider = linkedProviders.find((p) => p.provider === provider);
+    if (!linkedProvider) {
+      set({
+        authError: `${provider}は連携されていません`,
+      });
+      return;
+    }
+
+    set({ isLoading: true, authError: null });
+
+    try {
+      if (!window.electronAPI?.avatar?.useProvider) {
+        set({ isLoading: false });
+        return;
+      }
+
+      const response = await window.electronAPI.avatar.useProvider({
+        provider,
+      });
+
+      if (response.success && response.data) {
+        set((state) => ({
+          profile: state.profile
+            ? { ...state.profile, avatarUrl: response.data!.avatarUrl }
+            : null,
+          isLoading: false,
+        }));
+      } else {
+        set({
+          isLoading: false,
+          authError:
+            response.error?.message ??
+            "プロバイダーアバターの設定に失敗しました",
+        });
+      }
+    } catch (error) {
+      set({
+        isLoading: false,
+        authError: handleAuthError(error, "PROFILE_UPDATE_FAILED"),
+      });
+    }
+  },
+
+  removeAvatar: async () => {
+    set({ isLoading: true, authError: null });
+
+    try {
+      if (!window.electronAPI?.avatar?.remove) {
+        set({ isLoading: false });
+        return;
+      }
+
+      const response = await window.electronAPI.avatar.remove();
+
+      if (response.success) {
+        set((state) => ({
+          profile: state.profile ? { ...state.profile, avatarUrl: null } : null,
+          isLoading: false,
+        }));
+      } else {
+        set({
+          isLoading: false,
+          authError: response.error?.message ?? "アバターの削除に失敗しました",
+        });
+      }
+    } catch (error) {
+      set({
+        isLoading: false,
+        authError: handleAuthError(error, "PROFILE_UPDATE_FAILED"),
       });
     }
   },

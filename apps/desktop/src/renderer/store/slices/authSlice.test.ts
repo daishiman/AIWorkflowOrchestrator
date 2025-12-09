@@ -1264,4 +1264,361 @@ describe("authSlice", () => {
 
     return createAuthSlice(set as never, get as never, {} as never);
   }
+
+  /**
+   * Phase 2 TDD Red Phase: 未実装機能テスト
+   *
+   * これらのテストは設計レビュー(Phase 1.5)で指摘された未実装機能のテスト。
+   * Phase 3実装完了まで失敗する（TDD Red状態）。
+   *
+   * 対象機能:
+   * - unlinkProvider: OAuth連携解除
+   * - uploadAvatar: アバター画像アップロード
+   * - useProviderAvatar: プロバイダーアバター使用
+   * - removeAvatar: アバター削除
+   */
+  describe("未実装機能（TDD Red Phase）", () => {
+    // Mock追加
+    const mockProfileUnlinkProvider = vi.fn();
+    const mockAvatarUpload = vi.fn();
+    const mockAvatarUseProvider = vi.fn();
+    const mockAvatarRemove = vi.fn();
+
+    beforeEach(() => {
+      // 未実装機能のモックを追加
+      (mockElectronAPI as unknown as Record<string, unknown>).profile = {
+        ...mockElectronAPI.profile,
+        unlinkProvider: mockProfileUnlinkProvider,
+      };
+      (mockElectronAPI as unknown as Record<string, unknown>).avatar = {
+        upload: mockAvatarUpload,
+        useProvider: mockAvatarUseProvider,
+        remove: mockAvatarRemove,
+      };
+    });
+
+    describe("unlinkProvider - OAuth連携解除", () => {
+      it("unlinkProviderメソッドが存在する", () => {
+        expect(typeof store.unlinkProvider).toBe("function");
+      });
+
+      it("profile.unlinkProviderを呼び出す", async () => {
+        // 複数のプロバイダーを設定（最後のプロバイダー保護を回避）
+        store.linkedProviders = [
+          ...mockLinkedProviders,
+          {
+            provider: "github" as const,
+            providerId: "github-id",
+            email: "test@github.com",
+            displayName: "Test GitHub",
+            avatarUrl: null,
+            linkedAt: "2024-12-01T00:00:00Z",
+          },
+        ];
+
+        mockProfileUnlinkProvider.mockResolvedValue({
+          success: true,
+        });
+
+        await store.unlinkProvider("github");
+
+        expect(mockProfileUnlinkProvider).toHaveBeenCalledWith({
+          provider: "github",
+        });
+      });
+
+      it("連携解除成功時、linkedProvidersから該当プロバイダーを削除", async () => {
+        const githubProvider = {
+          provider: "github" as const,
+          providerId: "github-id",
+          email: "test@github.com",
+          displayName: "Test GitHub",
+          avatarUrl: null,
+          linkedAt: "2024-12-01T00:00:00Z",
+        };
+
+        store.linkedProviders = [...mockLinkedProviders, githubProvider];
+
+        mockProfileUnlinkProvider.mockResolvedValue({
+          success: true,
+        });
+
+        await store.unlinkProvider("github");
+
+        expect(store.linkedProviders).not.toContainEqual(
+          expect.objectContaining({ provider: "github" }),
+        );
+        // 元のGoogleプロバイダーは残る
+        expect(store.linkedProviders).toContainEqual(
+          expect.objectContaining({ provider: "google" }),
+        );
+      });
+
+      it("連携解除失敗時、authErrorを設定", async () => {
+        // 複数のプロバイダーを設定（最後のプロバイダー保護を回避）
+        store.linkedProviders = [
+          ...mockLinkedProviders,
+          {
+            provider: "github" as const,
+            providerId: "github-id",
+            email: "test@github.com",
+            displayName: "Test GitHub",
+            avatarUrl: null,
+            linkedAt: "2024-12-01T00:00:00Z",
+          },
+        ];
+
+        mockProfileUnlinkProvider.mockResolvedValue({
+          success: false,
+          error: {
+            code: "profile/unlink-failed",
+            message: "連携解除に失敗しました",
+          },
+        });
+
+        await store.unlinkProvider("github");
+
+        expect(store.authError).toBe("連携解除に失敗しました");
+      });
+
+      it("最後のプロバイダーは連携解除できない", async () => {
+        store.linkedProviders = [mockLinkedProviders[0]]; // Googleのみ
+
+        await store.unlinkProvider("google");
+
+        // エラーメッセージを確認
+        expect(store.authError).toContain("最後の");
+        expect(mockProfileUnlinkProvider).not.toHaveBeenCalled();
+      });
+
+      it("isLoadingを適切に制御する", async () => {
+        mockProfileUnlinkProvider.mockResolvedValue({
+          success: true,
+        });
+
+        store.linkedProviders = [
+          ...mockLinkedProviders,
+          {
+            provider: "github" as const,
+            providerId: "github-id",
+            email: "test@github.com",
+            displayName: null,
+            avatarUrl: null,
+            linkedAt: "2024-12-01T00:00:00Z",
+          },
+        ];
+
+        const unlinkPromise = store.unlinkProvider("github");
+
+        expect(mockSet).toHaveBeenCalledWith(
+          expect.objectContaining({ isLoading: true }),
+        );
+
+        await unlinkPromise;
+
+        expect(store.isLoading).toBe(false);
+      });
+
+      it("electronAPIが利用できない場合はisLoadingをfalseにして早期リターン", async () => {
+        Object.defineProperty(window, "electronAPI", {
+          value: undefined,
+          writable: true,
+        });
+
+        await store.unlinkProvider("github");
+
+        expect(mockProfileUnlinkProvider).not.toHaveBeenCalled();
+        expect(store.isLoading).toBe(false);
+      });
+
+      it("例外発生時のエラーハンドリング", async () => {
+        store.linkedProviders = [
+          ...mockLinkedProviders,
+          {
+            provider: "github" as const,
+            providerId: "github-id",
+            email: "test@github.com",
+            displayName: null,
+            avatarUrl: null,
+            linkedAt: "2024-12-01T00:00:00Z",
+          },
+        ];
+
+        mockProfileUnlinkProvider.mockRejectedValue(new Error("Network error"));
+
+        await store.unlinkProvider("github");
+
+        expect(store.authError).toBe("ネットワーク接続を確認してください");
+        expect(store.isLoading).toBe(false);
+      });
+    });
+
+    describe("uploadAvatar - アバター画像アップロード", () => {
+      it("uploadAvatarメソッドが存在する", () => {
+        expect(typeof store.uploadAvatar).toBe("function");
+      });
+
+      it("avatar.uploadを呼び出す", async () => {
+        mockAvatarUpload.mockResolvedValue({
+          success: true,
+          data: { avatarUrl: "https://storage.example.com/avatar.png" },
+        });
+
+        await store.uploadAvatar();
+
+        expect(mockAvatarUpload).toHaveBeenCalled();
+      });
+
+      it("アップロード成功時、profileのavatarUrlを更新", async () => {
+        const newAvatarUrl = "https://storage.example.com/new-avatar.png";
+        mockAvatarUpload.mockResolvedValue({
+          success: true,
+          data: { avatarUrl: newAvatarUrl },
+        });
+
+        store.profile = mockUserProfile;
+
+        await store.uploadAvatar();
+
+        expect(store.profile?.avatarUrl).toBe(newAvatarUrl);
+      });
+
+      it("アップロード失敗時、authErrorを設定", async () => {
+        mockAvatarUpload.mockResolvedValue({
+          success: false,
+          error: {
+            code: "avatar/upload-failed",
+            message: "アップロードに失敗しました",
+          },
+        });
+
+        await store.uploadAvatar();
+
+        expect(store.authError).toBe("アップロードに失敗しました");
+      });
+
+      it("isLoadingを適切に制御する", async () => {
+        mockAvatarUpload.mockResolvedValue({
+          success: true,
+          data: { avatarUrl: "https://example.com/avatar.png" },
+        });
+
+        const uploadPromise = store.uploadAvatar();
+
+        expect(mockSet).toHaveBeenCalledWith(
+          expect.objectContaining({ isLoading: true }),
+        );
+
+        await uploadPromise;
+
+        expect(store.isLoading).toBe(false);
+      });
+    });
+
+    describe("useProviderAvatar - プロバイダーアバター使用", () => {
+      it("useProviderAvatarメソッドが存在する", () => {
+        expect(typeof store.useProviderAvatar).toBe("function");
+      });
+
+      it("avatar.useProviderを呼び出す", async () => {
+        // linkedProvidersにgoogleを設定
+        store.linkedProviders = mockLinkedProviders;
+
+        mockAvatarUseProvider.mockResolvedValue({
+          success: true,
+          data: { avatarUrl: "https://google.com/avatar.png" },
+        });
+
+        await store.useProviderAvatar("google");
+
+        expect(mockAvatarUseProvider).toHaveBeenCalledWith({
+          provider: "google",
+        });
+      });
+
+      it("成功時、profileのavatarUrlを更新", async () => {
+        // linkedProvidersにgoogleを設定
+        store.linkedProviders = mockLinkedProviders;
+
+        const providerAvatarUrl = "https://google.com/avatar.png";
+        mockAvatarUseProvider.mockResolvedValue({
+          success: true,
+          data: { avatarUrl: providerAvatarUrl },
+        });
+
+        store.profile = mockUserProfile;
+
+        await store.useProviderAvatar("google");
+
+        expect(store.profile?.avatarUrl).toBe(providerAvatarUrl);
+      });
+
+      it("連携していないプロバイダーは使用できない", async () => {
+        store.linkedProviders = [mockLinkedProviders[0]]; // Googleのみ
+
+        await store.useProviderAvatar("github"); // 連携していない
+
+        expect(store.authError).toContain("連携されていません");
+        expect(mockAvatarUseProvider).not.toHaveBeenCalled();
+      });
+    });
+
+    describe("removeAvatar - アバター削除", () => {
+      it("removeAvatarメソッドが存在する", () => {
+        expect(typeof store.removeAvatar).toBe("function");
+      });
+
+      it("avatar.removeを呼び出す", async () => {
+        mockAvatarRemove.mockResolvedValue({
+          success: true,
+        });
+
+        await store.removeAvatar();
+
+        expect(mockAvatarRemove).toHaveBeenCalled();
+      });
+
+      it("削除成功時、profileのavatarUrlをnullに設定", async () => {
+        mockAvatarRemove.mockResolvedValue({
+          success: true,
+        });
+
+        store.profile = mockUserProfile;
+
+        await store.removeAvatar();
+
+        expect(store.profile?.avatarUrl).toBeNull();
+      });
+
+      it("削除失敗時、authErrorを設定", async () => {
+        mockAvatarRemove.mockResolvedValue({
+          success: false,
+          error: {
+            code: "avatar/remove-failed",
+            message: "削除に失敗しました",
+          },
+        });
+
+        await store.removeAvatar();
+
+        expect(store.authError).toBe("削除に失敗しました");
+      });
+
+      it("isLoadingを適切に制御する", async () => {
+        mockAvatarRemove.mockResolvedValue({
+          success: true,
+        });
+
+        const removePromise = store.removeAvatar();
+
+        expect(mockSet).toHaveBeenCalledWith(
+          expect.objectContaining({ isLoading: true }),
+        );
+
+        await removePromise;
+
+        expect(store.isLoading).toBe(false);
+      });
+    });
+  });
 });

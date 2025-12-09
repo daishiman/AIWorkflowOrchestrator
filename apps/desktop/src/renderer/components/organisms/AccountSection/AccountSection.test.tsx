@@ -172,12 +172,14 @@ describe("AccountSection", () => {
   describe("プロフィール編集", () => {
     it("表示名の編集ボタンを表示する", () => {
       render(<AccountSection />);
-      expect(screen.getByRole("button", { name: /編集/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /名前を編集/i }),
+      ).toBeInTheDocument();
     });
 
     it("編集ボタンをクリックすると編集モードになる", async () => {
       render(<AccountSection />);
-      const editButton = screen.getByRole("button", { name: /編集/i });
+      const editButton = screen.getByRole("button", { name: /名前を編集/i });
       await userEvent.click(editButton);
       expect(
         screen.getByRole("textbox", { name: /表示名/i }),
@@ -186,7 +188,7 @@ describe("AccountSection", () => {
 
     it("表示名を変更して保存する", async () => {
       render(<AccountSection />);
-      const editButton = screen.getByRole("button", { name: /編集/i });
+      const editButton = screen.getByRole("button", { name: /名前を編集/i });
       await userEvent.click(editButton);
 
       const input = screen.getByRole("textbox", { name: /表示名/i });
@@ -203,7 +205,7 @@ describe("AccountSection", () => {
 
     it("キャンセルボタンで編集モードを終了する", async () => {
       render(<AccountSection />);
-      const editButton = screen.getByRole("button", { name: /編集/i });
+      const editButton = screen.getByRole("button", { name: /名前を編集/i });
       await userEvent.click(editButton);
 
       const cancelButton = screen.getByRole("button", { name: /キャンセル/i });
@@ -339,6 +341,373 @@ describe("AccountSection", () => {
       render(<AccountSection className="custom-class" />);
       const section = screen.getByRole("region", { name: /アカウント/i });
       expect(section).toHaveClass("custom-class");
+    });
+  });
+
+  /**
+   * Phase 2 TDD Red Phase: 未実装機能テスト
+   *
+   * これらのテストは設計レビュー(Phase 1.5)で指摘された未実装機能のテスト。
+   * Phase 3実装完了まで失敗する（TDD Red状態）。
+   *
+   * 対象機能:
+   * - unlinkProvider: OAuth連携解除
+   * - uploadAvatar: アバター画像アップロード
+   * - useProviderAvatar: プロバイダーアバター使用
+   * - removeAvatar: アバター削除
+   */
+  describe("未実装機能（TDD Red Phase）", () => {
+    const mockUnlinkProvider = vi.fn();
+    const mockUploadAvatar = vi.fn();
+    const mockUseProviderAvatar = vi.fn();
+    const mockRemoveAvatar = vi.fn();
+
+    const createMockStateWithNewFeatures = (overrides = {}) => ({
+      ...createMockState(),
+      unlinkProvider: mockUnlinkProvider,
+      uploadAvatar: mockUploadAvatar,
+      useProviderAvatar: mockUseProviderAvatar,
+      removeAvatar: mockRemoveAvatar,
+      ...overrides,
+    });
+
+    beforeEach(async () => {
+      vi.clearAllMocks();
+      const { useAppStore } = await import("../../../store");
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (
+          state: ReturnType<typeof createMockStateWithNewFeatures>,
+        ) => unknown,
+      ) => selector(createMockStateWithNewFeatures())) as never);
+    });
+
+    describe("連携解除", () => {
+      it("連携解除ボタンを表示する（複数プロバイダー連携時）", async () => {
+        const { useAppStore } = await import("../../../store");
+        vi.mocked(useAppStore).mockImplementation(((
+          selector: (
+            state: ReturnType<typeof createMockStateWithNewFeatures>,
+          ) => unknown,
+        ) =>
+          selector(
+            createMockStateWithNewFeatures({
+              linkedProviders: [
+                mockLinkedProviders[0], // Google
+                {
+                  provider: "github" as const,
+                  providerId: "github-id",
+                  email: "test@github.com",
+                  displayName: "Test GitHub",
+                  avatarUrl: null,
+                  linkedAt: "2024-12-01T00:00:00Z",
+                },
+              ],
+            }),
+          )) as never);
+
+        render(<AccountSection />);
+        // 連携解除ボタンが表示される
+        expect(
+          screen.getByRole("button", { name: /google.*解除/i }),
+        ).toBeInTheDocument();
+      });
+
+      it("連携解除ボタンをクリックするとunlinkProviderが呼ばれる", async () => {
+        const { useAppStore } = await import("../../../store");
+        vi.mocked(useAppStore).mockImplementation(((
+          selector: (
+            state: ReturnType<typeof createMockStateWithNewFeatures>,
+          ) => unknown,
+        ) =>
+          selector(
+            createMockStateWithNewFeatures({
+              linkedProviders: [
+                mockLinkedProviders[0], // Google
+                {
+                  provider: "github" as const,
+                  providerId: "github-id",
+                  email: "test@github.com",
+                  displayName: "Test GitHub",
+                  avatarUrl: null,
+                  linkedAt: "2024-12-01T00:00:00Z",
+                },
+              ],
+            }),
+          )) as never);
+
+        render(<AccountSection />);
+        const unlinkButton = screen.getByRole("button", {
+          name: /github.*解除/i,
+        });
+        await userEvent.click(unlinkButton);
+        // 確認ダイアログが表示される
+        expect(
+          screen.getByText(/本当に連携を解除しますか/i),
+        ).toBeInTheDocument();
+        // 確認ボタンをクリック
+        const confirmButton = screen.getByRole("button", { name: /解除する/i });
+        await userEvent.click(confirmButton);
+        expect(mockUnlinkProvider).toHaveBeenCalledWith("github");
+      });
+
+      it("最後のプロバイダーは連携解除ボタンが非表示", async () => {
+        const { useAppStore } = await import("../../../store");
+        vi.mocked(useAppStore).mockImplementation(((
+          selector: (
+            state: ReturnType<typeof createMockStateWithNewFeatures>,
+          ) => unknown,
+        ) =>
+          selector(
+            createMockStateWithNewFeatures({
+              linkedProviders: [mockLinkedProviders[0]], // Googleのみ
+            }),
+          )) as never);
+
+        render(<AccountSection />);
+        // 連携解除ボタンが存在しないことを確認
+        expect(
+          screen.queryByRole("button", { name: /解除/i }),
+        ).not.toBeInTheDocument();
+      });
+
+      it("連携解除の確認ダイアログを表示する", async () => {
+        const { useAppStore } = await import("../../../store");
+        vi.mocked(useAppStore).mockImplementation(((
+          selector: (
+            state: ReturnType<typeof createMockStateWithNewFeatures>,
+          ) => unknown,
+        ) =>
+          selector(
+            createMockStateWithNewFeatures({
+              linkedProviders: [
+                mockLinkedProviders[0],
+                {
+                  provider: "github" as const,
+                  providerId: "github-id",
+                  email: "test@github.com",
+                  displayName: "Test GitHub",
+                  avatarUrl: null,
+                  linkedAt: "2024-12-01T00:00:00Z",
+                },
+              ],
+            }),
+          )) as never);
+
+        render(<AccountSection />);
+        const unlinkButton = screen.getByRole("button", {
+          name: /github.*解除/i,
+        });
+        await userEvent.click(unlinkButton);
+        // 確認ダイアログが表示される
+        expect(
+          screen.getByText(/本当に連携を解除しますか/i),
+        ).toBeInTheDocument();
+      });
+    });
+
+    describe("アバターアップロード", () => {
+      it("アバター編集ボタンを表示する", () => {
+        render(<AccountSection />);
+        expect(
+          screen.getByRole("button", { name: /アバター.*編集/i }),
+        ).toBeInTheDocument();
+      });
+
+      it("アバター編集メニューを開く", async () => {
+        render(<AccountSection />);
+        const avatarEditButton = screen.getByRole("button", {
+          name: /アバター.*編集/i,
+        });
+        await userEvent.click(avatarEditButton);
+        // メニューが表示される
+        expect(screen.getByRole("menu")).toBeInTheDocument();
+      });
+
+      it("アップロードオプションをクリックするとuploadAvatarが呼ばれる", async () => {
+        render(<AccountSection />);
+        const avatarEditButton = screen.getByRole("button", {
+          name: /アバター.*編集/i,
+        });
+        await userEvent.click(avatarEditButton);
+
+        const uploadOption = screen.getByRole("menuitem", {
+          name: /アップロード/i,
+        });
+        await userEvent.click(uploadOption);
+
+        expect(mockUploadAvatar).toHaveBeenCalled();
+      });
+    });
+
+    describe("プロバイダーアバター使用", () => {
+      it("連携プロバイダーのアバターオプションを表示する", async () => {
+        const { useAppStore } = await import("../../../store");
+        vi.mocked(useAppStore).mockImplementation(((
+          selector: (
+            state: ReturnType<typeof createMockStateWithNewFeatures>,
+          ) => unknown,
+        ) =>
+          selector(
+            createMockStateWithNewFeatures({
+              linkedProviders: [
+                {
+                  ...mockLinkedProviders[0],
+                  avatarUrl: "https://google.com/avatar.png", // アバターあり
+                },
+              ],
+            }),
+          )) as never);
+
+        render(<AccountSection />);
+        const avatarEditButton = screen.getByRole("button", {
+          name: /アバター.*編集/i,
+        });
+        await userEvent.click(avatarEditButton);
+
+        // Googleのアバターを使用するオプション
+        expect(
+          screen.getByRole("menuitem", { name: /google.*使用/i }),
+        ).toBeInTheDocument();
+      });
+
+      it("プロバイダーアバターオプションをクリックするとuseProviderAvatarが呼ばれる", async () => {
+        const { useAppStore } = await import("../../../store");
+        vi.mocked(useAppStore).mockImplementation(((
+          selector: (
+            state: ReturnType<typeof createMockStateWithNewFeatures>,
+          ) => unknown,
+        ) =>
+          selector(
+            createMockStateWithNewFeatures({
+              linkedProviders: [
+                {
+                  ...mockLinkedProviders[0],
+                  avatarUrl: "https://google.com/avatar.png",
+                },
+              ],
+            }),
+          )) as never);
+
+        render(<AccountSection />);
+        const avatarEditButton = screen.getByRole("button", {
+          name: /アバター.*編集/i,
+        });
+        await userEvent.click(avatarEditButton);
+
+        const providerAvatarOption = screen.getByRole("menuitem", {
+          name: /google.*使用/i,
+        });
+        await userEvent.click(providerAvatarOption);
+
+        expect(mockUseProviderAvatar).toHaveBeenCalledWith("google");
+      });
+
+      it("アバターがないプロバイダーはオプションを表示しない", async () => {
+        const { useAppStore } = await import("../../../store");
+        vi.mocked(useAppStore).mockImplementation(((
+          selector: (
+            state: ReturnType<typeof createMockStateWithNewFeatures>,
+          ) => unknown,
+        ) =>
+          selector(
+            createMockStateWithNewFeatures({
+              linkedProviders: [
+                {
+                  ...mockLinkedProviders[0],
+                  avatarUrl: null, // アバターなし
+                },
+              ],
+            }),
+          )) as never);
+
+        render(<AccountSection />);
+        const avatarEditButton = screen.getByRole("button", {
+          name: /アバター.*編集/i,
+        });
+        await userEvent.click(avatarEditButton);
+
+        // Googleのアバターオプションが表示されない
+        expect(
+          screen.queryByRole("menuitem", { name: /google.*使用/i }),
+        ).not.toBeInTheDocument();
+      });
+    });
+
+    describe("アバター削除", () => {
+      it("アバター削除オプションを表示する（アバターがある場合）", async () => {
+        render(<AccountSection />);
+        const avatarEditButton = screen.getByRole("button", {
+          name: /アバター.*編集/i,
+        });
+        await userEvent.click(avatarEditButton);
+
+        expect(
+          screen.getByRole("menuitem", { name: /削除/i }),
+        ).toBeInTheDocument();
+      });
+
+      it("アバター削除オプションをクリックするとremoveAvatarが呼ばれる", async () => {
+        render(<AccountSection />);
+        const avatarEditButton = screen.getByRole("button", {
+          name: /アバター.*編集/i,
+        });
+        await userEvent.click(avatarEditButton);
+
+        const removeOption = screen.getByRole("menuitem", { name: /削除/i });
+        await userEvent.click(removeOption);
+
+        // 確認ダイアログが表示される
+        expect(screen.getByText(/本当に削除しますか/i)).toBeInTheDocument();
+        // 確認ボタンをクリック
+        const confirmButton = screen.getByRole("button", { name: /削除する/i });
+        await userEvent.click(confirmButton);
+
+        expect(mockRemoveAvatar).toHaveBeenCalled();
+      });
+
+      it("アバターがない場合は削除オプションが無効", async () => {
+        const { useAppStore } = await import("../../../store");
+        vi.mocked(useAppStore).mockImplementation(((
+          selector: (
+            state: ReturnType<typeof createMockStateWithNewFeatures>,
+          ) => unknown,
+        ) =>
+          selector(
+            createMockStateWithNewFeatures({
+              profile: {
+                ...mockProfile,
+                avatarUrl: null,
+              },
+              authUser: {
+                ...mockAuthUser,
+                avatarUrl: null,
+              },
+            }),
+          )) as never);
+
+        render(<AccountSection />);
+        const avatarEditButton = screen.getByRole("button", {
+          name: /アバター.*編集/i,
+        });
+        await userEvent.click(avatarEditButton);
+
+        const removeOption = screen.getByRole("menuitem", { name: /削除/i });
+        expect(removeOption).toBeDisabled();
+      });
+
+      it("アバター削除の確認を求める", async () => {
+        render(<AccountSection />);
+        const avatarEditButton = screen.getByRole("button", {
+          name: /アバター.*編集/i,
+        });
+        await userEvent.click(avatarEditButton);
+
+        const removeOption = screen.getByRole("menuitem", { name: /削除/i });
+        await userEvent.click(removeOption);
+
+        // 確認ダイアログが表示される
+        expect(screen.getByText(/本当に削除しますか/i)).toBeInTheDocument();
+      });
     });
   });
 });

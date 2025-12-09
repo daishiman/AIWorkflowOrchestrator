@@ -25,6 +25,8 @@ import type {
   AuthLoginRequest,
   ProfileUpdateRequest,
   ProfileLinkProviderRequest,
+  ProfileUnlinkProviderRequest,
+  AvatarUseProviderRequest,
   AuthState,
 } from "./types";
 
@@ -143,6 +145,15 @@ const electronAPI: ElectronAPI = {
     getProviders: () => safeInvoke(IPC_CHANNELS.PROFILE_GET_PROVIDERS),
     linkProvider: (request: ProfileLinkProviderRequest) =>
       safeInvoke(IPC_CHANNELS.PROFILE_LINK_PROVIDER, request),
+    unlinkProvider: (request: ProfileUnlinkProviderRequest) =>
+      safeInvoke(IPC_CHANNELS.PROFILE_UNLINK_PROVIDER, request),
+  },
+
+  avatar: {
+    upload: () => safeInvoke(IPC_CHANNELS.AVATAR_UPLOAD),
+    useProvider: (request: AvatarUseProviderRequest) =>
+      safeInvoke(IPC_CHANNELS.AVATAR_USE_PROVIDER, request),
+    remove: () => safeInvoke(IPC_CHANNELS.AVATAR_REMOVE),
   },
 };
 

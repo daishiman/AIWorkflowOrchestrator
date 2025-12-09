@@ -266,9 +266,9 @@ describe("AccountSection Accessibility", () => {
     it("編集ボタンに適切な aria-label がある", () => {
       render(<AccountSection />);
 
-      const editButton = screen.getByRole("button", { name: /編集/i });
+      const editButton = screen.getByRole("button", { name: /名前を編集/i });
       expect(editButton).toBeInTheDocument();
-      expect(editButton).toHaveAttribute("aria-label", "編集");
+      expect(editButton).toHaveAttribute("aria-label", "名前を編集");
     });
 
     it("未認証時のログインボタンに適切な aria-label がある", async () => {
@@ -298,7 +298,7 @@ describe("AccountSection Accessibility", () => {
       render(<AccountSection />);
 
       // 編集モードに入る
-      const editButton = screen.getByRole("button", { name: /編集/i });
+      const editButton = screen.getByRole("button", { name: /名前を編集/i });
       await user.default.click(editButton);
 
       // 入力フィールドが表示される

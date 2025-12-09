@@ -56,6 +56,7 @@ export const IPC_CHANNELS = {
   PROFILE_UPDATE: "profile:update",
   PROFILE_GET_PROVIDERS: "profile:get-providers",
   PROFILE_LINK_PROVIDER: "profile:link-provider",
+  PROFILE_UNLINK_PROVIDER: "profile:unlink-provider",
 
   // Avatar operations
   AVATAR_UPLOAD: "avatar:upload",
@@ -104,6 +105,7 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.PROFILE_UPDATE,
   IPC_CHANNELS.PROFILE_GET_PROVIDERS,
   IPC_CHANNELS.PROFILE_LINK_PROVIDER,
+  IPC_CHANNELS.PROFILE_UNLINK_PROVIDER,
   // Avatar channels
   IPC_CHANNELS.AVATAR_UPLOAD,
   IPC_CHANNELS.AVATAR_USE_PROVIDER,

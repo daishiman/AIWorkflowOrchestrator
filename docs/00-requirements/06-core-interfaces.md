@@ -217,9 +217,94 @@ AIプロバイダーへのアクセスを抽象化するインターフェース
 
 ---
 
+## 6.7 認証・プロフィール型定義
+
+Desktop アプリの認証機能で使用する型定義。
+
+### 6.7.1 AuthUser
+
+認証済みユーザーの基本情報。
+
+| フィールド   | 型             | 説明                    |
+| ------------ | -------------- | ----------------------- |
+| id           | string         | ユーザーID              |
+| email        | string \| null | メールアドレス          |
+| displayName  | string \| null | 表示名                  |
+| avatarUrl    | string \| null | アバターURL             |
+| createdAt    | string         | 作成日時（ISO8601）     |
+| lastSignInAt | string         | 最終ログイン（ISO8601） |
+
+### 6.7.2 UserProfile
+
+ユーザープロフィール詳細情報。
+
+| フィールド  | 型                              | 説明                |
+| ----------- | ------------------------------- | ------------------- |
+| id          | string                          | ユーザーID          |
+| displayName | string                          | 表示名              |
+| email       | string                          | メールアドレス      |
+| avatarUrl   | string \| null                  | アバターURL         |
+| plan        | "free" \| "pro" \| "enterprise" | プラン種別          |
+| createdAt   | string                          | 作成日時（ISO8601） |
+| updatedAt   | string                          | 更新日時（ISO8601） |
+
+### 6.7.3 OAuthProvider
+
+対応する OAuth プロバイダー。
+
+| 値      | 説明          |
+| ------- | ------------- |
+| google  | Google OAuth  |
+| github  | GitHub OAuth  |
+| discord | Discord OAuth |
+
+### 6.7.4 LinkedProvider
+
+連携済みプロバイダー情報。
+
+| フィールド | 型             | 説明                 |
+| ---------- | -------------- | -------------------- |
+| id         | string         | Identity ID          |
+| provider   | string         | プロバイダー名       |
+| email      | string \| null | プロバイダーのメール |
+| name       | string \| null | プロバイダーの名前   |
+| avatarUrl  | string \| null | アバターURL          |
+| linkedAt   | string         | 連携日時（ISO8601）  |
+
+### 6.7.5 AuthGuardState
+
+認証ガードの状態を表す Discriminated Union。
+
+| status          | 追加フィールド | 説明     |
+| --------------- | -------------- | -------- |
+| checking        | -              | 確認中   |
+| authenticated   | user: AuthUser | 認証済み |
+| unauthenticated | -              | 未認証   |
+
+### 6.7.6 AuthErrorCode
+
+認証エラーコード。
+
+| コード                | 説明                   |
+| --------------------- | ---------------------- |
+| NETWORK_ERROR         | ネットワーク接続エラー |
+| AUTH_FAILED           | 認証失敗               |
+| TIMEOUT               | タイムアウト           |
+| SESSION_EXPIRED       | セッション期限切れ     |
+| PROVIDER_ERROR        | プロバイダーエラー     |
+| PROFILE_UPDATE_FAILED | プロフィール更新失敗   |
+| LINK_PROVIDER_FAILED  | アカウント連携失敗     |
+| DATABASE_ERROR        | データベースエラー     |
+| UNKNOWN               | 未分類エラー           |
+
+**実装場所**: `packages/shared/types/auth.ts`, `apps/desktop/src/renderer/components/AuthGuard/types.ts`
+
+---
+
 ## 関連ドキュメント
 
 - [アーキテクチャ設計](./05-architecture.md)
 - [エラーハンドリング仕様](./07-error-handling.md)
 - [プラグイン開発手順](./11-plugin-development.md)
 - [ローカルエージェント仕様](./09-local-agent.md)
+- [セキュリティガイドライン](./17-security-guidelines.md)

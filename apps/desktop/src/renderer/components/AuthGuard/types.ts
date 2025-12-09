@@ -72,6 +72,7 @@ export interface AuthError {
  * - `PROVIDER_ERROR`: OAuthプロバイダーエラー
  * - `PROFILE_UPDATE_FAILED`: プロフィール更新失敗
  * - `LINK_PROVIDER_FAILED`: アカウント連携失敗
+ * - `DATABASE_ERROR`: データベースエラー
  * - `UNKNOWN`: 未分類のエラー
  */
 export type AuthErrorCode =
@@ -82,6 +83,7 @@ export type AuthErrorCode =
   | "PROVIDER_ERROR"
   | "PROFILE_UPDATE_FAILED"
   | "LINK_PROVIDER_FAILED"
+  | "DATABASE_ERROR"
   | "UNKNOWN";
 
 // ============================================================
