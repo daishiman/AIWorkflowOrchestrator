@@ -8,6 +8,8 @@ import type { OAuthProvider } from "../../../../preload/types";
 export interface ProviderIconProps {
   /** 認証プロバイダーの種類 */
   provider: OAuthProvider;
+  /** アイコンのサイズ（ピクセル） */
+  size?: number;
   /** 追加のCSSクラス */
   className?: string;
 }
@@ -30,15 +32,20 @@ export interface ProviderIconProps {
  */
 export const ProviderIcon: React.FC<ProviderIconProps> = ({
   provider,
+  size,
   className,
 }) => {
-  const iconClass = clsx("w-5 h-5", className);
+  const sizeStyle = size
+    ? { width: `${size}px`, height: `${size}px` }
+    : undefined;
+  const iconClass = clsx(!size && "w-5 h-5", className);
 
   switch (provider) {
     case "google":
       return (
         <svg
           className={iconClass}
+          style={sizeStyle}
           viewBox="0 0 24 24"
           fill="currentColor"
           aria-hidden="true"
@@ -53,6 +60,7 @@ export const ProviderIcon: React.FC<ProviderIconProps> = ({
       return (
         <svg
           className={iconClass}
+          style={sizeStyle}
           viewBox="0 0 24 24"
           fill="currentColor"
           aria-hidden="true"
@@ -64,6 +72,7 @@ export const ProviderIcon: React.FC<ProviderIconProps> = ({
       return (
         <svg
           className={iconClass}
+          style={sizeStyle}
           viewBox="0 0 24 24"
           fill="currentColor"
           aria-hidden="true"

@@ -31,6 +31,8 @@ import {
   Pencil,
   WifiOff,
   AlertTriangle,
+  Upload,
+  Trash2,
   type LucideIcon,
 } from "lucide-react";
 
@@ -64,7 +66,9 @@ export type IconName =
   | "monitor"
   | "pencil"
   | "wifi-off"
-  | "alert-triangle";
+  | "alert-triangle"
+  | "upload"
+  | "trash-2";
 
 export interface IconProps extends React.SVGAttributes<SVGElement> {
   name: IconName;
@@ -105,6 +109,8 @@ const iconMap: Record<IconName, LucideIcon> = {
   pencil: Pencil,
   "wifi-off": WifiOff,
   "alert-triangle": AlertTriangle,
+  upload: Upload,
+  "trash-2": Trash2,
 };
 
 export const Icon = forwardRef<SVGSVGElement, IconProps>(

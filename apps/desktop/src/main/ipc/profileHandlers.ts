@@ -106,6 +106,36 @@ export function registerProfileHandlers(
             .single();
 
           if (error) {
+            // user_profilesテーブルが存在しない場合はuser_metadataからフォールバック
+            if (
+              error.message.includes("schema cache") ||
+              error.message.includes("does not exist") ||
+              error.code === "PGRST200" ||
+              error.code === "42P01"
+            ) {
+              console.warn(
+                "[ProfileHandlers] user_profiles テーブルが見つかりません。user_metadataからプロフィールを構築します",
+              );
+
+              // user_metadataからプロフィールを構築
+              const fallbackProfile: UserProfile = {
+                id: user.id,
+                displayName:
+                  (user.user_metadata?.display_name as string) ??
+                  (user.user_metadata?.name as string) ??
+                  (user.user_metadata?.full_name as string) ??
+                  "ユーザー",
+                email: user.email ?? "",
+                avatarUrl: (user.user_metadata?.avatar_url as string) ?? null,
+                plan: "free",
+                createdAt: user.created_at ?? new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+              };
+
+              await cache.updateCachedProfile(fallbackProfile);
+              return { success: true, data: fallbackProfile };
+            }
+
             // DBエラー時もキャッシュを試す
             const cached = await cache.getCachedProfile();
             if (cached) {
@@ -216,6 +246,61 @@ export function registerProfileHandlers(
             .single();
 
           if (error) {
+            // user_profilesテーブルが存在しない場合はuser_metadataにフォールバック
+            if (
+              error.message.includes("schema cache") ||
+              error.message.includes("does not exist") ||
+              error.code === "PGRST200" ||
+              error.code === "42P01"
+            ) {
+              console.warn(
+                "[ProfileHandlers] user_profiles テーブルが見つかりません。user_metadataにフォールバックします",
+              );
+
+              // Supabase Auth の user_metadata を更新
+              const metadataUpdate: Record<string, unknown> = {};
+              if (updates.displayName !== undefined) {
+                metadataUpdate.display_name = updates.displayName;
+              }
+              if (updates.avatarUrl !== undefined) {
+                metadataUpdate.avatar_url = updates.avatarUrl;
+              }
+
+              const { data: authData, error: authError } =
+                await supabase.auth.updateUser({
+                  data: metadataUpdate,
+                });
+
+              if (authError) {
+                return {
+                  success: false,
+                  error: {
+                    code: PROFILE_ERROR_CODES.UPDATE_FAILED,
+                    message: authError.message,
+                  },
+                };
+              }
+
+              // user_metadataからプロフィールを構築
+              const fallbackProfile: UserProfile = {
+                id: user.id,
+                displayName:
+                  (authData.user?.user_metadata?.display_name as string) ??
+                  (authData.user?.user_metadata?.name as string) ??
+                  "ユーザー",
+                email: authData.user?.email ?? "",
+                avatarUrl:
+                  (authData.user?.user_metadata?.avatar_url as string) ?? null,
+                plan: "free",
+                createdAt:
+                  authData.user?.created_at ?? new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+              };
+
+              await cache.updateCachedProfile(fallbackProfile);
+              return { success: true, data: fallbackProfile };
+            }
+
             return {
               success: false,
               error: {
@@ -355,6 +440,109 @@ export function registerProfileHandlers(
                 error instanceof Error
                   ? error.message
                   : "Failed to link provider",
+            },
+          };
+        }
+      },
+      { getAllowedWindows: () => [mainWindow] },
+    ),
+  );
+
+  // profile:unlink-provider - プロバイダー連携解除
+  ipcMain.handle(
+    IPC_CHANNELS.PROFILE_UNLINK_PROVIDER,
+    withValidation(
+      IPC_CHANNELS.PROFILE_UNLINK_PROVIDER,
+      async (
+        _event,
+        { provider }: { provider: string },
+      ): Promise<IPCResponse<void>> => {
+        try {
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+
+          if (!user) {
+            return {
+              success: false,
+              error: {
+                code: PROFILE_ERROR_CODES.UNLINK_FAILED,
+                message: "Not authenticated",
+              },
+            };
+          }
+
+          // プロバイダーバリデーション
+          if (!isValidProvider(provider)) {
+            return {
+              success: false,
+              error: {
+                code: PROFILE_ERROR_CODES.UNLINK_FAILED,
+                message: `Invalid provider: ${provider}. Must be one of: google, github, discord`,
+              },
+            };
+          }
+
+          const identities = user.identities ?? [];
+
+          // 最後のプロバイダーは解除できない
+          if (identities.length <= 1) {
+            return {
+              success: false,
+              error: {
+                code: "profile/unlink-last-provider",
+                message: "Cannot unlink the last authentication provider",
+              },
+            };
+          }
+
+          // 対象プロバイダーが連携されているか確認
+          const targetIdentity = identities.find(
+            (i) => i.provider === provider,
+          );
+          if (!targetIdentity) {
+            return {
+              success: false,
+              error: {
+                code: "profile/provider-not-linked",
+                message: `Provider ${provider} is not linked to this account`,
+              },
+            };
+          }
+
+          // Supabaseの unlinkIdentity を呼び出し
+          const { error } = await supabase.auth.unlinkIdentity(targetIdentity);
+
+          if (error) {
+            return {
+              success: false,
+              error: {
+                code: PROFILE_ERROR_CODES.UNLINK_FAILED,
+                message: error.message,
+              },
+            };
+          }
+
+          // 成功後に最新のユーザー情報を取得して通知
+          const { data: updatedUserData } = await supabase.auth.getUser();
+          const updatedUser = updatedUserData?.user ?? user;
+
+          // 成功時は認証状態変更を通知（最新のidentities情報を含む）
+          mainWindow.webContents.send(IPC_CHANNELS.AUTH_STATE_CHANGED, {
+            authenticated: true,
+            user: updatedUser,
+          });
+
+          return { success: true };
+        } catch (error) {
+          return {
+            success: false,
+            error: {
+              code: PROFILE_ERROR_CODES.UNLINK_FAILED,
+              message:
+                error instanceof Error
+                  ? error.message
+                  : "Failed to unlink provider",
             },
           };
         }
