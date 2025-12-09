@@ -68,22 +68,22 @@ graph TD
 
 ### 依存方向
 
-| レイヤー | 依存可能 | 依存不可 |
-|---------|---------|---------|
-| types/ | なし | - |
-| core/ | types/ | infrastructure/ |
-| infrastructure/ | core/, types/ | - |
+| レイヤー        | 依存可能      | 依存不可        |
+| --------------- | ------------- | --------------- |
+| types/          | なし          | -               |
+| core/           | types/        | infrastructure/ |
+| infrastructure/ | core/, types/ | -               |
 
 ### 禁止パターン
 
 ```typescript
 // ❌ 禁止: core が infrastructure に依存
 // core/entities/workflow.ts
-import { db } from '../infrastructure/database/client'; // NG
+import { db } from "../infrastructure/database/client"; // NG
 
 // ✅ 正解: core は types のみに依存
 // core/entities/workflow.ts
-import type { WorkflowStatus } from '../types'; // OK
+import type { WorkflowStatus } from "../types"; // OK
 ```
 
 ---
@@ -96,7 +96,7 @@ import type { WorkflowStatus } from '../types'; // OK
 
 ```typescript
 // types/workflow.ts
-export type WorkflowStatus = 'pending' | 'running' | 'completed' | 'failed';
+export type WorkflowStatus = "pending" | "running" | "completed" | "failed";
 
 export interface WorkflowBase {
   id: string;
@@ -113,7 +113,7 @@ export interface WorkflowBase {
 
 ```typescript
 // core/entities/workflow.ts
-import type { WorkflowBase, WorkflowStatus } from '../../types';
+import type { WorkflowBase, WorkflowStatus } from "../../types";
 
 export class Workflow implements WorkflowBase {
   constructor(
@@ -125,18 +125,18 @@ export class Workflow implements WorkflowBase {
   ) {}
 
   start(): void {
-    if (this.status !== 'pending') {
-      throw new Error('Workflow is not pending');
+    if (this.status !== "pending") {
+      throw new Error("Workflow is not pending");
     }
-    this.status = 'running';
+    this.status = "running";
     this.updatedAt = new Date();
   }
 
   complete(): void {
-    if (this.status !== 'running') {
-      throw new Error('Workflow is not running');
+    if (this.status !== "running") {
+      throw new Error("Workflow is not running");
     }
-    this.status = 'completed';
+    this.status = "completed";
     this.updatedAt = new Date();
   }
 }
@@ -148,15 +148,18 @@ export class Workflow implements WorkflowBase {
 
 ```typescript
 // infrastructure/database/repositories/workflow-repository.ts
-import { eq } from 'drizzle-orm';
-import type { IWorkflowRepository } from '../../../core/interfaces';
-import { Workflow } from '../../../core/entities';
-import { db } from '../client';
-import { workflows } from '../schema';
+import { eq } from "drizzle-orm";
+import type { IWorkflowRepository } from "../../../core/interfaces";
+import { Workflow } from "../../../core/entities";
+import { db } from "../client";
+import { workflows } from "../schema";
 
 export class WorkflowRepository implements IWorkflowRepository {
   async findById(id: string): Promise<Workflow | null> {
-    const result = await db.select().from(workflows).where(eq(workflows.id, id));
+    const result = await db
+      .select()
+      .from(workflows)
+      .where(eq(workflows.id, id));
     return result[0] ? this.toEntity(result[0]) : null;
   }
 
@@ -194,19 +197,19 @@ export class WorkflowRepository implements IWorkflowRepository {
 // packages/shared/index.ts
 
 // Types
-export * from './types';
+export * from "./types";
 
 // Core
-export * from './core/entities';
-export * from './core/interfaces';
+export * from "./core/entities";
+export * from "./core/interfaces";
 
 // Infrastructure
-export { WorkflowRepository } from './infrastructure/database/repositories';
-export { createDbClient } from './infrastructure/database/client';
-export * from './infrastructure/database/schema';
+export { WorkflowRepository } from "./infrastructure/database/repositories";
+export { createDbClient } from "./infrastructure/database/client";
+export * from "./infrastructure/database/schema";
 
 // Utils
-export * from './utils';
+export * from "./utils";
 ```
 
 ---
@@ -290,9 +293,9 @@ export * from './utils';
 import {
   WorkflowRepository,
   createDbClient,
-  type WorkflowBase
-} from '@repo/shared';
+  type WorkflowBase,
+} from "@repo/shared";
 
-const db = createDbClient('./data/app.db');
+const db = createDbClient("./data/app.db");
 const workflowRepo = new WorkflowRepository(db);
 ```

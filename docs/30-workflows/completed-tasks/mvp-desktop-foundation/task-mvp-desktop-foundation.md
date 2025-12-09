@@ -16,14 +16,14 @@
 
 > **重要**: MVP段階では無料サービス・無料枠のみを使用する
 
-| 項目 | 方針 | 理由 |
-|------|------|------|
-| CI/CD | GitHub Actions 無料枠 | Public repo: 無制限 / Private repo: 2,000分/月 |
-| コード署名 | **未署名**（スキップ） | 有料証明書（年間$99〜$299）が必要なため |
-| ビルド対象 | **macOS のみ**（開発機） | クロスプラットフォームビルドは CI 時間を消費 |
-| 自動更新 | **手動更新**（electron-updater 未使用） | 自動更新サーバーの運用コスト回避 |
-| E2E テスト | **ローカル実行のみ** | Playwright CI は時間を消費 |
-| 外部サービス | なし | SaaS連携は将来検討 |
+| 項目         | 方針                                    | 理由                                           |
+| ------------ | --------------------------------------- | ---------------------------------------------- |
+| CI/CD        | GitHub Actions 無料枠                   | Public repo: 無制限 / Private repo: 2,000分/月 |
+| コード署名   | **未署名**（スキップ）                  | 有料証明書（年間$99〜$299）が必要なため        |
+| ビルド対象   | **macOS のみ**（開発機）                | クロスプラットフォームビルドは CI 時間を消費   |
+| 自動更新     | **手動更新**（electron-updater 未使用） | 自動更新サーバーの運用コスト回避               |
+| E2E テスト   | **ローカル実行のみ**                    | Playwright CI は時間を消費                     |
+| 外部サービス | なし                                    | SaaS連携は将来検討                             |
 
 ---
 
@@ -55,15 +55,15 @@
 
 ### 成果物一覧
 
-| 種別           | 成果物                           | 配置先                                         |
-| -------------- | -------------------------------- | ---------------------------------------------- |
-| ライブラリ     | package.json 更新                | `package.json`, `apps/desktop/package.json`    |
-| 共通コード     | shared パッケージ                | `packages/shared/`                             |
-| DB スキーマ    | Drizzle スキーマ定義             | `packages/shared/infrastructure/database/`     |
-| UI コンポーネント | 最小 UI                        | `apps/desktop/src/renderer/`                   |
-| ファイル監視   | Watcher サービス                 | `apps/desktop/src/main/services/`              |
-| テスト         | ユニットテスト・E2E テスト       | `**/*.test.ts`, `**/*.test.tsx`                |
-| CI/CD          | GitHub Actions ワークフロー      | `.github/workflows/`                           |
+| 種別              | 成果物                      | 配置先                                      |
+| ----------------- | --------------------------- | ------------------------------------------- |
+| ライブラリ        | package.json 更新           | `package.json`, `apps/desktop/package.json` |
+| 共通コード        | shared パッケージ           | `packages/shared/`                          |
+| DB スキーマ       | Drizzle スキーマ定義        | `packages/shared/infrastructure/database/`  |
+| UI コンポーネント | 最小 UI                     | `apps/desktop/src/renderer/`                |
+| ファイル監視      | Watcher サービス            | `apps/desktop/src/main/services/`           |
+| テスト            | ユニットテスト・E2E テスト  | `**/*.test.ts`, `**/*.test.tsx`             |
+| CI/CD             | GitHub Actions ワークフロー | `.github/workflows/`                        |
 
 ---
 
@@ -80,25 +80,25 @@
 
 ## タスク分解サマリー
 
-| ID       | フェーズ              | サブタスク名                               | 責務                           | 依存       |
-| -------- | --------------------- | ------------------------------------------ | ------------------------------ | ---------- |
-| T-00-1   | Phase 0: 要件定義     | MVP スコープ定義                           | MVP 範囲の明確化               | なし       |
-| T-01-1   | Phase 1: 設計         | 共通パッケージ設計                         | packages/shared 構造設計       | T-00-1     |
-| T-01-2   | Phase 1: 設計         | DB スキーマ設計                            | SQLite テーブル設計            | T-00-1     |
-| T-01-3   | Phase 1: 設計         | CI/CD 設計                                 | GitHub Actions 設計            | T-00-1     |
-| T-02-1   | Phase 2: ライブラリ   | 依存ライブラリ導入                         | 全ライブラリのインストール     | T-01-1     |
-| T-03-1   | Phase 3: テスト作成   | DB リポジトリテスト                        | Repository 層のテスト          | T-02-1     |
-| T-03-2   | Phase 3: テスト作成   | ファイル監視テスト                         | Watcher サービスのテスト       | T-02-1     |
-| T-03-3   | Phase 3: テスト作成   | UI コンポーネントテスト                    | React コンポーネントのテスト   | T-02-1     |
-| T-04-1   | Phase 4: 実装         | 共通パッケージ実装                         | shared パッケージ構築          | T-03-1     |
-| T-04-2   | Phase 4: 実装         | DB スキーマ・リポジトリ実装                | Drizzle スキーマ実装           | T-03-1     |
-| T-04-3   | Phase 4: 実装         | ファイル監視サービス実装                   | chokidar による監視実装        | T-03-2     |
-| T-04-4   | Phase 4: 実装         | IPC 通信実装                               | Main ↔ Renderer 通信           | T-04-2,3   |
-| T-04-5   | Phase 4: 実装         | UI 実装                                    | ワークフロー一覧・ログ画面     | T-03-3     |
-| T-05-1   | Phase 5: リファクタ   | コード品質改善                             | Lint/Format/型チェック         | T-04-5     |
-| T-06-1   | Phase 6: CI/CD        | CI ワークフロー実装                        | テスト自動化                   | T-05-1     |
-| T-06-2   | Phase 6: CI/CD        | CD ワークフロー実装                        | Electron ビルド・リリース自動化 | T-06-1     |
-| T-07-1   | Phase 7: 品質保証     | 統合テスト・動作確認                       | End-to-End 動作検証            | T-06-2     |
+| ID     | フェーズ            | サブタスク名                | 責務                            | 依存     |
+| ------ | ------------------- | --------------------------- | ------------------------------- | -------- |
+| T-00-1 | Phase 0: 要件定義   | MVP スコープ定義            | MVP 範囲の明確化                | なし     |
+| T-01-1 | Phase 1: 設計       | 共通パッケージ設計          | packages/shared 構造設計        | T-00-1   |
+| T-01-2 | Phase 1: 設計       | DB スキーマ設計             | SQLite テーブル設計             | T-00-1   |
+| T-01-3 | Phase 1: 設計       | CI/CD 設計                  | GitHub Actions 設計             | T-00-1   |
+| T-02-1 | Phase 2: ライブラリ | 依存ライブラリ導入          | 全ライブラリのインストール      | T-01-1   |
+| T-03-1 | Phase 3: テスト作成 | DB リポジトリテスト         | Repository 層のテスト           | T-02-1   |
+| T-03-2 | Phase 3: テスト作成 | ファイル監視テスト          | Watcher サービスのテスト        | T-02-1   |
+| T-03-3 | Phase 3: テスト作成 | UI コンポーネントテスト     | React コンポーネントのテスト    | T-02-1   |
+| T-04-1 | Phase 4: 実装       | 共通パッケージ実装          | shared パッケージ構築           | T-03-1   |
+| T-04-2 | Phase 4: 実装       | DB スキーマ・リポジトリ実装 | Drizzle スキーマ実装            | T-03-1   |
+| T-04-3 | Phase 4: 実装       | ファイル監視サービス実装    | chokidar による監視実装         | T-03-2   |
+| T-04-4 | Phase 4: 実装       | IPC 通信実装                | Main ↔ Renderer 通信            | T-04-2,3 |
+| T-04-5 | Phase 4: 実装       | UI 実装                     | ワークフロー一覧・ログ画面      | T-03-3   |
+| T-05-1 | Phase 5: リファクタ | コード品質改善              | Lint/Format/型チェック          | T-04-5   |
+| T-06-1 | Phase 6: CI/CD      | CI ワークフロー実装         | テスト自動化                    | T-05-1   |
+| T-06-2 | Phase 6: CI/CD      | CD ワークフロー実装         | Electron ビルド・リリース自動化 | T-06-1   |
+| T-07-1 | Phase 7: 品質保証   | 統合テスト・動作確認        | End-to-End 動作検証             | T-06-2   |
 
 **総サブタスク数**: 17 個
 
@@ -188,17 +188,17 @@ MVP の機能範囲を文書化する。
 
 #### 活用スキル
 
-| スキル名                    | 活用方法                                 |
-| --------------------------- | ---------------------------------------- |
-| requirements-engineering    | 要件のトリアージと範囲確定               |
-| acceptance-criteria-writing | MVP 完了基準の明確化                     |
-| functional-non-functional   | 機能要件と非機能要件の分類               |
+| スキル名                    | 活用方法                   |
+| --------------------------- | -------------------------- |
+| requirements-engineering    | 要件のトリアージと範囲確定 |
+| acceptance-criteria-writing | MVP 完了基準の明確化       |
+| functional-non-functional   | 機能要件と非機能要件の分類 |
 
 #### 成果物
 
-| 成果物               | パス                                                            | 内容                   |
-| -------------------- | --------------------------------------------------------------- | ---------------------- |
-| MVP スコープ定義書   | `docs/30-workflows/mvp-desktop-foundation/mvp-scope.md`         | MVP 範囲の明文化       |
+| 成果物             | パス                                                    | 内容             |
+| ------------------ | ------------------------------------------------------- | ---------------- |
+| MVP スコープ定義書 | `docs/30-workflows/mvp-desktop-foundation/mvp-scope.md` | MVP 範囲の明文化 |
 
 #### 完了条件
 
@@ -237,16 +237,16 @@ packages/shared の内部構造を設計する。
 
 #### 活用スキル
 
-| スキル名                     | 活用方法                         |
-| ---------------------------- | -------------------------------- |
-| clean-architecture-principles | レイヤー構造と依存方向の定義     |
-| solid-principles             | 単一責務の原則に基づく分割       |
+| スキル名                      | 活用方法                     |
+| ----------------------------- | ---------------------------- |
+| clean-architecture-principles | レイヤー構造と依存方向の定義 |
+| solid-principles              | 単一責務の原則に基づく分割   |
 
 #### 成果物
 
-| 成果物             | パス                                                                | 内容                 |
-| ------------------ | ------------------------------------------------------------------- | -------------------- |
-| パッケージ設計書   | `docs/30-workflows/mvp-desktop-foundation/shared-package-design.md` | 構造と依存ルール     |
+| 成果物           | パス                                                                | 内容             |
+| ---------------- | ------------------------------------------------------------------- | ---------------- |
+| パッケージ設計書 | `docs/30-workflows/mvp-desktop-foundation/shared-package-design.md` | 構造と依存ルール |
 
 #### 完了条件
 
@@ -283,17 +283,17 @@ SQLite のテーブル設計を行う。
 
 #### 活用スキル
 
-| スキル名               | 活用方法                           |
-| ---------------------- | ---------------------------------- |
-| database-normalization | 正規化レベルの決定                 |
-| indexing-strategies    | 検索パフォーマンス向上             |
-| sql-anti-patterns      | アンチパターン回避                 |
+| スキル名               | 活用方法               |
+| ---------------------- | ---------------------- |
+| database-normalization | 正規化レベルの決定     |
+| indexing-strategies    | 検索パフォーマンス向上 |
+| sql-anti-patterns      | アンチパターン回避     |
 
 #### 成果物
 
-| 成果物           | パス                                                           | 内容               |
-| ---------------- | -------------------------------------------------------------- | ------------------ |
-| DB 設計書        | `docs/30-workflows/mvp-desktop-foundation/db-schema-design.md` | ER 図とカラム定義  |
+| 成果物    | パス                                                           | 内容              |
+| --------- | -------------------------------------------------------------- | ----------------- |
+| DB 設計書 | `docs/30-workflows/mvp-desktop-foundation/db-schema-design.md` | ER 図とカラム定義 |
 
 #### 完了条件
 
@@ -330,16 +330,16 @@ CI/CD パイプラインを設計する。
 
 #### 活用スキル
 
-| スキル名               | 活用方法                         |
-| ---------------------- | -------------------------------- |
-| ci-cd-pipelines        | ワークフロー構成設計             |
-| deployment-strategies  | リリース戦略の決定               |
+| スキル名              | 活用方法             |
+| --------------------- | -------------------- |
+| ci-cd-pipelines       | ワークフロー構成設計 |
+| deployment-strategies | リリース戦略の決定   |
 
 #### 成果物
 
-| 成果物         | パス                                                         | 内容                 |
-| -------------- | ------------------------------------------------------------ | -------------------- |
-| CI/CD 設計書   | `docs/30-workflows/mvp-desktop-foundation/cicd-design.md`    | ワークフロー構成図   |
+| 成果物       | パス                                                      | 内容               |
+| ------------ | --------------------------------------------------------- | ------------------ |
+| CI/CD 設計書 | `docs/30-workflows/mvp-desktop-foundation/cicd-design.md` | ワークフロー構成図 |
 
 #### 完了条件
 
@@ -378,14 +378,15 @@ package.json の更新とライブラリインストール。
 
 #### 活用スキル
 
-| スキル名                      | 活用方法                       |
-| ----------------------------- | ------------------------------ |
-| monorepo-dependency-management | ワークスペース間の依存管理     |
-| semantic-versioning           | バージョン指定戦略             |
+| スキル名                       | 活用方法                   |
+| ------------------------------ | -------------------------- |
+| monorepo-dependency-management | ワークスペース間の依存管理 |
+| semantic-versioning            | バージョン指定戦略         |
 
 #### 導入ライブラリ一覧
 
 **ルート（devDependencies）**:
+
 ```
 @testing-library/react
 @testing-library/user-event
@@ -395,6 +396,7 @@ eslint-plugin-boundaries
 ```
 
 **packages/shared**:
+
 ```
 drizzle-orm
 zod
@@ -402,12 +404,14 @@ date-fns
 ```
 
 **apps/desktop（dependencies）**:
+
 ```
 chokidar
 piscina
 ```
 
 **apps/desktop（devDependencies）**:
+
 ```
 @testing-library/react
 vitest
@@ -415,10 +419,10 @@ vitest
 
 #### 成果物
 
-| 成果物               | パス                                | 内容                   |
-| -------------------- | ----------------------------------- | ---------------------- |
-| 更新された package.json | 各 package.json                    | 依存関係追加           |
-| pnpm-lock.yaml       | `pnpm-lock.yaml`                    | ロックファイル更新     |
+| 成果物                  | パス             | 内容               |
+| ----------------------- | ---------------- | ------------------ |
+| 更新された package.json | 各 package.json  | 依存関係追加       |
+| pnpm-lock.yaml          | `pnpm-lock.yaml` | ロックファイル更新 |
 
 #### 完了条件
 
@@ -457,15 +461,15 @@ Repository 層のユニットテストを作成する。
 
 #### 活用スキル
 
-| スキル名          | 活用方法                       |
-| ----------------- | ------------------------------ |
-| tdd-principles    | Red-Green-Refactor サイクル    |
-| test-doubles      | SQLite のインメモリ DB 活用    |
+| スキル名       | 活用方法                    |
+| -------------- | --------------------------- |
+| tdd-principles | Red-Green-Refactor サイクル |
+| test-doubles   | SQLite のインメモリ DB 活用 |
 
 #### 成果物
 
-| 成果物                   | パス                                                              | 内容             |
-| ------------------------ | ----------------------------------------------------------------- | ---------------- |
+| 成果物                     | パス                                                                               | 内容        |
+| -------------------------- | ---------------------------------------------------------------------------------- | ----------- |
 | Workflow Repository テスト | `packages/shared/infrastructure/database/repositories/workflow-repository.test.ts` | CRUD テスト |
 
 #### TDD 検証: Red 状態確認
@@ -511,16 +515,16 @@ Watcher サービスのユニットテストを作成する。
 
 #### 活用スキル
 
-| スキル名                    | 活用方法                     |
-| --------------------------- | ---------------------------- |
-| event-driven-file-watching  | イベント発火のテスト         |
-| test-doubles                | ファイルシステムのモック     |
+| スキル名                   | 活用方法                 |
+| -------------------------- | ------------------------ |
+| event-driven-file-watching | イベント発火のテスト     |
+| test-doubles               | ファイルシステムのモック |
 
 #### 成果物
 
-| 成果物               | パス                                                        | 内容               |
-| -------------------- | ----------------------------------------------------------- | ------------------ |
-| Watcher テスト       | `apps/desktop/src/main/services/watcher/watcher.test.ts`    | イベント検知テスト |
+| 成果物         | パス                                                     | 内容               |
+| -------------- | -------------------------------------------------------- | ------------------ |
+| Watcher テスト | `apps/desktop/src/main/services/watcher/watcher.test.ts` | イベント検知テスト |
 
 #### TDD 検証: Red 状態確認
 
@@ -565,17 +569,17 @@ React コンポーネントのテストを作成する。
 
 #### 活用スキル
 
-| スキル名                  | 活用方法                       |
-| ------------------------- | ------------------------------ |
-| react-testing-library     | ユーザー視点のテスト           |
-| accessibility-testing     | アクセシビリティのテスト       |
+| スキル名              | 活用方法                 |
+| --------------------- | ------------------------ |
+| react-testing-library | ユーザー視点のテスト     |
+| accessibility-testing | アクセシビリティのテスト |
 
 #### 成果物
 
-| 成果物                     | パス                                                              | 内容               |
-| -------------------------- | ----------------------------------------------------------------- | ------------------ |
-| WorkflowList テスト        | `apps/desktop/src/renderer/components/WorkflowList.test.tsx`      | 一覧表示テスト     |
-| ExecutionLog テスト        | `apps/desktop/src/renderer/components/ExecutionLog.test.tsx`      | ログ表示テスト     |
+| 成果物              | パス                                                         | 内容           |
+| ------------------- | ------------------------------------------------------------ | -------------- |
+| WorkflowList テスト | `apps/desktop/src/renderer/components/WorkflowList.test.tsx` | 一覧表示テスト |
+| ExecutionLog テスト | `apps/desktop/src/renderer/components/ExecutionLog.test.tsx` | ログ表示テスト |
 
 #### TDD 検証: Red 状態確認
 
@@ -622,11 +626,11 @@ shared パッケージの基本構造を構築する。
 
 #### 成果物
 
-| 成果物           | パス                                    | 内容               |
-| ---------------- | --------------------------------------- | ------------------ |
-| package.json     | `packages/shared/package.json`          | パッケージ定義     |
-| tsconfig.json    | `packages/shared/tsconfig.json`         | TypeScript 設定    |
-| index.ts         | `packages/shared/index.ts`              | エクスポート       |
+| 成果物        | パス                            | 内容            |
+| ------------- | ------------------------------- | --------------- |
+| package.json  | `packages/shared/package.json`  | パッケージ定義  |
+| tsconfig.json | `packages/shared/tsconfig.json` | TypeScript 設定 |
+| index.ts      | `packages/shared/index.ts`      | エクスポート    |
 
 #### TDD 検証: Green 状態確認
 
@@ -671,11 +675,11 @@ SQLite スキーマと Repository を実装する。
 
 #### 成果物
 
-| 成果物             | パス                                                              | 内容               |
-| ------------------ | ----------------------------------------------------------------- | ------------------ |
-| スキーマ定義       | `packages/shared/infrastructure/database/schema/`                 | テーブル定義       |
-| DB クライアント    | `packages/shared/infrastructure/database/client.ts`               | 接続管理           |
-| Repository         | `packages/shared/infrastructure/database/repositories/`           | CRUD 実装          |
+| 成果物          | パス                                                    | 内容         |
+| --------------- | ------------------------------------------------------- | ------------ |
+| スキーマ定義    | `packages/shared/infrastructure/database/schema/`       | テーブル定義 |
+| DB クライアント | `packages/shared/infrastructure/database/client.ts`     | 接続管理     |
+| Repository      | `packages/shared/infrastructure/database/repositories/` | CRUD 実装    |
 
 #### TDD 検証: Green 状態確認
 
@@ -720,10 +724,10 @@ chokidar によるファイル監視サービスを実装する。
 
 #### 成果物
 
-| 成果物           | パス                                                        | 内容             |
-| ---------------- | ----------------------------------------------------------- | ---------------- |
-| Watcher サービス | `apps/desktop/src/main/services/watcher/watcher.ts`         | 監視実装         |
-| 設定             | `apps/desktop/src/main/services/watcher/config.ts`          | 監視設定         |
+| 成果物           | パス                                                | 内容     |
+| ---------------- | --------------------------------------------------- | -------- |
+| Watcher サービス | `apps/desktop/src/main/services/watcher/watcher.ts` | 監視実装 |
+| 設定             | `apps/desktop/src/main/services/watcher/config.ts`  | 監視設定 |
 
 #### TDD 検証: Green 状態確認
 
@@ -768,11 +772,11 @@ IPC チャネルとハンドラーを実装する。
 
 #### 成果物
 
-| 成果物           | パス                                               | 内容             |
-| ---------------- | -------------------------------------------------- | ---------------- |
-| チャネル定義     | `apps/desktop/src/main/ipc/channels.ts`            | 型定義           |
-| ハンドラー       | `apps/desktop/src/main/ipc/handlers/`              | 各ハンドラー     |
-| Preload API      | `apps/desktop/src/preload/api.ts`                  | 公開 API         |
+| 成果物       | パス                                    | 内容         |
+| ------------ | --------------------------------------- | ------------ |
+| チャネル定義 | `apps/desktop/src/main/ipc/channels.ts` | 型定義       |
+| ハンドラー   | `apps/desktop/src/main/ipc/handlers/`   | 各ハンドラー |
+| Preload API  | `apps/desktop/src/preload/api.ts`       | 公開 API     |
 
 #### 完了条件
 
@@ -809,11 +813,11 @@ React コンポーネントを実装する。
 
 #### 成果物
 
-| 成果物             | パス                                                        | 内容           |
-| ------------------ | ----------------------------------------------------------- | -------------- |
-| WorkflowList       | `apps/desktop/src/renderer/components/WorkflowList.tsx`     | 一覧表示       |
-| ExecutionLog       | `apps/desktop/src/renderer/components/ExecutionLog.tsx`     | ログ表示       |
-| App                | `apps/desktop/src/renderer/App.tsx`                         | ルート         |
+| 成果物       | パス                                                    | 内容     |
+| ------------ | ------------------------------------------------------- | -------- |
+| WorkflowList | `apps/desktop/src/renderer/components/WorkflowList.tsx` | 一覧表示 |
+| ExecutionLog | `apps/desktop/src/renderer/components/ExecutionLog.tsx` | ログ表示 |
+| App          | `apps/desktop/src/renderer/App.tsx`                     | ルート   |
 
 #### TDD 検証: Green 状態確認
 
@@ -860,10 +864,10 @@ MVP でも最低限のコード品質を維持する。
 
 #### 成果物
 
-| 成果物               | パス                        | 内容             |
-| -------------------- | --------------------------- | ---------------- |
-| ESLint 設定更新      | `eslint.config.js`          | ルール追加       |
-| Prettier 設定        | `.prettierrc`               | フォーマット設定 |
+| 成果物          | パス               | 内容             |
+| --------------- | ------------------ | ---------------- |
+| ESLint 設定更新 | `eslint.config.js` | ルール追加       |
+| Prettier 設定   | `.prettierrc`      | フォーマット設定 |
 
 #### TDD 検証: 継続 Green 確認
 
@@ -911,9 +915,9 @@ CI ワークフローを実装する。
 
 #### 成果物
 
-| 成果物           | パス                            | 内容             |
-| ---------------- | ------------------------------- | ---------------- |
-| CI ワークフロー  | `.github/workflows/ci.yml`      | テスト自動化     |
+| 成果物          | パス                       | 内容         |
+| --------------- | -------------------------- | ------------ |
+| CI ワークフロー | `.github/workflows/ci.yml` | テスト自動化 |
 
 #### 完了条件
 
@@ -950,24 +954,24 @@ CD ワークフローを実装する。
 
 #### 成果物
 
-| 成果物               | パス                                      | 内容               |
-| -------------------- | ----------------------------------------- | ------------------ |
-| CD ワークフロー      | `.github/workflows/release-desktop.yml`   | ビルド・リリース   |
+| 成果物          | パス                                    | 内容             |
+| --------------- | --------------------------------------- | ---------------- |
+| CD ワークフロー | `.github/workflows/release-desktop.yml` | ビルド・リリース |
 
 #### コスト最適化
 
 > **無料運用のための制限事項**
 
-| 項目 | MVP方針 | 将来（有料化後） |
-|------|---------|-----------------|
-| ビルド対象 | macOS のみ | macOS + Windows + Linux |
-| コード署名 | 未署名 | Apple/Microsoft 証明書 |
-| 自動更新 | なし（手動配布） | electron-updater |
-| ビルドトリガー | 手動タグ or ローカルビルド | 自動タグ |
+| 項目           | MVP方針                    | 将来（有料化後）        |
+| -------------- | -------------------------- | ----------------------- |
+| ビルド対象     | macOS のみ                 | macOS + Windows + Linux |
+| コード署名     | 未署名                     | Apple/Microsoft 証明書  |
+| 自動更新       | なし（手動配布）           | electron-updater        |
+| ビルドトリガー | 手動タグ or ローカルビルド | 自動タグ                |
 
 #### 完了条件
 
-- [ ] v* タグで自動実行される（または手動 workflow_dispatch）
+- [ ] v\* タグで自動実行される（または手動 workflow_dispatch）
 - [ ] **macOS 向けのみ**ビルドされる（コスト削減）
 - [ ] GitHub Releases に自動アップロードされる
 - [ ] **未署名**でビルドされる（Gatekeeper 警告は許容）
@@ -1005,17 +1009,17 @@ End-to-End でシステム全体が動作することを確認する。
 
 > **E2E テストはローカル実行のみ**（CI での Playwright 実行はコスト消費が大きいため）
 
-| テスト種別 | 実行環境 | 理由 |
-|-----------|---------|------|
-| ユニットテスト | CI（GitHub Actions） | 高速、低コスト |
-| E2E テスト | **ローカルのみ** | Playwright は CI 時間を消費 |
+| テスト種別     | 実行環境             | 理由                        |
+| -------------- | -------------------- | --------------------------- |
+| ユニットテスト | CI（GitHub Actions） | 高速、低コスト              |
+| E2E テスト     | **ローカルのみ**     | Playwright は CI 時間を消費 |
 
 #### 成果物
 
-| 成果物             | パス                                                            | 内容             |
-| ------------------ | --------------------------------------------------------------- | ---------------- |
-| E2E テスト         | `apps/desktop/e2e/`                                             | 統合テスト（ローカル実行用） |
-| 動作確認レポート   | `docs/30-workflows/mvp-desktop-foundation/verification-report.md` | 検証結果       |
+| 成果物           | パス                                                              | 内容                         |
+| ---------------- | ----------------------------------------------------------------- | ---------------------------- |
+| E2E テスト       | `apps/desktop/e2e/`                                               | 統合テスト（ローカル実行用） |
+| 動作確認レポート | `docs/30-workflows/mvp-desktop-foundation/verification-report.md` | 検証結果                     |
 
 #### 完了条件
 
@@ -1060,12 +1064,12 @@ End-to-End でシステム全体が動作することを確認する。
 
 ## リスクと対策
 
-| リスク                         | 影響度 | 発生確率 | 対策                                   | 対応サブタスク |
-| ------------------------------ | ------ | -------- | -------------------------------------- | -------------- |
-| Node.js バージョン不一致       | 高     | 高       | v22 への統一、CI での明示              | T-06-1         |
-| Electron ビルド失敗            | 高     | 中       | ローカルでの事前検証                   | T-06-2         |
-| chokidar パフォーマンス問題    | 中     | 低       | 除外パターンの最適化                   | T-04-3         |
-| IPC 型安全性の欠如             | 中     | 中       | zod による実行時検証                   | T-04-4         |
+| リスク                      | 影響度 | 発生確率 | 対策                      | 対応サブタスク |
+| --------------------------- | ------ | -------- | ------------------------- | -------------- |
+| Node.js バージョン不一致    | 高     | 高       | v22 への統一、CI での明示 | T-06-1         |
+| Electron ビルド失敗         | 高     | 中       | ローカルでの事前検証      | T-06-2         |
+| chokidar パフォーマンス問題 | 中     | 低       | 除外パターンの最適化      | T-04-3         |
+| IPC 型安全性の欠如          | 中     | 中       | zod による実行時検証      | T-04-4         |
 
 ---
 
@@ -1088,19 +1092,19 @@ End-to-End でシステム全体が動作することを確認する。
 
 ### コスト関連の制約と将来計画
 
-| 制約 | MVP対応 | 将来対応（有料化後） |
-|------|---------|---------------------|
-| コード署名なし | macOS Gatekeeper 警告を許容 | Apple Developer Program ($99/年) |
-| Windows 未対応 | macOS 開発機のみ | GitHub Actions Windows ランナー |
-| 自動更新なし | 手動で GitHub Releases からダウンロード | electron-updater + S3/GitHub |
-| E2E テスト CI なし | ローカル実行 | Playwright CI ワークフロー |
+| 制約               | MVP対応                                 | 将来対応（有料化後）             |
+| ------------------ | --------------------------------------- | -------------------------------- |
+| コード署名なし     | macOS Gatekeeper 警告を許容             | Apple Developer Program ($99/年) |
+| Windows 未対応     | macOS 開発機のみ                        | GitHub Actions Windows ランナー  |
+| 自動更新なし       | 手動で GitHub Releases からダウンロード | electron-updater + S3/GitHub     |
+| E2E テスト CI なし | ローカル実行                            | Playwright CI ワークフロー       |
 
 ### GitHub Actions 無料枠の範囲
 
-| リポジトリ種別 | 無料枠 | 備考 |
-|---------------|--------|------|
-| Public | 無制限 | 推奨 |
-| Private | 2,000分/月 | macOS は 10倍消費 (200分相当) |
+| リポジトリ種別 | 無料枠     | 備考                          |
+| -------------- | ---------- | ----------------------------- |
+| Public         | 無制限     | 推奨                          |
+| Private        | 2,000分/月 | macOS は 10倍消費 (200分相当) |
 
 **MVP推奨**: Public リポジトリで運用し、無制限の CI/CD を活用する
 
