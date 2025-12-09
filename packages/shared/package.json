@@ -17,9 +17,21 @@
       "types": "./dist/infrastructure/index.d.ts",
       "import": "./dist/infrastructure/index.js"
     },
+    "./infrastructure/auth": {
+      "types": "./dist/infrastructure/auth/index.d.ts",
+      "import": "./dist/infrastructure/auth/index.js"
+    },
+    "./infrastructure/database": {
+      "types": "./dist/infrastructure/database/index.d.ts",
+      "import": "./dist/infrastructure/database/index.js"
+    },
     "./types": {
       "types": "./dist/types/index.d.ts",
       "import": "./dist/types/index.js"
+    },
+    "./types/auth": {
+      "types": "./dist/types/auth.d.ts",
+      "import": "./dist/types/auth.js"
     }
   },
   "scripts": {
@@ -32,13 +44,14 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.86.2",
+    "date-fns": "^4.1.0",
     "drizzle-orm": "^0.39.0",
-    "zod": "^4.1.13",
-    "date-fns": "^4.1.0"
+    "zod": "^4.1.13"
   },
   "devDependencies": {
-    "better-sqlite3": "^12.5.0",
     "@types/better-sqlite3": "^7.6.13",
+    "better-sqlite3": "^12.5.0",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
   },

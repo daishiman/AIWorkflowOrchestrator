@@ -16,6 +16,7 @@ import {
   createDashboardSlice,
   type DashboardSlice,
 } from "./slices/dashboardSlice";
+import { createAuthSlice, type AuthSlice } from "./slices/authSlice";
 
 // Combined store type
 export type AppStore = NavigationSlice &
@@ -24,7 +25,8 @@ export type AppStore = NavigationSlice &
   GraphSlice &
   SettingsSlice &
   UISlice &
-  DashboardSlice;
+  DashboardSlice &
+  AuthSlice;
 
 // Custom storage for Set serialization
 const customStorage = {
@@ -71,6 +73,7 @@ export const useAppStore = create<AppStore>()(
         ...createSettingsSlice(...args),
         ...createUISlice(...args),
         ...createDashboardSlice(...args),
+        ...createAuthSlice(...args),
       }),
       {
         name: "knowledge-studio-store",
@@ -114,6 +117,18 @@ export const useDashboardStats = () =>
   useAppStore((state) => state.dashboardStats);
 export const useActivityFeed = () => useAppStore((state) => state.activityFeed);
 
+// Auth selectors
+export const useIsAuthenticated = () =>
+  useAppStore((state) => state.isAuthenticated);
+export const useAuthUser = () => useAppStore((state) => state.authUser);
+export const useAuthSession = () => useAppStore((state) => state.session);
+export const useUserProfile = () => useAppStore((state) => state.profile);
+export const useLinkedProviders = () =>
+  useAppStore((state) => state.linkedProviders);
+export const useAuthLoading = () => useAppStore((state) => state.isLoading);
+export const useAuthError = () => useAppStore((state) => state.authError);
+export const useIsOffline = () => useAppStore((state) => state.isOffline);
+
 // Computed selectors
 export const useIsDesktop = () =>
   useAppStore((state) => state.responsiveMode === "desktop");
@@ -125,4 +140,17 @@ export const useStoragePercentage = () =>
       ? (state.dashboardStats.storageUsed / state.dashboardStats.storageTotal) *
         100
       : 0,
+  );
+
+// Auth computed selectors
+export const useDisplayName = () =>
+  useAppStore(
+    (state) =>
+      state.profile?.displayName ?? state.authUser?.displayName ?? "User",
+  );
+export const useUserEmail = () =>
+  useAppStore((state) => state.profile?.email ?? state.authUser?.email ?? "");
+export const useUserAvatar = () =>
+  useAppStore(
+    (state) => state.profile?.avatarUrl ?? state.authUser?.avatarUrl ?? null,
   );

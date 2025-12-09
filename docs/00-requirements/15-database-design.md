@@ -157,6 +157,33 @@ packages/shared/infrastructure/db/
 | created_at  | TEXT | NO   | 作成日時                               |
 | updated_at  | TEXT | NO   | 更新日時                               |
 
+#### user_profiles（ユーザープロフィール - Supabase）
+
+Supabase Auth と連携するユーザープロフィールテーブル。
+
+| カラム       | 型   | NULL | 説明                               |
+| ------------ | ---- | ---- | ---------------------------------- |
+| id           | TEXT | NO   | UUID主キー（auth.users.id と同一） |
+| display_name | TEXT | NO   | 表示名（3-50文字）                 |
+| email        | TEXT | NO   | メールアドレス                     |
+| avatar_url   | TEXT | YES  | アバター画像URL                    |
+| plan         | TEXT | NO   | プラン（free/pro/enterprise）      |
+| created_at   | TEXT | NO   | 作成日時（ISO8601形式）            |
+| updated_at   | TEXT | NO   | 更新日時（ISO8601形式）            |
+
+**Supabase RLS ポリシー**:
+
+- SELECT: `auth.uid() = id` （自分のプロフィールのみ閲覧可能）
+- UPDATE: `auth.uid() = id` （自分のプロフィールのみ更新可能）
+- INSERT: 認証トリガーで自動作成
+
+**設計上の注意点**:
+
+- `id` は Supabase `auth.users` テーブルの `id` と同一（外部キー参照）
+- プロフィール作成は認証時のトリガーで自動実行
+- `display_name` は 3-50文字、HTMLタグ不許可
+- `avatar_url` は https:// または http://localhost のみ許可
+
 #### api_keys（APIキー管理）
 
 | カラム       | 型   | NULL | 説明                                |

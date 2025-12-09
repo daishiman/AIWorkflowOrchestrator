@@ -22,6 +22,10 @@ import type {
   MenuActionEvent,
   ThemeSetRequest,
   ThemeSystemChangedEvent,
+  AuthLoginRequest,
+  ProfileUpdateRequest,
+  ProfileLinkProviderRequest,
+  AuthState,
 } from "./types";
 
 // Type-safe invoke wrapper
@@ -119,6 +123,26 @@ const electronAPI: ElectronAPI = {
         IPC_CHANNELS.THEME_SYSTEM_CHANGED,
         callback,
       ),
+  },
+
+  auth: {
+    login: (request: AuthLoginRequest) =>
+      safeInvoke(IPC_CHANNELS.AUTH_LOGIN, request),
+    logout: () => safeInvoke(IPC_CHANNELS.AUTH_LOGOUT),
+    getSession: () => safeInvoke(IPC_CHANNELS.AUTH_GET_SESSION),
+    refresh: () => safeInvoke(IPC_CHANNELS.AUTH_REFRESH),
+    checkOnline: () => safeInvoke(IPC_CHANNELS.AUTH_CHECK_ONLINE),
+    onAuthStateChanged: (callback: (state: AuthState) => void) =>
+      safeOn<AuthState>(IPC_CHANNELS.AUTH_STATE_CHANGED, callback),
+  },
+
+  profile: {
+    get: () => safeInvoke(IPC_CHANNELS.PROFILE_GET),
+    update: (request: ProfileUpdateRequest) =>
+      safeInvoke(IPC_CHANNELS.PROFILE_UPDATE, request),
+    getProviders: () => safeInvoke(IPC_CHANNELS.PROFILE_GET_PROVIDERS),
+    linkProvider: (request: ProfileLinkProviderRequest) =>
+      safeInvoke(IPC_CHANNELS.PROFILE_LINK_PROVIDER, request),
   },
 };
 

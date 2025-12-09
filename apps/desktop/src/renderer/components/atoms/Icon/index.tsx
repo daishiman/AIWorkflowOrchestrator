@@ -7,6 +7,8 @@ import {
   Network,
   Aperture,
   User,
+  UserPlus,
+  LogIn,
   Folder,
   FolderOpen,
   FileText,
@@ -14,6 +16,7 @@ import {
   Menu,
   X,
   Check,
+  CheckCircle,
   Loader2,
   Send,
   RefreshCw,
@@ -25,6 +28,8 @@ import {
   Sun,
   Moon,
   Monitor,
+  Pencil,
+  WifiOff,
   type LucideIcon,
 } from "lucide-react";
 
@@ -35,6 +40,8 @@ export type IconName =
   | "network"
   | "aperture"
   | "user"
+  | "user-plus"
+  | "log-in"
   | "folder"
   | "folder-open"
   | "file-text"
@@ -42,6 +49,7 @@ export type IconName =
   | "menu"
   | "x"
   | "check"
+  | "check-circle"
   | "loader-2"
   | "send"
   | "refresh-cw"
@@ -52,7 +60,9 @@ export type IconName =
   | "pause"
   | "sun"
   | "moon"
-  | "monitor";
+  | "monitor"
+  | "pencil"
+  | "wifi-off";
 
 export interface IconProps extends React.SVGAttributes<SVGElement> {
   name: IconName;
@@ -69,6 +79,8 @@ const iconMap: Record<IconName, LucideIcon> = {
   network: Network,
   aperture: Aperture,
   user: User,
+  "user-plus": UserPlus,
+  "log-in": LogIn,
   folder: Folder,
   "folder-open": FolderOpen,
   "file-text": FileText,
@@ -76,6 +88,7 @@ const iconMap: Record<IconName, LucideIcon> = {
   menu: Menu,
   x: X,
   check: Check,
+  "check-circle": CheckCircle,
   "loader-2": Loader2,
   send: Send,
   "refresh-cw": RefreshCw,
@@ -87,6 +100,8 @@ const iconMap: Record<IconName, LucideIcon> = {
   sun: Sun,
   moon: Moon,
   monitor: Monitor,
+  pencil: Pencil,
+  "wifi-off": WifiOff,
 };
 
 export const Icon = forwardRef<SVGSVGElement, IconProps>(
