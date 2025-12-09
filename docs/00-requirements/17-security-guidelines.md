@@ -249,6 +249,20 @@ Electron Desktop アプリでは Supabase Auth を使用し、OAuth 2.0 PKCE フ
 - ユーザー入力のサニタイズ（DOMPurify等）
 - URLスキームの検証（javascript:の拒否）
 
+### 17.4.5 Zodスキーマによるバリデーション
+
+認証関連の入力バリデーションにはZodスキーマを使用し、型安全性とランタイム検証を統合する。
+
+**実装場所**: `packages/shared/schemas/auth.ts`
+
+**主要スキーマ**:
+
+| スキーマ              | 対象              | セキュリティ対策                  |
+| --------------------- | ----------------- | --------------------------------- |
+| `oauthProviderSchema` | OAuthプロバイダー | 許可プロバイダーのホワイトリスト  |
+| `displayNameSchema`   | 表示名            | XSS対策（特殊文字禁止）、長さ制限 |
+| `avatarUrlSchema`     | アバターURL       | HTTPSのみ許可、URL形式検証        |
+
 ---
 
 ## 17.5 API セキュリティ
@@ -355,7 +369,26 @@ Electron Desktop アプリでは Supabase Auth を使用し、OAuth 2.0 PKCE フ
 | webSecurity                 | true   | Same-Originポリシーの強制          |
 | allowRunningInsecureContent | false  | HTTP上のコンテンツ実行防止         |
 
-### 17.7.2 IPC通信のセキュリティ
+### 17.7.2 Content Security Policy (CSP)
+
+ElectronアプリにCSPを適用し、XSS攻撃を防御する。
+
+**実装場所**: `apps/desktop/src/main/infrastructure/security/csp.ts`
+
+**環境別設定**:
+
+| 環境 | script-src                           | unsafe-eval | 用途               |
+| ---- | ------------------------------------ | ----------- | ------------------ |
+| 本番 | 'self'                               | 禁止        | 厳格なセキュリティ |
+| 開発 | 'self' 'unsafe-inline' 'unsafe-eval' | 許可        | HMR対応            |
+
+**共通設定**:
+
+- `object-src 'none'`: プラグイン無効化
+- `frame-ancestors 'none'`: クリックジャッキング対策
+- `upgrade-insecure-requests`: HTTP→HTTPS自動変換
+
+### 17.7.3 IPC通信のセキュリティ
 
 **preloadスクリプトでのAPI公開**:
 
@@ -364,6 +397,18 @@ Electron Desktop アプリでは Supabase Auth を使用し、OAuth 2.0 PKCE フ
 - 引数のバリデーションをMain側で実施する
 - センシティブな操作にはユーザー確認ダイアログを表示する
 
+**IPC sender検証**:
+
+認証関連のIPCハンドラーには`withValidation`ラッパーを適用し、不正なsenderからの呼び出しを拒否する。
+
+**実装場所**: `apps/desktop/src/main/infrastructure/security/ipc-validator.ts`
+
+**検証項目**:
+
+1. webContentsに対応するBrowserWindowの存在確認
+2. DevToolsからの呼び出し検出・拒否
+3. 許可されたウィンドウリストとの照合
+
 **禁止事項**:
 
 - ipcRenderer全体の公開
@@ -371,7 +416,7 @@ Electron Desktop アプリでは Supabase Auth を使用し、OAuth 2.0 PKCE フ
 - ファイルシステムへの無制限アクセス
 - シェルコマンドの無制限実行
 
-### 17.7.3 自動更新のセキュリティ
+### 17.7.4 自動更新のセキュリティ
 
 | 項目         | 要件                         |
 | ------------ | ---------------------------- |

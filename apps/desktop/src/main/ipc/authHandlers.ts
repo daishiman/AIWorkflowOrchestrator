@@ -20,6 +20,7 @@ import {
   isValidProvider,
   AUTH_ERROR_CODES,
 } from "@repo/shared/types/auth";
+import { withValidation } from "../infrastructure/security/ipc-validator.js";
 
 // === 型定義 ===
 
@@ -73,203 +74,254 @@ export function registerAuthHandlers(
   // auth:login - OAuthログイン開始
   ipcMain.handle(
     IPC_CHANNELS.AUTH_LOGIN,
-    async (
-      _,
-      { provider }: { provider: string },
-    ): Promise<IPCResponse<void>> => {
-      try {
-        // プロバイダーバリデーション
-        if (!isValidProvider(provider)) {
-          return {
-            success: false,
-            error: {
-              code: AUTH_ERROR_CODES.INVALID_PROVIDER,
-              message: `Invalid provider: ${provider}. Must be one of: google, github, discord`,
+    withValidation(
+      IPC_CHANNELS.AUTH_LOGIN,
+      async (
+        _event,
+        { provider }: { provider: string },
+      ): Promise<IPCResponse<void>> => {
+        try {
+          // プロバイダーバリデーション
+          if (!isValidProvider(provider)) {
+            return {
+              success: false,
+              error: {
+                code: AUTH_ERROR_CODES.INVALID_PROVIDER,
+                message: `Invalid provider: ${provider}. Must be one of: google, github, discord`,
+              },
+            };
+          }
+
+          // OAuth URL取得
+          const { data, error } = await supabase.auth.signInWithOAuth({
+            provider: provider as OAuthProvider,
+            options: {
+              redirectTo: AUTH_REDIRECT_URL,
+              skipBrowserRedirect: true,
             },
-          };
-        }
+          });
 
-        // OAuth URL取得
-        const { data, error } = await supabase.auth.signInWithOAuth({
-          provider: provider as OAuthProvider,
-          options: {
-            redirectTo: AUTH_REDIRECT_URL,
-            skipBrowserRedirect: true,
-          },
-        });
+          if (error) {
+            return {
+              success: false,
+              error: {
+                code: AUTH_ERROR_CODES.LOGIN_FAILED,
+                message: error.message,
+              },
+            };
+          }
 
-        if (error) {
+          if (!data.url) {
+            return {
+              success: false,
+              error: {
+                code: AUTH_ERROR_CODES.LOGIN_FAILED,
+                message: "Failed to generate OAuth URL",
+              },
+            };
+          }
+
+          // 外部ブラウザで認証URLを開く
+          await shell.openExternal(data.url);
+
+          return { success: true };
+        } catch (error) {
           return {
             success: false,
             error: {
               code: AUTH_ERROR_CODES.LOGIN_FAILED,
-              message: error.message,
+              message: sanitizeErrorMessage(error),
             },
           };
         }
-
-        if (!data.url) {
-          return {
-            success: false,
-            error: {
-              code: AUTH_ERROR_CODES.LOGIN_FAILED,
-              message: "Failed to generate OAuth URL",
-            },
-          };
-        }
-
-        // 外部ブラウザで認証URLを開く
-        await shell.openExternal(data.url);
-
-        return { success: true };
-      } catch (error) {
-        return {
-          success: false,
-          error: {
-            code: AUTH_ERROR_CODES.LOGIN_FAILED,
-            message: sanitizeErrorMessage(error),
-          },
-        };
-      }
-    },
+      },
+      { getAllowedWindows: () => [mainWindow] },
+    ),
   );
 
   // auth:logout - ログアウト
   ipcMain.handle(
     IPC_CHANNELS.AUTH_LOGOUT,
-    async (): Promise<IPCResponse<void>> => {
-      try {
-        const { error } = await supabase.auth.signOut();
+    withValidation(
+      IPC_CHANNELS.AUTH_LOGOUT,
+      async (_event): Promise<IPCResponse<void>> => {
+        try {
+          const { error } = await supabase.auth.signOut();
 
-        if (error) {
+          if (error) {
+            return {
+              success: false,
+              error: {
+                code: AUTH_ERROR_CODES.LOGOUT_FAILED,
+                message: error.message,
+              },
+            };
+          }
+
+          // ストレージからトークン削除
+          await secureStorage.clearTokens();
+
+          // Rendererに認証状態変更を通知
+          mainWindow.webContents.send(IPC_CHANNELS.AUTH_STATE_CHANGED, {
+            authenticated: false,
+          } as AuthState);
+
+          return { success: true };
+        } catch (error) {
           return {
             success: false,
             error: {
               code: AUTH_ERROR_CODES.LOGOUT_FAILED,
-              message: error.message,
+              message: sanitizeErrorMessage(error),
             },
           };
         }
-
-        // ストレージからトークン削除
-        await secureStorage.clearTokens();
-
-        // Rendererに認証状態変更を通知
-        mainWindow.webContents.send(IPC_CHANNELS.AUTH_STATE_CHANGED, {
-          authenticated: false,
-        } as AuthState);
-
-        return { success: true };
-      } catch (error) {
-        return {
-          success: false,
-          error: {
-            code: AUTH_ERROR_CODES.LOGOUT_FAILED,
-            message: sanitizeErrorMessage(error),
-          },
-        };
-      }
-    },
+      },
+      { getAllowedWindows: () => [mainWindow] },
+    ),
   );
 
   // auth:get-session - セッション取得
   ipcMain.handle(
     IPC_CHANNELS.AUTH_GET_SESSION,
-    async (): Promise<IPCResponse<AuthSession | null>> => {
-      try {
-        const isOnline = net.isOnline();
+    withValidation(
+      IPC_CHANNELS.AUTH_GET_SESSION,
+      async (_event): Promise<IPCResponse<AuthSession | null>> => {
+        try {
+          const isOnline = net.isOnline();
 
-        // オンラインの場合はSupabaseからセッション取得
-        const { data, error } = await supabase.auth.getSession();
+          // オンラインの場合はSupabaseからセッション取得
+          const { data, error } = await supabase.auth.getSession();
 
-        if (error && !isOnline) {
-          // オフライン時はリフレッシュトークンからセッション復元を試みる
-          const refreshToken = await secureStorage.getRefreshToken();
-          if (refreshToken) {
-            const { data: refreshData, error: refreshError } =
-              await supabase.auth.setSession({
-                access_token: "",
-                refresh_token: refreshToken,
-              });
+          if (error && !isOnline) {
+            // オフライン時はリフレッシュトークンからセッション復元を試みる
+            const refreshToken = await secureStorage.getRefreshToken();
+            if (refreshToken) {
+              const { data: refreshData, error: refreshError } =
+                await supabase.auth.setSession({
+                  access_token: "",
+                  refresh_token: refreshToken,
+                });
 
-            if (!refreshError && refreshData.session) {
-              const user = toAuthUser(refreshData.session.user);
-              if (user) {
-                return {
-                  success: true,
-                  data: {
-                    user,
-                    accessToken: refreshData.session.access_token,
-                    refreshToken: refreshData.session.refresh_token,
-                    expiresAt:
-                      refreshData.session.expires_at ??
-                      Date.now() / 1000 + 3600,
-                    isOffline: true,
-                  },
-                };
+              if (!refreshError && refreshData.session) {
+                const user = toAuthUser(refreshData.session.user);
+                if (user) {
+                  return {
+                    success: true,
+                    data: {
+                      user,
+                      accessToken: refreshData.session.access_token,
+                      refreshToken: refreshData.session.refresh_token,
+                      expiresAt:
+                        refreshData.session.expires_at ??
+                        Date.now() / 1000 + 3600,
+                      isOffline: true,
+                    },
+                  };
+                }
               }
             }
           }
-        }
 
-        if (!data.session) {
-          return { success: true, data: null };
-        }
+          if (!data.session) {
+            return { success: true, data: null };
+          }
 
-        // リフレッシュトークンを保存
-        if (data.session.refresh_token) {
-          await secureStorage.storeRefreshToken(data.session.refresh_token);
-        }
+          // リフレッシュトークンを保存
+          if (data.session.refresh_token) {
+            await secureStorage.storeRefreshToken(data.session.refresh_token);
+          }
 
-        const user = toAuthUser(data.session.user);
-        if (!user) {
-          return { success: true, data: null };
-        }
+          const user = toAuthUser(data.session.user);
+          if (!user) {
+            return { success: true, data: null };
+          }
 
-        return {
-          success: true,
-          data: {
-            user,
-            accessToken: data.session.access_token,
-            refreshToken: data.session.refresh_token,
-            expiresAt: data.session.expires_at ?? Date.now() / 1000 + 3600,
-            isOffline: !isOnline,
-          },
-        };
-      } catch (error) {
-        return {
-          success: false,
-          error: {
-            code: AUTH_ERROR_CODES.SESSION_FAILED,
-            message: sanitizeErrorMessage(error),
-          },
-        };
-      }
-    },
+          return {
+            success: true,
+            data: {
+              user,
+              accessToken: data.session.access_token,
+              refreshToken: data.session.refresh_token,
+              expiresAt: data.session.expires_at ?? Date.now() / 1000 + 3600,
+              isOffline: !isOnline,
+            },
+          };
+        } catch (error) {
+          return {
+            success: false,
+            error: {
+              code: AUTH_ERROR_CODES.SESSION_FAILED,
+              message: sanitizeErrorMessage(error),
+            },
+          };
+        }
+      },
+      { getAllowedWindows: () => [mainWindow] },
+    ),
   );
 
   // auth:refresh - トークン更新
   ipcMain.handle(
     IPC_CHANNELS.AUTH_REFRESH,
-    async (): Promise<IPCResponse<AuthSession>> => {
-      try {
-        const refreshToken = await secureStorage.getRefreshToken();
+    withValidation(
+      IPC_CHANNELS.AUTH_REFRESH,
+      async (_event): Promise<IPCResponse<AuthSession>> => {
+        try {
+          const refreshToken = await secureStorage.getRefreshToken();
 
-        if (!refreshToken) {
+          if (!refreshToken) {
+            return {
+              success: false,
+              error: {
+                code: AUTH_ERROR_CODES.REFRESH_FAILED,
+                message: "No refresh token available",
+              },
+            };
+          }
+
+          const { data, error } = await supabase.auth.refreshSession({
+            refresh_token: refreshToken,
+          });
+
+          if (error || !data.session) {
+            // リフレッシュ失敗時はトークンをクリア
+            await secureStorage.clearTokens();
+
+            return {
+              success: false,
+              error: {
+                code: AUTH_ERROR_CODES.REFRESH_FAILED,
+                message: error?.message ?? "Token refresh failed",
+              },
+            };
+          }
+
+          // 新しいリフレッシュトークンを保存
+          await secureStorage.storeRefreshToken(data.session.refresh_token);
+
+          const user = toAuthUser(data.session.user);
+          if (!user) {
+            return {
+              success: false,
+              error: {
+                code: AUTH_ERROR_CODES.REFRESH_FAILED,
+                message: "Failed to parse user data",
+              },
+            };
+          }
+
           return {
-            success: false,
-            error: {
-              code: AUTH_ERROR_CODES.REFRESH_FAILED,
-              message: "No refresh token available",
+            success: true,
+            data: {
+              user,
+              accessToken: data.session.access_token,
+              refreshToken: data.session.refresh_token,
+              expiresAt: data.session.expires_at ?? Date.now() / 1000 + 3600,
+              isOffline: false,
             },
           };
-        }
-
-        const { data, error } = await supabase.auth.refreshSession({
-          refresh_token: refreshToken,
-        });
-
-        if (error || !data.session) {
+        } catch (error) {
           // リフレッシュ失敗時はトークンをクリア
           await secureStorage.clearTokens();
 
@@ -277,59 +329,28 @@ export function registerAuthHandlers(
             success: false,
             error: {
               code: AUTH_ERROR_CODES.REFRESH_FAILED,
-              message: error?.message ?? "Token refresh failed",
+              message: sanitizeErrorMessage(error),
             },
           };
         }
-
-        // 新しいリフレッシュトークンを保存
-        await secureStorage.storeRefreshToken(data.session.refresh_token);
-
-        const user = toAuthUser(data.session.user);
-        if (!user) {
-          return {
-            success: false,
-            error: {
-              code: AUTH_ERROR_CODES.REFRESH_FAILED,
-              message: "Failed to parse user data",
-            },
-          };
-        }
-
-        return {
-          success: true,
-          data: {
-            user,
-            accessToken: data.session.access_token,
-            refreshToken: data.session.refresh_token,
-            expiresAt: data.session.expires_at ?? Date.now() / 1000 + 3600,
-            isOffline: false,
-          },
-        };
-      } catch (error) {
-        // リフレッシュ失敗時はトークンをクリア
-        await secureStorage.clearTokens();
-
-        return {
-          success: false,
-          error: {
-            code: AUTH_ERROR_CODES.REFRESH_FAILED,
-            message: sanitizeErrorMessage(error),
-          },
-        };
-      }
-    },
+      },
+      { getAllowedWindows: () => [mainWindow] },
+    ),
   );
 
   // auth:check-online - オンライン状態確認
   ipcMain.handle(
     IPC_CHANNELS.AUTH_CHECK_ONLINE,
-    async (): Promise<IPCResponse<{ online: boolean }>> => {
-      return {
-        success: true,
-        data: { online: net.isOnline() },
-      };
-    },
+    withValidation(
+      IPC_CHANNELS.AUTH_CHECK_ONLINE,
+      async (_event): Promise<IPCResponse<{ online: boolean }>> => {
+        return {
+          success: true,
+          data: { online: net.isOnline() },
+        };
+      },
+      { getAllowedWindows: () => [mainWindow] },
+    ),
   );
 }
 

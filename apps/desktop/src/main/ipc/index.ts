@@ -40,7 +40,7 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
     const profileCache = createProfileCache();
 
     registerAuthHandlers(mainWindow, supabase, secureStorage);
-    registerProfileHandlers(supabase, profileCache);
+    registerProfileHandlers(mainWindow, supabase, profileCache);
   } else {
     console.warn(
       "[IPC] Auth and profile handlers not registered - Supabase not configured",

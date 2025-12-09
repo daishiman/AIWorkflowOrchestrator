@@ -1,7 +1,6 @@
 import { StateCreator } from "zustand";
 import type {
   AuthUser,
-  AuthSession,
   OAuthProvider,
   UserProfile,
   LinkedProvider,
@@ -9,13 +8,19 @@ import type {
 
 /**
  * 認証状態管理スライス
+ *
+ * セキュリティ対策として、トークン情報は状態に保存しない。
+ * トークンはMain Processのみで管理し、Rendererには最小限の状態のみを渡す。
+ *
+ * @see docs/30-workflows/login-only-auth/design-auth-state.md
  */
 export interface AuthSlice {
-  // State
+  // State (トークンなし - セキュリティ対策)
   isAuthenticated: boolean;
   isLoading: boolean;
   authUser: AuthUser | null;
-  session: AuthSession | null;
+  /** セッション有効期限 (Unix timestamp) - トークンは含まない */
+  sessionExpiresAt: number | null;
   profile: UserProfile | null;
   linkedProviders: LinkedProvider[];
   isOffline: boolean;
@@ -41,11 +46,11 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
   set,
   get,
 ) => ({
-  // Initial state
+  // Initial state (トークンなし - セキュリティ対策)
   isAuthenticated: false,
   isLoading: true,
   authUser: null,
-  session: null,
+  sessionExpiresAt: null, // トークンは含まない、有効期限のみ
   profile: null,
   linkedProviders: [],
   isOffline: false,
@@ -141,17 +146,18 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
         set({
           isAuthenticated: false,
           authUser: null,
-          session: null,
+          sessionExpiresAt: null,
           isLoading: false,
         });
         return;
       }
 
       if (response.success && response.data) {
+        // トークンは保存しない - 有効期限のみ
         set({
           isAuthenticated: true,
           authUser: response.data.user,
-          session: response.data,
+          sessionExpiresAt: response.data.expiresAt ?? null,
           isOffline: response.data.isOffline,
           isLoading: false,
         });
@@ -163,7 +169,7 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
         set({
           isAuthenticated: false,
           authUser: null,
-          session: null,
+          sessionExpiresAt: null,
           isLoading: false,
         });
       }
@@ -186,10 +192,11 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
               try {
                 const response = await window.electronAPI.auth.getSession();
                 if (response.success && response.data) {
+                  // トークンは保存しない - 有効期限のみ
                   set({
                     isAuthenticated: true,
                     authUser: response.data.user,
-                    session: response.data,
+                    sessionExpiresAt: response.data.expiresAt ?? null,
                     isOffline: response.data.isOffline,
                     isLoading: false,
                   });
@@ -211,9 +218,15 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
               }
             } else if (state.user) {
               // Direct user update (from existing session)
+              // トークンは保存しない - 有効期限はイベントに含まれていればそれを使用、なければ既存値を維持
+              const eventExpiresAt = (
+                state as unknown as { expiresAt?: number }
+              ).expiresAt;
               set({
                 isAuthenticated: true,
                 authUser: state.user,
+                // イベントにexpiresAtがあれば更新、なければ既存値を維持
+                sessionExpiresAt: eventExpiresAt ?? get().sessionExpiresAt,
                 isOffline: state.isOffline ?? false,
                 isLoading: false,
               });
@@ -244,8 +257,9 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
       const response = await window.electronAPI.auth.refresh();
 
       if (response.success && response.data) {
+        // トークンは保存しない - 有効期限のみ
         set({
-          session: response.data,
+          sessionExpiresAt: response.data.expiresAt ?? null,
           authUser: response.data.user,
           isOffline: response.data.isOffline,
         });
@@ -370,7 +384,7 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
       isAuthenticated: false,
       isLoading: false,
       authUser: null,
-      session: null,
+      sessionExpiresAt: null, // トークンは含まない
       profile: null,
       linkedProviders: [],
       authError: null,

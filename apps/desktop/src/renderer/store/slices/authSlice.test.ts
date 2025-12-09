@@ -133,7 +133,7 @@ describe("authSlice", () => {
       expect(store.isAuthenticated).toBe(false);
       expect(store.isLoading).toBe(true);
       expect(store.authUser).toBeNull();
-      expect(store.session).toBeNull();
+      expect(store.sessionExpiresAt).toBeNull(); // session -> sessionExpiresAt (状態最小化)
       expect(store.profile).toBeNull();
       expect(store.linkedProviders).toEqual([]);
       expect(store.isOffline).toBe(false);
@@ -231,7 +231,8 @@ describe("authSlice", () => {
 
       expect(store.isAuthenticated).toBe(true);
       expect(store.authUser).toEqual(mockAuthUser);
-      expect(store.session).toEqual(mockSession);
+      // 状態最小化: session -> sessionExpiresAt (トークンは保存しない)
+      expect(store.sessionExpiresAt).toBe(mockSession.expiresAt);
     });
 
     it("should fetch profile after successful auth", async () => {
@@ -292,9 +293,10 @@ describe("authSlice", () => {
     });
 
     it("should update session after refresh", async () => {
+      const newExpiresAt = Date.now() / 1000 + 7200;
       const newSession = {
         ...mockSession,
-        accessToken: "new-access-token",
+        expiresAt: newExpiresAt,
       };
       mockAuthRefresh.mockResolvedValue({
         success: true,
@@ -303,7 +305,8 @@ describe("authSlice", () => {
 
       await store.refreshSession();
 
-      expect(store.session).toEqual(newSession);
+      // 状態最小化: session -> sessionExpiresAt (トークンは保存しない)
+      expect(store.sessionExpiresAt).toBe(newExpiresAt);
     });
 
     it("should clear auth on refresh failure", async () => {
@@ -452,7 +455,7 @@ describe("authSlice", () => {
       // Set authenticated state
       store.isAuthenticated = true;
       store.authUser = mockAuthUser;
-      store.session = mockSession;
+      store.sessionExpiresAt = mockSession.expiresAt; // session -> sessionExpiresAt (状態最小化)
       store.profile = mockUserProfile;
       store.linkedProviders = mockLinkedProviders;
 
@@ -461,7 +464,7 @@ describe("authSlice", () => {
       expect(store.isAuthenticated).toBe(false);
       expect(store.isLoading).toBe(false);
       expect(store.authUser).toBeNull();
-      expect(store.session).toBeNull();
+      expect(store.sessionExpiresAt).toBeNull(); // session -> sessionExpiresAt (状態最小化)
       expect(store.profile).toBeNull();
       expect(store.linkedProviders).toEqual([]);
       expect(store.authError).toBeNull();
@@ -922,4 +925,339 @@ describe("authSlice", () => {
       expect(store.isLoading).toBe(false);
     });
   });
+
+  /**
+   * Phase 2 TDD Red Phase: 状態最小化テスト
+   *
+   * これらのテストはT-02-4タスクの一部として作成され、
+   * 状態からトークン情報を排除する実装が完了するまで失敗する
+   *
+   * 要件: spec-state-minimization.md
+   * 設計: design-auth-state.md
+   */
+  describe("状態最小化（TDD Red Phase）", () => {
+    describe("状態構造 - トークン排除", () => {
+      it("sessionプロパティが存在しない", () => {
+        // 新しい状態構造では session プロパティは削除される
+        // 代わりに sessionExpiresAt を使用
+        expect("session" in store).toBe(false);
+      });
+
+      it("sessionExpiresAtプロパティが存在する", () => {
+        expect("sessionExpiresAt" in store).toBe(true);
+      });
+
+      it("初期状態のsessionExpiresAtはnull", () => {
+        const freshStore = createTestStore();
+        expect(freshStore.sessionExpiresAt).toBeNull();
+      });
+
+      it("状態オブジェクトにaccessTokenが含まれない", () => {
+        const stateKeys = Object.keys(store);
+        expect(stateKeys).not.toContain("accessToken");
+      });
+
+      it("状態オブジェクトにrefreshTokenが含まれない", () => {
+        const stateKeys = Object.keys(store);
+        expect(stateKeys).not.toContain("refreshToken");
+      });
+
+      it("状態オブジェクトにtokensオブジェクトが含まれない", () => {
+        const stateKeys = Object.keys(store);
+        expect(stateKeys).not.toContain("tokens");
+      });
+    });
+
+    describe("認証成功時の状態 - トークンなし", () => {
+      it("getSessionレスポンスにトークンが含まれていても状態に保存されない", async () => {
+        // レスポンスにトークンが含まれている（後方互換性）
+        mockAuthGetSession.mockResolvedValue({
+          success: true,
+          data: {
+            user: mockAuthUser,
+            accessToken: "should-not-be-stored",
+            refreshToken: "should-not-be-stored",
+            expiresAt: Date.now() / 1000 + 3600,
+            isOffline: false,
+          },
+        });
+
+        await store.initializeAuth();
+
+        // 状態にトークンが含まれないことを確認
+        const stateSnapshot = JSON.stringify(store);
+        expect(stateSnapshot).not.toContain("should-not-be-stored");
+        expect(stateSnapshot).not.toContain("accessToken");
+        expect(stateSnapshot).not.toContain("refreshToken");
+      });
+
+      it("認証成功後、sessionExpiresAtが正しく設定される", async () => {
+        const expiresAt = Date.now() / 1000 + 7200;
+        mockAuthGetSession.mockResolvedValue({
+          success: true,
+          data: {
+            user: mockAuthUser,
+            expiresAt,
+            isOffline: false,
+          },
+        });
+
+        await store.initializeAuth();
+
+        expect(store.sessionExpiresAt).toBe(expiresAt);
+      });
+
+      it("認証成功後、authUserは設定されるがsessionは設定されない", async () => {
+        mockAuthGetSession.mockResolvedValue({
+          success: true,
+          data: {
+            user: mockAuthUser,
+            expiresAt: Date.now() / 1000 + 3600,
+            isOffline: false,
+          },
+        });
+
+        await store.initializeAuth();
+
+        expect(store.isAuthenticated).toBe(true);
+        expect(store.authUser).toEqual(mockAuthUser);
+        expect(
+          (store as unknown as Record<string, unknown>).session,
+        ).toBeUndefined();
+      });
+    });
+
+    describe("AUTH_STATE_CHANGED イベント - トークンなし", () => {
+      it("tokensを含むイベントでも状態にトークンが保存されない", async () => {
+        let authStateCallback: (state: unknown) => void;
+        mockAuthOnAuthStateChanged.mockImplementation((callback) => {
+          authStateCallback = callback;
+          return () => {};
+        });
+
+        await store.initializeAuth();
+
+        // トークン付きのイベントをシミュレート
+        await authStateCallback!({
+          authenticated: true,
+          user: mockAuthUser,
+          tokens: {
+            accessToken: "event-access-token",
+            refreshToken: "event-refresh-token",
+          },
+          expiresAt: Date.now() / 1000 + 3600,
+        });
+
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
+        // 状態にトークンが含まれないことを確認
+        const stateSnapshot = JSON.stringify(store);
+        expect(stateSnapshot).not.toContain("event-access-token");
+        expect(stateSnapshot).not.toContain("event-refresh-token");
+      });
+
+      it("expiresAtを含むイベントでsessionExpiresAtが更新される", async () => {
+        let authStateCallback: (state: unknown) => void;
+        mockAuthOnAuthStateChanged.mockImplementation((callback) => {
+          authStateCallback = callback;
+          return () => {};
+        });
+
+        await store.initializeAuth();
+
+        const newExpiresAt = Date.now() / 1000 + 9999;
+
+        await authStateCallback!({
+          authenticated: true,
+          user: mockAuthUser,
+          expiresAt: newExpiresAt,
+          isOffline: false,
+        });
+
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
+        expect(store.sessionExpiresAt).toBe(newExpiresAt);
+      });
+    });
+
+    describe("refreshSession - トークンなし", () => {
+      it("リフレッシュ後もトークンが状態に保存されない", async () => {
+        mockAuthRefresh.mockResolvedValue({
+          success: true,
+          data: {
+            user: mockAuthUser,
+            accessToken: "new-access-token",
+            refreshToken: "new-refresh-token",
+            expiresAt: Date.now() / 1000 + 7200,
+            isOffline: false,
+          },
+        });
+
+        // 認証状態を設定
+        mockAuthGetSession.mockResolvedValue({
+          success: true,
+          data: {
+            user: mockAuthUser,
+            expiresAt: Date.now() / 1000 + 100, // 期限切れ近い
+            isOffline: false,
+          },
+        });
+
+        await store.initializeAuth();
+        await store.refreshSession();
+
+        // 状態にトークンが含まれないことを確認
+        const stateSnapshot = JSON.stringify(store);
+        expect(stateSnapshot).not.toContain("new-access-token");
+        expect(stateSnapshot).not.toContain("new-refresh-token");
+      });
+
+      it("リフレッシュ後にsessionExpiresAtが更新される", async () => {
+        const newExpiresAt = Date.now() / 1000 + 7200;
+        mockAuthRefresh.mockResolvedValue({
+          success: true,
+          data: {
+            user: mockAuthUser,
+            expiresAt: newExpiresAt,
+            isOffline: false,
+          },
+        });
+
+        mockAuthGetSession.mockResolvedValue({
+          success: true,
+          data: {
+            user: mockAuthUser,
+            expiresAt: Date.now() / 1000 + 100,
+            isOffline: false,
+          },
+        });
+
+        await store.initializeAuth();
+        await store.refreshSession();
+
+        expect(store.sessionExpiresAt).toBe(newExpiresAt);
+      });
+    });
+
+    describe("clearAuth - 状態クリア", () => {
+      it("clearAuth後、sessionExpiresAtがnullになる", async () => {
+        mockAuthGetSession.mockResolvedValue({
+          success: true,
+          data: {
+            user: mockAuthUser,
+            expiresAt: Date.now() / 1000 + 3600,
+            isOffline: false,
+          },
+        });
+
+        await store.initializeAuth();
+        expect(store.sessionExpiresAt).not.toBeNull();
+
+        store.clearAuth();
+
+        expect(store.sessionExpiresAt).toBeNull();
+      });
+
+      it("clearAuth後、トークン関連の状態が存在しない", async () => {
+        await store.initializeAuth();
+        store.clearAuth();
+
+        const stateSnapshot = JSON.stringify(store);
+        expect(stateSnapshot).not.toContain("accessToken");
+        expect(stateSnapshot).not.toContain("refreshToken");
+        expect(stateSnapshot).not.toContain("tokens");
+      });
+    });
+
+    describe("logout - 状態クリア", () => {
+      it("logout後、sessionExpiresAtがnullになる", async () => {
+        mockAuthGetSession.mockResolvedValue({
+          success: true,
+          data: {
+            user: mockAuthUser,
+            expiresAt: Date.now() / 1000 + 3600,
+            isOffline: false,
+          },
+        });
+
+        await store.initializeAuth();
+
+        mockAuthLogout.mockResolvedValue({ success: true });
+
+        await store.logout();
+
+        expect(store.sessionExpiresAt).toBeNull();
+      });
+    });
+
+    describe("DevTools セキュリティ", () => {
+      it("シリアライズされた状態にトークンが含まれない", async () => {
+        // 認証後のフル状態をシミュレート
+        mockAuthGetSession.mockResolvedValue({
+          success: true,
+          data: {
+            user: mockAuthUser,
+            accessToken: "serialized-access-token",
+            refreshToken: "serialized-refresh-token",
+            expiresAt: Date.now() / 1000 + 3600,
+            isOffline: false,
+          },
+        });
+
+        await store.initializeAuth();
+
+        // DevToolsで表示される可能性のある形式でシリアライズ
+        const serializedState = JSON.stringify(store, null, 2);
+
+        expect(serializedState).not.toContain("serialized-access-token");
+        expect(serializedState).not.toContain("serialized-refresh-token");
+        expect(serializedState).not.toContain('"accessToken"');
+        expect(serializedState).not.toContain('"refreshToken"');
+      });
+
+      it("Object.keysに機密キーが含まれない", async () => {
+        await store.initializeAuth();
+
+        const keys = Object.keys(store);
+        const sensitiveKeys = [
+          "accessToken",
+          "refreshToken",
+          "tokens",
+          "session",
+        ];
+
+        sensitiveKeys.forEach((key) => {
+          expect(keys).not.toContain(key);
+        });
+      });
+    });
+
+    describe("型安全性", () => {
+      it("AuthSlice型にsessionプロパティが含まれない", () => {
+        // TypeScriptコンパイル時にチェックされるが、
+        // ランタイムでもチェックする
+        const sliceKeys = Object.keys(store);
+        expect(sliceKeys).not.toContain("session");
+      });
+
+      it("新しいRendererSession型にトークンが含まれない", () => {
+        // getSessionのレスポンス型がRendererSession型であることを確認
+        // 実際の実装では、この型チェックはコンパイル時に行われる
+        // ここではランタイムで状態を検証
+        expect("sessionExpiresAt" in store).toBe(true);
+        expect("session" in store).toBe(false);
+      });
+    });
+  });
+
+  // ヘルパー関数
+  function createTestStore(): AuthSlice {
+    let internalState: Partial<AuthSlice> = {};
+    const set = (newState: Partial<AuthSlice>) => {
+      internalState = { ...internalState, ...newState };
+    };
+    const get = () => internalState as AuthSlice;
+
+    return createAuthSlice(set as never, get as never, {} as never);
+  }
 });

@@ -45,6 +45,9 @@ vi.mock("electron", () => ({
   ipcMain: {
     handle: vi.fn(),
   },
+  BrowserWindow: {
+    fromWebContents: vi.fn().mockReturnValue({ id: 1 }),
+  },
   shell: {
     openExternal: vi.fn((...args: unknown[]) => mockOpenExternal(...args)),
   },
@@ -68,6 +71,17 @@ vi.mock("electron", () => ({
       buf.toString().replace("encrypted:", ""),
     ),
   },
+}));
+
+// Mock ipc-validator to pass validation
+vi.mock("../infrastructure/security/ipc-validator.js", () => ({
+  withValidation: vi.fn(
+    (
+      _channel: string,
+      handler: (...args: unknown[]) => Promise<unknown>,
+      _options: unknown,
+    ) => handler,
+  ),
 }));
 
 // Mock electron-store

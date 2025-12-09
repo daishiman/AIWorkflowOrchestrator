@@ -27,10 +27,22 @@ const mockSupabase = {
 const mockGetCachedProfile = vi.fn();
 const mockUpdateCachedProfile = vi.fn();
 
+// Mock BrowserWindow
+const mockMainWindow = {
+  id: 1,
+  webContents: {
+    id: 1,
+    send: vi.fn(),
+  },
+};
+
 // Mock electron modules
 vi.mock("electron", () => ({
   ipcMain: {
     handle: vi.fn(),
+  },
+  BrowserWindow: {
+    fromWebContents: vi.fn().mockReturnValue({ id: 1 }),
   },
   app: {
     getPath: vi.fn((name: string) => {
@@ -42,6 +54,17 @@ vi.mock("electron", () => ({
       return paths[name] || "";
     }),
   },
+}));
+
+// Mock ipc-validator to pass validation
+vi.mock("../infrastructure/security/ipc-validator.js", () => ({
+  withValidation: vi.fn(
+    (
+      _channel: string,
+      handler: (...args: unknown[]) => Promise<unknown>,
+      _options: unknown,
+    ) => handler,
+  ),
 }));
 
 // Mock electron-store
@@ -221,9 +244,12 @@ describe("profileHandlers", () => {
     try {
       const { registerProfileHandlers } = await import("./profileHandlers");
       registerProfileHandlers(
-        mockSupabase as unknown as Parameters<
+        mockMainWindow as unknown as Parameters<
           typeof registerProfileHandlers
         >[0],
+        mockSupabase as unknown as Parameters<
+          typeof registerProfileHandlers
+        >[1],
         {
           getCachedProfile: mockGetCachedProfile,
           updateCachedProfile: mockUpdateCachedProfile,
