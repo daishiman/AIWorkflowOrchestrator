@@ -8,7 +8,49 @@
 | 対象機能   | 認証画面（AuthView/AuthGuard）のセキュリティ向上 |
 | 優先度     | 高                                               |
 | 見積もり   | 中規模                                           |
-| ステータス | 未実施                                           |
+| ステータス | **完了** (2025-12-09)                            |
+
+---
+
+## 実施結果サマリー
+
+| 項目             | 結果                     |
+| ---------------- | ------------------------ |
+| 完了日           | 2025-12-09               |
+| 最終レビュー判定 | **PASS** (MINOR改善推奨) |
+| テストカバレッジ | 99.5%                    |
+| 脆弱性スキャン   | critical/high: 0件       |
+
+### 完了した4項目
+
+1. **CSP設定**: `apps/desktop/src/main/infrastructure/security/csp.ts`
+2. **入力バリデーション**: `packages/shared/schemas/auth.ts`
+3. **IPC sender検証**: `apps/desktop/src/main/infrastructure/security/ipc-validator.ts`
+4. **Renderer状態最小化**: `apps/desktop/src/renderer/store/slices/authSlice.ts`
+
+### 詳細レポート
+
+`docs/30-workflows/login-only-auth-security/` 参照
+
+---
+
+## 追加: MINOR改善項目（将来対応）
+
+Phase 5.5最終レビューで発見された改善推奨項目:
+
+| 優先度 | 項目                    | 担当               |
+| :----: | ----------------------- | ------------------ |
+|   中   | macOSでのsandbox明示化  | @electron-security |
+|   中   | CSP違反レポーティング   | @electron-security |
+|   低   | IPC境界値テスト追加     | @unit-tester       |
+|   低   | Reduxエラー状態の詳細化 | @code-quality      |
+|   低   | auth:logoutスキーマ追加 | @arch-police       |
+
+これらは即座の対応不要であり、次回リファクタリング時に検討。
+
+---
+
+## 元のタスク仕様（参考）
 
 ## 背景と目的
 
