@@ -9,22 +9,31 @@ import { ProviderIcon } from "../../components/atoms/ProviderIcon";
 import type { OAuthProvider } from "../../../preload/types";
 
 /**
- * AuthViewのProps
+ * AuthViewコンポーネントのProps
  */
 export interface AuthViewProps {
-  /** クラス名（スタイル拡張用） */
+  /** 追加のCSSクラス */
   className?: string;
 }
 
 /**
- * プロバイダー設定
+ * 認証プロバイダーの設定
  */
 interface ProviderConfig {
+  /** プロバイダーID（例: "google", "github"） */
   id: OAuthProvider;
+  /** 表示名（日本語） */
   name: string;
+  /** ボタンのラベル */
   label: string;
 }
 
+/**
+ * 利用可能な認証プロバイダー一覧
+ *
+ * 各プロバイダーの設定を配列で定義。
+ * 表示順序はこの配列の順序に従う。
+ */
 const PROVIDERS: ProviderConfig[] = [
   { id: "google", name: "Google", label: "Googleで続ける" },
   { id: "github", name: "GitHub", label: "GitHubで続ける" },
@@ -34,7 +43,20 @@ const PROVIDERS: ProviderConfig[] = [
 /**
  * ログイン画面コンポーネント
  *
- * OAuth認証（Google/GitHub/Discord）のUIを提供
+ * ソーシャルログイン（OAuth）を提供する画面。
+ * - 複数のプロバイダー（Google、GitHub、Discord）に対応
+ * - エラー表示とローディング状態の管理
+ * - GlassPanelを使用したモダンなUI
+ *
+ * @component
+ * @example
+ * ```tsx
+ * // 基本的な使用方法
+ * <AuthView />
+ *
+ * // カスタムクラス付き
+ * <AuthView className="mt-4" />
+ * ```
  */
 export const AuthView: React.FC<AuthViewProps> = ({ className }) => {
   // 認証状態
@@ -48,7 +70,11 @@ export const AuthView: React.FC<AuthViewProps> = ({ className }) => {
     null,
   );
 
-  // ログインハンドラー
+  /**
+   * ログインボタンクリック時のハンドラー
+   *
+   * @param provider - 選択された認証プロバイダー
+   */
   const handleLogin = useCallback(
     async (provider: OAuthProvider) => {
       setLoadingProvider(provider);
@@ -59,7 +85,9 @@ export const AuthView: React.FC<AuthViewProps> = ({ className }) => {
     [login, setAuthError],
   );
 
-  // エラークローズハンドラー
+  /**
+   * エラー表示を閉じるハンドラー
+   */
   const handleCloseError = useCallback(() => {
     setAuthError(null);
   }, [setAuthError]);

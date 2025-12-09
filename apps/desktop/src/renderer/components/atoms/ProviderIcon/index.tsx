@@ -2,17 +2,31 @@ import React from "react";
 import clsx from "clsx";
 import type { OAuthProvider } from "../../../../preload/types";
 
+/**
+ * ProviderIconコンポーネントのProps
+ */
 export interface ProviderIconProps {
-  /** OAuthプロバイダー */
+  /** 認証プロバイダーの種類 */
   provider: OAuthProvider;
-  /** カスタムクラス名 */
+  /** 追加のCSSクラス */
   className?: string;
 }
 
 /**
- * OAuthプロバイダーアイコン
+ * 認証プロバイダーのアイコン
  *
- * Google, GitHub, DiscordのSVGアイコンを表示する共通コンポーネント
+ * 各認証プロバイダー（Google、GitHub、Discord）に対応した
+ * SVGアイコンを表示する。
+ *
+ * @component
+ * @example
+ * ```tsx
+ * // 基本的な使用
+ * <ProviderIcon provider="google" />
+ *
+ * // スタイル追加
+ * <ProviderIcon provider="github" className="text-white" />
+ * ```
  */
 export const ProviderIcon: React.FC<ProviderIconProps> = ({
   provider,

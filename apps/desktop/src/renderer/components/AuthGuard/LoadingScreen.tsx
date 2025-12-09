@@ -4,6 +4,16 @@ import { Icon } from "../atoms/Icon";
 
 /**
  * 認証確認中のローディング画面
+ *
+ * 認証状態の確認中に表示されるスピナー付きの画面。
+ * GlassPanelを使用したデザインで、アプリ全体の統一感を維持。
+ *
+ * @component
+ * @example
+ * ```tsx
+ * // AuthGuard内部で使用
+ * <LoadingScreen />
+ * ```
  */
 export const LoadingScreen: React.FC = () => {
   return (

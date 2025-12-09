@@ -5,6 +5,94 @@ import type {
   UserProfile,
   LinkedProvider,
 } from "../../../preload/types";
+import { hasExpiresAt } from "../../components/AuthGuard/types";
+import type { AuthErrorCode } from "../../components/AuthGuard/types";
+
+// ============================================================
+// エラーハンドリングユーティリティ
+// ============================================================
+
+/**
+ * エラーコードから日本語メッセージへのマッピング
+ */
+const AUTH_ERROR_MESSAGES: Record<AuthErrorCode, string> = {
+  NETWORK_ERROR: "ネットワーク接続を確認してください",
+  AUTH_FAILED: "認証に失敗しました。再度ログインしてください",
+  TIMEOUT: "接続がタイムアウトしました。再試行してください",
+  SESSION_EXPIRED: "セッションの有効期限が切れました。再度ログインしてください",
+  PROVIDER_ERROR: "認証プロバイダーとの接続に失敗しました",
+  PROFILE_UPDATE_FAILED: "プロフィールの更新に失敗しました",
+  LINK_PROVIDER_FAILED: "アカウント連携に失敗しました",
+  UNKNOWN: "予期しないエラーが発生しました",
+};
+
+/**
+ * エラーメッセージからエラーコードを判定する
+ *
+ * @param message - エラーメッセージ
+ * @returns 判定されたAuthErrorCode
+ */
+const detectErrorCode = (message: string): AuthErrorCode => {
+  const lowerMessage = message.toLowerCase();
+
+  if (
+    lowerMessage.includes("network") ||
+    lowerMessage.includes("fetch") ||
+    lowerMessage.includes("connection") ||
+    lowerMessage.includes("offline")
+  ) {
+    return "NETWORK_ERROR";
+  }
+
+  if (
+    lowerMessage.includes("unauthorized") ||
+    lowerMessage.includes("401") ||
+    lowerMessage.includes("authentication") ||
+    lowerMessage.includes("invalid")
+  ) {
+    return "AUTH_FAILED";
+  }
+
+  if (lowerMessage.includes("timeout") || lowerMessage.includes("etimedout")) {
+    return "TIMEOUT";
+  }
+
+  if (lowerMessage.includes("expired") || lowerMessage.includes("session")) {
+    return "SESSION_EXPIRED";
+  }
+
+  if (lowerMessage.includes("provider") || lowerMessage.includes("oauth")) {
+    return "PROVIDER_ERROR";
+  }
+
+  return "UNKNOWN";
+};
+
+/**
+ * 認証エラーを日本語メッセージに変換する
+ *
+ * @param error - キャッチされたエラー（unknown型）
+ * @param fallbackCode - Errorインスタンスでない場合のフォールバックコード
+ * @returns ユーザー向け日本語エラーメッセージ
+ */
+const handleAuthError = (
+  error: unknown,
+  fallbackCode: AuthErrorCode = "UNKNOWN",
+): string => {
+  if (!(error instanceof Error)) {
+    console.warn("[AuthError] Non-Error object caught:", error);
+    return AUTH_ERROR_MESSAGES[fallbackCode];
+  }
+
+  const errorCode = detectErrorCode(error.message);
+  console.error(`[AuthError] ${errorCode}:`, error.message);
+
+  return AUTH_ERROR_MESSAGES[errorCode];
+};
+
+// ============================================================
+// AuthSlice定義
+// ============================================================
 
 /**
  * 認証状態管理スライス
@@ -84,8 +172,7 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
       console.error("[AuthSlice] Login error:", error);
       set({
         isLoading: false,
-        authError:
-          error instanceof Error ? error.message : "ログインに失敗しました",
+        authError: handleAuthError(error),
       });
     }
   },
@@ -110,6 +197,7 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
       get().clearAuth();
     } catch (error) {
       console.error("[AuthSlice] Logout error:", error);
+      set({ authError: handleAuthError(error) });
       get().clearAuth();
     }
   },
@@ -219,9 +307,9 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
             } else if (state.user) {
               // Direct user update (from existing session)
               // トークンは保存しない - 有効期限はイベントに含まれていればそれを使用、なければ既存値を維持
-              const eventExpiresAt = (
-                state as unknown as { expiresAt?: number }
-              ).expiresAt;
+              const eventExpiresAt = hasExpiresAt(state)
+                ? state.expiresAt
+                : undefined;
               set({
                 isAuthenticated: true,
                 authUser: state.user,
@@ -239,11 +327,9 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
         });
       }
     } catch (error) {
-      console.error("[AuthSlice] Initialize auth error:", error);
       set({
         isLoading: false,
-        authError:
-          error instanceof Error ? error.message : "認証の初期化に失敗しました",
+        authError: handleAuthError(error),
       });
     }
   },
@@ -312,13 +398,9 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
         });
       }
     } catch (error) {
-      console.error("[AuthSlice] Update profile error:", error);
       set({
         isLoading: false,
-        authError:
-          error instanceof Error
-            ? error.message
-            : "プロフィールの更新に失敗しました",
+        authError: handleAuthError(error, "PROFILE_UPDATE_FAILED"),
       });
     }
   },
@@ -364,13 +446,9 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
         });
       }
     } catch (error) {
-      console.error("[AuthSlice] Link provider error:", error);
       set({
         isLoading: false,
-        authError:
-          error instanceof Error
-            ? error.message
-            : "アカウント連携に失敗しました",
+        authError: handleAuthError(error, "LINK_PROVIDER_FAILED"),
       });
     }
   },
