@@ -18,7 +18,8 @@
     "format": "prettier --write .",
     "typecheck": "pnpm --filter @repo/shared typecheck && pnpm --filter @repo/desktop typecheck",
     "clean": "pnpm -r exec rm -rf dist out node_modules/.vite",
-    "prepare": "husky"
+    "prepare": "husky",
+    "postinstall": "pnpm rebuild better-sqlite3 || true"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
@@ -38,7 +39,7 @@
     "vitest": "^2.1.8"
   },
   "engines": {
-    "node": ">=22.0.0",
+    "node": ">=22.21.1 <23.0.0",
     "pnpm": ">=10.0.0"
   },
   "packageManager": "pnpm@10.9.0",
