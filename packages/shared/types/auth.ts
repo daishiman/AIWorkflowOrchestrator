@@ -213,6 +213,11 @@ export interface SupabaseUserMetadata {
 
 /**
  * Supabase Identity型
+ *
+ * identity_data内のフィールドはプロバイダーによって異なる:
+ * - Google: picture (アバターURL)
+ * - GitHub: avatar_url
+ * - Discord: avatar_url
  */
 export interface SupabaseIdentity {
   id: string;
@@ -221,6 +226,7 @@ export interface SupabaseIdentity {
     email?: string;
     name?: string;
     avatar_url?: string;
+    picture?: string; // Google uses 'picture' instead of 'avatar_url'
   };
   created_at: string;
 }

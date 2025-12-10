@@ -337,8 +337,10 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
                 isOffline: state.isOffline ?? false,
                 isLoading: false,
               });
-              // Refresh profile after auth state change
+              // Refresh profile and linked providers after auth state change
+              // (連携解除時などにUIを即座に更新するため)
               get().fetchProfile();
+              get().fetchLinkedProviders();
             }
           } else {
             get().clearAuth();
