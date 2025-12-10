@@ -14,7 +14,7 @@ import type { OAuthProvider } from "../../../../preload/types";
  */
 interface ConfirmDialogState {
   isOpen: boolean;
-  type: "unlink" | "remove-avatar" | null;
+  type: "unlink" | "remove-avatar" | "delete-account" | null;
   provider?: OAuthProvider;
 }
 
@@ -84,6 +84,7 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
   const uploadAvatar = useAppStore((state) => state.uploadAvatar);
   const useProviderAvatar = useAppStore((state) => state.useProviderAvatar);
   const removeAvatar = useAppStore((state) => state.removeAvatar);
+  const deleteAccount = useAppStore((state) => state.deleteAccount);
   const setAuthError = useAppStore((state) => state.setAuthError);
 
   const [isEditing, setIsEditing] = useState(false);
@@ -99,6 +100,7 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
     isOpen: false,
     type: null,
   });
+  const [deleteConfirmEmail, setDeleteConfirmEmail] = useState("");
   const avatarMenuRef = useRef<HTMLDivElement>(null);
   const avatarButtonRef = useRef<HTMLDivElement>(null);
 
@@ -251,7 +253,26 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
   // 確認ダイアログキャンセル
   const handleCancelConfirm = useCallback(() => {
     setConfirmDialog({ isOpen: false, type: null });
+    setDeleteConfirmEmail("");
   }, []);
+
+  // アカウント削除ダイアログを表示
+  const handleDeleteAccountClick = useCallback(() => {
+    setConfirmDialog({
+      isOpen: true,
+      type: "delete-account",
+    });
+    setDeleteConfirmEmail("");
+  }, []);
+
+  // アカウント削除確定
+  const handleConfirmDeleteAccount = useCallback(async () => {
+    const success = await deleteAccount(deleteConfirmEmail);
+    if (success) {
+      setConfirmDialog({ isOpen: false, type: null });
+      setDeleteConfirmEmail("");
+    }
+  }, [deleteAccount, deleteConfirmEmail]);
 
   const displayName = profile?.displayName || authUser?.displayName || "User";
   const email = profile?.email ?? authUser?.email ?? "";
@@ -610,6 +631,29 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
           >
             ログアウト
           </Button>
+
+          {/* Account Delete Section */}
+          <GlassPanel
+            radius="md"
+            blur="md"
+            className="p-6 border border-red-500/30"
+          >
+            <h4 className="text-sm font-medium text-red-400 mb-2">
+              危険な操作
+            </h4>
+            <p className="text-white/60 text-sm mb-4">
+              アカウントを削除すると、全てのデータが削除されます。この操作は取り消せません。
+            </p>
+            <Button
+              variant="ghost"
+              onClick={handleDeleteAccountClick}
+              disabled={isLoading}
+              className="text-red-400 hover:text-red-300 hover:bg-red-500/10 border border-red-500/30"
+              aria-label="アカウントを削除"
+            >
+              アカウントを削除
+            </Button>
+          </GlassPanel>
         </>
       )}
 
@@ -621,31 +665,73 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
               <Icon
                 name="alert-triangle"
                 size={48}
-                className="mx-auto text-yellow-400"
+                className={clsx(
+                  "mx-auto",
+                  confirmDialog.type === "delete-account"
+                    ? "text-red-400"
+                    : "text-yellow-400",
+                )}
               />
               <h3 className="text-lg font-semibold text-white">
                 {confirmDialog.type === "unlink"
                   ? "連携解除の確認"
-                  : "アバター削除の確認"}
+                  : confirmDialog.type === "delete-account"
+                    ? "アカウント削除の確認"
+                    : "アバター削除の確認"}
               </h3>
               <p className="text-white/60 text-sm">
                 {confirmDialog.type === "unlink"
                   ? `${confirmDialog.provider}との連携を本当に連携を解除しますか？`
-                  : "アバターを本当に削除しますか？"}
+                  : confirmDialog.type === "delete-account"
+                    ? "アカウントを削除すると、全てのデータが完全に削除されます。この操作は取り消せません。"
+                    : "アバターを本当に削除しますか？"}
               </p>
+              {/* アカウント削除時のみメール確認入力 */}
+              {confirmDialog.type === "delete-account" && (
+                <div className="text-left space-y-2">
+                  <label
+                    htmlFor="delete-confirm-email"
+                    className="text-white/80 text-sm"
+                  >
+                    確認のため、メールアドレスを入力してください:
+                  </label>
+                  <Input
+                    id="delete-confirm-email"
+                    aria-label="確認用メールアドレス"
+                    value={deleteConfirmEmail}
+                    onChange={setDeleteConfirmEmail}
+                    placeholder={email}
+                    type="email"
+                  />
+                  <p className="text-white/40 text-xs">
+                    削除するアカウント: {email}
+                  </p>
+                </div>
+              )}
               <div className="flex gap-3 justify-center">
                 <Button variant="ghost" onClick={handleCancelConfirm}>
                   キャンセル
                 </Button>
                 <Button
                   variant="danger"
+                  disabled={
+                    confirmDialog.type === "delete-account"
+                      ? deleteConfirmEmail !== email || isLoading
+                      : isLoading
+                  }
                   onClick={
                     confirmDialog.type === "unlink"
                       ? handleConfirmUnlink
-                      : handleConfirmRemoveAvatar
+                      : confirmDialog.type === "delete-account"
+                        ? handleConfirmDeleteAccount
+                        : handleConfirmRemoveAvatar
                   }
                 >
-                  {confirmDialog.type === "unlink" ? "解除する" : "削除する"}
+                  {confirmDialog.type === "unlink"
+                    ? "解除する"
+                    : confirmDialog.type === "delete-account"
+                      ? "アカウントを削除"
+                      : "削除する"}
                 </Button>
               </div>
             </div>

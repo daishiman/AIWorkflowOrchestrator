@@ -1643,6 +1643,12 @@ describe("authSlice", () => {
           success: true,
         });
 
+        // fetchProfile呼び出し後に返すプロファイル（avatarUrl: null）
+        mockProfileGet.mockResolvedValue({
+          success: true,
+          data: { ...mockUserProfile, avatarUrl: null },
+        });
+
         store.profile = mockUserProfile;
 
         await store.removeAvatar();

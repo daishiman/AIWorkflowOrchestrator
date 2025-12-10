@@ -402,6 +402,18 @@ export interface ProfileUpdateResponse {
   };
 }
 
+export interface ProfileDeleteRequest {
+  confirmEmail: string;
+}
+
+export interface ProfileDeleteResponse {
+  success: boolean;
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
 export interface ProfileGetProvidersResponse {
   success: boolean;
   data?: LinkedProvider[];
@@ -578,6 +590,7 @@ export interface ElectronAPI {
   profile: {
     get: () => Promise<ProfileGetResponse>;
     update: (request: ProfileUpdateRequest) => Promise<ProfileUpdateResponse>;
+    delete: (request: ProfileDeleteRequest) => Promise<ProfileDeleteResponse>;
     getProviders: () => Promise<ProfileGetProvidersResponse>;
     linkProvider: (
       request: ProfileLinkProviderRequest,
