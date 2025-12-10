@@ -19,6 +19,7 @@ import {
   PROFILE_ERROR_CODES,
 } from "@repo/shared/types/auth";
 import { withValidation } from "../infrastructure/security/ipc-validator.js";
+import { syncProfileToMetadata } from "../infrastructure/profileSync.js";
 
 // === 型定義 ===
 
@@ -322,6 +323,19 @@ export function registerProfileHandlers(
 
           const profile = toUserProfile(data);
 
+          // user_metadata への同期（Primary → Secondary）
+          // 失敗しても処理は続行（user_profiles が正）
+          const syncResult = await syncProfileToMetadata(supabase, {
+            display_name: updates.displayName,
+            avatar_url: updates.avatarUrl,
+          });
+          if (!syncResult.success) {
+            console.warn(
+              "[ProfileHandlers] user_metadata同期失敗:",
+              syncResult.error,
+            );
+          }
+
           // キャッシュ更新
           await cache.updateCachedProfile(profile);
 
@@ -553,6 +567,124 @@ export function registerProfileHandlers(
                 error instanceof Error
                   ? error.message
                   : "Failed to unlink provider",
+            },
+          };
+        }
+      },
+      { getAllowedWindows: () => [mainWindow] },
+    ),
+  );
+
+  // profile:delete - アカウント削除（ソフトデリート）
+  ipcMain.handle(
+    IPC_CHANNELS.PROFILE_DELETE,
+    withValidation(
+      IPC_CHANNELS.PROFILE_DELETE,
+      async (
+        _event,
+        { confirmEmail }: { confirmEmail: string },
+      ): Promise<IPCResponse<void>> => {
+        try {
+          // 1. 認証確認
+          const {
+            data: { user },
+            error: userError,
+          } = await supabase.auth.getUser();
+
+          if (userError || !user) {
+            return {
+              success: false,
+              error: {
+                code: PROFILE_ERROR_CODES.DELETE_FAILED,
+                message: "Not authenticated",
+              },
+            };
+          }
+
+          // 2. メールアドレス一致確認
+          if (user.email?.toLowerCase() !== confirmEmail.toLowerCase()) {
+            return {
+              success: false,
+              error: {
+                code: PROFILE_ERROR_CODES.DELETE_EMAIL_MISMATCH,
+                message: "Email address does not match",
+              },
+            };
+          }
+
+          // 3. user_profiles 論理削除（deleted_at を設定）
+          // ※ 物理削除ではなく、deleted_at フラグで管理者が復元可能に
+          console.log("[ProfileHandlers] 削除開始 user.id:", user.id);
+          const { data: updateData, error: profileError } = await supabase
+            .from("user_profiles")
+            .update({
+              deleted_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", user.id)
+            .select();
+
+          console.log("[ProfileHandlers] 削除結果:", {
+            updateData,
+            profileError,
+          });
+
+          if (profileError) {
+            // user_profilesテーブルが存在しない場合は続行
+            if (!isUserProfilesTableError(profileError)) {
+              console.error("[ProfileHandlers] 削除エラー:", profileError);
+              return {
+                success: false,
+                error: {
+                  code: PROFILE_ERROR_CODES.DELETE_FAILED,
+                  message: profileError.message,
+                },
+              };
+            }
+          }
+
+          // 4. Storage は削除しない（復元時に必要）
+          console.log("[ProfileHandlers] Storage保持（ソフトデリート）");
+
+          // 5. ローカルキャッシュクリア
+          try {
+            // キャッシュをnullでクリア（clearProfile未実装の場合の代替）
+            await cache.updateCachedProfile({
+              id: user.id,
+              displayName: "",
+              email: "",
+              avatarUrl: null,
+              plan: "free",
+              createdAt: "",
+              updatedAt: "",
+            });
+          } catch (cacheError) {
+            console.warn("[ProfileHandlers] キャッシュクリア警告:", cacheError);
+          }
+
+          // 6. サインアウト
+          const { error: signOutError } = await supabase.auth.signOut();
+          if (signOutError) {
+            console.warn("[ProfileHandlers] signOut警告:", signOutError);
+          }
+
+          // 7. 認証状態変更を通知
+          mainWindow.webContents.send(IPC_CHANNELS.AUTH_STATE_CHANGED, {
+            authenticated: false,
+            user: null,
+          });
+
+          return { success: true };
+        } catch (error) {
+          console.error("[ProfileHandlers] 予期しないエラー:", error);
+          return {
+            success: false,
+            error: {
+              code: PROFILE_ERROR_CODES.DELETE_FAILED,
+              message:
+                error instanceof Error
+                  ? error.message
+                  : "Failed to delete account",
             },
           };
         }

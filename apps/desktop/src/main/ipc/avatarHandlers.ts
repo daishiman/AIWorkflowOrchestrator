@@ -15,6 +15,7 @@ import {
   AVATAR_ERROR_CODES,
 } from "@repo/shared/types/auth";
 import { withValidation } from "../infrastructure/security/ipc-validator.js";
+import { syncMetadataToProfile } from "../infrastructure/profileSync.js";
 
 // === 定数 ===
 
@@ -53,6 +54,35 @@ async function isFileSizeValid(filePath: string): Promise<boolean> {
   }
 }
 
+/**
+ * アップロード済みの古いアバターをStorageから削除
+ * @param supabase Supabaseクライアント
+ * @param userMetadata ユーザーメタデータ
+ */
+async function deleteOldUploadedAvatar(
+  supabase: SupabaseClient,
+  userMetadata: { avatar_url?: string; avatar_source?: string } | undefined,
+): Promise<void> {
+  if (userMetadata?.avatar_source !== "uploaded" || !userMetadata?.avatar_url) {
+    return;
+  }
+
+  try {
+    const url = new URL(userMetadata.avatar_url);
+    const pathParts = url.pathname.split("/");
+    // avatars/{user_id}/filename の形式から {user_id}/filename を取得
+    const bucketIndex = pathParts.indexOf("avatars");
+    if (bucketIndex !== -1 && bucketIndex + 2 < pathParts.length) {
+      const storagePath = pathParts.slice(bucketIndex + 1).join("/");
+      await supabase.storage.from("avatars").remove([storagePath]);
+      console.log("[AvatarHandlers] 古いアバターを削除しました:", storagePath);
+    }
+  } catch (error) {
+    // 削除失敗は無視（メイン処理を続行）
+    console.warn("[AvatarHandlers] 古いアバターの削除に失敗しました:", error);
+  }
+}
+
 // === ハンドラー登録 ===
 
 /**
@@ -78,7 +108,7 @@ export function registerAvatarHandlers(
               success: false,
               error: {
                 code: AVATAR_ERROR_CODES.UPLOAD_FAILED,
-                message: "Not authenticated",
+                message: "認証されていません",
               },
             };
           }
@@ -100,7 +130,7 @@ export function registerAvatarHandlers(
               success: false,
               error: {
                 code: AVATAR_ERROR_CODES.UPLOAD_CANCELLED,
-                message: "File selection cancelled",
+                message: "ファイル選択がキャンセルされました",
               },
             };
           }
@@ -113,7 +143,8 @@ export function registerAvatarHandlers(
               success: false,
               error: {
                 code: AVATAR_ERROR_CODES.INVALID_FILE_TYPE,
-                message: "Invalid file type. Allowed: jpg, png, gif, webp",
+                message:
+                  "対応していないファイル形式です。jpg, png, gif, webp のみ対応しています",
               },
             };
           }
@@ -124,30 +155,40 @@ export function registerAvatarHandlers(
               success: false,
               error: {
                 code: AVATAR_ERROR_CODES.FILE_TOO_LARGE,
-                message: "File too large. Maximum size: 5MB",
+                message: "ファイルサイズが大きすぎます。最大5MBまでです",
               },
             };
           }
 
+          // 古いアップロード済みアバターを削除（容量節約）
+          const userMetadata = user.user_metadata as {
+            avatar_url?: string;
+            avatar_source?: string;
+          };
+          await deleteOldUploadedAvatar(supabase, userMetadata);
+
           // ファイル読み込み
           const fileBuffer = await fs.readFile(filePath);
-          const fileName = `${user.id}-${Date.now()}${path.extname(filePath)}`;
+          // フォルダ構造: {user_id}/avatar-{timestamp}.{ext}
+          // RLSポリシーが user_id フォルダを期待するため
+          const storagePath = `${user.id}/avatar-${Date.now()}${path.extname(filePath)}`;
 
           // Supabase Storageにアップロード
           const { data: uploadData, error: uploadError } =
             await supabase.storage
               .from("avatars")
-              .upload(fileName, fileBuffer, {
+              .upload(storagePath, fileBuffer, {
                 contentType: `image/${path.extname(filePath).slice(1)}`,
                 upsert: true,
               });
 
           if (uploadError) {
+            console.error("[AvatarHandlers] アップロードエラー:", uploadError);
             return {
               success: false,
               error: {
                 code: AVATAR_ERROR_CODES.UPLOAD_FAILED,
-                message: uploadError.message,
+                message: "アバターのアップロードに失敗しました",
               },
             };
           }
@@ -168,13 +209,29 @@ export function registerAvatarHandlers(
           });
 
           if (updateError) {
+            console.error(
+              "[AvatarHandlers] メタデータ更新エラー:",
+              updateError,
+            );
             return {
               success: false,
               error: {
                 code: AVATAR_ERROR_CODES.UPLOAD_FAILED,
-                message: updateError.message,
+                message: "プロフィールの更新に失敗しました",
               },
             };
+          }
+
+          // user_profiles への同期（Secondary → Primary）
+          // 失敗しても処理は続行
+          const syncResult = await syncMetadataToProfile(supabase, user.id, {
+            avatar_url: avatarUrl,
+          });
+          if (!syncResult.success) {
+            console.warn(
+              "[AvatarHandlers] user_profiles同期失敗:",
+              syncResult.error,
+            );
           }
 
           return {
@@ -182,14 +239,12 @@ export function registerAvatarHandlers(
             data: { avatarUrl },
           };
         } catch (error) {
+          console.error("[AvatarHandlers] 予期しないエラー:", error);
           return {
             success: false,
             error: {
               code: AVATAR_ERROR_CODES.UPLOAD_FAILED,
-              message:
-                error instanceof Error
-                  ? error.message
-                  : "Failed to upload avatar",
+              message: "アバターのアップロード中にエラーが発生しました",
             },
           };
         }
@@ -217,7 +272,7 @@ export function registerAvatarHandlers(
               success: false,
               error: {
                 code: AVATAR_ERROR_CODES.USE_PROVIDER_FAILED,
-                message: "Not authenticated",
+                message: "認証されていません",
               },
             };
           }
@@ -228,7 +283,7 @@ export function registerAvatarHandlers(
               success: false,
               error: {
                 code: AVATAR_ERROR_CODES.USE_PROVIDER_FAILED,
-                message: `Invalid provider: ${provider}`,
+                message: `無効なプロバイダーです: ${provider}`,
               },
             };
           }
@@ -243,7 +298,7 @@ export function registerAvatarHandlers(
               success: false,
               error: {
                 code: AVATAR_ERROR_CODES.PROVIDER_NOT_LINKED,
-                message: `Provider ${provider} is not linked to this account`,
+                message: `${provider}はこのアカウントに連携されていません`,
               },
             };
           }
@@ -258,10 +313,17 @@ export function registerAvatarHandlers(
               success: false,
               error: {
                 code: AVATAR_ERROR_CODES.NO_PROVIDER_AVATAR,
-                message: `Provider ${provider} does not have an avatar`,
+                message: `${provider}にはアバター画像がありません`,
               },
             };
           }
+
+          // 古いアップロード済みアバターを削除（容量節約）
+          const userMetadata = user.user_metadata as {
+            avatar_url?: string;
+            avatar_source?: string;
+          };
+          await deleteOldUploadedAvatar(supabase, userMetadata);
 
           // ユーザーメタデータを更新
           const { error: updateError } = await supabase.auth.updateUser({
@@ -272,13 +334,29 @@ export function registerAvatarHandlers(
           });
 
           if (updateError) {
+            console.error(
+              "[AvatarHandlers] プロバイダーアバター設定エラー:",
+              updateError,
+            );
             return {
               success: false,
               error: {
                 code: AVATAR_ERROR_CODES.USE_PROVIDER_FAILED,
-                message: updateError.message,
+                message: "プロバイダーアバターの設定に失敗しました",
               },
             };
+          }
+
+          // user_profiles への同期（Secondary → Primary）
+          // 失敗しても処理は続行
+          const syncResult = await syncMetadataToProfile(supabase, user.id, {
+            avatar_url: avatarUrl,
+          });
+          if (!syncResult.success) {
+            console.warn(
+              "[AvatarHandlers] user_profiles同期失敗:",
+              syncResult.error,
+            );
           }
 
           return {
@@ -286,14 +364,12 @@ export function registerAvatarHandlers(
             data: { avatarUrl },
           };
         } catch (error) {
+          console.error("[AvatarHandlers] 予期しないエラー:", error);
           return {
             success: false,
             error: {
               code: AVATAR_ERROR_CODES.USE_PROVIDER_FAILED,
-              message:
-                error instanceof Error
-                  ? error.message
-                  : "Failed to use provider avatar",
+              message: "プロバイダーアバターの設定中にエラーが発生しました",
             },
           };
         }
@@ -318,7 +394,7 @@ export function registerAvatarHandlers(
               success: false,
               error: {
                 code: AVATAR_ERROR_CODES.REMOVE_FAILED,
-                message: "Not authenticated",
+                message: "認証されていません",
               },
             };
           }
@@ -329,26 +405,7 @@ export function registerAvatarHandlers(
           };
 
           // アップロードされたアバターの場合はStorageからも削除
-          if (
-            userMetadata?.avatar_source === "uploaded" &&
-            userMetadata?.avatar_url
-          ) {
-            try {
-              // URLからファイル名を抽出
-              const url = new URL(userMetadata.avatar_url);
-              const pathParts = url.pathname.split("/");
-              const fileName = pathParts[pathParts.length - 1];
-
-              if (fileName) {
-                await supabase.storage.from("avatars").remove([fileName]);
-              }
-            } catch {
-              // ストレージ削除の失敗は無視（メタデータの更新は続行）
-              console.warn(
-                "[AvatarHandlers] Failed to delete avatar from storage",
-              );
-            }
-          }
+          await deleteOldUploadedAvatar(supabase, userMetadata);
 
           // ユーザーメタデータからアバターを削除
           const { error: updateError } = await supabase.auth.updateUser({
@@ -359,25 +416,37 @@ export function registerAvatarHandlers(
           });
 
           if (updateError) {
+            console.error("[AvatarHandlers] アバター削除エラー:", updateError);
             return {
               success: false,
               error: {
                 code: AVATAR_ERROR_CODES.REMOVE_FAILED,
-                message: updateError.message,
+                message: "アバターの削除に失敗しました",
               },
             };
           }
 
+          // user_profiles への同期（Secondary → Primary）
+          // ★ これがアバター削除が効かない問題の根本修正 ★
+          // user_profiles.avatar_url も null に更新する
+          const syncResult = await syncMetadataToProfile(supabase, user.id, {
+            avatar_url: null,
+          });
+          if (!syncResult.success) {
+            console.warn(
+              "[AvatarHandlers] user_profiles同期失敗:",
+              syncResult.error,
+            );
+          }
+
           return { success: true };
         } catch (error) {
+          console.error("[AvatarHandlers] 予期しないエラー:", error);
           return {
             success: false,
             error: {
               code: AVATAR_ERROR_CODES.REMOVE_FAILED,
-              message:
-                error instanceof Error
-                  ? error.message
-                  : "Failed to remove avatar",
+              message: "アバターの削除中にエラーが発生しました",
             },
           };
         }

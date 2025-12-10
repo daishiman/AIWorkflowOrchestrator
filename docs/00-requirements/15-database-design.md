@@ -164,25 +164,76 @@ Supabase Auth と連携するユーザープロフィールテーブル。
 | カラム       | 型   | NULL | 説明                               |
 | ------------ | ---- | ---- | ---------------------------------- |
 | id           | TEXT | NO   | UUID主キー（auth.users.id と同一） |
-| display_name | TEXT | NO   | 表示名（3-50文字）                 |
+| display_name | TEXT | NO   | 表示名（3-30文字）                 |
 | email        | TEXT | NO   | メールアドレス                     |
 | avatar_url   | TEXT | YES  | アバター画像URL                    |
 | plan         | TEXT | NO   | プラン（free/pro/enterprise）      |
 | created_at   | TEXT | NO   | 作成日時（ISO8601形式）            |
 | updated_at   | TEXT | NO   | 更新日時（ISO8601形式）            |
+| deleted_at   | TEXT | YES  | 削除日時（ソフトデリート用）       |
 
 **Supabase RLS ポリシー**:
 
 - SELECT: `auth.uid() = id` （自分のプロフィールのみ閲覧可能）
 - UPDATE: `auth.uid() = id` （自分のプロフィールのみ更新可能）
-- INSERT: 認証トリガーで自動作成
+- INSERT: `auth.uid() = id` （認証トリガーで自動作成）
+
+**データ同期設計**:
+
+`user_profiles`（Primary Source of Truth）と`user_metadata`（Supabase Auth）は双方向同期される：
+
+| 操作                | Primary → Secondary           | Secondary → Primary           |
+| ------------------- | ----------------------------- | ----------------------------- |
+| profile:update      | user_profiles → user_metadata | -                             |
+| avatar:upload       | -                             | user_metadata → user_profiles |
+| avatar:use-provider | -                             | user_metadata → user_profiles |
+| avatar:remove       | -                             | user_metadata → user_profiles |
+
+同期ユーティリティ: `apps/desktop/src/main/infrastructure/profileSync.ts`
+
+**ソフトデリート設計**:
+
+- `deleted_at`がNULLでないレコードは論理削除済みとして扱う
+- アカウント削除時は`deleted_at`にタイムスタンプを設定
+- 物理削除は管理者の手動操作でのみ実行
 
 **設計上の注意点**:
 
 - `id` は Supabase `auth.users` テーブルの `id` と同一（外部キー参照）
 - プロフィール作成は認証時のトリガーで自動実行
-- `display_name` は 3-50文字、HTMLタグ不許可
-- `avatar_url` は https:// または http://localhost のみ許可
+- `display_name` は 3-30文字、HTMLタグ不許可
+- `avatar_url` は https:// のみ許可（セキュリティ要件）
+
+#### avatars（Storage バケット - Supabase Storage）
+
+ユーザーがアップロードしたアバター画像を保存するStorageバケット。
+
+| 設定項目     | 値                                   |
+| ------------ | ------------------------------------ |
+| バケット名   | `avatars`                            |
+| 公開設定     | public（全員が閲覧可能）             |
+| フォルダ構造 | `{user_id}/avatar-{timestamp}.{ext}` |
+| 対応形式     | jpg, jpeg, png, gif, webp            |
+| 最大ファイル | 5MB                                  |
+
+**Storage RLS ポリシー**:
+
+- INSERT: `auth.uid()::text = (storage.foldername(name))[1]` （自分のフォルダにのみアップロード可能）
+- SELECT: `bucket_id = 'avatars'` （全員が閲覧可能）
+- UPDATE: `auth.uid()::text = (storage.foldername(name))[1]` （自分のアバターのみ更新可能）
+- DELETE: `auth.uid()::text = (storage.foldername(name))[1]` （自分のアバターのみ削除可能）
+
+**アバター管理の動作**:
+
+| 操作               | Storageの動作                  |
+| ------------------ | ------------------------------ |
+| 新規アップロード   | 古いアバターを削除 → 新規追加  |
+| プロバイダーに切替 | アップロード済みアバターを削除 |
+| アバター削除       | アップロード済みアバターを削除 |
+
+※ 容量節約のため、アバター切り替え時に古いファイルは自動削除される
+
+**マイグレーションファイル**: `supabase/migrations/002_create_avatars_storage.sql`
 
 #### api_keys（APIキー管理）
 
@@ -251,6 +302,7 @@ Supabase Auth と連携するユーザープロフィールテーブル。
 | workflow_executions | idx_executions_workflow_id   | workflow_id            | 履歴検索               |
 | workflow_executions | idx_executions_status        | status                 | 実行中/失敗の検索      |
 | workflow_executions | idx_executions_started_at    | started_at             | 時系列ソート           |
+| user_profiles       | idx_profiles_deleted_at      | deleted_at             | 有効ユーザー取得       |
 | api_keys            | idx_api_keys_user_id         | user_id                | ユーザー別キー取得     |
 | audit_logs          | idx_audit_event_type         | event_type             | イベント種別検索       |
 | audit_logs          | idx_audit_entity             | entity_type, entity_id | エンティティ別履歴     |

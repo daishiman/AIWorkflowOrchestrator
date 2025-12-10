@@ -132,6 +132,8 @@ export const AUTH_ERROR_CODES = {
 export const PROFILE_ERROR_CODES = {
   GET_FAILED: "profile/get-failed",
   UPDATE_FAILED: "profile/update-failed",
+  DELETE_FAILED: "profile/delete-failed",
+  DELETE_EMAIL_MISMATCH: "profile/delete-email-mismatch",
   PROVIDERS_FAILED: "profile/providers-failed",
   LINK_FAILED: "profile/link-failed",
   UNLINK_FAILED: "profile/unlink-failed",

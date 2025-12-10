@@ -142,6 +142,8 @@ const electronAPI: ElectronAPI = {
     get: () => safeInvoke(IPC_CHANNELS.PROFILE_GET),
     update: (request: ProfileUpdateRequest) =>
       safeInvoke(IPC_CHANNELS.PROFILE_UPDATE, request),
+    delete: (request: { confirmEmail: string }) =>
+      safeInvoke(IPC_CHANNELS.PROFILE_DELETE, request),
     getProviders: () => safeInvoke(IPC_CHANNELS.PROFILE_GET_PROVIDERS),
     linkProvider: (request: ProfileLinkProviderRequest) =>
       safeInvoke(IPC_CHANNELS.PROFILE_LINK_PROVIDER, request),

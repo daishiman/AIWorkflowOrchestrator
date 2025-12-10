@@ -145,6 +145,7 @@ export interface AuthSlice {
   uploadAvatar: () => Promise<void>;
   useProviderAvatar: (provider: OAuthProvider) => Promise<void>;
   removeAvatar: () => Promise<void>;
+  deleteAccount: (confirmEmail: string) => Promise<boolean>;
   setAuthError: (error: string | null) => void;
   clearAuth: () => void;
 }
@@ -410,6 +411,7 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
         set({
           profile: response.data,
           isLoading: false,
+          authError: null,
         });
       } else {
         set({
@@ -459,6 +461,7 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
         set((state) => ({
           linkedProviders: [...state.linkedProviders, response.data!],
           isLoading: false,
+          authError: null,
         }));
       } else {
         set({
@@ -504,6 +507,7 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
             (p) => p.provider !== provider,
           ),
           isLoading: false,
+          authError: null,
         }));
         // 成功後に最新のプロバイダー情報を再取得してUIを確実に更新
         get().fetchLinkedProviders();
@@ -538,6 +542,7 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
             ? { ...state.profile, avatarUrl: response.data!.avatarUrl }
             : null,
           isLoading: false,
+          authError: null,
         }));
       } else {
         set({
@@ -584,6 +589,7 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
             ? { ...state.profile, avatarUrl: response.data!.avatarUrl }
             : null,
           isLoading: false,
+          authError: null,
         }));
       } else {
         set({
@@ -616,7 +622,10 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
         set((state) => ({
           profile: state.profile ? { ...state.profile, avatarUrl: null } : null,
           isLoading: false,
+          authError: null,
         }));
+        // 削除後にプロフィールを再取得してUIを確実に更新
+        get().fetchProfile();
       } else {
         set({
           isLoading: false,
@@ -628,6 +637,40 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
         isLoading: false,
         authError: handleAuthError(error, "PROFILE_UPDATE_FAILED"),
       });
+    }
+  },
+
+  deleteAccount: async (confirmEmail: string) => {
+    set({ isLoading: true, authError: null });
+
+    try {
+      if (!window.electronAPI?.profile?.delete) {
+        set({ isLoading: false });
+        return false;
+      }
+
+      const response = await window.electronAPI.profile.delete({
+        confirmEmail,
+      });
+
+      if (response.success) {
+        // アカウント削除成功後、認証状態をクリア
+        get().clearAuth();
+        return true;
+      } else {
+        set({
+          isLoading: false,
+          authError:
+            response.error?.message ?? "アカウントの削除に失敗しました",
+        });
+        return false;
+      }
+    } catch (error) {
+      set({
+        isLoading: false,
+        authError: handleAuthError(error, "UNKNOWN"),
+      });
+      return false;
     }
   },
 
