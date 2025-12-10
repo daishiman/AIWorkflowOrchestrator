@@ -22,3 +22,9 @@ export {
   getCacheTTL,
   resetProfileCache,
 } from "./profileCache";
+
+export {
+  createApiKeyStorage,
+  clearApiKeyStore,
+  resetApiKeyStore,
+} from "./apiKeyStorage";

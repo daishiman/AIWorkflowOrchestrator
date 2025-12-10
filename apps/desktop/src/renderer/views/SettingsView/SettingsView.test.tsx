@@ -20,6 +20,19 @@ vi.mock("../../components/organisms/AccountSection", () => ({
   ),
 }));
 
+// Mock ApiKeysSection to avoid complex IPC dependencies
+vi.mock("../../components/organisms/ApiKeysSection", () => ({
+  ApiKeysSection: () => (
+    <div data-testid="api-keys-section" id="api-keys-settings-heading">
+      <h3>APIキー設定</h3>
+      <div>OpenAI</div>
+      <div>Anthropic</div>
+      <div>Google AI</div>
+      <div>xAI</div>
+    </div>
+  ),
+}));
+
 // Mock store state - flat structure matching actual store
 const createMockState = (overrides = {}) => ({
   // SettingsSlice
@@ -72,29 +85,19 @@ describe("SettingsView", () => {
     });
   });
 
-  describe("API設定", () => {
-    it("API設定セクションを表示する", () => {
+  describe("APIキー設定", () => {
+    it("APIキー設定セクションを表示する", () => {
       render(<SettingsView />);
-      expect(screen.getByText("API設定")).toBeInTheDocument();
+      // ApiKeysSectionコンポーネントが表示される
+      expect(screen.getByText("APIキー設定")).toBeInTheDocument();
     });
 
-    it("APIキー入力フィールドを表示する", () => {
+    it("4つのプロバイダーを表示する", () => {
       render(<SettingsView />);
-      expect(screen.getByText("APIキー")).toBeInTheDocument();
-      expect(screen.getByPlaceholderText("sk-...")).toBeInTheDocument();
-    });
-
-    it("APIキー変更でsetApiKeyを呼び出す", async () => {
-      const mockSetApiKey = vi.fn();
-      const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation(((
-        selector: (state: ReturnType<typeof createMockState>) => unknown,
-      ) => selector(createMockState({ setApiKey: mockSetApiKey }))) as never);
-
-      render(<SettingsView />);
-      const input = screen.getByPlaceholderText("sk-...");
-      fireEvent.change(input, { target: { value: "sk-new-key" } });
-      expect(mockSetApiKey).toHaveBeenCalledWith("sk-new-key");
+      expect(screen.getByText("OpenAI")).toBeInTheDocument();
+      expect(screen.getByText("Anthropic")).toBeInTheDocument();
+      expect(screen.getByText("Google AI")).toBeInTheDocument();
+      expect(screen.getByText("xAI")).toBeInTheDocument();
     });
   });
 
@@ -175,9 +178,9 @@ describe("SettingsView", () => {
       expect(section).toBeInTheDocument();
     });
 
-    it("API設定セクションにaria-labelledbyを持つ", () => {
+    it("APIキー設定セクションにaria-labelledbyを持つ", () => {
       render(<SettingsView />);
-      const section = screen.getByRole("region", { name: /API設定/ });
+      const section = screen.getByRole("region", { name: /APIキー設定/ });
       expect(section).toBeInTheDocument();
     });
 

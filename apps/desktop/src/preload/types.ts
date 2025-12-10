@@ -483,6 +483,83 @@ export interface AvatarRemoveResponse {
   };
 }
 
+// API Key operations
+export type AIProvider = "openai" | "anthropic" | "google" | "xai";
+
+export interface ApiKeySaveRequest {
+  provider: AIProvider;
+  apiKey: string;
+  validateBeforeSave?: boolean;
+}
+
+export interface ApiKeySaveResponse {
+  success: boolean;
+  data?: {
+    provider: AIProvider;
+    savedAt: string;
+  };
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface ApiKeyDeleteRequest {
+  provider: AIProvider;
+}
+
+export interface ApiKeyDeleteResponse {
+  success: boolean;
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface ApiKeyValidateRequest {
+  provider: AIProvider;
+  apiKey: string;
+}
+
+export type ApiKeyValidationStatus =
+  | "valid"
+  | "invalid"
+  | "network_error"
+  | "timeout"
+  | "unknown_error";
+
+export interface ApiKeyValidateResponse {
+  success: boolean;
+  data?: {
+    provider: AIProvider;
+    status: ApiKeyValidationStatus;
+    validatedAt: string;
+    errorMessage?: string;
+  };
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface ProviderStatus {
+  provider: AIProvider;
+  displayName: string;
+  status: "registered" | "not_registered";
+  lastValidatedAt: string | null;
+}
+
+export interface ApiKeyListResponse {
+  success: boolean;
+  data?: {
+    providers: ProviderStatus[];
+  };
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
 export interface ThemeGetResponse {
   success: boolean;
   data?: {
@@ -606,6 +683,15 @@ export interface ElectronAPI {
       request: AvatarUseProviderRequest,
     ) => Promise<AvatarUseProviderResponse>;
     remove: () => Promise<AvatarRemoveResponse>;
+  };
+
+  apiKey: {
+    save: (request: ApiKeySaveRequest) => Promise<ApiKeySaveResponse>;
+    delete: (request: ApiKeyDeleteRequest) => Promise<ApiKeyDeleteResponse>;
+    validate: (
+      request: ApiKeyValidateRequest,
+    ) => Promise<ApiKeyValidateResponse>;
+    list: () => Promise<ApiKeyListResponse>;
   };
 }
 

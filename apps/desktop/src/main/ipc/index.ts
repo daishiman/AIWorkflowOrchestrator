@@ -9,10 +9,12 @@ import { registerThemeHandlers, setupThemeWatcher } from "./themeHandlers";
 import { registerAuthHandlers } from "./authHandlers";
 import { registerProfileHandlers } from "./profileHandlers";
 import { registerAvatarHandlers } from "./avatarHandlers";
+import { registerApiKeyHandlers } from "./apiKeyHandlers";
 import {
   getSupabaseClient,
   createSecureStorage,
   createProfileCache,
+  createApiKeyStorage,
 } from "../infrastructure";
 
 /**
@@ -48,6 +50,10 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
       "[IPC] Auth, profile, and avatar handlers not registered - Supabase not configured",
     );
   }
+
+  // Register API Key handlers (always available - local storage only)
+  const apiKeyStorage = createApiKeyStorage();
+  registerApiKeyHandlers(mainWindow, apiKeyStorage);
 }
 
 // Re-export for menu actions
