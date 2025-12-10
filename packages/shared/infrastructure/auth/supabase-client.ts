@@ -101,6 +101,11 @@ export function toAuthUser(
 
 /**
  * Supabase Identityから LinkedProvider に変換
+ *
+ * 注意: プロバイダーによってavatarUrlのキー名が異なる
+ * - Google: picture
+ * - GitHub: avatar_url
+ * - Discord: avatar_url
  */
 export function toLinkedProvider(identity: SupabaseIdentity): {
   provider: OAuthProvider;
@@ -110,12 +115,19 @@ export function toLinkedProvider(identity: SupabaseIdentity): {
   avatarUrl: string | null;
   linkedAt: string;
 } {
+  // プロバイダーによってavatarのキー名が異なる
+  // Google: picture, GitHub/Discord: avatar_url
+  const avatarUrl =
+    identity.identity_data?.avatar_url ??
+    identity.identity_data?.picture ??
+    null;
+
   return {
     provider: identity.provider as OAuthProvider,
     providerId: identity.id,
     email: identity.identity_data?.email ?? "",
     displayName: identity.identity_data?.name ?? null,
-    avatarUrl: identity.identity_data?.avatar_url ?? null,
+    avatarUrl,
     linkedAt: identity.created_at,
   };
 }

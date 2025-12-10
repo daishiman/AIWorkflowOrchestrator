@@ -33,6 +33,26 @@ export interface ProfileCache {
 // === ヘルパー関数 ===
 
 /**
+ * user_profilesテーブル不在エラーかどうかを判定
+ * エラーコード: PGRST200 (テーブル不在), PGRST116 (行が見つからない), 42P01 (PostgreSQLのテーブル不存在エラー)
+ * または "schema cache", "does not exist", "user_profiles", "relation" を含むメッセージ
+ */
+function isUserProfilesTableError(error: {
+  message: string;
+  code?: string;
+}): boolean {
+  return (
+    error.message.includes("schema cache") ||
+    error.message.includes("does not exist") ||
+    error.message.includes("user_profiles") ||
+    error.message.includes("relation") ||
+    error.code === "PGRST200" ||
+    error.code === "PGRST116" ||
+    error.code === "42P01"
+  );
+}
+
+/**
  * Supabaseのプロフィールデータを UserProfile 型に変換
  */
 function toUserProfile(data: {
@@ -107,12 +127,7 @@ export function registerProfileHandlers(
 
           if (error) {
             // user_profilesテーブルが存在しない場合はuser_metadataからフォールバック
-            if (
-              error.message.includes("schema cache") ||
-              error.message.includes("does not exist") ||
-              error.code === "PGRST200" ||
-              error.code === "42P01"
-            ) {
+            if (isUserProfilesTableError(error)) {
               console.warn(
                 "[ProfileHandlers] user_profiles テーブルが見つかりません。user_metadataからプロフィールを構築します",
               );
@@ -247,12 +262,7 @@ export function registerProfileHandlers(
 
           if (error) {
             // user_profilesテーブルが存在しない場合はuser_metadataにフォールバック
-            if (
-              error.message.includes("schema cache") ||
-              error.message.includes("does not exist") ||
-              error.code === "PGRST200" ||
-              error.code === "42P01"
-            ) {
+            if (isUserProfilesTableError(error)) {
               console.warn(
                 "[ProfileHandlers] user_profiles テーブルが見つかりません。user_metadataにフォールバックします",
               );

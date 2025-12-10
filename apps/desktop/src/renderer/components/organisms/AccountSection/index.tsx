@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import clsx from "clsx";
 import { useAppStore } from "../../../store";
 import { Button } from "../../atoms/Button";
@@ -43,6 +44,14 @@ const PROVIDERS: { id: OAuthProvider; name: string; icon: string }[] = [
 ];
 
 /**
+ * プロバイダーIDから表示名を取得
+ */
+const getProviderDisplayName = (providerId: string): string => {
+  const provider = PROVIDERS.find((p) => p.id === providerId);
+  return provider?.name ?? providerId;
+};
+
+/**
  * アカウント管理セクション
  *
  * ユーザーのアカウント情報を表示し、以下の機能を提供する:
@@ -82,11 +91,16 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
   const [authResult, setAuthResult] = useState<AuthResultType>(null);
   const [previousAuthState, setPreviousAuthState] = useState(isAuthenticated);
   const [isAvatarMenuOpen, setIsAvatarMenuOpen] = useState(false);
+  const [menuPosition, setMenuPosition] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
   const [confirmDialog, setConfirmDialog] = useState<ConfirmDialogState>({
     isOpen: false,
     type: null,
   });
   const avatarMenuRef = useRef<HTMLDivElement>(null);
+  const avatarButtonRef = useRef<HTMLDivElement>(null);
 
   // 認証状態が変わったときに新規登録かログインかを判定
   useEffect(() => {
@@ -109,14 +123,17 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
     setPreviousAuthState(isAuthenticated);
   }, [isAuthenticated, authUser, previousAuthState]);
 
-  // アバターメニュー外クリックで閉じる
+  // アバターメニュー外クリックで閉じる（Portal対応）
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        avatarMenuRef.current &&
-        !avatarMenuRef.current.contains(event.target as Node)
-      ) {
+      const target = event.target as Node;
+      // アバターボタンコンテナとPortalメニュー両方をチェック
+      const isInsideButtonContainer = avatarButtonRef.current?.contains(target);
+      const isInsideMenu = avatarMenuRef.current?.contains(target);
+
+      if (!isInsideButtonContainer && !isInsideMenu) {
         setIsAvatarMenuOpen(false);
+        setMenuPosition(null);
       }
     };
 
@@ -185,18 +202,32 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
 
   // アバターメニュー操作
   const handleToggleAvatarMenu = useCallback(() => {
-    setIsAvatarMenuOpen((prev) => !prev);
+    setIsAvatarMenuOpen((prev) => {
+      if (!prev && avatarButtonRef.current) {
+        // メニューを開く時に位置を計算
+        const rect = avatarButtonRef.current.getBoundingClientRect();
+        setMenuPosition({
+          top: rect.bottom + 8, // mt-2相当
+          left: rect.left,
+        });
+      } else {
+        setMenuPosition(null);
+      }
+      return !prev;
+    });
   }, []);
 
   const handleUploadAvatar = useCallback(() => {
     uploadAvatar();
     setIsAvatarMenuOpen(false);
+    setMenuPosition(null);
   }, [uploadAvatar]);
 
   const handleUseProviderAvatar = useCallback(
     (provider: OAuthProvider) => {
       useProviderAvatar(provider);
       setIsAvatarMenuOpen(false);
+      setMenuPosition(null);
     },
     [useProviderAvatar],
   );
@@ -208,6 +239,7 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
       type: "remove-avatar",
     });
     setIsAvatarMenuOpen(false);
+    setMenuPosition(null);
   }, []);
 
   // アバター削除確定
@@ -355,7 +387,7 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
           <GlassPanel radius="md" blur="md" className="p-6">
             <div className="flex items-start gap-4">
               {/* Avatar with Edit Button */}
-              <div className="flex-shrink-0 relative" ref={avatarMenuRef}>
+              <div className="flex-shrink-0 relative" ref={avatarButtonRef}>
                 {avatarUrl ? (
                   <img
                     src={avatarUrl}
@@ -377,11 +409,17 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                 >
                   <Icon name="pencil" size={12} />
                 </Button>
-                {/* Avatar Edit Menu */}
-                {isAvatarMenuOpen && (
+              </div>
+
+              {/* Avatar Edit Menu - Portal to escape stacking context */}
+              {isAvatarMenuOpen &&
+                menuPosition &&
+                createPortal(
                   <div
+                    ref={avatarMenuRef}
                     role="menu"
-                    className="absolute top-full left-0 mt-2 w-48 bg-[#1a1a1a] border border-white/10 rounded-lg shadow-lg z-50"
+                    className="fixed w-48 bg-[#1a1a1a] border border-white/10 rounded-lg shadow-lg z-[9999]"
+                    style={{ top: menuPosition.top, left: menuPosition.left }}
                   >
                     <button
                       role="menuitem"
@@ -391,9 +429,9 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                       <Icon name="upload" size={14} />
                       アップロード
                     </button>
-                    {/* Provider Avatar Options */}
+                    {/* Provider Avatar Options - 現在使用中のアバターのプロバイダーは非表示 */}
                     {linkedProviders
-                      .filter((p) => p.avatarUrl)
+                      .filter((p) => p.avatarUrl && p.avatarUrl !== avatarUrl)
                       .map((provider) => (
                         <button
                           key={provider.provider}
@@ -409,7 +447,8 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                             provider={provider.provider as OAuthProvider}
                             size={14}
                           />
-                          {provider.provider}のアバターを使用
+                          {getProviderDisplayName(provider.provider)}
+                          のアバターを使用
                         </button>
                       ))}
                     {/* Remove Avatar Option */}
@@ -427,9 +466,9 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                       <Icon name="trash-2" size={14} />
                       アバターを削除
                     </button>
-                  </div>
+                  </div>,
+                  document.body,
                 )}
-              </div>
 
               {/* Profile Info */}
               <div className="flex-1 min-w-0">

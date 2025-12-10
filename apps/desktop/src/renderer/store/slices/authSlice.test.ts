@@ -779,6 +779,66 @@ describe("authSlice", () => {
     });
   });
 
+  describe("連携解除後のUI更新 - AUTH-UI-001", () => {
+    it("AUTH_STATE_CHANGEDイベント時にfetchLinkedProvidersが呼ばれる", async () => {
+      let authStateCallback: (state: {
+        authenticated: boolean;
+        user?: typeof mockAuthUser;
+        isOffline?: boolean;
+      }) => void = () => {};
+
+      mockAuthOnAuthStateChanged.mockImplementation((callback) => {
+        authStateCallback = callback;
+        return () => {};
+      });
+
+      await store.initializeAuth();
+
+      // fetchLinkedProvidersをリセット
+      mockProfileGetProviders.mockClear();
+
+      // 認証状態変更をシミュレート（連携解除後のイベント）
+      authStateCallback({
+        authenticated: true,
+        user: mockAuthUser,
+        isOffline: false,
+      });
+
+      // fetchLinkedProvidersが呼ばれることを確認
+      expect(mockProfileGetProviders).toHaveBeenCalled();
+    });
+
+    it("onAuthStateChangedでuser状態が更新されたときfetchLinkedProvidersが再取得される", async () => {
+      let authStateCallback: (state: {
+        authenticated: boolean;
+        user?: typeof mockAuthUser;
+        isOffline?: boolean;
+      }) => void = () => {};
+
+      mockAuthOnAuthStateChanged.mockImplementation((callback) => {
+        authStateCallback = callback;
+        return () => {};
+      });
+
+      await store.initializeAuth();
+
+      // 初期化後のコール回数を記録
+      const initialCallCount = mockProfileGetProviders.mock.calls.length;
+
+      // 認証状態変更をシミュレート
+      authStateCallback({
+        authenticated: true,
+        user: { ...mockAuthUser, id: "updated-user" },
+        isOffline: false,
+      });
+
+      // 追加でfetchLinkedProvidersが呼ばれることを確認
+      expect(mockProfileGetProviders.mock.calls.length).toBeGreaterThan(
+        initialCallCount,
+      );
+    });
+  });
+
   describe("auth state change callback", () => {
     it("should handle authenticated state change", async () => {
       let authStateCallback: (state: {

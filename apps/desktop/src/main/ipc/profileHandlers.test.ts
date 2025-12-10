@@ -5,6 +5,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 // Mock Supabase client for profile operations
 const mockSupabaseAuth = {
   getUser: vi.fn(),
+  updateUser: vi.fn(),
 };
 
 const mockSupabaseFrom = vi.fn();
@@ -726,6 +727,110 @@ describe("profileHandlers", () => {
 
       expect(result.success).toBe(false);
       expect(result.error?.message).toContain("HTTPS");
+    });
+  });
+
+  describe("user_profiles テーブル不在時のフォールバック - AUTH-UI-001", () => {
+    it("エラーメッセージに'user_profiles'が含まれる場合はuser_metadataにフォールバック", async () => {
+      const handler = handlers.get(IPC_CHANNELS.PROFILE_GET);
+      if (!handler) {
+        throw new Error("PROFILE_GET handler not registered");
+      }
+
+      mockSupabaseSingle.mockResolvedValue({
+        data: null,
+        error: {
+          message:
+            "Could not find the table 'public.user_profiles' in the schema cache",
+          code: "PGRST200",
+        },
+      });
+
+      const result = (await handler({})) as IPCResponse<UserProfile>;
+
+      // フォールバック成功時はuser_metadataから構築されたプロフィールを返す
+      expect(result.success).toBe(true);
+      expect(result.data).toBeDefined();
+    });
+
+    it("エラーメッセージに'relation'が含まれる場合はuser_metadataにフォールバック", async () => {
+      const handler = handlers.get(IPC_CHANNELS.PROFILE_GET);
+      if (!handler) {
+        throw new Error("PROFILE_GET handler not registered");
+      }
+
+      mockSupabaseSingle.mockResolvedValue({
+        data: null,
+        error: {
+          message: 'relation "public.user_profiles" does not exist',
+          code: "42P01",
+        },
+      });
+
+      const result = (await handler({})) as IPCResponse<UserProfile>;
+
+      expect(result.success).toBe(true);
+      expect(result.data).toBeDefined();
+    });
+
+    it("エラーコードPGRST116の場合はuser_metadataにフォールバック", async () => {
+      const handler = handlers.get(IPC_CHANNELS.PROFILE_GET);
+      if (!handler) {
+        throw new Error("PROFILE_GET handler not registered");
+      }
+
+      mockSupabaseSingle.mockResolvedValue({
+        data: null,
+        error: {
+          message: "JSON object requested, multiple (or no) rows returned",
+          code: "PGRST116",
+        },
+      });
+
+      const result = (await handler({})) as IPCResponse<UserProfile>;
+
+      expect(result.success).toBe(true);
+      expect(result.data).toBeDefined();
+    });
+
+    it("PROFILE_UPDATE時もuser_profilesテーブル不在ならuser_metadataを更新", async () => {
+      const handler = handlers.get(IPC_CHANNELS.PROFILE_UPDATE);
+      if (!handler) {
+        throw new Error("PROFILE_UPDATE handler not registered");
+      }
+
+      mockSupabaseSingle.mockResolvedValue({
+        data: null,
+        error: {
+          message:
+            "Could not find the table 'public.user_profiles' in the schema cache",
+          code: "PGRST200",
+        },
+      });
+
+      // フォールバック時にauth.updateUserが呼ばれるのでモックを設定
+      mockSupabaseAuth.updateUser.mockResolvedValue({
+        data: {
+          user: {
+            id: "user-123",
+            email: "test@example.com",
+            user_metadata: {
+              display_name: "New Name",
+              avatar_url: "https://example.com/avatar.png",
+            },
+            created_at: "2024-01-01T00:00:00Z",
+          },
+        },
+        error: null,
+      });
+
+      const result = (await handler(
+        {},
+        { updates: { displayName: "New Name" } },
+      )) as IPCResponse<UserProfile>;
+
+      // フォールバック処理が動作すれば成功
+      expect(result.success).toBe(true);
     });
   });
 

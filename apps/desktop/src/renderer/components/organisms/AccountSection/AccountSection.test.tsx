@@ -344,6 +344,48 @@ describe("AccountSection", () => {
     });
   });
 
+  describe("z-index問題 - AUTH-UI-001", () => {
+    it("アバター編集メニューがz-[9999]で表示される", async () => {
+      render(<AccountSection />);
+      const avatarEditButton = screen.getByRole("button", {
+        name: /アバター.*編集/i,
+      });
+      await userEvent.click(avatarEditButton);
+
+      // Portalでレンダリングされたメニューを取得
+      const avatarMenu = document.body.querySelector('[role="menu"]');
+      expect(avatarMenu).toHaveClass("z-[9999]");
+    });
+  });
+
+  describe("アバターメニューPortal - AUTH-UI-002", () => {
+    it("アバターメニューがfixedポジションでレンダリングされる", async () => {
+      render(<AccountSection />);
+      const avatarEditButton = screen.getByRole("button", {
+        name: /アバター.*編集/i,
+      });
+      await userEvent.click(avatarEditButton);
+
+      const avatarMenu = screen.getByRole("menu");
+      expect(avatarMenu).toHaveClass("fixed");
+    });
+
+    it("アバターメニューがdocument.body直下にPortalでレンダリングされる", async () => {
+      render(<AccountSection />);
+      const avatarEditButton = screen.getByRole("button", {
+        name: /アバター.*編集/i,
+      });
+      await userEvent.click(avatarEditButton);
+
+      // Portalでレンダリングされたメニューを検索
+      const menu = document.body.querySelector('[role="menu"]');
+      expect(menu).toBeInTheDocument();
+      // メニューがbody直下（Portalコンテナ経由）にあることを確認
+      // ReactのcreatePortalはdivでラップされることがある
+      expect(menu?.closest("body")).toBe(document.body);
+    });
+  });
+
   /**
    * Phase 2 TDD Red Phase: 未実装機能テスト
    *
@@ -708,6 +750,514 @@ describe("AccountSection", () => {
         // 確認ダイアログが表示される
         expect(screen.getByText(/本当に削除しますか/i)).toBeInTheDocument();
       });
+    });
+  });
+
+  describe("アバターメニュー動的表示 - AUTH-UI-003", () => {
+    const mockUnlinkProvider = vi.fn();
+    const mockUploadAvatar = vi.fn();
+    const mockUseProviderAvatar = vi.fn();
+    const mockRemoveAvatar = vi.fn();
+
+    const createMockStateWithAvatarFeatures = (overrides = {}) => ({
+      ...createMockState(),
+      unlinkProvider: mockUnlinkProvider,
+      uploadAvatar: mockUploadAvatar,
+      useProviderAvatar: mockUseProviderAvatar,
+      removeAvatar: mockRemoveAvatar,
+      ...overrides,
+    });
+
+    beforeEach(async () => {
+      vi.clearAllMocks();
+    });
+
+    it("現在使用中のプロバイダーアバターはメニューに表示されない", async () => {
+      const { useAppStore } = await import("../../../store");
+      // プロフィールアバターがGoogleのアバターを使用中
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (
+          state: ReturnType<typeof createMockStateWithAvatarFeatures>,
+        ) => unknown,
+      ) =>
+        selector(
+          createMockStateWithAvatarFeatures({
+            profile: {
+              ...mockProfile,
+              avatarUrl: "https://google.com/avatar.png", // Googleアバター使用中
+            },
+            linkedProviders: [
+              {
+                provider: "google" as const,
+                providerId: "google-id",
+                email: "test@example.com",
+                displayName: "Test User",
+                avatarUrl: "https://google.com/avatar.png",
+                linkedAt: "2024-01-01T00:00:00Z",
+              },
+              {
+                provider: "github" as const,
+                providerId: "github-id",
+                email: "test@github.com",
+                displayName: "Test GitHub",
+                avatarUrl: "https://github.com/avatar.png",
+                linkedAt: "2024-12-01T00:00:00Z",
+              },
+            ],
+          }),
+        )) as never);
+
+      render(<AccountSection />);
+      const avatarEditButton = screen.getByRole("button", {
+        name: /アバター.*編集/i,
+      });
+      await userEvent.click(avatarEditButton);
+
+      // Googleのアバターオプションは表示されない（現在使用中）
+      expect(
+        screen.queryByRole("menuitem", { name: /Google.*使用/i }),
+      ).not.toBeInTheDocument();
+      // GitHubのアバターオプションは表示される
+      expect(
+        screen.getByRole("menuitem", { name: /GitHub.*使用/i }),
+      ).toBeInTheDocument();
+    });
+
+    it("プロバイダー名がローカライズされて表示される（Google）", async () => {
+      const { useAppStore } = await import("../../../store");
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (
+          state: ReturnType<typeof createMockStateWithAvatarFeatures>,
+        ) => unknown,
+      ) =>
+        selector(
+          createMockStateWithAvatarFeatures({
+            profile: {
+              ...mockProfile,
+              avatarUrl: null, // カスタムアバターなし
+            },
+            linkedProviders: [
+              {
+                provider: "google" as const,
+                providerId: "google-id",
+                email: "test@example.com",
+                displayName: "Test User",
+                avatarUrl: "https://google.com/avatar.png",
+                linkedAt: "2024-01-01T00:00:00Z",
+              },
+            ],
+          }),
+        )) as never);
+
+      render(<AccountSection />);
+      const avatarEditButton = screen.getByRole("button", {
+        name: /アバター.*編集/i,
+      });
+      await userEvent.click(avatarEditButton);
+
+      // "Google"と表示される（"google"ではない）
+      expect(
+        screen.getByRole("menuitem", { name: /Googleのアバターを使用/i }),
+      ).toBeInTheDocument();
+    });
+
+    it("プロバイダー名がローカライズされて表示される（GitHub）", async () => {
+      const { useAppStore } = await import("../../../store");
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (
+          state: ReturnType<typeof createMockStateWithAvatarFeatures>,
+        ) => unknown,
+      ) =>
+        selector(
+          createMockStateWithAvatarFeatures({
+            profile: {
+              ...mockProfile,
+              avatarUrl: null,
+            },
+            linkedProviders: [
+              {
+                provider: "github" as const,
+                providerId: "github-id",
+                email: "test@github.com",
+                displayName: "Test GitHub",
+                avatarUrl: "https://github.com/avatar.png",
+                linkedAt: "2024-12-01T00:00:00Z",
+              },
+            ],
+          }),
+        )) as never);
+
+      render(<AccountSection />);
+      const avatarEditButton = screen.getByRole("button", {
+        name: /アバター.*編集/i,
+      });
+      await userEvent.click(avatarEditButton);
+
+      expect(
+        screen.getByRole("menuitem", { name: /GitHubのアバターを使用/i }),
+      ).toBeInTheDocument();
+    });
+
+    it("プロバイダー名がローカライズされて表示される（Discord）", async () => {
+      const { useAppStore } = await import("../../../store");
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (
+          state: ReturnType<typeof createMockStateWithAvatarFeatures>,
+        ) => unknown,
+      ) =>
+        selector(
+          createMockStateWithAvatarFeatures({
+            profile: {
+              ...mockProfile,
+              avatarUrl: null,
+            },
+            linkedProviders: [
+              {
+                provider: "discord" as const,
+                providerId: "discord-id",
+                email: "test@discord.com",
+                displayName: "Test Discord",
+                avatarUrl: "https://discord.com/avatar.png",
+                linkedAt: "2024-12-01T00:00:00Z",
+              },
+            ],
+          }),
+        )) as never);
+
+      render(<AccountSection />);
+      const avatarEditButton = screen.getByRole("button", {
+        name: /アバター.*編集/i,
+      });
+      await userEvent.click(avatarEditButton);
+
+      expect(
+        screen.getByRole("menuitem", { name: /Discordのアバターを使用/i }),
+      ).toBeInTheDocument();
+    });
+
+    it("複数プロバイダー連携時、現在使用中以外のみ表示される", async () => {
+      const { useAppStore } = await import("../../../store");
+      // GitHubアバターを使用中
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (
+          state: ReturnType<typeof createMockStateWithAvatarFeatures>,
+        ) => unknown,
+      ) =>
+        selector(
+          createMockStateWithAvatarFeatures({
+            profile: {
+              ...mockProfile,
+              avatarUrl: "https://github.com/avatar.png", // GitHub使用中
+            },
+            linkedProviders: [
+              {
+                provider: "google" as const,
+                providerId: "google-id",
+                email: "test@example.com",
+                displayName: "Test User",
+                avatarUrl: "https://google.com/avatar.png",
+                linkedAt: "2024-01-01T00:00:00Z",
+              },
+              {
+                provider: "github" as const,
+                providerId: "github-id",
+                email: "test@github.com",
+                displayName: "Test GitHub",
+                avatarUrl: "https://github.com/avatar.png",
+                linkedAt: "2024-12-01T00:00:00Z",
+              },
+              {
+                provider: "discord" as const,
+                providerId: "discord-id",
+                email: "test@discord.com",
+                displayName: "Test Discord",
+                avatarUrl: "https://discord.com/avatar.png",
+                linkedAt: "2024-12-01T00:00:00Z",
+              },
+            ],
+          }),
+        )) as never);
+
+      render(<AccountSection />);
+      const avatarEditButton = screen.getByRole("button", {
+        name: /アバター.*編集/i,
+      });
+      await userEvent.click(avatarEditButton);
+
+      // Google, Discordは表示される
+      expect(
+        screen.getByRole("menuitem", { name: /Googleのアバターを使用/i }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("menuitem", { name: /Discordのアバターを使用/i }),
+      ).toBeInTheDocument();
+      // GitHubは表示されない（現在使用中）
+      expect(
+        screen.queryByRole("menuitem", { name: /GitHubのアバターを使用/i }),
+      ).not.toBeInTheDocument();
+    });
+
+    it("カスタムアップロードアバター使用時は全プロバイダーが表示される", async () => {
+      const { useAppStore } = await import("../../../store");
+      // カスタムアバター（どのプロバイダーとも一致しない）を使用中
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (
+          state: ReturnType<typeof createMockStateWithAvatarFeatures>,
+        ) => unknown,
+      ) =>
+        selector(
+          createMockStateWithAvatarFeatures({
+            profile: {
+              ...mockProfile,
+              avatarUrl: "https://storage.example.com/custom-avatar.png", // カスタム
+            },
+            linkedProviders: [
+              {
+                provider: "google" as const,
+                providerId: "google-id",
+                email: "test@example.com",
+                displayName: "Test User",
+                avatarUrl: "https://google.com/avatar.png",
+                linkedAt: "2024-01-01T00:00:00Z",
+              },
+              {
+                provider: "github" as const,
+                providerId: "github-id",
+                email: "test@github.com",
+                displayName: "Test GitHub",
+                avatarUrl: "https://github.com/avatar.png",
+                linkedAt: "2024-12-01T00:00:00Z",
+              },
+            ],
+          }),
+        )) as never);
+
+      render(<AccountSection />);
+      const avatarEditButton = screen.getByRole("button", {
+        name: /アバター.*編集/i,
+      });
+      await userEvent.click(avatarEditButton);
+
+      // 両方表示される
+      expect(
+        screen.getByRole("menuitem", { name: /Googleのアバターを使用/i }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("menuitem", { name: /GitHubのアバターを使用/i }),
+      ).toBeInTheDocument();
+    });
+
+    it("アバターがnullの場合、デフォルトアイコンが表示される", async () => {
+      const { useAppStore } = await import("../../../store");
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (
+          state: ReturnType<typeof createMockStateWithAvatarFeatures>,
+        ) => unknown,
+      ) =>
+        selector(
+          createMockStateWithAvatarFeatures({
+            profile: {
+              ...mockProfile,
+              avatarUrl: null, // アバターなし
+            },
+            authUser: {
+              ...mockAuthUser,
+              avatarUrl: null,
+            },
+          }),
+        )) as never);
+
+      render(<AccountSection />);
+      // デフォルトアイコン（User）が表示される - imgタグが存在しない
+      expect(
+        screen.queryByRole("img", { name: /avatar/i }),
+      ).not.toBeInTheDocument();
+      // アバター編集ボタンは存在する
+      expect(
+        screen.getByRole("button", { name: /アバター.*編集/i }),
+      ).toBeInTheDocument();
+    });
+
+    it("メニューを開いた後、外側をクリックして閉じることができる", async () => {
+      const { useAppStore } = await import("../../../store");
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (
+          state: ReturnType<typeof createMockStateWithAvatarFeatures>,
+        ) => unknown,
+      ) =>
+        selector(
+          createMockStateWithAvatarFeatures({
+            linkedProviders: [
+              {
+                provider: "google" as const,
+                providerId: "google-id",
+                email: "test@example.com",
+                displayName: "Test User",
+                avatarUrl: "https://google.com/avatar.png",
+                linkedAt: "2024-01-01T00:00:00Z",
+              },
+            ],
+          }),
+        )) as never);
+
+      render(<AccountSection />);
+      const avatarEditButton = screen.getByRole("button", {
+        name: /アバター.*編集/i,
+      });
+
+      // メニューを開く
+      await userEvent.click(avatarEditButton);
+      expect(screen.getByRole("menu")).toBeInTheDocument();
+
+      // 外側をクリック（document.bodyをクリック）
+      await userEvent.click(document.body);
+
+      // メニューが閉じられる
+      expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+    });
+
+    it("アップロードオプションをクリック後にメニューが閉じる", async () => {
+      const { useAppStore } = await import("../../../store");
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (
+          state: ReturnType<typeof createMockStateWithAvatarFeatures>,
+        ) => unknown,
+      ) =>
+        selector(
+          createMockStateWithAvatarFeatures({
+            linkedProviders: [
+              {
+                provider: "google" as const,
+                providerId: "google-id",
+                email: "test@example.com",
+                displayName: "Test User",
+                avatarUrl: "https://google.com/avatar.png",
+                linkedAt: "2024-01-01T00:00:00Z",
+              },
+            ],
+          }),
+        )) as never);
+
+      render(<AccountSection />);
+      const avatarEditButton = screen.getByRole("button", {
+        name: /アバター.*編集/i,
+      });
+
+      // メニューを開く
+      await userEvent.click(avatarEditButton);
+      expect(screen.getByRole("menu")).toBeInTheDocument();
+
+      // アップロードオプションをクリック
+      const uploadOption = screen.getByRole("menuitem", {
+        name: /アップロード/i,
+      });
+      await userEvent.click(uploadOption);
+
+      // メニューが閉じられる
+      expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+    });
+
+    it("プロバイダーリストが空の場合、プロバイダーオプションは表示されない", async () => {
+      const { useAppStore } = await import("../../../store");
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (
+          state: ReturnType<typeof createMockStateWithAvatarFeatures>,
+        ) => unknown,
+      ) =>
+        selector(
+          createMockStateWithAvatarFeatures({
+            linkedProviders: [], // 空のプロバイダーリスト
+          }),
+        )) as never);
+
+      render(<AccountSection />);
+      const avatarEditButton = screen.getByRole("button", {
+        name: /アバター.*編集/i,
+      });
+
+      // メニューを開く
+      await userEvent.click(avatarEditButton);
+
+      // アップロードと削除オプションは表示される
+      expect(
+        screen.getByRole("menuitem", { name: /アップロード/i }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("menuitem", { name: /削除/i }),
+      ).toBeInTheDocument();
+
+      // プロバイダーオプションは表示されない
+      expect(
+        screen.queryByRole("menuitem", { name: /Google.*使用/i }),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("menuitem", { name: /GitHub.*使用/i }),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("menuitem", { name: /Discord.*使用/i }),
+      ).not.toBeInTheDocument();
+    });
+
+    it("avatarUrlがnullのプロバイダーはメニューに表示されない", async () => {
+      const { useAppStore } = await import("../../../store");
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (
+          state: ReturnType<typeof createMockStateWithAvatarFeatures>,
+        ) => unknown,
+      ) =>
+        selector(
+          createMockStateWithAvatarFeatures({
+            profile: {
+              ...mockProfile,
+              avatarUrl: null,
+            },
+            linkedProviders: [
+              {
+                provider: "google" as const,
+                providerId: "google-id",
+                email: "test@example.com",
+                displayName: "Test User",
+                avatarUrl: "https://google.com/avatar.png", // アバターあり
+                linkedAt: "2024-01-01T00:00:00Z",
+              },
+              {
+                provider: "github" as const,
+                providerId: "github-id",
+                email: "test@github.com",
+                displayName: "Test GitHub",
+                avatarUrl: null, // アバターなし
+                linkedAt: "2024-12-01T00:00:00Z",
+              },
+              {
+                provider: "discord" as const,
+                providerId: "discord-id",
+                email: "test@discord.com",
+                displayName: "Test Discord",
+                avatarUrl: "https://discord.com/avatar.png", // アバターあり
+                linkedAt: "2024-12-01T00:00:00Z",
+              },
+            ],
+          }),
+        )) as never);
+
+      render(<AccountSection />);
+      const avatarEditButton = screen.getByRole("button", {
+        name: /アバター.*編集/i,
+      });
+      await userEvent.click(avatarEditButton);
+
+      // avatarUrlがあるプロバイダーは表示される
+      expect(
+        screen.getByRole("menuitem", { name: /Googleのアバターを使用/i }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("menuitem", { name: /Discordのアバターを使用/i }),
+      ).toBeInTheDocument();
+
+      // avatarUrlがnullのGitHubは表示されない
+      expect(
+        screen.queryByRole("menuitem", { name: /GitHubのアバターを使用/i }),
+      ).not.toBeInTheDocument();
     });
   });
 });
