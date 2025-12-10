@@ -342,6 +342,107 @@ interface IPCResponse<T> {
 
 ---
 
+## 8.13 Electron IPC API設計
+
+デスクトップアプリでは、Renderer Process と Main Process 間の通信に IPC（Inter-Process Communication）を使用する。
+
+### 8.13.1 IPC設計原則
+
+| 原則                   | 説明                                     |
+| ---------------------- | ---------------------------------------- |
+| contextIsolation       | Preloadスクリプトでのみ通信APIを公開     |
+| チャネルホワイトリスト | 許可されたチャネルのみ通信可能           |
+| sender検証             | withValidation()でリクエスト元を検証     |
+| 型安全性               | 全チャネルに対してTypeScript型定義を適用 |
+
+### 8.13.2 APIキー管理 IPC チャネル
+
+| チャネル          | メソッド | 引数                   | 戻り値                          | 公開先    |
+| ----------------- | -------- | ---------------------- | ------------------------------- | --------- |
+| `apiKey:save`     | invoke   | `{ provider, apiKey }` | `IPCResponse<void>`             | Renderer  |
+| `apiKey:delete`   | invoke   | `{ provider }`         | `IPCResponse<void>`             | Renderer  |
+| `apiKey:validate` | invoke   | `{ provider, apiKey }` | `IPCResponse<ValidationResult>` | Renderer  |
+| `apiKey:list`     | invoke   | なし                   | `IPCResponse<ProviderStatus[]>` | Renderer  |
+| `apiKey:get`      | invoke   | `{ provider }`         | `string \| null`                | Main Only |
+
+**セキュリティ注意**: `apiKey:get` はRenderer Processに公開しない（Main Process内部使用のみ）
+
+### 8.13.3 認証 IPC チャネル
+
+| チャネル             | メソッド | 引数                           | 戻り値                        |
+| -------------------- | -------- | ------------------------------ | ----------------------------- |
+| `auth:sign-in`       | invoke   | `{ provider }`                 | `IPCResponse<AuthResult>`     |
+| `auth:sign-out`      | invoke   | なし                           | `IPCResponse<void>`           |
+| `auth:get-session`   | invoke   | なし                           | `IPCResponse<Session>`        |
+| `auth:link-provider` | invoke   | `{ provider }`                 | `IPCResponse<LinkedProvider>` |
+| `profile:get`        | invoke   | なし                           | `IPCResponse<UserProfile>`    |
+| `profile:update`     | invoke   | `{ displayName?, avatarUrl? }` | `IPCResponse<UserProfile>`    |
+| `profile:delete`     | invoke   | `{ confirmEmail }`             | `IPCResponse<void>`           |
+
+### 8.13.4 IPCレスポンス形式
+
+```
+成功時:
+{
+  success: true,
+  data: <T>
+}
+
+失敗時:
+{
+  success: false,
+  error: {
+    code: "ERROR_CODE",
+    message: "エラーメッセージ"
+  }
+}
+```
+
+### 8.13.5 IPC エラーコード
+
+| コード               | 説明                 | 対処                         |
+| -------------------- | -------------------- | ---------------------------- |
+| `INVALID_SENDER`     | 不正なリクエスト元   | DevTools等からの不正アクセス |
+| `PROVIDER_NOT_FOUND` | 未対応プロバイダー   | サポート対象を確認           |
+| `VALIDATION_FAILED`  | バリデーションエラー | 入力値を確認                 |
+| `STORAGE_ERROR`      | ストレージ操作失敗   | safeStorage利用可否確認      |
+| `NETWORK_ERROR`      | ネットワーク障害     | 接続状態を確認               |
+
+---
+
+## 8.14 AIプロバイダーAPI連携
+
+### 8.14.1 対応プロバイダー
+
+| プロバイダー | API ベースURL                                  | 認証方式         |
+| ------------ | ---------------------------------------------- | ---------------- |
+| OpenAI       | `https://api.openai.com/v1`                    | Bearer Token     |
+| Anthropic    | `https://api.anthropic.com/v1`                 | x-api-key Header |
+| Google AI    | `https://generativelanguage.googleapis.com/v1` | Query Parameter  |
+| xAI          | `https://api.x.ai/v1`                          | Bearer Token     |
+
+### 8.14.2 APIキー検証エンドポイント
+
+| プロバイダー | メソッド | エンドポイント         | 検証方法                     |
+| ------------ | -------- | ---------------------- | ---------------------------- |
+| OpenAI       | GET      | `/models`              | モデル一覧取得成功で有効判定 |
+| Anthropic    | POST     | `/messages`            | 最小リクエスト送信で認証確認 |
+| Google AI    | GET      | `/models?key={apiKey}` | モデル一覧取得成功で有効判定 |
+| xAI          | GET      | `/models`              | モデル一覧取得成功で有効判定 |
+
+### 8.14.3 HTTPステータスと検証結果マッピング
+
+| HTTPステータス | 検証結果        | 意味                               |
+| -------------- | --------------- | ---------------------------------- |
+| 200-299        | `valid`         | APIキー有効                        |
+| 401            | `invalid`       | 認証失敗（キー無効または期限切れ） |
+| 403            | `invalid`       | アクセス拒否                       |
+| 429            | `valid`         | レートリミット（認証は成功）       |
+| 500-504        | `network_error` | サーバーエラー                     |
+| タイムアウト   | `timeout`       | 接続タイムアウト（10秒）           |
+
+---
+
 ## 関連ドキュメント
 
 - [エラーハンドリング仕様](./07-error-handling.md)

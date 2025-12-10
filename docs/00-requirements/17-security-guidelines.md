@@ -227,6 +227,46 @@ Electron Desktop アプリでは Supabase Auth を使用し、OAuth 2.0 PKCE フ
 - Electronアプリのasarアーカイブ内への機密情報埋め込み
 - コンソールログへの機密情報出力
 
+### 17.3.4 AIプロバイダーAPIキー管理
+
+ユーザーが登録するAIプロバイダー（OpenAI、Anthropic、Google、xAI）のAPIキーは以下のセキュリティ要件に従って管理する。
+
+**ストレージ構成**:
+
+| コンポーネント | 役割                              | 実装場所                 |
+| -------------- | --------------------------------- | ------------------------ |
+| 暗号化         | Electron safeStorage API          | `apiKeyStorage.ts`       |
+| 永続化         | electron-store (Base64エンコード) | `userData/api-keys.json` |
+| IPC通信        | contextBridge経由                 | `apiKeyHandlers.ts`      |
+| 検証           | プロバイダーAPI呼び出し           | `apiKeyValidator.ts`     |
+
+**セキュリティ設計**:
+
+| 要件         | 実装                                                  |
+| ------------ | ----------------------------------------------------- |
+| 暗号化       | safeStorage.encryptString() → Base64 → electron-store |
+| Renderer分離 | APIキー取得(get)はRenderer非公開（Main Processのみ）  |
+| IPC検証      | withValidation() ラッパーでsender検証                 |
+| ログ出力     | APIキー値は一切ログに出力しない                       |
+| マスク表示   | UIではパスワードフィールド（type="password"）使用     |
+
+**IPCチャネル**:
+
+| チャネル        | 公開先    | 用途                       |
+| --------------- | --------- | -------------------------- |
+| apiKey:save     | Renderer  | キー保存                   |
+| apiKey:delete   | Renderer  | キー削除                   |
+| apiKey:validate | Renderer  | キー検証                   |
+| apiKey:list     | Renderer  | 登録状況一覧               |
+| apiKey:get      | Main Only | キー取得（Renderer非公開） |
+
+**実装ファイル**:
+
+- `apps/desktop/src/main/infrastructure/apiKeyStorage.ts` - 暗号化ストレージ
+- `apps/desktop/src/main/ipc/apiKeyHandlers.ts` - IPCハンドラー
+- `packages/shared/infrastructure/ai/apiKeyValidator.ts` - API検証
+- `apps/desktop/src/renderer/components/organisms/ApiKeysSection/` - UI
+
 ---
 
 ## 17.4 入力バリデーション

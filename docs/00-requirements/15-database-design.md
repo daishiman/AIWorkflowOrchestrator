@@ -635,6 +635,69 @@ Turso の Embedded Replicas は、ローカルの SQLite ファイルとクラ�
 
 ---
 
+## 15.13 Electron ローカルストレージ
+
+デスクトップアプリではクラウドDBとは別に、端末固有の機密情報を保存するローカルストレージを使用する。
+
+### ストレージ種類と用途
+
+| ストレージ種別   | 技術                 | 用途                   | セキュリティレベル         |
+| ---------------- | -------------------- | ---------------------- | -------------------------- |
+| 暗号化ストレージ | Electron safeStorage | APIキー、認証トークン  | 最高（OSキーチェーン連携） |
+| 設定ストレージ   | electron-store       | ユーザー設定、UI状態   | 中（ファイル暗号化なし）   |
+| キャッシュ       | ファイルシステム     | 一時データ、プレビュー | 低                         |
+
+### AIプロバイダーAPIキーストレージ
+
+**保存場所**: `{userData}/api-keys.json`（electron-store経由）
+
+**データ構造**:
+
+| フィールド      | 型   | 説明                              |
+| --------------- | ---- | --------------------------------- |
+| provider        | TEXT | openai / anthropic / google / xai |
+| encryptedKey    | TEXT | safeStorage暗号化後のBase64文字列 |
+| registeredAt    | TEXT | 登録日時（ISO8601）               |
+| lastValidatedAt | TEXT | 最終検証日時（ISO8601）           |
+
+**暗号化フロー**:
+
+1. 平文APIキー → `safeStorage.encryptString()` → Buffer
+2. Buffer → Base64エンコード → electron-storeに保存
+
+**復号化フロー**:
+
+1. electron-store → Base64文字列取得
+2. Base64デコード → Buffer
+3. Buffer → `safeStorage.decryptString()` → 平文APIキー
+
+**セキュリティ制約**:
+
+- `apiKey:get` チャネルはMain Process内部専用（Renderer非公開）
+- APIキー値はログ出力禁止
+- メモリ上の平文APIキーは使用後速やかに破棄
+
+### 認証トークンストレージ
+
+**保存場所**: Electron safeStorage（OSキーチェーン直接）
+
+| キー名               | 内容                          | 有効期限 |
+| -------------------- | ----------------------------- | -------- |
+| `auth_access_token`  | Supabase アクセストークン     | 1時間    |
+| `auth_refresh_token` | Supabase リフレッシュトークン | 30日     |
+
+### ストレージ初期化タイミング
+
+| イベント               | 処理                                  |
+| ---------------------- | ------------------------------------- |
+| アプリ初回起動         | 空のストレージファイル作成            |
+| ログイン成功           | 認証トークン保存                      |
+| APIキー登録            | 暗号化して保存                        |
+| ログアウト             | 認証トークンのみ削除（APIキーは保持） |
+| アプリアンインストール | OSがキーチェーンエントリ削除          |
+
+---
+
 ## 関連ドキュメント
 
 - [テクノロジースタック](./03-technology-stack.md)

@@ -2,9 +2,9 @@ import React, { useState, useCallback } from "react";
 import clsx from "clsx";
 import { SettingsCard } from "../../components/organisms/SettingsCard";
 import { AccountSection } from "../../components/organisms/AccountSection";
+import { ApiKeysSection } from "../../components/organisms/ApiKeysSection";
 import { FormField } from "../../components/molecules/FormField";
 import { ThemeSelector } from "../../components/molecules/ThemeSelector";
-import { Input } from "../../components/atoms/Input";
 import { Checkbox } from "../../components/atoms/Checkbox";
 import { Button } from "../../components/atoms/Button";
 import { ErrorDisplay } from "../../components/atoms/ErrorDisplay";
@@ -17,9 +17,7 @@ export interface SettingsViewProps {
 
 export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
   // Use flat store structure
-  const apiKey = useAppStore((state) => state.apiKey);
   const autoSyncEnabled = useAppStore((state) => state.autoSyncEnabled);
-  const setApiKeyAction = useAppStore((state) => state.setApiKey);
   const setAutoSyncEnabledAction = useAppStore(
     (state) => state.setAutoSyncEnabled,
   );
@@ -31,13 +29,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
   const [isLoading] = useState(false);
   const [error] = useState<string | null>(null);
   const [ragEnabled, setRagEnabled] = useState(false);
-
-  const handleApiKeyChange = useCallback(
-    (value: string) => {
-      setApiKeyAction(value);
-    },
-    [setApiKeyAction],
-  );
 
   const handleRagToggle = useCallback((checked: boolean) => {
     setRagEnabled(checked);
@@ -82,27 +73,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
           </SettingsCard>
         </section>
 
-        {/* API Settings */}
-        <section role="region" aria-labelledby="api-settings-heading">
-          <SettingsCard
-            title="API設定"
-            description="AIサービスへの接続設定"
-            id="api-settings-heading"
-          >
-            <FormField
-              label="APIキー"
-              description="OpenAI APIキーを入力してください"
-              required
-            >
-              <Input
-                type="password"
-                value={apiKey}
-                onChange={handleApiKeyChange}
-                placeholder="sk-..."
-                disabled={isLoading}
-              />
-            </FormField>
-          </SettingsCard>
+        {/* API Keys Settings - 全4プロバイダー対応 */}
+        <section role="region" aria-labelledby="api-keys-settings-heading">
+          <ApiKeysSection />
         </section>
 
         {/* RAG Settings */}

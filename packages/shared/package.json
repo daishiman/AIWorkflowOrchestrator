@@ -32,6 +32,14 @@
     "./types/auth": {
       "types": "./dist/types/auth.d.ts",
       "import": "./dist/types/auth.js"
+    },
+    "./types/api-keys": {
+      "types": "./dist/types/api-keys.d.ts",
+      "import": "./dist/types/api-keys.js"
+    },
+    "./infrastructure/ai/apiKeyValidator": {
+      "types": "./dist/infrastructure/ai/apiKeyValidator.d.ts",
+      "import": "./dist/infrastructure/ai/apiKeyValidator.js"
     }
   },
   "scripts": {

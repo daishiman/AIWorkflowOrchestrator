@@ -28,6 +28,9 @@ import type {
   ProfileUnlinkProviderRequest,
   AvatarUseProviderRequest,
   AuthState,
+  ApiKeySaveRequest,
+  ApiKeyDeleteRequest,
+  ApiKeyValidateRequest,
 } from "./types";
 
 // Type-safe invoke wrapper
@@ -156,6 +159,16 @@ const electronAPI: ElectronAPI = {
     useProvider: (request: AvatarUseProviderRequest) =>
       safeInvoke(IPC_CHANNELS.AVATAR_USE_PROVIDER, request),
     remove: () => safeInvoke(IPC_CHANNELS.AVATAR_REMOVE),
+  },
+
+  apiKey: {
+    save: (request: ApiKeySaveRequest) =>
+      safeInvoke(IPC_CHANNELS.API_KEY_SAVE, request),
+    delete: (request: ApiKeyDeleteRequest) =>
+      safeInvoke(IPC_CHANNELS.API_KEY_DELETE, request),
+    validate: (request: ApiKeyValidateRequest) =>
+      safeInvoke(IPC_CHANNELS.API_KEY_VALIDATE, request),
+    list: () => safeInvoke(IPC_CHANNELS.API_KEY_LIST),
   },
 };
 

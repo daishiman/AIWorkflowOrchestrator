@@ -67,6 +67,12 @@ export const IPC_CHANNELS = {
   // Settings operations (user-specific)
   USER_SETTINGS_GET: "settings:get",
   USER_SETTINGS_UPDATE: "settings:update",
+
+  // API Key operations
+  API_KEY_SAVE: "apiKey:save",
+  API_KEY_DELETE: "apiKey:delete",
+  API_KEY_VALIDATE: "apiKey:validate",
+  API_KEY_LIST: "apiKey:list",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -115,6 +121,11 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   // Settings channels
   IPC_CHANNELS.USER_SETTINGS_GET,
   IPC_CHANNELS.USER_SETTINGS_UPDATE,
+  // API Key channels (GET is not exposed for security - NFR-SEC-008)
+  IPC_CHANNELS.API_KEY_SAVE,
+  IPC_CHANNELS.API_KEY_DELETE,
+  IPC_CHANNELS.API_KEY_VALIDATE,
+  IPC_CHANNELS.API_KEY_LIST,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [

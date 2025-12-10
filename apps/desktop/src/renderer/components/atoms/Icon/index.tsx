@@ -33,6 +33,15 @@ import {
   AlertTriangle,
   Upload,
   Trash2,
+  Bot,
+  Globe,
+  Zap,
+  Eye,
+  EyeOff,
+  Lock,
+  XCircle,
+  Clock,
+  AlertCircle,
   type LucideIcon,
 } from "lucide-react";
 
@@ -68,7 +77,16 @@ export type IconName =
   | "wifi-off"
   | "alert-triangle"
   | "upload"
-  | "trash-2";
+  | "trash-2"
+  | "bot"
+  | "globe"
+  | "zap"
+  | "eye"
+  | "eye-off"
+  | "lock"
+  | "x-circle"
+  | "clock"
+  | "alert-circle";
 
 export interface IconProps extends React.SVGAttributes<SVGElement> {
   name: IconName;
@@ -111,6 +129,15 @@ const iconMap: Record<IconName, LucideIcon> = {
   "alert-triangle": AlertTriangle,
   upload: Upload,
   "trash-2": Trash2,
+  bot: Bot,
+  globe: Globe,
+  zap: Zap,
+  eye: Eye,
+  "eye-off": EyeOff,
+  lock: Lock,
+  "x-circle": XCircle,
+  clock: Clock,
+  "alert-circle": AlertCircle,
 };
 
 export const Icon = forwardRef<SVGSVGElement, IconProps>(
