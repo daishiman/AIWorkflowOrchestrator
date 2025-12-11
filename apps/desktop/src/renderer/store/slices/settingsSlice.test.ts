@@ -1,6 +1,17 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import { createSettingsSlice, type SettingsSlice } from "./settingsSlice";
-import type { UserProfile } from "../types";
+import type { UserProfile, ThemeMode, ResolvedTheme } from "../types";
+
+// Mock window.electronAPI
+const mockElectronAPI = {
+  theme: {
+    get: vi.fn(),
+    set: vi.fn(),
+    getSystem: vi.fn(),
+  },
+};
+
+vi.stubGlobal("electronAPI", mockElectronAPI);
 
 describe("settingsSlice", () => {
   let store: SettingsSlice;
@@ -11,6 +22,7 @@ describe("settingsSlice", () => {
   ) => void;
 
   beforeEach(() => {
+    vi.clearAllMocks();
     const state: Partial<SettingsSlice> = {};
     mockSet = (fn) => {
       const partial =
@@ -24,6 +36,14 @@ describe("settingsSlice", () => {
       (() => store) as never,
       {} as never,
     );
+
+    // Reset document state
+    document.documentElement.removeAttribute("data-theme");
+    document.documentElement.classList.remove("theme-transition");
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   const mockProfile: UserProfile = {
@@ -106,6 +126,159 @@ describe("settingsSlice", () => {
       store.setAutoSyncEnabled(false);
       store.setAutoSyncEnabled(true);
       expect(store.autoSyncEnabled).toBe(true);
+    });
+  });
+
+  describe("setThemeMode", () => {
+    it("electronAPIが利用不可の場合、フォールバックで動作する", async () => {
+      vi.stubGlobal("electronAPI", undefined);
+      const newStore = createSettingsSlice(
+        mockSet as never,
+        (() => store) as never,
+        {} as never,
+      );
+
+      await newStore.setThemeMode("dark");
+      expect(store.themeMode).toBe("dark");
+      expect(store.resolvedTheme).toBe("dark");
+
+      vi.stubGlobal("electronAPI", mockElectronAPI);
+    });
+
+    it("electronAPI.theme.setが利用不可の場合、フォールバックで動作する", async () => {
+      vi.stubGlobal("electronAPI", { theme: {} });
+      const newStore = createSettingsSlice(
+        mockSet as never,
+        (() => store) as never,
+        {} as never,
+      );
+
+      await newStore.setThemeMode("light");
+      expect(store.themeMode).toBe("light");
+      expect(store.resolvedTheme).toBe("light");
+
+      vi.stubGlobal("electronAPI", mockElectronAPI);
+    });
+
+    it("systemモードの場合、resolvedThemeはdarkにフォールバックする", async () => {
+      vi.stubGlobal("electronAPI", { theme: {} });
+      const newStore = createSettingsSlice(
+        mockSet as never,
+        (() => store) as never,
+        {} as never,
+      );
+
+      await newStore.setThemeMode("system");
+      expect(store.themeMode).toBe("system");
+      expect(store.resolvedTheme).toBe("dark");
+
+      vi.stubGlobal("electronAPI", mockElectronAPI);
+    });
+
+    it("IPC成功時にテーマを設定する", async () => {
+      mockElectronAPI.theme.set.mockResolvedValue({
+        success: true,
+        data: {
+          mode: "dark" as ThemeMode,
+          resolvedTheme: "dark" as ResolvedTheme,
+        },
+      });
+
+      await store.setThemeMode("dark");
+      expect(store.themeMode).toBe("dark");
+      expect(store.resolvedTheme).toBe("dark");
+    });
+
+    it("IPC失敗時にフォールバック処理を行う", async () => {
+      mockElectronAPI.theme.set.mockRejectedValue(new Error("IPC error"));
+      mockElectronAPI.theme.getSystem.mockRejectedValue(
+        new Error("System error"),
+      );
+
+      await store.setThemeMode("system");
+      expect(store.themeMode).toBe("system");
+      expect(store.resolvedTheme).toBe("dark");
+    });
+
+    it("IPC失敗時にシステムテーマを取得して設定する", async () => {
+      mockElectronAPI.theme.set.mockRejectedValue(new Error("IPC error"));
+      mockElectronAPI.theme.getSystem.mockResolvedValue({
+        data: { resolvedTheme: "light" as ResolvedTheme },
+      });
+
+      await store.setThemeMode("system");
+      expect(store.resolvedTheme).toBe("light");
+    });
+
+    it("IPC失敗かつlight/darkモードの場合、直接設定する", async () => {
+      mockElectronAPI.theme.set.mockRejectedValue(new Error("IPC error"));
+
+      await store.setThemeMode("light");
+      expect(store.themeMode).toBe("light");
+      expect(store.resolvedTheme).toBe("light");
+    });
+  });
+
+  describe("setResolvedTheme", () => {
+    it("resolvedThemeを直接設定する", () => {
+      store.setResolvedTheme("light");
+      expect(store.resolvedTheme).toBe("light");
+    });
+
+    it("DOMにテーマを適用する", () => {
+      store.setResolvedTheme("dark");
+      expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
+    });
+  });
+
+  describe("initializeTheme", () => {
+    it("electronAPIが利用不可の場合、デフォルトを使用する", async () => {
+      vi.stubGlobal("electronAPI", undefined);
+      const newStore = createSettingsSlice(
+        mockSet as never,
+        (() => store) as never,
+        {} as never,
+      );
+
+      await newStore.initializeTheme();
+      expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
+
+      vi.stubGlobal("electronAPI", mockElectronAPI);
+    });
+
+    it("electronAPI.theme.getが利用不可の場合、デフォルトを使用する", async () => {
+      vi.stubGlobal("electronAPI", { theme: {} });
+      const newStore = createSettingsSlice(
+        mockSet as never,
+        (() => store) as never,
+        {} as never,
+      );
+
+      await newStore.initializeTheme();
+      expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
+
+      vi.stubGlobal("electronAPI", mockElectronAPI);
+    });
+
+    it("IPC成功時にテーマを初期化する", async () => {
+      mockElectronAPI.theme.get.mockResolvedValue({
+        success: true,
+        data: {
+          mode: "light" as ThemeMode,
+          resolvedTheme: "light" as ResolvedTheme,
+        },
+      });
+
+      await store.initializeTheme();
+      expect(store.themeMode).toBe("light");
+      expect(store.resolvedTheme).toBe("light");
+    });
+
+    it("IPC失敗時にデフォルトを使用する", async () => {
+      mockElectronAPI.theme.get.mockRejectedValue(new Error("IPC error"));
+
+      await store.initializeTheme();
+      expect(store.resolvedTheme).toBe("dark");
     });
   });
 });
