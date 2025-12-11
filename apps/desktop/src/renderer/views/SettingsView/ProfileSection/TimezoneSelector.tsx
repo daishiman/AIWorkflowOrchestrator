@@ -132,7 +132,7 @@ export const TimezoneSelector: React.FC<TimezoneSelectorProps> = ({
           isDisabled
             ? "opacity-50 cursor-not-allowed"
             : "hover:bg-white/10 hover:border-white/20",
-          isOpen && "ring-2 ring-[#0a84ff]",
+          isOpen && "ring-2 ring-[var(--status-primary)]",
         )}
       >
         <div className="flex-1">
@@ -173,12 +173,12 @@ export const TimezoneSelector: React.FC<TimezoneSelectorProps> = ({
           role="listbox"
           className={clsx(
             "absolute z-[100] w-full mt-1",
-            "bg-[#1c1c1e] border border-white/10 rounded-lg",
+            "bg-[var(--bg-secondary)] border border-white/10 rounded-lg",
             "shadow-xl max-h-64 overflow-auto",
           )}
         >
           {/* Search input */}
-          <div className="sticky top-0 p-2 bg-[#1c1c1e] border-b border-white/10">
+          <div className="sticky top-0 p-2 bg-[var(--bg-secondary)] border-b border-white/10">
             <input
               type="text"
               placeholder="検索..."
@@ -188,7 +188,7 @@ export const TimezoneSelector: React.FC<TimezoneSelectorProps> = ({
                 "w-full px-3 py-2 rounded-md",
                 "bg-white/5 border border-white/10",
                 "text-white placeholder-white/40",
-                "focus:outline-none focus:ring-2 focus:ring-[#0a84ff]",
+                "focus:outline-none focus:ring-2 focus:ring-[var(--status-primary)]",
               )}
               autoFocus
             />
@@ -205,7 +205,7 @@ export const TimezoneSelector: React.FC<TimezoneSelectorProps> = ({
                 "w-full px-4 py-3 text-left",
                 "transition-colors duration-150",
                 value === tz.value
-                  ? "bg-[#0a84ff] text-white"
+                  ? "bg-[var(--status-primary)] text-white"
                   : "text-white/80 hover:bg-white/10",
               )}
             >

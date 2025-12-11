@@ -167,6 +167,91 @@
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
+/* ===== Kanagawa Dragon Theme (Default) ===== */
+/* Primitive Colors */
+:root {
+  /* Kanagawa Dragon - Primitive Colors */
+  --kanagawa-dragon-black-0: #0d0c0c;
+  --kanagawa-dragon-black-1: #12120f;
+  --kanagawa-dragon-black-2: #1d1c19;
+  --kanagawa-dragon-black-3: #282727;
+  --kanagawa-dragon-black-4: #393836;
+  --kanagawa-dragon-black-5: #625e5a;
+  --kanagawa-dragon-black-6: #7a8382;
+  --kanagawa-dragon-white: #c5c9c5;
+  --kanagawa-dragon-gray: #625e5a;
+  --kanagawa-dragon-gray-2: #a6a69c;
+  --kanagawa-dragon-violet: #8992a7;
+  --kanagawa-dragon-blue: #8ba4b0;
+  --kanagawa-dragon-green: #87a987;
+  --kanagawa-dragon-pink: #a292a3;
+  --kanagawa-dragon-orange: #b6927b;
+  --kanagawa-dragon-aqua: #8ea4a2;
+  --kanagawa-dragon-red: #c4746e;
+  --kanagawa-dragon-yellow: #c4b28a;
+  --kanagawa-dragon-teal: #949fb5;
+
+  /* Kanagawa UI Colors (shared) */
+  --kanagawa-samurai-red: #e82424;
+  --kanagawa-ronin-yellow: #ff9e3b;
+  --kanagawa-spring-blue: #7fb4ca;
+  --kanagawa-autumn-green: #76946a;
+  --kanagawa-autumn-yellow: #dca561;
+  --kanagawa-autumn-red: #c34043;
+  --kanagawa-peach-red: #ff5d62;
+}
+
+[data-theme="kanagawa-dragon"] {
+  color-scheme: dark;
+
+  /* Background */
+  --bg-primary: var(--kanagawa-dragon-black-1);
+  --bg-secondary: var(--kanagawa-dragon-black-2);
+  --bg-tertiary: var(--kanagawa-dragon-black-3);
+  --bg-elevated: var(--kanagawa-dragon-black-3);
+  --bg-glass: rgba(18, 18, 15, 0.9);
+  --bg-selection: var(--kanagawa-dragon-black-4);
+
+  /* Text */
+  --text-primary: var(--kanagawa-dragon-white);
+  --text-secondary: var(--kanagawa-dragon-gray-2);
+  --text-muted: var(--kanagawa-dragon-gray);
+  --text-inverse: var(--kanagawa-dragon-black-1);
+
+  /* Border */
+  --border-default: var(--kanagawa-dragon-black-4);
+  --border-emphasis: var(--kanagawa-dragon-black-5);
+  --border-subtle: rgba(197, 201, 197, 0.1);
+
+  /* Status */
+  --status-primary: var(--kanagawa-dragon-blue);
+  --status-primary-hover: var(--kanagawa-dragon-teal);
+  --status-success: var(--kanagawa-dragon-green);
+  --status-success-hover: var(--kanagawa-autumn-green);
+  --status-warning: var(--kanagawa-ronin-yellow);
+  --status-warning-hover: var(--kanagawa-dragon-yellow);
+  --status-error: var(--kanagawa-samurai-red);
+  --status-error-hover: var(--kanagawa-dragon-red);
+  --status-info: var(--kanagawa-spring-blue);
+  --status-info-hover: var(--kanagawa-dragon-blue);
+
+  /* Syntax Highlighting */
+  --syntax-keyword: var(--kanagawa-dragon-violet);
+  --syntax-function: var(--kanagawa-dragon-blue);
+  --syntax-string: var(--kanagawa-dragon-green);
+  --syntax-number: var(--kanagawa-dragon-pink);
+  --syntax-constant: var(--kanagawa-dragon-orange);
+  --syntax-type: var(--kanagawa-dragon-aqua);
+  --syntax-comment: var(--kanagawa-dragon-gray);
+  --syntax-variable: var(--kanagawa-dragon-yellow);
+}
+
+/* Kanagawa Dragon Glass Effects */
+[data-theme="kanagawa-dragon"] .glass-panel {
+  background: rgba(18, 18, 15, 0.85);
+  border-color: rgba(197, 201, 197, 0.1);
+}
+
 /* ===== Light Theme (data-theme="light") ===== */
 [data-theme="light"] {
   color-scheme: light;

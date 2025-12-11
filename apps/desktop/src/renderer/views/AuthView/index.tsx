@@ -95,7 +95,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ className }) => {
   return (
     <div
       className={clsx(
-        "h-screen w-screen flex flex-col items-center justify-center bg-[#0a0a0a]",
+        "h-screen w-screen flex flex-col items-center justify-center bg-[var(--bg-primary)]",
         className,
       )}
     >

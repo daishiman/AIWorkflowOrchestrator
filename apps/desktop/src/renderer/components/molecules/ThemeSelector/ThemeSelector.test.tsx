@@ -79,14 +79,15 @@ describe("ThemeSelector", () => {
       render(<ThemeSelector {...defaultProps} value="dark" />);
 
       const darkButton = screen.getByRole("radio", { name: /ダーク/i });
-      expect(darkButton).toHaveClass("bg-[#0a84ff]");
+      // CSS変数を使用したスタイル
+      expect(darkButton).toHaveClass("bg-[var(--status-primary)]");
     });
 
     it("未選択のボタンは未選択スタイルを持つ", () => {
       render(<ThemeSelector {...defaultProps} value="dark" />);
 
       const lightButton = screen.getByRole("radio", { name: /ライト/i });
-      expect(lightButton).not.toHaveClass("bg-[#0a84ff]");
+      expect(lightButton).not.toHaveClass("bg-[var(--status-primary)]");
     });
   });
 

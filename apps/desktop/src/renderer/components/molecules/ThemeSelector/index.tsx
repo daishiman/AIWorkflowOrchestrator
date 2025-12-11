@@ -125,14 +125,14 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = ({
               "flex items-center justify-center rounded-md",
               "transition-all duration-200 ease-out",
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
-              "focus-visible:ring-[#0a84ff]",
+              "focus-visible:ring-[var(--status-primary)]",
               currentSizeStyle.button,
               fullWidth && "flex-1",
 
               // State styles
               isSelected
                 ? // Selected state
-                  "bg-[#0a84ff] text-white ring-2 ring-[#0a84ff]/30"
+                  "bg-[var(--status-primary)] text-white ring-2 ring-[var(--status-primary)]/30"
                 : // Unselected state
                   clsx(
                     "bg-transparent text-white/60",

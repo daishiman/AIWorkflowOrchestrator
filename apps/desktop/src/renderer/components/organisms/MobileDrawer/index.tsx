@@ -50,7 +50,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
       <div
         className={clsx(
           "relative flex flex-col w-[85vw] max-w-[320px] h-screen",
-          "bg-[rgba(20,20,20,0.95)] backdrop-blur-xl",
+          "bg-[var(--bg-glass)] backdrop-blur-xl",
           "transform transition-transform duration-300 ease-out",
           open ? "translate-x-0" : "-translate-x-full",
           className,

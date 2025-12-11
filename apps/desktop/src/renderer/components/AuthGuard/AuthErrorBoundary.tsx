@@ -139,7 +139,7 @@ export class AuthErrorBoundary extends Component<
     // デフォルトのフォールバックUI
     return (
       <div
-        className="h-screen w-screen flex items-center justify-center bg-[#0a0a0a]"
+        className="h-screen w-screen flex items-center justify-center bg-[var(--bg-primary)]"
         role="alert"
         aria-live="assertive"
         aria-labelledby="error-title"

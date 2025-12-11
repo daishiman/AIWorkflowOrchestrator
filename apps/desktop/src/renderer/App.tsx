@@ -50,7 +50,7 @@ function App(): JSX.Element {
 
   return (
     <AuthGuard>
-      <div className="h-screen w-screen overflow-hidden bg-[#0a0a0a] text-white flex">
+      <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)] flex">
         {/* App Dock - Left side on desktop, bottom on mobile */}
         {isDesktop ? (
           <AppDock

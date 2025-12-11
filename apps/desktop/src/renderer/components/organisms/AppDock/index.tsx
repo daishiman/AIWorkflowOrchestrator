@@ -41,10 +41,18 @@ export const AppDock: React.FC<AppDockProps> = ({
   return (
     <nav
       className={clsx(
-        "bg-[rgba(20,20,20,0.8)] backdrop-blur-sm",
+        "bg-[var(--bg-glass)] backdrop-blur-sm",
         isDesktop
-          ? ["w-20 h-full", "flex flex-col", "border-r border-white/10"]
-          : ["h-[70px] w-full", "flex flex-row", "border-t border-white/10"],
+          ? [
+              "w-20 h-full",
+              "flex flex-col",
+              "border-r border-[var(--border-subtle)]",
+            ]
+          : [
+              "h-[70px] w-full",
+              "flex flex-row",
+              "border-t border-[var(--border-subtle)]",
+            ],
       )}
       role="navigation"
       aria-label="Main navigation"

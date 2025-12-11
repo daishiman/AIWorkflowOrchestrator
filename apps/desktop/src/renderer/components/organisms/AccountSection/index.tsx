@@ -439,7 +439,7 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                   <div
                     ref={avatarMenuRef}
                     role="menu"
-                    className="fixed w-48 bg-[#1a1a1a] border border-white/10 rounded-lg shadow-lg z-[9999]"
+                    className="fixed w-48 bg-[var(--bg-secondary)] border border-white/10 rounded-lg shadow-lg z-[9999]"
                     style={{ top: menuPosition.top, left: menuPosition.left }}
                   >
                     <button

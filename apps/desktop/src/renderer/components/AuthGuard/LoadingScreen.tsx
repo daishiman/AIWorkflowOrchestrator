@@ -18,7 +18,7 @@ import { Icon } from "../atoms/Icon";
 export const LoadingScreen: React.FC = () => {
   return (
     <div
-      className="h-screen w-screen flex flex-col items-center justify-center bg-[#0a0a0a]"
+      className="h-screen w-screen flex flex-col items-center justify-center bg-[var(--bg-primary)]"
       role="status"
       aria-label="認証確認中"
     >
