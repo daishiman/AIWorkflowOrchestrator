@@ -248,7 +248,39 @@ Desktop アプリの認証機能で使用する型定義。
 | createdAt   | string                          | 作成日時（ISO8601） |
 | updatedAt   | string                          | 更新日時（ISO8601） |
 
-### 6.7.3 OAuthProvider
+### 6.7.3 ExtendedUserProfile
+
+ユーザープロフィール拡張情報（通知設定等を含む）。
+
+| フィールド           | 型                   | 説明                       |
+| -------------------- | -------------------- | -------------------------- |
+| id                   | string               | ユーザーID                 |
+| displayName          | string               | 表示名                     |
+| email                | string               | メールアドレス             |
+| avatarUrl            | string \| null       | アバターURL                |
+| plan                 | string               | プラン種別                 |
+| createdAt            | string               | 作成日時（ISO8601）        |
+| updatedAt            | string               | 更新日時（ISO8601）        |
+| timezone             | string               | タイムゾーン（IANA形式）   |
+| locale               | string               | ロケール（ja, en等）       |
+| notificationSettings | NotificationSettings | 通知設定                   |
+| preferences          | object               | ユーザー設定（将来拡張用） |
+
+### 6.7.4 NotificationSettings
+
+通知設定オブジェクト。
+
+| フィールド       | 型      | 説明                       |
+| ---------------- | ------- | -------------------------- |
+| email            | boolean | メール通知を受け取る       |
+| desktop          | boolean | デスクトップ通知を表示     |
+| sound            | boolean | 通知時に音を鳴らす         |
+| workflowComplete | boolean | ワークフロー完了時に通知   |
+| workflowError    | boolean | ワークフローエラー時に通知 |
+
+**デフォルト値**: すべて `true`
+
+### 6.7.5 OAuthProvider
 
 対応する OAuth プロバイダー。
 
@@ -258,7 +290,7 @@ Desktop アプリの認証機能で使用する型定義。
 | github  | GitHub OAuth  |
 | discord | Discord OAuth |
 
-### 6.7.4 LinkedProvider
+### 6.7.6 LinkedProvider
 
 連携済みプロバイダー情報。
 
@@ -271,7 +303,7 @@ Desktop アプリの認証機能で使用する型定義。
 | avatarUrl  | string \| null | アバターURL          |
 | linkedAt   | string         | 連携日時（ISO8601）  |
 
-### 6.7.5 AuthGuardState
+### 6.7.7 AuthGuardState
 
 認証ガードの状態を表す Discriminated Union。
 
@@ -281,7 +313,7 @@ Desktop アプリの認証機能で使用する型定義。
 | authenticated   | user: AuthUser | 認証済み |
 | unauthenticated | -              | 未認証   |
 
-### 6.7.6 AuthErrorCode
+### 6.7.8 AuthErrorCode
 
 認証エラーコード。
 

@@ -44,12 +44,26 @@ export interface GraphLink {
   target: string;
 }
 
+// 通知設定型
+export interface NotificationSettings {
+  email: boolean;
+  desktop: boolean;
+  sound: boolean;
+  workflowComplete: boolean;
+  workflowError: boolean;
+}
+
 // ユーザープロフィール型
 export interface UserProfile {
   name: string;
   email: string;
   avatar: string;
   plan: "free" | "pro" | "enterprise";
+  // 拡張プロフィール属性
+  timezone?: string;
+  locale?: "ja" | "en" | "zh-CN" | "zh-TW" | "ko";
+  notificationSettings?: NotificationSettings;
+  preferences?: Record<string, unknown>;
 }
 
 // ダッシュボード統計型

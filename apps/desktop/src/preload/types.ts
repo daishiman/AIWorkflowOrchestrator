@@ -356,6 +356,18 @@ export interface AuthCheckOnlineResponse {
 // Profile operations
 export type UserPlan = "free" | "pro" | "enterprise";
 
+// ロケール型
+export type Locale = "ja" | "en" | "zh-CN" | "zh-TW" | "ko";
+
+// 通知設定型
+export interface NotificationSettings {
+  email: boolean;
+  desktop: boolean;
+  sound: boolean;
+  workflowComplete: boolean;
+  workflowError: boolean;
+}
+
 export interface UserProfile {
   id: string;
   displayName: string;
@@ -364,6 +376,11 @@ export interface UserProfile {
   plan: UserPlan;
   createdAt: string;
   updatedAt: string;
+  // 拡張プロフィール属性
+  timezone?: string;
+  locale?: Locale;
+  notificationSettings?: NotificationSettings;
+  preferences?: Record<string, unknown>;
 }
 
 export interface ProfileUpdateFields {
@@ -692,6 +709,23 @@ export interface ElectronAPI {
       request: ApiKeyValidateRequest,
     ) => Promise<ApiKeyValidateResponse>;
     list: () => Promise<ApiKeyListResponse>;
+  };
+
+  // Generic invoke for IPC calls
+  invoke: <T>(channel: string, payload?: unknown) => Promise<T>;
+
+  // Dialog APIs
+  dialog: {
+    showOpenDialog: (options: {
+      title?: string;
+      filters?: Array<{ name: string; extensions: string[] }>;
+      properties?: string[];
+    }) => Promise<{ canceled: boolean; filePaths: string[] }>;
+    showSaveDialog: (options: {
+      title?: string;
+      defaultPath?: string;
+      filters?: Array<{ name: string; extensions: string[] }>;
+    }) => Promise<{ canceled: boolean; filePath?: string }>;
   };
 }
 

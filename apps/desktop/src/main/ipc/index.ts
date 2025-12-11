@@ -10,6 +10,7 @@ import { registerAuthHandlers } from "./authHandlers";
 import { registerProfileHandlers } from "./profileHandlers";
 import { registerAvatarHandlers } from "./avatarHandlers";
 import { registerApiKeyHandlers } from "./apiKeyHandlers";
+import { registerDialogHandlers } from "./dialogHandlers";
 import {
   getSupabaseClient,
   createSecureStorage,
@@ -32,6 +33,7 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
 
   // Register handlers that need window reference
   registerWindowHandlers(mainWindow);
+  registerDialogHandlers(mainWindow);
 
   // Setup theme watcher to broadcast system theme changes
   setupThemeWatcher(nativeTheme, () => BrowserWindow.getAllWindows());

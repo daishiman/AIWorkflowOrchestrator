@@ -161,16 +161,46 @@ packages/shared/infrastructure/db/
 
 Supabase Auth と連携するユーザープロフィールテーブル。
 
-| カラム       | 型   | NULL | 説明                               |
-| ------------ | ---- | ---- | ---------------------------------- |
-| id           | TEXT | NO   | UUID主キー（auth.users.id と同一） |
-| display_name | TEXT | NO   | 表示名（3-30文字）                 |
-| email        | TEXT | NO   | メールアドレス                     |
-| avatar_url   | TEXT | YES  | アバター画像URL                    |
-| plan         | TEXT | NO   | プラン（free/pro/enterprise）      |
-| created_at   | TEXT | NO   | 作成日時（ISO8601形式）            |
-| updated_at   | TEXT | NO   | 更新日時（ISO8601形式）            |
-| deleted_at   | TEXT | YES  | 削除日時（ソフトデリート用）       |
+| カラム                | 型   | NULL | 説明                                   |
+| --------------------- | ---- | ---- | -------------------------------------- |
+| id                    | TEXT | NO   | UUID主キー（auth.users.id と同一）     |
+| display_name          | TEXT | NO   | 表示名（3-30文字）                     |
+| email                 | TEXT | NO   | メールアドレス                         |
+| avatar_url            | TEXT | YES  | アバター画像URL                        |
+| plan                  | TEXT | NO   | プラン（free/pro/enterprise）          |
+| timezone              | TEXT | YES  | タイムゾーン（デフォルト: Asia/Tokyo） |
+| locale                | TEXT | YES  | ロケール（デフォルト: ja）             |
+| notification_settings | JSON | YES  | 通知設定（下記参照）                   |
+| preferences           | JSON | YES  | ユーザー設定（拡張用）                 |
+| created_at            | TEXT | NO   | 作成日時（ISO8601形式）                |
+| updated_at            | TEXT | NO   | 更新日時（ISO8601形式）                |
+| deleted_at            | TEXT | YES  | 削除日時（ソフトデリート用）           |
+
+**notification_settings の構造**:
+
+```json
+{
+  "email": true,
+  "desktop": true,
+  "sound": true,
+  "workflowComplete": true,
+  "workflowError": true
+}
+```
+
+**マイグレーション**:
+
+- 基本テーブル: `supabase/migrations/001_create_user_profiles.sql`
+- 拡張カラム: `supabase/migrations/003_extend_user_profiles.sql`
+
+**フォールバック設計**:
+
+マイグレーション003が未適用の環境では、通知設定は `auth.users.user_metadata` に保存される。
+アプリケーションは以下の優先順位でデータを取得する：
+
+1. `user_profiles.notification_settings` カラム（存在する場合）
+2. `auth.users.user_metadata.notification_settings`（フォールバック）
+3. デフォルト値（全て有効）
 
 **Supabase RLS ポリシー**:
 
@@ -182,12 +212,13 @@ Supabase Auth と連携するユーザープロフィールテーブル。
 
 `user_profiles`（Primary Source of Truth）と`user_metadata`（Supabase Auth）は双方向同期される：
 
-| 操作                | Primary → Secondary           | Secondary → Primary           |
-| ------------------- | ----------------------------- | ----------------------------- |
-| profile:update      | user_profiles → user_metadata | -                             |
-| avatar:upload       | -                             | user_metadata → user_profiles |
-| avatar:use-provider | -                             | user_metadata → user_profiles |
-| avatar:remove       | -                             | user_metadata → user_profiles |
+| 操作                         | Primary → Secondary           | Secondary → Primary           |
+| ---------------------------- | ----------------------------- | ----------------------------- |
+| profile:update               | user_profiles → user_metadata | -                             |
+| profile:update-notifications | user_profiles → user_metadata | -                             |
+| avatar:upload                | -                             | user_metadata → user_profiles |
+| avatar:use-provider          | -                             | user_metadata → user_profiles |
+| avatar:remove                | -                             | user_metadata → user_profiles |
 
 同期ユーティリティ: `apps/desktop/src/main/infrastructure/profileSync.ts`
 
@@ -203,6 +234,7 @@ Supabase Auth と連携するユーザープロフィールテーブル。
 - プロフィール作成は認証時のトリガーで自動実行
 - `display_name` は 3-30文字、HTMLタグ不許可
 - `avatar_url` は https:// のみ許可（セキュリティ要件）
+- `timezone` / `locale` は将来実装予定（現在は日本固定）
 
 #### avatars（Storage バケット - Supabase Storage）
 

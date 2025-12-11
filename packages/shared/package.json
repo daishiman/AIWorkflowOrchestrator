@@ -40,6 +40,14 @@
     "./infrastructure/ai/apiKeyValidator": {
       "types": "./dist/infrastructure/ai/apiKeyValidator.d.ts",
       "import": "./dist/infrastructure/ai/apiKeyValidator.js"
+    },
+    "./schemas": {
+      "types": "./dist/schemas/index.d.ts",
+      "import": "./dist/schemas/index.js"
+    },
+    "./schemas/auth": {
+      "types": "./dist/schemas/auth.d.ts",
+      "import": "./dist/schemas/auth.js"
     }
   },
   "scripts": {

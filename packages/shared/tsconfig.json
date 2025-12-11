@@ -22,7 +22,8 @@
     "core/**/*.ts",
     "infrastructure/**/*.ts",
     "types/**/*.ts",
-    "utils/**/*.ts"
+    "utils/**/*.ts",
+    "schemas/**/*.ts"
   ],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }

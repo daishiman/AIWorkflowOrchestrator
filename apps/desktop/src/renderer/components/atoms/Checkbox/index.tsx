@@ -10,6 +10,7 @@ export interface CheckboxProps {
   disabled?: boolean;
   id?: string;
   className?: string;
+  "aria-label"?: string;
 }
 
 export const Checkbox: React.FC<CheckboxProps> = ({
@@ -20,6 +21,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   disabled = false,
   id,
   className,
+  "aria-label": ariaLabel,
 }) => {
   const checkboxId =
     id || `checkbox-${Math.random().toString(36).substr(2, 9)}`;
@@ -43,6 +45,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
           disabled={disabled}
           className="sr-only"
           aria-checked={checked}
+          aria-label={ariaLabel ?? label}
           aria-describedby={descriptionId}
         />
         <label
