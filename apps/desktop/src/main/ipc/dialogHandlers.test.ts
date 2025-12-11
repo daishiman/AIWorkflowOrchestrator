@@ -28,9 +28,9 @@ describe("dialogHandlers", () => {
 
     // Capture registered handlers
     vi.mocked(ipcMain.handle).mockImplementation(
-      (channel: string, handler: (...args: unknown[]) => Promise<unknown>) => {
+      (channel: string, handler: any) => {
         handlers.set(channel, handler);
-        return undefined;
+        return undefined as unknown as void;
       },
     );
 
@@ -154,14 +154,14 @@ describe("dialogHandlers", () => {
       vi.mocked(dialog.showSaveDialog).mockResolvedValue({
         canceled: true,
         filePath: undefined,
-      });
+      } as any);
 
       const handler = handlers.get(IPC_CHANNELS.DIALOG_SHOW_SAVE);
       const result = await handler!({}, {});
 
       expect(result).toEqual({
         canceled: true,
-        filePath: undefined,
+        filePath: undefined as string | undefined,
       });
     });
 
@@ -175,7 +175,7 @@ describe("dialogHandlers", () => {
 
       expect(result).toEqual({
         canceled: true,
-        filePath: undefined,
+        filePath: undefined as string | undefined,
       });
     });
   });

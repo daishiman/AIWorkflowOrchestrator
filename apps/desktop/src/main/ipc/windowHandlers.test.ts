@@ -17,14 +17,8 @@ vi.mock("electron", () => ({
 
 describe("windowHandlers", () => {
   let handlers: Map<string, (...args: unknown[]) => Promise<unknown>>;
-  let mockWindow: Partial<BrowserWindow> & {
-    on: ReturnType<typeof vi.fn>;
-    getBounds: ReturnType<typeof vi.fn>;
-    isMaximized: ReturnType<typeof vi.fn>;
-    isFullScreen: ReturnType<typeof vi.fn>;
-    getSize: ReturnType<typeof vi.fn>;
-    webContents: { send: ReturnType<typeof vi.fn> };
-  };
+
+  let mockWindow: any;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -43,9 +37,9 @@ describe("windowHandlers", () => {
 
     // Capture registered handlers
     vi.mocked(ipcMain.handle).mockImplementation(
-      (channel: string, handler: (...args: unknown[]) => Promise<unknown>) => {
+      (channel: string, handler: any) => {
         handlers.set(channel, handler);
-        return undefined;
+        return undefined as unknown as void;
       },
     );
 
@@ -163,7 +157,7 @@ describe("windowHandlers", () => {
     it("リサイズ時にrendererに通知を送る", () => {
       // Get the resize callback
       const resizeCallback = mockWindow.on.mock.calls.find(
-        (call) => call[0] === "resize",
+        (call: any) => call[0] === "resize",
       )?.[1] as () => void;
 
       expect(resizeCallback).toBeDefined();

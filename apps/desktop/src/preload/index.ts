@@ -31,6 +31,10 @@ import type {
   ApiKeySaveRequest,
   ApiKeyDeleteRequest,
   ApiKeyValidateRequest,
+  WorkspaceSaveRequest,
+  WorkspaceRemoveFolderRequest,
+  WorkspaceValidatePathsRequest,
+  WorkspaceFolderChangedEvent,
 } from "./types";
 
 // Type-safe invoke wrapper
@@ -169,6 +173,22 @@ const electronAPI: ElectronAPI = {
     validate: (request: ApiKeyValidateRequest) =>
       safeInvoke(IPC_CHANNELS.API_KEY_VALIDATE, request),
     list: () => safeInvoke(IPC_CHANNELS.API_KEY_LIST),
+  },
+
+  workspace: {
+    load: () => safeInvoke(IPC_CHANNELS.WORKSPACE_LOAD),
+    save: (request: WorkspaceSaveRequest) =>
+      safeInvoke(IPC_CHANNELS.WORKSPACE_SAVE, request),
+    addFolder: () => safeInvoke(IPC_CHANNELS.WORKSPACE_ADD_FOLDER),
+    removeFolder: (request: WorkspaceRemoveFolderRequest) =>
+      safeInvoke(IPC_CHANNELS.WORKSPACE_REMOVE_FOLDER, request),
+    validatePaths: (request: WorkspaceValidatePathsRequest) =>
+      safeInvoke(IPC_CHANNELS.WORKSPACE_VALIDATE_PATHS, request),
+    onFolderChanged: (callback: (event: WorkspaceFolderChangedEvent) => void) =>
+      safeOn<WorkspaceFolderChangedEvent>(
+        IPC_CHANNELS.WORKSPACE_FOLDER_CHANGED,
+        callback,
+      ),
   },
 
   // Generic invoke for IPC calls

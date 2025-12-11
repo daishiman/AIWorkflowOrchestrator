@@ -20,9 +20,9 @@ describe("graphHandlers", () => {
 
     // Capture registered handlers
     vi.mocked(ipcMain.handle).mockImplementation(
-      (channel: string, handler: (...args: unknown[]) => Promise<unknown>) => {
+      (channel: string, handler: any) => {
         handlers.set(channel, handler);
-        return undefined;
+        return undefined as unknown as void;
       },
     );
 
