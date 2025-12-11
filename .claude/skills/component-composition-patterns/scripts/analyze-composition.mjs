@@ -20,12 +20,7 @@ import path from "path";
 const PATTERNS = {
   compoundComponent: {
     name: "Compound Components",
-    patterns: [
-      /createContext/,
-      /useContext/,
-      /\.Provider/,
-      /\w+\.\w+\s*=/,
-    ],
+    patterns: [/createContext/, /useContext/, /\.Provider/, /\w+\.\w+\s*=/],
     description: "Context経由で状態を共有するサブコンポーネント群",
   },
   slotPattern: {
@@ -59,11 +54,7 @@ const PATTERNS = {
   },
   controlledComponent: {
     name: "Controlled Component",
-    patterns: [
-      /value\s*:\s*\w+/,
-      /onChange\s*:\s*\(/,
-      /defaultValue/,
-    ],
+    patterns: [/value\s*:\s*\w+/, /onChange\s*:\s*\(/, /defaultValue/],
     description: "外部からの状態制御",
   },
 };
@@ -95,7 +86,7 @@ function detectPatterns(content) {
 
   for (const [key, config] of Object.entries(PATTERNS)) {
     const matches = config.patterns.filter((pattern) =>
-      pattern.test(content)
+      pattern.test(content),
     ).length;
 
     if (matches >= 2) {
@@ -145,7 +136,7 @@ function analyzeProps(content) {
 
   // interface定義からprops抽出
   const interfaceMatch = content.match(
-    /interface\s+(\w+Props)\s*(?:extends[^{]+)?\{([^}]+)\}/gs
+    /interface\s+(\w+Props)\s*(?:extends[^{]+)?\{([^}]+)\}/gs,
   );
 
   if (interfaceMatch) {
@@ -188,7 +179,7 @@ function suggestPatterns(detected, issues, props) {
 
   // 多くのスロット系propsがある場合
   const slotProps = props.filter(
-    (p) => p.name.includes("Slot") || p.hasChildren
+    (p) => p.name.includes("Slot") || p.hasChildren,
   );
   if (slotProps.length > 2) {
     suggestions.push({
@@ -216,7 +207,9 @@ async function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.error("使用方法: node analyze-composition.mjs <component-file.tsx>");
+    console.error(
+      "使用方法: node analyze-composition.mjs <component-file.tsx>",
+    );
     process.exit(1);
   }
 

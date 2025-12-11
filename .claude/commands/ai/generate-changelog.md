@@ -43,10 +43,12 @@ Git履歴から変更をグループ化し、
 ### Phase 1: エージェント起動準備
 
 **ユーザー引数の処理:**
+
 - `$1` (from-tag): 開始バージョンタグ（オプション）
 - `$2` (to-tag): 終了バージョンタグ（オプション、デフォルト: HEAD）
 
 **Git履歴の取得:**
+
 ```bash
 # タグ一覧
 git tag -l
@@ -61,7 +63,7 @@ fi
 
 ### Phase 2: spec-writer エージェント起動
 
-```typescript
+````typescript
 `.claude/agents/spec-writer.md` を起動し、以下を依頼:
 
 **タスク**: CHANGELOG.mdの自動生成
@@ -99,9 +101,10 @@ fi
 
 ### Security
 - セキュリティ修正
-```
+````
 
 **分類ルール**:
+
 - feat: → Added
 - fix: → Fixed
 - docs: → Changed (Documentation)
@@ -110,6 +113,7 @@ fi
 - chore: → Changed
 - security: → Security
 - BREAKING CHANGE: → Changed (先頭に⚠️)
+
 ```
 
 ### Phase 3: 完了報告
@@ -128,3 +132,4 @@ fi
 - このコマンドはCHANGELOG生成のみを行い、詳細はエージェントに委譲
 - コミットメッセージの品質に依存します
 - Conventional Commits形式を推奨
+```

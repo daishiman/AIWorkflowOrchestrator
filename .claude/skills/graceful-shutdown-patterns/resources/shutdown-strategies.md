@@ -4,12 +4,12 @@
 
 ### 即時シャットダウン vs グレースフルシャットダウン
 
-| 観点 | 即時シャットダウン | グレースフルシャットダウン |
-|------|-------------------|--------------------------|
-| 終了時間 | 即座 | 数秒〜数十秒 |
-| データ整合性 | リスクあり | 保証される |
-| リソースリーク | 可能性あり | 防止される |
-| 使用場面 | 開発時、緊急時 | 本番環境 |
+| 観点           | 即時シャットダウン | グレースフルシャットダウン |
+| -------------- | ------------------ | -------------------------- |
+| 終了時間       | 即座               | 数秒〜数十秒               |
+| データ整合性   | リスクあり         | 保証される                 |
+| リソースリーク | 可能性あり         | 防止される                 |
+| 使用場面       | 開発時、緊急時     | 本番環境                   |
 
 ---
 
@@ -27,7 +27,7 @@ class RequestGate {
 
   close(): void {
     this.accepting = false;
-    console.log('No longer accepting new requests');
+    console.log("No longer accepting new requests");
   }
 }
 
@@ -35,7 +35,7 @@ class RequestGate {
 function gatekeeperMiddleware(gate: RequestGate) {
   return (req: Request, res: Response, next: NextFunction) => {
     if (!gate.isAccepting()) {
-      res.status(503).json({ error: 'Service shutting down' });
+      res.status(503).json({ error: "Service shutting down" });
       return;
     }
     next();
@@ -69,14 +69,14 @@ class OperationTracker {
     console.log(`Waiting for ${this.operations.size} operations...`);
 
     const timeout = new Promise<void>((_, reject) => {
-      setTimeout(() => reject(new Error('Timeout')), timeoutMs);
+      setTimeout(() => reject(new Error("Timeout")), timeoutMs);
     });
 
     const allOperations = Promise.allSettled([...this.operations]);
 
     try {
       await Promise.race([allOperations, timeout]);
-      console.log('All operations completed');
+      console.log("All operations completed");
     } catch {
       console.warn(`Timeout: ${this.operations.size} operations still pending`);
     }
@@ -127,19 +127,19 @@ class ResourceCloser {
 const closer = new ResourceCloser();
 
 closer.register({
-  name: 'HTTP Server',
+  name: "HTTP Server",
   priority: 1,
   close: () => new Promise((resolve) => server.close(resolve)),
 });
 
 closer.register({
-  name: 'File Watcher',
+  name: "File Watcher",
   priority: 2,
   close: () => watcher.close(),
 });
 
 closer.register({
-  name: 'Database Pool',
+  name: "Database Pool",
   priority: 3,
   close: () => pool.end(),
 });
@@ -153,10 +153,10 @@ closer.register({
 
 ```typescript
 interface ShutdownConfig {
-  drainTimeoutMs: number;      // 新規リクエスト停止後の待機
-  operationTimeoutMs: number;  // 進行中処理の完了待機
-  cleanupTimeoutMs: number;    // リソースクリーンアップ
-  forceExitMs: number;         // 強制終了までの総時間
+  drainTimeoutMs: number; // 新規リクエスト停止後の待機
+  operationTimeoutMs: number; // 進行中処理の完了待機
+  cleanupTimeoutMs: number; // リソースクリーンアップ
+  forceExitMs: number; // 強制終了までの総時間
 }
 
 const defaultConfig: ShutdownConfig = {
@@ -166,30 +166,32 @@ const defaultConfig: ShutdownConfig = {
   forceExitMs: 30000,
 };
 
-async function tieredShutdown(config: ShutdownConfig = defaultConfig): Promise<void> {
+async function tieredShutdown(
+  config: ShutdownConfig = defaultConfig,
+): Promise<void> {
   const forceExitTimer = setTimeout(() => {
-    console.error('Force exit triggered');
+    console.error("Force exit triggered");
     process.exit(1);
   }, config.forceExitMs);
 
   try {
     // Phase 1: ドレイン
-    console.log('Phase 1: Draining...');
+    console.log("Phase 1: Draining...");
     gate.close();
     await delay(config.drainTimeoutMs);
 
     // Phase 2: 処理完了待機
-    console.log('Phase 2: Waiting for operations...');
+    console.log("Phase 2: Waiting for operations...");
     await tracker.waitForAll(config.operationTimeoutMs);
 
     // Phase 3: クリーンアップ
-    console.log('Phase 3: Cleanup...');
+    console.log("Phase 3: Cleanup...");
     await withTimeout(closer.closeAll(), config.cleanupTimeoutMs);
 
     clearTimeout(forceExitTimer);
-    console.log('Shutdown complete');
+    console.log("Shutdown complete");
   } catch (error) {
-    console.error('Shutdown error:', error);
+    console.error("Shutdown error:", error);
     clearTimeout(forceExitTimer);
     throw error;
   }
@@ -203,7 +205,7 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   return Promise.race([
     promise,
     new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(`Timeout after ${ms}ms`)), ms)
+      setTimeout(() => reject(new Error(`Timeout after ${ms}ms`)), ms),
     ),
   ]);
 }
@@ -245,7 +247,7 @@ async function resilientCleanup(handlers: (() => Promise<void>)[]): Promise<{
 ```typescript
 async function retryableClose(
   close: () => Promise<void>,
-  options: { maxRetries?: number; delayMs?: number } = {}
+  options: { maxRetries?: number; delayMs?: number } = {},
 ): Promise<void> {
   const { maxRetries = 3, delayMs = 1000 } = options;
 
@@ -303,22 +305,22 @@ class SignalHandler {
 // 使用例
 const signals = new SignalHandler();
 
-signals.on('SIGTERM', async () => {
+signals.on("SIGTERM", async () => {
   // 本番環境での標準的なシャットダウン
   await gracefulShutdown();
   process.exit(0);
 });
 
-signals.on('SIGINT', async () => {
+signals.on("SIGINT", async () => {
   // 開発時のCtrl+C
-  console.log('\nInterrupt received');
+  console.log("\nInterrupt received");
   await gracefulShutdown();
   process.exit(0);
 });
 
-signals.on('SIGHUP', async () => {
+signals.on("SIGHUP", async () => {
   // 設定リロード
-  console.log('Reloading configuration...');
+  console.log("Reloading configuration...");
   await reloadConfig();
   // 終了しない
 });
@@ -329,12 +331,12 @@ signals.on('SIGHUP', async () => {
 ```typescript
 // Windowsでは一部のシグナルが利用不可
 function setupCrossplatformSignals(shutdown: () => Promise<void>): void {
-  const isWindows = process.platform === 'win32';
+  const isWindows = process.platform === "win32";
 
   if (isWindows) {
     // Windowsでは SIGTERM がサポートされない場合がある
     // readline を使用して Ctrl+C をキャプチャ
-    const readline = require('readline');
+    const readline = require("readline");
 
     if (process.stdin.isTTY) {
       readline.createInterface({
@@ -342,22 +344,22 @@ function setupCrossplatformSignals(shutdown: () => Promise<void>): void {
         output: process.stdout,
       });
 
-      readline.on('SIGINT', async () => {
-        console.log('\nReceived SIGINT (Windows)');
+      readline.on("SIGINT", async () => {
+        console.log("\nReceived SIGINT (Windows)");
         await shutdown();
         process.exit(0);
       });
     }
   } else {
     // Unix系
-    process.on('SIGTERM', async () => {
-      console.log('Received SIGTERM');
+    process.on("SIGTERM", async () => {
+      console.log("Received SIGTERM");
       await shutdown();
       process.exit(0);
     });
 
-    process.on('SIGINT', async () => {
-      console.log('\nReceived SIGINT');
+    process.on("SIGINT", async () => {
+      console.log("\nReceived SIGINT");
       await shutdown();
       process.exit(0);
     });
@@ -375,7 +377,7 @@ function setupCrossplatformSignals(shutdown: () => Promise<void>): void {
 interface ShutdownLog {
   timestamp: string;
   phase: string;
-  status: 'started' | 'completed' | 'failed' | 'timeout';
+  status: "started" | "completed" | "failed" | "timeout";
   duration?: number;
   details?: Record<string, unknown>;
 }
@@ -386,14 +388,14 @@ class ShutdownLogger {
 
   startPhase(phase: string): void {
     this.phaseStartTime = Date.now();
-    this.log({ phase, status: 'started' });
+    this.log({ phase, status: "started" });
   }
 
   completePhase(phase: string, details?: Record<string, unknown>): void {
     const duration = this.phaseStartTime
       ? Date.now() - this.phaseStartTime
       : undefined;
-    this.log({ phase, status: 'completed', duration, details });
+    this.log({ phase, status: "completed", duration, details });
     this.phaseStartTime = null;
   }
 
@@ -403,14 +405,14 @@ class ShutdownLogger {
       : undefined;
     this.log({
       phase,
-      status: 'failed',
+      status: "failed",
       duration,
       details: { error: error.message },
     });
     this.phaseStartTime = null;
   }
 
-  private log(entry: Omit<ShutdownLog, 'timestamp'>): void {
+  private log(entry: Omit<ShutdownLog, "timestamp">): void {
     const log: ShutdownLog = {
       timestamp: new Date().toISOString(),
       ...entry,
@@ -447,7 +449,7 @@ spec:
 // アプリケーション側
 const SHUTDOWN_TIMEOUT = 55000; // K8s grace period - 5秒マージン
 
-process.on('SIGTERM', async () => {
+process.on("SIGTERM", async () => {
   await shutdownWithTimeout(cleanup, SHUTDOWN_TIMEOUT);
   process.exit(0);
 });
@@ -468,21 +470,23 @@ CMD node app.js
 ```javascript
 // ecosystem.config.js
 module.exports = {
-  apps: [{
-    name: 'app',
-    script: './app.js',
-    kill_timeout: 30000,
-    wait_ready: true,
-    listen_timeout: 10000,
-  }],
+  apps: [
+    {
+      name: "app",
+      script: "./app.js",
+      kill_timeout: 30000,
+      wait_ready: true,
+      listen_timeout: 10000,
+    },
+  ],
 };
 ```
 
 ```typescript
 // アプリケーション側
-process.on('SIGINT', async () => {
+process.on("SIGINT", async () => {
   await cleanup();
-  process.send?.('ready'); // PM2に終了準備完了を通知
+  process.send?.("ready"); // PM2に終了準備完了を通知
   process.exit(0);
 });
 ```

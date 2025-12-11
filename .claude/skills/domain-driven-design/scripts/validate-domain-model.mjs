@@ -12,51 +12,66 @@
  *   node validate-domain-model.mjs src/shared/core/entities/Workflow.ts
  */
 
-import { readFileSync, readdirSync, statSync, existsSync } from 'fs';
-import { join, extname, basename } from 'path';
+import { readFileSync, readdirSync, statSync, existsSync } from "fs";
+import { join, extname, basename } from "path";
 
 // 検証ルール
 const VALIDATION_RULES = {
   entity: {
     requiredPatterns: [
-      { pattern: /readonly\s+\w+Id\s*:/i, description: '識別子（ID）の定義' },
-      { pattern: /private|readonly/i, description: 'カプセル化（private/readonly）' },
+      { pattern: /readonly\s+\w+Id\s*:/i, description: "識別子（ID）の定義" },
+      {
+        pattern: /private|readonly/i,
+        description: "カプセル化（private/readonly）",
+      },
     ],
     warningPatterns: [
-      { pattern: /public\s+set\s+/i, description: 'public setterの使用（避けるべき）' },
-      { pattern: /:\s*(string|number|boolean)\s*;/g, description: 'プリミティブ型の直接使用' },
+      {
+        pattern: /public\s+set\s+/i,
+        description: "public setterの使用（避けるべき）",
+      },
+      {
+        pattern: /:\s*(string|number|boolean)\s*;/g,
+        description: "プリミティブ型の直接使用",
+      },
     ],
   },
   valueObject: {
     requiredPatterns: [
-      { pattern: /readonly/i, description: '不変性（readonly）' },
+      { pattern: /readonly/i, description: "不変性（readonly）" },
     ],
     warningPatterns: [
-      { pattern: /public\s+\w+\s*=/i, description: '可変プロパティの可能性' },
+      { pattern: /public\s+\w+\s*=/i, description: "可変プロパティの可能性" },
     ],
   },
   repository: {
     requiredPatterns: [
-      { pattern: /interface\s+I\w*Repository/i, description: 'Repositoryインターフェースの命名' },
-      { pattern: /Promise</i, description: '非同期操作（Promise）' },
+      {
+        pattern: /interface\s+I\w*Repository/i,
+        description: "Repositoryインターフェースの命名",
+      },
+      { pattern: /Promise</i, description: "非同期操作（Promise）" },
     ],
     warningPatterns: [
-      { pattern: /SELECT|INSERT|UPDATE|DELETE/i, description: 'SQL文の直接使用（インターフェースには不適切）' },
+      {
+        pattern: /SELECT|INSERT|UPDATE|DELETE/i,
+        description: "SQL文の直接使用（インターフェースには不適切）",
+      },
     ],
   },
 };
 
 // カラー出力用
 const colors = {
-  reset: '\x1b[0m',
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  cyan: '\x1b[36m',
+  reset: "\x1b[0m",
+  red: "\x1b[31m",
+  green: "\x1b[32m",
+  yellow: "\x1b[33m",
+  blue: "\x1b[34m",
+  cyan: "\x1b[36m",
 };
 
-function log(message, color = 'reset') {
+function log(message, color = "reset") {
   console.log(`${colors[color]}${message}${colors.reset}`);
 }
 
@@ -64,21 +79,31 @@ function log(message, color = 'reset') {
 function guessFileType(content, filename) {
   const lowerFilename = filename.toLowerCase();
 
-  if (lowerFilename.includes('repository') || content.includes('interface I') && content.includes('Repository')) {
-    return 'repository';
+  if (
+    lowerFilename.includes("repository") ||
+    (content.includes("interface I") && content.includes("Repository"))
+  ) {
+    return "repository";
   }
-  if (content.includes('readonly') && !content.includes('Id') && content.match(/equals\s*\(/i)) {
-    return 'valueObject';
+  if (
+    content.includes("readonly") &&
+    !content.includes("Id") &&
+    content.match(/equals\s*\(/i)
+  ) {
+    return "valueObject";
   }
-  if (content.includes('Id') && (content.includes('class') || content.includes('interface'))) {
-    return 'entity';
+  if (
+    content.includes("Id") &&
+    (content.includes("class") || content.includes("interface"))
+  ) {
+    return "entity";
   }
-  return 'unknown';
+  return "unknown";
 }
 
 // 単一ファイルの検証
 function validateFile(filePath) {
-  const content = readFileSync(filePath, 'utf-8');
+  const content = readFileSync(filePath, "utf-8");
   const filename = basename(filePath);
   const fileType = guessFileType(content, filename);
 
@@ -90,8 +115,8 @@ function validateFile(filePath) {
     errors: [],
   };
 
-  if (fileType === 'unknown') {
-    results.warnings.push('ファイルタイプを特定できませんでした');
+  if (fileType === "unknown") {
+    results.warnings.push("ファイルタイプを特定できませんでした");
     return results;
   }
 
@@ -114,11 +139,15 @@ function validateFile(filePath) {
   }
 
   // 追加チェック
-  if (fileType === 'entity') {
+  if (fileType === "entity") {
     // プリミティブ型の使用数をカウント
-    const primitiveMatches = content.match(/:\s*(string|number|boolean)\s*[;=]/g);
+    const primitiveMatches = content.match(
+      /:\s*(string|number|boolean)\s*[;=]/g,
+    );
     if (primitiveMatches && primitiveMatches.length > 3) {
-      results.warnings.push(`⚠ プリミティブ型が${primitiveMatches.length}箇所で使用されています。値オブジェクトの導入を検討してください`);
+      results.warnings.push(
+        `⚠ プリミティブ型が${primitiveMatches.length}箇所で使用されています。値オブジェクトの導入を検討してください`,
+      );
     }
   }
 
@@ -136,7 +165,11 @@ function validateDirectory(dirPath) {
 
     if (stat.isDirectory()) {
       allResults.push(...validateDirectory(fullPath));
-    } else if (extname(entry) === '.ts' && !entry.endsWith('.d.ts') && !entry.endsWith('.test.ts')) {
+    } else if (
+      extname(entry) === ".ts" &&
+      !entry.endsWith(".d.ts") &&
+      !entry.endsWith(".test.ts")
+    ) {
       allResults.push(validateFile(fullPath));
     }
   }
@@ -151,31 +184,31 @@ function displayResults(results) {
   let totalErrors = 0;
 
   for (const result of results) {
-    log(`\n📄 ${result.file}`, 'cyan');
-    log(`   タイプ: ${result.type}`, 'blue');
+    log(`\n📄 ${result.file}`, "cyan");
+    log(`   タイプ: ${result.type}`, "blue");
 
     for (const passed of result.passed) {
-      log(`   ${passed}`, 'green');
+      log(`   ${passed}`, "green");
       totalPassed++;
     }
 
     for (const warning of result.warnings) {
-      log(`   ${warning}`, 'yellow');
+      log(`   ${warning}`, "yellow");
       totalWarnings++;
     }
 
     for (const error of result.errors) {
-      log(`   ${error}`, 'red');
+      log(`   ${error}`, "red");
       totalErrors++;
     }
   }
 
-  log('\n' + '='.repeat(50), 'cyan');
-  log('📊 検証サマリー', 'cyan');
+  log("\n" + "=".repeat(50), "cyan");
+  log("📊 検証サマリー", "cyan");
   log(`   ファイル数: ${results.length}`);
-  log(`   ✓ 合格: ${totalPassed}`, 'green');
-  log(`   ⚠ 警告: ${totalWarnings}`, 'yellow');
-  log(`   ✗ エラー: ${totalErrors}`, 'red');
+  log(`   ✓ 合格: ${totalPassed}`, "green");
+  log(`   ⚠ 警告: ${totalWarnings}`, "yellow");
+  log(`   ✗ エラー: ${totalErrors}`, "red");
 
   return totalErrors === 0;
 }
@@ -185,19 +218,25 @@ function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    log('使用方法: node validate-domain-model.mjs <file-or-directory>', 'yellow');
-    log('例: node validate-domain-model.mjs src/shared/core/entities/', 'yellow');
+    log(
+      "使用方法: node validate-domain-model.mjs <file-or-directory>",
+      "yellow",
+    );
+    log(
+      "例: node validate-domain-model.mjs src/shared/core/entities/",
+      "yellow",
+    );
     process.exit(1);
   }
 
   const targetPath = args[0];
 
   if (!existsSync(targetPath)) {
-    log(`エラー: パスが存在しません: ${targetPath}`, 'red');
+    log(`エラー: パスが存在しません: ${targetPath}`, "red");
     process.exit(1);
   }
 
-  log('🔍 ドメインモデル検証を開始します...', 'cyan');
+  log("🔍 ドメインモデル検証を開始します...", "cyan");
 
   const stat = statSync(targetPath);
   let results;

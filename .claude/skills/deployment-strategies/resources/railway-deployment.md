@@ -133,10 +133,10 @@ Railway Dashboard → Project → Environments → New Environment
 
 ### 環境ごとの設定
 
-| 環境 | NODE_ENV | LOG_LEVEL | 用途 |
-|------|----------|-----------|------|
-| Production | production | warn | 本番トラフィック |
-| Staging | staging | info | 検証・テスト |
+| 環境       | NODE_ENV   | LOG_LEVEL | 用途             |
+| ---------- | ---------- | --------- | ---------------- |
+| Production | production | warn      | 本番トラフィック |
+| Staging    | staging    | info      | 検証・テスト     |
 
 ### ブランチデプロイ
 
@@ -146,6 +146,7 @@ develop ブランチ → Staging 環境
 ```
 
 **設定方法**:
+
 ```
 Railway Dashboard → Service → Settings → Source → Branch
 ```
@@ -251,11 +252,13 @@ jobs:
 **症状**: デプロイがビルドフェーズで失敗
 
 **確認事項**:
+
 1. buildCommand が正しいか
 2. package.json の scripts が存在するか
 3. 依存関係が正しくインストールされるか
 
 **対処法**:
+
 ```bash
 # ローカルでビルドを確認
 pnpm install --frozen-lockfile
@@ -270,11 +273,13 @@ railway logs --build
 **症状**: ビルドは成功するがサービスが起動しない
 
 **確認事項**:
+
 1. startCommand が正しいか
 2. 環境変数が設定されているか
 3. ポートが正しく設定されているか
 
 **対処法**:
+
 ```bash
 # 環境変数を確認
 railway variables
@@ -288,11 +293,13 @@ railway logs
 **症状**: デプロイが完了しない、ヘルスチェックでタイムアウト
 
 **確認事項**:
+
 1. healthcheckPath が正しいか
 2. エンドポイントが200を返すか
 3. タイムアウトが十分か
 
 **対処法**:
+
 ```bash
 # エンドポイントを直接確認
 curl https://your-app.railway.app/api/health
@@ -306,10 +313,12 @@ curl https://your-app.railway.app/api/health
 **症状**: OOMエラーでサービスが再起動
 
 **確認事項**:
+
 1. メモリ使用量が適切か
 2. メモリリークがないか
 
 **対処法**:
+
 ```bash
 # メトリクスを確認
 Railway Dashboard → Service → Metrics
@@ -323,6 +332,7 @@ Railway Dashboard → Service → Settings → Resources
 ### デプロイ前
 
 1. **ローカルでビルド確認**
+
    ```bash
    pnpm install --frozen-lockfile
    pnpm build
@@ -339,6 +349,7 @@ Railway Dashboard → Service → Settings → Resources
 ### デプロイ中
 
 1. **ログを監視**
+
    ```bash
    railway logs --follow
    ```

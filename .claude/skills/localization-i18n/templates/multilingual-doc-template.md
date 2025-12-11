@@ -20,8 +20,8 @@
 
 ### サポート言語
 
-| 言語コード | 言語名 | 状態 | 完成度 |
-|-----------|-------|------|-------|
+| 言語コード      | 言語名          | 状態         | 完成度            |
+| --------------- | --------------- | ------------ | ----------------- |
 | {{lang_code_1}} | {{lang_name_1}} | {{status_1}} | {{completion_1}}% |
 | {{lang_code_2}} | {{lang_name_2}} | {{status_2}} | {{completion_2}}% |
 | {{lang_code_3}} | {{lang_name_3}} | {{status_3}} | {{completion_3}}% |
@@ -101,7 +101,7 @@ title: "{{page_title}}"
 description: "{{page_description}}"
 lang: "{{language_code}}"
 original_lang: "{{source_language}}"
-translation_status: "{{status}}"  # draft | review | published
+translation_status: "{{status}}" # draft | review | published
 last_translated: "{{date}}"
 translator: "{{translator_name}}"
 ---
@@ -114,15 +114,15 @@ translator: "{{translator_name}}"
 # 翻訳管理
 translation_id: "{{unique_id}}"
 source_version: "{{source_commit_hash}}"
-needs_update: {{boolean}}
+needs_update: { { boolean } }
 
 # SEO
 keywords:
-  - {{keyword_1}}
-  - {{keyword_2}}
+  - { { keyword_1 } }
+  - { { keyword_2 } }
 
 # ナビゲーション
-sidebar_position: {{number}}
+sidebar_position: { { number } }
 ---
 ```
 
@@ -138,12 +138,12 @@ terms:
   - id: "{{term_id}}"
     source: "{{source_term}}"
     translations:
-      {{lang_1}}: "{{translation_1}}"
-      {{lang_2}}: "{{translation_2}}"
+      { { lang_1 } }: "{{translation_1}}"
+      { { lang_2 } }: "{{translation_2}}"
     definition: "{{definition}}"
     context: "{{usage_context}}"
     notes: "{{translator_notes}}"
-    do_not_translate: {{boolean}}
+    do_not_translate: { { boolean } }
 ```
 
 ### 例
@@ -167,12 +167,12 @@ terms:
 
 ### 言語別スタイル
 
-| 項目 | {{lang_1}} | {{lang_2}} | {{lang_3}} |
-|-----|-----------|-----------|-----------|
+| 項目       | {{lang_1}}      | {{lang_2}}      | {{lang_3}}      |
+| ---------- | --------------- | --------------- | --------------- |
 | 敬語レベル | {{formality_1}} | {{formality_2}} | {{formality_3}} |
-| 文末表現 | {{ending_1}} | {{ending_2}} | {{ending_3}} |
-| 数字表記 | {{number_1}} | {{number_2}} | {{number_3}} |
-| 日付形式 | {{date_1}} | {{date_2}} | {{date_3}} |
+| 文末表現   | {{ending_1}}    | {{ending_2}}    | {{ending_3}}    |
+| 数字表記   | {{number_1}}    | {{number_2}}    | {{number_3}}    |
+| 日付形式   | {{date_1}}      | {{date_2}}      | {{date_3}}      |
 
 ### 共通ルール
 
@@ -187,13 +187,13 @@ terms:
 
 ### ステータス定義
 
-| ステータス | 説明 | 次のステップ |
-|-----------|------|-------------|
-| `pending` | 翻訳待ち | 翻訳開始 |
-| `draft` | 翻訳中 | レビュー依頼 |
-| `review` | レビュー中 | 修正または承認 |
-| `published` | 公開済み | 更新監視 |
-| `outdated` | 要更新 | 差分翻訳 |
+| ステータス  | 説明       | 次のステップ   |
+| ----------- | ---------- | -------------- |
+| `pending`   | 翻訳待ち   | 翻訳開始       |
+| `draft`     | 翻訳中     | レビュー依頼   |
+| `review`    | レビュー中 | 修正または承認 |
+| `published` | 公開済み   | 更新監視       |
+| `outdated`  | 要更新     | 差分翻訳       |
 
 ### ワークフロー図
 
@@ -229,16 +229,19 @@ terms:
 
 ```markdown
 ## 翻訳前チェック
+
 - [ ] ソースが翻訳準備完了か確認
 - [ ] 用語集を確認
 - [ ] コンテキスト情報を確認
 
 ## 翻訳中チェック
+
 - [ ] 用語の一貫性
 - [ ] 敬語レベルの統一
 - [ ] プレースホルダーの保持
 
 ## 翻訳後チェック
+
 - [ ] スペルチェック
 - [ ] 文法チェック
 - [ ] フォーマット確認
@@ -248,10 +251,10 @@ terms:
 
 ### 品質指標
 
-| 指標 | 目標 | 測定方法 |
-|-----|------|---------|
-| 用語一貫性 | 100% | 用語集との照合 |
-| 翻訳カバレッジ | ≥95% | 未翻訳文字列比率 |
+| 指標           | 目標 | 測定方法              |
+| -------------- | ---- | --------------------- |
+| 用語一貫性     | 100% | 用語集との照合        |
+| 翻訳カバレッジ | ≥95% | 未翻訳文字列比率      |
 | レビュー完了率 | 100% | レビュー済み/翻訳済み |
 
 ---
@@ -263,12 +266,13 @@ terms:
 ```yaml
 # translation-status.json
 {
-  "ja/getting-started/quickstart.md": {
-    "source_hash": "abc123",
-    "translated_hash": "def456",
-    "status": "published",
-    "last_sync": "2024-01-15"
-  }
+  "ja/getting-started/quickstart.md":
+    {
+      "source_hash": "abc123",
+      "translated_hash": "def456",
+      "status": "published",
+      "last_sync": "2024-01-15",
+    },
 }
 ```
 
@@ -318,23 +322,23 @@ translation-sync:
 
 ## 11. 連絡先
 
-| 役割 | 担当者 | 連絡先 |
-|-----|-------|-------|
-| プロジェクト管理 | {{pm_name}} | {{pm_contact}} |
-| {{lang_1}}翻訳 | {{translator_1}} | {{translator_1_contact}} |
-| {{lang_2}}翻訳 | {{translator_2}} | {{translator_2_contact}} |
-| 技術レビュー | {{tech_reviewer}} | {{tech_reviewer_contact}} |
+| 役割             | 担当者            | 連絡先                    |
+| ---------------- | ----------------- | ------------------------- |
+| プロジェクト管理 | {{pm_name}}       | {{pm_contact}}            |
+| {{lang_1}}翻訳   | {{translator_1}}  | {{translator_1_contact}}  |
+| {{lang_2}}翻訳   | {{translator_2}}  | {{translator_2_contact}}  |
+| 技術レビュー     | {{tech_reviewer}} | {{tech_reviewer_contact}} |
 
 ---
 
 ## 12. 更新履歴
 
-| 日付 | バージョン | 変更内容 | 担当者 |
-|-----|----------|---------|-------|
+| 日付       | バージョン    | 変更内容     | 担当者       |
+| ---------- | ------------- | ------------ | ------------ |
 | {{date_1}} | {{version_1}} | {{change_1}} | {{author_1}} |
 | {{date_2}} | {{version_2}} | {{change_2}} | {{author_2}} |
 
 ---
 
-*ドキュメントID: {{doc_id}}*
-*テンプレートバージョン: 1.0.0*
+_ドキュメントID: {{doc_id}}_
+_テンプレートバージョン: 1.0.0_

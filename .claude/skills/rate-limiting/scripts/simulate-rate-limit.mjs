@@ -35,7 +35,10 @@ class TokenBucket {
   refill() {
     const now = Date.now();
     const elapsed = (now - this.lastRefill) / 1000;
-    this.tokens = Math.min(this.capacity, this.tokens + elapsed * this.refillRate);
+    this.tokens = Math.min(
+      this.capacity,
+      this.tokens + elapsed * this.refillRate,
+    );
     this.lastRefill = now;
   }
 
@@ -165,8 +168,12 @@ function printResults(results, config) {
   console.log("=".repeat(50));
 
   console.log(`\nTotal Requests: ${results.total}`);
-  console.log(`Allowed: ${results.allowed} (${((results.allowed / results.total) * 100).toFixed(1)}%)`);
-  console.log(`Rejected: ${results.rejected} (${((results.rejected / results.total) * 100).toFixed(1)}%)`);
+  console.log(
+    `Allowed: ${results.allowed} (${((results.allowed / results.total) * 100).toFixed(1)}%)`,
+  );
+  console.log(
+    `Rejected: ${results.rejected} (${((results.rejected / results.total) * 100).toFixed(1)}%)`,
+  );
 
   // スループット
   const throughput = (results.allowed / config.duration) * 1000;
@@ -179,7 +186,9 @@ function printResults(results, config) {
   for (let i = 0; i < results.timeline.length; i += step) {
     const point = results.timeline[i];
     const bar = "█".repeat(Math.floor((point.allowed / results.total) * 50));
-    console.log(`  ${String(point.time).padStart(6)}ms: ${bar} ${point.allowed}`);
+    console.log(
+      `  ${String(point.time).padStart(6)}ms: ${bar} ${point.allowed}`,
+    );
   }
 
   console.log("\n" + "-".repeat(50));

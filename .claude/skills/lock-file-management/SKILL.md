@@ -300,13 +300,11 @@ yarn install --production --immutable
 ### すべきこと
 
 1. **ロックファイルを常にコミット**:
-
    - ロックファイルはバージョン管理に含める
    - .gitignore に追加しない
    - 変更時は意図的にレビュー
 
 2. **CI 環境では厳格モードを使用**:
-
    - `pnpm install --frozen-lockfile`
    - `pnpm ci`
    - `yarn install --immutable`
@@ -319,12 +317,10 @@ yarn install --production --immutable
 ### 避けるべきこと
 
 1. **ロックファイルの手動編集**:
-
    - ❌ 直接 YAML や JSON を編集
    - ✅ パッケージマネージャーのコマンドを使用
 
 2. **ロックファイルを無視したインストール**:
-
    - ❌ `--no-lockfile`オプションの使用
    - ✅ ロックファイルを尊重したインストール
 

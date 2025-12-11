@@ -8,39 +8,43 @@
  *   node validate-requirements.mjs <要件定義書.md>
  */
 
-import { readFileSync, existsSync } from 'fs';
-import { resolve } from 'path';
+import { readFileSync, existsSync } from "fs";
+import { resolve } from "path";
 
 // 曖昧性検出パターン
 const AMBIGUITY_PATTERNS = {
   quantitative: {
     pattern: /高速|速い|遅い|多い|少ない|大きい|小さい|長い|短い|頻繁/g,
-    message: '量的曖昧性: 具体的な数値に変換してください',
-    severity: 'error'
+    message: "量的曖昧性: 具体的な数値に変換してください",
+    severity: "error",
   },
   qualitative: {
-    pattern: /適切|正しく|十分|良い|悪い|使いやすい|分かりやすい|ユーザーフレンドリー/g,
-    message: '質的曖昧性: 測定可能な基準に変換してください',
-    severity: 'error'
+    pattern:
+      /適切|正しく|十分|良い|悪い|使いやすい|分かりやすい|ユーザーフレンドリー/g,
+    message: "質的曖昧性: 測定可能な基準に変換してください",
+    severity: "error",
   },
   scope: {
     pattern: /など|等|その他|いくつか|主な|を含む/g,
-    message: '範囲の曖昧性: 完全に列挙してください',
-    severity: 'warning'
+    message: "範囲の曖昧性: 完全に列挙してください",
+    severity: "warning",
   },
   conditional: {
     pattern: /場合によって|必要に応じて|状況次第|適宜|時々|可能であれば/g,
-    message: '条件の曖昧性: 具体的な条件を列挙してください',
-    severity: 'warning'
-  }
+    message: "条件の曖昧性: 具体的な条件を列挙してください",
+    severity: "warning",
+  },
 };
 
 // 必須セクションチェック
 const REQUIRED_SECTIONS = [
-  { pattern: /##?\s*(概要|Overview)/i, name: '概要' },
-  { pattern: /##?\s*(機能要件|Functional Requirements)/i, name: '機能要件' },
-  { pattern: /##?\s*(非機能要件|Non-Functional Requirements)/i, name: '非機能要件' },
-  { pattern: /##?\s*(制約|Constraints)/i, name: '制約条件' }
+  { pattern: /##?\s*(概要|Overview)/i, name: "概要" },
+  { pattern: /##?\s*(機能要件|Functional Requirements)/i, name: "機能要件" },
+  {
+    pattern: /##?\s*(非機能要件|Non-Functional Requirements)/i,
+    name: "非機能要件",
+  },
+  { pattern: /##?\s*(制約|Constraints)/i, name: "制約条件" },
 ];
 
 // 要件ID形式チェック
@@ -51,14 +55,14 @@ const REQUIREMENT_ID_PATTERN = /\b(FR|NFR|UC|AC)-\d{3}\b/g;
  */
 function validateRequirements(content, filePath) {
   const issues = [];
-  const lines = content.split('\n');
+  const lines = content.split("\n");
 
-  console.log('\n📋 要件定義書検証レポート');
-  console.log('='.repeat(50));
+  console.log("\n📋 要件定義書検証レポート");
+  console.log("=".repeat(50));
   console.log(`ファイル: ${filePath}\n`);
 
   // 1. 曖昧性チェック
-  console.log('🔍 曖昧性チェック...');
+  console.log("🔍 曖昧性チェック...");
   for (const [type, config] of Object.entries(AMBIGUITY_PATTERNS)) {
     let lineNum = 0;
     for (const line of lines) {
@@ -67,11 +71,11 @@ function validateRequirements(content, filePath) {
       if (matches) {
         for (const match of matches) {
           issues.push({
-            type: 'ambiguity',
+            type: "ambiguity",
             severity: config.severity,
             line: lineNum,
             match,
-            message: config.message
+            message: config.message,
           });
         }
       }
@@ -79,19 +83,19 @@ function validateRequirements(content, filePath) {
   }
 
   // 2. 必須セクションチェック
-  console.log('📑 必須セクションチェック...');
+  console.log("📑 必須セクションチェック...");
   for (const section of REQUIRED_SECTIONS) {
     if (!section.pattern.test(content)) {
       issues.push({
-        type: 'structure',
-        severity: 'warning',
-        message: `必須セクション「${section.name}」が見つかりません`
+        type: "structure",
+        severity: "warning",
+        message: `必須セクション「${section.name}」が見つかりません`,
       });
     }
   }
 
   // 3. 要件IDチェック
-  console.log('🏷️  要件IDチェック...');
+  console.log("🏷️  要件IDチェック...");
   const ids = content.match(REQUIREMENT_ID_PATTERN) || [];
   const uniqueIds = [...new Set(ids)];
 
@@ -99,23 +103,23 @@ function validateRequirements(content, filePath) {
     const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
     for (const dup of [...new Set(duplicates)]) {
       issues.push({
-        type: 'id',
-        severity: 'error',
-        message: `重複する要件ID: ${dup}`
+        type: "id",
+        severity: "error",
+        message: `重複する要件ID: ${dup}`,
       });
     }
   }
 
   // 4. 完全性チェック（受け入れ基準の有無）
-  console.log('✅ 完全性チェック...');
+  console.log("✅ 完全性チェック...");
   const frMatches = content.match(/FR-\d{3}/g) || [];
   const acMatches = content.match(/Scenario:|Given\s|When\s|Then\s/gi) || [];
 
   if (frMatches.length > 0 && acMatches.length === 0) {
     issues.push({
-      type: 'completeness',
-      severity: 'warning',
-      message: '受け入れ基準（Given-When-Then）が定義されていません'
+      type: "completeness",
+      severity: "warning",
+      message: "受け入れ基準（Given-When-Then）が定義されていません",
     });
   }
 
@@ -128,30 +132,34 @@ function validateRequirements(content, filePath) {
 function displayResults(result) {
   const { issues, stats } = result;
 
-  console.log('\n' + '='.repeat(50));
-  console.log('📊 検証結果サマリー');
-  console.log('='.repeat(50));
+  console.log("\n" + "=".repeat(50));
+  console.log("📊 検証結果サマリー");
+  console.log("=".repeat(50));
   console.log(`総行数: ${stats.lines}`);
   console.log(`要件ID数: ${stats.totalIds}`);
   console.log(`検出された問題: ${issues.length}`);
 
-  const errors = issues.filter(i => i.severity === 'error');
-  const warnings = issues.filter(i => i.severity === 'warning');
+  const errors = issues.filter((i) => i.severity === "error");
+  const warnings = issues.filter((i) => i.severity === "warning");
 
   console.log(`  - エラー: ${errors.length}`);
   console.log(`  - 警告: ${warnings.length}`);
 
   if (issues.length > 0) {
-    console.log('\n' + '='.repeat(50));
-    console.log('📝 詳細');
-    console.log('='.repeat(50));
+    console.log("\n" + "=".repeat(50));
+    console.log("📝 詳細");
+    console.log("=".repeat(50));
 
     for (const issue of issues) {
-      const icon = issue.severity === 'error' ? '❌' : '⚠️';
+      const icon = issue.severity === "error" ? "❌" : "⚠️";
       if (issue.line) {
-        console.log(`${icon} [${issue.severity.toUpperCase()}] 行${issue.line}: "${issue.match}" - ${issue.message}`);
+        console.log(
+          `${icon} [${issue.severity.toUpperCase()}] 行${issue.line}: "${issue.match}" - ${issue.message}`,
+        );
       } else {
-        console.log(`${icon} [${issue.severity.toUpperCase()}] ${issue.message}`);
+        console.log(
+          `${icon} [${issue.severity.toUpperCase()}] ${issue.message}`,
+        );
       }
     }
   }
@@ -162,17 +170,17 @@ function displayResults(result) {
   const warningPenalty = warnings.length * 2;
   const score = Math.max(0, baseScore - errorPenalty - warningPenalty);
 
-  console.log('\n' + '='.repeat(50));
+  console.log("\n" + "=".repeat(50));
   console.log(`📈 品質スコア: ${score}/100`);
 
   if (score >= 80) {
-    console.log('✅ 良好: 軽微な修正で承認可能');
+    console.log("✅ 良好: 軽微な修正で承認可能");
   } else if (score >= 60) {
-    console.log('⚠️  要改善: 修正後に再レビュー推奨');
+    console.log("⚠️  要改善: 修正後に再レビュー推奨");
   } else {
-    console.log('❌ 不十分: 大幅な修正が必要');
+    console.log("❌ 不十分: 大幅な修正が必要");
   }
-  console.log('='.repeat(50) + '\n');
+  console.log("=".repeat(50) + "\n");
 
   return score >= 60 ? 0 : 1;
 }
@@ -182,9 +190,9 @@ function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.log('使用方法: node validate-requirements.mjs <要件定義書.md>');
-    console.log('\n例:');
-    console.log('  node validate-requirements.mjs ./docs/requirements.md');
+    console.log("使用方法: node validate-requirements.mjs <要件定義書.md>");
+    console.log("\n例:");
+    console.log("  node validate-requirements.mjs ./docs/requirements.md");
     process.exit(1);
   }
 
@@ -196,7 +204,7 @@ function main() {
   }
 
   try {
-    const content = readFileSync(filePath, 'utf-8');
+    const content = readFileSync(filePath, "utf-8");
     const result = validateRequirements(content, filePath);
     const exitCode = displayResults(result);
     process.exit(exitCode);

@@ -156,8 +156,7 @@ automatic_failover:
     - ヘルスチェック連続失敗 > 3回
     - 手動トリガー
 
-  process:
-    1. 障害検出
+  process: 1. 障害検出
     2. スタンバイの正常性確認
     3. DNS切り替え
     4. アプリケーション接続先更新
@@ -183,8 +182,7 @@ manual_failover:
     - Tier 2: 技術リード承認
     - Tier 3/4: オンコール判断
 
-  process:
-    1. 障害宣言
+  process: 1. 障害宣言
     2. 承認取得
     3. フェイルオーバー実行
     4. 検証
@@ -240,7 +238,7 @@ post_drill_actions:
 ```yaml
 communication_plan:
   internal:
-    immediate:  # 即座に通知
+    immediate: # 即座に通知
       - オンコール担当
       - インシデントコマンダー
       - 技術リード
@@ -260,7 +258,7 @@ communication_plan:
       timing: 障害確認後30分以内
       update_frequency: 30分毎
 
-    regulators:  # 規制当局（必要な場合）
+    regulators: # 規制当局（必要な場合）
       timing: 規定に従う
       content: 影響範囲、対応状況、完了見込み
 ```
@@ -287,6 +285,7 @@ communication_plan:
 ## チェックリスト
 
 ### DR計画策定時
+
 - [ ] リスク評価が完了しているか？
 - [ ] 復旧優先度が定義されているか？
 - [ ] RPO/RTOが設定されているか？
@@ -295,6 +294,7 @@ communication_plan:
 - [ ] コミュニケーション計画があるか？
 
 ### 定期レビュー
+
 - [ ] DR計画は最新か？（年次レビュー）
 - [ ] 連絡先情報は正確か？
 - [ ] 手順書は最新か？
@@ -302,6 +302,7 @@ communication_plan:
 - [ ] 前回の訓練からの改善が反映されているか？
 
 ### 障害発生時
+
 - [ ] 障害が確認されたか？
 - [ ] 適切な承認を得たか？
 - [ ] コミュニケーションが開始されたか？

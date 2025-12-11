@@ -53,6 +53,7 @@ model: sonnet
 ### Phase 1: スタイルガイドの選択
 
 **引数検証**:
+
 ```bash
 style_guide="${ARGUMENTS:-airbnb}"
 
@@ -67,10 +68,12 @@ fi
 **使用エージェント**: `.claude/agents/code-quality.md`
 
 **エージェントへの依頼内容**:
-```markdown
+
+````markdown
 ESLint設定を「${style_guide}」スタイルガイドで構築してください。
 
 **要件**:
+
 1. 必要パッケージのインストール:
    ```bash
    # Airbnb の場合
@@ -81,34 +84,37 @@ ESLint設定を「${style_guide}」スタイルガイドで構築してくださ
      eslint-config-airbnb-typescript \
      eslint-plugin-import
    ```
+````
 
 2. eslint.config.js生成（Flat Config）:
+
    ```javascript
-   import js from '@eslint/js';
-   import typescript from '@typescript-eslint/eslint-plugin';
-   import parser from '@typescript-eslint/parser';
+   import js from "@eslint/js";
+   import typescript from "@typescript-eslint/eslint-plugin";
+   import parser from "@typescript-eslint/parser";
 
    export default [
      js.configs.recommended,
      {
-       files: ['**/*.ts', '**/*.tsx'],
+       files: ["**/*.ts", "**/*.tsx"],
        languageOptions: {
          parser,
          parserOptions: {
-           project: './tsconfig.json',
+           project: "./tsconfig.json",
          },
        },
-       plugins: { '@typescript-eslint': typescript },
+       plugins: { "@typescript-eslint": typescript },
        rules: {
          // Airbnb rules
-         '@typescript-eslint/no-unused-vars': 'error',
-         '@typescript-eslint/no-explicit-any': 'warn',
+         "@typescript-eslint/no-unused-vars": "error",
+         "@typescript-eslint/no-explicit-any": "warn",
        },
      },
    ];
    ```
 
 3. package.json scripts追加:
+
    ```json
    {
      "scripts": {
@@ -128,11 +134,13 @@ ESLint設定を「${style_guide}」スタイルガイドで構築してくださ
    ```
 
 **スキル参照**:
+
 - `.claude/skills/eslint-configuration/SKILL.md` - Flat Config設定方法
 - `.claude/skills/code-style-guides/SKILL.md` - スタイルガイド比較
 
 **成果物**: eslint.config.js、package.json、.eslintignore
-```
+
+````
 
 ### Phase 3: 完了報告
 
@@ -150,7 +158,7 @@ ESLint設定を「${style_guide}」スタイルガイドで構築してくださ
 1. リント実行: `pnpm lint`
 2. 自動修正: `pnpm lint:fix`
 3. pre-commit hook設定（推奨）
-```
+````
 
 ## 使用例
 
@@ -174,12 +182,12 @@ ESLint設定を「${style_guide}」スタイルガイドで構築してくださ
 
 ## スタイルガイド比較
 
-| 特徴 | Airbnb | Google | Standard |
-|------|--------|--------|----------|
-| 厳格度 | 高 | 中 | 低 |
-| React | ✅ | ⚠️ | ⚠️ |
-| 設定量 | 多 | 中 | 少 |
-| 推奨用途 | React/TypeScript | 汎用 | シンプルプロジェクト |
+| 特徴     | Airbnb           | Google | Standard             |
+| -------- | ---------------- | ------ | -------------------- |
+| 厳格度   | 高               | 中     | 低                   |
+| React    | ✅               | ⚠️     | ⚠️                   |
+| 設定量   | 多               | 中     | 少                   |
+| 推奨用途 | React/TypeScript | 汎用   | シンプルプロジェクト |
 
 ## ベストプラクティス
 

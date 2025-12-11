@@ -55,8 +55,8 @@ publish:
 
 ```typescript
 // src/main/services/updateService.ts
-import { autoUpdater } from 'electron-updater';
-import { BrowserWindow, ipcMain } from 'electron';
+import { autoUpdater } from "electron-updater";
+import { BrowserWindow, ipcMain } from "electron";
 
 export class UpdateService {
   private mainWindow: BrowserWindow | null = null;
@@ -68,28 +68,28 @@ export class UpdateService {
   }
 
   private setupEventHandlers(): void {
-    autoUpdater.on('checking-for-update', () => {
-      this.sendToRenderer('update-checking');
+    autoUpdater.on("checking-for-update", () => {
+      this.sendToRenderer("update-checking");
     });
 
-    autoUpdater.on('update-available', (info) => {
-      this.sendToRenderer('update-available', info);
+    autoUpdater.on("update-available", (info) => {
+      this.sendToRenderer("update-available", info);
     });
 
-    autoUpdater.on('update-not-available', () => {
-      this.sendToRenderer('update-not-available');
+    autoUpdater.on("update-not-available", () => {
+      this.sendToRenderer("update-not-available");
     });
 
-    autoUpdater.on('download-progress', (progress) => {
-      this.sendToRenderer('update-progress', progress);
+    autoUpdater.on("download-progress", (progress) => {
+      this.sendToRenderer("update-progress", progress);
     });
 
-    autoUpdater.on('update-downloaded', (info) => {
-      this.sendToRenderer('update-downloaded', info);
+    autoUpdater.on("update-downloaded", (info) => {
+      this.sendToRenderer("update-downloaded", info);
     });
 
-    autoUpdater.on('error', (error) => {
-      this.sendToRenderer('update-error', error.message);
+    autoUpdater.on("error", (error) => {
+      this.sendToRenderer("update-error", error.message);
     });
   }
 
@@ -101,7 +101,7 @@ export class UpdateService {
     try {
       await autoUpdater.checkForUpdates();
     } catch (error) {
-      console.error('Update check failed:', error);
+      console.error("Update check failed:", error);
     }
   }
 
@@ -123,19 +123,19 @@ export class UpdateService {
 
 ```typescript
 // src/main/ipc/update.ts
-import { ipcMain } from 'electron';
-import { UpdateService } from '../services/updateService';
+import { ipcMain } from "electron";
+import { UpdateService } from "../services/updateService";
 
 export function registerUpdateHandlers(updateService: UpdateService): void {
-  ipcMain.handle('update:check', async () => {
+  ipcMain.handle("update:check", async () => {
     await updateService.checkForUpdates();
   });
 
-  ipcMain.handle('update:download', async () => {
+  ipcMain.handle("update:download", async () => {
     await updateService.downloadUpdate();
   });
 
-  ipcMain.handle('update:install', () => {
+  ipcMain.handle("update:install", () => {
     updateService.quitAndInstall();
   });
 }
@@ -145,29 +145,31 @@ export function registerUpdateHandlers(updateService: UpdateService): void {
 
 ```typescript
 // src/renderer/hooks/useAutoUpdate.ts
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 export function useAutoUpdate() {
-  const [status, setStatus] = useState<'idle' | 'checking' | 'available' | 'downloading' | 'ready'>('idle');
+  const [status, setStatus] = useState<
+    "idle" | "checking" | "available" | "downloading" | "ready"
+  >("idle");
   const [progress, setProgress] = useState(0);
   const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null);
 
   useEffect(() => {
     window.electronAPI.onUpdateStatus((event, data) => {
       switch (event) {
-        case 'update-checking':
-          setStatus('checking');
+        case "update-checking":
+          setStatus("checking");
           break;
-        case 'update-available':
-          setStatus('available');
+        case "update-available":
+          setStatus("available");
           setUpdateInfo(data);
           break;
-        case 'update-progress':
-          setStatus('downloading');
+        case "update-progress":
+          setStatus("downloading");
           setProgress(data.percent);
           break;
-        case 'update-downloaded':
-          setStatus('ready');
+        case "update-downloaded":
+          setStatus("ready");
           break;
       }
     });
@@ -177,7 +179,14 @@ export function useAutoUpdate() {
   const downloadUpdate = () => window.electronAPI.downloadUpdate();
   const installUpdate = () => window.electronAPI.installUpdate();
 
-  return { status, progress, updateInfo, checkForUpdates, downloadUpdate, installUpdate };
+  return {
+    status,
+    progress,
+    updateInfo,
+    checkForUpdates,
+    downloadUpdate,
+    installUpdate,
+  };
 }
 ```
 
@@ -186,9 +195,11 @@ export function useAutoUpdate() {
 Task ツールで `@electron-devops` エージェントを起動し、以下を依頼:
 
 コンテキスト:
+
 - プロバイダー: "$ARGUMENTS" または "github"
 
 @electron-devops エージェントに以下を依頼:
+
 - Phase 1: 要件確認と配布戦略設計
 - Phase 2: electron-builder publish設定
 - Phase 3: UpdateService実装
@@ -196,12 +207,14 @@ Task ツールで `@electron-devops` エージェントを起動し、以下を�
 - Phase 5: Renderer側フック/UI
 
 期待される成果物:
+
 - electron-builder.yml（publish設定追加）
 - src/main/services/updateService.ts
 - src/main/ipc/update.ts
 - src/renderer/hooks/useAutoUpdate.ts
 
 品質基準:
+
 - すべてのイベントがハンドリングされている
 - エラーハンドリングが実装されている
 - Renderer側に状態が通知されている

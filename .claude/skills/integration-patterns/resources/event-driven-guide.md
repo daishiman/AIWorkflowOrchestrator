@@ -42,17 +42,17 @@
 ```typescript
 interface CloudEvent {
   // 必須フィールド
-  specversion: '1.0';
-  id: string;                    // 一意識別子
-  type: string;                  // イベントタイプ
-  source: string;                // イベントソース
-  time?: string;                 // ISO 8601 タイムスタンプ
+  specversion: "1.0";
+  id: string; // 一意識別子
+  type: string; // イベントタイプ
+  source: string; // イベントソース
+  time?: string; // ISO 8601 タイムスタンプ
 
   // オプションフィールド
-  datacontenttype?: string;      // data のコンテンツタイプ
-  dataschema?: string;           // data のスキーマURI
-  subject?: string;              // イベントの対象
-  data?: any;                    // イベントデータ
+  datacontenttype?: string; // data のコンテンツタイプ
+  dataschema?: string; // data のスキーマURI
+  subject?: string; // イベントの対象
+  data?: any; // イベントデータ
 
   // 拡張フィールド
   [key: string]: any;
@@ -60,18 +60,18 @@ interface CloudEvent {
 
 // 具体例
 const userCreatedEvent: CloudEvent = {
-  specversion: '1.0',
-  id: 'a3b4c5d6-e7f8-9012-3456-789012345678',
-  type: 'com.example.user.created',
-  source: '/services/user-service',
-  time: '2025-11-27T10:30:00.000Z',
-  datacontenttype: 'application/json',
-  subject: 'user-123',
+  specversion: "1.0",
+  id: "a3b4c5d6-e7f8-9012-3456-789012345678",
+  type: "com.example.user.created",
+  source: "/services/user-service",
+  time: "2025-11-27T10:30:00.000Z",
+  datacontenttype: "application/json",
+  subject: "user-123",
   data: {
-    userId: 'user-123',
-    email: 'user@example.com',
-    createdAt: '2025-11-27T10:30:00.000Z'
-  }
+    userId: "user-123",
+    email: "user@example.com",
+    createdAt: "2025-11-27T10:30:00.000Z",
+  },
 };
 ```
 
@@ -98,7 +98,7 @@ abstract class DomainEvent {
 // 具体的なイベント
 class OrderPlaced extends DomainEvent {
   get eventType(): string {
-    return 'OrderPlaced';
+    return "OrderPlaced";
   }
 
   constructor(
@@ -106,7 +106,7 @@ class OrderPlaced extends DomainEvent {
     version: number,
     public readonly customerId: string,
     public readonly items: OrderItem[],
-    public readonly totalAmount: number
+    public readonly totalAmount: number,
   ) {
     super(aggregateId, version);
   }
@@ -114,14 +114,14 @@ class OrderPlaced extends DomainEvent {
 
 class OrderShipped extends DomainEvent {
   get eventType(): string {
-    return 'OrderShipped';
+    return "OrderShipped";
   }
 
   constructor(
     aggregateId: string,
     version: number,
     public readonly trackingNumber: string,
-    public readonly carrier: string
+    public readonly carrier: string,
   ) {
     super(aggregateId, version);
   }
@@ -134,7 +134,11 @@ class OrderShipped extends DomainEvent {
 
 ```typescript
 interface EventStore {
-  append(streamId: string, events: DomainEvent[], expectedVersion: number): Promise<void>;
+  append(
+    streamId: string,
+    events: DomainEvent[],
+    expectedVersion: number,
+  ): Promise<void>;
   getEvents(streamId: string, fromVersion?: number): Promise<DomainEvent[]>;
   getSnapshot(streamId: string): Promise<Snapshot | null>;
   saveSnapshot(snapshot: Snapshot): Promise<void>;
@@ -153,13 +157,13 @@ class PostgresEventStore implements EventStore {
   async append(
     streamId: string,
     events: DomainEvent[],
-    expectedVersion: number
+    expectedVersion: number,
   ): Promise<void> {
     const currentVersion = await this.getCurrentVersion(streamId);
 
     if (currentVersion !== expectedVersion) {
       throw new OptimisticConcurrencyError(
-        `Expected version ${expectedVersion}, but found ${currentVersion}`
+        `Expected version ${expectedVersion}, but found ${currentVersion}`,
       );
     }
 
@@ -175,8 +179,8 @@ class PostgresEventStore implements EventStore {
             event.version,
             event.eventType,
             JSON.stringify(event),
-            event.occurredAt
-          ]
+            event.occurredAt,
+          ],
         );
       }
 
@@ -192,10 +196,10 @@ class PostgresEventStore implements EventStore {
       `SELECT data FROM events
        WHERE stream_id = $1 AND version >= $2
        ORDER BY version ASC`,
-      [streamId, fromVersion]
+      [streamId, fromVersion],
     );
 
-    return rows.map(row => this.deserializeEvent(row.data));
+    return rows.map((row) => this.deserializeEvent(row.data));
   }
 
   private deserializeEvent(data: any): DomainEvent {
@@ -207,7 +211,7 @@ class PostgresEventStore implements EventStore {
   private async getCurrentVersion(streamId: string): Promise<number> {
     const result = await this.db.query(
       `SELECT MAX(version) as version FROM events WHERE stream_id = $1`,
-      [streamId]
+      [streamId],
     );
     return result[0]?.version ?? 0;
   }
@@ -252,31 +256,40 @@ abstract class EventSourcedAggregate {
 
 // 具体的な集約
 class Order extends EventSourcedAggregate {
-  private status: OrderStatus = 'pending';
+  private status: OrderStatus = "pending";
   private items: OrderItem[] = [];
 
-  static create(orderId: string, customerId: string, items: OrderItem[]): Order {
+  static create(
+    orderId: string,
+    customerId: string,
+    items: OrderItem[],
+  ): Order {
     const order = new Order(orderId);
-    const totalAmount = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const totalAmount = items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0,
+    );
 
     order.apply(new OrderPlaced(orderId, 1, customerId, items, totalAmount));
     return order;
   }
 
   ship(trackingNumber: string, carrier: string): void {
-    if (this.status !== 'confirmed') {
-      throw new Error('Order must be confirmed before shipping');
+    if (this.status !== "confirmed") {
+      throw new Error("Order must be confirmed before shipping");
     }
 
-    this.apply(new OrderShipped(this.id, this.version + 1, trackingNumber, carrier));
+    this.apply(
+      new OrderShipped(this.id, this.version + 1, trackingNumber, carrier),
+    );
   }
 
   protected when(event: DomainEvent): void {
     if (event instanceof OrderPlaced) {
       this.items = event.items;
-      this.status = 'pending';
+      this.status = "pending";
     } else if (event instanceof OrderShipped) {
-      this.status = 'shipped';
+      this.status = "shipped";
     }
     // 他のイベントハンドラー...
   }
@@ -294,11 +307,11 @@ interface Command {
 }
 
 class PlaceOrderCommand implements Command {
-  readonly type = 'PlaceOrder';
+  readonly type = "PlaceOrder";
 
   constructor(
     public readonly customerId: string,
-    public readonly items: OrderItem[]
+    public readonly items: OrderItem[],
   ) {}
 }
 
@@ -310,7 +323,7 @@ interface CommandHandler<T extends Command> {
 class PlaceOrderHandler implements CommandHandler<PlaceOrderCommand> {
   constructor(
     private orderRepository: OrderRepository,
-    private eventBus: EventBus
+    private eventBus: EventBus,
   ) {}
 
   async handle(command: PlaceOrderCommand): Promise<void> {
@@ -342,7 +355,7 @@ interface Query {
 }
 
 class GetOrderDetailsQuery implements Query {
-  readonly type = 'GetOrderDetails';
+  readonly type = "GetOrderDetails";
 
   constructor(public readonly orderId: string) {}
 }
@@ -352,17 +365,20 @@ interface QueryHandler<T extends Query, R> {
   handle(query: T): Promise<R>;
 }
 
-class GetOrderDetailsHandler implements QueryHandler<GetOrderDetailsQuery, OrderDetailsDto> {
+class GetOrderDetailsHandler implements QueryHandler<
+  GetOrderDetailsQuery,
+  OrderDetailsDto
+> {
   constructor(private readDb: ReadDatabase) {}
 
   async handle(query: GetOrderDetailsQuery): Promise<OrderDetailsDto> {
     const result = await this.readDb.query(
       `SELECT * FROM order_details_view WHERE order_id = $1`,
-      [query.orderId]
+      [query.orderId],
     );
 
     if (!result) {
-      throw new NotFoundError('Order not found');
+      throw new NotFoundError("Order not found");
     }
 
     return result;
@@ -379,14 +395,20 @@ class OrderProjection {
         `INSERT INTO order_details_view
          (order_id, customer_id, status, total_amount, created_at)
          VALUES ($1, $2, $3, $4, $5)`,
-        [event.aggregateId, event.customerId, 'pending', event.totalAmount, event.occurredAt]
+        [
+          event.aggregateId,
+          event.customerId,
+          "pending",
+          event.totalAmount,
+          event.occurredAt,
+        ],
       );
     } else if (event instanceof OrderShipped) {
       await this.readDb.query(
         `UPDATE order_details_view
          SET status = 'shipped', tracking_number = $2, updated_at = $3
          WHERE order_id = $1`,
-        [event.aggregateId, event.trackingNumber, event.occurredAt]
+        [event.aggregateId, event.trackingNumber, event.occurredAt],
       );
     }
   }
@@ -401,21 +423,18 @@ class OrderProjection {
 interface WebhookConfig {
   secret?: string;
   signatureHeader?: string;
-  signatureAlgorithm?: 'sha256' | 'sha1';
+  signatureAlgorithm?: "sha256" | "sha1";
 }
 
 class WebhookReceiver {
   constructor(private config: WebhookConfig) {}
 
-  async receive(
-    headers: Record<string, string>,
-    body: string
-  ): Promise<any> {
+  async receive(headers: Record<string, string>, body: string): Promise<any> {
     // 署名検証
     if (this.config.secret && this.config.signatureHeader) {
       const signature = headers[this.config.signatureHeader];
       if (!this.verifySignature(body, signature)) {
-        throw new UnauthorizedError('Invalid webhook signature');
+        throw new UnauthorizedError("Invalid webhook signature");
       }
     }
 
@@ -426,18 +445,18 @@ class WebhookReceiver {
   }
 
   private verifySignature(body: string, signature: string): boolean {
-    const algorithm = this.config.signatureAlgorithm || 'sha256';
+    const algorithm = this.config.signatureAlgorithm || "sha256";
     const expected = crypto
       .createHmac(algorithm, this.config.secret!)
       .update(body)
-      .digest('hex');
+      .digest("hex");
 
     // GitHub形式: sha256=xxxxx
-    const actualSignature = signature.replace(/^sha\d+=/, '');
+    const actualSignature = signature.replace(/^sha\d+=/, "");
 
     return crypto.timingSafeEqual(
       Buffer.from(expected),
-      Buffer.from(actualSignature)
+      Buffer.from(actualSignature),
     );
   }
 }
@@ -456,20 +475,23 @@ class WebhookDispatcher {
   constructor(private targets: WebhookTarget[]) {}
 
   async dispatch(eventType: string, payload: any): Promise<void> {
-    const matchingTargets = this.targets.filter(t =>
-      t.events.includes(eventType) || t.events.includes('*')
+    const matchingTargets = this.targets.filter(
+      (t) => t.events.includes(eventType) || t.events.includes("*"),
     );
 
-    const promises = matchingTargets.map(target =>
-      this.sendWebhook(target, eventType, payload)
+    const promises = matchingTargets.map((target) =>
+      this.sendWebhook(target, eventType, payload),
     );
 
     const results = await Promise.allSettled(promises);
 
     // 失敗したWebhookをログ
     results.forEach((result, index) => {
-      if (result.status === 'rejected') {
-        console.error(`Webhook failed for ${matchingTargets[index].url}:`, result.reason);
+      if (result.status === "rejected") {
+        console.error(
+          `Webhook failed for ${matchingTargets[index].url}:`,
+          result.reason,
+        );
       }
     });
   }
@@ -477,32 +499,32 @@ class WebhookDispatcher {
   private async sendWebhook(
     target: WebhookTarget,
     eventType: string,
-    payload: any
+    payload: any,
   ): Promise<void> {
     const body = JSON.stringify({
       event: eventType,
       timestamp: new Date().toISOString(),
-      data: payload
+      data: payload,
     });
 
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-      'X-Webhook-Event': eventType
+      "Content-Type": "application/json",
+      "X-Webhook-Event": eventType,
     };
 
     if (target.secret) {
       const signature = crypto
-        .createHmac('sha256', target.secret)
+        .createHmac("sha256", target.secret)
         .update(body)
-        .digest('hex');
-      headers['X-Webhook-Signature'] = `sha256=${signature}`;
+        .digest("hex");
+      headers["X-Webhook-Signature"] = `sha256=${signature}`;
     }
 
     const response = await fetch(target.url, {
-      method: 'POST',
+      method: "POST",
       headers,
       body,
-      signal: AbortSignal.timeout(30000)
+      signal: AbortSignal.timeout(30000),
     });
 
     if (!response.ok) {
@@ -531,7 +553,9 @@ class EventVersionManager {
       this.upgraders.set(eventType, []);
     }
     this.upgraders.get(eventType)!.push(upgrader);
-    this.upgraders.get(eventType)!.sort((a, b) => a.fromVersion - b.fromVersion);
+    this.upgraders
+      .get(eventType)!
+      .sort((a, b) => a.fromVersion - b.fromVersion);
   }
 
   upgrade(eventType: string, event: any, targetVersion: number): any {
@@ -555,18 +579,18 @@ class EventVersionManager {
 const versionManager = new EventVersionManager();
 
 // v1 → v2 のアップグレード
-versionManager.registerUpgrader('OrderPlaced', {
+versionManager.registerUpgrader("OrderPlaced", {
   fromVersion: 1,
   toVersion: 2,
   upgrade: (oldEvent) => ({
     ...oldEvent,
     version: 2,
     // 新しいフィールドを追加
-    currency: 'JPY',  // デフォルト値
+    currency: "JPY", // デフォルト値
     // フィールド名変更
     orderTotal: oldEvent.totalAmount,
-    totalAmount: undefined
-  })
+    totalAmount: undefined,
+  }),
 });
 ```
 

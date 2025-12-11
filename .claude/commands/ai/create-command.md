@@ -60,12 +60,14 @@ Task ツールで `.claude/agents/command-arch.md` を起動:
 コマンド名: ${コマンド名}
 
 依頼内容:
+
 - ハブ特化型コマンドファイルの作成
 - argument-hint, allowed-tools, model の動的最適化
 - フェーズ別スキル条件付き参照
 - 量産可能なテンプレート構造使用
 
 必須要件:
+
 1. コマンドはエージェント・スキル呼び出しハブに特化
 2. 詳細な実装手順はエージェント・スキルに委譲
 3. allowed-tools は最小権限パターンから選択
@@ -73,6 +75,7 @@ Task ツールで `.claude/agents/command-arch.md` を起動:
 ```
 
 **期待成果物:**
+
 - `.claude/commands/*.md`（ハブ特化型）
 - 動的最適化された YAML Frontmatter
 - 簡潔な本文（エージェント起動手順のみ）

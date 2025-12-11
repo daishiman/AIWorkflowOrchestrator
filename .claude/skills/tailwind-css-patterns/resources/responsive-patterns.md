@@ -11,13 +11,13 @@ Tailwind CSSのモバイルファーストアプローチを活用した
 
 ### デフォルトブレークポイント
 
-| プレフィックス | 最小幅 | CSS |
-|---------------|--------|-----|
-| `sm` | 640px | `@media (min-width: 640px)` |
-| `md` | 768px | `@media (min-width: 768px)` |
-| `lg` | 1024px | `@media (min-width: 1024px)` |
-| `xl` | 1280px | `@media (min-width: 1280px)` |
-| `2xl` | 1536px | `@media (min-width: 1536px)` |
+| プレフィックス | 最小幅 | CSS                          |
+| -------------- | ------ | ---------------------------- |
+| `sm`           | 640px  | `@media (min-width: 640px)`  |
+| `md`           | 768px  | `@media (min-width: 768px)`  |
+| `lg`           | 1024px | `@media (min-width: 1024px)` |
+| `xl`           | 1280px | `@media (min-width: 1280px)` |
+| `2xl`          | 1536px | `@media (min-width: 1536px)` |
 
 ### カスタムブレークポイント
 
@@ -26,16 +26,16 @@ Tailwind CSSのモバイルファーストアプローチを活用した
 module.exports = {
   theme: {
     screens: {
-      'xs': '475px',
-      'sm': '640px',
-      'md': '768px',
-      'lg': '1024px',
-      'xl': '1280px',
-      '2xl': '1536px',
+      xs: "475px",
+      sm: "640px",
+      md: "768px",
+      lg: "1024px",
+      xl: "1280px",
+      "2xl": "1536px",
       // 最大幅（max-width）
-      'max-md': { max: '767px' },
+      "max-md": { max: "767px" },
       // 範囲指定
-      'tablet': { min: '640px', max: '1023px' },
+      tablet: { min: "640px", max: "1023px" },
     },
   },
 };
@@ -116,23 +116,28 @@ function Navigation() {
   return (
     <nav className="relative">
       {/* モバイルメニューボタン */}
-      <button
-        className="md:hidden p-2"
-        onClick={() => setIsOpen(!isOpen)}
-      >
+      <button className="md:hidden p-2" onClick={() => setIsOpen(!isOpen)}>
         <MenuIcon />
       </button>
 
       {/* メニュー */}
-      <ul className={cn(
-        // モバイル: 縦並び、隠し
-        'absolute left-0 top-full w-full flex-col bg-white shadow-lg',
-        'md:static md:flex md:flex-row md:shadow-none md:bg-transparent',
-        isOpen ? 'flex' : 'hidden md:flex'
-      )}>
-        <li><a href="/">Home</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/contact">Contact</a></li>
+      <ul
+        className={cn(
+          // モバイル: 縦並び、隠し
+          "absolute left-0 top-full w-full flex-col bg-white shadow-lg",
+          "md:static md:flex md:flex-row md:shadow-none md:bg-transparent",
+          isOpen ? "flex" : "hidden md:flex",
+        )}
+      >
+        <li>
+          <a href="/">Home</a>
+        </li>
+        <li>
+          <a href="/about">About</a>
+        </li>
+        <li>
+          <a href="/contact">Contact</a>
+        </li>
       </ul>
     </nav>
   );
@@ -144,11 +149,7 @@ function Navigation() {
 ```tsx
 // 縦→横レイアウト
 <div className="flex flex-col sm:flex-row overflow-hidden rounded-lg border">
-  <img
-    src={image}
-    className="w-full sm:w-48 h-48 object-cover"
-    alt=""
-  />
+  <img src={image} className="w-full sm:w-48 h-48 object-cover" alt="" />
   <div className="p-4 flex-1">
     <h3 className="text-lg font-semibold">{title}</h3>
     <p className="text-gray-600 mt-2">{description}</p>
@@ -159,29 +160,35 @@ function Navigation() {
 ### 3. ヒーローセクション
 
 ```tsx
-<section className="
+<section
+  className="
   py-12 md:py-20 lg:py-32
   px-4 sm:px-6 lg:px-8
   text-center lg:text-left
-">
-  <div className="
+"
+>
+  <div
+    className="
     max-w-7xl mx-auto
     grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16
     items-center
-  ">
+  "
+  >
     <div>
-      <h1 className="
+      <h1
+        className="
         text-3xl sm:text-4xl md:text-5xl lg:text-6xl
         font-bold tracking-tight
-      ">
+      "
+      >
         見出しテキスト
       </h1>
-      <p className="mt-4 text-lg sm:text-xl text-gray-600">
-        説明文
-      </p>
+      <p className="mt-4 text-lg sm:text-xl text-gray-600">説明文</p>
       <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
         <Button size="lg">主ボタン</Button>
-        <Button size="lg" variant="outline">副ボタン</Button>
+        <Button size="lg" variant="outline">
+          副ボタン
+        </Button>
       </div>
     </div>
     <div className="order-first lg:order-last">
@@ -309,15 +316,11 @@ function DashboardLayout({ children }) {
       <div className="flex">
         {/* サイドバー - モバイルでは非表示 */}
         <aside className="hidden lg:block w-64 border-r min-h-[calc(100vh-3.5rem)]">
-          <nav className="p-4">
-            {/* ナビゲーションリンク */}
-          </nav>
+          <nav className="p-4">{/* ナビゲーションリンク */}</nav>
         </aside>
 
         {/* メインコンテンツ */}
-        <main className="flex-1 p-4 lg:p-6">
-          {children}
-        </main>
+        <main className="flex-1 p-4 lg:p-6">{children}</main>
       </div>
     </div>
   );
@@ -332,9 +335,7 @@ function BlogLayout({ children, sidebar }) {
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8">
         <main>{children}</main>
-        <aside className="order-first lg:order-last">
-          {sidebar}
-        </aside>
+        <aside className="order-first lg:order-last">{sidebar}</aside>
       </div>
     </div>
   );

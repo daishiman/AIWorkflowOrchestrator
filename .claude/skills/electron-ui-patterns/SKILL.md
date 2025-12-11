@@ -37,10 +37,12 @@ ElectronデスクトップアプリケーションのUI実装パターンと設�
 ## 概要
 
 ### 目的
+
 Electronアプリケーションに特有のUI要素（ウィンドウ、メニュー、
 ダイアログ、通知、トレイ）の実装パターンを提供する。
 
 ### 対象者
+
 - Electronアプリ開発者
 - デスクトップUIエンジニア
 - フロントエンド開発者
@@ -53,8 +55,8 @@ Electronアプリケーションに特有のUI要素（ウィンドウ、メニ�
 
 ```typescript
 // main/window.ts
-import { BrowserWindow, screen } from 'electron';
-import path from 'path';
+import { BrowserWindow, screen } from "electron";
+import path from "path";
 
 export function createMainWindow(): BrowserWindow {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
@@ -70,17 +72,17 @@ export function createMainWindow(): BrowserWindow {
     center: true,
 
     // 外観
-    title: 'My Electron App',
-    icon: path.join(__dirname, '../assets/icon.png'),
-    backgroundColor: '#ffffff',
+    title: "My Electron App",
+    icon: path.join(__dirname, "../assets/icon.png"),
+    backgroundColor: "#ffffff",
 
     // ウィンドウフレーム
-    frame: true,              // false でカスタムタイトルバー
-    titleBarStyle: 'default', // 'hidden' | 'hiddenInset' | 'customButtonsOnHover'
+    frame: true, // false でカスタムタイトルバー
+    titleBarStyle: "default", // 'hidden' | 'hiddenInset' | 'customButtonsOnHover'
 
     // セキュリティ設定（必須）
     webPreferences: {
-      preload: path.join(__dirname, '../preload/index.js'),
+      preload: path.join(__dirname, "../preload/index.js"),
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
@@ -88,7 +90,7 @@ export function createMainWindow(): BrowserWindow {
   });
 
   // 開発時はDevTools
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === "development") {
     win.webContents.openDevTools();
   }
 
@@ -96,7 +98,7 @@ export function createMainWindow(): BrowserWindow {
   if (process.env.VITE_DEV_SERVER_URL) {
     win.loadURL(process.env.VITE_DEV_SERVER_URL);
   } else {
-    win.loadFile(path.join(__dirname, '../renderer/index.html'));
+    win.loadFile(path.join(__dirname, "../renderer/index.html"));
   }
 
   return win;
@@ -107,8 +109,8 @@ export function createMainWindow(): BrowserWindow {
 
 ```typescript
 // main/services/windowState.ts
-import { BrowserWindow, screen } from 'electron';
-import Store from 'electron-store';
+import { BrowserWindow, screen } from "electron";
+import Store from "electron-store";
 
 interface WindowState {
   x?: number;
@@ -127,14 +129,14 @@ export function loadWindowState(): WindowState {
     isMaximized: false,
   };
 
-  return store.get('windowState', defaultState);
+  return store.get("windowState", defaultState);
 }
 
 export function saveWindowState(win: BrowserWindow): void {
   const isMaximized = win.isMaximized();
   const bounds = win.getBounds();
 
-  store.set('windowState', {
+  store.set("windowState", {
     ...bounds,
     isMaximized,
   });
@@ -145,7 +147,7 @@ export function applyWindowState(win: BrowserWindow): void {
 
   // 位置がディスプレイ内にあるか確認
   const displays = screen.getAllDisplays();
-  const isVisible = displays.some(display => {
+  const isVisible = displays.some((display) => {
     const { x, y, width, height } = display.bounds;
     return (
       state.x !== undefined &&
@@ -182,10 +184,10 @@ export function applyWindowState(win: BrowserWindow): void {
 // main/window.ts
 const win = new BrowserWindow({
   frame: false,
-  titleBarStyle: 'hidden',
+  titleBarStyle: "hidden",
   trafficLightPosition: { x: 15, y: 10 }, // macOS用
   webPreferences: {
-    preload: path.join(__dirname, 'preload.js'),
+    preload: path.join(__dirname, "preload.js"),
     contextIsolation: true,
   },
 });
@@ -195,8 +197,8 @@ const win = new BrowserWindow({
 
 ```tsx
 // renderer/components/TitleBar.tsx
-import { FC } from 'react';
-import './TitleBar.css';
+import { FC } from "react";
+import "./TitleBar.css";
 
 export const TitleBar: FC<{ title: string }> = ({ title }) => {
   const handleMinimize = () => window.electronAPI.minimize();
@@ -292,94 +294,99 @@ export const TitleBar: FC<{ title: string }> = ({ title }) => {
 
 ```typescript
 // main/menu.ts
-import { Menu, shell, app, BrowserWindow } from 'electron';
+import { Menu, shell, app, BrowserWindow } from "electron";
 
 export function createApplicationMenu(win: BrowserWindow): Menu {
-  const isMac = process.platform === 'darwin';
+  const isMac = process.platform === "darwin";
 
   const template: Electron.MenuItemConstructorOptions[] = [
     // macOSのアプリメニュー
-    ...(isMac ? [{
-      label: app.name,
-      submenu: [
-        { role: 'about' as const },
-        { type: 'separator' as const },
-        { role: 'services' as const },
-        { type: 'separator' as const },
-        { role: 'hide' as const },
-        { role: 'hideOthers' as const },
-        { role: 'unhide' as const },
-        { type: 'separator' as const },
-        { role: 'quit' as const },
-      ],
-    }] : []),
+    ...(isMac
+      ? [
+          {
+            label: app.name,
+            submenu: [
+              { role: "about" as const },
+              { type: "separator" as const },
+              { role: "services" as const },
+              { type: "separator" as const },
+              { role: "hide" as const },
+              { role: "hideOthers" as const },
+              { role: "unhide" as const },
+              { type: "separator" as const },
+              { role: "quit" as const },
+            ],
+          },
+        ]
+      : []),
 
     // ファイルメニュー
     {
-      label: 'ファイル',
+      label: "ファイル",
       submenu: [
         {
-          label: '新規作成',
-          accelerator: 'CmdOrCtrl+N',
-          click: () => win.webContents.send('menu:new-file'),
+          label: "新規作成",
+          accelerator: "CmdOrCtrl+N",
+          click: () => win.webContents.send("menu:new-file"),
         },
         {
-          label: '開く...',
-          accelerator: 'CmdOrCtrl+O',
-          click: () => win.webContents.send('menu:open-file'),
+          label: "開く...",
+          accelerator: "CmdOrCtrl+O",
+          click: () => win.webContents.send("menu:open-file"),
         },
-        { type: 'separator' },
+        { type: "separator" },
         {
-          label: '保存',
-          accelerator: 'CmdOrCtrl+S',
-          click: () => win.webContents.send('menu:save-file'),
+          label: "保存",
+          accelerator: "CmdOrCtrl+S",
+          click: () => win.webContents.send("menu:save-file"),
         },
-        { type: 'separator' },
-        isMac ? { role: 'close' } : { role: 'quit' },
+        { type: "separator" },
+        isMac ? { role: "close" } : { role: "quit" },
       ],
     },
 
     // 編集メニュー
     {
-      label: '編集',
+      label: "編集",
       submenu: [
-        { role: 'undo', label: '元に戻す' },
-        { role: 'redo', label: 'やり直す' },
-        { type: 'separator' },
-        { role: 'cut', label: '切り取り' },
-        { role: 'copy', label: 'コピー' },
-        { role: 'paste', label: '貼り付け' },
-        { role: 'selectAll', label: 'すべて選択' },
+        { role: "undo", label: "元に戻す" },
+        { role: "redo", label: "やり直す" },
+        { type: "separator" },
+        { role: "cut", label: "切り取り" },
+        { role: "copy", label: "コピー" },
+        { role: "paste", label: "貼り付け" },
+        { role: "selectAll", label: "すべて選択" },
       ],
     },
 
     // 表示メニュー
     {
-      label: '表示',
+      label: "表示",
       submenu: [
-        { role: 'reload', label: '再読み込み' },
-        { role: 'forceReload', label: '強制再読み込み' },
-        { role: 'toggleDevTools', label: '開発者ツール' },
-        { type: 'separator' },
-        { role: 'resetZoom', label: 'ズームをリセット' },
-        { role: 'zoomIn', label: 'ズームイン' },
-        { role: 'zoomOut', label: 'ズームアウト' },
-        { type: 'separator' },
-        { role: 'togglefullscreen', label: 'フルスクリーン' },
+        { role: "reload", label: "再読み込み" },
+        { role: "forceReload", label: "強制再読み込み" },
+        { role: "toggleDevTools", label: "開発者ツール" },
+        { type: "separator" },
+        { role: "resetZoom", label: "ズームをリセット" },
+        { role: "zoomIn", label: "ズームイン" },
+        { role: "zoomOut", label: "ズームアウト" },
+        { type: "separator" },
+        { role: "togglefullscreen", label: "フルスクリーン" },
       ],
     },
 
     // ヘルプメニュー
     {
-      label: 'ヘルプ',
+      label: "ヘルプ",
       submenu: [
         {
-          label: 'ドキュメント',
-          click: () => shell.openExternal('https://example.com/docs'),
+          label: "ドキュメント",
+          click: () => shell.openExternal("https://example.com/docs"),
         },
         {
-          label: '問題を報告',
-          click: () => shell.openExternal('https://github.com/user/repo/issues'),
+          label: "問題を報告",
+          click: () =>
+            shell.openExternal("https://github.com/user/repo/issues"),
         },
       ],
     },
@@ -393,21 +400,23 @@ export function createApplicationMenu(win: BrowserWindow): Menu {
 
 ```typescript
 // main/contextMenu.ts
-import { Menu, BrowserWindow } from 'electron';
+import { Menu, BrowserWindow } from "electron";
 
 export function showContextMenu(
   win: BrowserWindow,
-  options: { hasSelection: boolean }
+  options: { hasSelection: boolean },
 ): void {
   const template: Electron.MenuItemConstructorOptions[] = [
-    ...(options.hasSelection ? [
-      { role: 'copy' as const, label: 'コピー' },
-      { role: 'cut' as const, label: '切り取り' },
-      { type: 'separator' as const },
-    ] : []),
-    { role: 'paste' as const, label: '貼り付け' },
-    { type: 'separator' as const },
-    { role: 'selectAll' as const, label: 'すべて選択' },
+    ...(options.hasSelection
+      ? [
+          { role: "copy" as const, label: "コピー" },
+          { role: "cut" as const, label: "切り取り" },
+          { type: "separator" as const },
+        ]
+      : []),
+    { role: "paste" as const, label: "貼り付け" },
+    { type: "separator" as const },
+    { role: "selectAll" as const, label: "すべて選択" },
   ];
 
   const menu = Menu.buildFromTemplate(template);
@@ -415,7 +424,7 @@ export function showContextMenu(
 }
 
 // IPC経由で呼び出し
-ipcMain.on('show-context-menu', (event, options) => {
+ipcMain.on("show-context-menu", (event, options) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   if (win) {
     showContextMenu(win, options);
@@ -431,68 +440,86 @@ ipcMain.on('show-context-menu', (event, options) => {
 
 ```typescript
 // main/ipc/dialog.ts
-import { dialog, BrowserWindow } from 'electron';
+import { dialog, BrowserWindow } from "electron";
 
-ipcMain.handle('dialog:open-file', async (event, options?: {
-  filters?: Electron.FileFilter[];
-  multiSelections?: boolean;
-}) => {
-  const win = BrowserWindow.fromWebContents(event.sender);
+ipcMain.handle(
+  "dialog:open-file",
+  async (
+    event,
+    options?: {
+      filters?: Electron.FileFilter[];
+      multiSelections?: boolean;
+    },
+  ) => {
+    const win = BrowserWindow.fromWebContents(event.sender);
 
-  const result = await dialog.showOpenDialog(win!, {
-    properties: [
-      'openFile',
-      ...(options?.multiSelections ? ['multiSelections' as const] : []),
-    ],
-    filters: options?.filters ?? [
-      { name: 'すべてのファイル', extensions: ['*'] },
-    ],
-  });
+    const result = await dialog.showOpenDialog(win!, {
+      properties: [
+        "openFile",
+        ...(options?.multiSelections ? ["multiSelections" as const] : []),
+      ],
+      filters: options?.filters ?? [
+        { name: "すべてのファイル", extensions: ["*"] },
+      ],
+    });
 
-  return result.canceled ? null : result.filePaths;
-});
+    return result.canceled ? null : result.filePaths;
+  },
+);
 
-ipcMain.handle('dialog:save-file', async (event, options?: {
-  defaultPath?: string;
-  filters?: Electron.FileFilter[];
-}) => {
-  const win = BrowserWindow.fromWebContents(event.sender);
+ipcMain.handle(
+  "dialog:save-file",
+  async (
+    event,
+    options?: {
+      defaultPath?: string;
+      filters?: Electron.FileFilter[];
+    },
+  ) => {
+    const win = BrowserWindow.fromWebContents(event.sender);
 
-  const result = await dialog.showSaveDialog(win!, {
-    defaultPath: options?.defaultPath,
-    filters: options?.filters ?? [
-      { name: 'すべてのファイル', extensions: ['*'] },
-    ],
-  });
+    const result = await dialog.showSaveDialog(win!, {
+      defaultPath: options?.defaultPath,
+      filters: options?.filters ?? [
+        { name: "すべてのファイル", extensions: ["*"] },
+      ],
+    });
 
-  return result.canceled ? null : result.filePath;
-});
+    return result.canceled ? null : result.filePath;
+  },
+);
 ```
 
 ### 確認ダイアログ
 
 ```typescript
-ipcMain.handle('dialog:confirm', async (event, options: {
-  title: string;
-  message: string;
-  detail?: string;
-  type?: 'none' | 'info' | 'error' | 'question' | 'warning';
-  buttons?: string[];
-}) => {
-  const win = BrowserWindow.fromWebContents(event.sender);
+ipcMain.handle(
+  "dialog:confirm",
+  async (
+    event,
+    options: {
+      title: string;
+      message: string;
+      detail?: string;
+      type?: "none" | "info" | "error" | "question" | "warning";
+      buttons?: string[];
+    },
+  ) => {
+    const win = BrowserWindow.fromWebContents(event.sender);
 
-  const result = await dialog.showMessageBox(win!, {
-    type: options.type ?? 'question',
-    title: options.title,
-    message: options.message,
-    detail: options.detail,
-    buttons: options.buttons ?? ['キャンセル', 'OK'],
-    defaultId: 1,
-    cancelId: 0,
-  });
+    const result = await dialog.showMessageBox(win!, {
+      type: options.type ?? "question",
+      title: options.title,
+      message: options.message,
+      detail: options.detail,
+      buttons: options.buttons ?? ["キャンセル", "OK"],
+      defaultId: 1,
+      cancelId: 0,
+    });
 
-  return result.response; // ボタンのインデックス
-});
+    return result.response; // ボタンのインデックス
+  },
+);
 ```
 
 ---
@@ -503,18 +530,18 @@ ipcMain.handle('dialog:confirm', async (event, options: {
 
 ```typescript
 // main/tray.ts
-import { Tray, Menu, app, nativeImage } from 'electron';
-import path from 'path';
+import { Tray, Menu, app, nativeImage } from "electron";
+import path from "path";
 
 let tray: Tray | null = null;
 
 export function createTray(showWindow: () => void): Tray {
   const icon = nativeImage.createFromPath(
-    path.join(__dirname, '../assets/tray-icon.png')
+    path.join(__dirname, "../assets/tray-icon.png"),
   );
 
   // macOSではテンプレート画像を使用
-  if (process.platform === 'darwin') {
+  if (process.platform === "darwin") {
     icon.setTemplateImage(true);
   }
 
@@ -522,43 +549,40 @@ export function createTray(showWindow: () => void): Tray {
 
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: 'ウィンドウを表示',
+      label: "ウィンドウを表示",
       click: showWindow,
     },
-    { type: 'separator' },
+    { type: "separator" },
     {
-      label: '設定',
+      label: "設定",
       click: () => {
         // 設定画面を開く
       },
     },
-    { type: 'separator' },
+    { type: "separator" },
     {
-      label: '終了',
+      label: "終了",
       click: () => app.quit(),
     },
   ]);
 
   tray.setContextMenu(contextMenu);
-  tray.setToolTip('My Electron App');
+  tray.setToolTip("My Electron App");
 
   // ダブルクリックでウィンドウ表示
-  tray.on('double-click', showWindow);
+  tray.on("double-click", showWindow);
 
   return tray;
 }
 
 // トレイアイコンの更新
-export function updateTrayIcon(status: 'normal' | 'active' | 'error'): void {
+export function updateTrayIcon(status: "normal" | "active" | "error"): void {
   if (!tray) return;
 
-  const iconPath = path.join(
-    __dirname,
-    `../assets/tray-icon-${status}.png`
-  );
+  const iconPath = path.join(__dirname, `../assets/tray-icon-${status}.png`);
   const icon = nativeImage.createFromPath(iconPath);
 
-  if (process.platform === 'darwin') {
+  if (process.platform === "darwin") {
     icon.setTemplateImage(true);
   }
 
@@ -574,33 +598,37 @@ export function updateTrayIcon(status: 'normal' | 'active' | 'error'): void {
 
 ```typescript
 // main/ipc/notification.ts
-import { Notification, nativeImage } from 'electron';
+import { Notification, nativeImage } from "electron";
 
-ipcMain.handle('notification:show', async (event, options: {
-  title: string;
-  body: string;
-  icon?: string;
-  silent?: boolean;
-  urgency?: 'normal' | 'critical' | 'low';
-}) => {
-  const notification = new Notification({
-    title: options.title,
-    body: options.body,
-    icon: options.icon
-      ? nativeImage.createFromPath(options.icon)
-      : undefined,
-    silent: options.silent,
-    urgency: options.urgency,
-  });
+ipcMain.handle(
+  "notification:show",
+  async (
+    event,
+    options: {
+      title: string;
+      body: string;
+      icon?: string;
+      silent?: boolean;
+      urgency?: "normal" | "critical" | "low";
+    },
+  ) => {
+    const notification = new Notification({
+      title: options.title,
+      body: options.body,
+      icon: options.icon ? nativeImage.createFromPath(options.icon) : undefined,
+      silent: options.silent,
+      urgency: options.urgency,
+    });
 
-  notification.show();
+    notification.show();
 
-  return new Promise<string>((resolve) => {
-    notification.on('click', () => resolve('click'));
-    notification.on('close', () => resolve('close'));
-    notification.on('action', () => resolve('action'));
-  });
-});
+    return new Promise<string>((resolve) => {
+      notification.on("click", () => resolve("click"));
+      notification.on("close", () => resolve("close"));
+      notification.on("action", () => resolve("action"));
+    });
+  },
+);
 ```
 
 ---
@@ -627,10 +655,12 @@ ipcMain.handle('notification:show', async (event, options: {
 ## 関連リソース
 
 ### 詳細ドキュメント
+
 - `resources/window-management.md` - ウィンドウ管理詳細
 - `resources/native-ui.md` - ネイティブUI要素
 - `resources/multi-window.md` - マルチウィンドウ設計
 
 ### テンプレート
+
 - `templates/frameless-window.ts` - フレームレスウィンドウ
 - `templates/tray-app.ts` - トレイアプリ

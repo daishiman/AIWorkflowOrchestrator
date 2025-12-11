@@ -69,7 +69,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: production  # Settings で Required reviewers 設定済み
+    environment: production # Settings で Required reviewers 設定済み
 
     steps:
       - uses: actions/checkout@v4
@@ -83,6 +83,7 @@ jobs:
 ```
 
 **Settings 設定**:
+
 ```
 production環境:
   Required reviewers: DevOps Team (2名)
@@ -125,6 +126,7 @@ jobs:
 ```
 
 **Settings 設定**:
+
 ```
 staging環境:
   Required reviewers: なし（自動デプロイ）
@@ -134,6 +136,7 @@ production環境:
 ```
 
 **フロー**:
+
 1. Staging に自動デプロイ
 2. Staging で検証
 3. Production デプロイ前に承認待機
@@ -174,6 +177,7 @@ jobs:
 ```
 
 **Settings 設定**:
+
 ```
 production-us環境:
   Required reviewers: US Operations Team
@@ -183,6 +187,7 @@ production-eu環境:
 ```
 
 **フロー**:
+
 - USとEUのデプロイが並列で承認待ち
 - 各チームが独立して承認
 - 承認された環境から順次デプロイ
@@ -201,7 +206,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: production  # Settings で Wait timer + Required reviewers 設定済み
+    environment: production # Settings で Wait timer + Required reviewers 設定済み
 
     steps:
       - uses: actions/checkout@v4
@@ -210,6 +215,7 @@ jobs:
 ```
 
 **Settings 設定**:
+
 ```
 production環境:
   Wait timer: 10分
@@ -217,6 +223,7 @@ production環境:
 ```
 
 **フロー**:
+
 1. ワークフロー開始
 2. 10分間自動待機
 3. 待機後、承認待ちに移行
@@ -253,6 +260,7 @@ jobs:
 ```
 
 **Settings 設定**:
+
 ```
 production環境:
   Required reviewers: DevOps Team
@@ -262,6 +270,7 @@ development環境:
 ```
 
 **フロー**:
+
 - `main` ブランチ → production環境 → 承認必要
 - `develop` ブランチ → development環境 → 承認不要
 
@@ -313,6 +322,7 @@ jobs:
 ```
 
 **Settings 設定**:
+
 ```
 production-db環境:
   Required reviewers: Database Admin (1名)
@@ -325,6 +335,7 @@ production-frontend環境:
 ```
 
 **フロー**:
+
 1. DBマイグレーション承認 → 実行
 2. バックエンドデプロイ承認 → 実行
 3. フロントエンドデプロイ承認 → 実行
@@ -338,6 +349,7 @@ production-frontend環境:
    - Actions タブの "Review deployments" バッジ
 
 2. **承認画面にアクセス**
+
    ```
    Repository → Actions → [ワークフロー実行]
    → "Review deployments" ボタンをクリック
@@ -359,6 +371,7 @@ Repository → Environments → [環境名] → View deployment history
 ```
 
 **表示情報**:
+
 - デプロイ日時
 - トリガーしたユーザー
 - 承認したレビュアー
@@ -383,11 +396,11 @@ Settings → Environments → [環境名] → Wait timer → Set delay
 # 深夜2時にデプロイ（22時にトリガー、4時間待機）
 on:
   schedule:
-    - cron: '0 22 * * *'  # 22時にトリガー
+    - cron: "0 22 * * *" # 22時にトリガー
 
 jobs:
   deploy:
-    environment: production  # Wait timer: 240分（4時間）
+    environment: production # Wait timer: 240分（4時間）
 ```
 
 #### 2. ロールバック猶予期間
@@ -400,7 +413,7 @@ jobs:
 
   deploy-production:
     needs: deploy-staging
-    environment: production  # Wait timer: 10分
+    environment: production # Wait timer: 10分
 ```
 
 **メリット**: Staging で問題が見つかった場合、本番デプロイをキャンセル可能
@@ -410,7 +423,7 @@ jobs:
 ```yaml
 jobs:
   deploy-canary:
-    environment: production-canary  # Wait timer: 30分
+    environment: production-canary # Wait timer: 30分
 
   deploy-full:
     needs: deploy-canary
@@ -418,6 +431,7 @@ jobs:
 ```
 
 **フロー**:
+
 1. Canary環境に10%トラフィック
 2. 30分待機（監視）
 3. 問題なければ全体デプロイ
@@ -431,6 +445,7 @@ Settings:
 ```
 
 **動作**:
+
 1. ワークフロー開始
 2. 10分間自動待機（この間はキャンセル可能）
 3. 待機完了後、承認待ちに移行
@@ -445,6 +460,7 @@ Actions → [ワークフロー実行] → "Cancel workflow" ボタン
 ```
 
 **影響**:
+
 - 承認待ちのジョブは即座に停止
 - 実行中のジョブも停止
 - 後続のジョブは実行されない
@@ -456,11 +472,12 @@ Actions → [ワークフロー実行] → "Cancel workflow" ボタン
 承認されない場合、6時間後に自動失敗します。
 
 **タイムアウト時間の変更**:
+
 ```yaml
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 1440  # 24時間
+    timeout-minutes: 1440 # 24時間
     environment: production
 ```
 
@@ -506,6 +523,7 @@ jobs:
 **原因1**: レビュアーとして指定されていない
 
 **確認**:
+
 ```
 Settings → Environments → [環境名] → Required reviewers
 ```
@@ -527,6 +545,7 @@ Wait timer終了まで待機が続きます。
 `needs` で指定された前のジョブが失敗している可能性。
 
 **確認**:
+
 ```
 Actions → [ワークフロー実行] → Jobs タブ
 ```
@@ -534,12 +553,14 @@ Actions → [ワークフロー実行] → Jobs タブ
 ### 承認通知が届かない
 
 **確認1**: 通知設定
+
 ```
 GitHub Settings → Notifications → Actions
 → "Deployments awaiting review" が有効か確認
 ```
 
 **確認2**: Email設定
+
 ```
 GitHub Settings → Emails
 → プライマリメールアドレスが認証済みか確認
@@ -548,10 +569,11 @@ GitHub Settings → Emails
 ### タイムアウトが早すぎる
 
 **解決**: ジョブのタイムアウトを延長
+
 ```yaml
 jobs:
   deploy:
-    timeout-minutes: 1440  # 24時間（デフォルトは360分）
+    timeout-minutes: 1440 # 24時間（デフォルトは360分）
     environment: production
 ```
 
@@ -600,7 +622,7 @@ on:
   workflow_dispatch:
     inputs:
       emergency:
-        description: 'Emergency deployment (skip staging)'
+        description: "Emergency deployment (skip staging)"
         type: boolean
         default: false
 

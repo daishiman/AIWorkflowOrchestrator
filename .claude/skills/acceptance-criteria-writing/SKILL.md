@@ -40,12 +40,14 @@ version: 1.0.0
 自動テストへの直接変換を可能にします。
 
 **核心概念**:
+
 - **Given-When-Then**: 前提条件→アクション→期待結果の構造化
 - **テスト可能性**: 自動テストに直接変換可能な記述
 - **網羅性**: 正常系・異常系・境界値の完全カバレッジ
 - **独立性**: 各シナリオが独立してテスト可能
 
 **主要な価値**:
+
 - 実装完了の明確な判定基準
 - テストケースへの直接変換
 - ステークホルダー間の認識統一
@@ -57,7 +59,7 @@ version: 1.0.0
 - **TDD実践フロー**（第2.4節）:
   - 仕様書 → **ユースケース** → **受け入れ基準** → テスト → 実装の順序
   - 受け入れ基準が Given-When-Then 形式で Vitest テストに直接変換可能
-  - features/[機能名]/__tests__/executor.test.ts への対応を前提
+  - features/[機能名]/**tests**/executor.test.ts への対応を前提
 
 - **テスト戦略との整合性**（第2.4節）:
   - **ユニットテスト**: Executor クラスの受け入れ基準（60%カバレッジ目標）
@@ -118,9 +120,11 @@ cat .claude/skills/acceptance-criteria-writing/templates/acceptance-criteria-tem
 ## いつ使うか
 
 ### シナリオ1: 機能要件への基準追加
+
 **状況**: 機能要件に完了条件を追加する
 
 **適用条件**:
+
 - [ ] 機能要件が定義されている
 - [ ] 完了の判定基準が曖昧
 - [ ] テスト可能な条件が必要
@@ -128,9 +132,11 @@ cat .claude/skills/acceptance-criteria-writing/templates/acceptance-criteria-tem
 **期待される成果**: Given-When-Then形式の受け入れ基準
 
 ### シナリオ2: ユーザーストーリーの詳細化
+
 **状況**: ユーザーストーリーにテスト条件を追加
 
 **適用条件**:
+
 - [ ] ユーザーストーリーが存在
 - [ ] 「何をもって完了とするか」が不明確
 - [ ] 開発者とQAの認識を統一したい
@@ -138,9 +144,11 @@ cat .claude/skills/acceptance-criteria-writing/templates/acceptance-criteria-tem
 **期待される成果**: 複数シナリオを含む受け入れ基準
 
 ### シナリオ3: テストケースの基盤作成
+
 **状況**: 自動テストの設計に使用可能な基準を作成
 
 **適用条件**:
+
 - [ ] テスト自動化を計画
 - [ ] テストケースの設計が必要
 - [ ] 網羅性の確保が重要
@@ -154,12 +162,14 @@ cat .claude/skills/acceptance-criteria-writing/templates/acceptance-criteria-tem
 **目的**: 必要なシナリオを網羅的に特定
 
 **ステップ**:
+
 1. 正常系シナリオ（ハッピーパス）
 2. 異常系シナリオ（エラーケース）
 3. 境界値シナリオ
 4. エッジケース
 
 **判断基準**:
+
 - [ ] 正常系が網羅されているか？
 - [ ] 異常系が考慮されているか？
 - [ ] 境界値が特定されているか？
@@ -171,6 +181,7 @@ cat .claude/skills/acceptance-criteria-writing/templates/acceptance-criteria-tem
 **目的**: 各シナリオを構造化された形式で記述
 
 **ステップ**:
+
 1. **Given（前提条件）**:
    - システムの初期状態
    - ユーザーの状態
@@ -184,6 +195,7 @@ cat .claude/skills/acceptance-criteria-writing/templates/acceptance-criteria-tem
    - 期待される出力
 
 **判断基準**:
+
 - [ ] Givenが具体的な状態を定義しているか？
 - [ ] Whenが明確なアクションか？
 - [ ] Thenが検証可能な結果か？
@@ -195,6 +207,7 @@ cat .claude/skills/acceptance-criteria-writing/templates/acceptance-criteria-tem
 **目的**: 境界条件を特定し、シナリオに追加
 
 **ステップ**:
+
 1. 入力値の境界特定
    - 最小値、最大値
    - 空、NULL
@@ -203,6 +216,7 @@ cat .claude/skills/acceptance-criteria-writing/templates/acceptance-criteria-tem
 3. 異常値シナリオの追加
 
 **判断基準**:
+
 - [ ] すべての境界値が特定されているか？
 - [ ] 境界値テストが含まれているか？
 
@@ -213,12 +227,14 @@ cat .claude/skills/acceptance-criteria-writing/templates/acceptance-criteria-tem
 **目的**: 受け入れ基準の品質を検証
 
 **ステップ**:
+
 1. 独立性の確認（各シナリオが独立）
 2. 具体性の確認（曖昧な表現がない）
 3. テスト可能性の確認
 4. 網羅性の確認
 
 **判断基準**:
+
 - [ ] 各シナリオが独立してテスト可能か？
 - [ ] 期待される結果が具体的で測定可能か？
 - [ ] すべてのケースがカバーされているか？
@@ -229,6 +245,7 @@ cat .claude/skills/acceptance-criteria-writing/templates/acceptance-criteria-tem
 ## 受け入れ基準: [機能名]
 
 ### シナリオ1: [正常系の名前]
+
 - **Given**: [前提条件]
   - [具体的な初期状態]
 - **When**: [実行するアクション]
@@ -237,11 +254,13 @@ cat .claude/skills/acceptance-criteria-writing/templates/acceptance-criteria-tem
   - [具体的で検証可能な結果]
 
 ### シナリオ2: [異常系の名前]
+
 - **Given**: [前提条件]
 - **When**: [エラーを引き起こすアクション]
 - **Then**: [期待されるエラー処理]
 
 ### シナリオ3: [境界値の名前]
+
 - **Given**: [境界条件の前提]
 - **When**: [境界値でのアクション]
 - **Then**: [期待される動作]
@@ -250,20 +269,24 @@ cat .claude/skills/acceptance-criteria-writing/templates/acceptance-criteria-tem
 ## シナリオタイプ別チェックリスト
 
 ### 正常系（Happy Path）
+
 - [ ] 期待通りの入力でのシナリオ
 - [ ] 成功時の結果が明確
 
 ### 異常系（Error Cases）
+
 - [ ] 無効な入力でのシナリオ
 - [ ] エラーメッセージが明確
 - [ ] エラー時の状態が定義
 
 ### 境界値（Boundary Values）
+
 - [ ] 最小値でのシナリオ
 - [ ] 最大値でのシナリオ
 - [ ] 境界±1のシナリオ
 
 ### エッジケース
+
 - [ ] 空・NULL値でのシナリオ
 - [ ] 同時実行のシナリオ
 - [ ] タイムアウトのシナリオ
@@ -304,6 +327,7 @@ cat .claude/skills/acceptance-criteria-writing/templates/acceptance-criteria-tem
 **このプロジェクトではTDD（Test-Driven Development）が必須**:
 
 **受け入れ基準 → テストコード変換の例**:
+
 ```
 受け入れ基準（Given-When-Then）:
 ---
@@ -337,6 +361,7 @@ describe('YouTubeSummarizeExecutor', () => {
 ### ハイブリッドアーキテクチャの反映
 
 **features/ 垂直スライスに対応した基準**:
+
 ```
 機能: YouTube動画要約
 配置: features/youtube-summarize/
@@ -352,6 +377,7 @@ describe('YouTubeSummarizeExecutor', () => {
 ### 技術スタック制約の反映
 
 **Zod + TypeScript strict による型安全性**:
+
 ```
 受け入れ基準に含めるべき項目:
 - [ ] 入力スキーマが Zod で定義されている（inputSchema）
@@ -361,6 +387,7 @@ describe('YouTubeSummarizeExecutor', () => {
 ```
 
 **Vitest によるテスト要件**:
+
 ```
 受け入れ基準に含めるべきテスト条件:
 - [ ] 正常系テスト（Happy Path）が存在
@@ -371,6 +398,7 @@ describe('YouTubeSummarizeExecutor', () => {
 ```
 
 **Railway デプロイメント制約**:
+
 ```
 非機能要件に含めるべき項目:
 - [ ] 環境変数による設定（DATABASE_URL、AI API キー等）
@@ -389,19 +417,22 @@ describe('YouTubeSummarizeExecutor', () => {
 ## メトリクス
 
 ### シナリオ網羅性
+
 **測定方法**: (カバーされたシナリオ / 必要なシナリオ) × 100
 **目標**: >95%
 
 ### テスト変換率
+
 **測定方法**: (テストに変換された基準 / 総基準) × 100
 **目標**: 100%
 
 ### 品質スコア
+
 - 具体性 (0-10)
 - 独立性 (0-10)
 - 検証可能性 (0-10)
 - 網羅性 (0-10)
-**目標**: 平均8点以上
+  **目標**: 平均8点以上
 
 ## 参考文献
 

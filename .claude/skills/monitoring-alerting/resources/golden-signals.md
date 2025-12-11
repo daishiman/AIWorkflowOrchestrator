@@ -12,6 +12,7 @@
 **定義**: リクエストの処理にかかる時間
 
 **重要なポイント**:
+
 - 成功したリクエストと失敗したリクエストを分けて測定
 - パーセンタイル（p50, p95, p99）で測定
 - 平均値だけでは不十分
@@ -23,12 +24,12 @@
 app.use((req, res, next) => {
   const start = Date.now();
 
-  res.on('finish', () => {
+  res.on("finish", () => {
     const duration = Date.now() - start;
     const status = res.statusCode;
 
     // メトリクス記録
-    metrics.histogram('http_request_duration_ms', duration, {
+    metrics.histogram("http_request_duration_ms", duration, {
       method: req.method,
       path: req.route?.path || req.path,
       status: String(status),
@@ -41,17 +42,18 @@ app.use((req, res, next) => {
 
 **閾値の例**:
 
-| パーセンタイル | 警告 | 重大 |
-|--------------|------|------|
-| p50 | > 100ms | > 200ms |
-| p95 | > 500ms | > 1000ms |
-| p99 | > 1000ms | > 2000ms |
+| パーセンタイル | 警告     | 重大     |
+| -------------- | -------- | -------- |
+| p50            | > 100ms  | > 200ms  |
+| p95            | > 500ms  | > 1000ms |
+| p99            | > 1000ms | > 2000ms |
 
 ### 2. トラフィック（Traffic）
 
 **定義**: システムへの需要量
 
 **測定対象**:
+
 - HTTPリクエスト数（RPS）
 - 同時接続数
 - トランザクション数
@@ -66,7 +68,7 @@ let requestCount = 0;
 app.use((req, res, next) => {
   requestCount++;
 
-  metrics.counter('http_requests_total', 1, {
+  metrics.counter("http_requests_total", 1, {
     method: req.method,
     path: req.route?.path || req.path,
   });
@@ -77,16 +79,16 @@ app.use((req, res, next) => {
 // 1分ごとにRPSを計算
 setInterval(() => {
   const rps = requestCount / 60;
-  metrics.gauge('http_requests_per_second', rps);
+  metrics.gauge("http_requests_per_second", rps);
   requestCount = 0;
 }, 60000);
 ```
 
 **閾値の例**:
 
-| 指標 | 警告 | 重大 |
-|------|------|------|
-| RPS増加率 | > 50%/5min | > 100%/5min |
+| 指標       | 警告              | 重大              |
+| ---------- | ----------------- | ----------------- |
+| RPS増加率  | > 50%/5min        | > 100%/5min       |
 | 同時接続数 | > 80%キャパシティ | > 95%キャパシティ |
 
 ### 3. エラー（Errors）
@@ -94,6 +96,7 @@ setInterval(() => {
 **定義**: 失敗したリクエストの割合
 
 **測定対象**:
+
 - HTTPエラー率（5xx）
 - アプリケーション例外
 - タイムアウト
@@ -104,9 +107,9 @@ setInterval(() => {
 ```typescript
 // エラーカウンター
 app.use((req, res, next) => {
-  res.on('finish', () => {
+  res.on("finish", () => {
     if (res.statusCode >= 500) {
-      metrics.counter('http_errors_total', 1, {
+      metrics.counter("http_errors_total", 1, {
         status: String(res.statusCode),
         path: req.route?.path || req.path,
       });
@@ -118,7 +121,7 @@ app.use((req, res, next) => {
 
 // エラーハンドラー
 app.use((err, req, res, next) => {
-  metrics.counter('application_errors_total', 1, {
+  metrics.counter("application_errors_total", 1, {
     error_type: err.name,
     path: req.route?.path || req.path,
   });
@@ -129,16 +132,17 @@ app.use((err, req, res, next) => {
 
 **閾値の例**:
 
-| 指標 | 警告 | 重大 |
-|------|------|------|
+| 指標     | 警告 | 重大 |
+| -------- | ---- | ---- |
 | エラー率 | > 1% | > 5% |
-| 5xx/分 | > 10 | > 50 |
+| 5xx/分   | > 10 | > 50 |
 
 ### 4. 飽和度（Saturation）
 
 **定義**: リソースの使用率
 
 **測定対象**:
+
 - CPU使用率
 - メモリ使用率
 - ディスク使用率
@@ -153,13 +157,13 @@ function collectResourceMetrics() {
   const memUsage = process.memoryUsage();
   const cpuUsage = process.cpuUsage();
 
-  metrics.gauge('nodejs_memory_heap_used_bytes', memUsage.heapUsed);
-  metrics.gauge('nodejs_memory_heap_total_bytes', memUsage.heapTotal);
-  metrics.gauge('nodejs_memory_rss_bytes', memUsage.rss);
+  metrics.gauge("nodejs_memory_heap_used_bytes", memUsage.heapUsed);
+  metrics.gauge("nodejs_memory_heap_total_bytes", memUsage.heapTotal);
+  metrics.gauge("nodejs_memory_rss_bytes", memUsage.rss);
 
   // ヒープ使用率
   const heapUsagePercent = (memUsage.heapUsed / memUsage.heapTotal) * 100;
-  metrics.gauge('nodejs_memory_heap_usage_percent', heapUsagePercent);
+  metrics.gauge("nodejs_memory_heap_usage_percent", heapUsagePercent);
 }
 
 setInterval(collectResourceMetrics, 10000);
@@ -167,12 +171,12 @@ setInterval(collectResourceMetrics, 10000);
 
 **閾値の例**:
 
-| リソース | 警告 | 重大 |
-|---------|------|------|
-| CPU | > 70% | > 90% |
-| メモリ | > 75% | > 90% |
+| リソース | 警告  | 重大  |
+| -------- | ----- | ----- |
+| CPU      | > 70% | > 90% |
+| メモリ   | > 75% | > 90% |
 | ディスク | > 80% | > 95% |
-| DB接続 | > 70% | > 90% |
+| DB接続   | > 70% | > 90% |
 
 ## ダッシュボード設計
 
@@ -243,7 +247,7 @@ slos:
 ### Express.js での実装
 
 ```typescript
-import express from 'express';
+import express from "express";
 
 const app = express();
 
@@ -251,14 +255,14 @@ const app = express();
 app.use((req, res, next) => {
   const start = process.hrtime.bigint();
 
-  res.on('finish', () => {
+  res.on("finish", () => {
     const end = process.hrtime.bigint();
     const durationMs = Number(end - start) / 1_000_000;
 
     // 全メトリクスを記録
     recordMetrics({
       method: req.method,
-      path: req.route?.path || 'unknown',
+      path: req.route?.path || "unknown",
       status: res.statusCode,
       duration: durationMs,
     });
@@ -274,7 +278,9 @@ function recordMetrics(data: {
   duration: number;
 }) {
   // レイテンシー
-  console.log(`[METRIC] latency_ms=${data.duration.toFixed(2)} path=${data.path}`);
+  console.log(
+    `[METRIC] latency_ms=${data.duration.toFixed(2)} path=${data.path}`,
+  );
 
   // エラー
   if (data.status >= 500) {
@@ -290,14 +296,14 @@ function recordMetrics(data: {
 
 ```typescript
 // middleware.ts
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
   // リクエスト開始時刻をヘッダーに記録
-  response.headers.set('X-Request-Start', Date.now().toString());
+  response.headers.set("X-Request-Start", Date.now().toString());
 
   return response;
 }

@@ -211,17 +211,14 @@ cp .claude/skills/documentation-architecture/templates/resource-structure.md ./n
 **4 つのパターン**:
 
 1. **トピック別分割**:
-
    - 適用: 独立したテーマごと
    - 命名: `[topic]-[subtopic].md`
 
 2. **レベル別分割**:
-
    - 適用: 学習段階がある
    - 命名: `01-basics.md`, `02-intermediate.md`, `03-advanced.md`
 
 3. **機能別分割**:
-
    - 適用: CRUD 等の操作ごと
    - 命名: `create.md`, `read.md`, `update.md`, `delete.md`
 
@@ -289,18 +286,15 @@ skill-name/
 ## リソースへの参照
 
 - **ファイル分割パターン**: `resources/splitting-patterns.md`
-
   - 4 つの分割パターンの詳細
   - 適用条件と判断基準
   - 具体的な実装例
 
 - **ディレクトリ組織化**: `resources/directory-organization.md`
-
   - 標準ディレクトリ構造
   - 配置基準とベストプラクティス
 
 - **命名規則**: `resources/naming-conventions.md`
-
   - ファイル・ディレクトリの命名パターン
   - 一貫性の確保
 
@@ -313,12 +307,10 @@ skill-name/
 ### すべきこと
 
 1. **早期分割の検討**:
-
    - 300 行を超えたら分割を検討
    - 500 行は絶対に超えない
 
 2. **論理的な構造**:
-
    - トピックごとに明確に分離
    - 階層が深すぎない（3 階層まで）
 
@@ -329,12 +321,10 @@ skill-name/
 ### 避けるべきこと
 
 1. **過度な分割**:
-
    - ❌ 10 行のファイルを大量に作成
    - ✅ 各ファイル 300-450 行の適切なサイズ
 
 2. **曖昧な命名**:
-
    - ❌ `misc.md`, `other.md`, `utils.md`
    - ✅ `error-handling-strategies.md`
 
@@ -446,7 +436,6 @@ skill-name/
 ### 参考文献
 
 - **『Information Architecture for the Web and Beyond』** Louis Rosenfeld 他著
-
   - 情報組織化の原則
 
 - **『Documenting Software Architectures』** Paul Clements 他著

@@ -9,18 +9,22 @@
 ### 構成要素
 
 **ユーザー（User）**:
+
 - システムにログインする主体
 - 1つ以上のロールを持つ
 
 **ロール（Role）**:
+
 - 責任範囲を表す概念（admin、editor、viewer等）
 - 複数の権限をグループ化
 
 **権限（Permission）**:
+
 - 具体的な操作（create_post、delete_user等）
 - リソースとアクション の組み合わせ
 
 **関係**:
+
 ```
 User → Role → Permission → Resource
 ```
@@ -30,6 +34,7 @@ User → Role → Permission → Resource
 ### 実装パターン
 
 **データベーススキーマ例**:
+
 ```sql
 -- ユーザーテーブル
 CREATE TABLE users (
@@ -69,6 +74,7 @@ CREATE TABLE role_permissions (
 ```
 
 **TypeScript実装**:
+
 ```typescript
 interface User {
   id: string;
@@ -88,10 +94,10 @@ interface Permission {
 
 // 権限チェック
 function hasPermission(user: User, resource: string, action: string): boolean {
-  return user.roles.some(role =>
-    role.permissions.some(p =>
-      p.resource === resource && p.action === action
-    )
+  return user.roles.some((role) =>
+    role.permissions.some(
+      (p) => p.resource === resource && p.action === action,
+    ),
   );
 }
 
@@ -99,13 +105,13 @@ function hasPermission(user: User, resource: string, action: string): boolean {
 const requirePermission = (resource: string, action: string) => {
   return (req, res, next) => {
     if (!hasPermission(req.user, resource, action)) {
-      return res.status(403).json({ error: 'Forbidden' });
+      return res.status(403).json({ error: "Forbidden" });
     }
     next();
   };
 };
 
-app.delete('/api/users/:id', requirePermission('users', 'delete'), deleteUser);
+app.delete("/api/users/:id", requirePermission("users", "delete"), deleteUser);
 ```
 
 ---
@@ -115,6 +121,7 @@ app.delete('/api/users/:id', requirePermission('users', 'delete'), deleteUser);
 **概念**: ロール間の継承関係
 
 **例**:
+
 ```
 SuperAdmin
   ├─ Admin
@@ -125,6 +132,7 @@ SuperAdmin
 ```
 
 **実装**:
+
 ```sql
 CREATE TABLE role_hierarchy (
   parent_role_id UUID REFERENCES roles(id),
@@ -134,15 +142,19 @@ CREATE TABLE role_hierarchy (
 ```
 
 **権限継承**:
+
 ```typescript
 function getAllPermissions(role: Role): Permission[] {
   const direct = role.permissions;
-  const inherited = role.parentRoles.flatMap(parent => getAllPermissions(parent));
+  const inherited = role.parentRoles.flatMap((parent) =>
+    getAllPermissions(parent),
+  );
   return [...direct, ...inherited];
 }
 ```
 
 **判断基準**:
+
 - [ ] ロール階層は循環していないか？
 - [ ] 継承関係は論理的に正しいか（AdminがEditorの権限を含む等）？
 - [ ] 最大階層深度は適切か（3-4レベル推奨）？
@@ -152,17 +164,20 @@ function getAllPermissions(role: Role): Permission[] {
 ### RBAC の利点と欠点
 
 **利点**:
+
 - 管理が容易（ロール単位で権限管理）
 - スケーラブル（ユーザー数増加に強い）
 - 職務分離が明確
 - 監査が容易
 
 **欠点**:
+
 - ロール爆発（役職が多いとロール数が膨大）
 - コンテキスト考慮が困難（時間、場所、条件）
 - 柔軟性に欠ける（細かい権限制御が難しい）
 
 **使用ケース**:
+
 - エンタープライズアプリケーション
 - 明確な職務定義がある組織
 - ユーザー数が多いシステム
@@ -178,15 +193,19 @@ function getAllPermissions(role: Role): Permission[] {
 ### 構成要素
 
 **Subject Attributes（主体属性）**:
+
 - ユーザーの属性（role、department、clearanceLevel等）
 
 **Resource Attributes（リソース属性）**:
+
 - リソースの属性（owner、classification、createdAt等）
 
 **Action Attributes（アクション属性）**:
+
 - 実行する操作（read、write、delete等）
 
 **Environment Attributes（環境属性）**:
+
 - コンテキスト情報（時刻、IPアドレス、デバイス等）
 
 ---
@@ -194,6 +213,7 @@ function getAllPermissions(role: Role): Permission[] {
 ### ポリシー例
 
 **XACML風の表現**:
+
 ```xml
 <!-- ポリシー: 勤務時間内のみドキュメント編集可能 -->
 <Policy>
@@ -218,6 +238,7 @@ function getAllPermissions(role: Role): Permission[] {
 ```
 
 **TypeScript実装**:
+
 ```typescript
 interface Policy {
   resource: string;
@@ -227,7 +248,7 @@ interface Policy {
 
 interface Condition {
   attribute: string;
-  operator: 'eq' | 'neq' | 'in' | 'gt' | 'lt' | 'between';
+  operator: "eq" | "neq" | "in" | "gt" | "lt" | "between";
   value: any;
 }
 
@@ -235,16 +256,25 @@ function evaluatePolicy(
   user: User,
   resource: Resource,
   action: string,
-  environment: Environment
+  environment: Environment,
 ): boolean {
-  return policies.some(policy => {
+  return policies.some((policy) => {
     if (policy.resource !== resource.type || policy.action !== action) {
       return false;
     }
 
-    return policy.conditions.every(condition => {
-      const attributeValue = getAttribute(user, resource, environment, condition.attribute);
-      return evaluateCondition(attributeValue, condition.operator, condition.value);
+    return policy.conditions.every((condition) => {
+      const attributeValue = getAttribute(
+        user,
+        resource,
+        environment,
+        condition.attribute,
+      );
+      return evaluateCondition(
+        attributeValue,
+        condition.operator,
+        condition.value,
+      );
     });
   });
 }
@@ -255,18 +285,21 @@ function evaluatePolicy(
 ### ABAC の利点と欠点
 
 **利点**:
+
 - 非常に柔軟（複雑な条件を表現可能）
 - コンテキスト考慮（時間、場所、状況）
 - ロール爆発を回避
 - 細粒度アクセス制御
 
 **欠点**:
+
 - 実装が複雑
 - ポリシー管理が困難（大量のルール）
 - パフォーマンス: ポリシー評価コストが高い
 - デバッグが難しい
 
 **使用ケース**:
+
 - 複雑なビジネスルールがある組織
 - コンテキスト依存のアクセス制御が必要
 - 動的な権限変更が頻繁
@@ -282,6 +315,7 @@ function evaluatePolicy(
 ### 実装
 
 **ファイルシステム型ACL**:
+
 ```
 File: document.pdf
   - User Alice: Read, Write
@@ -291,6 +325,7 @@ File: document.pdf
 ```
 
 **データベース実装**:
+
 ```sql
 CREATE TABLE acl_entries (
   id UUID PRIMARY KEY,
@@ -304,11 +339,12 @@ CREATE TABLE acl_entries (
 ```
 
 **TypeScript実装**:
+
 ```typescript
 interface AclEntry {
   resourceType: string;
   resourceId: string;
-  principalType: 'user' | 'group';
+  principalType: "user" | "group";
   principalId: string;
   permissions: string[];
 }
@@ -317,14 +353,14 @@ async function checkAcl(
   userId: string,
   resourceType: string,
   resourceId: string,
-  requiredPermission: string
+  requiredPermission: string,
 ): Promise<boolean> {
   // ユーザー直接権限をチェック
   const userEntry = await db.acl.findOne({
     resourceType,
     resourceId,
-    principalType: 'user',
-    principalId: userId
+    principalType: "user",
+    principalId: userId,
   });
 
   if (userEntry?.permissions.includes(requiredPermission)) {
@@ -337,8 +373,8 @@ async function checkAcl(
     const groupEntry = await db.acl.findOne({
       resourceType,
       resourceId,
-      principalType: 'group',
-      principalId: group.id
+      principalType: "group",
+      principalId: group.id,
     });
 
     if (groupEntry?.permissions.includes(requiredPermission)) {
@@ -355,16 +391,19 @@ async function checkAcl(
 ### ACL の利点と欠点
 
 **利点**:
+
 - シンプルで理解しやすい
 - リソースごとの細かい制御
 - 実装が容易
 
 **欠点**:
+
 - スケールしにくい（リソース数増加で管理困難）
 - ユーザー数が多いと非効率
 - 一貫性維持が難しい（リソースごとに設定）
 
 **使用ケース**:
+
 - ファイル共有システム
 - ドキュメント管理
 - 小規模アプリケーション
@@ -399,31 +438,33 @@ async function checkAcl(
 ### ハイブリッドアプローチ
 
 **RBAC + ACL**:
+
 ```typescript
 // 1. まずRBACで基本権限チェック
-const hasRolePermission = user.roles.some(role =>
-  role.permissions.includes('edit_documents')
+const hasRolePermission = user.roles.some((role) =>
+  role.permissions.includes("edit_documents"),
 );
 
 if (!hasRolePermission) {
-  return false;  // ロールレベルで権限なし
+  return false; // ロールレベルで権限なし
 }
 
 // 2. 次にACLでリソースレベル権限チェック
 const hasResourcePermission = await checkAcl(
   user.id,
-  'document',
+  "document",
   documentId,
-  'edit'
+  "edit",
 );
 
 return hasResourcePermission;
 ```
 
 **RBAC + ABAC**:
+
 ```typescript
 // 1. RBACで基本権限
-const hasRole = user.roles.includes('editor');
+const hasRole = user.roles.includes("editor");
 
 // 2. ABACで動的条件
 const isWorkingHours = isWithinBusinessHours();
@@ -436,15 +477,15 @@ return hasRole && isWorkingHours && isOwnDepartment;
 
 ## 5. 実装比較表
 
-| 特性 | RBAC | ABAC | ACL |
-|-----|------|------|-----|
-| **複雑性** | 中 | 高 | 低 |
-| **柔軟性** | 中 | 高 | 低 |
-| **スケーラビリティ** | 高 | 中 | 低 |
-| **管理コスト** | 中 | 高 | 高（リソース多時） |
-| **パフォーマンス** | 高 | 低-中 | 中-高 |
-| **監査容易性** | 高 | 中 | 中 |
-| **動的制御** | 低 | 高 | 低 |
+| 特性                 | RBAC | ABAC  | ACL                |
+| -------------------- | ---- | ----- | ------------------ |
+| **複雑性**           | 中   | 高    | 低                 |
+| **柔軟性**           | 中   | 高    | 低                 |
+| **スケーラビリティ** | 高   | 中    | 低                 |
+| **管理コスト**       | 中   | 高    | 高（リソース多時） |
+| **パフォーマンス**   | 高   | 低-中 | 中-高              |
+| **監査容易性**       | 高   | 中    | 中                 |
+| **動的制御**         | 低   | 高    | 低                 |
 
 ---
 
@@ -455,32 +496,35 @@ return hasRole && isWorkingHours && isOwnDepartment;
 **概念**: 明示的に許可されていない限り、すべてのアクセスを拒否
 
 **実装パターン**:
+
 ```typescript
 // ✅ デフォルト拒否
 function checkPermission(user, resource, action) {
   // ホワイトリストアプローチ
   const hasPermission = explicitlyAllowed(user, resource, action);
-  return hasPermission;  // false if not explicitly allowed
+  return hasPermission; // false if not explicitly allowed
 }
 
 // ❌ デフォルト許可（危険）
 function checkPermission(user, resource, action) {
   // ブラックリストアプローチ
   const isForbidden = explicitlyDenied(user, resource, action);
-  return !isForbidden;  // true unless explicitly denied
+  return !isForbidden; // true unless explicitly denied
 }
 ```
 
 **適用例**:
+
 ```typescript
 // すべてのAPIエンドポイントにデフォルトで認証を要求
-app.use('/api/*', requireAuth);
+app.use("/api/*", requireAuth);
 
 // 公開エンドポイントは明示的に許可
-app.get('/api/public/status', skipAuth, getStatus);
+app.get("/api/public/status", skipAuth, getStatus);
 ```
 
 **判断基準**:
+
 - [ ] 新しいエンドポイント追加時、デフォルトで保護されるか？
 - [ ] ホワイトリストアプローチを採用しているか？
 - [ ] 公開リソースは明示的にマークされているか？
@@ -494,24 +538,26 @@ app.get('/api/public/status', skipAuth, getStatus);
 **概念**: ユーザーには業務遂行に必要最小限の権限のみを付与
 
 **実装**:
+
 ```typescript
 // ✅ 最小権限
 const editorPermissions = [
-  'posts:read',
-  'posts:create',
-  'posts:update',
-  'own_posts:delete'  // 自分の投稿のみ削除可能
+  "posts:read",
+  "posts:create",
+  "posts:update",
+  "own_posts:delete", // 自分の投稿のみ削除可能
 ];
 
 // ❌ 過剰な権限
 const editorPermissions = [
-  'posts:*',      // すべての投稿操作
-  'users:read',   // 不要
-  'admin:*'       // 危険
+  "posts:*", // すべての投稿操作
+  "users:read", // 不要
+  "admin:*", // 危険
 ];
 ```
 
 **動的権限調整**:
+
 ```typescript
 // コンテキストに応じて権限を制限
 function getEffectivePermissions(user, context) {
@@ -519,7 +565,9 @@ function getEffectivePermissions(user, context) {
 
   // 自分のリソースのみ操作可能
   if (context.resourceOwnerId !== user.id && !user.isAdmin) {
-    return basePermissions.filter(p => !p.includes('delete') && !p.includes('update'));
+    return basePermissions.filter(
+      (p) => !p.includes("delete") && !p.includes("update"),
+    );
   }
 
   return basePermissions;
@@ -527,6 +575,7 @@ function getEffectivePermissions(user, context) {
 ```
 
 **判断基準**:
+
 - [ ] ロールは業務に必要な最小限の権限のみを持つか？
 - [ ] 管理者ロールが過剰に権限を持っていないか？
 - [ ] 一時的な権限昇格メカニズムがあるか（sudo的な）？
@@ -540,15 +589,17 @@ function getEffectivePermissions(user, context) {
 **攻撃**: 一般ユーザーが管理者機能にアクセス
 
 **検出パターン**:
+
 ```typescript
 // ❌ 危険: ロールチェックなし
-app.delete('/api/admin/users/:id', deleteUser);
+app.delete("/api/admin/users/:id", deleteUser);
 
 // ✅ 安全: ロールチェックあり
-app.delete('/api/admin/users/:id', requireRole('admin'), deleteUser);
+app.delete("/api/admin/users/:id", requireRole("admin"), deleteUser);
 ```
 
 **検出方法**:
+
 - すべての`/admin/*`エンドポイントに認可チェックがあるか？
 - センシティブ操作（削除、権限変更）にロールチェックがあるか？
 
@@ -559,20 +610,21 @@ app.delete('/api/admin/users/:id', requireRole('admin'), deleteUser);
 **攻撃**: ユーザーAがユーザーBのデータにアクセス
 
 **検出パターン**:
+
 ```typescript
 // ❌ 危険: 所有権チェックなし
-app.get('/api/users/:userId/profile', async (req, res) => {
+app.get("/api/users/:userId/profile", async (req, res) => {
   const profile = await db.profiles.findOne(req.params.userId);
   res.json(profile);
 });
 
 // ✅ 安全: 所有権チェックあり
-app.get('/api/users/:userId/profile', async (req, res) => {
+app.get("/api/users/:userId/profile", async (req, res) => {
   const requestedUserId = req.params.userId;
   const currentUserId = req.session.userId;
 
   if (requestedUserId !== currentUserId && !req.user.isAdmin) {
-    return res.status(403).json({ error: 'Forbidden' });
+    return res.status(403).json({ error: "Forbidden" });
   }
 
   const profile = await db.profiles.findOne(requestedUserId);
@@ -581,6 +633,7 @@ app.get('/api/users/:userId/profile', async (req, res) => {
 ```
 
 **検出方法**:
+
 - ユーザーIDパラメータを受け取るエンドポイントで所有権検証があるか？
 - `req.params.userId === req.session.userId`のチェックがあるか？
 
@@ -591,18 +644,20 @@ app.get('/api/users/:userId/profile', async (req, res) => {
 **攻撃**: 予測可能なID（1, 2, 3...）で他人のリソースにアクセス
 
 **脆弱な実装**:
+
 ```
 GET /api/orders/1234  ← 1235, 1236... と試せば他人の注文が見える
 ```
 
 **対策**:
+
 ```typescript
 // 対策1: 所有権検証
-app.get('/api/orders/:orderId', async (req, res) => {
+app.get("/api/orders/:orderId", async (req, res) => {
   const order = await db.orders.findOne(req.params.orderId);
 
   if (order.userId !== req.session.userId && !req.user.isAdmin) {
-    return res.status(404).json({ error: 'Not found' });  // 403ではなく404
+    return res.status(404).json({ error: "Not found" }); // 403ではなく404
   }
 
   res.json(order);
@@ -613,7 +668,7 @@ app.get('/api/orders/:orderId', async (req, res) => {
 
 // 対策3: 間接参照
 // ユーザーが直接IDを指定せず、"自分の注文"としてアクセス
-app.get('/api/my-orders/:index', async (req, res) => {
+app.get("/api/my-orders/:index", async (req, res) => {
   const orders = await db.orders.find({ userId: req.session.userId });
   const order = orders[req.params.index];
   res.json(order);
@@ -621,6 +676,7 @@ app.get('/api/my-orders/:index', async (req, res) => {
 ```
 
 **判断基準**:
+
 - [ ] リソースIDは予測困難か（UUID推奨）？
 - [ ] IDパラメータで所有権が検証されているか？
 - [ ] 404エラーで情報漏洩していないか（403は存在を示唆）？
@@ -634,37 +690,40 @@ app.get('/api/my-orders/:index', async (req, res) => {
 **問題**: 一部のエンドポイントで認可チェックが漏れる
 
 **対策**:
+
 ```typescript
 // ベースとなる認可ミドルウェアを全エンドポイントに適用
-app.use('/api/*', requireAuth);
+app.use("/api/*", requireAuth);
 
 // デフォルトで権限チェック
-app.use('/api/*', checkDefaultPermissions);
+app.use("/api/*", checkDefaultPermissions);
 
 // 例外的に公開するエンドポイントは明示的にスキップ
-app.get('/api/public/health', skipAuth, healthCheck);
+app.get("/api/public/health", skipAuth, healthCheck);
 ```
 
 **自動テスト**:
+
 ```typescript
 // 全エンドポイントで認証なしアクセスを試行
-describe('Authorization Tests', () => {
+describe("Authorization Tests", () => {
   const endpoints = [
-    'GET /api/users',
-    'POST /api/posts',
-    'DELETE /api/comments/:id'
+    "GET /api/users",
+    "POST /api/posts",
+    "DELETE /api/comments/:id",
   ];
 
-  endpoints.forEach(endpoint => {
+  endpoints.forEach((endpoint) => {
     it(`${endpoint} should require authentication`, async () => {
       const response = await request(app).get(endpoint);
-      expect(response.status).toBe(401);  // Unauthorized
+      expect(response.status).toBe(401); // Unauthorized
     });
   });
 });
 ```
 
 **判断基準**:
+
 - [ ] すべてのAPIエンドポイントにデフォルトで認証が必要か？
 - [ ] 認可チェックの漏れを検出するテストがあるか？
 - [ ] 新しいエンドポイント追加時、デフォルトで保護されるか？

@@ -5,15 +5,17 @@
 ### 実装パターン
 
 **ヘッダーベース（推奨）**:
+
 ```typescript
 const headers = {
-  'Authorization': `Bearer ${apiKey}`,
+  Authorization: `Bearer ${apiKey}`,
   // または
-  'X-API-Key': apiKey
+  "X-API-Key": apiKey,
 };
 ```
 
 **環境変数管理**:
+
 ```bash
 # .env ファイル
 GOOGLE_API_KEY=AIza...
@@ -42,6 +44,7 @@ GITHUB_TOKEN=ghp_...
 ### Authorization Code Flow
 
 **Step 1: 認可リクエスト**
+
 ```
 GET /authorize?
   response_type=code&
@@ -52,12 +55,14 @@ GET /authorize?
 ```
 
 **Step 2: 認可コード取得**
+
 ```
 Callback URL:
 {REDIRECT_URI}?code={AUTH_CODE}&state={STATE}
 ```
 
 **Step 3: トークンリクエスト**
+
 ```
 POST /oauth/token
 Content-Type: application/x-www-form-urlencoded
@@ -70,6 +75,7 @@ client_secret={CLIENT_SECRET}
 ```
 
 **Step 4: トークンレスポンス**
+
 ```json
 {
   "access_token": "eyJ...",
@@ -83,20 +89,22 @@ client_secret={CLIENT_SECRET}
 ### PKCE拡張
 
 **Code Verifier生成**:
+
 ```javascript
-const codeVerifier = crypto.randomBytes(32)
-  .toString('base64url');
+const codeVerifier = crypto.randomBytes(32).toString("base64url");
 ```
 
 **Code Challenge生成**:
+
 ```javascript
 const codeChallenge = crypto
-  .createHash('sha256')
+  .createHash("sha256")
   .update(codeVerifier)
-  .digest('base64url');
+  .digest("base64url");
 ```
 
 **認可リクエスト（PKCE付き）**:
+
 ```
 GET /authorize?
   ...
@@ -108,17 +116,17 @@ GET /authorize?
 
 ```javascript
 async function refreshAccessToken(refreshToken) {
-  const response = await fetch('/oauth/token', {
-    method: 'POST',
+  const response = await fetch("/oauth/token", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
+      "Content-Type": "application/x-www-form-urlencoded",
     },
     body: new URLSearchParams({
-      grant_type: 'refresh_token',
+      grant_type: "refresh_token",
       refresh_token: refreshToken,
       client_id: CLIENT_ID,
-      client_secret: CLIENT_SECRET
-    })
+      client_secret: CLIENT_SECRET,
+    }),
   });
 
   return response.json();
@@ -153,12 +161,12 @@ Payload:
 ```javascript
 function validateJWT(token) {
   // 1. トークンを分割
-  const [headerB64, payloadB64, signature] = token.split('.');
+  const [headerB64, payloadB64, signature] = token.split(".");
 
   // 2. 署名検証
-  const expectedSignature = sign(headerB64 + '.' + payloadB64, secret);
+  const expectedSignature = sign(headerB64 + "." + payloadB64, secret);
   if (signature !== expectedSignature) {
-    throw new Error('Invalid signature');
+    throw new Error("Invalid signature");
   }
 
   // 3. ペイロードをデコード
@@ -166,12 +174,12 @@ function validateJWT(token) {
 
   // 4. 有効期限チェック
   if (Date.now() >= payload.exp * 1000) {
-    throw new Error('Token expired');
+    throw new Error("Token expired");
   }
 
   // 5. 発行者チェック
   if (payload.iss !== EXPECTED_ISSUER) {
-    throw new Error('Invalid issuer');
+    throw new Error("Invalid issuer");
   }
 
   return payload;
@@ -183,11 +191,11 @@ function validateJWT(token) {
 ### Google Cloud
 
 ```javascript
-const { GoogleAuth } = require('google-auth-library');
+const { GoogleAuth } = require("google-auth-library");
 
 const auth = new GoogleAuth({
-  keyFile: 'service-account.json',
-  scopes: ['https://www.googleapis.com/auth/drive.readonly']
+  keyFile: "service-account.json",
+  scopes: ["https://www.googleapis.com/auth/drive.readonly"],
 });
 
 const client = await auth.getClient();
@@ -197,12 +205,12 @@ const token = await client.getAccessToken();
 ### AWS Signature V4
 
 ```javascript
-const AWS = require('aws-sdk');
+const AWS = require("aws-sdk");
 
 AWS.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: 'us-east-1'
+  region: "us-east-1",
 });
 ```
 
@@ -210,12 +218,12 @@ AWS.config.update({
 
 ### トークン保存
 
-| 保存場所 | セキュリティ | 用途 |
-|---------|------------|------|
-| 環境変数 | ✅ 高 | サーバーサイド |
-| Secure Cookie (httpOnly) | ✅ 高 | ブラウザ（セッション） |
-| localStorage | ❌ 低 | 非推奨 |
-| sessionStorage | ⚠️ 中 | 一時的なトークン |
+| 保存場所                 | セキュリティ | 用途                   |
+| ------------------------ | ------------ | ---------------------- |
+| 環境変数                 | ✅ 高        | サーバーサイド         |
+| Secure Cookie (httpOnly) | ✅ 高        | ブラウザ（セッション） |
+| localStorage             | ❌ 低        | 非推奨                 |
+| sessionStorage           | ⚠️ 中        | 一時的なトークン       |
 
 ### 安全な実装チェックリスト
 
@@ -230,14 +238,14 @@ AWS.config.update({
 
 ### 認証エラーコード
 
-| コード | 意味 | 対応 |
-|-------|------|------|
-| invalid_request | リクエスト形式不正 | パラメータ確認 |
-| invalid_client | クライアント認証失敗 | クレデンシャル確認 |
-| invalid_grant | 認可コード/トークン無効 | 再認証 |
-| unauthorized_client | クライアント未認可 | 権限確認 |
-| unsupported_grant_type | 非対応grant_type | 設定確認 |
-| invalid_scope | スコープ不正 | スコープ確認 |
+| コード                 | 意味                    | 対応               |
+| ---------------------- | ----------------------- | ------------------ |
+| invalid_request        | リクエスト形式不正      | パラメータ確認     |
+| invalid_client         | クライアント認証失敗    | クレデンシャル確認 |
+| invalid_grant          | 認可コード/トークン無効 | 再認証             |
+| unauthorized_client    | クライアント未認可      | 権限確認           |
+| unsupported_grant_type | 非対応grant_type        | 設定確認           |
+| invalid_scope          | スコープ不正            | スコープ確認       |
 
 ### エラーレスポンス例
 

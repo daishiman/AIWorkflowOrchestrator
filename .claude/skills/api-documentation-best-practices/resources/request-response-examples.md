@@ -9,6 +9,7 @@
 ### リソース作成（POST）
 
 **リクエスト**:
+
 ```http
 POST /api/v1/users HTTP/1.1
 Host: api.example.com
@@ -23,6 +24,7 @@ Content-Type: application/json
 ```
 
 **レスポンス（201 Created）**:
+
 ```http
 HTTP/1.1 201 Created
 Content-Type: application/json
@@ -41,6 +43,7 @@ Location: /api/v1/users/550e8400-e29b-41d4-a716-446655440000
 ### リソース取得（GET）
 
 **リクエスト**:
+
 ```http
 GET /api/v1/users/550e8400-e29b-41d4-a716-446655440000 HTTP/1.1
 Host: api.example.com
@@ -48,6 +51,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
 ```
 
 **レスポンス（200 OK）**:
+
 ```json
 {
   "id": "550e8400-e29b-41d4-a716-446655440000",
@@ -62,6 +66,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
 ### 一覧取得（GET with pagination）
 
 **リクエスト**:
+
 ```http
 GET /api/v1/users?page=1&limit=10&status=active HTTP/1.1
 Host: api.example.com
@@ -69,6 +74,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
 ```
 
 **レスポンス（200 OK）**:
+
 ```json
 {
   "data": [
@@ -97,6 +103,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
 ### バリデーションエラー（400）
 
 **リクエスト**:
+
 ```json
 {
   "name": "",
@@ -105,6 +112,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
 ```
 
 **レスポンス（400 Bad Request）**:
+
 ```json
 {
   "error": {
@@ -127,6 +135,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
 ### 認証エラー（401）
 
 **レスポンス（401 Unauthorized）**:
+
 ```json
 {
   "error": {
@@ -139,6 +148,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
 ### リソース未検出（404）
 
 **レスポンス（404 Not Found）**:
+
 ```json
 {
   "error": {
@@ -155,6 +165,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
 ### サーバーエラー（500）
 
 **レスポンス（500 Internal Server Error）**:
+
 ```json
 {
   "error": {
@@ -168,6 +179,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
 ## cURLコマンド例
 
 ### POST
+
 ```bash
 curl -X POST https://api.example.com/v1/users \
   -H "Authorization: Bearer $TOKEN" \
@@ -179,12 +191,14 @@ curl -X POST https://api.example.com/v1/users \
 ```
 
 ### GET
+
 ```bash
 curl -X GET "https://api.example.com/v1/users?page=1&limit=10" \
   -H "Authorization: Bearer $TOKEN"
 ```
 
 ### DELETE
+
 ```bash
 curl -X DELETE https://api.example.com/v1/users/550e8400 \
   -H "Authorization: Bearer $TOKEN"

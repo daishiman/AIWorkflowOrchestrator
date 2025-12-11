@@ -20,7 +20,7 @@ on:
     branches: [main]
   schedule:
     # 毎日午前3時（UTC）に実行
-    - cron: '0 3 * * *'
+    - cron: "0 3 * * *"
 
 jobs:
   audit:
@@ -38,8 +38,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -101,14 +101,14 @@ jobs:
       - name: Run Trivy
         uses: aquasecurity/trivy-action@master
         with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
+          scan-type: "fs"
+          scan-ref: "."
+          format: "sarif"
+          output: "trivy-results.sarif"
       - name: Upload Trivy results
         uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: "trivy-results.sarif"
 
   aggregate-results:
     needs: [pnpm-audit, snyk-scan, trivy-scan]
@@ -381,10 +381,10 @@ version: 1
 
 # ビルドをブロックする条件
 block_on:
-  critical: true      # Critical は常にブロック
-  high: true          # High もブロック
-  medium: false       # Medium は警告のみ
-  low: false          # Low は無視
+  critical: true # Critical は常にブロック
+  high: true # High もブロック
+  medium: false # Medium は警告のみ
+  low: false # Low は無視
 
 # 例外設定
 exceptions:
@@ -406,7 +406,7 @@ name: Security Notification
 
 on:
   schedule:
-    - cron: '0 9 * * 1'  # 毎週月曜 9:00 UTC
+    - cron: "0 9 * * 1" # 毎週月曜 9:00 UTC
   workflow_dispatch:
 
 jobs:
@@ -430,12 +430,14 @@ jobs:
 ## チェックリスト
 
 ### CI/CD統合時
+
 - [ ] 基本的な監査ワークフローを設定したか？
 - [ ] PRブロック条件を定義したか？
 - [ ] Dependabotを有効化したか？
 - [ ] 通知設定を行ったか？
 
 ### 運用時
+
 - [ ] 監査結果を定期的にレビューしているか？
 - [ ] 例外リストを最新に保っているか？
 - [ ] ブロック条件が適切か定期的に見直しているか？

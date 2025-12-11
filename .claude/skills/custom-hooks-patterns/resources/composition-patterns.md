@@ -16,7 +16,7 @@
 // 各フックは単一責務
 function useToggle(initial = false) {
   const [value, setValue] = useState(initial);
-  const toggle = useCallback(() => setValue(v => !v), []);
+  const toggle = useCallback(() => setValue((v) => !v), []);
   return [value, toggle, setValue] as const;
 }
 
@@ -30,11 +30,11 @@ function useMediaQuery(query: string) {
 
 // 合成: ダークモードフック
 function useDarkMode() {
-  const prefersDark = useMediaQuery('(prefers-color-scheme: dark)');
-  const [isDark, setIsDark] = useLocalStorage('dark-mode', prefersDark);
+  const prefersDark = useMediaQuery("(prefers-color-scheme: dark)");
+  const [isDark, setIsDark] = useLocalStorage("dark-mode", prefersDark);
 
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', isDark);
+    document.documentElement.classList.toggle("dark", isDark);
   }, [isDark]);
 
   return [isDark, setIsDark] as const;
@@ -57,18 +57,20 @@ function useFetch<T>(url: string) {
     setIsLoading(true);
 
     fetch(url)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         if (!cancelled) setData(data);
       })
-      .catch(err => {
+      .catch((err) => {
         if (!cancelled) setError(err);
       })
       .finally(() => {
         if (!cancelled) setIsLoading(false);
       });
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [url]);
 
   return { data, isLoading, error };
@@ -99,10 +101,9 @@ function useUserData(userId: string) {
   const { token } = useAuth();
 
   // useFetchに依存
-  const { data, isLoading, error } = useFetch<User>(
-    `/api/users/${userId}`,
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
+  const { data, isLoading, error } = useFetch<User>(`/api/users/${userId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
 
   return { user: data, isLoading, error };
 }
@@ -117,7 +118,7 @@ function useUserData(userId: string) {
 ```typescript
 // 各ステップを担当するフック
 function useSearchInput() {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   return { query, setQuery };
 }
 
@@ -132,7 +133,7 @@ function useDebounce<T>(value: T, delay: number) {
 
 function useSearchResults(query: string) {
   return useFetch<SearchResult[]>(
-    query ? `/api/search?q=${encodeURIComponent(query)}` : null
+    query ? `/api/search?q=${encodeURIComponent(query)}` : null,
   );
 }
 
@@ -190,11 +191,14 @@ function useFetch<T>(url: string | null) {
 
 // 機能拡張: キャッシュ付き
 function useCachedFetch<T>(url: string | null, cacheKey?: string) {
-  const [cache, setCache] = useLocalStorage<Record<string, T>>('fetch-cache', {});
-  const key = cacheKey ?? url ?? '';
+  const [cache, setCache] = useLocalStorage<Record<string, T>>(
+    "fetch-cache",
+    {},
+  );
+  const key = cacheKey ?? url ?? "";
 
   const { data, isLoading, error, refetch } = useFetch<T>(
-    cache[key] ? null : url  // キャッシュがあればフェッチしない
+    cache[key] ? null : url, // キャッシュがあればフェッチしない
   );
 
   // キャッシュからのデータまたはフェッチしたデータ
@@ -203,12 +207,12 @@ function useCachedFetch<T>(url: string | null, cacheKey?: string) {
   // 新しいデータをキャッシュ
   useEffect(() => {
     if (data && key) {
-      setCache(prev => ({ ...prev, [key]: data }));
+      setCache((prev) => ({ ...prev, [key]: data }));
     }
   }, [data, key, setCache]);
 
   const invalidateCache = useCallback(() => {
-    setCache(prev => {
+    setCache((prev) => {
       const next = { ...prev };
       delete next[key];
       return next;
@@ -253,19 +257,22 @@ function useQueryParams<T extends Record<string, string>>() {
     return obj as T;
   }, [searchParams]);
 
-  const setParams = useCallback((newParams: Partial<T>) => {
-    setSearchParams(prev => {
-      const next = new URLSearchParams(prev);
-      Object.entries(newParams).forEach(([key, value]) => {
-        if (value === undefined || value === '') {
-          next.delete(key);
-        } else {
-          next.set(key, value);
-        }
+  const setParams = useCallback(
+    (newParams: Partial<T>) => {
+      setSearchParams((prev) => {
+        const next = new URLSearchParams(prev);
+        Object.entries(newParams).forEach(([key, value]) => {
+          if (value === undefined || value === "") {
+            next.delete(key);
+          } else {
+            next.set(key, value);
+          }
+        });
+        return next;
       });
-      return next;
-    });
-  }, [setSearchParams]);
+    },
+    [setSearchParams],
+  );
 
   return [params, setParams] as const;
 }
@@ -273,13 +280,13 @@ function useQueryParams<T extends Record<string, string>>() {
 // フィルター + URL同期
 function useFilteredList<T>(
   items: T[],
-  filterFn: (item: T, filters: Record<string, string>) => boolean
+  filterFn: (item: T, filters: Record<string, string>) => boolean,
 ) {
   const [filters, setFilters] = useQueryParams();
 
   const filteredItems = useMemo(
-    () => items.filter(item => filterFn(item, filters)),
-    [items, filters, filterFn]
+    () => items.filter((item) => filterFn(item, filters)),
+    [items, filters, filterFn],
   );
 
   return { filteredItems, filters, setFilters };
@@ -313,7 +320,7 @@ function useApp() {
   // 統合された便利メソッド
   const logout = useCallback(async () => {
     await auth.logout();
-    notifications.show({ type: 'info', message: 'ログアウトしました' });
+    notifications.show({ type: "info", message: "ログアウトしました" });
   }, [auth, notifications]);
 
   return {
@@ -356,13 +363,19 @@ function useFlatComposition() {
 ```typescript
 // ❌ 循環依存
 function useA() {
-  const b = useB();  // useB内でuseAを使用
+  const b = useB(); // useB内でuseAを使用
 }
 
 // ✅ 共通の下位フックに抽出
-function useShared() { /* 共通ロジック */ }
-function useA() { const shared = useShared(); }
-function useB() { const shared = useShared(); }
+function useShared() {
+  /* 共通ロジック */
+}
+function useA() {
+  const shared = useShared();
+}
+function useB() {
+  const shared = useShared();
+}
 ```
 
 ### 3. 再レンダリングの最適化
@@ -374,11 +387,14 @@ function useOptimizedComposition() {
   const b = useB();
 
   // 必要な値だけを返す
-  return useMemo(() => ({
-    valueA: a.value,
-    valueB: b.value,
-    combined: a.value + b.value,
-  }), [a.value, b.value]);
+  return useMemo(
+    () => ({
+      valueA: a.value,
+      valueB: b.value,
+      combined: a.value + b.value,
+    }),
+    [a.value, b.value],
+  );
 }
 ```
 

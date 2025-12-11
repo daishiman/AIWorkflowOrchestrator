@@ -13,8 +13,8 @@
 ```yaml
 # pnpm-workspace.yaml
 packages:
-  - 'packages/*'
-  - 'apps/*'
+  - "packages/*"
+  - "apps/*"
 
 catalog:
   # 共通依存のバージョンを一元管理
@@ -66,8 +66,8 @@ catalogs:
 // 使用例
 {
   "dependencies": {
-    "react": "catalog:",           // default
-    "vitest": "catalog:testing"    // 名前付き
+    "react": "catalog:", // default
+    "vitest": "catalog:testing" // 名前付き
   }
 }
 ```
@@ -114,25 +114,25 @@ pnpm syncpack fix-mismatches
 #!/usr/bin/env node
 // scripts/sync-versions.mjs
 
-import { readFileSync, writeFileSync, readdirSync } from 'fs';
-import { join } from 'path';
+import { readFileSync, writeFileSync, readdirSync } from "fs";
+import { join } from "path";
 
 const SYNC_DEPS = {
-  'react': '^18.2.0',
-  'react-dom': '^18.2.0',
-  'typescript': '^5.3.0',
-  'zod': '^3.22.0',
+  react: "^18.2.0",
+  "react-dom": "^18.2.0",
+  typescript: "^5.3.0",
+  zod: "^3.22.0",
 };
 
 function getPackages() {
   const packages = [];
-  const dirs = ['packages', 'apps'];
+  const dirs = ["packages", "apps"];
 
-  dirs.forEach(dir => {
+  dirs.forEach((dir) => {
     try {
       const subdirs = readdirSync(dir);
-      subdirs.forEach(subdir => {
-        const pkgPath = join(dir, subdir, 'package.json');
+      subdirs.forEach((subdir) => {
+        const pkgPath = join(dir, subdir, "package.json");
         try {
           packages.push(pkgPath);
         } catch {}
@@ -146,25 +146,29 @@ function getPackages() {
 function syncVersions() {
   const packages = getPackages();
 
-  packages.forEach(pkgPath => {
+  packages.forEach((pkgPath) => {
     try {
-      const pkg = JSON.parse(readFileSync(pkgPath, 'utf8'));
+      const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
       let modified = false;
 
-      ['dependencies', 'devDependencies', 'peerDependencies'].forEach(depType => {
-        if (pkg[depType]) {
-          Object.keys(SYNC_DEPS).forEach(dep => {
-            if (pkg[depType][dep] && pkg[depType][dep] !== SYNC_DEPS[dep]) {
-              console.log(`${pkgPath}: ${dep} ${pkg[depType][dep]} -> ${SYNC_DEPS[dep]}`);
-              pkg[depType][dep] = SYNC_DEPS[dep];
-              modified = true;
-            }
-          });
-        }
-      });
+      ["dependencies", "devDependencies", "peerDependencies"].forEach(
+        (depType) => {
+          if (pkg[depType]) {
+            Object.keys(SYNC_DEPS).forEach((dep) => {
+              if (pkg[depType][dep] && pkg[depType][dep] !== SYNC_DEPS[dep]) {
+                console.log(
+                  `${pkgPath}: ${dep} ${pkg[depType][dep]} -> ${SYNC_DEPS[dep]}`,
+                );
+                pkg[depType][dep] = SYNC_DEPS[dep];
+                modified = true;
+              }
+            });
+          }
+        },
+      );
 
       if (modified) {
-        writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
+        writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + "\n");
       }
     } catch (e) {
       console.error(`Error processing ${pkgPath}:`, e.message);
@@ -184,15 +188,17 @@ syncVersions();
 ```yaml
 # pnpm-workspace.yaml
 catalog:
-  react: 18.2.0     # 固定バージョン
+  react: 18.2.0 # 固定バージョン
   typescript: 5.3.3 # 固定バージョン
 ```
 
 **メリット**:
+
 - 互換性の問題がない
 - バンドルサイズが最適化される
 
 **デメリット**:
+
 - 柔軟性が低い
 - 更新時に全パッケージのテストが必要
 
@@ -202,15 +208,17 @@ catalog:
 
 ```yaml
 catalog:
-  react: ^18.2.0    # Minor/Patch許可
+  react: ^18.2.0 # Minor/Patch許可
   typescript: ~5.3.0 # Patchのみ許可
 ```
 
 **メリット**:
+
 - ある程度の柔軟性
 - セキュリティパッチが自動適用
 
 **デメリット**:
+
 - バージョンのずれが発生する可能性
 
 ### パターン3: グループ同期
@@ -308,11 +316,13 @@ jobs:
 ## チェックリスト
 
 ### 設定時
+
 - [ ] バージョン同期の方法を選択したか？（catalog/syncpack/手動）
 - [ ] 同期対象の依存関係を特定したか？
 - [ ] CI/CDでの検証を設定したか？
 
 ### 運用時
+
 - [ ] 定期的にバージョンの不整合をチェックしているか？
 - [ ] 更新時にグループで更新しているか？
 - [ ] 変更の影響範囲を確認しているか？

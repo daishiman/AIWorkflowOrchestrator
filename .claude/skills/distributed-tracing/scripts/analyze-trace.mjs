@@ -6,8 +6,8 @@
  * 使用例: node analyze-trace.mjs <trace.json>
  */
 
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
 // スパンツリーの構築
 function buildSpanTree(spans) {
@@ -15,15 +15,15 @@ function buildSpanTree(spans) {
   const rootSpans = [];
 
   // スパンをマップに格納
-  spans.forEach(span => {
+  spans.forEach((span) => {
     spanMap.set(span.spanId, {
       ...span,
-      children: []
+      children: [],
     });
   });
 
   // 親子関係を構築
-  spans.forEach(span => {
+  spans.forEach((span) => {
     const spanNode = spanMap.get(span.spanId);
 
     if (span.parentSpanId) {
@@ -49,7 +49,7 @@ function findCriticalPath(span, path = []) {
 
   // 最も時間がかかった子スパンを追跡
   const slowestChild = span.children.reduce((slowest, child) =>
-    child.duration > slowest.duration ? child : slowest
+    child.duration > slowest.duration ? child : slowest,
   );
 
   return findCriticalPath(slowestChild, path);
@@ -57,7 +57,7 @@ function findCriticalPath(span, path = []) {
 
 // スパンツリーの表示
 function printSpanTree(span, indent = 0) {
-  const prefix = '  '.repeat(indent);
+  const prefix = "  ".repeat(indent);
   const duration = span.duration.toFixed(2);
   const percentage = ((span.duration / rootDuration) * 100).toFixed(1);
 
@@ -69,7 +69,7 @@ function printSpanTree(span, indent = 0) {
     });
   }
 
-  span.children.forEach(child => printSpanTree(child, indent + 1));
+  span.children.forEach((child) => printSpanTree(child, indent + 1));
 }
 
 let rootDuration = 0;
@@ -79,14 +79,16 @@ function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.error('Usage: node analyze-trace.mjs <trace.json>');
-    console.error('\nTrace JSON format:');
-    console.error('{');
+    console.error("Usage: node analyze-trace.mjs <trace.json>");
+    console.error("\nTrace JSON format:");
+    console.error("{");
     console.error('  "traceId": "...",');
     console.error('  "spans": [');
-    console.error('    { "spanId": "...", "parentSpanId": "...", "name": "...", "duration": 123, ... }');
-    console.error('  ]');
-    console.error('}');
+    console.error(
+      '    { "spanId": "...", "parentSpanId": "...", "name": "...", "duration": 123, ... }',
+    );
+    console.error("  ]");
+    console.error("}");
     process.exit(1);
   }
 
@@ -97,11 +99,11 @@ function main() {
     process.exit(1);
   }
 
-  const traceData = JSON.parse(fs.readFileSync(traceFilePath, 'utf-8'));
+  const traceData = JSON.parse(fs.readFileSync(traceFilePath, "utf-8"));
   const { traceId, spans } = traceData;
 
   if (!spans || spans.length === 0) {
-    console.error('Error: No spans found in trace data');
+    console.error("Error: No spans found in trace data");
     process.exit(1);
   }
 
@@ -111,7 +113,7 @@ function main() {
   const spanTree = buildSpanTree(spans);
 
   if (spanTree.length === 0) {
-    console.error('Error: Could not build span tree');
+    console.error("Error: Could not build span tree");
     process.exit(1);
   }
 
@@ -119,63 +121,71 @@ function main() {
   rootDuration = rootSpan.duration;
 
   // トレース概要
-  console.log('='.repeat(60));
-  console.log('Trace Summary:');
-  console.log('='.repeat(60));
+  console.log("=".repeat(60));
+  console.log("Trace Summary:");
+  console.log("=".repeat(60));
   console.log(`Trace ID: ${traceId}`);
   console.log(`Total Duration: ${rootDuration.toFixed(2)}ms`);
   console.log(`Total Spans: ${spans.length}`);
-  console.log('');
+  console.log("");
 
   // スパンツリー表示
-  console.log('Span Tree:');
-  console.log('');
+  console.log("Span Tree:");
+  console.log("");
   printSpanTree(rootSpan);
-  console.log('');
+  console.log("");
 
   // クリティカルパス分析
-  console.log('='.repeat(60));
-  console.log('Critical Path Analysis:');
-  console.log('='.repeat(60));
+  console.log("=".repeat(60));
+  console.log("Critical Path Analysis:");
+  console.log("=".repeat(60));
 
   const criticalPath = findCriticalPath(rootSpan);
-  console.log('\nCritical Path (最も時間がかかった経路):');
+  console.log("\nCritical Path (最も時間がかかった経路):");
   criticalPath.forEach((span, index) => {
     const duration = span.duration.toFixed(2);
     const percentage = ((span.duration / rootDuration) * 100).toFixed(1);
-    console.log(`  ${index + 1}. ${span.name} - ${duration}ms (${percentage}%)`);
+    console.log(
+      `  ${index + 1}. ${span.name} - ${duration}ms (${percentage}%)`,
+    );
   });
 
   // ボトルネック特定
   const bottleneck = criticalPath.reduce((slowest, span) =>
-    span.duration > slowest.duration ? span : slowest
+    span.duration > slowest.duration ? span : slowest,
   );
 
   console.log(`\n🎯 Bottleneck: ${bottleneck.name}`);
   console.log(`   Duration: ${bottleneck.duration.toFixed(2)}ms`);
-  console.log(`   Impact: ${((bottleneck.duration / rootDuration) * 100).toFixed(1)}% of total`);
+  console.log(
+    `   Impact: ${((bottleneck.duration / rootDuration) * 100).toFixed(1)}% of total`,
+  );
 
   // 推奨事項
-  console.log('\n💡 Recommendations:');
+  console.log("\n💡 Recommendations:");
 
-  if (bottleneck.duration / rootDuration > 0.50) {
-    console.log(`⚠️  "${bottleneck.name}" accounts for >50% of total duration. Optimize this span.`);
+  if (bottleneck.duration / rootDuration > 0.5) {
+    console.log(
+      `⚠️  "${bottleneck.name}" accounts for >50% of total duration. Optimize this span.`,
+    );
   }
 
   // 遅いスパンを特定
   const slowSpans = spans
-    .filter(span => span.duration > 100)
+    .filter((span) => span.duration > 100)
     .sort((a, b) => b.duration - a.duration)
     .slice(0, 5);
 
   if (slowSpans.length > 0) {
-    console.log('\n🐌 Slowest Spans:');
+    console.log("\n🐌 Slowest Spans:");
     slowSpans.forEach((span, index) => {
-      console.log(`  ${index + 1}. ${span.name} - ${span.duration.toFixed(2)}ms`);
+      console.log(
+        `  ${index + 1}. ${span.name} - ${span.duration.toFixed(2)}ms`,
+      );
     });
   }
 
-  console.log('\n');
+  console.log("\n");
 }
 
 main();

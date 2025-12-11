@@ -13,41 +13,53 @@
  *   - 日本語対応（文字数ベース）
  */
 
-import { readFileSync, readdirSync, statSync } from 'fs';
-import { join, extname } from 'path';
+import { readFileSync, readdirSync, statSync } from "fs";
+import { join, extname } from "path";
 
 // 専門用語リスト（検出対象）
 const TECHNICAL_TERMS = [
-  'API', 'エンドポイント', 'リクエスト', 'レスポンス',
-  'トークン', 'パラメータ', 'クエリ', 'キャッシュ',
-  'デプロイ', 'マイグレーション', 'コンフィグ',
-  'インスタンス', 'スキーマ', 'バリデーション'
+  "API",
+  "エンドポイント",
+  "リクエスト",
+  "レスポンス",
+  "トークン",
+  "パラメータ",
+  "クエリ",
+  "キャッシュ",
+  "デプロイ",
+  "マイグレーション",
+  "コンフィグ",
+  "インスタンス",
+  "スキーマ",
+  "バリデーション",
 ];
 
 /**
  * Markdownファイルからプレーンテキストを抽出
  */
 function extractText(markdown) {
-  return markdown
-    // コードブロックを除去
-    .replace(/```[\s\S]*?```/g, '')
-    // インラインコードを除去
-    .replace(/`[^`]+`/g, '')
-    // 見出しマーカーを除去
-    .replace(/^#{1,6}\s+/gm, '')
-    // リストマーカーを除去
-    .replace(/^[\s]*[-*+]\s+/gm, '')
-    .replace(/^[\s]*\d+\.\s+/gm, '')
-    // リンクをテキストに変換
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-    // 画像を除去
-    .replace(/!\[[^\]]*\]\([^)]+\)/g, '')
-    // テーブルマーカーを除去
-    .replace(/\|/g, ' ')
-    .replace(/[-:]+/g, '')
-    // 複数の空白を単一に
-    .replace(/\s+/g, ' ')
-    .trim();
+  return (
+    markdown
+      // コードブロックを除去
+      .replace(/```[\s\S]*?```/g, "")
+      // インラインコードを除去
+      .replace(/`[^`]+`/g, "")
+      // 見出しマーカーを除去
+      .replace(/^#{1,6}\s+/gm, "")
+      // リストマーカーを除去
+      .replace(/^[\s]*[-*+]\s+/gm, "")
+      .replace(/^[\s]*\d+\.\s+/gm, "")
+      // リンクをテキストに変換
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+      // 画像を除去
+      .replace(/!\[[^\]]*\]\([^)]+\)/g, "")
+      // テーブルマーカーを除去
+      .replace(/\|/g, " ")
+      .replace(/[-:]+/g, "")
+      // 複数の空白を単一に
+      .replace(/\s+/g, " ")
+      .trim()
+  );
 }
 
 /**
@@ -55,7 +67,7 @@ function extractText(markdown) {
  */
 function splitSentences(text) {
   // 日本語と英語の文末を考慮
-  return text.split(/[。！？!?.]+/).filter(s => s.trim().length > 0);
+  return text.split(/[。！？!?.]+/).filter((s) => s.trim().length > 0);
 }
 
 /**
@@ -66,7 +78,9 @@ function countWords(text) {
   // 英単語
   const englishWords = (text.match(/[a-zA-Z]+/g) || []).length;
   // 日本語文字（ひらがな、カタカナ、漢字）
-  const japaneseChars = (text.match(/[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF]/g) || []).length;
+  const japaneseChars = (
+    text.match(/[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF]/g) || []
+  ).length;
   // 日本語は2文字で1単語として計算
   return englishWords + Math.ceil(japaneseChars / 2);
 }
@@ -86,7 +100,7 @@ function calculateFleschScore(text) {
 
   // 日本語版のスコア算出（簡略化）
   // 文が短いほど読みやすい
-  let score = 100 - (avgWordsPerSentence * 3);
+  let score = 100 - avgWordsPerSentence * 3;
 
   // スコアを0-100の範囲に制限
   return Math.max(0, Math.min(100, Math.round(score)));
@@ -97,16 +111,19 @@ function calculateFleschScore(text) {
  */
 function analyzeSentenceLength(text) {
   const sentences = splitSentences(text);
-  const lengths = sentences.map(s => countWords(s));
+  const lengths = sentences.map((s) => countWords(s));
 
   const longSentences = sentences.filter((s, i) => lengths[i] > 25);
 
   return {
     total: sentences.length,
-    avgLength: lengths.length > 0 ? Math.round(lengths.reduce((a, b) => a + b, 0) / lengths.length) : 0,
+    avgLength:
+      lengths.length > 0
+        ? Math.round(lengths.reduce((a, b) => a + b, 0) / lengths.length)
+        : 0,
     maxLength: Math.max(...lengths, 0),
     longSentences: longSentences.length,
-    longSentenceExamples: longSentences.slice(0, 3)
+    longSentenceExamples: longSentences.slice(0, 3),
   };
 }
 
@@ -116,7 +133,7 @@ function analyzeSentenceLength(text) {
 function detectTechnicalTerms(text) {
   const found = [];
   for (const term of TECHNICAL_TERMS) {
-    const regex = new RegExp(term, 'gi');
+    const regex = new RegExp(term, "gi");
     const matches = text.match(regex);
     if (matches) {
       found.push({ term, count: matches.length });
@@ -129,7 +146,7 @@ function detectTechnicalTerms(text) {
  * ファイルを分析
  */
 function analyzeFile(filePath) {
-  const content = readFileSync(filePath, 'utf-8');
+  const content = readFileSync(filePath, "utf-8");
   const text = extractText(content);
 
   const fleschScore = calculateFleschScore(text);
@@ -142,7 +159,7 @@ function analyzeFile(filePath) {
     fleschGrade: getFleschGrade(fleschScore),
     sentenceAnalysis,
     technicalTerms,
-    totalWords: countWords(text)
+    totalWords: countWords(text),
   };
 }
 
@@ -150,29 +167,32 @@ function analyzeFile(filePath) {
  * Flesch スコアの評価
  */
 function getFleschGrade(score) {
-  if (score >= 90) return '非常に読みやすい（小学生レベル）';
-  if (score >= 80) return '読みやすい（中学生レベル）';
-  if (score >= 70) return 'やや読みやすい（高校生レベル）';
-  if (score >= 60) return '標準（一般成人レベル）';
-  if (score >= 50) return 'やや難しい';
-  if (score >= 30) return '難しい';
-  return '非常に難しい';
+  if (score >= 90) return "非常に読みやすい（小学生レベル）";
+  if (score >= 80) return "読みやすい（中学生レベル）";
+  if (score >= 70) return "やや読みやすい（高校生レベル）";
+  if (score >= 60) return "標準（一般成人レベル）";
+  if (score >= 50) return "やや難しい";
+  if (score >= 30) return "難しい";
+  return "非常に難しい";
 }
 
 /**
  * 結果を表示
  */
 function printResults(results) {
-  console.log('\n📊 ドキュメント可読性分析レポート\n');
-  console.log('='.repeat(60));
+  console.log("\n📊 ドキュメント可読性分析レポート\n");
+  console.log("=".repeat(60));
 
   for (const result of results) {
     console.log(`\n📄 ${result.file}`);
-    console.log('-'.repeat(60));
+    console.log("-".repeat(60));
 
     // Fleschスコア
-    const scoreEmoji = result.fleschScore >= 70 ? '✅' : result.fleschScore >= 50 ? '⚠️' : '❌';
-    console.log(`${scoreEmoji} Flesch スコア: ${result.fleschScore}/100 (${result.fleschGrade})`);
+    const scoreEmoji =
+      result.fleschScore >= 70 ? "✅" : result.fleschScore >= 50 ? "⚠️" : "❌";
+    console.log(
+      `${scoreEmoji} Flesch スコア: ${result.fleschScore}/100 (${result.fleschGrade})`,
+    );
 
     // 文の分析
     console.log(`\n📝 文の分析:`);
@@ -181,7 +201,9 @@ function printResults(results) {
     console.log(`   最長文: ${result.sentenceAnalysis.maxLength} 語`);
 
     if (result.sentenceAnalysis.longSentences > 0) {
-      console.log(`   ⚠️ 長い文（25語超）: ${result.sentenceAnalysis.longSentences} 文`);
+      console.log(
+        `   ⚠️ 長い文（25語超）: ${result.sentenceAnalysis.longSentences} 文`,
+      );
     }
 
     // 専門用語
@@ -198,15 +220,19 @@ function printResults(results) {
 
   // サマリー
   if (results.length > 1) {
-    const avgScore = Math.round(results.reduce((a, r) => a + r.fleschScore, 0) / results.length);
-    console.log('\n' + '='.repeat(60));
+    const avgScore = Math.round(
+      results.reduce((a, r) => a + r.fleschScore, 0) / results.length,
+    );
+    console.log("\n" + "=".repeat(60));
     console.log(`📊 全体平均スコア: ${avgScore}/100`);
   }
 
-  console.log('\n💡 推奨事項:');
-  console.log('   - スコア70以上を目標に文章を調整してください');
-  console.log('   - 25語を超える文は分割を検討してください');
-  console.log('   - 専門用語には説明を追加するか、平易な言葉に置き換えてください');
+  console.log("\n💡 推奨事項:");
+  console.log("   - スコア70以上を目標に文章を調整してください");
+  console.log("   - 25語を超える文は分割を検討してください");
+  console.log(
+    "   - 専門用語には説明を追加するか、平易な言葉に置き換えてください",
+  );
 }
 
 /**
@@ -216,7 +242,7 @@ function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.log('使用方法: node measure-readability.mjs <file_or_directory>');
+    console.log("使用方法: node measure-readability.mjs <file_or_directory>");
     process.exit(1);
   }
 
@@ -229,8 +255,8 @@ function main() {
     if (stat.isDirectory()) {
       // ディレクトリ内のMarkdownファイルを処理
       const files = readdirSync(target)
-        .filter(f => extname(f).toLowerCase() === '.md')
-        .map(f => join(target, f));
+        .filter((f) => extname(f).toLowerCase() === ".md")
+        .map((f) => join(target, f));
 
       for (const file of files) {
         results.push(analyzeFile(file));
@@ -241,7 +267,6 @@ function main() {
     }
 
     printResults(results);
-
   } catch (error) {
     console.error(`エラー: ${error.message}`);
     process.exit(1);

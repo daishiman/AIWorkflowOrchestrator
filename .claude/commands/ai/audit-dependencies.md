@@ -66,14 +66,17 @@ fi
 **使用エージェント**: `.claude/agents/dep-mgr.md`
 
 **依頼内容**:
-```markdown
+
+````markdown
 依存関係のセキュリティ監査を実行してください。
 
 **要件**:
+
 1. 脆弱性スキャン実行:
    ```bash
    pnpm audit --json > audit-result.json
    ```
+````
 
 2. 脆弱性分類:
    - **Critical**: 即座の対応必須（リモートコード実行等）
@@ -89,7 +92,8 @@ fi
 **スキル参照**: dependency-auditing, vulnerability-assessment
 
 **成果物**: 脆弱性一覧（JSON + Markdown）
-```
+
+````
 
 ### Phase 3: sec-auditorエージェントを起動（評価・推奨）
 
@@ -123,14 +127,15 @@ fi
 
    ### Medium（1週間以内）
    [...]
-   ```
+````
 
 3. 代替パッケージ提案（修正版がない場合）
 
 **スキル参照**: vulnerability-assessment, security-best-practices
 
 **成果物**: 監査レポート（Markdown）
-```
+
+````
 
 ### Phase 4: 完了報告とレポート保存
 
@@ -155,7 +160,7 @@ fi
 3. ライセンス問題の確認
 
 レポート: docs/security/dependency-audit-report.md
-```
+````
 
 ## 使用例
 
@@ -166,6 +171,7 @@ fi
 ```
 
 自動実行:
+
 1. `pnpm audit` でスキャン
 2. 脆弱性分類（Critical/High/Medium/Low）
 3. ライセンスチェック
@@ -174,7 +180,7 @@ fi
 
 ## 監査レポート例
 
-```markdown
+````markdown
 # 依存関係監査レポート
 
 監査日時: 2025-01-15 10:00:00
@@ -188,6 +194,7 @@ fi
 ## Critical脆弱性（即座対応）
 
 ### 1. axios@0.21.1 → CVE-2021-3749
+
 - **CVSS**: 9.8（Critical）
 - **影響**: SSRF（Server-Side Request Forgery）
 - **悪用可能性**: 高（公開エクスプロイトあり）
@@ -195,11 +202,14 @@ fi
   ```bash
   pnpm add axios@1.6.0
   ```
+````
+
 - **検証**: テスト実行後、本番デプロイ
 
 ## High脆弱性（24時間以内）
 
 ### 2. semver@6.3.0 → CVE-2022-25883
+
 - **CVSS**: 7.5（High）
 - **影響**: ReDoS（Regular Expression Denial of Service）
 - **修正方法**:
@@ -224,7 +234,8 @@ fi
 2. ✅ High脆弱性の24時間以内修正
 3. ⏳ Medium脆弱性の計画的修正（今週中）
 4. ✅ 定期監査スケジュール設定（週次）
-```
+
+````
 
 ## トラブルシューティング
 
@@ -237,11 +248,12 @@ pnpm search [alternative-package]
 
 # または一時的な緩和策
 # package.json の resolutions/overrides で強制バージョン指定
-```
+````
 
 ### false positive（誤検出）
 
 **解決策**:
+
 ```bash
 # audit の無視設定（最終手段）
 pnpm audit --audit-level=high  # Medium以下を無視

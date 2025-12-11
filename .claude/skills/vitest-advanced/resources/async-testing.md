@@ -12,24 +12,24 @@ Promise、async/await、タイマー、イベントのテストを扱います�
 ### 基本パターン
 
 ```typescript
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from "vitest";
 
-it('should fetch user data', async () => {
-  const user = await userService.getUser('1');
-  expect(user).toEqual({ id: '1', name: 'Test' });
+it("should fetch user data", async () => {
+  const user = await userService.getUser("1");
+  expect(user).toEqual({ id: "1", name: "Test" });
 });
 
 // 明示的なawait
-it('should process order', async () => {
+it("should process order", async () => {
   const result = await orderService.process(orderData);
-  expect(result.status).toBe('completed');
+  expect(result.status).toBe("completed");
 });
 ```
 
 ### 複数の非同期操作
 
 ```typescript
-it('should process multiple operations', async () => {
+it("should process multiple operations", async () => {
   // 順次実行
   const user = await userService.create(userData);
   const order = await orderService.create(user.id, orderData);
@@ -52,32 +52,32 @@ it('should process multiple operations', async () => {
 ### Promiseの成功を検証
 
 ```typescript
-it('should resolve with data', async () => {
-  await expect(fetchData()).resolves.toEqual({ data: 'value' });
+it("should resolve with data", async () => {
+  await expect(fetchData()).resolves.toEqual({ data: "value" });
 });
 
-it('should resolve to truthy', async () => {
+it("should resolve to truthy", async () => {
   await expect(checkStatus()).resolves.toBeTruthy();
 });
 
 // チェーン
-it('should resolve with specific property', async () => {
-  await expect(getUser('1')).resolves.toHaveProperty('id', '1');
+it("should resolve with specific property", async () => {
+  await expect(getUser("1")).resolves.toHaveProperty("id", "1");
 });
 ```
 
 ### Promiseの失敗を検証
 
 ```typescript
-it('should reject with error', async () => {
-  await expect(failingFn()).rejects.toThrow('Error message');
+it("should reject with error", async () => {
+  await expect(failingFn()).rejects.toThrow("Error message");
 });
 
-it('should reject with specific error type', async () => {
+it("should reject with specific error type", async () => {
   await expect(fetchInvalidUser()).rejects.toBeInstanceOf(NotFoundError);
 });
 
-it('should reject with error containing message', async () => {
+it("should reject with error containing message", async () => {
   await expect(invalidOperation()).rejects.toThrow(/invalid/i);
 });
 ```
@@ -89,9 +89,9 @@ it('should reject with error containing message', async () => {
 ### Fake Timers
 
 ```typescript
-import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
 
-describe('Timer tests', () => {
+describe("Timer tests", () => {
   beforeEach(() => {
     vi.useFakeTimers();
   });
@@ -100,7 +100,7 @@ describe('Timer tests', () => {
     vi.useRealTimers();
   });
 
-  it('should call callback after delay', () => {
+  it("should call callback after delay", () => {
     const callback = vi.fn();
     setTimeout(callback, 1000);
 
@@ -129,13 +129,13 @@ vi.runAllTimers();
 vi.runOnlyPendingTimers();
 
 // 現在時刻を設定
-vi.setSystemTime(new Date('2025-01-01'));
+vi.setSystemTime(new Date("2025-01-01"));
 ```
 
 ### Debounce/Throttleのテスト
 
 ```typescript
-it('should debounce function calls', () => {
+it("should debounce function calls", () => {
   const callback = vi.fn();
   const debounced = debounce(callback, 300);
 
@@ -154,7 +154,7 @@ it('should debounce function calls', () => {
 ### setIntervalのテスト
 
 ```typescript
-it('should poll at intervals', () => {
+it("should poll at intervals", () => {
   const poller = vi.fn();
   setInterval(poller, 100);
 
@@ -171,12 +171,12 @@ it('should poll at intervals', () => {
 ### システム時刻の設定
 
 ```typescript
-it('should use current date', () => {
+it("should use current date", () => {
   vi.useFakeTimers();
-  vi.setSystemTime(new Date('2025-06-15T10:00:00'));
+  vi.setSystemTime(new Date("2025-06-15T10:00:00"));
 
   const result = service.getFormattedDate();
-  expect(result).toBe('2025-06-15');
+  expect(result).toBe("2025-06-15");
 
   vi.useRealTimers();
 });
@@ -185,7 +185,7 @@ it('should use current date', () => {
 ### Date.nowのMock
 
 ```typescript
-it('should generate timestamp', () => {
+it("should generate timestamp", () => {
   vi.useFakeTimers();
   vi.setSystemTime(1735689600000); // 2025-01-01
 
@@ -204,12 +204,12 @@ it('should generate timestamp', () => {
 
 ```typescript
 // 個別のテスト
-it('long running test', async () => {
+it("long running test", async () => {
   // ...
 }, 10000); // 10秒のタイムアウト
 
 // describeレベル
-describe('Integration tests', { timeout: 30000 }, () => {
+describe("Integration tests", { timeout: 30000 }, () => {
   // ...
 });
 ```
@@ -232,14 +232,14 @@ export default defineConfig({
 ### EventEmitterのテスト
 
 ```typescript
-import { EventEmitter } from 'events';
+import { EventEmitter } from "events";
 
-it('should emit event', () => {
+it("should emit event", () => {
   const emitter = new EventEmitter();
   const listener = vi.fn();
 
-  emitter.on('data', listener);
-  emitter.emit('data', { value: 42 });
+  emitter.on("data", listener);
+  emitter.emit("data", { value: 42 });
 
   expect(listener).toHaveBeenCalledWith({ value: 42 });
 });
@@ -248,19 +248,19 @@ it('should emit event', () => {
 ### 非同期イベントのテスト
 
 ```typescript
-it('should wait for event', async () => {
+it("should wait for event", async () => {
   const emitter = new EventEmitter();
 
   const eventPromise = new Promise((resolve) => {
-    emitter.once('complete', resolve);
+    emitter.once("complete", resolve);
   });
 
   // 非同期でイベント発火
-  setTimeout(() => emitter.emit('complete', 'done'), 100);
+  setTimeout(() => emitter.emit("complete", "done"), 100);
 
   vi.advanceTimersByTime(100);
 
-  await expect(eventPromise).resolves.toBe('done');
+  await expect(eventPromise).resolves.toBe("done");
 });
 ```
 
@@ -272,7 +272,7 @@ it('should wait for event', async () => {
 
 ```typescript
 // 個別テスト
-it('flaky test', { retry: 3 }, async () => {
+it("flaky test", { retry: 3 }, async () => {
   // 最大3回再試行
 });
 
@@ -292,12 +292,12 @@ export default defineConfig({
 
 ```typescript
 // 悪い例：Promiseがテストされない
-it('should fetch data', () => {
+it("should fetch data", () => {
   expect(fetchData()).toBeDefined(); // Promiseオブジェクトを検証
 });
 
 // 良い例
-it('should fetch data', async () => {
+it("should fetch data", async () => {
   expect(await fetchData()).toBeDefined();
 });
 ```
@@ -306,7 +306,7 @@ it('should fetch data', async () => {
 
 ```typescript
 // 悪い例
-it('timer test', () => {
+it("timer test", () => {
   vi.useFakeTimers();
   // テスト
   // vi.useRealTimers()を忘れている
@@ -322,12 +322,12 @@ afterEach(() => {
 
 ```typescript
 // 悪い例：長すぎるタイムアウト
-it('should respond quickly', async () => {
+it("should respond quickly", async () => {
   await expect(fastOperation()).resolves.toBeDefined();
 }, 60000); // 60秒は長すぎる
 
 // 良い例
-it('should respond quickly', async () => {
+it("should respond quickly", async () => {
   await expect(fastOperation()).resolves.toBeDefined();
 }, 1000); // 1秒で十分
 ```

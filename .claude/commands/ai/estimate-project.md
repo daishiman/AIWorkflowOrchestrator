@@ -25,10 +25,10 @@ description: |
 
   トリガーキーワード: estimate, estimation, 見積もり, 規模, ストーリーポイント, ベロシティ, リリース予測
 allowed-tools:
-   - Task
-   - Read
-   - Write(docs/**)
-   - Grep
+  - Task
+  - Read
+  - Write(docs/**)
+  - Grep
 model: opus
 ---
 
@@ -126,6 +126,7 @@ docs/
 ```
 
 **配置理由**:
+
 - master_system_design.md のドキュメント階層に準拠
 - `00-requirements/`: 要件定義、`10-architecture/`: 設計、`20-specifications/`: 詳細仕様
 - `30-project-management/`: プロジェクト管理（見積もり、進捗、メトリクス）を追加

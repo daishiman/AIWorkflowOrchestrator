@@ -40,7 +40,11 @@ const ARIA_PATTERNS = {
   },
   combobox: {
     required: ['role="combobox"', "aria-expanded", "aria-haspopup"],
-    recommended: ["aria-activedescendant", "aria-autocomplete", "aria-controls"],
+    recommended: [
+      "aria-activedescendant",
+      "aria-autocomplete",
+      "aria-controls",
+    ],
     keyboard: ["ArrowDown", "ArrowUp", "Escape", "Enter"],
   },
   listbox: {
@@ -90,7 +94,10 @@ function checkAriaAttributes(content, componentType) {
 
   // 必須属性
   pattern.required.forEach((attr) => {
-    if (content.includes(attr) || new RegExp(attr.replace(/"/g, "'")).test(content)) {
+    if (
+      content.includes(attr) ||
+      new RegExp(attr.replace(/"/g, "'")).test(content)
+    ) {
       results.required.found.push(attr);
     } else {
       results.required.missing.push(attr);
@@ -99,7 +106,10 @@ function checkAriaAttributes(content, componentType) {
 
   // 推奨属性
   pattern.recommended.forEach((attr) => {
-    if (content.includes(attr) || new RegExp(attr.replace(/"/g, "'")).test(content)) {
+    if (
+      content.includes(attr) ||
+      new RegExp(attr.replace(/"/g, "'")).test(content)
+    ) {
       results.recommended.found.push(attr);
     } else {
       results.recommended.missing.push(attr);
@@ -143,7 +153,8 @@ function checkGeneralA11y(content) {
 
   // onClick without keyboard handler
   const onClickCount = (content.match(/onClick/g) || []).length;
-  const keyHandlerCount = (content.match(/onKeyDown|onKeyUp|onKeyPress/g) || []).length;
+  const keyHandlerCount = (content.match(/onKeyDown|onKeyUp|onKeyPress/g) || [])
+    .length;
   if (onClickCount > keyHandlerCount) {
     issues.push({
       type: "warning",
@@ -235,10 +246,14 @@ async function main() {
 
   // コンポーネントタイプ検出
   const types = detectComponentType(content);
-  console.log(`\n🔍 検出されたコンポーネントタイプ: ${types.length > 0 ? types.join(", ") : "汎用"}`);
+  console.log(
+    `\n🔍 検出されたコンポーネントタイプ: ${types.length > 0 ? types.join(", ") : "汎用"}`,
+  );
 
   // ARIA属性チェック
-  const ariaResults = types.map((type) => checkAriaAttributes(content, type)).filter(Boolean);
+  const ariaResults = types
+    .map((type) => checkAriaAttributes(content, type))
+    .filter(Boolean);
 
   if (ariaResults.length > 0) {
     console.log("\n📋 ARIA属性チェック:");
@@ -251,13 +266,17 @@ async function main() {
         result.required.found.forEach((attr) => console.log(`    ✅ ${attr}`));
       }
       if (result.required.missing.length > 0) {
-        result.required.missing.forEach((attr) => console.log(`    ❌ ${attr} (不足)`));
+        result.required.missing.forEach((attr) =>
+          console.log(`    ❌ ${attr} (不足)`),
+        );
       }
 
       // 推奨属性
       if (result.recommended.missing.length > 0) {
         console.log("  推奨属性:");
-        result.recommended.missing.forEach((attr) => console.log(`    ⚠️  ${attr} (推奨)`));
+        result.recommended.missing.forEach((attr) =>
+          console.log(`    ⚠️  ${attr} (推奨)`),
+        );
       }
 
       // キーボードハンドラ
@@ -266,7 +285,9 @@ async function main() {
         result.keyboard.found.forEach((key) => console.log(`    ✅ ${key}`));
       }
       if (result.keyboard.missing.length > 0) {
-        result.keyboard.missing.forEach((key) => console.log(`    ❌ ${key} (不足)`));
+        result.keyboard.missing.forEach((key) =>
+          console.log(`    ❌ ${key} (不足)`),
+        );
       }
     });
   }

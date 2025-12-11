@@ -45,6 +45,7 @@ model: sonnet
 ### ブランチ戦略の決定
 
 引数で戦略を指定:
+
 ```bash
 /ai:init-git-workflow git-flow
 /ai:init-git-workflow github-flow
@@ -52,6 +53,7 @@ model: sonnet
 ```
 
 引数未指定の場合、対話的に選択を質問:
+
 - git-flow: develop/main分離、feature/release/hotfixブランチ
 - github-flow: mainブランチ + featureブランチ、シンプルなフロー
 - trunk-based: 短命featureブランチ、頻繁なmainマージ
@@ -59,6 +61,7 @@ model: sonnet
 ### 現状確認
 
 Git設定状態確認:
+
 ```bash
 git status
 git branch -a
@@ -77,6 +80,7 @@ Task ツールで `.claude/agents/hook-master.md` を起動:
 ブランチ戦略: ${選択された戦略}
 
 依頼内容:
+
 1. 選択されたブランチ戦略に基づくGit Hooks設計・実装
 2. .gitignoreファイルの最適化（未存在の場合は作成）
 3. Claude Code Hooks統合（UserPromptSubmit、PreToolUse、PostToolUse）
@@ -84,18 +88,21 @@ Task ツールで `.claude/agents/hook-master.md` を起動:
 5. settings.json へのHooks設定統合
 
 必須要件:
+
 - ブランチ戦略に応じた適切なHook設計
 - システム強制ルールの実装（人間の意志に依存しない）
 - Fail Fast原則に基づくエラー検出
 - 透明なフィードバックとエラーメッセージ
 
 参照スキル:
+
 - `.claude/skills/git-hooks-concepts/SKILL.md`: Git Hook基本
 - `.claude/skills/claude-code-hooks/SKILL.md`: Claude Code Hook設計
 - `.claude/skills/automation-scripting/SKILL.md`: 自動化スクリプト実装
 - `.claude/skills/linting-formatting-automation/SKILL.md`: Lint/Format統合
 
 期待成果物:
+
 - .gitignore（最適化済み）
 - .claude/hooks/ ディレクトリとHookスクリプト
 - .claude/settings.json（Hooks設定追加）

@@ -3,15 +3,15 @@
 ## ワークフロー基本構造
 
 ```yaml
-name: CI                          # ワークフロー名
-on: [push, pull_request]          # トリガー
+name: CI # ワークフロー名
+on: [push, pull_request] # トリガー
 
 jobs:
-  build:                          # ジョブID
-    runs-on: ubuntu-latest        # 実行環境
-    steps:                        # ステップ配列
+  build: # ジョブID
+    runs-on: ubuntu-latest # 実行環境
+    steps: # ステップ配列
       - uses: actions/checkout@v4 # アクション使用
-      - run: pnpm install          # コマンド実行
+      - run: pnpm install # コマンド実行
 ```
 
 ## トリガー設定詳細
@@ -21,10 +21,10 @@ jobs:
 ```yaml
 on:
   pull_request:
-    branches: [main, develop]     # ターゲットブランチ
-    paths:                        # パスフィルター
-      - 'src/**'
-      - 'package.json'
+    branches: [main, develop] # ターゲットブランチ
+    paths: # パスフィルター
+      - "src/**"
+      - "package.json"
     types: [opened, synchronize, reopened]
 ```
 
@@ -35,9 +35,9 @@ on:
   push:
     branches: [main]
     tags:
-      - 'v*'                      # v で始まるタグ
+      - "v*" # v で始まるタグ
     paths-ignore:
-      - '**.md'                   # MDファイル変更は無視
+      - "**.md" # MDファイル変更は無視
 ```
 
 ### 手動実行トリガー
@@ -47,9 +47,9 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Deploy environment'
+        description: "Deploy environment"
         required: true
-        default: 'staging'
+        default: "staging"
         type: choice
         options:
           - staging
@@ -61,7 +61,7 @@ on:
 ```yaml
 on:
   schedule:
-    - cron: '0 0 * * *'           # 毎日0時UTC
+    - cron: "0 0 * * *" # 毎日0時UTC
 ```
 
 ## ジョブ設定
@@ -72,7 +72,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 10           # タイムアウト設定
+    timeout-minutes: 10 # タイムアウト設定
     steps:
       - uses: actions/checkout@v4
 ```
@@ -86,12 +86,12 @@ jobs:
     steps: [...]
 
   test:
-    needs: build                  # buildジョブ完了後に実行
+    needs: build # buildジョブ完了後に実行
     runs-on: ubuntu-latest
     steps: [...]
 
   deploy:
-    needs: [build, test]          # 複数ジョブ完了後
+    needs: [build, test] # 複数ジョブ完了後
     runs-on: ubuntu-latest
     steps: [...]
 ```
@@ -105,7 +105,7 @@ jobs:
       matrix:
         node-version: [18, 20, 22]
         os: [ubuntu-latest, windows-latest]
-      fail-fast: false            # 1つ失敗しても他は継続
+      fail-fast: false # 1つ失敗しても他は継続
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/setup-node@v4
@@ -138,7 +138,7 @@ jobs:
 steps:
   - uses: actions/checkout@v4
     with:
-      fetch-depth: 0              # 全履歴取得
+      fetch-depth: 0 # 全履歴取得
       token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
@@ -181,16 +181,16 @@ steps:
 
 ```yaml
 env:
-  NODE_ENV: production            # ワークフローレベル
+  NODE_ENV: production # ワークフローレベル
 
 jobs:
   build:
     env:
-      CI: true                    # ジョブレベル
+      CI: true # ジョブレベル
     steps:
       - name: Build
         env:
-          API_URL: https://api.example.com  # ステップレベル
+          API_URL: https://api.example.com # ステップレベル
         run: pnpm run build
 ```
 
@@ -241,7 +241,7 @@ steps:
   - uses: actions/setup-node@v4
     with:
       node-version: 22
-      cache: 'pnpm'               # 自動キャッシュ
+      cache: "pnpm" # 自動キャッシュ
 ```
 
 ### 複数パスキャッシュ
@@ -365,7 +365,7 @@ ${{ fromJSON(needs.build.outputs.matrix) }}
 ```yaml
 permissions:
   contents: read
-  pull-requests: write            # 必要な権限のみ
+  pull-requests: write # 必要な権限のみ
 ```
 
 ### ピン留めバージョン

@@ -160,6 +160,7 @@ const MyComponent = React.memo(({ data }) => {
 ```
 
 **正しいアプローチ**:
+
 1. React DevTools Profilerで測定
 2. パフォーマンス問題を確認
 3. 最適化を実施
@@ -306,6 +307,7 @@ const ThemeToggle = React.memo(() => {
 **原因と解決策**:
 
 1. **Propsに関数が含まれている**
+
    ```typescript
    // 悪い例
    <Child onClick={() => console.log('Clicked')} />
@@ -316,6 +318,7 @@ const ThemeToggle = React.memo(() => {
    ```
 
 2. **Propsにオブジェクトが含まれている**
+
    ```typescript
    // 悪い例
    <Child data={{ id: 1, name: 'Test' }} />
@@ -326,6 +329,7 @@ const ThemeToggle = React.memo(() => {
    ```
 
 3. **Propsに配列が含まれている**
+
    ```typescript
    // 悪い例
    <Child items={items.filter(item => item.active)} />

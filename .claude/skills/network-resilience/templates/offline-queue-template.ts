@@ -11,15 +11,15 @@
  *   - {{MAX_AGE_HOURS}}: 最大保持時間 (デフォルト: 168時間)
  */
 
-import { readFileSync, writeFileSync, appendFileSync, existsSync } from 'fs';
-import { randomUUID } from 'crypto';
+import { readFileSync, writeFileSync, appendFileSync, existsSync } from "fs";
+import { randomUUID } from "crypto";
 
 // ========================================
 // 型定義
 // ========================================
 
-export type TaskType = 'upload' | 'download' | 'sync';
-export type TaskPriority = 'high' | 'normal' | 'low';
+export type TaskType = "upload" | "download" | "sync";
+export type TaskPriority = "high" | "normal" | "low";
 
 export interface QueuedTask {
   id: string;
@@ -58,11 +58,11 @@ export interface QueueStats {
 // ========================================
 
 const DEFAULT_CONFIG: QueueConfig = {
-  queueFile: '.claude/sync-queue.jsonl',
-  deadLetterFile: '.claude/dead-letter-queue.jsonl',
+  queueFile: ".claude/sync-queue.jsonl",
+  deadLetterFile: ".claude/dead-letter-queue.jsonl",
   maxTasks: 1000,
-  maxAgeHours: 168,  // 7日
-  maxRetries: 5
+  maxAgeHours: 168, // 7日
+  maxRetries: 5,
 };
 
 // ========================================
@@ -79,12 +79,14 @@ export class OfflineQueue {
   /**
    * タスクをキューに追加する
    */
-  async enqueue(task: Omit<QueuedTask, 'id' | 'createdAt' | 'retries'>): Promise<string> {
+  async enqueue(
+    task: Omit<QueuedTask, "id" | "createdAt" | "retries">,
+  ): Promise<string> {
     const entry: QueuedTask = {
       ...task,
       id: randomUUID(),
       createdAt: new Date().toISOString(),
-      retries: 0
+      retries: 0,
     };
 
     // キューサイズをチェック
@@ -94,7 +96,7 @@ export class OfflineQueue {
     }
 
     // ファイルに追記
-    appendFileSync(this.config.queueFile, JSON.stringify(entry) + '\n');
+    appendFileSync(this.config.queueFile, JSON.stringify(entry) + "\n");
 
     return entry.id;
   }
@@ -107,7 +109,9 @@ export class OfflineQueue {
     if (tasks.length === 0) return null;
 
     // 優先度順にソート（high > normal > low）
-    tasks.sort((a, b) => this.priorityOrder(a.priority) - this.priorityOrder(b.priority));
+    tasks.sort(
+      (a, b) => this.priorityOrder(a.priority) - this.priorityOrder(b.priority),
+    );
 
     const task = tasks[0];
     const remaining = tasks.slice(1);
@@ -124,7 +128,9 @@ export class OfflineQueue {
     const tasks = await this.readQueue();
     if (tasks.length === 0) return null;
 
-    tasks.sort((a, b) => this.priorityOrder(a.priority) - this.priorityOrder(b.priority));
+    tasks.sort(
+      (a, b) => this.priorityOrder(a.priority) - this.priorityOrder(b.priority),
+    );
     return tasks[0];
   }
 
@@ -137,13 +143,13 @@ export class OfflineQueue {
       retries: task.retries + 1,
       lastAttempt: new Date().toISOString(),
       nextRetryAt: this.calculateNextRetry(task.retries + 1),
-      error
+      error,
     };
 
     if (updated.retries > this.config.maxRetries) {
       await this.moveToDeadLetter(updated);
     } else {
-      appendFileSync(this.config.queueFile, JSON.stringify(updated) + '\n');
+      appendFileSync(this.config.queueFile, JSON.stringify(updated) + "\n");
     }
   }
 
@@ -156,7 +162,7 @@ export class OfflineQueue {
     const stats: QueueStats = {
       totalTasks: tasks.length,
       byPriority: { high: 0, normal: 0, low: 0 },
-      byType: { upload: 0, download: 0, sync: 0 }
+      byType: { upload: 0, download: 0, sync: 0 },
     };
 
     for (const task of tasks) {
@@ -165,8 +171,9 @@ export class OfflineQueue {
     }
 
     if (tasks.length > 0) {
-      const sorted = tasks.sort((a, b) =>
-        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      const sorted = tasks.sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
       );
       stats.oldestTask = new Date(sorted[0].createdAt);
       stats.newestTask = new Date(sorted[sorted.length - 1].createdAt);
@@ -181,7 +188,7 @@ export class OfflineQueue {
   async clear(): Promise<number> {
     const tasks = await this.readQueue();
     const count = tasks.length;
-    writeFileSync(this.config.queueFile, '');
+    writeFileSync(this.config.queueFile, "");
     return count;
   }
 
@@ -193,8 +200,8 @@ export class OfflineQueue {
       return [];
     }
 
-    const content = readFileSync(this.config.queueFile, 'utf-8');
-    const lines = content.split('\n').filter(Boolean);
+    const content = readFileSync(this.config.queueFile, "utf-8");
+    const lines = content.split("\n").filter(Boolean);
 
     const tasks: QueuedTask[] = [];
     for (const line of lines) {
@@ -202,7 +209,7 @@ export class OfflineQueue {
         tasks.push(JSON.parse(line));
       } catch {
         // 破損した行をスキップ
-        console.warn('破損したキューエントリをスキップ');
+        console.warn("破損したキューエントリをスキップ");
       }
     }
 
@@ -213,8 +220,8 @@ export class OfflineQueue {
    * キューをファイルに書き込む
    */
   private async writeQueue(tasks: QueuedTask[]): Promise<void> {
-    const content = tasks.map(t => JSON.stringify(t)).join('\n');
-    writeFileSync(this.config.queueFile, content ? content + '\n' : '');
+    const content = tasks.map((t) => JSON.stringify(t)).join("\n");
+    writeFileSync(this.config.queueFile, content ? content + "\n" : "");
   }
 
   /**
@@ -225,15 +232,16 @@ export class OfflineQueue {
     const now = new Date();
 
     // 古いタスクを削除
-    tasks = tasks.filter(task => {
+    tasks = tasks.filter((task) => {
       const age = now.getTime() - new Date(task.createdAt).getTime();
       return age < this.config.maxAgeHours * 60 * 60 * 1000;
     });
 
     // サイズ超過時は古い順に削除
     if (tasks.length > this.config.maxTasks) {
-      tasks.sort((a, b) =>
-        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      tasks.sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
       );
       tasks = tasks.slice(-this.config.maxTasks);
     }
@@ -248,10 +256,10 @@ export class OfflineQueue {
     const entry = {
       ...task,
       movedAt: new Date().toISOString(),
-      reason: `最大リトライ回数 (${this.config.maxRetries}) を超過`
+      reason: `最大リトライ回数 (${this.config.maxRetries}) を超過`,
     };
 
-    appendFileSync(this.config.deadLetterFile, JSON.stringify(entry) + '\n');
+    appendFileSync(this.config.deadLetterFile, JSON.stringify(entry) + "\n");
   }
 
   /**

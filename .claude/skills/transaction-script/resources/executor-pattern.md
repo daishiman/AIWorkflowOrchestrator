@@ -59,7 +59,10 @@ class OrderExecutor {
 外部依存はコンストラクタで注入。
 
 ```typescript
-class CreateOrderExecutor implements IWorkflowExecutor<CreateOrderInput, Order> {
+class CreateOrderExecutor implements IWorkflowExecutor<
+  CreateOrderInput,
+  Order
+> {
   constructor(
     private readonly orderRepository: IOrderRepository,
     private readonly userRepository: IUserRepository,
@@ -78,21 +81,25 @@ class CreateOrderExecutor implements IWorkflowExecutor<CreateOrderInput, Order> 
 
 ```typescript
 // schema.ts
-import { z } from 'zod';
+import { z } from "zod";
 
 export const createOrderInputSchema = z.object({
   userId: z.string().uuid(),
-  items: z.array(z.object({
-    productId: z.string(),
-    quantity: z.number().positive(),
-  })).min(1),
+  items: z
+    .array(
+      z.object({
+        productId: z.string(),
+        quantity: z.number().positive(),
+      }),
+    )
+    .min(1),
 });
 
 export type CreateOrderInput = z.infer<typeof createOrderInputSchema>;
 
 export const createOrderOutputSchema = z.object({
   orderId: z.string(),
-  status: z.enum(['pending', 'confirmed']),
+  status: z.enum(["pending", "confirmed"]),
   totalAmount: z.number(),
 });
 
@@ -121,9 +128,16 @@ execute(input)
 
 ```typescript
 // executor.ts
-import { CreateOrderInput, CreateOrderOutput, createOrderInputSchema } from './schema';
+import {
+  CreateOrderInput,
+  CreateOrderOutput,
+  createOrderInputSchema,
+} from "./schema";
 
-export class CreateOrderExecutor implements IWorkflowExecutor<CreateOrderInput, CreateOrderOutput> {
+export class CreateOrderExecutor implements IWorkflowExecutor<
+  CreateOrderInput,
+  CreateOrderOutput
+> {
   constructor(
     private readonly orderRepository: IOrderRepository,
     private readonly userRepository: IUserRepository,
@@ -137,7 +151,7 @@ export class CreateOrderExecutor implements IWorkflowExecutor<CreateOrderInput, 
     // 2. データ取得
     const user = await this.userRepository.findById(validatedInput.userId);
     if (!user) {
-      throw new NotFoundError('User not found');
+      throw new NotFoundError("User not found");
     }
 
     // 3. ビジネスロジック
@@ -145,7 +159,7 @@ export class CreateOrderExecutor implements IWorkflowExecutor<CreateOrderInput, 
     const availability = await this.inventoryService.checkAvailability(items);
 
     if (!availability.allAvailable) {
-      throw new BusinessError('Some items are not available');
+      throw new BusinessError("Some items are not available");
     }
 
     const totalAmount = this.calculateTotal(items, availability.prices);
@@ -155,7 +169,7 @@ export class CreateOrderExecutor implements IWorkflowExecutor<CreateOrderInput, 
       userId: user.id,
       items,
       totalAmount,
-      status: 'pending',
+      status: "pending",
     });
 
     // 5. 結果返却
@@ -178,7 +192,7 @@ export class CreateOrderExecutor implements IWorkflowExecutor<CreateOrderInput, 
 
 ```typescript
 // __tests__/executor.test.ts
-describe('CreateOrderExecutor', () => {
+describe("CreateOrderExecutor", () => {
   let executor: CreateOrderExecutor;
   let mockOrderRepository: jest.Mocked<IOrderRepository>;
   let mockUserRepository: jest.Mocked<IUserRepository>;
@@ -196,27 +210,27 @@ describe('CreateOrderExecutor', () => {
     );
   });
 
-  it('should create order successfully', async () => {
+  it("should create order successfully", async () => {
     // Arrange
-    mockUserRepository.findById.mockResolvedValue({ id: 'user-1' });
+    mockUserRepository.findById.mockResolvedValue({ id: "user-1" });
     mockInventoryService.checkAvailability.mockResolvedValue({
       allAvailable: true,
-      prices: { 'product-1': 100 },
+      prices: { "product-1": 100 },
     });
     mockOrderRepository.create.mockResolvedValue({
-      id: 'order-1',
-      status: 'pending',
+      id: "order-1",
+      status: "pending",
       totalAmount: 200,
     });
 
     // Act
     const result = await executor.execute({
-      userId: 'user-1',
-      items: [{ productId: 'product-1', quantity: 2 }],
+      userId: "user-1",
+      items: [{ productId: "product-1", quantity: 2 }],
     });
 
     // Assert
-    expect(result.orderId).toBe('order-1');
+    expect(result.orderId).toBe("order-1");
     expect(result.totalAmount).toBe(200);
   });
 });

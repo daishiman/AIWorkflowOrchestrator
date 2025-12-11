@@ -52,6 +52,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+
 # ===================================================================
 # テンプレート2: マルチプラットフォームビルド
 # ===================================================================
@@ -61,7 +62,7 @@ name: Docker Multi-Platform Build
 on:
   push:
     branches: [main]
-    tags: ['v*.*.*']
+    tags: ["v*.*.*"]
 
 jobs:
   build-multi-platform:
@@ -110,6 +111,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+
 # ===================================================================
 # テンプレート3: 複数レジストリへの同時プッシュ
 # ===================================================================
@@ -118,7 +120,7 @@ name: Docker Multi-Registry Push
 
 on:
   push:
-    tags: ['v*.*.*']
+    tags: ["v*.*.*"]
 
 jobs:
   build-and-push:
@@ -171,6 +173,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+
 # ===================================================================
 # テンプレート4: マルチステージビルド + Secrets使用
 # ===================================================================
@@ -216,6 +219,7 @@ jobs:
             NODE_ENV=production
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
 
 # 対応するDockerfile例:
 # FROM node:20-alpine AS base
@@ -329,6 +333,7 @@ jobs:
           cache-from: type=gha,scope=frontend
           cache-to: type=gha,mode=max,scope=frontend
 
+
 # ===================================================================
 # テンプレート6: AWS ECR プッシュ（OIDC認証）
 # ===================================================================
@@ -374,6 +379,7 @@ jobs:
             ${{ steps.login-ecr.outputs.registry }}/${{ github.event.repository.name }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
 
 # ===================================================================
 # テンプレート7: セキュリティスキャン統合
@@ -433,13 +439,13 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ steps.meta.outputs.tags }}
-          format: 'sarif'
-          output: 'trivy-results.sarif'
+          format: "sarif"
+          output: "trivy-results.sarif"
 
       - name: Upload Trivy results to GitHub Security
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: "trivy-results.sarif"
 
       # スキャン成功時のみプッシュ
       - name: Push image
@@ -451,6 +457,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
+
 
 # ===================================================================
 # テンプレート8: 条件付きビルド（パス変更検出）

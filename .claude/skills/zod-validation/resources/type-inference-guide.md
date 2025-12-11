@@ -10,14 +10,14 @@ Zodの強力な型推論機能を活用して、ランタイムバリデーシ�
 ### z.infer の使用
 
 ```typescript
-import { z } from 'zod';
+import { z } from "zod";
 
 // スキーマ定義
 const userSchema = z.object({
   id: z.string().uuid(),
   email: z.string().email(),
   age: z.number().int().positive().optional(),
-  roles: z.array(z.enum(['admin', 'user', 'guest'])),
+  roles: z.array(z.enum(["admin", "user", "guest"])),
 });
 
 // 型推論
@@ -72,10 +72,7 @@ type InferredType = z.infer<typeof transformSchema>;
 
 ```typescript
 // バリデーション関数をジェネリック化
-function validate<T extends z.ZodSchema>(
-  schema: T,
-  data: unknown
-): z.infer<T> {
+function validate<T extends z.ZodSchema>(schema: T, data: unknown): z.infer<T> {
   return schema.parse(data);
 }
 
@@ -86,7 +83,7 @@ const user = validate(userSchema, rawData);
 // 安全な解析版
 function safeValidate<T extends z.ZodSchema>(
   schema: T,
-  data: unknown
+  data: unknown,
 ): z.SafeParseReturnType<z.input<T>, z.output<T>> {
   return schema.safeParse(data);
 }
@@ -144,16 +141,16 @@ type RequiredInput = z.infer<typeof requiredSchema>;
 ### 基本的な使用法
 
 ```typescript
-const resultSchema = z.discriminatedUnion('status', [
+const resultSchema = z.discriminatedUnion("status", [
   z.object({
-    status: z.literal('success'),
+    status: z.literal("success"),
     data: z.object({
       id: z.string(),
       value: z.number(),
     }),
   }),
   z.object({
-    status: z.literal('error'),
+    status: z.literal("error"),
     error: z.object({
       code: z.string(),
       message: z.string(),
@@ -170,7 +167,7 @@ type Result =
 
 // 型ガードとして使用
 function handleResult(result: Result) {
-  if (result.status === 'success') {
+  if (result.status === "success") {
     // TypeScript は result.data にアクセス可能と認識
     console.log(result.data.id);
   } else {
@@ -184,29 +181,31 @@ function handleResult(result: Result) {
 
 ```typescript
 // APIレスポンスの型付け
-const apiResponseSchema = z.discriminatedUnion('type', [
+const apiResponseSchema = z.discriminatedUnion("type", [
   z.object({
-    type: z.literal('user'),
+    type: z.literal("user"),
     payload: z.object({
       userId: z.string(),
       email: z.string(),
     }),
   }),
   z.object({
-    type: z.literal('product'),
+    type: z.literal("product"),
     payload: z.object({
       productId: z.string(),
       price: z.number(),
     }),
   }),
   z.object({
-    type: z.literal('order'),
+    type: z.literal("order"),
     payload: z.object({
       orderId: z.string(),
-      items: z.array(z.object({
-        productId: z.string(),
-        quantity: z.number(),
-      })),
+      items: z.array(
+        z.object({
+          productId: z.string(),
+          quantity: z.number(),
+        }),
+      ),
     }),
   }),
 ]);
@@ -232,7 +231,7 @@ const categorySchema: z.ZodType<Category> = z.lazy(() =>
     id: z.string(),
     name: z.string(),
     children: z.array(categorySchema).optional(),
-  })
+  }),
 );
 
 // 型推論
@@ -254,7 +253,7 @@ const personSchema: z.ZodType<Person> = z.lazy(() =>
     name: z.string(),
     friends: z.array(personSchema),
     bestFriend: personSchema.optional(),
-  })
+  }),
 );
 ```
 
@@ -264,8 +263,8 @@ const personSchema: z.ZodType<Person> = z.lazy(() =>
 
 ```typescript
 // 異なるIDを型レベルで区別
-const userIdSchema = z.string().uuid().brand<'UserId'>();
-const postIdSchema = z.string().uuid().brand<'PostId'>();
+const userIdSchema = z.string().uuid().brand<"UserId">();
+const postIdSchema = z.string().uuid().brand<"PostId">();
 
 type UserId = z.infer<typeof userIdSchema>;
 type PostId = z.infer<typeof postIdSchema>;
@@ -280,26 +279,26 @@ function getPost(id: PostId): Promise<Post> {
 }
 
 // 使用例
-const userId = userIdSchema.parse('123e4567-e89b-12d3-a456-426614174000');
-const postId = postIdSchema.parse('987fcdeb-51a2-3c4d-b5e6-789012345678');
+const userId = userIdSchema.parse("123e4567-e89b-12d3-a456-426614174000");
+const postId = postIdSchema.parse("987fcdeb-51a2-3c4d-b5e6-789012345678");
 
-getUser(userId);  // ✅ OK
-getUser(postId);  // ❌ 型エラー: PostId は UserId に代入できない
+getUser(userId); // ✅ OK
+getUser(postId); // ❌ 型エラー: PostId は UserId に代入できない
 ```
 
 ### 名目型の実現
 
 ```typescript
 // メールアドレスのブランド型
-const emailSchema = z.string().email().brand<'Email'>();
+const emailSchema = z.string().email().brand<"Email">();
 type Email = z.infer<typeof emailSchema>;
 
 // 正の整数のブランド型
-const positiveIntSchema = z.number().int().positive().brand<'PositiveInt'>();
+const positiveIntSchema = z.number().int().positive().brand<"PositiveInt">();
 type PositiveInt = z.infer<typeof positiveIntSchema>;
 
 // 通貨金額のブランド型
-const moneySchema = z.number().nonnegative().brand<'Money'>();
+const moneySchema = z.number().nonnegative().brand<"Money">();
 type Money = z.infer<typeof moneySchema>;
 ```
 
@@ -331,18 +330,22 @@ export const badUserSchema = z.object({
 
 ```typescript
 // schema.ts
-import { z } from 'zod';
+import { z } from "zod";
 
 // スキーマをエクスポート
-export const userSchema = z.object({ /* ... */ });
-export const postSchema = z.object({ /* ... */ });
+export const userSchema = z.object({
+  /* ... */
+});
+export const postSchema = z.object({
+  /* ... */
+});
 
 // 型もエクスポート
 export type User = z.infer<typeof userSchema>;
 export type Post = z.infer<typeof postSchema>;
 
 // 使用側
-import { userSchema, User, postSchema, Post } from './schema';
+import { userSchema, User, postSchema, Post } from "./schema";
 ```
 
 ### 3. 型アサーションの回避
@@ -375,7 +378,7 @@ const badSchema = z.object({
 const goodSchema: z.ZodType<TreeNode> = z.lazy(() =>
   z.object({
     children: z.array(goodSchema),
-  })
+  }),
 );
 ```
 
@@ -384,19 +387,19 @@ const goodSchema: z.ZodType<TreeNode> = z.lazy(() =>
 ```typescript
 // union の場合は discriminatedUnion を検討
 const schema = z.union([
-  z.object({ type: z.literal('a'), dataA: z.string() }),
-  z.object({ type: z.literal('b'), dataB: z.number() }),
+  z.object({ type: z.literal("a"), dataA: z.string() }),
+  z.object({ type: z.literal("b"), dataB: z.number() }),
 ]);
 
 // ✅ discriminatedUnion で型の絞り込みが効く
-const betterSchema = z.discriminatedUnion('type', [
-  z.object({ type: z.literal('a'), dataA: z.string() }),
-  z.object({ type: z.literal('b'), dataB: z.number() }),
+const betterSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("a"), dataA: z.string() }),
+  z.object({ type: z.literal("b"), dataB: z.number() }),
 ]);
 ```
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版リリース |
+| バージョン | 日付       | 変更内容     |
+| ---------- | ---------- | ------------ |
+| 1.0.0      | 2025-11-25 | 初版リリース |

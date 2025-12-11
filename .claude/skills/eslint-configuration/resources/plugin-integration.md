@@ -11,22 +11,23 @@ ESLintプラグインは、特定のフレームワークやパターンに対�
 **プラグイン**: `@typescript-eslint/eslint-plugin`
 
 **インストール**:
+
 ```bash
 pnpm add -D @typescript-eslint/eslint-plugin @typescript-eslint/parser
 ```
 
 **設定**:
+
 ```json
 {
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint"],
-  "extends": [
-    "plugin:@typescript-eslint/recommended"
-  ]
+  "extends": ["plugin:@typescript-eslint/recommended"]
 }
 ```
 
 **主要ルール**:
+
 - `@typescript-eslint/no-unused-vars`: TypeScript版未使用変数
 - `@typescript-eslint/no-explicit-any`: any使用警告
 - `@typescript-eslint/explicit-function-return-type`: 関数戻り値型必須
@@ -36,18 +37,17 @@ pnpm add -D @typescript-eslint/eslint-plugin @typescript-eslint/parser
 **プラグイン**: `eslint-plugin-react`, `eslint-plugin-react-hooks`
 
 **インストール**:
+
 ```bash
 pnpm add -D eslint-plugin-react eslint-plugin-react-hooks
 ```
 
 **設定**:
+
 ```json
 {
   "plugins": ["react", "react-hooks"],
-  "extends": [
-    "plugin:react/recommended",
-    "plugin:react-hooks/recommended"
-  ],
+  "extends": ["plugin:react/recommended", "plugin:react-hooks/recommended"],
   "settings": {
     "react": {
       "version": "detect"
@@ -57,6 +57,7 @@ pnpm add -D eslint-plugin-react eslint-plugin-react-hooks
 ```
 
 **主要ルール**:
+
 - `react-hooks/rules-of-hooks`: Hooksルール違反検出
 - `react-hooks/exhaustive-deps`: useEffect依存配列検証
 - `react/prop-types`: PropTypes検証（TypeScript使用時はoff）
@@ -68,11 +69,13 @@ pnpm add -D eslint-plugin-react eslint-plugin-react-hooks
 **目的**: インポート順序、循環依存検出
 
 **インストール**:
+
 ```bash
 pnpm add -D eslint-plugin-import
 ```
 
 **設定**:
+
 ```json
 {
   "plugins": ["import"],
@@ -102,11 +105,13 @@ pnpm add -D eslint-plugin-import
 **目的**: アーキテクチャルール強制（Clean Architecture等）
 
 **インストール**:
+
 ```bash
 pnpm add -D eslint-plugin-boundaries
 ```
 
 **設定例（ハイブリッドアーキテクチャ）**:
+
 ```json
 {
   "plugins": ["boundaries"],
@@ -145,11 +150,13 @@ pnpm add -D eslint-plugin-boundaries
 **目的**: セキュリティ脆弱性検出
 
 **インストール**:
+
 ```bash
 pnpm add -D eslint-plugin-security
 ```
 
 **設定**:
+
 ```json
 {
   "plugins": ["security"],
@@ -166,11 +173,13 @@ pnpm add -D eslint-plugin-security
 **目的**: Reactアクセシビリティ検証
 
 **インストール**:
+
 ```bash
 pnpm add -D eslint-plugin-jsx-a11y
 ```
 
 **設定**:
+
 ```json
 {
   "plugins": ["jsx-a11y"],
@@ -247,6 +256,7 @@ pnpm add -D eslint-plugin-jsx-a11y
 **エラー**: `Failed to load plugin 'react'`
 
 **解決**:
+
 ```bash
 pnpm add -D eslint-plugin-react
 ```
@@ -262,10 +272,11 @@ pnpm add -D eslint-plugin-react
 **エラー**: `Parsing error: Cannot read file 'tsconfig.json'`
 
 **解決**:
+
 ```json
 {
   "parserOptions": {
-    "project": "./tsconfig.json"  // 正しいパス指定
+    "project": "./tsconfig.json" // 正しいパス指定
   }
 }
 ```

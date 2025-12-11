@@ -16,10 +16,11 @@ Playwrightの最大の特徴は、多くの操作で自動的に要素が準備�
 // 2. 要素が表示されている
 // 3. 要素が安定している（アニメーション完了）
 // 4. 要素がクリック可能
-await page.getByRole('button').click();
+await page.getByRole("button").click();
 ```
 
 **自動待機が行われる操作**:
+
 - `click()`
 - `fill()`
 - `selectOption()`
@@ -40,13 +41,14 @@ await page.getByRole('button').click();
 await page.waitForSelector('[data-testid="success-message"]');
 
 // 要素が非表示になるまで待機
-await page.waitForSelector('[data-testid="loading"]', { state: 'hidden' });
+await page.waitForSelector('[data-testid="loading"]', { state: "hidden" });
 
 // 要素がDOMから削除されるまで待機
-await page.waitForSelector('[data-testid="modal"]', { state: 'detached' });
+await page.waitForSelector('[data-testid="modal"]', { state: "detached" });
 ```
 
 **stateオプション**:
+
 - `'attached'`: 要素がDOMに存在 (デフォルト)
 - `'detached'`: 要素がDOMから削除
 - `'visible'`: 要素が表示されている
@@ -58,16 +60,17 @@ await page.waitForSelector('[data-testid="modal"]', { state: 'detached' });
 
 ```typescript
 // DOMContentLoaded イベントまで待機
-await page.waitForLoadState('domcontentloaded');
+await page.waitForLoadState("domcontentloaded");
 
 // ページの完全な読み込みまで待機
-await page.waitForLoadState('load');
+await page.waitForLoadState("load");
 
 // ネットワークアイドル（500ms間ネットワーク通信なし）まで待機
-await page.waitForLoadState('networkidle');
+await page.waitForLoadState("networkidle");
 ```
 
 **使い分け**:
+
 - `'domcontentloaded'`: 最小限の待機、DOM構築完了時
 - `'load'`: 画像やスタイルシート含む全リソース読み込み完了時
 - `'networkidle'`: API呼び出しが完了するまで待つ場合
@@ -78,16 +81,16 @@ await page.waitForLoadState('networkidle');
 
 ```typescript
 // 完全一致
-await page.waitForURL('https://example.com/dashboard');
+await page.waitForURL("https://example.com/dashboard");
 
 // パターンマッチ
-await page.waitForURL('**/dashboard');
+await page.waitForURL("**/dashboard");
 
 // 正規表現
 await page.waitForURL(/\/dashboard$/);
 
 // 条件関数
-await page.waitForURL(url => url.searchParams.get('success') === 'true');
+await page.waitForURL((url) => url.searchParams.get("success") === "true");
 ```
 
 #### waitForFunction()
@@ -97,20 +100,20 @@ await page.waitForURL(url => url.searchParams.get('success') === 'true');
 ```typescript
 // ページ内のJavaScript関数が真を返すまで待機
 await page.waitForFunction(() => {
-  return document.querySelectorAll('.item').length > 5;
+  return document.querySelectorAll(".item").length > 5;
 });
 
 // 引数を渡す
 await page.waitForFunction(
-  count => document.querySelectorAll('.item').length >= count,
-  10
+  (count) => document.querySelectorAll(".item").length >= count,
+  10,
 );
 
 // ポーリング間隔を指定
-await page.waitForFunction(
-  () => document.title === 'Loaded',
-  { polling: 100, timeout: 5000 }
-);
+await page.waitForFunction(() => document.title === "Loaded", {
+  polling: 100,
+  timeout: 5000,
+});
 ```
 
 #### waitForResponse()
@@ -119,16 +122,16 @@ await page.waitForFunction(
 
 ```typescript
 // URLマッチ
-const responsePromise = page.waitForResponse('**/api/users');
-await page.getByRole('button', { name: 'Load Users' }).click();
+const responsePromise = page.waitForResponse("**/api/users");
+await page.getByRole("button", { name: "Load Users" }).click();
 const response = await responsePromise;
 const users = await response.json();
 
 // 条件関数
 const responsePromise = page.waitForResponse(
-  response => response.url().includes('/api/') && response.status() === 200
+  (response) => response.url().includes("/api/") && response.status() === 200,
 );
-await page.getByRole('button', { name: 'Submit' }).click();
+await page.getByRole("button", { name: "Submit" }).click();
 await responsePromise;
 ```
 
@@ -137,8 +140,8 @@ await responsePromise;
 特定のネットワークリクエストを待機します。
 
 ```typescript
-const requestPromise = page.waitForRequest('**/api/users');
-await page.getByRole('button', { name: 'Load Users' }).click();
+const requestPromise = page.waitForRequest("**/api/users");
+await page.getByRole("button", { name: "Load Users" }).click();
 const request = await requestPromise;
 console.log(request.method()); // GET, POST等
 ```
@@ -158,8 +161,8 @@ export default {
 test.setTimeout(120000); // 120秒
 
 // 個別操作のタイムアウト
-await page.getByRole('button').click({ timeout: 10000 }); // 10秒
-await expect(page.getByText('Loaded')).toBeVisible({ timeout: 15000 }); // 15秒
+await page.getByRole("button").click({ timeout: 10000 }); // 10秒
+await expect(page.getByText("Loaded")).toBeVisible({ timeout: 15000 }); // 15秒
 ```
 
 ## 待機アンチパターン
@@ -175,6 +178,7 @@ await page.waitForSelector('[data-testid="loaded"]');
 ```
 
 **理由**:
+
 - 不必要に遅い（条件が早く満たされても待つ）
 - 不安定（条件が遅れると失敗）
 - 保守性が低い
@@ -183,7 +187,7 @@ await page.waitForSelector('[data-testid="loaded"]');
 
 ```typescript
 // ❌ 悪い例
-await page.waitForLoadState('networkidle'); // すべての通信が止まるまで待つ
+await page.waitForLoadState("networkidle"); // すべての通信が止まるまで待つ
 await page.waitForTimeout(1000);
 await page.waitForSelector('[data-testid="button"]');
 
@@ -192,6 +196,7 @@ await page.waitForSelector('[data-testid="button"]');
 ```
 
 **理由**:
+
 - テスト実行時間が不必要に長くなる
 - networkidleは必ずしも必要ない
 
@@ -200,17 +205,17 @@ await page.waitForSelector('[data-testid="button"]');
 ### パターン1: API呼び出し後の待機
 
 ```typescript
-test('APIデータ読み込み', async ({ page }) => {
-  await page.goto('/users');
+test("APIデータ読み込み", async ({ page }) => {
+  await page.goto("/users");
 
   // API呼び出しを待つ
-  const responsePromise = page.waitForResponse('**/api/users');
-  await page.getByRole('button', { name: 'Load' }).click();
+  const responsePromise = page.waitForResponse("**/api/users");
+  await page.getByRole("button", { name: "Load" }).click();
   const response = await responsePromise;
 
   // データが表示されるまで待つ
-  await expect(page.getByRole('listitem')).toHaveCount(
-    (await response.json()).length
+  await expect(page.getByRole("listitem")).toHaveCount(
+    (await response.json()).length,
   );
 });
 ```
@@ -218,23 +223,23 @@ test('APIデータ読み込み', async ({ page }) => {
 ### パターン2: 動的コンテンツの読み込み
 
 ```typescript
-test('無限スクロール', async ({ page }) => {
-  await page.goto('/feed');
+test("無限スクロール", async ({ page }) => {
+  await page.goto("/feed");
 
   // 初期アイテム数
-  const initialCount = await page.getByRole('article').count();
+  const initialCount = await page.getByRole("article").count();
 
   // スクロール
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
 
   // 新しいアイテムが追加されるまで待機
   await page.waitForFunction(
-    count => document.querySelectorAll('article').length > count,
-    initialCount
+    (count) => document.querySelectorAll("article").length > count,
+    initialCount,
   );
 
   // 検証
-  const newCount = await page.getByRole('article').count();
+  const newCount = await page.getByRole("article").count();
   expect(newCount).toBeGreaterThan(initialCount);
 });
 ```
@@ -242,62 +247,62 @@ test('無限スクロール', async ({ page }) => {
 ### パターン3: モーダルの表示と非表示
 
 ```typescript
-test('モーダル操作', async ({ page }) => {
-  await page.goto('/');
+test("モーダル操作", async ({ page }) => {
+  await page.goto("/");
 
   // モーダルを開く
-  await page.getByRole('button', { name: 'Open Modal' }).click();
+  await page.getByRole("button", { name: "Open Modal" }).click();
 
   // モーダルが表示されるまで待機
-  await expect(page.getByRole('dialog')).toBeVisible();
+  await expect(page.getByRole("dialog")).toBeVisible();
 
   // モーダルを閉じる
-  await page.getByRole('button', { name: 'Close' }).click();
+  await page.getByRole("button", { name: "Close" }).click();
 
   // モーダルが非表示になるまで待機
-  await expect(page.getByRole('dialog')).toBeHidden();
+  await expect(page.getByRole("dialog")).toBeHidden();
 });
 ```
 
 ### パターン4: フォーム送信とリダイレクト
 
 ```typescript
-test('フォーム送信', async ({ page }) => {
-  await page.goto('/login');
+test("フォーム送信", async ({ page }) => {
+  await page.goto("/login");
 
-  await page.getByLabel('Email').fill('user@example.com');
-  await page.getByLabel('Password').fill('password');
+  await page.getByLabel("Email").fill("user@example.com");
+  await page.getByLabel("Password").fill("password");
 
   // URLが変わるまで待機
   const [response] = await Promise.all([
-    page.waitForURL('**/dashboard'),
-    page.getByRole('button', { name: 'Login' }).click()
+    page.waitForURL("**/dashboard"),
+    page.getByRole("button", { name: "Login" }).click(),
   ]);
 
   // ダッシュボード表示確認
-  await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
 });
 ```
 
 ### パターン5: ファイルアップロード
 
 ```typescript
-test('ファイルアップロード', async ({ page }) => {
-  await page.goto('/upload');
+test("ファイルアップロード", async ({ page }) => {
+  await page.goto("/upload");
 
   // ファイル選択
-  await page.getByLabel('File').setInputFiles('test-file.pdf');
+  await page.getByLabel("File").setInputFiles("test-file.pdf");
 
   // アップロード開始
-  const uploadPromise = page.waitForResponse('**/api/upload');
-  await page.getByRole('button', { name: 'Upload' }).click();
+  const uploadPromise = page.waitForResponse("**/api/upload");
+  await page.getByRole("button", { name: "Upload" }).click();
 
   // アップロード完了まで待機
   const response = await uploadPromise;
   expect(response.status()).toBe(200);
 
   // 成功メッセージ表示確認
-  await expect(page.getByText('Upload successful')).toBeVisible();
+  await expect(page.getByText("Upload successful")).toBeVisible();
 });
 ```
 
@@ -306,35 +311,35 @@ test('ファイルアップロード', async ({ page }) => {
 ### 待機のトレース
 
 ```typescript
-test('デバッグ', async ({ page }) => {
+test("デバッグ", async ({ page }) => {
   // 詳細ログ有効化
-  page.on('console', msg => console.log('PAGE LOG:', msg.text()));
+  page.on("console", (msg) => console.log("PAGE LOG:", msg.text()));
 
-  await page.goto('/');
+  await page.goto("/");
 
   // 待機時の状態確認
-  console.log('Waiting for selector...');
+  console.log("Waiting for selector...");
   await page.waitForSelector('[data-testid="loaded"]');
-  console.log('Selector found!');
+  console.log("Selector found!");
 
   // スクリーンショット撮影
-  await page.screenshot({ path: 'debug.png' });
+  await page.screenshot({ path: "debug.png" });
 });
 ```
 
 ### タイムアウトエラーのデバッグ
 
 ```typescript
-test('タイムアウトデバッグ', async ({ page }) => {
+test("タイムアウトデバッグ", async ({ page }) => {
   try {
     await page.waitForSelector('[data-testid="missing"]', { timeout: 5000 });
   } catch (error) {
     // エラー時の状態確認
-    console.log('Current URL:', page.url());
-    console.log('Page HTML:', await page.content());
+    console.log("Current URL:", page.url());
+    console.log("Page HTML:", await page.content());
 
     // スクリーンショット保存
-    await page.screenshot({ path: 'timeout-error.png' });
+    await page.screenshot({ path: "timeout-error.png" });
 
     throw error;
   }
@@ -347,13 +352,13 @@ test('タイムアウトデバッグ', async ({ page }) => {
 
 ```typescript
 // ❌ 遅い
-await page.goto('/');
-await page.waitForLoadState('networkidle'); // 不要な待機
-await page.getByRole('button').click();
+await page.goto("/");
+await page.waitForLoadState("networkidle"); // 不要な待機
+await page.getByRole("button").click();
 
 // ✅ 速い
-await page.goto('/');
-await page.getByRole('button').click(); // 自動待機で十分
+await page.goto("/");
+await page.getByRole("button").click(); // 自動待機で十分
 ```
 
 ### 並列待機
@@ -368,13 +373,14 @@ await page.waitForSelector('[data-testid="item3"]');
 await Promise.all([
   page.waitForSelector('[data-testid="item1"]'),
   page.waitForSelector('[data-testid="item2"]'),
-  page.waitForSelector('[data-testid="item3"]')
+  page.waitForSelector('[data-testid="item3"]'),
 ]);
 ```
 
 ## まとめ
 
 **待機戦略の原則**:
+
 1. **自動待機を信頼**: Playwrightの自動待機は強力
 2. **固定時間待機を避ける**: 必ず条件ベースの待機を使用
 3. **適切なタイムアウト設定**: 合理的なタイムアウトを設定
@@ -382,6 +388,7 @@ await Promise.all([
 5. **デバッグ情報を収集**: 待機失敗時の診断情報を残す
 
 **待機戦略の選択**:
+
 - **要素操作**: 自動待機（何もしない）
 - **ページ遷移**: `waitForURL()`
 - **API呼び出し**: `waitForResponse()`

@@ -2,9 +2,9 @@
  * ワークフロー関連の型定義
  */
 
-export type WorkflowStatus = 'active' | 'inactive';
+export type WorkflowStatus = "active" | "inactive";
 
-export type WorkflowType = 'file_watch';
+export type WorkflowType = "file_watch";
 
 export interface WorkflowBase {
   id: string;
@@ -16,7 +16,7 @@ export interface WorkflowBase {
   updatedAt: Date;
 }
 
-export type ExecutionStatus = 'pending' | 'running' | 'completed' | 'failed';
+export type ExecutionStatus = "pending" | "running" | "completed" | "failed";
 
 export interface ExecutionBase {
   id: string;
@@ -31,7 +31,7 @@ export interface ExecutionBase {
   createdAt: Date;
 }
 
-export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+export type LogLevel = "debug" | "info" | "warn" | "error";
 
 export interface LogBase {
   id: string;

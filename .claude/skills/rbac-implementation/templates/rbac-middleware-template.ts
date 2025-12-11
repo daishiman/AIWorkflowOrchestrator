@@ -3,19 +3,25 @@
  * Next.js App Router向けロールベースアクセス制御ミドルウェア
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { getSession } from '@/lib/auth';
+import { NextRequest, NextResponse } from "next/server";
+import { getSession } from "@/lib/auth";
 
 // ========================================
 // 型定義
 // ========================================
 
-type Role = 'ADMIN' | 'USER' | 'GUEST';
+type Role = "ADMIN" | "USER" | "GUEST";
 
 type Permission =
-  | 'user:create' | 'user:read' | 'user:update' | 'user:delete'
-  | 'workflow:create' | 'workflow:read' | 'workflow:update' | 'workflow:delete'
-  | 'admin:access';
+  | "user:create"
+  | "user:read"
+  | "user:update"
+  | "user:delete"
+  | "workflow:create"
+  | "workflow:read"
+  | "workflow:update"
+  | "workflow:delete"
+  | "admin:access";
 
 interface Session {
   userId: string;
@@ -28,16 +34,18 @@ interface Session {
 
 const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
   ADMIN: [
-    'user:create', 'user:read', 'user:update', 'user:delete',
-    'workflow:create', 'workflow:read', 'workflow:update', 'workflow:delete',
-    'admin:access',
+    "user:create",
+    "user:read",
+    "user:update",
+    "user:delete",
+    "workflow:create",
+    "workflow:read",
+    "workflow:update",
+    "workflow:delete",
+    "admin:access",
   ],
-  USER: [
-    'workflow:create', 'workflow:read', 'workflow:update',
-  ],
-  GUEST: [
-    'workflow:read',
-  ],
+  USER: ["workflow:create", "workflow:read", "workflow:update"],
+  GUEST: ["workflow:read"],
 };
 
 // ========================================
@@ -45,9 +53,9 @@ const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
 // ========================================
 
 const ROUTE_PERMISSIONS: Record<string, Permission> = {
-  '/admin': 'admin:access',
-  '/api/users': 'user:create',
-  '/api/workflows': 'workflow:create',
+  "/admin": "admin:access",
+  "/api/users": "user:create",
+  "/api/workflows": "workflow:create",
 };
 
 // ========================================
@@ -67,13 +75,13 @@ export async function middleware(request: NextRequest) {
 
   // 未認証
   if (!session) {
-    return NextResponse.redirect(new URL('/login', request.url));
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   // ルートベース権限チェック
   const requiredPermission = getRequiredPermission(pathname);
   if (requiredPermission && !hasPermission(session, requiredPermission)) {
-    return new NextResponse('Forbidden', { status: 403 });
+    return new NextResponse("Forbidden", { status: 403 });
   }
 
   return NextResponse.next();
@@ -83,17 +91,26 @@ export async function middleware(request: NextRequest) {
 // 権限チェック関数
 // ========================================
 
-export function hasPermission(session: Session, permission: Permission): boolean {
+export function hasPermission(
+  session: Session,
+  permission: Permission,
+): boolean {
   const permissions = ROLE_PERMISSIONS[session.role];
   return permissions.includes(permission);
 }
 
-export function hasAnyPermission(session: Session, permissions: Permission[]): boolean {
-  return permissions.some(p => hasPermission(session, p));
+export function hasAnyPermission(
+  session: Session,
+  permissions: Permission[],
+): boolean {
+  return permissions.some((p) => hasPermission(session, p));
 }
 
-export function hasAllPermissions(session: Session, permissions: Permission[]): boolean {
-  return permissions.every(p => hasPermission(session, p));
+export function hasAllPermissions(
+  session: Session,
+  permissions: Permission[],
+): boolean {
+  return permissions.every((p) => hasPermission(session, p));
 }
 
 // ========================================
@@ -102,14 +119,14 @@ export function hasAllPermissions(session: Session, permissions: Permission[]): 
 
 function isPublicRoute(pathname: string): boolean {
   const publicRoutes = [
-    '/',
-    '/login',
-    '/signup',
-    '/api/auth/callback',
-    '/api/health',
+    "/",
+    "/login",
+    "/signup",
+    "/api/auth/callback",
+    "/api/health",
   ];
 
-  return publicRoutes.some(route => pathname.startsWith(route));
+  return publicRoutes.some((route) => pathname.startsWith(route));
 }
 
 function getRequiredPermission(pathname: string): Permission | null {
@@ -130,17 +147,17 @@ function getRequiredPermission(pathname: string): Permission | null {
  */
 export function requirePermission(permission: Permission) {
   return async (
-    handler: (request: Request, session: Session) => Promise<Response>
+    handler: (request: Request, session: Session) => Promise<Response>,
   ) => {
     return async (request: Request) => {
       const session = await getSession();
 
       if (!session) {
-        return new Response('Unauthorized', { status: 401 });
+        return new Response("Unauthorized", { status: 401 });
       }
 
       if (!hasPermission(session, permission)) {
-        return new Response('Forbidden', { status: 403 });
+        return new Response("Forbidden", { status: 403 });
       }
 
       return await handler(request, session);
@@ -162,17 +179,17 @@ export function requirePermission(permission: Permission) {
  */
 export function requireRole(...roles: Role[]) {
   return async (
-    handler: (request: Request, session: Session) => Promise<Response>
+    handler: (request: Request, session: Session) => Promise<Response>,
   ) => {
     return async (request: Request) => {
       const session = await getSession();
 
       if (!session) {
-        return new Response('Unauthorized', { status: 401 });
+        return new Response("Unauthorized", { status: 401 });
       }
 
       if (!roles.includes(session.role)) {
-        return new Response('Forbidden', { status: 403 });
+        return new Response("Forbidden", { status: 403 });
       }
 
       return await handler(request, session);
@@ -193,9 +210,5 @@ export function requireRole(...roles: Role[]) {
 // ========================================
 
 export const config = {
-  matcher: [
-    '/dashboard/:path*',
-    '/admin/:path*',
-    '/api/:path*',
-  ],
+  matcher: ["/dashboard/:path*", "/admin/:path*", "/api/:path*"],
 };

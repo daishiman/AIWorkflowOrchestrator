@@ -223,26 +223,25 @@ sequenceDiagram
 **HTML:**
 
 ```html
-<div class="mermaid">
-sequenceDiagram
-    ...
-</div>
+<div class="mermaid">sequenceDiagram ...</div>
 <script src="https://cdn.jsdelivr.net/pnpm/mermaid/dist/mermaid.min.js"></script>
-<script>mermaid.initialize({startOnLoad:true});</script>
+<script>
+  mermaid.initialize({ startOnLoad: true });
+</script>
 ```
 
 ### カスタマイズ
 
 ```javascript
 mermaid.initialize({
-  theme: 'default',  // default, forest, dark, neutral
-  securityLevel: 'loose',
+  theme: "default", // default, forest, dark, neutral
+  securityLevel: "loose",
   sequence: {
     diagramMarginX: 50,
     diagramMarginY: 10,
     actorMargin: 50,
     width: 150,
-    height: 65
-  }
+    height: 65,
+  },
 });
 ```

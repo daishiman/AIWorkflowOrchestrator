@@ -10,8 +10,8 @@
  *   node check-error-handling.mjs ./src/app
  */
 
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
 class ErrorHandlingChecker {
   constructor(appDir) {
@@ -39,7 +39,7 @@ class ErrorHandlingChecker {
     }
 
     console.log(`\n🔍 Error Handling Check: ${this.appDir}\n`);
-    console.log('='.repeat(60));
+    console.log("=".repeat(60));
 
     this.checkRootFiles();
     this.scanDirectory(this.appDir);
@@ -50,49 +50,59 @@ class ErrorHandlingChecker {
   }
 
   checkRootFiles() {
-    console.log('\n📁 Root Level Files:');
-    console.log('-'.repeat(40));
+    console.log("\n📁 Root Level Files:");
+    console.log("-".repeat(40));
 
     // global-error.tsx
-    const globalErrorPath = path.join(this.appDir, 'global-error.tsx');
+    const globalErrorPath = path.join(this.appDir, "global-error.tsx");
     this.stats.hasGlobalError = fs.existsSync(globalErrorPath);
-    console.log(`  global-error.tsx: ${this.stats.hasGlobalError ? '✅ Found' : '❌ Missing'}`);
+    console.log(
+      `  global-error.tsx: ${this.stats.hasGlobalError ? "✅ Found" : "❌ Missing"}`,
+    );
 
     if (!this.stats.hasGlobalError) {
       this.issues.push({
-        type: 'warning',
-        message: 'global-error.tsx が見つかりません（Root Layoutのエラーを捕捉できません）',
+        type: "warning",
+        message:
+          "global-error.tsx が見つかりません（Root Layoutのエラーを捕捉できません）",
       });
     }
 
     // error.tsx
-    const errorPath = path.join(this.appDir, 'error.tsx');
+    const errorPath = path.join(this.appDir, "error.tsx");
     this.stats.hasRootError = fs.existsSync(errorPath);
-    console.log(`  error.tsx: ${this.stats.hasRootError ? '✅ Found' : '⚠️  Missing'}`);
+    console.log(
+      `  error.tsx: ${this.stats.hasRootError ? "✅ Found" : "⚠️  Missing"}`,
+    );
 
     if (!this.stats.hasRootError) {
       this.issues.push({
-        type: 'warning',
-        message: 'app/error.tsx が見つかりません',
+        type: "warning",
+        message: "app/error.tsx が見つかりません",
       });
     }
 
     // not-found.tsx
-    const notFoundPath = path.join(this.appDir, 'not-found.tsx');
+    const notFoundPath = path.join(this.appDir, "not-found.tsx");
     this.stats.hasRootNotFound = fs.existsSync(notFoundPath);
-    console.log(`  not-found.tsx: ${this.stats.hasRootNotFound ? '✅ Found' : '❌ Missing'}`);
+    console.log(
+      `  not-found.tsx: ${this.stats.hasRootNotFound ? "✅ Found" : "❌ Missing"}`,
+    );
 
     if (!this.stats.hasRootNotFound) {
       this.issues.push({
-        type: 'error',
-        message: 'app/not-found.tsx が見つかりません（404ページがデフォルトになります）',
+        type: "error",
+        message:
+          "app/not-found.tsx が見つかりません（404ページがデフォルトになります）",
       });
     }
 
     // loading.tsx
-    const loadingPath = path.join(this.appDir, 'loading.tsx');
+    const loadingPath = path.join(this.appDir, "loading.tsx");
     this.stats.hasRootLoading = fs.existsSync(loadingPath);
-    console.log(`  loading.tsx: ${this.stats.hasRootLoading ? '✅ Found' : '⚠️  Optional'}`);
+    console.log(
+      `  loading.tsx: ${this.stats.hasRootLoading ? "✅ Found" : "⚠️  Optional"}`,
+    );
 
     // error.tsxの内容チェック
     if (this.stats.hasRootError) {
@@ -106,80 +116,96 @@ class ErrorHandlingChecker {
   }
 
   validateErrorFile(filePath) {
-    const content = fs.readFileSync(filePath, 'utf-8');
+    const content = fs.readFileSync(filePath, "utf-8");
 
     // 'use client' チェック
-    if (!content.includes("'use client'") && !content.includes('"use client"')) {
+    if (
+      !content.includes("'use client'") &&
+      !content.includes('"use client"')
+    ) {
       this.issues.push({
-        type: 'error',
+        type: "error",
         message: `${path.relative(this.appDir, filePath)}: 'use client' ディレクティブがありません`,
       });
     }
 
     // reset関数の使用チェック
-    if (!content.includes('reset')) {
+    if (!content.includes("reset")) {
       this.issues.push({
-        type: 'warning',
+        type: "warning",
         message: `${path.relative(this.appDir, filePath)}: reset関数が使用されていません`,
       });
     }
   }
 
   validateGlobalErrorFile(filePath) {
-    const content = fs.readFileSync(filePath, 'utf-8');
+    const content = fs.readFileSync(filePath, "utf-8");
 
     // 'use client' チェック
-    if (!content.includes("'use client'") && !content.includes('"use client"')) {
+    if (
+      !content.includes("'use client'") &&
+      !content.includes('"use client"')
+    ) {
       this.issues.push({
-        type: 'error',
+        type: "error",
         message: `global-error.tsx: 'use client' ディレクティブがありません`,
       });
     }
 
     // html/body タグチェック
-    if (!content.includes('<html') || !content.includes('<body')) {
+    if (!content.includes("<html") || !content.includes("<body")) {
       this.issues.push({
-        type: 'error',
-        message: 'global-error.tsx: <html>と<body>タグが必要です',
+        type: "error",
+        message: "global-error.tsx: <html>と<body>タグが必要です",
       });
     }
   }
 
-  scanDirectory(dir, relativePath = '') {
+  scanDirectory(dir, relativePath = "") {
     const entries = fs.readdirSync(dir, { withFileTypes: true });
 
     // このディレクトリがルートセグメントか
-    const hasPage = entries.some((e) => e.name === 'page.tsx' || e.name === 'page.ts');
+    const hasPage = entries.some(
+      (e) => e.name === "page.tsx" || e.name === "page.ts",
+    );
 
     if (hasPage) {
       this.stats.totalSegments++;
 
       const segmentInfo = {
-        path: relativePath || '/',
+        path: relativePath || "/",
         hasError: false,
         hasNotFound: false,
         hasLoading: false,
-        isDynamic: relativePath.includes('['),
+        isDynamic: relativePath.includes("["),
       };
 
       // 各ファイルの存在チェック
-      if (entries.some((e) => e.name === 'error.tsx' || e.name === 'error.ts')) {
+      if (
+        entries.some((e) => e.name === "error.tsx" || e.name === "error.ts")
+      ) {
         segmentInfo.hasError = true;
         this.stats.segmentsWithError++;
 
         // error.tsxの内容検証
-        const errorPath = path.join(dir, 'error.tsx');
+        const errorPath = path.join(dir, "error.tsx");
         if (fs.existsSync(errorPath)) {
           this.validateErrorFile(errorPath);
         }
       }
 
-      if (entries.some((e) => e.name === 'not-found.tsx' || e.name === 'not-found.ts')) {
+      if (
+        entries.some(
+          (e) => e.name === "not-found.tsx" || e.name === "not-found.ts",
+        )
+      ) {
         segmentInfo.hasNotFound = true;
         this.stats.segmentsWithNotFound++;
       }
 
-      if (entries.some((e) => e.name === 'loading.tsx' || e.name === 'loading.ts')) {
+      if (
+        entries.some((e) => e.name === "loading.tsx" || e.name === "loading.ts")
+      ) {
         segmentInfo.hasLoading = true;
         this.stats.segmentsWithLoading++;
       }
@@ -189,14 +215,17 @@ class ErrorHandlingChecker {
         this.stats.dynamicRoutes++;
 
         // 動的ルートでnotFound()が使用されているかチェック
-        const pagePath = path.join(dir, 'page.tsx');
+        const pagePath = path.join(dir, "page.tsx");
         if (fs.existsSync(pagePath)) {
-          const pageContent = fs.readFileSync(pagePath, 'utf-8');
-          if (pageContent.includes('notFound()') || pageContent.includes('notFound(')) {
+          const pageContent = fs.readFileSync(pagePath, "utf-8");
+          if (
+            pageContent.includes("notFound()") ||
+            pageContent.includes("notFound(")
+          ) {
             this.stats.dynamicRoutesWithNotFound++;
           } else {
             this.suggestions.push(
-              `${relativePath}: 動的ルートで notFound() の使用を検討してください`
+              `${relativePath}: 動的ルートで notFound() の使用を検討してください`,
             );
           }
         }
@@ -204,9 +233,9 @@ class ErrorHandlingChecker {
 
       // 出力
       console.log(`\n📄 ${segmentInfo.path}`);
-      console.log(`  error.tsx: ${segmentInfo.hasError ? '✅' : '—'}`);
-      console.log(`  not-found.tsx: ${segmentInfo.hasNotFound ? '✅' : '—'}`);
-      console.log(`  loading.tsx: ${segmentInfo.hasLoading ? '✅' : '—'}`);
+      console.log(`  error.tsx: ${segmentInfo.hasError ? "✅" : "—"}`);
+      console.log(`  not-found.tsx: ${segmentInfo.hasNotFound ? "✅" : "—"}`);
+      console.log(`  loading.tsx: ${segmentInfo.hasLoading ? "✅" : "—"}`);
       if (segmentInfo.isDynamic) {
         console.log(`  [Dynamic Route]`);
       }
@@ -214,7 +243,11 @@ class ErrorHandlingChecker {
 
     // サブディレクトリを再帰的にチェック
     for (const entry of entries) {
-      if (entry.isDirectory() && !entry.name.startsWith('.') && entry.name !== 'node_modules') {
+      if (
+        entry.isDirectory() &&
+        !entry.name.startsWith(".") &&
+        entry.name !== "node_modules"
+      ) {
         const subPath = path.join(relativePath, entry.name);
         this.scanDirectory(path.join(dir, entry.name), subPath);
       }
@@ -223,37 +256,49 @@ class ErrorHandlingChecker {
 
   analyzeResults() {
     // カバレッジ分析
-    const errorCoverage = this.stats.totalSegments > 0
-      ? (this.stats.segmentsWithError / this.stats.totalSegments) * 100
-      : 0;
+    const errorCoverage =
+      this.stats.totalSegments > 0
+        ? (this.stats.segmentsWithError / this.stats.totalSegments) * 100
+        : 0;
 
     if (errorCoverage < 50 && this.stats.totalSegments > 3) {
-      this.suggestions.push('error.tsx のカバレッジが低いです。重要なルートには個別のerror.tsxを検討してください');
+      this.suggestions.push(
+        "error.tsx のカバレッジが低いです。重要なルートには個別のerror.tsxを検討してください",
+      );
     }
 
     // 動的ルートの分析
-    if (this.stats.dynamicRoutes > 0 && this.stats.dynamicRoutesWithNotFound < this.stats.dynamicRoutes) {
+    if (
+      this.stats.dynamicRoutes > 0 &&
+      this.stats.dynamicRoutesWithNotFound < this.stats.dynamicRoutes
+    ) {
       this.suggestions.push(
-        `${this.stats.dynamicRoutes - this.stats.dynamicRoutesWithNotFound}/${this.stats.dynamicRoutes} の動的ルートで notFound() が使用されていません`
+        `${this.stats.dynamicRoutes - this.stats.dynamicRoutesWithNotFound}/${this.stats.dynamicRoutes} の動的ルートで notFound() が使用されていません`,
       );
     }
 
     // loadingの提案
     if (this.stats.segmentsWithLoading === 0 && this.stats.totalSegments > 0) {
-      this.suggestions.push('loading.tsx がありません。データフェッチを行うページには追加を検討してください');
+      this.suggestions.push(
+        "loading.tsx がありません。データフェッチを行うページには追加を検討してください",
+      );
     }
   }
 
   printStats() {
-    console.log('\n' + '='.repeat(60));
-    console.log('📊 Summary:');
-    console.log('-'.repeat(40));
+    console.log("\n" + "=".repeat(60));
+    console.log("📊 Summary:");
+    console.log("-".repeat(40));
     console.log(`  Total Segments: ${this.stats.totalSegments}`);
-    console.log(`  With error.tsx: ${this.stats.segmentsWithError} (${this.percentage(this.stats.segmentsWithError, this.stats.totalSegments)}%)`);
+    console.log(
+      `  With error.tsx: ${this.stats.segmentsWithError} (${this.percentage(this.stats.segmentsWithError, this.stats.totalSegments)}%)`,
+    );
     console.log(`  With not-found.tsx: ${this.stats.segmentsWithNotFound}`);
     console.log(`  With loading.tsx: ${this.stats.segmentsWithLoading}`);
     console.log(`  Dynamic Routes: ${this.stats.dynamicRoutes}`);
-    console.log(`  Dynamic with notFound(): ${this.stats.dynamicRoutesWithNotFound}`);
+    console.log(
+      `  Dynamic with notFound(): ${this.stats.dynamicRoutesWithNotFound}`,
+    );
 
     // スコア計算
     const score = this.calculateScore();
@@ -274,14 +319,18 @@ class ErrorHandlingChecker {
 
     // error.tsxカバレッジ (20点)
     if (this.stats.totalSegments > 0) {
-      score += Math.round((this.stats.segmentsWithError / this.stats.totalSegments) * 20);
+      score += Math.round(
+        (this.stats.segmentsWithError / this.stats.totalSegments) * 20,
+      );
     } else {
       score += 20;
     }
 
     // 動的ルートでのnotFound()使用 (20点)
     if (this.stats.dynamicRoutes > 0) {
-      score += Math.round((this.stats.dynamicRoutesWithNotFound / this.stats.dynamicRoutes) * 20);
+      score += Math.round(
+        (this.stats.dynamicRoutesWithNotFound / this.stats.dynamicRoutes) * 20,
+      );
     } else {
       score += 20;
     }
@@ -295,14 +344,14 @@ class ErrorHandlingChecker {
   }
 
   printIssues() {
-    console.log('\n⚠️  Issues:');
-    console.log('-'.repeat(40));
+    console.log("\n⚠️  Issues:");
+    console.log("-".repeat(40));
 
     if (this.issues.length === 0) {
-      console.log('  ✅ No issues found');
+      console.log("  ✅ No issues found");
     } else {
-      const errors = this.issues.filter((i) => i.type === 'error');
-      const warnings = this.issues.filter((i) => i.type === 'warning');
+      const errors = this.issues.filter((i) => i.type === "error");
+      const warnings = this.issues.filter((i) => i.type === "warning");
 
       for (const error of errors) {
         console.log(`  ❌ ${error.message}`);
@@ -314,26 +363,26 @@ class ErrorHandlingChecker {
   }
 
   printSuggestions() {
-    console.log('\n💡 Suggestions:');
-    console.log('-'.repeat(40));
+    console.log("\n💡 Suggestions:");
+    console.log("-".repeat(40));
 
     if (this.suggestions.length === 0) {
-      console.log('  ✅ No additional suggestions');
+      console.log("  ✅ No additional suggestions");
     } else {
       for (const suggestion of this.suggestions) {
         console.log(`  → ${suggestion}`);
       }
     }
 
-    console.log('\n' + '='.repeat(60) + '\n');
+    console.log("\n" + "=".repeat(60) + "\n");
   }
 }
 
 // Main execution
 const args = process.argv.slice(2);
 if (args.length === 0) {
-  console.log('Usage: node check-error-handling.mjs <app-directory>');
-  console.log('Example: node check-error-handling.mjs ./src/app');
+  console.log("Usage: node check-error-handling.mjs <app-directory>");
+  console.log("Example: node check-error-handling.mjs ./src/app");
   process.exit(1);
 }
 

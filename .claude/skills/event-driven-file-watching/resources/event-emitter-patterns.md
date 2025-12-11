@@ -5,8 +5,8 @@
 ### 1. 継承パターン
 
 ```typescript
-import { EventEmitter } from 'events';
-import type { Stats } from 'fs';
+import { EventEmitter } from "events";
+import type { Stats } from "fs";
 
 interface FileWatcherEvents {
   fileAdded: (event: { path: string; stats?: Stats }) => void;
@@ -25,12 +25,16 @@ class FileWatcher extends EventEmitter {
 
   // 型安全なemit
   protected emitFileAdded(path: string, stats?: Stats): boolean {
-    return this.emit('fileAdded', { path, stats, timestamp: new Date().toISOString() });
+    return this.emit("fileAdded", {
+      path,
+      stats,
+      timestamp: new Date().toISOString(),
+    });
   }
 
   // 型安全なon
-  onFileAdded(handler: FileWatcherEvents['fileAdded']): this {
-    return this.on('fileAdded', handler);
+  onFileAdded(handler: FileWatcherEvents["fileAdded"]): this {
+    return this.on("fileAdded", handler);
   }
 }
 ```
@@ -38,7 +42,7 @@ class FileWatcher extends EventEmitter {
 ### 2. コンポジションパターン
 
 ```typescript
-import { EventEmitter } from 'events';
+import { EventEmitter } from "events";
 
 class FileWatcher {
   private emitter: EventEmitter;
@@ -76,10 +80,10 @@ class FileWatcher extends EventEmitter {
     super();
 
     // エラーリスナーがない場合のフォールバック
-    this.on('error', (error) => {
-      if (this.listenerCount('error') === 1) {
+    this.on("error", (error) => {
+      if (this.listenerCount("error") === 1) {
         // デフォルトハンドラーのみ = ユーザーハンドラーなし
-        console.error('[FileWatcher] Unhandled error:', error);
+        console.error("[FileWatcher] Unhandled error:", error);
         // プロセスをクラッシュさせない
       }
     });
@@ -95,19 +99,22 @@ class WatcherError extends Error {
     message: string,
     public readonly code: string,
     public readonly path?: string,
-    public readonly recoverable: boolean = true
+    public readonly recoverable: boolean = true,
   ) {
     super(message);
-    this.name = 'WatcherError';
+    this.name = "WatcherError";
   }
 
-  static fromNodeError(err: NodeJS.ErrnoException, path?: string): WatcherError {
-    const recoverable = ['EACCES', 'ENOENT', 'EMFILE'].includes(err.code || '');
+  static fromNodeError(
+    err: NodeJS.ErrnoException,
+    path?: string,
+  ): WatcherError {
+    const recoverable = ["EACCES", "ENOENT", "EMFILE"].includes(err.code || "");
     return new WatcherError(
       err.message,
-      err.code || 'UNKNOWN',
+      err.code || "UNKNOWN",
       path || err.path,
-      recoverable
+      recoverable,
     );
   }
 }
@@ -125,7 +132,7 @@ class FileWatcher extends EventEmitter {
 
   onWithCleanup<E extends keyof FileWatcherEvents>(
     event: E,
-    handler: FileWatcherEvents[E]
+    handler: FileWatcherEvents[E],
   ): () => void {
     this.on(event, handler as (...args: any[]) => void);
 
@@ -138,7 +145,7 @@ class FileWatcher extends EventEmitter {
   }
 
   cleanup(): void {
-    this.cleanupHandlers.forEach(fn => fn());
+    this.cleanupHandlers.forEach((fn) => fn());
     this.cleanupHandlers = [];
     this.removeAllListeners();
   }
@@ -149,20 +156,20 @@ class FileWatcher extends EventEmitter {
 
 ```typescript
 // 一度だけ実行
-watcher.once('ready', () => {
-  console.log('Watcher is ready');
+watcher.once("ready", () => {
+  console.log("Watcher is ready");
 });
 
 // 継続的に実行
-watcher.on('fileAdded', (event) => {
+watcher.on("fileAdded", (event) => {
   processFile(event.path);
 });
 
 // プロミス化（一度だけ）
 async function waitForReady(watcher: FileWatcher): Promise<void> {
   return new Promise((resolve, reject) => {
-    watcher.once('ready', resolve);
-    watcher.once('error', reject);
+    watcher.once("ready", resolve);
+    watcher.once("error", reject);
   });
 }
 ```
@@ -197,7 +204,7 @@ class AsyncEventEmitter extends EventEmitter {
         try {
           await listener(...item.args);
         } catch (error) {
-          this.emit('error', error);
+          this.emit("error", error);
         }
       }
     }
@@ -219,7 +226,7 @@ class BackpressureEventEmitter extends EventEmitter {
     if (this.eventQueue.length >= this.maxQueueSize) {
       if (!this.paused) {
         this.paused = true;
-        this.emit('pause');
+        this.emit("pause");
       }
       return false;
     }
@@ -237,7 +244,7 @@ class BackpressureEventEmitter extends EventEmitter {
 
     if (this.paused && this.eventQueue.length < this.maxQueueSize / 2) {
       this.paused = false;
-      this.emit('resume');
+      this.emit("resume");
     }
   }
 }
@@ -248,10 +255,12 @@ class BackpressureEventEmitter extends EventEmitter {
 ## TypedEventEmitter パターン
 
 ```typescript
-import { EventEmitter } from 'events';
+import { EventEmitter } from "events";
 
 // 厳密な型定義
-interface TypedEventEmitter<T extends Record<string, (...args: any[]) => void>> {
+interface TypedEventEmitter<
+  T extends Record<string, (...args: any[]) => void>,
+> {
   on<K extends keyof T>(event: K, listener: T[K]): this;
   once<K extends keyof T>(event: K, listener: T[K]): this;
   off<K extends keyof T>(event: K, listener: T[K]): this;
@@ -280,15 +289,15 @@ class TypedFileWatcher
 
 ```typescript
 // 1. エラーリスナーなし（プロセスクラッシュの原因）
-watcher.emit('error', new Error('Something went wrong'));
+watcher.emit("error", new Error("Something went wrong"));
 
 // 2. リスナー上限超過
 for (let i = 0; i < 100; i++) {
-  watcher.on('fileAdded', handler); // メモリリーク
+  watcher.on("fileAdded", handler); // メモリリーク
 }
 
 // 3. 同期的な重い処理
-watcher.on('fileAdded', (path) => {
+watcher.on("fileAdded", (path) => {
   const data = fs.readFileSync(path); // ブロッキング
   processSync(data);
 });
@@ -298,15 +307,15 @@ watcher.on('fileAdded', (path) => {
 
 ```typescript
 // 1. エラーリスナー必須
-watcher.on('error', (error) => {
-  logger.error('Watcher error:', error);
+watcher.on("error", (error) => {
+  logger.error("Watcher error:", error);
 });
 
 // 2. リスナー数制限
 watcher.setMaxListeners(10);
 
 // 3. 非同期処理
-watcher.on('fileAdded', async (path) => {
+watcher.on("fileAdded", async (path) => {
   const data = await fs.promises.readFile(path);
   await processAsync(data);
 });

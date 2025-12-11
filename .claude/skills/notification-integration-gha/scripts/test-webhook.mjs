@@ -17,18 +17,19 @@
  *   node test-webhook.mjs --teams https://outlook.office.com/webhook/... "Test message"
  */
 
-import https from 'https';
-import { URL } from 'url';
+import https from "https";
+import { URL } from "url";
 
 // デフォルトメッセージ
-const DEFAULT_MESSAGE = '🧪 GitHub Actions Webhook Test';
+const DEFAULT_MESSAGE = "🧪 GitHub Actions Webhook Test";
 
 // Webhook種別を自動検出
 function detectWebhookType(url) {
-  if (url.includes('hooks.slack.com')) return 'slack';
-  if (url.includes('discord.com')) return 'discord';
-  if (url.includes('webhook.office.com') || url.includes('outlook.office.com')) return 'teams';
-  return 'unknown';
+  if (url.includes("hooks.slack.com")) return "slack";
+  if (url.includes("discord.com")) return "discord";
+  if (url.includes("webhook.office.com") || url.includes("outlook.office.com"))
+    return "teams";
+  return "unknown";
 }
 
 // Slack用ペイロード生成
@@ -37,29 +38,29 @@ function createSlackPayload(message) {
     text: message,
     blocks: [
       {
-        type: 'section',
+        type: "section",
         text: {
-          type: 'mrkdwn',
-          text: `*${message}*`
-        }
+          type: "mrkdwn",
+          text: `*${message}*`,
+        },
       },
       {
-        type: 'section',
+        type: "section",
         fields: [
-          { type: 'mrkdwn', text: '*Script:*\ntest-webhook.mjs' },
-          { type: 'mrkdwn', text: '*Timestamp:*\n' + new Date().toISOString() }
-        ]
+          { type: "mrkdwn", text: "*Script:*\ntest-webhook.mjs" },
+          { type: "mrkdwn", text: "*Timestamp:*\n" + new Date().toISOString() },
+        ],
       },
       {
-        type: 'context',
+        type: "context",
         elements: [
           {
-            type: 'mrkdwn',
-            text: '✅ Webhook is working correctly!'
-          }
-        ]
-      }
-    ]
+            type: "mrkdwn",
+            text: "✅ Webhook is working correctly!",
+          },
+        ],
+      },
+    ],
   };
 }
 
@@ -69,42 +70,42 @@ function createDiscordPayload(message) {
     content: message,
     embeds: [
       {
-        title: '🧪 Webhook Test',
-        description: 'This is a test message from test-webhook.mjs',
+        title: "🧪 Webhook Test",
+        description: "This is a test message from test-webhook.mjs",
         color: 3066993, // 緑色
         fields: [
-          { name: 'Script', value: 'test-webhook.mjs', inline: true },
-          { name: 'Status', value: '✅ Working', inline: true },
-          { name: 'Timestamp', value: new Date().toISOString(), inline: false }
+          { name: "Script", value: "test-webhook.mjs", inline: true },
+          { name: "Status", value: "✅ Working", inline: true },
+          { name: "Timestamp", value: new Date().toISOString(), inline: false },
         ],
         footer: {
-          text: 'GitHub Actions Webhook Tester'
+          text: "GitHub Actions Webhook Tester",
         },
-        timestamp: new Date().toISOString()
-      }
-    ]
+        timestamp: new Date().toISOString(),
+      },
+    ],
   };
 }
 
 // MS Teams用ペイロード生成
 function createTeamsPayload(message) {
   return {
-    '@type': 'MessageCard',
-    '@context': 'https://schema.org/extensions',
-    summary: 'Webhook Test',
-    themeColor: '0078D4',
-    title: '🧪 Webhook Test',
+    "@type": "MessageCard",
+    "@context": "https://schema.org/extensions",
+    summary: "Webhook Test",
+    themeColor: "0078D4",
+    title: "🧪 Webhook Test",
     sections: [
       {
         activityTitle: message,
-        activitySubtitle: 'test-webhook.mjs',
+        activitySubtitle: "test-webhook.mjs",
         facts: [
-          { name: 'Status', value: '✅ Working' },
-          { name: 'Timestamp', value: new Date().toISOString() }
+          { name: "Status", value: "✅ Working" },
+          { name: "Timestamp", value: new Date().toISOString() },
         ],
-        markdown: true
-      }
-    ]
+        markdown: true,
+      },
+    ],
   };
 }
 
@@ -118,30 +119,32 @@ function sendWebhook(url, payload) {
       hostname: parsedUrl.hostname,
       port: parsedUrl.port || 443,
       path: parsedUrl.pathname + parsedUrl.search,
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(payloadString)
-      }
+        "Content-Type": "application/json",
+        "Content-Length": Buffer.byteLength(payloadString),
+      },
     };
 
     const req = https.request(options, (res) => {
-      let data = '';
+      let data = "";
 
-      res.on('data', (chunk) => {
+      res.on("data", (chunk) => {
         data += chunk;
       });
 
-      res.on('end', () => {
+      res.on("end", () => {
         if (res.statusCode >= 200 && res.statusCode < 300) {
           resolve({ statusCode: res.statusCode, body: data });
         } else {
-          reject(new Error(`Request failed with status ${res.statusCode}: ${data}`));
+          reject(
+            new Error(`Request failed with status ${res.statusCode}: ${data}`),
+          );
         }
       });
     });
 
-    req.on('error', (error) => {
+    req.on("error", (error) => {
       reject(error);
     });
 
@@ -155,14 +158,16 @@ function validateWebhookUrl(url, expectedType) {
   try {
     const parsedUrl = new URL(url);
 
-    if (parsedUrl.protocol !== 'https:') {
-      throw new Error('Webhook URL must use HTTPS protocol');
+    if (parsedUrl.protocol !== "https:") {
+      throw new Error("Webhook URL must use HTTPS protocol");
     }
 
     const detectedType = detectWebhookType(url);
 
     if (expectedType && expectedType !== detectedType) {
-      throw new Error(`URL appears to be ${detectedType} webhook, but ${expectedType} was specified`);
+      throw new Error(
+        `URL appears to be ${detectedType} webhook, but ${expectedType} was specified`,
+      );
     }
 
     return detectedType;
@@ -176,7 +181,7 @@ async function main() {
   const args = process.argv.slice(2);
 
   // 引数解析
-  if (args.length === 0 || args.includes('--help') || args.includes('-h')) {
+  if (args.length === 0 || args.includes("--help") || args.includes("-h")) {
     console.log(`
 GitHub Actions Webhook Tester
 
@@ -205,8 +210,8 @@ Examples:
   let message = DEFAULT_MESSAGE;
 
   // 引数処理
-  if (args[0].startsWith('--')) {
-    webhookType = args[0].replace('--', '');
+  if (args[0].startsWith("--")) {
+    webhookType = args[0].replace("--", "");
     webhookUrl = args[1];
     message = args[2] || DEFAULT_MESSAGE;
   } else {
@@ -215,12 +220,12 @@ Examples:
   }
 
   if (!webhookUrl) {
-    console.error('❌ Error: Webhook URL is required');
+    console.error("❌ Error: Webhook URL is required");
     process.exit(1);
   }
 
   try {
-    console.log('🔍 Validating webhook URL...');
+    console.log("🔍 Validating webhook URL...");
     const detectedType = validateWebhookUrl(webhookUrl, webhookType);
 
     if (!webhookType) {
@@ -233,21 +238,23 @@ Examples:
     // ペイロード生成
     let payload;
     switch (webhookType) {
-      case 'slack':
+      case "slack":
         payload = createSlackPayload(message);
         break;
-      case 'discord':
+      case "discord":
         payload = createDiscordPayload(message);
         break;
-      case 'teams':
+      case "teams":
         payload = createTeamsPayload(message);
         break;
       default:
-        throw new Error(`Unsupported webhook type: ${webhookType}. Supported types: slack, discord, teams`);
+        throw new Error(
+          `Unsupported webhook type: ${webhookType}. Supported types: slack, discord, teams`,
+        );
     }
 
     // リクエスト送信
-    console.log('⏳ Sending request...');
+    console.log("⏳ Sending request...");
     const startTime = Date.now();
     const response = await sendWebhook(webhookUrl, payload);
     const duration = Date.now() - startTime;
@@ -260,22 +267,32 @@ Examples:
       console.log(`📄 Response body: ${response.body}`);
     }
 
-    console.log('\n✨ Webhook is working correctly!');
+    console.log("\n✨ Webhook is working correctly!");
     process.exit(0);
-
   } catch (error) {
     console.error(`\n❌ Error: ${error.message}`);
 
-    if (error.message.includes('ENOTFOUND')) {
-      console.error('💡 Tip: Check if the webhook URL hostname is correct');
-    } else if (error.message.includes('status 404')) {
-      console.error('💡 Tip: Webhook URL may be expired or deleted. Create a new webhook.');
-    } else if (error.message.includes('status 400')) {
-      console.error('💡 Tip: Payload format may be incorrect. Check webhook type specification.');
-    } else if (error.message.includes('status 401') || error.message.includes('status 403')) {
-      console.error('💡 Tip: Webhook URL may be invalid or missing required authentication.');
-    } else if (error.message.includes('status 429')) {
-      console.error('💡 Tip: Rate limit exceeded. Wait a moment and try again.');
+    if (error.message.includes("ENOTFOUND")) {
+      console.error("💡 Tip: Check if the webhook URL hostname is correct");
+    } else if (error.message.includes("status 404")) {
+      console.error(
+        "💡 Tip: Webhook URL may be expired or deleted. Create a new webhook.",
+      );
+    } else if (error.message.includes("status 400")) {
+      console.error(
+        "💡 Tip: Payload format may be incorrect. Check webhook type specification.",
+      );
+    } else if (
+      error.message.includes("status 401") ||
+      error.message.includes("status 403")
+    ) {
+      console.error(
+        "💡 Tip: Webhook URL may be invalid or missing required authentication.",
+      );
+    } else if (error.message.includes("status 429")) {
+      console.error(
+        "💡 Tip: Rate limit exceeded. Wait a moment and try again.",
+      );
     }
 
     process.exit(1);

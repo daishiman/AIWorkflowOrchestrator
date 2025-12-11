@@ -32,6 +32,7 @@
 ### フローステップ
 
 1. **認可リクエスト**:
+
    ```
    GET /authorize?
      response_type=code
@@ -48,6 +49,7 @@
 3. **認可コード発行**: リダイレクトでcodeパラメータを返す
 
 4. **トークンリクエスト**:
+
    ```
    POST /token
    Content-Type: application/x-www-form-urlencoded
@@ -64,11 +66,13 @@
 ### PKCEの重要性
 
 **PKCE（Proof Key for Code Exchange）**:
+
 - 認可コード横取り攻撃（Authorization Code Interception）を防止
 - code_verifierとcode_challengeのペアで検証
 - SPAやモバイルアプリでは必須
 
 **実装**:
+
 ```javascript
 // Code Verifier生成（43-128文字のランダム文字列）
 const codeVerifier = generateRandomString(128);
@@ -120,6 +124,7 @@ Implicit Flowを使用している場合、Authorization Code Flow + PKCEへの�
 ### フローステップ
 
 1. **トークンリクエスト**:
+
    ```
    POST /token
    Content-Type: application/x-www-form-urlencoded
@@ -199,6 +204,7 @@ OpenID Connect = OAuth 2.0 + ID Token（JWT形式）
 ### ID Token
 
 **クレーム**:
+
 - `sub`: ユーザーの一意識別子
 - `iss`: 発行者（Authorization Server）
 - `aud`: クライアントID
@@ -207,6 +213,7 @@ OpenID Connect = OAuth 2.0 + ID Token（JWT形式）
 - `nonce`: リプレイ攻撃対策
 
 **検証要件**:
+
 - 署名検証（JWKSから公開鍵を取得）
 - issクレーム検証（期待する発行者か）
 - audクレーム検証（自分のクライアントID宛か）
@@ -216,12 +223,14 @@ OpenID Connect = OAuth 2.0 + ID Token（JWT形式）
 ### UserInfo Endpoint
 
 **使用方法**:
+
 ```
 GET /userinfo
 Authorization: Bearer ACCESS_TOKEN
 ```
 
 **レスポンス例**:
+
 ```json
 {
   "sub": "248289761001",
@@ -236,15 +245,15 @@ Authorization: Bearer ACCESS_TOKEN
 
 ## フロー選択マトリックス
 
-| アプリタイプ | 推奨フロー | 理由 |
-|------------|----------|------|
-| Webアプリ（サーバーサイド） | Authorization Code + PKCE | 最も安全、リフレッシュトークン対応 |
-| SPA | Authorization Code + PKCE | Implicit Flowより安全 |
-| モバイルアプリ | Authorization Code + PKCE | ネイティブアプリに最適 |
-| デスクトップアプリ | Authorization Code + PKCE | ローカルhttpサーバーでコールバック受信 |
-| サーバー間（M2M） | Client Credentials | ユーザーコンテキスト不要 |
-| IoT/TV | Device Authorization | 入力制限デバイス向け |
-| レガシー移行 | Resource Owner Password（一時的） | 移行期間のみ許容 |
+| アプリタイプ                | 推奨フロー                        | 理由                                   |
+| --------------------------- | --------------------------------- | -------------------------------------- |
+| Webアプリ（サーバーサイド） | Authorization Code + PKCE         | 最も安全、リフレッシュトークン対応     |
+| SPA                         | Authorization Code + PKCE         | Implicit Flowより安全                  |
+| モバイルアプリ              | Authorization Code + PKCE         | ネイティブアプリに最適                 |
+| デスクトップアプリ          | Authorization Code + PKCE         | ローカルhttpサーバーでコールバック受信 |
+| サーバー間（M2M）           | Client Credentials                | ユーザーコンテキスト不要               |
+| IoT/TV                      | Device Authorization              | 入力制限デバイス向け                   |
+| レガシー移行                | Resource Owner Password（一時的） | 移行期間のみ許容                       |
 
 ---
 

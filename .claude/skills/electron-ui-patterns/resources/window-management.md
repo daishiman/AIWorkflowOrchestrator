@@ -11,11 +11,11 @@ const win = new BrowserWindow({
   height: 800,
   minWidth: 800,
   minHeight: 600,
-  maxWidth: undefined,  // 無制限
+  maxWidth: undefined, // 無制限
   maxHeight: undefined,
 
   // 位置
-  x: undefined,  // 自動配置
+  x: undefined, // 自動配置
   y: undefined,
   center: true,
 
@@ -33,29 +33,29 @@ const win = new BrowserWindow({
 ```typescript
 const win = new BrowserWindow({
   // フレーム
-  frame: true,  // false でカスタムタイトルバー
-  titleBarStyle: 'default', // 'hidden' | 'hiddenInset' | 'customButtonsOnHover'
+  frame: true, // false でカスタムタイトルバー
+  titleBarStyle: "default", // 'hidden' | 'hiddenInset' | 'customButtonsOnHover'
   titleBarOverlay: {
-    color: '#ffffff',
-    symbolColor: '#000000',
+    color: "#ffffff",
+    symbolColor: "#000000",
     height: 32,
   },
 
   // 背景
-  backgroundColor: '#ffffff',
+  backgroundColor: "#ffffff",
   transparent: false,
   opacity: 1.0,
 
   // アイコン
-  icon: path.join(__dirname, 'icon.png'),
+  icon: path.join(__dirname, "icon.png"),
 
   // 表示
   show: true,
   paintWhenInitiallyHidden: true,
 
   // 効果
-  vibrancy: undefined,  // macOS: 'appearance-based' | 'light' | 'dark' | ...
-  visualEffectState: 'followWindow',
+  vibrancy: undefined, // macOS: 'appearance-based' | 'light' | 'dark' | ...
+  visualEffectState: "followWindow",
 });
 ```
 
@@ -81,8 +81,8 @@ if (process.platform === 'win32') {
 
 ```typescript
 // store/windowState.ts
-import Store from 'electron-store';
-import { screen, BrowserWindow } from 'electron';
+import Store from "electron-store";
+import { screen, BrowserWindow } from "electron";
 
 interface WindowState {
   x?: number;
@@ -108,7 +108,7 @@ export class WindowStateManager {
       height: defaultState.height ?? 800,
       isMaximized: false,
       isFullScreen: false,
-      ...store.get('windowState'),
+      ...store.get("windowState"),
     };
 
     this.restore();
@@ -140,7 +140,7 @@ export class WindowStateManager {
     }
 
     const displays = screen.getAllDisplays();
-    return displays.some(display => {
+    return displays.some((display) => {
       const { x, y, width, height } = display.bounds;
       return (
         this.state.x! >= x &&
@@ -152,13 +152,20 @@ export class WindowStateManager {
   }
 
   private setupListeners(): void {
-    const events = ['resize', 'move', 'maximize', 'unmaximize', 'enter-full-screen', 'leave-full-screen'];
+    const events = [
+      "resize",
+      "move",
+      "maximize",
+      "unmaximize",
+      "enter-full-screen",
+      "leave-full-screen",
+    ];
 
-    events.forEach(event => {
+    events.forEach((event) => {
       this.win.on(event as any, () => this.scheduleStateSave());
     });
 
-    this.win.on('close', () => this.saveState());
+    this.win.on("close", () => this.saveState());
   }
 
   private scheduleStateSave(): void {
@@ -169,7 +176,11 @@ export class WindowStateManager {
   }
 
   private saveState(): void {
-    if (!this.win.isMaximized() && !this.win.isMinimized() && !this.win.isFullScreen()) {
+    if (
+      !this.win.isMaximized() &&
+      !this.win.isMinimized() &&
+      !this.win.isFullScreen()
+    ) {
       const bounds = this.win.getBounds();
       this.state.x = bounds.x;
       this.state.y = bounds.y;
@@ -180,7 +191,7 @@ export class WindowStateManager {
     this.state.isMaximized = this.win.isMaximized();
     this.state.isFullScreen = this.win.isFullScreen();
 
-    store.set('windowState', this.state);
+    store.set("windowState", this.state);
   }
 }
 ```
@@ -189,10 +200,10 @@ export class WindowStateManager {
 
 ```typescript
 // services/windowManager.ts
-import { BrowserWindow, BrowserWindowConstructorOptions } from 'electron';
+import { BrowserWindow, BrowserWindowConstructorOptions } from "electron";
 
 interface WindowConfig {
-  type: 'main' | 'settings' | 'about' | 'dialog';
+  type: "main" | "settings" | "about" | "dialog";
   options?: Partial<BrowserWindowConstructorOptions>;
 }
 
@@ -214,7 +225,7 @@ class WindowManager {
 
     this.windows.set(id, win);
 
-    win.on('closed', () => {
+    win.on("closed", () => {
       this.windows.delete(id);
     });
 
@@ -230,11 +241,13 @@ class WindowManager {
   }
 
   closeAll(): void {
-    this.windows.forEach(win => win.close());
+    this.windows.forEach((win) => win.close());
   }
 
-  private getDefaultOptions(type: WindowConfig['type']): BrowserWindowConstructorOptions {
-    const preload = path.join(__dirname, '../preload/index.js');
+  private getDefaultOptions(
+    type: WindowConfig["type"],
+  ): BrowserWindowConstructorOptions {
+    const preload = path.join(__dirname, "../preload/index.js");
 
     const common: BrowserWindowConstructorOptions = {
       webPreferences: {
@@ -246,13 +259,13 @@ class WindowManager {
     };
 
     switch (type) {
-      case 'main':
+      case "main":
         return { ...common, width: 1200, height: 800 };
-      case 'settings':
+      case "settings":
         return { ...common, width: 600, height: 500, resizable: false };
-      case 'about':
+      case "about":
         return { ...common, width: 400, height: 300, resizable: false };
-      case 'dialog':
+      case "dialog":
         return { ...common, width: 500, height: 400, modal: true };
       default:
         return common;
@@ -267,16 +280,16 @@ export const windowManager = new WindowManager();
 
 ```typescript
 // Main → 特定ウィンドウ
-windowManager.get('main')?.webContents.send('event', data);
+windowManager.get("main")?.webContents.send("event", data);
 
 // Main → 全ウィンドウ
-windowManager.getAll().forEach(win => {
-  win.webContents.send('broadcast', data);
+windowManager.getAll().forEach((win) => {
+  win.webContents.send("broadcast", data);
 });
 
 // Renderer → Main → 他のRenderer
-ipcMain.on('relay', (event, targetId: string, data: any) => {
+ipcMain.on("relay", (event, targetId: string, data: any) => {
   const targetWin = windowManager.get(targetId);
-  targetWin?.webContents.send('relayed', data);
+  targetWin?.webContents.send("relayed", data);
 });
 ```

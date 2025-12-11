@@ -45,28 +45,28 @@ export function createWrapper() {
 // useCounter.ts
 function useCounter(initialValue = 0) {
   const [count, setCount] = useState(initialValue);
-  const increment = useCallback(() => setCount(c => c + 1), []);
-  const decrement = useCallback(() => setCount(c => c - 1), []);
+  const increment = useCallback(() => setCount((c) => c + 1), []);
+  const decrement = useCallback(() => setCount((c) => c - 1), []);
   const reset = useCallback(() => setCount(initialValue), [initialValue]);
   return { count, increment, decrement, reset };
 }
 
 // useCounter.test.ts
-import { renderHook, act } from '@testing-library/react';
-import { useCounter } from './useCounter';
+import { renderHook, act } from "@testing-library/react";
+import { useCounter } from "./useCounter";
 
-describe('useCounter', () => {
-  it('should initialize with default value', () => {
+describe("useCounter", () => {
+  it("should initialize with default value", () => {
     const { result } = renderHook(() => useCounter());
     expect(result.current.count).toBe(0);
   });
 
-  it('should initialize with provided value', () => {
+  it("should initialize with provided value", () => {
     const { result } = renderHook(() => useCounter(10));
     expect(result.current.count).toBe(10);
   });
 
-  it('should increment count', () => {
+  it("should increment count", () => {
     const { result } = renderHook(() => useCounter());
 
     act(() => {
@@ -76,7 +76,7 @@ describe('useCounter', () => {
     expect(result.current.count).toBe(1);
   });
 
-  it('should decrement count', () => {
+  it("should decrement count", () => {
     const { result } = renderHook(() => useCounter(5));
 
     act(() => {
@@ -86,7 +86,7 @@ describe('useCounter', () => {
     expect(result.current.count).toBe(4);
   });
 
-  it('should reset to initial value', () => {
+  it("should reset to initial value", () => {
     const { result } = renderHook(() => useCounter(10));
 
     act(() => {
@@ -114,49 +114,51 @@ function useFetch<T>(url: string) {
     setIsLoading(true);
 
     fetch(url)
-      .then(res => {
-        if (!res.ok) throw new Error('Fetch failed');
+      .then((res) => {
+        if (!res.ok) throw new Error("Fetch failed");
         return res.json();
       })
-      .then(data => {
+      .then((data) => {
         if (!cancelled) {
           setData(data);
           setIsLoading(false);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         if (!cancelled) {
           setError(err);
           setIsLoading(false);
         }
       });
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [url]);
 
   return { data, isLoading, error };
 }
 
 // useFetch.test.ts
-import { renderHook, waitFor } from '@testing-library/react';
-import { useFetch } from './useFetch';
+import { renderHook, waitFor } from "@testing-library/react";
+import { useFetch } from "./useFetch";
 
 // fetchのモック
 global.fetch = jest.fn();
 
-describe('useFetch', () => {
+describe("useFetch", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should fetch data successfully', async () => {
-    const mockData = { id: 1, name: 'Test' };
+  it("should fetch data successfully", async () => {
+    const mockData = { id: 1, name: "Test" };
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
       json: async () => mockData,
     });
 
-    const { result } = renderHook(() => useFetch('/api/test'));
+    const { result } = renderHook(() => useFetch("/api/test"));
 
     // 初期状態
     expect(result.current.isLoading).toBe(true);
@@ -171,20 +173,20 @@ describe('useFetch', () => {
     expect(result.current.error).toBe(null);
   });
 
-  it('should handle fetch error', async () => {
-    (fetch as jest.Mock).mockRejectedValueOnce(new Error('Network error'));
+  it("should handle fetch error", async () => {
+    (fetch as jest.Mock).mockRejectedValueOnce(new Error("Network error"));
 
-    const { result } = renderHook(() => useFetch('/api/test'));
+    const { result } = renderHook(() => useFetch("/api/test"));
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
     });
 
     expect(result.current.data).toBe(null);
-    expect(result.current.error?.message).toBe('Network error');
+    expect(result.current.error?.message).toBe("Network error");
   });
 
-  it('should refetch when url changes', async () => {
+  it("should refetch when url changes", async () => {
     const mockData1 = { id: 1 };
     const mockData2 = { id: 2 };
 
@@ -192,17 +194,16 @@ describe('useFetch', () => {
       .mockResolvedValueOnce({ ok: true, json: async () => mockData1 })
       .mockResolvedValueOnce({ ok: true, json: async () => mockData2 });
 
-    const { result, rerender } = renderHook(
-      ({ url }) => useFetch(url),
-      { initialProps: { url: '/api/1' } }
-    );
+    const { result, rerender } = renderHook(({ url }) => useFetch(url), {
+      initialProps: { url: "/api/1" },
+    });
 
     await waitFor(() => {
       expect(result.current.data).toEqual(mockData1);
     });
 
     // URL変更
-    rerender({ url: '/api/2' });
+    rerender({ url: "/api/2" });
 
     await waitFor(() => {
       expect(result.current.data).toEqual(mockData2);
@@ -229,32 +230,32 @@ function useDebounce<T>(value: T, delay: number): T {
 }
 
 // useDebounce.test.ts
-import { renderHook, act } from '@testing-library/react';
-import { useDebounce } from './useDebounce';
+import { renderHook, act } from "@testing-library/react";
+import { useDebounce } from "./useDebounce";
 
 jest.useFakeTimers();
 
-describe('useDebounce', () => {
+describe("useDebounce", () => {
   afterEach(() => {
     jest.clearAllTimers();
   });
 
-  it('should return initial value immediately', () => {
-    const { result } = renderHook(() => useDebounce('initial', 500));
-    expect(result.current).toBe('initial');
+  it("should return initial value immediately", () => {
+    const { result } = renderHook(() => useDebounce("initial", 500));
+    expect(result.current).toBe("initial");
   });
 
-  it('should debounce value updates', () => {
+  it("should debounce value updates", () => {
     const { result, rerender } = renderHook(
       ({ value, delay }) => useDebounce(value, delay),
-      { initialProps: { value: 'initial', delay: 500 } }
+      { initialProps: { value: "initial", delay: 500 } },
     );
 
     // 値を変更
-    rerender({ value: 'updated', delay: 500 });
+    rerender({ value: "updated", delay: 500 });
 
     // まだ変更されていない
-    expect(result.current).toBe('initial');
+    expect(result.current).toBe("initial");
 
     // 時間を進める
     act(() => {
@@ -262,32 +263,40 @@ describe('useDebounce', () => {
     });
 
     // 更新された
-    expect(result.current).toBe('updated');
+    expect(result.current).toBe("updated");
   });
 
-  it('should cancel previous timeout on rapid updates', () => {
+  it("should cancel previous timeout on rapid updates", () => {
     const { result, rerender } = renderHook(
       ({ value }) => useDebounce(value, 500),
-      { initialProps: { value: 'a' } }
+      { initialProps: { value: "a" } },
     );
 
-    rerender({ value: 'b' });
-    act(() => { jest.advanceTimersByTime(200); });
+    rerender({ value: "b" });
+    act(() => {
+      jest.advanceTimersByTime(200);
+    });
 
-    rerender({ value: 'c' });
-    act(() => { jest.advanceTimersByTime(200); });
+    rerender({ value: "c" });
+    act(() => {
+      jest.advanceTimersByTime(200);
+    });
 
-    rerender({ value: 'd' });
-    act(() => { jest.advanceTimersByTime(200); });
+    rerender({ value: "d" });
+    act(() => {
+      jest.advanceTimersByTime(200);
+    });
 
     // まだ 'a' のまま
-    expect(result.current).toBe('a');
+    expect(result.current).toBe("a");
 
     // 残りの時間を進める
-    act(() => { jest.advanceTimersByTime(300); });
+    act(() => {
+      jest.advanceTimersByTime(300);
+    });
 
     // 最後の値 'd' になる
-    expect(result.current).toBe('d');
+    expect(result.current).toBe("d");
   });
 });
 ```
@@ -346,50 +355,42 @@ describe('useAuth', () => {
 
 ```typescript
 // useLocalStorage.test.ts
-import { renderHook, act } from '@testing-library/react';
-import { useLocalStorage } from './useLocalStorage';
+import { renderHook, act } from "@testing-library/react";
+import { useLocalStorage } from "./useLocalStorage";
 
-describe('useLocalStorage', () => {
+describe("useLocalStorage", () => {
   beforeEach(() => {
     localStorage.clear();
     jest.clearAllMocks();
   });
 
-  it('should return initial value when localStorage is empty', () => {
-    const { result } = renderHook(() =>
-      useLocalStorage('key', 'initial')
-    );
+  it("should return initial value when localStorage is empty", () => {
+    const { result } = renderHook(() => useLocalStorage("key", "initial"));
 
-    expect(result.current[0]).toBe('initial');
+    expect(result.current[0]).toBe("initial");
   });
 
-  it('should return stored value when localStorage has data', () => {
-    localStorage.setItem('key', JSON.stringify('stored'));
+  it("should return stored value when localStorage has data", () => {
+    localStorage.setItem("key", JSON.stringify("stored"));
 
-    const { result } = renderHook(() =>
-      useLocalStorage('key', 'initial')
-    );
+    const { result } = renderHook(() => useLocalStorage("key", "initial"));
 
-    expect(result.current[0]).toBe('stored');
+    expect(result.current[0]).toBe("stored");
   });
 
-  it('should update localStorage when value changes', () => {
-    const { result } = renderHook(() =>
-      useLocalStorage('key', 'initial')
-    );
+  it("should update localStorage when value changes", () => {
+    const { result } = renderHook(() => useLocalStorage("key", "initial"));
 
     act(() => {
-      result.current[1]('updated');
+      result.current[1]("updated");
     });
 
-    expect(result.current[0]).toBe('updated');
-    expect(localStorage.getItem('key')).toBe(JSON.stringify('updated'));
+    expect(result.current[0]).toBe("updated");
+    expect(localStorage.getItem("key")).toBe(JSON.stringify("updated"));
   });
 
-  it('should handle objects', () => {
-    const { result } = renderHook(() =>
-      useLocalStorage('key', { a: 1 })
-    );
+  it("should handle objects", () => {
+    const { result } = renderHook(() => useLocalStorage("key", { a: 1 }));
 
     act(() => {
       result.current[1]({ a: 2, b: 3 });
@@ -398,13 +399,11 @@ describe('useLocalStorage', () => {
     expect(result.current[0]).toEqual({ a: 2, b: 3 });
   });
 
-  it('should handle function updates', () => {
-    const { result } = renderHook(() =>
-      useLocalStorage('count', 0)
-    );
+  it("should handle function updates", () => {
+    const { result } = renderHook(() => useLocalStorage("count", 0));
 
     act(() => {
-      result.current[1](prev => prev + 1);
+      result.current[1]((prev) => prev + 1);
     });
 
     expect(result.current[0]).toBe(1);
@@ -454,11 +453,19 @@ beforeEach(() => {
 ### 5. エッジケースをテスト
 
 ```typescript
-describe('edge cases', () => {
-  it('should handle empty input', () => { /* ... */ });
-  it('should handle null values', () => { /* ... */ });
-  it('should handle rapid updates', () => { /* ... */ });
-  it('should cleanup on unmount', () => { /* ... */ });
+describe("edge cases", () => {
+  it("should handle empty input", () => {
+    /* ... */
+  });
+  it("should handle null values", () => {
+    /* ... */
+  });
+  it("should handle rapid updates", () => {
+    /* ... */
+  });
+  it("should cleanup on unmount", () => {
+    /* ... */
+  });
 });
 ```
 

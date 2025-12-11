@@ -10,6 +10,7 @@
 ### 1. ロックファイルとpackage.jsonの同期確認
 
 **pnpm**:
+
 ```bash
 # 同期チェック（差分があればエラー）
 pnpm install --frozen-lockfile
@@ -20,6 +21,7 @@ git diff pnpm-lock.yaml
 ```
 
 **pnpm**:
+
 ```bash
 # 同期チェック（pnpm ci は厳格）
 pnpm ci
@@ -30,6 +32,7 @@ git diff package-lock.json
 ```
 
 **yarn**:
+
 ```bash
 # 同期チェック
 yarn install --immutable
@@ -72,34 +75,34 @@ pnpm dedupe --check
 #!/usr/bin/env node
 // verify-integrity.mjs
 
-import { execSync } from 'child_process';
-import { existsSync, readFileSync } from 'fs';
+import { execSync } from "child_process";
+import { existsSync, readFileSync } from "fs";
 
 function detectPackageManager() {
-  if (existsSync('pnpm-lock.yaml')) return 'pnpm';
-  if (existsSync('yarn.lock')) return 'yarn';
-  if (existsSync('package-lock.json')) return 'pnpm';
+  if (existsSync("pnpm-lock.yaml")) return "pnpm";
+  if (existsSync("yarn.lock")) return "yarn";
+  if (existsSync("package-lock.json")) return "pnpm";
   return null;
 }
 
 function verifyLockfileSync(pm) {
   const commands = {
-    pnpm: 'pnpm install --frozen-lockfile --dry-run',
-    pnpm: 'pnpm ci --dry-run',
-    yarn: 'yarn install --immutable --check-cache'
+    pnpm: "pnpm install --frozen-lockfile --dry-run",
+    pnpm: "pnpm ci --dry-run",
+    yarn: "yarn install --immutable --check-cache",
   };
 
   try {
-    execSync(commands[pm], { stdio: 'pipe' });
-    return { success: true, message: 'Lock file is in sync' };
+    execSync(commands[pm], { stdio: "pipe" });
+    return { success: true, message: "Lock file is in sync" };
   } catch (error) {
-    return { success: false, message: 'Lock file is out of sync' };
+    return { success: false, message: "Lock file is out of sync" };
   }
 }
 
 const pm = detectPackageManager();
 if (!pm) {
-  console.error('No lock file found');
+  console.error("No lock file found");
   process.exit(1);
 }
 
@@ -114,49 +117,49 @@ process.exit(result.success ? 0 : 1);
 #!/usr/bin/env node
 // detailed-integrity-check.mjs
 
-import { execSync } from 'child_process';
-import { readFileSync, existsSync } from 'fs';
+import { execSync } from "child_process";
+import { readFileSync, existsSync } from "fs";
 
 function getPackageJson() {
-  return JSON.parse(readFileSync('package.json', 'utf8'));
+  return JSON.parse(readFileSync("package.json", "utf8"));
 }
 
 function getLockfileInfo(pm) {
-  if (pm === 'pnpm') {
-    const lock = readFileSync('pnpm-lock.yaml', 'utf8');
+  if (pm === "pnpm") {
+    const lock = readFileSync("pnpm-lock.yaml", "utf8");
     const versionMatch = lock.match(/lockfileVersion: ['"]?([^'"\n]+)/);
     return { version: versionMatch?.[1] };
   }
-  if (pm === 'pnpm') {
-    const lock = JSON.parse(readFileSync('package-lock.json', 'utf8'));
+  if (pm === "pnpm") {
+    const lock = JSON.parse(readFileSync("package-lock.json", "utf8"));
     return { version: lock.lockfileVersion };
   }
-  return { version: 'unknown' };
+  return { version: "unknown" };
 }
 
 function checkDependencies(pm) {
   const pkg = getPackageJson();
   const deps = {
     ...pkg.dependencies,
-    ...pkg.devDependencies
+    ...pkg.devDependencies,
   };
 
   const issues = [];
 
   Object.entries(deps).forEach(([name, version]) => {
     // 危険なバージョン指定をチェック
-    if (version === '*' || version === 'latest') {
+    if (version === "*" || version === "latest") {
       issues.push({
         package: name,
-        issue: `Dangerous version specifier: ${version}`
+        issue: `Dangerous version specifier: ${version}`,
       });
     }
 
     // file: や link: プロトコルをチェック
-    if (version.startsWith('file:') || version.startsWith('link:')) {
+    if (version.startsWith("file:") || version.startsWith("link:")) {
       issues.push({
         package: name,
-        issue: `Local dependency: ${version}`
+        issue: `Local dependency: ${version}`,
       });
     }
   });
@@ -165,14 +168,18 @@ function checkDependencies(pm) {
 }
 
 function main() {
-  console.log('=== Dependency Integrity Report ===\n');
+  console.log("=== Dependency Integrity Report ===\n");
 
-  const pm = existsSync('pnpm-lock.yaml') ? 'pnpm' :
-             existsSync('package-lock.json') ? 'pnpm' :
-             existsSync('yarn.lock') ? 'yarn' : null;
+  const pm = existsSync("pnpm-lock.yaml")
+    ? "pnpm"
+    : existsSync("package-lock.json")
+      ? "pnpm"
+      : existsSync("yarn.lock")
+        ? "yarn"
+        : null;
 
   if (!pm) {
-    console.error('No lock file found!');
+    console.error("No lock file found!");
     process.exit(1);
   }
 
@@ -184,10 +191,10 @@ function main() {
   const issues = checkDependencies(pm);
 
   if (issues.length > 0) {
-    console.log('\n⚠️  Issues found:');
-    issues.forEach(i => console.log(`  - ${i.package}: ${i.issue}`));
+    console.log("\n⚠️  Issues found:");
+    issues.forEach((i) => console.log(`  - ${i.package}: ${i.issue}`));
   } else {
-    console.log('\n✅ No issues found');
+    console.log("\n✅ No issues found");
   }
 }
 
@@ -216,8 +223,8 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
 
       - name: Verify lock file integrity
         run: pnpm install --frozen-lockfile
@@ -251,11 +258,13 @@ verify-integrity:
 ### 問題1: ロックファイルの古さ
 
 **症状**:
+
 ```
 WARN  Cannot find a lockfile in /project
 ```
 
 **解決策**:
+
 ```bash
 # ロックファイルを生成
 pnpm install
@@ -268,11 +277,13 @@ git commit -m "chore: add lock file"
 ### 問題2: package.jsonとの不整合
 
 **症状**:
+
 ```
 ERR_PNPM_OUTDATED_LOCKFILE  Cannot install with "frozen-lockfile"
 ```
 
 **解決策**:
+
 ```bash
 # ロックファイルを更新
 pnpm install
@@ -285,16 +296,19 @@ git commit -m "chore: sync lock file with package.json"
 ### 問題3: 整合性ハッシュの不一致
 
 **症状**:
+
 ```
 EINTEGRITY  sha512-xxx expected sha512-yyy
 ```
 
 **原因**:
+
 - レジストリの問題
 - 中間者攻撃の可能性
 - キャッシュの破損
 
 **解決策**:
+
 ```bash
 # キャッシュをクリア
 pnpm store prune
@@ -314,7 +328,7 @@ name: Weekly Integrity Check
 
 on:
   schedule:
-    - cron: '0 9 * * 1'  # 毎週月曜 9:00 UTC
+    - cron: "0 9 * * 1" # 毎週月曜 9:00 UTC
 
 jobs:
   check:
@@ -338,11 +352,13 @@ jobs:
 ## チェックリスト
 
 ### 日常的な検証
+
 - [ ] `pnpm install --frozen-lockfile` が成功するか？
 - [ ] ロックファイルに予期しない変更がないか？
 - [ ] セキュリティ監査でエラーがないか？
 
 ### リリース前の検証
+
 - [ ] 全ての依存関係が正しく解決されるか？
 - [ ] 重複した依存関係がないか？
 - [ ] 整合性ハッシュが正しいか？

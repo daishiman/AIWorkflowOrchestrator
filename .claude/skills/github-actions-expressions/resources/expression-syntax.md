@@ -10,11 +10,13 @@ GitHub Actionsの式は、ワークフローファイル内で動的な値の評
 ### `${{ }}` 構文
 
 **基本形式**:
+
 ```yaml
 ${{ <expression> }}
 ```
 
 **使用可能な場所**:
+
 - `if`条件（ジョブ、ステップレベル）
 - `with`パラメータ
 - `env`環境変数の値
@@ -22,12 +24,14 @@ ${{ <expression> }}
 - `name`フィールド
 
 **評価タイミング**:
+
 - ワークフロー実行時にサーバー側で評価
 - 環境変数展開（`$VAR`）よりも優先
 
 ### 式の省略形
 
 `if`条件では`${{ }}`を省略可能:
+
 ```yaml
 # 完全形
 if: ${{ github.ref == 'refs/heads/main' }}
@@ -37,6 +41,7 @@ if: github.ref == 'refs/heads/main'
 ```
 
 **注意**: `if`以外の場所では省略不可:
+
 ```yaml
 # ❌ 間違い
 env:
@@ -52,12 +57,14 @@ env:
 ### 文字列リテラル
 
 **シングルクォート**（推奨）:
+
 ```yaml
 if: github.event.head_commit.message == 'deploy'
 if: contains(github.ref, 'feature/')
 ```
 
 **エスケープ**:
+
 ```yaml
 # シングルクォート内でシングルクォートをエスケープ
 if: github.event.head_commit.message == 'It''s ready'
@@ -89,18 +96,20 @@ if: steps.check.outputs.result != null
 
 ### 論理演算子
 
-| 演算子 | 説明 | 例 |
-|--------|------|-----|
-| `&&` | 論理AND | `success() && github.ref == 'refs/heads/main'` |
-| `\|\|` | 論理OR | `failure() \|\| cancelled()` |
-| `!` | 論理NOT | `!contains(github.ref, 'feature/')` |
+| 演算子 | 説明    | 例                                             |
+| ------ | ------- | ---------------------------------------------- |
+| `&&`   | 論理AND | `success() && github.ref == 'refs/heads/main'` |
+| `\|\|` | 論理OR  | `failure() \|\| cancelled()`                   |
+| `!`    | 論理NOT | `!contains(github.ref, 'feature/')`            |
 
 **評価順序**:
+
 1. `!` (最優先)
 2. `&&`
 3. `||` (最低優先)
 
 **短絡評価**:
+
 ```yaml
 # 左辺がfalseなら右辺は評価されない
 if: github.ref == 'refs/heads/main' && success()
@@ -111,16 +120,17 @@ if: failure() || cancelled()
 
 ### 比較演算子
 
-| 演算子 | 説明 | 例 |
-|--------|------|-----|
-| `==` | 等価 | `github.ref == 'refs/heads/main'` |
-| `!=` | 非等価 | `matrix.os != 'windows-latest'` |
-| `<` | 小なり | `github.event.pull_request.additions < 100` |
-| `<=` | 以下 | `matrix.version <= 16` |
-| `>` | 大なり | `github.event.pull_request.changed_files > 10` |
-| `>=` | 以上 | `matrix.node >= 18` |
+| 演算子 | 説明   | 例                                             |
+| ------ | ------ | ---------------------------------------------- |
+| `==`   | 等価   | `github.ref == 'refs/heads/main'`              |
+| `!=`   | 非等価 | `matrix.os != 'windows-latest'`                |
+| `<`    | 小なり | `github.event.pull_request.additions < 100`    |
+| `<=`   | 以下   | `matrix.version <= 16`                         |
+| `>`    | 大なり | `github.event.pull_request.changed_files > 10` |
+| `>=`   | 以上   | `matrix.node >= 18`                            |
 
 **文字列比較**:
+
 - 大文字小文字を区別
 - 辞書順で比較
 
@@ -133,6 +143,7 @@ if: github.ref == 'refs/heads/Main'
 ```
 
 **型の自動変換**:
+
 ```yaml
 # 文字列と数値の比較は文字列として比較される
 if: env.VERSION == '1.0'  # "1.0" == "1.0"
@@ -157,15 +168,16 @@ GitHub Actionsの式では直接的な算術演算子（`+`, `-`, `*`, `/`）は
 
 ## 演算子の優先順位
 
-| 優先順位 | 演算子 | 結合性 |
-|---------|--------|--------|
-| 1（最高） | `!` | 右結合 |
-| 2 | `<`, `<=`, `>`, `>=` | 左結合 |
-| 3 | `==`, `!=` | 左結合 |
-| 4 | `&&` | 左結合 |
-| 5（最低） | `\|\|` | 左結合 |
+| 優先順位  | 演算子               | 結合性 |
+| --------- | -------------------- | ------ |
+| 1（最高） | `!`                  | 右結合 |
+| 2         | `<`, `<=`, `>`, `>=` | 左結合 |
+| 3         | `==`, `!=`           | 左結合 |
+| 4         | `&&`                 | 左結合 |
+| 5（最低） | `\|\|`               | 左結合 |
 
 **括弧による優先順位制御**:
+
 ```yaml
 # 括弧なし: (success() && github.ref == 'refs/heads/main') || failure()
 if: success() && github.ref == 'refs/heads/main' || failure()
@@ -179,11 +191,13 @@ if: success() && (github.ref == 'refs/heads/main' || failure())
 ### 型変換
 
 **Truthyな値**:
+
 - `true`
 - 0以外の数値
 - 空でない文字列
 
 **Falsyな値**:
+
 - `false`
 - `0`
 - `''`（空文字列）
@@ -200,6 +214,7 @@ if: env.DEPLOY_ENV != ''
 ### Nullセーフティ
 
 存在しないプロパティは`null`として評価:
+
 ```yaml
 # env.OPTIONAL_VARが定義されていない場合、nullと評価
 if: env.OPTIONAL_VAR == null
@@ -290,6 +305,7 @@ steps:
 ### よくあるエラー
 
 **1. 構文エラー: クォートなし文字列**
+
 ```yaml
 # ❌ 間違い
 if: github.ref == refs/heads/main
@@ -299,6 +315,7 @@ if: github.ref == 'refs/heads/main'
 ```
 
 **2. 型の不一致**
+
 ```yaml
 # ❌ 文字列と数値の誤った比較
 if: env.VERSION == 1.0  # env.VERSIONは文字列
@@ -308,6 +325,7 @@ if: env.VERSION == '1.0'
 ```
 
 **3. 式の省略可能な場所の誤解**
+
 ```yaml
 # ❌ if以外で${{ }}を省略
 env:

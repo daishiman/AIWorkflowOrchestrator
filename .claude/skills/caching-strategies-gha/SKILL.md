@@ -35,12 +35,14 @@ version: 1.0.0
 actions/cacheの効果的な使用法から、言語別の最適化パターン、キャッシュヒット率の向上まで網羅します。
 
 **主要な価値**:
+
 - ビルド時間の50-80%短縮
 - 依存関係インストールの高速化
 - ストレージ効率的なキャッシュ戦略
 - 言語・フレームワーク別のベストプラクティス
 
 **制約**:
+
 - キャッシュサイズ上限: 単一エントリ10GB、リポジトリ合計10GB
 - キャッシュ保持期間: 7日間未使用で削除
 - キャッシュキーは一度作成されると不変
@@ -105,23 +107,23 @@ node .claude/skills/caching-strategies-gha/scripts/estimate-cache-size.mjs <dire
 
 ### 言語別キャッシュパターン
 
-| 言語/ツール | キャッシュパス | キーパターン |
-|-----------|--------------|------------|
-| **Node.js (pnpm)** | `~/.pnpm` | `${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}` |
-| **Node.js (pnpm)** | `~/.pnpm-store` | `${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}` |
-| **Python (pip)** | `~/.cache/pip` | `${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}` |
-| **Go** | `~/go/pkg/mod` | `${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}` |
-| **Rust** | `~/.cargo/registry`<br>`~/.cargo/git`<br>`target/` | `${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}` |
-| **Docker** | `/tmp/.buildx-cache` | `${{ runner.os }}-buildx-${{ github.sha }}` |
+| 言語/ツール        | キャッシュパス                                     | キーパターン                                                     |
+| ------------------ | -------------------------------------------------- | ---------------------------------------------------------------- |
+| **Node.js (pnpm)** | `~/.pnpm`                                          | `${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}` |
+| **Node.js (pnpm)** | `~/.pnpm-store`                                    | `${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}`    |
+| **Python (pip)**   | `~/.cache/pip`                                     | `${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}`   |
+| **Go**             | `~/go/pkg/mod`                                     | `${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}`              |
+| **Rust**           | `~/.cargo/registry`<br>`~/.cargo/git`<br>`target/` | `${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}`       |
+| **Docker**         | `/tmp/.buildx-cache`                               | `${{ runner.os }}-buildx-${{ github.sha }}`                      |
 
 ### キャッシュキー戦略
 
-| 戦略 | キーパターン | 用途 |
-|-----|------------|------|
-| **完全一致** | `${{ hashFiles('**/lock-file') }}` | 依存関係が変更された時のみ更新 |
-| **プレフィックス一致** | `restore-keys: ${{ runner.os }}-node-` | 部分ヒットで古いキャッシュを利用 |
-| **日付ベース** | `${{ runner.os }}-${{ github.run_id }}` | 毎実行で新規キャッシュ作成 |
-| **ブランチ別** | `${{ runner.os }}-${{ github.ref }}` | ブランチごとに独立したキャッシュ |
+| 戦略                   | キーパターン                            | 用途                             |
+| ---------------------- | --------------------------------------- | -------------------------------- |
+| **完全一致**           | `${{ hashFiles('**/lock-file') }}`      | 依存関係が変更された時のみ更新   |
+| **プレフィックス一致** | `restore-keys: ${{ runner.os }}-node-`  | 部分ヒットで古いキャッシュを利用 |
+| **日付ベース**         | `${{ runner.os }}-${{ github.run_id }}` | 毎実行で新規キャッシュ作成       |
+| **ブランチ別**         | `${{ runner.os }}-${{ github.ref }}`    | ブランチごとに独立したキャッシュ |
 
 ### キャッシュ最適化チェックリスト
 
@@ -162,6 +164,7 @@ node .claude/skills/caching-strategies-gha/scripts/estimate-cache-size.mjs <dire
 ### Phase 3: 実装と検証
 
 1. **キャッシュアクションの追加**
+
    ```yaml
    - uses: actions/cache@v4
      with:

@@ -14,10 +14,10 @@ WAI-ARIA（Web Accessibility Initiative - Accessible Rich Internet Applications�
 ```tsx
 interface UseDialogReturn {
   dialogProps: {
-    role: 'dialog';
-    'aria-modal': boolean;
-    'aria-labelledby': string;
-    'aria-describedby'?: string;
+    role: "dialog";
+    "aria-modal": boolean;
+    "aria-labelledby": string;
+    "aria-describedby"?: string;
   };
   titleProps: {
     id: string;
@@ -34,10 +34,10 @@ function useDialog(): UseDialogReturn {
   // Escapeキーでクローズ
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === "Escape") onClose();
     };
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
   }, [onClose]);
 
   // フォーカストラップ
@@ -48,10 +48,10 @@ function useDialog(): UseDialogReturn {
 
   return {
     dialogProps: {
-      role: 'dialog',
-      'aria-modal': true,
-      'aria-labelledby': titleId,
-      'aria-describedby': descriptionId,
+      role: "dialog",
+      "aria-modal": true,
+      "aria-labelledby": titleId,
+      "aria-describedby": descriptionId,
     },
     titleProps: { id: titleId },
     descriptionProps: { id: descriptionId },
@@ -69,33 +69,33 @@ function useMenu() {
 
   const handleKeyDown = (e: KeyboardEvent) => {
     switch (e.key) {
-      case 'ArrowDown':
+      case "ArrowDown":
         e.preventDefault();
         if (!isOpen) {
           setIsOpen(true);
           setActiveIndex(0);
         } else {
-          setActiveIndex(prev => Math.min(prev + 1, itemCount - 1));
+          setActiveIndex((prev) => Math.min(prev + 1, itemCount - 1));
         }
         break;
-      case 'ArrowUp':
+      case "ArrowUp":
         e.preventDefault();
-        setActiveIndex(prev => Math.max(prev - 1, 0));
+        setActiveIndex((prev) => Math.max(prev - 1, 0));
         break;
-      case 'Home':
+      case "Home":
         e.preventDefault();
         setActiveIndex(0);
         break;
-      case 'End':
+      case "End":
         e.preventDefault();
         setActiveIndex(itemCount - 1);
         break;
-      case 'Escape':
+      case "Escape":
         setIsOpen(false);
         buttonRef.current?.focus();
         break;
-      case 'Enter':
-      case ' ':
+      case "Enter":
+      case " ":
         if (activeIndex >= 0) {
           selectItem(activeIndex);
           setIsOpen(false);
@@ -107,22 +107,21 @@ function useMenu() {
   return {
     isOpen,
     buttonProps: {
-      'aria-haspopup': 'menu' as const,
-      'aria-expanded': isOpen,
-      'aria-controls': menuId,
+      "aria-haspopup": "menu" as const,
+      "aria-expanded": isOpen,
+      "aria-controls": menuId,
       onClick: () => setIsOpen(!isOpen),
     },
     menuProps: {
       id: menuId,
-      role: 'menu' as const,
-      'aria-activedescendant': activeIndex >= 0
-        ? `${menuId}-item-${activeIndex}`
-        : undefined,
+      role: "menu" as const,
+      "aria-activedescendant":
+        activeIndex >= 0 ? `${menuId}-item-${activeIndex}` : undefined,
       onKeyDown: handleKeyDown,
     },
     getItemProps: (index: number) => ({
       id: `${menuId}-item-${index}`,
-      role: 'menuitem' as const,
+      role: "menuitem" as const,
       tabIndex: -1,
     }),
   };
@@ -132,14 +131,14 @@ function useMenu() {
 ### 3. Tabs（タブ）
 
 ```tsx
-function useTabs({ defaultValue, orientation = 'horizontal' }) {
+function useTabs({ defaultValue, orientation = "horizontal" }) {
   const [activeTab, setActiveTab] = useState(defaultValue);
   const tablistId = useId();
 
   const handleKeyDown = (e: KeyboardEvent, index: number) => {
-    const isHorizontal = orientation === 'horizontal';
-    const prevKey = isHorizontal ? 'ArrowLeft' : 'ArrowUp';
-    const nextKey = isHorizontal ? 'ArrowRight' : 'ArrowDown';
+    const isHorizontal = orientation === "horizontal";
+    const prevKey = isHorizontal ? "ArrowLeft" : "ArrowUp";
+    const nextKey = isHorizontal ? "ArrowRight" : "ArrowDown";
 
     switch (e.key) {
       case prevKey:
@@ -150,11 +149,11 @@ function useTabs({ defaultValue, orientation = 'horizontal' }) {
         e.preventDefault();
         focusNextTab(index);
         break;
-      case 'Home':
+      case "Home":
         e.preventDefault();
         focusFirstTab();
         break;
-      case 'End':
+      case "End":
         e.preventDefault();
         focusLastTab();
         break;
@@ -164,22 +163,22 @@ function useTabs({ defaultValue, orientation = 'horizontal' }) {
   return {
     activeTab,
     tablistProps: {
-      role: 'tablist' as const,
-      'aria-orientation': orientation,
+      role: "tablist" as const,
+      "aria-orientation": orientation,
     },
     getTabProps: (value: string, index: number) => ({
-      role: 'tab' as const,
+      role: "tab" as const,
       id: `${tablistId}-tab-${value}`,
-      'aria-selected': activeTab === value,
-      'aria-controls': `${tablistId}-panel-${value}`,
+      "aria-selected": activeTab === value,
+      "aria-controls": `${tablistId}-panel-${value}`,
       tabIndex: activeTab === value ? 0 : -1,
       onClick: () => setActiveTab(value),
       onKeyDown: (e: KeyboardEvent) => handleKeyDown(e, index),
     }),
     getPanelProps: (value: string) => ({
-      role: 'tabpanel' as const,
+      role: "tabpanel" as const,
       id: `${tablistId}-panel-${value}`,
-      'aria-labelledby': `${tablistId}-tab-${value}`,
+      "aria-labelledby": `${tablistId}-tab-${value}`,
       tabIndex: 0,
       hidden: activeTab !== value,
     }),
@@ -190,19 +189,19 @@ function useTabs({ defaultValue, orientation = 'horizontal' }) {
 ### 4. Accordion
 
 ```tsx
-function useAccordion({ type = 'single', collapsible = false }) {
+function useAccordion({ type = "single", collapsible = false }) {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
   const toggleItem = (id: string) => {
-    setExpandedItems(prev => {
+    setExpandedItems((prev) => {
       const next = new Set(prev);
 
       if (next.has(id)) {
-        if (collapsible || type === 'multiple') {
+        if (collapsible || type === "multiple") {
           next.delete(id);
         }
       } else {
-        if (type === 'single') {
+        if (type === "single") {
           next.clear();
         }
         next.add(id);
@@ -214,18 +213,18 @@ function useAccordion({ type = 'single', collapsible = false }) {
 
   return {
     getHeaderProps: (id: string) => ({
-      role: 'heading' as const,
-      'aria-level': 3,
+      role: "heading" as const,
+      "aria-level": 3,
     }),
     getTriggerProps: (id: string) => ({
-      'aria-expanded': expandedItems.has(id),
-      'aria-controls': `panel-${id}`,
+      "aria-expanded": expandedItems.has(id),
+      "aria-controls": `panel-${id}`,
       onClick: () => toggleItem(id),
     }),
     getPanelProps: (id: string) => ({
       id: `panel-${id}`,
-      role: 'region' as const,
-      'aria-labelledby': `trigger-${id}`,
+      role: "region" as const,
+      "aria-labelledby": `trigger-${id}`,
       hidden: !expandedItems.has(id),
     }),
   };
@@ -237,36 +236,34 @@ function useAccordion({ type = 'single', collapsible = false }) {
 ```tsx
 function useCombobox<T>({ items, filter }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [activeIndex, setActiveIndex] = useState(-1);
   const listboxId = useId();
 
   const filteredItems = useMemo(
     () => filter(items, inputValue),
-    [items, inputValue, filter]
+    [items, inputValue, filter],
   );
 
   const handleInputKeyDown = (e: KeyboardEvent) => {
     switch (e.key) {
-      case 'ArrowDown':
+      case "ArrowDown":
         e.preventDefault();
         if (!isOpen) {
           setIsOpen(true);
         }
-        setActiveIndex(prev =>
-          Math.min(prev + 1, filteredItems.length - 1)
-        );
+        setActiveIndex((prev) => Math.min(prev + 1, filteredItems.length - 1));
         break;
-      case 'ArrowUp':
+      case "ArrowUp":
         e.preventDefault();
-        setActiveIndex(prev => Math.max(prev - 1, 0));
+        setActiveIndex((prev) => Math.max(prev - 1, 0));
         break;
-      case 'Enter':
+      case "Enter":
         if (activeIndex >= 0) {
           selectItem(filteredItems[activeIndex]);
         }
         break;
-      case 'Escape':
+      case "Escape":
         setIsOpen(false);
         setActiveIndex(-1);
         break;
@@ -275,14 +272,13 @@ function useCombobox<T>({ items, filter }) {
 
   return {
     inputProps: {
-      role: 'combobox' as const,
-      'aria-expanded': isOpen,
-      'aria-haspopup': 'listbox' as const,
-      'aria-controls': listboxId,
-      'aria-activedescendant': activeIndex >= 0
-        ? `${listboxId}-option-${activeIndex}`
-        : undefined,
-      'aria-autocomplete': 'list' as const,
+      role: "combobox" as const,
+      "aria-expanded": isOpen,
+      "aria-haspopup": "listbox" as const,
+      "aria-controls": listboxId,
+      "aria-activedescendant":
+        activeIndex >= 0 ? `${listboxId}-option-${activeIndex}` : undefined,
+      "aria-autocomplete": "list" as const,
       value: inputValue,
       onChange: (e: ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
@@ -292,12 +288,12 @@ function useCombobox<T>({ items, filter }) {
     },
     listboxProps: {
       id: listboxId,
-      role: 'listbox' as const,
+      role: "listbox" as const,
     },
     getOptionProps: (index: number) => ({
       id: `${listboxId}-option-${index}`,
-      role: 'option' as const,
-      'aria-selected': activeIndex === index,
+      role: "option" as const,
+      "aria-selected": activeIndex === index,
     }),
   };
 }
@@ -316,7 +312,7 @@ function useFocusTrap(containerRef: RefObject<HTMLElement>) {
     if (!container) return;
 
     const focusableElements = container.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     );
 
     const firstElement = focusableElements[0] as HTMLElement;
@@ -325,7 +321,7 @@ function useFocusTrap(containerRef: RefObject<HTMLElement>) {
     ] as HTMLElement;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') return;
+      if (e.key !== "Tab") return;
 
       if (e.shiftKey) {
         if (document.activeElement === firstElement) {
@@ -340,11 +336,11 @@ function useFocusTrap(containerRef: RefObject<HTMLElement>) {
       }
     };
 
-    container.addEventListener('keydown', handleKeyDown);
+    container.addEventListener("keydown", handleKeyDown);
     firstElement?.focus();
 
     return () => {
-      container.removeEventListener('keydown', handleKeyDown);
+      container.removeEventListener("keydown", handleKeyDown);
     };
   }, [containerRef]);
 }
@@ -358,7 +354,7 @@ function useScrollLock(isLocked: boolean) {
     if (!isLocked) return;
 
     const originalStyle = window.getComputedStyle(document.body).overflow;
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
 
     return () => {
       document.body.style.overflow = originalStyle;
@@ -370,10 +366,7 @@ function useScrollLock(isLocked: boolean) {
 ### クリック外検出
 
 ```tsx
-function useClickOutside(
-  ref: RefObject<HTMLElement>,
-  handler: () => void
-) {
+function useClickOutside(ref: RefObject<HTMLElement>, handler: () => void) {
   useEffect(() => {
     const listener = (event: MouseEvent | TouchEvent) => {
       if (!ref.current || ref.current.contains(event.target as Node)) {
@@ -382,12 +375,12 @@ function useClickOutside(
       handler();
     };
 
-    document.addEventListener('mousedown', listener);
-    document.addEventListener('touchstart', listener);
+    document.addEventListener("mousedown", listener);
+    document.addEventListener("touchstart", listener);
 
     return () => {
-      document.removeEventListener('mousedown', listener);
-      document.removeEventListener('touchstart', listener);
+      document.removeEventListener("mousedown", listener);
+      document.removeEventListener("touchstart", listener);
     };
   }, [ref, handler]);
 }
@@ -399,37 +392,37 @@ function useClickOutside(
 
 ### ロール
 
-| ロール | 用途 | 例 |
-|--------|------|-----|
-| `dialog` | モーダルダイアログ | モーダル、アラート |
-| `menu` | メニュー | ドロップダウンメニュー |
-| `menuitem` | メニュー項目 | メニューオプション |
-| `tab` | タブ | タブナビゲーション |
-| `tabpanel` | タブパネル | タブコンテンツ |
-| `tablist` | タブリスト | タブコンテナ |
-| `listbox` | リストボックス | 選択リスト |
-| `option` | オプション | リスト項目 |
-| `combobox` | コンボボックス | オートコンプリート |
+| ロール     | 用途               | 例                     |
+| ---------- | ------------------ | ---------------------- |
+| `dialog`   | モーダルダイアログ | モーダル、アラート     |
+| `menu`     | メニュー           | ドロップダウンメニュー |
+| `menuitem` | メニュー項目       | メニューオプション     |
+| `tab`      | タブ               | タブナビゲーション     |
+| `tabpanel` | タブパネル         | タブコンテンツ         |
+| `tablist`  | タブリスト         | タブコンテナ           |
+| `listbox`  | リストボックス     | 選択リスト             |
+| `option`   | オプション         | リスト項目             |
+| `combobox` | コンボボックス     | オートコンプリート     |
 
 ### 状態属性
 
-| 属性 | 型 | 用途 |
-|------|-----|------|
-| `aria-expanded` | boolean | 展開状態 |
-| `aria-selected` | boolean | 選択状態 |
-| `aria-checked` | boolean/mixed | チェック状態 |
-| `aria-disabled` | boolean | 無効状態 |
-| `aria-hidden` | boolean | 非表示状態 |
-| `aria-pressed` | boolean/mixed | 押下状態 |
+| 属性            | 型            | 用途         |
+| --------------- | ------------- | ------------ |
+| `aria-expanded` | boolean       | 展開状態     |
+| `aria-selected` | boolean       | 選択状態     |
+| `aria-checked`  | boolean/mixed | チェック状態 |
+| `aria-disabled` | boolean       | 無効状態     |
+| `aria-hidden`   | boolean       | 非表示状態   |
+| `aria-pressed`  | boolean/mixed | 押下状態     |
 
 ### 関係属性
 
-| 属性 | 型 | 用途 |
-|------|-----|------|
-| `aria-labelledby` | ID参照 | ラベル要素 |
-| `aria-describedby` | ID参照 | 説明要素 |
-| `aria-controls` | ID参照 | 制御対象 |
-| `aria-owns` | ID参照 | 所有要素 |
+| 属性                    | 型     | 用途               |
+| ----------------------- | ------ | ------------------ |
+| `aria-labelledby`       | ID参照 | ラベル要素         |
+| `aria-describedby`      | ID参照 | 説明要素           |
+| `aria-controls`         | ID参照 | 制御対象           |
+| `aria-owns`             | ID参照 | 所有要素           |
 | `aria-activedescendant` | ID参照 | アクティブな子要素 |
 
 ---
@@ -437,12 +430,14 @@ function useClickOutside(
 ## チェックリスト
 
 ### 必須要件
+
 - [ ] 適切なロールが設定されているか
 - [ ] キーボード操作が実装されているか
 - [ ] フォーカス管理が適切か
 - [ ] スクリーンリーダーでテストしたか
 
 ### 推奨事項
+
 - [ ] ライブリージョンが必要か検討したか
 - [ ] エラーメッセージがアクセシブルか
 - [ ] カラーコントラストが十分か

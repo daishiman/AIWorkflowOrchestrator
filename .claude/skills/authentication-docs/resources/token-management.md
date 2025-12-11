@@ -2,11 +2,11 @@
 
 ## トークン種別
 
-| トークン種別 | 有効期限 | 用途 | 保存場所 |
-|-------------|---------|------|---------|
-| Access Token | 短期（1時間程度） | APIアクセス | メモリ/セキュアストレージ |
-| Refresh Token | 長期（30日〜無期限） | Access Token更新 | セキュアストレージのみ |
-| ID Token | 短期 | ユーザー情報（OIDC） | メモリ |
+| トークン種別  | 有効期限             | 用途                 | 保存場所                  |
+| ------------- | -------------------- | -------------------- | ------------------------- |
+| Access Token  | 短期（1時間程度）    | APIアクセス          | メモリ/セキュアストレージ |
+| Refresh Token | 長期（30日〜無期限） | Access Token更新     | セキュアストレージのみ    |
+| ID Token      | 短期                 | ユーザー情報（OIDC） | メモリ                    |
 
 ---
 
@@ -118,14 +118,14 @@ class TokenManager {
   }
 
   private async refresh(): Promise<void> {
-    const response = await fetch('/oauth/token', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    const response = await fetch("/oauth/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({
-        grant_type: 'refresh_token',
+        grant_type: "refresh_token",
         refresh_token: this.refreshToken,
-        client_id: CLIENT_ID
-      })
+        client_id: CLIENT_ID,
+      }),
     });
 
     const data = await response.json();
@@ -144,8 +144,8 @@ async function apiRequest(url: string, options: RequestInit) {
     ...options,
     headers: {
       ...options.headers,
-      'Authorization': `Bearer ${tokenManager.accessToken}`
-    }
+      Authorization: `Bearer ${tokenManager.accessToken}`,
+    },
   });
 
   // トークン期限切れ
@@ -157,8 +157,8 @@ async function apiRequest(url: string, options: RequestInit) {
       ...options,
       headers: {
         ...options.headers,
-        'Authorization': `Bearer ${tokenManager.accessToken}`
-      }
+        Authorization: `Bearer ${tokenManager.accessToken}`,
+      },
     });
   }
 
@@ -233,15 +233,15 @@ HTTP/1.1 200 OK
 
 ### 標準クレーム
 
-| クレーム | 説明 | 必須 |
-|---------|------|------|
-| iss | 発行者URL | ✅ |
-| sub | ユーザー識別子 | ✅ |
-| aud | 対象クライアント | ✅ |
-| exp | 有効期限（Unix時間） | ✅ |
-| iat | 発行日時（Unix時間） | ✅ |
-| nbf | 有効開始日時 | ❌ |
-| jti | トークン一意識別子 | ❌ |
+| クレーム | 説明                 | 必須 |
+| -------- | -------------------- | ---- |
+| iss      | 発行者URL            | ✅   |
+| sub      | ユーザー識別子       | ✅   |
+| aud      | 対象クライアント     | ✅   |
+| exp      | 有効期限（Unix時間） | ✅   |
+| iat      | 発行日時（Unix時間） | ✅   |
+| nbf      | 有効開始日時         | ❌   |
+| jti      | トークン一意識別子   | ❌   |
 
 ---
 
@@ -250,11 +250,11 @@ HTTP/1.1 200 OK
 ### サーバーサイド検証
 
 ```typescript
-import jwt from 'jsonwebtoken';
-import jwksClient from 'jwks-rsa';
+import jwt from "jsonwebtoken";
+import jwksClient from "jwks-rsa";
 
 const client = jwksClient({
-  jwksUri: 'https://auth.example.com/.well-known/jwks.json'
+  jwksUri: "https://auth.example.com/.well-known/jwks.json",
 });
 
 async function verifyToken(token: string): Promise<JwtPayload> {
@@ -262,8 +262,8 @@ async function verifyToken(token: string): Promise<JwtPayload> {
   const key = await client.getSigningKey(decoded.header.kid);
 
   return jwt.verify(token, key.getPublicKey(), {
-    issuer: 'https://auth.example.com',
-    audience: 'your_client_id'
+    issuer: "https://auth.example.com",
+    audience: "your_client_id",
   });
 }
 ```
@@ -284,10 +284,10 @@ async function verifyToken(token: string): Promise<JwtPayload> {
 
 ```typescript
 // ❌ 危険: localStorage（XSS脆弱）
-localStorage.setItem('access_token', token);
+localStorage.setItem("access_token", token);
 
 // ⚠️ 限定的: sessionStorage（タブ間共有不可）
-sessionStorage.setItem('access_token', token);
+sessionStorage.setItem("access_token", token);
 
 // ✅ 推奨: HttpOnly Cookie（サーバー設定）
 // または メモリ内保持 + リフレッシュトークンをHttpOnly Cookieに
@@ -300,23 +300,25 @@ sessionStorage.setItem('access_token', token);
 const clientSecret = process.env.OAUTH_CLIENT_SECRET;
 
 // ファイルシステム（暗号化推奨）
-import { readFileSync } from 'fs';
-const token = readFileSync('/secure/path/token.enc', 'utf8');
+import { readFileSync } from "fs";
+const token = readFileSync("/secure/path/token.enc", "utf8");
 
 // シークレット管理サービス
-import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
+import { SecretManagerServiceClient } from "@google-cloud/secret-manager";
 const client = new SecretManagerServiceClient();
-const [secret] = await client.accessSecretVersion({ name: 'projects/.../secrets/api-token/versions/latest' });
+const [secret] = await client.accessSecretVersion({
+  name: "projects/.../secrets/api-token/versions/latest",
+});
 ```
 
 ### モバイル
 
-| プラットフォーム | 推奨ストレージ |
-|----------------|---------------|
-| iOS | Keychain |
-| Android | Encrypted SharedPreferences / Keystore |
-| React Native | react-native-keychain |
-| Flutter | flutter_secure_storage |
+| プラットフォーム | 推奨ストレージ                         |
+| ---------------- | -------------------------------------- |
+| iOS              | Keychain                               |
+| Android          | Encrypted SharedPreferences / Keystore |
+| React Native     | react-native-keychain                  |
+| Flutter          | flutter_secure_storage                 |
 
 ---
 
@@ -324,9 +326,9 @@ const [secret] = await client.accessSecretVersion({ name: 'projects/.../secrets/
 
 ### よくあるエラー
 
-| エラー | 原因 | 対処 |
-|--------|------|------|
-| invalid_grant | リフレッシュトークン期限切れ | 再ログインを促す |
-| invalid_token | トークン形式不正 | トークン取得処理を確認 |
-| token_expired | アクセストークン期限切れ | リフレッシュを実行 |
-| insufficient_scope | スコープ不足 | 必要なスコープで再認証 |
+| エラー             | 原因                         | 対処                   |
+| ------------------ | ---------------------------- | ---------------------- |
+| invalid_grant      | リフレッシュトークン期限切れ | 再ログインを促す       |
+| invalid_token      | トークン形式不正             | トークン取得処理を確認 |
+| token_expired      | アクセストークン期限切れ     | リフレッシュを実行     |
+| insufficient_scope | スコープ不足                 | 必要なスコープで再認証 |

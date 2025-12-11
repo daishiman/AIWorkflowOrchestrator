@@ -11,8 +11,8 @@
  *   - 共通化の提案を出力
  */
 
-import { readFileSync, readdirSync, statSync } from 'fs';
-import { join, basename, relative } from 'path';
+import { readFileSync, readdirSync, statSync } from "fs";
+import { join, basename, relative } from "path";
 
 const MIN_PHRASE_LENGTH = 20;
 const MIN_OCCURRENCES = 2;
@@ -24,9 +24,9 @@ function getAllMarkdownFiles(dir, files = []) {
     const fullPath = join(dir, entry);
     const stat = statSync(fullPath);
 
-    if (stat.isDirectory() && !entry.startsWith('.')) {
+    if (stat.isDirectory() && !entry.startsWith(".")) {
       getAllMarkdownFiles(fullPath, files);
-    } else if (entry.endsWith('.md')) {
+    } else if (entry.endsWith(".md")) {
       files.push(fullPath);
     }
   }
@@ -36,13 +36,13 @@ function getAllMarkdownFiles(dir, files = []) {
 
 function extractPhrases(content, minLength) {
   const phrases = [];
-  const lines = content.split('\n');
+  const lines = content.split("\n");
 
   for (const line of lines) {
     // コードブロック内はスキップ
-    if (line.startsWith('```') || line.startsWith('    ')) continue;
+    if (line.startsWith("```") || line.startsWith("    ")) continue;
     // 見出しはスキップ
-    if (line.startsWith('#')) continue;
+    if (line.startsWith("#")) continue;
 
     // 意味のあるフレーズを抽出
     const trimmed = line.trim();
@@ -58,7 +58,7 @@ function findDuplicates(files, baseDir) {
   const phraseLocations = new Map();
 
   for (const file of files) {
-    const content = readFileSync(file, 'utf-8');
+    const content = readFileSync(file, "utf-8");
     const phrases = extractPhrases(content, MIN_PHRASE_LENGTH);
     const relativePath = relative(baseDir, file);
 
@@ -91,7 +91,7 @@ function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.log('使用方法: node check-dry-violations.mjs <directory>');
+    console.log("使用方法: node check-dry-violations.mjs <directory>");
     process.exit(1);
   }
 
@@ -106,35 +106,39 @@ function main() {
   }
 
   console.log(`\n📋 DRY違反検出レポート`);
-  console.log(`${'='.repeat(50)}\n`);
+  console.log(`${"=".repeat(50)}\n`);
   console.log(`対象ディレクトリ: ${targetDir}`);
   console.log(`検出ファイル数: ${files.length}件\n`);
 
   const duplicates = findDuplicates(files, targetDir);
 
   if (duplicates.length === 0) {
-    console.log('✅ DRY違反は検出されませんでした');
+    console.log("✅ DRY違反は検出されませんでした");
     process.exit(0);
   }
 
   console.log(`⚠️  重複フレーズ: ${duplicates.length}件検出\n`);
 
   duplicates.slice(0, 10).forEach((dup, index) => {
-    console.log(`${index + 1}. "${dup.phrase.substring(0, 60)}${dup.phrase.length > 60 ? '...' : ''}"`);
+    console.log(
+      `${index + 1}. "${dup.phrase.substring(0, 60)}${dup.phrase.length > 60 ? "..." : ""}"`,
+    );
     console.log(`   出現回数: ${dup.count}回`);
     console.log(`   ファイル:`);
-    dup.locations.forEach(loc => {
+    dup.locations.forEach((loc) => {
       console.log(`     - ${loc}`);
     });
-    console.log('');
+    console.log("");
   });
 
   if (duplicates.length > 10) {
     console.log(`... 他 ${duplicates.length - 10}件`);
   }
 
-  console.log(`\n${'='.repeat(50)}`);
-  console.log(`💡 提案: 重複フレーズを common/ ディレクトリに共通化し、参照に置き換えてください`);
+  console.log(`\n${"=".repeat(50)}`);
+  console.log(
+    `💡 提案: 重複フレーズを common/ ディレクトリに共通化し、参照に置き換えてください`,
+  );
 
   process.exit(duplicates.length > 0 ? 1 : 0);
 }

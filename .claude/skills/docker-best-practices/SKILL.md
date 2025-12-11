@@ -150,7 +150,6 @@ node .claude/skills/docker-best-practices/scripts/analyze-image.mjs myapp:latest
 **ステップ**:
 
 1. **アプリケーション分析**:
-
    - 言語/ランタイム
    - 依存関係
    - 必要なシステムパッケージ
@@ -173,7 +172,6 @@ node .claude/skills/docker-best-practices/scripts/analyze-image.mjs myapp:latest
 **ステップ**:
 
 1. **イメージ比較**:
-
    - 公式イメージの確認
    - サイズ比較
    - セキュリティ考慮
@@ -196,7 +194,6 @@ node .claude/skills/docker-best-practices/scripts/analyze-image.mjs myapp:latest
 **ステップ**:
 
 1. **マルチステージビルド**:
-
    - ビルドステージ
    - 実行ステージ
 
@@ -218,7 +215,6 @@ node .claude/skills/docker-best-practices/scripts/analyze-image.mjs myapp:latest
 **ステップ**:
 
 1. **ユーザー設定**:
-
    - 非 root ユーザーの作成
    - 適切な権限設定
 
@@ -290,12 +286,10 @@ coverage
 ### すべきこと
 
 1. **マルチステージビルド**:
-
    - ビルド環境と実行環境を分離
    - 最終イメージを最小化
 
 2. **レイヤーキャッシュ活用**:
-
    - 変更頻度の低いものを先に
    - package.json を先にコピー
 
@@ -306,12 +300,10 @@ coverage
 ### 避けるべきこと
 
 1. **latest タグ**:
-
    - ❌ `FROM node:latest`
    - ✅ `FROM node:20-alpine`
 
 2. **シークレットの埋め込み**:
-
    - ❌ `ENV API_KEY=xxx`
    - ✅ 実行時に環境変数で渡す
 
@@ -383,7 +375,6 @@ coverage
 ## 参考文献
 
 - **Docker 公式ドキュメント**
-
   - [Dockerfile best practices](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
 
 - **Hadolint**

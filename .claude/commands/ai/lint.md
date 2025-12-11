@@ -18,9 +18,9 @@ description: |
   トリガーキーワード: lint, eslint, code quality, コードチェック, 静的解析
 argument-hint: "[--fix]"
 allowed-tools:
-   - Task
-   - Bash
-   - Write
+  - Task
+  - Bash
+  - Write
 model: sonnet
 ---
 

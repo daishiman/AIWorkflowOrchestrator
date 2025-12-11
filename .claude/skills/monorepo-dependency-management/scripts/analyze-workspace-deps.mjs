@@ -15,22 +15,22 @@
  *   --json            JSON形式で出力
  */
 
-import { execSync } from 'child_process';
-import { readFileSync, readdirSync, existsSync } from 'fs';
-import { join } from 'path';
+import { execSync } from "child_process";
+import { readFileSync, readdirSync, existsSync } from "fs";
+import { join } from "path";
 
 // ANSI カラーコード
 const colors = {
-  reset: '\x1b[0m',
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  cyan: '\x1b[36m',
-  gray: '\x1b[90m',
+  reset: "\x1b[0m",
+  red: "\x1b[31m",
+  green: "\x1b[32m",
+  yellow: "\x1b[33m",
+  blue: "\x1b[34m",
+  cyan: "\x1b[36m",
+  gray: "\x1b[90m",
 };
 
-function log(message, color = 'reset') {
+function log(message, color = "reset") {
   console.log(`${colors[color]}${message}${colors.reset}`);
 }
 
@@ -45,24 +45,24 @@ function parseArgs() {
 
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
-      case '--package':
-      case '-p':
+      case "--package":
+      case "-p":
         options.package = args[++i];
         break;
-      case '--graph':
-      case '-g':
+      case "--graph":
+      case "-g":
         options.graph = true;
         break;
-      case '--cycles':
-      case '-c':
+      case "--cycles":
+      case "-c":
         options.cycles = true;
         break;
-      case '--json':
-      case '-j':
+      case "--json":
+      case "-j":
         options.json = true;
         break;
-      case '--help':
-      case '-h':
+      case "--help":
+      case "-h":
         showHelp();
         process.exit(0);
     }
@@ -94,20 +94,20 @@ function showHelp() {
 
 function getWorkspacePackages() {
   const packages = [];
-  const workspaceDirs = ['packages', 'apps', 'tools', 'libs'];
+  const workspaceDirs = ["packages", "apps", "tools", "libs"];
 
   for (const dir of workspaceDirs) {
     if (!existsSync(dir)) continue;
 
     const subdirs = readdirSync(dir, { withFileTypes: true })
-      .filter(d => d.isDirectory())
-      .map(d => d.name);
+      .filter((d) => d.isDirectory())
+      .map((d) => d.name);
 
     for (const subdir of subdirs) {
-      const pkgPath = join(dir, subdir, 'package.json');
+      const pkgPath = join(dir, subdir, "package.json");
       if (existsSync(pkgPath)) {
         try {
-          const pkg = JSON.parse(readFileSync(pkgPath, 'utf8'));
+          const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
           packages.push({
             name: pkg.name,
             version: pkg.version,
@@ -128,7 +128,7 @@ function getWorkspacePackages() {
 
 function buildDependencyGraph(packages) {
   const graph = {};
-  const packageNames = new Set(packages.map(p => p.name));
+  const packageNames = new Set(packages.map((p) => p.name));
 
   for (const pkg of packages) {
     const internalDeps = [];
@@ -247,11 +247,11 @@ function analyzePackage(graph, packageName) {
     version: data.version,
     directDependencies,
     transitiveDependencies: transitiveDependencies.filter(
-      d => !directDependencies.includes(d)
+      (d) => !directDependencies.includes(d),
     ),
     directDependents,
     transitiveDependents: transitiveDependents.filter(
-      d => !directDependents.includes(d)
+      (d) => !directDependents.includes(d),
     ),
     impactScore: transitiveDependents.length + 1,
   };
@@ -263,21 +263,21 @@ function printGraph(graph, asJson) {
     return;
   }
 
-  log('\n========================================', 'cyan');
-  log('ワークスペース依存グラフ', 'cyan');
-  log('========================================\n', 'cyan');
+  log("\n========================================", "cyan");
+  log("ワークスペース依存グラフ", "cyan");
+  log("========================================\n", "cyan");
 
   for (const [name, data] of Object.entries(graph)) {
-    log(`📦 ${name}`, 'blue');
-    log(`   パス: ${data.path}`, 'gray');
-    log(`   バージョン: ${data.version}`, 'gray');
+    log(`📦 ${name}`, "blue");
+    log(`   パス: ${data.path}`, "gray");
+    log(`   バージョン: ${data.version}`, "gray");
 
     if (data.dependencies.length > 0) {
-      log(`   依存: ${data.dependencies.join(', ')}`, 'yellow');
+      log(`   依存: ${data.dependencies.join(", ")}`, "yellow");
     }
 
     if (data.dependents.length > 0) {
-      log(`   被依存: ${data.dependents.join(', ')}`, 'green');
+      log(`   被依存: ${data.dependents.join(", ")}`, "green");
     }
 
     console.log();
@@ -290,17 +290,17 @@ function printCycles(cycles, asJson) {
     return;
   }
 
-  log('\n========================================', 'cyan');
-  log('循環依存チェック', 'cyan');
-  log('========================================\n', 'cyan');
+  log("\n========================================", "cyan");
+  log("循環依存チェック", "cyan");
+  log("========================================\n", "cyan");
 
   if (cycles.length === 0) {
-    log('✅ 循環依存は検出されませんでした', 'green');
+    log("✅ 循環依存は検出されませんでした", "green");
   } else {
-    log(`❌ ${cycles.length} 件の循環依存を検出しました\n`, 'red');
+    log(`❌ ${cycles.length} 件の循環依存を検出しました\n`, "red");
 
     cycles.forEach((cycle, index) => {
-      log(`${index + 1}. ${cycle.join(' → ')}`, 'red');
+      log(`${index + 1}. ${cycle.join(" → ")}`, "red");
     });
   }
 }
@@ -312,50 +312,50 @@ function printPackageAnalysis(analysis, asJson) {
   }
 
   if (analysis.error) {
-    log(`\n❌ ${analysis.error}`, 'red');
+    log(`\n❌ ${analysis.error}`, "red");
     return;
   }
 
-  log('\n========================================', 'cyan');
-  log(`影響分析: ${analysis.package}`, 'cyan');
-  log('========================================\n', 'cyan');
+  log("\n========================================", "cyan");
+  log(`影響分析: ${analysis.package}`, "cyan");
+  log("========================================\n", "cyan");
 
-  log(`📦 パッケージ: ${analysis.package}`, 'blue');
-  log(`   パス: ${analysis.path}`, 'gray');
-  log(`   バージョン: ${analysis.version}`, 'gray');
-  log(`   影響スコア: ${analysis.impactScore}`, 'yellow');
+  log(`📦 パッケージ: ${analysis.package}`, "blue");
+  log(`   パス: ${analysis.path}`, "gray");
+  log(`   バージョン: ${analysis.version}`, "gray");
+  log(`   影響スコア: ${analysis.impactScore}`, "yellow");
 
   console.log();
 
-  log('依存関係:', 'green');
+  log("依存関係:", "green");
   if (analysis.directDependencies.length > 0) {
-    log(`  直接: ${analysis.directDependencies.join(', ')}`, 'gray');
+    log(`  直接: ${analysis.directDependencies.join(", ")}`, "gray");
   } else {
-    log('  直接: なし', 'gray');
+    log("  直接: なし", "gray");
   }
 
   if (analysis.transitiveDependencies.length > 0) {
-    log(`  間接: ${analysis.transitiveDependencies.join(', ')}`, 'gray');
+    log(`  間接: ${analysis.transitiveDependencies.join(", ")}`, "gray");
   }
 
   console.log();
 
-  log('被依存関係（このパッケージに依存するパッケージ）:', 'yellow');
+  log("被依存関係（このパッケージに依存するパッケージ）:", "yellow");
   if (analysis.directDependents.length > 0) {
-    log(`  直接: ${analysis.directDependents.join(', ')}`, 'gray');
+    log(`  直接: ${analysis.directDependents.join(", ")}`, "gray");
   } else {
-    log('  直接: なし', 'gray');
+    log("  直接: なし", "gray");
   }
 
   if (analysis.transitiveDependents.length > 0) {
-    log(`  間接: ${analysis.transitiveDependents.join(', ')}`, 'gray');
+    log(`  間接: ${analysis.transitiveDependents.join(", ")}`, "gray");
   }
 
   console.log();
 
-  log('推奨テストコマンド:', 'cyan');
-  log(`  pnpm --filter "...${analysis.package}" run test`, 'gray');
-  log(`  pnpm --filter "...${analysis.package}" run build`, 'gray');
+  log("推奨テストコマンド:", "cyan");
+  log(`  pnpm --filter "...${analysis.package}" run test`, "gray");
+  log(`  pnpm --filter "...${analysis.package}" run build`, "gray");
 }
 
 function printSummary(graph, asJson) {
@@ -376,19 +376,19 @@ function printSummary(graph, asJson) {
     return;
   }
 
-  log('\n========================================', 'cyan');
-  log('ワークスペース概要', 'cyan');
-  log('========================================\n', 'cyan');
+  log("\n========================================", "cyan");
+  log("ワークスペース概要", "cyan");
+  log("========================================\n", "cyan");
 
-  log(`総パッケージ数: ${stats.totalPackages}`, 'blue');
+  log(`総パッケージ数: ${stats.totalPackages}`, "blue");
   console.log();
 
-  log('影響度ランキング（高い順）:', 'yellow');
+  log("影響度ランキング（高い順）:", "yellow");
   stats.packages.forEach((pkg, index) => {
-    const bar = '█'.repeat(Math.min(pkg.impactScore, 20));
+    const bar = "█".repeat(Math.min(pkg.impactScore, 20));
     log(
       `  ${index + 1}. ${pkg.name.padEnd(30)} ${bar} (${pkg.impactScore})`,
-      'gray'
+      "gray",
     );
   });
 }
@@ -397,16 +397,16 @@ function printSummary(graph, asJson) {
 function main() {
   const options = parseArgs();
 
-  log('\n🔍 ワークスペース依存関係分析を開始...', 'cyan');
+  log("\n🔍 ワークスペース依存関係分析を開始...", "cyan");
 
   const packages = getWorkspacePackages();
 
   if (packages.length === 0) {
+    log("\n⚠️  ワークスペースパッケージが見つかりません。", "yellow");
     log(
-      '\n⚠️  ワークスペースパッケージが見つかりません。',
-      'yellow'
+      "   packages/、apps/、tools/、libs/ ディレクトリを確認してください。",
+      "gray",
     );
-    log('   packages/、apps/、tools/、libs/ ディレクトリを確認してください。', 'gray');
     process.exit(1);
   }
 

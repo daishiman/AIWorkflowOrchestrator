@@ -69,7 +69,7 @@ let isShuttingDown = false;
 
 function initiateShutdown(signal) {
   if (isShuttingDown) {
-    console.log('Shutdown already in progress, ignoring');
+    console.log("Shutdown already in progress, ignoring");
     return;
   }
 
@@ -79,37 +79,37 @@ function initiateShutdown(signal) {
   gracefulShutdown();
 }
 
-process.on('SIGTERM', () => initiateShutdown('SIGTERM'));
-process.on('SIGINT', () => initiateShutdown('SIGINT'));
+process.on("SIGTERM", () => initiateShutdown("SIGTERM"));
+process.on("SIGINT", () => initiateShutdown("SIGINT"));
 ```
 
 ### Step 2: ヘルスチェック更新
 
 ```javascript
 // Express middleware
-app.get('/health', (req, res) => {
+app.get("/health", (req, res) => {
   if (isShuttingDown) {
     // ロードバランサーにシャットダウン中を通知
     res.status(503).json({
-      status: 'shutting_down',
-      message: 'Service is shutting down'
+      status: "shutting_down",
+      message: "Service is shutting down",
     });
     return;
   }
 
   res.json({
-    status: 'healthy',
-    uptime: process.uptime()
+    status: "healthy",
+    uptime: process.uptime(),
   });
 });
 
 // Kubernetes readiness probe
-app.get('/ready', (req, res) => {
+app.get("/ready", (req, res) => {
   if (isShuttingDown) {
-    res.status(503).send('NOT READY');
+    res.status(503).send("NOT READY");
     return;
   }
-  res.status(200).send('OK');
+  res.status(200).send("OK");
 });
 ```
 
@@ -120,11 +120,11 @@ async function closeServer() {
   return new Promise((resolve, reject) => {
     server.close((err) => {
       if (err) {
-        console.error('Error closing server:', err);
+        console.error("Error closing server:", err);
         reject(err);
         return;
       }
-      console.log('HTTP server closed');
+      console.log("HTTP server closed");
       resolve();
     });
 
@@ -149,12 +149,12 @@ class RequestTracker {
     return (req, res, next) => {
       this.activeRequests++;
 
-      res.on('finish', () => {
+      res.on("finish", () => {
         this.activeRequests--;
         this.notifyWaiters();
       });
 
-      res.on('close', () => {
+      res.on("close", () => {
         this.activeRequests--;
         this.notifyWaiters();
       });
@@ -182,7 +182,7 @@ class RequestTracker {
   }
 
   notifyWaiters() {
-    this.waiters.forEach(fn => fn());
+    this.waiters.forEach((fn) => fn());
   }
 }
 
@@ -215,15 +215,15 @@ class GracefulShutdown {
         await fn();
         results.push({
           name,
-          status: 'success',
-          duration: Date.now() - start
+          status: "success",
+          duration: Date.now() - start,
         });
       } catch (error) {
         results.push({
           name,
-          status: 'error',
+          status: "error",
           error: error.message,
-          duration: Date.now() - start
+          duration: Date.now() - start,
         });
       }
     }
@@ -235,48 +235,52 @@ class GracefulShutdown {
 const shutdown = new GracefulShutdown();
 
 // 優先度: 10 (最初) - HTTPサーバー
-shutdown.register('http-server', () => closeServer(), 10);
+shutdown.register("http-server", () => closeServer(), 10);
 
 // 優先度: 20 - リクエスト完了待機
-shutdown.register('request-drain', () => tracker.waitForCompletion(), 20);
+shutdown.register("request-drain", () => tracker.waitForCompletion(), 20);
 
 // 優先度: 30 - 外部API接続
-shutdown.register('external-apis', () => apiClient.close(), 30);
+shutdown.register("external-apis", () => apiClient.close(), 30);
 
 // 優先度: 40 - キュー接続
-shutdown.register('queue', () => queue.close(), 40);
+shutdown.register("queue", () => queue.close(), 40);
 
 // 優先度: 50 - キャッシュ
-shutdown.register('redis', () => redis.quit(), 50);
+shutdown.register("redis", () => redis.quit(), 50);
 
 // 優先度: 60 - データベース
-shutdown.register('database', () => db.close(), 60);
+shutdown.register("database", () => db.close(), 60);
 ```
 
 ### Step 8: ログフラッシュ
 
 ```javascript
-shutdown.register('logger', async () => {
-  // Winston等のロガーをフラッシュ
-  if (logger.end) {
-    await new Promise(resolve => logger.end(resolve));
-  }
+shutdown.register(
+  "logger",
+  async () => {
+    // Winston等のロガーをフラッシュ
+    if (logger.end) {
+      await new Promise((resolve) => logger.end(resolve));
+    }
 
-  // console.logはstdoutに即座に書き込まれるため
-  // 特別な処理は不要だが、念のため少し待機
-  await sleep(100);
-}, 70);
+    // console.logはstdoutに即座に書き込まれるため
+    // 特別な処理は不要だが、念のため少し待機
+    await sleep(100);
+  },
+  70,
+);
 ```
 
 ### Step 9: プロセス終了
 
 ```javascript
 async function gracefulShutdown() {
-  console.log('Starting graceful shutdown...');
+  console.log("Starting graceful shutdown...");
 
   // タイムアウト設定
   const timeout = setTimeout(() => {
-    console.error('Shutdown timeout, forcing exit');
+    console.error("Shutdown timeout, forcing exit");
     process.exit(1);
   }, 30000);
 
@@ -284,15 +288,15 @@ async function gracefulShutdown() {
     const results = await shutdown.execute();
 
     // 結果サマリー
-    const succeeded = results.filter(r => r.status === 'success').length;
-    const failed = results.filter(r => r.status === 'error').length;
+    const succeeded = results.filter((r) => r.status === "success").length;
+    const failed = results.filter((r) => r.status === "error").length;
     console.log(`Cleanup complete: ${succeeded} succeeded, ${failed} failed`);
 
     clearTimeout(timeout);
-    console.log('Graceful shutdown completed');
+    console.log("Graceful shutdown completed");
     process.exit(0);
   } catch (error) {
-    console.error('Fatal shutdown error:', error);
+    console.error("Fatal shutdown error:", error);
     clearTimeout(timeout);
     process.exit(1);
   }
@@ -305,11 +309,11 @@ async function gracefulShutdown() {
 
 ```javascript
 const TIMEOUTS = {
-  requestDrain: 15000,    // リクエスト完了待機
-  externalAPIs: 5000,     // 外部API切断
-  cache: 3000,            // キャッシュ切断
-  database: 10000,        // DB切断
-  total: 30000            // 全体タイムアウト
+  requestDrain: 15000, // リクエスト完了待機
+  externalAPIs: 5000, // 外部API切断
+  cache: 3000, // キャッシュ切断
+  database: 10000, // DB切断
+  total: 30000, // 全体タイムアウト
 };
 
 async function gracefulShutdownWithTimeouts() {
@@ -321,14 +325,10 @@ async function gracefulShutdownWithTimeouts() {
   await withTimeout(
     tracker.waitForCompletion(),
     TIMEOUTS.requestDrain,
-    'request drain'
+    "request drain",
   );
 
-  await withTimeout(
-    apiClient.close(),
-    TIMEOUTS.externalAPIs,
-    'external APIs'
-  );
+  await withTimeout(apiClient.close(), TIMEOUTS.externalAPIs, "external APIs");
 
   // ...
 
@@ -340,9 +340,9 @@ function withTimeout(promise, ms, name) {
   return Promise.race([
     promise,
     new Promise((_, reject) =>
-      setTimeout(() => reject(new Error(`${name} timeout`)), ms)
-    )
-  ]).catch(err => console.warn(`Warning: ${err.message}`));
+      setTimeout(() => reject(new Error(`${name} timeout`)), ms),
+    ),
+  ]).catch((err) => console.warn(`Warning: ${err.message}`));
 }
 ```
 
@@ -363,14 +363,14 @@ function withTimeout(promise, ms, name) {
 ```yaml
 spec:
   containers:
-  - name: app
-    lifecycle:
-      preStop:
-        exec:
-          command: ["sh", "-c", "sleep 5"]
-    readinessProbe:
-      httpGet:
-        path: /ready
-        port: 8080
-      periodSeconds: 5
+    - name: app
+      lifecycle:
+        preStop:
+          exec:
+            command: ["sh", "-c", "sleep 5"]
+      readinessProbe:
+        httpGet:
+          path: /ready
+          port: 8080
+        periodSeconds: 5
 ```

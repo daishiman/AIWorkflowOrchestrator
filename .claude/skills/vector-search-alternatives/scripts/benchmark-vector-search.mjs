@@ -16,7 +16,7 @@
 
 // 設定
 const CONFIG = {
-  databaseUrl: process.env.DATABASE_URL || '',
+  databaseUrl: process.env.DATABASE_URL || "",
   dimensions: 1536,
   testQueries: 100,
   topK: 10,
@@ -72,25 +72,28 @@ const BENCHMARK_QUERIES = {
  * ランダムなベクトルを生成
  */
 function generateRandomVector(dimensions) {
-  const vector = Array.from({ length: dimensions }, () => Math.random() * 2 - 1);
+  const vector = Array.from(
+    { length: dimensions },
+    () => Math.random() * 2 - 1,
+  );
   // 正規化
   const magnitude = Math.sqrt(vector.reduce((sum, v) => sum + v * v, 0));
-  return vector.map(v => v / magnitude);
+  return vector.map((v) => v / magnitude);
 }
 
 /**
  * レイテンシベンチマーク
  */
 function benchmarkLatency() {
-  console.log('\n⏱️  Latency Benchmark');
-  console.log('====================');
+  console.log("\n⏱️  Latency Benchmark");
+  console.log("====================");
 
-  console.log('\n📋 Test Configuration:');
+  console.log("\n📋 Test Configuration:");
   console.log(`   Dimensions: ${CONFIG.dimensions}`);
   console.log(`   Queries: ${CONFIG.testQueries}`);
   console.log(`   Top K: ${CONFIG.topK}`);
 
-  console.log('\n📊 Expected Results (based on typical performance):');
+  console.log("\n📊 Expected Results (based on typical performance):");
   console.log(`
   ┌─────────────────────────────────────────────────────────────┐
   │ Index Type    │ Latency (ms)  │ Note                        │
@@ -101,27 +104,31 @@ function benchmarkLatency() {
   └─────────────────────────────────────────────────────────────┘
   `);
 
-  console.log('\n📝 SQL to run benchmark:');
+  console.log("\n📝 SQL to run benchmark:");
   console.log(BENCHMARK_QUERIES.latencyTest);
 
-  console.log('\n💡 Tips:');
-  console.log('   - Run multiple times to warm up cache');
-  console.log('   - Compare with and without index');
-  console.log('   - Adjust ef_search/probes for speed vs accuracy');
+  console.log("\n💡 Tips:");
+  console.log("   - Run multiple times to warm up cache");
+  console.log("   - Compare with and without index");
+  console.log("   - Adjust ef_search/probes for speed vs accuracy");
 }
 
 /**
  * Recall（精度）ベンチマーク
  */
 function benchmarkRecall() {
-  console.log('\n🎯 Recall Benchmark');
-  console.log('===================');
+  console.log("\n🎯 Recall Benchmark");
+  console.log("===================");
 
-  console.log('\n📋 What is Recall@K:');
-  console.log('   The percentage of true nearest neighbors found in top K results');
-  console.log('   Recall@10 = 95% means 9.5 out of 10 true neighbors are found');
+  console.log("\n📋 What is Recall@K:");
+  console.log(
+    "   The percentage of true nearest neighbors found in top K results",
+  );
+  console.log(
+    "   Recall@10 = 95% means 9.5 out of 10 true neighbors are found",
+  );
 
-  console.log('\n📊 Typical Recall Values:');
+  console.log("\n📊 Typical Recall Values:");
   console.log(`
   ┌─────────────────────────────────────────────────────────────┐
   │ Index Type    │ Recall@10     │ Configuration               │
@@ -132,7 +139,7 @@ function benchmarkRecall() {
   └─────────────────────────────────────────────────────────────┘
   `);
 
-  console.log('\n📝 How to measure Recall:');
+  console.log("\n📝 How to measure Recall:");
   console.log(`
   1. Run exact search (no index) to get ground truth:
      SELECT id FROM documents
@@ -153,16 +160,16 @@ function benchmarkRecall() {
  * インデックス情報の表示
  */
 function showIndexInfo() {
-  console.log('\n📊 Index Information');
-  console.log('====================');
+  console.log("\n📊 Index Information");
+  console.log("====================");
 
-  console.log('\n📝 Query to check indexes:');
+  console.log("\n📝 Query to check indexes:");
   console.log(BENCHMARK_QUERIES.indexInfo);
 
-  console.log('\n📝 Query to check table stats:');
+  console.log("\n📝 Query to check table stats:");
   console.log(BENCHMARK_QUERIES.tableStats);
 
-  console.log('\n📝 Query to check index usage:');
+  console.log("\n📝 Query to check index usage:");
   console.log(BENCHMARK_QUERIES.indexUsage);
 }
 
@@ -170,10 +177,10 @@ function showIndexInfo() {
  * 推奨設定
  */
 function showRecommendations() {
-  console.log('\n💡 Recommendations');
-  console.log('==================');
+  console.log("\n💡 Recommendations");
+  console.log("==================");
 
-  console.log('\n📊 Index Selection:');
+  console.log("\n📊 Index Selection:");
   console.log(`
   Data Size        │ Recommended Index │ Parameters
   ─────────────────┼───────────────────┼─────────────────────
@@ -183,7 +190,7 @@ function showRecommendations() {
   > 1M rows        │ HNSW + Partition  │ m=32, ef_construction=128
   `);
 
-  console.log('\n📊 Search Parameter Tuning:');
+  console.log("\n📊 Search Parameter Tuning:");
   console.log(`
   Use Case         │ ef_search/probes │ Latency vs Recall
   ─────────────────┼──────────────────┼───────────────────
@@ -197,10 +204,12 @@ function showRecommendations() {
  * 完全なベンチマーク
  */
 function fullBenchmark() {
-  console.log('\n🔬 Full Benchmark Report');
-  console.log('========================');
+  console.log("\n🔬 Full Benchmark Report");
+  console.log("========================");
   console.log(`Generated at: ${new Date().toISOString()}`);
-  console.log(`Database: ${CONFIG.databaseUrl ? '(configured)' : '(not configured)'}`);
+  console.log(
+    `Database: ${CONFIG.databaseUrl ? "(configured)" : "(not configured)"}`,
+  );
 
   benchmarkLatency();
   benchmarkRecall();
@@ -244,36 +253,36 @@ function showHelp() {
 function main() {
   const args = process.argv.slice(2);
 
-  if (args.length === 0 || args.includes('--help')) {
+  if (args.length === 0 || args.includes("--help")) {
     showHelp();
     process.exit(0);
   }
 
-  console.log('📊 Vector Search Benchmark Tool');
+  console.log("📊 Vector Search Benchmark Tool");
   console.log(`Dimensions: ${CONFIG.dimensions}`);
 
-  if (args.includes('--full')) {
+  if (args.includes("--full")) {
     fullBenchmark();
     process.exit(0);
   }
 
-  if (args.includes('--latency')) {
+  if (args.includes("--latency")) {
     benchmarkLatency();
   }
 
-  if (args.includes('--recall')) {
+  if (args.includes("--recall")) {
     benchmarkRecall();
   }
 
-  if (args.includes('--indexes')) {
+  if (args.includes("--indexes")) {
     showIndexInfo();
   }
 
-  if (args.includes('--recommend')) {
+  if (args.includes("--recommend")) {
     showRecommendations();
   }
 
-  console.log('\n✅ Benchmark information generated');
+  console.log("\n✅ Benchmark information generated");
 }
 
 main();

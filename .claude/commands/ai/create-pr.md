@@ -55,6 +55,7 @@ model: sonnet
 ### Phase 1: ブランチと変更内容の確認
 
 **ブランチ確認**:
+
 ```bash
 # 現在のブランチ
 current_branch=$(git branch --show-current)
@@ -68,6 +69,7 @@ git diff ${base_branch}...HEAD
 ```
 
 **変更内容分析**:
+
 ```bash
 # 変更ファイル一覧
 git diff --name-status ${base_branch}...HEAD
@@ -84,39 +86,48 @@ git diff ${base_branch}...HEAD
 **使用エージェント**: `.claude/agents/spec-writer.md`
 
 **エージェントへの依頼内容**:
-```markdown
+
+````markdown
 ブランチ「${current_branch}」のPR説明文を作成してください。
 
 **ベースブランチ**: ${base_branch}
 
 **入力**:
+
 - コミット履歴: ${git log ${base_branch}..HEAD}
 - 変更差分: ${git diff ${base_branch}...HEAD}
 - 変更ファイル: ${git diff --name-status}
 
 **要件**:
+
 1. PRタイトル生成:
    - 簡潔で明確（50文字以内推奨）
    - Conventional Commits形式（type(scope): subject）
    - 変更の核心を表現
 
 2. PR説明文生成:
+
    ```markdown
    ## What（何を変更したか）
+
    [変更内容のサマリー、1-3文]
 
    ## Why（なぜ変更したか）
+
    [背景、課題、解決する問題]
 
    ## How（どう実装したか）
+
    [主要な設計判断、技術的な選択理由]
 
    ## Changes（主要な変更点）
+
    - [変更点1]
    - [変更点2]
    - [変更点3]
 
    ## Test Plan（テストプラン）
+
    - [ ] ユニットテスト合格
    - [ ] 型チェック合格
    - [ ] ESLint合格
@@ -124,23 +135,30 @@ git diff ${base_branch}...HEAD
    - [ ] [機能固有の検証項目]
 
    ## Screenshots（該当する場合）
+
    [UIスクリーンショット]
 
    ## Breaking Changes（該当する場合）
+
    [破壊的変更の詳細、移行ガイド]
 
    ## Related Issues
+
    Closes #123
    ```
+````
 
 **スキル参照**:
+
 - `.claude/skills/structured-writing/SKILL.md`
 - `.claude/skills/markdown-advanced-syntax/SKILL.md`
 
 **成果物**:
+
 - PRタイトル
 - PR説明文（Markdown）
-```
+
+````
 
 ### Phase 3: PR作成実行
 
@@ -155,7 +173,7 @@ gh pr create \
 
 # PR URL取得
 pr_url=$(gh pr view --json url -q .url)
-```
+````
 
 ### Phase 4: 完了報告
 
@@ -165,12 +183,14 @@ pr_url=$(gh pr view --json url -q .url)
 PR URL: ${pr_url}
 
 ### 内容
+
 - Base Branch: ${base_branch}
 - Head Branch: ${current_branch}
 - Commits: ${commit_count}件
 - Files Changed: ${files_changed}件
 
 ### Next Steps
+
 1. PR URLを開いてレビュー依頼
 2. CI/CDの実行を確認
 3. レビューアからのフィードバック対応
@@ -186,6 +206,7 @@ PR URL: ${pr_url}
 ```
 
 自動実行:
+
 1. main ブランチとの差分確認
 2. 変更内容分析
 3. PRタイトル・説明文自動生成
@@ -204,25 +225,30 @@ develop ブランチへのPRを作成
 
 ```markdown
 ## What
+
 YouTube動画要約機能を追加しました。
 
 ## Why
+
 ユーザーからのリクエストにより、YouTube動画の内容を素早く把握できる機能が必要でした。
 
 ## How
+
 - Vercel AI SDK（Anthropic Claude）を使用した要約生成
 - IWorkflowExecutor インターフェースの実装
 - Zod による入出力バリデーション
 
 ## Changes
+
 - `src/features/youtube-summarize/` 追加
   - schema.ts: 入出力スキーマ定義
   - executor.ts: 要約ロジック実装
-  - __tests__/executor.test.ts: ユニットテスト（カバレッジ85%）
+  - **tests**/executor.test.ts: ユニットテスト（カバレッジ85%）
 - `src/features/registry.ts` 更新: YOUTUBE_SUMMARIZE を登録
 - `docs/20-specifications/features/youtube-summarize.md` 追加
 
 ## Test Plan
+
 - [x] ユニットテスト合格（`pnpm test`）
 - [x] 型チェック合格（`pnpm typecheck`）
 - [x] ESLint合格（`pnpm lint`）
@@ -230,6 +256,7 @@ YouTube動画要約機能を追加しました。
 - [ ] 統合テスト（Discord経由の実行確認）
 
 ## Related Issues
+
 Closes #45
 ```
 
@@ -240,6 +267,7 @@ Closes #45
 **原因**: GitHub CLI未インストール
 
 **解決策**:
+
 ```bash
 # macOS
 brew install gh
@@ -253,6 +281,7 @@ gh auth login
 **原因**: GitHub認証が切れている
 
 **解決策**:
+
 ```bash
 gh auth status
 gh auth login
@@ -263,6 +292,7 @@ gh auth login
 **原因**: コミットされていない、またはベースブランチと同一
 
 **解決策**:
+
 ```bash
 # コミット確認
 git log ${base_branch}..HEAD

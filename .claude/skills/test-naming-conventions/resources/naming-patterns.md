@@ -21,18 +21,18 @@ should not [動詞] when [条件]
 
 ```typescript
 // 基本形
-it('should return the sum of two numbers', () => {});
-it('should create a new user', () => {});
-it('should send welcome email', () => {});
+it("should return the sum of two numbers", () => {});
+it("should create a new user", () => {});
+it("should send welcome email", () => {});
 
 // 条件付き
-it('should return user when id is valid', () => {});
-it('should throw NotFoundError when user does not exist', () => {});
-it('should return empty array when no results match', () => {});
+it("should return user when id is valid", () => {});
+it("should throw NotFoundError when user does not exist", () => {});
+it("should return empty array when no results match", () => {});
 
 // 否定形
-it('should not allow login when password is incorrect', () => {});
-it('should not send email when user is unsubscribed', () => {});
+it("should not allow login when password is incorrect", () => {});
+it("should not send email when user is unsubscribed", () => {});
 ```
 
 ### 利点
@@ -56,16 +56,16 @@ Then [期待される結果]
 ### describe構造での実装
 
 ```typescript
-describe('UserService', () => {
-  describe('given a valid user id', () => {
-    describe('when getUser is called', () => {
-      it('then it should return the user data', () => {});
+describe("UserService", () => {
+  describe("given a valid user id", () => {
+    describe("when getUser is called", () => {
+      it("then it should return the user data", () => {});
     });
   });
 
-  describe('given an invalid user id', () => {
-    describe('when getUser is called', () => {
-      it('then it should throw NotFoundError', () => {});
+  describe("given an invalid user id", () => {
+    describe("when getUser is called", () => {
+      it("then it should throw NotFoundError", () => {});
     });
   });
 });
@@ -74,9 +74,9 @@ describe('UserService', () => {
 ### 単一のit内での実装
 
 ```typescript
-it('given valid credentials, when login is called, then it should return auth token', () => {
+it("given valid credentials, when login is called, then it should return auth token", () => {
   // Given
-  const credentials = { email: 'test@example.com', password: 'password' };
+  const credentials = { email: "test@example.com", password: "password" };
 
   // When
   const result = authService.login(credentials);
@@ -106,18 +106,18 @@ it('given valid credentials, when login is called, then it should return auth to
 
 ```typescript
 // アンダースコア区切り
-it('calculateTotal_withValidItems_returnsSum', () => {});
-it('validateEmail_withInvalidFormat_returnsFalse', () => {});
-it('createUser_withDuplicateEmail_throwsError', () => {});
+it("calculateTotal_withValidItems_returnsSum", () => {});
+it("validateEmail_withInvalidFormat_returnsFalse", () => {});
+it("createUser_withDuplicateEmail_throwsError", () => {});
 
 // キャメルケース（読みにくい）
-it('calculateTotalWithValidItemsReturnsSum', () => {});
+it("calculateTotalWithValidItemsReturnsSum", () => {});
 ```
 
 ### コード構造
 
 ```typescript
-it('calculateTotal_withValidItems_returnsSum', () => {
+it("calculateTotal_withValidItems_returnsSum", () => {
   // Arrange
   const items = [{ price: 100 }, { price: 200 }];
   const calculator = new Calculator();
@@ -142,53 +142,53 @@ it('calculateTotal_withValidItems_returnsSum', () => {
 
 ### 戻り値系
 
-| 動詞 | 使用場面 | 例 |
-|------|---------|-----|
-| return | 値を返す | should return user data |
-| get | 取得 | should get user by id |
-| calculate | 計算 | should calculate total |
-| generate | 生成 | should generate unique id |
-| convert | 変換 | should convert to JSON |
-| format | 整形 | should format date |
+| 動詞      | 使用場面 | 例                        |
+| --------- | -------- | ------------------------- |
+| return    | 値を返す | should return user data   |
+| get       | 取得     | should get user by id     |
+| calculate | 計算     | should calculate total    |
+| generate  | 生成     | should generate unique id |
+| convert   | 変換     | should convert to JSON    |
+| format    | 整形     | should format date        |
 
 ### 状態変更系
 
-| 動詞 | 使用場面 | 例 |
-|------|---------|-----|
-| create | 作成 | should create new user |
-| update | 更新 | should update user name |
-| delete | 削除 | should delete user |
-| add | 追加 | should add item to cart |
-| remove | 除去 | should remove item from list |
-| set | 設定 | should set default value |
+| 動詞   | 使用場面 | 例                           |
+| ------ | -------- | ---------------------------- |
+| create | 作成     | should create new user       |
+| update | 更新     | should update user name      |
+| delete | 削除     | should delete user           |
+| add    | 追加     | should add item to cart      |
+| remove | 除去     | should remove item from list |
+| set    | 設定     | should set default value     |
 
 ### 検証系
 
-| 動詞 | 使用場面 | 例 |
-|------|---------|-----|
-| validate | 検証 | should validate email format |
-| check | チェック | should check permission |
-| verify | 確認 | should verify token |
-| accept | 受け入れ | should accept valid input |
-| reject | 拒否 | should reject invalid input |
+| 動詞     | 使用場面 | 例                           |
+| -------- | -------- | ---------------------------- |
+| validate | 検証     | should validate email format |
+| check    | チェック | should check permission      |
+| verify   | 確認     | should verify token          |
+| accept   | 受け入れ | should accept valid input    |
+| reject   | 拒否     | should reject invalid input  |
 
 ### 副作用系
 
-| 動詞 | 使用場面 | 例 |
-|------|---------|-----|
-| send | 送信 | should send email |
-| save | 保存 | should save to database |
-| log | 記録 | should log error message |
-| emit | 発行 | should emit event |
-| notify | 通知 | should notify subscribers |
+| 動詞   | 使用場面 | 例                        |
+| ------ | -------- | ------------------------- |
+| send   | 送信     | should send email         |
+| save   | 保存     | should save to database   |
+| log    | 記録     | should log error message  |
+| emit   | 発行     | should emit event         |
+| notify | 通知     | should notify subscribers |
 
 ### エラー系
 
-| 動詞 | 使用場面 | 例 |
-|------|---------|-----|
-| throw | 例外スロー | should throw NotFoundError |
-| fail | 失敗 | should fail with message |
-| error | エラー | should error on invalid input |
+| 動詞  | 使用場面   | 例                            |
+| ----- | ---------- | ----------------------------- |
+| throw | 例外スロー | should throw NotFoundError    |
+| fail  | 失敗       | should fail with message      |
+| error | エラー     | should error on invalid input |
 
 ---
 
@@ -197,42 +197,42 @@ it('calculateTotal_withValidItems_returnsSum', () => {
 ### when句
 
 ```typescript
-it('should [動作] when [条件]', () => {});
+it("should [動作] when [条件]", () => {});
 
 // 例
-it('should return empty array when no results found', () => {});
-it('should throw error when input is null', () => {});
-it('should redirect when session expires', () => {});
+it("should return empty array when no results found", () => {});
+it("should throw error when input is null", () => {});
+it("should redirect when session expires", () => {});
 ```
 
 ### if句
 
 ```typescript
-it('should [動作] if [条件]', () => {});
+it("should [動作] if [条件]", () => {});
 
 // 例
-it('should apply discount if user is premium', () => {});
-it('should skip validation if flag is set', () => {});
+it("should apply discount if user is premium", () => {});
+it("should skip validation if flag is set", () => {});
 ```
 
 ### with句
 
 ```typescript
-it('should [動作] with [入力/状態]', () => {});
+it("should [動作] with [入力/状態]", () => {});
 
 // 例
-it('should calculate total with valid items', () => {});
-it('should format date with custom pattern', () => {});
+it("should calculate total with valid items", () => {});
+it("should format date with custom pattern", () => {});
 ```
 
 ### for句
 
 ```typescript
-it('should [動作] for [対象]', () => {});
+it("should [動作] for [対象]", () => {});
 
 // 例
-it('should return discount for premium users', () => {});
-it('should generate report for last month', () => {});
+it("should return discount for premium users", () => {});
+it("should generate report for last month", () => {});
 ```
 
 ---

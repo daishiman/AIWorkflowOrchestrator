@@ -16,7 +16,6 @@ description: |
 version: 1.0.0
 ---
 
-
 # Concurrency Control Skill
 
 GitHub Actions ワークフローの並行実行制御パターンと、レースコンディション防止戦略を提供します。
@@ -68,7 +67,7 @@ node .claude/skills/concurrency-control/scripts/check-concurrency.mjs <workflow-
 ```yaml
 concurrency:
   group: production-deploy
-  cancel-in-progress: false  # キューに入れて順次実行
+  cancel-in-progress: false # キューに入れて順次実行
 ```
 
 **用途**: デプロイ、データベースマイグレーション、リリース
@@ -78,7 +77,7 @@ concurrency:
 ```yaml
 concurrency:
   group: pr-${{ github.ref }}
-  cancel-in-progress: true  # 進行中のジョブをキャンセル
+  cancel-in-progress: true # 進行中のジョブをキャンセル
 ```
 
 **用途**: PR ビルド、テスト、プレビューデプロイ
@@ -127,12 +126,12 @@ concurrency:
 
 ### よくある問題
 
-| 問題 | 原因 | 解決策 |
-|------|------|--------|
-| デプロイが重複実行 | `cancel-in-progress: true` | `false` に変更してキュー化 |
-| キューが溜まる | すべて順次実行 | 環境別に group を分離 |
-| 古いデプロイが完了 | キャンセルなし | `cancel-in-progress: true` で最新化 |
-| 同時デプロイ競合 | group が不適切 | 環境名を group に追加 |
+| 問題               | 原因                       | 解決策                              |
+| ------------------ | -------------------------- | ----------------------------------- |
+| デプロイが重複実行 | `cancel-in-progress: true` | `false` に変更してキュー化          |
+| キューが溜まる     | すべて順次実行             | 環境別に group を分離               |
+| 古いデプロイが完了 | キャンセルなし             | `cancel-in-progress: true` で最新化 |
+| 同時デプロイ競合   | group が不適切             | 環境名を group に追加               |
 
 ### デバッグコマンド
 

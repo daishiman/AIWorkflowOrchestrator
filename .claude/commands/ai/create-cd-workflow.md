@@ -42,6 +42,7 @@ model: sonnet
 **起動タイミング**: コマンド開始直後
 
 **引数引き渡し**:
+
 - `$ARGUMENTS`: デプロイ環境（staging/production）
   - `staging`: ステージング環境用ワークフロー（自動デプロイ）
   - `production`: 本番環境用ワークフロー（承認フロー付き）
@@ -64,6 +65,7 @@ model: sonnet
    - デプロイ履歴の記録
 
 **期待成果物**:
+
 - `.github/workflows/deploy-{environment}.yml`
 - GitHub Environments 設定ガイド（コメント形式）
 
@@ -90,6 +92,7 @@ model: sonnet
    - 自動クリーンアップ
 
 **期待成果物**:
+
 - `railway.json` 設定ファイル
 - Railway 統合ドキュメント（`docs/deployment.md`）
 
@@ -98,13 +101,16 @@ model: sonnet
 エージェントが以下のスキルを必要に応じて参照:
 
 **必須スキル（gha-workflow-architect）**:
+
 - `.claude/skills/deployment-environments-gha/SKILL.md`: GitHub Environments 設定
 - `.claude/skills/deployment-strategies/SKILL.md`: デプロイ戦略・パターン
 
 **必須スキル（devops-eng）**:
+
 - `.claude/skills/railway-integration/SKILL.md`: Railway 統合設定
 
 **条件付きスキル**:
+
 - `.claude/skills/github-actions-security/SKILL.md`: シークレット管理が必要な場合
 - `.claude/skills/rollback-strategies/SKILL.md`: ロールバック機能が必要な場合
 - `.claude/skills/deployment-best-practices/SKILL.md`: 複雑なデプロイフローの場合
@@ -112,6 +118,7 @@ model: sonnet
 ## Phase 4: 検証と完了
 
 **検証基準**:
+
 - ✅ 環境別ワークフローが正しく作成されている
 - ✅ Railway 統合設定が完了している
 - ✅ 本番環境には承認フローが設定されている

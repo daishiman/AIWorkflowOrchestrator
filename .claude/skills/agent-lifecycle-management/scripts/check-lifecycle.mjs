@@ -10,46 +10,46 @@
  *   ライフサイクル管理の分析結果（バージョン、変更履歴、廃止予定等）を表示します。
  */
 
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
+import { readFileSync } from "fs";
+import { resolve } from "path";
 
 const LIFECYCLE_ELEMENTS = {
   version: {
-    name: 'バージョン管理',
+    name: "バージョン管理",
     patterns: [/version:\s*[\d.]+/i, /## 変更履歴/m],
     weight: 3,
-    description: 'セマンティックバージョニングが適用されているか'
+    description: "セマンティックバージョニングが適用されているか",
   },
   changelog: {
-    name: '変更履歴',
+    name: "変更履歴",
     patterns: [/## 変更履歴/m, /changelog/i, /\|\s*バージョン\s*\|/m],
     weight: 2,
-    description: '変更履歴が記録されているか'
+    description: "変更履歴が記録されているか",
   },
   deprecation: {
-    name: '廃止予定管理',
+    name: "廃止予定管理",
     patterns: [/deprecated/i, /廃止予定/m, /非推奨/m],
     weight: 1,
-    description: '廃止予定の機能が明記されているか'
+    description: "廃止予定の機能が明記されているか",
   },
   migration: {
-    name: '移行ガイド',
+    name: "移行ガイド",
     patterns: [/migration/i, /移行/m, /アップグレード/m],
     weight: 1,
-    description: 'バージョン間の移行ガイドがあるか'
+    description: "バージョン間の移行ガイドがあるか",
   },
   dependencies: {
-    name: '依存関係管理',
+    name: "依存関係管理",
     patterns: [/dependencies/i, /依存/m, /requires/i],
     weight: 2,
-    description: '依存関係が管理されているか'
+    description: "依存関係が管理されているか",
   },
   status: {
-    name: 'ステータス管理',
+    name: "ステータス管理",
     patterns: [/status:/i, /ステータス/m, /stable|beta|alpha|experimental/i],
     weight: 1,
-    description: 'エージェントのステータスが明記されているか'
-  }
+    description: "エージェントのステータスが明記されているか",
+  },
 };
 
 const VERSION_PATTERN = /version:\s*([\d]+)\.([\d]+)\.([\d]+)/i;
@@ -59,30 +59,33 @@ function parseYamlFrontmatter(content) {
   if (!match) return {};
 
   const yaml = {};
-  const lines = match[1].split('\n');
+  const lines = match[1].split("\n");
   let currentKey = null;
-  let multilineValue = '';
+  let multilineValue = "";
 
   for (const line of lines) {
     if (line.match(/^\w+:/)) {
       if (currentKey && multilineValue) {
         yaml[currentKey] = multilineValue.trim();
-        multilineValue = '';
+        multilineValue = "";
       }
-      const colonIndex = line.indexOf(':');
+      const colonIndex = line.indexOf(":");
       const key = line.substring(0, colonIndex).trim();
       const value = line.substring(colonIndex + 1).trim();
       currentKey = key;
 
-      if (value.startsWith('[') && value.endsWith(']')) {
-        yaml[key] = value.slice(1, -1).split(',').map(s => s.trim());
+      if (value.startsWith("[") && value.endsWith("]")) {
+        yaml[key] = value
+          .slice(1, -1)
+          .split(",")
+          .map((s) => s.trim());
         currentKey = null;
-      } else if (value && value !== '|') {
+      } else if (value && value !== "|") {
         yaml[key] = value;
         currentKey = null;
       }
-    } else if (currentKey && line.startsWith('  ')) {
-      multilineValue += line.trim() + '\n';
+    } else if (currentKey && line.startsWith("  ")) {
+      multilineValue += line.trim() + "\n";
     }
   }
 
@@ -101,7 +104,7 @@ function analyzeVersion(content, yaml) {
     minor: 0,
     patch: 0,
     isPreRelease: false,
-    status: 'unknown'
+    status: "unknown",
   };
 
   // YAML frontmatterからバージョンを取得
@@ -119,11 +122,11 @@ function analyzeVersion(content, yaml) {
 
   // ステータスを推定
   if (versionInfo.major === 0) {
-    versionInfo.status = 'development';
+    versionInfo.status = "development";
   } else if (versionInfo.isPreRelease) {
-    versionInfo.status = 'pre-release';
+    versionInfo.status = "pre-release";
   } else {
-    versionInfo.status = 'stable';
+    versionInfo.status = "stable";
   }
 
   return versionInfo;
@@ -133,7 +136,7 @@ function analyzeChangelog(content) {
   const changelog = {
     hasChangelog: false,
     entries: [],
-    lastUpdate: null
+    lastUpdate: null,
   };
 
   // 変更履歴テーブルを検出
@@ -144,7 +147,7 @@ function analyzeChangelog(content) {
     // バージョンエントリを抽出
     const versionEntries = content.match(/\|\s*([\d.]+)\s*\|/g);
     if (versionEntries) {
-      changelog.entries = versionEntries.map(e => e.replace(/[|\s]/g, ''));
+      changelog.entries = versionEntries.map((e) => e.replace(/[|\s]/g, ""));
     }
 
     // 日付を抽出
@@ -161,11 +164,11 @@ function analyzeLifecycleElements(content) {
   const results = {};
 
   for (const [elementId, element] of Object.entries(LIFECYCLE_ELEMENTS)) {
-    const matches = element.patterns.filter(pattern => pattern.test(content));
+    const matches = element.patterns.filter((pattern) => pattern.test(content));
     results[elementId] = {
       ...element,
       found: matches.length > 0,
-      matchCount: matches.length
+      matchCount: matches.length,
     };
   }
 
@@ -177,9 +180,9 @@ function detectDeprecations(content) {
 
   // 廃止予定パターン
   const patterns = [
-    { regex: /deprecated:\s*(.+)/gi, type: 'explicit' },
-    { regex: /廃止予定[:：]\s*(.+)/gm, type: 'explicit' },
-    { regex: /\[DEPRECATED\]\s*(.+)/gi, type: 'marker' }
+    { regex: /deprecated:\s*(.+)/gi, type: "explicit" },
+    { regex: /廃止予定[:：]\s*(.+)/gm, type: "explicit" },
+    { regex: /\[DEPRECATED\]\s*(.+)/gi, type: "marker" },
   ];
 
   for (const { regex, type } of patterns) {
@@ -187,7 +190,7 @@ function detectDeprecations(content) {
     while ((match = regex.exec(content)) !== null) {
       deprecations.push({
         type,
-        content: match[1].trim()
+        content: match[1].trim(),
       });
     }
   }
@@ -200,7 +203,7 @@ function calculateScore(elements, versionInfo, changelog, deprecations) {
 
   // バージョン管理
   if (versionInfo.hasVersion) score += 2;
-  if (versionInfo.status === 'stable') score += 1;
+  if (versionInfo.status === "stable") score += 1;
 
   // 変更履歴
   if (changelog.hasChangelog) score += 1;
@@ -217,29 +220,38 @@ function calculateScore(elements, versionInfo, changelog, deprecations) {
   return Math.min(10, score);
 }
 
-function printResults(filePath, yaml, elements, versionInfo, changelog, deprecations) {
+function printResults(
+  filePath,
+  yaml,
+  elements,
+  versionInfo,
+  changelog,
+  deprecations,
+) {
   const score = calculateScore(elements, versionInfo, changelog, deprecations);
 
-  console.log('═══════════════════════════════════════════════════════════');
-  console.log('              ライフサイクル管理分析レポート                 ');
-  console.log('═══════════════════════════════════════════════════════════');
+  console.log("═══════════════════════════════════════════════════════════");
+  console.log("              ライフサイクル管理分析レポート                 ");
+  console.log("═══════════════════════════════════════════════════════════");
   console.log(`ファイル: ${filePath}`);
-  console.log(`エージェント名: ${yaml.name || '不明'}`);
-  console.log('───────────────────────────────────────────────────────────');
+  console.log(`エージェント名: ${yaml.name || "不明"}`);
+  console.log("───────────────────────────────────────────────────────────");
 
-  console.log('\n【バージョン情報】');
+  console.log("\n【バージョン情報】");
   if (versionInfo.hasVersion) {
     console.log(`  ✅ バージョン: ${versionInfo.version}`);
-    console.log(`     Major: ${versionInfo.major}, Minor: ${versionInfo.minor}, Patch: ${versionInfo.patch}`);
+    console.log(
+      `     Major: ${versionInfo.major}, Minor: ${versionInfo.minor}, Patch: ${versionInfo.patch}`,
+    );
     console.log(`     ステータス: ${versionInfo.status}`);
     if (versionInfo.isPreRelease) {
-      console.log('     ⚠️ プレリリース版');
+      console.log("     ⚠️ プレリリース版");
     }
   } else {
-    console.log('  ❌ バージョン情報がありません');
+    console.log("  ❌ バージョン情報がありません");
   }
 
-  console.log('\n【変更履歴】');
+  console.log("\n【変更履歴】");
   if (changelog.hasChangelog) {
     console.log(`  ✅ 変更履歴あり`);
     console.log(`     エントリ数: ${changelog.entries.length}`);
@@ -247,58 +259,60 @@ function printResults(filePath, yaml, elements, versionInfo, changelog, deprecat
       console.log(`     最終更新: ${changelog.lastUpdate}`);
     }
   } else {
-    console.log('  ❌ 変更履歴がありません');
+    console.log("  ❌ 変更履歴がありません");
   }
 
-  console.log('\n【ライフサイクル要素】');
+  console.log("\n【ライフサイクル要素】");
   for (const [elementId, element] of Object.entries(elements)) {
-    const status = element.found ? '✅' : '❌';
+    const status = element.found ? "✅" : "❌";
     console.log(`  ${status} ${element.name}`);
   }
 
-  console.log('\n【廃止予定項目】');
+  console.log("\n【廃止予定項目】");
   if (deprecations.length === 0) {
-    console.log('  廃止予定項目はありません');
+    console.log("  廃止予定項目はありません");
   } else {
     for (const dep of deprecations) {
       console.log(`  ⚠️ ${dep.content}`);
     }
   }
 
-  console.log('\n───────────────────────────────────────────────────────────');
+  console.log("\n───────────────────────────────────────────────────────────");
   console.log(`ライフサイクル管理スコア: ${score.toFixed(1)}/10`);
 
   if (score >= 8) {
-    console.log('✅ 評価: 優れたライフサイクル管理です');
+    console.log("✅ 評価: 優れたライフサイクル管理です");
   } else if (score >= 5) {
-    console.log('⚠️  評価: 一部改善が推奨されます');
+    console.log("⚠️  評価: 一部改善が推奨されます");
   } else {
-    console.log('❌ 評価: ライフサイクル管理の強化が必要です');
+    console.log("❌ 評価: ライフサイクル管理の強化が必要です");
   }
-  console.log('═══════════════════════════════════════════════════════════');
+  console.log("═══════════════════════════════════════════════════════════");
 
   // 推奨事項
   const recommendations = [];
 
   if (!versionInfo.hasVersion) {
-    recommendations.push('- YAMLフロントマターにversion:を追加してください');
+    recommendations.push("- YAMLフロントマターにversion:を追加してください");
   }
 
   if (!changelog.hasChangelog) {
-    recommendations.push('- ## 変更履歴セクションを追加してください');
+    recommendations.push("- ## 変更履歴セクションを追加してください");
   }
 
   if (!elements.deprecation.found) {
-    recommendations.push('- 廃止予定機能がある場合は明記してください');
+    recommendations.push("- 廃止予定機能がある場合は明記してください");
   }
 
   if (!elements.migration.found) {
-    recommendations.push('- 破壊的変更がある場合は移行ガイドを追加してください');
+    recommendations.push(
+      "- 破壊的変更がある場合は移行ガイドを追加してください",
+    );
   }
 
   if (recommendations.length > 0) {
-    console.log('\n推奨事項:');
-    recommendations.forEach(r => console.log(r));
+    console.log("\n推奨事項:");
+    recommendations.forEach((r) => console.log(r));
   }
 }
 
@@ -306,7 +320,7 @@ function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.log('使用方法: node check-lifecycle.mjs <agent_file.md>');
+    console.log("使用方法: node check-lifecycle.mjs <agent_file.md>");
     process.exit(1);
   }
 
@@ -314,7 +328,7 @@ function main() {
   let content;
 
   try {
-    content = readFileSync(filePath, 'utf-8');
+    content = readFileSync(filePath, "utf-8");
   } catch (err) {
     console.error(`エラー: ファイル "${filePath}" を読み込めません`);
     process.exit(1);

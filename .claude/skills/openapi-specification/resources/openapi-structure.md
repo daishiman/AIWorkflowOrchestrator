@@ -63,18 +63,18 @@ externalDocs:
 
 ### 必須フィールド
 
-| フィールド | 型 | 説明 |
-|-----------|-----|------|
-| `title` | string | API名（簡潔で説明的） |
-| `version` | string | API バージョン（SemVer推奨） |
+| フィールド | 型     | 説明                         |
+| ---------- | ------ | ---------------------------- |
+| `title`    | string | API名（簡潔で説明的）        |
+| `version`  | string | API バージョン（SemVer推奨） |
 
 ### 推奨フィールド
 
-| フィールド | 型 | 説明 |
-|-----------|-----|------|
+| フィールド    | 型     | 説明                     |
+| ------------- | ------ | ------------------------ |
 | `description` | string | 詳細説明（Markdown対応） |
-| `contact` | object | 連絡先情報 |
-| `license` | object | ライセンス情報 |
+| `contact`     | object | 連絡先情報               |
+| `license`     | object | ライセンス情報           |
 
 ### 例
 
@@ -159,10 +159,10 @@ paths:
         管理者のみアクセス可能です。
       operationId: listUsers
       parameters:
-        - $ref: '#/components/parameters/PageLimit'
-        - $ref: '#/components/parameters/PageOffset'
+        - $ref: "#/components/parameters/PageLimit"
+        - $ref: "#/components/parameters/PageOffset"
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
@@ -172,13 +172,13 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/User'
+                      $ref: "#/components/schemas/User"
                   pagination:
-                    $ref: '#/components/schemas/Pagination'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
       security:
         - BearerAuth:
             - read:users
@@ -194,12 +194,12 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserInput'
+              $ref: "#/components/schemas/UserInput"
             example:
               name: John Doe
               email: john@example.com
       responses:
-        '201':
+        "201":
           description: ユーザー作成成功
           headers:
             Location:
@@ -210,11 +210,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '409':
-          $ref: '#/components/responses/Conflict'
+                $ref: "#/components/schemas/User"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "409":
+          $ref: "#/components/responses/Conflict"
 ```
 
 ### パスパラメータ
@@ -315,7 +315,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
           example:
             success: false
             error:
@@ -329,28 +329,28 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
 
     Unauthorized:
       description: 認証が必要です
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
 
     Forbidden:
       description: アクセス権限がありません
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
 
     Conflict:
       description: リソースが競合しています
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
 ```
 
 ### Parameters

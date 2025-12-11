@@ -7,22 +7,27 @@
 ## 設計パターン
 
 ### 原子的コマンド
+
 ```markdown
-/lint      # 単機能：Lint実行
-/test      # 単機能：テスト実行
-/build     # 単機能：ビルド実行
-/deploy    # 単機能：デプロイ実行
+/lint # 単機能：Lint実行
+/test # 単機能：テスト実行
+/build # 単機能：ビルド実行
+/deploy # 単機能：デプロイ実行
 ```
 
 ### 組み合わせ
+
 ```markdown
 # パイプラインコマンド
+
 ---
-description: Full CI/CD pipeline
----
+
+## description: Full CI/CD pipeline
+
 # ci-cd
 
 Execute in sequence:
+
 1. /lint
 2. /test
 3. /build
@@ -39,18 +44,22 @@ Execute in sequence:
 
 ```markdown
 # 原子的コマンド群
-/validate-code   # コード検証
-/run-unit-tests  # ユニットテスト
-/run-e2e-tests   # E2Eテスト
-/create-bundle   # バンドル作成
+
+/validate-code # コード検証
+/run-unit-tests # ユニットテスト
+/run-e2e-tests # E2Eテスト
+/create-bundle # バンドル作成
 
 # 組み合わせパターン1: 開発用
+
 /validate-code && /run-unit-tests
 
 # 組み合わせパターン2: CI用
+
 /validate-code && /run-unit-tests && /run-e2e-tests
 
 # 組み合わせパターン3: リリース用
+
 /validate-code && /run-unit-tests && /run-e2e-tests && /create-bundle
 ```
 
@@ -60,12 +69,15 @@ Execute in sequence:
 
 ```markdown
 # ✓ 良い設計：標準的な出力
+
 Output: exit code (0=success, 1=failure)
 
 # ✓ 良い設計：標準的な入力
+
 Input: $ARGUMENTS or stdin
 
 # ✗ 悪い設計：特殊な出力形式
+
 Output: カスタム独自形式
 ```
 

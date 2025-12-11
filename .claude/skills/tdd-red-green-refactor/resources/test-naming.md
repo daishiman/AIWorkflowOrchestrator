@@ -12,6 +12,7 @@
 **構造**: `should{ExpectedBehavior}When{Condition}`
 
 **例**:
+
 - `shouldReturnTrueWhenInputIsValid`
 - `shouldThrowErrorWhenUserNotFound`
 - `shouldCalculateTotalWithTax`
@@ -21,6 +22,7 @@
 **構造**: `given{Context}_when{Action}_then{Outcome}`
 
 **例**:
+
 - `givenValidUser_whenLogin_thenReturnsToken`
 - `givenEmptyCart_whenAddItem_thenCartHasOneItem`
 
@@ -29,6 +31,7 @@
 **構造**: `{methodName}_{condition}_{expectedResult}`
 
 **例**:
+
 - `calculateTotal_withDiscount_returnsReducedPrice`
 - `validateEmail_invalidFormat_throwsValidationError`
 
@@ -113,6 +116,7 @@
 テスト対象のクラスやメソッドを示す。
 
 **パターン**:
+
 - `describe('ClassName')` - クラス全体
 - `describe('#methodName')` - インスタンスメソッド
 - `describe('.staticMethod')` - 静的メソッド
@@ -122,6 +126,7 @@
 条件ごとにネストする。
 
 **パターン**:
+
 ```
 describe('UserService')
   describe('#createUser')

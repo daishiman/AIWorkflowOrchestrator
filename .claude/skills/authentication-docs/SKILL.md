@@ -30,6 +30,7 @@ OAuth 2.0フロー、API Key認証、JWT取得手順などを
 ## 知識ドメイン
 
 ### 1. 認証方式
+
 - API Key認証（ヘッダー/クエリ）
 - Bearer Token認証
 - Basic認証
@@ -37,41 +38,45 @@ OAuth 2.0フロー、API Key認証、JWT取得手順などを
 - OpenID Connect
 
 ### 2. OAuth 2.0フロー
+
 - Authorization Code Flow（+ PKCE）
 - Client Credentials Flow
 - Device Code Flow
 - Implicit Flow（非推奨）
 
 ### 3. トークン管理
+
 - アクセストークン取得
 - リフレッシュトークン使用
 - トークン有効期限管理
 - スコープと権限
 
 ### 4. セキュリティ考慮
+
 - シークレット管理
 - CORS設定
 - レート制限
 - 監査ログ
 
 ### 5. 図解・可視化
+
 - シーケンス図（Mermaid）
 - フロー図
 - 状態遷移図
 
 ## リソース
 
-| ファイル | 内容 |
-|---------|------|
-| `resources/oauth2-flows.md` | OAuth 2.0各フローの詳細解説 |
-| `resources/token-management.md` | トークン取得・更新・管理 |
+| ファイル                               | 内容                               |
+| -------------------------------------- | ---------------------------------- |
+| `resources/oauth2-flows.md`            | OAuth 2.0各フローの詳細解説        |
+| `resources/token-management.md`        | トークン取得・更新・管理           |
 | `resources/security-best-practices.md` | 認証セキュリティベストプラクティス |
 
 ## テンプレート
 
-| ファイル | 用途 |
-|---------|------|
-| `templates/auth-quickstart.md` | 認証クイックスタートガイド |
+| ファイル                       | 用途                          |
+| ------------------------------ | ----------------------------- |
+| `templates/auth-quickstart.md` | 認証クイックスタートガイド    |
 | `templates/oauth2-diagrams.md` | OAuth 2.0フロー図テンプレート |
 
 ## 使用方法
@@ -93,14 +98,14 @@ OAuth 2.0フロー、API Key認証、JWT取得手順などを
 
 ## 関連スキル
 
-| スキル | パス | 関連性 |
-|-------|------|--------|
-| openapi-specification | `.claude/skills/openapi-specification/SKILL.md` | OpenAPIセキュリティスキーム定義 |
-| request-response-examples | `.claude/skills/request-response-examples/SKILL.md` | 認証リクエスト/レスポンス例 |
+| スキル                           | パス                                                       | 関連性                                  |
+| -------------------------------- | ---------------------------------------------------------- | --------------------------------------- |
+| openapi-specification            | `.claude/skills/openapi-specification/SKILL.md`            | OpenAPIセキュリティスキーム定義         |
+| request-response-examples        | `.claude/skills/request-response-examples/SKILL.md`        | 認証リクエスト/レスポンス例             |
 | api-documentation-best-practices | `.claude/skills/api-documentation-best-practices/SKILL.md` | APIドキュメント全体のベストプラクティス |
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-27 | 初版リリース。OAuth 2.0フロー、トークン管理、セキュリティベストプラクティスを追加 |
+| バージョン | 日付       | 変更内容                                                                          |
+| ---------- | ---------- | --------------------------------------------------------------------------------- |
+| 1.0.0      | 2025-11-27 | 初版リリース。OAuth 2.0フロー、トークン管理、セキュリティベストプラクティスを追加 |

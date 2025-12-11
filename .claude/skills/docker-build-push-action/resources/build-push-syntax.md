@@ -12,8 +12,8 @@
 - name: Build and push Docker image
   uses: docker/build-push-action@v5
   with:
-    context: .              # ビルドコンテキスト（必須）
-    push: true              # プッシュ有効化
+    context: . # ビルドコンテキスト（必須）
+    push: true # プッシュ有効化
 ```
 
 ### 完全パラメータリスト
@@ -23,52 +23,52 @@
   uses: docker/build-push-action@v5
   with:
     # === コンテキスト設定 ===
-    context: .                          # ビルドコンテキストのパス
-    file: ./Dockerfile                  # Dockerfileのパス（デフォルト: ./Dockerfile）
+    context: . # ビルドコンテキストのパス
+    file: ./Dockerfile # Dockerfileのパス（デフォルト: ./Dockerfile）
 
     # === ターゲット・プラットフォーム ===
-    target: production                  # マルチステージビルドのターゲット
-    platforms: linux/amd64,linux/arm64  # ビルド対象プラットフォーム
+    target: production # マルチステージビルドのターゲット
+    platforms: linux/amd64,linux/arm64 # ビルド対象プラットフォーム
 
     # === タグ・レジストリ ===
-    tags: |                             # イメージタグ（複数指定可）
+    tags: | # イメージタグ（複数指定可）
       ghcr.io/user/repo:latest
       ghcr.io/user/repo:1.2.3
-    labels: |                           # OCI準拠ラベル
+    labels: | # OCI準拠ラベル
       org.opencontainers.image.title=MyApp
       org.opencontainers.image.version=1.2.3
 
     # === プッシュ制御 ===
-    push: true                          # レジストリへプッシュ
-    load: false                         # ローカルDockerデーモンへロード（pushと排他）
-    outputs: type=docker,dest=/tmp/image.tar  # カスタム出力
+    push: true # レジストリへプッシュ
+    load: false # ローカルDockerデーモンへロード（pushと排他）
+    outputs: type=docker,dest=/tmp/image.tar # カスタム出力
 
     # === BuildKit機能 ===
-    builder: mybuilder                  # 使用するBuildxビルダー
-    cache-from: type=gha                # キャッシュ読み込み元
-    cache-to: type=gha,mode=max         # キャッシュ書き込み先
+    builder: mybuilder # 使用するBuildxビルダー
+    cache-from: type=gha # キャッシュ読み込み元
+    cache-to: type=gha,mode=max # キャッシュ書き込み先
 
     # === ビルド引数 ===
-    build-args: |                       # ビルド時の変数
+    build-args: | # ビルド時の変数
       NODE_ENV=production
       API_URL=${{ secrets.API_URL }}
-    secrets: |                          # ビルド時のSecret（BuildKit）
+    secrets: | # ビルド時のSecret（BuildKit）
       GIT_AUTH_TOKEN=${{ secrets.GIT_TOKEN }}
 
     # === ネットワーク・セキュリティ ===
-    network: host                       # ビルド時のネットワークモード
-    no-cache: false                     # キャッシュ無効化
-    pull: false                         # ベースイメージの強制pull
+    network: host # ビルド時のネットワークモード
+    no-cache: false # キャッシュ無効化
+    pull: false # ベースイメージの強制pull
 
     # === SSH・Git ===
-    ssh: default=${{ env.SSH_AUTH_SOCK }}  # SSHエージェント転送
+    ssh: default=${{ env.SSH_AUTH_SOCK }} # SSHエージェント転送
 
     # === その他 ===
-    allow: |                            # セキュリティ関連の許可
+    allow: | # セキュリティ関連の許可
       network.host
       security.insecure
-    provenance: false                   # SLSA Provenanceメタデータ（v4+）
-    sbom: false                         # SBOM生成（v4+）
+    provenance: false # SLSA Provenanceメタデータ（v4+）
+    sbom: false # SBOM生成（v4+）
 ```
 
 ## BuildKit高度な機能
@@ -83,6 +83,7 @@ cache-to: type=gha,mode=max
 ```
 
 **特徴**:
+
 - GitHub Actions標準キャッシュ（無料枠10GB）
 - `mode=max`: 全中間レイヤーをキャッシュ（最大再利用）
 - `mode=min`: 最終レイヤーのみ（ストレージ節約）
@@ -95,6 +96,7 @@ cache-to: type=registry,ref=ghcr.io/user/repo:buildcache,mode=max
 ```
 
 **特徴**:
+
 - マルチランナー環境で共有可能
 - ストレージ制限なし
 - 認証が必要
@@ -107,6 +109,7 @@ cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
 ```
 
 **特徴**:
+
 - セルフホストランナー向け
 - 永続ストレージが必要
 
@@ -118,6 +121,7 @@ cache-to: type=inline
 ```
 
 **特徴**:
+
 - イメージ自体にキャッシュを埋め込み
 - 追加のストレージ不要
 - イメージサイズが増加
@@ -129,12 +133,13 @@ cache-to: type=inline
   uses: docker/build-push-action@v5
   with:
     context: .
-    target: production              # マルチステージの特定ステージのみビルド
+    target: production # マルチステージの特定ステージのみビルド
     cache-from: type=gha
     cache-to: type=gha,mode=max
 ```
 
 **Dockerfile例**:
+
 ```dockerfile
 # ベースステージ
 FROM node:20-alpine AS base
@@ -170,6 +175,7 @@ CMD ["node", "dist/index.js"]
 ```
 
 **Dockerfile内での使用**:
+
 ```dockerfile
 # マウント型Secret（ビルド後にイメージに残らない）
 RUN --mount=type=secret,id=GIT_AUTH_TOKEN \
@@ -191,6 +197,7 @@ RUN --mount=type=secret,id=NPM_TOKEN \
 ```
 
 **Dockerfile内での使用**:
+
 ```dockerfile
 # プライベートリポジトリからのclone
 RUN --mount=type=ssh \
@@ -220,15 +227,15 @@ steps:
 
 ### 対応プラットフォーム
 
-| プラットフォーム | 説明 | 用途 |
-|----------------|------|------|
-| `linux/amd64` | x86_64アーキテクチャ | 標準サーバー、PC |
-| `linux/arm64` | ARM 64bit | ARM64サーバー、Apple Silicon |
-| `linux/arm/v7` | ARM 32bit v7 | Raspberry Pi等 |
-| `linux/arm/v6` | ARM 32bit v6 | 古いRaspberry Pi |
-| `linux/386` | x86 32bit | レガシーシステム |
-| `linux/ppc64le` | PowerPC 64bit LE | IBM Power |
-| `linux/s390x` | IBM System z | メインフレーム |
+| プラットフォーム | 説明                 | 用途                         |
+| ---------------- | -------------------- | ---------------------------- |
+| `linux/amd64`    | x86_64アーキテクチャ | 標準サーバー、PC             |
+| `linux/arm64`    | ARM 64bit            | ARM64サーバー、Apple Silicon |
+| `linux/arm/v7`   | ARM 32bit v7         | Raspberry Pi等               |
+| `linux/arm/v6`   | ARM 32bit v6         | 古いRaspberry Pi             |
+| `linux/386`      | x86 32bit            | レガシーシステム             |
+| `linux/ppc64le`  | PowerPC 64bit LE     | IBM Power                    |
+| `linux/s390x`    | IBM System z         | メインフレーム               |
 
 ### プラットフォーム別条件分岐
 
@@ -331,7 +338,7 @@ RUN if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
   uses: docker/build-push-action@v5
   with:
     context: .
-    load: true              # ローカルにロード（pushと排他）
+    load: true # ローカルにロード（pushと排他）
     tags: myapp:test
 ```
 
@@ -405,8 +412,8 @@ jobs:
   uses: docker/build-push-action@v5
   with:
     context: .
-    no-cache: true          # キャッシュ無効化
-    pull: true              # ベースイメージを強制pull
+    no-cache: true # キャッシュ無効化
+    pull: true # ベースイメージを強制pull
 ```
 
 ## トラブルシューティング
@@ -441,8 +448,8 @@ jobs:
   uses: docker/build-push-action@v5
   with:
     context: .
-    platforms: linux/amd64  # 1プラットフォームのみ
-    load: true              # ローカルロードでテスト
+    platforms: linux/amd64 # 1プラットフォームのみ
+    load: true # ローカルロードでテスト
 ```
 
 ## ベストプラクティス
@@ -450,6 +457,7 @@ jobs:
 ### レイヤーキャッシュ最適化
 
 **Dockerfileの順序**:
+
 ```dockerfile
 # 1. ベースイメージ
 FROM node:20-alpine

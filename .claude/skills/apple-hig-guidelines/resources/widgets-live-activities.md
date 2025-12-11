@@ -4,16 +4,16 @@
 
 ### ウィジェットファミリー
 
-| ファミリー | サイズ | プラットフォーム |
-|-----------|-------|----------------|
-| **systemSmall** | 小 | iOS, iPadOS, macOS |
-| **systemMedium** | 中 | iOS, iPadOS, macOS |
-| **systemLarge** | 大 | iOS, iPadOS, macOS |
-| **systemExtraLarge** | 特大 | iPadOS, macOS |
-| **accessoryCircular** | 円形 | watchOS, iOS Lock Screen |
-| **accessoryRectangular** | 長方形 | watchOS, iOS Lock Screen |
-| **accessoryInline** | インライン | watchOS, iOS Lock Screen |
-| **accessoryCorner** | コーナー | watchOS |
+| ファミリー               | サイズ     | プラットフォーム         |
+| ------------------------ | ---------- | ------------------------ |
+| **systemSmall**          | 小         | iOS, iPadOS, macOS       |
+| **systemMedium**         | 中         | iOS, iPadOS, macOS       |
+| **systemLarge**          | 大         | iOS, iPadOS, macOS       |
+| **systemExtraLarge**     | 特大       | iPadOS, macOS            |
+| **accessoryCircular**    | 円形       | watchOS, iOS Lock Screen |
+| **accessoryRectangular** | 長方形     | watchOS, iOS Lock Screen |
+| **accessoryInline**      | インライン | watchOS, iOS Lock Screen |
+| **accessoryCorner**      | コーナー   | watchOS                  |
 
 ---
 
@@ -21,38 +21,38 @@
 
 ### iOS ウィジェット（ホーム画面）
 
-| デバイス | Small | Medium | Large |
-|---------|-------|--------|-------|
+| デバイス              | Small   | Medium  | Large   |
+| --------------------- | ------- | ------- | ------- |
 | **iPhone 15 Pro Max** | 170×170 | 364×170 | 364×382 |
-| **iPhone 15 Pro** | 158×158 | 338×158 | 338×354 |
+| **iPhone 15 Pro**     | 158×158 | 338×158 | 338×354 |
 | **iPhone 15/15 Plus** | 158×158 | 338×158 | 338×354 |
-| **iPhone SE** | 141×141 | 292×141 | 292×311 |
+| **iPhone SE**         | 141×141 | 292×141 | 292×311 |
 
 ### iPadOS ウィジェット
 
-| デバイス | Small | Medium | Large | Extra Large |
-|---------|-------|--------|-------|-------------|
-| **iPad Pro 12.9"** | 170×170 | 379×170 | 379×379 | 795×379 |
-| **iPad Pro 11"** | 155×155 | 342×155 | 342×342 | 715×342 |
-| **iPad Air** | 155×155 | 342×155 | 342×342 | 715×342 |
-| **iPad** | 141×141 | 305×141 | 305×305 | 634×305 |
+| デバイス           | Small   | Medium  | Large   | Extra Large |
+| ------------------ | ------- | ------- | ------- | ----------- |
+| **iPad Pro 12.9"** | 170×170 | 379×170 | 379×379 | 795×379     |
+| **iPad Pro 11"**   | 155×155 | 342×155 | 342×342 | 715×342     |
+| **iPad Air**       | 155×155 | 342×155 | 342×342 | 715×342     |
+| **iPad**           | 141×141 | 305×141 | 305×305 | 634×305     |
 
 ### ロック画面ウィジェット（iOS 16+）
 
-| タイプ | サイズ | 位置 |
-|-------|-------|------|
-| **Circular** | 76×76 pt | 時計の上下 |
-| **Rectangular** | 172×76 pt | 時計の下 |
-| **Inline** | 全幅×20 pt | 時計の上 |
+| タイプ          | サイズ     | 位置       |
+| --------------- | ---------- | ---------- |
+| **Circular**    | 76×76 pt   | 時計の上下 |
+| **Rectangular** | 172×76 pt  | 時計の下   |
+| **Inline**      | 全幅×20 pt | 時計の上   |
 
 ### Apple Watch コンプリケーション
 
-| ファミリー | サイズ (pt) | 用途 |
-|-----------|-----------|------|
-| **Circular** | 47×47 | ウォッチフェイス |
-| **Rectangular** | 174×76 | ウォッチフェイス |
-| **Inline** | 全幅×16 | テキスト表示 |
-| **Corner** | 40×40 | コーナー位置 |
+| ファミリー      | サイズ (pt) | 用途             |
+| --------------- | ----------- | ---------------- |
+| **Circular**    | 47×47       | ウォッチフェイス |
+| **Rectangular** | 174×76      | ウォッチフェイス |
+| **Inline**      | 全幅×16     | テキスト表示     |
+| **Corner**      | 40×40       | コーナー位置     |
 
 ---
 
@@ -78,12 +78,12 @@
 
 ### パディング値
 
-| サイズ | パディング |
-|-------|----------|
-| Small | 16pt |
-| Medium | 16pt |
-| Large | 16pt |
-| Extra Large | 20pt |
+| サイズ      | パディング |
+| ----------- | ---------- |
+| Small       | 16pt       |
+| Medium      | 16pt       |
+| Large       | 16pt       |
+| Extra Large | 20pt       |
 
 ### タイポグラフィ
 
@@ -188,12 +188,12 @@ Toggle(isOn: $isEnabled, intent: ToggleIntent()) {
 
 #### サイズ
 
-| 状態 | サイズ | 用途 |
-|------|-------|------|
-| **Compact Leading** | 52×36.67 pt | 左側コンパクト |
-| **Compact Trailing** | 52×36.67 pt | 右側コンパクト |
-| **Minimal** | 36.67×36.67 pt | 最小表示 |
-| **Expanded** | 371×160 pt (max) | 長押し展開時 |
+| 状態                 | サイズ           | 用途           |
+| -------------------- | ---------------- | -------------- |
+| **Compact Leading**  | 52×36.67 pt      | 左側コンパクト |
+| **Compact Trailing** | 52×36.67 pt      | 右側コンパクト |
+| **Minimal**          | 36.67×36.67 pt   | 最小表示       |
+| **Expanded**         | 371×160 pt (max) | 長押し展開時   |
 
 #### Compact レイアウト
 
@@ -260,11 +260,11 @@ Toggle(isOn: $isEnabled, intent: ToggleIntent()) {
 
 ### 更新頻度
 
-| タイプ | 推奨頻度 | 最大頻度 |
-|-------|---------|---------|
-| **Push更新** | イベント駆動 | 制限なし |
-| **定期更新** | 15分以上 | 1分 |
-| **バッテリー考慮** | 30分以上 | - |
+| タイプ             | 推奨頻度     | 最大頻度 |
+| ------------------ | ------------ | -------- |
+| **Push更新**       | イベント駆動 | 制限なし |
+| **定期更新**       | 15分以上     | 1分      |
+| **バッテリー考慮** | 30分以上     | -        |
 
 ### アニメーション
 
@@ -284,10 +284,10 @@ Text(timerInterval: startDate...endDate, countsDown: true)
 
 ### サイズ
 
-| 状態 | サイズ |
-|------|-------|
-| **フル表示** | 画面サイズ依存 |
-| **縮小時** | ウィジェットサイズ準拠 |
+| 状態         | サイズ                 |
+| ------------ | ---------------------- |
+| **フル表示** | 画面サイズ依存         |
+| **縮小時**   | ウィジェットサイズ準拠 |
 
 ### デザイン要件
 
@@ -489,6 +489,7 @@ func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) ->
 ## チェックリスト
 
 ### ウィジェット
+
 - [ ] 全サイズ対応（Small, Medium, Large）
 - [ ] ダークモード対応
 - [ ] プレースホルダー状態定義
@@ -498,6 +499,7 @@ func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) ->
 - [ ] エラー状態の表示
 
 ### Live Activity
+
 - [ ] Dynamic Island レイアウト（Compact, Expanded, Minimal）
 - [ ] ロック画面レイアウト
 - [ ] 更新頻度の最適化

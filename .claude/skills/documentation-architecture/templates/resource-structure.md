@@ -4,20 +4,19 @@
 
 ## テンプレート
 
-```markdown
+````markdown
 ## リソース構造
 
-\```
-[skill-name]/
+\```[skill-name]/
 ├── SKILL.md                    # 本ファイル（概要とワークフロー）
 ├── resources/
 │   ├── [resource-1].md        # [説明]
 │   ├── [resource-2].md        # [説明]
 │   └── [resource-3].md        # [説明]
 ├── scripts/
-│   └── [script].sh            # [説明] - 実行: `./scripts/[script].sh`
+│   └── [script].sh            # [説明] - 実行:`./scripts/[script].sh`
 └── templates/
-    └── [template].[ext]       # [説明]
+└── [template].[ext] # [説明]
 \```
 
 ### リソース種別
@@ -26,7 +25,7 @@
 - **[カテゴリ2]** (`resources/[file].md`): [用途と内容]
 - **スクリプト** (`scripts/[file].sh`): [用途] - 実行: `./scripts/[file].sh [args]`
 - **テンプレート** (`templates/[file]`): [用途]
-```
+````
 
 ## 使用方法
 

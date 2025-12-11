@@ -103,7 +103,7 @@ conditional-concurrency:
 
   on:
     push:
-      branches: ['**']
+      branches: ["**"]
 
   # main ブランチは順次、その他は最新のみ
   concurrency:
@@ -213,7 +213,7 @@ release-creation:
   on:
     push:
       tags:
-        - 'v*'
+        - "v*"
 
   # リリースは順次作成（タグの競合を防止）
   concurrency:

@@ -7,10 +7,10 @@
 ```yaml
 - uses: actions/download-artifact@v4
   with:
-    name: artifact-name          # オプション: 特定のアーティファクト名（省略時は全て）
-    path: path/to/destination    # オプション: ダウンロード先（デフォルト: カレントディレクトリ）
-    pattern: artifact-*          # オプション: パターンマッチング
-    merge-multiple: false        # オプション: 複数アーティファクトをマージ
+    name: artifact-name # オプション: 特定のアーティファクト名（省略時は全て）
+    path: path/to/destination # オプション: ダウンロード先（デフォルト: カレントディレクトリ）
+    pattern: artifact-* # オプション: パターンマッチング
+    merge-multiple: false # オプション: 複数アーティファクトをマージ
 ```
 
 ## ダウンロードパターン
@@ -49,7 +49,7 @@
 - uses: actions/download-artifact@v4
   with:
     pattern: test-results-*
-    merge-multiple: true  # 全て同じディレクトリにマージ
+    merge-multiple: true # 全て同じディレクトリにマージ
     path: ./all-test-results
 ```
 
@@ -70,7 +70,7 @@ jobs:
           path: dist/
 
   test:
-    needs: build  # buildジョブ完了後に実行
+    needs: build # buildジョブ完了後に実行
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
@@ -301,6 +301,7 @@ jobs:
 **原因**: アーティファクトが存在しないか、保持期間が過ぎた
 
 **解決策**:
+
 1. アップロードジョブが成功したか確認
 2. アーティファクト名が正しいか確認
 3. 保持期間内か確認
@@ -323,9 +324,10 @@ jobs:
 **原因**: クロスワークフローアクセス時の権限不足
 
 **解決策**:
+
 ```yaml
 permissions:
-  actions: read  # アーティファクト読み取りに必要
+  actions: read # アーティファクト読み取りに必要
   contents: read
 ```
 
@@ -334,6 +336,7 @@ permissions:
 **原因**: アーティファクトサイズが大きい
 
 **解決策**:
+
 1. 必要なファイルのみアップロード
 2. アップロード時に圧縮レベルを上げる
 3. 複数の小さいアーティファクトに分割

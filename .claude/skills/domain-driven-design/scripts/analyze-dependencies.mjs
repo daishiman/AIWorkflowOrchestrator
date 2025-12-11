@@ -13,8 +13,8 @@
  *   node analyze-dependencies.mjs src/shared/core/
  */
 
-import { readdir, readFile, stat } from 'fs/promises';
-import { join, extname, basename, dirname } from 'path';
+import { readdir, readFile, stat } from "fs/promises";
+import { join, extname, basename, dirname } from "path";
 
 // 禁止された依存パターン
 const FORBIDDEN_PATTERNS = {
@@ -62,7 +62,7 @@ const FORBIDDEN_PATTERNS = {
 
 // 許可されるドメイン内部の依存
 const ALLOWED_PATTERNS = [
-  /from\s+['"]\.\.?\//,  // 相対パス
+  /from\s+['"]\.\.?\//, // 相対パス
   /from\s+['"].*domain/i,
   /from\s+['"].*entities/i,
   /from\s+['"].*value-objects/i,
@@ -76,8 +76,8 @@ const ALLOWED_PATTERNS = [
  * ファイルの依存関係を分析
  */
 async function analyzeFile(filePath) {
-  const content = await readFile(filePath, 'utf-8');
-  const lines = content.split('\n');
+  const content = await readFile(filePath, "utf-8");
+  const lines = content.split("\n");
   const violations = [];
   const imports = [];
 
@@ -121,13 +121,13 @@ async function analyzeDirectory(dir, results = []) {
     const fullPath = join(dir, entry.name);
 
     if (entry.isDirectory()) {
-      if (entry.name.startsWith('.') || entry.name === 'node_modules') {
+      if (entry.name.startsWith(".") || entry.name === "node_modules") {
         continue;
       }
       await analyzeDirectory(fullPath, results);
     } else if (entry.isFile()) {
       const ext = extname(entry.name);
-      if (['.ts', '.tsx', '.js', '.jsx'].includes(ext)) {
+      if ([".ts", ".tsx", ".js", ".jsx"].includes(ext)) {
         try {
           const analysis = await analyzeFile(fullPath);
           results.push(analysis);
@@ -151,7 +151,7 @@ function buildDependencyGraph(results) {
     const fileName = basename(result.filePath);
     graph[fileName] = {
       path: result.filePath,
-      dependencies: result.imports.map(imp => imp.path),
+      dependencies: result.imports.map((imp) => imp.path),
       violationCount: result.violations.length,
     };
   }
@@ -164,26 +164,30 @@ function buildDependencyGraph(results) {
  */
 function generateReport(results) {
   const report = [];
-  const violations = results.flatMap(r => r.violations);
+  const violations = results.flatMap((r) => r.violations);
   const totalFiles = results.length;
-  const filesWithViolations = results.filter(r => r.violations.length > 0).length;
+  const filesWithViolations = results.filter(
+    (r) => r.violations.length > 0,
+  ).length;
 
-  report.push('# ドメイン依存関係分析レポート\n');
+  report.push("# ドメイン依存関係分析レポート\n");
   report.push(`生成日時: ${new Date().toISOString()}\n`);
 
   // サマリー
-  report.push('\n## サマリー\n');
+  report.push("\n## サマリー\n");
   report.push(`- 分析ファイル数: ${totalFiles}`);
   report.push(`- 違反ファイル数: ${filesWithViolations}`);
   report.push(`- 総違反数: ${violations.length}`);
 
   if (violations.length === 0) {
-    report.push('\n✅ ドメイン層の依存関係は適切です。技術的詳細への依存は検出されませんでした。\n');
-    return report.join('\n');
+    report.push(
+      "\n✅ ドメイン層の依存関係は適切です。技術的詳細への依存は検出されませんでした。\n",
+    );
+    return report.join("\n");
   }
 
   // カテゴリ別の違反
-  report.push('\n## 違反の詳細\n');
+  report.push("\n## 違反の詳細\n");
 
   const byCategory = {};
   for (const v of violations) {
@@ -203,13 +207,15 @@ function generateReport(results) {
   }
 
   // 推奨アクション
-  report.push('\n## 推奨アクション\n');
-  report.push('1. **インフラ層への依存**: リポジトリインターフェースを通じてアクセス');
-  report.push('2. **プレゼンテーション層への依存**: DTOやViewModelで分離');
-  report.push('3. **アプリケーション層への依存**: 依存性逆転の原則を適用');
-  report.push('4. **フレームワーク依存**: ポートとアダプターパターンで隔離');
+  report.push("\n## 推奨アクション\n");
+  report.push(
+    "1. **インフラ層への依存**: リポジトリインターフェースを通じてアクセス",
+  );
+  report.push("2. **プレゼンテーション層への依存**: DTOやViewModelで分離");
+  report.push("3. **アプリケーション層への依存**: 依存性逆転の原則を適用");
+  report.push("4. **フレームワーク依存**: ポートとアダプターパターンで隔離");
 
-  return report.join('\n');
+  return report.join("\n");
 }
 
 /**
@@ -217,10 +223,10 @@ function generateReport(results) {
  */
 function getCategoryLabel(category) {
   const labels = {
-    infrastructure: 'インフラストラクチャ層への依存',
-    presentation: 'プレゼンテーション層への依存',
-    application: 'アプリケーション層への依存',
-    frameworks: '外部フレームワークへの依存',
+    infrastructure: "インフラストラクチャ層への依存",
+    presentation: "プレゼンテーション層への依存",
+    application: "アプリケーション層への依存",
+    frameworks: "外部フレームワークへの依存",
   };
   return labels[category] || category;
 }
@@ -232,10 +238,10 @@ async function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.log('使用方法: node analyze-dependencies.mjs <directory>');
-    console.log('');
-    console.log('例:');
-    console.log('  node analyze-dependencies.mjs src/shared/core/');
+    console.log("使用方法: node analyze-dependencies.mjs <directory>");
+    console.log("");
+    console.log("例:");
+    console.log("  node analyze-dependencies.mjs src/shared/core/");
     process.exit(1);
   }
 
@@ -254,7 +260,7 @@ async function main() {
   }
 
   console.log(`分析対象: ${targetDir}`);
-  console.log('依存関係を分析中...\n');
+  console.log("依存関係を分析中...\n");
 
   // 分析実行
   const results = await analyzeDirectory(targetDir);
@@ -264,11 +270,11 @@ async function main() {
   console.log(report);
 
   // 違反があればエラーコードで終了
-  const hasViolations = results.some(r => r.violations.length > 0);
+  const hasViolations = results.some((r) => r.violations.length > 0);
   process.exit(hasViolations ? 1 : 0);
 }
 
 main().catch((error) => {
-  console.error('エラー:', error.message);
+  console.error("エラー:", error.message);
   process.exit(1);
 });

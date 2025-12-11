@@ -34,10 +34,10 @@ description: |
   トリガーキーワード: user stories, acceptance criteria, ユーザーストーリー, 受け入れ基準, backlog, バックログ, MVP
 argument-hint: "[feature-name]"
 allowed-tools:
-   - Task
-   - Read
-   - Write(docs/00-requirements/**)
-   - Grep
+  - Task
+  - Read
+  - Write(docs/00-requirements/**)
+  - Grep
 model: opus
 ---
 
@@ -73,6 +73,7 @@ model: opus
    - リリース計画の策定
 
 **成果物**:
+
 - ユーザーストーリーマップ（アクティビティ→ストーリー階層）
 - 優先順位付けされたバックログ
 - MVPスコープ定義
@@ -109,6 +110,7 @@ model: opus
    - 技術スタック制約（Next.js 15, TypeScript strict, Drizzle ORM）
 
 **成果物**:
+
 - Given-When-Then形式の受け入れ基準
 - テストケース設計の基盤
 - 要件品質検証レポート
@@ -134,6 +136,7 @@ model: opus
    - 実装フェーズへの連携情報（Executor実装、Registry登録）
 
 **完了条件チェックリスト**:
+
 - [ ] すべてのユーザーストーリーがINVEST原則を満たしているか？
 - [ ] すべてのストーリーに受け入れ基準があるか？
 - [ ] 正常系・異常系・境界値がカバーされているか？
@@ -142,6 +145,7 @@ model: opus
 - [ ] プロジェクト固有制約（TDD、ハイブリッド構造）が反映されているか？
 
 **最終成果物**:
+
 - `docs/00-requirements/user-stories.md`（ユーザーストーリー + 受け入れ基準）
 - 優先順位付けされたバックログ
 - MVP定義とリリース計画

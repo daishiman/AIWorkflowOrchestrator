@@ -13,8 +13,8 @@
  *   - 再利用可能性の評価
  */
 
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
 const patterns = {
   // 状態定義
@@ -36,7 +36,8 @@ const patterns = {
 
   // コンポーネント定義
   functionComponent: /(?:export\s+)?function\s+([A-Z]\w+)\s*\(/g,
-  arrowComponent: /(?:export\s+)?const\s+([A-Z]\w+)\s*=\s*(?:\([^)]*\)|[^=])\s*=>/g,
+  arrowComponent:
+    /(?:export\s+)?const\s+([A-Z]\w+)\s*=\s*(?:\([^)]*\)|[^=])\s*=>/g,
 
   // フェッチパターン
   fetch: /fetch\s*\(/g,
@@ -52,8 +53,8 @@ const patterns = {
 };
 
 function analyzeFile(filePath) {
-  const content = fs.readFileSync(filePath, 'utf-8');
-  const lines = content.split('\n');
+  const content = fs.readFileSync(filePath, "utf-8");
+  const lines = content.split("\n");
 
   const results = {
     file: filePath,
@@ -80,19 +81,29 @@ function analyzeFile(filePath) {
   const funcMatches = [...content.matchAll(patterns.functionComponent)];
   const arrowMatches = [...content.matchAll(patterns.arrowComponent)];
   results.components = [
-    ...funcMatches.map(m => m[1]),
-    ...arrowMatches.map(m => m[1]),
+    ...funcMatches.map((m) => m[1]),
+    ...arrowMatches.map((m) => m[1]),
   ];
 
   // フック使用カウント
   results.hookUsage.useState = (content.match(patterns.useState) || []).length;
-  results.hookUsage.useReducer = (content.match(patterns.useReducer) || []).length;
-  results.hookUsage.useEffect = (content.match(patterns.useEffect) || []).length;
-  results.hookUsage.useCallback = (content.match(patterns.useCallback) || []).length;
+  results.hookUsage.useReducer = (
+    content.match(patterns.useReducer) || []
+  ).length;
+  results.hookUsage.useEffect = (
+    content.match(patterns.useEffect) || []
+  ).length;
+  results.hookUsage.useCallback = (
+    content.match(patterns.useCallback) || []
+  ).length;
   results.hookUsage.useMemo = (content.match(patterns.useMemo) || []).length;
   results.hookUsage.useRef = (content.match(patterns.useRef) || []).length;
-  results.hookUsage.useContext = (content.match(patterns.useContext) || []).length;
-  results.hookUsage.customHooks = (content.match(patterns.customHook) || []).length;
+  results.hookUsage.useContext = (
+    content.match(patterns.useContext) || []
+  ).length;
+  results.hookUsage.customHooks = (
+    content.match(patterns.customHook) || []
+  ).length;
 
   // 抽出候補の検出
   detectCandidates(results, content);
@@ -108,10 +119,11 @@ function detectCandidates(results, content) {
   const useStateMatches = [...content.matchAll(patterns.useState)];
   if (useStateMatches.length >= 3) {
     results.candidates.push({
-      type: 'state-group',
+      type: "state-group",
       description: `${useStateMatches.length}個のuseStateが検出されました`,
-      suggestion: 'useReducerへの統合、またはカスタムフックへの抽出を検討してください',
-      priority: 'medium',
+      suggestion:
+        "useReducerへの統合、またはカスタムフックへの抽出を検討してください",
+      priority: "medium",
     });
   }
 
@@ -123,10 +135,10 @@ function detectCandidates(results, content) {
 
   if (hasDataFetchPattern) {
     results.candidates.push({
-      type: 'data-fetch',
-      description: 'データフェッチパターンが検出されました',
-      suggestion: 'useFetch、SWR、またはReact Queryへの移行を検討してください',
-      priority: 'high',
+      type: "data-fetch",
+      description: "データフェッチパターンが検出されました",
+      suggestion: "useFetch、SWR、またはReact Queryへの移行を検討してください",
+      priority: "high",
     });
   }
 
@@ -137,10 +149,10 @@ function detectCandidates(results, content) {
 
   if (hasEventListeners) {
     results.candidates.push({
-      type: 'event-listener',
-      description: 'イベントリスナーの使用が検出されました',
-      suggestion: 'useEventListenerカスタムフックへの抽出を検討してください',
-      priority: 'medium',
+      type: "event-listener",
+      description: "イベントリスナーの使用が検出されました",
+      suggestion: "useEventListenerカスタムフックへの抽出を検討してください",
+      priority: "medium",
     });
   }
 
@@ -151,42 +163,47 @@ function detectCandidates(results, content) {
 
   if (hasTimers && results.hookUsage.useEffect > 0) {
     results.candidates.push({
-      type: 'timer',
-      description: 'タイマーの使用が検出されました',
-      suggestion: 'useTimeout/useIntervalカスタムフックへの抽出を検討してください',
-      priority: 'medium',
+      type: "timer",
+      description: "タイマーの使用が検出されました",
+      suggestion:
+        "useTimeout/useIntervalカスタムフックへの抽出を検討してください",
+      priority: "medium",
     });
   }
 
   // フォームパターン（onChange、onSubmitの多用）
-  const formPatterns = (content.match(/onChange\s*=/g) || []).length +
-                       (content.match(/onSubmit\s*=/g) || []).length;
+  const formPatterns =
+    (content.match(/onChange\s*=/g) || []).length +
+    (content.match(/onSubmit\s*=/g) || []).length;
   if (formPatterns >= 3) {
     results.candidates.push({
-      type: 'form',
-      description: 'フォームパターンが検出されました',
-      suggestion: 'useFormカスタムフック、またはreact-hook-formの使用を検討してください',
-      priority: 'high',
+      type: "form",
+      description: "フォームパターンが検出されました",
+      suggestion:
+        "useFormカスタムフック、またはreact-hook-formの使用を検討してください",
+      priority: "high",
     });
   }
 
   // 同一コンポーネント内の複数useEffect
   if (results.hookUsage.useEffect >= 3) {
     results.candidates.push({
-      type: 'multiple-effects',
+      type: "multiple-effects",
       description: `${results.hookUsage.useEffect}個のuseEffectが検出されました`,
-      suggestion: '各副作用を独立したカスタムフックに分離することを検討してください',
-      priority: 'medium',
+      suggestion:
+        "各副作用を独立したカスタムフックに分離することを検討してください",
+      priority: "medium",
     });
   }
 
   // ローカルストレージパターン
-  if (content.includes('localStorage') || content.includes('sessionStorage')) {
+  if (content.includes("localStorage") || content.includes("sessionStorage")) {
     results.candidates.push({
-      type: 'storage',
-      description: 'ストレージAPIの使用が検出されました',
-      suggestion: 'useLocalStorage/useSessionStorageカスタムフックへの抽出を検討してください',
-      priority: 'low',
+      type: "storage",
+      description: "ストレージAPIの使用が検出されました",
+      suggestion:
+        "useLocalStorage/useSessionStorageカスタムフックへの抽出を検討してください",
+      priority: "low",
     });
   }
 }
@@ -196,7 +213,10 @@ function evaluateComplexity(results, content) {
   const factors = [];
 
   // フック数による複雑性
-  const totalHooks = Object.values(results.hookUsage).reduce((a, b) => a + b, 0);
+  const totalHooks = Object.values(results.hookUsage).reduce(
+    (a, b) => a + b,
+    0,
+  );
   if (totalHooks > 10) {
     score += 3;
     factors.push(`高いフック使用数 (${totalHooks})`);
@@ -212,8 +232,9 @@ function evaluateComplexity(results, content) {
   }
 
   // ネストの深さ（簡易チェック）
-  const maxIndent = content.split('\n')
-    .map(line => line.match(/^(\s*)/)?.[1]?.length || 0)
+  const maxIndent = content
+    .split("\n")
+    .map((line) => line.match(/^(\s*)/)?.[1]?.length || 0)
     .reduce((max, curr) => Math.max(max, curr), 0);
 
   if (maxIndent > 16) {
@@ -222,7 +243,7 @@ function evaluateComplexity(results, content) {
   }
 
   // 行数
-  const lineCount = content.split('\n').length;
+  const lineCount = content.split("\n").length;
   if (lineCount > 200) {
     score += 2;
     factors.push(`大きなファイル (${lineCount}行)`);
@@ -241,9 +262,13 @@ function evaluateComplexity(results, content) {
 
   // 複雑性に基づく提案
   if (score >= 5) {
-    results.suggestions.push('⚠️ 高い複雑性: カスタムフックへの積極的な分割を推奨します');
+    results.suggestions.push(
+      "⚠️ 高い複雑性: カスタムフックへの積極的な分割を推奨します",
+    );
   } else if (score >= 3) {
-    results.suggestions.push('📝 中程度の複雑性: ロジックの分離を検討してください');
+    results.suggestions.push(
+      "📝 中程度の複雑性: ロジックの分離を検討してください",
+    );
   }
 }
 
@@ -251,16 +276,16 @@ function formatResults(results) {
   const output = [];
 
   output.push(`\n📁 ${results.file}`);
-  output.push('═'.repeat(60));
+  output.push("═".repeat(60));
 
   // コンポーネント
   if (results.components.length > 0) {
-    output.push('\n🧩 コンポーネント:');
-    output.push(`  ${results.components.join(', ')}`);
+    output.push("\n🧩 コンポーネント:");
+    output.push(`  ${results.components.join(", ")}`);
   }
 
   // フック使用状況
-  output.push('\n🪝 フック使用状況:');
+  output.push("\n🪝 フック使用状況:");
   Object.entries(results.hookUsage)
     .filter(([, count]) => count > 0)
     .forEach(([name, count]) => {
@@ -269,38 +294,48 @@ function formatResults(results) {
 
   // 複雑性
   const complexityLevel =
-    results.complexity.score >= 5 ? '🔴 高' :
-    results.complexity.score >= 3 ? '🟡 中' : '🟢 低';
+    results.complexity.score >= 5
+      ? "🔴 高"
+      : results.complexity.score >= 3
+        ? "🟡 中"
+        : "🟢 低";
 
-  output.push(`\n📊 複雑性: ${complexityLevel} (スコア: ${results.complexity.score})`);
+  output.push(
+    `\n📊 複雑性: ${complexityLevel} (スコア: ${results.complexity.score})`,
+  );
   if (results.complexity.factors.length > 0) {
-    output.push('  要因:');
-    results.complexity.factors.forEach(factor => {
+    output.push("  要因:");
+    results.complexity.factors.forEach((factor) => {
       output.push(`    • ${factor}`);
     });
   }
 
   // 抽出候補
   if (results.candidates.length > 0) {
-    output.push('\n🎯 抽出候補:');
-    results.candidates.forEach(candidate => {
+    output.push("\n🎯 抽出候補:");
+    results.candidates.forEach((candidate) => {
       const priorityIcon =
-        candidate.priority === 'high' ? '🔴' :
-        candidate.priority === 'medium' ? '🟡' : '🟢';
-      output.push(`  ${priorityIcon} [${candidate.type}] ${candidate.description}`);
+        candidate.priority === "high"
+          ? "🔴"
+          : candidate.priority === "medium"
+            ? "🟡"
+            : "🟢";
+      output.push(
+        `  ${priorityIcon} [${candidate.type}] ${candidate.description}`,
+      );
       output.push(`     💡 ${candidate.suggestion}`);
     });
   }
 
   // 提案
   if (results.suggestions.length > 0) {
-    output.push('\n💡 全体的な提案:');
-    results.suggestions.forEach(suggestion => {
+    output.push("\n💡 全体的な提案:");
+    results.suggestions.forEach((suggestion) => {
       output.push(`  ${suggestion}`);
     });
   }
 
-  return output.join('\n');
+  return output.join("\n");
 }
 
 function analyzeDirectory(dirPath) {
@@ -321,7 +356,7 @@ function analyzeDirectory(dirPath) {
 const target = process.argv[2];
 
 if (!target) {
-  console.log('使用法: node analyze-hook-candidates.mjs <file.tsx|directory>');
+  console.log("使用法: node analyze-hook-candidates.mjs <file.tsx|directory>");
   process.exit(1);
 }
 
@@ -333,11 +368,13 @@ if (!fs.existsSync(targetPath)) {
 }
 
 const isDirectory = fs.statSync(targetPath).isDirectory();
-const results = isDirectory ? analyzeDirectory(targetPath) : [analyzeFile(targetPath)];
+const results = isDirectory
+  ? analyzeDirectory(targetPath)
+  : [analyzeFile(targetPath)];
 
 // サマリー出力
-console.log('\n🔍 カスタムフック抽出候補分析レポート');
-console.log('═'.repeat(60));
+console.log("\n🔍 カスタムフック抽出候補分析レポート");
+console.log("═".repeat(60));
 
 for (const result of results) {
   console.log(formatResults(result));
@@ -345,13 +382,19 @@ for (const result of results) {
 
 // 全体サマリー
 if (results.length > 1) {
-  console.log('\n📈 全体サマリー');
-  console.log('═'.repeat(60));
+  console.log("\n📈 全体サマリー");
+  console.log("═".repeat(60));
 
-  const totalCandidates = results.reduce((sum, r) => sum + r.candidates.length, 0);
-  const highPriority = results.reduce((sum, r) =>
-    sum + r.candidates.filter(c => c.priority === 'high').length, 0);
-  const avgComplexity = results.reduce((sum, r) => sum + r.complexity.score, 0) / results.length;
+  const totalCandidates = results.reduce(
+    (sum, r) => sum + r.candidates.length,
+    0,
+  );
+  const highPriority = results.reduce(
+    (sum, r) => sum + r.candidates.filter((c) => c.priority === "high").length,
+    0,
+  );
+  const avgComplexity =
+    results.reduce((sum, r) => sum + r.complexity.score, 0) / results.length;
 
   console.log(`  分析ファイル数: ${results.length}`);
   console.log(`  抽出候補総数: ${totalCandidates}`);

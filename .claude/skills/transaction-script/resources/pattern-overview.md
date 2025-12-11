@@ -43,10 +43,13 @@
 ### 基本形
 
 ```typescript
-async function processOrder(orderId: string, userId: string): Promise<OrderResult> {
+async function processOrder(
+  orderId: string,
+  userId: string,
+): Promise<OrderResult> {
   // 1. 入力検証
   if (!orderId || !userId) {
-    throw new ValidationError('OrderId and UserId are required');
+    throw new ValidationError("OrderId and UserId are required");
   }
 
   // 2. データ取得
@@ -54,12 +57,12 @@ async function processOrder(orderId: string, userId: string): Promise<OrderResul
   const user = await userRepository.findById(userId);
 
   if (!order || !user) {
-    throw new NotFoundError('Order or User not found');
+    throw new NotFoundError("Order or User not found");
   }
 
   // 3. ビジネスロジック
-  if (order.status !== 'pending') {
-    throw new BusinessError('Order is not in pending status');
+  if (order.status !== "pending") {
+    throw new BusinessError("Order is not in pending status");
   }
 
   const total = calculateTotal(order.items);
@@ -67,7 +70,7 @@ async function processOrder(orderId: string, userId: string): Promise<OrderResul
   const finalAmount = total - discount;
 
   // 4. 永続化
-  order.status = 'processed';
+  order.status = "processed";
   order.amount = finalAmount;
   order.processedAt = new Date();
   await orderRepository.save(order);

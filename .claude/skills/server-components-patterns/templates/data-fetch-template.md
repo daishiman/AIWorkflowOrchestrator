@@ -175,12 +175,12 @@ export default async function {{Resource}}Page({ params }: Props) {
 
 ## 変数説明
 
-| 変数 | 説明 | 例 |
-|------|------|-----|
-| `{{resource}}` | リソース名（単数、camelCase） | `user`, `post`, `product` |
-| `{{Resource}}` | リソース名（単数、PascalCase） | `User`, `Post`, `Product` |
-| `{{resources}}` | リソース名（複数、camelCase） | `users`, `posts`, `products` |
+| 変数            | 説明                           | 例                           |
+| --------------- | ------------------------------ | ---------------------------- |
+| `{{resource}}`  | リソース名（単数、camelCase）  | `user`, `post`, `product`    |
+| `{{Resource}}`  | リソース名（単数、PascalCase） | `User`, `Post`, `Product`    |
+| `{{resources}}` | リソース名（複数、camelCase）  | `users`, `posts`, `products` |
 | `{{Resources}}` | リソース名（複数、PascalCase） | `Users`, `Posts`, `Products` |
-| `{{feature}}` | 機能名 | `dashboard`, `blog`, `shop` |
-| `{{PageName}}` | ページコンポーネント名 | `Dashboard`, `UserProfile` |
-| `{{SectionA}}` | セクションコンポーネント名 | `Stats`, `Posts`, `Activity` |
+| `{{feature}}`   | 機能名                         | `dashboard`, `blog`, `shop`  |
+| `{{PageName}}`  | ページコンポーネント名         | `Dashboard`, `UserProfile`   |
+| `{{SectionA}}`  | セクションコンポーネント名     | `Stats`, `Posts`, `Activity` |

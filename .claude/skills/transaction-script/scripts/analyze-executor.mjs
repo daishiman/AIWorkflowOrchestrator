@@ -14,13 +14,21 @@
  * - トランザクションスクリプトパターンの適合度
  */
 
-import { readFileSync, readdirSync, statSync, existsSync } from 'fs';
-import { join, extname } from 'path';
+import { readFileSync, readdirSync, statSync, existsSync } from "fs";
+import { join, extname } from "path";
 
 // 設定
 const CONFIG = {
-  supportedExtensions: ['.ts', '.tsx'],
-  excludePatterns: ['node_modules', '.git', 'dist', 'build', '__tests__', '*.test.ts', '*.spec.ts'],
+  supportedExtensions: [".ts", ".tsx"],
+  excludePatterns: [
+    "node_modules",
+    ".git",
+    "dist",
+    "build",
+    "__tests__",
+    "*.test.ts",
+    "*.spec.ts",
+  ],
   executorPattern: /class\s+(\w+)Executor/g,
   executeMethodPattern: /async\s+execute\s*\([^)]*\)/,
   maxExecuteLines: 50,
@@ -46,7 +54,8 @@ function getFiles(dir, files = []) {
   const items = readdirSync(dir);
 
   for (const item of items) {
-    if (CONFIG.excludePatterns.some(p => item.includes(p.replace('*', '')))) continue;
+    if (CONFIG.excludePatterns.some((p) => item.includes(p.replace("*", ""))))
+      continue;
 
     const fullPath = join(dir, item);
     const stat = statSync(fullPath);
@@ -54,7 +63,7 @@ function getFiles(dir, files = []) {
     if (stat.isDirectory()) {
       getFiles(fullPath, files);
     } else if (CONFIG.supportedExtensions.includes(extname(item))) {
-      if (!item.includes('.test.') && !item.includes('.spec.')) {
+      if (!item.includes(".test.") && !item.includes(".spec.")) {
         files.push(fullPath);
       }
     }
@@ -87,7 +96,9 @@ function analyzeExecutor(content, filePath) {
   executor.implementsInterface = /implements\s+IWorkflowExecutor/.test(content);
 
   // executeメソッドの確認
-  const executeMatch = content.match(/async\s+execute\s*\([^)]*\)\s*:\s*Promise[^{]*\{/);
+  const executeMatch = content.match(
+    /async\s+execute\s*\([^)]*\)\s*:\s*Promise[^{]*\{/,
+  );
   if (executeMatch) {
     executor.hasExecuteMethod = true;
 
@@ -98,10 +109,10 @@ function analyzeExecutor(content, filePath) {
     let endIndex = startIndex;
 
     for (let i = startIndex; i < content.length; i++) {
-      if (content[i] === '{') {
+      if (content[i] === "{") {
         braceCount++;
         started = true;
-      } else if (content[i] === '}') {
+      } else if (content[i] === "}") {
         braceCount--;
       }
       if (started && braceCount === 0) {
@@ -111,7 +122,7 @@ function analyzeExecutor(content, filePath) {
     }
 
     const executeBody = content.substring(startIndex, endIndex);
-    executor.executeLineCount = executeBody.split('\n').length;
+    executor.executeLineCount = executeBody.split("\n").length;
   }
 
   // バリデーションの確認
@@ -139,7 +150,7 @@ function analyzeExecutor(content, filePath) {
  * ファイルを分析
  */
 function analyzeFile(filePath) {
-  const content = readFileSync(filePath, 'utf-8');
+  const content = readFileSync(filePath, "utf-8");
   results.files++;
 
   const executor = analyzeExecutor(content, filePath);
@@ -150,16 +161,16 @@ function analyzeFile(filePath) {
     if (!executor.implementsInterface) {
       results.issues.push({
         file: filePath,
-        issue: 'IWorkflowExecutorインターフェースを実装していません',
-        severity: 'warning',
+        issue: "IWorkflowExecutorインターフェースを実装していません",
+        severity: "warning",
       });
     }
 
     if (!executor.hasExecuteMethod) {
       results.issues.push({
         file: filePath,
-        issue: 'executeメソッドが見つかりません',
-        severity: 'error',
+        issue: "executeメソッドが見つかりません",
+        severity: "error",
       });
     }
 
@@ -167,27 +178,27 @@ function analyzeFile(filePath) {
       results.issues.push({
         file: filePath,
         issue: `executeメソッドが長すぎます (${executor.executeLineCount}行 > ${CONFIG.maxExecuteLines}行)`,
-        severity: 'warning',
+        severity: "warning",
       });
       results.recommendations.push({
         file: filePath,
-        recommendation: 'Extract Methodでサブメソッドに分割することを推奨',
+        recommendation: "Extract Methodでサブメソッドに分割することを推奨",
       });
     }
 
     if (!executor.hasValidation) {
       results.issues.push({
         file: filePath,
-        issue: '入力バリデーションが見つかりません',
-        severity: 'info',
+        issue: "入力バリデーションが見つかりません",
+        severity: "info",
       });
     }
 
     if (!executor.hasErrorHandling) {
       results.issues.push({
         file: filePath,
-        issue: 'エラーハンドリングが不足しています',
-        severity: 'warning',
+        issue: "エラーハンドリングが不足しています",
+        severity: "warning",
       });
     }
   }
@@ -197,8 +208,8 @@ function analyzeFile(filePath) {
  * 結果を出力
  */
 function printResults() {
-  console.log('\n📊 Executor分析結果\n');
-  console.log('='.repeat(60));
+  console.log("\n📊 Executor分析結果\n");
+  console.log("=".repeat(60));
 
   // 概要
   console.log(`\n📁 分析ファイル: ${results.files}件`);
@@ -206,15 +217,24 @@ function printResults() {
 
   // Executor一覧
   if (results.executors.length > 0) {
-    console.log('\n📋 Executor一覧:');
+    console.log("\n📋 Executor一覧:");
     for (const exec of results.executors) {
-      const scoreEmoji = exec.score >= 80 ? '🟢' : exec.score >= 60 ? '🟡' : '🔴';
-      console.log(`\n  ${scoreEmoji} ${exec.name}Executor (スコア: ${exec.score}/100)`);
+      const scoreEmoji =
+        exec.score >= 80 ? "🟢" : exec.score >= 60 ? "🟡" : "🔴";
+      console.log(
+        `\n  ${scoreEmoji} ${exec.name}Executor (スコア: ${exec.score}/100)`,
+      );
       console.log(`     ファイル: ${exec.file}`);
-      console.log(`     インターフェース実装: ${exec.implementsInterface ? '✅' : '❌'}`);
-      console.log(`     executeメソッド: ${exec.hasExecuteMethod ? '✅' : '❌'}`);
-      console.log(`     バリデーション: ${exec.hasValidation ? '✅' : '❌'}`);
-      console.log(`     エラーハンドリング: ${exec.hasErrorHandling ? '✅' : '❌'}`);
+      console.log(
+        `     インターフェース実装: ${exec.implementsInterface ? "✅" : "❌"}`,
+      );
+      console.log(
+        `     executeメソッド: ${exec.hasExecuteMethod ? "✅" : "❌"}`,
+      );
+      console.log(`     バリデーション: ${exec.hasValidation ? "✅" : "❌"}`);
+      console.log(
+        `     エラーハンドリング: ${exec.hasErrorHandling ? "✅" : "❌"}`,
+      );
       if (exec.executeLineCount > 0) {
         console.log(`     execute行数: ${exec.executeLineCount}行`);
       }
@@ -223,9 +243,14 @@ function printResults() {
 
   // 問題点
   if (results.issues.length > 0) {
-    console.log('\n⚠️ 検出された問題:');
+    console.log("\n⚠️ 検出された問題:");
     for (const issue of results.issues) {
-      const icon = issue.severity === 'error' ? '🔴' : issue.severity === 'warning' ? '🟠' : '🟡';
+      const icon =
+        issue.severity === "error"
+          ? "🔴"
+          : issue.severity === "warning"
+            ? "🟠"
+            : "🟡";
       console.log(`  ${icon} [${issue.severity}] ${issue.file}`);
       console.log(`     ${issue.issue}`);
     }
@@ -233,7 +258,7 @@ function printResults() {
 
   // 推奨事項
   if (results.recommendations.length > 0) {
-    console.log('\n💡 推奨事項:');
+    console.log("\n💡 推奨事項:");
     for (const rec of results.recommendations) {
       console.log(`  📌 ${rec.file}`);
       console.log(`     ${rec.recommendation}`);
@@ -241,21 +266,25 @@ function printResults() {
   }
 
   // サマリー
-  console.log('\n' + '='.repeat(60));
-  const avgScore = results.executors.length > 0
-    ? Math.round(results.executors.reduce((sum, e) => sum + e.score, 0) / results.executors.length)
-    : 0;
-  const summaryEmoji = avgScore >= 80 ? '🟢' : avgScore >= 60 ? '🟡' : '🔴';
+  console.log("\n" + "=".repeat(60));
+  const avgScore =
+    results.executors.length > 0
+      ? Math.round(
+          results.executors.reduce((sum, e) => sum + e.score, 0) /
+            results.executors.length,
+        )
+      : 0;
+  const summaryEmoji = avgScore >= 80 ? "🟢" : avgScore >= 60 ? "🟡" : "🔴";
   console.log(`${summaryEmoji} 平均スコア: ${avgScore}/100`);
   console.log(`📋 問題数: ${results.issues.length}件`);
-  console.log('');
+  console.log("");
 }
 
 // メイン処理
 const args = process.argv.slice(2);
 if (args.length === 0) {
-  console.log('Usage: node analyze-executor.mjs <directory>');
-  console.log('Example: node analyze-executor.mjs src/features/');
+  console.log("Usage: node analyze-executor.mjs <directory>");
+  console.log("Example: node analyze-executor.mjs src/features/");
   process.exit(1);
 }
 

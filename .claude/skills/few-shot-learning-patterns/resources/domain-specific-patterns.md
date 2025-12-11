@@ -69,6 +69,7 @@
 例1（すべてのエンティティ含む）:
 テキスト: 「田中太郎氏はソニー株式会社の東京本社で働いています。」
 抽出:
+
 - 人名: ["田中太郎"]
 - 組織名: ["ソニー株式会社"]
 - 場所: ["東京"]
@@ -76,6 +77,7 @@
 例2（一部のみ）:
 テキスト: 「Appleは新製品を発表しました。」
 抽出:
+
 - 人名: []
 - 組織名: ["Apple"]
 - 場所: []
@@ -83,6 +85,7 @@
 例3（複数エンティティ）:
 テキスト: 「山田花子と佐藤次郎は大阪と京都を訪問した。」
 抽出:
+
 - 人名: ["山田花子", "佐藤次郎"]
 - 組織名: []
 - 場所: ["大阪", "京都"]
@@ -99,30 +102,30 @@
 入力: 「iPhone 15 Pro - 128GB - スペースブラック - 159,800円」
 出力:
 {
-  "product_name": "iPhone 15 Pro",
-  "storage": "128GB",
-  "color": "スペースブラック",
-  "price": 159800
+"product_name": "iPhone 15 Pro",
+"storage": "128GB",
+"color": "スペースブラック",
+"price": 159800
 }
 
 例2（一部欠損）:
 入力: 「MacBook Air M2 - 256GB - 148,800円」
 出力:
 {
-  "product_name": "MacBook Air M2",
-  "storage": "256GB",
-  "color": null,
-  "price": 148800
+"product_name": "MacBook Air M2",
+"storage": "256GB",
+"color": null,
+"price": 148800
 }
 
 例3（異なる形式）:
 入力: 「Apple Watch Ultra 2（チタニウム）124,800円」
 出力:
 {
-  "product_name": "Apple Watch Ultra 2",
-  "storage": null,
-  "color": "チタニウム",
-  "price": 124800
+"product_name": "Apple Watch Ultra 2",
+"storage": null,
+"color": "チタニウム",
+"price": 124800
 }
 ```
 
@@ -176,37 +179,45 @@
 
 ### コード説明
 
-```markdown
+````markdown
 # 推奨: 2-3例（異なる複雑性レベル）
 
 コードスニペットを簡潔に説明してください。
 
 例1（シンプル）:
 コード:
+
 ```python
 def add(a, b):
     return a + b
 ```
+````
+
 説明: 2つの引数を受け取り、その合計を返す関数
 
 例2（中程度）:
 コード:
+
 ```python
 def filter_even(numbers):
     return [n for n in numbers if n % 2 == 0]
 ```
+
 説明: リストから偶数のみを抽出するリスト内包表記を使用した関数
 
 例3（複雑）:
 コード:
+
 ```python
 async def fetch_all(urls):
     async with aiohttp.ClientSession() as session:
         tasks = [fetch(session, url) for url in urls]
         return await asyncio.gather(*tasks)
 ```
+
 説明: 複数URLを非同期で並行取得し、すべての結果を返す関数
-```
+
+````
 
 ### バグ修正提案
 
@@ -220,9 +231,11 @@ async def fetch_all(urls):
 ```python
 for i in range(len(arr)):
     print(arr[i+1])
-```
+````
+
 問題: 配列の最後でインデックス範囲外エラー
 修正:
+
 ```python
 for i in range(len(arr) - 1):
     print(arr[i+1])
@@ -230,15 +243,19 @@ for i in range(len(arr) - 1):
 
 例2（Null参照）:
 バグコード:
+
 ```javascript
 const name = user.profile.name;
 ```
+
 問題: userまたはprofileがnullの可能性
 修正:
+
 ```javascript
-const name = user?.profile?.name ?? 'Unknown';
+const name = user?.profile?.name ?? "Unknown";
 ```
-```
+
+````
 
 ## ビジネス文書
 
@@ -268,7 +285,7 @@ const name = user?.profile?.name ?? 'Unknown';
 
 要約: 「Q3売上が前年比15%増、新規顧客獲得が好調。
 ただし原材料費高騰で利益率は低下傾向。」
-```
+````
 
 ### レポート構造化
 
@@ -285,15 +302,15 @@ const name = user?.profile?.name ?? 'Unknown';
 
 構造化:
 {
-  "incident_type": "システム障害",
-  "reported_time": "14:23",
-  "resolved_time": "15:10",
-  "cause": "認証サーバーのメモリリーク",
-  "resolution": "サーバー再起動",
-  "impact": {
-    "users_affected": 500,
-    "duration_minutes": 47
-  }
+"incident_type": "システム障害",
+"reported_time": "14:23",
+"resolved_time": "15:10",
+"cause": "認証サーバーのメモリリーク",
+"resolution": "サーバー再起動",
+"impact": {
+"users_affected": 500,
+"duration_minutes": 47
+}
 }
 ```
 

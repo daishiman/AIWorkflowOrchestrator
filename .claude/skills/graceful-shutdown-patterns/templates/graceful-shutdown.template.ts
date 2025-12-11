@@ -46,12 +46,12 @@ interface CleanupTask {
 
 interface CleanupResult {
   name: string;
-  status: 'success' | 'error' | 'timeout';
+  status: "success" | "error" | "timeout";
   duration: number;
   error?: string;
 }
 
-type ShutdownState = 'running' | 'shutting_down' | 'terminated';
+type ShutdownState = "running" | "shutting_down" | "terminated";
 
 // ============================================================
 // デフォルトロガー
@@ -60,7 +60,7 @@ type ShutdownState = 'running' | 'shutting_down' | 'terminated';
 const defaultLogger: Logger = {
   info: (msg) => console.log(`[GracefulShutdown] ${msg}`),
   warn: (msg) => console.warn(`[GracefulShutdown] ${msg}`),
-  error: (msg, err) => console.error(`[GracefulShutdown] ${msg}`, err || ''),
+  error: (msg, err) => console.error(`[GracefulShutdown] ${msg}`, err || ""),
 };
 
 // ============================================================
@@ -68,7 +68,7 @@ const defaultLogger: Logger = {
 // ============================================================
 
 export class GracefulShutdown {
-  private state: ShutdownState = 'running';
+  private state: ShutdownState = "running";
   private tasks: CleanupTask[] = [];
   private timeout: number;
   private logger: Logger;
@@ -97,11 +97,13 @@ export class GracefulShutdown {
     name: string,
     fn: () => Promise<void> | void,
     priority: number = 50,
-    timeout?: number
+    timeout?: number,
   ): this {
     this.tasks.push({ name, fn, priority, timeout });
     this.tasks.sort((a, b) => a.priority - b.priority);
-    this.logger.info(`Registered cleanup task: ${name} (priority: ${priority})`);
+    this.logger.info(
+      `Registered cleanup task: ${name} (priority: ${priority})`,
+    );
     return this;
   }
 
@@ -111,25 +113,25 @@ export class GracefulShutdown {
    */
   initialize(): this {
     // 二重初期化防止
-    if (this.state !== 'running') {
-      this.logger.warn('Already initialized or shutting down');
+    if (this.state !== "running") {
+      this.logger.warn("Already initialized or shutting down");
       return this;
     }
 
     // シグナルハンドラー設定
-    process.on('SIGTERM', () => this.handleSignal('SIGTERM'));
-    process.on('SIGINT', () => this.handleSignal('SIGINT'));
+    process.on("SIGTERM", () => this.handleSignal("SIGTERM"));
+    process.on("SIGINT", () => this.handleSignal("SIGINT"));
 
     // PM2モードの場合、メッセージハンドラーも設定
     if (this.pm2Mode) {
-      process.on('message', (msg) => {
-        if (msg === 'shutdown') {
-          this.handleSignal('PM2_SHUTDOWN');
+      process.on("message", (msg) => {
+        if (msg === "shutdown") {
+          this.handleSignal("PM2_SHUTDOWN");
         }
       });
     }
 
-    this.logger.info('Graceful shutdown initialized');
+    this.logger.info("Graceful shutdown initialized");
     return this;
   }
 
@@ -144,14 +146,14 @@ export class GracefulShutdown {
    * シャットダウン中かどうか
    */
   isShuttingDown(): boolean {
-    return this.state === 'shutting_down';
+    return this.state === "shutting_down";
   }
 
   /**
    * 手動でシャットダウンを開始
    */
   async shutdown(): Promise<void> {
-    return this.executeShutdown('MANUAL');
+    return this.executeShutdown("MANUAL");
   }
 
   /**
@@ -159,7 +161,7 @@ export class GracefulShutdown {
    */
   getHealthStatus(): { status: string; uptime: number } {
     return {
-      status: this.state === 'running' ? 'healthy' : 'shutting_down',
+      status: this.state === "running" ? "healthy" : "shutting_down",
       uptime: process.uptime(),
     };
   }
@@ -170,8 +172,8 @@ export class GracefulShutdown {
 
   private detectPM2(): boolean {
     return (
-      typeof process.env.PM2_HOME !== 'undefined' ||
-      typeof process.env.pm_id !== 'undefined'
+      typeof process.env.PM2_HOME !== "undefined" ||
+      typeof process.env.pm_id !== "undefined"
     );
   }
 
@@ -183,11 +185,11 @@ export class GracefulShutdown {
   private async executeShutdown(trigger: string): Promise<void> {
     // べき等性: 既にシャットダウン中なら既存のPromiseを返す
     if (this.shutdownPromise) {
-      this.logger.warn('Shutdown already in progress');
+      this.logger.warn("Shutdown already in progress");
       return this.shutdownPromise;
     }
 
-    this.state = 'shutting_down';
+    this.state = "shutting_down";
     this.logger.info(`Starting graceful shutdown (triggered by: ${trigger})`);
 
     this.shutdownPromise = this.runShutdown();
@@ -201,21 +203,21 @@ export class GracefulShutdown {
     // 全体タイムアウト設定
     const timeoutPromise = new Promise<never>((_, reject) => {
       setTimeout(() => {
-        reject(new Error('Global shutdown timeout'));
+        reject(new Error("Global shutdown timeout"));
       }, this.timeout);
     });
 
     try {
       // クリーンアップタスクを順次実行
-      await Promise.race([
-        this.runCleanupTasks(results),
-        timeoutPromise,
-      ]);
+      await Promise.race([this.runCleanupTasks(results), timeoutPromise]);
     } catch (error) {
-      if (error instanceof Error && error.message === 'Global shutdown timeout') {
-        this.logger.error('Global shutdown timeout exceeded, forcing exit');
+      if (
+        error instanceof Error &&
+        error.message === "Global shutdown timeout"
+      ) {
+        this.logger.error("Global shutdown timeout exceeded, forcing exit");
       } else {
-        this.logger.error('Unexpected error during shutdown', error as Error);
+        this.logger.error("Unexpected error during shutdown", error as Error);
       }
     }
 
@@ -223,8 +225,8 @@ export class GracefulShutdown {
     this.logResults(results, Date.now() - startTime);
 
     // プロセス終了
-    this.state = 'terminated';
-    const hasErrors = results.some((r) => r.status === 'error');
+    this.state = "terminated";
+    const hasErrors = results.some((r) => r.status === "error");
     const exitCode = hasErrors ? 1 : 0;
 
     this.logger.info(`Exiting with code ${exitCode}`);
@@ -248,7 +250,7 @@ export class GracefulShutdown {
       await Promise.race([
         Promise.resolve(task.fn()),
         new Promise<never>((_, reject) => {
-          setTimeout(() => reject(new Error('Task timeout')), taskTimeout);
+          setTimeout(() => reject(new Error("Task timeout")), taskTimeout);
         }),
       ]);
 
@@ -257,12 +259,13 @@ export class GracefulShutdown {
 
       return {
         name: task.name,
-        status: 'success',
+        status: "success",
         duration,
       };
     } catch (error) {
       const duration = Date.now() - startTime;
-      const isTimeout = error instanceof Error && error.message === 'Task timeout';
+      const isTimeout =
+        error instanceof Error && error.message === "Task timeout";
 
       if (isTimeout) {
         this.logger.warn(`Cleanup timeout: ${task.name} (>${taskTimeout}ms)`);
@@ -272,7 +275,7 @@ export class GracefulShutdown {
 
       return {
         name: task.name,
-        status: isTimeout ? 'timeout' : 'error',
+        status: isTimeout ? "timeout" : "error",
         duration,
         error: error instanceof Error ? error.message : String(error),
       };
@@ -280,20 +283,22 @@ export class GracefulShutdown {
   }
 
   private logResults(results: CleanupResult[], totalDuration: number): void {
-    const succeeded = results.filter((r) => r.status === 'success').length;
-    const failed = results.filter((r) => r.status === 'error').length;
-    const timedOut = results.filter((r) => r.status === 'timeout').length;
+    const succeeded = results.filter((r) => r.status === "success").length;
+    const failed = results.filter((r) => r.status === "error").length;
+    const timedOut = results.filter((r) => r.status === "timeout").length;
 
     this.logger.info(
-      `Shutdown complete: ${succeeded} succeeded, ${failed} failed, ${timedOut} timed out (${totalDuration}ms)`
+      `Shutdown complete: ${succeeded} succeeded, ${failed} failed, ${timedOut} timed out (${totalDuration}ms)`,
     );
 
     if (failed > 0 || timedOut > 0) {
-      this.logger.warn('Failed/timed out tasks:');
+      this.logger.warn("Failed/timed out tasks:");
       results
-        .filter((r) => r.status !== 'success')
+        .filter((r) => r.status !== "success")
         .forEach((r) => {
-          this.logger.warn(`  - ${r.name}: ${r.status} (${r.error || 'no details'})`);
+          this.logger.warn(
+            `  - ${r.name}: ${r.status} (${r.error || "no details"})`,
+          );
         });
     }
   }
@@ -311,13 +316,16 @@ export class GracefulShutdown {
  * app.get('/health', createHealthCheckMiddleware(shutdown));
  */
 export function createHealthCheckMiddleware(shutdown: GracefulShutdown) {
-  return (_req: unknown, res: { status: (code: number) => { json: (data: unknown) => void } }) => {
+  return (
+    _req: unknown,
+    res: { status: (code: number) => { json: (data: unknown) => void } },
+  ) => {
     const health = shutdown.getHealthStatus();
 
     if (shutdown.isShuttingDown()) {
       res.status(503).json({
         ...health,
-        message: 'Service is shutting down',
+        message: "Service is shutting down",
       });
       return;
     }
@@ -349,7 +357,7 @@ export class RequestTracker {
     return (
       _req: unknown,
       res: { on: (event: string, handler: () => void) => void },
-      next: () => void
+      next: () => void,
     ) => {
       this.activeRequests++;
 
@@ -358,8 +366,8 @@ export class RequestTracker {
         this.notifyWaiters();
       };
 
-      res.on('finish', onFinish);
-      res.on('close', onFinish);
+      res.on("finish", onFinish);
+      res.on("close", onFinish);
 
       next();
     };
@@ -382,7 +390,9 @@ export class RequestTracker {
 
     return new Promise((resolve) => {
       const timeout = setTimeout(() => {
-        console.warn(`Request drain timeout: ${this.activeRequests} requests still active`);
+        console.warn(
+          `Request drain timeout: ${this.activeRequests} requests still active`,
+        );
         resolve();
       }, timeoutMs);
 

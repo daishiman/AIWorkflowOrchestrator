@@ -50,24 +50,24 @@ module.exports = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'example.com',
-        port: '',
-        pathname: '/images/**',
+        protocol: "https",
+        hostname: "example.com",
+        port: "",
+        pathname: "/images/**",
       },
       {
-        protocol: 'https',
-        hostname: '*.cloudinary.com',
+        protocol: "https",
+        hostname: "*.cloudinary.com",
       },
     ],
     // 画像フォーマット
-    formats: ['image/avif', 'image/webp'],
+    formats: ["image/avif", "image/webp"],
     // デバイスサイズ
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     // 画像サイズ
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
-}
+};
 ```
 
 ## レイアウトパターン
@@ -223,15 +223,15 @@ import heroImage from '@/public/hero.jpg'
 
 ```typescript
 // lib/placeholder.ts
-import { getPlaiceholder } from 'plaiceholder'
+import { getPlaiceholder } from "plaiceholder";
 
 export async function getBlurDataURL(src: string) {
-  const { base64 } = await getPlaiceholder(src)
-  return base64
+  const { base64 } = await getPlaiceholder(src);
+  return base64;
 }
 
 // 使用例
-const blurDataURL = await getBlurDataURL('/path/to/image.jpg')
+const blurDataURL = await getBlurDataURL("/path/to/image.jpg");
 ```
 
 ### カスタムプレースホルダー
@@ -383,10 +383,10 @@ export function Avatar({ src, name, size = 'md' }: AvatarProps) {
 // next.config.js
 module.exports = {
   images: {
-    loader: 'cloudinary',
-    path: 'https://res.cloudinary.com/your-cloud-name/image/upload/',
+    loader: "cloudinary",
+    path: "https://res.cloudinary.com/your-cloud-name/image/upload/",
   },
-}
+};
 ```
 
 ### カスタムローダー

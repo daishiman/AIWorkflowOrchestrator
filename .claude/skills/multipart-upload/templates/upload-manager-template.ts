@@ -11,9 +11,9 @@
  *   - {{HASH_ALGORITHM}}: ハッシュアルゴリズム (デフォルト: sha256)
  */
 
-import { createReadStream, statSync } from 'fs';
-import { createHash } from 'crypto';
-import FormData from 'form-data';
+import { createReadStream, statSync } from "fs";
+import { createHash } from "crypto";
+import FormData from "form-data";
 
 // ========================================
 // 型定義
@@ -35,7 +35,7 @@ export interface UploadProgress {
   estimatedTime: number;
   currentChunk: number;
   totalChunks: number;
-  status: 'preparing' | 'uploading' | 'processing' | 'completed' | 'error';
+  status: "preparing" | "uploading" | "processing" | "completed" | "error";
 }
 
 export interface ChunkInfo {
@@ -58,10 +58,10 @@ export interface UploadResult {
 // ========================================
 
 const DEFAULT_CONFIG: UploadConfig = {
-  chunkSize: 5 * 1024 * 1024,  // 5MB
+  chunkSize: 5 * 1024 * 1024, // 5MB
   maxRetries: 5,
-  hashAlgorithm: 'sha256',
-  timeout: 180000  // 3分
+  hashAlgorithm: "sha256",
+  timeout: 180000, // 3分
 };
 
 // ========================================
@@ -99,24 +99,29 @@ export class UploadManager {
         estimatedTime: 0,
         currentChunk: 0,
         totalChunks: chunks.length,
-        status: 'preparing'
+        status: "preparing",
       });
 
       // 4. チャンクをアップロード
       for (const chunk of chunks) {
-        await this.uploadChunk(filePath, uploadUrl, chunk, fileHash, chunks.length);
+        await this.uploadChunk(
+          filePath,
+          uploadUrl,
+          chunk,
+          fileHash,
+          chunks.length,
+        );
       }
 
       // 5. 完了
       return {
         success: true,
-        fileId: 'file-id-from-server'  // サーバーからの応答を設定
+        fileId: "file-id-from-server", // サーバーからの応答を設定
       };
-
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   }
@@ -138,9 +143,9 @@ export class UploadManager {
       const hash = createHash(this.config.hashAlgorithm);
       const stream = createReadStream(filePath);
 
-      stream.on('data', (chunk) => hash.update(chunk));
-      stream.on('end', () => resolve(hash.digest('hex')));
-      stream.on('error', reject);
+      stream.on("data", (chunk) => hash.update(chunk));
+      stream.on("end", () => resolve(hash.digest("hex")));
+      stream.on("error", reject);
     });
   }
 
@@ -159,7 +164,7 @@ export class UploadManager {
         index: i,
         start,
         end,
-        size: end - start
+        size: end - start,
       });
     }
 
@@ -174,18 +179,18 @@ export class UploadManager {
     uploadUrl: string,
     chunk: ChunkInfo,
     fileHash: string,
-    totalChunks: number
+    totalChunks: number,
   ): Promise<void> {
     const formData = new FormData();
     const stream = createReadStream(filePath, {
       start: chunk.start,
-      end: chunk.end - 1
+      end: chunk.end - 1,
     });
 
-    formData.append('chunk', stream);
-    formData.append('chunkIndex', chunk.index.toString());
-    formData.append('totalChunks', totalChunks.toString());
-    formData.append('fileHash', fileHash);
+    formData.append("chunk", stream);
+    formData.append("chunkIndex", chunk.index.toString());
+    formData.append("totalChunks", totalChunks.toString());
+    formData.append("fileHash", fileHash);
 
     // ここでHTTPリクエストを実行
     // 実際の実装では axios や fetch を使用

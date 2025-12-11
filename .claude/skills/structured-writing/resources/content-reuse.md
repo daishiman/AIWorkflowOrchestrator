@@ -12,9 +12,11 @@
 
 ```markdown
 <!-- _shared/product-name.md -->
+
 MyProduct™
 
 <!-- 使用 -->
+
 {{snippet:product-name}} は最新の技術を採用しています。
 ```
 
@@ -24,12 +26,14 @@ MyProduct™
 
 ```markdown
 <!-- _shared/security-notice.md -->
+
 > 🔒 **セキュリティに関する注意**
 >
 > パスワードは暗号化して保存してください。
 > 平文での保存は推奨されません。
 
 <!-- 使用 -->
+
 {{include:_shared/security-notice.md}}
 ```
 
@@ -39,6 +43,7 @@ MyProduct™
 
 ```markdown
 <!-- _shared/sections/prerequisites.md -->
+
 ## 前提条件
 
 - Node.js 18以上
@@ -46,6 +51,7 @@ MyProduct™
 - Git
 
 <!-- 使用 -->
+
 {{include:_shared/sections/prerequisites.md}}
 ```
 
@@ -66,13 +72,16 @@ topics:
 
 ```markdown
 <!-- テンプレート -->
+
 API endpoint: {{BASE_URL}}/{{VERSION}}/users
 
 <!-- 変数定義 -->
+
 BASE_URL: https://api.example.com
 VERSION: v1
 
 <!-- 出力 -->
+
 API endpoint: https://api.example.com/v1/users
 ```
 
@@ -96,17 +105,22 @@ API endpoint: https://api.example.com/v1/users
 
 ```markdown
 <!-- データ -->
+
 features:
-  - name: 認証
-    desc: OAuth 2.0対応
-  - name: API
-    desc: RESTful設計
-  - name: UI
-    desc: レスポンシブ対応
+
+- name: 認証
+  desc: OAuth 2.0対応
+- name: API
+  desc: RESTful設計
+- name: UI
+  desc: レスポンシブ対応
 
 <!-- テンプレート -->
+
 {{#each features}}
+
 ### {{name}}
+
 {{desc}}
 {{/each}}
 ```
@@ -116,11 +130,13 @@ features:
 ```markdown
 <!-- 定義 -->
 <!-- keys.yaml -->
+
 product_name: MyProduct
 support_email: support@example.com
 docs_url: https://docs.example.com
 
 <!-- 使用 -->
+
 {{key:product_name}} のドキュメントは {{key:docs_url}} を参照してください。
 お問い合わせは {{key:support_email}} まで。
 ```
@@ -129,15 +145,15 @@ docs_url: https://docs.example.com
 
 ### 再利用候補の特定
 
-| 条件 | 再利用する |
-|:-----|:-----------|
-| 3箇所以上で同じ内容 | ✅ |
-| 製品名・バージョン番号 | ✅ |
-| 警告・注意文 | ✅ |
-| 共通の手順 | ✅ |
-| 法的文言・免責事項 | ✅ |
-| 1箇所でのみ使用 | ❌ |
-| 文脈依存の内容 | ❌ |
+| 条件                   | 再利用する |
+| :--------------------- | :--------- |
+| 3箇所以上で同じ内容    | ✅         |
+| 製品名・バージョン番号 | ✅         |
+| 警告・注意文           | ✅         |
+| 共通の手順             | ✅         |
+| 法的文言・免責事項     | ✅         |
+| 1箇所でのみ使用        | ❌         |
+| 文脈依存の内容         | ❌         |
 
 ### 再利用可能にするための加工
 

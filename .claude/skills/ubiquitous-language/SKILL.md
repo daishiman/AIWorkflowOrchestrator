@@ -254,13 +254,11 @@ cat .claude/skills/ubiquitous-language/templates/domain-glossary-template.md
 ### すべきこと
 
 1. **ドメインエキスパートとの協力**:
-
    - 用語定義はドメインエキスパートと共同で
    - 技術者だけで決めない
    - 定期的なレビューを実施
 
 2. **用語集の可視化**:
-
    - アクセスしやすい場所に配置
    - 検索可能な形式で管理
    - 変更通知の仕組みを用意
@@ -273,12 +271,10 @@ cat .claude/skills/ubiquitous-language/templates/domain-glossary-template.md
 ### 避けるべきこと
 
 1. **技術用語への言い換え**:
-
    - ❌ 「ワークフロー」→「プロセスオブジェクト」
    - ✅ 「ワークフロー」→「Workflow」
 
 2. **同義語の乱用**:
-
    - ❌ 「ユーザー」「顧客」「アカウント」を混用
    - ✅ 一つの概念に一つの用語を決定
 
@@ -333,7 +329,6 @@ cat .claude/skills/ubiquitous-language/templates/domain-glossary-template.md
 ## 参考文献
 
 - **『エリック・エヴァンスのドメイン駆動設計』**
-
   - 第 2 章: コミュニケーションと言語の使用
 
 - **『実践ドメイン駆動設計』**

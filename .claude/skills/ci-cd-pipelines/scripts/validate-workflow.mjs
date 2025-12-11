@@ -8,28 +8,29 @@
  *   node validate-workflow.mjs .github/workflows/*.yml
  */
 
-import { readFileSync, existsSync } from 'fs';
-import { parse } from 'yaml';
-import { basename } from 'path';
+import { readFileSync, existsSync } from "fs";
+import { parse } from "yaml";
+import { basename } from "path";
 
 // Validation rules
 const RULES = {
   // Required fields
-  requiredTopLevel: ['name', 'on', 'jobs'],
+  requiredTopLevel: ["name", "on", "jobs"],
 
   // Recommended practices
   recommendations: {
     usesFrozenLockfile: {
       pattern: /--frozen-lockfile|--ci|pnpm ci/,
-      message: 'Consider using --frozen-lockfile (pnpm) or pnpm ci for reproducible installs',
+      message:
+        "Consider using --frozen-lockfile (pnpm) or pnpm ci for reproducible installs",
     },
     usesCache: {
       pattern: /actions\/cache|cache:/,
-      message: 'Consider adding caching for faster builds',
+      message: "Consider adding caching for faster builds",
     },
     hasTimeout: {
       pattern: /timeout-minutes/,
-      message: 'Consider adding timeout-minutes to prevent stuck jobs',
+      message: "Consider adding timeout-minutes to prevent stuck jobs",
     },
   },
 
@@ -38,11 +39,11 @@ const RULES = {
     noSecretsInRun: {
       pattern: /\$\{\{\s*secrets\.[^}]+\}\}/,
       inRunCommand: true,
-      message: 'Avoid echoing secrets directly in run commands',
+      message: "Avoid echoing secrets directly in run commands",
     },
     pinnedActions: {
       pattern: /@v\d+(\.\d+)*$|@[a-f0-9]{40}$/,
-      message: 'Consider pinning action versions for security',
+      message: "Consider pinning action versions for security",
     },
   },
 };
@@ -61,7 +62,7 @@ class WorkflowValidator {
       return this.getResults();
     }
 
-    const content = readFileSync(this.filePath, 'utf-8');
+    const content = readFileSync(this.filePath, "utf-8");
 
     // Parse YAML
     let workflow;
@@ -91,17 +92,27 @@ class WorkflowValidator {
 
     // Validate 'on' triggers
     if (workflow.on) {
-      const triggers = typeof workflow.on === 'string'
-        ? [workflow.on]
-        : Array.isArray(workflow.on)
-          ? workflow.on
-          : Object.keys(workflow.on);
+      const triggers =
+        typeof workflow.on === "string"
+          ? [workflow.on]
+          : Array.isArray(workflow.on)
+            ? workflow.on
+            : Object.keys(workflow.on);
 
       const validTriggers = [
-        'push', 'pull_request', 'pull_request_target',
-        'workflow_dispatch', 'workflow_call', 'schedule',
-        'release', 'issue_comment', 'issues',
-        'create', 'delete', 'fork', 'watch',
+        "push",
+        "pull_request",
+        "pull_request_target",
+        "workflow_dispatch",
+        "workflow_call",
+        "schedule",
+        "release",
+        "issue_comment",
+        "issues",
+        "create",
+        "delete",
+        "fork",
+        "watch",
       ];
 
       for (const trigger of triggers) {
@@ -117,7 +128,7 @@ class WorkflowValidator {
 
     for (const [jobName, job] of Object.entries(workflow.jobs)) {
       // Check runs-on
-      if (!job['runs-on']) {
+      if (!job["runs-on"]) {
         this.errors.push(`Job '${jobName}' missing 'runs-on'`);
       }
 
@@ -140,7 +151,9 @@ class WorkflowValidator {
         // Check action version pinning
         if (step.uses) {
           if (!RULES.security.pinnedActions.pattern.test(step.uses)) {
-            this.warnings.push(`${stepRef}: Action '${step.uses}' should be pinned to a version`);
+            this.warnings.push(
+              `${stepRef}: Action '${step.uses}' should be pinned to a version`,
+            );
           }
         }
       }
@@ -150,7 +163,9 @@ class WorkflowValidator {
         const needs = Array.isArray(job.needs) ? job.needs : [job.needs];
         for (const dep of needs) {
           if (!workflow.jobs[dep]) {
-            this.errors.push(`Job '${jobName}' depends on unknown job '${dep}'`);
+            this.errors.push(
+              `Job '${jobName}' depends on unknown job '${dep}'`,
+            );
           }
         }
       }
@@ -159,26 +174,33 @@ class WorkflowValidator {
 
   validateSecurity(content, workflow) {
     // Check for secrets in echo/run commands
-    const lines = content.split('\n');
+    const lines = content.split("\n");
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
 
       // Check for potential secret exposure
-      if (line.includes('echo') && /\$\{\{\s*secrets\./.test(line)) {
-        this.warnings.push(`Line ${i + 1}: Potential secret exposure in echo command`);
+      if (line.includes("echo") && /\$\{\{\s*secrets\./.test(line)) {
+        this.warnings.push(
+          `Line ${i + 1}: Potential secret exposure in echo command`,
+        );
       }
     }
 
     // Check permissions
-    if (workflow.permissions === 'write-all') {
-      this.warnings.push('Using broad "write-all" permissions - consider restricting');
+    if (workflow.permissions === "write-all") {
+      this.warnings.push(
+        'Using broad "write-all" permissions - consider restricting',
+      );
     }
   }
 
   checkRecommendations(content) {
     // Check for frozen lockfile
     if (!RULES.recommendations.usesFrozenLockfile.pattern.test(content)) {
-      if (content.includes('pnpm install') || content.includes('pnpm install')) {
+      if (
+        content.includes("pnpm install") ||
+        content.includes("pnpm install")
+      ) {
         this.info.push(RULES.recommendations.usesFrozenLockfile.message);
       }
     }
@@ -210,11 +232,11 @@ function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.log('Usage: node validate-workflow.mjs <workflow-file.yml> [...]');
-    console.log('');
-    console.log('Examples:');
-    console.log('  node validate-workflow.mjs .github/workflows/ci.yml');
-    console.log('  node validate-workflow.mjs .github/workflows/*.yml');
+    console.log("Usage: node validate-workflow.mjs <workflow-file.yml> [...]");
+    console.log("");
+    console.log("Examples:");
+    console.log("  node validate-workflow.mjs .github/workflows/ci.yml");
+    console.log("  node validate-workflow.mjs .github/workflows/*.yml");
     process.exit(1);
   }
 
@@ -225,33 +247,33 @@ function main() {
     const results = validator.validate();
 
     console.log(`\n📄 ${basename(filePath)}`);
-    console.log('─'.repeat(50));
+    console.log("─".repeat(50));
 
     if (results.valid) {
-      console.log('✅ Valid workflow');
+      console.log("✅ Valid workflow");
     } else {
       hasErrors = true;
-      console.log('❌ Invalid workflow');
+      console.log("❌ Invalid workflow");
     }
 
     if (results.errors.length > 0) {
-      console.log('\n🔴 Errors:');
-      results.errors.forEach(e => console.log(`   • ${e}`));
+      console.log("\n🔴 Errors:");
+      results.errors.forEach((e) => console.log(`   • ${e}`));
     }
 
     if (results.warnings.length > 0) {
-      console.log('\n🟡 Warnings:');
-      results.warnings.forEach(w => console.log(`   • ${w}`));
+      console.log("\n🟡 Warnings:");
+      results.warnings.forEach((w) => console.log(`   • ${w}`));
     }
 
     if (results.info.length > 0) {
-      console.log('\n💡 Recommendations:');
-      results.info.forEach(i => console.log(`   • ${i}`));
+      console.log("\n💡 Recommendations:");
+      results.info.forEach((i) => console.log(`   • ${i}`));
     }
   }
 
-  console.log('\n' + '═'.repeat(50));
-  console.log(hasErrors ? '❌ Validation failed' : '✅ All workflows valid');
+  console.log("\n" + "═".repeat(50));
+  console.log(hasErrors ? "❌ Validation failed" : "✅ All workflows valid");
 
   process.exit(hasErrors ? 1 : 0);
 }

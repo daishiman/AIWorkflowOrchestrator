@@ -31,7 +31,6 @@ description: |
 version: 1.0.0
 ---
 
-
 # Error Message Design
 
 ## 概要
@@ -41,12 +40,14 @@ version: 1.0.0
 エラー発生時もユーザーが次のアクションを取れるようにします。
 
 **主要な価値**:
+
 - ユーザーが理解しやすいエラーメッセージ
 - 開発者がデバッグしやすい情報提供
 - 多言語・多文化対応
 - 一貫したエラーハンドリング
 
 **対象ユーザー**:
+
 - スキーマ定義を行うエージェント（@schema-def）
 - APIを設計する開発者
 - フロントエンド開発者
@@ -102,9 +103,11 @@ cat .claude/skills/error-message-design/templates/error-system-template.ts
 ## いつ使うか
 
 ### シナリオ1: フォームバリデーション
+
 **状況**: ユーザー入力のバリデーションエラーを表示する
 
 **適用条件**:
+
 - [ ] 複数のフィールドでエラーが発生し得る
 - [ ] ユーザーが修正方法を理解する必要がある
 - [ ] 多言語対応が必要
@@ -112,9 +115,11 @@ cat .claude/skills/error-message-design/templates/error-system-template.ts
 **期待される成果**: 分かりやすいバリデーションエラー表示
 
 ### シナリオ2: APIエラーレスポンス
+
 **状況**: APIクライアントにエラー情報を返す
 
 **適用条件**:
+
 - [ ] HTTPステータスコードの選択
 - [ ] エラーコードの体系化
 - [ ] 開発者向けデバッグ情報の提供
@@ -122,9 +127,11 @@ cat .claude/skills/error-message-design/templates/error-system-template.ts
 **期待される成果**: 一貫したAPIエラーレスポンス
 
 ### シナリオ3: エラーの国際化
+
 **状況**: 多言語対応のアプリケーションでエラーを表示
 
 **適用条件**:
+
 - [ ] 複数の言語でエラーメッセージを表示
 - [ ] 文化的な配慮が必要
 - [ ] メッセージの動的な組み立て
@@ -221,19 +228,19 @@ type ErrorCode = keyof typeof ERROR_CODES;
 ```typescript
 // RFC 7807 Problem Details準拠
 interface ApiError {
-  type: string;           // エラータイプのURI
-  title: string;          // 人間が読めるタイトル
-  status: number;         // HTTPステータスコード
-  detail?: string;        // 詳細な説明
-  instance?: string;      // このエラー発生のURI
-  code?: string;          // アプリケーション固有のエラーコード
-  errors?: FieldError[];  // フィールド別エラー（バリデーション用）
+  type: string; // エラータイプのURI
+  title: string; // 人間が読めるタイトル
+  status: number; // HTTPステータスコード
+  detail?: string; // 詳細な説明
+  instance?: string; // このエラー発生のURI
+  code?: string; // アプリケーション固有のエラーコード
+  errors?: FieldError[]; // フィールド別エラー（バリデーション用）
 }
 
 interface FieldError {
-  field: string;          // フィールド名
-  message: string;        // エラーメッセージ
-  code?: string;          // エラーコード
+  field: string; // フィールド名
+  message: string; // エラーメッセージ
+  code?: string; // エラーコード
 }
 
 // 使用例
@@ -244,8 +251,16 @@ const validationError: ApiError = {
   detail: "以下のフィールドを確認してください",
   code: "VAL_001",
   errors: [
-    { field: "email", message: "有効なメールアドレスを入力してください", code: "VAL_EMAIL" },
-    { field: "password", message: "パスワードは8文字以上必要です", code: "VAL_PASSWORD_LENGTH" },
+    {
+      field: "email",
+      message: "有効なメールアドレスを入力してください",
+      code: "VAL_EMAIL",
+    },
+    {
+      field: "password",
+      message: "パスワードは8文字以上必要です",
+      code: "VAL_PASSWORD_LENGTH",
+    },
   ],
 };
 ```
@@ -253,18 +268,21 @@ const validationError: ApiError = {
 ## 判断基準チェックリスト
 
 ### メッセージ設計時
+
 - [ ] ユーザーが何をすべきか明確か？
 - [ ] 技術用語を使っていないか？
 - [ ] エラーの原因が分かるか？
 - [ ] 解決方法が提示されているか？
 
 ### コード体系設計時
+
 - [ ] エラーコードは一意か？
 - [ ] カテゴリ分類は適切か？
 - [ ] ドキュメント化されているか？
 - [ ] ログで追跡可能か？
 
 ### 多言語対応時
+
 - [ ] プレースホルダーは適切に配置されているか？
 - [ ] 語順の違いに対応しているか？
 - [ ] 文化的な配慮がされているか？
@@ -277,6 +295,6 @@ const validationError: ApiError = {
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版リリース - エラーメッセージ設計の基本を網羅 |
+| バージョン | 日付       | 変更内容                                        |
+| ---------- | ---------- | ----------------------------------------------- |
+| 1.0.0      | 2025-11-25 | 初版リリース - エラーメッセージ設計の基本を網羅 |

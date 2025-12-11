@@ -45,11 +45,11 @@
 
 ```typescript
 // ❌ 悪い例: 現在時刻に直接依存
-test('期限切れタスクの表示', async ({ page }) => {
-  await page.goto('/tasks');
+test("期限切れタスクの表示", async ({ page }) => {
+  await page.goto("/tasks");
 
   // 現在時刻によって結果が変わる
-  const expiredTasks = page.locator('.task.expired');
+  const expiredTasks = page.locator(".task.expired");
   await expect(expiredTasks).toHaveCount(3); // 時間経過で変わる
 });
 ```
@@ -60,22 +60,22 @@ test('期限切れタスクの表示', async ({ page }) => {
 
 ```typescript
 // ✅ 良い例: テストデータで期限を制御
-test('期限切れタスクの表示', async ({ page, dbSeeder }) => {
+test("期限切れタスクの表示", async ({ page, dbSeeder }) => {
   const now = new Date();
   const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
   const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
 
   // 明示的に期限切れタスクを3件作成
-  await dbSeeder.createTask({ title: 'Task 1', dueDate: yesterday });
-  await dbSeeder.createTask({ title: 'Task 2', dueDate: yesterday });
-  await dbSeeder.createTask({ title: 'Task 3', dueDate: yesterday });
+  await dbSeeder.createTask({ title: "Task 1", dueDate: yesterday });
+  await dbSeeder.createTask({ title: "Task 2", dueDate: yesterday });
+  await dbSeeder.createTask({ title: "Task 3", dueDate: yesterday });
 
   // 期限内タスクも作成
-  await dbSeeder.createTask({ title: 'Task 4', dueDate: tomorrow });
+  await dbSeeder.createTask({ title: "Task 4", dueDate: tomorrow });
 
-  await page.goto('/tasks');
+  await page.goto("/tasks");
 
-  const expiredTasks = page.locator('.task.expired');
+  const expiredTasks = page.locator(".task.expired");
   await expect(expiredTasks).toHaveCount(3); // 確定
 });
 ```
@@ -86,15 +86,15 @@ test('期限切れタスクの表示', async ({ page, dbSeeder }) => {
 
 ```typescript
 // ❌ 悪い例: ローカルタイムゾーンに依存
-test('日付フィルター', async ({ page }) => {
-  const today = new Date().toISOString().split('T')[0]; // "2024-01-15"
+test("日付フィルター", async ({ page }) => {
+  const today = new Date().toISOString().split("T")[0]; // "2024-01-15"
 
-  await page.goto('/tasks');
+  await page.goto("/tasks");
   await page.fill('input[name="date"]', today);
   await page.click('button:has-text("フィルター")');
 
   // タイムゾーンによって結果が変わる可能性
-  await expect(page.locator('.task')).toHaveCount(5);
+  await expect(page.locator(".task")).toHaveCount(5);
 });
 ```
 
@@ -104,21 +104,21 @@ test('日付フィルター', async ({ page }) => {
 
 ```typescript
 // ✅ 良い例: UTCで統一
-test('日付フィルター', async ({ page, dbSeeder }) => {
+test("日付フィルター", async ({ page, dbSeeder }) => {
   // UTC 2024-01-15 00:00:00のタスクを作成
-  const targetDate = new Date('2024-01-15T00:00:00Z');
+  const targetDate = new Date("2024-01-15T00:00:00Z");
 
   await dbSeeder.createTask({
-    title: 'UTC Task',
+    title: "UTC Task",
     createdAt: targetDate.toISOString(),
   });
 
-  await page.goto('/tasks');
-  await page.fill('input[name="date"]', '2024-01-15');
+  await page.goto("/tasks");
+  await page.fill('input[name="date"]', "2024-01-15");
   await page.click('button:has-text("フィルター")');
 
-  await expect(page.locator('.task')).toBeVisible();
-  await expect(page.locator('.task')).toContainText('UTC Task');
+  await expect(page.locator(".task")).toBeVisible();
+  await expect(page.locator(".task")).toContainText("UTC Task");
 });
 ```
 
@@ -128,11 +128,11 @@ test('日付フィルター', async ({ page, dbSeeder }) => {
 
 ```typescript
 // ❌ 悪い例: "5分前"などの相対表示に依存
-test('相対時間表示', async ({ page }) => {
-  await page.goto('/notifications');
+test("相対時間表示", async ({ page }) => {
+  await page.goto("/notifications");
 
   // "5分前"は時間経過で変わる
-  await expect(page.locator('.time')).toContainText('5分前');
+  await expect(page.locator(".time")).toContainText("5分前");
 });
 ```
 
@@ -140,22 +140,22 @@ test('相対時間表示', async ({ page }) => {
 
 ```typescript
 // ✅ 良い例: データ属性で絶対時刻を検証
-test('相対時間表示', async ({ page, dbSeeder }) => {
+test("相対時間表示", async ({ page, dbSeeder }) => {
   const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
 
   await dbSeeder.createNotification({
-    message: 'Test notification',
+    message: "Test notification",
     createdAt: fiveMinutesAgo.toISOString(),
   });
 
-  await page.goto('/notifications');
+  await page.goto("/notifications");
 
   // data-timestamp属性を検証
-  const timeElement = page.locator('.time').first();
-  const timestamp = await timeElement.getAttribute('data-timestamp');
+  const timeElement = page.locator(".time").first();
+  const timestamp = await timeElement.getAttribute("data-timestamp");
   expect(new Date(timestamp!).getTime()).toBeCloseTo(
     fiveMinutesAgo.getTime(),
-    -3 // 誤差1秒以内
+    -3, // 誤差1秒以内
   );
 });
 ```
@@ -168,12 +168,12 @@ test('相対時間表示', async ({ page, dbSeeder }) => {
 
 ```typescript
 // ❌ 悪い例: ランダムな要素の選択
-test('ランダムユーザーの表示', async ({ page }) => {
-  await page.goto('/users/random');
+test("ランダムユーザーの表示", async ({ page }) => {
+  await page.goto("/users/random");
 
   // 毎回異なるユーザーが表示される
-  const userName = await page.locator('.user-name').textContent();
-  expect(userName).toBe('John Doe'); // ランダムなので失敗する可能性
+  const userName = await page.locator(".user-name").textContent();
+  expect(userName).toBe("John Doe"); // ランダムなので失敗する可能性
 });
 ```
 
@@ -181,13 +181,13 @@ test('ランダムユーザーの表示', async ({ page }) => {
 
 ```typescript
 // ✅ 良い例: シード値でランダム性を制御
-test('ランダムユーザーの表示', async ({ page }) => {
+test("ランダムユーザーの表示", async ({ page }) => {
   // URLパラメータでシード値を指定
-  await page.goto('/users/random?seed=12345');
+  await page.goto("/users/random?seed=12345");
 
   // シード値が同じなら、常に同じユーザーが表示される
-  const userName = await page.locator('.user-name').textContent();
-  expect(userName).toBe('John Doe'); // 確定
+  const userName = await page.locator(".user-name").textContent();
+  expect(userName).toBe("John Doe"); // 確定
 });
 ```
 
@@ -197,9 +197,9 @@ test('ランダムユーザーの表示', async ({ page }) => {
 
 ```typescript
 // ❌ 悪い例: 自動生成されたUUIDに依存
-test('リソース作成', async ({ page }) => {
-  await page.goto('/resources/new');
-  await page.fill('input[name="name"]', 'Test Resource');
+test("リソース作成", async ({ page }) => {
+  await page.goto("/resources/new");
+  await page.fill('input[name="name"]', "Test Resource");
   await page.click('button:has-text("作成")');
 
   // リダイレクト先のURLが予測できない
@@ -214,14 +214,14 @@ test('リソース作成', async ({ page }) => {
 
 ```typescript
 // ✅ 良い例: APIレスポンスからIDを取得
-test('リソース作成', async ({ page }) => {
+test("リソース作成", async ({ page }) => {
   // ネットワークレスポンスを監視
   const responsePromise = page.waitForResponse((response) =>
-    response.url().includes('/api/resources')
+    response.url().includes("/api/resources"),
   );
 
-  await page.goto('/resources/new');
-  await page.fill('input[name="name"]', 'Test Resource');
+  await page.goto("/resources/new");
+  await page.fill('input[name="name"]', "Test Resource");
   await page.click('button:has-text("作成")');
 
   const response = await responsePromise;
@@ -230,7 +230,9 @@ test('リソース作成', async ({ page }) => {
 
   // IDが分かっているので、検証可能
   await expect(page).toHaveURL(`/resources/${resourceId}`);
-  await expect(page.locator(`[data-resource-id="${resourceId}"]`)).toBeVisible();
+  await expect(
+    page.locator(`[data-resource-id="${resourceId}"]`),
+  ).toBeVisible();
 });
 ```
 
@@ -242,11 +244,11 @@ test('リソース作成', async ({ page }) => {
 
 ```typescript
 // ❌ 悪い例: 実際の外部APIを呼び出す
-test('天気情報の表示', async ({ page }) => {
-  await page.goto('/weather');
+test("天気情報の表示", async ({ page }) => {
+  await page.goto("/weather");
 
   // 外部API（OpenWeatherMap）の結果に依存
-  await expect(page.locator('.temperature')).toContainText('15°C');
+  await expect(page.locator(".temperature")).toContainText("15°C");
   // 実際の天気によって変わるので失敗する
 });
 ```
@@ -255,29 +257,29 @@ test('天気情報の表示', async ({ page }) => {
 
 ```typescript
 // ✅ 良い例: MSWでAPIレスポンスをモック
-import { test, expect } from '@playwright/test';
-import { setupServer } from 'msw/node';
-import { http, HttpResponse } from 'msw';
+import { test, expect } from "@playwright/test";
+import { setupServer } from "msw/node";
+import { http, HttpResponse } from "msw";
 
 const server = setupServer(
-  http.get('https://api.openweathermap.org/data/2.5/weather', () => {
+  http.get("https://api.openweathermap.org/data/2.5/weather", () => {
     return HttpResponse.json({
       main: { temp: 15 },
-      weather: [{ description: 'clear sky' }],
+      weather: [{ description: "clear sky" }],
     });
-  })
+  }),
 );
 
 test.beforeAll(() => server.listen());
 test.afterEach(() => server.resetHandlers());
 test.afterAll(() => server.close());
 
-test('天気情報の表示', async ({ page }) => {
-  await page.goto('/weather');
+test("天気情報の表示", async ({ page }) => {
+  await page.goto("/weather");
 
   // モックされたレスポンスが常に返る
-  await expect(page.locator('.temperature')).toContainText('15°C');
-  await expect(page.locator('.description')).toContainText('clear sky');
+  await expect(page.locator(".temperature")).toContainText("15°C");
+  await expect(page.locator(".description")).toContainText("clear sky");
 });
 ```
 
@@ -287,11 +289,11 @@ test('天気情報の表示', async ({ page }) => {
 
 ```typescript
 // ❌ 悪い例: 外部APIのレート制限に依存
-test('複数ユーザーのプロフィール画像取得', async ({ page }) => {
+test("複数ユーザーのプロフィール画像取得", async ({ page }) => {
   for (let i = 0; i < 100; i++) {
     await page.goto(`/users/${i}`);
     // 外部CDNから画像を取得
-    await expect(page.locator('.avatar')).toBeVisible();
+    await expect(page.locator(".avatar")).toBeVisible();
   }
   // レート制限で失敗する可能性
 });
@@ -301,19 +303,19 @@ test('複数ユーザーのプロフィール画像取得', async ({ page }) => 
 
 ```typescript
 // ✅ 良い例: ローカルモック画像を使用
-test('複数ユーザーのプロフィール画像取得', async ({ page, context }) => {
+test("複数ユーザーのプロフィール画像取得", async ({ page, context }) => {
   // 画像リクエストをインターセプトしてモック画像を返す
-  await context.route('**/avatars/**', (route) => {
+  await context.route("**/avatars/**", (route) => {
     route.fulfill({
       status: 200,
-      contentType: 'image/png',
-      path: './tests/fixtures/mock-avatar.png',
+      contentType: "image/png",
+      path: "./tests/fixtures/mock-avatar.png",
     });
   });
 
   for (let i = 0; i < 100; i++) {
     await page.goto(`/users/${i}`);
-    await expect(page.locator('.avatar')).toBeVisible();
+    await expect(page.locator(".avatar")).toBeVisible();
   }
   // ローカルファイルなのでレート制限なし
 });
@@ -327,11 +329,11 @@ test('複数ユーザーのプロフィール画像取得', async ({ page, conte
 
 ```typescript
 // ❌ 悪い例: 非同期処理の完了を待たない
-test('非同期データの表示', async ({ page }) => {
-  await page.goto('/dashboard');
+test("非同期データの表示", async ({ page }) => {
+  await page.goto("/dashboard");
 
   // データ取得APIが完了する前にチェックしてしまう
-  const count = await page.locator('.item').count();
+  const count = await page.locator(".item").count();
   expect(count).toBe(10); // タイミングによって0〜10
 });
 ```
@@ -340,24 +342,24 @@ test('非同期データの表示', async ({ page }) => {
 
 ```typescript
 // ✅ 良い例: Playwrightの自動待機を活用
-test('非同期データの表示', async ({ page }) => {
-  await page.goto('/dashboard');
+test("非同期データの表示", async ({ page }) => {
+  await page.goto("/dashboard");
 
   // Playwrightは要素が表示されるまで自動的に待機
-  await expect(page.locator('.item')).toHaveCount(10);
+  await expect(page.locator(".item")).toHaveCount(10);
 });
 
 // ✅ 良い例: 特定のAPIレスポンスを待機
-test('非同期データの表示（API待機）', async ({ page }) => {
+test("非同期データの表示（API待機）", async ({ page }) => {
   const responsePromise = page.waitForResponse(
     (response) =>
-      response.url().includes('/api/items') && response.status() === 200
+      response.url().includes("/api/items") && response.status() === 200,
   );
 
-  await page.goto('/dashboard');
+  await page.goto("/dashboard");
   await responsePromise; // API完了を確実に待つ
 
-  await expect(page.locator('.item')).toHaveCount(10);
+  await expect(page.locator(".item")).toHaveCount(10);
 });
 ```
 
@@ -367,11 +369,11 @@ test('非同期データの表示（API待機）', async ({ page }) => {
 
 ```typescript
 // ❌ 悪い例: アニメーション中に要素をクリック
-test('モーダルのクリック', async ({ page }) => {
+test("モーダルのクリック", async ({ page }) => {
   await page.click('button:has-text("開く")');
 
   // モーダルが開くアニメーション中にクリックしようとする
-  await page.click('.modal .close-button'); // 失敗する可能性
+  await page.click(".modal .close-button"); // 失敗する可能性
 });
 ```
 
@@ -379,11 +381,11 @@ test('モーダルのクリック', async ({ page }) => {
 
 ```typescript
 // ✅ 良い例: 要素が安定するまで待つ
-test('モーダルのクリック', async ({ page }) => {
+test("モーダルのクリック", async ({ page }) => {
   await page.click('button:has-text("開く")');
 
   // 要素が表示され、かつクリック可能になるまで待機
-  const closeButton = page.locator('.modal .close-button');
+  const closeButton = page.locator(".modal .close-button");
   await expect(closeButton).toBeVisible();
   await expect(closeButton).toBeEnabled();
 
@@ -395,7 +397,7 @@ test.use({
   viewport: { width: 1280, height: 720 },
   // CSSでアニメーションを無効化
   extraHTTPHeaders: {
-    'X-Test-Mode': 'true', // サーバー側でアニメーション無効化フラグ
+    "X-Test-Mode": "true", // サーバー側でアニメーション無効化フラグ
   },
 });
 ```
@@ -408,12 +410,12 @@ test.use({
 
 ```typescript
 // ❌ 悪い例: 固定のタイムアウト
-test('データ取得', async ({ page }) => {
-  await page.goto('/dashboard');
+test("データ取得", async ({ page }) => {
+  await page.goto("/dashboard");
   await page.waitForTimeout(3000); // 3秒待つ
 
   // ネットワークが遅い場合、3秒では不十分
-  await expect(page.locator('.data')).toBeVisible();
+  await expect(page.locator(".data")).toBeVisible();
 });
 ```
 
@@ -421,18 +423,18 @@ test('データ取得', async ({ page }) => {
 
 ```typescript
 // ✅ 良い例: 条件ベースの待機
-test('データ取得', async ({ page }) => {
-  await page.goto('/dashboard');
+test("データ取得", async ({ page }) => {
+  await page.goto("/dashboard");
 
   // 要素が表示されるまで待つ（最大30秒）
-  await expect(page.locator('.data')).toBeVisible({ timeout: 30000 });
+  await expect(page.locator(".data")).toBeVisible({ timeout: 30000 });
 });
 
 // ✅ 良い例: ネットワークアイドルを待つ
-test('データ取得（ネットワーク完了）', async ({ page }) => {
-  await page.goto('/dashboard', { waitUntil: 'networkidle' });
+test("データ取得（ネットワーク完了）", async ({ page }) => {
+  await page.goto("/dashboard", { waitUntil: "networkidle" });
 
-  await expect(page.locator('.data')).toBeVisible();
+  await expect(page.locator(".data")).toBeVisible();
 });
 ```
 
@@ -464,6 +466,7 @@ test('データ取得（ネットワーク完了）', async ({ page }) => {
 非決定性を排除することで、安定したフレーキーのないE2Eテストを実現できます。
 
 **キーポイント**:
+
 1. **時刻**: UTC固定、明示的な日時設定
 2. **ランダム性**: シード値で制御、固定データを使用
 3. **外部依存**: MSWやモックで隔離

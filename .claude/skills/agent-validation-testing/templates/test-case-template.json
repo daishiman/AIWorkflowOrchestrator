@@ -3,7 +3,14 @@
   "title": "Agent Test Case Template",
   "description": "エージェントのテストケース定義テンプレート",
   "type": "object",
-  "required": ["test_id", "type", "name", "input", "expected_output", "success_criteria"],
+  "required": [
+    "test_id",
+    "type",
+    "name",
+    "input",
+    "expected_output",
+    "success_criteria"
+  ],
   "properties": {
     "test_id": {
       "type": "string",
@@ -19,7 +26,11 @@
     "name": {
       "type": "string",
       "description": "テストケース名",
-      "examples": ["基本的な動作テスト", "入力値境界テスト", "エラーハンドリングテスト"]
+      "examples": [
+        "基本的な動作テスト",
+        "入力値境界テスト",
+        "エラーハンドリングテスト"
+      ]
     },
     "description": {
       "type": "string",

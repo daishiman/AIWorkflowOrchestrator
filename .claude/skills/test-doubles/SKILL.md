@@ -132,12 +132,10 @@ cat .claude/skills/test-doubles/templates/test-double-selection.md
 ### すべきこと
 
 1. **目的を明確にする**:
-
    - 何をテストしたいのか
    - どの検証が必要か
 
 2. **最小限のテストダブル**:
-
    - 必要な依存のみ置き換え
    - 過度なモッキングを避ける
 
@@ -148,12 +146,10 @@ cat .claude/skills/test-doubles/templates/test-double-selection.md
 ### 避けるべきこと
 
 1. **過度なモッキング**:
-
    - ❌ すべての依存をモック化
    - ✅ テストに必要な依存のみ
 
 2. **実装への密結合**:
-
    - ❌ 内部実装の詳細を検証
    - ✅ 公開インターフェースを検証
 

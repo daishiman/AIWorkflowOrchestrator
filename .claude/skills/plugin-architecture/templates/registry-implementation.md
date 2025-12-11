@@ -161,7 +161,7 @@ export class WorkflowRegistry {
    * Executorの情報を取得する
    */
   getExecutorInfo(): ExecutorInfo[] {
-    return this.listExecutors().map(executor => ({
+    return this.listExecutors().map((executor) => ({
       type: executor.type,
       displayName: executor.displayName,
       description: executor.description,
@@ -208,7 +208,7 @@ interface ExecutorInfo {
 export class DuplicateKeyError extends Error {
   constructor(key: string) {
     super(`Item with key '${key}' is already registered`);
-    this.name = 'DuplicateKeyError';
+    this.name = "DuplicateKeyError";
   }
 }
 
@@ -217,11 +217,12 @@ export class DuplicateKeyError extends Error {
  */
 export class ItemNotFoundError extends Error {
   constructor(key: string, availableKeys: string[]) {
-    const available = availableKeys.length > 0
-      ? `Available: ${availableKeys.join(', ')}`
-      : 'No items registered';
+    const available =
+      availableKeys.length > 0
+        ? `Available: ${availableKeys.join(", ")}`
+        : "No items registered";
     super(`Item '${key}' not found. ${available}`);
-    this.name = 'ItemNotFoundError';
+    this.name = "ItemNotFoundError";
   }
 }
 
@@ -230,11 +231,12 @@ export class ItemNotFoundError extends Error {
  */
 export class UnknownWorkflowTypeError extends Error {
   constructor(type: string, availableTypes: string[]) {
-    const available = availableTypes.length > 0
-      ? `Available types: ${availableTypes.join(', ')}`
-      : 'No workflow types registered';
+    const available =
+      availableTypes.length > 0
+        ? `Available types: ${availableTypes.join(", ")}`
+        : "No workflow types registered";
     super(`Unknown workflow type: '${type}'. ${available}`);
-    this.name = 'UnknownWorkflowTypeError';
+    this.name = "UnknownWorkflowTypeError";
   }
 }
 ```
@@ -244,10 +246,10 @@ export class UnknownWorkflowTypeError extends Error {
 ```typescript
 // src/features/registry.ts
 
-import { WorkflowRegistry } from '@/shared/core/registry';
-import { AuthenticationExecutor } from './authentication/executor';
-import { NotificationExecutor } from './notification/executor';
-import { AnalyticsExecutor } from './analytics/executor';
+import { WorkflowRegistry } from "@/shared/core/registry";
+import { AuthenticationExecutor } from "./authentication/executor";
+import { NotificationExecutor } from "./notification/executor";
+import { AnalyticsExecutor } from "./analytics/executor";
 
 /**
  * 全てのExecutorをレジストリに登録する

@@ -368,8 +368,8 @@ export function LazyPreloadable({ children, onActivate }: LazyPreloadableProps) 
 
 ## 変数説明
 
-| 変数 | 説明 | 例 |
-|------|------|-----|
-| `{{component}}` | コンポーネントファイル名 | `modal`, `drawer`, `chart` |
+| 変数            | 説明                           | 例                         |
+| --------------- | ------------------------------ | -------------------------- |
+| `{{component}}` | コンポーネントファイル名       | `modal`, `drawer`, `chart` |
 | `{{Component}}` | コンポーネント名（PascalCase） | `Modal`, `Drawer`, `Chart` |
-| `{{ssr}}` | SSR設定 | `true`, `false` |
+| `{{ssr}}`       | SSR設定                        | `true`, `false`            |

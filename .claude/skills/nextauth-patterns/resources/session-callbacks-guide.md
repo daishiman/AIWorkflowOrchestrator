@@ -3,6 +3,7 @@
 ## コールバックの役割
 
 NextAuth.jsは以下のコールバックでセッション管理をカスタマイズできます:
+
 - `jwt()`: JWTトークンにデータを追加
 - `session()`: セッションオブジェクトにデータを追加
 - `signIn()`: ログイン時の追加検証
@@ -117,26 +118,26 @@ async signIn({ user, account, profile }) {
 ### next-auth.d.ts
 
 ```typescript
-import { type DefaultSession } from 'next-auth';
+import { type DefaultSession } from "next-auth";
 
-declare module 'next-auth' {
+declare module "next-auth" {
   interface Session {
     user: {
       id: string;
-      role: 'ADMIN' | 'USER' | 'GUEST';
+      role: "ADMIN" | "USER" | "GUEST";
       permissions?: string[];
-    } & DefaultSession['user'];
+    } & DefaultSession["user"];
   }
 
   interface User {
-    role: 'ADMIN' | 'USER' | 'GUEST';
+    role: "ADMIN" | "USER" | "GUEST";
   }
 }
 
-declare module 'next-auth/jwt' {
+declare module "next-auth/jwt" {
   interface JWT {
     userId: string;
-    role: 'ADMIN' | 'USER' | 'GUEST';
+    role: "ADMIN" | "USER" | "GUEST";
     permissions?: string[];
   }
 }
@@ -152,6 +153,7 @@ declare module 'next-auth/jwt' {
 ## まとめ
 
 NextAuth.jsのコールバックを適切に実装することで:
+
 - セッションにロール・権限情報を統合
 - 動的な権限変更に対応
 - 型安全性を確保

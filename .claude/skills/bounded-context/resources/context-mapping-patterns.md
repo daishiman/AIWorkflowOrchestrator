@@ -12,11 +12,13 @@
 **説明**: 2つのコンテキストがコードやモデルの一部を共有
 
 **特徴**:
+
 - 変更には両チームの合意が必要
 - 緊密な協力関係が前提
 - 共有範囲は最小限に保つ
 
 **適用場面**:
+
 - 緊密に連携するチーム
 - 頻繁に一緒に変更されるモデル
 - 分離のコストが高い場合
@@ -35,25 +37,27 @@
 ```
 
 **実装例**:
+
 ```typescript
 // shared-kernel/src/Money.ts
 // 両方のコンテキストで使用
 export class Money {
   constructor(
     private readonly amount: number,
-    private readonly currency: Currency
+    private readonly currency: Currency,
   ) {}
   // ...
 }
 
 // sales/src/Order.ts
-import { Money } from '@shared-kernel/Money';
+import { Money } from "@shared-kernel/Money";
 
 // shipping/src/ShippingCost.ts
-import { Money } from '@shared-kernel/Money';
+import { Money } from "@shared-kernel/Money";
 ```
 
 **注意点**:
+
 - 共有範囲を厳密に管理
 - 変更の影響範囲を常に把握
 - テストを厳重に
@@ -65,11 +69,13 @@ import { Money } from '@shared-kernel/Money';
 **説明**: 上流（供給者）と下流（顧客）の明確な関係
 
 **特徴**:
+
 - 上流が下流のニーズに応える責任
 - 下流は要件を提示できる
 - 明確な依存の方向
 
 **適用場面**:
+
 - 上流が下流のニーズを理解・対応できる
 - 下流に発言権がある関係
 - 組織内の異なるチーム間
@@ -96,6 +102,7 @@ import { Money } from '@shared-kernel/Money';
 ```
 
 **実装例**:
+
 ```typescript
 // 上流（販売コンテキスト）
 interface ISalesApi {
@@ -126,11 +133,13 @@ class ShippingService {
 **説明**: 下流が上流のモデルに完全に従う
 
 **特徴**:
+
 - 下流は上流のモデルをそのまま使用
 - 変換レイヤーなし
 - 上流の変更に下流が追従
 
 **適用場面**:
+
 - 上流に影響力がない（外部サービス）
 - 変換コストが高い
 - 上流のモデルが十分に良い
@@ -157,9 +166,10 @@ class ShippingService {
 ```
 
 **実装例**:
+
 ```typescript
 // 外部APIのレスポンス型をそのまま使用
-import { ExternalOrderResponse } from 'external-api';
+import { ExternalOrderResponse } from "external-api";
 
 class OrderProcessor {
   // 外部のモデルをそのまま使用
@@ -170,6 +180,7 @@ class OrderProcessor {
 ```
 
 **注意点**:
+
 - 上流の変更に脆弱
 - 自ドメインの表現力が制限される
 - 可能なら腐敗防止層を検討
@@ -181,11 +192,13 @@ class OrderProcessor {
 **説明**: 他のコンテキストのモデルを自コンテキストのモデルに変換
 
 **特徴**:
+
 - 外部モデルから自モデルを保護
 - 明示的な変換レイヤー
 - 他システムの変更の影響を局所化
 
 **適用場面**:
+
 - レガシーシステムとの統合
 - 外部サービスとの連携
 - モデルの違いが大きい場合
@@ -224,6 +237,7 @@ class OrderProcessor {
 ```
 
 **実装例**:
+
 ```typescript
 // 腐敗防止層
 class LegacyOrderAdapter implements IOrderSource {
@@ -240,7 +254,7 @@ class LegacyOrderAdapter implements IOrderSource {
   private translate(legacy: LegacyOrder): Order {
     return Order.create({
       id: OrderId.fromString(legacy.ORDER_NO),
-      items: legacy.ITEM_LIST.map(item => this.translateItem(item)),
+      items: legacy.ITEM_LIST.map((item) => this.translateItem(item)),
       customerId: CustomerId.fromString(legacy.CUST_ID),
       status: this.translateStatus(legacy.STATUS_CD),
     });
@@ -248,10 +262,10 @@ class LegacyOrderAdapter implements IOrderSource {
 
   private translateStatus(statusCode: string): OrderStatus {
     const mapping: Record<string, OrderStatus> = {
-      '01': OrderStatus.PENDING,
-      '02': OrderStatus.CONFIRMED,
-      '03': OrderStatus.SHIPPED,
-      '99': OrderStatus.CANCELLED,
+      "01": OrderStatus.PENDING,
+      "02": OrderStatus.CONFIRMED,
+      "03": OrderStatus.SHIPPED,
+      "99": OrderStatus.CANCELLED,
     };
     return mapping[statusCode] ?? OrderStatus.UNKNOWN;
   }
@@ -265,11 +279,13 @@ class LegacyOrderAdapter implements IOrderSource {
 **説明**: 標準化されたAPIを公開し、複数の利用者に提供
 
 **特徴**:
+
 - 多数の下流に対応
 - 安定したAPI
 - バージョニングで進化
 
 **適用場面**:
+
 - 多くのシステムが利用する機能
 - プラットフォームサービス
 - 公開API
@@ -294,12 +310,13 @@ class LegacyOrderAdapter implements IOrderSource {
 ```
 
 **実装例**:
+
 ```typescript
 // 公開API
-@Controller('api/v1/orders')
+@Controller("api/v1/orders")
 class OrdersController {
-  @Get(':id')
-  async getOrder(@Param('id') id: string): Promise<OrderDto> {
+  @Get(":id")
+  async getOrder(@Param("id") id: string): Promise<OrderDto> {
     // 内部モデルを公開DTOに変換
     const order = await this.orderService.getById(id);
     return OrderDto.fromDomain(order);
@@ -331,11 +348,13 @@ class OrderDto {
 **説明**: コンテキスト間で共通の言語（フォーマット）で通信
 
 **特徴**:
+
 - 標準化されたデータ形式
 - ドキュメント化されたスキーマ
 - 業界標準の活用
 
 **適用場面**:
+
 - 異なる組織間の統合
 - 業界標準が存在する場合
 - 多くのシステムとの相互運用
@@ -363,6 +382,7 @@ class OrderDto {
 ```
 
 **実装例**:
+
 ```typescript
 // 公開言語としてのスキーマ定義
 // order-schema.json
@@ -411,11 +431,13 @@ class OrderMessageConverter {
 **説明**: 統合せずに独立して存在
 
 **特徴**:
+
 - 統合コストが高すぎる
 - 重複を許容
 - 独立性を最優先
 
 **適用場面**:
+
 - 統合のROIが低い
 - 完全に独立した業務
 - 一時的な状況
@@ -427,23 +449,25 @@ class OrderMessageConverter {
 **説明**: 明確な境界がない混沌とした状態
 
 **特徴**:
+
 - 避けるべき状態
 - レガシーシステムの現実
 - 段階的な改善対象
 
 **対処法**:
+
 1. 境界を徐々に明確化
 2. 腐敗防止層で隔離
 3. 新機能は別コンテキストで開発
 
 ## パターン選択ガイド
 
-| 状況 | 推奨パターン |
-|-----|------------|
-| 緊密な協力が可能なチーム | 共有カーネル |
-| 上流に影響力がある | 顧客/供給者 |
-| 上流に影響力がない | 適合者 or ACL |
-| レガシーとの統合 | 腐敗防止層 |
-| 多数の利用者 | 公開ホストサービス |
-| 異なる組織間 | 公開言語 |
-| 統合メリットなし | 分離した道 |
+| 状況                     | 推奨パターン       |
+| ------------------------ | ------------------ |
+| 緊密な協力が可能なチーム | 共有カーネル       |
+| 上流に影響力がある       | 顧客/供給者        |
+| 上流に影響力がない       | 適合者 or ACL      |
+| レガシーとの統合         | 腐敗防止層         |
+| 多数の利用者             | 公開ホストサービス |
+| 異なる組織間             | 公開言語           |
+| 統合メリットなし         | 分離した道         |

@@ -5,14 +5,14 @@
  * 基本的なロガークラスとユーティリティ関数を提供します。
  */
 
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
+import { v4 as uuidv4 } from "uuid";
+import crypto from "crypto";
 
 // ============================================================
 // Type Definitions
 // ============================================================
 
-type LogLevel = 'DEBUG' | 'INFO' | 'WARN' | 'ERROR' | 'FATAL';
+type LogLevel = "DEBUG" | "INFO" | "WARN" | "ERROR" | "FATAL";
 
 interface BaseLogEntry {
   timestamp: string;
@@ -49,8 +49,8 @@ interface ErrorLogEntry extends TraceableLogEntry {
  * 例: john.doe@example.com → j***e@example.com
  */
 export function maskEmail(email: string): string {
-  const [local, domain] = email.split('@');
-  if (!domain) return '***';
+  const [local, domain] = email.split("@");
+  if (!domain) return "***";
   if (local.length <= 2) return `${local[0]}***@${domain}`;
   return `${local[0]}***${local[local.length - 1]}@${domain}`;
 }
@@ -60,7 +60,7 @@ export function maskEmail(email: string): string {
  * 例: +1-555-123-4567 → ***-***-***-4567
  */
 export function maskPhone(phone: string): string {
-  const digits = phone.replace(/\D/g, '');
+  const digits = phone.replace(/\D/g, "");
   const lastFour = digits.slice(-4);
   return `***-***-***-${lastFour}`;
 }
@@ -70,14 +70,14 @@ export function maskPhone(phone: string): string {
  * 例: 192.168.1.100 → 192.168.1.***
  */
 export function maskIP(ip: string): string {
-  if (ip.includes('.')) {
+  if (ip.includes(".")) {
     // IPv4
-    const parts = ip.split('.');
-    return `${parts.slice(0, 3).join('.')}.***`;
+    const parts = ip.split(".");
+    return `${parts.slice(0, 3).join(".")}.***`;
   } else {
     // IPv6
-    const parts = ip.split(':');
-    return `${parts.slice(0, 3).join(':')}:****:****:****:****:****`;
+    const parts = ip.split(":");
+    return `${parts.slice(0, 3).join(":")}:****:****:****:****:****`;
   }
 }
 
@@ -85,7 +85,7 @@ export function maskIP(ip: string): string {
  * ユーザーIDをハッシュ化
  */
 export function hashUserId(userId: string): string {
-  return crypto.createHash('sha256').update(userId).digest('hex');
+  return crypto.createHash("sha256").update(userId).digest("hex");
 }
 
 /**
@@ -93,16 +93,16 @@ export function hashUserId(userId: string): string {
  */
 export function autoMaskPII(data: Record<string, any>): Record<string, any> {
   const masked = { ...data };
-  const PII_FIELDS = ['email', 'phone', 'ssn', 'credit_card', 'password'];
+  const PII_FIELDS = ["email", "phone", "ssn", "credit_card", "password"];
 
   for (const field of PII_FIELDS) {
     if (masked[field]) {
-      if (field === 'email') {
+      if (field === "email") {
         masked[field] = maskEmail(masked[field]);
-      } else if (field === 'phone') {
+      } else if (field === "phone") {
         masked[field] = maskPhone(masked[field]);
       } else {
-        masked[field] = '***';
+        masked[field] = "***";
       }
     }
   }
@@ -123,7 +123,7 @@ export class StructuredLogger {
     INFO: 1,
     WARN: 2,
     ERROR: 3,
-    FATAL: 4
+    FATAL: 4,
   };
 
   constructor(config: {
@@ -132,16 +132,21 @@ export class StructuredLogger {
     minLevel?: LogLevel;
   }) {
     this.service = config.service;
-    this.environment = config.environment || process.env.NODE_ENV || 'development';
+    this.environment =
+      config.environment || process.env.NODE_ENV || "development";
     this.minLevel = config.minLevel || this.getDefaultLevel();
   }
 
   private getDefaultLevel(): LogLevel {
     switch (this.environment) {
-      case 'development': return 'DEBUG';
-      case 'staging': return 'INFO';
-      case 'production': return 'INFO';
-      default: return 'INFO';
+      case "development":
+        return "DEBUG";
+      case "staging":
+        return "INFO";
+      case "production":
+        return "INFO";
+      default:
+        return "INFO";
     }
   }
 
@@ -153,7 +158,7 @@ export class StructuredLogger {
     level: LogLevel,
     message: string,
     context?: Record<string, unknown>,
-    error?: Error
+    error?: Error,
   ): TraceableLogEntry | ErrorLogEntry {
     const baseLog: TraceableLogEntry = {
       timestamp: new Date().toISOString(),
@@ -164,7 +169,7 @@ export class StructuredLogger {
       request_id: this.getRequestId(),
       trace_id: this.getTraceId(),
       user_id: this.getUserId(),
-      session_id: this.getSessionId()
+      session_id: this.getSessionId(),
     };
 
     if (error) {
@@ -174,16 +179,16 @@ export class StructuredLogger {
           type: error.constructor.name,
           message: error.message,
           code: (error as any).code,
-          stack: error.stack
+          stack: error.stack,
         },
-        context: context ? autoMaskPII(context) : undefined
+        context: context ? autoMaskPII(context) : undefined,
       } as ErrorLogEntry;
     }
 
     if (context) {
       return {
         ...baseLog,
-        ...autoMaskPII(context)
+        ...autoMaskPII(context),
       };
     }
 
@@ -221,28 +226,36 @@ export class StructuredLogger {
   // ============================================================
 
   debug(message: string, context?: Record<string, unknown>): void {
-    if (!this.shouldLog('DEBUG')) return;
-    this.output(this.formatLog('DEBUG', message, context));
+    if (!this.shouldLog("DEBUG")) return;
+    this.output(this.formatLog("DEBUG", message, context));
   }
 
   info(message: string, context?: Record<string, unknown>): void {
-    if (!this.shouldLog('INFO')) return;
-    this.output(this.formatLog('INFO', message, context));
+    if (!this.shouldLog("INFO")) return;
+    this.output(this.formatLog("INFO", message, context));
   }
 
   warn(message: string, context?: Record<string, unknown>): void {
-    if (!this.shouldLog('WARN')) return;
-    this.output(this.formatLog('WARN', message, context));
+    if (!this.shouldLog("WARN")) return;
+    this.output(this.formatLog("WARN", message, context));
   }
 
-  error(message: string, error?: Error, context?: Record<string, unknown>): void {
-    if (!this.shouldLog('ERROR')) return;
-    this.output(this.formatLog('ERROR', message, context, error));
+  error(
+    message: string,
+    error?: Error,
+    context?: Record<string, unknown>,
+  ): void {
+    if (!this.shouldLog("ERROR")) return;
+    this.output(this.formatLog("ERROR", message, context, error));
   }
 
-  fatal(message: string, error?: Error, context?: Record<string, unknown>): void {
-    if (!this.shouldLog('FATAL')) return;
-    this.output(this.formatLog('FATAL', message, context, error));
+  fatal(
+    message: string,
+    error?: Error,
+    context?: Record<string, unknown>,
+  ): void {
+    if (!this.shouldLog("FATAL")) return;
+    this.output(this.formatLog("FATAL", message, context, error));
 
     // FATALレベルはシステム停止を伴う可能性
     // 必要に応じて process.exit(1) 等を呼び出す
@@ -259,37 +272,36 @@ export class StructuredLogger {
 
 // ロガーインスタンス作成
 const logger = new StructuredLogger({
-  service: 'api-server',
-  environment: 'production',
-  minLevel: 'INFO'
+  service: "api-server",
+  environment: "production",
+  minLevel: "INFO",
 });
 
 // 基本的なログ出力
-logger.info('Application started', { port: 3000, version: '1.0.0' });
+logger.info("Application started", { port: 3000, version: "1.0.0" });
 
 // エラーログ出力
 try {
-  await database.query('SELECT * FROM users');
+  await database.query("SELECT * FROM users");
 } catch (error) {
-  logger.error(
-    'Database query failed',
-    error as Error,
-    { query: 'SELECT * FROM users', table: 'users' }
-  );
+  logger.error("Database query failed", error as Error, {
+    query: "SELECT * FROM users",
+    table: "users",
+  });
 }
 
 // ビジネスイベントログ
-logger.info('Order completed', {
-  order_id: 'ord_123',
-  user_id: 'user_456',
+logger.info("Order completed", {
+  order_id: "ord_123",
+  user_id: "user_456",
   total_amount: 1234.56,
-  currency: 'USD'
+  currency: "USD",
 });
 
 // 警告ログ
-logger.warn('Rate limit approaching', {
-  user_id: 'user_789',
+logger.warn("Rate limit approaching", {
+  user_id: "user_789",
   current_requests: 95,
   limit: 100,
-  window_seconds: 60
+  window_seconds: 60,
 });

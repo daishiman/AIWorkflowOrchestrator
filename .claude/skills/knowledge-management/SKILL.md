@@ -46,11 +46,13 @@ Claude Codeエコシステムにおいては、エージェント、スキル、
 効率的に蓄積・共有・活用するための基盤となります。
 
 **主要な価値**:
+
 - 個人の経験や勘（暗黙知）を誰でも再現可能な知識（形式知）に変換
 - 知識の陳腐化を防ぎ、常に最新の状態を維持
 - 知識の再利用性を高め、重複を排除（DRY原則の知識への適用）
 
 **対象ユーザー**:
+
 - スキルやドキュメントを作成するエージェント
 - ベストプラクティスを体系化したい開発者
 - 知識ベースの品質を維持したいチーム
@@ -137,9 +139,11 @@ cp .claude/skills/knowledge-management/templates/knowledge-document-template.md 
 ## いつ使うか
 
 ### シナリオ1: 暗黙知の形式知化
+
 **状況**: コードレビューで頻繁に指摘される内容があるが、文書化されていない
 
 **適用条件**:
+
 - [ ] 同じ指摘が3回以上繰り返されている
 - [ ] 指摘内容が経験や勘に基づいている
 - [ ] 明確なルールとして言語化されていない
@@ -147,9 +151,11 @@ cp .claude/skills/knowledge-management/templates/knowledge-document-template.md 
 **期待される成果**: 再現可能なチェックリストやガイドラインとして文書化
 
 ### シナリオ2: ベストプラクティスの体系化
+
 **状況**: 散在する情報を体系的に整理したい
 
 **適用条件**:
+
 - [ ] 複数の情報源（書籍、ドキュメント、経験）が存在
 - [ ] 情報間の関連性が不明確
 - [ ] 一貫性のある知識体系が必要
@@ -157,9 +163,11 @@ cp .claude/skills/knowledge-management/templates/knowledge-document-template.md 
 **期待される成果**: 統合された知識ベースとして整理
 
 ### シナリオ3: 知識の陳腐化防止
+
 **状況**: 既存ドキュメントが古くなり、信頼性が低下している
 
 **適用条件**:
+
 - [ ] 最終更新から6ヶ月以上経過
 - [ ] 参照する技術のバージョンが古い
 - [ ] 非推奨のAPIやパターンを含む
@@ -169,15 +177,18 @@ cp .claude/skills/knowledge-management/templates/knowledge-document-template.md 
 ## 前提条件
 
 ### 必要な知識
+
 - [ ] SECIモデルの基本概念理解（暗黙知・形式知・知識変換）
 - [ ] ドキュメンテーションの基本スキル（Markdown、構造化ライティング）
 
 ### 必要なツール
+
 - Read: 既存情報源の読み込み
 - Write: SKILL.mdやドキュメントの作成
 - Grep: パターン抽出、重複チェック
 
 ### 環境要件
+
 - `.claude/skills/`ディレクトリが存在する
 - 参照する情報源（ドキュメント、コード）が利用可能
 
@@ -188,6 +199,7 @@ cp .claude/skills/knowledge-management/templates/knowledge-document-template.md 
 **目的**: 形式知化すべき暗黙知を特定し、収集する
 
 **ステップ**:
+
 1. **暗黙知の源泉特定**:
    - コードレビューコメント履歴
    - チーム内議論・会話
@@ -200,6 +212,7 @@ cp .claude/skills/knowledge-management/templates/knowledge-document-template.md 
    - ベストプラクティス事例の収集
 
 **判断基準**:
+
 - [ ] 一次情報源が特定されているか？
 - [ ] 情報の信頼性が評価されているか？
 - [ ] 十分な情報量が収集されているか？
@@ -211,6 +224,7 @@ cp .claude/skills/knowledge-management/templates/knowledge-document-template.md 
 **目的**: 暗黙知を明示的な言語で表現し、概念として整理する
 
 **ステップ**:
+
 1. **言語化**:
    - 経験や勘を言葉で表現
    - パターンを抽象化
@@ -227,6 +241,7 @@ cp .claude/skills/knowledge-management/templates/knowledge-document-template.md 
    - 再現性の確認
 
 **判断基準**:
+
 - [ ] 暗黙知が明示的な言語で表現されているか？
 - [ ] 他者が再現可能な形式になっているか？
 - [ ] 抽象的すぎず、具体的すぎない適切な粒度か？
@@ -239,6 +254,7 @@ cp .claude/skills/knowledge-management/templates/knowledge-document-template.md 
 **目的**: 複数の形式知を組み合わせて新しい知識体系を構築する
 
 **ステップ**:
+
 1. **知識の統合**:
    - 複数情報源の組み合わせ
    - 矛盾の解消
@@ -255,6 +271,7 @@ cp .claude/skills/knowledge-management/templates/knowledge-document-template.md 
    - メタデータの定義
 
 **判断基準**:
+
 - [ ] 知識が体系的に整理されているか？
 - [ ] 重複が排除されているか？
 - [ ] 参照関係が明確か？
@@ -266,6 +283,7 @@ cp .claude/skills/knowledge-management/templates/knowledge-document-template.md 
 **目的**: 形式知化された知識を実践で活用し、フィードバックループを確立する
 
 **ステップ**:
+
 1. **品質評価**:
    - 完全性の確認
    - 明確性の評価
@@ -282,6 +300,7 @@ cp .claude/skills/knowledge-management/templates/knowledge-document-template.md 
    - 定期レビューサイクル
 
 **判断基準**:
+
 - [ ] 品質基準を満たしているか？
 - [ ] 陳腐化検出メカニズムが存在するか？
 - [ ] 更新プロセスが定義されているか？
@@ -348,6 +367,7 @@ cp .claude/skills/knowledge-management/templates/knowledge-document-template.md 
 **原因**: 思考プロセスが無意識化している
 
 **解決策**:
+
 1. 具体的な事例から始める
 2. 「なぜそう判断したか」を繰り返し自問
 3. パターンを抽出して抽象化
@@ -359,11 +379,13 @@ cp .claude/skills/knowledge-management/templates/knowledge-document-template.md 
 **症状**: ドキュメントを作成したが参照されない
 
 **原因**:
+
 - 発見可能性が低い
 - 内容が実用的でない
 - 抽象度が適切でない
 
 **解決策**:
+
 1. descriptionにトリガーキーワードを含める
 2. 具体的な使用シナリオを明示
 3. 判断基準とチェックリストを提供
@@ -377,6 +399,7 @@ cp .claude/skills/knowledge-management/templates/knowledge-document-template.md 
 **原因**: 更新プロセスが未定義
 
 **解決策**:
+
 1. 陳腐化検出基準を定義
 2. 定期レビューサイクルを設定
 3. バージョニングで変更を追跡
@@ -395,6 +418,7 @@ cp .claude/skills/knowledge-management/templates/knowledge-document-template.md 
 ### 知識品質スコア
 
 **評価基準**:
+
 - 完全性: 必要な情報がすべて含まれているか (0-10点)
 - 明確性: 理解しやすいか (0-10点)
 - 再現性: 他者が再現可能か (0-10点)
@@ -416,29 +440,33 @@ cp .claude/skills/knowledge-management/templates/knowledge-document-template.md 
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-23 | 初版作成 - SECIモデルに基づく知識管理フレームワーク |
+| バージョン | 日付       | 変更内容                                            |
+| ---------- | ---------- | --------------------------------------------------- |
+| 1.0.0      | 2025-11-23 | 初版作成 - SECIモデルに基づく知識管理フレームワーク |
 
 ## 使用上の注意
 
 ### このスキルが得意なこと
+
 - 暗黙知の形式知化（経験やノウハウの文書化）
 - 知識の体系化と統合
 - 陳腐化防止と品質維持
 
 ### このスキルが行わないこと
+
 - 具体的なコード実装
 - プロジェクト固有のビジネスロジック
 - 実際のスキルファイルの作成（それは@skill-librarianエージェントの役割）
 
 ### 推奨される使用フロー
+
 1. 暗黙知の特定（Socialization）
 2. 言語化と概念化（Externalization）
 3. 統合と体系化（Combination）
 4. 品質保証と継続的改善（Internalization）
 
 ### 参考文献
+
 - **『知識創造企業』** 野中郁次郎・竹内弘高著
   - 第3章: 知識創造の理論（SECIモデル）
   - 第5章: 知識創造を促進する組織

@@ -38,15 +38,17 @@
 
 ```markdown
 ✅ 高凝集: 認証設定
+
 - 認証方式の選択
 - 認証情報の設定
 - 認証のテスト
 
 ❌ 低凝集: 設定
+
 - 認証の設定
 - データベースの設定
 - ログの設定
-（無関係な項目の混在）
+  （無関係な項目の混在）
 ```
 
 ## モジュール構造
@@ -73,12 +75,12 @@ docs/
 
 ### モジュールの命名規則
 
-| タイプ | パターン | 例 |
-|:-------|:---------|:---|
-| Concept | `what-is-{topic}.md` | `what-is-oauth.md` |
-| Task | `{verb}-{object}.md` | `configure-oauth.md` |
-| Reference | `{topic}-reference.md` | `api-reference.md` |
-| Snippet | `{topic}.md` | `api-base-url.md` |
+| タイプ    | パターン               | 例                   |
+| :-------- | :--------------------- | :------------------- |
+| Concept   | `what-is-{topic}.md`   | `what-is-oauth.md`   |
+| Task      | `{verb}-{object}.md`   | `configure-oauth.md` |
+| Reference | `{topic}-reference.md` | `api-reference.md`   |
+| Snippet   | `{topic}.md`           | `api-base-url.md`    |
 
 ## 再利用パターン
 
@@ -86,9 +88,11 @@ docs/
 
 ```markdown
 <!-- _shared/snippets/api-base-url.md -->
+
 `https://api.example.com/v1`
 
 <!-- 使用箇所 -->
+
 APIのベースURLは {{include:_shared/snippets/api-base-url.md}} です。
 ```
 
@@ -96,12 +100,15 @@ APIのベースURLは {{include:_shared/snippets/api-base-url.md}} です。
 
 ```markdown
 <!-- _shared/procedures/login-steps.md -->
+
 1. ブラウザで https://app.example.com を開く
 2. ユーザー名とパスワードを入力
 3. **ログイン**をクリック
 
 <!-- 使用箇所 -->
+
 ## ログイン手順
+
 {{include:_shared/procedures/login-steps.md}}
 ```
 
@@ -109,6 +116,7 @@ APIのベースURLは {{include:_shared/snippets/api-base-url.md}} です。
 
 ```markdown
 <!-- 環境別の設定を切り替え -->
+
 {{if env="production"}}
 {{include:_shared/config/production-settings.md}}
 {{else}}
@@ -120,12 +128,12 @@ APIのベースURLは {{include:_shared/snippets/api-base-url.md}} です。
 
 ### 適切な粒度の判断基準
 
-| 基準 | 分割する | 統合する |
-|:-----|:---------|:---------|
-| 再利用 | 複数箇所で使用 | 1箇所のみで使用 |
-| 更新頻度 | 異なる頻度で更新 | 同時に更新 |
-| 対象読者 | 異なる読者 | 同じ読者 |
-| 文脈 | 独立して理解可能 | 文脈が必要 |
+| 基準     | 分割する         | 統合する        |
+| :------- | :--------------- | :-------------- |
+| 再利用   | 複数箇所で使用   | 1箇所のみで使用 |
+| 更新頻度 | 異なる頻度で更新 | 同時に更新      |
+| 対象読者 | 異なる読者       | 同じ読者        |
+| 文脈     | 独立して理解可能 | 文脈が必要      |
 
 ### 粒度の例
 

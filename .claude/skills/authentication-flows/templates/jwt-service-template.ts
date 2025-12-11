@@ -28,7 +28,16 @@ export interface JWTConfig {
   publicKey?: string;
 
   /** 署名アルゴリズム */
-  algorithm: "HS256" | "HS384" | "HS512" | "RS256" | "RS384" | "RS512" | "ES256" | "ES384" | "ES512";
+  algorithm:
+    | "HS256"
+    | "HS384"
+    | "HS512"
+    | "RS256"
+    | "RS384"
+    | "RS512"
+    | "ES256"
+    | "ES384"
+    | "ES512";
 
   /** 発行者 */
   issuer: string;
@@ -83,7 +92,7 @@ export interface TokenPair {
 export class JWTError extends Error {
   constructor(
     message: string,
-    public readonly code: string
+    public readonly code: string,
   ) {
     super(message);
     this.name = "JWTError";
@@ -164,9 +173,17 @@ class JWTUtil {
   /**
    * HMAC検証
    */
-  static hmacVerify(data: string, signature: string, secret: string, algorithm: string): boolean {
+  static hmacVerify(
+    data: string,
+    signature: string,
+    secret: string,
+    algorithm: string,
+  ): boolean {
     const expected = this.hmacSign(data, secret, algorithm);
-    return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+    return crypto.timingSafeEqual(
+      Buffer.from(signature),
+      Buffer.from(expected),
+    );
   }
 }
 
@@ -189,7 +206,10 @@ export class JWTService {
       throw new Error("Secret is required for HMAC algorithms");
     }
 
-    if ((algorithm.startsWith("RS") || algorithm.startsWith("ES")) && !privateKey) {
+    if (
+      (algorithm.startsWith("RS") || algorithm.startsWith("ES")) &&
+      !privateKey
+    ) {
       throw new Error("Private key is required for RSA/ECDSA algorithms");
     }
 
@@ -202,10 +222,13 @@ export class JWTService {
   /**
    * JWT を生成
    */
-  sign(payload: Omit<JWTPayload, "iss" | "aud" | "iat" | "exp" | "jti">, options: {
-    expiresIn?: string | number;
-    jti?: string;
-  } = {}): string {
+  sign(
+    payload: Omit<JWTPayload, "iss" | "aud" | "iat" | "exp" | "jti">,
+    options: {
+      expiresIn?: string | number;
+      jti?: string;
+    } = {},
+  ): string {
     const now = Math.floor(Date.now() / 1000);
     const expiresIn = options.expiresIn
       ? JWTUtil.parseExpiry(options.expiresIn)
@@ -267,7 +290,9 @@ export class JWTService {
     // ヘッダー検証
     const header = JSON.parse(JWTUtil.base64UrlDecode(headerB64));
     if (header.alg !== this.config.algorithm) {
-      throw new InvalidTokenError(`Invalid algorithm: expected ${this.config.algorithm}`);
+      throw new InvalidTokenError(
+        `Invalid algorithm: expected ${this.config.algorithm}`,
+      );
     }
 
     // 署名検証
@@ -350,21 +375,26 @@ export class TokenPairService {
   /**
    * アクセストークンとリフレッシュトークンのペアを生成
    */
-  generateTokenPair(userId: string, claims: Record<string, unknown> = {}): TokenPair {
+  generateTokenPair(
+    userId: string,
+    claims: Record<string, unknown> = {},
+  ): TokenPair {
     const now = Date.now();
-    const accessExpiry = JWTUtil.parseExpiry(this.config.accessTokenExpiry) * 1000;
-    const refreshExpiry = JWTUtil.parseExpiry(this.config.refreshTokenExpiry) * 1000;
+    const accessExpiry =
+      JWTUtil.parseExpiry(this.config.accessTokenExpiry) * 1000;
+    const refreshExpiry =
+      JWTUtil.parseExpiry(this.config.refreshTokenExpiry) * 1000;
 
     // アクセストークン
     const accessToken = this.jwtService.sign(
       { sub: userId, type: "access", ...claims },
-      { expiresIn: this.config.accessTokenExpiry }
+      { expiresIn: this.config.accessTokenExpiry },
     );
 
     // リフレッシュトークン
     const refreshToken = this.jwtService.sign(
       { sub: userId, type: "refresh" },
-      { expiresIn: this.config.refreshTokenExpiry }
+      { expiresIn: this.config.refreshTokenExpiry },
     );
 
     return {
@@ -404,7 +434,10 @@ export class TokenPairService {
   /**
    * リフレッシュトークンから新しいトークンペアを生成
    */
-  refreshTokenPair(refreshToken: string, claims: Record<string, unknown> = {}): TokenPair {
+  refreshTokenPair(
+    refreshToken: string,
+    claims: Record<string, unknown> = {},
+  ): TokenPair {
     const payload = this.verifyRefreshToken(refreshToken);
     return this.generateTokenPair(payload.sub, claims);
   }

@@ -72,18 +72,18 @@ locales/
 ### i18next（推奨）
 
 ```typescript
-import i18next from 'i18next';
+import i18next from "i18next";
 
 // 初期化
 await i18next.init({
-  lng: 'ja',
-  fallbackLng: 'en',
+  lng: "ja",
+  fallbackLng: "en",
   resources: {
     ja: {
-      errors: require('./locales/ja/errors.json'),
+      errors: require("./locales/ja/errors.json"),
     },
     en: {
-      errors: require('./locales/en/errors.json'),
+      errors: require("./locales/en/errors.json"),
     },
   },
   interpolation: {
@@ -97,7 +97,7 @@ function translateError(key: string, params?: Record<string, unknown>): string {
 }
 
 // 例
-translateError('validation.required', { field: 'メールアドレス' });
+translateError("validation.required", { field: "メールアドレス" });
 // 日本語: "メールアドレスは必須です"
 // 英語: "Email address is required"
 ```
@@ -108,16 +108,16 @@ translateError('validation.required', { field: 'メールアドレス' });
 // フィールド名も翻訳する
 const fieldLabels = {
   ja: {
-    email: 'メールアドレス',
-    password: 'パスワード',
-    username: 'ユーザー名',
-    phone: '電話番号',
+    email: "メールアドレス",
+    password: "パスワード",
+    username: "ユーザー名",
+    phone: "電話番号",
   },
   en: {
-    email: 'Email',
-    password: 'Password',
-    username: 'Username',
-    phone: 'Phone number',
+    email: "Email",
+    password: "Password",
+    username: "Username",
+    phone: "Phone number",
   },
 };
 
@@ -129,7 +129,7 @@ function translateValidationError(
   key: string,
   field: string,
   locale: string,
-  params?: Record<string, unknown>
+  params?: Record<string, unknown>,
 ): string {
   const fieldLabel = getFieldLabel(field, locale);
   return i18next.t(`errors:validation.${key}`, {
@@ -145,33 +145,36 @@ function translateValidationError(
 ### ICU MessageFormat
 
 ```typescript
-import { createIntl, createIntlCache } from '@formatjs/intl';
+import { createIntl, createIntlCache } from "@formatjs/intl";
 
 const cache = createIntlCache();
 
 const messages = {
   ja: {
-    filesSelected: '{count}個のファイルが選択されています',
-    itemsRemaining: '残り{count}件',
+    filesSelected: "{count}個のファイルが選択されています",
+    itemsRemaining: "残り{count}件",
   },
   en: {
-    filesSelected: '{count, plural, one {# file} other {# files}} selected',
-    itemsRemaining: '{count, plural, one {# item} other {# items}} remaining',
+    filesSelected: "{count, plural, one {# file} other {# files}} selected",
+    itemsRemaining: "{count, plural, one {# item} other {# items}} remaining",
   },
 };
 
 function createFormatter(locale: string) {
-  return createIntl({
-    locale,
-    messages: messages[locale],
-  }, cache);
+  return createIntl(
+    {
+      locale,
+      messages: messages[locale],
+    },
+    cache,
+  );
 }
 
 // 使用例
-const intl = createFormatter('en');
-intl.formatMessage({ id: 'filesSelected' }, { count: 1 });
+const intl = createFormatter("en");
+intl.formatMessage({ id: "filesSelected" }, { count: 1 });
 // "1 file selected"
-intl.formatMessage({ id: 'filesSelected' }, { count: 5 });
+intl.formatMessage({ id: "filesSelected" }, { count: 5 });
 // "5 files selected"
 ```
 
@@ -180,11 +183,11 @@ intl.formatMessage({ id: 'filesSelected' }, { count: 5 });
 ```typescript
 // 日本語は複数形が少ないが、助数詞に注意
 const jaCounters = {
-  file: '個',
-  person: '人',
-  item: '件',
-  page: 'ページ',
-  minute: '分',
+  file: "個",
+  person: "人",
+  item: "件",
+  page: "ページ",
+  minute: "分",
 };
 
 function formatCount(count: number, type: keyof typeof jaCounters): string {
@@ -198,8 +201,8 @@ function formatCount(count: number, type: keyof typeof jaCounters): string {
 ### 日付・時刻のフォーマット
 
 ```typescript
-import { format, formatDistanceToNow } from 'date-fns';
-import { ja, enUS, zhCN } from 'date-fns/locale';
+import { format, formatDistanceToNow } from "date-fns";
+import { ja, enUS, zhCN } from "date-fns/locale";
 
 const locales = { ja, en: enUS, zh: zhCN };
 
@@ -210,23 +213,23 @@ function formatDate(date: Date, locale: string, formatStr: string): string {
 // エラーメッセージでの使用
 const errorMessages = {
   ja: {
-    sessionExpired: 'セッションの有効期限が切れました（{time}に期限切れ）',
-    maintenanceUntil: '{endTime}までメンテナンス中です',
+    sessionExpired: "セッションの有効期限が切れました（{time}に期限切れ）",
+    maintenanceUntil: "{endTime}までメンテナンス中です",
   },
   en: {
-    sessionExpired: 'Your session has expired (expired {time})',
-    maintenanceUntil: 'Under maintenance until {endTime}',
+    sessionExpired: "Your session has expired (expired {time})",
+    maintenanceUntil: "Under maintenance until {endTime}",
   },
 };
 
 function formatSessionExpiredError(expiredAt: Date, locale: string): string {
   const time = formatDistanceToNow(expiredAt, {
     locale: locales[locale],
-    addSuffix: true
+    addSuffix: true,
   });
   // 日本語: "5分前"
   // 英語: "5 minutes ago"
-  return errorMessages[locale].sessionExpired.replace('{time}', time);
+  return errorMessages[locale].sessionExpired.replace("{time}", time);
 }
 ```
 
@@ -234,26 +237,29 @@ function formatSessionExpiredError(expiredAt: Date, locale: string): string {
 
 ```typescript
 // 日本語の敬語レベル
-type PolitenessLevel = 'casual' | 'polite' | 'honorific';
+type PolitenessLevel = "casual" | "polite" | "honorific";
 
 const jaMessages: Record<PolitenessLevel, Record<string, string>> = {
   casual: {
-    loginRequired: 'ログインしてね',
-    error: 'エラーだよ',
+    loginRequired: "ログインしてね",
+    error: "エラーだよ",
   },
   polite: {
-    loginRequired: 'ログインしてください',
-    error: 'エラーが発生しました',
+    loginRequired: "ログインしてください",
+    error: "エラーが発生しました",
   },
   honorific: {
-    loginRequired: 'ログインをお願いいたします',
-    error: 'エラーが発生いたしました',
+    loginRequired: "ログインをお願いいたします",
+    error: "エラーが発生いたしました",
   },
 };
 
 // ビジネス向けはhonorific、一般向けはpolite
-function getJapaneseMessage(key: string, level: PolitenessLevel = 'polite'): string {
-  return jaMessages[level][key] || jaMessages['polite'][key];
+function getJapaneseMessage(
+  key: string,
+  level: PolitenessLevel = "polite",
+): string {
+  return jaMessages[level][key] || jaMessages["polite"][key];
 }
 ```
 
@@ -262,7 +268,7 @@ function getJapaneseMessage(key: string, level: PolitenessLevel = 'polite'): str
 ### React i18n対応エラー表示
 
 ```tsx
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 interface ErrorMessageProps {
   errorKey: string;
@@ -271,7 +277,7 @@ interface ErrorMessageProps {
 }
 
 function ErrorMessage({ errorKey, params, className }: ErrorMessageProps) {
-  const { t } = useTranslation('errors');
+  const { t } = useTranslation("errors");
 
   return (
     <div className={className} role="alert">
@@ -288,7 +294,7 @@ interface FieldErrorProps {
 }
 
 function FieldError({ field, errorKey, params }: FieldErrorProps) {
-  const { t } = useTranslation(['errors', 'fields']);
+  const { t } = useTranslation(["errors", "fields"]);
 
   const fieldLabel = t(`fields:${field}`);
 
@@ -303,11 +309,11 @@ function FieldError({ field, errorKey, params }: FieldErrorProps) {
 ### 言語切り替え時の即時反映
 
 ```tsx
-import { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 function useErrorMessages() {
-  const { t, i18n } = useTranslation('errors');
+  const { t, i18n } = useTranslation("errors");
 
   // 言語変更時にエラーメッセージを再評価
   useEffect(() => {
@@ -315,7 +321,8 @@ function useErrorMessages() {
   }, [i18n.language]);
 
   return {
-    translate: (key: string, params?: Record<string, unknown>) => t(key, params),
+    translate: (key: string, params?: Record<string, unknown>) =>
+      t(key, params),
     currentLanguage: i18n.language,
   };
 }
@@ -326,13 +333,13 @@ function useErrorMessages() {
 ### Express.js with i18next
 
 ```typescript
-import express from 'express';
-import i18next from 'i18next';
-import i18nextMiddleware from 'i18next-http-middleware';
+import express from "express";
+import i18next from "i18next";
+import i18nextMiddleware from "i18next-http-middleware";
 
 await i18next.init({
-  preload: ['ja', 'en'],
-  fallbackLng: 'en',
+  preload: ["ja", "en"],
+  fallbackLng: "en",
   resources: {
     // リソース設定
   },
@@ -342,66 +349,85 @@ const app = express();
 app.use(i18nextMiddleware.handle(i18next));
 
 // エラーハンドラー
-app.use((err: AppError, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  const t = req.t; // i18nextミドルウェアが追加
+app.use(
+  (
+    err: AppError,
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) => {
+    const t = req.t; // i18nextミドルウェアが追加
 
-  res.status(err.httpStatus).json({
-    code: err.code,
-    message: t(`errors:${err.code}`),
-    action: err.action ? t(`errors:actions.${err.code}`) : undefined,
-  });
-});
+    res.status(err.httpStatus).json({
+      code: err.code,
+      message: t(`errors:${err.code}`),
+      action: err.action ? t(`errors:actions.${err.code}`) : undefined,
+    });
+  },
+);
 ```
 
 ### Accept-Languageヘッダーの処理
 
 ```typescript
 function detectLanguage(acceptLanguage: string | undefined): string {
-  if (!acceptLanguage) return 'en';
+  if (!acceptLanguage) return "en";
 
   const languages = acceptLanguage
-    .split(',')
+    .split(",")
     .map((lang) => {
-      const [code, priority] = lang.trim().split(';q=');
+      const [code, priority] = lang.trim().split(";q=");
       return {
-        code: code.split('-')[0], // ja-JP → ja
+        code: code.split("-")[0], // ja-JP → ja
         priority: priority ? parseFloat(priority) : 1.0,
       };
     })
     .sort((a, b) => b.priority - a.priority);
 
-  const supportedLanguages = ['ja', 'en', 'zh', 'ko'];
+  const supportedLanguages = ["ja", "en", "zh", "ko"];
   const detected = languages.find((l) => supportedLanguages.includes(l.code));
 
-  return detected?.code || 'en';
+  return detected?.code || "en";
 }
 ```
 
 ## テスト
 
 ```typescript
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from "vitest";
 
-describe('i18n error messages', () => {
-  it('should translate validation errors in Japanese', () => {
-    const message = translateError('validation.required', { field: 'メールアドレス' }, 'ja');
-    expect(message).toBe('メールアドレスは必須です');
+describe("i18n error messages", () => {
+  it("should translate validation errors in Japanese", () => {
+    const message = translateError(
+      "validation.required",
+      { field: "メールアドレス" },
+      "ja",
+    );
+    expect(message).toBe("メールアドレスは必須です");
   });
 
-  it('should translate validation errors in English', () => {
-    const message = translateError('validation.required', { field: 'Email' }, 'en');
-    expect(message).toBe('Email is required');
+  it("should translate validation errors in English", () => {
+    const message = translateError(
+      "validation.required",
+      { field: "Email" },
+      "en",
+    );
+    expect(message).toBe("Email is required");
   });
 
-  it('should fall back to English for unsupported languages', () => {
-    const message = translateError('validation.required', { field: 'Email' }, 'fr');
-    expect(message).toBe('Email is required');
+  it("should fall back to English for unsupported languages", () => {
+    const message = translateError(
+      "validation.required",
+      { field: "Email" },
+      "fr",
+    );
+    expect(message).toBe("Email is required");
   });
 });
 ```
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版リリース |
+| バージョン | 日付       | 変更内容     |
+| ---------- | ---------- | ------------ |
+| 1.0.0      | 2025-11-25 | 初版リリース |

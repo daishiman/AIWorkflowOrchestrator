@@ -4,11 +4,11 @@
 
 ### 戦略の種類
 
-| 戦略 | 速度 | データ影響 | 用途 |
-|------|------|----------|------|
-| 即座ロールバック | 秒単位 | なし | 重大障害 |
-| 段階的ロールバック | 分単位 | 最小 | 部分的問題 |
-| 計画的ロールバック | 時間単位 | 管理可能 | 非緊急の問題 |
+| 戦略               | 速度     | データ影響 | 用途         |
+| ------------------ | -------- | ---------- | ------------ |
+| 即座ロールバック   | 秒単位   | なし       | 重大障害     |
+| 段階的ロールバック | 分単位   | 最小       | 部分的問題   |
+| 計画的ロールバック | 時間単位 | 管理可能   | 非緊急の問題 |
 
 ---
 
@@ -19,17 +19,17 @@
 ```yaml
 automatic_rollback:
   triggers:
-    critical:  # 即座ロールバック
+    critical: # 即座ロールバック
       - error_rate > 10%
       - availability < 95%
       - p99_latency > 10000ms
 
-    warning:  # アラート + 手動判断
+    warning: # アラート + 手動判断
       - error_rate > 5%
       - p95_latency > 3000ms
       - hallucination_rate > 15%
 
-    watch:  # 監視強化
+    watch: # 監視強化
       - error_rate > 2%
       - p50_latency > 1000ms
       - user_complaints > 5
@@ -50,13 +50,13 @@ automatic_rollback:
 
 2. 判断マトリックス
 
-   | ユーザー影響 | ビジネス影響 | 修正時間 | アクション |
-   |-------------|-------------|---------|-----------|
-   | 全体        | 高          | -       | 即座ロールバック |
-   | 全体        | 中          | 長      | 即座ロールバック |
-   | 一部        | 高          | 長      | 段階的ロールバック |
-   | 一部        | 中          | 短      | 修正を試みる |
-   | 軽微        | 低          | -       | 次回リリースで修正 |
+   | ユーザー影響 | ビジネス影響 | 修正時間 | アクション         |
+   | ------------ | ------------ | -------- | ------------------ |
+   | 全体         | 高           | -        | 即座ロールバック   |
+   | 全体         | 中           | 長       | 即座ロールバック   |
+   | 一部         | 高           | 長       | 段階的ロールバック |
+   | 一部         | 中           | 短       | 修正を試みる       |
+   | 軽微         | 低           | -        | 次回リリースで修正 |
 ```
 
 ---
@@ -201,7 +201,7 @@ fallback_chain:
     trigger: "primary_timeout or primary_error"
 
   fallback_2:
-    version: "v1.0.0"  # 最も安定したバージョン
+    version: "v1.0.0" # 最も安定したバージョン
     timeout: 10000ms
     trigger: "fallback_1_error"
 
@@ -214,7 +214,7 @@ fallback_chain:
 
 ```typescript
 async function executePrompt(input: string): Promise<string> {
-  const versions = ['v2.0.0', 'v1.5.0', 'v1.0.0'];
+  const versions = ["v2.0.0", "v1.5.0", "v1.0.0"];
 
   for (const version of versions) {
     try {
@@ -226,7 +226,7 @@ async function executePrompt(input: string): Promise<string> {
     }
   }
 
-  throw new Error('All prompt versions failed');
+  throw new Error("All prompt versions failed");
 }
 ```
 
@@ -240,27 +240,32 @@ async function executePrompt(input: string): Promise<string> {
 ## 根本原因分析テンプレート
 
 ### 概要
+
 - インシデント日時: YYYY-MM-DD HH:MM
 - 影響時間: XX分
 - 影響範囲: XXユーザー
 
 ### タイムライン
-| 時刻 | イベント |
-|------|---------|
+
+| 時刻  | イベント             |
+| ----- | -------------------- |
 | HH:MM | 新バージョンデプロイ |
-| HH:MM | エラー率上昇を検知 |
-| HH:MM | ロールバック実施 |
-| HH:MM | 正常復旧確認 |
+| HH:MM | エラー率上昇を検知   |
+| HH:MM | ロールバック実施     |
+| HH:MM | 正常復旧確認         |
 
 ### 根本原因
+
 [詳細な原因分析]
 
 ### 再発防止策
+
 1. [対策1]
 2. [対策2]
 3. [対策3]
 
 ### アクションアイテム
+
 - [ ] [担当者] [タスク] [期限]
 ```
 
@@ -333,12 +338,14 @@ rollback_drills:
 ## ロールバック訓練チェックリスト
 
 ### 準備
+
 - [ ] 訓練シナリオの選定
 - [ ] 関係者への事前通知
 - [ ] モニタリングダッシュボード準備
 - [ ] 通信チャネルの確認
 
 ### 実施
+
 - [ ] 障害シミュレーション開始
 - [ ] 検知時間の記録
 - [ ] ロールバック判断の記録
@@ -346,6 +353,7 @@ rollback_drills:
 - [ ] コミュニケーションの評価
 
 ### 振り返り
+
 - [ ] 目標時間との比較
 - [ ] 改善点の特定
 - [ ] ランブックの更新
@@ -362,6 +370,7 @@ rollback_drills:
 # プロンプトロールバック ランブック
 
 ## 前提条件
+
 - 本番環境へのアクセス権限
 - ロールバック実行権限
 - 監視ダッシュボードへのアクセス
@@ -369,30 +378,43 @@ rollback_drills:
 ## 手順
 
 ### 1. 状況確認 (所要時間: 1分)
+
 \`\`\`bash
+
 # エラー率確認
+
 curl -s http://monitoring/api/metrics/error_rate
+
 # 現在のバージョン確認
+
 kubectl get deployment prompt-service -o jsonpath='{.spec.template.metadata.labels.version}'
 \`\`\`
 
 ### 2. ロールバック実行 (所要時間: 30秒)
+
 \`\`\`bash
+
 # ロールバックスクリプト実行
+
 ./scripts/rollback.sh --target v1.0.0
 \`\`\`
 
 ### 3. 確認 (所要時間: 5分)
+
 \`\`\`bash
+
 # エラー率の低下を確認
+
 ./scripts/monitor-errors.sh --duration 5m
 \`\`\`
 
 ### 4. 通知
+
 - [ ] Slackの#incident チャネルに投稿
 - [ ] オンコールエンジニアに連絡
 
 ## エスカレーション
+
 - 15分以内に解決しない場合: シニアエンジニアに連絡
 - 30分以内に解決しない場合: マネージャーに連絡
 ```

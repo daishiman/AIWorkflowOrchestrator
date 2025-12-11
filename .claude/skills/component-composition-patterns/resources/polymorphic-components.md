@@ -286,16 +286,13 @@ import {
   ComponentPropsWithRef,
   ComponentPropsWithoutRef,
   ForwardedRef,
-} from 'react';
+} from "react";
 
 /**
  * Polymorphic component の基本props型
  */
-export type PolymorphicProps<
-  T extends ElementType,
-  OwnProps = {}
-> = OwnProps &
-  Omit<ComponentPropsWithoutRef<T>, keyof OwnProps | 'as'> & {
+export type PolymorphicProps<T extends ElementType, OwnProps = {}> = OwnProps &
+  Omit<ComponentPropsWithoutRef<T>, keyof OwnProps | "as"> & {
     as?: T;
   };
 
@@ -304,18 +301,18 @@ export type PolymorphicProps<
  */
 export type PolymorphicPropsWithRef<
   T extends ElementType,
-  OwnProps = {}
+  OwnProps = {},
 > = OwnProps &
-  Omit<ComponentPropsWithRef<T>, keyof OwnProps | 'as'> & {
+  Omit<ComponentPropsWithRef<T>, keyof OwnProps | "as"> & {
     as?: T;
-    ref?: ForwardedRef<ComponentPropsWithRef<T>['ref']>;
+    ref?: ForwardedRef<ComponentPropsWithRef<T>["ref"]>;
   };
 
 /**
  * Polymorphic componentのRef型
  */
 export type PolymorphicRef<T extends ElementType> = ForwardedRef<
-  ComponentPropsWithRef<T>['ref']
+  ComponentPropsWithRef<T>["ref"]
 >;
 ```
 
@@ -327,15 +324,21 @@ export type PolymorphicRef<T extends ElementType> = ForwardedRef<
 
 ```tsx
 // セマンティックに適切なデフォルトを選択
-function Card<T extends ElementType = 'article'>({ as, ...props }: CardProps<T>) {
+function Card<T extends ElementType = "article">({
+  as,
+  ...props
+}: CardProps<T>) {
   // カードコンテンツにはarticleが適切
 }
 
-function Button<T extends ElementType = 'button'>({ as, ...props }: ButtonProps<T>) {
+function Button<T extends ElementType = "button">({
+  as,
+  ...props
+}: ButtonProps<T>) {
   // インタラクティブ要素にはbuttonが適切
 }
 
-function Text<T extends ElementType = 'span'>({ as, ...props }: TextProps<T>) {
+function Text<T extends ElementType = "span">({ as, ...props }: TextProps<T>) {
   // インラインテキストにはspanが適切
 }
 ```
@@ -343,17 +346,18 @@ function Text<T extends ElementType = 'span'>({ as, ...props }: TextProps<T>) {
 ### 2. アクセシビリティの維持
 
 ```tsx
-function Button<T extends ElementType = 'button'>({
+function Button<T extends ElementType = "button">({
   as,
   disabled,
   ...props
 }: ButtonProps<T>) {
-  const Component = as || 'button';
+  const Component = as || "button";
 
   // aタグの場合、disabledの代わりにaria-disabledを使用
-  const disabledProps = Component === 'a'
-    ? { 'aria-disabled': disabled, tabIndex: disabled ? -1 : undefined }
-    : { disabled };
+  const disabledProps =
+    Component === "a"
+      ? { "aria-disabled": disabled, tabIndex: disabled ? -1 : undefined }
+      : { disabled };
 
   return <Component {...disabledProps} {...props} />;
 }
@@ -363,27 +367,24 @@ function Button<T extends ElementType = 'button'>({
 
 ```tsx
 // as propが変わってもスタイルが一貫するようにする
-const buttonStyles = cva('btn', {
+const buttonStyles = cva("btn", {
   variants: {
     variant: {
-      primary: 'btn--primary',
-      secondary: 'btn--secondary',
+      primary: "btn--primary",
+      secondary: "btn--secondary",
     },
   },
 });
 
-function Button<T extends ElementType = 'button'>({
+function Button<T extends ElementType = "button">({
   as,
   variant,
   className,
   ...props
 }: ButtonProps<T>) {
-  const Component = as || 'button';
+  const Component = as || "button";
   return (
-    <Component
-      className={buttonStyles({ variant, className })}
-      {...props}
-    />
+    <Component className={buttonStyles({ variant, className })} {...props} />
   );
 }
 ```

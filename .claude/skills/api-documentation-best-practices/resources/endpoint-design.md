@@ -48,25 +48,29 @@ POST /deleteUser
 
 ## HTTPメソッドの使い分け
 
-| メソッド | 用途 | べき等性 | 安全性 |
-|:---------|:-----|:--------:|:------:|
-| GET | リソース取得 | ○ | ○ |
-| POST | リソース作成 | × | × |
-| PUT | リソース全体更新 | ○ | × |
-| PATCH | リソース部分更新 | × | × |
-| DELETE | リソース削除 | ○ | × |
+| メソッド | 用途             | べき等性 | 安全性 |
+| :------- | :--------------- | :------: | :----: |
+| GET      | リソース取得     |    ○     |   ○    |
+| POST     | リソース作成     |    ×     |   ×    |
+| PUT      | リソース全体更新 |    ○     |   ×    |
+| PATCH    | リソース部分更新 |    ×     |   ×    |
+| DELETE   | リソース削除     |    ○     |   ×    |
 
 ## パスパラメータ vs クエリパラメータ
 
 ### パスパラメータ
+
 リソースの識別に使用
+
 ```
 GET /users/{userId}
 GET /orders/{orderId}
 ```
 
 ### クエリパラメータ
+
 フィルタリング、ソート、ページネーションに使用
+
 ```
 GET /users?status=active
 GET /users?sort=created_at&order=desc
@@ -76,11 +80,13 @@ GET /users?page=2&limit=20
 ## ページネーションパターン
 
 ### オフセットベース
+
 ```
 GET /users?page=1&limit=20
 ```
 
 レスポンス:
+
 ```json
 {
   "data": [...],
@@ -94,11 +100,13 @@ GET /users?page=1&limit=20
 ```
 
 ### カーソルベース
+
 ```
 GET /users?cursor=abc123&limit=20
 ```
 
 レスポンス:
+
 ```json
 {
   "data": [...],
@@ -138,12 +146,14 @@ GET /users?sort=status,-created_at
 ## バージョニング
 
 ### URLパス方式（推奨）
+
 ```
 /api/v1/users
 /api/v2/users
 ```
 
 ### ヘッダー方式
+
 ```
 Accept: application/vnd.example.v1+json
 ```

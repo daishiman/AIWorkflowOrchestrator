@@ -53,6 +53,7 @@ model: sonnet
 ### Phase 1: 更新戦略の確認
 
 **引数検証**:
+
 ```bash
 # 更新戦略（オプション、デフォルト: patch）
 strategy: "${ARGUMENTS:-patch}"
@@ -66,6 +67,7 @@ fi
 ```
 
 **パッケージマネージャー検出**:
+
 ```bash
 # ロックファイルから判定
 if [ -f "pnpm-lock.yaml" ]; then
@@ -84,17 +86,21 @@ fi
 **使用エージェント**: `.claude/agents/dep-mgr.md`
 
 **エージェントへの依頼内容**:
-```markdown
+
+````markdown
 依存パッケージを「${strategy}」戦略で更新してください。
 
 **入力**:
+
 - 更新戦略: ${strategy}
 - パッケージマネージャー: ${pkg_manager}
 - 現在のpackage.json: ${cat package.json}
 - 現在のロックファイル: ${cat pnpm-lock.yaml}
 
 **要件**:
+
 1. 更新可能パッケージ確認:
+
    ```bash
    # pnpm の場合
    pnpm outdated
@@ -105,6 +111,7 @@ fi
    next         14.1.0   14.1.4  14.2.0
    typescript   5.3.3    5.3.3   5.4.2
    ```
+````
 
 2. 更新戦略別の判断:
    - **patch**: パッチバージョンのみ更新（3.22.0 → 3.22.4）
@@ -118,6 +125,7 @@ fi
    - 破壊的変更の影響範囲を評価
 
 4. 更新実行:
+
    ```bash
    # patch戦略（セキュリティパッチ）
    pnpm update
@@ -139,6 +147,7 @@ fi
    - `pnpm test` でテスト実行
 
 6. 更新レポート生成:
+
    ```markdown
    ## 依存関係更新完了
 
@@ -146,20 +155,23 @@ fi
 
    ### 更新されたパッケージ（10件）
 
-   | パッケージ | 変更前 | 変更後 | 種類 |
-   |-----------|--------|--------|------|
-   | zod | 3.22.0 | 3.22.4 | patch（セキュリティパッチ） |
-   | next | 14.1.0 | 14.1.4 | patch |
-   | typescript | 5.3.3 | 5.4.2 | minor（新機能追加） |
+   | パッケージ | 変更前 | 変更後 | 種類                        |
+   | ---------- | ------ | ------ | --------------------------- |
+   | zod        | 3.22.0 | 3.22.4 | patch（セキュリティパッチ） |
+   | next       | 14.1.0 | 14.1.4 | patch                       |
+   | typescript | 5.3.3  | 5.4.2  | minor（新機能追加）         |
 
    ### 破壊的変更（0件）
+
    なし
 
    ### セキュリティ監査
+
    - 脆弱性: 修正済み（2件のCritical脆弱性を解決）
    - ライセンス: 変更なし
 
    ### Next Steps
+
    1. テスト実行: pnpm test
    2. 型チェック: pnpm typecheck
    3. ローカル動作確認
@@ -167,15 +179,18 @@ fi
    ```
 
 **スキル参照**:
+
 - `.claude/skills/upgrade-strategies/SKILL.md`
 - `.claude/skills/semantic-versioning/SKILL.md`
 - `.claude/skills/dependency-auditing/SKILL.md`
 
 **成果物**:
+
 - 更新されたpackage.json
 - 更新されたロックファイル
 - 更新レポート
-```
+
+````
 
 ### Phase 3: 完了報告
 
@@ -199,7 +214,7 @@ fi
 2. 型チェック確認
 3. ローカル動作確認
 4. コミット作成
-```
+````
 
 ## 使用例
 
@@ -210,6 +225,7 @@ fi
 ```
 
 自動実行:
+
 1. セキュリティパッチのみ更新（1.0.0 → 1.0.1）
 2. 破壊的変更なし保証
 3. 安全な自動更新
@@ -307,6 +323,7 @@ fi
 **原因**: 破壊的変更またはバグ
 
 **解決策**:
+
 ```bash
 # ロックファイルをリセット
 git checkout pnpm-lock.yaml package.json
@@ -323,6 +340,7 @@ pnpm add [package-name]@[previous-version]
 **原因**: TypeScript バージョン変更または型定義更新
 
 **解決策**:
+
 ```bash
 # 型定義の更新
 pnpm add -D @types/node @types/react
@@ -338,6 +356,7 @@ pnpm add -D @types/node @types/react
 **原因**: メジャーアップグレード後の peer dependency 不一致
 
 **解決策**:
+
 ```bash
 # 競合確認
 pnpm list

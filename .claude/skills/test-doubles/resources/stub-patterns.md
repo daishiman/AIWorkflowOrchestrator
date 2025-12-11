@@ -13,8 +13,8 @@ Stubは事前に設定された応答を返すテストダブルです。
 // 最もシンプルなStub
 const stubRepository = {
   findById: vi.fn().mockResolvedValue({
-    id: 'user-1',
-    name: 'Test User',
+    id: "user-1",
+    name: "Test User",
   }),
 };
 ```
@@ -26,8 +26,8 @@ const stubRepository = {
 const stubRepository = {
   findById: vi.fn().mockImplementation(async (id) => {
     const users = {
-      'user-1': { id: 'user-1', name: 'Alice' },
-      'user-2': { id: 'user-2', name: 'Bob' },
+      "user-1": { id: "user-1", name: "Alice" },
+      "user-2": { id: "user-2", name: "Bob" },
     };
     return users[id] || null;
   }),
@@ -39,7 +39,8 @@ const stubRepository = {
 ```typescript
 // 呼び出しごとに異なる値
 const stubApi = {
-  fetch: vi.fn()
+  fetch: vi
+    .fn()
     .mockResolvedValueOnce({ page: 1, hasMore: true })
     .mockResolvedValueOnce({ page: 2, hasMore: true })
     .mockResolvedValueOnce({ page: 3, hasMore: false }),
@@ -51,16 +52,16 @@ const stubApi = {
 ### 成功ケース
 
 ```typescript
-describe('成功ケース', () => {
+describe("成功ケース", () => {
   const stubRepository = {
-    findById: vi.fn().mockResolvedValue({ id: '1', name: 'Test' }),
+    findById: vi.fn().mockResolvedValue({ id: "1", name: "Test" }),
     save: vi.fn().mockResolvedValue(undefined),
   };
 
-  it('should return user', async () => {
+  it("should return user", async () => {
     const service = new UserService(stubRepository);
-    const user = await service.getUser('1');
-    expect(user.name).toBe('Test');
+    const user = await service.getUser("1");
+    expect(user.name).toBe("Test");
   });
 });
 ```
@@ -68,14 +69,14 @@ describe('成功ケース', () => {
 ### エラーケース
 
 ```typescript
-describe('エラーケース', () => {
+describe("エラーケース", () => {
   const stubRepository = {
     findById: vi.fn().mockResolvedValue(null),
   };
 
-  it('should throw when user not found', async () => {
+  it("should throw when user not found", async () => {
     const service = new UserService(stubRepository);
-    await expect(service.getUser('unknown')).rejects.toThrow('User not found');
+    await expect(service.getUser("unknown")).rejects.toThrow("User not found");
   });
 });
 ```
@@ -83,14 +84,14 @@ describe('エラーケース', () => {
 ### 例外ケース
 
 ```typescript
-describe('例外ケース', () => {
+describe("例外ケース", () => {
   const stubRepository = {
-    findById: vi.fn().mockRejectedValue(new Error('DB connection failed')),
+    findById: vi.fn().mockRejectedValue(new Error("DB connection failed")),
   };
 
-  it('should handle database error', async () => {
+  it("should handle database error", async () => {
     const service = new UserService(stubRepository);
-    await expect(service.getUser('1')).rejects.toThrow('DB connection failed');
+    await expect(service.getUser("1")).rejects.toThrow("DB connection failed");
   });
 });
 ```
@@ -100,19 +101,24 @@ describe('例外ケース', () => {
 ```typescript
 // タイムアウトテスト用
 const stubSlowApi = {
-  fetch: vi.fn().mockImplementation(() =>
-    new Promise(resolve => setTimeout(() => resolve({ data: 'slow' }), 5000))
-  ),
+  fetch: vi
+    .fn()
+    .mockImplementation(
+      () =>
+        new Promise((resolve) =>
+          setTimeout(() => resolve({ data: "slow" }), 5000),
+        ),
+    ),
 };
 
-it('should timeout on slow response', async () => {
+it("should timeout on slow response", async () => {
   vi.useFakeTimers();
   const service = new ApiService(stubSlowApi, { timeout: 3000 });
 
   const promise = service.fetchData();
   vi.advanceTimersByTime(3000);
 
-  await expect(promise).rejects.toThrow('Timeout');
+  await expect(promise).rejects.toThrow("Timeout");
   vi.useRealTimers();
 });
 ```
@@ -125,11 +131,11 @@ it('should timeout on slow response', async () => {
 const stubHttpClient = {
   get: vi.fn().mockResolvedValue({
     status: 200,
-    data: { users: [{ id: '1', name: 'Test' }] },
+    data: { users: [{ id: "1", name: "Test" }] },
   }),
   post: vi.fn().mockResolvedValue({
     status: 201,
-    data: { id: 'new-1' },
+    data: { id: "new-1" },
   }),
 };
 ```
@@ -140,11 +146,11 @@ const stubHttpClient = {
 const stubAuthService = {
   verifyToken: vi.fn().mockResolvedValue({
     valid: true,
-    userId: 'user-1',
-    permissions: ['read', 'write'],
+    userId: "user-1",
+    permissions: ["read", "write"],
   }),
   refreshToken: vi.fn().mockResolvedValue({
-    token: 'new-token',
+    token: "new-token",
     expiresIn: 3600,
   }),
 };
@@ -156,12 +162,12 @@ const stubAuthService = {
 const stubPaymentGateway = {
   charge: vi.fn().mockResolvedValue({
     success: true,
-    transactionId: 'txn-123',
+    transactionId: "txn-123",
     amount: 1000,
   }),
   refund: vi.fn().mockResolvedValue({
     success: true,
-    refundId: 'ref-123',
+    refundId: "ref-123",
   }),
 };
 ```
@@ -177,15 +183,17 @@ function createRetryStub() {
     fetch: vi.fn().mockImplementation(async () => {
       callCount++;
       if (callCount < 3) {
-        throw new Error('Temporary failure');
+        throw new Error("Temporary failure");
       }
       return { success: true };
     }),
-    reset: () => { callCount = 0; },
+    reset: () => {
+      callCount = 0;
+    },
   };
 }
 
-it('should succeed after retries', async () => {
+it("should succeed after retries", async () => {
   const stub = createRetryStub();
   const service = new RetryService(stub, { maxRetries: 3 });
 
@@ -202,16 +210,16 @@ it('should succeed after retries', async () => {
 // Stubファクトリ
 function createUserStub(overrides = {}) {
   return {
-    id: 'user-1',
-    name: 'Default User',
-    email: 'default@example.com',
-    createdAt: new Date('2025-01-01'),
+    id: "user-1",
+    name: "Default User",
+    email: "default@example.com",
+    createdAt: new Date("2025-01-01"),
     ...overrides,
   };
 }
 
 function createRepositoryStub(users = [createUserStub()]) {
-  const userMap = new Map(users.map(u => [u.id, u]));
+  const userMap = new Map(users.map((u) => [u.id, u]));
 
   return {
     findById: vi.fn().mockImplementation(async (id) => userMap.get(id) || null),
@@ -224,14 +232,14 @@ function createRepositoryStub(users = [createUserStub()]) {
 }
 
 // 使用例
-it('should find admin user', async () => {
-  const adminUser = createUserStub({ id: 'admin', role: 'admin' });
+it("should find admin user", async () => {
+  const adminUser = createUserStub({ id: "admin", role: "admin" });
   const repo = createRepositoryStub([adminUser]);
 
   const service = new UserService(repo);
-  const user = await service.getUser('admin');
+  const user = await service.getUser("admin");
 
-  expect(user.role).toBe('admin');
+  expect(user.role).toBe("admin");
 });
 ```
 
@@ -243,7 +251,7 @@ class StubBuilder {
   private errors: Map<string, Error> = new Map();
 
   withUser(id: string, user: Partial<User>) {
-    this.responses.set(id, { id, name: 'Default', ...user });
+    this.responses.set(id, { id, name: "Default", ...user });
     return this;
   }
 
@@ -266,9 +274,9 @@ class StubBuilder {
 
 // 使用例
 const stub = new StubBuilder()
-  .withUser('user-1', { name: 'Alice' })
-  .withUser('user-2', { name: 'Bob' })
-  .withError('error-user', new Error('Not found'))
+  .withUser("user-1", { name: "Alice" })
+  .withUser("user-2", { name: "Bob" })
+  .withError("error-user", new Error("Not found"))
   .build();
 ```
 

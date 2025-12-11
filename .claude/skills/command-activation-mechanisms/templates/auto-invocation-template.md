@@ -15,9 +15,11 @@ Scope: $2 (optional)
 Message: $3 or $ARGUMENTS
 
 ## Generate Commit Message
+
 Format: type(scope): message
 
 ## Create Commit
+
 Execute: git commit -m "[message]"
 ```
 

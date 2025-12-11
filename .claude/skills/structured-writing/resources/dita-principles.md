@@ -22,11 +22,11 @@ DITA (Darwin Information Typing Architecture) は、トピックベースの構�
 
 ### 2. 情報型の分離
 
-| 情報型 | 目的 | 質問への回答 |
-|:-------|:-----|:-------------|
-| **Concept** | 理解を深める | 「それは何か？」「なぜ重要か？」 |
-| **Task** | 手順を示す | 「どうやるか？」 |
-| **Reference** | 事実を提供 | 「詳細は何か？」 |
+| 情報型        | 目的         | 質問への回答                     |
+| :------------ | :----------- | :------------------------------- |
+| **Concept**   | 理解を深める | 「それは何か？」「なぜ重要か？」 |
+| **Task**      | 手順を示す   | 「どうやるか？」                 |
+| **Reference** | 事実を提供   | 「詳細は何か？」                 |
 
 ### 3. 単一ソース
 
@@ -35,9 +35,11 @@ DITA (Darwin Information Typing Architecture) は、トピックベースの構�
 ```markdown
 <!-- 定義箇所 -->
 <!-- snippets/api-base-url.md -->
+
 `https://api.example.com/v1`
 
 <!-- 使用箇所 -->
+
 APIのベースURLは {{snippet:api-base-url}} です。
 ```
 
@@ -58,12 +60,15 @@ APIのベースURLは {{snippet:api-base-url}} です。
 # トピックタイトル
 
 ## 概要
+
 [トピックの目的を1-2文で説明]
 
 ## 本文
+
 [主要コンテンツ]
 
 ## 関連情報
+
 - [関連トピック1](./related1.md)
 - [関連トピック2](./related2.md)
 ```
@@ -87,9 +92,11 @@ keywords: [keyword1, keyword2]
 ```markdown
 <!-- 共通の警告文を定義 -->
 <!-- _shared/warnings.md -->
+
 > ⚠️ この操作は元に戻せません。実行前にバックアップを取得してください。
 
 <!-- 参照して使用 -->
+
 {{conref:_shared/warnings.md#backup-warning}}
 ```
 
@@ -97,6 +104,7 @@ keywords: [keyword1, keyword2]
 
 ```markdown
 <!-- 製品別に表示を切り替え -->
+
 {{if product="enterprise"}}
 エンタープライズ版では追加機能が利用可能です。
 {{/if}}

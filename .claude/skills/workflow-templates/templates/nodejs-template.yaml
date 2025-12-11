@@ -60,7 +60,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'  # プロジェクトに応じて変更
+          node-version: "20" # プロジェクトに応じて変更
           cache: ${{ needs.setup.outputs.package-manager }}
 
       - name: Install dependencies
@@ -160,7 +160,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
           cache: ${{ needs.setup.outputs.package-manager }}
 
       - name: Install dependencies
@@ -196,7 +196,7 @@ jobs:
     name: E2E Tests
     runs-on: ubuntu-latest
     needs: [setup, build]
-    if: github.event_name == 'pull_request'  # PRの場合のみ実行
+    if: github.event_name == 'pull_request' # PRの場合のみ実行
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -210,7 +210,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
           cache: ${{ needs.setup.outputs.package-manager }}
 
       - name: Install dependencies
@@ -260,7 +260,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
           cache: ${{ needs.setup.outputs.package-manager }}
 
       # 脆弱性監査

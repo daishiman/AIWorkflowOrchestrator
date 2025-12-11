@@ -386,7 +386,6 @@ model: sonnet # または opus, haiku
 ### フェーズ 1: 初期分析
 
 1. [ステップ 1 の詳細]
-
    - 使用ツール: [ツール名]
    - 期待結果: [結果形式]
 
@@ -414,7 +413,6 @@ model: sonnet # または opus, haiku
    - 使用ツール: Read
    - 対象: 仕様ファイル、既存コード
 2. テストケースの設計
-
    - ハッピーパスのテスト
    - エッジケースの特定
    - エラーハンドリングのテスト
@@ -427,7 +425,6 @@ model: sonnet # または opus, haiku
 ### フェーズ 2: 実装（GREEN）
 
 1. 最小限の実装
-
    - 使用ツール: Write, Edit
    - テストをパスする最小のコード
 
@@ -438,7 +435,6 @@ model: sonnet # または opus, haiku
 ### フェーズ 3: リファクタリング（REFACTOR）
 
 1. コード品質改善
-
    - 重複の削除
    - 可読性の向上
    - パフォーマンス最適化
@@ -1377,9 +1373,10 @@ Use proactively after any file edit in src/ or api/ directories.
 ```markdown
 読み取り専用エージェント:
 tools:
-  - Read
-  - Search
-例:
+
+- Read
+- Search
+  例:
 
 - code-reviewer-agent
 - security-auditor-agent
@@ -1387,33 +1384,36 @@ tools:
 
 読み書きエージェント（制限付き）:
 tools:
-  - Read
-  - Write
-  - Search
-write_paths: ["src/**/*.test.js", "tests/**"]
-例:
+
+- Read
+- Write
+- Search
+  write_paths: ["src/**/*.test.js", "tests/**"]
+  例:
 
 - test-generator-agent
 
 フル権限エージェント:
 tools:
-  - Bash
-  - Read
-  - Write
-  - Edit
-  - Search
-  - Task
-approval_required: true
-例:
+
+- Bash
+- Read
+- Write
+- Edit
+- Search
+- Task
+  approval_required: true
+  例:
 
 - deployment-agent
 - database-migration-agent
 
 委譲専門エージェント:
 tools:
-  - Task
-  - Read
-例:
+
+- Task
+- Read
+  例:
 
 - orchestrator-agent
 - pipeline-coordinator-agent
@@ -1503,7 +1503,6 @@ description: Test an agent in isolation
    `@$ARGUMENTS` を指定のテストケースで実行
 
 3. 結果検証
-
    - 期待された動作をしたか
    - タイムアウトしなかったか
    - エラーなく完了したか

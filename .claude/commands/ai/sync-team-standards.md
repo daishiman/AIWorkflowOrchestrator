@@ -60,15 +60,18 @@ fi
 **使用エージェント**: `.claude/agents/code-quality.md`
 
 **依頼内容**:
+
 ```markdown
 チームコーディング規約を`.claude/CLAUDE.md`に統合してください。
 
 **要件**:
+
 1. コーディング規約の整理
 2. 命名規則の明確化
 3. アーキテクチャルールの統合
 
 **スキル参照**:
+
 - `.claude/skills/code-style-guides/SKILL.md`
 - `.claude/skills/best-practices-curation/SKILL.md`
 
@@ -81,11 +84,13 @@ fi
 ## チーム規約同期完了
 
 ### 更新内容
+
 - コーディング規約: 更新
 - 命名規則: 明確化
 - アーキテクチャルール: 統合
 
 ### Next Steps
+
 1. チームレビュー
 2. Git commit
 ```

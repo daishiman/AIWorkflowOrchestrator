@@ -5,6 +5,7 @@
 ### 適切な粒度の判断基準
 
 **スパンを作成すべき箇所**:
+
 - [ ] ビジネスロジックの意味のある単位か？
 - [ ] ボトルネック特定に有用か？
 - [ ] パフォーマンス測定が必要か？
@@ -12,6 +13,7 @@
 - [ ] 外部システム（DB、API等）を呼び出すか？
 
 **スパンを作成すべきでない箇所**:
+
 - [ ] 単純な変数代入や計算
 - [ ] ユーティリティ関数（1行程度）
 - [ ] ループの各イテレーション
@@ -20,10 +22,11 @@
 ### 粒度の例
 
 **粗すぎる**:
+
 ```typescript
 // ❌ 悪い例: 1つのスパンで全処理
 async function processOrder(orderId) {
-  const span = startSpan('process_order');
+  const span = startSpan("process_order");
 
   const order = await fetchOrder(orderId);
   await validateOrder(order);
@@ -36,14 +39,15 @@ async function processOrder(orderId) {
 ```
 
 **適切**:
+
 ```typescript
 // ✅ 良い例: 意味のある単位でスパン分割
 async function processOrder(orderId) {
-  return withSpan('process_order', async () => {
-    const order = await withSpan('fetch_order', () => fetchOrder(orderId));
-    await withSpan('validate_order', () => validateOrder(order));
-    await withSpan('charge_payment', () => chargePayment(order));
-    await withSpan('send_notification', () => sendNotification(order));
+  return withSpan("process_order", async () => {
+    const order = await withSpan("fetch_order", () => fetchOrder(orderId));
+    await withSpan("validate_order", () => validateOrder(order));
+    await withSpan("charge_payment", () => chargePayment(order));
+    await withSpan("send_notification", () => sendNotification(order));
     return order;
   });
 }
@@ -51,14 +55,18 @@ async function processOrder(orderId) {
 ```
 
 **細かすぎる**:
+
 ```typescript
 // ❌ 悪い例: 過剰なスパン
 async function calculateTotal(items) {
-  return withSpan('calculate_total', async () => {
+  return withSpan("calculate_total", async () => {
     let total = 0;
     for (const item of items) {
       // 各イテレーションでスパン作成（過剰）
-      total += await withSpan(`add_item_${item.id}`, () => item.price * item.quantity);
+      total += await withSpan(
+        `add_item_${item.id}`,
+        () => item.price * item.quantity,
+      );
     }
     return total;
   });
@@ -70,7 +78,8 @@ async function calculateTotal(items) {
 
 ### 命名パターン
 
-**動詞_目的語形式**:
+**動詞\_目的語形式**:
+
 ```
 ✅ fetch_user
 ✅ validate_payment
@@ -79,6 +88,7 @@ async function calculateTotal(items) {
 ```
 
 **HTTP操作**:
+
 ```
 ✅ GET /api/users
 ✅ POST /api/orders
@@ -86,6 +96,7 @@ async function calculateTotal(items) {
 ```
 
 **データベース操作**:
+
 ```
 ✅ SELECT users
 ✅ INSERT INTO orders
@@ -95,6 +106,7 @@ async function calculateTotal(items) {
 ### 一貫性
 
 **同じ操作には同じ名前**:
+
 ```
 ✅ すべてのユーザー取得: fetch_user
 ❌ fetch_user, get_user, retrieve_user （バラバラ）
@@ -105,15 +117,18 @@ async function calculateTotal(items) {
 ### 必須属性
 
 **すべてのスパン**:
+
 - `service.name`: サービス名
 - `span.kind`: スパンの種類（SERVER/CLIENT/PRODUCER/CONSUMER/INTERNAL）
 
 **HTTPスパン**:
+
 - `http.method`: HTTPメソッド
 - `http.url`: URL
 - `http.status_code`: ステータスコード
 
 **データベーススパン**:
+
 - `db.system`: データベース種別
 - `db.statement`: SQL文
 - `db.operation`: 操作種別（SELECT/INSERT等）
@@ -121,29 +136,32 @@ async function calculateTotal(items) {
 ### カスタム属性の設計指針
 
 **ビジネスコンテキスト**:
+
 ```typescript
 span.setAttributes({
-  'user.id': userId,
-  'order.id': orderId,
-  'order.total': 1234.56,
-  'payment.method': 'credit_card'
+  "user.id": userId,
+  "order.id": orderId,
+  "order.total": 1234.56,
+  "payment.method": "credit_card",
 });
 ```
 
 **診断情報**:
+
 ```typescript
 span.setAttributes({
-  'cache.hit': true,
-  'retry.count': 2,
-  'queue.size': 150
+  "cache.hit": true,
+  "retry.count": 2,
+  "queue.size": 150,
 });
 ```
 
 **パフォーマンス情報**:
+
 ```typescript
 span.setAttributes({
-  'db.rows_affected': 5,
-  'api.response_size_bytes': 4096
+  "db.rows_affected": 5,
+  "api.response_size_bytes": 4096,
 });
 ```
 
@@ -154,6 +172,7 @@ span.setAttributes({
 **定義**: スパン内で発生した特定の時点のイベント
 
 **用途**:
+
 - ログとトレースの統合
 - 処理の途中経過を記録
 - 例外発生を記録
@@ -161,12 +180,12 @@ span.setAttributes({
 ### イベント追加
 
 ```typescript
-span.addEvent('Validation started');
+span.addEvent("Validation started");
 
 // 属性付きイベント
-span.addEvent('Cache miss', {
-  'cache.key': 'user:123',
-  'cache.ttl': 3600
+span.addEvent("Cache miss", {
+  "cache.key": "user:123",
+  "cache.ttl": 3600,
 });
 
 // 例外記録
@@ -179,19 +198,22 @@ span.recordException(error);
 ### ステータスコード
 
 **OK**: 処理成功
+
 ```typescript
 span.setStatus({ code: SpanStatusCode.OK });
 ```
 
 **ERROR**: 処理失敗
+
 ```typescript
 span.setStatus({
   code: SpanStatusCode.ERROR,
-  message: 'Payment processing failed'
+  message: "Payment processing failed",
 });
 ```
 
 **UNSET**: 未設定（デフォルト）
+
 ```typescript
 // 明示的に設定しない場合はUNSET
 ```
@@ -200,7 +222,7 @@ span.setStatus({
 
 ```typescript
 async function processPayment(paymentData) {
-  const span = startSpan('process_payment');
+  const span = startSpan("process_payment");
 
   try {
     const result = await paymentGateway.charge(paymentData);
@@ -209,7 +231,7 @@ async function processPayment(paymentData) {
   } catch (error) {
     span.setStatus({
       code: SpanStatusCode.ERROR,
-      message: error.message
+      message: error.message,
     });
     span.recordException(error);
     throw error;
@@ -229,20 +251,22 @@ async function processPayment(paymentData) {
 
 ```typescript
 // メッセージ送信（親スパン）
-const publishSpan = startSpan('publish_message');
+const publishSpan = startSpan("publish_message");
 const publishContext = publishSpan.spanContext();
-await queue.publish('orders', { orderId, _trace: publishContext });
+await queue.publish("orders", { orderId, _trace: publishContext });
 publishSpan.end();
 
 // メッセージ受信（子スパン、非同期）
-const message = await queue.consume('orders');
+const message = await queue.consume("orders");
 const publishContext = message._trace;
 
 // リンクで親スパンと関連付け
-const consumeSpan = startSpan('consume_message', {
-  links: [{
-    context: publishContext
-  }]
+const consumeSpan = startSpan("consume_message", {
+  links: [
+    {
+      context: publishContext,
+    },
+  ],
 });
 
 await processOrder(message.orderId);
@@ -250,6 +274,7 @@ consumeSpan.end();
 ```
 
 **可視化**:
+
 ```
 Publish Span (10ms)
   ⋯ (リンク)

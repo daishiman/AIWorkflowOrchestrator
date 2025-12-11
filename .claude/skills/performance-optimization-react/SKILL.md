@@ -153,6 +153,7 @@ cat .claude/skills/performance-optimization-react/templates/optimization-checkli
 - **Context分割**: 頻繁に更新される値と静的な値を別Contextに分離
 
 **詳細リソース**:
+
 ```bash
 cat .claude/skills/performance-optimization-react/resources/re-rendering-patterns.md
 ```
@@ -181,11 +182,12 @@ const MyComponent = React.memo(
   (prevProps, nextProps) => {
     // trueを返すと再レンダリングをスキップ
     return prevProps.data.id === nextProps.data.id;
-  }
+  },
 );
 ```
 
 **詳細リソース**:
+
 ```bash
 cat .claude/skills/performance-optimization-react/resources/react-memo-guide.md
 ```
@@ -211,6 +213,7 @@ cat .claude/skills/performance-optimization-react/resources/react-memo-guide.md
 - **コミット時間**: React が DOM に変更を反映する時間
 
 **詳細リソース**:
+
 ```bash
 cat .claude/skills/performance-optimization-react/resources/profiler-measurement.md
 ```
@@ -256,6 +259,7 @@ const SettingsContext = createContext<Settings>(defaultSettings);
 ```
 
 **詳細リソース**:
+
 ```bash
 cat .claude/skills/performance-optimization-react/resources/context-splitting.md
 ```
@@ -307,12 +311,12 @@ cat .claude/skills/performance-optimization-react/resources/context-splitting.md
 
 **選択マトリックス**:
 
-| 原因 | 推奨手法 | 適用条件 |
-|------|---------|---------|
-| 親の再レンダリング | React.memo | Propsが変わらないことが多い |
-| コールバックProps | useCallback | コールバックが子に渡される |
-| 計算コスト高い | useMemo | 計算が重く、依存が少ない |
-| Context頻繁更新 | Context分割 | 一部の値のみ頻繁に更新 |
+| 原因               | 推奨手法    | 適用条件                    |
+| ------------------ | ----------- | --------------------------- |
+| 親の再レンダリング | React.memo  | Propsが変わらないことが多い |
+| コールバックProps  | useCallback | コールバックが子に渡される  |
+| 計算コスト高い     | useMemo     | 計算が重く、依存が少ない    |
+| Context頻繁更新    | Context分割 | 一部の値のみ頻繁に更新      |
 
 **判断基準**:
 
@@ -368,9 +372,14 @@ const MyComponent = React.memo(
 **useCallbackの適用**:
 
 ```typescript
-const handleClick = useCallback(() => {
-  // クリック処理
-}, [/* 依存配列 */]);
+const handleClick = useCallback(
+  () => {
+    // クリック処理
+  },
+  [
+    /* 依存配列 */
+  ],
+);
 ```
 
 **useMemoの適用**:
@@ -397,13 +406,13 @@ const expensiveValue = useMemo(() => {
 // 分割前
 const AppContext = createContext({
   user: null,
-  theme: 'light',
-  cart: []
+  theme: "light",
+  cart: [],
 });
 
 // 分割後
 const UserContext = createContext(null);
-const ThemeContext = createContext('light');
+const ThemeContext = createContext("light");
 const CartContext = createContext([]);
 ```
 
@@ -470,6 +479,7 @@ cat .claude/skills/performance-optimization-react/templates/optimization-checkli
 **原則**: 測定なしに最適化しない
 
 **理由**:
+
 - 早すぎる最適化はコードを複雑にする
 - 実際のボトルネックは予想と異なることが多い
 - 測定により最適化の効果を確認できる
@@ -477,11 +487,13 @@ cat .claude/skills/performance-optimization-react/templates/optimization-checkli
 ### React.memoの適用判断
 
 **適用すべき場合**:
+
 - [ ] 測定でパフォーマンス問題を確認済み
 - [ ] Propsが変わらないことが多い
 - [ ] レンダリングコストが高い
 
 **適用を避けるべき場合**:
+
 - [ ] 測定なしの早すぎる最適化
 - [ ] Propsが毎回変わる
 - [ ] レンダリングコストが低い
@@ -489,11 +501,13 @@ cat .claude/skills/performance-optimization-react/templates/optimization-checkli
 ### Context分割の基準
 
 **分割すべき場合**:
+
 - [ ] 一部の値のみが頻繁に更新される
 - [ ] Context使用コンポーネントが10個以上
 - [ ] パフォーマンス問題が測定で確認済み
 
 **分割を避けるべき場合**:
+
 - [ ] すべての値が同時に更新される
 - [ ] Context使用コンポーネントが少ない（5個以下）
 - [ ] パフォーマンス問題がない
@@ -505,10 +519,12 @@ cat .claude/skills/performance-optimization-react/templates/optimization-checkli
 **症状**: React.memoを適用しても再レンダリングされる
 
 **原因**:
+
 - Propsに毎回新しいオブジェクトや関数が渡されている
 - 親のuseCallbackやuseMemoが適切でない
 
 **解決策**:
+
 1. Propsの変更を確認（React DevTools）
 2. 親でuseCallbackやuseMemoを適用
 3. カスタム比較関数を実装
@@ -518,10 +534,12 @@ cat .claude/skills/performance-optimization-react/templates/optimization-checkli
 **症状**: useMemoを適用しても処理が遅い
 
 **原因**:
+
 - 依存配列が毎回変わっている
 - メモ化のオーバーヘッドが計算コストより高い
 
 **解決策**:
+
 1. 依存配列を見直す
 2. 計算コストを測定
 3. 本当にuseMemoが必要か再検討
@@ -531,10 +549,12 @@ cat .claude/skills/performance-optimization-react/templates/optimization-checkli
 **症状**: Context分割後もパフォーマンス改善がない
 
 **原因**:
+
 - 分割粒度が適切でない
 - 頻繁に更新される値が分離されていない
 
 **解決策**:
+
 1. Context値の更新頻度を確認
 2. さらに細かく分割
 3. useContextの使用箇所を確認
@@ -542,6 +562,7 @@ cat .claude/skills/performance-optimization-react/templates/optimization-checkli
 ## 変更履歴
 
 ### v1.0.0 (2025-11-27)
+
 - 初版リリース
 - state-manager.mdからパフォーマンス最適化知識を分離
 - React DevTools Profiler測定方法を体系化

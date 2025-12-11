@@ -8,24 +8,24 @@
 // 概念的な構造（実装は技術スタックに応じて調整）
 interface IRepository<T, ID> {
   // 作成
-  add(entity: T): Promise<T>
+  add(entity: T): Promise<T>;
 
   // 読み取り
-  findById(id: ID): Promise<T | null>
-  findAll(): Promise<T[]>
+  findById(id: ID): Promise<T | null>;
+  findAll(): Promise<T[]>;
 
   // 更新
-  update(entity: T): Promise<T>
+  update(entity: T): Promise<T>;
 
   // 削除
-  remove(entity: T): Promise<void>
-  removeById(id: ID): Promise<boolean>
+  remove(entity: T): Promise<void>;
+  removeById(id: ID): Promise<boolean>;
 
   // 存在確認
-  exists(id: ID): Promise<boolean>
+  exists(id: ID): Promise<boolean>;
 
   // カウント
-  count(): Promise<number>
+  count(): Promise<number>;
 }
 ```
 
@@ -35,10 +35,10 @@ interface IRepository<T, ID> {
 
 ```typescript
 interface IReadOnlyRepository<T, ID> {
-  findById(id: ID): Promise<T | null>
-  findAll(): Promise<T[]>
-  exists(id: ID): Promise<boolean>
-  count(): Promise<number>
+  findById(id: ID): Promise<T | null>;
+  findAll(): Promise<T[]>;
+  exists(id: ID): Promise<boolean>;
+  count(): Promise<number>;
 }
 ```
 
@@ -48,9 +48,9 @@ interface IReadOnlyRepository<T, ID> {
 
 ```typescript
 interface IWriteOnlyRepository<T, ID> {
-  add(entity: T): Promise<T>
-  update(entity: T): Promise<T>
-  remove(entity: T): Promise<void>
+  add(entity: T): Promise<T>;
+  update(entity: T): Promise<T>;
+  remove(entity: T): Promise<void>;
 }
 ```
 
@@ -63,18 +63,21 @@ interface IWriteOnlyRepository<T, ID> {
 ```typescript
 interface IWorkflowRepository extends IRepository<Workflow, string> {
   // ステータスによる検索
-  findPendingWorkflows(): Promise<Workflow[]>
-  findCompletedWorkflows(): Promise<Workflow[]>
+  findPendingWorkflows(): Promise<Workflow[]>;
+  findCompletedWorkflows(): Promise<Workflow[]>;
 
   // ユーザーによる検索
-  findByUserId(userId: string): Promise<Workflow[]>
+  findByUserId(userId: string): Promise<Workflow[]>;
 
   // 複合条件
-  findByUserAndStatus(userId: string, status: WorkflowStatus): Promise<Workflow[]>
+  findByUserAndStatus(
+    userId: string,
+    status: WorkflowStatus,
+  ): Promise<Workflow[]>;
 
   // 期間指定
-  findCreatedAfter(date: Date): Promise<Workflow[]>
-  findCreatedBetween(start: Date, end: Date): Promise<Workflow[]>
+  findCreatedAfter(date: Date): Promise<Workflow[]>;
+  findCreatedBetween(start: Date, end: Date): Promise<Workflow[]>;
 }
 ```
 
@@ -84,28 +87,28 @@ interface IWorkflowRepository extends IRepository<Workflow, string> {
 
 ```typescript
 interface PageRequest {
-  page: number       // 0-indexed
-  size: number       // 1ページあたりの件数
-  sortBy?: string    // ソートカラム
-  sortOrder?: 'asc' | 'desc'
+  page: number; // 0-indexed
+  size: number; // 1ページあたりの件数
+  sortBy?: string; // ソートカラム
+  sortOrder?: "asc" | "desc";
 }
 
 interface Page<T> {
-  content: T[]
-  totalElements: number
-  totalPages: number
-  currentPage: number
-  size: number
-  hasNext: boolean
-  hasPrevious: boolean
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  currentPage: number;
+  size: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
 }
 
 interface IPaginatedRepository<T, ID> extends IRepository<T, ID> {
-  findAllPaginated(request: PageRequest): Promise<Page<T>>
+  findAllPaginated(request: PageRequest): Promise<Page<T>>;
   findByConditionPaginated(
     condition: Partial<T>,
-    request: PageRequest
-  ): Promise<Page<T>>
+    request: PageRequest,
+  ): Promise<Page<T>>;
 }
 ```
 
@@ -115,13 +118,13 @@ interface IPaginatedRepository<T, ID> extends IRepository<T, ID> {
 
 ```typescript
 interface IBulkRepository<T, ID> {
-  addAll(entities: T[]): Promise<T[]>
-  updateAll(entities: T[]): Promise<T[]>
-  removeAll(entities: T[]): Promise<void>
-  removeAllByIds(ids: ID[]): Promise<number>  // 削除件数を返却
+  addAll(entities: T[]): Promise<T[]>;
+  updateAll(entities: T[]): Promise<T[]>;
+  removeAll(entities: T[]): Promise<void>;
+  removeAllByIds(ids: ID[]): Promise<number>; // 削除件数を返却
 
   // 一括検索
-  findByIds(ids: ID[]): Promise<T[]>
+  findByIds(ids: ID[]): Promise<T[]>;
 }
 ```
 
@@ -129,16 +132,16 @@ interface IBulkRepository<T, ID> {
 
 ### メソッド名プレフィックス
 
-| プレフィックス | 用途 | 戻り値 |
-|--------------|------|--------|
-| `find` | 検索 | `T` or `T[]` or `null` |
-| `findAll` | 全件取得 | `T[]` |
-| `findBy` | 条件検索 | `T` or `T[]` |
-| `exists` | 存在確認 | `boolean` |
-| `count` | 件数取得 | `number` |
-| `add` | 追加 | `T` |
-| `update` | 更新 | `T` |
-| `remove` | 削除 | `void` or `boolean` |
+| プレフィックス | 用途     | 戻り値                 |
+| -------------- | -------- | ---------------------- |
+| `find`         | 検索     | `T` or `T[]` or `null` |
+| `findAll`      | 全件取得 | `T[]`                  |
+| `findBy`       | 条件検索 | `T` or `T[]`           |
+| `exists`       | 存在確認 | `boolean`              |
+| `count`        | 件数取得 | `number`               |
+| `add`          | 追加     | `T`                    |
+| `update`       | 更新     | `T`                    |
+| `remove`       | 削除     | `void` or `boolean`    |
 
 ### ビジネス用語の使用
 
@@ -179,8 +182,8 @@ findWorkflowsByUsers(userIds: string[])
 ```typescript
 // ❌ アンチパターン
 interface IRepository<T> {
-  find(query: any): Promise<T[]>  // 任意のクエリを許可
-  executeQuery(sql: string): Promise<T[]>  // 生SQL
+  find(query: any): Promise<T[]>; // 任意のクエリを許可
+  executeQuery(sql: string): Promise<T[]>; // 生SQL
 }
 ```
 
@@ -191,9 +194,9 @@ interface IRepository<T> {
 ```typescript
 // ❌ アンチパターン
 interface IRepository<T> {
-  beginTransaction(): Promise<void>
-  commit(): Promise<void>
-  rollback(): Promise<void>
+  beginTransaction(): Promise<void>;
+  commit(): Promise<void>;
+  rollback(): Promise<void>;
 }
 ```
 
@@ -204,8 +207,8 @@ interface IRepository<T> {
 ```typescript
 // ❌ アンチパターン
 interface IWorkflowRepository {
-  processWorkflow(id: string): Promise<void>  // ビジネスロジック
-  validateAndSave(workflow: Workflow): Promise<Workflow>  // バリデーション混入
+  processWorkflow(id: string): Promise<void>; // ビジネスロジック
+  validateAndSave(workflow: Workflow): Promise<Workflow>; // バリデーション混入
 }
 ```
 
@@ -218,8 +221,8 @@ interface IWorkflowRepository {
 ```typescript
 // ID型を明示的に指定
 interface IRepository<T, ID extends string | number> {
-  findById(id: ID): Promise<T | null>
-  removeById(id: ID): Promise<boolean>
+  findById(id: ID): Promise<T | null>;
+  removeById(id: ID): Promise<boolean>;
 }
 
 // 使用例

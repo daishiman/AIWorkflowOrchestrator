@@ -36,8 +36,8 @@ paths:
       tags:
         - Users
       parameters:
-        - $ref: '#/components/parameters/PageParam'
-        - $ref: '#/components/parameters/LimitParam'
+        - $ref: "#/components/parameters/PageParam"
+        - $ref: "#/components/parameters/LimitParam"
         - name: status
           in: query
           description: ステータスでフィルタ
@@ -45,7 +45,7 @@ paths:
             type: string
             enum: [active, inactive, pending]
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
@@ -55,11 +55,11 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/User'
+                      $ref: "#/components/schemas/User"
                   pagination:
-                    $ref: '#/components/schemas/Pagination'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
 
     post:
       summary: ユーザー作成
@@ -72,22 +72,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserCreate'
+              $ref: "#/components/schemas/UserCreate"
             example:
               name: John Doe
               email: john@example.com
               role: user
       responses:
-        '201':
+        "201":
           description: 作成成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+                $ref: "#/components/schemas/User"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
 
   /users/{userId}:
     parameters:
@@ -106,14 +106,14 @@ paths:
       tags:
         - Users
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '404':
-          $ref: '#/components/responses/NotFound'
+                $ref: "#/components/schemas/User"
+        "404":
+          $ref: "#/components/responses/NotFound"
 
     put:
       summary: ユーザー更新
@@ -126,18 +126,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserUpdate'
+              $ref: "#/components/schemas/UserUpdate"
       responses:
-        '200':
+        "200":
           description: 更新成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          $ref: '#/components/responses/NotFound'
+                $ref: "#/components/schemas/User"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
 
     delete:
       summary: ユーザー削除
@@ -146,10 +146,10 @@ paths:
       tags:
         - Users
       responses:
-        '204':
+        "204":
           description: 削除成功
-        '404':
-          $ref: '#/components/responses/NotFound'
+        "404":
+          $ref: "#/components/responses/NotFound"
 
 components:
   schemas:
@@ -292,7 +292,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
           example:
             code: VALIDATION_ERROR
             message: 入力値が不正です
@@ -305,7 +305,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
           example:
             code: UNAUTHORIZED
             message: 認証が必要です
@@ -315,7 +315,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
           example:
             code: NOT_FOUND
             message: 指定されたリソースが見つかりません

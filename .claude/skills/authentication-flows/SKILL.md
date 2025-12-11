@@ -42,24 +42,28 @@ OAuth 2.0、JWT、API Key、相互TLSなど、主要な認証方式の
 ## 含まれるリソース
 
 ### 1. OAuth 2.0 (resources/oauth2.md)
+
 - Authorization Code Flow
 - Client Credentials Flow
 - PKCE拡張
 - トークンリフレッシュ戦略
 
 ### 2. JWT (resources/jwt.md)
+
 - JWT構造と検証
 - 署名アルゴリズム選択
 - クレーム設計
 - トークンローテーション
 
 ### 3. API Key (resources/api-key.md)
+
 - API Key管理
 - 安全な保存方法
 - ローテーション戦略
 - 使用量追跡
 
 ### 4. 相互TLS (resources/mtls.md)
+
 - 証明書ベース認証
 - 証明書管理
 - 信頼チェーン構築
@@ -92,14 +96,14 @@ OAuth 2.0、JWT、API Key、相互TLSなど、主要な認証方式の
 
 ## 認証方式選択ガイド
 
-| シナリオ | 推奨方式 | 理由 |
-|---------|---------|------|
-| ユーザー代理でAPI呼び出し | OAuth 2.0 Auth Code | ユーザー同意フロー対応 |
-| サービス間通信 | OAuth 2.0 Client Credentials | サービスアカウント認証 |
-| SPAからのAPI呼び出し | OAuth 2.0 + PKCE | トークン漏洩対策 |
-| 社内マイクロサービス | JWT | ステートレス、検証容易 |
-| シンプルなAPI連携 | API Key | 実装簡易、低オーバーヘッド |
-| 金融・医療等高セキュリティ | mTLS | 双方向認証、強力な暗号化 |
+| シナリオ                   | 推奨方式                     | 理由                       |
+| -------------------------- | ---------------------------- | -------------------------- |
+| ユーザー代理でAPI呼び出し  | OAuth 2.0 Auth Code          | ユーザー同意フロー対応     |
+| サービス間通信             | OAuth 2.0 Client Credentials | サービスアカウント認証     |
+| SPAからのAPI呼び出し       | OAuth 2.0 + PKCE             | トークン漏洩対策           |
+| 社内マイクロサービス       | JWT                          | ステートレス、検証容易     |
+| シンプルなAPI連携          | API Key                      | 実装簡易、低オーバーヘッド |
+| 金融・医療等高セキュリティ | mTLS                         | 双方向認証、強力な暗号化   |
 
 ## ベストプラクティス
 
@@ -151,7 +155,7 @@ function getSecret(name: string): string {
 async function getSecretFromSecretsManager(secretId: string): Promise<string> {
   const client = new SecretsManagerClient({});
   const response = await client.send(
-    new GetSecretValueCommand({ SecretId: secretId })
+    new GetSecretValueCommand({ SecretId: secretId }),
   );
   return response.SecretString!;
 }
@@ -164,17 +168,17 @@ async function getSecretFromSecretsManager(secretId: string): Promise<string> {
 function handleAuthError(error: unknown): never {
   if (error instanceof AuthError) {
     switch (error.code) {
-      case 'invalid_token':
+      case "invalid_token":
         // トークン無効 → 再認証
-        throw new UnauthorizedError('Token is invalid or expired');
+        throw new UnauthorizedError("Token is invalid or expired");
 
-      case 'insufficient_scope':
+      case "insufficient_scope":
         // スコープ不足 → 403
-        throw new ForbiddenError('Insufficient permissions');
+        throw new ForbiddenError("Insufficient permissions");
 
-      case 'invalid_client':
+      case "invalid_client":
         // クライアント設定エラー → 設定確認
-        throw new ConfigurationError('Invalid client credentials');
+        throw new ConfigurationError("Invalid client credentials");
 
       default:
         throw new AuthenticationError(error.message);
@@ -187,16 +191,19 @@ function handleAuthError(error: unknown): never {
 ## セキュリティチェックリスト
 
 ### 設計時
+
 - [ ] 適切な認証方式を選択したか？
 - [ ] トークン有効期限を設定したか？
 - [ ] シークレットの保存場所を決定したか？
 
 ### 実装時
+
 - [ ] トークンをログに出力していないか？
 - [ ] HTTPSを使用しているか？
 - [ ] エラーメッセージに機密情報を含めていないか？
 
 ### 運用時
+
 - [ ] シークレットローテーションが設定されているか？
 - [ ] 認証失敗のモニタリングがあるか？
 - [ ] トークン漏洩検出の仕組みがあるか？
@@ -207,11 +214,11 @@ function handleAuthError(error: unknown): never {
 
 ```typescript
 // NG: トークンをログに出力
-console.log('Token:', accessToken);
+console.log("Token:", accessToken);
 logger.info({ headers: request.headers }); // Authorizationヘッダー含む
 
 // ✅ マスキング
-console.log('Token:', maskToken(accessToken));
+console.log("Token:", maskToken(accessToken));
 logger.info({ headers: maskHeaders(request.headers) });
 ```
 
@@ -219,7 +226,7 @@ logger.info({ headers: maskHeaders(request.headers) });
 
 ```typescript
 // NG: コードにシークレット埋め込み
-const apiKey = 'sk-12345-secret-key';
+const apiKey = "sk-12345-secret-key";
 
 // ✅ 環境変数使用
 const apiKey = process.env.API_KEY;
@@ -232,7 +239,7 @@ const apiKey = process.env.API_KEY;
 const token = jwt.sign({ userId: 123 }, secret);
 
 // ✅ 適切な有効期限
-const token = jwt.sign({ userId: 123 }, secret, { expiresIn: '1h' });
+const token = jwt.sign({ userId: 123 }, secret, { expiresIn: "1h" });
 ```
 
 ## 参考資料

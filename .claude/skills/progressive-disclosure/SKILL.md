@@ -46,12 +46,14 @@ Claude Codeスキルシステムにおいては、3層構造（メタデータ�
 トークン効率と知識の深さを両立させ、スキルの自動発動信頼性を最大化します。
 
 **主要な価値**:
+
 - トークン使用量を60-80%削減
 - スキル発動率を20%から84%に向上
 - 必要な時に必要な情報だけを提供
 - コンテキスト汚染を防止
 
 **対象ユーザー**:
+
 - スキルを設計するエージェント（@skill-librarian）
 - スキルメタデータを最適化したい開発者
 - トークン効率を重視するプロジェクト
@@ -132,9 +134,11 @@ cp .claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml 
 ## いつ使うか
 
 ### シナリオ1: スキルメタデータの設計
+
 **状況**: 新しいスキルのYAML Frontmatterを作成する
 
 **適用条件**:
+
 - [ ] スキルのdescriptionを設計する必要がある
 - [ ] 自動発動のトリガー条件を定義したい
 - [ ] トークン効率を最大化したい
@@ -142,9 +146,11 @@ cp .claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml 
 **期待される成果**: 発動率の高い、効率的なメタデータ
 
 ### シナリオ2: トークン使用量の削減
+
 **状況**: スキルのトークン使用量が大きすぎる
 
 **適用条件**:
+
 - [ ] スキル全体のトークン使用量が20K以上
 - [ ] SKILL.md本文が500行を超えそう
 - [ ] コンテキスト汚染を防ぎたい
@@ -152,9 +158,11 @@ cp .claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml 
 **期待される成果**: 60-80%のトークン削減
 
 ### シナリオ3: スキル発動率の向上
+
 **状況**: スキルが自動発動しない
 
 **適用条件**:
+
 - [ ] スキルの発動率が50%未満
 - [ ] トリガー条件が不明確
 - [ ] エージェントがスキルを見逃している
@@ -164,16 +172,19 @@ cp .claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml 
 ## 前提条件
 
 ### 必要な知識
+
 - [ ] Claude Codeスキルシステムの基本理解
 - [ ] YAML Frontmatterの基本文法
 - [ ] トークンとコンテキストウィンドウの概念
 
 ### 必要なツール
+
 - Read: 既存スキルの分析
 - Write: SKILL.mdとリソースの作成
 - Grep: パターン検索
 
 ### 環境要件
+
 - `.claude/skills/`ディレクトリが存在する
 - 参照する既存スキルが利用可能
 
@@ -184,6 +195,7 @@ cp .claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml 
 **目的**: メタデータ・本文・リソースの3層に情報を適切に配置する
 
 **ステップ**:
+
 1. **情報の分類**:
    - レベル1向け: 概要、トリガー条件（常時ロード）
    - レベル2向け: ワークフロー、基本的なベストプラクティス（必要時ロード）
@@ -200,6 +212,7 @@ cp .claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml 
    - 段階的なナビゲーション
 
 **判断基準**:
+
 - [ ] 各層の役割が明確か？
 - [ ] 情報の配置が適切か？
 - [ ] 参照フローが論理的か？
@@ -211,6 +224,7 @@ cp .claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml 
 **目的**: descriptionを設計し、自動発動率を最大化する
 
 **ステップ**:
+
 1. **description構成要素の定義**:
    - 概要（1-2文）
    - 専門分野（2-4項目）
@@ -227,6 +241,7 @@ cp .claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml 
    - 他スキルとの境界明確化
 
 **判断基準**:
+
 - [ ] トリガーキーワードが3つ以上あるか？
 - [ ] 具体的な使用シナリオが含まれているか？
 - [ ] 除外条件が明示されているか？
@@ -238,6 +253,7 @@ cp .claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml 
 **目的**: 必要最小限のトークンで最大の価値を提供する
 
 **ステップ**:
+
 1. **遅延読み込み設計**:
    - 全リソースの事前ロード禁止
    - 必要なリソースのみ参照
@@ -254,6 +270,7 @@ cp .claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml 
    - 例は最小限（2-3個）
 
 **判断基準**:
+
 - [ ] SKILL.mdがインデックスとして機能するか？
 - [ ] トークン使用量が推奨範囲（<20K）か？
 - [ ] 無駄な冗長性がないか？
@@ -265,6 +282,7 @@ cp .claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml 
 **目的**: スキルが適切なタイミングで確実に発動するようにする
 
 **ステップ**:
+
 1. **トリガー設計の最適化**:
    - プライマリトリガー（必ず発動）
    - セカンダリトリガー（文脈依存）
@@ -281,6 +299,7 @@ cp .claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml 
    - 改善サイクルの実施
 
 **判断基準**:
+
 - [ ] トリガー階層が明確か？
 - [ ] コミットメントメカニズムが機能するか？
 - [ ] 発動率が目標値（単一責任: 90%、協調: 60%）に達するか？
@@ -356,11 +375,13 @@ cp .claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml 
 **症状**: 該当するタスクなのにスキルが選択されない
 
 **原因**:
+
 - descriptionのトリガーキーワードが不明確
 - 使用タイミングが抽象的すぎる
 - 他のスキルと区別できない
 
 **解決策**:
+
 1. descriptionに具体的な技術名・操作名を追加
 2. 使用タイミングを「〇〇の時」という明確なシナリオで記述
 3. 除外条件を明示して境界を明確化
@@ -372,11 +393,13 @@ cp .claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml 
 **症状**: スキル全体で20K以上のトークンを使用
 
 **原因**:
+
 - すべての情報をSKILL.mdに含めている
 - リソース分割が不十分
 - 冗長な記述が多い
 
 **解決策**:
+
 1. SKILL.mdを500行以内に制限
 2. 詳細情報をリソースに分離
 3. 冗長性を排除（DRY原則）
@@ -388,11 +411,13 @@ cp .claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml 
 **症状**: 必要な情報がどこにあるか分からない
 
 **原因**:
+
 - SKILL.mdからリソースへの参照が不明確
 - リソース間の関連性が不明
 - ナビゲーションが複雑
 
 **解決策**:
+
 1. SKILL.mdに「リソースへの参照」セクションを追加
 2. 各Phaseで対応するリソースを明示
 3. リソース構造セクションでディレクトリツリーを提示
@@ -419,6 +444,7 @@ cp .claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml 
 **測定方法**: (発動した回数 / テスト総数) × 100
 
 **目標**:
+
 - 単一責任スキル: 90%以上
 - 階層的スキル: 70-80%
 - 協調的スキル: 60-70%
@@ -431,30 +457,34 @@ cp .claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml 
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-23 | 初版作成 - 3層開示モデルとスキル発動最適化フレームワーク |
+| バージョン | 日付       | 変更内容                                                 |
+| ---------- | ---------- | -------------------------------------------------------- |
+| 1.0.0      | 2025-11-23 | 初版作成 - 3層開示モデルとスキル発動最適化フレームワーク |
 
 ## 使用上の注意
 
 ### このスキルが得意なこと
+
 - スキルメタデータ（description）の設計と最適化
 - トークン使用量の削減（60-80%）
 - スキル発動率の向上（20%→84%）
 - 3層構造の設計
 
 ### このスキルが行わないこと
+
 - スキルの実際の実行
 - コンテンツの作成（構造設計のみ）
 - プロジェクト固有のビジネスロジック
 
 ### 推奨される使用フロー
+
 1. 3層構造の設計（Phase 1）
 2. メタデータの最適化（Phase 2）
 3. トークン効率の最大化（Phase 3）
 4. 発動信頼性の向上（Phase 4）
 
 ### 参考文献
+
 - **『Progressive Disclosure in User Interface Design』** (Web Resource)
   - 情報の段階的開示テクニック
   - 認知負荷の軽減方法

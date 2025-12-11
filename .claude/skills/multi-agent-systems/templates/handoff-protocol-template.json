@@ -13,10 +13,7 @@
     "summary": {
       "task_description": "実施したタスクの概要",
       "outcome": "タスクの結果",
-      "key_findings": [
-        "発見事項1",
-        "発見事項2"
-      ]
+      "key_findings": ["発見事項1", "発見事項2"]
     },
 
     "artifacts": {
@@ -57,10 +54,7 @@
           "assigned_to": "担当エージェント（オプション）"
         }
       ],
-      "assumptions": [
-        "前提条件1",
-        "前提条件2"
-      ]
+      "assumptions": ["前提条件1", "前提条件2"]
     },
 
     "metadata": {

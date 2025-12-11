@@ -16,15 +16,18 @@ description: Manage and discover commands
 Action: $ARGUMENTS
 
 ## List All Commands
+
 Scan `.claude/commands/` directory
 Display: name, description, usage
 
 ## Search Commands
+
 If $ARGUMENTS provided:
-  Filter by keyword in name/description
-  Display matches
+Filter by keyword in name/description
+Display matches
 
 ## Execute Command
+
 If $ARGUMENTS is command name:
   Execute: `/$ARGUMENTS`
 ```
@@ -41,19 +44,22 @@ description: Search and manage project commands
 Query: $ARGUMENTS
 
 ## No Arguments: List All
+
 Scan `.claude/commands/*.md`
 Parse YAML frontmatter
 Display table:
 | Command | Description | Args |
 
 ## With Arguments: Search
+
 Filter commands matching $ARGUMENTS
 Display matches with usage examples
 
 ## Special: Help
+
 If $ARGUMENTS == "help":
-  Display command syntax guide
-  Show examples
+Display command syntax guide
+Show examples
 ```
 
 ## ユースケース

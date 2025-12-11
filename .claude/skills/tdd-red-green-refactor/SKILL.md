@@ -230,12 +230,10 @@ cat .claude/skills/tdd-red-green-refactor/templates/test-template.md
 ### すべきこと
 
 1. **小さなステップで進める**:
-
    - 一度に一つのテストだけを追加
    - 各テストは一つのことだけを検証
 
 2. **テストを先に書く**:
-
    - 実装前にテストを書く習慣をつける
    - テストが仕様書になることを意識
 
@@ -246,12 +244,10 @@ cat .claude/skills/tdd-red-green-refactor/templates/test-template.md
 ### 避けるべきこと
 
 1. **複数のテストを同時に書く**:
-
    - ❌ 10 個のテストを書いてから実装
    - ✅ 1 個ずつテスト → 実装を繰り返す
 
 2. **テストを後回しにする**:
-
    - ❌ 「後でテストを書く」
    - ✅ テストファーストを徹底
 
@@ -284,7 +280,6 @@ cat .claude/skills/tdd-red-green-refactor/templates/test-template.md
 ## 参考文献
 
 - **『テスト駆動開発』** ケント・ベック著
-
   - 第 1 部: The Money Example
   - 第 2 部: The xUnit Example
   - 第 3 部: Patterns for Test-Driven Development

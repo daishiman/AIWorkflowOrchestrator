@@ -7,6 +7,7 @@ GitHub Actionsワークフローの一般的なエラーパターンと解決策
 ### 1.1 GITHUB_TOKEN 権限不足
 
 **エラーメッセージ**:
+
 ```
 Error: Resource not accessible by integration
 Error: Permission denied
@@ -22,10 +23,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: write        # リポジトリへの書き込み
-      pull-requests: write   # PRへの書き込み
-      issues: write          # Issueへの書き込み
-      packages: write        # パッケージ公開
+      contents: write # リポジトリへの書き込み
+      pull-requests: write # PRへの書き込み
+      issues: write # Issueへの書き込み
+      packages: write # パッケージ公開
     steps:
       - name: Deploy
         run: |
@@ -60,18 +61,19 @@ jobs:
 
 **権限スコープリファレンス**:
 
-| スコープ | 用途 |
-|---------|------|
-| `contents: write` | コード、タグ、リリースの作成/更新 |
-| `pull-requests: write` | PRの作成、コメント、マージ |
-| `issues: write` | Issueの作成、コメント、クローズ |
-| `packages: write` | GitHub Packagesへの公開 |
-| `deployments: write` | デプロイメント作成 |
-| `pages: write` | GitHub Pagesへのデプロイ |
+| スコープ               | 用途                              |
+| ---------------------- | --------------------------------- |
+| `contents: write`      | コード、タグ、リリースの作成/更新 |
+| `pull-requests: write` | PRの作成、コメント、マージ        |
+| `issues: write`        | Issueの作成、コメント、クローズ   |
+| `packages: write`      | GitHub Packagesへの公開           |
+| `deployments: write`   | デプロイメント作成                |
+| `pages: write`         | GitHub Pagesへのデプロイ          |
 
 ### 1.2 ファイルシステム権限エラー
 
 **エラーメッセージ**:
+
 ```
 Permission denied: '/path/to/file'
 EACCES: permission denied
@@ -96,6 +98,7 @@ EACCES: permission denied
 ### 2.1 キャッシュがヒットしない
 
 **エラーメッセージ**:
+
 ```
 Cache not found for input keys: ...
 ```
@@ -103,6 +106,7 @@ Cache not found for input keys: ...
 **原因A: キャッシュキーの不一致**
 
 **解決策**: キーを確認
+
 ```yaml
 - name: Cache dependencies
   uses: actions/cache@v4
@@ -155,6 +159,7 @@ path: |
 ### 2.2 キャッシュサイズ超過
 
 **エラーメッセージ**:
+
 ```
 Cache size exceeded limit of 10GB
 ```
@@ -193,6 +198,7 @@ Cache size exceeded limit of 10GB
 ### 3.1 ジョブタイムアウト
 
 **エラーメッセージ**:
+
 ```
 The job running on runner ... has exceeded the maximum execution time of 360 minutes.
 ```
@@ -205,7 +211,7 @@ The job running on runner ... has exceeded the maximum execution time of 360 min
 jobs:
   long-running:
     runs-on: ubuntu-latest
-    timeout-minutes: 480  # 8時間（最大35日）
+    timeout-minutes: 480 # 8時間（最大35日）
     steps:
       - name: Long task
         run: |
@@ -247,6 +253,7 @@ jobs:
 ### 3.3 ネットワークタイムアウト
 
 **エラーメッセージ**:
+
 ```
 curl: (28) Operation timed out
 pnpm ERR! network request timed out
@@ -269,6 +276,7 @@ pnpm ERR! network request timed out
 ### 4.1 シークレットが見つからない
 
 **エラーメッセージ**:
+
 ```
 Warning: The secret MY_SECRET is not defined
 ```
@@ -297,7 +305,7 @@ gh secret set MY_SECRET --body "secret_value"
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: production  # 環境シークレットを使用
+    environment: production # 環境シークレットを使用
     steps:
       - name: Deploy
         run: |
@@ -312,7 +320,7 @@ jobs:
 
 ```yaml
 on:
-  pull_request_target:  # フォークからもシークレットにアクセス可能
+  pull_request_target: # フォークからもシークレットにアクセス可能
 
 jobs:
   test:
@@ -343,6 +351,7 @@ jobs:
 ### 5.1 リポジトリが見つからない
 
 **エラーメッセージ**:
+
 ```
 Error: Repository not found
 ```
@@ -368,7 +377,7 @@ Error: Repository not found
   uses: actions/checkout@v4
   with:
     submodules: recursive
-    token: ${{ secrets.PAT }}  # プライベートサブモジュール用
+    token: ${{ secrets.PAT }} # プライベートサブモジュール用
 ```
 
 ## 6. 依存関係エラー
@@ -376,6 +385,7 @@ Error: Repository not found
 ### 6.1 依存関係のインストール失敗
 
 **エラーメッセージ**:
+
 ```
 pnpm ERR! 404 Not Found
 pip install error: No matching distribution found
@@ -409,8 +419,8 @@ pip install error: No matching distribution found
 - name: Setup Node.js
   uses: actions/setup-node@v4
   with:
-    node-version: '20.x'
-    cache: 'pnpm'
+    node-version: "20.x"
+    cache: "pnpm"
 
 - name: Install dependencies
   run: pnpm ci
@@ -421,6 +431,7 @@ pip install error: No matching distribution found
 ### 7.1 メモリ不足
 
 **エラーメッセージ**:
+
 ```
 FATAL ERROR: Ineffective mark-compacts near heap limit
 JavaScript heap out of memory
@@ -440,7 +451,7 @@ JavaScript heap out of memory
 ```yaml
 jobs:
   build:
-    runs-on: ubuntu-latest-large  # GitHub Enterpriseで利用可能
+    runs-on: ubuntu-latest-large # GitHub Enterpriseで利用可能
     steps:
       - name: Build
         run: pnpm run build
@@ -449,6 +460,7 @@ jobs:
 ### 7.2 ディスク容量不足
 
 **エラーメッセージ**:
+
 ```
 No space left on device
 ```
@@ -472,6 +484,7 @@ No space left on device
 ### 8.1 アーティファクトがアップロードできない
 
 **エラーメッセージ**:
+
 ```
 Error: Unable to upload artifact
 ```
@@ -528,12 +541,12 @@ Error: Unable to upload artifact
 strategy:
   matrix:
     node: [18, 20, 22]
-  fail-fast: false  # 他のジョブを継続
+  fail-fast: false # 他のジョブを継続
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    continue-on-error: ${{ matrix.node == '22' }}  # Node.js 22は実験的
+    continue-on-error: ${{ matrix.node == '22' }} # Node.js 22は実験的
     strategy:
       matrix:
         node: ${{ matrix.node }}
@@ -550,7 +563,7 @@ strategy:
     node: [18, 20]
     exclude:
       - os: macos-latest
-        node: 18  # macOSではNode.js 18をスキップ
+        node: 18 # macOSではNode.js 18をスキップ
 ```
 
 ## 10. セルフホストランナーエラー
@@ -558,6 +571,7 @@ strategy:
 ### 10.1 ランナーがオフライン
 
 **エラーメッセージ**:
+
 ```
 No runners online with the labels: self-hosted
 ```
@@ -588,5 +602,6 @@ tail -f /path/to/runner/_diag/Runner_*.log
 ---
 
 **関連リソース**:
+
 - [debug-logging.md](./debug-logging.md): デバッグログ有効化ガイド
 - [diagnostic-commands.md](./diagnostic-commands.md): 診断コマンドリファレンス

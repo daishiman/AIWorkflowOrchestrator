@@ -26,10 +26,10 @@
 
 ```yaml
 permissions:
-  contents: read       # リポジトリコンテンツ読み取り
-  issues: write        # Issue作成・編集
+  contents: read # リポジトリコンテンツ読み取り
+  issues: write # Issue作成・編集
   pull-requests: write # PR作成・編集
-  packages: write      # パッケージ公開
+  packages: write # パッケージ公開
 ```
 
 ### Personal Access Token (PAT)
@@ -44,6 +44,7 @@ permissions:
 ```
 
 **PAT作成手順**:
+
 1. Settings → Developer settings → Personal access tokens
 2. Generate new token (classic or fine-grained)
 3. 必要なスコープを選択
@@ -76,6 +77,7 @@ gh <command> <subcommand> [flags]
 ```
 
 **主要コマンド**:
+
 - `gh issue`: Issue操作
 - `gh pr`: Pull Request操作
 - `gh release`: リリース操作
@@ -378,7 +380,7 @@ curl -X <METHOD> \
 - name: Setup Node.js
   uses: actions/setup-node@v4
   with:
-    node-version: '20'
+    node-version: "20"
 
 - name: Install Octokit
   run: pnpm install @octokit/rest
@@ -393,19 +395,19 @@ curl -X <METHOD> \
 
 ```javascript
 // scripts/github-api.js
-import { Octokit } from '@octokit/rest';
+import { Octokit } from "@octokit/rest";
 
 const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN
+  auth: process.env.GITHUB_TOKEN,
 });
 
 // Issue作成
 const { data: issue } = await octokit.issues.create({
-  owner: 'octocat',
-  repo: 'hello-world',
-  title: 'Bug report',
-  body: 'Description of the bug',
-  labels: ['bug']
+  owner: "octocat",
+  repo: "hello-world",
+  title: "Bug report",
+  body: "Description of the bug",
+  labels: ["bug"],
 });
 
 console.log(`Created issue #${issue.number}`);
@@ -420,28 +422,28 @@ async function automateWorkflow() {
 
   // 1. PR一覧取得
   const { data: prs } = await octokit.pulls.list({
-    owner: 'octocat',
-    repo: 'hello-world',
-    state: 'open'
+    owner: "octocat",
+    repo: "hello-world",
+    state: "open",
   });
 
   // 2. ラベル付け
   for (const pr of prs) {
-    if (pr.title.startsWith('feat:')) {
+    if (pr.title.startsWith("feat:")) {
       await octokit.issues.addLabels({
-        owner: 'octocat',
-        repo: 'hello-world',
+        owner: "octocat",
+        repo: "hello-world",
         issue_number: pr.number,
-        labels: ['enhancement']
+        labels: ["enhancement"],
       });
     }
   }
 
   // 3. リリースノート生成
   const { data: release } = await octokit.repos.generateReleaseNotes({
-    owner: 'octocat',
-    repo: 'hello-world',
-    tag_name: 'v1.0.0'
+    owner: "octocat",
+    repo: "hello-world",
+    tag_name: "v1.0.0",
   });
 
   console.log(release.body);
@@ -485,7 +487,7 @@ name: Auto Close Stale Issues
 
 on:
   schedule:
-    - cron: '0 0 * * 0'  # 毎週日曜日
+    - cron: "0 0 * * 0" # 毎週日曜日
 
 jobs:
   close-stale:
@@ -593,7 +595,7 @@ jobs:
 
 ```yaml
 permissions:
-  issues: write  # Issueのみ書き込み可能
+  issues: write # Issueのみ書き込み可能
 ```
 
 ### 2. トークン管理

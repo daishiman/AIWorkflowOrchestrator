@@ -9,28 +9,28 @@ SWRとReact Queryは、Reactにおけるサーバー状態管理の代表的な�
 
 ### 基本情報
 
-| 項目 | SWR | React Query (TanStack Query) |
-|------|-----|------------------------------|
-| 開発元 | Vercel | TanStack |
-| バンドルサイズ | ~4KB (gzip) | ~13KB (gzip) |
-| 最終更新 | 活発 | 活発 |
-| TypeScript | フルサポート | フルサポート |
+| 項目           | SWR          | React Query (TanStack Query) |
+| -------------- | ------------ | ---------------------------- |
+| 開発元         | Vercel       | TanStack                     |
+| バンドルサイズ | ~4KB (gzip)  | ~13KB (gzip)                 |
+| 最終更新       | 活発         | 活発                         |
+| TypeScript     | フルサポート | フルサポート                 |
 
 ### 機能比較
 
-| 機能 | SWR | React Query |
-|------|-----|-------------|
-| 基本的なフェッチ | ✅ | ✅ |
-| キャッシュ | ✅ | ✅（より細かい制御） |
-| 自動再検証 | ✅ | ✅ |
-| ミューテーション | ✅（シンプル） | ✅（強力） |
-| 楽観的更新 | ✅ | ✅（より簡単） |
-| 無限スクロール | ✅ | ✅ |
-| プリフェッチ | ✅ | ✅ |
-| DevTools | 基本的 | 高機能 |
-| オフラインサポート | 基本的 | 高度 |
-| クエリ無効化 | シンプル | 詳細な制御 |
-| Suspense対応 | ✅ | ✅ |
+| 機能               | SWR            | React Query          |
+| ------------------ | -------------- | -------------------- |
+| 基本的なフェッチ   | ✅             | ✅                   |
+| キャッシュ         | ✅             | ✅（より細かい制御） |
+| 自動再検証         | ✅             | ✅                   |
+| ミューテーション   | ✅（シンプル） | ✅（強力）           |
+| 楽観的更新         | ✅             | ✅（より簡単）       |
+| 無限スクロール     | ✅             | ✅                   |
+| プリフェッチ       | ✅             | ✅                   |
+| DevTools           | 基本的         | 高機能               |
+| オフラインサポート | 基本的         | 高度                 |
+| クエリ無効化       | シンプル       | 詳細な制御           |
+| Suspense対応       | ✅             | ✅                   |
 
 ## SWR
 
@@ -90,20 +90,20 @@ function App() {
 ### 特徴
 
 ```typescript
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 function Todos() {
   const queryClient = useQueryClient();
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['todos'],
+    queryKey: ["todos"],
     queryFn: () => fetchTodos(),
   });
 
   const mutation = useMutation({
     mutationFn: (newTodo) => postTodo(newTodo),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['todos'] });
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
     },
   });
 
@@ -180,12 +180,12 @@ function App() {
 
 ```typescript
 // SWR
-const { data, error } = useSWR('/api/user', fetcher);
+const { data, error } = useSWR("/api/user", fetcher);
 
 // React Query
 const { data, error } = useQuery({
-  queryKey: ['user'],
-  queryFn: () => fetch('/api/user').then(res => res.json()),
+  queryKey: ["user"],
+  queryFn: () => fetch("/api/user").then((res) => res.json()),
 });
 ```
 
@@ -194,12 +194,12 @@ const { data, error } = useQuery({
 ```typescript
 // React Query
 const { data, isLoading } = useQuery({
-  queryKey: ['user'],
+  queryKey: ["user"],
   queryFn: fetchUser,
 });
 
 // SWR
-const { data, isLoading } = useSWR('user', fetchUser);
+const { data, isLoading } = useSWR("user", fetchUser);
 ```
 
 ## ベストプラクティス

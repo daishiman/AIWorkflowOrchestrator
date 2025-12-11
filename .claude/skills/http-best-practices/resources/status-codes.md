@@ -7,13 +7,13 @@ HTTPステータスコードはサーバーからクライアントへの処理�
 
 ## ステータスコードカテゴリ
 
-| 範囲 | カテゴリ | 説明 |
-|-----|---------|------|
-| 1xx | 情報 | リクエスト処理中（ほぼ使用しない） |
-| 2xx | 成功 | リクエスト正常完了 |
-| 3xx | リダイレクト | 追加アクションが必要 |
-| 4xx | クライアントエラー | リクエストに問題 |
-| 5xx | サーバーエラー | サーバー側で問題 |
+| 範囲 | カテゴリ           | 説明                               |
+| ---- | ------------------ | ---------------------------------- |
+| 1xx  | 情報               | リクエスト処理中（ほぼ使用しない） |
+| 2xx  | 成功               | リクエスト正常完了                 |
+| 3xx  | リダイレクト       | 追加アクションが必要               |
+| 4xx  | クライアントエラー | リクエストに問題                   |
+| 5xx  | サーバーエラー     | サーバー側で問題                   |
 
 ## 2xx 成功系
 
@@ -341,13 +341,13 @@ Retry-After: 300
 interface ErrorResponse {
   error: {
     // 必須フィールド
-    code: string;           // 機械可読コード
-    message: string;        // 人間可読メッセージ
+    code: string; // 機械可読コード
+    message: string; // 人間可読メッセージ
 
     // オプションフィールド
-    details?: unknown[];    // 詳細情報（バリデーションエラーなど）
-    requestId?: string;     // デバッグ用リクエストID
-    retryAfter?: number;    // リトライ待機秒数
+    details?: unknown[]; // 詳細情報（バリデーションエラーなど）
+    requestId?: string; // デバッグ用リクエストID
+    retryAfter?: number; // リトライ待機秒数
     documentationUrl?: string; // 関連ドキュメント
   };
 }
@@ -359,23 +359,23 @@ interface ErrorResponse {
 // カテゴリ別プレフィックス
 const ErrorCodes = {
   // 認証・認可
-  AUTH_INVALID_CREDENTIALS: 'AUTH_001',
-  AUTH_TOKEN_EXPIRED: 'AUTH_002',
-  AUTH_INSUFFICIENT_PERMISSIONS: 'AUTH_003',
+  AUTH_INVALID_CREDENTIALS: "AUTH_001",
+  AUTH_TOKEN_EXPIRED: "AUTH_002",
+  AUTH_INSUFFICIENT_PERMISSIONS: "AUTH_003",
 
   // バリデーション
-  VALIDATION_REQUIRED_FIELD: 'VAL_001',
-  VALIDATION_INVALID_FORMAT: 'VAL_002',
-  VALIDATION_OUT_OF_RANGE: 'VAL_003',
+  VALIDATION_REQUIRED_FIELD: "VAL_001",
+  VALIDATION_INVALID_FORMAT: "VAL_002",
+  VALIDATION_OUT_OF_RANGE: "VAL_003",
 
   // ビジネスロジック
-  BUSINESS_INSUFFICIENT_STOCK: 'BIZ_001',
-  BUSINESS_DUPLICATE_ORDER: 'BIZ_002',
+  BUSINESS_INSUFFICIENT_STOCK: "BIZ_001",
+  BUSINESS_DUPLICATE_ORDER: "BIZ_002",
 
   // システム
-  SYSTEM_INTERNAL_ERROR: 'SYS_001',
-  SYSTEM_UPSTREAM_ERROR: 'SYS_002',
-  SYSTEM_RATE_LIMITED: 'SYS_003',
+  SYSTEM_INTERNAL_ERROR: "SYS_001",
+  SYSTEM_UPSTREAM_ERROR: "SYS_002",
+  SYSTEM_RATE_LIMITED: "SYS_003",
 } as const;
 ```
 
@@ -384,14 +384,14 @@ const ErrorCodes = {
 ### Express.js エラーハンドラー
 
 ```typescript
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from "express";
 
 class AppError extends Error {
   constructor(
     public statusCode: number,
     public code: string,
     message: string,
-    public details?: unknown
+    public details?: unknown,
   ) {
     super(message);
   }
@@ -401,9 +401,9 @@ function errorHandler(
   err: Error,
   req: Request,
   res: Response,
-  _next: NextFunction
+  _next: NextFunction,
 ): void {
-  const requestId = req.headers['x-request-id'] || generateRequestId();
+  const requestId = req.headers["x-request-id"] || generateRequestId();
 
   if (err instanceof AppError) {
     res.status(err.statusCode).json({
@@ -420,8 +420,8 @@ function errorHandler(
 
     res.status(500).json({
       error: {
-        code: 'INTERNAL_ERROR',
-        message: 'An unexpected error occurred',
+        code: "INTERNAL_ERROR",
+        message: "An unexpected error occurred",
         requestId,
       },
     });
@@ -432,16 +432,19 @@ function errorHandler(
 ## チェックリスト
 
 ### 設計時
+
 - [ ] 各エンドポイントに想定されるステータスコードをドキュメント化しているか？
 - [ ] エラーレスポンスの形式が統一されているか？
 - [ ] エラーコードが一意で識別可能か？
 
 ### 実装時
+
 - [ ] 適切なステータスコードを使用しているか（200で全部返していないか）？
 - [ ] 5xxエラーで詳細を隠し、ログに記録しているか？
 - [ ] リクエストIDを含めているか？
 
 ### 運用時
+
 - [ ] ステータスコード別のメトリクスを収集しているか？
 - [ ] 4xx/5xxエラー率にアラートを設定しているか？
 - [ ] エラーログの保持期間は適切か？

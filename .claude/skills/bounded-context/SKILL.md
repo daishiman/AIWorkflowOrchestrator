@@ -38,12 +38,14 @@ version: 1.0.0
 特定のドメインモデルが適用される明示的な境界です。
 
 **主要な価値**:
+
 - ドメインの複雑性の管理
 - チーム間の責任の明確化
 - システムのモジュール性向上
 - 独立した進化の実現
 
 **対象ユーザー**:
+
 - システムアーキテクトを担当するエージェント
 - マイクロサービス設計を行う開発者
 - チーム編成を検討する技術リーダー
@@ -99,6 +101,7 @@ cat .claude/skills/bounded-context/templates/context-map-template.md
 **定義**: 特定のドメインモデルが適用される明示的な境界
 
 **特徴**:
+
 - ユビキタス言語の適用範囲
 - 一貫したモデルの維持
 - 独立した進化が可能
@@ -107,6 +110,7 @@ cat .claude/skills/bounded-context/templates/context-map-template.md
 ### 2. コンテキストの原則
 
 **原則1: 言語の境界**
+
 - 同じ用語が異なる意味を持つ場合は別のコンテキスト
 - コンテキスト内では用語の意味が一貫
 
@@ -119,10 +123,12 @@ cat .claude/skills/bounded-context/templates/context-map-template.md
 ```
 
 **原則2: モデルの独立性**
+
 - 各コンテキストは独自のモデルを持つ
 - 他のコンテキストのモデルに直接依存しない
 
 **原則3: 明示的な境界**
+
 - コンテキストの境界を明確に定義
 - 境界を越える場合は変換を行う
 
@@ -155,12 +161,14 @@ cat .claude/skills/bounded-context/templates/context-map-template.md
 **目的**: ドメインの境界を特定
 
 **手法**:
+
 1. イベントストーミングでドメインイベントを洗い出す
 2. 言語の境界を見つける（同じ用語が異なる意味を持つ箇所）
 3. ビジネスプロセスの断絶点を特定
 4. チームの責任範囲を確認
 
 **判断基準**:
+
 - [ ] 用語の意味が文脈によって異なるか？
 - [ ] 独立して変更できる範囲か？
 - [ ] チームの責任範囲と一致するか？
@@ -171,6 +179,7 @@ cat .claude/skills/bounded-context/templates/context-map-template.md
 **目的**: コンテキスト間の関係を定義
 
 **ステップ**:
+
 1. すべてのコンテキストをリストアップ
 2. コンテキスト間のデータフローを特定
 3. 統合パターンを選択
@@ -193,6 +202,7 @@ cat .claude/skills/bounded-context/templates/context-map-template.md
 **実装パターン**:
 
 1. **パッケージ/モジュール分離**:
+
 ```
 src/
 ├── contexts/
@@ -212,6 +222,7 @@ src/
 ```
 
 2. **腐敗防止層（ACL）**:
+
 ```typescript
 // 配送コンテキストから販売コンテキストのデータを取得
 class SalesContextAdapter {
@@ -227,7 +238,7 @@ class SalesContextAdapter {
     return ShippingOrder.create({
       orderId: salesOrder.id,
       destination: this.translateAddress(salesOrder.shippingAddress),
-      items: salesOrder.items.map(i => this.translateItem(i)),
+      items: salesOrder.items.map((i) => this.translateItem(i)),
     });
   }
 }
@@ -238,6 +249,7 @@ class SalesContextAdapter {
 **目的**: コンテキスト間の連携を検証
 
 **テスト観点**:
+
 - コンテキスト間のデータ変換
 - APIの互換性
 - 障害時の動作
@@ -250,6 +262,7 @@ class SalesContextAdapter {
 **状況**: モノリスをマイクロサービスに分割したい
 
 **適用条件**:
+
 - [ ] ビジネスドメインが複数ある
 - [ ] チームが独立して開発したい
 - [ ] スケーラビリティ要件が異なる
@@ -261,6 +274,7 @@ class SalesContextAdapter {
 **状況**: 既存システムと新システムを統合したい
 
 **適用条件**:
+
 - [ ] 異なるモデルを持つシステム
 - [ ] 段階的な移行が必要
 - [ ] データ整合性の維持が重要
@@ -272,6 +286,7 @@ class SalesContextAdapter {
 **状況**: 開発チームの責任範囲を明確にしたい
 
 **適用条件**:
+
 - [ ] 複数チームが並行開発
 - [ ] 依存関係を最小化したい
 - [ ] 自律的なチーム運営を目指す
@@ -315,6 +330,7 @@ class SalesContextAdapter {
 **症状**: どこで分割すべきか分からない
 
 **解決策**:
+
 1. イベントストーミングを実施
 2. 言語の違いに注目
 3. チームの責任範囲を確認
@@ -325,6 +341,7 @@ class SalesContextAdapter {
 **症状**: コンテキスト間の連携が困難
 
 **解決策**:
+
 1. 腐敗防止層を導入
 2. 非同期統合を検討
 3. 公開ホストサービスを定義
@@ -335,6 +352,7 @@ class SalesContextAdapter {
 **症状**: 似たようなコードが複数コンテキストに
 
 **解決策**:
+
 1. 本当に同じ概念か確認
 2. 必要な重複は許容
 3. 共有カーネルは慎重に
@@ -357,6 +375,6 @@ class SalesContextAdapter {
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版作成 - 境界付けられたコンテキストの設計と統合 |
+| バージョン | 日付       | 変更内容                                          |
+| ---------- | ---------- | ------------------------------------------------- |
+| 1.0.0      | 2025-11-25 | 初版作成 - 境界付けられたコンテキストの設計と統合 |

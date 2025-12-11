@@ -110,7 +110,7 @@ function Card({ onClick }) {
       tabIndex={0}
       onClick={onClick}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
+        if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           onClick();
         }
@@ -194,7 +194,8 @@ function Card({ onClick }) {
 
 ```html
 <html lang="ja">
-<abbr title="World Wide Web Consortium">W3C</abbr>
+  <abbr title="World Wide Web Consortium">W3C</abbr>
+</html>
 ```
 
 ### 3.2 予測可能
@@ -218,7 +219,7 @@ function FormField({ error, ...props }) {
     <div>
       <input
         aria-invalid={!!error}
-        aria-describedby={error ? 'error-message' : undefined}
+        aria-describedby={error ? "error-message" : undefined}
         {...props}
       />
       {error && (
@@ -233,7 +234,7 @@ function FormField({ error, ...props }) {
 // 確認ダイアログ
 function DeleteButton({ onDelete }) {
   const handleClick = () => {
-    if (confirm('本当に削除しますか？この操作は取り消せません。')) {
+    if (confirm("本当に削除しますか？この操作は取り消せません。")) {
       onDelete();
     }
   };
@@ -274,25 +275,25 @@ function DeleteButton({ onDelete }) {
 
 ### 必須確認項目
 
-| 項目 | 確認方法 |
-|------|----------|
-| キーボード操作 | Tabキーで全要素にアクセス可能か |
+| 項目           | 確認方法                         |
+| -------------- | -------------------------------- |
+| キーボード操作 | Tabキーで全要素にアクセス可能か  |
 | フォーカス表示 | フォーカスが視覚的に確認できるか |
-| 代替テキスト | 画像にalt属性があるか |
-| コントラスト | テキストが読みやすいか |
-| エラー表示 | エラーメッセージが明確か |
-| ラベル | フォームにラベルがあるか |
-| 見出し構造 | 見出しが論理的か |
-| ズーム | 200%でも使えるか |
+| 代替テキスト   | 画像にalt属性があるか            |
+| コントラスト   | テキストが読みやすいか           |
+| エラー表示     | エラーメッセージが明確か         |
+| ラベル         | フォームにラベルがあるか         |
+| 見出し構造     | 見出しが論理的か                 |
+| ズーム         | 200%でも使えるか                 |
 
 ### ツールによるチェック
 
-| ツール | 用途 |
-|--------|------|
-| axe DevTools | 自動アクセシビリティテスト |
-| Lighthouse | パフォーマンス＋A11yスコア |
-| Wave | 視覚的なA11y問題検出 |
-| Color Contrast Analyzer | コントラスト比チェック |
+| ツール                  | 用途                       |
+| ----------------------- | -------------------------- |
+| axe DevTools            | 自動アクセシビリティテスト |
+| Lighthouse              | パフォーマンス＋A11yスコア |
+| Wave                    | 視覚的なA11y問題検出       |
+| Color Contrast Analyzer | コントラスト比チェック     |
 
 ---
 

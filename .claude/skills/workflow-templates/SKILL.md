@@ -79,7 +79,7 @@ node .claude/skills/workflow-templates/scripts/generate-workflow.mjs nodejs .git
 
 | プロジェクトタイプ | 推奨テンプレート                        | 主要機能                                   |
 | ------------------ | --------------------------------------- | ------------------------------------------ |
-| **Node.js**        | `nodejs-template.yaml`                  | pnpm/pnpm/yarn、キャッシング、Lint/Test     |
+| **Node.js**        | `nodejs-template.yaml`                  | pnpm/pnpm/yarn、キャッシング、Lint/Test    |
 | **Python**         | `ci-template.yaml`                      | pip/poetry、仮想環境、pytest               |
 | **Docker**         | `docker-template.yaml`                  | ビルド最適化、レジストリプッシュ、スキャン |
 | **Go/Rust**        | `ci-template.yaml`                      | 言語ツールチェーン、テスト、ビルド         |

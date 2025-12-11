@@ -11,14 +11,14 @@
  *   node scan-dependencies.mjs --json
  */
 
-import { execSync } from 'child_process';
-import { existsSync } from 'fs';
+import { execSync } from "child_process";
+import { existsSync } from "fs";
 
 const args = process.argv.slice(2);
 
 function parseArgs() {
   const options = {
-    severity: 'moderate', // low, moderate, high, critical
+    severity: "moderate", // low, moderate, high, critical
     json: false,
     help: false,
   };
@@ -26,11 +26,11 @@ function parseArgs() {
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
 
-    if (arg === '--severity' || arg === '-s') {
-      options.severity = args[++i] || 'moderate';
-    } else if (arg === '--json') {
+    if (arg === "--severity" || arg === "-s") {
+      options.severity = args[++i] || "moderate";
+    } else if (arg === "--json") {
       options.json = true;
-    } else if (arg === '--help' || arg === '-h') {
+    } else if (arg === "--help" || arg === "-h") {
       options.help = true;
     }
   }
@@ -59,23 +59,23 @@ function printUsage() {
 }
 
 function detectPackageManager() {
-  if (existsSync('pnpm-lock.yaml')) {
-    return 'pnpm';
+  if (existsSync("pnpm-lock.yaml")) {
+    return "pnpm";
   }
-  if (existsSync('yarn.lock')) {
-    return 'yarn';
+  if (existsSync("yarn.lock")) {
+    return "yarn";
   }
-  if (existsSync('package-lock.json')) {
-    return 'pnpm';
+  if (existsSync("package-lock.json")) {
+    return "pnpm";
   }
   return null;
 }
 
 function runAudit(packageManager, severity, jsonOutput) {
   const commands = {
-    pnpm: `pnpm audit --audit-level=${severity}${jsonOutput ? ' --json' : ''}`,
-    pnpm: `pnpm audit --audit-level=${severity}${jsonOutput ? ' --json' : ''}`,
-    yarn: `yarn audit --level ${severity}${jsonOutput ? ' --json' : ''}`,
+    pnpm: `pnpm audit --audit-level=${severity}${jsonOutput ? " --json" : ""}`,
+    pnpm: `pnpm audit --audit-level=${severity}${jsonOutput ? " --json" : ""}`,
+    yarn: `yarn audit --level ${severity}${jsonOutput ? " --json" : ""}`,
   };
 
   const command = commands[packageManager];
@@ -84,7 +84,7 @@ function runAudit(packageManager, severity, jsonOutput) {
   }
 
   try {
-    const output = execSync(command, { encoding: 'utf-8' });
+    const output = execSync(command, { encoding: "utf-8" });
     return { success: true, output, exitCode: 0 };
   } catch (error) {
     // audit は脆弱性があると非0で終了するため、出力は取得できる
@@ -100,14 +100,14 @@ function parseAuditOutput(output, packageManager) {
   try {
     const data = JSON.parse(output);
 
-    if (packageManager === 'pnpm' || packageManager === 'pnpm') {
+    if (packageManager === "pnpm" || packageManager === "pnpm") {
       return {
         vulnerabilities: data.metadata?.vulnerabilities || {},
         advisories: data.advisories || {},
         total:
           Object.values(data.metadata?.vulnerabilities || {}).reduce(
             (a, b) => a + b,
-            0
+            0,
           ) || 0,
       };
     }
@@ -120,54 +120,54 @@ function parseAuditOutput(output, packageManager) {
 
 function formatSeverity(severity) {
   const colors = {
-    critical: '\x1b[31m', // 赤
-    high: '\x1b[91m', // 明るい赤
-    moderate: '\x1b[33m', // 黄
-    low: '\x1b[36m', // シアン
+    critical: "\x1b[31m", // 赤
+    high: "\x1b[91m", // 明るい赤
+    moderate: "\x1b[33m", // 黄
+    low: "\x1b[36m", // シアン
   };
-  const reset = '\x1b[0m';
-  return `${colors[severity] || ''}${severity.toUpperCase()}${reset}`;
+  const reset = "\x1b[0m";
+  return `${colors[severity] || ""}${severity.toUpperCase()}${reset}`;
 }
 
 function printSummary(result, packageManager) {
-  console.log('\n' + '═'.repeat(60));
-  console.log('📋 依存関係セキュリティ監査レポート');
-  console.log('═'.repeat(60));
+  console.log("\n" + "═".repeat(60));
+  console.log("📋 依存関係セキュリティ監査レポート");
+  console.log("═".repeat(60));
 
   console.log(`\nパッケージマネージャー: ${packageManager}`);
 
   if (result.parsed) {
     const vulns = result.parsed.vulnerabilities;
-    console.log('\n脆弱性サマリー:');
-    console.log('─'.repeat(40));
+    console.log("\n脆弱性サマリー:");
+    console.log("─".repeat(40));
 
-    const levels = ['critical', 'high', 'moderate', 'low'];
+    const levels = ["critical", "high", "moderate", "low"];
     let totalFound = 0;
 
     for (const level of levels) {
       const count = vulns[level] || 0;
       totalFound += count;
-      const status = count > 0 ? '⚠️' : '✅';
+      const status = count > 0 ? "⚠️" : "✅";
       console.log(`  ${status} ${formatSeverity(level)}: ${count}`);
     }
 
-    console.log('─'.repeat(40));
+    console.log("─".repeat(40));
     console.log(`  合計: ${totalFound} 件の脆弱性`);
 
     if (totalFound === 0) {
-      console.log('\n✅ 脆弱性は検出されませんでした！');
+      console.log("\n✅ 脆弱性は検出されませんでした！");
     } else {
-      console.log('\n⚠️  脆弱性が検出されました。対応を検討してください。');
-      console.log('\n推奨アクション:');
-      console.log('  1. pnpm audit --fix  # 自動修正を試行');
-      console.log('  2. pnpm update       # 依存関係を更新');
-      console.log('  3. 手動で影響を確認し、必要に応じてパッケージを更新');
+      console.log("\n⚠️  脆弱性が検出されました。対応を検討してください。");
+      console.log("\n推奨アクション:");
+      console.log("  1. pnpm audit --fix  # 自動修正を試行");
+      console.log("  2. pnpm update       # 依存関係を更新");
+      console.log("  3. 手動で影響を確認し、必要に応じてパッケージを更新");
     }
   } else {
-    console.log('\n' + result.output);
+    console.log("\n" + result.output);
   }
 
-  console.log('\n' + '═'.repeat(60) + '\n');
+  console.log("\n" + "═".repeat(60) + "\n");
 }
 
 async function main() {
@@ -181,9 +181,9 @@ async function main() {
   // パッケージマネージャーを検出
   const packageManager = detectPackageManager();
   if (!packageManager) {
-    console.error('❌ パッケージマネージャーを検出できませんでした。');
+    console.error("❌ パッケージマネージャーを検出できませんでした。");
     console.error(
-      '   pnpm-lock.yaml, yarn.lock, または package-lock.json が必要です。'
+      "   pnpm-lock.yaml, yarn.lock, または package-lock.json が必要です。",
     );
     process.exit(1);
   }
@@ -211,6 +211,6 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error('❌ エラーが発生しました:', error.message);
+  console.error("❌ エラーが発生しました:", error.message);
   process.exit(1);
 });

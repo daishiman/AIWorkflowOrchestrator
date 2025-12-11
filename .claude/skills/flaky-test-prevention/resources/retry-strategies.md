@@ -39,7 +39,7 @@ E2Eテストでは一時的なネットワーク障害やタイミング問題�
 
 ```typescript
 // playwright.config.ts
-import { defineConfig } from '@playwright/test';
+import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
   // すべてのテストで自動リトライを有効化
@@ -59,14 +59,15 @@ export default defineConfig({
     navigationTimeout: 30 * 1000, // goto, waitForNavigation などのタイムアウト: 30秒
 
     // トレース記録（リトライ時のみ）
-    trace: 'on-first-retry', // 最初のリトライ時にトレースを記録
-    screenshot: 'only-on-failure', // 失敗時のみスクリーンショット
-    video: 'retain-on-failure', // 失敗時のみビデオ保持
+    trace: "on-first-retry", // 最初のリトライ時にトレースを記録
+    screenshot: "only-on-failure", // 失敗時のみスクリーンショット
+    video: "retain-on-failure", // 失敗時のみビデオ保持
   },
 });
 ```
 
 **メリット**:
+
 - 設定ファイルで一元管理
 - CI環境とローカル環境で動作を切り替え
 - トレース/スクリーンショットで失敗原因を分析
@@ -77,31 +78,31 @@ export default defineConfig({
 
 ```typescript
 // tests/critical-flow.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
 // 特定のテストスイートでリトライ設定を上書き
-test.describe('重要なワークフロー', () => {
+test.describe("重要なワークフロー", () => {
   test.describe.configure({ retries: 3 }); // このスイートは3回リトライ
 
-  test('決済フロー', async ({ page }) => {
-    await page.goto('/checkout');
-    await page.fill('input[name="card"]', '4242424242424242');
+  test("決済フロー", async ({ page }) => {
+    await page.goto("/checkout");
+    await page.fill('input[name="card"]', "4242424242424242");
     await page.click('button:has-text("支払う")');
-    await expect(page.locator('.success-message')).toBeVisible();
+    await expect(page.locator(".success-message")).toBeVisible();
   });
 });
 
 // 個別のテストでリトライ設定
-test('不安定なテスト', { retries: 5 }, async ({ page }) => {
+test("不安定なテスト", { retries: 5 }, async ({ page }) => {
   // このテストのみ5回リトライ
-  await page.goto('/flaky-page');
-  await expect(page.locator('.content')).toBeVisible();
+  await page.goto("/flaky-page");
+  await expect(page.locator(".content")).toBeVisible();
 });
 
 // リトライを無効化
-test('リトライ不要なテスト', { retries: 0 }, async ({ page }) => {
-  await page.goto('/stable-page');
-  await expect(page.locator('.title')).toContainText('Stable');
+test("リトライ不要なテスト", { retries: 0 }, async ({ page }) => {
+  await page.goto("/stable-page");
+  await expect(page.locator(".title")).toContainText("Stable");
 });
 ```
 
@@ -111,20 +112,20 @@ test('リトライ不要なテスト', { retries: 0 }, async ({ page }) => {
 
 ```typescript
 // tests/retry-aware.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('リトライ回数を確認', async ({ page }, testInfo) => {
+test("リトライ回数を確認", async ({ page }, testInfo) => {
   console.log(`Current retry: ${testInfo.retry}`); // 現在のリトライ回数（0, 1, 2...）
 
   // リトライ時に異なる動作をする（通常は推奨しない）
   if (testInfo.retry > 0) {
-    console.log('これはリトライ実行です');
+    console.log("これはリトライ実行です");
     // 例: リトライ時はキャッシュをクリア
     await page.context().clearCookies();
   }
 
-  await page.goto('/dashboard');
-  await expect(page.locator('.data')).toBeVisible();
+  await page.goto("/dashboard");
+  await expect(page.locator(".data")).toBeVisible();
 });
 ```
 
@@ -136,12 +137,12 @@ test('リトライ回数を確認', async ({ page }, testInfo) => {
 
 ```typescript
 // tests/fixtures/retry-fixtures.ts
-import { test as base } from '@playwright/test';
+import { test as base } from "@playwright/test";
 
 type RetryFixtures = {
   retryableAction: <T>(
     action: () => Promise<T>,
-    options?: { maxRetries?: number; delay?: number }
+    options?: { maxRetries?: number; delay?: number },
   ) => Promise<T>;
 };
 
@@ -149,7 +150,7 @@ export const test = base.extend<RetryFixtures>({
   retryableAction: async ({}, use) => {
     const retryAction = async <T>(
       action: () => Promise<T>,
-      options: { maxRetries?: number; delay?: number } = {}
+      options: { maxRetries?: number; delay?: number } = {},
     ): Promise<T> => {
       const maxRetries = options.maxRetries ?? 3;
       const delay = options.delay ?? 1000;
@@ -170,7 +171,7 @@ export const test = base.extend<RetryFixtures>({
       }
 
       throw new Error(
-        `Action failed after ${maxRetries} retries: ${lastError?.message}`
+        `Action failed after ${maxRetries} retries: ${lastError?.message}`,
       );
     };
 
@@ -178,17 +179,17 @@ export const test = base.extend<RetryFixtures>({
   },
 });
 
-export { expect } from '@playwright/test';
+export { expect } from "@playwright/test";
 ```
 
 ### 使用例
 
 ```typescript
 // tests/api-integration.spec.ts
-import { test, expect } from './fixtures/retry-fixtures';
+import { test, expect } from "./fixtures/retry-fixtures";
 
-test('不安定なAPIエンドポイント', async ({ page, retryableAction }) => {
-  await page.goto('/dashboard');
+test("不安定なAPIエンドポイント", async ({ page, retryableAction }) => {
+  await page.goto("/dashboard");
 
   // 不安定なボタンクリックをリトライ
   await retryableAction(
@@ -196,12 +197,14 @@ test('不安定なAPIエンドポイント', async ({ page, retryableAction }) =
       const button = page.locator('button:has-text("データ更新")');
       await expect(button).toBeVisible({ timeout: 5000 });
       await button.click();
-      await expect(page.locator('.success-toast')).toBeVisible({ timeout: 3000 });
+      await expect(page.locator(".success-toast")).toBeVisible({
+        timeout: 3000,
+      });
     },
-    { maxRetries: 5, delay: 2000 }
+    { maxRetries: 5, delay: 2000 },
   );
 
-  await expect(page.locator('.updated-data')).toBeVisible();
+  await expect(page.locator(".updated-data")).toBeVisible();
 });
 ```
 
@@ -219,7 +222,7 @@ export async function pollUntil<T>(
   options: {
     interval?: number;
     timeout?: number;
-  } = {}
+  } = {},
 ): Promise<T> {
   const interval = options.interval ?? 1000;
   const timeout = options.timeout ?? 30000;
@@ -249,16 +252,16 @@ export async function pollUntil<T>(
 
 ```typescript
 // tests/async-processing.spec.ts
-import { test, expect } from '@playwright/test';
-import { pollUntil } from './helpers/polling';
+import { test, expect } from "@playwright/test";
+import { pollUntil } from "./helpers/polling";
 
-test('非同期ジョブの完了を待つ', async ({ page, request }) => {
+test("非同期ジョブの完了を待つ", async ({ page, request }) => {
   // ジョブを開始
-  await page.goto('/jobs/new');
+  await page.goto("/jobs/new");
   await page.click('button:has-text("実行")');
 
   // ジョブIDを取得
-  const jobId = await page.locator('.job-id').textContent();
+  const jobId = await page.locator(".job-id").textContent();
 
   // ジョブの完了をポーリング
   const result = await pollUntil(
@@ -266,13 +269,13 @@ test('非同期ジョブの完了を待つ', async ({ page, request }) => {
       const response = await request.get(`/api/jobs/${jobId}`);
       return response.json();
     },
-    (data) => data.status === 'completed',
-    { interval: 2000, timeout: 60000 } // 2秒ごと、最大60秒
+    (data) => data.status === "completed",
+    { interval: 2000, timeout: 60000 }, // 2秒ごと、最大60秒
   );
 
-  expect(result.status).toBe('completed');
+  expect(result.status).toBe("completed");
   await page.reload();
-  await expect(page.locator('.job-result')).toContainText('成功');
+  await expect(page.locator(".job-result")).toContainText("成功");
 });
 ```
 
@@ -293,7 +296,7 @@ export async function retryWithBackoff<T>(
     initialDelay?: number;
     maxDelay?: number;
     factor?: number;
-  } = {}
+  } = {},
 ): Promise<T> {
   const maxRetries = options.maxRetries ?? 5;
   const initialDelay = options.initialDelay ?? 1000;
@@ -325,7 +328,7 @@ export async function retryWithBackoff<T>(
   }
 
   throw new Error(
-    `Action failed after ${maxRetries} retries: ${lastError?.message}`
+    `Action failed after ${maxRetries} retries: ${lastError?.message}`,
   );
 }
 ```
@@ -334,16 +337,16 @@ export async function retryWithBackoff<T>(
 
 ```typescript
 // tests/rate-limited-api.spec.ts
-import { test, expect } from '@playwright/test';
-import { retryWithBackoff } from './helpers/exponential-backoff';
+import { test, expect } from "@playwright/test";
+import { retryWithBackoff } from "./helpers/exponential-backoff";
 
-test('レート制限のあるAPI', async ({ page, request }) => {
-  await page.goto('/dashboard');
+test("レート制限のあるAPI", async ({ page, request }) => {
+  await page.goto("/dashboard");
 
   // APIリクエストを段階的バックオフでリトライ
   const data = await retryWithBackoff(
     async () => {
-      const response = await request.get('/api/rate-limited-endpoint');
+      const response = await request.get("/api/rate-limited-endpoint");
       if (!response.ok()) {
         throw new Error(`HTTP ${response.status()}`);
       }
@@ -354,10 +357,10 @@ test('レート制限のあるAPI', async ({ page, request }) => {
       initialDelay: 1000, // 1秒
       maxDelay: 16000, // 最大16秒
       factor: 2, // 1秒 → 2秒 → 4秒 → 8秒 → 16秒
-    }
+    },
   );
 
-  expect(data).toHaveProperty('items');
+  expect(data).toHaveProperty("items");
 });
 ```
 
@@ -386,14 +389,14 @@ test('レート制限のあるAPI', async ({ page, request }) => {
 
 ### リトライ vs 根本原因修正
 
-| 症状 | リトライ | 根本原因修正 |
-|------|---------|-------------|
-| 一時的なネットワーク障害 | ✅ 適切 | - |
-| CI環境のリソース制約 | ✅ 適切 | - |
-| テストの非決定性 | ❌ 不適切 | ✅ テストを決定的に修正 |
-| 固定タイムアウト | ❌ 不適切 | ✅ 条件ベースの待機に変更 |
-| コードのバグ | ❌ 不適切 | ✅ バグ修正 |
-| 外部API依存 | ⚠️ 一時的 | ✅ モックを使用 |
+| 症状                     | リトライ  | 根本原因修正              |
+| ------------------------ | --------- | ------------------------- |
+| 一時的なネットワーク障害 | ✅ 適切   | -                         |
+| CI環境のリソース制約     | ✅ 適切   | -                         |
+| テストの非決定性         | ❌ 不適切 | ✅ テストを決定的に修正   |
+| 固定タイムアウト         | ❌ 不適切 | ✅ 条件ベースの待機に変更 |
+| コードのバグ             | ❌ 不適切 | ✅ バグ修正               |
+| 外部API依存              | ⚠️ 一時的 | ✅ モックを使用           |
 
 ---
 
@@ -406,8 +409,8 @@ export default defineConfig({
   retries: process.env.CI
     ? 2 // CI環境: 2回リトライ
     : process.env.STAGING
-    ? 1 // ステージング: 1回リトライ
-    : 0, // ローカル: リトライなし
+      ? 1 // ステージング: 1回リトライ
+      : 0, // ローカル: リトライなし
 
   // タイムアウト設定
   timeout: 60 * 1000, // テスト全体: 60秒
@@ -420,9 +423,9 @@ export default defineConfig({
     navigationTimeout: 30 * 1000, // ナビゲーション: 30秒
 
     // 失敗時の診断
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    trace: "on-first-retry",
+    screenshot: "only-on-failure",
+    video: "retain-on-failure",
   },
 });
 ```
@@ -434,6 +437,7 @@ export default defineConfig({
 適切なリトライ戦略により、一時的な問題に対してテストを堅牢にできます。
 
 **キーポイント**:
+
 1. **Playwrightの自動リトライ**: CI環境で有効化
 2. **カスタムリトライ**: 特定の操作に対してリトライロジックを実装
 3. **段階的バックオフ**: ネットワーク問題やレート制限に対応

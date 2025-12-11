@@ -177,7 +177,7 @@ function UserName() {
 // ❌ 問題: どのプロパティが変わっても全消費者が再レンダリング
 const AppContext = createContext({
   user: null,
-  theme: 'light',
+  theme: "light",
   notifications: [],
   settings: {},
 });

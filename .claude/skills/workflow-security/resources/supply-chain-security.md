@@ -33,6 +33,7 @@ uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
 ```
 
 **理由**:
+
 - タグは削除・再作成可能（`git tag -f v4 <malicious-commit>`）
 - ブランチは常に最新コミットを参照
 - コミットSHAは暗号学的に一意で不変
@@ -68,18 +69,19 @@ updates:
 ```
 
 Dependabot が自動的に:
+
 1. 新しいリリースを検出
 2. コミットSHAを取得
 3. PRを作成（タグコメント付き）
 
 ### 固定のトレードオフ
 
-| 方式 | セキュリティ | メンテナンス | 推奨度 |
-|------|------------|------------|--------|
-| タグ | 🔴 低 | 🟢 簡単 | ❌ 非推奨 |
-| ブランチ | 🔴 低 | 🟢 自動 | ❌ 非推奨 |
-| コミットSHA | 🟢 高 | 🟡 手動 | ✅ 推奨 |
-| SHA + Dependabot | 🟢 高 | 🟢 自動 | ✅ 最推奨 |
+| 方式             | セキュリティ | メンテナンス | 推奨度    |
+| ---------------- | ------------ | ------------ | --------- |
+| タグ             | 🔴 低        | 🟢 簡単      | ❌ 非推奨 |
+| ブランチ         | 🔴 低        | 🟢 自動      | ❌ 非推奨 |
+| コミットSHA      | 🟢 高        | 🟡 手動      | ✅ 推奨   |
+| SHA + Dependabot | 🟢 高        | 🟢 自動      | ✅ 最推奨 |
 
 ## 依存関係レビュー
 
@@ -126,7 +128,7 @@ jobs:
   dependency-review:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - uses: actions/dependency-review-action@v4
         with:
           # 高・致命的脆弱性でPR失敗
@@ -235,6 +237,7 @@ uses: my-org/action@b4ffde65  # 内部レビュー済み
 ```
 
 **手順**:
+
 1. パブリックアクションをフォーク
 2. セキュリティレビュー実施
 3. 内部リポジトリで管理
@@ -244,17 +247,18 @@ uses: my-org/action@b4ffde65  # 内部レビュー済み
 
 ```yaml
 # .github/actions/custom-action/action.yml
-name: 'Custom Action'
-description: 'Internal verified action'
+name: "Custom Action"
+description: "Internal verified action"
 inputs:
   token:
     required: true
 runs:
-  using: 'node20'
-  main: 'dist/index.js'
+  using: "node20"
+  main: "dist/index.js"
 ```
 
 **使用**:
+
 ```yaml
 - uses: ./.github/actions/custom-action
   with:
@@ -275,7 +279,7 @@ allow:
 
 # 拒否リスト
 deny:
-  - 0.0.0.0/0  # デフォルト拒否
+  - 0.0.0.0/0 # デフォルト拒否
 ```
 
 ### アウトバウンド通信の監視
@@ -328,15 +332,15 @@ jobs:
 - name: Run Trivy
   uses: aquasecurity/trivy-action@master
   with:
-    scan-type: 'fs'
-    scan-ref: '.'
-    format: 'sarif'
-    output: 'trivy-results.sarif'
+    scan-type: "fs"
+    scan-ref: "."
+    format: "sarif"
+    output: "trivy-results.sarif"
 
 - name: Upload to GitHub Security
   uses: github/codeql-action/upload-sarif@v3
   with:
-    sarif_file: 'trivy-results.sarif'
+    sarif_file: "trivy-results.sarif"
 ```
 
 ### Semgrep（パターンマッチング）
@@ -451,6 +455,7 @@ jobs:
 ---
 
 **参考リンク**:
+
 - [Sigstore](https://www.sigstore.dev/)
 - [Dependency Review Action](https://github.com/actions/dependency-review-action)
 - [GitHub Supply Chain Security](https://docs.github.com/en/code-security/supply-chain-security)

@@ -1,4 +1,4 @@
-import { format, parseISO, isValid } from 'date-fns';
+import { format, parseISO, isValid } from "date-fns";
 
 /**
  * ISO8601 形式の日時文字列を Date に変換
@@ -18,7 +18,10 @@ export function toISOString(date: Date): string {
 /**
  * 日時を表示用フォーマットに変換
  */
-export function formatDate(date: Date, formatStr: string = 'yyyy-MM-dd HH:mm:ss'): string {
+export function formatDate(
+  date: Date,
+  formatStr: string = "yyyy-MM-dd HH:mm:ss",
+): string {
   return format(date, formatStr);
 }
 
@@ -37,5 +40,5 @@ export function getRelativeTime(date: Date): string {
   if (diffMin < 60) return `${diffMin}分前`;
   if (diffHour < 24) return `${diffHour}時間前`;
   if (diffDay < 7) return `${diffDay}日前`;
-  return formatDate(date, 'yyyy-MM-dd');
+  return formatDate(date, "yyyy-MM-dd");
 }

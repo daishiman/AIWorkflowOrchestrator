@@ -7,38 +7,38 @@ on:
   workflow_call:
     inputs:
       node-version:
-        description: 'Node.js version to use'
+        description: "Node.js version to use"
         required: false
         type: number
         default: 22
       working-directory:
-        description: 'Working directory for commands'
+        description: "Working directory for commands"
         required: false
         type: string
-        default: '.'
+        default: "."
       run-lint:
-        description: 'Whether to run linting'
+        description: "Whether to run linting"
         required: false
         type: boolean
         default: true
       run-type-check:
-        description: 'Whether to run type checking'
+        description: "Whether to run type checking"
         required: false
         type: boolean
         default: true
       run-tests:
-        description: 'Whether to run tests'
+        description: "Whether to run tests"
         required: false
         type: boolean
         default: true
       coverage-threshold:
-        description: 'Minimum coverage percentage'
+        description: "Minimum coverage percentage"
         required: false
         type: number
         default: 80
     secrets:
       NPM_TOKEN:
-        description: 'pnpm token for private packages'
+        description: "pnpm token for private packages"
         required: false
 
 jobs:
@@ -60,7 +60,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         id: cache
@@ -85,7 +85,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         working-directory: ${{ inputs.working-directory }}
@@ -113,7 +113,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         working-directory: ${{ inputs.working-directory }}
@@ -141,7 +141,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         working-directory: ${{ inputs.working-directory }}

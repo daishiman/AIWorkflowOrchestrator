@@ -22,6 +22,7 @@ key: ${{ runner.os }}-pnpm-v1
 ```
 
 **メリット:**
+
 - 依存関係が同じなら必ずヒット
 - 不要なキャッシュ再作成を防止
 - 決定論的な動作
@@ -39,12 +40,14 @@ restore-keys: |
 ```
 
 **マッチング順序:**
+
 1. 完全一致: `linux-node-v2-abc123`
 2. プレフィックス一致 (新→古): `linux-node-v2-def456`, `linux-node-v2-xyz789`
 3. より広いプレフィックス: `linux-node-v1-abc123`
 4. さらに広い: `linux-abc123`
 
 **ベストプラクティス:**
+
 ```yaml
 # ✅ 良い例: 段階的フォールバック
 restore-keys: |
@@ -74,6 +77,7 @@ key: ${{ runner.os }}-cache-v3-${{ hashFiles('**/lock-file') }}
 ```
 
 **バージョンアップが必要なケース:**
+
 - パッケージマネージャーのメジャーアップデート
 - キャッシュパスの変更
 - ビルドツールの設定変更
@@ -96,6 +100,7 @@ restore-keys: |
 ```
 
 **使用ケース:**
+
 - main: 本番環境用の安定したキャッシュ
 - feature: ブランチ固有の依存関係（実験的な変更）
 - PR: main からのフォールバックで効率化
@@ -112,6 +117,7 @@ enableCrossOsArchive: true
 ```
 
 **注意点:**
+
 - パス区切り文字の違い（Windows: `\`, Linux: `/`）
 - 実行権限の保持
 - ネイティブモジュールの非互換性
@@ -136,18 +142,18 @@ enableCrossOsArchive: true
     key: all-${{ hashFiles('**/*') }}
 
 # ✅ 良い例: 3つの小さなキャッシュに分割
-- uses: actions/cache@v4  # 4GB
+- uses: actions/cache@v4 # 4GB
   with:
     path: ~/.cargo/registry
     key: cargo-registry-${{ hashFiles('**/Cargo.lock') }}
 
-- uses: actions/cache@v4  # 5GB
+- uses: actions/cache@v4 # 5GB
   with:
     path: target/
     key: build-${{ hashFiles('**/*.rs') }}
     restore-keys: build-
 
-- uses: actions/cache@v4  # 2GB
+- uses: actions/cache@v4 # 2GB
   with:
     path: ~/.cache
     key: cache-${{ github.run_id }}
@@ -155,6 +161,7 @@ enableCrossOsArchive: true
 ```
 
 **メリット:**
+
 - 10GB制限を回避
 - 変更頻度に応じた最適化
 - ヒット率の向上
@@ -184,6 +191,7 @@ path: |
 ### キャッシュエビクション管理
 
 **自動削除条件:**
+
 1. 7日間未使用
 2. リポジトリ合計が10GBを超過
 3. ブランチ削除
@@ -194,7 +202,7 @@ path: |
 # main ブランチで定期的にアクセスしてキャッシュを保持
 on:
   schedule:
-    - cron: '0 0 * * 0'  # 毎週日曜日
+    - cron: "0 0 * * 0" # 毎週日曜日
 
 jobs:
   keep-cache-warm:
@@ -204,7 +212,7 @@ jobs:
         with:
           path: ~/.cargo
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          lookup-only: true  # 復元のみ、保存しない
+          lookup-only: true # 復元のみ、保存しない
 ```
 
 ## パフォーマンス最適化
@@ -223,6 +231,7 @@ jobs:
 ```
 
 **メリット:**
+
 - PR ではキャッシュを消費しない
 - ストレージ使用量を削減
 
@@ -263,7 +272,7 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
-          lookup-only: true  # 復元のみ
+          lookup-only: true # 復元のみ
       - run: pnpm test -- --shard=${{ matrix.shard }}/4
 ```
 
@@ -288,12 +297,12 @@ jobs:
 
 #### 原因と対策
 
-| 原因 | 対策 |
-|-----|-----|
-| ロックファイルが見つからない | `hashFiles()` のパターンを確認 |
-| パスが間違っている | キャッシュパスが実際に存在するか確認 |
-| キーが毎回変わる | `github.sha` などの動的な値を使用していないか確認 |
-| クロスOS問題 | `enableCrossOsArchive: true` を設定 |
+| 原因                         | 対策                                              |
+| ---------------------------- | ------------------------------------------------- |
+| ロックファイルが見つからない | `hashFiles()` のパターンを確認                    |
+| パスが間違っている           | キャッシュパスが実際に存在するか確認              |
+| キーが毎回変わる             | `github.sha` などの動的な値を使用していないか確認 |
+| クロスOS問題                 | `enableCrossOsArchive: true` を設定               |
 
 ### 問題2: キャッシュが古い
 
@@ -337,6 +346,7 @@ du -sh ~/.pnpm/* | sort -hr | head -20
 #### 対策
 
 **戦略A: パスの最適化**
+
 ```yaml
 # 不要なディレクトリを除外
 path: |
@@ -346,14 +356,15 @@ path: |
 ```
 
 **戦略B: キャッシュの分割**
+
 ```yaml
 # 変更頻度で分割
-- uses: actions/cache@v4  # 低頻度（依存関係）
+- uses: actions/cache@v4 # 低頻度（依存関係）
   with:
     path: ~/.cargo/registry
     key: registry-${{ hashFiles('**/Cargo.lock') }}
 
-- uses: actions/cache@v4  # 高頻度（ビルド成果物）
+- uses: actions/cache@v4 # 高頻度（ビルド成果物）
   with:
     path: target/
     key: build-${{ hashFiles('**/*.rs') }}
@@ -361,6 +372,7 @@ path: |
 ```
 
 **戦略C: クリーンアップ**
+
 ```yaml
 - name: Cleanup before cache
   run: |
@@ -397,6 +409,7 @@ path: |
 #### 対策
 
 **戦略A: restore-keys の最適化**
+
 ```yaml
 # より多くのフォールバックオプション
 restore-keys: |
@@ -406,6 +419,7 @@ restore-keys: |
 ```
 
 **戦略B: 増分キャッシュ**
+
 ```yaml
 # 常に前回のキャッシュから開始
 key: ${{ runner.os }}-build-${{ github.run_id }}
@@ -414,6 +428,7 @@ restore-keys: |
 ```
 
 **戦略C: 複数レイヤー戦略**
+
 ```yaml
 # Layer 1: 安定した依存関係
 - uses: actions/cache@v4
@@ -450,13 +465,13 @@ restore-keys: |
 
 ### 推奨される目標値
 
-| メトリクス | 目標値 | 許容範囲 |
-|-----------|--------|----------|
-| キャッシュヒット率 | >90% | 80-95% |
-| キャッシュサイズ（依存関係） | <500MB | <1GB |
-| キャッシュサイズ（ビルド） | <2GB | <5GB |
-| 復元時間 | <30秒 | <60秒 |
-| ビルド時間短縮率 | >50% | 30-80% |
+| メトリクス                   | 目標値 | 許容範囲 |
+| ---------------------------- | ------ | -------- |
+| キャッシュヒット率           | >90%   | 80-95%   |
+| キャッシュサイズ（依存関係） | <500MB | <1GB     |
+| キャッシュサイズ（ビルド）   | <2GB   | <5GB     |
+| 復元時間                     | <30秒  | <60秒    |
+| ビルド時間短縮率             | >50%   | 30-80%   |
 
 ### 定期的なレビュー
 
@@ -464,7 +479,7 @@ restore-keys: |
 # 月次レポート生成
 on:
   schedule:
-    - cron: '0 0 1 * *'  # 毎月1日
+    - cron: "0 0 1 * *" # 毎月1日
 
 jobs:
   cache-report:
@@ -492,11 +507,13 @@ jobs:
 ### DO（推奨）
 
 ✅ **ロックファイルのハッシュをキーに使用**
+
 ```yaml
 key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
 ```
 
 ✅ **restore-keys で段階的フォールバック**
+
 ```yaml
 restore-keys: |
   ${{ runner.os }}-pnpm-${{ hashFiles('**/package-lock.json') }}-
@@ -504,16 +521,19 @@ restore-keys: |
 ```
 
 ✅ **キャッシュサイズを監視**
+
 ```yaml
 - run: du -sh ~/.pnpm
 ```
 
 ✅ **バージョニングで強制リフレッシュ**
+
 ```yaml
 key: ${{ runner.os }}-cache-v2-${{ hashFiles('**/lock') }}
 ```
 
 ✅ **必要最小限のパスをキャッシュ**
+
 ```yaml
 path: |
   ~/.cargo/registry/cache
@@ -523,27 +543,32 @@ path: |
 ### DON'T（非推奨）
 
 ❌ **静的キーを使用**
+
 ```yaml
-key: my-cache  # 依存関係更新を検出できない
+key: my-cache # 依存関係更新を検出できない
 ```
 
 ❌ **広すぎるrestore-keys**
+
 ```yaml
-restore-keys: cache-  # 無関係なキャッシュを取得
+restore-keys: cache- # 無関係なキャッシュを取得
 ```
 
 ❌ **不要なファイルをキャッシュ**
+
 ```yaml
 path: |
   ~/.cargo  # すべてをキャッシュ（サイズが大きい）
 ```
 
 ❌ **動的なキーのみ使用**
+
 ```yaml
-key: ${{ github.sha }}  # 毎回ミスする
+key: ${{ github.sha }} # 毎回ミスする
 ```
 
 ❌ **キャッシュサイズを無視**
+
 ```yaml
 # 10GB超のキャッシュを作成
 ```

@@ -7,13 +7,13 @@
 
 ## クォータ vs レート制限
 
-| 観点 | レート制限 | クォータ |
-|------|-----------|---------|
-| 目的 | バースト制御 | 使用量制限 |
-| 期間 | 短期（秒〜分） | 長期（日〜月） |
-| リセット | 自動 | 計画的 |
-| 課金連携 | なし | あり |
-| 超過時 | 一時拒否 | 追加課金/停止 |
+| 観点     | レート制限     | クォータ       |
+| -------- | -------------- | -------------- |
+| 目的     | バースト制御   | 使用量制限     |
+| 期間     | 短期（秒〜分） | 長期（日〜月） |
+| リセット | 自動           | 計画的         |
+| 課金連携 | なし           | あり           |
+| 超過時   | 一時拒否       | 追加課金/停止  |
 
 ## クォータ設計
 
@@ -22,15 +22,15 @@
 ```typescript
 interface QuotaConfig {
   // 基本クォータ
-  daily: number;      // 1日あたり
-  monthly: number;    // 1ヶ月あたり
+  daily: number; // 1日あたり
+  monthly: number; // 1ヶ月あたり
 
   // 細分化クォータ
   perEndpoint?: Record<string, number>;
 
   // リソース別クォータ
-  storage?: number;   // バイト
-  compute?: number;   // CPU秒
+  storage?: number; // バイト
+  compute?: number; // CPU秒
 
   // バースト許容
   burstAllowance?: number;
@@ -41,8 +41,8 @@ const quotaPlans: Record<string, QuotaConfig> = {
     daily: 1000,
     monthly: 10000,
     perEndpoint: {
-      'POST /api/generate': 100,
-      'POST /api/upload': 10,
+      "POST /api/generate": 100,
+      "POST /api/upload": 10,
     },
     storage: 100 * 1024 * 1024, // 100MB
   },
@@ -51,8 +51,8 @@ const quotaPlans: Record<string, QuotaConfig> = {
     daily: 10000,
     monthly: 100000,
     perEndpoint: {
-      'POST /api/generate': 1000,
-      'POST /api/upload': 100,
+      "POST /api/generate": 1000,
+      "POST /api/upload": 100,
     },
     storage: 1024 * 1024 * 1024, // 1GB
     burstAllowance: 0.1, // 10%追加許容
@@ -74,7 +74,7 @@ const quotaPlans: Record<string, QuotaConfig> = {
 ```typescript
 interface UsageRecord {
   userId: string;
-  period: string;       // "2024-01" (月) or "2024-01-15" (日)
+  period: string; // "2024-01" (月) or "2024-01-15" (日)
   endpoint?: string;
   count: number;
   lastUpdated: Date;
@@ -86,7 +86,7 @@ class UsageTracker {
   async increment(
     userId: string,
     endpoint?: string,
-    amount: number = 1
+    amount: number = 1,
   ): Promise<UsageRecord> {
     const dailyKey = this.getDailyKey(userId, endpoint);
     const monthlyKey = this.getMonthlyKey(userId, endpoint);
@@ -104,7 +104,7 @@ class UsageTracker {
     let record = this.storage.get(key);
 
     if (!record) {
-      const [userId, period, endpoint] = key.split(':');
+      const [userId, period, endpoint] = key.split(":");
       record = {
         userId,
         period,
@@ -121,18 +121,19 @@ class UsageTracker {
 
   async getUsage(
     userId: string,
-    type: 'daily' | 'monthly',
-    endpoint?: string
+    type: "daily" | "monthly",
+    endpoint?: string,
   ): Promise<number> {
-    const key = type === 'daily'
-      ? this.getDailyKey(userId, endpoint)
-      : this.getMonthlyKey(userId, endpoint);
+    const key =
+      type === "daily"
+        ? this.getDailyKey(userId, endpoint)
+        : this.getMonthlyKey(userId, endpoint);
 
     return this.storage.get(key)?.count || 0;
   }
 
   private getDailyKey(userId: string, endpoint?: string): string {
-    const date = new Date().toISOString().split('T')[0];
+    const date = new Date().toISOString().split("T")[0];
     return endpoint ? `${userId}:${date}:${endpoint}` : `${userId}:${date}`;
   }
 
@@ -152,7 +153,7 @@ class RedisUsageTracker {
   async increment(
     userId: string,
     endpoint?: string,
-    amount: number = 1
+    amount: number = 1,
   ): Promise<{ daily: number; monthly: number }> {
     const now = new Date();
     const dailyKey = this.getDailyKey(userId, endpoint, now);
@@ -171,12 +172,15 @@ class RedisUsageTracker {
     const results = await pipeline.exec();
 
     return {
-      daily: results?.[0]?.[1] as number || 0,
-      monthly: results?.[2]?.[1] as number || 0,
+      daily: (results?.[0]?.[1] as number) || 0,
+      monthly: (results?.[2]?.[1] as number) || 0,
     };
   }
 
-  async getUsage(userId: string, endpoint?: string): Promise<{
+  async getUsage(
+    userId: string,
+    endpoint?: string,
+  ): Promise<{
     daily: number;
     monthly: number;
   }> {
@@ -187,19 +191,27 @@ class RedisUsageTracker {
     const [daily, monthly] = await this.redis.mget(dailyKey, monthlyKey);
 
     return {
-      daily: parseInt(daily || '0', 10),
-      monthly: parseInt(monthly || '0', 10),
+      daily: parseInt(daily || "0", 10),
+      monthly: parseInt(monthly || "0", 10),
     };
   }
 
-  private getDailyKey(userId: string, endpoint: string | undefined, date: Date): string {
-    const day = date.toISOString().split('T')[0];
+  private getDailyKey(
+    userId: string,
+    endpoint: string | undefined,
+    date: Date,
+  ): string {
+    const day = date.toISOString().split("T")[0];
     return endpoint
       ? `quota:daily:${userId}:${endpoint}:${day}`
       : `quota:daily:${userId}:${day}`;
   }
 
-  private getMonthlyKey(userId: string, endpoint: string | undefined, date: Date): string {
+  private getMonthlyKey(
+    userId: string,
+    endpoint: string | undefined,
+    date: Date,
+  ): string {
     const month = date.toISOString().slice(0, 7);
     return endpoint
       ? `quota:monthly:${userId}:${endpoint}:${month}`
@@ -236,13 +248,13 @@ interface QuotaResult {
 class QuotaEnforcer {
   constructor(
     private readonly tracker: RedisUsageTracker,
-    private readonly plans: Record<string, QuotaConfig>
+    private readonly plans: Record<string, QuotaConfig>,
   ) {}
 
   async check(
     userId: string,
     plan: string,
-    endpoint?: string
+    endpoint?: string,
   ): Promise<QuotaResult> {
     const config = this.plans[plan];
     if (!config) {
@@ -300,9 +312,13 @@ class QuotaEnforcer {
 
 // Express ミドルウェア
 function quotaMiddleware(enforcer: QuotaEnforcer) {
-  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  return async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
     const userId = req.user?.id;
-    const plan = req.user?.plan || 'free';
+    const plan = req.user?.plan || "free";
     const endpoint = `${req.method} ${req.path}`;
 
     if (!userId) {
@@ -312,18 +328,24 @@ function quotaMiddleware(enforcer: QuotaEnforcer) {
     const result = await enforcer.check(userId, plan, endpoint);
 
     // ヘッダー設定
-    res.setHeader('X-Quota-Limit-Daily', result.limits.daily);
-    res.setHeader('X-Quota-Remaining-Daily', result.remaining.daily);
-    res.setHeader('X-Quota-Reset-Daily', Math.ceil(result.resetAt.daily / 1000));
-    res.setHeader('X-Quota-Limit-Monthly', result.limits.monthly);
-    res.setHeader('X-Quota-Remaining-Monthly', result.remaining.monthly);
-    res.setHeader('X-Quota-Reset-Monthly', Math.ceil(result.resetAt.monthly / 1000));
+    res.setHeader("X-Quota-Limit-Daily", result.limits.daily);
+    res.setHeader("X-Quota-Remaining-Daily", result.remaining.daily);
+    res.setHeader(
+      "X-Quota-Reset-Daily",
+      Math.ceil(result.resetAt.daily / 1000),
+    );
+    res.setHeader("X-Quota-Limit-Monthly", result.limits.monthly);
+    res.setHeader("X-Quota-Remaining-Monthly", result.remaining.monthly);
+    res.setHeader(
+      "X-Quota-Reset-Monthly",
+      Math.ceil(result.resetAt.monthly / 1000),
+    );
 
     if (!result.allowed) {
       res.status(429).json({
         error: {
-          code: 'QUOTA_EXCEEDED',
-          message: 'Quota exceeded',
+          code: "QUOTA_EXCEEDED",
+          message: "Quota exceeded",
           usage: result.usage,
           limits: result.limits,
           resetAt: result.resetAt,
@@ -346,8 +368,13 @@ function quotaMiddleware(enforcer: QuotaEnforcer) {
 
 ```typescript
 interface AlertConfig {
-  thresholds: number[];  // [0.5, 0.8, 0.9, 1.0]
-  notifyFn: (userId: string, usage: number, limit: number, threshold: number) => Promise<void>;
+  thresholds: number[]; // [0.5, 0.8, 0.9, 1.0]
+  notifyFn: (
+    userId: string,
+    usage: number,
+    limit: number,
+    threshold: number,
+  ) => Promise<void>;
 }
 
 class QuotaAlertManager {
@@ -358,7 +385,7 @@ class QuotaAlertManager {
   async checkAndAlert(
     userId: string,
     usage: number,
-    limit: number
+    limit: number,
   ): Promise<void> {
     const ratio = usage / limit;
     const alertKey = `${userId}:${this.getCurrentPeriod()}`;
@@ -391,7 +418,9 @@ class QuotaAlertManager {
 const alertManager = new QuotaAlertManager({
   thresholds: [0.5, 0.8, 0.9, 1.0],
   notifyFn: async (userId, usage, limit, threshold) => {
-    console.log(`User ${userId}: ${threshold * 100}% quota used (${usage}/${limit})`);
+    console.log(
+      `User ${userId}: ${threshold * 100}% quota used (${usage}/${limit})`,
+    );
     // メール送信、Slack通知など
   },
 });
@@ -425,7 +454,7 @@ async function getUserUsageSummary(
   userId: string,
   tracker: RedisUsageTracker,
   plans: Record<string, QuotaConfig>,
-  userPlan: string
+  userPlan: string,
 ): Promise<UsageSummary> {
   const now = new Date();
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -458,16 +487,19 @@ async function getUserUsageSummary(
 ## チェックリスト
 
 ### 設計時
+
 - [ ] プラン別のクォータを定義したか？
 - [ ] リセット周期を決定したか？
 - [ ] アラート閾値を設定したか？
 
 ### 実装時
+
 - [ ] 使用量追跡が正確か？
 - [ ] アトミックなインクリメントか？
 - [ ] ダウンタイム時の対応は？
 
 ### 運用時
+
 - [ ] 使用量ダッシュボードがあるか？
 - [ ] アラート通知が機能しているか？
 - [ ] プラン変更時の処理は？

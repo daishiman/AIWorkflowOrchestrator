@@ -341,20 +341,22 @@ code_generation_rubric:
 ## 評価記録テンプレート
 
 ### 評価対象
+
 - テストケースID: {{test_case_id}}
 - 入力: {{input}}
 - 出力: {{output}}
 
 ### 次元別評価
 
-| 次元 | スコア | 理由 |
-|------|--------|------|
-| 正確性 | /5 | |
-| 完全性 | /5 | |
-| 明確性 | /5 | |
-| 適切性 | /5 | |
+| 次元   | スコア | 理由 |
+| ------ | ------ | ---- |
+| 正確性 | /5     |      |
+| 完全性 | /5     |      |
+| 明確性 | /5     |      |
+| 適切性 | /5     |      |
 
 ### 総合評価
+
 - 総合スコア: /5
 - 主な強み:
 - 主な改善点:
@@ -373,10 +375,7 @@ interface RubricScore {
 
 function calculateWeightedScore(scores: RubricScore[]): number {
   const totalWeight = scores.reduce((sum, s) => sum + s.weight, 0);
-  const weightedSum = scores.reduce(
-    (sum, s) => sum + (s.score * s.weight),
-    0
-  );
+  const weightedSum = scores.reduce((sum, s) => sum + s.score * s.weight, 0);
 
   return weightedSum / totalWeight;
 }
@@ -398,29 +397,29 @@ process:
 ### Step 2: レベルの定義
 
 ```yaml
-  2_define_levels:
-    guidelines:
-      - 各レベルの差を明確に
-      - 具体的で観察可能な基準
-      - 主観を最小化
+2_define_levels:
+  guidelines:
+    - 各レベルの差を明確に
+    - 具体的で観察可能な基準
+    - 主観を最小化
 ```
 
 ### Step 3: 重み付け
 
 ```yaml
-  3_assign_weights:
-    guidelines:
-      - ビジネス影響度を考慮
-      - 合計が1.0になるように
-      - 最重要次元に最大の重み
+3_assign_weights:
+  guidelines:
+    - ビジネス影響度を考慮
+    - 合計が1.0になるように
+    - 最重要次元に最大の重み
 ```
 
 ### Step 4: 検証
 
 ```yaml
-  4_validate:
-    methods:
-      - サンプル出力で試行
-      - 評価者間の一致率を確認
-      - 必要に応じて調整
+4_validate:
+  methods:
+    - サンプル出力で試行
+    - 評価者間の一致率を確認
+    - 必要に応じて調整
 ```

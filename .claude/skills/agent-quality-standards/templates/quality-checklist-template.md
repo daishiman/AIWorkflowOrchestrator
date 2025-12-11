@@ -143,17 +143,18 @@
 
 ## 総合評価
 
-| カテゴリ | スコア | 重み | 加重スコア |
-|---------|-------|------|-----------|
-| 構造品質 | `{{structural_score}}` | 25% | `{{structural_weighted}}` |
-| 設計原則品質 | `{{design_score}}` | 25% | `{{design_weighted}}` |
-| セキュリティ品質 | `{{security_score}}` | 20% | `{{security_weighted}}` |
-| ドキュメンテーション品質 | `{{documentation_score}}` | 15% | `{{documentation_weighted}}` |
-| 統合品質 | `{{integration_score}}` | 15% | `{{integration_weighted}}` |
+| カテゴリ                 | スコア                    | 重み | 加重スコア                   |
+| ------------------------ | ------------------------- | ---- | ---------------------------- |
+| 構造品質                 | `{{structural_score}}`    | 25%  | `{{structural_weighted}}`    |
+| 設計原則品質             | `{{design_score}}`        | 25%  | `{{design_weighted}}`        |
+| セキュリティ品質         | `{{security_score}}`      | 20%  | `{{security_weighted}}`      |
+| ドキュメンテーション品質 | `{{documentation_score}}` | 15%  | `{{documentation_weighted}}` |
+| 統合品質                 | `{{integration_score}}`   | 15%  | `{{integration_weighted}}`   |
 
 **総合品質スコア**: `{{total_score}}/100`
 
 **評価**: `{{rating}}`
+
 - 90-100点: 優秀（Excellent）
 - 80-89点: 良好（Good）
 - 70-79点: 合格（Acceptable）
@@ -184,8 +185,8 @@
 
 ## アクションプラン
 
-| 項目 | 優先度 | 担当 | 期限 | ステータス |
-|------|-------|------|------|-----------|
+| 項目           | 優先度           | 担当             | 期限             | ステータス     |
+| -------------- | ---------------- | ---------------- | ---------------- | -------------- |
 | `{{action_1}}` | `{{priority_1}}` | `{{assignee_1}}` | `{{deadline_1}}` | `{{status_1}}` |
 | `{{action_2}}` | `{{priority_2}}` | `{{assignee_2}}` | `{{deadline_2}}` | `{{status_2}}` |
 | `{{action_3}}` | `{{priority_3}}` | `{{assignee_3}}` | `{{deadline_3}}` | `{{status_3}}` |
@@ -209,6 +210,6 @@
 
 ## 変更履歴
 
-| 日付 | 評価者 | 総合スコア | 主要変更 |
-|------|-------|-----------|---------|
+| 日付       | 評価者          | 総合スコア        | 主要変更 |
+| ---------- | --------------- | ----------------- | -------- |
 | `{{date}}` | `{{evaluator}}` | `{{total_score}}` | 初回評価 |

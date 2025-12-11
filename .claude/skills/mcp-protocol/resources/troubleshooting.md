@@ -7,6 +7,7 @@
 **症状**: MCPサーバーが起動せず、ツールが認識されない
 
 **チェックポイント**:
+
 1. コマンドパスが正しいか確認
 2. 必要な依存関係がインストールされているか確認
 3. 環境変数が正しく設定されているか確認
@@ -36,6 +37,7 @@ echo $REQUIRED_ENV_VAR
 | リソース不足 | メモリ/CPU確認 |
 
 **設定例**:
+
 ```json
 {
   "mcpServers": {
@@ -54,6 +56,7 @@ echo $REQUIRED_ENV_VAR
 **症状**: `API key not found` または `Authentication failed`
 
 **診断**:
+
 ```bash
 # 環境変数の存在確認
 env | grep API_KEY
@@ -63,6 +66,7 @@ cat .env | grep API_KEY
 ```
 
 **解決策**:
+
 1. `.env` ファイルに環境変数を追加
 2. シェル設定に環境変数をエクスポート
 3. Claude Desktop設定で環境変数を指定
@@ -72,6 +76,7 @@ cat .env | grep API_KEY
 **症状**: `Token expired` または `Invalid token`
 
 **解決策**:
+
 1. トークンを再生成
 2. リフレッシュトークンの実装
 3. 有効期限の確認
@@ -83,18 +88,20 @@ cat .env | grep API_KEY
 **症状**: `Invalid params` エラー
 
 **診断チェックリスト**:
+
 - [ ] 必須パラメータがすべて含まれているか
 - [ ] パラメータの型が正しいか
 - [ ] 値が許容範囲内か
 
 **デバッグ方法**:
+
 ```json
 {
   "method": "tools/call",
   "params": {
     "name": "tool_name",
     "arguments": {
-      "param1": "value1"  // ここを確認
+      "param1": "value1" // ここを確認
     }
   }
 }
@@ -105,11 +112,13 @@ cat .env | grep API_KEY
 **症状**: `Method not found` または `Tool not found`
 
 **原因**:
+
 1. サーバーがツールを公開していない
 2. ツール名のスペルミス
 3. サーバーバージョン不一致
 
 **確認コマンド**:
+
 ```bash
 # 利用可能なツールをリスト
 # MCPデバッグモードで確認
@@ -121,6 +130,7 @@ DEBUG=mcp:* npx -y @server/name
 ### レスポンス遅延
 
 **診断**:
+
 1. ネットワークレイテンシの測定
 2. サーバー処理時間の確認
 3. ペイロードサイズの確認
@@ -137,12 +147,14 @@ DEBUG=mcp:* npx -y @server/name
 **症状**: メモリ使用量が継続的に増加
 
 **診断**:
+
 ```bash
 # Node.jsプロセスのメモリ監視
 node --inspect server.js
 ```
 
 **対策**:
+
 1. 接続プールの制限
 2. キャッシュの有効期限設定
 3. 定期的なガベージコレクション
@@ -151,32 +163,38 @@ node --inspect server.js
 
 ### エラーコード別対応表
 
-| エラーコード | メッセージ | 対応 |
-|-------------|-----------|------|
-| -32700 | Parse error | JSONフォーマット確認 |
-| -32600 | Invalid request | リクエスト構造確認 |
-| -32601 | Method not found | メソッド名確認 |
-| -32602 | Invalid params | パラメータ確認 |
-| -32603 | Internal error | サーバーログ確認 |
+| エラーコード | メッセージ       | 対応                 |
+| ------------ | ---------------- | -------------------- |
+| -32700       | Parse error      | JSONフォーマット確認 |
+| -32600       | Invalid request  | リクエスト構造確認   |
+| -32601       | Method not found | メソッド名確認       |
+| -32602       | Invalid params   | パラメータ確認       |
+| -32603       | Internal error   | サーバーログ確認     |
 
 ### 具体的なエラー対応
 
 **`ECONNREFUSED`**:
+
 ```
 Error: connect ECONNREFUSED 127.0.0.1:3000
 ```
+
 → サーバーが起動しているか確認
 
 **`EPERM`**:
+
 ```
 Error: EPERM: operation not permitted
 ```
+
 → ファイル/ディレクトリのアクセス権限を確認
 
 **`ENOENT`**:
+
 ```
 Error: ENOENT: no such file or directory
 ```
+
 → パスが正しいか確認
 
 ## 6. デバッグ手順

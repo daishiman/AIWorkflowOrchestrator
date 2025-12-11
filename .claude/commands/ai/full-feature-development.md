@@ -78,13 +78,13 @@ description: |
   トリガーキーワード: full feature, complete development, 機能開発, TDD, end-to-end, 完全開発サイクル
 argument-hint: "[feature-name]"
 allowed-tools:
-   - Task
-   - Read
-   - Write
-   - Edit
-   - Bash
-   - Grep
-   - Glob
+  - Task
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
 model: opus
 ---
 
@@ -99,21 +99,25 @@ model: opus
 **使用エージェント**: `.claude/agents/product-manager.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 機能「${feature-name}」の価値定義とバックログ優先順位を決定してください。
 
 **要件**:
+
 1. ビジネス価値の明確化（Why: なぜこの機能が必要か）
 2. ユーザーストーリー作成（As a - I want - So that形式）
 3. 優先順位決定（ROI、RICE Scoring等）
 4. 成功指標の定義（KPI、メトリクス）
 
 **スキル参照**:
+
 - `.claude/skills/user-story-mapping/SKILL.md`
 - `.claude/skills/prioritization-frameworks/SKILL.md`
 - `.claude/skills/product-vision/SKILL.md`
 
 **成果物**:
+
 - `docs/00-requirements/features/${feature-name}.md`（ビジネス価値、ユーザーストーリー、優先順位、成功指標）
 ```
 
@@ -122,28 +126,33 @@ model: opus
 **使用エージェント**: `.claude/agents/req-analyst.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 機能「${feature-name}」の要件を整理し、ユースケースと受け入れ基準を定義してください。
 
 **入力**: Phase 1の成果物（`docs/00-requirements/features/${feature-name}.md`）
 
 **要件**:
+
 1. 機能要件（Functional Requirements）の詳細化
 2. 非機能要件（Non-Functional Requirements）の定義
 3. ユースケース作成（正常系・異常系）
 4. 受け入れ基準（Acceptance Criteria）の定義（Given-When-Then形式）
 
 **プロジェクト制約**:
+
 - TDD必須（仕様 → テスト → 実装の順序）
 - ハイブリッド構造（shared/ と features/ の責務明確化）
 - Clean Architecture（依存方向: app → features → infrastructure → core）
 
 **スキル参照**:
+
 - `.claude/skills/use-case-modeling/SKILL.md`
 - `.claude/skills/acceptance-criteria-writing/SKILL.md`
 - `.claude/skills/functional-non-functional-requirements/SKILL.md`
 
 **成果物**:
+
 - `docs/00-requirements/features/${feature-name}.md`（要件追加: ユースケース、受け入れ基準、TDDフロー）
 ```
 
@@ -152,12 +161,14 @@ model: opus
 **使用エージェント**: `.claude/agents/spec-writer.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 機能「${feature-name}」の詳細仕様書を作成してください。
 
 **入力**: Phase 2の成果物（要件定義）
 
 **要件**:
+
 1. データモデル設計（入出力スキーマ、Zod定義）
 2. API設計（エンドポイント、HTTPメソッド、レスポンス形式）
 3. ビジネスロジック仕様（Executorの処理フロー）
@@ -165,15 +176,18 @@ model: opus
 5. エラーハンドリング仕様（7.1-7.3章準拠）
 
 **プロジェクト構造準拠**（master_system_design.md 4章）:
+
 - `src/features/${feature-name}/schema.ts`: 入出力スキーマ
 - `src/features/${feature-name}/executor.ts`: IWorkflowExecutor実装
 - `src/features/${feature-name}/__tests__/`: テストファイル
 
 **スキル参照**:
+
 - `.claude/skills/api-documentation-best-practices/SKILL.md`
 - `.claude/skills/zod-validation/SKILL.md`
 
 **成果物**:
+
 - `docs/20-specifications/features/${feature-name}.md`（詳細仕様、データモデル、API、テストケース、TDD準拠）
 ```
 
@@ -182,12 +196,14 @@ model: opus
 **使用エージェント**: `.claude/agents/domain-modeler.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 機能「${feature-name}」のドメインモデルを設計してください。
 
 **入力**: Phase 3の成果物（詳細仕様）
 
 **要件**:
+
 1. エンティティ設計（必要な場合のみ、`src/shared/core/entities/`）
 2. バリューオブジェクト設計
 3. 集約の境界決定
@@ -195,16 +211,19 @@ model: opus
 5. ユビキタス言語の定義（用語集）
 
 **Clean Architecture準拠**:
+
 - エンティティは外部依存ゼロ（`src/shared/core/entities/`）
 - インターフェース定義（`src/shared/core/interfaces/`）
 - エラークラス（`src/shared/core/errors/`）
 
 **スキル参照**:
+
 - `.claude/skills/bounded-context/SKILL.md`
 - `.claude/skills/ubiquitous-language/SKILL.md`
 - `.claude/skills/clean-architecture-principles/SKILL.md`
 
 **成果物**:
+
 - `src/shared/core/entities/${entity}.ts`（必要時のみ）
 - `src/shared/core/interfaces/${interface}.ts`（必要時のみ）
 - ドメインモデル図（仕様書に追記）
@@ -217,12 +236,14 @@ model: opus
 **条件**: UIコンポーネントが必要な機能の場合のみ実行
 
 **エージェントへの依頼内容**:
+
 ```markdown
 機能「${feature-name}」のUIコンポーネントを設計してください。
 
 **入力**: Phase 3の詳細仕様
 
 **要件**:
+
 1. コンポーネント構成設計（Composition Pattern、Slot Pattern）
 2. デザイントークン活用（Tailwind CSS）
 3. アクセシビリティ（WCAG 2.1準拠、ARIA）
@@ -230,14 +251,17 @@ model: opus
 5. エラー状態・ローディング状態の設計
 
 **プロジェクト構造**:
+
 - `src/app/components/${feature-name}/`（Presentation Layer）
 
 **スキル参照**:
+
 - `.claude/skills/component-composition-patterns/SKILL.md`
 - `.claude/skills/accessibility-wcag/SKILL.md`
 - `.claude/skills/tailwind-css-patterns/SKILL.md`
 
 **成果物**:
+
 - `src/app/components/${feature-name}/*.tsx`（UIコンポーネント）
 - Storybookストーリー（オプション）
 ```
@@ -247,12 +271,14 @@ model: opus
 **使用エージェント**: `.claude/agents/logic-dev.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 機能「${feature-name}」のビジネスロジックを実装してください。
 
 **入力**: Phase 3の詳細仕様、Phase 4のドメインモデル
 
 **要件**:
+
 1. スキーマ定義（`schema.ts`）:
    - Zod入力スキーマ
    - Zod出力スキーマ
@@ -274,16 +300,19 @@ model: opus
    - `src/features/registry.ts` に追加
 
 **プロジェクト構造準拠**:
+
 - `src/features/${feature-name}/schema.ts`
 - `src/features/${feature-name}/executor.ts`
 - `src/shared/infrastructure/repositories/${repository}.ts`（必要時）
 
 **スキル参照**:
+
 - `.claude/skills/repository-pattern/SKILL.md`
 - `.claude/skills/transaction-management/SKILL.md`
 - `.claude/skills/zod-validation/SKILL.md`
 
 **成果物**:
+
 - `src/features/${feature-name}/schema.ts`
 - `src/features/${feature-name}/executor.ts`
 - `src/shared/infrastructure/repositories/`（必要時）
@@ -295,12 +324,14 @@ model: opus
 **使用エージェント**: `.claude/agents/unit-tester.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 機能「${feature-name}」のユニットテストを作成してください。
 
 **TDD必須**: テストは Phase 6の実装前に作成すべきでしたが、実装後の場合も完全なテストを作成
 
 **要件**:
+
 1. テストファイル作成:
    - `src/features/${feature-name}/__tests__/executor.test.ts`
    - `src/features/${feature-name}/__tests__/schema.test.ts`
@@ -320,11 +351,13 @@ model: opus
    - スキーマバリデーション: 100%
 
 **スキル参照**:
+
 - `.claude/skills/tdd-principles/SKILL.md`
 - `.claude/skills/test-doubles/SKILL.md`
 - `.claude/skills/boundary-value-analysis/SKILL.md`
 
 **成果物**:
+
 - `src/features/${feature-name}/__tests__/executor.test.ts`
 - `src/features/${feature-name}/__tests__/schema.test.ts`
 - カバレッジレポート（80%以上達成）
@@ -335,12 +368,14 @@ model: opus
 **使用エージェント**: `.claude/agents/code-quality.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 機能「${feature-name}」のコード品質をレビューしてください。
 
 **レビュー対象**: `src/features/${feature-name}/`
 
 **要件**:
+
 1. SOLID原則チェック:
    - 単一責任原則（SRP）
    - 開放閉鎖原則（OCP）
@@ -365,11 +400,13 @@ model: opus
    - Prettier（`pnpm format --check`）
 
 **スキル参照**:
+
 - `.claude/skills/solid-principles/SKILL.md`
 - `.claude/skills/clean-code-practices/SKILL.md`
 - `.claude/skills/code-smell-detection/SKILL.md`
 
 **成果物**:
+
 - `.claude/docs/quality/${feature-name}-review.md`（品質レポート、改善提案）
 ```
 
@@ -378,12 +415,14 @@ model: opus
 **使用エージェント**: `.claude/agents/sec-auditor.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 機能「${feature-name}」のセキュリティ監査を実施してください。
 
 **監査対象**: `src/features/${feature-name}/`, `src/app/api/`（該当する場合）
 
 **要件**:
+
 1. OWASP Top 10チェック:
    - A01: Broken Access Control
    - A02: Cryptographic Failures
@@ -406,45 +445,53 @@ model: opus
    - ログ出力のマスキング
 
 **スキル参照**:
+
 - `.claude/skills/owasp-top-10/SKILL.md`
 - `.claude/skills/input-validation-patterns/SKILL.md`
 - `.claude/skills/authentication-patterns/SKILL.md`
 
 **成果物**:
+
 - `.claude/docs/security/${feature-name}-audit.md`（セキュリティレポート、脆弱性リスト、修正提案）
 ```
 
 ### Phase 10: 統合完了報告
 
 **実行内容**:
+
 1. 全Phaseの成果物確認
 2. 品質基準達成確認
 3. Next Steps提示
 
 **完了報告**:
+
 ```markdown
 ## 機能開発完了: ${feature-name}
 
 ### 成果物
+
 ✅ 要件定義: docs/00-requirements/features/${feature-name}.md
 ✅ 詳細仕様: docs/20-specifications/features/${feature-name}.md
 ✅ エンティティ: src/shared/core/entities/（必要時）
 ✅ 機能実装: src/features/${feature-name}/
-  - schema.ts（Zod入出力スキーマ）
-  - executor.ts（IWorkflowExecutor実装）
-  - __tests__/（ユニットテスト、カバレッジ80%+）
-✅ Repository: src/shared/infrastructure/repositories/（必要時）
-✅ UIコンポーネント: src/app/components/（必要時）
-✅ 品質レポート: .claude/docs/quality/${feature-name}-review.md
+
+- schema.ts（Zod入出力スキーマ）
+- executor.ts（IWorkflowExecutor実装）
+- **tests**/（ユニットテスト、カバレッジ80%+）
+  ✅ Repository: src/shared/infrastructure/repositories/（必要時）
+  ✅ UIコンポーネント: src/app/components/（必要時）
+  ✅ 品質レポート: .claude/docs/quality/${feature-name}-review.md
 ✅ セキュリティレポート: .claude/docs/security/${feature-name}-audit.md
 
 ### 品質指標
+
 - テストカバレッジ: XX%（目標: 60%以上、重要ロジック80%以上）
 - 型安全性: ✅ strict モード、any型なし
 - SOLID原則: ✅ 全原則遵守
 - セキュリティ: ✅ OWASP Top 10準拠
 
 ### Next Steps
+
 1. 統合テスト作成（API エンドポイント、E2E）
 2. ドキュメント最終化（README、API仕様書）
 3. PRレビュー依頼
@@ -460,6 +507,7 @@ model: opus
 ```
 
 対話的に以下を実行:
+
 1. ビジネス価値の確認
 2. 要件整理（ユースケース、受け入れ基準）
 3. 詳細仕様作成（データモデル、API、テストケース）
@@ -509,24 +557,26 @@ src/
 **Phase 4**: エンティティ不要（外部API依存のため）
 **Phase 5**: UI不要（Discord経由のため）
 **Phase 6**: 実装
+
 ```typescript
 // src/features/youtube-summarize/schema.ts
 export const inputSchema = z.object({
   url: z.string().url(),
-  language: z.enum(['ja', 'en']).default('ja')
+  language: z.enum(["ja", "en"]).default("ja"),
 });
 
 // src/features/youtube-summarize/executor.ts
 export class YouTubeSummarizeExecutor implements IWorkflowExecutor {
-  type = 'YOUTUBE_SUMMARIZE';
+  type = "YOUTUBE_SUMMARIZE";
   async execute(input, context) {
     // AI処理
   }
 }
 
 // src/features/registry.ts に追加
-['YOUTUBE_SUMMARIZE', new YouTubeSummarizeExecutor()]
+["YOUTUBE_SUMMARIZE", new YouTubeSummarizeExecutor()];
 ```
+
 **Phase 7**: テスト作成（`__tests__/executor.test.ts`、カバレッジ80%以上）
 **Phase 8-9**: 品質・セキュリティレビュー
 
@@ -537,6 +587,7 @@ export class YouTubeSummarizeExecutor implements IWorkflowExecutor {
 **原因**: エージェントファイルが存在しない
 
 **解決策**:
+
 ```bash
 ls .claude/agents/ | grep -E "(product-manager|req-analyst|spec-writer|domain-modeler|ui-designer|logic-dev|unit-tester|code-quality|sec-auditor)"
 ```
@@ -546,6 +597,7 @@ ls .claude/agents/ | grep -E "(product-manager|req-analyst|spec-writer|domain-mo
 **原因**: テストケースが不十分
 
 **解決策**:
+
 - Phase 7を再実行
 - 異常系・エッジケースを追加
 - モックを適切に設計
@@ -555,12 +607,14 @@ ls .claude/agents/ | grep -E "(product-manager|req-analyst|spec-writer|domain-mo
 **原因**: 依存方向が逆転
 
 **解決策**:
+
 - ESLint（eslint-plugin-boundaries）で検出
 - 依存関係を修正（app → features → infrastructure → core）
 
 ## 参照
 
 ### エージェント
+
 - product-manager: `.claude/agents/product-manager.md`
 - req-analyst: `.claude/agents/req-analyst.md`
 - spec-writer: `.claude/agents/spec-writer.md`
@@ -572,4 +626,5 @@ ls .claude/agents/ | grep -E "(product-manager|req-analyst|spec-writer|domain-mo
 - sec-auditor: `.claude/agents/sec-auditor.md`
 
 ### プロジェクト設計
+
 - master_system_design.md: `docs/00-requirements/master_system_design.md`

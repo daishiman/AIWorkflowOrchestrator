@@ -13,46 +13,85 @@
  *   node detect-primitive-obsession.mjs src/domain/
  */
 
-import { readdir, readFile, stat } from 'fs/promises';
-import { join, extname } from 'path';
+import { readdir, readFile, stat } from "fs/promises";
+import { join, extname } from "path";
 
 // 検出パターン
 const DETECTION_PATTERNS = {
   // プリミティブ型のパラメータ名パターン
   parameterPatterns: [
-    { pattern: /:\s*string\s*[,)].*(?:email|mail)/i, suggestion: 'EmailAddress' },
-    { pattern: /:\s*string\s*[,)].*(?:phone|tel)/i, suggestion: 'PhoneNumber' },
-    { pattern: /:\s*string\s*[,)].*(?:postal|zip)/i, suggestion: 'PostalCode' },
-    { pattern: /:\s*string\s*[,)].*(?:url|uri)/i, suggestion: 'Url' },
-    { pattern: /:\s*string\s*[,)].*(?:password|pass)/i, suggestion: 'Password' },
-    { pattern: /:\s*number\s*[,)].*(?:price|amount|cost|fee)/i, suggestion: 'Money' },
-    { pattern: /:\s*number\s*[,)].*(?:quantity|qty|count)/i, suggestion: 'Quantity' },
-    { pattern: /:\s*number\s*[,)].*(?:percent|rate)/i, suggestion: 'Percentage' },
-    { pattern: /:\s*number\s*[,)].*(?:age)/i, suggestion: 'Age' },
-    { pattern: /:\s*string\s*[,)].*(?:userId|customerId|orderId)/i, suggestion: '専用のId値オブジェクト' },
+    {
+      pattern: /:\s*string\s*[,)].*(?:email|mail)/i,
+      suggestion: "EmailAddress",
+    },
+    { pattern: /:\s*string\s*[,)].*(?:phone|tel)/i, suggestion: "PhoneNumber" },
+    { pattern: /:\s*string\s*[,)].*(?:postal|zip)/i, suggestion: "PostalCode" },
+    { pattern: /:\s*string\s*[,)].*(?:url|uri)/i, suggestion: "Url" },
+    {
+      pattern: /:\s*string\s*[,)].*(?:password|pass)/i,
+      suggestion: "Password",
+    },
+    {
+      pattern: /:\s*number\s*[,)].*(?:price|amount|cost|fee)/i,
+      suggestion: "Money",
+    },
+    {
+      pattern: /:\s*number\s*[,)].*(?:quantity|qty|count)/i,
+      suggestion: "Quantity",
+    },
+    {
+      pattern: /:\s*number\s*[,)].*(?:percent|rate)/i,
+      suggestion: "Percentage",
+    },
+    { pattern: /:\s*number\s*[,)].*(?:age)/i, suggestion: "Age" },
+    {
+      pattern: /:\s*string\s*[,)].*(?:userId|customerId|orderId)/i,
+      suggestion: "専用のId値オブジェクト",
+    },
   ],
 
   // プロパティ型パターン
   propertyPatterns: [
-    { pattern: /(?:email|mail)\s*:\s*string/i, suggestion: 'EmailAddress' },
-    { pattern: /(?:phone|tel)\s*:\s*string/i, suggestion: 'PhoneNumber' },
-    { pattern: /(?:postal|zip)(?:Code)?\s*:\s*string/i, suggestion: 'PostalCode' },
-    { pattern: /(?:price|amount|cost|fee)\s*:\s*number/i, suggestion: 'Money' },
-    { pattern: /(?:quantity|qty|count)\s*:\s*number/i, suggestion: 'Quantity' },
-    { pattern: /(?:percent|rate)\s*:\s*number/i, suggestion: 'Percentage' },
-    { pattern: /(?:url|uri)\s*:\s*string/i, suggestion: 'Url' },
-    { pattern: /(?:password|pass)\s*:\s*string/i, suggestion: 'Password (ハッシュ化必須)' },
-    { pattern: /(?:userId|customerId|orderId)\s*:\s*string/i, suggestion: '専用のId値オブジェクト' },
-    { pattern: /(?:address)\s*:\s*string/i, suggestion: 'Address' },
-    { pattern: /(?:name)\s*:\s*string/i, suggestion: 'PersonName または専用Name型' },
+    { pattern: /(?:email|mail)\s*:\s*string/i, suggestion: "EmailAddress" },
+    { pattern: /(?:phone|tel)\s*:\s*string/i, suggestion: "PhoneNumber" },
+    {
+      pattern: /(?:postal|zip)(?:Code)?\s*:\s*string/i,
+      suggestion: "PostalCode",
+    },
+    { pattern: /(?:price|amount|cost|fee)\s*:\s*number/i, suggestion: "Money" },
+    { pattern: /(?:quantity|qty|count)\s*:\s*number/i, suggestion: "Quantity" },
+    { pattern: /(?:percent|rate)\s*:\s*number/i, suggestion: "Percentage" },
+    { pattern: /(?:url|uri)\s*:\s*string/i, suggestion: "Url" },
+    {
+      pattern: /(?:password|pass)\s*:\s*string/i,
+      suggestion: "Password (ハッシュ化必須)",
+    },
+    {
+      pattern: /(?:userId|customerId|orderId)\s*:\s*string/i,
+      suggestion: "専用のId値オブジェクト",
+    },
+    { pattern: /(?:address)\s*:\s*string/i, suggestion: "Address" },
+    {
+      pattern: /(?:name)\s*:\s*string/i,
+      suggestion: "PersonName または専用Name型",
+    },
   ],
 
   // 同じ検証ロジックの重複（コードの匂い）
   validationDuplication: [
-    { pattern: /\.test\(.*email/i, description: 'メールアドレスの検証が複数箇所に' },
-    { pattern: /\.test\(.*phone/i, description: '電話番号の検証が複数箇所に' },
-    { pattern: /\.length\s*[<>=]+\s*\d+.*(?:password|pass)/i, description: 'パスワード検証が複数箇所に' },
-    { pattern: /[<>=]+\s*0.*(?:price|amount|cost)/i, description: '金額の範囲チェックが複数箇所に' },
+    {
+      pattern: /\.test\(.*email/i,
+      description: "メールアドレスの検証が複数箇所に",
+    },
+    { pattern: /\.test\(.*phone/i, description: "電話番号の検証が複数箇所に" },
+    {
+      pattern: /\.length\s*[<>=]+\s*\d+.*(?:password|pass)/i,
+      description: "パスワード検証が複数箇所に",
+    },
+    {
+      pattern: /[<>=]+\s*0.*(?:price|amount|cost)/i,
+      description: "金額の範囲チェックが複数箇所に",
+    },
   ],
 };
 
@@ -61,16 +100,19 @@ const DETECTION_PATTERNS = {
  */
 function detectPrimitiveObsession(content, filePath) {
   const issues = [];
-  const lines = content.split('\n');
+  const lines = content.split("\n");
 
   lines.forEach((line, index) => {
     const lineNumber = index + 1;
 
     // パラメータパターンチェック
-    for (const { pattern, suggestion } of DETECTION_PATTERNS.parameterPatterns) {
+    for (const {
+      pattern,
+      suggestion,
+    } of DETECTION_PATTERNS.parameterPatterns) {
       if (pattern.test(line)) {
         issues.push({
-          type: 'parameter',
+          type: "parameter",
           file: filePath,
           line: lineNumber,
           code: line.trim(),
@@ -83,7 +125,7 @@ function detectPrimitiveObsession(content, filePath) {
     for (const { pattern, suggestion } of DETECTION_PATTERNS.propertyPatterns) {
       if (pattern.test(line)) {
         issues.push({
-          type: 'property',
+          type: "property",
           file: filePath,
           line: lineNumber,
           code: line.trim(),
@@ -93,10 +135,13 @@ function detectPrimitiveObsession(content, filePath) {
     }
 
     // バリデーション重複チェック
-    for (const { pattern, description } of DETECTION_PATTERNS.validationDuplication) {
+    for (const {
+      pattern,
+      description,
+    } of DETECTION_PATTERNS.validationDuplication) {
       if (pattern.test(line)) {
         issues.push({
-          type: 'validation_duplication',
+          type: "validation_duplication",
           file: filePath,
           line: lineNumber,
           code: line.trim(),
@@ -113,7 +158,9 @@ function detectPrimitiveObsession(content, filePath) {
  * 類似したバリデーションの重複を検出
  */
 function detectValidationDuplication(allIssues) {
-  const validationIssues = allIssues.filter(i => i.type === 'validation_duplication');
+  const validationIssues = allIssues.filter(
+    (i) => i.type === "validation_duplication",
+  );
 
   // 同じパターンが複数ファイルで見つかった場合
   const groupedByPattern = new Map();
@@ -131,7 +178,7 @@ function detectValidationDuplication(allIssues) {
       duplications.push({
         pattern,
         count: issues.length,
-        files: [...new Set(issues.map(i => i.file))],
+        files: [...new Set(issues.map((i) => i.file))],
       });
     }
   }
@@ -142,7 +189,10 @@ function detectValidationDuplication(allIssues) {
 /**
  * ディレクトリを再帰的に走査
  */
-async function walkDirectory(dir, fileExtensions = ['.ts', '.tsx', '.js', '.jsx']) {
+async function walkDirectory(
+  dir,
+  fileExtensions = [".ts", ".tsx", ".js", ".jsx"],
+) {
   const files = [];
 
   async function walk(currentDir) {
@@ -152,7 +202,7 @@ async function walkDirectory(dir, fileExtensions = ['.ts', '.tsx', '.js', '.jsx'
       const fullPath = join(currentDir, entry.name);
 
       if (entry.isDirectory()) {
-        if (!entry.name.startsWith('.') && entry.name !== 'node_modules') {
+        if (!entry.name.startsWith(".") && entry.name !== "node_modules") {
           await walk(fullPath);
         }
       } else if (entry.isFile()) {
@@ -174,16 +224,18 @@ async function walkDirectory(dir, fileExtensions = ['.ts', '.tsx', '.js', '.jsx'
 function generateReport(allIssues, duplications, totalFiles) {
   const report = [];
 
-  report.push('# プリミティブ偏愛検出レポート\n');
+  report.push("# プリミティブ偏愛検出レポート\n");
   report.push(`分析ファイル数: ${totalFiles}`);
   report.push(`生成日時: ${new Date().toISOString()}\n`);
 
   // サマリー
-  const parameterIssues = allIssues.filter(i => i.type === 'parameter');
-  const propertyIssues = allIssues.filter(i => i.type === 'property');
-  const validationIssues = allIssues.filter(i => i.type === 'validation_duplication');
+  const parameterIssues = allIssues.filter((i) => i.type === "parameter");
+  const propertyIssues = allIssues.filter((i) => i.type === "property");
+  const validationIssues = allIssues.filter(
+    (i) => i.type === "validation_duplication",
+  );
 
-  report.push('\n## サマリー\n');
+  report.push("\n## サマリー\n");
   report.push(`- パラメータの問題: ${parameterIssues.length}件`);
   report.push(`- プロパティの問題: ${propertyIssues.length}件`);
   report.push(`- バリデーション重複: ${validationIssues.length}件`);
@@ -191,8 +243,10 @@ function generateReport(allIssues, duplications, totalFiles) {
 
   // 優先度の高い問題（重複バリデーション）
   if (duplications.length > 0) {
-    report.push('\n## 🔴 優先度高: バリデーションの重複\n');
-    report.push('同じ検証ロジックが複数箇所にあります。値オブジェクトにカプセル化を検討してください。\n');
+    report.push("\n## 🔴 優先度高: バリデーションの重複\n");
+    report.push(
+      "同じ検証ロジックが複数箇所にあります。値オブジェクトにカプセル化を検討してください。\n",
+    );
     for (const dup of duplications) {
       report.push(`### ${dup.pattern}`);
       report.push(`- 検出数: ${dup.count}件`);
@@ -200,14 +254,14 @@ function generateReport(allIssues, duplications, totalFiles) {
       for (const file of dup.files) {
         report.push(`  - ${file}`);
       }
-      report.push('');
+      report.push("");
     }
   }
 
   // パラメータの問題
   if (parameterIssues.length > 0) {
-    report.push('\n## 🟡 パラメータのプリミティブ型\n');
-    report.push('関数パラメータでプリミティブ型が使用されています。\n');
+    report.push("\n## 🟡 パラメータのプリミティブ型\n");
+    report.push("関数パラメータでプリミティブ型が使用されています。\n");
 
     // ファイルごとにグループ化
     const byFile = groupByFile(parameterIssues);
@@ -217,14 +271,16 @@ function generateReport(allIssues, duplications, totalFiles) {
         report.push(`- 行 ${issue.line}: \`${truncate(issue.code, 60)}\``);
         report.push(`  - 提案: ${issue.suggestion}`);
       }
-      report.push('');
+      report.push("");
     }
   }
 
   // プロパティの問題
   if (propertyIssues.length > 0) {
-    report.push('\n## 🟡 プロパティのプリミティブ型\n');
-    report.push('クラス/インターフェースのプロパティでプリミティブ型が使用されています。\n');
+    report.push("\n## 🟡 プロパティのプリミティブ型\n");
+    report.push(
+      "クラス/インターフェースのプロパティでプリミティブ型が使用されています。\n",
+    );
 
     const byFile = groupByFile(propertyIssues);
     for (const [file, issues] of byFile) {
@@ -233,18 +289,24 @@ function generateReport(allIssues, duplications, totalFiles) {
         report.push(`- 行 ${issue.line}: \`${truncate(issue.code, 60)}\``);
         report.push(`  - 提案: ${issue.suggestion}`);
       }
-      report.push('');
+      report.push("");
     }
   }
 
   // 推奨アクション
-  report.push('\n## 推奨アクション\n');
-  report.push('1. **バリデーション重複の解消**: 同じ検証ロジックを値オブジェクトに集約');
-  report.push('2. **識別子の値オブジェクト化**: userId, orderIdなどを専用のId型に');
-  report.push('3. **ドメイン概念の抽出**: email, phone, moneyなどを値オブジェクトに');
-  report.push('4. **段階的な導入**: 影響範囲が小さい箇所から始める');
+  report.push("\n## 推奨アクション\n");
+  report.push(
+    "1. **バリデーション重複の解消**: 同じ検証ロジックを値オブジェクトに集約",
+  );
+  report.push(
+    "2. **識別子の値オブジェクト化**: userId, orderIdなどを専用のId型に",
+  );
+  report.push(
+    "3. **ドメイン概念の抽出**: email, phone, moneyなどを値オブジェクトに",
+  );
+  report.push("4. **段階的な導入**: 影響範囲が小さい箇所から始める");
 
-  return report.join('\n');
+  return report.join("\n");
 }
 
 /**
@@ -266,7 +328,7 @@ function groupByFile(issues) {
  */
 function truncate(str, maxLength) {
   if (str.length <= maxLength) return str;
-  return str.slice(0, maxLength - 3) + '...';
+  return str.slice(0, maxLength - 3) + "...";
 }
 
 /**
@@ -276,11 +338,11 @@ async function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.log('使用方法: node detect-primitive-obsession.mjs <directory>');
-    console.log('');
-    console.log('例:');
-    console.log('  node detect-primitive-obsession.mjs src/domain/');
-    console.log('  node detect-primitive-obsession.mjs src/');
+    console.log("使用方法: node detect-primitive-obsession.mjs <directory>");
+    console.log("");
+    console.log("例:");
+    console.log("  node detect-primitive-obsession.mjs src/domain/");
+    console.log("  node detect-primitive-obsession.mjs src/");
     process.exit(1);
   }
 
@@ -299,7 +361,7 @@ async function main() {
   }
 
   console.log(`分析対象: ${targetDir}`);
-  console.log('ファイルを検索中...');
+  console.log("ファイルを検索中...");
 
   // ファイル一覧取得
   const files = await walkDirectory(targetDir);
@@ -310,7 +372,7 @@ async function main() {
 
   for (const file of files) {
     try {
-      const content = await readFile(file, 'utf-8');
+      const content = await readFile(file, "utf-8");
       const issues = detectPrimitiveObsession(content, file);
       allIssues.push(...issues);
     } catch (error) {
@@ -323,13 +385,13 @@ async function main() {
 
   // レポート生成
   const report = generateReport(allIssues, duplications, files.length);
-  console.log('\n' + report);
+  console.log("\n" + report);
 
   // 終了コード
   process.exit(allIssues.length > 0 ? 1 : 0);
 }
 
 main().catch((error) => {
-  console.error('エラー:', error.message);
+  console.error("エラー:", error.message);
   process.exit(1);
 });

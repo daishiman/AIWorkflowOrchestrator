@@ -6,29 +6,29 @@
 
 ```typescript
 // app/sitemap.ts
-import { MetadataRoute } from 'next'
+import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
-      url: 'https://example.com',
+      url: "https://example.com",
       lastModified: new Date(),
-      changeFrequency: 'yearly',
+      changeFrequency: "yearly",
       priority: 1,
     },
     {
-      url: 'https://example.com/about',
+      url: "https://example.com/about",
       lastModified: new Date(),
-      changeFrequency: 'monthly',
+      changeFrequency: "monthly",
       priority: 0.8,
     },
     {
-      url: 'https://example.com/blog',
+      url: "https://example.com/blog",
       lastModified: new Date(),
-      changeFrequency: 'weekly',
+      changeFrequency: "weekly",
       priority: 0.5,
     },
-  ]
+  ];
 }
 ```
 
@@ -36,53 +36,53 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
 ```typescript
 // app/sitemap.ts
-import { MetadataRoute } from 'next'
-import { getAllPosts, getAllProducts } from '@/lib/data'
+import { MetadataRoute } from "next";
+import { getAllPosts, getAllProducts } from "@/lib/data";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://example.com'
+  const baseUrl = "https://example.com";
 
   // 静的ページ
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
       lastModified: new Date(),
-      changeFrequency: 'daily',
+      changeFrequency: "daily",
       priority: 1,
     },
     {
       url: `${baseUrl}/about`,
       lastModified: new Date(),
-      changeFrequency: 'monthly',
+      changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${baseUrl}/contact`,
       lastModified: new Date(),
-      changeFrequency: 'yearly',
+      changeFrequency: "yearly",
       priority: 0.5,
     },
-  ]
+  ];
 
   // 動的ページ（ブログ記事）
-  const posts = await getAllPosts()
+  const posts = await getAllPosts();
   const postPages: MetadataRoute.Sitemap = posts.map((post) => ({
     url: `${baseUrl}/blog/${post.slug}`,
     lastModified: new Date(post.updatedAt),
-    changeFrequency: 'weekly',
+    changeFrequency: "weekly",
     priority: 0.7,
-  }))
+  }));
 
   // 動的ページ（商品）
-  const products = await getAllProducts()
+  const products = await getAllProducts();
   const productPages: MetadataRoute.Sitemap = products.map((product) => ({
     url: `${baseUrl}/products/${product.slug}`,
     lastModified: new Date(product.updatedAt),
-    changeFrequency: 'daily',
+    changeFrequency: "daily",
     priority: 0.8,
-  }))
+  }));
 
-  return [...staticPages, ...postPages, ...productPages]
+  return [...staticPages, ...postPages, ...productPages];
 }
 ```
 
@@ -90,51 +90,51 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
 ```typescript
 // app/sitemap.ts
-import { MetadataRoute } from 'next'
+import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // サイトマップインデックスを返す
   return [
     {
-      url: 'https://example.com/sitemaps/pages.xml',
+      url: "https://example.com/sitemaps/pages.xml",
       lastModified: new Date(),
     },
     {
-      url: 'https://example.com/sitemaps/posts.xml',
+      url: "https://example.com/sitemaps/posts.xml",
       lastModified: new Date(),
     },
     {
-      url: 'https://example.com/sitemaps/products.xml',
+      url: "https://example.com/sitemaps/products.xml",
       lastModified: new Date(),
     },
-  ]
+  ];
 }
 
 // app/sitemaps/posts/sitemap.ts
 export async function generateSitemaps() {
-  const posts = await getAllPosts()
-  const postsPerSitemap = 1000
+  const posts = await getAllPosts();
+  const postsPerSitemap = 1000;
 
   // 1000件ごとにサイトマップを分割
   return Array.from(
     { length: Math.ceil(posts.length / postsPerSitemap) },
-    (_, i) => ({ id: i })
-  )
+    (_, i) => ({ id: i }),
+  );
 }
 
 export default async function sitemap({
   id,
 }: {
-  id: number
+  id: number;
 }): Promise<MetadataRoute.Sitemap> {
-  const posts = await getAllPosts()
-  const start = id * 1000
-  const end = start + 1000
+  const posts = await getAllPosts();
+  const start = id * 1000;
+  const end = start + 1000;
 
   return posts.slice(start, end).map((post) => ({
     url: `https://example.com/blog/${post.slug}`,
     lastModified: new Date(post.updatedAt),
-  }))
+  }));
 }
 ```
 
@@ -142,10 +142,10 @@ export default async function sitemap({
 
 ```typescript
 // app/sitemap.ts
-import { MetadataRoute } from 'next'
+import { MetadataRoute } from "next";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const posts = await getPostsWithMedia()
+  const posts = await getPostsWithMedia();
 
   return posts.map((post) => ({
     url: `https://example.com/blog/${post.slug}`,
@@ -160,7 +160,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       duration: video.duration,
       publication_date: video.publishedAt,
     })),
-  }))
+  }));
 }
 ```
 
@@ -168,13 +168,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
 ```typescript
 // app/sitemap.ts
-import { MetadataRoute } from 'next'
+import { MetadataRoute } from "next";
 
-const locales = ['ja', 'en', 'zh']
-const baseUrl = 'https://example.com'
+const locales = ["ja", "en", "zh"];
+const baseUrl = "https://example.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const pages = await getAllPages()
+  const pages = await getAllPages();
 
   return pages.flatMap((page) =>
     locales.map((locale) => ({
@@ -182,11 +182,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(page.updatedAt),
       alternates: {
         languages: Object.fromEntries(
-          locales.map((l) => [l, `${baseUrl}/${l}${page.path}`])
+          locales.map((l) => [l, `${baseUrl}/${l}${page.path}`]),
         ),
       },
-    }))
-  )
+    })),
+  );
 }
 ```
 
@@ -196,17 +196,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
 ```typescript
 // app/robots.ts
-import { MetadataRoute } from 'next'
+import { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
-      userAgent: '*',
-      allow: '/',
-      disallow: '/private/',
+      userAgent: "*",
+      allow: "/",
+      disallow: "/private/",
     },
-    sitemap: 'https://example.com/sitemap.xml',
-  }
+    sitemap: "https://example.com/sitemap.xml",
+  };
 }
 ```
 
@@ -214,30 +214,30 @@ export default function robots(): MetadataRoute.Robots {
 
 ```typescript
 // app/robots.ts
-import { MetadataRoute } from 'next'
+import { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
-        userAgent: '*',
-        allow: '/',
-        disallow: ['/api/', '/admin/', '/_next/', '/private/'],
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/api/", "/admin/", "/_next/", "/private/"],
       },
       {
-        userAgent: 'Googlebot',
-        allow: '/',
-        disallow: '/nogooglebot/',
+        userAgent: "Googlebot",
+        allow: "/",
+        disallow: "/nogooglebot/",
       },
       {
-        userAgent: 'Bingbot',
+        userAgent: "Bingbot",
         crawlDelay: 10,
-        allow: '/',
+        allow: "/",
       },
     ],
-    sitemap: 'https://example.com/sitemap.xml',
-    host: 'https://example.com',
-  }
+    sitemap: "https://example.com/sitemap.xml",
+    host: "https://example.com",
+  };
 }
 ```
 
@@ -245,32 +245,32 @@ export default function robots(): MetadataRoute.Robots {
 
 ```typescript
 // app/robots.ts
-import { MetadataRoute } from 'next'
+import { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
-  const isProduction = process.env.NODE_ENV === 'production'
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://example.com'
+  const isProduction = process.env.NODE_ENV === "production";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://example.com";
 
   // 本番環境以外はクロールを禁止
   if (!isProduction) {
     return {
       rules: {
-        userAgent: '*',
-        disallow: '/',
+        userAgent: "*",
+        disallow: "/",
       },
-    }
+    };
   }
 
   return {
     rules: [
       {
-        userAgent: '*',
-        allow: '/',
-        disallow: ['/api/', '/admin/', '/_next/'],
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/api/", "/admin/", "/_next/"],
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,
-  }
+  };
 }
 ```
 
@@ -289,12 +289,12 @@ export const metadata: Metadata = {
       index: true,
       follow: true,
       noimageindex: false,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
-}
+};
 ```
 
 ### 特定ページのクロール禁止
@@ -306,7 +306,7 @@ export const metadata: Metadata = {
     index: false,
     follow: false,
   },
-}
+};
 ```
 
 ### noindex設定
@@ -318,30 +318,30 @@ export const metadata: Metadata = {
     index: false,
     follow: true, // リンクはフォローする
   },
-}
+};
 ```
 
 ## ベストプラクティス
 
 ### サイトマップ
 
-| 項目 | 推奨 |
-|------|------|
-| URL数 | 1ファイルあたり50,000件以下 |
-| ファイルサイズ | 50MB以下（非圧縮） |
-| 更新頻度 | 内容変更時に更新 |
-| changeFrequency | 実際の更新頻度に合わせる |
-| priority | 相対的な重要度（0.0〜1.0） |
+| 項目            | 推奨                        |
+| --------------- | --------------------------- |
+| URL数           | 1ファイルあたり50,000件以下 |
+| ファイルサイズ  | 50MB以下（非圧縮）          |
+| 更新頻度        | 内容変更時に更新            |
+| changeFrequency | 実際の更新頻度に合わせる    |
+| priority        | 相対的な重要度（0.0〜1.0）  |
 
 ### robots.txt
 
-| 項目 | 推奨 |
-|------|------|
-| 配置場所 | ルートディレクトリ |
-| サイトマップ参照 | 必ず含める |
-| APIルート | クロール禁止推奨 |
-| 管理画面 | クロール禁止 |
-| 認証ページ | クロール禁止 |
+| 項目             | 推奨               |
+| ---------------- | ------------------ |
+| 配置場所         | ルートディレクトリ |
+| サイトマップ参照 | 必ず含める         |
+| APIルート        | クロール禁止推奨   |
+| 管理画面         | クロール禁止       |
+| 認証ページ       | クロール禁止       |
 
 ### クロール最適化
 
@@ -352,11 +352,11 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
     googleBot: {
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
-}
+};
 ```
 
 ## 検証・確認

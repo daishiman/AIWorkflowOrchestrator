@@ -3,12 +3,12 @@
 ## Vitest テストテンプレート
 
 ```typescript
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 
 // テスト対象のインポート
-import { TargetClass } from './target';
+import { TargetClass } from "./target";
 
-describe('TargetClass', () => {
+describe("TargetClass", () => {
   // 共通のセットアップ
   let target: TargetClass;
 
@@ -22,12 +22,12 @@ describe('TargetClass', () => {
     vi.clearAllMocks();
   });
 
-  describe('#methodName', () => {
-    describe('正常系', () => {
-      it('should return expected result when valid input', () => {
+  describe("#methodName", () => {
+    describe("正常系", () => {
+      it("should return expected result when valid input", () => {
         // Arrange
-        const input = 'valid input';
-        const expected = 'expected result';
+        const input = "valid input";
+        const expected = "expected result";
 
         // Act
         const result = target.methodName(input);
@@ -36,9 +36,9 @@ describe('TargetClass', () => {
         expect(result).toBe(expected);
       });
 
-      it('should handle edge case correctly', () => {
+      it("should handle edge case correctly", () => {
         // Arrange
-        const input = 'edge case input';
+        const input = "edge case input";
 
         // Act
         const result = target.methodName(input);
@@ -48,19 +48,20 @@ describe('TargetClass', () => {
       });
     });
 
-    describe('異常系', () => {
-      it('should throw error when input is invalid', () => {
+    describe("異常系", () => {
+      it("should throw error when input is invalid", () => {
         // Arrange
         const invalidInput = null;
 
         // Act & Assert
-        expect(() => target.methodName(invalidInput))
-          .toThrow('Expected error message');
+        expect(() => target.methodName(invalidInput)).toThrow(
+          "Expected error message",
+        );
       });
 
-      it('should return null when item not found', () => {
+      it("should return null when item not found", () => {
         // Arrange
-        const nonExistentId = 'non-existent';
+        const nonExistentId = "non-existent";
 
         // Act
         const result = target.methodName(nonExistentId);
@@ -76,14 +77,14 @@ describe('TargetClass', () => {
 ## モック使用テンプレート
 
 ```typescript
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { TargetService } from './target-service';
-import { DependencyService } from './dependency-service';
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { TargetService } from "./target-service";
+import { DependencyService } from "./dependency-service";
 
 // モック作成
-vi.mock('./dependency-service');
+vi.mock("./dependency-service");
 
-describe('TargetService', () => {
+describe("TargetService", () => {
   let target: TargetService;
   let mockDependency: DependencyService;
 
@@ -93,14 +94,14 @@ describe('TargetService', () => {
 
     // モックの設定
     mockDependency = new DependencyService();
-    vi.mocked(mockDependency.someMethod).mockResolvedValue('mocked value');
+    vi.mocked(mockDependency.someMethod).mockResolvedValue("mocked value");
 
     target = new TargetService(mockDependency);
   });
 
-  it('should call dependency with correct parameters', async () => {
+  it("should call dependency with correct parameters", async () => {
     // Arrange
-    const expectedParam = 'test param';
+    const expectedParam = "test param";
 
     // Act
     await target.doSomething(expectedParam);
@@ -115,15 +116,15 @@ describe('TargetService', () => {
 ## 非同期テストテンプレート
 
 ```typescript
-import { describe, it, expect } from 'vitest';
-import { AsyncService } from './async-service';
+import { describe, it, expect } from "vitest";
+import { AsyncService } from "./async-service";
 
-describe('AsyncService', () => {
-  describe('#fetchData', () => {
-    it('should resolve with data when successful', async () => {
+describe("AsyncService", () => {
+  describe("#fetchData", () => {
+    it("should resolve with data when successful", async () => {
       // Arrange
       const service = new AsyncService();
-      const expectedData = { id: 1, name: 'test' };
+      const expectedData = { id: 1, name: "test" };
 
       // Act
       const result = await service.fetchData(1);
@@ -132,14 +133,12 @@ describe('AsyncService', () => {
       expect(result).toEqual(expectedData);
     });
 
-    it('should reject when network error occurs', async () => {
+    it("should reject when network error occurs", async () => {
       // Arrange
       const service = new AsyncService();
 
       // Act & Assert
-      await expect(service.fetchData(-1))
-        .rejects
-        .toThrow('Network error');
+      await expect(service.fetchData(-1)).rejects.toThrow("Network error");
     });
   });
 });

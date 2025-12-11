@@ -150,9 +150,10 @@ class {{ConcreteClassName}} extends {{AbstractClassName}}<{{InputType}}, {{Outpu
  *
  * 共通の実行フローを定義し、個別の実装をサブクラスに委ねる
  */
-abstract class BaseWorkflowExecutor<TInput, TOutput>
-  implements IWorkflowExecutor<TInput, TOutput> {
-
+abstract class BaseWorkflowExecutor<
+  TInput,
+  TOutput,
+> implements IWorkflowExecutor<TInput, TOutput> {
   abstract readonly type: string;
   abstract readonly displayName: string;
   abstract readonly description: string;
@@ -164,7 +165,7 @@ abstract class BaseWorkflowExecutor<TInput, TOutput>
    */
   public async execute(
     input: TInput,
-    context: ExecutionContext
+    context: ExecutionContext,
   ): Promise<TOutput> {
     const startTime = Date.now();
 
@@ -188,7 +189,6 @@ abstract class BaseWorkflowExecutor<TInput, TOutput>
       await this.logComplete(processedResult, context, startTime);
 
       return processedResult;
-
     } catch (error) {
       // エラーハンドリング
       await this.handleError(error as Error, context, startTime);
@@ -203,24 +203,24 @@ abstract class BaseWorkflowExecutor<TInput, TOutput>
    */
   protected abstract doExecute(
     input: TInput,
-    context: ExecutionContext
+    context: ExecutionContext,
   ): Promise<TOutput>;
 
   // ===== フックメソッド =====
 
   protected async logStart(
     input: TInput,
-    context: ExecutionContext
+    context: ExecutionContext,
   ): Promise<void> {
     context.logger.info(`Starting ${this.type}`, {
       workflowId: context.workflowId,
-      type: this.type
+      type: this.type,
     });
   }
 
   protected async validateInput(
     input: TInput,
-    context: ExecutionContext
+    context: ExecutionContext,
   ): Promise<void> {
     const result = this.inputSchema.safeParse(input);
     if (!result.success) {
@@ -230,14 +230,14 @@ abstract class BaseWorkflowExecutor<TInput, TOutput>
 
   protected async preProcess(
     input: TInput,
-    context: ExecutionContext
+    context: ExecutionContext,
   ): Promise<TInput> {
     return input;
   }
 
   protected async postProcess(
     result: TOutput,
-    context: ExecutionContext
+    context: ExecutionContext,
   ): Promise<TOutput> {
     return result;
   }
@@ -245,27 +245,27 @@ abstract class BaseWorkflowExecutor<TInput, TOutput>
   protected async logComplete(
     result: TOutput,
     context: ExecutionContext,
-    startTime: number
+    startTime: number,
   ): Promise<void> {
     const duration = Date.now() - startTime;
     context.logger.info(`Completed ${this.type}`, {
       workflowId: context.workflowId,
       type: this.type,
-      durationMs: duration
+      durationMs: duration,
     });
   }
 
   protected async handleError(
     error: Error,
     context: ExecutionContext,
-    startTime: number
+    startTime: number,
   ): Promise<void> {
     const duration = Date.now() - startTime;
     context.logger.error(`Failed ${this.type}`, {
       workflowId: context.workflowId,
       type: this.type,
       error: error.message,
-      durationMs: duration
+      durationMs: duration,
     });
   }
 
@@ -275,7 +275,7 @@ abstract class BaseWorkflowExecutor<TInput, TOutput>
     const result = this.inputSchema.safeParse(input);
     return {
       valid: result.success,
-      errors: result.success ? [] : result.error.errors
+      errors: result.success ? [] : result.error.errors,
     };
   }
 
@@ -347,10 +347,10 @@ export class {{ExecutorName}} extends BaseWorkflowExecutor<
 
 ## 命名規則
 
-| 要素 | 命名規則 | 例 |
-|------|---------|-----|
-| Abstract Class | Base + 機能名 | BaseWorkflowExecutor |
-| Concrete Class | 具体名 + 機能名 | AuthenticationExecutor |
-| Template Method | execute, run, process | execute |
-| Abstract Method | do + 動詞 | doExecute |
-| Hook Method | before/after + 動詞, on + イベント | beforeExecute, onError |
+| 要素            | 命名規則                           | 例                     |
+| --------------- | ---------------------------------- | ---------------------- |
+| Abstract Class  | Base + 機能名                      | BaseWorkflowExecutor   |
+| Concrete Class  | 具体名 + 機能名                    | AuthenticationExecutor |
+| Template Method | execute, run, process              | execute                |
+| Abstract Method | do + 動詞                          | doExecute              |
+| Hook Method     | before/after + 動詞, on + イベント | beforeExecute, onError |

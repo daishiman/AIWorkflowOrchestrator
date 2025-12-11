@@ -16,7 +16,7 @@ Tailwind CSSでダークモードを実装するための
 ```javascript
 // tailwind.config.js
 module.exports = {
-  darkMode: 'class',
+  darkMode: "class",
 };
 ```
 
@@ -34,16 +34,14 @@ function ThemeToggle() {
 
   useEffect(() => {
     if (isDark) {
-      document.documentElement.classList.add('dark');
+      document.documentElement.classList.add("dark");
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove("dark");
     }
   }, [isDark]);
 
   return (
-    <button onClick={() => setIsDark(!isDark)}>
-      {isDark ? '🌙' : '☀️'}
-    </button>
+    <button onClick={() => setIsDark(!isDark)}>{isDark ? "🌙" : "☀️"}</button>
   );
 }
 ```
@@ -55,7 +53,7 @@ OSの設定に自動で追従。
 ```javascript
 // tailwind.config.js
 module.exports = {
-  darkMode: 'media',
+  darkMode: "media",
 };
 ```
 
@@ -66,12 +64,12 @@ module.exports = {
 ```javascript
 // tailwind.config.js
 module.exports = {
-  darkMode: ['selector', '[data-theme="dark"]'],
+  darkMode: ["selector", '[data-theme="dark"]'],
 };
 ```
 
 ```html
-<html data-theme="dark">
+<html data-theme="dark"></html>
 ```
 
 ---
@@ -82,63 +80,65 @@ module.exports = {
 
 ```tsx
 // ThemeContext.tsx
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from "react";
 
-type Theme = 'light' | 'dark' | 'system';
+type Theme = "light" | "dark" | "system";
 
 interface ThemeContextType {
   theme: Theme;
   setTheme: (theme: Theme) => void;
-  resolvedTheme: 'light' | 'dark';
+  resolvedTheme: "light" | "dark";
 }
 
 const ThemeContext = createContext<ThemeContextType | null>(null);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('system');
-  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
+  const [theme, setTheme] = useState<Theme>("system");
+  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
     // ローカルストレージから復元
-    const stored = localStorage.getItem('theme') as Theme | null;
+    const stored = localStorage.getItem("theme") as Theme | null;
     if (stored) setTheme(stored);
   }, []);
 
   useEffect(() => {
     const root = document.documentElement;
-    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const systemDark = window.matchMedia(
+      "(prefers-color-scheme: dark)",
+    ).matches;
 
-    let resolved: 'light' | 'dark';
-    if (theme === 'system') {
-      resolved = systemDark ? 'dark' : 'light';
+    let resolved: "light" | "dark";
+    if (theme === "system") {
+      resolved = systemDark ? "dark" : "light";
     } else {
       resolved = theme;
     }
 
     setResolvedTheme(resolved);
 
-    if (resolved === 'dark') {
-      root.classList.add('dark');
+    if (resolved === "dark") {
+      root.classList.add("dark");
     } else {
-      root.classList.remove('dark');
+      root.classList.remove("dark");
     }
 
     // ローカルストレージに保存
-    localStorage.setItem('theme', theme);
+    localStorage.setItem("theme", theme);
   }, [theme]);
 
   // システム設定の変更を監視
   useEffect(() => {
-    if (theme !== 'system') return;
+    if (theme !== "system") return;
 
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const handler = (e: MediaQueryListEvent) => {
-      setResolvedTheme(e.matches ? 'dark' : 'light');
-      document.documentElement.classList.toggle('dark', e.matches);
+      setResolvedTheme(e.matches ? "dark" : "light");
+      document.documentElement.classList.toggle("dark", e.matches);
     };
 
-    mediaQuery.addEventListener('change', handler);
-    return () => mediaQuery.removeEventListener('change', handler);
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
   }, [theme]);
 
   return (
@@ -150,7 +150,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
 export function useTheme() {
   const context = useContext(ThemeContext);
-  if (!context) throw new Error('useTheme must be used within ThemeProvider');
+  if (!context) throw new Error("useTheme must be used within ThemeProvider");
   return context;
 }
 ```
@@ -164,28 +164,28 @@ function ThemeToggle() {
   return (
     <div className="flex gap-2">
       <button
-        onClick={() => setTheme('light')}
+        onClick={() => setTheme("light")}
         className={cn(
-          'p-2 rounded-md',
-          theme === 'light' && 'bg-gray-200 dark:bg-gray-700'
+          "p-2 rounded-md",
+          theme === "light" && "bg-gray-200 dark:bg-gray-700",
         )}
       >
         ☀️
       </button>
       <button
-        onClick={() => setTheme('dark')}
+        onClick={() => setTheme("dark")}
         className={cn(
-          'p-2 rounded-md',
-          theme === 'dark' && 'bg-gray-200 dark:bg-gray-700'
+          "p-2 rounded-md",
+          theme === "dark" && "bg-gray-200 dark:bg-gray-700",
         )}
       >
         🌙
       </button>
       <button
-        onClick={() => setTheme('system')}
+        onClick={() => setTheme("system")}
         className={cn(
-          'p-2 rounded-md',
-          theme === 'system' && 'bg-gray-200 dark:bg-gray-700'
+          "p-2 rounded-md",
+          theme === "system" && "bg-gray-200 dark:bg-gray-700",
         )}
       >
         💻
@@ -251,34 +251,34 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
         },
         primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
         },
         muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
         },
         destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
         },
-        border: 'hsl(var(--border))',
-        ring: 'hsl(var(--ring))',
+        border: "hsl(var(--border))",
+        ring: "hsl(var(--ring))",
       },
     },
   },
@@ -376,28 +376,23 @@ export default function RootLayout({ children }) {
 
 ```tsx
 const buttonVariants = cva(
-  'inline-flex items-center justify-center rounded-md font-medium transition-colors',
+  "inline-flex items-center justify-center rounded-md font-medium transition-colors",
   {
     variants: {
       variant: {
-        primary: [
-          'bg-primary text-primary-foreground',
-          'hover:bg-primary/90',
-        ],
+        primary: ["bg-primary text-primary-foreground", "hover:bg-primary/90"],
         secondary: [
-          'bg-secondary text-secondary-foreground',
-          'hover:bg-secondary/80',
+          "bg-secondary text-secondary-foreground",
+          "hover:bg-secondary/80",
         ],
         outline: [
-          'border border-input bg-background',
-          'hover:bg-accent hover:text-accent-foreground',
+          "border border-input bg-background",
+          "hover:bg-accent hover:text-accent-foreground",
         ],
-        ghost: [
-          'hover:bg-accent hover:text-accent-foreground',
-        ],
+        ghost: ["hover:bg-accent hover:text-accent-foreground"],
       },
     },
-  }
+  },
 );
 ```
 
@@ -408,10 +403,10 @@ function Card({ children, className }) {
   return (
     <div
       className={cn(
-        'rounded-lg border bg-card text-card-foreground shadow-sm',
+        "rounded-lg border bg-card text-card-foreground shadow-sm",
         // ダークモードでシャドウを調整
-        'dark:shadow-none dark:border-border',
-        className
+        "dark:shadow-none dark:border-border",
+        className,
       )}
     >
       {children}

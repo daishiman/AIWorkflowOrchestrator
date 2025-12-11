@@ -42,10 +42,10 @@
 await page.click('[data-testid="submit-button"]');
 
 // ⚠️ 悪い例: CSSクラスに依存
-await page.click('.btn.btn-primary.submit');
+await page.click(".btn.btn-primary.submit");
 
 // ⚠️ 悪い例: 要素の順序に依存
-await page.click('button >> nth=2');
+await page.click("button >> nth=2");
 ```
 
 ---
@@ -77,7 +77,7 @@ await page.click('button >> nth=2');
 const uniqueEmail = `user_${Date.now()}_${Math.random().toString(36).slice(2)}@test.com`;
 
 // ❌ 悪い例: 固定のメールアドレス
-const email = 'testuser@test.com'; // 並列実行で衝突
+const email = "testuser@test.com"; // 並列実行で衝突
 ```
 
 ---
@@ -100,7 +100,7 @@ const email = 'testuser@test.com'; // 並列実行で衝突
 
 ```typescript
 // ✅ 良い例: 条件ベースの待機
-await expect(page.locator('.data')).toBeVisible({ timeout: 30000 });
+await expect(page.locator(".data")).toBeVisible({ timeout: 30000 });
 
 // ❌ 悪い例: 固定待機時間
 await page.waitForTimeout(3000);
@@ -125,13 +125,13 @@ await page.waitForTimeout(3000);
 
 ```typescript
 // ✅ 良い例: MSWで外部APIをモック
-import { http, HttpResponse } from 'msw';
-import { setupServer } from 'msw/node';
+import { http, HttpResponse } from "msw";
+import { setupServer } from "msw/node";
 
 const server = setupServer(
-  http.get('https://api.external.com/data', () => {
-    return HttpResponse.json({ data: 'mocked' });
-  })
+  http.get("https://api.external.com/data", () => {
+    return HttpResponse.json({ data: "mocked" });
+  }),
 );
 
 test.beforeAll(() => server.listen());
@@ -160,7 +160,7 @@ test.afterAll(() => server.close());
 const uniqueEmail = `user_w${testInfo.parallelIndex}_${Date.now()}@test.com`;
 
 // ❌ 悪い例: 固定リソースに依存
-const sharedFile = './shared-data.json'; // 並列実行で競合
+const sharedFile = "./shared-data.json"; // 並列実行で競合
 ```
 
 ---
@@ -189,10 +189,10 @@ const sharedFile = './shared-data.json'; // 並列実行で競合
 // playwright.config.ts
 export default defineConfig({
   use: {
-    baseURL: process.env.BASE_URL || 'http://localhost:3000',
+    baseURL: process.env.BASE_URL || "http://localhost:3000",
     viewport: { width: 1280, height: 720 }, // 固定
-    timezoneId: 'UTC', // UTC固定
-    locale: 'ja-JP',
+    timezoneId: "UTC", // UTC固定
+    locale: "ja-JP",
   },
 });
 ```
@@ -226,17 +226,18 @@ export default defineConfig({
 各セクションの達成率を計算し、安定性スコアを算出します。
 
 | セクション | 達成項目 / 総項目 | 達成率 |
-|-----------|------------------|--------|
-| テスト設計 | X / Y | % |
-| データ管理 | X / Y | % |
-| タイミング | X / Y | % |
-| 外部依存 | X / Y | % |
-| 並列実行 | X / Y | % |
-| 環境設定 | X / Y | % |
+| ---------- | ----------------- | ------ |
+| テスト設計 | X / Y             | %      |
+| データ管理 | X / Y             | %      |
+| タイミング | X / Y             | %      |
+| 外部依存   | X / Y             | %      |
+| 並列実行   | X / Y             | %      |
+| 環境設定   | X / Y             | %      |
 
 **総合安定性スコア**: 平均達成率
 
 **目標**:
+
 - **90%以上**: 優れた安定性
 - **75-89%**: 良好、いくつかの改善点あり
 - **60-74%**: 要改善、フレーキーテストのリスクあり
@@ -249,6 +250,7 @@ export default defineConfig({
 このチェックリストを使用して、E2Eテストの安定性を体系的に向上させることができます。
 
 **推奨アプローチ**:
+
 1. 新規テスト作成時にチェックリストを確認
 2. フレーキーテスト発生時にチェックリストで診断
 3. 定期的に既存テストをレビュー

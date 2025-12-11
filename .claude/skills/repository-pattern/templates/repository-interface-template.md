@@ -86,12 +86,12 @@ export interface I{{EntityName}}Repository {
 
 ## 変数置換ガイド
 
-| 変数 | 説明 | 例 |
-|------|------|-----|
-| `{{EntityName}}` | エンティティ名（PascalCase） | `Workflow` |
-| `{{EntityNameDescription}}` | エンティティの説明 | `ワークフロー` |
-| `{{EntityName}}Id` | ID型（ブランド型推奨） | `WorkflowId` |
-| `{{EntityName}}Status` | ステータスEnum | `WorkflowStatus` |
+| 変数                        | 説明                         | 例               |
+| --------------------------- | ---------------------------- | ---------------- |
+| `{{EntityName}}`            | エンティティ名（PascalCase） | `Workflow`       |
+| `{{EntityNameDescription}}` | エンティティの説明           | `ワークフロー`   |
+| `{{EntityName}}Id`          | ID型（ブランド型推奨）       | `WorkflowId`     |
+| `{{EntityName}}Status`      | ステータスEnum               | `WorkflowStatus` |
 
 ## ドメイン固有メソッド追加例
 

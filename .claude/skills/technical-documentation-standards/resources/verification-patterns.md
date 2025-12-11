@@ -9,11 +9,13 @@
 要件が検証可能とは、その要件を満たしているかどうかを客観的に判定できることを意味します。
 
 ### 検証可能な要件の特徴
+
 - 具体的な数値や条件がある
 - 成功/失敗の判定基準が明確
 - テストケースを作成できる
 
 ### 検証不可能な要件の特徴
+
 - 主観的な表現（使いやすい、美しい）
 - 曖昧な程度表現（速い、多い）
 - 条件が不明確
@@ -23,11 +25,13 @@
 ### パターン1: 性能要件
 
 **検証不可能**:
+
 ```
 システムは高速に応答すること
 ```
 
 **検証可能**:
+
 ```
 GET /api/users エンドポイントは、
 同時接続100ユーザー、データ件数10,000件の条件下で、
@@ -35,10 +39,11 @@ GET /api/users エンドポイントは、
 ```
 
 **テストケース**:
+
 ```typescript
-test('GET /api/users は200ms以内に応答する', async () => {
+test("GET /api/users は200ms以内に応答する", async () => {
   const start = Date.now();
-  await fetch('/api/users');
+  await fetch("/api/users");
   const duration = Date.now() - start;
   expect(duration).toBeLessThan(200);
 });
@@ -47,11 +52,13 @@ test('GET /api/users は200ms以内に応答する', async () => {
 ### パターン2: 入力検証
 
 **検証不可能**:
+
 ```
 ユーザー名は適切な長さであること
 ```
 
 **検証可能**:
+
 ```
 ユーザー名は以下の条件を満たすこと:
 - 3文字以上50文字以下
@@ -60,16 +67,17 @@ test('GET /api/users は200ms以内に応答する', async () => {
 ```
 
 **テストケース**:
+
 ```typescript
-describe('ユーザー名バリデーション', () => {
-  test('3文字未満は拒否', () => {
-    expect(validate('ab')).toBe(false);
+describe("ユーザー名バリデーション", () => {
+  test("3文字未満は拒否", () => {
+    expect(validate("ab")).toBe(false);
   });
-  test('50文字超は拒否', () => {
-    expect(validate('a'.repeat(51))).toBe(false);
+  test("50文字超は拒否", () => {
+    expect(validate("a".repeat(51))).toBe(false);
   });
-  test('特殊文字は拒否', () => {
-    expect(validate('user@name')).toBe(false);
+  test("特殊文字は拒否", () => {
+    expect(validate("user@name")).toBe(false);
   });
 });
 ```
@@ -77,11 +85,13 @@ describe('ユーザー名バリデーション', () => {
 ### パターン3: 状態遷移
 
 **検証不可能**:
+
 ```
 注文は適切なステータスに遷移すること
 ```
 
 **検証可能**:
+
 ```
 注文ステータスは以下の遷移のみ許可:
 - pending → processing (支払い確認時)
@@ -91,21 +101,24 @@ describe('ユーザー名バリデーション', () => {
 ```
 
 **テストケース**:
+
 ```typescript
-test('pending から shipped への直接遷移は不可', () => {
-  const order = new Order('pending');
-  expect(() => order.transitionTo('shipped')).toThrow();
+test("pending から shipped への直接遷移は不可", () => {
+  const order = new Order("pending");
+  expect(() => order.transitionTo("shipped")).toThrow();
 });
 ```
 
 ### パターン4: エラーハンドリング
 
 **検証不可能**:
+
 ```
 エラー時は適切に処理すること
 ```
 
 **検証可能**:
+
 ```
 データベース接続エラー時:
 - HTTPステータス: 503 Service Unavailable
@@ -116,11 +129,13 @@ test('pending から shipped への直接遷移は不可', () => {
 ### パターン5: セキュリティ要件
 
 **検証不可能**:
+
 ```
 パスワードは安全に保存すること
 ```
 
 **検証可能**:
+
 ```
 パスワード保存要件:
 - ハッシュアルゴリズム: bcrypt

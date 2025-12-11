@@ -41,11 +41,13 @@ version: 1.0.0
 GitHub Actionsを活用した効率的なCI/CDパイプラインの設計と実装を支援します。
 
 **主要な価値**:
+
 - 開発からデプロイまでの価値の流れを高速化
 - 問題の早期発見と即時フィードバック
 - 品質の作り込みによる本番障害の削減
 
 **対象ユーザー**:
+
 - CI/CDパイプラインを構築するDevOpsエンジニア
 - GitHub Actionsを最適化したい開発者
 - デプロイ自動化を実現したいチーム
@@ -120,6 +122,7 @@ cat .claude/skills/ci-cd-pipelines/templates/reusable-workflow-template.yml
 **状況**: 新しいプロジェクトにCI/CDパイプラインを構築したい
 
 **適用条件**:
+
 - [ ] プロジェクトのビルドシステムが確立している
 - [ ] テストフレームワークが導入されている
 - [ ] GitHub（またはGitHub互換）でホスティングされている
@@ -131,6 +134,7 @@ cat .claude/skills/ci-cd-pipelines/templates/reusable-workflow-template.yml
 **状況**: 既存のCI/CDパイプラインが遅い、または不安定
 
 **適用条件**:
+
 - [ ] パイプライン実行時間が目標を超えている（例: >10分）
 - [ ] キャッシュが活用されていない
 - [ ] 並列化可能なジョブが直列実行されている
@@ -142,6 +146,7 @@ cat .claude/skills/ci-cd-pipelines/templates/reusable-workflow-template.yml
 **状況**: 品質基準を満たさないコードが本番に流入している
 
 **適用条件**:
+
 - [ ] テストカバレッジが追跡されていない
 - [ ] Lint/Formatter違反がマージされている
 - [ ] セキュリティ脆弱性チェックがない
@@ -155,6 +160,7 @@ cat .claude/skills/ci-cd-pipelines/templates/reusable-workflow-template.yml
 **目的**: プロジェクト固有のCI/CD要件を明確化
 
 **ステップ**:
+
 1. **プロジェクト構造分析**:
    - パッケージマネージャーの特定（pnpm/pnpm/yarn）
    - テストフレームワークの特定（Vitest/Jest/Playwright）
@@ -167,6 +173,7 @@ cat .claude/skills/ci-cd-pipelines/templates/reusable-workflow-template.yml
    - Deploy Stage: ステージング/本番環境への自動デプロイ
 
 **判断基準**:
+
 - [ ] プロジェクトの技術スタックが特定されているか？
 - [ ] 各ステージの達成条件が明確か？
 - [ ] 品質基準が測定可能か？
@@ -178,6 +185,7 @@ cat .claude/skills/ci-cd-pipelines/templates/reusable-workflow-template.yml
 **目的**: 設計に基づいてGitHub Actionsワークフローを実装
 
 **ステップ**:
+
 1. **トリガー設定**:
    - PR作成時: `pull_request`
    - mainブランチへのプッシュ: `push`
@@ -193,6 +201,7 @@ cat .claude/skills/ci-cd-pipelines/templates/reusable-workflow-template.yml
    - ビルドキャッシュ（.next/cache）
 
 **判断基準**:
+
 - [ ] トリガー条件が要件を満たしているか？
 - [ ] ジョブの並列化が最大化されているか？
 - [ ] キャッシュが適切に設定されているか？
@@ -204,6 +213,7 @@ cat .claude/skills/ci-cd-pipelines/templates/reusable-workflow-template.yml
 **目的**: 品質基準を満たさないコードの本番流入を防ぐ
 
 **ステップ**:
+
 1. **必須チェック設定**:
    - TypeScript型チェック
    - ESLint/Prettier
@@ -216,6 +226,7 @@ cat .claude/skills/ci-cd-pipelines/templates/reusable-workflow-template.yml
    - マージ前の最新化要求
 
 **判断基準**:
+
 - [ ] すべての品質基準がCI/CDで強制されているか？
 - [ ] 品質ゲート失敗時のフィードバックが明確か？
 - [ ] ブランチ保護が適切に設定されているか？
@@ -227,6 +238,7 @@ cat .claude/skills/ci-cd-pipelines/templates/reusable-workflow-template.yml
 **目的**: パイプラインの動作確認と継続的改善
 
 **ステップ**:
+
 1. **動作検証**:
    - テストPRでの動作確認
    - すべてのジョブの成功確認
@@ -238,6 +250,7 @@ cat .claude/skills/ci-cd-pipelines/templates/reusable-workflow-template.yml
    - 並列化の追加検討
 
 **判断基準**:
+
 - [ ] パイプラインが期待通り動作するか？
 - [ ] 実行時間が目標以内か？
 - [ ] キャッシュヒット率が高いか？
@@ -249,18 +262,21 @@ cat .claude/skills/ci-cd-pipelines/templates/reusable-workflow-template.yml
 ### GitHub Actions構文の要点
 
 **ワークフロートリガー**:
+
 - `pull_request`: PR作成/更新時に実行
 - `push`: 指定ブランチへのプッシュ時に実行
 - `workflow_dispatch`: 手動実行を許可
 - `schedule`: cron形式でスケジュール実行
 
 **ジョブ構成の原則**:
+
 - `needs`: ジョブ間の依存関係を定義
 - `strategy.matrix`: 複数環境での並列テスト
 - `continue-on-error`: 失敗しても次のジョブを実行
 - `if`: 条件付き実行
 
 **キャッシュの要点**:
+
 - `actions/cache`: 依存関係のキャッシュ
 - キーにはlock fileのハッシュを使用
 - `restore-keys`: フォールバックキーの設定
@@ -270,11 +286,13 @@ cat .claude/skills/ci-cd-pipelines/templates/reusable-workflow-template.yml
 ### パイプラインパターン
 
 **多段階パイプライン（推奨）**:
+
 ```
 Build → Test → Quality Gate → Deploy Staging → Deploy Production
 ```
 
 **並列パイプライン**:
+
 ```
 ├── Build
 ├── Test Unit
@@ -326,11 +344,13 @@ Build → Test → Quality Gate → Deploy Staging → Deploy Production
 **症状**: 実行時間が10分を超える
 
 **原因**:
+
 - キャッシュが効いていない
 - 並列化されていない
 - 不要なステップがある
 
 **解決策**:
+
 1. キャッシュキーを確認し、ヒット率を測定
 2. 独立したジョブを並列化
 3. 不要なステップを削除
@@ -340,10 +360,12 @@ Build → Test → Quality Gate → Deploy Staging → Deploy Production
 **症状**: 品質基準を満たさないコードがマージされる
 
 **原因**:
+
 - ブランチ保護が未設定
 - 必須ステータスチェックが未設定
 
 **解決策**:
+
 1. リポジトリ設定でブランチ保護を有効化
 2. 必須ステータスチェックを設定
 3. "Require branches to be up to date"を有効化
@@ -353,11 +375,13 @@ Build → Test → Quality Gate → Deploy Staging → Deploy Production
 **症状**: 毎回依存関係がインストールされる
 
 **原因**:
+
 - キャッシュキーが毎回変わる
 - restore-keysが未設定
 - キャッシュサイズ上限
 
 **解決策**:
+
 1. lock fileのハッシュをキーに使用
 2. restore-keysでフォールバックを設定
 3. キャッシュサイズを確認（GitHub: 10GB上限）
@@ -397,9 +421,9 @@ Build → Test → Quality Gate → Deploy Staging → Deploy Production
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版作成 - GitHub Actions中心のCI/CDパイプライン設計 |
+| バージョン | 日付       | 変更内容                                             |
+| ---------- | ---------- | ---------------------------------------------------- |
+| 1.0.0      | 2025-11-25 | 初版作成 - GitHub Actions中心のCI/CDパイプライン設計 |
 
 ## 参考文献
 

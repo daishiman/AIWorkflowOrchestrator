@@ -31,12 +31,14 @@ version: 1.0.0
 親切なエラーメッセージの設計により、ユーザーフレンドリーなコマンドを作成できます。
 
 **主要な価値**:
+
 - $ARGUMENTS と位置引数の完全理解
 - 堅牢な引数検証の実装
 - デフォルト値の適切な提供
 - わかりやすいエラーメッセージ設計
 
 **対象ユーザー**:
+
 - コマンドを作成するエージェント（@command-arch）
 - 引数付きコマンドを設計する開発者
 - ユーザーフレンドリーなコマンドを作成したいチーム
@@ -68,9 +70,11 @@ command-arguments-system/
 ## いつ使うか
 
 ### シナリオ1: 引数付きコマンドの作成
+
 **状況**: コマンドに引数を追加したい
 
 **適用条件**:
+
 - [ ] $ARGUMENTS の使い方を知らない
 - [ ] 位置引数の使い分けがわからない
 - [ ] argument-hint の設定方法を知りたい
@@ -78,9 +82,11 @@ command-arguments-system/
 **期待される成果**: 引数を正しく扱うコマンド
 
 ### シナリオ2: 引数検証の実装
+
 **状況**: 不正な引数をエラーにしたい
 
 **適用条件**:
+
 - [ ] 引数が空の場合のハンドリングが必要
 - [ ] 特定の値のみ許可したい
 - [ ] 複数引数の組み合わせを検証したい
@@ -88,9 +94,11 @@ command-arguments-system/
 **期待される成果**: 堅牢な引数検証ロジック
 
 ### シナリオ3: デフォルト値の提供
+
 **状況**: 引数が省略された場合のデフォルト動作を設定したい
 
 **適用条件**:
+
 - [ ] オプション引数を実装したい
 - [ ] デフォルト値の設定方法を知りたい
 - [ ] 引数省略時の動作を定義したい
@@ -113,6 +121,7 @@ description: Commit changes with message
 Commit message: $ARGUMENTS
 
 Steps:
+
 1. Stage all changes: `git add -A`
 2. Commit with message: `git commit -m "$ARGUMENTS"`
 3. Push: `git push`
@@ -130,7 +139,7 @@ Steps:
 
 **複数引数を扱う**:
 
-```markdown
+````markdown
 ---
 argument-hint: [source] [destination]
 ---
@@ -142,9 +151,11 @@ Copy file from $1 to $2
 ```bash
 cp "$1" "$2"
 ```
+````
 
 Verify copy succeeded.
-```
+
+````
 
 **実行例**:
 
@@ -153,13 +164,13 @@ Verify copy succeeded.
 
 → $1 = "src/old.js"
 → $2 = "src/new.js"
-```
+````
 
 ## 引数検証
 
 ### 必須引数のチェック
 
-```markdown
+````markdown
 ---
 description: Deploy to environment
 ---
@@ -169,7 +180,9 @@ description: Deploy to environment
 Target environment: $ARGUMENTS
 
 ## Validation
+
 Check if $ARGUMENTS is provided:
+
 ```bash
 if [ -z "$ARGUMENTS" ]; then
   echo "❌ Error: Environment not specified"
@@ -177,10 +190,13 @@ if [ -z "$ARGUMENTS" ]; then
   exit 1
 fi
 ```
+````
 
 ## Execution
+
 Proceed with deployment to $ARGUMENTS
-```
+
+````
 
 ### 値の範囲チェック
 
@@ -193,8 +209,9 @@ if [ "$ARGUMENTS" != "staging" ] && [ "$ARGUMENTS" != "production" ]; then
   echo "Valid options: staging, production"
   exit 1
 fi
-```
-```
+````
+
+````
 
 ### 複数引数の検証
 
@@ -229,11 +246,13 @@ if [ ! -d "$DEST_DIR" ]; then
   echo "❌ Error: Destination directory '$DEST_DIR' not found"
   exit 1
 fi
-```
+````
 
 ## Execution
+
 Copy file from $1 to $2
-```
+
+````
 
 ## デフォルト値
 
@@ -252,8 +271,9 @@ Test pattern: $ARGUMENTS (default: all tests)
 ```bash
 PATTERN="${$ARGUMENTS:-**/*.test.js}"
 pnpm test -- "$PATTERN"
-```
-```
+````
+
+````
 
 ### 条件付きデフォルト
 
@@ -269,8 +289,9 @@ else
 fi
 
 echo "Deploying to: $ENV"
-```
-```
+````
+
+````
 
 ## エラーメッセージ設計
 
@@ -280,9 +301,10 @@ echo "Deploying to: $ENV"
 ```bash
 echo "Error"
 exit 1
-```
+````
 
 **良い例**:
+
 ```bash
 echo "❌ Error: Invalid environment '$ARGUMENTS'"
 echo ""
@@ -303,6 +325,7 @@ exit 1
 ## Error Handling
 
 If validation fails, show:
+
 1. ❌ What went wrong
 2. ✓ What are valid options
 3. 💡 How to fix it (usage example)
@@ -310,28 +333,33 @@ If validation fails, show:
 
 Example error message:
 ```
+
 ❌ Error: Invalid priority level 'urgent'
 
 Valid priority levels:
-  - low
-  - medium
-  - high
+
+- low
+- medium
+- high
 
 Usage: /create-issue [title] [priority]
 
 Example:
-  /create-issue "Fix login bug" high
+/create-issue "Fix login bug" high
+
 ```
+
 ```
 
 ## 高度な引数パターン
 
 ### フラグ引数の処理
 
-```markdown
+````markdown
 ## Parse Arguments
 
 Check for flags in $ARGUMENTS:
+
 ```bash
 VERBOSE=false
 FORCE=false
@@ -350,10 +378,13 @@ for arg in $ARGUMENTS; do
   esac
 done
 ```
+````
 
 ## Execution
+
 Deploy to $TARGET with verbose=$VERBOSE, force=$FORCE
-```
+
+````
 
 ### 名前付き引数の処理
 
@@ -375,13 +406,15 @@ for arg in $ARGUMENTS; do
       ;;
   esac
 done
-```
+````
 
 Example:
+
 ```
 /deploy env=production region=us-east-1 version=1.2.3
 ```
-```
+
+````
 
 ## 詳細リソースの参照
 
@@ -411,7 +444,7 @@ $1, $2 等の使用方法は `resources/positional-arguments-guide.md` を参照
 ```bash
 # $ARGUMENTS完全リファレンス
 cat .claude/skills/command-arguments-system/resources/arguments-reference.md
-```
+````
 
 ### 他のスキルのスクリプトを活用
 

@@ -6,37 +6,37 @@
 
 ```typescript
 // Main
-ipcMain.handle('user:get', async (event, userId: string) => {
+ipcMain.handle("user:get", async (event, userId: string) => {
   const user = await database.getUser(userId);
   return user;
 });
 
 // Preload
-contextBridge.exposeInMainWorld('api', {
-  getUser: (userId: string) => ipcRenderer.invoke('user:get', userId),
+contextBridge.exposeInMainWorld("api", {
+  getUser: (userId: string) => ipcRenderer.invoke("user:get", userId),
 });
 
 // Renderer
-const user = await window.api.getUser('123');
+const user = await window.api.getUser("123");
 ```
 
 ### 2. Fire-and-Forget（通知のみ）
 
 ```typescript
 // Main
-ipcMain.on('analytics:track', (event, eventName: string, data: any) => {
+ipcMain.on("analytics:track", (event, eventName: string, data: any) => {
   analyticsService.track(eventName, data);
   // 戻り値なし
 });
 
 // Preload
-contextBridge.exposeInMainWorld('api', {
+contextBridge.exposeInMainWorld("api", {
   trackEvent: (name: string, data: any) =>
-    ipcRenderer.send('analytics:track', name, data),
+    ipcRenderer.send("analytics:track", name, data),
 });
 
 // Renderer
-window.api.trackEvent('button_click', { buttonId: 'save' });
+window.api.trackEvent("button_click", { buttonId: "save" });
 ```
 
 ### 3. Push Notification（Main → Renderer）
@@ -44,15 +44,15 @@ window.api.trackEvent('button_click', { buttonId: 'save' });
 ```typescript
 // Main
 function notifyProgress(win: BrowserWindow, progress: number) {
-  win.webContents.send('download:progress', progress);
+  win.webContents.send("download:progress", progress);
 }
 
 // Preload
-contextBridge.exposeInMainWorld('api', {
+contextBridge.exposeInMainWorld("api", {
   onDownloadProgress: (callback: (progress: number) => void) => {
     const handler = (_: any, progress: number) => callback(progress);
-    ipcRenderer.on('download:progress', handler);
-    return () => ipcRenderer.removeListener('download:progress', handler);
+    ipcRenderer.on("download:progress", handler);
+    return () => ipcRenderer.removeListener("download:progress", handler);
   },
 });
 
@@ -68,18 +68,18 @@ useEffect(() => {
 
 ```typescript
 // Main
-ipcMain.handle('chat:connect', async (event) => {
+ipcMain.handle("chat:connect", async (event) => {
   const sessionId = crypto.randomUUID();
   const win = BrowserWindow.fromWebContents(event.sender);
 
   chatService.onMessage(sessionId, (message) => {
-    win?.webContents.send('chat:message', message);
+    win?.webContents.send("chat:message", message);
   });
 
   return sessionId;
 });
 
-ipcMain.on('chat:send', (event, sessionId: string, message: string) => {
+ipcMain.on("chat:send", (event, sessionId: string, message: string) => {
   chatService.sendMessage(sessionId, message);
 });
 ```
@@ -91,11 +91,11 @@ ipcMain.on('chat:send', (event, sessionId: string, message: string) => {
 ```typescript
 // shared/ipc-types.ts
 export interface IpcChannels {
-  'file:read': {
+  "file:read": {
     request: { path: string };
     response: { content: string } | { error: string };
   };
-  'file:write': {
+  "file:write": {
     request: { path: string; content: string };
     response: { success: boolean };
   };
@@ -104,16 +104,16 @@ export interface IpcChannels {
 // preload/typed-ipc.ts
 type TypedInvoke = <K extends keyof IpcChannels>(
   channel: K,
-  args: IpcChannels[K]['request']
-) => Promise<IpcChannels[K]['response']>;
+  args: IpcChannels[K]["request"],
+) => Promise<IpcChannels[K]["response"]>;
 
 const typedInvoke: TypedInvoke = (channel, args) =>
   ipcRenderer.invoke(channel, args);
 
-contextBridge.exposeInMainWorld('api', {
-  readFile: (path: string) => typedInvoke('file:read', { path }),
+contextBridge.exposeInMainWorld("api", {
+  readFile: (path: string) => typedInvoke("file:read", { path }),
   writeFile: (path: string, content: string) =>
-    typedInvoke('file:write', { path, content }),
+    typedInvoke("file:write", { path, content }),
 });
 ```
 
@@ -121,16 +121,16 @@ contextBridge.exposeInMainWorld('api', {
 
 ```typescript
 // Main
-ipcMain.handle('files:batch-read', async (event, paths: string[]) => {
+ipcMain.handle("files:batch-read", async (event, paths: string[]) => {
   const results = await Promise.all(
     paths.map(async (path) => {
       try {
-        const content = await fs.promises.readFile(path, 'utf-8');
+        const content = await fs.promises.readFile(path, "utf-8");
         return { path, success: true, content };
       } catch (error) {
         return { path, success: false, error: error.message };
       }
-    })
+    }),
   );
   return results;
 });
@@ -140,7 +140,7 @@ ipcMain.handle('files:batch-read', async (event, paths: string[]) => {
 
 ```typescript
 // Main
-ipcMain.handle('file:copy-large', async (event, src: string, dest: string) => {
+ipcMain.handle("file:copy-large", async (event, src: string, dest: string) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   const stat = await fs.promises.stat(src);
   let copied = 0;
@@ -148,16 +148,16 @@ ipcMain.handle('file:copy-large', async (event, src: string, dest: string) => {
   const readStream = fs.createReadStream(src);
   const writeStream = fs.createWriteStream(dest);
 
-  readStream.on('data', (chunk: Buffer) => {
+  readStream.on("data", (chunk: Buffer) => {
     copied += chunk.length;
     const progress = Math.round((copied / stat.size) * 100);
-    win?.webContents.send('file:copy-progress', progress);
+    win?.webContents.send("file:copy-progress", progress);
   });
 
   return new Promise((resolve, reject) => {
     readStream.pipe(writeStream);
-    writeStream.on('finish', () => resolve({ success: true }));
-    writeStream.on('error', reject);
+    writeStream.on("finish", () => resolve({ success: true }));
+    writeStream.on("error", reject);
   });
 });
 ```
@@ -168,7 +168,7 @@ ipcMain.handle('file:copy-large', async (event, src: string, dest: string) => {
 // Main
 const runningTasks = new Map<string, AbortController>();
 
-ipcMain.handle('task:start', async (event, taskId: string, params: any) => {
+ipcMain.handle("task:start", async (event, taskId: string, params: any) => {
   const controller = new AbortController();
   runningTasks.set(taskId, controller);
 
@@ -176,7 +176,7 @@ ipcMain.handle('task:start', async (event, taskId: string, params: any) => {
     const result = await longRunningTask(params, controller.signal);
     return { success: true, result };
   } catch (error) {
-    if (error.name === 'AbortError') {
+    if (error.name === "AbortError") {
       return { success: false, cancelled: true };
     }
     throw error;
@@ -185,7 +185,7 @@ ipcMain.handle('task:start', async (event, taskId: string, params: any) => {
   }
 });
 
-ipcMain.on('task:cancel', (event, taskId: string) => {
+ipcMain.on("task:cancel", (event, taskId: string) => {
   const controller = runningTasks.get(taskId);
   controller?.abort();
 });
@@ -208,23 +208,26 @@ export type IpcResult<T> =
   | { success: false; error: IpcError };
 
 // Main
-ipcMain.handle('file:read', async (event, path: string): Promise<IpcResult<string>> => {
-  try {
-    const content = await fs.promises.readFile(path, 'utf-8');
-    return { success: true, data: content };
-  } catch (error) {
-    return {
-      success: false,
-      error: {
-        code: error.code || 'UNKNOWN',
-        message: error.message,
-      },
-    };
-  }
-});
+ipcMain.handle(
+  "file:read",
+  async (event, path: string): Promise<IpcResult<string>> => {
+    try {
+      const content = await fs.promises.readFile(path, "utf-8");
+      return { success: true, data: content };
+    } catch (error) {
+      return {
+        success: false,
+        error: {
+          code: error.code || "UNKNOWN",
+          message: error.message,
+        },
+      };
+    }
+  },
+);
 
 // Renderer
-const result = await window.api.readFile('/path/to/file');
+const result = await window.api.readFile("/path/to/file");
 if (result.success) {
   console.log(result.data);
 } else {
@@ -238,19 +241,19 @@ if (result.success) {
 
 ```typescript
 // Main
-import { z } from 'zod';
+import { z } from "zod";
 
 const FileReadSchema = z.object({
-  path: z.string().min(1).refine(
-    (p) => !p.includes('..'),
-    'Path traversal not allowed'
-  ),
+  path: z
+    .string()
+    .min(1)
+    .refine((p) => !p.includes(".."), "Path traversal not allowed"),
 });
 
-ipcMain.handle('file:read', async (event, args: unknown) => {
+ipcMain.handle("file:read", async (event, args: unknown) => {
   const result = FileReadSchema.safeParse(args);
   if (!result.success) {
-    return { success: false, error: 'Invalid input' };
+    return { success: false, error: "Invalid input" };
   }
 
   // 安全に処理
@@ -263,12 +266,12 @@ ipcMain.handle('file:read', async (event, args: unknown) => {
 
 ```typescript
 // Main
-ipcMain.handle('sensitive:action', async (event, data: any) => {
+ipcMain.handle("sensitive:action", async (event, data: any) => {
   const win = BrowserWindow.fromWebContents(event.sender);
 
   // メインウィンドウからのみ許可
   if (win?.id !== mainWindow.id) {
-    return { success: false, error: 'Unauthorized' };
+    return { success: false, error: "Unauthorized" };
   }
 
   // 処理を実行

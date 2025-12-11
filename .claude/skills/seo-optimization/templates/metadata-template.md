@@ -304,18 +304,18 @@ export default async function OGImage({
 
 ```typescript
 // app/blog/[slug]/twitter-image.tsx
-export { default, alt, size, contentType } from './opengraph-image'
+export { default, alt, size, contentType } from "./opengraph-image";
 ```
 
 ## 変数説明
 
-| 変数 | 説明 | 例 |
-|------|------|-----|
-| `{{domain}}` | サイトドメイン | `example.com` |
-| `{{site_name}}` | サイト名 | `My Blog` |
-| `{{site_description}}` | サイト説明 | `技術ブログです` |
-| `{{author_name}}` | 著者名 | `山田太郎` |
-| `{{twitter_handle}}` | Twitterハンドル | `yamada_taro` |
-| `{{resource}}` | リソース名（camelCase） | `post`, `product` |
-| `{{Resource}}` | リソース名（PascalCase） | `Post`, `Product` |
-| `{{background_gradient}}` | 背景グラデーション | `linear-gradient(135deg, #667eea 0%, #764ba2 100%)` |
+| 変数                      | 説明                     | 例                                                  |
+| ------------------------- | ------------------------ | --------------------------------------------------- |
+| `{{domain}}`              | サイトドメイン           | `example.com`                                       |
+| `{{site_name}}`           | サイト名                 | `My Blog`                                           |
+| `{{site_description}}`    | サイト説明               | `技術ブログです`                                    |
+| `{{author_name}}`         | 著者名                   | `山田太郎`                                          |
+| `{{twitter_handle}}`      | Twitterハンドル          | `yamada_taro`                                       |
+| `{{resource}}`            | リソース名（camelCase）  | `post`, `product`                                   |
+| `{{Resource}}`            | リソース名（PascalCase） | `Post`, `Product`                                   |
+| `{{background_gradient}}` | 背景グラデーション       | `linear-gradient(135deg, #667eea 0%, #764ba2 100%)` |

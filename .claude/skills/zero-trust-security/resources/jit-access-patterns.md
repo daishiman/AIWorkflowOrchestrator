@@ -26,15 +26,15 @@ interface JITAccessGrant {
   expiresAt: Date;
   justification: string;
   approvedBy: string;
-  status: 'active' | 'expired' | 'revoked';
+  status: "active" | "expired" | "revoked";
 }
 
 class JITAccessManager {
   async requestAccess(
     userId: string,
     secretName: string,
-    duration: number,  // ミリ秒
-    justification: string
+    duration: number, // ミリ秒
+    justification: string,
   ): Promise<JITAccessGrant> {
     // 1. リクエスト作成
     const request = {
@@ -60,8 +60,8 @@ class JITAccessManager {
       grantedAt: new Date(),
       expiresAt: new Date(Date.now() + duration),
       justification,
-      approvedBy: 'auto',
-      status: 'active',
+      approvedBy: "auto",
+      status: "active",
     };
 
     await this.storeGrant(grant);
@@ -71,7 +71,7 @@ class JITAccessManager {
 
     // 5. 監査ログ
     await this.auditLog.record({
-      event: 'jit_access_granted',
+      event: "jit_access_granted",
       grant_id: grant.id,
       user_id: userId,
       secret_name: secretName,
@@ -85,17 +85,20 @@ class JITAccessManager {
   private scheduleRevoke(grantId: string, duration: number): void {
     setTimeout(async () => {
       await this.revokeAccess(grantId);
-      await this.notifyUser(grant.userId, `Access to ${grant.secretName} expired`);
+      await this.notifyUser(
+        grant.userId,
+        `Access to ${grant.secretName} expired`,
+      );
     }, duration);
   }
 
   async revokeAccess(grantId: string): Promise<void> {
     const grant = await this.getGrant(grantId);
-    grant.status = 'revoked';
+    grant.status = "revoked";
     await this.updateGrant(grant);
 
     await this.auditLog.record({
-      event: 'jit_access_revoked',
+      event: "jit_access_revoked",
       grant_id: grantId,
       revoked_at: new Date(),
     });
@@ -114,14 +117,14 @@ class ApprovalWorkflow {
     // 2. 承認リクエスト送信
     const approvalRequest = await this.createApprovalRequest({
       requestId: request.id,
-      approvers: approvers.map(a => a.id),
+      approvers: approvers.map((a) => a.id),
       expiresAt: new Date(Date.now() + 1 * 60 * 60 * 1000), // 1時間以内に承認必要
     });
 
     // 3. 通知送信
     for (const approver of approvers) {
       await this.sendNotification(approver, {
-        type: 'approval_required',
+        type: "approval_required",
         message: `${request.userId} requests access to ${request.secretName}`,
         justification: request.justification,
         approvalLink: this.generateApprovalLink(approvalRequest.id),
@@ -132,13 +135,16 @@ class ApprovalWorkflow {
     return await this.waitForApproval(approvalRequest.id);
   }
 
-  async approve(approvalRequestId: string, approverId: string): Promise<JITAccessGrant> {
+  async approve(
+    approvalRequestId: string,
+    approverId: string,
+  ): Promise<JITAccessGrant> {
     const approvalRequest = await this.getApprovalRequest(approvalRequestId);
     const request = approvalRequest.originalRequest;
 
     // 承認権限確認
     if (!approvalRequest.approvers.includes(approverId)) {
-      throw new Error('Not authorized to approve this request');
+      throw new Error("Not authorized to approve this request");
     }
 
     // アクセス付与
@@ -150,7 +156,7 @@ class ApprovalWorkflow {
     });
 
     // 承認ステータス更新
-    await this.updateApprovalStatus(approvalRequestId, 'approved', approverId);
+    await this.updateApprovalStatus(approvalRequestId, "approved", approverId);
 
     return grant;
   }
@@ -164,7 +170,7 @@ class BreakGlassAccess {
   async emergencyAccess(
     userId: string,
     secretName: string,
-    justification: string
+    justification: string,
   ): Promise<JITAccessGrant> {
     // 緊急アクセスは即座に付与されるが、高度に監視される
 
@@ -172,15 +178,15 @@ class BreakGlassAccess {
     const grant = await this.jitAccessManager.grantAccess({
       userId,
       secretName,
-      duration: 30 * 60 * 1000,  // 30分のみ
-      approvedBy: 'emergency_protocol',
+      duration: 30 * 60 * 1000, // 30分のみ
+      approvedBy: "emergency_protocol",
       emergencyAccess: true,
     });
 
     // 2. 即座にアラート送信
     await this.sendCriticalAlert({
-      severity: 'critical',
-      event: 'emergency_access_granted',
+      severity: "critical",
+      event: "emergency_access_granted",
       user_id: userId,
       secret_name: secretName,
       justification: justification,
@@ -189,9 +195,9 @@ class BreakGlassAccess {
 
     // 3. Security Adminに通知
     await this.notifySecurityTeam({
-      type: 'emergency_access',
+      type: "emergency_access",
       message: `Emergency access granted to ${userId} for ${secretName}`,
-      action_required: 'Review and validate within 1 hour',
+      action_required: "Review and validate within 1 hour",
     });
 
     // 4. 事後レビュー必須
@@ -208,23 +214,26 @@ class BreakGlassAccess {
 
 ```typescript
 class AccessValidator {
-  async validateActiveGrant(userId: string, secretName: string): Promise<boolean> {
+  async validateActiveGrant(
+    userId: string,
+    secretName: string,
+  ): Promise<boolean> {
     // 1. アクティブなGrant検索
     const grant = await this.findActiveGrant(userId, secretName);
     if (!grant) {
-      return false;  // Grant不在
+      return false; // Grant不在
     }
 
     // 2. 有効期限確認
     if (grant.expiresAt < new Date()) {
-      grant.status = 'expired';
+      grant.status = "expired";
       await this.updateGrant(grant);
-      return false;  // 期限切れ
+      return false; // 期限切れ
     }
 
     // 3. ステータス確認
-    if (grant.status !== 'active') {
-      return false;  // revoked or expired
+    if (grant.status !== "active") {
+      return false; // revoked or expired
     }
 
     // 4. 継続的検証（異常検知）
@@ -233,15 +242,15 @@ class AccessValidator {
       // 異常検知 → Grantを即座にrevoke
       await this.revokeAccess(grant.id);
       await this.sendAlert({
-        severity: 'high',
-        event: 'anomaly_detected_grant_revoked',
+        severity: "high",
+        event: "anomaly_detected_grant_revoked",
         user_id: userId,
         grant_id: grant.id,
       });
       return false;
     }
 
-    return true;  // 有効
+    return true; // 有効
   }
 }
 ```
@@ -258,32 +267,35 @@ class ApproverSelector {
 
     // 2. 分類に応じた承認者選定
     switch (secret.classification) {
-      case 'critical':
+      case "critical":
         // Critical → Security Admin必須 + Secret Owner
         return [
           await this.getSecurityAdmin(),
           await this.getSecretOwner(secretName),
         ];
 
-      case 'high':
+      case "high":
         // High → Secret Owner or DevOps Manager
         return [
-          await this.getSecretOwner(secretName) || await this.getDevOpsManager(),
+          (await this.getSecretOwner(secretName)) ||
+            (await this.getDevOpsManager()),
         ];
 
-      case 'medium':
-      case 'low':
+      case "medium":
+      case "low":
         // Medium/Low → 自動承認（監査ログのみ）
         return [];
 
       default:
-        throw new Error('Unknown secret classification');
+        throw new Error("Unknown secret classification");
     }
   }
 
   private async getSecretOwner(secretName: string): Promise<User | null> {
     const secret = await this.secretRepository.findByName(secretName);
-    return secret.owner ? await this.userRepository.findById(secret.owner) : null;
+    return secret.owner
+      ? await this.userRepository.findById(secret.owner)
+      : null;
   }
 }
 ```
@@ -310,18 +322,21 @@ interface JITAccessReport {
 }
 
 class JITAuditReporter {
-  async generateReport(startDate: Date, endDate: Date): Promise<JITAccessReport> {
+  async generateReport(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<JITAccessReport> {
     const grants = await this.getGrants(startDate, endDate);
 
     return {
       period: { start: startDate, end: endDate },
       grants: {
         total: grants.length,
-        approved: grants.filter(g => g.status === 'active').length,
-        denied: grants.filter(g => g.status === 'denied').length,
-        emergency: grants.filter(g => g.emergencyAccess).length,
-        expired: grants.filter(g => g.status === 'expired').length,
-        revoked: grants.filter(g => g.status === 'revoked').length,
+        approved: grants.filter((g) => g.status === "active").length,
+        denied: grants.filter((g) => g.status === "denied").length,
+        emergency: grants.filter((g) => g.emergencyAccess).length,
+        expired: grants.filter((g) => g.status === "expired").length,
+        revoked: grants.filter((g) => g.status === "revoked").length,
       },
       averageDuration: this.calculateAverageDuration(grants),
       topUsers: this.getTopUsers(grants),

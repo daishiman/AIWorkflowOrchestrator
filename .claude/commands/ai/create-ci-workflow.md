@@ -39,6 +39,7 @@ model: sonnet
 **起動タイミング**: コマンド開始直後
 
 **引数引き渡し**:
+
 - `$ARGUMENTS`: ワークフロータイプ（test/lint/build）
   - 未指定時: 全タイプを含む統合CIワークフローを作成
 
@@ -68,6 +69,7 @@ model: sonnet
    - Railway自動デプロイとの連携考慮
 
 **期待成果物**:
+
 - `.github/workflows/ci-{type}.yml` または `.github/workflows/ci.yml`
 - ワークフロー設定の説明ドキュメント（コメント形式）
 
@@ -76,10 +78,12 @@ model: sonnet
 エージェントが以下のスキルを必要に応じて参照:
 
 **必須スキル**:
+
 - `.claude/skills/github-actions-syntax/SKILL.md`: ワークフロー構文・トリガー設定
 - `.claude/skills/caching-strategies-gha/SKILL.md`: 依存関係・ビルドキャッシュ戦略
 
 **条件付きスキル**:
+
 - `.claude/skills/matrix-builds/SKILL.md`: 複数バージョン対応が必要な場合
 - `.claude/skills/parallel-jobs-gha/SKILL.md`: 並列実行による高速化が必要な場合
 - `.claude/skills/github-actions-security/SKILL.md`: シークレット管理・権限設定が必要な場合
@@ -87,6 +91,7 @@ model: sonnet
 ## Phase 3: 検証と完了
 
 **検証基準**:
+
 - ✅ ワークフローファイルが正しいYAML構文で作成されている
 - ✅ プロジェクト構成に適したジョブ・ステップが含まれている
 - ✅ キャッシュ戦略が適用され、実行時間が最適化されている

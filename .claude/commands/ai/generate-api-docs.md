@@ -44,9 +44,11 @@ model: sonnet
 ### Phase 1: エージェント起動準備
 
 **ユーザー引数の処理:**
+
 - `$1` (source-path): ソースコードパス（未指定時: `src/app/api`）
 
 **コンテキスト収集:**
+
 ```bash
 # API実装ファイルの確認
 grep -r "export async function" $SOURCE_PATH
@@ -78,6 +80,7 @@ grep -r "export async function" $SOURCE_PATH
 ### Phase 3: 完了報告
 
 エージェントからの成果物を受け取り、ユーザーに以下を報告:
+
 - ✅ 生成されたファイル一覧
 - 📊 ドキュメント化されたエンドポイント数
 - 🔍 バリデーション結果

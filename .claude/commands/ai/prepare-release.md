@@ -88,6 +88,7 @@ model: sonnet
 ### Phase 1: バージョン確認
 
 **引数検証**:
+
 ```bash
 # バージョン番号（必須、semver形式）
 version: "$ARGUMENTS"（例: v1.2.3, v2.0.0-beta.1）
@@ -101,10 +102,12 @@ version: "$ARGUMENTS"（例: v1.2.3, v2.0.0-beta.1）
 **使用エージェント**: `.claude/agents/unit-tester.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 リリース${version}の全テストを実行してください。
 
 **要件**:
+
 1. ユニットテスト実行（`pnpm test`）
 2. 統合テスト実行（該当する場合）
 3. E2Eテスト実行（クリティカルパスのみ）
@@ -112,15 +115,18 @@ version: "$ARGUMENTS"（例: v1.2.3, v2.0.0-beta.1）
 5. Flaky Test検出（不安定なテストの除去）
 
 **品質ゲート**:
+
 - すべてのテスト合格（失敗0件）
 - カバレッジ60%以上達成
 - Flaky Testなし
 
 **スキル参照**:
+
 - `.claude/skills/tdd-principles/SKILL.md`
 - `.claude/skills/flaky-test-prevention/SKILL.md`
 
 **成果物**:
+
 - テストレポート（合格/失敗、カバレッジ、実行時間）
 ```
 
@@ -129,10 +135,12 @@ version: "$ARGUMENTS"（例: v1.2.3, v2.0.0-beta.1）
 **使用エージェント**: `.claude/agents/code-quality.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 リリース${version}のコード品質をレビューしてください。
 
 **要件**:
+
 1. 型チェック（`pnpm typecheck`）
 2. ESLint（`pnpm lint`、エラーなし、警告最小化）
 3. Prettier（`pnpm format --check`、フォーマット統一）
@@ -140,17 +148,20 @@ version: "$ARGUMENTS"（例: v1.2.3, v2.0.0-beta.1）
 5. コードスメル検出（長い関数、複雑な条件分岐、重複コード）
 
 **品質ゲート**:
+
 - 型エラーなし
 - ESLintエラーなし
 - SOLID原則違反なし
 - Critical/High コードスメルなし
 
 **スキル参照**:
+
 - `.claude/skills/solid-principles/SKILL.md`
 - `.claude/skills/clean-code-practices/SKILL.md`
 - `.claude/skills/code-smell-detection/SKILL.md`
 
 **成果物**:
+
 - `.claude/docs/quality/release-${version}-quality.md`（品質レポート、改善提案）
 ```
 
@@ -159,10 +170,12 @@ version: "$ARGUMENTS"（例: v1.2.3, v2.0.0-beta.1）
 **使用エージェント**: `.claude/agents/sec-auditor.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 リリース${version}のセキュリティ監査を実施してください。
 
 **要件**:
+
 1. 依存関係脆弱性スキャン（`pnpm audit`）
 2. OWASP Top 10チェック（A01-A10）
 3. 環境変数チェック（ハードコード検出、.env.example最新化）
@@ -170,16 +183,19 @@ version: "$ARGUMENTS"（例: v1.2.3, v2.0.0-beta.1）
 5. 機密情報漏洩チェック（ログ、エラーメッセージ）
 
 **品質ゲート**:
+
 - Critical/High脆弱性なし
 - OWASP Top 10違反なし
 - 機密情報ハードコードなし
 
 **スキル参照**:
+
 - `.claude/skills/owasp-top-10/SKILL.md`
 - `.claude/skills/dependency-security-scanning/SKILL.md`
 - `.claude/skills/security-configuration-review/SKILL.md`
 
 **成果物**:
+
 - `.claude/docs/security/release-${version}-security.md`（セキュリティレポート、脆弱性リスト、修正提案）
 ```
 
@@ -188,10 +204,12 @@ version: "$ARGUMENTS"（例: v1.2.3, v2.0.0-beta.1）
 **使用エージェント**: `.claude/agents/spec-writer.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 リリース${version}のドキュメントを更新してください。
 
 **要件**:
+
 1. CHANGELOG.md更新:
    - バージョン番号と日付
    - Added（新機能）
@@ -211,10 +229,12 @@ version: "$ARGUMENTS"（例: v1.2.3, v2.0.0-beta.1）
 4. README.md更新（バージョンバッジ、新機能紹介）
 
 **スキル参照**:
+
 - `.claude/skills/semantic-versioning/SKILL.md`
 - `.claude/skills/version-control-for-docs/SKILL.md`
 
 **成果物**:
+
 - `CHANGELOG.md`（更新）
 - `docs/releases/${version}.md`（リリースノート）
 - `README.md`（更新）
@@ -225,10 +245,12 @@ version: "$ARGUMENTS"（例: v1.2.3, v2.0.0-beta.1）
 **使用エージェント**: `.claude/agents/devops-eng.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 リリース${version}のビルドを検証してください。
 
 **要件**:
+
 1. ビルド実行（`pnpm build`）
 2. ビルド成果物確認（`.next/`）
 3. Railway設定確認（`railway.json`）
@@ -236,15 +258,18 @@ version: "$ARGUMENTS"（例: v1.2.3, v2.0.0-beta.1）
 5. package.json バージョン更新
 
 **品質ゲート**:
+
 - ビルド成功
 - 環境変数整合性確保
 - package.json バージョン正確
 
 **スキル参照**:
+
 - `.claude/skills/infrastructure-as-code/SKILL.md`
 - `.claude/skills/ci-cd-pipelines/SKILL.md`
 
 **成果物**:
+
 - package.json（version: ${version}）
 - ビルド成果物（`.next/`）
 - ビルドレポート（サイズ、警告等）
@@ -253,6 +278,7 @@ version: "$ARGUMENTS"（例: v1.2.3, v2.0.0-beta.1）
 ### Phase 7: 最終検証と完了報告
 
 **実行内容**:
+
 1. 全品質ゲートの合格確認
 2. 成果物の存在確認
 3. Next Steps提示
@@ -264,6 +290,7 @@ version: "$ARGUMENTS"（例: v1.2.3, v2.0.0-beta.1）
 ```
 
 自動実行:
+
 1. 全テスト実行（unit, integration, e2e）
 2. 品質チェック（typecheck, lint, format）
 3. セキュリティ監査（pnpm audit, OWASP）
@@ -276,6 +303,7 @@ version: "$ARGUMENTS"（例: v1.2.3, v2.0.0-beta.1）
 ### レベル1: 必須（fail-fast）
 
 すべて合格必須、1つでも失敗したら即座に中止:
+
 - ✅ 全テスト合格
 - ✅ 型チェック合格
 - ✅ ビルド成功
@@ -283,6 +311,7 @@ version: "$ARGUMENTS"（例: v1.2.3, v2.0.0-beta.1）
 ### レベル2: 重要（warning）
 
 警告を出すが続行可能:
+
 - ⚠️ テストカバレッジ60%未満
 - ⚠️ ESLint警告あり
 - ⚠️ Medium脆弱性あり
@@ -290,6 +319,7 @@ version: "$ARGUMENTS"（例: v1.2.3, v2.0.0-beta.1）
 ### レベル3: 推奨（info）
 
 情報提供のみ:
+
 - ℹ️ バンドルサイズ増加
 - ℹ️ 依存関係更新可能
 - ℹ️ ドキュメント改善余地
@@ -299,6 +329,7 @@ version: "$ARGUMENTS"（例: v1.2.3, v2.0.0-beta.1）
 ### テスト失敗でリリース中止
 
 **解決策**: Phase 2を単独実行して修正
+
 ```bash
 /ai:run-all-tests
 ```
@@ -306,6 +337,7 @@ version: "$ARGUMENTS"（例: v1.2.3, v2.0.0-beta.1）
 ### セキュリティ監査失敗
 
 **解決策**: 脆弱性修正
+
 ```bash
 # 自動修正可能な場合
 pnpm audit fix
@@ -317,6 +349,7 @@ pnpm audit fix
 ### ビルドエラー
 
 **解決策**: 型エラー、インポートエラーを修正
+
 ```bash
 pnpm typecheck
 pnpm lint

@@ -12,16 +12,16 @@
  *   3. 自己参照（A → A）
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
 // ANSI color codes
 const colors = {
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  reset: '\x1b[0m'
+  red: "\x1b[31m",
+  green: "\x1b[32m",
+  yellow: "\x1b[33m",
+  blue: "\x1b[34m",
+  reset: "\x1b[0m",
 };
 
 /**
@@ -32,7 +32,7 @@ function extractDependencies(filePath) {
     return [];
   }
 
-  const content = fs.readFileSync(filePath, 'utf-8');
+  const content = fs.readFileSync(filePath, "utf-8");
   const deps = [];
 
   // Task(), Skill(), Agent()呼び出しから依存先を抽出
@@ -41,9 +41,9 @@ function extractDependencies(filePath) {
 
   while ((match = depPattern.exec(content)) !== null) {
     const dep = match[1].trim();
-    if (dep.endsWith('.md')) {
+    if (dep.endsWith(".md")) {
       // ファイルパスからエージェント名を抽出
-      deps.push(path.basename(dep, '.md'));
+      deps.push(path.basename(dep, ".md"));
     }
   }
 
@@ -55,7 +55,7 @@ function extractDependencies(filePath) {
  */
 function getAgentName(content, filePath) {
   const nameMatch = content.match(/^name:\s*(.+)$/m);
-  return nameMatch ? nameMatch[1].trim() : path.basename(filePath, '.md');
+  return nameMatch ? nameMatch[1].trim() : path.basename(filePath, ".md");
 }
 
 /**
@@ -70,12 +70,9 @@ function detectCycles(agentName, rootAgent, visited, currentPath, cycles) {
   currentPath.push(agentName);
 
   // エージェントファイルを探す
-  const possiblePaths = [
-    `.claude/agents/${agentName}.md`,
-    agentName
-  ];
+  const possiblePaths = [`.claude/agents/${agentName}.md`, agentName];
 
-  let agentFile = '';
+  let agentFile = "";
   for (const p of possiblePaths) {
     if (fs.existsSync(p)) {
       agentFile = p;
@@ -124,8 +121,8 @@ function detectCycles(agentName, rootAgent, visited, currentPath, cycles) {
  * 依存関係グラフを表示
  */
 function displayDependencyGraph(agentName, deps) {
-  console.log('');
-  console.log('📋 [3/3] 依存関係グラフ...');
+  console.log("");
+  console.log("📋 [3/3] 依存関係グラフ...");
   console.log(agentName);
 
   for (const dep of deps) {
@@ -146,41 +143,47 @@ function displayDependencyGraph(agentName, deps) {
  * メイン検証関数
  */
 function checkCircularDependencies(agentFile) {
-  console.log('=== 循環依存検出 ===');
+  console.log("=== 循環依存検出 ===");
   console.log(`対象ファイル: ${agentFile}`);
-  console.log('');
+  console.log("");
 
   if (!fs.existsSync(agentFile)) {
-    console.log(`${colors.red}エラー: ファイルが見つかりません: ${agentFile}${colors.reset}`);
+    console.log(
+      `${colors.red}エラー: ファイルが見つかりません: ${agentFile}${colors.reset}`,
+    );
     return false;
   }
 
-  const content = fs.readFileSync(agentFile, 'utf-8');
+  const content = fs.readFileSync(agentFile, "utf-8");
   const agentName = getAgentName(content, agentFile);
 
   console.log(`エージェント名: ${agentName}`);
-  console.log('');
+  console.log("");
 
   // 依存関係の抽出
-  console.log('📊 [1/3] 依存関係の抽出...');
+  console.log("📊 [1/3] 依存関係の抽出...");
   const deps = extractDependencies(agentFile);
 
   if (deps.length === 0) {
-    console.log(`${colors.green}  ✓ 依存関係なし（スタンドアロン）${colors.reset}`);
-    console.log('');
-    console.log('=== 検証結果サマリー ===');
-    console.log(`${colors.green}✓ 循環依存は検出されませんでした${colors.reset}`);
+    console.log(
+      `${colors.green}  ✓ 依存関係なし（スタンドアロン）${colors.reset}`,
+    );
+    console.log("");
+    console.log("=== 検証結果サマリー ===");
+    console.log(
+      `${colors.green}✓ 循環依存は検出されませんでした${colors.reset}`,
+    );
     return true;
   }
 
-  console.log('依存先:');
+  console.log("依存先:");
   for (const dep of deps) {
     console.log(`  - ${dep}`);
   }
 
   // 循環依存のチェック
-  console.log('');
-  console.log('🔍 [2/3] 循環依存のチェック...');
+  console.log("");
+  console.log("🔍 [2/3] 循環依存のチェック...");
 
   const visited = new Set([agentName]);
   const cycles = [];
@@ -192,9 +195,13 @@ function checkCircularDependencies(agentFile) {
   if (cycles.length > 0) {
     for (const cycle of cycles) {
       if (cycle[0] === cycle[cycle.length - 1]) {
-        console.log(`${colors.red}  ✗ 自己参照検出: ${cycle.join(' → ')}${colors.reset}`);
+        console.log(
+          `${colors.red}  ✗ 自己参照検出: ${cycle.join(" → ")}${colors.reset}`,
+        );
       } else {
-        console.log(`${colors.red}  ✗ 循環依存検出: ${cycle.join(' → ')}${colors.reset}`);
+        console.log(
+          `${colors.red}  ✗ 循環依存検出: ${cycle.join(" → ")}${colors.reset}`,
+        );
       }
     }
   } else {
@@ -205,20 +212,24 @@ function checkCircularDependencies(agentFile) {
   displayDependencyGraph(agentName, deps);
 
   // 結果サマリー
-  console.log('');
-  console.log('=== 検証結果サマリー ===');
+  console.log("");
+  console.log("=== 検証結果サマリー ===");
   console.log(`エラー: ${colors.red}${errors}${colors.reset}`);
 
   if (errors === 0) {
-    console.log(`\n${colors.green}✓ 循環依存は検出されませんでした${colors.reset}`);
+    console.log(
+      `\n${colors.green}✓ 循環依存は検出されませんでした${colors.reset}`,
+    );
     return true;
   } else {
-    console.log(`\n${colors.red}✗ 循環依存が検出されました。修正が必要です${colors.reset}`);
-    console.log('');
-    console.log('推奨される解決策:');
-    console.log('  1. 依存の削減: 不要な依存を削除');
-    console.log('  2. 依存の反転: 依存方向を逆転');
-    console.log('  3. 中間層の導入: 仲介エージェントを追加');
+    console.log(
+      `\n${colors.red}✗ 循環依存が検出されました。修正が必要です${colors.reset}`,
+    );
+    console.log("");
+    console.log("推奨される解決策:");
+    console.log("  1. 依存の削減: 不要な依存を削除");
+    console.log("  2. 依存の反転: 依存方向を逆転");
+    console.log("  3. 中間層の導入: 仲介エージェントを追加");
     return false;
   }
 }
@@ -230,10 +241,12 @@ function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.log('使用法: node check-circular-deps.mjs <agent_file.md>');
-    console.log('');
-    console.log('例:');
-    console.log('  node check-circular-deps.mjs .claude/agents/skill-librarian.md');
+    console.log("使用法: node check-circular-deps.mjs <agent_file.md>");
+    console.log("");
+    console.log("例:");
+    console.log(
+      "  node check-circular-deps.mjs .claude/agents/skill-librarian.md",
+    );
     process.exit(1);
   }
 

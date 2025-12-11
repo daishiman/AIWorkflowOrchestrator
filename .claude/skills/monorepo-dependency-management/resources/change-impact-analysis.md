@@ -54,13 +54,13 @@ pnpm --filter "...[origin/main]" run test
 
 ### フィルタ構文
 
-| 構文 | 説明 |
-|------|-----|
-| `@app/core` | 特定のパッケージ |
-| `@app/core...` | パッケージとその依存先 |
-| `...@app/core` | パッケージとそれに依存するパッケージ |
+| 構文               | 説明                                       |
+| ------------------ | ------------------------------------------ |
+| `@app/core`        | 特定のパッケージ                           |
+| `@app/core...`     | パッケージとその依存先                     |
+| `...@app/core`     | パッケージとそれに依存するパッケージ       |
 | `...[origin/main]` | 変更されたパッケージとその被依存パッケージ |
-| `{packages/*}` | globパターン |
+| `{packages/*}`     | globパターン                               |
 
 ## 影響分析スクリプト
 
@@ -70,38 +70,36 @@ pnpm --filter "...[origin/main]" run test
 #!/usr/bin/env node
 // scripts/analyze-impact.mjs
 
-import { execSync } from 'child_process';
+import { execSync } from "child_process";
 
 function getAffectedPackages(changedPackage) {
-  const output = execSync(
-    `pnpm --filter "...${changedPackage}" ls --json`,
-    { encoding: 'utf8' }
-  );
+  const output = execSync(`pnpm --filter "...${changedPackage}" ls --json`, {
+    encoding: "utf8",
+  });
 
   const packages = JSON.parse(output);
-  return packages.map(pkg => pkg.name);
+  return packages.map((pkg) => pkg.name);
 }
 
 function getDependencyTree(packageName) {
-  const output = execSync(
-    `pnpm why ${packageName} --json`,
-    { encoding: 'utf8' }
-  );
+  const output = execSync(`pnpm why ${packageName} --json`, {
+    encoding: "utf8",
+  });
 
   return JSON.parse(output);
 }
 
 const changedPackage = process.argv[2];
 if (!changedPackage) {
-  console.error('Usage: node analyze-impact.mjs <package-name>');
+  console.error("Usage: node analyze-impact.mjs <package-name>");
   process.exit(1);
 }
 
 console.log(`\n影響分析: ${changedPackage}\n`);
-console.log('影響を受けるパッケージ:');
+console.log("影響を受けるパッケージ:");
 
 const affected = getAffectedPackages(changedPackage);
-affected.forEach(pkg => console.log(`  - ${pkg}`));
+affected.forEach((pkg) => console.log(`  - ${pkg}`));
 
 console.log(`\n合計: ${affected.length} パッケージ`);
 ```
@@ -112,17 +110,17 @@ console.log(`\n合計: ${affected.length} パッケージ`);
 #!/usr/bin/env node
 // scripts/detailed-impact-analysis.mjs
 
-import { execSync } from 'child_process';
-import { readFileSync } from 'fs';
+import { execSync } from "child_process";
+import { readFileSync } from "fs";
 
 function getWorkspacePackages() {
-  const output = execSync('pnpm -r ls --json --depth 0', { encoding: 'utf8' });
+  const output = execSync("pnpm -r ls --json --depth 0", { encoding: "utf8" });
   return JSON.parse(output);
 }
 
 function getPackageDependencies(packagePath) {
   const pkgJson = JSON.parse(
-    readFileSync(`${packagePath}/package.json`, 'utf8')
+    readFileSync(`${packagePath}/package.json`, "utf8"),
   );
 
   return {
@@ -135,7 +133,7 @@ function getPackageDependencies(packagePath) {
 function buildDependencyGraph(packages) {
   const graph = {};
 
-  packages.forEach(pkg => {
+  packages.forEach((pkg) => {
     const deps = getPackageDependencies(pkg.path);
     graph[pkg.name] = {
       ...deps,
@@ -144,9 +142,9 @@ function buildDependencyGraph(packages) {
   });
 
   // 被依存関係を構築
-  packages.forEach(pkg => {
+  packages.forEach((pkg) => {
     const deps = graph[pkg.name].dependencies;
-    deps.forEach(dep => {
+    deps.forEach((dep) => {
       if (graph[dep]) {
         graph[dep].dependents.push(pkg.name);
       }
@@ -161,9 +159,10 @@ function getTransitiveDependents(graph, packageName, visited = new Set()) {
   visited.add(packageName);
 
   const dependents = graph[packageName]?.dependents || [];
-  const transitive = dependents.flatMap(dep =>
-    [dep, ...getTransitiveDependents(graph, dep, visited)]
-  );
+  const transitive = dependents.flatMap((dep) => [
+    dep,
+    ...getTransitiveDependents(graph, dep, visited),
+  ]);
 
   return [...new Set(transitive)];
 }
@@ -171,7 +170,7 @@ function getTransitiveDependents(graph, packageName, visited = new Set()) {
 function main() {
   const changedPackage = process.argv[2];
   if (!changedPackage) {
-    console.error('Usage: node detailed-impact-analysis.mjs <package-name>');
+    console.error("Usage: node detailed-impact-analysis.mjs <package-name>");
     process.exit(1);
   }
 
@@ -186,12 +185,14 @@ function main() {
   console.log(`========================================\n`);
 
   console.log(`直接影響を受けるパッケージ (${directDependents.length}):`);
-  directDependents.forEach(dep => console.log(`  - ${dep}`));
+  directDependents.forEach((dep) => console.log(`  - ${dep}`));
 
-  console.log(`\n間接的に影響を受けるパッケージ (${transitiveDependents.length}):`);
+  console.log(
+    `\n間接的に影響を受けるパッケージ (${transitiveDependents.length}):`,
+  );
   transitiveDependents
-    .filter(dep => !directDependents.includes(dep))
-    .forEach(dep => console.log(`  - ${dep}`));
+    .filter((dep) => !directDependents.includes(dep))
+    .forEach((dep) => console.log(`  - ${dep}`));
 
   console.log(`\n推奨テスト範囲:`);
   console.log(`  pnpm --filter "...${changedPackage}" run test`);
@@ -312,42 +313,47 @@ dot -Tpng deps.dot -o deps.png
 
 ### Mermaidダイアグラム
 
-```javascript
+````javascript
 // scripts/generate-mermaid.mjs
-import { execSync } from 'child_process';
+import { execSync } from "child_process";
 
 const packages = JSON.parse(
-  execSync('pnpm -r ls --json', { encoding: 'utf8' })
+  execSync("pnpm -r ls --json", { encoding: "utf8" }),
 );
 
-console.log('```mermaid');
-console.log('graph TD');
+console.log("```mermaid");
+console.log("graph TD");
 
-packages.forEach(pkg => {
+packages.forEach((pkg) => {
   const deps = pkg.dependencies || {};
   Object.keys(deps)
-    .filter(dep => dep.startsWith('@app/'))
-    .forEach(dep => {
-      console.log(`  ${pkg.name.replace('@app/', '')} --> ${dep.replace('@app/', '')}`);
+    .filter((dep) => dep.startsWith("@app/"))
+    .forEach((dep) => {
+      console.log(
+        `  ${pkg.name.replace("@app/", "")} --> ${dep.replace("@app/", "")}`,
+      );
     });
 });
 
-console.log('```');
-```
+console.log("```");
+````
 
 ## チェックリスト
 
 ### 変更前
+
 - [ ] 変更するパッケージを特定したか？
 - [ ] 影響を受けるパッケージを分析したか？
 - [ ] テスト範囲を決定したか？
 
 ### 変更後
+
 - [ ] 影響を受けるパッケージでテストを実行したか？
 - [ ] ビルドが成功することを確認したか？
 - [ ] 型チェックが通ることを確認したか？
 
 ### CI/CD
+
 - [ ] 影響ベースのテスト/ビルドを設定したか？
 - [ ] 変更検出が正しく動作しているか？
 - [ ] 依存グラフを可視化しているか？

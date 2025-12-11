@@ -8,7 +8,7 @@ GitHub Actions の並行実行制御構文の詳細リファレンスです。
 
 ```yaml
 concurrency:
-  group: <string>              # 並行実行グループの識別子
+  group: <string> # 並行実行グループの識別子
   cancel-in-progress: <boolean> # 進行中のジョブをキャンセルするか
 ```
 
@@ -24,10 +24,12 @@ concurrency:
 **用途**: 単一環境、単一ワークフローの制御
 
 **利点**:
+
 - シンプルで理解しやすい
 - 設定が容易
 
 **欠点**:
+
 - 柔軟性が低い
 - 複数ワークフローで共有できない
 
@@ -41,10 +43,12 @@ concurrency:
 **用途**: ワークフローごとに独立した並行実行制御
 
 **利点**:
+
 - ワークフロー間の独立性
 - 再利用可能
 
 **欠点**:
+
 - 同じワークフロー内のすべての実行が影響を受ける
 
 ### 3. リファレンスベース（ブランチ/PR）
@@ -57,15 +61,18 @@ concurrency:
 **用途**: ブランチまたは PR ごとの制御
 
 **例**:
+
 - `deploy-refs/heads/main`
 - `deploy-refs/heads/feature/123`
 - `deploy-refs/pull/456/merge`
 
 **利点**:
+
 - ブランチごとに独立
 - PR ごとに並行実行可能
 
 **欠点**:
+
 - main ブランチで複数デプロイが同時実行される可能性
 
 ### 4. 環境ベース
@@ -78,15 +85,18 @@ concurrency:
 **用途**: 環境ごとのデプロイメント制御
 
 **例**:
+
 - `deploy-production`
 - `deploy-staging`
 - `deploy-development`
 
 **利点**:
+
 - 環境ごとに独立したキュー
 - 環境保護
 
 **欠点**:
+
 - deployment イベントでのみ使用可能
 
 ### 5. ハイブリッドパターン
@@ -99,15 +109,18 @@ concurrency:
 **用途**: イベントタイプとリファレンスの組み合わせ
 
 **例**:
+
 - `deploy-push-refs/heads/main`
 - `deploy-pull_request-refs/pull/123/merge`
 - `deploy-workflow_dispatch-refs/heads/feature/456`
 
 **利点**:
+
 - 最大限の粒度制御
 - イベントタイプによる分離
 
 **欠点**:
+
 - 複雑で理解しづらい
 - グループ名が長くなる
 
@@ -122,22 +135,26 @@ concurrency:
 ```
 
 **使用シナリオ**:
+
 - 本番デプロイメント
 - データベースマイグレーション
 - リリース作成
 - 状態変更を伴う操作
 
 **動作**:
+
 1. 新しいワークフローが実行開始
 2. 同じ group の実行中ジョブがある場合、キューに入る
 3. 前のジョブが完了後、次のジョブが実行
 
 **利点**:
+
 - すべてのデプロイが実行される
 - デプロイの順序が保証される
 - データ整合性が保たれる
 
 **欠点**:
+
 - キューが溜まる可能性
 - 古いコミットがデプロイされる可能性
 - 実行時間が長くなる
@@ -151,22 +168,26 @@ concurrency:
 ```
 
 **使用シナリオ**:
+
 - PR ビルド・テスト
 - プレビューデプロイ
 - 開発環境デプロイ
 - 状態を持たない操作
 
 **動作**:
+
 1. 新しいワークフローが実行開始
 2. 同じ group の実行中ジョブがある場合、キャンセル
 3. 新しいジョブがすぐに実行
 
 **利点**:
+
 - 常に最新のコードが実行される
 - リソースの無駄を削減
 - フィードバックが速い
 
 **欠点**:
+
 - 古いジョブが完了しない
 - デプロイの順序が保証されない
 - キャンセルされたデプロイの追跡が必要
@@ -180,6 +201,7 @@ concurrency:
 ```
 
 **使用シナリオ**:
+
 - main ブランチは順次実行、他は最新のみ
 - 環境によって戦略を変更
 
@@ -259,10 +281,12 @@ jobs:
 **特徴**: ジョブごとに独立した制御
 
 **利点**:
+
 - ジョブごとに異なる戦略
 - test は最新のみ、deploy は順次実行
 
 **欠点**:
+
 - 設定が複雑
 - 管理が煩雑
 
@@ -280,6 +304,7 @@ concurrency:
 ```
 
 **利用可能な変数**:
+
 - `github.workflow`: ワークフロー名
 - `github.ref`: ブランチまたは PR リファレンス
 - `github.event_name`: トリガーイベント
@@ -347,6 +372,7 @@ concurrency:
 **原因**: group 名が動的に変わる
 
 **解決**:
+
 ```yaml
 # ❌ 問題のある例
 concurrency:
@@ -362,11 +388,13 @@ concurrency:
 **問題**: `cancel-in-progress: true` でもキャンセルされない
 
 **原因**:
+
 1. group 名が異なる
 2. ワークフローレベルとジョブレベルの混在
 3. API レート制限
 
 **解決**:
+
 1. group 名を統一
 2. 適用レベルを統一
 3. リトライ戦略を実装
@@ -374,5 +402,6 @@ concurrency:
 ---
 
 **参照**:
+
 - [GitHub Actions: Concurrency](https://docs.github.com/en/actions/using-jobs/using-concurrency)
 - [Workflow syntax for GitHub Actions](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#concurrency)

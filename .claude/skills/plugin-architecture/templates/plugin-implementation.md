@@ -7,7 +7,7 @@
 ## IWorkflowExecutor インターフェース
 
 ```typescript
-import { z } from 'zod';
+import { z } from "zod";
 
 /**
  * 実行コンテキスト
@@ -164,18 +164,23 @@ export class {{ExecutorName}} implements IWorkflowExecutor<{{InputType}}, {{Outp
 /**
  * AIAnalysisExecutor - AIを使用した分析ワークフロー
  */
-export class AIAnalysisExecutor implements IWorkflowExecutor<AnalysisInput, AnalysisOutput> {
-  readonly type = 'AI_ANALYSIS';
-  readonly displayName = 'AI分析';
-  readonly description = 'AIを使用してコンテンツを分析します';
+export class AIAnalysisExecutor implements IWorkflowExecutor<
+  AnalysisInput,
+  AnalysisOutput
+> {
+  readonly type = "AI_ANALYSIS";
+  readonly displayName = "AI分析";
+  readonly description = "AIを使用してコンテンツを分析します";
 
   readonly inputSchema = z.object({
     content: z.string().min(1),
-    analysisType: z.enum(['sentiment', 'summary', 'keywords']),
-    options: z.object({
-      language: z.string().default('ja'),
-      maxLength: z.number().optional(),
-    }).optional(),
+    analysisType: z.enum(["sentiment", "summary", "keywords"]),
+    options: z
+      .object({
+        language: z.string().default("ja"),
+        maxLength: z.number().optional(),
+      })
+      .optional(),
   });
 
   readonly outputSchema = z.object({
@@ -195,7 +200,7 @@ export class AIAnalysisExecutor implements IWorkflowExecutor<AnalysisInput, Anal
 
   async execute(
     input: AnalysisInput,
-    context: ExecutionContext
+    context: ExecutionContext,
   ): Promise<AnalysisOutput> {
     const startTime = Date.now();
 
@@ -225,9 +230,11 @@ export class AIAnalysisExecutor implements IWorkflowExecutor<AnalysisInput, Anal
 
   canRetry(error: Error): boolean {
     // AIサービスのレート制限やタイムアウトはリトライ可能
-    return error.message.includes('rate_limit')
-      || error.message.includes('timeout')
-      || error.message.includes('503');
+    return (
+      error.message.includes("rate_limit") ||
+      error.message.includes("timeout") ||
+      error.message.includes("503")
+    );
   }
 }
 ```
@@ -239,11 +246,11 @@ export class AIAnalysisExecutor implements IWorkflowExecutor<AnalysisInput, Anal
  * DatabaseExecutor - データベース接続を必要とするExecutor
  */
 export class DatabaseExecutor
-  implements IWorkflowExecutor<DbInput, DbOutput>, IExecutorLifecycle {
-
-  readonly type = 'DATABASE_OPERATION';
-  readonly displayName = 'データベース操作';
-  readonly description = 'データベースに対する操作を実行します';
+  implements IWorkflowExecutor<DbInput, DbOutput>, IExecutorLifecycle
+{
+  readonly type = "DATABASE_OPERATION";
+  readonly displayName = "データベース操作";
+  readonly description = "データベースに対する操作を実行します";
 
   // スキーマ定義...
 
@@ -255,19 +262,19 @@ export class DatabaseExecutor
 
   async onInitialize(): Promise<void> {
     this.connection = await this.connectionFactory();
-    console.log('Database connection established');
+    console.log("Database connection established");
   }
 
   async onShutdown(): Promise<void> {
     if (this.connection) {
       await this.connection.close();
-      console.log('Database connection closed');
+      console.log("Database connection closed");
     }
   }
 
   async execute(input: DbInput, context: ExecutionContext): Promise<DbOutput> {
     if (!this.connection) {
-      throw new Error('Executor not initialized');
+      throw new Error("Executor not initialized");
     }
 
     return await this.connection.transaction(async (tx) => {
@@ -279,7 +286,7 @@ export class DatabaseExecutor
   private async processWithTransaction(
     tx: Transaction,
     input: DbInput,
-    context: ExecutionContext
+    context: ExecutionContext,
   ): Promise<DbOutput> {
     // 実装
   }

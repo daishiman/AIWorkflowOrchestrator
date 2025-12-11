@@ -43,15 +43,15 @@ interface StringValidation {
   minLength?: number;
   maxLength?: number;
   pattern?: RegExp;
-  format?: 'email' | 'url' | 'uuid' | 'date';
+  format?: "email" | "url" | "uuid" | "date";
   enum?: string[];
   trim?: boolean;
   lowercase?: boolean;
 }
 
 function validateString(value: unknown, rules: StringValidation): string {
-  if (typeof value !== 'string') {
-    throw new Error('Expected string');
+  if (typeof value !== "string") {
+    throw new Error("Expected string");
   }
 
   let str = value;
@@ -68,11 +68,11 @@ function validateString(value: unknown, rules: StringValidation): string {
   }
 
   if (rules.pattern && !rules.pattern.test(str)) {
-    throw new Error('Invalid format');
+    throw new Error("Invalid format");
   }
 
   if (rules.enum && !rules.enum.includes(str)) {
-    throw new Error(`Must be one of: ${rules.enum.join(', ')}`);
+    throw new Error(`Must be one of: ${rules.enum.join(", ")}`);
   }
 
   return str;
@@ -94,15 +94,15 @@ function validateNumber(value: unknown, rules: NumberValidation): number {
   const num = Number(value);
 
   if (isNaN(num)) {
-    throw new Error('Expected number');
+    throw new Error("Expected number");
   }
 
   if (rules.integer && !Number.isInteger(num)) {
-    throw new Error('Expected integer');
+    throw new Error("Expected integer");
   }
 
   if (rules.positive && num <= 0) {
-    throw new Error('Must be positive');
+    throw new Error("Must be positive");
   }
 
   if (rules.min !== undefined && num < rules.min) {
@@ -133,7 +133,7 @@ interface ArrayValidation<T> {
 
 function validateArray<T>(value: unknown, rules: ArrayValidation<T>): T[] {
   if (!Array.isArray(value)) {
-    throw new Error('Expected array');
+    throw new Error("Expected array");
   }
 
   if (rules.minItems && value.length < rules.minItems) {
@@ -151,9 +151,9 @@ function validateArray<T>(value: unknown, rules: ArrayValidation<T>): T[] {
   }
 
   if (rules.unique) {
-    const uniqueSet = new Set(items.map(i => JSON.stringify(i)));
+    const uniqueSet = new Set(items.map((i) => JSON.stringify(i)));
     if (uniqueSet.size !== items.length) {
-      throw new Error('Items must be unique');
+      throw new Error("Items must be unique");
     }
   }
 
@@ -168,15 +168,15 @@ function validateArray<T>(value: unknown, rules: ArrayValidation<T>): T[] {
 ```typescript
 function escapeHtml(str: string): string {
   const htmlEscapes: Record<string, string> = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#x27;',
-    '/': '&#x2F;'
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#x27;",
+    "/": "&#x2F;",
   };
 
-  return str.replace(/[&<>"'/]/g, char => htmlEscapes[char]);
+  return str.replace(/[&<>"'/]/g, (char) => htmlEscapes[char]);
 }
 
 // 使用例
@@ -193,15 +193,15 @@ const badQuery = `SELECT * FROM users WHERE id = ${userId}`;
 
 // 良い例（パラメータ化）
 const goodQuery = {
-  text: 'SELECT * FROM users WHERE id = $1',
-  values: [userId]
+  text: "SELECT * FROM users WHERE id = $1",
+  values: [userId],
 };
 ```
 
 ### パス正規化（パストラバーサル対策）
 
 ```typescript
-import path from 'path';
+import path from "path";
 
 function sanitizePath(userPath: string, allowedRoot: string): string {
   // パスを正規化
@@ -212,28 +212,28 @@ function sanitizePath(userPath: string, allowedRoot: string): string {
 
   // 許可されたディレクトリ内かチェック
   if (!absolutePath.startsWith(path.resolve(allowedRoot))) {
-    throw new Error('Path traversal detected');
+    throw new Error("Path traversal detected");
   }
 
   return absolutePath;
 }
 
 // 使用例
-const userInput = '../../../etc/passwd';
-const allowedDir = '/var/www/uploads';
+const userInput = "../../../etc/passwd";
+const allowedDir = "/var/www/uploads";
 // throws Error: Path traversal detected
 ```
 
 ### コマンドインジェクション対策
 
 ```typescript
-import { execFile } from 'child_process';
+import { execFile } from "child_process";
 
 // 悪い例（シェル経由）
 // exec(`ls -la ${userInput}`);  // 危険！
 
 // 良い例（引数として渡す）
-execFile('ls', ['-la', userInput], (error, stdout) => {
+execFile("ls", ["-la", userInput], (error, stdout) => {
   // 安全
 });
 
@@ -241,7 +241,7 @@ execFile('ls', ['-la', userInput], (error, stdout) => {
 function sanitizeFilename(filename: string): string {
   // 英数字、ハイフン、アンダースコア、ドットのみ許可
   if (!/^[\w\-.]+$/.test(filename)) {
-    throw new Error('Invalid filename');
+    throw new Error("Invalid filename");
   }
   return filename;
 }
@@ -294,30 +294,30 @@ function sanitizeFilename(filename: string): string {
 ## 5. Zodによる検証例
 
 ```typescript
-import { z } from 'zod';
+import { z } from "zod";
 
 // ユーザー入力スキーマ
 const UserInputSchema = z.object({
-  username: z.string()
-    .min(3, 'Username must be at least 3 characters')
-    .max(20, 'Username must be at most 20 characters')
-    .regex(/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores'),
+  username: z
+    .string()
+    .min(3, "Username must be at least 3 characters")
+    .max(20, "Username must be at most 20 characters")
+    .regex(
+      /^[a-zA-Z0-9_]+$/,
+      "Username can only contain letters, numbers, and underscores",
+    ),
 
-  email: z.string()
-    .email('Invalid email format'),
+  email: z.string().email("Invalid email format"),
 
-  age: z.number()
-    .int('Age must be an integer')
-    .min(0, 'Age must be positive')
-    .max(150, 'Invalid age'),
+  age: z
+    .number()
+    .int("Age must be an integer")
+    .min(0, "Age must be positive")
+    .max(150, "Invalid age"),
 
-  website: z.string()
-    .url('Invalid URL')
-    .optional(),
+  website: z.string().url("Invalid URL").optional(),
 
-  tags: z.array(z.string())
-    .max(10, 'Maximum 10 tags')
-    .optional()
+  tags: z.array(z.string()).max(10, "Maximum 10 tags").optional(),
 });
 
 // 使用例
@@ -325,11 +325,11 @@ function validateUserInput(data: unknown) {
   const result = UserInputSchema.safeParse(data);
 
   if (!result.success) {
-    const errors = result.error.issues.map(issue => ({
-      field: issue.path.join('.'),
-      message: issue.message
+    const errors = result.error.issues.map((issue) => ({
+      field: issue.path.join("."),
+      message: issue.message,
     }));
-    throw new ValidationError('Invalid input', errors);
+    throw new ValidationError("Invalid input", errors);
   }
 
   return result.data;

@@ -28,15 +28,17 @@ on:
 
 concurrency:
   group: production-deploy
-  cancel-in-progress: false  # キューに入れて順次実行
+  cancel-in-progress: false # キューに入れて順次実行
 ```
 
 **効果**:
+
 - デプロイが順次実行される
 - 同時デプロイを完全に防止
 - デプロイの順序が保証される
 
 **適用シナリオ**:
+
 - 本番環境デプロイ
 - データベースマイグレーション
 - インフラストラクチャ変更
@@ -50,10 +52,12 @@ concurrency:
 ```
 
 **効果**:
+
 - 環境ごとに独立したキュー
 - 環境間は並行実行可能
 
 **例**:
+
 - `production` への同時デプロイを防止
 - `staging` と `production` は並行デプロイ可能
 
@@ -85,6 +89,7 @@ jobs:
 ```
 
 **効果**:
+
 - 古いコミットのデプロイを防止
 - 最新のコードのみデプロイ
 
@@ -152,6 +157,7 @@ jobs:
 ```
 
 **効果**:
+
 - GitHub がデプロイメントの状態を管理
 - 環境保護ルールと統合
 - デプロイ履歴の追跡
@@ -227,6 +233,7 @@ jobs:
 ```
 
 **効果**:
+
 - 同時実行数を制限
 - リソース使用量の制御
 
@@ -374,6 +381,7 @@ jobs:
 ```
 
 **戦略**:
+
 - `development`: 最新のみ実行（`cancel-in-progress: true`）
 - `staging`: 最新のみ実行（`cancel-in-progress: true`）
 - `production`: 順次実行（`cancel-in-progress: false`）
@@ -567,12 +575,14 @@ concurrency:
 ### 問題: デプロイが重複実行される
 
 **診断**:
+
 ```bash
 gh api repos/OWNER/REPO/actions/runs \
   --jq '.workflow_runs[] | select(.status == "in_progress" and .name == "Deploy") | {id, sha, created_at}'
 ```
 
 **解決策**:
+
 1. `concurrency` 設定を追加
 2. `cancel-in-progress: false` を設定
 3. グループ名が一致しているか確認
@@ -580,12 +590,14 @@ gh api repos/OWNER/REPO/actions/runs \
 ### 問題: 古いバージョンがデプロイされる
 
 **診断**:
+
 ```bash
 # デプロイキューを確認
 gh run list --workflow=deploy.yml --status=queued
 ```
 
 **解決策**:
+
 1. タイムスタンプ検証を実装
 2. バージョンチェックを追加
 3. デプロイ前に最新コミットを確認
@@ -593,6 +605,7 @@ gh run list --workflow=deploy.yml --status=queued
 ### 問題: デプロイが永久にキューに残る
 
 **診断**:
+
 ```bash
 # 長時間キューに残っているジョブを検索
 gh api repos/OWNER/REPO/actions/runs \
@@ -600,6 +613,7 @@ gh api repos/OWNER/REPO/actions/runs \
 ```
 
 **解決策**:
+
 1. タイムアウト設定を追加
 2. キューの最大待機時間を設定
 3. デッドロック検出を実装
@@ -607,5 +621,6 @@ gh api repos/OWNER/REPO/actions/runs \
 ---
 
 **参照**:
+
 - [GitHub Deployments API](https://docs.github.com/en/rest/deployments/deployments)
 - [Environment protection rules](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment)

@@ -59,6 +59,7 @@ model: sonnet
   - `google`: Google OAuth 2.0
 
 **使用例**:
+
 ```bash
 /ai:setup-auth
 /ai:setup-auth github
@@ -73,6 +74,7 @@ model: sonnet
 ### Phase 1: 準備・要件分析
 
 **エージェント起動**:
+
 ```
 `.claude/agents/auth-specialist.md` を起動し、以下を依頼:
 - プロバイダー: $1 (デフォルト: credentials)
@@ -82,11 +84,13 @@ model: sonnet
 ```
 
 **スキル参照** (Phase 1):
+
 - `.claude/skills/project-architecture-integration/SKILL.md`: プロジェクト構造理解
 - `.claude/skills/nextauth-patterns/SKILL.md`: NextAuth.js実装パターン
 - `.claude/skills/oauth2-flows/SKILL.md`: OAuth 2.0フロー設計
 
 **期待成果物**:
+
 - プロジェクトタイプの特定（Next.js/Express/Fastify等）
 - 実装方針の決定（NextAuth.js/Passport.js等）
 - 必要なパッケージリスト
@@ -97,6 +101,7 @@ model: sonnet
 ### Phase 2: 認証システム実装
 
 **エージェント起動**:
+
 ```
 `.claude/agents/auth-specialist.md` を起動し、以下を依頼:
 - 依存関係のインストール
@@ -107,6 +112,7 @@ model: sonnet
 ```
 
 **スキル参照** (Phase 2):
+
 ```
 【GitHub/Google OAuth】
 - `.claude/skills/oauth2-flows/SKILL.md`: OAuth 2.0フロー実装
@@ -121,6 +127,7 @@ model: sonnet
 ```
 
 **実装内容**:
+
 ```
 【Next.js + NextAuth.js の場合】
 - src/auth.ts または src/lib/auth.ts: 認証設定
@@ -136,6 +143,7 @@ model: sonnet
 ```
 
 **期待成果物**:
+
 - 完全に動作する認証システム
 - 環境変数テンプレート（.env.example）
 - 認証ミドルウェア
@@ -146,6 +154,7 @@ model: sonnet
 ### Phase 3: 検証・ドキュメント生成
 
 **エージェント起動**:
+
 ```
 `.claude/agents/auth-specialist.md` を起動し、以下を依頼:
 - 実装の検証（型チェック、lint）
@@ -155,10 +164,12 @@ model: sonnet
 ```
 
 **スキル参照** (Phase 3):
+
 - `.claude/skills/best-practices-curation/SKILL.md`: セキュリティベストプラクティス
 - `.claude/skills/tool-permission-management/SKILL.md`: 権限設定最適化
 
 **成果物**:
+
 - `docs/auth/setup-guide.md`: セットアップガイド
   - 環境変数の設定方法
   - プロバイダー設定手順（GitHub/Google OAuth等）
@@ -194,9 +205,11 @@ model: sonnet
 ## 🎓 参考資料
 
 **エージェント仕様**:
+
 - `.claude/agents/auth-specialist.md`: 認証専門エージェント
 
 **スキル仕様**:
+
 - `.claude/skills/oauth2-flows/SKILL.md`: OAuth 2.0フロー実装
 - `.claude/skills/nextauth-patterns/SKILL.md`: NextAuth.jsパターン
 - `.claude/skills/rbac-implementation/SKILL.md`: ロールベースアクセス制御

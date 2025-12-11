@@ -18,7 +18,7 @@ jobs:
   build:
     uses: ./.github/workflows/component-build.yml
     with:
-      node-version: '20'
+      node-version: "20"
 
   # コンポーネント2: テスト
   test:
@@ -130,7 +130,7 @@ jobs:
   deploy:
     uses: ./.github/workflows/base-deploy.yml
     with:
-      environment: 'staging'
+      environment: "staging"
       requires-approval: false
 ```
 
@@ -146,7 +146,7 @@ jobs:
   deploy:
     uses: ./.github/workflows/base-deploy.yml
     with:
-      environment: 'production'
+      environment: "production"
       requires-approval: true
 ```
 
@@ -167,7 +167,7 @@ on:
       setup-command:
         required: false
         type: string
-        default: 'pnpm ci'
+        default: "pnpm ci"
       coverage-required:
         required: false
         type: boolean
@@ -203,7 +203,7 @@ jobs:
   test:
     uses: ./.github/workflows/template-test.yml
     with:
-      test-command: 'pnpm run test:unit'
+      test-command: "pnpm run test:unit"
       coverage-required: true
 ```
 
@@ -217,8 +217,8 @@ jobs:
   test:
     uses: ./.github/workflows/template-test.yml
     with:
-      setup-command: 'pnpm ci && npx playwright install'
-      test-command: 'pnpm run test:e2e'
+      setup-command: "pnpm ci && npx playwright install"
+      test-command: "pnpm run test:e2e"
       coverage-required: false
 ```
 
@@ -233,7 +233,7 @@ jobs:
   stage-1-build:
     uses: ./.github/workflows/build.yml
     with:
-      environment: 'build'
+      environment: "build"
 
   stage-2-test:
     needs: stage-1-build
@@ -265,17 +265,17 @@ jobs:
   build-linux:
     uses: ./.github/workflows/build.yml
     with:
-      os: 'ubuntu-latest'
+      os: "ubuntu-latest"
 
   build-windows:
     uses: ./.github/workflows/build.yml
     with:
-      os: 'windows-latest'
+      os: "windows-latest"
 
   build-macos:
     uses: ./.github/workflows/build.yml
     with:
-      os: 'macos-latest'
+      os: "macos-latest"
 
   # Fan-In: 結果を集約
   aggregate-results:
@@ -521,12 +521,12 @@ on:
   workflow_call:
     inputs:
       environment:
-        description: 'Deployment environment (dev|staging|prod)'
+        description: "Deployment environment (dev|staging|prod)"
         required: true
         type: string
     outputs:
       deployment-url:
-        description: 'URL of deployed application'
+        description: "URL of deployed application"
         value: ${{ jobs.deploy.outputs.url }}
 ```
 

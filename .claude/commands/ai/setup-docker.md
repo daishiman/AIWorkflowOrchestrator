@@ -38,6 +38,7 @@ model: sonnet
 **起動タイミング**: コマンド開始直後
 
 **引数引き渡し**:
+
 - `$ARGUMENTS`: サービス名（例: api, frontend, worker）
   - 未指定時: プロジェクト全体のコンテナ化設定を作成
 
@@ -71,6 +72,7 @@ model: sonnet
    - ポート設定
 
 **期待成果物**:
+
 - `Dockerfile`
 - `docker-compose.yml`
 - `.dockerignore`
@@ -81,10 +83,12 @@ model: sonnet
 エージェントが以下のスキルを必要に応じて参照:
 
 **必須スキル**:
+
 - `.claude/skills/docker-basics/SKILL.md`: Docker基礎・構文
 - `.claude/skills/docker-best-practices/SKILL.md`: ベストプラクティス
 
 **条件付きスキル**:
+
 - `.claude/skills/multi-stage-builds/SKILL.md`: マルチステージビルドが必要な場合
 - `.claude/skills/docker-security/SKILL.md`: セキュリティ要件が高い場合
 - `.claude/skills/dockerfile-optimization/SKILL.md`: パフォーマンス最適化が必要な場合
@@ -92,6 +96,7 @@ model: sonnet
 ## Phase 3: 検証と完了
 
 **検証基準**:
+
 - ✅ Dockerfileが正しい構文で作成されている
 - ✅ マルチステージビルドが適用されている
 - ✅ docker-compose.ymlが動作可能

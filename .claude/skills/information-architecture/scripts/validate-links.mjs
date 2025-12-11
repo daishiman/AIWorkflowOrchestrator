@@ -12,8 +12,8 @@
  *   - 壊れたリンクのレポート
  */
 
-import { readFileSync, readdirSync, statSync, existsSync } from 'fs';
-import { join, dirname, extname, resolve, relative } from 'path';
+import { readFileSync, readdirSync, statSync, existsSync } from "fs";
+import { join, dirname, extname, resolve, relative } from "path";
 
 /**
  * ディレクトリ内のMarkdownファイルを再帰的に取得
@@ -27,10 +27,10 @@ function getMarkdownFiles(dir, files = []) {
 
     if (stat.isDirectory()) {
       // node_modulesや.gitは除外
-      if (!item.startsWith('.') && item !== 'node_modules') {
+      if (!item.startsWith(".") && item !== "node_modules") {
         getMarkdownFiles(fullPath, files);
       }
-    } else if (extname(item).toLowerCase() === '.md') {
+    } else if (extname(item).toLowerCase() === ".md") {
       files.push(fullPath);
     }
   }
@@ -50,15 +50,19 @@ function extractLinks(content, filePath) {
 
   while ((match = linkRegex.exec(content)) !== null) {
     const [fullMatch, text, url] = match;
-    const lineNumber = content.slice(0, match.index).split('\n').length;
+    const lineNumber = content.slice(0, match.index).split("\n").length;
 
     // 外部リンク(http/https)は除外
-    if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('mailto:')) {
+    if (
+      !url.startsWith("http://") &&
+      !url.startsWith("https://") &&
+      !url.startsWith("mailto:")
+    ) {
       links.push({
         text,
         url,
         lineNumber,
-        filePath
+        filePath,
       });
     }
   }
@@ -81,9 +85,9 @@ function extractAnchors(content) {
     // GitHubスタイルのアンカー生成
     const anchor = heading
       .toLowerCase()
-      .replace(/[^\w\s\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-');
+      .replace(/[^\w\s\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-");
     anchors.add(anchor);
   }
 
@@ -97,21 +101,21 @@ function validateLink(link, baseDir, filesMap, anchorsMap) {
   const result = {
     ...link,
     valid: true,
-    error: null
+    error: null,
   };
 
   let targetPath = link.url;
   let anchor = null;
 
   // アンカー部分を分離
-  if (targetPath.includes('#')) {
-    const parts = targetPath.split('#');
+  if (targetPath.includes("#")) {
+    const parts = targetPath.split("#");
     targetPath = parts[0];
     anchor = parts[1];
   }
 
   // 同一ファイル内のアンカーリンク
-  if (targetPath === '' && anchor) {
+  if (targetPath === "" && anchor) {
     const currentAnchors = anchorsMap.get(link.filePath);
     if (currentAnchors && !currentAnchors.has(anchor)) {
       result.valid = false;
@@ -126,8 +130,8 @@ function validateLink(link, baseDir, filesMap, anchorsMap) {
 
   // .md拡張子がない場合は追加
   let checkPath = resolvedPath;
-  if (!checkPath.endsWith('.md') && !existsSync(checkPath)) {
-    checkPath = resolvedPath + '.md';
+  if (!checkPath.endsWith(".md") && !existsSync(checkPath)) {
+    checkPath = resolvedPath + ".md";
   }
 
   // ファイルの存在確認
@@ -153,11 +157,11 @@ function validateLink(link, baseDir, filesMap, anchorsMap) {
  * 検証結果を表示
  */
 function printResults(results, baseDir) {
-  const validLinks = results.filter(r => r.valid);
-  const invalidLinks = results.filter(r => !r.valid);
+  const validLinks = results.filter((r) => r.valid);
+  const invalidLinks = results.filter((r) => !r.valid);
 
-  console.log('\n🔗 ドキュメントリンク検証レポート\n');
-  console.log('='.repeat(70));
+  console.log("\n🔗 ドキュメントリンク検証レポート\n");
+  console.log("=".repeat(70));
 
   console.log(`\n📊 サマリー`);
   console.log(`   総リンク数: ${results.length}`);
@@ -165,7 +169,7 @@ function printResults(results, baseDir) {
   console.log(`   ❌ 無効: ${invalidLinks.length}`);
 
   if (invalidLinks.length > 0) {
-    console.log('\n❌ 壊れたリンク:\n');
+    console.log("\n❌ 壊れたリンク:\n");
 
     // ファイルごとにグループ化
     const byFile = {};
@@ -183,20 +187,20 @@ function printResults(results, baseDir) {
         console.log(`   行 ${link.lineNumber}: [${link.text}](${link.url})`);
         console.log(`      → ${link.error}`);
       }
-      console.log('');
+      console.log("");
     }
   }
 
   // 改善提案
   if (invalidLinks.length > 0) {
-    console.log('\n💡 改善提案:');
-    console.log('   1. ファイルパスのスペルを確認してください');
-    console.log('   2. ファイルが移動または削除されていないか確認してください');
-    console.log('   3. アンカー名は見出しテキストから自動生成されます');
-    console.log('   4. 相対パスが正しいか確認してください');
+    console.log("\n💡 改善提案:");
+    console.log("   1. ファイルパスのスペルを確認してください");
+    console.log("   2. ファイルが移動または削除されていないか確認してください");
+    console.log("   3. アンカー名は見出しテキストから自動生成されます");
+    console.log("   4. 相対パスが正しいか確認してください");
   }
 
-  console.log('\n' + '='.repeat(70));
+  console.log("\n" + "=".repeat(70));
 
   return invalidLinks.length === 0;
 }
@@ -208,9 +212,9 @@ function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.log('使用方法: node validate-links.mjs <directory>');
-    console.log('\n例:');
-    console.log('  node validate-links.mjs docs/');
+    console.log("使用方法: node validate-links.mjs <directory>");
+    console.log("\n例:");
+    console.log("  node validate-links.mjs docs/");
     process.exit(1);
   }
 
@@ -231,14 +235,14 @@ function main() {
     // 各ファイルのアンカーを抽出
     const anchorsMap = new Map();
     for (const file of files) {
-      const content = readFileSync(file, 'utf-8');
+      const content = readFileSync(file, "utf-8");
       anchorsMap.set(file, extractAnchors(content));
     }
 
     // 各ファイルのリンクを抽出して検証
     const allResults = [];
     for (const file of files) {
-      const content = readFileSync(file, 'utf-8');
+      const content = readFileSync(file, "utf-8");
       const links = extractLinks(content, file);
 
       for (const link of links) {
@@ -251,7 +255,6 @@ function main() {
     const success = printResults(allResults, targetDir);
 
     process.exit(success ? 0 : 1);
-
   } catch (error) {
     console.error(`エラー: ${error.message}`);
     process.exit(1);

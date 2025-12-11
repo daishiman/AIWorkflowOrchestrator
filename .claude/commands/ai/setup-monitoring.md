@@ -44,9 +44,11 @@ SLO/SLI定義、ダッシュボード、アラートルールを含む包括的�
 ### Phase 1: エージェント起動準備
 
 **ユーザー引数の処理:**
+
 - `$1` (service-name): 監視対象サービス名（オプション、デフォルト: プロジェクト名）
 
 **コンテキスト収集:**
+
 ```bash
 # プロジェクト名取得
 cat package.json | grep '"name"'
@@ -60,7 +62,7 @@ cat docs/00-requirements/master_system_design.md | grep -A 20 "workflows"
 
 ### Phase 2: sre-observer エージェント起動
 
-```typescript
+````typescript
 `.claude/agents/sre-observer.md` を起動し、以下を依頼:
 
 **タスク**: 監視・アラートシステムの設計と設定
@@ -94,7 +96,7 @@ cat docs/00-requirements/master_system_design.md | grep -A 20 "workflows"
      - name: error_budget_depleted
        condition: error_budget < 10%
        severity: critical
-   ```
+````
 
 3. **ダッシュボード設計** (`docs/observability/dashboard-design.md`):
    - ゴールデンシグナル（Latency, Traffic, Errors, Saturation）
@@ -108,10 +110,12 @@ cat docs/00-requirements/master_system_design.md | grep -A 20 "workflows"
    - よくある問題と解決策
 
 **設計要件**:
+
 - Alert Fatigue回避（誤検知 < 5%）
 - すべてのアラートがアクション可能
 - SLOベースのアラート設計
 - ユーザー体験を反映するSLI
+
 ```
 
 ### Phase 3: 完了報告
@@ -131,3 +135,4 @@ cat docs/00-requirements/master_system_design.md | grep -A 20 "workflows"
 - このコマンドは監視設計のみを行い、詳細はエージェントに委譲
 - 実際のモニタリングツール統合は別途実施
 - SLO/SLIはビジネス要件に応じて調整が必要
+```

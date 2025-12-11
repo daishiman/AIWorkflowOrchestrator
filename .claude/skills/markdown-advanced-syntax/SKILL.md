@@ -170,7 +170,6 @@ cat .claude/skills/markdown-advanced-syntax/templates/specification-template.md
 **ステップ**:
 
 1. **目的と読者の明確化**:
-
    - 何を伝えるドキュメントか
    - 読み手の技術レベル
    - どのような理解を促したいか
@@ -194,14 +193,12 @@ cat .claude/skills/markdown-advanced-syntax/templates/specification-template.md
 **ステップ**:
 
 1. **図タイプの選択**:
-
    - フローチャート: 処理の流れ、条件分岐
    - シーケンス図: 時系列の相互作用
    - ER 図: データモデルの関係性
    - 状態遷移図: 状態の変化
 
 2. **図の構築**:
-
    - ノードとエッジの定義
    - スタイリングの適用
    - 注釈やコメントの追加
@@ -225,7 +222,6 @@ cat .claude/skills/markdown-advanced-syntax/templates/specification-template.md
 **ステップ**:
 
 1. **テーブル設計**:
-
    - カラム構成の決定
    - 整列方向の指定
    - ヘッダーの明確化
@@ -250,7 +246,6 @@ cat .claude/skills/markdown-advanced-syntax/templates/specification-template.md
 **ステップ**:
 
 1. **Front Matter の設定**:
-
    - title, version, author の定義
    - 作成日・更新日の記録
    - ステータスの明記
@@ -273,13 +268,11 @@ cat .claude/skills/markdown-advanced-syntax/templates/specification-template.md
 ### すべきこと
 
 1. **Mermaid 図は簡潔に**:
-
    - 1 つの図に詰め込みすぎない
    - 複雑な場合は分割する
    - 適切な凡例を追加
 
 2. **コードブロックには言語を明記**:
-
    - ` ```typescript `、` ```json ` 等
    - シンタックスハイライトを有効化
    - 必要に応じて行番号を追加
@@ -292,13 +285,11 @@ cat .claude/skills/markdown-advanced-syntax/templates/specification-template.md
 ### 避けるべきこと
 
 1. **巨大な Mermaid 図**:
-
    - ノード数 50 以上は避ける
    - レンダリング時間が長くなる
    - 可読性が低下する
 
 2. **言語未指定のコードブロック**:
-
    - ハイライトが効かない
    - コピー時に問題が発生する可能性
 

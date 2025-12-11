@@ -3,16 +3,19 @@
 ## 効果的な例の原則
 
 ### 1. 即座に実行可能
+
 - コピー＆ペーストで動作するコード
 - 必要な環境変数・認証情報を明示
 - プレースホルダーは明確に区別
 
 ### 2. 段階的複雑性
+
 - 最小限の例から開始
 - オプション機能を徐々に追加
 - 完全な例は最後に
 
 ### 3. 現実的なデータ
+
 - ダミーデータでも意味のある値
 - 実際のユースケースを反映
 - 日付・IDは現実的な形式
@@ -239,8 +242,8 @@ curl "https://api.example.com/v1/users?fields=id,name,email"
 ```json
 {
   "data": [
-    {"id": "usr_abc123", "name": "山田太郎", "email": "yamada@example.com"},
-    {"id": "usr_def456", "name": "佐藤花子", "email": "sato@example.com"}
+    { "id": "usr_abc123", "name": "山田太郎", "email": "yamada@example.com" },
+    { "id": "usr_def456", "name": "佐藤花子", "email": "sato@example.com" }
   ]
 }
 ```
@@ -308,16 +311,16 @@ curl -X POST "https://api.example.com/v1/users" \
 <summary>JavaScript (fetch)</summary>
 
 ```javascript
-const response = await fetch('https://api.example.com/v1/users', {
-  method: 'POST',
+const response = await fetch("https://api.example.com/v1/users", {
+  method: "POST",
   headers: {
-    'Authorization': 'Bearer YOUR_API_KEY',
-    'Content-Type': 'application/json'
+    Authorization: "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json",
   },
   body: JSON.stringify({
-    name: '新規ユーザー',
-    email: 'new@example.com'
-  })
+    name: "新規ユーザー",
+    email: "new@example.com",
+  }),
 });
 
 const user = await response.json();
@@ -352,6 +355,7 @@ print(user['id'])
 ## チェックリスト
 
 ### リクエスト例
+
 - [ ] 認証ヘッダーが含まれている
 - [ ] Content-Typeが適切
 - [ ] プレースホルダーが明示的
@@ -359,6 +363,7 @@ print(user['id'])
 - [ ] コピー＆ペーストで動作
 
 ### レスポンス例
+
 - [ ] 現実的なデータ値
 - [ ] 日付形式が一貫
 - [ ] ID形式がプレフィックス付き

@@ -609,11 +609,13 @@
 ### キーパターンの選択
 
 **完全一致が必要な場合:**
+
 ```yaml
 key: ${{ runner.os }}-${{ hashFiles('**/lock-file') }}
 ```
 
 **部分ヒットを許可する場合:**
+
 ```yaml
 key: ${{ runner.os }}-${{ hashFiles('**/lock-file') }}-${{ github.sha }}
 restore-keys: |
@@ -647,6 +649,7 @@ restore-keys: |
 ### パフォーマンス最適化
 
 **大きなnode_modulesは分割:**
+
 ```yaml
 # 基本依存関係
 - uses: actions/cache@v4

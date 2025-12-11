@@ -63,11 +63,11 @@ description: |
   トリガーキーワード: code review, レビュー, 品質チェック, アーキテクチャレビュー, comprehensive review
 argument-hint: "[target-path]"
 allowed-tools:
-   - Task
-   - Read
-   - Grep
-   - Glob
-   - Write(docs/**)
+  - Task
+  - Read
+  - Grep
+  - Glob
+  - Write(docs/**)
 model: opus
 ---
 
@@ -80,6 +80,7 @@ model: opus
 ### Phase 1: レビュー範囲の確認
 
 **引数解析**:
+
 ```bash
 # ターゲットパス指定あり
 target-path: "$ARGUMENTS"（例: src/features/auth, src/app/api）
@@ -93,10 +94,12 @@ target-path: "."（全体レビュー）
 **使用エージェント**: `.claude/agents/arch-police.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 パス「${target-path}」のアーキテクチャをレビューしてください。
 
 **レビュー観点**:
+
 1. Clean Architecture準拠:
    - 依存方向チェック（app → features → infrastructure → core）
    - レイヤー責務の明確性
@@ -112,11 +115,13 @@ target-path: "."（全体レビュー）
    - 安定度メトリクス
 
 **スキル参照**:
+
 - `.claude/skills/clean-architecture-principles/SKILL.md`
 - `.claude/skills/dependency-analysis/SKILL.md`
 - `.claude/skills/architectural-patterns/SKILL.md`
 
 **成果物**:
+
 - アーキテクチャレビューレポート（違反リスト、依存関係図、改善提案）
 ```
 
@@ -125,10 +130,12 @@ target-path: "."（全体レビュー）
 **使用エージェント**: `.claude/agents/code-quality.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 パス「${target-path}」のコード品質をレビューしてください。
 
 **レビュー観点**:
+
 1. SOLID原則（SRP, OCP, LSP, ISP, DIP）
 2. Clean Code原則（意味のある命名、関数の単一責任、コメント最小化）
 3. コードスメル検出:
@@ -139,12 +146,14 @@ target-path: "."（全体レビュー）
 4. 静的解析（TypeScript, ESLint, Prettier）
 
 **スキル参照**:
+
 - `.claude/skills/solid-principles/SKILL.md`
 - `.claude/skills/clean-code-practices/SKILL.md`
 - `.claude/skills/code-smell-detection/SKILL.md`
 - `.claude/skills/refactoring-techniques/SKILL.md`
 
 **成果物**:
+
 - 品質レビューレポート（コードスメルリスト、SOLID違反、リファクタリング提案）
 ```
 
@@ -153,10 +162,12 @@ target-path: "."（全体レビュー）
 **使用エージェント**: `.claude/agents/sec-auditor.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 パス「${target-path}」のセキュリティをレビューしてください。
 
 **レビュー観点**:
+
 1. OWASP Top 10（A01-A10）
 2. 入力バリデーション（Zodスキーマ網羅性、サニタイゼーション）
 3. 認証・認可（トークン検証、権限チェック）
@@ -164,10 +175,12 @@ target-path: "."（全体レビュー）
 5. 依存関係脆弱性（`pnpm audit`）
 
 **スキル参照**:
+
 - `.claude/skills/owasp-top-10/SKILL.md`
 - `.claude/skills/input-validation-patterns/SKILL.md`
 
 **成果物**:
+
 - セキュリティレビューレポート（脆弱性リスト、リスクレベル、修正提案）
 ```
 
@@ -176,10 +189,12 @@ target-path: "."（全体レビュー）
 **使用エージェント**: `.claude/agents/logic-dev.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 パス「${target-path}」のビジネスロジックをレビューしてください。
 
 **レビュー観点**:
+
 1. ドメインモデル妥当性（エンティティ、集約、境界）
 2. エッジケース処理（境界値、nullish値、異常系）
 3. エラーハンドリング（7.1-7.3章準拠、リトライ戦略）
@@ -187,20 +202,24 @@ target-path: "."（全体レビュー）
 5. ビジネスルール実装（仕様書との整合性）
 
 **スキル参照**:
+
 - `.claude/skills/bounded-context/SKILL.md`
 - `.claude/skills/transaction-management/SKILL.md`
 
 **成果物**:
+
 - ロジックレビューレポート（ビジネスルール検証、エッジケース不足、改善提案）
 ```
 
 ### Phase 6: 総合レポート生成
 
 **実行内容**:
+
 ```markdown
 ## 総合コードレビューレポート
 
 ### レビューサマリー
+
 - レビュー範囲: ${target-path}
 - レビュー日時: ${timestamp}
 - レビュー観点: アーキテクチャ、品質、セキュリティ、ロジック
@@ -208,24 +227,30 @@ target-path: "."（全体レビュー）
 ### 優先度別改善提案
 
 #### 🔴 Critical（即座の対応必須）
+
 [Critical問題のリスト]
 
 #### 🟡 High（早急な対応推奨）
+
 [High問題のリスト]
 
 #### 🟢 Medium（計画的な対応）
+
 [Medium問題のリスト]
 
 #### 🔵 Low（改善余地）
+
 [Low問題のリスト]
 
 ### 領域別詳細
+
 - アーキテクチャ: [詳細レポートへのリンク]
 - 品質: [詳細レポートへのリンク]
 - セキュリティ: [詳細レポートへのリンク]
 - ロジック: [詳細レポートへのリンク]
 
 ### Next Steps
+
 1. Critical問題の修正
 2. High問題の計画
 3. リファクタリング実施

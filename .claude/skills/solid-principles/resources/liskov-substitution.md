@@ -4,16 +4,19 @@
 
 > 「S が T の派生型であれば、プログラム内で T 型のオブジェクトが使われている箇所は、
 > プログラムの振る舞いを変更することなく S 型のオブジェクトで置換可能でなければならない」
+>
 > - Barbara Liskov
 
 ## 核心概念
 
 ### 置換可能性
+
 - 派生クラスは基底クラスの契約（Contract）を完全に満たす
 - クライアントコードが基底クラスと派生クラスを区別する必要がない
 - 「is-a」関係が行動レベルでも成立する
 
 ### 契約の構成要素
+
 1. **事前条件**: メソッド呼び出し前に満たすべき条件（緩和のみ可）
 2. **事後条件**: メソッド実行後に保証される条件（強化のみ可）
 3. **不変条件**: クラスが常に満たすべき条件
@@ -25,7 +28,10 @@
 ```typescript
 // ❌ LSP違反: 正方形は長方形の派生型として不適切
 class Rectangle {
-  constructor(protected width: number, protected height: number) {}
+  constructor(
+    protected width: number,
+    protected height: number,
+  ) {}
 
   setWidth(width: number): void {
     this.width = width;
@@ -78,7 +84,7 @@ interface Shape {
 class Rectangle implements Shape {
   constructor(
     private readonly width: number,
-    private readonly height: number
+    private readonly height: number,
   ) {}
 
   getArea(): number {
@@ -115,13 +121,13 @@ class Square implements Shape {
 // ❌ 基底クラスにない例外を投げる
 class Bird {
   fly(): void {
-    console.log('Flying...');
+    console.log("Flying...");
   }
 }
 
 class Penguin extends Bird {
   fly(): void {
-    throw new Error('Penguins cannot fly'); // LSP違反
+    throw new Error("Penguins cannot fly"); // LSP違反
   }
 }
 ```

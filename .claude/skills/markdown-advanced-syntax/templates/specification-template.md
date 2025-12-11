@@ -31,33 +31,33 @@ tags:
 
 ```typescript
 interface EntityName {
-  id: string;          // UUID形式
-  name: string;        // 名前（最大100文字）
-  status: Status;      // ステータス
-  createdAt: Date;     // 作成日時
-  updatedAt: Date;     // 更新日時
+  id: string; // UUID形式
+  name: string; // 名前（最大100文字）
+  status: Status; // ステータス
+  createdAt: Date; // 作成日時
+  updatedAt: Date; // 更新日時
 }
 
-type Status = 'active' | 'inactive' | 'deleted';
+type Status = "active" | "inactive" | "deleted";
 ```
 
 ### 制約条件
 
-| フィールド | 制約 |
-|:-----------|:-----|
-| `id` | UUID形式、必須 |
-| `name` | 1-100文字、必須 |
-| `status` | enum値のみ、デフォルト 'active' |
+| フィールド | 制約                            |
+| :--------- | :------------------------------ |
+| `id`       | UUID形式、必須                  |
+| `name`     | 1-100文字、必須                 |
+| `status`   | enum値のみ、デフォルト 'active' |
 
 ## API仕様
 
 ### エンドポイント一覧
 
-| メソッド | パス | 概要 | 認証 |
-|:---------|:-----|:-----|:----:|
-| GET | `/api/v1/resources` | リソース一覧取得 | ○ |
-| POST | `/api/v1/resources` | リソース作成 | ○ |
-| GET | `/api/v1/resources/{id}` | リソース詳細取得 | ○ |
+| メソッド | パス                     | 概要             | 認証 |
+| :------- | :----------------------- | :--------------- | :--: |
+| GET      | `/api/v1/resources`      | リソース一覧取得 |  ○   |
+| POST     | `/api/v1/resources`      | リソース作成     |  ○   |
+| GET      | `/api/v1/resources/{id}` | リソース詳細取得 |  ○   |
 
 ### POST /api/v1/resources
 
@@ -83,11 +83,11 @@ type Status = 'active' | 'inactive' | 'deleted';
 
 #### エラーレスポンス
 
-| ステータス | コード | 説明 |
-|:-----------|:-------|:-----|
-| 400 | VALIDATION_ERROR | 入力値が不正 |
-| 401 | UNAUTHORIZED | 認証が必要 |
-| 500 | INTERNAL_ERROR | サーバーエラー |
+| ステータス | コード           | 説明           |
+| :--------- | :--------------- | :------------- |
+| 400        | VALIDATION_ERROR | 入力値が不正   |
+| 401        | UNAUTHORIZED     | 認証が必要     |
+| 500        | INTERNAL_ERROR   | サーバーエラー |
 
 ## ワークフロー
 
@@ -118,11 +118,11 @@ sequenceDiagram
 
 ## エラーハンドリング
 
-| エラーコード | HTTP Status | 説明 | 対応方法 |
-|:-------------|:------------|:-----|:---------|
-| VALIDATION_ERROR | 400 | 入力値が不正 | リクエストを確認 |
-| NOT_FOUND | 404 | リソースが存在しない | IDを確認 |
-| INTERNAL_ERROR | 500 | サーバーエラー | リトライ後サポートに連絡 |
+| エラーコード     | HTTP Status | 説明                 | 対応方法                 |
+| :--------------- | :---------- | :------------------- | :----------------------- |
+| VALIDATION_ERROR | 400         | 入力値が不正         | リクエストを確認         |
+| NOT_FOUND        | 404         | リソースが存在しない | IDを確認                 |
+| INTERNAL_ERROR   | 500         | サーバーエラー       | リトライ後サポートに連絡 |
 
 ## セキュリティ考慮事項
 
@@ -132,9 +132,9 @@ sequenceDiagram
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|:-----------|:-----|:---------|
-| 1.0.0 | YYYY-MM-DD | 初版作成 |
+| バージョン | 日付       | 変更内容 |
+| :--------- | :--------- | :------- |
+| 1.0.0      | YYYY-MM-DD | 初版作成 |
 
 ## 関連資料
 

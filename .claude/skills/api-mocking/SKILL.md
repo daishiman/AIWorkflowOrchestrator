@@ -42,14 +42,14 @@ E2EテストにおけるAPI モック技術。外部依存の排除、テスト�
 ```typescript
 test.beforeEach(async ({ page }) => {
   // APIレスポンスをモック
-  await page.route('**/api/users', route => {
+  await page.route("**/api/users", (route) => {
     route.fulfill({
       status: 200,
-      contentType: 'application/json',
+      contentType: "application/json",
       body: JSON.stringify([
-        { id: 1, name: 'Test User 1' },
-        { id: 2, name: 'Test User 2' }
-      ])
+        { id: 1, name: "Test User 1" },
+        { id: 2, name: "Test User 2" },
+      ]),
     });
   });
 });
@@ -58,38 +58,38 @@ test.beforeEach(async ({ page }) => {
 ### 2. エラーケースのシミュレーション
 
 ```typescript
-test('APIエラー処理', async ({ page }) => {
+test("APIエラー処理", async ({ page }) => {
   // 500エラーをモック
-  await page.route('**/api/users', route => {
+  await page.route("**/api/users", (route) => {
     route.fulfill({
       status: 500,
-      body: JSON.stringify({ error: 'Internal Server Error' })
+      body: JSON.stringify({ error: "Internal Server Error" }),
     });
   });
 
-  await page.goto('/users');
-  await expect(page.getByText('Error loading users')).toBeVisible();
+  await page.goto("/users");
+  await expect(page.getByText("Error loading users")).toBeVisible();
 });
 ```
 
 ### 3. ネットワーク遅延のシミュレーション
 
 ```typescript
-test('ローディング表示', async ({ page }) => {
-  await page.route('**/api/users', async route => {
+test("ローディング表示", async ({ page }) => {
+  await page.route("**/api/users", async (route) => {
     // 2秒遅延
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     route.fulfill({
       status: 200,
-      body: JSON.stringify([])
+      body: JSON.stringify([]),
     });
   });
 
-  await page.goto('/users');
+  await page.goto("/users");
 
   // ローディング表示確認
-  await expect(page.getByTestId('loading')).toBeVisible();
+  await expect(page.getByTestId("loading")).toBeVisible();
 });
 ```
 
@@ -99,20 +99,20 @@ test('ローディング表示', async ({ page }) => {
 
 ```typescript
 // mocks/handlers.ts
-import { http, HttpResponse } from 'msw';
+import { http, HttpResponse } from "msw";
 
 export const handlers = [
-  http.get('/api/users', () => {
+  http.get("/api/users", () => {
     return HttpResponse.json([
-      { id: 1, name: 'Test User 1' },
-      { id: 2, name: 'Test User 2' }
+      { id: 1, name: "Test User 1" },
+      { id: 2, name: "Test User 2" },
     ]);
-  })
+  }),
 ];
 
 // tests/setup.ts
-import { setupServer } from 'msw/node';
-import { handlers } from '../mocks/handlers';
+import { setupServer } from "msw/node";
+import { handlers } from "../mocks/handlers";
 
 const server = setupServer(...handlers);
 
@@ -124,13 +124,13 @@ afterAll(() => server.close());
 ### パターン2: 条件付きモック
 
 ```typescript
-test('条件付きモック', async ({ page }) => {
-  await page.route('**/api/**', route => {
+test("条件付きモック", async ({ page }) => {
+  await page.route("**/api/**", (route) => {
     const url = route.request().url();
 
     // 特定エンドポイントのみモック
-    if (url.includes('/api/users')) {
-      route.fulfill({ status: 200, body: '[]' });
+    if (url.includes("/api/users")) {
+      route.fulfill({ status: 200, body: "[]" });
     } else {
       route.continue(); // その他は実APIへ
     }
@@ -169,25 +169,28 @@ test('Fixture使用', async ({ page }) => {
 ### DO（推奨）
 
 1. **モックの一元管理**:
+
 ```typescript
 // mocks/index.ts
-export const mockUsers = [{ id: 1, name: 'Test' }];
-export const mockPosts = [{ id: 1, title: 'Post' }];
+export const mockUsers = [{ id: 1, name: "Test" }];
+export const mockPosts = [{ id: 1, title: "Post" }];
 ```
 
 2. **エラーケースのテスト**:
+
 ```typescript
-test('ネットワークエラー', async ({ page }) => {
-  await page.route('**/api/**', route => route.abort());
+test("ネットワークエラー", async ({ page }) => {
+  await page.route("**/api/**", (route) => route.abort());
 });
 ```
 
 3. **リクエスト検証**:
+
 ```typescript
-test('POSTリクエスト検証', async ({ page }) => {
-  await page.route('**/api/users', route => {
+test("POSTリクエスト検証", async ({ page }) => {
+  await page.route("**/api/users", (route) => {
     const postData = route.request().postDataJSON();
-    expect(postData.name).toBe('New User');
+    expect(postData.name).toBe("New User");
 
     route.fulfill({ status: 201, body: JSON.stringify(postData) });
   });

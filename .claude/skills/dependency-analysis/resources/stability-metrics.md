@@ -16,10 +16,10 @@ I = Ce / (Ca + Ce)
 - **Ce（Efferent Coupling）**: 他に依存している数（出力）
 - **Ca（Afferent Coupling）**: 他から依存されている数（入力）
 
-| I値 | 解釈 |
-|----|------|
-| 0 | 完全に安定（他に依存しない、多くから依存される） |
-| 1 | 完全に不安定（多くに依存、誰からも依存されない） |
+| I値 | 解釈                                             |
+| --- | ------------------------------------------------ |
+| 0   | 完全に安定（他に依存しない、多くから依存される） |
+| 1   | 完全に不安定（多くに依存、誰からも依存されない） |
 
 ### 2. Abstractness（抽象度）
 
@@ -30,10 +30,10 @@ A = Na / Nc
 - **Na**: 抽象クラス・インターフェースの数
 - **Nc**: 全クラスの数
 
-| A値 | 解釈 |
-|----|------|
-| 0 | 完全に具象（実装のみ） |
-| 1 | 完全に抽象（インターフェースのみ） |
+| A値 | 解釈                               |
+| --- | ---------------------------------- |
+| 0   | 完全に具象（実装のみ）             |
+| 1   | 完全に抽象（インターフェースのみ） |
 
 ### 3. Distance from Main Sequence（主系列からの距離）
 
@@ -119,8 +119,8 @@ D = |0 + 0.67 - 1| = 0.33（許容範囲）
 
 ```javascript
 // calculate-metrics.mjs
-import { readdir, readFile, stat } from 'fs/promises';
-import { join, relative, dirname } from 'path';
+import { readdir, readFile, stat } from "fs/promises";
+import { join, relative, dirname } from "path";
 
 class StabilityAnalyzer {
   constructor() {
@@ -128,7 +128,7 @@ class StabilityAnalyzer {
   }
 
   analyze(modulePath, dependencies, dependents) {
-    const Ca = dependents.length;  // Afferent
+    const Ca = dependents.length; // Afferent
     const Ce = dependencies.length; // Efferent
 
     const I = Ce === 0 && Ca === 0 ? 0 : Ce / (Ca + Ce);
@@ -138,7 +138,7 @@ class StabilityAnalyzer {
       Ca,
       Ce,
       I,
-      stability: I < 0.5 ? 'stable' : 'unstable'
+      stability: I < 0.5 ? "stable" : "unstable",
     };
   }
 }

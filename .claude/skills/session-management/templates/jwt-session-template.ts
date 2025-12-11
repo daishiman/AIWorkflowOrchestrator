@@ -15,25 +15,25 @@
  * - 高トラフィックアプリケーション
  */
 
-import { SignJWT, jwtVerify } from 'jose';
-import { cookies } from 'next/headers';
+import { SignJWT, jwtVerify } from "jose";
+import { cookies } from "next/headers";
 
 // ========================================
 // 型定義
 // ========================================
 
 interface JWTPayload {
-  sub: string;                          // Subject (User ID)
-  role: 'ADMIN' | 'USER' | 'GUEST';    // User Role
-  email?: string;                       // User Email (optional)
-  jti: string;                          // JWT ID (for revocation)
-  iat: number;                          // Issued At
-  exp: number;                          // Expiration Time
+  sub: string; // Subject (User ID)
+  role: "ADMIN" | "USER" | "GUEST"; // User Role
+  email?: string; // User Email (optional)
+  jti: string; // JWT ID (for revocation)
+  iat: number; // Issued At
+  exp: number; // Expiration Time
 }
 
 interface SessionData {
   userId: string;
-  role: 'ADMIN' | 'USER' | 'GUEST';
+  role: "ADMIN" | "USER" | "GUEST";
   email?: string;
 }
 
@@ -54,9 +54,9 @@ export async function generateJWT(sessionData: SessionData): Promise<string> {
     email: sessionData.email,
     jti: tokenId,
   })
-    .setProtectedHeader({ alg: 'HS256' })
+    .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime('1h') // 1時間
+    .setExpirationTime("1h") // 1時間
     .sign(secret);
 
   return jwt;
@@ -70,12 +70,12 @@ export async function verifyJWT(token: string): Promise<JWTPayload> {
 
   try {
     const { payload } = await jwtVerify(token, secret, {
-      algorithms: ['HS256'],
+      algorithms: ["HS256"],
     });
 
     return payload as JWTPayload;
   } catch (error) {
-    throw new JWTVerificationError('Invalid or expired JWT');
+    throw new JWTVerificationError("Invalid or expired JWT");
   }
 }
 
@@ -90,12 +90,12 @@ export async function createSession(sessionData: SessionData): Promise<void> {
   const jwt = await generateJWT(sessionData);
 
   // HttpOnly Cookieに保存
-  cookies().set('session_token', jwt, {
+  cookies().set("session_token", jwt, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
     maxAge: 60 * 60, // 1時間（JWTと同じ）
-    path: '/',
+    path: "/",
   });
 }
 
@@ -103,7 +103,7 @@ export async function createSession(sessionData: SessionData): Promise<void> {
  * セッション取得
  */
 export async function getSession(): Promise<JWTPayload | null> {
-  const token = cookies().get('session_token')?.value;
+  const token = cookies().get("session_token")?.value;
 
   if (!token) {
     return null;
@@ -113,7 +113,7 @@ export async function getSession(): Promise<JWTPayload | null> {
     return await verifyJWT(token);
   } catch (error) {
     // トークン無効 → Cookieクリア
-    cookies().delete('session_token');
+    cookies().delete("session_token");
     return null;
   }
 }
@@ -130,7 +130,7 @@ export async function deleteSession(): Promise<void> {
   }
 
   // Cookieクリア
-  cookies().delete('session_token');
+  cookies().delete("session_token");
 }
 
 /**
@@ -140,7 +140,7 @@ export async function refreshSession(): Promise<void> {
   const currentSession = await getSession();
 
   if (!currentSession) {
-    throw new Error('No active session');
+    throw new Error("No active session");
   }
 
   // 新しいJWT生成
@@ -151,12 +151,12 @@ export async function refreshSession(): Promise<void> {
   });
 
   // Cookieを更新
-  cookies().set('session_token', newJwt, {
+  cookies().set("session_token", newJwt, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
     maxAge: 60 * 60,
-    path: '/',
+    path: "/",
   });
 }
 
@@ -172,7 +172,7 @@ async function addToBlacklist(jti: string, exp: number): Promise<void> {
   const ttl = Math.max(0, exp - Math.floor(Date.now() / 1000));
 
   // Redis使用例
-  await redis.setex(`blacklist:${jti}`, ttl, '1');
+  await redis.setex(`blacklist:${jti}`, ttl, "1");
 }
 
 /**
@@ -186,12 +186,14 @@ async function isBlacklisted(jti: string): Promise<boolean> {
 /**
  * ブラックリストチェック付きJWT検証
  */
-export async function verifyJWTWithBlacklist(token: string): Promise<JWTPayload> {
+export async function verifyJWTWithBlacklist(
+  token: string,
+): Promise<JWTPayload> {
   const payload = await verifyJWT(token);
 
   // ブラックリストチェック
   if (await isBlacklisted(payload.jti)) {
-    throw new JWTVerificationError('Token has been revoked');
+    throw new JWTVerificationError("Token has been revoked");
   }
 
   return payload;
@@ -204,18 +206,20 @@ export async function verifyJWTWithBlacklist(token: string): Promise<JWTPayload>
 /**
  * Next.js Middleware: セッション検証
  */
-export async function authMiddleware(request: Request): Promise<Response | null> {
+export async function authMiddleware(
+  request: Request,
+): Promise<Response | null> {
   const session = await getSession();
 
   // 未認証
   if (!session) {
-    return Response.redirect(new URL('/login', request.url));
+    return Response.redirect(new URL("/login", request.url));
   }
 
   // 有効期限チェック（JWTライブラリが自動で行うが、明示的にも可能）
   if (session.exp * 1000 < Date.now()) {
-    cookies().delete('session_token');
-    return Response.redirect(new URL('/login', request.url));
+    cookies().delete("session_token");
+    return Response.redirect(new URL("/login", request.url));
   }
 
   // 認証済み → 次のハンドラーへ
@@ -226,12 +230,12 @@ export async function authMiddleware(request: Request): Promise<Response | null>
  * API Route: セッション検証ヘルパー
  */
 export async function requireAuth(
-  handler: (session: JWTPayload) => Promise<Response>
+  handler: (session: JWTPayload) => Promise<Response>,
 ): Promise<Response> {
   const session = await getSession();
 
   if (!session) {
-    return new Response('Unauthorized', { status: 401 });
+    return new Response("Unauthorized", { status: 401 });
   }
 
   return await handler(session);
@@ -252,7 +256,9 @@ export async function requireAuth(
 /**
  * セッション固定対策: ログイン成功時に新しいJWT発行
  */
-export async function regenerateSession(sessionData: SessionData): Promise<void> {
+export async function regenerateSession(
+  sessionData: SessionData,
+): Promise<void> {
   // 古いセッション削除
   await deleteSession();
 
@@ -265,7 +271,7 @@ export async function regenerateSession(sessionData: SessionData): Promise<void>
  */
 export async function validateSessionContext(
   session: JWTPayload,
-  request: Request
+  request: Request,
 ): Promise<boolean> {
   // JWTに含めたIP/UAと現在を比較する場合
   // （ただし、JWTペイロード肥大化とプライバシー考慮）
@@ -280,10 +286,10 @@ export async function validateSessionContext(
   }
 
   const currentIp = getClientIP(request);
-  const currentUA = request.headers.get('User-Agent');
+  const currentUA = request.headers.get("User-Agent");
 
   if (sessionMeta.ipAddress !== currentIp) {
-    logSecurityEvent('IP_CHANGE', { session, currentIp });
+    logSecurityEvent("IP_CHANGE", { session, currentIp });
     // 追加検証要求またはセッション無効化
     return false;
   }
@@ -296,9 +302,11 @@ export async function validateSessionContext(
 // ========================================
 
 function getClientIP(request: Request): string {
-  return request.headers.get('x-forwarded-for')?.split(',')[0] ||
-         request.headers.get('x-real-ip') ||
-         'unknown';
+  return (
+    request.headers.get("x-forwarded-for")?.split(",")[0] ||
+    request.headers.get("x-real-ip") ||
+    "unknown"
+  );
 }
 
 // ========================================
@@ -308,7 +316,7 @@ function getClientIP(request: Request): string {
 class JWTVerificationError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'JWTVerificationError';
+    this.name = "JWTVerificationError";
   }
 }
 

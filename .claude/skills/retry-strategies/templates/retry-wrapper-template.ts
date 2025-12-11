@@ -54,7 +54,7 @@ export class RetryError extends Error {
   constructor(
     message: string,
     public readonly attempts: number,
-    public readonly lastError: Error
+    public readonly lastError: Error,
   ) {
     super(message);
     this.name = "RetryError";
@@ -75,10 +75,7 @@ function sleep(ms: number): Promise<void> {
 /**
  * バックオフ待機時間を計算
  */
-function calculateDelay(
-  attempt: number,
-  config: RetryConfig
-): number {
+function calculateDelay(attempt: number, config: RetryConfig): number {
   // 指数バックオフ
   const exponentialDelay = config.baseDelay * Math.pow(2, attempt);
 
@@ -146,7 +143,7 @@ function defaultIsRetryable(error: unknown): boolean {
  */
 export async function withRetry<T>(
   fn: () => Promise<T>,
-  config: Partial<RetryConfig> = {}
+  config: Partial<RetryConfig> = {},
 ): Promise<T> {
   const mergedConfig: RetryConfig = {
     ...DEFAULT_RETRY_CONFIG,
@@ -167,7 +164,7 @@ export async function withRetry<T>(
         throw new RetryError(
           `All ${mergedConfig.maxRetries + 1} attempts failed`,
           attempt + 1,
-          lastError
+          lastError,
         );
       }
 
@@ -204,7 +201,7 @@ export async function withRetry<T>(
   throw new RetryError(
     "Unexpected: retry loop exited without result",
     mergedConfig.maxRetries + 1,
-    lastError!
+    lastError!,
   );
 }
 
@@ -220,7 +217,7 @@ export function Retry(config: Partial<RetryConfig> = {}) {
   return function (
     _target: unknown,
     _propertyKey: string,
-    descriptor: PropertyDescriptor
+    descriptor: PropertyDescriptor,
   ) {
     const originalMethod = descriptor.value;
 
@@ -241,7 +238,7 @@ export function Retry(config: Partial<RetryConfig> = {}) {
  */
 export function createRetryable<TArgs extends unknown[], TResult>(
   fn: (...args: TArgs) => Promise<TResult>,
-  config: Partial<RetryConfig> = {}
+  config: Partial<RetryConfig> = {},
 ): (...args: TArgs) => Promise<TResult> {
   return (...args: TArgs) => withRetry(() => fn(...args), config);
 }

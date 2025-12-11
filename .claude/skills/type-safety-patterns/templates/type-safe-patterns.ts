@@ -17,7 +17,9 @@
  * 成功または失敗を表すResult型
  * 例外を使わない明示的なエラーハンドリング
  */
-export type Result<T, E = Error> = { ok: true; value: T } | { ok: false; error: E };
+export type Result<T, E = Error> =
+  | { ok: true; value: T }
+  | { ok: false; error: E };
 
 /** 成功を作成 */
 export function ok<T>(value: T): Result<T, never> {
@@ -30,7 +32,10 @@ export function err<E>(error: E): Result<never, E> {
 }
 
 /** Result型のマップ処理 */
-export function mapResult<T, U, E>(result: Result<T, E>, fn: (value: T) => U): Result<U, E> {
+export function mapResult<T, U, E>(
+  result: Result<T, E>,
+  fn: (value: T) => U,
+): Result<U, E> {
   if (result.ok) {
     return ok(fn(result.value));
   }
@@ -40,7 +45,7 @@ export function mapResult<T, U, E>(result: Result<T, E>, fn: (value: T) => U): R
 /** Result型のフラットマップ処理 */
 export function flatMapResult<T, U, E>(
   result: Result<T, E>,
-  fn: (value: T) => Result<U, E>
+  fn: (value: T) => Result<U, E>,
 ): Result<U, E> {
   if (result.ok) {
     return fn(result.value);
@@ -90,21 +95,24 @@ export function toNullable<T>(option: Option<T>): T | null {
 
 /** 文字列型ガード */
 export function isString(value: unknown): value is string {
-  return typeof value === 'string';
+  return typeof value === "string";
 }
 
 /** 数値型ガード */
 export function isNumber(value: unknown): value is number {
-  return typeof value === 'number' && !Number.isNaN(value);
+  return typeof value === "number" && !Number.isNaN(value);
 }
 
 /** オブジェクト型ガード */
 export function isObject(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 /** 配列型ガード（ジェネリック） */
-export function isArrayOf<T>(value: unknown, guard: (item: unknown) => item is T): value is T[] {
+export function isArrayOf<T>(
+  value: unknown,
+  guard: (item: unknown) => item is T,
+): value is T[] {
   return Array.isArray(value) && value.every(guard);
 }
 
@@ -116,7 +124,7 @@ export function isNonNullable<T>(value: T): value is NonNullable<T> {
 /** プロパティ存在チェック型ガード */
 export function hasProperty<K extends string>(
   obj: unknown,
-  key: K
+  key: K,
 ): obj is Record<K, unknown> {
   return isObject(obj) && key in obj;
 }
@@ -126,16 +134,22 @@ export function hasProperty<K extends string>(
 // ============================================================
 
 /** 値が存在することをアサート */
-export function assertNonNull<T>(value: T, message?: string): asserts value is NonNullable<T> {
+export function assertNonNull<T>(
+  value: T,
+  message?: string,
+): asserts value is NonNullable<T> {
   if (value === null || value === undefined) {
-    throw new Error(message ?? 'Value is null or undefined');
+    throw new Error(message ?? "Value is null or undefined");
   }
 }
 
 /** 条件が真であることをアサート */
-export function assertCondition(condition: boolean, message?: string): asserts condition {
+export function assertCondition(
+  condition: boolean,
+  message?: string,
+): asserts condition {
   if (!condition) {
-    throw new Error(message ?? 'Assertion failed');
+    throw new Error(message ?? "Assertion failed");
   }
 }
 
@@ -152,40 +166,43 @@ export function assertNever(value: never, message?: string): never {
  * APIレスポンスの状態を表すDiscriminated Union
  */
 export type ApiState<T, E = Error> =
-  | { status: 'idle' }
-  | { status: 'loading' }
-  | { status: 'success'; data: T; timestamp: Date }
-  | { status: 'error'; error: E; retryCount: number };
+  | { status: "idle" }
+  | { status: "loading" }
+  | { status: "success"; data: T; timestamp: Date }
+  | { status: "error"; error: E; retryCount: number };
 
 /** API状態の初期値 */
 export function createIdleState<T, E = Error>(): ApiState<T, E> {
-  return { status: 'idle' };
+  return { status: "idle" };
 }
 
 /** ローディング状態 */
 export function createLoadingState<T, E = Error>(): ApiState<T, E> {
-  return { status: 'loading' };
+  return { status: "loading" };
 }
 
 /** 成功状態 */
 export function createSuccessState<T, E = Error>(data: T): ApiState<T, E> {
-  return { status: 'success', data, timestamp: new Date() };
+  return { status: "success", data, timestamp: new Date() };
 }
 
 /** エラー状態 */
-export function createErrorState<T, E = Error>(error: E, retryCount = 0): ApiState<T, E> {
-  return { status: 'error', error, retryCount };
+export function createErrorState<T, E = Error>(
+  error: E,
+  retryCount = 0,
+): ApiState<T, E> {
+  return { status: "error", error, retryCount };
 }
 
 /**
  * フォーム状態のDiscriminated Union
  */
 export type FormState<T extends Record<string, unknown>> =
-  | { status: 'pristine'; values: T }
-  | { status: 'dirty'; values: T; changedFields: (keyof T)[] }
-  | { status: 'submitting'; values: T }
-  | { status: 'submitted'; values: T; response: unknown }
-  | { status: 'error'; values: T; errors: Partial<Record<keyof T, string[]>> };
+  | { status: "pristine"; values: T }
+  | { status: "dirty"; values: T; changedFields: (keyof T)[] }
+  | { status: "submitting"; values: T }
+  | { status: "submitted"; values: T; response: unknown }
+  | { status: "error"; values: T; errors: Partial<Record<keyof T, string[]>> };
 
 // ============================================================
 // 6. 型安全なイベントエミッター
@@ -197,7 +214,10 @@ export type FormState<T extends Record<string, unknown>> =
 export class TypedEventEmitter<TEvents extends Record<string, unknown>> {
   private listeners = new Map<keyof TEvents, Set<(payload: unknown) => void>>();
 
-  on<K extends keyof TEvents>(event: K, listener: (payload: TEvents[K]) => void): () => void {
+  on<K extends keyof TEvents>(
+    event: K,
+    listener: (payload: TEvents[K]) => void,
+  ): () => void {
     if (!this.listeners.has(event)) {
       this.listeners.set(event, new Set());
     }
@@ -213,7 +233,10 @@ export class TypedEventEmitter<TEvents extends Record<string, unknown>> {
     this.listeners.get(event)?.forEach((listener) => listener(payload));
   }
 
-  off<K extends keyof TEvents>(event: K, listener: (payload: TEvents[K]) => void): void {
+  off<K extends keyof TEvents>(
+    event: K,
+    listener: (payload: TEvents[K]) => void,
+  ): void {
     this.listeners.get(event)?.delete(listener as (payload: unknown) => void);
   }
 }
@@ -232,7 +255,9 @@ export class TypedEventEmitter<TEvents extends Record<string, unknown>> {
 // ============================================================
 
 /** DeepPartial - ネストされたすべてのプロパティをオプショナルに */
-export type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } : T;
+export type DeepPartial<T> = T extends object
+  ? { [P in keyof T]?: DeepPartial<T[P]> }
+  : T;
 
 /** DeepReadonly - ネストされたすべてのプロパティを読み取り専用に */
 export type DeepReadonly<T> = T extends object
@@ -255,15 +280,22 @@ export type StrictOmit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type StrictPick<T, K extends keyof T> = Pick<T, K>;
 
 /** RequireAtLeastOne - 少なくとも1つのプロパティが必須 */
-export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> &
+export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<
+  T,
+  Exclude<keyof T, Keys>
+> &
   {
     [K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>;
   }[Keys];
 
 /** RequireOnlyOne - 1つだけのプロパティが必須 */
-export type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> &
+export type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<
+  T,
+  Exclude<keyof T, Keys>
+> &
   {
-    [K in Keys]-?: Required<Pick<T, K>> & Partial<Record<Exclude<Keys, K>, never>>;
+    [K in Keys]-?: Required<Pick<T, K>> &
+      Partial<Record<Exclude<Keys, K>, never>>;
   }[Keys];
 
 // ============================================================
@@ -275,15 +307,15 @@ declare const __brand: unique symbol;
 export type Brand<T, TBrand extends string> = T & { [__brand]: TBrand };
 
 /** ブランド型の例 */
-export type UserId = Brand<string, 'UserId'>;
-export type Email = Brand<string, 'Email'>;
-export type PositiveNumber = Brand<number, 'PositiveNumber'>;
+export type UserId = Brand<string, "UserId">;
+export type Email = Brand<string, "Email">;
+export type PositiveNumber = Brand<number, "PositiveNumber">;
 
 /** UserId作成関数 */
 export function createUserId(id: string): UserId {
   // バリデーションロジックを追加
   if (!id || id.length === 0) {
-    throw new Error('Invalid user ID');
+    throw new Error("Invalid user ID");
   }
   return id as UserId;
 }
@@ -292,7 +324,7 @@ export function createUserId(id: string): UserId {
 export function createEmail(email: string): Email {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
-    throw new Error('Invalid email format');
+    throw new Error("Invalid email format");
   }
   return email as Email;
 }
@@ -300,7 +332,7 @@ export function createEmail(email: string): Email {
 /** PositiveNumber作成関数 */
 export function createPositiveNumber(n: number): PositiveNumber {
   if (n <= 0 || !Number.isFinite(n)) {
-    throw new Error('Number must be positive');
+    throw new Error("Number must be positive");
   }
   return n as PositiveNumber;
 }

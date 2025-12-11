@@ -12,19 +12,19 @@ on:
 
 # ワークフローレベルで最小権限
 permissions:
-  contents: read  # ソースコード読み取りのみ
+  contents: read # ソースコード読み取りのみ
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       # ✅ コミットSHAで固定（タグコメント付き）
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8  # v4.0.2
+      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm ci
@@ -36,7 +36,6 @@ jobs:
         run: pnpm run lint
 
 ---
-
 # ===================================================================
 # 例2: PR自動化（コメント投稿）
 # ===================================================================
@@ -46,24 +45,24 @@ on:
     types: [opened, synchronize]
 
 permissions:
-  contents: read         # ソースコード読み取り
-  pull-requests: write   # PRコメント投稿のみ
+  contents: read # ソースコード読み取り
+  pull-requests: write # PRコメント投稿のみ
 
 jobs:
   coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8  # v4.0.2
+      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
-          node-version: '20'
+          node-version: "20"
 
       - run: pnpm ci
       - run: pnpm test -- --coverage
 
       - name: Comment coverage
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea  # v7.0.1
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         with:
           script: |
             const fs = require('fs');
@@ -81,13 +80,12 @@ jobs:
             });
 
 ---
-
 # ===================================================================
 # 例3: 安全なpull_request_target（ベースブランチのコード）
 # ===================================================================
 name: PR Labeler
 on:
-  pull_request_target:  # forkからのPRでもシークレットアクセス可能
+  pull_request_target: # forkからのPRでもシークレットアクセス可能
     types: [opened]
 
 permissions:
@@ -99,15 +97,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # ✅ 重要: ベースブランチをチェックアウト（PRコードではない）
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         with:
-          ref: ${{ github.base_ref }}  # PRではなくベースブランチ
+          ref: ${{ github.base_ref }} # PRではなくベースブランチ
 
       # ✅ ベースブランチの信頼できるスクリプトを実行
       - name: Run trusted script
         run: node .github/scripts/label-pr.js
 
-      - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea  # v7.0.1
+      - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         with:
           script: |
             // PRの情報のみ使用（コード実行なし）
@@ -122,7 +120,6 @@ jobs:
             }
 
 ---
-
 # ===================================================================
 # 例4: リリース作成（書き込み権限）
 # ===================================================================
@@ -130,10 +127,10 @@ name: Release
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 
 permissions:
-  contents: write  # リリース作成に必要
+  contents: write # リリース作成に必要
 
 jobs:
   release:
@@ -142,13 +139,13 @@ jobs:
     environment:
       name: production
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         with:
-          fetch-depth: 0  # 全履歴取得（changelog生成用）
+          fetch-depth: 0 # 全履歴取得（changelog生成用）
 
-      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8  # v4.0.2
+      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
-          node-version: '20'
+          node-version: "20"
 
       - run: pnpm ci
       - run: pnpm run build
@@ -162,7 +159,7 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Create Release
-        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844  # v1
+        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v1
         with:
           body: ${{ steps.changelog.outputs.changelog }}
           files: |
@@ -171,7 +168,6 @@ jobs:
           prerelease: false
 
 ---
-
 # ===================================================================
 # 例5: パッケージ公開
 # ===================================================================
@@ -182,19 +178,19 @@ on:
 
 permissions:
   contents: read
-  packages: write  # GitHub Packages公開
-  id-token: write  # pnpm provenance
+  packages: write # GitHub Packages公開
+  id-token: write # pnpm provenance
 
 jobs:
   publish-pnpm:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8  # v4.0.2
+      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
 
       - run: pnpm ci
       - run: pnpm run build
@@ -207,24 +203,23 @@ jobs:
   publish-ghcr:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d  # v3.0.0
+        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
-        uses: docker/build-push-action@4a13e500e55cf31b7a5d59a38ab2040ab0f42f56  # v5.1.0
+        uses: docker/build-push-action@4a13e500e55cf31b7a5d59a38ab2040ab0f42f56 # v5.1.0
         with:
           context: .
           push: true
           tags: ghcr.io/${{ github.repository }}:${{ github.ref_name }}
 
 ---
-
 # ===================================================================
 # 例6: シークレット保護（PRから隔離）
 # ===================================================================
@@ -243,10 +238,10 @@ jobs:
     # PRでも実行（シークレット不要）
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - run: pnpm ci
       - run: pnpm run build
-      - uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392  # v4.0.0
+      - uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392 # v4.0.0
         with:
           name: dist
           path: dist/
@@ -260,7 +255,7 @@ jobs:
       name: production
       url: https://example.com
     steps:
-      - uses: actions/download-artifact@f44cd7b40bfd40b6aa1cc1b9b5b7bf03d3c67110  # v4.1.0
+      - uses: actions/download-artifact@f44cd7b40bfd40b6aa1cc1b9b5b7bf03d3c67110 # v4.1.0
         with:
           name: dist
           path: dist/
@@ -274,7 +269,6 @@ jobs:
           aws s3 sync ./dist s3://my-production-bucket --delete
 
 ---
-
 # ===================================================================
 # 例7: 依存関係セキュリティスキャン
 # ===================================================================
@@ -285,7 +279,7 @@ on:
   pull_request:
     branches: [main]
   schedule:
-    - cron: '0 0 * * 1'  # 毎週月曜日
+    - cron: "0 0 * * 1" # 毎週月曜日
 
 permissions:
   contents: read
@@ -296,37 +290,36 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
-      - uses: actions/dependency-review-action@5bbc3ba658137598168acb2ab73b21c432dd411b  # v4.2.0
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/dependency-review-action@5bbc3ba658137598168acb2ab73b21c432dd411b # v4.2.0
         with:
           fail-on-severity: high
 
   codeql:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
-      - uses: github/codeql-action/init@e8893c57a1f3a2b659b6b55564fdfdbbd2982911  # v3.24.0
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: github/codeql-action/init@e8893c57a1f3a2b659b6b55564fdfdbbd2982911 # v3.24.0
         with:
           languages: javascript, typescript
-      - uses: github/codeql-action/autobuild@e8893c57a1f3a2b659b6b55564fdfdbbd2982911  # v3.24.0
-      - uses: github/codeql-action/analyze@e8893c57a1f3a2b659b6b55564fdfdbbd2982911  # v3.24.0
+      - uses: github/codeql-action/autobuild@e8893c57a1f3a2b659b6b55564fdfdbbd2982911 # v3.24.0
+      - uses: github/codeql-action/analyze@e8893c57a1f3a2b659b6b55564fdfdbbd2982911 # v3.24.0
 
   trivy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - uses: aquasecurity/trivy-action@master
         with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-      - uses: github/codeql-action/upload-sarif@e8893c57a1f3a2b659b6b55564fdfdbbd2982911  # v3.24.0
+          scan-type: "fs"
+          scan-ref: "."
+          format: "sarif"
+          output: "trivy-results.sarif"
+      - uses: github/codeql-action/upload-sarif@e8893c57a1f3a2b659b6b55564fdfdbbd2982911 # v3.24.0
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: "trivy-results.sarif"
 
 ---
-
 # ===================================================================
 # 例8: OIDC認証（長期トークン不要）
 # ===================================================================
@@ -337,16 +330,16 @@ on:
 
 permissions:
   contents: read
-  id-token: write  # OIDC トークン取得
+  id-token: write # OIDC トークン取得
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
       # ✅ OIDC でAWS認証（シークレット不要）
-      - uses: aws-actions/configure-aws-credentials@010d0da01d0b5a38af31e9c3470dbfdabdecca3a  # v4.0.1
+      - uses: aws-actions/configure-aws-credentials@010d0da01d0b5a38af31e9c3470dbfdabdecca3a # v4.0.1
         with:
           role-to-assume: arn:aws:iam::123456789012:role/GitHubActionsRole
           aws-region: us-east-1
@@ -354,7 +347,6 @@ jobs:
       - run: aws s3 sync ./dist s3://my-bucket
 
 ---
-
 # ===================================================================
 # 例9: 権限なし（外部サービスのみ）
 # ===================================================================
@@ -371,7 +363,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # checkoutは匿名アクセス可能なパブリックリポジトリ
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
       - name: Deploy to Vercel
         env:
@@ -383,7 +375,6 @@ jobs:
           vercel --prod --token=$VERCEL_TOKEN
 
 ---
-
 # ===================================================================
 # 例10: マルチジョブ権限制御
 # ===================================================================
@@ -399,14 +390,14 @@ jobs:
     # ワークフローレベルを継承（contents: read）
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - run: pnpm test
 
   build:
     # ワークフローレベルを継承
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - run: pnpm run build
 
   release:
@@ -418,5 +409,5 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4.1.1
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - run: pnpm run release

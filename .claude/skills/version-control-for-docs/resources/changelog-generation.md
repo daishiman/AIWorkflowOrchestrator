@@ -19,38 +19,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+
 - OAuth 2.0 authentication guide (#123)
 
 ### Changed
+
 - Updated installation instructions for v2.0 (#456)
 
 ### Fixed
+
 - Corrected broken links in API reference (#789)
 
 ## [1.2.0] - 2025-01-15
 
 ### Added
+
 - New troubleshooting section
 - API rate limiting documentation
 
 ### Changed
+
 - Reorganized navigation structure
 - Updated code examples to use async/await
 
 ### Removed
+
 - Deprecated v1 API documentation
 ```
 
 ## カテゴリ定義
 
-| カテゴリ | 用途 | 例 |
-|:---------|:-----|:---|
-| `Added` | 新規追加 | 新しいガイド、セクション |
-| `Changed` | 変更・改善 | 内容の更新、構造変更 |
-| `Deprecated` | 非推奨化 | 古いAPI文書の警告 |
-| `Removed` | 削除 | 古い文書の削除 |
-| `Fixed` | 修正 | 誤り、タイポ、リンク修正 |
-| `Security` | セキュリティ | セキュリティ関連の更新 |
+| カテゴリ     | 用途         | 例                       |
+| :----------- | :----------- | :----------------------- |
+| `Added`      | 新規追加     | 新しいガイド、セクション |
+| `Changed`    | 変更・改善   | 内容の更新、構造変更     |
+| `Deprecated` | 非推奨化     | 古いAPI文書の警告        |
+| `Removed`    | 削除         | 古い文書の削除           |
+| `Fixed`      | 修正         | 誤り、タイポ、リンク修正 |
+| `Security`   | セキュリティ | セキュリティ関連の更新   |
 
 ## 自動生成
 
@@ -70,17 +76,18 @@ conventional-changelog -p angular -i CHANGELOG.md -s -r 0
 ### 設定ファイル
 
 `.changelogrc.js`:
+
 ```javascript
 module.exports = {
   types: [
-    { type: 'docs', section: 'Added', hidden: false },
-    { type: 'update', section: 'Changed', hidden: false },
-    { type: 'fix', section: 'Fixed', hidden: false },
-    { type: 'remove', section: 'Removed', hidden: false },
-    { type: 'refactor', section: 'Changed', hidden: false },
-    { type: 'style', section: 'Changed', hidden: true },
-    { type: 'translate', section: 'Added', hidden: false }
-  ]
+    { type: "docs", section: "Added", hidden: false },
+    { type: "update", section: "Changed", hidden: false },
+    { type: "fix", section: "Fixed", hidden: false },
+    { type: "remove", section: "Removed", hidden: false },
+    { type: "refactor", section: "Changed", hidden: false },
+    { type: "style", section: "Changed", hidden: true },
+    { type: "translate", section: "Added", hidden: false },
+  ],
 };
 ```
 
@@ -106,7 +113,7 @@ jobs:
         uses: TriPSs/conventional-changelog-action@v5
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          output-file: 'CHANGELOG.md'
+          output-file: "CHANGELOG.md"
           skip-version-file: true
           skip-commit: false
 ```
@@ -119,11 +126,13 @@ jobs:
 ## [Unreleased]
 
 ### Added
+
 - [ガイド名] 新しいガイドを追加 (#Issue番号)
   - 含まれる内容の詳細
   - 関連するファイル
 
 ### Changed
+
 - [セクション名] 内容を更新 (#Issue番号)
   - 変更の具体的な内容
 ```
@@ -140,6 +149,7 @@ jobs:
 ## [1.3.0] - 2025-02-01
 
 ### Added
+
 - (移動した内容)
 ```
 
@@ -157,11 +167,11 @@ PATCH: 誤り修正、タイポ修正
 
 ### 文書向けの解釈
 
-| バージョン | 変更内容 |
-|:-----------|:---------|
-| 2.0.0 | 全面リニューアル、構造の大幅変更 |
-| 1.1.0 | 新しいガイドの追加 |
-| 1.0.1 | タイポ修正、リンク修正 |
+| バージョン | 変更内容                         |
+| :--------- | :------------------------------- |
+| 2.0.0      | 全面リニューアル、構造の大幅変更 |
+| 1.1.0      | 新しいガイドの追加               |
+| 1.0.1      | タイポ修正、リンク修正           |
 
 ## カスタムスクリプト
 
@@ -185,26 +195,26 @@ git log --pretty=format:"- %s (%h)" --since="last month" \
 
 ```javascript
 // scripts/generate-changelog.mjs
-import { execSync } from 'child_process';
-import { writeFileSync } from 'fs';
+import { execSync } from "child_process";
+import { writeFileSync } from "fs";
 
 const categories = {
-  docs: 'Added',
-  update: 'Changed',
-  fix: 'Fixed',
-  remove: 'Removed'
+  docs: "Added",
+  update: "Changed",
+  fix: "Fixed",
+  remove: "Removed",
 };
 
 function generateChangelog() {
   const commits = execSync(
     'git log --pretty=format:"%s|%h" --since="last tag"',
-    { encoding: 'utf-8' }
-  ).split('\n');
+    { encoding: "utf-8" },
+  ).split("\n");
 
   const entries = {};
 
   for (const commit of commits) {
-    const [message, hash] = commit.split('|');
+    const [message, hash] = commit.split("|");
     const match = message.match(/^(docs|update|fix|remove)\(([^)]+)\):\s*(.+)/);
 
     if (match) {
@@ -216,11 +226,11 @@ function generateChangelog() {
     }
   }
 
-  let changelog = '## [Unreleased]\n\n';
+  let changelog = "## [Unreleased]\n\n";
 
   for (const [category, items] of Object.entries(entries)) {
     changelog += `### ${category}\n`;
-    changelog += items.join('\n') + '\n\n';
+    changelog += items.join("\n") + "\n\n";
   }
 
   return changelog;
@@ -268,5 +278,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - YYYY-MM-DD
 
 ### Added
+
 - Initial documentation release
 ```

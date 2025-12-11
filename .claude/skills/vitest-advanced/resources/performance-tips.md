@@ -33,12 +33,12 @@ export default defineConfig({
 
 ```typescript
 // テストを並行実行
-describe.concurrent('Parallel tests', () => {
-  it.concurrent('test 1', async () => {
+describe.concurrent("Parallel tests", () => {
+  it.concurrent("test 1", async () => {
     await someAsyncOperation();
   });
 
-  it.concurrent('test 2', async () => {
+  it.concurrent("test 2", async () => {
     await anotherAsyncOperation();
   });
 });
@@ -54,12 +54,12 @@ beforeAll(() => {
   sharedData = loadData();
 });
 
-it('test 1', () => {
+it("test 1", () => {
   sharedData.modify(); // 他のテストに影響
 });
 
 // ✅ 良い例：独立したセットアップ
-it('test 1', () => {
+it("test 1", () => {
   const data = loadData();
   data.modify();
 });
@@ -73,7 +73,7 @@ it('test 1', () => {
 
 ```typescript
 // 重いセットアップはbeforeAllで共有
-describe('Database tests', () => {
+describe("Database tests", () => {
   let connection: Connection;
 
   beforeAll(async () => {
@@ -99,20 +99,20 @@ describe('Database tests', () => {
 export default defineConfig({
   test: {
     // グローバルセットアップ
-    setupFiles: ['./test/setup.ts'],
+    setupFiles: ["./test/setup.ts"],
 
     // 環境ごとのセットアップ
-    globalSetup: ['./test/global-setup.ts'],
+    globalSetup: ["./test/global-setup.ts"],
   },
 });
 ```
 
 ```typescript
 // test/setup.ts
-import { vi } from 'vitest';
+import { vi } from "vitest";
 
 // グローバルモック
-vi.mock('./expensive-module', () => ({
+vi.mock("./expensive-module", () => ({
   default: vi.fn(),
 }));
 ```
@@ -125,13 +125,13 @@ vi.mock('./expensive-module', () => ({
 
 ```typescript
 // ❌ 重い：実際のモジュールをロード
-vi.mock('./heavy-module', async (importOriginal) => {
+vi.mock("./heavy-module", async (importOriginal) => {
   const actual = await importOriginal();
   return { ...actual, method: vi.fn() };
 });
 
 // ✅ 軽い：完全にモック
-vi.mock('./heavy-module', () => ({
+vi.mock("./heavy-module", () => ({
   default: vi.fn(),
   method: vi.fn(),
 }));
@@ -141,13 +141,13 @@ vi.mock('./heavy-module', () => ({
 
 ```typescript
 // ❌ 悪い：不要なモック
-vi.mock('./logger');
-vi.mock('./metrics');
-vi.mock('./tracer');
+vi.mock("./logger");
+vi.mock("./metrics");
+vi.mock("./tracer");
 // 実際に使うのはloggerだけ
 
 // ✅ 良い：必要なものだけ
-vi.mock('./logger');
+vi.mock("./logger");
 ```
 
 ---
@@ -199,11 +199,7 @@ tests/user/
 export default defineConfig({
   test: {
     // 監視対象
-    watchExclude: [
-      '**/node_modules/**',
-      '**/dist/**',
-      '**/coverage/**',
-    ],
+    watchExclude: ["**/node_modules/**", "**/dist/**", "**/coverage/**"],
 
     // 関連ファイルのみ再実行
     passWithNoTests: true,
@@ -231,7 +227,7 @@ npx vitest --changed
 ### メモリリーク防止
 
 ```typescript
-describe('Memory sensitive tests', () => {
+describe("Memory sensitive tests", () => {
   let largeData: LargeData;
 
   beforeEach(() => {
@@ -281,14 +277,14 @@ npx vitest run --reporter=json --outputFile=results.json
 ### ベンチマーク
 
 ```typescript
-import { bench, describe } from 'vitest';
+import { bench, describe } from "vitest";
 
-describe('Performance benchmarks', () => {
-  bench('fast operation', () => {
+describe("Performance benchmarks", () => {
+  bench("fast operation", () => {
     fastFunction();
   });
 
-  bench('slow operation', () => {
+  bench("slow operation", () => {
     slowFunction();
   });
 });
@@ -313,7 +309,7 @@ export default defineConfig({
 
     // キャッシュ
     cache: {
-      dir: './node_modules/.vitest',
+      dir: "./node_modules/.vitest",
     },
 
     // 型チェックをスキップ
@@ -322,7 +318,7 @@ export default defineConfig({
     },
 
     // 最小限のレポート
-    reporters: ['basic'],
+    reporters: ["basic"],
 
     // 不要な機能を無効化
     coverage: {
@@ -345,8 +341,8 @@ export default defineConfig({
     cache: false,
 
     // 完全なレポート
-    reporters: ['verbose', 'junit'],
-    outputFile: './test-results.xml',
+    reporters: ["verbose", "junit"],
+    outputFile: "./test-results.xml",
 
     // カバレッジ有効
     coverage: {
@@ -364,14 +360,14 @@ export default defineConfig({
 
 ```typescript
 // 悪い例：固定待機
-it('should process', async () => {
+it("should process", async () => {
   await process();
-  await new Promise(resolve => setTimeout(resolve, 1000)); // 不要
+  await new Promise((resolve) => setTimeout(resolve, 1000)); // 不要
   expect(result).toBeDefined();
 });
 
 // 良い例：必要な待機のみ
-it('should process', async () => {
+it("should process", async () => {
   const result = await process();
   expect(result).toBeDefined();
 });
@@ -382,13 +378,13 @@ it('should process', async () => {
 ```typescript
 // 悪い例：すべてのテストで重いセットアップ
 beforeEach(async () => {
-  await seedDatabase();  // 毎回実行
-  await warmupCache();   // 毎回実行
+  await seedDatabase(); // 毎回実行
+  await warmupCache(); // 毎回実行
 });
 
 // 良い例：必要な時だけ
 beforeAll(async () => {
-  await seedDatabase();  // 一度だけ
+  await seedDatabase(); // 一度だけ
 });
 
 beforeEach(() => {

@@ -9,24 +9,24 @@
 ```typescript
 interface UploadProgress {
   // 基本情報
-  loaded: number;           // アップロード済みバイト数
-  total: number;            // 総ファイルサイズ
-  percentage: number;       // 進捗率 (0-100)
+  loaded: number; // アップロード済みバイト数
+  total: number; // 総ファイルサイズ
+  percentage: number; // 進捗率 (0-100)
 
   // 速度情報
-  speed: number;            // 現在の転送速度 (bytes/sec)
-  averageSpeed: number;     // 平均転送速度
+  speed: number; // 現在の転送速度 (bytes/sec)
+  averageSpeed: number; // 平均転送速度
 
   // 時間情報
-  elapsedTime: number;      // 経過時間 (秒)
-  estimatedTime: number;    // 推定残り時間 (秒)
+  elapsedTime: number; // 経過時間 (秒)
+  estimatedTime: number; // 推定残り時間 (秒)
 
   // チャンク情報（分割時）
-  currentChunk: number;     // 現在のチャンク番号
-  totalChunks: number;      // 総チャンク数
+  currentChunk: number; // 現在のチャンク番号
+  totalChunks: number; // 総チャンク数
 
   // ステータス
-  status: 'preparing' | 'uploading' | 'processing' | 'completed' | 'error';
+  status: "preparing" | "uploading" | "processing" | "completed" | "error";
 }
 ```
 
@@ -34,15 +34,15 @@ interface UploadProgress {
 
 ### イベント種類
 
-| イベント | タイミング | データ |
-|---------|-----------|--------|
-| `start` | アップロード開始 | 初期状態 |
-| `progress` | 進捗更新（定期的） | UploadProgress |
-| `chunk-complete` | チャンク完了 | チャンク番号 |
-| `pause` | 一時停止 | 現在状態 |
-| `resume` | 再開 | 現在状態 |
-| `complete` | 完了 | 最終結果 |
-| `error` | エラー発生 | エラー詳細 |
+| イベント         | タイミング         | データ         |
+| ---------------- | ------------------ | -------------- |
+| `start`          | アップロード開始   | 初期状態       |
+| `progress`       | 進捗更新（定期的） | UploadProgress |
+| `chunk-complete` | チャンク完了       | チャンク番号   |
+| `pause`          | 一時停止           | 現在状態       |
+| `resume`         | 再開               | 現在状態       |
+| `complete`       | 完了               | 最終結果       |
+| `error`          | エラー発生         | エラー詳細     |
 
 ### イベント発火間隔
 
@@ -57,7 +57,7 @@ interface UploadProgress {
 ```typescript
 function calculateInstantSpeed(
   bytesTransferred: number,
-  timeElapsed: number
+  timeElapsed: number,
 ): number {
   if (timeElapsed <= 0) return 0;
   return bytesTransferred / timeElapsed;
@@ -93,7 +93,7 @@ class SpeedCalculator {
 ```typescript
 function estimateRemainingTime(
   remainingBytes: number,
-  averageSpeed: number
+  averageSpeed: number,
 ): number {
   if (averageSpeed <= 0) return Infinity;
   return remainingBytes / averageSpeed;
@@ -102,12 +102,12 @@ function estimateRemainingTime(
 
 ### 表示形式
 
-| 残り時間 | 表示形式 |
-|---------|---------|
-| < 1分 | 「まもなく完了」 |
-| 1-60分 | 「約X分」 |
-| 1-24時間 | 「約X時間Y分」 |
-| > 24時間 | 「1日以上」 |
+| 残り時間 | 表示形式         |
+| -------- | ---------------- |
+| < 1分    | 「まもなく完了」 |
+| 1-60分   | 「約X分」        |
+| 1-24時間 | 「約X時間Y分」   |
+| > 24時間 | 「1日以上」      |
 
 ## キャンセル機能
 
@@ -118,9 +118,9 @@ const controller = new AbortController();
 
 // アップロード開始
 fetch(url, {
-  method: 'POST',
+  method: "POST",
   body: formData,
-  signal: controller.signal
+  signal: controller.signal,
 });
 
 // キャンセル

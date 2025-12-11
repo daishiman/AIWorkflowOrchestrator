@@ -78,10 +78,12 @@
 ## 制約
 
 **すべきこと**:
+
 - {{制約1}}
 - {{制約2}}
 
 **避けるべきこと**:
+
 - {{禁止事項1}}
 - {{禁止事項2}}
 ```
@@ -98,11 +100,13 @@
 ## ベストプラクティス
 
 ✅ **すべきこと**:
+
 - 明確で説明的な変数名を使用
 - 小さなステップでリファクタリング
 - 各ステップでテストを実行
 
 ❌ **避けるべきこと**:
+
 - テストなしのリファクタリング
 - 複数の変更を同時に実施
 - 曖昧な変数名の使用
@@ -118,15 +122,18 @@
 ### Phase 1: {{Phase名}}
 
 **実施内容**:
+
 1. {{ステップ1}}
 2. {{ステップ2}}
 3. {{ステップ3}}
 
 **ツール使用**:
+
 - {{ツール1}}
 - {{ツール2}}
 
 **成果物**:
+
 - {{成果物1}}
 ```
 
@@ -144,16 +151,19 @@
 ### Phase 1: Code Smellsの検出
 
 **実施内容**:
+
 1. 対象コードファイルを読み込み
 2. Long Method（長すぎるメソッド）を検出
 3. Duplicate Code（重複コード）を特定
 4. Large Class（巨大クラス）を発見
 
 **ツール使用**:
+
 - Read: コードファイルの読み込み
 - Grep: パターン検索
 
 **成果物**:
+
 - `.claude/docs/code-smells-report.md`
 ```
 
@@ -161,10 +171,11 @@
 
 ### 基本形式
 
-```markdown
+````markdown
 ## 専門知識の参照
 
 このエージェントは以下のスキルに依存しています:
+
 - **{{スキル1}}** (`.claude/skills/{{スキル1パス}}/SKILL.md`)
 - **{{スキル2}}** (`.claude/skills/{{スキル2パス}}/SKILL.md`)
 
@@ -174,7 +185,9 @@
 cat .claude/skills/{{スキル1パス}}/SKILL.md
 cat .claude/skills/{{スキル2パス}}/SKILL.md
 ```
-```
+````
+
+````
 
 ### 効果
 
@@ -196,8 +209,9 @@ cat .claude/skills/{{スキル2パス}}/SKILL.md
 ```bash
 cat .claude/skills/agent-architecture-patterns/SKILL.md
 cat .claude/skills/agent-structure-design/SKILL.md
-```
-```
+````
+
+````
 
 ## パターン5: Few-Shot Examples
 
@@ -221,7 +235,7 @@ cat .claude/skills/agent-structure-design/SKILL.md
 
 **期待される出力**:
 {{出力例2}}
-```
+````
 
 ### 効果
 
@@ -236,24 +250,28 @@ cat .claude/skills/agent-structure-design/SKILL.md
 
 ### 例
 
-```markdown
+````markdown
 ## 例
 
 ### 例1: Long Methodの検出
 
 **入力**:
+
 ```typescript
 function processUserData(user) {
   // 50行のコード
   // ...
 }
 ```
+````
 
 **期待される出力**:
+
 - Code Smell検出: Long Method
 - 推奨リファクタリング: Extract Method
 - 提案: `processUserData`を5つのメソッドに分割
-```
+
+````
 
 ## パターン6: Context Enhancement
 
@@ -273,7 +291,7 @@ function processUserData(user) {
 以下の基準に従って判断します:
 - {{基準1}}
 - {{基準2}}
-```
+````
 
 ### 効果
 
@@ -296,12 +314,14 @@ function processUserData(user) {
 ### Fallback動作
 
 エラー時の代替動作:
+
 1. {{fallback_1}}
 2. {{fallback_2}}
 
 ### Escalation
 
 以下の場合は上位エージェントにエスカレーション:
+
 - {{escalation_condition_1}}
 - {{escalation_condition_2}}
 ```
@@ -332,6 +352,6 @@ function processUserData(user) {
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-24 | 初版作成 |
+| バージョン | 日付       | 変更内容 |
+| ---------- | ---------- | -------- |
+| 1.0.0      | 2025-11-24 | 初版作成 |

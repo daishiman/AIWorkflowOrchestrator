@@ -29,9 +29,9 @@ description: |
   トリガーキーワード: spec, specification, 仕様書, 詳細仕様, 実装仕様, 設計書
 argument-hint: "[feature-name]"
 allowed-tools:
-   - Task
-   - Read
-   - Write(docs/**)
+  - Task
+  - Read
+  - Write(docs/**)
 model: sonnet
 ---
 
@@ -44,6 +44,7 @@ model: sonnet
 ### Phase 1: 機能名確認
 
 **引数チェック**:
+
 - `$1` (feature-name) が指定されている場合: そのまま使用
 - 未指定の場合: 対話的に機能名を確認
 
@@ -52,6 +53,7 @@ model: sonnet
 **エージェント**: `.claude/agents/spec-writer.md`
 
 **起動パラメータ**:
+
 ```
 Feature Name: $1 (または対話で確認した機能名)
 Project Context: master_system_design.md 準拠
@@ -99,6 +101,7 @@ Output Path: docs/20-specifications/features/[feature-name].md
 ### Phase 3: 検証と完了報告
 
 **検証項目**:
+
 - [ ] master_system_design.md の制約が反映されているか
 - [ ] TDD準拠のテストケースが明記されているか
 - [ ] 入出力スキーマ（Zod）が定義されているか
@@ -106,6 +109,7 @@ Output Path: docs/20-specifications/features/[feature-name].md
 - [ ] ハイブリッド構造の責務分離が反映されているか
 
 **完了報告**:
+
 - 生成された仕様書のパス
 - 記述された主要セクションの概要
 - 次のステップの提案（実装、レビュー等）
@@ -115,6 +119,7 @@ Output Path: docs/20-specifications/features/[feature-name].md
 **ファイルパス**: `docs/20-specifications/features/[feature-name].md`
 
 **品質基準**:
+
 - 実装者が仕様書のみで実装可能な詳細度
 - プロジェクト固有制約の完全な反映
 - TDD準拠のテストケース明記
@@ -123,14 +128,16 @@ Output Path: docs/20-specifications/features/[feature-name].md
 ## 注意事項
 
 **コマンドハブ原則**:
+
 - このコマンドは `.claude/agents/spec-writer.md` の起動ハブとして機能
 - 詳細な仕様書フォーマット、記述ルールは spec-writer エージェントに委譲
 - master_system_design.md 準拠の指示のみ行う
 
 **allowed-tools 制限**:
+
 - Task: spec-writer エージェント起動専用
 - Read: master_system_design.md、要件書、既存仕様参照専用
-- Write: docs/** ディレクトリのみ（ソースコード変更禁止）
+- Write: docs/\*\* ディレクトリのみ（ソースコード変更禁止）
 
 ## 使用例
 

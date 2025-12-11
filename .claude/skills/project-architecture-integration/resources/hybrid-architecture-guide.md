@@ -45,11 +45,13 @@ project/
 #### `shared/ui/`
 
 **配置するもの**:
+
 - 汎用UIコンポーネント（Button、Input、Card）
 - レイアウトコンポーネント（Header、Footer、Sidebar）
 - アニメーションコンポーネント
 
 **例**:
+
 ```typescript
 // shared/ui/Button.tsx
 export const Button = ({ children, onClick, variant }: ButtonProps) => {
@@ -64,26 +66,30 @@ export const Button = ({ children, onClick, variant }: ButtonProps) => {
 #### `shared/utils/`
 
 **配置するもの**:
+
 - 汎用ユーティリティ関数
 - 日付・文字列・数値操作
 - バリデーション関数
 
 **例**:
+
 ```typescript
 // shared/utils/formatDate.ts
 export const formatDate = (date: Date): string => {
-  return date.toLocaleDateString('ja-JP');
+  return date.toLocaleDateString("ja-JP");
 };
 ```
 
 #### `shared/types/`
 
 **配置するもの**:
+
 - 共通型定義
 - APIレスポンス型
 - エンティティ型
 
 **例**:
+
 ```typescript
 // shared/types/ApiResponse.ts
 export interface ApiResponse<T> {
@@ -96,11 +102,13 @@ export interface ApiResponse<T> {
 #### `shared/hooks/`
 
 **配置するもの**:
+
 - 汎用カスタムフック
 - API呼び出しフック
 - 状態管理フック
 
 **例**:
+
 ```typescript
 // shared/hooks/useLocalStorage.ts
 export const useLocalStorage = <T>(key: string, initialValue: T) => {
@@ -138,10 +146,10 @@ features/auth/
 
 ```typescript
 // features/auth/index.ts
-export { LoginForm, RegisterForm } from './components';
-export { useAuth, useUser } from './hooks';
-export { login, logout } from './api';
-export type { AuthUser, LoginCredentials } from './types/auth.types';
+export { LoginForm, RegisterForm } from "./components";
+export { useAuth, useUser } from "./hooks";
+export { login, logout } from "./api";
+export type { AuthUser, LoginCredentials } from "./types/auth.types";
 ```
 
 ## 依存関係ルール
@@ -149,41 +157,46 @@ export type { AuthUser, LoginCredentials } from './types/auth.types';
 ### ✅ 許可される依存
 
 1. **features → shared**: OK
+
    ```typescript
    // features/auth/components/LoginForm.tsx
-   import { Button } from '@/shared/ui/Button';
+   import { Button } from "@/shared/ui/Button";
    ```
 
 2. **features → features（同一フィーチャー内）**: OK
+
    ```typescript
    // features/auth/components/LoginForm.tsx
-   import { useAuth } from '../hooks/useAuth';
+   import { useAuth } from "../hooks/useAuth";
    ```
 
 3. **pages → features**: OK
+
    ```typescript
    // pages/login.tsx
-   import { LoginForm } from '@/features/auth';
+   import { LoginForm } from "@/features/auth";
    ```
 
 4. **pages → shared**: OK
    ```typescript
    // pages/dashboard.tsx
-   import { Card } from '@/shared/ui/Card';
+   import { Card } from "@/shared/ui/Card";
    ```
 
 ### ❌ 禁止される依存
 
 1. **shared → features**: NG
+
    ```typescript
    // shared/utils/auth.ts
-   import { useAuth } from '@/features/auth'; // ❌ 循環依存
+   import { useAuth } from "@/features/auth"; // ❌ 循環依存
    ```
 
 2. **features → features（異なるフィーチャー間）**: NG
+
    ```typescript
    // features/products/api/getProducts.ts
-   import { useAuth } from '@/features/auth'; // ❌ フィーチャー間依存
+   import { useAuth } from "@/features/auth"; // ❌ フィーチャー間依存
    ```
 
    **解決策**: sharedに共通ロジックを移動
@@ -225,6 +238,6 @@ export type { AuthUser, LoginCredentials } from './types/auth.types';
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-24 | 初版作成 |
+| バージョン | 日付       | 変更内容 |
+| ---------- | ---------- | -------- |
+| 1.0.0      | 2025-11-24 | 初版作成 |

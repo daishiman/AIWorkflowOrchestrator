@@ -41,13 +41,15 @@ setInterval(() => {
 
   if (samples.length === SAMPLE_COUNT) {
     // 単調増加チェック
-    const isIncreasing = samples.every((val, i) =>
-      i === 0 || val >= samples[i - 1]
+    const isIncreasing = samples.every(
+      (val, i) => i === 0 || val >= samples[i - 1],
     );
 
     if (isIncreasing) {
       const growth = samples[SAMPLE_COUNT - 1] - samples[0];
-      console.warn(`Potential leak: heap grew ${(growth / 1024 / 1024).toFixed(2)}MB`);
+      console.warn(
+        `Potential leak: heap grew ${(growth / 1024 / 1024).toFixed(2)}MB`,
+      );
     }
   }
 }, 60000);
@@ -65,8 +67,11 @@ function checkGCEffectiveness() {
     const after = process.memoryUsage().heapUsed;
     const freed = before - after;
 
-    if (freed < before * 0.1) { // 10%未満しか解放されない
-      console.warn(`GC ineffective: only freed ${(freed / 1024 / 1024).toFixed(2)}MB`);
+    if (freed < before * 0.1) {
+      // 10%未満しか解放されない
+      console.warn(
+        `GC ineffective: only freed ${(freed / 1024 / 1024).toFixed(2)}MB`,
+      );
     }
   }
 }
@@ -75,7 +80,7 @@ function checkGCEffectiveness() {
 ### 3. デタッチコンテキストの増加
 
 ```javascript
-const v8 = require('v8');
+const v8 = require("v8");
 
 function checkDetachedContexts() {
   const stats = v8.getHeapStatistics();
@@ -99,10 +104,10 @@ function processRequest(userId, data) {
 }
 
 // ✅ LRUキャッシュを使用
-const LRU = require('lru-cache');
+const LRU = require("lru-cache");
 const cache = new LRU({
   max: 500,
-  ttl: 1000 * 60 * 5 // 5分
+  ttl: 1000 * 60 * 5, // 5分
 });
 ```
 
@@ -114,7 +119,7 @@ function handleConnection(socket) {
   const listener = (data) => {
     // 処理
   };
-  socket.on('data', listener);
+  socket.on("data", listener);
   // 接続終了時に解除されない
 }
 
@@ -123,10 +128,10 @@ function handleConnection(socket) {
   const listener = (data) => {
     // 処理
   };
-  socket.on('data', listener);
+  socket.on("data", listener);
 
-  socket.on('close', () => {
-    socket.removeListener('data', listener);
+  socket.on("close", () => {
+    socket.removeListener("data", listener);
   });
 }
 ```
@@ -136,7 +141,7 @@ function handleConnection(socket) {
 ```javascript
 // ❌ リークする（大きなオブジェクトへの参照を保持）
 function createHandler(largeData) {
-  return function() {
+  return function () {
     // largeDataへの参照が残る
     console.log(largeData.id);
   };
@@ -145,7 +150,7 @@ function createHandler(largeData) {
 // ✅ 必要な値のみ抽出
 function createHandler(largeData) {
   const id = largeData.id; // 必要な値のみ
-  return function() {
+  return function () {
     console.log(id);
   };
 }
@@ -211,10 +216,10 @@ pnpm install heapdump
 ```
 
 ```javascript
-const heapdump = require('heapdump');
+const heapdump = require("heapdump");
 
 // シグナルでダンプ
-process.on('SIGUSR2', () => {
+process.on("SIGUSR2", () => {
   const filename = `/tmp/heap-${process.pid}-${Date.now()}.heapsnapshot`;
   heapdump.writeSnapshot(filename, (err, filename) => {
     if (err) console.error(err);
@@ -230,11 +235,11 @@ pnpm install @airbnb/node-memwatch
 ```
 
 ```javascript
-const memwatch = require('@airbnb/node-memwatch');
+const memwatch = require("@airbnb/node-memwatch");
 
 // リーク検出
-memwatch.on('leak', (info) => {
-  console.error('Memory leak detected:', info);
+memwatch.on("leak", (info) => {
+  console.error("Memory leak detected:", info);
   // {
   //   growth: 1234567,
   //   reason: 'heap growth over 5 consecutive GCs'
@@ -242,8 +247,8 @@ memwatch.on('leak', (info) => {
 });
 
 // ヒープ差分
-memwatch.on('stats', (stats) => {
-  console.log('GC stats:', stats);
+memwatch.on("stats", (stats) => {
+  console.log("GC stats:", stats);
 });
 ```
 
@@ -268,7 +273,7 @@ clinic doctor -- node app.js
 ```javascript
 // ベースラインの記録
 const baseline = process.memoryUsage();
-console.log('Baseline:', baseline);
+console.log("Baseline:", baseline);
 
 // 負荷テスト
 async function loadTest() {
@@ -281,16 +286,16 @@ async function loadTest() {
 ### Step 2: スナップショット比較
 
 ```javascript
-const heapdump = require('heapdump');
+const heapdump = require("heapdump");
 
 // 開始時
-heapdump.writeSnapshot('/tmp/heap-before.heapsnapshot');
+heapdump.writeSnapshot("/tmp/heap-before.heapsnapshot");
 
 // 負荷後
 await loadTest();
 
 // 終了時
-heapdump.writeSnapshot('/tmp/heap-after.heapsnapshot');
+heapdump.writeSnapshot("/tmp/heap-after.heapsnapshot");
 ```
 
 ### Step 3: Chrome DevToolsで分析
@@ -312,15 +317,15 @@ heapdump.writeSnapshot('/tmp/heap-after.heapsnapshot');
 ### イベントリスナー監視
 
 ```javascript
-const EventEmitter = require('events');
+const EventEmitter = require("events");
 
 // 最大リスナー数を設定
 EventEmitter.defaultMaxListeners = 10;
 
 // 警告をエラーに昇格
-process.on('warning', (warning) => {
-  if (warning.name === 'MaxListenersExceededWarning') {
-    console.error('Too many listeners:', warning);
+process.on("warning", (warning) => {
+  if (warning.name === "MaxListenersExceededWarning") {
+    console.error("Too many listeners:", warning);
   }
 });
 ```

@@ -32,20 +32,20 @@ pnpm install jest-axe @types/jest-axe --save-dev
 
 ```tsx
 // __tests__/Button.test.tsx
-import { render } from '@testing-library/react';
-import { axe, toHaveNoViolations } from 'jest-axe';
-import { Button } from '../Button';
+import { render } from "@testing-library/react";
+import { axe, toHaveNoViolations } from "jest-axe";
+import { Button } from "../Button";
 
 expect.extend(toHaveNoViolations);
 
-describe('Button', () => {
-  it('アクセシビリティ違反がないこと', async () => {
+describe("Button", () => {
+  it("アクセシビリティ違反がないこと", async () => {
     const { container } = render(<Button>クリック</Button>);
     const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
 
-  it('disabled状態でも違反がないこと', async () => {
+  it("disabled状態でも違反がないこと", async () => {
     const { container } = render(<Button disabled>無効</Button>);
     const results = await axe(container);
     expect(results).toHaveNoViolations();
@@ -56,34 +56,34 @@ describe('Button', () => {
 ### Testing Library
 
 ```tsx
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
-describe('Form', () => {
-  it('ラベルとフィールドが関連付けられていること', () => {
+describe("Form", () => {
+  it("ラベルとフィールドが関連付けられていること", () => {
     render(
       <form>
         <label htmlFor="email">メール</label>
         <input id="email" type="email" />
-      </form>
+      </form>,
     );
 
     // ラベルテキストで要素を取得できる
-    const input = screen.getByLabelText('メール');
+    const input = screen.getByLabelText("メール");
     expect(input).toBeInTheDocument();
   });
 
-  it('キーボードでフォームを操作できること', async () => {
+  it("キーボードでフォームを操作できること", async () => {
     const handleSubmit = jest.fn();
     render(
       <form onSubmit={handleSubmit}>
         <input type="text" />
         <button type="submit">送信</button>
-      </form>
+      </form>,
     );
 
-    const input = screen.getByRole('textbox');
-    const button = screen.getByRole('button');
+    const input = screen.getByRole("textbox");
+    const button = screen.getByRole("button");
 
     // Tabでフォーカス移動
     await userEvent.tab();
@@ -93,7 +93,7 @@ describe('Form', () => {
     expect(button).toHaveFocus();
 
     // Enterで送信
-    await userEvent.keyboard('{Enter}');
+    await userEvent.keyboard("{Enter}");
     expect(handleSubmit).toHaveBeenCalled();
   });
 });
@@ -103,40 +103,40 @@ describe('Form', () => {
 
 ```tsx
 // e2e/accessibility.spec.ts
-import { test, expect } from '@playwright/test';
-import AxeBuilder from '@axe-core/playwright';
+import { test, expect } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 
-test.describe('アクセシビリティ', () => {
-  test('ホームページに違反がないこと', async ({ page }) => {
-    await page.goto('/');
+test.describe("アクセシビリティ", () => {
+  test("ホームページに違反がないこと", async ({ page }) => {
+    await page.goto("/");
 
     const results = await new AxeBuilder({ page }).analyze();
     expect(results.violations).toEqual([]);
   });
 
-  test('特定のルールをチェック', async ({ page }) => {
-    await page.goto('/form');
+  test("特定のルールをチェック", async ({ page }) => {
+    await page.goto("/form");
 
     const results = await new AxeBuilder({ page })
-      .withTags(['wcag2a', 'wcag2aa'])
+      .withTags(["wcag2a", "wcag2aa"])
       .analyze();
 
     expect(results.violations).toEqual([]);
   });
 
-  test('キーボードナビゲーション', async ({ page }) => {
-    await page.goto('/');
+  test("キーボードナビゲーション", async ({ page }) => {
+    await page.goto("/");
 
     // Tabでナビゲーション
-    await page.keyboard.press('Tab');
+    await page.keyboard.press("Tab");
     const firstFocused = await page.evaluate(
-      () => document.activeElement?.tagName
+      () => document.activeElement?.tagName,
     );
-    expect(firstFocused).toBe('A');
+    expect(firstFocused).toBe("A");
 
     // スキップリンクのテスト
-    await page.keyboard.press('Enter');
-    const mainContent = page.locator('#main-content');
+    await page.keyboard.press("Enter");
+    const mainContent = page.locator("#main-content");
     await expect(mainContent).toBeVisible();
   });
 });
@@ -147,22 +147,20 @@ test.describe('アクセシビリティ', () => {
 ```tsx
 // .storybook/main.js
 module.exports = {
-  addons: ['@storybook/addon-a11y'],
+  addons: ["@storybook/addon-a11y"],
 };
 
 // Button.stories.tsx
-import { Button } from './Button';
+import { Button } from "./Button";
 
 export default {
-  title: 'Components/Button',
+  title: "Components/Button",
   component: Button,
   parameters: {
     a11y: {
       // axeの設定をカスタマイズ
       config: {
-        rules: [
-          { id: 'color-contrast', enabled: true },
-        ],
+        rules: [{ id: "color-contrast", enabled: true }],
       },
     },
   },
@@ -170,8 +168,8 @@ export default {
 
 export const Primary = {
   args: {
-    variant: 'primary',
-    children: 'ボタン',
+    variant: "primary",
+    children: "ボタン",
   },
 };
 ```
@@ -182,24 +180,24 @@ export const Primary = {
 
 ### キーボードテスト
 
-| 操作 | 確認項目 |
-|------|----------|
-| Tab | すべてのインタラクティブ要素に到達できるか |
-| Shift+Tab | 逆順に移動できるか |
-| Enter/Space | 要素を操作できるか |
-| Escape | モーダルやドロップダウンを閉じられるか |
-| 矢印キー | メニューやタブを操作できるか |
+| 操作        | 確認項目                                   |
+| ----------- | ------------------------------------------ |
+| Tab         | すべてのインタラクティブ要素に到達できるか |
+| Shift+Tab   | 逆順に移動できるか                         |
+| Enter/Space | 要素を操作できるか                         |
+| Escape      | モーダルやドロップダウンを閉じられるか     |
+| 矢印キー    | メニューやタブを操作できるか               |
 
 ```tsx
 // キーボードテスト用チェックリスト
 const keyboardTestCases = [
-  { key: 'Tab', expected: 'フォーカスが次の要素に移動' },
-  { key: 'Shift+Tab', expected: 'フォーカスが前の要素に移動' },
-  { key: 'Enter', expected: 'リンク/ボタンが活性化' },
-  { key: 'Space', expected: 'ボタン/チェックボックスが活性化' },
-  { key: 'Escape', expected: 'モーダル/ドロップダウンが閉じる' },
-  { key: 'ArrowDown', expected: 'メニュー内で次の項目に移動' },
-  { key: 'ArrowUp', expected: 'メニュー内で前の項目に移動' },
+  { key: "Tab", expected: "フォーカスが次の要素に移動" },
+  { key: "Shift+Tab", expected: "フォーカスが前の要素に移動" },
+  { key: "Enter", expected: "リンク/ボタンが活性化" },
+  { key: "Space", expected: "ボタン/チェックボックスが活性化" },
+  { key: "Escape", expected: "モーダル/ドロップダウンが閉じる" },
+  { key: "ArrowDown", expected: "メニュー内で次の項目に移動" },
+  { key: "ArrowUp", expected: "メニュー内で前の項目に移動" },
 ];
 ```
 
@@ -233,18 +231,21 @@ const keyboardTestCases = [
 ## スクリーンリーダーチェックリスト
 
 ### 基本
+
 - [ ] ページタイトルが読み上げられる
 - [ ] 見出し構造を辿れる
 - [ ] リンクの目的がわかる
 - [ ] 画像の代替テキストが読まれる
 
 ### フォーム
+
 - [ ] ラベルが読み上げられる
 - [ ] 必須フィールドがわかる
 - [ ] エラーメッセージが通知される
 - [ ] ヘルプテキストが読まれる
 
 ### インタラクション
+
 - [ ] ボタンの目的がわかる
 - [ ] 状態の変化が通知される
 - [ ] モーダルの開閉がわかる
@@ -302,7 +303,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install dependencies
         run: pnpm ci
@@ -333,12 +334,12 @@ jobs:
 
 ### レベル別アプローチ
 
-| レベル | 方法 | カバレッジ |
-|--------|------|------------|
-| ユニット | jest-axe | 各コンポーネント |
-| 統合 | Testing Library | ユーザーフロー |
-| E2E | Playwright + axe | 全ページ |
-| 手動 | キーボード + SR | 重要な機能 |
+| レベル   | 方法             | カバレッジ       |
+| -------- | ---------------- | ---------------- |
+| ユニット | jest-axe         | 各コンポーネント |
+| 統合     | Testing Library  | ユーザーフロー   |
+| E2E      | Playwright + axe | 全ページ         |
+| 手動     | キーボード + SR  | 重要な機能       |
 
 ### 優先度
 
@@ -351,16 +352,19 @@ jobs:
 ## チェックリスト
 
 ### 開発時
+
 - [ ] コンポーネントにjest-axeテストを追加
 - [ ] キーボード操作テストを追加
 - [ ] Storybookでa11yアドオンを確認
 
 ### PR時
+
 - [ ] CI/CDのa11yテストが通過
 - [ ] 新機能に手動テストを実施
 - [ ] スクリーンリーダーで確認（重要な機能）
 
 ### リリース前
+
 - [ ] 全ページのLighthouseスコアを確認
 - [ ] axe DevToolsで全体スキャン
 - [ ] 主要フローの手動テスト

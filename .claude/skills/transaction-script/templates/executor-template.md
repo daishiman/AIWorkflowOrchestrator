@@ -216,6 +216,7 @@ describe('[機能名]Executor', () => {
 ## 使用方法
 
 1. ディレクトリを作成:
+
    ```bash
    mkdir -p src/features/[機能名]/__tests__
    ```

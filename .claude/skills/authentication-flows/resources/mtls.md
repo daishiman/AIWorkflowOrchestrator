@@ -71,7 +71,7 @@ openssl x509 -req -days 365 -in client.csr -CA ca.crt -CAkey ca.key \
 ### Node.js証明書生成
 
 ```typescript
-import forge from 'node-forge';
+import forge from "node-forge";
 
 interface CertificateInfo {
   certificate: string;
@@ -87,19 +87,21 @@ class CertificateGenerator {
     cert.serialNumber = this.generateSerial();
     cert.validity.notBefore = new Date();
     cert.validity.notAfter = new Date();
-    cert.validity.notAfter.setDate(cert.validity.notBefore.getDate() + validityDays);
+    cert.validity.notAfter.setDate(
+      cert.validity.notBefore.getDate() + validityDays,
+    );
 
     const attrs = [
-      { name: 'commonName', value: commonName },
-      { name: 'organizationName', value: 'My Organization' },
+      { name: "commonName", value: commonName },
+      { name: "organizationName", value: "My Organization" },
     ];
 
     cert.setSubject(attrs);
     cert.setIssuer(attrs);
 
     cert.setExtensions([
-      { name: 'basicConstraints', cA: true },
-      { name: 'keyUsage', keyCertSign: true, cRLSign: true },
+      { name: "basicConstraints", cA: true },
+      { name: "keyUsage", keyCertSign: true, cRLSign: true },
     ]);
 
     cert.sign(keys.privateKey, forge.md.sha256.create());
@@ -114,7 +116,7 @@ class CertificateGenerator {
     caCert: string,
     caKey: string,
     commonName: string,
-    validityDays: number
+    validityDays: number,
   ): CertificateInfo {
     const ca = forge.pki.certificateFromPem(caCert);
     const caPrivateKey = forge.pki.privateKeyFromPem(caKey);
@@ -125,15 +127,17 @@ class CertificateGenerator {
     cert.serialNumber = this.generateSerial();
     cert.validity.notBefore = new Date();
     cert.validity.notAfter = new Date();
-    cert.validity.notAfter.setDate(cert.validity.notBefore.getDate() + validityDays);
+    cert.validity.notAfter.setDate(
+      cert.validity.notBefore.getDate() + validityDays,
+    );
 
-    cert.setSubject([{ name: 'commonName', value: commonName }]);
+    cert.setSubject([{ name: "commonName", value: commonName }]);
     cert.setIssuer(ca.subject.attributes);
 
     cert.setExtensions([
-      { name: 'basicConstraints', cA: false },
-      { name: 'keyUsage', digitalSignature: true },
-      { name: 'extKeyUsage', clientAuth: true },
+      { name: "basicConstraints", cA: false },
+      { name: "keyUsage", digitalSignature: true },
+      { name: "extKeyUsage", clientAuth: true },
     ]);
 
     cert.sign(caPrivateKey, forge.md.sha256.create());
@@ -155,21 +159,21 @@ class CertificateGenerator {
 ### Node.js HTTPSサーバー
 
 ```typescript
-import https from 'https';
-import fs from 'fs';
-import { Request, Response } from 'express';
-import express from 'express';
+import https from "https";
+import fs from "fs";
+import { Request, Response } from "express";
+import express from "express";
 
 const app = express();
 
 // mTLS設定
 const options: https.ServerOptions = {
   // サーバー証明書
-  cert: fs.readFileSync('server.crt'),
-  key: fs.readFileSync('server.key'),
+  cert: fs.readFileSync("server.crt"),
+  key: fs.readFileSync("server.key"),
 
   // CA証明書（クライアント証明書の検証用）
-  ca: fs.readFileSync('ca.crt'),
+  ca: fs.readFileSync("ca.crt"),
 
   // クライアント証明書を要求
   requestCert: true,
@@ -184,7 +188,7 @@ app.use((req: Request, res: Response, next) => {
 
   if (!cert || Object.keys(cert).length === 0) {
     return res.status(401).json({
-      error: { code: 'NO_CLIENT_CERT', message: 'Client certificate required' },
+      error: { code: "NO_CLIENT_CERT", message: "Client certificate required" },
     });
   }
 
@@ -200,10 +204,10 @@ app.use((req: Request, res: Response, next) => {
   next();
 });
 
-app.get('/api/secure', (req, res) => {
+app.get("/api/secure", (req, res) => {
   const cert = (req as any).clientCert;
   res.json({
-    message: 'Authenticated via mTLS',
+    message: "Authenticated via mTLS",
     client: cert.subject.CN,
   });
 });
@@ -238,24 +242,24 @@ class CertificateValidator {
     const validTo = new Date(cert.validTo);
 
     if (now < validFrom) {
-      return { valid: false, reason: 'Certificate not yet valid' };
+      return { valid: false, reason: "Certificate not yet valid" };
     }
 
     if (now > validTo) {
-      return { valid: false, reason: 'Certificate expired' };
+      return { valid: false, reason: "Certificate expired" };
     }
 
     // フィンガープリント検証（オプション）
     if (this.allowedFingerprints.size > 0) {
       if (!this.allowedFingerprints.has(cert.fingerprint)) {
-        return { valid: false, reason: 'Certificate fingerprint not allowed' };
+        return { valid: false, reason: "Certificate fingerprint not allowed" };
       }
     }
 
     // CN検証（オプション）
     if (this.allowedCNs.size > 0) {
       if (!this.allowedCNs.has(cert.subject.CN)) {
-        return { valid: false, reason: 'Certificate CN not allowed' };
+        return { valid: false, reason: "Certificate CN not allowed" };
       }
     }
 
@@ -269,7 +273,10 @@ function mtlsMiddleware(validator: CertificateValidator) {
 
     if (!cert) {
       return res.status(401).json({
-        error: { code: 'NO_CLIENT_CERT', message: 'Client certificate required' },
+        error: {
+          code: "NO_CLIENT_CERT",
+          message: "Client certificate required",
+        },
       });
     }
 
@@ -277,7 +284,7 @@ function mtlsMiddleware(validator: CertificateValidator) {
 
     if (!result.valid) {
       return res.status(403).json({
-        error: { code: 'INVALID_CERT', message: result.reason },
+        error: { code: "INVALID_CERT", message: result.reason },
       });
     }
 
@@ -291,8 +298,8 @@ function mtlsMiddleware(validator: CertificateValidator) {
 ### Node.js HTTPSクライアント
 
 ```typescript
-import https from 'https';
-import fs from 'fs';
+import https from "https";
+import fs from "fs";
 
 class MTLSClient {
   private readonly agent: https.Agent;
@@ -323,34 +330,34 @@ class MTLSClient {
 
 // 使用例
 const client = new MTLSClient({
-  cert: './client.crt',
-  key: './client.key',
-  ca: './ca.crt',
+  cert: "./client.crt",
+  key: "./client.key",
+  ca: "./ca.crt",
 });
 
-const response = await client.request('https://api.example.com/secure');
+const response = await client.request("https://api.example.com/secure");
 ```
 
 ### axiosでの使用
 
 ```typescript
-import axios from 'axios';
-import https from 'https';
-import fs from 'fs';
+import axios from "axios";
+import https from "https";
+import fs from "fs";
 
 const httpsAgent = new https.Agent({
-  cert: fs.readFileSync('client.crt'),
-  key: fs.readFileSync('client.key'),
-  ca: fs.readFileSync('ca.crt'),
+  cert: fs.readFileSync("client.crt"),
+  key: fs.readFileSync("client.key"),
+  ca: fs.readFileSync("ca.crt"),
   rejectUnauthorized: true,
 });
 
 const client = axios.create({
   httpsAgent,
-  baseURL: 'https://api.example.com',
+  baseURL: "https://api.example.com",
 });
 
-const response = await client.get('/secure');
+const response = await client.get("/secure");
 ```
 
 ## 証明書ローテーション
@@ -366,7 +373,9 @@ class CertificateRotator {
     const daysUntilExpiry = this.getDaysUntilExpiry(cert);
 
     if (daysUntilExpiry <= this.renewalThresholdDays) {
-      console.log(`Certificate expires in ${daysUntilExpiry} days, rotating...`);
+      console.log(
+        `Certificate expires in ${daysUntilExpiry} days, rotating...`,
+      );
       await this.rotateCertificate(certPath);
     }
   }
@@ -387,9 +396,12 @@ class CertificateRotator {
 }
 
 // 定期実行
-setInterval(() => {
-  rotator.checkAndRotate('./client.crt').catch(console.error);
-}, 24 * 60 * 60 * 1000); // 毎日チェック
+setInterval(
+  () => {
+    rotator.checkAndRotate("./client.crt").catch(console.error);
+  },
+  24 * 60 * 60 * 1000,
+); // 毎日チェック
 ```
 
 ## 証明書失効
@@ -397,7 +409,7 @@ setInterval(() => {
 ### CRL（Certificate Revocation List）
 
 ```typescript
-import forge from 'node-forge';
+import forge from "node-forge";
 
 class CRLChecker {
   private crl: forge.pki.CertificateRevocationList | null = null;
@@ -406,7 +418,7 @@ class CRLChecker {
     const response = await fetch(crlUrl);
     const crlData = await response.arrayBuffer();
     this.crl = forge.pki.certificationRequestFromPem(
-      Buffer.from(crlData).toString()
+      Buffer.from(crlData).toString(),
     );
   }
 
@@ -424,10 +436,12 @@ class CRLChecker {
 
 ```typescript
 class OCSPChecker {
-  async checkStatus(cert: forge.pki.Certificate): Promise<'good' | 'revoked' | 'unknown'> {
+  async checkStatus(
+    cert: forge.pki.Certificate,
+  ): Promise<"good" | "revoked" | "unknown"> {
     // OCSP応答者にリクエスト
     // 実装はOCSPプロトコルに従う
-    return 'good';
+    return "good";
   }
 }
 ```
@@ -435,16 +449,19 @@ class OCSPChecker {
 ## チェックリスト
 
 ### 設計時
+
 - [ ] 証明書階層を設計したか？
 - [ ] 有効期限ポリシーを決定したか？
 - [ ] 失効戦略を選択したか（CRL/OCSP）？
 
 ### 実装時
+
 - [ ] 秘密鍵を安全に保存しているか？
 - [ ] 証明書チェーンを正しく設定したか？
 - [ ] エラーハンドリングが適切か？
 
 ### 運用時
+
 - [ ] 証明書有効期限のモニタリングがあるか？
 - [ ] ローテーション手順が確立されているか？
 - [ ] 失効時の対応手順があるか？
@@ -455,10 +472,10 @@ class OCSPChecker {
 
 ```typescript
 // NG: 自己署名を信頼
-rejectUnauthorized: false
+rejectUnauthorized: false;
 
 // OK: 適切なCA証明書を使用
-ca: fs.readFileSync('production-ca.crt')
+ca: fs.readFileSync("production-ca.crt");
 ```
 
 ### ❌ 秘密鍵の不適切な保護

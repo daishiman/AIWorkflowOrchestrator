@@ -13,15 +13,15 @@
  * - カバレッジギャップの特定
  */
 
-import { readFileSync, readdirSync, statSync, existsSync } from 'fs';
-import { join, extname, dirname, basename } from 'path';
+import { readFileSync, readdirSync, statSync, existsSync } from "fs";
+import { join, extname, dirname, basename } from "path";
 
 // 設定
 const CONFIG = {
-  sourceExtensions: ['.ts', '.tsx'],
-  testPatterns: ['.test.ts', '.test.tsx', '.spec.ts', '.spec.tsx'],
-  testDirectories: ['__tests__', 'tests', 'test'],
-  excludePatterns: ['node_modules', '.git', 'dist', 'build'],
+  sourceExtensions: [".ts", ".tsx"],
+  testPatterns: [".test.ts", ".test.tsx", ".spec.ts", ".spec.tsx"],
+  testDirectories: ["__tests__", "tests", "test"],
+  excludePatterns: ["node_modules", ".git", "dist", "build"],
 };
 
 // 結果格納
@@ -63,7 +63,7 @@ function isTestFile(filePath) {
   const fileName = basename(filePath);
 
   // テストパターンに一致するか
-  if (CONFIG.testPatterns.some(pattern => fileName.endsWith(pattern))) {
+  if (CONFIG.testPatterns.some((pattern) => fileName.endsWith(pattern))) {
     return true;
   }
 
@@ -95,7 +95,7 @@ function isSourceFile(filePath) {
 function findTestFile(sourceFile) {
   const dir = dirname(sourceFile);
   const fileName = basename(sourceFile);
-  const baseName = fileName.replace(/\.(ts|tsx)$/, '');
+  const baseName = fileName.replace(/\.(ts|tsx)$/, "");
 
   // 候補となるテストファイルパス
   const candidates = [];
@@ -135,8 +135,8 @@ function findTestFile(sourceFile) {
  */
 function getLineCount(filePath) {
   try {
-    const content = readFileSync(filePath, 'utf-8');
-    return content.split('\n').length;
+    const content = readFileSync(filePath, "utf-8");
+    return content.split("\n").length;
   } catch {
     return 0;
   }
@@ -168,13 +168,17 @@ function analyzeDirectory(dir) {
  * 結果を出力
  */
 function printResults() {
-  console.log('\n📊 テストカバレッジ分析結果\n');
-  console.log('='.repeat(60));
+  console.log("\n📊 テストカバレッジ分析結果\n");
+  console.log("=".repeat(60));
 
   // 概要
-  const coverageRate = results.sourceFiles.length > 0
-    ? ((results.coveredFiles.length / results.sourceFiles.length) * 100).toFixed(1)
-    : 0;
+  const coverageRate =
+    results.sourceFiles.length > 0
+      ? (
+          (results.coveredFiles.length / results.sourceFiles.length) *
+          100
+        ).toFixed(1)
+      : 0;
 
   console.log(`\n📁 ソースファイル: ${results.sourceFiles.length}件`);
   console.log(`🧪 テストファイル: ${results.testFiles.length}件`);
@@ -184,7 +188,7 @@ function printResults() {
 
   // テストなしのファイル
   if (results.uncoveredFiles.length > 0) {
-    console.log('\n⚠️ テストが見つからないファイル:');
+    console.log("\n⚠️ テストが見つからないファイル:");
     for (const file of results.uncoveredFiles.slice(0, 20)) {
       console.log(`   ${file}`);
     }
@@ -209,29 +213,29 @@ function printResults() {
   }
 
   // 推奨アクション
-  console.log('\n' + '='.repeat(60));
-  console.log('📋 推奨アクション:');
+  console.log("\n" + "=".repeat(60));
+  console.log("📋 推奨アクション:");
 
   if (results.uncoveredFiles.length > 0) {
-    console.log('  1. テストのないファイルにテストを追加');
-    console.log('     優先順位: ビジネスロジック > ユーティリティ > 型定義');
+    console.log("  1. テストのないファイルにテストを追加");
+    console.log("     優先順位: ビジネスロジック > ユーティリティ > 型定義");
   }
 
   if (coverageRate < 80) {
-    console.log('  2. カバレッジ率を80%以上に向上');
+    console.log("  2. カバレッジ率を80%以上に向上");
   }
 
   if (totalSourceLines > 0 && totalTestLines / totalSourceLines < 0.8) {
-    console.log('  3. テストコード量を増やす（エッジケース、エラーケース）');
+    console.log("  3. テストコード量を増やす（エッジケース、エラーケース）");
   }
 
-  console.log('');
+  console.log("");
 }
 
 // メイン処理
 const args = process.argv.slice(2);
 if (args.length === 0) {
-  console.log('Usage: node analyze-coverage.mjs <directory>');
+  console.log("Usage: node analyze-coverage.mjs <directory>");
   process.exit(1);
 }
 

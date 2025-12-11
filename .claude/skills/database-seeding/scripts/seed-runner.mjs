@@ -17,22 +17,22 @@
 
 // 設定
 const CONFIG = {
-  environments: ['development', 'test', 'staging', 'production'],
-  seedTypes: ['master', 'development', 'test', 'full'],
+  environments: ["development", "test", "staging", "production"],
+  seedTypes: ["master", "development", "test", "full"],
 };
 
 /**
  * 環境を取得
  */
 function getEnvironment() {
-  return process.env.NODE_ENV || 'development';
+  return process.env.NODE_ENV || "development";
 }
 
 /**
  * 環境が本番かどうか
  */
 function isProduction() {
-  return getEnvironment() === 'production';
+  return getEnvironment() === "production";
 }
 
 /**
@@ -40,7 +40,9 @@ function isProduction() {
  */
 function validateSeedType(type) {
   if (!CONFIG.seedTypes.includes(type)) {
-    throw new Error(`Invalid seed type: ${type}. Valid types: ${CONFIG.seedTypes.join(', ')}`);
+    throw new Error(
+      `Invalid seed type: ${type}. Valid types: ${CONFIG.seedTypes.join(", ")}`,
+    );
   }
 }
 
@@ -52,39 +54,41 @@ async function confirmProduction() {
     return true;
   }
 
-  console.log('\n⚠️  WARNING: You are about to run seeds in PRODUCTION');
-  console.log('This action may modify production data.');
-  console.log('');
+  console.log("\n⚠️  WARNING: You are about to run seeds in PRODUCTION");
+  console.log("This action may modify production data.");
+  console.log("");
 
   // Node.jsでの簡易確認（実際の実装ではreadlineを使用）
-  console.log('To proceed, set CONFIRM_PRODUCTION=true environment variable');
+  console.log("To proceed, set CONFIRM_PRODUCTION=true environment variable");
 
-  return process.env.CONFIRM_PRODUCTION === 'true';
+  return process.env.CONFIRM_PRODUCTION === "true";
 }
 
 /**
  * シードのサマリーを表示
  */
 function showSeedSummary(env, type, dryRun) {
-  console.log('\n📋 Seed Summary');
-  console.log('===============');
+  console.log("\n📋 Seed Summary");
+  console.log("===============");
   console.log(`Environment: ${env}`);
   console.log(`Seed Type: ${type}`);
-  console.log(`Dry Run: ${dryRun ? 'Yes' : 'No'}`);
-  console.log(`Database: ${process.env.DATABASE_URL ? '(configured)' : '(not configured)'}`);
-  console.log('');
+  console.log(`Dry Run: ${dryRun ? "Yes" : "No"}`);
+  console.log(
+    `Database: ${process.env.DATABASE_URL ? "(configured)" : "(not configured)"}`,
+  );
+  console.log("");
 }
 
 /**
  * マスターシードの実行（デモ）
  */
 function runMasterSeed(dryRun) {
-  console.log('🔄 Running master seeds...');
+  console.log("🔄 Running master seeds...");
 
   const masterData = [
-    { table: 'roles', records: ['admin', 'editor', 'viewer'] },
-    { table: 'categories', records: ['electronics', 'books', 'clothing'] },
-    { table: 'settings', records: ['app.name', 'app.timezone'] },
+    { table: "roles", records: ["admin", "editor", "viewer"] },
+    { table: "categories", records: ["electronics", "books", "clothing"] },
+    { table: "settings", records: ["app.name", "app.timezone"] },
   ];
 
   masterData.forEach(({ table, records }) => {
@@ -101,16 +105,16 @@ function runMasterSeed(dryRun) {
  */
 function runDevelopmentSeed(dryRun) {
   if (isProduction()) {
-    console.log('  ⚠️ Skipping development seeds in production');
+    console.log("  ⚠️ Skipping development seeds in production");
     return;
   }
 
-  console.log('🔄 Running development seeds...');
+  console.log("🔄 Running development seeds...");
 
   const devData = [
-    { table: 'users', count: 50 },
-    { table: 'orders', count: 200 },
-    { table: 'order_items', count: 600 },
+    { table: "users", count: 50 },
+    { table: "orders", count: 200 },
+    { table: "order_items", count: 600 },
   ];
 
   devData.forEach(({ table, count }) => {
@@ -126,16 +130,16 @@ function runDevelopmentSeed(dryRun) {
  * テストシードの実行（デモ）
  */
 function runTestSeed(dryRun) {
-  console.log('🔄 Running test seeds...');
+  console.log("🔄 Running test seeds...");
 
   const testFixtures = [
-    'user_with_orders',
-    'user_without_orders',
-    'cancelled_order',
-    'refunded_order',
+    "user_with_orders",
+    "user_without_orders",
+    "cancelled_order",
+    "refunded_order",
   ];
 
-  testFixtures.forEach(fixture => {
+  testFixtures.forEach((fixture) => {
     if (dryRun) {
       console.log(`  [DRY RUN] Would create fixture: ${fixture}`);
     } else {
@@ -156,44 +160,44 @@ async function runSeeds(options) {
   if (isProduction()) {
     const confirmed = await confirmProduction();
     if (!confirmed) {
-      console.log('❌ Seed cancelled');
+      console.log("❌ Seed cancelled");
       process.exit(1);
     }
   }
 
-  console.log('🚀 Starting seed process...\n');
+  console.log("🚀 Starting seed process...\n");
 
   try {
     switch (type) {
-      case 'master':
+      case "master":
         runMasterSeed(dryRun);
         break;
 
-      case 'development':
+      case "development":
         runMasterSeed(dryRun);
         runDevelopmentSeed(dryRun);
         break;
 
-      case 'test':
+      case "test":
         runMasterSeed(dryRun);
         runTestSeed(dryRun);
         break;
 
-      case 'full':
+      case "full":
         runMasterSeed(dryRun);
         runDevelopmentSeed(dryRun);
         runTestSeed(dryRun);
         break;
     }
 
-    console.log('\n✅ Seed process completed');
+    console.log("\n✅ Seed process completed");
 
     if (dryRun) {
-      console.log('\nℹ️  This was a dry run. No data was actually modified.');
-      console.log('   Remove --dry-run to execute the seeds.');
+      console.log("\nℹ️  This was a dry run. No data was actually modified.");
+      console.log("   Remove --dry-run to execute the seeds.");
     }
   } catch (error) {
-    console.error('\n❌ Seed process failed:', error.message);
+    console.error("\n❌ Seed process failed:", error.message);
     process.exit(1);
   }
 }
@@ -202,20 +206,22 @@ async function runSeeds(options) {
  * シードステータスの表示
  */
 function showStatus() {
-  console.log('\n📊 Seed Status');
-  console.log('==============');
+  console.log("\n📊 Seed Status");
+  console.log("==============");
   console.log(`Environment: ${getEnvironment()}`);
-  console.log(`Database: ${process.env.DATABASE_URL ? '(configured)' : '(not configured)'}`);
-  console.log('');
-  console.log('Available seed types:');
-  CONFIG.seedTypes.forEach(type => {
+  console.log(
+    `Database: ${process.env.DATABASE_URL ? "(configured)" : "(not configured)"}`,
+  );
+  console.log("");
+  console.log("Available seed types:");
+  CONFIG.seedTypes.forEach((type) => {
     console.log(`  - ${type}`);
   });
-  console.log('');
-  console.log('Usage examples:');
-  console.log('  node seed-runner.mjs --type master');
-  console.log('  node seed-runner.mjs --type development --dry-run');
-  console.log('  NODE_ENV=staging node seed-runner.mjs --type full');
+  console.log("");
+  console.log("Usage examples:");
+  console.log("  node seed-runner.mjs --type master");
+  console.log("  node seed-runner.mjs --type development --dry-run");
+  console.log("  NODE_ENV=staging node seed-runner.mjs --type full");
 }
 
 /**
@@ -264,7 +270,7 @@ function showHelp() {
 function parseArgs(args) {
   const options = {
     env: getEnvironment(),
-    type: 'development',
+    type: "development",
     dryRun: false,
     showStatus: false,
     showHelp: false,
@@ -272,19 +278,19 @@ function parseArgs(args) {
 
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
-      case '--env':
+      case "--env":
         options.env = args[++i];
         break;
-      case '--type':
+      case "--type":
         options.type = args[++i];
         break;
-      case '--dry-run':
+      case "--dry-run":
         options.dryRun = true;
         break;
-      case '--status':
+      case "--status":
         options.showStatus = true;
         break;
-      case '--help':
+      case "--help":
         options.showHelp = true;
         break;
     }
@@ -312,7 +318,7 @@ async function main() {
     validateSeedType(options.type);
     await runSeeds(options);
   } catch (error) {
-    console.error('Error:', error.message);
+    console.error("Error:", error.message);
     process.exit(1);
   }
 }

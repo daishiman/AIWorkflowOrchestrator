@@ -11,6 +11,7 @@
 ### 1. パストラバーサル攻撃
 
 #### 脅威の説明
+
 攻撃者が `../` などの相対パス表記を使用して、監視対象外のディレクトリにアクセスする。
 
 #### 攻撃ベクター
@@ -23,13 +24,13 @@
 
 #### エンコーディングバリエーション
 
-| パターン | エンコーディング | 例 |
-|---------|----------------|-----|
-| 標準 | なし | `../etc/passwd` |
-| URL | %xx | `%2e%2e%2f` |
-| ダブルURL | %25xx | `%252e%252e%252f` |
-| Unicode | \uxxxx | `\u002e\u002e/` |
-| Null Byte | \0 | `file.txt\0.jpg` |
+| パターン  | エンコーディング | 例                |
+| --------- | ---------------- | ----------------- |
+| 標準      | なし             | `../etc/passwd`   |
+| URL       | %xx              | `%2e%2e%2f`       |
+| ダブルURL | %25xx            | `%252e%252e%252f` |
+| Unicode   | \uxxxx           | `\u002e\u002e/`   |
+| Null Byte | \0               | `file.txt\0.jpg`  |
 
 #### 対策
 
@@ -38,7 +39,7 @@
 function validatePath(input: string): string {
   // Layer 1: 疑わしいパターンの検出
   if (containsSuspiciousPattern(input)) {
-    throw new SecurityError('Suspicious pattern detected');
+    throw new SecurityError("Suspicious pattern detected");
   }
 
   // Layer 2: 正規化
@@ -46,12 +47,12 @@ function validatePath(input: string): string {
 
   // Layer 3: ホワイトリスト検証
   if (!isWithinAllowedDirs(normalized)) {
-    throw new SecurityError('Path outside allowed directories');
+    throw new SecurityError("Path outside allowed directories");
   }
 
   // Layer 4: 二重チェック（正規化後のパターン）
   if (containsSuspiciousPattern(normalized)) {
-    throw new SecurityError('Suspicious pattern after normalization');
+    throw new SecurityError("Suspicious pattern after normalization");
   }
 
   return normalized;
@@ -63,6 +64,7 @@ function validatePath(input: string): string {
 ### 2. シンボリックリンク攻撃
 
 #### 脅威の説明
+
 攻撃者がシンボリックリンクを作成し、監視対象外のファイルを参照させる。
 
 #### 攻撃シナリオ
@@ -86,22 +88,22 @@ ln -s /etc/passwd /app/uploads/innocent.txt
 
 ```typescript
 // O_NOFOLLOW フラグを使用した安全なファイルオープン
-import { open } from 'fs/promises';
+import { open } from "fs/promises";
 
 async function safeRead(filePath: string): Promise<Buffer> {
   // lstat で先にチェック（symlinkかどうか）
   const stats = await fs.lstat(filePath);
   if (stats.isSymbolicLink()) {
-    throw new SecurityError('Symbolic links not allowed');
+    throw new SecurityError("Symbolic links not allowed");
   }
 
   // TOCTOU対策: O_NOFOLLOWフラグ
-  const fd = await open(filePath, 'r');
+  const fd = await open(filePath, "r");
   try {
     // fd経由でfstatして再確認
     const fdStats = await fd.stat();
     if (fdStats.ino !== stats.ino) {
-      throw new SecurityError('File changed during access (race condition)');
+      throw new SecurityError("File changed during access (race condition)");
     }
     return await fd.readFile();
   } finally {
@@ -115,16 +117,17 @@ async function safeRead(filePath: string): Promise<Buffer> {
 ### 3. リソース枯渇攻撃 (DoS)
 
 #### 脅威の説明
+
 攻撃者が大量のファイル操作を発生させ、監視システムをオーバーロードさせる。
 
 #### 攻撃パターン
 
-| パターン | 説明 | 影響 |
-|---------|------|------|
-| ファイル爆弾 | 短時間に数千ファイル作成 | CPU/メモリ枯渇 |
-| 深いネスト | 非常に深いディレクトリ構造 | スタックオーバーフロー |
-| 長いファイル名 | 極端に長いパス名 | バッファオーバーフロー |
-| 高速変更 | 同一ファイルの高速更新 | イベントキュー溢れ |
+| パターン       | 説明                       | 影響                   |
+| -------------- | -------------------------- | ---------------------- |
+| ファイル爆弾   | 短時間に数千ファイル作成   | CPU/メモリ枯渇         |
+| 深いネスト     | 非常に深いディレクトリ構造 | スタックオーバーフロー |
+| 長いファイル名 | 極端に長いパス名           | バッファオーバーフロー |
+| 高速変更       | 同一ファイルの高速更新     | イベントキュー溢れ     |
 
 #### 対策
 
@@ -163,6 +166,7 @@ function checkDepth(filePath: string): void {
 ### 4. 権限昇格
 
 #### 脅威の説明
+
 監視プロセスの実行権限を利用して、より高い権限でコードを実行する。
 
 #### 攻撃ベクター
@@ -180,7 +184,7 @@ chmod u+s /app/uploads/malicious
 ```typescript
 // 1. 最小権限で実行
 if (process.getuid && process.getuid() === 0) {
-  console.error('WARNING: Running as root is not recommended');
+  console.error("WARNING: Running as root is not recommended");
   // 権限降格
   process.setgid(1000);
   process.setuid(1000);
@@ -192,8 +196,8 @@ async function checkSpecialPermissions(filePath: string): Promise<void> {
   const mode = stats.mode;
 
   // setuid (4000) または setgid (2000) をチェック
-  if ((mode & 0o4000) || (mode & 0o2000)) {
-    throw new SecurityError('setuid/setgid files not allowed');
+  if (mode & 0o4000 || mode & 0o2000) {
+    throw new SecurityError("setuid/setgid files not allowed");
   }
 
   // world-writable (0002) をチェック
@@ -208,6 +212,7 @@ async function checkSpecialPermissions(filePath: string): Promise<void> {
 ### 5. 情報漏洩
 
 #### 脅威の説明
+
 機密情報を含むファイルが意図せず監視・処理される。
 
 #### 機密ファイルパターン
@@ -255,7 +260,7 @@ class SensitiveFileFilter {
   }
 
   isSensitive(filePath: string): boolean {
-    return this.patterns.some(pattern => pattern.test(filePath));
+    return this.patterns.some((pattern) => pattern.test(filePath));
   }
 
   filter(files: string[]): { safe: string[]; sensitive: string[] } {
@@ -279,13 +284,13 @@ class SensitiveFileFilter {
 
 ## リスク評価マトリックス
 
-| 脅威 | 発生確率 | 影響度 | リスクレベル | 優先対策 |
-|------|---------|-------|-------------|---------|
-| パストラバーサル | 高 | 重大 | 🔴 Critical | 入力検証必須 |
-| シンボリックリンク | 中 | 重大 | 🔴 Critical | lstat/realpath検証 |
-| DoS | 高 | 高 | 🟠 High | レート制限 |
-| 権限昇格 | 低 | 重大 | 🟡 Medium | 最小権限実行 |
-| 情報漏洩 | 中 | 高 | 🟠 High | 除外パターン |
+| 脅威               | 発生確率 | 影響度 | リスクレベル | 優先対策           |
+| ------------------ | -------- | ------ | ------------ | ------------------ |
+| パストラバーサル   | 高       | 重大   | 🔴 Critical  | 入力検証必須       |
+| シンボリックリンク | 中       | 重大   | 🔴 Critical  | lstat/realpath検証 |
+| DoS                | 高       | 高     | 🟠 High      | レート制限         |
+| 権限昇格           | 低       | 重大   | 🟡 Medium    | 最小権限実行       |
+| 情報漏洩           | 中       | 高     | 🟠 High      | 除外パターン       |
 
 ---
 
@@ -297,7 +302,7 @@ class SensitiveFileFilter {
 const devSecurityProfile = {
   // 緩いセキュリティ設定
   pathValidation: true,
-  symlinkPolicy: 'allow',
+  symlinkPolicy: "allow",
   rateLimit: false,
   auditLog: false,
 };
@@ -308,7 +313,7 @@ const devSecurityProfile = {
 ```typescript
 const stagingSecurityProfile = {
   pathValidation: true,
-  symlinkPolicy: 'verify',
+  symlinkPolicy: "verify",
   rateLimit: true,
   auditLog: true,
 };
@@ -319,7 +324,7 @@ const stagingSecurityProfile = {
 ```typescript
 const productionSecurityProfile = {
   pathValidation: true,
-  symlinkPolicy: 'deny', // マルチテナントでは必須
+  symlinkPolicy: "deny", // マルチテナントでは必須
   rateLimit: true,
   auditLog: true,
   sandbox: true,

@@ -432,10 +432,10 @@ export function OgImage({ src, alt, title }: OgImageProps) {
 
 ## 変数説明
 
-| 変数 | 説明 | 例 |
-|------|------|-----|
-| `src` | 画像ソースURL | `/images/hero.jpg` |
-| `alt` | 代替テキスト | `商品のサムネイル` |
-| `aspectRatio` | アスペクト比 | `16/9`, `4/3`, `1/1` |
-| `sizes` | レスポンシブサイズ | `(max-width: 768px) 100vw, 50vw` |
-| `priority` | プリロード設定 | `true`, `false` |
+| 変数          | 説明               | 例                               |
+| ------------- | ------------------ | -------------------------------- |
+| `src`         | 画像ソースURL      | `/images/hero.jpg`               |
+| `alt`         | 代替テキスト       | `商品のサムネイル`               |
+| `aspectRatio` | アスペクト比       | `16/9`, `4/3`, `1/1`             |
+| `sizes`       | レスポンシブサイズ | `(max-width: 768px) 100vw, 50vw` |
+| `priority`    | プリロード設定     | `true`, `false`                  |

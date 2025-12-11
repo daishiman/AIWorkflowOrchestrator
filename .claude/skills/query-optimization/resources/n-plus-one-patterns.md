@@ -6,6 +6,7 @@
 子エンティティ取得クエリ（N回）が発生する問題。
 
 **影響**:
+
 - データベース負荷の増大
 - レスポンスタイムの悪化
 - コネクションプールの枯渇リスク
@@ -17,14 +18,14 @@
 ```typescript
 // ❌ N+1問題あり
 async function getWorkflowsWithSteps(): Promise<WorkflowWithSteps[]> {
-  const workflows = await workflowRepo.findAll()  // 1クエリ
+  const workflows = await workflowRepo.findAll(); // 1クエリ
 
   return Promise.all(
     workflows.map(async (workflow) => ({
       ...workflow,
-      steps: await stepRepo.findByWorkflowId(workflow.id),  // N クエリ
-    }))
-  )
+      steps: await stepRepo.findByWorkflowId(workflow.id), // N クエリ
+    })),
+  );
 }
 // 合計: 1 + N クエリ
 ```
@@ -33,10 +34,10 @@ async function getWorkflowsWithSteps(): Promise<WorkflowWithSteps[]> {
 
 ```typescript
 // ❌ Lazy Loading による N+1
-const workflows = await workflowRepo.findAll()  // 1クエリ
+const workflows = await workflowRepo.findAll(); // 1クエリ
 
 for (const workflow of workflows) {
-  console.log(workflow.user.name)  // 暗黙的に N クエリ発生
+  console.log(workflow.user.name); // 暗黙的に N クエリ発生
 }
 ```
 
@@ -44,12 +45,14 @@ for (const workflow of workflows) {
 
 ```tsx
 // ❌ テンプレート内での関連アクセス
-{workflows.map((workflow) => (
-  <div key={workflow.id}>
-    {workflow.user.name}  // レンダリング時に N クエリ
-    {workflow.steps.length}  // さらに N クエリ
-  </div>
-))}
+{
+  workflows.map((workflow) => (
+    <div key={workflow.id}>
+      {workflow.user.name} // レンダリング時に N クエリ
+      {workflow.steps.length} // さらに N クエリ
+    </div>
+  ));
+}
 ```
 
 ## 解決策
@@ -65,24 +68,27 @@ async function getWorkflowsWithSteps(): Promise<WorkflowWithSteps[]> {
     .select()
     .from(workflows)
     .leftJoin(steps, eq(steps.workflowId, workflows.id))
-    .orderBy(workflows.id)
+    .orderBy(workflows.id);
 
   // 結果をグループ化
-  return groupByWorkflow(results)
+  return groupByWorkflow(results);
 }
 // 合計: 1 クエリ
 ```
 
 **適用条件**:
+
 - [ ] 関連データが常に必要
 - [ ] 結果セットが大きすぎない
 - [ ] 1対多または多対多の関連
 
 **メリット**:
+
 - クエリ数が最小（1回）
 - ネットワークラウンドトリップ削減
 
 **デメリット**:
+
 - 結果セットが大きくなる可能性
 - メモリ使用量の増加
 
@@ -93,30 +99,33 @@ async function getWorkflowsWithSteps(): Promise<WorkflowWithSteps[]> {
 ```typescript
 // ✅ バッチフェッチで一括取得
 async function getWorkflowsWithSteps(): Promise<WorkflowWithSteps[]> {
-  const workflows = await workflowRepo.findAll()  // 1クエリ
-  const workflowIds = workflows.map(w => w.id)
+  const workflows = await workflowRepo.findAll(); // 1クエリ
+  const workflowIds = workflows.map((w) => w.id);
 
-  const allSteps = await stepRepo.findByWorkflowIds(workflowIds)  // 1クエリ
-  const stepsByWorkflowId = groupBy(allSteps, 'workflowId')
+  const allSteps = await stepRepo.findByWorkflowIds(workflowIds); // 1クエリ
+  const stepsByWorkflowId = groupBy(allSteps, "workflowId");
 
-  return workflows.map(workflow => ({
+  return workflows.map((workflow) => ({
     ...workflow,
     steps: stepsByWorkflowId[workflow.id] || [],
-  }))
+  }));
 }
 // 合計: 2 クエリ（1 + 1）
 ```
 
 **適用条件**:
+
 - [ ] IDの配列で検索可能
 - [ ] 結果のグループ化が可能
 - [ ] JOINが複雑すぎる場合
 
 **メリット**:
+
 - クエリ数が固定（2回）
 - JOINより結果セットが小さい
 
 **デメリット**:
+
 - アプリケーション側でのグループ化が必要
 - IN句の要素数制限に注意
 
@@ -126,35 +135,38 @@ async function getWorkflowsWithSteps(): Promise<WorkflowWithSteps[]> {
 
 ```typescript
 // ✅ DataLoaderを使用
-import DataLoader from 'dataloader'
+import DataLoader from "dataloader";
 
 const stepLoader = new DataLoader(async (workflowIds: string[]) => {
-  const steps = await stepRepo.findByWorkflowIds(workflowIds)
-  const stepsByWorkflowId = groupBy(steps, 'workflowId')
-  return workflowIds.map(id => stepsByWorkflowId[id] || [])
-})
+  const steps = await stepRepo.findByWorkflowIds(workflowIds);
+  const stepsByWorkflowId = groupBy(steps, "workflowId");
+  return workflowIds.map((id) => stepsByWorkflowId[id] || []);
+});
 
 // 使用側（ループでも自動的にバッチ化）
-const workflows = await workflowRepo.findAll()
+const workflows = await workflowRepo.findAll();
 const results = await Promise.all(
   workflows.map(async (workflow) => ({
     ...workflow,
-    steps: await stepLoader.load(workflow.id),  // 自動バッチ化
-  }))
-)
+    steps: await stepLoader.load(workflow.id), // 自動バッチ化
+  })),
+);
 ```
 
 **適用条件**:
+
 - [ ] GraphQLなどのリゾルバーパターン
 - [ ] 複雑なネストした関連がある
 - [ ] リクエストスコープでのキャッシュが有効
 
 **メリット**:
+
 - 透過的なバッチ化
 - キャッシュ機能あり
 - コードの可読性維持
 
 **デメリット**:
+
 - 追加ライブラリが必要
 - リクエストスコープの管理が必要
 
@@ -229,14 +241,15 @@ async findWorkflowsWithDetails(userId: string): Promise<WorkflowWithDetails[]> {
 
 ## パフォーマンス比較
 
-| 方式 | クエリ数 | メモリ | 実装難易度 |
-|------|---------|--------|-----------|
-| N+1（問題あり） | 1 + N | 低 | 低 |
-| JOIN | 1 | 高 | 中 |
-| バッチフェッチ | 2 | 中 | 中 |
-| DataLoader | 2〜 | 中 | 高 |
+| 方式            | クエリ数 | メモリ | 実装難易度 |
+| --------------- | -------- | ------ | ---------- |
+| N+1（問題あり） | 1 + N    | 低     | 低         |
+| JOIN            | 1        | 高     | 中         |
+| バッチフェッチ  | 2        | 中     | 中         |
+| DataLoader      | 2〜      | 中     | 高         |
 
 **目安**:
+
 - N < 10: どの方式でも大差なし
 - N = 100: JOIN または バッチフェッチ推奨
 - N > 1000: バッチフェッチ + ページネーション推奨

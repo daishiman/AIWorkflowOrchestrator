@@ -45,6 +45,7 @@ master_system_design.md（9章）に準拠したローカルエージェント�
 ### Phase 1: エージェント起動準備
 
 **コンテキスト収集:**
+
 ```bash
 # master_system_design.md の仕様確認
 cat docs/00-requirements/master_system_design.md | grep -A 50 "## 9. ローカルエージェント仕様"
@@ -58,6 +59,7 @@ ls -la local-agent/ 2>/dev/null || echo "No existing local-agent"
 **並列起動** - 以下の3エージェントを同時に起動:
 
 #### 2-1. `.claude/agents/local-watcher.md` エージェント起動
+
 ```typescript
 `.claude/agents/local-watcher.md` を起動し、以下を依頼:
 
@@ -79,6 +81,7 @@ ls -la local-agent/ 2>/dev/null || echo "No existing local-agent"
 ```
 
 #### 2-2. `.claude/agents/local-sync.md` エージェント起動
+
 ```typescript
 `.claude/agents/local-sync.md` を起動し、以下を依頼:
 
@@ -96,6 +99,7 @@ ls -la local-agent/ 2>/dev/null || echo "No existing local-agent"
 ```
 
 #### 2-3. `.claude/agents/process-mgr.md` エージェント起動
+
 ```typescript
 `.claude/agents/process-mgr.md` を起動し、以下を依頼:
 
@@ -119,6 +123,7 @@ ls -la local-agent/ 2>/dev/null || echo "No existing local-agent"
 ### Phase 3: 統合と完了報告
 
 3エージェントの成果物を統合し、ユーザーに以下を報告:
+
 - ✅ 実装されたファイル一覧
   - local-agent/src/index.ts
   - local-agent/src/watcher.ts
@@ -135,6 +140,7 @@ ls -la local-agent/ 2>/dev/null || echo "No existing local-agent"
   - ポーリング間隔: Xms
 
 - 🚀 起動手順
+
   ```bash
   cd local-agent
   pnpm install

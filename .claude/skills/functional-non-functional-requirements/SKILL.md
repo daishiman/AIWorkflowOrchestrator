@@ -162,37 +162,31 @@ cat .claude/skills/functional-non-functional-requirements/templates/nfr-definiti
 **品質特性カタログ（FURPS+ベース）**:
 
 1. **パフォーマンス（Performance）**:
-
    - 応答時間
    - スループット
    - リソース使用率
 
 2. **スケーラビリティ（Scalability）**:
-
    - 同時ユーザー数
    - データ量
    - トランザクション量
 
 3. **セキュリティ（Security）**:
-
    - 認証・認可
    - データ暗号化
    - 監査ログ
 
 4. **可用性（Availability）**:
-
    - 稼働率（SLA）
    - MTBF / MTTR
    - 障害復旧
 
 5. **保守性（Maintainability）**:
-
    - コードの可読性
    - テストカバレッジ
    - ドキュメント
 
 6. **ユーザビリティ（Usability）**:
-
    - 学習容易性
    - エラー回復
    - アクセシビリティ
@@ -344,12 +338,10 @@ cat .claude/skills/functional-non-functional-requirements/templates/nfr-definiti
 ### すべきこと
 
 1. **すべて定量化**:
-
    - ✅ 「応答時間 200ms 以内」
    - ❌ 「高速に動作する」
 
 2. **測定方法を明記**:
-
    - ✅ 「APM ツールで 95 パーセンタイルを計測」
    - ❌ 「適切に測定する」
 
@@ -360,11 +352,9 @@ cat .claude/skills/functional-non-functional-requirements/templates/nfr-definiti
 ### 避けるべきこと
 
 1. **曖昧な表現**:
-
    - ❌ 「十分な」「適切な」「高い」
 
 2. **測定不能な要件**:
-
    - ❌ 「ユーザーフレンドリー」
    - ✅ 「3 クリック以内で目的の操作が完了」
 

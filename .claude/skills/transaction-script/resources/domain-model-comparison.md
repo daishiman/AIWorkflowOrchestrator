@@ -7,14 +7,14 @@
 
 ## 比較表
 
-| 観点 | トランザクションスクリプト | ドメインモデル |
-|------|--------------------------|---------------|
-| 構造 | 手続き型 | オブジェクト指向 |
-| ロジック配置 | スクリプト内 | エンティティ内 |
-| 適合度 | シンプルなドメイン | 複雑なドメイン |
-| 学習コスト | 低い | 高い |
-| 初期開発速度 | 速い | 遅い |
-| 長期保守性 | 複雑化で困難 | 複雑でも管理可能 |
+| 観点         | トランザクションスクリプト | ドメインモデル   |
+| ------------ | -------------------------- | ---------------- |
+| 構造         | 手続き型                   | オブジェクト指向 |
+| ロジック配置 | スクリプト内               | エンティティ内   |
+| 適合度       | シンプルなドメイン         | 複雑なドメイン   |
+| 学習コスト   | 低い                       | 高い             |
+| 初期開発速度 | 速い                       | 遅い             |
+| 長期保守性   | 複雑化で困難               | 複雑でも管理可能 |
 
 ## パターン選択の判断
 
@@ -53,10 +53,10 @@ async function applyDiscount(orderId: string): Promise<Order> {
 
   // ビジネスルールがスクリプト内に
   let discount = 0;
-  if (user.tier === 'gold') {
+  if (user.tier === "gold") {
     discount = order.total * 0.15;
-  } else if (user.tier === 'silver') {
-    discount = order.total * 0.10;
+  } else if (user.tier === "silver") {
+    discount = order.total * 0.1;
   }
 
   if (order.total > 10000) {
@@ -90,7 +90,7 @@ class Order {
 
 class User {
   getTierDiscount(): number {
-    const discountMap = { gold: 0.15, silver: 0.10, bronze: 0.05 };
+    const discountMap = { gold: 0.15, silver: 0.1, bronze: 0.05 };
     return discountMap[this.tier] ?? 0;
   }
 }

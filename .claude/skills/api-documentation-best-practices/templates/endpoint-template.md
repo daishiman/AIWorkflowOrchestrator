@@ -2,12 +2,12 @@
 
 ## 概要
 
-| 項目 | 値 |
-|:-----|:---|
+| 項目         | 値                                          |
+| :----------- | :------------------------------------------ |
 | **メソッド** | `GET` / `POST` / `PUT` / `PATCH` / `DELETE` |
-| **パス** | `/api/v1/resource/{id}` |
-| **認証** | Bearer Token / API Key / OAuth 2.0 |
-| **権限** | `read:resource` / `write:resource` |
+| **パス**     | `/api/v1/resource/{id}`                     |
+| **認証**     | Bearer Token / API Key / OAuth 2.0          |
+| **権限**     | `read:resource` / `write:resource`          |
 
 [エンドポイントの目的を1-2文で説明]
 
@@ -15,26 +15,26 @@
 
 ### パスパラメータ
 
-| パラメータ | 型 | 必須 | 説明 |
-|:-----------|:---|:----:|:-----|
-| `id` | string | ○ | リソースの一意識別子（UUID形式） |
+| パラメータ | 型     | 必須 | 説明                             |
+| :--------- | :----- | :--: | :------------------------------- |
+| `id`       | string |  ○   | リソースの一意識別子（UUID形式） |
 
 ### クエリパラメータ
 
-| パラメータ | 型 | 必須 | デフォルト | 説明 |
-|:-----------|:---|:----:|:-----------|:-----|
-| `page` | integer | - | 1 | ページ番号 |
-| `limit` | integer | - | 20 | 1ページあたりの件数（最大100） |
-| `sort` | string | - | `created_at` | ソートフィールド |
-| `order` | string | - | `desc` | ソート順序（`asc` / `desc`） |
+| パラメータ | 型      | 必須 | デフォルト   | 説明                           |
+| :--------- | :------ | :--: | :----------- | :----------------------------- |
+| `page`     | integer |  -   | 1            | ページ番号                     |
+| `limit`    | integer |  -   | 20           | 1ページあたりの件数（最大100） |
+| `sort`     | string  |  -   | `created_at` | ソートフィールド               |
+| `order`    | string  |  -   | `desc`       | ソート順序（`asc` / `desc`）   |
 
 ### リクエストヘッダー
 
-| ヘッダー | 値 | 必須 | 説明 |
-|:---------|:---|:----:|:-----|
-| `Authorization` | `Bearer {token}` | ○ | アクセストークン |
-| `Content-Type` | `application/json` | ○ | リクエストボディの形式 |
-| `Accept-Language` | `ja` / `en` | - | レスポンス言語 |
+| ヘッダー          | 値                 | 必須 | 説明                   |
+| :---------------- | :----------------- | :--: | :--------------------- |
+| `Authorization`   | `Bearer {token}`   |  ○   | アクセストークン       |
+| `Content-Type`    | `application/json` |  ○   | リクエストボディの形式 |
+| `Accept-Language` | `ja` / `en`        |  -   | レスポンス言語         |
 
 ### リクエストボディ
 
@@ -49,12 +49,12 @@
 }
 ```
 
-| フィールド | 型 | 必須 | 制約 | 説明 |
-|:-----------|:---|:----:|:-----|:-----|
-| `name` | string | ○ | 1-100文字 | リソース名 |
-| `description` | string | - | 最大500文字 | 説明 |
-| `settings.enabled` | boolean | - | - | 有効フラグ |
-| `settings.config` | object | - | - | 追加設定 |
+| フィールド         | 型      | 必須 | 制約        | 説明       |
+| :----------------- | :------ | :--: | :---------- | :--------- |
+| `name`             | string  |  ○   | 1-100文字   | リソース名 |
+| `description`      | string  |  -   | 最大500文字 | 説明       |
+| `settings.enabled` | boolean |  -   | -           | 有効フラグ |
+| `settings.config`  | object  |  -   | -           | 追加設定   |
 
 ## レスポンス
 
@@ -76,10 +76,10 @@
 }
 ```
 
-| フィールド | 型 | 説明 |
-|:-----------|:---|:-----|
-| `id` | string | リソースID（UUID） |
-| `name` | string | リソース名 |
+| フィールド  | 型     | 説明                 |
+| :---------- | :----- | :------------------- |
+| `id`        | string | リソースID（UUID）   |
+| `name`      | string | リソース名           |
 | `createdAt` | string | 作成日時（ISO 8601） |
 | `updatedAt` | string | 更新日時（ISO 8601） |
 
@@ -151,12 +151,12 @@ curl -X GET "https://api.example.com/v1/resource/550e8400" \
 ### JavaScript (fetch)
 
 ```javascript
-const response = await fetch('https://api.example.com/v1/resource/550e8400', {
-  method: 'GET',
+const response = await fetch("https://api.example.com/v1/resource/550e8400", {
+  method: "GET",
   headers: {
-    'Authorization': `Bearer ${token}`,
-    'Accept': 'application/json'
-  }
+    Authorization: `Bearer ${token}`,
+    Accept: "application/json",
+  },
 });
 const data = await response.json();
 ```

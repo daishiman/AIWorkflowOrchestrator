@@ -35,14 +35,14 @@
 
 ```typescript
 // SWR
-const { data } = useSWR('/api/user', fetcher, {
+const { data } = useSWR("/api/user", fetcher, {
   revalidateOnFocus: true,
   revalidateOnReconnect: true,
 });
 
 // React Query
 const { data } = useQuery({
-  queryKey: ['user'],
+  queryKey: ["user"],
   queryFn: fetchUser,
   staleTime: 1000 * 60 * 5, // 5分間はstaleにならない
 });
@@ -118,24 +118,23 @@ queryClient.invalidateQueries({ queryKey: [key] });
 
 ```typescript
 // ユーザー一覧
-['users']
-
-// 特定のユーザー
-['users', userId]
-
-// ユーザーの投稿一覧
-['users', userId, 'posts']
-
-// 特定の投稿
-['users', userId, 'posts', postId]
+["users"][
+  // 特定のユーザー
+  ("users", userId)
+][
+  // ユーザーの投稿一覧
+  ("users", userId, "posts")
+][
+  // 特定の投稿
+  ("users", userId, "posts", postId)
+];
 ```
 
 ### パターン2: フィルター付きキー
 
 ```typescript
 // フィルター条件をキーに含める
-['todos', { status: 'completed' }]
-['todos', { status: 'pending', page: 1 }]
+["todos", { status: "completed" }][("todos", { status: "pending", page: 1 })];
 ```
 
 ### パターン3: 動的キー
@@ -143,7 +142,7 @@ queryClient.invalidateQueries({ queryKey: [key] });
 ```typescript
 // クエリパラメータを含む
 const { data } = useQuery({
-  queryKey: ['search', { query: searchQuery, page }],
+  queryKey: ["search", { query: searchQuery, page }],
   queryFn: () => search(searchQuery, page),
   enabled: !!searchQuery, // 検索クエリがある時のみ実行
 });
@@ -158,13 +157,13 @@ const { data } = useQuery({
 const queryClient = useQueryClient();
 
 // 特定のキーを無効化
-queryClient.invalidateQueries({ queryKey: ['todos'] });
+queryClient.invalidateQueries({ queryKey: ["todos"] });
 
 // 部分一致で無効化
-queryClient.invalidateQueries({ queryKey: ['todos'] }); // ['todos', 1]も含む
+queryClient.invalidateQueries({ queryKey: ["todos"] }); // ['todos', 1]も含む
 
 // 完全一致で無効化
-queryClient.invalidateQueries({ queryKey: ['todos'], exact: true });
+queryClient.invalidateQueries({ queryKey: ["todos"], exact: true });
 ```
 
 ### パターン2: ミューテーション後の無効化
@@ -175,21 +174,21 @@ const mutation = useMutation({
   mutationFn: createTodo,
   onSuccess: () => {
     // 関連するクエリを無効化
-    queryClient.invalidateQueries({ queryKey: ['todos'] });
+    queryClient.invalidateQueries({ queryKey: ["todos"] });
   },
 });
 
 // SWR
 const { mutate } = useSWRConfig();
 await createTodo(newTodo);
-mutate('/api/todos'); // キャッシュを無効化
+mutate("/api/todos"); // キャッシュを無効化
 ```
 
 ### パターン3: 条件付き無効化
 
 ```typescript
 queryClient.invalidateQueries({
-  queryKey: ['todos'],
+  queryKey: ["todos"],
   predicate: (query) => {
     // 特定の条件のクエリのみ無効化
     return query.state.data?.length > 10;
@@ -201,19 +200,19 @@ queryClient.invalidateQueries({
 
 ### データタイプ別の推奨設定
 
-| データタイプ | staleTime | cacheTime | 再検証 |
-|------------|-----------|-----------|--------|
-| 静的データ（設定等） | 長い（30分+） | 長い | フォーカス時のみ |
-| ユーザーデータ | 中（5分） | 中（15分） | フォーカス時 + 定期 |
-| リアルタイムデータ | 短い（30秒） | 短い（1分） | 頻繁なポーリング |
-| 検索結果 | 短い（1分） | 中（5分） | フォーカス時 |
+| データタイプ         | staleTime     | cacheTime   | 再検証              |
+| -------------------- | ------------- | ----------- | ------------------- |
+| 静的データ（設定等） | 長い（30分+） | 長い        | フォーカス時のみ    |
+| ユーザーデータ       | 中（5分）     | 中（15分）  | フォーカス時 + 定期 |
+| リアルタイムデータ   | 短い（30秒）  | 短い（1分） | 頻繁なポーリング    |
+| 検索結果             | 短い（1分）   | 中（5分）   | フォーカス時        |
 
 ### 設定例
 
 ```typescript
 // 静的データ
 useQuery({
-  queryKey: ['config'],
+  queryKey: ["config"],
   queryFn: fetchConfig,
   staleTime: 1000 * 60 * 30, // 30分
   cacheTime: 1000 * 60 * 60, // 1時間
@@ -222,7 +221,7 @@ useQuery({
 
 // ユーザーデータ
 useQuery({
-  queryKey: ['user', userId],
+  queryKey: ["user", userId],
   queryFn: () => fetchUser(userId),
   staleTime: 1000 * 60 * 5, // 5分
   cacheTime: 1000 * 60 * 15, // 15分
@@ -230,7 +229,7 @@ useQuery({
 
 // リアルタイムデータ
 useQuery({
-  queryKey: ['notifications'],
+  queryKey: ["notifications"],
   queryFn: fetchNotifications,
   staleTime: 1000 * 30, // 30秒
   refetchInterval: 1000 * 30, // 30秒ごとにポーリング

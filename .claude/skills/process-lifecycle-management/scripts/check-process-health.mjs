@@ -11,14 +11,14 @@
  *   node check-process-health.mjs --pm2 my-app
  */
 
-import { execSync } from 'child_process';
+import { execSync } from "child_process";
 
 // 閾値定義
 const THRESHOLDS = {
-  memoryPercent: 80,    // メモリ使用率 (%)
-  cpuPercent: 90,       // CPU使用率 (%)
-  restarts: 5,          // 許容再起動回数
-  uptimeMinutes: 5      // 最小稼働時間 (分)
+  memoryPercent: 80, // メモリ使用率 (%)
+  cpuPercent: 90, // CPU使用率 (%)
+  restarts: 5, // 許容再起動回数
+  uptimeMinutes: 5, // 最小稼働時間 (分)
 };
 
 /**
@@ -29,10 +29,10 @@ function getProcessInfo(pid) {
     // psコマンドでプロセス情報取得
     const result = execSync(
       `ps -p ${pid} -o pid,ppid,%cpu,%mem,rss,vsz,etime,comm`,
-      { encoding: 'utf8' }
+      { encoding: "utf8" },
     ).trim();
 
-    const lines = result.split('\n');
+    const lines = result.split("\n");
     if (lines.length < 2) {
       return null;
     }
@@ -43,10 +43,10 @@ function getProcessInfo(pid) {
       ppid: parseInt(values[1]),
       cpuPercent: parseFloat(values[2]),
       memPercent: parseFloat(values[3]),
-      rss: parseInt(values[4]) * 1024,  // KB to bytes
+      rss: parseInt(values[4]) * 1024, // KB to bytes
       vsz: parseInt(values[5]) * 1024,
       elapsed: values[6],
-      command: values.slice(7).join(' ')
+      command: values.slice(7).join(" "),
     };
   } catch (error) {
     return null;
@@ -83,13 +83,10 @@ function parseElapsedTime(elapsed) {
  */
 function getPM2Info(appName) {
   try {
-    const result = execSync(
-      `pm2 jlist`,
-      { encoding: 'utf8' }
-    );
+    const result = execSync(`pm2 jlist`, { encoding: "utf8" });
 
     const apps = JSON.parse(result);
-    const app = apps.find(a => a.name === appName);
+    const app = apps.find((a) => a.name === appName);
 
     if (!app) {
       return null;
@@ -103,10 +100,10 @@ function getPM2Info(appName) {
       uptime: app.pm2_env.pm_uptime,
       memory: app.monit?.memory || 0,
       cpu: app.monit?.cpu || 0,
-      instances: app.pm2_env.instances
+      instances: app.pm2_env.instances,
     };
   } catch (error) {
-    console.error('PM2 info error:', error.message);
+    console.error("PM2 info error:", error.message);
     return null;
   }
 }
@@ -120,7 +117,7 @@ function evaluateHealth(info, isPM2 = false) {
 
   if (isPM2) {
     // PM2固有のチェック
-    if (info.status !== 'online') {
+    if (info.status !== "online") {
       issues.push(`Status is ${info.status}, not online`);
     }
 
@@ -136,7 +133,8 @@ function evaluateHealth(info, isPM2 = false) {
 
     // メモリ (PM2はバイト単位)
     const memMB = info.memory / 1024 / 1024;
-    if (memMB > 500) {  // 500MB以上
+    if (memMB > 500) {
+      // 500MB以上
       warnings.push(`High memory usage: ${memMB.toFixed(1)}MB`);
     }
 
@@ -160,10 +158,14 @@ function evaluateHealth(info, isPM2 = false) {
   }
 
   return {
-    status: issues.length > 0 ? 'unhealthy' :
-            warnings.length > 0 ? 'warning' : 'healthy',
+    status:
+      issues.length > 0
+        ? "unhealthy"
+        : warnings.length > 0
+          ? "warning"
+          : "healthy",
     issues,
-    warnings
+    warnings,
   };
 }
 
@@ -171,12 +173,12 @@ function evaluateHealth(info, isPM2 = false) {
  * 結果を出力
  */
 function printResults(info, health, isPM2) {
-  console.log('\n' + '='.repeat(50));
-  console.log('Process Health Check Results');
-  console.log('='.repeat(50) + '\n');
+  console.log("\n" + "=".repeat(50));
+  console.log("Process Health Check Results");
+  console.log("=".repeat(50) + "\n");
 
   // プロセス情報
-  console.log('📋 Process Information:');
+  console.log("📋 Process Information:");
   if (isPM2) {
     console.log(`   Name:      ${info.name}`);
     console.log(`   PID:       ${info.pid}`);
@@ -198,21 +200,25 @@ function printResults(info, health, isPM2) {
   console.log();
 
   // ヘルスステータス
-  const statusIcon = health.status === 'healthy' ? '✅' :
-                     health.status === 'warning' ? '⚠️' : '❌';
+  const statusIcon =
+    health.status === "healthy"
+      ? "✅"
+      : health.status === "warning"
+        ? "⚠️"
+        : "❌";
   console.log(`${statusIcon} Health Status: ${health.status.toUpperCase()}`);
 
   if (health.issues.length > 0) {
-    console.log('\n❌ Issues:');
-    health.issues.forEach(issue => console.log(`   • ${issue}`));
+    console.log("\n❌ Issues:");
+    health.issues.forEach((issue) => console.log(`   • ${issue}`));
   }
 
   if (health.warnings.length > 0) {
-    console.log('\n⚠️  Warnings:');
-    health.warnings.forEach(warning => console.log(`   • ${warning}`));
+    console.log("\n⚠️  Warnings:");
+    health.warnings.forEach((warning) => console.log(`   • ${warning}`));
   }
 
-  console.log('\n' + '-'.repeat(50));
+  console.log("\n" + "-".repeat(50));
 }
 
 /**
@@ -240,18 +246,18 @@ function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.log('Usage:');
-    console.log('  node check-process-health.mjs <pid>');
-    console.log('  node check-process-health.mjs --pm2 <app-name>');
+    console.log("Usage:");
+    console.log("  node check-process-health.mjs <pid>");
+    console.log("  node check-process-health.mjs --pm2 <app-name>");
     process.exit(1);
   }
 
   let info;
   let isPM2 = false;
 
-  if (args[0] === '--pm2') {
+  if (args[0] === "--pm2") {
     if (args.length < 2) {
-      console.error('Error: App name required with --pm2 flag');
+      console.error("Error: App name required with --pm2 flag");
       process.exit(1);
     }
     isPM2 = true;
@@ -263,7 +269,7 @@ function main() {
   } else {
     const pid = parseInt(args[0]);
     if (isNaN(pid)) {
-      console.error('Error: Invalid PID');
+      console.error("Error: Invalid PID");
       process.exit(1);
     }
     info = getProcessInfo(pid);
@@ -277,7 +283,9 @@ function main() {
   printResults(info, health, isPM2);
 
   // 終了コード
-  process.exit(health.status === 'healthy' ? 0 : health.status === 'warning' ? 0 : 1);
+  process.exit(
+    health.status === "healthy" ? 0 : health.status === "warning" ? 0 : 1,
+  );
 }
 
 main();

@@ -13,11 +13,13 @@
 **定義**: パラメータを埋めるためだけに使用され、実際には使われないオブジェクト。
 
 **特徴**:
+
 - 呼び出されることを想定しない
 - 型を満たすためだけに存在
 - nullや空オブジェクトでも可
 
 **例**:
+
 ```typescript
 // Dummyの例
 class DummyLogger implements ILogger {
@@ -32,6 +34,7 @@ const service = new UserService(userRepository, new DummyLogger());
 ```
 
 **使用場面**:
+
 - テスト対象が使用しない依存
 - 必須パラメータの型を満たす
 
@@ -40,30 +43,33 @@ const service = new UserService(userRepository, new DummyLogger());
 **定義**: 事前に設定された応答を返すオブジェクト。
 
 **特徴**:
+
 - 固定値または条件に応じた値を返す
 - テスト対象への入力を制御
 - 状態検証で使用
 
 **例**:
+
 ```typescript
 // Stubの例
 const stubUserRepository = {
   findById: vi.fn().mockResolvedValue({
-    id: 'user-1',
-    name: 'Test User',
-    email: 'test@example.com',
+    id: "user-1",
+    name: "Test User",
+    email: "test@example.com",
   }),
 };
 
 // 使用例
-it('should return user name', async () => {
+it("should return user name", async () => {
   const service = new UserService(stubUserRepository);
-  const result = await service.getUserName('user-1');
-  expect(result).toBe('Test User'); // 状態検証
+  const result = await service.getUserName("user-1");
+  expect(result).toBe("Test User"); // 状態検証
 });
 ```
 
 **使用場面**:
+
 - 特定の入力条件をテスト
 - 外部サービスの応答をシミュレート
 - エラーケースのテスト
@@ -73,11 +79,13 @@ it('should return user name', async () => {
 **定義**: 呼び出しを記録し、後で検証可能にするオブジェクト。
 
 **特徴**:
+
 - 呼び出し回数、引数を記録
 - 本物のメソッドを呼ぶことも可能
 - 振る舞い検証で使用
 
 **例**:
+
 ```typescript
 // Spyの例
 const spyNotificationService = {
@@ -85,18 +93,19 @@ const spyNotificationService = {
 };
 
 // 使用例
-it('should send notification when order is placed', async () => {
+it("should send notification when order is placed", async () => {
   const service = new OrderService(spyNotificationService);
-  await service.placeOrder({ userId: 'user-1', items: [] });
+  await service.placeOrder({ userId: "user-1", items: [] });
 
   expect(spyNotificationService.send).toHaveBeenCalledTimes(1);
   expect(spyNotificationService.send).toHaveBeenCalledWith(
-    expect.objectContaining({ type: 'order_placed' })
+    expect.objectContaining({ type: "order_placed" }),
   );
 });
 ```
 
 **使用場面**:
+
 - 副作用の発生を確認
 - 呼び出し回数の検証
 - 引数の検証
@@ -106,30 +115,33 @@ it('should send notification when order is placed', async () => {
 **定義**: 期待される呼び出しを事前に設定し、それが満たされたかを検証するオブジェクト。
 
 **特徴**:
+
 - 期待を事前に定義
 - 期待が満たされないとテスト失敗
 - 厳密な振る舞い検証
 
 **例**:
+
 ```typescript
 // Mockの例（厳密な期待設定）
-it('should call payment gateway with correct amount', async () => {
+it("should call payment gateway with correct amount", async () => {
   const mockPaymentGateway = {
     charge: vi.fn().mockResolvedValue({ success: true }),
   };
 
   const service = new PaymentService(mockPaymentGateway);
-  await service.processPayment({ amount: 1000, currency: 'JPY' });
+  await service.processPayment({ amount: 1000, currency: "JPY" });
 
   // 期待の検証
   expect(mockPaymentGateway.charge).toHaveBeenCalledExactlyOnceWith({
     amount: 1000,
-    currency: 'JPY',
+    currency: "JPY",
   });
 });
 ```
 
 **使用場面**:
+
 - 重要な相互作用の検証
 - 呼び出し順序の検証
 - 引数の厳密な検証
@@ -139,11 +151,13 @@ it('should call payment gateway with correct amount', async () => {
 **定義**: 本物のオブジェクトの簡略化された実装。
 
 **特徴**:
+
 - 実際に動作するロジックを持つ
 - 本番とは異なる簡易実装
 - 状態を保持する
 
 **例**:
+
 ```typescript
 // Fakeの例
 class FakeUserRepository implements IUserRepository {
@@ -163,7 +177,7 @@ class FakeUserRepository implements IUserRepository {
 
   // テストヘルパー
   seed(users: User[]): void {
-    users.forEach(user => this.users.set(user.id, user));
+    users.forEach((user) => this.users.set(user.id, user));
   }
 
   clear(): void {
@@ -172,32 +186,33 @@ class FakeUserRepository implements IUserRepository {
 }
 
 // 使用例
-it('should update user', async () => {
+it("should update user", async () => {
   const fakeRepository = new FakeUserRepository();
-  fakeRepository.seed([{ id: 'user-1', name: 'Old Name' }]);
+  fakeRepository.seed([{ id: "user-1", name: "Old Name" }]);
 
   const service = new UserService(fakeRepository);
-  await service.updateName('user-1', 'New Name');
+  await service.updateName("user-1", "New Name");
 
-  const user = await fakeRepository.findById('user-1');
-  expect(user.name).toBe('New Name');
+  const user = await fakeRepository.findById("user-1");
+  expect(user.name).toBe("New Name");
 });
 ```
 
 **使用場面**:
+
 - インメモリデータベース
 - ファイルシステムの代替
 - 外部APIの簡易実装
 
 ## 比較表
 
-| 種類 | 戻り値 | 呼び出し記録 | 実装の複雑さ | 主な検証 |
-|------|--------|-------------|-------------|---------|
-| Dummy | なし/例外 | なし | 最小 | なし |
-| Stub | 固定値 | なし | 低 | 状態 |
-| Spy | 本物/固定 | あり | 中 | 振る舞い |
-| Mock | 固定値 | あり＋期待 | 中 | 振る舞い |
-| Fake | 動的 | なし | 高 | 状態 |
+| 種類  | 戻り値    | 呼び出し記録 | 実装の複雑さ | 主な検証 |
+| ----- | --------- | ------------ | ------------ | -------- |
+| Dummy | なし/例外 | なし         | 最小         | なし     |
+| Stub  | 固定値    | なし         | 低           | 状態     |
+| Spy   | 本物/固定 | あり         | 中           | 振る舞い |
+| Mock  | 固定値    | あり＋期待   | 中           | 振る舞い |
+| Fake  | 動的      | なし         | 高           | 状態     |
 
 ## 選択ガイドライン
 

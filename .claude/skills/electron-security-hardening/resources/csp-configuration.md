@@ -98,7 +98,7 @@ function buildProductionCSP(): string {
   return [
     "default-src 'self'",
     "script-src 'self'",
-    "style-src 'self' 'unsafe-inline'",  // Tailwind等のCSS-in-JS
+    "style-src 'self' 'unsafe-inline'", // Tailwind等のCSS-in-JS
     "img-src 'self' data: https:",
     "font-src 'self' data:",
     "connect-src 'self' https://api.example.com",
@@ -109,7 +109,7 @@ function buildProductionCSP(): string {
     "form-action 'self'",
     "frame-ancestors 'none'",
     "upgrade-insecure-requests",
-  ].join('; ');
+  ].join("; ");
 }
 ```
 
@@ -119,13 +119,13 @@ function buildProductionCSP(): string {
 function buildDevelopmentCSP(): string {
   return [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-eval'",        // Hot reload
+    "script-src 'self' 'unsafe-eval'", // Hot reload
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: https: http:",
     "font-src 'self' data:",
     "connect-src 'self' ws://localhost:* http://localhost:* https:",
     "worker-src 'self' blob:",
-  ].join('; ');
+  ].join("; ");
 }
 ```
 
@@ -133,7 +133,7 @@ function buildDevelopmentCSP(): string {
 
 ```typescript
 function buildCSP(): string {
-  const isDev = process.env.NODE_ENV === 'development';
+  const isDev = process.env.NODE_ENV === "development";
   return isDev ? buildDevelopmentCSP() : buildProductionCSP();
 }
 ```
@@ -147,7 +147,7 @@ function buildCSP(): string {
 const csp = [
   ...basePolicy,
   "report-uri https://your-csp-report-endpoint.com/report",
-].join('; ');
+].join("; ");
 
 // またはレポートのみモード（ブロックしない）
 const cspReportOnly = csp;
@@ -155,7 +155,7 @@ session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
   callback({
     responseHeaders: {
       ...details.responseHeaders,
-      'Content-Security-Policy-Report-Only': [cspReportOnly],
+      "Content-Security-Policy-Report-Only": [cspReportOnly],
     },
   });
 });
@@ -165,8 +165,8 @@ session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
 
 ```typescript
 // CSP違反イベントのリスニング
-document.addEventListener('securitypolicyviolation', (e) => {
-  console.error('CSP Violation:', {
+document.addEventListener("securitypolicyviolation", (e) => {
+  console.error("CSP Violation:", {
     violatedDirective: e.violatedDirective,
     blockedURI: e.blockedURI,
     originalPolicy: e.originalPolicy,

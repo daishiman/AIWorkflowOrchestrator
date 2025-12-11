@@ -58,6 +58,7 @@ model: sonnet
 ### Phase 1: バージョン番号の確認と検証
 
 **引数検証**:
+
 ```bash
 # バージョン番号（必須、semver形式）
 version: "$ARGUMENTS"（例: v1.2.3, v2.0.0-beta.1）
@@ -70,6 +71,7 @@ pattern: ^v?(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-[a-zA-Z0-9.-]+)?(\+[a-zA-Z
 ```
 
 **既存タグ確認**:
+
 ```bash
 # 既存タグ一覧
 git tag -l
@@ -81,6 +83,7 @@ git tag -l
 ### Phase 2: 変更内容の収集
 
 **前バージョンからの変更**:
+
 ```bash
 # 最新のタグを取得
 previous_tag=$(git describe --tags --abbrev=0)
@@ -97,47 +100,60 @@ grep -A 50 "## \[${version}\]" CHANGELOG.md
 **使用エージェント**: `.claude/agents/spec-writer.md`
 
 **エージェントへの依頼内容**:
-```markdown
+
+````markdown
 バージョン「${version}」のリリースノートを作成してください。
 
 **入力**:
+
 - 前バージョン: ${previous_tag}
 - コミット履歴: ${git log ${previous_tag}..HEAD}
 - CHANGELOG: ${grep result}
 
 **要件**:
+
 1. リリースノート構造:
+
    ```markdown
    # Release ${version}
 
    **リリース日**: ${date}
 
    ## ハイライト
+
    [このリリースの主要な変更、1-3文]
 
    ## ✨ Features（新機能）
+
    - feat(scope): description (#PR番号)
 
    ## 🐛 Bug Fixes（バグ修正）
+
    - fix(scope): description (#PR番号)
 
    ## ⚠️ Breaking Changes（破壊的変更、該当時）
+
    - 変更内容
    - 移行方法
 
    ## 📝 Documentation（ドキュメント）
+
    - docs(scope): description
 
    ## 🔧 Chore（その他）
+
    - chore(scope): description
 
    ## 🙏 Contributors
+
    @contributor1, @contributor2
 
    ## 📦 Downloads
+
    - [Source Code (zip)](url)
    - [Source Code (tar.gz)](url)
    ```
+````
 
 2. Semantic Versioning判定:
    - 破壊的変更あり → MAJOR
@@ -150,12 +166,15 @@ grep -A 50 "## \[${version}\]" CHANGELOG.md
    - コード例（Before/After）
 
 **スキル参照**:
+
 - `.claude/skills/semantic-versioning/SKILL.md`
 - `.claude/skills/version-control-for-docs/SKILL.md`
 
 **成果物**:
+
 - リリースノート（Markdown）
-```
+
+````
 
 ### Phase 4: Gitタグ作成
 
@@ -168,11 +187,12 @@ ${release_notes_summary}"
 
 # タグをリモートにプッシュ
 git push origin ${version}
-```
+````
 
 ### Phase 5: GitHub Release作成
 
 **GitHub CLI使用**:
+
 ```bash
 # GitHub Release作成
 gh release create ${version} \
@@ -205,17 +225,20 @@ EOF
 リリース日: ${date}
 
 ### 成果物
+
 ✅ Gitタグ: ${version}
 ✅ GitHub Release: ${release_url}
 ✅ リリースノート: docs/releases/${version}.md
 
 ### リリース内容
+
 - 新機能: ${feature_count}件
 - バグ修正: ${fix_count}件
 - 破壊的変更: ${breaking_changes_count}件
 - ドキュメント: ${docs_count}件
 
 ### Next Steps
+
 1. GitHub Releaseを確認
 2. デプロイ確認（Railway）
 3. ユーザーへのアナウンス
@@ -231,6 +254,7 @@ EOF
 ```
 
 自動実行:
+
 1. semver形式検証
 2. 既存タグ確認
 3. 変更内容収集（前バージョンから）
@@ -289,6 +313,7 @@ v2.0.0-beta.1, v2.0.0-rc.1
 **原因**: 同じバージョンのタグが既に作成済み
 
 **解決策**:
+
 ```bash
 # タグ削除（ローカル）
 git tag -d ${version}
@@ -305,6 +330,7 @@ git push --delete origin ${version}
 **原因**: GitHub認証エラー
 
 **解決策**:
+
 ```bash
 gh auth status
 gh auth login
@@ -315,6 +341,7 @@ gh auth login
 **原因**: バージョン番号が不正
 
 **解決策**:
+
 ```bash
 # ✅ 正しい形式
 v1.2.3

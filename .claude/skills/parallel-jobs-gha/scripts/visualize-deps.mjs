@@ -18,20 +18,20 @@
  *   - Critical path identification
  */
 
-import { readFileSync } from 'fs';
-import { parse } from 'yaml';
-import { resolve } from 'path';
+import { readFileSync } from "fs";
+import { parse } from "yaml";
+import { resolve } from "path";
 
 /**
  * Parse workflow file and extract job dependencies
  */
 function parseWorkflow(filePath) {
   try {
-    const content = readFileSync(filePath, 'utf8');
+    const content = readFileSync(filePath, "utf8");
     const workflow = parse(content);
 
     if (!workflow.jobs) {
-      throw new Error('No jobs found in workflow file');
+      throw new Error("No jobs found in workflow file");
     }
 
     return workflow;
@@ -54,7 +54,7 @@ function buildDependencyGraph(jobs) {
     graph.set(jobName, {
       dependencies: deps,
       condition: jobConfig.if || null,
-      runsOn: jobConfig['runs-on'] || 'ubuntu-latest',
+      runsOn: jobConfig["runs-on"] || "ubuntu-latest",
     });
   }
 
@@ -123,7 +123,7 @@ function calculateLevels(graph) {
       return 0;
     }
 
-    const maxDepLevel = Math.max(...deps.map(dep => getLevel(dep)));
+    const maxDepLevel = Math.max(...deps.map((dep) => getLevel(dep)));
     const level = maxDepLevel + 1;
     levels.set(job, level);
     return level;
@@ -162,12 +162,14 @@ function findCriticalPath(graph, levels) {
  * Generate Mermaid flowchart
  */
 function generateMermaidDiagram(graph, levels) {
-  const lines = ['```mermaid', 'flowchart TD'];
+  const lines = ["```mermaid", "flowchart TD"];
 
   // Add job nodes
   for (const [job, data] of graph.entries()) {
     const level = levels.get(job);
-    const condition = data.condition ? `<br/><small>if: ${data.condition}</small>` : '';
+    const condition = data.condition
+      ? `<br/><small>if: ${data.condition}</small>`
+      : "";
     lines.push(`    ${job}["${job}<br/>Level: ${level}${condition}"]`);
   }
 
@@ -189,19 +191,19 @@ function generateMermaidDiagram(graph, levels) {
 
     if (jobsAtLevel.length > 0) {
       const color = getColorForLevel(level, maxLevel);
-      lines.push(`    style ${jobsAtLevel.join(',')} fill:${color}`);
+      lines.push(`    style ${jobsAtLevel.join(",")} fill:${color}`);
     }
   }
 
-  lines.push('```');
-  return lines.join('\n');
+  lines.push("```");
+  return lines.join("\n");
 }
 
 /**
  * Get color for level (gradient from green to red)
  */
 function getColorForLevel(level, maxLevel) {
-  if (maxLevel === 0) return '#90EE90';
+  if (maxLevel === 0) return "#90EE90";
 
   const ratio = level / maxLevel;
   const r = Math.round(144 + (255 - 144) * ratio);
@@ -215,86 +217,99 @@ function getColorForLevel(level, maxLevel) {
  * Generate analysis report
  */
 function generateAnalysisReport(graph, levels, criticalPath) {
-  const lines = ['# Workflow Analysis Report\n'];
+  const lines = ["# Workflow Analysis Report\n"];
 
   // Summary
-  lines.push('## Summary');
+  lines.push("## Summary");
   lines.push(`- Total jobs: ${graph.size}`);
   lines.push(`- Execution levels: ${Math.max(...levels.values()) + 1}`);
   lines.push(`- Critical path length: ${criticalPath.length}`);
-  lines.push('');
+  lines.push("");
 
   // Jobs by level
-  lines.push('## Jobs by Execution Level\n');
+  lines.push("## Jobs by Execution Level\n");
   const maxLevel = Math.max(...levels.values());
   for (let level = 0; level <= maxLevel; level++) {
     const jobsAtLevel = Array.from(levels.entries())
       .filter(([_, l]) => l === level)
       .map(([job]) => job);
 
-    lines.push(`**Level ${level}** (${jobsAtLevel.length} job${jobsAtLevel.length !== 1 ? 's' : ''}):`);
+    lines.push(
+      `**Level ${level}** (${jobsAtLevel.length} job${jobsAtLevel.length !== 1 ? "s" : ""}):`,
+    );
     for (const job of jobsAtLevel) {
       const deps = graph.get(job)?.dependencies || [];
-      const depsStr = deps.length > 0 ? ` (depends on: ${deps.join(', ')})` : ' (no dependencies)';
+      const depsStr =
+        deps.length > 0
+          ? ` (depends on: ${deps.join(", ")})`
+          : " (no dependencies)";
       lines.push(`  - ${job}${depsStr}`);
     }
-    lines.push('');
+    lines.push("");
   }
 
   // Critical path
-  lines.push('## Critical Path\n');
-  lines.push('The longest execution path through the workflow:\n');
-  lines.push(criticalPath.map((job, idx) => `${idx + 1}. ${job}`).join('\n'));
-  lines.push('');
+  lines.push("## Critical Path\n");
+  lines.push("The longest execution path through the workflow:\n");
+  lines.push(criticalPath.map((job, idx) => `${idx + 1}. ${job}`).join("\n"));
+  lines.push("");
 
   // Parallelization opportunities
-  lines.push('## Parallelization Analysis\n');
+  lines.push("## Parallelization Analysis\n");
   for (let level = 0; level <= maxLevel; level++) {
     const jobsAtLevel = Array.from(levels.entries())
       .filter(([_, l]) => l === level)
       .map(([job]) => job);
 
     if (jobsAtLevel.length > 1) {
-      lines.push(`**Level ${level}**: ${jobsAtLevel.length} jobs run in parallel`);
-      lines.push(`  - ${jobsAtLevel.join(', ')}`);
+      lines.push(
+        `**Level ${level}**: ${jobsAtLevel.length} jobs run in parallel`,
+      );
+      lines.push(`  - ${jobsAtLevel.join(", ")}`);
     }
   }
-  lines.push('');
+  lines.push("");
 
   // Recommendations
-  lines.push('## Recommendations\n');
+  lines.push("## Recommendations\n");
 
   // Check for sequential jobs that could be parallelized
-  const sequentialJobs = Array.from(levels.entries())
-    .filter(([job, level]) => {
-      const deps = graph.get(job)?.dependencies || [];
-      return deps.length === 1 && level > 0;
-    });
+  const sequentialJobs = Array.from(levels.entries()).filter(([job, level]) => {
+    const deps = graph.get(job)?.dependencies || [];
+    return deps.length === 1 && level > 0;
+  });
 
   if (sequentialJobs.length > 0) {
-    lines.push('### Potential Parallelization Opportunities\n');
-    lines.push('These jobs have only one dependency and might be parallelizable:\n');
+    lines.push("### Potential Parallelization Opportunities\n");
+    lines.push(
+      "These jobs have only one dependency and might be parallelizable:\n",
+    );
     for (const [job, _] of sequentialJobs) {
       const dep = graph.get(job)?.dependencies[0];
-      lines.push(`- Consider if \`${job}\` can run in parallel with other jobs after \`${dep}\``);
+      lines.push(
+        `- Consider if \`${job}\` can run in parallel with other jobs after \`${dep}\``,
+      );
     }
-    lines.push('');
+    lines.push("");
   }
 
   // Check for jobs with many dependencies
-  const complexJobs = Array.from(graph.entries())
-    .filter(([_, data]) => data.dependencies.length > 2);
+  const complexJobs = Array.from(graph.entries()).filter(
+    ([_, data]) => data.dependencies.length > 2,
+  );
 
   if (complexJobs.length > 0) {
-    lines.push('### Complex Dependencies\n');
-    lines.push('These jobs have multiple dependencies and might benefit from review:\n');
+    lines.push("### Complex Dependencies\n");
+    lines.push(
+      "These jobs have multiple dependencies and might benefit from review:\n",
+    );
     for (const [job, data] of complexJobs) {
-      lines.push(`- \`${job}\` depends on: ${data.dependencies.join(', ')}`);
+      lines.push(`- \`${job}\` depends on: ${data.dependencies.join(", ")}`);
     }
-    lines.push('');
+    lines.push("");
   }
 
-  return lines.join('\n');
+  return lines.join("\n");
 }
 
 /**
@@ -304,8 +319,8 @@ function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.error('Usage: node visualize-deps.mjs <workflow-file.yml>');
-    console.error('Example: node visualize-deps.mjs .github/workflows/ci.yml');
+    console.error("Usage: node visualize-deps.mjs <workflow-file.yml>");
+    console.error("Example: node visualize-deps.mjs .github/workflows/ci.yml");
     process.exit(1);
   }
 
@@ -315,7 +330,7 @@ function main() {
 
   // Parse workflow
   const workflow = parseWorkflow(workflowPath);
-  console.log(`Workflow name: ${workflow.name || 'Unnamed'}\n`);
+  console.log(`Workflow name: ${workflow.name || "Unnamed"}\n`);
 
   // Build dependency graph
   const graph = buildDependencyGraph(workflow.jobs);
@@ -333,9 +348,9 @@ function main() {
   const criticalPath = findCriticalPath(graph, levels);
 
   // Generate Mermaid diagram
-  console.log('## Dependency Graph\n');
+  console.log("## Dependency Graph\n");
   console.log(generateMermaidDiagram(graph, levels));
-  console.log('\n');
+  console.log("\n");
 
   // Generate analysis report
   console.log(generateAnalysisReport(graph, levels, criticalPath));
@@ -346,4 +361,10 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   main();
 }
 
-export { parseWorkflow, buildDependencyGraph, topologicalSort, calculateLevels, generateMermaidDiagram };
+export {
+  parseWorkflow,
+  buildDependencyGraph,
+  topologicalSort,
+  calculateLevels,
+  generateMermaidDiagram,
+};

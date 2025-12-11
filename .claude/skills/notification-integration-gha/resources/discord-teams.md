@@ -135,6 +135,7 @@ jobs:
 ```
 
 **メンション構文**:
+
 - `@everyone`: 全員（権限必要）
 - `@here`: オンラインメンバー
 - `<@USER_ID>`: 特定ユーザー（例: `<@123456789012345678>`）
@@ -377,6 +378,7 @@ jobs:
 3. 通知を受け取りたいメールアドレス設定
 
 **制限事項**:
+
 - ワークフロー単位での制御不可
 - カスタムメッセージ不可
 - リポジトリ全体の通知設定
@@ -482,6 +484,7 @@ jobs:
 **原因**: レート制限（5リクエスト/2秒、30リクエスト/分）
 
 **解決策**:
+
 ```yaml
 - name: Rate-limited Discord notification
   run: |
@@ -500,6 +503,7 @@ jobs:
 **原因**: JSON構文エラー、必須フィールド欠落
 
 **解決策**:
+
 ```yaml
 - name: Validate JSON before sending
   run: |
@@ -523,6 +527,7 @@ jobs:
 ### Webhook URL無効
 
 **検証スクリプト**:
+
 ```yaml
 - name: Validate webhook URLs
   run: |
@@ -544,10 +549,12 @@ jobs:
 ## 参考リンク
 
 ### Discord
+
 - [Discord Webhooks Guide](https://discord.com/developers/docs/resources/webhook)
 - [Discord Embed Builder](https://discohook.org/)
 
 ### Microsoft Teams
+
 - [Teams Incoming Webhooks](https://learn.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook)
 - [Adaptive Cards Designer](https://adaptivecards.io/designer/)
 - [MessageCard Reference](https://learn.microsoft.com/en-us/outlook/actionable-messages/message-card-reference)

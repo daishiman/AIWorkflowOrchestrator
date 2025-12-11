@@ -24,23 +24,23 @@ module.exports = {
 
       // プロセス名: 説明的でユニークな名前
       // 命名規則: {project}-{component} 例: myapp-api, myapp-worker
-      name: '{{APP_NAME}}',
+      name: "{{APP_NAME}}",
 
       // エントリーポイント: ビルド成果物を指定
       // 例: './dist/index.js', './build/server.js'
-      script: './dist/index.js',
+      script: "./dist/index.js",
 
       // ═══════════════════════════════════════════════
       // 実行設定
       // ═══════════════════════════════════════════════
 
       // 作業ディレクトリ: プロジェクトルート
-      cwd: './',
+      cwd: "./",
 
       // 実行モード: 'fork' (単一) または 'cluster' (複数)
       // fork: I/O bound処理, ステートフル処理
       // cluster: CPU bound処理, HTTP/APIサーバー
-      exec_mode: 'fork',
+      exec_mode: "fork",
 
       // インスタンス数:
       // 1: 単一インスタンス
@@ -66,7 +66,7 @@ module.exports = {
 
       // 最小稼働時間: 起動成功判定 (推奨: 5s-30s)
       // プロセスがこの時間以上稼働すれば起動成功
-      min_uptime: '10s',
+      min_uptime: "10s",
 
       // 再起動間隔 (ミリ秒): 即時再起動を避ける
       restart_delay: 1000,
@@ -80,7 +80,7 @@ module.exports = {
 
       // メモリ上限: この値を超えると自動再起動
       // 例: '300M', '500M', '1G'
-      max_memory_restart: '500M',
+      max_memory_restart: "500M",
 
       // Graceful Shutdown待機時間 (ミリ秒)
       // SIGTERM送信後、強制終了までの待機時間
@@ -97,13 +97,13 @@ module.exports = {
       // ═══════════════════════════════════════════════
 
       // エラーログパス: 相対パス推奨
-      error_file: './logs/error.log',
+      error_file: "./logs/error.log",
 
       // 標準出力ログパス: 相対パス推奨
-      out_file: './logs/out.log',
+      out_file: "./logs/out.log",
 
       // タイムスタンプ形式: ISO8601推奨
-      log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
+      log_date_format: "YYYY-MM-DD HH:mm:ss Z",
 
       // ログ統合: clusterモードで推奨
       merge_logs: true,
@@ -116,12 +116,7 @@ module.exports = {
       watch: false,
 
       // 監視除外パターン
-      ignore_watch: [
-        'node_modules',
-        'logs',
-        '.git',
-        '*.log'
-      ],
+      ignore_watch: ["node_modules", "logs", ".git", "*.log"],
 
       // ═══════════════════════════════════════════════
       // 環境変数
@@ -129,25 +124,25 @@ module.exports = {
 
       // 共通設定 (すべての環境)
       env: {
-        NODE_ENV: 'development',
+        NODE_ENV: "development",
         PORT: 3000,
-        LOG_LEVEL: 'debug',
-        TZ: 'Asia/Tokyo'
+        LOG_LEVEL: "debug",
+        TZ: "Asia/Tokyo",
       },
 
       // 本番環境 (--env production)
       env_production: {
-        NODE_ENV: 'production',
+        NODE_ENV: "production",
         PORT: 8080,
-        LOG_LEVEL: 'info'
+        LOG_LEVEL: "info",
       },
 
       // ステージング環境 (--env staging)
       env_staging: {
-        NODE_ENV: 'staging',
+        NODE_ENV: "staging",
         PORT: 3001,
-        LOG_LEVEL: 'debug'
-      }
+        LOG_LEVEL: "debug",
+      },
 
       // ═══════════════════════════════════════════════
       // 高度な設定 (オプション)
@@ -162,7 +157,7 @@ module.exports = {
 
       // 外部.envファイル参照
       // env_file: '.env.production',
-    }
+    },
 
     // ═══════════════════════════════════════════════
     // 追加アプリケーション例
@@ -175,5 +170,5 @@ module.exports = {
     //   instances: 1,
     //   // ... 上記と同様の設定
     // }
-  ]
+  ],
 };

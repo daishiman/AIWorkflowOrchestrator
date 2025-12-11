@@ -11,7 +11,7 @@
  *   - {{JITTER_FACTOR}}: ジッター係数 (デフォルト: 0.25)
  */
 
-import { createHash } from 'crypto';
+import { createHash } from "crypto";
 
 // ========================================
 // 型定義
@@ -46,12 +46,12 @@ export interface ChunkUploadResult {
 // ========================================
 
 const DEFAULT_CONFIG: ChunkUploadConfig = {
-  baseDelay: 1000,           // 1秒
-  maxDelay: 32000,           // 32秒
+  baseDelay: 1000, // 1秒
+  maxDelay: 32000, // 32秒
   maxRetries: 5,
-  jitterFactor: 0.25,        // ±25%
-  timeout: 60000,            // 60秒
-  hashAlgorithm: 'sha256'
+  jitterFactor: 0.25, // ±25%
+  timeout: 60000, // 60秒
+  hashAlgorithm: "sha256",
 };
 
 // ========================================
@@ -70,7 +70,7 @@ export class ChunkUploader {
    */
   async upload(
     uploadUrl: string,
-    chunk: ChunkData
+    chunk: ChunkData,
   ): Promise<ChunkUploadResult> {
     const chunkHash = this.calculateHash(chunk.buffer);
     let lastError: Error | null = null;
@@ -81,21 +81,25 @@ export class ChunkUploader {
 
         // ハッシュ検証
         if (result.serverHash !== chunkHash) {
-          throw new Error(`チェックサム不一致: expected=${chunkHash}, received=${result.serverHash}`);
+          throw new Error(
+            `チェックサム不一致: expected=${chunkHash}, received=${result.serverHash}`,
+          );
         }
 
         return {
           success: true,
           chunkIndex: chunk.index,
           serverHash: result.serverHash,
-          attempts: attempt
+          attempts: attempt,
         };
-
       } catch (error) {
-        lastError = error instanceof Error ? error : new Error('Unknown error');
+        lastError = error instanceof Error ? error : new Error("Unknown error");
 
         // リトライ可能かチェック
-        if (!this.isRetryableError(error) || attempt === this.config.maxRetries) {
+        if (
+          !this.isRetryableError(error) ||
+          attempt === this.config.maxRetries
+        ) {
           break;
         }
 
@@ -109,7 +113,7 @@ export class ChunkUploader {
       success: false,
       chunkIndex: chunk.index,
       attempts: this.config.maxRetries,
-      error: lastError?.message
+      error: lastError?.message,
     };
   }
 
@@ -119,7 +123,7 @@ export class ChunkUploader {
   private async uploadAttempt(
     uploadUrl: string,
     chunk: ChunkData,
-    chunkHash: string
+    chunkHash: string,
   ): Promise<{ serverHash: string }> {
     // 実際の実装では fetch や axios を使用
     // const response = await fetch(uploadUrl, {
@@ -136,9 +140,7 @@ export class ChunkUploader {
    * ハッシュを計算する
    */
   private calculateHash(buffer: Buffer): string {
-    return createHash(this.config.hashAlgorithm)
-      .update(buffer)
-      .digest('hex');
+    return createHash(this.config.hashAlgorithm).update(buffer).digest("hex");
   }
 
   /**
@@ -162,10 +164,12 @@ export class ChunkUploader {
   private isRetryableError(error: unknown): boolean {
     if (error instanceof Error) {
       // ネットワークエラー
-      if (error.message.includes('network') ||
-          error.message.includes('timeout') ||
-          error.message.includes('ECONNRESET') ||
-          error.message.includes('ETIMEDOUT')) {
+      if (
+        error.message.includes("network") ||
+        error.message.includes("timeout") ||
+        error.message.includes("ECONNRESET") ||
+        error.message.includes("ETIMEDOUT")
+      ) {
         return true;
       }
     }
@@ -180,6 +184,6 @@ export class ChunkUploader {
    * 指定時間待機する
    */
   private sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }

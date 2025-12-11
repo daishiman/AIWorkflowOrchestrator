@@ -12,11 +12,13 @@
 ローカルで即座に反映し、バックグラウンドでリモート同期。
 
 **特徴**:
+
 - 高い応答性
 - オフライン時も操作可能
 - 競合解決が必要
 
 **適用条件**:
+
 - [ ] ユーザー体験優先
 - [ ] 競合頻度が低い
 - [ ] 競合解決が容易
@@ -26,11 +28,13 @@
 リモート確認後にローカル反映。
 
 **特徴**:
+
 - 整合性保証
 - 競合なし
 - オンライン必須
 
 **適用条件**:
+
 - [ ] データ整合性最優先
 - [ ] 常時オンライン
 - [ ] 競合回避が重要
@@ -40,11 +44,13 @@
 Conflict-free Replicated Data Types を使用。
 
 **特徴**:
+
 - 自動マージ
 - 競合なし
 - データ型制限あり
 
 **適用条件**:
+
 - [ ] 複雑なデータ構造
 - [ ] 頻繁な同時編集
 - [ ] 自動解決が必要
@@ -64,12 +70,14 @@ interface VersionedData<T> {
 function detectConflict<T>(
   local: VersionedData<T>,
   remote: VersionedData<T>,
-  base: VersionedData<T>
+  base: VersionedData<T>,
 ): boolean {
   // 両方がベースから変更されている
-  return local.version !== base.version &&
-         remote.version !== base.version &&
-         local.version !== remote.version;
+  return (
+    local.version !== base.version &&
+    remote.version !== base.version &&
+    local.version !== remote.version
+  );
 }
 ```
 
@@ -78,17 +86,16 @@ function detectConflict<T>(
 ```typescript
 interface HashedData<T> {
   data: T;
-  hash: string;        // データのハッシュ
-  parentHash: string;  // 変更前のハッシュ
+  hash: string; // データのハッシュ
+  parentHash: string; // 変更前のハッシュ
 }
 
 function detectConflictByHash<T>(
   local: HashedData<T>,
-  remote: HashedData<T>
+  remote: HashedData<T>,
 ): boolean {
   // 同じ親から異なる変更が発生
-  return local.parentHash === remote.parentHash &&
-         local.hash !== remote.hash;
+  return local.parentHash === remote.parentHash && local.hash !== remote.hash;
 }
 ```
 
@@ -99,7 +106,7 @@ function detectConflictByHash<T>(
 ```typescript
 function resolveByTimestamp<T>(
   local: VersionedData<T>,
-  remote: VersionedData<T>
+  remote: VersionedData<T>,
 ): T {
   const localTime = new Date(local.updatedAt).getTime();
   const remoteTime = new Date(remote.updatedAt).getTime();
@@ -116,7 +123,7 @@ function resolveByTimestamp<T>(
 ```typescript
 function resolveByServer<T>(
   local: VersionedData<T>,
-  remote: VersionedData<T>
+  remote: VersionedData<T>,
 ): T {
   return remote.data;
 }
@@ -131,7 +138,7 @@ function resolveByServer<T>(
 function mergeObjects<T extends Record<string, unknown>>(
   local: T,
   remote: T,
-  base: T
+  base: T,
 ): T {
   const result: Record<string, unknown> = { ...base };
 
@@ -145,9 +152,10 @@ function mergeObjects<T extends Record<string, unknown>>(
       result[key] = remote[key];
     } else if (localChanged && remoteChanged) {
       // 両方変更された場合は後勝ち
-      result[key] = new Date(local.updatedAt) > new Date(remote.updatedAt)
-        ? local[key]
-        : remote[key];
+      result[key] =
+        new Date(local.updatedAt) > new Date(remote.updatedAt)
+          ? local[key]
+          : remote[key];
     }
   }
 
@@ -163,17 +171,17 @@ interface ConflictResolution<T> {
   local: T;
   remote: T;
   resolved?: T;
-  resolvedBy?: 'user' | 'auto';
+  resolvedBy?: "user" | "auto";
   resolvedAt?: string;
 }
 
 async function promptUserResolution<T>(
-  conflict: ConflictResolution<T>
+  conflict: ConflictResolution<T>,
 ): Promise<T> {
   // UIでユーザーに選択を委ねる
   const choice = await showConflictDialog(conflict.local, conflict.remote);
 
-  return choice === 'local' ? conflict.local : conflict.remote;
+  return choice === "local" ? conflict.local : conflict.remote;
 }
 ```
 
@@ -191,6 +199,7 @@ async function fullSync(): Promise<void> {
 ```
 
 **使用タイミング**:
+
 - 初回起動時
 - 大きな整合性問題発生時
 - ユーザー明示的要求時
@@ -204,9 +213,9 @@ async function deltaSync(since: Date): Promise<void> {
   const changes = await fetchChangesSince(since);
 
   for (const change of changes) {
-    if (change.type === 'create' || change.type === 'update') {
+    if (change.type === "create" || change.type === "update") {
       await upsertLocal(change.data);
-    } else if (change.type === 'delete') {
+    } else if (change.type === "delete") {
       await deleteLocal(change.id);
     }
   }
@@ -216,6 +225,7 @@ async function deltaSync(since: Date): Promise<void> {
 ```
 
 **使用タイミング**:
+
 - 通常の同期操作
 - バックグラウンド同期
 
@@ -247,7 +257,7 @@ async function bidirectionalSync(): Promise<SyncResult> {
     uploaded: uploadResult.count,
     downloaded: remoteChanges.length,
     conflicts: conflicts.length,
-    resolved: resolved.length
+    resolved: resolved.length,
   };
 }
 ```
@@ -262,7 +272,7 @@ interface SyncMetadata {
   lastSyncVersion: number;
   pendingChanges: number;
   conflictCount: number;
-  status: 'synced' | 'syncing' | 'pending' | 'conflict' | 'error';
+  status: "synced" | "syncing" | "pending" | "conflict" | "error";
 }
 ```
 
@@ -273,7 +283,7 @@ interface ChangeLog {
   id: string;
   entityType: string;
   entityId: string;
-  operation: 'create' | 'update' | 'delete';
+  operation: "create" | "update" | "delete";
   timestamp: string;
   synced: boolean;
 }

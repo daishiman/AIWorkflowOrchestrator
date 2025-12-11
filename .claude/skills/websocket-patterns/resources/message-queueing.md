@@ -17,12 +17,12 @@ WebSocket接続断時のメッセージ保全と、
 
 ```typescript
 interface QueuedMessage {
-  id: string;            // 一意ID
-  payload: unknown;      // メッセージ本体
-  priority: 'high' | 'normal' | 'low';
-  createdAt: number;     // 作成タイムスタンプ
-  attempts: number;      // 送信試行回数
-  maxAttempts: number;   // 最大試行回数
+  id: string; // 一意ID
+  payload: unknown; // メッセージ本体
+  priority: "high" | "normal" | "low";
+  createdAt: number; // 作成タイムスタンプ
+  attempts: number; // 送信試行回数
+  maxAttempts: number; // 最大試行回数
 }
 ```
 
@@ -30,15 +30,15 @@ interface QueuedMessage {
 
 ```typescript
 interface QueueConfig {
-  maxSize: number;       // 最大キューサイズ
-  maxAge: number;        // 最大保持時間（ミリ秒）
-  retryLimit: number;    // 送信リトライ上限
+  maxSize: number; // 最大キューサイズ
+  maxAge: number; // 最大保持時間（ミリ秒）
+  retryLimit: number; // 送信リトライ上限
 }
 
 const DEFAULT_QUEUE_CONFIG: QueueConfig = {
   maxSize: 1000,
-  maxAge: 300000,        // 5分
-  retryLimit: 3
+  maxAge: 300000, // 5分
+  retryLimit: 3,
 };
 ```
 
@@ -51,7 +51,7 @@ class MessageQueue {
   private queue: QueuedMessage[] = [];
   private config: QueueConfig;
 
-  enqueue(payload: unknown, priority = 'normal'): string {
+  enqueue(payload: unknown, priority = "normal"): string {
     const id = randomUUID();
 
     const message: QueuedMessage = {
@@ -60,7 +60,7 @@ class MessageQueue {
       priority,
       createdAt: Date.now(),
       attempts: 0,
-      maxAttempts: this.config.retryLimit
+      maxAttempts: this.config.retryLimit,
     };
 
     // サイズ制限チェック
@@ -100,10 +100,10 @@ class MessageQueue {
 
   private removeOldest(): void {
     // 低優先度から削除
-    const lowPriority = this.queue.filter(m => m.priority === 'low');
+    const lowPriority = this.queue.filter((m) => m.priority === "low");
     if (lowPriority.length > 0) {
       const oldest = lowPriority[0];
-      this.queue = this.queue.filter(m => m.id !== oldest.id);
+      this.queue = this.queue.filter((m) => m.id !== oldest.id);
       return;
     }
 
@@ -112,7 +112,7 @@ class MessageQueue {
   }
 
   private onMaxRetries(message: QueuedMessage): void {
-    emit('message_failed', { message });
+    emit("message_failed", { message });
   }
 }
 ```
@@ -123,12 +123,12 @@ IndexedDBを使用した永続化:
 
 ```typescript
 class PersistentQueue extends MessageQueue {
-  private dbName = 'websocket-queue';
-  private storeName = 'messages';
+  private dbName = "websocket-queue";
+  private storeName = "messages";
 
   async save(): Promise<void> {
     const db = await this.openDB();
-    const tx = db.transaction(this.storeName, 'readwrite');
+    const tx = db.transaction(this.storeName, "readwrite");
     const store = tx.objectStore(this.storeName);
 
     // 既存をクリア
@@ -142,16 +142,14 @@ class PersistentQueue extends MessageQueue {
 
   async restore(): Promise<void> {
     const db = await this.openDB();
-    const tx = db.transaction(this.storeName, 'readonly');
+    const tx = db.transaction(this.storeName, "readonly");
     const store = tx.objectStore(this.storeName);
 
     const messages = await store.getAll();
 
     // 有効期限内のメッセージのみ復元
     const now = Date.now();
-    this.queue = messages.filter(m =>
-      now - m.createdAt < this.config.maxAge
-    );
+    this.queue = messages.filter((m) => now - m.createdAt < this.config.maxAge);
   }
 
   private async openDB(): Promise<IDBDatabase> {
@@ -161,7 +159,7 @@ class PersistentQueue extends MessageQueue {
       request.onupgradeneeded = () => {
         const db = request.result;
         if (!db.objectStoreNames.contains(this.storeName)) {
-          db.createObjectStore(this.storeName, { keyPath: 'id' });
+          db.createObjectStore(this.storeName, { keyPath: "id" });
         }
       };
 
@@ -186,10 +184,10 @@ async function flushQueue(): Promise<void> {
 
     try {
       await send(message.payload);
-      emit('message_sent', { id: message.id });
+      emit("message_sent", { id: message.id });
     } catch (error) {
       queue.requeue(message);
-      break;  // 失敗したら中断
+      break; // 失敗したら中断
     }
   }
 }
@@ -198,9 +196,7 @@ async function flushQueue(): Promise<void> {
 ### 流量制御
 
 ```typescript
-async function flushWithThrottle(
-  messagesPerSecond = 10
-): Promise<void> {
+async function flushWithThrottle(messagesPerSecond = 10): Promise<void> {
   const delay = 1000 / messagesPerSecond;
 
   while (queue.size > 0 && isConnected()) {
@@ -226,11 +222,11 @@ async function flushWithThrottle(
 function cleanupExpired(): void {
   const now = Date.now();
 
-  queue.queue = queue.queue.filter(message => {
+  queue.queue = queue.queue.filter((message) => {
     const age = now - message.createdAt;
 
     if (age > config.maxAge) {
-      emit('message_expired', { message });
+      emit("message_expired", { message });
       return false;
     }
 

@@ -82,6 +82,7 @@
 ```
 
 **設計原則**:
+
 - グローバル層は数値ベース（50, 100, 500...）
 - エイリアス層は用途ベース（primary, secondary...）
 - セマンティック層は状態ベース（success, error...）
@@ -120,6 +121,7 @@
 ```
 
 **Alias例**:
+
 ```json
 {
   "text": {
@@ -158,6 +160,7 @@
 ```
 
 **4pxグリッドシステム**:
+
 - 1 = 4px (0.25rem)
 - 2 = 8px (0.5rem)
 - 4 = 16px (1rem)
@@ -249,13 +252,13 @@
 
 ```css
 :root {
-  --color-background: #F9FAFB;
+  --color-background: #f9fafb;
   --color-text-primary: #111827;
 }
 
 [data-theme="dark"] {
   --color-background: #111827;
-  --color-text-primary: #F9FAFB;
+  --color-text-primary: #f9fafb;
 }
 ```
 
@@ -277,10 +280,10 @@ border.radius.lg
 
 ### 避けるべき命名
 
-| NG | OK | 理由 |
-|-----|-----|------|
-| `red` | `error` | 色ではなく意味で |
-| `large` | `lg` | 略語で統一 |
+| NG            | OK               | 理由                 |
+| ------------- | ---------------- | -------------------- |
+| `red`         | `error`          | 色ではなく意味で     |
+| `large`       | `lg`             | 略語で統一           |
 | `button-blue` | `button-primary` | 色の直接参照を避ける |
 
 ---
@@ -292,25 +295,29 @@ border.radius.lg
 ```javascript
 // config.js
 module.exports = {
-  source: ['tokens/**/*.json'],
+  source: ["tokens/**/*.json"],
   platforms: {
     css: {
-      transformGroup: 'css',
-      buildPath: 'dist/',
-      files: [{
-        destination: 'variables.css',
-        format: 'css/variables'
-      }]
+      transformGroup: "css",
+      buildPath: "dist/",
+      files: [
+        {
+          destination: "variables.css",
+          format: "css/variables",
+        },
+      ],
     },
     js: {
-      transformGroup: 'js',
-      buildPath: 'dist/',
-      files: [{
-        destination: 'tokens.js',
-        format: 'javascript/es6'
-      }]
-    }
-  }
+      transformGroup: "js",
+      buildPath: "dist/",
+      files: [
+        {
+          destination: "tokens.js",
+          format: "javascript/es6",
+        },
+      ],
+    },
+  },
 };
 ```
 
@@ -318,14 +325,14 @@ module.exports = {
 
 ```javascript
 // tailwind.config.js
-const tokens = require('./dist/tokens.js');
+const tokens = require("./dist/tokens.js");
 
 module.exports = {
   theme: {
     colors: tokens.color,
     spacing: tokens.spacing,
     // ...
-  }
+  },
 };
 ```
 

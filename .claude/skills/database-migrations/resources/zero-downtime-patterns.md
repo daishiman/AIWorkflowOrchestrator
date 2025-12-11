@@ -143,12 +143,12 @@ DROP VIEW customers;
 
 ### 安全な型変更
 
-| 変更 | 安全性 | 方法 |
-|------|--------|------|
-| VARCHAR(50)→VARCHAR(100) | ✅安全 | 直接変更可 |
+| 変更                     | 安全性 | 方法           |
+| ------------------------ | ------ | -------------- |
+| VARCHAR(50)→VARCHAR(100) | ✅安全 | 直接変更可     |
 | VARCHAR(100)→VARCHAR(50) | ⚠️危険 | データ確認必要 |
-| INTEGER→BIGINT | ✅安全 | 直接変更可 |
-| VARCHAR→INTEGER | ❌危険 | 新カラム方式 |
+| INTEGER→BIGINT           | ✅安全 | 直接変更可     |
+| VARCHAR→INTEGER          | ❌危険 | 新カラム方式   |
 
 ### 安全でない型変更の例
 
@@ -220,6 +220,7 @@ CREATE INDEX CONCURRENTLY idx_users_email ON users(email);
 ```
 
 **注意点**:
+
 - トランザクション内では使用不可
 - 失敗時は INVALID 状態のインデックスが残る
 - 失敗後は `DROP INDEX` してリトライ

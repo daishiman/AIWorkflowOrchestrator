@@ -6,31 +6,33 @@
 
 ```javascript
 module.exports = {
-  apps: [{
-    name: 'my-app',
-    script: './dist/index.js',
+  apps: [
+    {
+      name: "my-app",
+      script: "./dist/index.js",
 
-    // 共通設定（すべての環境）
-    env: {
-      NODE_ENV: 'development',
-      PORT: 3000,
-      LOG_LEVEL: 'debug'
+      // 共通設定（すべての環境）
+      env: {
+        NODE_ENV: "development",
+        PORT: 3000,
+        LOG_LEVEL: "debug",
+      },
+
+      // 本番環境
+      env_production: {
+        NODE_ENV: "production",
+        PORT: 8080,
+        LOG_LEVEL: "info",
+      },
+
+      // ステージング環境
+      env_staging: {
+        NODE_ENV: "staging",
+        PORT: 3001,
+        LOG_LEVEL: "debug",
+      },
     },
-
-    // 本番環境
-    env_production: {
-      NODE_ENV: 'production',
-      PORT: 8080,
-      LOG_LEVEL: 'info'
-    },
-
-    // ステージング環境
-    env_staging: {
-      NODE_ENV: 'staging',
-      PORT: 3001,
-      LOG_LEVEL: 'debug'
-    }
-  }]
+  ],
 };
 ```
 
@@ -65,17 +67,19 @@ env_production: {
 
 ```javascript
 // ecosystem.config.js
-require('dotenv').config();
+require("dotenv").config();
 
 module.exports = {
-  apps: [{
-    name: 'my-app',
-    script: './dist/index.js',
-    env: {
-      DB_HOST: process.env.DB_HOST,
-      DB_PASSWORD: process.env.DB_PASSWORD
-    }
-  }]
+  apps: [
+    {
+      name: "my-app",
+      script: "./dist/index.js",
+      env: {
+        DB_HOST: process.env.DB_HOST,
+        DB_PASSWORD: process.env.DB_PASSWORD,
+      },
+    },
+  ],
 };
 ```
 
@@ -90,11 +94,13 @@ export API_KEY="sk-xxxxx"
 ```javascript
 // ecosystem.config.js
 module.exports = {
-  apps: [{
-    name: 'my-app',
-    script: './dist/index.js'
-    // 環境変数は自動継承
-  }]
+  apps: [
+    {
+      name: "my-app",
+      script: "./dist/index.js",
+      // 環境変数は自動継承
+    },
+  ],
 };
 ```
 
@@ -102,11 +108,13 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  apps: [{
-    name: 'my-app',
-    script: './dist/index.js',
-    env_file: '.env.production'
-  }]
+  apps: [
+    {
+      name: "my-app",
+      script: "./dist/index.js",
+      env_file: ".env.production",
+    },
+  ],
 };
 ```
 
@@ -184,35 +192,39 @@ API_KEY=<YOUR_API_KEY_HERE>
 ### 開発/本番分離
 
 ```javascript
-const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = process.env.NODE_ENV === "production";
 
 module.exports = {
-  apps: [{
-    name: isProduction ? 'app-prod' : 'app-dev',
-    script: './dist/index.js',
-    instances: isProduction ? 'max' : 1,
-    exec_mode: isProduction ? 'cluster' : 'fork',
-    env: {
-      NODE_ENV: 'development'
+  apps: [
+    {
+      name: isProduction ? "app-prod" : "app-dev",
+      script: "./dist/index.js",
+      instances: isProduction ? "max" : 1,
+      exec_mode: isProduction ? "cluster" : "fork",
+      env: {
+        NODE_ENV: "development",
+      },
+      env_production: {
+        NODE_ENV: "production",
+      },
     },
-    env_production: {
-      NODE_ENV: 'production'
-    }
-  }]
+  ],
 };
 ```
 
 ### 動的設定読み込み
 
 ```javascript
-const config = require('./config')[process.env.NODE_ENV || 'development'];
+const config = require("./config")[process.env.NODE_ENV || "development"];
 
 module.exports = {
-  apps: [{
-    name: 'app',
-    script: './dist/index.js',
-    env: config.env
-  }]
+  apps: [
+    {
+      name: "app",
+      script: "./dist/index.js",
+      env: config.env,
+    },
+  ],
 };
 ```
 

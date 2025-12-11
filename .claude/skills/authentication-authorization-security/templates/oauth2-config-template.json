@@ -26,10 +26,7 @@
         "https://app.example.com",
         "http://localhost:3000"
       ],
-      "allowedOrigins": [
-        "https://app.example.com",
-        "http://localhost:3000"
-      ]
+      "allowedOrigins": ["https://app.example.com", "http://localhost:3000"]
     },
 
     "flow": {
@@ -37,18 +34,11 @@
       "pkce": true,
       "responseType": "code",
       "responseMode": "query",
-      "grantTypes": [
-        "authorization_code",
-        "refresh_token"
-      ]
+      "grantTypes": ["authorization_code", "refresh_token"]
     },
 
     "scope": {
-      "requested": [
-        "openid",
-        "profile",
-        "email"
-      ],
+      "requested": ["openid", "profile", "email"],
       "description": {
         "openid": "OpenID Connect 必須スコープ",
         "profile": "ユーザープロフィール情報（名前、画像等）",

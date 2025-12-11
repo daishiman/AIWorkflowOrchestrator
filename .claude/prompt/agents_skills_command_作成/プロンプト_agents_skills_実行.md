@@ -5,6 +5,7 @@
 作って欲しいのは、次のエージェントとこれに関わるスキルを作成して。
 """
 @.claude/agents/gha-workflow-architect.md
+
 #### 36. GitHub Actions ワークフロー・アーキテクト
 
 - **エージェント名:** `@gha-workflow-architect`
@@ -64,7 +65,7 @@
   | **github-api-integration** | `.claude/skills/github-api-integration/SKILL.md` | GitHub API、gh CLI |
   | **workflow-templates** | `.claude/skills/workflow-templates/SKILL.md` | ワークフローテンプレート |
   | **concurrency-control** | `.claude/skills/concurrency-control/SKILL.md` | 同時実行制御 |
-"""
+  """
 
 これに記述しているスキル以外も必要十分なスキルを作成すること。
 スキルは、resource/, script/, template/, SKILL.md を必要十分な粒度で作成すること。
@@ -76,6 +77,7 @@
 参考：
 @.claude/agents/agent_list.md
 """
+
 #### 33. メタ・エージェント設計者
 
 - **エージェント名:** `@meta-agent-designer`
@@ -108,10 +110,11 @@
   | **multi-agent-systems** | `.claude/skills/multi-agent-systems/SKILL.md` | エージェント間協調、メッセージパッシング |
   | **prompt-engineering-for-agents** | `.claude/skills/prompt-engineering-for-agents/SKILL.md` | System Prompt、Few-Shot Examples |
   | **agent-lifecycle-management** | `.claude/skills/agent-lifecycle-management/SKILL.md` | 起動、実行、終了、状態管理 |
-"""
+  """
 
 @.claude/skills/skill_list.md
 """
+
 ## 33. メタ・エージェント設計者
 
 - **エージェント名:** `@meta-agent-designer`
@@ -120,70 +123,77 @@
 ```markdown
 - **必要なスキル**:
 
-  | スキル名 | パス | 概要 |
-  |---------|------|------|
-  | **agent-architecture-patterns** | `.claude/skills/agent-architecture-patterns/SKILL.md` | オーケストレーター・ワーカー、ハブアンドスポーク、パイプライン、ステートマシンパターン |
-  | **agent-structure-design** | `.claude/skills/agent-structure-design/SKILL.md` | YAML Frontmatter設計、システムプロンプト構造、5段階ワークフロー設計 |
-  | **agent-dependency-design** | `.claude/skills/agent-dependency-design/SKILL.md` | スキル依存、エージェント依存、ハンドオフプロトコル、循環依存検出 |
-  | **agent-quality-standards** | `.claude/skills/agent-quality-standards/SKILL.md` | 5カテゴリ品質基準（構造、設計原則、セキュリティ、ドキュメンテーション、統合） |
-  | **agent-validation-testing** | `.claude/skills/agent-validation-testing/SKILL.md` | 正常系・エッジケース・異常系テスト、YAML/Markdown構文検証 |
-  | **agent-template-patterns** | `.claude/skills/agent-template-patterns/SKILL.md` | 再利用可能エージェントテンプレート、変数設計、インスタンス化スクリプト |
-  | **project-architecture-integration** | `.claude/skills/project-architecture-integration/SKILL.md` | ハイブリッドアーキテクチャ（shared/features）、データベース設計、REST API |
-  | **agent-persona-design** | `.claude/skills/agent-persona-design/SKILL.md` | ペルソナ定義、役割の明確化、制約設定 |
-  | **tool-permission-management** | `.claude/skills/tool-permission-management/SKILL.md` | 最小権限、ツールアクセス制御 |
-  | **multi-agent-systems** | `.claude/skills/multi-agent-systems/SKILL.md` | エージェント間協調、メッセージパッシング |
-  | **prompt-engineering-for-agents** | `.claude/skills/prompt-engineering-for-agents/SKILL.md` | System Prompt、Few-Shot Examples |
-  | **agent-lifecycle-management** | `.claude/skills/agent-lifecycle-management/SKILL.md` | 起動、実行、終了、状態管理 |
+  | スキル名                             | パス                                                       | 概要                                                                                   |
+  | ------------------------------------ | ---------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+  | **agent-architecture-patterns**      | `.claude/skills/agent-architecture-patterns/SKILL.md`      | オーケストレーター・ワーカー、ハブアンドスポーク、パイプライン、ステートマシンパターン |
+  | **agent-structure-design**           | `.claude/skills/agent-structure-design/SKILL.md`           | YAML Frontmatter設計、システムプロンプト構造、5段階ワークフロー設計                    |
+  | **agent-dependency-design**          | `.claude/skills/agent-dependency-design/SKILL.md`          | スキル依存、エージェント依存、ハンドオフプロトコル、循環依存検出                       |
+  | **agent-quality-standards**          | `.claude/skills/agent-quality-standards/SKILL.md`          | 5カテゴリ品質基準（構造、設計原則、セキュリティ、ドキュメンテーション、統合）          |
+  | **agent-validation-testing**         | `.claude/skills/agent-validation-testing/SKILL.md`         | 正常系・エッジケース・異常系テスト、YAML/Markdown構文検証                              |
+  | **agent-template-patterns**          | `.claude/skills/agent-template-patterns/SKILL.md`          | 再利用可能エージェントテンプレート、変数設計、インスタンス化スクリプト                 |
+  | **project-architecture-integration** | `.claude/skills/project-architecture-integration/SKILL.md` | ハイブリッドアーキテクチャ（shared/features）、データベース設計、REST API              |
+  | **agent-persona-design**             | `.claude/skills/agent-persona-design/SKILL.md`             | ペルソナ定義、役割の明確化、制約設定                                                   |
+  | **tool-permission-management**       | `.claude/skills/tool-permission-management/SKILL.md`       | 最小権限、ツールアクセス制御                                                           |
+  | **multi-agent-systems**              | `.claude/skills/multi-agent-systems/SKILL.md`              | エージェント間協調、メッセージパッシング                                               |
+  | **prompt-engineering-for-agents**    | `.claude/skills/prompt-engineering-for-agents/SKILL.md`    | System Prompt、Few-Shot Examples                                                       |
+  | **agent-lifecycle-management**       | `.claude/skills/agent-lifecycle-management/SKILL.md`       | 起動、実行、終了、状態管理                                                             |
 ```
+
 """
 
 参考エージェントメタ情報:
 """
+
 ---
+
 name: sec-auditor
 description: |
-  システムのセキュリティ脆弱性を積極的に検出し、能動的な防御を提供します。
-  OWASP Top 10に基づく包括的なセキュリティ分析を実行します。
+システムのセキュリティ脆弱性を積極的に検出し、能動的な防御を提供します。
+OWASP Top 10に基づく包括的なセキュリティ分析を実行します。
 
-  📚 依存スキル（11個）:
-  このエージェントは以下のスキルに専門知識を分離しています。
-  タスクに応じて必要なスキルのみを読み込んでください:
+📚 依存スキル（11個）:
+このエージェントは以下のスキルに専門知識を分離しています。
+タスクに応じて必要なスキルのみを読み込んでください:
 
-  - `.claude/skills/owasp-top-10/SKILL.md`: OWASP Top 10脆弱性分類と対策
-  - `.claude/skills/vulnerability-scanning/SKILL.md`: 脆弱性スキャン手法とツール
-  - `.claude/skills/authentication-authorization-security/SKILL.md`: 認証・認可のセキュリティ評価
-  - `.claude/skills/cryptographic-practices/SKILL.md`: 暗号化とセキュアランダム値
-  - `.claude/skills/security-configuration-review/SKILL.md`: セキュリティ設定レビュー
-  - `.claude/skills/dependency-security-scanning/SKILL.md`: 依存関係脆弱性スキャン
-  - `.claude/skills/code-static-analysis-security/SKILL.md`: コード静的解析（セキュリティ）
-  - `.claude/skills/rate-limiting-strategies/SKILL.md`: Rate LimitingとDoS対策
-  - `.claude/skills/input-sanitization-advanced/SKILL.md`: 入力検証とサニタイゼーション
-  - `.claude/skills/security-testing/SKILL.md`: セキュリティテストケース作成
-  - `.claude/skills/security-reporting/SKILL.md`: セキュリティレポート生成
+- `.claude/skills/owasp-top-10/SKILL.md`: OWASP Top 10脆弱性分類と対策
+- `.claude/skills/vulnerability-scanning/SKILL.md`: 脆弱性スキャン手法とツール
+- `.claude/skills/authentication-authorization-security/SKILL.md`: 認証・認可のセキュリティ評価
+- `.claude/skills/cryptographic-practices/SKILL.md`: 暗号化とセキュアランダム値
+- `.claude/skills/security-configuration-review/SKILL.md`: セキュリティ設定レビュー
+- `.claude/skills/dependency-security-scanning/SKILL.md`: 依存関係脆弱性スキャン
+- `.claude/skills/code-static-analysis-security/SKILL.md`: コード静的解析（セキュリティ）
+- `.claude/skills/rate-limiting-strategies/SKILL.md`: Rate LimitingとDoS対策
+- `.claude/skills/input-sanitization-advanced/SKILL.md`: 入力検証とサニタイゼーション
+- `.claude/skills/security-testing/SKILL.md`: セキュリティテストケース作成
+- `.claude/skills/security-reporting/SKILL.md`: セキュリティレポート生成
 
-  パス: .claude/skills/[スキル名]/SKILL.md
+パス: .claude/skills/[スキル名]/SKILL.md
 
-  専門分野:
-  - 脆弱性検出: SQLインジェクション、XSS、CSRF等の一般的な攻撃パターンの識別
-  - セキュリティスキャン: SAST/DASTツールの実行と結果解釈
-  - 攻撃者視点分析: システムの弱点を攻撃者の視点から評価
-  - Rate Limiting設計: DoS/DDoS攻撃対策の実装支援
-  - 入力検証: パラメータタンパリング防止とエンコード処理
+専門分野:
 
-  使用タイミング:
-  - コード変更後のセキュリティ検証
-  - デプロイ前の最終セキュリティチェック
-  - 定期的なセキュリティ監査
-  - 外部API統合時のセキュリティレビュー
+- 脆弱性検出: SQLインジェクション、XSS、CSRF等の一般的な攻撃パターンの識別
+- セキュリティスキャン: SAST/DASTツールの実行と結果解釈
+- 攻撃者視点分析: システムの弱点を攻撃者の視点から評価
+- Rate Limiting設計: DoS/DDoS攻撃対策の実装支援
+- 入力検証: パラメータタンパリング防止とエンコード処理
 
-  Use proactively after code changes in authentication, API endpoints,
-  database queries, or user input handling logic.
+使用タイミング:
+
+- コード変更後のセキュリティ検証
+- デプロイ前の最終セキュリティチェック
+- 定期的なセキュリティ監査
+- 外部API統合時のセキュリティレビュー
+
+Use proactively after code changes in authentication, API endpoints,
+database queries, or user input handling logic.
 tools:
-  - Read
-  - Grep
-  - Bash
-model: sonnet
-version: 2.0.0
+
+- Read
+- Grep
+- Bash
+  model: sonnet
+  version: 2.0.0
+
 ---
 
 """
@@ -192,5 +202,6 @@ version: 2.0.0
 ステップバイステップで一つ一つ確実に実行してスキルとエージェントを作成してください。各エージェントやスキルに記述されている内容をステップバイステップで確実に実行してください。フォーマットや各ディレクトリの作成、ファイルの作成、一切漏れなく作成してください。 特にエージェントのが、コマンドでスキルを呼び出しているのか、相対パスで記述しているのかを確認しておくこと。　
 エージェント名やスキル名を記述するのではなく、相対パスを記述するようにしてください。相対パスとは次のような内容で記述してください。`.claude/skills/agent-lifecycle-management/SKILL.md`
 エージェント:
+
 - @.claude/agents/meta-agent-designer.md
 - @.claude/agents/skiすでにスキルが作成されているのであれば作成は不要ですが確認はしておいてください

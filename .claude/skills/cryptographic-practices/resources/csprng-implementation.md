@@ -13,19 +13,19 @@ CSPRNG（Cryptographically Secure Pseudo-Random Number Generator）は、暗号�
 **推奨**: セキュリティトークン、セッションID、ソルト生成
 
 ```javascript
-const crypto = require('crypto');
+const crypto = require("crypto");
 
 // バイナリ形式
-const randomBytes = crypto.randomBytes(32);  // 32バイト = 256ビット
+const randomBytes = crypto.randomBytes(32); // 32バイト = 256ビット
 
 // 16進数文字列
-const randomHex = crypto.randomBytes(16).toString('hex');
+const randomHex = crypto.randomBytes(16).toString("hex");
 
 // Base64エンコード
-const randomBase64 = crypto.randomBytes(24).toString('base64');
+const randomBase64 = crypto.randomBytes(24).toString("base64");
 
 // URL-safe Base64
-const randomUrlSafe = crypto.randomBytes(24).toString('base64url');
+const randomUrlSafe = crypto.randomBytes(24).toString("base64url");
 ```
 
 ### crypto.randomUUID()
@@ -103,8 +103,8 @@ crypto.getRandomValues(array);
 
 // 16進数文字列に変換
 const hex = Array.from(array)
-  .map(b => b.toString(16).padStart(2, '0'))
-  .join('');
+  .map((b) => b.toString(16).padStart(2, "0"))
+  .join("");
 
 // Base64に変換
 const base64 = btoa(String.fromCharCode.apply(null, array));
@@ -141,10 +141,10 @@ session_id = secrets.token_hex(32)
 
 ```javascript
 // Node.js
-const csrfToken = crypto.randomBytes(16).toString('base64');
+const csrfToken = crypto.randomBytes(16).toString("base64");
 
 // Python
-csrf_token = secrets.token_urlsafe(16)
+csrf_token = secrets.token_urlsafe(16);
 ```
 
 **要件**: 128ビット以上
@@ -170,8 +170,8 @@ api_key = f"sk-{secrets.token_urlsafe(32)}"
 
 ```javascript
 // Node.js (bcrypt自動生成)
-const bcrypt = require('bcrypt');
-const hash = await bcrypt.hash(password, 12);  // ソルト自動生成
+const bcrypt = require("bcrypt");
+const hash = await bcrypt.hash(password, 12); // ソルト自動生成
 
 // 手動ソルト生成（PBKDF2等）
 const salt = crypto.randomBytes(16);
@@ -185,12 +185,12 @@ const salt = crypto.randomBytes(16);
 
 ```javascript
 // Node.js
-const state = crypto.randomBytes(16).toString('hex');
-const nonce = crypto.randomBytes(16).toString('hex');
+const state = crypto.randomBytes(16).toString("hex");
+const nonce = crypto.randomBytes(16).toString("hex");
 
 // Python
-state = secrets.token_hex(16)
-nonce = secrets.token_hex(16)
+state = secrets.token_hex(16);
+nonce = secrets.token_hex(16);
 ```
 
 **要件**: 128ビット以上
@@ -246,14 +246,14 @@ value = random.random()
 // 生成された値のユニーク性テスト
 const seen = new Set();
 for (let i = 0; i < 100000; i++) {
-  const value = crypto.randomBytes(16).toString('hex');
+  const value = crypto.randomBytes(16).toString("hex");
   if (seen.has(value)) {
-    console.error('Collision detected!');
+    console.error("Collision detected!");
     break;
   }
   seen.add(value);
 }
-console.log('100,000 unique values generated');
+console.log("100,000 unique values generated");
 ```
 
 ### パフォーマンス測定

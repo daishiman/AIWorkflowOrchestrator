@@ -10,14 +10,14 @@ import {
   useState,
   type ComponentPropsWithoutRef,
   type ReactNode,
-} from 'react';
+} from "react";
 
 // =============================================================================
 // ユーティリティ
 // =============================================================================
 
 function cn(...classes: (string | undefined | false)[]) {
-  return classes.filter(Boolean).join(' ');
+  return classes.filter(Boolean).join(" ");
 }
 
 // =============================================================================
@@ -56,18 +56,19 @@ export function FormField({
   const helpId = `${id}-help`;
 
   // aria-describedby の値を構築
-  const describedBy = [
-    error && errorId,
-    helpText && helpId,
-  ].filter(Boolean).join(' ') || undefined;
+  const describedBy =
+    [error && errorId, helpText && helpId].filter(Boolean).join(" ") ||
+    undefined;
 
   return (
-    <div className={cn('form-field', className)}>
+    <div className={cn("form-field", className)}>
       <label htmlFor={id} className="form-label">
         {label}
         {required && (
           <>
-            <span aria-hidden="true" className="text-red-500 ml-1">*</span>
+            <span aria-hidden="true" className="text-red-500 ml-1">
+              *
+            </span>
             <span className="sr-only">（必須）</span>
           </>
         )}
@@ -79,9 +80,9 @@ export function FormField({
           if (React.isValidElement(child)) {
             return React.cloneElement(child, {
               id,
-              'aria-required': required,
-              'aria-invalid': !!error,
-              'aria-describedby': describedBy,
+              "aria-required": required,
+              "aria-invalid": !!error,
+              "aria-describedby": describedBy,
               ...child.props,
             } as any);
           }
@@ -115,44 +116,51 @@ export function FormField({
 // Input コンポーネント
 // =============================================================================
 
-interface InputProps extends ComponentPropsWithoutRef<'input'> {
+interface InputProps extends ComponentPropsWithoutRef<"input"> {
   /** 左側アイコン */
   leftIcon?: ReactNode;
   /** 右側アイコン */
   rightIcon?: ReactNode;
 }
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(
-  function Input({ className, leftIcon, rightIcon, ...props }, ref) {
-    return (
-      <div className="relative">
-        {leftIcon && (
-          <div className="absolute left-3 top-1/2 -translate-y-1/2" aria-hidden="true">
-            {leftIcon}
-          </div>
+export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
+  { className, leftIcon, rightIcon, ...props },
+  ref,
+) {
+  return (
+    <div className="relative">
+      {leftIcon && (
+        <div
+          className="absolute left-3 top-1/2 -translate-y-1/2"
+          aria-hidden="true"
+        >
+          {leftIcon}
+        </div>
+      )}
+      <input
+        ref={ref}
+        className={cn(
+          "w-full rounded-md border border-gray-300 px-3 py-2",
+          "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+          "disabled:bg-gray-100 disabled:cursor-not-allowed",
+          "aria-invalid:border-red-500 aria-invalid:focus:ring-red-500",
+          leftIcon && "pl-10",
+          rightIcon && "pr-10",
+          className,
         )}
-        <input
-          ref={ref}
-          className={cn(
-            'w-full rounded-md border border-gray-300 px-3 py-2',
-            'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
-            'disabled:bg-gray-100 disabled:cursor-not-allowed',
-            'aria-invalid:border-red-500 aria-invalid:focus:ring-red-500',
-            leftIcon && 'pl-10',
-            rightIcon && 'pr-10',
-            className
-          )}
-          {...props}
-        />
-        {rightIcon && (
-          <div className="absolute right-3 top-1/2 -translate-y-1/2" aria-hidden="true">
-            {rightIcon}
-          </div>
-        )}
-      </div>
-    );
-  }
-);
+        {...props}
+      />
+      {rightIcon && (
+        <div
+          className="absolute right-3 top-1/2 -translate-y-1/2"
+          aria-hidden="true"
+        >
+          {rightIcon}
+        </div>
+      )}
+    </div>
+  );
+});
 
 // =============================================================================
 // Select コンポーネント
@@ -164,7 +172,10 @@ interface SelectOption {
   disabled?: boolean;
 }
 
-interface SelectProps extends Omit<ComponentPropsWithoutRef<'select'>, 'children'> {
+interface SelectProps extends Omit<
+  ComponentPropsWithoutRef<"select">,
+  "children"
+> {
   options: SelectOption[];
   placeholder?: string;
 }
@@ -175,11 +186,11 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
       <select
         ref={ref}
         className={cn(
-          'w-full rounded-md border border-gray-300 px-3 py-2',
-          'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
-          'disabled:bg-gray-100 disabled:cursor-not-allowed',
-          'aria-invalid:border-red-500 aria-invalid:focus:ring-red-500',
-          className
+          "w-full rounded-md border border-gray-300 px-3 py-2",
+          "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+          "disabled:bg-gray-100 disabled:cursor-not-allowed",
+          "aria-invalid:border-red-500 aria-invalid:focus:ring-red-500",
+          className,
         )}
         {...props}
       >
@@ -199,14 +210,14 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         ))}
       </select>
     );
-  }
+  },
 );
 
 // =============================================================================
 // Textarea コンポーネント
 // =============================================================================
 
-interface TextareaProps extends ComponentPropsWithoutRef<'textarea'> {
+interface TextareaProps extends ComponentPropsWithoutRef<"textarea"> {
   /** 文字数カウントを表示 */
   showCount?: boolean;
   /** 最大文字数 */
@@ -215,18 +226,18 @@ interface TextareaProps extends ComponentPropsWithoutRef<'textarea'> {
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   function Textarea({ className, showCount, maxLength, value, ...props }, ref) {
-    const charCount = typeof value === 'string' ? value.length : 0;
+    const charCount = typeof value === "string" ? value.length : 0;
 
     return (
       <div className="relative">
         <textarea
           ref={ref}
           className={cn(
-            'w-full rounded-md border border-gray-300 px-3 py-2 min-h-[100px]',
-            'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
-            'disabled:bg-gray-100 disabled:cursor-not-allowed',
-            'aria-invalid:border-red-500 aria-invalid:focus:ring-red-500',
-            className
+            "w-full rounded-md border border-gray-300 px-3 py-2 min-h-[100px]",
+            "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+            "disabled:bg-gray-100 disabled:cursor-not-allowed",
+            "aria-invalid:border-red-500 aria-invalid:focus:ring-red-500",
+            className,
           )}
           value={value}
           maxLength={maxLength}
@@ -242,14 +253,17 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 // =============================================================================
 // Checkbox コンポーネント
 // =============================================================================
 
-interface CheckboxProps extends Omit<ComponentPropsWithoutRef<'input'>, 'type'> {
+interface CheckboxProps extends Omit<
+  ComponentPropsWithoutRef<"input">,
+  "type"
+> {
   /** ラベルテキスト */
   label: string;
 }
@@ -266,10 +280,10 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           type="checkbox"
           id={id}
           className={cn(
-            'h-4 w-4 rounded border-gray-300',
-            'focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
-            'disabled:opacity-50 disabled:cursor-not-allowed',
-            className
+            "h-4 w-4 rounded border-gray-300",
+            "focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
+            "disabled:opacity-50 disabled:cursor-not-allowed",
+            className,
           )}
           {...props}
         />
@@ -278,7 +292,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         </label>
       </div>
     );
-  }
+  },
 );
 
 // =============================================================================
@@ -330,7 +344,9 @@ export function RadioGroup({
         {label}
         {required && (
           <>
-            <span aria-hidden="true" className="text-red-500 ml-1">*</span>
+            <span aria-hidden="true" className="text-red-500 ml-1">
+              *
+            </span>
             <span className="sr-only">（必須）</span>
           </>
         )}
@@ -348,10 +364,7 @@ export function RadioGroup({
               onChange={(e) => onChange?.(e.target.value)}
               className="h-4 w-4 border-gray-300 focus:ring-2 focus:ring-blue-500"
             />
-            <label
-              htmlFor={`${groupId}-${option.value}`}
-              className="text-sm"
-            >
+            <label htmlFor={`${groupId}-${option.value}`} className="text-sm">
               {option.label}
             </label>
           </div>

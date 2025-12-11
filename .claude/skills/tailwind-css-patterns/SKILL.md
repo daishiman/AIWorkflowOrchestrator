@@ -73,7 +73,7 @@ const button = cva(
       variant: "primary",
       size: "md",
     },
-  }
+  },
 );
 
 type ButtonProps = VariantProps<typeof button>;
@@ -101,7 +101,7 @@ cn(
   "base-class",
   isActive && "active-class",
   { "conditional-class": condition },
-  className // 外部からのクラスで上書き可能
+  className, // 外部からのクラスで上書き可能
 );
 ```
 
@@ -265,7 +265,7 @@ const buttonVariants = cva(
       variant: "default",
       size: "default",
     },
-  }
+  },
 );
 ```
 
@@ -276,7 +276,7 @@ const Card = ({ className, ...props }) => (
   <div
     className={cn(
       "rounded-lg border bg-card text-card-foreground shadow-sm",
-      className
+      className,
     )}
     {...props}
   />
@@ -305,13 +305,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           "placeholder:text-muted-foreground",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
           "disabled:cursor-not-allowed disabled:opacity-50",
-          className
+          className,
         )}
         ref={ref}
         {...props}
       />
     );
-  }
+  },
 );
 ```
 

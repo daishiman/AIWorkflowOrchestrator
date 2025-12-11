@@ -12,12 +12,13 @@
  *   - メモ化の過不足を検出
  */
 
-import { readFile } from 'fs/promises';
-import { resolve } from 'path';
+import { readFile } from "fs/promises";
+import { resolve } from "path";
 
 const HOOKS_PATTERNS = {
   useState: /useState\s*(<[^>]+>)?\s*\(/g,
-  useEffect: /useEffect\s*\(\s*\(\)\s*=>\s*\{[\s\S]*?\},\s*\[([\s\S]*?)\]\s*\)/g,
+  useEffect:
+    /useEffect\s*\(\s*\(\)\s*=>\s*\{[\s\S]*?\},\s*\[([\s\S]*?)\]\s*\)/g,
   useCallback: /useCallback\s*\(\s*[\s\S]*?,\s*\[([\s\S]*?)\]\s*\)/g,
   useMemo: /useMemo\s*\(\s*\(\)\s*=>\s*[\s\S]*?,\s*\[([\s\S]*?)\]\s*\)/g,
   useReducer: /useReducer\s*\(/g,
@@ -27,31 +28,31 @@ const HOOKS_PATTERNS = {
 
 const WARNING_PATTERNS = [
   {
-    name: 'Empty dependency array without comment',
+    name: "Empty dependency array without comment",
     pattern: /useEffect\s*\([^)]+,\s*\[\]\s*\)(?!\s*\/\/)/g,
-    message: '空の依存配列には意図をコメントで明記してください',
+    message: "空の依存配列には意図をコメントで明記してください",
   },
   {
-    name: 'Missing dependency array',
+    name: "Missing dependency array",
     pattern: /useEffect\s*\([^,]+\)(?!\s*,)/g,
-    message: 'useEffectに依存配列がありません（毎レンダリング実行）',
+    message: "useEffectに依存配列がありません（毎レンダリング実行）",
   },
   {
-    name: 'Object in dependency',
+    name: "Object in dependency",
     pattern: /\[\s*\{[^}]+\}\s*\]/g,
-    message: '依存配列にオブジェクトリテラルがあります（無限ループの原因）',
+    message: "依存配列にオブジェクトリテラルがあります（無限ループの原因）",
   },
 ];
 
 async function analyzeFile(filePath) {
   const absolutePath = resolve(process.cwd(), filePath);
-  const content = await readFile(absolutePath, 'utf-8');
+  const content = await readFile(absolutePath, "utf-8");
 
   console.log(`\n📊 Hooks使用状況分析: ${filePath}\n`);
-  console.log('='.repeat(60));
+  console.log("=".repeat(60));
 
   // Hooksの使用回数をカウント
-  console.log('\n📌 Hooks使用状況:\n');
+  console.log("\n📌 Hooks使用状況:\n");
 
   let totalHooks = 0;
   for (const [hookName, pattern] of Object.entries(HOOKS_PATTERNS)) {
@@ -65,11 +66,11 @@ async function analyzeFile(filePath) {
   }
 
   if (totalHooks === 0) {
-    console.log('  （Hooksは使用されていません）');
+    console.log("  （Hooksは使用されていません）");
   }
 
   // 警告パターンをチェック
-  console.log('\n⚠️  潜在的な問題:\n');
+  console.log("\n⚠️  潜在的な問題:\n");
 
   let warningCount = 0;
   for (const { name, pattern, message } of WARNING_PATTERNS) {
@@ -83,24 +84,26 @@ async function analyzeFile(filePath) {
   }
 
   if (warningCount === 0) {
-    console.log('  （警告はありません）');
+    console.log("  （警告はありません）");
   }
 
   // サマリー
-  console.log('\n' + '='.repeat(60));
+  console.log("\n" + "=".repeat(60));
   console.log(`\n📈 サマリー:`);
   console.log(`  - 総Hooks使用数: ${totalHooks}`);
   console.log(`  - 警告数: ${warningCount}`);
 
   // 推奨事項
   if (warningCount > 0) {
-    console.log('\n💡 推奨事項:');
-    console.log('  - ESLint react-hooks/exhaustive-deps を有効にしてください');
-    console.log('  - 空の依存配列には意図をコメントで明記してください');
-    console.log('  - オブジェクトはuseMemoでメモ化するか、プリミティブに分解してください');
+    console.log("\n💡 推奨事項:");
+    console.log("  - ESLint react-hooks/exhaustive-deps を有効にしてください");
+    console.log("  - 空の依存配列には意図をコメントで明記してください");
+    console.log(
+      "  - オブジェクトはuseMemoでメモ化するか、プリミティブに分解してください",
+    );
   }
 
-  console.log('\n');
+  console.log("\n");
 
   return {
     totalHooks,

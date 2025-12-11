@@ -14,48 +14,87 @@
  *   2 - File not found or invalid arguments
  */
 
-import { readFileSync } from 'fs';
-import { basename, resolve } from 'path';
-import { parse as parseYaml } from 'yaml';
+import { readFileSync } from "fs";
+import { basename, resolve } from "path";
+import { parse as parseYaml } from "yaml";
 
 // ANSI color codes
 const colors = {
-  reset: '\x1b[0m',
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  cyan: '\x1b[36m',
+  reset: "\x1b[0m",
+  red: "\x1b[31m",
+  green: "\x1b[32m",
+  yellow: "\x1b[33m",
+  blue: "\x1b[34m",
+  cyan: "\x1b[36m",
 };
 
 // Validation rules and schema
 const schema = {
-  required: ['on', 'jobs'],
-  optional: ['name', 'permissions', 'env', 'defaults', 'concurrency'],
+  required: ["on", "jobs"],
+  optional: ["name", "permissions", "env", "defaults", "concurrency"],
 
   validEvents: [
-    'push', 'pull_request', 'workflow_dispatch', 'schedule', 'workflow_call',
-    'release', 'issues', 'issue_comment', 'repository_dispatch', 'workflow_run',
-    'check_run', 'check_suite', 'create', 'delete', 'deployment', 'deployment_status',
-    'fork', 'gollum', 'label', 'milestone', 'page_build', 'project', 'project_card',
-    'project_column', 'public', 'registry_package', 'status', 'watch'
+    "push",
+    "pull_request",
+    "workflow_dispatch",
+    "schedule",
+    "workflow_call",
+    "release",
+    "issues",
+    "issue_comment",
+    "repository_dispatch",
+    "workflow_run",
+    "check_run",
+    "check_suite",
+    "create",
+    "delete",
+    "deployment",
+    "deployment_status",
+    "fork",
+    "gollum",
+    "label",
+    "milestone",
+    "page_build",
+    "project",
+    "project_card",
+    "project_column",
+    "public",
+    "registry_package",
+    "status",
+    "watch",
   ],
 
   validRunners: [
-    'ubuntu-latest', 'ubuntu-22.04', 'ubuntu-20.04',
-    'windows-latest', 'windows-2022', 'windows-2019',
-    'macos-latest', 'macos-13', 'macos-12'
+    "ubuntu-latest",
+    "ubuntu-22.04",
+    "ubuntu-20.04",
+    "windows-latest",
+    "windows-2022",
+    "windows-2019",
+    "macos-latest",
+    "macos-13",
+    "macos-12",
   ],
 
-  validShells: ['bash', 'pwsh', 'python', 'sh', 'cmd', 'powershell'],
+  validShells: ["bash", "pwsh", "python", "sh", "cmd", "powershell"],
 
   validPermissionScopes: [
-    'actions', 'checks', 'contents', 'deployments', 'discussions', 'id-token',
-    'issues', 'packages', 'pages', 'pull-requests', 'repository-projects',
-    'security-events', 'statuses'
+    "actions",
+    "checks",
+    "contents",
+    "deployments",
+    "discussions",
+    "id-token",
+    "issues",
+    "packages",
+    "pages",
+    "pull-requests",
+    "repository-projects",
+    "security-events",
+    "statuses",
   ],
 
-  validPermissionLevels: ['read', 'write', 'none']
+  validPermissionLevels: ["read", "write", "none"],
 };
 
 class WorkflowValidator {
@@ -67,30 +106,30 @@ class WorkflowValidator {
   }
 
   // Log helpers
-  log(message, color = 'reset') {
+  log(message, color = "reset") {
     console.log(`${colors[color]}${message}${colors.reset}`);
   }
 
   error(message, location = null) {
-    const locStr = location ? ` [${location}]` : '';
+    const locStr = location ? ` [${location}]` : "";
     this.errors.push(`${message}${locStr}`);
   }
 
   warn(message, location = null) {
-    const locStr = location ? ` [${location}]` : '';
+    const locStr = location ? ` [${location}]` : "";
     this.warnings.push(`${message}${locStr}`);
   }
 
   // Parse YAML file
   parseWorkflow() {
     try {
-      const content = readFileSync(this.filePath, 'utf8');
+      const content = readFileSync(this.filePath, "utf8");
       this.workflow = parseYaml(content);
       return true;
     } catch (err) {
-      if (err.code === 'ENOENT') {
+      if (err.code === "ENOENT") {
         this.error(`File not found: ${this.filePath}`);
-      } else if (err.name === 'YAMLParseError') {
+      } else if (err.name === "YAMLParseError") {
         this.error(`YAML parsing error: ${err.message}`);
       } else {
         this.error(`Error reading file: ${err.message}`);
@@ -122,18 +161,20 @@ class WorkflowValidator {
     const { on: events } = this.workflow;
     if (!events) return;
 
-    const eventList = Array.isArray(events) ? events :
-                     typeof events === 'string' ? [events] :
-                     Object.keys(events);
+    const eventList = Array.isArray(events)
+      ? events
+      : typeof events === "string"
+        ? [events]
+        : Object.keys(events);
 
     for (const event of eventList) {
       if (!schema.validEvents.includes(event)) {
-        this.warn(`Unknown event trigger: '${event}'`, 'on');
+        this.warn(`Unknown event trigger: '${event}'`, "on");
       }
     }
 
     // Validate event configurations
-    if (typeof events === 'object' && !Array.isArray(events)) {
+    if (typeof events === "object" && !Array.isArray(events)) {
       this.validateEventConfigs(events);
     }
   }
@@ -141,37 +182,37 @@ class WorkflowValidator {
   validateEventConfigs(events) {
     // Validate push/pull_request filters
     for (const [event, config] of Object.entries(events)) {
-      if (!config || typeof config !== 'object') continue;
+      if (!config || typeof config !== "object") continue;
 
-      if (event === 'push' || event === 'pull_request') {
+      if (event === "push" || event === "pull_request") {
         this.validateBranchFilters(config, event);
         this.validatePathFilters(config, event);
       }
 
-      if (event === 'workflow_dispatch') {
+      if (event === "workflow_dispatch") {
         this.validateWorkflowInputs(config, event);
       }
 
-      if (event === 'schedule') {
+      if (event === "schedule") {
         this.validateSchedule(config, event);
       }
     }
   }
 
   validateBranchFilters(config, event) {
-    if (config.branches && config['branches-ignore']) {
+    if (config.branches && config["branches-ignore"]) {
       this.warn(
         `Both 'branches' and 'branches-ignore' specified. Only one should be used.`,
-        `on.${event}`
+        `on.${event}`,
       );
     }
   }
 
   validatePathFilters(config, event) {
-    if (config.paths && config['paths-ignore']) {
+    if (config.paths && config["paths-ignore"]) {
       this.warn(
         `Both 'paths' and 'paths-ignore' specified. Only one should be used.`,
-        `on.${event}`
+        `on.${event}`,
       );
     }
   }
@@ -179,19 +220,19 @@ class WorkflowValidator {
   validateWorkflowInputs(config, event) {
     if (!config.inputs) return;
 
-    const validTypes = ['string', 'choice', 'boolean', 'environment'];
+    const validTypes = ["string", "choice", "boolean", "environment"];
     for (const [name, input] of Object.entries(config.inputs)) {
       if (input.type && !validTypes.includes(input.type)) {
         this.error(
-          `Invalid input type '${input.type}' for input '${name}'. Must be one of: ${validTypes.join(', ')}`,
-          `on.${event}.inputs.${name}`
+          `Invalid input type '${input.type}' for input '${name}'. Must be one of: ${validTypes.join(", ")}`,
+          `on.${event}.inputs.${name}`,
         );
       }
 
-      if (input.type === 'choice' && !input.options) {
+      if (input.type === "choice" && !input.options) {
         this.error(
           `Input '${name}' has type 'choice' but no 'options' specified`,
-          `on.${event}.inputs.${name}`
+          `on.${event}.inputs.${name}`,
         );
       }
     }
@@ -205,7 +246,10 @@ class WorkflowValidator {
 
     for (const [index, schedule] of config.entries()) {
       if (!schedule.cron) {
-        this.error(`Schedule entry ${index} missing 'cron' field`, `on.${event}[${index}]`);
+        this.error(
+          `Schedule entry ${index} missing 'cron' field`,
+          `on.${event}[${index}]`,
+        );
       } else {
         this.validateCron(schedule.cron, `on.${event}[${index}].cron`);
       }
@@ -217,7 +261,7 @@ class WorkflowValidator {
     if (parts.length !== 5) {
       this.error(
         `Invalid cron expression '${cronExpr}'. Must have 5 fields (minute hour day month weekday)`,
-        location
+        location,
       );
     }
   }
@@ -225,7 +269,7 @@ class WorkflowValidator {
   // Validate jobs
   validateJobs() {
     const { jobs } = this.workflow;
-    if (!jobs || typeof jobs !== 'object') {
+    if (!jobs || typeof jobs !== "object") {
       this.error(`'jobs' must be an object`);
       return;
     }
@@ -244,19 +288,22 @@ class WorkflowValidator {
   }
 
   validateJob(jobId, job) {
-    if (!job || typeof job !== 'object') {
+    if (!job || typeof job !== "object") {
       this.error(`Job '${jobId}' must be an object`);
       return;
     }
 
     // Check for runs-on (required for non-reusable workflows)
-    if (!job['runs-on'] && !job.uses) {
-      this.error(`Job '${jobId}' missing required 'runs-on' field`, `jobs.${jobId}`);
+    if (!job["runs-on"] && !job.uses) {
+      this.error(
+        `Job '${jobId}' missing required 'runs-on' field`,
+        `jobs.${jobId}`,
+      );
     }
 
     // Validate runs-on
-    if (job['runs-on']) {
-      this.validateRunsOn(job['runs-on'], `jobs.${jobId}`);
+    if (job["runs-on"]) {
+      this.validateRunsOn(job["runs-on"], `jobs.${jobId}`);
     }
 
     // Validate steps
@@ -282,16 +329,19 @@ class WorkflowValidator {
     }
 
     // Validate timeout
-    if (job['timeout-minutes'] !== undefined) {
-      if (typeof job['timeout-minutes'] !== 'number' || job['timeout-minutes'] <= 0) {
+    if (job["timeout-minutes"] !== undefined) {
+      if (
+        typeof job["timeout-minutes"] !== "number" ||
+        job["timeout-minutes"] <= 0
+      ) {
         this.error(
           `'timeout-minutes' must be a positive number`,
-          `jobs.${jobId}`
+          `jobs.${jobId}`,
         );
-      } else if (job['timeout-minutes'] > 360) {
+      } else if (job["timeout-minutes"] > 360) {
         this.warn(
-          `'timeout-minutes' is ${job['timeout-minutes']} (maximum is 360)`,
-          `jobs.${jobId}`
+          `'timeout-minutes' is ${job["timeout-minutes"]} (maximum is 360)`,
+          `jobs.${jobId}`,
         );
       }
     }
@@ -302,17 +352,19 @@ class WorkflowValidator {
 
     for (const runner of runners) {
       // Skip validation for matrix expressions
-      if (typeof runner === 'string' && runner.includes('${{')) {
+      if (typeof runner === "string" && runner.includes("${{")) {
         continue;
       }
 
       // Check if it's a known GitHub-hosted runner
-      if (typeof runner === 'string' &&
-          !schema.validRunners.includes(runner) &&
-          !runner.startsWith('self-hosted')) {
+      if (
+        typeof runner === "string" &&
+        !schema.validRunners.includes(runner) &&
+        !runner.startsWith("self-hosted")
+      ) {
         this.warn(
           `Unknown runner: '${runner}'. Consider using a standard GitHub-hosted runner.`,
-          location
+          location,
         );
       }
     }
@@ -336,7 +388,7 @@ class WorkflowValidator {
   validateStep(step, jobId, index) {
     const location = `jobs.${jobId}.steps[${index}]`;
 
-    if (!step || typeof step !== 'object') {
+    if (!step || typeof step !== "object") {
       this.error(`Step must be an object`, location);
       return;
     }
@@ -354,14 +406,17 @@ class WorkflowValidator {
     // Validate shell
     if (step.shell && !schema.validShells.includes(step.shell)) {
       this.warn(
-        `Unknown shell: '${step.shell}'. Valid shells: ${schema.validShells.join(', ')}`,
-        location
+        `Unknown shell: '${step.shell}'. Valid shells: ${schema.validShells.join(", ")}`,
+        location,
       );
     }
 
     // Validate timeout
-    if (step['timeout-minutes'] !== undefined) {
-      if (typeof step['timeout-minutes'] !== 'number' || step['timeout-minutes'] <= 0) {
+    if (step["timeout-minutes"] !== undefined) {
+      if (
+        typeof step["timeout-minutes"] !== "number" ||
+        step["timeout-minutes"] <= 0
+      ) {
         this.error(`'timeout-minutes' must be a positive number`, location);
       }
     }
@@ -373,30 +428,33 @@ class WorkflowValidator {
   }
 
   validatePermissions(permissions, location) {
-    if (typeof permissions === 'string') {
-      if (!['read-all', 'write-all'].includes(permissions)) {
+    if (typeof permissions === "string") {
+      if (!["read-all", "write-all"].includes(permissions)) {
         this.error(
           `Invalid permissions value: '${permissions}'. Must be 'read-all', 'write-all', or an object`,
-          location
+          location,
         );
       }
       return;
     }
 
-    if (typeof permissions !== 'object') {
+    if (typeof permissions !== "object") {
       this.error(`Permissions must be an object or string`, location);
       return;
     }
 
     for (const [scope, level] of Object.entries(permissions)) {
       if (!schema.validPermissionScopes.includes(scope)) {
-        this.warn(`Unknown permission scope: '${scope}'`, `${location}.permissions`);
+        this.warn(
+          `Unknown permission scope: '${scope}'`,
+          `${location}.permissions`,
+        );
       }
 
       if (!schema.validPermissionLevels.includes(level)) {
         this.error(
-          `Invalid permission level '${level}' for scope '${scope}'. Must be: ${schema.validPermissionLevels.join(', ')}`,
-          `${location}.permissions`
+          `Invalid permission level '${level}' for scope '${scope}'. Must be: ${schema.validPermissionLevels.join(", ")}`,
+          `${location}.permissions`,
         );
       }
     }
@@ -418,28 +476,34 @@ class WorkflowValidator {
     }
 
     // Validate max-parallel
-    if (strategy['max-parallel'] !== undefined) {
-      if (typeof strategy['max-parallel'] !== 'number' || strategy['max-parallel'] <= 0) {
+    if (strategy["max-parallel"] !== undefined) {
+      if (
+        typeof strategy["max-parallel"] !== "number" ||
+        strategy["max-parallel"] <= 0
+      ) {
         this.error(`'max-parallel' must be a positive number`, location);
       }
     }
 
     // Check for include/exclude without proper matrix
-    if ((matrix.include || matrix.exclude) && Object.keys(matrix).length === 1) {
+    if (
+      (matrix.include || matrix.exclude) &&
+      Object.keys(matrix).length === 1
+    ) {
       this.warn(
         `Matrix has only 'include' or 'exclude' but no base dimensions`,
-        `${location}.matrix`
+        `${location}.matrix`,
       );
     }
   }
 
   validateEnvironment(environment, location) {
-    if (typeof environment === 'string') {
+    if (typeof environment === "string") {
       // Simple environment name
       return;
     }
 
-    if (typeof environment === 'object') {
+    if (typeof environment === "object") {
       if (!environment.name) {
         this.error(`Environment object must have 'name' field`, location);
       }
@@ -460,7 +524,7 @@ class WorkflowValidator {
         if (!jobIds.includes(dep)) {
           this.error(
             `Job '${jobId}' depends on unknown job '${dep}'`,
-            `jobs.${jobId}.needs`
+            `jobs.${jobId}.needs`,
           );
         }
       }
@@ -476,19 +540,17 @@ class WorkflowValidator {
     for (const dep of dependencies) {
       if (visited.includes(dep)) {
         this.error(
-          `Circular dependency detected: ${visited.join(' -> ')} -> ${dep}`,
-          `jobs.${jobId}.needs`
+          `Circular dependency detected: ${visited.join(" -> ")} -> ${dep}`,
+          `jobs.${jobId}.needs`,
         );
         return;
       }
 
       if (jobs[dep]?.needs) {
-        this.detectCircularDependency(
+        this.detectCircularDependency(dep, jobs[dep].needs, jobs, [
+          ...visited,
           dep,
-          jobs[dep].needs,
-          jobs,
-          [...visited, dep]
-        );
+        ]);
       }
     }
   }
@@ -496,14 +558,14 @@ class WorkflowValidator {
   // Validate global permissions
   validateGlobalPermissions() {
     if (this.workflow.permissions) {
-      this.validatePermissions(this.workflow.permissions, 'permissions');
+      this.validatePermissions(this.workflow.permissions, "permissions");
     }
   }
 
   // Run all validations
   validate() {
-    this.log(`\nValidating workflow: ${basename(this.filePath)}`, 'cyan');
-    this.log('━'.repeat(60), 'cyan');
+    this.log(`\nValidating workflow: ${basename(this.filePath)}`, "cyan");
+    this.log("━".repeat(60), "cyan");
 
     if (!this.parseWorkflow()) {
       this.printResults();
@@ -524,33 +586,35 @@ class WorkflowValidator {
     console.log();
 
     if (this.errors.length > 0) {
-      this.log('❌ Errors:', 'red');
+      this.log("❌ Errors:", "red");
       for (const error of this.errors) {
-        this.log(`  • ${error}`, 'red');
+        this.log(`  • ${error}`, "red");
       }
       console.log();
     }
 
     if (this.warnings.length > 0) {
-      this.log('⚠️  Warnings:', 'yellow');
+      this.log("⚠️  Warnings:", "yellow");
       for (const warning of this.warnings) {
-        this.log(`  • ${warning}`, 'yellow');
+        this.log(`  • ${warning}`, "yellow");
       }
       console.log();
     }
 
     if (this.errors.length === 0 && this.warnings.length === 0) {
-      this.log('✅ Validation successful! No issues found.', 'green');
+      this.log("✅ Validation successful! No issues found.", "green");
     } else {
       const summary = [
         this.errors.length > 0 ? `${this.errors.length} error(s)` : null,
-        this.warnings.length > 0 ? `${this.warnings.length} warning(s)` : null
-      ].filter(Boolean).join(', ');
+        this.warnings.length > 0 ? `${this.warnings.length} warning(s)` : null,
+      ]
+        .filter(Boolean)
+        .join(", ");
 
       if (this.errors.length > 0) {
-        this.log(`❌ Validation failed: ${summary}`, 'red');
+        this.log(`❌ Validation failed: ${summary}`, "red");
       } else {
-        this.log(`✅ Validation passed with ${summary}`, 'yellow');
+        this.log(`✅ Validation passed with ${summary}`, "yellow");
       }
     }
 
@@ -563,7 +627,7 @@ function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.error('Usage: node validate-workflow.mjs <workflow-file.yml>');
+    console.error("Usage: node validate-workflow.mjs <workflow-file.yml>");
     process.exit(2);
   }
 

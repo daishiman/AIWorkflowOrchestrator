@@ -154,79 +154,88 @@ component/button/bg-primary
 ```javascript
 // style-dictionary.config.js
 module.exports = {
-  source: ['tokens/**/*.json'],
+  source: ["tokens/**/*.json"],
   platforms: {
     css: {
-      transformGroup: 'css',
-      buildPath: 'dist/css/',
-      files: [{
-        destination: 'variables.css',
-        format: 'css/variables',
-        options: {
-          outputReferences: true
-        }
-      }]
+      transformGroup: "css",
+      buildPath: "dist/css/",
+      files: [
+        {
+          destination: "variables.css",
+          format: "css/variables",
+          options: {
+            outputReferences: true,
+          },
+        },
+      ],
     },
     typescript: {
-      transformGroup: 'js',
-      buildPath: 'dist/ts/',
-      files: [{
-        destination: 'tokens.ts',
-        format: 'typescript/es6-declarations'
-      }]
+      transformGroup: "js",
+      buildPath: "dist/ts/",
+      files: [
+        {
+          destination: "tokens.ts",
+          format: "typescript/es6-declarations",
+        },
+      ],
     },
     tailwind: {
-      transformGroup: 'js',
-      buildPath: 'dist/',
-      files: [{
-        destination: 'tailwind-tokens.js',
-        format: 'javascript/module-flat'
-      }]
-    }
-  }
+      transformGroup: "js",
+      buildPath: "dist/",
+      files: [
+        {
+          destination: "tailwind-tokens.js",
+          format: "javascript/module-flat",
+        },
+      ],
+    },
+  },
 };
 ```
 
 ### 出力例
 
 **CSS Variables (dist/css/variables.css)**:
+
 ```css
 :root {
-  --color-global-blue-500: #3B82F6;
+  --color-global-blue-500: #3b82f6;
   --color-semantic-primary: var(--color-global-blue-500);
   --spacing-4: 16px;
 }
 ```
 
 **TypeScript (dist/ts/tokens.ts)**:
+
 ```typescript
 export const color = {
   global: {
     blue: {
-      500: '#3B82F6',
+      500: "#3B82F6",
     },
   },
   semantic: {
-    primary: 'var(--color-semantic-primary)',
+    primary: "var(--color-semantic-primary)",
   },
 };
 
 export const spacing = {
-  4: '16px',
+  4: "16px",
 };
 ```
 
 **Tailwind Config (dist/tailwind-tokens.js)**:
+
 ```javascript
 module.exports = {
   colors: {
     blue: {
-      500: '#3B82F6',
+      500: "#3B82F6",
     },
-    primary: 'var(--color-semantic-primary)',
+    primary: "var(--color-semantic-primary)",
   },
   spacing: {
-    4: '16px',
+    4: "16px",
   },
 };
 ```
@@ -244,7 +253,7 @@ name: Design Tokens Sync
 on:
   push:
     paths:
-      - 'tokens/**'
+      - "tokens/**"
   workflow_dispatch:
 
 jobs:
@@ -256,7 +265,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install dependencies
         run: pnpm ci
@@ -270,8 +279,8 @@ jobs:
       - name: Create PR with changes
         uses: peter-evans/create-pull-request@v5
         with:
-          title: 'chore: update design tokens'
-          commit-message: 'chore: update design tokens'
+          title: "chore: update design tokens"
+          commit-message: "chore: update design tokens"
           branch: design-tokens-update
 ```
 
@@ -329,10 +338,12 @@ jobs:
 **症状**: Figmaとコードで色が異なる
 
 **原因**:
+
 - 同期が古い
 - 参照が壊れている
 
 **解決策**:
+
 ```bash
 pnpm run tokens:sync
 git diff tokens/
@@ -343,10 +354,12 @@ git diff tokens/
 **症状**: Style Dictionaryがエラー
 
 **原因**:
+
 - 無効な参照
 - 形式の不一致
 
 **解決策**:
+
 ```bash
 pnpm run tokens:validate
 # エラー箇所を確認して修正
@@ -357,10 +370,12 @@ pnpm run tokens:validate
 **症状**: Tailwindに新しい色がない
 
 **原因**:
+
 - tailwind.config.jsの更新漏れ
 - キャッシュ
 
 **解決策**:
+
 ```bash
 pnpm run tokens:build
 # tailwind.config.jsを確認

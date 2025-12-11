@@ -5,16 +5,16 @@
  * Path: app/api/health/route.ts
  */
 
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
 interface CheckResult {
-  status: 'pass' | 'warn' | 'fail';
+  status: "pass" | "warn" | "fail";
   responseTime?: number;
   message?: string;
 }
 
 interface HealthResponse {
-  status: 'healthy' | 'degraded' | 'unhealthy';
+  status: "healthy" | "degraded" | "unhealthy";
   timestamp: string;
   version: string;
   uptime: number;
@@ -34,20 +34,23 @@ async function checkDatabase(): Promise<CheckResult> {
     await Promise.resolve();
 
     return {
-      status: 'pass',
+      status: "pass",
       responseTime: Date.now() - start,
     };
   } catch (error) {
     return {
-      status: 'fail',
+      status: "fail",
       responseTime: Date.now() - start,
-      message: error instanceof Error ? error.message : 'Database check failed',
+      message: error instanceof Error ? error.message : "Database check failed",
     };
   }
 }
 
 // External service check example
-async function checkExternalService(url: string, name: string): Promise<CheckResult> {
+async function checkExternalService(
+  url: string,
+  name: string,
+): Promise<CheckResult> {
   const start = Date.now();
   const timeout = 5000;
 
@@ -56,7 +59,7 @@ async function checkExternalService(url: string, name: string): Promise<CheckRes
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
     const response = await fetch(url, {
-      method: 'HEAD',
+      method: "HEAD",
       signal: controller.signal,
     });
 
@@ -64,27 +67,27 @@ async function checkExternalService(url: string, name: string): Promise<CheckRes
 
     if (response.ok) {
       return {
-        status: 'pass',
+        status: "pass",
         responseTime: Date.now() - start,
       };
     }
 
     return {
-      status: 'warn',
+      status: "warn",
       responseTime: Date.now() - start,
       message: `${name} returned status ${response.status}`,
     };
   } catch (error) {
-    if (error instanceof Error && error.name === 'AbortError') {
+    if (error instanceof Error && error.name === "AbortError") {
       return {
-        status: 'warn',
+        status: "warn",
         responseTime: Date.now() - start,
         message: `${name} timeout after ${timeout}ms`,
       };
     }
 
     return {
-      status: 'fail',
+      status: "fail",
       responseTime: Date.now() - start,
       message: error instanceof Error ? error.message : `${name} check failed`,
     };
@@ -93,8 +96,11 @@ async function checkExternalService(url: string, name: string): Promise<CheckRes
 
 // Memory check
 function checkMemory(): CheckResult {
-  if (typeof process === 'undefined') {
-    return { status: 'pass', message: 'Memory check not available in edge runtime' };
+  if (typeof process === "undefined") {
+    return {
+      status: "pass",
+      message: "Memory check not available in edge runtime",
+    };
   }
 
   const used = process.memoryUsage();
@@ -104,20 +110,20 @@ function checkMemory(): CheckResult {
 
   if (usage > 0.9) {
     return {
-      status: 'fail',
+      status: "fail",
       message: `Critical memory usage: ${(usage * 100).toFixed(1)}% (${heapUsedMB.toFixed(0)}MB / ${heapTotalMB.toFixed(0)}MB)`,
     };
   }
 
   if (usage > 0.75) {
     return {
-      status: 'warn',
+      status: "warn",
       message: `High memory usage: ${(usage * 100).toFixed(1)}% (${heapUsedMB.toFixed(0)}MB / ${heapTotalMB.toFixed(0)}MB)`,
     };
   }
 
   return {
-    status: 'pass',
+    status: "pass",
     message: `Memory usage: ${(usage * 100).toFixed(1)}% (${heapUsedMB.toFixed(0)}MB / ${heapTotalMB.toFixed(0)}MB)`,
   };
 }
@@ -142,26 +148,29 @@ export async function GET() {
 
   // Determine overall status
   const statuses = Object.values(checks).map((c) => c.status);
-  let overallStatus: HealthResponse['status'];
+  let overallStatus: HealthResponse["status"];
 
-  if (statuses.every((s) => s === 'pass')) {
-    overallStatus = 'healthy';
-  } else if (statuses.some((s) => s === 'fail')) {
-    overallStatus = 'unhealthy';
+  if (statuses.every((s) => s === "pass")) {
+    overallStatus = "healthy";
+  } else if (statuses.some((s) => s === "fail")) {
+    overallStatus = "unhealthy";
   } else {
-    overallStatus = 'degraded';
+    overallStatus = "degraded";
   }
 
   const response: HealthResponse = {
     status: overallStatus,
     timestamp: new Date().toISOString(),
-    version: process.env.APP_VERSION || process.env.RAILWAY_GIT_COMMIT_SHA?.slice(0, 7) || 'unknown',
+    version:
+      process.env.APP_VERSION ||
+      process.env.RAILWAY_GIT_COMMIT_SHA?.slice(0, 7) ||
+      "unknown",
     uptime: Math.floor((Date.now() - startTime) / 1000),
     checks,
   };
 
   // Return appropriate status code
-  const statusCode = overallStatus === 'unhealthy' ? 503 : 200;
+  const statusCode = overallStatus === "unhealthy" ? 503 : 200;
 
   return NextResponse.json(response, { status: statusCode });
 }

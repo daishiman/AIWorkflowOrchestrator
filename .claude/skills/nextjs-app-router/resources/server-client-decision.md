@@ -62,12 +62,12 @@ function ApiInfo() {
 
 ```typescript
 // ❌ Server Componentでは使用不可
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from "react";
 
 function ServerComponent() {
-  const [count, setCount] = useState(0) // エラー
-  useEffect(() => {}, [])               // エラー
-  const handleClick = () => {}          // onClick使用不可
+  const [count, setCount] = useState(0); // エラー
+  useEffect(() => {}, []); // エラー
+  const handleClick = () => {}; // onClick使用不可
 }
 ```
 

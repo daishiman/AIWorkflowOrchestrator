@@ -32,10 +32,12 @@ version: 1.0.0
 ## 概要
 
 ### 目的
+
 Reactおよびモダンフロントエンドフレームワークにおけるコンポーネント合成パターンを体系化し、
 柔軟で保守性の高いUIコンポーネント設計を支援する。
 
 ### 対象者
+
 - UIコンポーネント設計者
 - フロントエンドエンジニア
 - デザインシステム開発者
@@ -47,6 +49,7 @@ Reactおよびモダンフロントエンドフレームワークにおけるコ
 ### 1. 合成パターン基礎
 
 #### Children Pattern
+
 最もシンプルな合成パターン。コンポーネントの内容を外部から注入。
 
 ```tsx
@@ -59,10 +62,11 @@ function Card({ children }) {
 <Card>
   <h2>タイトル</h2>
   <p>内容</p>
-</Card>
+</Card>;
 ```
 
 #### Compound Components
+
 関連するコンポーネントをグループ化し、暗黙的な状態共有を実現。
 
 ```tsx
@@ -77,8 +81,12 @@ const Tabs = ({ children, defaultValue }) => {
 };
 
 Tabs.List = ({ children }) => <div role="tablist">{children}</div>;
-Tabs.Tab = ({ value, children }) => { /* ... */ };
-Tabs.Panel = ({ value, children }) => { /* ... */ };
+Tabs.Tab = ({ value, children }) => {
+  /* ... */
+};
+Tabs.Panel = ({ value, children }) => {
+  /* ... */
+};
 
 // 使用例
 <Tabs defaultValue="tab1">
@@ -88,12 +96,13 @@ Tabs.Panel = ({ value, children }) => { /* ... */ };
   </Tabs.List>
   <Tabs.Panel value="tab1">コンテンツ1</Tabs.Panel>
   <Tabs.Panel value="tab2">コンテンツ2</Tabs.Panel>
-</Tabs>
+</Tabs>;
 ```
 
 ### 2. 高度な合成パターン
 
 #### Slot Pattern
+
 名前付きスロットによる柔軟なコンテンツ配置。
 
 ```tsx
@@ -115,6 +124,7 @@ function Card({ header, footer, children }: CardProps) {
 ```
 
 #### Render Props Pattern
+
 レンダリングロジックを外部から注入。
 
 ```tsx
@@ -132,6 +142,7 @@ function MouseTracker({ render }: MouseTrackerProps) {
 ### 3. 制御パターン
 
 #### Controlled vs Uncontrolled
+
 状態管理の責任分離。
 
 ```tsx
@@ -158,6 +169,7 @@ interface InputProps {
 ### 4. レイアウトパターン
 
 #### Polymorphic Component
+
 `as` propによる要素タイプの動的変更。
 
 ```tsx
@@ -208,20 +220,22 @@ function Box<T extends ElementType = 'div'>({
 
 ### パターン比較表
 
-| パターン | 柔軟性 | 複雑性 | 型安全性 | 使用場面 |
-|---------|--------|--------|----------|----------|
-| Children | 低 | 低 | 高 | シンプルなラッパー |
-| Compound | 高 | 中 | 高 | タブ、アコーディオン |
-| Slot | 中 | 低 | 高 | カード、モーダル |
-| Render Props | 高 | 高 | 中 | データ共有 |
-| Polymorphic | 高 | 中 | 高 | 汎用コンポーネント |
+| パターン     | 柔軟性 | 複雑性 | 型安全性 | 使用場面             |
+| ------------ | ------ | ------ | -------- | -------------------- |
+| Children     | 低     | 低     | 高       | シンプルなラッパー   |
+| Compound     | 高     | 中     | 高       | タブ、アコーディオン |
+| Slot         | 中     | 低     | 高       | カード、モーダル     |
+| Render Props | 高     | 高     | 中       | データ共有           |
+| Polymorphic  | 高     | 中     | 高       | 汎用コンポーネント   |
 
 ---
 
 ## アンチパターン
 
 ### 1. Prop Drilling
+
 ❌ 深い階層へのprop伝播
+
 ```tsx
 // Bad: 中間コンポーネントが不要なpropsを受け取る
 <App user={user}>
@@ -231,6 +245,7 @@ function Box<T extends ElementType = 'div'>({
 ```
 
 ✅ Context または Compound Components を使用
+
 ```tsx
 // Good: Contextで状態共有
 <UserProvider user={user}>
@@ -240,11 +255,13 @@ function Box<T extends ElementType = 'div'>({
 ```
 
 ### 2. 過度な抽象化
+
 ❌ 1回しか使わないコンポーネントの過度な汎用化
 
 ✅ 3回以上使う時に抽象化を検討
 
 ### 3. 巨大コンポーネント
+
 ❌ 1ファイル500行超のコンポーネント
 
 ✅ 単一責任原則に基づいて分割

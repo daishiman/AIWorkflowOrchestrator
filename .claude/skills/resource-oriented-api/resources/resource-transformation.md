@@ -35,14 +35,14 @@ CSV ファイル → [パース] → [フィルタ] → [マッピング] → JS
 
 ```typescript
 interface FieldMapping {
-  source: string;        // ソースフィールドパス
-  target: string;        // ターゲットフィールドパス
-  transform?: (value: any) => any;  // 値変換関数
+  source: string; // ソースフィールドパス
+  target: string; // ターゲットフィールドパス
+  transform?: (value: any) => any; // 値変換関数
 }
 
 function mapResource(
   source: Record<string, any>,
-  mappings: FieldMapping[]
+  mappings: FieldMapping[],
 ): Record<string, any> {
   const result: Record<string, any> = {};
 
@@ -57,9 +57,17 @@ function mapResource(
 
 // 使用例
 const mappings: FieldMapping[] = [
-  { source: 'user_name', target: 'name' },
-  { source: 'email_address', target: 'email', transform: (v) => v.toLowerCase() },
-  { source: 'created_at', target: 'createdAt', transform: (v) => new Date(v).toISOString() }
+  { source: "user_name", target: "name" },
+  {
+    source: "email_address",
+    target: "email",
+    transform: (v) => v.toLowerCase(),
+  },
+  {
+    source: "created_at",
+    target: "createdAt",
+    transform: (v) => new Date(v).toISOString(),
+  },
 ];
 
 const result = mapResource(sourceData, mappings);
@@ -70,28 +78,34 @@ const result = mapResource(sourceData, mappings);
 ```typescript
 interface FilterRule {
   field: string;
-  operator: 'eq' | 'ne' | 'gt' | 'lt' | 'gte' | 'lte' | 'contains' | 'regex';
+  operator: "eq" | "ne" | "gt" | "lt" | "gte" | "lte" | "contains" | "regex";
   value: any;
 }
 
-function filterResources(
-  resources: any[],
-  rules: FilterRule[]
-): any[] {
-  return resources.filter(resource => {
-    return rules.every(rule => {
+function filterResources(resources: any[], rules: FilterRule[]): any[] {
+  return resources.filter((resource) => {
+    return rules.every((rule) => {
       const fieldValue = getNestedValue(resource, rule.field);
 
       switch (rule.operator) {
-        case 'eq': return fieldValue === rule.value;
-        case 'ne': return fieldValue !== rule.value;
-        case 'gt': return fieldValue > rule.value;
-        case 'lt': return fieldValue < rule.value;
-        case 'gte': return fieldValue >= rule.value;
-        case 'lte': return fieldValue <= rule.value;
-        case 'contains': return String(fieldValue).includes(rule.value);
-        case 'regex': return new RegExp(rule.value).test(String(fieldValue));
-        default: return true;
+        case "eq":
+          return fieldValue === rule.value;
+        case "ne":
+          return fieldValue !== rule.value;
+        case "gt":
+          return fieldValue > rule.value;
+        case "lt":
+          return fieldValue < rule.value;
+        case "gte":
+          return fieldValue >= rule.value;
+        case "lte":
+          return fieldValue <= rule.value;
+        case "contains":
+          return String(fieldValue).includes(rule.value);
+        case "regex":
+          return new RegExp(rule.value).test(String(fieldValue));
+        default:
+          return true;
       }
     });
   });
@@ -105,22 +119,22 @@ interface AggregationConfig {
   groupBy: string[];
   aggregations: {
     field: string;
-    function: 'sum' | 'count' | 'avg' | 'min' | 'max';
+    function: "sum" | "count" | "avg" | "min" | "max";
     alias: string;
   }[];
 }
 
 function aggregateResources(
   resources: any[],
-  config: AggregationConfig
+  config: AggregationConfig,
 ): any[] {
   const groups = new Map<string, any[]>();
 
   // グループ化
   for (const resource of resources) {
     const groupKey = config.groupBy
-      .map(field => getNestedValue(resource, field))
-      .join('|');
+      .map((field) => getNestedValue(resource, field))
+      .join("|");
 
     if (!groups.has(groupKey)) {
       groups.set(groupKey, []);
@@ -134,14 +148,14 @@ function aggregateResources(
     const result: any = {};
 
     // グループキーを設定
-    const keyValues = key.split('|');
+    const keyValues = key.split("|");
     config.groupBy.forEach((field, i) => {
       setNestedValue(result, field, keyValues[i]);
     });
 
     // 集計値を計算
     for (const agg of config.aggregations) {
-      const values = items.map(item => getNestedValue(item, agg.field));
+      const values = items.map((item) => getNestedValue(item, agg.field));
       result[agg.alias] = calculateAggregation(values, agg.function);
     }
 
@@ -153,12 +167,18 @@ function aggregateResources(
 
 function calculateAggregation(values: number[], func: string): number {
   switch (func) {
-    case 'sum': return values.reduce((a, b) => a + b, 0);
-    case 'count': return values.length;
-    case 'avg': return values.reduce((a, b) => a + b, 0) / values.length;
-    case 'min': return Math.min(...values);
-    case 'max': return Math.max(...values);
-    default: return 0;
+    case "sum":
+      return values.reduce((a, b) => a + b, 0);
+    case "count":
+      return values.length;
+    case "avg":
+      return values.reduce((a, b) => a + b, 0) / values.length;
+    case "min":
+      return Math.min(...values);
+    case "max":
+      return Math.max(...values);
+    default:
+      return 0;
   }
 }
 ```
@@ -170,11 +190,11 @@ function calculateAggregation(values: number[], func: string): number {
 ```typescript
 // CSV → JSON
 function csvToJson(csv: string): any[] {
-  const lines = csv.trim().split('\n');
-  const headers = lines[0].split(',').map(h => h.trim());
+  const lines = csv.trim().split("\n");
+  const headers = lines[0].split(",").map((h) => h.trim());
 
-  return lines.slice(1).map(line => {
-    const values = line.split(',');
+  return lines.slice(1).map((line) => {
+    const values = line.split(",");
     const obj: any = {};
     headers.forEach((header, i) => {
       obj[header] = values[i]?.trim();
@@ -185,14 +205,14 @@ function csvToJson(csv: string): any[] {
 
 // JSON → CSV
 function jsonToCsv(data: any[]): string {
-  if (data.length === 0) return '';
+  if (data.length === 0) return "";
 
   const headers = Object.keys(data[0]);
-  const rows = data.map(item =>
-    headers.map(h => escapeCSVValue(item[h])).join(',')
+  const rows = data.map((item) =>
+    headers.map((h) => escapeCSVValue(item[h])).join(","),
   );
 
-  return [headers.join(','), ...rows].join('\n');
+  return [headers.join(","), ...rows].join("\n");
 }
 
 // XML → JSON
@@ -200,7 +220,7 @@ function xmlToJson(xml: string): any {
   // DOMParserまたはxml2jsライブラリを使用
   // 簡略化した例
   const parser = new DOMParser();
-  const doc = parser.parseFromString(xml, 'text/xml');
+  const doc = parser.parseFromString(xml, "text/xml");
   return nodeToJson(doc.documentElement);
 }
 
@@ -216,11 +236,11 @@ function yamlToJson(yaml: string): any {
 ```typescript
 // Base64 エンコード/デコード
 function toBase64(buffer: Buffer): string {
-  return buffer.toString('base64');
+  return buffer.toString("base64");
 }
 
 function fromBase64(base64: string): Buffer {
-  return Buffer.from(base64, 'base64');
+  return Buffer.from(base64, "base64");
 }
 
 // リソースコンテンツの変換
@@ -228,13 +248,13 @@ interface ResourceContent {
   uri: string;
   mimeType?: string;
   text?: string;
-  blob?: string;  // Base64
+  blob?: string; // Base64
 }
 
 function convertContent(content: ResourceContent): any {
   if (content.text) {
     // テキストコンテンツ
-    if (content.mimeType === 'application/json') {
+    if (content.mimeType === "application/json") {
       return JSON.parse(content.text);
     }
     return content.text;
@@ -254,11 +274,11 @@ function convertContent(content: ResourceContent): any {
 ### トランスフォームストリーム
 
 ```typescript
-import { Transform } from 'stream';
+import { Transform } from "stream";
 
 // 行単位変換ストリーム
 class LineTransform extends Transform {
-  private buffer = '';
+  private buffer = "";
 
   constructor(private transformer: (line: string) => string) {
     super({ objectMode: true });
@@ -266,11 +286,11 @@ class LineTransform extends Transform {
 
   _transform(chunk: any, encoding: string, callback: Function) {
     this.buffer += chunk.toString();
-    const lines = this.buffer.split('\n');
-    this.buffer = lines.pop() || '';
+    const lines = this.buffer.split("\n");
+    this.buffer = lines.pop() || "";
 
     for (const line of lines) {
-      this.push(this.transformer(line) + '\n');
+      this.push(this.transformer(line) + "\n");
     }
     callback();
   }
@@ -304,32 +324,32 @@ class JsonTransform extends Transform {
 ### パイプライン構築
 
 ```typescript
-import { pipeline } from 'stream/promises';
+import { pipeline } from "stream/promises";
 
 async function transformResourceStream(
   source: Readable,
   transformers: Transform[],
-  destination: Writable
+  destination: Writable,
 ): Promise<void> {
   await pipeline(source, ...transformers, destination);
 }
 
 // 使用例
-const source = fs.createReadStream('input.csv');
-const destination = fs.createWriteStream('output.json');
+const source = fs.createReadStream("input.csv");
+const destination = fs.createWriteStream("output.json");
 
 await transformResourceStream(
   source,
   [
     new CsvParseTransform(),
-    new FilterTransform(record => record.status === 'active'),
-    new MapTransform(record => ({
+    new FilterTransform((record) => record.status === "active"),
+    new MapTransform((record) => ({
       id: record.id,
-      name: record.name.toUpperCase()
+      name: record.name.toUpperCase(),
     })),
-    new JsonStringifyTransform()
+    new JsonStringifyTransform(),
   ],
-  destination
+  destination,
 );
 ```
 
@@ -341,7 +361,7 @@ await transformResourceStream(
 interface SchemaVersion {
   version: string;
   schema: any;
-  migrate?: (data: any) => any;  // 前バージョンからの移行
+  migrate?: (data: any) => any; // 前バージョンからの移行
 }
 
 class SchemaTransformer {
@@ -375,19 +395,23 @@ class SchemaTransformer {
 const transformer = new SchemaTransformer();
 
 transformer.registerVersion({
-  version: '1.0',
-  schema: { /* v1 schema */ }
+  version: "1.0",
+  schema: {
+    /* v1 schema */
+  },
 });
 
 transformer.registerVersion({
-  version: '2.0',
-  schema: { /* v2 schema */ },
+  version: "2.0",
+  schema: {
+    /* v2 schema */
+  },
   migrate: (v1Data) => ({
     ...v1Data,
     // v1の'name'を'fullName'に変更
     fullName: v1Data.name,
-    name: undefined
-  })
+    name: undefined,
+  }),
 });
 ```
 
@@ -401,27 +425,27 @@ interface NormalizationRule {
 
 const normalizers: NormalizationRule[] = [
   {
-    field: 'email',
-    normalizer: (v) => v?.toLowerCase().trim()
+    field: "email",
+    normalizer: (v) => v?.toLowerCase().trim(),
   },
   {
-    field: 'phone',
-    normalizer: (v) => v?.replace(/[^0-9+]/g, '')
+    field: "phone",
+    normalizer: (v) => v?.replace(/[^0-9+]/g, ""),
   },
   {
-    field: 'date',
+    field: "date",
     normalizer: (v) => {
       const d = new Date(v);
       return isNaN(d.getTime()) ? null : d.toISOString();
-    }
+    },
   },
   {
-    field: 'amount',
+    field: "amount",
     normalizer: (v) => {
-      const num = parseFloat(String(v).replace(/[^0-9.-]/g, ''));
+      const num = parseFloat(String(v).replace(/[^0-9.-]/g, ""));
       return isNaN(num) ? null : num;
-    }
-  }
+    },
+  },
 ];
 
 function normalizeResource(resource: any, rules: NormalizationRule[]): any {
@@ -443,7 +467,7 @@ function normalizeResource(resource: any, rules: NormalizationRule[]): any {
 
 ```typescript
 interface TransformError {
-  type: 'parse' | 'validation' | 'mapping' | 'format';
+  type: "parse" | "validation" | "mapping" | "format";
   field?: string;
   message: string;
   originalValue?: any;
@@ -458,7 +482,7 @@ interface TransformResult<T> {
 
 function safeTransform<T>(
   data: any,
-  transformer: (data: any) => T
+  transformer: (data: any) => T,
 ): TransformResult<T> {
   const errors: TransformError[] = [];
   const warnings: TransformError[] = [];
@@ -468,9 +492,9 @@ function safeTransform<T>(
     return { success: true, data: result, errors, warnings };
   } catch (error) {
     errors.push({
-      type: 'mapping',
+      type: "mapping",
       message: error.message,
-      originalValue: data
+      originalValue: data,
     });
     return { success: false, errors, warnings };
   }
@@ -480,12 +504,12 @@ function safeTransform<T>(
 function transformWithFallback<T>(
   data: any,
   transformer: (data: any) => T,
-  fallback: T
+  fallback: T,
 ): T {
   try {
     return transformer(data);
   } catch (error) {
-    console.warn('Transform failed, using fallback:', error.message);
+    console.warn("Transform failed, using fallback:", error.message);
     return fallback;
   }
 }
@@ -499,7 +523,7 @@ function transformWithFallback<T>(
 async function batchTransform<T, R>(
   items: T[],
   transformer: (item: T) => Promise<R>,
-  batchSize: number = 100
+  batchSize: number = 100,
 ): Promise<R[]> {
   const results: R[] = [];
 
@@ -518,13 +542,13 @@ async function batchTransform<T, R>(
 ```typescript
 function lazyTransform<T, R>(
   items: T[],
-  transformer: (item: T) => R
+  transformer: (item: T) => R,
 ): Generator<R> {
-  return function* () {
+  return (function* () {
     for (const item of items) {
       yield transformer(item);
     }
-  }();
+  })();
 }
 
 // 使用例：必要な分だけ変換

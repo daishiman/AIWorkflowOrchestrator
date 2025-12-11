@@ -38,6 +38,7 @@ model: sonnet
 **起動タイミング**: コマンド開始直後
 
 **引数引き渡し**:
+
 - `$ARGUMENTS`: アクション名（例: setup-environment, deploy-to-railway）
   - 未指定時: インタラクティブに用途を確認
 
@@ -64,6 +65,7 @@ model: sonnet
    - 入力・出力パラメータのリファレンス
 
 **期待成果物**:
+
 - `.github/actions/{name}/action.yml`
 - `.github/actions/{name}/README.md`
 
@@ -72,16 +74,19 @@ model: sonnet
 エージェントが以下のスキルを必要に応じて参照:
 
 **必須スキル**:
+
 - `.claude/skills/github-actions-syntax/SKILL.md`: アクション構文・メタデータ設定
 - `.claude/skills/composite-actions/SKILL.md`: コンポジットアクションのパターン
 
 **条件付きスキル**:
+
 - `.claude/skills/action-inputs-outputs/SKILL.md`: 複雑な入出力設計が必要な場合
 - `.claude/skills/github-actions-security/SKILL.md`: シークレット管理が必要な場合
 
 ## Phase 3: 検証と完了
 
 **検証基準**:
+
 - ✅ `action.yml` が正しい構文で作成されている
 - ✅ 入力パラメータが適切に定義されている（required・default）
 - ✅ ステップが正しく配置され、動作する

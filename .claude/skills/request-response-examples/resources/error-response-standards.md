@@ -146,7 +146,7 @@
       "code": "OUT_OF_RANGE",
       "message": "年齢は0〜150の範囲で指定してください",
       "value": 200,
-      "constraints": {"min": 0, "max": 150}
+      "constraints": { "min": 0, "max": 150 }
     }
   ]
 }
@@ -235,15 +235,15 @@ PAYMENT_DECLINED
 
 ### カテゴリ一覧
 
-| カテゴリ | 説明 | 例 |
-|---------|------|-----|
-| AUTH | 認証・認可 | AUTH_TOKEN_EXPIRED |
-| VALIDATION | 入力検証 | VALIDATION_REQUIRED |
-| RESOURCE | リソース操作 | RESOURCE_NOT_FOUND |
-| RATE | レート制限 | RATE_LIMIT_EXCEEDED |
-| PAYMENT | 決済関連 | PAYMENT_DECLINED |
-| EXTERNAL | 外部サービス | EXTERNAL_SERVICE_ERROR |
-| INTERNAL | 内部エラー | INTERNAL_DATABASE_ERROR |
+| カテゴリ   | 説明         | 例                      |
+| ---------- | ------------ | ----------------------- |
+| AUTH       | 認証・認可   | AUTH_TOKEN_EXPIRED      |
+| VALIDATION | 入力検証     | VALIDATION_REQUIRED     |
+| RESOURCE   | リソース操作 | RESOURCE_NOT_FOUND      |
+| RATE       | レート制限   | RATE_LIMIT_EXCEEDED     |
+| PAYMENT    | 決済関連     | PAYMENT_DECLINED        |
+| EXTERNAL   | 外部サービス | EXTERNAL_SERVICE_ERROR  |
+| INTERNAL   | 内部エラー   | INTERNAL_DATABASE_ERROR |
 
 ---
 
@@ -274,19 +274,19 @@ PAYMENT_DECLINED
 
 ### リトライ判定表
 
-| ステータス | リトライ可能 | 条件 |
-|-----------|-------------|------|
-| 400 | ❌ | リクエスト修正が必要 |
-| 401 | ⚠️ | トークン更新後に可能 |
-| 403 | ❌ | 権限変更が必要 |
-| 404 | ❌ | リソースが存在しない |
-| 409 | ⚠️ | 競合解決後に可能 |
-| 422 | ❌ | 入力修正が必要 |
-| 429 | ✅ | Retry-After後に可能 |
-| 500 | ✅ | 指数バックオフで再試行 |
-| 502 | ✅ | 一時的な接続問題 |
-| 503 | ✅ | Retry-After後に可能 |
-| 504 | ✅ | タイムアウト、再試行可能 |
+| ステータス | リトライ可能 | 条件                     |
+| ---------- | ------------ | ------------------------ |
+| 400        | ❌           | リクエスト修正が必要     |
+| 401        | ⚠️           | トークン更新後に可能     |
+| 403        | ❌           | 権限変更が必要           |
+| 404        | ❌           | リソースが存在しない     |
+| 409        | ⚠️           | 競合解決後に可能         |
+| 422        | ❌           | 入力修正が必要           |
+| 429        | ✅           | Retry-After後に可能      |
+| 500        | ✅           | 指数バックオフで再試行   |
+| 502        | ✅           | 一時的な接続問題         |
+| 503        | ✅           | Retry-After後に可能      |
+| 504        | ✅           | タイムアウト、再試行可能 |
 
 ---
 
@@ -357,36 +357,36 @@ interface ValidationError {
 // lib/errors.ts
 export function createValidationError(
   instance: string,
-  errors: ValidationError[]
+  errors: ValidationError[],
 ): ProblemDetails {
   return {
-    type: 'https://api.example.com/errors/validation-error',
-    title: 'Validation Error',
+    type: "https://api.example.com/errors/validation-error",
+    title: "Validation Error",
     status: 422,
     detail: `${errors.length}件のバリデーションエラーがあります`,
     instance,
     errors,
     request_id: generateRequestId(),
     timestamp: new Date().toISOString(),
-    retryable: false
+    retryable: false,
   };
 }
 
 export function createNotFoundError(
   instance: string,
   resourceType: string,
-  resourceId: string
+  resourceId: string,
 ): ProblemDetails {
   return {
-    type: 'https://api.example.com/errors/not-found',
-    title: 'Not Found',
+    type: "https://api.example.com/errors/not-found",
+    title: "Not Found",
     status: 404,
     detail: `指定された${resourceType}が見つかりません`,
     instance,
-    code: 'RESOURCE_NOT_FOUND',
+    code: "RESOURCE_NOT_FOUND",
     request_id: generateRequestId(),
     timestamp: new Date().toISOString(),
-    retryable: false
+    retryable: false,
   };
 }
 ```
@@ -396,6 +396,7 @@ export function createNotFoundError(
 ## チェックリスト
 
 ### エラーレスポンス設計
+
 - [ ] RFC 7807形式に準拠
 - [ ] HTTPステータスコードが適切
 - [ ] エラーコードが体系的
@@ -403,6 +404,7 @@ export function createNotFoundError(
 - [ ] request_idが含まれる
 
 ### ドキュメント化
+
 - [ ] 全エラーコードを列挙
 - [ ] 各エラーの対処法を記載
 - [ ] サンプルレスポンスを提供

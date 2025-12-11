@@ -44,7 +44,8 @@ const CHECKS = [
     name: "ステータスコードチェック",
     severity: "error",
     pattern: /response\.ok|response\.status|statusCode/i,
-    message: "レスポンスステータスコードがチェックされていることを確認してください",
+    message:
+      "レスポンスステータスコードがチェックされていることを確認してください",
     recommendation: "response.okまたはstatusを確認してエラーハンドリングする",
   },
   {
@@ -87,7 +88,8 @@ const CHECKS = [
     pattern: /['"`](sk-|api[_-]?key|password|secret)[a-zA-Z0-9_-]{10,}['"`]/i,
     antiPattern: true,
     message: "認証情報がコードにハードコードされている可能性があります",
-    recommendation: "認証情報は環境変数またはシークレット管理サービスを使用する",
+    recommendation:
+      "認証情報は環境変数またはシークレット管理サービスを使用する",
   },
   {
     id: "json-parse-safety",
@@ -154,7 +156,11 @@ class ValidationResult {
   }
 
   get score() {
-    const total = this.errors.length + this.warnings.length + this.info.length + this.passed.length;
+    const total =
+      this.errors.length +
+      this.warnings.length +
+      this.info.length +
+      this.passed.length;
     if (total === 0) return 100;
     return Math.round((this.passed.length / total) * 100);
   }

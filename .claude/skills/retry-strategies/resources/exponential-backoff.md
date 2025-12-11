@@ -10,6 +10,7 @@
 ### なぜ指数バックオフが必要か
 
 **問題**: 固定間隔リトライの課題
+
 ```
 時刻0: 1000クライアントが同時にリクエスト
 時刻1: サーバー障害、全クライアント失敗
@@ -19,6 +20,7 @@
 ```
 
 **解決**: 指数バックオフ + ジッター
+
 ```
 時刻0: 1000クライアントが同時にリクエスト
 時刻1: サーバー障害、全クライアント失敗
@@ -57,20 +59,21 @@ delay = min(maxDelay, random(baseDelay, previousDelay * 3))
 
 ### 基本パラメータ
 
-| パラメータ | 推奨値 | 説明 |
-|-----------|--------|------|
-| baseDelay | 100-1000ms | 初回リトライの待機時間 |
-| maxDelay | 30-60s | 最大待機時間 |
-| maxRetries | 3-5回 | 最大リトライ回数 |
-| jitterFactor | 0-0.5 | ジッターの割合 |
+| パラメータ   | 推奨値     | 説明                   |
+| ------------ | ---------- | ---------------------- |
+| baseDelay    | 100-1000ms | 初回リトライの待機時間 |
+| maxDelay     | 30-60s     | 最大待機時間           |
+| maxRetries   | 3-5回      | 最大リトライ回数       |
+| jitterFactor | 0-0.5      | ジッターの割合         |
 
 ### 用途別推奨値
 
 #### 高速復旧（インタラクティブ操作）
+
 ```typescript
 const config = {
-  baseDelay: 100,    // 100ms
-  maxDelay: 3000,    // 3秒
+  baseDelay: 100, // 100ms
+  maxDelay: 3000, // 3秒
   maxRetries: 3,
   jitterFactor: 0.2,
 };
@@ -78,10 +81,11 @@ const config = {
 ```
 
 #### 標準（バックグラウンド処理）
+
 ```typescript
 const config = {
-  baseDelay: 1000,   // 1秒
-  maxDelay: 30000,   // 30秒
+  baseDelay: 1000, // 1秒
+  maxDelay: 30000, // 30秒
   maxRetries: 5,
   jitterFactor: 0.3,
 };
@@ -89,10 +93,11 @@ const config = {
 ```
 
 #### 長期復旧（バッチ処理）
+
 ```typescript
 const config = {
-  baseDelay: 5000,   // 5秒
-  maxDelay: 300000,  // 5分
+  baseDelay: 5000, // 5秒
+  maxDelay: 300000, // 5分
   maxRetries: 10,
   jitterFactor: 0.5,
 };
@@ -106,7 +111,7 @@ const config = {
 ```typescript
 async function retryWithBackoff<T>(
   fn: () => Promise<T>,
-  config: RetryConfig
+  config: RetryConfig,
 ): Promise<T> {
   let lastError: Error;
 
@@ -150,7 +155,7 @@ function retryPromise<T>(
   fn: () => Promise<T>,
   retriesLeft: number,
   delay: number,
-  config: RetryConfig
+  config: RetryConfig,
 ): Promise<T> {
   return fn().catch((error) => {
     if (retriesLeft === 0 || !isRetryableError(error)) {
@@ -161,10 +166,8 @@ function retryPromise<T>(
     const jitter = nextDelay * config.jitterFactor * Math.random();
 
     return new Promise((resolve) =>
-      setTimeout(resolve, nextDelay + jitter)
-    ).then(() =>
-      retryPromise(fn, retriesLeft - 1, nextDelay, config)
-    );
+      setTimeout(resolve, nextDelay + jitter),
+    ).then(() => retryPromise(fn, retriesLeft - 1, nextDelay, config));
   });
 }
 ```
@@ -199,17 +202,15 @@ function isRetryableError(error: unknown): boolean {
 
 ```typescript
 const RETRYABLE_ERROR_MESSAGES = [
-  'ECONNRESET',
-  'ETIMEDOUT',
-  'ECONNREFUSED',
-  'ENETUNREACH',
-  'socket hang up',
+  "ECONNRESET",
+  "ETIMEDOUT",
+  "ECONNREFUSED",
+  "ENETUNREACH",
+  "socket hang up",
 ];
 
 function isRetryableByMessage(error: Error): boolean {
-  return RETRYABLE_ERROR_MESSAGES.some(
-    (msg) => error.message.includes(msg)
-  );
+  return RETRYABLE_ERROR_MESSAGES.some((msg) => error.message.includes(msg));
 }
 ```
 
@@ -239,10 +240,10 @@ function logRetry(
   attempt: number,
   maxRetries: number,
   delay: number,
-  error: Error
+  error: Error,
 ): void {
   console.log({
-    event: 'retry_attempt',
+    event: "retry_attempt",
     attempt: attempt + 1,
     maxRetries,
     delayMs: delay,
@@ -256,16 +257,19 @@ function logRetry(
 ## チェックリスト
 
 ### 設計時
+
 - [ ] リトライ対象のエラーが明確に定義されているか？
 - [ ] 総最大待機時間がユースケースに適切か？
 - [ ] ジッターが追加されているか？
 
 ### 実装時
+
 - [ ] 最大リトライ回数が設定されているか？
 - [ ] 最大待機時間が設定されているか？
 - [ ] 各リトライがログに記録されているか？
 
 ### テスト時
+
 - [ ] リトライ回数が正しいか？
 - [ ] 待機時間が指数的に増加しているか？
 - [ ] 永続的エラーではリトライしないか？

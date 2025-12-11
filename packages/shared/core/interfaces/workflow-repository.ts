@@ -1,5 +1,5 @@
-import type { Workflow } from '../entities/workflow';
-import type { PaginationParams, PaginatedResult } from '../../types';
+import type { Workflow } from "../entities/workflow";
+import type { PaginationParams, PaginatedResult } from "../../types";
 
 /**
  * ワークフローリポジトリインターフェース

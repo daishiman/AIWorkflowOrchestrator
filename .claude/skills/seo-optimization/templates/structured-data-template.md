@@ -402,13 +402,13 @@ export default async function BlogPostPage({
 
 ## 変数説明
 
-| 変数 | 説明 | 例 |
-|------|------|-----|
-| `{{domain}}` | サイトドメイン | `example.com` |
-| `{{site_name}}` | サイト名 | `My Site` |
-| `{{organization_name}}` | 組織名 | `株式会社サンプル` |
-| `{{twitter_handle}}` | Twitterハンドル | `example` |
-| `{{business_type}}` | 事業タイプ | `Restaurant`, `Store` |
-| `{{latitude}}` | 緯度 | `35.6895` |
-| `{{longitude}}` | 経度 | `139.6917` |
-| `{{price_range}}` | 価格帯 | `¥¥` |
+| 変数                    | 説明            | 例                    |
+| ----------------------- | --------------- | --------------------- |
+| `{{domain}}`            | サイトドメイン  | `example.com`         |
+| `{{site_name}}`         | サイト名        | `My Site`             |
+| `{{organization_name}}` | 組織名          | `株式会社サンプル`    |
+| `{{twitter_handle}}`    | Twitterハンドル | `example`             |
+| `{{business_type}}`     | 事業タイプ      | `Restaurant`, `Store` |
+| `{{latitude}}`          | 緯度            | `35.6895`             |
+| `{{longitude}}`         | 経度            | `139.6917`            |
+| `{{price_range}}`       | 価格帯          | `¥¥`                  |

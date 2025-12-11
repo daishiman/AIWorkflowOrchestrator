@@ -11,6 +11,7 @@
 **総合評価**: {{OVERALL_GRADE}}
 
 **脆弱性サマリー**:
+
 - Critical: {{CRITICAL_COUNT}}件
 - High: {{HIGH_COUNT}}件
 - Medium: {{MEDIUM_COUNT}}件
@@ -52,6 +53,7 @@
 {{IMPACT_DESCRIPTION}}
 
 **修正方法**:
+
 ```bash
 # アップグレード
 pnpm install {{PACKAGE_NAME}}@{{FIXED_VERSION}}
@@ -61,6 +63,7 @@ pnpm install {{PACKAGE_NAME}}@{{FIXED_VERSION}}
 ```
 
 **依存関係経路**:
+
 ```
 {{PROJECT_NAME}}
   └─ {{PARENT_PACKAGE_1}}
@@ -69,6 +72,7 @@ pnpm install {{PACKAGE_NAME}}@{{FIXED_VERSION}}
 ```
 
 **参考資料**:
+
 - CVE詳細: https://nvd.nist.gov/vuln/detail/CVE-YYYY-XXXXX
 - GitHub Advisory: {{GITHUB_ADVISORY_URL}}
 
@@ -92,12 +96,13 @@ pnpm install {{PACKAGE_NAME}}@{{FIXED_VERSION}}
 
 以下の脆弱性は推移的依存関係で、直接アップグレードできません:
 
-| パッケージ | 経由 | CVSS | 修正方法 |
-|----------|------|------|---------|
-| {{PKG1}} | {{PARENT1}} | {{SCORE1}} | 親パッケージアップグレード |
-| {{PKG2}} | {{PARENT2}} | {{SCORE2}} | pnpm override使用 |
+| パッケージ | 経由        | CVSS       | 修正方法                   |
+| ---------- | ----------- | ---------- | -------------------------- |
+| {{PKG1}}   | {{PARENT1}} | {{SCORE1}} | 親パッケージアップグレード |
+| {{PKG2}}   | {{PARENT2}} | {{SCORE2}} | pnpm override使用          |
 
 **推奨アクション**:
+
 1. 親パッケージのアップグレード確認
 2. pnpm overrideまたはresolutionsの使用
 3. 代替パッケージへの移行検討
@@ -108,9 +113,9 @@ pnpm install {{PACKAGE_NAME}}@{{FIXED_VERSION}}
 
 ### P0: 即座に修正（Critical、悪用容易）
 
-| パッケージ | CVE | 修正バージョン | コマンド |
-|----------|-----|-------------|---------|
-| {{PKG}} | {{CVE}} | {{VERSION}} | `pnpm install {{PKG}}@{{VERSION}}` |
+| パッケージ | CVE     | 修正バージョン | コマンド                           |
+| ---------- | ------- | -------------- | ---------------------------------- |
+| {{PKG}}    | {{CVE}} | {{VERSION}}    | `pnpm install {{PKG}}@{{VERSION}}` |
 
 ### P1: 1週間以内（High、本番環境）
 
@@ -130,9 +135,9 @@ pnpm install {{PACKAGE_NAME}}@{{FIXED_VERSION}}
 
 ### パッケージ信頼性評価
 
-| パッケージ | ダウンロード数/週 | メンテナンス | 最終更新 | 評価 |
-|----------|---------------|-----------|---------|------|
-| {{PKG1}} | {{DOWNLOADS1}} | {{MAINTENANCE1}} | {{UPDATED1}} | {{SCORE1}} |
+| パッケージ | ダウンロード数/週 | メンテナンス     | 最終更新     | 評価       |
+| ---------- | ----------------- | ---------------- | ------------ | ---------- |
+| {{PKG1}}   | {{DOWNLOADS1}}    | {{MAINTENANCE1}} | {{UPDATED1}} | {{SCORE1}} |
 
 ### 推奨事項
 

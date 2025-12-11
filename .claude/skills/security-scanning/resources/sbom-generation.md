@@ -14,11 +14,11 @@ SBOM（Software Bill of Materials）は、ソフトウェアを構成するす�
 
 ## 標準フォーマット
 
-| フォーマット | 特徴 | 用途 |
-|-------------|------|------|
-| SPDX | Linux Foundation、ISO標準 | 広範な互換性 |
-| CycloneDX | OWASP、軽量 | セキュリティ重視 |
-| SWID | ISO/IEC 19770-2 | エンタープライズ |
+| フォーマット | 特徴                      | 用途             |
+| ------------ | ------------------------- | ---------------- |
+| SPDX         | Linux Foundation、ISO標準 | 広範な互換性     |
+| CycloneDX    | OWASP、軽量               | セキュリティ重視 |
+| SWID         | ISO/IEC 19770-2           | エンタープライズ |
 
 ## ツール
 
@@ -196,12 +196,14 @@ jobs:
 ### 活用方法
 
 1. **脆弱性監視**
+
    ```bash
    # 既存SBOMを定期スキャン
    grype sbom:./sbom.json
    ```
 
 2. **ライセンス確認**
+
    ```bash
    # SBOMからライセンス一覧を抽出
    jq '.components[].licenses[].license.id' sbom.cdx.json | sort | uniq

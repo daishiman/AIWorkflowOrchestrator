@@ -55,7 +55,7 @@ paths:
       summary: ログイン
       description: ユーザー認証を行い、アクセストークンを取得します。
       operationId: login
-      security: []  # 認証不要
+      security: [] # 認証不要
       requestBody:
         required: true
         content:
@@ -73,14 +73,14 @@ paths:
                   type: string
                   format: password
       responses:
-        '200':
+        "200":
           description: ログイン成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthTokenResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+                $ref: "#/components/schemas/AuthTokenResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
 
   # ヘルスチェック
   /health:
@@ -91,7 +91,7 @@ paths:
       operationId: healthCheck
       security: []
       responses:
-        '200':
+        "200":
           description: サービス正常
           content:
             application/json:
@@ -113,10 +113,10 @@ paths:
       summary: ユーザー一覧取得
       operationId: listUsers
       parameters:
-        - $ref: '#/components/parameters/PageLimit'
-        - $ref: '#/components/parameters/PageOffset'
+        - $ref: "#/components/parameters/PageLimit"
+        - $ref: "#/components/parameters/PageOffset"
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
@@ -126,11 +126,11 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/User'
+                      $ref: "#/components/schemas/User"
                   pagination:
-                    $ref: '#/components/schemas/Pagination'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
 
     post:
       tags:
@@ -142,9 +142,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserInput'
+              $ref: "#/components/schemas/UserInput"
       responses:
-        '201':
+        "201":
           description: 作成成功
           headers:
             Location:
@@ -155,13 +155,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '409':
-          $ref: '#/components/responses/Conflict'
+                $ref: "#/components/schemas/User"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "409":
+          $ref: "#/components/responses/Conflict"
 
   /users/{userId}:
     parameters:
@@ -179,14 +179,14 @@ paths:
       summary: ユーザー詳細取得
       operationId: getUserById
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '404':
-          $ref: '#/components/responses/NotFound'
+                $ref: "#/components/schemas/User"
+        "404":
+          $ref: "#/components/responses/NotFound"
 
     patch:
       tags:
@@ -198,18 +198,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserUpdate'
+              $ref: "#/components/schemas/UserUpdate"
       responses:
-        '200':
+        "200":
           description: 更新成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          $ref: '#/components/responses/NotFound'
+                $ref: "#/components/schemas/User"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
 
     delete:
       tags:
@@ -217,10 +217,10 @@ paths:
       summary: ユーザー削除
       operationId: deleteUser
       responses:
-        '204':
+        "204":
           description: 削除成功
-        '404':
-          $ref: '#/components/responses/NotFound'
+        "404":
+          $ref: "#/components/responses/NotFound"
 
 components:
   securitySchemes:
@@ -393,7 +393,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
           example:
             success: false
             error:
@@ -409,7 +409,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
           example:
             success: false
             error:
@@ -422,14 +422,14 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
 
     NotFound:
       description: リソースが見つかりません
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
           example:
             success: false
             error:
@@ -442,7 +442,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
 
     TooManyRequests:
       description: レート制限超過
@@ -454,7 +454,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
 
 security:
   - BearerAuth: []

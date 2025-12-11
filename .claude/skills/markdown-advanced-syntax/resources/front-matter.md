@@ -19,31 +19,31 @@ status: draft
 
 ## 必須フィールド
 
-| フィールド | 型 | 説明 |
-|:-----------|:---|:-----|
-| `title` | string | ドキュメントのタイトル |
-| `version` | string | セマンティックバージョン |
-| `author` | string | 作成者 |
-| `created` | date | 作成日（YYYY-MM-DD） |
-| `status` | enum | draft, review, approved |
+| フィールド | 型     | 説明                     |
+| :--------- | :----- | :----------------------- |
+| `title`    | string | ドキュメントのタイトル   |
+| `version`  | string | セマンティックバージョン |
+| `author`   | string | 作成者                   |
+| `created`  | date   | 作成日（YYYY-MM-DD）     |
+| `status`   | enum   | draft, review, approved  |
 
 ## 推奨フィールド
 
-| フィールド | 型 | 説明 |
-|:-----------|:---|:-----|
-| `updated` | date | 最終更新日 |
-| `reviewers` | array | レビュアー一覧 |
-| `tags` | array | 分類タグ |
-| `related` | array | 関連ドキュメント |
+| フィールド  | 型    | 説明             |
+| :---------- | :---- | :--------------- |
+| `updated`   | date  | 最終更新日       |
+| `reviewers` | array | レビュアー一覧   |
+| `tags`      | array | 分類タグ         |
+| `related`   | array | 関連ドキュメント |
 
 ## ステータス定義
 
-| ステータス | 説明 |
-|:-----------|:-----|
-| `draft` | 作成中、未レビュー |
-| `review` | レビュー中 |
-| `approved` | 承認済み、公開可能 |
-| `deprecated` | 非推奨、更新予定 |
+| ステータス   | 説明               |
+| :----------- | :----------------- |
+| `draft`      | 作成中、未レビュー |
+| `review`     | レビュー中         |
+| `approved`   | 承認済み、公開可能 |
+| `deprecated` | 非推奨、更新予定   |
 
 ## 仕様書用テンプレート
 
@@ -70,12 +70,15 @@ related:
 ## 活用例
 
 ### 自動目次生成
+
 Front Matterの`title`から自動的にサイト目次を生成
 
 ### ステータスフィルタリング
+
 `status: approved`のドキュメントのみを公開
 
 ### バージョン管理
+
 `version`フィールドで変更履歴を追跡
 
 ## ベストプラクティス

@@ -97,13 +97,21 @@ function analyzeRetryConfig(retry, result) {
     if (retry.maxRetries < rec.maxRetries.min) {
       result.addWarning(
         `maxRetries (${retry.maxRetries}) は推奨最小値 (${rec.maxRetries.min}) より小さいです`,
-        { field: "maxRetries", value: retry.maxRetries, recommended: rec.maxRetries }
+        {
+          field: "maxRetries",
+          value: retry.maxRetries,
+          recommended: rec.maxRetries,
+        },
       );
     }
     if (retry.maxRetries > rec.maxRetries.max) {
       result.addWarning(
         `maxRetries (${retry.maxRetries}) は推奨最大値 (${rec.maxRetries.max}) より大きいです`,
-        { field: "maxRetries", value: retry.maxRetries, recommended: rec.maxRetries }
+        {
+          field: "maxRetries",
+          value: retry.maxRetries,
+          recommended: rec.maxRetries,
+        },
       );
     }
   }
@@ -113,13 +121,21 @@ function analyzeRetryConfig(retry, result) {
     if (retry.baseDelay < rec.baseDelay.min) {
       result.addWarning(
         `baseDelay (${retry.baseDelay}ms) は推奨最小値 (${rec.baseDelay.min}ms) より小さいです`,
-        { field: "baseDelay", value: retry.baseDelay, recommended: rec.baseDelay }
+        {
+          field: "baseDelay",
+          value: retry.baseDelay,
+          recommended: rec.baseDelay,
+        },
       );
     }
     if (retry.baseDelay > rec.baseDelay.max) {
       result.addWarning(
         `baseDelay (${retry.baseDelay}ms) は推奨最大値 (${rec.baseDelay.max}ms) より大きいです`,
-        { field: "baseDelay", value: retry.baseDelay, recommended: rec.baseDelay }
+        {
+          field: "baseDelay",
+          value: retry.baseDelay,
+          recommended: rec.baseDelay,
+        },
       );
     }
   }
@@ -129,7 +145,11 @@ function analyzeRetryConfig(retry, result) {
     if (retry.maxDelay < retry.baseDelay) {
       result.addError(
         `maxDelay (${retry.maxDelay}ms) は baseDelay (${retry.baseDelay}ms) より小さくできません`,
-        { field: "maxDelay", value: retry.maxDelay, baseDelay: retry.baseDelay }
+        {
+          field: "maxDelay",
+          value: retry.maxDelay,
+          baseDelay: retry.baseDelay,
+        },
       );
     }
   }
@@ -139,13 +159,13 @@ function analyzeRetryConfig(retry, result) {
     if (retry.jitterFactor < 0 || retry.jitterFactor > 1) {
       result.addError(
         `jitterFactor (${retry.jitterFactor}) は 0-1 の範囲である必要があります`,
-        { field: "jitterFactor", value: retry.jitterFactor }
+        { field: "jitterFactor", value: retry.jitterFactor },
       );
     }
     if (retry.jitterFactor === 0) {
       result.addSuggestion(
         "jitterFactor が 0 です。同時リトライを避けるため、ジッターの追加を推奨します",
-        { field: "jitterFactor", recommended: rec.jitterFactor.default }
+        { field: "jitterFactor", recommended: rec.jitterFactor.default },
       );
     }
   }
@@ -158,7 +178,7 @@ function analyzeRetryConfig(retry, result) {
     if (totalWaitTime > 120000) {
       result.addSuggestion(
         `総最大待機時間 (${formatDuration(totalWaitTime)}) が長いです。ユーザー体験への影響を考慮してください`,
-        { totalWaitTime }
+        { totalWaitTime },
       );
     }
   }
@@ -173,7 +193,11 @@ function analyzeCircuitBreakerConfig(cb, result) {
     if (cb.failureThreshold < rec.failureThreshold.min) {
       result.addWarning(
         `failureThreshold (${cb.failureThreshold}) は推奨最小値 (${rec.failureThreshold.min}) より小さいです。フラッピングの原因になる可能性があります`,
-        { field: "failureThreshold", value: cb.failureThreshold, recommended: rec.failureThreshold }
+        {
+          field: "failureThreshold",
+          value: cb.failureThreshold,
+          recommended: rec.failureThreshold,
+        },
       );
     }
   }
@@ -183,7 +207,10 @@ function analyzeCircuitBreakerConfig(cb, result) {
     if (cb.successThreshold > cb.failureThreshold) {
       result.addWarning(
         `successThreshold (${cb.successThreshold}) が failureThreshold (${cb.failureThreshold}) より大きいです`,
-        { successThreshold: cb.successThreshold, failureThreshold: cb.failureThreshold }
+        {
+          successThreshold: cb.successThreshold,
+          failureThreshold: cb.failureThreshold,
+        },
       );
     }
   }
@@ -193,7 +220,7 @@ function analyzeCircuitBreakerConfig(cb, result) {
     if (cb.timeout < rec.timeout.min) {
       result.addWarning(
         `サーキットブレーカー timeout (${cb.timeout}ms) が短すぎます。外部サービスの復旧時間を考慮してください`,
-        { field: "timeout", value: cb.timeout, recommended: rec.timeout }
+        { field: "timeout", value: cb.timeout, recommended: rec.timeout },
       );
     }
   }
@@ -208,7 +235,11 @@ function analyzeTimeoutConfig(timeout, result) {
     if (timeout.connection > rec.connection.max) {
       result.addWarning(
         `接続タイムアウト (${timeout.connection}ms) が長すぎます`,
-        { field: "connection", value: timeout.connection, recommended: rec.connection }
+        {
+          field: "connection",
+          value: timeout.connection,
+          recommended: rec.connection,
+        },
       );
     }
   }
@@ -218,7 +249,7 @@ function analyzeTimeoutConfig(timeout, result) {
     if (timeout.read < timeout.connection) {
       result.addWarning(
         `読み取りタイムアウト (${timeout.read}ms) が接続タイムアウト (${timeout.connection}ms) より短いです`,
-        { read: timeout.read, connection: timeout.connection }
+        { read: timeout.read, connection: timeout.connection },
       );
     }
   }
@@ -228,7 +259,7 @@ function analyzeTimeoutConfig(timeout, result) {
     if (timeout.read && timeout.total < timeout.read) {
       result.addError(
         `全体タイムアウト (${timeout.total}ms) が読み取りタイムアウト (${timeout.read}ms) より短いです`,
-        { total: timeout.total, read: timeout.read }
+        { total: timeout.total, read: timeout.read },
       );
     }
   }
@@ -239,20 +270,24 @@ function analyzeOverall(config, result) {
   // リトライとサーキットブレーカーの整合性
   if (config.retry && config.circuitBreaker) {
     const totalWaitTime = calculateTotalWaitTime(config.retry);
-    const cbTimeout = config.circuitBreaker.timeout || RECOMMENDED_CONFIG.circuitBreaker.timeout.default;
+    const cbTimeout =
+      config.circuitBreaker.timeout ||
+      RECOMMENDED_CONFIG.circuitBreaker.timeout.default;
 
     if (totalWaitTime > cbTimeout) {
       result.addSuggestion(
         `リトライの総待機時間 (${formatDuration(totalWaitTime)}) がサーキットブレーカーの timeout (${formatDuration(cbTimeout)}) より長いです`,
-        { totalWaitTime, cbTimeout }
+        { totalWaitTime, cbTimeout },
       );
     }
   }
 
   // リトライとタイムアウトの整合性
   if (config.retry && config.timeout) {
-    const totalTimeout = config.timeout.total || RECOMMENDED_CONFIG.timeout.total.default;
-    const maxRetries = config.retry.maxRetries || RECOMMENDED_CONFIG.retry.maxRetries.default;
+    const totalTimeout =
+      config.timeout.total || RECOMMENDED_CONFIG.timeout.total.default;
+    const maxRetries =
+      config.retry.maxRetries || RECOMMENDED_CONFIG.retry.maxRetries.default;
     const perRequestTimeout = totalTimeout / maxRetries;
 
     result.setMetric("perRequestTimeout", perRequestTimeout);
@@ -260,7 +295,7 @@ function analyzeOverall(config, result) {
     if (perRequestTimeout < 5000) {
       result.addWarning(
         `リクエストあたりのタイムアウト (${formatDuration(perRequestTimeout)}) が短すぎる可能性があります`,
-        { perRequestTimeout, totalTimeout, maxRetries }
+        { perRequestTimeout, totalTimeout, maxRetries },
       );
     }
   }
@@ -300,7 +335,9 @@ function printReport(result) {
   if (Object.keys(result.metrics).length > 0) {
     console.log("\n📊 Metrics:");
     for (const [key, value] of Object.entries(result.metrics)) {
-      console.log(`  ${key}: ${typeof value === "number" ? formatDuration(value) : value}`);
+      console.log(
+        `  ${key}: ${typeof value === "number" ? formatDuration(value) : value}`,
+      );
     }
   }
 
@@ -347,7 +384,9 @@ function main() {
   if (args.length === 0) {
     console.log("Usage:");
     console.log("  node analyze-retry-config.mjs <config-file.json>");
-    console.log('  node analyze-retry-config.mjs --inline \'{"retry":{"maxRetries":3}}\'');
+    console.log(
+      '  node analyze-retry-config.mjs --inline \'{"retry":{"maxRetries":3}}\'',
+    );
     process.exit(1);
   }
 

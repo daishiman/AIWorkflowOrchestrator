@@ -11,13 +11,13 @@
 
 ### 基本ルール
 
-| 対象 | 規約 | 例 |
-|------|------|-----|
-| コンポーネント名 | PascalCase | `Button`, `IconButton`, `UserCard` |
-| ファイル名 | PascalCase.tsx | `Button.tsx`, `IconButton.tsx` |
-| フォルダ名 | PascalCase | `Button/`, `IconButton/` |
-| カスタムフック | camelCase + use接頭辞 | `useButton`, `useModal` |
-| 型定義 | PascalCase + Props/State接尾辞 | `ButtonProps`, `ModalState` |
+| 対象             | 規約                           | 例                                 |
+| ---------------- | ------------------------------ | ---------------------------------- |
+| コンポーネント名 | PascalCase                     | `Button`, `IconButton`, `UserCard` |
+| ファイル名       | PascalCase.tsx                 | `Button.tsx`, `IconButton.tsx`     |
+| フォルダ名       | PascalCase                     | `Button/`, `IconButton/`           |
+| カスタムフック   | camelCase + use接頭辞          | `useButton`, `useModal`            |
+| 型定義           | PascalCase + Props/State接尾辞 | `ButtonProps`, `ModalState`        |
 
 ### コンポーネント命名パターン
 
@@ -31,11 +31,13 @@
 ```
 
 **良い例**:
+
 - `Button` - 基本ボタン
 - `IconButton` - アイコン付きボタン
 - `SubmitButton` - 送信ボタン（機能を表す）
 
 **避けるべき例**:
+
 - `BlueButton` - 色で命名（variantで表現すべき）
 - `BigButton` - サイズで命名（sizeプロパティで表現すべき）
 - `Btn` - 過度な略語
@@ -46,23 +48,23 @@
 
 ### 基本ルール
 
-| 種類 | 規約 | 例 |
-|------|------|-----|
-| 一般Props | camelCase | `onClick`, `className` |
-| 真偽値Props | is/has/can接頭辞 | `isDisabled`, `hasError`, `canEdit` |
-| ハンドラProps | on接頭辞 | `onClick`, `onChange`, `onSubmit` |
-| 参照Props | ref接尾辞 | `inputRef`, `containerRef` |
+| 種類          | 規約             | 例                                  |
+| ------------- | ---------------- | ----------------------------------- |
+| 一般Props     | camelCase        | `onClick`, `className`              |
+| 真偽値Props   | is/has/can接頭辞 | `isDisabled`, `hasError`, `canEdit` |
+| ハンドラProps | on接頭辞         | `onClick`, `onChange`, `onSubmit`   |
+| 参照Props     | ref接尾辞        | `inputRef`, `containerRef`          |
 
 ### Variant命名
 
 ```typescript
 // 良い例
-type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
-type ButtonSize = 'sm' | 'md' | 'lg';
+type ButtonVariant = "primary" | "secondary" | "outline" | "ghost";
+type ButtonSize = "sm" | "md" | "lg";
 
 // 避けるべき例
-type ButtonVariant = 'blue' | 'gray';  // ❌ 色ベース
-type ButtonSize = 'small' | 'medium' | 'large';  // ❌ 長い表記
+type ButtonVariant = "blue" | "gray"; // ❌ 色ベース
+type ButtonSize = "small" | "medium" | "large"; // ❌ 長い表記
 ```
 
 ### 状態Props
@@ -70,10 +72,10 @@ type ButtonSize = 'small' | 'medium' | 'large';  // ❌ 長い表記
 ```typescript
 // 真偽値は is/has/can で始める
 interface ButtonProps {
-  isDisabled?: boolean;  // ○
-  isLoading?: boolean;   // ○
-  hasIcon?: boolean;     // ○
-  disabled?: boolean;    // △ HTML属性との一致を優先する場合
+  isDisabled?: boolean; // ○
+  isLoading?: boolean; // ○
+  hasIcon?: boolean; // ○
+  disabled?: boolean; // △ HTML属性との一致を優先する場合
 }
 ```
 
@@ -99,8 +101,8 @@ Button/
 
 ```typescript
 // Button/index.ts
-export { Button } from './Button';
-export type { ButtonProps, ButtonVariant } from './Button.types';
+export { Button } from "./Button";
+export type { ButtonProps, ButtonVariant } from "./Button.types";
 ```
 
 ### 階層別ディレクトリ構造
@@ -138,7 +140,7 @@ components/
 
 :root {
   /* Colors */
-  --ds-color-primary-500: #3B82F6;
+  --ds-color-primary-500: #3b82f6;
   --ds-color-text-primary: #111827;
 
   /* Spacing */
@@ -158,12 +160,12 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          50: 'var(--ds-color-primary-50)',
+          50: "var(--ds-color-primary-50)",
           // ...
-        }
-      }
-    }
-  }
+        },
+      },
+    },
+  },
 };
 ```
 
@@ -171,11 +173,16 @@ module.exports = {
 
 ```css
 /* Button.module.css */
-.button { }
-.button--primary { }
-.button--disabled { }
-.button__icon { }
-.button__label { }
+.button {
+}
+.button--primary {
+}
+.button--disabled {
+}
+.button__icon {
+}
+.button__label {
+}
 ```
 
 ---
@@ -197,14 +204,14 @@ motion.duration.fast
 
 ### カテゴリ一覧
 
-| カテゴリ | 説明 | 例 |
-|---------|------|-----|
-| `color` | 色 | `color.primary.500` |
+| カテゴリ     | 説明 | 例                         |
+| ------------ | ---- | -------------------------- |
+| `color`      | 色   | `color.primary.500`        |
 | `typography` | 文字 | `typography.fontSize.base` |
-| `spacing` | 間隔 | `spacing.4` |
-| `border` | 境界 | `border.radius.md` |
-| `shadow` | 影 | `shadow.lg` |
-| `motion` | 動き | `motion.duration.normal` |
+| `spacing`    | 間隔 | `spacing.4`                |
+| `border`     | 境界 | `border.radius.md`         |
+| `shadow`     | 影   | `shadow.lg`                |
+| `motion`     | 動き | `motion.duration.normal`   |
 
 ---
 
@@ -215,7 +222,7 @@ motion.duration.fast
 ```typescript
 // Button.stories.tsx
 export default {
-  title: 'Primitives/Button',  // 階層/コンポーネント名
+  title: "Primitives/Button", // 階層/コンポーネント名
   component: Button,
 };
 ```
@@ -245,14 +252,14 @@ Button.e2e.test.tsx   # E2Eテスト
 ### テストケース命名
 
 ```typescript
-describe('Button', () => {
-  describe('レンダリング', () => {
-    it('デフォルトのvariantでレンダリングされる', () => {});
-    it('disabledの場合クリックできない', () => {});
+describe("Button", () => {
+  describe("レンダリング", () => {
+    it("デフォルトのvariantでレンダリングされる", () => {});
+    it("disabledの場合クリックできない", () => {});
   });
 
-  describe('インタラクション', () => {
-    it('クリック時にonClickが呼ばれる', () => {});
+  describe("インタラクション", () => {
+    it("クリック時にonClickが呼ばれる", () => {});
   });
 });
 ```

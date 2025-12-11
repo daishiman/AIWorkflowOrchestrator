@@ -39,10 +39,12 @@ version: 1.0.0
 ## 概要
 
 ### 目的
+
 ヘッドレスUIの設計原則を体系化し、ロジックとスタイルを完全に分離した
 再利用性の高いコンポーネント設計を支援する。
 
 ### 対象者
+
 - UIライブラリ開発者
 - デザインシステムアーキテクト
 - 高度なコンポーネント設計を行うフロントエンドエンジニア
@@ -75,11 +77,11 @@ version: 1.0.0
 
 ### 2. 関心の分離
 
-| 層 | 責任 | 例 |
-|----|------|-----|
-| ロジック層 | 動作・状態・アクセシビリティ | `useDialog`, `useMenu` |
-| プレゼンテーション層 | 視覚表現・スタイル | CSS, Tailwind |
-| コンポジション層 | 構造・レイアウト | JSX構造 |
+| 層                   | 責任                         | 例                     |
+| -------------------- | ---------------------------- | ---------------------- |
+| ロジック層           | 動作・状態・アクセシビリティ | `useDialog`, `useMenu` |
+| プレゼンテーション層 | 視覚表現・スタイル           | CSS, Tailwind          |
+| コンポジション層     | 構造・レイアウト             | JSX構造                |
 
 ### 3. スタイル非依存（Style Agnostic）
 
@@ -87,14 +89,14 @@ version: 1.0.0
 // ヘッドレスコンポーネント - スタイルなし
 function useToggle(initialValue = false) {
   const [isOn, setIsOn] = useState(initialValue);
-  const toggle = () => setIsOn(prev => !prev);
+  const toggle = () => setIsOn((prev) => !prev);
 
   return {
     isOn,
     toggle,
     buttonProps: {
-      role: 'switch',
-      'aria-checked': isOn,
+      role: "switch",
+      "aria-checked": isOn,
       onClick: toggle,
     },
   };
@@ -105,11 +107,8 @@ function StyledToggle() {
   const { isOn, buttonProps } = useToggle();
 
   return (
-    <button
-      {...buttonProps}
-      className={isOn ? 'bg-blue-500' : 'bg-gray-300'}
-    >
-      {isOn ? 'ON' : 'OFF'}
+    <button {...buttonProps} className={isOn ? "bg-blue-500" : "bg-gray-300"}>
+      {isOn ? "ON" : "OFF"}
     </button>
   );
 }
@@ -131,13 +130,13 @@ interface UseDialogReturn {
   close: () => void;
   triggerProps: {
     onClick: () => void;
-    'aria-haspopup': 'dialog';
-    'aria-expanded': boolean;
+    "aria-haspopup": "dialog";
+    "aria-expanded": boolean;
   };
   dialogProps: {
-    role: 'dialog';
-    'aria-modal': boolean;
-    'aria-labelledby': string;
+    role: "dialog";
+    "aria-modal": boolean;
+    "aria-labelledby": string;
   };
 }
 
@@ -151,13 +150,13 @@ function useDialog(): UseDialogReturn {
     close: () => setIsOpen(false),
     triggerProps: {
       onClick: () => setIsOpen(true),
-      'aria-haspopup': 'dialog',
-      'aria-expanded': isOpen,
+      "aria-haspopup": "dialog",
+      "aria-expanded": isOpen,
     },
     dialogProps: {
-      role: 'dialog',
-      'aria-modal': true,
-      'aria-labelledby': `${id}-title`,
+      role: "dialog",
+      "aria-modal": true,
+      "aria-labelledby": `${id}-title`,
     },
   };
 }
@@ -208,13 +207,9 @@ function Dialog({ children, open, onOpenChange }) {
 
 function DialogTrigger({ children, asChild }) {
   const { onOpenChange } = useDialogContext();
-  const Comp = asChild ? Slot : 'button';
+  const Comp = asChild ? Slot : "button";
 
-  return (
-    <Comp onClick={() => onOpenChange(true)}>
-      {children}
-    </Comp>
-  );
+  return <Comp onClick={() => onOpenChange(true)}>{children}</Comp>;
 }
 
 function DialogContent({ children }) {
@@ -248,19 +243,19 @@ function useMenu() {
   // キーボードナビゲーション
   const handleKeyDown = (e: KeyboardEvent) => {
     switch (e.key) {
-      case 'ArrowDown':
+      case "ArrowDown":
         e.preventDefault();
-        setActiveIndex(prev => Math.min(prev + 1, itemCount - 1));
+        setActiveIndex((prev) => Math.min(prev + 1, itemCount - 1));
         break;
-      case 'ArrowUp':
+      case "ArrowUp":
         e.preventDefault();
-        setActiveIndex(prev => Math.max(prev - 1, 0));
+        setActiveIndex((prev) => Math.max(prev - 1, 0));
         break;
-      case 'Escape':
+      case "Escape":
         setIsOpen(false);
         break;
-      case 'Enter':
-      case ' ':
+      case "Enter":
+      case " ":
         if (activeIndex >= 0) {
           selectItem(activeIndex);
         }
@@ -272,23 +267,22 @@ function useMenu() {
     isOpen,
     activeIndex,
     buttonProps: {
-      'aria-haspopup': 'menu',
-      'aria-expanded': isOpen,
+      "aria-haspopup": "menu",
+      "aria-expanded": isOpen,
       onClick: () => setIsOpen(!isOpen),
     },
     menuProps: {
-      role: 'menu',
-      'aria-activedescendant': activeIndex >= 0
-        ? `menu-item-${activeIndex}`
-        : undefined,
+      role: "menu",
+      "aria-activedescendant":
+        activeIndex >= 0 ? `menu-item-${activeIndex}` : undefined,
       onKeyDown: handleKeyDown,
       ref: menuRef,
     },
     getItemProps: (index: number) => ({
       id: `menu-item-${index}`,
-      role: 'menuitem',
+      role: "menuitem",
       tabIndex: activeIndex === index ? 0 : -1,
-      'aria-selected': activeIndex === index,
+      "aria-selected": activeIndex === index,
     }),
   };
 }
@@ -301,13 +295,11 @@ function useMenu() {
 ### Radix UI
 
 ```tsx
-import * as Dialog from '@radix-ui/react-dialog';
+import * as Dialog from "@radix-ui/react-dialog";
 
 // 完全なスタイル制御が可能
 <Dialog.Root>
-  <Dialog.Trigger className="your-button-styles">
-    Open
-  </Dialog.Trigger>
+  <Dialog.Trigger className="your-button-styles">Open</Dialog.Trigger>
   <Dialog.Portal>
     <Dialog.Overlay className="your-overlay-styles" />
     <Dialog.Content className="your-content-styles">
@@ -315,34 +307,28 @@ import * as Dialog from '@radix-ui/react-dialog';
       <Dialog.Description>Description</Dialog.Description>
     </Dialog.Content>
   </Dialog.Portal>
-</Dialog.Root>
+</Dialog.Root>;
 ```
 
 ### Headless UI
 
 ```tsx
-import { Menu } from '@headlessui/react';
+import { Menu } from "@headlessui/react";
 
 <Menu>
-  <Menu.Button className="your-button-styles">
-    Options
-  </Menu.Button>
+  <Menu.Button className="your-button-styles">Options</Menu.Button>
   <Menu.Items className="your-menu-styles">
     <Menu.Item>
-      {({ active }) => (
-        <a className={active ? 'bg-blue-500' : ''}>
-          Account
-        </a>
-      )}
+      {({ active }) => <a className={active ? "bg-blue-500" : ""}>Account</a>}
     </Menu.Item>
   </Menu.Items>
-</Menu>
+</Menu>;
 ```
 
 ### React Aria
 
 ```tsx
-import { useButton } from '@react-aria/button';
+import { useButton } from "@react-aria/button";
 
 function Button(props) {
   const ref = useRef(null);
@@ -363,12 +349,14 @@ function Button(props) {
 ### ヘッドレスを選ぶべき場合
 
 ✅ **推奨**:
+
 - カスタムデザインシステムを構築する
 - ブランドアイデンティティが重要
 - 複数プロジェクトで再利用する
 - 完全なアクセシビリティ制御が必要
 
 ❌ **非推奨**:
+
 - 素早いプロトタイピング
 - 標準的なUIで十分
 - チームにアクセシビリティ知識が不足

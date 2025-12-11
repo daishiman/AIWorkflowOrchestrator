@@ -393,9 +393,9 @@ export default function Error({
 
 ## 変数説明
 
-| 変数 | 説明 | 例 |
-|------|------|-----|
-| `{{route}}` | ルートパス | `dashboard`, `blog` |
-| `error.name` | エラー名 | `Error`, `AuthenticationError` |
-| `error.message` | エラーメッセージ | `Failed to fetch` |
-| `error.digest` | サーバーエラーのハッシュ | `abc123` |
+| 変数            | 説明                     | 例                             |
+| --------------- | ------------------------ | ------------------------------ |
+| `{{route}}`     | ルートパス               | `dashboard`, `blog`            |
+| `error.name`    | エラー名                 | `Error`, `AuthenticationError` |
+| `error.message` | エラーメッセージ         | `Failed to fetch`              |
+| `error.digest`  | サーバーエラーのハッシュ | `abc123`                       |

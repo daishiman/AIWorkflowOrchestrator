@@ -210,7 +210,6 @@ cat .claude/skills/requirements-engineering/templates/requirements-document-temp
 ### すべきこと
 
 1. **5W1H で確認**:
-
    - Why: なぜこの機能が必要か
    - Who: 誰が使うか
    - What: 何を実現したいか
@@ -219,7 +218,6 @@ cat .claude/skills/requirements-engineering/templates/requirements-document-temp
    - How: どのように使うか
 
 2. **検証可能な基準を定義**:
-
    - 「速い」→「200ms 以内」
    - 「使いやすい」→「3 クリック以内で完了」
    - 「多くの」→「1000 件以上」
@@ -231,12 +229,10 @@ cat .claude/skills/requirements-engineering/templates/requirements-document-temp
 ### 避けるべきこと
 
 1. **曖昧な表現**:
-
    - ❌ 「高速に」「適切に」「など」
    - ✅ 具体的な数値と単位
 
 2. **推測や仮定**:
-
    - ❌ 「おそらく〜だろう」
    - ✅ 確認して明示
 

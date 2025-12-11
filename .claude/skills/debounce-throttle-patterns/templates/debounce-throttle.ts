@@ -42,7 +42,7 @@ export interface ThrottledFunction<T extends (...args: any[]) => void> {
  */
 export function debounce<T extends (...args: any[]) => void>(
   fn: T,
-  delay: number
+  delay: number,
 ): DebouncedFunction<T> {
   let timeoutId: NodeJS.Timeout | null = null;
   let lastArgs: Parameters<T> | null = null;
@@ -88,7 +88,7 @@ export function debounce<T extends (...args: any[]) => void>(
  */
 export function debounceLeading<T extends (...args: any[]) => void>(
   fn: T,
-  delay: number
+  delay: number,
 ): DebouncedFunction<T> {
   let timeoutId: NodeJS.Timeout | null = null;
   let canExecute = true;
@@ -136,7 +136,7 @@ export function debounceLeading<T extends (...args: any[]) => void>(
 export function debounceWithMaxWait<T extends (...args: any[]) => void>(
   fn: T,
   delay: number,
-  maxWait: number
+  maxWait: number,
 ): DebouncedFunction<T> {
   let timeoutId: NodeJS.Timeout | null = null;
   let maxWaitTimeoutId: NodeJS.Timeout | null = null;
@@ -206,7 +206,7 @@ export function debounceWithMaxWait<T extends (...args: any[]) => void>(
  */
 export function throttle<T extends (...args: any[]) => void>(
   fn: T,
-  interval: number
+  interval: number,
 ): ThrottledFunction<T> {
   let lastExecutionTime = 0;
   let timeoutId: NodeJS.Timeout | null = null;
@@ -251,7 +251,7 @@ export function throttle<T extends (...args: any[]) => void>(
  */
 export function throttleLeading<T extends (...args: any[]) => void>(
   fn: T,
-  interval: number
+  interval: number,
 ): ThrottledFunction<T> {
   let lastExecutionTime = 0;
 
@@ -287,7 +287,7 @@ export class GroupedDebouncer<K, V> {
   constructor(
     private readonly fn: (key: K, value: V) => void,
     private readonly delay: number,
-    private readonly cleanupAfter: number = 60000
+    private readonly cleanupAfter: number = 60000,
   ) {
     this.startCleanup();
   }
@@ -301,7 +301,7 @@ export class GroupedDebouncer<K, V> {
     if (!this.debouncers.has(key)) {
       this.debouncers.set(
         key,
-        debounce((v: V) => this.fn(key, v), this.delay)
+        debounce((v: V) => this.fn(key, v), this.delay),
       );
     }
 

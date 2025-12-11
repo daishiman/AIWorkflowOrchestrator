@@ -5,11 +5,11 @@
 ### 基本的な使い方
 
 ```typescript
-import { faker } from '@faker-js/faker';
-import { faker as fakerJa } from '@faker-js/faker/locale/ja';
+import { faker } from "@faker-js/faker";
+import { faker as fakerJa } from "@faker-js/faker/locale/ja";
 
 // 日本語ロケールを使用
-fakerJa.seed(12345);  // 再現性のためにシードを設定
+fakerJa.seed(12345); // 再現性のためにシードを設定
 
 // 基本的なデータ生成
 const user = {
@@ -61,8 +61,8 @@ const dates = {
   past: faker.date.past({ years: 1 }),
   future: faker.date.future({ years: 1 }),
   between: faker.date.between({
-    from: '2024-01-01',
-    to: '2024-12-31',
+    from: "2024-01-01",
+    to: "2024-12-31",
   }),
   recent: faker.date.recent({ days: 7 }),
 };
@@ -109,7 +109,11 @@ interface UserFactory {
   build(overrides?: Partial<User>): User;
   buildMany(count: number, overrides?: Partial<User>): User[];
   create(db: Database, overrides?: Partial<User>): Promise<User>;
-  createMany(db: Database, count: number, overrides?: Partial<User>): Promise<User[]>;
+  createMany(
+    db: Database,
+    count: number,
+    overrides?: Partial<User>,
+  ): Promise<User[]>;
 }
 
 function createUserFactory(): UserFactory {
@@ -121,7 +125,7 @@ function createUserFactory(): UserFactory {
       id: sequence,
       email: `user${sequence}@example.com`,
       name: faker.person.fullName(),
-      role: 'user',
+      role: "user",
       createdAt: new Date(),
       ...overrides,
     };
@@ -150,11 +154,11 @@ function createUserFactory(): UserFactory {
 const userFactory = createUserFactory();
 
 // メモリ上で生成
-const user = userFactory.build({ role: 'admin' });
+const user = userFactory.build({ role: "admin" });
 const users = userFactory.buildMany(10);
 
 // DBに作成
-const createdUser = await userFactory.create(db, { role: 'admin' });
+const createdUser = await userFactory.create(db, { role: "admin" });
 const createdUsers = await userFactory.createMany(db, 50);
 ```
 
@@ -166,7 +170,7 @@ interface OrderFactory {
   createWithItems(
     db: Database,
     userId: number,
-    itemCount?: number
+    itemCount?: number,
   ): Promise<{ order: Order; items: OrderItem[] }>;
 }
 
@@ -181,7 +185,11 @@ function createOrderFactory(): OrderFactory {
       const order: Order = {
         id: orderSequence,
         userId,
-        status: faker.helpers.arrayElement(['pending', 'processing', 'completed']),
+        status: faker.helpers.arrayElement([
+          "pending",
+          "processing",
+          "completed",
+        ]),
         totalAmount: 0,
         createdAt: faker.date.recent(),
       };
@@ -219,13 +227,13 @@ function createOrderFactory(): OrderFactory {
 const edgeCases = {
   // 文字列の境界
   strings: {
-    empty: '',
-    singleChar: 'a',
-    maxLength: 'a'.repeat(255),
-    unicode: '日本語テスト 🎉',
+    empty: "",
+    singleChar: "a",
+    maxLength: "a".repeat(255),
+    unicode: "日本語テスト 🎉",
     specialChars: "O'Brien & Co.",
-    whitespace: '  前後に空白  ',
-    newlines: '複数\n行の\nテキスト',
+    whitespace: "  前後に空白  ",
+    newlines: "複数\n行の\nテキスト",
   },
 
   // 数値の境界
@@ -240,16 +248,16 @@ const edgeCases = {
   // 日付の境界
   dates: {
     epoch: new Date(0),
-    farPast: new Date('1900-01-01'),
-    farFuture: new Date('2100-12-31'),
-    leapYear: new Date('2024-02-29'),
-    endOfMonth: new Date('2024-01-31'),
+    farPast: new Date("1900-01-01"),
+    farFuture: new Date("2100-12-31"),
+    leapYear: new Date("2024-02-29"),
+    endOfMonth: new Date("2024-01-31"),
   },
 
   // 配列の境界
   arrays: {
     empty: [],
-    single: ['item'],
+    single: ["item"],
     large: Array.from({ length: 1000 }, (_, i) => `item${i}`),
   },
 };
@@ -257,11 +265,11 @@ const edgeCases = {
 // エッジケースを含むユーザー生成
 function generateEdgeCaseUsers() {
   return [
-    { email: 'normal@example.com', name: 'Normal User' },
-    { email: 'a@b.co', name: 'A' },  // 最短
-    { email: `${'a'.repeat(50)}@${'b'.repeat(50)}.com`, name: 'a'.repeat(255) },  // 最長
-    { email: "o'brien@example.com", name: "O'Brien" },  // 特殊文字
-    { email: 'unicode@example.com', name: '田中太郎 🎉' },  // Unicode
+    { email: "normal@example.com", name: "Normal User" },
+    { email: "a@b.co", name: "A" }, // 最短
+    { email: `${"a".repeat(50)}@${"b".repeat(50)}.com`, name: "a".repeat(255) }, // 最長
+    { email: "o'brien@example.com", name: "O'Brien" }, // 特殊文字
+    { email: "unicode@example.com", name: "田中太郎 🎉" }, // Unicode
   ];
 }
 ```
@@ -274,14 +282,14 @@ const businessScenarios = {
   // 新規ユーザー
   newUser: {
     user: { registeredAt: faker.date.recent({ days: 7 }) },
-    orders: [],  // 注文なし
+    orders: [], // 注文なし
   },
 
   // アクティブユーザー
   activeUser: {
     user: { registeredAt: faker.date.past({ years: 1 }) },
     orders: generateMany(20, () => ({
-      status: 'completed',
+      status: "completed",
       createdAt: faker.date.past({ years: 1 }),
     })),
   },
@@ -293,7 +301,7 @@ const businessScenarios = {
       lastLoginAt: faker.date.past({ years: 1 }),
     },
     orders: generateMany(5, () => ({
-      status: 'completed',
+      status: "completed",
       createdAt: faker.date.past({ years: 2 }),
     })),
   },
@@ -301,8 +309,8 @@ const businessScenarios = {
   // 問題のある注文
   problematicOrder: {
     order: {
-      status: 'cancelled',
-      cancelReason: 'customer_request',
+      status: "cancelled",
+      cancelReason: "customer_request",
       refundAmount: 5000,
     },
   },
@@ -314,7 +322,7 @@ const businessScenarios = {
 ### シードの固定
 
 ```typescript
-import { faker } from '@faker-js/faker';
+import { faker } from "@faker-js/faker";
 
 // グローバルシードを設定
 faker.seed(12345);
@@ -340,15 +348,15 @@ function generateDeterministicData(seed: number) {
 
 ```typescript
 // 生成したデータをJSONで保存
-import { writeFileSync, readFileSync, existsSync } from 'fs';
+import { writeFileSync, readFileSync, existsSync } from "fs";
 
-const SNAPSHOT_PATH = './seeds/snapshots/';
+const SNAPSHOT_PATH = "./seeds/snapshots/";
 
 function getOrCreateSnapshot<T>(name: string, generator: () => T): T {
   const filePath = `${SNAPSHOT_PATH}${name}.json`;
 
   if (existsSync(filePath)) {
-    return JSON.parse(readFileSync(filePath, 'utf-8'));
+    return JSON.parse(readFileSync(filePath, "utf-8"));
   }
 
   const data = generator();
@@ -357,12 +365,12 @@ function getOrCreateSnapshot<T>(name: string, generator: () => T): T {
 }
 
 // 使用例
-const users = getOrCreateSnapshot('development-users', () =>
+const users = getOrCreateSnapshot("development-users", () =>
   generateMany(100, () => ({
     id: faker.string.uuid(),
     name: faker.person.fullName(),
     email: faker.internet.email(),
-  }))
+  })),
 );
 ```
 
@@ -420,7 +428,7 @@ async function seedWithIterator(db: Database, count: number) {
 
     if (batch.length >= BATCH_SIZE) {
       await db.insert(users).values(batch);
-      batch.length = 0;  // バッチをクリア
+      batch.length = 0; // バッチをクリア
     }
   }
 
@@ -434,12 +442,14 @@ async function seedWithIterator(db: Database, count: number) {
 ## チェックリスト
 
 ### データ生成時
+
 - [ ] シードを固定して再現性を確保しているか？
 - [ ] エッジケースを含めているか？
 - [ ] 日本語/Unicode対応しているか？
 - [ ] パフォーマンスを考慮しているか？
 
 ### ファクトリ設計時
+
 - [ ] 関連データを一緒に生成できるか？
 - [ ] オーバーライドが簡単か？
 - [ ] シーケンスIDが衝突しないか？

@@ -44,12 +44,14 @@ Claude Codeエージェントも単一責任を持つ特化型エージェント
 複雑な知的活動を実現します。
 
 **主要な価値**:
+
 - 適切なアーキテクチャパターンの選択により、保守性と拡張性が向上
 - 単一責任原則により、エージェントの役割が明確化
 - 階層的組織により、複雑なタスクを管理可能な単位に分割
 - 制約の明確化により、エージェントの性能が最適化
 
 **対象ユーザー**:
+
 - エージェントを設計する@meta-agent-designer
 - マルチエージェントシステムを構築する開発者
 - 既存エージェントをリファクタリングするチーム
@@ -115,9 +117,11 @@ cp .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-temp
 ## いつ使うか
 
 ### シナリオ1: 新規エージェントのアーキテクチャ設計
+
 **状況**: 新しいエージェントを作成する際、適切な構造を決定したい
 
 **適用条件**:
+
 - [ ] タスクが複数のステップで構成される
 - [ ] 他エージェントとの協調が必要
 - [ ] 役割分担を明確にしたい
@@ -125,9 +129,11 @@ cp .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-temp
 **期待される成果**: タスク特性に最適なアーキテクチャパターンの選択
 
 ### シナリオ2: マルチエージェントシステムの設計
+
 **状況**: 複数エージェントの協調システムを構築する
 
 **適用条件**:
+
 - [ ] 3つ以上のエージェントが連携する
 - [ ] 協調パターンが不明確
 - [ ] スケーラビリティが重要
@@ -135,9 +141,11 @@ cp .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-temp
 **期待される成果**: 階層的で管理可能なシステム構造
 
 ### シナリオ3: 既存エージェントのリファクタリング
+
 **状況**: 既存エージェントの構造を改善したい
 
 **適用条件**:
+
 - [ ] エージェントが複数の責務を持っている
 - [ ] 保守性が低下している
 - [ ] 拡張が困難になっている
@@ -147,15 +155,18 @@ cp .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-temp
 ## 前提条件
 
 ### 必要な知識
+
 - [ ] Claude Codeエージェントシステムの基本理解
 - [ ] マルチエージェント協調の概念
 - [ ] ソフトウェアアーキテクチャの基本原則
 
 ### 必要なツール
+
 - Read: 既存エージェントの構造分析
 - Grep: パターン検索
 
 ### 環境要件
+
 - `.claude/agents/`ディレクトリが存在する
 - 既存エージェントが分析可能
 
@@ -166,6 +177,7 @@ cp .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-temp
 **目的**: タスクの性質を理解し、適切なパターンを選択する基礎情報を収集
 
 **ステップ**:
+
 1. **タスクの分解**:
    - タスクを構成する主要ステップを特定
    - 各ステップの依存関係を明確化
@@ -182,6 +194,7 @@ cp .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-temp
    - 並行処理が有効か
 
 **判断基準**:
+
 - [ ] タスクが3つ以上のステップに分解されているか？
 - [ ] 各ステップの依存関係が明確か？
 - [ ] 複雑度レベルが特定されているか？
@@ -195,12 +208,15 @@ cp .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-temp
 **4つのパターン**:
 
 #### パターン1: オーケストレーター・ワーカー
+
 **適用条件**:
+
 - 中央集権的な制御が必要
 - 複数のサブタスクを並列実行可能
 - 全体の進捗管理が重要
 
 **構造**:
+
 ```
 オーケストレーター
   ├─ ワーカー1（専門タスクA）
@@ -212,12 +228,15 @@ cp .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-temp
 **欠点**: オーケストレーターがボトルネック
 
 #### パターン2: ハブアンドスポーク
+
 **適用条件**:
+
 - 複数のエージェントが共通リソースにアクセス
 - データの一元管理が必要
 - エージェント間の直接通信を避けたい
 
 **構造**:
+
 ```
       ハブ（データ管理）
        ↑↓
@@ -229,12 +248,15 @@ cp .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-temp
 **欠点**: ハブが単一障害点
 
 #### パターン3: パイプライン
+
 **適用条件**:
+
 - データが段階的に変換される
 - 各ステップが独立している
 - ストリーム処理が有効
 
 **構造**:
+
 ```
 入力 → エージェント1 → エージェント2 → エージェント3 → 出力
 ```
@@ -243,12 +265,15 @@ cp .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-temp
 **欠点**: 柔軟性が低い、エラーの伝播
 
 #### パターン4: ステートマシン
+
 **適用条件**:
+
 - 明確な状態遷移がある
 - 条件分岐が複雑
 - エラーからのリカバリーが重要
 
 **構造**:
+
 ```
 状態A ─(条件1)→ 状態B ─(条件2)→ 状態C
   ↑                              ↓
@@ -259,6 +284,7 @@ cp .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-temp
 **欠点**: 複雑な遷移は管理困難
 
 **判断フロー**:
+
 ```
 タスクの性質は？
 ├─ 並列処理が主 → オーケストレーター・ワーカー
@@ -268,6 +294,7 @@ cp .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-temp
 ```
 
 **判断基準**:
+
 - [ ] パターンがタスク特性に合致しているか？
 - [ ] スケーラビリティが確保されているか？
 - [ ] 保守性が高いか？
@@ -281,66 +308,81 @@ cp .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-temp
 **5つの設計原則**:
 
 #### 原則1: 単一機能の原則 (Single Function Principle)
+
 **定義**: 各エージェントは明確に定義された単一の機能のみを持つ
 
 **適用方法**:
+
 - エージェントの責務を1文で表現できるか確認
 - 複数の動詞が必要な場合は分割を検討
 - 「〇〇と△△を行う」→ 2つのエージェントに分割
 
 **チェックリスト**:
+
 - [ ] エージェントの目的が1文で表現できるか？
 - [ ] 責務が明確で境界が定義されているか？
 - [ ] 他のエージェントと責務が重複していないか？
 
 #### 原則2: 創発的複雑性の原則 (Emergent Complexity Principle)
+
 **定義**: 単純なエージェントの組み合わせで複雑な知的活動を実現
 
 **適用方法**:
+
 - 個々のエージェントはシンプルに保つ
 - 複雑さは組み合わせで対応
 - do-everything型エージェントを作らない
 
 **チェックリスト**:
+
 - [ ] 各エージェントが十分にシンプルか？
 - [ ] 組み合わせで複雑なタスクを実現できるか？
 - [ ] 新しいエージェントの追加が容易か？
 
 #### 原則3: 階層的組織の原則 (Hierarchical Organization Principle)
+
 **定義**: オーケストレーター（上位）とワーカー（下位）の明確な階層構造
 
 **適用方法**:
+
 - 上位: 戦略的判断、進捗管理、統合
 - 下位: 具体的実行、専門タスク
 - 階層は3レベルまでに制限
 
 **チェックリスト**:
+
 - [ ] 階層が明確に定義されているか？
 - [ ] 上位と下位の役割分担が適切か？
 - [ ] 階層が3レベル以内か？
 
 #### 原則4: 制約による最適化の原則 (Constraint-Based Optimization Principle)
+
 **定義**: 役割、ツール、責務の制約を明確にすることで性能が向上
 
 **適用方法**:
+
 - ツール権限を最小限に制限
 - 責務範囲を明確に定義
 - 「しないこと」を明示
 
 **チェックリスト**:
+
 - [ ] ツール権限が必要最小限か？
 - [ ] 責務範囲が明確に定義されているか？
 - [ ] 「しないこと」が列挙されているか？
 
 #### 原則5: コンテキスト分離の原則 (Context Isolation Principle)
+
 **定義**: 各エージェントは独立したコンテキストウィンドウを持つ
 
 **適用方法**:
+
 - エージェント間でコンテキストを共有しない
 - 必要な情報のみを明示的に受け渡す
 - 長大なコンテキストを避ける
 
 **チェックリスト**:
+
 - [ ] 各エージェントが独立して動作可能か？
 - [ ] コンテキスト汚染を避けているか？
 - [ ] 情報の受け渡しが明示的か？
@@ -354,12 +396,14 @@ cp .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-temp
 **検証項目**:
 
 1. **単一責任の検証**:
+
    ```bash
    # 各エージェントの責務を1文で表現できるかチェック
    grep "^## 役割定義" .claude/agents/*.md
    ```
 
 2. **階層の妥当性**:
+
    ```bash
    # エージェント間の依存関係を可視化
    .claude/skills/agent-architecture-patterns/scripts/analyze-agent-structure.sh
@@ -374,6 +418,7 @@ cp .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-temp
    - Progressive Disclosureの適用
 
 **判断基準**:
+
 - [ ] 全5つの設計原則に準拠しているか？
 - [ ] パターンが適切に適用されているか？
 - [ ] スケーラビリティが確保されているか？
@@ -447,6 +492,7 @@ cp .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-temp
 **原因**: 単一責任原則の違反
 
 **解決策**:
+
 1. エージェントの動作を列挙
 2. 異なる責務を特定
 3. 責務ごとに分割
@@ -461,6 +507,7 @@ cp .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-temp
 **原因**: 過度な集中制御
 
 **解決策**:
+
 1. ワーカーに権限委譲
 2. パイプラインパターンへの変更を検討
 3. 並列処理の最適化
@@ -474,6 +521,7 @@ cp .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-temp
 **原因**: 適切なパターンが適用されていない
 
 **解決策**:
+
 1. 依存関係を可視化
 2. ハブアンドスポークパターンの適用を検討
 3. 共通データ管理層の導入
@@ -490,6 +538,7 @@ cp .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-temp
 ## 詳細リファレンス
 
 詳細な実装ガイドとツールは以下を参照:
+
 - パターンカタログ (`resources/pattern-catalog.md`)
 - オーケストレーター・ワーカーテンプレート (`templates/orchestrator-worker-template.md`)
 - パイプラインテンプレート (`templates/pipeline-template.md`)
@@ -500,6 +549,7 @@ cp .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-temp
 ### アーキテクチャ品質スコア
 
 **評価基準**:
+
 - 単一責任準拠: 0-10点
 - 階層の適切性: 0-10点
 - 制約の明確性: 0-10点
@@ -516,6 +566,7 @@ cp .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-temp
 ### 保守性スコア
 
 **評価基準**:
+
 - 責務の明確性
 - 変更の容易性
 - テストの容易性
@@ -525,23 +576,27 @@ cp .claude/skills/agent-architecture-patterns/templates/orchestrator-worker-temp
 ## 使用上の注意
 
 ### このスキルが得意なこと
+
 - エージェントアーキテクチャパターンの選択
 - 設計原則の適用と検証
 - マルチエージェントシステムの構造設計
 - 既存エージェントの構造改善
 
 ### このスキルが行わないこと
+
 - エージェントの実際の実装
 - 具体的なコード生成
 - プロジェクト固有のビジネスロジック
 
 ### 推奨される使用フロー
+
 1. タスク特性の分析（Phase 1）
 2. アーキテクチャパターンの選択（Phase 2）
 3. 設計原則の適用（Phase 3）
 4. 構造の検証と最適化（Phase 4）
 
 ### 参考文献
+
 - **『The Society of Mind』** Marvin Minsky著
   - Chapter 1: Prologue - エージェント概念の導入
   - Chapter 6: Agents and Agencies - エージェントの階層構造

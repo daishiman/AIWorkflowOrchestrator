@@ -17,8 +17,8 @@
  * tracker.start();
  */
 
-import { EventEmitter } from 'events';
-import v8 from 'v8';
+import { EventEmitter } from "events";
+import v8 from "v8";
 
 // ============================================================
 // 型定義
@@ -59,7 +59,7 @@ interface MemorySample {
 }
 
 interface MemoryAlert {
-  type: 'threshold' | 'leak' | 'gc_ineffective';
+  type: "threshold" | "leak" | "gc_ineffective";
   metric: string;
   value: number;
   threshold: number;
@@ -144,7 +144,7 @@ export class MemoryTracker extends EventEmitter {
       this.setupPM2Metrics();
     }
 
-    this.emit('started');
+    this.emit("started");
     return this;
   }
 
@@ -156,7 +156,7 @@ export class MemoryTracker extends EventEmitter {
       clearInterval(this.timer);
       this.timer = null;
     }
-    this.emit('stopped');
+    this.emit("stopped");
     return this;
   }
 
@@ -276,7 +276,7 @@ export class MemoryTracker extends EventEmitter {
         heapUsed: acc.heapUsed + s.heapUsed,
         heapTotal: acc.heapTotal + s.heapTotal,
       }),
-      { rss: 0, heapUsed: 0, heapTotal: 0 }
+      { rss: 0, heapUsed: 0, heapTotal: 0 },
     );
 
     const average = {
@@ -292,7 +292,7 @@ export class MemoryTracker extends EventEmitter {
         heapUsed: Math.max(acc.heapUsed, s.heapUsed),
         heapTotal: Math.max(acc.heapTotal, s.heapTotal),
       }),
-      { rss: 0, heapUsed: 0, heapTotal: 0 }
+      { rss: 0, heapUsed: 0, heapTotal: 0 },
     );
 
     return {
@@ -315,7 +315,7 @@ export class MemoryTracker extends EventEmitter {
       this.samples.shift();
     }
 
-    this.emit('sample', sample);
+    this.emit("sample", sample);
   }
 
   private analyzeAndAlert(): void {
@@ -325,8 +325,8 @@ export class MemoryTracker extends EventEmitter {
     // ヒープ使用量チェック
     if (threshold.heapUsed && current.heapUsed > threshold.heapUsed) {
       this.sendAlert({
-        type: 'threshold',
-        metric: 'heapUsed',
+        type: "threshold",
+        metric: "heapUsed",
         value: current.heapUsed,
         threshold: threshold.heapUsed,
         message: `Heap used (${this.formatBytes(current.heapUsed)}) exceeds threshold`,
@@ -340,8 +340,8 @@ export class MemoryTracker extends EventEmitter {
       current.heapUsagePercent > threshold.heapUsagePercent
     ) {
       this.sendAlert({
-        type: 'threshold',
-        metric: 'heapUsagePercent',
+        type: "threshold",
+        metric: "heapUsagePercent",
         value: current.heapUsagePercent,
         threshold: threshold.heapUsagePercent,
         message: `Heap usage (${current.heapUsagePercent.toFixed(1)}%) exceeds threshold`,
@@ -352,8 +352,8 @@ export class MemoryTracker extends EventEmitter {
     // RSSチェック
     if (threshold.rss && current.rss > threshold.rss) {
       this.sendAlert({
-        type: 'threshold',
-        metric: 'rss',
+        type: "threshold",
+        metric: "rss",
         value: current.rss,
         threshold: threshold.rss,
         message: `RSS (${this.formatBytes(current.rss)}) exceeds threshold`,
@@ -365,8 +365,8 @@ export class MemoryTracker extends EventEmitter {
     const leakAnalysis = this.analyzeForLeaks();
     if (leakAnalysis.isLeak) {
       this.sendAlert({
-        type: 'leak',
-        metric: 'growthRate',
+        type: "leak",
+        metric: "growthRate",
         value: leakAnalysis.growthRate,
         threshold: threshold.growthRate || 10 * MB,
         message: `Potential memory leak detected (${this.formatBytes(leakAnalysis.growthRate)}/min)`,
@@ -387,22 +387,22 @@ export class MemoryTracker extends EventEmitter {
 
     this.alertCooldown.set(key, Date.now());
     this.options.onAlert(alert);
-    this.emit('alert', alert);
+    this.emit("alert", alert);
   }
 
   private setupPM2Metrics(): void {
     try {
       // PM2 IOモジュールを動的にロード
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const io = require('@pm2/io');
+      const io = require("@pm2/io");
 
       io.metric({
-        name: 'Heap Used (MB)',
+        name: "Heap Used (MB)",
         value: () => Math.round(process.memoryUsage().heapUsed / MB),
       });
 
       io.metric({
-        name: 'Heap Usage (%)',
+        name: "Heap Usage (%)",
         value: () => {
           const usage = process.memoryUsage();
           return Math.round((usage.heapUsed / usage.heapTotal) * 100);
@@ -410,7 +410,7 @@ export class MemoryTracker extends EventEmitter {
       });
 
       io.metric({
-        name: 'RSS (MB)',
+        name: "RSS (MB)",
         value: () => Math.round(process.memoryUsage().rss / MB),
       });
     } catch {
@@ -439,17 +439,17 @@ export function getHeapStatistics(): v8.HeapInfo {
  * ヒープスナップショットをトリガー（heapdumpモジュールが必要）
  */
 export async function triggerHeapSnapshot(
-  filename?: string
+  filename?: string,
 ): Promise<string | null> {
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const heapdump = require('heapdump');
+    const heapdump = require("heapdump");
     const path = filename || `/tmp/heap-${Date.now()}.heapsnapshot`;
 
     return new Promise((resolve) => {
       heapdump.writeSnapshot(path, (err: Error | null, finalPath: string) => {
         if (err) {
-          console.error('Heap snapshot error:', err);
+          console.error("Heap snapshot error:", err);
           resolve(null);
         } else {
           resolve(finalPath);
@@ -457,7 +457,7 @@ export async function triggerHeapSnapshot(
       });
     });
   } catch {
-    console.warn('heapdump module not available');
+    console.warn("heapdump module not available");
     return null;
   }
 }

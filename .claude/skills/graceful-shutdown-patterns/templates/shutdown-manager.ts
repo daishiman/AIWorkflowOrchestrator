@@ -4,7 +4,7 @@
  * Node.jsアプリケーションの安全な終了処理を管理するユーティリティ
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from "events";
 
 // ============================================================
 // 型定義
@@ -18,7 +18,7 @@ export interface ShutdownConfig {
   /** 未処理エラーでシャットダウンするか */
   handleUncaughtErrors: boolean;
   /** ログ出力関数 */
-  logger: (message: string, level: 'info' | 'warn' | 'error') => void;
+  logger: (message: string, level: "info" | "warn" | "error") => void;
 }
 
 export interface CleanupHandler {
@@ -43,7 +43,7 @@ export interface ShutdownResult {
   errors: Error[];
 }
 
-export type ShutdownEvent = 'shutdown' | 'timeout' | 'error' | 'complete';
+export type ShutdownEvent = "shutdown" | "timeout" | "error" | "complete";
 
 // ============================================================
 // デフォルト設定
@@ -55,9 +55,9 @@ const DEFAULT_CONFIG: ShutdownConfig = {
   handleUncaughtErrors: true,
   logger: (message, level) => {
     const prefix = `[Shutdown] [${level.toUpperCase()}]`;
-    if (level === 'error') {
+    if (level === "error") {
       console.error(`${prefix} ${message}`);
-    } else if (level === 'warn') {
+    } else if (level === "warn") {
       console.warn(`${prefix} ${message}`);
     } else {
       console.log(`${prefix} ${message}`);
@@ -93,11 +93,11 @@ export class ShutdownManager extends EventEmitter {
   // ----------------------------------------------------------
 
   private setupSignalHandlers(): void {
-    const signals: NodeJS.Signals[] = ['SIGTERM', 'SIGINT'];
+    const signals: NodeJS.Signals[] = ["SIGTERM", "SIGINT"];
 
     for (const signal of signals) {
       process.on(signal, async () => {
-        this.config.logger(`Received ${signal}`, 'info');
+        this.config.logger(`Received ${signal}`, "info");
         const result = await this.shutdown();
         process.exit(result.success ? 0 : 1);
       });
@@ -105,14 +105,14 @@ export class ShutdownManager extends EventEmitter {
   }
 
   private setupErrorHandlers(): void {
-    process.on('uncaughtException', async (error) => {
-      this.config.logger(`Uncaught exception: ${error.message}`, 'error');
+    process.on("uncaughtException", async (error) => {
+      this.config.logger(`Uncaught exception: ${error.message}`, "error");
       const result = await this.shutdown();
       process.exit(result.success ? 1 : 1);
     });
 
-    process.on('unhandledRejection', async (reason) => {
-      this.config.logger(`Unhandled rejection: ${reason}`, 'error');
+    process.on("unhandledRejection", async (reason) => {
+      this.config.logger(`Unhandled rejection: ${reason}`, "error");
       const result = await this.shutdown();
       process.exit(result.success ? 1 : 1);
     });
@@ -130,9 +130,9 @@ export class ShutdownManager extends EventEmitter {
   register(
     nameOrHandler: string | CleanupHandler,
     handler?: () => Promise<void>,
-    priority: number = 10
+    priority: number = 10,
   ): this {
-    if (typeof nameOrHandler === 'string') {
+    if (typeof nameOrHandler === "string") {
       this.handlers.push({
         name: nameOrHandler,
         priority,
@@ -170,7 +170,7 @@ export class ShutdownManager extends EventEmitter {
   async shutdown(): Promise<ShutdownResult> {
     // 二重実行防止
     if (this.shutdownPromise) {
-      this.config.logger('Shutdown already in progress', 'warn');
+      this.config.logger("Shutdown already in progress", "warn");
       return this.shutdownPromise;
     }
 
@@ -192,8 +192,8 @@ export class ShutdownManager extends EventEmitter {
     const failed: string[] = [];
     const errors: Error[] = [];
 
-    this.emit('shutdown');
-    this.config.logger('Starting graceful shutdown...', 'info');
+    this.emit("shutdown");
+    this.config.logger("Starting graceful shutdown...", "info");
 
     // タイムアウト設定
     const timeoutPromise = new Promise<never>((_, reject) => {
@@ -208,9 +208,9 @@ export class ShutdownManager extends EventEmitter {
         timeoutPromise,
       ]);
     } catch (error) {
-      if ((error as Error).message.includes('timeout')) {
-        this.emit('timeout');
-        this.config.logger('Shutdown timed out', 'error');
+      if ((error as Error).message.includes("timeout")) {
+        this.emit("timeout");
+        this.config.logger("Shutdown timed out", "error");
         errors.push(error as Error);
       }
     }
@@ -227,36 +227,36 @@ export class ShutdownManager extends EventEmitter {
     };
 
     if (success) {
-      this.config.logger(`Shutdown complete in ${duration}ms`, 'info');
+      this.config.logger(`Shutdown complete in ${duration}ms`, "info");
     } else {
       this.config.logger(
         `Shutdown completed with errors: ${failed.length} failed, ${errors.length} errors`,
-        'warn'
+        "warn",
       );
     }
 
-    this.emit('complete', result);
+    this.emit("complete", result);
     return result;
   }
 
   private async runHandlers(
     completed: string[],
     failed: string[],
-    errors: Error[]
+    errors: Error[],
   ): Promise<void> {
     for (const { name, handler } of this.handlers) {
       try {
-        this.config.logger(`Executing: ${name}`, 'info');
+        this.config.logger(`Executing: ${name}`, "info");
         await handler();
         completed.push(name);
-        this.config.logger(`Completed: ${name}`, 'info');
+        this.config.logger(`Completed: ${name}`, "info");
       } catch (error) {
         failed.push(name);
         errors.push(error as Error);
-        this.emit('error', { name, error });
+        this.emit("error", { name, error });
         this.config.logger(
           `Failed: ${name} - ${(error as Error).message}`,
-          'error'
+          "error",
         );
       }
     }
@@ -285,7 +285,7 @@ export class FileWatcherShutdown {
     private options: FileWatcherShutdownOptions = {
       operationTimeout: 10000,
       closeTimeout: 5000,
-    }
+    },
   ) {}
 
   /**
@@ -293,7 +293,7 @@ export class FileWatcherShutdown {
    */
   trackOperation<T>(operation: Promise<T>): Promise<T> {
     if (!this.isAccepting) {
-      return Promise.reject(new Error('Not accepting new operations'));
+      return Promise.reject(new Error("Not accepting new operations"));
     }
 
     this.pendingOperations.add(operation);
@@ -325,12 +325,14 @@ export class FileWatcherShutdown {
       return;
     }
 
-    console.log(`Waiting for ${this.pendingOperations.size} pending operations...`);
+    console.log(
+      `Waiting for ${this.pendingOperations.size} pending operations...`,
+    );
 
     const timeout = new Promise<void>((_, reject) => {
       setTimeout(
-        () => reject(new Error('Operation timeout')),
-        this.options.operationTimeout
+        () => reject(new Error("Operation timeout")),
+        this.options.operationTimeout,
       );
     });
 
@@ -340,7 +342,9 @@ export class FileWatcherShutdown {
         timeout,
       ]);
     } catch {
-      console.warn(`Timeout: ${this.pendingOperations.size} operations still pending`);
+      console.warn(
+        `Timeout: ${this.pendingOperations.size} operations still pending`,
+      );
     }
   }
 
@@ -349,7 +353,7 @@ export class FileWatcherShutdown {
    */
   createHandler(closeWatcher: () => Promise<void>): CleanupHandler {
     return {
-      name: 'FileWatcher',
+      name: "FileWatcher",
       priority: 5,
       handler: async () => {
         // 1. 新規操作の受付を停止
@@ -361,8 +365,8 @@ export class FileWatcherShutdown {
         // 3. ウォッチャーをクローズ
         const closeTimeout = new Promise<void>((_, reject) => {
           setTimeout(
-            () => reject(new Error('Close timeout')),
-            this.options.closeTimeout
+            () => reject(new Error("Close timeout")),
+            this.options.closeTimeout,
           );
         });
 
@@ -381,7 +385,9 @@ let defaultManager: ShutdownManager | null = null;
 /**
  * デフォルトのShutdownManagerを取得
  */
-export function getShutdownManager(config?: Partial<ShutdownConfig>): ShutdownManager {
+export function getShutdownManager(
+  config?: Partial<ShutdownConfig>,
+): ShutdownManager {
   if (!defaultManager) {
     defaultManager = new ShutdownManager(config);
   }
@@ -394,7 +400,7 @@ export function getShutdownManager(config?: Partial<ShutdownConfig>): ShutdownMa
 export function onShutdown(
   name: string,
   handler: () => Promise<void>,
-  priority: number = 10
+  priority: number = 10,
 ): void {
   getShutdownManager().register(name, handler, priority);
 }

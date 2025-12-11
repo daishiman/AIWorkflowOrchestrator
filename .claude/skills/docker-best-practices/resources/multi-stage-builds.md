@@ -158,7 +158,7 @@ CMD ["node", "server.js"]
 ```javascript
 // next.config.js
 module.exports = {
-  output: 'standalone',
+  output: "standalone",
 };
 ```
 
@@ -271,11 +271,11 @@ COPY --from=busybox:musl /bin/busybox /bin/busybox
 
 ### 実際の例
 
-| アプリ | シングルステージ | マルチステージ | 削減率 |
-|-------|-----------------|---------------|--------|
-| Node.js API | 1.1GB | 180MB | 84% |
-| Next.js | 1.4GB | 250MB | 82% |
-| TypeScript Bundle | 800MB | 120MB | 85% |
+| アプリ            | シングルステージ | マルチステージ | 削減率 |
+| ----------------- | ---------------- | -------------- | ------ |
+| Node.js API       | 1.1GB            | 180MB          | 84%    |
+| Next.js           | 1.4GB            | 250MB          | 82%    |
+| TypeScript Bundle | 800MB            | 120MB          | 85%    |
 
 ## デバッグ
 
@@ -304,6 +304,7 @@ docker inspect myapp:latest | jq '.[0].RootFS.Layers'
 ### すべきこと
 
 1. **ベースステージを共有**
+
    ```dockerfile
    FROM node:20-alpine AS base
    # 共通設定
@@ -314,6 +315,7 @@ docker inspect myapp:latest | jq '.[0].RootFS.Layers'
    ```
 
 2. **本番依存関係のみ含める**
+
    ```dockerfile
    RUN pnpm install --frozen-lockfile --prod
    ```
@@ -345,6 +347,7 @@ docker inspect myapp:latest | jq '.[0].RootFS.Layers'
 **症状**: 中間ステージでエラー
 
 **対応**:
+
 ```bash
 # 特定ステージまでビルドして確認
 docker build --target deps -t debug .
@@ -356,6 +359,7 @@ docker run -it debug sh
 **症状**: COPYでファイルが見つからない
 
 **対応**:
+
 ```dockerfile
 # ステージでファイルの存在を確認
 RUN ls -la /app/dist
@@ -366,6 +370,7 @@ RUN ls -la /app/dist
 **症状**: マルチステージでも大きい
 
 **対応**:
+
 1. 本番依存関係のみか確認
 2. node_modulesの不要なファイルを確認
 3. ベースイメージを見直し

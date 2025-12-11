@@ -33,13 +33,13 @@ description: |
   トリガーキーワード: business logic, executor, implement, 実装, ビジネスロジック, TDD
 argument-hint: "[logic-name]"
 allowed-tools:
-   - Task
-   - Read
-   - Write(src/features/**)
-   - Edit
-   - Grep
-   - Glob
-   - Bash(pnpm test*)
+  - Task
+  - Read
+  - Write(src/features/**)
+  - Edit
+  - Grep
+  - Glob
+  - Bash(pnpm test*)
 model: opus
 ---
 
@@ -93,6 +93,7 @@ model: opus
 ### Phase 3: 検証と報告
 
 1. **テスト実行**
+
    ```bash
    pnpm test src/features/$ARGUMENTS/
    ```
@@ -105,11 +106,11 @@ model: opus
 
 ## 成果物
 
-| ファイル | 説明 |
-|---------|------|
-| `src/features/$ARGUMENTS/executor.ts` | ビジネスロジック実装（IWorkflowExecutor準拠） |
-| `src/features/$ARGUMENTS/__tests__/executor.test.ts` | ユニットテスト（Vitest） |
-| `src/features/$ARGUMENTS/schema.ts` | 入出力スキーマ（Zod）※未存在の場合 |
+| ファイル                                             | 説明                                          |
+| ---------------------------------------------------- | --------------------------------------------- |
+| `src/features/$ARGUMENTS/executor.ts`                | ビジネスロジック実装（IWorkflowExecutor準拠） |
+| `src/features/$ARGUMENTS/__tests__/executor.test.ts` | ユニットテスト（Vitest）                      |
+| `src/features/$ARGUMENTS/schema.ts`                  | 入出力スキーマ（Zod）※未存在の場合            |
 
 ## 使用例
 

@@ -32,9 +32,7 @@ class PricingService implements IPricingService {
     let totalDiscount = Percentage.of(0);
 
     // 会員ランク割引
-    totalDiscount = totalDiscount.add(
-      this.getMemberDiscount(customer.rank)
-    );
+    totalDiscount = totalDiscount.add(this.getMemberDiscount(customer.rank));
 
     // 数量割引
     if (order.totalQuantity >= 10) {
@@ -173,7 +171,7 @@ class OrderValidationService implements IOrderValidationService {
       new CreditLimitRule(),
       new InventoryAvailabilityRule(),
       new OrderAmountRule(),
-      new BusinessHoursRule()
+      new BusinessHoursRule(),
     );
   }
 
@@ -206,9 +204,9 @@ class CreditLimitRule implements OrderValidationRule {
     if (customer.creditLimit.isLessThan(orderTotal)) {
       return RuleValidationResult.invalid(
         new ValidationError(
-          'CREDIT_LIMIT_EXCEEDED',
-          `与信限度（${customer.creditLimit.format()}）を超えています`
-        )
+          "CREDIT_LIMIT_EXCEEDED",
+          `与信限度（${customer.creditLimit.format()}）を超えています`,
+        ),
       );
     }
 
@@ -255,16 +253,16 @@ class OrderToInvoiceService implements IOrderToInvoiceService {
         quantity: item.quantity,
         unitPrice: item.unitPrice,
         amount: item.subtotal,
-      })
+      }),
     );
   }
 
   private convertDiscounts(discounts: AppliedDiscount[]): InvoiceDiscount[] {
-    return discounts.map(discount =>
+    return discounts.map((discount) =>
       InvoiceDiscount.create({
         description: discount.description,
         amount: discount.amount,
-      })
+      }),
     );
   }
 
@@ -316,7 +314,7 @@ class OrderFulfillmentService implements IOrderFulfillmentService {
 
   private reserveInventory(
     order: Order,
-    warehouse: Warehouse
+    warehouse: Warehouse,
   ): ReservationResult {
     const reservations: InventoryReservation[] = [];
 
@@ -337,7 +335,7 @@ class OrderFulfillmentService implements IOrderFulfillmentService {
 
   private createShipment(
     order: Order,
-    reservations: ReservationResult
+    reservations: ReservationResult,
   ): Shipment {
     return Shipment.create({
       orderId: order.id,
@@ -372,7 +370,7 @@ interface IReturnPolicyService {
 class ReturnPolicyService implements IReturnPolicyService {
   private readonly returnPeriodDays = 30;
   private readonly restockingFeeRate = Percentage.of(10);
-  private readonly noRefundCategories = ['DIGITAL', 'PERISHABLE', 'CUSTOM'];
+  private readonly noRefundCategories = ["DIGITAL", "PERISHABLE", "CUSTOM"];
 
   canReturn(order: Order, item: OrderItem, reason: ReturnReason): boolean {
     // 返品期限チェック
@@ -397,7 +395,9 @@ class ReturnPolicyService implements IReturnPolicyService {
     const itemTotal = item.unitPrice.multiply(returnedQuantity);
 
     // 返品理由に関係なく再在庫化手数料を適用
-    const restockingFee = itemTotal.multiply(this.restockingFeeRate.toDecimal());
+    const restockingFee = itemTotal.multiply(
+      this.restockingFeeRate.toDecimal(),
+    );
 
     return itemTotal.subtract(restockingFee);
   }
@@ -420,10 +420,10 @@ class ReturnPolicyService implements IReturnPolicyService {
 
 ## パターン選択ガイド
 
-| 場面 | 推奨パターン |
-|-----|------------|
-| 価格・料金の計算 | 計算サービス |
-| ビジネスルールの検証 | 検証サービス |
-| ドメイン間のデータ変換 | 変換サービス |
-| 複数集約の協調 | 調整サービス |
+| 場面                   | 推奨パターン     |
+| ---------------------- | ---------------- |
+| 価格・料金の計算       | 計算サービス     |
+| ビジネスルールの検証   | 検証サービス     |
+| ドメイン間のデータ変換 | 変換サービス     |
+| 複数集約の協調         | 調整サービス     |
 | ビジネスポリシーの表現 | ポリシーサービス |

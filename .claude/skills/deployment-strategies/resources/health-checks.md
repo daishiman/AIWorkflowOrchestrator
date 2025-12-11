@@ -13,12 +13,13 @@
 
 ```typescript
 // 最小限のliveness check
-app.get('/health/live', (req, res) => {
-  res.status(200).json({ status: 'alive' });
+app.get("/health/live", (req, res) => {
+  res.status(200).json({ status: "alive" });
 });
 ```
 
 **特徴**:
+
 - 軽量で高速
 - 外部依存なし
 - 失敗 → プロセス再起動
@@ -29,22 +30,20 @@ app.get('/health/live', (req, res) => {
 
 ```typescript
 // readiness check（依存サービスを確認）
-app.get('/health/ready', async (req, res) => {
-  const checks = await Promise.all([
-    checkDatabase(),
-    checkCache(),
-  ]);
+app.get("/health/ready", async (req, res) => {
+  const checks = await Promise.all([checkDatabase(), checkCache()]);
 
-  const allReady = checks.every(c => c.healthy);
+  const allReady = checks.every((c) => c.healthy);
 
   res.status(allReady ? 200 : 503).json({
-    status: allReady ? 'ready' : 'not_ready',
-    checks
+    status: allReady ? "ready" : "not_ready",
+    checks,
   });
 });
 ```
 
 **特徴**:
+
 - 依存サービスを確認
 - 失敗 → トラフィックを停止
 - プロセスは継続
@@ -63,14 +62,15 @@ async function initialize() {
   isStarted = true;
 }
 
-app.get('/health/startup', (req, res) => {
+app.get("/health/startup", (req, res) => {
   res.status(isStarted ? 200 : 503).json({
-    status: isStarted ? 'started' : 'starting'
+    status: isStarted ? "started" : "starting",
   });
 });
 ```
 
 **特徴**:
+
 - 起動時のみ使用
 - 長い起動時間を許容
 - 完了後はreadiness checkに移行
@@ -81,14 +81,14 @@ app.get('/health/startup', (req, res) => {
 
 ```typescript
 interface HealthResponse {
-  status: 'healthy' | 'degraded' | 'unhealthy';
+  status: "healthy" | "degraded" | "unhealthy";
   timestamp: string;
   version: string;
   checks: Record<string, CheckResult>;
 }
 
 interface CheckResult {
-  status: 'pass' | 'warn' | 'fail';
+  status: "pass" | "warn" | "fail";
   responseTime?: number;
   message?: string;
 }
@@ -97,7 +97,7 @@ interface CheckResult {
 ### 包括的なヘルスエンドポイント
 
 ```typescript
-app.get('/api/health', async (req, res) => {
+app.get("/api/health", async (req, res) => {
   const startTime = Date.now();
 
   const checks: Record<string, CheckResult> = {};
@@ -112,27 +112,30 @@ app.get('/api/health', async (req, res) => {
   checks.memory = checkMemory();
 
   // Determine overall status
-  const statuses = Object.values(checks).map(c => c.status);
-  let overallStatus: 'healthy' | 'degraded' | 'unhealthy';
+  const statuses = Object.values(checks).map((c) => c.status);
+  let overallStatus: "healthy" | "degraded" | "unhealthy";
 
-  if (statuses.every(s => s === 'pass')) {
-    overallStatus = 'healthy';
-  } else if (statuses.some(s => s === 'fail')) {
-    overallStatus = 'unhealthy';
+  if (statuses.every((s) => s === "pass")) {
+    overallStatus = "healthy";
+  } else if (statuses.some((s) => s === "fail")) {
+    overallStatus = "unhealthy";
   } else {
-    overallStatus = 'degraded';
+    overallStatus = "degraded";
   }
 
   const response: HealthResponse = {
     status: overallStatus,
     timestamp: new Date().toISOString(),
-    version: process.env.APP_VERSION || 'unknown',
+    version: process.env.APP_VERSION || "unknown",
     checks,
   };
 
-  const statusCode = overallStatus === 'healthy' ? 200
-    : overallStatus === 'degraded' ? 200
-    : 503;
+  const statusCode =
+    overallStatus === "healthy"
+      ? 200
+      : overallStatus === "degraded"
+        ? 200
+        : 503;
 
   res.status(statusCode).json(response);
 });
@@ -147,14 +150,14 @@ async function checkDatabase(): Promise<CheckResult> {
   const start = Date.now();
 
   try {
-    await db.raw('SELECT 1');
+    await db.raw("SELECT 1");
     return {
-      status: 'pass',
+      status: "pass",
       responseTime: Date.now() - start,
     };
   } catch (error) {
     return {
-      status: 'fail',
+      status: "fail",
       responseTime: Date.now() - start,
       message: error.message,
     };
@@ -173,7 +176,7 @@ async function checkExternalApi(): Promise<CheckResult> {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
-    const response = await fetch('https://api.external.com/health', {
+    const response = await fetch("https://api.external.com/health", {
       signal: controller.signal,
     });
 
@@ -181,19 +184,19 @@ async function checkExternalApi(): Promise<CheckResult> {
 
     if (response.ok) {
       return {
-        status: 'pass',
+        status: "pass",
         responseTime: Date.now() - start,
       };
     } else {
       return {
-        status: 'warn',
+        status: "warn",
         responseTime: Date.now() - start,
         message: `Status: ${response.status}`,
       };
     }
   } catch (error) {
     return {
-      status: error.name === 'AbortError' ? 'warn' : 'fail',
+      status: error.name === "AbortError" ? "warn" : "fail",
       responseTime: Date.now() - start,
       message: error.message,
     };
@@ -212,18 +215,18 @@ function checkMemory(): CheckResult {
 
   if (usage > 0.9) {
     return {
-      status: 'fail',
+      status: "fail",
       message: `High memory usage: ${(usage * 100).toFixed(1)}%`,
     };
   } else if (usage > 0.75) {
     return {
-      status: 'warn',
+      status: "warn",
       message: `Elevated memory usage: ${(usage * 100).toFixed(1)}%`,
     };
   }
 
   return {
-    status: 'pass',
+    status: "pass",
     message: `Memory usage: ${(usage * 100).toFixed(1)}%`,
   };
 }
@@ -252,10 +255,10 @@ interface SmokeTestResult {
 
 async function runSmokeTests(): Promise<SmokeTestResult[]> {
   const tests = [
-    { name: 'Homepage loads', fn: testHomepage },
-    { name: 'API responds', fn: testApiHealth },
-    { name: 'Auth works', fn: testAuthentication },
-    { name: 'Database queries', fn: testDatabaseQuery },
+    { name: "Homepage loads", fn: testHomepage },
+    { name: "API responds", fn: testApiHealth },
+    { name: "Auth works", fn: testAuthentication },
+    { name: "Database queries", fn: testDatabaseQuery },
   ];
 
   const results: SmokeTestResult[] = [];
@@ -283,12 +286,12 @@ async function runSmokeTests(): Promise<SmokeTestResult[]> {
 }
 
 async function testHomepage(): Promise<void> {
-  const res = await fetch('https://app.example.com');
+  const res = await fetch("https://app.example.com");
   if (!res.ok) throw new Error(`Status: ${res.status}`);
 }
 
 async function testApiHealth(): Promise<void> {
-  const res = await fetch('https://app.example.com/api/health');
+  const res = await fetch("https://app.example.com/api/health");
   if (!res.ok) throw new Error(`Status: ${res.status}`);
 }
 ```
@@ -308,10 +311,10 @@ async function testApiHealth(): Promise<void> {
 
 ### 設定項目
 
-| 項目 | 説明 | 推奨値 |
-|------|------|--------|
-| healthcheckPath | ヘルスチェックエンドポイント | `/api/health` |
-| healthcheckTimeout | タイムアウト秒数 | 30秒 |
+| 項目               | 説明                         | 推奨値        |
+| ------------------ | ---------------------------- | ------------- |
+| healthcheckPath    | ヘルスチェックエンドポイント | `/api/health` |
+| healthcheckTimeout | タイムアウト秒数             | 30秒          |
 
 ### 動作
 
@@ -362,6 +365,7 @@ async function testApiHealth(): Promise<void> {
 ### ヘルスチェックが常に失敗
 
 **確認事項**:
+
 1. エンドポイントのパスが正しいか
 2. ポート番号が正しいか
 3. 起動時間が足りているか
@@ -370,6 +374,7 @@ async function testApiHealth(): Promise<void> {
 ### 間欠的なヘルスチェック失敗
 
 **確認事項**:
+
 1. タイムアウトが短すぎないか
 2. 依存サービスの不安定さ
 3. リソース不足（CPU、メモリ）

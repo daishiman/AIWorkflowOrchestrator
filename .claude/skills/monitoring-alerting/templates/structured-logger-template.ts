@@ -9,7 +9,7 @@
 // Types
 // ============================================
 
-type LogLevel = 'error' | 'warn' | 'info' | 'debug';
+type LogLevel = "error" | "warn" | "info" | "debug";
 
 interface LogContext {
   correlationId?: string;
@@ -49,26 +49,26 @@ const LOG_LEVELS: Record<LogLevel, number> = {
 
 const DEFAULT_LOG_LEVEL: LogLevel =
   (process.env.LOG_LEVEL as LogLevel) ||
-  (process.env.NODE_ENV === 'production' ? 'info' : 'debug');
+  (process.env.NODE_ENV === "production" ? "info" : "debug");
 
-const SERVICE_NAME = process.env.SERVICE_NAME || 'app';
-const ENVIRONMENT = process.env.NODE_ENV || 'development';
+const SERVICE_NAME = process.env.SERVICE_NAME || "app";
+const ENVIRONMENT = process.env.NODE_ENV || "development";
 
 // ============================================
 // Sensitive Data Handling
 // ============================================
 
 const SENSITIVE_KEYS = [
-  'password',
-  'token',
-  'secret',
-  'apikey',
-  'api_key',
-  'authorization',
-  'cookie',
-  'creditcard',
-  'credit_card',
-  'ssn',
+  "password",
+  "token",
+  "secret",
+  "apikey",
+  "api_key",
+  "authorization",
+  "cookie",
+  "creditcard",
+  "credit_card",
+  "ssn",
 ];
 
 function sanitize(obj: Record<string, unknown>): Record<string, unknown> {
@@ -78,8 +78,12 @@ function sanitize(obj: Record<string, unknown>): Record<string, unknown> {
     const lowerKey = key.toLowerCase();
 
     if (SENSITIVE_KEYS.some((k) => lowerKey.includes(k))) {
-      result[key] = '[REDACTED]';
-    } else if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      result[key] = "[REDACTED]";
+    } else if (
+      typeof value === "object" &&
+      value !== null &&
+      !Array.isArray(value)
+    ) {
       result[key] = sanitize(value as Record<string, unknown>);
     } else {
       result[key] = value;
@@ -110,7 +114,11 @@ class Logger {
     return LOG_LEVELS[level] <= this.minLevel;
   }
 
-  private formatEntry(level: LogLevel, message: string, data?: Record<string, unknown>): LogEntry {
+  private formatEntry(
+    level: LogLevel,
+    message: string,
+    data?: Record<string, unknown>,
+  ): LogEntry {
     const entry: LogEntry = {
       timestamp: new Date().toISOString(),
       level,
@@ -137,7 +145,7 @@ class Logger {
 
   private write(entry: LogEntry): void {
     // In production, output single-line JSON for log aggregation
-    if (ENVIRONMENT === 'production') {
+    if (ENVIRONMENT === "production") {
       console.log(JSON.stringify(entry));
     } else {
       // In development, pretty print for readability
@@ -151,26 +159,26 @@ class Logger {
   }
 
   error(message: string, data?: Record<string, unknown>): void {
-    if (this.shouldLog('error')) {
-      this.write(this.formatEntry('error', message, data));
+    if (this.shouldLog("error")) {
+      this.write(this.formatEntry("error", message, data));
     }
   }
 
   warn(message: string, data?: Record<string, unknown>): void {
-    if (this.shouldLog('warn')) {
-      this.write(this.formatEntry('warn', message, data));
+    if (this.shouldLog("warn")) {
+      this.write(this.formatEntry("warn", message, data));
     }
   }
 
   info(message: string, data?: Record<string, unknown>): void {
-    if (this.shouldLog('info')) {
-      this.write(this.formatEntry('info', message, data));
+    if (this.shouldLog("info")) {
+      this.write(this.formatEntry("info", message, data));
     }
   }
 
   debug(message: string, data?: Record<string, unknown>): void {
-    if (this.shouldLog('debug')) {
-      this.write(this.formatEntry('debug', message, data));
+    if (this.shouldLog("debug")) {
+      this.write(this.formatEntry("debug", message, data));
     }
   }
 
@@ -218,7 +226,7 @@ export function createRequestLogger(req: {
 }): Logger {
   const correlationId =
     req.correlationId ||
-    (req.headers?.['x-correlation-id'] as string) ||
+    (req.headers?.["x-correlation-id"] as string) ||
     crypto.randomUUID();
 
   return logger.child({
@@ -233,22 +241,27 @@ export function createRequestLogger(req: {
 // ============================================
 
 export function loggingMiddleware(
-  req: { method: string; url: string; headers: Record<string, string | string[] | undefined> },
+  req: {
+    method: string;
+    url: string;
+    headers: Record<string, string | string[] | undefined>;
+  },
   res: { on: (event: string, cb: () => void) => void; statusCode: number },
-  next: () => void
+  next: () => void,
 ): void {
   const start = Date.now();
   const requestLogger = createRequestLogger(req);
 
-  requestLogger.info('Request started', {
-    userAgent: req.headers['user-agent'],
+  requestLogger.info("Request started", {
+    userAgent: req.headers["user-agent"],
   });
 
-  res.on('finish', () => {
+  res.on("finish", () => {
     const duration = Date.now() - start;
-    const level = res.statusCode >= 500 ? 'error' : res.statusCode >= 400 ? 'warn' : 'info';
+    const level =
+      res.statusCode >= 500 ? "error" : res.statusCode >= 400 ? "warn" : "info";
 
-    requestLogger[level]('Request completed', {
+    requestLogger[level]("Request completed", {
       status: res.statusCode,
       duration,
     });

@@ -8,32 +8,32 @@
 
 ### 状態管理Hooks
 
-| Hook | 用途 | 複雑さ | 選択基準 |
-|------|------|--------|---------|
-| `useState` | 単純な状態 | 低 | 単一値、独立した状態 |
-| `useReducer` | 複雑な状態 | 中 | 関連する複数状態、複雑なロジック |
+| Hook         | 用途       | 複雑さ | 選択基準                         |
+| ------------ | ---------- | ------ | -------------------------------- |
+| `useState`   | 単純な状態 | 低     | 単一値、独立した状態             |
+| `useReducer` | 複雑な状態 | 中     | 関連する複数状態、複雑なロジック |
 
 ### 最適化Hooks
 
-| Hook | 用途 | オーバーヘッド | 選択基準 |
-|------|------|--------------|---------|
-| `useCallback` | 関数メモ化 | 小 | 子コンポーネントへのコールバック |
-| `useMemo` | 値メモ化 | 小 | 計算コストの高い処理 |
-| `React.memo` | コンポーネントメモ化 | 中 | props変更が少ないコンポーネント |
+| Hook          | 用途                 | オーバーヘッド | 選択基準                         |
+| ------------- | -------------------- | -------------- | -------------------------------- |
+| `useCallback` | 関数メモ化           | 小             | 子コンポーネントへのコールバック |
+| `useMemo`     | 値メモ化             | 小             | 計算コストの高い処理             |
+| `React.memo`  | コンポーネントメモ化 | 中             | props変更が少ないコンポーネント  |
 
 ### 副作用Hooks
 
-| Hook | 実行タイミング | 用途 |
-|------|--------------|------|
-| `useEffect` | レンダリング後 | データフェッチ、購読、DOM操作 |
-| `useLayoutEffect` | DOM更新直後 | DOM測定、同期的な副作用 |
+| Hook              | 実行タイミング | 用途                          |
+| ----------------- | -------------- | ----------------------------- |
+| `useEffect`       | レンダリング後 | データフェッチ、購読、DOM操作 |
+| `useLayoutEffect` | DOM更新直後    | DOM測定、同期的な副作用       |
 
 ### 参照Hooks
 
-| Hook | 用途 | 再レンダリング |
-|------|------|--------------|
-| `useRef` | 可変参照保持 | 発生しない |
-| `useImperativeHandle` | 親への参照公開 | 発生しない |
+| Hook                  | 用途           | 再レンダリング |
+| --------------------- | -------------- | -------------- |
+| `useRef`              | 可変参照保持   | 発生しない     |
+| `useImperativeHandle` | 親への参照公開 | 発生しない     |
 
 ## useState vs useReducer 判断フロー
 
@@ -53,8 +53,8 @@
 const [isOpen, setIsOpen] = useState(false);
 
 // 独立した複数の状態
-const [name, setName] = useState('');
-const [email, setEmail] = useState('');
+const [name, setName] = useState("");
+const [email, setEmail] = useState("");
 
 // 単純なカウンター
 const [count, setCount] = useState(0);
@@ -73,10 +73,10 @@ interface FormState {
 
 // 複雑な状態遷移
 type FetchState =
-  | { status: 'idle' }
-  | { status: 'loading' }
-  | { status: 'success'; data: Data }
-  | { status: 'error'; error: Error };
+  | { status: "idle" }
+  | { status: "loading" }
+  | { status: "success"; data: Data }
+  | { status: "error"; error: Error };
 ```
 
 ## メモ化Hook選択基準

@@ -144,7 +144,7 @@ function decrypt(encryptedData, key) {
   const decipher = crypto.createDecipheriv(
     "aes-256-gcm",
     key,
-    Buffer.from(encryptedData.iv, "hex")
+    Buffer.from(encryptedData.iv, "hex"),
   );
 
   decipher.setAuthTag(Buffer.from(encryptedData.authTag, "hex"));
@@ -213,7 +213,7 @@ const encrypted = crypto.publicEncrypt(
     padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
     oaepHash: "sha256",
   },
-  Buffer.from(plaintext)
+  Buffer.from(plaintext),
 );
 
 // 復号化
@@ -223,7 +223,7 @@ const decrypted = crypto.privateDecrypt(
     padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
     oaepHash: "sha256",
   },
-  encrypted
+  encrypted,
 );
 ```
 
@@ -465,7 +465,7 @@ function verifyHmac(message, providedTag, secretKey) {
   // タイミングセーフな比較
   return crypto.timingSafeEqual(
     Buffer.from(providedTag, "hex"),
-    Buffer.from(expectedTag, "hex")
+    Buffer.from(expectedTag, "hex"),
   );
 }
 ```

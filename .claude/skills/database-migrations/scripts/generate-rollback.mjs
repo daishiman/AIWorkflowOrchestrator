@@ -12,17 +12,17 @@
  *   node generate-rollback.mjs migrations/0001_add_users.sql
  */
 
-import { readFileSync, writeFileSync } from 'fs';
-import { basename, dirname, join } from 'path';
+import { readFileSync, writeFileSync } from "fs";
+import { basename, dirname, join } from "path";
 
 // 色定義
 const colors = {
-  red: '\x1b[31m',
-  yellow: '\x1b[33m',
-  green: '\x1b[32m',
-  blue: '\x1b[34m',
-  cyan: '\x1b[36m',
-  reset: '\x1b[0m',
+  red: "\x1b[31m",
+  yellow: "\x1b[33m",
+  green: "\x1b[32m",
+  blue: "\x1b[34m",
+  cyan: "\x1b[36m",
+  reset: "\x1b[0m",
 };
 
 /**
@@ -116,9 +116,9 @@ const rollbackRules = [
 function parseStatements(sql) {
   // コメントを保持しつつ、セミコロンで分割
   const statements = [];
-  let current = '';
+  let current = "";
   let inString = false;
-  let stringChar = '';
+  let stringChar = "";
 
   for (let i = 0; i < sql.length; i++) {
     const char = sql[i];
@@ -126,7 +126,7 @@ function parseStatements(sql) {
     // 文字列リテラル内の処理
     if (inString) {
       current += char;
-      if (char === stringChar && sql[i - 1] !== '\\') {
+      if (char === stringChar && sql[i - 1] !== "\\") {
         inString = false;
       }
       continue;
@@ -141,12 +141,12 @@ function parseStatements(sql) {
     }
 
     // セミコロンでステートメント終了
-    if (char === ';') {
+    if (char === ";") {
       const stmt = current.trim();
       if (stmt) {
         statements.push(stmt);
       }
-      current = '';
+      current = "";
       continue;
     }
 
@@ -178,14 +178,14 @@ function generateRollbackForStatement(statement) {
   }
 
   // マッチしない場合はコメントとして返す
-  return `-- WARNING: Cannot auto-generate rollback for:\n-- ${statement.replace(/\n/g, '\n-- ')}`;
+  return `-- WARNING: Cannot auto-generate rollback for:\n-- ${statement.replace(/\n/g, "\n-- ")}`;
 }
 
 /**
  * マイグレーションファイルからロールバックSQLを生成
  */
 function generateRollback(migrationPath) {
-  const content = readFileSync(migrationPath, 'utf-8');
+  const content = readFileSync(migrationPath, "utf-8");
   const statements = parseStatements(content);
 
   // ロールバックは逆順で実行
@@ -199,7 +199,7 @@ function generateRollback(migrationPath) {
 
 `;
 
-  return header + rollbackStatements.join('\n\n') + '\n';
+  return header + rollbackStatements.join("\n\n") + "\n";
 }
 
 /**
@@ -209,21 +209,23 @@ function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.log('使用方法: node generate-rollback.mjs <migration-file>');
-    console.log('例: node generate-rollback.mjs migrations/0001_add_users.sql');
+    console.log("使用方法: node generate-rollback.mjs <migration-file>");
+    console.log("例: node generate-rollback.mjs migrations/0001_add_users.sql");
     process.exit(1);
   }
 
   const migrationPath = args[0];
 
   try {
-    console.log(`\n${colors.cyan}マイグレーションファイル:${colors.reset} ${migrationPath}\n`);
+    console.log(
+      `\n${colors.cyan}マイグレーションファイル:${colors.reset} ${migrationPath}\n`,
+    );
 
     const rollbackSql = generateRollback(migrationPath);
 
     // 出力ファイル名を生成
     const dir = dirname(migrationPath);
-    const base = basename(migrationPath, '.sql');
+    const base = basename(migrationPath, ".sql");
     const outputPath = join(dir, `${base}_rollback.sql`);
 
     writeFileSync(outputPath, rollbackSql);
@@ -232,12 +234,14 @@ function main() {
     console.log(`${colors.blue}出力ファイル:${colors.reset} ${outputPath}\n`);
 
     // 内容をプレビュー
-    console.log('='.repeat(60));
-    console.log('生成されたロールバックSQL:');
-    console.log('='.repeat(60));
+    console.log("=".repeat(60));
+    console.log("生成されたロールバックSQL:");
+    console.log("=".repeat(60));
     console.log(rollbackSql);
 
-    console.log(`\n${colors.yellow}⚠️  注意: 実行前に必ず内容を確認してください${colors.reset}\n`);
+    console.log(
+      `\n${colors.yellow}⚠️  注意: 実行前に必ず内容を確認してください${colors.reset}\n`,
+    );
   } catch (error) {
     console.error(`${colors.red}エラー: ${error.message}${colors.reset}`);
     process.exit(1);

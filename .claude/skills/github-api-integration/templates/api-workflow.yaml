@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       api_type:
-        description: 'API type to demonstrate'
+        description: "API type to demonstrate"
         required: true
         type: choice
         options:
@@ -227,7 +227,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install Octokit
         run: |

@@ -4,8 +4,8 @@
  * カスタムタイトルバーを持つフレームレスウィンドウの実装例
  */
 
-import { BrowserWindow, ipcMain } from 'electron';
-import path from 'path';
+import { BrowserWindow, ipcMain } from "electron";
+import path from "path";
 
 export function createFramelessWindow(): BrowserWindow {
   const win = new BrowserWindow({
@@ -16,7 +16,7 @@ export function createFramelessWindow(): BrowserWindow {
 
     // フレームレス設定
     frame: false,
-    titleBarStyle: 'hidden',
+    titleBarStyle: "hidden",
     titleBarOverlay: false,
 
     // macOS: トラフィックライトの位置調整
@@ -24,10 +24,10 @@ export function createFramelessWindow(): BrowserWindow {
 
     // 透明背景（オプション）
     transparent: false,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
 
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
       nodeIntegration: false,
     },
@@ -40,11 +40,11 @@ export function createFramelessWindow(): BrowserWindow {
 }
 
 function setupWindowControls(win: BrowserWindow): void {
-  ipcMain.handle('window:minimize', () => {
+  ipcMain.handle("window:minimize", () => {
     win.minimize();
   });
 
-  ipcMain.handle('window:maximize', () => {
+  ipcMain.handle("window:maximize", () => {
     if (win.isMaximized()) {
       win.unmaximize();
     } else {
@@ -52,21 +52,21 @@ function setupWindowControls(win: BrowserWindow): void {
     }
   });
 
-  ipcMain.handle('window:close', () => {
+  ipcMain.handle("window:close", () => {
     win.close();
   });
 
-  ipcMain.handle('window:isMaximized', () => {
+  ipcMain.handle("window:isMaximized", () => {
     return win.isMaximized();
   });
 
   // 最大化状態の変更を通知
-  win.on('maximize', () => {
-    win.webContents.send('window:maximized', true);
+  win.on("maximize", () => {
+    win.webContents.send("window:maximized", true);
   });
 
-  win.on('unmaximize', () => {
-    win.webContents.send('window:maximized', false);
+  win.on("unmaximize", () => {
+    win.webContents.send("window:maximized", false);
   });
 }
 

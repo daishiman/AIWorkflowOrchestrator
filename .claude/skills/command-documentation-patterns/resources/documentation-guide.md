@@ -11,16 +11,20 @@ argument-hint: "[required] [optional]"
 # command-name
 
 ## Purpose
+
 Brief explanation
 
 ## Usage
+
 /command-name [args]
 
 ## Examples
+
 /command-name example1
 /command-name example2
 
 ## Steps
+
 Clear step descriptions
 ```
 
@@ -41,12 +45,16 @@ description: Create React component with TypeScript, tests, and Storybook storie
 
 ```markdown
 ## Step 1: Validation
+
 # 入力の妥当性を確認
+
 Check if component exists
 Validate naming conventions
 
 ## Step 2: Generation
+
 # テンプレートからファイルを生成
+
 Create component.tsx from template
 Create test.spec.tsx from template
 ```
@@ -59,12 +67,15 @@ Create test.spec.tsx from template
 ## Examples
 
 ### Basic usage
+
 /create-component Button
 
 ### With options
+
 /create-component Button --with-stories
 
 ### Multiple components
+
 /create-component Modal Dialog Tooltip
 ```
 
@@ -74,8 +85,10 @@ Create test.spec.tsx from template
 ## Common Issues
 
 ### "Component already exists"
+
 Solution: Use --force flag to overwrite
 
 ### "Invalid name format"
+
 Solution: Use PascalCase (e.g., MyComponent)
 ```

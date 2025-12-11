@@ -19,6 +19,7 @@
 ### Phase 1: エージェント分析と分離計画
 
 **実行内容**:
+
 1. skill-librarianエージェント(1849行)の全体を読み込み
 2. agent_list.mdから必要な5つのスキルを特定:
    - knowledge-management
@@ -29,6 +30,7 @@
 3. 各スキルの役割と行数目標を決定
 
 **knowledge-managementの役割定義**:
+
 - SECIモデルの適用
 - 暗黙知→形式知変換
 - 知識キュレーションフレームワーク
@@ -39,6 +41,7 @@
 ### Phase 2: ディレクトリ構造作成
 
 **実行コマンド**:
+
 ```bash
 mkdir -p .claude/skills/knowledge-management/resources
 mkdir -p .claude/skills/knowledge-management/scripts
@@ -47,6 +50,7 @@ mkdir -p .claude/skills/knowledge-management/assets
 ```
 
 **結果**:
+
 ```
 knowledge-management/
 ├── resources/
@@ -60,6 +64,7 @@ knowledge-management/
 ### Phase 3: SKILL.md作成
 
 **YAML Frontmatter設計**:
+
 ```yaml
 name: knowledge-management
 description: |
@@ -78,6 +83,7 @@ version: 1.0.0
 ```
 
 **本文構成** (408行):
+
 1. 概要 (約50行)
 2. リソース構造 (約30行)
 3. いつ使うか (約40行)
@@ -90,6 +96,7 @@ version: 1.0.0
 10. 関連スキル・メトリクス (約20行)
 
 **重要ポイント**:
+
 - リソース構造セクションを追加（ディレクトリツリーとリソース種別の説明）
 - 各Phase で対応するリソースファイルへの参照を明記
 - 500行制約を厳守（最終: 408行）
@@ -136,6 +143,7 @@ version: 1.0.0
    - 継続的品質改善
 
 **行数管理**:
+
 - すべてのリソースが500行以内 ✓
 - 最大: quality-assurance.md (498行)
 - 最小: seci-combination.md (335行)
@@ -145,6 +153,7 @@ version: 1.0.0
 ### Phase 5: スクリプトとテンプレート作成
 
 **スクリプト**: `validate-knowledge.sh` (約160行)
+
 - 必須セクション確認
 - ファイルサイズ制約チェック
 - プレースホルダー検出
@@ -152,6 +161,7 @@ version: 1.0.0
 - 実行権限付与: `chmod +x`
 
 **テンプレート**: `knowledge-document-template.md` (187行)
+
 - 日本語の知識文書標準テンプレート
 - メタデータ、必須セクション、構造を含む
 - 即座に使用可能
@@ -161,10 +171,12 @@ version: 1.0.0
 ### Phase 6: 統合と登録
 
 **skill_list.md更新**:
+
 ```markdown
 ## ナレッジマネジメント
 
 ### knowledge-management
+
 - **ファイル**: `.claude/skills/knowledge-management/SKILL.md`
 - **バージョン**: 1.0.0
 - **概要**: SECIモデル（野中郁次郎）に基づく...
@@ -222,46 +234,60 @@ version: 1.0.0
 # [スキル名]
 
 ## 概要
+
 [2-3段落]
 
 ## リソース構造
+
 [ディレクトリツリー + リソース種別説明]
 
 ## いつ使うか
+
 [シナリオ1-3]
 
 ## 前提条件
+
 [必要な知識・ツール・環境]
 
 ## ワークフロー
+
 [Phase 1-4、各Phaseでリソース参照]
 
 ## リソースへの参照
+
 [リソースファイルの説明]
 
 ## ベストプラクティス
+
 [すべきこと・避けるべきこと]
 
 ## トラブルシューティング
+
 [問題1-3]
 
 ## 例
+
 [例1-2]
 
 ## 関連スキル
+
 [関連スキルのリスト]
 
 ## メトリクス
+
 [測定可能な指標]
 
 ## 変更履歴
+
 [バージョン履歴テーブル]
 
 ## 使用上の注意
+
 [得意なこと・行わないこと・推奨フロー]
 ```
 
 **セクション別推奨行数**:
+
 - 概要: 30-50行
 - リソース構造: 20-30行
 - いつ使うか: 30-50行
@@ -279,24 +305,30 @@ version: 1.0.0
 ### パターン2: リソースファイル設計
 
 **命名規則**:
+
 - トピック別: `[topic]-[subtopic].md`
 - フェーズ別: `[framework]-[phase].md`
 - 機能別: `[function]-[aspect].md`
 
 **構成**:
+
 ```markdown
 # [リソースタイトル]
 
 ## 概要
+
 [このリソースの目的と範囲]
 
 ## [セクション1]
+
 [詳細内容]
 
 ## [セクション2]
+
 [詳細内容]
 
 ## 参考文献
+
 [関連文献]
 ```
 
@@ -307,16 +339,19 @@ version: 1.0.0
 ### パターン3: スクリプト提供
 
 **必要条件**:
+
 - 検証や自動化が有益な場合
 - 繰り返し実行される処理がある場合
 
 **必須要素**:
+
 - shebang: `#!/bin/bash`
 - エラーハンドリング: `set -e`
 - ヘルプメッセージ
 - 実行権限: `chmod +x`
 
 **knowledge-managementでの実装**:
+
 ```bash
 #!/bin/bash
 # Knowledge Validation Script
@@ -333,10 +368,12 @@ set -e
 ### パターン4: テンプレート提供
 
 **必要条件**:
+
 - ユーザーが同様の文書を作成する場合
 - 標準フォーマットが存在する場合
 
 **テンプレート要素**:
+
 - プレースホルダー: `[項目名]`, `YYYY-MM-DD`
 - 必須セクション
 - コメントによる説明
@@ -378,6 +415,7 @@ set -e
 ### progressive-disclosure スキル作成時
 
 **予想される構造**:
+
 ```
 progressive-disclosure/
 ├── SKILL.md (400行目標)
@@ -393,6 +431,7 @@ progressive-disclosure/
 ```
 
 **適用するパターン**:
+
 - パターン1: SKILL.md構成（同じセクション構成）
 - パターン2: リソースファイル設計（トピック別命名）
 - パターン3: スクリプト提供（トークン計算の自動化）
@@ -401,6 +440,7 @@ progressive-disclosure/
 ### documentation-architecture スキル作成時
 
 **予想される構造**:
+
 ```
 documentation-architecture/
 ├── SKILL.md (350行目標)
@@ -420,6 +460,7 @@ documentation-architecture/
 ## チェックリスト（再利用可能）
 
 ### Phase 3: SKILL.md作成
+
 - [ ] YAML Frontmatterが完全（name, description, version）
 - [ ] descriptionに具体的なトリガー条件が3つ以上
 - [ ] リソース構造セクションがある
@@ -430,6 +471,7 @@ documentation-architecture/
 - [ ] 行数が500行以内
 
 ### Phase 4: リソース作成
+
 - [ ] 各リソースが独立したトピックを扱う
 - [ ] 各リソースが500行以内
 - [ ] SKILL.mdから明確に参照されている
@@ -437,12 +479,14 @@ documentation-architecture/
 - [ ] 独立して理解可能
 
 ### Phase 5: ツール作成
+
 - [ ] スクリプトに実行権限（chmod +x）
 - [ ] エラーハンドリング（set -e）
 - [ ] ヘルプメッセージ
 - [ ] カラー出力（可読性向上）
 
 ### Phase 6: 検証
+
 - [ ] すべてのファイルが500行以内
 - [ ] SKILL.mdが適切な行数（350-450行）
 - [ ] リソース参照パスが正確
@@ -455,18 +499,21 @@ documentation-architecture/
 ### knowledge-management スキル
 
 **ファイル数**: 10
+
 - SKILL.md: 1
 - resources/: 7
 - scripts/: 1
 - templates/: 1
 
 **総行数**: 約3,400行
+
 - SKILL.md: 408行
 - リソース合計: 2,930行
 - スクリプト: 約160行
 - テンプレート: 187行
 
 **トークン見積もり**:
+
 - SKILL.md: 約2,500トークン
 - リソース総計: 約18,000トークン
 - 総計: 約20,500トークン（目標の<20K範囲内 ✓）
@@ -522,6 +569,7 @@ documentation-architecture/
 4. **best-practices-curation** - キュレーションに特化したバリエーション
 
 **期待される効果**:
+
 - 作成時間の短縮（2-3時間 → 1-2時間）
 - 品質の一貫性向上
 - 500行制約の遵守率向上

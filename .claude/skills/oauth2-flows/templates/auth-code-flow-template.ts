@@ -26,7 +26,7 @@ interface OAuthProvider {
 
 interface TokenResponse {
   access_token: string;
-  token_type: 'Bearer';
+  token_type: "Bearer";
   expires_in: number;
   refresh_token?: string;
   scope?: string;
@@ -55,7 +55,7 @@ export function initiateOAuthFlow(provider: OAuthProvider): void {
 
   // 認可URLパラメータ構築
   const params = new URLSearchParams({
-    response_type: 'code',
+    response_type: "code",
     client_id: provider.clientId,
     redirect_uri: provider.redirectUri,
     scope: provider.scope,
@@ -77,28 +77,28 @@ export function initiateOAuthFlow(provider: OAuthProvider): void {
  */
 export async function handleOAuthCallback(
   request: Request,
-  provider: OAuthProvider
+  provider: OAuthProvider,
 ): Promise<TokenResponse> {
   const url = new URL(request.url);
-  const code = url.searchParams.get('code');
-  const state = url.searchParams.get('state');
-  const error = url.searchParams.get('error');
+  const code = url.searchParams.get("code");
+  const state = url.searchParams.get("state");
+  const error = url.searchParams.get("error");
 
   // エラーチェック
   if (error) {
-    const errorDescription = url.searchParams.get('error_description');
+    const errorDescription = url.searchParams.get("error_description");
     throw new OAuthAuthorizationError(error, errorDescription);
   }
 
   // 認可コード検証
   if (!code) {
-    throw new Error('Authorization code missing from callback');
+    throw new Error("Authorization code missing from callback");
   }
 
   // State検証（CSRF対策）
   const savedState = sessionStorage.getItem(`oauth_state_${provider.name}`);
   if (!savedState || state !== savedState) {
-    throw new Error('State mismatch - potential CSRF attack');
+    throw new Error("State mismatch - potential CSRF attack");
   }
 
   // State削除（一度のみ使用）
@@ -117,10 +117,10 @@ export async function handleOAuthCallback(
  */
 async function exchangeCodeForToken(
   code: string,
-  provider: OAuthProvider
+  provider: OAuthProvider,
 ): Promise<TokenResponse> {
   const params = new URLSearchParams({
-    grant_type: 'authorization_code',
+    grant_type: "authorization_code",
     code: code,
     client_id: provider.clientId,
     client_secret: provider.clientSecret,
@@ -128,10 +128,10 @@ async function exchangeCodeForToken(
   });
 
   const response = await fetch(provider.tokenUrl, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Accept': 'application/json',
+      "Content-Type": "application/x-www-form-urlencoded",
+      Accept: "application/json",
     },
     body: params.toString(),
   });
@@ -158,17 +158,17 @@ async function exchangeCodeForToken(
  */
 export async function fetchProtectedResource<T>(
   url: string,
-  accessToken: string
+  accessToken: string,
 ): Promise<T> {
   const response = await fetch(url, {
     headers: {
-      'Authorization': `Bearer ${accessToken}`,
-      'Accept': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+      Accept: "application/json",
     },
   });
 
   if (response.status === 401) {
-    throw new TokenExpiredError('Access token expired or invalid');
+    throw new TokenExpiredError("Access token expired or invalid");
   }
 
   if (!response.ok) {
@@ -188,18 +188,17 @@ export async function fetchProtectedResource<T>(
 function generateSecureRandomString(length: number): string {
   const array = new Uint8Array(length);
   crypto.getRandomValues(array);
-  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+  return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join(
+    "",
+  );
 }
 
 /**
  * Base64 URL Encode
  */
 function base64URLEncode(buffer: Uint8Array | Buffer): string {
-  const base64 = Buffer.from(buffer).toString('base64');
-  return base64
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=/g, '');
+  const base64 = Buffer.from(buffer).toString("base64");
+  return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
 }
 
 /**
@@ -207,15 +206,15 @@ function base64URLEncode(buffer: Uint8Array | Buffer): string {
  */
 function validateTokenResponse(tokens: TokenResponse): void {
   if (!tokens.access_token) {
-    throw new Error('Access token missing from response');
+    throw new Error("Access token missing from response");
   }
 
-  if (tokens.token_type !== 'Bearer') {
+  if (tokens.token_type !== "Bearer") {
     throw new Error(`Unsupported token type: ${tokens.token_type}`);
   }
 
   if (!tokens.expires_in || tokens.expires_in <= 0) {
-    throw new Error('Invalid token expiration');
+    throw new Error("Invalid token expiration");
   }
 }
 
@@ -226,34 +225,38 @@ function validateTokenResponse(tokens: TokenResponse): void {
 class OAuthAuthorizationError extends Error {
   constructor(
     public error: string,
-    public description?: string | null
+    public description?: string | null,
   ) {
-    super(`OAuth Authorization Error: ${error}${description ? ` - ${description}` : ''}`);
-    this.name = 'OAuthAuthorizationError';
+    super(
+      `OAuth Authorization Error: ${error}${description ? ` - ${description}` : ""}`,
+    );
+    this.name = "OAuthAuthorizationError";
   }
 }
 
 class OAuthTokenError extends Error {
   constructor(
     public error: string,
-    public description?: string | null
+    public description?: string | null,
   ) {
-    super(`OAuth Token Error: ${error}${description ? ` - ${description}` : ''}`);
-    this.name = 'OAuthTokenError';
+    super(
+      `OAuth Token Error: ${error}${description ? ` - ${description}` : ""}`,
+    );
+    this.name = "OAuthTokenError";
   }
 }
 
 class TokenExpiredError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'TokenExpiredError';
+    this.name = "TokenExpiredError";
   }
 }
 
 class APIError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'APIError';
+    this.name = "APIError";
   }
 }
 
@@ -267,35 +270,35 @@ class APIError extends Error {
 export async function GET(request: Request): Promise<Response> {
   try {
     const provider: OAuthProvider = {
-      name: 'google',
-      authorizeUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
-      tokenUrl: 'https://oauth2.googleapis.com/token',
+      name: "google",
+      authorizeUrl: "https://accounts.google.com/o/oauth2/v2/auth",
+      tokenUrl: "https://oauth2.googleapis.com/token",
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       redirectUri: process.env.GOOGLE_REDIRECT_URI!,
-      scope: 'openid email profile',
+      scope: "openid email profile",
     };
 
     const tokens = await handleOAuthCallback(request, provider);
 
     // トークンをHttpOnly Cookieに保存
-    const response = Response.redirect('/dashboard');
+    const response = Response.redirect("/dashboard");
     response.headers.append(
-      'Set-Cookie',
-      `access_token=${tokens.access_token}; HttpOnly; Secure; SameSite=Lax; Max-Age=${tokens.expires_in}; Path=/`
+      "Set-Cookie",
+      `access_token=${tokens.access_token}; HttpOnly; Secure; SameSite=Lax; Max-Age=${tokens.expires_in}; Path=/`,
     );
 
     if (tokens.refresh_token) {
       response.headers.append(
-        'Set-Cookie',
-        `refresh_token=${tokens.refresh_token}; HttpOnly; Secure; SameSite=Lax; Max-Age=${30 * 24 * 3600}; Path=/api/auth/refresh`
+        "Set-Cookie",
+        `refresh_token=${tokens.refresh_token}; HttpOnly; Secure; SameSite=Lax; Max-Age=${30 * 24 * 3600}; Path=/api/auth/refresh`,
       );
     }
 
     return response;
   } catch (error) {
-    console.error('OAuth callback error:', error);
-    return Response.redirect('/login?error=auth_failed');
+    console.error("OAuth callback error:", error);
+    return Response.redirect("/login?error=auth_failed");
   }
 }
 
@@ -308,13 +311,13 @@ export async function GET(request: Request): Promise<Response> {
  */
 function onLoginButtonClick(): void {
   const provider: OAuthProvider = {
-    name: 'google',
-    authorizeUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
-    tokenUrl: '', // クライアント側では不要
+    name: "google",
+    authorizeUrl: "https://accounts.google.com/o/oauth2/v2/auth",
+    tokenUrl: "", // クライアント側では不要
     clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
-    clientSecret: '', // クライアント側では不要
+    clientSecret: "", // クライアント側では不要
     redirectUri: `${window.location.origin}/api/auth/callback`,
-    scope: 'openid email profile',
+    scope: "openid email profile",
   };
 
   initiateOAuthFlow(provider);
@@ -325,25 +328,25 @@ function onLoginButtonClick(): void {
  */
 export async function getUserProfile(request: Request): Promise<UserProfile> {
   // Cookie からアクセストークン取得
-  const cookies = parseCookies(request.headers.get('Cookie') || '');
+  const cookies = parseCookies(request.headers.get("Cookie") || "");
   const accessToken = cookies.access_token;
 
   if (!accessToken) {
-    throw new Error('Not authenticated');
+    throw new Error("Not authenticated");
   }
 
   // Google User Info APIを呼び出し
   return await fetchProtectedResource<UserProfile>(
-    'https://www.googleapis.com/oauth2/v2/userinfo',
-    accessToken
+    "https://www.googleapis.com/oauth2/v2/userinfo",
+    accessToken,
   );
 }
 
 function parseCookies(cookieHeader: string): Record<string, string> {
   return Object.fromEntries(
-    cookieHeader.split(';').map(cookie => {
-      const [key, value] = cookie.trim().split('=');
+    cookieHeader.split(";").map((cookie) => {
+      const [key, value] = cookie.trim().split("=");
       return [key, value];
-    })
+    }),
   );
 }

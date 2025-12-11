@@ -13,8 +13,8 @@
  *   node analyze-service-responsibilities.mjs src/domain/services/
  */
 
-import { readdir, readFile, stat } from 'fs/promises';
-import { join, extname, basename } from 'path';
+import { readdir, readFile, stat } from "fs/promises";
+import { join, extname, basename } from "path";
 
 // 検出パターン
 const PATTERNS = {
@@ -22,52 +22,55 @@ const PATTERNS = {
   domainServiceIssues: [
     {
       pattern: /\bawait\b/,
-      issue: 'async/await',
-      suggestion: 'ドメインサービスは通常同期的。外部リソースアクセスはアプリケーションサービスで',
+      issue: "async/await",
+      suggestion:
+        "ドメインサービスは通常同期的。外部リソースアクセスはアプリケーションサービスで",
     },
     {
       pattern: /repository\./i,
-      issue: 'リポジトリ直接アクセス',
-      suggestion: 'ドメインサービスはリポジトリに依存すべきでない。アプリケーションサービスで注入',
+      issue: "リポジトリ直接アクセス",
+      suggestion:
+        "ドメインサービスはリポジトリに依存すべきでない。アプリケーションサービスで注入",
     },
     {
       pattern: /\.query\(|\.execute\(|\.find\(/,
-      issue: 'データベースアクセスの可能性',
-      suggestion: 'ドメインサービスはインフラストラクチャに依存すべきでない',
+      issue: "データベースアクセスの可能性",
+      suggestion: "ドメインサービスはインフラストラクチャに依存すべきでない",
     },
     {
       pattern: /fetch\(|axios\.|http\./i,
-      issue: 'HTTP呼び出し',
-      suggestion: '外部APIアクセスはアプリケーションサービスまたはインフラ層で',
+      issue: "HTTP呼び出し",
+      suggestion: "外部APIアクセスはアプリケーションサービスまたはインフラ層で",
     },
     {
       pattern: /private\s+\w+\s*[:=]/,
-      issue: 'インスタンス変数（状態）の可能性',
-      suggestion: 'ドメインサービスはステートレスであるべき',
+      issue: "インスタンス変数（状態）の可能性",
+      suggestion: "ドメインサービスはステートレスであるべき",
     },
     {
       pattern: /this\.\w+\s*=/,
-      issue: '状態の変更',
-      suggestion: 'ドメインサービスは状態を持つべきでない',
+      issue: "状態の変更",
+      suggestion: "ドメインサービスは状態を持つべきでない",
     },
   ],
 
   // アプリケーションサービスでの問題パターン
   appServiceIssues: [
     {
-      pattern: /if\s*\([^)]*\.balance|if\s*\([^)]*\.status|if\s*\([^)]*\.is\w+\(/,
-      issue: 'ビジネスロジックの漏れ',
-      suggestion: 'ビジネスルールはエンティティまたはドメインサービスに',
+      pattern:
+        /if\s*\([^)]*\.balance|if\s*\([^)]*\.status|if\s*\([^)]*\.is\w+\(/,
+      issue: "ビジネスロジックの漏れ",
+      suggestion: "ビジネスルールはエンティティまたはドメインサービスに",
     },
     {
       pattern: /\.setBalance\(|\.setStatus\(/,
-      issue: '直接的な状態変更',
-      suggestion: 'エンティティのメソッドを通じて状態を変更すべき',
+      issue: "直接的な状態変更",
+      suggestion: "エンティティのメソッドを通じて状態を変更すべき",
     },
     {
       pattern: /for\s*\(.*items|\.forEach\(.*calculate/i,
-      issue: '計算ループ',
-      suggestion: '計算ロジックはドメインサービスまたは値オブジェクトに',
+      issue: "計算ループ",
+      suggestion: "計算ロジックはドメインサービスまたは値オブジェクトに",
     },
   ],
 
@@ -75,23 +78,23 @@ const PATTERNS = {
   namingIssues: [
     {
       pattern: /Manager$/,
-      issue: 'Manager サフィックス',
-      suggestion: 'より具体的なドメイン用語を使用',
+      issue: "Manager サフィックス",
+      suggestion: "より具体的なドメイン用語を使用",
     },
     {
       pattern: /Helper$/,
-      issue: 'Helper サフィックス',
-      suggestion: 'Service または具体的な責務名を使用',
+      issue: "Helper サフィックス",
+      suggestion: "Service または具体的な責務名を使用",
     },
     {
       pattern: /Utils?$/,
-      issue: 'Utils サフィックス',
-      suggestion: 'ドメインサービスとして再設計',
+      issue: "Utils サフィックス",
+      suggestion: "ドメインサービスとして再設計",
     },
     {
       pattern: /Processor$/,
-      issue: 'Processor サフィックス',
-      suggestion: 'より具体的なドメイン用語を使用',
+      issue: "Processor サフィックス",
+      suggestion: "より具体的なドメイン用語を使用",
     },
   ],
 };
@@ -103,11 +106,11 @@ function determineServiceType(filePath, content) {
   const fileName = basename(filePath);
 
   // パスベースの判定
-  if (filePath.includes('/application/') || filePath.includes('/app/')) {
-    return 'application';
+  if (filePath.includes("/application/") || filePath.includes("/app/")) {
+    return "application";
   }
-  if (filePath.includes('/domain/')) {
-    return 'domain';
+  if (filePath.includes("/domain/")) {
+    return "domain";
   }
 
   // 内容ベースの判定
@@ -116,10 +119,10 @@ function determineServiceType(filePath, content) {
   const hasTransaction = /transaction|unitOfWork/i.test(content);
 
   if (hasAwait || hasRepository || hasTransaction) {
-    return 'application';
+    return "application";
   }
 
-  return 'domain'; // デフォルト
+  return "domain"; // デフォルト
 }
 
 /**
@@ -127,7 +130,7 @@ function determineServiceType(filePath, content) {
  */
 function analyzeFile(content, filePath) {
   const issues = [];
-  const lines = content.split('\n');
+  const lines = content.split("\n");
   const serviceType = determineServiceType(filePath, content);
 
   // クラス名を抽出
@@ -138,7 +141,7 @@ function analyzeFile(content, filePath) {
   for (const { pattern, issue, suggestion } of PATTERNS.namingIssues) {
     if (pattern.test(className)) {
       issues.push({
-        type: 'naming',
+        type: "naming",
         file: filePath,
         className,
         line: null,
@@ -149,9 +152,10 @@ function analyzeFile(content, filePath) {
   }
 
   // サービス種類に応じた問題をチェック
-  const patternsToCheck = serviceType === 'domain'
-    ? PATTERNS.domainServiceIssues
-    : PATTERNS.appServiceIssues;
+  const patternsToCheck =
+    serviceType === "domain"
+      ? PATTERNS.domainServiceIssues
+      : PATTERNS.appServiceIssues;
 
   lines.forEach((line, index) => {
     const lineNumber = index + 1;
@@ -160,11 +164,11 @@ function analyzeFile(content, filePath) {
       if (pattern.test(line)) {
         // 重複を避ける
         const existingIssue = issues.find(
-          i => i.line === lineNumber && i.issue === issue
+          (i) => i.line === lineNumber && i.issue === issue,
         );
         if (!existingIssue) {
           issues.push({
-            type: serviceType === 'domain' ? 'domain_issue' : 'app_issue',
+            type: serviceType === "domain" ? "domain_issue" : "app_issue",
             file: filePath,
             className,
             line: lineNumber,
@@ -183,7 +187,10 @@ function analyzeFile(content, filePath) {
 /**
  * ディレクトリを再帰的に走査
  */
-async function walkDirectory(dir, fileExtensions = ['.ts', '.tsx', '.js', '.jsx']) {
+async function walkDirectory(
+  dir,
+  fileExtensions = [".ts", ".tsx", ".js", ".jsx"],
+) {
   const files = [];
 
   async function walk(currentDir) {
@@ -193,7 +200,7 @@ async function walkDirectory(dir, fileExtensions = ['.ts', '.tsx', '.js', '.jsx'
       const fullPath = join(currentDir, entry.name);
 
       if (entry.isDirectory()) {
-        if (!entry.name.startsWith('.') && entry.name !== 'node_modules') {
+        if (!entry.name.startsWith(".") && entry.name !== "node_modules") {
           await walk(fullPath);
         }
       } else if (entry.isFile()) {
@@ -216,16 +223,16 @@ async function walkDirectory(dir, fileExtensions = ['.ts', '.tsx', '.js', '.jsx'
 function generateReport(analyses) {
   const report = [];
 
-  report.push('# サービス責務分析レポート\n');
+  report.push("# サービス責務分析レポート\n");
   report.push(`生成日時: ${new Date().toISOString()}`);
   report.push(`分析サービス数: ${analyses.length}\n`);
 
   // サマリー
-  const domainServices = analyses.filter(a => a.serviceType === 'domain');
-  const appServices = analyses.filter(a => a.serviceType === 'application');
+  const domainServices = analyses.filter((a) => a.serviceType === "domain");
+  const appServices = analyses.filter((a) => a.serviceType === "application");
   const totalIssues = analyses.reduce((sum, a) => sum + a.issues.length, 0);
 
-  report.push('\n## サマリー\n');
+  report.push("\n## サマリー\n");
   report.push(`- ドメインサービス: ${domainServices.length}件`);
   report.push(`- アプリケーションサービス: ${appServices.length}件`);
   report.push(`- **検出された問題: ${totalIssues}件**\n`);
@@ -245,20 +252,20 @@ function generateReport(analyses) {
 
   // 命名の問題
   if (issuesByType.naming.length > 0) {
-    report.push('\n## 🔴 命名の問題\n');
+    report.push("\n## 🔴 命名の問題\n");
     for (const issue of issuesByType.naming) {
       report.push(`### ${issue.className}`);
       report.push(`- ファイル: ${issue.file}`);
       report.push(`- 問題: ${issue.issue}`);
       report.push(`- 提案: ${issue.suggestion}`);
-      report.push('');
+      report.push("");
     }
   }
 
   // ドメインサービスの問題
   if (issuesByType.domain_issue.length > 0) {
-    report.push('\n## 🟡 ドメインサービスの問題\n');
-    report.push('ドメインサービスに不適切なコードが含まれています。\n');
+    report.push("\n## 🟡 ドメインサービスの問題\n");
+    report.push("ドメインサービスに不適切なコードが含まれています。\n");
 
     const byFile = groupByFile(issuesByType.domain_issue);
     for (const [file, issues] of byFile) {
@@ -269,14 +276,14 @@ function generateReport(analyses) {
         report.push(`  - コード: \`${truncate(issue.code, 50)}\``);
         report.push(`  - 提案: ${issue.suggestion}`);
       }
-      report.push('');
+      report.push("");
     }
   }
 
   // アプリケーションサービスの問題
   if (issuesByType.app_issue.length > 0) {
-    report.push('\n## 🟡 アプリケーションサービスの問題\n');
-    report.push('アプリケーションサービスにビジネスロジックが漏れています。\n');
+    report.push("\n## 🟡 アプリケーションサービスの問題\n");
+    report.push("アプリケーションサービスにビジネスロジックが漏れています。\n");
 
     const byFile = groupByFile(issuesByType.app_issue);
     for (const [file, issues] of byFile) {
@@ -287,18 +294,22 @@ function generateReport(analyses) {
         report.push(`  - コード: \`${truncate(issue.code, 50)}\``);
         report.push(`  - 提案: ${issue.suggestion}`);
       }
-      report.push('');
+      report.push("");
     }
   }
 
   // 推奨アクション
-  report.push('\n## 推奨アクション\n');
-  report.push('1. **命名の改善**: Manager/Helper/Utils を具体的なドメイン用語に');
-  report.push('2. **責務の分離**: ドメインサービスからインフラ依存を除去');
-  report.push('3. **ビジネスロジックの移動**: アプリケーションサービスからドメイン層へ');
-  report.push('4. **ステートレス化**: ドメインサービスから状態を除去');
+  report.push("\n## 推奨アクション\n");
+  report.push(
+    "1. **命名の改善**: Manager/Helper/Utils を具体的なドメイン用語に",
+  );
+  report.push("2. **責務の分離**: ドメインサービスからインフラ依存を除去");
+  report.push(
+    "3. **ビジネスロジックの移動**: アプリケーションサービスからドメイン層へ",
+  );
+  report.push("4. **ステートレス化**: ドメインサービスから状態を除去");
 
-  return report.join('\n');
+  return report.join("\n");
 }
 
 /**
@@ -320,7 +331,7 @@ function groupByFile(issues) {
  */
 function truncate(str, maxLength) {
   if (str.length <= maxLength) return str;
-  return str.slice(0, maxLength - 3) + '...';
+  return str.slice(0, maxLength - 3) + "...";
 }
 
 /**
@@ -330,11 +341,15 @@ async function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.log('使用方法: node analyze-service-responsibilities.mjs <directory>');
-    console.log('');
-    console.log('例:');
-    console.log('  node analyze-service-responsibilities.mjs src/domain/services/');
-    console.log('  node analyze-service-responsibilities.mjs src/');
+    console.log(
+      "使用方法: node analyze-service-responsibilities.mjs <directory>",
+    );
+    console.log("");
+    console.log("例:");
+    console.log(
+      "  node analyze-service-responsibilities.mjs src/domain/services/",
+    );
+    console.log("  node analyze-service-responsibilities.mjs src/");
     process.exit(1);
   }
 
@@ -353,14 +368,14 @@ async function main() {
   }
 
   console.log(`分析対象: ${targetDir}`);
-  console.log('サービスファイルを検索中...');
+  console.log("サービスファイルを検索中...");
 
   // ファイル一覧取得
   const files = await walkDirectory(targetDir);
   console.log(`${files.length}個のサービスファイルを発見`);
 
   if (files.length === 0) {
-    console.log('サービスファイルが見つかりませんでした。');
+    console.log("サービスファイルが見つかりませんでした。");
     console.log('ファイル名に "Service" が含まれるファイルが対象です。');
     process.exit(0);
   }
@@ -370,7 +385,7 @@ async function main() {
 
   for (const file of files) {
     try {
-      const content = await readFile(file, 'utf-8');
+      const content = await readFile(file, "utf-8");
       const analysis = analyzeFile(content, file);
       analyses.push(analysis);
     } catch (error) {
@@ -380,7 +395,7 @@ async function main() {
 
   // レポート生成
   const report = generateReport(analyses);
-  console.log('\n' + report);
+  console.log("\n" + report);
 
   // 終了コード
   const totalIssues = analyses.reduce((sum, a) => sum + a.issues.length, 0);
@@ -388,6 +403,6 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error('エラー:', error.message);
+  console.error("エラー:", error.message);
   process.exit(1);
 });

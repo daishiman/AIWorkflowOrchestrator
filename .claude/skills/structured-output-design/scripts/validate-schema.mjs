@@ -53,7 +53,7 @@ function validateJsonSchema(schema) {
     // additionalPropertiesの推奨
     if (schema.additionalProperties === undefined) {
       warnings.push(
-        "additionalPropertiesが未定義です（厳密な検証にはfalseを推奨）"
+        "additionalPropertiesが未定義です（厳密な検証にはfalseを推奨）",
       );
     }
 
@@ -127,7 +127,7 @@ function analyzeSchema(schema, depth = 0, path = "") {
           const nested = analyzeSchema(
             prop.items,
             depth + 1,
-            `${path}.${key}[]`
+            `${path}.${key}[]`,
           );
           analysis.totalProperties += nested.totalProperties;
           analysis.nestedObjects += nested.nestedObjects;

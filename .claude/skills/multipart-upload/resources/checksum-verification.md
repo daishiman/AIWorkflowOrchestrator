@@ -6,13 +6,13 @@
 
 ## アルゴリズム選択
 
-| アルゴリズム | 出力長 | 速度 | セキュリティ | 推奨用途 |
-|-------------|-------|------|------------|---------|
-| MD5 | 128bit | 最速 | 低 | 内部システム、非機密 |
-| SHA-1 | 160bit | 高速 | 中 | レガシー互換 |
-| SHA-256 | 256bit | 中速 | 高 | **推奨**、一般用途 |
-| SHA-512 | 512bit | 中速 | 最高 | 高セキュリティ要件 |
-| CRC32 | 32bit | 最速 | 最低 | 簡易破損検出のみ |
+| アルゴリズム | 出力長 | 速度 | セキュリティ | 推奨用途             |
+| ------------ | ------ | ---- | ------------ | -------------------- |
+| MD5          | 128bit | 最速 | 低           | 内部システム、非機密 |
+| SHA-1        | 160bit | 高速 | 中           | レガシー互換         |
+| SHA-256      | 256bit | 中速 | 高           | **推奨**、一般用途   |
+| SHA-512      | 512bit | 中速 | 最高         | 高セキュリティ要件   |
+| CRC32        | 32bit  | 最速 | 最低         | 簡易破損検出のみ     |
 
 **推奨**: SHA-256（セキュリティと速度のバランス）
 
@@ -21,20 +21,20 @@
 ### メモリ効率の良い計算
 
 ```typescript
-import { createHash } from 'crypto';
-import { createReadStream } from 'fs';
+import { createHash } from "crypto";
+import { createReadStream } from "fs";
 
 async function calculateFileHash(
   filePath: string,
-  algorithm: string = 'sha256'
+  algorithm: string = "sha256",
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     const hash = createHash(algorithm);
     const stream = createReadStream(filePath);
 
-    stream.on('data', (chunk) => hash.update(chunk));
-    stream.on('end', () => resolve(hash.digest('hex')));
-    stream.on('error', reject);
+    stream.on("data", (chunk) => hash.update(chunk));
+    stream.on("end", () => resolve(hash.digest("hex")));
+    stream.on("error", reject);
   });
 }
 ```
@@ -44,9 +44,9 @@ async function calculateFileHash(
 ```typescript
 function calculateChunkHash(
   chunk: Buffer,
-  algorithm: string = 'sha256'
+  algorithm: string = "sha256",
 ): string {
-  return createHash(algorithm).update(chunk).digest('hex');
+  return createHash(algorithm).update(chunk).digest("hex");
 }
 ```
 
@@ -73,11 +73,11 @@ function calculateChunkHash(
 ```typescript
 interface UploadResponse {
   success: boolean;
-  serverHash: string;      // サーバーで計算したハッシュ
-  clientHash: string;      // クライアントから送信されたハッシュ
-  hashMatch: boolean;      // 一致判定
-  fileId?: string;         // 成功時のファイルID
-  error?: string;          // エラー時のメッセージ
+  serverHash: string; // サーバーで計算したハッシュ
+  clientHash: string; // クライアントから送信されたハッシュ
+  hashMatch: boolean; // 一致判定
+  fileId?: string; // 成功時のファイルID
+  error?: string; // エラー時のメッセージ
 }
 ```
 
@@ -93,11 +93,11 @@ interface UploadResponse {
 
 ```typescript
 interface ChecksumError {
-  code: 'CHECKSUM_MISMATCH';
-  expected: string;      // 期待されたハッシュ
-  received: string;      // 受信したハッシュ
-  filePath: string;      // ファイルパス
-  chunkIndex?: number;   // チャンク番号（分割時）
+  code: "CHECKSUM_MISMATCH";
+  expected: string; // 期待されたハッシュ
+  received: string; // 受信したハッシュ
+  filePath: string; // ファイルパス
+  chunkIndex?: number; // チャンク番号（分割時）
 }
 ```
 

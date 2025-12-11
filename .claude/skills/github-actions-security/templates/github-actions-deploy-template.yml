@@ -7,14 +7,14 @@ name: Deploy to Railway
 on:
   push:
     branches:
-      - main       # → production environment
-      - staging    # → staging environment
-      - develop    # → development environment
+      - main # → production environment
+      - staging # → staging environment
+      - develop # → development environment
 
-  workflow_dispatch:  # 手動実行を許可
+  workflow_dispatch: # 手動実行を許可
     inputs:
       environment:
-        description: 'Target environment'
+        description: "Target environment"
         required: true
         type: choice
         options:
@@ -27,8 +27,8 @@ on:
 # ═══════════════════════════════════════════════════
 
 env:
-  NODE_VERSION: '20.x'
-  PNPM_VERSION: '8'
+  NODE_VERSION: "20.x"
+  PNPM_VERSION: "8"
 
 # ═══════════════════════════════════════════════════
 # Jobs
@@ -45,7 +45,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # 全履歴取得
+          fetch-depth: 0 # 全履歴取得
 
       - name: Run gitleaks
         uses: gitleaks/gitleaks-action@v2
@@ -77,7 +77,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -106,7 +106,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -138,7 +138,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

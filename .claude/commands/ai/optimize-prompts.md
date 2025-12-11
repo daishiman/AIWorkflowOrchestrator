@@ -30,10 +30,10 @@ description: |
   トリガーキーワード: prompt, AI, optimization, hallucination, few-shot, chain-of-thought
 argument-hint: "[prompt-file]"
 allowed-tools:
-   - Task
-   - Read
-   - Edit
-   - Grep
+  - Task
+  - Read
+  - Edit
+  - Grep
 model: opus
 ---
 

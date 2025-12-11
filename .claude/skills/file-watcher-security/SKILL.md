@@ -29,7 +29,6 @@ description: |
 version: 1.0.0
 ---
 
-
 # file-watcher-security
 
 > ファイル監視システムのセキュリティ対策とプロダクション環境での安全な運用パターン
@@ -72,7 +71,7 @@ const secureWatcher = {
 
     // ベースディレクトリ内かチェック
     if (!normalized.startsWith(ALLOWED_BASE_DIR)) {
-      throw new SecurityError('Path traversal detected');
+      throw new SecurityError("Path traversal detected");
     }
     return normalized;
   },
@@ -83,7 +82,7 @@ const secureWatcher = {
     if (stats.isSymbolicLink()) {
       const realPath = await fs.realpath(filePath);
       if (!realPath.startsWith(ALLOWED_BASE_DIR)) {
-        throw new SecurityError('Symlink escape detected');
+        throw new SecurityError("Symlink escape detected");
       }
     }
   },
@@ -92,20 +91,22 @@ const secureWatcher = {
   rateLimit: new RateLimiter({
     maxEvents: 1000,
     windowMs: 1000,
-    onExceeded: () => { /* アラート発火 */ }
-  })
+    onExceeded: () => {
+      /* アラート発火 */
+    },
+  }),
 };
 ```
 
 ### 脅威モデル概要
 
-| 脅威カテゴリ | 攻撃ベクター | 対策 | 優先度 |
-|------------|------------|------|-------|
-| パストラバーサル | `../` 含むパス | パス正規化・検証 | 🔴 高 |
-| シンボリックリンク | 外部を指すsymlink | realpath検証 | 🔴 高 |
-| DoS | 大量ファイル生成 | レート制限・クォータ | 🟡 中 |
-| 情報漏洩 | 機密ファイル監視 | 除外パターン強制 | 🟡 中 |
-| 権限昇格 | setuid/setgid | 権限チェック | 🔴 高 |
+| 脅威カテゴリ       | 攻撃ベクター      | 対策                 | 優先度 |
+| ------------------ | ----------------- | -------------------- | ------ |
+| パストラバーサル   | `../` 含むパス    | パス正規化・検証     | 🔴 高  |
+| シンボリックリンク | 外部を指すsymlink | realpath検証         | 🔴 高  |
+| DoS                | 大量ファイル生成  | レート制限・クォータ | 🟡 中  |
+| 情報漏洩           | 機密ファイル監視  | 除外パターン強制     | 🟡 中  |
+| 権限昇格           | setuid/setgid     | 権限チェック         | 🔴 高  |
 
 ---
 
@@ -114,14 +115,14 @@ const secureWatcher = {
 ### パターン1: パストラバーサル防止
 
 ```typescript
-import * as path from 'path';
-import * as fs from 'fs/promises';
+import * as path from "path";
+import * as fs from "fs/promises";
 
 class PathValidator {
   constructor(private readonly allowedDirs: string[]) {
     // 許可ディレクトリを正規化して保持
-    this.allowedDirs = allowedDirs.map(dir =>
-      path.resolve(path.normalize(dir))
+    this.allowedDirs = allowedDirs.map((dir) =>
+      path.resolve(path.normalize(dir)),
     );
   }
 
@@ -132,18 +133,18 @@ class PathValidator {
   validate(inputPath: string): string {
     // Step 1: 基本的なパストラバーサルパターンをチェック
     const suspiciousPatterns = [
-      /\.\.\//,           // ../
-      /\.\.\\/,           // ..\
-      /%2e%2e/i,          // URL encoded ..
-      /%252e%252e/i,      // Double URL encoded
-      /\.\.%2f/i,         // Mixed encoding
-      /\0/,               // Null byte
+      /\.\.\//, // ../
+      /\.\.\\/, // ..\
+      /%2e%2e/i, // URL encoded ..
+      /%252e%252e/i, // Double URL encoded
+      /\.\.%2f/i, // Mixed encoding
+      /\0/, // Null byte
     ];
 
     for (const pattern of suspiciousPatterns) {
       if (pattern.test(inputPath)) {
         throw new SecurityError(
-          `Suspicious path pattern detected: ${inputPath}`
+          `Suspicious path pattern detected: ${inputPath}`,
         );
       }
     }
@@ -153,14 +154,15 @@ class PathValidator {
     const normalized = path.normalize(resolved);
 
     // Step 3: 許可されたディレクトリ内かチェック
-    const isAllowed = this.allowedDirs.some(allowedDir =>
-      normalized.startsWith(allowedDir + path.sep) ||
-      normalized === allowedDir
+    const isAllowed = this.allowedDirs.some(
+      (allowedDir) =>
+        normalized.startsWith(allowedDir + path.sep) ||
+        normalized === allowedDir,
     );
 
     if (!isAllowed) {
       throw new SecurityError(
-        `Path outside allowed directories: ${normalized}`
+        `Path outside allowed directories: ${normalized}`,
       );
     }
 
@@ -171,26 +173,26 @@ class PathValidator {
    * 複数パスを一括検証
    */
   validateAll(paths: string[]): string[] {
-    return paths.map(p => this.validate(p));
+    return paths.map((p) => this.validate(p));
   }
 }
 
 // 使用例
-const validator = new PathValidator(['/app/data', '/app/uploads']);
+const validator = new PathValidator(["/app/data", "/app/uploads"]);
 
 // ✅ 安全なパス
-validator.validate('/app/data/user/file.txt');
+validator.validate("/app/data/user/file.txt");
 
 // ❌ 拒否されるパス
-validator.validate('/app/data/../etc/passwd');  // SecurityError
-validator.validate('/etc/passwd');              // SecurityError
+validator.validate("/app/data/../etc/passwd"); // SecurityError
+validator.validate("/etc/passwd"); // SecurityError
 ```
 
 ### パターン2: シンボリックリンク安全性
 
 ```typescript
-import * as fs from 'fs/promises';
-import * as path from 'path';
+import * as fs from "fs/promises";
+import * as path from "path";
 
 interface SymlinkPolicy {
   /** シンボリックリンクを完全に禁止 */
@@ -219,15 +221,15 @@ class SymlinkValidator {
     const stats = await fs.lstat(filePath);
 
     if (!stats.isSymbolicLink()) {
-      return { safe: true, type: 'regular' };
+      return { safe: true, type: "regular" };
     }
 
     // シンボリックリンク完全禁止モード
     if (this.policy.deny) {
       return {
         safe: false,
-        type: 'symlink',
-        reason: 'Symbolic links are not allowed',
+        type: "symlink",
+        reason: "Symbolic links are not allowed",
       };
     }
 
@@ -247,8 +249,8 @@ class SymlinkValidator {
       if (visited.has(currentPath)) {
         return {
           safe: false,
-          type: 'symlink',
-          reason: 'Circular symlink detected',
+          type: "symlink",
+          reason: "Circular symlink detected",
         };
       }
       visited.add(currentPath);
@@ -263,7 +265,7 @@ class SymlinkValidator {
     if (depth >= this.policy.maxDepth) {
       return {
         safe: false,
-        type: 'symlink',
+        type: "symlink",
         reason: `Symlink depth exceeded (max: ${this.policy.maxDepth})`,
       };
     }
@@ -273,14 +275,15 @@ class SymlinkValidator {
 
     // 許可されたターゲット内かチェック
     if (this.policy.allowedTargets.length > 0) {
-      const isAllowed = this.policy.allowedTargets.some(target =>
-        realPath.startsWith(target + path.sep) || realPath === target
+      const isAllowed = this.policy.allowedTargets.some(
+        (target) =>
+          realPath.startsWith(target + path.sep) || realPath === target,
       );
 
       if (!isAllowed) {
         return {
           safe: false,
-          type: 'symlink',
+          type: "symlink",
           reason: `Symlink target outside allowed directories: ${realPath}`,
         };
       }
@@ -288,7 +291,7 @@ class SymlinkValidator {
 
     return {
       safe: true,
-      type: 'symlink',
+      type: "symlink",
       resolvedPath: realPath,
     };
   }
@@ -296,7 +299,7 @@ class SymlinkValidator {
 
 interface ValidationResult {
   safe: boolean;
-  type: 'regular' | 'symlink';
+  type: "regular" | "symlink";
   reason?: string;
   resolvedPath?: string;
 }
@@ -335,7 +338,8 @@ class EventRateLimiter {
       windowMs: config.windowMs,
       onExceeded: config.onExceeded ?? (() => {}),
       allowBurst: config.allowBurst ?? true,
-      burstAllowance: config.burstAllowance ?? Math.floor(config.maxEvents * 0.2),
+      burstAllowance:
+        config.burstAllowance ?? Math.floor(config.maxEvents * 0.2),
     };
   }
 
@@ -348,7 +352,7 @@ class EventRateLimiter {
     const windowStart = now - this.config.windowMs;
 
     // 古いイベントを削除
-    this.events = this.events.filter(timestamp => timestamp > windowStart);
+    this.events = this.events.filter((timestamp) => timestamp > windowStart);
 
     // 制限チェック
     const effectiveLimit = this.config.allowBurst
@@ -380,7 +384,7 @@ class EventRateLimiter {
   getStats(): { current: number; limit: number; utilization: number } {
     const now = Date.now();
     const windowStart = now - this.config.windowMs;
-    this.events = this.events.filter(timestamp => timestamp > windowStart);
+    this.events = this.events.filter((timestamp) => timestamp > windowStart);
 
     return {
       current: this.events.length,
@@ -453,7 +457,7 @@ class DirectoryQuotaManager {
 ### パターン4: サンドボックス化
 
 ```typescript
-import { spawn, ChildProcess } from 'child_process';
+import { spawn, ChildProcess } from "child_process";
 
 interface SandboxConfig {
   /** 読み取り専用ディレクトリ */
@@ -486,23 +490,26 @@ class ProcessSandbox {
       // コンテナ環境の場合: 既にサンドボックス化されている前提
 
       const sandboxArgs = this.buildSandboxArgs();
-      const child = spawn(sandboxArgs.command, [
-        ...sandboxArgs.args,
-        'node',
-        script,
-        ...args,
-      ], {
-        stdio: ['pipe', 'pipe', 'pipe'],
-        env: this.buildRestrictedEnv(),
+      const child = spawn(
+        sandboxArgs.command,
+        [...sandboxArgs.args, "node", script, ...args],
+        {
+          stdio: ["pipe", "pipe", "pipe"],
+          env: this.buildRestrictedEnv(),
+        },
+      );
+
+      let stdout = "";
+      let stderr = "";
+
+      child.stdout.on("data", (data) => {
+        stdout += data;
+      });
+      child.stderr.on("data", (data) => {
+        stderr += data;
       });
 
-      let stdout = '';
-      let stderr = '';
-
-      child.stdout.on('data', (data) => { stdout += data; });
-      child.stderr.on('data', (data) => { stderr += data; });
-
-      child.on('close', (code) => {
+      child.on("close", (code) => {
         if (code === 0) {
           resolve(stdout);
         } else {
@@ -510,39 +517,39 @@ class ProcessSandbox {
         }
       });
 
-      child.on('error', reject);
+      child.on("error", reject);
     });
   }
 
   private buildSandboxArgs(): { command: string; args: string[] } {
     const platform = process.platform;
 
-    if (platform === 'linux') {
+    if (platform === "linux") {
       // firejailを使用（インストールが必要）
       return {
-        command: 'firejail',
+        command: "firejail",
         args: [
-          '--quiet',
-          '--private-dev',
-          '--private-tmp',
-          ...this.config.readOnlyDirs.map(d => `--read-only=${d}`),
-          ...this.config.readWriteDirs.map(d => `--whitelist=${d}`),
-          ...(this.config.allowNetwork ? [] : ['--net=none']),
+          "--quiet",
+          "--private-dev",
+          "--private-tmp",
+          ...this.config.readOnlyDirs.map((d) => `--read-only=${d}`),
+          ...this.config.readWriteDirs.map((d) => `--whitelist=${d}`),
+          ...(this.config.allowNetwork ? [] : ["--net=none"]),
         ],
       };
     }
 
-    if (platform === 'darwin') {
+    if (platform === "darwin") {
       // macOSのsandbox-exec（非推奨だが利用可能）
       return {
-        command: 'sandbox-exec',
-        args: ['-p', this.buildDarwinProfile()],
+        command: "sandbox-exec",
+        args: ["-p", this.buildDarwinProfile()],
       };
     }
 
     // Windows/その他: サンドボックスなしで実行（警告ログ）
-    console.warn('Sandbox not available on this platform');
-    return { command: 'node', args: [] };
+    console.warn("Sandbox not available on this platform");
+    return { command: "node", args: [] };
   }
 
   private buildDarwinProfile(): string {
@@ -551,16 +558,16 @@ class ProcessSandbox {
       (deny default)
       (allow file-read* (subpath "/usr"))
       (allow file-read* (subpath "/System"))
-      ${this.config.readOnlyDirs.map(d => `(allow file-read* (subpath "${d}"))`).join('\n')}
-      ${this.config.readWriteDirs.map(d => `(allow file-write* (subpath "${d}"))`).join('\n')}
+      ${this.config.readOnlyDirs.map((d) => `(allow file-read* (subpath "${d}"))`).join("\n")}
+      ${this.config.readWriteDirs.map((d) => `(allow file-write* (subpath "${d}"))`).join("\n")}
       (allow process-exec)
     `;
   }
 
   private buildRestrictedEnv(): NodeJS.ProcessEnv {
     return {
-      PATH: '/usr/bin:/bin',
-      NODE_ENV: 'production',
+      PATH: "/usr/bin:/bin",
+      NODE_ENV: "production",
       // 機密環境変数を除外
       HOME: undefined,
       USER: undefined,
@@ -596,19 +603,14 @@ Layer 6: 監査ログ
 const productionSecurityConfig = {
   // パス検証
   pathValidation: {
-    allowedDirs: ['/app/data', '/app/uploads'],
-    deniedPatterns: [
-      /\.env$/,
-      /\.git\//,
-      /node_modules\//,
-      /\.ssh\//,
-    ],
+    allowedDirs: ["/app/data", "/app/uploads"],
+    deniedPatterns: [/\.env$/, /\.git\//, /node_modules\//, /\.ssh\//],
   },
 
   // シンボリックリンクポリシー
   symlink: {
     deny: false, // マルチテナント環境ではtrueを推奨
-    allowedTargets: ['/app/shared'],
+    allowedTargets: ["/app/shared"],
     maxDepth: 5,
   },
 
@@ -617,14 +619,14 @@ const productionSecurityConfig = {
     maxEvents: 1000,
     windowMs: 1000,
     onExceeded: (stats) => {
-      alerting.send('file-watcher-rate-limit', stats);
+      alerting.send("file-watcher-rate-limit", stats);
     },
   },
 
   // クォータ
   quotas: {
-    '/app/uploads': 100000,
-    '/app/data': 500000,
+    "/app/uploads": 100000,
+    "/app/data": 500000,
   },
 
   // 監査
@@ -642,12 +644,12 @@ const productionSecurityConfig = {
 
 ### よくあるセキュリティ問題
 
-| 問題 | 症状 | 解決策 |
-|------|------|-------|
-| パストラバーサル検出 | `SecurityError: Path outside allowed` | 入力パスの正規化を確認 |
-| シンボリックリンク拒否 | `Symlink target outside allowed` | allowedTargets設定を確認 |
-| レート制限発動 | 大量のイベントがドロップ | maxEventsを調整またはバッチ処理を検討 |
-| クォータ超過 | 新規ファイルが処理されない | クォータ上限を確認、不要ファイルを削除 |
+| 問題                   | 症状                                  | 解決策                                 |
+| ---------------------- | ------------------------------------- | -------------------------------------- |
+| パストラバーサル検出   | `SecurityError: Path outside allowed` | 入力パスの正規化を確認                 |
+| シンボリックリンク拒否 | `Symlink target outside allowed`      | allowedTargets設定を確認               |
+| レート制限発動         | 大量のイベントがドロップ              | maxEventsを調整またはバッチ処理を検討  |
+| クォータ超過           | 新規ファイルが処理されない            | クォータ上限を確認、不要ファイルを削除 |
 
 ### セキュリティ監査チェックリスト
 

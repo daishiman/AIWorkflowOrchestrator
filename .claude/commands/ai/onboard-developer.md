@@ -51,11 +51,11 @@ description: |
   トリガーキーワード: onboarding, オンボーディング, 新規開発者, developer guide, getting started
 argument-hint: "[developer-role]"
 allowed-tools:
-   - Task
-   - Read
-   - Write(docs/**)
-   - Grep
-   - Glob
+  - Task
+  - Read
+  - Write(docs/**)
+  - Grep
+  - Glob
 model: sonnet
 ---
 
@@ -68,6 +68,7 @@ model: sonnet
 ### Phase 1: 役割の確認
 
 **引数解析**:
+
 ```bash
 # 役割（必須）
 developer-role: "$ARGUMENTS"（frontend | backend | fullstack | devops）
@@ -82,12 +83,14 @@ developer-role: "$ARGUMENTS"（frontend | backend | fullstack | devops）
 **使用エージェント**: `.claude/agents/manual-writer.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 役割「${developer-role}」の新規開発者向けオンボーディングガイドを作成してください。
 
 **対象読者**: ${developer-role} Developer
 
 **要件**:
+
 1. プロジェクト概要:
    - 目的、背景、主要機能
    - 技術スタック（3.2-3.7章）
@@ -171,10 +174,12 @@ developer-role: "$ARGUMENTS"（frontend | backend | fullstack | devops）
    - ヘルプの探し方
 
 **スキル参照**:
+
 - `.claude/skills/tutorial-design/SKILL.md`
 - `.claude/skills/progressive-disclosure/SKILL.md`
 
 **成果物**:
+
 - `docs/onboarding/${role}-onboarding.md`（オンボーディングガイド）
 ```
 
@@ -185,16 +190,19 @@ developer-role: "$ARGUMENTS"（frontend | backend | fullstack | devops）
 **使用エージェント**: `.claude/agents/meta-agent-designer.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 役割「${developer-role}」向けのエージェント活用ガイドを作成してください。
 
 **要件**:
+
 1. 役割別エージェント一覧
 2. 各エージェントの使用タイミング
 3. エージェント起動方法（Task tool、コマンド）
 4. エージェント間連携パターン
 
 **成果物**:
+
 - `docs/onboarding/${role}-agent-guide.md`（エージェント活用ガイド）
 ```
 
@@ -205,40 +213,47 @@ developer-role: "$ARGUMENTS"（frontend | backend | fullstack | devops）
 **使用エージェント**: `.claude/agents/skill-librarian.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 役割「${developer-role}」向けのスキル参照ガイドを作成してください。
 
 **要件**:
+
 1. 役割別スキル一覧
 2. 各スキルの使用タイミング
 3. スキル参照方法（相対パス）
 4. Progressive Disclosure活用法
 
 **成果物**:
+
 - `docs/onboarding/${role}-skill-guide.md`（スキル参照ガイド）
 ```
 
 ### Phase 5: 完了報告
 
 **完了報告**:
+
 ```markdown
 ## オンボーディングガイド完成: ${developer-role}
 
 ### 成果物
+
 ✅ オンボーディングガイド: docs/onboarding/${role}-onboarding.md
-  - プロジェクト概要
-  - 環境セットアップ
-  - プロジェクト構造理解
-  - 開発フロー（役割別）
-  - TDDフロー
-  - Git ワークフロー
-  - エージェント・スキル活用
-  - トラブルシューティング
+
+- プロジェクト概要
+- 環境セットアップ
+- プロジェクト構造理解
+- 開発フロー（役割別）
+- TDDフロー
+- Git ワークフロー
+- エージェント・スキル活用
+- トラブルシューティング
 
 ✅ エージェント活用ガイド: docs/onboarding/${role}-agent-guide.md（オプション）
 ✅ スキル参照ガイド: docs/onboarding/${role}-skill-guide.md（オプション）
 
 ### Next Steps（新規開発者へ）
+
 1. オンボーディングガイドを読む
 2. 環境セットアップを実行
 3. サンプル機能を実装してみる
@@ -255,6 +270,7 @@ developer-role: "$ARGUMENTS"（frontend | backend | fullstack | devops）
 ```
 
 生成内容:
+
 - Next.js App Router、React、Tailwind CSS
 - UIコンポーネント作成フロー
 - `.claude/agents/ui-designer.md` の使い方
@@ -268,6 +284,7 @@ developer-role: "$ARGUMENTS"（frontend | backend | fullstack | devops）
 ```
 
 生成内容:
+
 - Drizzle ORM、Repository Pattern、API設計
 - 機能プラグイン作成フロー
 - `.claude/agents/domain-modeler.md` の使い方
@@ -282,6 +299,7 @@ developer-role: "$ARGUMENTS"（frontend | backend | fullstack | devops）
 ```
 
 生成内容:
+
 - 全レイヤーの理解
 - フロントエンド・バックエンド両方の開発フロー
 - 全エージェント・スキルの活用法
@@ -292,40 +310,52 @@ developer-role: "$ARGUMENTS"（frontend | backend | fullstack | devops）
 # Frontend Developer オンボーディングガイド
 
 ## 1. プロジェクト概要
+
 [目的、背景、主要機能]
 
 ## 2. 環境セットアップ
+
 ### 2.1 必要なツール
+
 - pnpm 9.x
 - Node.js 22.x LTS
 - Railway CLI
 - Git
 
 ### 2.2 セットアップ手順
+
 [ステップバイステップガイド]
 
 ## 3. プロジェクト構造
+
 [ディレクトリ構造図、レイヤー責務]
 
 ## 4. 開発フロー
+
 ### 4.1 UIコンポーネント作成
+
 [ステップバイステップ]
 
 ### 4.2 Page実装
+
 [ステップバイステップ]
 
 ## 5. TDDフロー
+
 [Red-Green-Refactor]
 
 ## 6. Git ワークフロー
+
 [ブランチ戦略、コミット、PR]
 
 ## 7. エージェント活用
+
 - `.claude/agents/ui-designer.md` の使い方
 - `.claude/agents/router-dev.md` の使い方
 - `.claude/agents/state-manager.md` の使い方
 
 ## 8. トラブルシューティング
+
 [よくある問題と解決策]
 ```
 

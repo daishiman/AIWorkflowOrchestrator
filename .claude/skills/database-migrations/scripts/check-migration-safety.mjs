@@ -40,7 +40,8 @@ const PATTERNS = {
       /ALTER\s+TABLE\s+["']?(\w+)["']?\s+DROP\s+COLUMN\s+(?:IF\s+EXISTS\s+)?["']?(\w+)["']?/gi,
     risk: "CRITICAL",
     message: (match) => `カラム削除: ${match[1]}.${match[2]}`,
-    recommendation: "アプリケーションの使用停止を確認し、バックアップを作成してください",
+    recommendation:
+      "アプリケーションの使用停止を確認し、バックアップを作成してください",
   },
 
   // 型変更
@@ -80,7 +81,8 @@ const PATTERNS = {
 
   // インデックス作成（CONCURRENTLY なし）
   createIndex: {
-    regex: /CREATE\s+INDEX\s+(?!CONCURRENTLY)["']?(\w+)["']?\s+ON\s+["']?(\w+)["']?/gi,
+    regex:
+      /CREATE\s+INDEX\s+(?!CONCURRENTLY)["']?(\w+)["']?\s+ON\s+["']?(\w+)["']?/gi,
     risk: "MEDIUM",
     message: (match) => `インデックス作成: ${match[1]} on ${match[2]}`,
     recommendation:
@@ -108,7 +110,8 @@ const PATTERNS = {
     regex: /TRUNCATE\s+(?:TABLE\s+)?["']?(\w+)["']?/gi,
     risk: "CRITICAL",
     message: (match) => `テーブルTRUNCATE: ${match[1]}`,
-    recommendation: "すべてのデータが削除されます。バックアップを確認してください",
+    recommendation:
+      "すべてのデータが削除されます。バックアップを確認してください",
   },
 
   // データ更新
@@ -165,7 +168,9 @@ function analyzeMigration(content, filename) {
 
   // リスクでソート
   const riskOrder = ["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"];
-  findings.sort((a, b) => riskOrder.indexOf(a.risk) - riskOrder.indexOf(b.risk));
+  findings.sort(
+    (a, b) => riskOrder.indexOf(a.risk) - riskOrder.indexOf(b.risk),
+  );
 
   return findings;
 }

@@ -22,7 +22,6 @@ description: |
 version: 1.0.0
 ---
 
-
 # Debounce & Throttle Patterns
 
 ## 概要
@@ -35,12 +34,12 @@ version: 1.0.0
 
 ### デバウンス vs スロットリング
 
-| 特性 | デバウンス | スロットリング |
-|------|------------|----------------|
-| **動作** | 最後のイベントのみ処理 | 一定間隔で処理 |
-| **遅延** | イベント停止後に実行 | 最初のイベントで即座に実行可能 |
-| **用途** | 入力完了待機、保存操作 | 継続的サンプリング、進捗通知 |
-| **保証** | 最終状態を確実に処理 | 定期的な処理を保証 |
+| 特性     | デバウンス             | スロットリング                 |
+| -------- | ---------------------- | ------------------------------ |
+| **動作** | 最後のイベントのみ処理 | 一定間隔で処理                 |
+| **遅延** | イベント停止後に実行   | 最初のイベントで即座に実行可能 |
+| **用途** | 入力完了待機、保存操作 | 継続的サンプリング、進捗通知   |
+| **保証** | 最終状態を確実に処理   | 定期的な処理を保証             |
 
 ### 選択基準
 
@@ -71,7 +70,7 @@ version: 1.0.0
  */
 function debounce<T extends (...args: any[]) => void>(
   fn: T,
-  delay: number
+  delay: number,
 ): (...args: Parameters<T>) => void {
   let timeoutId: NodeJS.Timeout | null = null;
 
@@ -96,7 +95,7 @@ function debounce<T extends (...args: any[]) => void>(
  */
 function debounceLeading<T extends (...args: any[]) => void>(
   fn: T,
-  delay: number
+  delay: number,
 ): (...args: Parameters<T>) => void {
   let timeoutId: NodeJS.Timeout | null = null;
   let isLeading = true;
@@ -130,7 +129,7 @@ interface DebouncedFunction<T extends (...args: any[]) => void> {
 
 function debounceWithCancel<T extends (...args: any[]) => void>(
   fn: T,
-  delay: number
+  delay: number,
 ): DebouncedFunction<T> {
   let timeoutId: NodeJS.Timeout | null = null;
   let lastArgs: Parameters<T> | null = null;
@@ -183,7 +182,7 @@ function debounceWithCancel<T extends (...args: any[]) => void>(
  */
 function throttle<T extends (...args: any[]) => void>(
   fn: T,
-  interval: number
+  interval: number,
 ): (...args: Parameters<T>) => void {
   let lastExecutionTime = 0;
   let timeoutId: NodeJS.Timeout | null = null;
@@ -215,7 +214,7 @@ function throttle<T extends (...args: any[]) => void>(
  */
 function throttleWithTrailing<T extends (...args: any[]) => void>(
   fn: T,
-  interval: number
+  interval: number,
 ): (...args: Parameters<T>) => void {
   let lastExecutionTime = 0;
   let pendingArgs: Parameters<T> | null = null;
@@ -254,20 +253,20 @@ function throttleWithTrailing<T extends (...args: any[]) => void>(
 ### デバウンスの適用例
 
 ```typescript
-import chokidar from 'chokidar';
+import chokidar from "chokidar";
 
 const processFile = debounce((path: string) => {
   console.log(`Processing: ${path}`);
   // ファイル処理ロジック
 }, 300);
 
-const watcher = chokidar.watch('./input', {
+const watcher = chokidar.watch("./input", {
   persistent: true,
   ignoreInitial: true,
 });
 
-watcher.on('add', processFile);
-watcher.on('change', processFile);
+watcher.on("add", processFile);
+watcher.on("change", processFile);
 ```
 
 ### パス別デバウンス
@@ -278,7 +277,7 @@ watcher.on('change', processFile);
  */
 function createPathDebouncer<T>(
   fn: (path: string, ...args: T[]) => void,
-  delay: number
+  delay: number,
 ): (path: string, ...args: T[]) => void {
   const debouncers = new Map<string, (...args: T[]) => void>();
 
@@ -286,7 +285,7 @@ function createPathDebouncer<T>(
     if (!debouncers.has(path)) {
       debouncers.set(
         path,
-        debounce((...a: T[]) => fn(path, ...a), delay)
+        debounce((...a: T[]) => fn(path, ...a), delay),
       );
     }
     debouncers.get(path)!(...args);
@@ -298,7 +297,7 @@ const processFilePath = createPathDebouncer((path: string) => {
   console.log(`Processing: ${path}`);
 }, 300);
 
-watcher.on('change', (path) => processFilePath(path));
+watcher.on("change", (path) => processFilePath(path));
 ```
 
 ---
@@ -307,22 +306,22 @@ watcher.on('change', (path) => processFilePath(path));
 
 ### デバウンス遅延
 
-| ユースケース | 推奨値 | 理由 |
-|-------------|--------|------|
-| ファイル保存検知 | 100-300ms | 書き込み完了待機 |
-| 検索入力 | 300-500ms | タイピング完了待機 |
-| フォームバリデーション | 200-400ms | 入力完了待機 |
-| ウィンドウリサイズ | 100-200ms | レイアウト再計算 |
+| ユースケース           | 推奨値    | 理由               |
+| ---------------------- | --------- | ------------------ |
+| ファイル保存検知       | 100-300ms | 書き込み完了待機   |
+| 検索入力               | 300-500ms | タイピング完了待機 |
+| フォームバリデーション | 200-400ms | 入力完了待機       |
+| ウィンドウリサイズ     | 100-200ms | レイアウト再計算   |
 
 ### スロットリング間隔
 
-| ユースケース | 推奨値 | 理由 |
-|-------------|--------|------|
-| スクロールイベント | 100-200ms | スムーズなUX |
-| マウス移動 | 50-100ms | 追従性 |
-| API レート制限 | 1000ms+ | サーバー負荷 |
-| ログ出力 | 500-1000ms | ログ量制御 |
-| 進捗通知 | 200-500ms | 適度な更新頻度 |
+| ユースケース       | 推奨値     | 理由           |
+| ------------------ | ---------- | -------------- |
+| スクロールイベント | 100-200ms  | スムーズなUX   |
+| マウス移動         | 50-100ms   | 追従性         |
+| API レート制限     | 1000ms+    | サーバー負荷   |
+| ログ出力           | 500-1000ms | ログ量制御     |
+| 進捗通知           | 200-500ms  | 適度な更新頻度 |
 
 ---
 
@@ -361,7 +360,7 @@ function badDebounce(fn: () => void) {
 }
 
 // 2. クリーンアップ忘れ
-watcher.on('change', debounce(handler, 300));
+watcher.on("change", debounce(handler, 300));
 // シャットダウン時にタイマーがリークする
 
 // 3. 過度に長い遅延
@@ -375,7 +374,7 @@ const debouncedSave = debounce(save, 5000); // 5秒は長すぎる
 const debouncedHandler = debounceWithCancel(handler, 300);
 
 // 2. 適切なクリーンアップ
-process.on('SIGTERM', () => {
+process.on("SIGTERM", () => {
   debouncedHandler.flush(); // 保留中の処理を実行
   watcher.close();
 });

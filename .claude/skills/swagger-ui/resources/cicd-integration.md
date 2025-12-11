@@ -11,8 +11,8 @@ name: OpenAPI Validation
 on:
   pull_request:
     paths:
-      - 'openapi.yaml'
-      - 'openapi/**'
+      - "openapi.yaml"
+      - "openapi/**"
 
 jobs:
   validate:
@@ -23,8 +23,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
 
       - name: Install Redocly CLI
         run: pnpm install -g @redocly/cli
@@ -52,8 +52,8 @@ on:
   push:
     branches: [main]
     paths:
-      - 'openapi.yaml'
-      - 'openapi/**'
+      - "openapi.yaml"
+      - "openapi/**"
   workflow_dispatch:
 
 permissions:
@@ -70,7 +70,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install Redocly CLI
         run: pnpm install -g @redocly/cli
@@ -110,7 +110,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'openapi.yaml'
+      - "openapi.yaml"
 
 jobs:
   build:
@@ -121,7 +121,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install dependencies
         run: |
@@ -225,20 +225,20 @@ rules:
 theme:
   openapi:
     hideDownloadButton: false
-    expandResponses: '200,201'
+    expandResponses: "200,201"
     requiredPropsFirst: true
     sortPropsAlphabetically: false
     nativeScrollbars: true
     theme:
       colors:
         primary:
-          main: '#32329f'
+          main: "#32329f"
       typography:
-        fontSize: '14px'
-        fontFamily: 'system-ui, sans-serif'
+        fontSize: "14px"
+        fontFamily: "system-ui, sans-serif"
         headings:
-          fontFamily: 'system-ui, sans-serif'
-          fontWeight: '600'
+          fontFamily: "system-ui, sans-serif"
+          fontWeight: "600"
 ```
 
 ### 複数ファイル管理
@@ -378,13 +378,13 @@ branches:
   - main
 
 plugins:
-  - '@semantic-release/commit-analyzer'
-  - '@semantic-release/release-notes-generator'
-  - '@semantic-release/changelog'
-  - - '@semantic-release/exec'
-    - prepareCmd: 'pnpm run sync-version'
-  - '@semantic-release/pnpm'
-  - '@semantic-release/git'
+  - "@semantic-release/commit-analyzer"
+  - "@semantic-release/release-notes-generator"
+  - "@semantic-release/changelog"
+  - - "@semantic-release/exec"
+    - prepareCmd: "pnpm run sync-version"
+  - "@semantic-release/pnpm"
+  - "@semantic-release/git"
 ```
 
 ---
@@ -408,7 +408,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install Redocly CLI
         run: pnpm install -g @redocly/cli
@@ -432,7 +432,7 @@ jobs:
   if: failure()
   uses: slackapi/slack-github-action@v1.24.0
   with:
-    channel-id: 'api-docs'
+    channel-id: "api-docs"
     slack-message: |
       :warning: OpenAPI validation failed
       PR: ${{ github.event.pull_request.html_url }}

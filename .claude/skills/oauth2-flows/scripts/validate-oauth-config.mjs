@@ -14,9 +14,9 @@
  *   - Scopeの妥当性
  */
 
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,11 +27,11 @@ const __dirname = path.dirname(__filename);
 
 const VALIDATION_RULES = {
   requiredFields: [
-    'authorizeUrl',
-    'tokenUrl',
-    'clientId',
-    'redirectUri',
-    'scope',
+    "authorizeUrl",
+    "tokenUrl",
+    "clientId",
+    "redirectUri",
+    "scope",
   ],
   urlPattern: /^https?:\/\/.+/,
   clientIdMinLength: 10,
@@ -49,10 +49,10 @@ async function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.error('❌ Usage: node validate-oauth-config.mjs <config-file>');
-    console.error('');
-    console.error('Example:');
-    console.error('  node validate-oauth-config.mjs oauth-config.json');
+    console.error("❌ Usage: node validate-oauth-config.mjs <config-file>");
+    console.error("");
+    console.error("Example:");
+    console.error("  node validate-oauth-config.mjs oauth-config.json");
     process.exit(1);
   }
 
@@ -64,10 +64,10 @@ async function main() {
   }
 
   try {
-    const configContent = fs.readFileSync(configPath, 'utf-8');
+    const configContent = fs.readFileSync(configPath, "utf-8");
     const config = JSON.parse(configContent);
 
-    console.log('🔍 Validating OAuth 2.0 Configuration...\n');
+    console.log("🔍 Validating OAuth 2.0 Configuration...\n");
 
     const results = validateOAuthConfig(config);
 
@@ -77,7 +77,7 @@ async function main() {
       process.exit(1);
     }
 
-    console.log('\n✅ OAuth 2.0 configuration is valid!');
+    console.log("\n✅ OAuth 2.0 configuration is valid!");
   } catch (error) {
     console.error(`❌ Validation failed: ${error.message}`);
     process.exit(1);
@@ -103,80 +103,97 @@ function validateOAuthConfig(config) {
   // authorizeUrl検証
   if (config.authorizeUrl) {
     if (!VALIDATION_RULES.urlPattern.test(config.authorizeUrl)) {
-      errors.push('authorizeUrl must be a valid URL');
+      errors.push("authorizeUrl must be a valid URL");
     }
-    if (!config.authorizeUrl.startsWith('https://') && process.env.NODE_ENV === 'production') {
-      errors.push('authorizeUrl must use HTTPS in production');
+    if (
+      !config.authorizeUrl.startsWith("https://") &&
+      process.env.NODE_ENV === "production"
+    ) {
+      errors.push("authorizeUrl must use HTTPS in production");
     }
   }
 
   // tokenUrl検証
   if (config.tokenUrl) {
     if (!VALIDATION_RULES.urlPattern.test(config.tokenUrl)) {
-      errors.push('tokenUrl must be a valid URL');
+      errors.push("tokenUrl must be a valid URL");
     }
-    if (!config.tokenUrl.startsWith('https://')) {
-      errors.push('tokenUrl must use HTTPS');
+    if (!config.tokenUrl.startsWith("https://")) {
+      errors.push("tokenUrl must use HTTPS");
     }
   }
 
   // clientId検証
   if (config.clientId) {
     if (config.clientId.length < VALIDATION_RULES.clientIdMinLength) {
-      warnings.push(`clientId seems too short (< ${VALIDATION_RULES.clientIdMinLength} chars)`);
+      warnings.push(
+        `clientId seems too short (< ${VALIDATION_RULES.clientIdMinLength} chars)`,
+      );
     }
   }
 
   // clientSecret検証（存在する場合）
   if (config.clientSecret) {
     if (config.clientSecret.length < VALIDATION_RULES.clientSecretMinLength) {
-      warnings.push(`clientSecret seems too short (< ${VALIDATION_RULES.clientSecretMinLength} chars)`);
+      warnings.push(
+        `clientSecret seems too short (< ${VALIDATION_RULES.clientSecretMinLength} chars)`,
+      );
     }
-    warnings.push('clientSecret should be stored in environment variables, not in config files');
+    warnings.push(
+      "clientSecret should be stored in environment variables, not in config files",
+    );
   }
 
   // redirectUri検証
   if (config.redirectUri) {
     if (!VALIDATION_RULES.urlPattern.test(config.redirectUri)) {
-      errors.push('redirectUri must be a valid URL');
+      errors.push("redirectUri must be a valid URL");
     }
-    if (!config.redirectUri.startsWith('https://') &&
-        !config.redirectUri.startsWith('http://localhost') &&
-        process.env.NODE_ENV === 'production') {
-      errors.push('redirectUri must use HTTPS in production (except localhost)');
+    if (
+      !config.redirectUri.startsWith("https://") &&
+      !config.redirectUri.startsWith("http://localhost") &&
+      process.env.NODE_ENV === "production"
+    ) {
+      errors.push(
+        "redirectUri must use HTTPS in production (except localhost)",
+      );
     }
-    if (config.redirectUri.includes('*')) {
-      errors.push('redirectUri must not contain wildcards');
+    if (config.redirectUri.includes("*")) {
+      errors.push("redirectUri must not contain wildcards");
     }
   }
 
   // scope検証
   if (config.scope) {
-    const scopes = config.scope.split(' ');
+    const scopes = config.scope.split(" ");
     if (scopes.length === 0) {
-      errors.push('scope must contain at least one scope');
+      errors.push("scope must contain at least one scope");
     }
     if (scopes.length > 10) {
-      warnings.push('scope contains many scopes - consider minimal privilege principle');
+      warnings.push(
+        "scope contains many scopes - consider minimal privilege principle",
+      );
     }
   }
 
   // PKCEパラメータ検証（存在する場合）
   if (config.usePKCE) {
-    info.push('PKCE enabled - recommended for SPAs and mobile apps');
+    info.push("PKCE enabled - recommended for SPAs and mobile apps");
 
-    if (config.codeChallengeMethod && config.codeChallengeMethod !== 'S256') {
-      warnings.push('codeChallengeMethod should be S256, not plain');
+    if (config.codeChallengeMethod && config.codeChallengeMethod !== "S256") {
+      warnings.push("codeChallengeMethod should be S256, not plain");
     }
   }
 
   // State parameter検証（存在する場合）
   if (config.state) {
     if (config.state.length < VALIDATION_RULES.stateMinLength) {
-      warnings.push(`state should be at least ${VALIDATION_RULES.stateMinLength} characters for security`);
+      warnings.push(
+        `state should be at least ${VALIDATION_RULES.stateMinLength} characters for security`,
+      );
     }
   } else {
-    warnings.push('state parameter is recommended for CSRF protection');
+    warnings.push("state parameter is recommended for CSRF protection");
   }
 
   return { errors, warnings, info };
@@ -188,27 +205,27 @@ function validateOAuthConfig(config) {
 
 function printValidationResults(results) {
   if (results.errors.length > 0) {
-    console.log('❌ Errors:');
+    console.log("❌ Errors:");
     results.errors.forEach((err, idx) => {
       console.log(`  ${idx + 1}. ${err}`);
     });
-    console.log('');
+    console.log("");
   }
 
   if (results.warnings.length > 0) {
-    console.log('⚠️  Warnings:');
+    console.log("⚠️  Warnings:");
     results.warnings.forEach((warn, idx) => {
       console.log(`  ${idx + 1}. ${warn}`);
     });
-    console.log('');
+    console.log("");
   }
 
   if (results.info.length > 0) {
-    console.log('ℹ️  Info:');
+    console.log("ℹ️  Info:");
     results.info.forEach((info, idx) => {
       console.log(`  ${idx + 1}. ${info}`);
     });
-    console.log('');
+    console.log("");
   }
 }
 
@@ -216,7 +233,7 @@ function printValidationResults(results) {
 // 実行
 // ========================================
 
-main().catch(error => {
-  console.error('Fatal error:', error);
+main().catch((error) => {
+  console.error("Fatal error:", error);
   process.exit(1);
 });

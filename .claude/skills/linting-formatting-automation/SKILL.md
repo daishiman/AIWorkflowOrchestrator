@@ -100,11 +100,11 @@ version: 1.0.0
 
 ### JavaScript/TypeScript
 
-| ツール   | 用途             | 特徴                         |
-| -------- | ---------------- | ---------------------------- |
-| ESLint   | リンティング     | 最も成熟、豊富なプラグイン   |
-| Prettier | フォーマッティング | オピニオネイテッド、設定少   |
-| Biome    | 両方             | 高速、Rust製、設定簡素       |
+| ツール   | 用途               | 特徴                       |
+| -------- | ------------------ | -------------------------- |
+| ESLint   | リンティング       | 最も成熟、豊富なプラグイン |
+| Prettier | フォーマッティング | オピニオネイテッド、設定少 |
+| Biome    | 両方               | 高速、Rust製、設定簡素     |
 
 ### 推奨組み合わせ
 
@@ -134,27 +134,28 @@ touch eslint.config.js .prettierrc
 ```
 
 **eslint.config.js** (Flat Config):
+
 ```javascript
-import tseslint from '@typescript-eslint/eslint-plugin';
-import tsparser from '@typescript-eslint/parser';
-import prettier from 'eslint-config-prettier';
+import tseslint from "@typescript-eslint/eslint-plugin";
+import tsparser from "@typescript-eslint/parser";
+import prettier from "eslint-config-prettier";
 
 export default [
   {
-    files: ['**/*.ts', '**/*.tsx'],
+    files: ["**/*.ts", "**/*.tsx"],
     languageOptions: {
       parser: tsparser,
       parserOptions: {
-        project: './tsconfig.json',
+        project: "./tsconfig.json",
       },
     },
     plugins: {
-      '@typescript-eslint': tseslint,
+      "@typescript-eslint": tseslint,
     },
     rules: {
       ...tseslint.configs.recommended.rules,
-      '@typescript-eslint/no-unused-vars': 'error',
-      '@typescript-eslint/explicit-function-return-type': 'warn',
+      "@typescript-eslint/no-unused-vars": "error",
+      "@typescript-eslint/explicit-function-return-type": "warn",
     },
   },
   prettier,
@@ -162,6 +163,7 @@ export default [
 ```
 
 **.prettierrc**:
+
 ```json
 {
   "semi": true,
@@ -183,6 +185,7 @@ pnpm biome init
 ```
 
 **biome.json**:
+
 ```json
 {
   "$schema": "https://biomejs.dev/schemas/1.9.0/schema.json",
@@ -224,16 +227,12 @@ echo "pnpm lint-staged" > .husky/pre-commit
 ```
 
 **package.json**:
+
 ```json
 {
   "lint-staged": {
-    "*.{ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{json,md}": [
-      "prettier --write"
-    ]
+    "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
+    "*.{json,md}": ["prettier --write"]
   }
 }
 ```
@@ -243,9 +242,7 @@ echo "pnpm lint-staged" > .husky/pre-commit
 ```json
 {
   "lint-staged": {
-    "*.{ts,tsx,js,jsx,json}": [
-      "biome check --write"
-    ]
+    "*.{ts,tsx,js,jsx,json}": ["biome check --write"]
   }
 }
 ```
@@ -270,7 +267,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - run: pnpm install
 
@@ -294,6 +291,7 @@ jobs:
 **原因**: PrettierとESLintのルールが競合
 
 **解決策**:
+
 ```bash
 # eslint-config-prettierを最後に適用
 # eslint.config.js で prettier を配列の最後に追加
@@ -306,6 +304,7 @@ jobs:
 **原因**: 全ファイルをチェックしている
 
 **解決策**:
+
 ```json
 {
   "lint-staged": {
@@ -313,6 +312,7 @@ jobs:
   }
 }
 ```
+
 `--cache`オプションで差分のみチェック
 
 ### 問題 3: VS Codeで自動フォーマットが効かない
@@ -320,6 +320,7 @@ jobs:
 **症状**: 保存時にフォーマットされない
 
 **解決策** (.vscode/settings.json):
+
 ```json
 {
   "editor.formatOnSave": true,

@@ -34,7 +34,11 @@ export interface RateLimiterConfig {
   keyGenerator?: (req: Request) => string;
 
   /** 制限超過時のハンドラー */
-  onLimitExceeded?: (req: Request, res: Response, result: RateLimitResult) => void;
+  onLimitExceeded?: (
+    req: Request,
+    res: Response,
+    result: RateLimitResult,
+  ) => void;
 
   /** スキップ条件 */
   skip?: (req: Request) => boolean;
@@ -67,13 +71,15 @@ export class TokenBucket {
   consume(tokens: number = 1): RateLimitResult {
     this.refill();
 
-    const resetAt = Date.now() + Math.ceil(
-      (this.config.capacity - this.tokens) / this.config.refillRate * 1000
-    );
+    const resetAt =
+      Date.now() +
+      Math.ceil(
+        ((this.config.capacity - this.tokens) / this.config.refillRate) * 1000,
+      );
 
     if (this.tokens < tokens) {
       const needed = tokens - this.tokens;
-      const retryAfter = Math.ceil(needed / this.config.refillRate * 1000);
+      const retryAfter = Math.ceil((needed / this.config.refillRate) * 1000);
 
       return {
         allowed: false,
@@ -97,7 +103,7 @@ export class TokenBucket {
     const elapsed = (now - this.lastRefill) / 1000;
     this.tokens = Math.min(
       this.config.capacity,
-      this.tokens + elapsed * this.config.refillRate
+      this.tokens + elapsed * this.config.refillRate,
     );
     this.lastRefill = now;
   }
@@ -191,13 +197,17 @@ export interface RateLimitStore {
  * インメモリストア
  */
 export class MemoryStore implements RateLimitStore {
-  private readonly store: Map<string, TokenBucket | SlidingWindowCounter> = new Map();
+  private readonly store: Map<string, TokenBucket | SlidingWindowCounter> =
+    new Map();
 
   async get(key: string): Promise<TokenBucket | SlidingWindowCounter | null> {
     return this.store.get(key) || null;
   }
 
-  async set(key: string, limiter: TokenBucket | SlidingWindowCounter): Promise<void> {
+  async set(
+    key: string,
+    limiter: TokenBucket | SlidingWindowCounter,
+  ): Promise<void> {
     this.store.set(key, limiter);
   }
 }
@@ -228,19 +238,26 @@ export interface RateLimitMiddlewareConfig extends RateLimiterConfig {
 export function createRateLimitMiddleware(config: RateLimitMiddlewareConfig) {
   const store = config.store || new MemoryStore();
 
-  const keyGenerator = config.keyGenerator || ((req: Request) => req.ip || "unknown");
+  const keyGenerator =
+    config.keyGenerator || ((req: Request) => req.ip || "unknown");
 
-  const onLimitExceeded = config.onLimitExceeded || ((req: Request, res: Response, result: RateLimitResult) => {
-    res.status(429).json({
-      error: {
-        code: "RATE_LIMIT_EXCEEDED",
-        message: "Too many requests",
-        retryAfter: result.retryAfter,
-      },
+  const onLimitExceeded =
+    config.onLimitExceeded ||
+    ((req: Request, res: Response, result: RateLimitResult) => {
+      res.status(429).json({
+        error: {
+          code: "RATE_LIMIT_EXCEEDED",
+          message: "Too many requests",
+          retryAfter: result.retryAfter,
+        },
+      });
     });
-  });
 
-  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  return async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
     // スキップ条件
     if (config.skip?.(req)) {
       return next();
@@ -254,7 +271,10 @@ export function createRateLimitMiddleware(config: RateLimitMiddlewareConfig) {
     if (!limiter) {
       if (config.algorithm === "token-bucket" && config.tokenBucket) {
         limiter = new TokenBucket(config.tokenBucket);
-      } else if (config.algorithm === "sliding-window" && config.slidingWindow) {
+      } else if (
+        config.algorithm === "sliding-window" &&
+        config.slidingWindow
+      ) {
         limiter = new SlidingWindowCounter(config.slidingWindow);
       } else {
         throw new Error("Invalid rate limiter configuration");
@@ -263,15 +283,15 @@ export function createRateLimitMiddleware(config: RateLimitMiddlewareConfig) {
     }
 
     // レート制限チェック
-    const result = limiter instanceof TokenBucket
-      ? limiter.consume()
-      : limiter.increment();
+    const result =
+      limiter instanceof TokenBucket ? limiter.consume() : limiter.increment();
 
     // ヘッダー設定
-    res.setHeader("X-RateLimit-Limit",
+    res.setHeader(
+      "X-RateLimit-Limit",
       config.algorithm === "token-bucket"
         ? config.tokenBucket!.capacity
-        : config.slidingWindow!.limit
+        : config.slidingWindow!.limit,
     );
     res.setHeader("X-RateLimit-Remaining", result.remaining);
     res.setHeader("X-RateLimit-Reset", Math.ceil(result.resetAt / 1000));
@@ -295,27 +315,26 @@ export function createRateLimitMiddleware(config: RateLimitMiddlewareConfig) {
  * レート制限デコレーター
  */
 export function RateLimit(config: TokenBucketConfig | SlidingWindowConfig) {
-  const limiter = "capacity" in config
-    ? new TokenBucket(config)
-    : new SlidingWindowCounter(config);
+  const limiter =
+    "capacity" in config
+      ? new TokenBucket(config)
+      : new SlidingWindowCounter(config);
 
   return function (
     _target: unknown,
     _propertyKey: string,
-    descriptor: PropertyDescriptor
+    descriptor: PropertyDescriptor,
   ) {
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args: unknown[]) {
-      const result = limiter instanceof TokenBucket
-        ? limiter.consume()
-        : limiter.increment();
+      const result =
+        limiter instanceof TokenBucket
+          ? limiter.consume()
+          : limiter.increment();
 
       if (!result.allowed) {
-        throw new RateLimitError(
-          "Rate limit exceeded",
-          result.retryAfter || 0
-        );
+        throw new RateLimitError("Rate limit exceeded", result.retryAfter || 0);
       }
 
       return originalMethod.apply(this, args);
@@ -328,7 +347,7 @@ export function RateLimit(config: TokenBucketConfig | SlidingWindowConfig) {
 export class RateLimitError extends Error {
   constructor(
     message: string,
-    public readonly retryAfter: number
+    public readonly retryAfter: number,
   ) {
     super(message);
     this.name = "RateLimitError";

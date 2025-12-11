@@ -7,26 +7,29 @@
 #### AWS Secrets Manager
 
 ```javascript
-const { SecretsManagerClient, GetSecretValueCommand } = require('@aws-sdk/client-secrets-manager');
+const {
+  SecretsManagerClient,
+  GetSecretValueCommand,
+} = require("@aws-sdk/client-secrets-manager");
 
 async function getSecret(secretName) {
-  const client = new SecretsManagerClient({ region: 'ap-northeast-1' });
+  const client = new SecretsManagerClient({ region: "ap-northeast-1" });
   const command = new GetSecretValueCommand({ SecretId: secretName });
   const response = await client.send(command);
   return JSON.parse(response.SecretString);
 }
 
 // 使用例
-const secrets = await getSecret('prod/api-keys');
+const secrets = await getSecret("prod/api-keys");
 const apiKey = secrets.GITHUB_TOKEN;
 ```
 
 #### HashiCorp Vault
 
 ```javascript
-const vault = require('node-vault')({
-  endpoint: 'https://vault.example.com:8200',
-  token: process.env.VAULT_TOKEN
+const vault = require("node-vault")({
+  endpoint: "https://vault.example.com:8200",
+  token: process.env.VAULT_TOKEN,
 });
 
 async function getSecret(path) {
@@ -35,7 +38,7 @@ async function getSecret(path) {
 }
 
 // 使用例
-const secrets = await getSecret('secret/api-keys');
+const secrets = await getSecret("secret/api-keys");
 ```
 
 ### 環境変数（サーバーサイド）
@@ -44,16 +47,16 @@ const secrets = await getSecret('secret/api-keys');
 
 ```javascript
 // dotenv を使用
-require('dotenv').config();
+require("dotenv").config();
 
 const config = {
   githubToken: process.env.GITHUB_TOKEN,
   googleApiKey: process.env.GOOGLE_API_KEY,
-  slackBotToken: process.env.SLACK_BOT_TOKEN
+  slackBotToken: process.env.SLACK_BOT_TOKEN,
 };
 
 // 必須環境変数のチェック
-const requiredEnvVars = ['GITHUB_TOKEN', 'GOOGLE_API_KEY'];
+const requiredEnvVars = ["GITHUB_TOKEN", "GOOGLE_API_KEY"];
 for (const envVar of requiredEnvVars) {
   if (!process.env[envVar]) {
     throw new Error(`Missing required environment variable: ${envVar}`);
@@ -81,7 +84,7 @@ metadata:
   name: api-keys
 type: Opaque
 data:
-  GITHUB_TOKEN: Z2hwX3h4eHh4eHh4eA==  # base64エンコード
+  GITHUB_TOKEN: Z2hwX3h4eHh4eHh4eA== # base64エンコード
   GOOGLE_API_KEY: QUl6YXh4eHh4eHg=
 ---
 apiVersion: v1
@@ -90,10 +93,10 @@ metadata:
   name: app
 spec:
   containers:
-  - name: app
-    envFrom:
-    - secretRef:
-        name: api-keys
+    - name: app
+      envFrom:
+        - secretRef:
+            name: api-keys
 ```
 
 ## 2. 漏洩防止対策
@@ -194,16 +197,19 @@ class KeyRotation {
     await this.secretManager.update(this.serviceName, {
       currentKey: newKey,
       previousKey: await this.getCurrentKey(),
-      rotatedAt: new Date().toISOString()
+      rotatedAt: new Date().toISOString(),
     });
 
     // 3. アプリケーションに通知（必要に応じて）
     await this.notifyApplications();
 
     // 4. 古いキーを無効化（待機期間後）
-    setTimeout(async () => {
-      await this.revokeOldKey();
-    }, 30 * 24 * 60 * 60 * 1000); // 30日後
+    setTimeout(
+      async () => {
+        await this.revokeOldKey();
+      },
+      30 * 24 * 60 * 60 * 1000,
+    ); // 30日後
   }
 
   async getCurrentKey() {
@@ -213,7 +219,7 @@ class KeyRotation {
 
   async generateNewKey() {
     // APIプロバイダーによって異なる実装
-    throw new Error('Must be implemented by subclass');
+    throw new Error("Must be implemented by subclass");
   }
 }
 ```

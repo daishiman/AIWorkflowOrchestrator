@@ -10,14 +10,14 @@
  * 3. 必要に応じてカスタマイズ
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 // {{FIXTURE_IMPORT}} 例: import { test, expect } from './fixtures/test-data-fixtures';
 
 // ==============================================================================
 // テストスイート: {{TEST_SUITE_NAME}}
 // ==============================================================================
 
-test.describe('{{TEST_SUITE_NAME}}', () => {
+test.describe("{{TEST_SUITE_NAME}}", () => {
   // ----------------------------------------------------------------------------
   // 設定: リトライとタイムアウト
   // ----------------------------------------------------------------------------
@@ -37,20 +37,16 @@ test.describe('{{TEST_SUITE_NAME}}', () => {
 
   test.beforeEach(async ({ page /* , apiSeeder, uniqueGen */ }) => {
     // ✅ ベストプラクティス: 各テストで独立したデータセットを作成
-
     // 例: 一意のテストユーザーを作成
     // const email = uniqueGen.email('testuser@example.com');
     // const user = await apiSeeder.createUser({
     //   email,
     //   name: uniqueGen.name('Test User'),
     // });
-
     // ✅ ベストプラクティス: 決定的な初期状態を確保
     // await page.goto('{{BASE_URL}}'); // 例: '/dashboard'
-
     // ❌ 避けるべき: 固定のタイムアウト
     // await page.waitForTimeout(3000);
-
     // ✅ 推奨: 条件ベースの待機
     // await expect(page.locator('.loading')).not.toBeVisible();
   });
@@ -59,39 +55,41 @@ test.describe('{{TEST_SUITE_NAME}}', () => {
   // 後処理: クリーンアップ
   // ----------------------------------------------------------------------------
 
-  test.afterEach(async ({ /* apiSeeder */ }) => {
-    // ✅ ベストプラクティス: テストデータを確実にクリーンアップ
-    // クリーンアップはFixtureで自動化されている場合は不要
-  });
+  test.afterEach(
+    async (
+      {
+        /* apiSeeder */
+      },
+    ) => {
+      // ✅ ベストプラクティス: テストデータを確実にクリーンアップ
+      // クリーンアップはFixtureで自動化されている場合は不要
+    },
+  );
 
   // ----------------------------------------------------------------------------
   // テストケース1: {{TEST_CASE_1_NAME}}
   // ----------------------------------------------------------------------------
 
-  test('{{TEST_CASE_1_NAME}}', async ({ page /* , testUser, testProject */ }) => {
+  test("{{TEST_CASE_1_NAME}}", async ({
+    page /* , testUser, testProject */,
+  }) => {
     // ✅ ベストプラクティス: テストの意図を明確にする
     // このテストは、{{TEST_CASE_1_DESCRIPTION}}を検証します
-
     // ステップ1: {{STEP_1_DESCRIPTION}}
     // ✅ 推奨: 安定したセレクターを使用（data-testid、role、labelなど）
     // await page.click('[data-testid="{{ELEMENT_ID}}"]');
-
     // ❌ 避けるべき: 脆弱なセレクター（CSSクラス、nth-child）
     // await page.click('.btn.btn-primary >> nth=2');
-
     // ステップ2: {{STEP_2_DESCRIPTION}}
     // ✅ 推奨: Playwrightの自動待機を活用
     // await expect(page.locator('[data-testid="{{RESULT_ELEMENT}}"]')).toBeVisible();
-
     // ❌ 避けるべき: 固定のタイムアウト
     // await page.waitForTimeout(2000);
     // const element = await page.locator('.result');
-
     // ステップ3: {{STEP_3_DESCRIPTION}}
     // ✅ 推奨: 明示的なアサーション
     // const resultText = await page.locator('[data-testid="result"]').textContent();
     // expect(resultText).toBe('{{EXPECTED_VALUE}}');
-
     // ❌ 避けるべき: 曖昧なアサーション
     // expect(resultText).toBeTruthy();
   });
@@ -100,11 +98,12 @@ test.describe('{{TEST_SUITE_NAME}}', () => {
   // テストケース2: 非同期処理の待機パターン
   // ----------------------------------------------------------------------------
 
-  test('非同期処理の待機', async ({ page }) => {
+  test("非同期処理の待機", async ({ page }) => {
     // ✅ パターン1: APIレスポンスを待つ
     const responsePromise = page.waitForResponse(
       (response) =>
-        response.url().includes('/api/{{ENDPOINT}}') && response.status() === 200
+        response.url().includes("/api/{{ENDPOINT}}") &&
+        response.status() === 200,
     );
 
     // アクションを実行
@@ -115,10 +114,10 @@ test.describe('{{TEST_SUITE_NAME}}', () => {
     const data = await response.json();
 
     // レスポンスデータを検証
-    expect(data).toHaveProperty('{{EXPECTED_PROPERTY}}');
+    expect(data).toHaveProperty("{{EXPECTED_PROPERTY}}");
 
     // ✅ パターン2: ネットワークアイドルを待つ
-    await page.goto('/{{PAGE}}', { waitUntil: 'networkidle' });
+    await page.goto("/{{PAGE}}", { waitUntil: "networkidle" });
 
     // ✅ パターン3: 特定の要素が表示されるまで待つ
     await expect(page.locator('[data-testid="loaded-content"]')).toBeVisible({
@@ -130,8 +129,8 @@ test.describe('{{TEST_SUITE_NAME}}', () => {
   // テストケース3: フォーム入力と送信
   // ----------------------------------------------------------------------------
 
-  test('フォーム入力と送信', async ({ page /* , uniqueGen */ }) => {
-    await page.goto('/{{FORM_PAGE}}');
+  test("フォーム入力と送信", async ({ page /* , uniqueGen */ }) => {
+    await page.goto("/{{FORM_PAGE}}");
 
     // ✅ ベストプラクティス: 一意のデータを使用
     // const uniqueValue = uniqueGen.name('Test Value');
@@ -156,23 +155,23 @@ test.describe('{{TEST_SUITE_NAME}}', () => {
   // テストケース4: 外部API依存のモック
   // ----------------------------------------------------------------------------
 
-  test('外部API依存のモック', async ({ page, context }) => {
+  test("外部API依存のモック", async ({ page, context }) => {
     // ✅ ベストプラクティス: 外部APIをモック
-    await context.route('**/api/external/**', (route) => {
+    await context.route("**/api/external/**", (route) => {
       route.fulfill({
         status: 200,
-        contentType: 'application/json',
+        contentType: "application/json",
         body: JSON.stringify({
-          data: '{{MOCKED_DATA}}',
+          data: "{{MOCKED_DATA}}",
         }),
       });
     });
 
-    await page.goto('/{{PAGE_WITH_EXTERNAL_API}}');
+    await page.goto("/{{PAGE_WITH_EXTERNAL_API}}");
 
     // モックされたデータが表示されることを確認
     await expect(page.locator('[data-testid="external-data"]')).toContainText(
-      '{{MOCKED_DATA}}'
+      "{{MOCKED_DATA}}",
     );
   });
 
@@ -180,8 +179,8 @@ test.describe('{{TEST_SUITE_NAME}}', () => {
   // テストケース5: アニメーション・トランジション
   // ----------------------------------------------------------------------------
 
-  test('アニメーション・トランジション', async ({ page }) => {
-    await page.goto('/{{PAGE_WITH_ANIMATION}}');
+  test("アニメーション・トランジション", async ({ page }) => {
+    await page.goto("/{{PAGE_WITH_ANIMATION}}");
 
     // モーダルを開く
     await page.click('[data-testid="open-modal-button"]');
@@ -202,7 +201,7 @@ test.describe('{{TEST_SUITE_NAME}}', () => {
   // テストケース6: 並列実行対応
   // ----------------------------------------------------------------------------
 
-  test('並列実行対応テスト1', async ({ page /* , uniqueGen */ }, testInfo) => {
+  test("並列実行対応テスト1", async ({ page /* , uniqueGen */ }, testInfo) => {
     // ✅ ベストプラクティス: Worker IDを使用してデータを分離
     const workerId = testInfo.parallelIndex;
     console.log(`Running on worker ${workerId}`);
@@ -213,7 +212,7 @@ test.describe('{{TEST_SUITE_NAME}}', () => {
     // テスト実行...
   });
 
-  test('並列実行対応テスト2', async ({ page /* , uniqueGen */ }, testInfo) => {
+  test("並列実行対応テスト2", async ({ page /* , uniqueGen */ }, testInfo) => {
     // このテストは並列実行されても、独立したデータセットを使用
     const workerId = testInfo.parallelIndex;
     console.log(`Running on worker ${workerId}`);
@@ -228,8 +227,8 @@ test.describe('{{TEST_SUITE_NAME}}', () => {
   // テストケース7: エラーハンドリング
   // ----------------------------------------------------------------------------
 
-  test('エラーハンドリング', async ({ page }) => {
-    await page.goto('/{{PAGE}}');
+  test("エラーハンドリング", async ({ page }) => {
+    await page.goto("/{{PAGE}}");
 
     // ✅ 推奨: エラー状態を明示的に検証
     await page.click('[data-testid="trigger-error-button"]');
@@ -237,7 +236,7 @@ test.describe('{{TEST_SUITE_NAME}}', () => {
     // エラーメッセージが表示されることを確認
     await expect(page.locator('[data-testid="error-message"]')).toBeVisible();
     await expect(page.locator('[data-testid="error-message"]')).toContainText(
-      '{{EXPECTED_ERROR_MESSAGE}}'
+      "{{EXPECTED_ERROR_MESSAGE}}",
     );
 
     // エラー後の状態を検証
@@ -249,19 +248,21 @@ test.describe('{{TEST_SUITE_NAME}}', () => {
   // ----------------------------------------------------------------------------
 
   test(
-    '一時的なネットワーク障害を想定したテスト',
+    "一時的なネットワーク障害を想定したテスト",
     {
       retries: 3, // このテストのみ3回リトライ
     },
     async ({ page }) => {
       // 不安定な外部サービスに依存するテスト
-      await page.goto('/{{PAGE_WITH_EXTERNAL_SERVICE}}');
+      await page.goto("/{{PAGE_WITH_EXTERNAL_SERVICE}}");
 
       // ✅ 推奨: 長めのタイムアウトを設定
-      await expect(page.locator('[data-testid="external-content"]')).toBeVisible({
+      await expect(
+        page.locator('[data-testid="external-content"]'),
+      ).toBeVisible({
         timeout: 60000, // 60秒
       });
-    }
+    },
   );
 });
 

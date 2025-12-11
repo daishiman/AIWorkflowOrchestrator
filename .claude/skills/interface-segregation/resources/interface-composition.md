@@ -238,23 +238,23 @@ ExecutorFactory:
 
 ### 推奨される組み合わせ
 
-| ユースケース | 推奨組み合わせ |
-|-------------|---------------|
-| **単純処理** | IWorkflowExecutor のみ |
-| **外部API連携** | IWorkflowExecutor + IRetryable |
-| **ユーザー入力処理** | IWorkflowExecutor + IValidatable |
-| **トランザクション処理** | IWorkflowExecutor + IValidatable + IRollbackable |
-| **長時間処理** | IWorkflowExecutor + IProgressReporter |
-| **バッチ処理** | IWorkflowExecutor + ISchedulable + ILifecycleAware |
-| **監視対象処理** | IWorkflowExecutor + IMetricsProvider |
+| ユースケース             | 推奨組み合わせ                                     |
+| ------------------------ | -------------------------------------------------- |
+| **単純処理**             | IWorkflowExecutor のみ                             |
+| **外部API連携**          | IWorkflowExecutor + IRetryable                     |
+| **ユーザー入力処理**     | IWorkflowExecutor + IValidatable                   |
+| **トランザクション処理** | IWorkflowExecutor + IValidatable + IRollbackable   |
+| **長時間処理**           | IWorkflowExecutor + IProgressReporter              |
+| **バッチ処理**           | IWorkflowExecutor + ISchedulable + ILifecycleAware |
+| **監視対象処理**         | IWorkflowExecutor + IMetricsProvider               |
 
 ### 避けるべき組み合わせ
 
-| 組み合わせ | 問題 |
-|-----------|------|
+| 組み合わせ                   | 問題                                   |
+| ---------------------------- | -------------------------------------- |
 | IRollbackable + ISchedulable | スケジュール実行中のロールバックは複雑 |
-| IProgressReporter のみ | 進捗レポートだけでは意味がない |
-| すべてのインターフェース | 本当に必要か検討すべき |
+| IProgressReporter のみ       | 進捗レポートだけでは意味がない         |
+| すべてのインターフェース     | 本当に必要か検討すべき                 |
 
 ## チェックリスト
 

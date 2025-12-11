@@ -9,12 +9,14 @@
 ## Team Capacity
 
 ### Available Days
+
 - Total Days: [X] days
 - Holidays: [X] days
 - Team Members: [X] people
 - Vacations/PTO: [List by member]
 
 ### Capacity Calculation
+
 ```
 Base Hours: [X] hours/person × [X] days × [X] people = [X] hours
 Meetings: -[X] hours
@@ -27,9 +29,9 @@ Total Capacity: [X] hours ([X] story points)
 
 ## Selected Backlog Items
 
-| ID | Story | Priority | Points | Owner | Dependencies |
-|----|-------|----------|--------|-------|--------------|
-|    |       |          |        |       |              |
+| ID  | Story | Priority | Points | Owner | Dependencies |
+| --- | ----- | -------- | ------ | ----- | ------------ |
+|     |       |          |        |       |              |
 
 **Total Committed**: [X] points
 **Buffer**: [X] points (20%)
@@ -37,11 +39,13 @@ Total Capacity: [X] hours ([X] story points)
 ## Sprint Risks
 
 ### Risk 1: [Risk Name]
+
 - **Probability**: [High/Medium/Low]
 - **Impact**: [High/Medium/Low]
 - **Mitigation**: [Action plan]
 
 ### Risk 2: [Risk Name]
+
 - **Probability**: [High/Medium/Low]
 - **Impact**: [High/Medium/Low]
 - **Mitigation**: [Action plan]

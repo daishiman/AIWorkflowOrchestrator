@@ -24,19 +24,20 @@
 
 ```typescript
 // tests/visual/full-page.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('トップページの全体表示', async ({ page }) => {
-  await page.goto('/');
+test("トップページの全体表示", async ({ page }) => {
+  await page.goto("/");
 
   // ページ全体のスクリーンショット
-  await expect(page).toHaveScreenshot('homepage-full.png', {
+  await expect(page).toHaveScreenshot("homepage-full.png", {
     fullPage: true, // スクロール領域を含む全体
   });
 });
 ```
 
 **用途**:
+
 - ランディングページ
 - 長いコンテンツページ
 - スクロール可能なリスト
@@ -52,19 +53,20 @@ test('トップページの全体表示', async ({ page }) => {
 
 ```typescript
 // tests/visual/viewport.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('ダッシュボードのファーストビュー', async ({ page }) => {
-  await page.goto('/dashboard');
+test("ダッシュボードのファーストビュー", async ({ page }) => {
+  await page.goto("/dashboard");
 
   // ビューポート内のみのスクリーンショット
-  await expect(page).toHaveScreenshot('dashboard-viewport.png', {
+  await expect(page).toHaveScreenshot("dashboard-viewport.png", {
     fullPage: false, // デフォルト
   });
 });
 ```
 
 **用途**:
+
 - ファーストビュー（above the fold）
 - 固定高さのコンテンツ
 - モーダル、ドロップダウン
@@ -80,19 +82,20 @@ test('ダッシュボードのファーストビュー', async ({ page }) => {
 
 ```typescript
 // tests/visual/element.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('ナビゲーションバーの表示', async ({ page }) => {
-  await page.goto('/');
+test("ナビゲーションバーの表示", async ({ page }) => {
+  await page.goto("/");
 
   const navbar = page.locator('[data-testid="navbar"]');
 
   // 要素のみのスクリーンショット
-  await expect(navbar).toHaveScreenshot('navbar.png');
+  await expect(navbar).toHaveScreenshot("navbar.png");
 });
 ```
 
 **用途**:
+
 - ヘッダー、フッター
 - カード、ボタン
 - グラフ、チャート
@@ -108,31 +111,31 @@ test('ナビゲーションバーの表示', async ({ page }) => {
 
 ```typescript
 // tests/visual/landing-page.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test.describe('ランディングページの視覚的回帰テスト', () => {
-  test('デスクトップ表示', async ({ page }) => {
+test.describe("ランディングページの視覚的回帰テスト", () => {
+  test("デスクトップ表示", async ({ page }) => {
     await page.setViewportSize({ width: 1920, height: 1080 });
-    await page.goto('/');
+    await page.goto("/");
 
     // ページの読み込み完了を待つ
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState("networkidle");
 
     // 全ページスクリーンショット
-    await expect(page).toHaveScreenshot('landing-page-desktop.png', {
+    await expect(page).toHaveScreenshot("landing-page-desktop.png", {
       fullPage: true,
-      animations: 'disabled', // アニメーションを無効化
+      animations: "disabled", // アニメーションを無効化
     });
   });
 
-  test('モバイル表示', async ({ page }) => {
+  test("モバイル表示", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
 
-    await expect(page).toHaveScreenshot('landing-page-mobile.png', {
+    await expect(page).toHaveScreenshot("landing-page-mobile.png", {
       fullPage: true,
-      animations: 'disabled',
+      animations: "disabled",
     });
   });
 });
@@ -144,32 +147,32 @@ test.describe('ランディングページの視覚的回帰テスト', () => {
 
 ```typescript
 // tests/visual/long-page.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('長いコンテンツページ', async ({ page }) => {
-  await page.goto('/blog/long-article');
+test("長いコンテンツページ", async ({ page }) => {
+  await page.goto("/blog/long-article");
 
   // 画像の遅延読み込みを待つ
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState("networkidle");
 
   // すべての画像が読み込まれるまで待つ
   await page.evaluate(async () => {
-    const images = Array.from(document.querySelectorAll('img'));
+    const images = Array.from(document.querySelectorAll("img"));
     await Promise.all(
       images.map((img) => {
         if (img.complete) return;
         return new Promise((resolve) => {
-          img.addEventListener('load', resolve);
-          img.addEventListener('error', resolve);
+          img.addEventListener("load", resolve);
+          img.addEventListener("error", resolve);
         });
-      })
+      }),
     );
   });
 
   // 全ページスクリーンショット
-  await expect(page).toHaveScreenshot('long-article.png', {
+  await expect(page).toHaveScreenshot("long-article.png", {
     fullPage: true,
-    animations: 'disabled',
+    animations: "disabled",
   });
 });
 ```
@@ -182,35 +185,35 @@ test('長いコンテンツページ', async ({ page }) => {
 
 ```typescript
 // tests/visual/components.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test.describe('UIコンポーネントの視覚的テスト', () => {
+test.describe("UIコンポーネントの視覚的テスト", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/components');
+    await page.goto("/components");
   });
 
-  test('プライマリボタン', async ({ page }) => {
+  test("プライマリボタン", async ({ page }) => {
     const button = page.locator('[data-testid="primary-button"]');
-    await expect(button).toHaveScreenshot('button-primary.png');
+    await expect(button).toHaveScreenshot("button-primary.png");
   });
 
-  test('プライマリボタン（ホバー状態）', async ({ page }) => {
+  test("プライマリボタン（ホバー状態）", async ({ page }) => {
     const button = page.locator('[data-testid="primary-button"]');
 
     // ホバー状態にする
     await button.hover();
 
-    await expect(button).toHaveScreenshot('button-primary-hover.png');
+    await expect(button).toHaveScreenshot("button-primary-hover.png");
   });
 
-  test('プライマリボタン（無効状態）', async ({ page }) => {
+  test("プライマリボタン（無効状態）", async ({ page }) => {
     const button = page.locator('[data-testid="primary-button-disabled"]');
-    await expect(button).toHaveScreenshot('button-primary-disabled.png');
+    await expect(button).toHaveScreenshot("button-primary-disabled.png");
   });
 
-  test('カードコンポーネント', async ({ page }) => {
+  test("カードコンポーネント", async ({ page }) => {
     const card = page.locator('[data-testid="product-card"]').first();
-    await expect(card).toHaveScreenshot('card-product.png');
+    await expect(card).toHaveScreenshot("card-product.png");
   });
 });
 ```
@@ -223,17 +226,17 @@ test.describe('UIコンポーネントの視覚的テスト', () => {
 
 ```typescript
 // tests/visual/masked-content.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('動的コンテンツを含むページ', async ({ page }) => {
-  await page.goto('/dashboard');
+test("動的コンテンツを含むページ", async ({ page }) => {
+  await page.goto("/dashboard");
 
   // 動的な部分（時刻、グラフ）をマスキング
-  await expect(page).toHaveScreenshot('dashboard-masked.png', {
+  await expect(page).toHaveScreenshot("dashboard-masked.png", {
     mask: [
       page.locator('[data-testid="current-time"]'), // 時刻表示
       page.locator('[data-testid="live-chart"]'), // リアルタイムグラフ
-      page.locator('.avatar'), // ユーザーアバター（変わる可能性）
+      page.locator(".avatar"), // ユーザーアバター（変わる可能性）
     ],
   });
 });
@@ -247,35 +250,35 @@ test('動的コンテンツを含むページ', async ({ page }) => {
 
 ```typescript
 // tests/visual/responsive.spec.ts
-import { test, expect, devices } from '@playwright/test';
+import { test, expect, devices } from "@playwright/test";
 
 const viewports = [
-  { name: 'mobile', ...devices['iPhone 12'] },
-  { name: 'tablet', ...devices['iPad Pro'] },
-  { name: 'desktop', viewport: { width: 1920, height: 1080 } },
+  { name: "mobile", ...devices["iPhone 12"] },
+  { name: "tablet", ...devices["iPad Pro"] },
+  { name: "desktop", viewport: { width: 1920, height: 1080 } },
 ];
 
 for (const device of viewports) {
   test.describe(`レスポンシブデザイン - ${device.name}`, () => {
     test.use(device);
 
-    test('トップページ', async ({ page }) => {
-      await page.goto('/');
-      await page.waitForLoadState('networkidle');
+    test("トップページ", async ({ page }) => {
+      await page.goto("/");
+      await page.waitForLoadState("networkidle");
 
       await expect(page).toHaveScreenshot(`homepage-${device.name}.png`, {
         fullPage: true,
-        animations: 'disabled',
+        animations: "disabled",
       });
     });
 
-    test('製品ページ', async ({ page }) => {
-      await page.goto('/products');
-      await page.waitForLoadState('networkidle');
+    test("製品ページ", async ({ page }) => {
+      await page.goto("/products");
+      await page.waitForLoadState("networkidle");
 
       await expect(page).toHaveScreenshot(`products-${device.name}.png`, {
         fullPage: true,
-        animations: 'disabled',
+        animations: "disabled",
       });
     });
   });
@@ -288,27 +291,27 @@ for (const device of viewports) {
 
 ```typescript
 // tests/visual/breakpoints.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
 const breakpoints = [
-  { name: 'xs', width: 375, height: 667 }, // モバイル
-  { name: 'sm', width: 640, height: 800 }, // 小型タブレット
-  { name: 'md', width: 768, height: 1024 }, // タブレット
-  { name: 'lg', width: 1024, height: 768 }, // 小型デスクトップ
-  { name: 'xl', width: 1280, height: 1024 }, // デスクトップ
-  { name: '2xl', width: 1920, height: 1080 }, // 大型デスクトップ
+  { name: "xs", width: 375, height: 667 }, // モバイル
+  { name: "sm", width: 640, height: 800 }, // 小型タブレット
+  { name: "md", width: 768, height: 1024 }, // タブレット
+  { name: "lg", width: 1024, height: 768 }, // 小型デスクトップ
+  { name: "xl", width: 1280, height: 1024 }, // デスクトップ
+  { name: "2xl", width: 1920, height: 1080 }, // 大型デスクトップ
 ];
 
-test.describe('ブレークポイントごとの視覚的テスト', () => {
+test.describe("ブレークポイントごとの視覚的テスト", () => {
   for (const bp of breakpoints) {
     test(`${bp.name} (${bp.width}x${bp.height})`, async ({ page }) => {
       await page.setViewportSize({ width: bp.width, height: bp.height });
-      await page.goto('/responsive-page');
-      await page.waitForLoadState('networkidle');
+      await page.goto("/responsive-page");
+      await page.waitForLoadState("networkidle");
 
       await expect(page).toHaveScreenshot(`responsive-${bp.name}.png`, {
         fullPage: true,
-        animations: 'disabled',
+        animations: "disabled",
       });
     });
   }
@@ -323,10 +326,10 @@ test.describe('ブレークポイントごとの視覚的テスト', () => {
 
 ```typescript
 // tests/visual/animations.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('アニメーションを無効化', async ({ page }) => {
-  await page.goto('/animated-page');
+test("アニメーションを無効化", async ({ page }) => {
+  await page.goto("/animated-page");
 
   // CSSアニメーションを無効化
   await page.addStyleTag({
@@ -338,8 +341,8 @@ test('アニメーションを無効化', async ({ page }) => {
     `,
   });
 
-  await expect(page).toHaveScreenshot('no-animations.png', {
-    animations: 'disabled', // Playwrightの設定でも無効化
+  await expect(page).toHaveScreenshot("no-animations.png", {
+    animations: "disabled", // Playwrightの設定でも無効化
   });
 });
 ```
@@ -350,12 +353,12 @@ test('アニメーションを無効化', async ({ page }) => {
 
 ```typescript
 // tests/visual/time-fixed.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('固定された時刻でスクリーンショット', async ({ page }) => {
+test("固定された時刻でスクリーンショット", async ({ page }) => {
   // 時刻を固定（2024-01-01 12:00:00 UTC）
   await page.addInitScript(() => {
-    const mockDate = new Date('2024-01-01T12:00:00Z');
+    const mockDate = new Date("2024-01-01T12:00:00Z");
     // @ts-ignore
     Date = class extends Date {
       constructor(...args) {
@@ -372,10 +375,10 @@ test('固定された時刻でスクリーンショット', async ({ page }) => 
     };
   });
 
-  await page.goto('/dashboard');
+  await page.goto("/dashboard");
 
   // 時刻表示が固定されているため、一貫したスクリーンショット
-  await expect(page).toHaveScreenshot('dashboard-fixed-time.png');
+  await expect(page).toHaveScreenshot("dashboard-fixed-time.png");
 });
 ```
 
@@ -385,10 +388,10 @@ test('固定された時刻でスクリーンショット', async ({ page }) => 
 
 ```typescript
 // tests/visual/lazy-images.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('遅延読み込み画像を含むページ', async ({ page }) => {
-  await page.goto('/gallery');
+test("遅延読み込み画像を含むページ", async ({ page }) => {
+  await page.goto("/gallery");
 
   // すべての画像にスクロール（遅延読み込みをトリガー）
   await page.evaluate(async () => {
@@ -400,9 +403,9 @@ test('遅延読み込み画像を含むページ', async ({ page }) => {
   });
 
   // すべての画像が読み込まれるまで待つ
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState("networkidle");
 
-  await expect(page).toHaveScreenshot('gallery-all-images.png', {
+  await expect(page).toHaveScreenshot("gallery-all-images.png", {
     fullPage: true,
   });
 });
@@ -437,7 +440,7 @@ test('遅延読み込み画像を含むページ', async ({ page }) => {
 // playwright.config.ts
 export default defineConfig({
   use: {
-    screenshot: 'only-on-failure', // 失敗時のみスクリーンショット保存
+    screenshot: "only-on-failure", // 失敗時のみスクリーンショット保存
 
     // 視覚的回帰テスト用の設定
     viewport: { width: 1280, height: 720 },
@@ -448,7 +451,7 @@ export default defineConfig({
     toHaveScreenshot: {
       maxDiffPixels: 100, // 最大100ピクセルの差異を許容
       threshold: 0.2, // 20%の差異を許容
-      animations: 'disabled', // アニメーション無効化
+      animations: "disabled", // アニメーション無効化
     },
   },
 });
@@ -461,6 +464,7 @@ export default defineConfig({
 適切なスクリーンショット撮影戦略により、効果的な視覚的回帰テストを実現できます。
 
 **キーポイント**:
+
 1. **撮影範囲**: 全ページ、ビューポート、要素のいずれかを適切に選択
 2. **レスポンシブ対応**: 主要なブレークポイントでテスト
 3. **動的コンテンツ**: マスキング、固定化、無効化で対処

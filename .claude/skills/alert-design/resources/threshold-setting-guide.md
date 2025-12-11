@@ -33,6 +33,7 @@
 **前提**: データが正規分布に従う場合
 
 **計算式**:
+
 ```
 閾値 = 平均 + k × 標準偏差
 
@@ -41,6 +42,7 @@ k = 3: 99.7%の値が範囲内（0.3%がアラート）
 ```
 
 **例**:
+
 ```
 過去30日のエラー率:
 - 平均: 0.05%
@@ -51,6 +53,7 @@ Critical閾値 = 0.05% + 3 × 0.02% = 0.11% (P99.7相当)
 ```
 
 **Prometheusクエリ**:
+
 ```
 # 平均 + 2σ
 error_rate
@@ -63,12 +66,14 @@ avg_over_time(error_rate[30d]) + 2 * stddev_over_time(error_rate[30d])
 **前提**: データが正規分布に従わない場合（ロングテール）
 
 **計算式**:
+
 ```
 Warning閾値 = P95
 Critical閾値 = P99
 ```
 
 **例**:
+
 ```
 過去30日のレイテンシ:
 - P50: 100ms
@@ -81,6 +86,7 @@ Critical閾値 = 500ms (P99)
 ```
 
 **Prometheusクエリ**:
+
 ```
 # P95レイテンシ
 histogram_quantile(0.95,
@@ -96,12 +102,14 @@ histogram_quantile(0.95,
 トラフィックは時間帯で大きく変動
 
 **実装**:
+
 ```
 # 過去1週間の同時刻帯の平均+2σ
 threshold = avg_over_time(metric[1w] offset 1w) + 2 * stddev_over_time(metric[1w] offset 1w)
 ```
 
 **例**:
+
 ```
 CPU使用率:
 - 深夜2時: 平均30% → 閾値50% (30% + 2×10%)
@@ -114,6 +122,7 @@ CPU使用率:
 平日と週末でトラフィックパターンが異なる
 
 **実装**:
+
 ```
 # 曜日を考慮した閾値
 IF day_of_week IN (Saturday, Sunday):
@@ -128,6 +137,7 @@ ELSE:
 トラフィック増加時はエラー数も比例して増加
 
 **実装**:
+
 ```
 # エラー率（割合）で評価
 error_rate = errors / total_requests
@@ -150,6 +160,7 @@ alert: error_rate > 0.01  # 1%
 ### 継続的調整
 
 **月次レビュー**:
+
 ```
 1. 誤検知率を計算
 2. 目標（< 5%）と比較
@@ -158,6 +169,7 @@ alert: error_rate > 0.01  # 1%
 ```
 
 **トラフィック変化対応**:
+
 ```
 トラフィックが2倍に増加
 → 閾値も再計算が必要
@@ -169,11 +181,13 @@ alert: error_rate > 0.01  # 1%
 ### CPU使用率
 
 **固定閾値（非推奨）**:
+
 ```
 ❌ CPU > 80%
 ```
 
 **適応的閾値（推奨）**:
+
 ```
 ✅ CPU > avg_1w + 2σ
 ✅ CPU > P95_same_hour_last_week
@@ -182,6 +196,7 @@ alert: error_rate > 0.01  # 1%
 ### メモリ使用率
 
 **閾値**:
+
 ```
 Warning: 85%
 Critical: 95%
@@ -193,6 +208,7 @@ Critical: 95%
 ### エラー率
 
 **閾値**:
+
 ```
 Warning: > 0.5% (通常の2倍)
 Critical: > 1% (SLO違反)
@@ -201,6 +217,7 @@ Critical: > 1% (SLO違反)
 ### レイテンシ
 
 **閾値**:
+
 ```
 Warning: P95 > 300ms
 Critical: P99 > 500ms (SLO違反)
@@ -209,6 +226,7 @@ Critical: P99 > 500ms (SLO違反)
 ### ディスク使用率
 
 **閾値**:
+
 ```
 Warning: 80%
 Critical: 90%

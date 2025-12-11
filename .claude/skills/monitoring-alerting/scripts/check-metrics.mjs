@@ -15,7 +15,7 @@ const args = process.argv.slice(2);
 function parseArgs() {
   const options = {
     baseUrl: null,
-    healthPath: '/api/health',
+    healthPath: "/api/health",
     timeout: 10,
     verbose: false,
   };
@@ -23,16 +23,16 @@ function parseArgs() {
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
 
-    if (arg === '--health-path' || arg === '-p') {
+    if (arg === "--health-path" || arg === "-p") {
       options.healthPath = args[++i];
-    } else if (arg === '--timeout' || arg === '-t') {
+    } else if (arg === "--timeout" || arg === "-t") {
       options.timeout = parseInt(args[++i], 10);
-    } else if (arg === '--verbose' || arg === '-v') {
+    } else if (arg === "--verbose" || arg === "-v") {
       options.verbose = true;
-    } else if (arg === '--help' || arg === '-h') {
+    } else if (arg === "--help" || arg === "-h") {
       printUsage();
       process.exit(0);
-    } else if (!arg.startsWith('-')) {
+    } else if (!arg.startsWith("-")) {
       options.baseUrl = arg;
     }
   }
@@ -67,10 +67,10 @@ async function fetchWithTimeout(url, timeout) {
   try {
     const start = Date.now();
     const response = await fetch(url, {
-      method: 'GET',
+      method: "GET",
       signal: controller.signal,
       headers: {
-        Accept: 'application/json',
+        Accept: "application/json",
       },
     });
 
@@ -78,8 +78,8 @@ async function fetchWithTimeout(url, timeout) {
     const duration = Date.now() - start;
 
     let body = null;
-    const contentType = response.headers.get('content-type');
-    if (contentType?.includes('application/json')) {
+    const contentType = response.headers.get("content-type");
+    if (contentType?.includes("application/json")) {
       body = await response.json();
     }
 
@@ -92,7 +92,7 @@ async function fetchWithTimeout(url, timeout) {
   } catch (error) {
     clearTimeout(timeoutId);
 
-    if (error.name === 'AbortError') {
+    if (error.name === "AbortError") {
       return {
         success: false,
         error: `Timeout after ${timeout}s`,
@@ -114,32 +114,34 @@ function formatDuration(ms) {
 }
 
 function getStatusIcon(status) {
-  if (status === 'pass' || status === 'healthy') return '✅';
-  if (status === 'warn' || status === 'degraded') return '⚠️';
-  return '❌';
+  if (status === "pass" || status === "healthy") return "✅";
+  if (status === "warn" || status === "degraded") return "⚠️";
+  return "❌";
 }
 
 function getLatencyRating(ms) {
-  if (ms < 100) return { rating: 'Excellent', icon: '🟢' };
-  if (ms < 300) return { rating: 'Good', icon: '🟢' };
-  if (ms < 500) return { rating: 'Acceptable', icon: '🟡' };
-  if (ms < 1000) return { rating: 'Slow', icon: '🟠' };
-  return { rating: 'Critical', icon: '🔴' };
+  if (ms < 100) return { rating: "Excellent", icon: "🟢" };
+  if (ms < 300) return { rating: "Good", icon: "🟢" };
+  if (ms < 500) return { rating: "Acceptable", icon: "🟡" };
+  if (ms < 1000) return { rating: "Slow", icon: "🟠" };
+  return { rating: "Critical", icon: "🔴" };
 }
 
 async function checkHomepage(baseUrl, timeout) {
-  console.log('\n📄 Homepage Check');
-  console.log('─'.repeat(40));
+  console.log("\n📄 Homepage Check");
+  console.log("─".repeat(40));
 
   const result = await fetchWithTimeout(baseUrl, timeout);
 
   if (result.success) {
     const latency = getLatencyRating(result.duration);
     console.log(`   Status: ✅ ${result.status}`);
-    console.log(`   Latency: ${formatDuration(result.duration)} ${latency.icon} ${latency.rating}`);
+    console.log(
+      `   Latency: ${formatDuration(result.duration)} ${latency.icon} ${latency.rating}`,
+    );
     return { pass: true, latency: result.duration };
   } else {
-    console.log(`   Status: ❌ ${result.status || 'Failed'}`);
+    console.log(`   Status: ❌ ${result.status || "Failed"}`);
     if (result.error) {
       console.log(`   Error: ${result.error}`);
     }
@@ -148,8 +150,8 @@ async function checkHomepage(baseUrl, timeout) {
 }
 
 async function checkHealth(baseUrl, healthPath, timeout, verbose) {
-  console.log('\n🏥 Health Check');
-  console.log('─'.repeat(40));
+  console.log("\n🏥 Health Check");
+  console.log("─".repeat(40));
 
   const url = `${baseUrl}${healthPath}`;
   const result = await fetchWithTimeout(url, timeout);
@@ -171,8 +173,8 @@ async function checkHealth(baseUrl, healthPath, timeout, verbose) {
       console.log(`   Uptime: ${uptimeHours}h ${uptimeMins}m`);
     }
 
-    if (health.checks && (verbose || health.status !== 'healthy')) {
-      console.log('\n   Checks:');
+    if (health.checks && (verbose || health.status !== "healthy")) {
+      console.log("\n   Checks:");
       for (const [name, check] of Object.entries(health.checks)) {
         const checkIcon = getStatusIcon(check.status);
         let line = `     ${checkIcon} ${name}: ${check.status}`;
@@ -187,8 +189,8 @@ async function checkHealth(baseUrl, healthPath, timeout, verbose) {
     }
 
     return {
-      pass: health.status === 'healthy',
-      degraded: health.status === 'degraded',
+      pass: health.status === "healthy",
+      degraded: health.status === "degraded",
       data: health,
     };
   } else {
@@ -201,9 +203,9 @@ async function checkHealth(baseUrl, healthPath, timeout, verbose) {
 }
 
 async function measureLatencyStats(baseUrl, timeout) {
-  console.log('\n📊 Latency Statistics');
-  console.log('─'.repeat(40));
-  console.log('   Running 5 requests...');
+  console.log("\n📊 Latency Statistics");
+  console.log("─".repeat(40));
+  console.log("   Running 5 requests...");
 
   const latencies = [];
 
@@ -217,7 +219,7 @@ async function measureLatencyStats(baseUrl, timeout) {
   }
 
   if (latencies.length === 0) {
-    console.log('   ❌ All requests failed');
+    console.log("   ❌ All requests failed");
     return { pass: false };
   }
 
@@ -227,7 +229,9 @@ async function measureLatencyStats(baseUrl, timeout) {
   const min = latencies[0];
   const max = latencies[latencies.length - 1];
   const p50 = latencies[Math.floor(latencies.length * 0.5)];
-  const p95 = latencies[Math.floor(latencies.length * 0.95)] || latencies[latencies.length - 1];
+  const p95 =
+    latencies[Math.floor(latencies.length * 0.95)] ||
+    latencies[latencies.length - 1];
 
   console.log(`   Samples: ${latencies.length}/5`);
   console.log(`   Min: ${formatDuration(min)}`);
@@ -249,58 +253,67 @@ async function main() {
   const options = parseArgs();
 
   if (!options.baseUrl) {
-    console.error('❌ Error: Base URL is required\n');
+    console.error("❌ Error: Base URL is required\n");
     printUsage();
     process.exit(1);
   }
 
   console.log(`\n🔍 Metrics Check: ${options.baseUrl}`);
-  console.log('═'.repeat(50));
+  console.log("═".repeat(50));
 
   const results = {
     homepage: await checkHomepage(options.baseUrl, options.timeout),
-    health: await checkHealth(options.baseUrl, options.healthPath, options.timeout, options.verbose),
+    health: await checkHealth(
+      options.baseUrl,
+      options.healthPath,
+      options.timeout,
+      options.verbose,
+    ),
     latency: await measureLatencyStats(options.baseUrl, options.timeout),
   };
 
   // Summary
-  console.log('\n' + '═'.repeat(50));
-  console.log('📋 Summary');
-  console.log('─'.repeat(50));
+  console.log("\n" + "═".repeat(50));
+  console.log("📋 Summary");
+  console.log("─".repeat(50));
 
   const checks = [
-    { name: 'Homepage', result: results.homepage },
-    { name: 'Health', result: results.health },
-    { name: 'Latency', result: results.latency },
+    { name: "Homepage", result: results.homepage },
+    { name: "Health", result: results.health },
+    { name: "Latency", result: results.latency },
   ];
 
   let allPassed = true;
   let hasDegraded = false;
 
   for (const check of checks) {
-    const icon = check.result.pass ? '✅' : check.result.degraded ? '⚠️' : '❌';
-    const status = check.result.pass ? 'Pass' : check.result.degraded ? 'Degraded' : 'Fail';
+    const icon = check.result.pass ? "✅" : check.result.degraded ? "⚠️" : "❌";
+    const status = check.result.pass
+      ? "Pass"
+      : check.result.degraded
+        ? "Degraded"
+        : "Fail";
     console.log(`   ${icon} ${check.name}: ${status}`);
 
     if (!check.result.pass) allPassed = false;
     if (check.result.degraded) hasDegraded = true;
   }
 
-  console.log('─'.repeat(50));
+  console.log("─".repeat(50));
 
   if (allPassed && !hasDegraded) {
-    console.log('✅ All checks passed!');
+    console.log("✅ All checks passed!");
     process.exit(0);
   } else if (allPassed && hasDegraded) {
-    console.log('⚠️  Service is degraded');
+    console.log("⚠️  Service is degraded");
     process.exit(0);
   } else {
-    console.log('❌ Some checks failed');
+    console.log("❌ Some checks failed");
     process.exit(1);
   }
 }
 
 main().catch((error) => {
-  console.error('Unexpected error:', error);
+  console.error("Unexpected error:", error);
   process.exit(1);
 });

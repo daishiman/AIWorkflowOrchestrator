@@ -74,13 +74,15 @@ echo "最新: $library_name@$latest_version"
 **使用エージェント**: `.claude/agents/dep-mgr.md`
 
 **依頼内容**:
-```markdown
+
+````markdown
 「${library_name}」を最新版に移行する計画を作成してください。
 
 **現在バージョン**: ${current_version}
 **最新バージョン**: ${latest_version}
 
 **要件**:
+
 1. CHANGELOG分析:
    - 破壊的変更の特定
    - 非推奨APIの特定
@@ -91,25 +93,30 @@ echo "最新: $library_name@$latest_version"
    - peer dependencies要件
 
 3. マイグレーション計画:
+
    ```markdown
    ## マイグレーション計画
 
    ### 破壊的変更（3件）
+
    1. API変更: `getStaticProps` → `generateStaticParams`
    2. 設定変更: `next.config.js` → `next.config.mjs`
    3. インポートパス変更: `next/link` → 新しいLink API
 
    ### コード修正箇所
-   - src/app/**/*.tsx: 15ファイル
+
+   - src/app/\*_/_.tsx: 15ファイル
    - next.config.js: 1ファイル
 
    ### 推定作業時間: 2-4時間
    ```
+````
 
 **スキル参照**: `.claude/skills/upgrade-strategies/SKILL.md`
 
 **成果物**: マイグレーション計画書
-```
+
+````
 
 ### Phase 3: logic-devエージェントを起動（コード修正）
 
@@ -129,7 +136,7 @@ echo "最新: $library_name@$latest_version"
 **スキル参照**: `.claude/skills/refactoring-techniques/SKILL.md`
 
 **成果物**: 修正されたコード
-```
+````
 
 ### Phase 4: 完了報告
 
@@ -140,10 +147,12 @@ echo "最新: $library_name@$latest_version"
 バージョン: ${current_version} → ${latest_version}
 
 ### 変更サマリー
+
 - ファイル修正: ${file_count}件
 - 破壊的変更対応: ${breaking_changes}件
 
 ### Next Steps
+
 1. テスト実行: pnpm test
 2. 型チェック: pnpm typecheck
 3. ビルド確認: pnpm build

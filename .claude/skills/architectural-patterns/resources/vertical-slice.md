@@ -91,13 +91,11 @@ export interface CreateOrderRequest {
 
 ```typescript
 // features/orders/create-order/handler.ts
-import { CreateOrderRequest } from './request';
-import { db } from '@/shared/infrastructure/database';
-import { Order } from '@/shared/core/entities/order';
+import { CreateOrderRequest } from "./request";
+import { db } from "@/shared/infrastructure/database";
+import { Order } from "@/shared/core/entities/order";
 
-export async function createOrder(
-  request: CreateOrderRequest
-): Promise<Order> {
+export async function createOrder(request: CreateOrderRequest): Promise<Order> {
   // バリデーション
   validateRequest(request);
 
@@ -106,7 +104,7 @@ export async function createOrder(
     customerId: request.customerId,
     items: request.items,
     shippingAddress: request.shippingAddress,
-    status: 'pending',
+    status: "pending",
     createdAt: new Date(),
   });
 
@@ -118,26 +116,29 @@ export async function createOrder(
 
 function validateRequest(request: CreateOrderRequest): void {
   if (!request.customerId) {
-    throw new ValidationError('Customer ID is required');
+    throw new ValidationError("Customer ID is required");
   }
   if (request.items.length === 0) {
-    throw new ValidationError('At least one item is required');
+    throw new ValidationError("At least one item is required");
   }
 }
 ```
 
 ```typescript
 // features/orders/create-order/index.ts
-export { createOrder } from './handler';
-export type { CreateOrderRequest } from './request';
+export { createOrder } from "./handler";
+export type { CreateOrderRequest } from "./request";
 ```
 
 ### API Routeとの統合
 
 ```typescript
 // app/api/orders/route.ts
-import { createOrder, CreateOrderRequest } from '@/features/orders/create-order';
-import { getOrders } from '@/features/orders/list-orders';
+import {
+  createOrder,
+  CreateOrderRequest,
+} from "@/features/orders/create-order";
+import { getOrders } from "@/features/orders/list-orders";
 
 export async function POST(request: Request) {
   const body: CreateOrderRequest = await request.json();

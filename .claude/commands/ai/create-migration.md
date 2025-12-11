@@ -88,17 +88,20 @@ Drizzle ORMを使用して、以下の原則に基づくマイグレーション
 **dba-mgr エージェントが Phase 1〜5 を実行**:
 
 **Phase 1: スキーマ分析とコンテキスト理解**
+
 - スキーマ定義読み取り（`src/shared/infrastructure/database/schema.ts`）
 - マイグレーション履歴確認（`drizzle/**/*.sql`）
 - 設計書参照（`docs/00-requirements/master_system_design.md`）
 
 **Phase 2: マイグレーション設計**（database-migrations スキル参照）
+
 - 変更戦略立案（追加、変更、削除、移行期間パターン）
 - Up/Down両方設計（可逆性保証）
 - インデックス設計（パフォーマンス影響評価）
 - 破壊的変更の場合は移行期間設計
 
 **Phase 3: 実装とテスト**
+
 - Drizzleスキーマ更新（`schema.ts`）
 - マイグレーション生成（Drizzle Kit）
   ```bash
@@ -111,6 +114,7 @@ Drizzle ORMを使用して、以下の原則に基づくマイグレーション
 - ロールバックテスト（Downマイグレーション検証）
 
 **Phase 4: 信頼性保証**
+
 - バックアップ確認（backup-recovery スキル参照）
 - パフォーマンステスト（query-performance-tuning スキル参照）
   ```sql
@@ -119,6 +123,7 @@ Drizzle ORMを使用して、以下の原則に基づくマイグレーション
 - データ整合性検証
 
 **Phase 5: デプロイと監視**
+
 - CI/CD統合（GitHub Actions等）
 - 本番マイグレーション計画策定
 - ドキュメント更新
@@ -158,24 +163,29 @@ CREATE INDEX idx_workflows_retry_count ON workflows(retry_count) WHERE retry_cou
 # マイグレーション計画: add_workflow_retry_count
 
 ## 変更概要
+
 - テーブル: workflows
 - 追加カラム: retry_count (INTEGER, NOT NULL, DEFAULT 0)
 
 ## Up/Down確認
+
 - [x] Up マイグレーション作成済み
 - [x] Down マイグレーション作成済み（コメント化）
 
 ## パフォーマンス影響
+
 - 既存レコード数: 1,000件
 - 推定実行時間: < 5秒
 - ロック時間: 最小（DEFAULT値あり）
 
 ## ロールバック手順
+
 1. Downマイグレーション実行
 2. データ整合性確認
 3. アプリケーション再デプロイ
 
 ## テスト結果
+
 - [x] ローカルテスト成功
 - [x] ロールバックテスト成功
 - [x] EXPLAIN ANALYZE確認済み

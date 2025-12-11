@@ -32,12 +32,14 @@ YAML Frontmatterの各フィールドの意味と使い方、本文パターン�
 実運用レベルのコマンドファイルを作成するための基盤知識を習得できます。
 
 **主要な価値**:
+
 - YAML Frontmatterの完全理解
 - 4つの本文パターンの使い分け
 - ファイル構造の最適化
 - 最小構成から完全版までの段階的理解
 
 **対象ユーザー**:
+
 - コマンドを作成するエージェント（@command-arch）
 - 新しいコマンドを設計する開発者
 - コマンドファイルの構造を理解したいチーム
@@ -66,9 +68,11 @@ command-structure-fundamentals/
 ## いつ使うか
 
 ### シナリオ1: 新規コマンド作成
+
 **状況**: 初めてコマンドを作成する
 
 **適用条件**:
+
 - [ ] コマンドの基本構造を知らない
 - [ ] YAML Frontmatterのフィールドを理解していない
 - [ ] 最小構成がわからない
@@ -76,9 +80,11 @@ command-structure-fundamentals/
 **期待される成果**: 実運用可能な最小構成コマンドの作成
 
 ### シナリオ2: Frontmatterフィールドの理解
+
 **状況**: description、allowed-toolsなどの意味を知りたい
 
 **適用条件**:
+
 - [ ] 各フィールドの意味が不明
 - [ ] どのフィールドが必須か知らない
 - [ ] フィールドの組み合わせ方がわからない
@@ -86,9 +92,11 @@ command-structure-fundamentals/
 **期待される成果**: Frontmatterの正確な理解と適切な設定
 
 ### シナリオ3: ファイル構造の最適化
+
 **状況**: コマンドをどこに配置すべきか判断したい
 
 **適用条件**:
+
 - [ ] プロジェクトコマンドとユーザーコマンドの違いを知らない
 - [ ] 名前空間の使い方がわからない
 - [ ] ディレクトリ構造の設計方法を知りたい
@@ -110,6 +118,7 @@ Detailed instructions for Claude to execute this command.
 ```
 
 **必須要素**:
+
 - `description`: コマンドの説明（**必須**）
 - 本文: Claudeへの指示
 
@@ -148,33 +157,41 @@ model: sonnet
 # [コマンドタイトル]
 
 ## 目的
+
 [1-2文で簡潔に]
 
 ## エージェント起動フロー
 
 ### Phase 1: 準備
+
 - 引数処理
 - コンテキスト確認
 
 ### Phase 2: エージェント起動
+
 Task ツールで `[エージェントパス]` を起動
 
 **エージェントへの依頼:**
+
 - [やること]（必要時: [スキルパス]）
 - [やること]（必須: [スキルパス]）
 
 **期待成果物:**
+
 - [成果物]
 
 ### Phase 3: 検証と報告
+
 - 成果物確認
 - 完了報告
 
 ## 使用例
+
 [1-2個の具体例]
 ```
 
 **ハブ特化型の特徴**:
+
 - ✅ エージェント起動に特化（詳細はエージェントに委譲）
 - ✅ スキルは条件付き参照（トークン効率）
 - ✅ 簡潔な本文（3フェーズのみ）
@@ -194,21 +211,26 @@ model: sonnet
 # Command Title
 
 ## Purpose
+
 What this command does
 
 ## Execution Steps
+
 1. Step 1
 2. Step 2
 3. Step 3
 
 ## Examples
+
 Usage examples
 
 ## Error Handling
+
 How to handle failures
 ```
 
 **従来型の用途**:
+
 - エージェントを使わない直接実行コマンド
 - シンプルな自動化（Bash スクリプト相当）
 
@@ -233,12 +255,14 @@ description: |
 **ベストプラクティス**:
 
 **ハブ特化型（エージェント起動コマンド）**:
+
 - 🤖 起動エージェント: 相対パス + 役割 + 起動タイミング
 - 📚 利用可能スキル: フェーズ別・条件付き（「必要時」明記）
 - ⚙️ 設定根拠: argument-hint, allowed-tools, model の選択理由を記述
 - トリガーキーワード: 自然言語での起動キーワード
 
 **従来型（直接実行コマンド）**:
+
 - 4-8行の詳細な説明
 - トリガーキーワードを含める
 - 使用タイミングを明記
@@ -387,6 +411,7 @@ allowed-tools:
 ```
 
 **セキュリティ原則**:
+
 ```yaml
 # ✅ 良い例：最小権限
 allowed-tools:
@@ -416,6 +441,7 @@ allowed-tools:
 ```
 
 **パス制限の重要性**:
+
 ```yaml
 # ✅ 推奨：特定パスのみ
 Write(.claude/commands/**)    # .claude/commands/ 配下のみ
@@ -457,10 +483,10 @@ model: claude-3-5-haiku-20241022
 disable-model-invocation: true
 
 例:
-- データベース削除
-- 本番デプロイ
-- ファイル一括削除
-- 機密情報操作
+  - データベース削除
+  - 本番デプロイ
+  - ファイル一括削除
+  - 機密情報操作
 ```
 
 ## ファイル構造
@@ -515,6 +541,7 @@ disable-model-invocation: true
 ```
 
 **利点**:
+
 - 組織化が容易
 - コマンドの発見性向上
 - 命名の衝突回避
@@ -523,15 +550,19 @@ disable-model-invocation: true
 ## 詳細リソースの参照
 
 ### YAML Frontmatter 完全リファレンス
+
 詳細な仕様は `resources/yaml-frontmatter-reference.md` を参照
 
 ### 本文パターン実例集
+
 4つのパターンの実例は `resources/body-pattern-examples.md` を参照
 
 ### ファイル構造ベストプラクティス
+
 配置とディレクトリ設計は `resources/file-structure-best-practices.md` を参照
 
 ### テンプレート
+
 - 最小構成: `templates/minimal-command.md`
 - 完全版: `templates/complete-command.md`
 

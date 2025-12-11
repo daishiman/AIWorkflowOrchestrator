@@ -42,6 +42,7 @@ model: sonnet
 ### Phase 1: Hook種別の確認
 
 **引数確認**:
+
 ```bash
 # Hook種別が指定されている場合
 hook-type: "$ARGUMENTS"（PreToolUse, PostToolUse, Stop等）
@@ -55,12 +56,14 @@ hook-type: "all"（全hooks設定）
 **使用エージェント**: `.claude/agents/hook-master.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 Claude Code hooksとGit hooksの統合設定を行ってください。
 
 **Hook種別**: ${hook-type}
 
 **要件**:
+
 1. Claude Code hooks設定（settings.json）:
    - PreToolUse: ツール実行前の検証（破壊的操作の確認、パス検証）
    - PostToolUse: ツール実行後の処理（ログ記録、通知）
@@ -78,18 +81,21 @@ Claude Code hooksとGit hooksの統合設定を行ってください。
    - カスタム検証ロジック
 
 **スキル参照**:
+
 - `.claude/skills/claude-code-hooks/SKILL.md`: Claude Code hooks設計パターン
 - `.claude/skills/git-hooks-concepts/SKILL.md`: Git hooksライフサイクル
 - `.claude/skills/automation-scripting/SKILL.md`: Bash/Node.jsスクリプト実装
 - `.claude/skills/linting-formatting-automation/SKILL.md`: ESLint/Prettier統合
 
 **成果物**:
+
 - `.claude/settings.json`（Claude Code hooks設定、既存設定を保持）
 - `.husky/`（Git hooks、huskyフレームワーク使用）
 - `.claude/hooks/`（カスタムスクリプト）
 - `package.json`（lint-staged設定追加）
 
 **品質基準**:
+
 - hooks実行時のパフォーマンス（pre-commit < 5秒、pre-push < 30秒）
 - エラーハンドリング（失敗時の明確なメッセージ、リトライ可否）
 - セキュリティ（パス検証、破壊的操作の確認）
@@ -99,12 +105,14 @@ Claude Code hooksとGit hooksの統合設定を行ってください。
 ### Phase 3: 検証と完了
 
 **検証内容**:
+
 1. settings.json構文チェック
 2. Git hooks実行権限確認（chmod +x）
 3. huskyインストール確認
 4. lint-staged動作確認
 
 **完了報告**:
+
 - 設定されたhooks一覧
 - 使用方法とテスト手順
 - トラブルシューティングガイド
@@ -132,16 +140,19 @@ Claude Code hooksとGit hooksの統合設定を行ってください。
 ### Claude Code Hooks
 
 **PreToolUse（ツール実行前）**:
+
 - 破壊的操作の確認（Write/Edit/Bash）
 - パス検証（禁止パターン、許可パターン）
 - コンテキスト分析（トークン使用量警告）
 
 **PostToolUse（ツール実行後）**:
+
 - 実行ログ記録（ツール名、引数、結果）
 - エラー通知（Discord/Slack連携）
 - メトリクス収集（実行時間、成功率）
 
 **UserPromptSubmit（プロンプト送信前）**:
+
 - 文脈分析（重要情報の欠落検出）
 - 最適化提案（より効率的なツール使用提案）
 - セキュリティチェック（秘密情報の混入検出）
@@ -149,6 +160,7 @@ Claude Code hooksとGit hooksの統合設定を行ってください。
 ### Git Hooks
 
 **pre-commit**:
+
 ```bash
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
@@ -164,6 +176,7 @@ git diff --cached --name-only | grep -q "\.test\." && pnpm test
 ```
 
 **commit-msg**:
+
 ```bash
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
@@ -173,6 +186,7 @@ npx --no -- commitlint --edit $1
 ```
 
 **pre-push**:
+
 ```bash
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
@@ -191,6 +205,7 @@ pnpm audit --audit-level=moderate
 **原因**: Git hooksの実行権限がない
 
 **解決策**:
+
 ```bash
 chmod +x .husky/pre-commit
 chmod +x .husky/commit-msg
@@ -203,6 +218,7 @@ chmod +x .husky/pre-push
 
 **解決策**:
 package.jsonのlint-staged設定を最適化:
+
 ```json
 {
   "lint-staged": {
@@ -217,6 +233,7 @@ package.jsonのlint-staged設定を最適化:
 **原因**: JSONフォーマット不正
 
 **解決策**:
+
 ```bash
 # JSONフォーマット検証
 cat .claude/settings.json | jq .

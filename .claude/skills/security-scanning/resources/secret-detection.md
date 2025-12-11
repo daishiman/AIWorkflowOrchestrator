@@ -7,12 +7,12 @@
 
 ## ツール比較
 
-| ツール | 特徴 | コスト |
-|-------|------|--------|
-| TruffleHog | 高精度、Git履歴スキャン | OSS |
-| GitLeaks | 高速、pre-commit対応 | OSS |
-| detect-secrets | Yelp製、ベースライン管理 | OSS |
-| GitHub Secret Scanning | GitHub統合 | 無料（Public） |
+| ツール                 | 特徴                     | コスト         |
+| ---------------------- | ------------------------ | -------------- |
+| TruffleHog             | 高精度、Git履歴スキャン  | OSS            |
+| GitLeaks               | 高速、pre-commit対応     | OSS            |
+| detect-secrets         | Yelp製、ベースライン管理 | OSS            |
+| GitHub Secret Scanning | GitHub統合               | 無料（Public） |
 
 ## TruffleHog
 
@@ -161,7 +161,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # 全履歴が必要
+          fetch-depth: 0 # 全履歴が必要
 
       - name: TruffleHog Scan
         uses: trufflesecurity/trufflehog@main
@@ -181,12 +181,12 @@ jobs:
 
 ### 一般的なシークレット
 
-| 種類 | パターン例 |
-|------|-----------|
-| AWS Access Key | `AKIA[0-9A-Z]{16}` |
-| AWS Secret Key | `[A-Za-z0-9/+=]{40}` |
-| GitHub Token | `gh[ps]_[A-Za-z0-9]{36}` |
-| Slack Token | `xox[baprs]-[0-9a-zA-Z-]+` |
+| 種類            | パターン例                                                |
+| --------------- | --------------------------------------------------------- |
+| AWS Access Key  | `AKIA[0-9A-Z]{16}`                                        |
+| AWS Secret Key  | `[A-Za-z0-9/+=]{40}`                                      |
+| GitHub Token    | `gh[ps]_[A-Za-z0-9]{36}`                                  |
+| Slack Token     | `xox[baprs]-[0-9a-zA-Z-]+`                                |
 | Generic API Key | `[aA][pP][iI][-_]?[kK][eE][yY].*['"][0-9a-zA-Z]{16,}['"]` |
 
 ### 誤検知の除外

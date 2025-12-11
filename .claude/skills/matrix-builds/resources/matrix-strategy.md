@@ -17,6 +17,7 @@ strategy:
 ```
 
 **アクセス方法**:
+
 ```yaml
 runs-on: ${{ matrix.os }}
 steps:
@@ -58,12 +59,13 @@ strategy:
       - os: ubuntu-latest
         node: 20
         experimental: true
-        rust: 'nightly'
+        rust: "nightly"
 ```
 
 **結果**: `ubuntu-latest + node 20`のジョブに`experimental`と`rust`プロパティ追加
 
 **アクセス**:
+
 ```yaml
 steps:
   - name: 実験的ビルド
@@ -153,6 +155,7 @@ strategy:
 ```
 
 **実行順序**:
+
 1. us-east-1, us-west-2（並列）
 2. 完了後 → eu-west-1, ap-northeast-1（並列）
 
@@ -162,7 +165,7 @@ strategy:
 
 ```yaml
 strategy:
-  max-parallel: 1  # 順次実行
+  max-parallel: 1 # 順次実行
   matrix:
     environment: [prod, staging, dev]
 ```
@@ -173,7 +176,7 @@ strategy:
 
 ```yaml
 strategy:
-  max-parallel: 5  # GitHub無料プランの並列数以内
+  max-parallel: 5 # GitHub無料プランの並列数以内
   matrix:
     browser: [chrome, firefox, safari, edge, opera]
 ```
@@ -211,7 +214,7 @@ strategy:
       # macOS最新（Node 22のみ）
       - os: macos-14
         node: 22
-        label: 'macos-arm64'
+        label: "macos-arm64"
 
     exclude:
       # Windowsの古いバージョン除外
@@ -224,6 +227,7 @@ strategy:
 ```
 
 **結果**:
+
 - 基本: 3 OS × 3 Node = 9
 - 除外: -2
 - 追加: +2
@@ -259,9 +263,9 @@ strategy:
     os: [ubuntu-latest, windows-latest]
     include:
       - os: ubuntu-latest
-        package-manager: 'apt'
+        package-manager: "apt"
       - os: windows-latest
-        package-manager: 'choco'
+        package-manager: "choco"
 
 steps:
   - name: パッケージインストール
@@ -280,15 +284,18 @@ steps:
 ### 1. マトリックス次元を最小化
 
 ❌ **避けるべき**:
+
 ```yaml
 matrix:
-  os: [ubuntu-20.04, ubuntu-22.04, windows-2019, windows-2022, macos-12, macos-13]
+  os:
+    [ubuntu-20.04, ubuntu-22.04, windows-2019, windows-2022, macos-12, macos-13]
   node: [16, 18, 20, 22]
   browser: [chrome, firefox, safari, edge]
   # 6 × 4 × 4 = 96ジョブ！
 ```
 
 ✅ **推奨**:
+
 ```yaml
 matrix:
   os: [ubuntu-latest, windows-latest, macos-latest]
@@ -304,9 +311,9 @@ strategy:
     include:
       # LTS版のみ、主要OSのみ
       - os: ubuntu-latest
-        node: 18  # LTS
+        node: 18 # LTS
       - os: ubuntu-latest
-        node: 20  # Current LTS
+        node: 20 # Current LTS
       - os: windows-latest
         node: 20
       - os: macos-latest
@@ -317,15 +324,17 @@ strategy:
 ### 3. fail-fast戦略
 
 **開発ブランチ**:
+
 ```yaml
 strategy:
-  fail-fast: false  # 全結果確認
+  fail-fast: false # 全結果確認
 ```
 
 **mainブランチ**:
+
 ```yaml
 strategy:
-  fail-fast: true  # 高速フィードバック
+  fail-fast: true # 高速フィードバック
 ```
 
 ---
@@ -362,7 +371,7 @@ jobs:
 
   report:
     needs: test
-    if: always()  # testが失敗しても実行
+    if: always() # testが失敗しても実行
     runs-on: ubuntu-latest
     steps:
       - name: 結果レポート
@@ -378,6 +387,7 @@ jobs:
 ### 1. マトリックス変数の命名
 
 ✅ **明確な命名**:
+
 ```yaml
 matrix:
   os: [ubuntu-latest, windows-latest]
@@ -386,6 +396,7 @@ matrix:
 ```
 
 ❌ **曖昧な命名**:
+
 ```yaml
 matrix:
   a: [ubuntu-latest, windows-latest]
@@ -434,12 +445,12 @@ jobs:
 
 ## まとめ
 
-| 機能 | 用途 | デフォルト |
-|------|------|-----------|
-| `matrix` | 組み合わせ定義 | - |
-| `include` | 組み合わせ/プロパティ追加 | - |
-| `exclude` | 組み合わせ除外 | - |
-| `fail-fast` | 失敗時の継続制御 | `true` |
-| `max-parallel` | 並列度制限 | 無制限 |
+| 機能           | 用途                      | デフォルト |
+| -------------- | ------------------------- | ---------- |
+| `matrix`       | 組み合わせ定義            | -          |
+| `include`      | 組み合わせ/プロパティ追加 | -          |
+| `exclude`      | 組み合わせ除外            | -          |
+| `fail-fast`    | 失敗時の継続制御          | `true`     |
+| `max-parallel` | 並列度制限                | 無制限     |
 
 **推奨**: 2-3次元マトリックス、代表的組み合わせ、適切なfail-fast設定

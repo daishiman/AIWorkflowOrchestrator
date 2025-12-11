@@ -12,19 +12,19 @@ Facebook、LINE、Slack、Discordなど多くのプラットフォームが対�
 ```typescript
 export const metadata: Metadata = {
   openGraph: {
-    title: 'ページタイトル',        // og:title
-    description: '説明文',         // og:description
-    url: 'https://example.com',   // og:url
-    type: 'website',              // og:type
+    title: "ページタイトル", // og:title
+    description: "説明文", // og:description
+    url: "https://example.com", // og:url
+    type: "website", // og:type
     images: [
       {
-        url: 'https://example.com/og.png',
+        url: "https://example.com/og.png",
         width: 1200,
         height: 630,
       },
     ],
   },
-}
+};
 ```
 
 ### OGタイプ別設定
@@ -147,12 +147,12 @@ twitter: {
 
 ### 推奨仕様
 
-| プラットフォーム | サイズ | アスペクト比 | フォーマット |
-|----------------|--------|-------------|------------|
-| OGP | 1200x630px | 1.91:1 | PNG, JPG |
-| Twitter Large | 1200x630px | 1.91:1 | PNG, JPG, GIF |
-| Twitter Summary | 144x144px | 1:1 | PNG, JPG, GIF |
-| LINE | 1200x630px | 1.91:1 | PNG, JPG |
+| プラットフォーム | サイズ     | アスペクト比 | フォーマット  |
+| ---------------- | ---------- | ------------ | ------------- |
+| OGP              | 1200x630px | 1.91:1       | PNG, JPG      |
+| Twitter Large    | 1200x630px | 1.91:1       | PNG, JPG, GIF |
+| Twitter Summary  | 144x144px  | 1:1          | PNG, JPG, GIF |
+| LINE             | 1200x630px | 1.91:1       | PNG, JPG      |
 
 ### 動的OGP画像生成
 
@@ -255,7 +255,7 @@ export default async function Image({ params }: { params: { slug: string } }) {
 
 ```typescript
 // app/blog/[slug]/twitter-image.tsx
-export { default, alt, size, contentType } from './opengraph-image'
+export { default, alt, size, contentType } from "./opengraph-image";
 ```
 
 ## プレビュー・デバッグツール
@@ -284,22 +284,22 @@ export { default, alt, size, contentType } from './opengraph-image'
 
 ```typescript
 // app/blog/[slug]/page.tsx
-import type { Metadata } from 'next'
+import type { Metadata } from "next";
 
 type Props = {
-  params: Promise<{ slug: string }>
-}
+  params: Promise<{ slug: string }>;
+};
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params
-  const post = await getPost(slug)
+  const { slug } = await params;
+  const post = await getPost(slug);
 
   const ogImage = {
     url: `https://example.com/api/og?title=${encodeURIComponent(post.title)}`,
     width: 1200,
     height: 630,
     alt: post.title,
-  }
+  };
 
   return {
     title: post.title,
@@ -309,10 +309,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: post.title,
       description: post.excerpt,
       url: `https://example.com/blog/${slug}`,
-      siteName: 'My Blog',
+      siteName: "My Blog",
       images: [ogImage],
-      locale: 'ja_JP',
-      type: 'article',
+      locale: "ja_JP",
+      type: "article",
       publishedTime: post.publishedAt,
       modifiedTime: post.updatedAt,
       authors: [post.author.name],
@@ -320,13 +320,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
 
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       title: post.title,
       description: post.excerpt,
       images: [ogImage.url],
       creator: `@${post.author.twitter}`,
     },
-  }
+  };
 }
 ```
 

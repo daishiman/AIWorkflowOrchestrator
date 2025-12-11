@@ -2,16 +2,16 @@
 
 ## 対応言語一覧
 
-| 言語 | HTTPライブラリ | 優先度 |
-|------|--------------|--------|
-| JavaScript/TypeScript | fetch, axios | 高 |
-| Python | requests, httpx | 高 |
-| Go | net/http | 中 |
-| Ruby | net/http, faraday | 中 |
-| Java | HttpClient, OkHttp | 中 |
-| PHP | Guzzle | 中 |
-| C# | HttpClient | 低 |
-| Shell | curl | 高 |
+| 言語                  | HTTPライブラリ     | 優先度 |
+| --------------------- | ------------------ | ------ |
+| JavaScript/TypeScript | fetch, axios       | 高     |
+| Python                | requests, httpx    | 高     |
+| Go                    | net/http           | 中     |
+| Ruby                  | net/http, faraday  | 中     |
+| Java                  | HttpClient, OkHttp | 中     |
+| PHP                   | Guzzle             | 中     |
+| C#                    | HttpClient         | 低     |
+| Shell                 | curl               | 高     |
 
 ---
 
@@ -21,11 +21,11 @@
 
 ```typescript
 // 基本的なGETリクエスト
-const response = await fetch('https://api.example.com/v1/users', {
+const response = await fetch("https://api.example.com/v1/users", {
   headers: {
-    'Authorization': `Bearer ${API_KEY}`,
-    'Content-Type': 'application/json'
-  }
+    Authorization: `Bearer ${API_KEY}`,
+    "Content-Type": "application/json",
+  },
 });
 
 if (!response.ok) {
@@ -38,16 +38,16 @@ const users = await response.json();
 
 ```typescript
 // POSTリクエスト
-const response = await fetch('https://api.example.com/v1/users', {
-  method: 'POST',
+const response = await fetch("https://api.example.com/v1/users", {
+  method: "POST",
   headers: {
-    'Authorization': `Bearer ${API_KEY}`,
-    'Content-Type': 'application/json'
+    Authorization: `Bearer ${API_KEY}`,
+    "Content-Type": "application/json",
   },
   body: JSON.stringify({
-    name: '山田太郎',
-    email: 'yamada@example.com'
-  })
+    name: "山田太郎",
+    email: "yamada@example.com",
+  }),
 });
 
 const newUser = await response.json();
@@ -57,29 +57,29 @@ console.log(`Created user: ${newUser.id}`);
 ### axios
 
 ```typescript
-import axios from 'axios';
+import axios from "axios";
 
 const client = axios.create({
-  baseURL: 'https://api.example.com/v1',
+  baseURL: "https://api.example.com/v1",
   headers: {
-    'Authorization': `Bearer ${API_KEY}`
-  }
+    Authorization: `Bearer ${API_KEY}`,
+  },
 });
 
 // GETリクエスト
-const { data: users } = await client.get('/users', {
-  params: { limit: 10, status: 'active' }
+const { data: users } = await client.get("/users", {
+  params: { limit: 10, status: "active" },
 });
 
 // POSTリクエスト
-const { data: newUser } = await client.post('/users', {
-  name: '山田太郎',
-  email: 'yamada@example.com'
+const { data: newUser } = await client.post("/users", {
+  name: "山田太郎",
+  email: "yamada@example.com",
 });
 
 // エラーハンドリング
 try {
-  await client.get('/users/invalid');
+  await client.get("/users/invalid");
 } catch (error) {
   if (axios.isAxiosError(error)) {
     console.error(error.response?.data.detail);
@@ -119,35 +119,32 @@ class APIClient {
   private apiKey: string;
 
   constructor(apiKey: string) {
-    this.baseURL = 'https://api.example.com/v1';
+    this.baseURL = "https://api.example.com/v1";
     this.apiKey = apiKey;
   }
 
   async getUsers(limit = 20): Promise<PaginatedResponse<User>> {
-    const response = await fetch(
-      `${this.baseURL}/users?limit=${limit}`,
-      {
-        headers: { 'Authorization': `Bearer ${this.apiKey}` }
-      }
-    );
+    const response = await fetch(`${this.baseURL}/users?limit=${limit}`, {
+      headers: { Authorization: `Bearer ${this.apiKey}` },
+    });
     return response.json();
   }
 
   async createUser(data: CreateUserRequest): Promise<User> {
     const response = await fetch(`${this.baseURL}/users`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${this.apiKey}`,
-        'Content-Type': 'application/json'
+        Authorization: `Bearer ${this.apiKey}`,
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     });
     return response.json();
   }
 }
 
 // 使用例
-const client = new APIClient('your_api_key');
+const client = new APIClient("your_api_key");
 const users = await client.getUsers(10);
 ```
 
@@ -432,34 +429,42 @@ echo "$body" | jq '.'
 
 ### タブ切り替え形式（ドキュメント用）
 
-```markdown
+````markdown
 {{< tabs >}}
 
 {{< tab "cURL" >}}
+
 ```bash
 curl -X GET "https://api.example.com/v1/users" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
+````
+
 {{< /tab >}}
 
 {{< tab "JavaScript" >}}
+
 ```javascript
-const response = await fetch('https://api.example.com/v1/users', {
-  headers: { 'Authorization': 'Bearer YOUR_API_KEY' }
+const response = await fetch("https://api.example.com/v1/users", {
+  headers: { Authorization: "Bearer YOUR_API_KEY" },
 });
 ```
+
 {{< /tab >}}
 
 {{< tab "Python" >}}
+
 ```python
 response = requests.get(
     'https://api.example.com/v1/users',
     headers={'Authorization': 'Bearer YOUR_API_KEY'}
 )
 ```
+
 {{< /tab >}}
 
 {{< /tabs >}}
+
 ```
 
 ---
@@ -472,3 +477,4 @@ response = requests.get(
 - [ ] 型定義がある（該当する場合）
 - [ ] 実行可能なコード
 - [ ] 依存関係が明記されている
+```

@@ -22,20 +22,20 @@ function calculateBackoff(attempt: number, config: BackoffConfig): number {
 }
 
 interface BackoffConfig {
-  baseDelay: number;     // 基本遅延（ミリ秒）
-  maxDelay: number;      // 最大遅延（ミリ秒）
-  jitterFactor: number;  // ジッター係数（0-1）
+  baseDelay: number; // 基本遅延（ミリ秒）
+  maxDelay: number; // 最大遅延（ミリ秒）
+  jitterFactor: number; // ジッター係数（0-1）
 }
 ```
 
 ### 推奨設定
 
-| 設定項目 | 推奨値 | 説明 |
-|---------|-------|------|
-| baseDelay | 1000ms | 初回リトライの待機時間 |
-| maxDelay | 64000ms | 最大待機時間（約1分） |
-| jitterFactor | 0.25 | ±25%のランダム変動 |
-| maxAttempts | 無制限 | 接続が回復するまで継続 |
+| 設定項目     | 推奨値  | 説明                   |
+| ------------ | ------- | ---------------------- |
+| baseDelay    | 1000ms  | 初回リトライの待機時間 |
+| maxDelay     | 64000ms | 最大待機時間（約1分）  |
+| jitterFactor | 0.25    | ±25%のランダム変動     |
+| maxAttempts  | 無制限  | 接続が回復するまで継続 |
 
 ### バックオフ系列の例
 
@@ -77,17 +77,17 @@ Client3: ─●───●──●────●───●────>
 
 ```typescript
 interface HealthCheckConfig {
-  url: string;           // ヘルスチェックURL
-  timeout: number;       // タイムアウト（ミリ秒）
-  interval: number;      // チェック間隔（ミリ秒）
-  method: 'GET' | 'HEAD';
+  url: string; // ヘルスチェックURL
+  timeout: number; // タイムアウト（ミリ秒）
+  interval: number; // チェック間隔（ミリ秒）
+  method: "GET" | "HEAD";
 }
 
 const DEFAULT_HEALTH_CHECK: HealthCheckConfig = {
-  url: '/api/health',
-  timeout: 5000,         // 5秒
-  interval: 30000,       // 30秒
-  method: 'HEAD'         // 軽量なリクエスト
+  url: "/api/health",
+  timeout: 5000, // 5秒
+  interval: 30000, // 30秒
+  method: "HEAD", // 軽量なリクエスト
 };
 ```
 
@@ -114,7 +114,7 @@ function isHealthy(response: Response): boolean {
 ### 状態定義
 
 ```typescript
-type ConnectionState = 'online' | 'offline' | 'reconnecting';
+type ConnectionState = "online" | "offline" | "reconnecting";
 
 interface ConnectionStatus {
   state: ConnectionState;
@@ -160,18 +160,18 @@ interface ConnectionEvents {
 ### 使用例
 
 ```typescript
-connectionManager.on('offline', (event) => {
+connectionManager.on("offline", (event) => {
   console.log(`接続が切断されました: ${event.reason}`);
   ui.showOfflineBanner();
 });
 
-connectionManager.on('online', (event) => {
-  console.log('接続が回復しました');
+connectionManager.on("online", (event) => {
+  console.log("接続が回復しました");
   ui.hideOfflineBanner();
   queue.processAll();
 });
 
-connectionManager.on('reconnecting', (event) => {
+connectionManager.on("reconnecting", (event) => {
   console.log(`再接続中 (${event.attempt}回目)...`);
 });
 ```

@@ -5,6 +5,7 @@
 ### 検出パターン
 
 **文字列連結**:
+
 ```javascript
 // ❌ 危険
 const query = `SELECT * FROM users WHERE id = ${userId}`;
@@ -13,6 +14,7 @@ db.query(`UPDATE users SET name = '${userName}'`);
 ```
 
 **検出正規表現**:
+
 ```regex
 /(query|exec|raw)\s*\(\s*['"`].*\$\{/
 /(query|exec)\s*\(\s*['"`].*\+\s*\w+/
@@ -22,8 +24,8 @@ db.query(`UPDATE users SET name = '${userName}'`);
 
 ```javascript
 // ✅ パラメータ化クエリ
-db.query('SELECT * FROM users WHERE id = $1', [userId]);
-db.query('SELECT * FROM users WHERE id = ?', [userId]);
+db.query("SELECT * FROM users WHERE id = $1", [userId]);
+db.query("SELECT * FROM users WHERE id = ?", [userId]);
 ```
 
 ---
@@ -33,14 +35,16 @@ db.query('SELECT * FROM users WHERE id = ?', [userId]);
 ### 検出パターン
 
 **文字列連結コマンド**:
+
 ```javascript
 // ❌ 危険
 exec(`ls -la ${userInput}`);
 execSync(`rm -rf ${directory}`);
-spawn('sh', ['-c', `cat ${filename}`]);
+spawn("sh", ["-c", `cat ${filename}`]);
 ```
 
 **検出正規表現**:
+
 ```regex
 /exec(Sync)?\s*\(\s*['"`].*\$\{/
 /spawn\s*\(\s*['"`]sh['"`]\s*,.*\$\{/
@@ -50,8 +54,8 @@ spawn('sh', ['-c', `cat ${filename}`]);
 
 ```javascript
 // ✅ 引数配列
-spawn('ls', ['-la', userInput]);
-execFile('cat', [filename]);
+spawn("ls", ["-la", userInput]);
+execFile("cat", [filename]);
 ```
 
 ---
@@ -71,7 +75,7 @@ const filter = `(uid=${username})`;
 // ✅ エスケープ
 function escapeLDAP(str) {
   return str.replace(/[*()\\\0]/g, (char) => {
-    return '\\' + char.charCodeAt(0).toString(16).padStart(2, '0');
+    return "\\" + char.charCodeAt(0).toString(16).padStart(2, "0");
   });
 }
 ```

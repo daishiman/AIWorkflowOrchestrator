@@ -52,12 +52,14 @@ Workflow (短期トークンで操作実行)
 ### IAM OIDC プロバイダー設定
 
 **AWS Management Console**:
+
 1. IAM → Identity providers → Add provider
 2. Provider type: OpenID Connect
 3. Provider URL: `https://token.actions.githubusercontent.com`
 4. Audience: `sts.amazonaws.com`
 
 **AWS CLI**:
+
 ```bash
 aws iam create-open-id-connect-provider \
   --url https://token.actions.githubusercontent.com \
@@ -68,6 +70,7 @@ aws iam create-open-id-connect-provider \
 ### IAMロール作成
 
 **信頼ポリシー** (`trust-policy.json`):
+
 ```json
 {
   "Version": "2012-10-17",
@@ -92,6 +95,7 @@ aws iam create-open-id-connect-provider \
 ```
 
 **条件付きアクセス例**:
+
 ```json
 {
   "Condition": {
@@ -104,6 +108,7 @@ aws iam create-open-id-connect-provider \
 ```
 
 **ワイルドカード使用**:
+
 ```json
 {
   "Condition": {
@@ -118,6 +123,7 @@ aws iam create-open-id-connect-provider \
 ```
 
 **IAMロール作成**:
+
 ```bash
 aws iam create-role \
   --role-name GitHubActionsRole \
@@ -132,12 +138,13 @@ aws iam attach-role-policy \
 ### ワークフロー実装
 
 **基本パターン**:
+
 ```yaml
 name: AWS OIDC Example
 on: push
 
 permissions:
-  id-token: write  # OIDC トークン取得に必須
+  id-token: write # OIDC トークン取得に必須
   contents: read
 
 jobs:
@@ -161,6 +168,7 @@ jobs:
 ```
 
 **複数リージョン対応**:
+
 ```yaml
 jobs:
   deploy:
@@ -175,6 +183,7 @@ jobs:
 ```
 
 **セッション名カスタマイズ**:
+
 ```yaml
 - uses: aws-actions/configure-aws-credentials@v4
   with:
@@ -196,6 +205,7 @@ jobs:
 ### Workload Identity Pool設定
 
 **gcloud CLI**:
+
 ```bash
 # Workload Identity Pool作成
 gcloud iam workload-identity-pools create "github-pool" \
@@ -214,6 +224,7 @@ gcloud iam workload-identity-pools providers create-oidc "github-provider" \
 ```
 
 **属性マッピング**:
+
 ```
 google.subject = assertion.sub
 attribute.actor = assertion.actor
@@ -225,12 +236,14 @@ attribute.ref = assertion.ref
 ### サービスアカウント設定
 
 **サービスアカウント作成**:
+
 ```bash
 gcloud iam service-accounts create github-actions \
   --display-name="GitHub Actions Service Account"
 ```
 
 **IAMポリシーバインディング**:
+
 ```bash
 # 条件なし（すべてのリポジトリ）
 gcloud iam service-accounts add-iam-policy-binding \
@@ -249,6 +262,7 @@ gcloud iam service-accounts add-iam-policy-binding \
 ### ワークフロー実装
 
 **基本パターン**:
+
 ```yaml
 name: GCP OIDC Example
 on: push
@@ -267,8 +281,8 @@ jobs:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: 'projects/123456789/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
-          service_account: 'github-actions@my-project.iam.gserviceaccount.com'
+          workload_identity_provider: "projects/123456789/locations/global/workloadIdentityPools/github-pool/providers/github-provider"
+          service_account: "github-actions@my-project.iam.gserviceaccount.com"
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
@@ -281,13 +295,14 @@ jobs:
 ```
 
 **アクセストークン直接取得**:
+
 ```yaml
 - uses: google-github-actions/auth@v2
   id: auth
   with:
-    token_format: 'access_token'
-    workload_identity_provider: 'projects/.../providers/github-provider'
-    service_account: 'github-actions@my-project.iam.gserviceaccount.com'
+    token_format: "access_token"
+    workload_identity_provider: "projects/.../providers/github-provider"
+    service_account: "github-actions@my-project.iam.gserviceaccount.com"
 
 - name: Use Access Token
   run: |
@@ -309,6 +324,7 @@ jobs:
 ### Azure AD アプリケーション設定
 
 **Azure CLI**:
+
 ```bash
 # アプリケーション登録
 az ad app create --display-name "GitHub Actions App"
@@ -328,6 +344,7 @@ az ad app federated-credential create \
 ```
 
 **条件付きアクセス例**:
+
 ```json
 {
   "subject": "repo:octo-org/octo-repo:environment:production"
@@ -335,6 +352,7 @@ az ad app federated-credential create \
 ```
 
 **ロール割り当て**:
+
 ```bash
 az role assignment create \
   --assignee <app-id> \
@@ -345,6 +363,7 @@ az role assignment create \
 ### ワークフロー実装
 
 **基本パターン**:
+
 ```yaml
 name: Azure OIDC Example
 on: push
@@ -375,6 +394,7 @@ jobs:
 ```
 
 **複数環境対応**:
+
 ```yaml
 jobs:
   deploy:
@@ -397,6 +417,7 @@ jobs:
 ### Vault設定
 
 **JWT Auth Methodの有効化**:
+
 ```bash
 vault auth enable jwt
 
@@ -406,6 +427,7 @@ vault write auth/jwt/config \
 ```
 
 **ロール作成**:
+
 ```bash
 vault write auth/jwt/role/github-actions \
   role_type="jwt" \
@@ -460,11 +482,13 @@ jobs:
 ### カスタムオーディエンス
 
 **デフォルト**:
+
 - AWS: `sts.amazonaws.com`
 - GCP: Workload Identity Provider URL
 - Azure: `api://AzureADTokenExchange`
 
 **カスタマイズ**:
+
 ```yaml
 jobs:
   deploy:
@@ -482,6 +506,7 @@ jobs:
 ### トークンクレーム
 
 **標準クレーム**:
+
 ```json
 {
   "jti": "example-id",
@@ -514,9 +539,10 @@ jobs:
 **原因**: `id-token: write`パーミッション未設定
 
 **解決**:
+
 ```yaml
 permissions:
-  id-token: write  # 必須
+  id-token: write # 必須
   contents: read
 ```
 
@@ -525,11 +551,13 @@ permissions:
 **原因**: IAMロールの信頼ポリシーが不正
 
 **確認ポイント**:
+
 1. OIDC プロバイダーARNが正しいか
 2. `sub` クレーム条件がリポジトリ/ブランチと一致するか
 3. `aud` クレーム条件が正しいか
 
 **デバッグ**:
+
 ```yaml
 - name: Decode OIDC Token
   run: |
@@ -543,6 +571,7 @@ permissions:
 **原因**: オーディエンスが一致しない
 
 **解決**:
+
 - AWS: `sts.amazonaws.com`
 - 信頼ポリシーのaudienceと一致させる
 

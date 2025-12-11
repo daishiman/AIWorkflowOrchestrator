@@ -18,12 +18,12 @@
  */
 export function escapeHtml(unsafe: string): string {
   const escapeMap: Record<string, string> = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#x27;',
-    '/': '&#x2F;',
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#x27;",
+    "/": "&#x2F;",
   };
   return unsafe.replace(/[&<>"'/]/g, (char) => escapeMap[char] || char);
 }
@@ -33,28 +33,34 @@ export function escapeHtml(unsafe: string): string {
  */
 export function escapeHtmlAttribute(value: string): string {
   return value
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/\n/g, '&#x0a;')
-    .replace(/\r/g, '&#x0d;');
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\n/g, "&#x0a;")
+    .replace(/\r/g, "&#x0d;");
 }
 
 /**
  * HTMLタグを除去（プレーンテキスト抽出）
  */
 export function stripHtmlTags(html: string): string {
-  return html.replace(/<[^>]*>/g, '');
+  return html.replace(/<[^>]*>/g, "");
 }
 
 /**
  * 許可されたHTMLタグのみ保持
  */
-export function sanitizeHtml(html: string, allowedTags: string[] = ['b', 'i', 'em', 'strong']): string {
-  const tagPattern = new RegExp(`<(?!/?(?:${allowedTags.join('|')})\\b)[^>]*>`, 'gi');
-  return html.replace(tagPattern, '');
+export function sanitizeHtml(
+  html: string,
+  allowedTags: string[] = ["b", "i", "em", "strong"],
+): string {
+  const tagPattern = new RegExp(
+    `<(?!/?(?:${allowedTags.join("|")})\\b)[^>]*>`,
+    "gi",
+  );
+  return html.replace(tagPattern, "");
 }
 
 // ============================================================
@@ -66,14 +72,14 @@ export function sanitizeHtml(html: string, allowedTags: string[] = ['b', 'i', 'e
  */
 export function isSafeUrl(url: string): boolean {
   const lowerUrl = url.toLowerCase().trim();
-  const dangerousProtocols = ['javascript:', 'data:', 'vbscript:', 'file:'];
+  const dangerousProtocols = ["javascript:", "data:", "vbscript:", "file:"];
   return !dangerousProtocols.some((protocol) => lowerUrl.startsWith(protocol));
 }
 
 /**
  * 安全なURLを返す（危険なURLは空文字列）
  */
-export function sanitizeUrl(url: string, fallback = ''): string {
+export function sanitizeUrl(url: string, fallback = ""): string {
   if (!isSafeUrl(url)) {
     return fallback;
   }
@@ -93,7 +99,7 @@ export function encodeUrlParam(value: string): string {
 export function parseUrl(url: string): URL | null {
   try {
     const parsed = new URL(url);
-    if (!['http:', 'https:'].includes(parsed.protocol)) {
+    if (!["http:", "https:"].includes(parsed.protocol)) {
       return null;
     }
     return parsed;
@@ -111,9 +117,9 @@ export function parseUrl(url: string): URL | null {
  */
 export function sanitizeFilename(filename: string): string {
   return filename
-    .replace(/[^a-zA-Z0-9._-]/g, '_') // 英数字、ドット、アンダースコア、ハイフンのみ
-    .replace(/\.{2,}/g, '.') // 連続ドットを単一に
-    .replace(/^\.+|\.+$/g, '') // 先頭・末尾のドット除去
+    .replace(/[^a-zA-Z0-9._-]/g, "_") // 英数字、ドット、アンダースコア、ハイフンのみ
+    .replace(/\.{2,}/g, ".") // 連続ドットを単一に
+    .replace(/^\.+|\.+$/g, "") // 先頭・末尾のドット除去
     .substring(0, 255); // 長さ制限
 }
 
@@ -121,8 +127,8 @@ export function sanitizeFilename(filename: string): string {
  * パストラバーサルをチェック
  */
 export function hasPathTraversal(path: string): boolean {
-  const normalizedPath = path.replace(/\\/g, '/');
-  return normalizedPath.includes('../') || normalizedPath.includes('..');
+  const normalizedPath = path.replace(/\\/g, "/");
+  return normalizedPath.includes("../") || normalizedPath.includes("..");
 }
 
 /**
@@ -130,11 +136,11 @@ export function hasPathTraversal(path: string): boolean {
  */
 export function safePath(baseDir: string, userPath: string): string | null {
   // Node.js環境でのみ使用可能
-  if (typeof process === 'undefined') {
-    throw new Error('This function requires Node.js environment');
+  if (typeof process === "undefined") {
+    throw new Error("This function requires Node.js environment");
   }
 
-  const path = require('path');
+  const path = require("path");
   const normalizedBase = path.resolve(baseDir);
   const sanitizedName = sanitizeFilename(path.basename(userPath));
   const fullPath = path.join(normalizedBase, sanitizedName);
@@ -157,7 +163,7 @@ export function safePath(baseDir: string, userPath: string): string | null {
 export function validateLength(
   value: string,
   min: number,
-  max: number
+  max: number,
 ): { valid: boolean; error?: string } {
   if (value.length < min) {
     return { valid: false, error: `最小${min}文字以上必要です` };
@@ -181,7 +187,7 @@ export function isValidEmail(email: string): boolean {
  */
 export function isValidPhoneNumber(phone: string): boolean {
   const phoneRegex = /^0\d{9,10}$/;
-  const cleanPhone = phone.replace(/[-\s]/g, '');
+  const cleanPhone = phone.replace(/[-\s]/g, "");
   return phoneRegex.test(cleanPhone);
 }
 
@@ -208,20 +214,20 @@ export function isInteger(value: string): boolean {
  */
 export function escapeSqlString(value: string): string {
   return value
-    .replace(/\\/g, '\\\\')
+    .replace(/\\/g, "\\\\")
     .replace(/'/g, "\\'")
     .replace(/"/g, '\\"')
-    .replace(/\x00/g, '\\0')
-    .replace(/\n/g, '\\n')
-    .replace(/\r/g, '\\r')
-    .replace(/\x1a/g, '\\Z');
+    .replace(/\x00/g, "\\0")
+    .replace(/\n/g, "\\n")
+    .replace(/\r/g, "\\r")
+    .replace(/\x1a/g, "\\Z");
 }
 
 /**
  * LIKE句のワイルドカードをエスケープ
  */
 export function escapeLikePattern(pattern: string): string {
-  return pattern.replace(/[%_\\]/g, '\\$&');
+  return pattern.replace(/[%_\\]/g, "\\$&");
 }
 
 // ============================================================
@@ -253,21 +259,21 @@ export function escapeShellArg(arg: string): string {
  */
 export function removeControlChars(value: string): string {
   // eslint-disable-next-line no-control-regex
-  return value.replace(/[\x00-\x1F\x7F]/g, '');
+  return value.replace(/[\x00-\x1F\x7F]/g, "");
 }
 
 /**
  * Unicode正規化
  */
 export function normalizeUnicode(value: string): string {
-  return value.normalize('NFC');
+  return value.normalize("NFC");
 }
 
 /**
  * 空白文字をトリムして正規化
  */
 export function normalizeWhitespace(value: string): string {
-  return value.trim().replace(/\s+/g, ' ');
+  return value.trim().replace(/\s+/g, " ");
 }
 
 /**
@@ -280,7 +286,7 @@ export function sanitizeTextInput(
     trimWhitespace?: boolean;
     removeHtml?: boolean;
     removeControlChars?: boolean;
-  } = {}
+  } = {},
 ): string {
   const {
     maxLength = 1000,
@@ -346,21 +352,21 @@ export const encoder = {
  * 文字列型ガード
  */
 export function isString(value: unknown): value is string {
-  return typeof value === 'string';
+  return typeof value === "string";
 }
 
 /**
  * 非空文字列チェック
  */
 export function isNonEmptyString(value: unknown): value is string {
-  return typeof value === 'string' && value.length > 0;
+  return typeof value === "string" && value.length > 0;
 }
 
 /**
  * 安全にunknownから文字列を取得
  */
-export function safeString(value: unknown, defaultValue = ''): string {
-  if (typeof value === 'string') return value;
-  if (typeof value === 'number') return String(value);
+export function safeString(value: unknown, defaultValue = ""): string {
+  if (typeof value === "string") return value;
+  if (typeof value === "number") return String(value);
   return defaultValue;
 }

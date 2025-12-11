@@ -2,12 +2,12 @@
 
 ## デプロイ戦略の選択
 
-| 戦略 | リスク | 速度 | 複雑性 | 用途 |
-|------|-------|------|--------|------|
-| Big Bang | 高 | 高 | 低 | 開発環境、低リスク変更 |
-| Blue-Green | 低 | 中 | 中 | 本番環境、重要プロンプト |
-| Canary | 低 | 低 | 高 | 高トラフィック、慎重なロールアウト |
-| Feature Flag | 低 | 高 | 中 | 段階的機能リリース |
+| 戦略         | リスク | 速度 | 複雑性 | 用途                               |
+| ------------ | ------ | ---- | ------ | ---------------------------------- |
+| Big Bang     | 高     | 高   | 低     | 開発環境、低リスク変更             |
+| Blue-Green   | 低     | 中   | 中     | 本番環境、重要プロンプト           |
+| Canary       | 低     | 低   | 高     | 高トラフィック、慎重なロールアウト |
+| Feature Flag | 低     | 高   | 中     | 段階的機能リリース                 |
 
 ---
 
@@ -67,11 +67,13 @@ blue_green_deployment:
 ### メリット・デメリット
 
 **メリット**:
+
 - 即座のロールバックが可能
 - ダウンタイムなし
 - 検証環境と本番が同一
 
 **デメリット**:
+
 - 環境コストが2倍
 - データ同期の考慮が必要
 - 同時に複数バージョンを維持
@@ -127,7 +129,7 @@ canary_deployment:
     - name: "Phase 3: 50%"
       traffic: 50
       duration: "8 hours"
-      requires_approval: true  # 手動承認
+      requires_approval: true # 手動承認
 
     - name: "Phase 4: 100%"
       traffic: 100
@@ -171,10 +173,10 @@ canary_metrics:
 ```javascript
 // Feature Flagによるプロンプト切り替え
 const getPrompt = (userId, featureFlags) => {
-  if (featureFlags.isEnabled('new-prompt-v2', userId)) {
-    return loadPrompt('v2.0.0');
+  if (featureFlags.isEnabled("new-prompt-v2", userId)) {
+    return loadPrompt("v2.0.0");
   }
-  return loadPrompt('v1.0.0');
+  return loadPrompt("v1.0.0");
 };
 ```
 
@@ -220,7 +222,7 @@ gradual_rollout:
     - date: "2025-04-22"
       percentage: 100
       target: "all_users"
-      action: "remove_flag"  # フラグ削除
+      action: "remove_flag" # フラグ削除
 ```
 
 ---
@@ -285,7 +287,7 @@ name: Prompt Deployment
 on:
   push:
     paths:
-      - 'prompts/**'
+      - "prompts/**"
     branches:
       - main
 
@@ -329,6 +331,7 @@ jobs:
 ## デプロイ前確認事項
 
 ### 必須チェック
+
 - [ ] すべてのテストがパス
 - [ ] コードレビュー承認済み
 - [ ] 変更ログ更新済み
@@ -336,12 +339,14 @@ jobs:
 - [ ] ロールバック手順確認済み
 
 ### 推奨チェック
+
 - [ ] 負荷テスト実施済み
 - [ ] セキュリティレビュー完了
 - [ ] 依存関係の互換性確認
 - [ ] モニタリングアラート設定済み
 
 ### デプロイ後確認
+
 - [ ] ヘルスチェック正常
 - [ ] エラー率が閾値以下
 - [ ] レイテンシが許容範囲内

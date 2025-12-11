@@ -53,10 +53,10 @@ jobs:
     steps:
       - run: echo "secret" > secret.txt
 
-  build2:  # 同じランナーで実行される可能性
+  build2: # 同じランナーで実行される可能性
     runs-on: self-hosted
     steps:
-      - run: cat secret.txt  # 前のジョブのファイルにアクセス可能
+      - run: cat secret.txt # 前のジョブのファイルにアクセス可能
 ```
 
 #### 4. 権限昇格
@@ -262,16 +262,16 @@ spec:
   template:
     spec:
       containers:
-      - name: runner
-        image: github-runner:ephemeral
-        env:
-        - name: REPO_URL
-          value: "https://github.com/owner/repo"
-        - name: RUNNER_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: github-runner-token
-              key: token
+        - name: runner
+          image: github-runner:ephemeral
+          env:
+            - name: REPO_URL
+              value: "https://github.com/owner/repo"
+            - name: RUNNER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: github-runner-token
+                  key: token
       restartPolicy: OnFailure
 ```
 
@@ -281,12 +281,12 @@ spec:
 
 ```yaml
 # docker-compose.yml
-version: '3.8'
+version: "3.8"
 
 services:
   runner:
     build: .
-    privileged: true  # Docker実行に必要
+    privileged: true # Docker実行に必要
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:

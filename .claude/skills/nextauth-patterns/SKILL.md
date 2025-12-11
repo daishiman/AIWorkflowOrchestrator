@@ -29,7 +29,6 @@ description: |
   Use when implementing NextAuth.js, configuring authentication providers,
   or customizing authentication flows in Next.js applications.
 
-
 version: 1.0.0
 ---
 
@@ -38,6 +37,7 @@ version: 1.0.0
 ## スキル概要
 
 **コアドメイン**:
+
 - NextAuth.js v5設定
 - プロバイダー設定
 - アダプター統合
@@ -48,10 +48,10 @@ version: 1.0.0
 ### auth.ts設定
 
 ```typescript
-import NextAuth from 'next-auth';
-import Google from 'next-auth/providers/google';
-import { DrizzleAdapter } from '@auth/drizzle-adapter';
-import { db } from '@/infrastructure/database';
+import NextAuth from "next-auth";
+import Google from "next-auth/providers/google";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import { db } from "@/infrastructure/database";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db),
@@ -62,7 +62,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   session: {
-    strategy: 'jwt', // or 'database'
+    strategy: "jwt", // or 'database'
     maxAge: 30 * 24 * 60 * 60, // 30日
   },
   callbacks: {
@@ -86,7 +86,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
 ```typescript
 // app/api/auth/[...nextauth]/route.ts
-import { handlers } from '@/auth';
+import { handlers } from "@/auth";
 
 export const { GET, POST } = handlers;
 ```
@@ -96,34 +96,34 @@ export const { GET, POST } = handlers;
 ### Google OAuth 2.0
 
 ```typescript
-import Google from 'next-auth/providers/google';
+import Google from "next-auth/providers/google";
 
 Google({
   clientId: process.env.GOOGLE_CLIENT_ID!,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
   authorization: {
     params: {
-      scope: 'openid email profile',
-      prompt: 'select_account', // アカウント選択強制
+      scope: "openid email profile",
+      prompt: "select_account", // アカウント選択強制
     },
   },
-})
+});
 ```
 
 ### GitHub OAuth 2.0
 
 ```typescript
-import GitHub from 'next-auth/providers/github';
+import GitHub from "next-auth/providers/github";
 
 GitHub({
   clientId: process.env.GITHUB_CLIENT_ID!,
   clientSecret: process.env.GITHUB_CLIENT_SECRET!,
   authorization: {
     params: {
-      scope: 'read:user user:email',
+      scope: "read:user user:email",
     },
   },
-})
+});
 ```
 
 ## アダプター統合
@@ -131,8 +131,8 @@ GitHub({
 ### Drizzle Adapter
 
 ```typescript
-import { DrizzleAdapter } from '@auth/drizzle-adapter';
-import { db } from '@/infrastructure/database';
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import { db } from "@/infrastructure/database";
 
 export const { handlers, auth } = NextAuth({
   adapter: DrizzleAdapter(db),
@@ -205,6 +205,6 @@ node .claude/skills/nextauth-patterns/scripts/validate-nextauth-config.mjs auth.
 
 ## バージョン履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-26 | 初版リリース - NextAuth.js v5パターン |
+| バージョン | 日付       | 変更内容                              |
+| ---------- | ---------- | ------------------------------------- |
+| 1.0.0      | 2025-11-26 | 初版リリース - NextAuth.js v5パターン |

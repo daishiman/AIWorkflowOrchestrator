@@ -209,17 +209,17 @@ notification_channels:
     type: discord
     webhook_url: ${DISCORD_WEBHOOK_CRITICAL}
     mention: "@here"
-    color: 0xFF0000  # 赤
+    color: 0xFF0000 # 赤
 
   discord_warning:
     type: discord
     webhook_url: ${DISCORD_WEBHOOK_WARNING}
-    color: 0xFFA500  # オレンジ
+    color: 0xFFA500 # オレンジ
 
   discord_info:
     type: discord
     webhook_url: ${DISCORD_WEBHOOK_INFO}
-    color: 0x00FF00  # 緑
+    color: 0x00FF00 # 緑
 
   security_team:
     type: email

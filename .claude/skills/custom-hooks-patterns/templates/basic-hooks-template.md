@@ -5,7 +5,7 @@
 ### useToggle
 
 ```typescript
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from "react";
 
 /**
  * ブール値の切り替えを管理するフック
@@ -21,7 +21,7 @@ export function useToggle(initialValue = false) {
   const [value, setValue] = useState(initialValue);
 
   const toggle = useCallback(() => {
-    setValue(prev => !prev);
+    setValue((prev) => !prev);
   }, []);
 
   return [value, toggle, setValue] as const;
@@ -31,7 +31,7 @@ export function useToggle(initialValue = false) {
 ### useCounter
 
 ```typescript
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from "react";
 
 interface UseCounterOptions {
   min?: number;
@@ -53,20 +53,23 @@ export function useCounter(initialValue = 0, options: UseCounterOptions = {}) {
   const [count, setCount] = useState(initialValue);
 
   const increment = useCallback(() => {
-    setCount(prev => Math.min(prev + step, max));
+    setCount((prev) => Math.min(prev + step, max));
   }, [step, max]);
 
   const decrement = useCallback(() => {
-    setCount(prev => Math.max(prev - step, min));
+    setCount((prev) => Math.max(prev - step, min));
   }, [step, min]);
 
   const reset = useCallback(() => {
     setCount(initialValue);
   }, [initialValue]);
 
-  const set = useCallback((value: number) => {
-    setCount(Math.max(min, Math.min(value, max)));
-  }, [min, max]);
+  const set = useCallback(
+    (value: number) => {
+      setCount(Math.max(min, Math.min(value, max)));
+    },
+    [min, max],
+  );
 
   return { count, increment, decrement, reset, set };
 }
@@ -75,7 +78,7 @@ export function useCounter(initialValue = 0, options: UseCounterOptions = {}) {
 ### useInput
 
 ```typescript
-import { useState, useCallback, ChangeEvent } from 'react';
+import { useState, useCallback, ChangeEvent } from "react";
 
 /**
  * 入力フィールドの状態を管理するフック
@@ -88,21 +91,22 @@ import { useState, useCallback, ChangeEvent } from 'react';
  * // または
  * <input value={name.value} onChange={name.onChange} />
  */
-export function useInput(initialValue = '') {
+export function useInput(initialValue = "") {
   const [value, setValue] = useState(initialValue);
 
-  const onChange = useCallback((
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setValue(e.target.value);
-  }, []);
+  const onChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setValue(e.target.value);
+    },
+    [],
+  );
 
   const reset = useCallback(() => {
     setValue(initialValue);
   }, [initialValue]);
 
   const clear = useCallback(() => {
-    setValue('');
+    setValue("");
   }, []);
 
   return {
@@ -121,7 +125,7 @@ export function useInput(initialValue = '') {
 ### useDebounce
 
 ```typescript
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 /**
  * 値のデバウンスを行うフック
@@ -155,7 +159,7 @@ export function useDebounce<T>(value: T, delay: number): T {
 ### useInterval
 
 ```typescript
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 /**
  * インターバルを管理するフック
@@ -189,7 +193,7 @@ export function useInterval(callback: () => void, delay: number | null) {
 ### useTimeout
 
 ```typescript
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback } from "react";
 
 /**
  * タイムアウトを管理するフック
@@ -235,7 +239,7 @@ export function useTimeout(callback: () => void, delay: number | null) {
 ### useEventListener
 
 ```typescript
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 /**
  * イベントリスナーを管理するフック
@@ -252,8 +256,10 @@ import { useEffect, useRef } from 'react';
 export function useEventListener<K extends keyof WindowEventMap>(
   eventName: K,
   handler: (event: WindowEventMap[K]) => void,
-  element: Window | HTMLElement | null = typeof window !== 'undefined' ? window : null,
-  options?: AddEventListenerOptions
+  element: Window | HTMLElement | null = typeof window !== "undefined"
+    ? window
+    : null,
+  options?: AddEventListenerOptions,
 ) {
   const savedHandler = useRef(handler);
 
@@ -280,7 +286,7 @@ export function useEventListener<K extends keyof WindowEventMap>(
 ### useClickOutside
 
 ```typescript
-import { useEffect, useRef, RefObject } from 'react';
+import { useEffect, useRef, RefObject } from "react";
 
 /**
  * 要素外クリックを検出するフック
@@ -293,7 +299,7 @@ import { useEffect, useRef, RefObject } from 'react';
  * <div ref={ref}>...</div>
  */
 export function useClickOutside<T extends HTMLElement>(
-  callback: () => void
+  callback: () => void,
 ): RefObject<T> {
   const ref = useRef<T>(null);
 
@@ -304,10 +310,10 @@ export function useClickOutside<T extends HTMLElement>(
       }
     };
 
-    document.addEventListener('mousedown', handleClick);
+    document.addEventListener("mousedown", handleClick);
 
     return () => {
-      document.removeEventListener('mousedown', handleClick);
+      document.removeEventListener("mousedown", handleClick);
     };
   }, [callback]);
 
@@ -320,7 +326,7 @@ export function useClickOutside<T extends HTMLElement>(
 ### useLocalStorage
 
 ```typescript
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from "react";
 
 /**
  * ローカルストレージと同期する状態を管理するフック
@@ -333,7 +339,7 @@ import { useState, useCallback, useEffect } from 'react';
  */
 export function useLocalStorage<T>(key: string, initialValue: T) {
   const [storedValue, setStoredValue] = useState<T>(() => {
-    if (typeof window === 'undefined') return initialValue;
+    if (typeof window === "undefined") return initialValue;
 
     try {
       const item = window.localStorage.getItem(key);
@@ -344,22 +350,26 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
     }
   });
 
-  const setValue = useCallback((value: T | ((prev: T) => T)) => {
-    try {
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      if (typeof window !== 'undefined') {
-        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+  const setValue = useCallback(
+    (value: T | ((prev: T) => T)) => {
+      try {
+        const valueToStore =
+          value instanceof Function ? value(storedValue) : value;
+        setStoredValue(valueToStore);
+        if (typeof window !== "undefined") {
+          window.localStorage.setItem(key, JSON.stringify(valueToStore));
+        }
+      } catch (error) {
+        console.warn(`Error setting localStorage key "${key}":`, error);
       }
-    } catch (error) {
-      console.warn(`Error setting localStorage key "${key}":`, error);
-    }
-  }, [key, storedValue]);
+    },
+    [key, storedValue],
+  );
 
   const removeValue = useCallback(() => {
     try {
       setStoredValue(initialValue);
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         window.localStorage.removeItem(key);
       }
     } catch (error) {
@@ -374,7 +384,7 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
 ### useMediaQuery
 
 ```typescript
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 /**
  * メディアクエリの状態を監視するフック
@@ -387,12 +397,12 @@ import { useState, useEffect } from 'react';
  */
 export function useMediaQuery(query: string): boolean {
   const [matches, setMatches] = useState(() => {
-    if (typeof window === 'undefined') return false;
+    if (typeof window === "undefined") return false;
     return window.matchMedia(query).matches;
   });
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     const mediaQuery = window.matchMedia(query);
     const handler = (e: MediaQueryListEvent) => setMatches(e.matches);
@@ -400,10 +410,10 @@ export function useMediaQuery(query: string): boolean {
     // 初期値を設定
     setMatches(mediaQuery.matches);
 
-    mediaQuery.addEventListener('change', handler);
+    mediaQuery.addEventListener("change", handler);
 
     return () => {
-      mediaQuery.removeEventListener('change', handler);
+      mediaQuery.removeEventListener("change", handler);
     };
   }, [query]);
 
@@ -416,7 +426,7 @@ export function useMediaQuery(query: string): boolean {
 ### usePrevious
 
 ```typescript
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 /**
  * 前回の値を保持するフック
@@ -443,7 +453,7 @@ export function usePrevious<T>(value: T): T | undefined {
 ### useMounted
 
 ```typescript
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback } from "react";
 
 /**
  * コンポーネントのマウント状態を追跡するフック

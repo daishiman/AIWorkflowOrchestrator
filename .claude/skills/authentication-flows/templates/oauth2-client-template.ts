@@ -64,7 +64,7 @@ export class OAuth2Error extends Error {
   constructor(
     public readonly error: string,
     public readonly errorDescription?: string,
-    public readonly errorUri?: string
+    public readonly errorUri?: string,
   ) {
     super(errorDescription || error);
     this.name = "OAuth2Error";
@@ -195,11 +195,13 @@ export class OAuth2Client {
   /**
    * 認可URLを生成
    */
-  getAuthorizationUrl(options: {
-    state?: string;
-    pkce?: { verifier: string; challenge: string };
-    additionalParams?: Record<string, string>;
-  } = {}): { url: string; state: string; pkceVerifier?: string } {
+  getAuthorizationUrl(
+    options: {
+      state?: string;
+      pkce?: { verifier: string; challenge: string };
+      additionalParams?: Record<string, string>;
+    } = {},
+  ): { url: string; state: string; pkceVerifier?: string } {
     const state = options.state || this.stateManager.generate();
 
     const params = new URLSearchParams({
@@ -274,10 +276,7 @@ export class OAuth2Client {
   /**
    * 認可コードをトークンに交換
    */
-  async exchangeCode(
-    code: string,
-    pkceVerifier?: string
-  ): Promise<TokenSet> {
+  async exchangeCode(code: string, pkceVerifier?: string): Promise<TokenSet> {
     const body = new URLSearchParams({
       grant_type: "authorization_code",
       code,
@@ -305,13 +304,11 @@ export class OAuth2Client {
   /**
    * クライアントクレデンシャルでトークンを取得
    */
-  async getClientCredentialsToken(
-    scopes?: string[]
-  ): Promise<TokenSet> {
+  async getClientCredentialsToken(scopes?: string[]): Promise<TokenSet> {
     if (!this.config.clientSecret) {
       throw new OAuth2Error(
         "invalid_client",
-        "Client secret is required for client credentials flow"
+        "Client secret is required for client credentials flow",
       );
     }
 
@@ -432,7 +429,9 @@ export class TokenManager {
     }
 
     try {
-      this.refreshPromise = this.client.refreshToken(this.tokenSet.refreshToken);
+      this.refreshPromise = this.client.refreshToken(
+        this.tokenSet.refreshToken,
+      );
       this.tokenSet = await this.refreshPromise;
     } finally {
       this.refreshPromise = null;
@@ -451,7 +450,8 @@ export class TokenManager {
    */
   get isValid(): boolean {
     return Boolean(
-      this.tokenSet && Date.now() < this.tokenSet.expiresAt - this.refreshThreshold
+      this.tokenSet &&
+      Date.now() < this.tokenSet.expiresAt - this.refreshThreshold,
     );
   }
 }

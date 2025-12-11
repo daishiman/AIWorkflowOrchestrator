@@ -6,11 +6,11 @@
 
 ```typescript
 interface BaseLogEntry {
-  timestamp: string;      // ISO8601形式: "2025-11-26T10:30:45.123Z"
-  level: LogLevel;        // "DEBUG" | "INFO" | "WARN" | "ERROR" | "FATAL"
-  message: string;        // 人間可読メッセージ
-  service: string;        // サービス名: "api-server", "worker"
-  environment: string;    // "development" | "staging" | "production"
+  timestamp: string; // ISO8601形式: "2025-11-26T10:30:45.123Z"
+  level: LogLevel; // "DEBUG" | "INFO" | "WARN" | "ERROR" | "FATAL"
+  message: string; // 人間可読メッセージ
+  service: string; // サービス名: "api-server", "worker"
+  environment: string; // "development" | "staging" | "production"
 }
 ```
 
@@ -18,11 +18,11 @@ interface BaseLogEntry {
 
 ```typescript
 interface TraceableLogEntry extends BaseLogEntry {
-  request_id: string;     // リクエスト識別子（UUID v4推奨）
-  trace_id?: string;      // 分散トレースID（OpenTelemetry等）
-  span_id?: string;       // スパンID（トレーシング使用時）
-  user_id?: string;       // ユーザー識別子（認証済みの場合）
-  session_id?: string;    // セッション識別子
+  request_id: string; // リクエスト識別子（UUID v4推奨）
+  trace_id?: string; // 分散トレースID（OpenTelemetry等）
+  span_id?: string; // スパンID（トレーシング使用時）
+  user_id?: string; // ユーザー識別子（認証済みの場合）
+  session_id?: string; // セッション識別子
   correlation_id?: string; // 相関ID（複数リクエストをグループ化）
 }
 ```
@@ -33,10 +33,10 @@ interface TraceableLogEntry extends BaseLogEntry {
 interface ErrorLogEntry extends TraceableLogEntry {
   level: "ERROR" | "FATAL";
   error: {
-    type: string;         // エラー分類
-    message: string;      // エラーメッセージ
-    code?: string;        // エラーコード
-    stack?: string;       // スタックトレース
+    type: string; // エラー分類
+    message: string; // エラーメッセージ
+    code?: string; // エラーコード
+    stack?: string; // スタックトレース
   };
   context?: Record<string, unknown>; // エラー時のコンテキスト
 }
@@ -47,16 +47,19 @@ interface ErrorLogEntry extends TraceableLogEntry {
 ### タイムスタンプ設計
 
 **推奨形式**: ISO8601 with timezone
+
 ```
 "timestamp": "2025-11-26T10:30:45.123Z"
 ```
 
 **理由**:
+
 - 国際標準で言語/ライブラリ間の互換性が高い
 - タイムゾーン情報を含む（Zは UTC）
 - ミリ秒精度で正確な順序付けが可能
 
 **アンチパターン**:
+
 ```
 // ❌ 悪い例
 "timestamp": "2025-11-26 10:30:45"  // タイムゾーン不明
@@ -66,23 +69,25 @@ interface ErrorLogEntry extends TraceableLogEntry {
 ### ログレベルフィールド設計
 
 **推奨形式**: 大文字文字列
+
 ```
 "level": "ERROR"
 ```
 
 **レベル選択基準**:
 
-| レベル | 使用条件 | 例 |
-|--------|---------|-----|
-| DEBUG | 開発時の詳細情報 | 変数値、関数呼び出し、内部状態 |
-| INFO | 正常動作の重要イベント | リクエスト受信、処理完了、起動/終了 |
-| WARN | 予期しないが対応可能 | リトライ、非推奨機能、設定ミス |
-| ERROR | 機能障害 | API失敗、データエラー、処理失敗 |
-| FATAL | システム停止レベル | 起動失敗、データベース接続不可 |
+| レベル | 使用条件               | 例                                  |
+| ------ | ---------------------- | ----------------------------------- |
+| DEBUG  | 開発時の詳細情報       | 変数値、関数呼び出し、内部状態      |
+| INFO   | 正常動作の重要イベント | リクエスト受信、処理完了、起動/終了 |
+| WARN   | 予期しないが対応可能   | リトライ、非推奨機能、設定ミス      |
+| ERROR  | 機能障害               | API失敗、データエラー、処理失敗     |
+| FATAL  | システム停止レベル     | 起動失敗、データベース接続不可      |
 
 ### サービス識別設計
 
 **推奨形式**: kebab-case
+
 ```
 "service": "api-server"
 "service": "background-worker"
@@ -90,6 +95,7 @@ interface ErrorLogEntry extends TraceableLogEntry {
 ```
 
 **マイクロサービスの場合**:
+
 ```
 "service": "user-service"
 "service": "payment-service"
@@ -99,6 +105,7 @@ interface ErrorLogEntry extends TraceableLogEntry {
 ### 環境識別設計
 
 **推奨値**:
+
 ```
 "environment": "development"   // ローカル開発
 "environment": "staging"       // ステージング環境
@@ -110,12 +117,14 @@ interface ErrorLogEntry extends TraceableLogEntry {
 ### Request ID生成戦略
 
 **UUID v4推奨**:
+
 ```typescript
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 const request_id = uuidv4(); // "550e8400-e29b-41d4-a716-446655440000"
 ```
 
 **理由**:
+
 - 衝突確率が極めて低い
 - グローバルにユニーク
 - 標準ライブラリが充実
@@ -123,17 +132,19 @@ const request_id = uuidv4(); // "550e8400-e29b-41d4-a716-446655440000"
 ### Trace ID伝播パターン
 
 **HTTPヘッダー**:
+
 ```
 X-Request-ID: 550e8400-e29b-41d4-a716-446655440000
 X-Trace-ID: 4bf92f3577b34da6a3ce929d0e0e4736
 ```
 
 **ミドルウェアでの実装**:
+
 ```typescript
 // リクエスト受信時
 app.use((req, res, next) => {
-  req.request_id = req.headers['x-request-id'] || uuidv4();
-  res.setHeader('X-Request-ID', req.request_id);
+  req.request_id = req.headers["x-request-id"] || uuidv4();
+  res.setHeader("X-Request-ID", req.request_id);
   next();
 });
 ```
@@ -141,8 +152,9 @@ app.use((req, res, next) => {
 ### 非同期処理での伝播
 
 **AsyncLocalStorage（Node.js）**:
+
 ```typescript
-import { AsyncLocalStorage } from 'async_hooks';
+import { AsyncLocalStorage } from "async_hooks";
 
 const asyncLocalStorage = new AsyncLocalStorage();
 
@@ -162,6 +174,7 @@ const request_id = context?.request_id;
 ### スタックトレース記録
 
 **完全なスタックトレース**:
+
 ```json
 {
   "level": "ERROR",
@@ -176,6 +189,7 @@ const request_id = context?.request_id;
 ### リクエストコンテキスト
 
 **診断に有用な情報**:
+
 ```json
 {
   "level": "ERROR",
@@ -186,13 +200,11 @@ const request_id = context?.request_id;
       "path": "/api/users",
       "query": {},
       "body": {
-        "email": "us***@example.com",  // PIIマスキング
+        "email": "us***@example.com", // PIIマスキング
         "age": 25
       }
     },
-    "validation_errors": [
-      {"field": "email", "message": "Invalid format"}
-    ]
+    "validation_errors": [{ "field": "email", "message": "Invalid format" }]
   }
 }
 ```
@@ -200,6 +212,7 @@ const request_id = context?.request_id;
 ### 実行環境情報
 
 **デバッグに有用な環境情報**:
+
 ```json
 {
   "level": "ERROR",
@@ -220,6 +233,7 @@ const request_id = context?.request_id;
 ### サンプリング戦略
 
 **正常リクエストのサンプリング**:
+
 ```typescript
 // 成功リクエストは1%のみログ
 if (response.status === 200 && Math.random() > 0.01) {
@@ -235,23 +249,26 @@ if (response.status >= 400) {
 ### ログレベル動的制御
 
 **本番環境での動的制御**:
+
 ```typescript
 // 通常時はINFO以上
-let logLevel = 'INFO';
+let logLevel = "INFO";
 
 // 問題調査時は一時的にDEBUGに変更（環境変数経由）
-if (process.env.DEBUG_MODE === 'true') {
-  logLevel = 'DEBUG';
+if (process.env.DEBUG_MODE === "true") {
+  logLevel = "DEBUG";
 }
 ```
 
 ### 高頻度ログの集約
 
 **同一ログの集約**:
+
 ```typescript
 // 同じエラーが1分間に複数回発生した場合は集約
 const errorCount = incrementErrorCount(errorType);
-if (errorCount % 10 === 1) { // 10回ごとにログ
+if (errorCount % 10 === 1) {
+  // 10回ごとにログ
   logger.error(`Error occurred ${errorCount} times`, { errorType });
 }
 ```
@@ -265,8 +282,16 @@ interface Logger {
   debug(message: string, context?: Record<string, unknown>): void;
   info(message: string, context?: Record<string, unknown>): void;
   warn(message: string, context?: Record<string, unknown>): void;
-  error(message: string, error?: Error, context?: Record<string, unknown>): void;
-  fatal(message: string, error?: Error, context?: Record<string, unknown>): void;
+  error(
+    message: string,
+    error?: Error,
+    context?: Record<string, unknown>,
+  ): void;
+  fatal(
+    message: string,
+    error?: Error,
+    context?: Record<string, unknown>,
+  ): void;
 }
 ```
 
@@ -296,4 +321,5 @@ interface Logger {
 ## 参照
 
 このスキルを使用するエージェント:
+
 - `@sre-observer` - ロギング・監視設計者 (.claude/agents/sre-observer.md:978)

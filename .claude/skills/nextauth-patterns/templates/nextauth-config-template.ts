@@ -2,33 +2,33 @@
  * NextAuth.js v5 Configuration Template
  */
 
-import NextAuth, { type DefaultSession } from 'next-auth';
-import Google from 'next-auth/providers/google';
-import GitHub from 'next-auth/providers/github';
-import { DrizzleAdapter } from '@auth/drizzle-adapter';
-import { db } from '@/infrastructure/database';
+import NextAuth, { type DefaultSession } from "next-auth";
+import Google from "next-auth/providers/google";
+import GitHub from "next-auth/providers/github";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import { db } from "@/infrastructure/database";
 
 // ========================================
 // 型拡張
 // ========================================
 
-declare module 'next-auth' {
+declare module "next-auth" {
   interface Session {
     user: {
       id: string;
-      role: 'ADMIN' | 'USER' | 'GUEST';
-    } & DefaultSession['user'];
+      role: "ADMIN" | "USER" | "GUEST";
+    } & DefaultSession["user"];
   }
 
   interface User {
-    role: 'ADMIN' | 'USER' | 'GUEST';
+    role: "ADMIN" | "USER" | "GUEST";
   }
 }
 
-declare module 'next-auth/jwt' {
+declare module "next-auth/jwt" {
   interface JWT {
     userId: string;
-    role: 'ADMIN' | 'USER' | 'GUEST';
+    role: "ADMIN" | "USER" | "GUEST";
   }
 }
 
@@ -45,8 +45,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       authorization: {
         params: {
-          scope: 'openid email profile',
-          prompt: 'select_account',
+          scope: "openid email profile",
+          prompt: "select_account",
         },
       },
     }),
@@ -56,14 +56,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
       authorization: {
         params: {
-          scope: 'read:user user:email',
+          scope: "read:user user:email",
         },
       },
     }),
   ],
 
   session: {
-    strategy: 'jwt', // or 'database'
+    strategy: "jwt", // or 'database'
     maxAge: 30 * 24 * 60 * 60, // 30日
   },
 
@@ -72,11 +72,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       // 初回ログイン時
       if (user) {
         token.userId = user.id;
-        token.role = user.role || 'USER';
+        token.role = user.role || "USER";
       }
 
       // セッション更新時（動的権限変更対応）
-      if (trigger === 'update' && session) {
+      if (trigger === "update" && session) {
         const updatedUser = await db.query.users.findFirst({
           where: (users, { eq }) => eq(users.id, token.userId),
         });
@@ -104,8 +104,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
 
   pages: {
-    signIn: '/auth/signin',
-    error: '/auth/error',
+    signIn: "/auth/signin",
+    error: "/auth/error",
   },
 
   events: {

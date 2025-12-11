@@ -38,11 +38,13 @@ version: 1.0.0
 基本原則と具体的なテクニックを解説します。
 
 **核心原則**:
+
 - コードは書かれるより読まれる回数が圧倒的に多い
 - 明確さが簡潔さに勝る
 - 小さなものは理解しやすい
 
 **対象ユーザー**:
+
 - ビジネスロジック実装エージェント（@logic-dev）
 - コードレビュー担当者
 - 品質向上を目指す開発者
@@ -95,6 +97,7 @@ node .claude/skills/clean-code-practices/scripts/measure-code-quality.mjs src/fe
 変数名、関数名、クラス名は、その存在理由、機能、使用方法を表現すべきです。
 
 **基準**:
+
 - 名前だけで何をするか分かるか？
 - コメントなしで理解できるか？
 - 発音しやすいか？
@@ -115,6 +118,7 @@ node .claude/skills/clean-code-practices/scripts/measure-code-quality.mjs src/fe
 関数は一つのことだけを行い、それを上手くやるべきです。
 
 **基準**:
+
 - 関数が一つのことだけをしているか？
 - 関数名が処理内容を正確に表しているか？
 - 抽象度が統一されているか？
@@ -134,6 +138,7 @@ node .claude/skills/clean-code-practices/scripts/measure-code-quality.mjs src/fe
 "Don't Repeat Yourself" - 同じ知識を複数箇所に持たない。
 
 **適用条件**:
+
 - 同じロジックが3回以上繰り返される
 - 変更時に複数箇所を修正する必要がある
 - コピー&ペーストでコードを書いている
@@ -152,12 +157,14 @@ node .claude/skills/clean-code-practices/scripts/measure-code-quality.mjs src/fe
 コメントよりも、コード自体で意図を表現することを優先します。
 
 **良いコメント**:
+
 - 法的情報
 - 意図の説明（なぜそうしたか）
 - 警告
 - TODO（一時的）
 
 **悪いコメント**:
+
 - 冗長な説明
 - 誤解を招くコメント
 - コメントアウトされたコード
@@ -261,6 +268,6 @@ node .claude/skills/clean-code-practices/scripts/measure-code-quality.mjs src/fe
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版作成 - Uncle BobのClean Codeプラクティス |
+| バージョン | 日付       | 変更内容                                     |
+| ---------- | ---------- | -------------------------------------------- |
+| 1.0.0      | 2025-11-25 | 初版作成 - Uncle BobのClean Codeプラクティス |

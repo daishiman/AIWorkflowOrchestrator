@@ -51,6 +51,7 @@ model: sonnet
 引数なし（プロジェクト全体をスキャン）
 
 **使用例**:
+
 ```bash
 /ai:scan-vulnerabilities
 ```
@@ -62,6 +63,7 @@ model: sonnet
 ### Phase 1: 準備・環境確認
 
 **エージェント起動**:
+
 ```
 `.claude/agents/sec-auditor.md` を起動し、以下を依頼:
 - プロジェクト構造の分析
@@ -71,10 +73,12 @@ model: sonnet
 ```
 
 **スキル参照** (Phase 1):
+
 - `.claude/skills/project-architecture-integration/SKILL.md`: プロジェクト構造理解
 - `.claude/skills/vulnerability-scanning/SKILL.md`: スキャン戦略
 
 **期待成果物**:
+
 - 使用パッケージマネージャーの特定
 - スキャン対象の明確化
 - スキャン実行計画
@@ -84,6 +88,7 @@ model: sonnet
 ### Phase 2: 脆弱性スキャン実行
 
 **エージェント起動**:
+
 ```
 `.claude/agents/sec-auditor.md` と `.claude/agents/dep-mgr.md` を起動し、以下を依頼:
 
@@ -100,6 +105,7 @@ model: sonnet
 ```
 
 **実行コマンド例**:
+
 ```bash
 # pnpm の場合
 pnpm audit --json > audit-results.json
@@ -115,6 +121,7 @@ yarn audit
 ```
 
 **期待成果物**:
+
 - 依存関係監査結果（JSON + 人間可読形式）
 - 検出された脆弱性リスト
 - CVE番号と重大度情報
@@ -125,6 +132,7 @@ yarn audit
 ### Phase 3: レポート生成・修正提案
 
 **エージェント起動**:
+
 ```
 `.claude/agents/sec-auditor.md` を起動し、以下を依頼:
 - スキャン結果の集約・分析
@@ -135,11 +143,13 @@ yarn audit
 ```
 
 **スキル参照** (Phase 3):
+
 - `.claude/skills/vulnerability-scanning/SKILL.md`: 脆弱性評価
 - `.claude/skills/dependency-auditing/SKILL.md`: 依存関係管理
 - `.claude/skills/best-practices-curation/SKILL.md`: セキュリティベストプラクティス
 
 **成果物**:
+
 - `docs/security/vulnerability-scan-[YYYYMMDD].md`: 脆弱性スキャンレポート
   - Executive Summary（重大度別サマリー）
   - 検出された脆弱性の詳細リスト
@@ -185,6 +195,7 @@ yarn audit
 ## 自動修正可能（15件）
 
 ### Critical: `lodash` - Prototype Pollution (CVE-2023-XXXXX)
+
 - **影響バージョン**: 4.17.15
 - **修正バージョン**: 4.17.21
 - **修正方法**: `pnpm update lodash`
@@ -192,6 +203,7 @@ yarn audit
 ## 手動対応が必要（12件）
 
 ### High: `express` - DoS Vulnerability (CVE-2024-XXXXX)
+
 - **影響バージョン**: 4.17.1
 - **修正バージョン**: なし（パッチ未リリース）
 - **回避策**: レート制限の実装、WAFの設定
@@ -216,10 +228,12 @@ yarn audit
 ## 🎓 参考資料
 
 **エージェント仕様**:
+
 - `.claude/agents/sec-auditor.md`: セキュリティ監査エージェント
 - `.claude/agents/dep-mgr.md`: 依存関係管理エージェント
 
 **スキル仕様**:
+
 - `.claude/skills/vulnerability-scanning/SKILL.md`: 脆弱性スキャン手法
 - `.claude/skills/dependency-auditing/SKILL.md`: 依存関係監査
 - `.claude/skills/best-practices-curation/SKILL.md`: セキュリティベストプラクティス

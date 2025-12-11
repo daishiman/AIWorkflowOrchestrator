@@ -142,12 +142,10 @@ cat .claude/skills/orm-best-practices/templates/schema-template.md
 **ステップ**:
 
 1. **エンティティ分析**:
-
    - ドメインモデルからテーブル構造を導出
    - カラム型と nullability を決定
 
 2. **リレーション設定**:
-
    - 外部キー制約の定義
    - リレーションヘルパーの設定
 
@@ -170,12 +168,10 @@ cat .claude/skills/orm-best-practices/templates/schema-template.md
 **ステップ**:
 
 1. **基本クエリ構築**:
-
    - select, insert, update, delete の基本操作
    - where 条件の効果的な使用
 
 2. **JOIN 操作**:
-
    - 適切な JOIN 種類の選択
    - リレーションを使用した簡潔な記述
 
@@ -198,7 +194,6 @@ cat .claude/skills/orm-best-practices/templates/schema-template.md
 **ステップ**:
 
 1. **変換関数作成**:
-
    - toEntity: DB レコード → ドメインエンティティ
    - toRecord: ドメインエンティティ → DB レコード
 
@@ -220,12 +215,10 @@ cat .claude/skills/orm-best-practices/templates/schema-template.md
 **ステップ**:
 
 1. **N+1 問題対策**:
-
    - JOIN またはバッチフェッチの適用
    - クエリ数の監視
 
 2. **接続プール最適化**:
-
    - プールサイズの調整
    - 接続タイムアウトの設定
 
@@ -271,12 +264,10 @@ cat .claude/skills/orm-best-practices/templates/schema-template.md
 ### すべきこと
 
 1. **型を活用**:
-
    - InferSelectType, InferInsertType を使用
    - カスタム型の定義
 
 2. **prepared statements を使用**:
-
    - 頻繁なクエリは prepare で最適化
    - SQL インジェクション防止
 
@@ -287,12 +278,10 @@ cat .claude/skills/orm-best-practices/templates/schema-template.md
 ### 避けるべきこと
 
 1. **生 SQL 濫用**:
-
    - ❌ 型安全性を失う sql``の多用
    - ✅ ビルダーメソッドを優先
 
 2. **SELECT \***:
-
    - ❌ すべてのカラムを取得
    - ✅ 必要なカラムを明示
 
@@ -375,7 +364,6 @@ cat .claude/skills/orm-best-practices/templates/schema-template.md
 ## 参考文献
 
 - **Drizzle ORM Documentation**
-
   - https://orm.drizzle.team/docs
 
 - **『High-Performance Java Persistence』** Vlad Mihalcea 著

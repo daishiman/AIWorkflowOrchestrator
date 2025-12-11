@@ -41,6 +41,7 @@ allowed-tools:
 ### Phase 1: 準備（エージェント起動前）
 
 **引数検証**:
+
 ```bash
 API_NAME="$1"
 
@@ -53,6 +54,7 @@ fi
 ```
 
 **プロジェクト設計書確認**:
+
 - `docs/00-requirements/master_system_design.md`: ハイブリッドアーキテクチャ、Clean Architecture制約確認
 
 ---
@@ -114,6 +116,7 @@ fi
 エージェントが以下を完了したことを確認:
 
 **成果物チェックリスト**:
+
 - [ ] `src/shared/infrastructure/$API_NAME/client.ts` 作成
 - [ ] `src/shared/infrastructure/$API_NAME/transformer.ts` 作成
 - [ ] `src/shared/infrastructure/$API_NAME/__tests__/` テスト作成
@@ -123,6 +126,7 @@ fi
 - [ ] 腐敗防止層実装完了
 
 **検証コマンド**:
+
 ```bash
 # テスト実行
 pnpm test src/shared/infrastructure/$API_NAME
@@ -139,21 +143,25 @@ pnpm type-check
 ## 使用例
 
 ### Discord API統合
+
 ```bash
 /ai:create-api-gateway discord
 ```
 
 ### Slack API統合
+
 ```bash
 /ai:create-api-gateway slack
 ```
 
 ### OpenAI API統合
+
 ```bash
 /ai:create-api-gateway openai
 ```
 
 ### Stripe API統合
+
 ```bash
 /ai:create-api-gateway stripe
 ```

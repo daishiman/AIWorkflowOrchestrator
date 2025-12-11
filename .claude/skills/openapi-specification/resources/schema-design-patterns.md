@@ -25,7 +25,7 @@ components:
 
     User:
       allOf:
-        - $ref: '#/components/schemas/BaseEntity'
+        - $ref: "#/components/schemas/BaseEntity"
         - type: object
           required:
             - email
@@ -45,15 +45,15 @@ components:
   schemas:
     Notification:
       oneOf:
-        - $ref: '#/components/schemas/EmailNotification'
-        - $ref: '#/components/schemas/SlackNotification'
-        - $ref: '#/components/schemas/WebhookNotification'
+        - $ref: "#/components/schemas/EmailNotification"
+        - $ref: "#/components/schemas/SlackNotification"
+        - $ref: "#/components/schemas/WebhookNotification"
       discriminator:
         propertyName: type
         mapping:
-          email: '#/components/schemas/EmailNotification'
-          slack: '#/components/schemas/SlackNotification'
-          webhook: '#/components/schemas/WebhookNotification'
+          email: "#/components/schemas/EmailNotification"
+          slack: "#/components/schemas/SlackNotification"
+          webhook: "#/components/schemas/WebhookNotification"
 
     EmailNotification:
       type: object
@@ -88,9 +88,9 @@ components:
   schemas:
     Filter:
       anyOf:
-        - $ref: '#/components/schemas/DateFilter'
-        - $ref: '#/components/schemas/StatusFilter'
-        - $ref: '#/components/schemas/TagFilter'
+        - $ref: "#/components/schemas/DateFilter"
+        - $ref: "#/components/schemas/StatusFilter"
+        - $ref: "#/components/schemas/TagFilter"
 ```
 
 ---
@@ -146,7 +146,7 @@ components:
   schemas:
     UserUpdate:
       type: object
-      minProperties: 1  # 少なくとも1つのプロパティ必須
+      minProperties: 1 # 少なくとも1つのプロパティ必須
       properties:
         name:
           type: string
@@ -175,9 +175,9 @@ components:
       properties:
         data:
           type: array
-          items: {}  # 具体的な型は継承先で定義
+          items: {} # 具体的な型は継承先で定義
         pagination:
-          $ref: '#/components/schemas/OffsetPagination'
+          $ref: "#/components/schemas/OffsetPagination"
 
     OffsetPagination:
       type: object
@@ -202,13 +202,13 @@ components:
 
     UserListResponse:
       allOf:
-        - $ref: '#/components/schemas/PaginatedResponse'
+        - $ref: "#/components/schemas/PaginatedResponse"
         - type: object
           properties:
             data:
               type: array
               items:
-                $ref: '#/components/schemas/User'
+                $ref: "#/components/schemas/User"
 ```
 
 ### カーソルベース
@@ -311,7 +311,7 @@ components:
         steps:
           type: array
           items:
-            $ref: '#/components/schemas/ExecutionStep'
+            $ref: "#/components/schemas/ExecutionStep"
 
     ExecutionStep:
       type: object
@@ -479,7 +479,7 @@ WellDesigned:
 # ❌ 悪い例：汎用的すぎる型
 TooGeneric:
   type: object
-  additionalProperties: true  # 何でも入る
+  additionalProperties: true # 何でも入る
 
 # ✅ 良い例：明確な型定義
 WellTyped:

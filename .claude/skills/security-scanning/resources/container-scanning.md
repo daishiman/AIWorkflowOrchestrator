@@ -6,12 +6,12 @@ Dockerイメージに含まれる脆弱性（OS、パッケージ、アプリケ
 
 ## ツール比較
 
-| ツール | 特徴 | コスト |
-|-------|------|--------|
-| Trivy | 高速、包括的、CI/CD向け | OSS |
-| Grype | 軽量、SBOM連携 | OSS |
-| Snyk Container | 詳細な修正提案 | 無料枠あり |
-| Docker Scout | Docker Desktop統合 | 無料枠あり |
+| ツール         | 特徴                    | コスト     |
+| -------------- | ----------------------- | ---------- |
+| Trivy          | 高速、包括的、CI/CD向け | OSS        |
+| Grype          | 軽量、SBOM連携          | OSS        |
+| Snyk Container | 詳細な修正提案          | 無料枠あり |
+| Docker Scout   | Docker Desktop統合      | 無料枠あり |
 
 ## Trivy
 
@@ -143,14 +143,14 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: myapp:${{ github.sha }}
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          severity: 'CRITICAL,HIGH'
+          format: "sarif"
+          output: "trivy-results.sarif"
+          severity: "CRITICAL,HIGH"
 
       - name: Upload Trivy scan results
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: "trivy-results.sarif"
 ```
 
 ### Grype
@@ -198,16 +198,17 @@ trivy image registry.example.com/myapp:latest
 
 ### 対応優先度
 
-| 重大度 | CVSS | 対応期限 |
-|--------|------|----------|
-| Critical | 9.0-10.0 | 24時間 |
-| High | 7.0-8.9 | 1週間 |
-| Medium | 4.0-6.9 | 1ヶ月 |
-| Low | 0.1-3.9 | 任意 |
+| 重大度   | CVSS     | 対応期限 |
+| -------- | -------- | -------- |
+| Critical | 9.0-10.0 | 24時間   |
+| High     | 7.0-8.9  | 1週間    |
+| Medium   | 4.0-6.9  | 1ヶ月    |
+| Low      | 0.1-3.9  | 任意     |
 
 ### 修正方法
 
 1. **ベースイメージ更新**
+
    ```dockerfile
    # Before
    FROM node:18-alpine
@@ -217,6 +218,7 @@ trivy image registry.example.com/myapp:latest
    ```
 
 2. **パッケージ更新**
+
    ```dockerfile
    RUN apk upgrade --no-cache
    ```

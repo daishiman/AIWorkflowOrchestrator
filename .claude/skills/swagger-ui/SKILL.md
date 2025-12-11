@@ -174,7 +174,7 @@ app.use(
   swaggerUi.setup(swaggerDocument, {
     customCss: ".swagger-ui .topbar { display: none }",
     customSiteTitle: "API Documentation",
-  })
+  }),
 );
 ```
 

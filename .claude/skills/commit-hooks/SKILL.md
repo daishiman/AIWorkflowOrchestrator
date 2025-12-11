@@ -43,6 +43,7 @@ pnpm exec husky init
 ### 2. フックファイル作成
 
 **pre-commit** (.husky/pre-commit):
+
 ```bash
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
@@ -51,6 +52,7 @@ pnpm lint-staged
 ```
 
 **commit-msg** (.husky/commit-msg):
+
 ```bash
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
@@ -59,6 +61,7 @@ pnpm commitlint --edit $1
 ```
 
 **pre-push** (.husky/pre-push):
+
 ```bash
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
@@ -79,16 +82,12 @@ chmod +x .husky/pre-push
 ### 基本設定
 
 **package.json**:
+
 ```json
 {
   "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{json,md,yml,yaml}": [
-      "prettier --write"
-    ]
+    "*.{ts,tsx,js,jsx}": ["eslint --fix", "prettier --write"],
+    "*.{json,md,yml,yaml}": ["prettier --write"]
   }
 }
 ```
@@ -96,56 +95,73 @@ chmod +x .husky/pre-push
 ### 高度な設定
 
 **関数形式** (.lintstagedrc.js):
+
 ```javascript
 module.exports = {
-  '*.{ts,tsx}': (filenames) => [
-    `eslint --fix ${filenames.join(' ')}`,
-    `prettier --write ${filenames.join(' ')}`,
-    `vitest related --run ${filenames.join(' ')}`  // 関連テスト実行
+  "*.{ts,tsx}": (filenames) => [
+    `eslint --fix ${filenames.join(" ")}`,
+    `prettier --write ${filenames.join(" ")}`,
+    `vitest related --run ${filenames.join(" ")}`, // 関連テスト実行
   ],
-  '*.{json,md}': (filenames) => [
-    `prettier --write ${filenames.join(' ')}`
-  ]
-}
+  "*.{json,md}": (filenames) => [`prettier --write ${filenames.join(" ")}`],
+};
 ```
 
 ## フックタイプ別戦略
 
 ### pre-commit
+
 **目的**: コード品質保証
 
 **実行内容**:
+
 - lint実行（eslint --fix）
 - format実行（prettier --write）
 - 型チェック（tsc --noEmit）オプション
 
 **パフォーマンス考慮**:
+
 - ステージングファイルのみ処理
 - 並列実行活用
 - キャッシュ活用
 
 ### commit-msg
+
 **目的**: コミットメッセージ規約強制
 
 **ツール**: commitlint
 
 **設定例**:
+
 ```json
 {
   "extends": ["@commitlint/config-conventional"],
   "rules": {
-    "type-enum": [2, "always", [
-      "feat", "fix", "docs", "style", "refactor",
-      "test", "chore", "perf", "ci"
-    ]]
+    "type-enum": [
+      2,
+      "always",
+      [
+        "feat",
+        "fix",
+        "docs",
+        "style",
+        "refactor",
+        "test",
+        "chore",
+        "perf",
+        "ci"
+      ]
+    ]
   }
 }
 ```
 
 ### pre-push
+
 **目的**: テスト実行、ビルド検証
 
 **実行内容**:
+
 - 全テスト実行
 - ビルド成功確認
 - カバレッジ閾値チェック
@@ -157,6 +173,7 @@ module.exports = {
 **lint-stagedデフォルト**: 並列実行
 
 **カスタマイズ**:
+
 ```javascript
 {
   concurrent: true,  // 並列実行有効
@@ -167,11 +184,12 @@ module.exports = {
 ### 2. 対象ファイル制限
 
 **glob pattern活用**:
+
 ```json
 {
   "lint-staged": {
-    "src/**/*.{ts,tsx}": ["eslint --fix"],  // src配下のみ
-    "!**/*.test.ts": ["eslint --fix"]       // テスト除外
+    "src/**/*.{ts,tsx}": ["eslint --fix"], // src配下のみ
+    "!**/*.test.ts": ["eslint --fix"] // テスト除外
   }
 }
 ```
@@ -201,6 +219,7 @@ lint-staged
 ## トラブルシューティング
 
 ### フック実行されない
+
 ```bash
 # Huskyインストール確認
 ls -la .husky
@@ -210,6 +229,7 @@ git config core.hooksPath
 ```
 
 ### パフォーマンス問題
+
 - キャッシュ有効化
 - 対象ファイル絞り込み
 - 並列実行確認

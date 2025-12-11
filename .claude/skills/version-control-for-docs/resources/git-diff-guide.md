@@ -53,6 +53,7 @@ git diff --word-diff-regex='[^[:space:]]+'
 ```
 
 **出力例**:
+
 ```
 ユーザーは[-古い機能-]{+新しい機能+}を使用できます。
 ```
@@ -90,11 +91,13 @@ git diff --function-context '*.md'
 ```
 
 `.gitattributes` に追加:
+
 ```
 *.md diff=markdown
 ```
 
 `.gitconfig` に追加:
+
 ```ini
 [diff "markdown"]
     xfuncname = "^#{1,6}\\s+.*$"
@@ -199,6 +202,7 @@ git diff -U10 path/to/file.md
 ## エイリアス設定
 
 `.gitconfig` に追加:
+
 ```ini
 [alias]
     # 文書レビュー向け差分
@@ -210,6 +214,7 @@ git diff -U10 path/to/file.md
 ```
 
 使用例:
+
 ```bash
 git ddiff    # 単語単位の差分
 git dstat    # 統計情報

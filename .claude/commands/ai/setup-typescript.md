@@ -47,6 +47,7 @@ model: sonnet
 ### Phase 1: 厳格度レベルの選択
 
 **引数検証**:
+
 ```bash
 strictness="${ARGUMENTS:-strict}"
 
@@ -61,10 +62,12 @@ fi
 **使用エージェント**: `.claude/agents/schema-def.md`
 
 **エージェントへの依頼内容**:
-```markdown
+
+````markdown
 TypeScript設定を「${strictness}」レベルで最適化してください。
 
 **要件**:
+
 1. tsconfig.json更新:
    ```json
    {
@@ -73,7 +76,7 @@ TypeScript設定を「${strictness}」レベルで最適化してください。
        "lib": ["ES2022", "DOM", "DOM.Iterable"],
        "module": "ESNext",
        "moduleResolution": "bundler",
-       "strict": true,  // strictnessに応じて調整
+       "strict": true, // strictnessに応じて調整
        "noUncheckedIndexedAccess": true,
        "noImplicitReturns": true,
        "skipLibCheck": true,
@@ -86,6 +89,7 @@ TypeScript設定を「${strictness}」レベルで最適化してください。
      "exclude": ["node_modules", ".next", "out"]
    }
    ```
+````
 
 2. 厳格度別設定:
    - **strict**: `strict: true`, `noUncheckedIndexedAccess: true`
@@ -105,11 +109,13 @@ TypeScript設定を「${strictness}」レベルで最適化してください。
    ```
 
 **スキル参照**:
+
 - `.claude/skills/type-safety-patterns/SKILL.md` - 型安全性パターン
 - `.claude/skills/typescript-configuration/SKILL.md` - tsconfig最適化
 
 **成果物**: tsconfig.json
-```
+
+````
 
 ### Phase 3: 完了報告
 
@@ -126,7 +132,7 @@ TypeScript設定を「${strictness}」レベルで最適化してください。
 ### Next Steps
 1. 型チェック実行: `pnpm typecheck`
 2. エラー修正（strictモードの場合）
-```
+````
 
 ## 使用例
 
@@ -156,12 +162,12 @@ TypeScript設定を「${strictness}」レベルで最適化してください。
 
 ## 厳格度比較
 
-| オプション | strict | moderate | loose |
-|-----------|--------|----------|-------|
-| strict | ✅ | ✅ | ❌ |
-| noImplicitAny | ✅ | ✅ | ❌ |
-| noUncheckedIndexedAccess | ✅ | ❌ | ❌ |
-| skipLibCheck | ❌ | ✅ | ✅ |
+| オプション               | strict | moderate | loose |
+| ------------------------ | ------ | -------- | ----- |
+| strict                   | ✅     | ✅       | ❌    |
+| noImplicitAny            | ✅     | ✅       | ❌    |
+| noUncheckedIndexedAccess | ✅     | ❌       | ❌    |
+| skipLibCheck             | ❌     | ✅       | ✅    |
 
 ## ベストプラクティス
 

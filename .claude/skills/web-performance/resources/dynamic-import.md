@@ -31,13 +31,13 @@ const DynamicNoSSR = dynamic(() => import('./ClientOnlyComponent'), {
 ```typescript
 // Named exportをインポートする場合
 const DynamicHello = dynamic(() =>
-  import('./components').then((mod) => mod.Hello)
-)
+  import("./components").then((mod) => mod.Hello),
+);
 
 // または
-const DynamicHello = dynamic(
-  () => import('./components').then((mod) => ({ default: mod.Hello }))
-)
+const DynamicHello = dynamic(() =>
+  import("./components").then((mod) => ({ default: mod.Hello })),
+);
 ```
 
 ### 複雑なローディングUI
@@ -224,24 +224,24 @@ const Editor = dynamic(() => import('./RichTextEditor'), {
 
 ```typescript
 // window/document を使用するコンポーネント
-const ClientComponent = dynamic(() => import('./ClientComponent'), {
+const ClientComponent = dynamic(() => import("./ClientComponent"), {
   ssr: false,
-})
+});
 
 // ブラウザ固有のAPI
-const MapComponent = dynamic(() => import('./MapComponent'), {
+const MapComponent = dynamic(() => import("./MapComponent"), {
   ssr: false, // Geolocation API使用
-})
+});
 
 // Web Storage
-const StorageComponent = dynamic(() => import('./StorageComponent'), {
+const StorageComponent = dynamic(() => import("./StorageComponent"), {
   ssr: false, // localStorage/sessionStorage使用
-})
+});
 
 // Canvas/WebGL
-const CanvasComponent = dynamic(() => import('./CanvasComponent'), {
+const CanvasComponent = dynamic(() => import("./CanvasComponent"), {
   ssr: false,
-})
+});
 ```
 
 ### useEffect の代替としての ssr: false
@@ -302,22 +302,22 @@ npx @next/bundle-analyzer
 
 ```typescript
 // ❌ 小さなコンポーネントを分割しても効果薄
-const Button = dynamic(() => import('./Button'))
-const Icon = dynamic(() => import('./Icon'))
+const Button = dynamic(() => import("./Button"));
+const Icon = dynamic(() => import("./Icon"));
 
 // ✅ 大きなコンポーネントのみ分割
-const Dashboard = dynamic(() => import('./Dashboard'))
-const DataTable = dynamic(() => import('./DataTable'))
+const Dashboard = dynamic(() => import("./Dashboard"));
+const DataTable = dynamic(() => import("./DataTable"));
 ```
 
 ### ファーストビューでの動的インポート
 
 ```typescript
 // ❌ LCPに影響するコンポーネントを遅延読み込み
-const Hero = dynamic(() => import('./Hero'))
+const Hero = dynamic(() => import("./Hero"));
 
 // ✅ ファーストビューは通常のインポート
-import Hero from './Hero'
+import Hero from "./Hero";
 ```
 
 ## チェックリスト

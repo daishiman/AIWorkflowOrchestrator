@@ -12,7 +12,7 @@ Compound Componentsは、関連するコンポーネント群が暗黙的に状�
 ### Contextベースの実装
 
 ```tsx
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode } from "react";
 
 // 1. Context作成
 interface AccordionContextType {
@@ -26,7 +26,7 @@ const AccordionContext = createContext<AccordionContextType | null>(null);
 function useAccordion() {
   const context = useContext(AccordionContext);
   if (!context) {
-    throw new Error('useAccordion must be used within AccordionProvider');
+    throw new Error("useAccordion must be used within AccordionProvider");
   }
   return context;
 }
@@ -34,22 +34,26 @@ function useAccordion() {
 // 3. ルートコンポーネント
 interface AccordionProps {
   children: ReactNode;
-  type?: 'single' | 'multiple';
+  type?: "single" | "multiple";
   defaultExpanded?: string[];
 }
 
-function Accordion({ children, type = 'single', defaultExpanded = [] }: AccordionProps) {
+function Accordion({
+  children,
+  type = "single",
+  defaultExpanded = [],
+}: AccordionProps) {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(
-    new Set(defaultExpanded)
+    new Set(defaultExpanded),
   );
 
   const toggleItem = (id: string) => {
-    setExpandedItems(prev => {
+    setExpandedItems((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
         next.delete(id);
       } else {
-        if (type === 'single') {
+        if (type === "single") {
           next.clear();
         }
         next.add(id);
@@ -132,23 +136,15 @@ export { Accordion };
 ### 基本使用
 
 ```tsx
-<Accordion defaultExpanded={['item-1']}>
+<Accordion defaultExpanded={["item-1"]}>
   <Accordion.Item id="item-1">
-    <Accordion.Trigger id="item-1">
-      セクション1
-    </Accordion.Trigger>
-    <Accordion.Content id="item-1">
-      セクション1の内容
-    </Accordion.Content>
+    <Accordion.Trigger id="item-1">セクション1</Accordion.Trigger>
+    <Accordion.Content id="item-1">セクション1の内容</Accordion.Content>
   </Accordion.Item>
 
   <Accordion.Item id="item-2">
-    <Accordion.Trigger id="item-2">
-      セクション2
-    </Accordion.Trigger>
-    <Accordion.Content id="item-2">
-      セクション2の内容
-    </Accordion.Content>
+    <Accordion.Trigger id="item-2">セクション2</Accordion.Trigger>
+    <Accordion.Content id="item-2">セクション2の内容</Accordion.Content>
   </Accordion.Item>
 </Accordion>
 ```
@@ -156,7 +152,7 @@ export { Accordion };
 ### 複数展開モード
 
 ```tsx
-<Accordion type="multiple" defaultExpanded={['item-1', 'item-2']}>
+<Accordion type="multiple" defaultExpanded={["item-1", "item-2"]}>
   {/* ... */}
 </Accordion>
 ```
@@ -196,13 +192,11 @@ function AccordionItem({ id, children }: AccordionItemProps) {
 <Accordion.Item id="item-1">
   {({ isExpanded, toggle }) => (
     <>
-      <button onClick={toggle}>
-        {isExpanded ? '閉じる' : '開く'}
-      </button>
+      <button onClick={toggle}>{isExpanded ? "閉じる" : "開く"}</button>
       {isExpanded && <div>内容</div>}
     </>
   )}
-</Accordion.Item>
+</Accordion.Item>;
 ```
 
 ### Controlled Mode
@@ -217,7 +211,7 @@ interface ControlledAccordionProps {
 function ControlledAccordion({
   expanded,
   onExpandedChange,
-  children
+  children,
 }: ControlledAccordionProps) {
   const expandedSet = new Set(expanded);
 
@@ -232,7 +226,9 @@ function ControlledAccordion({
   };
 
   return (
-    <AccordionContext.Provider value={{ expandedItems: expandedSet, toggleItem }}>
+    <AccordionContext.Provider
+      value={{ expandedItems: expandedSet, toggleItem }}
+    >
       <div className="accordion">{children}</div>
     </AccordionContext.Provider>
   );
@@ -254,7 +250,7 @@ const TabsContext = createContext<TabsContextType | null>(null);
 
 function useTabs() {
   const context = useContext(TabsContext);
-  if (!context) throw new Error('useTabs must be used within Tabs');
+  if (!context) throw new Error("useTabs must be used within Tabs");
   return context;
 }
 
@@ -305,7 +301,7 @@ function Tab({ value, children, disabled }: TabProps) {
       role="tab"
       aria-selected={isActive}
       disabled={disabled}
-      className={`tab ${isActive ? 'tab--active' : ''}`}
+      className={`tab ${isActive ? "tab--active" : ""}`}
       onClick={() => setActiveTab(value)}
     >
       {children}
@@ -344,13 +340,19 @@ export { Tabs };
 ## ベストプラクティス
 
 ### 1. Context分離
+
 ```tsx
 // 状態と操作を分離して不要な再レンダリングを防ぐ
-const AccordionStateContext = createContext<{ expandedItems: Set<string> } | null>(null);
-const AccordionActionsContext = createContext<{ toggleItem: (id: string) => void } | null>(null);
+const AccordionStateContext = createContext<{
+  expandedItems: Set<string>;
+} | null>(null);
+const AccordionActionsContext = createContext<{
+  toggleItem: (id: string) => void;
+} | null>(null);
 ```
 
 ### 2. 型安全性の確保
+
 ```tsx
 // サブコンポーネントの型を明示
 interface AccordionComponent extends React.FC<AccordionProps> {
@@ -367,6 +369,7 @@ const Accordion: AccordionComponent = Object.assign(AccordionRoot, {
 ```
 
 ### 3. デフォルト値の提供
+
 ```tsx
 // 適切なデフォルト値で使いやすさを向上
 <Accordion
@@ -381,12 +384,14 @@ const Accordion: AccordionComponent = Object.assign(AccordionRoot, {
 ## チェックリスト
 
 ### 実装時
+
 - [ ] Contextが適切にエラーハンドリングしているか
 - [ ] サブコンポーネントが親なしで使用された時のエラーメッセージが明確か
 - [ ] 型定義が完全か
 - [ ] アクセシビリティ属性が適切か
 
 ### 使用時
+
 - [ ] ルートコンポーネントで必要なpropsが設定されているか
 - [ ] 子コンポーネントの順序は正しいか
 - [ ] IDの重複がないか

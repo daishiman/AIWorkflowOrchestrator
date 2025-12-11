@@ -10,11 +10,11 @@ v{{OLD_VERSION}} は {{SUNSET_DATE}} に廃止されます。
 
 ## 変更サマリー
 
-| カテゴリ | 変更数 | 影響度 |
-|---------|--------|--------|
-| 破壊的変更 | {{BREAKING_COUNT}} | 🔴 高 |
-| 非推奨化 | {{DEPRECATED_COUNT}} | 🟡 中 |
-| 新機能 | {{NEW_FEATURE_COUNT}} | 🟢 低 |
+| カテゴリ   | 変更数                | 影響度 |
+| ---------- | --------------------- | ------ |
+| 破壊的変更 | {{BREAKING_COUNT}}    | 🔴 高  |
+| 非推奨化   | {{DEPRECATED_COUNT}}  | 🟡 中  |
+| 新機能     | {{NEW_FEATURE_COUNT}} | 🟢 低  |
 
 ---
 
@@ -41,10 +41,18 @@ v{{OLD_VERSION}} は {{SUNSET_DATE}} に廃止されます。
 
 ```typescript
 // 変更前
-{{OLD_CODE_1}}
+{
+  {
+    OLD_CODE_1;
+  }
+}
 
 // 変更後
-{{NEW_CODE_1}}
+{
+  {
+    NEW_CODE_1;
+  }
+}
 ```
 
 ---
@@ -55,11 +63,13 @@ v{{OLD_VERSION}} は {{SUNSET_DATE}} に廃止されます。
 {{BREAKING_CHANGE_DESCRIPTION_2}}
 
 **変更前**:
+
 ```
 {{OLD_EXAMPLE_2}}
 ```
 
 **変更後**:
+
 ```
 {{NEW_EXAMPLE_2}}
 ```
@@ -71,10 +81,10 @@ v{{OLD_VERSION}} は {{SUNSET_DATE}} に廃止されます。
 
 ## 非推奨化されたエンドポイント
 
-| v{{OLD_VERSION}} エンドポイント | v{{NEW_VERSION}} 代替 | 廃止日 |
-|-------------------------------|----------------------|--------|
-| {{OLD_ENDPOINT_1}} | {{NEW_ENDPOINT_1}} | {{SUNSET_DATE}} |
-| {{OLD_ENDPOINT_2}} | {{NEW_ENDPOINT_2}} | {{SUNSET_DATE}} |
+| v{{OLD_VERSION}} エンドポイント | v{{NEW_VERSION}} 代替 | 廃止日          |
+| ------------------------------- | --------------------- | --------------- |
+| {{OLD_ENDPOINT_1}}              | {{NEW_ENDPOINT_1}}    | {{SUNSET_DATE}} |
+| {{OLD_ENDPOINT_2}}              | {{NEW_ENDPOINT_2}}    | {{SUNSET_DATE}} |
 
 ---
 
@@ -98,24 +108,28 @@ curl -X GET "{{API_BASE_URL}}/{{NEW_VERSION}}/{{NEW_FEATURE_1_PATH}}" \
 ## 移行チェックリスト
 
 ### 準備フェーズ
+
 - [ ] 現在使用中のv{{OLD_VERSION}}エンドポイントを特定
 - [ ] 影響を受けるコードベースを把握
 - [ ] 移行スケジュールを策定
 - [ ] テスト環境でv{{NEW_VERSION}}を検証
 
 ### 実装フェーズ
+
 - [ ] APIクライアントのベースURLを更新
 - [ ] リクエスト形式の変更を適用
 - [ ] レスポンス処理の変更を適用
 - [ ] エラーハンドリングを更新
 
 ### 検証フェーズ
+
 - [ ] 全エンドポイントの動作確認
 - [ ] エラーケースのテスト
 - [ ] パフォーマンステスト
 - [ ] 本番環境への段階的ロールアウト
 
 ### 完了フェーズ
+
 - [ ] v{{OLD_VERSION}}への依存を完全に削除
 - [ ] 監視設定を更新
 - [ ] ドキュメントを更新
@@ -145,16 +159,16 @@ v{{NEW_VERSION}}への移行が必須です。
 
 ## サポート
 
-| チャネル | 連絡先 |
-|---------|--------|
-| メール | {{SUPPORT_EMAIL}} |
-| Slack | {{SLACK_CHANNEL}} |
-| ドキュメント | {{DOCS_URL}} |
+| チャネル     | 連絡先            |
+| ------------ | ----------------- |
+| メール       | {{SUPPORT_EMAIL}} |
+| Slack        | {{SLACK_CHANNEL}} |
+| ドキュメント | {{DOCS_URL}}      |
 
 ---
 
 ## 変更履歴
 
-| 日付 | 変更内容 |
-|------|---------|
+| 日付                   | 変更内容 |
+| ---------------------- | -------- |
 | {{GUIDE_CREATED_DATE}} | 初版作成 |

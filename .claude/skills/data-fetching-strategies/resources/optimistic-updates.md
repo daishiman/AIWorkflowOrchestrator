@@ -29,7 +29,7 @@ UIを即座に更新するパターンです。ユーザー体験を向上させ
 ### 基本パターン
 
 ```typescript
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 function useTodoMutation() {
   const queryClient = useQueryClient();
@@ -40,16 +40,14 @@ function useTodoMutation() {
     // ミューテーション開始前
     onMutate: async (newTodo) => {
       // 進行中のクエリをキャンセル
-      await queryClient.cancelQueries({ queryKey: ['todos'] });
+      await queryClient.cancelQueries({ queryKey: ["todos"] });
 
       // 現在の状態を保存
-      const previousTodos = queryClient.getQueryData(['todos']);
+      const previousTodos = queryClient.getQueryData(["todos"]);
 
       // 楽観的に更新
-      queryClient.setQueryData(['todos'], (old: Todo[]) =>
-        old.map(todo =>
-          todo.id === newTodo.id ? newTodo : todo
-        )
+      queryClient.setQueryData(["todos"], (old: Todo[]) =>
+        old.map((todo) => (todo.id === newTodo.id ? newTodo : todo)),
       );
 
       // ロールバック用にコンテキストを返す
@@ -58,13 +56,13 @@ function useTodoMutation() {
 
     // エラー時のロールバック
     onError: (err, newTodo, context) => {
-      queryClient.setQueryData(['todos'], context?.previousTodos);
-      toast.error('更新に失敗しました');
+      queryClient.setQueryData(["todos"], context?.previousTodos);
+      toast.error("更新に失敗しました");
     },
 
     // 成功/失敗にかかわらず実行
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['todos'] });
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
     },
   });
 }
@@ -77,8 +75,8 @@ const mutation = useMutation({
   mutationFn: createTodo,
 
   onMutate: async (newTodo) => {
-    await queryClient.cancelQueries({ queryKey: ['todos'] });
-    const previousTodos = queryClient.getQueryData(['todos']);
+    await queryClient.cancelQueries({ queryKey: ["todos"] });
+    const previousTodos = queryClient.getQueryData(["todos"]);
 
     // 仮のIDで楽観的に追加
     const optimisticTodo = {
@@ -87,7 +85,7 @@ const mutation = useMutation({
       createdAt: new Date().toISOString(),
     };
 
-    queryClient.setQueryData(['todos'], (old: Todo[]) => [
+    queryClient.setQueryData(["todos"], (old: Todo[]) => [
       ...old,
       optimisticTodo,
     ]);
@@ -97,15 +95,13 @@ const mutation = useMutation({
 
   onSuccess: (data, variables, context) => {
     // サーバーからの正式なデータで更新
-    queryClient.setQueryData(['todos'], (old: Todo[]) =>
-      old.map(todo =>
-        todo.id === context?.optimisticTodo.id ? data : todo
-      )
+    queryClient.setQueryData(["todos"], (old: Todo[]) =>
+      old.map((todo) => (todo.id === context?.optimisticTodo.id ? data : todo)),
     );
   },
 
   onError: (err, newTodo, context) => {
-    queryClient.setQueryData(['todos'], context?.previousTodos);
+    queryClient.setQueryData(["todos"], context?.previousTodos);
   },
 });
 ```
@@ -117,20 +113,20 @@ const deleteMutation = useMutation({
   mutationFn: deleteTodo,
 
   onMutate: async (todoId) => {
-    await queryClient.cancelQueries({ queryKey: ['todos'] });
-    const previousTodos = queryClient.getQueryData(['todos']);
+    await queryClient.cancelQueries({ queryKey: ["todos"] });
+    const previousTodos = queryClient.getQueryData(["todos"]);
 
     // 楽観的に削除
-    queryClient.setQueryData(['todos'], (old: Todo[]) =>
-      old.filter(todo => todo.id !== todoId)
+    queryClient.setQueryData(["todos"], (old: Todo[]) =>
+      old.filter((todo) => todo.id !== todoId),
     );
 
     return { previousTodos };
   },
 
   onError: (err, todoId, context) => {
-    queryClient.setQueryData(['todos'], context?.previousTodos);
-    toast.error('削除に失敗しました');
+    queryClient.setQueryData(["todos"], context?.previousTodos);
+    toast.error("削除に失敗しました");
   },
 });
 ```
@@ -140,29 +136,29 @@ const deleteMutation = useMutation({
 ### 基本パターン
 
 ```typescript
-import useSWR, { useSWRConfig } from 'swr';
+import useSWR, { useSWRConfig } from "swr";
 
 function useTodos() {
-  const { data, error } = useSWR('/api/todos', fetcher);
+  const { data, error } = useSWR("/api/todos", fetcher);
   const { mutate } = useSWRConfig();
 
   const updateTodo = async (newTodo: Todo) => {
     // 楽観的更新
     mutate(
-      '/api/todos',
+      "/api/todos",
       (todos: Todo[]) =>
-        todos.map(todo => (todo.id === newTodo.id ? newTodo : todo)),
-      false // revalidateをfalseにして即座更新
+        todos.map((todo) => (todo.id === newTodo.id ? newTodo : todo)),
+      false, // revalidateをfalseにして即座更新
     );
 
     try {
       // サーバーに送信
       await api.updateTodo(newTodo);
       // 成功時は再検証
-      mutate('/api/todos');
+      mutate("/api/todos");
     } catch (error) {
       // 失敗時はロールバック（再検証で元に戻る）
-      mutate('/api/todos');
+      mutate("/api/todos");
       throw error;
     }
   };
@@ -174,25 +170,23 @@ function useTodos() {
 ### 新しいSWR API（useSWRMutation）
 
 ```typescript
-import useSWRMutation from 'swr/mutation';
+import useSWRMutation from "swr/mutation";
 
 function useTodoMutation() {
   const { trigger, isMutating } = useSWRMutation(
-    '/api/todos',
+    "/api/todos",
     async (url, { arg }: { arg: Todo }) => {
       return await api.updateTodo(arg);
     },
     {
       // 楽観的更新
       optimisticData: (currentData, arg) =>
-        currentData.map(todo =>
-          todo.id === arg.id ? arg : todo
-        ),
+        currentData.map((todo) => (todo.id === arg.id ? arg : todo)),
       // 失敗時は自動ロールバック
       rollbackOnError: true,
       // 成功後に再検証
       revalidate: true,
-    }
+    },
   );
 
   return { updateTodo: trigger, isMutating };
@@ -211,7 +205,7 @@ const mutation = useMutation({
   mutationFn: updateTodo,
   onMutate: async (newTodo) => {
     // 他のミューテーションをキャンセル
-    await queryClient.cancelQueries({ queryKey: ['todos', newTodo.id] });
+    await queryClient.cancelQueries({ queryKey: ["todos", newTodo.id] });
     // ...
   },
 });
@@ -300,17 +294,17 @@ onError: (error) => {
 ## テスト
 
 ```typescript
-describe('optimistic updates', () => {
-  it('should update UI immediately', async () => {
+describe("optimistic updates", () => {
+  it("should update UI immediately", async () => {
     // 楽観的更新が即座に反映されることを確認
   });
 
-  it('should rollback on error', async () => {
+  it("should rollback on error", async () => {
     // サーバーエラー時にロールバックすることを確認
     server.use(
-      rest.put('/api/todos/:id', (req, res, ctx) => {
+      rest.put("/api/todos/:id", (req, res, ctx) => {
         return res(ctx.status(500));
-      })
+      }),
     );
 
     // ミューテーション実行

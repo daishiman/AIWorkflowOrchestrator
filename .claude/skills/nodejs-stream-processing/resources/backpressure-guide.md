@@ -22,14 +22,14 @@ const canWrite = writable.write(chunk);
 if (!canWrite) {
   // 内部バッファがhighWaterMarkに達した
   // これ以上のデータを送るとメモリ問題の可能性
-  console.log('Backpressure detected!');
+  console.log("Backpressure detected!");
 }
 ```
 
 ### drainイベント
 
 ```typescript
-writable.on('drain', () => {
+writable.on("drain", () => {
   // バッファが空になった
   // 書き込み再開可能
 });
@@ -42,12 +42,12 @@ writable.on('drain', () => {
 ### パターン1: pause/resume
 
 ```typescript
-import { createReadStream, createWriteStream } from 'fs';
+import { createReadStream, createWriteStream } from "fs";
 
-const readable = createReadStream('./input.bin');
-const writable = createWriteStream('./output.bin');
+const readable = createReadStream("./input.bin");
+const writable = createWriteStream("./output.bin");
 
-readable.on('data', (chunk) => {
+readable.on("data", (chunk) => {
   const ok = writable.write(chunk);
 
   if (!ok) {
@@ -56,12 +56,12 @@ readable.on('data', (chunk) => {
   }
 });
 
-writable.on('drain', () => {
+writable.on("drain", () => {
   // 読み込みを再開
   readable.resume();
 });
 
-readable.on('end', () => {
+readable.on("end", () => {
   writable.end();
 });
 ```
@@ -69,7 +69,7 @@ readable.on('end', () => {
 ### パターン2: pipeline（推奨）
 
 ```typescript
-import { pipeline } from 'stream/promises';
+import { pipeline } from "stream/promises";
 
 // 自動的にバックプレッシャーを処理
 await pipeline(readable, transform, writable);
@@ -78,7 +78,7 @@ await pipeline(readable, transform, writable);
 ### パターン3: async iterator
 
 ```typescript
-import { createReadStream, createWriteStream } from 'fs';
+import { createReadStream, createWriteStream } from "fs";
 
 async function processWithAsyncIterator(input: string, output: string) {
   const readable = createReadStream(input);
@@ -91,8 +91,8 @@ async function processWithAsyncIterator(input: string, output: string) {
       if (ok) {
         resolve();
       } else {
-        writable.once('drain', resolve);
-        writable.once('error', reject);
+        writable.once("drain", resolve);
+        writable.once("error", reject);
       }
     });
   }
@@ -109,7 +109,7 @@ async function processWithAsyncIterator(input: string, output: string) {
 ### Readableストリーム
 
 ```typescript
-import { Readable } from 'stream';
+import { Readable } from "stream";
 
 class CustomReadable extends Readable {
   private index = 0;
@@ -144,7 +144,7 @@ class CustomReadable extends Readable {
 ### Writableストリーム
 
 ```typescript
-import { Writable, WritableOptions } from 'stream';
+import { Writable, WritableOptions } from "stream";
 
 class CustomWritable extends Writable {
   constructor(options?: WritableOptions) {
@@ -157,7 +157,7 @@ class CustomWritable extends Writable {
   _write(
     chunk: Buffer,
     encoding: BufferEncoding,
-    callback: (error?: Error | null) => void
+    callback: (error?: Error | null) => void,
   ): void {
     // 非同期処理をシミュレート
     setImmediate(() => {
@@ -169,7 +169,7 @@ class CustomWritable extends Writable {
   // オプション: バッチ書き込み
   _writev(
     chunks: Array<{ chunk: Buffer; encoding: BufferEncoding }>,
-    callback: (error?: Error | null) => void
+    callback: (error?: Error | null) => void,
   ): void {
     // 複数チャンクをまとめて処理
     const totalSize = chunks.reduce((acc, c) => acc + c.chunk.length, 0);
@@ -182,7 +182,7 @@ class CustomWritable extends Writable {
 ### Transformストリーム
 
 ```typescript
-import { Transform, TransformCallback } from 'stream';
+import { Transform, TransformCallback } from "stream";
 
 class AsyncTransform extends Transform {
   constructor() {
@@ -192,7 +192,7 @@ class AsyncTransform extends Transform {
   async _transform(
     chunk: Buffer,
     encoding: BufferEncoding,
-    callback: TransformCallback
+    callback: TransformCallback,
   ): Promise<void> {
     try {
       // 非同期処理
@@ -232,19 +232,19 @@ function monitorMemory(label: string): void {
 }
 
 // ストリーム処理中に定期的に監視
-setInterval(() => monitorMemory('Stream processing'), 1000);
+setInterval(() => monitorMemory("Stream processing"), 1000);
 ```
 
 ### ストリームバッファ監視
 
 ```typescript
-import { Readable, Writable } from 'stream';
+import { Readable, Writable } from "stream";
 
 function getBufferSize(stream: Readable | Writable): number {
-  if ('readableLength' in stream) {
+  if ("readableLength" in stream) {
     return (stream as Readable).readableLength;
   }
-  if ('writableLength' in stream) {
+  if ("writableLength" in stream) {
     return (stream as Writable).writableLength;
   }
   return 0;
@@ -267,6 +267,7 @@ function logBufferStatus(readable: Readable, writable: Writable): void {
 **原因**: バックプレッシャーが適切に処理されていない
 
 **解決策**:
+
 ```typescript
 // pipeline()を使用
 await pipeline(readable, writable);
@@ -279,14 +280,15 @@ await pipeline(readable, writable);
 **原因**: drainイベントが発火しない、またはリスナーが外れている
 
 **解決策**:
+
 ```typescript
 // once()ではなくon()を使用し、適切にクリーンアップ
 const drainHandler = () => readable.resume();
-writable.on('drain', drainHandler);
+writable.on("drain", drainHandler);
 
 // クリーンアップ
-readable.on('end', () => {
-  writable.off('drain', drainHandler);
+readable.on("end", () => {
+  writable.off("drain", drainHandler);
 });
 ```
 
@@ -295,12 +297,13 @@ readable.on('end', () => {
 **原因**: バッファオーバーフロー時にデータが破棄されている
 
 **解決策**:
+
 ```typescript
 // write()の戻り値を必ずチェック
 const ok = writable.write(chunk);
 if (!ok) {
   // 書き込み完了を待機
-  await new Promise(resolve => writable.once('drain', resolve));
+  await new Promise((resolve) => writable.once("drain", resolve));
 }
 ```
 

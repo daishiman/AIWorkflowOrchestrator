@@ -279,12 +279,14 @@ const NotificationBadge = () => {
 ### ステップ3: 実装
 
 1. **新しいContextを作成**
+
    ```typescript
    const Context1 = createContext<Type1>(defaultValue1);
    const Context2 = createContext<Type2>(defaultValue2);
    ```
 
 2. **Providerコンポーネントを実装**
+
    ```typescript
    const CombinedProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
      return (
@@ -302,7 +304,7 @@ const NotificationBadge = () => {
    const useContext1 = () => {
      const context = useContext(Context1);
      if (context === undefined) {
-       throw new Error('useContext1 must be used within Provider');
+       throw new Error("useContext1 must be used within Provider");
      }
      return context;
    };
@@ -455,6 +457,7 @@ const AppProviders: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 **原因と解決策**:
 
 1. **Providerの値が毎回新しいオブジェクト**
+
    ```typescript
    // 悪い例
    <Context.Provider value={{ data, setData }}>
@@ -485,7 +488,7 @@ const useForm = () => {
     values,
     errors,
     touched,
-    ...actions
+    ...actions,
   };
 };
 

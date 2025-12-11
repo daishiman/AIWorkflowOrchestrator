@@ -4,10 +4,14 @@
  * S3などのストレージと連携する更新サーバーの実装例
  */
 
-import express from 'express';
-import { S3Client, GetObjectCommand, ListObjectsV2Command } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import semver from 'semver';
+import express from "express";
+import {
+  S3Client,
+  GetObjectCommand,
+  ListObjectsV2Command,
+} from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import semver from "semver";
 
 // =====================================
 // 設定
@@ -17,10 +21,10 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const s3 = new S3Client({
-  region: process.env.AWS_REGION || 'us-east-1',
+  region: process.env.AWS_REGION || "us-east-1",
 });
 
-const BUCKET = process.env.S3_BUCKET || 'your-app-releases';
+const BUCKET = process.env.S3_BUCKET || "your-app-releases";
 const SIGNED_URL_EXPIRY = 60 * 60; // 1時間
 
 // =====================================
@@ -56,7 +60,9 @@ interface VersionMetadata {
 /**
  * S3から最新バージョンを取得
  */
-async function getLatestVersion(platform: string): Promise<VersionMetadata | null> {
+async function getLatestVersion(
+  platform: string,
+): Promise<VersionMetadata | null> {
   try {
     const command = new ListObjectsV2Command({
       Bucket: BUCKET,
@@ -94,7 +100,7 @@ async function getLatestVersion(platform: string): Promise<VersionMetadata | nul
 
     return JSON.parse(metadataString) as VersionMetadata;
   } catch (error) {
-    console.error('Error getting latest version:', error);
+    console.error("Error getting latest version:", error);
     return null;
   }
 }
@@ -102,7 +108,11 @@ async function getLatestVersion(platform: string): Promise<VersionMetadata | nul
 /**
  * 署名付きダウンロードURLを生成
  */
-async function getDownloadUrl(platform: string, version: string, filename: string): Promise<string> {
+async function getDownloadUrl(
+  platform: string,
+  version: string,
+  filename: string,
+): Promise<string> {
   const command = new GetObjectCommand({
     Bucket: BUCKET,
     Key: `releases/${platform}/${version}/${filename}`,
@@ -136,7 +146,7 @@ async function getReleaseNotes(version: string): Promise<string | undefined> {
  * 更新確認エンドポイント
  * electron-updater が呼び出す
  */
-app.get('/update/:platform/:currentVersion', async (req, res) => {
+app.get("/update/:platform/:currentVersion", async (req, res) => {
   const { platform, currentVersion } = req.params;
 
   console.log(`Update check: platform=${platform}, version=${currentVersion}`);
@@ -145,13 +155,13 @@ app.get('/update/:platform/:currentVersion', async (req, res) => {
     const latestMetadata = await getLatestVersion(platform);
 
     if (!latestMetadata) {
-      console.log('No releases found');
+      console.log("No releases found");
       return res.status(204).send();
     }
 
     // 現在のバージョンが最新か確認
     if (!semver.gt(latestMetadata.version, currentVersion)) {
-      console.log('Already up to date');
+      console.log("Already up to date");
       return res.status(204).send();
     }
 
@@ -159,7 +169,7 @@ app.get('/update/:platform/:currentVersion', async (req, res) => {
     const downloadUrl = await getDownloadUrl(
       platform,
       latestMetadata.version,
-      latestMetadata.filename
+      latestMetadata.filename,
     );
 
     // リリースノートを取得
@@ -181,8 +191,8 @@ app.get('/update/:platform/:currentVersion', async (req, res) => {
     console.log(`Update available: ${latestMetadata.version}`);
     res.json(response);
   } catch (error) {
-    console.error('Update check error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Update check error:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
@@ -190,44 +200,46 @@ app.get('/update/:platform/:currentVersion', async (req, res) => {
  * ダウンロードエンドポイント
  * ファイルの直接ダウンロード
  */
-app.get('/download/:platform/:version/:filename', async (req, res) => {
+app.get("/download/:platform/:version/:filename", async (req, res) => {
   const { platform, version, filename } = req.params;
 
-  console.log(`Download: platform=${platform}, version=${version}, file=${filename}`);
+  console.log(
+    `Download: platform=${platform}, version=${version}, file=${filename}`,
+  );
 
   try {
     const downloadUrl = await getDownloadUrl(platform, version, filename);
     res.redirect(downloadUrl);
   } catch (error) {
-    console.error('Download error:', error);
-    res.status(404).json({ error: 'File not found' });
+    console.error("Download error:", error);
+    res.status(404).json({ error: "File not found" });
   }
 });
 
 /**
  * リリースノートエンドポイント
  */
-app.get('/releases/:version/notes', async (req, res) => {
+app.get("/releases/:version/notes", async (req, res) => {
   const { version } = req.params;
 
   try {
     const notes = await getReleaseNotes(version);
     if (notes) {
-      res.type('text/markdown').send(notes);
+      res.type("text/markdown").send(notes);
     } else {
-      res.status(404).json({ error: 'Release notes not found' });
+      res.status(404).json({ error: "Release notes not found" });
     }
   } catch (error) {
-    console.error('Release notes error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Release notes error:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
 /**
  * ヘルスチェック
  */
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok' });
+app.get("/health", (req, res) => {
+  res.json({ status: "ok" });
 });
 
 // =====================================

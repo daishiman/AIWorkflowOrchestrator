@@ -7,13 +7,13 @@
 
 ## アルゴリズム比較
 
-| アルゴリズム | メモリ使用 | 精度 | バースト | 実装難易度 |
-|------------|----------|------|---------|----------|
-| Token Bucket | 低 | 中 | 許容 | 中 |
-| Leaky Bucket | 低 | 高 | 抑制 | 低 |
-| Fixed Window | 低 | 低 | 境界問題 | 低 |
-| Sliding Window Log | 高 | 高 | 許容 | 中 |
-| Sliding Window Counter | 中 | 中〜高 | 許容 | 中 |
+| アルゴリズム           | メモリ使用 | 精度   | バースト | 実装難易度 |
+| ---------------------- | ---------- | ------ | -------- | ---------- |
+| Token Bucket           | 低         | 中     | 許容     | 中         |
+| Leaky Bucket           | 低         | 高     | 抑制     | 低         |
+| Fixed Window           | 低         | 低     | 境界問題 | 低         |
+| Sliding Window Log     | 高         | 高     | 許容     | 中         |
+| Sliding Window Counter | 中         | 中〜高 | 許容     | 中         |
 
 ## Token Bucket
 
@@ -43,8 +43,8 @@ class TokenBucket {
   private lastRefill: number;
 
   constructor(
-    private readonly capacity: number,    // バケット容量
-    private readonly refillRate: number   // トークン/秒
+    private readonly capacity: number, // バケット容量
+    private readonly refillRate: number, // トークン/秒
   ) {
     this.tokens = capacity;
     this.lastRefill = Date.now();
@@ -87,7 +87,7 @@ class TokenBucket {
     }
 
     const needed = tokens - this.tokens;
-    return Math.ceil(needed / this.refillRate * 1000);
+    return Math.ceil((needed / this.refillRate) * 1000);
   }
 
   /**
@@ -139,8 +139,8 @@ class LeakyBucket {
   private lastLeak: number;
 
   constructor(
-    private readonly capacity: number,  // キュー容量
-    private readonly leakRate: number   // 処理レート（リクエスト/秒）
+    private readonly capacity: number, // キュー容量
+    private readonly leakRate: number, // 処理レート（リクエスト/秒）
   ) {
     this.lastLeak = Date.now();
   }
@@ -190,7 +190,7 @@ class LeakyBucket {
     }
 
     const overflow = this.queue - this.capacity + 1;
-    return Math.ceil(overflow / this.leakRate * 1000);
+    return Math.ceil((overflow / this.leakRate) * 1000);
   }
 }
 ```
@@ -221,8 +221,8 @@ class FixedWindow {
   private windowStart: number;
 
   constructor(
-    private readonly windowMs: number,  // ウィンドウサイズ（ミリ秒）
-    private readonly limit: number      // 制限
+    private readonly windowMs: number, // ウィンドウサイズ（ミリ秒）
+    private readonly limit: number, // 制限
   ) {
     this.windowStart = Date.now();
   }
@@ -291,8 +291,8 @@ class SlidingWindowLog {
   private timestamps: number[] = [];
 
   constructor(
-    private readonly windowMs: number,  // ウィンドウサイズ
-    private readonly limit: number      // 制限
+    private readonly windowMs: number, // ウィンドウサイズ
+    private readonly limit: number, // 制限
   ) {}
 
   /**
@@ -303,7 +303,7 @@ class SlidingWindowLog {
     const windowStart = now - this.windowMs;
 
     // 期限切れエントリを削除
-    this.timestamps = this.timestamps.filter(ts => ts > windowStart);
+    this.timestamps = this.timestamps.filter((ts) => ts > windowStart);
 
     if (this.timestamps.length >= this.limit) {
       return false;
@@ -319,7 +319,7 @@ class SlidingWindowLog {
   getRemaining(): number {
     const now = Date.now();
     const windowStart = now - this.windowMs;
-    const validCount = this.timestamps.filter(ts => ts > windowStart).length;
+    const validCount = this.timestamps.filter((ts) => ts > windowStart).length;
     return Math.max(0, this.limit - validCount);
   }
 
@@ -331,7 +331,7 @@ class SlidingWindowLog {
     const windowStart = now - this.windowMs;
 
     // 有効なエントリのみ
-    this.timestamps = this.timestamps.filter(ts => ts > windowStart);
+    this.timestamps = this.timestamps.filter((ts) => ts > windowStart);
 
     if (this.timestamps.length < this.limit) {
       return 0;
@@ -370,7 +370,7 @@ class SlidingWindowCounter {
 
   constructor(
     private readonly windowMs: number,
-    private readonly limit: number
+    private readonly limit: number,
   ) {
     this.windowStart = Date.now();
   }
@@ -432,13 +432,13 @@ class SlidingWindowCounter {
 ### Redis Token Bucket
 
 ```typescript
-import Redis from 'ioredis';
+import Redis from "ioredis";
 
 class RedisTokenBucket {
   constructor(
     private readonly redis: Redis,
     private readonly capacity: number,
-    private readonly refillRate: number
+    private readonly refillRate: number,
   ) {}
 
   async consume(key: string, tokens: number = 1): Promise<boolean> {
@@ -478,7 +478,7 @@ class RedisTokenBucket {
       this.capacity,
       this.refillRate,
       tokens,
-      now
+      now,
     );
 
     return result === 1;
@@ -489,11 +489,13 @@ class RedisTokenBucket {
 ## チェックリスト
 
 ### 設計時
+
 - [ ] ユースケースに適したアルゴリズムを選択したか？
 - [ ] バースト許容が必要か検討したか？
 - [ ] 分散環境での動作を考慮したか？
 
 ### 実装時
+
 - [ ] メモリ使用量は許容範囲か？
 - [ ] 境界条件を正しく処理しているか？
 - [ ] 時間の同期問題を考慮したか？

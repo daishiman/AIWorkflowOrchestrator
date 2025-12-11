@@ -5,9 +5,11 @@ GitHub Actionsワークフローテンプレートの3つの主要なタイプ�
 ## 1. 組織テンプレート (Organization Templates)
 
 ### 概要
+
 組織全体で標準化されたワークフローテンプレートを提供する仕組み。
 
 ### 配置場所
+
 ```
 .github/
 └── workflow-templates/
@@ -30,6 +32,7 @@ GitHub Actionsワークフローテンプレートの3つの主要なタイプ�
 ```
 
 **プロパティ項目**:
+
 - `name`: テンプレート名（UI表示用）
 - `description`: 説明文
 - `iconName`: アイコン識別子（octicon名）
@@ -52,7 +55,7 @@ name: Node.js CI
 
 on:
   push:
-    branches: [$default-branch]  # GitHub UIが自動置換
+    branches: [$default-branch] # GitHub UIが自動置換
   pull_request:
     branches: [$default-branch]
 
@@ -63,8 +66,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'  # プロジェクトに応じて変更
-          cache: 'pnpm'
+          node-version: "20" # プロジェクトに応じて変更
+          cache: "pnpm"
 ```
 
 ```yaml
@@ -73,7 +76,7 @@ name: Node.js CI
 
 on:
   push:
-    branches: [main]  # 組織内のブランチ戦略と合わない可能性
+    branches: [main] # 組織内のブランチ戦略と合わない可能性
 ```
 
 ### 管理戦略
@@ -88,9 +91,11 @@ on:
 ## 2. スターターワークフロー (Starter Workflows)
 
 ### 概要
+
 GitHubが公式に提供するプロジェクトタイプ別の最適化されたワークフローテンプレート。
 
 ### 提供元
+
 - GitHub公式リポジトリ: [actions/starter-workflows](https://github.com/actions/starter-workflows)
 - カテゴリ: CI、Deployment、Automation、Pages、Security
 
@@ -99,6 +104,7 @@ GitHubが公式に提供するプロジェクトタイプ別の最適化され�
 #### CI系
 
 **Node.js**:
+
 ```yaml
 name: Node.js CI
 
@@ -116,13 +122,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
+          cache: "pnpm"
       - run: pnpm ci
       - run: pnpm run build --if-present
       - run: pnpm test
 ```
 
 **Python**:
+
 ```yaml
 name: Python application
 
@@ -136,13 +143,14 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-          cache: 'pip'
+          python-version: "3.11"
+          cache: "pip"
       - run: pip install -r requirements.txt
       - run: pytest
 ```
 
 **Docker**:
+
 ```yaml
 name: Docker Image CI
 
@@ -160,6 +168,7 @@ jobs:
 #### Deployment系
 
 **AWS**:
+
 ```yaml
 name: Deploy to Amazon ECS
 
@@ -204,6 +213,7 @@ jobs:
 ## 3. 再利用可能パターン (Reusable Patterns)
 
 ### 概要
+
 複数のワークフローで共通して使用される処理をパターン化したもの。
 
 ### パターンタイプ
@@ -219,12 +229,12 @@ description: Node.js環境のセットアップとキャッシング
 
 inputs:
   node-version:
-    description: 'Node.js version'
+    description: "Node.js version"
     required: true
   package-manager:
-    description: 'Package manager (pnpm/yarn/pnpm)'
+    description: "Package manager (pnpm/yarn/pnpm)"
     required: false
-    default: 'pnpm'
+    default: "pnpm"
 
 runs:
   using: composite
@@ -246,13 +256,14 @@ runs:
 ```
 
 **使用例**:
+
 ```yaml
 steps:
   - uses: actions/checkout@v4
   - uses: ./.github/actions/setup-node-with-cache
     with:
-      node-version: '20'
-      package-manager: 'pnpm'
+      node-version: "20"
+      package-manager: "pnpm"
   - run: pnpm test
 ```
 
@@ -295,6 +306,7 @@ jobs:
 ```
 
 **呼び出し側**:
+
 ```yaml
 name: CI
 
@@ -304,7 +316,7 @@ jobs:
   test:
     uses: ./.github/workflows/reusable-test.yml
     with:
-      node-version: '20'
+      node-version: "20"
       run-e2e: true
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -317,9 +329,9 @@ jobs:
 ```yaml
 # Template
 env:
-  NODE_VERSION: '20'          # ← プロジェクトに応じて変更
-  DOCKER_REGISTRY: 'ghcr.io'  # ← プロジェクトに応じて変更
-  APP_NAME: 'my-app'          # ← プロジェクトに応じて変更
+  NODE_VERSION: "20" # ← プロジェクトに応じて変更
+  DOCKER_REGISTRY: "ghcr.io" # ← プロジェクトに応じて変更
+  APP_NAME: "my-app" # ← プロジェクトに応じて変更
 
 jobs:
   build:
@@ -332,11 +344,11 @@ jobs:
 
 ### 再利用パターン選択基準
 
-| パターン | 適用場面 | メリット | デメリット |
-|---------|---------|---------|----------|
-| **Composite Action** | 複数ステップの定型処理 | 簡単に組み込める | ジョブレベルの制御不可 |
-| **Reusable Workflow** | ワークフロー全体の再利用 | 完全な独立性 | 呼び出しオーバーヘッド |
-| **テンプレート変数** | 軽微なカスタマイズ | シンプル | 構造的な再利用は困難 |
+| パターン              | 適用場面                 | メリット         | デメリット             |
+| --------------------- | ------------------------ | ---------------- | ---------------------- |
+| **Composite Action**  | 複数ステップの定型処理   | 簡単に組み込める | ジョブレベルの制御不可 |
+| **Reusable Workflow** | ワークフロー全体の再利用 | 完全な独立性     | 呼び出しオーバーヘッド |
+| **テンプレート変数**  | 軽微なカスタマイズ       | シンプル         | 構造的な再利用は困難   |
 
 ---
 

@@ -7,13 +7,13 @@ DDDでは「ドメインサービス」と「アプリケーションサービ�
 
 ## 基本的な違い
 
-| 観点 | ドメインサービス | アプリケーションサービス |
-|-----|---------------|---------------------|
-| **レイヤー** | ドメイン層 | アプリケーション層 |
-| **責務** | ビジネスロジック | ユースケースの調整 |
-| **依存** | ドメインオブジェクトのみ | インフラストラクチャも含む |
-| **状態** | ステートレス | ステートレス |
-| **知識** | ドメイン知識 | アプリケーション知識 |
+| 観点         | ドメインサービス         | アプリケーションサービス   |
+| ------------ | ------------------------ | -------------------------- |
+| **レイヤー** | ドメイン層               | アプリケーション層         |
+| **責務**     | ビジネスロジック         | ユースケースの調整         |
+| **依存**     | ドメインオブジェクトのみ | インフラストラクチャも含む |
+| **状態**     | ステートレス             | ステートレス               |
+| **知識**     | ドメイン知識             | アプリケーション知識       |
 
 ## 詳細比較
 
@@ -22,6 +22,7 @@ DDDでは「ドメインサービス」と「アプリケーションサービ�
 **役割**: エンティティや値オブジェクトに属さないドメインロジックをカプセル化
 
 **特徴**:
+
 - 純粋なビジネスロジック
 - インフラストラクチャに依存しない
 - ユビキタス言語で命名
@@ -39,9 +40,12 @@ class PricingService {
 
   private getMemberDiscount(rank: CustomerRank): Percentage {
     switch (rank) {
-      case CustomerRank.PLATINUM: return Percentage.of(15);
-      case CustomerRank.GOLD: return Percentage.of(10);
-      default: return Percentage.of(0);
+      case CustomerRank.PLATINUM:
+        return Percentage.of(15);
+      case CustomerRank.GOLD:
+        return Percentage.of(10);
+      default:
+        return Percentage.of(0);
     }
   }
 
@@ -58,6 +62,7 @@ class PricingService {
 **役割**: ユースケースを実現するためのオーケストレーション
 
 **特徴**:
+
 - ユースケースの調整
 - トランザクション制御
 - リポジトリとの連携
@@ -70,19 +75,21 @@ class OrderApplicationService {
     private readonly orderRepository: IOrderRepository,
     private readonly customerRepository: ICustomerRepository,
     private readonly inventoryService: IInventoryService,
-    private readonly pricingService: PricingService,  // ドメインサービスを使用
-    private readonly emailService: IEmailService
+    private readonly pricingService: PricingService, // ドメインサービスを使用
+    private readonly emailService: IEmailService,
   ) {}
 
   async placeOrder(command: PlaceOrderCommand): Promise<OrderId> {
     // トランザクション開始
     return this.unitOfWork.execute(async () => {
       // 1. 顧客を取得
-      const customer = await this.customerRepository.getById(command.customerId);
+      const customer = await this.customerRepository.getById(
+        command.customerId,
+      );
 
       // 2. 在庫確認（外部サービス）
       const availability = await this.inventoryService.checkAvailability(
-        command.items
+        command.items,
       );
       if (!availability.isAvailable) {
         throw new InsufficientInventoryError(availability.unavailableItems);
@@ -221,7 +228,7 @@ class TransferService {
 class TransferApplicationService {
   constructor(
     private readonly accountRepository: IAccountRepository,
-    private readonly transferService: TransferService
+    private readonly transferService: TransferService,
   ) {}
 
   async transfer(command: TransferCommand): Promise<void> {
@@ -246,7 +253,7 @@ class PricingService {
   calculateFinalPrice(
     order: Order,
     customer: Customer,
-    coupons: Coupon[]
+    coupons: Coupon[],
   ): Money {
     let price = order.subtotal;
 
@@ -269,7 +276,7 @@ class CheckoutApplicationService {
     private readonly orderRepository: IOrderRepository,
     private readonly customerRepository: ICustomerRepository,
     private readonly couponRepository: ICouponRepository,
-    private readonly pricingService: PricingService
+    private readonly pricingService: PricingService,
   ) {}
 
   async calculatePrice(orderId: OrderId): Promise<PriceDetails> {
@@ -282,7 +289,7 @@ class CheckoutApplicationService {
     const finalPrice = this.pricingService.calculateFinalPrice(
       order,
       customer,
-      coupons
+      coupons,
     );
 
     return new PriceDetails(order.subtotal, finalPrice);

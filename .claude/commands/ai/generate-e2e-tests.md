@@ -78,6 +78,7 @@ Task ツールで `.claude/agents/e2e-tester.md` を起動:
 ユーザーフロー: ${ユーザーフロー名}
 
 依頼内容:
+
 - クリティカルパスのE2Eテストシナリオ設計
 - Playwrightによるブラウザ自動化テスト実装
 - テストデータFixture作成とクリーンアップ戦略
@@ -85,6 +86,7 @@ Task ツールで `.claude/agents/e2e-tester.md` を起動:
 - Page Object Model等の抽象化パターン適用
 
 必須要件:
+
 1. Phase 1: テスト要件理解（クリティカルパス特定、シナリオ設計）
 2. Phase 2: テスト環境セットアップ（テストデータ、モック設定）
 3. Phase 3: テストコード実装（セレクタ戦略、明示的待機）
@@ -92,11 +94,13 @@ Task ツールで `.claude/agents/e2e-tester.md` を起動:
 5. Phase 5: テスト実行と検証（並列実行、CI/CD統合提案）
 
 テストピラミッド原則:
+
 - E2Eは少数・高コスト・統合テストとして位置づけ
 - 詳細なエッジケースはユニットテストに委譲
 ```
 
 **期待成果物:**
+
 - Playwrightテストファイル（`tests/[user-flow].spec.ts`）
 - テストデータFixture（`tests/fixtures/`）
 - セレクタ戦略適用済み（data-testid優先）
@@ -128,10 +132,12 @@ Task ツールで `.claude/agents/e2e-tester.md` を起動:
 ✅ E2Eテスト作成完了
 
 📁 生成ファイル:
+
 - tests/login-flow.spec.ts
 - tests/fixtures/user-data.ts
 
 📊 テストシナリオ:
+
 - ✅ ログインフォーム表示
 - ✅ 正常ログイン（メール + パスワード）
 - ✅ 認証エラーハンドリング

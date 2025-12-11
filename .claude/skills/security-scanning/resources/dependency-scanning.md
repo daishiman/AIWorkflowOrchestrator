@@ -6,12 +6,12 @@ Node.jsプロジェクトの依存関係に含まれる既知の脆弱性を検�
 
 ## ツール比較
 
-| ツール | 特徴 | コスト |
-|-------|------|--------|
-| pnpm audit | pnpm組み込み、高速 | 無料 |
-| pnpm audit | npm組み込み | 無料 |
-| Snyk | 詳細な修正提案、PR自動作成 | 無料枠あり |
-| Dependabot | GitHub統合、自動PR | 無料 |
+| ツール     | 特徴                       | コスト     |
+| ---------- | -------------------------- | ---------- |
+| pnpm audit | pnpm組み込み、高速         | 無料       |
+| pnpm audit | npm組み込み                | 無料       |
+| Snyk       | 詳細な修正提案、PR自動作成 | 無料枠あり |
+| Dependabot | GitHub統合、自動PR         | 無料       |
 
 ## pnpm audit
 
@@ -166,9 +166,7 @@ GitHub Settings → Security → Dependabot alerts を有効化
 
 ```json
 {
-  "exceptions": [
-    "https://npmjs.com/advisories/1234"
-  ]
+  "exceptions": ["https://npmjs.com/advisories/1234"]
 }
 ```
 
@@ -178,9 +176,9 @@ GitHub Settings → Security → Dependabot alerts を有効化
 version: v1.19.0
 ignore:
   SNYK-JS-LODASH-1234:
-    - '*':
-        reason: 'No direct exposure, patched in next release'
-        expires: '2024-12-31T00:00:00.000Z'
+    - "*":
+        reason: "No direct exposure, patched in next release"
+        expires: "2024-12-31T00:00:00.000Z"
 ```
 
 ## ベストプラクティス

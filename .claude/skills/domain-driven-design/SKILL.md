@@ -315,13 +315,11 @@ cat .claude/skills/domain-driven-design/templates/repository-interface-template.
 ### すべきこと
 
 1. **不変条件を常に保護**:
-
    - コンストラクタでバリデーション
    - 不正な状態への遷移を防止
    - ビジネスルールをドメイン内にカプセル化
 
 2. **小さな集約を維持**:
-
    - 必要最小限のオブジェクトを含む
    - 大きな集約は分割を検討
    - ID による参照で集約間を疎結合に
@@ -333,12 +331,10 @@ cat .claude/skills/domain-driven-design/templates/repository-interface-template.
 ### 避けるべきこと
 
 1. **プリミティブ型執着**:
-
    - ❌ `string`型のメールアドレス
    - ✅ `Email`値オブジェクト
 
 2. **貧血ドメインモデル**:
-
    - ❌ getter/setter のみのエンティティ
    - ✅ ビジネスロジックを含むリッチモデル
 
@@ -394,12 +390,10 @@ cat .claude/skills/domain-driven-design/templates/repository-interface-template.
 ## 参考文献
 
 - **『エリック・エヴァンスのドメイン駆動設計』** エリック・エヴァンス著
-
   - 第 5 章: ソフトウェアで表現されたモデル
   - 第 6 章: ドメインオブジェクトのライフサイクル
 
 - **『実践ドメイン駆動設計』** ヴォーン・ヴァーノン著
-
   - 第 5 章: エンティティ
   - 第 6 章: 値オブジェクト
   - 第 10 章: 集約

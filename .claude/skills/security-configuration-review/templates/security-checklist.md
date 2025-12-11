@@ -36,7 +36,7 @@
 ### オリジン制限
 
 - [ ] 許可オリジンがホワイトリストで制限されているか
-- [ ] origin: '*' と credentials: true の組み合わせを避けているか
+- [ ] origin: '\*' と credentials: true の組み合わせを避けているか
 - [ ] 動的オリジン許可時に検証があるか
 
 ### メソッドとヘッダー
@@ -68,8 +68,8 @@
 
 ### .gitignore
 
-- [ ] .env、.env.local、.env.*.local が含まれているか
-- [ ] *.key、*.pem、*.p12、*.pfx が含まれているか
+- [ ] .env、.env.local、.env.\*.local が含まれているか
+- [ ] _.key、_.pem、_.p12、_.pfx が含まれているか
 - [ ] credentials.json、auth.json等が含まれているか
 
 ---

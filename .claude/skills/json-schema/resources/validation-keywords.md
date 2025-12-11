@@ -53,8 +53,8 @@ Draft 2020-12に準拠しています。
 ```json
 {
   "type": "string",
-  "minLength": 1,      // 最小長（含む）
-  "maxLength": 100     // 最大長（含む）
+  "minLength": 1, // 最小長（含む）
+  "maxLength": 100 // 最大長（含む）
 }
 ```
 
@@ -155,10 +155,10 @@ Draft 2020-12に準拠しています。
 ```json
 {
   "type": "array",
-  "items": { "type": "string" },   // 全要素の型
-  "minItems": 1,                    // 最小要素数
-  "maxItems": 10,                   // 最大要素数
-  "uniqueItems": true               // 重複禁止
+  "items": { "type": "string" }, // 全要素の型
+  "minItems": 1, // 最小要素数
+  "maxItems": 10, // 最大要素数
+  "uniqueItems": true // 重複禁止
 }
 ```
 
@@ -197,8 +197,8 @@ Draft 2020-12に準拠しています。
       "type": { "const": "admin" }
     }
   },
-  "minContains": 1,    // 最低1つ含む
-  "maxContains": 3     // 最大3つまで
+  "minContains": 1, // 最低1つ含む
+  "maxContains": 3 // 最大3つまで
 }
 ```
 
@@ -212,7 +212,7 @@ Draft 2020-12に準拠しています。
       "prefixItems": [{ "type": "string" }]
     }
   ],
-  "unevaluatedItems": false  // allOf で評価されなかった追加要素を禁止
+  "unevaluatedItems": false // allOf で評価されなかった追加要素を禁止
 }
 ```
 
@@ -227,8 +227,8 @@ Draft 2020-12に準拠しています。
     "name": { "type": "string" },
     "age": { "type": "integer" }
   },
-  "required": ["name"],           // 必須プロパティ
-  "additionalProperties": false   // 追加プロパティを禁止
+  "required": ["name"], // 必須プロパティ
+  "additionalProperties": false // 追加プロパティを禁止
 }
 ```
 
@@ -237,8 +237,8 @@ Draft 2020-12に準拠しています。
 ```json
 {
   "type": "object",
-  "minProperties": 1,   // 最小プロパティ数
-  "maxProperties": 10   // 最大プロパティ数
+  "minProperties": 1, // 最小プロパティ数
+  "maxProperties": 10 // 最大プロパティ数
 }
 ```
 
@@ -248,7 +248,7 @@ Draft 2020-12に準拠しています。
 {
   "type": "object",
   "propertyNames": {
-    "pattern": "^[a-z][a-zA-Z0-9]*$"  // camelCaseのみ許可
+    "pattern": "^[a-z][a-zA-Z0-9]*$" // camelCaseのみ許可
   }
 }
 ```
@@ -259,9 +259,9 @@ Draft 2020-12に準拠しています。
 {
   "type": "object",
   "patternProperties": {
-    "^S_": { "type": "string" },    // S_で始まるプロパティはstring
-    "^I_": { "type": "integer" },   // I_で始まるプロパティはinteger
-    "^B_": { "type": "boolean" }    // B_で始まるプロパティはboolean
+    "^S_": { "type": "string" }, // S_で始まるプロパティはstring
+    "^I_": { "type": "integer" }, // I_で始まるプロパティはinteger
+    "^B_": { "type": "boolean" } // B_で始まるプロパティはboolean
   },
   "additionalProperties": false
 }
@@ -292,7 +292,7 @@ Draft 2020-12に準拠しています。
       }
     }
   ],
-  "unevaluatedProperties": false  // allOf で評価されなかった追加プロパティを禁止
+  "unevaluatedProperties": false // allOf で評価されなかった追加プロパティを禁止
 }
 ```
 
@@ -355,10 +355,7 @@ Draft 2020-12に準拠しています。
 
 ```json
 {
-  "allOf": [
-    { "$ref": "#/$defs/base" },
-    { "$ref": "#/$defs/extension" }
-  ]
+  "allOf": [{ "$ref": "#/$defs/base" }, { "$ref": "#/$defs/extension" }]
 }
 ```
 
@@ -366,10 +363,7 @@ Draft 2020-12に準拠しています。
 
 ```json
 {
-  "oneOf": [
-    { "$ref": "#/$defs/typeA" },
-    { "$ref": "#/$defs/typeB" }
-  ]
+  "oneOf": [{ "$ref": "#/$defs/typeA" }, { "$ref": "#/$defs/typeB" }]
 }
 ```
 
@@ -377,10 +371,7 @@ Draft 2020-12に準拠しています。
 
 ```json
 {
-  "anyOf": [
-    { "type": "string" },
-    { "type": "number" }
-  ]
+  "anyOf": [{ "type": "string" }, { "type": "number" }]
 }
 ```
 
@@ -409,6 +400,6 @@ Draft 2020-12に準拠しています。
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版リリース |
+| バージョン | 日付       | 変更内容     |
+| ---------- | ---------- | ------------ |
+| 1.0.0      | 2025-11-25 | 初版リリース |

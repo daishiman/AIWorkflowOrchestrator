@@ -12,6 +12,7 @@
 **最も推奨される方法**
 
 **直接依存の場合**:
+
 ```bash
 # 特定バージョンへアップグレード
 pnpm update lodash@4.17.21
@@ -24,6 +25,7 @@ pnpm update lodash --save
 ```
 
 **推移的依存の場合（pnpm）**:
+
 ```json
 // package.json
 {
@@ -36,6 +38,7 @@ pnpm update lodash --save
 ```
 
 **推移的依存の場合（pnpm）**:
+
 ```json
 // package.json
 {
@@ -46,6 +49,7 @@ pnpm update lodash --save
 ```
 
 **推移的依存の場合（yarn）**:
+
 ```json
 // package.json
 {
@@ -58,6 +62,7 @@ pnpm update lodash --save
 ### 2. パッチの適用
 
 **package-patchを使用**:
+
 ```bash
 # パッチの作成
 npx patch-package lodash
@@ -76,6 +81,7 @@ npx patch-package lodash
 ```
 
 **パッチの内容例**:
+
 ```diff
 diff --git a/node_modules/lodash/lodash.js b/node_modules/lodash/lodash.js
 index 1234567..abcdefg 100644
@@ -94,11 +100,13 @@ index 1234567..abcdefg 100644
 ### 3. 代替パッケージへの移行
 
 **移行の判断基準**:
+
 - [ ] 現在のパッケージがメンテナンスされていない
 - [ ] 脆弱性が頻繁に発見される
 - [ ] より安全な代替が存在する
 
 **移行例**:
+
 ```bash
 # moment.js → date-fns への移行
 pnpm remove moment
@@ -114,17 +122,18 @@ pnpm add node-fetch
 **パッチが利用できない場合の一時的対策**
 
 **入力検証の強化**:
+
 ```javascript
 // 脆弱な関数を使用する前に入力を検証
 function safeProcess(input) {
   // プロトタイプ汚染を防止
-  if (typeof input !== 'object' || input === null) {
-    throw new Error('Invalid input');
+  if (typeof input !== "object" || input === null) {
+    throw new Error("Invalid input");
   }
 
   // 危険なキーを除外
   const sanitized = Object.keys(input)
-    .filter(key => !['__proto__', 'constructor', 'prototype'].includes(key))
+    .filter((key) => !["__proto__", "constructor", "prototype"].includes(key))
     .reduce((obj, key) => {
       obj[key] = input[key];
       return obj;
@@ -135,6 +144,7 @@ function safeProcess(input) {
 ```
 
 **WAFルールの追加**:
+
 ```yaml
 # 例: AWS WAFルール
 Rules:
@@ -152,14 +162,15 @@ Rules:
 ### 5. 機能の無効化
 
 **リスクを受け入れられない場合**:
+
 ```javascript
 // 脆弱な機能を使用しないラッパー
 const safeLibrary = {
   ...originalLibrary,
   // 脆弱な関数を無効化
   vulnerableFunction: () => {
-    throw new Error('This function is disabled due to security concerns');
-  }
+    throw new Error("This function is disabled due to security concerns");
+  },
 };
 
 export default safeLibrary;
@@ -199,6 +210,7 @@ export default safeLibrary;
 **即時対応が必要**
 
 1. **緊急パッチの適用**:
+
    ```bash
    # 即座にパッチを適用
    pnpm update vulnerable-package --save
@@ -209,6 +221,7 @@ export default safeLibrary;
    ```
 
 2. **ホットフィックスデプロイ**:
+
    ```bash
    # メインブランチに直接適用
    git checkout main
@@ -232,6 +245,7 @@ export default safeLibrary;
    - テスト計画の策定
 
 2. **通常のリリースプロセスで対応**:
+
    ```bash
    # フィーチャーブランチで作業
    git checkout -b fix/cve-xxxx-xxxxx
@@ -249,6 +263,7 @@ export default safeLibrary;
 **定期メンテナンスで対応**
 
 1. **依存関係更新バッチに含める**:
+
    ```bash
    # 定期的な依存関係更新
    pnpm update
@@ -304,19 +319,23 @@ du -sh dist/
 ## セキュリティアドバイザリー: CVE-XXXX-XXXXX
 
 ### 概要
+
 - **脆弱性**: プロトタイプ汚染
 - **影響を受けるパッケージ**: lodash < 4.17.21
 - **重大度**: High (CVSS 7.5)
 
 ### 影響
+
 本プロジェクトでは lodash の merge 関数を使用しており、
 攻撃者が細工した入力により任意のプロパティを注入できる可能性がありました。
 
 ### 対応
+
 - lodash を 4.17.21 にアップグレード
 - 影響を受ける入力ポイントに追加のバリデーションを実装
 
 ### 確認
+
 - 自動テスト: 全て通過
 - セキュリティ監査: 脆弱性解消を確認
 - 本番デプロイ: 2025-11-27 完了
@@ -325,17 +344,20 @@ du -sh dist/
 ## チェックリスト
 
 ### 修正前
+
 - [ ] 脆弱性の詳細を理解したか？
 - [ ] 影響範囲を特定したか？
 - [ ] 修正オプションを評価したか？
 - [ ] ロールバック計画を準備したか？
 
 ### 修正中
+
 - [ ] テスト環境で検証したか？
 - [ ] 回帰テストを実行したか？
 - [ ] パフォーマンス影響を確認したか？
 
 ### 修正後
+
 - [ ] 脆弱性が解消されたことを確認したか？
 - [ ] 新たな脆弱性が導入されていないか？
 - [ ] 文書化を完了したか？

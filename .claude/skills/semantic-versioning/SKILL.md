@@ -317,13 +317,11 @@ cat .claude/skills/semantic-versioning/templates/upgrade-assessment-template.md
 ### すべきこと
 
 1. **CHANGELOG を必ず確認**:
-
    - リリースノートや GitHub Releases を確認
    - Breaking Changes セクションに注目
    - Deprecation 警告を確認
 
 2. **段階的な更新**:
-
    - 一度に複数の Major 更新を行わない
    - 1 パッケージずつ更新して影響を切り分け
    - 各更新後にテストを実行
@@ -336,12 +334,10 @@ cat .claude/skills/semantic-versioning/templates/upgrade-assessment-template.md
 ### 避けるべきこと
 
 1. **ワイルドカードの使用**:
-
    - ❌ `*` や `latest` は使用しない
    - ✅ 明示的なバージョン範囲を指定
 
 2. **CHANGELOG 未確認での更新**:
-
    - ❌ バージョン番号だけで判断しない
    - ✅ 変更内容を理解してから更新
 

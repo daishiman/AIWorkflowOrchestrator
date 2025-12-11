@@ -3,7 +3,7 @@ name: Stale Issues and PRs
 on:
   schedule:
     # 毎日 09:00 JST (00:00 UTC) に実行
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
   workflow_dispatch:
 
 permissions:
@@ -25,10 +25,10 @@ jobs:
             14日以内に活動がない場合、自動的にクローズされます。
 
             引き続き必要な場合は、コメントを追加してください。
-          stale-issue-label: 'stale'
+          stale-issue-label: "stale"
           days-before-issue-stale: 30
           days-before-issue-close: 14
-          exempt-issue-labels: 'pinned,security,bug,enhancement'
+          exempt-issue-labels: "pinned,security,bug,enhancement"
 
           # PR設定
           stale-pr-message: |
@@ -36,10 +36,10 @@ jobs:
             7日以内に活動がない場合、自動的にクローズされます。
 
             引き続き作業中の場合は、コメントを追加してください。
-          stale-pr-label: 'stale'
+          stale-pr-label: "stale"
           days-before-pr-stale: 14
           days-before-pr-close: 7
-          exempt-pr-labels: 'pinned,security,wip'
+          exempt-pr-labels: "pinned,security,wip"
 
           # 共通設定
           operations-per-run: 30

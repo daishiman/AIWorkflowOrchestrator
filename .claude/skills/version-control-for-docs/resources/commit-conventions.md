@@ -30,29 +30,29 @@ Closes #123
 
 ## タイプ（Type）
 
-| タイプ | 用途 | 例 |
-|:-------|:-----|:---|
-| `docs` | 新規文書の追加 | `docs(guide): add getting started guide` |
-| `update` | 既存文書の更新 | `update(api): revise authentication section` |
-| `fix` | 誤字・誤り修正 | `fix(readme): correct installation command` |
-| `style` | フォーマット変更 | `style(all): apply consistent heading format` |
-| `refactor` | 構造の再編成 | `refactor(guide): split into multiple files` |
-| `remove` | 文書の削除 | `remove(legacy): delete deprecated api docs` |
-| `translate` | 翻訳 | `translate(guide): add Japanese version` |
+| タイプ      | 用途             | 例                                            |
+| :---------- | :--------------- | :-------------------------------------------- |
+| `docs`      | 新規文書の追加   | `docs(guide): add getting started guide`      |
+| `update`    | 既存文書の更新   | `update(api): revise authentication section`  |
+| `fix`       | 誤字・誤り修正   | `fix(readme): correct installation command`   |
+| `style`     | フォーマット変更 | `style(all): apply consistent heading format` |
+| `refactor`  | 構造の再編成     | `refactor(guide): split into multiple files`  |
+| `remove`    | 文書の削除       | `remove(legacy): delete deprecated api docs`  |
+| `translate` | 翻訳             | `translate(guide): add Japanese version`      |
 
 ## スコープ（Scope）
 
 変更対象の範囲を示します。
 
-| スコープ | 説明 |
-|:---------|:-----|
-| `api` | API文書 |
-| `guide` | ユーザーガイド |
-| `tutorial` | チュートリアル |
-| `reference` | リファレンス |
-| `readme` | READMEファイル |
-| `changelog` | 変更履歴 |
-| `all` | 複数ファイル全体 |
+| スコープ    | 説明             |
+| :---------- | :--------------- |
+| `api`       | API文書          |
+| `guide`     | ユーザーガイド   |
+| `tutorial`  | チュートリアル   |
+| `reference` | リファレンス     |
+| `readme`    | READMEファイル   |
+| `changelog` | 変更履歴         |
+| `all`       | 複数ファイル全体 |
 
 ## サブジェクト（Subject）
 
@@ -176,6 +176,7 @@ refactor(<scope>): reorganize <section/document>
 ### コミットテンプレート
 
 `.gitmessage`:
+
 ```
 # <type>(<scope>): <subject>
 #
@@ -192,6 +193,7 @@ refactor(<scope>): reorganize <section/document>
 ```
 
 設定:
+
 ```bash
 git config commit.template .gitmessage
 ```
@@ -199,19 +201,22 @@ git config commit.template .gitmessage
 ### commitlint設定
 
 `.commitlintrc.js`:
+
 ```javascript
 module.exports = {
-  extends: ['@commitlint/config-conventional'],
+  extends: ["@commitlint/config-conventional"],
   rules: {
-    'type-enum': [2, 'always', [
-      'docs', 'update', 'fix', 'style',
-      'refactor', 'remove', 'translate'
-    ]],
-    'scope-enum': [2, 'always', [
-      'api', 'guide', 'tutorial', 'reference',
-      'readme', 'changelog', 'all'
-    ]]
-  }
+    "type-enum": [
+      2,
+      "always",
+      ["docs", "update", "fix", "style", "refactor", "remove", "translate"],
+    ],
+    "scope-enum": [
+      2,
+      "always",
+      ["api", "guide", "tutorial", "reference", "readme", "changelog", "all"],
+    ],
+  },
 };
 ```
 

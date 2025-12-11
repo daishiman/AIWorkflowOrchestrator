@@ -28,7 +28,6 @@ description: |
 version: 1.0.0
 ---
 
-
 # file-watcher-observability
 
 > ファイル監視システムの可観測性：メトリクス収集、パフォーマンス監視、アラート設計
@@ -61,34 +60,34 @@ Traces（トレース）: 処理フローの追跡
 
 ### 主要メトリクス一覧
 
-| メトリクス | 型 | 単位 | アラート閾値 |
-|-----------|-----|------|------------|
-| `watcher.events.rate` | Gauge | events/sec | > 1000/s |
-| `watcher.events.total` | Counter | count | - |
-| `watcher.latency.p99` | Histogram | ms | > 500ms |
-| `watcher.memory.heap` | Gauge | bytes | > 80% of limit |
-| `watcher.queue.size` | Gauge | count | > 10000 |
-| `watcher.errors.rate` | Counter | errors/min | > 10/min |
+| メトリクス             | 型        | 単位       | アラート閾値   |
+| ---------------------- | --------- | ---------- | -------------- |
+| `watcher.events.rate`  | Gauge     | events/sec | > 1000/s       |
+| `watcher.events.total` | Counter   | count      | -              |
+| `watcher.latency.p99`  | Histogram | ms         | > 500ms        |
+| `watcher.memory.heap`  | Gauge     | bytes      | > 80% of limit |
+| `watcher.queue.size`   | Gauge     | count      | > 10000        |
+| `watcher.errors.rate`  | Counter   | errors/min | > 10/min       |
 
 ### Prometheusメトリクス例
 
 ```typescript
 // Prometheusフォーマット出力
-import { Registry, Counter, Gauge, Histogram } from 'prom-client';
+import { Registry, Counter, Gauge, Histogram } from "prom-client";
 
 const registry = new Registry();
 
 const eventsTotal = new Counter({
-  name: 'file_watcher_events_total',
-  help: 'Total file events processed',
-  labelNames: ['event_type', 'status'],
+  name: "file_watcher_events_total",
+  help: "Total file events processed",
+  labelNames: ["event_type", "status"],
   registers: [registry],
 });
 
 const eventLatency = new Histogram({
-  name: 'file_watcher_event_latency_seconds',
-  help: 'Event processing latency',
-  labelNames: ['event_type'],
+  name: "file_watcher_event_latency_seconds",
+  help: "Event processing latency",
+  labelNames: ["event_type"],
   buckets: [0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1, 5],
   registers: [registry],
 });
@@ -101,7 +100,7 @@ const eventLatency = new Histogram({
 ### パターン1: メトリクス収集システム
 
 ```typescript
-import { EventEmitter } from 'events';
+import { EventEmitter } from "events";
 
 // ============================================================
 // 型定義
@@ -115,7 +114,7 @@ interface MetricValue {
 
 interface MetricDefinition {
   name: string;
-  type: 'counter' | 'gauge' | 'histogram';
+  type: "counter" | "gauge" | "histogram";
   help: string;
   labels?: string[];
   buckets?: number[]; // histogram用
@@ -151,7 +150,7 @@ class Counter {
     return Object.entries(labels)
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([k, v]) => `${k}="${v}"`)
-      .join(',');
+      .join(",");
   }
 
   toPrometheus(): string {
@@ -167,7 +166,7 @@ class Counter {
       lines.push(`${this.definition.name} ${this.value}`);
     }
 
-    return lines.join('\n');
+    return lines.join("\n");
   }
 }
 
@@ -213,7 +212,7 @@ class Gauge {
     return Object.entries(labels)
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([k, v]) => `${k}="${v}"`)
-      .join(',');
+      .join(",");
   }
 
   toPrometheus(): string {
@@ -229,7 +228,7 @@ class Gauge {
       lines.push(`${this.definition.name} ${this.value}`);
     }
 
-    return lines.join('\n');
+    return lines.join("\n");
   }
 }
 
@@ -243,7 +242,9 @@ class Histogram {
   private count = 0;
 
   constructor(private definition: MetricDefinition) {
-    const defaultBuckets = [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10];
+    const defaultBuckets = [
+      0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10,
+    ];
     const buckets = definition.buckets || defaultBuckets;
 
     for (const b of buckets) {
@@ -284,20 +285,21 @@ class Histogram {
     lines.push(`# HELP ${this.definition.name} ${this.definition.help}`);
     lines.push(`# TYPE ${this.definition.name} histogram`);
 
-    const sortedBuckets = Array.from(this.buckets.entries())
-      .sort(([a], [b]) => a - b);
+    const sortedBuckets = Array.from(this.buckets.entries()).sort(
+      ([a], [b]) => a - b,
+    );
 
     let cumulative = 0;
     for (const [bucket, count] of sortedBuckets) {
       cumulative += count;
-      const le = bucket === Infinity ? '+Inf' : bucket.toString();
+      const le = bucket === Infinity ? "+Inf" : bucket.toString();
       lines.push(`${this.definition.name}_bucket{le="${le}"} ${cumulative}`);
     }
 
     lines.push(`${this.definition.name}_sum ${this.sum}`);
     lines.push(`${this.definition.name}_count ${this.count}`);
 
-    return lines.join('\n');
+    return lines.join("\n");
   }
 }
 ```
@@ -311,48 +313,48 @@ class Histogram {
 class FileWatcherMetrics {
   // イベントカウンター
   private eventsTotal = new Counter({
-    name: 'file_watcher_events_total',
-    help: 'Total number of file events',
-    type: 'counter',
-    labels: ['event_type', 'status'],
+    name: "file_watcher_events_total",
+    help: "Total number of file events",
+    type: "counter",
+    labels: ["event_type", "status"],
   });
 
   // 処理レイテンシ
   private eventLatency = new Histogram({
-    name: 'file_watcher_event_latency_seconds',
-    help: 'Event processing latency in seconds',
-    type: 'histogram',
+    name: "file_watcher_event_latency_seconds",
+    help: "Event processing latency in seconds",
+    type: "histogram",
     buckets: [0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1],
   });
 
   // キューサイズ
   private queueSize = new Gauge({
-    name: 'file_watcher_queue_size',
-    help: 'Current event queue size',
-    type: 'gauge',
+    name: "file_watcher_queue_size",
+    help: "Current event queue size",
+    type: "gauge",
   });
 
   // メモリ使用量
   private memoryUsage = new Gauge({
-    name: 'file_watcher_memory_bytes',
-    help: 'Memory usage in bytes',
-    type: 'gauge',
-    labels: ['type'],
+    name: "file_watcher_memory_bytes",
+    help: "Memory usage in bytes",
+    type: "gauge",
+    labels: ["type"],
   });
 
   // アクティブウォッチャー数
   private activeWatchers = new Gauge({
-    name: 'file_watcher_active_watchers',
-    help: 'Number of active file watchers',
-    type: 'gauge',
+    name: "file_watcher_active_watchers",
+    help: "Number of active file watchers",
+    type: "gauge",
   });
 
   // エラーカウンター
   private errorsTotal = new Counter({
-    name: 'file_watcher_errors_total',
-    help: 'Total number of errors',
-    type: 'counter',
-    labels: ['error_type'],
+    name: "file_watcher_errors_total",
+    help: "Total number of errors",
+    type: "counter",
+    labels: ["error_type"],
   });
 
   // イベントレート計算用
@@ -363,13 +365,13 @@ class FileWatcherMetrics {
    * イベント処理を記録
    */
   recordEvent(
-    eventType: 'add' | 'change' | 'unlink',
-    status: 'success' | 'error' | 'dropped',
-    latencyMs?: number
+    eventType: "add" | "change" | "unlink",
+    status: "success" | "error" | "dropped",
+    latencyMs?: number,
   ): void {
     this.eventsTotal.inc({ event_type: eventType, status });
 
-    if (latencyMs !== undefined && status === 'success') {
+    if (latencyMs !== undefined && status === "success") {
       this.eventLatency.observe(latencyMs / 1000); // 秒に変換
     }
 
@@ -390,10 +392,10 @@ class FileWatcherMetrics {
    */
   updateMemoryUsage(): void {
     const usage = process.memoryUsage();
-    this.memoryUsage.set(usage.heapUsed, { type: 'heap_used' });
-    this.memoryUsage.set(usage.heapTotal, { type: 'heap_total' });
-    this.memoryUsage.set(usage.rss, { type: 'rss' });
-    this.memoryUsage.set(usage.external, { type: 'external' });
+    this.memoryUsage.set(usage.heapUsed, { type: "heap_used" });
+    this.memoryUsage.set(usage.heapTotal, { type: "heap_total" });
+    this.memoryUsage.set(usage.rss, { type: "rss" });
+    this.memoryUsage.set(usage.external, { type: "external" });
   }
 
   /**
@@ -436,7 +438,7 @@ class FileWatcherMetrics {
       this.memoryUsage.toPrometheus(),
       this.activeWatchers.toPrometheus(),
       this.errorsTotal.toPrometheus(),
-    ].join('\n\n');
+    ].join("\n\n");
   }
 
   /**
@@ -459,9 +461,9 @@ class FileWatcherMetrics {
         size: this.queueSize.get(),
       },
       memory: {
-        heapUsed: this.memoryUsage.get({ type: 'heap_used' }),
-        heapTotal: this.memoryUsage.get({ type: 'heap_total' }),
-        rss: this.memoryUsage.get({ type: 'rss' }),
+        heapUsed: this.memoryUsage.get({ type: "heap_used" }),
+        heapTotal: this.memoryUsage.get({ type: "heap_total" }),
+        rss: this.memoryUsage.get({ type: "rss" }),
       },
       watchers: {
         active: this.activeWatchers.get(),
@@ -482,7 +484,7 @@ class FileWatcherMetrics {
 ### パターン3: 構造化ログシステム
 
 ```typescript
-type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+type LogLevel = "debug" | "info" | "warn" | "error";
 
 interface LogEntry {
   timestamp: string;
@@ -495,8 +497,8 @@ interface LogEntry {
 
 interface LoggerConfig {
   level: LogLevel;
-  format: 'json' | 'text';
-  output: 'console' | 'file' | 'both';
+  format: "json" | "text";
+  output: "console" | "file" | "both";
   filePath?: string;
 }
 
@@ -510,9 +512,9 @@ class StructuredLogger {
   };
 
   private config: LoggerConfig = {
-    level: 'info',
-    format: 'json',
-    output: 'console',
+    level: "info",
+    format: "json",
+    output: "console",
   };
 
   private currentTraceId?: string;
@@ -548,7 +550,11 @@ class StructuredLogger {
   /**
    * ログを出力
    */
-  log(level: LogLevel, message: string, context?: Record<string, unknown>): void {
+  log(
+    level: LogLevel,
+    message: string,
+    context?: Record<string, unknown>,
+  ): void {
     if (this.logLevels[level] < this.logLevels[this.config.level]) {
       return;
     }
@@ -566,19 +572,19 @@ class StructuredLogger {
   }
 
   debug(message: string, context?: Record<string, unknown>): void {
-    this.log('debug', message, context);
+    this.log("debug", message, context);
   }
 
   info(message: string, context?: Record<string, unknown>): void {
-    this.log('info', message, context);
+    this.log("info", message, context);
   }
 
   warn(message: string, context?: Record<string, unknown>): void {
-    this.log('warn', message, context);
+    this.log("warn", message, context);
   }
 
   error(message: string, context?: Record<string, unknown>): void {
-    this.log('error', message, context);
+    this.log("error", message, context);
   }
 
   /**
@@ -587,7 +593,7 @@ class StructuredLogger {
   fileEvent(
     eventType: string,
     filePath: string,
-    details?: Record<string, unknown>
+    details?: Record<string, unknown>,
   ): void {
     this.info(`File ${eventType}`, {
       event_type: eventType,
@@ -602,9 +608,9 @@ class StructuredLogger {
   performance(
     operation: string,
     durationMs: number,
-    details?: Record<string, unknown>
+    details?: Record<string, unknown>,
   ): void {
-    const level = durationMs > 1000 ? 'warn' : 'debug';
+    const level = durationMs > 1000 ? "warn" : "debug";
     this.log(level, `Performance: ${operation}`, {
       operation,
       duration_ms: durationMs,
@@ -614,14 +620,14 @@ class StructuredLogger {
 
   private output(entry: LogEntry): void {
     const formatted =
-      this.config.format === 'json'
+      this.config.format === "json"
         ? JSON.stringify(entry)
         : this.formatText(entry);
 
-    if (this.config.output === 'console' || this.config.output === 'both') {
-      if (entry.level === 'error') {
+    if (this.config.output === "console" || this.config.output === "both") {
+      if (entry.level === "error") {
         console.error(formatted);
-      } else if (entry.level === 'warn') {
+      } else if (entry.level === "warn") {
         console.warn(formatted);
       } else {
         console.log(formatted);
@@ -632,10 +638,8 @@ class StructuredLogger {
   }
 
   private formatText(entry: LogEntry): string {
-    const context = entry.context
-      ? ' ' + JSON.stringify(entry.context)
-      : '';
-    const trace = entry.traceId ? ` [${entry.traceId}]` : '';
+    const context = entry.context ? " " + JSON.stringify(entry.context) : "";
+    const trace = entry.traceId ? ` [${entry.traceId}]` : "";
     return `${entry.timestamp} [${entry.level.toUpperCase()}]${trace} ${entry.message}${context}`;
   }
 }
@@ -650,7 +654,7 @@ export const logger = StructuredLogger.getInstance();
 interface AlertRule {
   name: string;
   condition: () => boolean;
-  severity: 'critical' | 'warning' | 'info';
+  severity: "critical" | "warning" | "info";
   message: string;
   cooldownMs: number;
 }
@@ -744,7 +748,7 @@ class AlertManager {
           this.activeAlerts.delete(rule.name);
         }
       } catch (error) {
-        logger.error('Alert check failed', {
+        logger.error("Alert check failed", {
           rule: rule.name,
           error: (error as Error).message,
         });
@@ -757,7 +761,7 @@ class AlertManager {
       try {
         await handler.handle(alert);
       } catch (error) {
-        logger.error('Alert handler failed', {
+        logger.error("Alert handler failed", {
           handler: handler.name,
           error: (error as Error).message,
         });
@@ -770,7 +774,7 @@ class AlertManager {
       try {
         await handler.handle({ ...alert, resolvedAt: new Date() });
       } catch (error) {
-        logger.error('Alert resolution handler failed', {
+        logger.error("Alert resolution handler failed", {
           handler: handler.name,
           error: (error as Error).message,
         });
@@ -792,46 +796,46 @@ class AlertManager {
 
 function setupWatcherAlerts(
   metrics: FileWatcherMetrics,
-  alertManager: AlertManager
+  alertManager: AlertManager,
 ): void {
   // イベントレート過負荷
   alertManager.addRule({
-    name: 'high_event_rate',
+    name: "high_event_rate",
     condition: () => metrics.getEventRate() > 1000,
-    severity: 'warning',
-    message: 'File watcher event rate exceeded 1000/sec',
+    severity: "warning",
+    message: "File watcher event rate exceeded 1000/sec",
     cooldownMs: 60000,
   });
 
   // 処理レイテンシ異常
   alertManager.addRule({
-    name: 'high_latency',
+    name: "high_latency",
     condition: () => metrics.getP99Latency() > 0.5, // 500ms
-    severity: 'warning',
-    message: 'Event processing latency P99 exceeded 500ms',
+    severity: "warning",
+    message: "Event processing latency P99 exceeded 500ms",
     cooldownMs: 60000,
   });
 
   // メモリ使用量過多
   alertManager.addRule({
-    name: 'high_memory',
+    name: "high_memory",
     condition: () => {
       const usage = process.memoryUsage();
       return usage.heapUsed / usage.heapTotal > 0.9;
     },
-    severity: 'critical',
-    message: 'Heap memory usage exceeded 90%',
+    severity: "critical",
+    message: "Heap memory usage exceeded 90%",
     cooldownMs: 300000,
   });
 
   // Slackハンドラー例
   alertManager.addHandler({
-    name: 'slack',
+    name: "slack",
     handle: async (alert) => {
       if (alert.resolvedAt) {
-        logger.info('Alert resolved', { rule: alert.rule.name });
+        logger.info("Alert resolved", { rule: alert.rule.name });
       } else {
-        logger.warn('Alert triggered', {
+        logger.warn("Alert triggered", {
           rule: alert.rule.name,
           severity: alert.rule.severity,
           message: alert.rule.message,
@@ -852,39 +856,44 @@ function setupWatcherAlerts(
 ### メトリクスエンドポイントの設定
 
 ```typescript
-import * as http from 'http';
+import * as http from "http";
 
-function createMetricsServer(metrics: FileWatcherMetrics, port: number = 9090): http.Server {
-  return http.createServer((req, res) => {
-    if (req.url === '/metrics') {
-      res.setHeader('Content-Type', 'text/plain');
-      res.end(metrics.toPrometheus());
-    } else if (req.url === '/health') {
-      res.setHeader('Content-Type', 'application/json');
-      res.end(JSON.stringify({ status: 'healthy' }));
-    } else if (req.url === '/stats') {
-      res.setHeader('Content-Type', 'application/json');
-      res.end(JSON.stringify(metrics.toJSON()));
-    } else {
-      res.statusCode = 404;
-      res.end('Not Found');
-    }
-  }).listen(port, () => {
-    console.log(`Metrics server listening on port ${port}`);
-  });
+function createMetricsServer(
+  metrics: FileWatcherMetrics,
+  port: number = 9090,
+): http.Server {
+  return http
+    .createServer((req, res) => {
+      if (req.url === "/metrics") {
+        res.setHeader("Content-Type", "text/plain");
+        res.end(metrics.toPrometheus());
+      } else if (req.url === "/health") {
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify({ status: "healthy" }));
+      } else if (req.url === "/stats") {
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify(metrics.toJSON()));
+      } else {
+        res.statusCode = 404;
+        res.end("Not Found");
+      }
+    })
+    .listen(port, () => {
+      console.log(`Metrics server listening on port ${port}`);
+    });
 }
 ```
 
 ### ダッシュボード推奨項目
 
-| パネル | メトリクス | 可視化タイプ |
-|--------|----------|-------------|
-| イベントレート | `rate(file_watcher_events_total[5m])` | 折れ線グラフ |
-| レイテンシ分布 | `file_watcher_event_latency_seconds` | ヒートマップ |
-| キューサイズ | `file_watcher_queue_size` | ゲージ |
-| メモリ使用量 | `file_watcher_memory_bytes` | スタックエリア |
-| エラーレート | `rate(file_watcher_errors_total[5m])` | 折れ線グラフ |
-| アクティブウォッチャー | `file_watcher_active_watchers` | 単一値 |
+| パネル                 | メトリクス                            | 可視化タイプ   |
+| ---------------------- | ------------------------------------- | -------------- |
+| イベントレート         | `rate(file_watcher_events_total[5m])` | 折れ線グラフ   |
+| レイテンシ分布         | `file_watcher_event_latency_seconds`  | ヒートマップ   |
+| キューサイズ           | `file_watcher_queue_size`             | ゲージ         |
+| メモリ使用量           | `file_watcher_memory_bytes`           | スタックエリア |
+| エラーレート           | `rate(file_watcher_errors_total[5m])` | 折れ線グラフ   |
+| アクティブウォッチャー | `file_watcher_active_watchers`        | 単一値         |
 
 ---
 
@@ -892,12 +901,12 @@ function createMetricsServer(metrics: FileWatcherMetrics, port: number = 9090): 
 
 ### よくある問題
 
-| 問題 | メトリクス兆候 | 対処法 |
-|------|--------------|--------|
-| イベントドロップ | queue_size急増、events_dropped増加 | バッファサイズ増加、処理並列化 |
-| メモリリーク | heap_used持続増加 | ヒープダンプ分析、参照リーク調査 |
-| 処理遅延 | latency_p99増加 | 処理ロジック最適化、非同期化 |
-| ウォッチャー停止 | active_watchers=0 | エラーログ確認、再起動 |
+| 問題             | メトリクス兆候                     | 対処法                           |
+| ---------------- | ---------------------------------- | -------------------------------- |
+| イベントドロップ | queue_size急増、events_dropped増加 | バッファサイズ増加、処理並列化   |
+| メモリリーク     | heap_used持続増加                  | ヒープダンプ分析、参照リーク調査 |
+| 処理遅延         | latency_p99増加                    | 処理ロジック最適化、非同期化     |
+| ウォッチャー停止 | active_watchers=0                  | エラーログ確認、再起動           |
 
 ---
 

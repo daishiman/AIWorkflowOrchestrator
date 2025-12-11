@@ -14,15 +14,15 @@
 
 ## 主要な言語識別子
 
-| 言語 | 識別子 | 用途 |
-|:-----|:-------|:-----|
+| 言語       | 識別子             | 用途                   |
+| :--------- | :----------------- | :--------------------- |
 | TypeScript | `typescript`, `ts` | 型定義、フロントエンド |
-| JavaScript | `javascript`, `js` | 一般的なJS |
-| JSON | `json` | API応答、設定 |
-| YAML | `yaml` | 設定ファイル |
-| SQL | `sql` | データベースクエリ |
-| Bash | `bash`, `sh` | シェルコマンド |
-| Markdown | `markdown`, `md` | ドキュメント |
+| JavaScript | `javascript`, `js` | 一般的なJS             |
+| JSON       | `json`             | API応答、設定          |
+| YAML       | `yaml`             | 設定ファイル           |
+| SQL        | `sql`              | データベースクエリ     |
+| Bash       | `bash`, `sh`       | シェルコマンド         |
+| Markdown   | `markdown`, `md`   | ドキュメント           |
 
 ## TypeScriptの例
 
@@ -69,11 +69,13 @@ async function getUser(id: string): Promise<User> {
 ## ベストプラクティス
 
 ### すべきこと
+
 - 言語識別子を必ず指定
 - 1ブロック50行以内
 - 実行可能なサンプルを提供
 
 ### 避けるべきこと
+
 - 言語未指定のコードブロック
 - 長すぎるコード
 - 不完全なサンプル

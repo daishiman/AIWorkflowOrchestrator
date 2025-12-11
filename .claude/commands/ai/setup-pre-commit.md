@@ -19,9 +19,9 @@ description: |
   トリガーキーワード: pre-commit, git hooks, husky, lint-staged, 品質自動化
 argument-hint: ""
 allowed-tools:
-   - Task
-   - Write
-   - Bash
+  - Task
+  - Write
+  - Bash
 model: sonnet
 ---
 

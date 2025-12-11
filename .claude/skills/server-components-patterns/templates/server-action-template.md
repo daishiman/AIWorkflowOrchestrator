@@ -271,8 +271,8 @@ export function {{Resource}}List({ items }: { items: {{Resource}}[] }) {
 
 ## 変数説明
 
-| 変数 | 説明 | 例 |
-|------|------|-----|
-| `{{resource}}` | リソース名（単数、camelCase） | `post`, `comment`, `task` |
-| `{{Resource}}` | リソース名（単数、PascalCase） | `Post`, `Comment`, `Task` |
-| `{{resources}}` | リソース名（複数、camelCase） | `posts`, `comments`, `tasks` |
+| 変数            | 説明                           | 例                           |
+| --------------- | ------------------------------ | ---------------------------- |
+| `{{resource}}`  | リソース名（単数、camelCase）  | `post`, `comment`, `task`    |
+| `{{Resource}}`  | リソース名（単数、PascalCase） | `Post`, `Comment`, `Task`    |
+| `{{resources}}` | リソース名（複数、camelCase）  | `posts`, `comments`, `tasks` |

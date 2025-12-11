@@ -64,8 +64,14 @@
   },
   "typography": {
     "fontFamily": {
-      "sans": { "value": "Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", "type": "fontFamily" },
-      "mono": { "value": "JetBrains Mono, Menlo, Monaco, 'Courier New', monospace", "type": "fontFamily" }
+      "sans": {
+        "value": "Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+        "type": "fontFamily"
+      },
+      "mono": {
+        "value": "JetBrains Mono, Menlo, Monaco, 'Courier New', monospace",
+        "type": "fontFamily"
+      }
     },
     "fontSize": {
       "xs": { "value": "0.75rem", "type": "dimension" },
@@ -123,9 +129,18 @@
   },
   "shadow": {
     "sm": { "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)", "type": "boxShadow" },
-    "md": { "value": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)", "type": "boxShadow" },
-    "lg": { "value": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)", "type": "boxShadow" },
-    "xl": { "value": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)", "type": "boxShadow" }
+    "md": {
+      "value": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+      "type": "boxShadow"
+    },
+    "lg": {
+      "value": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+      "type": "boxShadow"
+    },
+    "xl": {
+      "value": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
+      "type": "boxShadow"
+    }
   },
   "motion": {
     "duration": {
@@ -136,9 +151,18 @@
     },
     "easing": {
       "linear": { "value": "linear", "type": "cubicBezier" },
-      "ease-in": { "value": "cubic-bezier(0.4, 0, 1, 1)", "type": "cubicBezier" },
-      "ease-out": { "value": "cubic-bezier(0, 0, 0.2, 1)", "type": "cubicBezier" },
-      "ease-in-out": { "value": "cubic-bezier(0.4, 0, 0.2, 1)", "type": "cubicBezier" }
+      "ease-in": {
+        "value": "cubic-bezier(0.4, 0, 1, 1)",
+        "type": "cubicBezier"
+      },
+      "ease-out": {
+        "value": "cubic-bezier(0, 0, 0.2, 1)",
+        "type": "cubicBezier"
+      },
+      "ease-in-out": {
+        "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+        "type": "cubicBezier"
+      }
     }
   }
 }

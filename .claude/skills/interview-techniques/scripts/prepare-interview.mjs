@@ -8,105 +8,105 @@
  *   node prepare-interview.mjs [--topic <トピック>] [--output <出力ファイル>]
  */
 
-import { writeFileSync } from 'fs';
-import { resolve } from 'path';
+import { writeFileSync } from "fs";
+import { resolve } from "path";
 
 // 5W1H質問テンプレート
 const QUESTIONS_5W1H = {
   who: {
-    title: 'Who（誰が）',
+    title: "Who（誰が）",
     questions: [
-      'このシステム/機能を使うのは主にどなたですか？',
-      '他に関係する部門や人はいますか？',
-      'ユーザーの技術レベルはどの程度ですか？',
-      '意思決定者はどなたですか？',
-      '承認プロセスに関わる人は？'
-    ]
+      "このシステム/機能を使うのは主にどなたですか？",
+      "他に関係する部門や人はいますか？",
+      "ユーザーの技術レベルはどの程度ですか？",
+      "意思決定者はどなたですか？",
+      "承認プロセスに関わる人は？",
+    ],
   },
   what: {
-    title: 'What（何を）',
+    title: "What（何を）",
     questions: [
-      '何を実現したいですか？最も重要な機能は何ですか？',
-      '現在できていないことは何ですか？',
-      '必須の機能と、あれば良い機能を教えてください',
-      '成功の基準は何ですか？',
-      'データとして何を扱いますか？'
-    ]
+      "何を実現したいですか？最も重要な機能は何ですか？",
+      "現在できていないことは何ですか？",
+      "必須の機能と、あれば良い機能を教えてください",
+      "成功の基準は何ですか？",
+      "データとして何を扱いますか？",
+    ],
   },
   when: {
-    title: 'When（いつ）',
+    title: "When（いつ）",
     questions: [
-      'いつまでに必要ですか？その期限は絶対ですか？',
-      'いつ、どのくらいの頻度で使いますか？',
-      'ピーク時期はいつですか？',
-      '段階的なリリースは可能ですか？',
-      'データの保持期間は？'
-    ]
+      "いつまでに必要ですか？その期限は絶対ですか？",
+      "いつ、どのくらいの頻度で使いますか？",
+      "ピーク時期はいつですか？",
+      "段階的なリリースは可能ですか？",
+      "データの保持期間は？",
+    ],
   },
   where: {
-    title: 'Where（どこで）',
+    title: "Where（どこで）",
     questions: [
-      'どこで使いますか？（オフィス、外出先、在宅）',
-      'どのデバイスで使いますか？',
-      '連携する他のシステムはありますか？',
-      'ネットワーク環境の制約はありますか？',
-      'データはどこに保存しますか？'
-    ]
+      "どこで使いますか？（オフィス、外出先、在宅）",
+      "どのデバイスで使いますか？",
+      "連携する他のシステムはありますか？",
+      "ネットワーク環境の制約はありますか？",
+      "データはどこに保存しますか？",
+    ],
   },
   why: {
-    title: 'Why（なぜ）',
+    title: "Why（なぜ）",
     questions: [
-      'なぜこれが必要ですか？',
-      '現在の課題は何ですか？',
-      '期待する効果は何ですか？',
-      'なぜ今このタイミングですか？',
-      '他の解決策は検討しましたか？'
-    ]
+      "なぜこれが必要ですか？",
+      "現在の課題は何ですか？",
+      "期待する効果は何ですか？",
+      "なぜ今このタイミングですか？",
+      "他の解決策は検討しましたか？",
+    ],
   },
   how: {
-    title: 'How（どのように）',
+    title: "How（どのように）",
     questions: [
-      '現在の業務手順を教えてください',
-      '理想的な手順はどのようなものですか？',
-      '特殊なケースや例外はありますか？',
-      'エラー時の対応はどうしますか？',
-      'トレーニングはどのように行いますか？'
-    ]
-  }
+      "現在の業務手順を教えてください",
+      "理想的な手順はどのようなものですか？",
+      "特殊なケースや例外はありますか？",
+      "エラー時の対応はどうしますか？",
+      "トレーニングはどのように行いますか？",
+    ],
+  },
 };
 
 // トピック別追加質問
 const TOPIC_QUESTIONS = {
-  '認証': [
-    '認証方式の要件はありますか？（パスワード、SSO、MFA等）',
-    'パスワードポリシーの要件は？',
-    'セッション管理の要件は？',
-    '外部認証サービスとの連携は必要ですか？'
+  認証: [
+    "認証方式の要件はありますか？（パスワード、SSO、MFA等）",
+    "パスワードポリシーの要件は？",
+    "セッション管理の要件は？",
+    "外部認証サービスとの連携は必要ですか？",
   ],
-  'パフォーマンス': [
-    '許容される最大応答時間は？',
-    'ピーク時の同時ユーザー数は？',
-    'データ処理量の見込みは？',
-    'バッチ処理の要件は？'
+  パフォーマンス: [
+    "許容される最大応答時間は？",
+    "ピーク時の同時ユーザー数は？",
+    "データ処理量の見込みは？",
+    "バッチ処理の要件は？",
   ],
-  'セキュリティ': [
-    '取り扱うデータの機密レベルは？',
-    'コンプライアンス要件はありますか？',
-    '監査ログの要件は？',
-    'データ暗号化の要件は？'
+  セキュリティ: [
+    "取り扱うデータの機密レベルは？",
+    "コンプライアンス要件はありますか？",
+    "監査ログの要件は？",
+    "データ暗号化の要件は？",
   ],
-  'UI/UX': [
-    'ターゲットユーザーの技術レベルは？',
-    '参考にしたいUIはありますか？',
-    'アクセシビリティ要件はありますか？',
-    '対応するブラウザ・デバイスは？'
+  "UI/UX": [
+    "ターゲットユーザーの技術レベルは？",
+    "参考にしたいUIはありますか？",
+    "アクセシビリティ要件はありますか？",
+    "対応するブラウザ・デバイスは？",
   ],
-  'データ移行': [
-    '移行元システムは何ですか？',
-    '移行するデータ量は？',
-    'データクレンジングの必要性は？',
-    '移行のタイミングと許容ダウンタイムは？'
-  ]
+  データ移行: [
+    "移行元システムは何ですか？",
+    "移行するデータ量は？",
+    "データクレンジングの必要性は？",
+    "移行のタイミングと許容ダウンタイムは？",
+  ],
 };
 
 /**
@@ -115,7 +115,7 @@ const TOPIC_QUESTIONS = {
 function generateInterviewGuide(options = {}) {
   const { topic, date, interviewee } = options;
   const now = new Date();
-  const dateStr = date || now.toISOString().split('T')[0];
+  const dateStr = date || now.toISOString().split("T")[0];
 
   let content = `# インタビュー準備ガイド
 
@@ -124,9 +124,9 @@ function generateInterviewGuide(options = {}) {
 | 項目 | 内容 |
 |-----|------|
 | 日時 | ${dateStr} |
-| インタビュイー | ${interviewee || '[未定]'} |
-| トピック | ${topic || '[一般]'} |
-| 準備日 | ${now.toISOString().split('T')[0]} |
+| インタビュイー | ${interviewee || "[未定]"} |
+| トピック | ${topic || "[一般]"} |
+| 準備日 | ${now.toISOString().split("T")[0]} |
 
 ---
 
@@ -159,7 +159,7 @@ function generateInterviewGuide(options = {}) {
     for (const q of section.questions) {
       content += `- [ ] ${q}\n`;
     }
-    content += '\n**回答メモ**:\n```\n[ここに回答を記録]\n```\n\n';
+    content += "\n**回答メモ**:\n```\n[ここに回答を記録]\n```\n\n";
   }
 
   // トピック別質問を追加
@@ -168,7 +168,7 @@ function generateInterviewGuide(options = {}) {
     for (const q of TOPIC_QUESTIONS[topic]) {
       content += `- [ ] ${q}\n`;
     }
-    content += '\n**回答メモ**:\n```\n[ここに回答を記録]\n```\n\n';
+    content += "\n**回答メモ**:\n```\n[ここに回答を記録]\n```\n\n";
   }
 
   content += `---
@@ -219,7 +219,7 @@ Why 5: なぜ[Why4の回答]ですか？
 ### オープニング
 \`\`\`
 「本日はお時間いただきありがとうございます。
-${topic ? `${topic}について` : '要件について'}お話を伺いたいと思います。
+${topic ? `${topic}について` : "要件について"}お話を伺いたいと思います。
 お時間は[X]分を予定しています。
 録音させていただいてもよろしいでしょうか？」
 \`\`\`
@@ -241,11 +241,11 @@ ${topic ? `${topic}について` : '要件について'}お話を伺いたいと
  * 利用可能なトピック一覧を表示
  */
 function showTopics() {
-  console.log('\n📋 利用可能なトピック:\n');
+  console.log("\n📋 利用可能なトピック:\n");
   for (const topic of Object.keys(TOPIC_QUESTIONS)) {
     console.log(`  - ${topic}`);
   }
-  console.log('\n');
+  console.log("\n");
 }
 
 // メイン処理
@@ -253,7 +253,7 @@ function main() {
   const args = process.argv.slice(2);
 
   // ヘルプ
-  if (args.includes('--help') || args.includes('-h')) {
+  if (args.includes("--help") || args.includes("-h")) {
     console.log(`
 使用方法: node prepare-interview.mjs [オプション]
 
@@ -273,7 +273,7 @@ function main() {
   }
 
   // トピック一覧表示
-  if (args.includes('--list-topics')) {
+  if (args.includes("--list-topics")) {
     showTopics();
     process.exit(0);
   }
@@ -281,13 +281,13 @@ function main() {
   // オプション解析
   const options = {};
   for (let i = 0; i < args.length; i++) {
-    if (args[i] === '--topic' && args[i + 1]) {
+    if (args[i] === "--topic" && args[i + 1]) {
       options.topic = args[++i];
-    } else if (args[i] === '--date' && args[i + 1]) {
+    } else if (args[i] === "--date" && args[i + 1]) {
       options.date = args[++i];
-    } else if (args[i] === '--interviewee' && args[i + 1]) {
+    } else if (args[i] === "--interviewee" && args[i + 1]) {
       options.interviewee = args[++i];
-    } else if (args[i] === '--output' && args[i + 1]) {
+    } else if (args[i] === "--output" && args[i + 1]) {
       options.output = args[++i];
     }
   }
@@ -297,7 +297,7 @@ function main() {
 
   if (options.output) {
     const outputPath = resolve(options.output);
-    writeFileSync(outputPath, content, 'utf-8');
+    writeFileSync(outputPath, content, "utf-8");
     console.log(`✅ インタビューガイドを生成しました: ${outputPath}`);
   } else {
     console.log(content);

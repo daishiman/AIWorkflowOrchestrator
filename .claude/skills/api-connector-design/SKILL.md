@@ -39,11 +39,13 @@ related_skills:
 ### 1. RESTful API
 
 **特徴**:
+
 - HTTPメソッドによるCRUD操作
 - ステートレス通信
 - リソース指向設計
 
 **設計パターン**:
+
 ```
 GET    /resources          - リソース一覧取得
 GET    /resources/{id}     - 個別リソース取得
@@ -54,6 +56,7 @@ DELETE /resources/{id}     - リソース削除
 ```
 
 **ベストプラクティス**:
+
 - Content-Type: application/json の一貫した使用
 - 適切なHTTPステータスコードの返却
 - HALまたはJSON:APIフォーマットの採用検討
@@ -61,11 +64,13 @@ DELETE /resources/{id}     - リソース削除
 ### 2. GraphQL
 
 **特徴**:
+
 - スキーマベースの型システム
 - 単一エンドポイント
 - 柔軟なクエリ構造
 
 **設計パターン**:
+
 ```graphql
 query {
   user(id: "123") {
@@ -86,6 +91,7 @@ mutation {
 ```
 
 **ベストプラクティス**:
+
 - N+1問題の回避（DataLoader使用）
 - 複雑度制限の実装
 - 適切なエラーハンドリング
@@ -93,11 +99,13 @@ mutation {
 ### 3. WebSocket
 
 **特徴**:
+
 - 双方向リアルタイム通信
 - 持続的接続
 - 低レイテンシ
 
 **設計パターン**:
+
 ```
 Client <──────────────> Server
     │ CONNECT              │
@@ -111,6 +119,7 @@ Client <──────────────> Server
 ```
 
 **ベストプラクティス**:
+
 - ハートビートによる接続維持
 - 再接続ロジックの実装
 - メッセージキューイング
@@ -118,11 +127,13 @@ Client <──────────────> Server
 ### 4. Webhook
 
 **特徴**:
+
 - イベント駆動型
 - プッシュ型通知
 - 非同期処理
 
 **設計パターン**:
+
 ```
 ┌─────────┐   Event発生   ┌──────────┐   POST   ┌─────────┐
 │ Service │ ────────────▶ │ Webhook  │ ────────▶│ Your    │
@@ -145,6 +156,7 @@ url: `${baseUrl}?api_key=${apiKey}`
 ```
 
 **セキュリティ考慮事項**:
+
 - [ ] 環境変数での管理
 - [ ] HTTPS通信の強制
 - [ ] ローテーション計画
@@ -152,6 +164,7 @@ url: `${baseUrl}?api_key=${apiKey}`
 ### OAuth 2.0
 
 **Authorization Code Flow**:
+
 ```
 1. Client → Authorization Server: 認可リクエスト
 2. User: ログイン・承認
@@ -161,6 +174,7 @@ url: `${baseUrl}?api_key=${apiKey}`
 ```
 
 **実装チェックリスト**:
+
 - [ ] state パラメータによるCSRF対策
 - [ ] PKCE（Proof Key for Code Exchange）実装
 - [ ] リフレッシュトークンの安全な保存
@@ -186,19 +200,20 @@ header.payload.signature
 ```javascript
 // レスポンスヘッダーから制限情報を取得
 const rateLimitInfo = {
-  limit: response.headers['X-RateLimit-Limit'],
-  remaining: response.headers['X-RateLimit-Remaining'],
-  reset: response.headers['X-RateLimit-Reset']
+  limit: response.headers["X-RateLimit-Limit"],
+  remaining: response.headers["X-RateLimit-Remaining"],
+  reset: response.headers["X-RateLimit-Reset"],
 };
 ```
 
 ### リトライ戦略
 
 **指数バックオフ**:
+
 ```javascript
 const delay = Math.min(
   initialDelay * Math.pow(backoffFactor, attempt),
-  maxDelay
+  maxDelay,
 );
 // ジッターを追加（同時リトライ回避）
 const jitteredDelay = delay * (0.5 + Math.random());
@@ -259,9 +274,9 @@ node .claude/skills/api-connector-design/scripts/validate-auth-flow.mjs <config.
 
 ## 関連スキル
 
-| スキル | 用途 |
-|-------|------|
-| `.claude/skills/mcp-protocol/SKILL.md` | MCP設定 |
-| `.claude/skills/tool-security/SKILL.md` | セキュリティ設定 |
-| `.claude/skills/resource-oriented-api/SKILL.md` | リソース設計 |
-| `.claude/skills/integration-patterns/SKILL.md` | 統合パターン |
+| スキル                                          | 用途             |
+| ----------------------------------------------- | ---------------- |
+| `.claude/skills/mcp-protocol/SKILL.md`          | MCP設定          |
+| `.claude/skills/tool-security/SKILL.md`         | セキュリティ設定 |
+| `.claude/skills/resource-oriented-api/SKILL.md` | リソース設計     |
+| `.claude/skills/integration-patterns/SKILL.md`  | 統合パターン     |

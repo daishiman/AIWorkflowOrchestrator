@@ -34,10 +34,12 @@ Level 3: 統合チェック（低速）
 ```
 
 **成功基準**:
+
 - 型エラーゼロ
 - 厳格モード（strict: true）でパス
 
 **失敗時のアクション**:
+
 - PR をブロック
 - エラー箇所をコメント（オプション）
 
@@ -49,21 +51,23 @@ Level 3: 統合チェック（低速）
 ```
 
 **成功基準**:
+
 - エラーゼロ
 - 警告ゼロ（`--max-warnings 0`）
 
 **推奨ルール**:
+
 ```javascript
 // eslint.config.js
 export default [
   {
     rules: {
-      'no-console': 'error',
-      'no-debugger': 'error',
-      '@typescript-eslint/no-unused-vars': 'error',
-      '@typescript-eslint/no-explicit-any': 'warn',
-    }
-  }
+      "no-console": "error",
+      "no-debugger": "error",
+      "@typescript-eslint/no-unused-vars": "error",
+      "@typescript-eslint/no-explicit-any": "warn",
+    },
+  },
 ];
 ```
 
@@ -75,6 +79,7 @@ export default [
 ```
 
 **成功基準**:
+
 - すべてのファイルがフォーマット済み
 
 ## Level 2: テストチェック
@@ -87,6 +92,7 @@ export default [
 ```
 
 **成功基準**:
+
 - 全テストパス
 - カバレッジ閾値達成
 
@@ -106,13 +112,14 @@ export default [
 ```
 
 **Vitest での設定**:
+
 ```typescript
 // vitest.config.ts
 export default defineConfig({
   test: {
     coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      provider: "v8",
+      reporter: ["text", "json", "html"],
       thresholds: {
         lines: 80,
         branches: 80,
@@ -135,6 +142,7 @@ export default defineConfig({
 ```
 
 **成功基準**:
+
 - High/Critical 脆弱性ゼロ
 
 ### E2E テスト
@@ -145,6 +153,7 @@ export default defineConfig({
 ```
 
 **成功基準**:
+
 - 全 E2E テストパス
 - スクリーンショット差分なし（Visual Regression）
 
@@ -192,14 +201,14 @@ jobs:
       - run: pnpm tsc --noEmit
 
   test:
-    needs: static-check           # 静的チェック後
+    needs: static-check # 静的チェック後
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: pnpm test
 
   security:
-    needs: test                   # テスト後
+    needs: test # テスト後
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -258,7 +267,7 @@ name: CI
 
 jobs:
   lint:
-    name: Lint Check           # この名前がステータスチェック名になる
+    name: Lint Check # この名前がステータスチェック名になる
     runs-on: ubuntu-latest
     steps: [...]
 
@@ -291,6 +300,7 @@ jobs:
 ### ビルドステータスバッジ
 
 README.md に追加:
+
 ```markdown
 ![CI](https://github.com/owner/repo/actions/workflows/ci.yml/badge.svg)
 ![Coverage](https://codecov.io/gh/owner/repo/branch/main/graph/badge.svg)
@@ -303,8 +313,8 @@ README.md に追加:
 ```yaml
 env:
   COVERAGE_THRESHOLD: 80
-  MAX_BUNDLE_SIZE: 500000  # bytes
-  MAX_BUILD_TIME: 120      # seconds
+  MAX_BUNDLE_SIZE: 500000 # bytes
+  MAX_BUILD_TIME: 120 # seconds
 
 jobs:
   quality-gate:
@@ -389,7 +399,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
+          cache: "pnpm"
       - run: pnpm install --frozen-lockfile
       - run: pnpm tsc --noEmit
       - run: pnpm eslint . --max-warnings 0
@@ -404,7 +414,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
+          cache: "pnpm"
       - run: pnpm install --frozen-lockfile
       - run: pnpm test --coverage
       - uses: codecov/codecov-action@v4

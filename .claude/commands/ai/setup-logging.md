@@ -45,6 +45,7 @@ JSON形式ログ、相関ID追跡、PIIマスキングを含む堅牢なロギ�
 ### Phase 1: エージェント起動準備
 
 **ユーザー引数の処理:**
+
 - `$1` (log-level): デフォルトログレベル（デフォルト: info）
   - `debug`: デバッグ情報含む
   - `info`: 重要イベントのみ
@@ -52,6 +53,7 @@ JSON形式ログ、相関ID追跡、PIIマスキングを含む堅牢なロギ�
   - `error`: エラーのみ
 
 **コンテキスト収集:**
+
 ```bash
 # 既存ログ出力の確認
 grep -r "console.log\|console.error" src/
@@ -62,7 +64,7 @@ cat docs/00-requirements/master_system_design.md | grep -A 30 "## 2.2 ロギン�
 
 ### Phase 2: sre-observer エージェント起動
 
-```typescript
+````typescript
 `.claude/agents/sre-observer.md` を起動し、以下を依頼:
 
 **タスク**: 構造化ロギングシステムの設計と実装
@@ -101,23 +103,27 @@ cat docs/00-requirements/master_system_design.md | grep -A 30 "## 2.2 ロギン�
     code?: string
   }
 }
-```
+````
 
 **ログレベル使い分け**:
+
 - error: システムエラー、例外、障害（即座の対応必要）
 - warn: 警告、リトライ、非推奨機能使用
 - info: 重要イベント（ワークフロー開始/完了等）
 - debug: デバッグ情報（開発環境のみ）
 
 **ログ出力先**:
+
 - 開発環境: console（標準出力）
 - 本番環境: Railway Logs（自動収集、7日間保持）
 
 **必須機能**:
+
 - 相関ID自動付与
 - PIIマスキング（個人情報保護）
 - コンテキスト情報の自動追加
 - エラースタックトレース含む
+
 ```
 
 ### Phase 3: 完了報告
@@ -135,3 +141,4 @@ cat docs/00-requirements/master_system_design.md | grep -A 30 "## 2.2 ロギン�
 - このコマンドはロギング実装のみを行い、詳細はエージェントに委譲
 - master_system_design.md 2.2章の仕様に完全準拠
 - 既存の console.log は構造化ロガーに置き換え
+```

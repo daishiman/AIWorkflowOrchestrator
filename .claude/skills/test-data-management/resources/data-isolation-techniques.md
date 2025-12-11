@@ -50,7 +50,7 @@ export class UniqueGenerator {
    */
   static email(baseEmail: string): string {
     const timestamp = Date.now();
-    const [local, domain] = baseEmail.split('@');
+    const [local, domain] = baseEmail.split("@");
     return `${local}+${timestamp}@${domain}`;
   }
 
@@ -74,19 +74,19 @@ export class UniqueGenerator {
 
 ```typescript
 // tests/user-registration.spec.ts
-import { test, expect } from '@playwright/test';
-import { UniqueGenerator } from './helpers/unique-generator';
+import { test, expect } from "@playwright/test";
+import { UniqueGenerator } from "./helpers/unique-generator";
 
-test('ユーザー登録', async ({ page }) => {
-  const email = UniqueGenerator.email('testuser@example.com');
-  const name = UniqueGenerator.name('Test User');
+test("ユーザー登録", async ({ page }) => {
+  const email = UniqueGenerator.email("testuser@example.com");
+  const name = UniqueGenerator.name("Test User");
 
-  await page.goto('/register');
+  await page.goto("/register");
   await page.fill('input[name="email"]', email);
   await page.fill('input[name="name"]', name);
   await page.click('button:has-text("登録")');
 
-  await expect(page).toHaveURL('/dashboard');
+  await expect(page).toHaveURL("/dashboard");
 });
 ```
 
@@ -101,7 +101,7 @@ UUIDv4を使用して、完全に一意な識別子を生成。
 
 ```typescript
 // tests/helpers/uuid-generator.ts
-import { randomUUID } from 'crypto';
+import { randomUUID } from "crypto";
 
 export class UuidGenerator {
   /**
@@ -109,7 +109,7 @@ export class UuidGenerator {
    */
   static email(baseEmail: string): string {
     const uuid = randomUUID();
-    const [local, domain] = baseEmail.split('@');
+    const [local, domain] = baseEmail.split("@");
     return `${local}+${uuid}@${domain}`;
   }
 
@@ -134,17 +134,17 @@ export class UuidGenerator {
 
 ```typescript
 // tests/project-creation.spec.ts
-import { test, expect } from '@playwright/test';
-import { UuidGenerator } from './helpers/uuid-generator';
+import { test, expect } from "@playwright/test";
+import { UuidGenerator } from "./helpers/uuid-generator";
 
-test('プロジェクト作成', async ({ page }) => {
-  const projectName = UuidGenerator.name('Test Project');
+test("プロジェクト作成", async ({ page }) => {
+  const projectName = UuidGenerator.name("Test Project");
 
-  await page.goto('/projects/new');
+  await page.goto("/projects/new");
   await page.fill('input[name="name"]', projectName);
   await page.click('button:has-text("作成")');
 
-  await expect(page.locator('h1')).toContainText(projectName);
+  await expect(page.locator("h1")).toContainText(projectName);
 });
 ```
 
@@ -171,7 +171,7 @@ export class WorkerUniqueGenerator {
    */
   email(baseEmail: string): string {
     const timestamp = Date.now();
-    const [local, domain] = baseEmail.split('@');
+    const [local, domain] = baseEmail.split("@");
     return `${local}+${this.workerId}_${timestamp}@${domain}`;
   }
 
@@ -189,8 +189,8 @@ export class WorkerUniqueGenerator {
 
 ```typescript
 // tests/fixtures/worker-fixtures.ts
-import { test as base } from '@playwright/test';
-import { WorkerUniqueGenerator } from '../helpers/worker-unique-generator';
+import { test as base } from "@playwright/test";
+import { WorkerUniqueGenerator } from "../helpers/worker-unique-generator";
 
 type WorkerFixtures = {
   uniqueGen: WorkerUniqueGenerator;
@@ -203,33 +203,33 @@ export const test = base.extend<WorkerFixtures>({
   },
 });
 
-export { expect } from '@playwright/test';
+export { expect } from "@playwright/test";
 ```
 
 ### 使用例
 
 ```typescript
 // tests/parallel-user-creation.spec.ts
-import { test, expect } from './fixtures/worker-fixtures';
+import { test, expect } from "./fixtures/worker-fixtures";
 
-test('並列ユーザー作成 1', async ({ page, uniqueGen }) => {
-  const email = uniqueGen.email('user@test.com');
+test("並列ユーザー作成 1", async ({ page, uniqueGen }) => {
+  const email = uniqueGen.email("user@test.com");
   // Worker 0: user+w0_1700000000000@test.com
 
-  await page.goto('/register');
+  await page.goto("/register");
   await page.fill('input[name="email"]', email);
   await page.click('button:has-text("登録")');
-  await expect(page).toHaveURL('/dashboard');
+  await expect(page).toHaveURL("/dashboard");
 });
 
-test('並列ユーザー作成 2', async ({ page, uniqueGen }) => {
-  const email = uniqueGen.email('user@test.com');
+test("並列ユーザー作成 2", async ({ page, uniqueGen }) => {
+  const email = uniqueGen.email("user@test.com");
   // Worker 1: user+w1_1700000000001@test.com
 
-  await page.goto('/register');
+  await page.goto("/register");
   await page.fill('input[name="email"]', email);
   await page.click('button:has-text("登録")');
-  await expect(page).toHaveURL('/dashboard');
+  await expect(page).toHaveURL("/dashboard");
 });
 ```
 
@@ -255,7 +255,7 @@ export class NamespaceManager {
   constructor(testName: string, workerIndex: number) {
     // テスト名 + worker ID + タイムスタンプで名前空間を作成
     this.namespace = `${testName}_w${workerIndex}_${Date.now()}`
-      .replace(/[^a-zA-Z0-9_]/g, '_') // 特殊文字を除去
+      .replace(/[^a-zA-Z0-9_]/g, "_") // 特殊文字を除去
       .toLowerCase();
     this.createdResources = new Map();
   }
@@ -271,7 +271,7 @@ export class NamespaceManager {
    * 名前空間付きのメールアドレスを生成
    */
   email(baseEmail: string): string {
-    const [local, domain] = baseEmail.split('@');
+    const [local, domain] = baseEmail.split("@");
     return `${local}+${this.namespace}@${domain}`;
   }
 
@@ -305,8 +305,8 @@ export class NamespaceManager {
 
 ```typescript
 // tests/fixtures/namespace-fixtures.ts
-import { test as base } from '@playwright/test';
-import { NamespaceManager } from '../helpers/namespace-manager';
+import { test as base } from "@playwright/test";
+import { NamespaceManager } from "../helpers/namespace-manager";
 
 type NamespaceFixtures = {
   namespace: NamespaceManager;
@@ -316,23 +316,23 @@ export const test = base.extend<NamespaceFixtures>({
   namespace: async ({}, use, testInfo) => {
     const manager = new NamespaceManager(
       testInfo.title,
-      testInfo.parallelIndex
+      testInfo.parallelIndex,
     );
     await use(manager);
   },
 });
 
-export { expect } from '@playwright/test';
+export { expect } from "@playwright/test";
 ```
 
 ### 使用例
 
 ```typescript
 // tests/namespaced-projects.spec.ts
-import { test, expect } from './fixtures/namespace-fixtures';
-import { ApiSeeder } from './helpers/api-seeder';
+import { test, expect } from "./fixtures/namespace-fixtures";
+import { ApiSeeder } from "./helpers/api-seeder";
 
-test.describe('名前空間付きプロジェクト管理', () => {
+test.describe("名前空間付きプロジェクト管理", () => {
   let seeder: ApiSeeder;
 
   test.beforeEach(async ({ namespace }) => {
@@ -341,36 +341,36 @@ test.describe('名前空間付きプロジェクト管理', () => {
     console.log(`Test namespace: ${namespace.getNamespace()}`);
   });
 
-  test('プロジェクト作成と削除', async ({ page, namespace }) => {
+  test("プロジェクト作成と削除", async ({ page, namespace }) => {
     // 名前空間付きでユーザー作成
-    const userEmail = namespace.email('user@test.com');
+    const userEmail = namespace.email("user@test.com");
     const user = await seeder.createUser({
       email: userEmail,
-      name: namespace.resourceName('Test User'),
+      name: namespace.resourceName("Test User"),
     });
-    namespace.trackResource('users', user.id);
+    namespace.trackResource("users", user.id);
 
     // 名前空間付きでプロジェクト作成
-    const projectName = namespace.resourceName('Project');
+    const projectName = namespace.resourceName("Project");
     const project = await seeder.createProject({
       name: projectName,
-      description: 'Namespaced project',
+      description: "Namespaced project",
       ownerId: user.id,
     });
-    namespace.trackResource('projects', project.id);
+    namespace.trackResource("projects", project.id);
 
     await page.goto(`/projects/${project.id}`);
-    await expect(page.locator('h1')).toContainText(projectName);
+    await expect(page.locator("h1")).toContainText(projectName);
   });
 
   test.afterEach(async ({ namespace }) => {
     // 名前空間内のリソースをクリーンアップ
-    const projectIds = namespace.getTrackedResources('projects');
+    const projectIds = namespace.getTrackedResources("projects");
     for (const id of projectIds) {
       await seeder.deleteProject(id).catch(console.error);
     }
 
-    const userIds = namespace.getTrackedResources('users');
+    const userIds = namespace.getTrackedResources("users");
     for (const id of userIds) {
       await seeder.deleteUser(id).catch(console.error);
     }
@@ -381,11 +381,13 @@ test.describe('名前空間付きプロジェクト管理', () => {
 ```
 
 **メリット**:
+
 - テストごとに完全に分離されたデータセット
 - リソース追跡が容易
 - デバッグ時に名前空間でフィルタリング可能
 
 **デメリット**:
+
 - リソース名が長くなる
 - 実装が複雑
 
@@ -414,7 +416,7 @@ export class TenantManager {
     const tenant = await seeder.createTenant({
       id: this.tenantId,
       name: this.tenantName,
-      plan: 'test',
+      plan: "test",
     });
     return tenant;
   }
@@ -454,9 +456,9 @@ export class TenantManager {
 
 ```typescript
 // tests/fixtures/tenant-fixtures.ts
-import { test as base } from '@playwright/test';
-import { TenantManager } from '../helpers/tenant-manager';
-import { ApiSeeder } from '../helpers/api-seeder';
+import { test as base } from "@playwright/test";
+import { TenantManager } from "../helpers/tenant-manager";
+import { ApiSeeder } from "../helpers/api-seeder";
 
 type TenantFixtures = {
   tenantManager: TenantManager;
@@ -472,7 +474,7 @@ export const test = base.extend<TenantFixtures>({
   tenantSeeder: async ({ tenantManager }, use) => {
     const seeder = new ApiSeeder(process.env.BASE_URL!);
     await seeder.initialize();
-    await seeder.authenticate('admin@test.com', 'AdminPass123!');
+    await seeder.authenticate("admin@test.com", "AdminPass123!");
 
     // テナント作成
     await tenantManager.createTenant(seeder);
@@ -485,46 +487,48 @@ export const test = base.extend<TenantFixtures>({
   },
 });
 
-export { expect } from '@playwright/test';
+export { expect } from "@playwright/test";
 ```
 
 ### 使用例
 
 ```typescript
 // tests/multi-tenant.spec.ts
-import { test, expect } from './fixtures/tenant-fixtures';
+import { test, expect } from "./fixtures/tenant-fixtures";
 
-test('テナント分離されたプロジェクト作成', async ({
+test("テナント分離されたプロジェクト作成", async ({
   page,
   tenantManager,
   tenantSeeder,
 }) => {
   // このテスト専用のテナント内でユーザー作成
   const user = await tenantManager.createUserInTenant(tenantSeeder, {
-    email: 'user@test.com',
-    name: 'Tenant User',
+    email: "user@test.com",
+    name: "Tenant User",
   });
 
   // このテスト専用のテナント内でプロジェクト作成
   const project = await tenantManager.createProjectInTenant(tenantSeeder, {
-    name: 'Tenant Project',
-    description: 'Isolated in tenant',
+    name: "Tenant Project",
+    description: "Isolated in tenant",
     ownerId: user.id,
   });
 
   await page.goto(`/projects/${project.id}`);
-  await expect(page.locator('h1')).toContainText('Tenant Project');
+  await expect(page.locator("h1")).toContainText("Tenant Project");
 
   // テスト終了後、テナントごと削除される（カスケード）
 });
 ```
 
 **メリット**:
+
 - 完全なデータ分離
 - シンプルなクリーンアップ（テナント削除のみ）
 - 実際のマルチテナント環境に近い
 
 **デメリット**:
+
 - マルチテナントアーキテクチャが必要
 - テナント作成のオーバーヘッド
 
@@ -536,24 +540,24 @@ test('テナント分離されたプロジェクト作成', async ({
 
 ```typescript
 // playwright.config.ts
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
-  testDir: './tests',
+  testDir: "./tests",
   fullyParallel: true, // すべてのテストを並列実行
   workers: process.env.CI ? 2 : undefined, // CI環境ではworker数を制限
   retries: process.env.CI ? 2 : 0,
-  reporter: 'html',
+  reporter: "html",
 
   use: {
-    baseURL: process.env.BASE_URL || 'http://localhost:3000',
-    trace: 'on-first-retry',
+    baseURL: process.env.BASE_URL || "http://localhost:3000",
+    trace: "on-first-retry",
   },
 
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
     },
   ],
 });
@@ -606,6 +610,7 @@ pnpm playwright test --workers=1
 5. **テナント分離**: マルチテナントアプリケーションの場合
 
 **推奨アプローチ**:
+
 - 小規模プロジェクト: タイムスタンプベースから始める
 - 中規模プロジェクト: Worker ID + タイムスタンプ + Fixture
 - 大規模プロジェクト: 名前空間パターンまたはテナント分離

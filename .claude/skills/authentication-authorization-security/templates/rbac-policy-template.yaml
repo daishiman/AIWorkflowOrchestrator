@@ -33,7 +33,7 @@ roles:
       - posts:create
       - posts:read
       - posts:update
-      - own_posts:delete  # 自分の投稿のみ削除可能
+      - own_posts:delete # 自分の投稿のみ削除可能
       - comments:moderate
 
   # モデレーターロール
@@ -99,7 +99,7 @@ permissions:
   # ロール管理
   - resource: roles
     actions:
-      - manage  # 作成・更新・削除
+      - manage # 作成・更新・削除
 
   # 設定管理
   - resource: settings
@@ -141,7 +141,7 @@ userRoles:
   - userId: user_003
     roles:
       - editor
-      - moderator  # 複数ロール可能
+      - moderator # 複数ロール可能
 
   - userId: user_004
     roles:

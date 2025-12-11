@@ -6,11 +6,11 @@
 
 policy_version: "1.0.0"
 effective_date: "2025-11-26"
-review_cycle: "quarterly"  # quarterly, monthly, annual
+review_cycle: "quarterly" # quarterly, monthly, annual
 
 # デフォルトポリシー（明示的な許可がない場合）
 default_policy:
-  action: "deny"  # deny, allow
+  action: "deny" # deny, allow
   require_justification: true
   require_approval: true
   require_mfa: false
@@ -28,8 +28,8 @@ roles:
       - resource: "secret/dev/*"
         actions: ["read", "write"]
         conditions:
-          time_range: "00:00-23:59"  # 24時間アクセス可
-          days_of_week: [1, 2, 3, 4, 5, 6, 7]  # 全曜日
+          time_range: "00:00-23:59" # 24時間アクセス可
+          days_of_week: [1, 2, 3, 4, 5, 6, 7] # 全曜日
           mfa_required: false
           approval_required: false
 
@@ -43,11 +43,11 @@ roles:
       - resource: "secret/staging/*"
         actions: ["read", "write", "rotate"]
       - resource: "secret/prod/*"
-        actions: ["read"]  # 本番は読み取りのみ
+        actions: ["read"] # 本番は読み取りのみ
         conditions:
           mfa_required: true
           approval_required: true
-          max_duration: 7200000  # 2時間
+          max_duration: 7200000 # 2時間
 
   - id: "security-admin"
     name: "Security Administrator"
@@ -68,7 +68,7 @@ roles:
       - resource: "audit/*"
         actions: ["read"]
       - resource: "secret/*"
-        actions: []  # Secretアクセス不可
+        actions: [] # Secretアクセス不可
 
 # ═══════════════════════════════════════════════════
 # Environment-Specific Policies
@@ -88,8 +88,8 @@ environments:
     allowed_roles: ["devops-engineer", "security-admin"]
 
   production:
-    require_approval: true  # 本番は必ず承認
-    require_mfa: true       # 本番はMFA必須
+    require_approval: true # 本番は必ず承認
+    require_mfa: true # 本番はMFA必須
     access_logging: "verbose"
     allowed_roles: ["devops-engineer", "security-admin"]
     additional_controls:
@@ -98,7 +98,7 @@ environments:
         business_hours: "09:00-18:00"
         timezone: "Asia/Tokyo"
       - type: "jit_access"
-        max_duration: 7200000  # 2時間
+        max_duration: 7200000 # 2時間
         auto_revoke: true
 
 # ═══════════════════════════════════════════════════
@@ -107,12 +107,13 @@ environments:
 
 secret_classifications:
   critical:
-    examples: ["DATABASE_PASSWORD_PROD", "STRIPE_SECRET_KEY", "ENCRYPTION_MASTER_KEY"]
+    examples:
+      ["DATABASE_PASSWORD_PROD", "STRIPE_SECRET_KEY", "ENCRYPTION_MASTER_KEY"]
     access_controls:
       require_approval: true
       require_mfa: true
       require_justification: true
-      max_access_duration: 3600000  # 1時間
+      max_access_duration: 3600000 # 1時間
       allowed_roles: ["security-admin", "devops-engineer"]
       approval_chain:
         - role: "security-admin"
@@ -126,7 +127,7 @@ secret_classifications:
       require_approval: true
       require_mfa: false
       require_justification: true
-      max_access_duration: 14400000  # 4時間
+      max_access_duration: 14400000 # 4時間
       allowed_roles: ["devops-engineer", "security-admin"]
 
   medium:
@@ -156,7 +157,7 @@ anomaly_detection:
       description: "Detect rapid successive access to secrets"
       condition:
         access_count: 10
-        time_window: 600000  # 10分
+        time_window: 600000 # 10分
       action: "alert"
       severity: "high"
 
@@ -164,7 +165,7 @@ anomaly_detection:
       description: "Access outside business hours"
       condition:
         time_range: "22:00-06:00"
-        days_of_week: [6, 7]  # 土日
+        days_of_week: [6, 7] # 土日
       action: "require_approval"
       severity: "medium"
 
@@ -172,7 +173,7 @@ anomaly_detection:
       description: "Access from new geographic location"
       condition:
         location_change: true
-        threshold: 100  # km
+        threshold: 100 # km
       action: "require_mfa"
       severity: "high"
 
@@ -181,7 +182,7 @@ anomaly_detection:
       condition:
         secret_classification: "critical"
         access_count: 3
-        time_window: 3600000  # 1時間
+        time_window: 3600000 # 1時間
       action: "block"
       severity: "critical"
 
@@ -194,14 +195,14 @@ approval_workflows:
     approvers:
       - role: "security-admin"
         required: true
-        approval_timeout: 3600000  # 1時間以内に承認必要
+        approval_timeout: 3600000 # 1時間以内に承認必要
       - role: "secret-owner"
         required: true
-        approval_timeout: 7200000  # 2時間以内に承認必要
+        approval_timeout: 7200000 # 2時間以内に承認必要
     notification_channels: ["email", "slack"]
     escalation:
       enabled: true
-      escalate_after: 1800000  # 30分後にエスカレーション
+      escalate_after: 1800000 # 30分後にエスカレーション
       escalate_to: "security-team-lead"
 
   high_secret_access:
@@ -217,8 +218,8 @@ approval_workflows:
 
 audit_settings:
   enabled: true
-  log_level: "verbose"  # minimal, standard, detailed, verbose
-  retention_period: 2592000000  # 30日（ミリ秒）
+  log_level: "verbose" # minimal, standard, detailed, verbose
+  retention_period: 2592000000 # 30日（ミリ秒）
   log_destination:
     - type: "file"
       path: "/var/log/secret-access/audit.jsonl"
@@ -228,7 +229,8 @@ audit_settings:
     - type: "monthly"
       recipients: ["security-admin@example.com"]
     - type: "quarterly"
-      recipients: ["security-admin@example.com", "compliance-officer@example.com"]
+      recipients:
+        ["security-admin@example.com", "compliance-officer@example.com"]
 
 # ═══════════════════════════════════════════════════
 # Emergency Access (Break Glass)
@@ -236,7 +238,7 @@ audit_settings:
 
 emergency_access:
   enabled: true
-  max_duration: 1800000  # 30分
+  max_duration: 1800000 # 30分
   allowed_roles: ["security-admin", "devops-engineer"]
   notification:
     immediate_alert: true
@@ -244,7 +246,7 @@ emergency_access:
     recipients: ["security-team@example.com"]
   post_incident_review:
     required: true
-    due_within: 86400000  # 24時間以内
+    due_within: 86400000 # 24時間以内
     assigned_to: "security-admin"
 
 # ═══════════════════════════════════════════════════
@@ -252,11 +254,12 @@ emergency_access:
 # ═══════════════════════════════════════════════════
 
 session_management:
-  token_ttl: 900000  # 15分
-  max_session_duration: 28800000  # 8時間
-  idle_timeout: 1800000  # 30分
+  token_ttl: 900000 # 15分
+  max_session_duration: 28800000 # 8時間
+  idle_timeout: 1800000 # 30分
   re_authentication_required: true
-  mfa_validity: 3600000  # MFA検証は1時間有効
+  mfa_validity: 3600000 # MFA検証は1時間有効
+
 
 # ═══════════════════════════════════════════════════
 # Notes & Customization Guide

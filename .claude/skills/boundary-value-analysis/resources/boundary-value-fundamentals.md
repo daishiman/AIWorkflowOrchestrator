@@ -83,11 +83,11 @@
 
 // 境界値テスト
 it.each([
-  { quantity: 0, valid: false, desc: '下限未満' },
-  { quantity: 1, valid: true, desc: '下限' },
-  { quantity: 100, valid: true, desc: '上限' },
-  { quantity: 101, valid: false, desc: '上限超過' },
-])('validateQuantity($quantity) → $valid ($desc)', ({ quantity, valid }) => {
+  { quantity: 0, valid: false, desc: "下限未満" },
+  { quantity: 1, valid: true, desc: "下限" },
+  { quantity: 100, valid: true, desc: "上限" },
+  { quantity: 101, valid: false, desc: "上限超過" },
+])("validateQuantity($quantity) → $valid ($desc)", ({ quantity, valid }) => {
   expect(validateQuantity(quantity)).toBe(valid);
 });
 ```
@@ -99,11 +99,11 @@ it.each([
 
 // 境界値テスト
 it.each([
-  { username: 'ab', valid: false, desc: '2文字（下限-1）' },
-  { username: 'abc', valid: true, desc: '3文字（下限）' },
-  { username: 'a'.repeat(20), valid: true, desc: '20文字（上限）' },
-  { username: 'a'.repeat(21), valid: false, desc: '21文字（上限+1）' },
-])('validateUsername($desc)', ({ username, valid }) => {
+  { username: "ab", valid: false, desc: "2文字（下限-1）" },
+  { username: "abc", valid: true, desc: "3文字（下限）" },
+  { username: "a".repeat(20), valid: true, desc: "20文字（上限）" },
+  { username: "a".repeat(21), valid: false, desc: "21文字（上限+1）" },
+])("validateUsername($desc)", ({ username, valid }) => {
   expect(validateUsername(username)).toBe(valid);
 });
 ```
@@ -115,11 +115,11 @@ it.each([
 
 // 境界値テスト
 it.each([
-  { offset: -1, valid: false, desc: '昨日' },
-  { offset: 0, valid: true, desc: '今日' },
-  { offset: 30, valid: true, desc: '30日後' },
-  { offset: 31, valid: false, desc: '31日後' },
-])('validateReservationDate($desc)', ({ offset, valid }) => {
+  { offset: -1, valid: false, desc: "昨日" },
+  { offset: 0, valid: true, desc: "今日" },
+  { offset: 30, valid: true, desc: "30日後" },
+  { offset: 31, valid: false, desc: "31日後" },
+])("validateReservationDate($desc)", ({ offset, valid }) => {
   const date = addDays(new Date(), offset);
   expect(validateReservationDate(date)).toBe(valid);
 });
@@ -132,11 +132,11 @@ it.each([
 
 // 境界値テスト
 it.each([
-  { items: [], valid: false, desc: '0個' },
-  { items: [item], valid: true, desc: '1個' },
-  { items: Array(10).fill(item), valid: true, desc: '10個' },
-  { items: Array(11).fill(item), valid: false, desc: '11個' },
-])('validateCart($desc)', ({ items, valid }) => {
+  { items: [], valid: false, desc: "0個" },
+  { items: [item], valid: true, desc: "1個" },
+  { items: Array(10).fill(item), valid: true, desc: "10個" },
+  { items: Array(11).fill(item), valid: false, desc: "11個" },
+])("validateCart($desc)", ({ items, valid }) => {
   expect(validateCart(items)).toBe(valid);
 });
 ```
@@ -162,7 +162,7 @@ it.each([
 
 ```typescript
 // 浮動小数点の境界値は注意が必要
-it('should handle floating point boundary', () => {
+it("should handle floating point boundary", () => {
   // 直接比較を避ける
   expect(value).toBeCloseTo(10.0, 5);
 
@@ -176,16 +176,16 @@ it('should handle floating point boundary', () => {
 ```typescript
 // 数値の特殊値
 it.each([
-  { value: 0, desc: 'ゼロ' },
-  { value: -0, desc: '負のゼロ' },
-  { value: Number.MIN_VALUE, desc: '最小正数' },
-  { value: Number.MAX_VALUE, desc: '最大値' },
-  { value: Number.MIN_SAFE_INTEGER, desc: '最小安全整数' },
-  { value: Number.MAX_SAFE_INTEGER, desc: '最大安全整数' },
-  { value: Infinity, desc: '正の無限大' },
-  { value: -Infinity, desc: '負の無限大' },
-  { value: NaN, desc: '非数' },
-])('should handle $desc', ({ value }) => {
+  { value: 0, desc: "ゼロ" },
+  { value: -0, desc: "負のゼロ" },
+  { value: Number.MIN_VALUE, desc: "最小正数" },
+  { value: Number.MAX_VALUE, desc: "最大値" },
+  { value: Number.MIN_SAFE_INTEGER, desc: "最小安全整数" },
+  { value: Number.MAX_SAFE_INTEGER, desc: "最大安全整数" },
+  { value: Infinity, desc: "正の無限大" },
+  { value: -Infinity, desc: "負の無限大" },
+  { value: NaN, desc: "非数" },
+])("should handle $desc", ({ value }) => {
   // テスト
 });
 ```

@@ -7,24 +7,24 @@
  * 出力: 検出されたスタイル（Airbnb/Google/Standard）、適合率、推奨設定
  */
 
-import { readFile } from 'fs/promises';
-import { resolve, join } from 'path';
-import { glob } from 'glob';
+import { readFile } from "fs/promises";
+import { resolve, join } from "path";
+import { glob } from "glob";
 
-async function detectStyle(targetDir = 'src') {
+async function detectStyle(targetDir = "src") {
   const absolutePath = resolve(targetDir);
 
-  console.log('🔍 Code Style Detection\n');
+  console.log("🔍 Code Style Detection\n");
   console.log(`Target: ${absolutePath}\n`);
 
   try {
     // ファイル収集
     const files = await glob(`${absolutePath}/**/*.{ts,tsx,js,jsx}`, {
-      ignore: ['**/node_modules/**', '**/dist/**', '**/build/**']
+      ignore: ["**/node_modules/**", "**/dist/**", "**/build/**"],
     });
 
     if (files.length === 0) {
-      console.log('❌ No source files found');
+      console.log("❌ No source files found");
       process.exit(1);
     }
 
@@ -35,19 +35,24 @@ async function detectStyle(targetDir = 'src') {
       semicolon: { yes: 0, no: 0 },
       quotes: { single: 0, double: 0 },
       indent: { spaces2: 0, spaces4: 0, tabs: 0 },
-      trailingComma: { yes: 0, no: 0 }
+      trailingComma: { yes: 0, no: 0 },
     };
 
     // ファイル解析
-    for (const file of files.slice(0, 50)) {  // サンプル50ファイル
-      const content = await readFile(file, 'utf-8');
-      const lines = content.split('\n');
+    for (const file of files.slice(0, 50)) {
+      // サンプル50ファイル
+      const content = await readFile(file, "utf-8");
+      const lines = content.split("\n");
 
-      lines.forEach(line => {
+      lines.forEach((line) => {
         // セミコロン検出
-        if (line.trim().endsWith(';')) {
+        if (line.trim().endsWith(";")) {
           stylePatterns.semicolon.yes++;
-        } else if (line.trim().length > 0 && !line.trim().endsWith('{') && !line.trim().endsWith(',')) {
+        } else if (
+          line.trim().length > 0 &&
+          !line.trim().endsWith("{") &&
+          !line.trim().endsWith(",")
+        ) {
           stylePatterns.semicolon.no++;
         }
 
@@ -63,65 +68,76 @@ async function detectStyle(targetDir = 'src') {
         if (line.match(/^\t/)) stylePatterns.indent.tabs++;
 
         // 末尾カンマ検出
-        if (line.trim().endsWith(',')) stylePatterns.trailingComma.yes++;
+        if (line.trim().endsWith(",")) stylePatterns.trailingComma.yes++;
       });
     }
 
     // 検出結果
-    console.log('📊 Detected Patterns:\n');
+    console.log("📊 Detected Patterns:\n");
 
     // セミコロン
     const semiTotal = stylePatterns.semicolon.yes + stylePatterns.semicolon.no;
-    const semiPercent = semiTotal > 0
-      ? (stylePatterns.semicolon.yes / semiTotal * 100).toFixed(1)
-      : 0;
+    const semiPercent =
+      semiTotal > 0
+        ? ((stylePatterns.semicolon.yes / semiTotal) * 100).toFixed(1)
+        : 0;
     console.log(`  Semicolons: ${semiPercent}% used`);
-    const semiStyle = semiPercent > 50 ? 'yes (recommended)' : 'no';
+    const semiStyle = semiPercent > 50 ? "yes (recommended)" : "no";
     console.log(`    → Detected style: ${semiStyle}\n`);
 
     // クォート
-    const quoteTotal = stylePatterns.quotes.single + stylePatterns.quotes.double;
-    const singlePercent = quoteTotal > 0
-      ? (stylePatterns.quotes.single / quoteTotal * 100).toFixed(1)
-      : 0;
+    const quoteTotal =
+      stylePatterns.quotes.single + stylePatterns.quotes.double;
+    const singlePercent =
+      quoteTotal > 0
+        ? ((stylePatterns.quotes.single / quoteTotal) * 100).toFixed(1)
+        : 0;
     console.log(`  Quotes: ${singlePercent}% single quotes`);
-    const quoteStyle = singlePercent > 50 ? 'single (recommended)' : 'double';
+    const quoteStyle = singlePercent > 50 ? "single (recommended)" : "double";
     console.log(`    → Detected style: ${quoteStyle}\n`);
 
     // インデント
-    const indentTotal = stylePatterns.indent.spaces2 + stylePatterns.indent.spaces4 + stylePatterns.indent.tabs;
-    const indent2Percent = indentTotal > 0
-      ? (stylePatterns.indent.spaces2 / indentTotal * 100).toFixed(1)
-      : 0;
-    const indent4Percent = indentTotal > 0
-      ? (stylePatterns.indent.spaces4 / indentTotal * 100).toFixed(1)
-      : 0;
+    const indentTotal =
+      stylePatterns.indent.spaces2 +
+      stylePatterns.indent.spaces4 +
+      stylePatterns.indent.tabs;
+    const indent2Percent =
+      indentTotal > 0
+        ? ((stylePatterns.indent.spaces2 / indentTotal) * 100).toFixed(1)
+        : 0;
+    const indent4Percent =
+      indentTotal > 0
+        ? ((stylePatterns.indent.spaces4 / indentTotal) * 100).toFixed(1)
+        : 0;
 
-    console.log(`  Indent: 2 spaces ${indent2Percent}%, 4 spaces ${indent4Percent}%`);
-    let indentStyle = '2 spaces (recommended)';
-    if (indent4Percent > indent2Percent) indentStyle = '4 spaces';
-    if (stylePatterns.indent.tabs > stylePatterns.indent.spaces2) indentStyle = 'tabs';
+    console.log(
+      `  Indent: 2 spaces ${indent2Percent}%, 4 spaces ${indent4Percent}%`,
+    );
+    let indentStyle = "2 spaces (recommended)";
+    if (indent4Percent > indent2Percent) indentStyle = "4 spaces";
+    if (stylePatterns.indent.tabs > stylePatterns.indent.spaces2)
+      indentStyle = "tabs";
     console.log(`    → Detected style: ${indentStyle}\n`);
 
     // スタイルガイド推定
-    console.log('🎯 Recommended Style Guide:\n');
+    console.log("🎯 Recommended Style Guide:\n");
 
-    let recommendation = 'Custom';
+    let recommendation = "Custom";
     let score = 0;
 
     // Airbnb適合度
     if (semiPercent > 80 && singlePercent > 80 && indent2Percent > 50) {
-      recommendation = 'Airbnb';
+      recommendation = "Airbnb";
       score = 90;
     }
     // Google適合度
     else if (semiPercent > 80 && singlePercent > 80) {
-      recommendation = 'Google';
+      recommendation = "Google";
       score = 85;
     }
     // Standard適合度
     else if (semiPercent < 20 && singlePercent > 80) {
-      recommendation = 'Standard';
+      recommendation = "Standard";
       score = 85;
     }
 
@@ -130,19 +146,20 @@ async function detectStyle(targetDir = 'src') {
     console.log(`    {`);
     console.log(`      "extends": ["${recommendation.toLowerCase()}"],`);
     console.log(`      "rules": {`);
-    console.log(`        "semi": ${semiPercent > 50 ? 'true' : 'false'},`);
-    console.log(`        "quotes": ["error", "${singlePercent > 50 ? 'single' : 'double'}"]`);
+    console.log(`        "semi": ${semiPercent > 50 ? "true" : "false"},`);
+    console.log(
+      `        "quotes": ["error", "${singlePercent > 50 ? "single" : "double"}"]`,
+    );
     console.log(`      }`);
     console.log(`    }`);
 
-    console.log('\n✅ Analysis complete');
-
+    console.log("\n✅ Analysis complete");
   } catch (error) {
-    console.error('❌ Analysis error:', error.message);
+    console.error("❌ Analysis error:", error.message);
     process.exit(1);
   }
 }
 
 // CLI実行
-const targetDir = process.argv[2] || 'src';
+const targetDir = process.argv[2] || "src";
 detectStyle(targetDir);
