@@ -59,10 +59,11 @@ describe("ProfileSection", () => {
       expect(screen.getByTestId("profile-section")).toBeInTheDocument();
     });
 
-    it("地域設定セクションを含む", () => {
-      render(<ProfileSection />);
-      expect(screen.getByText("地域設定")).toBeInTheDocument();
-    });
+    // 注: 地域設定は将来実装予定（task-locale-timezone-selection.md参照）
+    // it("地域設定セクションを含む", () => {
+    //   render(<ProfileSection />);
+    //   expect(screen.getByText("地域設定")).toBeInTheDocument();
+    // });
 
     it("通知設定セクションを含む", () => {
       render(<ProfileSection />);
@@ -97,7 +98,7 @@ describe("ProfileSection", () => {
       render(<ProfileSection collapsed />);
       expect(screen.getByText(/プロフィール設定/i)).toBeInTheDocument();
       // 折りたたまれた状態では詳細は非表示
-      expect(screen.queryByText("地域設定")).not.toBeInTheDocument();
+      expect(screen.queryByText("通知")).not.toBeInTheDocument();
     });
   });
 

@@ -196,6 +196,9 @@ interface ProfileExportData {
   locale: string;
   notificationSettings: NotificationSettings;
   preferences: Record<string, unknown>;
+  linkedProviders?: Array<{ provider: string; linkedAt: string }>;
+  accountCreatedAt?: string;
+  plan?: string;
 }
 
 interface IPCResponse<T> {
@@ -650,8 +653,10 @@ describe("profileHandlers - Extended Features (TDD Red)", () => {
       expect(exportedData.timezone).toBeDefined();
       expect(exportedData.locale).toBeDefined();
       expect(exportedData.notificationSettings).toBeDefined();
+      // planは含まれるべきデータ（ユーザー情報の一部）
+      expect(exportedData.plan).toBeDefined();
 
-      // 除外されるべきデータ（型定義に含まれないことで検証）
+      // 除外されるべきデータ（機密情報）
       expect(
         (exportedData as unknown as Record<string, unknown>).email,
       ).toBeUndefined();
@@ -660,9 +665,6 @@ describe("profileHandlers - Extended Features (TDD Red)", () => {
       ).toBeUndefined();
       expect(
         (exportedData as unknown as Record<string, unknown>).id,
-      ).toBeUndefined();
-      expect(
-        (exportedData as unknown as Record<string, unknown>).plan,
       ).toBeUndefined();
     });
 
