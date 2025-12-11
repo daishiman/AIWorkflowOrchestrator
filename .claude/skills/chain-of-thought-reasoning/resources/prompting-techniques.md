@@ -30,6 +30,7 @@ Chain-of-Thoughtを効果的に引き出すための
 ### トリガーの配置
 
 **パターン1: 末尾配置（標準）**
+
 ```markdown
 問題: [問題文]
 
@@ -37,6 +38,7 @@ Let's think step by step.
 ```
 
 **パターン2: 中間配置**
+
 ```markdown
 問題: [問題文]
 
@@ -46,6 +48,7 @@ Let's think step by step.
 ```
 
 **パターン3: 複合トリガー**
+
 ```markdown
 問題: [問題文]
 
@@ -59,33 +62,38 @@ Let's think step by step.
 ### 例示の構造化
 
 **基本形式**:
+
 ```markdown
 例1:
 Q: [質問]
 A: [思考プロセス]
-   [最終回答]
+[最終回答]
 
 例2:
 Q: [質問]
 A: [思考プロセス]
-   [最終回答]
+[最終回答]
 ```
 
 **詳細形式**:
+
 ```markdown
 例1:
 問題: [問題文]
 
 分析:
+
 1. [ステップ1の説明]
 2. [ステップ2の説明]
 3. [ステップ3の説明]
 
 計算:
+
 - [計算1]
 - [計算2]
 
 検証:
+
 - [検証内容]
 
 答え: [最終回答]
@@ -95,10 +103,10 @@ A: [思考プロセス]
 
 ```yaml
 recommended_examples:
-  simple_reasoning: 1-2  # シンプルな推論
-  moderate_complexity: 2-3  # 中程度の複雑さ
-  complex_reasoning: 3-5  # 複雑な推論
-  high_precision: 4-6  # 高精度要求
+  simple_reasoning: 1-2 # シンプルな推論
+  moderate_complexity: 2-3 # 中程度の複雑さ
+  complex_reasoning: 3-5 # 複雑な推論
+  high_precision: 4-6 # 高精度要求
 ```
 
 ### 多様性の確保
@@ -114,17 +122,19 @@ recommended_examples:
 例2（中程度の推論）:
 問題: 15% の 80 は？
 思考:
+
 1. 15% = 0.15
 2. 0.15 × 80 = 12
-答え: 12
+   答え: 12
 
 例3（長い推論）:
 問題: 商品が20%引きで800円。元の価格は？
 思考:
+
 1. 20%引き = 80%の価格
 2. 800円 = 元の価格 × 0.8
 3. 元の価格 = 800 ÷ 0.8 = 1000
-答え: 1000円
+   答え: 1000円
 ```
 
 ## 構造化プロンプト
@@ -133,28 +143,36 @@ recommended_examples:
 
 ```markdown
 # タスク
+
 [タスクの説明]
 
 # 制約
+
 - [制約1]
 - [制約2]
 
 # 思考プロセス
+
 以下の形式で回答してください：
 
 ## 1. 情報整理
+
 [与えられた情報を整理]
 
 ## 2. 分析
+
 [問題の分析]
 
 ## 3. 推論
+
 [段階的な推論]
 
 ## 4. 結論
+
 [最終的な回答]
 
 # 入力
+
 [実際の問題]
 ```
 
@@ -188,6 +206,7 @@ recommended_examples:
 回答は以下の形式で記述してください：
 
 【前提の確認】
+
 - ...
 
 【推論ステップ】
@@ -208,6 +227,7 @@ recommended_examples:
 演繹的推論を使用して、以下の問題を解いてください。
 
 前提:
+
 1. すべてのAはBである
 2. CはAである
 
@@ -247,16 +267,16 @@ recommended_examples:
 async function selfConsistencyCoT(
   prompt: string,
   numSamples: number = 5,
-  temperature: number = 0.7
+  temperature: number = 0.7,
 ): Promise<string> {
   const responses = await Promise.all(
-    Array(numSamples).fill(null).map(() =>
-      generateWithCoT(prompt, { temperature })
-    )
+    Array(numSamples)
+      .fill(null)
+      .map(() => generateWithCoT(prompt, { temperature })),
   );
 
   // 回答を抽出
-  const answers = responses.map(r => extractAnswer(r));
+  const answers = responses.map((r) => extractAnswer(r));
 
   // 多数決
   const counts = countOccurrences(answers);
@@ -274,6 +294,7 @@ async function selfConsistencyCoT(
 問題: [問題文]
 
 解答プロセス:
+
 1. [ステップ1]
 2. [ステップ2]
 3. [ステップ3]
@@ -281,6 +302,7 @@ async function selfConsistencyCoT(
 暫定回答: [回答]
 
 検証:
+
 - 計算は正しいか？ [はい/いいえ]
 - 論理は一貫しているか？ [はい/いいえ]
 - 別のアプローチでも同じ結果になるか？ [検証]
@@ -317,16 +339,16 @@ async function selfConsistencyCoT(
 # Claudeでの効果的なCoT
 
 1. XMLタグを使用した構造化
-<thinking>
-[推論プロセス]
-</thinking>
+   <thinking>
+   [推論プロセス]
+   </thinking>
 
 <answer>
 [最終回答]
 </answer>
 
 2. 明確な指示
-「段階的に考え、各ステップを明示してください」
+   「段階的に考え、各ステップを明示してください」
 ```
 
 ### GPT向け
@@ -335,12 +357,12 @@ async function selfConsistencyCoT(
 # GPTでの効果的なCoT
 
 1. システムメッセージでの設定
-System: "You are a helpful assistant that thinks step by step."
+   System: "You are a helpful assistant that thinks step by step."
 
 2. フォーマット指示
-"Format your response as:
-Thinking: [your reasoning]
-Answer: [final answer]"
+   "Format your response as:
+   Thinking: [your reasoning]
+   Answer: [final answer]"
 ```
 
 ## エラー処理
@@ -350,6 +372,7 @@ Answer: [final answer]"
 ```markdown
 問題を解いてください。
 もし行き詰まった場合は、以下を試してください：
+
 1. 問題を言い換える
 2. 小さなサブ問題に分解する
 3. 類似問題との比較

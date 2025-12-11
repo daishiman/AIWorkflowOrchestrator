@@ -65,7 +65,7 @@ export const DEFAULT_CIRCUIT_BREAKER_CONFIG: CircuitBreakerConfig = {
 export class CircuitOpenError extends Error {
   constructor(
     message = "Circuit breaker is open",
-    public readonly state: CircuitState = CircuitState.OPEN
+    public readonly state: CircuitState = CircuitState.OPEN,
   ) {
     super(message);
     this.name = "CircuitOpenError";
@@ -135,7 +135,7 @@ export class CircuitBreaker<T> {
       } else {
         this.rejectedRequests++;
         throw new CircuitOpenError(
-          `Circuit is open. Will attempt reset in ${this.getRemainingTimeout()}ms`
+          `Circuit is open. Will attempt reset in ${this.getRemainingTimeout()}ms`,
         );
       }
     }
@@ -146,7 +146,7 @@ export class CircuitBreaker<T> {
         this.rejectedRequests++;
         throw new CircuitOpenError(
           "Circuit is half-open, max concurrent calls reached",
-          CircuitState.HALF_OPEN
+          CircuitState.HALF_OPEN,
         );
       }
       this.halfOpenCalls++;
@@ -167,7 +167,7 @@ export class CircuitBreaker<T> {
    */
   async executeWithFallback(
     fn: () => Promise<T>,
-    fallback: () => T | Promise<T>
+    fallback: () => T | Promise<T>,
   ): Promise<T> {
     try {
       return await this.execute(fn);
@@ -363,12 +363,12 @@ export class CircuitBreakerRegistry {
    */
   get<T>(
     name: string,
-    config?: Partial<CircuitBreakerConfig>
+    config?: Partial<CircuitBreakerConfig>,
   ): CircuitBreaker<T> {
     if (!this.breakers.has(name)) {
       this.breakers.set(
         name,
-        new CircuitBreaker<T>({ ...this.defaultConfig, ...config })
+        new CircuitBreaker<T>({ ...this.defaultConfig, ...config }),
       );
     }
     return this.breakers.get(name) as CircuitBreaker<T>;

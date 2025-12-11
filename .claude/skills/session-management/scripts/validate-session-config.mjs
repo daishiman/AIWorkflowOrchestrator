@@ -13,8 +13,8 @@
  *   - セキュリティ設定
  */
 
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
 const VALIDATION_RULES = {
   minSessionDuration: 5 * 60, // 5分
@@ -28,7 +28,7 @@ async function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.error('❌ Usage: node validate-session-config.mjs <config-file>');
+    console.error("❌ Usage: node validate-session-config.mjs <config-file>");
     process.exit(1);
   }
 
@@ -40,10 +40,10 @@ async function main() {
   }
 
   try {
-    const configContent = fs.readFileSync(configPath, 'utf-8');
+    const configContent = fs.readFileSync(configPath, "utf-8");
     const config = JSON.parse(configContent);
 
-    console.log('🔍 Validating Session Configuration...\n');
+    console.log("🔍 Validating Session Configuration...\n");
 
     const results = validateSessionConfig(config);
 
@@ -53,7 +53,7 @@ async function main() {
       process.exit(1);
     }
 
-    console.log('\n✅ Session configuration is valid!');
+    console.log("\n✅ Session configuration is valid!");
   } catch (error) {
     console.error(`❌ Validation failed: ${error.message}`);
     process.exit(1);
@@ -67,9 +67,11 @@ function validateSessionConfig(config) {
 
   // セッション戦略チェック
   if (!config.strategy) {
-    errors.push('Missing session strategy (jwt or database)');
-  } else if (!['jwt', 'database', 'hybrid'].includes(config.strategy)) {
-    errors.push(`Invalid strategy: ${config.strategy}. Must be jwt, database, or hybrid`);
+    errors.push("Missing session strategy (jwt or database)");
+  } else if (!["jwt", "database", "hybrid"].includes(config.strategy)) {
+    errors.push(
+      `Invalid strategy: ${config.strategy}. Must be jwt, database, or hybrid`,
+    );
   } else {
     info.push(`Session strategy: ${config.strategy}`);
   }
@@ -78,20 +80,23 @@ function validateSessionConfig(config) {
   if (config.cookie) {
     // HttpOnly
     if (config.cookie.httpOnly !== true) {
-      errors.push('cookie.httpOnly must be true for security');
+      errors.push("cookie.httpOnly must be true for security");
     }
 
     // Secure
-    if (process.env.NODE_ENV === 'production' && config.cookie.secure !== true) {
-      errors.push('cookie.secure must be true in production');
+    if (
+      process.env.NODE_ENV === "production" &&
+      config.cookie.secure !== true
+    ) {
+      errors.push("cookie.secure must be true in production");
     }
 
     // SameSite
     if (!config.cookie.sameSite) {
       warnings.push('cookie.sameSite is not set - recommend "lax" or "strict"');
-    } else if (config.cookie.sameSite === 'none' && !config.cookie.secure) {
-      errors.push('cookie.sameSite=none requires cookie.secure=true');
-    } else if (!['strict', 'lax', 'none'].includes(config.cookie.sameSite)) {
+    } else if (config.cookie.sameSite === "none" && !config.cookie.secure) {
+      errors.push("cookie.sameSite=none requires cookie.secure=true");
+    } else if (!["strict", "lax", "none"].includes(config.cookie.sameSite)) {
       errors.push(`Invalid sameSite: ${config.cookie.sameSite}`);
     }
 
@@ -105,42 +110,44 @@ function validateSessionConfig(config) {
       }
     }
   } else {
-    errors.push('Missing cookie configuration');
+    errors.push("Missing cookie configuration");
   }
 
   // JWT設定チェック（JWT戦略の場合）
-  if (config.strategy === 'jwt') {
+  if (config.strategy === "jwt") {
     if (!config.jwt) {
-      errors.push('JWT strategy requires jwt configuration');
+      errors.push("JWT strategy requires jwt configuration");
     } else {
       if (!config.jwt.secret) {
-        errors.push('jwt.secret is required for JWT strategy');
+        errors.push("jwt.secret is required for JWT strategy");
       } else if (config.jwt.secret.length < 32) {
-        warnings.push('jwt.secret should be at least 32 characters');
+        warnings.push("jwt.secret should be at least 32 characters");
       }
 
       if (config.jwt.maxAge) {
         if (config.jwt.maxAge > VALIDATION_RULES.maxAccessTokenDuration) {
-          warnings.push(`jwt.maxAge is too long (> 24 hours) - recommend 1 hour`);
+          warnings.push(
+            `jwt.maxAge is too long (> 24 hours) - recommend 1 hour`,
+          );
         }
       }
     }
   }
 
   // Database設定チェック（Database戦略の場合）
-  if (config.strategy === 'database') {
+  if (config.strategy === "database") {
     if (!config.adapter) {
-      errors.push('Database strategy requires adapter configuration');
+      errors.push("Database strategy requires adapter configuration");
     }
   }
 
   // タイムアウト設定チェック
   if (config.timeout) {
     if (config.timeout.idle && config.timeout.idle < 5 * 60) {
-      warnings.push('timeout.idle is very short (< 5 minutes)');
+      warnings.push("timeout.idle is very short (< 5 minutes)");
     }
     if (config.timeout.absolute && config.timeout.absolute > 24 * 60 * 60) {
-      warnings.push('timeout.absolute is very long (> 24 hours)');
+      warnings.push("timeout.absolute is very long (> 24 hours)");
     }
   }
 
@@ -149,31 +156,31 @@ function validateSessionConfig(config) {
 
 function printValidationResults(results) {
   if (results.errors.length > 0) {
-    console.log('❌ Errors:');
+    console.log("❌ Errors:");
     results.errors.forEach((err, idx) => {
       console.log(`  ${idx + 1}. ${err}`);
     });
-    console.log('');
+    console.log("");
   }
 
   if (results.warnings.length > 0) {
-    console.log('⚠️  Warnings:');
+    console.log("⚠️  Warnings:");
     results.warnings.forEach((warn, idx) => {
       console.log(`  ${idx + 1}. ${warn}`);
     });
-    console.log('');
+    console.log("");
   }
 
   if (results.info.length > 0) {
-    console.log('ℹ️  Info:');
+    console.log("ℹ️  Info:");
     results.info.forEach((info, idx) => {
       console.log(`  ${idx + 1}. ${info}`);
     });
-    console.log('');
+    console.log("");
   }
 }
 
-main().catch(error => {
-  console.error('Fatal error:', error);
+main().catch((error) => {
+  console.error("Fatal error:", error);
   process.exit(1);
 });

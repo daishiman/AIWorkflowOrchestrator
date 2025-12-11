@@ -25,7 +25,8 @@ const VALIDATION_RULES = {
       /:\s*Promise<\w+ApiResult>/g,
     ],
     severity: "error",
-    message: "外部型が関数の戻り値として公開されています。内部型に変換してください。",
+    message:
+      "外部型が関数の戻り値として公開されています。内部型に変換してください。",
   },
 
   // 型キャストの使用チェック
@@ -75,10 +76,7 @@ const VALIDATION_RULES = {
   // ハードコードされたURL
   hardcodedUrls: {
     name: "ハードコードURL",
-    patterns: [
-      /['"`]https?:\/\/[^'"`]+['"`]/g,
-      /['"`]\/api\/[^'"`]+['"`]/g,
-    ],
+    patterns: [/['"`]https?:\/\/[^'"`]+['"`]/g, /['"`]\/api\/[^'"`]+['"`]/g],
     severity: "info",
     message:
       "ハードコードされたURLが見つかりました。環境変数または設定ファイルの使用を検討してください。",
@@ -132,7 +130,12 @@ function validateFile(filePath) {
   const result = new ValidationResult();
 
   if (!fs.existsSync(filePath)) {
-    result.addIssue("error", { name: "ファイル", message: "ファイルが存在しません" }, 0, filePath);
+    result.addIssue(
+      "error",
+      { name: "ファイル", message: "ファイルが存在しません" },
+      0,
+      filePath,
+    );
     return result;
   }
 
@@ -174,7 +177,9 @@ function printReport(filePath, result) {
   const { errors, warnings, infos } = result.summary;
 
   // サマリー
-  console.log(`\nSummary: ${errors} errors, ${warnings} warnings, ${infos} info`);
+  console.log(
+    `\nSummary: ${errors} errors, ${warnings} warnings, ${infos} info`,
+  );
 
   // エラー出力
   if (result.errors.length > 0) {
@@ -223,7 +228,9 @@ function main() {
 
   if (args.length === 0) {
     console.log("Usage: node validate-api-client.mjs <file-path>");
-    console.log("Example: node validate-api-client.mjs src/infrastructure/discord/client.ts");
+    console.log(
+      "Example: node validate-api-client.mjs src/infrastructure/discord/client.ts",
+    );
     process.exit(1);
   }
 

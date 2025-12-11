@@ -50,10 +50,10 @@ description: |
   トリガーキーワード: agent, エージェント作成, ペルソナ設計, 自動化, マルチエージェント
 argument-hint: "[agent-name] [specialty]"
 allowed-tools:
-   - Read
-   - Write(.claude/agents/**)
-   - Grep
-   - Bash
+  - Read
+  - Write(.claude/agents/**)
+  - Grep
+  - Bash
 model: opus
 ---
 
@@ -61,7 +61,7 @@ model: opus
 
 ## 目的
 
-新しいClaude Codeエージェント（.claude/agents/*.md）を作成します。
+新しいClaude Codeエージェント（.claude/agents/\*.md）を作成します。
 meta-agent-designer エージェントを起動し、マービン・ミンスキーの『心の社会』に基づいた
 単一責任を持つ特化型エージェントを設計・生成します。
 
@@ -73,22 +73,26 @@ meta-agent-designer エージェントを起動し、マービン・ミンスキ
 このエージェントは以下の12個のスキルを活用します（タスクに応じて必要なスキルのみ読み込み）:
 
 #### コア設計スキル（Phase 1-2で使用）
+
 - **agent-architecture-patterns**: マービン・ミンスキーに基づくアーキテクチャパターン選択
 - **agent-structure-design**: YAML Frontmatter・ワークフロー設計
 - **agent-persona-design**: ペルソナ・役割定義（実在する専門家ベース）
 - **tool-permission-management**: ツール権限・セキュリティ設計
 
 #### 統合・協調スキル（Phase 3で使用）
+
 - **agent-dependency-design**: 依存関係・ハンドオフ設計
 - **multi-agent-systems**: マルチエージェント協調パターン
 - **project-architecture-integration**: プロジェクト固有設計
 
 #### 品質・検証スキル（Phase 4-5で使用）
+
 - **agent-quality-standards**: 品質基準・メトリクス
 - **agent-validation-testing**: テストケース・検証
 - **prompt-engineering-for-agents**: System Prompt最適化
 
 #### テンプレート・ライフサイクルスキル（全Phaseで使用）
+
 - **agent-template-patterns**: エージェントテンプレート
 - **agent-lifecycle-management**: バージョン管理・更新戦略
 
@@ -156,27 +160,35 @@ version: 1.0.0
 # [Agent Name]
 
 ## 役割定義
+
 [専門分野、責任範囲、制約]
 
 ## 専門家の思想と哲学
+
 [実在する専門家ベースのペルソナモデリング]
 
 ## スキル管理（必要な場合）
+
 [依存スキルの一覧と使用タイミング]
 
 ## タスク実行ワークフロー
+
 [5段階のワークフロー: Phase 1-5]
 
 ## ツール使用方針
+
 [各ツールの使用目的と制約]
 
 ## 品質基準と成功の定義
+
 [完了条件、品質メトリクス、エラーハンドリング]
 
 ## 実行プロトコル
+
 [エージェント起動時の標準的な流れ]
 
 ## 使用上の注意
+
 [このエージェントが得意なこと、行わないこと]
 ```
 
@@ -197,6 +209,7 @@ version: 1.0.0
 ```
 
 対話的に以下の情報を収集:
+
 - 専門分野の詳細
 - ベースとなる実在の専門家
 - 責任範囲と制約
@@ -369,6 +382,7 @@ Task ツールで `.claude/agents/meta-agent-designer.md` エージェントを�
 3. **検証と完了**
 
 エージェントが完了したら:
+
 - 作成されたエージェントファイルのパスを確認
 - エージェントファイルの行数を検証（450-550行範囲内）
 - YAML Frontmatter の構文を検証
@@ -457,6 +471,7 @@ allowed-tools:
 **原因**: 詳細知識を本文に詰め込みすぎ
 
 **解決策**:
+
 1. 詳細な知識を外部スキルに分離
 2. 「スキル管理」セクションで相対パス参照
 3. ワークフローは概要のみ、詳細は各Phase内で簡潔に
@@ -468,6 +483,7 @@ allowed-tools:
 **原因**: スコープが広すぎる
 
 **解決策**:
+
 1. 専門分野を1つに絞る
 2. 複数の責務がある場合は複数のエージェントに分割
 3. 協調パターンで連携させる
@@ -479,6 +495,7 @@ allowed-tools:
 **原因**: 最小権限の原則が適用されていない
 
 **解決策**:
+
 - Read専用エージェント: `[Read, Grep, Glob]`
 - ドキュメント作成: `[Read, Write(docs/**)]`
 - コード実装: `[Read, Write(src/**), Edit]`
@@ -491,6 +508,7 @@ allowed-tools:
 **原因**: 既存エージェントの確認不足
 
 **解決策**:
+
 1. 既存エージェントを検索: `grep -r "専門分野" .claude/agents/*.md`
 2. 重複部分は既存エージェントに統合
 3. 差分が明確な場合のみ新規作成

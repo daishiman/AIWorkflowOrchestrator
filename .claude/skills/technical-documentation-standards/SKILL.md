@@ -159,7 +159,6 @@ cat .claude/skills/technical-documentation-standards/templates/srs-template.md
 **ステップ**:
 
 1. **ドキュメントタイプの特定**:
-
    - 要件仕様書 → IEEE 830
    - API 仕様書 → OpenAPI + DRY
    - 設計書 → アーキテクチャ標準
@@ -184,12 +183,10 @@ cat .claude/skills/technical-documentation-standards/templates/srs-template.md
 **ステップ**:
 
 1. **重複の特定**:
-
    - 同じ情報が複数箇所に記述されていないか
    - 共通定義（データ型、定数、認証方式等）を抽出
 
 2. **共通定義の作成**:
-
    - 共通定義ファイルに集約
    - 参照による再利用
 
@@ -212,12 +209,10 @@ cat .claude/skills/technical-documentation-standards/templates/srs-template.md
 **ステップ**:
 
 1. **曖昧表現の検出**:
-
    - 「適切に」「必要に応じて」「可能であれば」を排除
    - 具体的な条件や数値に置き換え
 
 2. **検証可能な記述**:
-
    - すべての要件にテスト可能な基準
    - 成功/失敗が明確に判定可能
 
@@ -240,13 +235,11 @@ cat .claude/skills/technical-documentation-standards/templates/srs-template.md
 **ステップ**:
 
 1. **バージョン管理**:
-
    - Git でドキュメントを管理
    - 変更履歴の記録
    - ブランチ戦略の適用
 
 2. **自動検証**:
-
    - Markdown リンター
    - スペルチェック
    - 構文検証
@@ -268,13 +261,11 @@ cat .claude/skills/technical-documentation-standards/templates/srs-template.md
 ### すべきこと
 
 1. **単一の真実の情報源（SSOT）**:
-
    - 共通定義は 1 箇所に集約
    - 他からは参照のみ
    - 変更は 1 箇所で完結
 
 2. **検証可能な記述**:
-
    - 「ログインは高速であるべき」→「ログインは 200ms 以内に完了する」
    - 測定可能、テスト可能な基準
 
@@ -286,13 +277,11 @@ cat .claude/skills/technical-documentation-standards/templates/srs-template.md
 ### 避けるべきこと
 
 1. **曖昧な表現**:
-
    - 「適切に処理する」
    - 「必要に応じて」
    - 「可能な限り」
 
 2. **重複記述**:
-
    - 同じ情報を複数箇所に記載
    - コピペによる記述
 

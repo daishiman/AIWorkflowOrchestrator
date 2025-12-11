@@ -16,11 +16,11 @@ function identity<T>(value: T): T {
 }
 
 // 使用時に型が推論される
-const str = identity('hello'); // string
+const str = identity("hello"); // string
 const num = identity(42); // number
 
 // 明示的な型指定
-const arr = identity<string[]>(['a', 'b', 'c']);
+const arr = identity<string[]>(["a", "b", "c"]);
 ```
 
 ### 複数の型パラメータ
@@ -30,14 +30,14 @@ function pair<T, U>(first: T, second: U): [T, U] {
   return [first, second];
 }
 
-const result = pair('hello', 42); // [string, number]
+const result = pair("hello", 42); // [string, number]
 
 // マップ関数
 function map<T, U>(array: T[], fn: (item: T) => U): U[] {
   return array.map(fn);
 }
 
-const numbers = map(['1', '2', '3'], (s) => parseInt(s, 10));
+const numbers = map(["1", "2", "3"], (s) => parseInt(s, 10));
 // number[]
 ```
 
@@ -74,19 +74,22 @@ function getLength<T extends { length: number }>(item: T): number {
   return item.length;
 }
 
-getLength('hello'); // OK
+getLength("hello"); // OK
 getLength([1, 2, 3]); // OK
 getLength({ length: 10 }); // OK
 // getLength(42); // エラー: number には length がない
 
 // オブジェクト制約
-function getProperty<T extends object, K extends keyof T>(obj: T, key: K): T[K] {
+function getProperty<T extends object, K extends keyof T>(
+  obj: T,
+  key: K,
+): T[K] {
   return obj[key];
 }
 
-const user = { name: 'John', age: 30 };
-const name = getProperty(user, 'name'); // string
-const age = getProperty(user, 'age'); // number
+const user = { name: "John", age: 30 };
+const name = getProperty(user, "name"); // string
+const age = getProperty(user, "age"); // number
 ```
 
 ### 複数の制約
@@ -231,7 +234,7 @@ type PaginatedList<T> = {
 
 // API関数の型
 type ApiFunction<TParams, TResponse> = (
-  params: TParams
+  params: TParams,
 ) => Promise<ApiResponse<TResponse>>;
 
 // 使用例
@@ -250,7 +253,9 @@ type GetUsersFn = ApiFunction<{ page: number }, PaginatedList<User>>;
 class QueryBuilder<T extends object, Selected extends keyof T = never> {
   private selectedFields: Selected[] = [];
 
-  select<K extends Exclude<keyof T, Selected>>(field: K): QueryBuilder<T, Selected | K> {
+  select<K extends Exclude<keyof T, Selected>>(
+    field: K,
+  ): QueryBuilder<T, Selected | K> {
     this.selectedFields.push(field as unknown as Selected);
     return this as unknown as QueryBuilder<T, Selected | K>;
   }
@@ -269,10 +274,7 @@ interface User {
   age: number;
 }
 
-const query = new QueryBuilder<User>()
-  .select('name')
-  .select('email')
-  .build();
+const query = new QueryBuilder<User>().select("name").select("email").build();
 // Pick<User, 'name' | 'email'>
 ```
 
@@ -303,11 +305,11 @@ class TypedEventEmitter<T extends Record<string, any>> {
 // 使用例
 const emitter = new TypedEventEmitter<EventMap>();
 
-emitter.on('login', (payload) => {
+emitter.on("login", (payload) => {
   console.log(payload.userId); // 型安全
 });
 
-emitter.emit('login', { userId: '123' }); // OK
+emitter.emit("login", { userId: "123" }); // OK
 // emitter.emit('login', { userId: 123 }); // エラー
 ```
 
@@ -382,8 +384,10 @@ type OverlyComplex<
   T extends object,
   K extends keyof T,
   U extends T[K] extends infer R ? R : never,
-  V extends U extends object ? keyof U : never
-> = { /* ... */ };
+  V extends U extends object ? keyof U : never,
+> = {
+  /* ... */
+};
 
 // ✅ 段階的に分解
 type ExtractValue<T, K extends keyof T> = T[K];
@@ -392,6 +396,6 @@ type ExtractKeys<T> = T extends object ? keyof T : never;
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版リリース |
+| バージョン | 日付       | 変更内容     |
+| ---------- | ---------- | ------------ |
+| 1.0.0      | 2025-11-25 | 初版リリース |

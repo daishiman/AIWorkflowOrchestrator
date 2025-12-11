@@ -12,22 +12,22 @@ Vitestでのテストカバレッジの設定、測定、最適化方法を解�
 
 ```typescript
 // vitest.config.ts
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
     coverage: {
       // プロバイダー（v8推奨）
-      provider: 'v8', // または 'istanbul'
+      provider: "v8", // または 'istanbul'
 
       // 有効化
       enabled: true,
 
       // レポーター
-      reporter: ['text', 'html', 'lcov', 'json'],
+      reporter: ["text", "html", "lcov", "json"],
 
       // 出力ディレクトリ
-      reportsDirectory: './coverage',
+      reportsDirectory: "./coverage",
     },
   },
 });
@@ -89,10 +89,11 @@ coverage: {
 
 ```typescript
 function calculate(a: number, b: number): number {
-  if (a > 0) {           // ← 実行された
-    return a + b;        // ← 実行された
+  if (a > 0) {
+    // ← 実行された
+    return a + b; // ← 実行された
   }
-  return b;              // ← 実行されていない
+  return b; // ← 実行されていない
 }
 ```
 
@@ -102,12 +103,14 @@ function calculate(a: number, b: number): number {
 
 ```typescript
 function validate(value: number): string {
-  if (value < 0) {       // ← true分岐とfalse分岐
-    return 'negative';
-  } else if (value > 100) {  // ← true分岐とfalse分岐
-    return 'too high';
+  if (value < 0) {
+    // ← true分岐とfalse分岐
+    return "negative";
+  } else if (value > 100) {
+    // ← true分岐とfalse分岐
+    return "too high";
   }
-  return 'valid';
+  return "valid";
 }
 
 // 4つの分岐すべてをテストする必要がある
@@ -182,17 +185,18 @@ npx vitest run --coverage
 ```typescript
 // カバーされていない分岐を特定
 function process(data: Data): Result {
-  if (data.type === 'A') {
+  if (data.type === "A") {
     return processTypeA(data);
-  } else if (data.type === 'B') {  // ← この分岐がテストされていない
+  } else if (data.type === "B") {
+    // ← この分岐がテストされていない
     return processTypeB(data);
   }
-  throw new Error('Unknown type');
+  throw new Error("Unknown type");
 }
 
 // 追加テスト
-it('should process type B', () => {
-  const result = process({ type: 'B', value: 10 });
+it("should process type B", () => {
+  const result = process({ type: "B", value: 10 });
   expect(result).toBeDefined();
 });
 ```
@@ -202,11 +206,11 @@ it('should process type B', () => {
 ```typescript
 // 境界値テスト
 it.each([
-  { input: 0, expected: 'zero' },
-  { input: -1, expected: 'negative' },
-  { input: 100, expected: 'max' },
-  { input: 101, expected: 'overflow' },
-])('should handle $input', ({ input, expected }) => {
+  { input: 0, expected: "zero" },
+  { input: -1, expected: "negative" },
+  { input: 100, expected: "max" },
+  { input: 101, expected: "overflow" },
+])("should handle $input", ({ input, expected }) => {
   expect(classify(input)).toBe(expected);
 });
 ```
@@ -232,13 +236,13 @@ coverage: {
 ```typescript
 /* v8 ignore start */
 // このブロックはカバレッジから除外
-if (process.env.NODE_ENV === 'development') {
-  console.log('Debug mode');
+if (process.env.NODE_ENV === "development") {
+  console.log("Debug mode");
 }
 /* v8 ignore stop */
 
 // 単一行の除外
-const debug = () => console.log('debug'); /* v8 ignore next */
+const debug = () => console.log("debug"); /* v8 ignore next */
 ```
 
 ### Istanbulコメント
@@ -311,16 +315,16 @@ npx vitest run --coverage --coverage.thresholds.100
 
 ```typescript
 // 悪い例：カバレッジのためだけのテスト
-it('should cover getters', () => {
+it("should cover getters", () => {
   const user = new User();
   user.name; // ただ呼び出すだけ
   user.email; // 意味のないテスト
 });
 
 // 良い例：振る舞いをテスト
-it('should format full name', () => {
-  const user = new User({ firstName: 'John', lastName: 'Doe' });
-  expect(user.fullName).toBe('John Doe');
+it("should format full name", () => {
+  const user = new User({ firstName: "John", lastName: "Doe" });
+  expect(user.fullName).toBe("John Doe");
 });
 ```
 
@@ -330,8 +334,8 @@ it('should format full name', () => {
 // カバレッジから除外すべき
 /* v8 ignore next */
 function devOnly() {
-  if (process.env.NODE_ENV !== 'production') {
-    console.log('Development mode');
+  if (process.env.NODE_ENV !== "production") {
+    console.log("Development mode");
   }
 }
 ```
@@ -340,13 +344,13 @@ function devOnly() {
 
 ```typescript
 // カバレッジ80%でも品質が低いテスト
-it('covers the function', () => {
+it("covers the function", () => {
   const result = complexFunction(1, 2, 3);
   expect(result).toBeDefined(); // 何も検証していない
 });
 
 // カバレッジ60%でも品質が高いテスト
-it('should calculate correct total with discount', () => {
+it("should calculate correct total with discount", () => {
   const result = complexFunction(100, 2, 0.1);
   expect(result.total).toBe(180);
   expect(result.discount).toBe(20);

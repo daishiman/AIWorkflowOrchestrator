@@ -23,9 +23,9 @@
 
 作成後に表示される以下の情報を安全に保存してください：
 
-| 項目 | 説明 |
-|------|------|
-| Client ID | `{{CLIENT_ID_PLACEHOLDER}}` |
+| 項目          | 説明                            |
+| ------------- | ------------------------------- |
+| Client ID     | `{{CLIENT_ID_PLACEHOLDER}}`     |
 | Client Secret | `{{CLIENT_SECRET_PLACEHOLDER}}` |
 
 > ⚠️ **注意**: Client Secretは一度しか表示されません。
@@ -37,12 +37,12 @@
 
 ### あなたに最適な認証方式
 
-| アプリケーション種別 | 推奨方式 | リンク |
-|-------------------|---------|-------|
-| Webアプリ（サーバーサイド） | Authorization Code | [詳細](#authorization-code-flow) |
-| SPA / モバイルアプリ | Authorization Code + PKCE | [詳細](#authorization-code--pkce) |
-| サーバー間通信 | Client Credentials | [詳細](#client-credentials-flow) |
-| CLIツール | Device Code | [詳細](#device-code-flow) |
+| アプリケーション種別        | 推奨方式                  | リンク                            |
+| --------------------------- | ------------------------- | --------------------------------- |
+| Webアプリ（サーバーサイド） | Authorization Code        | [詳細](#authorization-code-flow)  |
+| SPA / モバイルアプリ        | Authorization Code + PKCE | [詳細](#authorization-code--pkce) |
+| サーバー間通信              | Client Credentials        | [詳細](#client-credentials-flow)  |
+| CLIツール                   | Device Code               | [詳細](#device-code-flow)         |
 
 ---
 
@@ -181,27 +181,30 @@ curl -X POST "{{TOKEN_ENDPOINT}}" \
 <summary>JavaScript (Node.js)</summary>
 
 ```javascript
-const axios = require('axios');
+const axios = require("axios");
 
-const TOKEN_ENDPOINT = '{{TOKEN_ENDPOINT}}';
-const API_BASE_URL = '{{API_BASE_URL}}';
+const TOKEN_ENDPOINT = "{{TOKEN_ENDPOINT}}";
+const API_BASE_URL = "{{API_BASE_URL}}";
 
 // トークン取得
 async function getToken(code) {
-  const response = await axios.post(TOKEN_ENDPOINT, new URLSearchParams({
-    grant_type: 'authorization_code',
-    code,
-    redirect_uri: '{{REDIRECT_URI_EXAMPLE}}',
-    client_id: process.env.CLIENT_ID,
-    client_secret: process.env.CLIENT_SECRET
-  }));
+  const response = await axios.post(
+    TOKEN_ENDPOINT,
+    new URLSearchParams({
+      grant_type: "authorization_code",
+      code,
+      redirect_uri: "{{REDIRECT_URI_EXAMPLE}}",
+      client_id: process.env.CLIENT_ID,
+      client_secret: process.env.CLIENT_SECRET,
+    }),
+  );
   return response.data;
 }
 
 // API呼び出し
 async function callApi(accessToken) {
   const response = await axios.get(`${API_BASE_URL}/{{EXAMPLE_ENDPOINT}}`, {
-    headers: { Authorization: `Bearer ${accessToken}` }
+    headers: { Authorization: `Bearer ${accessToken}` },
   });
   return response.data;
 }
@@ -245,12 +248,12 @@ def call_api(access_token):
 
 ### よくあるエラー
 
-| エラー | 原因 | 解決方法 |
-|--------|------|---------|
-| `invalid_client` | Client IDまたはSecretが不正 | 認証情報を確認 |
-| `invalid_grant` | 認可コードが期限切れまたは使用済み | 再度認可フローを実行 |
-| `invalid_scope` | 許可されていないスコープ | スコープ設定を確認 |
-| `redirect_uri_mismatch` | リダイレクトURIが一致しない | 登録済みURIと完全一致させる |
+| エラー                  | 原因                               | 解決方法                    |
+| ----------------------- | ---------------------------------- | --------------------------- |
+| `invalid_client`        | Client IDまたはSecretが不正        | 認証情報を確認              |
+| `invalid_grant`         | 認可コードが期限切れまたは使用済み | 再度認可フローを実行        |
+| `invalid_scope`         | 許可されていないスコープ           | スコープ設定を確認          |
+| `redirect_uri_mismatch` | リダイレクトURIが一致しない        | 登録済みURIと完全一致させる |
 
 ---
 

@@ -46,7 +46,7 @@ function collectErrorContext(error: Error, errorInfo?: ErrorInfo): ErrorReport {
   return {
     // エラー情報
     message: error.message,
-    stack: error.stack ?? '',
+    stack: error.stack ?? "",
     name: error.name,
 
     // Reactコンポーネント情報
@@ -58,7 +58,7 @@ function collectErrorContext(error: Error, errorInfo?: ErrorInfo): ErrorReport {
     timestamp: new Date().toISOString(),
 
     // アプリケーション情報
-    appVersion: process.env.REACT_APP_VERSION ?? 'unknown',
+    appVersion: process.env.REACT_APP_VERSION ?? "unknown",
     environment: process.env.NODE_ENV,
   };
 }
@@ -169,12 +169,12 @@ class ErrorReporter {
   report(error: Error, context?: Record<string, unknown>) {
     const report: ErrorReport = {
       message: error.message,
-      stack: error.stack ?? '',
+      stack: error.stack ?? "",
       name: error.name,
       url: window.location.href,
       userAgent: navigator.userAgent,
       timestamp: new Date().toISOString(),
-      appVersion: process.env.REACT_APP_VERSION ?? 'unknown',
+      appVersion: process.env.REACT_APP_VERSION ?? "unknown",
       environment: process.env.NODE_ENV,
       extra: context,
     };
@@ -200,20 +200,20 @@ class ErrorReporter {
 
     try {
       await fetch(this.endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ errors: reports }),
       });
     } catch (e) {
       // 送信失敗時はキューに戻す
       this.queue.unshift(...reports);
-      console.error('Failed to send error reports:', e);
+      console.error("Failed to send error reports:", e);
     }
   }
 }
 
 // グローバルインスタンス
-export const errorReporter = new ErrorReporter('/api/errors');
+export const errorReporter = new ErrorReporter("/api/errors");
 
 // Error Boundaryで使用
 class ReportingErrorBoundary extends Component<Props, State> {
@@ -231,13 +231,14 @@ class ReportingErrorBoundary extends Component<Props, State> {
 
 ```typescript
 // 未処理のPromise拒否をキャッチ
-window.addEventListener('unhandledrejection', (event) => {
-  const error = event.reason instanceof Error
-    ? event.reason
-    : new Error(String(event.reason));
+window.addEventListener("unhandledrejection", (event) => {
+  const error =
+    event.reason instanceof Error
+      ? event.reason
+      : new Error(String(event.reason));
 
   errorReporter.report(error, {
-    type: 'unhandledrejection',
+    type: "unhandledrejection",
   });
 
   // 必要に応じてイベントを抑制
@@ -249,11 +250,11 @@ window.addEventListener('unhandledrejection', (event) => {
 
 ```typescript
 // グローバルエラーをキャッチ
-window.addEventListener('error', (event) => {
+window.addEventListener("error", (event) => {
   // スクリプトエラー以外は無視
   if (event.error) {
     errorReporter.report(event.error, {
-      type: 'global',
+      type: "global",
       filename: event.filename,
       lineno: event.lineno,
       colno: event.colno,
@@ -274,11 +275,11 @@ function initializeErrorHandling() {
   });
 
   // グローバルハンドラー
-  window.addEventListener('unhandledrejection', (event) => {
+  window.addEventListener("unhandledrejection", (event) => {
     Sentry.captureException(event.reason);
   });
 
-  window.addEventListener('error', (event) => {
+  window.addEventListener("error", (event) => {
     if (event.error) {
       Sentry.captureException(event.error);
     }
@@ -288,9 +289,9 @@ function initializeErrorHandling() {
   const originalConsoleError = console.error;
   console.error = (...args) => {
     Sentry.addBreadcrumb({
-      category: 'console',
-      message: args.join(' '),
-      level: 'error',
+      category: "console",
+      message: args.join(" "),
+      level: "error",
     });
     originalConsoleError.apply(console, args);
   };
@@ -307,20 +308,23 @@ function sanitizeError(error: ErrorReport): ErrorReport {
 
   // URLからクエリパラメータを除去
   const url = new URL(sanitized.url);
-  url.search = '';
+  url.search = "";
   sanitized.url = url.toString();
 
   // スタックトレースからファイルパスを正規化
   if (sanitized.stack) {
     sanitized.stack = sanitized.stack.replace(
       /\/Users\/[^/]+/g,
-      '/Users/[redacted]'
+      "/Users/[redacted]",
     );
   }
 
   // 機密フィールドを除去
   if (sanitized.extra) {
-    const { password, token, secret, ...safeExtra } = sanitized.extra as Record<string, unknown>;
+    const { password, token, secret, ...safeExtra } = sanitized.extra as Record<
+      string,
+      unknown
+    >;
     sanitized.extra = safeExtra;
   }
 

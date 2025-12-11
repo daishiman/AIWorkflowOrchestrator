@@ -42,12 +42,14 @@ version: 1.0.0
 OpenAPI 3.x仕様を基盤とし、エンドポイントの明確な定義、リクエスト/レスポンスのサンプル、認証フローの説明、エラーハンドリングの網羅的な記述を行います。
 
 **主要な価値**:
+
 - 開発者体験（DX）の向上
 - API利用時の試行錯誤を削減
 - インテグレーション時間の短縮
 - サポートコストの低減
 
 **対象ユーザー**:
+
 - API仕様書を作成するエージェント（@spec-writer, @api-doc-writer）
 - バックエンド開発者
 - APIアーキテクト
@@ -111,9 +113,11 @@ cat .claude/skills/api-documentation-best-practices/templates/openapi-template.y
 ## いつ使うか
 
 ### シナリオ1: REST API仕様書の作成
+
 **状況**: 新しいAPIエンドポイントの仕様書を作成する
 
 **適用条件**:
+
 - [ ] HTTPメソッドとエンドポイントURLを定義する
 - [ ] リクエスト/レスポンスの構造を明確化する
 - [ ] 認証要件を説明する
@@ -121,9 +125,11 @@ cat .claude/skills/api-documentation-best-practices/templates/openapi-template.y
 **推奨アプローチ**: OpenAPI形式 + Markdownサンプル
 
 ### シナリオ2: OpenAPI定義の設計
+
 **状況**: Swagger/OpenAPI形式でAPIを定義する
 
 **適用条件**:
+
 - [ ] OpenAPI 3.x仕様に準拠する必要がある
 - [ ] スキーマの再利用を最大化したい
 - [ ] 自動生成ツールと連携したい
@@ -131,9 +137,11 @@ cat .claude/skills/api-documentation-best-practices/templates/openapi-template.y
 **推奨アプローチ**: コンポーネント分離、参照活用
 
 ### シナリオ3: エラーハンドリングの文書化
+
 **状況**: APIのエラーケースを網羅的に説明する
 
 **適用条件**:
+
 - [ ] 各エラーコードの意味を説明する
 - [ ] エラー時の対応方法を示す
 - [ ] サンプルエラーレスポンスを提供する
@@ -143,15 +151,18 @@ cat .claude/skills/api-documentation-best-practices/templates/openapi-template.y
 ## 前提条件
 
 ### 必要な知識
+
 - [ ] REST APIの基本概念（HTTPメソッド、ステータスコード）
 - [ ] JSON/YAML形式の理解
 - [ ] 認証方式の基礎（OAuth, JWT, API Key）
 
 ### 必要なツール
+
 - Write: ドキュメントの作成
 - Read: 既存APIコードの参照
 
 ### 環境要件
+
 - OpenAPIレンダリング環境（Swagger UI等）
 
 ## ワークフロー
@@ -161,6 +172,7 @@ cat .claude/skills/api-documentation-best-practices/templates/openapi-template.y
 **目的**: APIの全体構造を理解し、ドキュメント構成を設計する
 
 **ステップ**:
+
 1. **エンドポイント一覧の作成**:
    - 全エンドポイントのリストアップ
    - HTTPメソッドとURLパターン
@@ -172,6 +184,7 @@ cat .claude/skills/api-documentation-best-practices/templates/openapi-template.y
    - 関連性の整理
 
 **判断基準**:
+
 - [ ] 全エンドポイントがリストアップされているか？
 - [ ] データモデルが特定されているか？
 
@@ -182,6 +195,7 @@ cat .claude/skills/api-documentation-best-practices/templates/openapi-template.y
 **目的**: 各エンドポイントの完全な仕様を記述する
 
 **ステップ**:
+
 1. **基本情報**:
    - エンドポイントURL
    - HTTPメソッド
@@ -200,6 +214,7 @@ cat .claude/skills/api-documentation-best-practices/templates/openapi-template.y
    - デフォルト値
 
 **判断基準**:
+
 - [ ] すべてのパラメータが定義されているか？
 - [ ] 型と制約が明確か？
 - [ ] 必須/任意が区別されているか？
@@ -211,6 +226,7 @@ cat .claude/skills/api-documentation-best-practices/templates/openapi-template.y
 **目的**: 実際に使用できる具体的なサンプルを提供する
 
 **ステップ**:
+
 1. **成功ケースのサンプル**:
    - リクエストボディ例
    - レスポンス例
@@ -226,6 +242,7 @@ cat .claude/skills/api-documentation-best-practices/templates/openapi-template.y
    - HTTPieコマンド例
 
 **判断基準**:
+
 - [ ] サンプルがコピペで使える形式か？
 - [ ] 成功/失敗両方のケースがあるか？
 - [ ] 実際の値が使用されているか？
@@ -237,6 +254,7 @@ cat .claude/skills/api-documentation-best-practices/templates/openapi-template.y
 **目的**: 認証フローとエラーハンドリングを完全に説明する
 
 **ステップ**:
+
 1. **認証フローの説明**:
    - 認証方式の概要
    - トークン取得手順
@@ -248,6 +266,7 @@ cat .claude/skills/api-documentation-best-practices/templates/openapi-template.y
    - 対処方法
 
 **判断基準**:
+
 - [ ] 認証の手順が明確か？
 - [ ] 全エラーコードが説明されているか？
 - [ ] エラー時の対処法が示されているか？
@@ -294,10 +313,12 @@ cat .claude/skills/api-documentation-best-practices/templates/openapi-template.y
 **症状**: ドキュメント通りにリクエストしてもエラーになる
 
 **原因**:
+
 - ドキュメントと実装の乖離
 - サンプルが不正確
 
 **解決策**:
+
 1. 実際のAPIをテストして確認
 2. サンプルを実行可能な形式で更新
 3. バージョンを明記
@@ -307,10 +328,12 @@ cat .claude/skills/api-documentation-best-practices/templates/openapi-template.y
 **症状**: トークン取得や認証ヘッダーが分からない
 
 **原因**:
+
 - 認証フローの説明不足
 - サンプルがない
 
 **解決策**:
+
 1. 認証の全手順を図解
 2. 具体的なヘッダー形式を提示
 3. トークン取得のサンプルリクエストを追加
@@ -320,10 +343,12 @@ cat .claude/skills/api-documentation-best-practices/templates/openapi-template.y
 **症状**: エラーが発生しても対処方法が不明
 
 **原因**:
+
 - エラーコードの説明不足
 - 対処方法の欠如
 
 **解決策**:
+
 1. エラーコード一覧を作成
 2. 各エラーの原因と対処法を記載
 3. サンプルエラーレスポンスを追加
@@ -337,37 +362,43 @@ cat .claude/skills/api-documentation-best-practices/templates/openapi-template.y
 ## メトリクス
 
 ### サンプル提供率
+
 **測定方法**: サンプル付きエンドポイント数 / 総エンドポイント数
 **目標**: 100%
 
 ### エラーカバレッジ
+
 **測定方法**: 説明済みエラーコード数 / 発生しうるエラーコード数
 **目標**: 100%
 
 ### 認証説明の完全性
+
 **評価基準**: トークン取得、使用、リフレッシュがすべて説明されている
 **目標**: 完全
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版作成 - OpenAPI、エンドポイント、エラードキュメント |
+| バージョン | 日付       | 変更内容                                               |
+| ---------- | ---------- | ------------------------------------------------------ |
+| 1.0.0      | 2025-11-25 | 初版作成 - OpenAPI、エンドポイント、エラードキュメント |
 
 ## 使用上の注意
 
 ### このスキルが得意なこと
+
 - REST APIの仕様書作成
 - OpenAPI定義の設計
 - リクエスト/レスポンス例の作成
 - エラードキュメンテーション
 
 ### このスキルが行わないこと
+
 - API実装
 - OpenAPIファイルの自動生成
 - 実際のAPI検証
 
 ### 参考文献
+
 - **OpenAPI Specification**: https://spec.openapis.org/oas/v3.1.0
 - **API Design Patterns**: https://www.oreilly.com/library/view/api-design-patterns/
 - **『Continuous API Management』**: API管理のベストプラクティス

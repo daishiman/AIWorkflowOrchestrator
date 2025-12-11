@@ -37,6 +37,7 @@ const handleClick = useCallback(() => {
 ```
 
 **適用基準**:
+
 - コールバックを子コンポーネントに渡す
 - 子コンポーネントがReact.memoでラップされている
 - 子コンポーネントのレンダリングコストが高い
@@ -47,16 +48,17 @@ const handleClick = useCallback(() => {
 
 ```typescript
 // ❌ 毎回フィルタリングが実行される
-const filteredItems = items.filter(item => item.active);
+const filteredItems = items.filter((item) => item.active);
 
 // ✅ itemsが変わった時だけ再計算
 const filteredItems = useMemo(
-  () => items.filter(item => item.active),
-  [items]
+  () => items.filter((item) => item.active),
+  [items],
 );
 ```
 
 **適用基準**:
+
 - 計算コストが高い（O(n)以上のループ、複雑な変換）
 - 大きなデータ構造の処理
 - 結果の参照同一性が重要
@@ -73,6 +75,7 @@ const ExpensiveComponent = React.memo(({ data, onUpdate }) => {
 ```
 
 **適用基準**:
+
 - 親の再レンダリングが頻繁
 - コンポーネントのレンダリングコストが高い
 - propsが頻繁に変わらない
@@ -142,7 +145,7 @@ function SearchResults({ query }) {
       limit: 20,
       includeMetadata: true,
     }),
-    [query]
+    [query],
   );
 
   // searchOptionsの参照が安定するので、
@@ -171,14 +174,11 @@ const doubled = count * 2;
 // ❌ filterが漏れている
 const filtered = useMemo(
   () => items.filter(filter),
-  [items] // filterが依存から漏れている
+  [items], // filterが依存から漏れている
 );
 
 // ✅ すべての依存を含む
-const filtered = useMemo(
-  () => items.filter(filter),
-  [items, filter]
-);
+const filtered = useMemo(() => items.filter(filter), [items, filter]);
 ```
 
 ### 3. メモ化のチェーン問題
@@ -209,6 +209,7 @@ const result = useMemo(() => {
 6. 結果を分析
 
 **確認ポイント**:
+
 - Render duration（レンダリング時間）
 - Why did this render?（再レンダリング理由）
 - Ranked chart（最もコストの高いコンポーネント）

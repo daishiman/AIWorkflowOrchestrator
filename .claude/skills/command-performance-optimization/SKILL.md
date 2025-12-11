@@ -36,12 +36,14 @@ version: 1.0.0
 高速で効率的なコマンドを作成できます。
 
 **主要な価値**:
+
 - トークン使用量の削減
 - 実行速度の向上
 - 並列実行の活用
 - 最適なモデル選択
 
 **対象ユーザー**:
+
 - コマンドを作成するエージェント（@command-arch）
 - パフォーマンスを重視する開発者
 - 大規模プロジェクトで効率化したいチーム
@@ -69,9 +71,11 @@ command-performance-optimization/
 ## いつ使うか
 
 ### シナリオ1: トークン削減
+
 **状況**: コマンドのトークン使用量が多すぎる
 
 **適用条件**:
+
 - [ ] description が長すぎる
 - [ ] 本文が冗長
 - [ ] 不要な情報が多い
@@ -79,9 +83,11 @@ command-performance-optimization/
 **期待される成果**: 60-80%のトークン削減
 
 ### シナリオ2: 実行速度改善
+
 **状況**: コマンドの実行が遅い
 
 **適用条件**:
+
 - [ ] 連続処理が多い
 - [ ] 並列化可能な処理がある
 - [ ] 待機時間が長い
@@ -89,9 +95,11 @@ command-performance-optimization/
 **期待される成果**: 実行時間の短縮
 
 ### シナリオ3: モデル選択最適化
+
 **状況**: 適切なモデルを選択したい
 
 **適用条件**:
+
 - [ ] Opusを使う必要がない処理
 - [ ] Haikuで十分な処理
 - [ ] コスト最適化が必要
@@ -134,20 +142,24 @@ description: |
 This command will create a new React component for you.
 
 ## Step 1: Create Component File
+
 In this step, we will create the main component file.
 The file will be created in the components directory.
 The file will be named after the component name you provide.
 
 Create `src/components/$ARGUMENTS/$ARGUMENTS.tsx` with:
+
 - A TypeScript interface for the props
 - A functional component that uses the interface
 - JSDoc comments to document the component
 
 ## Step 2: Create Test File
+
 In this step, we will create a test file for the component.
 The test file will contain basic tests for the component.
 
 Create `src/components/$ARGUMENTS/$ARGUMENTS.test.tsx` with:
+
 - A test for rendering the component
 - A test for props
 - Tests for interactions
@@ -163,12 +175,15 @@ Create `src/components/$ARGUMENTS/$ARGUMENTS.test.tsx` with:
 Component: $ARGUMENTS
 
 ## Create Files
+
 `src/components/$ARGUMENTS/$ARGUMENTS.tsx`:
+
 - TypeScript interface for props
 - Functional component with hooks
 - JSDoc comments
 
 `src/components/$ARGUMENTS/$ARGUMENTS.test.tsx`:
+
 - Render, props, interaction tests
 
 (約40単語、73%削減)
@@ -200,6 +215,7 @@ After that, parse the contents. Finally, validate the parsed data.
 
 ```markdown
 ## Execution
+
 1. Run linter: `pnpm run lint`
 2. Run tests: `pnpm test`
 3. Run type check: `pnpm run typecheck`
@@ -209,18 +225,22 @@ Total time: 5 + 10 + 3 = 18 seconds
 
 **After（並列実行）**:
 
-```markdown
+````markdown
 ## Execution
+
 Run checks in parallel:
+
 ```bash
 pnpm run lint & \
 pnpm test & \
 pnpm run typecheck & \
 wait
 ```
+````
 
 Total time: max(5, 10, 3) = 10 seconds (44% faster)
-```
+
+````
 
 ### パターン2: バッチ処理
 
@@ -232,7 +252,7 @@ for file in src/**/*.js; do
 done
 
 # 100 files × 0.5s = 50 seconds
-```
+````
 
 **After（バッチ）**:
 
@@ -258,27 +278,28 @@ Execute `/build`
 
 ```markdown
 Execute in parallel:
+
 - `/lint` &
 - `/test` &
-Wait for both to complete
-Then execute `/build`
+  Wait for both to complete
+  Then execute `/build`
 ```
 
 ## モデル選択最適化
 
 ### 選択マトリックス
 
-| タスクの複雑度 | 推奨モデル | 理由 |
-|--------------|-----------|------|
-| **シンプル** | Haiku | 高速・低コスト |
-| フォーマット | Haiku | 決定論的タスク |
-| シンプルな変換 | Haiku | パターン認識のみ |
-| **中程度** | Sonnet | バランス |
-| コード生成 | Sonnet | 適度な判断が必要 |
-| レビュー | Sonnet | 文脈理解が必要 |
-| **複雑** | Opus | 高度な推論 |
-| アーキテクチャ設計 | Opus | 複雑な判断 |
-| 複雑なリファクタリング | Opus | 深い理解が必要 |
+| タスクの複雑度         | 推奨モデル | 理由             |
+| ---------------------- | ---------- | ---------------- |
+| **シンプル**           | Haiku      | 高速・低コスト   |
+| フォーマット           | Haiku      | 決定論的タスク   |
+| シンプルな変換         | Haiku      | パターン認識のみ |
+| **中程度**             | Sonnet     | バランス         |
+| コード生成             | Sonnet     | 適度な判断が必要 |
+| レビュー               | Sonnet     | 文脈理解が必要   |
+| **複雑**               | Opus       | 高度な推論       |
+| アーキテクチャ設計     | Opus       | 複雑な判断       |
+| 複雑なリファクタリング | Opus       | 深い理解が必要   |
 
 ### 実装例
 
@@ -299,9 +320,8 @@ Run: `npx prettier --write "src/**/*.{js,ts}"`
 ```yaml
 ---
 description: Review code for best practices
-model: claude-sonnet-4-5-20250929  # デフォルト（Sonnet）
+model: claude-sonnet-4-5-20250929 # デフォルト（Sonnet）
 ---
-
 # Code Review
 Analyze code quality, patterns, potential issues
 ```
@@ -311,9 +331,8 @@ Analyze code quality, patterns, potential issues
 ```yaml
 ---
 description: Design microservices architecture
-model: claude-opus-4-20250514  # Opus が必要
+model: claude-opus-4-20250514 # Opus が必要
 ---
-
 # Architecture Design
 Evaluate requirements, design services, plan integration
 ```
@@ -324,6 +343,7 @@ Evaluate requirements, design services, plan integration
 ## Model Selection
 
 Based on $ARGUMENTS complexity:
+
 - If "simple" → Use Haiku (fast, cheap)
 - If "standard" → Use Sonnet (balanced)
 - If "complex" → Use Opus (thorough)
@@ -339,7 +359,9 @@ Analyze task automatically and select appropriate model
 
 ```markdown
 ## Preparation
+
 Load all configuration files:
+
 - package.json
 - tsconfig.json
 - .eslintrc
@@ -353,7 +375,9 @@ Load all configuration files:
 
 ```markdown
 ## Lazy Loading
+
 Load configuration only when needed:
+
 - If linting → Load .eslintrc
 - If testing → Load jest.config.js
 - etc.
@@ -363,8 +387,9 @@ Load configuration only when needed:
 
 ### 2. キャッシングの活用
 
-```markdown
+````markdown
 ## Step 1: Check Cache
+
 ```bash
 CACHE_FILE=".claude/cache/$COMMAND_NAME"
 
@@ -380,10 +405,13 @@ if [ -f "$CACHE_FILE" ]; then
   fi
 fi
 ```
+````
 
 ## Step 2: Execute (if cache miss)
+
 Run command and cache results
-```
+
+````
 
 ### 3. 早期終了
 
@@ -398,12 +426,13 @@ Run command and cache results
 5. Check files
 
 (All checks, even if arg1 fails)
-```
+````
 
 **After（早期終了）**:
 
 ```markdown
 ## Validation
+
 Check arg1 → Fail fast if invalid
 Check arg2 → Fail fast if invalid
 Check arg3 → Fail fast if invalid
@@ -440,10 +469,11 @@ echo "✅ Done"
 
 ### ベンチマーク
 
-```markdown
+````markdown
 ## Performance Metrics
 
 Add timing to your command:
+
 ```bash
 START_TIME=$(date +%s)
 
@@ -454,6 +484,7 @@ DURATION=$((END_TIME - START_TIME))
 
 echo "⏱️  Execution time: ${DURATION}s"
 ```
+````
 
 ### 最適化前後の比較
 
@@ -461,16 +492,19 @@ echo "⏱️  Execution time: ${DURATION}s"
 ## Optimization Results
 
 Before:
+
 - Token usage: 5,000 tokens
 - Execution time: 30 seconds
 - Model: Opus
 
 After:
+
 - Token usage: 1,200 tokens (76% reduction)
 - Execution time: 8 seconds (73% faster)
 - Model: Sonnet
 
 Improvements:
+
 - 4x faster execution
 - 10x cheaper (Opus → Sonnet + fewer tokens)
 ```
@@ -508,18 +542,23 @@ Improvements:
 ## 詳細リソースの参照
 
 ### トークン最適化
+
 詳細は `resources/token-optimization.md` を参照
 
 ### 並列実行
+
 詳細は `resources/parallel-execution.md` を参照
 
 ### モデル選択
+
 詳細は `resources/model-selection.md` を参照
 
 ### 実行速度
+
 詳細は `resources/execution-speed.md` を参照
 
 ### テンプレート
+
 - 最適化コマンド: `templates/optimized-command-template.md`
 - 並列実行: `templates/parallel-execution-template.md`
 

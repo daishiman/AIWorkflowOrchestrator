@@ -4,13 +4,13 @@
 
 ### 一般的な制限タイプ
 
-| タイプ | 説明 | 例 |
-|-------|------|---|
-| リクエスト/秒 | 1秒あたりの最大リクエスト数 | 10 req/sec |
-| リクエスト/分 | 1分あたりの最大リクエスト数 | 60 req/min |
+| タイプ        | 説明                        | 例             |
+| ------------- | --------------------------- | -------------- |
+| リクエスト/秒 | 1秒あたりの最大リクエスト数 | 10 req/sec     |
+| リクエスト/分 | 1分あたりの最大リクエスト数 | 60 req/min     |
 | リクエスト/日 | 1日あたりの最大リクエスト数 | 10,000 req/day |
-| 同時接続数 | 同時接続の最大数 | 5 connections |
-| バースト制限 | 短時間の高負荷制限 | 100 req/10sec |
+| 同時接続数    | 同時接続の最大数            | 5 connections  |
+| バースト制限  | 短時間の高負荷制限          | 100 req/10sec  |
 
 ### レスポンスヘッダーの読み取り
 
@@ -18,13 +18,13 @@
 function parseRateLimitHeaders(response) {
   return {
     // 制限値
-    limit: parseInt(response.headers['x-ratelimit-limit'], 10),
+    limit: parseInt(response.headers["x-ratelimit-limit"], 10),
     // 残りリクエスト数
-    remaining: parseInt(response.headers['x-ratelimit-remaining'], 10),
+    remaining: parseInt(response.headers["x-ratelimit-remaining"], 10),
     // リセット時刻（UNIX timestamp）
-    reset: parseInt(response.headers['x-ratelimit-reset'], 10),
+    reset: parseInt(response.headers["x-ratelimit-reset"], 10),
     // リトライまでの待機秒数
-    retryAfter: parseInt(response.headers['retry-after'], 10)
+    retryAfter: parseInt(response.headers["retry-after"], 10),
   };
 }
 ```
@@ -90,7 +90,7 @@ class FixedIntervalRetry {
   }
 
   sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
 ```
@@ -114,14 +114,15 @@ class AdaptiveRetry {
     } else if (recentFailureRate > 0.5) {
       return 10000; // 50%超失敗時は10秒待機
     } else if (recentFailureRate > 0.2) {
-      return 3000;  // 20%超失敗時は3秒待機
+      return 3000; // 20%超失敗時は3秒待機
     }
-    return 1000;    // 通常時は1秒待機
+    return 1000; // 通常時は1秒待機
   }
 
   calculateFailureRate() {
-    const recent = [...this.failureHistory, ...this.successHistory]
-      .slice(-this.windowSize);
+    const recent = [...this.failureHistory, ...this.successHistory].slice(
+      -this.windowSize,
+    );
     if (recent.length === 0) return 0;
     const failures = this.failureHistory.slice(-this.windowSize).length;
     return failures / recent.length;
@@ -140,8 +141,8 @@ class AdaptiveRetry {
   cleanup() {
     // 古い履歴を削除
     const cutoff = Date.now() - 60000;
-    this.successHistory = this.successHistory.filter(t => t > cutoff);
-    this.failureHistory = this.failureHistory.filter(t => t > cutoff);
+    this.successHistory = this.successHistory.filter((t) => t > cutoff);
+    this.failureHistory = this.failureHistory.filter((t) => t > cutoff);
   }
 }
 ```
@@ -153,17 +154,17 @@ class CircuitBreaker {
   constructor(options = {}) {
     this.failureThreshold = options.failureThreshold || 5;
     this.resetTimeout = options.resetTimeout || 30000;
-    this.state = 'CLOSED'; // CLOSED, OPEN, HALF_OPEN
+    this.state = "CLOSED"; // CLOSED, OPEN, HALF_OPEN
     this.failures = 0;
     this.lastFailure = null;
   }
 
   async execute(fn) {
-    if (this.state === 'OPEN') {
+    if (this.state === "OPEN") {
       if (Date.now() - this.lastFailure > this.resetTimeout) {
-        this.state = 'HALF_OPEN';
+        this.state = "HALF_OPEN";
       } else {
-        throw new Error('Circuit is OPEN');
+        throw new Error("Circuit is OPEN");
       }
     }
 
@@ -179,14 +180,14 @@ class CircuitBreaker {
 
   onSuccess() {
     this.failures = 0;
-    this.state = 'CLOSED';
+    this.state = "CLOSED";
   }
 
   onFailure() {
     this.failures++;
     this.lastFailure = Date.now();
     if (this.failures >= this.failureThreshold) {
-      this.state = 'OPEN';
+      this.state = "OPEN";
     }
   }
 
@@ -194,7 +195,7 @@ class CircuitBreaker {
     return {
       state: this.state,
       failures: this.failures,
-      lastFailure: this.lastFailure
+      lastFailure: this.lastFailure,
     };
   }
 }
@@ -255,13 +256,13 @@ class RequestQueue {
 
 ### 主要APIの制限
 
-| プロバイダー | 制限 | 備考 |
-|-------------|------|------|
-| GitHub | 5,000 req/hour | 認証済み |
-| Slack | 1 req/sec (Web API) | メソッドによる |
-| Google Drive | 12,000 req/min | プロジェクト単位 |
-| Twitter | 900 req/15min | エンドポイント別 |
-| OpenAI | 3 req/min (無料) | プラン依存 |
+| プロバイダー | 制限                | 備考             |
+| ------------ | ------------------- | ---------------- |
+| GitHub       | 5,000 req/hour      | 認証済み         |
+| Slack        | 1 req/sec (Web API) | メソッドによる   |
+| Google Drive | 12,000 req/min      | プロジェクト単位 |
+| Twitter      | 900 req/15min       | エンドポイント別 |
+| OpenAI       | 3 req/min (無料)    | プラン依存       |
 
 ### プロバイダー別設定例
 
@@ -271,20 +272,20 @@ const providerConfigs = {
     maxRetries: 3,
     initialDelay: 1000,
     backoffFactor: 2,
-    maxConcurrent: 10
+    maxConcurrent: 10,
   },
   slack: {
     maxRetries: 5,
     initialDelay: 1100, // 1 req/secに準拠
     backoffFactor: 1.5,
-    maxConcurrent: 1
+    maxConcurrent: 1,
   },
   openai: {
     maxRetries: 3,
     initialDelay: 20000, // 3 req/minに準拠
     backoffFactor: 2,
-    maxConcurrent: 1
-  }
+    maxConcurrent: 1,
+  },
 };
 ```
 
@@ -297,7 +298,7 @@ class RateLimitMonitor {
     this.metrics = {
       totalRequests: 0,
       rateLimitHits: 0,
-      lastReset: Date.now()
+      lastReset: Date.now(),
     };
   }
 
@@ -318,14 +319,16 @@ class RateLimitMonitor {
   }
 
   alert() {
-    console.warn(`[RateLimitMonitor] Hit rate ${(this.getHitRate() * 100).toFixed(1)}% exceeds threshold ${this.threshold * 100}%`);
+    console.warn(
+      `[RateLimitMonitor] Hit rate ${(this.getHitRate() * 100).toFixed(1)}% exceeds threshold ${this.threshold * 100}%`,
+    );
   }
 
   reset() {
     this.metrics = {
       totalRequests: 0,
       rateLimitHits: 0,
-      lastReset: Date.now()
+      lastReset: Date.now(),
     };
   }
 }

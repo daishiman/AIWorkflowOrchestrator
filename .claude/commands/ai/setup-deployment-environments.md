@@ -63,6 +63,7 @@ model: sonnet
    - トラブルシューティングガイド
 
 **期待成果物**:
+
 - `railway.json` 設定ファイル
 - 環境変数リスト（`.env.example`）
 - デプロイドキュメント（`docs/deployment.md`）
@@ -91,6 +92,7 @@ model: sonnet
    - ロールバック用の情報記録
 
 **期待成果物**:
+
 - GitHub Environments設定ガイド（`.github/ENVIRONMENTS.md`）
 - 承認フロー設定手順
 
@@ -99,19 +101,23 @@ model: sonnet
 エージェントが以下のスキルを必要に応じて参照:
 
 **必須スキル（devops-eng）**:
+
 - `.claude/skills/deployment-environments-gha/SKILL.md`: 環境設定パターン
 - `.claude/skills/railway-integration/SKILL.md`: Railway統合設定
 
 **必須スキル（gha-workflow-architect）**:
+
 - `.claude/skills/approval-workflows/SKILL.md`: 承認フロー設計
 
 **条件付きスキル**:
+
 - `.claude/skills/secret-management/SKILL.md`: シークレット管理が複雑な場合
 - `.claude/skills/environment-variables-management/SKILL.md`: 環境変数が多い場合
 
 ## Phase 4: 検証と完了
 
 **検証基準**:
+
 - ✅ `railway.json` が正しく設定されている
 - ✅ 環境変数リストが作成されている
 - ✅ GitHub Environments設定ガイドが明確

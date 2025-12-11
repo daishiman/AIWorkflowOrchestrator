@@ -178,7 +178,7 @@ export async function POST(request: Request) {
 export async function updateWorkflow(
   workflowId: string,
   userId: string,
-  data: UpdateWorkflowDTO
+  data: UpdateWorkflowDTO,
 ): Promise<Workflow> {
   const workflow = await db.workflows.findOne({ id: workflowId });
 
@@ -198,7 +198,7 @@ export async function updateWorkflow(
 ```typescript
 export function hasPermission(
   session: JWTPayload | null,
-  permission: Permission
+  permission: Permission,
 ): boolean {
   if (!session) {
     return false;

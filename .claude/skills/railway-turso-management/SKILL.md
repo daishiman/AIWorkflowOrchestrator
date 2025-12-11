@@ -434,7 +434,7 @@ private secretPatterns = [
 /sk*live*[0-9a-zA-Z]{24,}/, // Stripe
 /-----BEGIN ._ PRIVATE KEY-----/, // Private Key
 /AKIA[0-9A-Z]{16}/, // AWS Access Key
-/eyJhbGc[a-zA-Z0-9_-]_\.[a-zA-Z0-9_-]_\.[a-zA-Z0-9_-]_/, // JWT tokens
+/eyJhbGc[a-zA-Z0-9_-]_\.[a-zA-Z0-9_-]_\.[a-zA-Z0-9_-]\_/, // JWT tokens
 /libsql:\/\/[a-zA-Z0-9-]+\.turso\.io/, // Turso URL
 ];
 

@@ -15,23 +15,39 @@
  *   - ベストプラクティスチェック
  */
 
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
+import { readFileSync } from "fs";
+import { resolve } from "path";
 
 // 検証結果
 const results = {
   errors: [],
   warnings: [],
-  info: []
+  info: [],
 };
 
 // 有効なJSON Schemaタイプ
-const VALID_TYPES = ['string', 'number', 'integer', 'boolean', 'array', 'object', 'null'];
+const VALID_TYPES = [
+  "string",
+  "number",
+  "integer",
+  "boolean",
+  "array",
+  "object",
+  "null",
+];
 
 // 有効なフォーマット
 const VALID_FORMATS = [
-  'date-time', 'date', 'time', 'email', 'uri', 'uuid',
-  'hostname', 'ipv4', 'ipv6', 'regex'
+  "date-time",
+  "date",
+  "time",
+  "email",
+  "uri",
+  "uuid",
+  "hostname",
+  "ipv4",
+  "ipv6",
+  "regex",
 ];
 
 /**
@@ -40,10 +56,10 @@ const VALID_FORMATS = [
 function loadFile(filePath) {
   try {
     const absolutePath = resolve(filePath);
-    const content = readFileSync(absolutePath, 'utf-8');
+    const content = readFileSync(absolutePath, "utf-8");
     return JSON.parse(content);
   } catch (error) {
-    if (error.code === 'ENOENT') {
+    if (error.code === "ENOENT") {
       throw new Error(`ファイルが見つかりません: ${filePath}`);
     }
     if (error instanceof SyntaxError) {
@@ -62,7 +78,7 @@ function validateToolName(name) {
     return false;
   }
 
-  if (typeof name !== 'string') {
+  if (typeof name !== "string") {
     results.errors.push("'name' は文字列である必要があります");
     return false;
   }
@@ -84,7 +100,7 @@ function validateDescription(description) {
     return true;
   }
 
-  if (typeof description !== 'string') {
+  if (typeof description !== "string") {
     results.errors.push("'description' は文字列である必要があります");
     return false;
   }
@@ -109,32 +125,44 @@ function validatePropertyType(propName, property, path) {
 
   // 配列形式の型（Union type）
   if (Array.isArray(property.type)) {
-    const invalidTypes = property.type.filter(t => !VALID_TYPES.includes(t));
+    const invalidTypes = property.type.filter((t) => !VALID_TYPES.includes(t));
     if (invalidTypes.length > 0) {
-      results.errors.push(`[${fullPath}] 無効な型: ${invalidTypes.join(', ')}`);
+      results.errors.push(`[${fullPath}] 無効な型: ${invalidTypes.join(", ")}`);
       return false;
     }
     return true;
   }
 
   if (!VALID_TYPES.includes(property.type)) {
-    results.errors.push(`[${fullPath}] 無効な型 '${property.type}'。有効: ${VALID_TYPES.join(', ')}`);
+    results.errors.push(
+      `[${fullPath}] 無効な型 '${property.type}'。有効: ${VALID_TYPES.join(", ")}`,
+    );
     return false;
   }
 
   // 追加の型固有検証
-  if (property.type === 'string' && property.format) {
+  if (property.type === "string" && property.format) {
     if (!VALID_FORMATS.includes(property.format)) {
-      results.warnings.push(`[${fullPath}] 非標準フォーマット '${property.format}'`);
+      results.warnings.push(
+        `[${fullPath}] 非標準フォーマット '${property.format}'`,
+      );
     }
   }
 
-  if (property.type === 'array' && !property.items) {
-    results.warnings.push(`[${fullPath}] 配列の 'items' スキーマが推奨されます`);
+  if (property.type === "array" && !property.items) {
+    results.warnings.push(
+      `[${fullPath}] 配列の 'items' スキーマが推奨されます`,
+    );
   }
 
-  if (property.type === 'object' && !property.properties && !property.additionalProperties) {
-    results.warnings.push(`[${fullPath}] オブジェクトの 'properties' または 'additionalProperties' が推奨されます`);
+  if (
+    property.type === "object" &&
+    !property.properties &&
+    !property.additionalProperties
+  ) {
+    results.warnings.push(
+      `[${fullPath}] オブジェクトの 'properties' または 'additionalProperties' が推奨されます`,
+    );
   }
 
   return true;
@@ -143,7 +171,7 @@ function validatePropertyType(propName, property, path) {
 /**
  * プロパティを検証
  */
-function validateProperty(propName, property, path = '') {
+function validateProperty(propName, property, path = "") {
   let valid = true;
   const fullPath = path ? `${path}.${propName}` : propName;
 
@@ -155,16 +183,18 @@ function validateProperty(propName, property, path = '') {
   }
 
   // ネストされたプロパティの検証
-  if (property.type === 'object' && property.properties) {
-    for (const [nestedName, nestedProp] of Object.entries(property.properties)) {
+  if (property.type === "object" && property.properties) {
+    for (const [nestedName, nestedProp] of Object.entries(
+      property.properties,
+    )) {
       valid = validateProperty(nestedName, nestedProp, fullPath) && valid;
     }
   }
 
   // 配列アイテムの検証
-  if (property.type === 'array' && property.items) {
-    if (typeof property.items === 'object' && !Array.isArray(property.items)) {
-      valid = validateProperty('items', property.items, fullPath) && valid;
+  if (property.type === "array" && property.items) {
+    if (typeof property.items === "object" && !Array.isArray(property.items)) {
+      valid = validateProperty("items", property.items, fullPath) && valid;
     }
   }
 
@@ -176,11 +206,13 @@ function validateProperty(propName, property, path = '') {
  */
 function validateInputSchema(inputSchema) {
   if (!inputSchema) {
-    results.warnings.push("'inputSchema' が未定義です（パラメータなしのツール）");
+    results.warnings.push(
+      "'inputSchema' が未定義です（パラメータなしのツール）",
+    );
     return true;
   }
 
-  if (inputSchema.type !== 'object') {
+  if (inputSchema.type !== "object") {
     results.errors.push("'inputSchema.type' は 'object' である必要があります");
     return false;
   }
@@ -203,7 +235,9 @@ function validateInputSchema(inputSchema) {
       const properties = inputSchema.properties || {};
       for (const reqProp of inputSchema.required) {
         if (!properties[reqProp]) {
-          results.errors.push(`必須パラメータ '${reqProp}' が 'properties' に定義されていません`);
+          results.errors.push(
+            `必須パラメータ '${reqProp}' が 'properties' に定義されていません`,
+          );
           valid = false;
         }
       }
@@ -233,31 +267,31 @@ function validateToolDefinition(definition) {
  * 結果を表示
  */
 function printResults() {
-  console.log('\n=== ツールスキーマ検証結果 ===\n');
+  console.log("\n=== ツールスキーマ検証結果 ===\n");
 
   if (results.errors.length > 0) {
-    console.log('❌ エラー:');
-    results.errors.forEach(err => console.log(`   - ${err}`));
-    console.log('');
+    console.log("❌ エラー:");
+    results.errors.forEach((err) => console.log(`   - ${err}`));
+    console.log("");
   }
 
   if (results.warnings.length > 0) {
-    console.log('⚠️  警告:');
-    results.warnings.forEach(warn => console.log(`   - ${warn}`));
-    console.log('');
+    console.log("⚠️  警告:");
+    results.warnings.forEach((warn) => console.log(`   - ${warn}`));
+    console.log("");
   }
 
   if (results.info.length > 0) {
-    console.log('ℹ️  情報:');
-    results.info.forEach(info => console.log(`   - ${info}`));
-    console.log('');
+    console.log("ℹ️  情報:");
+    results.info.forEach((info) => console.log(`   - ${info}`));
+    console.log("");
   }
 
   if (results.errors.length === 0) {
-    console.log('✅ 検証成功: ツール定義は有効です');
+    console.log("✅ 検証成功: ツール定義は有効です");
     return true;
   } else {
-    console.log('❌ 検証失敗: エラーを修正してください');
+    console.log("❌ 検証失敗: エラーを修正してください");
     return false;
   }
 }
@@ -269,8 +303,10 @@ function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.log('使用方法: node validate-tool-schema.mjs <tool-definition-file>');
-    console.log('例: node validate-tool-schema.mjs tool-definition.json');
+    console.log(
+      "使用方法: node validate-tool-schema.mjs <tool-definition-file>",
+    );
+    console.log("例: node validate-tool-schema.mjs tool-definition.json");
     process.exit(1);
   }
 

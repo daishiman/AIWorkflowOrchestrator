@@ -217,7 +217,7 @@ cat .claude/skills/dependency-auditing/templates/vulnerability-assessment-templa
 
 | ツール | コマンド     | 出力形式      |
 | ------ | ------------ | ------------- |
-| pnpm    | `pnpm audit`  | テキスト/JSON |
+| pnpm   | `pnpm audit` | テキスト/JSON |
 | pnpm   | `pnpm audit` | テキスト/JSON |
 | yarn   | `yarn audit` | テキスト/JSON |
 
@@ -307,13 +307,11 @@ cat .claude/skills/dependency-auditing/templates/vulnerability-assessment-templa
 ### すべきこと
 
 1. **定期的な監査**:
-
    - 最低週次での自動監査
    - 依存関係変更時の即時監査
    - リリース前の必須監査
 
 2. **多層的なセキュリティ**:
-
    - 複数のツールを組み合わせる
    - 手動レビューと自動化の併用
    - 深い依存関係まで検査
@@ -326,12 +324,10 @@ cat .claude/skills/dependency-auditing/templates/vulnerability-assessment-templa
 ### 避けるべきこと
 
 1. **脆弱性の無視**:
-
    - ❌ 「うちには関係ない」と決めつける
    - ✅ 影響範囲を正確に評価してから判断
 
 2. **過度な依存**:
-
    - ❌ 自動ツールだけに頼る
    - ✅ 手動レビューと組み合わせる
 

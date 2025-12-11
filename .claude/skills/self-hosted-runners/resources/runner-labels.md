@@ -28,7 +28,7 @@ GitHub が自動的に付与するラベル:
 - ARM64
 
 # ランナータイプ
-- self-hosted  # すべてのセルフホストランナーに付与
+- self-hosted # すべてのセルフホストランナーに付与
 ```
 
 ### カスタムラベル（ユーザー定義）
@@ -408,11 +408,11 @@ GPU Runners:
 
 ## Available Runner Labels
 
-| Label | Description | Hardware | Use Cases |
-|-------|-------------|----------|-----------|
-| `production` | Production environment | 16 core / 32GB | Production deploys |
-| `gpu-training` | ML training | 8 core / Tesla V100 | Model training |
-| `ephemeral` | Disposable runner | 4 core / 8GB | Security-sensitive builds |
+| Label          | Description            | Hardware            | Use Cases                 |
+| -------------- | ---------------------- | ------------------- | ------------------------- |
+| `production`   | Production environment | 16 core / 32GB      | Production deploys        |
+| `gpu-training` | ML training            | 8 core / Tesla V100 | Model training            |
+| `ephemeral`    | Disposable runner      | 4 core / 8GB        | Security-sensitive builds |
 ```
 
 ### 4. 定期的なレビュー
@@ -441,7 +441,8 @@ gh api graphql -f query='
 # 問題: "No runner matching the specified labels was found"
 
 # 確認1: ラベルの正確性
-runs-on: [self-hosted, linux, gpu]  # すべてのラベルが必要
+runs-on: [self-hosted, linux, gpu] # すべてのラベルが必要
+
 
 # 確認2: ランナーの状態
 # GitHub UI でランナーがオンラインか確認

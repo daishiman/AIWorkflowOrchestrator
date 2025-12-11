@@ -258,7 +258,7 @@ async function simpleUpload(filePath: string, url: string) {
 async function uploadWithProgress(
   filePath: string,
   url: string,
-  onProgress: (progress: UploadProgress) => void
+  onProgress: (progress: UploadProgress) => void,
 ) {
   const fileSize = fs.statSync(filePath).size;
   const formData = new FormData();
@@ -296,7 +296,7 @@ async function uploadWithProgress(
 async function chunkedUpload(
   filePath: string,
   url: string,
-  chunkSize: number = 5 * 1024 * 1024
+  chunkSize: number = 5 * 1024 * 1024,
 ) {
   const fileSize = fs.statSync(filePath).size;
   const totalChunks = Math.ceil(fileSize / chunkSize);
@@ -466,11 +466,9 @@ cat .claude/skills/multipart-upload/templates/chunk-uploader-template.ts
 ## 参考文献
 
 - **『Computer Networks』** Andrew S. Tanenbaum 著
-
   - Chapter 3: The Data Link Layer - エラー検出とフロー制御
 
 - **『Web を支える技術』** 山本陽平著
-
   - 第 4 章: HTTP の世界観 - マルチパートの仕様
 
 - **RFC 7578**: multipart/form-data 仕様

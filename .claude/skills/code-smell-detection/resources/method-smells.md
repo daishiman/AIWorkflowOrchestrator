@@ -3,9 +3,11 @@
 ## 1. Long Method（長いメソッド）
 
 ### 説明
+
 一つのメソッドに多くの処理が詰め込まれている状態。
 
 ### 検出基準
+
 - 20行以上のメソッド
 - ネストが3段以上
 - 複数の異なる処理を含む
@@ -17,7 +19,7 @@
 async function processOrder(orderId: string): Promise<void> {
   // 注文取得
   const order = await db.orders.findById(orderId);
-  if (!order) throw new Error('Order not found');
+  if (!order) throw new Error("Order not found");
 
   // 在庫チェック
   for (const item of order.items) {
@@ -31,29 +33,33 @@ async function processOrder(orderId: string): Promise<void> {
   for (const item of order.items) {
     await db.inventory.update({
       where: { productId: item.productId },
-      data: { quantity: { decrement: item.quantity } }
+      data: { quantity: { decrement: item.quantity } },
     });
   }
 
   // 支払い処理
   const customer = await db.customers.findById(order.customerId);
   const paymentMethod = await db.paymentMethods.findFirst({
-    where: { customerId: customer.id, isDefault: true }
+    where: { customerId: customer.id, isDefault: true },
   });
   await stripe.charges.create({
     amount: order.total,
-    source: paymentMethod.stripeId
+    source: paymentMethod.stripeId,
   });
 
   // ステータス更新
   await db.orders.update({
     where: { id: orderId },
-    data: { status: 'processing' }
+    data: { status: "processing" },
   });
 
   // 通知送信
-  await sendEmail(customer.email, 'Order Confirmed', `Your order ${orderId} has been confirmed.`);
-  await sendPushNotification(customer.deviceToken, 'Order Confirmed');
+  await sendEmail(
+    customer.email,
+    "Order Confirmed",
+    `Your order ${orderId} has been confirmed.`,
+  );
+  await sendPushNotification(customer.deviceToken, "Order Confirmed");
 }
 ```
 
@@ -66,13 +72,13 @@ async function processOrder(orderId: string): Promise<void> {
   await validateStock(order);
   await reserveStock(order);
   await processPayment(order);
-  await updateOrderStatus(order, 'processing');
+  await updateOrderStatus(order, "processing");
   await notifyCustomer(order);
 }
 
 async function getOrder(orderId: string): Promise<Order> {
   const order = await db.orders.findById(orderId);
-  if (!order) throw new Error('Order not found');
+  if (!order) throw new Error("Order not found");
   return order;
 }
 
@@ -93,9 +99,11 @@ async function validateStock(order: Order): Promise<void> {
 ## 2. Long Parameter List（長いパラメータリスト）
 
 ### 説明
+
 メソッドのパラメータが多すぎる状態。
 
 ### 検出基準
+
 - 4つ以上のパラメータ
 - 似た型のパラメータが連続
 - パラメータの順序を覚える必要がある
@@ -115,7 +123,7 @@ function createUser(
   country: string,
   postalCode: string,
   dateOfBirth: Date,
-  role: string
+  role: string,
 ): User {
   // ...
 }
@@ -149,9 +157,9 @@ function createUser(params: CreateUserParams): User {
 
 // 呼び出し
 createUser({
-  name: { first: 'John', last: 'Doe' },
-  email: 'john@example.com',
-  password: 'secret',
+  name: { first: "John", last: "Doe" },
+  email: "john@example.com",
+  password: "secret",
 });
 ```
 
@@ -160,9 +168,11 @@ createUser({
 ## 3. Flag Argument（フラグ引数）
 
 ### 説明
+
 Boolean引数によってメソッドの動作が分岐する。
 
 ### 検出基準
+
 - boolean型のパラメータ
 - パラメータ値によって大きく異なる処理
 
@@ -179,7 +189,7 @@ function getUsers(includeInactive: boolean): User[] {
 }
 
 // 呼び出し側で意図が不明
-getUsers(true);  // ???
+getUsers(true); // ???
 getUsers(false); // ???
 ```
 
@@ -205,9 +215,11 @@ getAllUsers();
 ## 4. Speculative Generality（推測的汎用化）
 
 ### 説明
+
 「将来必要になるかもしれない」という理由で追加された未使用の機能。
 
 ### 検出基準
+
 - 使用されていないパラメータ
 - 使用されていないメソッドオーバーロード
 - 過度な抽象化
@@ -221,8 +233,8 @@ interface DataProcessor<T, R, M> {
   processAsync(data: T, options?: ProcessOptions<M>): Promise<R>;
   processBatch(data: T[], options?: BatchOptions<M>): R[];
   processBatchAsync(data: T[], options?: BatchOptions<M>): Promise<R[]>;
-  transform(data: T): T;  // 使われていない
-  validate(data: T): boolean;  // 使われていない
+  transform(data: T): T; // 使われていない
+  validate(data: T): boolean; // 使われていない
 }
 
 // 実際には1つのメソッドしか使っていない
@@ -254,9 +266,11 @@ class UpperCaseProcessor implements StringProcessor {
 ## 5. Dead Code（死んだコード）
 
 ### 説明
+
 実行されることのないコード。
 
 ### 検出基準
+
 - 到達不能なコード
 - 未使用の変数・関数
 - コメントアウトされたコード
@@ -272,7 +286,7 @@ function calculate(value: number): number {
   return value * 2;
 
   // 到達不能
-  console.log('Done'); // Dead code
+  console.log("Done"); // Dead code
 }
 
 // 未使用の関数
@@ -303,9 +317,11 @@ function calculate(value: number): number {
 ## 6. Message Chains（メッセージチェーン）
 
 ### 説明
+
 オブジェクトを取得するために連鎖的にメソッドを呼び出す。
 
 ### 検出基準
+
 - 3つ以上のドット演算子の連鎖
 - 中間オブジェクトへの依存
 
@@ -316,10 +332,7 @@ function calculate(value: number): number {
 const managerName = company.getDepartment().getManager().getName();
 
 // または
-const city = order
-  .getCustomer()
-  .getShippingAddress()
-  .getCity();
+const city = order.getCustomer().getShippingAddress().getCity();
 ```
 
 ### リファクタリング

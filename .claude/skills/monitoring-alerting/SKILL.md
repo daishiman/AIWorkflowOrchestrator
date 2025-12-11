@@ -149,7 +149,6 @@ cat .claude/skills/monitoring-alerting/templates/structured-logger-template.ts
 **ステップ**:
 
 1. **ビジネス要件**:
-
    - SLO/SLI 目標
    - 対応時間要件
    - ステークホルダーの期待
@@ -174,7 +173,6 @@ cat .claude/skills/monitoring-alerting/templates/structured-logger-template.ts
 **ステップ**:
 
 1. **ゴールデンシグナル**:
-
    - レイテンシー
    - トラフィック
    - エラー率
@@ -198,7 +196,6 @@ cat .claude/skills/monitoring-alerting/templates/structured-logger-template.ts
 **ステップ**:
 
 1. **閾値設定**:
-
    - 警告レベル
    - 重大レベル
    - 自動復旧
@@ -222,7 +219,6 @@ cat .claude/skills/monitoring-alerting/templates/structured-logger-template.ts
 **ステップ**:
 
 1. **フォーマット**:
-
    - 構造化ログ（JSON）
    - 必須フィールド
    - 相関 ID
@@ -280,12 +276,10 @@ SLA (Service Level Agreement): 契約
 ### すべきこと
 
 1. **ゴールデンシグナルの監視**:
-
    - 4 つのシグナルを必ず監視
    - ダッシュボードで可視化
 
 2. **構造化ログの実装**:
-
    - JSON フォーマット
    - 相関 ID の付与
    - 適切なログレベル
@@ -298,12 +292,10 @@ SLA (Service Level Agreement): 契約
 ### 避けるべきこと
 
 1. **アラート疲れ**:
-
    - ❌ 無意味なアラートの乱発
    - ✅ アクション可能なアラートのみ
 
 2. **情報の過剰収集**:
-
    - ❌ すべてを記録
    - ✅ 必要な情報のみ
 
@@ -375,7 +367,6 @@ SLA (Service Level Agreement): 契約
 ## 参考文献
 
 - **『Site Reliability Engineering』** Google 著
-
   - Chapter 6: Monitoring Distributed Systems
 
 - **『The DevOps Handbook』** Gene Kim 他著

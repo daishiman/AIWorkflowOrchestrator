@@ -20,7 +20,7 @@ class EmailAddress {
 
   static of(value: string): EmailAddress {
     if (!value) {
-      throw new InvalidEmailError('メールアドレスは必須です');
+      throw new InvalidEmailError("メールアドレスは必須です");
     }
     if (!this.PATTERN.test(value)) {
       throw new InvalidEmailError(`不正なメールアドレス形式: ${value}`);
@@ -31,7 +31,7 @@ class EmailAddress {
 
 // ❌ 悪い例：バリデーションがない
 class EmailAddress {
-  constructor(public value: string) {}  // 不正な値も受け入れてしまう
+  constructor(public value: string) {} // 不正な値も受け入れてしまう
 }
 ```
 
@@ -39,12 +39,12 @@ class EmailAddress {
 
 ```typescript
 // 一度生成されたら、常に有効
-const email = EmailAddress.of('user@example.com');
+const email = EmailAddress.of("user@example.com");
 // email は常に有効なメールアドレス
 
 // 不正な値は生成段階で拒否
 try {
-  const invalid = EmailAddress.of('invalid-email');
+  const invalid = EmailAddress.of("invalid-email");
 } catch (e) {
   // InvalidEmailError がスロー
 }
@@ -75,15 +75,15 @@ function sendEmail(to: string, subject: string): void {
 class Money {
   private constructor(
     private readonly amount: number,
-    private readonly currency: Currency
+    private readonly currency: Currency,
   ) {}
 
   static of(amount: number, currency: Currency): Money {
     if (!Number.isFinite(amount)) {
-      throw new InvalidMoneyError('金額は有限の数値である必要があります');
+      throw new InvalidMoneyError("金額は有限の数値である必要があります");
     }
     if (amount < 0) {
-      throw new NegativeMoneyError('金額は0以上である必要があります');
+      throw new NegativeMoneyError("金額は0以上である必要があります");
     }
     return new Money(amount, currency);
   }
@@ -113,10 +113,16 @@ class EmailAddress {
 
   static create(value: string): Result<EmailAddress, ValidationError> {
     if (!value) {
-      return { ok: false, error: new ValidationError('メールアドレスは必須です') };
+      return {
+        ok: false,
+        error: new ValidationError("メールアドレスは必須です"),
+      };
     }
     if (!this.PATTERN.test(value)) {
-      return { ok: false, error: new ValidationError('不正なメールアドレス形式です') };
+      return {
+        ok: false,
+        error: new ValidationError("不正なメールアドレス形式です"),
+      };
     }
     return { ok: true, value: new EmailAddress(value.toLowerCase()) };
   }
@@ -163,7 +169,7 @@ class PositiveNumber {
   static of(value: number): PositiveNumber {
     const result = this.tryCreate(value);
     if (result === null) {
-      throw new InvalidValueError('正の数である必要があります');
+      throw new InvalidValueError("正の数である必要があります");
     }
     return result;
   }
@@ -196,32 +202,40 @@ class Password {
     const errors: ValidationError[] = [];
 
     if (!value) {
-      errors.push(new ValidationError('パスワードは必須です'));
-      return errors;  // 以降のチェックは不要
+      errors.push(new ValidationError("パスワードは必須です"));
+      return errors; // 以降のチェックは不要
     }
 
     if (value.length < this.MIN_LENGTH) {
-      errors.push(new ValidationError(`パスワードは${this.MIN_LENGTH}文字以上必要です`));
+      errors.push(
+        new ValidationError(`パスワードは${this.MIN_LENGTH}文字以上必要です`),
+      );
     }
 
     if (value.length > this.MAX_LENGTH) {
-      errors.push(new ValidationError(`パスワードは${this.MAX_LENGTH}文字以下にしてください`));
+      errors.push(
+        new ValidationError(
+          `パスワードは${this.MAX_LENGTH}文字以下にしてください`,
+        ),
+      );
     }
 
     if (this.REQUIRE_UPPERCASE && !/[A-Z]/.test(value)) {
-      errors.push(new ValidationError('大文字を含める必要があります'));
+      errors.push(new ValidationError("大文字を含める必要があります"));
     }
 
     if (this.REQUIRE_LOWERCASE && !/[a-z]/.test(value)) {
-      errors.push(new ValidationError('小文字を含める必要があります'));
+      errors.push(new ValidationError("小文字を含める必要があります"));
     }
 
     if (this.REQUIRE_NUMBER && !/\d/.test(value)) {
-      errors.push(new ValidationError('数字を含める必要があります'));
+      errors.push(new ValidationError("数字を含める必要があります"));
     }
 
     if (this.REQUIRE_SPECIAL && !/[!@#$%^&*]/.test(value)) {
-      errors.push(new ValidationError('特殊文字(!@#$%^&*)を含める必要があります'));
+      errors.push(
+        new ValidationError("特殊文字(!@#$%^&*)を含める必要があります"),
+      );
     }
 
     return errors;
@@ -261,21 +275,23 @@ const password = Password.of(inputValue);
 class DateRange {
   private constructor(
     private readonly start: Date,
-    private readonly end: Date
+    private readonly end: Date,
   ) {}
 
   static create(start: Date, end: Date): DateRange {
     // 個別のバリデーション
     if (!start || isNaN(start.getTime())) {
-      throw new InvalidDateError('開始日が不正です');
+      throw new InvalidDateError("開始日が不正です");
     }
     if (!end || isNaN(end.getTime())) {
-      throw new InvalidDateError('終了日が不正です');
+      throw new InvalidDateError("終了日が不正です");
     }
 
     // フィールド間の整合性チェック
     if (start > end) {
-      throw new InvalidDateRangeError('開始日は終了日より前である必要があります');
+      throw new InvalidDateRangeError(
+        "開始日は終了日より前である必要があります",
+      );
     }
 
     return new DateRange(new Date(start), new Date(end));
@@ -312,7 +328,7 @@ class EmailAddress {
 // 存在チェックはアプリケーションサービスで
 class UserRegistrationService {
   async register(email: string): Promise<User> {
-    const emailAddress = EmailAddress.of(email);  // 形式チェック
+    const emailAddress = EmailAddress.of(email); // 形式チェック
 
     // 存在チェックは別途
     if (await this.userRepository.existsByEmail(emailAddress)) {
@@ -336,7 +352,7 @@ abstract class DomainError extends Error {
 
 // 値オブジェクト固有のエラー
 class InvalidEmailError extends DomainError {
-  readonly code = 'INVALID_EMAIL';
+  readonly code = "INVALID_EMAIL";
 
   constructor(value: string) {
     super(`不正なメールアドレス形式: ${value}`);
@@ -344,7 +360,7 @@ class InvalidEmailError extends DomainError {
 }
 
 class InvalidMoneyError extends DomainError {
-  readonly code = 'INVALID_MONEY';
+  readonly code = "INVALID_MONEY";
 
   constructor(message: string) {
     super(message);
@@ -352,15 +368,15 @@ class InvalidMoneyError extends DomainError {
 }
 
 class NegativeMoneyError extends InvalidMoneyError {
-  override readonly code = 'NEGATIVE_MONEY';
+  override readonly code = "NEGATIVE_MONEY";
 
   constructor() {
-    super('金額は0以上である必要があります');
+    super("金額は0以上である必要があります");
   }
 }
 
 class CurrencyMismatchError extends DomainError {
-  readonly code = 'CURRENCY_MISMATCH';
+  readonly code = "CURRENCY_MISMATCH";
 
   constructor(currency1: Currency, currency2: Currency) {
     super(`通貨が一致しません: ${currency1.code} と ${currency2.code}`);
@@ -377,7 +393,7 @@ class ValidationErrors extends Error {
   }
 
   get messages(): string[] {
-    return this.errors.map(e => e.message);
+    return this.errors.map((e) => e.message);
   }
 
   static single(error: ValidationError): ValidationErrors {
@@ -396,13 +412,13 @@ class UserProfile {
     const errors: ValidationError[] = [];
 
     if (!name) {
-      errors.push(new ValidationError('名前は必須です'));
+      errors.push(new ValidationError("名前は必須です"));
     }
     if (!email) {
-      errors.push(new ValidationError('メールアドレスは必須です'));
+      errors.push(new ValidationError("メールアドレスは必須です"));
     }
     if (age < 0 || age > 150) {
-      errors.push(new ValidationError('年齢は0-150の範囲で入力してください'));
+      errors.push(new ValidationError("年齢は0-150の範囲で入力してください"));
     }
 
     if (errors.length > 0) {
@@ -412,7 +428,7 @@ class UserProfile {
     return new UserProfile(
       PersonName.of(name),
       EmailAddress.of(email),
-      Age.of(age)
+      Age.of(age),
     );
   }
 }
@@ -428,13 +444,13 @@ class EmailAddress {
 
   static of(value: string): EmailAddress {
     if (!value) {
-      throw new InvalidEmailError('メールアドレスは必須です');
+      throw new InvalidEmailError("メールアドレスは必須です");
     }
 
     // 正規化
     const normalized = value
-      .trim()           // 前後の空白を除去
-      .toLowerCase();   // 小文字に統一
+      .trim() // 前後の空白を除去
+      .toLowerCase(); // 小文字に統一
 
     if (!this.isValidFormat(normalized)) {
       throw new InvalidEmailError(value);
@@ -453,7 +469,7 @@ class PhoneNumber {
 
   static of(value: string): PhoneNumber {
     // 数字以外を除去して正規化
-    const digitsOnly = value.replace(/\D/g, '');
+    const digitsOnly = value.replace(/\D/g, "");
 
     if (digitsOnly.length !== 10 && digitsOnly.length !== 11) {
       throw new InvalidPhoneNumberError(value);

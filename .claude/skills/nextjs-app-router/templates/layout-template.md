@@ -273,13 +273,13 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 ## 変数説明
 
-| 変数 | 説明 | 例 |
-|------|------|-----|
-| `{{SiteName}}` | サイト名 | `My App` |
-| `{{SiteDescription}}` | サイト説明 | `最高のWebアプリケーション` |
-| `{{SiteUrl}}` | サイトURL | `https://example.com` |
-| `{{OgImageUrl}}` | OGP画像URL | `https://example.com/og.png` |
-| `{{TwitterHandle}}` | Twitterハンドル | `myapp` |
-| `{{AuthorName}}` | 著者名 | `John Doe` |
-| `{{CreatorName}}` | 制作者名 | `My Company` |
-| `{{keyword1}}`, `{{keyword2}}` | SEOキーワード | `web app`, `next.js` |
+| 変数                           | 説明            | 例                           |
+| ------------------------------ | --------------- | ---------------------------- |
+| `{{SiteName}}`                 | サイト名        | `My App`                     |
+| `{{SiteDescription}}`          | サイト説明      | `最高のWebアプリケーション`  |
+| `{{SiteUrl}}`                  | サイトURL       | `https://example.com`        |
+| `{{OgImageUrl}}`               | OGP画像URL      | `https://example.com/og.png` |
+| `{{TwitterHandle}}`            | Twitterハンドル | `myapp`                      |
+| `{{AuthorName}}`               | 著者名          | `John Doe`                   |
+| `{{CreatorName}}`              | 制作者名        | `My Company`                 |
+| `{{keyword1}}`, `{{keyword2}}` | SEOキーワード   | `web app`, `next.js`         |

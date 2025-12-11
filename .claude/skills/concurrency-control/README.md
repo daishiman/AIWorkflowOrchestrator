@@ -74,21 +74,27 @@ node .claude/skills/concurrency-control/scripts/check-concurrency.mjs .github/wo
 ## 📚 詳細ドキュメント
 
 ### 1. 構文リファレンス
+
 `resources/concurrency-syntax.md` を参照:
+
 - group の設計パターン
 - cancel-in-progress の設定戦略
 - 条件付き並行実行制御
 - 式の活用とベストプラクティス
 
 ### 2. レースコンディション防止
+
 `resources/race-conditions.md` を参照:
+
 - 排他制御とキューイング
 - タイムスタンプ検証
 - ロック機構の実装
 - デプロイメントキューの設計
 
 ### 3. ワークフロー例
+
 `templates/concurrency-workflow.yaml` を参照:
+
 - 12種類の実装パターン
 - 環境別制御の例
 - モニタリングとリトライ戦略
@@ -110,6 +116,7 @@ done
 ```
 
 **チェック項目**:
+
 - ✅ concurrency 設定の構文
 - ✅ group 名のパターン
 - ✅ cancel-in-progress の適切性
@@ -161,12 +168,15 @@ concurrency:
 ## 🛠️ トラブルシューティング
 
 ### デプロイが重複実行される
+
 → `resources/race-conditions.md` の「排他制御」セクションを参照
 
 ### 古いバージョンがデプロイされる
+
 → `resources/race-conditions.md` の「タイムスタンプ検証」セクションを参照
 
 ### キューが溜まり続ける
+
 → `resources/concurrency-syntax.md` の「トラブルシューティング」セクションを参照
 
 ## 📝 メンテナンス

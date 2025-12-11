@@ -28,13 +28,13 @@ async function callExternalApi(endpoint: string, params: any): Promise<any> {
 
   try {
     const response = await fetch(endpoint, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getToken()}`
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getToken()}`,
       },
       body: JSON.stringify(params),
-      signal: controller.signal
+      signal: controller.signal,
     });
 
     if (!response.ok) {
@@ -75,38 +75,41 @@ async function callExternalApi(endpoint: string, params: any): Promise<any> {
 class ApiError extends Error {
   constructor(
     public statusCode: number,
-    public body: string
+    public body: string,
   ) {
     super(`API Error: ${statusCode}`);
   }
 }
 
-async function callWithErrorHandling(endpoint: string, params: any): Promise<any> {
+async function callWithErrorHandling(
+  endpoint: string,
+  params: any,
+): Promise<any> {
   try {
     return await callExternalApi(endpoint, params);
   } catch (error) {
     if (error instanceof ApiError) {
       switch (error.statusCode) {
         case 400:
-          throw new ValidationError('Invalid request parameters');
+          throw new ValidationError("Invalid request parameters");
         case 401:
         case 403:
-          throw new AuthenticationError('Authentication failed');
+          throw new AuthenticationError("Authentication failed");
         case 404:
-          throw new NotFoundError('Resource not found');
+          throw new NotFoundError("Resource not found");
         case 429:
-          throw new RateLimitError('Rate limit exceeded');
+          throw new RateLimitError("Rate limit exceeded");
         case 500:
         case 502:
         case 503:
-          throw new ServiceError('External service unavailable');
+          throw new ServiceError("External service unavailable");
         default:
           throw new UnknownError(`Unexpected error: ${error.statusCode}`);
       }
     }
 
-    if (error.name === 'AbortError') {
-      throw new TimeoutError('Request timed out');
+    if (error.name === "AbortError") {
+      throw new TimeoutError("Request timed out");
     }
 
     throw error;
@@ -126,7 +129,9 @@ interface AggregationSource {
   timeout?: number;
 }
 
-async function aggregateData(sources: AggregationSource[]): Promise<Record<string, any>> {
+async function aggregateData(
+  sources: AggregationSource[],
+): Promise<Record<string, any>> {
   const results: Record<string, any> = {};
   const errors: Record<string, Error> = {};
 
@@ -161,30 +166,30 @@ async function aggregateData(sources: AggregationSource[]): Promise<Record<strin
 
   return {
     data: results,
-    errors: Object.keys(errors).length > 0 ? errors : undefined
+    errors: Object.keys(errors).length > 0 ? errors : undefined,
   };
 }
 
 // 使用例
 const result = await aggregateData([
   {
-    name: 'users',
+    name: "users",
     fetch: () => fetchUsers(),
     required: true,
-    timeout: 5000
+    timeout: 5000,
   },
   {
-    name: 'analytics',
+    name: "analytics",
     fetch: () => fetchAnalytics(),
-    required: false,  // オプショナル
-    timeout: 3000
+    required: false, // オプショナル
+    timeout: 3000,
   },
   {
-    name: 'notifications',
+    name: "notifications",
     fetch: () => fetchNotifications(),
     required: false,
-    timeout: 2000
-  }
+    timeout: 2000,
+  },
 ]);
 ```
 
@@ -198,7 +203,7 @@ interface DependentSource {
 }
 
 async function aggregateWithDependencies(
-  sources: DependentSource[]
+  sources: DependentSource[],
 ): Promise<Record<string, any>> {
   const results: Record<string, any> = {};
   const completed = new Set<string>();
@@ -206,12 +211,12 @@ async function aggregateWithDependencies(
 
   while (pending.length > 0) {
     // 依存関係が満たされたソースを見つける
-    const ready = pending.filter(source =>
-      source.dependsOn.every(dep => completed.has(dep))
+    const ready = pending.filter((source) =>
+      source.dependsOn.every((dep) => completed.has(dep)),
     );
 
     if (ready.length === 0 && pending.length > 0) {
-      throw new Error('Circular dependency detected');
+      throw new Error("Circular dependency detected");
     }
 
     // 並列実行
@@ -221,7 +226,7 @@ async function aggregateWithDependencies(
         results[source.name] = data;
         completed.add(source.name);
         pending.splice(pending.indexOf(source), 1);
-      })
+      }),
     );
   }
 
@@ -256,7 +261,7 @@ class ApiGateway {
 
   async handle(path: string, request: any): Promise<any> {
     // マッチするルートを検索
-    const route = this.routes.find(r => r.pattern.test(path));
+    const route = this.routes.find((r) => r.pattern.test(path));
 
     if (!route) {
       throw new NotFoundError(`No route for path: ${path}`);
@@ -286,7 +291,7 @@ class ApiGateway {
 
   private async checkRateLimit(
     path: string,
-    config: { maxRequests: number; windowMs: number }
+    config: { maxRequests: number; windowMs: number },
   ): Promise<void> {
     // Rate Limit ロジック
   }
@@ -305,35 +310,35 @@ class RestToGraphqlAdapter {
     const [, resource, id] = path.match(/^\/(\w+)(?:\/(\w+))?$/) || [];
 
     if (!resource) {
-      throw new Error('Invalid path');
+      throw new Error("Invalid path");
     }
 
     switch (method) {
-      case 'GET':
+      case "GET":
         if (id) {
           return {
-            query: `query { ${resource}(id: "${id}") { id ...fields } }`
+            query: `query { ${resource}(id: "${id}") { id ...fields } }`,
           };
         }
         return {
-          query: `query { ${resource}List { items { id ...fields } } }`
+          query: `query { ${resource}List { items { id ...fields } } }`,
         };
 
-      case 'POST':
+      case "POST":
         return {
           query: `mutation { create${capitalize(resource)}(input: $input) { id } }`,
-          variables: { input: body }
+          variables: { input: body },
         };
 
-      case 'PUT':
+      case "PUT":
         return {
           query: `mutation { update${capitalize(resource)}(id: "${id}", input: $input) { id } }`,
-          variables: { input: body }
+          variables: { input: body },
         };
 
-      case 'DELETE':
+      case "DELETE":
         return {
-          query: `mutation { delete${capitalize(resource)}(id: "${id}") { success } }`
+          query: `mutation { delete${capitalize(resource)}(id: "${id}") { success } }`,
         };
 
       default:
@@ -349,9 +354,9 @@ class RestToGraphqlAdapter {
 
 ```typescript
 enum CircuitState {
-  CLOSED = 'CLOSED',
-  OPEN = 'OPEN',
-  HALF_OPEN = 'HALF_OPEN'
+  CLOSED = "CLOSED",
+  OPEN = "OPEN",
+  HALF_OPEN = "HALF_OPEN",
 }
 
 interface CircuitBreakerConfig {
@@ -375,7 +380,7 @@ class CircuitBreaker {
         this.state = CircuitState.HALF_OPEN;
         this.successes = 0;
       } else {
-        throw new Error('Circuit breaker is OPEN');
+        throw new Error("Circuit breaker is OPEN");
       }
     }
 
@@ -393,8 +398,8 @@ class CircuitBreaker {
     return Promise.race([
       operation(),
       new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('Timeout')), this.config.timeout)
-      )
+        setTimeout(() => reject(new Error("Timeout")), this.config.timeout),
+      ),
     ]);
   }
 
@@ -428,17 +433,17 @@ class CircuitBreaker {
 
 ```typescript
 const circuitBreaker = new CircuitBreaker({
-  failureThreshold: 5,     // 5回失敗でOPEN
-  successThreshold: 3,     // 3回成功でCLOSED
-  timeout: 10000,          // 10秒タイムアウト
-  resetTimeout: 30000      // 30秒後にHALF_OPEN
+  failureThreshold: 5, // 5回失敗でOPEN
+  successThreshold: 3, // 3回成功でCLOSED
+  timeout: 10000, // 10秒タイムアウト
+  resetTimeout: 30000, // 30秒後にHALF_OPEN
 });
 
 async function callExternalService(data: any): Promise<any> {
   return circuitBreaker.execute(async () => {
-    const response = await fetch('https://api.example.com/endpoint', {
-      method: 'POST',
-      body: JSON.stringify(data)
+    const response = await fetch("https://api.example.com/endpoint", {
+      method: "POST",
+      body: JSON.stringify(data),
     });
     return response.json();
   });
@@ -461,7 +466,7 @@ interface RetryConfig {
 
 async function retryWithBackoff<T>(
   operation: () => Promise<T>,
-  config: RetryConfig
+  config: RetryConfig,
 ): Promise<T> {
   let lastError: Error;
   let delay = config.initialDelayMs;
@@ -495,21 +500,20 @@ async function retryWithBackoff<T>(
 }
 
 // 使用例
-const result = await retryWithBackoff(
-  () => callExternalApi(endpoint, params),
-  {
-    maxRetries: 3,
-    initialDelayMs: 1000,
-    maxDelayMs: 30000,
-    multiplier: 2,
-    jitter: true,
-    retryableErrors: (error) => {
-      return error instanceof ServiceError ||
-             error instanceof TimeoutError ||
-             error instanceof RateLimitError;
-    }
-  }
-);
+const result = await retryWithBackoff(() => callExternalApi(endpoint, params), {
+  maxRetries: 3,
+  initialDelayMs: 1000,
+  maxDelayMs: 30000,
+  multiplier: 2,
+  jitter: true,
+  retryableErrors: (error) => {
+    return (
+      error instanceof ServiceError ||
+      error instanceof TimeoutError ||
+      error instanceof RateLimitError
+    );
+  },
+});
 ```
 
 ## 6. チェックリスト

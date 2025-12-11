@@ -9,11 +9,13 @@
 ### 1. 構造品質（Structural Quality）
 
 **指標**:
+
 - ファイルサイズ: 450-550行（推奨）
 - Phase数: 3-7個（推奨）
 - セクション完全性: 7つの必須セクション
 
 **測定方法**:
+
 ```bash
 # ファイルサイズチェック
 wc -l agent-file.md
@@ -28,6 +30,7 @@ grep "^## ワークフロー" agent-file.md
 ```
 
 **スコア算出**:
+
 ```
 構造スコア = (ファイルサイズ適正度 × 0.3) +
             (Phase数適正度 × 0.3) +
@@ -37,11 +40,13 @@ grep "^## ワークフロー" agent-file.md
 ### 2. 設計原則品質（Design Principles Quality）
 
 **指標**:
+
 - 単一責任原則: 役割セクション数 = 1
 - 依存性逆転: スキル参照数 > 0
 - プログレッシブディスクロージャー: 詳細はスキルへ移譲
 
 **測定方法**:
+
 ```bash
 # 単一責任チェック
 ROLE_COUNT=$(grep -c "^## 役割" agent-file.md)
@@ -53,6 +58,7 @@ if [ $SKILL_COUNT -gt 0 ]; then echo "PASS"; fi
 ```
 
 **スコア算出**:
+
 ```
 設計原則スコア = (単一責任 × 0.4) +
                 (依存性逆転 × 0.3) +
@@ -62,11 +68,13 @@ if [ $SKILL_COUNT -gt 0 ]; then echo "PASS"; fi
 ### 3. セキュリティ品質（Security Quality）
 
 **指標**:
+
 - 最小権限の原則: tools配列の妥当性
 - パス制限: write_allowed_paths設定
 - 承認要求: 危険な操作への approval_required
 
 **測定方法**:
+
 ```bash
 # ツール権限チェック
 TOOLS=$(grep "^tools:" agent-file.md | sed 's/tools: *//')
@@ -80,6 +88,7 @@ grep "approval_required" agent-file.md
 ```
 
 **スコア算出**:
+
 ```
 セキュリティスコア = (最小権限 × 0.4) +
                     (パス制限 × 0.3) +
@@ -89,11 +98,13 @@ grep "approval_required" agent-file.md
 ### 4. ドキュメンテーション品質（Documentation Quality）
 
 **指標**:
+
 - description明確性: 2-3行、100-200文字
 - ベストプラクティス: ✅❌形式
 - 変更履歴: 存在と更新頻度
 
 **測定方法**:
+
 ```bash
 # description長さチェック
 DESC_LENGTH=$(grep -A 10 "^description:" agent-file.md | wc -c)
@@ -107,6 +118,7 @@ grep "## 変更履歴" agent-file.md
 ```
 
 **スコア算出**:
+
 ```
 ドキュメンテーションスコア = (description明確性 × 0.3) +
                             (ベストプラクティス × 0.4) +
@@ -116,11 +128,13 @@ grep "## 変更履歴" agent-file.md
 ### 5. 統合品質（Integration Quality）
 
 **指標**:
+
 - スキル統合: スキル参照の適切性
 - コマンド統合: コマンドの存在
 - エージェント連携: ハンドオフプロトコル
 
 **測定方法**:
+
 ```bash
 # スキル統合チェック
 grep "Skill(.claude/skills/" agent-file.md
@@ -133,6 +147,7 @@ grep "handoff\|ハンドオフ" agent-file.md
 ```
 
 **スコア算出**:
+
 ```
 統合スコア = (スキル統合 × 0.4) +
             (コマンド統合 × 0.3) +
@@ -142,6 +157,7 @@ grep "handoff\|ハンドオフ" agent-file.md
 ## 総合品質スコア
 
 **算出式**:
+
 ```
 総合品質スコア = (構造品質 × 0.25) +
                 (設計原則品質 × 0.25) +
@@ -151,6 +167,7 @@ grep "handoff\|ハンドオフ" agent-file.md
 ```
 
 **評価基準**:
+
 - 90-100点: 優秀（Excellent）
 - 80-89点: 良好（Good）
 - 70-79点: 合格（Acceptable）
@@ -222,6 +239,6 @@ grep "handoff\|ハンドオフ" agent-file.md
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-24 | 初版作成 |
+| バージョン | 日付       | 変更内容 |
+| ---------- | ---------- | -------- |
+| 1.0.0      | 2025-11-24 | 初版作成 |

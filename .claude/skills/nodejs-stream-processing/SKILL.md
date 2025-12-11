@@ -132,7 +132,7 @@ async function compressFile(input: string, output: string): Promise<void> {
   await pipeline(
     createReadStream(input),
     createGzip(),
-    createWriteStream(output)
+    createWriteStream(output),
   );
   // すべてのストリームが自動的にクリーンアップされる
 }
@@ -199,7 +199,7 @@ class UpperCaseTransform extends Transform {
   _transform(
     chunk: Buffer,
     encoding: BufferEncoding,
-    callback: TransformCallback
+    callback: TransformCallback,
   ): void {
     try {
       const upperCased = chunk.toString().toUpperCase();
@@ -228,7 +228,7 @@ class LineProcessor extends Transform {
   _transform(
     chunk: Buffer,
     encoding: BufferEncoding,
-    callback: TransformCallback
+    callback: TransformCallback,
   ): void {
     this.buffer += chunk.toString();
     const lines = this.buffer.split("\n");
@@ -304,7 +304,7 @@ class ProgressTracker extends Transform {
 
   constructor(
     private totalBytes: number,
-    private onProgress: (percent: number) => void
+    private onProgress: (percent: number) => void,
   ) {
     super();
   }
@@ -328,7 +328,7 @@ async function uploadWithProgress(filePath: string): Promise<void> {
   await pipeline(
     createReadStream(filePath),
     progressTracker,
-    createUploadStream(filePath)
+    createUploadStream(filePath),
   );
 }
 ```

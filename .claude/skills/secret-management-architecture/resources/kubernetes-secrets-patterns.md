@@ -56,10 +56,10 @@ spec:
   target:
     name: app-secrets
   data:
-  - secretKey: database-url
-    remoteRef:
-      key: secret/prod/database
-      property: url
+    - secretKey: database-url
+      remoteRef:
+        key: secret/prod/database
+        property: url
 ```
 
 **メリット**: 外部Secret管理サービス（Vault、AWS Secrets Manager）との統合
@@ -75,19 +75,19 @@ metadata:
   name: app
 spec:
   containers:
-  - name: app
-    image: myapp:latest
-    env:
-    - name: DATABASE_URL
-      valueFrom:
-        secretKeyRef:
-          name: app-secrets
-          key: database-url
-    - name: API_KEY
-      valueFrom:
-        secretKeyRef:
-          name: app-secrets
-          key: api-key
+    - name: app
+      image: myapp:latest
+      env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: database-url
+        - name: API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: api-key
 ```
 
 **メリット**: シンプル、アプリケーション変更不要
@@ -102,24 +102,25 @@ metadata:
   name: app
 spec:
   containers:
-  - name: app
-    image: myapp:latest
-    volumeMounts:
-    - name: secrets
-      mountPath: "/etc/secrets"
-      readOnly: true
+    - name: app
+      image: myapp:latest
+      volumeMounts:
+        - name: secrets
+          mountPath: "/etc/secrets"
+          readOnly: true
   volumes:
-  - name: secrets
-    secret:
-      secretName: app-secrets
+    - name: secrets
+      secret:
+        secretName: app-secrets
 ```
 
 **アクセス**:
-```typescript
-import fs from 'fs/promises';
 
-const dbUrl = await fs.readFile('/etc/secrets/database-url', 'utf8');
-const apiKey = await fs.readFile('/etc/secrets/api-key', 'utf8');
+```typescript
+import fs from "fs/promises";
+
+const dbUrl = await fs.readFile("/etc/secrets/database-url", "utf8");
+const apiKey = await fs.readFile("/etc/secrets/api-key", "utf8");
 ```
 
 **メリット**: ファイルパーミッション制御可能、環境変数より安全
@@ -134,22 +135,27 @@ metadata:
   name: app
 spec:
   initContainers:
-  - name: secret-injector
-    image: vault:latest
-    command: ['sh', '-c', 'vault kv get -field=value secret/prod/db > /secrets/db-url']
-    volumeMounts:
-    - name: secrets
-      mountPath: "/secrets"
+    - name: secret-injector
+      image: vault:latest
+      command:
+        [
+          "sh",
+          "-c",
+          "vault kv get -field=value secret/prod/db > /secrets/db-url",
+        ]
+      volumeMounts:
+        - name: secrets
+          mountPath: "/secrets"
   containers:
-  - name: app
-    image: myapp:latest
-    volumeMounts:
-    - name: secrets
-      mountPath: "/etc/secrets"
-      readOnly: true
+    - name: app
+      image: myapp:latest
+      volumeMounts:
+        - name: secrets
+          mountPath: "/etc/secrets"
+          readOnly: true
   volumes:
-  - name: secrets
-    emptyDir: {}
+    - name: secrets
+      emptyDir: {}
 ```
 
 **メリット**: 外部Secret管理との統合、起動時のみアクセス
@@ -168,16 +174,17 @@ apiVersion: apiserver.config.k8s.io/v1
 kind: EncryptionConfiguration
 resources:
   - resources:
-    - secrets
+      - secrets
     providers:
-    - aescbc:
-        keys:
-        - name: key1
-          secret: <BASE64_ENCODED_SECRET>
-    - identity: {}
+      - aescbc:
+          keys:
+            - name: key1
+              secret: <BASE64_ENCODED_SECRET>
+      - identity: {}
 ```
 
 **API Server起動オプション**:
+
 ```bash
 --encryption-provider-config=/etc/kubernetes/enc/encryption-config.yaml
 ```
@@ -221,17 +228,17 @@ kind: ExternalSecret
 metadata:
   name: app-secrets
 spec:
-  refreshInterval: 1h  # 1時間毎に自動更新
+  refreshInterval: 1h # 1時間毎に自動更新
   secretStoreRef:
     name: vault-backend
   target:
     name: app-secrets
     creationPolicy: Owner
   data:
-  - secretKey: api-key
-    remoteRef:
-      key: secret/prod/api
-      property: key
+    - secretKey: api-key
+      remoteRef:
+        key: secret/prod/api
+        property: key
 ```
 
 **メリット**: 完全自動、ダウンタイムなし
@@ -257,6 +264,7 @@ metadata:
 ```
 
 **RBAC設定**:
+
 ```yaml
 # 開発者はdevelopmentのみアクセス可
 apiVersion: rbac.authorization.k8s.io/v1
@@ -265,8 +273,8 @@ metadata:
   name: developer-secrets
   namespace: development
 subjects:
-- kind: Group
-  name: developers
+  - kind: Group
+    name: developers
 roleRef:
   kind: Role
   name: secret-reader
@@ -278,8 +286,8 @@ kind: ClusterRoleBinding
 metadata:
   name: devops-secrets
 subjects:
-- kind: Group
-  name: devops
+  - kind: Group
+    name: devops
 roleRef:
   kind: ClusterRole
   name: secret-admin
@@ -290,15 +298,16 @@ roleRef:
 ### Secret アクセスログ
 
 Kubernetes Audit Policyで監視:
+
 ```yaml
 apiVersion: audit.k8s.io/v1
 kind: Policy
 rules:
-- level: RequestResponse
-  resources:
-  - group: ""
-    resources: ["secrets"]
-  verbs: ["get", "list", "watch"]
+  - level: RequestResponse
+    resources:
+      - group: ""
+        resources: ["secrets"]
+    verbs: ["get", "list", "watch"]
 ```
 
 すべてのSecret取得が記録され、異常なアクセスパターンを検知可能。
@@ -308,15 +317,18 @@ rules:
 ### よくある問題
 
 **問題1**: SecretがPodに注入されない
+
 - ネームスペースが一致しているか確認
 - Secretが存在するか確認（`kubectl get secret -n <namespace>`）
 - RBAC権限を確認
 
 **問題2**: Base64デコードエラー
+
 - `echo "value" | base64` で正しくエンコードされているか確認
 - 改行文字に注意（`echo -n` を使用）
 
 **問題3**: Secretが更新されない
+
 - Podの再起動が必要（環境変数注入の場合）
 - ボリュームマウントは自動更新（最大60秒遅延）
 

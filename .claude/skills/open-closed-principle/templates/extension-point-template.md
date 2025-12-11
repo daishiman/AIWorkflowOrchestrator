@@ -7,7 +7,7 @@
 ## 基本構造: Strategy + Registry
 
 ```typescript
-import { IWorkflowExecutor, ExecutionContext } from '@/shared/core/interfaces';
+import { IWorkflowExecutor, ExecutionContext } from "@/shared/core/interfaces";
 
 // ===== インターフェース定義 =====
 
@@ -90,7 +90,7 @@ export class StrategyRegistry<T extends IWorkflowStrategy> {
    * 戦略の情報一覧
    */
   listStrategies(): StrategyInfo[] {
-    return Array.from(this.strategies.values()).map(s => ({
+    return Array.from(this.strategies.values()).map((s) => ({
       type: s.type,
       displayName: s.displayName,
       description: s.description,
@@ -106,11 +106,12 @@ interface StrategyInfo {
 
 class UnknownStrategyError extends Error {
   constructor(type: string, availableTypes: string[]) {
-    const available = availableTypes.length > 0
-      ? `Available types: ${availableTypes.join(', ')}`
-      : 'No strategies registered';
+    const available =
+      availableTypes.length > 0
+        ? `Available types: ${availableTypes.join(", ")}`
+        : "No strategies registered";
     super(`Unknown strategy type: '${type}'. ${available}`);
-    this.name = 'UnknownStrategyError';
+    this.name = "UnknownStrategyError";
   }
 }
 ```
@@ -134,7 +135,7 @@ export class WorkflowEngine {
   async execute<TInput, TOutput>(
     type: string,
     input: TInput,
-    context: ExecutionContext
+    context: ExecutionContext,
   ): Promise<TOutput> {
     const strategy = this.registry.get(type);
 
@@ -151,7 +152,7 @@ export class WorkflowEngine {
       return this.middlewareChain.execute(
         input,
         context,
-        (i, c) => strategy.execute(i, c) as Promise<TOutput>
+        (i, c) => strategy.execute(i, c) as Promise<TOutput>,
       );
     }
 
@@ -172,7 +173,7 @@ export interface IMiddleware<TInput = unknown, TOutput = unknown> {
   execute(
     input: TInput,
     context: ExecutionContext,
-    next: (input: TInput, context: ExecutionContext) => Promise<TOutput>
+    next: (input: TInput, context: ExecutionContext) => Promise<TOutput>,
   ): Promise<TOutput>;
 }
 
@@ -197,12 +198,15 @@ export class MiddlewareChain<TInput = unknown, TOutput = unknown> {
   async execute(
     input: TInput,
     context: ExecutionContext,
-    finalHandler: (input: TInput, context: ExecutionContext) => Promise<TOutput>
+    finalHandler: (
+      input: TInput,
+      context: ExecutionContext,
+    ) => Promise<TOutput>,
   ): Promise<TOutput> {
     const chain = this.middlewares.reduceRight(
-      (next, middleware) =>
-        (i: TInput, c: ExecutionContext) => middleware.execute(i, c, next),
-      finalHandler
+      (next, middleware) => (i: TInput, c: ExecutionContext) =>
+        middleware.execute(i, c, next),
+      finalHandler,
     );
     return chain(input, context);
   }
@@ -215,7 +219,7 @@ export class MiddlewareChain<TInput = unknown, TOutput = unknown> {
 /**
  * イベントタイプ
  */
-type WorkflowEvent = 'beforeExecute' | 'afterExecute' | 'onError';
+type WorkflowEvent = "beforeExecute" | "afterExecute" | "onError";
 
 /**
  * イベントリスナー
@@ -269,9 +273,9 @@ export class WorkflowEventEmitter {
 // ===== 具体的な戦略の実装 =====
 
 class AIAnalysisStrategy implements IWorkflowStrategy<AIInput, AIOutput> {
-  readonly type = 'AI_ANALYSIS';
-  readonly displayName = 'AI分析';
-  readonly description = 'AIを使用したテキスト分析';
+  readonly type = "AI_ANALYSIS";
+  readonly displayName = "AI分析";
+  readonly description = "AIを使用したテキスト分析";
 
   constructor(private readonly aiClient: AIClient) {}
 
@@ -284,14 +288,20 @@ class AIAnalysisStrategy implements IWorkflowStrategy<AIInput, AIOutput> {
   }
 }
 
-class DataTransformStrategy implements IWorkflowStrategy<DataInput, DataOutput> {
-  readonly type = 'DATA_TRANSFORM';
-  readonly displayName = 'データ変換';
-  readonly description = 'データ形式の変換';
+class DataTransformStrategy implements IWorkflowStrategy<
+  DataInput,
+  DataOutput
+> {
+  readonly type = "DATA_TRANSFORM";
+  readonly displayName = "データ変換";
+  readonly description = "データ形式の変換";
 
   constructor(private readonly dataService: DataService) {}
 
-  async execute(input: DataInput, context: ExecutionContext): Promise<DataOutput> {
+  async execute(
+    input: DataInput,
+    context: ExecutionContext,
+  ): Promise<DataOutput> {
     return await this.dataService.transform(input);
   }
 }
@@ -316,16 +326,16 @@ const engine = new WorkflowEngine(registry, middlewareChain);
 
 // イベントハンドラの登録
 const emitter = new WorkflowEventEmitter();
-emitter.on('beforeExecute', (data) => console.log('Starting:', data));
-emitter.on('afterExecute', (data) => console.log('Completed:', data));
-emitter.on('onError', (data) => alertService.notify(data.error));
+emitter.on("beforeExecute", (data) => console.log("Starting:", data));
+emitter.on("afterExecute", (data) => console.log("Completed:", data));
+emitter.on("onError", (data) => alertService.notify(data.error));
 
 // ===== 新しいタイプの追加（既存コード修正なし） =====
 
 class NotificationStrategy implements IWorkflowStrategy {
-  readonly type = 'NOTIFICATION';
-  readonly displayName = '通知';
-  readonly description = '通知の送信';
+  readonly type = "NOTIFICATION";
+  readonly displayName = "通知";
+  readonly description = "通知の送信";
 
   async execute(input, context) {
     // 通知ロジック

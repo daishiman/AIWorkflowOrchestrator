@@ -7,6 +7,7 @@ ESLintとPrettierは一部のルールが重複し、競合します。
 ### 競合するルール領域
 
 **フォーマット関連**:
+
 - インデント（`indent` vs Prettier）
 - クォートスタイル（`quotes` vs Prettier）
 - セミコロン（`semi` vs Prettier）
@@ -20,26 +21,30 @@ ESLintとPrettierは一部のルールが重複し、競合します。
 **目的**: Prettierと競合するESLintルールを自動無効化
 
 **インストール**:
+
 ```bash
 pnpm add -D eslint-config-prettier
 ```
 
 **設定**:
+
 ```json
 {
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "prettier"  // 必ず最後に配置
+    "prettier" // 必ず最後に配置
   ]
 }
 ```
 
 **動作**:
+
 - `prettier`設定がPrettierと競合するESLintルールをすべて無効化
 - 順序重要: 最後に`prettier`を配置
 
 **検証**:
+
 ```bash
 # 競合確認
 npx eslint-config-prettier .eslintrc.json
@@ -48,6 +53,7 @@ npx eslint-config-prettier .eslintrc.json
 ### 戦略2: 手動無効化
 
 **Prettierに委譲するルール**:
+
 ```json
 {
   "rules": {
@@ -65,6 +71,7 @@ npx eslint-config-prettier .eslintrc.json
 ```
 
 **TypeScript固有**:
+
 ```json
 {
   "rules": {
@@ -81,9 +88,10 @@ npx eslint-config-prettier .eslintrc.json
 **非推奨**: Prettierの責務を尊重すべき
 
 **例**（避けるべき）:
+
 ```json
 {
-  "semi": true,  // ESLintのsemiルールに合わせる
+  "semi": true, // ESLintのsemiルールに合わせる
   "singleQuote": true
 }
 ```
@@ -121,12 +129,14 @@ pre-commit hook
 ## 責務分離の確認
 
 ### ESLintが担当
+
 - [ ] 論理エラー検出（`no-unused-vars`）
 - [ ] ベストプラクティス（`prefer-const`）
 - [ ] 複雑度制限（`complexity`）
 - [ ] 命名規約（`camelcase`）
 
 ### Prettierが担当
+
 - [ ] インデント
 - [ ] クォートスタイル
 - [ ] セミコロン
@@ -134,6 +144,7 @@ pre-commit hook
 - [ ] 改行位置
 
 ### 競合なし
+
 - [ ] フォーマットルールがESLintで無効化されている
 - [ ] ESLintはロジックのみチェック
 - [ ] Prettierはスタイルのみ管理
@@ -145,6 +156,7 @@ pre-commit hook
 **症状**: ESLintエラーを修正するとPrettier警告、逆も同様
 
 **解決**:
+
 ```bash
 # 競合チェック
 npx eslint-config-prettier .eslintrc.json
@@ -157,6 +169,7 @@ npx eslint-config-prettier .eslintrc.json
 **症状**: 保存するたびにスタイルが変わる
 
 **解決**:
+
 ```json
 // .vscode/settings.json
 {
@@ -176,12 +189,13 @@ npx eslint-config-prettier .eslintrc.json
 **症状**: pre-commit hook失敗
 
 **解決**:
+
 ```json
 {
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
-      "prettier --write",  // 先にフォーマット
-      "eslint --fix"       // 後でlint
+      "prettier --write", // 先にフォーマット
+      "eslint --fix" // 後でlint
     ]
   }
 }
@@ -190,11 +204,13 @@ npx eslint-config-prettier .eslintrc.json
 ## まとめ
 
 **原則**:
+
 - Prettier = フォーマット専門
 - ESLint = コード品質専門
 - 重複ルールは無効化（eslint-config-prettier）
 
 **実装**:
+
 1. eslint-config-prettierインストール
 2. extendsの最後に"prettier"追加
 3. 競合確認（npx eslint-config-prettier）

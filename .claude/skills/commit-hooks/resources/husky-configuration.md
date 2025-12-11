@@ -16,6 +16,7 @@ pnpm exec husky init
 ```
 
 **自動生成**:
+
 - `.husky/`ディレクトリ
 - `.husky/pre-commit`サンプルフック
 - `package.json`に`prepare`スクリプト追加
@@ -39,11 +40,13 @@ pnpm exec husky init
 **実行タイミング**: `git commit`実行直前
 
 **用途**:
+
 - lint/format実行
 - 型チェック
 - ステージングファイルのみ処理
 
 **設定例** (`.husky/pre-commit`):
+
 ```bash
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
@@ -56,10 +59,12 @@ pnpm lint-staged
 **実行タイミング**: コミットメッセージ入力後
 
 **用途**:
+
 - コミットメッセージ規約検証
 - Conventional Commits強制
 
 **設定例** (`.husky/commit-msg`):
+
 ```bash
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
@@ -68,14 +73,26 @@ pnpm commitlint --edit $1
 ```
 
 **commitlint設定** (`.commitlintrc.json`):
+
 ```json
 {
   "extends": ["@commitlint/config-conventional"],
   "rules": {
-    "type-enum": [2, "always", [
-      "feat", "fix", "docs", "style", "refactor",
-      "test", "chore", "perf", "ci"
-    ]],
+    "type-enum": [
+      2,
+      "always",
+      [
+        "feat",
+        "fix",
+        "docs",
+        "style",
+        "refactor",
+        "test",
+        "chore",
+        "perf",
+        "ci"
+      ]
+    ],
     "subject-case": [2, "never", ["upper-case"]]
   }
 }
@@ -86,11 +103,13 @@ pnpm commitlint --edit $1
 **実行タイミング**: `git push`実行直前
 
 **用途**:
+
 - 全テスト実行
 - ビルド検証
 - カバレッジチェック
 
 **設定例** (`.husky/pre-push`):
+
 ```bash
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
@@ -104,10 +123,12 @@ pnpm build
 **実行タイミング**: `git merge`/`git pull`後
 
 **用途**:
+
 - 依存関係自動インストール
 - マイグレーション自動実行
 
 **設定例** (`.husky/post-merge`):
+
 ```bash
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
@@ -194,6 +215,7 @@ fi
 ### 並列実行
 
 **lint-staged**:
+
 ```json
 {
   "lint-staged": {
@@ -230,6 +252,7 @@ eslint "src/**/*.{ts,tsx}" --fix
 ### フックが実行されない
 
 **確認**:
+
 ```bash
 # Git hooksパス確認
 git config core.hooksPath
@@ -238,6 +261,7 @@ git config core.hooksPath
 ```
 
 **修正**:
+
 ```bash
 git config core.hooksPath .husky
 ```
@@ -247,6 +271,7 @@ git config core.hooksPath .husky
 **エラー**: `Permission denied`
 
 **修正**:
+
 ```bash
 chmod +x .husky/pre-commit
 ```
@@ -256,12 +281,14 @@ chmod +x .husky/pre-commit
 **エラー**: `\r command not found`
 
 **修正**:
+
 ```bash
 # LF改行に変換
 dos2unix .husky/pre-commit
 ```
 
 または`.gitattributes`設定:
+
 ```
 * text=auto eol=lf
 *.sh text eol=lf
@@ -293,6 +320,7 @@ HUSKY=0 git commit -m "message"
 ## まとめ
 
 **基本構成**:
+
 - pre-commit: lint-staged
 - commit-msg: commitlint
 - pre-push: test（オプション）

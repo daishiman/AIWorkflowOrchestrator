@@ -58,7 +58,7 @@ export class SignalHandler {
     const { logger, watchPM2Messages } = this.options;
 
     // 終了シグナル
-    const shutdownSignals: NodeJS.Signals[] = ['SIGTERM', 'SIGINT'];
+    const shutdownSignals: NodeJS.Signals[] = ["SIGTERM", "SIGINT"];
     shutdownSignals.forEach((signal) => {
       process.on(signal, () => {
         logger.info(`[SignalHandler] ${signal} received`);
@@ -68,28 +68,33 @@ export class SignalHandler {
 
     // PM2メッセージ監視
     if (watchPM2Messages) {
-      process.on('message', (msg) => {
-        if (msg === 'shutdown') {
-          logger.info('[SignalHandler] PM2 shutdown message received');
-          this.shutdown('PM2_SHUTDOWN');
+      process.on("message", (msg) => {
+        if (msg === "shutdown") {
+          logger.info("[SignalHandler] PM2 shutdown message received");
+          this.shutdown("PM2_SHUTDOWN");
         }
       });
     }
 
     // 未捕捉例外
-    process.on('uncaughtException', (error) => {
-      logger.error('[SignalHandler] Uncaught Exception:', error);
-      this.shutdown('uncaughtException');
+    process.on("uncaughtException", (error) => {
+      logger.error("[SignalHandler] Uncaught Exception:", error);
+      this.shutdown("uncaughtException");
     });
 
     // 未処理のPromise拒否
-    process.on('unhandledRejection', (reason, promise) => {
-      logger.error('[SignalHandler] Unhandled Rejection at:', promise, 'reason:', reason);
+    process.on("unhandledRejection", (reason, promise) => {
+      logger.error(
+        "[SignalHandler] Unhandled Rejection at:",
+        promise,
+        "reason:",
+        reason,
+      );
       // 通常は終了しないが、必要に応じてコメントを外す
       // this.shutdown('unhandledRejection');
     });
 
-    logger.info('[SignalHandler] Signal handlers registered');
+    logger.info("[SignalHandler] Signal handlers registered");
   }
 
   /**
@@ -100,16 +105,20 @@ export class SignalHandler {
 
     // 二重実行防止
     if (this.isShuttingDown) {
-      logger.info('[SignalHandler] Shutdown already in progress');
+      logger.info("[SignalHandler] Shutdown already in progress");
       return;
     }
     this.isShuttingDown = true;
 
-    logger.info(`[SignalHandler] Starting graceful shutdown (reason: ${reason})`);
+    logger.info(
+      `[SignalHandler] Starting graceful shutdown (reason: ${reason})`,
+    );
 
     // タイムアウト設定
     const timeout = setTimeout(() => {
-      logger.error(`[SignalHandler] Shutdown timeout (${shutdownTimeout}ms), forcing exit`);
+      logger.error(
+        `[SignalHandler] Shutdown timeout (${shutdownTimeout}ms), forcing exit`,
+      );
       process.exit(1);
     }, shutdownTimeout);
 
@@ -128,10 +137,10 @@ export class SignalHandler {
       }
 
       clearTimeout(timeout);
-      logger.info('[SignalHandler] Graceful shutdown completed');
+      logger.info("[SignalHandler] Graceful shutdown completed");
       process.exit(0);
     } catch (error) {
-      logger.error('[SignalHandler] Shutdown error:', error);
+      logger.error("[SignalHandler] Shutdown error:", error);
       clearTimeout(timeout);
       process.exit(1);
     }

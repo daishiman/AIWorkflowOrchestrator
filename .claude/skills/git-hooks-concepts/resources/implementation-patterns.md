@@ -1,6 +1,7 @@
 # Git Hooks 実装パターン集
 
 ## パターン1: Prettier + ESLint統合
+
 ```bash
 #!/bin/bash
 # pre-commit: コード品質の統一チェック
@@ -34,6 +35,7 @@ exit 0
 ```
 
 ## パターン2: TypeScript型チェック
+
 ```bash
 #!/bin/bash
 # pre-commit: TypeScript型チェック
@@ -57,6 +59,7 @@ exit 0
 ```
 
 ## パターン3: テスト実行
+
 ```bash
 #!/bin/bash
 # pre-push: テスト実行
@@ -74,6 +77,7 @@ exit 0
 ```
 
 ## パターン4: Conventional Commits検証
+
 ```bash
 #!/bin/bash
 # commit-msg: Conventional Commitsフォーマット検証
@@ -97,6 +101,7 @@ exit 0
 ```
 
 ## パターン5: ブランチ名検証
+
 ```bash
 #!/bin/bash
 # prepare-commit-msg: ブランチ名をプレフィックスとして追加
@@ -120,6 +125,7 @@ exit 0
 ```
 
 ## パターン6: ビルド確認
+
 ```bash
 #!/bin/bash
 # pre-push: ビルド成功確認
@@ -137,6 +143,7 @@ exit 0
 ```
 
 ## パターン7: セキュリティチェック
+
 ```bash
 #!/bin/bash
 # pre-commit: セキュリティ脆弱性検査
@@ -162,6 +169,7 @@ exit 0
 ```
 
 ## パターン8: ファイルサイズ制限
+
 ```bash
 #!/bin/bash
 # pre-commit: ファイルサイズ制限
@@ -185,6 +193,7 @@ exit 0
 ```
 
 ## パターン9: 通知送信
+
 ```bash
 #!/bin/bash
 # post-commit: Slack通知
@@ -201,6 +210,7 @@ exit 0
 ```
 
 ## パターン10: 条件付きチェック
+
 ```bash
 #!/bin/bash
 # pre-commit: ファイルタイプに応じた検証
@@ -231,6 +241,7 @@ exit 0
 ## トラブルシューティング
 
 ### フックが実行されない場合
+
 ```bash
 # 実行権限を確認
 ls -la .git/hooks/pre-commit
@@ -240,6 +251,7 @@ chmod +x .git/hooks/pre-commit
 ```
 
 ### デバッグモード
+
 ```bash
 # フック内でデバッグを有効化
 #!/bin/bash
@@ -247,6 +259,7 @@ set -x  # 実行されるコマンドを出力
 ```
 
 ### 特定フックのみをスキップ
+
 ```bash
 # すべてのフックをスキップ
 git commit --no-verify

@@ -184,7 +184,7 @@ steps:
     uses: actions/setup-node@v4
     with:
       node-version: ${{ inputs.node-version }}
-      cache: 'pnpm'  # npmキャッシュを有効化
+      cache: "pnpm" # npmキャッシュを有効化
 
   - name: Cache dependencies
     id: cache
@@ -274,7 +274,7 @@ jobs:
 
 # Composite Action (action.yml)
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Validate secrets
       shell: bash
@@ -287,7 +287,7 @@ runs:
     - name: Deploy
       shell: bash
       env:
-        API_TOKEN: ${{ env.API_TOKEN }}  # 環境変数から取得
+        API_TOKEN: ${{ env.API_TOKEN }} # 環境変数から取得
       run: |
         curl -H "Authorization: Bearer $API_TOKEN" ...
 ```
@@ -360,7 +360,7 @@ steps:
 
 ```yaml
 # action.yml
-name: 'My Action'
+name: "My Action"
 # バージョンはGitタグで管理
 
 # タグの例
@@ -394,19 +394,24 @@ git push origin v1 --force
 ## [1.2.0] - 2024-01-15
 
 ### Added
+
 - キャッシュ戦略の改善
 - タイムアウト設定のサポート
 
 ### Changed
+
 - デフォルトNode.jsバージョンを18に変更
 
 ### Fixed
+
 - Windows環境でのパス処理の問題を修正
 
 ### Deprecated
+
 - `old-input` パラメータ（v2.0.0で削除予定）
 
 ## [1.1.0] - 2023-12-01
+
 ...
 ```
 
@@ -424,7 +429,7 @@ name: Test Action
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
 
 jobs:
@@ -436,10 +441,10 @@ jobs:
       # ローカルアクションをテスト
       - name: Test action
         id: test
-        uses: ./  # リポジトリルートのaction.yml
+        uses: ./ # リポジトリルートのaction.yml
         with:
-          node-version: '18'
-          cache-enabled: 'true'
+          node-version: "18"
+          cache-enabled: "true"
 
       # 出力を検証
       - name: Verify outputs
@@ -460,7 +465,7 @@ jobs:
 ```yaml
 steps:
   - name: Debug information
-    if: runner.debug == '1'  # ACTIONS_STEP_DEBUG=trueで有効化
+    if: runner.debug == '1' # ACTIONS_STEP_DEBUG=trueで有効化
     shell: bash
     run: |
       echo "::group::Debug Information"
@@ -482,7 +487,7 @@ steps:
 ```yaml
 # action.yml
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Validate
       id: validate
@@ -506,7 +511,7 @@ runs:
 
 **包括的なドキュメントを提供**
 
-```markdown
+````markdown
 # Setup Node with Cache
 
 Node.jsのセットアップとnpmキャッシュの設定を行うComposite Action
@@ -516,22 +521,23 @@ Node.jsのセットアップとnpmキャッシュの設定を行うComposite Act
 ```yaml
 - uses: owner/setup-node-cache@v1
   with:
-    node-version: '18'
-    cache-enabled: 'true'
+    node-version: "18"
+    cache-enabled: "true"
 ```
+````
 
 ## Inputs
 
-| Name | Description | Required | Default |
-|------|-------------|----------|---------|
-| `node-version` | Node.jsバージョン | No | `18` |
-| `cache-enabled` | キャッシュを有効化 | No | `true` |
+| Name            | Description        | Required | Default |
+| --------------- | ------------------ | -------- | ------- |
+| `node-version`  | Node.jsバージョン  | No       | `18`    |
+| `cache-enabled` | キャッシュを有効化 | No       | `true`  |
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| `cache-hit` | キャッシュがヒットしたか |
+| Name           | Description                  |
+| -------------- | ---------------------------- |
+| `cache-hit`    | キャッシュがヒットしたか     |
 | `node-version` | インストールされたバージョン |
 
 ## Examples
@@ -547,14 +553,15 @@ Node.jsのセットアップとnpmキャッシュの設定を行うComposite Act
 ```yaml
 - uses: owner/setup-node-cache@v1
   with:
-    node-version: '20'
-    cache-enabled: 'false'
+    node-version: "20"
+    cache-enabled: "false"
 ```
 
 ## License
 
 MIT
-```
+
+````
 
 ### インラインドキュメント
 
@@ -584,7 +591,7 @@ inputs:
       'true'でキャッシュを有効化、'false'で無効化。
     required: false
     default: 'true'
-```
+````
 
 ---
 
@@ -650,6 +657,7 @@ Error: Required property is missing: shell
 ```
 
 **解決策**:
+
 ```yaml
 # ❌ エラー
 - run: echo "test"
@@ -662,6 +670,7 @@ Error: Required property is missing: shell
 #### 問題: outputs が空
 
 **解決策**:
+
 ```yaml
 # ステップIDと出力を正しく設定
 - id: my-step
@@ -676,6 +685,7 @@ outputs:
 #### 問題: 環境変数が後続ステップで使えない
 
 **解決策**:
+
 ```yaml
 # $GITHUB_ENV を使用
 - run: echo "MY_VAR=value" >> $GITHUB_ENV
@@ -689,6 +699,7 @@ outputs:
 #### 問題: パスが見つからない
 
 **解決策**:
+
 ```yaml
 # 絶対パスを使用
 - run: |

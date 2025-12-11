@@ -12,7 +12,7 @@
 interface TestResult {
   name: string;
   endpoint: string;
-  status: 'pass' | 'fail' | 'skip';
+  status: "pass" | "fail" | "skip";
   duration: number;
   error?: string;
 }
@@ -26,7 +26,7 @@ interface SmokeTestConfig {
 interface TestCase {
   name: string;
   endpoint: string;
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  method: "GET" | "POST" | "PUT" | "DELETE";
   expectedStatus: number;
   expectedBody?: Record<string, unknown>;
   headers?: Record<string, string>;
@@ -41,42 +41,42 @@ interface TestCase {
 const testCases: TestCase[] = [
   // ヘルスチェック
   {
-    name: 'Health Check',
-    endpoint: '/api/health',
-    method: 'GET',
+    name: "Health Check",
+    endpoint: "/api/health",
+    method: "GET",
     expectedStatus: 200,
-    expectedBody: { status: 'healthy' },
+    expectedBody: { status: "healthy" },
   },
 
   // 認証エンドポイント
   {
-    name: 'Auth Status',
-    endpoint: '/api/auth/session',
-    method: 'GET',
+    name: "Auth Status",
+    endpoint: "/api/auth/session",
+    method: "GET",
     expectedStatus: 200,
   },
 
   // 主要APIエンドポイント
   {
-    name: 'API Root',
-    endpoint: '/api',
-    method: 'GET',
+    name: "API Root",
+    endpoint: "/api",
+    method: "GET",
     expectedStatus: 200,
   },
 
   // 静的アセット
   {
-    name: 'Static Assets',
-    endpoint: '/favicon.ico',
-    method: 'GET',
+    name: "Static Assets",
+    endpoint: "/favicon.ico",
+    method: "GET",
     expectedStatus: 200,
   },
 
   // 例: 認証が必要なエンドポイント（スキップ可能）
   {
-    name: 'Protected Endpoint',
-    endpoint: '/api/user/profile',
-    method: 'GET',
+    name: "Protected Endpoint",
+    endpoint: "/api/user/profile",
+    method: "GET",
     expectedStatus: 401, // 認証なしで401を期待
     skip: false,
   },
@@ -89,7 +89,7 @@ const testCases: TestCase[] = [
 async function runTest(
   baseUrl: string,
   testCase: TestCase,
-  timeout: number
+  timeout: number,
 ): Promise<TestResult> {
   const startTime = Date.now();
   const url = `${baseUrl}${testCase.endpoint}`;
@@ -98,7 +98,7 @@ async function runTest(
     return {
       name: testCase.name,
       endpoint: testCase.endpoint,
-      status: 'skip',
+      status: "skip",
       duration: 0,
     };
   }
@@ -110,7 +110,7 @@ async function runTest(
     const response = await fetch(url, {
       method: testCase.method,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         ...testCase.headers,
       },
       body: testCase.body ? JSON.stringify(testCase.body) : undefined,
@@ -126,7 +126,7 @@ async function runTest(
       return {
         name: testCase.name,
         endpoint: testCase.endpoint,
-        status: 'fail',
+        status: "fail",
         duration,
         error: `Expected status ${testCase.expectedStatus}, got ${response.status}`,
       };
@@ -140,7 +140,7 @@ async function runTest(
           return {
             name: testCase.name,
             endpoint: testCase.endpoint,
-            status: 'fail',
+            status: "fail",
             duration,
             error: `Expected body.${key} = ${value}, got ${body[key]}`,
           };
@@ -151,18 +151,18 @@ async function runTest(
     return {
       name: testCase.name,
       endpoint: testCase.endpoint,
-      status: 'pass',
+      status: "pass",
       duration,
     };
   } catch (error) {
     const duration = Date.now() - startTime;
     const errorMessage =
-      error instanceof Error ? error.message : 'Unknown error';
+      error instanceof Error ? error.message : "Unknown error";
 
     return {
       name: testCase.name,
       endpoint: testCase.endpoint,
-      status: 'fail',
+      status: "fail",
       duration,
       error: errorMessage,
     };
@@ -173,20 +173,15 @@ async function runSmokeTests(config: SmokeTestConfig): Promise<TestResult[]> {
   const results: TestResult[] = [];
 
   console.log(`\n🔥 Smoke Tests - ${config.baseUrl}\n`);
-  console.log('─'.repeat(60));
+  console.log("─".repeat(60));
 
   for (const testCase of config.tests) {
     const result = await runTest(config.baseUrl, testCase, config.timeout);
     results.push(result);
 
     const icon =
-      result.status === 'pass'
-        ? '✅'
-        : result.status === 'skip'
-          ? '⏭️'
-          : '❌';
-    const duration =
-      result.status !== 'skip' ? ` (${result.duration}ms)` : '';
+      result.status === "pass" ? "✅" : result.status === "skip" ? "⏭️" : "❌";
+    const duration = result.status !== "skip" ? ` (${result.duration}ms)` : "";
 
     console.log(`${icon} ${result.name}${duration}`);
     if (result.error) {
@@ -198,15 +193,15 @@ async function runSmokeTests(config: SmokeTestConfig): Promise<TestResult[]> {
 }
 
 function printSummary(results: TestResult[]): boolean {
-  const passed = results.filter((r) => r.status === 'pass').length;
-  const failed = results.filter((r) => r.status === 'fail').length;
-  const skipped = results.filter((r) => r.status === 'skip').length;
+  const passed = results.filter((r) => r.status === "pass").length;
+  const failed = results.filter((r) => r.status === "fail").length;
+  const skipped = results.filter((r) => r.status === "skip").length;
   const total = results.length;
 
   const totalDuration = results.reduce((sum, r) => sum + r.duration, 0);
 
-  console.log('\n' + '─'.repeat(60));
-  console.log('\n📊 Summary\n');
+  console.log("\n" + "─".repeat(60));
+  console.log("\n📊 Summary\n");
   console.log(`   Total:   ${total}`);
   console.log(`   Passed:  ${passed} ✅`);
   console.log(`   Failed:  ${failed} ❌`);
@@ -214,7 +209,7 @@ function printSummary(results: TestResult[]): boolean {
   console.log(`   Duration: ${totalDuration}ms`);
 
   if (failed === 0) {
-    console.log('\n🎉 All smoke tests passed!\n');
+    console.log("\n🎉 All smoke tests passed!\n");
     return true;
   } else {
     console.log(`\n⚠️  ${failed} test(s) failed!\n`);
@@ -230,13 +225,15 @@ async function main() {
   const baseUrl = process.argv[2];
 
   if (!baseUrl) {
-    console.error('Usage: npx tsx smoke-test-template.ts <base-url>');
-    console.error('Example: npx tsx smoke-test-template.ts https://app.railway.app');
+    console.error("Usage: npx tsx smoke-test-template.ts <base-url>");
+    console.error(
+      "Example: npx tsx smoke-test-template.ts https://app.railway.app",
+    );
     process.exit(1);
   }
 
   // URLの正規化
-  const normalizedUrl = baseUrl.replace(/\/$/, '');
+  const normalizedUrl = baseUrl.replace(/\/$/, "");
 
   const config: SmokeTestConfig = {
     baseUrl: normalizedUrl,
@@ -249,7 +246,7 @@ async function main() {
     const allPassed = printSummary(results);
     process.exit(allPassed ? 0 : 1);
   } catch (error) {
-    console.error('Fatal error:', error);
+    console.error("Fatal error:", error);
     process.exit(1);
   }
 }

@@ -8,10 +8,7 @@
       "_description": "{{SERVER_DESCRIPTION}}",
 
       "command": "{{COMMAND}}",
-      "args": [
-        "{{ARG_1}}",
-        "{{ARG_2}}"
-      ],
+      "args": ["{{ARG_1}}", "{{ARG_2}}"],
 
       "env": {
         "{{ENV_VAR_1}}": "${{{ENV_VAR_1}}}",

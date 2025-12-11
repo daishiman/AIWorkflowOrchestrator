@@ -103,17 +103,17 @@ scopes:
 
 ```typescript
 enum Role {
-  ADMIN = 'admin',
-  EDITOR = 'editor',
-  VIEWER = 'viewer',
-  GUEST = 'guest'
+  ADMIN = "admin",
+  EDITOR = "editor",
+  VIEWER = "viewer",
+  GUEST = "guest",
 }
 
 const rolePermissions: Record<Role, string[]> = {
-  [Role.ADMIN]: ['read', 'write', 'delete', 'manage'],
-  [Role.EDITOR]: ['read', 'write'],
-  [Role.VIEWER]: ['read'],
-  [Role.GUEST]: ['read:public']
+  [Role.ADMIN]: ["read", "write", "delete", "manage"],
+  [Role.EDITOR]: ["read", "write"],
+  [Role.VIEWER]: ["read"],
+  [Role.GUEST]: ["read:public"],
 };
 
 function hasPermission(userRole: Role, requiredPermission: string): boolean {
@@ -148,20 +148,21 @@ function evaluatePolicy(request: AccessRequest): boolean {
     (req) => req.subject.userId === req.resource.owner,
 
     // 管理者は全アクセス可能
-    (req) => req.subject.role === 'admin',
+    (req) => req.subject.role === "admin",
 
     // 機密データは同じ部門のみ
-    (req) => req.resource.sensitivity === 'confidential'
-      && req.subject.department === req.resource.owner,
+    (req) =>
+      req.resource.sensitivity === "confidential" &&
+      req.subject.department === req.resource.owner,
 
     // 営業時間内のみアクセス可能
     (req) => {
       const hour = req.context.time.getHours();
       return hour >= 9 && hour < 18;
-    }
+    },
   ];
 
-  return policies.some(policy => policy(request));
+  return policies.some((policy) => policy(request));
 }
 ```
 
@@ -210,7 +211,7 @@ resources:
 ```typescript
 async function validatePermissionEscalation(
   currentUser: User,
-  targetPermissions: string[]
+  targetPermissions: string[],
 ): Promise<boolean> {
   const currentPermissions = await getUserPermissions(currentUser.id);
 
@@ -266,7 +267,7 @@ class TemporaryAccessManager {
 
   async revoke(access: TemporaryAccess): Promise<void> {
     await this.store.delete(access);
-    await this.auditLog.record('revoke', access);
+    await this.auditLog.record("revoke", access);
   }
 
   async check(userId: string, permission: string): Promise<boolean> {
@@ -314,7 +315,7 @@ interface PermissionUsage {
 
 async function findUnusedPermissions(
   userId: string,
-  thresholdDays: number = 90
+  thresholdDays: number = 90,
 ): Promise<string[]> {
   const permissions = await getUserPermissions(userId);
   const usageLog = await getPermissionUsageLog(userId);
@@ -322,8 +323,8 @@ async function findUnusedPermissions(
   const threshold = new Date();
   threshold.setDate(threshold.getDate() - thresholdDays);
 
-  return permissions.filter(permission => {
-    const usage = usageLog.find(u => u.permission === permission);
+  return permissions.filter((permission) => {
+    const usage = usageLog.find((u) => u.permission === permission);
     return !usage || !usage.lastUsed || usage.lastUsed < threshold;
   });
 }

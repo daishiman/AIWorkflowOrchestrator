@@ -32,12 +32,14 @@ version: 1.0.0
 コマンドの複雑度に応じた最適な構造を選択できます。
 
 **主要な価値**:
+
 - 4つのパターンの完全理解
 - 複雑度に応じた適切な選択
 - パターンごとのベストプラクティス
 - 実装例と応用方法
 
 **対象ユーザー**:
+
 - コマンドを作成するエージェント（@command-arch）
 - ワークフローを構造化したい開発者
 - パターンを学びたいチーム
@@ -69,9 +71,11 @@ command-basic-patterns/
 ## いつ使うか
 
 ### シナリオ1: パターン選択
+
 **状況**: どのパターンを使うべきか判断したい
 
 **適用条件**:
+
 - [ ] コマンドの複雑度が不明
 - [ ] 適切なパターンがわからない
 - [ ] 複数パターンの組み合わせが必要
@@ -79,9 +83,11 @@ command-basic-patterns/
 **期待される成果**: 最適なパターンの選択
 
 ### シナリオ2: 既存コマンドの理解
+
 **状況**: 既存コマンドがどのパターンを使っているか理解したい
 
 **適用条件**:
+
 - [ ] パターンが混在している
 - [ ] 各パターンの特徴を知りたい
 - [ ] リファクタリングを検討している
@@ -89,9 +95,11 @@ command-basic-patterns/
 **期待される成果**: パターンの特定と理解
 
 ### シナリオ3: ワークフローの構造化
+
 **状況**: 複雑なワークフローを整理したい
 
 **適用条件**:
+
 - [ ] 複数ステップがある
 - [ ] 条件分岐が必要
 - [ ] 外部ファイルの参照が必要
@@ -101,18 +109,20 @@ command-basic-patterns/
 ## パターン1: シンプル指示型
 
 ### 用途
+
 - 単一操作
 - シンプルなワークフロー
 - 明確な手順
 
 ### 適用例
+
 - フォーマット
 - 単純なビルド
 - 基本的なテスト実行
 
 ### 実装例
 
-```markdown
+````markdown
 ---
 description: Format code with Prettier
 ---
@@ -124,9 +134,11 @@ Run Prettier on all JavaScript and TypeScript files:
 ```bash
 npx prettier --write "src/**/*.{js,ts,jsx,tsx}"
 ```
+````
 
 Verify formatting is correct.
-```
+
+````
 
 ### 特徴
 - ✓ シンプルで理解しやすい
@@ -177,8 +189,9 @@ Run tests and type checking:
 ```bash
 pnpm test -- $ARGUMENTS
 pnpm run typecheck
-```
-```
+````
+
+````
 
 ### 特徴
 - ✓ ステップが明確
@@ -226,9 +239,10 @@ Determine target environment from $ARGUMENTS:
 ```bash
 aws s3 sync dist/ s3://staging-bucket/
 aws cloudfront create-invalidation --distribution-id STAGING_ID
-```
+````
 
 ### If Production:
+
 ```bash
 # Require confirmation
 aws s3 sync dist/ s3://production-bucket/
@@ -236,11 +250,14 @@ aws cloudfront create-invalidation --distribution-id PROD_ID
 ```
 
 ## Post-deployment
+
 Verify deployment health:
+
 ```bash
 curl -f https://$ARGUMENTS.example.com/health
 ```
-```
+
+````
 
 ### 特徴
 - ✓ 柔軟性が高い
@@ -287,9 +304,10 @@ Create detailed review with:
 - Issues found (with severity)
 - Suggestions for improvement
 - Approved sections
-```
+````
 
 ### 特徴
+
 - ✓ ガイドラインの一元管理
 - ✓ 一貫性の確保
 - ✓ 更新が容易
@@ -322,13 +340,13 @@ Create detailed review with:
 
 ### 選択基準
 
-| 基準 | パターン1 | パターン2 | パターン3 | パターン4 |
-|------|----------|----------|----------|----------|
-| ステップ数 | 1-3 | 4-8 | 4-8 | 制約なし |
-| 条件分岐 | なし | 少ない | 多い | 可能 |
-| 外部参照 | なし | なし | なし | 必要 |
-| 複雑度 | 低 | 中 | 中-高 | 中 |
-| メンテナンス | 容易 | 容易 | 中 | 容易 |
+| 基準         | パターン1 | パターン2 | パターン3 | パターン4 |
+| ------------ | --------- | --------- | --------- | --------- |
+| ステップ数   | 1-3       | 4-8       | 4-8       | 制約なし  |
+| 条件分岐     | なし      | 少ない    | 多い      | 可能      |
+| 外部参照     | なし      | なし      | なし      | 必要      |
+| 複雑度       | 低        | 中        | 中-高     | 中        |
+| メンテナンス | 容易      | 容易      | 中        | 容易      |
 
 ## パターンの組み合わせ
 
@@ -336,18 +354,23 @@ Create detailed review with:
 
 ```markdown
 ## Step 1: Environment Detection
+
 If $ARGUMENTS is "production":
-  - Require additional approval
-  - Use production configuration
-Else:
-  - Use staging configuration
+
+- Require additional approval
+- Use production configuration
+  Else:
+- Use staging configuration
 
 ## Step 2: Pre-deployment Checks
+
 Run based on environment:
+
 - Staging: Basic tests
 - Production: Full test suite
 
 ## Step 3: Deployment
+
 Execute environment-specific deployment
 ```
 
@@ -355,23 +378,29 @@ Execute environment-specific deployment
 
 ```markdown
 ## Load Configuration
+
 Read environment-specific config:
+
 - If staging: @.claude/config/staging.md
 - If production: @.claude/config/production.md
 
 ## Apply Configuration
+
 Based on loaded config, execute deployment
 ```
 
 ## 詳細リソースの参照
 
 ### パターン詳細
+
 各パターンの詳細は `resources/pattern*.md` を参照
 
 ### 選択ガイド
+
 意思決定フローチャートは `resources/pattern-selection-guide.md` を参照
 
 ### テンプレート
+
 - パターン1: `templates/simple-instruction-template.md`
 - パターン2: `templates/step-by-step-template.md`
 - パターン3: `templates/conditional-template.md`

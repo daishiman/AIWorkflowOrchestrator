@@ -9,13 +9,13 @@ import {
   useQueryClient,
   QueryClient,
   QueryClientProvider,
-} from '@tanstack/react-query';
+} from "@tanstack/react-query";
 
 // フェッチャー関数
 async function fetcher<T>(url: string): Promise<T> {
   const res = await fetch(url);
   if (!res.ok) {
-    const error = new Error('An error occurred while fetching the data.');
+    const error = new Error("An error occurred while fetching the data.");
     error.info = await res.json();
     error.status = res.status;
     throw error;
@@ -37,7 +37,7 @@ export function useData<T>(key: string, enabled = true) {
 ## ユーザーデータフック
 
 ```typescript
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 
 interface User {
   id: string;
@@ -48,7 +48,7 @@ interface User {
 
 export function useUser(userId: string | null) {
   return useQuery<User>({
-    queryKey: ['user', userId],
+    queryKey: ["user", userId],
     queryFn: () => fetcher<User>(`/api/users/${userId}`),
     enabled: !!userId,
     staleTime: 1000 * 60 * 5, // 5分間はstaleにならない
@@ -59,7 +59,7 @@ export function useUser(userId: string | null) {
 // 複数ユーザーの取得
 export function useUsers(userIds: string[]) {
   return useQuery<User[]>({
-    queryKey: ['users', userIds],
+    queryKey: ["users", userIds],
     queryFn: async () => {
       const promises = userIds.map((id) => fetcher<User>(`/api/users/${id}`));
       return Promise.all(promises);
@@ -72,7 +72,7 @@ export function useUsers(userIds: string[]) {
 ## リスト取得フック（ページネーション付き）
 
 ```typescript
-import { useQuery, keepPreviousData } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 
 interface PaginatedResponse<T> {
   data: T[];
@@ -90,7 +90,7 @@ interface UsePaginatedListOptions {
 
 export function usePaginatedList<T>(
   endpoint: string,
-  options: UsePaginatedListOptions
+  options: UsePaginatedListOptions,
 ) {
   const { page, pageSize = 10, enabled = true } = options;
 
@@ -98,7 +98,7 @@ export function usePaginatedList<T>(
     queryKey: [endpoint, { page, pageSize }],
     queryFn: () =>
       fetcher<PaginatedResponse<T>>(
-        `${endpoint}?page=${page}&pageSize=${pageSize}`
+        `${endpoint}?page=${page}&pageSize=${pageSize}`,
       ),
     enabled,
     placeholderData: keepPreviousData, // ページ切り替え時にデータを保持
@@ -110,7 +110,7 @@ export function usePaginatedList<T>(
 ## 無限スクロールフック
 
 ```typescript
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 interface InfiniteResponse<T> {
   data: T[];
@@ -120,10 +120,10 @@ interface InfiniteResponse<T> {
 
 export function useInfiniteList<T>(endpoint: string) {
   const query = useInfiniteQuery<InfiniteResponse<T>>({
-    queryKey: [endpoint, 'infinite'],
+    queryKey: [endpoint, "infinite"],
     queryFn: ({ pageParam }) =>
       fetcher<InfiniteResponse<T>>(
-        pageParam ? `${endpoint}?cursor=${pageParam}` : endpoint
+        pageParam ? `${endpoint}?cursor=${pageParam}` : endpoint,
       ),
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -143,7 +143,7 @@ export function useInfiniteList<T>(endpoint: string) {
 ## 基本ミューテーションフック
 
 ```typescript
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface Todo {
   id: string;
@@ -158,18 +158,18 @@ export function useUpdateTodo() {
   return useMutation({
     mutationFn: async (todo: Partial<Todo> & { id: string }) => {
       const res = await fetch(`/api/todos/${todo.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(todo),
       });
-      if (!res.ok) throw new Error('Failed to update');
+      if (!res.ok) throw new Error("Failed to update");
       return res.json() as Promise<Todo>;
     },
     onSuccess: (data) => {
       // 特定のtodoを更新
-      queryClient.setQueryData(['todo', data.id], data);
+      queryClient.setQueryData(["todo", data.id], data);
       // リストを無効化
-      queryClient.invalidateQueries({ queryKey: ['todos'] });
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
     },
   });
 }
@@ -178,7 +178,7 @@ export function useUpdateTodo() {
 ## 楽観的更新付きミューテーション
 
 ```typescript
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface Todo {
   id: string;
@@ -192,25 +192,25 @@ export function useOptimisticUpdateTodo() {
   return useMutation({
     mutationFn: async (newTodo: Todo) => {
       const res = await fetch(`/api/todos/${newTodo.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newTodo),
       });
-      if (!res.ok) throw new Error('Failed to update');
+      if (!res.ok) throw new Error("Failed to update");
       return res.json() as Promise<Todo>;
     },
 
     // 楽観的更新
     onMutate: async (newTodo) => {
       // 進行中のクエリをキャンセル
-      await queryClient.cancelQueries({ queryKey: ['todos'] });
+      await queryClient.cancelQueries({ queryKey: ["todos"] });
 
       // 現在の状態をスナップショット
-      const previousTodos = queryClient.getQueryData<Todo[]>(['todos']);
+      const previousTodos = queryClient.getQueryData<Todo[]>(["todos"]);
 
       // 楽観的に更新
-      queryClient.setQueryData<Todo[]>(['todos'], (old) =>
-        old?.map((todo) => (todo.id === newTodo.id ? newTodo : todo))
+      queryClient.setQueryData<Todo[]>(["todos"], (old) =>
+        old?.map((todo) => (todo.id === newTodo.id ? newTodo : todo)),
       );
 
       // ロールバック用にコンテキストを返す
@@ -220,13 +220,13 @@ export function useOptimisticUpdateTodo() {
     // エラー時のロールバック
     onError: (err, newTodo, context) => {
       if (context?.previousTodos) {
-        queryClient.setQueryData(['todos'], context.previousTodos);
+        queryClient.setQueryData(["todos"], context.previousTodos);
       }
     },
 
     // 成功・失敗にかかわらず再検証
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['todos'] });
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
     },
   });
 }
@@ -235,7 +235,7 @@ export function useOptimisticUpdateTodo() {
 ## 作成ミューテーション（楽観的更新付き）
 
 ```typescript
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface CreateTodoInput {
   title: string;
@@ -246,18 +246,18 @@ export function useCreateTodo() {
 
   return useMutation({
     mutationFn: async (input: CreateTodoInput) => {
-      const res = await fetch('/api/todos', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/todos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(input),
       });
-      if (!res.ok) throw new Error('Failed to create');
+      if (!res.ok) throw new Error("Failed to create");
       return res.json() as Promise<Todo>;
     },
 
     onMutate: async (newTodoInput) => {
-      await queryClient.cancelQueries({ queryKey: ['todos'] });
-      const previousTodos = queryClient.getQueryData<Todo[]>(['todos']);
+      await queryClient.cancelQueries({ queryKey: ["todos"] });
+      const previousTodos = queryClient.getQueryData<Todo[]>(["todos"]);
 
       // 仮のIDで楽観的に追加
       const optimisticTodo: Todo = {
@@ -266,7 +266,7 @@ export function useCreateTodo() {
         completed: false,
       };
 
-      queryClient.setQueryData<Todo[]>(['todos'], (old) => [
+      queryClient.setQueryData<Todo[]>(["todos"], (old) => [
         ...(old ?? []),
         optimisticTodo,
       ]);
@@ -276,16 +276,16 @@ export function useCreateTodo() {
 
     onSuccess: (data, variables, context) => {
       // サーバーからの正式なデータで仮データを置き換え
-      queryClient.setQueryData<Todo[]>(['todos'], (old) =>
+      queryClient.setQueryData<Todo[]>(["todos"], (old) =>
         old?.map((todo) =>
-          todo.id === context?.optimisticTodo.id ? data : todo
-        )
+          todo.id === context?.optimisticTodo.id ? data : todo,
+        ),
       );
     },
 
     onError: (err, variables, context) => {
       if (context?.previousTodos) {
-        queryClient.setQueryData(['todos'], context.previousTodos);
+        queryClient.setQueryData(["todos"], context.previousTodos);
       }
     },
   });
@@ -295,7 +295,7 @@ export function useCreateTodo() {
 ## 削除ミューテーション
 
 ```typescript
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export function useDeleteTodo() {
   const queryClient = useQueryClient();
@@ -303,17 +303,17 @@ export function useDeleteTodo() {
   return useMutation({
     mutationFn: async (todoId: string) => {
       const res = await fetch(`/api/todos/${todoId}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
-      if (!res.ok) throw new Error('Failed to delete');
+      if (!res.ok) throw new Error("Failed to delete");
     },
 
     onMutate: async (todoId) => {
-      await queryClient.cancelQueries({ queryKey: ['todos'] });
-      const previousTodos = queryClient.getQueryData<Todo[]>(['todos']);
+      await queryClient.cancelQueries({ queryKey: ["todos"] });
+      const previousTodos = queryClient.getQueryData<Todo[]>(["todos"]);
 
-      queryClient.setQueryData<Todo[]>(['todos'], (old) =>
-        old?.filter((todo) => todo.id !== todoId)
+      queryClient.setQueryData<Todo[]>(["todos"], (old) =>
+        old?.filter((todo) => todo.id !== todoId),
       );
 
       return { previousTodos };
@@ -321,12 +321,12 @@ export function useDeleteTodo() {
 
     onError: (err, todoId, context) => {
       if (context?.previousTodos) {
-        queryClient.setQueryData(['todos'], context.previousTodos);
+        queryClient.setQueryData(["todos"], context.previousTodos);
       }
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['todos'] });
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
     },
   });
 }
@@ -335,7 +335,7 @@ export function useDeleteTodo() {
 ## 依存クエリフック
 
 ```typescript
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 
 interface User {
   id: string;
@@ -352,16 +352,15 @@ interface Post {
 export function useUserPosts(userId: string | null) {
   // 1. ユーザー取得
   const userQuery = useQuery<User>({
-    queryKey: ['user', userId],
+    queryKey: ["user", userId],
     queryFn: () => fetcher<User>(`/api/users/${userId}`),
     enabled: !!userId,
   });
 
   // 2. ユーザーの投稿取得（ユーザーが取得できてから）
   const postsQuery = useQuery<Post[]>({
-    queryKey: ['posts', { userId: userQuery.data?.id }],
-    queryFn: () =>
-      fetcher<Post[]>(`/api/users/${userQuery.data!.id}/posts`),
+    queryKey: ["posts", { userId: userQuery.data?.id }],
+    queryFn: () => fetcher<Post[]>(`/api/users/${userQuery.data!.id}/posts`),
     enabled: !!userQuery.data?.id,
   });
 
@@ -467,10 +466,10 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
 ```typescript
 // クエリキーの一元管理
 export const queryKeys = {
-  all: ['todos'] as const,
-  lists: () => [...queryKeys.all, 'list'] as const,
+  all: ["todos"] as const,
+  lists: () => [...queryKeys.all, "list"] as const,
   list: (filters: TodoFilters) => [...queryKeys.lists(), filters] as const,
-  details: () => [...queryKeys.all, 'detail'] as const,
+  details: () => [...queryKeys.all, "detail"] as const,
   detail: (id: string) => [...queryKeys.details(), id] as const,
 };
 

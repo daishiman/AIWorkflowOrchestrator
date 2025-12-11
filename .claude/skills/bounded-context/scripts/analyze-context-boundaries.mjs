@@ -13,19 +13,19 @@
  *   node analyze-context-boundaries.mjs src/
  */
 
-import { readdir, readFile, stat } from 'fs/promises';
-import { join, extname, dirname, basename } from 'path';
+import { readdir, readFile, stat } from "fs/promises";
+import { join, extname, dirname, basename } from "path";
 
 // 分析対象のパターン
 const PATTERNS = {
   // コンテキストを示唆するディレクトリ名
   contextIndicators: [
-    'domain',
-    'context',
-    'module',
-    'bounded-context',
-    'service',
-    'application',
+    "domain",
+    "context",
+    "module",
+    "bounded-context",
+    "service",
+    "application",
   ],
 
   // ドメイン層のファイルパターン
@@ -40,18 +40,13 @@ const PATTERNS = {
 
   // コンテキスト間の依存を示唆するパターン
   crossContextPatterns: [
-    /from\s+['"]\.\.\/\.\.\//,  // 親の親への参照
-    /from\s+['"]@\w+\//,        // スコープパッケージ参照
+    /from\s+['"]\.\.\/\.\.\//, // 親の親への参照
+    /from\s+['"]@\w+\//, // スコープパッケージ参照
     /import.*from.*contexts\//i, // contexts からのインポート
   ],
 
   // 共有カーネルの候補
-  sharedKernelPatterns: [
-    /shared/i,
-    /common/i,
-    /kernel/i,
-    /core/i,
-  ],
+  sharedKernelPatterns: [/shared/i, /common/i, /kernel/i, /core/i],
 };
 
 /**
@@ -79,30 +74,34 @@ async function analyzeDirectory(dir, depth = 0, maxDepth = 4) {
 
     if (entry.isDirectory()) {
       // 除外ディレクトリ
-      if (entry.name.startsWith('.') || entry.name === 'node_modules') {
+      if (entry.name.startsWith(".") || entry.name === "node_modules") {
         continue;
       }
 
       // コンテキスト候補かチェック
-      const isContextCandidate = PATTERNS.contextIndicators.some(
-        indicator => entry.name.toLowerCase().includes(indicator)
+      const isContextCandidate = PATTERNS.contextIndicators.some((indicator) =>
+        entry.name.toLowerCase().includes(indicator),
       );
 
-      const childAnalysis = await analyzeDirectory(fullPath, depth + 1, maxDepth);
+      const childAnalysis = await analyzeDirectory(
+        fullPath,
+        depth + 1,
+        maxDepth,
+      );
       childAnalysis.isContextCandidate = isContextCandidate;
 
       result.children.push(childAnalysis);
 
       // domainディレクトリの存在をチェック
-      if (entry.name.toLowerCase() === 'domain') {
+      if (entry.name.toLowerCase() === "domain") {
         result.hasdomainLayer = true;
       }
     } else if (entry.isFile()) {
       const ext = extname(entry.name);
-      if (['.ts', '.tsx', '.js', '.jsx'].includes(ext)) {
+      if ([".ts", ".tsx", ".js", ".jsx"].includes(ext)) {
         // ドメインファイルかチェック
-        const isDomainFile = PATTERNS.domainPatterns.some(
-          pattern => pattern.test(entry.name)
+        const isDomainFile = PATTERNS.domainPatterns.some((pattern) =>
+          pattern.test(entry.name),
         );
 
         if (isDomainFile) {
@@ -114,7 +113,7 @@ async function analyzeDirectory(dir, depth = 0, maxDepth = 4) {
 
         // コンテキスト間参照をチェック
         try {
-          const content = await readFile(fullPath, 'utf-8');
+          const content = await readFile(fullPath, "utf-8");
           const crossImports = detectCrossContextImports(content, fullPath);
           if (crossImports.length > 0) {
             result.crossContextImports.push({
@@ -137,7 +136,7 @@ async function analyzeDirectory(dir, depth = 0, maxDepth = 4) {
  */
 function detectCrossContextImports(content, filePath) {
   const imports = [];
-  const lines = content.split('\n');
+  const lines = content.split("\n");
 
   for (const line of lines) {
     // インポート文を検出
@@ -146,9 +145,9 @@ function detectCrossContextImports(content, filePath) {
       const importPath = importMatch[1];
 
       // 相対パスで親ディレクトリを超える参照
-      if (importPath.startsWith('../..')) {
+      if (importPath.startsWith("../..")) {
         imports.push({
-          type: 'parent_reference',
+          type: "parent_reference",
           path: importPath,
         });
       }
@@ -156,7 +155,7 @@ function detectCrossContextImports(content, filePath) {
       // 他のコンテキストへの参照
       if (/contexts?\//.test(importPath)) {
         imports.push({
-          type: 'context_reference',
+          type: "context_reference",
           path: importPath,
         });
       }
@@ -176,7 +175,7 @@ function extractContextCandidates(analysis, candidates = []) {
       name: analysis.name,
       path: analysis.path,
       reason: analysis.hasdomainLayer
-        ? 'ドメイン層を持つ'
+        ? "ドメイン層を持つ"
         : `${analysis.domainFiles.length}個のドメインファイルを含む`,
       domainFiles: analysis.domainFiles,
       crossContextImports: analysis.crossContextImports,
@@ -188,7 +187,7 @@ function extractContextCandidates(analysis, candidates = []) {
     candidates.push({
       name: analysis.name,
       path: analysis.path,
-      reason: 'コンテキストを示唆するディレクトリ名',
+      reason: "コンテキストを示唆するディレクトリ名",
       domainFiles: analysis.domainFiles,
       crossContextImports: analysis.crossContextImports,
     });
@@ -206,8 +205,8 @@ function extractContextCandidates(analysis, candidates = []) {
  * 共有カーネル候補を検出
  */
 function detectSharedKernelCandidates(analysis, candidates = []) {
-  const isSharedCandidate = PATTERNS.sharedKernelPatterns.some(
-    pattern => pattern.test(analysis.name)
+  const isSharedCandidate = PATTERNS.sharedKernelPatterns.some((pattern) =>
+    pattern.test(analysis.name),
   );
 
   if (isSharedCandidate && analysis.domainFiles.length > 0) {
@@ -253,18 +252,18 @@ function analyzeContextDependencies(candidates) {
 function generateReport(candidates, sharedCandidates, dependencies) {
   const report = [];
 
-  report.push('# コンテキスト境界分析レポート\n');
+  report.push("# コンテキスト境界分析レポート\n");
   report.push(`生成日時: ${new Date().toISOString()}\n`);
 
   // サマリー
-  report.push('\n## サマリー\n');
+  report.push("\n## サマリー\n");
   report.push(`- コンテキスト候補: ${candidates.length}件`);
   report.push(`- 共有カーネル候補: ${sharedCandidates.length}件`);
   report.push(`- コンテキスト間参照: ${dependencies.length}件\n`);
 
   // コンテキスト候補
   if (candidates.length > 0) {
-    report.push('\n## コンテキスト候補\n');
+    report.push("\n## コンテキスト候補\n");
     for (const candidate of candidates) {
       report.push(`### ${candidate.name}`);
       report.push(`- パス: ${candidate.path}`);
@@ -278,27 +277,29 @@ function generateReport(candidates, sharedCandidates, dependencies) {
           report.push(`  - ... 他 ${candidate.domainFiles.length - 5}件`);
         }
       }
-      report.push('');
+      report.push("");
     }
   }
 
   // 共有カーネル候補
   if (sharedCandidates.length > 0) {
-    report.push('\n## 共有カーネル候補\n');
-    report.push('これらのディレクトリは複数のコンテキストで共有される可能性があります。\n');
+    report.push("\n## 共有カーネル候補\n");
+    report.push(
+      "これらのディレクトリは複数のコンテキストで共有される可能性があります。\n",
+    );
     for (const candidate of sharedCandidates) {
       report.push(`### ${candidate.name}`);
       report.push(`- パス: ${candidate.path}`);
       report.push(`- ドメインファイル数: ${candidate.domainFiles.length}`);
-      report.push('');
+      report.push("");
     }
   }
 
   // コンテキスト間の依存
   if (dependencies.length > 0) {
-    report.push('\n## コンテキスト間の参照\n');
-    report.push('以下の参照はコンテキスト境界を越えている可能性があります。\n');
-    report.push('腐敗防止層（ACL）の導入を検討してください。\n');
+    report.push("\n## コンテキスト間の参照\n");
+    report.push("以下の参照はコンテキスト境界を越えている可能性があります。\n");
+    report.push("腐敗防止層（ACL）の導入を検討してください。\n");
 
     for (const dep of dependencies) {
       report.push(`- **${dep.from}** → ${dep.to}`);
@@ -308,13 +309,13 @@ function generateReport(candidates, sharedCandidates, dependencies) {
   }
 
   // 推奨アクション
-  report.push('\n## 推奨アクション\n');
-  report.push('1. コンテキスト候補ごとにユビキタス言語を定義');
-  report.push('2. コンテキスト間の参照を腐敗防止層で整理');
-  report.push('3. 共有カーネルの範囲を最小限に');
-  report.push('4. コンテキストマップを作成して可視化');
+  report.push("\n## 推奨アクション\n");
+  report.push("1. コンテキスト候補ごとにユビキタス言語を定義");
+  report.push("2. コンテキスト間の参照を腐敗防止層で整理");
+  report.push("3. 共有カーネルの範囲を最小限に");
+  report.push("4. コンテキストマップを作成して可視化");
 
-  return report.join('\n');
+  return report.join("\n");
 }
 
 /**
@@ -324,10 +325,10 @@ async function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.log('使用方法: node analyze-context-boundaries.mjs <directory>');
-    console.log('');
-    console.log('例:');
-    console.log('  node analyze-context-boundaries.mjs src/');
+    console.log("使用方法: node analyze-context-boundaries.mjs <directory>");
+    console.log("");
+    console.log("例:");
+    console.log("  node analyze-context-boundaries.mjs src/");
     process.exit(1);
   }
 
@@ -346,7 +347,7 @@ async function main() {
   }
 
   console.log(`分析対象: ${targetDir}`);
-  console.log('ディレクトリ構造を分析中...');
+  console.log("ディレクトリ構造を分析中...");
 
   // 分析実行
   const analysis = await analyzeDirectory(targetDir);
@@ -358,10 +359,10 @@ async function main() {
 
   // レポート生成
   const report = generateReport(candidates, sharedCandidates, dependencies);
-  console.log('\n' + report);
+  console.log("\n" + report);
 }
 
 main().catch((error) => {
-  console.error('エラー:', error.message);
+  console.error("エラー:", error.message);
   process.exit(1);
 });

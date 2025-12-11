@@ -27,12 +27,14 @@
 ## いつ使うか
 
 ### 適用条件
+
 - [ ] 外部システムのドメインモデルが内部と大きく異なる
 - [ ] 外部システムが頻繁に変更される可能性がある
 - [ ] 内部ドメインの純粋性を維持したい
 - [ ] 外部の概念を内部用語に翻訳する必要がある
 
 ### 適用しない条件
+
 - 外部システムと内部が同じドメインモデルを共有
 - 一時的または使い捨ての統合
 - ACLのオーバーヘッドが価値を上回る場合
@@ -63,8 +65,8 @@
 // 外部の概念: "Subscriber" with "subscription_tier"
 interface ExternalSubscriber {
   subscriber_id: string;
-  subscription_tier: 'free' | 'basic' | 'premium' | 'enterprise';
-  billing_status: 'active' | 'past_due' | 'canceled';
+  subscription_tier: "free" | "basic" | "premium" | "enterprise";
+  billing_status: "active" | "past_due" | "canceled";
 }
 
 // 内部の概念: "User" with "membershipLevel"
@@ -86,19 +88,19 @@ class SubscriberToUserTranslator {
 
   private translateTier(tier: string): MembershipLevel {
     const mapping: Record<string, MembershipLevel> = {
-      'free': MembershipLevel.FREE,
-      'basic': MembershipLevel.STANDARD,
-      'premium': MembershipLevel.PREMIUM,
-      'enterprise': MembershipLevel.ENTERPRISE,
+      free: MembershipLevel.FREE,
+      basic: MembershipLevel.STANDARD,
+      premium: MembershipLevel.PREMIUM,
+      enterprise: MembershipLevel.ENTERPRISE,
     };
     return mapping[tier] ?? MembershipLevel.FREE;
   }
 
   private translateStatus(status: string): AccountStatus {
     const mapping: Record<string, AccountStatus> = {
-      'active': AccountStatus.ACTIVE,
-      'past_due': AccountStatus.SUSPENDED,
-      'canceled': AccountStatus.INACTIVE,
+      active: AccountStatus.ACTIVE,
+      past_due: AccountStatus.SUSPENDED,
+      canceled: AccountStatus.INACTIVE,
     };
     return mapping[status] ?? AccountStatus.UNKNOWN;
   }
@@ -129,7 +131,7 @@ class ExternalSubscriptionServiceAdapter implements UserRepository {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    const response = await this.client.get('/subscribers', { email });
+    const response = await this.client.get("/subscribers", { email });
     if (!response.data.length) return null;
     return this.translator.translate(response.data[0]);
   }
@@ -244,14 +246,14 @@ class OutboundTranslator {
 class ErrorTranslator {
   translateError(externalError: ExternalApiError): DomainError {
     switch (externalError.code) {
-      case 'SUBSCRIBER_NOT_FOUND':
+      case "SUBSCRIBER_NOT_FOUND":
         return new UserNotFoundError(externalError.message);
-      case 'SUBSCRIPTION_EXPIRED':
+      case "SUBSCRIPTION_EXPIRED":
         return new MembershipExpiredError(externalError.message);
-      case 'PAYMENT_FAILED':
+      case "PAYMENT_FAILED":
         return new PaymentError(externalError.message);
       default:
-        return new ExternalServiceError('External service error');
+        return new ExternalServiceError("External service error");
     }
   }
 }
@@ -262,14 +264,14 @@ class ErrorTranslator {
 ### ACL層のテスト
 
 ```typescript
-describe('SubscriberToUserTranslator', () => {
-  it('should translate subscription tier to membership level', () => {
+describe("SubscriberToUserTranslator", () => {
+  it("should translate subscription tier to membership level", () => {
     const translator = new SubscriberToUserTranslator();
 
     const external: ExternalSubscriber = {
-      subscriber_id: '123',
-      subscription_tier: 'premium',
-      billing_status: 'active',
+      subscriber_id: "123",
+      subscription_tier: "premium",
+      billing_status: "active",
     };
 
     const user = translator.translate(external);
@@ -278,13 +280,13 @@ describe('SubscriberToUserTranslator', () => {
     expect(user.accountStatus).toBe(AccountStatus.ACTIVE);
   });
 
-  it('should handle unknown tier gracefully', () => {
+  it("should handle unknown tier gracefully", () => {
     const translator = new SubscriberToUserTranslator();
 
     const external = {
-      subscriber_id: '123',
-      subscription_tier: 'unknown_tier',
-      billing_status: 'active',
+      subscriber_id: "123",
+      subscription_tier: "unknown_tier",
+      billing_status: "active",
     } as ExternalSubscriber;
 
     const user = translator.translate(external);
@@ -297,16 +299,19 @@ describe('SubscriberToUserTranslator', () => {
 ## チェックリスト
 
 ### 設計時
+
 - [ ] 外部概念と内部概念の対応表を作成したか？
 - [ ] 境界の位置が明確に定義されているか？
 - [ ] 内部ドメインが外部に依存していないか？
 
 ### 実装時
+
 - [ ] Translatorで概念の翻訳が完結しているか？
 - [ ] 外部の型が内部コードに漏れていないか？
 - [ ] エラーも内部形式に変換されているか？
 
 ### 保守時
+
 - [ ] 外部API変更時、ACL層のみの修正で済むか？
 - [ ] 翻訳ルールが文書化されているか？
 - [ ] テストカバレッジは十分か？
@@ -345,7 +350,8 @@ class ThinAcl {
 class FatAcl {
   async processUpgrade(userId: string): Promise<void> {
     const user = await this.getUser(userId);
-    if (user.canUpgrade()) { // ← ビジネスロジック
+    if (user.canUpgrade()) {
+      // ← ビジネスロジック
       await this.externalApi.upgrade(userId);
     }
   }

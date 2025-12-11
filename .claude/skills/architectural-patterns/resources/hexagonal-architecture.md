@@ -74,7 +74,7 @@ export interface IPaymentGateway {
 export class OrderService implements IOrderService {
   constructor(
     private orderRepository: IOrderRepository,
-    private paymentGateway: IPaymentGateway
+    private paymentGateway: IPaymentGateway,
   ) {}
 
   async createOrder(customerId: string, items: OrderItem[]): Promise<Order> {
@@ -97,7 +97,7 @@ export class OrderService implements IOrderService {
 
   async cancelOrder(orderId: string): Promise<void> {
     const order = await this.orderRepository.findById(orderId);
-    if (!order) throw new Error('Order not found');
+    if (!order) throw new Error("Order not found");
 
     order.cancel();
     await this.paymentGateway.refund(order.paymentId);
@@ -130,7 +130,7 @@ export class OrderCLI {
     const [command, ...params] = args;
 
     switch (command) {
-      case 'create':
+      case "create":
         await this.orderService.createOrder(params[0], JSON.parse(params[1]));
         break;
       // ...
@@ -165,7 +165,7 @@ export class StripePaymentGateway implements IPaymentGateway {
       amount,
       customer: customerId,
     });
-    return { paymentId: intent.id, status: 'success' };
+    return { paymentId: intent.id, status: "success" };
   }
 
   async refund(paymentId: string): Promise<void> {

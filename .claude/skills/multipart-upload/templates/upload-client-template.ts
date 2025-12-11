@@ -3,10 +3,10 @@
  * 使用例: このテンプレートをプロジェクトに合わせてカスタマイズ
  */
 
-import fs from 'fs';
-import FormData from 'form-data';
-import axios, { AxiosRequestConfig } from 'axios';
-import crypto from 'crypto';
+import fs from "fs";
+import FormData from "form-data";
+import axios, { AxiosRequestConfig } from "axios";
+import crypto from "crypto";
 
 interface UploadProgress {
   loaded: number;
@@ -30,11 +30,11 @@ interface UploadOptions {
  */
 async function calculateChecksum(filePath: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const hash = crypto.createHash('sha256');
+    const hash = crypto.createHash("sha256");
     const stream = fs.createReadStream(filePath);
-    stream.on('data', (chunk) => hash.update(chunk));
-    stream.on('end', () => resolve(hash.digest('hex')));
-    stream.on('error', reject);
+    stream.on("data", (chunk) => hash.update(chunk));
+    stream.on("end", () => resolve(hash.digest("hex")));
+    stream.on("error", reject);
   });
 }
 
@@ -49,8 +49,8 @@ export async function uploadFile(options: UploadOptions): Promise<any> {
 
   // FormData構築
   const formData = new FormData();
-  formData.append('file', fs.createReadStream(filePath));
-  formData.append('checksum', checksum);
+  formData.append("file", fs.createReadStream(filePath));
+  formData.append("checksum", checksum);
 
   // アップロード
   const config: AxiosRequestConfig = {
@@ -95,10 +95,10 @@ export async function uploadFileChunked(options: UploadOptions): Promise<any> {
     const chunk = fs.createReadStream(filePath, { start, end: end - 1 });
 
     const formData = new FormData();
-    formData.append('chunk', chunk);
-    formData.append('chunkIndex', chunkIndex.toString());
-    formData.append('totalChunks', totalChunks.toString());
-    formData.append('fileSize', fileSize.toString());
+    formData.append("chunk", chunk);
+    formData.append("chunkIndex", chunkIndex.toString());
+    formData.append("totalChunks", totalChunks.toString());
+    formData.append("fileSize", fileSize.toString());
 
     const config: AxiosRequestConfig = {
       headers: formData.getHeaders(),

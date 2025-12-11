@@ -1,2 +1,2 @@
-export type { IWorkflowRepository } from './workflow-repository';
-export type { IExecutionRepository } from './execution-repository';
+export type { IWorkflowRepository } from "./workflow-repository";
+export type { IExecutionRepository } from "./execution-repository";

@@ -7,9 +7,9 @@
  * - graceful shutdownによるリソース管理
  */
 
-import { EventEmitter } from 'events';
-import chokidar, { FSWatcher } from 'chokidar';
-import type { Stats } from 'fs';
+import { EventEmitter } from "events";
+import chokidar, { FSWatcher } from "chokidar";
+import type { Stats } from "fs";
 
 // ============================================================
 // 型定義
@@ -36,7 +36,7 @@ export interface WatcherConfig {
 }
 
 export interface FileEvent {
-  type: 'add' | 'change' | 'unlink';
+  type: "add" | "change" | "unlink";
   path: string;
   stats?: Stats;
   timestamp: string;
@@ -71,7 +71,7 @@ export class FileWatcher extends EventEmitter {
     this.setMaxListeners(10); // メモリリーク防止
 
     // エラーハンドラーのデフォルト登録
-    this.on('error', this.defaultErrorHandler.bind(this));
+    this.on("error", this.defaultErrorHandler.bind(this));
   }
 
   // ----------------------------------------------------------
@@ -83,7 +83,7 @@ export class FileWatcher extends EventEmitter {
    */
   async start(): Promise<void> {
     if (this.watcher) {
-      throw new Error('Watcher is already running');
+      throw new Error("Watcher is already running");
     }
 
     this.watcher = chokidar.watch(this.config.watchPath, {
@@ -127,24 +127,24 @@ export class FileWatcher extends EventEmitter {
   // 型安全なイベントリスナー
   // ----------------------------------------------------------
 
-  onFileAdded(handler: FileWatcherEvents['fileAdded']): this {
-    return this.on('fileAdded', handler);
+  onFileAdded(handler: FileWatcherEvents["fileAdded"]): this {
+    return this.on("fileAdded", handler);
   }
 
-  onFileChanged(handler: FileWatcherEvents['fileChanged']): this {
-    return this.on('fileChanged', handler);
+  onFileChanged(handler: FileWatcherEvents["fileChanged"]): this {
+    return this.on("fileChanged", handler);
   }
 
-  onFileRemoved(handler: FileWatcherEvents['fileRemoved']): this {
-    return this.on('fileRemoved', handler);
+  onFileRemoved(handler: FileWatcherEvents["fileRemoved"]): this {
+    return this.on("fileRemoved", handler);
   }
 
-  onError(handler: FileWatcherEvents['error']): this {
-    return this.on('error', handler);
+  onError(handler: FileWatcherEvents["error"]): this {
+    return this.on("error", handler);
   }
 
-  onReady(handler: FileWatcherEvents['ready']): this {
-    return this.on('ready', handler);
+  onReady(handler: FileWatcherEvents["ready"]): this {
+    return this.on("ready", handler);
   }
 
   // ----------------------------------------------------------
@@ -155,17 +155,19 @@ export class FileWatcher extends EventEmitter {
     if (!this.watcher) return;
 
     this.watcher
-      .on('add', (path, stats) => this.handleFileEvent('add', path, stats))
-      .on('change', (path, stats) => this.handleFileEvent('change', path, stats))
-      .on('unlink', (path) => this.handleFileEvent('unlink', path))
-      .on('error', (error) => this.handleError(error))
-      .on('ready', () => this.handleReady());
+      .on("add", (path, stats) => this.handleFileEvent("add", path, stats))
+      .on("change", (path, stats) =>
+        this.handleFileEvent("change", path, stats),
+      )
+      .on("unlink", (path) => this.handleFileEvent("unlink", path))
+      .on("error", (error) => this.handleError(error))
+      .on("ready", () => this.handleReady());
   }
 
   private handleFileEvent(
-    type: 'add' | 'change' | 'unlink',
+    type: "add" | "change" | "unlink",
     path: string,
-    stats?: Stats
+    stats?: Stats,
   ): void {
     const event: FileEvent = {
       type,
@@ -175,57 +177,57 @@ export class FileWatcher extends EventEmitter {
     };
 
     switch (type) {
-      case 'add':
-        this.emit('fileAdded', event);
+      case "add":
+        this.emit("fileAdded", event);
         break;
-      case 'change':
-        this.emit('fileChanged', event);
+      case "change":
+        this.emit("fileChanged", event);
         break;
-      case 'unlink':
-        this.emit('fileRemoved', event);
+      case "unlink":
+        this.emit("fileRemoved", event);
         break;
     }
   }
 
   private handleError(error: Error): void {
     const watcherError: WatcherError = this.normalizeError(error);
-    this.emit('error', watcherError);
+    this.emit("error", watcherError);
   }
 
   private handleReady(): void {
     this.isReady = true;
-    this.emit('ready');
+    this.emit("ready");
   }
 
   private normalizeError(error: Error & { code?: string }): WatcherError {
-    const recoverableCodes = ['EACCES', 'ENOENT', 'EMFILE', 'EBUSY'];
+    const recoverableCodes = ["EACCES", "ENOENT", "EMFILE", "EBUSY"];
     return {
-      code: error.code || 'UNKNOWN',
+      code: error.code || "UNKNOWN",
       message: error.message,
       path: (error as any).path,
-      recoverable: recoverableCodes.includes(error.code || ''),
+      recoverable: recoverableCodes.includes(error.code || ""),
     };
   }
 
   private defaultErrorHandler(error: WatcherError): void {
     // ユーザーハンドラーがない場合のフォールバック
-    if (this.listenerCount('error') === 1) {
-      console.error('[FileWatcher] Unhandled error:', error);
+    if (this.listenerCount("error") === 1) {
+      console.error("[FileWatcher] Unhandled error:", error);
     }
   }
 
   private waitForReady(): Promise<void> {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
-        reject(new Error('Watcher initialization timeout'));
+        reject(new Error("Watcher initialization timeout"));
       }, 30000);
 
-      this.once('ready', () => {
+      this.once("ready", () => {
         clearTimeout(timeout);
         resolve();
       });
 
-      this.once('error', (error) => {
+      this.once("error", (error) => {
         if (!this.isReady) {
           clearTimeout(timeout);
           reject(new Error(`Watcher initialization failed: ${error.message}`));
@@ -244,18 +246,18 @@ export class FileWatcher extends EventEmitter {
  */
 export function createFileWatcher(
   watchPath: string,
-  options?: Partial<WatcherConfig>
+  options?: Partial<WatcherConfig>,
 ): FileWatcher {
   const defaultConfig: WatcherConfig = {
     watchPath,
     ignored: [
-      '**/node_modules/**',
-      '**/.git/**',
-      '**/dist/**',
-      '**/*.tmp',
-      '**/*.swp',
-      '**/.DS_Store',
-      '**/Thumbs.db',
+      "**/node_modules/**",
+      "**/.git/**",
+      "**/dist/**",
+      "**/*.tmp",
+      "**/*.swp",
+      "**/.DS_Store",
+      "**/Thumbs.db",
     ],
     awaitWriteFinish: {
       stabilityThreshold: 100,
@@ -285,8 +287,8 @@ export function setupGracefulShutdown(watcher: FileWatcher): void {
     process.exit(0);
   };
 
-  process.on('SIGTERM', () => shutdown('SIGTERM'));
-  process.on('SIGINT', () => shutdown('SIGINT'));
+  process.on("SIGTERM", () => shutdown("SIGTERM"));
+  process.on("SIGINT", () => shutdown("SIGINT"));
 }
 
 // ============================================================

@@ -69,7 +69,7 @@ export default function GlobalError({ error, reset }) {
 ### 2. Client Componentが必須
 
 ```typescript
-'use client' // 必須
+"use client"; // 必須
 
 export default function GlobalError({ error, reset }) {
   // ...
@@ -85,13 +85,13 @@ export default function GlobalError({ error, reset }) {
 
 ## error.tsxとの違い
 
-| 特性 | error.tsx | global-error.tsx |
-|------|-----------|-----------------|
-| Root Layoutのエラー | ❌ 捕捉不可 | ✅ 捕捉可能 |
-| html/bodyタグ | 不要 | 必須 |
-| 階層配置 | 任意のルートセグメント | app/のみ |
-| Layout継承 | 親Layoutを使用 | 独自のhtml/body |
-| 主な用途 | 特定ルートのエラー | 最終フォールバック |
+| 特性                | error.tsx              | global-error.tsx   |
+| ------------------- | ---------------------- | ------------------ |
+| Root Layoutのエラー | ❌ 捕捉不可            | ✅ 捕捉可能        |
+| html/bodyタグ       | 不要                   | 必須               |
+| 階層配置            | 任意のルートセグメント | app/のみ           |
+| Layout継承          | 親Layoutを使用         | 独自のhtml/body    |
+| 主な用途            | 特定ルートのエラー     | 最終フォールバック |
 
 ## エラーハンドリングの階層
 

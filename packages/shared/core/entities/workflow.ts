@@ -1,4 +1,4 @@
-import type { WorkflowBase, WorkflowStatus, WorkflowType } from '../../types';
+import type { WorkflowBase, WorkflowStatus, WorkflowType } from "../../types";
 
 /**
  * ワークフローエンティティ
@@ -11,17 +11,17 @@ export class Workflow implements WorkflowBase {
     public triggerPath: string | null,
     public status: WorkflowStatus,
     public readonly createdAt: Date,
-    public updatedAt: Date
+    public updatedAt: Date,
   ) {}
 
   /**
    * ワークフローを有効化
    */
   activate(): void {
-    if (this.status === 'active') {
+    if (this.status === "active") {
       return;
     }
-    this.status = 'active';
+    this.status = "active";
     this.updatedAt = new Date();
   }
 
@@ -29,10 +29,10 @@ export class Workflow implements WorkflowBase {
    * ワークフローを無効化
    */
   deactivate(): void {
-    if (this.status === 'inactive') {
+    if (this.status === "inactive") {
       return;
     }
-    this.status = 'inactive';
+    this.status = "inactive";
     this.updatedAt = new Date();
   }
 
@@ -49,7 +49,7 @@ export class Workflow implements WorkflowBase {
    */
   updateName(name: string): void {
     if (!name.trim()) {
-      throw new Error('Workflow name cannot be empty');
+      throw new Error("Workflow name cannot be empty");
     }
     this.name = name.trim();
     this.updatedAt = new Date();
@@ -68,11 +68,11 @@ export class Workflow implements WorkflowBase {
     return new Workflow(
       params.id,
       params.name,
-      params.type ?? 'file_watch',
+      params.type ?? "file_watch",
       params.triggerPath ?? null,
-      'active',
+      "active",
       now,
-      now
+      now,
     );
   }
 }

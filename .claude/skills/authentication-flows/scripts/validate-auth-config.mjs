@@ -19,7 +19,8 @@ const SECURITY_CHECKS = {
     {
       id: "oauth-pkce",
       name: "PKCE使用",
-      check: (config) => config.pkce === true || config.code_challenge_method === "S256",
+      check: (config) =>
+        config.pkce === true || config.code_challenge_method === "S256",
       severity: "warning",
       message: "パブリッククライアントではPKCEの使用を推奨します",
     },
@@ -34,7 +35,11 @@ const SECURITY_CHECKS = {
       id: "oauth-https",
       name: "HTTPS使用",
       check: (config) => {
-        const urls = [config.authorizationEndpoint, config.tokenEndpoint, config.redirectUri];
+        const urls = [
+          config.authorizationEndpoint,
+          config.tokenEndpoint,
+          config.redirectUri,
+        ];
         return urls.filter(Boolean).every((url) => url.startsWith("https://"));
       },
       severity: "error",
@@ -47,7 +52,17 @@ const SECURITY_CHECKS = {
       id: "jwt-algorithm",
       name: "安全なアルゴリズム",
       check: (config) => {
-        const safeAlgorithms = ["RS256", "RS384", "RS512", "ES256", "ES384", "ES512", "HS256", "HS384", "HS512"];
+        const safeAlgorithms = [
+          "RS256",
+          "RS384",
+          "RS512",
+          "ES256",
+          "ES384",
+          "ES512",
+          "HS256",
+          "HS384",
+          "HS512",
+        ];
         return safeAlgorithms.includes(config.algorithm);
       },
       severity: "error",
@@ -84,7 +99,8 @@ const SECURITY_CHECKS = {
     {
       id: "apikey-hashing",
       name: "ハッシュ化保存",
-      check: (config) => config.hashAlgorithm && config.hashAlgorithm !== "plain",
+      check: (config) =>
+        config.hashAlgorithm && config.hashAlgorithm !== "plain",
       severity: "error",
       message: "APIキーはハッシュ化して保存してください",
     },
@@ -215,7 +231,8 @@ function scanDirectory(dirPath) {
   const patterns = [
     // ハードコードされたシークレット
     {
-      pattern: /['"`](sk[-_]|api[-_]?key[-_]?|secret[-_]?|password[-_]?)[a-zA-Z0-9_-]{10,}['"`]/gi,
+      pattern:
+        /['"`](sk[-_]|api[-_]?key[-_]?|secret[-_]?|password[-_]?)[a-zA-Z0-9_-]{10,}['"`]/gi,
       severity: "error",
       message: "ハードコードされたシークレットが検出されました",
     },
@@ -227,7 +244,8 @@ function scanDirectory(dirPath) {
     },
     // HTTP URL（認証関連）
     {
-      pattern: /(authorizationEndpoint|tokenEndpoint|redirectUri)\s*[:=]\s*['"`]http:\/\//gi,
+      pattern:
+        /(authorizationEndpoint|tokenEndpoint|redirectUri)\s*[:=]\s*['"`]http:\/\//gi,
       severity: "error",
       message: "認証URLにHTTPが使用されています",
     },
@@ -355,7 +373,9 @@ function printScanReport(findings) {
   }
 
   console.log("\n" + "-".repeat(60));
-  console.log(`Total: ${findings.length} issues (${errors.length} errors, ${warnings.length} warnings)`);
+  console.log(
+    `Total: ${findings.length} issues (${errors.length} errors, ${warnings.length} warnings)`,
+  );
   console.log("-".repeat(60));
 
   return errors.length === 0;

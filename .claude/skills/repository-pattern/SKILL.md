@@ -157,13 +157,11 @@ cat .claude/skills/repository-pattern/templates/repository-implementation-templa
 **ステップ**:
 
 1. **ドメインエンティティの確認**:
-
    - エンティティの属性と型を把握
    - 一意識別子（ID）の型を確認
    - 関連エンティティの有無を確認
 
 2. **必要な操作の洗い出し**:
-
    - 基本 CRUD（Create, Read, Update, Delete）
    - ビジネス固有の検索メソッド
    - バルク操作の必要性
@@ -189,12 +187,10 @@ cat .claude/skills/repository-pattern/templates/repository-implementation-templa
 **ステップ**:
 
 1. **データ変換の設計**:
-
    - DB オブジェクト → ドメインエンティティ（toEntity）
    - ドメインエンティティ → DB オブジェクト（toRecord）
 
 2. **実装の配置決定**:
-
    - 共通インフラ層（src/shared/infrastructure/database/repositories/）
 
 3. **エラーハンドリング設計**:
@@ -217,7 +213,6 @@ cat .claude/skills/repository-pattern/templates/repository-implementation-templa
 **ステップ**:
 
 1. **単体テストの設計**:
-
    - 各メソッドの正常系
    - エラーケース
    - 境界条件
@@ -275,12 +270,10 @@ app/ → features/ → shared/infrastructure/ → shared/core/
 ### すべきこと
 
 1. **ドメイン用語を使用**:
-
    - ✅ `findPendingWorkflows()`
    - ❌ `findByStatusEquals("PENDING")`
 
 2. **単一責任を維持**:
-
    - 1 つの Repository は 1 つの集約ルートに対応
    - 関連エンティティは集約ルート経由でアクセス
 
@@ -291,12 +284,10 @@ app/ → features/ → shared/infrastructure/ → shared/core/
 ### 避けるべきこと
 
 1. **ビジネスロジックの混入**:
-
    - ❌ Repository 内でドメインルールを適用
    - ✅ Repository 外のサービス層で処理
 
 2. **トランザクション管理の漏洩**:
-
    - ❌ Repository がトランザクションを開始
    - ✅ 呼び出し側がトランザクションを制御
 

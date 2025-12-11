@@ -51,6 +51,7 @@ model: sonnet
 ### Phase 1: MCPサーバー名の確認
 
 **引数確認**:
+
 ```bash
 # MCPサーバー名が指定されている場合
 mcp-server-name: "$ARGUMENTS"（例: context7, sequential-thinking, playwright）
@@ -65,10 +66,12 @@ mcp-server-name: "$ARGUMENTS"（例: context7, sequential-thinking, playwright�
 **使用エージェント**: `.claude/agents/mcp-integrator.md`
 
 **エージェントへの依頼内容**:
+
 ```markdown
 MCPサーバー「${mcp-server-name}」の統合設定を行ってください。
 
 **要件**:
+
 1. MCPサーバー情報の収集:
    - サーバー種別（npx package、custom command、Docker container）
    - 必要な環境変数（API キー、認証情報等）
@@ -91,17 +94,20 @@ MCPサーバー「${mcp-server-name}」の統合設定を行ってください�
    - トラブルシューティング
 
 **スキル参照**:
+
 - `.claude/skills/mcp-protocol/SKILL.md`: MCP仕様、設定形式
 - `.claude/skills/tool-security/SKILL.md`: ツール権限設計
 - `.claude/skills/json-schema-validation/SKILL.md`: 設定ファイル検証
 - `.claude/skills/process-management/SKILL.md`: プロセス管理
 
 **成果物**:
+
 - `claude_mcp_config.json`（MCPサーバー設定、既存設定保持）
 - `.env.example`（環境変数追加）
 - `.claude/docs/mcp/${mcp-server-name}.md`（使用ガイド）
 
 **品質基準**:
+
 - JSON構文の正確性
 - 既存設定の保持（マージ処理、上書き禁止）
 - セキュリティ（API キーの環境変数化、パス検証）
@@ -111,12 +117,14 @@ MCPサーバー「${mcp-server-name}」の統合設定を行ってください�
 ### Phase 3: 検証と完了
 
 **検証内容**:
+
 1. claude_mcp_config.json 構文チェック
 2. 環境変数の存在確認
 3. MCPサーバー起動テスト（オプション）
 4. ツール一覧の取得確認
 
 **完了報告**:
+
 - 設定されたMCPサーバー名
 - 提供されるツール一覧
 - 必要な環境変数一覧
@@ -131,6 +139,7 @@ MCPサーバー「${mcp-server-name}」の統合設定を行ってください�
 ```
 
 **設定内容**:
+
 ```json
 {
   "mcpServers": {
@@ -151,6 +160,7 @@ MCPサーバー「${mcp-server-name}」の統合設定を行ってください�
 ```
 
 **設定内容**:
+
 ```json
 {
   "mcpServers": {
@@ -171,6 +181,7 @@ MCPサーバー「${mcp-server-name}」の統合設定を行ってください�
 ```
 
 **設定内容**:
+
 ```json
 {
   "mcpServers": {
@@ -186,6 +197,7 @@ MCPサーバー「${mcp-server-name}」の統合設定を行ってください�
 ```
 
 **環境変数**:
+
 ```bash
 # .env.example に追加
 PLAYWRIGHT_BROWSER=chromium  # chromium | firefox | webkit
@@ -195,22 +207,24 @@ PLAYWRIGHT_BROWSER=chromium  # chromium | firefox | webkit
 
 ### 公式MCPサーバー
 
-| サーバー名 | 説明 | 環境変数 |
-|-----------|------|----------|
-| **context7** | ライブラリドキュメンテーション検索 | 不要 |
-| **sequential-thinking** | 多段階推論エンジン | 不要 |
-| **playwright** | ブラウザ自動化・E2Eテスト | PLAYWRIGHT_BROWSER（オプション） |
-| **brave-search** | Brave Search API統合 | BRAVE_API_KEY（必須） |
-| **github** | GitHub API統合 | GITHUB_PERSONAL_ACCESS_TOKEN（必須） |
+| サーバー名              | 説明                               | 環境変数                             |
+| ----------------------- | ---------------------------------- | ------------------------------------ |
+| **context7**            | ライブラリドキュメンテーション検索 | 不要                                 |
+| **sequential-thinking** | 多段階推論エンジン                 | 不要                                 |
+| **playwright**          | ブラウザ自動化・E2Eテスト          | PLAYWRIGHT_BROWSER（オプション）     |
+| **brave-search**        | Brave Search API統合               | BRAVE_API_KEY（必須）                |
+| **github**              | GitHub API統合                     | GITHUB_PERSONAL_ACCESS_TOKEN（必須） |
 
 ### カスタムMCPサーバー
 
 カスタムMCPサーバーも設定可能:
+
 ```bash
 /ai:setup-mcp custom-server
 ```
 
 対話的に以下を収集:
+
 - 起動コマンド（npx、node、custom script）
 - 環境変数
 - セキュリティ設定
@@ -222,6 +236,7 @@ PLAYWRIGHT_BROWSER=chromium  # chromium | firefox | webkit
 **原因**: 環境変数が設定されていない
 
 **解決策**:
+
 ```bash
 # 必要な環境変数を確認
 cat .claude/docs/mcp/[server-name].md
@@ -236,6 +251,7 @@ cp .env.example .env
 **原因**: claude_mcp_config.json のフォーマット不正
 
 **解決策**:
+
 ```bash
 # JSONフォーマット検証
 cat claude_mcp_config.json | jq .
@@ -250,6 +266,7 @@ mv claude_mcp_config.json.tmp claude_mcp_config.json
 **原因**: MCPサーバーが正常に起動していない
 
 **解決策**:
+
 1. Claude Codeを再起動
 2. MCPサーバーログを確認
 3. 環境変数が正しく設定されているか確認
@@ -259,6 +276,7 @@ mv claude_mcp_config.json.tmp claude_mcp_config.json
 **原因**: mcp-integrator のマージ処理ミス
 
 **解決策**:
+
 1. Git履歴から claude_mcp_config.json を復元
 2. 手動で設定をマージ
 3. mcp-integrator エージェントのバグ報告
@@ -286,6 +304,7 @@ mv claude_mcp_config.json.tmp claude_mcp_config.json
 ### ツール権限の制限
 
 MCPサーバーが提供するツールに対して、必要最小限の権限のみ付与:
+
 - Read系ツールのみ: 分析・検索用途
 - Write系ツール: 明示的な承認必要
 - Bash系ツール: サンドボックス環境のみ

@@ -1,6 +1,6 @@
-import Database from 'better-sqlite3';
-import { drizzle } from 'drizzle-orm/better-sqlite3';
-import * as schema from './schema';
+import Database from "better-sqlite3";
+import { drizzle } from "drizzle-orm/better-sqlite3";
+import * as schema from "./schema";
 
 export type DbClient = ReturnType<typeof createDbClient>;
 
@@ -11,9 +11,9 @@ export function createDbClient(dbPath: string) {
   const sqlite = new Database(dbPath);
 
   // WAL モードで高速化
-  sqlite.pragma('journal_mode = WAL');
+  sqlite.pragma("journal_mode = WAL");
   // 外部キー制約を有効化
-  sqlite.pragma('foreign_keys = ON');
+  sqlite.pragma("foreign_keys = ON");
 
   return drizzle(sqlite, { schema });
 }
@@ -22,8 +22,8 @@ export function createDbClient(dbPath: string) {
  * インメモリデータベースクライアントを作成（テスト用）
  */
 export function createInMemoryDbClient() {
-  const sqlite = new Database(':memory:');
-  sqlite.pragma('foreign_keys = ON');
+  const sqlite = new Database(":memory:");
+  sqlite.pragma("foreign_keys = ON");
   return drizzle(sqlite, { schema });
 }
 
@@ -32,8 +32,8 @@ export function createInMemoryDbClient() {
  */
 export function initializeDatabase(dbPath: string) {
   const sqlite = new Database(dbPath);
-  sqlite.pragma('journal_mode = WAL');
-  sqlite.pragma('foreign_keys = ON');
+  sqlite.pragma("journal_mode = WAL");
+  sqlite.pragma("foreign_keys = ON");
 
   // テーブル作成
   sqlite.exec(`

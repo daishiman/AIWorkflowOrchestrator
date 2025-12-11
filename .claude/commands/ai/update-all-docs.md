@@ -39,10 +39,10 @@ description: |
   トリガーキーワード: update docs, documentation, ドキュメント更新, 仕様書更新
 argument-hint: ""
 allowed-tools:
-   - Task
-   - Read
-   - Edit
-   - Write(docs/**)
+  - Task
+  - Read
+  - Edit
+  - Write(docs/**)
 model: sonnet
 ---
 
@@ -55,6 +55,7 @@ model: sonnet
 ### Phase 1: 変更内容の分析
 
 **Git差分確認**:
+
 ```bash
 # 前回のドキュメント更新以降の変更
 git log --since="last-doc-update" --oneline
@@ -68,12 +69,14 @@ git diff HEAD~10 --name-only | grep "src/"
 **使用エージェント**: `.claude/agents/spec-writer.md`
 
 **依頼内容**:
+
 ```markdown
 仕様書（`docs/20-specifications/`）を更新してください。
 
 **変更内容**: ${git diff summary}
 
 **要件**:
+
 1. 機能仕様書の更新:
    - 新機能追加の反映
    - 変更箇所の更新
@@ -84,6 +87,7 @@ git diff HEAD~10 --name-only | grep "src/"
 3. 変更履歴の追記
 
 **スキル参照**:
+
 - `.claude/skills/markdown-advanced-syntax/SKILL.md`
 - `.claude/skills/technical-documentation-standards/SKILL.md`
 
@@ -95,12 +99,14 @@ git diff HEAD~10 --name-only | grep "src/"
 **使用エージェント**: `.claude/agents/api-doc-writer.md`
 
 **依頼内容**:
+
 ```markdown
 API仕様書（`docs/30-api/`）を更新してください。
 
 **変更内容**: ${API route changes}
 
 **要件**:
+
 1. エンドポイント仕様更新:
    - 新規エンドポイント追加
    - リクエスト/レスポンススキーマ更新
@@ -120,12 +126,14 @@ API仕様書（`docs/30-api/`）を更新してください。
 **使用エージェント**: `.claude/agents/manual-writer.md`
 
 **依頼内容**:
+
 ```markdown
 ユーザーマニュアル（`docs/40-manuals/`）を更新してください。
 
 **変更内容**: ${feature changes}
 
 **要件**:
+
 1. 使用方法の更新:
    - 新機能の使用例追加
    - UI変更の反映
@@ -144,16 +152,19 @@ API仕様書（`docs/30-api/`）を更新してください。
 ## ドキュメント更新完了
 
 ### 更新サマリー
+
 - 仕様書: ${spec_updated}件更新
 - API仕様: ${api_updated}件更新
 - マニュアル: ${manual_updated}件更新
 
 ### 主な変更
+
 - 新機能追加: ${new_features}
 - APIエンドポイント: ${new_endpoints}
 - UI変更: ${ui_changes}
 
 ### Next Steps
+
 1. ドキュメントレビュー
 2. コミット: git commit -m "docs: update all documentation"
 ```
@@ -165,6 +176,7 @@ API仕様書（`docs/30-api/`）を更新してください。
 ```
 
 自動実行:
+
 1. 変更内容分析（Git差分）
 2. 仕様書更新（spec-writer）
 3. API仕様更新（api-doc-writer）

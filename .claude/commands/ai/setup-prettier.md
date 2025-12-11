@@ -49,16 +49,20 @@ model: sonnet
 **使用エージェント**: `.claude/agents/code-quality.md`
 
 **エージェントへの依頼内容**:
-```markdown
+
+````markdown
 Prettier設定を構築してください。
 
 **要件**:
+
 1. インストール:
    ```bash
    pnpm add -D prettier eslint-config-prettier
    ```
+````
 
 2. .prettierrc生成:
+
    ```json
    {
      "semi": true,
@@ -71,6 +75,7 @@ Prettier設定を構築してください。
    ```
 
 3. .prettierignore生成:
+
    ```
    node_modules/
    .next/
@@ -92,7 +97,8 @@ Prettier設定を構築してください。
 **スキル参照**: `.claude/skills/prettier-integration/SKILL.md`
 
 **成果物**: .prettierrc、.prettierignore、package.json
-```
+
+````
 
 ### Phase 2: 完了報告
 
@@ -107,7 +113,7 @@ Prettier設定を構築してください。
 ### Next Steps
 1. フォーマット実行: `pnpm format`
 2. エディタ統合（VSCode: Format On Save）
-```
+````
 
 ## 使用例
 
@@ -116,6 +122,7 @@ Prettier設定を構築してください。
 ```
 
 自動実行:
+
 1. Prettierインストール
 2. .prettierrc生成
 3. ESLint統合設定
@@ -126,6 +133,7 @@ Prettier設定を構築してください。
 ### VSCode
 
 `.vscode/settings.json`:
+
 ```json
 {
   "editor.formatOnSave": true,

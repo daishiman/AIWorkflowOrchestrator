@@ -9,18 +9,21 @@ GitHub Actionsワークフローのデバッグログを有効化し、詳細な
 **用途**: 各ステップの詳細な実行ログを出力
 
 **有効化方法**:
+
 ```bash
 # リポジトリシークレットとして設定
 gh secret set ACTIONS_STEP_DEBUG --body "true"
 ```
 
 **または手動設定**:
+
 1. GitHubリポジトリ → Settings → Secrets and variables → Actions
 2. "New repository secret" をクリック
 3. Name: `ACTIONS_STEP_DEBUG`
 4. Value: `true`
 
 **出力例**:
+
 ```
 ::debug::Evaluating condition for step: 'Run tests'
 ::debug::Evaluating: success()
@@ -34,16 +37,19 @@ gh secret set ACTIONS_STEP_DEBUG --body "true"
 **用途**: ランナープロセスの診断ログを出力（より詳細）
 
 **有効化方法**:
+
 ```bash
 gh secret set ACTIONS_RUNNER_DEBUG --body "true"
 ```
 
 **警告**:
+
 - 非常に大量のログを生成
 - ストレージとログビューアのパフォーマンスに影響
 - 本当に必要な場合のみ使用
 
 **出力例**:
+
 ```
 [DEBUG] Starting runner listener
 [DEBUG] Connection info: https://pipelines.actions.githubusercontent.com/...
@@ -64,6 +70,7 @@ gh secret set ACTIONS_RUNNER_DEBUG --body "true"
 ```
 
 **ログレベル**:
+
 ```yaml
 - name: Various log levels
   run: |
@@ -83,6 +90,7 @@ gh secret set ACTIONS_RUNNER_DEBUG --body "true"
 ```
 
 **主要フィールド**:
+
 - `github.event`: トリガーイベントの詳細
 - `github.ref`: ブランチ/タグ参照
 - `github.sha`: コミットSHA
@@ -340,6 +348,7 @@ act push --secret-file .secrets
 **原因**: ACTIONS_STEP_DEBUGがリポジトリシークレットに設定されていない
 
 **解決策**:
+
 ```bash
 gh secret set ACTIONS_STEP_DEBUG --body "true"
 ```
@@ -347,6 +356,7 @@ gh secret set ACTIONS_STEP_DEBUG --body "true"
 ### 8.2 ログが多すぎて見づらい
 
 **解決策**: ログをグループ化
+
 ```yaml
 - name: Verbose output
   run: |
@@ -358,6 +368,7 @@ gh secret set ACTIONS_STEP_DEBUG --body "true"
 ### 8.3 センシティブ情報の漏洩
 
 **解決策**: 自動マスキングの確認
+
 ```yaml
 - name: Check masking
   run: |
@@ -367,6 +378,7 @@ gh secret set ACTIONS_STEP_DEBUG --body "true"
 ```
 
 **追加マスク**:
+
 ```yaml
 - name: Mask custom values
   run: |
@@ -377,5 +389,6 @@ gh secret set ACTIONS_STEP_DEBUG --body "true"
 ---
 
 **関連リソース**:
+
 - [troubleshooting-guide.md](./troubleshooting-guide.md): 一般的なエラーと解決策
 - [diagnostic-commands.md](./diagnostic-commands.md): 診断コマンドリファレンス

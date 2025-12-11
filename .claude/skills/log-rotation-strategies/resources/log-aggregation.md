@@ -32,16 +32,19 @@
 ### ELK Stack (Elasticsearch, Logstash, Kibana)
 
 **特徴**:
+
 - オープンソース
 - 高度な検索・分析機能
 - オンプレミス運用可能
 
 **構成**:
+
 ```
 App → Filebeat → Logstash → Elasticsearch → Kibana
 ```
 
 **Filebeat設定** (`filebeat.yml`):
+
 ```yaml
 filebeat.inputs:
   - type: log
@@ -59,11 +62,13 @@ output.elasticsearch:
 ### Datadog
 
 **特徴**:
+
 - SaaS、管理不要
 - APM統合
 - リッチなダッシュボード
 
 **Agent設定** (`datadog.yaml`):
+
 ```yaml
 logs_enabled: true
 
@@ -72,6 +77,7 @@ logs_config:
 ```
 
 **カスタムログ設定** (`conf.d/myapp.d/conf.yaml`):
+
 ```yaml
 logs:
   - type: file
@@ -84,11 +90,13 @@ logs:
 ### AWS CloudWatch Logs
 
 **特徴**:
+
 - AWSネイティブ統合
 - 低コスト
 - Lambda連携
 
 **CloudWatch Agent設定**:
+
 ```json
 {
   "logs": {
@@ -111,11 +119,13 @@ logs:
 ### Grafana Loki
 
 **特徴**:
+
 - 軽量
 - Grafana統合
 - ラベルベース検索
 
 **Promtail設定** (`promtail.yaml`):
+
 ```yaml
 server:
   http_listen_port: 9080
@@ -141,51 +151,51 @@ scrape_configs:
 ### Winston + 外部サービス
 
 ```javascript
-const winston = require('winston');
-const { ElasticsearchTransport } = require('winston-elasticsearch');
+const winston = require("winston");
+const { ElasticsearchTransport } = require("winston-elasticsearch");
 
 const logger = winston.createLogger({
   transports: [
     // ファイル出力
     new winston.transports.File({
-      filename: 'logs/app.log'
+      filename: "logs/app.log",
     }),
     // Elasticsearch送信
     new ElasticsearchTransport({
-      level: 'info',
+      level: "info",
       clientOpts: {
-        node: 'http://elasticsearch:9200'
+        node: "http://elasticsearch:9200",
       },
-      indexPrefix: 'myapp'
-    })
-  ]
+      indexPrefix: "myapp",
+    }),
+  ],
 });
 ```
 
 ### Pino + HTTP送信
 
 ```javascript
-const pino = require('pino');
-const pinoHttp = require('pino-http');
+const pino = require("pino");
+const pinoHttp = require("pino-http");
 
 // HTTP経由でログ送信
 const transport = pino.transport({
   targets: [
     {
-      target: 'pino/file',
-      options: { destination: './logs/app.log' }
+      target: "pino/file",
+      options: { destination: "./logs/app.log" },
     },
     {
-      target: 'pino-datadog-transport',
+      target: "pino-datadog-transport",
       options: {
         ddClientConf: {
           authMethods: {
-            apiKeyAuth: process.env.DD_API_KEY
-          }
-        }
-      }
-    }
-  ]
+            apiKeyAuth: process.env.DD_API_KEY,
+          },
+        },
+      },
+    },
+  ],
 });
 
 const logger = pino(transport);
@@ -197,27 +207,27 @@ const logger = pino(transport);
 // 推奨フォーマット
 const logEntry = {
   timestamp: new Date().toISOString(),
-  level: 'info',
-  service: 'myapp',
-  version: '1.0.0',
+  level: "info",
+  service: "myapp",
+  version: "1.0.0",
   host: os.hostname(),
   pid: process.pid,
 
   // リクエストコンテキスト
-  requestId: req.headers['x-request-id'],
+  requestId: req.headers["x-request-id"],
   userId: req.user?.id,
 
   // ログ内容
-  message: 'User logged in',
-  event: 'user.login',
+  message: "User logged in",
+  event: "user.login",
   duration: 150,
 
   // エラー情報（該当する場合）
   error: {
     name: err.name,
     message: err.message,
-    stack: err.stack
-  }
+    stack: err.stack,
+  },
 };
 ```
 
@@ -228,7 +238,7 @@ const logEntry = {
 ```javascript
 // 本番環境ではinfo以上のみ
 const logger = winston.createLogger({
-  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+  level: process.env.NODE_ENV === "production" ? "info" : "debug",
   // ...
 });
 ```
@@ -250,8 +260,8 @@ function logWithSampling(level, message, meta) {
 
 ```javascript
 // 環境変数で動的変更
-process.on('SIGUSR2', () => {
-  const newLevel = logger.level === 'info' ? 'debug' : 'info';
+process.on("SIGUSR2", () => {
+  const newLevel = logger.level === "info" ? "debug" : "info";
   logger.level = newLevel;
   logger.info(`Log level changed to: ${newLevel}`);
 });
@@ -362,12 +372,12 @@ sum by (level) (rate({service="myapp"}[5m]))
 
 ### 保持期間の最適化
 
-| ログタイプ | 推奨保持期間 |
-|-----------|-------------|
-| デバッグログ | 3-7日 |
-| アプリログ | 30-90日 |
-| 監査ログ | 1-7年 |
-| セキュリティログ | 1-7年 |
+| ログタイプ       | 推奨保持期間 |
+| ---------------- | ------------ |
+| デバッグログ     | 3-7日        |
+| アプリログ       | 30-90日      |
+| 監査ログ         | 1-7年        |
+| セキュリティログ | 1-7年        |
 
 ### データ圧縮
 

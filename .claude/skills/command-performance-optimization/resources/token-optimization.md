@@ -20,13 +20,17 @@ description: Create React component with TypeScript, tests, and stories
 
 ```markdown
 # ❌ Before
+
 ## Step 1: Preparation
+
 First, we need to check if the component already exists.
 If it exists, we should ask the user if they want to overwrite it.
 Then we need to create the directory structure if it doesn't exist.
 
 # ✅ After
+
 ## Step 1: Check & Prepare
+
 Check component existence
 Create directories if needed
 ```
@@ -34,12 +38,14 @@ Create directories if needed
 ## 不要な情報削除
 
 削除すべき:
+
 - 冗長な説明
 - 自明なステップ
 - 詳細すぎるコメント
 - 例示の過剰な繰り返し
 
 保持すべき:
+
 - コマンド構造
 - 重要な条件分岐
 - エラーハンドリング

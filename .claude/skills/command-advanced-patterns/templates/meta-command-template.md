@@ -10,16 +10,19 @@ description: Manage and discover commands
 Action: $ARGUMENTS
 
 ## List Commands
+
 Scan `.claude/commands/*.md`
 Parse YAML frontmatter
 Display: | Name | Description |
 
 ## Search
+
 If $ARGUMENTS:
-  Filter by keyword
-  Display matches
+Filter by keyword
+Display matches
 
 ## Help
+
 If $ARGUMENTS == "help":
-  Show usage guide
+Show usage guide
 ```

@@ -17,20 +17,23 @@ app.log.N (削除)
 ```
 
 **メリット**:
+
 - ディスク使用量の予測が容易
 - ログ量が多い時も安定動作
 
 **デメリット**:
+
 - 時系列での検索が困難
 - ファイル間で日付が跨る
 
 **設定例（Winston）**:
+
 ```javascript
 new winston.transports.File({
-  filename: 'logs/app.log',
+  filename: "logs/app.log",
   maxsize: 10 * 1024 * 1024, // 10MB
   maxFiles: 5,
-  tailable: true
+  tailable: true,
 });
 ```
 
@@ -46,19 +49,22 @@ app-2025-01-17.log
 ```
 
 **メリット**:
+
 - 日付でのログ検索が容易
 - 時系列分析に最適
 
 **デメリット**:
+
 - ログ量によりファイルサイズが不均一
 - 大量ログ時にディスク圧迫
 
 **設定例（winston-daily-rotate-file）**:
+
 ```javascript
 new DailyRotateFile({
-  filename: 'logs/app-%DATE%.log',
-  datePattern: 'YYYY-MM-DD',
-  maxFiles: '14d'
+  filename: "logs/app-%DATE%.log",
+  datePattern: "YYYY-MM-DD",
+  maxFiles: "14d",
 });
 ```
 
@@ -75,16 +81,18 @@ app-2025-01-16.2.log    (30MB - 同日3つ目)
 ```
 
 **メリット**:
+
 - 両方のメリットを享受
 - 柔軟なディスク管理
 
 **設定例**:
+
 ```javascript
 new DailyRotateFile({
-  filename: 'logs/app-%DATE%.log',
-  datePattern: 'YYYY-MM-DD',
-  maxSize: '100m',     // サイズ制限
-  maxFiles: '14d'      // 時間制限
+  filename: "logs/app-%DATE%.log",
+  datePattern: "YYYY-MM-DD",
+  maxSize: "100m", // サイズ制限
+  maxFiles: "14d", // 時間制限
 });
 ```
 
@@ -128,20 +136,20 @@ new DailyRotateFile({
 
 ### 日付パターン
 
-| パターン | 例 | 用途 |
-|---------|-----|------|
-| `YYYY-MM-DD` | app-2025-01-15.log | 日次分析 |
-| `YYYY-MM-DD-HH` | app-2025-01-15-14.log | 時間帯分析 |
-| `YYYY-MM` | app-2025-01.log | 月次アーカイブ |
-| `YYYYMMDD` | app-20250115.log | ソート容易 |
+| パターン        | 例                    | 用途           |
+| --------------- | --------------------- | -------------- |
+| `YYYY-MM-DD`    | app-2025-01-15.log    | 日次分析       |
+| `YYYY-MM-DD-HH` | app-2025-01-15-14.log | 時間帯分析     |
+| `YYYY-MM`       | app-2025-01.log       | 月次アーカイブ |
+| `YYYYMMDD`      | app-20250115.log      | ソート容易     |
 
 ### 番号パターン
 
-| パターン | 例 | 説明 |
-|---------|-----|------|
-| `.1, .2, .3` | app.log.1 | 古い順 |
-| `.log.1` | app.log.1 | 標準的 |
-| `-001` | app-001.log | ゼロパディング |
+| パターン     | 例          | 説明           |
+| ------------ | ----------- | -------------- |
+| `.1, .2, .3` | app.log.1   | 古い順         |
+| `.log.1`     | app.log.1   | 標準的         |
+| `-001`       | app-001.log | ゼロパディング |
 
 ## 圧縮戦略
 
@@ -155,6 +163,7 @@ new DailyRotateFile({
 ```
 
 **圧縮率目安**:
+
 - テキストログ: 約90%削減
 - JSONログ: 約85%削減
 
@@ -169,6 +178,7 @@ new DailyRotateFile({
 ```
 
 **メリット**:
+
 - 直近ログの即座アクセス
 - 圧縮処理の負荷分散
 
@@ -205,6 +215,7 @@ du -h /var/log/myapp/*.log | sort -h
 **原因**: ローテーション設定が適用されていない
 
 **対処**:
+
 ```bash
 # 設定確認
 pm2 conf pm2-logrotate
@@ -218,6 +229,7 @@ pm2 flush
 **原因**: ファイルハンドルが古いファイルを参照
 
 **対処**:
+
 ```javascript
 // copytruncate使用（logrotate）
 {
@@ -235,6 +247,7 @@ endscript
 **原因**: 書き込み中に圧縮が実行
 
 **対処**:
+
 ```javascript
 // delaycompressを有効化
 {

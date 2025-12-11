@@ -9,10 +9,10 @@ API仕様の定義、コンポーネントの再利用、差異の理解を網�
 
 ### バージョン対応
 
-| OpenAPI | JSON Schema |
-|---------|-------------|
-| 3.0.x | Draft 5 (Wright) ベース |
-| 3.1.x | Draft 2020-12 完全互換 |
+| OpenAPI | JSON Schema             |
+| ------- | ----------------------- |
+| 3.0.x   | Draft 5 (Wright) ベース |
+| 3.1.x   | Draft 2020-12 完全互換  |
 
 ### OpenAPI 3.0での制限
 
@@ -86,7 +86,7 @@ components:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/User'
+            $ref: "#/components/schemas/User"
         total:
           type: integer
           minimum: 0
@@ -195,7 +195,7 @@ components:
     # 継承
     User:
       allOf:
-        - $ref: '#/components/schemas/BaseEntity'
+        - $ref: "#/components/schemas/BaseEntity"
         - type: object
           properties:
             email:
@@ -209,7 +209,7 @@ components:
 
     Product:
       allOf:
-        - $ref: '#/components/schemas/BaseEntity'
+        - $ref: "#/components/schemas/BaseEntity"
         - type: object
           properties:
             title:
@@ -228,15 +228,15 @@ components:
   schemas:
     Payment:
       oneOf:
-        - $ref: '#/components/schemas/CreditCardPayment'
-        - $ref: '#/components/schemas/BankTransferPayment'
-        - $ref: '#/components/schemas/PayPalPayment'
+        - $ref: "#/components/schemas/CreditCardPayment"
+        - $ref: "#/components/schemas/BankTransferPayment"
+        - $ref: "#/components/schemas/PayPalPayment"
       discriminator:
         propertyName: type
         mapping:
-          credit_card: '#/components/schemas/CreditCardPayment'
-          bank_transfer: '#/components/schemas/BankTransferPayment'
-          paypal: '#/components/schemas/PayPalPayment'
+          credit_card: "#/components/schemas/CreditCardPayment"
+          bank_transfer: "#/components/schemas/BankTransferPayment"
+          paypal: "#/components/schemas/PayPalPayment"
 
     CreditCardPayment:
       type: object
@@ -318,7 +318,7 @@ components:
 
     ValidationError:
       allOf:
-        - $ref: '#/components/schemas/ProblemDetails'
+        - $ref: "#/components/schemas/ProblemDetails"
         - type: object
           properties:
             errors:
@@ -342,21 +342,21 @@ components:
       content:
         application/problem+json:
           schema:
-            $ref: '#/components/schemas/ValidationError'
+            $ref: "#/components/schemas/ValidationError"
 
     NotFound:
       description: リソースが見つからない
       content:
         application/problem+json:
           schema:
-            $ref: '#/components/schemas/ProblemDetails'
+            $ref: "#/components/schemas/ProblemDetails"
 
     InternalError:
       description: サーバーエラー
       content:
         application/problem+json:
           schema:
-            $ref: '#/components/schemas/ProblemDetails'
+            $ref: "#/components/schemas/ProblemDetails"
 ```
 
 ## パス定義との統合
@@ -381,14 +381,14 @@ paths:
             maximum: 100
             default: 20
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserList'
-        '500':
-          $ref: '#/components/responses/InternalError'
+                $ref: "#/components/schemas/UserList"
+        "500":
+          $ref: "#/components/responses/InternalError"
 
     post:
       summary: ユーザー作成
@@ -397,16 +397,16 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserCreate'
+              $ref: "#/components/schemas/UserCreate"
       responses:
-        '201':
+        "201":
           description: 作成成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
+                $ref: "#/components/schemas/UserResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
 
   /users/{id}:
     parameters:
@@ -420,14 +420,14 @@ paths:
     get:
       summary: ユーザー取得
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserResponse'
-        '404':
-          $ref: '#/components/responses/NotFound'
+                $ref: "#/components/schemas/UserResponse"
+        "404":
+          $ref: "#/components/responses/NotFound"
 
     patch:
       summary: ユーザー更新
@@ -436,26 +436,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserUpdate'
+              $ref: "#/components/schemas/UserUpdate"
       responses:
-        '200':
+        "200":
           description: 更新成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          $ref: '#/components/responses/NotFound'
+                $ref: "#/components/schemas/UserResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
 
     delete:
       summary: ユーザー削除
       responses:
-        '204':
+        "204":
           description: 削除成功
-        '404':
-          $ref: '#/components/responses/NotFound'
+        "404":
+          $ref: "#/components/responses/NotFound"
 ```
 
 ## TypeScriptコード生成
@@ -468,18 +468,20 @@ npx openapi-typescript openapi.yaml -o types.ts
 
 ```typescript
 // 生成されたtypes.tsの使用例
-import type { paths, components } from './types';
+import type { paths, components } from "./types";
 
-type User = components['schemas']['UserResponse'];
-type UserCreate = components['schemas']['UserCreate'];
+type User = components["schemas"]["UserResponse"];
+type UserCreate = components["schemas"]["UserCreate"];
 
 // APIクライアント用の型
-type GetUsersResponse = paths['/users']['get']['responses']['200']['content']['application/json'];
-type CreateUserRequest = paths['/users']['post']['requestBody']['content']['application/json'];
+type GetUsersResponse =
+  paths["/users"]["get"]["responses"]["200"]["content"]["application/json"];
+type CreateUserRequest =
+  paths["/users"]["post"]["requestBody"]["content"]["application/json"];
 ```
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版リリース |
+| バージョン | 日付       | 変更内容     |
+| ---------- | ---------- | ------------ |
+| 1.0.0      | 2025-11-25 | 初版リリース |

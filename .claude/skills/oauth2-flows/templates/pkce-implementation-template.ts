@@ -18,7 +18,7 @@
 interface PKCEParams {
   codeVerifier: string;
   codeChallenge: string;
-  codeChallengeMethod: 'S256';
+  codeChallengeMethod: "S256";
 }
 
 interface PKCEOAuthProvider {
@@ -48,10 +48,12 @@ export function generateCodeVerifier(): string {
  * Code Challenge生成（S256方式）
  * SHA-256ハッシュを適用してBase64URLエンコード
  */
-export async function generateCodeChallenge(codeVerifier: string): Promise<string> {
+export async function generateCodeChallenge(
+  codeVerifier: string,
+): Promise<string> {
   const encoder = new TextEncoder();
   const data = encoder.encode(codeVerifier);
-  const hash = await crypto.subtle.digest('SHA-256', data);
+  const hash = await crypto.subtle.digest("SHA-256", data);
   return base64URLEncode(new Uint8Array(hash));
 }
 
@@ -61,10 +63,7 @@ export async function generateCodeChallenge(codeVerifier: string): Promise<strin
  */
 function base64URLEncode(buffer: Uint8Array): string {
   const base64 = btoa(String.fromCharCode(...Array.from(buffer)));
-  return base64
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=/g, '');
+  return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
 }
 
 /**
@@ -77,7 +76,7 @@ export async function generatePKCEParams(): Promise<PKCEParams> {
   return {
     codeVerifier,
     codeChallenge,
-    codeChallengeMethod: 'S256',
+    codeChallengeMethod: "S256",
   };
 }
 
@@ -89,13 +88,13 @@ export async function generatePKCEParams(): Promise<PKCEParams> {
  * PKCE付きOAuth 2.0認可フローを開始
  */
 export async function initiateOAuthFlowWithPKCE(
-  provider: PKCEOAuthProvider
+  provider: PKCEOAuthProvider,
 ): Promise<void> {
   // PKCEパラメータ生成
   const pkce = await generatePKCEParams();
 
   // Code Verifierを保存（トークン交換時に使用）
-  sessionStorage.setItem('pkce_code_verifier', pkce.codeVerifier);
+  sessionStorage.setItem("pkce_code_verifier", pkce.codeVerifier);
 
   // State生成（CSRF対策）
   const state = generateSecureRandomString(32);
@@ -103,7 +102,7 @@ export async function initiateOAuthFlowWithPKCE(
 
   // 認可URLパラメータ構築（PKCE追加）
   const params = new URLSearchParams({
-    response_type: 'code',
+    response_type: "code",
     client_id: provider.clientId,
     redirect_uri: provider.redirectUri,
     scope: provider.scope,
@@ -125,28 +124,28 @@ export async function initiateOAuthFlowWithPKCE(
  */
 export async function handlePKCECallback(
   request: Request,
-  provider: PKCEOAuthProvider
+  provider: PKCEOAuthProvider,
 ): Promise<TokenResponse> {
   const url = new URL(request.url);
-  const code = url.searchParams.get('code');
-  const state = url.searchParams.get('state');
-  const error = url.searchParams.get('error');
+  const code = url.searchParams.get("code");
+  const state = url.searchParams.get("state");
+  const error = url.searchParams.get("error");
 
   // エラーチェック
   if (error) {
-    const errorDescription = url.searchParams.get('error_description');
+    const errorDescription = url.searchParams.get("error_description");
     throw new OAuthAuthorizationError(error, errorDescription);
   }
 
   // 認可コード検証
   if (!code) {
-    throw new Error('Authorization code missing from callback');
+    throw new Error("Authorization code missing from callback");
   }
 
   // State検証
   const savedState = sessionStorage.getItem(`oauth_state_${provider.name}`);
   if (!savedState || state !== savedState) {
-    throw new Error('State mismatch - potential CSRF attack');
+    throw new Error("State mismatch - potential CSRF attack");
   }
 
   // State削除
@@ -165,16 +164,16 @@ export async function handlePKCECallback(
  */
 async function exchangeCodeWithPKCE(
   code: string,
-  provider: PKCEOAuthProvider
+  provider: PKCEOAuthProvider,
 ): Promise<TokenResponse> {
   // Code Verifierを取得
-  const codeVerifier = sessionStorage.getItem('pkce_code_verifier');
+  const codeVerifier = sessionStorage.getItem("pkce_code_verifier");
   if (!codeVerifier) {
-    throw new Error('Code verifier missing - PKCE flow broken');
+    throw new Error("Code verifier missing - PKCE flow broken");
   }
 
   const params = new URLSearchParams({
-    grant_type: 'authorization_code',
+    grant_type: "authorization_code",
     code: code,
     client_id: provider.clientId,
     redirect_uri: provider.redirectUri,
@@ -183,16 +182,16 @@ async function exchangeCodeWithPKCE(
   });
 
   const response = await fetch(provider.tokenUrl, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Accept': 'application/json',
+      "Content-Type": "application/x-www-form-urlencoded",
+      Accept: "application/json",
     },
     body: params.toString(),
   });
 
   // Code Verifier削除（一度のみ使用）
-  sessionStorage.removeItem('pkce_code_verifier');
+  sessionStorage.removeItem("pkce_code_verifier");
 
   if (!response.ok) {
     const error = await response.json();
@@ -212,18 +211,20 @@ async function exchangeCodeWithPKCE(
 function generateSecureRandomString(length: number): string {
   const array = new Uint8Array(length);
   crypto.getRandomValues(array);
-  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+  return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join(
+    "",
+  );
 }
 
 function validateTokenResponse(tokens: TokenResponse): void {
   if (!tokens.access_token) {
-    throw new Error('Access token missing');
+    throw new Error("Access token missing");
   }
-  if (tokens.token_type !== 'Bearer') {
+  if (tokens.token_type !== "Bearer") {
     throw new Error(`Unsupported token type: ${tokens.token_type}`);
   }
   if (!tokens.expires_in || tokens.expires_in <= 0) {
-    throw new Error('Invalid expiration');
+    throw new Error("Invalid expiration");
   }
 }
 
@@ -244,7 +245,7 @@ export function useOAuthWithPKCE(provider: PKCEOAuthProvider) {
       setError(null);
       await initiateOAuthFlowWithPKCE(provider);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
+      setError(err instanceof Error ? err.message : "Unknown error");
       setIsLoading(false);
     }
   };
@@ -281,26 +282,26 @@ export function useOAuthWithPKCE(provider: PKCEOAuthProvider) {
  * Node.js環境でのCode Verifier生成
  */
 export function generateCodeVerifierNode(): string {
-  const crypto = require('crypto');
+  const crypto = require("crypto");
   const buffer = crypto.randomBytes(32);
   return buffer
-    .toString('base64')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=/g, '');
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=/g, "");
 }
 
 /**
  * Node.js環境でのCode Challenge生成
  */
 export function generateCodeChallengeNode(codeVerifier: string): string {
-  const crypto = require('crypto');
-  const hash = crypto.createHash('sha256').update(codeVerifier).digest();
+  const crypto = require("crypto");
+  const hash = crypto.createHash("sha256").update(codeVerifier).digest();
   return hash
-    .toString('base64')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=/g, '');
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=/g, "");
 }
 
 // ========================================
@@ -314,22 +315,32 @@ interface OAuthError {
 
 interface TokenResponse {
   access_token: string;
-  token_type: 'Bearer';
+  token_type: "Bearer";
   expires_in: number;
   refresh_token?: string;
   scope?: string;
 }
 
 class OAuthAuthorizationError extends Error {
-  constructor(public error: string, public description?: string | null) {
-    super(`OAuth Authorization Error: ${error}${description ? ` - ${description}` : ''}`);
-    this.name = 'OAuthAuthorizationError';
+  constructor(
+    public error: string,
+    public description?: string | null,
+  ) {
+    super(
+      `OAuth Authorization Error: ${error}${description ? ` - ${description}` : ""}`,
+    );
+    this.name = "OAuthAuthorizationError";
   }
 }
 
 class OAuthTokenError extends Error {
-  constructor(public error: string, public description?: string | null) {
-    super(`OAuth Token Error: ${error}${description ? ` - ${description}` : ''}`);
-    this.name = 'OAuthTokenError';
+  constructor(
+    public error: string,
+    public description?: string | null,
+  ) {
+    super(
+      `OAuth Token Error: ${error}${description ? ` - ${description}` : ""}`,
+    );
+    this.name = "OAuthTokenError";
   }
 }

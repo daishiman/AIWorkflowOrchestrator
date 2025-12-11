@@ -15,8 +15,8 @@
  * - 最適化の提案
  */
 
-import { readFileSync } from 'fs';
-import { parse } from 'yaml';
+import { readFileSync } from "fs";
+import { parse } from "yaml";
 
 // 条件式のパターン
 const PATTERNS = {
@@ -45,10 +45,10 @@ class ConditionAnalyzer {
    */
   analyze() {
     try {
-      const content = readFileSync(this.workflowPath, 'utf8');
+      const content = readFileSync(this.workflowPath, "utf8");
       this.workflow = parse(content);
 
-      console.log('🔍 Analyzing workflow conditions...\n');
+      console.log("🔍 Analyzing workflow conditions...\n");
 
       this.extractConditions();
       this.analyzeConditionComplexity();
@@ -72,7 +72,7 @@ class ConditionAnalyzer {
       // ジョブレベルの条件
       if (job.if) {
         this.conditions.push({
-          type: 'job',
+          type: "job",
           name: jobName,
           condition: job.if,
           location: `jobs.${jobName}.if`,
@@ -84,7 +84,7 @@ class ConditionAnalyzer {
       steps.forEach((step, index) => {
         if (step.if) {
           this.conditions.push({
-            type: 'step',
+            type: "step",
             name: step.name || `step-${index}`,
             job: jobName,
             condition: step.if,
@@ -105,7 +105,8 @@ class ConditionAnalyzer {
       const condition = String(item.condition);
 
       // 複雑度の計算
-      const operators = (condition.match(PATTERNS.logicalOperators) || []).length;
+      const operators = (condition.match(PATTERNS.logicalOperators) || [])
+        .length;
       const functions = (condition.match(/\w+\(/g) || []).length;
       const contextRefs = (condition.match(/\w+\.\w+/g) || []).length;
 
@@ -116,26 +117,26 @@ class ConditionAnalyzer {
         operators,
         functions,
         contextRefs,
-        lines: condition.split('\n').length,
+        lines: condition.split("\n").length,
       };
 
       // 複雑すぎる条件を警告
       if (complexity > 5) {
         this.issues.push({
-          severity: 'warning',
+          severity: "warning",
           location: item.location,
           message: `Complex condition detected (complexity: ${complexity})`,
-          suggestion: 'Consider simplifying or breaking into multiple steps',
+          suggestion: "Consider simplifying or breaking into multiple steps",
         });
       }
 
       // 長すぎる条件を警告
       if (condition.length > 200) {
         this.issues.push({
-          severity: 'warning',
+          severity: "warning",
           location: item.location,
           message: `Long condition (${condition.length} characters)`,
-          suggestion: 'Consider using a script for complex logic',
+          suggestion: "Consider using a script for complex logic",
         });
       }
     });
@@ -149,42 +150,42 @@ class ConditionAnalyzer {
       const condition = String(item.condition);
 
       // success() の明示的使用（デフォルトなので不要）
-      if (condition.trim() === 'success()') {
+      if (condition.trim() === "success()") {
         this.issues.push({
-          severity: 'info',
+          severity: "info",
           location: item.location,
-          message: 'Explicit success() is redundant (default behavior)',
-          suggestion: 'Remove the condition or add additional checks',
+          message: "Explicit success() is redundant (default behavior)",
+          suggestion: "Remove the condition or add additional checks",
         });
       }
 
       // シークレットの直接比較（セキュリティリスク）
       if (condition.match(/secrets\.\w+\s*==\s*['"][^'"]+['"]/)) {
         this.issues.push({
-          severity: 'critical',
+          severity: "critical",
           location: item.location,
-          message: 'Comparing secrets directly in condition (security risk)',
-          suggestion: 'Only check if secret exists: secrets.KEY != \'\'',
+          message: "Comparing secrets directly in condition (security risk)",
+          suggestion: "Only check if secret exists: secrets.KEY != ''",
         });
       }
 
       // 括弧の使用（サポート外）
       if (condition.match(/\([^()]*\s*(&&|\|\|)\s*[^()]*\)/)) {
         this.issues.push({
-          severity: 'error',
+          severity: "error",
           location: item.location,
-          message: 'Parentheses not supported in GitHub Actions conditions',
-          suggestion: 'Remove parentheses or use multi-line format',
+          message: "Parentheses not supported in GitHub Actions conditions",
+          suggestion: "Remove parentheses or use multi-line format",
         });
       }
 
       // needs コンテキストの不適切な使用
       if (condition.match(/needs\.\w+\s*==\s*['"]?true['"]?/)) {
         this.issues.push({
-          severity: 'warning',
+          severity: "warning",
           location: item.location,
-          message: 'Checking needs as boolean may not work as expected',
-          suggestion: 'Use needs.job_name.result == \'success\' instead',
+          message: "Checking needs as boolean may not work as expected",
+          suggestion: "Use needs.job_name.result == 'success' instead",
         });
       }
     });
@@ -214,29 +215,34 @@ class ConditionAnalyzer {
     // 使用されていないステータス関数を提案
     if (statusFunctionUsage.failure === 0) {
       this.suggestions.push({
-        type: 'enhancement',
-        message: 'No failure() handlers detected',
-        suggestion: 'Consider adding failure notifications or cleanup steps',
+        type: "enhancement",
+        message: "No failure() handlers detected",
+        suggestion: "Consider adding failure notifications or cleanup steps",
       });
     }
 
     if (statusFunctionUsage.always === 0) {
       this.suggestions.push({
-        type: 'enhancement',
-        message: 'No always() steps detected',
-        suggestion: 'Consider adding cleanup steps with always() condition',
+        type: "enhancement",
+        message: "No always() steps detected",
+        suggestion: "Consider adding cleanup steps with always() condition",
       });
     }
 
     // ジョブレベルとステップレベルの条件の分布
-    const jobConditions = this.conditions.filter((c) => c.type === 'job').length;
-    const stepConditions = this.conditions.filter((c) => c.type === 'step').length;
+    const jobConditions = this.conditions.filter(
+      (c) => c.type === "job",
+    ).length;
+    const stepConditions = this.conditions.filter(
+      (c) => c.type === "step",
+    ).length;
 
     if (stepConditions > jobConditions * 3) {
       this.suggestions.push({
-        type: 'optimization',
+        type: "optimization",
         message: `Many step-level conditions (${stepConditions}) vs job-level (${jobConditions})`,
-        suggestion: 'Consider moving common conditions to job level for clarity',
+        suggestion:
+          "Consider moving common conditions to job level for clarity",
       });
     }
   }
@@ -245,42 +251,50 @@ class ConditionAnalyzer {
    * レポートを出力
    */
   printReport() {
-    console.log('=' .repeat(60));
-    console.log('📋 CONDITION ANALYSIS REPORT');
-    console.log('='.repeat(60));
+    console.log("=".repeat(60));
+    console.log("📋 CONDITION ANALYSIS REPORT");
+    console.log("=".repeat(60));
     console.log();
 
     // 概要
-    console.log('📊 Summary:');
+    console.log("📊 Summary:");
     console.log(`  Total conditions: ${this.conditions.length}`);
-    console.log(`  Job-level: ${this.conditions.filter((c) => c.type === 'job').length}`);
-    console.log(`  Step-level: ${this.conditions.filter((c) => c.type === 'step').length}`);
+    console.log(
+      `  Job-level: ${this.conditions.filter((c) => c.type === "job").length}`,
+    );
+    console.log(
+      `  Step-level: ${this.conditions.filter((c) => c.type === "step").length}`,
+    );
     console.log();
 
     // 条件の詳細
     if (this.conditions.length > 0) {
-      console.log('🔍 Conditions:');
+      console.log("🔍 Conditions:");
       this.conditions.forEach((item, index) => {
         console.log(`  ${index + 1}. [${item.type}] ${item.name}`);
         console.log(`     Location: ${item.location}`);
         console.log(`     Complexity: ${item.complexity}`);
-        console.log(`     Condition: ${String(item.condition).substring(0, 80)}${String(item.condition).length > 80 ? '...' : ''}`);
+        console.log(
+          `     Condition: ${String(item.condition).substring(0, 80)}${String(item.condition).length > 80 ? "..." : ""}`,
+        );
         console.log();
       });
     }
 
     // 問題
     if (this.issues.length > 0) {
-      console.log('⚠️  Issues:');
+      console.log("⚠️  Issues:");
       this.issues.forEach((issue, index) => {
         const icon = {
-          critical: '🔴',
-          error: '❌',
-          warning: '⚠️',
-          info: 'ℹ️',
+          critical: "🔴",
+          error: "❌",
+          warning: "⚠️",
+          info: "ℹ️",
         }[issue.severity];
 
-        console.log(`  ${icon} [${issue.severity.toUpperCase()}] ${issue.location}`);
+        console.log(
+          `  ${icon} [${issue.severity.toUpperCase()}] ${issue.location}`,
+        );
         console.log(`     ${issue.message}`);
         console.log(`     💡 ${issue.suggestion}`);
         console.log();
@@ -289,9 +303,11 @@ class ConditionAnalyzer {
 
     // 提案
     if (this.suggestions.length > 0) {
-      console.log('💡 Suggestions:');
+      console.log("💡 Suggestions:");
       this.suggestions.forEach((suggestion, index) => {
-        console.log(`  ${index + 1}. [${suggestion.type}] ${suggestion.message}`);
+        console.log(
+          `  ${index + 1}. [${suggestion.type}] ${suggestion.message}`,
+        );
         console.log(`     ${suggestion.suggestion}`);
         console.log();
       });
@@ -299,9 +315,9 @@ class ConditionAnalyzer {
 
     // スコア計算
     const score = this.calculateScore();
-    console.log('='.repeat(60));
+    console.log("=".repeat(60));
     console.log(`Overall Score: ${score}/100`);
-    console.log('='.repeat(60));
+    console.log("=".repeat(60));
   }
 
   /**
@@ -334,7 +350,7 @@ class ConditionAnalyzer {
 
 // メイン処理
 if (process.argv.length < 3) {
-  console.error('Usage: node analyze-conditions.mjs <workflow.yml>');
+  console.error("Usage: node analyze-conditions.mjs <workflow.yml>");
   process.exit(1);
 }
 

@@ -7,11 +7,11 @@
 ```yaml
 - uses: actions/upload-artifact@v4
   with:
-    name: artifact-name          # 必須: アーティファクト名
-    path: path/to/files          # 必須: アップロードするファイル/ディレクトリ
-    retention-days: 7            # オプション: 保持期間（1-90日、デフォルト90）
-    if-no-files-found: warn      # オプション: warn, error, ignore
-    compression-level: 6         # オプション: 0-9（デフォルト6）
+    name: artifact-name # 必須: アーティファクト名
+    path: path/to/files # 必須: アップロードするファイル/ディレクトリ
+    retention-days: 7 # オプション: 保持期間（1-90日、デフォルト90）
+    if-no-files-found: warn # オプション: warn, error, ignore
+    compression-level: 6 # オプション: 0-9（デフォルト6）
 ```
 
 ## パス指定パターン
@@ -68,6 +68,7 @@ retention-days: 90  # 90日間保持（最大）
 ```
 
 **推奨設定**:
+
 - CI/CDビルド: 7-14日
 - リリースパッケージ: 30-90日
 - デバッグログ: 1-3日
@@ -83,6 +84,7 @@ if-no-files-found: ignore # 無視
 ```
 
 **推奨設定**:
+
 - 必須ビルド成果物: `error`
 - オプショナルログ: `warn` または `ignore`
 
@@ -97,6 +99,7 @@ compression-level: 9  # 低速、小容量
 ```
 
 **推奨設定**:
+
 - 大きなバイナリ（既に圧縮済み）: 0-3
 - テキストファイル、ログ: 6-9
 - 一般的なビルド成果物: 6
@@ -166,7 +169,7 @@ compression-level: 9  # 低速、小容量
 - uses: actions/upload-artifact@v4
   with:
     name: all-outputs
-    path: .  # すべてアップロード
+    path: . # すべてアップロード
 
 # 良い例: 必要なものだけ分割
 - uses: actions/upload-artifact@v4
@@ -207,7 +210,7 @@ path: |
   with:
     name: app-optimized
     path: app.tar.gz
-    compression-level: 0  # 既に圧縮済み
+    compression-level: 0 # 既に圧縮済み
 ```
 
 ## トラブルシューティング
@@ -217,6 +220,7 @@ path: |
 **原因**: pathで指定したファイルが存在しない
 
 **解決策**:
+
 1. ビルドステップが成功しているか確認
 2. パスが正しいか確認（相対パスはワーキングディレクトリから）
 3. `if-no-files-found: warn`に変更してデバッグ
@@ -229,7 +233,7 @@ path: |
   with:
     name: build
     path: dist/
-    if-no-files-found: warn  # デバッグ用
+    if-no-files-found: warn # デバッグ用
 ```
 
 ### 警告: "Artifact size exceeds limit"
@@ -237,6 +241,7 @@ path: |
 **原因**: アーティファクトサイズが大きすぎる
 
 **解決策**:
+
 1. 不要ファイルを除外
 2. 圧縮レベルを上げる
 3. 複数のアーティファクトに分割

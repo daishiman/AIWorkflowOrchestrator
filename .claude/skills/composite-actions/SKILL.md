@@ -23,27 +23,30 @@ version: 1.0.0
 # Composite Actions
 
 ---
+
 name: composite-actions
 version: 1.0.0
 description: |
-  Composite Actionsのスキル。
+Composite Actionsのスキル。
 
-  **使用タイミング**:
-  - 複数ステップを再利用可能なアクションとしてパッケージ化する時
-  - ワークフロー間で共通処理を標準化する時
-  - 組織全体でベストプラクティスを配布する時
-  - シェルスクリプトとGitHub Actionsステップを組み合わせる時
-  - カスタムアクションを軽量に作成する時（Dockerやnccビルド不要）
-dependencies:
-  - .claude/skills/github-actions-syntax/SKILL.md
-  - .claude/skills/github-actions-expressions/SKILL.md
-related_skills:
-  - .claude/skills/reusable-workflows/SKILL.md
-  - .claude/skills/workflow-templates/SKILL.md
-tags:
-  - github-actions
-  - composite-actions
-  - action-development
+**使用タイミング**:
+
+- 複数ステップを再利用可能なアクションとしてパッケージ化する時
+- ワークフロー間で共通処理を標準化する時
+- 組織全体でベストプラクティスを配布する時
+- シェルスクリプトとGitHub Actionsステップを組み合わせる時
+- カスタムアクションを軽量に作成する時（Dockerやnccビルド不要）
+  dependencies:
+- .claude/skills/github-actions-syntax/SKILL.md
+- .claude/skills/github-actions-expressions/SKILL.md
+  related_skills:
+- .claude/skills/reusable-workflows/SKILL.md
+- .claude/skills/workflow-templates/SKILL.md
+  tags:
+- github-actions
+- composite-actions
+- action-development
+
 ---
 
 ## 概要
@@ -53,6 +56,7 @@ Composite Actionsは、複数のワークフローステップを単一の再利
 **主な利点**: 再利用性、保守性、軽量（DockerやJavaScriptビルド不要）、柔軟性
 
 **使い分け**:
+
 - **Composite Action**: 複数ステップの再利用（軽量・柔軟）
 - **Reusable Workflow**: ジョブ全体の再利用（ジョブレベル制御）
 - **JavaScript Action**: 複雑なロジック（プログラマブル）
@@ -92,22 +96,22 @@ node .claude/skills/composite-actions/scripts/validate-action.mjs <action.yml>
 ## 基本的なaction.yml
 
 ```yaml
-name: 'Setup Node with Cache'
-description: 'Node.jsのセットアップとnpmキャッシュの設定'
+name: "Setup Node with Cache"
+description: "Node.jsのセットアップとnpmキャッシュの設定"
 
 inputs:
   node-version:
-    description: 'Node.jsのバージョン'
+    description: "Node.jsのバージョン"
     required: true
-    default: '18'
+    default: "18"
 
 outputs:
   cache-hit:
-    description: 'キャッシュがヒットしたかどうか'
+    description: "キャッシュがヒットしたかどうか"
     value: ${{ steps.cache.outputs.cache-hit }}
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -124,10 +128,11 @@ runs:
 ```
 
 **ワークフローでの使用**:
+
 ```yaml
 - uses: ./.github/actions/setup-node-cache
   with:
-    node-version: '20'
+    node-version: "20"
 ```
 
 ---
@@ -139,13 +144,13 @@ runs:
 ```yaml
 inputs:
   environment:
-    description: 'デプロイ環境 (dev/staging/prod)'
+    description: "デプロイ環境 (dev/staging/prod)"
     required: true
 
   dry-run:
-    description: 'dry-runモードで実行'
+    description: "dry-runモードで実行"
     required: false
-    default: 'false'
+    default: "false"
 ```
 
 ### outputs定義
@@ -153,7 +158,7 @@ inputs:
 ```yaml
 outputs:
   deployment-url:
-    description: 'デプロイされたアプリケーションのURL'
+    description: "デプロイされたアプリケーションのURL"
     value: ${{ steps.deploy.outputs.url }}
 ```
 
@@ -165,11 +170,11 @@ outputs:
 
 ```yaml
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Run script
       run: echo "Processing ${{ inputs.file }}"
-      shell: bash  # 必須
+      shell: bash # 必須
 ```
 
 ### 複数行スクリプト
@@ -247,14 +252,16 @@ Error: Required property is missing: shell
 ```
 
 **解決**: すべての `run` ステップに `shell` を指定
+
 ```yaml
 - run: echo "test"
-  shell: bash  # 必須
+  shell: bash # 必須
 ```
 
 ### outputsが空
 
 **解決**: step idとoutputsを正しく設定
+
 ```yaml
 steps:
   - id: compute
@@ -270,12 +277,12 @@ outputs:
 
 ## 関連スキル
 
-| スキル | パス | 用途 |
-|--------|------|------|
-| **github-actions-syntax** | `.claude/skills/github-actions-syntax/SKILL.md` | 基本構文 |
-| **github-actions-expressions** | `.claude/skills/github-actions-expressions/SKILL.md` | 式と関数 |
-| **reusable-workflows** | `.claude/skills/reusable-workflows/SKILL.md` | ジョブレベル再利用 |
-| **workflow-templates** | `.claude/skills/workflow-templates/SKILL.md` | 組織テンプレート |
+| スキル                         | パス                                                 | 用途               |
+| ------------------------------ | ---------------------------------------------------- | ------------------ |
+| **github-actions-syntax**      | `.claude/skills/github-actions-syntax/SKILL.md`      | 基本構文           |
+| **github-actions-expressions** | `.claude/skills/github-actions-expressions/SKILL.md` | 式と関数           |
+| **reusable-workflows**         | `.claude/skills/reusable-workflows/SKILL.md`         | ジョブレベル再利用 |
+| **workflow-templates**         | `.claude/skills/workflow-templates/SKILL.md`         | 組織テンプレート   |
 
 ---
 

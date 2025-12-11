@@ -8,13 +8,16 @@ description: [General-purpose utility]
 # [Command Name]
 
 ## Purpose
+
 Personal utility for [general task]
 Works across all projects
 
 ## Execution
+
 [Generic steps]
 
 ## Configuration
+
 [User-specific settings]
 ```
 
@@ -30,9 +33,11 @@ description: Quick note-taking with timestamp
 Text: $ARGUMENTS
 
 ## Create Note
+
 File: ~/notes/$(date +%Y-%m-%d).md
 Append: "[$(date +%H:%M)] $ARGUMENTS"
 
 ## Display
+
 Show confirmation with file path
 ```

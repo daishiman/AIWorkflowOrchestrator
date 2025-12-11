@@ -46,12 +46,14 @@
 **定義**: 分割不可能な最小単位のUI要素
 
 **特徴**:
+
 - ビジネスロジックを含まない
 - 高い再利用性
 - 単一の責務
 - 外部依存なし（他コンポーネントに依存しない）
 
 **例**:
+
 ```typescript
 // Button - プリミティブの典型例
 interface ButtonProps {
@@ -76,6 +78,7 @@ export function Button({ variant, size, disabled, children, onClick }: ButtonPro
 ```
 
 **プリミティブの一覧**:
+
 - `Button` - クリック可能なアクション要素
 - `Input` - テキスト入力
 - `Checkbox` - 選択状態の切り替え
@@ -92,12 +95,14 @@ export function Button({ variant, size, disabled, children, onClick }: ButtonPro
 **定義**: プリミティブを組み合わせた汎用UIパターン
 
 **特徴**:
+
 - プリミティブの組み合わせ
 - 特定のUIパターンを実現
 - ビジネスロジックは含まない
 - レイアウトや振る舞いの標準化
 
 **例**:
+
 ```typescript
 // FormField - Label + Input + ErrorMessage のパターン
 interface FormFieldProps {
@@ -119,6 +124,7 @@ export function FormField({ label, error, required, children }: FormFieldProps) 
 ```
 
 **パターンの一覧**:
+
 - `FormField` - ラベル付きフォーム入力
 - `SearchInput` - 検索アイコン付き入力
 - `IconButton` - アイコン付きボタン
@@ -135,12 +141,14 @@ export function FormField({ label, error, required, children }: FormFieldProps) 
 **定義**: ビジネスロジックを含む機能特化型コンポーネント
 
 **特徴**:
+
 - 特定の機能に特化
 - ビジネスロジックを含む
 - データフェッチを行う場合がある
 - プロジェクト固有
 
 **例**:
+
 ```typescript
 // LoginForm - 認証機能を持つフォーム
 export function LoginForm() {
@@ -170,6 +178,7 @@ export function LoginForm() {
 ```
 
 **Featuresの例**:
+
 - `LoginForm` - ログインフォーム
 - `UserCard` - ユーザー情報カード
 - `CommentSection` - コメント一覧
@@ -181,12 +190,14 @@ export function LoginForm() {
 **定義**: ページ全体のレイアウト構造
 
 **特徴**:
+
 - ページの骨格を定義
 - Slot（配置場所）を提供
 - コンテンツは受け取る
 - ナビゲーション、サイドバー等を含む
 
 **例**:
+
 ```typescript
 // DashboardLayout - ダッシュボードのレイアウト
 interface DashboardLayoutProps {
@@ -221,6 +232,7 @@ Templates → Features → Patterns → Primitives
 ```
 
 **ルール**:
+
 - 上位層は下位層に依存できる
 - 下位層は上位層に依存してはいけない
 - 同一層内での依存は最小限に
@@ -294,12 +306,12 @@ Q: ビジネスロジックを含むか？
 
 ### Patterns vs Features の判断
 
-| 観点 | Patterns | Features |
-|------|----------|----------|
-| ビジネスロジック | なし | あり |
-| データフェッチ | なし | あり |
-| 再利用性 | プロジェクト横断 | プロジェクト固有 |
-| 命名 | 汎用的（Card） | 具体的（UserCard） |
+| 観点             | Patterns         | Features           |
+| ---------------- | ---------------- | ------------------ |
+| ビジネスロジック | なし             | あり               |
+| データフェッチ   | なし             | あり               |
+| 再利用性         | プロジェクト横断 | プロジェクト固有   |
+| 命名             | 汎用的（Card）   | 具体的（UserCard） |
 
 ---
 

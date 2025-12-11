@@ -111,12 +111,14 @@ node .claude/skills/composite-actions/scripts/validate-action.mjs <path-to-actio
 ```
 
 **検証項目**:
+
 - 必須フィールド（name, description, runs）
 - Composite固有要件（using: 'composite', shell指定）
 - ベストプラクティス（入力にデフォルト値、出力に説明）
 - よくある間違い（shellの未指定、無効なステップ構文）
 
 **出力例**:
+
 ```
 🔍 Validating Composite Action
 📄 File: .github/actions/my-action/action.yml
@@ -131,33 +133,33 @@ node .claude/skills/composite-actions/scripts/validate-action.mjs <path-to-actio
 
 ## 🔗 関連スキル
 
-| スキル | 用途 |
-|--------|------|
-| **github-actions-syntax** | 基本構文とワークフロー構造 |
-| **github-actions-expressions** | 式と関数の使用 |
-| **reusable-workflows** | ジョブレベルの再利用 |
-| **workflow-templates** | 組織全体のテンプレート |
+| スキル                         | 用途                       |
+| ------------------------------ | -------------------------- |
+| **github-actions-syntax**      | 基本構文とワークフロー構造 |
+| **github-actions-expressions** | 式と関数の使用             |
+| **reusable-workflows**         | ジョブレベルの再利用       |
+| **workflow-templates**         | 組織全体のテンプレート     |
 
 ## 📝 例
 
 ### 基本的なComposite Action
 
 ```yaml
-name: 'Setup Node with Cache'
-description: 'Node.jsのセットアップとnpmキャッシュの設定'
+name: "Setup Node with Cache"
+description: "Node.jsのセットアップとnpmキャッシュの設定"
 
 inputs:
   node-version:
-    description: 'Node.jsのバージョン'
+    description: "Node.jsのバージョン"
     required: false
-    default: '18'
+    default: "18"
 
 outputs:
   cache-hit:
     value: ${{ steps.cache.outputs.cache-hit }}
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - uses: actions/setup-node@v4
       with:
@@ -176,7 +178,7 @@ runs:
 ```yaml
 - uses: ./.github/actions/setup-node-cache
   with:
-    node-version: '20'
+    node-version: "20"
 ```
 
 ## ⚠️ 重要な注意点
@@ -195,14 +197,14 @@ runs:
 
 ## 🆚 Composite Action vs Reusable Workflow
 
-| 特徴 | Composite Action | Reusable Workflow |
-|------|------------------|-------------------|
-| 粒度 | ステップレベル | ジョブレベル |
-| 軽量性 | ✅ 非常に軽量 | ⚠️ やや重い |
-| ビルド | ❌ 不要 | ❌ 不要 |
-| シークレット | ⚠️ 環境変数経由 | ✅ 直接アクセス |
-| Matrix | ❌ 使用不可 | ✅ 使用可能 |
-| 用途 | 複数ステップの再利用 | ジョブ全体の再利用 |
+| 特徴         | Composite Action     | Reusable Workflow  |
+| ------------ | -------------------- | ------------------ |
+| 粒度         | ステップレベル       | ジョブレベル       |
+| 軽量性       | ✅ 非常に軽量        | ⚠️ やや重い        |
+| ビルド       | ❌ 不要              | ❌ 不要            |
+| シークレット | ⚠️ 環境変数経由      | ✅ 直接アクセス    |
+| Matrix       | ❌ 使用不可          | ✅ 使用可能        |
+| 用途         | 複数ステップの再利用 | ジョブ全体の再利用 |
 
 ## 📄 ライセンス
 

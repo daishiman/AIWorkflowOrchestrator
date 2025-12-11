@@ -17,26 +17,29 @@
 {{FEATURE_DESCRIPTION}}
 
 【入力】
+
 - {{INPUT_1}}
 - {{INPUT_2}}
 
 【出力】
+
 - {{OUTPUT_1}}
 - {{OUTPUT_2}}
 
 【制約】
+
 - {{CONSTRAINT_1}}
 - {{CONSTRAINT_2}}
 ```
 
 ### テストケース一覧
 
-| # | ケース | 入力 | 期待結果 | 優先度 |
-|---|-------|------|---------|-------|
-| 1 | 正常系: {{CASE_1}} | {{INPUT}} | {{EXPECTED}} | High |
-| 2 | 境界値: {{CASE_2}} | {{INPUT}} | {{EXPECTED}} | High |
-| 3 | 異常系: {{CASE_3}} | {{INPUT}} | {{EXPECTED}} | Medium |
-| 4 | エッジ: {{CASE_4}} | {{INPUT}} | {{EXPECTED}} | Low |
+| #   | ケース             | 入力      | 期待結果     | 優先度 |
+| --- | ------------------ | --------- | ------------ | ------ |
+| 1   | 正常系: {{CASE_1}} | {{INPUT}} | {{EXPECTED}} | High   |
+| 2   | 境界値: {{CASE_2}} | {{INPUT}} | {{EXPECTED}} | High   |
+| 3   | 異常系: {{CASE_3}} | {{INPUT}} | {{EXPECTED}} | Medium |
+| 4   | エッジ: {{CASE_4}} | {{INPUT}} | {{EXPECTED}} | Low    |
 
 ---
 
@@ -48,14 +51,11 @@
 
 ```typescript
 // テストコード
-describe('{{TEST_SUBJECT}}', () => {
-  it('should {{EXPECTED_BEHAVIOR}}', () => {
+describe("{{TEST_SUBJECT}}", () => {
+  it("should {{EXPECTED_BEHAVIOR}}", () => {
     // Arrange
-
     // Act
-
     // Assert
-
   });
 });
 ```
@@ -74,6 +74,7 @@ describe('{{TEST_SUBJECT}}', () => {
 #### Refactor: 改善
 
 **変更内容**:
+
 - [ ] {{REFACTOR_1}}
 - [ ] {{REFACTOR_2}}
 
@@ -86,7 +87,7 @@ describe('{{TEST_SUBJECT}}', () => {
 #### Red: 次のテスト
 
 ```typescript
-it('should {{NEXT_BEHAVIOR}}', () => {
+it("should {{NEXT_BEHAVIOR}}", () => {
   // テストコード
 });
 ```
@@ -100,6 +101,7 @@ it('should {{NEXT_BEHAVIOR}}', () => {
 #### Refactor: 改善
 
 **変更内容**:
+
 - [ ] {{REFACTOR_ITEM}}
 
 ---

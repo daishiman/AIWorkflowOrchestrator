@@ -38,11 +38,11 @@ description: |
   トリガーキーワード: flaky test, unstable test, 不安定なテスト, フレーキー
 argument-hint: "[test-file]"
 allowed-tools:
-   - Task
-   - Read
-   - Edit
-   - Bash(pnpm test*|playwright*)
-   - Grep
+  - Task
+  - Read
+  - Edit
+  - Bash(pnpm test*|playwright*)
+  - Grep
 model: sonnet
 ---
 
@@ -75,6 +75,7 @@ Task ツールで `.claude/agents/e2e-tester.md` を起動:
 タスク: フレーキーテスト防止と安定化
 
 依頼内容:
+
 - フレーキーテストの検出と分析
 - 非決定的要素の排除（時刻、ランダム、外部API）
 - 明示的待機戦略の適用
@@ -82,6 +83,7 @@ Task ツールで `.claude/agents/e2e-tester.md` を起動:
 - 連続実行テストによる安定性確認
 
 必須要件:
+
 1. Phase 1: フレーキー検出
    - 固定時間待機の検出（sleep、setTimeout）
    - 非決定的要素の特定（Date.now()、Math.random()、外部API）
@@ -99,12 +101,14 @@ Task ツールで `.claude/agents/e2e-tester.md` を起動:
    - 診断情報収集（スクリーンショット、トレース）
 
 期待成果物:
+
 - 非決定性排除済みテストコード
 - 明示的待機戦略適用済み
 - 連続実行テスト成功（10/10）
 ```
 
 **期待成果物:**
+
 - 安定化されたテストコード
 - フレーキー検出レポート
 - 連続実行テスト結果
@@ -130,19 +134,23 @@ Task ツールで `.claude/agents/e2e-tester.md` を起動:
 ✅ フレーキーテスト修正完了
 
 📁 対象ファイル:
+
 - tests/login-flow.spec.ts
 
 🔍 検出された問題:
+
 1. 固定時間待機: await page.waitForTimeout(3000) → 明示的待機に変更
 2. 時刻依存: new Date() → page.clock.setFixedTime() でモック化
 3. 外部API依存: fetch('/api/login') → Route Mocking で制御
 
 🛠️ 適用した修正:
+
 1. ✅ waitForTimeout(3000) → waitForSelector('[data-testid="success-message"]')
 2. ✅ new Date() → page.clock.setFixedTime(new Date('2025-01-01'))
 3. ✅ 外部API → await page.route('/api/login', route => route.fulfill(...))
 
 📊 安定性検証:
+
 - 連続実行テスト: ✅ 10/10 成功
 - 並列実行テスト: ✅ 成功（データ競合なし）
 - フレーキーテスト: 0件

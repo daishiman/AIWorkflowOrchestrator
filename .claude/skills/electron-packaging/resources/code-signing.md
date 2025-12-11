@@ -55,17 +55,17 @@ afterSign: scripts/notarize.js
 
 ```javascript
 // scripts/notarize.js
-const { notarize } = require('@electron/notarize');
+const { notarize } = require("@electron/notarize");
 
 exports.default = async function notarizing(context) {
   const { electronPlatformName, appOutDir } = context;
 
-  if (electronPlatformName !== 'darwin') {
+  if (electronPlatformName !== "darwin") {
     return;
   }
 
   if (!process.env.APPLE_ID || !process.env.APPLE_ID_PASSWORD) {
-    console.log('Skipping notarization: credentials not found');
+    console.log("Skipping notarization: credentials not found");
     return;
   }
 
@@ -74,14 +74,14 @@ exports.default = async function notarizing(context) {
   console.log(`Notarizing ${appName}...`);
 
   await notarize({
-    appBundleId: 'com.yourcompany.yourapp',
+    appBundleId: "com.yourcompany.yourapp",
     appPath: `${appOutDir}/${appName}.app`,
     appleId: process.env.APPLE_ID,
     appleIdPassword: process.env.APPLE_ID_PASSWORD,
     teamId: process.env.APPLE_TEAM_ID,
   });
 
-  console.log('Notarization complete');
+  console.log("Notarization complete");
 };
 ```
 
@@ -132,10 +132,10 @@ CSC_KEY_PASSWORD=certificate-password
 
 ### 証明書の種類
 
-| 種類 | SmartScreen | 価格 | 推奨 |
-|------|------------|------|------|
-| Standard | 評判蓄積必要 | $100-300/年 | 小規模 |
-| EV (Extended Validation) | 即座に信頼 | $300-500/年 | 推奨 |
+| 種類                     | SmartScreen  | 価格        | 推奨   |
+| ------------------------ | ------------ | ----------- | ------ |
+| Standard                 | 評判蓄積必要 | $100-300/年 | 小規模 |
+| EV (Extended Validation) | 即座に信頼   | $300-500/年 | 推奨   |
 
 ### electron-builder設定
 
@@ -156,12 +156,13 @@ win:
 
 ```javascript
 // scripts/sign.js
-exports.default = async function(configuration) {
+exports.default = async function (configuration) {
   // Azure Key Vaultの場合
   if (process.env.AZURE_KEY_VAULT_URI) {
-    const { execSync } = require('child_process');
+    const { execSync } = require("child_process");
 
-    execSync(`
+    execSync(
+      `
       AzureSignTool sign
         -kvu ${process.env.AZURE_KEY_VAULT_URI}
         -kvc ${process.env.AZURE_KEY_VAULT_CERT_NAME}
@@ -171,13 +172,16 @@ exports.default = async function(configuration) {
         -tr http://timestamp.digicert.com
         -td sha256
         "${configuration.path}"
-    `, { stdio: 'inherit' });
+    `,
+      { stdio: "inherit" },
+    );
   }
   // ローカル証明書の場合
   else if (process.env.WIN_CERT_FILE) {
-    const { execSync } = require('child_process');
+    const { execSync } = require("child_process");
 
-    execSync(`
+    execSync(
+      `
       signtool sign
         /f "${process.env.WIN_CERT_FILE}"
         /p "${process.env.WIN_CERT_PASSWORD}"
@@ -185,7 +189,9 @@ exports.default = async function(configuration) {
         /td sha256
         /fd sha256
         "${configuration.path}"
-    `, { stdio: 'inherit' });
+    `,
+      { stdio: "inherit" },
+    );
   }
 };
 ```

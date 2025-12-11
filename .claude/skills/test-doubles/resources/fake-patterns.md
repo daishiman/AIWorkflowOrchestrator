@@ -25,7 +25,9 @@ class FakeUserRepository implements IUserRepository {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return Array.from(this.users.values()).find(u => u.email === email) || null;
+    return (
+      Array.from(this.users.values()).find((u) => u.email === email) || null
+    );
   }
 
   async findAll(): Promise<User[]> {
@@ -43,7 +45,7 @@ class FakeUserRepository implements IUserRepository {
 
   // テストヘルパー
   seed(users: User[]): void {
-    users.forEach(user => this.users.set(user.id, user));
+    users.forEach((user) => this.users.set(user.id, user));
   }
 
   clear(): void {
@@ -94,7 +96,7 @@ class FakeCache implements ICache {
     return new Map(
       Array.from(this.store.entries())
         .filter(([_, v]) => Date.now() <= v.expiresAt)
-        .map(([k, v]) => [k, v.value])
+        .map(([k, v]) => [k, v.value]),
     );
   }
 }
@@ -104,7 +106,8 @@ class FakeCache implements ICache {
 
 ```typescript
 class FakeFileSystem implements IFileSystem {
-  private files: Map<string, { content: string; metadata: FileMetadata }> = new Map();
+  private files: Map<string, { content: string; metadata: FileMetadata }> =
+    new Map();
 
   async readFile(path: string): Promise<string> {
     const file = this.files.get(path);
@@ -134,8 +137,9 @@ class FakeFileSystem implements IFileSystem {
   }
 
   async listFiles(directory: string): Promise<string[]> {
-    return Array.from(this.files.keys())
-      .filter(path => path.startsWith(directory));
+    return Array.from(this.files.keys()).filter((path) =>
+      path.startsWith(directory),
+    );
   }
 
   // テストヘルパー
@@ -171,7 +175,7 @@ class FakeEventBus implements IEventBus {
     this.publishedEvents.push({ type: eventType, payload });
 
     const handlers = this.handlers.get(eventType) || [];
-    await Promise.all(handlers.map(handler => handler(payload)));
+    await Promise.all(handlers.map((handler) => handler(payload)));
   }
 
   // テストヘルパー
@@ -181,8 +185,8 @@ class FakeEventBus implements IEventBus {
 
   getEventsOfType<T>(type: string): T[] {
     return this.publishedEvents
-      .filter(e => e.type === type)
-      .map(e => e.payload as T);
+      .filter((e) => e.type === type)
+      .map((e) => e.payload as T);
   }
 
   clearEvents(): void {
@@ -196,7 +200,7 @@ class FakeEventBus implements IEventBus {
 ### 統合テスト
 
 ```typescript
-describe('OrderService Integration', () => {
+describe("OrderService Integration", () => {
   let orderService: OrderService;
   let fakeOrderRepo: FakeOrderRepository;
   let fakeUserRepo: FakeUserRepository;
@@ -207,16 +211,10 @@ describe('OrderService Integration', () => {
     fakeUserRepo = new FakeUserRepository();
     fakeEventBus = new FakeEventBus();
 
-    orderService = new OrderService(
-      fakeOrderRepo,
-      fakeUserRepo,
-      fakeEventBus,
-    );
+    orderService = new OrderService(fakeOrderRepo, fakeUserRepo, fakeEventBus);
 
     // テストデータを設定
-    fakeUserRepo.seed([
-      { id: 'user-1', name: 'Alice', tier: 'gold' },
-    ]);
+    fakeUserRepo.seed([{ id: "user-1", name: "Alice", tier: "gold" }]);
   });
 
   afterEach(() => {
@@ -225,27 +223,28 @@ describe('OrderService Integration', () => {
     fakeEventBus.clearEvents();
   });
 
-  it('should create order and publish event', async () => {
+  it("should create order and publish event", async () => {
     const result = await orderService.createOrder({
-      userId: 'user-1',
-      items: [{ productId: 'prod-1', quantity: 2 }],
+      userId: "user-1",
+      items: [{ productId: "prod-1", quantity: 2 }],
     });
 
     // 状態検証
     const savedOrder = await fakeOrderRepo.findById(result.orderId);
     expect(savedOrder).not.toBeNull();
-    expect(savedOrder.status).toBe('pending');
+    expect(savedOrder.status).toBe("pending");
 
     // イベント検証
-    const events = fakeEventBus.getEventsOfType<OrderCreatedEvent>('order.created');
+    const events =
+      fakeEventBus.getEventsOfType<OrderCreatedEvent>("order.created");
     expect(events).toHaveLength(1);
     expect(events[0].orderId).toBe(result.orderId);
   });
 
-  it('should apply gold tier discount', async () => {
+  it("should apply gold tier discount", async () => {
     const result = await orderService.createOrder({
-      userId: 'user-1',
-      items: [{ productId: 'prod-1', quantity: 1, price: 1000 }],
+      userId: "user-1",
+      items: [{ productId: "prod-1", quantity: 1, price: 1000 }],
     });
 
     const order = await fakeOrderRepo.findById(result.orderId);
@@ -257,7 +256,7 @@ describe('OrderService Integration', () => {
 ### シナリオテスト
 
 ```typescript
-describe('User Registration Flow', () => {
+describe("User Registration Flow", () => {
   let userService: UserService;
   let fakeUserRepo: FakeUserRepository;
   let fakeEmailService: FakeEmailService;
@@ -268,20 +267,20 @@ describe('User Registration Flow', () => {
     userService = new UserService(fakeUserRepo, fakeEmailService);
   });
 
-  it('should complete registration flow', async () => {
+  it("should complete registration flow", async () => {
     // ユーザー登録
     const user = await userService.register({
-      email: 'new@example.com',
-      name: 'New User',
+      email: "new@example.com",
+      name: "New User",
     });
 
-    expect(user.status).toBe('pending_verification');
+    expect(user.status).toBe("pending_verification");
 
     // メール確認
     const sentEmails = fakeEmailService.getSentEmails();
     expect(sentEmails).toHaveLength(1);
-    expect(sentEmails[0].to).toBe('new@example.com');
-    expect(sentEmails[0].type).toBe('verification');
+    expect(sentEmails[0].to).toBe("new@example.com");
+    expect(sentEmails[0].type).toBe("verification");
 
     // トークンを取得して検証
     const verificationToken = sentEmails[0].token;
@@ -289,20 +288,20 @@ describe('User Registration Flow', () => {
 
     // 状態を確認
     const verifiedUser = await fakeUserRepo.findById(user.id);
-    expect(verifiedUser.status).toBe('active');
+    expect(verifiedUser.status).toBe("active");
   });
 });
 ```
 
 ## Fake vs Stub
 
-| 観点 | Fake | Stub |
-|------|------|------|
-| 実装 | 本物に近い | 固定値を返す |
-| 状態 | 保持する | 保持しない |
-| 用途 | 統合テスト | 単体テスト |
-| 複雑さ | 高い | 低い |
-| 保守 | 必要 | 不要 |
+| 観点   | Fake       | Stub         |
+| ------ | ---------- | ------------ |
+| 実装   | 本物に近い | 固定値を返す |
+| 状態   | 保持する   | 保持しない   |
+| 用途   | 統合テスト | 単体テスト   |
+| 複雑さ | 高い       | 低い         |
+| 保守   | 必要       | 不要         |
 
 ## チェックリスト
 

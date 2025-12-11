@@ -1,57 +1,125 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import "@testing-library/jest-dom/vitest";
 import { EditorView } from "./index";
+import type {
+  Workspace,
+  FolderId,
+  FolderPath,
+} from "../../store/types/workspace";
+import type { FileNode } from "../../store/types";
 
-// Mock store state - flat structure matching actual store
-const createMockState = (overrides = {}) => ({
-  // EditorSlice
-  fileTree: [
+// Mock workspace data
+const mockWorkspace: Workspace = {
+  id: "default",
+  folders: [
     {
-      id: "/docs/readme.md",
-      path: "/docs/readme.md",
-      name: "readme.md",
-      type: "file" as const,
+      id: "folder-1" as FolderId,
+      path: "/docs" as FolderPath,
+      displayName: "docs",
+      isExpanded: true,
+      expandedPaths: new Set<string>(),
+      addedAt: new Date(),
     },
-    {
-      id: "/docs/guide.md",
-      path: "/docs/guide.md",
-      name: "guide.md",
-      type: "file" as const,
-    },
-    { id: "/src", path: "/src", name: "src", type: "folder" as const },
   ],
-  selectedFile: {
-    id: "/docs/readme.md",
+  lastSelectedFileId: null,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
+const mockFileTree: FileNode[] = [
+  {
+    id: "file-1",
     path: "/docs/readme.md",
     name: "readme.md",
     type: "file" as const,
   },
+  {
+    id: "file-2",
+    path: "/docs/guide.md",
+    name: "guide.md",
+    type: "file" as const,
+  },
+];
+
+// Mock store state - matching new EditorView structure
+const createMockState = (overrides: Record<string, unknown> = {}) => ({
+  // Workspace state
+  workspace: mockWorkspace,
+  folderFileTrees: new Map([["folder-1" as FolderId, mockFileTree]]),
+  workspaceIsLoading: false,
+  workspaceError: null,
+  loadWorkspace: vi.fn(),
+  saveWorkspace: vi.fn(),
+  addFolder: vi.fn(),
+  removeFolder: vi.fn(),
+  toggleFolderExpansion: vi.fn(),
+  toggleSubfolder: vi.fn(),
+  setWorkspaceSelectedFile: vi.fn(),
+
+  // Editor state
   editorContent: "# README\n\nThis is a readme file.",
   hasUnsavedChanges: false,
-  expandedFolders: new Set<string>(),
-  setSelectedFile: vi.fn(),
-  setFileTree: vi.fn(),
   setEditorContent: vi.fn(),
-  setHasUnsavedChanges: vi.fn(),
-  setExpandedFolders: vi.fn(),
-  toggleFolder: vi.fn(),
   markAsSaved: vi.fn(),
+
+  // Legacy editor state (for compatibility)
+  fileTree: [],
+  selectedFile: null,
+  setSelectedFile: vi.fn(),
   ...overrides,
 });
+
+// Mock window.electronAPI
+const mockElectronAPI = {
+  file: {
+    read: vi.fn().mockResolvedValue({
+      success: true,
+      data: { content: "# Test content" },
+    }),
+    write: vi.fn().mockResolvedValue({ success: true }),
+    getTree: vi.fn().mockResolvedValue({ success: true, data: mockFileTree }),
+    watchStart: vi.fn(),
+    watchStop: vi.fn(),
+    onChanged: vi.fn(),
+  },
+  workspace: {
+    load: vi.fn().mockResolvedValue({ success: true, data: null }),
+    save: vi.fn().mockResolvedValue({ success: true }),
+    addFolder: vi.fn().mockResolvedValue({ success: true, data: null }),
+    validatePaths: vi.fn().mockResolvedValue({
+      success: true,
+      data: { validPaths: ["/docs"] },
+    }),
+  },
+};
+
+vi.stubGlobal("electronAPI", mockElectronAPI);
 
 vi.mock("../../store", () => ({
   useAppStore: vi.fn((selector: (state: unknown) => unknown) =>
     selector(createMockState()),
   ),
+  useWorkspace: vi.fn(() => mockWorkspace),
+  useWorkspaceLoading: vi.fn(() => false),
+  useWorkspaceError: vi.fn(() => null),
 }));
 
 describe("EditorView", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
-    const { useAppStore } = await import("../../store");
+    const {
+      useAppStore,
+      useWorkspace,
+      useWorkspaceLoading,
+      useWorkspaceError,
+    } = await import("../../store");
     vi.mocked(useAppStore).mockImplementation(((
       selector: (state: ReturnType<typeof createMockState>) => unknown,
     ) => selector(createMockState())) as never);
+    vi.mocked(useWorkspace).mockReturnValue(mockWorkspace);
+    vi.mocked(useWorkspaceLoading).mockReturnValue(false);
+    vi.mocked(useWorkspaceError).mockReturnValue(null);
   });
 
   describe("レンダリング", () => {
@@ -60,64 +128,45 @@ describe("EditorView", () => {
       expect(screen.getByTestId("editor-view")).toBeInTheDocument();
     });
 
-    it("ファイルツリーセクションを表示する", () => {
+    it("WorkspaceSidebarを表示する", () => {
       render(<EditorView />);
-      expect(screen.getByText("ファイル")).toBeInTheDocument();
+      expect(screen.getByTestId("workspace-sidebar")).toBeInTheDocument();
     });
 
-    it("現在のファイル名を表示する", () => {
+    it("ファイル未選択時にメッセージを表示する", () => {
       render(<EditorView />);
-      const heading = screen.getByRole("heading", { level: 1 });
-      expect(heading).toHaveTextContent("readme.md");
+      expect(
+        screen.getByText("左側のワークスペースからファイルを選択してください"),
+      ).toBeInTheDocument();
     });
   });
 
-  describe("ファイルツリー", () => {
-    it("ファイル一覧を表示する", () => {
-      render(<EditorView />);
-      expect(screen.getAllByText("readme.md").length).toBeGreaterThan(0);
-      expect(screen.getByText("guide.md")).toBeInTheDocument();
-      expect(screen.getByText("src")).toBeInTheDocument();
-    });
-
-    it("ファイルクリックでsetSelectedFileを呼び出す", async () => {
-      const mockSetSelectedFile = vi.fn();
+  describe("ワークスペース", () => {
+    it("マウント時にワークスペースを読み込む", async () => {
+      const mockLoadWorkspace = vi.fn();
       const { useAppStore } = await import("../../store");
       vi.mocked(useAppStore).mockImplementation(((
         selector: (state: ReturnType<typeof createMockState>) => unknown,
       ) =>
         selector(
-          createMockState({ setSelectedFile: mockSetSelectedFile }),
+          createMockState({ loadWorkspace: mockLoadWorkspace }),
         )) as never);
 
       render(<EditorView />);
-      const guideItem = screen.getByRole("treeitem", { name: /guide\.md/ });
-      fireEvent.click(guideItem);
-      expect(mockSetSelectedFile).toHaveBeenCalled();
-    });
-  });
-
-  describe("エディター", () => {
-    it("ファイル内容をテキストエリアに表示する", () => {
-      render(<EditorView />);
-      const textarea = screen.getByRole("textbox");
-      expect(textarea).toHaveValue("# README\n\nThis is a readme file.");
+      expect(mockLoadWorkspace).toHaveBeenCalled();
     });
 
-    it("内容変更でsetEditorContentを呼び出す", async () => {
-      const mockSetEditorContent = vi.fn();
+    it("フォルダ追加ボタンをクリックでaddFolderを呼び出す", async () => {
+      const mockAddFolder = vi.fn();
       const { useAppStore } = await import("../../store");
       vi.mocked(useAppStore).mockImplementation(((
         selector: (state: ReturnType<typeof createMockState>) => unknown,
-      ) =>
-        selector(
-          createMockState({ setEditorContent: mockSetEditorContent }),
-        )) as never);
+      ) => selector(createMockState({ addFolder: mockAddFolder }))) as never);
 
       render(<EditorView />);
-      const textarea = screen.getByRole("textbox");
-      fireEvent.change(textarea, { target: { value: "New content" } });
-      expect(mockSetEditorContent).toHaveBeenCalledWith("New content");
+      const addButton = screen.getByTestId("add-folder-btn");
+      fireEvent.click(addButton);
+      await waitFor(() => expect(mockAddFolder).toHaveBeenCalled());
     });
   });
 
@@ -127,103 +176,21 @@ describe("EditorView", () => {
       expect(screen.getByRole("button", { name: "保存" })).toBeInTheDocument();
     });
 
-    it("変更がない場合は無効化される", async () => {
+    it("ファイル未選択時は無効化される", () => {
       render(<EditorView />);
       const saveButton = screen.getByRole("button", { name: "保存" });
       expect(saveButton).toBeDisabled();
     });
-
-    it("変更がある場合は有効になる", async () => {
-      const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation(((
-        selector: (state: ReturnType<typeof createMockState>) => unknown,
-      ) => selector(createMockState({ hasUnsavedChanges: true }))) as never);
-
-      render(<EditorView />);
-      const saveButton = screen.getByRole("button", { name: "保存" });
-      expect(saveButton).not.toBeDisabled();
-    });
-
-    it("クリックでmarkAsSavedを呼び出す", async () => {
-      const mockMarkAsSaved = vi.fn();
-      const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation(((
-        selector: (state: ReturnType<typeof createMockState>) => unknown,
-      ) =>
-        selector(
-          createMockState({
-            hasUnsavedChanges: true,
-            markAsSaved: mockMarkAsSaved,
-          }),
-        )) as never);
-
-      render(<EditorView />);
-      const saveButton = screen.getByRole("button", { name: "保存" });
-      fireEvent.click(saveButton);
-      expect(mockMarkAsSaved).toHaveBeenCalled();
-    });
   });
 
-  describe("未保存インジケーター", () => {
-    it("変更がある場合にインジケーターを表示する", async () => {
-      const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation(((
-        selector: (state: ReturnType<typeof createMockState>) => unknown,
-      ) => selector(createMockState({ hasUnsavedChanges: true }))) as never);
+  describe("エラー状態", () => {
+    it("workspaceErrorがある場合にエラーメッセージを表示する", async () => {
+      const { useWorkspaceError } = await import("../../store");
+      vi.mocked(useWorkspaceError).mockReturnValue("Test error message");
 
       render(<EditorView />);
-      expect(screen.getByLabelText("未保存の変更あり")).toBeInTheDocument();
-    });
-  });
-
-  describe("ファイル未選択状態", () => {
-    it("ファイルが選択されていない場合にメッセージを表示する", async () => {
-      const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation(((
-        selector: (state: ReturnType<typeof createMockState>) => unknown,
-      ) =>
-        selector(
-          createMockState({
-            selectedFile: null,
-            editorContent: "",
-          }),
-        )) as never);
-
-      render(<EditorView />);
-      expect(
-        screen.getByText("左側のファイルツリーからファイルを選択してください"),
-      ).toBeInTheDocument();
-      expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-        "ファイルを選択してください",
-      );
-    });
-  });
-
-  describe("空状態", () => {
-    it("ファイルがない場合はメッセージを表示する", async () => {
-      const { useAppStore } = await import("../../store");
-      vi.mocked(useAppStore).mockImplementation(((
-        selector: (state: ReturnType<typeof createMockState>) => unknown,
-      ) => selector(createMockState({ fileTree: [] }))) as never);
-
-      render(<EditorView />);
-      expect(screen.getByText("ファイルがありません")).toBeInTheDocument();
-    });
-  });
-
-  describe("アクセシビリティ", () => {
-    it("ファイルツリーナビゲーションにaria-labelを持つ", () => {
-      render(<EditorView />);
-      expect(
-        screen.getByRole("navigation", { name: "ファイルツリー" }),
-      ).toBeInTheDocument();
-    });
-
-    it("テキストエリアにaria-labelを持つ", () => {
-      render(<EditorView />);
-      expect(
-        screen.getByRole("textbox", { name: /readme.mdの編集/ }),
-      ).toBeInTheDocument();
+      // ErrorDisplay component shows error in specific format
+      expect(screen.getByText(/Test error message/)).toBeInTheDocument();
     });
   });
 

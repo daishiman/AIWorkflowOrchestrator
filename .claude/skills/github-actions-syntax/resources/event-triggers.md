@@ -7,14 +7,14 @@ on:
   push:
     branches:
       - main
-      - 'releases/**'
+      - "releases/**"
     branches-ignore:
-      - 'feature/**'
+      - "feature/**"
     paths:
-      - 'src/**'
-      - '!src/docs/**'
+      - "src/**"
+      - "!src/docs/**"
     paths-ignore:
-      - '**/*.md'
+      - "**/*.md"
     tags:
       - v*.*.*
     tags-ignore:
@@ -33,20 +33,20 @@ on:
       - reopened
       - ready_for_review
     paths:
-      - 'src/**'
+      - "src/**"
 ```
 
 ### pull_requestのtypes
 
-| type | 説明 |
-|------|------|
-| `opened` | PR作成時 |
-| `synchronize` | 新しいコミットプッシュ時 |
-| `reopened` | PR再オープン時 |
-| `closed` | PRクローズ時 |
-| `ready_for_review` | draft解除時 |
-| `labeled` | ラベル追加時 |
-| `unlabeled` | ラベル削除時 |
+| type               | 説明                     |
+| ------------------ | ------------------------ |
+| `opened`           | PR作成時                 |
+| `synchronize`      | 新しいコミットプッシュ時 |
+| `reopened`         | PR再オープン時           |
+| `closed`           | PRクローズ時             |
+| `ready_for_review` | draft解除時              |
+| `labeled`          | ラベル追加時             |
+| `unlabeled`        | ラベル削除時             |
 
 ## workflow_dispatchイベント
 
@@ -55,20 +55,20 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'デプロイ先環境'
+        description: "デプロイ先環境"
         required: true
-        default: 'staging'
+        default: "staging"
         type: choice
         options:
           - staging
           - production
       debug:
-        description: 'デバッグモード'
+        description: "デバッグモード"
         required: false
         type: boolean
         default: false
       version:
-        description: 'バージョン'
+        description: "バージョン"
         required: true
         type: string
 ```
@@ -86,11 +86,11 @@ on:
 on:
   schedule:
     # 毎日 UTC 0:00
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
     # 月曜日 9:00 JST (0:00 UTC)
-    - cron: '0 0 * * MON'
+    - cron: "0 0 * * MON"
     # 毎月1日 0:00
-    - cron: '0 0 1 * *'
+    - cron: "0 0 1 * *"
 ```
 
 ### cron構文
@@ -117,10 +117,10 @@ on:
       environment:
         required: false
         type: string
-        default: 'staging'
+        default: "staging"
     outputs:
       artifact-id:
-        description: 'アーティファクトID'
+        description: "アーティファクトID"
         value: ${{ jobs.build.outputs.artifact-id }}
     secrets:
       deploy-token:
@@ -184,12 +184,12 @@ on:
 # 含める
 branches:
   - main
-  - 'feature/**'
-  - 'release/v[0-9]+.[0-9]+'
+  - "feature/**"
+  - "release/v[0-9]+.[0-9]+"
 
 # 除外
 branches-ignore:
-  - 'dependabot/**'
+  - "dependabot/**"
 ```
 
 ### パスフィルタ
@@ -211,7 +211,7 @@ paths:
 ```yaml
 tags:
   - v*.*.*
-  - 'v[0-9]+.[0-9]+.[0-9]+'
+  - "v[0-9]+.[0-9]+.[0-9]+"
 ```
 
 ## 複合イベント
@@ -224,5 +224,5 @@ on:
     branches: [main]
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
 ```

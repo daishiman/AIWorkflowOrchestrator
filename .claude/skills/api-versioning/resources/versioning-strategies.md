@@ -84,14 +84,14 @@ API-Version: 1
 
 ```typescript
 // middleware.ts (Next.js)
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const version = request.headers.get('API-Version') || '1';
+  const version = request.headers.get("API-Version") || "1";
 
   // バージョンに基づいてルーティング
   const url = request.nextUrl.clone();
-  url.pathname = `/api/v${version}${url.pathname.replace('/api', '')}`;
+  url.pathname = `/api/v${version}${url.pathname.replace("/api", "")}`;
 
   return NextResponse.rewrite(url);
 }
@@ -118,8 +118,8 @@ paths:
           required: false
           schema:
             type: string
-            enum: ['1', '2']
-            default: '1'
+            enum: ["1", "2"]
+            default: "1"
           description: APIバージョン
 ```
 
@@ -152,9 +152,9 @@ https://api.example.com/users?v=2
 // app/api/users/route.ts
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const version = searchParams.get('version') || '1';
+  const version = searchParams.get("version") || "1";
 
-  if (version === '2') {
+  if (version === "2") {
     return handleV2(request);
   }
   return handleV1(request);
@@ -232,8 +232,8 @@ GET /api/v1/users?feature=new-pagination
 
 ```typescript
 interface ApiVersion {
-  major: number;   // URL Path から
-  minor: number;   // Header から
+  major: number; // URL Path から
+  minor: number; // Header から
   features: string[]; // Query から
 }
 
@@ -243,8 +243,8 @@ function resolveVersion(request: Request): ApiVersion {
 
   return {
     major: majorMatch ? parseInt(majorMatch[1]) : 1,
-    minor: parseInt(request.headers.get('API-Minor-Version') || '0'),
-    features: url.searchParams.getAll('feature')
+    minor: parseInt(request.headers.get("API-Minor-Version") || "0"),
+    features: url.searchParams.getAll("feature"),
   };
 }
 ```
@@ -256,9 +256,9 @@ function resolveVersion(request: Request): ApiVersion {
 ### デフォルトバージョン戦略
 
 ```typescript
-const DEFAULT_VERSION = '1';
-const SUPPORTED_VERSIONS = ['1', '2'];
-const LATEST_VERSION = '2';
+const DEFAULT_VERSION = "1";
+const SUPPORTED_VERSIONS = ["1", "2"];
+const LATEST_VERSION = "2";
 
 function resolveVersion(requestedVersion: string | null): string {
   // 未指定 → デフォルト
@@ -267,7 +267,7 @@ function resolveVersion(requestedVersion: string | null): string {
   }
 
   // "latest" 指定
-  if (requestedVersion === 'latest') {
+  if (requestedVersion === "latest") {
     return LATEST_VERSION;
   }
 
@@ -284,21 +284,18 @@ function resolveVersion(requestedVersion: string | null): string {
 ### 廃止バージョンの処理
 
 ```typescript
-const DEPRECATED_VERSIONS = ['1'];
+const DEPRECATED_VERSIONS = ["1"];
 const SUNSET_DATES: Record<string, Date> = {
-  '1': new Date('2025-06-01')
+  "1": new Date("2025-06-01"),
 };
 
 function checkDeprecation(version: string, response: Response): void {
   if (DEPRECATED_VERSIONS.includes(version)) {
     const sunsetDate = SUNSET_DATES[version];
 
-    response.headers.set('Deprecation', 'true');
-    response.headers.set('Sunset', sunsetDate.toUTCString());
-    response.headers.set(
-      'Link',
-      `</api/v2>; rel="successor-version"`
-    );
+    response.headers.set("Deprecation", "true");
+    response.headers.set("Sunset", sunsetDate.toUTCString());
+    response.headers.set("Link", `</api/v2>; rel="successor-version"`);
   }
 }
 ```
@@ -307,13 +304,13 @@ function checkDeprecation(version: string, response: Response): void {
 
 ## バージョン比較表
 
-| 観点 | URL Path | Header | Query | Content-Type |
-|------|----------|--------|-------|--------------|
-| 明確さ | ⭐⭐⭐ | ⭐ | ⭐⭐ | ⭐ |
-| REST準拠 | ⭐ | ⭐⭐⭐ | ⭐ | ⭐⭐⭐ |
-| キャッシュ | ⭐⭐⭐ | ⭐ | ⭐ | ⭐⭐ |
-| テスト容易性 | ⭐⭐⭐ | ⭐ | ⭐⭐⭐ | ⭐ |
-| ツールサポート | ⭐⭐⭐ | ⭐⭐ | ⭐⭐ | ⭐ |
-| 採用実績 | ⭐⭐⭐ | ⭐⭐ | ⭐ | ⭐ |
+| 観点           | URL Path | Header | Query  | Content-Type |
+| -------------- | -------- | ------ | ------ | ------------ |
+| 明確さ         | ⭐⭐⭐   | ⭐     | ⭐⭐   | ⭐           |
+| REST準拠       | ⭐       | ⭐⭐⭐ | ⭐     | ⭐⭐⭐       |
+| キャッシュ     | ⭐⭐⭐   | ⭐     | ⭐     | ⭐⭐         |
+| テスト容易性   | ⭐⭐⭐   | ⭐     | ⭐⭐⭐ | ⭐           |
+| ツールサポート | ⭐⭐⭐   | ⭐⭐   | ⭐⭐   | ⭐           |
+| 採用実績       | ⭐⭐⭐   | ⭐⭐   | ⭐     | ⭐           |
 
 **推奨**: 新規プロジェクトでは **URL Path Versioning** を採用

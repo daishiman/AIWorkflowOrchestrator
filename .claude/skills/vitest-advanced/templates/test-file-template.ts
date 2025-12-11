@@ -12,7 +12,7 @@
  * - it: should + 動詞 + 期待される動作
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 
 // テスト対象のインポート
 // import { TargetClass } from './target';
@@ -23,7 +23,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 //   dependency: vi.fn(),
 // }));
 
-describe('TargetClass', () => {
+describe("TargetClass", () => {
   // テスト対象
   // let target: TargetClass;
 
@@ -51,12 +51,16 @@ describe('TargetClass', () => {
     vi.restoreAllMocks();
   });
 
-  describe('methodName', () => {
-    describe('正常系', () => {
-      it('should return expected result when given valid input', async () => {
+  describe("methodName", () => {
+    describe("正常系", () => {
+      it("should return expected result when given valid input", async () => {
         // Arrange
-        const input = { /* ... */ };
-        const expected = { /* ... */ };
+        const input = {
+          /* ... */
+        };
+        const expected = {
+          /* ... */
+        };
 
         // Act
         // const result = await target.methodName(input);
@@ -65,9 +69,11 @@ describe('TargetClass', () => {
         // expect(result).toEqual(expected);
       });
 
-      it('should call dependency with correct parameters', async () => {
+      it("should call dependency with correct parameters", async () => {
         // Arrange
-        const input = { /* ... */ };
+        const input = {
+          /* ... */
+        };
 
         // Act
         // await target.methodName(input);
@@ -79,40 +85,41 @@ describe('TargetClass', () => {
       });
     });
 
-    describe('異常系', () => {
-      it('should throw error when input is invalid', async () => {
+    describe("異常系", () => {
+      it("should throw error when input is invalid", async () => {
         // Arrange
-        const invalidInput = { /* ... */ };
+        const invalidInput = {
+          /* ... */
+        };
 
         // Act & Assert
         // await expect(target.methodName(invalidInput))
         //   .rejects.toThrow('Expected error message');
       });
 
-      it('should handle dependency error gracefully', async () => {
+      it("should handle dependency error gracefully", async () => {
         // Arrange
         // mockDependency.method.mockRejectedValue(new Error('Dependency error'));
-
         // Act & Assert
         // await expect(target.methodName({}))
         //   .rejects.toThrow('Dependency error');
       });
     });
 
-    describe('境界値', () => {
+    describe("境界値", () => {
       it.each([
-        { input: 0, expected: 'zero' },
-        { input: -1, expected: 'negative' },
-        { input: 100, expected: 'max' },
-      ])('should handle boundary value: $input', ({ input, expected }) => {
+        { input: 0, expected: "zero" },
+        { input: -1, expected: "negative" },
+        { input: 100, expected: "max" },
+      ])("should handle boundary value: $input", ({ input, expected }) => {
         // const result = target.classify(input);
         // expect(result).toBe(expected);
       });
     });
   });
 
-  describe('anotherMethod', () => {
-    it.todo('should implement additional tests');
+  describe("anotherMethod", () => {
+    it.todo("should implement additional tests");
   });
 });
 

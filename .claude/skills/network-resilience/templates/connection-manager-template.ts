@@ -11,13 +11,13 @@
  *   - {{CHECK_TIMEOUT}}: タイムアウト (デフォルト: 5000ms)
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from "events";
 
 // ========================================
 // 型定義
 // ========================================
 
-export type ConnectionState = 'online' | 'offline' | 'reconnecting';
+export type ConnectionState = "online" | "offline" | "reconnecting";
 
 export interface ConnectionConfig {
   healthCheckUrl: string;
@@ -50,14 +50,14 @@ export interface ConnectionEvents {
 // ========================================
 
 const DEFAULT_CONFIG: ConnectionConfig = {
-  healthCheckUrl: '/api/health',
-  checkInterval: 30000,    // 30秒
-  checkTimeout: 5000,      // 5秒
+  healthCheckUrl: "/api/health",
+  checkInterval: 30000, // 30秒
+  checkTimeout: 5000, // 5秒
   backoff: {
-    baseDelay: 1000,       // 1秒
-    maxDelay: 64000,       // 64秒
-    jitterFactor: 0.25     // ±25%
-  }
+    baseDelay: 1000, // 1秒
+    maxDelay: 64000, // 64秒
+    jitterFactor: 0.25, // ±25%
+  },
 };
 
 // ========================================
@@ -74,8 +74,8 @@ export class ConnectionManager extends EventEmitter {
     super();
     this.config = { ...DEFAULT_CONFIG, ...config };
     this.status = {
-      state: 'offline',
-      reconnectAttempt: 0
+      state: "offline",
+      reconnectAttempt: 0,
     };
   }
 
@@ -111,7 +111,7 @@ export class ConnectionManager extends EventEmitter {
    * オンラインかどうか
    */
   isOnline(): boolean {
-    return this.status.state === 'online';
+    return this.status.state === "online";
   }
 
   /**
@@ -130,11 +130,14 @@ export class ConnectionManager extends EventEmitter {
   private async performHealthCheck(): Promise<void> {
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), this.config.checkTimeout);
+      const timeout = setTimeout(
+        () => controller.abort(),
+        this.config.checkTimeout,
+      );
 
       const response = await fetch(this.config.healthCheckUrl, {
-        method: 'HEAD',
-        signal: controller.signal
+        method: "HEAD",
+        signal: controller.signal,
       });
 
       clearTimeout(timeout);
@@ -142,10 +145,12 @@ export class ConnectionManager extends EventEmitter {
       if (this.isHealthy(response)) {
         this.transitionToOnline();
       } else {
-        this.transitionToOffline('ヘルスチェック失敗');
+        this.transitionToOffline("ヘルスチェック失敗");
       }
     } catch (error) {
-      this.transitionToOffline(error instanceof Error ? error.message : 'Unknown error');
+      this.transitionToOffline(
+        error instanceof Error ? error.message : "Unknown error",
+      );
     }
   }
 
@@ -160,20 +165,20 @@ export class ConnectionManager extends EventEmitter {
    * オンライン状態に遷移する
    */
   private transitionToOnline(): void {
-    if (this.status.state === 'online') return;
+    if (this.status.state === "online") return;
 
     const previousState = this.status.state;
     this.status = {
-      state: 'online',
+      state: "online",
       lastOnline: new Date(),
-      reconnectAttempt: 0
+      reconnectAttempt: 0,
     };
 
-    this.emit('online', { timestamp: new Date() });
+    this.emit("online", { timestamp: new Date() });
 
     // オフライン→オンラインの場合、キュー処理を通知
-    if (previousState === 'offline' || previousState === 'reconnecting') {
-      this.emit('ready-to-sync', {});
+    if (previousState === "offline" || previousState === "reconnecting") {
+      this.emit("ready-to-sync", {});
     }
   }
 
@@ -181,7 +186,7 @@ export class ConnectionManager extends EventEmitter {
    * オフライン状態に遷移する
    */
   private transitionToOffline(reason: string): void {
-    if (this.status.state === 'offline') {
+    if (this.status.state === "offline") {
       // 既にオフラインなら再接続を試行
       this.scheduleReconnect();
       return;
@@ -189,11 +194,11 @@ export class ConnectionManager extends EventEmitter {
 
     this.status = {
       ...this.status,
-      state: 'offline',
-      lastOffline: new Date()
+      state: "offline",
+      lastOffline: new Date(),
     };
 
-    this.emit('offline', { timestamp: new Date(), reason });
+    this.emit("offline", { timestamp: new Date(), reason });
     this.scheduleReconnect();
   }
 
@@ -202,14 +207,14 @@ export class ConnectionManager extends EventEmitter {
    */
   private scheduleReconnect(): void {
     this.status.reconnectAttempt++;
-    this.status.state = 'reconnecting';
+    this.status.state = "reconnecting";
 
     const delay = this.calculateBackoff(this.status.reconnectAttempt);
     this.status.nextReconnectAt = new Date(Date.now() + delay);
 
-    this.emit('reconnecting', {
+    this.emit("reconnecting", {
       attempt: this.status.reconnectAttempt,
-      nextTryIn: delay
+      nextTryIn: delay,
     });
 
     this.reconnectTimer = setTimeout(() => {

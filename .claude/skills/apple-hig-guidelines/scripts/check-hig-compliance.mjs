@@ -23,13 +23,13 @@
  *   - Notifications
  */
 
-import { readdir, readFile, stat } from 'fs/promises';
-import { join, relative } from 'path';
+import { readdir, readFile, stat } from "fs/promises";
+import { join, relative } from "path";
 
 // HIG準拠チェックルール
 const HIG_RULES = {
   touchTarget: {
-    name: 'タッチターゲットサイズ',
+    name: "タッチターゲットサイズ",
     minSize: 44,
     visionOSMinSize: 60,
     patterns: [
@@ -40,16 +40,28 @@ const HIG_RULES = {
     ],
   },
   systemColors: {
-    name: 'システムカラー使用',
-    recommended: ['#007AFF', '#FF3B30', '#34C759', '#FF9500', '#5856D6', '#AF52DE', '#FF2D55'],
-    semanticColors: [
-      'var(--system-blue)', 'var(--system-red)', 'var(--system-green)',
-      'var(--label)', 'var(--secondary-label)', 'var(--system-background)',
+    name: "システムカラー使用",
+    recommended: [
+      "#007AFF",
+      "#FF3B30",
+      "#34C759",
+      "#FF9500",
+      "#5856D6",
+      "#AF52DE",
+      "#FF2D55",
     ],
-    avoidHardcoded: ['#FFFFFF', '#000000', '#FFF', '#000'],
+    semanticColors: [
+      "var(--system-blue)",
+      "var(--system-red)",
+      "var(--system-green)",
+      "var(--label)",
+      "var(--secondary-label)",
+      "var(--system-background)",
+    ],
+    avoidHardcoded: ["#FFFFFF", "#000000", "#FFF", "#000"],
   },
   typography: {
-    name: 'タイポグラフィ',
+    name: "タイポグラフィ",
     minFontSize: 11,
     sfProDisplayMin: 20, // SF Pro Display は 20pt以上
     patterns: [
@@ -59,74 +71,82 @@ const HIG_RULES = {
     ],
   },
   accessibility: {
-    name: 'アクセシビリティ',
+    name: "アクセシビリティ",
     requiredAttributes: [
-      'aria-label',
-      'aria-labelledby',
-      'accessibilityLabel',
-      'role',
-      'aria-describedby',
+      "aria-label",
+      "aria-labelledby",
+      "accessibilityLabel",
+      "role",
+      "aria-describedby",
     ],
     reduceMotion: [
-      'prefers-reduced-motion',
-      'UIAccessibility.isReduceMotionEnabled',
-      'accessibilityReduceMotion',
+      "prefers-reduced-motion",
+      "UIAccessibility.isReduceMotionEnabled",
+      "accessibilityReduceMotion",
     ],
   },
   cornerRadius: {
-    name: '角丸（Squircle）',
+    name: "角丸（Squircle）",
     recommendedValues: [8, 10, 12, 14, 16, 20, 24],
     squircleRatio: 0.22, // ~22% for Apple Squircle
   },
   shadows: {
-    name: 'シャドウ',
+    name: "シャドウ",
     levels: [
-      { name: 'subtle', blur: '3-4px', opacity: '0.04-0.08' },
-      { name: 'light', blur: '6-8px', opacity: '0.08-0.12' },
-      { name: 'medium', blur: '10-16px', opacity: '0.12-0.15' },
-      { name: 'strong', blur: '16-24px', opacity: '0.15-0.20' },
-      { name: 'heavy', blur: '24-32px', opacity: '0.20-0.25' },
-      { name: 'maximum', blur: '32-48px', opacity: '0.25-0.30' },
+      { name: "subtle", blur: "3-4px", opacity: "0.04-0.08" },
+      { name: "light", blur: "6-8px", opacity: "0.08-0.12" },
+      { name: "medium", blur: "10-16px", opacity: "0.12-0.15" },
+      { name: "strong", blur: "16-24px", opacity: "0.15-0.20" },
+      { name: "heavy", blur: "24-32px", opacity: "0.20-0.25" },
+      { name: "maximum", blur: "32-48px", opacity: "0.25-0.30" },
     ],
   },
   animation: {
-    name: 'アニメーション',
+    name: "アニメーション",
     recommendedDurations: {
       microInteraction: [100, 150],
       transition: [200, 300],
       modal: [300, 400],
       complex: [400, 500],
     },
-    recommendedEasing: ['ease-out', 'ease-in-out', 'cubic-bezier'],
+    recommendedEasing: ["ease-out", "ease-in-out", "cubic-bezier"],
     avoidLinear: true,
   },
   componentStates: {
-    name: 'コンポーネント状態',
-    required: ['default', 'hover', 'pressed', 'focused', 'disabled'],
-    optional: ['selected', 'loading', 'error'],
+    name: "コンポーネント状態",
+    required: ["default", "hover", "pressed", "focused", "disabled"],
+    optional: ["selected", "loading", "error"],
   },
   appIcons: {
-    name: 'App Icons',
+    name: "App Icons",
     requiredSizes: [1024, 180, 120, 167, 152, 80, 60, 58, 40, 29, 20],
     squircleRatio: 0.22,
   },
   widgets: {
-    name: 'Widgets',
-    families: ['systemSmall', 'systemMedium', 'systemLarge', 'systemExtraLarge'],
-    accessory: ['accessoryCircular', 'accessoryRectangular', 'accessoryInline'],
+    name: "Widgets",
+    families: [
+      "systemSmall",
+      "systemMedium",
+      "systemLarge",
+      "systemExtraLarge",
+    ],
+    accessory: ["accessoryCircular", "accessoryRectangular", "accessoryInline"],
   },
   liveActivities: {
-    name: 'Live Activities',
-    dynamicIsland: ['compactLeading', 'compactTrailing', 'minimal', 'expanded'],
+    name: "Live Activities",
+    dynamicIsland: ["compactLeading", "compactTrailing", "minimal", "expanded"],
   },
   notifications: {
-    name: 'Notifications',
+    name: "Notifications",
     maxActions: 4,
-    interruptionLevels: ['passive', 'active', 'time-sensitive', 'critical'],
+    interruptionLevels: ["passive", "active", "time-sensitive", "critical"],
   },
 };
 
-async function findFiles(dir, extensions = ['.tsx', '.jsx', '.ts', '.js', '.css', '.swift', '.swiftui']) {
+async function findFiles(
+  dir,
+  extensions = [".tsx", ".jsx", ".ts", ".js", ".css", ".swift", ".swiftui"],
+) {
   const files = [];
 
   async function scan(currentDir) {
@@ -138,10 +158,15 @@ async function findFiles(dir, extensions = ['.tsx', '.jsx', '.ts', '.js', '.css'
         const stats = await stat(fullPath);
 
         if (stats.isDirectory()) {
-          if (!entry.startsWith('.') && entry !== 'node_modules' && entry !== 'dist' && entry !== 'build') {
+          if (
+            !entry.startsWith(".") &&
+            entry !== "node_modules" &&
+            entry !== "dist" &&
+            entry !== "build"
+          ) {
             await scan(fullPath);
           }
-        } else if (extensions.some(ext => entry.endsWith(ext))) {
+        } else if (extensions.some((ext) => entry.endsWith(ext))) {
           files.push(fullPath);
         }
       }
@@ -165,16 +190,22 @@ function checkTouchTargets(content, filePath) {
     while ((match = pattern.exec(content)) !== null) {
       const size = parseInt(match[1], 10);
       // Tailwind classの場合（w-10 = 40px = 10 * 4）
-      const actualSize = match[0].includes('-') && !match[0].includes('px') ? size * 4 : size;
+      const actualSize =
+        match[0].includes("-") && !match[0].includes("px") ? size * 4 : size;
 
       if (actualSize > 0 && actualSize < HIG_RULES.touchTarget.minSize) {
         // ボタンやタッチ要素の近くにあるかチェック
-        const context = content.substring(Math.max(0, match.index - 100), match.index + 100);
-        if (/button|touchable|pressable|click|tap|href|Button|Link/i.test(context)) {
-          const line = content.substring(0, match.index).split('\n').length;
+        const context = content.substring(
+          Math.max(0, match.index - 100),
+          match.index + 100,
+        );
+        if (
+          /button|touchable|pressable|click|tap|href|Button|Link/i.test(context)
+        ) {
+          const line = content.substring(0, match.index).split("\n").length;
           issues.push({
-            type: 'touch_target',
-            severity: 'high',
+            type: "touch_target",
+            severity: "high",
             line,
             message: `タッチターゲットが小さい可能性: ${actualSize}pt (最小: ${HIG_RULES.touchTarget.minSize}pt)`,
             found: match[0],
@@ -189,17 +220,18 @@ function checkTouchTargets(content, filePath) {
 
 function checkTypography(content, filePath) {
   const issues = [];
-  const fontSizePattern = /(?:font-size|fontSize)[:=]\s*['"]?(\d+)(?:px|pt)?['"]?/gi;
+  const fontSizePattern =
+    /(?:font-size|fontSize)[:=]\s*['"]?(\d+)(?:px|pt)?['"]?/gi;
 
   let match;
   while ((match = fontSizePattern.exec(content)) !== null) {
     const size = parseInt(match[1], 10);
 
     if (size < HIG_RULES.typography.minFontSize) {
-      const line = content.substring(0, match.index).split('\n').length;
+      const line = content.substring(0, match.index).split("\n").length;
       issues.push({
-        type: 'typography',
-        severity: 'medium',
+        type: "typography",
+        severity: "medium",
         line,
         message: `フォントサイズが最小値未満: ${size}pt (最小: ${HIG_RULES.typography.minFontSize}pt)`,
         found: match[0],
@@ -211,13 +243,13 @@ function checkTypography(content, filePath) {
   if (/\btext-xs\b/.test(content)) {
     const matches = [...content.matchAll(/\btext-xs\b/g)];
     for (const m of matches) {
-      const line = content.substring(0, m.index).split('\n').length;
+      const line = content.substring(0, m.index).split("\n").length;
       issues.push({
-        type: 'typography',
-        severity: 'low',
+        type: "typography",
+        severity: "low",
         line,
-        message: 'text-xs (12px) は最小フォントサイズに近い',
-        found: 'text-xs',
+        message: "text-xs (12px) は最小フォントサイズに近い",
+        found: "text-xs",
       });
     }
   }
@@ -243,17 +275,17 @@ function checkAccessibility(content, filePath) {
       const contextEnd = Math.min(content.length, match.index + 200);
       const context = content.substring(contextStart, contextEnd);
 
-      const hasA11y = HIG_RULES.accessibility.requiredAttributes.some(
-        attr => context.includes(attr)
+      const hasA11y = HIG_RULES.accessibility.requiredAttributes.some((attr) =>
+        context.includes(attr),
       );
 
-      if (!hasA11y && !context.includes('children')) {
-        const line = content.substring(0, match.index).split('\n').length;
+      if (!hasA11y && !context.includes("children")) {
+        const line = content.substring(0, match.index).split("\n").length;
         issues.push({
-          type: 'accessibility',
-          severity: 'medium',
+          type: "accessibility",
+          severity: "medium",
           line,
-          message: 'インタラクティブ要素にアクセシビリティ属性がない可能性',
+          message: "インタラクティブ要素にアクセシビリティ属性がない可能性",
           found: match[0].substring(0, 50),
         });
       }
@@ -261,16 +293,20 @@ function checkAccessibility(content, filePath) {
   }
 
   // Reduce Motion対応チェック
-  const hasAnimation = /animation|transition|transform|@keyframes/i.test(content);
-  const hasReduceMotion = HIG_RULES.accessibility.reduceMotion.some(rm => content.includes(rm));
+  const hasAnimation = /animation|transition|transform|@keyframes/i.test(
+    content,
+  );
+  const hasReduceMotion = HIG_RULES.accessibility.reduceMotion.some((rm) =>
+    content.includes(rm),
+  );
 
   if (hasAnimation && !hasReduceMotion) {
     issues.push({
-      type: 'accessibility',
-      severity: 'medium',
+      type: "accessibility",
+      severity: "medium",
       line: 1,
-      message: 'アニメーションがあるが、Reduce Motion対応が見つかりません',
-      found: 'animation/transition detected',
+      message: "アニメーションがあるが、Reduce Motion対応が見つかりません",
+      found: "animation/transition detected",
     });
   }
 
@@ -294,12 +330,12 @@ function checkColors(content, filePath) {
   for (const pattern of hardcodedColors) {
     let match;
     while ((match = pattern.exec(content)) !== null) {
-      const line = content.substring(0, match.index).split('\n').length;
+      const line = content.substring(0, match.index).split("\n").length;
       issues.push({
-        type: 'color',
-        severity: 'low',
+        type: "color",
+        severity: "low",
         line,
-        message: 'ハードコードされた色を検出（セマンティックカラーを推奨）',
+        message: "ハードコードされた色を検出（セマンティックカラーを推奨）",
         found: match[0],
       });
     }
@@ -314,13 +350,13 @@ function checkNavigation(content, filePath) {
   // ハンバーガーメニューのチェック（iOSでは非推奨）
   if (/hamburger|drawer|sidebar-toggle|menu-toggle/i.test(content)) {
     const line = content.search(/hamburger|drawer|sidebar-toggle|menu-toggle/i);
-    const lineNum = content.substring(0, line).split('\n').length;
+    const lineNum = content.substring(0, line).split("\n").length;
     issues.push({
-      type: 'navigation',
-      severity: 'medium',
+      type: "navigation",
+      severity: "medium",
       line: lineNum,
-      message: 'iOSではハンバーガーメニューよりタブバーを推奨',
-      found: 'hamburger/drawer pattern detected',
+      message: "iOSではハンバーガーメニューよりタブバーを推奨",
+      found: "hamburger/drawer pattern detected",
     });
   }
 
@@ -336,13 +372,16 @@ function checkCornerRadius(content, filePath) {
     const radius = parseInt(match[1], 10);
 
     // 非標準の角丸値をチェック
-    if (!HIG_RULES.cornerRadius.recommendedValues.includes(radius) && radius > 0) {
-      const line = content.substring(0, match.index).split('\n').length;
+    if (
+      !HIG_RULES.cornerRadius.recommendedValues.includes(radius) &&
+      radius > 0
+    ) {
+      const line = content.substring(0, match.index).split("\n").length;
       issues.push({
-        type: 'corner_radius',
-        severity: 'low',
+        type: "corner_radius",
+        severity: "low",
         line,
-        message: `非標準の角丸値: ${radius}pt (推奨: ${HIG_RULES.cornerRadius.recommendedValues.join(', ')}pt)`,
+        message: `非標準の角丸値: ${radius}pt (推奨: ${HIG_RULES.cornerRadius.recommendedValues.join(", ")}pt)`,
         found: match[0],
       });
     }
@@ -358,31 +397,32 @@ function checkAnimation(content, filePath) {
   if (/animation.*linear|transition.*linear/i.test(content)) {
     const match = content.match(/animation.*linear|transition.*linear/i);
     if (match) {
-      const line = content.substring(0, match.index).split('\n').length;
+      const line = content.substring(0, match.index).split("\n").length;
       issues.push({
-        type: 'animation',
-        severity: 'low',
+        type: "animation",
+        severity: "low",
         line,
-        message: 'linear easingよりease-out/ease-in-outを推奨',
+        message: "linear easingよりease-out/ease-in-outを推奨",
         found: match[0].substring(0, 50),
       });
     }
   }
 
   // 長すぎるアニメーション
-  const durationPattern = /(?:animation-duration|transition-duration|duration):\s*(\d+)(?:ms|s)/gi;
+  const durationPattern =
+    /(?:animation-duration|transition-duration|duration):\s*(\d+)(?:ms|s)/gi;
   let match;
   while ((match = durationPattern.exec(content)) !== null) {
     let duration = parseInt(match[1], 10);
-    if (match[0].includes('s') && !match[0].includes('ms')) {
+    if (match[0].includes("s") && !match[0].includes("ms")) {
       duration *= 1000;
     }
 
     if (duration > 500) {
-      const line = content.substring(0, match.index).split('\n').length;
+      const line = content.substring(0, match.index).split("\n").length;
       issues.push({
-        type: 'animation',
-        severity: 'low',
+        type: "animation",
+        severity: "low",
         line,
         message: `アニメーション時間が長い: ${duration}ms (推奨: 100-500ms)`,
         found: match[0],
@@ -406,18 +446,18 @@ function checkComponentStates(content, filePath) {
     const hasDisabled = /:disabled|disabled|isDisabled/i.test(content);
 
     const missingStates = [];
-    if (!hasHover && content.includes('button')) missingStates.push('hover');
-    if (!hasPressed) missingStates.push('pressed');
-    if (!hasFocused) missingStates.push('focused');
-    if (!hasDisabled) missingStates.push('disabled');
+    if (!hasHover && content.includes("button")) missingStates.push("hover");
+    if (!hasPressed) missingStates.push("pressed");
+    if (!hasFocused) missingStates.push("focused");
+    if (!hasDisabled) missingStates.push("disabled");
 
     if (missingStates.length > 0) {
       issues.push({
-        type: 'component_states',
-        severity: 'medium',
+        type: "component_states",
+        severity: "medium",
         line: 1,
-        message: `インタラクティブ要素に状態が不足: ${missingStates.join(', ')}`,
-        found: 'Missing states in interactive component',
+        message: `インタラクティブ要素に状態が不足: ${missingStates.join(", ")}`,
+        found: "Missing states in interactive component",
       });
     }
   }
@@ -434,11 +474,11 @@ function checkWidgetLiveActivities(content, filePath) {
     if (/systemSmall|WidgetFamily\.systemSmall/i.test(content)) {
       if (/Link\(.*Link\(/s.test(content)) {
         issues.push({
-          type: 'widget',
-          severity: 'high',
+          type: "widget",
+          severity: "high",
           line: 1,
-          message: 'Small widgetは単一のタップターゲットのみ使用可能',
-          found: 'Multiple Links in systemSmall',
+          message: "Small widgetは単一のタップターゲットのみ使用可能",
+          found: "Multiple Links in systemSmall",
         });
       }
     }
@@ -448,11 +488,11 @@ function checkWidgetLiveActivities(content, filePath) {
   if (/ActivityKit|LiveActivity|DynamicIsland/i.test(content)) {
     if (!/(compactLeading|compactTrailing|minimal|expanded)/i.test(content)) {
       issues.push({
-        type: 'live_activity',
-        severity: 'medium',
+        type: "live_activity",
+        severity: "medium",
         line: 1,
-        message: 'Live Activityには全ての表示モードを定義してください',
-        found: 'Incomplete Live Activity implementation',
+        message: "Live Activityには全ての表示モードを定義してください",
+        found: "Incomplete Live Activity implementation",
       });
     }
   }
@@ -466,11 +506,16 @@ function checkNotifications(content, filePath) {
   // Notification関連
   if (/UNNotification|UserNotifications|pushNotification/i.test(content)) {
     // アクション数チェック
-    const actionMatches = content.match(/UNNotificationAction|NotificationAction/gi);
-    if (actionMatches && actionMatches.length > HIG_RULES.notifications.maxActions) {
+    const actionMatches = content.match(
+      /UNNotificationAction|NotificationAction/gi,
+    );
+    if (
+      actionMatches &&
+      actionMatches.length > HIG_RULES.notifications.maxActions
+    ) {
       issues.push({
-        type: 'notification',
-        severity: 'medium',
+        type: "notification",
+        severity: "medium",
         line: 1,
         message: `通知アクションが多すぎます: ${actionMatches.length} (最大: ${HIG_RULES.notifications.maxActions})`,
         found: `${actionMatches.length} notification actions`,
@@ -482,7 +527,7 @@ function checkNotifications(content, filePath) {
 }
 
 async function analyzeFile(filePath, baseDir) {
-  const content = await readFile(filePath, 'utf-8');
+  const content = await readFile(filePath, "utf-8");
   const relativePath = relative(baseDir, filePath);
 
   const allIssues = [
@@ -505,16 +550,16 @@ async function analyzeFile(filePath, baseDir) {
 }
 
 async function main() {
-  const targetDir = process.argv[2] || 'src';
+  const targetDir = process.argv[2] || "src";
 
-  console.log('\n🍎 Apple HIG準拠チェック v1.2.0');
+  console.log("\n🍎 Apple HIG準拠チェック v1.2.0");
   console.log(`📁 対象ディレクトリ: ${targetDir}\n`);
 
   const files = await findFiles(targetDir);
   console.log(`📄 検出ファイル数: ${files.length}\n`);
 
   if (files.length === 0) {
-    console.log('⚠️ ファイルが見つかりませんでした\n');
+    console.log("⚠️ ファイルが見つかりませんでした\n");
     process.exit(0);
   }
 
@@ -530,7 +575,7 @@ async function main() {
   }
 
   if (totalIssues === 0) {
-    console.log('✅ HIG違反は検出されませんでした\n');
+    console.log("✅ HIG違反は検出されませんでした\n");
     process.exit(0);
   }
 
@@ -548,32 +593,32 @@ async function main() {
     }
   }
 
-  console.log('## カテゴリ別サマリー\n');
+  console.log("## カテゴリ別サマリー\n");
   const typeNames = {
-    touch_target: 'タッチターゲット',
-    typography: 'タイポグラフィ',
-    accessibility: 'アクセシビリティ',
-    color: 'カラー',
-    navigation: 'ナビゲーション',
-    corner_radius: '角丸（Squircle）',
-    animation: 'アニメーション',
-    component_states: 'コンポーネント状態',
-    widget: 'Widgets',
-    live_activity: 'Live Activities',
-    notification: 'Notifications',
+    touch_target: "タッチターゲット",
+    typography: "タイポグラフィ",
+    accessibility: "アクセシビリティ",
+    color: "カラー",
+    navigation: "ナビゲーション",
+    corner_radius: "角丸（Squircle）",
+    animation: "アニメーション",
+    component_states: "コンポーネント状態",
+    widget: "Widgets",
+    live_activity: "Live Activities",
+    notification: "Notifications",
   };
 
   for (const [type, count] of Object.entries(byType)) {
     console.log(`- ${typeNames[type] || type}: ${count}件`);
   }
 
-  console.log('\n## 深刻度別サマリー\n');
+  console.log("\n## 深刻度別サマリー\n");
   console.log(`- 🔴 高: ${bySeverity.high}件`);
   console.log(`- 🟡 中: ${bySeverity.medium}件`);
   console.log(`- 🟢 低: ${bySeverity.low}件`);
 
   // 詳細レポート
-  console.log('\n## 詳細レポート\n');
+  console.log("\n## 詳細レポート\n");
 
   for (const result of results) {
     console.log(`### ${result.file}`);
@@ -584,38 +629,45 @@ async function main() {
     });
 
     for (const issue of sortedIssues) {
-      const icon = issue.severity === 'high' ? '🔴' : issue.severity === 'medium' ? '🟡' : '🟢';
+      const icon =
+        issue.severity === "high"
+          ? "🔴"
+          : issue.severity === "medium"
+            ? "🟡"
+            : "🟢";
       console.log(`  ${icon} L${issue.line}: ${issue.message}`);
       console.log(`     検出: ${issue.found}`);
     }
-    console.log('');
+    console.log("");
   }
 
   // スコア算出
-  console.log('## HIG準拠スコア\n');
+  console.log("## HIG準拠スコア\n");
   const maxScore = 100;
-  const deductions = bySeverity.high * 10 + bySeverity.medium * 5 + bySeverity.low * 2;
+  const deductions =
+    bySeverity.high * 10 + bySeverity.medium * 5 + bySeverity.low * 2;
   const score = Math.max(0, maxScore - deductions);
 
   console.log(`  総合スコア: ${score}/100`);
-  const rating = score >= 80 ? '✅ 良好' : score >= 60 ? '⚠️ 要改善' : '❌ 要対応';
+  const rating =
+    score >= 80 ? "✅ 良好" : score >= 60 ? "⚠️ 要改善" : "❌ 要対応";
   console.log(`  評価: ${rating}\n`);
 
   // チェック項目リスト
-  console.log('## チェック項目\n');
-  console.log('このスクリプトは以下の項目をチェックします:\n');
-  console.log('1. タッチターゲットサイズ（44pt / visionOS: 60pt）');
-  console.log('2. タイポグラフィ（最小11pt、SF Pro適用）');
-  console.log('3. アクセシビリティ（VoiceOver、Reduce Motion対応）');
-  console.log('4. カラー（セマンティックカラー使用）');
-  console.log('5. ナビゲーション（タブバー推奨）');
-  console.log('6. 角丸（Squircle、標準値）');
-  console.log('7. アニメーション（duration、easing）');
-  console.log('8. コンポーネント状態（8状態の定義）');
-  console.log('9. Widgets（systemSmall/Medium/Large）');
-  console.log('10. Live Activities（Dynamic Island）');
-  console.log('11. Notifications（アクション数制限）');
-  console.log('');
+  console.log("## チェック項目\n");
+  console.log("このスクリプトは以下の項目をチェックします:\n");
+  console.log("1. タッチターゲットサイズ（44pt / visionOS: 60pt）");
+  console.log("2. タイポグラフィ（最小11pt、SF Pro適用）");
+  console.log("3. アクセシビリティ（VoiceOver、Reduce Motion対応）");
+  console.log("4. カラー（セマンティックカラー使用）");
+  console.log("5. ナビゲーション（タブバー推奨）");
+  console.log("6. 角丸（Squircle、標準値）");
+  console.log("7. アニメーション（duration、easing）");
+  console.log("8. コンポーネント状態（8状態の定義）");
+  console.log("9. Widgets（systemSmall/Medium/Large）");
+  console.log("10. Live Activities（Dynamic Island）");
+  console.log("11. Notifications（アクション数制限）");
+  console.log("");
 
   // 高深刻度がある場合は非ゼロで終了
   process.exit(bySeverity.high > 0 ? 1 : 0);

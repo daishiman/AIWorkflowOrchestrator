@@ -48,7 +48,7 @@ export default function Error({
 ### 1. Client Componentが必須
 
 ```typescript
-'use client' // 必須！Error BoundaryはClient Componentでのみ機能する
+"use client"; // 必須！Error BoundaryはClient Componentでのみ機能する
 
 export default function Error({ error, reset }) {
   // ...
@@ -59,9 +59,9 @@ export default function Error({ error, reset }) {
 
 ```typescript
 type ErrorProps = {
-  error: Error & { digest?: string }
-  reset: () => void
-}
+  error: Error & { digest?: string };
+  reset: () => void;
+};
 
 // digestはサーバーエラーの安全なハッシュ
 // クライアントに詳細を漏らさずにエラーを追跡できる
@@ -102,14 +102,14 @@ app/
 
 ### 捕捉されるエラー
 
-| ソース | error.tsx で捕捉 |
-|--------|------------------|
-| page.tsx 内のエラー | ✅ |
-| 子ルートのエラー | ✅ |
-| Server Component エラー | ✅ |
-| 同階層の layout.tsx | ❌ |
-| 親の layout.tsx | ❌ |
-| Root Layout | ❌（global-error.tsx必要）|
+| ソース                  | error.tsx で捕捉           |
+| ----------------------- | -------------------------- |
+| page.tsx 内のエラー     | ✅                         |
+| 子ルートのエラー        | ✅                         |
+| Server Component エラー | ✅                         |
+| 同階層の layout.tsx     | ❌                         |
+| 親の layout.tsx         | ❌                         |
+| Root Layout             | ❌（global-error.tsx必要） |
 
 ## エラーの種類別処理
 
@@ -118,23 +118,23 @@ app/
 ```typescript
 // lib/errors.ts
 export class AuthenticationError extends Error {
-  constructor(message: string = 'Authentication required') {
-    super(message)
-    this.name = 'AuthenticationError'
+  constructor(message: string = "Authentication required") {
+    super(message);
+    this.name = "AuthenticationError";
   }
 }
 
 export class NotFoundError extends Error {
-  constructor(message: string = 'Resource not found') {
-    super(message)
-    this.name = 'NotFoundError'
+  constructor(message: string = "Resource not found") {
+    super(message);
+    this.name = "NotFoundError";
   }
 }
 
 export class ValidationError extends Error {
-  constructor(message: string = 'Validation failed') {
-    super(message)
-    this.name = 'ValidationError'
+  constructor(message: string = "Validation failed") {
+    super(message);
+    this.name = "ValidationError";
   }
 }
 ```
@@ -248,9 +248,9 @@ export default function Error({
 ```typescript
 // lib/error-logging.ts
 export async function logError(error: Error & { digest?: string }) {
-  await fetch('/api/log-error', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+  await fetch("/api/log-error", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       name: error.name,
       message: error.message,
@@ -258,7 +258,7 @@ export async function logError(error: Error & { digest?: string }) {
       stack: error.stack,
       timestamp: new Date().toISOString(),
     }),
-  })
+  });
 }
 ```
 

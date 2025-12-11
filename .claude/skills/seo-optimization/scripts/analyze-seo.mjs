@@ -10,8 +10,8 @@
  *   node analyze-seo.mjs ./src/app
  */
 
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
 class SEOAnalyzer {
   constructor(appDir) {
@@ -36,7 +36,7 @@ class SEOAnalyzer {
     }
 
     console.log(`\n🔍 SEO Analysis: ${this.appDir}\n`);
-    console.log('='.repeat(60));
+    console.log("=".repeat(60));
 
     this.checkRootFiles();
     this.scanDirectory(this.appDir);
@@ -46,79 +46,95 @@ class SEOAnalyzer {
   }
 
   checkRootFiles() {
-    console.log('\n📁 Root Level Files:');
-    console.log('-'.repeat(40));
+    console.log("\n📁 Root Level Files:");
+    console.log("-".repeat(40));
 
     // sitemap.ts チェック
-    const sitemapPath = path.join(this.appDir, 'sitemap.ts');
-    const sitemapTsxPath = path.join(this.appDir, 'sitemap.tsx');
-    this.stats.hasSitemap = fs.existsSync(sitemapPath) || fs.existsSync(sitemapTsxPath);
-    console.log(`  sitemap.ts: ${this.stats.hasSitemap ? '✅ Found' : '❌ Missing'}`);
+    const sitemapPath = path.join(this.appDir, "sitemap.ts");
+    const sitemapTsxPath = path.join(this.appDir, "sitemap.tsx");
+    this.stats.hasSitemap =
+      fs.existsSync(sitemapPath) || fs.existsSync(sitemapTsxPath);
+    console.log(
+      `  sitemap.ts: ${this.stats.hasSitemap ? "✅ Found" : "❌ Missing"}`,
+    );
 
     // robots.ts チェック
-    const robotsPath = path.join(this.appDir, 'robots.ts');
-    const robotsTsxPath = path.join(this.appDir, 'robots.tsx');
-    this.stats.hasRobots = fs.existsSync(robotsPath) || fs.existsSync(robotsTsxPath);
-    console.log(`  robots.ts: ${this.stats.hasRobots ? '✅ Found' : '❌ Missing'}`);
+    const robotsPath = path.join(this.appDir, "robots.ts");
+    const robotsTsxPath = path.join(this.appDir, "robots.tsx");
+    this.stats.hasRobots =
+      fs.existsSync(robotsPath) || fs.existsSync(robotsTsxPath);
+    console.log(
+      `  robots.ts: ${this.stats.hasRobots ? "✅ Found" : "❌ Missing"}`,
+    );
 
     // Root Layout チェック
-    const layoutPath = path.join(this.appDir, 'layout.tsx');
+    const layoutPath = path.join(this.appDir, "layout.tsx");
     const hasRootLayout = fs.existsSync(layoutPath);
-    console.log(`  layout.tsx: ${hasRootLayout ? '✅ Found' : '❌ Missing'}`);
+    console.log(`  layout.tsx: ${hasRootLayout ? "✅ Found" : "❌ Missing"}`);
 
     if (hasRootLayout) {
       this.analyzeRootLayout(layoutPath);
     }
 
     // favicon チェック
-    const faviconPath = path.join(this.appDir, 'favicon.ico');
-    const iconPath = path.join(this.appDir, 'icon.png');
-    const iconTsxPath = path.join(this.appDir, 'icon.tsx');
-    const hasIcon = fs.existsSync(faviconPath) || fs.existsSync(iconPath) || fs.existsSync(iconTsxPath);
-    console.log(`  favicon/icon: ${hasIcon ? '✅ Found' : '⚠️  Missing'}`);
+    const faviconPath = path.join(this.appDir, "favicon.ico");
+    const iconPath = path.join(this.appDir, "icon.png");
+    const iconTsxPath = path.join(this.appDir, "icon.tsx");
+    const hasIcon =
+      fs.existsSync(faviconPath) ||
+      fs.existsSync(iconPath) ||
+      fs.existsSync(iconTsxPath);
+    console.log(`  favicon/icon: ${hasIcon ? "✅ Found" : "⚠️  Missing"}`);
 
     // opengraph-image チェック
-    const ogImagePath = path.join(this.appDir, 'opengraph-image.png');
-    const ogImageTsxPath = path.join(this.appDir, 'opengraph-image.tsx');
-    const hasOgImage = fs.existsSync(ogImagePath) || fs.existsSync(ogImageTsxPath);
-    console.log(`  opengraph-image: ${hasOgImage ? '✅ Found' : '⚠️  Optional'}`);
+    const ogImagePath = path.join(this.appDir, "opengraph-image.png");
+    const ogImageTsxPath = path.join(this.appDir, "opengraph-image.tsx");
+    const hasOgImage =
+      fs.existsSync(ogImagePath) || fs.existsSync(ogImageTsxPath);
+    console.log(
+      `  opengraph-image: ${hasOgImage ? "✅ Found" : "⚠️  Optional"}`,
+    );
 
     if (!this.stats.hasSitemap) {
       this.issues.push({
-        type: 'error',
-        message: 'sitemap.ts が見つかりません',
+        type: "error",
+        message: "sitemap.ts が見つかりません",
       });
     }
 
     if (!this.stats.hasRobots) {
       this.issues.push({
-        type: 'error',
-        message: 'robots.ts が見つかりません',
+        type: "error",
+        message: "robots.ts が見つかりません",
       });
     }
   }
 
   analyzeRootLayout(layoutPath) {
-    const content = fs.readFileSync(layoutPath, 'utf-8');
+    const content = fs.readFileSync(layoutPath, "utf-8");
 
     // title.template チェック
-    const hasTitleTemplate = content.includes('template:') && content.includes('%s');
+    const hasTitleTemplate =
+      content.includes("template:") && content.includes("%s");
     if (!hasTitleTemplate) {
-      this.suggestions.push('Root Layoutに title.template を設定することを推奨');
+      this.suggestions.push(
+        "Root Layoutに title.template を設定することを推奨",
+      );
     }
 
     // 基本メタデータチェック
-    const hasMetadataExport = content.includes('export const metadata') ||
-                             content.includes('export async function generateMetadata');
+    const hasMetadataExport =
+      content.includes("export const metadata") ||
+      content.includes("export async function generateMetadata");
     if (!hasMetadataExport) {
       this.issues.push({
-        type: 'warning',
-        message: 'Root Layoutにメタデータエクスポートがありません',
+        type: "warning",
+        message: "Root Layoutにメタデータエクスポートがありません",
       });
     }
   }
 
-  scanDirectory(dir, relativePath = '') {
+  scanDirectory(dir, relativePath = "") {
     const entries = fs.readdirSync(dir, { withFileTypes: true });
 
     for (const entry of entries) {
@@ -128,7 +144,7 @@ class SEOAnalyzer {
       if (entry.isDirectory()) {
         // Route Groups、Parallel Routes などを除外しない
         this.scanDirectory(fullPath, relPath);
-      } else if (entry.name === 'page.tsx' || entry.name === 'page.ts') {
+      } else if (entry.name === "page.tsx" || entry.name === "page.ts") {
         this.analyzePage(fullPath, relativePath);
       }
     }
@@ -136,20 +152,24 @@ class SEOAnalyzer {
 
   analyzePage(pagePath, routePath) {
     this.stats.pages++;
-    const content = fs.readFileSync(pagePath, 'utf-8');
+    const content = fs.readFileSync(pagePath, "utf-8");
 
-    console.log(`\n📄 ${routePath || '/'}`);
-    console.log('-'.repeat(40));
+    console.log(`\n📄 ${routePath || "/"}`);
+    console.log("-".repeat(40));
 
     // 静的メタデータチェック
-    const hasStaticMetadata = content.includes('export const metadata');
+    const hasStaticMetadata = content.includes("export const metadata");
 
     // 動的メタデータチェック
-    const hasDynamicMetadata = content.includes('export async function generateMetadata');
+    const hasDynamicMetadata = content.includes(
+      "export async function generateMetadata",
+    );
 
     if (hasStaticMetadata || hasDynamicMetadata) {
       this.stats.pagesWithMetadata++;
-      console.log(`  Metadata: ${hasDynamicMetadata ? '✅ Dynamic' : '✅ Static'}`);
+      console.log(
+        `  Metadata: ${hasDynamicMetadata ? "✅ Dynamic" : "✅ Static"}`,
+      );
 
       if (hasDynamicMetadata) {
         this.stats.pagesWithDynamicMetadata++;
@@ -157,17 +177,18 @@ class SEOAnalyzer {
     } else {
       console.log(`  Metadata: ❌ Missing`);
       this.issues.push({
-        type: 'warning',
-        message: `${routePath || '/'} にメタデータがありません`,
+        type: "warning",
+        message: `${routePath || "/"} にメタデータがありません`,
       });
     }
 
     // OGP画像チェック
     const pageDir = path.dirname(pagePath);
-    const hasOgImage = fs.existsSync(path.join(pageDir, 'opengraph-image.tsx')) ||
-                       fs.existsSync(path.join(pageDir, 'opengraph-image.png')) ||
-                       content.includes('openGraph:') ||
-                       content.includes('og:image');
+    const hasOgImage =
+      fs.existsSync(path.join(pageDir, "opengraph-image.tsx")) ||
+      fs.existsSync(path.join(pageDir, "opengraph-image.png")) ||
+      content.includes("openGraph:") ||
+      content.includes("og:image");
 
     if (hasOgImage) {
       this.stats.pagesWithOgImage++;
@@ -177,9 +198,10 @@ class SEOAnalyzer {
     }
 
     // JSON-LD チェック
-    const hasJsonLd = content.includes('application/ld+json') ||
-                      content.includes('JsonLd') ||
-                      content.includes('@context');
+    const hasJsonLd =
+      content.includes("application/ld+json") ||
+      content.includes("JsonLd") ||
+      content.includes("@context");
 
     if (hasJsonLd) {
       this.stats.pagesWithJsonLd++;
@@ -189,10 +211,10 @@ class SEOAnalyzer {
     }
 
     // 動的ルートの場合の追加チェック
-    if (routePath.includes('[')) {
+    if (routePath.includes("[")) {
       if (!hasDynamicMetadata) {
         this.issues.push({
-          type: 'warning',
+          type: "warning",
           message: `動的ルート ${routePath} に generateMetadata がありません`,
         });
       }
@@ -200,16 +222,24 @@ class SEOAnalyzer {
   }
 
   printStats() {
-    console.log('\n' + '='.repeat(60));
-    console.log('📊 Summary:');
-    console.log('-'.repeat(40));
+    console.log("\n" + "=".repeat(60));
+    console.log("📊 Summary:");
+    console.log("-".repeat(40));
     console.log(`  Total Pages: ${this.stats.pages}`);
-    console.log(`  With Metadata: ${this.stats.pagesWithMetadata} (${this.percentage(this.stats.pagesWithMetadata, this.stats.pages)}%)`);
-    console.log(`  With Dynamic Metadata: ${this.stats.pagesWithDynamicMetadata}`);
-    console.log(`  With OGP Image: ${this.stats.pagesWithOgImage} (${this.percentage(this.stats.pagesWithOgImage, this.stats.pages)}%)`);
-    console.log(`  With JSON-LD: ${this.stats.pagesWithJsonLd} (${this.percentage(this.stats.pagesWithJsonLd, this.stats.pages)}%)`);
-    console.log(`  Has Sitemap: ${this.stats.hasSitemap ? '✅' : '❌'}`);
-    console.log(`  Has Robots.txt: ${this.stats.hasRobots ? '✅' : '❌'}`);
+    console.log(
+      `  With Metadata: ${this.stats.pagesWithMetadata} (${this.percentage(this.stats.pagesWithMetadata, this.stats.pages)}%)`,
+    );
+    console.log(
+      `  With Dynamic Metadata: ${this.stats.pagesWithDynamicMetadata}`,
+    );
+    console.log(
+      `  With OGP Image: ${this.stats.pagesWithOgImage} (${this.percentage(this.stats.pagesWithOgImage, this.stats.pages)}%)`,
+    );
+    console.log(
+      `  With JSON-LD: ${this.stats.pagesWithJsonLd} (${this.percentage(this.stats.pagesWithJsonLd, this.stats.pages)}%)`,
+    );
+    console.log(`  Has Sitemap: ${this.stats.hasSitemap ? "✅" : "❌"}`);
+    console.log(`  Has Robots.txt: ${this.stats.hasRobots ? "✅" : "❌"}`);
 
     // SEOスコア計算
     const score = this.calculateSEOScore();
@@ -221,12 +251,16 @@ class SEOAnalyzer {
 
     // メタデータカバレッジ (40点)
     if (this.stats.pages > 0) {
-      score += Math.round((this.stats.pagesWithMetadata / this.stats.pages) * 40);
+      score += Math.round(
+        (this.stats.pagesWithMetadata / this.stats.pages) * 40,
+      );
     }
 
     // OGPカバレッジ (20点)
     if (this.stats.pages > 0) {
-      score += Math.round((this.stats.pagesWithOgImage / this.stats.pages) * 20);
+      score += Math.round(
+        (this.stats.pagesWithOgImage / this.stats.pages) * 20,
+      );
     }
 
     // サイトマップ (15点)
@@ -249,14 +283,14 @@ class SEOAnalyzer {
   }
 
   printIssues() {
-    console.log('\n⚠️  Issues:');
-    console.log('-'.repeat(40));
+    console.log("\n⚠️  Issues:");
+    console.log("-".repeat(40));
 
     if (this.issues.length === 0) {
-      console.log('  ✅ No issues found');
+      console.log("  ✅ No issues found");
     } else {
-      const errors = this.issues.filter(i => i.type === 'error');
-      const warnings = this.issues.filter(i => i.type === 'warning');
+      const errors = this.issues.filter((i) => i.type === "error");
+      const warnings = this.issues.filter((i) => i.type === "warning");
 
       for (const error of errors) {
         console.log(`  ❌ ${error.message}`);
@@ -268,39 +302,43 @@ class SEOAnalyzer {
   }
 
   printSuggestions() {
-    console.log('\n💡 Suggestions:');
-    console.log('-'.repeat(40));
+    console.log("\n💡 Suggestions:");
+    console.log("-".repeat(40));
 
     // 自動生成の提案
     if (this.stats.pagesWithMetadata < this.stats.pages) {
-      this.suggestions.push('すべてのページにメタデータを設定してください');
+      this.suggestions.push("すべてのページにメタデータを設定してください");
     }
 
     if (this.stats.pagesWithOgImage < this.stats.pages) {
-      this.suggestions.push('OGP画像の設定を検討してください（ソーシャルシェア時の表示向上）');
+      this.suggestions.push(
+        "OGP画像の設定を検討してください（ソーシャルシェア時の表示向上）",
+      );
     }
 
     if (this.stats.pagesWithJsonLd === 0) {
-      this.suggestions.push('構造化データ（JSON-LD）の追加を検討してください（リッチリザルト獲得）');
+      this.suggestions.push(
+        "構造化データ（JSON-LD）の追加を検討してください（リッチリザルト獲得）",
+      );
     }
 
     if (this.suggestions.length === 0) {
-      console.log('  ✅ No additional suggestions');
+      console.log("  ✅ No additional suggestions");
     } else {
       for (const suggestion of this.suggestions) {
         console.log(`  → ${suggestion}`);
       }
     }
 
-    console.log('\n' + '='.repeat(60) + '\n');
+    console.log("\n" + "=".repeat(60) + "\n");
   }
 }
 
 // Main execution
 const args = process.argv.slice(2);
 if (args.length === 0) {
-  console.log('Usage: node analyze-seo.mjs <app-directory>');
-  console.log('Example: node analyze-seo.mjs ./src/app');
+  console.log("Usage: node analyze-seo.mjs <app-directory>");
+  console.log("Example: node analyze-seo.mjs ./src/app");
   process.exit(1);
 }
 

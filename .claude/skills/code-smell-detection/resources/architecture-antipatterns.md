@@ -3,9 +3,11 @@
 ## 1. Big Ball of Mud（泥だんご）
 
 ### 説明
+
 構造や設計原則がなく、場当たり的に成長したシステム。
 
 ### 兆候
+
 - 明確なレイヤー分離がない
 - どこからでもどこでもアクセス可能
 - 一貫性のない命名規則
@@ -22,6 +24,7 @@ madge src/ --circular | wc -l
 ```
 
 ### 対策
+
 1. 境界の定義から始める
 2. 段階的にモジュールを抽出
 3. 依存関係のルールを設定
@@ -32,10 +35,12 @@ madge src/ --circular | wc -l
 ## 2. Anemic Domain Model（貧血ドメインモデル）
 
 ### 説明
+
 データのみを持ち、振る舞いのないドメインオブジェクト。
 ビジネスロジックがサービスレイヤーに散在。
 
 ### 兆候
+
 - Entity/Modelがgetter/setterのみ
 - Service層に複雑なロジックが集中
 - ドメインオブジェクトが単なるDTO
@@ -53,14 +58,17 @@ class Order {
 
 class OrderService {
   calculateTotal(order: Order): number {
-    return order.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    return order.items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0,
+    );
   }
 
   submit(order: Order): void {
     if (order.items.length === 0) {
-      throw new Error('Empty order');
+      throw new Error("Empty order");
     }
-    order.status = 'submitted';
+    order.status = "submitted";
     order.total = this.calculateTotal(order);
   }
 }
@@ -88,19 +96,19 @@ class Order {
   calculateTotal(): Money {
     return this.items.reduce(
       (sum, item) => sum.add(item.subtotal()),
-      Money.zero()
+      Money.zero(),
     );
   }
 
   private ensureDraft(): void {
     if (this.status !== OrderStatus.Draft) {
-      throw new DomainError('Cannot modify submitted order');
+      throw new DomainError("Cannot modify submitted order");
     }
   }
 
   private ensureNotEmpty(): void {
     if (this.items.length === 0) {
-      throw new DomainError('Cannot submit empty order');
+      throw new DomainError("Cannot submit empty order");
     }
   }
 }
@@ -111,9 +119,11 @@ class Order {
 ## 3. Distributed Monolith（分散モノリス）
 
 ### 説明
+
 マイクロサービスの名を借りた、ネットワーク越しの密結合システム。
 
 ### 兆候
+
 - サービス間で同期呼び出しが多い
 - 1つのサービスの変更が他に波及
 - すべてのサービスを同時にデプロイ
@@ -130,6 +140,7 @@ class Order {
 ```
 
 ### 対策
+
 1. 同期→非同期への移行
 2. イベント駆動アーキテクチャの採用
 3. サービス境界の再定義
@@ -140,9 +151,11 @@ class Order {
 ## 4. Golden Hammer（金の槌）
 
 ### 説明
+
 慣れ親しんだ技術やパターンをすべての問題に適用しようとする。
 
 ### 兆候
+
 - 「このフレームワークですべて解決」
 - 問題に合わないパターンの強制
 - 新技術の拒否または盲目的な採用
@@ -185,9 +198,11 @@ const ToggleButton = () => {
 ## 5. Vendor Lock-in（ベンダーロックイン）
 
 ### 説明
+
 特定のプラットフォームやフレームワークに過度に依存。
 
 ### 兆候
+
 - フレームワーク固有のアノテーションが全体に散在
 - ビジネスロジックがフレームワークAPIに依存
 - 移行コストが非常に高い
@@ -203,13 +218,13 @@ export class OrderService {
     const apiKey = process.env.NEXT_PUBLIC_API_KEY;
 
     // Next.js固有のAPI呼び出し
-    const res = await fetch('/api/orders', {
-      method: 'POST',
-      body: JSON.stringify(data)
+    const res = await fetch("/api/orders", {
+      method: "POST",
+      body: JSON.stringify(data),
     });
 
     // Next.js固有のルーティング
-    redirect('/orders/success');
+    redirect("/orders/success");
   }
 }
 ```
@@ -222,12 +237,12 @@ export class OrderService {
 export class OrderService {
   constructor(
     private readonly apiClient: IApiClient,
-    private readonly config: IConfig
+    private readonly config: IConfig,
   ) {}
 
   async createOrder(data: OrderData): Promise<Order> {
     const apiKey = this.config.getApiKey();
-    return this.apiClient.post('/orders', data);
+    return this.apiClient.post("/orders", data);
   }
 }
 
@@ -245,9 +260,11 @@ export class NextConfig implements IConfig {
 ## 6. Leaky Abstraction（漏れのある抽象化）
 
 ### 説明
+
 抽象化が内部実装の詳細を隠しきれていない。
 
 ### 兆候
+
 - 抽象化を使うのに実装詳細の知識が必要
 - エラーメッセージが内部実装を露出
 - パフォーマンス最適化に実装知識が必要

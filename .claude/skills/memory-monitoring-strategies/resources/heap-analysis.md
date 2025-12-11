@@ -9,7 +9,7 @@ pnpm install heapdump
 ```
 
 ```javascript
-const heapdump = require('heapdump');
+const heapdump = require("heapdump");
 
 // 即時取得
 heapdump.writeSnapshot((err, filename) => {
@@ -18,10 +18,10 @@ heapdump.writeSnapshot((err, filename) => {
 });
 
 // 指定パスに出力
-heapdump.writeSnapshot('/tmp/heap.heapsnapshot');
+heapdump.writeSnapshot("/tmp/heap.heapsnapshot");
 
 // シグナルトリガー（本番推奨）
-process.on('SIGUSR2', () => {
+process.on("SIGUSR2", () => {
   const filename = `/tmp/heap-${Date.now()}.heapsnapshot`;
   heapdump.writeSnapshot(filename);
   console.log(`Heap dump written: ${filename}`);
@@ -40,8 +40,8 @@ node --inspect app.js
 
 ```javascript
 // プログラムからinspectorを有効化
-const inspector = require('inspector');
-const fs = require('fs');
+const inspector = require("inspector");
+const fs = require("fs");
 
 const session = new inspector.Session();
 session.connect();
@@ -50,12 +50,12 @@ function takeHeapSnapshot() {
   return new Promise((resolve) => {
     const chunks = [];
 
-    session.on('HeapProfiler.addHeapSnapshotChunk', (m) => {
+    session.on("HeapProfiler.addHeapSnapshotChunk", (m) => {
       chunks.push(m.params.chunk);
     });
 
-    session.post('HeapProfiler.takeHeapSnapshot', null, () => {
-      const snapshot = chunks.join('');
+    session.post("HeapProfiler.takeHeapSnapshot", null, () => {
+      const snapshot = chunks.join("");
       const filename = `/tmp/heap-${Date.now()}.heapsnapshot`;
       fs.writeFileSync(filename, snapshot);
       resolve(filename);
@@ -79,14 +79,15 @@ function takeHeapSnapshot() {
 
 オブジェクトをコンストラクタ名でグループ化。
 
-| 列 | 説明 |
-|---|------|
-| Constructor | オブジェクトのコンストラクタ名 |
-| Distance | ルートからの距離 |
-| Shallow Size | オブジェクト自体のサイズ |
+| 列            | 説明                            |
+| ------------- | ------------------------------- |
+| Constructor   | オブジェクトのコンストラクタ名  |
+| Distance      | ルートからの距離                |
+| Shallow Size  | オブジェクト自体のサイズ        |
 | Retained Size | オブジェクト+参照先の合計サイズ |
 
 **チェックポイント**:
+
 - 異常に多いオブジェクト数
 - 大きなRetained Size
 - 予期しないコンストラクタ名
@@ -95,14 +96,15 @@ function takeHeapSnapshot() {
 
 2つのスナップショットを比較。
 
-| 列 | 説明 |
-|---|------|
-| # New | 新しく作成されたオブジェクト数 |
-| # Deleted | 削除されたオブジェクト数 |
-| # Delta | 差分（New - Deleted） |
-| Size Delta | サイズ変化 |
+| 列         | 説明                           |
+| ---------- | ------------------------------ |
+| # New      | 新しく作成されたオブジェクト数 |
+| # Deleted  | 削除されたオブジェクト数       |
+| # Delta    | 差分（New - Deleted）          |
+| Size Delta | サイズ変化                     |
 
 **リーク検出**:
+
 - #Deltaが正の大きな値 → リーク候補
 - Size Deltaが継続的に増加 → 明確なリーク
 
@@ -146,6 +148,7 @@ Summary View:
 ```
 
 **調査**:
+
 - オブジェクトの作成元を確認
 - キャッシュ/プールの上限を確認
 - 不要なオブジェクトの参照を確認
@@ -158,6 +161,7 @@ Summary View:
 ```
 
 **調査**:
+
 - Cacheが何を保持しているか展開
 - 参照チェーンを確認
 - 適切なキャッシュ戦略を検討
@@ -170,6 +174,7 @@ Summary View:
 ```
 
 **調査**:
+
 - DOMが参照されているがDOMツリーから切り離されている
 - イベントリスナーの解除漏れを確認
 
@@ -181,6 +186,7 @@ Comparison View:
 ```
 
 **調査**:
+
 - クロージャが大きなオブジェクトを参照していないか
 - 不要なクロージャが蓄積していないか
 
@@ -189,12 +195,12 @@ Comparison View:
 ### 定期スナップショット
 
 ```javascript
-const heapdump = require('heapdump');
-const path = require('path');
+const heapdump = require("heapdump");
+const path = require("path");
 
 class HeapAnalyzer {
   constructor(options = {}) {
-    this.snapshotDir = options.dir || '/tmp/heapdumps';
+    this.snapshotDir = options.dir || "/tmp/heapdumps";
     this.interval = options.interval || 3600000; // 1時間
     this.maxSnapshots = options.maxSnapshots || 10;
     this.snapshots = [];
@@ -215,12 +221,12 @@ class HeapAnalyzer {
   takeSnapshot() {
     const filename = path.join(
       this.snapshotDir,
-      `heap-${Date.now()}.heapsnapshot`
+      `heap-${Date.now()}.heapsnapshot`,
     );
 
     heapdump.writeSnapshot(filename, (err) => {
       if (err) {
-        console.error('Heap snapshot error:', err);
+        console.error("Heap snapshot error:", err);
         return;
       }
 
@@ -230,7 +236,7 @@ class HeapAnalyzer {
       // 古いスナップショットを削除
       if (this.snapshots.length > this.maxSnapshots) {
         const old = this.snapshots.shift();
-        require('fs').unlinkSync(old);
+        require("fs").unlinkSync(old);
       }
     });
   }
@@ -299,6 +305,7 @@ FATAL ERROR: CALL_AND_RETRY_LAST Allocation failed - JavaScript heap out of memo
 ```
 
 **対策**:
+
 ```bash
 # ヒープ上限を増やす
 node --max-old-space-size=4096 app.js
@@ -307,6 +314,7 @@ node --max-old-space-size=4096 app.js
 ### ファイルが大きすぎる
 
 **対策**:
+
 - 負荷が低い時間帯に取得
 - 不要なキャッシュをクリアしてから取得
 - ヒープの一部だけを分析（v8.getHeapSpaceStatistics）
@@ -314,6 +322,7 @@ node --max-old-space-size=4096 app.js
 ### DevToolsで開けない
 
 **対策**:
+
 - Chromeを最新版に更新
 - `--js-flags="--max-old-space-size=8192"`でChrome起動
 - 分析用に別マシンを使用

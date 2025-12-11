@@ -14,15 +14,15 @@
  *   node validate-arguments.mjs <command-file.md>
  */
 
-import fs from 'fs';
+import fs from "fs";
 
 const COLORS = {
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  reset: '\x1b[0m',
-  bold: '\x1b[1m'
+  red: "\x1b[31m",
+  green: "\x1b[32m",
+  yellow: "\x1b[33m",
+  blue: "\x1b[34m",
+  reset: "\x1b[0m",
+  bold: "\x1b[1m",
 };
 
 function log(type, message) {
@@ -30,7 +30,7 @@ function log(type, message) {
     error: `${COLORS.red}❌${COLORS.reset}`,
     success: `${COLORS.green}✅${COLORS.reset}`,
     warning: `${COLORS.yellow}⚠️${COLORS.reset}`,
-    info: `${COLORS.blue}ℹ️${COLORS.reset}`
+    info: `${COLORS.blue}ℹ️${COLORS.reset}`,
   };
   console.log(`${icons[type]} ${message}`);
 }
@@ -42,10 +42,10 @@ function extractArgumentHint(content) {
 
 function analyzeArgumentUsage(content) {
   const usage = {
-    hasArguments: content.includes('$ARGUMENTS'),
+    hasArguments: content.includes("$ARGUMENTS"),
     positionalArgs: [],
     hasValidation: false,
-    hasDefaultValue: false
+    hasDefaultValue: false,
   };
 
   // 位置引数の検出
@@ -61,17 +61,13 @@ function analyzeArgumentUsage(content) {
     /\[\s*-z\s*"?\$ARGUMENTS"?\s*\]/,
     /validation/i,
     /check.*argument/i,
-    /required.*argument/i
+    /required.*argument/i,
   ];
-  usage.hasValidation = validationPatterns.some(p => p.test(content));
+  usage.hasValidation = validationPatterns.some((p) => p.test(content));
 
   // デフォルト値の検出
-  const defaultPatterns = [
-    /\$\{.*:-.*\}/,
-    /default/i,
-    /if.*empty.*use/i
-  ];
-  usage.hasDefaultValue = defaultPatterns.some(p => p.test(content));
+  const defaultPatterns = [/\$\{.*:-.*\}/, /default/i, /if.*empty.*use/i];
+  usage.hasDefaultValue = defaultPatterns.some((p) => p.test(content));
 
   return usage;
 }
@@ -88,15 +84,17 @@ function validateArgumentConsistency(argumentHint, usage) {
 
     if (usage.positionalArgs.length === 0 && !usage.hasArguments) {
       warnings.push(
-        `argument-hint が定義されていますが、$ARGUMENTS も位置引数も使用されていません`
+        `argument-hint が定義されていますが、$ARGUMENTS も位置引数も使用されていません`,
       );
     }
 
     if (usage.positionalArgs.length > 0) {
-      const maxPositional = Math.max(...usage.positionalArgs.map(a => parseInt(a.replace('$', ''))));
+      const maxPositional = Math.max(
+        ...usage.positionalArgs.map((a) => parseInt(a.replace("$", ""))),
+      );
       if (maxPositional > expectedCount) {
         warnings.push(
-          `argument-hint で定義された引数数(${expectedCount})より多い位置引数($${maxPositional})が使用されています`
+          `argument-hint で定義された引数数(${expectedCount})より多い位置引数($${maxPositional})が使用されています`,
         );
       }
     }
@@ -104,7 +102,7 @@ function validateArgumentConsistency(argumentHint, usage) {
     // argument-hint がない場合
     if (usage.positionalArgs.length > 1) {
       warnings.push(
-        `複数の位置引数(${usage.positionalArgs.join(', ')})が使用されていますが、argument-hint がありません`
+        `複数の位置引数(${usage.positionalArgs.join(", ")})が使用されていますが、argument-hint がありません`,
       );
     }
   }
@@ -112,7 +110,9 @@ function validateArgumentConsistency(argumentHint, usage) {
   // 引数を使用している場合の検証
   if (usage.hasArguments || usage.positionalArgs.length > 0) {
     if (!usage.hasValidation) {
-      warnings.push('引数の検証ロジックがありません。不正な入力に対するエラーハンドリングを検討してください');
+      warnings.push(
+        "引数の検証ロジックがありません。不正な入力に対するエラーハンドリングを検討してください",
+      );
     }
   }
 
@@ -141,13 +141,15 @@ Usage:
   const filePath = args[0];
 
   if (!fs.existsSync(filePath)) {
-    log('error', `ファイルが見つかりません: ${filePath}`);
+    log("error", `ファイルが見つかりません: ${filePath}`);
     process.exit(1);
   }
 
-  const content = fs.readFileSync(filePath, 'utf-8');
+  const content = fs.readFileSync(filePath, "utf-8");
 
-  console.log(`\n${COLORS.bold}Validating Arguments: ${filePath}${COLORS.reset}\n`);
+  console.log(
+    `\n${COLORS.bold}Validating Arguments: ${filePath}${COLORS.reset}\n`,
+  );
 
   // 分析
   const argumentHint = extractArgumentHint(content);
@@ -155,23 +157,26 @@ Usage:
 
   // 結果表示
   console.log(`${COLORS.bold}Analysis:${COLORS.reset}`);
-  log('info', `argument-hint: ${argumentHint || '(未定義)'}`);
-  log('info', `$ARGUMENTS 使用: ${usage.hasArguments ? 'Yes' : 'No'}`);
-  log('info', `位置引数: ${usage.positionalArgs.length > 0 ? usage.positionalArgs.join(', ') : '(なし)'}`);
-  log('info', `検証ロジック: ${usage.hasValidation ? 'Yes' : 'No'}`);
-  log('info', `デフォルト値: ${usage.hasDefaultValue ? 'Yes' : 'No'}`);
+  log("info", `argument-hint: ${argumentHint || "(未定義)"}`);
+  log("info", `$ARGUMENTS 使用: ${usage.hasArguments ? "Yes" : "No"}`);
+  log(
+    "info",
+    `位置引数: ${usage.positionalArgs.length > 0 ? usage.positionalArgs.join(", ") : "(なし)"}`,
+  );
+  log("info", `検証ロジック: ${usage.hasValidation ? "Yes" : "No"}`);
+  log("info", `デフォルト値: ${usage.hasDefaultValue ? "Yes" : "No"}`);
 
   // 整合性チェック
   const { errors, warnings } = validateArgumentConsistency(argumentHint, usage);
 
   if (errors.length > 0) {
     console.log(`\n${COLORS.red}Errors:${COLORS.reset}`);
-    errors.forEach(e => log('error', e));
+    errors.forEach((e) => log("error", e));
   }
 
   if (warnings.length > 0) {
     console.log(`\n${COLORS.yellow}Warnings:${COLORS.reset}`);
-    warnings.forEach(w => log('warning', w));
+    warnings.forEach((w) => log("warning", w));
   }
 
   // サマリー
@@ -184,7 +189,7 @@ Usage:
   }
 
   if (warnings.length === 0) {
-    log('success', '引数システムは適切に設定されています');
+    log("success", "引数システムは適切に設定されています");
   }
 }
 

@@ -3,9 +3,11 @@
 ## 概要
 
 ### 目的
+
 {{コンポーネントの目的を記述}}
 
 ### 分類
+
 - **階層**: {{Primitives | Patterns | Features | Templates}}
 - **カテゴリ**: {{Button | Input | Layout | ...}}
 
@@ -15,14 +17,14 @@
 
 ### Props
 
-| Prop | Type | Default | Required | Description |
-|------|------|---------|----------|-------------|
-| `variant` | `'primary' \| 'secondary' \| 'outline'` | `'primary'` | No | ボタンのスタイルバリアント |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | No | ボタンのサイズ |
-| `isDisabled` | `boolean` | `false` | No | 無効状態 |
-| `isLoading` | `boolean` | `false` | No | ローディング状態 |
-| `onClick` | `() => void` | - | No | クリックハンドラ |
-| `children` | `ReactNode` | - | Yes | ボタンの内容 |
+| Prop         | Type                                    | Default     | Required | Description                |
+| ------------ | --------------------------------------- | ----------- | -------- | -------------------------- |
+| `variant`    | `'primary' \| 'secondary' \| 'outline'` | `'primary'` | No       | ボタンのスタイルバリアント |
+| `size`       | `'sm' \| 'md' \| 'lg'`                  | `'md'`      | No       | ボタンのサイズ             |
+| `isDisabled` | `boolean`                               | `false`     | No       | 無効状態                   |
+| `isLoading`  | `boolean`                               | `false`     | No       | ローディング状態           |
+| `onClick`    | `() => void`                            | -           | No       | クリックハンドラ           |
+| `children`   | `ReactNode`                             | -           | Yes      | ボタンの内容               |
 
 ### 型定義
 
@@ -44,33 +46,33 @@ interface {{ComponentName}}Props {
 
 ### デザイントークン
 
-| Property | Token | Value |
-|----------|-------|-------|
-| Background (primary) | `color.semantic.primary` | `#3B82F6` |
-| Background (hover) | `color.semantic.primary-hover` | `#2563EB` |
-| Text | `color.text.inverse` | `#FFFFFF` |
-| Border Radius | `border.radius.md` | `0.375rem` |
-| Padding X | `spacing.4` | `1rem` |
-| Padding Y | `spacing.2` | `0.5rem` |
+| Property             | Token                          | Value      |
+| -------------------- | ------------------------------ | ---------- |
+| Background (primary) | `color.semantic.primary`       | `#3B82F6`  |
+| Background (hover)   | `color.semantic.primary-hover` | `#2563EB`  |
+| Text                 | `color.text.inverse`           | `#FFFFFF`  |
+| Border Radius        | `border.radius.md`             | `0.375rem` |
+| Padding X            | `spacing.4`                    | `1rem`     |
+| Padding Y            | `spacing.2`                    | `0.5rem`   |
 
 ### サイズバリエーション
 
 | Size | Height | Padding X | Padding Y | Font Size |
-|------|--------|-----------|-----------|-----------|
-| `sm` | 32px | 12px | 6px | 14px |
-| `md` | 40px | 16px | 8px | 16px |
-| `lg` | 48px | 20px | 12px | 18px |
+| ---- | ------ | --------- | --------- | --------- |
+| `sm` | 32px   | 12px      | 6px       | 14px      |
+| `md` | 40px   | 16px      | 8px       | 16px      |
+| `lg` | 48px   | 20px      | 12px      | 18px      |
 
 ### 状態
 
-| State | Description | Visual Changes |
-|-------|-------------|----------------|
-| Default | 通常状態 | 標準スタイル |
-| Hover | ホバー時 | 背景色が暗くなる |
-| Active | クリック中 | さらに暗く、scale 0.98 |
-| Focus | フォーカス時 | フォーカスリング表示 |
-| Disabled | 無効時 | 半透明、カーソル無効 |
-| Loading | ローディング中 | スピナー表示、操作無効 |
+| State    | Description    | Visual Changes         |
+| -------- | -------------- | ---------------------- |
+| Default  | 通常状態       | 標準スタイル           |
+| Hover    | ホバー時       | 背景色が暗くなる       |
+| Active   | クリック中     | さらに暗く、scale 0.98 |
+| Focus    | フォーカス時   | フォーカスリング表示   |
+| Disabled | 無効時         | 半透明、カーソル無効   |
+| Loading  | ローディング中 | スピナー表示、操作無効 |
 
 ---
 
@@ -78,26 +80,26 @@ interface {{ComponentName}}Props {
 
 ### ARIA属性
 
-| Attribute | Value | When |
-|-----------|-------|------|
-| `aria-disabled` | `true` | `isDisabled` が true の時 |
-| `aria-busy` | `true` | `isLoading` が true の時 |
-| `role` | `button` | ネイティブ button でない場合 |
+| Attribute       | Value    | When                         |
+| --------------- | -------- | ---------------------------- |
+| `aria-disabled` | `true`   | `isDisabled` が true の時    |
+| `aria-busy`     | `true`   | `isLoading` が true の時     |
+| `role`          | `button` | ネイティブ button でない場合 |
 
 ### キーボード操作
 
-| Key | Action |
-|-----|--------|
-| `Enter` | クリックアクション実行 |
-| `Space` | クリックアクション実行 |
-| `Tab` | 次の要素へフォーカス移動 |
+| Key     | Action                   |
+| ------- | ------------------------ |
+| `Enter` | クリックアクション実行   |
+| `Space` | クリックアクション実行   |
+| `Tab`   | 次の要素へフォーカス移動 |
 
 ### カラーコントラスト
 
 | Foreground | Background | Ratio | WCAG AA |
-|------------|------------|-------|---------|
-| #FFFFFF | #3B82F6 | 4.5:1 | ✅ Pass |
-| #FFFFFF | #2563EB | 5.2:1 | ✅ Pass |
+| ---------- | ---------- | ----- | ------- |
+| #FFFFFF    | #3B82F6    | 4.5:1 | ✅ Pass |
+| #FFFFFF    | #2563EB    | 5.2:1 | ✅ Pass |
 
 ---
 
@@ -186,9 +188,9 @@ import { {{ComponentName}} } from '@/components/primitives';
 
 ## 変更履歴
 
-| Version | Date | Changes |
-|---------|------|---------|
-| 1.0.0 | {{date}} | 初版作成 |
+| Version | Date     | Changes  |
+| ------- | -------- | -------- |
+| 1.0.0   | {{date}} | 初版作成 |
 
 ---
 

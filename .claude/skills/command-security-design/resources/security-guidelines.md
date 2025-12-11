@@ -6,7 +6,7 @@
 ---
 description: Safe file viewer
 allowed-tools:
-  - Read    # 読み取りのみ許可
+  - Read # 読み取りのみ許可
   # Write は意図的に除外
 ---
 ```
@@ -28,9 +28,11 @@ disable-model-invocation: true
 
 ```markdown
 ## Validation
+
 If $ARGUMENTS contains dangerous patterns:
-  - "../" (パストラバーサル)
-  - "rm -rf" (破壊的コマンド)
+
+- "../" (パストラバーサル)
+- "rm -rf" (破壊的コマンド)
   Error and exit
 ```
 
@@ -38,14 +40,16 @@ If $ARGUMENTS contains dangerous patterns:
 
 ```markdown
 ## Destructive Operation Warning
+
 Display: "This will delete [N] files"
 Ask: "Type 'DELETE' to confirm"
 
 If input != "DELETE":
-  Cancel and exit
+Cancel and exit
 ```
 
 ## ベストプラクティス
+
 1. 破壊的操作は常に確認
 2. allowed-tools で最小権限
 3. パス入力は検証

@@ -36,28 +36,32 @@ version: 1.0.0
 ### 1. Airbnb JavaScript Style Guide
 
 **特徴**:
+
 - 最も広範なコミュニティ採用
 - 厳格なルールセット
 - React推奨設定あり
 
 **適用方法**:
+
 ```json
 {
   "extends": [
-    "airbnb-base",  // JavaScript
-    "airbnb",       // React含む
-    "airbnb-typescript"  // TypeScript
+    "airbnb-base", // JavaScript
+    "airbnb", // React含む
+    "airbnb-typescript" // TypeScript
   ]
 }
 ```
 
 **主要ルール**:
+
 - セミコロン必須
 - シングルクォート推奨
 - 末尾カンマ推奨
 - アロー関数優先
 
 **適用プロジェクト**:
+
 - React/TypeScriptプロジェクト
 - 高品質基準を求めるチーム
 - コミュニティ標準に従いたい場合
@@ -65,11 +69,13 @@ version: 1.0.0
 ### 2. Google JavaScript Style Guide
 
 **特徴**:
+
 - Google社内標準
 - 実用主義
 - TypeScript公式推奨に近い
 
 **適用方法**:
+
 ```json
 {
   "extends": ["google"]
@@ -77,12 +83,14 @@ version: 1.0.0
 ```
 
 **主要ルール**:
+
 - セミコロン必須
 - シングルクォート推奨
 - インデント2スペース
 - const/let推奨（var禁止）
 
 **適用プロジェクト**:
+
 - エンタープライズプロジェクト
 - TypeScript中心の開発
 - 実用性重視
@@ -90,11 +98,13 @@ version: 1.0.0
 ### 3. Standard JS
 
 **特徴**:
+
 - セミコロンなし
 - 設定ゼロ（opinionated）
 - シンプル
 
 **適用方法**:
+
 ```json
 {
   "extends": ["standard"]
@@ -102,12 +112,14 @@ version: 1.0.0
 ```
 
 **主要ルール**:
+
 - セミコロンなし
 - シングルクォート
 - インデント2スペース
 - スペース多用
 
 **適用プロジェクト**:
+
 - 設定を最小化したい場合
 - セミコロンなし派
 - Node.jsプロジェクト
@@ -121,8 +133,8 @@ version: 1.0.0
   "extends": ["airbnb-base"],
   "rules": {
     // プロジェクト固有ルールで上書き
-    "no-console": "off",  // 開発中はconsole許可
-    "max-len": ["error", { "code": 100 }]  // 行長を100に緩和
+    "no-console": "off", // 開発中はconsole許可
+    "max-len": ["error", { "code": 100 }] // 行長を100に緩和
   }
 }
 ```
@@ -130,14 +142,17 @@ version: 1.0.0
 ### 段階的適用
 
 **Phase 1: 基本ルールのみ**:
+
 - eslint:recommended
 - 必須エラールールのみ
 
 **Phase 2: スタイルガイド導入**:
+
 - airbnb-base追加
 - warnレベルで運用
 
 **Phase 3: 厳格化**:
+
 - warnをerrorに格上げ
 - 追加ルール有効化
 
@@ -156,6 +171,7 @@ version: 1.0.0
 ### パターン検出
 
 **インデント**:
+
 ```bash
 # スペース使用率を確認
 grep -r "^  " src/ | wc -l  # 2スペース
@@ -164,6 +180,7 @@ grep -r "^\t" src/ | wc -l  # タブ
 ```
 
 **セミコロン**:
+
 ```bash
 # セミコロン使用率
 grep -r ";" src/**/*.js | wc -l

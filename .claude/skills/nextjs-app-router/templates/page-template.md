@@ -183,12 +183,12 @@ export default async function {{PageName}}Page({ searchParams }: Props) {
 
 ## 変数説明
 
-| 変数 | 説明 | 例 |
-|------|------|-----|
-| `{{PageName}}` | Page コンポーネント名（PascalCase） | `BlogPost`, `UserProfile` |
-| `{{PageTitle}}` | ページタイトル | `ブログ記事`, `ユーザープロフィール` |
-| `{{PageDescription}}` | メタディスクリプション | `最新のブログ記事一覧` |
-| `{{feature}}` | 機能名（kebab-case） | `blog`, `user-profile` |
-| `{{resource}}` | リソース名（複数形） | `posts`, `users` |
-| `{{param}}` | 動的パラメータ名 | `slug`, `id`, `username` |
-| `{{apiUrl}}` | データフェッチURL | `https://api.example.com/data` |
+| 変数                  | 説明                                | 例                                   |
+| --------------------- | ----------------------------------- | ------------------------------------ |
+| `{{PageName}}`        | Page コンポーネント名（PascalCase） | `BlogPost`, `UserProfile`            |
+| `{{PageTitle}}`       | ページタイトル                      | `ブログ記事`, `ユーザープロフィール` |
+| `{{PageDescription}}` | メタディスクリプション              | `最新のブログ記事一覧`               |
+| `{{feature}}`         | 機能名（kebab-case）                | `blog`, `user-profile`               |
+| `{{resource}}`        | リソース名（複数形）                | `posts`, `users`                     |
+| `{{param}}`           | 動的パラメータ名                    | `slug`, `id`, `username`             |
+| `{{apiUrl}}`          | データフェッチURL                   | `https://api.example.com/data`       |

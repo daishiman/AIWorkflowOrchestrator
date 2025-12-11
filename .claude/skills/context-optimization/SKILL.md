@@ -30,7 +30,6 @@ description: |
 version: 1.0.0
 ---
 
-
 # Context Optimization
 
 ## 概要
@@ -40,6 +39,7 @@ version: 1.0.0
 トークン使用量を60-80%削減しながら、必要な知識を確実に提供します。
 
 **主要な価値**:
+
 - トークン使用量の大幅削減（60-80%）
 - コンテキスト汚染の防止
 - 必要な情報への高速アクセス
@@ -101,9 +101,11 @@ node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/ski
 ## いつ使うか
 
 ### シナリオ1: トークン削減
+
 **状況**: スキルのトークン使用量が20Kを超えている
 
 **適用条件**:
+
 - [ ] 総トークン数が20K以上
 - [ ] コンテキストウィンドウを圧迫
 - [ ] 削減の余地がある
@@ -111,9 +113,11 @@ node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/ski
 **期待される成果**: 60-80%の削減
 
 ### シナリオ2: 遅延読み込みの実装
+
 **状況**: すべての情報を事前ロードしている
 
 **適用条件**:
+
 - [ ] 多数のリソースファイルがある
 - [ ] すべてを同時に使うことは稀
 - [ ] 段階的な参照が可能
@@ -127,6 +131,7 @@ node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/ski
 **原則**: 全リソースの事前ロード禁止
 
 **方法**:
+
 - SKILL.mdにインデックスを提供
 - 必要なリソースのみ参照
 - エージェントが判断して選択
@@ -138,6 +143,7 @@ node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/ski
 **原則**: SKILL.mdは「目次」として機能
 
 **方法**:
+
 - リソース構造セクションでディレクトリツリー提示
 - 各Phaseで対応するリソースを明示
 - リソース選択ガイドを提供
@@ -149,6 +155,7 @@ node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/ski
 **原則**: 冗長性を排除、本質のみ抽出
 
 **方法**:
+
 - 重複削除（DRY原則）
 - 例の最小化（2-3個）
 - 概念要素中心（具体例は最小限）
@@ -158,11 +165,13 @@ node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/ski
 ## ベストプラクティス
 
 ### すべきこと
+
 1. **SKILL.mdは500行以内**: 厳守
 2. **インデックスを充実**: リソース構造セクション必須
 3. **参照を明確に**: どこに何があるか常に明示
 
 ### 避けるべきこと
+
 1. **全ロード**: すべてのリソースを一度に参照しない
 2. **冗長性**: 同じ情報を複数箇所に書かない
 3. **過度な詳細**: 本質的でない情報は削除
@@ -170,16 +179,18 @@ node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/ski
 ## メトリクス
 
 ### トークン削減率
+
 **目標**: 60-80%
 
 ### 情報アクセス時間
+
 **目標**: <2分
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-23 | 初版作成 - コンテキスト最適化戦略 |
+| バージョン | 日付       | 変更内容                          |
+| ---------- | ---------- | --------------------------------- |
+| 1.0.0      | 2025-11-23 | 初版作成 - コンテキスト最適化戦略 |
 
 ## 関連スキル
 

@@ -24,16 +24,16 @@ With Keep-Alive:
 ### Node.js設定
 
 ```typescript
-import http from 'http';
-import https from 'https';
+import http from "http";
+import https from "https";
 
 // HTTPエージェント設定
 const httpAgent = new http.Agent({
-  keepAlive: true,           // コネクション再利用を有効化
-  keepAliveMsecs: 30000,     // Keep-Alive間隔（30秒）
-  maxSockets: 50,            // ホストあたり最大同時接続数
-  maxFreeSockets: 10,        // 待機コネクション数
-  timeout: 60000,            // ソケットタイムアウト
+  keepAlive: true, // コネクション再利用を有効化
+  keepAliveMsecs: 30000, // Keep-Alive間隔（30秒）
+  maxSockets: 50, // ホストあたり最大同時接続数
+  maxFreeSockets: 10, // 待機コネクション数
+  timeout: 60000, // ソケットタイムアウト
 });
 
 // HTTPSエージェント設定
@@ -44,22 +44,22 @@ const httpsAgent = new https.Agent({
   maxFreeSockets: 10,
   timeout: 60000,
   // TLS設定
-  rejectUnauthorized: true,  // 証明書検証
-  minVersion: 'TLSv1.2',
+  rejectUnauthorized: true, // 証明書検証
+  minVersion: "TLSv1.2",
 });
 
 // fetch使用時
 const response = await fetch(url, {
-  agent: url.startsWith('https') ? httpsAgent : httpAgent,
+  agent: url.startsWith("https") ? httpsAgent : httpAgent,
 });
 ```
 
 ### axios設定
 
 ```typescript
-import axios from 'axios';
-import http from 'http';
-import https from 'https';
+import axios from "axios";
+import http from "http";
+import https from "https";
 
 const client = axios.create({
   httpAgent: new http.Agent({
@@ -80,10 +80,10 @@ const client = axios.create({
 
 ```typescript
 interface PoolConfig {
-  maxConnections: number;      // 最大接続数
-  minConnections: number;      // 最小維持接続数
-  maxIdleTime: number;         // アイドルタイムアウト
-  acquireTimeout: number;      // 取得待ちタイムアウト
+  maxConnections: number; // 最大接続数
+  minConnections: number; // 最小維持接続数
+  maxIdleTime: number; // アイドルタイムアウト
+  acquireTimeout: number; // 取得待ちタイムアウト
   createRetryInterval: number; // 作成リトライ間隔
 }
 
@@ -111,7 +111,7 @@ class ConnectionPool<T> {
   constructor(
     private readonly config: PoolConfig,
     private readonly factory: () => Promise<T>,
-    private readonly destroyer: (conn: T) => Promise<void>
+    private readonly destroyer: (conn: T) => Promise<void>,
   ) {
     // 最小接続数を事前作成
     this.warmUp();
@@ -123,7 +123,7 @@ class ConnectionPool<T> {
         const conn = await this.factory();
         this.available.push(conn);
       } catch (error) {
-        console.error('Failed to warm up connection:', error);
+        console.error("Failed to warm up connection:", error);
       }
     }
   }
@@ -146,10 +146,10 @@ class ConnectionPool<T> {
     // 待機キューに追加
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
-        const index = this.waiting.findIndex(w => w.resolve === resolve);
+        const index = this.waiting.findIndex((w) => w.resolve === resolve);
         if (index !== -1) {
           this.waiting.splice(index, 1);
-          reject(new Error('Connection acquire timeout'));
+          reject(new Error("Connection acquire timeout"));
         }
       }, this.config.acquireTimeout);
 
@@ -213,7 +213,7 @@ Single Connection:
 ### Node.js HTTP/2クライアント
 
 ```typescript
-import http2 from 'http2';
+import http2 from "http2";
 
 class Http2Client {
   private session: http2.ClientHttp2Session | null = null;
@@ -222,7 +222,7 @@ class Http2Client {
 
   constructor(
     private readonly authority: string,
-    private readonly options: http2.SecureClientSessionOptions = {}
+    private readonly options: http2.SecureClientSessionOptions = {},
   ) {}
 
   private async connect(): Promise<http2.ClientHttp2Session> {
@@ -241,20 +241,20 @@ class Http2Client {
     return new Promise((resolve, reject) => {
       this.session = http2.connect(this.authority, this.options);
 
-      this.session.on('connect', () => {
+      this.session.on("connect", () => {
         this.connecting = false;
-        this.pendingRequests.forEach(cb => cb());
+        this.pendingRequests.forEach((cb) => cb());
         this.pendingRequests.length = 0;
         resolve(this.session!);
       });
 
-      this.session.on('error', (err) => {
+      this.session.on("error", (err) => {
         this.connecting = false;
         this.session = null;
         reject(err);
       });
 
-      this.session.on('close', () => {
+      this.session.on("close", () => {
         this.session = null;
       });
     });
@@ -266,14 +266,18 @@ class Http2Client {
       method?: string;
       headers?: http2.OutgoingHttpHeaders;
       body?: string | Buffer;
-    } = {}
-  ): Promise<{ status: number; headers: http2.IncomingHttpHeaders; body: string }> {
+    } = {},
+  ): Promise<{
+    status: number;
+    headers: http2.IncomingHttpHeaders;
+    body: string;
+  }> {
     const session = await this.connect();
 
     return new Promise((resolve, reject) => {
       const req = session.request({
-        ':path': path,
-        ':method': options.method || 'GET',
+        ":path": path,
+        ":method": options.method || "GET",
         ...options.headers,
       });
 
@@ -281,24 +285,24 @@ class Http2Client {
       let headers: http2.IncomingHttpHeaders = {};
       const chunks: Buffer[] = [];
 
-      req.on('response', (hdrs) => {
-        status = hdrs[':status'] as number;
+      req.on("response", (hdrs) => {
+        status = hdrs[":status"] as number;
         headers = hdrs;
       });
 
-      req.on('data', (chunk) => {
+      req.on("data", (chunk) => {
         chunks.push(chunk);
       });
 
-      req.on('end', () => {
+      req.on("end", () => {
         resolve({
           status,
           headers,
-          body: Buffer.concat(chunks).toString('utf8'),
+          body: Buffer.concat(chunks).toString("utf8"),
         });
       });
 
-      req.on('error', reject);
+      req.on("error", reject);
 
       if (options.body) {
         req.write(options.body);
@@ -316,13 +320,13 @@ class Http2Client {
 }
 
 // 使用例
-const client = new Http2Client('https://api.example.com');
+const client = new Http2Client("https://api.example.com");
 
 // 並列リクエスト（単一コネクションで多重化）
 const results = await Promise.all([
-  client.request('/api/users'),
-  client.request('/api/orders'),
-  client.request('/api/products'),
+  client.request("/api/users"),
+  client.request("/api/orders"),
+  client.request("/api/products"),
 ]);
 ```
 
@@ -333,16 +337,16 @@ const results = await Promise.all([
 ```typescript
 interface TimeoutConfig {
   // 接続確立タイムアウト
-  connect: number;      // デフォルト: 5000ms
+  connect: number; // デフォルト: 5000ms
 
   // ソケットアイドルタイムアウト
-  socket: number;       // デフォルト: 30000ms
+  socket: number; // デフォルト: 30000ms
 
   // 全体タイムアウト
-  request: number;      // デフォルト: 60000ms
+  request: number; // デフォルト: 60000ms
 
   // DNS解決タイムアウト
-  lookup: number;       // デフォルト: 5000ms
+  lookup: number; // デフォルト: 5000ms
 }
 
 const DEFAULT_TIMEOUTS: TimeoutConfig = {
@@ -358,7 +362,7 @@ const DEFAULT_TIMEOUTS: TimeoutConfig = {
 ```typescript
 async function fetchWithTimeouts(
   url: string,
-  options: RequestInit & { timeouts?: Partial<TimeoutConfig> } = {}
+  options: RequestInit & { timeouts?: Partial<TimeoutConfig> } = {},
 ): Promise<Response> {
   const timeouts = { ...DEFAULT_TIMEOUTS, ...options.timeouts };
 
@@ -392,14 +396,14 @@ class ConnectionHealthChecker {
   constructor(
     private readonly pool: ConnectionPool<unknown>,
     private readonly healthCheck: (conn: unknown) => Promise<boolean>,
-    private readonly intervalMs = 30000
+    private readonly intervalMs = 30000,
   ) {
     this.checkInterval = setInterval(() => this.check(), intervalMs);
   }
 
   private async check(): Promise<void> {
     const stats = this.pool.getStats();
-    console.log('Connection pool stats:', stats);
+    console.log("Connection pool stats:", stats);
 
     // 利用可能な接続のヘルスチェック
     // 実装は具体的なプールの内部構造に依存
@@ -450,13 +454,13 @@ class MetricsCollector {
 
   record(event: string, value: number): void {
     switch (event) {
-      case 'acquire_time':
-        this.updateAverage('avgAcquireTimeMs', value);
+      case "acquire_time":
+        this.updateAverage("avgAcquireTimeMs", value);
         break;
-      case 'connection_error':
+      case "connection_error":
         this.metrics.connectionErrors++;
         break;
-      case 'timeout_error':
+      case "timeout_error":
         this.metrics.timeoutErrors++;
         break;
     }
@@ -476,16 +480,19 @@ class MetricsCollector {
 ## チェックリスト
 
 ### 設計時
+
 - [ ] 想定同時接続数を算出したか？
 - [ ] HTTP/2対応を検討したか？
 - [ ] タイムアウト値を決定したか？
 
 ### 実装時
+
 - [ ] Keep-Aliveを有効化したか？
 - [ ] コネクションプールを設定したか？
 - [ ] グレースフルシャットダウンを実装したか？
 
 ### 運用時
+
 - [ ] コネクション数をモニタリングしているか？
 - [ ] コネクションリークを検出できるか？
 - [ ] エラー率にアラートを設定しているか？

@@ -8,12 +8,14 @@ Facadeパターンは、複雑な外部APIまたは複数の外部サービス�
 ## いつ使うか
 
 ### 適用条件
+
 - [ ] 複数の外部APIを組み合わせて1つの機能を実現する
 - [ ] 外部APIの呼び出し順序が複雑
 - [ ] 呼び出し側に外部システムの複雑さを見せたくない
 - [ ] トランザクション的な一連の操作を統合したい
 
 ### 適用しない条件
+
 - 単一の外部APIで完結する場合（Adapterで十分）
 - 各API呼び出しを個別に制御する必要がある
 - Facade層のオーバーヘッドが問題になる場合
@@ -65,10 +67,10 @@ class OrderServiceFacade implements OrderFacade {
   async placeOrder(request: OrderRequest): Promise<OrderResult> {
     // 1. 在庫確認
     const inventory = await this.inventoryApi.checkAvailability(
-      request.items.map(i => i.productId)
+      request.items.map((i) => i.productId),
     );
     if (!inventory.allAvailable) {
-      return { success: false, reason: 'OUT_OF_STOCK' };
+      return { success: false, reason: "OUT_OF_STOCK" };
     }
 
     // 2. 在庫予約
@@ -83,7 +85,7 @@ class OrderServiceFacade implements OrderFacade {
 
       if (!payment.success) {
         await this.inventoryApi.releaseReservation(reservation.id);
-        return { success: false, reason: 'PAYMENT_FAILED' };
+        return { success: false, reason: "PAYMENT_FAILED" };
       }
 
       // 4. 配送手配
@@ -188,11 +190,11 @@ class ConditionalFacade {
   async processPayment(request: PaymentRequest): Promise<PaymentResult> {
     // 支払い方法による分岐を隠蔽
     switch (request.method) {
-      case 'CREDIT_CARD':
+      case "CREDIT_CARD":
         return this.creditCardApi.charge(request);
-      case 'BANK_TRANSFER':
+      case "BANK_TRANSFER":
         return this.bankApi.transfer(request);
-      case 'WALLET':
+      case "WALLET":
         return this.walletApi.pay(request);
       default:
         throw new UnsupportedPaymentMethodError(request.method);
@@ -230,7 +232,7 @@ class TransactionalFacade {
           await compensate();
         } catch (compensationError) {
           // 補償失敗をログに記録
-          console.error('Compensation failed:', compensationError);
+          console.error("Compensation failed:", compensationError);
         }
       }
       throw error;
@@ -245,17 +247,17 @@ class TransactionalFacade {
 class PartialSuccessFacade {
   async batchProcess(items: Item[]): Promise<BatchResult> {
     const results = await Promise.allSettled(
-      items.map(item => this.processItem(item))
+      items.map((item) => this.processItem(item)),
     );
 
-    const successful = results.filter(r => r.status === 'fulfilled');
-    const failed = results.filter(r => r.status === 'rejected');
+    const successful = results.filter((r) => r.status === "fulfilled");
+    const failed = results.filter((r) => r.status === "rejected");
 
     return {
       total: items.length,
       successful: successful.length,
       failed: failed.length,
-      errors: failed.map(r => (r as PromiseRejectedResult).reason),
+      errors: failed.map((r) => (r as PromiseRejectedResult).reason),
     };
   }
 }
@@ -264,16 +266,19 @@ class PartialSuccessFacade {
 ## チェックリスト
 
 ### 設計時
+
 - [ ] Facadeが提供するインターフェースは十分にシンプルか？
 - [ ] 各外部APIの責務が明確に分離されているか？
 - [ ] エラー発生時の補償トランザクションが考慮されているか？
 
 ### 実装時
+
 - [ ] 並列実行可能な処理はPromise.allで最適化されているか？
 - [ ] タイムアウトが適切に設定されているか？
 - [ ] 部分的失敗のハンドリングが実装されているか？
 
 ### テスト時
+
 - [ ] 各外部APIのモックが準備されているか？
 - [ ] 失敗シナリオ（各ステップでの失敗）がテストされているか？
 - [ ] 補償トランザクションがテストされているか？

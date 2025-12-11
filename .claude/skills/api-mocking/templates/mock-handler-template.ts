@@ -9,7 +9,7 @@
  * 3. 必要に応じてカスタマイズ
  */
 
-import { http, HttpResponse, delay } from 'msw';
+import { http, HttpResponse, delay } from "msw";
 
 // ==============================================================================
 // 型定義
@@ -24,7 +24,7 @@ type User = {
   id: string;
   email: string;
   name: string;
-  role: 'admin' | 'user' | 'guest';
+  role: "admin" | "user" | "guest";
   createdAt: string;
   updatedAt?: string;
 };
@@ -52,23 +52,23 @@ type Resource = {
 const mockState = {
   users: new Map<string, User>([
     [
-      '1',
+      "1",
       {
-        id: '1',
-        email: 'admin@test.com',
-        name: 'Admin User',
-        role: 'admin',
-        createdAt: '2024-01-01T00:00:00Z',
+        id: "1",
+        email: "admin@test.com",
+        name: "Admin User",
+        role: "admin",
+        createdAt: "2024-01-01T00:00:00Z",
       },
     ],
     [
-      '2',
+      "2",
       {
-        id: '2',
-        email: 'user@test.com',
-        name: 'Test User',
-        role: 'user',
-        createdAt: '2024-01-02T00:00:00Z',
+        id: "2",
+        email: "user@test.com",
+        name: "Test User",
+        role: "user",
+        createdAt: "2024-01-02T00:00:00Z",
       },
     ],
   ]),
@@ -77,7 +77,7 @@ const mockState = {
   // 例: projects: new Map<string, Project>(),
 
   nextUserId: 3,
-  authToken: 'mock-jwt-token-initial',
+  authToken: "mock-jwt-token-initial",
 };
 
 /**
@@ -87,22 +87,22 @@ const mockState = {
  */
 export function resetMockState() {
   mockState.users.clear();
-  mockState.users.set('1', {
-    id: '1',
-    email: 'admin@test.com',
-    name: 'Admin User',
-    role: 'admin',
-    createdAt: '2024-01-01T00:00:00Z',
+  mockState.users.set("1", {
+    id: "1",
+    email: "admin@test.com",
+    name: "Admin User",
+    role: "admin",
+    createdAt: "2024-01-01T00:00:00Z",
   });
-  mockState.users.set('2', {
-    id: '2',
-    email: 'user@test.com',
-    name: 'Test User',
-    role: 'user',
-    createdAt: '2024-01-02T00:00:00Z',
+  mockState.users.set("2", {
+    id: "2",
+    email: "user@test.com",
+    name: "Test User",
+    role: "user",
+    createdAt: "2024-01-02T00:00:00Z",
   });
   mockState.nextUserId = 3;
-  mockState.authToken = 'mock-jwt-token-initial';
+  mockState.authToken = "mock-jwt-token-initial";
 }
 
 // ==============================================================================
@@ -113,7 +113,7 @@ export function resetMockState() {
  * 認証トークンを検証
  */
 function validateAuth(request: Request): boolean {
-  const authHeader = request.headers.get('Authorization');
+  const authHeader = request.headers.get("Authorization");
   return authHeader === `Bearer ${mockState.authToken}`;
 }
 
@@ -121,17 +121,14 @@ function validateAuth(request: Request): boolean {
  * 認証エラーレスポンス
  */
 function unauthorizedResponse() {
-  return HttpResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  return HttpResponse.json({ error: "Unauthorized" }, { status: 401 });
 }
 
 /**
  * Not Foundレスポンス
  */
 function notFoundResponse(resource: string) {
-  return HttpResponse.json(
-    { error: `${resource} not found` },
-    { status: 404 }
-  );
+  return HttpResponse.json({ error: `${resource} not found` }, { status: 404 });
 }
 
 // ==============================================================================
@@ -140,44 +137,41 @@ function notFoundResponse(resource: string) {
 
 export const authHandlers = [
   // ログイン
-  http.post('{{API_BASE_URL}}/auth/login', async ({ request }) => {
+  http.post("{{API_BASE_URL}}/auth/login", async ({ request }) => {
     const body = (await request.json()) as { email: string; password: string };
 
     // 簡易認証（テスト用）
-    if (body.email === 'admin@test.com' && body.password === 'password123') {
+    if (body.email === "admin@test.com" && body.password === "password123") {
       mockState.authToken = `mock-jwt-token-${Date.now()}`;
 
       return HttpResponse.json({
         token: mockState.authToken,
-        user: mockState.users.get('1'),
+        user: mockState.users.get("1"),
       });
     }
 
-    return HttpResponse.json(
-      { error: 'Invalid credentials' },
-      { status: 401 }
-    );
+    return HttpResponse.json({ error: "Invalid credentials" }, { status: 401 });
   }),
 
   // ログアウト
-  http.post('{{API_BASE_URL}}/auth/logout', ({ request }) => {
+  http.post("{{API_BASE_URL}}/auth/logout", ({ request }) => {
     if (!validateAuth(request)) {
       return unauthorizedResponse();
     }
 
-    mockState.authToken = '';
-    return HttpResponse.json({ message: 'Logged out' });
+    mockState.authToken = "";
+    return HttpResponse.json({ message: "Logged out" });
   }),
 
   // 現在のユーザー取得
-  http.get('{{API_BASE_URL}}/auth/me', ({ request }) => {
+  http.get("{{API_BASE_URL}}/auth/me", ({ request }) => {
     if (!validateAuth(request)) {
       return unauthorizedResponse();
     }
 
     // トークンからユーザーIDを抽出（実際はJWTデコード）
     // ここでは簡略化してadminユーザーを返す
-    return HttpResponse.json(mockState.users.get('1'));
+    return HttpResponse.json(mockState.users.get("1"));
   }),
 ];
 
@@ -187,15 +181,15 @@ export const authHandlers = [
 
 export const userHandlers = [
   // ユーザー一覧取得
-  http.get('{{API_BASE_URL}}/users', ({ request }) => {
+  http.get("{{API_BASE_URL}}/users", ({ request }) => {
     if (!validateAuth(request)) {
       return unauthorizedResponse();
     }
 
     const url = new URL(request.url);
-    const page = parseInt(url.searchParams.get('page') || '1', 10);
-    const limit = parseInt(url.searchParams.get('limit') || '10', 10);
-    const role = url.searchParams.get('role');
+    const page = parseInt(url.searchParams.get("page") || "1", 10);
+    const limit = parseInt(url.searchParams.get("limit") || "10", 10);
+    const role = url.searchParams.get("role");
 
     let users = Array.from(mockState.users.values());
 
@@ -222,7 +216,7 @@ export const userHandlers = [
   }),
 
   // ユーザー詳細取得
-  http.get('{{API_BASE_URL}}/users/:userId', ({ request, params }) => {
+  http.get("{{API_BASE_URL}}/users/:userId", ({ request, params }) => {
     if (!validateAuth(request)) {
       return unauthorizedResponse();
     }
@@ -231,14 +225,14 @@ export const userHandlers = [
     const user = mockState.users.get(userId as string);
 
     if (!user) {
-      return notFoundResponse('User');
+      return notFoundResponse("User");
     }
 
     return HttpResponse.json(user);
   }),
 
   // ユーザー作成
-  http.post('{{API_BASE_URL}}/users', async ({ request }) => {
+  http.post("{{API_BASE_URL}}/users", async ({ request }) => {
     if (!validateAuth(request)) {
       return unauthorizedResponse();
     }
@@ -248,8 +242,8 @@ export const userHandlers = [
     // バリデーション
     if (!body.email || !body.name) {
       return HttpResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
+        { error: "Missing required fields" },
+        { status: 400 },
       );
     }
 
@@ -257,7 +251,7 @@ export const userHandlers = [
       id: `user_${mockState.nextUserId++}`,
       email: body.email,
       name: body.name,
-      role: body.role || 'user',
+      role: body.role || "user",
       createdAt: new Date().toISOString(),
     };
 
@@ -267,7 +261,7 @@ export const userHandlers = [
   }),
 
   // ユーザー更新
-  http.put('{{API_BASE_URL}}/users/:userId', async ({ request, params }) => {
+  http.put("{{API_BASE_URL}}/users/:userId", async ({ request, params }) => {
     if (!validateAuth(request)) {
       return unauthorizedResponse();
     }
@@ -276,7 +270,7 @@ export const userHandlers = [
     const user = mockState.users.get(userId as string);
 
     if (!user) {
-      return notFoundResponse('User');
+      return notFoundResponse("User");
     }
 
     const body = (await request.json()) as Partial<User>;
@@ -294,7 +288,7 @@ export const userHandlers = [
   }),
 
   // ユーザー削除
-  http.delete('{{API_BASE_URL}}/users/:userId', ({ request, params }) => {
+  http.delete("{{API_BASE_URL}}/users/:userId", ({ request, params }) => {
     if (!validateAuth(request)) {
       return unauthorizedResponse();
     }
@@ -302,7 +296,7 @@ export const userHandlers = [
     const { userId } = params;
 
     if (!mockState.users.has(userId as string)) {
-      return notFoundResponse('User');
+      return notFoundResponse("User");
     }
 
     mockState.users.delete(userId as string);
@@ -317,30 +311,27 @@ export const userHandlers = [
 
 export const errorHandlers = [
   // 500 Internal Server Error
-  http.get('{{API_BASE_URL}}/error/500', () => {
+  http.get("{{API_BASE_URL}}/error/500", () => {
     return HttpResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 }
+      { error: "Internal Server Error" },
+      { status: 500 },
     );
   }),
 
   // 503 Service Unavailable
-  http.get('{{API_BASE_URL}}/error/503', () => {
-    return HttpResponse.json(
-      { error: 'Service Unavailable' },
-      { status: 503 }
-    );
+  http.get("{{API_BASE_URL}}/error/503", () => {
+    return HttpResponse.json({ error: "Service Unavailable" }, { status: 503 });
   }),
 
   // ネットワークエラー
-  http.get('{{API_BASE_URL}}/error/network', () => {
+  http.get("{{API_BASE_URL}}/error/network", () => {
     return HttpResponse.error();
   }),
 
   // タイムアウト
-  http.get('{{API_BASE_URL}}/error/timeout', async () => {
+  http.get("{{API_BASE_URL}}/error/timeout", async () => {
     await delay(60000); // 60秒待機
-    return HttpResponse.json({ data: 'Should timeout' });
+    return HttpResponse.json({ data: "Should timeout" });
   }),
 ];
 
@@ -350,25 +341,25 @@ export const errorHandlers = [
 
 export const performanceHandlers = [
   // 高速レスポンス（50ms）
-  http.get('{{API_BASE_URL}}/perf/fast', async () => {
+  http.get("{{API_BASE_URL}}/perf/fast", async () => {
     await delay(50);
-    return HttpResponse.json({ data: 'Fast response' });
+    return HttpResponse.json({ data: "Fast response" });
   }),
 
   // 通常速度（500ms）
-  http.get('{{API_BASE_URL}}/perf/normal', async () => {
+  http.get("{{API_BASE_URL}}/perf/normal", async () => {
     await delay(500);
-    return HttpResponse.json({ data: 'Normal response' });
+    return HttpResponse.json({ data: "Normal response" });
   }),
 
   // 低速レスポンス（3秒）
-  http.get('{{API_BASE_URL}}/perf/slow', async () => {
+  http.get("{{API_BASE_URL}}/perf/slow", async () => {
     await delay(3000);
-    return HttpResponse.json({ data: 'Slow response' });
+    return HttpResponse.json({ data: "Slow response" });
   }),
 
   // 大量データ
-  http.get('{{API_BASE_URL}}/perf/large', () => {
+  http.get("{{API_BASE_URL}}/perf/large", () => {
     const largeData = Array.from({ length: 10000 }, (_, i) => ({
       id: `item_${i + 1}`,
       value: Math.random() * 1000,

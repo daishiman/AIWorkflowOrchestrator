@@ -43,6 +43,7 @@ related_skills:
 このスキルは、認証・認可機構のセキュリティ評価に特化した専門知識を提供します。
 
 **専門分野**:
+
 - 認証メカニズムの評価（パスワード、OAuth、MFA）
 - セッション管理とトークンセキュリティ
 - アクセス制御モデルの評価（RBAC、ABAC）
@@ -50,6 +51,7 @@ related_skills:
 - JWT/トークンセキュリティの評価
 
 **理論的基盤**:
+
 - ブルース・シュナイアー『Secrets and Lies』: セキュリティプロセスと防御層
 - Aaron Parecki『OAuth 2.0 Simplified』: OAuth標準とベストプラクティス
 - OWASP Authentication Cheat Sheet: 認証実装ガイドライン
@@ -61,12 +63,14 @@ related_skills:
 ### 1.1 パスワードベース認証
 
 **強度要件**:
+
 - 最小長: 8文字以上（推奨: 12文字以上）
 - 複雑性: 大文字、小文字、数字、記号の組み合わせ
 - 辞書攻撃対策: 一般的なパスワードのブラックリスト
 - パスワード履歴: 過去N個のパスワード再利用禁止
 
 **ハッシュアルゴリズム評価**:
+
 ```
 ✅ 推奨:
   - bcrypt (cost factor: 10-12)
@@ -83,6 +87,7 @@ related_skills:
 ```
 
 **判断基準**:
+
 - [ ] パスワードは安全なハッシュアルゴリズム（bcrypt/argon2）でハッシュ化されているか？
 - [ ] ソルトは各ユーザーでユニークか？
 - [ ] ハッシュのcost factorは適切か（bcrypt: 10-12）？
@@ -91,23 +96,27 @@ related_skills:
 ### 1.2 セッション管理
 
 **セッショントークン要件**:
+
 - 予測不可能性: 暗号論的に安全な乱数生成器（CSPRNG）使用
 - エントロピー: 最低128ビット（推奨: 256ビット）
 - 有効期限: アクティビティに基づいた適切な期限設定
 - 再生成: ログイン成功時、権限変更時にセッションIDを再生成
 
 **Cookie設定**:
+
 ```typescript
 // ✅ 推奨設定
 Set-Cookie: sessionId=xxx; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=3600
 ```
 
 **セッション固定攻撃対策**:
+
 1. ログイン成功時に新しいセッションIDを発行
 2. 古いセッションIDを無効化
 3. セッションIDをURLパラメータに含めない
 
 **判断基準**:
+
 - [ ] セッショントークンは予測不可能か（CSPRNG使用）？
 - [ ] HttpOnlyフラグが設定されているか（XSS対策）？
 - [ ] Secureフラグが設定されているか（HTTPS強制）？
@@ -117,12 +126,14 @@ Set-Cookie: sessionId=xxx; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=36
 ### 1.3 多要素認証（MFA）
 
 **実装評価基準**:
+
 - TOTP（Time-based OTP）: RFC 6238準拠、30秒ウィンドウ
 - SMS/Email OTP: レート制限、有効期限（5-10分）
 - ハードウェアトークン: WebAuthn/FIDO2対応
 - バックアップコード: 使い捨て、安全に保存
 
 **判断基準**:
+
 - [ ] MFAは任意ではなく、管理者やセンシティブ操作で強制されているか？
 - [ ] TOTP実装はタイムドリフトに対応しているか？
 - [ ] バックアップコードは1回限りの使用に制限されているか？
@@ -135,19 +146,23 @@ Set-Cookie: sessionId=xxx; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=36
 ### 2.1 フロー選択の妥当性
 
 **Authorization Code Flow + PKCE**:
+
 - 用途: Webアプリケーション、モバイルアプリ
 - セキュリティ: 最も安全、リフレッシュトークン対応
 - 必須要素: PKCE（Proof Key for Code Exchange）
 
 **Implicit Flow**:
+
 - 状態: **非推奨** - セキュリティリスクが高い
 - 理由: アクセストークンがURLフラグメントに露出
 
 **Client Credentials Flow**:
+
 - 用途: サーバー間通信、M2M認証
 - 制約: ユーザーコンテキストなし
 
 **判断基準**:
+
 - [ ] SPAやモバイルアプリでPKCEが使用されているか？
 - [ ] Implicit Flowは使用されていないか？
 - [ ] stateパラメータでCSRF対策がされているか？
@@ -156,17 +171,20 @@ Set-Cookie: sessionId=xxx; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=36
 ### 2.2 トークン管理
 
 **アクセストークン**:
+
 - 有効期限: 短期（15分-1時間）
 - 保存場所: メモリ内（LocalStorageは避ける）
 - 送信方法: Authorizationヘッダー（Bearer Token）
 
 **リフレッシュトークン**:
+
 - 有効期限: 長期（数日-数週間）
 - 保存場所: HttpOnly Secure Cookie（推奨）
 - ローテーション: 使用時に新しいトークンを発行
 - 取り消し: ログアウト時、不正検出時に即座に無効化
 
 **判断基準**:
+
 - [ ] アクセストークンの有効期限は適切に短いか？
 - [ ] リフレッシュトークンはHttpOnly Cookieで保護されているか？
 - [ ] トークンローテーションが実装されているか？
@@ -179,16 +197,18 @@ Set-Cookie: sessionId=xxx; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=36
 ### 3.1 RBAC（Role-Based Access Control）
 
 **実装評価**:
+
 - ロール定義: 明確な責任範囲を持つロール
 - ロール階層: 継承関係の設計
 - 権限マッピング: ロールから権限への適切なマッピング
 - デフォルト拒否: 明示的な許可がない限り拒否
 
 **権限チェックのポイント**:
+
 ```typescript
 // ✅ サーバーサイドで検証
 function deleteUser(userId, currentUser) {
-  if (!currentUser.roles.includes('admin')) {
+  if (!currentUser.roles.includes("admin")) {
     throw new ForbiddenError();
   }
   // 処理...
@@ -199,6 +219,7 @@ function deleteUser(userId, currentUser) {
 ```
 
 **判断基準**:
+
 - [ ] 権限チェックはサーバーサイドで行われているか？
 - [ ] すべてのAPIエンドポイントで認可チェックがあるか？
 - [ ] デフォルト拒否原則が適用されているか？
@@ -207,14 +228,17 @@ function deleteUser(userId, currentUser) {
 ### 3.2 権限昇格脆弱性
 
 **垂直権限昇格**:
+
 - 一般ユーザーが管理者機能にアクセス
 - 検証ポイント: ロールチェックの一貫性
 
 **水平権限昇格**:
+
 - ユーザーAがユーザーBのデータにアクセス
 - 検証ポイント: リソース所有権の確認
 
 **検出パターン**:
+
 ```
 // ❌ 危険: IDパラメータのみで検証なし
 GET /api/users/{userId}/profile
@@ -226,6 +250,7 @@ if (requestedUserId !== currentUser.id && !currentUser.isAdmin) {
 ```
 
 **判断基準**:
+
 - [ ] ユーザーIDパラメータは所有権検証されているか？
 - [ ] ロール昇格のチェックが全エンドポイントにあるか？
 - [ ] 間接的なオブジェクト参照（IDOR）への対策があるか？
@@ -237,6 +262,7 @@ if (requestedUserId !== currentUser.id && !currentUser.isAdmin) {
 ### 4.1 署名アルゴリズム
 
 **安全なアルゴリズム**:
+
 ```
 ✅ 推奨:
   - RS256 (RSA署名、公開鍵検証)
@@ -251,6 +277,7 @@ if (requestedUserId !== currentUser.id && !currentUser.isAdmin) {
 ```
 
 **alg header攻撃対策**:
+
 - アルゴリズムをホワイトリスト化
 - `alg: none`を拒否
 - 署名検証を必ず実行
@@ -258,6 +285,7 @@ if (requestedUserId !== currentUser.id && !currentUser.isAdmin) {
 ### 4.2 クレーム設計
 
 **標準クレーム**:
+
 - `iss` (issuer): トークン発行者
 - `sub` (subject): ユーザー識別子
 - `aud` (audience): トークン対象
@@ -266,6 +294,7 @@ if (requestedUserId !== currentUser.id && !currentUser.isAdmin) {
 - `jti` (JWT ID): リプレイ攻撃対策
 
 **判断基準**:
+
 - [ ] expクレームが設定され、検証されているか？
 - [ ] audクレームで対象アプリケーションを制限しているか？
 - [ ] センシティブデータ（パスワード、SSN）がペイロードに含まれていないか？
@@ -273,6 +302,7 @@ if (requestedUserId !== currentUser.id && !currentUser.isAdmin) {
 ### 4.3 トークン保存
 
 **保存場所の評価**:
+
 ```
 ✅ 推奨:
   - メモリ内（SPA、短命アクセストークン）
@@ -288,6 +318,7 @@ if (requestedUserId !== currentUser.id && !currentUser.isAdmin) {
 ```
 
 **判断基準**:
+
 - [ ] トークンはLocalStorageではなく、安全な場所に保存されているか？
 - [ ] XSS攻撃でトークンが漏洩しないか？
 - [ ] トークンはHTTPSでのみ送信されるか（Secureフラグ）？
@@ -299,6 +330,7 @@ if (requestedUserId !== currentUser.id && !currentUser.isAdmin) {
 ### 5.1 セッション開始
 
 **ログインフロー**:
+
 1. 認証情報の検証（ユーザー名/パスワード）
 2. MFA検証（有効な場合）
 3. 新しいセッションIDの生成（CSPRNG）
@@ -308,11 +340,13 @@ if (requestedUserId !== currentUser.id && !currentUser.isAdmin) {
 ### 5.2 セッション維持
 
 **アクティビティベースの有効期限**:
+
 - 絶対タイムアウト: ログインから一定時間後に強制ログアウト
 - アイドルタイムアウト: 非アクティブ時間後に自動ログアウト
 - スライディングウィンドウ: アクティビティで期限延長
 
 **同時セッション管理**:
+
 - 単一デバイス制限: 1ユーザー1セッションのみ許可
 - 複数デバイス許可: すべてのアクティブセッション管理
 - セッション一覧: ユーザーが自身のセッションを確認・削除可能
@@ -320,18 +354,21 @@ if (requestedUserId !== currentUser.id && !currentUser.isAdmin) {
 ### 5.3 セッション終了
 
 **ログアウト処理**:
+
 1. サーバーサイドでセッションを無効化
 2. トークンをブラックリストに追加（JWT使用時）
 3. クライアント側でトークンを削除
 4. Cookieをクリア
 
 **強制ログアウト**:
+
 - パスワード変更時
 - 権限変更時
 - 不正アクセス検出時
 - セキュリティポリシー違反時
 
 **判断基準**:
+
 - [ ] ログアウト時にサーバーサイドでセッションが無効化されるか？
 - [ ] トークン取り消しメカニズムが実装されているか？
 - [ ] クライアント側のトークンが確実に削除されるか？
@@ -343,18 +380,20 @@ if (requestedUserId !== currentUser.id && !currentUser.isAdmin) {
 ### 6.1 エンドポイント保護
 
 **すべてのエンドポイントでの検証**:
+
 ```typescript
 // ✅ 一貫した権限チェック
-app.use('/api/admin/*', requireRole('admin'));
-app.get('/api/admin/users', listUsers);
-app.delete('/api/admin/users/:id', deleteUser);
+app.use("/api/admin/*", requireRole("admin"));
+app.get("/api/admin/users", listUsers);
+app.delete("/api/admin/users/:id", deleteUser);
 
 // ❌ 一部のエンドポイントでチェック漏れ
-app.get('/api/admin/users', requireRole('admin'), listUsers);
-app.delete('/api/admin/users/:id', deleteUser); // チェックなし
+app.get("/api/admin/users", requireRole("admin"), listUsers);
+app.delete("/api/admin/users/:id", deleteUser); // チェックなし
 ```
 
 **リソースレベル認可**:
+
 - オブジェクトIDの検証
 - 所有権の確認
 - 関連リソースへのアクセス制御
@@ -362,11 +401,13 @@ app.delete('/api/admin/users/:id', deleteUser); // チェックなし
 ### 6.2 デフォルト拒否原則
 
 **実装パターン**:
+
 1. すべてのエンドポイントにデフォルトで認証を要求
 2. 公開エンドポイントのみ明示的に許可
 3. ホワイトリストアプローチ（ブラックリストではない）
 
 **判断基準**:
+
 - [ ] 新しいエンドポイント追加時、デフォルトで保護されるか？
 - [ ] 公開エンドポイントは明示的にマークされているか？
 - [ ] 認可チェックの漏れを検出する仕組みがあるか？
@@ -377,26 +418,29 @@ app.delete('/api/admin/users/:id', deleteUser); // チェックなし
 
 ### 7.1 脆弱性パターン
 
-| 脆弱性タイプ | 説明 | 検出方法 |
-|------------|------|---------|
-| **セッション固定** | 攻撃者が事前にセッションIDを設定 | ログイン時のセッションID再生成を確認 |
-| **CSRF** | 偽造リクエストでユーザーを騙す | CSRF トークン、SameSite Cookie確認 |
-| **権限昇格** | 一般ユーザーが管理者機能を実行 | 全エンドポイントの認可チェック確認 |
-| **IDOR** | 直接オブジェクト参照で他人のデータ取得 | リソース所有権検証を確認 |
-| **トークン漏洩** | XSS/ログでトークンが露出 | トークン保存場所、ログ出力を確認 |
-| **ブルートフォース** | パスワード総当たり攻撃 | Rate Limiting、アカウントロック確認 |
+| 脆弱性タイプ         | 説明                                   | 検出方法                             |
+| -------------------- | -------------------------------------- | ------------------------------------ |
+| **セッション固定**   | 攻撃者が事前にセッションIDを設定       | ログイン時のセッションID再生成を確認 |
+| **CSRF**             | 偽造リクエストでユーザーを騙す         | CSRF トークン、SameSite Cookie確認   |
+| **権限昇格**         | 一般ユーザーが管理者機能を実行         | 全エンドポイントの認可チェック確認   |
+| **IDOR**             | 直接オブジェクト参照で他人のデータ取得 | リソース所有権検証を確認             |
+| **トークン漏洩**     | XSS/ログでトークンが露出               | トークン保存場所、ログ出力を確認     |
+| **ブルートフォース** | パスワード総当たり攻撃                 | Rate Limiting、アカウントロック確認  |
 
 ### 7.2 攻撃シナリオと対策
 
 **シナリオ1: セッションハイジャック**
+
 - 攻撃: XSSでセッションCookieを窃取
 - 対策: HttpOnly Cookie、CSP、入力サニタイズ
 
 **シナリオ2: トークンリプレイ攻撃**
+
 - 攻撃: 盗んだトークンを再利用
 - 対策: 短い有効期限、jtiクレーム、トークンバインディング
 
 **シナリオ3: パスワードスプレー攻撃**
+
 - 攻撃: 共通パスワードで多数のアカウントを試行
 - 対策: レート制限、CAPTCHA、異常検出
 
@@ -440,6 +484,7 @@ app.delete('/api/admin/users/:id', deleteUser); // チェックなし
 ## リソース・スクリプト・テンプレート
 
 ### リソース
+
 - `resources/password-hashing-guide.md`: パスワードハッシュアルゴリズム詳細
 - `resources/oauth2-flow-comparison.md`: OAuth 2.0フローの比較と選択ガイド
 - `resources/jwt-security-checklist.md`: JWT実装セキュリティチェックリスト
@@ -447,11 +492,13 @@ app.delete('/api/admin/users/:id', deleteUser); // チェックなし
 - `resources/access-control-models.md`: RBAC、ABAC、ACLの詳細比較
 
 ### スクリプト
+
 - `scripts/analyze-auth-endpoints.mjs`: 認証・認可エンドポイントの分析
 - `scripts/check-token-security.mjs`: JWT/トークンセキュリティチェック
 - `scripts/validate-session-config.mjs`: セッション設定の検証
 
 ### テンプレート
+
 - `templates/rbac-policy-template.yaml`: RBACポリシー定義テンプレート
 - `templates/oauth2-config-template.json`: OAuth 2.0設定テンプレート
 - `templates/session-security-checklist.md`: セッションセキュリティチェックリスト
@@ -472,6 +519,7 @@ app.delete('/api/admin/users/:id', deleteUser); // チェックなし
 ## 変更履歴
 
 ### v1.0.0 (2025-11-26)
+
 - 初版リリース
 - @sec-auditorエージェントから知識領域3を抽出
 - 認証機構、OAuth 2.0、アクセス制御、JWT、セッション管理の評価基準を定義

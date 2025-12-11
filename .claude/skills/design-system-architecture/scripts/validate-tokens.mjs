@@ -67,14 +67,16 @@ function validateTokens(tokens, path = [], errors = [], warnings = []) {
         if (typeof tokenValue === "string" && tokenValue.startsWith("{")) {
           const resolved = resolveReference(tokenValue, tokens);
           if (resolved === null) {
-            errors.push(`[ERROR] ${pathStr}: 参照 "${tokenValue}" を解決できません`);
+            errors.push(
+              `[ERROR] ${pathStr}: 参照 "${tokenValue}" を解決できません`,
+            );
           }
         } else {
           // 値の形式チェック
           const pattern = VALUE_PATTERNS[type];
           if (pattern && !pattern.test(tokenValue)) {
             warnings.push(
-              `[WARN] ${pathStr}: 値 "${tokenValue}" は ${type} の期待される形式と異なります`
+              `[WARN] ${pathStr}: 値 "${tokenValue}" は ${type} の期待される形式と異なります`,
             );
           }
         }

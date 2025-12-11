@@ -87,7 +87,7 @@ export class HttpError extends Error {
     public readonly status: number,
     public readonly statusText: string,
     public readonly requestId: string,
-    public readonly response?: unknown
+    public readonly response?: unknown,
   ) {
     super(message);
     this.name = "HttpError";
@@ -115,7 +115,7 @@ export class HttpError extends Error {
 export class TimeoutError extends Error {
   constructor(
     message: string,
-    public readonly requestId: string
+    public readonly requestId: string,
   ) {
     super(message);
     this.name = "TimeoutError";
@@ -126,7 +126,7 @@ export class NetworkError extends Error {
   constructor(
     message: string,
     public readonly requestId: string,
-    public readonly cause?: Error
+    public readonly cause?: Error,
   ) {
     super(message);
     this.name = "NetworkError";
@@ -163,7 +163,7 @@ function sleep(ms: number): Promise<void> {
 function buildUrl(
   baseUrl: string,
   path: string,
-  params?: Record<string, string | number | boolean>
+  params?: Record<string, string | number | boolean>,
 ): string {
   const url = new URL(path, baseUrl);
 
@@ -176,7 +176,11 @@ function buildUrl(
   return url.toString();
 }
 
-function calculateBackoff(attempt: number, baseDelay: number, maxDelay: number): number {
+function calculateBackoff(
+  attempt: number,
+  baseDelay: number,
+  maxDelay: number,
+): number {
   const delay = baseDelay * Math.pow(2, attempt);
   const jitter = delay * 0.3 * Math.random();
   return Math.min(delay + jitter, maxDelay);
@@ -207,42 +211,63 @@ export class HttpClient {
   /**
    * GETリクエスト
    */
-  async get<T>(path: string, options?: Omit<RequestOptions, "method" | "body">): Promise<HttpResponse<T>> {
+  async get<T>(
+    path: string,
+    options?: Omit<RequestOptions, "method" | "body">,
+  ): Promise<HttpResponse<T>> {
     return this.request<T>(path, { ...options, method: "GET" });
   }
 
   /**
    * POSTリクエスト
    */
-  async post<T>(path: string, body?: unknown, options?: Omit<RequestOptions, "method">): Promise<HttpResponse<T>> {
+  async post<T>(
+    path: string,
+    body?: unknown,
+    options?: Omit<RequestOptions, "method">,
+  ): Promise<HttpResponse<T>> {
     return this.request<T>(path, { ...options, method: "POST", body });
   }
 
   /**
    * PUTリクエスト
    */
-  async put<T>(path: string, body?: unknown, options?: Omit<RequestOptions, "method">): Promise<HttpResponse<T>> {
+  async put<T>(
+    path: string,
+    body?: unknown,
+    options?: Omit<RequestOptions, "method">,
+  ): Promise<HttpResponse<T>> {
     return this.request<T>(path, { ...options, method: "PUT", body });
   }
 
   /**
    * PATCHリクエスト
    */
-  async patch<T>(path: string, body?: unknown, options?: Omit<RequestOptions, "method">): Promise<HttpResponse<T>> {
+  async patch<T>(
+    path: string,
+    body?: unknown,
+    options?: Omit<RequestOptions, "method">,
+  ): Promise<HttpResponse<T>> {
     return this.request<T>(path, { ...options, method: "PATCH", body });
   }
 
   /**
    * DELETEリクエスト
    */
-  async delete<T>(path: string, options?: Omit<RequestOptions, "method" | "body">): Promise<HttpResponse<T>> {
+  async delete<T>(
+    path: string,
+    options?: Omit<RequestOptions, "method" | "body">,
+  ): Promise<HttpResponse<T>> {
     return this.request<T>(path, { ...options, method: "DELETE" });
   }
 
   /**
    * 汎用リクエスト
    */
-  async request<T>(path: string, options: RequestOptions = {}): Promise<HttpResponse<T>> {
+  async request<T>(
+    path: string,
+    options: RequestOptions = {},
+  ): Promise<HttpResponse<T>> {
     const requestId = this.config.generateRequestId();
     const method = options.method || "GET";
     const timeout = options.timeout || this.config.timeout;
@@ -301,7 +326,7 @@ export class HttpClient {
         const delay = calculateBackoff(
           attempt,
           this.config.retry.baseDelay,
-          this.config.retry.maxDelay
+          this.config.retry.maxDelay,
         );
 
         console.log({
@@ -332,7 +357,7 @@ export class HttpClient {
       timeout: number;
       cache?: RequestCache;
       requestId: string;
-    }
+    },
   ): Promise<HttpResponse<unknown>> {
     const { method, headers, body, timeout, cache, requestId } = options;
 
@@ -383,7 +408,7 @@ export class HttpClient {
           response.status,
           response.statusText,
           requestId,
-          data
+          data,
         );
       }
 
@@ -401,10 +426,17 @@ export class HttpClient {
 
       if (error instanceof Error) {
         if (error.name === "AbortError") {
-          throw new TimeoutError(`Request timed out after ${timeout}ms`, requestId);
+          throw new TimeoutError(
+            `Request timed out after ${timeout}ms`,
+            requestId,
+          );
         }
 
-        throw new NetworkError(`Network error: ${error.message}`, requestId, error);
+        throw new NetworkError(
+          `Network error: ${error.message}`,
+          requestId,
+          error,
+        );
       }
 
       throw new NetworkError("Unknown network error", requestId);

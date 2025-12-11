@@ -15,16 +15,19 @@ W3C Trace Contextは、分散システムにおけるトレースコンテキス
 #### traceparent
 
 **フォーマット**:
+
 ```
 traceparent: {version}-{trace-id}-{parent-id}-{trace-flags}
 ```
 
 **例**:
+
 ```
 traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
 ```
 
 **フィールド**:
+
 - `version`: バージョン（現在は `00`）
 - `trace-id`: トレース識別子（32文字Hex = 16バイト）
 - `parent-id`: 親スパン識別子（16文字Hex = 8バイト）
@@ -35,11 +38,13 @@ traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
 **用途**: ベンダー固有情報の伝播
 
 **フォーマット**:
+
 ```
 tracestate: vendor1=value1,vendor2=value2
 ```
 
 **例**:
+
 ```
 tracestate: congo=t61rcWkgMzE,rojo=00f067aa0ba902b7
 ```
@@ -49,12 +54,12 @@ tracestate: congo=t61rcWkgMzE,rojo=00f067aa0ba902b7
 ### パターン1: リクエスト受信
 
 ```typescript
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 function parseTraceParent(traceparent: string) {
   if (!traceparent) return null;
 
-  const parts = traceparent.split('-');
+  const parts = traceparent.split("-");
   if (parts.length !== 4) return null;
 
   const [version, traceId, parentId, flags] = parts;
@@ -63,13 +68,13 @@ function parseTraceParent(traceparent: string) {
     version,
     traceId,
     parentId,
-    flags: parseInt(flags, 16)
+    flags: parseInt(flags, 16),
   };
 }
 
 // Express middleware
 app.use((req, res, next) => {
-  const traceContext = parseTraceParent(req.headers['traceparent']);
+  const traceContext = parseTraceParent(req.headers["traceparent"]);
 
   if (traceContext) {
     // 既存トレースを引き継ぐ
@@ -91,14 +96,14 @@ app.use((req, res, next) => {
 
 function generateTraceId(): string {
   // 16バイト = 32文字Hex
-  return uuidv4().replace(/-/g, '') + uuidv4().replace(/-/g, '').slice(0, 0);
+  return uuidv4().replace(/-/g, "") + uuidv4().replace(/-/g, "").slice(0, 0);
   // または
-  return crypto.randomBytes(16).toString('hex');
+  return crypto.randomBytes(16).toString("hex");
 }
 
 function generateSpanId(): string {
   // 8バイト = 16文字Hex
-  return crypto.randomBytes(8).toString('hex');
+  return crypto.randomBytes(8).toString("hex");
 }
 
 function shouldSample(): boolean {
@@ -109,9 +114,13 @@ function shouldSample(): boolean {
 ### パターン2: リクエスト送信
 
 ```typescript
-function generateTraceParent(traceId: string, spanId: string, sampled: boolean): string {
-  const version = '00';
-  const flags = sampled ? '01' : '00';
+function generateTraceParent(
+  traceId: string,
+  spanId: string,
+  sampled: boolean,
+): string {
+  const version = "00";
+  const flags = sampled ? "01" : "00";
   return `${version}-${traceId}-${spanId}-${flags}`;
 }
 
@@ -120,13 +129,13 @@ async function callDownstreamService(url: string, data: any) {
   const traceparent = generateTraceParent(req.traceId, req.spanId, req.sampled);
 
   const response = await fetch(url, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'traceparent': traceparent,
-      'tracestate': req.headers['tracestate'] || '' // 引き継ぐ
+      "Content-Type": "application/json",
+      traceparent: traceparent,
+      tracestate: req.headers["tracestate"] || "", // 引き継ぐ
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   });
 
   return response.json();
@@ -136,8 +145,8 @@ async function callDownstreamService(url: string, data: any) {
 ### パターン3: OpenTelemetry統合
 
 ```typescript
-import { trace, context, propagation } from '@opentelemetry/api';
-import { W3CTraceContextPropagator } from '@opentelemetry/core';
+import { trace, context, propagation } from "@opentelemetry/api";
+import { W3CTraceContextPropagator } from "@opentelemetry/core";
 
 // W3C Trace Context Propagatorを設定
 propagation.setGlobalPropagator(new W3CTraceContextPropagator());
@@ -146,8 +155,8 @@ propagation.setGlobalPropagator(new W3CTraceContextPropagator());
 const response = await fetch(url, {
   headers: {
     // OpenTelemetryが自動的にtraceparentを追加
-    ...propagation.inject(context.active(), {})
-  }
+    ...propagation.inject(context.active(), {}),
+  },
 });
 ```
 
@@ -156,22 +165,24 @@ const response = await fetch(url, {
 ### HTTP伝播
 
 **送信側**:
+
 ```typescript
 const headers = {
-  'traceparent': generateTraceParent(traceId, spanId, sampled)
+  traceparent: generateTraceParent(traceId, spanId, sampled),
 };
 
 if (tracestate) {
-  headers['tracestate'] = tracestate;
+  headers["tracestate"] = tracestate;
 }
 
 await fetch(url, { headers });
 ```
 
 **受信側**:
+
 ```typescript
-const traceparent = req.headers['traceparent'];
-const tracestate = req.headers['tracestate'];
+const traceparent = req.headers["traceparent"];
+const tracestate = req.headers["tracestate"];
 
 // パースして使用
 const context = parseTraceParent(traceparent);
@@ -180,20 +191,22 @@ const context = parseTraceParent(traceparent);
 ### メッセージキュー伝播
 
 **送信側**:
+
 ```typescript
-await queue.publish('order-processing', {
+await queue.publish("order-processing", {
   body: orderData,
   headers: {
-    'traceparent': generateTraceParent(traceId, spanId, sampled),
-    'tracestate': tracestate
-  }
+    traceparent: generateTraceParent(traceId, spanId, sampled),
+    tracestate: tracestate,
+  },
 });
 ```
 
 **受信側**:
+
 ```typescript
-queue.subscribe('order-processing', (message) => {
-  const traceparent = message.headers['traceparent'];
+queue.subscribe("order-processing", (message) => {
+  const traceparent = message.headers["traceparent"];
   const context = parseTraceParent(traceparent);
 
   // 新しいスパンを作成（トレースを継続）
@@ -209,10 +222,10 @@ queue.subscribe('order-processing', (message) => {
 OpenTelemetry gRPC計装が自動的に処理
 
 ```typescript
-import { GrpcInstrumentation } from '@opentelemetry/instrumentation-grpc';
+import { GrpcInstrumentation } from "@opentelemetry/instrumentation-grpc";
 
 const sdk = new NodeSDK({
-  instrumentations: [new GrpcInstrumentation()]
+  instrumentations: [new GrpcInstrumentation()],
 });
 ```
 
@@ -221,6 +234,7 @@ const sdk = new NodeSDK({
 ### sampled フラグ
 
 **値**:
+
 - `01`: サンプリング対象（記録する）
 - `00`: サンプリング対象外（記録しない）
 
@@ -228,6 +242,7 @@ const sdk = new NodeSDK({
 親スパンがsampledの場合、すべての子スパンもsampled
 
 **実装**:
+
 ```typescript
 // 親スパンのsampledフラグを引き継ぐ
 const sampled = (traceContext.flags & 1) === 1;

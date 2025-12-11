@@ -8,15 +8,16 @@ Google({
   clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
   authorization: {
     params: {
-      scope: 'openid email profile',
-      prompt: 'select_account',
-      access_type: 'offline', // リフレッシュトークン取得
+      scope: "openid email profile",
+      prompt: "select_account",
+      access_type: "offline", // リフレッシュトークン取得
     },
   },
-})
+});
 ```
 
 **環境変数**:
+
 ```env
 GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=your-client-secret
@@ -30,13 +31,14 @@ GitHub({
   clientSecret: process.env.GITHUB_CLIENT_SECRET!,
   authorization: {
     params: {
-      scope: 'read:user user:email',
+      scope: "read:user user:email",
     },
   },
-})
+});
 ```
 
 **環境変数**:
+
 ```env
 GITHUB_CLIENT_ID=your-github-client-id
 GITHUB_CLIENT_SECRET=your-github-client-secret
@@ -50,59 +52,63 @@ Discord({
   clientSecret: process.env.DISCORD_CLIENT_SECRET!,
   authorization: {
     params: {
-      scope: 'identify email',
+      scope: "identify email",
     },
   },
-})
+});
 ```
 
 ## Credentials Provider（カスタムログイン）
 
 ```typescript
-import Credentials from 'next-auth/providers/credentials';
-import { verifyPassword } from '@/lib/auth';
+import Credentials from "next-auth/providers/credentials";
+import { verifyPassword } from "@/lib/auth";
 
 Credentials({
-  name: 'Email and Password',
+  name: "Email and Password",
   credentials: {
-    email: { label: 'Email', type: 'email' },
-    password: { label: 'Password', type: 'password' },
+    email: { label: "Email", type: "email" },
+    password: { label: "Password", type: "password" },
   },
   async authorize(credentials) {
     const user = await db.users.findOne({ email: credentials.email });
 
-    if (!user || !await verifyPassword(credentials.password, user.hashedPassword)) {
+    if (
+      !user ||
+      !(await verifyPassword(credentials.password, user.hashedPassword))
+    ) {
       return null;
     }
 
     return { id: user.id, email: user.email, role: user.role };
   },
-})
+});
 ```
 
 ## 型安全性の確保
 
 **next-auth.d.ts**:
-```typescript
-import { type DefaultSession } from 'next-auth';
 
-declare module 'next-auth' {
+```typescript
+import { type DefaultSession } from "next-auth";
+
+declare module "next-auth" {
   interface Session {
     user: {
       id: string;
-      role: 'ADMIN' | 'USER' | 'GUEST';
-    } & DefaultSession['user'];
+      role: "ADMIN" | "USER" | "GUEST";
+    } & DefaultSession["user"];
   }
 
   interface User {
-    role: 'ADMIN' | 'USER' | 'GUEST';
+    role: "ADMIN" | "USER" | "GUEST";
   }
 }
 
-declare module 'next-auth/jwt' {
+declare module "next-auth/jwt" {
   interface JWT {
     userId: string;
-    role: 'ADMIN' | 'USER' | 'GUEST';
+    role: "ADMIN" | "USER" | "GUEST";
   }
 }
 ```
@@ -110,6 +116,7 @@ declare module 'next-auth/jwt' {
 ## まとめ
 
 NextAuth.js実装の鉄則:
+
 1. プロバイダー正しく設定
 2. セッション戦略を要件に合わせる
 3. セッションにロール情報統合

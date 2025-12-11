@@ -43,12 +43,12 @@ class SessionTokenManager {
     const session = await this.getSession(token);
 
     if (!session) {
-      throw new Error('Invalid session token');
+      throw new Error("Invalid session token");
     }
 
     if (session.expiresAt < new Date()) {
       await this.deleteSession(token);
-      throw new Error('Session expired');
+      throw new Error("Session expired");
     }
 
     return session;
@@ -78,7 +78,7 @@ class ContextCollector {
       location: this.geolocate(req.ip),
       timestamp: new Date(),
       deviceId: this.extractDeviceId(req),
-      userAgent: req.headers['user-agent'],
+      userAgent: req.headers["user-agent"],
     };
   }
 
@@ -89,9 +89,10 @@ class ContextCollector {
 
   private extractDeviceId(req: Request): string {
     // デバイス指紋から一意ID生成
-    return crypto.createHash('sha256')
-      .update(req.headers['user-agent'] + req.headers['accept-language'])
-      .digest('hex');
+    return crypto
+      .createHash("sha256")
+      .update(req.headers["user-agent"] + req.headers["accept-language"])
+      .digest("hex");
   }
 }
 ```
@@ -110,7 +111,11 @@ class RiskEvaluator {
     }
 
     // 地理的リスク
-    if (!user.knownLocations.some(loc => loc.country === context.location.country)) {
+    if (
+      !user.knownLocations.some(
+        (loc) => loc.country === context.location.country,
+      )
+    ) {
       riskScore += 0.3; // 新しい地域
     }
 
@@ -144,7 +149,7 @@ class AdaptiveAuthenticationManager {
   async accessSecret(
     secretName: string,
     userId: string,
-    context: AccessContext
+    context: AccessContext,
   ): Promise<string> {
     // 1. リスク評価
     const user = await this.getUser(userId);
@@ -154,16 +159,14 @@ class AdaptiveAuthenticationManager {
     if (riskScore > 0.7) {
       // 高リスク → MFA必須 + 承認必要
       if (!context.mfaVerified) {
-        throw new Error('MFA verification required');
+        throw new Error("MFA verification required");
       }
       await this.requestManagerApproval(userId, secretName);
-
     } else if (riskScore > 0.4) {
       // 中リスク → MFA必須
       if (!context.mfaVerified) {
-        throw new Error('MFA verification required');
+        throw new Error("MFA verification required");
       }
-
     } else {
       // 低リスク → 通常認証のみ
     }
@@ -202,13 +205,22 @@ class MLAnomalyDetector {
 
   async detectAnomaly(
     event: AccessEvent,
-    profile: UserBehaviorProfile
+    profile: UserBehaviorProfile,
   ): Promise<{ isAnomaly: boolean; score: number; reasons: string[] }> {
     const deviations = {
-      time: this.compareTime(event.timestamp.getHours(), profile.usualAccessTimes),
+      time: this.compareTime(
+        event.timestamp.getHours(),
+        profile.usualAccessTimes,
+      ),
       location: this.compareLocation(event.location, profile.usualLocations),
-      frequency: this.compareFrequency(event.recentCount, profile.usualFrequency),
-      secretType: this.compareSecretType(event.secretType, profile.usualSecretTypes),
+      frequency: this.compareFrequency(
+        event.recentCount,
+        profile.usualFrequency,
+      ),
+      secretType: this.compareSecretType(
+        event.secretType,
+        profile.usualSecretTypes,
+      ),
     };
 
     // 重み付きスコア計算
@@ -219,10 +231,10 @@ class MLAnomalyDetector {
       deviations.secretType * 0.2;
 
     const reasons = [];
-    if (deviations.time > 0.7) reasons.push('Unusual access time');
-    if (deviations.location > 0.7) reasons.push('New location');
-    if (deviations.frequency > 0.7) reasons.push('Abnormal frequency');
-    if (deviations.secretType > 0.7) reasons.push('Unusual secret type');
+    if (deviations.time > 0.7) reasons.push("Unusual access time");
+    if (deviations.location > 0.7) reasons.push("New location");
+    if (deviations.frequency > 0.7) reasons.push("Abnormal frequency");
+    if (deviations.secretType > 0.7) reasons.push("Unusual secret type");
 
     return {
       isAnomaly: score > 0.8,
@@ -233,13 +245,16 @@ class MLAnomalyDetector {
 
   private compareTime(hour: number, usualTimes: number[]): number {
     // 通常アクセス時間帯との偏差計算
-    const distribution = usualTimes.reduce((acc, time) => {
-      acc[time] = (acc[time] || 0) + 1;
-      return acc;
-    }, {} as Record<number, number>);
+    const distribution = usualTimes.reduce(
+      (acc, time) => {
+        acc[time] = (acc[time] || 0) + 1;
+        return acc;
+      },
+      {} as Record<number, number>,
+    );
 
     const accessProbability = distribution[hour] || 0;
-    return 1 - (accessProbability / Math.max(...Object.values(distribution)));
+    return 1 - accessProbability / Math.max(...Object.values(distribution));
   }
 }
 ```
@@ -253,7 +268,7 @@ class ReAuthenticationManager {
   async checkReAuthNeed(
     session: SessionToken,
     action: string,
-    resource: string
+    resource: string,
   ): Promise<boolean> {
     // 1. セッション有効期限
     if (session.expiresAt < new Date()) {
@@ -261,7 +276,7 @@ class ReAuthenticationManager {
     }
 
     // 2. 重要な操作
-    const criticalActions = ['rotate', 'delete', 'write'];
+    const criticalActions = ["rotate", "delete", "write"];
     if (criticalActions.includes(action)) {
       // MFA検証が1時間以上前
       if (Date.now() - session.mfaVerifiedAt > 60 * 60 * 1000) {
@@ -271,9 +286,12 @@ class ReAuthenticationManager {
 
     // 3. Critical Secretへのアクセス
     const secretMeta = await this.getSecretMetadata(resource);
-    if (secretMeta.classification === 'critical') {
+    if (secretMeta.classification === "critical") {
       // Critical Secretは毎回MFA
-      if (!session.mfaVerified || Date.now() - session.mfaVerifiedAt > 15 * 60 * 1000) {
+      if (
+        !session.mfaVerified ||
+        Date.now() - session.mfaVerifiedAt > 15 * 60 * 1000
+      ) {
         return true;
       }
     }
@@ -289,11 +307,14 @@ class ReAuthenticationManager {
 
 ```typescript
 class AnomalyResponseSystem {
-  async handleAnomaly(event: AccessEvent, anomaly: AnomalyDetection): Promise<void> {
+  async handleAnomaly(
+    event: AccessEvent,
+    anomaly: AnomalyDetection,
+  ): Promise<void> {
     // 1. アラート送信
     await this.sendAlert({
-      severity: anomaly.score > 0.9 ? 'critical' : 'high',
-      event: 'anomaly_detected',
+      severity: anomaly.score > 0.9 ? "critical" : "high",
+      event: "anomaly_detected",
       user: event.userId,
       secret: event.secretName,
       score: anomaly.score,
@@ -305,15 +326,13 @@ class AnomalyResponseSystem {
       // 非常に疑わしい → アクセスブロック + セッション無効化
       await this.revokeSession(event.sessionToken);
       await this.blockAccess(event.userId, event.secretName, 3600000); // 1時間ブロック
-
     } else if (anomaly.score > 0.8) {
       // 疑わしい → MFA要求
       await this.requestMFA(event.userId);
-
     } else {
       // やや疑わしい → ログ記録のみ
       await this.auditLog.record({
-        event: 'anomaly_detected_low_severity',
+        event: "anomaly_detected_low_severity",
         details: anomaly,
       });
     }
@@ -321,10 +340,10 @@ class AnomalyResponseSystem {
     // 3. Security Teamに通知
     if (anomaly.score > 0.8) {
       await this.notifySecurityTeam({
-        type: 'anomaly',
+        type: "anomaly",
         user: event.userId,
         score: anomaly.score,
-        actionTaken: anomaly.score > 0.9 ? 'blocked' : 'mfa_requested',
+        actionTaken: anomaly.score > 0.9 ? "blocked" : "mfa_requested",
       });
     }
   }

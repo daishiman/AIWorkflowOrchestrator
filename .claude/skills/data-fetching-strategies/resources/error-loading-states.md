@@ -10,7 +10,7 @@
 ### 基本状態
 
 ```typescript
-type FetchStatus = 'idle' | 'loading' | 'success' | 'error';
+type FetchStatus = "idle" | "loading" | "success" | "error";
 
 interface FetchState<T> {
   status: FetchStatus;
@@ -34,11 +34,11 @@ const { data, error, isLoading, isValidating } = useSWR(key, fetcher);
 const {
   data,
   error,
-  isLoading,    // 初回ロード中
-  isFetching,   // バックグラウンドフェッチ中
-  isError,      // エラー状態
-  isSuccess,    // 成功状態
-  status,       // 'loading' | 'error' | 'success'
+  isLoading, // 初回ロード中
+  isFetching, // バックグラウンドフェッチ中
+  isError, // エラー状態
+  isSuccess, // 成功状態
+  status, // 'loading' | 'error' | 'success'
 } = useQuery(options);
 ```
 
@@ -167,7 +167,7 @@ function UserProfile({ userId }: { userId: string }) {
 
 ```typescript
 const { data } = useQuery({
-  queryKey: ['user', userId],
+  queryKey: ["user", userId],
   queryFn: () => fetchUser(userId),
   onError: (error) => {
     toast.error(`ユーザー情報の取得に失敗しました: ${error.message}`);
@@ -312,10 +312,10 @@ const queryClient = new QueryClient({
         // グローバルエラーハンドリング
         if (error.response?.status === 401) {
           // 認証エラー
-          router.push('/login');
+          router.push("/login");
         } else if (error.response?.status === 500) {
           // サーバーエラー
-          toast.error('サーバーエラーが発生しました');
+          toast.error("サーバーエラーが発生しました");
         }
       },
     },

@@ -39,7 +39,7 @@ const transformUser = (external: ExternalUser): User => ({
 実行時の型安全性を確保するパターン。
 
 ```typescript
-import { z } from 'zod';
+import { z } from "zod";
 
 // 外部データのスキーマ（検証用）
 const ExternalUserSchema = z.object({
@@ -102,7 +102,7 @@ const safeTransform = (data: unknown): Result<User, TransformError> => {
   } catch (error) {
     return {
       success: false,
-      error: new TransformError('Transformation failed', { cause: error }),
+      error: new TransformError("Transformation failed", { cause: error }),
     };
   }
 };
@@ -192,10 +192,8 @@ const transformOrder = (external: ExternalOrder): Order => {
   };
 };
 
-const transformLineItems = (
-  items: ExternalOrder['items']
-): OrderLineItem[] =>
-  items.map(item => ({
+const transformLineItems = (items: ExternalOrder["items"]): OrderLineItem[] =>
+  items.map((item) => ({
     productId: item.product_id,
     quantity: item.quantity,
     unitPrice: item.unit_price,
@@ -213,9 +211,9 @@ const calculateTotal = (items: OrderLineItem[]): number =>
 ```typescript
 // ステータスによって構造が異なる外部型
 type ExternalPayment =
-  | { status: 'pending'; initiated_at: string }
-  | { status: 'completed'; completed_at: string; amount: number }
-  | { status: 'failed'; failed_at: string; error_code: string };
+  | { status: "pending"; initiated_at: string }
+  | { status: "completed"; completed_at: string; amount: number }
+  | { status: "failed"; failed_at: string; error_code: string };
 
 // 内部型（統一構造）
 interface Payment {
@@ -230,18 +228,18 @@ const transformPayment = (external: ExternalPayment): Payment => {
   const base = { status: transformStatus(external.status) };
 
   switch (external.status) {
-    case 'pending':
+    case "pending":
       return {
         ...base,
         timestamp: new Date(external.initiated_at),
       };
-    case 'completed':
+    case "completed":
       return {
         ...base,
         timestamp: new Date(external.completed_at),
         amount: external.amount,
       };
-    case 'failed':
+    case "failed":
       return {
         ...base,
         timestamp: new Date(external.failed_at),
@@ -260,7 +258,7 @@ const transformPayment = (external: ExternalPayment): Payment => {
 async function* transformBatch<T, U>(
   items: AsyncIterable<T>,
   transform: (item: T) => U,
-  batchSize = 100
+  batchSize = 100,
 ): AsyncGenerator<U[]> {
   let batch: U[] = [];
 
@@ -308,8 +306,8 @@ interface Profile {
 }
 
 const transformProfile = (external: ExternalProfile): Profile => ({
-  displayName: external.display_name ?? 'Anonymous',
-  bio: external.bio ?? '',
+  displayName: external.display_name ?? "Anonymous",
+  bio: external.bio ?? "",
   avatarUrl: external.avatar_url ?? undefined,
   followersCount: external.followers_count ?? 0,
 });
@@ -319,10 +317,10 @@ const transformProfile = (external: ExternalProfile): Profile => ({
 
 ```typescript
 // ?? はnullとundefinedのみ
-const value1 = external.count ?? 0;  // 0は0、nullは0
+const value1 = external.count ?? 0; // 0は0、nullは0
 
 // || は falsy 値すべて
-const value2 = external.count || 0;  // 0は0（危険！）
+const value2 = external.count || 0; // 0は0（危険！）
 
 // 明示的なチェック
 const value3 = external.count === null ? 0 : external.count;
@@ -345,7 +343,7 @@ const fromIso = (iso: string): Date => new Date(iso);
 // カスタム形式 → Date
 const fromCustomFormat = (dateStr: string, format: string): Date => {
   // 例: "2024-01-15" → Date
-  const [year, month, day] = dateStr.split('-').map(Number);
+  const [year, month, day] = dateStr.split("-").map(Number);
   return new Date(year, month - 1, day);
 };
 ```
@@ -373,10 +371,10 @@ class TransformError extends Error {
     message: string,
     public readonly field?: string,
     public readonly value?: unknown,
-    public readonly cause?: Error
+    public readonly cause?: Error,
   ) {
     super(message);
-    this.name = 'TransformError';
+    this.name = "TransformError";
   }
 }
 
@@ -385,10 +383,10 @@ class ValidationError extends TransformError {
     public readonly issues: Array<{
       path: string;
       message: string;
-    }>
+    }>,
   ) {
-    super('Validation failed');
-    this.name = 'ValidationError';
+    super("Validation failed");
+    this.name = "ValidationError";
   }
 }
 ```
@@ -398,12 +396,13 @@ class ValidationError extends TransformError {
 ```typescript
 const transformWithFallback = (
   external: ExternalData,
-  fallback: Partial<InternalData> = {}
+  fallback: Partial<InternalData> = {},
 ): InternalData => {
   const result: InternalData = {
     id: external.id ?? fallback.id ?? generateId(),
-    name: external.name ?? fallback.name ?? 'Unknown',
-    createdAt: parseDate(external.created_at) ?? fallback.createdAt ?? new Date(),
+    name: external.name ?? fallback.name ?? "Unknown",
+    createdAt:
+      parseDate(external.created_at) ?? fallback.createdAt ?? new Date(),
   };
 
   return result;
@@ -419,16 +418,19 @@ const parseDate = (value: unknown): Date | null => {
 ## チェックリスト
 
 ### 設計時
+
 - [ ] 外部型と内部型の対応が明確か？
 - [ ] null/undefinedの処理方針が決まっているか？
 - [ ] エラーハンドリング戦略が定義されているか？
 
 ### 実装時
+
 - [ ] Zodなどで実行時検証を行っているか？
 - [ ] 日付/タイムゾーンの変換が正しいか？
 - [ ] 深くネストした構造の変換が段階的か？
 
 ### テスト時
+
 - [ ] 正常系のマッピングがテストされているか？
 - [ ] null/undefined/空文字の処理がテストされているか？
 - [ ] 無効なデータでのエラーがテストされているか？

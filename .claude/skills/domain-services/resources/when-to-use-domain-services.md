@@ -33,6 +33,7 @@
 ### 1. 複数の集約をまたがる操作
 
 **特徴**:
+
 - 1つのエンティティに属さない操作
 - 複数のエンティティを協調させる
 - どのエンティティが主体か不明確
@@ -44,7 +45,7 @@
 class Account {
   transferTo(target: Account, amount: Money): void {
     this.withdraw(amount);
-    target.deposit(amount);  // 他の集約を操作している
+    target.deposit(amount); // 他の集約を操作している
   }
 }
 
@@ -65,10 +66,7 @@ class TransferService {
 ```typescript
 // 複数の在庫から予約する操作
 class InventoryReservationService {
-  reserve(
-    items: OrderItem[],
-    warehouses: Warehouse[]
-  ): ReservationResult {
+  reserve(items: OrderItem[], warehouses: Warehouse[]): ReservationResult {
     const reservations: Reservation[] = [];
 
     for (const item of items) {
@@ -87,6 +85,7 @@ class InventoryReservationService {
 ### 2. ビジネスポリシーの適用
 
 **特徴**:
+
 - ビジネスルールを表現
 - 条件に基づく判断
 - 複雑な計算ロジック
@@ -98,7 +97,7 @@ class PricingService {
   calculateFinalPrice(
     order: Order,
     customer: Customer,
-    coupons: Coupon[]
+    coupons: Coupon[],
   ): Money {
     let price = order.subtotal;
 
@@ -118,10 +117,14 @@ class PricingService {
 
   private getMemberDiscount(rank: CustomerRank): Percentage {
     switch (rank) {
-      case CustomerRank.PLATINUM: return Percentage.of(15);
-      case CustomerRank.GOLD: return Percentage.of(10);
-      case CustomerRank.SILVER: return Percentage.of(5);
-      default: return Percentage.of(0);
+      case CustomerRank.PLATINUM:
+        return Percentage.of(15);
+      case CustomerRank.GOLD:
+        return Percentage.of(10);
+      case CustomerRank.SILVER:
+        return Percentage.of(5);
+      default:
+        return Percentage.of(0);
     }
   }
 }
@@ -134,7 +137,7 @@ class ShippingCostService {
   calculate(
     destination: Address,
     items: OrderItem[],
-    shippingMethod: ShippingMethod
+    shippingMethod: ShippingMethod,
   ): Money {
     // 基本料金
     const baseCost = shippingMethod.baseCost;
@@ -142,7 +145,7 @@ class ShippingCostService {
     // 重量による追加料金
     const totalWeight = items.reduce(
       (sum, item) => sum + item.weight * item.quantity,
-      0
+      0,
     );
     const weightSurcharge = this.calculateWeightSurcharge(totalWeight);
 
@@ -157,6 +160,7 @@ class ShippingCostService {
 ### 3. 変換・マッピング処理
 
 **特徴**:
+
 - ドメインオブジェクト間の変換
 - フォーマット変換
 - 集約間のマッピング
@@ -170,7 +174,7 @@ class InvoiceGenerationService {
       invoiceNumber: InvoiceNumber.generate(),
       customerId: customer.id,
       billingAddress: customer.billingAddress,
-      items: order.items.map(item => InvoiceItem.fromOrderItem(item)),
+      items: order.items.map((item) => InvoiceItem.fromOrderItem(item)),
       subtotal: order.subtotal,
       tax: this.calculateTax(order),
       total: order.total,
@@ -191,6 +195,7 @@ class InvoiceGenerationService {
 ### 4. 検証・バリデーションサービス
 
 **特徴**:
+
 - 複数エンティティにまたがる検証
 - ビジネスルールの整合性チェック
 
@@ -201,24 +206,24 @@ class OrderValidationService {
   validate(
     customer: Customer,
     items: OrderItem[],
-    shippingAddress: Address
+    shippingAddress: Address,
   ): ValidationResult {
     const errors: ValidationError[] = [];
 
     // 顧客の状態チェック
     if (!customer.isActive) {
-      errors.push(new ValidationError('顧客アカウントが無効です'));
+      errors.push(new ValidationError("顧客アカウントが無効です"));
     }
 
     // 与信限度チェック
     const orderTotal = this.calculateTotal(items);
     if (customer.creditLimit.isLessThan(orderTotal)) {
-      errors.push(new ValidationError('与信限度を超えています'));
+      errors.push(new ValidationError("与信限度を超えています"));
     }
 
     // 配送先チェック
     if (!this.isDeliverableArea(shippingAddress)) {
-      errors.push(new ValidationError('配送対象外の地域です'));
+      errors.push(new ValidationError("配送対象外の地域です"));
     }
 
     // 商品在庫チェック
@@ -243,7 +248,7 @@ class OrderValidationService {
 // ❌ ドメインサービスにしない
 class OrderService {
   addItem(order: Order, item: OrderItem): void {
-    order.items.push(item);  // エンティティの内部状態を操作
+    order.items.push(item); // エンティティの内部状態を操作
   }
 }
 
@@ -281,7 +286,7 @@ class Money {
 // ❌ ドメインサービスでDBアクセス
 class UserDomainService {
   async isEmailUnique(email: EmailAddress): Promise<boolean> {
-    const existing = await this.db.query('SELECT ...');  // インフラ依存
+    const existing = await this.db.query("SELECT ..."); // インフラ依存
     return !existing;
   }
 }

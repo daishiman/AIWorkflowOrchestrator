@@ -17,7 +17,7 @@
 // ===== テンプレート =====
 
 const templates = {
-  'factory-method': (name) => `/**
+  "factory-method": (name) => `/**
  * ${name}Factory - Factory Methodパターン
  */
 
@@ -86,7 +86,7 @@ class ${name}Executor implements IWorkflowExecutor {
 }
 `,
 
-  'abstract-factory': (name) => `/**
+  "abstract-factory": (name) => `/**
  * ${name}ComponentFactory - Abstract Factoryパターン
  */
 
@@ -154,7 +154,7 @@ export class Test${name}Factory implements ${name}ComponentFactory {
 // 具体的な製品クラスは別ファイルで実装
 `,
 
-  'builder': (name) => `/**
+  builder: (name) => `/**
  * ${name}Builder - Builderパターン
  */
 
@@ -310,7 +310,7 @@ class ${name}Executor implements IWorkflowExecutor {
 }
 `,
 
-  'registry': (name) => `/**
+  registry: (name) => `/**
  * ${name}Registry - Registry Factoryパターン
  */
 
@@ -453,18 +453,18 @@ function main() {
   const args = process.argv.slice(2);
 
   if (args.length < 2) {
-    console.log('使用方法: node generate-factory.mjs <pattern> <name>');
-    console.log('');
-    console.log('パターン:');
-    console.log('  factory-method    Factory Methodパターン');
-    console.log('  abstract-factory  Abstract Factoryパターン');
-    console.log('  builder           Builderパターン');
-    console.log('  registry          Registry Factoryパターン');
-    console.log('');
-    console.log('例:');
-    console.log('  node generate-factory.mjs factory-method Workflow');
-    console.log('  node generate-factory.mjs builder Executor');
-    console.log('  node generate-factory.mjs registry Workflow');
+    console.log("使用方法: node generate-factory.mjs <pattern> <name>");
+    console.log("");
+    console.log("パターン:");
+    console.log("  factory-method    Factory Methodパターン");
+    console.log("  abstract-factory  Abstract Factoryパターン");
+    console.log("  builder           Builderパターン");
+    console.log("  registry          Registry Factoryパターン");
+    console.log("");
+    console.log("例:");
+    console.log("  node generate-factory.mjs factory-method Workflow");
+    console.log("  node generate-factory.mjs builder Executor");
+    console.log("  node generate-factory.mjs registry Workflow");
     process.exit(0);
   }
 
@@ -474,7 +474,9 @@ function main() {
   const template = templates[pattern];
   if (!template) {
     console.error(`❌ 不明なパターン: ${pattern}`);
-    console.log('利用可能なパターン: factory-method, abstract-factory, builder, registry');
+    console.log(
+      "利用可能なパターン: factory-method, abstract-factory, builder, registry",
+    );
     process.exit(1);
   }
 
@@ -483,10 +485,10 @@ function main() {
 
   const code = template(pascalName);
 
-  console.log('// ============================================');
+  console.log("// ============================================");
   console.log(`// Generated: ${pattern} for ${pascalName}`);
-  console.log('// ============================================');
-  console.log('');
+  console.log("// ============================================");
+  console.log("");
   console.log(code);
 }
 

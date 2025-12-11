@@ -70,9 +70,11 @@ fi
 ## パフォーマンス問題診断完了
 
 ### 診断結果
+
 原因: ${root_cause}
 
 ### 修正提案
+
 ${fix_proposal}
 
 レポート: docs/performance/diagnosis-report.md

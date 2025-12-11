@@ -58,6 +58,7 @@ model: sonnet
 オプションフラグ: "$ARGUMENTS"
 
 サポートフラグ:
+
 - --coverage: カバレッジレポート生成
 - --watch: ウォッチモード（開発中）
 - --ci: CI/CDモード（並列実行最適化）
@@ -73,6 +74,7 @@ Task ツールで `.claude/agents/unit-tester.md` を起動:
 エージェント: .claude/agents/unit-tester.md
 
 依頼内容:
+
 - ユニットテストの並列実行
 - カバレッジ測定（--coverage指定時）
 - テスト結果サマリー生成
@@ -81,6 +83,7 @@ Task ツールで `.claude/agents/unit-tester.md` を起動:
 pnpm test:unit ${--coverage フラグ}
 
 必須要件:
+
 1. すべてのユニットテスト実行（`vitest run`）
 2. カバレッジ測定（`vitest --coverage`、--coverage指定時）
 3. 結果サマリー（成功/失敗件数、実行時間、カバレッジ率）
@@ -94,6 +97,7 @@ Task ツールで `.claude/agents/e2e-tester.md` を起動:
 エージェント: .claude/agents/e2e-tester.md
 
 依頼内容:
+
 - E2Eテストの実行（Playwright）
 - クリティカルパスの動作保証
 - テスト結果サマリー生成
@@ -102,6 +106,7 @@ Task ツールで `.claude/agents/e2e-tester.md` を起動:
 pnpm test:e2e
 
 必須要件:
+
 1. すべてのE2Eテスト実行（`playwright test`）
 2. 並列実行による高速化
 3. 結果サマリー（成功/失敗件数、実行時間、フレーキーテスト検出）
@@ -114,6 +119,7 @@ pnpm test:e2e
 - CI/CD統合提案
 
 **期待成果物:**
+
 - 統合テスト結果サマリー
 - カバレッジレポート（全体>60%、重要ロジック>80%）
 - 失敗テストの詳細（存在する場合）
@@ -144,11 +150,13 @@ pnpm test:e2e
 ✅ 全テストスイート実行完了
 
 📊 ユニットテスト:
+
 - 成功: 45/45
 - 実行時間: 3.2秒
 - カバレッジ: 82% (目標>60%)
 
 📊 E2Eテスト:
+
 - 成功: 12/12
 - 実行時間: 15.8秒
 - フレーキーテスト: 0件

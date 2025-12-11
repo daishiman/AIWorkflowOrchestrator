@@ -11,12 +11,12 @@
 
 ### 非推奨化の基本ルール
 
-| ルール | 説明 |
-|--------|------|
+| ルール       | 説明                               |
+| ------------ | ---------------------------------- |
 | 最低告知期間 | 4週間以上（重要なAPIは12週間以上） |
-| 並行稼働期間 | 新旧両方を最低4週間提供 |
-| 移行サポート | ガイド、ツール、サポートを提供 |
-| 段階的廃止 | 急激な変更を避ける |
+| 並行稼働期間 | 新旧両方を最低4週間提供            |
+| 移行サポート | ガイド、ツール、サポートを提供     |
+| 段階的廃止   | 急激な変更を避ける                 |
 
 ---
 
@@ -27,6 +27,7 @@
 **期間**: 廃止の2-4週間前
 
 **アクション**:
+
 1. ドキュメント更新
 2. ブログ/ニュースレターで告知
 3. ダッシュボード通知
@@ -40,12 +41,15 @@
 `GET /api/v1/users` は **2025年6月1日** に廃止予定です。
 
 ### 代替エンドポイント
+
 `GET /api/v2/users` をご使用ください。
 
 ### 移行ガイド
+
 詳細は [移行ガイド](/docs/migration/v1-to-v2) を参照してください。
 
 ### サポート
+
 ご質問は api-support@example.com までお問い合わせください。
 ```
 
@@ -54,6 +58,7 @@
 **期間**: 廃止の4-8週間前
 
 **アクション**:
+
 1. Deprecation HTTPヘッダー追加
 2. レスポンスに警告メッセージ追加
 3. 使用状況のモニタリング開始
@@ -65,26 +70,23 @@
 function addDeprecationHeaders(
   response: Response,
   sunsetDate: Date,
-  successorUrl: string
+  successorUrl: string,
 ): void {
   // RFC 8594 Sunset Header
-  response.headers.set('Sunset', sunsetDate.toUTCString());
+  response.headers.set("Sunset", sunsetDate.toUTCString());
 
   // RFC 8594 Deprecation Header
-  response.headers.set('Deprecation', 'true');
+  response.headers.set("Deprecation", "true");
   // または Unix timestamp
   // response.headers.set('Deprecation', `@${Math.floor(sunsetDate.getTime() / 1000)}`);
 
   // 後継リソースへのリンク
-  response.headers.set(
-    'Link',
-    `<${successorUrl}>; rel="successor-version"`
-  );
+  response.headers.set("Link", `<${successorUrl}>; rel="successor-version"`);
 
   // カスタム警告
   response.headers.set(
-    'X-API-Warn',
-    `This endpoint is deprecated and will be removed on ${sunsetDate.toISOString().split('T')[0]}`
+    "X-API-Warn",
+    `This endpoint is deprecated and will be removed on ${sunsetDate.toISOString().split("T")[0]}`,
   );
 }
 ```
@@ -110,6 +112,7 @@ function addDeprecationHeaders(
 **期間**: 廃止の4-12週間前
 
 **アクション**:
+
 1. 新旧両方のエンドポイントを並行稼働
 2. 移行ツールやスクリプトの提供
 3. 使用量の継続的モニタリング
@@ -125,11 +128,7 @@ export async function GET(request: Request) {
   const response = await handleV1Users(request);
 
   // 非推奨ヘッダーを追加
-  addDeprecationHeaders(
-    response,
-    new Date('2025-06-01'),
-    '/api/v2/users'
-  );
+  addDeprecationHeaders(response, new Date("2025-06-01"), "/api/v2/users");
 
   return response;
 }
@@ -148,16 +147,16 @@ export async function GET(request: Request) {
 async function trackDeprecatedUsage(
   endpoint: string,
   clientId: string,
-  version: string
+  version: string,
 ): Promise<void> {
   await analytics.track({
-    event: 'deprecated_api_call',
+    event: "deprecated_api_call",
     properties: {
       endpoint,
       clientId,
       version,
-      timestamp: new Date().toISOString()
-    }
+      timestamp: new Date().toISOString(),
+    },
   });
 }
 ```
@@ -167,6 +166,7 @@ async function trackDeprecatedUsage(
 **期間**: 廃止日以降
 
 **アクション**:
+
 1. エンドポイント無効化
 2. 410 Gone レスポンス返却
 3. 代替エンドポイントへの案内
@@ -181,23 +181,23 @@ export async function GET(request: Request) {
     JSON.stringify({
       success: false,
       error: {
-        code: 'ENDPOINT_REMOVED',
-        message: 'This endpoint has been permanently removed',
+        code: "ENDPOINT_REMOVED",
+        message: "This endpoint has been permanently removed",
         details: {
-          removed_date: '2025-06-01',
-          successor: '/api/v2/users',
-          documentation: 'https://docs.example.com/migration/v1-to-v2'
+          removed_date: "2025-06-01",
+          successor: "/api/v2/users",
+          documentation: "https://docs.example.com/migration/v1-to-v2",
         },
-        retryable: false
-      }
+        retryable: false,
+      },
     }),
     {
       status: 410, // Gone
       headers: {
-        'Content-Type': 'application/json',
-        'Link': '</api/v2/users>; rel="successor-version"'
-      }
-    }
+        "Content-Type": "application/json",
+        Link: '</api/v2/users>; rel="successor-version"',
+      },
+    },
   );
 }
 ```
@@ -274,19 +274,23 @@ components:
 API v1 のサポート終了についてお知らせいたします。
 
 ## 概要
+
 - 対象: API v1 全エンドポイント
 - 廃止日: 2025年6月1日
 - 代替: API v2
 
 ## 影響を受けるエンドポイント
+
 - GET /api/v1/users
 - POST /api/v1/users
 - ...
 
 ## 移行ガイド
+
 https://docs.example.com/migration/v1-to-v2
 
 ## サポート
+
 ご不明点は api-support@example.com までお問い合わせください。
 
 何卒よろしくお願いいたします。
@@ -307,10 +311,12 @@ API v1 の廃止まで残り1週間となりました。
 ## 廃止日: 2025年6月1日
 
 ## 未移行の場合
+
 廃止日以降、API v1へのリクエストは
 410 Gone エラーを返します。
 
 ## サポート
+
 移行でお困りの場合は、
 api-support@example.com までご連絡ください。
 ```
@@ -320,18 +326,21 @@ api-support@example.com までご連絡ください。
 ## チェックリスト
 
 ### 非推奨化前
+
 - [ ] 代替エンドポイントが準備されているか
 - [ ] 移行ガイドが作成されているか
 - [ ] サポート体制が整っているか
 - [ ] 告知計画が策定されているか
 
 ### 非推奨化中
+
 - [ ] Deprecation/Sunset ヘッダーが設定されているか
 - [ ] 使用量モニタリングが有効か
 - [ ] 大口利用者に個別連絡したか
 - [ ] サポートチケットに対応しているか
 
 ### 廃止後
+
 - [ ] 410 Gone レスポンスが返されているか
 - [ ] 代替エンドポイントへの誘導が機能しているか
 - [ ] 廃止完了の告知を行ったか

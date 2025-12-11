@@ -27,40 +27,40 @@ on:
     inputs:
       # String型
       environment:
-        description: 'Deployment environment'
+        description: "Deployment environment"
         required: true
         type: string
 
       # Boolean型
       debug-mode:
-        description: 'Enable debug logging'
+        description: "Enable debug logging"
         required: false
         type: boolean
         default: false
 
       # Number型
       timeout-minutes:
-        description: 'Job timeout in minutes'
+        description: "Job timeout in minutes"
         required: false
         type: number
         default: 30
 
       # Choice型（列挙）- stringで実装
       log-level:
-        description: 'Logging level'
+        description: "Logging level"
         required: false
         type: string
-        default: 'info'
+        default: "info"
 ```
 
 ### Input Properties
 
-| Property | Required | Description |
-|----------|----------|-------------|
-| `description` | No | 入力の説明 |
-| `required` | No | 必須かどうか（デフォルト: false） |
-| `type` | Yes | string, boolean, number のいずれか |
-| `default` | No | デフォルト値（required: false の場合） |
+| Property      | Required | Description                            |
+| ------------- | -------- | -------------------------------------- |
+| `description` | No       | 入力の説明                             |
+| `required`    | No       | 必須かどうか（デフォルト: false）      |
+| `type`        | Yes      | string, boolean, number のいずれか     |
+| `default`     | No       | デフォルト値（required: false の場合） |
 
 ### Using Inputs
 
@@ -122,10 +122,10 @@ jobs:
 
 ### Output Properties
 
-| Property | Required | Description |
-|----------|----------|-------------|
-| `description` | No | 出力の説明 |
-| `value` | Yes | 出力値（ジョブの出力を参照） |
+| Property      | Required | Description                  |
+| ------------- | -------- | ---------------------------- |
+| `description` | No       | 出力の説明                   |
+| `value`       | Yes      | 出力値（ジョブの出力を参照） |
 
 ## Secrets Definition
 
@@ -138,12 +138,12 @@ on:
       # 必須シークレット
       NPM_TOKEN:
         required: true
-        description: 'pnpm registry token'
+        description: "pnpm registry token"
 
       # オプショナルシークレット
       SENTRY_DSN:
         required: false
-        description: 'Sentry error tracking DSN'
+        description: "Sentry error tracking DSN"
 ```
 
 ### Using Secrets
@@ -185,24 +185,24 @@ on:
   workflow_call:
     inputs:
       node-version:
-        description: 'Node.js version to use'
+        description: "Node.js version to use"
         required: true
         type: string
 
       environment:
-        description: 'Target environment'
+        description: "Target environment"
         required: false
         type: string
-        default: 'development'
+        default: "development"
 
       run-tests:
-        description: 'Run test suite'
+        description: "Run test suite"
         required: false
         type: boolean
         default: true
 
       test-timeout:
-        description: 'Test timeout in minutes'
+        description: "Test timeout in minutes"
         required: false
         type: number
         default: 10
@@ -223,11 +223,11 @@ on:
     secrets:
       NPM_TOKEN:
         required: true
-        description: 'pnpm authentication token'
+        description: "pnpm authentication token"
 
       CODECOV_TOKEN:
         required: false
-        description: 'Codecov upload token'
+        description: "Codecov upload token"
 
 jobs:
   build:
@@ -242,7 +242,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm ci
@@ -283,7 +283,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Download build
         uses: actions/download-artifact@v4

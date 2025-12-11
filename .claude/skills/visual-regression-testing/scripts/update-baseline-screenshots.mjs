@@ -22,10 +22,10 @@
  *   node update-baseline-screenshots.mjs --dry-run --backup
  */
 
-import { execSync } from 'child_process';
-import { readdirSync, copyFileSync, existsSync, mkdirSync, statSync } from 'fs';
-import { resolve, join, relative } from 'path';
-import { createInterface } from 'readline';
+import { execSync } from "child_process";
+import { readdirSync, copyFileSync, existsSync, mkdirSync, statSync } from "fs";
+import { resolve, join, relative } from "path";
+import { createInterface } from "readline";
 
 class BaselineUpdater {
   constructor(options = {}) {
@@ -35,27 +35,27 @@ class BaselineUpdater {
     this.dryRun = options.dryRun || false;
     this.backup = options.backup || false;
 
-    this.baselineDir = 'playwright/screenshots';
-    this.actualDir = 'tests-results';
-    this.backupDir = 'playwright/screenshots-backup';
+    this.baselineDir = "playwright/screenshots";
+    this.actualDir = "tests-results";
+    this.backupDir = "playwright/screenshots-backup";
   }
 
   /**
    * メイン処理
    */
   async run() {
-    console.log('🔍 Baseline Screenshot Updater\n');
+    console.log("🔍 Baseline Screenshot Updater\n");
 
     // ステップ1: テストを実行して差分を生成
-    console.log('Step 1: Running visual regression tests...\n');
+    console.log("Step 1: Running visual regression tests...\n");
     this.runTests();
 
     // ステップ2: 差分画像を検出
-    console.log('\nStep 2: Detecting screenshot diffs...\n');
+    console.log("\nStep 2: Detecting screenshot diffs...\n");
     const diffs = this.detectDiffs();
 
     if (diffs.length === 0) {
-      console.log('✅ No screenshot diffs found. All tests passed!\n');
+      console.log("✅ No screenshot diffs found. All tests passed!\n");
       return 0;
     }
 
@@ -64,30 +64,30 @@ class BaselineUpdater {
       console.log(`  ${index + 1}. ${diff.name}`);
       console.log(`     Baseline: ${diff.baseline}`);
       console.log(`     Actual:   ${diff.actual}`);
-      console.log('');
+      console.log("");
     });
 
     if (this.dryRun) {
-      console.log('--dry-run mode: No files will be updated.\n');
+      console.log("--dry-run mode: No files will be updated.\n");
       return 0;
     }
 
     // ステップ3: バックアップ作成（必要に応じて）
     if (this.backup) {
-      console.log('Step 3: Creating backup...\n');
+      console.log("Step 3: Creating backup...\n");
       this.createBackup(diffs);
     }
 
     // ステップ4: ベースライン更新
     if (this.interactive) {
-      console.log('Step 4: Updating baselines interactively...\n');
+      console.log("Step 4: Updating baselines interactively...\n");
       await this.updateInteractively(diffs);
     } else {
-      console.log('Step 4: Updating baselines...\n');
+      console.log("Step 4: Updating baselines...\n");
       this.updateAll(diffs);
     }
 
-    console.log('\n✅ Baseline update complete!\n');
+    console.log("\n✅ Baseline update complete!\n");
     return 0;
   }
 
@@ -95,22 +95,22 @@ class BaselineUpdater {
    * Playwrightテストを実行
    */
   runTests() {
-    let command = 'pnpm playwright test';
+    let command = "pnpm playwright test";
 
     if (this.testFile) {
       command += ` ${this.testFile}`;
     } else {
-      command += ' --grep @visual'; // @visualタグのテストのみ
+      command += " --grep @visual"; // @visualタグのテストのみ
     }
 
     try {
       execSync(command, {
-        stdio: 'inherit',
-        encoding: 'utf-8',
+        stdio: "inherit",
+        encoding: "utf-8",
       });
     } catch (error) {
       // テスト失敗は想定内（差分があるため）
-      console.log('\n⚠️  Some tests failed (expected when there are diffs)');
+      console.log("\n⚠️  Some tests failed (expected when there are diffs)");
     }
   }
 
@@ -132,9 +132,9 @@ class BaselineUpdater {
 
         if (entry.isDirectory()) {
           findDiffs(fullPath);
-        } else if (entry.name.endsWith('-actual.png')) {
+        } else if (entry.name.endsWith("-actual.png")) {
           // -actual.pngファイルが見つかった場合、差分がある
-          const baseName = entry.name.replace('-actual.png', '.png');
+          const baseName = entry.name.replace("-actual.png", ".png");
 
           // パターンフィルタリング
           if (this.pattern && !baseName.includes(this.pattern)) {
@@ -148,7 +148,7 @@ class BaselineUpdater {
             name: baseName,
             actual: actualPath,
             baseline: baselinePath,
-            diff: fullPath.replace('-actual.png', '-diff.png'),
+            diff: fullPath.replace("-actual.png", "-diff.png"),
           });
         }
       }
@@ -167,7 +167,7 @@ class BaselineUpdater {
       mkdirSync(this.backupDir, { recursive: true });
     }
 
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
     const backupPath = join(this.backupDir, timestamp);
     mkdirSync(backupPath, { recursive: true });
 
@@ -217,26 +217,26 @@ class BaselineUpdater {
 
       // 差分画像を開く（オプション）
       if (existsSync(diff.diff)) {
-        console.log('\n  To view the diff image, run:');
+        console.log("\n  To view the diff image, run:");
         console.log(`  open "${diff.diff}"\n`);
       }
 
       const answer = await this.question(
         rl,
-        '  Update this baseline? (y/n/q to quit): '
+        "  Update this baseline? (y/n/q to quit): ",
       );
 
-      if (answer.toLowerCase() === 'q') {
-        console.log('\n⚠️  Quit. Remaining baselines not updated.');
+      if (answer.toLowerCase() === "q") {
+        console.log("\n⚠️  Quit. Remaining baselines not updated.");
         break;
       }
 
-      if (answer.toLowerCase() === 'y') {
+      if (answer.toLowerCase() === "y") {
         copyFileSync(diff.actual, diff.baseline);
-        console.log('  ✅ Updated');
+        console.log("  ✅ Updated");
         updatedCount++;
       } else {
-        console.log('  ⏭️  Skipped');
+        console.log("  ⏭️  Skipped");
       }
     }
 
@@ -268,22 +268,22 @@ function parseArgs() {
 
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
-      case '--test-file':
+      case "--test-file":
         options.testFile = args[++i];
         break;
-      case '--pattern':
+      case "--pattern":
         options.pattern = args[++i];
         break;
-      case '--interactive':
+      case "--interactive":
         options.interactive = true;
         break;
-      case '--dry-run':
+      case "--dry-run":
         options.dryRun = true;
         break;
-      case '--backup':
+      case "--backup":
         options.backup = true;
         break;
-      case '--help':
+      case "--help":
         printHelp();
         process.exit(0);
       default:

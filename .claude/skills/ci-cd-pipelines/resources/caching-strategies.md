@@ -32,13 +32,14 @@
   uses: actions/setup-node@v4
   with:
     node-version: 22
-    cache: 'pnpm'               # 自動キャッシュ
+    cache: "pnpm" # 自動キャッシュ
 
 - name: Install dependencies
   run: pnpm install --frozen-lockfile
 ```
 
 **メカニズム**:
+
 - `pnpm-lock.yaml` のハッシュをキーに使用
 - `~/.pnpm-store` をキャッシュ
 - `actions/setup-node` が自動管理
@@ -50,7 +51,7 @@
   uses: actions/setup-node@v4
   with:
     node-version: 22
-    cache: 'pnpm'
+    cache: "pnpm"
 
 - name: Install dependencies
   run: pnpm ci
@@ -63,7 +64,7 @@
   uses: actions/setup-node@v4
   with:
     node-version: 22
-    cache: 'yarn'
+    cache: "yarn"
 
 - name: Install dependencies
   run: yarn install --frozen-lockfile
@@ -149,6 +150,7 @@ restore-keys: |
 ```
 
 **動作**:
+
 1. 完全一致を検索
 2. 見つからなければ、より汎用的なキーで検索
 3. 古いキャッシュでも、差分インストールで高速化
@@ -156,6 +158,7 @@ restore-keys: |
 ### キー設計のベストプラクティス
 
 **✅ 良い例**:
+
 ```yaml
 # 依存関係キャッシュ - lock ファイルベース
 key: deps-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -165,6 +168,7 @@ key: build-${{ runner.os }}-${{ hashFiles('src/**/*.ts') }}
 ```
 
 **❌ 悪い例**:
+
 ```yaml
 # タイムスタンプ - 毎回変わるのでキャッシュが効かない
 key: deps-${{ github.run_id }}
@@ -268,24 +272,26 @@ pnpm store path
 
 ### 制限事項
 
-| 項目 | 制限 |
-|------|------|
-| 最大キャッシュサイズ | 10 GB / リポジトリ |
-| 単一キャッシュ上限 | 10 GB |
-| キャッシュ保持期間 | 7日間（最終アクセスから） |
-| 同時キャッシュ数 | 制限なし（10GB内） |
+| 項目                 | 制限                      |
+| -------------------- | ------------------------- |
+| 最大キャッシュサイズ | 10 GB / リポジトリ        |
+| 単一キャッシュ上限   | 10 GB                     |
+| キャッシュ保持期間   | 7日間（最終アクセスから） |
+| 同時キャッシュ数     | 制限なし（10GB内）        |
 
 ### 制限への対策
 
 **キャッシュサイズ削減**:
+
 ```yaml
 # node_modules ではなく pnpm store をキャッシュ
-path: ~/.pnpm-store  # 重複排除で効率的
+path: ~/.pnpm-store # 重複排除で効率的
 # ではなく
 # path: node_modules  # プロジェクトごとに重複
 ```
 
 **キャッシュ分割**:
+
 ```yaml
 # 依存関係とビルドを分離
 - uses: actions/cache@v4
@@ -313,7 +319,7 @@ path: ~/.pnpm-store  # 重複排除で効率的
   uses: actions/setup-node@v4
   with:
     node-version: 22
-    cache: 'pnpm'
+    cache: "pnpm"
 
 - name: Cache Next.js build
   uses: actions/cache@v4
@@ -340,7 +346,7 @@ path: ~/.pnpm-store  # 重複排除で効率的
   uses: actions/setup-node@v4
   with:
     node-version: 22
-    cache: 'pnpm'
+    cache: "pnpm"
 
 - name: Cache Turbo
   uses: actions/cache@v4

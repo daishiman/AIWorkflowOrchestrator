@@ -37,10 +37,12 @@ Electronアプリケーションのビルド・パッケージング専門知識
 ## 概要
 
 ### 目的
+
 Electronアプリケーションを各プラットフォーム向けに
 ビルド・パッケージングし、配布可能な形式で出力する。
 
 ### 対象者
+
 - Electronアプリ開発者
 - DevOpsエンジニア
 - リリースマネージャー
@@ -51,13 +53,13 @@ Electronアプリケーションを各プラットフォーム向けに
 
 ### electron-builder vs electron-forge
 
-| 特徴 | electron-builder | electron-forge |
-|------|------------------|----------------|
-| 設定形式 | YAML/JSON | JavaScript |
-| カスタマイズ性 | 高い | 非常に高い |
-| 学習曲線 | 低い | やや高い |
-| 自動更新統合 | 内蔵 | プラグイン |
-| モノレポ対応 | 良好 | 良好 |
+| 特徴           | electron-builder       | electron-forge     |
+| -------------- | ---------------------- | ------------------ |
+| 設定形式       | YAML/JSON              | JavaScript         |
+| カスタマイズ性 | 高い                   | 非常に高い         |
+| 学習曲線       | 低い                   | やや高い           |
+| 自動更新統合   | 内蔵                   | プラグイン         |
+| モノレポ対応   | 良好                   | 良好               |
 | **推奨ケース** | シンプルなプロジェクト | 高度なカスタマイズ |
 
 ---
@@ -271,25 +273,33 @@ export CSC_KEY_PASSWORD="certificate-password"
 
 ```javascript
 // scripts/sign.js
-exports.default = async function(configuration) {
-  const signTool = require('electron-builder-lib/out/codeSign/windowsCodeSign');
+exports.default = async function (configuration) {
+  const signTool = require("electron-builder-lib/out/codeSign/windowsCodeSign");
 
   // Azure SignTool例
   if (process.env.AZURE_KEY_VAULT_URI) {
     await signTool.sign({
       path: configuration.path,
-      name: 'My Electron App',
-      site: 'https://myapp.com',
+      name: "My Electron App",
+      site: "https://myapp.com",
       signToolArgs: [
-        'sign',
-        '/fd', 'SHA256',
-        '/tr', 'http://timestamp.digicert.com',
-        '/td', 'SHA256',
-        '/kvu', process.env.AZURE_KEY_VAULT_URI,
-        '/kvc', process.env.AZURE_KEY_VAULT_CERT_NAME,
-        '/kvi', process.env.AZURE_CLIENT_ID,
-        '/kvs', process.env.AZURE_CLIENT_SECRET,
-        '/kvt', process.env.AZURE_TENANT_ID,
+        "sign",
+        "/fd",
+        "SHA256",
+        "/tr",
+        "http://timestamp.digicert.com",
+        "/td",
+        "SHA256",
+        "/kvu",
+        process.env.AZURE_KEY_VAULT_URI,
+        "/kvc",
+        process.env.AZURE_KEY_VAULT_CERT_NAME,
+        "/kvi",
+        process.env.AZURE_CLIENT_ID,
+        "/kvs",
+        process.env.AZURE_CLIENT_SECRET,
+        "/kvt",
+        process.env.AZURE_TENANT_ID,
       ],
     });
   }
@@ -388,7 +398,7 @@ name: Build & Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   build-mac:
@@ -399,8 +409,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -426,8 +436,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -450,8 +460,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -511,22 +521,24 @@ files:
 
 ### よくある問題
 
-| 問題 | 原因 | 解決策 |
-|------|------|--------|
-| 署名エラー | 証明書の問題 | 環境変数確認、証明書更新 |
-| asar読み込みエラー | ネイティブモジュール | asarUnpackに追加 |
-| アイコン表示されない | サイズ不足 | 各プラットフォーム要件確認 |
-| ビルドが遅い | キャッシュなし | electron-builder キャッシュ有効化 |
+| 問題                 | 原因                 | 解決策                            |
+| -------------------- | -------------------- | --------------------------------- |
+| 署名エラー           | 証明書の問題         | 環境変数確認、証明書更新          |
+| asar読み込みエラー   | ネイティブモジュール | asarUnpackに追加                  |
+| アイコン表示されない | サイズ不足           | 各プラットフォーム要件確認        |
+| ビルドが遅い         | キャッシュなし       | electron-builder キャッシュ有効化 |
 
 ---
 
 ## 関連リソース
 
 ### 詳細ドキュメント
+
 - `resources/electron-builder-config.md` - 詳細設定
 - `resources/code-signing.md` - コード署名ガイド
 - `resources/platform-specific.md` - プラットフォーム固有
 
 ### テンプレート・スクリプト
+
 - `templates/electron-builder.yml` - ビルド設定
 - `scripts/build.sh` - ビルドスクリプト

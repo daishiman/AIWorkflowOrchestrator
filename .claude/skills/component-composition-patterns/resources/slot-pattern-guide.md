@@ -21,30 +21,23 @@ interface CardProps {
 function Card({ header, footer, children }: CardProps) {
   return (
     <div className="card">
-      {header && (
-        <div className="card-header">{header}</div>
-      )}
+      {header && <div className="card-header">{header}</div>}
       <div className="card-body">{children}</div>
-      {footer && (
-        <div className="card-footer">{footer}</div>
-      )}
+      {footer && <div className="card-footer">{footer}</div>}
     </div>
   );
 }
 
 // 使用例
-<Card
-  header={<h2>タイトル</h2>}
-  footer={<Button>送信</Button>}
->
+<Card header={<h2>タイトル</h2>} footer={<Button>送信</Button>}>
   <p>カードの内容</p>
-</Card>
+</Card>;
 ```
 
 ### Children Inspection Pattern
 
 ```tsx
-import { Children, isValidElement, ReactElement } from 'react';
+import { Children, isValidElement, ReactElement } from "react";
 
 // スロットコンポーネントの定義
 const CardHeader = ({ children }: { children: ReactNode }) => <>{children}</>;
@@ -92,7 +85,7 @@ Card.Footer = CardFooter;
   <Card.Footer>
     <Button>閉じる</Button>
   </Card.Footer>
-</Card>
+</Card>;
 ```
 
 ---
@@ -109,19 +102,20 @@ interface DialogProps {
   onClose: () => void;
 }
 
-function Dialog({ renderHeader, renderFooter, children, onClose }: DialogProps) {
+function Dialog({
+  renderHeader,
+  renderFooter,
+  children,
+  onClose,
+}: DialogProps) {
   return (
     <div className="dialog">
       {renderHeader && (
-        <div className="dialog-header">
-          {renderHeader(onClose)}
-        </div>
+        <div className="dialog-header">{renderHeader(onClose)}</div>
       )}
       <div className="dialog-body">{children}</div>
       {renderFooter && (
-        <div className="dialog-footer">
-          {renderFooter(onClose)}
-        </div>
+        <div className="dialog-footer">{renderFooter(onClose)}</div>
       )}
     </div>
   );
@@ -139,19 +133,21 @@ function Dialog({ renderHeader, renderFooter, children, onClose }: DialogProps) 
   renderFooter={(close) => (
     <>
       <Button onClick={close}>キャンセル</Button>
-      <Button variant="primary" onClick={handleSubmit}>確定</Button>
+      <Button variant="primary" onClick={handleSubmit}>
+        確定
+      </Button>
     </>
   )}
 >
   <p>本当によろしいですか？</p>
-</Dialog>
+</Dialog>;
 ```
 
 ### Conditional Slots
 
 ```tsx
 interface AlertProps {
-  type: 'info' | 'warning' | 'error' | 'success';
+  type: "info" | "warning" | "error" | "success";
   icon?: ReactNode;
   action?: ReactNode;
   children: ReactNode;
@@ -172,20 +168,15 @@ function Alert({ type, icon, action, children }: AlertProps) {
     <div className={`alert alert--${type}`} role="alert">
       <div className="alert-icon">{displayIcon}</div>
       <div className="alert-content">{children}</div>
-      {action && (
-        <div className="alert-action">{action}</div>
-      )}
+      {action && <div className="alert-action">{action}</div>}
     </div>
   );
 }
 
 // 使用例
-<Alert
-  type="error"
-  action={<Button size="sm">再試行</Button>}
->
+<Alert type="error" action={<Button size="sm">再試行</Button>}>
   エラーが発生しました
-</Alert>
+</Alert>;
 ```
 
 ---
@@ -254,15 +245,13 @@ interface ResponsiveLayoutProps {
 function ResponsiveLayout({
   mobileHeader,
   desktopHeader,
-  children
+  children,
 }: ResponsiveLayoutProps) {
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   return (
     <div className="responsive-layout">
-      <header>
-        {isMobile ? mobileHeader : desktopHeader}
-      </header>
+      <header>{isMobile ? mobileHeader : desktopHeader}</header>
       <main>{children}</main>
     </div>
   );
@@ -308,10 +297,10 @@ function DataDisplay<T>({
   data,
   renderItem,
   renderEmpty,
-  renderLoading
+  renderLoading,
 }: SlotComponentProps<T>) {
   if (data === null || data === undefined) {
-    return <>{renderEmpty?.() ?? 'データがありません'}</>;
+    return <>{renderEmpty?.() ?? "データがありません"}</>;
   }
 
   return <>{renderItem(data)}</>;
@@ -322,12 +311,12 @@ function DataDisplay<T>({
 
 ## パターン比較
 
-| 実装方法 | 柔軟性 | 型安全性 | 使いやすさ |
-|----------|--------|----------|------------|
-| Props-based | 中 | 高 | 高 |
-| Children Inspection | 高 | 中 | 中 |
-| Render Function | 高 | 高 | 中 |
-| Compound + Slot | 最高 | 高 | 中 |
+| 実装方法            | 柔軟性 | 型安全性 | 使いやすさ |
+| ------------------- | ------ | -------- | ---------- |
+| Props-based         | 中     | 高       | 高         |
+| Children Inspection | 高     | 中       | 中         |
+| Render Function     | 高     | 高       | 中         |
+| Compound + Slot     | 最高   | 高       | 中         |
 
 ---
 
@@ -339,9 +328,9 @@ function DataDisplay<T>({
 // デフォルトコンテンツでUXを向上
 function EmptyState({
   icon = <EmptyIcon />,
-  title = 'データがありません',
+  title = "データがありません",
   action,
-  children
+  children,
 }: EmptyStateProps) {
   return (
     <div className="empty-state">
@@ -373,7 +362,7 @@ function validateSlots(children: ReactNode) {
 
 ```tsx
 interface ModalProps {
-  title: ReactNode;        // スクリーンリーダー用に必須
+  title: ReactNode; // スクリーンリーダー用に必須
   description?: ReactNode; // aria-describedby用
   children: ReactNode;
 }

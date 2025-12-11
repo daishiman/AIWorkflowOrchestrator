@@ -112,18 +112,18 @@ async function UserPosts({ userId }: { userId: string }) {
 
 ```typescript
 // lib/data.ts
-import { cache } from 'react'
+import { cache } from "react";
 
 // cacheで同一リクエスト内の重複を排除
 export const getUser = cache(async (id: string) => {
-  const res = await fetch(`/api/users/${id}`)
-  return res.json()
-})
+  const res = await fetch(`/api/users/${id}`);
+  return res.json();
+});
 
 // プリロード関数
 export const preloadUser = (id: string) => {
-  void getUser(id)
-}
+  void getUser(id);
+};
 ```
 
 ```typescript
@@ -153,14 +153,14 @@ export default async function UserPage({
 ### Reactのcache関数
 
 ```typescript
-import { cache } from 'react'
+import { cache } from "react";
 
 // 同一リクエスト内で複数回呼び出しても1回のみ実行
 export const getUser = cache(async (id: string) => {
-  console.log('Fetching user:', id) // 1回のみログ出力
-  const res = await fetch(`/api/users/${id}`)
-  return res.json()
-})
+  console.log("Fetching user:", id); // 1回のみログ出力
+  const res = await fetch(`/api/users/${id}`);
+  return res.json();
+});
 ```
 
 ```typescript
@@ -204,67 +204,67 @@ async function ComponentB() {
 
 ```typescript
 // lib/db/users.ts
-import { db } from '@/lib/db'
-import { cache } from 'react'
+import { db } from "@/lib/db";
+import { cache } from "react";
 
 export const getUser = cache(async (id: string) => {
   return db.user.findUnique({
     where: { id },
     include: { profile: true },
-  })
-})
+  });
+});
 
 export const getUsers = cache(async () => {
   return db.user.findMany({
-    orderBy: { createdAt: 'desc' },
-  })
-})
+    orderBy: { createdAt: "desc" },
+  });
+});
 
 export const getUserWithPosts = cache(async (id: string) => {
   return db.user.findUnique({
     where: { id },
     include: {
       posts: {
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         take: 10,
       },
     },
-  })
-})
+  });
+});
 ```
 
 ```typescript
 // lib/api/posts.ts
-import { cache } from 'react'
+import { cache } from "react";
 
-const API_URL = process.env.API_URL
+const API_URL = process.env.API_URL;
 
 export const getPosts = cache(async () => {
   const res = await fetch(`${API_URL}/posts`, {
     next: { revalidate: 3600 },
-  })
+  });
 
   if (!res.ok) {
-    throw new Error('Failed to fetch posts')
+    throw new Error("Failed to fetch posts");
   }
 
-  return res.json()
-})
+  return res.json();
+});
 
 export const getPost = cache(async (slug: string) => {
   const res = await fetch(`${API_URL}/posts/${slug}`, {
     next: { tags: [`post-${slug}`] },
-  })
+  });
 
   if (!res.ok) {
     if (res.status === 404) {
-      return null
+      return null;
     }
-    throw new Error('Failed to fetch post')
+    throw new Error("Failed to fetch post");
   }
 
-  return res.json()
-})
+  return res.json();
+});
 ```
 
 ## エラーハンドリング

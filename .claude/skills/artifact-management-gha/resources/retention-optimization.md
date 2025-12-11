@@ -9,13 +9,13 @@ GitHub Actionsのアーティファクトはデフォルトで**90日間保持**
 
 ### 推奨保持期間
 
-| アーティファクトタイプ | 推奨期間 | 理由 |
-|---------------------|---------|------|
-| CI/CDビルド成果物 | 7-14日 | 通常はリリース後すぐに不要 |
-| リリースパッケージ | 30-90日 | ロールバック用に長期保持 |
-| テストレポート | 7-14日 | トレンド分析後は不要 |
-| デバッグログ | 1-3日 | 問題解決後すぐに不要 |
-| プレビュービルド（PR） | 3-7日 | PR マージ後は不要 |
+| アーティファクトタイプ | 推奨期間 | 理由                       |
+| ---------------------- | -------- | -------------------------- |
+| CI/CDビルド成果物      | 7-14日   | 通常はリリース後すぐに不要 |
+| リリースパッケージ     | 30-90日  | ロールバック用に長期保持   |
+| テストレポート         | 7-14日   | トレンド分析後は不要       |
+| デバッグログ           | 1-3日    | 問題解決後すぐに不要       |
+| プレビュービルド（PR） | 3-7日    | PR マージ後は不要          |
 
 ### 設定方法
 
@@ -24,7 +24,7 @@ GitHub Actionsのアーティファクトはデフォルトで**90日間保持**
   with:
     name: build-output
     path: dist/
-    retention-days: 7  # 7日間保持
+    retention-days: 7 # 7日間保持
 ```
 
 ### ユースケース別設定例
@@ -39,7 +39,7 @@ jobs:
         with:
           name: build-${{ github.sha }}
           path: dist/
-          retention-days: 7  # 1週間後に自動削除
+          retention-days: 7 # 1週間後に自動削除
 ```
 
 #### リリースビルド
@@ -51,7 +51,7 @@ jobs:
   with:
     name: release-${{ github.ref_name }}
     path: dist/
-    retention-days: 90  # リリースは長期保持
+    retention-days: 90 # リリースは長期保持
 ```
 
 #### デバッグログ（失敗時のみ）
@@ -63,19 +63,19 @@ jobs:
   with:
     name: debug-${{ github.run_id }}
     path: logs/
-    retention-days: 3  # 問題解決後すぐ削除
+    retention-days: 3 # 問題解決後すぐ削除
 ```
 
 ## ストレージコスト削減
 
 ### GitHub Actions ストレージ制限
 
-| プラン | 無料枠 | 超過料金 |
-|--------|--------|---------|
-| Free | 500MB | - |
-| Pro | 2GB | $0.25/GB/月 |
-| Team | 2GB | $0.25/GB/月 |
-| Enterprise | 50GB | $0.25/GB/月 |
+| プラン     | 無料枠 | 超過料金    |
+| ---------- | ------ | ----------- |
+| Free       | 500MB  | -           |
+| Pro        | 2GB    | $0.25/GB/月 |
+| Team       | 2GB    | $0.25/GB/月 |
+| Enterprise | 50GB   | $0.25/GB/月 |
 
 ### コスト削減戦略
 
@@ -109,7 +109,7 @@ jobs:
   with:
     name: build-compressed
     path: build.tar.gz
-    compression-level: 0  # 既に圧縮済み
+    compression-level: 0 # 既に圧縮済み
     retention-days: 7
 ```
 
@@ -174,8 +174,8 @@ name: Cleanup Artifacts
 
 on:
   schedule:
-    - cron: '0 0 * * 0'  # 毎週日曜日 00:00
-  workflow_dispatch:      # 手動実行も可能
+    - cron: "0 0 * * 0" # 毎週日曜日 00:00
+  workflow_dispatch: # 手動実行も可能
 
 jobs:
   cleanup:
@@ -277,7 +277,7 @@ jobs:
 
 ### セキュリティチェックリスト
 
-- [ ] センシティブ情報（.env, *.key）を除外しているか？
+- [ ] センシティブ情報（.env, \*.key）を除外しているか？
 - [ ] アーティファクトへのアクセス権限は適切か？
 - [ ] パブリックリポジトリでアーティファクトが公開されていないか？
 

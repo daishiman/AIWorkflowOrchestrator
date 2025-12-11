@@ -35,12 +35,12 @@
 
 ### 各層の責任
 
-| 層 | 責任 | 出力 |
-|----|------|------|
-| ヘッドレス層 | ロジック、状態、A11y | Props, Handlers, State |
-| コンポジション層 | 構造、配置 | JSX構造 |
-| スタイル層 | 視覚表現 | クラス、スタイル |
-| 消費者層 | ビジネスロジック | 最終的なUI |
+| 層               | 責任                 | 出力                   |
+| ---------------- | -------------------- | ---------------------- |
+| ヘッドレス層     | ロジック、状態、A11y | Props, Handlers, State |
+| コンポジション層 | 構造、配置           | JSX構造                |
+| スタイル層       | 視覚表現             | クラス、スタイル       |
+| 消費者層         | ビジネスロジック     | 最終的なUI             |
 
 ---
 
@@ -60,23 +60,29 @@ function useAccordion(options: AccordionOptions) {
     expandedItems,
 
     // 操作
-    expand: (id: string) => { /* ... */ },
-    collapse: (id: string) => { /* ... */ },
-    toggle: (id: string) => { /* ... */ },
+    expand: (id: string) => {
+      /* ... */
+    },
+    collapse: (id: string) => {
+      /* ... */
+    },
+    toggle: (id: string) => {
+      /* ... */
+    },
 
     // Props生成関数
     getRootProps: () => ({
-      role: 'presentation',
+      role: "presentation",
     }),
     getTriggerProps: (id: string) => ({
-      role: 'button',
-      'aria-expanded': expandedItems.has(id),
-      'aria-controls': `panel-${id}`,
+      role: "button",
+      "aria-expanded": expandedItems.has(id),
+      "aria-controls": `panel-${id}`,
       onClick: () => toggle(id),
     }),
     getPanelProps: (id: string) => ({
       id: `panel-${id}`,
-      role: 'region',
+      role: "region",
       hidden: !expandedItems.has(id),
     }),
   };
@@ -85,18 +91,14 @@ function useAccordion(options: AccordionOptions) {
 // コンポジション層
 function Accordion({ items }: AccordionProps) {
   const { expandedItems, getRootProps, getTriggerProps, getPanelProps } =
-    useAccordion({ type: 'single' });
+    useAccordion({ type: "single" });
 
   return (
     <div {...getRootProps()}>
-      {items.map(item => (
+      {items.map((item) => (
         <div key={item.id}>
-          <button {...getTriggerProps(item.id)}>
-            {item.title}
-          </button>
-          <div {...getPanelProps(item.id)}>
-            {item.content}
-          </div>
+          <button {...getTriggerProps(item.id)}>{item.title}</button>
+          <div {...getPanelProps(item.id)}>{item.content}</div>
         </div>
       ))}
     </div>
@@ -112,11 +114,13 @@ Radix UIスタイル。コンポーネントとして提供しつつ、スタイ
 // ヘッドレスコンポーネント
 const AccordionContext = createContext<AccordionContextType | null>(null);
 
-function AccordionRoot({ children, type = 'single' }: AccordionRootProps) {
+function AccordionRoot({ children, type = "single" }: AccordionRootProps) {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
   return (
-    <AccordionContext.Provider value={{ expandedItems, setExpandedItems, type }}>
+    <AccordionContext.Provider
+      value={{ expandedItems, setExpandedItems, type }}
+    >
       {children}
     </AccordionContext.Provider>
   );
@@ -137,13 +141,10 @@ function AccordionTrigger({ children, asChild }: AccordionTriggerProps) {
   const { value, isExpanded } = useAccordionItemContext();
   const { toggleItem } = useAccordionContext();
 
-  const Comp = asChild ? Slot : 'button';
+  const Comp = asChild ? Slot : "button";
 
   return (
-    <Comp
-      aria-expanded={isExpanded}
-      onClick={() => toggleItem(value)}
-    >
+    <Comp aria-expanded={isExpanded} onClick={() => toggleItem(value)}>
       {children}
     </Comp>
   );
@@ -190,18 +191,18 @@ function Accordion({ items, children }: AccordionProps) {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
   const renderProps: AccordionRenderProps = {
-    items: items.map(item => ({
+    items: items.map((item) => ({
       item,
       isExpanded: expandedItems.has(item.id),
       triggerProps: {
-        'aria-expanded': expandedItems.has(item.id),
+        "aria-expanded": expandedItems.has(item.id),
         onClick: () => toggleItem(item.id),
       },
       contentProps: {
         hidden: !expandedItems.has(item.id),
       },
     })),
-    expandAll: () => setExpandedItems(new Set(items.map(i => i.id))),
+    expandAll: () => setExpandedItems(new Set(items.map((i) => i.id))),
     collapseAll: () => setExpandedItems(new Set()),
   };
 
@@ -216,7 +217,7 @@ function Accordion({ items, children }: AccordionProps) {
 ### Slot コンポーネント
 
 ```tsx
-import { cloneElement, isValidElement, ReactElement, ReactNode } from 'react';
+import { cloneElement, isValidElement, ReactElement, ReactNode } from "react";
 
 interface SlotProps {
   children: ReactNode;
@@ -238,21 +239,15 @@ function Slot({ children, ...props }: SlotProps) {
 
 // 使用例
 function AccordionTrigger({ children, asChild, ...props }: TriggerProps) {
-  const Comp = asChild ? Slot : 'button';
+  const Comp = asChild ? Slot : "button";
 
-  return (
-    <Comp {...props}>
-      {children}
-    </Comp>
-  );
+  return <Comp {...props}>{children}</Comp>;
 }
 
 // 消費者のコード
 <AccordionTrigger asChild>
-  <CustomButton variant="primary">
-    Click me
-  </CustomButton>
-</AccordionTrigger>
+  <CustomButton variant="primary">Click me</CustomButton>
+</AccordionTrigger>;
 ```
 
 ---
@@ -281,7 +276,7 @@ function useControllableState<T>({
   const setValue = useCallback(
     (nextValue: T | ((prev: T) => T)) => {
       const newValue =
-        typeof nextValue === 'function'
+        typeof nextValue === "function"
           ? (nextValue as (prev: T) => T)(value as T)
           : nextValue;
 
@@ -291,7 +286,7 @@ function useControllableState<T>({
 
       onChange?.(newValue);
     },
-    [isControlled, value, onChange]
+    [isControlled, value, onChange],
   );
 
   return [value, setValue] as const;
@@ -326,21 +321,21 @@ function useRovingFocus(items: string[]) {
 
   const handleKeyDown = (e: KeyboardEvent) => {
     switch (e.key) {
-      case 'ArrowDown':
-      case 'ArrowRight':
+      case "ArrowDown":
+      case "ArrowRight":
         e.preventDefault();
-        setFocusedIndex(prev => (prev + 1) % items.length);
+        setFocusedIndex((prev) => (prev + 1) % items.length);
         break;
-      case 'ArrowUp':
-      case 'ArrowLeft':
+      case "ArrowUp":
+      case "ArrowLeft":
         e.preventDefault();
-        setFocusedIndex(prev => (prev - 1 + items.length) % items.length);
+        setFocusedIndex((prev) => (prev - 1 + items.length) % items.length);
         break;
-      case 'Home':
+      case "Home":
         e.preventDefault();
         setFocusedIndex(0);
         break;
-      case 'End':
+      case "End":
         e.preventDefault();
         setFocusedIndex(items.length - 1);
         break;
@@ -377,8 +372,8 @@ function HeadlessButton({ className, ...userProps }, ref) {
 
   return (
     <button
-      {...buttonProps}     // ヘッドレスのpropsが先
-      {...userProps}       // ユーザーのpropsで上書き可能
+      {...buttonProps} // ヘッドレスのpropsが先
+      {...userProps} // ユーザーのpropsで上書き可能
       ref={ref}
       className={mergeClassNames(buttonProps.className, className)}
     />
@@ -390,12 +385,11 @@ function HeadlessButton({ className, ...userProps }, ref) {
 
 ```tsx
 // 消費者が型を拡張できるようにする
-interface HeadlessButtonProps<T extends ElementType = 'button'> {
+interface HeadlessButtonProps<T extends ElementType = "button"> {
   as?: T;
 }
 
-type ButtonProps<T extends ElementType = 'button'> =
-  HeadlessButtonProps<T> &
+type ButtonProps<T extends ElementType = "button"> = HeadlessButtonProps<T> &
   Omit<ComponentPropsWithRef<T>, keyof HeadlessButtonProps<T>>;
 ```
 
@@ -418,18 +412,21 @@ function useDialog({
 ## チェックリスト
 
 ### 設計時
+
 - [ ] ロジックとスタイルが完全に分離されているか
 - [ ] アクセシビリティが組み込まれているか
 - [ ] キーボードナビゲーションが実装されているか
 - [ ] 型定義が拡張可能か
 
 ### 実装時
+
 - [ ] Controlled/Uncontrolled両方サポートしているか
 - [ ] asChildパターンが必要か検討したか
 - [ ] フォーカス管理が適切か
 - [ ] イベントハンドラの順序が正しいか
 
 ### テスト時
+
 - [ ] ロジックのみのユニットテストが書けるか
 - [ ] アクセシビリティテストが通るか
 - [ ] キーボード操作テストが通るか

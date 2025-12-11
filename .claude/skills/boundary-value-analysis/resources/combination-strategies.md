@@ -89,12 +89,12 @@
 ### ペアワイズの効果
 
 | パラメータ数 | 値の数 | 全組み合わせ | ペアワイズ |
-|-------------|--------|-------------|-----------|
-| 3 | 3 | 27 | 9 |
-| 4 | 3 | 81 | 9 |
-| 5 | 3 | 243 | 12 |
-| 10 | 3 | 59,049 | 17 |
-| 20 | 3 | 3.5億 | 20 |
+| ------------ | ------ | ------------ | ---------- |
+| 3            | 3      | 27           | 9          |
+| 4            | 3      | 81           | 9          |
+| 5            | 3      | 243          | 12         |
+| 10           | 3      | 59,049       | 17         |
+| 20           | 3      | 3.5億        | 20         |
 
 ### ツール
 
@@ -175,7 +175,7 @@ const decisionTable: TestCase[] = [
   // ... 他のルール
 ];
 
-it.each(decisionTable)('should apply correct rules', (testCase) => {
+it.each(decisionTable)("should apply correct rules", (testCase) => {
   const result = calculateOrder(testCase);
   expect(result.discount).toBe(testCase.expectedDiscount);
   expect(result.freeShipping).toBe(testCase.expectedFreeShipping);
@@ -214,19 +214,19 @@ it.each(decisionTable)('should apply correct rules', (testCase) => {
 ```typescript
 const transitions = [
   // 有効な遷移
-  { from: 'pending', to: 'processing', valid: true },
-  { from: 'processing', to: 'shipped', valid: true },
-  { from: 'shipped', to: 'delivered', valid: true },
-  { from: 'pending', to: 'cancelled', valid: true },
-  { from: 'processing', to: 'cancelled', valid: true },
+  { from: "pending", to: "processing", valid: true },
+  { from: "processing", to: "shipped", valid: true },
+  { from: "shipped", to: "delivered", valid: true },
+  { from: "pending", to: "cancelled", valid: true },
+  { from: "processing", to: "cancelled", valid: true },
 
   // 無効な遷移
-  { from: 'shipped', to: 'cancelled', valid: false },
-  { from: 'delivered', to: 'cancelled', valid: false },
-  { from: 'cancelled', to: 'processing', valid: false },
+  { from: "shipped", to: "cancelled", valid: false },
+  { from: "delivered", to: "cancelled", valid: false },
+  { from: "cancelled", to: "processing", valid: false },
 ];
 
-it.each(transitions)('$from → $to should be $valid', ({ from, to, valid }) => {
+it.each(transitions)("$from → $to should be $valid", ({ from, to, valid }) => {
   const order = createOrder({ status: from });
 
   if (valid) {
@@ -266,13 +266,13 @@ it.each(transitions)('$from → $to should be $valid', ({ from, to, valid }) => 
 
 ### 比較表
 
-| 戦略 | テスト数 | カバレッジ | 適用場面 |
-|------|---------|-----------|---------|
-| 全組み合わせ | 最大 | 100% | 小規模、重要な機能 |
-| 単一障害仮定 | 最小 | 低 | 相互作用がない |
-| ペアワイズ | 中 | 高 | 一般的なケース |
-| デシジョンテーブル | 中 | 高 | 複雑な条件分岐 |
-| 状態遷移 | 状態数依存 | 高 | 状態マシン |
+| 戦略               | テスト数   | カバレッジ | 適用場面           |
+| ------------------ | ---------- | ---------- | ------------------ |
+| 全組み合わせ       | 最大       | 100%       | 小規模、重要な機能 |
+| 単一障害仮定       | 最小       | 低         | 相互作用がない     |
+| ペアワイズ         | 中         | 高         | 一般的なケース     |
+| デシジョンテーブル | 中         | 高         | 複雑な条件分岐     |
+| 状態遷移           | 状態数依存 | 高         | 状態マシン         |
 
 ---
 

@@ -3,6 +3,7 @@
 ## 基本ルール
 
 ### ケバブケース
+
 ```bash
 ✓ create-component
 ✓ deploy-staging
@@ -14,6 +15,7 @@
 ```
 
 ### 動詞ベース
+
 ```bash
 ✓ create-user
 ✓ deploy-app
@@ -26,6 +28,7 @@
 ## 命名パターン
 
 ### パターン1: 動詞-目的語
+
 ```bash
 create-component
 delete-branch
@@ -33,6 +36,7 @@ deploy-service
 ```
 
 ### パターン2: 動詞-目的語-修飾語
+
 ```bash
 deploy-staging
 deploy-production
@@ -41,6 +45,7 @@ test-integration
 ```
 
 ### パターン3: 名前空間プレフィックス
+
 ```bash
 git-commit
 git-push
@@ -66,6 +71,7 @@ docker-run
 ## 一貫性
 
 プロジェクト内で統一:
+
 ```bash
 # 一貫した命名
 create-component

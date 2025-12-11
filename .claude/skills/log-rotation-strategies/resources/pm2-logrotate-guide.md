@@ -12,16 +12,16 @@ pm2 install pm2-logrotate
 
 ### 設定一覧
 
-| 設定項目 | デフォルト | 説明 |
-|---------|----------|------|
-| max_size | 10M | ローテーション発生サイズ |
-| retain | 30 | 保持するファイル数 |
-| compress | false | gzip圧縮の有効化 |
-| dateFormat | YYYY-MM-DD_HH-mm-ss | 日付フォーマット |
-| rotateModule | true | PM2モジュールログもローテーション |
-| workerInterval | 30 | チェック間隔（秒） |
-| rotateInterval | 0 0 * * * | cronスタイルのローテーション間隔 |
-| TZ | システムTZ | タイムゾーン |
+| 設定項目       | デフォルト          | 説明                              |
+| -------------- | ------------------- | --------------------------------- |
+| max_size       | 10M                 | ローテーション発生サイズ          |
+| retain         | 30                  | 保持するファイル数                |
+| compress       | false               | gzip圧縮の有効化                  |
+| dateFormat     | YYYY-MM-DD_HH-mm-ss | 日付フォーマット                  |
+| rotateModule   | true                | PM2モジュールログもローテーション |
+| workerInterval | 30                  | チェック間隔（秒）                |
+| rotateInterval | 0 0 \* \* \*        | cronスタイルのローテーション間隔  |
+| TZ             | システムTZ          | タイムゾーン                      |
 
 ### 設定コマンド
 
@@ -46,23 +46,25 @@ pm2 describe pm2-logrotate
 
 ```javascript
 module.exports = {
-  apps: [{
-    name: 'my-app',
-    script: 'app.js',
+  apps: [
+    {
+      name: "my-app",
+      script: "app.js",
 
-    // ログファイルパス
-    error_file: './logs/error.log',
-    out_file: './logs/out.log',
+      // ログファイルパス
+      error_file: "./logs/error.log",
+      out_file: "./logs/out.log",
 
-    // 日付フォーマット
-    log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
+      // 日付フォーマット
+      log_date_format: "YYYY-MM-DD HH:mm:ss Z",
 
-    // クラスターモードでログをマージ
-    merge_logs: true,
+      // クラスターモードでログをマージ
+      merge_logs: true,
 
-    // JSONフォーマット
-    log_type: 'json'
-  }]
+      // JSONフォーマット
+      log_type: "json",
+    },
+  ],
 };
 ```
 
@@ -70,24 +72,26 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  apps: [{
-    name: 'my-app',
-    script: 'app.js',
+  apps: [
+    {
+      name: "my-app",
+      script: "app.js",
 
-    // 共通設定
-    log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
+      // 共通設定
+      log_date_format: "YYYY-MM-DD HH:mm:ss Z",
 
-    // 環境別設定
-    env_development: {
-      error_file: '/dev/null',  // 開発時はコンソールのみ
-      out_file: '/dev/null'
+      // 環境別設定
+      env_development: {
+        error_file: "/dev/null", // 開発時はコンソールのみ
+        out_file: "/dev/null",
+      },
+      env_production: {
+        error_file: "/var/log/myapp/error.log",
+        out_file: "/var/log/myapp/out.log",
+        merge_logs: true,
+      },
     },
-    env_production: {
-      error_file: '/var/log/myapp/error.log',
-      out_file: '/var/log/myapp/out.log',
-      merge_logs: true
-    }
-  }]
+  ],
 };
 ```
 
@@ -245,12 +249,12 @@ pm2 set pm2-logrotate:retain 7
 ```javascript
 // ecosystem.config.jsで明示的に設定
 {
-  log_type: 'json'
+  log_type: "json";
 }
 
 // または、アプリケーション側でJSONロガーを使用
-const logger = require('pino')();
-logger.info({ event: 'startup' }, 'Application started');
+const logger = require("pino")();
+logger.info({ event: "startup" }, "Application started");
 ```
 
 ## 監視設定

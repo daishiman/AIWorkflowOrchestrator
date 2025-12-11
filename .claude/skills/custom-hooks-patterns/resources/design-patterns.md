@@ -12,7 +12,7 @@
 ```typescript
 function useToggle(initialValue = false): [boolean, () => void] {
   const [value, setValue] = useState(initialValue);
-  const toggle = useCallback(() => setValue(prev => !prev), []);
+  const toggle = useCallback(() => setValue((prev) => !prev), []);
   return [value, toggle];
 }
 
@@ -34,18 +34,21 @@ function useCounter(initialValue = 0, options: UseCounterOptions = {}) {
   const [count, setCount] = useState(initialValue);
 
   const increment = useCallback(() => {
-    setCount(prev => Math.min(prev + step, max));
+    setCount((prev) => Math.min(prev + step, max));
   }, [step, max]);
 
   const decrement = useCallback(() => {
-    setCount(prev => Math.max(prev - step, min));
+    setCount((prev) => Math.max(prev - step, min));
   }, [step, min]);
 
   const reset = useCallback(() => setCount(initialValue), [initialValue]);
 
-  const set = useCallback((value: number) => {
-    setCount(Math.max(min, Math.min(value, max)));
-  }, [min, max]);
+  const set = useCallback(
+    (value: number) => {
+      setCount(Math.max(min, Math.min(value, max)));
+    },
+    [min, max],
+  );
 
   return { count, increment, decrement, reset, set };
 }
@@ -80,25 +83,28 @@ function useHistory<T>(initialValue: T, maxHistory = 10) {
 
   const current = history[index];
 
-  const set = useCallback((value: T) => {
-    setHistory(prev => {
-      const newHistory = prev.slice(0, index + 1);
-      newHistory.push(value);
-      if (newHistory.length > maxHistory) {
-        newHistory.shift();
+  const set = useCallback(
+    (value: T) => {
+      setHistory((prev) => {
+        const newHistory = prev.slice(0, index + 1);
+        newHistory.push(value);
+        if (newHistory.length > maxHistory) {
+          newHistory.shift();
+          return newHistory;
+        }
         return newHistory;
-      }
-      return newHistory;
-    });
-    setIndex(prev => Math.min(prev + 1, maxHistory - 1));
-  }, [index, maxHistory]);
+      });
+      setIndex((prev) => Math.min(prev + 1, maxHistory - 1));
+    },
+    [index, maxHistory],
+  );
 
   const undo = useCallback(() => {
-    setIndex(prev => Math.max(prev - 1, 0));
+    setIndex((prev) => Math.max(prev - 1, 0));
   }, []);
 
   const redo = useCallback(() => {
-    setIndex(prev => Math.min(prev + 1, history.length - 1));
+    setIndex((prev) => Math.min(prev + 1, history.length - 1));
   }, [history.length]);
 
   const canUndo = index > 0;
@@ -140,30 +146,33 @@ return <input {...name.bind} />;
 ```typescript
 function useForm<T extends Record<string, unknown>>(
   initialValues: T,
-  onSubmit: (values: T) => void | Promise<void>
+  onSubmit: (values: T) => void | Promise<void>,
 ) {
   const [values, setValues] = useState<T>(initialValues);
   const [errors, setErrors] = useState<Partial<Record<keyof T, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = useCallback(<K extends keyof T>(
-    field: K,
-    value: T[K]
-  ) => {
-    setValues(prev => ({ ...prev, [field]: value }));
-    // エラーをクリア
-    setErrors(prev => ({ ...prev, [field]: undefined }));
-  }, []);
+  const handleChange = useCallback(
+    <K extends keyof T>(field: K, value: T[K]) => {
+      setValues((prev) => ({ ...prev, [field]: value }));
+      // エラーをクリア
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
+    },
+    [],
+  );
 
-  const handleSubmit = useCallback(async (e: FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    try {
-      await onSubmit(values);
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [values, onSubmit]);
+  const handleSubmit = useCallback(
+    async (e: FormEvent) => {
+      e.preventDefault();
+      setIsSubmitting(true);
+      try {
+        await onSubmit(values);
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [values, onSubmit],
+  );
 
   const reset = useCallback(() => {
     setValues(initialValues);
@@ -171,7 +180,7 @@ function useForm<T extends Record<string, unknown>>(
   }, [initialValues]);
 
   const setFieldError = useCallback((field: keyof T, error: string) => {
-    setErrors(prev => ({ ...prev, [field]: error }));
+    setErrors((prev) => ({ ...prev, [field]: error }));
   }, []);
 
   return {
@@ -206,7 +215,7 @@ function useDebounce<T>(value: T, delay: number): T {
 }
 
 // 使用: 検索入力のデバウンス
-const [searchTerm, setSearchTerm] = useState('');
+const [searchTerm, setSearchTerm] = useState("");
 const debouncedSearch = useDebounce(searchTerm, 300);
 
 useEffect(() => {
@@ -228,10 +237,13 @@ function useThrottle<T>(value: T, interval: number): T {
       lastUpdated.current = now;
       setThrottledValue(value);
     } else {
-      const timer = setTimeout(() => {
-        lastUpdated.current = Date.now();
-        setThrottledValue(value);
-      }, interval - (now - lastUpdated.current));
+      const timer = setTimeout(
+        () => {
+          lastUpdated.current = Date.now();
+          setThrottledValue(value);
+        },
+        interval - (now - lastUpdated.current),
+      );
 
       return () => clearTimeout(timer);
     }
@@ -262,9 +274,12 @@ function useInterval(callback: () => void, delay: number | null) {
 }
 
 // 使用
-useInterval(() => {
-  setCount(c => c + 1);
-}, isRunning ? 1000 : null);  // nullで停止
+useInterval(
+  () => {
+    setCount((c) => c + 1);
+  },
+  isRunning ? 1000 : null,
+); // nullで停止
 ```
 
 ### useTimeout
@@ -295,7 +310,7 @@ function useEventListener<K extends keyof WindowEventMap>(
   eventName: K,
   handler: (event: WindowEventMap[K]) => void,
   element: Window | HTMLElement | null = window,
-  options?: AddEventListenerOptions
+  options?: AddEventListenerOptions,
 ) {
   const savedHandler = useRef(handler);
 
@@ -316,8 +331,8 @@ function useEventListener<K extends keyof WindowEventMap>(
 }
 
 // 使用
-useEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeModal();
+useEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeModal();
 });
 ```
 
@@ -362,12 +377,12 @@ function useHover<T extends HTMLElement>(): [RefObject<T>, boolean] {
     const handleMouseEnter = () => setIsHovered(true);
     const handleMouseLeave = () => setIsHovered(false);
 
-    element.addEventListener('mouseenter', handleMouseEnter);
-    element.addEventListener('mouseleave', handleMouseLeave);
+    element.addEventListener("mouseenter", handleMouseEnter);
+    element.addEventListener("mouseleave", handleMouseLeave);
 
     return () => {
-      element.removeEventListener('mouseenter', handleMouseEnter);
-      element.removeEventListener('mouseleave', handleMouseLeave);
+      element.removeEventListener("mouseenter", handleMouseEnter);
+      element.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, []);
 
@@ -391,15 +406,19 @@ function useLocalStorage<T>(key: string, initialValue: T) {
     }
   });
 
-  const setValue = useCallback((value: T | ((prev: T) => T)) => {
-    try {
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
-    } catch (error) {
-      console.warn(`Error setting localStorage key "${key}":`, error);
-    }
-  }, [key, storedValue]);
+  const setValue = useCallback(
+    (value: T | ((prev: T) => T)) => {
+      try {
+        const valueToStore =
+          value instanceof Function ? value(storedValue) : value;
+        setStoredValue(valueToStore);
+        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      } catch (error) {
+        console.warn(`Error setting localStorage key "${key}":`, error);
+      }
+    },
+    [key, storedValue],
+  );
 
   const removeValue = useCallback(() => {
     try {
@@ -419,7 +438,7 @@ function useLocalStorage<T>(key: string, initialValue: T) {
 ```typescript
 function useMediaQuery(query: string): boolean {
   const [matches, setMatches] = useState(() => {
-    if (typeof window === 'undefined') return false;
+    if (typeof window === "undefined") return false;
     return window.matchMedia(query).matches;
   });
 
@@ -427,15 +446,15 @@ function useMediaQuery(query: string): boolean {
     const mediaQuery = window.matchMedia(query);
     const handler = (e: MediaQueryListEvent) => setMatches(e.matches);
 
-    mediaQuery.addEventListener('change', handler);
-    return () => mediaQuery.removeEventListener('change', handler);
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
   }, [query]);
 
   return matches;
 }
 
 // 使用
-const isMobile = useMediaQuery('(max-width: 768px)');
+const isMobile = useMediaQuery("(max-width: 768px)");
 ```
 
 ### useOnlineStatus
@@ -443,19 +462,19 @@ const isMobile = useMediaQuery('(max-width: 768px)');
 ```typescript
 function useOnlineStatus(): boolean {
   const [isOnline, setIsOnline] = useState(
-    typeof navigator !== 'undefined' ? navigator.onLine : true
+    typeof navigator !== "undefined" ? navigator.onLine : true,
   );
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
 
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
 
     return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
     };
   }, []);
 

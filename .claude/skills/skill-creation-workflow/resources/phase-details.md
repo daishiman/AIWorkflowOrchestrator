@@ -3,6 +3,7 @@
 ## Phase 1: Knowledge Collection and Analysis
 
 ### Purpose
+
 Identify and collect knowledge that should be formalized into a skill.
 
 ### Key Steps
@@ -26,6 +27,7 @@ Identify and collect knowledge that should be formalized into a skill.
    - Map dependencies with related skills
 
 ### Success Criteria
+
 - [ ] Knowledge scope clearly defined
 - [ ] Knowledge sources identified
 - [ ] No overlap confirmed
@@ -37,6 +39,7 @@ Identify and collect knowledge that should be formalized into a skill.
 ## Phase 2: Skill Structure Design
 
 ### Purpose
+
 Design YAML Frontmatter and SKILL.md body structure.
 
 ### Key Steps
@@ -56,6 +59,7 @@ Design YAML Frontmatter and SKILL.md body structure.
    - Level-based split (beginner/intermediate/advanced)
 
 ### Success Criteria
+
 - [ ] Description contains 3+ specific trigger conditions
 - [ ] SKILL.md body fits within 500 lines
 - [ ] Resource split plan is appropriate
@@ -67,6 +71,7 @@ Design YAML Frontmatter and SKILL.md body structure.
 ## Phase 3: File Generation and Organization
 
 ### Purpose
+
 Create SKILL.md and resources based on design.
 
 ### Key Steps
@@ -77,6 +82,7 @@ Create SKILL.md and resources based on design.
 4. **Create Scripts/Templates (as needed)**
 
 ### Success Criteria
+
 - [ ] All files within 500 lines
 - [ ] Resource references clear
 - [ ] Scripts executable
@@ -88,6 +94,7 @@ Create SKILL.md and resources based on design.
 ## Phase 4: Quality Assurance and Optimization
 
 ### Purpose
+
 Verify skill quality and optimize activation reliability.
 
 ### Key Steps
@@ -98,6 +105,7 @@ Verify skill quality and optimize activation reliability.
 4. **Agent Integration Testing**
 
 ### Success Criteria
+
 - [ ] 3-layer structure functional
 - [ ] Token usage within recommended range (<20K)
 - [ ] Auto-activation working properly
@@ -109,6 +117,7 @@ Verify skill quality and optimize activation reliability.
 ## Phase 5: Integration and Maintenance Planning
 
 ### Purpose
+
 Integrate skill into ecosystem and plan continuous quality maintenance.
 
 ### Key Steps
@@ -120,6 +129,7 @@ Integrate skill into ecosystem and plan continuous quality maintenance.
 5. **Establish Versioning Strategy**
 
 ### Success Criteria
+
 - [ ] skill_list.md registration complete
 - [ ] agent_list.md registration complete
 - [ ] Maintenance plan defined

@@ -9,12 +9,12 @@
 
 ### 特性
 
-| 特性 | 説明 | 実装方法 |
-|-----|------|---------|
-| 不変性 | 一度作成したら変更できない | readonly属性、setter禁止 |
-| 等価性 | 属性が同じなら同一とみなす | equals()メソッド実装 |
-| 自己検証 | 不正な値を生成させない | ファクトリメソッドでバリデーション |
-| 副作用なし | 操作は新しいインスタンスを返す | 内部状態を変更しない |
+| 特性       | 説明                           | 実装方法                           |
+| ---------- | ------------------------------ | ---------------------------------- |
+| 不変性     | 一度作成したら変更できない     | readonly属性、setter禁止           |
+| 等価性     | 属性が同じなら同一とみなす     | equals()メソッド実装               |
+| 自己検証   | 不正な値を生成させない         | ファクトリメソッドでバリデーション |
+| 副作用なし | 操作は新しいインスタンスを返す | 内部状態を変更しない               |
 
 ### エンティティとの比較
 
@@ -23,7 +23,7 @@
 class Customer {
   constructor(
     private readonly id: CustomerId,
-    private name: string
+    private name: string,
   ) {}
 
   // IDが同じなら同一のCustomer
@@ -36,13 +36,12 @@ class Customer {
 class Money {
   constructor(
     private readonly amount: number,
-    private readonly currency: string
+    private readonly currency: string,
   ) {}
 
   // 属性が全て同じなら同一のMoney
   equals(other: Money): boolean {
-    return this.amount === other.amount
-        && this.currency === other.currency;
+    return this.amount === other.amount && this.currency === other.currency;
   }
 }
 ```
@@ -74,8 +73,10 @@ class ValueObject {
 
   // 4. 等価性判定
   equals(other: ValueObject): boolean {
-    return this.attribute1 === other.attribute1
-        && this.attribute2 === other.attribute2;
+    return (
+      this.attribute1 === other.attribute1 &&
+      this.attribute2 === other.attribute2
+    );
   }
 
   // 5. ゲッター（読み取り専用アクセス）
@@ -129,11 +130,11 @@ class EmailAddress {
   }
 
   get localPart(): string {
-    return this.value.split('@')[0];
+    return this.value.split("@")[0];
   }
 
   get domain(): string {
-    return this.value.split('@')[1];
+    return this.value.split("@")[1];
   }
 }
 ```
@@ -150,7 +151,7 @@ class Address {
     private readonly prefecture: string,
     private readonly city: string,
     private readonly street: string,
-    private readonly building: string | null
+    private readonly building: string | null,
   ) {}
 
   static create(
@@ -158,14 +159,14 @@ class Address {
     prefecture: string,
     city: string,
     street: string,
-    building?: string
+    building?: string,
   ): Address {
     return new Address(
       PostalCode.of(postalCode),
       prefecture,
       city,
       street,
-      building ?? null
+      building ?? null,
     );
   }
 
@@ -179,15 +180,17 @@ class Address {
     if (this.building) {
       parts.push(this.building);
     }
-    return parts.join(' ');
+    return parts.join(" ");
   }
 
   equals(other: Address): boolean {
-    return this.postalCode.equals(other.postalCode)
-        && this.prefecture === other.prefecture
-        && this.city === other.city
-        && this.street === other.street
-        && this.building === other.building;
+    return (
+      this.postalCode.equals(other.postalCode) &&
+      this.prefecture === other.prefecture &&
+      this.city === other.city &&
+      this.street === other.street &&
+      this.building === other.building
+    );
   }
 }
 
@@ -195,7 +198,7 @@ class Address {
 class Money {
   private constructor(
     private readonly amount: number,
-    private readonly currency: Currency
+    private readonly currency: Currency,
   ) {}
 
   static of(amount: number, currency: Currency): Money {
@@ -225,12 +228,14 @@ class Money {
 class DateRange {
   private constructor(
     private readonly start: Date,
-    private readonly end: Date
+    private readonly end: Date,
   ) {}
 
   static create(start: Date, end: Date): DateRange {
     if (start > end) {
-      throw new InvalidDateRangeError('開始日は終了日より前である必要があります');
+      throw new InvalidDateRangeError(
+        "開始日は終了日より前である必要があります",
+      );
     }
     return new DateRange(start, end);
   }
@@ -253,12 +258,12 @@ class DateRange {
 class NumberRange {
   private constructor(
     private readonly min: number,
-    private readonly max: number
+    private readonly max: number,
   ) {}
 
   static create(min: number, max: number): NumberRange {
     if (min > max) {
-      throw new InvalidRangeError('最小値は最大値以下である必要があります');
+      throw new InvalidRangeError("最小値は最大値以下である必要があります");
     }
     return new NumberRange(min, max);
   }
@@ -282,17 +287,21 @@ class NumberRange {
 class Currency {
   private static readonly instances = new Map<string, Currency>();
 
-  static readonly JPY = Currency.of('JPY', '円', 0);
-  static readonly USD = Currency.of('USD', 'ドル', 2);
-  static readonly EUR = Currency.of('EUR', 'ユーロ', 2);
+  static readonly JPY = Currency.of("JPY", "円", 0);
+  static readonly USD = Currency.of("USD", "ドル", 2);
+  static readonly EUR = Currency.of("EUR", "ユーロ", 2);
 
   private constructor(
     private readonly code: string,
     private readonly name: string,
-    private readonly decimalPlaces: number
+    private readonly decimalPlaces: number,
   ) {}
 
-  private static of(code: string, name: string, decimalPlaces: number): Currency {
+  private static of(
+    code: string,
+    name: string,
+    decimalPlaces: number,
+  ): Currency {
     const currency = new Currency(code, name, decimalPlaces);
     this.instances.set(code, currency);
     return currency;
@@ -311,7 +320,7 @@ class Currency {
   }
 
   formatAmount(amount: number): string {
-    return amount.toFixed(this.decimalPlaces) + ' ' + this.code;
+    return amount.toFixed(this.decimalPlaces) + " " + this.code;
   }
 }
 ```
@@ -345,7 +354,7 @@ class CustomerId extends Identifier<string> {
   }
 
   static fromString(value: string): CustomerId {
-    if (!value) throw new InvalidIdError('CustomerId');
+    if (!value) throw new InvalidIdError("CustomerId");
     return new CustomerId(value);
   }
 }
@@ -360,14 +369,14 @@ class OrderId extends Identifier<string> {
   }
 
   static fromString(value: string): OrderId {
-    if (!value) throw new InvalidIdError('OrderId');
+    if (!value) throw new InvalidIdError("OrderId");
     return new OrderId(value);
   }
 }
 
 // 型安全な使用
-function findCustomer(id: CustomerId): Customer { }
-function findOrder(id: OrderId): Order { }
+function findCustomer(id: CustomerId): Customer {}
+function findOrder(id: OrderId): Order {}
 
 // コンパイルエラー：型が異なる
 // findCustomer(OrderId.generate());  // ❌
@@ -382,7 +391,7 @@ function findOrder(id: OrderId): Order { }
 class Point {
   constructor(
     private readonly x: number,
-    private readonly y: number
+    private readonly y: number,
   ) {}
 
   // 構造的等価性
@@ -404,13 +413,16 @@ class Point {
 
 ```typescript
 // 値オブジェクトをキーにする場合
-class ValueObjectMap<K extends { hashCode(): number; equals(other: K): boolean }, V> {
+class ValueObjectMap<
+  K extends { hashCode(): number; equals(other: K): boolean },
+  V,
+> {
   private readonly map = new Map<number, Array<{ key: K; value: V }>>();
 
   set(key: K, value: V): void {
     const hash = key.hashCode();
     const bucket = this.map.get(hash) ?? [];
-    const existing = bucket.find(item => item.key.equals(key));
+    const existing = bucket.find((item) => item.key.equals(key));
     if (existing) {
       existing.value = value;
     } else {
@@ -422,7 +434,7 @@ class ValueObjectMap<K extends { hashCode(): number; equals(other: K): boolean }
   get(key: K): V | undefined {
     const hash = key.hashCode();
     const bucket = this.map.get(hash);
-    return bucket?.find(item => item.key.equals(key))?.value;
+    return bucket?.find((item) => item.key.equals(key))?.value;
   }
 }
 ```

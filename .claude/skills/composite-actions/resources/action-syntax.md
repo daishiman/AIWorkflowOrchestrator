@@ -5,40 +5,40 @@
 ### 必須フィールド
 
 ```yaml
-name: 'My Action'              # アクション名（必須）
-description: 'Action purpose'  # 説明（必須）
+name: "My Action" # アクション名（必須）
+description: "Action purpose" # 説明（必須）
 
 runs:
-  using: 'composite'            # 必須: 'composite' を指定
-  steps: []                     # 実行ステップ（必須）
+  using: "composite" # 必須: 'composite' を指定
+  steps: [] # 実行ステップ（必須）
 ```
 
 ### 完全な構造
 
 ```yaml
-name: 'Complete Composite Action'
-description: 'Full example with all features'
-author: 'Your Name'
+name: "Complete Composite Action"
+description: "Full example with all features"
+author: "Your Name"
 branding:
-  icon: 'activity'
-  color: 'blue'
+  icon: "activity"
+  color: "blue"
 
 inputs:
   input-name:
-    description: 'Input description'
+    description: "Input description"
     required: true|false
-    default: 'default value'
-    deprecationMessage: 'Use new-input instead'
+    default: "default value"
+    deprecationMessage: "Use new-input instead"
 
 outputs:
   output-name:
-    description: 'Output description'
+    description: "Output description"
     value: ${{ steps.step-id.outputs.value }}
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
-    - name: 'Step name'
+    - name: "Step name"
       id: step-id
       uses: actions/checkout@v4
       with:
@@ -62,20 +62,20 @@ runs:
 inputs:
   # 文字列入力
   message:
-    description: 'メッセージテキスト'
+    description: "メッセージテキスト"
     required: true
 
   # デフォルト値付き
   log-level:
-    description: 'ログレベル'
+    description: "ログレベル"
     required: false
-    default: 'info'
+    default: "info"
 
   # 非推奨の入力
   old-param:
-    description: '古いパラメータ'
+    description: "古いパラメータ"
     required: false
-    deprecationMessage: 'Use new-param instead. Will be removed in v2.0.0'
+    deprecationMessage: "Use new-param instead. Will be removed in v2.0.0"
 ```
 
 ### 入力の型と検証
@@ -84,19 +84,19 @@ inputs:
 inputs:
   # 真偽値
   enable-feature:
-    description: '機能を有効化'
+    description: "機能を有効化"
     required: false
-    default: 'false'  # 注意: 文字列として定義
+    default: "false" # 注意: 文字列として定義
 
   # 数値
   timeout:
-    description: 'タイムアウト（秒）'
+    description: "タイムアウト（秒）"
     required: false
-    default: '300'    # 注意: 文字列として定義
+    default: "300" # 注意: 文字列として定義
 
   # 選択肢（ドキュメントで明記）
   environment:
-    description: '環境 (dev, staging, prod)'
+    description: "環境 (dev, staging, prod)"
     required: true
     # 注意: 列挙型の検証は実装側で行う
 ```
@@ -107,20 +107,20 @@ inputs:
 inputs:
   # JSON形式の入力
   config:
-    description: 'JSON形式の設定'
+    description: "JSON形式の設定"
     required: false
-    default: '{}'
+    default: "{}"
 
   # マルチライン入力
   script:
-    description: '実行するスクリプト'
+    description: "実行するスクリプト"
     required: true
 
   # パス入力
   working-directory:
-    description: '作業ディレクトリ'
+    description: "作業ディレクトリ"
     required: false
-    default: '.'
+    default: "."
 ```
 
 ---
@@ -133,17 +133,17 @@ inputs:
 outputs:
   # 単一値の出力
   result:
-    description: '処理結果'
+    description: "処理結果"
     value: ${{ steps.process.outputs.result }}
 
   # 真偽値の出力
   success:
-    description: '成功したかどうか'
+    description: "成功したかどうか"
     value: ${{ steps.check.outputs.success }}
 
   # 複数ステップの出力を結合
   summary:
-    description: '処理サマリー'
+    description: "処理サマリー"
     value: |
       Status: ${{ steps.check.outputs.status }}
       Duration: ${{ steps.measure.outputs.duration }}
@@ -155,12 +155,12 @@ outputs:
 outputs:
   # 条件によって値を変更
   deployment-url:
-    description: 'デプロイメントURL'
+    description: "デプロイメントURL"
     value: ${{ inputs.environment == 'prod' && steps.deploy.outputs.prod-url || steps.deploy.outputs.dev-url }}
 
   # 存在チェック
   cache-hit:
-    description: 'キャッシュヒット'
+    description: "キャッシュヒット"
     value: ${{ steps.cache.outputs.cache-hit || 'false' }}
 ```
 
@@ -168,7 +168,7 @@ outputs:
 
 ```yaml
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     # 単一値の出力
     - id: compute
@@ -206,7 +206,7 @@ runs:
 
 ```yaml
 steps:
-  - name: 'Use action'
+  - name: "Use action"
     uses: actions/checkout@v4
     with:
       repository: owner/repo
@@ -217,7 +217,7 @@ steps:
 
 ```yaml
 steps:
-  - name: 'Run script'
+  - name: "Run script"
     run: |
       echo "Processing..."
       ./scripts/deploy.sh
@@ -228,16 +228,16 @@ steps:
 
 ```yaml
 steps:
-  - name: 'Setup'
+  - name: "Setup"
     uses: actions/setup-node@v4
     with:
       node-version: ${{ inputs.node-version }}
 
-  - name: 'Install'
+  - name: "Install"
     run: pnpm ci
     shell: bash
 
-  - name: 'Test'
+  - name: "Test"
     run: pnpm test
     shell: bash
 ```
@@ -246,18 +246,18 @@ steps:
 
 ```yaml
 steps:
-  - name: 'Full step example'
-    id: step-id                    # ステップID（outputsで参照）
+  - name: "Full step example"
+    id: step-id # ステップID（outputsで参照）
     if: inputs.condition == 'true' # 条件付き実行
-    uses: owner/action@v1          # 使用するアクション
-    with:                          # アクションへの入力
+    uses: owner/action@v1 # 使用するアクション
+    with: # アクションへの入力
       param: value
-    run: echo "script"             # 実行するスクリプト
-    shell: bash                    # シェル（run使用時は必須）
-    working-directory: ./subdir    # 作業ディレクトリ
-    env:                           # 環境変数
+    run: echo "script" # 実行するスクリプト
+    shell: bash # シェル（run使用時は必須）
+    working-directory: ./subdir # 作業ディレクトリ
+    env: # 環境変数
       KEY: value
-    continue-on-error: true        # エラーでも続行
+    continue-on-error: true # エラーでも続行
 ```
 
 ### shell オプション
@@ -293,25 +293,25 @@ steps:
 ```yaml
 steps:
   # 入力による条件
-  - name: 'Production only'
+  - name: "Production only"
     if: inputs.environment == 'prod'
     run: ./prod-script.sh
     shell: bash
 
   # 複数条件
-  - name: 'Conditional step'
+  - name: "Conditional step"
     if: inputs.enabled == 'true' && runner.os == 'Linux'
     run: ./linux-script.sh
     shell: bash
 
   # 失敗時の実行
-  - name: 'Cleanup on failure'
+  - name: "Cleanup on failure"
     if: failure()
     run: ./cleanup.sh
     shell: bash
 
   # 常に実行
-  - name: 'Always run'
+  - name: "Always run"
     if: always()
     run: ./report.sh
     shell: bash
@@ -322,13 +322,13 @@ steps:
 ```yaml
 steps:
   # エラーを無視して続行
-  - name: 'Optional step'
+  - name: "Optional step"
     continue-on-error: true
     run: ./optional-check.sh
     shell: bash
 
   # 条件付きエラー無視
-  - name: 'Ignore errors on dev'
+  - name: "Ignore errors on dev"
     continue-on-error: ${{ inputs.environment == 'dev' }}
     run: ./strict-check.sh
     shell: bash
@@ -343,7 +343,7 @@ steps:
 ```yaml
 steps:
   # ステップレベルの環境変数
-  - name: 'With env'
+  - name: "With env"
     env:
       NODE_ENV: production
       API_URL: https://api.example.com
@@ -351,14 +351,14 @@ steps:
     shell: bash
 
   # 永続的な環境変数
-  - name: 'Set global env'
+  - name: "Set global env"
     shell: bash
     run: |
       echo "BUILD_ID=${{ github.run_id }}" >> $GITHUB_ENV
       echo "DEPLOY_TIME=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_ENV
 
   # 後続ステップで使用
-  - name: 'Use env'
+  - name: "Use env"
     shell: bash
     run: |
       echo "Build: $BUILD_ID"
@@ -369,7 +369,7 @@ steps:
 
 ```yaml
 steps:
-  - name: 'Setup environment'
+  - name: "Setup environment"
     shell: bash
     run: |
       echo "ENV_NAME=${{ inputs.environment }}" >> $GITHUB_ENV
@@ -385,7 +385,7 @@ steps:
 
 ```yaml
 steps:
-  - name: 'Safe execution'
+  - name: "Safe execution"
     shell: bash
     run: |
       set -e  # エラー時に停止
@@ -407,7 +407,7 @@ steps:
 
 ```yaml
 steps:
-  - name: 'With annotations'
+  - name: "With annotations"
     shell: bash
     run: |
       # 情報メッセージ
@@ -434,7 +434,7 @@ steps:
 
 ```yaml
 steps:
-  - name: 'Try-catch pattern'
+  - name: "Try-catch pattern"
     id: execute
     shell: bash
     run: |
@@ -461,7 +461,7 @@ steps:
 
 ```yaml
 steps:
-  - name: 'Cross-platform setup'
+  - name: "Cross-platform setup"
     shell: bash
     run: |
       if [ "$RUNNER_OS" = "Windows" ]; then
@@ -480,7 +480,7 @@ steps:
 
 ```yaml
 steps:
-  - name: 'Dynamic paths'
+  - name: "Dynamic paths"
     shell: bash
     run: |
       # ワークスペースからの相対パス
@@ -497,7 +497,7 @@ steps:
 
 ```yaml
 steps:
-  - name: 'Check prerequisites'
+  - name: "Check prerequisites"
     id: check
     shell: bash
     run: |
@@ -507,12 +507,12 @@ steps:
         echo "has-package-json=false" >> $GITHUB_OUTPUT
       fi
 
-  - name: 'Install dependencies'
+  - name: "Install dependencies"
     if: steps.check.outputs.has-package-json == 'true'
     run: pnpm ci
     shell: bash
 
-  - name: 'Build'
+  - name: "Build"
     if: steps.check.outputs.has-package-json == 'true'
     run: pnpm run build
     shell: bash
@@ -540,6 +540,7 @@ steps:
 ### ベストプラクティス
 
 1. **shell を必ず指定**
+
    ```yaml
    # ❌ エラー
    - run: echo "test"
@@ -550,6 +551,7 @@ steps:
    ```
 
 2. **id を使ってステップを識別**
+
    ```yaml
    - id: build
      run: pnpm run build
@@ -557,6 +559,7 @@ steps:
    ```
 
 3. **エラーハンドリングを実装**
+
    ```yaml
    - run: |
        set -e

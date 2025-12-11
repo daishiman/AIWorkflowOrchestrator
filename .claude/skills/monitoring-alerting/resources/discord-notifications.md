@@ -30,18 +30,18 @@ DISCORD_ALERT_WEBHOOK_URL=https://discord.com/api/webhooks/xxx/zzz
 
 ```typescript
 interface DiscordMessage {
-  content?: string;           // 通常のテキスト
-  embeds?: DiscordEmbed[];    // リッチなメッセージ
-  username?: string;          // 表示名の上書き
-  avatar_url?: string;        // アバターの上書き
+  content?: string; // 通常のテキスト
+  embeds?: DiscordEmbed[]; // リッチなメッセージ
+  username?: string; // 表示名の上書き
+  avatar_url?: string; // アバターの上書き
 }
 
 interface DiscordEmbed {
   title?: string;
   description?: string;
   url?: string;
-  color?: number;             // 16進数カラーコード
-  timestamp?: string;         // ISO 8601
+  color?: number; // 16進数カラーコード
+  timestamp?: string; // ISO 8601
   footer?: { text: string };
   fields?: {
     name: string;
@@ -53,13 +53,13 @@ interface DiscordEmbed {
 
 ### カラーコード
 
-| 色 | 用途 | コード |
-|----|------|--------|
-| 赤 | P1/Critical | 15158332 (0xE74C3C) |
-| オレンジ | P2/High | 15105570 (0xE67E22) |
-| 黄色 | P3/Warning | 16776960 (0xFFFF00) |
-| 緑 | Success/Resolved | 5763719 (0x57F287) |
-| 青 | Info | 3447003 (0x3498DB) |
+| 色       | 用途             | コード              |
+| -------- | ---------------- | ------------------- |
+| 赤       | P1/Critical      | 15158332 (0xE74C3C) |
+| オレンジ | P2/High          | 15105570 (0xE67E22) |
+| 黄色     | P3/Warning       | 16776960 (0xFFFF00) |
+| 緑       | Success/Resolved | 5763719 (0x57F287)  |
+| 青       | Info             | 3447003 (0x3498DB)  |
 
 ## 通知テンプレート
 
@@ -70,29 +70,33 @@ async function notifyDeployment(data: {
   service: string;
   version: string;
   environment: string;
-  status: 'started' | 'success' | 'failed';
+  status: "started" | "success" | "failed";
   url?: string;
 }) {
   const statusConfig = {
-    started: { emoji: '🚀', color: 3447003, text: 'デプロイ開始' },
-    success: { emoji: '✅', color: 5763719, text: 'デプロイ成功' },
-    failed: { emoji: '❌', color: 15158332, text: 'デプロイ失敗' },
+    started: { emoji: "🚀", color: 3447003, text: "デプロイ開始" },
+    success: { emoji: "✅", color: 5763719, text: "デプロイ成功" },
+    failed: { emoji: "❌", color: 15158332, text: "デプロイ失敗" },
   };
 
   const config = statusConfig[data.status];
 
   await sendDiscordMessage({
-    embeds: [{
-      title: `${config.emoji} ${config.text}`,
-      color: config.color,
-      fields: [
-        { name: 'サービス', value: data.service, inline: true },
-        { name: 'バージョン', value: data.version, inline: true },
-        { name: '環境', value: data.environment, inline: true },
-        ...(data.url ? [{ name: 'URL', value: data.url, inline: false }] : []),
-      ],
-      timestamp: new Date().toISOString(),
-    }],
+    embeds: [
+      {
+        title: `${config.emoji} ${config.text}`,
+        color: config.color,
+        fields: [
+          { name: "サービス", value: data.service, inline: true },
+          { name: "バージョン", value: data.version, inline: true },
+          { name: "環境", value: data.environment, inline: true },
+          ...(data.url
+            ? [{ name: "URL", value: data.url, inline: false }]
+            : []),
+        ],
+        timestamp: new Date().toISOString(),
+      },
+    ],
   });
 }
 ```
@@ -101,7 +105,7 @@ async function notifyDeployment(data: {
 
 ```typescript
 async function notifyAlert(data: {
-  severity: 'P1' | 'P2' | 'P3' | 'P4';
+  severity: "P1" | "P2" | "P3" | "P4";
   title: string;
   description: string;
   service: string;
@@ -109,29 +113,37 @@ async function notifyAlert(data: {
   runbookUrl?: string;
 }) {
   const severityConfig = {
-    P1: { emoji: '🚨', color: 15158332, label: 'Critical' },
-    P2: { emoji: '🔴', color: 15105570, label: 'High' },
-    P3: { emoji: '🟡', color: 16776960, label: 'Medium' },
-    P4: { emoji: '🔵', color: 3447003, label: 'Low' },
+    P1: { emoji: "🚨", color: 15158332, label: "Critical" },
+    P2: { emoji: "🔴", color: 15105570, label: "High" },
+    P3: { emoji: "🟡", color: 16776960, label: "Medium" },
+    P4: { emoji: "🔵", color: 3447003, label: "Low" },
   };
 
   const config = severityConfig[data.severity];
 
   await sendDiscordMessage({
-    embeds: [{
-      title: `${config.emoji} [${data.severity}] ${data.title}`,
-      description: data.description,
-      color: config.color,
-      fields: [
-        { name: 'サービス', value: data.service, inline: true },
-        { name: '環境', value: data.environment, inline: true },
-        { name: '重大度', value: config.label, inline: true },
-        ...(data.runbookUrl
-          ? [{ name: '対応手順', value: `[Runbook](${data.runbookUrl})`, inline: false }]
-          : []),
-      ],
-      timestamp: new Date().toISOString(),
-    }],
+    embeds: [
+      {
+        title: `${config.emoji} [${data.severity}] ${data.title}`,
+        description: data.description,
+        color: config.color,
+        fields: [
+          { name: "サービス", value: data.service, inline: true },
+          { name: "環境", value: data.environment, inline: true },
+          { name: "重大度", value: config.label, inline: true },
+          ...(data.runbookUrl
+            ? [
+                {
+                  name: "対応手順",
+                  value: `[Runbook](${data.runbookUrl})`,
+                  inline: false,
+                },
+              ]
+            : []),
+        ],
+        timestamp: new Date().toISOString(),
+      },
+    ],
   });
 }
 ```
@@ -146,16 +158,18 @@ async function notifyResolved(data: {
   service: string;
 }) {
   await sendDiscordMessage({
-    embeds: [{
-      title: `✅ 解決: ${data.title}`,
-      description: data.description,
-      color: 5763719,
-      fields: [
-        { name: 'サービス', value: data.service, inline: true },
-        { name: '解決までの時間', value: data.duration, inline: true },
-      ],
-      timestamp: new Date().toISOString(),
-    }],
+    embeds: [
+      {
+        title: `✅ 解決: ${data.title}`,
+        description: data.description,
+        color: 5763719,
+        fields: [
+          { name: "サービス", value: data.service, inline: true },
+          { name: "解決までの時間", value: data.duration, inline: true },
+        ],
+        timestamp: new Date().toISOString(),
+      },
+    ],
   });
 }
 ```
@@ -169,15 +183,15 @@ async function sendDiscordMessage(message: DiscordMessage): Promise<void> {
   const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
 
   if (!webhookUrl) {
-    console.warn('DISCORD_WEBHOOK_URL is not set');
+    console.warn("DISCORD_WEBHOOK_URL is not set");
     return;
   }
 
   try {
     const response = await fetch(webhookUrl, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(message),
     });
@@ -186,7 +200,7 @@ async function sendDiscordMessage(message: DiscordMessage): Promise<void> {
       throw new Error(`Discord API error: ${response.status}`);
     }
   } catch (error) {
-    console.error('Failed to send Discord message:', error);
+    console.error("Failed to send Discord message:", error);
     // 通知失敗でアプリケーションを止めない
   }
 }
@@ -197,21 +211,21 @@ async function sendDiscordMessage(message: DiscordMessage): Promise<void> {
 ```typescript
 async function sendDiscordMessageWithRetry(
   message: DiscordMessage,
-  maxRetries = 3
+  maxRetries = 3,
 ): Promise<void> {
   const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
 
   if (!webhookUrl) {
-    console.warn('DISCORD_WEBHOOK_URL is not set');
+    console.warn("DISCORD_WEBHOOK_URL is not set");
     return;
   }
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       const response = await fetch(webhookUrl, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(message),
       });
@@ -222,7 +236,7 @@ async function sendDiscordMessageWithRetry(
 
       // レート制限の場合は待機
       if (response.status === 429) {
-        const retryAfter = response.headers.get('retry-after');
+        const retryAfter = response.headers.get("retry-after");
         const waitTime = retryAfter ? parseInt(retryAfter) * 1000 : 5000;
         await sleep(waitTime);
         continue;
@@ -231,7 +245,7 @@ async function sendDiscordMessageWithRetry(
       throw new Error(`Discord API error: ${response.status}`);
     } catch (error) {
       if (attempt === maxRetries) {
-        console.error('Failed to send Discord message after retries:', error);
+        console.error("Failed to send Discord message after retries:", error);
       } else {
         await sleep(1000 * attempt); // Exponential backoff
       }
@@ -240,7 +254,7 @@ async function sendDiscordMessageWithRetry(
 }
 
 function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 ```
 
@@ -386,6 +400,7 @@ class RateLimitedNotifier {
 ### 通知が届かない
 
 **確認事項**:
+
 1. Webhook URLが正しいか
 2. チャンネルが存在するか
 3. Webhookが有効か
@@ -393,6 +408,7 @@ class RateLimitedNotifier {
 ### レート制限エラー
 
 **対策**:
+
 1. 送信間隔を空ける
 2. キューイングを実装
 3. 重要度でフィルタリング
@@ -400,6 +416,7 @@ class RateLimitedNotifier {
 ### メッセージが表示されない
 
 **確認事項**:
+
 1. JSONフォーマットが正しいか
 2. フィールド値が空でないか
 3. 色コードが有効か

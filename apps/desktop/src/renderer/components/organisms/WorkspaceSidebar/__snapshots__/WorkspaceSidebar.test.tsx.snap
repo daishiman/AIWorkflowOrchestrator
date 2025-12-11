@@ -1,0 +1,292 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`WorkspaceSidebar > Snapshot Tests > エラー状態のスナップショット 1`] = `
+<aside
+  aria-label="ワークスペースサイドバー"
+  class="workspace-sidebar flex flex-col h-full bg-zinc-900 "
+  data-testid="workspace-sidebar"
+>
+  <div
+    class="workspace-header flex items-center justify-between px-3 py-2 border-b border-zinc-700"
+  >
+    <h2
+      class="text-sm font-semibold text-zinc-100"
+    >
+      Workspace
+    </h2>
+    <button
+      aria-label="フォルダを追加"
+      class="add-folder-btn px-2 py-1 text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      data-testid="add-folder-btn"
+    >
+      + Add
+    </button>
+  </div>
+  <div
+    class="error-message px-3 py-2 bg-red-900/30 text-red-400 text-sm"
+    data-testid="workspace-error"
+    role="alert"
+  >
+    Test error
+  </div>
+  <div
+    class="workspace-content flex-1 overflow-y-auto px-1 py-2"
+  >
+    <div
+      aria-label="フォルダ一覧"
+      class="folder-list space-y-1"
+      data-testid="folder-list"
+      role="tree"
+    >
+      <div
+        class="folder-entry group"
+        data-testid="folder-entry-folder-1"
+      >
+        <div
+          aria-expanded="false"
+          aria-label="projectフォルダ 折りたたみ中"
+          class="folder-header flex items-center gap-2 px-2 py-1.5 cursor-pointer hover:bg-zinc-800 rounded transition-colors"
+          data-testid="folder-header-folder-1"
+          role="button"
+          tabindex="0"
+        >
+          <span
+            aria-hidden="true"
+            class="expand-icon text-zinc-400"
+            data-testid="folder-expand-folder-1"
+          >
+            ▶
+          </span>
+          <span
+            aria-hidden="true"
+            class="folder-icon"
+          >
+            📁
+          </span>
+          <span
+            class="folder-name flex-1 truncate text-sm text-zinc-100"
+          >
+            project
+          </span>
+          <button
+            aria-label="projectを削除"
+            class="remove-btn p-1 text-zinc-500 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
+            data-testid="folder-remove-folder-1"
+          >
+            ✕
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>
+`;
+
+exports[`WorkspaceSidebar > Snapshot Tests > デフォルト状態のスナップショット 1`] = `
+<aside
+  aria-label="ワークスペースサイドバー"
+  class="workspace-sidebar flex flex-col h-full bg-zinc-900 "
+  data-testid="workspace-sidebar"
+>
+  <div
+    class="workspace-header flex items-center justify-between px-3 py-2 border-b border-zinc-700"
+  >
+    <h2
+      class="text-sm font-semibold text-zinc-100"
+    >
+      Workspace
+    </h2>
+    <button
+      aria-label="フォルダを追加"
+      class="add-folder-btn px-2 py-1 text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      data-testid="add-folder-btn"
+    >
+      + Add
+    </button>
+  </div>
+  <div
+    class="workspace-content flex-1 overflow-y-auto px-1 py-2"
+  >
+    <div
+      aria-label="フォルダ一覧"
+      class="folder-list space-y-1"
+      data-testid="folder-list"
+      role="tree"
+    >
+      <div
+        class="folder-entry group"
+        data-testid="folder-entry-folder-1"
+      >
+        <div
+          aria-expanded="false"
+          aria-label="projectフォルダ 折りたたみ中"
+          class="folder-header flex items-center gap-2 px-2 py-1.5 cursor-pointer hover:bg-zinc-800 rounded transition-colors"
+          data-testid="folder-header-folder-1"
+          role="button"
+          tabindex="0"
+        >
+          <span
+            aria-hidden="true"
+            class="expand-icon text-zinc-400"
+            data-testid="folder-expand-folder-1"
+          >
+            ▶
+          </span>
+          <span
+            aria-hidden="true"
+            class="folder-icon"
+          >
+            📁
+          </span>
+          <span
+            class="folder-name flex-1 truncate text-sm text-zinc-100"
+          >
+            project
+          </span>
+          <button
+            aria-label="projectを削除"
+            class="remove-btn p-1 text-zinc-500 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
+            data-testid="folder-remove-folder-1"
+          >
+            ✕
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>
+`;
+
+exports[`WorkspaceSidebar > Snapshot Tests > ローディング状態のスナップショット 1`] = `
+<aside
+  aria-label="ワークスペースサイドバー"
+  class="workspace-sidebar flex flex-col h-full bg-zinc-900 "
+  data-testid="workspace-sidebar"
+>
+  <div
+    class="workspace-header flex items-center justify-between px-3 py-2 border-b border-zinc-700"
+  >
+    <h2
+      class="text-sm font-semibold text-zinc-100"
+    >
+      Workspace
+    </h2>
+    <button
+      aria-label="フォルダを追加"
+      class="add-folder-btn px-2 py-1 text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      data-testid="add-folder-btn"
+      disabled=""
+    >
+      + Add
+    </button>
+  </div>
+  <div
+    aria-live="polite"
+    class="loading-indicator px-3 py-2 text-zinc-400 text-sm"
+    data-testid="workspace-loading"
+    role="status"
+  >
+    読み込み中...
+  </div>
+  <div
+    class="workspace-content flex-1 overflow-y-auto px-1 py-2"
+  >
+    <div
+      aria-label="フォルダ一覧"
+      class="folder-list space-y-1"
+      data-testid="folder-list"
+      role="tree"
+    >
+      <div
+        class="folder-entry group"
+        data-testid="folder-entry-folder-1"
+      >
+        <div
+          aria-expanded="false"
+          aria-label="projectフォルダ 折りたたみ中"
+          class="folder-header flex items-center gap-2 px-2 py-1.5 cursor-pointer hover:bg-zinc-800 rounded transition-colors"
+          data-testid="folder-header-folder-1"
+          role="button"
+          tabindex="0"
+        >
+          <span
+            aria-hidden="true"
+            class="expand-icon text-zinc-400"
+            data-testid="folder-expand-folder-1"
+          >
+            ▶
+          </span>
+          <span
+            aria-hidden="true"
+            class="folder-icon"
+          >
+            📁
+          </span>
+          <span
+            class="folder-name flex-1 truncate text-sm text-zinc-100"
+          >
+            project
+          </span>
+          <button
+            aria-label="projectを削除"
+            class="remove-btn p-1 text-zinc-500 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
+            data-testid="folder-remove-folder-1"
+          >
+            ✕
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>
+`;
+
+exports[`WorkspaceSidebar > Snapshot Tests > 空状態のスナップショット 1`] = `
+<aside
+  aria-label="ワークスペースサイドバー"
+  class="workspace-sidebar flex flex-col h-full bg-zinc-900 "
+  data-testid="workspace-sidebar"
+>
+  <div
+    class="workspace-header flex items-center justify-between px-3 py-2 border-b border-zinc-700"
+  >
+    <h2
+      class="text-sm font-semibold text-zinc-100"
+    >
+      Workspace
+    </h2>
+    <button
+      aria-label="フォルダを追加"
+      class="add-folder-btn px-2 py-1 text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      data-testid="add-folder-btn"
+    >
+      + Add
+    </button>
+  </div>
+  <div
+    class="workspace-content flex-1 overflow-y-auto px-1 py-2"
+  >
+    <div
+      class="empty-state flex flex-col items-center justify-center h-full gap-3 text-zinc-400"
+      data-testid="workspace-empty"
+    >
+      <span
+        class="text-4xl"
+      >
+        📁
+      </span>
+      <p
+        class="text-sm"
+      >
+        フォルダがありません
+      </p>
+      <button
+        class="add-folder-empty-btn px-3 py-1.5 text-sm bg-blue-600 hover:bg-blue-500 text-white rounded transition-colors"
+        data-testid="add-folder-empty-btn"
+      >
+        フォルダを追加
+      </button>
+    </div>
+  </div>
+</aside>
+`;

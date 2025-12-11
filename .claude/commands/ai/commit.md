@@ -58,6 +58,7 @@ git diff --staged
 ### 2. 変更分析とコミットタイプ決定
 
 **分析基準**:
+
 ```bash
 # feat: 新機能
 新しいファイル追加、新機能実装
@@ -93,6 +94,7 @@ src/shared/infrastructure/database/ → scope: db
 ### 4. コミットメッセージ生成
 
 **フォーマット**:
+
 ```
 <type>(<scope>): <subject>
 
@@ -102,6 +104,7 @@ src/shared/infrastructure/database/ → scope: db
 ```
 
 **例**:
+
 ```bash
 # 新機能追加
 feat(auth): add JWT authentication
@@ -138,6 +141,7 @@ git log -1
 ```
 
 実行内容:
+
 1. `git status` で変更確認
 2. `git diff` で差分分析
 3. コミットタイプ・スコープ・メッセージ自動生成
@@ -156,16 +160,16 @@ git log -1
 
 ### タイプ一覧
 
-| タイプ | 説明 | 例 |
-|--------|------|-----|
-| **feat** | 新機能 | `feat(api): add webhook endpoint` |
-| **fix** | バグ修正 | `fix(db): resolve connection pool leak` |
-| **docs** | ドキュメント | `docs(api): update endpoint documentation` |
-| **style** | フォーマット | `style: run prettier on all files` |
+| タイプ       | 説明             | 例                                            |
+| ------------ | ---------------- | --------------------------------------------- |
+| **feat**     | 新機能           | `feat(api): add webhook endpoint`             |
+| **fix**      | バグ修正         | `fix(db): resolve connection pool leak`       |
+| **docs**     | ドキュメント     | `docs(api): update endpoint documentation`    |
+| **style**    | フォーマット     | `style: run prettier on all files`            |
 | **refactor** | リファクタリング | `refactor(executor): simplify error handling` |
-| **perf** | パフォーマンス | `perf(query): add database index` |
-| **test** | テスト | `test(auth): add edge case tests` |
-| **chore** | その他 | `chore(deps): upgrade dependencies` |
+| **perf**     | パフォーマンス   | `perf(query): add database index`             |
+| **test**     | テスト           | `test(auth): add edge case tests`             |
+| **chore**    | その他           | `chore(deps): upgrade dependencies`           |
 
 ### 破壊的変更（Breaking Changes）
 
@@ -196,6 +200,7 @@ BREAKING CHANGE: old auth endpoints are removed, migrate to /api/v2/auth
 **原因**: ESLint、Prettier、型チェック失敗
 
 **解決策**:
+
 ```bash
 # ESLint自動修正
 pnpm lint --fix
@@ -212,6 +217,7 @@ pnpm typecheck
 **原因**: Conventional Commits形式違反
 
 **解決策**:
+
 ```bash
 # 正しい形式
 <type>(<scope>): <subject>
@@ -227,6 +233,7 @@ fix(auth) add validation  # コロン欠落
 **原因**: 一度に多すぎる変更をコミット
 
 **解決策**:
+
 ```bash
 # 論理的なまとまりで分割コミット
 git add src/features/auth/

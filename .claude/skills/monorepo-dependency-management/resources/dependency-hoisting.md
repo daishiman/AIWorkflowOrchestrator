@@ -200,11 +200,13 @@ shamefully-hoist=true  # 最初は緩く
 ### 問題1: ESLintが動作しない
 
 **症状**:
+
 ```
 Cannot find module 'eslint-plugin-xxx'
 ```
 
 **解決策**:
+
 ```ini
 # .npmrc
 public-hoist-pattern[]=eslint*
@@ -214,11 +216,13 @@ public-hoist-pattern[]=@typescript-eslint/*
 ### 問題2: TypeScriptの型解決エラー
 
 **症状**:
+
 ```
 Cannot find type definition file for 'xxx'
 ```
 
 **解決策**:
+
 ```ini
 # .npmrc
 public-hoist-pattern[]=@types/*
@@ -227,11 +231,13 @@ public-hoist-pattern[]=@types/*
 ### 問題3: ビルドツールが依存を見つけられない
 
 **症状**:
+
 ```
 Module not found: Can't resolve 'xxx'
 ```
 
 **解決策**:
+
 ```bash
 # 依存を明示的に追加
 pnpm add xxx
@@ -244,11 +250,13 @@ public-hoist-pattern[]=xxx
 ## チェックリスト
 
 ### 設定時
+
 - [ ] デフォルトで厳格モード(shamefully-hoist=false)を使用しているか？
 - [ ] 必要最小限のパッケージのみホイストしているか？
 - [ ] ホイストの理由を文書化しているか？
 
 ### 問題発生時
+
 - [ ] pnpm whyで依存を確認したか？
 - [ ] node_modules構造を確認したか？
 - [ ] 明示的な依存追加で解決できないか確認したか？

@@ -77,6 +77,7 @@
 - [ ] **URLパラメータ禁止**: セッションIDをURLパラメータに含めない
 
 **実装確認**:
+
 ```javascript
 // ✅ ログイン時の再生成
 req.session.regenerate((err) => {
@@ -131,10 +132,11 @@ req.session.userId = user.id;
 - [ ] **不審なアクティビティ**: 異常なパターン検出とアラート
 
 **実装確認**:
+
 ```javascript
 // IPアドレス変化検出
 if (req.session.ipAddress && req.session.ipAddress !== req.ip) {
-  logger.warn('Session hijacking suspected');
+  logger.warn("Session hijacking suspected");
   // 対応: セッション無効化または再認証要求
 }
 ```
@@ -179,6 +181,7 @@ if (req.session.ipAddress && req.session.ipAddress !== req.ip) {
 - [ ] **デバイス情報**: User-Agent、IP、最終アクティビティを表示
 
 **UI要件**:
+
 ```
 あなたのアクティブセッション:
 1. Chrome on Windows (192.168.1.100) - 2時間前 [削除]
@@ -393,46 +396,48 @@ if (req.session.ipAddress && req.session.ipAddress !== req.ip) {
 ### Express.js
 
 ```javascript
-const session = require('express-session');
-const RedisStore = require('connect-redis').default;
-const { createClient } = require('redis');
+const session = require("express-session");
+const RedisStore = require("connect-redis").default;
+const { createClient } = require("redis");
 
 const redisClient = createClient({
-  url: process.env.REDIS_URL
+  url: process.env.REDIS_URL,
 });
 redisClient.connect();
 
-app.use(session({
-  store: new RedisStore({ client: redisClient }),
-  secret: process.env.SESSION_SECRET,  // 32文字以上
-  resave: false,
-  saveUninitialized: false,
-  name: 'sessionId',  // デフォルト名を変更
-  cookie: {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    maxAge: 3600000  // 1時間
-  },
-  rolling: true,  // アクティビティで期限延長
-  unset: 'destroy'  // セッション削除時にストアからも削除
-}));
+app.use(
+  session({
+    store: new RedisStore({ client: redisClient }),
+    secret: process.env.SESSION_SECRET, // 32文字以上
+    resave: false,
+    saveUninitialized: false,
+    name: "sessionId", // デフォルト名を変更
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 3600000, // 1時間
+    },
+    rolling: true, // アクティビティで期限延長
+    unset: "destroy", // セッション削除時にストアからも削除
+  }),
+);
 ```
 
 ### Next.js（Iron Session）
 
 ```javascript
-import { withIronSessionApiRoute } from 'iron-session/next';
+import { withIronSessionApiRoute } from "iron-session/next";
 
 export default withIronSessionApiRoute(handler, {
-  cookieName: 'app_session',
-  password: process.env.SESSION_SECRET,  // 32文字以上
+  cookieName: "app_session",
+  password: process.env.SESSION_SECRET, // 32文字以上
   cookieOptions: {
-    secure: process.env.NODE_ENV === 'production',
+    secure: process.env.NODE_ENV === "production",
     httpOnly: true,
-    sameSite: 'lax',
-    maxAge: 3600  // 秒単位
-  }
+    sameSite: "lax",
+    maxAge: 3600, // 秒単位
+  },
 });
 ```
 

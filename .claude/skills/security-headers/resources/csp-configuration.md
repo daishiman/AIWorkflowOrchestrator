@@ -3,6 +3,7 @@
 ## CSPディレクティブ
 
 ### default-src
+
 すべてのリソースタイプのデフォルトポリシー
 
 ```
@@ -10,6 +11,7 @@ default-src 'self';
 ```
 
 ### script-src
+
 JavaScriptの読み込み元を制限
 
 ```
@@ -20,6 +22,7 @@ script-src 'self' https://cdn.example.com; # 特定CDN許可
 ```
 
 ### style-src
+
 CSSの読み込み元を制限
 
 ```
@@ -27,6 +30,7 @@ style-src 'self' 'unsafe-inline';
 ```
 
 ### img-src
+
 画像の読み込み元を制限
 
 ```
@@ -34,6 +38,7 @@ img-src 'self' data: https:;
 ```
 
 ### connect-src
+
 fetch、XMLHttpRequest、WebSocketの接続先を制限
 
 ```
@@ -41,6 +46,7 @@ connect-src 'self' https://api.example.com;
 ```
 
 ### frame-ancestors
+
 iframe埋め込みを制限
 
 ```
@@ -70,11 +76,12 @@ Content-Security-Policy: default-src 'self'; report-uri /api/csp-report;
 ```
 
 **レポートハンドラー**:
+
 ```typescript
 export async function POST(request: Request) {
   const report = await request.json();
-  console.error('CSP Violation:', report);
+  console.error("CSP Violation:", report);
   // ログシステムに記録
-  return new Response('OK', { status: 200 });
+  return new Response("OK", { status: 200 });
 }
 ```

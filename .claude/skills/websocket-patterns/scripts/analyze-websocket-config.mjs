@@ -13,7 +13,7 @@
  *   - 推奨事項の提示
  */
 
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync } from "fs";
 
 // ============================================================
 // 推奨値
@@ -50,26 +50,52 @@ function analyzeConfig(config) {
 
   // 必須フィールドチェック
   if (!config.url) {
-    results.errors.push('❌ url が設定されていません');
+    results.errors.push("❌ url が設定されていません");
     results.score -= 30;
   }
 
   // 再接続設定
-  analyzeRange(results, config, 'maxRetries', RECOMMENDED.maxRetries);
-  analyzeRange(results, config, 'baseDelay', RECOMMENDED.baseDelay);
-  analyzeRange(results, config, 'maxDelay', RECOMMENDED.maxDelay);
-  analyzeRange(results, config, 'connectionTimeout', RECOMMENDED.connectionTimeout);
+  analyzeRange(results, config, "maxRetries", RECOMMENDED.maxRetries);
+  analyzeRange(results, config, "baseDelay", RECOMMENDED.baseDelay);
+  analyzeRange(results, config, "maxDelay", RECOMMENDED.maxDelay);
+  analyzeRange(
+    results,
+    config,
+    "connectionTimeout",
+    RECOMMENDED.connectionTimeout,
+  );
 
   // baseDelay < maxDelay チェック
-  if (config.baseDelay && config.maxDelay && config.baseDelay >= config.maxDelay) {
-    results.errors.push('❌ baseDelay は maxDelay より小さくする必要があります');
+  if (
+    config.baseDelay &&
+    config.maxDelay &&
+    config.baseDelay >= config.maxDelay
+  ) {
+    results.errors.push(
+      "❌ baseDelay は maxDelay より小さくする必要があります",
+    );
     results.score -= 15;
   }
 
   // ハートビート設定
-  analyzeRange(results, config, 'heartbeatInterval', RECOMMENDED.heartbeatInterval);
-  analyzeRange(results, config, 'heartbeatTimeout', RECOMMENDED.heartbeatTimeout);
-  analyzeRange(results, config, 'maxMissedHeartbeats', RECOMMENDED.maxMissedHeartbeats);
+  analyzeRange(
+    results,
+    config,
+    "heartbeatInterval",
+    RECOMMENDED.heartbeatInterval,
+  );
+  analyzeRange(
+    results,
+    config,
+    "heartbeatTimeout",
+    RECOMMENDED.heartbeatTimeout,
+  );
+  analyzeRange(
+    results,
+    config,
+    "maxMissedHeartbeats",
+    RECOMMENDED.maxMissedHeartbeats,
+  );
 
   // heartbeatTimeout < heartbeatInterval チェック
   if (
@@ -78,25 +104,25 @@ function analyzeConfig(config) {
     config.heartbeatTimeout >= config.heartbeatInterval
   ) {
     results.warnings.push(
-      '⚠️ heartbeatTimeout は heartbeatInterval より小さくすることを推奨します'
+      "⚠️ heartbeatTimeout は heartbeatInterval より小さくすることを推奨します",
     );
     results.score -= 5;
   }
 
   // キュー設定
-  analyzeRange(results, config, 'queueMaxSize', RECOMMENDED.queueMaxSize);
-  analyzeRange(results, config, 'queueMaxAge', RECOMMENDED.queueMaxAge);
+  analyzeRange(results, config, "queueMaxSize", RECOMMENDED.queueMaxSize);
+  analyzeRange(results, config, "queueMaxAge", RECOMMENDED.queueMaxAge);
 
   // プロキシ対策チェック
   if (config.heartbeatInterval && config.heartbeatInterval > 30000) {
     results.warnings.push(
-      '⚠️ heartbeatInterval が 30秒を超えています。プロキシによる切断に注意してください'
+      "⚠️ heartbeatInterval が 30秒を超えています。プロキシによる切断に注意してください",
     );
   }
 
   // autoReconnect チェック
   if (config.autoReconnect === false) {
-    results.info.push('ℹ️ autoReconnect が無効です。手動での再接続が必要です');
+    results.info.push("ℹ️ autoReconnect が無効です。手動での再接続が必要です");
   }
 
   return results;
@@ -106,18 +132,20 @@ function analyzeRange(results, config, key, range) {
   const value = config[key];
 
   if (value === undefined) {
-    results.info.push(`ℹ️ ${key} が未設定です。デフォルト値 ${range.default} が使用されます`);
+    results.info.push(
+      `ℹ️ ${key} が未設定です。デフォルト値 ${range.default} が使用されます`,
+    );
     return;
   }
 
   if (value < range.min) {
     results.warnings.push(
-      `⚠️ ${key} (${value}) が推奨最小値 ${range.min} より小さいです`
+      `⚠️ ${key} (${value}) が推奨最小値 ${range.min} より小さいです`,
     );
     results.score -= 5;
   } else if (value > range.max) {
     results.warnings.push(
-      `⚠️ ${key} (${value}) が推奨最大値 ${range.max} より大きいです`
+      `⚠️ ${key} (${value}) が推奨最大値 ${range.max} より大きいです`,
     );
     results.score -= 5;
   }
@@ -128,63 +156,72 @@ function analyzeRange(results, config, key, range) {
 // ============================================================
 
 function printReport(config, results) {
-  console.log('\n' + '='.repeat(60));
-  console.log('📊 WebSocket設定分析レポート');
-  console.log('='.repeat(60) + '\n');
+  console.log("\n" + "=".repeat(60));
+  console.log("📊 WebSocket設定分析レポート");
+  console.log("=".repeat(60) + "\n");
 
   // 設定サマリー
-  console.log('📋 設定サマリー:');
-  console.log(`   URL: ${config.url || '(未設定)'}`);
-  console.log(`   自動再接続: ${config.autoReconnect !== false ? '有効' : '無効'}`);
-  console.log(`   最大リトライ: ${config.maxRetries || RECOMMENDED.maxRetries.default}`);
+  console.log("📋 設定サマリー:");
+  console.log(`   URL: ${config.url || "(未設定)"}`);
   console.log(
-    `   ハートビート間隔: ${config.heartbeatInterval || RECOMMENDED.heartbeatInterval.default}ms`
+    `   自動再接続: ${config.autoReconnect !== false ? "有効" : "無効"}`,
   );
-  console.log(`   キュー最大サイズ: ${config.queueMaxSize || RECOMMENDED.queueMaxSize.default}`);
-  console.log('');
+  console.log(
+    `   最大リトライ: ${config.maxRetries || RECOMMENDED.maxRetries.default}`,
+  );
+  console.log(
+    `   ハートビート間隔: ${config.heartbeatInterval || RECOMMENDED.heartbeatInterval.default}ms`,
+  );
+  console.log(
+    `   キュー最大サイズ: ${config.queueMaxSize || RECOMMENDED.queueMaxSize.default}`,
+  );
+  console.log("");
 
   // エラー
   if (results.errors.length > 0) {
-    console.log('🔴 エラー:');
+    console.log("🔴 エラー:");
     results.errors.forEach((e) => console.log(`   ${e}`));
-    console.log('');
+    console.log("");
   }
 
   // 警告
   if (results.warnings.length > 0) {
-    console.log('🟡 警告:');
+    console.log("🟡 警告:");
     results.warnings.forEach((w) => console.log(`   ${w}`));
-    console.log('');
+    console.log("");
   }
 
   // 情報
   if (results.info.length > 0) {
-    console.log('🔵 情報:');
+    console.log("🔵 情報:");
     results.info.forEach((i) => console.log(`   ${i}`));
-    console.log('');
+    console.log("");
   }
 
   // スコア
-  const scoreColor = results.score >= 80 ? '🟢' : results.score >= 60 ? '🟡' : '🔴';
-  console.log('='.repeat(60));
+  const scoreColor =
+    results.score >= 80 ? "🟢" : results.score >= 60 ? "🟡" : "🔴";
+  console.log("=".repeat(60));
   console.log(`${scoreColor} 総合スコア: ${Math.max(0, results.score)}/100`);
-  console.log('='.repeat(60) + '\n');
+  console.log("=".repeat(60) + "\n");
 
   // 推奨事項
   if (results.score < 100) {
-    console.log('💡 推奨事項:');
+    console.log("💡 推奨事項:");
 
     if (results.errors.length > 0) {
-      console.log('   1. エラーを修正してください');
+      console.log("   1. エラーを修正してください");
     }
 
     if (results.warnings.length > 0) {
-      console.log('   2. 警告の設定値を見直してください');
+      console.log("   2. 警告の設定値を見直してください");
     }
 
-    console.log('   3. 本番環境ではハートビート間隔を30秒以下に設定してください');
-    console.log('   4. キューサイズはメモリ使用量を考慮して設定してください');
-    console.log('');
+    console.log(
+      "   3. 本番環境ではハートビート間隔を30秒以下に設定してください",
+    );
+    console.log("   4. キューサイズはメモリ使用量を考慮して設定してください");
+    console.log("");
   }
 }
 
@@ -197,10 +234,12 @@ function main() {
 
   if (args.length === 0) {
     // サンプル設定で分析
-    console.log('📝 設定ファイルが指定されていないため、サンプル設定を分析します');
+    console.log(
+      "📝 設定ファイルが指定されていないため、サンプル設定を分析します",
+    );
 
     const sampleConfig = {
-      url: 'wss://example.com/ws',
+      url: "wss://example.com/ws",
       maxRetries: 10,
       baseDelay: 1000,
       maxDelay: 30000,
@@ -226,7 +265,7 @@ function main() {
   }
 
   try {
-    const content = readFileSync(configPath, 'utf-8');
+    const content = readFileSync(configPath, "utf-8");
     const config = JSON.parse(content);
 
     const results = analyzeConfig(config);

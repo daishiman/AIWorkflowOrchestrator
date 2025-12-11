@@ -11,21 +11,21 @@ Server Actionsは、サーバーで実行される非同期関数です。フォ
 
 ```typescript
 // app/actions.ts
-'use server'
+"use server";
 
-import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function createPost(formData: FormData) {
-  const title = formData.get('title') as string
-  const content = formData.get('content') as string
+  const title = formData.get("title") as string;
+  const content = formData.get("content") as string;
 
   await db.post.create({
     data: { title, content },
-  })
+  });
 
-  revalidatePath('/posts')
-  redirect('/posts')
+  revalidatePath("/posts");
+  redirect("/posts");
 }
 ```
 
@@ -78,40 +78,40 @@ export function CreatePostForm() {
 
 ```typescript
 // app/actions.ts
-'use server'
+"use server";
 
 type State = {
-  message: string
+  message: string;
   errors?: {
-    title?: string[]
-    content?: string[]
-  }
-}
+    title?: string[];
+    content?: string[];
+  };
+};
 
 export async function createPost(
   prevState: State,
-  formData: FormData
+  formData: FormData,
 ): Promise<State> {
-  const title = formData.get('title') as string
-  const content = formData.get('content') as string
+  const title = formData.get("title") as string;
+  const content = formData.get("content") as string;
 
   // バリデーション
-  const errors: State['errors'] = {}
+  const errors: State["errors"] = {};
   if (!title || title.length < 3) {
-    errors.title = ['Title must be at least 3 characters']
+    errors.title = ["Title must be at least 3 characters"];
   }
   if (!content || content.length < 10) {
-    errors.content = ['Content must be at least 10 characters']
+    errors.content = ["Content must be at least 10 characters"];
   }
 
   if (Object.keys(errors).length > 0) {
-    return { message: 'Validation failed', errors }
+    return { message: "Validation failed", errors };
   }
 
-  await db.post.create({ data: { title, content } })
-  revalidatePath('/posts')
+  await db.post.create({ data: { title, content } });
+  revalidatePath("/posts");
 
-  return { message: 'Post created successfully' }
+  return { message: "Post created successfully" };
 }
 ```
 
@@ -267,19 +267,19 @@ export function TodoList({ todos }: { todos: Todo[] }) {
 
 ```typescript
 // app/actions.ts
-'use server'
+"use server";
 
 export async function createPost(formData: FormData) {
   try {
-    const title = formData.get('title') as string
+    const title = formData.get("title") as string;
 
-    await db.post.create({ data: { title } })
-    revalidatePath('/posts')
+    await db.post.create({ data: { title } });
+    revalidatePath("/posts");
 
-    return { success: true }
+    return { success: true };
   } catch (error) {
-    console.error('Failed to create post:', error)
-    return { success: false, error: 'Failed to create post' }
+    console.error("Failed to create post:", error);
+    return { success: false, error: "Failed to create post" };
   }
 }
 ```
@@ -288,34 +288,34 @@ export async function createPost(formData: FormData) {
 
 ```typescript
 // app/actions.ts
-'use server'
+"use server";
 
-import { z } from 'zod'
+import { z } from "zod";
 
 const PostSchema = z.object({
-  title: z.string().min(3, 'Title must be at least 3 characters'),
-  content: z.string().min(10, 'Content must be at least 10 characters'),
-})
+  title: z.string().min(3, "Title must be at least 3 characters"),
+  content: z.string().min(10, "Content must be at least 10 characters"),
+});
 
 export async function createPost(formData: FormData) {
   const validatedFields = PostSchema.safeParse({
-    title: formData.get('title'),
-    content: formData.get('content'),
-  })
+    title: formData.get("title"),
+    content: formData.get("content"),
+  });
 
   if (!validatedFields.success) {
     return {
       success: false,
       errors: validatedFields.error.flatten().fieldErrors,
-    }
+    };
   }
 
-  const { title, content } = validatedFields.data
+  const { title, content } = validatedFields.data;
 
-  await db.post.create({ data: { title, content } })
-  revalidatePath('/posts')
+  await db.post.create({ data: { title, content } });
+  revalidatePath("/posts");
 
-  return { success: true }
+  return { success: true };
 }
 ```
 
@@ -324,53 +324,53 @@ export async function createPost(formData: FormData) {
 ### 認証チェック
 
 ```typescript
-'use server'
+"use server";
 
-import { auth } from '@/lib/auth'
-import { redirect } from 'next/navigation'
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export async function createPost(formData: FormData) {
-  const session = await auth()
+  const session = await auth();
 
   if (!session) {
-    redirect('/login')
+    redirect("/login");
   }
 
   // 認証済みユーザーのみ実行可能
-  const title = formData.get('title') as string
+  const title = formData.get("title") as string;
 
   await db.post.create({
     data: {
       title,
       authorId: session.user.id,
     },
-  })
+  });
 
-  revalidatePath('/posts')
+  revalidatePath("/posts");
 }
 ```
 
 ### 認可チェック
 
 ```typescript
-'use server'
+"use server";
 
 export async function deletePost(postId: string) {
-  const session = await auth()
+  const session = await auth();
 
   if (!session) {
-    throw new Error('Unauthorized')
+    throw new Error("Unauthorized");
   }
 
-  const post = await db.post.findUnique({ where: { id: postId } })
+  const post = await db.post.findUnique({ where: { id: postId } });
 
   // 投稿の所有者のみ削除可能
   if (post?.authorId !== session.user.id) {
-    throw new Error('Forbidden')
+    throw new Error("Forbidden");
   }
 
-  await db.post.delete({ where: { id: postId } })
-  revalidatePath('/posts')
+  await db.post.delete({ where: { id: postId } });
+  revalidatePath("/posts");
 }
 ```
 

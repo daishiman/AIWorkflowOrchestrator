@@ -65,12 +65,12 @@ function greet(name: string, age: number) {
 }
 
 // ❌ 型エラー
-greet.call(undefined, 'John'); // age が不足
-greet.apply(undefined, ['John', 'thirty']); // age が string
+greet.call(undefined, "John"); // age が不足
+greet.apply(undefined, ["John", "thirty"]); // age が string
 
 // ✅ 正しい使用
-greet.call(undefined, 'John', 30);
-greet.apply(undefined, ['John', 30]);
+greet.call(undefined, "John", 30);
+greet.apply(undefined, ["John", 30]);
 ```
 
 #### strictFunctionTypes
@@ -78,8 +78,12 @@ greet.apply(undefined, ['John', 30]);
 関数の引数の型を厳密にチェック（反変性）。
 
 ```typescript
-interface Animal { name: string }
-interface Dog extends Animal { breed: string }
+interface Animal {
+  name: string;
+}
+interface Dog extends Animal {
+  breed: string;
+}
 
 type Handler<T> = (value: T) => void;
 
@@ -148,10 +152,10 @@ function process(data: { value: string }): string {
 const obj = {
   value: 42,
   getValue() {
-    return function() {
+    return function () {
       return this.value; // this は any
     };
-  }
+  },
 };
 
 // ✅ 明示的な this または アロー関数
@@ -161,7 +165,7 @@ const obj = {
     return () => {
       return this.value; // this は obj を参照
     };
-  }
+  },
 };
 ```
 
@@ -172,7 +176,7 @@ catch の引数を unknown 型に。
 ```typescript
 // ✅ useUnknownInCatchVariables: true
 try {
-  throw new Error('Something went wrong');
+  throw new Error("Something went wrong");
 } catch (error) {
   // error は unknown 型
   if (error instanceof Error) {
@@ -193,7 +197,7 @@ const obj: Record<string, number> = { a: 1, b: 2 };
 
 // noUncheckedIndexedAccess: true
 const value1 = arr[0]; // number | undefined
-const value2 = obj['a']; // number | undefined
+const value2 = obj["a"]; // number | undefined
 
 // 安全なアクセス
 if (value1 !== undefined) {
@@ -216,13 +220,13 @@ interface Config {
 
 // ❌ exactOptionalPropertyTypes: true ではエラー
 const config: Config = {
-  name: 'app',
+  name: "app",
   timeout: undefined, // エラー
 };
 
 // ✅ 正しい使用
 const config: Config = {
-  name: 'app',
+  name: "app",
   // timeout を省略
 };
 
@@ -241,7 +245,7 @@ interface Config {
 // ❌ 暗黙の undefined 返却
 function getValue(condition: boolean): string {
   if (condition) {
-    return 'value';
+    return "value";
   }
   // return がない
 }
@@ -249,9 +253,9 @@ function getValue(condition: boolean): string {
 // ✅ すべてのパスで return
 function getValue(condition: boolean): string {
   if (condition) {
-    return 'value';
+    return "value";
   }
-  return 'default';
+  return "default";
 }
 ```
 
@@ -263,10 +267,10 @@ switch の case に break/return がないことを警告。
 // ❌ フォールスルー
 switch (value) {
   case 1:
-    console.log('one');
-    // break がない
+    console.log("one");
+  // break がない
   case 2:
-    console.log('two');
+    console.log("two");
     break;
 }
 
@@ -274,7 +278,7 @@ switch (value) {
 switch (value) {
   case 1:
   case 2: // 意図的なフォールスルー
-    console.log('one or two');
+    console.log("one or two");
     break;
 }
 ```
@@ -288,13 +292,13 @@ interface StringMap {
   [key: string]: string;
 }
 
-const map: StringMap = { foo: 'bar' };
+const map: StringMap = { foo: "bar" };
 
 // ❌ ドットアクセス
 const value1 = map.foo; // エラー
 
 // ✅ ブラケットアクセス
-const value2 = map['foo']; // OK
+const value2 = map["foo"]; // OK
 ```
 
 ## 段階的な導入
@@ -338,6 +342,6 @@ const value2 = map['foo']; // OK
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版リリース |
+| バージョン | 日付       | 変更内容     |
+| ---------- | ---------- | ------------ |
+| 1.0.0      | 2025-11-25 | 初版リリース |

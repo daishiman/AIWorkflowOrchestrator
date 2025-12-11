@@ -16,7 +16,7 @@
 
 // 設定
 const CONFIG = {
-  databaseUrl: process.env.DATABASE_URL || '',
+  databaseUrl: process.env.DATABASE_URL || "",
   defaultTop: 10,
   defaultThreshold: 100, // ms
 };
@@ -94,63 +94,63 @@ function analyzeQueryPattern(query) {
   // SELECT *の検出
   if (/SELECT\s+\*/i.test(query)) {
     patterns.push({
-      issue: 'SELECT * の使用',
-      severity: 'warning',
-      suggestion: '必要なカラムのみ指定してください',
+      issue: "SELECT * の使用",
+      severity: "warning",
+      suggestion: "必要なカラムのみ指定してください",
     });
   }
 
   // LIKE '%...'の検出
   if (/LIKE\s+'%/i.test(query)) {
     patterns.push({
-      issue: 'LIKE \'%...\' パターン',
-      severity: 'warning',
-      suggestion: '前方一致または全文検索の使用を検討してください',
+      issue: "LIKE '%...' パターン",
+      severity: "warning",
+      suggestion: "前方一致または全文検索の使用を検討してください",
     });
   }
 
   // OR条件の検出
   if (/\bOR\b/i.test(query)) {
     patterns.push({
-      issue: 'OR条件の使用',
-      severity: 'info',
-      suggestion: 'UNIONへの書き換えを検討してください',
+      issue: "OR条件の使用",
+      severity: "info",
+      suggestion: "UNIONへの書き換えを検討してください",
     });
   }
 
   // NOT INの検出
   if (/NOT\s+IN/i.test(query)) {
     patterns.push({
-      issue: 'NOT IN の使用',
-      severity: 'warning',
-      suggestion: 'NOT EXISTS または LEFT JOIN + IS NULL を検討してください',
+      issue: "NOT IN の使用",
+      severity: "warning",
+      suggestion: "NOT EXISTS または LEFT JOIN + IS NULL を検討してください",
     });
   }
 
   // ORDER BY + OFFSET の検出
   if (/ORDER\s+BY.*OFFSET/i.test(query)) {
     patterns.push({
-      issue: 'OFFSET ページネーション',
-      severity: 'warning',
-      suggestion: 'キーセットページネーションを検討してください',
+      issue: "OFFSET ページネーション",
+      severity: "warning",
+      suggestion: "キーセットページネーションを検討してください",
     });
   }
 
   // サブクエリの検出
   if (/\(\s*SELECT/i.test(query)) {
     patterns.push({
-      issue: 'サブクエリの使用',
-      severity: 'info',
-      suggestion: 'JOINへの書き換えを検討してください',
+      issue: "サブクエリの使用",
+      severity: "info",
+      suggestion: "JOINへの書き換えを検討してください",
     });
   }
 
   // COUNT(*)の検出
   if (/COUNT\s*\(\s*\*\s*\)/i.test(query)) {
     patterns.push({
-      issue: 'COUNT(*) の使用',
-      severity: 'info',
-      suggestion: '必要に応じて推定値の使用を検討してください',
+      issue: "COUNT(*) の使用",
+      severity: "info",
+      suggestion: "必要に応じて推定値の使用を検討してください",
     });
   }
 
@@ -161,9 +161,9 @@ function analyzeQueryPattern(query) {
  * 分析結果を表示
  */
 function displayAnalysis(title, description) {
-  console.log('\n' + '='.repeat(60));
+  console.log("\n" + "=".repeat(60));
   console.log(`📊 ${title}`);
-  console.log('='.repeat(60));
+  console.log("=".repeat(60));
   console.log(description);
 }
 
@@ -172,12 +172,12 @@ function displayAnalysis(title, description) {
  */
 function formatQueryResults(results) {
   if (!results || results.length === 0) {
-    return 'データがありません';
+    return "データがありません";
   }
 
-  let output = '';
+  let output = "";
   results.forEach((row, index) => {
-    output += `\n[${index + 1}] Query ID: ${row.queryid || 'N/A'}\n`;
+    output += `\n[${index + 1}] Query ID: ${row.queryid || "N/A"}\n`;
     output += `    Query: ${row.query_preview}\n`;
     output += `    Calls: ${row.calls || 0}\n`;
     output += `    Avg Time: ${row.avg_time_ms || 0}ms\n`;
@@ -191,9 +191,9 @@ function formatQueryResults(results) {
     // パターン分析
     const patterns = analyzeQueryPattern(row.query_preview);
     if (patterns.length > 0) {
-      output += '    Issues:\n';
-      patterns.forEach(p => {
-        const icon = p.severity === 'warning' ? '⚠️' : 'ℹ️';
+      output += "    Issues:\n";
+      patterns.forEach((p) => {
+        const icon = p.severity === "warning" ? "⚠️" : "ℹ️";
         output += `      ${icon} ${p.issue}: ${p.suggestion}\n`;
       });
     }
@@ -206,13 +206,13 @@ function formatQueryResults(results) {
  * レポートを生成
  */
 function generateReport() {
-  console.log('\n📋 スロークエリ分析レポート');
-  console.log('生成日時:', new Date().toISOString());
-  console.log('\n注意: このスクリプトはデモ用です。');
-  console.log('実際の使用にはデータベース接続ライブラリ（pg等）が必要です。\n');
+  console.log("\n📋 スロークエリ分析レポート");
+  console.log("生成日時:", new Date().toISOString());
+  console.log("\n注意: このスクリプトはデモ用です。");
+  console.log("実際の使用にはデータベース接続ライブラリ（pg等）が必要です。\n");
 
   displayAnalysis(
-    '実行に必要なクエリ（コピーして使用）',
+    "実行に必要なクエリ（コピーして使用）",
     `
 -- 1. pg_stat_statements が有効か確認
 SELECT * FROM pg_extension WHERE extname = 'pg_stat_statements';
@@ -228,19 +228,19 @@ ${QUERIES.topByCalls(10)}
 
 -- 5. 閾値（100ms）以上のクエリ
 ${QUERIES.aboveThreshold(100)}
-    `
+    `,
   );
 
-  console.log('\n📝 分析のポイント:');
-  console.log('  1. mean_exec_time が高いクエリから優先的に最適化');
-  console.log('  2. calls × mean_exec_time（total_exec_time）で影響度を評価');
-  console.log('  3. 各クエリに対して EXPLAIN ANALYZE を実行して詳細を確認');
-  console.log('  4. インデックス追加やクエリ書き換えを検討');
+  console.log("\n📝 分析のポイント:");
+  console.log("  1. mean_exec_time が高いクエリから優先的に最適化");
+  console.log("  2. calls × mean_exec_time（total_exec_time）で影響度を評価");
+  console.log("  3. 各クエリに対して EXPLAIN ANALYZE を実行して詳細を確認");
+  console.log("  4. インデックス追加やクエリ書き換えを検討");
 
-  console.log('\n📚 参考リソース:');
-  console.log('  - EXPLAIN ANALYZE ガイド: resources/explain-analyze-guide.md');
-  console.log('  - インデックス戦略: resources/index-strategies.md');
-  console.log('  - クエリパターン: resources/query-patterns.md');
+  console.log("\n📚 参考リソース:");
+  console.log("  - EXPLAIN ANALYZE ガイド: resources/explain-analyze-guide.md");
+  console.log("  - インデックス戦略: resources/index-strategies.md");
+  console.log("  - クエリパターン: resources/query-patterns.md");
 }
 
 /**
@@ -278,18 +278,18 @@ function showHelp() {
  * クエリテンプレートを表示
  */
 function showQueries() {
-  console.log('\n📋 使用可能なクエリテンプレート\n');
+  console.log("\n📋 使用可能なクエリテンプレート\n");
 
-  console.log('=== 平均実行時間でソート ===');
+  console.log("=== 平均実行時間でソート ===");
   console.log(QUERIES.topByAvgTime(10));
 
-  console.log('\n=== 合計実行時間でソート ===');
+  console.log("\n=== 合計実行時間でソート ===");
   console.log(QUERIES.topByTotalTime(10));
 
-  console.log('\n=== 呼び出し回数でソート ===');
+  console.log("\n=== 呼び出し回数でソート ===");
   console.log(QUERIES.topByCalls(10));
 
-  console.log('\n=== 閾値以上のクエリ ===');
+  console.log("\n=== 閾値以上のクエリ ===");
   console.log(QUERIES.aboveThreshold(100));
 }
 
@@ -297,27 +297,27 @@ function showQueries() {
 function main() {
   const args = process.argv.slice(2);
 
-  if (args.length === 0 || args.includes('--help')) {
+  if (args.length === 0 || args.includes("--help")) {
     showHelp();
     process.exit(0);
   }
 
-  if (args.includes('--queries')) {
+  if (args.includes("--queries")) {
     showQueries();
     process.exit(0);
   }
 
-  if (args.includes('--report')) {
+  if (args.includes("--report")) {
     generateReport();
     process.exit(0);
   }
 
   // デフォルト動作
-  console.log('🔍 スロークエリ分析を開始...\n');
+  console.log("🔍 スロークエリ分析を開始...\n");
 
   if (!CONFIG.databaseUrl) {
-    console.log('⚠️  DATABASE_URL が設定されていません');
-    console.log('   --report オプションでクエリテンプレートを確認できます\n');
+    console.log("⚠️  DATABASE_URL が設定されていません");
+    console.log("   --report オプションでクエリテンプレートを確認できます\n");
   }
 
   generateReport();

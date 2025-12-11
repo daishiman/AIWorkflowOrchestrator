@@ -20,26 +20,25 @@
  *   node generate-mock-handlers.mjs --input api-spec.yaml --type auto --output custom-handlers.ts
  */
 
-import { readFileSync, writeFileSync, existsSync } from 'fs';
-import { resolve } from 'path';
+import { readFileSync, writeFileSync, existsSync } from "fs";
+import { resolve } from "path";
 
 class MockHandlerGenerator {
   constructor(options = {}) {
     this.inputFile = options.inputFile || null;
-    this.outputFile =
-      options.outputFile || 'tests/mocks/generated-handlers.ts';
-    this.inputType = options.inputType || 'auto';
-    this.basePath = options.basePath || '/api';
+    this.outputFile = options.outputFile || "tests/mocks/generated-handlers.ts";
+    this.inputType = options.inputType || "auto";
+    this.basePath = options.basePath || "/api";
   }
 
   /**
    * メイン処理
    */
   run() {
-    console.log('🔧 MSW Mock Handler Generator\n');
+    console.log("🔧 MSW Mock Handler Generator\n");
 
     if (!this.inputFile) {
-      console.error('❌ Error: --input file is required');
+      console.error("❌ Error: --input file is required");
       process.exit(1);
     }
 
@@ -63,7 +62,7 @@ class MockHandlerGenerator {
     endpoints.forEach((ep, index) => {
       console.log(`  ${index + 1}. ${ep.method.toUpperCase()} ${ep.path}`);
     });
-    console.log('');
+    console.log("");
 
     // ステップ3: MSWハンドラーを生成
     const handlers = this.generateHandlers(endpoints);
@@ -79,19 +78,19 @@ class MockHandlerGenerator {
    * 入力ファイルを読み込み
    */
   readInput() {
-    const content = readFileSync(this.inputFile, 'utf-8');
+    const content = readFileSync(this.inputFile, "utf-8");
 
     // 自動判定
-    if (this.inputType === 'auto') {
-      if (this.inputFile.endsWith('.json')) {
-        this.inputType = 'openapi';
+    if (this.inputType === "auto") {
+      if (this.inputFile.endsWith(".json")) {
+        this.inputType = "openapi";
       } else if (
-        this.inputFile.endsWith('.yaml') ||
-        this.inputFile.endsWith('.yml')
+        this.inputFile.endsWith(".yaml") ||
+        this.inputFile.endsWith(".yml")
       ) {
-        this.inputType = 'openapi';
+        this.inputType = "openapi";
       } else {
-        this.inputType = 'endpoints';
+        this.inputType = "endpoints";
       }
     }
 
@@ -102,9 +101,9 @@ class MockHandlerGenerator {
    * エンドポイント情報を抽出
    */
   parseEndpoints(input) {
-    if (this.inputType === 'openapi') {
+    if (this.inputType === "openapi") {
       return this.parseOpenAPI(input);
-    } else if (this.inputType === 'endpoints') {
+    } else if (this.inputType === "endpoints") {
       return this.parseEndpointsList(input);
     }
 
@@ -119,18 +118,18 @@ class MockHandlerGenerator {
     const endpoints = [];
 
     if (!spec.paths) {
-      console.warn('⚠️  No paths found in OpenAPI spec');
+      console.warn("⚠️  No paths found in OpenAPI spec");
       return endpoints;
     }
 
     for (const [path, methods] of Object.entries(spec.paths)) {
       for (const [method, operation] of Object.entries(methods)) {
-        if (['get', 'post', 'put', 'patch', 'delete'].includes(method)) {
+        if (["get", "post", "put", "patch", "delete"].includes(method)) {
           endpoints.push({
             method,
             path: this.normalizePath(path),
-            summary: operation.summary || '',
-            operationId: operation.operationId || '',
+            summary: operation.summary || "",
+            operationId: operation.operationId || "",
             parameters: operation.parameters || [],
             requestBody: operation.requestBody || null,
             responses: operation.responses || {},
@@ -146,7 +145,7 @@ class MockHandlerGenerator {
    * エンドポイントリストからエンドポイントを抽出
    */
   parseEndpointsList(content) {
-    const lines = content.split('\n').filter((line) => line.trim());
+    const lines = content.split("\n").filter((line) => line.trim());
     const endpoints = [];
 
     for (const line of lines) {
@@ -158,8 +157,8 @@ class MockHandlerGenerator {
         endpoints.push({
           method: method.toLowerCase(),
           path: this.normalizePath(path),
-          summary: '',
-          operationId: '',
+          summary: "",
+          operationId: "",
           parameters: [],
           requestBody: null,
           responses: {},
@@ -175,7 +174,7 @@ class MockHandlerGenerator {
    */
   normalizePath(path) {
     // OpenAPIの{id}をPlaywrightの:id形式に変換
-    return path.replace(/\{([^}]+)\}/g, ':$1');
+    return path.replace(/\{([^}]+)\}/g, ":$1");
   }
 
   /**
@@ -207,10 +206,10 @@ export const generatedHandlers = [\n`;
    */
   generateHandler(endpoint) {
     const { method, path, summary } = endpoint;
-    const hasParams = path.includes(':');
-    const hasBody = ['post', 'put', 'patch'].includes(method);
+    const hasParams = path.includes(":");
+    const hasBody = ["post", "put", "patch"].includes(method);
 
-    let handler = '';
+    let handler = "";
 
     // コメント
     if (summary) {
@@ -222,16 +221,16 @@ export const generatedHandlers = [\n`;
 
     // パラメータ
     if (hasParams || hasBody) {
-      handler += ', async ({ ';
-      if (hasParams) handler += 'params';
-      if (hasParams && hasBody) handler += ', ';
-      if (hasBody) handler += 'request';
-      handler += ' }) => {\n';
+      handler += ", async ({ ";
+      if (hasParams) handler += "params";
+      if (hasParams && hasBody) handler += ", ";
+      if (hasBody) handler += "request";
+      handler += " }) => {\n";
 
       // パラメータ処理
       if (hasParams) {
         const paramNames = this.extractParamNames(path);
-        handler += `    const { ${paramNames.join(', ')} } = params;\n\n`;
+        handler += `    const { ${paramNames.join(", ")} } = params;\n\n`;
       }
 
       // リクエストボディ処理
@@ -243,7 +242,7 @@ export const generatedHandlers = [\n`;
       handler += this.generateResponse(endpoint);
       handler += `  }),\n\n`;
     } else {
-      handler += ', () => {\n';
+      handler += ", () => {\n";
       handler += this.generateResponse(endpoint);
       handler += `  }),\n\n`;
     }
@@ -267,19 +266,19 @@ export const generatedHandlers = [\n`;
 
     // デフォルトレスポンス
     let statusCode = 200;
-    if (method === 'post') statusCode = 201;
-    if (method === 'delete') statusCode = 204;
+    if (method === "post") statusCode = 201;
+    if (method === "delete") statusCode = 204;
 
     // OpenAPIのレスポンス定義から取得
     const responseKeys = Object.keys(responses);
     if (responseKeys.length > 0) {
-      const successKey = responseKeys.find((key) => key.startsWith('2'));
+      const successKey = responseKeys.find((key) => key.startsWith("2"));
       if (successKey) {
         statusCode = parseInt(successKey, 10);
       }
     }
 
-    let code = '';
+    let code = "";
 
     if (statusCode === 204) {
       // No Content
@@ -305,7 +304,7 @@ export const generatedHandlers = [\n`;
    */
   writeOutput(content) {
     const outputPath = resolve(process.cwd(), this.outputFile);
-    writeFileSync(outputPath, content, 'utf-8');
+    writeFileSync(outputPath, content, "utf-8");
     console.log(`✅ Generated: ${outputPath}`);
   }
 }
@@ -315,26 +314,26 @@ function parseArgs() {
   const args = process.argv.slice(2);
   const options = {
     inputFile: null,
-    outputFile: 'tests/mocks/generated-handlers.ts',
-    inputType: 'auto',
-    basePath: '/api',
+    outputFile: "tests/mocks/generated-handlers.ts",
+    inputType: "auto",
+    basePath: "/api",
   };
 
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
-      case '--input':
+      case "--input":
         options.inputFile = args[++i];
         break;
-      case '--output':
+      case "--output":
         options.outputFile = args[++i];
         break;
-      case '--type':
+      case "--type":
         options.inputType = args[++i];
         break;
-      case '--base-path':
+      case "--base-path":
         options.basePath = args[++i];
         break;
-      case '--help':
+      case "--help":
         printHelp();
         process.exit(0);
       default:

@@ -10,11 +10,13 @@
 ### 同期統合（リクエスト/レスポンス）
 
 **特徴**:
+
 - 即座に結果が必要
 - 強い一貫性
 - シンプルな実装
 
 **パターン**:
+
 - REST API
 - gRPC
 - GraphQL
@@ -31,11 +33,13 @@ class ShippingService {
 ```
 
 **メリット**:
+
 - 実装がシンプル
 - 即時のフィードバック
 - デバッグが容易
 
 **デメリット**:
+
 - 強い結合
 - 可用性の連鎖
 - レイテンシの累積
@@ -43,11 +47,13 @@ class ShippingService {
 ### 非同期統合（イベント駆動）
 
 **特徴**:
+
 - 疎結合
 - 高い可用性
 - 結果整合性
 
 **パターン**:
+
 - ドメインイベント
 - メッセージキュー
 - イベントソーシング
@@ -63,7 +69,7 @@ class OrderService {
 
     // イベントを発行
     await this.eventPublisher.publish(
-      new OrderConfirmedEvent(order.id, order.items, order.shippingAddress)
+      new OrderConfirmedEvent(order.id, order.items, order.shippingAddress),
     );
   }
 }
@@ -79,11 +85,13 @@ class OrderConfirmedHandler {
 ```
 
 **メリット**:
+
 - 疎結合
 - 独立したスケーリング
 - 障害耐性
 
 **デメリット**:
+
 - 実装が複雑
 - 結果整合性の管理
 - デバッグが困難
@@ -94,10 +102,10 @@ class OrderConfirmedHandler {
 
 ```typescript
 // 公開API（上流コンテキスト）
-@Controller('api/v1/orders')
+@Controller("api/v1/orders")
 class OrdersApiController {
-  @Get(':id')
-  async getOrder(@Param('id') id: string): Promise<OrderDto> {
+  @Get(":id")
+  async getOrder(@Param("id") id: string): Promise<OrderDto> {
     const order = await this.orderService.getById(id);
     return OrderDto.fromDomain(order);
   }
@@ -109,7 +117,7 @@ class SalesApiClient implements ISalesApi {
 
   async getOrder(orderId: string): Promise<OrderDto> {
     const response = await this.httpClient.get(
-      `${this.baseUrl}/api/v1/orders/${orderId}`
+      `${this.baseUrl}/api/v1/orders/${orderId}`,
     );
     return response.data;
   }
@@ -121,7 +129,7 @@ class SalesApiClient implements ISalesApi {
 ```typescript
 // イベント定義（公開言語）
 interface OrderConfirmedEvent {
-  eventType: 'OrderConfirmed';
+  eventType: "OrderConfirmed";
   occurredAt: string;
   payload: {
     orderId: string;
@@ -142,23 +150,17 @@ interface OrderConfirmedEvent {
 class OrderEventPublisher {
   async publish(event: DomainEvent): Promise<void> {
     // メッセージキューに発行
-    await this.messageQueue.publish(
-      'order.events',
-      JSON.stringify(event)
-    );
+    await this.messageQueue.publish("order.events", JSON.stringify(event));
   }
 }
 
 // 購読側（配送コンテキスト）
 class OrderEventSubscriber {
   async subscribe(): Promise<void> {
-    await this.messageQueue.subscribe(
-      'order.events',
-      async (message) => {
-        const event = JSON.parse(message);
-        await this.handleEvent(event);
-      }
-    );
+    await this.messageQueue.subscribe("order.events", async (message) => {
+      const event = JSON.parse(message);
+      await this.handleEvent(event);
+    });
   }
 
   private async handleEvent(event: OrderConfirmedEvent): Promise<void> {
@@ -181,25 +183,22 @@ class OrderSaga {
 
     try {
       // Step 1: 注文作成
-      const orderId = await this.salesService.createOrder(
-        createOrderCommand
-      );
+      const orderId = await this.salesService.createOrder(createOrderCommand);
 
       // Step 2: 在庫予約
       await this.inventoryService.reserveStock(
         orderId,
-        createOrderCommand.items
+        createOrderCommand.items,
       );
 
       // Step 3: 支払い処理
       await this.paymentService.processPayment(
         orderId,
-        createOrderCommand.payment
+        createOrderCommand.payment,
       );
 
       // 完了
       await this.salesService.confirmOrder(orderId);
-
     } catch (error) {
       // 補償トランザクション
       await this.compensate(sagaId, error);
@@ -213,13 +212,13 @@ class OrderSaga {
     // 逆順で補償
     for (const step of history.reverse()) {
       switch (step.type) {
-        case 'PAYMENT_PROCESSED':
+        case "PAYMENT_PROCESSED":
           await this.paymentService.refund(step.paymentId);
           break;
-        case 'STOCK_RESERVED':
+        case "STOCK_RESERVED":
           await this.inventoryService.releaseStock(step.reservationId);
           break;
-        case 'ORDER_CREATED':
+        case "ORDER_CREATED":
           await this.salesService.cancelOrder(step.orderId);
           break;
       }
@@ -260,7 +259,7 @@ class OrderReadModelSynchronizer {
       orderId: event.orderId,
       customerName: event.customerName,
       totalAmount: event.totalAmount,
-      status: 'CREATED',
+      status: "CREATED",
       createdAt: event.occurredAt,
     });
   }
@@ -373,12 +372,12 @@ class RetryableEventHandler {
 ```typescript
 class CircuitBreaker {
   private failures = 0;
-  private state: 'CLOSED' | 'OPEN' | 'HALF_OPEN' = 'CLOSED';
+  private state: "CLOSED" | "OPEN" | "HALF_OPEN" = "CLOSED";
   private readonly threshold = 5;
   private readonly timeout = 30000;
 
   async execute<T>(operation: () => Promise<T>): Promise<T> {
-    if (this.state === 'OPEN') {
+    if (this.state === "OPEN") {
       throw new CircuitOpenError();
     }
 
@@ -394,15 +393,15 @@ class CircuitBreaker {
 
   private onSuccess(): void {
     this.failures = 0;
-    this.state = 'CLOSED';
+    this.state = "CLOSED";
   }
 
   private onFailure(): void {
     this.failures++;
     if (this.failures >= this.threshold) {
-      this.state = 'OPEN';
+      this.state = "OPEN";
       setTimeout(() => {
-        this.state = 'HALF_OPEN';
+        this.state = "HALF_OPEN";
       }, this.timeout);
     }
   }
@@ -411,11 +410,11 @@ class CircuitBreaker {
 
 ## 選択ガイド
 
-| 要件 | 推奨戦略 |
-|-----|---------|
-| 即時の一貫性 | 同期統合 + 強い一貫性 |
-| 高い可用性 | 非同期統合 + 結果整合性 |
-| 複数コンテキストのトランザクション | サガパターン |
-| 読み取り性能の最適化 | CQRS |
-| イベント発行の信頼性 | アウトボックスパターン |
-| 障害耐性 | サーキットブレーカー |
+| 要件                               | 推奨戦略                |
+| ---------------------------------- | ----------------------- |
+| 即時の一貫性                       | 同期統合 + 強い一貫性   |
+| 高い可用性                         | 非同期統合 + 結果整合性 |
+| 複数コンテキストのトランザクション | サガパターン            |
+| 読み取り性能の最適化               | CQRS                    |
+| イベント発行の信頼性               | アウトボックスパターン  |
+| 障害耐性                           | サーキットブレーカー    |

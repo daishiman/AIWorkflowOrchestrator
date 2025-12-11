@@ -38,6 +38,7 @@ model: sonnet
 **起動タイミング**: コマンド開始直後
 
 **引数引き渡し**:
+
 - `$ARGUMENTS`: 対象ワークフローファイル（例: ci.yml, deploy.yml）
   - 未指定時: `.github/workflows/` 内の全ワークフローを分析
 
@@ -70,6 +71,7 @@ model: sonnet
    - さらなる改善提案
 
 **期待成果物**:
+
 - 最適化されたワークフローファイル（`.github/workflows/{name}-optimized.yml`）
 - 最適化レポート（コメント形式またはドキュメント）
 
@@ -78,16 +80,19 @@ model: sonnet
 エージェントが以下のスキルを必要に応じて参照:
 
 **必須スキル**:
+
 - `.claude/skills/caching-strategies-gha/SKILL.md`: キャッシュ戦略・パターン
 - `.claude/skills/parallel-jobs-gha/SKILL.md`: 並列実行の設計
 
 **条件付きスキル**:
+
 - `.claude/skills/cost-optimization-gha/SKILL.md`: コスト削減が重要な場合
 - `.claude/skills/workflow-optimization/SKILL.md`: 複雑な最適化が必要な場合
 
 ## Phase 3: 検証と完了
 
 **検証基準**:
+
 - ✅ キャッシュ戦略が適切に適用されている
 - ✅ 並列実行可能なジョブが並列化されている
 - ✅ 不要なステップが削除されている

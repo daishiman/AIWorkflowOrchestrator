@@ -9,16 +9,16 @@
  * 3. 必要に応じてカスタマイズ
  */
 
-import { test, expect, devices } from '@playwright/test';
+import { test, expect, devices } from "@playwright/test";
 // {{FIXTURE_IMPORT}} 例: import { test, expect } from '../fixtures/test-data-fixtures';
 
 // ==============================================================================
 // テストスイート: {{TEST_SUITE_NAME}} の視覚的回帰テスト
 // ==============================================================================
 
-test.describe('Visual: {{TEST_SUITE_NAME}}', () => {
+test.describe("Visual: {{TEST_SUITE_NAME}}", () => {
   // このテストスイートに@visualタグを付与（フィルタリング用）
-  test.use({ tag: '@visual' });
+  test.use({ tag: "@visual" });
 
   // ----------------------------------------------------------------------------
   // 設定: タイムアウトとリトライ
@@ -55,15 +55,17 @@ test.describe('Visual: {{TEST_SUITE_NAME}}', () => {
   // パターン1: 全ページスクリーンショット
   // ----------------------------------------------------------------------------
 
-  test('{{PAGE_NAME}} - 全ページ', async ({ page }) => {
-    await page.goto('{{PAGE_URL}}'); // 例: '/dashboard'
+  test("{{PAGE_NAME}} - 全ページ", async ({ page }) => {
+    await page.goto("{{PAGE_URL}}"); // 例: '/dashboard'
 
     // ✅ 推奨: ページの読み込み完了を待つ
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState("networkidle");
 
     // 遅延読み込み画像がある場合
     await page.evaluate(async () => {
-      const images = Array.from(document.querySelectorAll('img[loading="lazy"]'));
+      const images = Array.from(
+        document.querySelectorAll('img[loading="lazy"]'),
+      );
       for (const img of images) {
         img.scrollIntoView();
         await new Promise((resolve) => setTimeout(resolve, 100));
@@ -71,9 +73,9 @@ test.describe('Visual: {{TEST_SUITE_NAME}}', () => {
     });
 
     // 全ページスクリーンショット
-    await expect(page).toHaveScreenshot('{{PAGE_NAME}}-full-page.png', {
+    await expect(page).toHaveScreenshot("{{PAGE_NAME}}-full-page.png", {
       fullPage: true,
-      animations: 'disabled',
+      animations: "disabled",
     });
   });
 
@@ -81,14 +83,14 @@ test.describe('Visual: {{TEST_SUITE_NAME}}', () => {
   // パターン2: ビューポートスクリーンショット
   // ----------------------------------------------------------------------------
 
-  test('{{PAGE_NAME}} - ファーストビュー', async ({ page }) => {
-    await page.goto('{{PAGE_URL}}');
-    await page.waitForLoadState('networkidle');
+  test("{{PAGE_NAME}} - ファーストビュー", async ({ page }) => {
+    await page.goto("{{PAGE_URL}}");
+    await page.waitForLoadState("networkidle");
 
     // ビューポート内のみのスクリーンショット
-    await expect(page).toHaveScreenshot('{{PAGE_NAME}}-viewport.png', {
+    await expect(page).toHaveScreenshot("{{PAGE_NAME}}-viewport.png", {
       fullPage: false, // デフォルト
-      animations: 'disabled',
+      animations: "disabled",
     });
   });
 
@@ -96,9 +98,9 @@ test.describe('Visual: {{TEST_SUITE_NAME}}', () => {
   // パターン3: 要素スクリーンショット
   // ----------------------------------------------------------------------------
 
-  test('{{COMPONENT_NAME}} コンポーネント', async ({ page }) => {
-    await page.goto('{{PAGE_URL}}');
-    await page.waitForLoadState('networkidle');
+  test("{{COMPONENT_NAME}} コンポーネント", async ({ page }) => {
+    await page.goto("{{PAGE_URL}}");
+    await page.waitForLoadState("networkidle");
 
     // 特定の要素のみスクリーンショット
     const component = page.locator('[data-testid="{{COMPONENT_ID}}"]');
@@ -106,8 +108,8 @@ test.describe('Visual: {{TEST_SUITE_NAME}}', () => {
     // 要素が表示されるまで待つ
     await expect(component).toBeVisible();
 
-    await expect(component).toHaveScreenshot('{{COMPONENT_NAME}}.png', {
-      animations: 'disabled',
+    await expect(component).toHaveScreenshot("{{COMPONENT_NAME}}.png", {
+      animations: "disabled",
     });
   });
 
@@ -115,19 +117,19 @@ test.describe('Visual: {{TEST_SUITE_NAME}}', () => {
   // パターン4: 動的コンテンツのマスキング
   // ----------------------------------------------------------------------------
 
-  test('{{PAGE_NAME}} - 動的コンテンツをマスキング', async ({ page }) => {
-    await page.goto('{{PAGE_URL}}');
-    await page.waitForLoadState('networkidle');
+  test("{{PAGE_NAME}} - 動的コンテンツをマスキング", async ({ page }) => {
+    await page.goto("{{PAGE_URL}}");
+    await page.waitForLoadState("networkidle");
 
     // ✅ ベストプラクティス: 動的コンテンツをマスキング
-    await expect(page).toHaveScreenshot('{{PAGE_NAME}}-masked.png', {
+    await expect(page).toHaveScreenshot("{{PAGE_NAME}}-masked.png", {
       fullPage: true,
-      animations: 'disabled',
+      animations: "disabled",
       mask: [
         // 時刻表示
         page.locator('[data-testid="current-time"]'),
         // ユーザーアバター
-        page.locator('.user-avatar'),
+        page.locator(".user-avatar"),
         // リアルタイムグラフ
         page.locator('[data-testid="live-chart"]'),
         // {{ADDITIONAL_MASKS}}
@@ -140,9 +142,9 @@ test.describe('Visual: {{TEST_SUITE_NAME}}', () => {
   // ----------------------------------------------------------------------------
 
   const viewports = [
-    { name: 'mobile', width: 375, height: 667 },
-    { name: 'tablet', width: 768, height: 1024 },
-    { name: 'desktop', width: 1920, height: 1080 },
+    { name: "mobile", width: 375, height: 667 },
+    { name: "tablet", width: 768, height: 1024 },
+    { name: "desktop", width: 1920, height: 1080 },
   ];
 
   for (const viewport of viewports) {
@@ -152,15 +154,15 @@ test.describe('Visual: {{TEST_SUITE_NAME}}', () => {
         height: viewport.height,
       });
 
-      await page.goto('{{PAGE_URL}}');
-      await page.waitForLoadState('networkidle');
+      await page.goto("{{PAGE_URL}}");
+      await page.waitForLoadState("networkidle");
 
       await expect(page).toHaveScreenshot(
         `{{PAGE_NAME}}-${viewport.name}.png`,
         {
           fullPage: true,
-          animations: 'disabled',
-        }
+          animations: "disabled",
+        },
       );
     });
   }
@@ -169,8 +171,8 @@ test.describe('Visual: {{TEST_SUITE_NAME}}', () => {
   // パターン6: インタラクティブ状態のテスト
   // ----------------------------------------------------------------------------
 
-  test('{{COMPONENT_NAME}} - ホバー状態', async ({ page }) => {
-    await page.goto('{{PAGE_URL}}');
+  test("{{COMPONENT_NAME}} - ホバー状態", async ({ page }) => {
+    await page.goto("{{PAGE_URL}}");
 
     const button = page.locator('[data-testid="{{BUTTON_ID}}"]');
 
@@ -178,34 +180,34 @@ test.describe('Visual: {{TEST_SUITE_NAME}}', () => {
     await button.hover();
 
     // ホバー状態のスクリーンショット
-    await expect(button).toHaveScreenshot('{{COMPONENT_NAME}}-hover.png', {
-      animations: 'disabled',
+    await expect(button).toHaveScreenshot("{{COMPONENT_NAME}}-hover.png", {
+      animations: "disabled",
     });
   });
 
-  test('{{COMPONENT_NAME}} - フォーカス状態', async ({ page }) => {
-    await page.goto('{{PAGE_URL}}');
+  test("{{COMPONENT_NAME}} - フォーカス状態", async ({ page }) => {
+    await page.goto("{{PAGE_URL}}");
 
     const input = page.locator('[data-testid="{{INPUT_ID}}"]');
 
     // フォーカス状態にする
     await input.focus();
 
-    await expect(input).toHaveScreenshot('{{COMPONENT_NAME}}-focus.png', {
-      animations: 'disabled',
+    await expect(input).toHaveScreenshot("{{COMPONENT_NAME}}-focus.png", {
+      animations: "disabled",
     });
   });
 
-  test('{{COMPONENT_NAME}} - アクティブ状態', async ({ page }) => {
-    await page.goto('{{PAGE_URL}}');
+  test("{{COMPONENT_NAME}} - アクティブ状態", async ({ page }) => {
+    await page.goto("{{PAGE_URL}}");
 
     const button = page.locator('[data-testid="{{BUTTON_ID}}"]');
 
     // アクティブ状態にする（クリック中）
-    await button.dispatchEvent('mousedown');
+    await button.dispatchEvent("mousedown");
 
-    await expect(button).toHaveScreenshot('{{COMPONENT_NAME}}-active.png', {
-      animations: 'disabled',
+    await expect(button).toHaveScreenshot("{{COMPONENT_NAME}}-active.png", {
+      animations: "disabled",
     });
   });
 
@@ -213,10 +215,10 @@ test.describe('Visual: {{TEST_SUITE_NAME}}', () => {
   // パターン7: 時刻固定化
   // ----------------------------------------------------------------------------
 
-  test('{{PAGE_NAME}} - 固定時刻', async ({ page }) => {
+  test("{{PAGE_NAME}} - 固定時刻", async ({ page }) => {
     // ✅ ベストプラクティス: 時刻を固定
     await page.addInitScript(() => {
-      const mockDate = new Date('2024-01-01T12:00:00Z');
+      const mockDate = new Date("2024-01-01T12:00:00Z");
 
       // @ts-ignore
       Date = class extends Date {
@@ -234,13 +236,13 @@ test.describe('Visual: {{TEST_SUITE_NAME}}', () => {
       };
     });
 
-    await page.goto('{{PAGE_URL}}');
-    await page.waitForLoadState('networkidle');
+    await page.goto("{{PAGE_URL}}");
+    await page.waitForLoadState("networkidle");
 
     // 時刻が固定されているため、一貫したスクリーンショット
-    await expect(page).toHaveScreenshot('{{PAGE_NAME}}-fixed-time.png', {
+    await expect(page).toHaveScreenshot("{{PAGE_NAME}}-fixed-time.png", {
       fullPage: true,
-      animations: 'disabled',
+      animations: "disabled",
     });
   });
 
@@ -248,29 +250,29 @@ test.describe('Visual: {{TEST_SUITE_NAME}}', () => {
   // パターン8: カスタム閾値
   // ----------------------------------------------------------------------------
 
-  test('{{COMPONENT_NAME}} - カスタム閾値', async ({ page }) => {
-    await page.goto('{{PAGE_URL}}');
+  test("{{COMPONENT_NAME}} - カスタム閾値", async ({ page }) => {
+    await page.goto("{{PAGE_URL}}");
 
     const logo = page.locator('[data-testid="logo"]');
 
     // ロゴは厳格な閾値（ほぼ完全一致）
-    await expect(logo).toHaveScreenshot('logo.png', {
+    await expect(logo).toHaveScreenshot("logo.png", {
       maxDiffPixels: 10, // 最大10ピクセルの差異
       threshold: 0.01, // 1%の差異まで許容
-      animations: 'disabled',
+      animations: "disabled",
     });
   });
 
-  test('{{COMPONENT_NAME}} - 緩い閾値', async ({ page }) => {
-    await page.goto('{{PAGE_URL}}');
+  test("{{COMPONENT_NAME}} - 緩い閾値", async ({ page }) => {
+    await page.goto("{{PAGE_URL}}");
 
     const chart = page.locator('[data-testid="chart"]');
 
     // グラフは緩い閾値（多少の差異を許容）
-    await expect(chart).toHaveScreenshot('chart.png', {
+    await expect(chart).toHaveScreenshot("chart.png", {
       maxDiffPixels: 500,
       threshold: 0.3, // 30%の差異まで許容
-      animations: 'disabled',
+      animations: "disabled",
     });
   });
 
@@ -279,25 +281,25 @@ test.describe('Visual: {{TEST_SUITE_NAME}}', () => {
   // ----------------------------------------------------------------------------
 
   const deviceTests = [
-    { name: 'iPhone 12', device: devices['iPhone 12'] },
-    { name: 'iPad Pro', device: devices['iPad Pro'] },
-    { name: 'Desktop Chrome', device: devices['Desktop Chrome'] },
+    { name: "iPhone 12", device: devices["iPhone 12"] },
+    { name: "iPad Pro", device: devices["iPad Pro"] },
+    { name: "Desktop Chrome", device: devices["Desktop Chrome"] },
   ];
 
   for (const { name, device } of deviceTests) {
     test.describe(`デバイス: ${name}`, () => {
       test.use(device);
 
-      test('{{PAGE_NAME}}', async ({ page }) => {
-        await page.goto('{{PAGE_URL}}');
-        await page.waitForLoadState('networkidle');
+      test("{{PAGE_NAME}}", async ({ page }) => {
+        await page.goto("{{PAGE_URL}}");
+        await page.waitForLoadState("networkidle");
 
         await expect(page).toHaveScreenshot(
-          `{{PAGE_NAME}}-${name.replace(/\s+/g, '-').toLowerCase()}.png`,
+          `{{PAGE_NAME}}-${name.replace(/\s+/g, "-").toLowerCase()}.png`,
           {
             fullPage: true,
-            animations: 'disabled',
-          }
+            animations: "disabled",
+          },
         );
       });
     });
@@ -307,29 +309,29 @@ test.describe('Visual: {{TEST_SUITE_NAME}}', () => {
   // パターン10: ダークモード
   // ----------------------------------------------------------------------------
 
-  test('{{PAGE_NAME}} - ダークモード', async ({ page }) => {
+  test("{{PAGE_NAME}} - ダークモード", async ({ page }) => {
     // ダークモードを有効化
-    await page.emulateMedia({ colorScheme: 'dark' });
+    await page.emulateMedia({ colorScheme: "dark" });
 
-    await page.goto('{{PAGE_URL}}');
-    await page.waitForLoadState('networkidle');
+    await page.goto("{{PAGE_URL}}");
+    await page.waitForLoadState("networkidle");
 
-    await expect(page).toHaveScreenshot('{{PAGE_NAME}}-dark.png', {
+    await expect(page).toHaveScreenshot("{{PAGE_NAME}}-dark.png", {
       fullPage: true,
-      animations: 'disabled',
+      animations: "disabled",
     });
   });
 
-  test('{{PAGE_NAME}} - ライトモード', async ({ page }) => {
+  test("{{PAGE_NAME}} - ライトモード", async ({ page }) => {
     // ライトモードを有効化
-    await page.emulateMedia({ colorScheme: 'light' });
+    await page.emulateMedia({ colorScheme: "light" });
 
-    await page.goto('{{PAGE_URL}}');
-    await page.waitForLoadState('networkidle');
+    await page.goto("{{PAGE_URL}}");
+    await page.waitForLoadState("networkidle");
 
-    await expect(page).toHaveScreenshot('{{PAGE_NAME}}-light.png', {
+    await expect(page).toHaveScreenshot("{{PAGE_NAME}}-light.png", {
       fullPage: true,
-      animations: 'disabled',
+      animations: "disabled",
     });
   });
 });

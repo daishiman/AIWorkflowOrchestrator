@@ -26,11 +26,13 @@
 **原則**: 引数と戻り値はドメインエンティティ
 
 **理由**:
+
 - ドメイン層からDB詳細を隠蔽
 - 型安全性の確保
 - ドメインロジックとの統合
 
 **概念例**:
+
 ```typescript
 interface IWorkflowRepository {
   add(workflow: Workflow): Promise<void>;
@@ -43,10 +45,12 @@ interface IWorkflowRepository {
 ### 3. インターフェースの配置
 
 **原則**:
+
 - インターフェース → ドメイン層（`src/shared/core/interfaces/`）
 - 実装 → インフラストラクチャ層（`src/shared/infrastructure/`）
 
 **依存の方向**:
+
 ```
 Infrastructure層 → ドメイン層（インターフェース）
                         ↑
@@ -58,17 +62,20 @@ Infrastructure層 → ドメイン層（インターフェース）
 **原則**: リポジトリは集約ルートに対してのみ定義
 
 **理由**:
+
 - 集約の整合性を保護
 - アクセス経路の明確化
 - 不変条件の維持
 
 **正しい例**:
+
 ```
 IOrderRepository      → Order集約ルート
 ICustomerRepository   → Customer集約ルート
 ```
 
 **避けるべき例**:
+
 ```
 IOrderItemRepository  → OrderItem（集約内エンティティ）
 ```
@@ -78,6 +85,7 @@ IOrderItemRepository  → OrderItem（集約内エンティティ）
 ### 検索メソッド
 
 **基本パターン**:
+
 - `findById(id)`: 単一エンティティ取得、見つからない場合null
 - `getById(id)`: 単一エンティティ取得、見つからない場合例外
 - `findByXxx(criteria)`: 条件検索、配列を返す
@@ -93,21 +101,25 @@ IOrderItemRepository  → OrderItem（集約内エンティティ）
 ### 永続化メソッド
 
 **パターン**:
+
 - `add(entity)`: 新規追加
 - `update(entity)` or `save(entity)`: 更新
 - `remove(entity)`: 削除
 
 **Unit of Work パターンとの組み合わせ**:
+
 - トランザクション管理は上位層で
 - リポジトリは個別操作のみ
 
 ### 存在確認メソッド
 
 **パターン**:
+
 - `exists(id)`: IDで存在確認
 - `existsByXxx(criteria)`: 条件で存在確認
 
 **用途**:
+
 - 重複チェック
 - 前提条件の検証
 - パフォーマンス最適化（全件取得を避ける）
@@ -117,20 +129,24 @@ IOrderItemRepository  → OrderItem（集約内エンティティ）
 ### 1. 戻り値の型
 
 **null許容**:
+
 - `findById`: `Promise<Entity | null>`
 - 見つからない場合はnullを返す
 
 **例外スロー**:
+
 - `getById`: `Promise<Entity>` (例外スロー)
 - 見つからない場合は例外
 
 **使い分け**:
+
 - 存在しない可能性が高い → find系
 - 存在することが前提 → get系
 
 ### 2. 引数の設計
 
 **ID型の使用**:
+
 ```typescript
 // ✓ 良い: 値オブジェクトのID
 findById(id: WorkflowId): Promise<Workflow | null>
@@ -140,6 +156,7 @@ findById(id: string): Promise<Workflow | null>
 ```
 
 **検索条件の構造化**:
+
 ```typescript
 // 複雑な条件の場合は専用の型を定義
 interface WorkflowSearchCriteria {
@@ -154,6 +171,7 @@ findByCriteria(criteria: WorkflowSearchCriteria): Promise<Workflow[]>
 ### 3. ページネーション
 
 **標準的なインターフェース**:
+
 ```typescript
 interface PaginationOptions {
   page: number;
@@ -179,10 +197,12 @@ findAll(options: PaginationOptions): Promise<PaginatedResult<Workflow>>
 **症状**: すべてのエンティティに同じインターフェース
 
 **問題**:
+
 - ドメイン固有のクエリが表現できない
 - 型安全性の低下
 
 **解決策**:
+
 - 集約ごとに専用リポジトリを定義
 
 ### 2. ビジネスロジックの混入
@@ -190,10 +210,12 @@ findAll(options: PaginationOptions): Promise<PaginatedResult<Workflow>>
 **症状**: リポジトリ内でビジネスルールを実装
 
 **問題**:
+
 - 責務の混在
 - テスト困難
 
 **解決策**:
+
 - リポジトリはCRUD操作のみ
 - ビジネスロジックはドメインサービスへ
 
@@ -202,9 +224,11 @@ findAll(options: PaginationOptions): Promise<PaginatedResult<Workflow>>
 **症状**: リポジトリインターフェースにSQL固有の概念
 
 **問題**:
+
 - ドメイン層がDB詳細に依存
 
 **解決策**:
+
 - インターフェースはドメイン用語のみ使用
 - 実装でDBマッピング
 

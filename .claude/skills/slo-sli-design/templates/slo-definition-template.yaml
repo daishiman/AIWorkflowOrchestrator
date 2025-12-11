@@ -22,8 +22,8 @@ slos:
       exclusions:
         - "ヘルスチェックエンドポイント (/health)"
         - "メトリクスエンドポイント (/metrics)"
-    slo_target: 99.9  # 99.9%
-    measurement_window: "30d"  # 30日間のローリングウィンドウ
+    slo_target: 99.9 # 99.9%
+    measurement_window: "30d" # 30日間のローリングウィンドウ
     error_budget:
       calculation: "(1 - 0.999) * total_requests_30d"
       policy:
@@ -49,7 +49,7 @@ slos:
             rate(http_request_duration_seconds_bucket{service="{{SERVICE_NAME}}"}[{{WINDOW}}])
           )
       percentile: 99
-    slo_target: 0.5  # 500ms
+    slo_target: 0.5 # 500ms
     measurement_window: "30d"
     error_budget:
       calculation: "Requests with latency > 500ms"
@@ -70,7 +70,7 @@ slos:
           sum(rate(http_requests_total{service="{{SERVICE_NAME}}", status=~"5.."}[{{WINDOW}}]))
           /
           sum(rate(http_requests_total{service="{{SERVICE_NAME}}"}[{{WINDOW}}]))
-    slo_target: 0.001  # 0.1% (99.9%の成功率)
+    slo_target: 0.001 # 0.1% (99.9%の成功率)
     measurement_window: "30d"
     error_budget:
       calculation: "(1 - 0.999) * total_requests_30d"

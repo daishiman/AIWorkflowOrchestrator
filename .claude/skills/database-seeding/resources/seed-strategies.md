@@ -9,26 +9,32 @@
 ```typescript
 // 例: ロール定義
 const roles = [
-  { id: 1, name: 'admin', displayName: '管理者', permissions: ['*'] },
-  { id: 2, name: 'editor', displayName: '編集者', permissions: ['read', 'write'] },
-  { id: 3, name: 'viewer', displayName: '閲覧者', permissions: ['read'] },
+  { id: 1, name: "admin", displayName: "管理者", permissions: ["*"] },
+  {
+    id: 2,
+    name: "editor",
+    displayName: "編集者",
+    permissions: ["read", "write"],
+  },
+  { id: 3, name: "viewer", displayName: "閲覧者", permissions: ["read"] },
 ];
 
 // 例: アプリケーション設定
 const settings = [
-  { key: 'app.name', value: 'MyApp', description: 'アプリケーション名' },
-  { key: 'app.timezone', value: 'Asia/Tokyo', description: 'タイムゾーン' },
+  { key: "app.name", value: "MyApp", description: "アプリケーション名" },
+  { key: "app.timezone", value: "Asia/Tokyo", description: "タイムゾーン" },
 ];
 
 // 例: カテゴリマスター
 const categories = [
-  { id: 1, name: 'electronics', displayName: '電子機器' },
-  { id: 2, name: 'books', displayName: '書籍' },
-  { id: 3, name: 'clothing', displayName: '衣類' },
+  { id: 1, name: "electronics", displayName: "電子機器" },
+  { id: 2, name: "books", displayName: "書籍" },
+  { id: 3, name: "clothing", displayName: "衣類" },
 ];
 ```
 
 **特徴**:
+
 - 静的で変更が少ない
 - IDが固定されることが多い
 - すべての環境で同一
@@ -38,31 +44,32 @@ const categories = [
 開発環境でのテスト・デバッグ用データ。
 
 ```typescript
-import { faker } from '@faker-js/faker/locale/ja';
+import { faker } from "@faker-js/faker/locale/ja";
 
 // 開発用ユーザー
 const devUsers = [
   // 固定の開発アカウント
   {
-    email: 'admin@example.com',
-    password: 'password123',  // 開発環境のみ
-    role: 'admin',
+    email: "admin@example.com",
+    password: "password123", // 開発環境のみ
+    role: "admin",
   },
   {
-    email: 'user@example.com',
-    password: 'password123',
-    role: 'user',
+    email: "user@example.com",
+    password: "password123",
+    role: "user",
   },
   // ランダム生成ユーザー
   ...Array.from({ length: 50 }, () => ({
     email: faker.internet.email(),
     name: faker.person.fullName(),
-    role: 'user',
+    role: "user",
   })),
 ];
 ```
 
 **特徴**:
+
 - リアルなダミーデータ
 - エッジケースを含む
 - 本番には投入しない
@@ -76,28 +83,29 @@ const devUsers = [
 export const testFixtures = {
   // 特定のテストシナリオ用
   userWithOrders: {
-    user: { id: 1001, email: 'test-user@example.com' },
+    user: { id: 1001, email: "test-user@example.com" },
     orders: [
-      { id: 2001, userId: 1001, status: 'pending', total: 1000 },
-      { id: 2002, userId: 1001, status: 'completed', total: 2500 },
+      { id: 2001, userId: 1001, status: "pending", total: 1000 },
+      { id: 2002, userId: 1001, status: "completed", total: 2500 },
     ],
   },
 
   // エッジケース
   userWithNoOrders: {
-    user: { id: 1002, email: 'no-orders@example.com' },
+    user: { id: 1002, email: "no-orders@example.com" },
     orders: [],
   },
 
   // 境界値テスト
   orderWithMaxItems: {
     orderId: 3001,
-    itemCount: 100,  // 最大アイテム数
+    itemCount: 100, // 最大アイテム数
   },
 };
 ```
 
 **特徴**:
+
 - 決定論的（毎回同じ結果）
 - テストケースに直接対応
 - 最小限のデータ
@@ -117,13 +125,14 @@ const productionSeeds = {
 
   // 必須設定
   requiredSettings: [
-    { key: 'app.initialized', value: 'true' },
-    { key: 'app.version', value: '1.0.0' },
+    { key: "app.initialized", value: "true" },
+    { key: "app.version", value: "1.0.0" },
   ],
 };
 ```
 
 **特徴**:
+
 - 最小限のデータ
 - セキュリティを考慮
 - 機密情報は環境変数から
@@ -134,25 +143,25 @@ const productionSeeds = {
 
 ```typescript
 // seeds/index.ts
-import { seedMaster } from './master';
-import { seedDevelopment } from './development';
-import { seedTest } from './test';
-import { seedProduction } from './production';
+import { seedMaster } from "./master";
+import { seedDevelopment } from "./development";
+import { seedTest } from "./test";
+import { seedProduction } from "./production";
 
 export async function runSeeds(db: Database) {
-  const env = process.env.NODE_ENV || 'development';
+  const env = process.env.NODE_ENV || "development";
 
   // すべての環境でマスターシードを実行
   await seedMaster(db);
 
   switch (env) {
-    case 'production':
+    case "production":
       await seedProduction(db);
       break;
-    case 'test':
+    case "test":
       await seedTest(db);
       break;
-    case 'development':
+    case "development":
     default:
       await seedDevelopment(db);
       break;
@@ -198,15 +207,15 @@ export async function runSeeds(db: Database, options: SeedOptions) {
 ```typescript
 // マイグレーションスタイルのシード管理
 const seedMigrations = [
-  { version: '001', name: 'initial_roles', run: seedRoles },
-  { version: '002', name: 'initial_categories', run: seedCategories },
-  { version: '003', name: 'admin_user', run: seedAdminUser },
+  { version: "001", name: "initial_roles", run: seedRoles },
+  { version: "002", name: "initial_categories", run: seedCategories },
+  { version: "003", name: "admin_user", run: seedAdminUser },
 ];
 
 export async function runSeedMigrations(db: Database) {
   // 実行済みシードを取得
   const executed = await db.select().from(seedHistory);
-  const executedVersions = new Set(executed.map(s => s.version));
+  const executedVersions = new Set(executed.map((s) => s.version));
 
   // 未実行のシードを順番に実行
   for (const seed of seedMigrations) {
@@ -280,12 +289,12 @@ async function seedAll(db: Database) {
 
 ### 環境別データ量
 
-| 環境 | ユーザー数 | 注文数 | 目的 |
-|------|----------|--------|------|
-| 開発 | 50-100 | 200-500 | 一般的なシナリオテスト |
-| テスト | 10-20 | 50-100 | 特定シナリオの検証 |
-| ステージング | 1000+ | 10000+ | パフォーマンステスト |
-| 本番 | 最小限 | 0 | 初期設定のみ |
+| 環境         | ユーザー数 | 注文数  | 目的                   |
+| ------------ | ---------- | ------- | ---------------------- |
+| 開発         | 50-100     | 200-500 | 一般的なシナリオテスト |
+| テスト       | 10-20      | 50-100  | 特定シナリオの検証     |
+| ステージング | 1000+      | 10000+  | パフォーマンステスト   |
+| 本番         | 最小限     | 0       | 初期設定のみ           |
 
 ### スケーラブルなシード設計
 
@@ -318,18 +327,21 @@ async function seedWithConfig(db: Database, config: SeedConfig) {
 ## チェックリスト
 
 ### シード設計時
+
 - [ ] データ分類（マスター/開発/テスト/本番）が明確か？
 - [ ] 依存関係が整理されているか？
 - [ ] 環境ごとの戦略が決まっているか？
 - [ ] データ量が適切か？
 
 ### 実装時
+
 - [ ] 冪等性が確保されているか？
 - [ ] エラーハンドリングがあるか？
 - [ ] ログ出力があるか？
 - [ ] ロールバック可能か？
 
 ### 運用時
+
 - [ ] シード実行手順が文書化されているか？
 - [ ] 本番シードの承認フローがあるか？
 - [ ] シードのバージョン管理ができているか？

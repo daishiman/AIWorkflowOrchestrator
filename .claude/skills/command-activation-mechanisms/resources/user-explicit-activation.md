@@ -17,6 +17,7 @@
 
 ```markdown
 # コマンド定義
+
 Target: $ARGUMENTS
 ```
 
@@ -32,6 +33,7 @@ Target: $ARGUMENTS
 
 ```markdown
 # コマンド定義
+
 Environment: $1
 Feature: $2
 ```
@@ -56,13 +58,15 @@ Target: $ARGUMENTS (default: main)
 ## ベストプラクティス
 
 1. **argument-hint**: 引数の説明を追加
+
 ```yaml
 argument-hint: "[environment] [feature-name]"
 ```
 
 2. **バリデーション**: 引数の検証
+
 ```markdown
 If $1 not in ["dev", "staging", "prod"]:
-  Display error
-  Exit
+Display error
+Exit
 ```

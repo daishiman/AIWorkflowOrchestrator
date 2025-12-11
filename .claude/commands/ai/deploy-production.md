@@ -70,6 +70,7 @@ disable-model-invocation: true
    - 承認者への通知（手動）
 
 **期待成果物**:
+
 - 本番デプロイ前検証レポート
 - デプロイ承認リクエスト
 - ロールバックプラン
@@ -108,6 +109,7 @@ disable-model-invocation: true
    - リリースノート
 
 **期待成果物**:
+
 - 本番デプロイ成功レポート
 - 本番URL
 - リリースノート
@@ -120,20 +122,24 @@ disable-model-invocation: true
 エージェントが以下のスキルを必要に応じて参照:
 
 **必須スキル（devops-eng）**:
+
 - `.claude/skills/deployment-strategies/SKILL.md`: デプロイ戦略
 - `.claude/skills/production-deployment-checklist/SKILL.md`: 本番デプロイチェックリスト
 - `.claude/skills/railway-integration/SKILL.md`: Railway統合
 
 **必須スキル（gha-workflow-architect）**:
+
 - `.claude/skills/deployment-verification/SKILL.md`: デプロイ検証
 
 **条件付きスキル**:
+
 - `.claude/skills/rollback-strategies/SKILL.md`: デプロイ失敗時のみ
 - `.claude/skills/production-security/SKILL.md`: セキュリティ問題発生時のみ
 
 ## Phase 4: 検証と完了
 
 **検証基準**:
+
 - ✅ すべての品質ゲートが成功している
 - ✅ 承認プロセスが完了している
 - ✅ 本番ビルドが正常に完了している

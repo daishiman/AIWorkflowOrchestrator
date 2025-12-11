@@ -8,8 +8,8 @@
  *   node prompt-evaluator.mjs --test-file tests.json --output results.json
  */
 
-import fs from 'fs/promises';
-import path from 'path';
+import fs from "fs/promises";
+import path from "path";
 
 // ====================
 // 型定義
@@ -82,7 +82,7 @@ function validateLength(output, min, max) {
     valid: length >= min && length <= max,
     actual: length,
     min,
-    max
+    max,
   };
 }
 
@@ -93,17 +93,17 @@ function checkKeywords(output, required = [], forbidden = []) {
   const lowerOutput = output.toLowerCase();
 
   const missingRequired = required.filter(
-    kw => !lowerOutput.includes(kw.toLowerCase())
+    (kw) => !lowerOutput.includes(kw.toLowerCase()),
   );
 
-  const foundForbidden = forbidden.filter(
-    kw => lowerOutput.includes(kw.toLowerCase())
+  const foundForbidden = forbidden.filter((kw) =>
+    lowerOutput.includes(kw.toLowerCase()),
   );
 
   return {
     passed: missingRequired.length === 0 && foundForbidden.length === 0,
     missingRequired,
-    foundForbidden
+    foundForbidden,
   };
 }
 
@@ -114,7 +114,7 @@ function calculateSimilarity(str1, str2) {
   const tokens1 = new Set(str1.toLowerCase().split(/\s+/));
   const tokens2 = new Set(str2.toLowerCase().split(/\s+/));
 
-  const intersection = new Set([...tokens1].filter(t => tokens2.has(t)));
+  const intersection = new Set([...tokens1].filter((t) => tokens2.has(t)));
   const union = new Set([...tokens1, ...tokens2]);
 
   return intersection.size / union.size;
@@ -132,26 +132,26 @@ function evaluateTestCase(testCase, output) {
   const evaluation = {
     passed: false,
     score: 0,
-    details: {}
+    details: {},
   };
 
   switch (type) {
-    case 'accuracy':
-      if (expected.match_type === 'exact') {
+    case "accuracy":
+      if (expected.match_type === "exact") {
         evaluation.passed = exactMatch(output, expected.output);
         evaluation.score = evaluation.passed ? 1.0 : 0.0;
-      } else if (expected.match_type === 'contains') {
+      } else if (expected.match_type === "contains") {
         evaluation.passed = containsMatch(output, expected.output);
         evaluation.score = evaluation.passed ? 1.0 : 0.0;
-      } else if (expected.match_type === 'semantic') {
+      } else if (expected.match_type === "semantic") {
         const similarity = calculateSimilarity(output, expected.output);
         evaluation.score = similarity;
         evaluation.passed = similarity >= (expected.threshold || 0.8);
       }
       break;
 
-    case 'format':
-      if (expected.format === 'json') {
+    case "format":
+      if (expected.format === "json") {
         const jsonResult = validateJSON(output);
         evaluation.passed = jsonResult.valid;
         evaluation.score = jsonResult.valid ? 1.0 : 0.0;
@@ -159,15 +159,15 @@ function evaluateTestCase(testCase, output) {
       }
       break;
 
-    case 'edge_case':
+    case "edge_case":
       const acceptableBehaviors = expected.acceptable_behaviors || [];
-      evaluation.passed = acceptableBehaviors.some(
-        behavior => output.includes(behavior)
+      evaluation.passed = acceptableBehaviors.some((behavior) =>
+        output.includes(behavior),
       );
       evaluation.score = evaluation.passed ? 1.0 : 0.0;
       break;
 
-    case 'safety':
+    case "safety":
       const forbidden = expected.forbidden_content || [];
       const keywordCheck = checkKeywords(output, [], forbidden);
       evaluation.passed = keywordCheck.passed;
@@ -194,20 +194,20 @@ async function runTestSuite(testCases, options = {}) {
 
     // 実際の実装では、ここでLLM APIを呼び出す
     // このスクリプトではシミュレーション
-    const simulatedOutput = testCase.expected?.output || '';
+    const simulatedOutput = testCase.expected?.output || "";
 
     const evaluation = evaluateTestCase(testCase, simulatedOutput);
 
     results.push({
       testId: testCase.id,
       testName: testCase.name,
-      status: evaluation.passed ? 'passed' : 'failed',
+      status: evaluation.passed ? "passed" : "failed",
       output: {
         actual: simulatedOutput,
-        expected: testCase.expected?.output
+        expected: testCase.expected?.output,
       },
       evaluation,
-      duration: Date.now() - startTime
+      duration: Date.now() - startTime,
     });
   }
 
@@ -220,21 +220,21 @@ async function runTestSuite(testCases, options = {}) {
 function generateReport(results) {
   const summary = {
     total: results.length,
-    passed: results.filter(r => r.status === 'passed').length,
-    failed: results.filter(r => r.status === 'failed').length,
-    error: results.filter(r => r.status === 'error').length
+    passed: results.filter((r) => r.status === "passed").length,
+    failed: results.filter((r) => r.status === "failed").length,
+    error: results.filter((r) => r.status === "error").length,
   };
 
-  summary.passRate = (summary.passed / summary.total * 100).toFixed(1);
+  summary.passRate = ((summary.passed / summary.total) * 100).toFixed(1);
 
   const byType = {};
   for (const result of results) {
-    const type = result.testId.split('-')[0];
+    const type = result.testId.split("-")[0];
     if (!byType[type]) {
       byType[type] = { total: 0, passed: 0, failed: 0 };
     }
     byType[type].total++;
-    if (result.status === 'passed') {
+    if (result.status === "passed") {
       byType[type].passed++;
     } else {
       byType[type].failed++;
@@ -246,7 +246,7 @@ function generateReport(results) {
     summary,
     byType,
     results,
-    failedTests: results.filter(r => r.status !== 'passed')
+    failedTests: results.filter((r) => r.status !== "passed"),
   };
 }
 
@@ -258,7 +258,7 @@ async function main() {
   const args = process.argv.slice(2);
 
   // ヘルプ表示
-  if (args.includes('--help') || args.includes('-h')) {
+  if (args.includes("--help") || args.includes("-h")) {
     console.log(`
 Prompt Evaluator Script
 
@@ -278,12 +278,12 @@ Prompt Evaluator Script
   }
 
   // 引数パース
-  const testFileIndex = args.indexOf('--test-file');
-  const outputIndex = args.indexOf('--output');
-  const verbose = args.includes('--verbose');
+  const testFileIndex = args.indexOf("--test-file");
+  const outputIndex = args.indexOf("--output");
+  const verbose = args.includes("--verbose");
 
   if (testFileIndex === -1) {
-    console.error('エラー: --test-file オプションが必要です');
+    console.error("エラー: --test-file オプションが必要です");
     process.exit(1);
   }
 
@@ -293,7 +293,7 @@ Prompt Evaluator Script
   try {
     // テストケース読み込み
     if (verbose) console.log(`テストファイル読み込み中: ${testFile}`);
-    const testContent = await fs.readFile(testFile, 'utf-8');
+    const testContent = await fs.readFile(testFile, "utf-8");
     const testCases = JSON.parse(testContent);
 
     // テスト実行
@@ -310,14 +310,14 @@ Prompt Evaluator Script
     }
 
     // コンソール出力
-    console.log('\n===== テスト結果サマリー =====');
+    console.log("\n===== テスト結果サマリー =====");
     console.log(`合計: ${report.summary.total}`);
     console.log(`成功: ${report.summary.passed} (${report.summary.passRate}%)`);
     console.log(`失敗: ${report.summary.failed}`);
     console.log(`エラー: ${report.summary.error}`);
 
     if (report.failedTests.length > 0) {
-      console.log('\n===== 失敗したテスト =====');
+      console.log("\n===== 失敗したテスト =====");
       for (const failed of report.failedTests) {
         console.log(`- ${failed.testId}: ${failed.testName}`);
       }
@@ -325,9 +325,8 @@ Prompt Evaluator Script
 
     // 終了コード
     process.exit(report.summary.failed > 0 ? 1 : 0);
-
   } catch (error) {
-    console.error('エラー:', error.message);
+    console.error("エラー:", error.message);
     process.exit(1);
   }
 }

@@ -7,20 +7,20 @@ GitHub Actionsのコンテキストオブジェクトは、ワークフロー実
 
 ## 主要コンテキスト一覧
 
-| コンテキスト | スコープ | 用途 |
-|-------------|---------|------|
-| `github` | すべて | イベント情報、リポジトリ、アクター |
-| `env` | すべて | 環境変数 |
-| `vars` | すべて | 設定変数（Configuration variables） |
-| `job` | ジョブ、ステップ | ジョブ実行情報 |
-| `jobs` | 再利用可能ワークフロー | 呼び出し元ジョブ情報 |
-| `steps` | ステップ | ステップ出力、結果 |
-| `runner` | すべて | ランナー環境情報 |
-| `secrets` | すべて | シークレット |
-| `strategy` | すべて | マトリクス戦略情報 |
-| `matrix` | すべて | 現在のマトリクス値 |
-| `needs` | すべて | 依存ジョブの出力 |
-| `inputs` | workflow_dispatch/call | ワークフロー入力 |
+| コンテキスト | スコープ               | 用途                                |
+| ------------ | ---------------------- | ----------------------------------- |
+| `github`     | すべて                 | イベント情報、リポジトリ、アクター  |
+| `env`        | すべて                 | 環境変数                            |
+| `vars`       | すべて                 | 設定変数（Configuration variables） |
+| `job`        | ジョブ、ステップ       | ジョブ実行情報                      |
+| `jobs`       | 再利用可能ワークフロー | 呼び出し元ジョブ情報                |
+| `steps`      | ステップ               | ステップ出力、結果                  |
+| `runner`     | すべて                 | ランナー環境情報                    |
+| `secrets`    | すべて                 | シークレット                        |
+| `strategy`   | すべて                 | マトリクス戦略情報                  |
+| `matrix`     | すべて                 | 現在のマトリクス値                  |
+| `needs`      | すべて                 | 依存ジョブの出力                    |
+| `inputs`     | workflow_dispatch/call | ワークフロー入力                    |
 
 ## github コンテキスト
 
@@ -148,14 +148,14 @@ github.token               # 自動生成されるGITHUB_TOKENへの参照
 
 ```yaml
 env:
-  NODE_VERSION: '18'
-  DEPLOY_ENV: 'production'
+  NODE_VERSION: "18"
+  DEPLOY_ENV: "production"
 
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      BUILD_TYPE: 'release'
+      BUILD_TYPE: "release"
     steps:
       - if: env.DEPLOY_ENV == 'production'
         run: echo "Production deployment"
@@ -166,14 +166,14 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - env:
-          STEP_VAR: 'local'
+          STEP_VAR: "local"
         run: |
           echo "Node: ${{ env.NODE_VERSION }}"
           echo "Build: ${{ env.BUILD_TYPE }}"
           echo "Step: ${{ env.STEP_VAR }}"
 ```
 
-### GITHUB_* 環境変数
+### GITHUB\_\* 環境変数
 
 ```yaml
 # 自動設定される環境変数も参照可能
@@ -453,7 +453,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment to deploy'
+        description: "Environment to deploy"
         required: true
         type: choice
         options:
@@ -461,7 +461,7 @@ on:
           - staging
           - production
       dry-run:
-        description: 'Perform dry run'
+        description: "Perform dry run"
         required: false
         type: boolean
         default: false

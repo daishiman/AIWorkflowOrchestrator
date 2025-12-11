@@ -222,7 +222,7 @@ import { useOptimistic } from "react";
 function PostList({ posts }) {
   const [optimisticPosts, addOptimisticPost] = useOptimistic(
     posts,
-    (state, newPost) => [...state, newPost]
+    (state, newPost) => [...state, newPost],
   );
   // ...
 }

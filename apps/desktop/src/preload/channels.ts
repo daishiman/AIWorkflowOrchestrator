@@ -84,6 +84,14 @@ export const IPC_CHANNELS = {
   // Dialog operations
   DIALOG_SHOW_OPEN: "dialog:showOpenDialog",
   DIALOG_SHOW_SAVE: "dialog:showSaveDialog",
+
+  // Workspace operations
+  WORKSPACE_LOAD: "workspace:load",
+  WORKSPACE_SAVE: "workspace:save",
+  WORKSPACE_ADD_FOLDER: "workspace:add-folder",
+  WORKSPACE_REMOVE_FOLDER: "workspace:remove-folder",
+  WORKSPACE_VALIDATE_PATHS: "workspace:validate-paths",
+  WORKSPACE_FOLDER_CHANGED: "workspace:folder-changed",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -146,6 +154,12 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   // Dialog channels
   IPC_CHANNELS.DIALOG_SHOW_OPEN,
   IPC_CHANNELS.DIALOG_SHOW_SAVE,
+  // Workspace channels
+  IPC_CHANNELS.WORKSPACE_LOAD,
+  IPC_CHANNELS.WORKSPACE_SAVE,
+  IPC_CHANNELS.WORKSPACE_ADD_FOLDER,
+  IPC_CHANNELS.WORKSPACE_REMOVE_FOLDER,
+  IPC_CHANNELS.WORKSPACE_VALIDATE_PATHS,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [
@@ -156,4 +170,6 @@ export const ALLOWED_ON_CHANNELS: readonly string[] = [
   IPC_CHANNELS.THEME_SYSTEM_CHANGED,
   // Auth channels
   IPC_CHANNELS.AUTH_STATE_CHANGED,
+  // Workspace channels
+  IPC_CHANNELS.WORKSPACE_FOLDER_CHANGED,
 ];

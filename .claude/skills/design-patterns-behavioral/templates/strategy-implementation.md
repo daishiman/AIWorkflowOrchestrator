@@ -225,9 +225,9 @@ export class {{ExecutorName}} implements IWorkflowExecutor<{{InputType}}, {{Outp
 
 ## 命名規則
 
-| 要素 | 命名規則 | 例 |
-|------|---------|-----|
-| Interface | I + 機能名 + Strategy | IPaymentStrategy |
-| Concrete | 具体名 + Strategy | CreditCardPaymentStrategy |
-| Context | 機能名 + Context | PaymentContext |
-| Executor | 機能名 + Executor | AuthenticationExecutor |
+| 要素      | 命名規則              | 例                        |
+| --------- | --------------------- | ------------------------- |
+| Interface | I + 機能名 + Strategy | IPaymentStrategy          |
+| Concrete  | 具体名 + Strategy     | CreditCardPaymentStrategy |
+| Context   | 機能名 + Context      | PaymentContext            |
+| Executor  | 機能名 + Executor     | AuthenticationExecutor    |

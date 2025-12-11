@@ -15,6 +15,7 @@
 ### 1. ステージングファイルのみ処理
 
 **lint-staged使用**:
+
 ```json
 {
   "lint-staged": {
@@ -26,21 +27,25 @@
 **効果**: 全ファイルスキャン回避
 
 **比較**:
+
 - 全ファイル: 30秒
 - ステージングのみ: 3秒
 
 ### 2. キャッシュ活用
 
 **ESLint**:
+
 ```bash
 eslint --cache --fix
 ```
 
 **効果**:
+
 - 初回: 10秒
 - 2回目以降: 2秒（80%削減）
 
 **Prettier**:
+
 ```bash
 prettier --cache --write
 ```
@@ -50,29 +55,32 @@ prettier --cache --write
 **lint-stagedデフォルト**: 並列実行
 
 **カスタマイズ**:
+
 ```javascript
 // .lintstagedrc.js
 module.exports = {
-  concurrent: true,  // 並列実行（デフォルト）
-  chunkSize: 10,     // 10ファイルずつ処理
-  '*.{ts,tsx}': ['eslint --fix', 'prettier --write']
+  concurrent: true, // 並列実行（デフォルト）
+  chunkSize: 10, // 10ファイルずつ処理
+  "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
 };
 ```
 
 ### 4. 対象ファイル絞り込み
 
 **不要なファイル除外**:
+
 ```json
 {
   "lint-staged": {
     "*.{ts,tsx}": ["eslint --fix"],
-    "!**/*.d.ts": ["eslint --fix"],  // 型定義除外
-    "!**/dist/**": ["eslint --fix"]  // ビルド成果物除外
+    "!**/*.d.ts": ["eslint --fix"], // 型定義除外
+    "!**/dist/**": ["eslint --fix"] // ビルド成果物除外
   }
 }
 ```
 
 **.eslintignore活用**:
+
 ```
 node_modules/
 dist/
@@ -83,20 +91,24 @@ build/
 ### 5. 型チェックスキップ
 
 **型チェックは遅い**:
+
 ```bash
 tsc --noEmit  # 5-10秒かかる
 ```
 
 **代替案**:
+
 - pre-pushで実行（pre-commitではスキップ）
 - CI/CDで実行
 
 **pre-commit**:
+
 ```bash
 pnpm lint-staged  # 型チェックなし、高速
 ```
 
 **pre-push**:
+
 ```bash
 pnpm tsc --noEmit  # push前に型チェック
 pnpm test
@@ -105,11 +117,13 @@ pnpm test
 ### 6. テスト実行戦略
 
 **全テスト実行は遅い**:
+
 ```bash
 pnpm test  # 30秒-数分
 ```
 
 **最適化**:
+
 ```javascript
 // 関連テストのみ
 '*.{ts,tsx}': (filenames) => [
@@ -119,6 +133,7 @@ pnpm test  # 30秒-数分
 ```
 
 **または**:
+
 - pre-commit: テストなし（高速）
 - pre-push: 全テスト（厳格）
 
@@ -133,21 +148,23 @@ time git commit -m "test"
 
 ### 目標値
 
-| フック | 目標時間 | 許容時間 |
-|--------|---------|---------|
-| pre-commit | <3秒 | <5秒 |
-| commit-msg | <1秒 | <2秒 |
-| pre-push | <30秒 | <60秒 |
+| フック     | 目標時間 | 許容時間 |
+| ---------- | -------- | -------- |
+| pre-commit | <3秒     | <5秒     |
+| commit-msg | <1秒     | <2秒     |
+| pre-push   | <30秒    | <60秒    |
 
 ### 最適化前後比較
 
 **最適化前**:
+
 ```bash
 # 全ファイルlint + format + 型チェック + テスト
 real    0m45.231s
 ```
 
 **最適化後**:
+
 ```bash
 # ステージングファイルのみ lint + format
 real    0m2.847s
@@ -160,11 +177,13 @@ real    0m2.847s
 ### 問題1: コミットが遅すぎる
 
 **診断**:
+
 ```bash
 DEBUG=lint-staged* git commit
 ```
 
 **解決策**:
+
 1. キャッシュ有効化
 2. 対象ファイル絞り込み
 3. 型チェック/テストをpre-pushに移行
@@ -174,12 +193,14 @@ DEBUG=lint-staged* git commit
 **症状**: `JavaScript heap out of memory`
 
 **解決**:
+
 ```bash
 # Node.jsメモリ増加
 export NODE_OPTIONS="--max-old-space-size=4096"
 ```
 
 **lint-staged設定**:
+
 ```javascript
 {
   chunkSize: 5  # チャンクサイズ削減
@@ -191,9 +212,10 @@ export NODE_OPTIONS="--max-old-space-size=4096"
 **症状**: ランダムに失敗
 
 **解決**:
+
 ```javascript
 {
-  concurrent: false  // 直列実行に変更
+  concurrent: false; // 直列実行に変更
 }
 ```
 
@@ -204,10 +226,7 @@ export NODE_OPTIONS="--max-old-space-size=4096"
 ```json
 {
   "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
-      "eslint --cache --fix",
-      "prettier --cache --write"
-    ]
+    "*.{ts,tsx,js,jsx}": ["eslint --cache --fix", "prettier --cache --write"]
   }
 }
 ```
@@ -242,6 +261,7 @@ CI/CD時:
 ## まとめ
 
 **最適化優先順位**:
+
 1. ステージングファイルのみ（最重要）
 2. キャッシュ有効化
 3. 並列実行
@@ -249,6 +269,7 @@ CI/CD時:
 5. 重い処理をpre-pushに移行
 
 **目標**:
+
 - pre-commit: <5秒
 - 開発者体験を損なわない
 - 品質と速度のバランス

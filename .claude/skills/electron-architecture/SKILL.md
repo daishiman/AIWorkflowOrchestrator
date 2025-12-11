@@ -37,10 +37,12 @@ Electronデスクトップアプリケーションのアーキテクチャ設計
 ## 概要
 
 ### 目的
+
 Electronアプリケーションのプロセスモデル、IPC設計、
 セキュリティ境界を理解し、保守性の高いアーキテクチャを構築する。
 
 ### 対象者
+
 - Electronアプリ開発者
 - デスクトップアプリアーキテクト
 - フロントエンドエンジニア
@@ -82,11 +84,11 @@ Electronアプリケーションのプロセスモデル、IPC設計、
 
 ### プロセス責務分離
 
-| プロセス | 責務 | アクセス可能 |
-|---------|------|-------------|
-| **Main** | システムAPI、ウィンドウ管理 | Node.js全機能、OS API |
-| **Preload** | API橋渡し、サニタイズ | 制限付きNode.js |
-| **Renderer** | UI描画、ユーザー操作 | DOM、公開API |
+| プロセス     | 責務                        | アクセス可能          |
+| ------------ | --------------------------- | --------------------- |
+| **Main**     | システムAPI、ウィンドウ管理 | Node.js全機能、OS API |
+| **Preload**  | API橋渡し、サニタイズ       | 制限付きNode.js       |
+| **Renderer** | UI描画、ユーザー操作        | DOM、公開API          |
 
 ---
 
@@ -133,38 +135,38 @@ electron-app/
 
 ```typescript
 // preload/index.ts
-import { contextBridge, ipcRenderer } from 'electron';
+import { contextBridge, ipcRenderer } from "electron";
 
-contextBridge.exposeInMainWorld('electronAPI', {
+contextBridge.exposeInMainWorld("electronAPI", {
   // 一方向送信（戻り値なし）
   sendNotification: (message: string) => {
-    ipcRenderer.send('show-notification', message);
+    ipcRenderer.send("show-notification", message);
   },
 });
 
 // main/ipc/notification.ts
-ipcMain.on('show-notification', (event, message: string) => {
-  new Notification({ title: 'App', body: message }).show();
+ipcMain.on("show-notification", (event, message: string) => {
+  new Notification({ title: "App", body: message }).show();
 });
 
 // renderer側使用
-window.electronAPI.sendNotification('保存完了');
+window.electronAPI.sendNotification("保存完了");
 ```
 
 ### 2. 双方向通信（invoke/handle）
 
 ```typescript
 // preload/index.ts - 推奨パターン
-contextBridge.exposeInMainWorld('electronAPI', {
-  readFile: (path: string) => ipcRenderer.invoke('file:read', path),
+contextBridge.exposeInMainWorld("electronAPI", {
+  readFile: (path: string) => ipcRenderer.invoke("file:read", path),
   writeFile: (path: string, content: string) =>
-    ipcRenderer.invoke('file:write', path, content),
+    ipcRenderer.invoke("file:write", path, content),
 });
 
 // main/ipc/file.ts
-ipcMain.handle('file:read', async (event, path: string) => {
+ipcMain.handle("file:read", async (event, path: string) => {
   try {
-    const content = await fs.promises.readFile(path, 'utf-8');
+    const content = await fs.promises.readFile(path, "utf-8");
     return { success: true, data: content };
   } catch (error) {
     return { success: false, error: error.message };
@@ -172,7 +174,7 @@ ipcMain.handle('file:read', async (event, path: string) => {
 });
 
 // renderer側使用
-const result = await window.electronAPI.readFile('/path/to/file');
+const result = await window.electronAPI.readFile("/path/to/file");
 if (result.success) {
   console.log(result.data);
 }
@@ -188,14 +190,14 @@ function sendToRenderer(channel: string, data: unknown) {
 }
 
 // preload/index.ts
-contextBridge.exposeInMainWorld('electronAPI', {
+contextBridge.exposeInMainWorld("electronAPI", {
   onUpdateProgress: (callback: (progress: number) => void) => {
     const handler = (_event: IpcRendererEvent, progress: number) => {
       callback(progress);
     };
-    ipcRenderer.on('update-progress', handler);
+    ipcRenderer.on("update-progress", handler);
     // クリーンアップ関数を返す
-    return () => ipcRenderer.removeListener('update-progress', handler);
+    return () => ipcRenderer.removeListener("update-progress", handler);
   },
 });
 
@@ -217,15 +219,17 @@ useEffect(() => {
 ```typescript
 // src/shared/ipc-types.ts
 export interface IpcChannels {
-  'file:read': {
+  "file:read": {
     request: { path: string };
-    response: { success: true; data: string } | { success: false; error: string };
+    response:
+      | { success: true; data: string }
+      | { success: false; error: string };
   };
-  'file:write': {
+  "file:write": {
     request: { path: string; content: string };
     response: { success: boolean; error?: string };
   };
-  'app:quit': {
+  "app:quit": {
     request: void;
     response: void;
   };
@@ -238,20 +242,20 @@ export type IpcChannel = keyof IpcChannels;
 
 ```typescript
 // preload/index.ts
-import type { IpcChannels } from '../shared/ipc-types';
+import type { IpcChannels } from "../shared/ipc-types";
 
 type TypedInvoke = <K extends keyof IpcChannels>(
   channel: K,
-  args: IpcChannels[K]['request']
-) => Promise<IpcChannels[K]['response']>;
+  args: IpcChannels[K]["request"],
+) => Promise<IpcChannels[K]["response"]>;
 
 const typedInvoke: TypedInvoke = (channel, args) =>
   ipcRenderer.invoke(channel, args);
 
-contextBridge.exposeInMainWorld('electronAPI', {
-  readFile: (path: string) => typedInvoke('file:read', { path }),
+contextBridge.exposeInMainWorld("electronAPI", {
+  readFile: (path: string) => typedInvoke("file:read", { path }),
   writeFile: (path: string, content: string) =>
-    typedInvoke('file:write', { path, content }),
+    typedInvoke("file:write", { path, content }),
 });
 ```
 
@@ -260,12 +264,15 @@ contextBridge.exposeInMainWorld('electronAPI', {
 ```typescript
 // src/renderer/types/electron.d.ts
 interface ElectronAPI {
-  readFile: (path: string) => Promise<
+  readFile: (
+    path: string,
+  ) => Promise<
     { success: true; data: string } | { success: false; error: string }
   >;
-  writeFile: (path: string, content: string) => Promise<
-    { success: boolean; error?: string }
-  >;
+  writeFile: (
+    path: string,
+    content: string,
+  ) => Promise<{ success: boolean; error?: string }>;
   onUpdateProgress: (callback: (progress: number) => void) => () => void;
 }
 
@@ -284,7 +291,7 @@ declare global {
 
 ```typescript
 // main/index.ts
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow } from "electron";
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -297,7 +304,7 @@ app.whenReady().then(async () => {
   mainWindow = createMainWindow();
 
   // macOS: Dockクリックで再表示
-  app.on('activate', () => {
+  app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       mainWindow = createMainWindow();
     }
@@ -305,14 +312,14 @@ app.whenReady().then(async () => {
 });
 
 // 全ウィンドウ閉じた時（macOS以外で終了）
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
     app.quit();
   }
 });
 
 // 終了前クリーンアップ
-app.on('before-quit', async (event) => {
+app.on("before-quit", async (event) => {
   event.preventDefault();
   await cleanup();
   app.exit(0);
@@ -379,10 +386,12 @@ app.on('before-quit', async (event) => {
 ## 関連リソース
 
 ### 詳細ドキュメント
+
 - `resources/process-model.md` - プロセスモデル詳細
 - `resources/ipc-patterns.md` - IPCパターン集
 - `resources/project-structure.md` - プロジェクト構成詳細
 
 ### テンプレート
+
 - `templates/main-process.ts` - Mainプロセス雛形
 - `templates/preload.ts` - Preloadスクリプト雛形

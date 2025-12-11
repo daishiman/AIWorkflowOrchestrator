@@ -183,13 +183,11 @@ const schema = z.object({
 ### すべきこと
 
 1. **厳密な型定義**:
-
    - すべてのフィールドに型を指定
    - nullable の明示
    - enum による値制限
 
 2. **適切な制約**:
-
    - 文字列長の制限
    - 数値範囲の指定
    - 必須フィールドの明示
@@ -201,12 +199,10 @@ const schema = z.object({
 ### 避けるべきこと
 
 1. **過度な柔軟性**:
-
    - ❌ additionalProperties: true
    - ✅ additionalProperties: false
 
 2. **曖昧な型**:
-
    - ❌ type: "any"
    - ✅ 具体的な型指定
 

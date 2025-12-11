@@ -7,22 +7,26 @@ GitHub ActionsからSlackへの通知統合の詳細手順とベストプラク�
 ### 1. Slack Incoming Webhook（簡単・推奨初心者向け）
 
 **メリット**:
+
 - 設定が簡単（Webhook URL 1つだけ）
 - 追加の認証不要
 - シンプルなメッセージ送信
 
 **デメリット**:
+
 - 単一チャネルのみ
 - インタラクティブ機能制限
 - メッセージ更新不可
 
 **設定手順**:
+
 1. Slack Workspace → Apps → "Incoming Webhooks"を追加
 2. 通知先チャネル選択
 3. Webhook URL取得（`https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXX`）
 4. GitHub Secrets → `SLACK_WEBHOOK_URL`に保存
 
 **ワークフロー例**:
+
 ```yaml
 name: Slack Webhook Notification
 
@@ -74,16 +78,19 @@ jobs:
 ### 2. Slack GitHub Action（公式・推奨本番環境）
 
 **メリット**:
+
 - 複数チャネル対応
 - メッセージ更新可能（デプロイ進行状況等）
 - インタラクティブ機能（ボタン・選択肢）
 - エラーハンドリング充実
 
 **デメリット**:
+
 - Slack App作成が必要
 - Bot Tokenの管理
 
 **設定手順**:
+
 1. Slack App作成（https://api.slack.com/apps）
 2. Permissions → Bot Token Scopes追加:
    - `chat:write` (メッセージ送信)
@@ -93,6 +100,7 @@ jobs:
 5. チャネルIDを取得（Slackで右クリック → "Copy link" → 末尾の`C...`）
 
 **ワークフロー例**:
+
 ```yaml
 name: Slack Bot Notification
 
@@ -106,7 +114,7 @@ jobs:
         id: slack
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          channel-id: 'C1234567890'
+          channel-id: "C1234567890"
           slack-message: |
             *Deployment Status*: ${{ job.status }}
             *Repository*: ${{ github.repository }}
@@ -121,7 +129,7 @@ jobs:
         if: success()
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          channel-id: 'C1234567890'
+          channel-id: "C1234567890"
           update-ts: ${{ steps.slack.outputs.ts }}
           slack-message: |
             ✅ *Deployment Completed Successfully*
@@ -159,10 +167,10 @@ jobs:
     {
       "type": "section",
       "fields": [
-        {"type": "mrkdwn", "text": "*Repository:*\nmy-org/my-repo"},
-        {"type": "mrkdwn", "text": "*Branch:*\nmain"},
-        {"type": "mrkdwn", "text": "*Commit:*\n`abc123`"},
-        {"type": "mrkdwn", "text": "*Author:*\njohn.doe"}
+        { "type": "mrkdwn", "text": "*Repository:*\nmy-org/my-repo" },
+        { "type": "mrkdwn", "text": "*Branch:*\nmain" },
+        { "type": "mrkdwn", "text": "*Commit:*\n`abc123`" },
+        { "type": "mrkdwn", "text": "*Author:*\njohn.doe" }
       ]
     },
     {
@@ -179,13 +187,13 @@ jobs:
       "elements": [
         {
           "type": "button",
-          "text": {"type": "plain_text", "text": "View Logs"},
+          "text": { "type": "plain_text", "text": "View Logs" },
           "url": "https://github.com/my-org/my-repo/actions/runs/123456",
           "style": "primary"
         },
         {
           "type": "button",
-          "text": {"type": "plain_text", "text": "View Deployment"},
+          "text": { "type": "plain_text", "text": "View Deployment" },
           "url": "https://my-app.com"
         }
       ]
@@ -217,6 +225,7 @@ jobs:
 ```
 
 **メンション構文**:
+
 - `<!here>`: オンラインメンバー全員
 - `<!channel>`: チャネルメンバー全員
 - `<@U1234567890>`: 特定ユーザー（User IDで指定）
@@ -233,8 +242,8 @@ jobs:
   if: success()
   uses: slackapi/slack-github-action@v1.24.0
   with:
-    channel-id: 'C_SUCCESS_CHANNEL'
-    slack-message: '✅ Deployment succeeded!'
+    channel-id: "C_SUCCESS_CHANNEL"
+    slack-message: "✅ Deployment succeeded!"
   env:
     SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
@@ -242,8 +251,8 @@ jobs:
   if: failure()
   uses: slackapi/slack-github-action@v1.24.0
   with:
-    channel-id: 'C_ALERT_CHANNEL'
-    slack-message: '❌ Deployment failed! @here'
+    channel-id: "C_ALERT_CHANNEL"
+    slack-message: "❌ Deployment failed! @here"
   env:
     SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 ```
@@ -255,8 +264,8 @@ jobs:
   if: github.ref == 'refs/heads/main'
   uses: slackapi/slack-github-action@v1.24.0
   with:
-    channel-id: 'C_PRODUCTION_CHANNEL'
-    slack-message: '🚀 Production deployment started'
+    channel-id: "C_PRODUCTION_CHANNEL"
+    slack-message: "🚀 Production deployment started"
   env:
     SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
@@ -264,8 +273,8 @@ jobs:
   if: github.ref == 'refs/heads/develop'
   uses: slackapi/slack-github-action@v1.24.0
   with:
-    channel-id: 'C_STAGING_CHANNEL'
-    slack-message: '🧪 Staging deployment started'
+    channel-id: "C_STAGING_CHANNEL"
+    slack-message: "🧪 Staging deployment started"
   env:
     SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 ```
@@ -277,8 +286,8 @@ jobs:
   id: slack_init
   uses: slackapi/slack-github-action@v1.24.0
   with:
-    channel-id: 'C1234567890'
-    slack-message: '🔄 Deployment started...'
+    channel-id: "C1234567890"
+    slack-message: "🔄 Deployment started..."
   env:
     SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
@@ -288,8 +297,8 @@ jobs:
 - name: Update thread
   uses: slackapi/slack-github-action@v1.24.0
   with:
-    channel-id: 'C1234567890'
-    slack-message: '✅ Build completed'
+    channel-id: "C1234567890"
+    slack-message: "✅ Build completed"
     thread-ts: ${{ steps.slack_init.outputs.ts }}
   env:
     SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
@@ -300,8 +309,8 @@ jobs:
 - name: Final update
   uses: slackapi/slack-github-action@v1.24.0
   with:
-    channel-id: 'C1234567890'
-    slack-message: '🎉 Deployment completed!'
+    channel-id: "C1234567890"
+    slack-message: "🎉 Deployment completed!"
     thread-ts: ${{ steps.slack_init.outputs.ts }}
   env:
     SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
@@ -318,8 +327,8 @@ jobs:
   continue-on-error: true
   uses: slackapi/slack-github-action@v1.24.0
   with:
-    channel-id: 'C1234567890'
-    slack-message: 'Deployment completed'
+    channel-id: "C1234567890"
+    slack-message: "Deployment completed"
   env:
     SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 ```
@@ -347,8 +356,8 @@ jobs:
   continue-on-error: true
   uses: slackapi/slack-github-action@v1.24.0
   with:
-    channel-id: 'C_PRIMARY'
-    slack-message: 'Deployment status'
+    channel-id: "C_PRIMARY"
+    slack-message: "Deployment status"
   env:
     SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
@@ -469,6 +478,7 @@ Error: not_in_channel
 ```
 
 **解決策**:
+
 - Bot TokenにBot Token Scopes `chat:write.public`を追加
 - または、Botを事前にチャネルに招待（`/invite @bot-name`）
 
@@ -479,6 +489,7 @@ Error: Invalid webhook URL
 ```
 
 **解決策**:
+
 - Webhook URLが`https://hooks.slack.com/services/`で始まるか確認
 - Incoming Webhookが有効化されているか確認
 - Secretsに正しく保存されているか確認

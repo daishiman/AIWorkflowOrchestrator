@@ -13,15 +13,15 @@
  * - 命名の品質スコア
  */
 
-import { readFileSync, readdirSync, statSync } from 'fs';
-import { join, extname } from 'path';
+import { readFileSync, readdirSync, statSync } from "fs";
+import { join, extname } from "path";
 
 // 設定
 const CONFIG = {
-  supportedExtensions: ['.ts', '.tsx', '.js', '.jsx'],
+  supportedExtensions: [".ts", ".tsx", ".js", ".jsx"],
   maxFunctionLines: 20,
   maxParameters: 3,
-  excludePatterns: ['node_modules', '.git', 'dist', 'build', '__tests__'],
+  excludePatterns: ["node_modules", ".git", "dist", "build", "__tests__"],
 };
 
 // 結果格納
@@ -61,16 +61,17 @@ function getFiles(dir, files = []) {
  */
 function analyzeFunctions(content, filePath) {
   // 関数パターン（簡易）
-  const functionPattern = /(?:function\s+(\w+)|(?:const|let|var)\s+(\w+)\s*=\s*(?:async\s*)?\([^)]*\)\s*=>|(?:async\s+)?(\w+)\s*\([^)]*\)\s*\{)/g;
+  const functionPattern =
+    /(?:function\s+(\w+)|(?:const|let|var)\s+(\w+)\s*=\s*(?:async\s*)?\([^)]*\)\s*=>|(?:async\s+)?(\w+)\s*\([^)]*\)\s*\{)/g;
 
   let match;
-  const lines = content.split('\n');
+  const lines = content.split("\n");
 
   while ((match = functionPattern.exec(content)) !== null) {
     results.functions++;
 
     const funcName = match[1] || match[2] || match[3];
-    const startLine = content.substring(0, match.index).split('\n').length;
+    const startLine = content.substring(0, match.index).split("\n").length;
 
     // 関数の行数を計算（簡易）
     let braceCount = 0;
@@ -80,10 +81,10 @@ function analyzeFunctions(content, filePath) {
     for (let i = startLine - 1; i < lines.length; i++) {
       const line = lines[i];
       for (const char of line) {
-        if (char === '{') {
+        if (char === "{") {
           braceCount++;
           started = true;
-        } else if (char === '}') {
+        } else if (char === "}") {
           braceCount--;
         }
       }
@@ -110,7 +111,7 @@ function analyzeFunctions(content, filePath) {
     // パラメータ数チェック
     const paramMatch = content.substring(match.index).match(/\(([^)]*)\)/);
     if (paramMatch && paramMatch[1]) {
-      const params = paramMatch[1].split(',').filter(p => p.trim());
+      const params = paramMatch[1].split(",").filter((p) => p.trim());
       if (params.length > CONFIG.maxParameters) {
         results.manyParameters.push({
           file: filePath,
@@ -143,14 +144,14 @@ function isPoorName(name) {
     /^(foo|bar|baz|test|xxx)$/i, // プレースホルダー
   ];
 
-  return poorPatterns.some(pattern => pattern.test(name));
+  return poorPatterns.some((pattern) => pattern.test(name));
 }
 
 /**
  * ファイルを分析
  */
 function analyzeFile(filePath) {
-  const content = readFileSync(filePath, 'utf-8');
+  const content = readFileSync(filePath, "utf-8");
   results.files++;
   analyzeFunctions(content, filePath);
 }
@@ -166,7 +167,12 @@ function calculateQualityScore() {
   const paramDeduction = results.manyParameters.length * 3;
   const nameDeduction = results.poorNames.length * 2;
 
-  const score = Math.max(0, Math.round(goodRatio * 100 - largeDeduction - paramDeduction - nameDeduction));
+  const score = Math.max(
+    0,
+    Math.round(
+      goodRatio * 100 - largeDeduction - paramDeduction - nameDeduction,
+    ),
+  );
   return Math.min(100, score);
 }
 
@@ -176,11 +182,11 @@ function calculateQualityScore() {
 function printResults() {
   const score = calculateQualityScore();
 
-  console.log('\n📊 コード品質測定結果\n');
-  console.log('='.repeat(60));
+  console.log("\n📊 コード品質測定結果\n");
+  console.log("=".repeat(60));
 
   // スコア
-  const scoreEmoji = score >= 80 ? '🟢' : score >= 60 ? '🟡' : '🔴';
+  const scoreEmoji = score >= 80 ? "🟢" : score >= 60 ? "🟡" : "🔴";
   console.log(`\n${scoreEmoji} 品質スコア: ${score}/100`);
 
   // 概要
@@ -189,18 +195,26 @@ function printResults() {
   console.log(`✅ 良好な関数: ${results.goodFunctions}件`);
 
   // 大きな関数
-  console.log(`\n🔴 大きすぎる関数 (${CONFIG.maxFunctionLines}行超): ${results.largeFunctions.length}件`);
+  console.log(
+    `\n🔴 大きすぎる関数 (${CONFIG.maxFunctionLines}行超): ${results.largeFunctions.length}件`,
+  );
   for (const item of results.largeFunctions.slice(0, 10)) {
-    console.log(`   ${item.file}:${item.line} - ${item.name}() [${item.lineCount}行]`);
+    console.log(
+      `   ${item.file}:${item.line} - ${item.name}() [${item.lineCount}行]`,
+    );
   }
   if (results.largeFunctions.length > 10) {
     console.log(`   ... 他 ${results.largeFunctions.length - 10}件`);
   }
 
   // パラメータ過多
-  console.log(`\n🟠 パラメータ過多 (${CONFIG.maxParameters}個超): ${results.manyParameters.length}件`);
+  console.log(
+    `\n🟠 パラメータ過多 (${CONFIG.maxParameters}個超): ${results.manyParameters.length}件`,
+  );
   for (const item of results.manyParameters.slice(0, 10)) {
-    console.log(`   ${item.file}:${item.line} - ${item.name}() [${item.paramCount}個]`);
+    console.log(
+      `   ${item.file}:${item.line} - ${item.name}() [${item.paramCount}個]`,
+    );
   }
   if (results.manyParameters.length > 10) {
     console.log(`   ... 他 ${results.manyParameters.length - 10}件`);
@@ -216,29 +230,29 @@ function printResults() {
   }
 
   // 推奨アクション
-  console.log('\n' + '='.repeat(60));
-  console.log('📋 推奨アクション:');
+  console.log("\n" + "=".repeat(60));
+  console.log("📋 推奨アクション:");
 
   if (results.largeFunctions.length > 0) {
-    console.log('  1. 大きな関数をExtract Methodで分割');
+    console.log("  1. 大きな関数をExtract Methodで分割");
   }
   if (results.manyParameters.length > 0) {
-    console.log('  2. Introduce Parameter Objectでパラメータを整理');
+    console.log("  2. Introduce Parameter Objectでパラメータを整理");
   }
   if (results.poorNames.length > 0) {
-    console.log('  3. より具体的で意図が伝わる命名に改善');
+    console.log("  3. より具体的で意図が伝わる命名に改善");
   }
   if (score >= 80) {
-    console.log('  ✨ 良好な品質を維持してください！');
+    console.log("  ✨ 良好な品質を維持してください！");
   }
 
-  console.log('');
+  console.log("");
 }
 
 // メイン処理
 const args = process.argv.slice(2);
 if (args.length === 0) {
-  console.log('Usage: node measure-code-quality.mjs <directory>');
+  console.log("Usage: node measure-code-quality.mjs <directory>");
   process.exit(1);
 }
 

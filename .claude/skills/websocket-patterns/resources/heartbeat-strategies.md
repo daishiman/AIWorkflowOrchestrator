@@ -30,8 +30,8 @@ JSONメッセージによる独自実装:
 // Ping送信
 function sendPing(): void {
   send({
-    type: 'ping',
-    timestamp: Date.now()
+    type: "ping",
+    timestamp: Date.now(),
   });
 }
 
@@ -41,7 +41,7 @@ function handlePong(message: { timestamp: number }): void {
   lastPongAt = Date.now();
   missedPongs = 0;
 
-  emit('latency', { latency });
+  emit("latency", { latency });
 }
 ```
 
@@ -49,25 +49,25 @@ function handlePong(message: { timestamp: number }): void {
 
 ### 推奨パラメータ
 
-| パラメータ | 推奨値 | 説明 |
-|-----------|-------|------|
-| interval | 30000ms | Ping送信間隔 |
-| timeout | 10000ms | Pong待機タイムアウト |
-| maxMissed | 3 | 許容する連続失敗回数 |
+| パラメータ | 推奨値  | 説明                 |
+| ---------- | ------- | -------------------- |
+| interval   | 30000ms | Ping送信間隔         |
+| timeout    | 10000ms | Pong待機タイムアウト |
+| maxMissed  | 3       | 許容する連続失敗回数 |
 
 ### 設定インターフェース
 
 ```typescript
 interface HeartbeatConfig {
-  interval: number;     // Ping間隔
-  timeout: number;      // タイムアウト
-  maxMissed: number;    // 最大連続失敗回数
+  interval: number; // Ping間隔
+  timeout: number; // タイムアウト
+  maxMissed: number; // 最大連続失敗回数
 }
 
 const DEFAULT_HEARTBEAT: HeartbeatConfig = {
   interval: 30000,
   timeout: 10000,
-  maxMissed: 3
+  maxMissed: 3,
 };
 ```
 
@@ -123,7 +123,7 @@ class Heartbeat {
 
   private onTimeout(): void {
     this.stop();
-    emit('heartbeat_timeout');
+    emit("heartbeat_timeout");
     // 再接続をトリガー
     scheduleReconnect();
   }
@@ -159,16 +159,10 @@ class AdaptiveHeartbeat {
 
     if (avgLatency > 5000) {
       // 高レイテンシ → 間隔を長く
-      this.currentInterval = Math.min(
-        this.config.interval * 2,
-        60000
-      );
+      this.currentInterval = Math.min(this.config.interval * 2, 60000);
     } else if (avgLatency < 1000) {
       // 低レイテンシ → 間隔を短く
-      this.currentInterval = Math.max(
-        this.config.interval / 2,
-        15000
-      );
+      this.currentInterval = Math.max(this.config.interval / 2, 15000);
     }
   }
 
@@ -183,28 +177,34 @@ class AdaptiveHeartbeat {
 ### 問題1: Pongが返ってこない
 
 **原因**:
+
 - サーバーがPingを処理していない
 - ネットワーク遅延
 
 **解決策**:
+
 - サーバー側のPing処理を確認
 - タイムアウトを長めに設定
 
 ### 問題2: 頻繁なタイムアウト
 
 **原因**:
+
 - 間隔が短すぎる
 - ネットワークが不安定
 
 **解決策**:
+
 - 間隔を長くする（30秒→60秒）
 - maxMissedを増やす
 
 ### 問題3: プロキシによる切断
 
 **原因**:
+
 - プロキシのアイドルタイムアウト
 
 **解決策**:
+
 - 間隔をプロキシタイムアウトより短く設定
 - 一般的には30秒以下を推奨

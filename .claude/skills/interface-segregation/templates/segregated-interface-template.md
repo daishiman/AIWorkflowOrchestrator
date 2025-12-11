@@ -41,7 +41,7 @@ export interface IWorkflowExecutor<TInput = unknown, TOutput = unknown> {
 ### 検証機能
 
 ```typescript
-import { z } from 'zod';
+import { z } from "zod";
 
 /**
  * IValidatable - 入力検証機能
@@ -262,32 +262,46 @@ export interface ISchedulable {
 /**
  * 型ガードユーティリティ
  */
-export function isValidatable(executor: IWorkflowExecutor): executor is IWorkflowExecutor & IValidatable {
-  return 'validate' in executor && 'inputSchema' in executor;
+export function isValidatable(
+  executor: IWorkflowExecutor,
+): executor is IWorkflowExecutor & IValidatable {
+  return "validate" in executor && "inputSchema" in executor;
 }
 
-export function isRetryable(executor: IWorkflowExecutor): executor is IWorkflowExecutor & IRetryable {
-  return 'canRetry' in executor && 'maxRetries' in executor;
+export function isRetryable(
+  executor: IWorkflowExecutor,
+): executor is IWorkflowExecutor & IRetryable {
+  return "canRetry" in executor && "maxRetries" in executor;
 }
 
-export function isRollbackable(executor: IWorkflowExecutor): executor is IWorkflowExecutor & IRollbackable {
-  return 'rollback' in executor;
+export function isRollbackable(
+  executor: IWorkflowExecutor,
+): executor is IWorkflowExecutor & IRollbackable {
+  return "rollback" in executor;
 }
 
-export function isProgressReporter(executor: IWorkflowExecutor): executor is IWorkflowExecutor & IProgressReporter {
-  return 'onProgress' in executor && 'supportsProgress' in executor;
+export function isProgressReporter(
+  executor: IWorkflowExecutor,
+): executor is IWorkflowExecutor & IProgressReporter {
+  return "onProgress" in executor && "supportsProgress" in executor;
 }
 
-export function isMetricsProvider(executor: IWorkflowExecutor): executor is IWorkflowExecutor & IMetricsProvider {
-  return 'getMetrics' in executor && 'resetMetrics' in executor;
+export function isMetricsProvider(
+  executor: IWorkflowExecutor,
+): executor is IWorkflowExecutor & IMetricsProvider {
+  return "getMetrics" in executor && "resetMetrics" in executor;
 }
 
-export function isLifecycleAware(executor: IWorkflowExecutor): executor is IWorkflowExecutor & ILifecycleAware {
-  return 'onInitialize' in executor && 'onShutdown' in executor;
+export function isLifecycleAware(
+  executor: IWorkflowExecutor,
+): executor is IWorkflowExecutor & ILifecycleAware {
+  return "onInitialize" in executor && "onShutdown" in executor;
 }
 
-export function isSchedulable(executor: IWorkflowExecutor): executor is IWorkflowExecutor & ISchedulable {
-  return 'getCronExpression' in executor && 'getNextExecutionTime' in executor;
+export function isSchedulable(
+  executor: IWorkflowExecutor,
+): executor is IWorkflowExecutor & ISchedulable {
+  return "getCronExpression" in executor && "getNextExecutionTime" in executor;
 }
 ```
 
@@ -296,13 +310,19 @@ export function isSchedulable(executor: IWorkflowExecutor): executor is IWorkflo
 ### シンプルなExecutor
 
 ```typescript
-export class SimpleTextExecutor implements IWorkflowExecutor<TextInput, TextOutput> {
-  readonly type = 'TEXT_PROCESS';
-  readonly displayName = 'テキスト処理';
-  readonly description = 'シンプルなテキスト処理を実行';
+export class SimpleTextExecutor implements IWorkflowExecutor<
+  TextInput,
+  TextOutput
+> {
+  readonly type = "TEXT_PROCESS";
+  readonly displayName = "テキスト処理";
+  readonly description = "シンプルなテキスト処理を実行";
 
-  async execute(input: TextInput, context: ExecutionContext): Promise<TextOutput> {
-    context.logger.info('Processing text', { length: input.text.length });
+  async execute(
+    input: TextInput,
+    context: ExecutionContext,
+  ): Promise<TextOutput> {
+    context.logger.info("Processing text", { length: input.text.length });
     return {
       result: input.text.toUpperCase(),
       processedAt: new Date(),
@@ -314,16 +334,20 @@ export class SimpleTextExecutor implements IWorkflowExecutor<TextInput, TextOutp
 ### 検証付きExecutor
 
 ```typescript
-export class ValidatingExecutor implements IWorkflowExecutor<DataInput, DataOutput>, IValidatable<DataInput> {
-  readonly type = 'VALIDATING_PROCESS';
-  readonly displayName = '検証付き処理';
-  readonly description = '入力検証を行う処理';
+export class ValidatingExecutor
+  implements IWorkflowExecutor<DataInput, DataOutput>, IValidatable<DataInput>
+{
+  readonly type = "VALIDATING_PROCESS";
+  readonly displayName = "検証付き処理";
+  readonly description = "入力検証を行う処理";
 
   readonly inputSchema = z.object({
     data: z.string().min(1).max(1000),
-    options: z.object({
-      format: z.enum(['json', 'xml', 'csv']),
-    }).optional(),
+    options: z
+      .object({
+        format: z.enum(["json", "xml", "csv"]),
+      })
+      .optional(),
   });
 
   readonly outputSchema = z.object({
@@ -335,15 +359,20 @@ export class ValidatingExecutor implements IWorkflowExecutor<DataInput, DataOutp
     const result = this.inputSchema.safeParse(input);
     return {
       valid: result.success,
-      errors: result.success ? [] : result.error.errors.map(e => ({
-        path: e.path.map(String),
-        message: e.message,
-        code: e.code,
-      })),
+      errors: result.success
+        ? []
+        : result.error.errors.map((e) => ({
+            path: e.path.map(String),
+            message: e.message,
+            code: e.code,
+          })),
     };
   }
 
-  async execute(input: DataInput, context: ExecutionContext): Promise<DataOutput> {
+  async execute(
+    input: DataInput,
+    context: ExecutionContext,
+  ): Promise<DataOutput> {
     // 実装
   }
 }
@@ -362,9 +391,9 @@ export class FullFeaturedExecutor
     IMetricsProvider,
     ILifecycleAware
 {
-  readonly type = 'FULL_FEATURED';
-  readonly displayName = 'フル機能処理';
-  readonly description = 'すべての機能を持つ処理';
+  readonly type = "FULL_FEATURED";
+  readonly displayName = "フル機能処理";
+  readonly description = "すべての機能を持つ処理";
 
   // IValidatable
   readonly inputSchema = complexInputSchema;

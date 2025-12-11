@@ -77,7 +77,6 @@ jobs:
 
 - name: Install dependencies
   run: pnpm ci
-
 # キャッシュヒット時: 2分 → 10秒 (83%短縮)
 ```
 
@@ -94,7 +93,6 @@ jobs:
 
 - name: Build
   run: pnpm run build
-
 # キャッシュヒット時: 5分 → 30秒 (90%短縮)
 ```
 
@@ -112,7 +110,6 @@ jobs:
     tags: user/app:latest
     cache-from: type=gha
     cache-to: type=gha,mode=max
-
 # キャッシュヒット時: 10分 → 2分 (80%短縮)
 ```
 
@@ -126,10 +123,10 @@ jobs:
 on:
   push:
     paths:
-      - 'src/**'
-      - 'tests/**'
-      - 'package.json'
-      - 'package-lock.json'
+      - "src/**"
+      - "tests/**"
+      - "package.json"
+      - "package-lock.json"
   # ドキュメントのみの変更では実行しない
 
 # 月間実行回数: 100回 → 40回 (60%削減)
@@ -258,7 +255,6 @@ jobs:
 - name: Run tests
   if: steps.changed-files.outputs.any_changed == 'true'
   run: pnpm test
-
 # ソースコード変更がない場合はテストをスキップ
 ```
 
@@ -273,7 +269,6 @@ jobs:
 
 - name: Run tests
   run: pnpm test -- --cache --cacheDirectory=.jest-cache
-
 # 変更がないテストはスキップ
 ```
 
@@ -371,7 +366,7 @@ runs-on: ubuntu-latest-4-cores
 # 過度な並列化は逆効果
 strategy:
   matrix:
-    shard: [1, 2, 3, 4, 5, 6, 7, 8]  # 多すぎる
+    shard: [1, 2, 3, 4, 5, 6, 7, 8] # 多すぎる
     # → オーバーヘッドで遅くなる
 
 # 最適な数を見つける: 通常2-4が最適

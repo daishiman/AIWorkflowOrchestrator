@@ -148,7 +148,6 @@ cat .claude/skills/deployment-strategies/templates/health-endpoint-template.ts
 **ステップ**:
 
 1. **可用性要件**:
-
    - 許容ダウンタイム
    - SLA 要件
    - ピーク時間帯
@@ -173,7 +172,6 @@ cat .claude/skills/deployment-strategies/templates/health-endpoint-template.ts
 **ステップ**:
 
 1. **パターン選択**:
-
    - Blue-Green: 高可用性、即座の切り替え
    - Canary: 段階的、リスク軽減
    - Rolling: リソース効率、漸進的
@@ -197,7 +195,6 @@ cat .claude/skills/deployment-strategies/templates/health-endpoint-template.ts
 **ステップ**:
 
 1. **インフラ設定**:
-
    - Railway 構成
    - ヘルスチェック設定
    - 環境変数設定
@@ -221,7 +218,6 @@ cat .claude/skills/deployment-strategies/templates/health-endpoint-template.ts
 **ステップ**:
 
 1. **スモークテスト**:
-
    - 主要機能の動作確認
    - API 応答確認
    - パフォーマンス確認
@@ -283,13 +279,11 @@ Railway は自動的にゼロダウンタイムデプロイを実現:
 ### すべきこと
 
 1. **ヘルスチェックの実装**:
-
    - `/api/health` エンドポイント
    - DB 接続確認
    - 外部サービス確認
 
 2. **段階的ロールアウト**:
-
    - 小さな変更を頻繁に
    - 影響範囲を限定
    - 監視を強化
@@ -302,12 +296,10 @@ Railway は自動的にゼロダウンタイムデプロイを実現:
 ### 避けるべきこと
 
 1. **ビッグバンデプロイ**:
-
    - ❌ 大規模変更の一括デプロイ
    - ✅ 小さな変更を頻繁に
 
 2. **テストなしデプロイ**:
-
    - ❌ 本番直接デプロイ
    - ✅ ステージングでの事前検証
 

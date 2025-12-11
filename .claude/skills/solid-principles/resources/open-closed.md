@@ -4,15 +4,18 @@
 
 > 「ソフトウェアの実体（クラス、モジュール、関数など）は拡張に対して開いており、
 > 修正に対して閉じていなければならない」
+>
 > - Bertrand Meyer
 
 ## 核心概念
 
 ### 開放と閉鎖
+
 - **拡張に開放**: 新しい振る舞いを追加できる
 - **修正に閉鎖**: 既存のコードを変更する必要がない
 
 ### 実現手段
+
 1. **抽象化**: インターフェースや抽象クラスの活用
 2. **ポリモーフィズム**: 実装の差し替えによる振る舞い変更
 3. **依存性注入**: 具体的な実装の外部からの注入
@@ -25,15 +28,15 @@
 // ❌ OCP違反: 新しい形状を追加するたびに修正が必要
 class AreaCalculator {
   calculateArea(shape: any): number {
-    if (shape.type === 'circle') {
+    if (shape.type === "circle") {
       return Math.PI * shape.radius ** 2;
-    } else if (shape.type === 'rectangle') {
+    } else if (shape.type === "rectangle") {
       return shape.width * shape.height;
-    } else if (shape.type === 'triangle') {
+    } else if (shape.type === "triangle") {
       // 新しい形状のたびにここを修正
       return (shape.base * shape.height) / 2;
     }
-    throw new Error('Unknown shape');
+    throw new Error("Unknown shape");
   }
 }
 ```
@@ -58,7 +61,10 @@ class Circle implements Shape {
 }
 
 class Rectangle implements Shape {
-  constructor(private width: number, private height: number) {}
+  constructor(
+    private width: number,
+    private height: number,
+  ) {}
 
   area(): number {
     return this.width * this.height;
@@ -67,7 +73,10 @@ class Rectangle implements Shape {
 
 // 新しい形状を追加（既存コードの修正不要）
 class Triangle implements Shape {
-  constructor(private base: number, private height: number) {}
+  constructor(
+    private base: number,
+    private height: number,
+  ) {}
 
   area(): number {
     return (this.base * this.height) / 2;
@@ -152,7 +161,7 @@ class CsvExporter extends DataExporter {
 
   protected serialize(data: any): string {
     // CSV文字列に変換
-    return '';
+    return "";
   }
 }
 ```
@@ -178,11 +187,13 @@ grep -rn "\.type\s*===\|typeof\s" src/ --include="*.ts"
 ## 適用指針
 
 ### いつOCPを適用するか
+
 - 同じ分岐が複数箇所に出現
 - 新しいバリエーションの追加が予想される
 - 変更が既存コードのテストを破壊する
 
 ### いつOCPを緩和するか
+
 - 変更が予想されない安定した領域
 - 過度な抽象化によるコード複雑化
 - 単純なケース（2-3の固定バリエーション）

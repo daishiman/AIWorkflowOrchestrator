@@ -7,15 +7,15 @@
  * Usage: node calculate-token-usage.mjs <skill-directory>
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
 // ANSI color codes
 const colors = {
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  reset: '\x1b[0m'
+  red: "\x1b[31m",
+  green: "\x1b[32m",
+  yellow: "\x1b[33m",
+  reset: "\x1b[0m",
 };
 
 /**
@@ -35,8 +35,8 @@ function getFileStats(filePath) {
     return null;
   }
 
-  const content = fs.readFileSync(filePath, 'utf-8');
-  const lines = content.split('\n').length;
+  const content = fs.readFileSync(filePath, "utf-8");
+  const lines = content.split("\n").length;
   const chars = content.length;
   const tokens = estimateTokens(chars);
 
@@ -61,26 +61,28 @@ function getStatusIndicator(lines) {
  */
 function analyzeSkillDirectory(skillDir) {
   if (!fs.existsSync(skillDir)) {
-    console.log(`${colors.red}Error: Directory not found: ${skillDir}${colors.reset}`);
+    console.log(
+      `${colors.red}Error: Directory not found: ${skillDir}${colors.reset}`,
+    );
     process.exit(1);
   }
 
   const skillName = path.basename(skillDir);
 
-  console.log('==========================================');
+  console.log("==========================================");
   console.log(`File Size Analysis: ${skillName}`);
-  console.log('==========================================');
-  console.log('');
+  console.log("==========================================");
+  console.log("");
 
   let totalLines = 0;
   let totalChars = 0;
 
   // SKILL.md
-  const skillMdPath = path.join(skillDir, 'SKILL.md');
+  const skillMdPath = path.join(skillDir, "SKILL.md");
   const skillStats = getFileStats(skillMdPath);
 
   if (skillStats) {
-    console.log('SKILL.md:');
+    console.log("SKILL.md:");
     console.log(`  Lines: ${skillStats.lines}`);
     console.log(`  Estimated tokens: ${skillStats.tokens}`);
     console.log(`  Status: ${getStatusIndicator(skillStats.lines)}`);
@@ -91,12 +93,12 @@ function analyzeSkillDirectory(skillDir) {
   }
 
   // Resources
-  console.log('');
-  console.log('Resources:');
-  const resourcesDir = path.join(skillDir, 'resources');
+  console.log("");
+  console.log("Resources:");
+  const resourcesDir = path.join(skillDir, "resources");
 
   if (fs.existsSync(resourcesDir)) {
-    const files = fs.readdirSync(resourcesDir).filter(f => f.endsWith('.md'));
+    const files = fs.readdirSync(resourcesDir).filter((f) => f.endsWith(".md"));
 
     for (const file of files) {
       const filePath = path.join(resourcesDir, file);
@@ -113,23 +115,23 @@ function analyzeSkillDirectory(skillDir) {
     }
 
     if (files.length === 0) {
-      console.log('  No resource files');
+      console.log("  No resource files");
     }
   } else {
-    console.log('  No resources directory');
+    console.log("  No resources directory");
   }
 
   // Summary
   const totalTokens = estimateTokens(totalChars);
 
-  console.log('');
-  console.log('==========================================');
-  console.log('Summary');
-  console.log('==========================================');
+  console.log("");
+  console.log("==========================================");
+  console.log("Summary");
+  console.log("==========================================");
   console.log(`Total lines: ${totalLines}`);
   console.log(`Total characters: ${totalChars}`);
   console.log(`Estimated tokens: ${totalTokens}`);
-  console.log('');
+  console.log("");
 
   // Overall evaluation
   if (totalLines <= 3000) {
@@ -140,15 +142,17 @@ function analyzeSkillDirectory(skillDir) {
     console.log(`${colors.red}✗ 大きすぎる、分割を推奨${colors.reset}`);
   }
 
-  console.log('');
-  console.log('参考:');
+  console.log("");
+  console.log("参考:");
   if (totalLines > 0) {
-    console.log(`- 推定トークン/行: ${Math.ceil(totalTokens / totalLines)} tokens/line`);
+    console.log(
+      `- 推定トークン/行: ${Math.ceil(totalTokens / totalLines)} tokens/line`,
+    );
   }
-  console.log('- SKILL.md推奨: <500行');
-  console.log('- リソース推奨: 各<500行');
-  console.log('');
-  console.log('注: トークン見積もりは文字数÷3で計算（日英混在・コード考慮）');
+  console.log("- SKILL.md推奨: <500行");
+  console.log("- リソース推奨: 各<500行");
+  console.log("");
+  console.log("注: トークン見積もりは文字数÷3で計算（日英混在・コード考慮）");
 }
 
 /**
@@ -158,10 +162,12 @@ function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.log('Usage: node calculate-token-usage.mjs <skill-directory>');
-    console.log('');
-    console.log('Example:');
-    console.log('  node calculate-token-usage.mjs .claude/skills/progressive-disclosure');
+    console.log("Usage: node calculate-token-usage.mjs <skill-directory>");
+    console.log("");
+    console.log("Example:");
+    console.log(
+      "  node calculate-token-usage.mjs .claude/skills/progressive-disclosure",
+    );
     process.exit(1);
   }
 

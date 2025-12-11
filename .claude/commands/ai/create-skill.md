@@ -41,10 +41,10 @@ description: |
   トリガーキーワード: skill, スキル作成, 知識体系化, ベストプラクティス, 形式知化
 argument-hint: "[skill-name]"
 allowed-tools:
-   - Read
-   - Write(.claude/skills/**)
-   - Grep
-   - Bash
+  - Read
+  - Write(.claude/skills/**)
+  - Grep
+  - Bash
 model: opus
 ---
 
@@ -52,7 +52,7 @@ model: opus
 
 ## 目的
 
-新しいClaude Codeスキル（.claude/skills/*/SKILL.md）を作成します。
+新しいClaude Codeスキル（.claude/skills/\*/SKILL.md）を作成します。
 skill-librarian エージェントを起動し、SECIモデルに基づいた実運用レベルのスキルファイルを生成します。
 
 ## コマンド実行フロー
@@ -131,24 +131,31 @@ version: 1.0.0
 # [Skill Name]
 
 ## 概要
+
 [スキルの目的、価値、対象ユーザー]
 
 ## リソース構造
+
 [ディレクトリ構造とリソースの説明]
 
 ## いつ使うか
+
 [具体的なシナリオと適用条件]
 
 ## ワークフロー
+
 [段階的な実行手順]
 
 ## ベストプラクティス
+
 [推奨事項と注意点]
 
 ## トラブルシューティング
+
 [よくある問題と解決策]
 
 ## 関連スキル
+
 [相対パスで関連スキルを記載]
 ```
 
@@ -161,6 +168,7 @@ version: 1.0.0
 ```
 
 対話的に以下の情報を収集:
+
 - スキルの目的と専門分野
 - 体系化したい暗黙知の内容
 - ターゲットユーザーと使用シナリオ
@@ -255,6 +263,7 @@ Task ツールで `.claude/agents/skill-librarian.md` エージェントを起�
 3. **検証と完了**
 
 エージェントが完了したら:
+
 - 作成されたスキルディレクトリのパスを確認
 - SKILL.md の行数を検証（500行以内）
 - YAML Frontmatter の構文を検証
@@ -266,15 +275,19 @@ Task ツールで `.claude/agents/skill-librarian.md` エージェントを起�
 ### SECIモデル（野中郁次郎）
 
 #### Socialization（共同化）
+
 暗黙知を暗黙知として共有。経験や勘、ノウハウの特定。
 
 #### Externalization（表出化）
+
 暗黙知を形式知に変換。言語化、図解、体系化。
 
 #### Combination（連結化）
+
 形式知と形式知を組み合わせて新しい知識を創造。既存知識との統合。
 
 #### Internalization（内面化）
+
 形式知を暗黙知として習得。実践を通じた理解の深化。
 
 ### Progressive Disclosure（段階的情報開示）
@@ -314,6 +327,7 @@ Task ツールで `.claude/agents/skill-librarian.md` エージェントを起�
 **原因**: メタデータの発動条件が不明確
 
 **解決策**:
+
 1. `description` にトリガーキーワードを追加
 2. 「使用タイミング」を具体的なシナリオで記述
 3. "Use proactively when..." 文を英語で追加
@@ -325,6 +339,7 @@ Task ツールで `.claude/agents/skill-librarian.md` エージェントを起�
 **原因**: 詳細情報を本文に詰め込みすぎ
 
 **解決策**:
+
 1. 詳細なトピックを `resources/` ディレクトリに分離
 2. 本文には概要とワークフローのみ残す
 3. Progressive Disclosure原則に従って階層化
@@ -336,6 +351,7 @@ Task ツールで `.claude/agents/skill-librarian.md` エージェントを起�
 **原因**: 既存知識の確認不足
 
 **解決策**:
+
 1. 既存スキルを検索: `grep -r "keyword" .claude/skills/*/SKILL.md`
 2. 重複部分は既存スキルを参照
 3. 「関連スキル」セクションで相対パスを記載
@@ -347,6 +363,7 @@ Task ツールで `.claude/agents/skill-librarian.md` エージェントを起�
 **原因**: 絶対パスまたはスキル名のみで参照している
 
 **解決策**:
+
 - ✅ 正しい: `.claude/skills/knowledge-management/SKILL.md`
 - ❌ 間違い: `knowledge-management`
 - ❌ 間違い: `/Users/.../knowledge-management/SKILL.md`

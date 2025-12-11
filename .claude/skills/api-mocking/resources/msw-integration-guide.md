@@ -58,46 +58,43 @@ pnpm msw init public/ --save
 
 ```typescript
 // tests/mocks/handlers.ts
-import { http, HttpResponse } from 'msw';
+import { http, HttpResponse } from "msw";
 
 export const handlers = [
   // GETリクエストのモック
-  http.get('/api/users', () => {
+  http.get("/api/users", () => {
     return HttpResponse.json([
-      { id: '1', name: 'Alice', email: 'alice@example.com' },
-      { id: '2', name: 'Bob', email: 'bob@example.com' },
+      { id: "1", name: "Alice", email: "alice@example.com" },
+      { id: "2", name: "Bob", email: "bob@example.com" },
     ]);
   }),
 
   // POSTリクエストのモック
-  http.post('/api/users', async ({ request }) => {
+  http.post("/api/users", async ({ request }) => {
     const newUser = await request.json();
     return HttpResponse.json(
       {
-        id: '3',
+        id: "3",
         ...newUser,
         createdAt: new Date().toISOString(),
       },
-      { status: 201 }
+      { status: 201 },
     );
   }),
 
   // パスパラメータを含むリクエスト
-  http.get('/api/users/:userId', ({ params }) => {
+  http.get("/api/users/:userId", ({ params }) => {
     const { userId } = params;
     return HttpResponse.json({
       id: userId,
-      name: 'Mock User',
+      name: "Mock User",
       email: `user${userId}@example.com`,
     });
   }),
 
   // エラーレスポンス
-  http.delete('/api/users/:userId', () => {
-    return HttpResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    );
+  http.delete("/api/users/:userId", () => {
+    return HttpResponse.json({ error: "Unauthorized" }, { status: 401 });
   }),
 ];
 ```
@@ -110,8 +107,8 @@ Playwright E2Eテストでは、Node.js環境でMSWを使用します。
 
 ```typescript
 // tests/setup/msw-server.ts
-import { setupServer } from 'msw/node';
-import { handlers } from '../mocks/handlers';
+import { setupServer } from "msw/node";
+import { handlers } from "../mocks/handlers";
 
 // MSWサーバーをセットアップ
 export const server = setupServer(...handlers);
@@ -119,7 +116,7 @@ export const server = setupServer(...handlers);
 // テスト開始前にサーバーを起動
 export function startMockServer() {
   server.listen({
-    onUnhandledRequest: 'warn', // モックされていないリクエストを警告
+    onUnhandledRequest: "warn", // モックされていないリクエストを警告
   });
 }
 
@@ -144,39 +141,39 @@ export function resetMockServer() {
 
 ```typescript
 // playwright.config.ts
-import { defineConfig } from '@playwright/test';
+import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
-  globalSetup: require.resolve('./tests/setup/global-setup.ts'),
-  globalTeardown: require.resolve('./tests/setup/global-teardown.ts'),
+  globalSetup: require.resolve("./tests/setup/global-setup.ts"),
+  globalTeardown: require.resolve("./tests/setup/global-teardown.ts"),
 
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: "http://localhost:3000",
   },
 });
 ```
 
 ```typescript
 // tests/setup/global-setup.ts
-import { startMockServer } from './msw-server';
+import { startMockServer } from "./msw-server";
 
 export default async function globalSetup() {
   // MSWサーバーを起動
   startMockServer();
 
-  console.log('MSW server started');
+  console.log("MSW server started");
 }
 ```
 
 ```typescript
 // tests/setup/global-teardown.ts
-import { stopMockServer } from './msw-server';
+import { stopMockServer } from "./msw-server";
 
 export default async function globalTeardown() {
   // MSWサーバーを停止
   stopMockServer();
 
-  console.log('MSW server stopped');
+  console.log("MSW server stopped");
 }
 ```
 
@@ -188,8 +185,8 @@ export default async function globalTeardown() {
 
 ```typescript
 // tests/fixtures/msw-fixtures.ts
-import { test as base } from '@playwright/test';
-import { server, resetMockServer } from '../setup/msw-server';
+import { test as base } from "@playwright/test";
+import { server, resetMockServer } from "../setup/msw-server";
 
 type MswFixtures = {
   mockServer: typeof server;
@@ -208,38 +205,38 @@ export const test = base.extend<MswFixtures>({
   },
 });
 
-export { expect } from '@playwright/test';
+export { expect } from "@playwright/test";
 ```
 
 ### 使用例
 
 ```typescript
 // tests/api-mocked.spec.ts
-import { test, expect } from './fixtures/msw-fixtures';
-import { http, HttpResponse } from 'msw';
+import { test, expect } from "./fixtures/msw-fixtures";
+import { http, HttpResponse } from "msw";
 
-test.describe('APIモックテスト', () => {
-  test('ユーザー一覧の取得', async ({ page, mockServer }) => {
-    await page.goto('/users');
+test.describe("APIモックテスト", () => {
+  test("ユーザー一覧の取得", async ({ page, mockServer }) => {
+    await page.goto("/users");
 
     // モックレスポンスが表示されることを確認
-    await expect(page.locator('text=Alice')).toBeVisible();
-    await expect(page.locator('text=Bob')).toBeVisible();
+    await expect(page.locator("text=Alice")).toBeVisible();
+    await expect(page.locator("text=Bob")).toBeVisible();
   });
 
-  test('カスタムハンドラーでオーバーライド', async ({ page, mockServer }) => {
+  test("カスタムハンドラーでオーバーライド", async ({ page, mockServer }) => {
     // このテストのみ異なるレスポンスを返す
     mockServer.use(
-      http.get('/api/users', () => {
+      http.get("/api/users", () => {
         return HttpResponse.json([
-          { id: '99', name: 'Custom User', email: 'custom@example.com' },
+          { id: "99", name: "Custom User", email: "custom@example.com" },
         ]);
-      })
+      }),
     );
 
-    await page.goto('/users');
+    await page.goto("/users");
 
-    await expect(page.locator('text=Custom User')).toBeVisible();
+    await expect(page.locator("text=Custom User")).toBeVisible();
   });
 });
 ```
@@ -254,39 +251,34 @@ test.describe('APIモックテスト', () => {
 
 ```typescript
 // tests/mocks/conditional-handlers.ts
-import { http, HttpResponse } from 'msw';
+import { http, HttpResponse } from "msw";
 
 export const conditionalHandlers = [
-  http.get('/api/users', ({ request }) => {
+  http.get("/api/users", ({ request }) => {
     const url = new URL(request.url);
-    const role = url.searchParams.get('role');
+    const role = url.searchParams.get("role");
 
-    if (role === 'admin') {
+    if (role === "admin") {
       return HttpResponse.json([
-        { id: '1', name: 'Admin User', role: 'admin' },
+        { id: "1", name: "Admin User", role: "admin" },
       ]);
     }
 
-    return HttpResponse.json([
-      { id: '2', name: 'Regular User', role: 'user' },
-    ]);
+    return HttpResponse.json([{ id: "2", name: "Regular User", role: "user" }]);
   }),
 
-  http.post('/api/login', async ({ request }) => {
+  http.post("/api/login", async ({ request }) => {
     const { email, password } = await request.json();
 
     // 特定の認証情報でのみ成功
-    if (email === 'admin@test.com' && password === 'password123') {
+    if (email === "admin@test.com" && password === "password123") {
       return HttpResponse.json({
-        token: 'mock-jwt-token',
-        user: { id: '1', email },
+        token: "mock-jwt-token",
+        user: { id: "1", email },
       });
     }
 
-    return HttpResponse.json(
-      { error: 'Invalid credentials' },
-      { status: 401 }
-    );
+    return HttpResponse.json({ error: "Invalid credentials" }, { status: 401 });
   }),
 ];
 ```
@@ -297,21 +289,21 @@ export const conditionalHandlers = [
 
 ```typescript
 // tests/mocks/delayed-handlers.ts
-import { http, HttpResponse, delay } from 'msw';
+import { http, HttpResponse, delay } from "msw";
 
 export const delayedHandlers = [
-  http.get('/api/slow-endpoint', async () => {
+  http.get("/api/slow-endpoint", async () => {
     // 2秒の遅延をシミュレート
     await delay(2000);
 
-    return HttpResponse.json({ data: 'Slow response' });
+    return HttpResponse.json({ data: "Slow response" });
   }),
 
-  http.get('/api/timeout-endpoint', async () => {
+  http.get("/api/timeout-endpoint", async () => {
     // 60秒の遅延（タイムアウトをトリガー）
     await delay(60000);
 
-    return HttpResponse.json({ data: 'Should timeout' });
+    return HttpResponse.json({ data: "Should timeout" });
   }),
 ];
 ```
@@ -320,19 +312,19 @@ export const delayedHandlers = [
 
 ```typescript
 // tests/slow-api.spec.ts
-import { test, expect } from './fixtures/msw-fixtures';
-import { delayedHandlers } from './mocks/delayed-handlers';
+import { test, expect } from "./fixtures/msw-fixtures";
+import { delayedHandlers } from "./mocks/delayed-handlers";
 
-test('遅いAPIのローディング状態', async ({ page, mockServer }) => {
+test("遅いAPIのローディング状態", async ({ page, mockServer }) => {
   mockServer.use(...delayedHandlers);
 
-  await page.goto('/dashboard');
+  await page.goto("/dashboard");
 
   // ローディングインジケーターが表示される
-  await expect(page.locator('.loading-spinner')).toBeVisible();
+  await expect(page.locator(".loading-spinner")).toBeVisible();
 
   // 2秒後にデータが表示される
-  await expect(page.locator('.data-content')).toBeVisible({ timeout: 5000 });
+  await expect(page.locator(".data-content")).toBeVisible({ timeout: 5000 });
 });
 ```
 
@@ -342,35 +334,32 @@ test('遅いAPIのローディング状態', async ({ page, mockServer }) => {
 
 ```typescript
 // tests/mocks/error-handlers.ts
-import { http, HttpResponse } from 'msw';
+import { http, HttpResponse } from "msw";
 
 export const errorHandlers = [
   // 500 Internal Server Error
-  http.get('/api/error-500', () => {
+  http.get("/api/error-500", () => {
     return HttpResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 }
+      { error: "Internal Server Error" },
+      { status: 500 },
     );
   }),
 
   // 404 Not Found
-  http.get('/api/not-found', () => {
-    return HttpResponse.json(
-      { error: 'Resource not found' },
-      { status: 404 }
-    );
+  http.get("/api/not-found", () => {
+    return HttpResponse.json({ error: "Resource not found" }, { status: 404 });
   }),
 
   // ネットワークエラー
-  http.get('/api/network-error', () => {
+  http.get("/api/network-error", () => {
     return HttpResponse.error();
   }),
 
   // レート制限
-  http.get('/api/rate-limited', () => {
+  http.get("/api/rate-limited", () => {
     return HttpResponse.json(
-      { error: 'Too Many Requests' },
-      { status: 429, headers: { 'Retry-After': '60' } }
+      { error: "Too Many Requests" },
+      { status: 429, headers: { "Retry-After": "60" } },
     );
   }),
 ];
@@ -380,26 +369,26 @@ export const errorHandlers = [
 
 ```typescript
 // tests/error-handling.spec.ts
-import { test, expect } from './fixtures/msw-fixtures';
-import { errorHandlers } from './mocks/error-handlers';
+import { test, expect } from "./fixtures/msw-fixtures";
+import { errorHandlers } from "./mocks/error-handlers";
 
-test.describe('エラーハンドリング', () => {
-  test('500エラーの表示', async ({ page, mockServer }) => {
+test.describe("エラーハンドリング", () => {
+  test("500エラーの表示", async ({ page, mockServer }) => {
     mockServer.use(...errorHandlers);
 
-    await page.goto('/dashboard');
+    await page.goto("/dashboard");
 
     // エラーメッセージが表示される
-    await expect(page.locator('.error-message')).toContainText(
-      'Internal Server Error'
+    await expect(page.locator(".error-message")).toContainText(
+      "Internal Server Error",
     );
   });
 
-  test('リトライロジック', async ({ page, mockServer }) => {
+  test("リトライロジック", async ({ page, mockServer }) => {
     let attemptCount = 0;
 
     mockServer.use(
-      http.get('/api/retry-test', () => {
+      http.get("/api/retry-test", () => {
         attemptCount++;
 
         // 最初の2回は失敗、3回目で成功
@@ -407,14 +396,14 @@ test.describe('エラーハンドリング', () => {
           return HttpResponse.error();
         }
 
-        return HttpResponse.json({ data: 'Success after retry' });
-      })
+        return HttpResponse.json({ data: "Success after retry" });
+      }),
     );
 
-    await page.goto('/dashboard');
+    await page.goto("/dashboard");
 
     // リトライ後に成功
-    await expect(page.locator('.data-content')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator(".data-content")).toBeVisible({ timeout: 10000 });
   });
 });
 ```
@@ -425,46 +414,46 @@ test.describe('エラーハンドリング', () => {
 
 ```typescript
 // tests/mocks/auth-handlers.ts
-import { http, HttpResponse } from 'msw';
+import { http, HttpResponse } from "msw";
 
 let mockAuthToken: string | null = null;
 
 export const authHandlers = [
   // ログイン
-  http.post('/api/auth/login', async ({ request }) => {
+  http.post("/api/auth/login", async ({ request }) => {
     const { email, password } = await request.json();
 
-    if (email === 'test@example.com' && password === 'password123') {
-      mockAuthToken = 'mock-jwt-token-' + Date.now();
+    if (email === "test@example.com" && password === "password123") {
+      mockAuthToken = "mock-jwt-token-" + Date.now();
 
       return HttpResponse.json({
         token: mockAuthToken,
-        user: { id: '1', email, name: 'Test User' },
+        user: { id: "1", email, name: "Test User" },
       });
     }
 
-    return HttpResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+    return HttpResponse.json({ error: "Invalid credentials" }, { status: 401 });
   }),
 
   // 認証が必要なエンドポイント
-  http.get('/api/protected/profile', ({ request }) => {
-    const authHeader = request.headers.get('Authorization');
+  http.get("/api/protected/profile", ({ request }) => {
+    const authHeader = request.headers.get("Authorization");
 
     if (!authHeader || authHeader !== `Bearer ${mockAuthToken}`) {
-      return HttpResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return HttpResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     return HttpResponse.json({
-      id: '1',
-      email: 'test@example.com',
-      name: 'Test User',
+      id: "1",
+      email: "test@example.com",
+      name: "Test User",
     });
   }),
 
   // ログアウト
-  http.post('/api/auth/logout', () => {
+  http.post("/api/auth/logout", () => {
     mockAuthToken = null;
-    return HttpResponse.json({ message: 'Logged out' });
+    return HttpResponse.json({ message: "Logged out" });
   }),
 ];
 ```
@@ -495,6 +484,7 @@ export const authHandlers = [
 MSWを使用することで、外部API依存を排除し、安定したE2Eテストを構築できます。
 
 **キーポイント**:
+
 1. **ネットワークレベルのモック**: Service Workerで透過的にインターセプト
 2. **Fixture統合**: Playwrightのfixtureで簡単に使用
 3. **条件付きレスポンス**: リクエスト内容に応じて動的に返す

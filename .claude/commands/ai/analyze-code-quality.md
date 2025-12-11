@@ -18,11 +18,11 @@ description: |
   トリガーキーワード: code quality, analyze, metrics, complexity, 品質分析, メトリクス, 複雑度
 argument-hint: "[directory]"
 allowed-tools:
-   - Task
-   - Grep
-   - Glob
-   - Bash
-   - Write"
+  - Task
+  - Grep
+  - Glob
+  - Bash
+  - Write"
 model: sonnet
 ---
 

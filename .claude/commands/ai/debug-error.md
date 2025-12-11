@@ -37,10 +37,10 @@ description: |
   トリガーキーワード: debug, error analysis, エラー調査, デバッグ, 原因特定
 argument-hint: "[error-message]"
 allowed-tools:
-   - Task
-   - Read
-   - Grep
-   - Bash
+  - Task
+  - Read
+  - Grep
+  - Bash
 model: opus
 ---
 
@@ -68,12 +68,14 @@ echo "分析対象エラー: $error_message"
 **使用エージェント**: `.claude/agents/logic-dev.md`
 
 **依頼内容**:
-```markdown
+
+`````markdown
 エラーを分析し、根本原因を特定してください。
 
 **エラーメッセージ**: ${error_message}
 
 **要件**:
+
 1. エラー種別の特定:
    - ランタイムエラー / 型エラー / ビルドエラー
    - エラーコード（該当する場合）
@@ -84,7 +86,8 @@ echo "分析対象エラー: $error_message"
    - 関連コードの確認
 
 3. 根本原因の特定:
-   ```markdown
+
+   ````markdown
    ## 根本原因
 
    **エラー種別**: TypeError（ランタイムエラー）
@@ -95,28 +98,35 @@ echo "分析対象エラー: $error_message"
    APIレスポンスが`null`の場合にmap()を呼び出している
 
    **コード**:
+
    ```typescript
    // エラー発生コード（45行目）
-   const results = response.data.map(item => item.name);
+   const results = response.data.map((item) => item.name);
    //              ^^^^^^^^^^^^^ null の可能性
    ```
+   ````
+`````
 
-   **根本原因**:
-   APIがエラーを返した場合、response.dataがnullになるが、
-   nullチェックが行われていない
-   ```
+```
+
+**根本原因**:
+APIがエラーを返した場合、response.dataがnullになるが、
+nullチェックが行われていない
+
+```
 
 4. 修正方法提案:
-   ```typescript
-   // 修正案1: Optional Chaining + Nullish Coalescing
-   const results = (response.data ?? []).map(item => item.name);
 
-   // 修正案2: 明示的なnullチェック
-   if (!response.data) {
-     throw new Error("API response data is null");
-   }
-   const results = response.data.map(item => item.name);
-   ```
+```typescript
+// 修正案1: Optional Chaining + Nullish Coalescing
+const results = (response.data ?? []).map((item) => item.name);
+
+// 修正案2: 明示的なnullチェック
+if (!response.data) {
+  throw new Error("API response data is null");
+}
+const results = response.data.map((item) => item.name);
+```
 
 5. 再発防止策:
    - 型定義の強化（non-null型）
@@ -124,11 +134,13 @@ echo "分析対象エラー: $error_message"
    - エラーハンドリング改善
 
 **スキル参照**:
+
 - `.claude/skills/debugging-techniques/SKILL.md`
 - `.claude/skills/error-pattern-recognition/SKILL.md`
 
 **成果物**: エラー分析レポート、修正提案
-```
+
+````
 
 ### Phase 3: 完了報告
 
@@ -148,7 +160,7 @@ ${prevention}
 1. 修正実装
 2. テスト追加
 3. 類似箇所の確認
-```
+````
 
 ## 使用例
 

@@ -9,7 +9,7 @@ on:
       - main
       - develop
   pull_request:
-  workflow_dispatch:  # 手動実行可能
+  workflow_dispatch: # 手動実行可能
 
 # デバッグログを有効化するには、リポジトリシークレットに以下を設定:
 # - ACTIONS_STEP_DEBUG=true
@@ -131,8 +131,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
 
       - name: Check cache directories
         run: |
@@ -231,11 +231,11 @@ jobs:
   debug-timeout:
     name: Timeout Diagnostics
     runs-on: ubuntu-latest
-    timeout-minutes: 5  # ジョブ全体のタイムアウト
+    timeout-minutes: 5 # ジョブ全体のタイムアウト
 
     steps:
       - name: Quick task
-        timeout-minutes: 1  # ステップごとのタイムアウト
+        timeout-minutes: 1 # ステップごとのタイムアウト
         run: |
           echo "This task completes quickly"
           sleep 5
@@ -293,7 +293,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         node: [18, 20]
-      fail-fast: false  # 他のジョブを継続
+      fail-fast: false # 他のジョブを継続
 
     steps:
       - name: Environment info
@@ -357,7 +357,14 @@ jobs:
   debug-summary:
     name: Debug Summary
     runs-on: ubuntu-latest
-    needs: [debug-basic, debug-permissions, debug-cache, debug-network, debug-artifacts]
+    needs:
+      [
+        debug-basic,
+        debug-permissions,
+        debug-cache,
+        debug-network,
+        debug-artifacts,
+      ]
     if: always()
 
     steps:

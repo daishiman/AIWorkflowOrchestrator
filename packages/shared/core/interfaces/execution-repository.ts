@@ -1,5 +1,9 @@
-import type { Execution } from '../entities/execution';
-import type { PaginationParams, PaginatedResult, ExecutionStatus } from '../../types';
+import type { Execution } from "../entities/execution";
+import type {
+  PaginationParams,
+  PaginatedResult,
+  ExecutionStatus,
+} from "../../types";
 
 /**
  * 実行リポジトリインターフェース
@@ -15,7 +19,7 @@ export interface IExecutionRepository {
    */
   findByWorkflowId(
     workflowId: string,
-    params?: PaginationParams
+    params?: PaginationParams,
   ): Promise<PaginatedResult<Execution>>;
 
   /**

@@ -43,6 +43,7 @@ model: sonnet
 ### Phase 1: エージェント起動準備
 
 **コンテキスト収集:**
+
 ```bash
 # エラーメッセージの収集
 grep -r "throw new" src/
@@ -84,6 +85,7 @@ cat docs/manual/faq.md 2>/dev/null || echo "No existing FAQ"
 ### Phase 3: 完了報告
 
 エージェントからの成果物を受け取り、ユーザーに以下を報告:
+
 - ✅ カバーされた問題カテゴリ数
 - 📋 FAQ項目数
 - 🔍 診断フロー数

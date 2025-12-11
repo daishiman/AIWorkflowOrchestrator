@@ -51,8 +51,8 @@ depcruise src --include-only "^src" --validate .dependency-cruiser.js
 
 ```javascript
 // check-circular.mjs
-import { readdir, readFile, stat } from 'fs/promises';
-import { join, dirname, resolve } from 'path';
+import { readdir, readFile, stat } from "fs/promises";
+import { join, dirname, resolve } from "path";
 
 class CircularDetector {
   constructor() {
@@ -108,12 +108,16 @@ class CircularDetector {
 ```typescript
 // ❌ Before: 循環依存
 // auth.ts
-import { generateToken } from './token';
-export function login() { /* ... */ }
+import { generateToken } from "./token";
+export function login() {
+  /* ... */
+}
 
 // token.ts
-import { getCurrentUser } from './auth';
-export function generateToken() { /* ... */ }
+import { getCurrentUser } from "./auth";
+export function generateToken() {
+  /* ... */
+}
 ```
 
 ```typescript
@@ -124,16 +128,20 @@ export interface IAuthService {
 }
 
 // token.ts
-import { IAuthService } from './interfaces/auth';
+import { IAuthService } from "./interfaces/auth";
 export class TokenService {
   constructor(private auth: IAuthService) {}
-  generateToken() { /* ... */ }
+  generateToken() {
+    /* ... */
+  }
 }
 
 // auth.ts
-import { IAuthService } from './interfaces/auth';
+import { IAuthService } from "./interfaces/auth";
 export class AuthService implements IAuthService {
-  getCurrentUser(): User { /* ... */ }
+  getCurrentUser(): User {
+    /* ... */
+  }
 }
 ```
 
@@ -142,27 +150,40 @@ export class AuthService implements IAuthService {
 ```typescript
 // ❌ Before: 循環依存
 // user.ts
-import { Order } from './order';
-export class User { orders: Order[]; }
+import { Order } from "./order";
+export class User {
+  orders: Order[];
+}
 
 // order.ts
-import { User } from './user';
-export class Order { user: User; }
+import { User } from "./user";
+export class Order {
+  user: User;
+}
 ```
 
 ```typescript
 // ✅ After: 共通エンティティを抽出
 // types/entities.ts
-export interface IUser { id: string; }
-export interface IOrder { id: string; userId: string; }
+export interface IUser {
+  id: string;
+}
+export interface IOrder {
+  id: string;
+  userId: string;
+}
 
 // user.ts
-import { IUser, IOrder } from './types/entities';
-export class User implements IUser { /* ... */ }
+import { IUser, IOrder } from "./types/entities";
+export class User implements IUser {
+  /* ... */
+}
 
 // order.ts
-import { IOrder } from './types/entities';
-export class Order implements IOrder { /* ... */ }
+import { IOrder } from "./types/entities";
+export class Order implements IOrder {
+  /* ... */
+}
 ```
 
 ### 3. イベント駆動への変更
@@ -170,15 +191,17 @@ export class Order implements IOrder { /* ... */ }
 ```typescript
 // ❌ Before: 直接呼び出し
 // payment.ts
-import { notifyUser } from './notification';
+import { notifyUser } from "./notification";
 export function processPayment() {
   // 支払い処理
-  notifyUser('Payment complete');
+  notifyUser("Payment complete");
 }
 
 // notification.ts
-import { getPaymentStatus } from './payment';
-export function notifyUser(msg: string) { /* ... */ }
+import { getPaymentStatus } from "./payment";
+export function notifyUser(msg: string) {
+  /* ... */
+}
 ```
 
 ```typescript
@@ -187,16 +210,18 @@ export function notifyUser(msg: string) { /* ... */ }
 export const eventBus = new EventEmitter();
 
 // payment.ts
-import { eventBus } from './events';
+import { eventBus } from "./events";
 export function processPayment() {
   // 支払い処理
-  eventBus.emit('payment:complete', { /* ... */ });
+  eventBus.emit("payment:complete", {
+    /* ... */
+  });
 }
 
 // notification.ts
-import { eventBus } from './events';
-eventBus.on('payment:complete', (data) => {
-  notifyUser('Payment complete');
+import { eventBus } from "./events";
+eventBus.on("payment:complete", (data) => {
+  notifyUser("Payment complete");
 });
 ```
 
@@ -204,11 +229,11 @@ eventBus.on('payment:complete', (data) => {
 
 ```typescript
 // ❌ Before: トップレベルimport
-import { heavy } from './heavy-module';
+import { heavy } from "./heavy-module";
 
 // ✅ After: 動的import
 export async function useHeavyFeature() {
-  const { heavy } = await import('./heavy-module');
+  const { heavy } = await import("./heavy-module");
   return heavy();
 }
 ```

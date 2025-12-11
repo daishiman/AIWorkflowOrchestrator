@@ -15,11 +15,11 @@
  * - 詳細なセッション管理が必要
  */
 
-import { db } from '@/infrastructure/database';
-import { sessions } from '@/infrastructure/database/schema';
-import { eq, and, gt } from 'drizzle-orm';
-import { cookies } from 'next/headers';
-import crypto from 'crypto';
+import { db } from "@/infrastructure/database";
+import { sessions } from "@/infrastructure/database/schema";
+import { eq, and, gt } from "drizzle-orm";
+import { cookies } from "next/headers";
+import crypto from "crypto";
 
 // ========================================
 // 型定義
@@ -53,24 +53,27 @@ export async function createSession(data: SessionData): Promise<Session> {
   const sessionId = generateSessionId();
   const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30日
 
-  const [session] = await db.insert(sessions).values({
-    id: sessionId,
-    userId: data.userId,
-    expiresAt,
-    createdAt: new Date(),
-    lastActivityAt: new Date(),
-    ipAddress: data.ipAddress,
-    userAgent: data.userAgent,
-    active: true,
-  }).returning();
+  const [session] = await db
+    .insert(sessions)
+    .values({
+      id: sessionId,
+      userId: data.userId,
+      expiresAt,
+      createdAt: new Date(),
+      lastActivityAt: new Date(),
+      ipAddress: data.ipAddress,
+      userAgent: data.userAgent,
+      active: true,
+    })
+    .returning();
 
   // Session IDをCookieに保存
-  cookies().set('session_id', sessionId, {
+  cookies().set("session_id", sessionId, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
     maxAge: 30 * 24 * 60 * 60,
-    path: '/',
+    path: "/",
   });
 
   return session;
@@ -80,7 +83,7 @@ export async function createSession(data: SessionData): Promise<Session> {
  * セッション取得
  */
 export async function getSession(): Promise<Session | null> {
-  const sessionId = cookies().get('session_id')?.value;
+  const sessionId = cookies().get("session_id")?.value;
 
   if (!sessionId) {
     return null;
@@ -93,14 +96,14 @@ export async function getSession(): Promise<Session | null> {
       and(
         eq(sessions.id, sessionId),
         eq(sessions.active, true),
-        gt(sessions.expiresAt, new Date())
-      )
+        gt(sessions.expiresAt, new Date()),
+      ),
     )
     .limit(1);
 
   if (!session) {
     // 無効なセッション → Cookieクリア
-    cookies().delete('session_id');
+    cookies().delete("session_id");
     return null;
   }
 
@@ -114,7 +117,7 @@ export async function getSession(): Promise<Session | null> {
  * セッション削除（ログアウト）
  */
 export async function deleteSession(): Promise<void> {
-  const sessionId = cookies().get('session_id')?.value;
+  const sessionId = cookies().get("session_id")?.value;
 
   if (sessionId) {
     // セッションを無効化
@@ -125,7 +128,7 @@ export async function deleteSession(): Promise<void> {
   }
 
   // Cookieクリア
-  cookies().delete('session_id');
+  cookies().delete("session_id");
 }
 
 /**
@@ -135,10 +138,7 @@ export async function deleteAllUserSessions(userId: string): Promise<void> {
   await db
     .update(sessions)
     .set({ active: false, revokedAt: new Date() })
-    .where(and(
-      eq(sessions.userId, userId),
-      eq(sessions.active, true)
-    ));
+    .where(and(eq(sessions.userId, userId), eq(sessions.active, true)));
 }
 
 // ========================================
@@ -150,14 +150,14 @@ export async function deleteAllUserSessions(userId: string): Promise<void> {
  */
 export async function validateSessionContext(
   session: Session,
-  request: Request
+  request: Request,
 ): Promise<boolean> {
   const currentIp = getClientIP(request);
-  const currentUA = request.headers.get('User-Agent');
+  const currentUA = request.headers.get("User-Agent");
 
   // IP変更検出
   if (session.ipAddress && session.ipAddress !== currentIp) {
-    logSecurityEvent('IP_ADDRESS_CHANGE', {
+    logSecurityEvent("IP_ADDRESS_CHANGE", {
       sessionId: session.id,
       userId: session.userId,
       oldIp: session.ipAddress,
@@ -170,7 +170,7 @@ export async function validateSessionContext(
 
   // User-Agent変更検出
   if (session.userAgent && session.userAgent !== currentUA) {
-    logSecurityEvent('USER_AGENT_CHANGE', {
+    logSecurityEvent("USER_AGENT_CHANGE", {
       sessionId: session.id,
       userId: session.userId,
       oldUA: session.userAgent,
@@ -226,12 +226,12 @@ export async function extendSession(sessionId: string): Promise<void> {
     .where(eq(sessions.id, sessionId));
 
   // Cookie の Max-Age も更新
-  cookies().set('session_id', sessionId, {
+  cookies().set("session_id", sessionId, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
     maxAge: 30 * 24 * 60 * 60,
-    path: '/',
+    path: "/",
   });
 }
 
@@ -244,16 +244,13 @@ export async function extendSession(sessionId: string): Promise<void> {
  */
 export async function enforceSessionLimit(
   userId: string,
-  maxSessions: number = 3
+  maxSessions: number = 3,
 ): Promise<void> {
   const userSessions = await db
     .select()
     .from(sessions)
-    .where(and(
-      eq(sessions.userId, userId),
-      eq(sessions.active, true)
-    ))
-    .orderBy(sessions.lastActivityAt, 'desc');
+    .where(and(eq(sessions.userId, userId), eq(sessions.active, true)))
+    .orderBy(sessions.lastActivityAt, "desc");
 
   if (userSessions.length >= maxSessions) {
     // 最も古いセッションを無効化
@@ -263,7 +260,10 @@ export async function enforceSessionLimit(
       .update(sessions)
       .set({ active: false, revokedAt: new Date() })
       .where(
-        eq(sessions.id, sessionsToRevoke.map(s => s.id))
+        eq(
+          sessions.id,
+          sessionsToRevoke.map((s) => s.id),
+        ),
       );
   }
 }
@@ -290,18 +290,20 @@ export async function cleanupExpiredSessions(): Promise<number> {
 // ========================================
 
 function generateSessionId(): string {
-  return crypto.randomBytes(32).toString('base64url');
+  return crypto.randomBytes(32).toString("base64url");
 }
 
 function getClientIP(request: Request): string {
-  return request.headers.get('x-forwarded-for')?.split(',')[0] ||
-         request.headers.get('x-real-ip') ||
-         'unknown';
+  return (
+    request.headers.get("x-forwarded-for")?.split(",")[0] ||
+    request.headers.get("x-real-ip") ||
+    "unknown"
+  );
 }
 
 async function logSecurityEvent(
   eventType: string,
-  data: Record<string, any>
+  data: Record<string, any>,
 ): Promise<void> {
   console.warn(`[SECURITY] ${eventType}:`, data);
   // 実装: セキュリティログシステムへの記録
@@ -314,23 +316,25 @@ async function logSecurityEvent(
 /**
  * Next.js Middleware: Database Session検証
  */
-export async function authMiddleware(request: Request): Promise<Response | null> {
+export async function authMiddleware(
+  request: Request,
+): Promise<Response | null> {
   const session = await getSession();
 
   if (!session) {
-    return Response.redirect(new URL('/login', request.url));
+    return Response.redirect(new URL("/login", request.url));
   }
 
   // セッションタイムアウトチェック
   if (isSessionExpired(session)) {
     await deleteSession();
-    return Response.redirect(new URL('/login', request.url));
+    return Response.redirect(new URL("/login", request.url));
   }
 
   // セッションコンテキスト検証
-  if (!await validateSessionContext(session, request)) {
+  if (!(await validateSessionContext(session, request))) {
     // セキュリティリスク → 追加認証要求
-    return Response.redirect(new URL('/auth/verify', request.url));
+    return Response.redirect(new URL("/auth/verify", request.url));
   }
 
   return null;

@@ -39,9 +39,9 @@ const req = http.request(options, (res) => {
   // レスポンス処理
 });
 
-req.on('timeout', () => {
+req.on("timeout", () => {
   req.destroy();
-  throw new TimeoutError('Socket timeout');
+  throw new TimeoutError("Socket timeout");
 });
 ```
 
@@ -52,7 +52,7 @@ req.on('timeout', () => {
 ```typescript
 async function withTimeout<T>(
   promise: Promise<T>,
-  timeoutMs: number
+  timeoutMs: number,
 ): Promise<T> {
   let timeoutId: NodeJS.Timeout;
 
@@ -81,7 +81,7 @@ class IdleTimeoutStream {
 
   constructor(
     private readonly idleTimeout: number,
-    private readonly onTimeout: () => void
+    private readonly onTimeout: () => void,
   ) {
     this.checkInterval = setInterval(() => {
       if (Date.now() - this.lastActivity > this.idleTimeout) {
@@ -104,35 +104,35 @@ class IdleTimeoutStream {
 
 ### 推奨値
 
-| タイムアウト種別 | 推奨値 | 考慮事項 |
-|-----------------|--------|---------|
-| 接続タイムアウト | 3-10秒 | ネットワーク遅延、サーバー距離 |
-| 読み取りタイムアウト | 10-60秒 | データサイズ、サーバー処理時間 |
-| 全体タイムアウト | 30-120秒 | 操作の複雑さ、ユーザー期待 |
-| アイドルタイムアウト | 30-60秒 | ストリームの特性 |
+| タイムアウト種別     | 推奨値   | 考慮事項                       |
+| -------------------- | -------- | ------------------------------ |
+| 接続タイムアウト     | 3-10秒   | ネットワーク遅延、サーバー距離 |
+| 読み取りタイムアウト | 10-60秒  | データサイズ、サーバー処理時間 |
+| 全体タイムアウト     | 30-120秒 | 操作の複雑さ、ユーザー期待     |
+| アイドルタイムアウト | 30-60秒  | ストリームの特性               |
 
 ### 用途別設計
 
 ```typescript
 // インタラクティブ操作（ユーザー待機）
 const interactiveTimeout = {
-  connection: 3000,   // 3秒
-  read: 10000,        // 10秒
-  total: 15000,       // 15秒
+  connection: 3000, // 3秒
+  read: 10000, // 10秒
+  total: 15000, // 15秒
 };
 
 // バックグラウンド処理
 const backgroundTimeout = {
-  connection: 10000,  // 10秒
-  read: 60000,        // 60秒
-  total: 120000,      // 2分
+  connection: 10000, // 10秒
+  read: 60000, // 60秒
+  total: 120000, // 2分
 };
 
 // バッチ処理
 const batchTimeout = {
-  connection: 30000,  // 30秒
-  read: 300000,       // 5分
-  total: 600000,      // 10分
+  connection: 30000, // 30秒
+  read: 300000, // 5分
+  total: 600000, // 10分
 };
 ```
 
@@ -149,8 +149,8 @@ class TimeoutController {
     // 全体タイムアウト
     this.timeouts.push(
       setTimeout(() => {
-        this.controller.abort(new TimeoutError('Total timeout exceeded'));
-      }, config.total)
+        this.controller.abort(new TimeoutError("Total timeout exceeded"));
+      }, config.total),
     );
   }
 
@@ -190,11 +190,13 @@ async function fetchWithTimeout(url: string): Promise<Response> {
 async function executeWithTimeout<T>(
   operation: () => Promise<T>,
   timeoutMs: number,
-  operationName = 'Operation'
+  operationName = "Operation",
 ): Promise<T> {
   const timeoutPromise = new Promise<never>((_, reject) => {
     setTimeout(() => {
-      reject(new TimeoutError(`${operationName} timed out after ${timeoutMs}ms`));
+      reject(
+        new TimeoutError(`${operationName} timed out after ${timeoutMs}ms`),
+      );
     }, timeoutMs);
   });
 
@@ -205,7 +207,7 @@ async function executeWithTimeout<T>(
 const result = await executeWithTimeout(
   () => api.getUser(userId),
   10000,
-  'GetUser'
+  "GetUser",
 );
 ```
 
@@ -225,12 +227,12 @@ class HierarchicalTimeout {
   async executeStep<T>(
     stepName: string,
     operation: () => Promise<T>,
-    stepTimeout?: number
+    stepTimeout?: number,
   ): Promise<T> {
     const remaining = this.getRemainingTime();
 
     if (remaining <= 0) {
-      throw new TimeoutError('Total timeout exceeded before ' + stepName);
+      throw new TimeoutError("Total timeout exceeded before " + stepName);
     }
 
     const effectiveTimeout = stepTimeout
@@ -245,9 +247,19 @@ class HierarchicalTimeout {
 async function complexOperation(): Promise<Result> {
   const timeout = new HierarchicalTimeout(60000); // 全体60秒
 
-  const user = await timeout.executeStep('GetUser', () => api.getUser(id), 10000);
-  const orders = await timeout.executeStep('GetOrders', () => api.getOrders(id), 20000);
-  const process = await timeout.executeStep('Process', () => processData(user, orders));
+  const user = await timeout.executeStep(
+    "GetUser",
+    () => api.getUser(id),
+    10000,
+  );
+  const orders = await timeout.executeStep(
+    "GetOrders",
+    () => api.getOrders(id),
+    20000,
+  );
+  const process = await timeout.executeStep("Process", () =>
+    processData(user, orders),
+  );
 
   return process;
 }
@@ -264,7 +276,7 @@ async function retryWithTimeout<T>(
     timeout: number;
     maxRetries: number;
     backoff: BackoffConfig;
-  }
+  },
 ): Promise<T> {
   let lastError: Error;
 
@@ -294,7 +306,7 @@ async function retryWithTimeout<T>(
 async function retryWithTotalTimeout<T>(
   operation: () => Promise<T>,
   totalTimeout: number,
-  maxRetries: number
+  maxRetries: number,
 ): Promise<T> {
   const startTime = Date.now();
   let attempt = 0;
@@ -304,7 +316,7 @@ async function retryWithTotalTimeout<T>(
     const remaining = totalTimeout - elapsed;
 
     if (remaining <= 0) {
-      throw new TimeoutError('Total timeout exceeded');
+      throw new TimeoutError("Total timeout exceeded");
     }
 
     try {
@@ -318,7 +330,7 @@ async function retryWithTotalTimeout<T>(
     }
   }
 
-  throw new Error('Unexpected: max retries reached');
+  throw new Error("Unexpected: max retries reached");
 }
 ```
 
@@ -330,28 +342,28 @@ async function retryWithTotalTimeout<T>(
 class TimeoutError extends Error {
   constructor(
     message: string,
-    public readonly type: 'connection' | 'read' | 'total' | 'idle',
-    public readonly elapsedMs?: number
+    public readonly type: "connection" | "read" | "total" | "idle",
+    public readonly elapsedMs?: number,
   ) {
     super(message);
-    this.name = 'TimeoutError';
+    this.name = "TimeoutError";
   }
 }
 
 // 使用例
 function handleTimeoutError(error: TimeoutError): void {
   switch (error.type) {
-    case 'connection':
+    case "connection":
       // サーバーが到達不能の可能性
-      console.log('Failed to connect to server');
+      console.log("Failed to connect to server");
       break;
-    case 'read':
+    case "read":
       // サーバーが過負荷の可能性
-      console.log('Server is slow to respond');
+      console.log("Server is slow to respond");
       break;
-    case 'total':
+    case "total":
       // 操作全体が長すぎる
-      console.log('Operation took too long');
+      console.log("Operation took too long");
       break;
   }
 }
@@ -360,16 +372,19 @@ function handleTimeoutError(error: TimeoutError): void {
 ## チェックリスト
 
 ### 設計時
+
 - [ ] 各タイムアウト種別が適切に設定されているか？
 - [ ] ユーザー体験への影響が考慮されているか？
 - [ ] バックエンド処理時間が考慮されているか？
 
 ### 実装時
+
 - [ ] タイムアウト時にリソースがクリーンアップされるか？
 - [ ] AbortSignal が正しく伝播されるか？
 - [ ] タイムアウトエラーが適切に分類されるか？
 
 ### 運用時
+
 - [ ] タイムアウト発生率がモニタリングされているか？
 - [ ] タイムアウト値の調整が可能か？
 - [ ] 適切なアラートが設定されているか？

@@ -153,7 +153,10 @@ const GOOD_PATTERNS = [
   { pattern: /role=["']alert["']/gi, name: "アラートロール" },
   { pattern: /role=["']status["']/gi, name: "ステータスロール" },
   { pattern: /aria-live=/gi, name: "ライブリージョン" },
-  { pattern: /sr-only|visually-hidden/gi, name: "スクリーンリーダー用テキスト" },
+  {
+    pattern: /sr-only|visually-hidden/gi,
+    name: "スクリーンリーダー用テキスト",
+  },
   { pattern: /<label[^>]*htmlFor=/gi, name: "labelとhtmlFor関連付け" },
   { pattern: /onKeyDown/gi, name: "キーボードイベントハンドラ" },
   { pattern: /tabIndex/gi, name: "tabIndex管理" },
@@ -293,16 +296,22 @@ function printResults(results, score) {
       console.log("  - divやspanの代わりにbutton、a、inputを使用してください");
     }
 
-    if (results.warnings.some((w) => w.category === "フォームアクセシビリティ")) {
+    if (
+      results.warnings.some((w) => w.category === "フォームアクセシビリティ")
+    ) {
       console.log("  - フォーム要素にはラベルを関連付けてください");
     }
 
-    if (results.warnings.some((w) => w.category === "キーボードアクセシビリティ")) {
+    if (
+      results.warnings.some((w) => w.category === "キーボードアクセシビリティ")
+    ) {
       console.log("  - onClickにはonKeyDownも追加してください");
     }
 
     if (results.errors.some((e) => e.category === "フォーカス管理")) {
-      console.log("  - フォーカス表示を削除せず、カスタムスタイルを適用してください");
+      console.log(
+        "  - フォーカス表示を削除せず、カスタムスタイルを適用してください",
+      );
     }
   }
 

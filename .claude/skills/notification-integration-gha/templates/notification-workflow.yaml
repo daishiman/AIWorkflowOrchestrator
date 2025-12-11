@@ -31,7 +31,7 @@ jobs:
         if: success()
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          channel-id: 'C1234567890'
+          channel-id: "C1234567890"
           slack-message: |
             ✅ *Deployment Succeeded*
             *Repository*: ${{ github.repository }}
@@ -46,7 +46,7 @@ jobs:
         if: failure()
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          channel-id: 'C_ALERT_CHANNEL'
+          channel-id: "C_ALERT_CHANNEL"
           slack-message: |
             ❌ *Build Failed* <!here>
             *Repository*: ${{ github.repository }}
@@ -57,7 +57,6 @@ jobs:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
 ---
-
 # ============================================
 # 2. Discord通知（Webhook）
 # ============================================
@@ -127,7 +126,6 @@ jobs:
             }"
 
 ---
-
 # ============================================
 # 3. MS Teams通知（Adaptive Card）
 # ============================================
@@ -137,7 +135,7 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: '0 9 * * 1'  # 毎週月曜9時
+    - cron: "0 9 * * 1" # 毎週月曜9時
 
 jobs:
   report-and-notify:
@@ -194,7 +192,6 @@ jobs:
             }'
 
 ---
-
 # ============================================
 # 4. 複数サービス統合（Slack + Discord + Teams）
 # ============================================
@@ -265,7 +262,6 @@ jobs:
           wait
 
 ---
-
 # ============================================
 # 5. スレッド型通知（進行状況更新）
 # ============================================
@@ -283,8 +279,8 @@ jobs:
         id: slack_init
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          channel-id: 'C1234567890'
-          slack-message: '🔄 Deployment started...'
+          channel-id: "C1234567890"
+          slack-message: "🔄 Deployment started..."
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
@@ -297,7 +293,7 @@ jobs:
       - name: Update - Build complete
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          channel-id: 'C1234567890'
+          channel-id: "C1234567890"
           update-ts: ${{ steps.slack_init.outputs.ts }}
           slack-message: |
             ✅ Build completed
@@ -311,7 +307,7 @@ jobs:
       - name: Update - Tests complete
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          channel-id: 'C1234567890'
+          channel-id: "C1234567890"
           update-ts: ${{ steps.slack_init.outputs.ts }}
           slack-message: |
             ✅ Build completed
@@ -326,7 +322,7 @@ jobs:
       - name: Final notification
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          channel-id: 'C1234567890'
+          channel-id: "C1234567890"
           update-ts: ${{ steps.slack_init.outputs.ts }}
           slack-message: |
             ✅ Build completed
@@ -337,7 +333,6 @@ jobs:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
 ---
-
 # ============================================
 # 6. 条件付き通知（ブランチ・環境別）
 # ============================================
@@ -362,8 +357,8 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          channel-id: 'C_PRODUCTION'
-          slack-message: '🚀 Production deployment completed'
+          channel-id: "C_PRODUCTION"
+          slack-message: "🚀 Production deployment completed"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
@@ -371,8 +366,8 @@ jobs:
         if: github.ref == 'refs/heads/staging'
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          channel-id: 'C_STAGING'
-          slack-message: '🧪 Staging deployment completed'
+          channel-id: "C_STAGING"
+          slack-message: "🧪 Staging deployment completed"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
@@ -380,8 +375,8 @@ jobs:
         if: github.ref == 'refs/heads/develop'
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          channel-id: 'C_DEVELOPMENT'
-          slack-message: '🔧 Development deployment completed'
+          channel-id: "C_DEVELOPMENT"
+          slack-message: "🔧 Development deployment completed"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
@@ -389,7 +384,7 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: slackapi/slack-github-action@v1.24.0
         with:
-          channel-id: 'C_PR_REVIEWS'
+          channel-id: "C_PR_REVIEWS"
           slack-message: |
             📝 *Pull Request Update*
             *PR #${{ github.event.pull_request.number }}*: ${{ github.event.pull_request.title }}
@@ -399,7 +394,6 @@ jobs:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
 ---
-
 # ============================================
 # 7. エラーハンドリングとリトライ
 # ============================================
@@ -448,7 +442,6 @@ jobs:
           echo "Deployment status: ${{ job.status }}"
 
 ---
-
 # ============================================
 # 8. カスタムEmail通知（SendGrid）
 # ============================================
@@ -456,7 +449,7 @@ name: Email Notification via SendGrid
 
 on:
   schedule:
-    - cron: '0 0 * * 0'  # 毎週日曜0時
+    - cron: "0 0 * * 0" # 毎週日曜0時
   workflow_dispatch:
 
 jobs:

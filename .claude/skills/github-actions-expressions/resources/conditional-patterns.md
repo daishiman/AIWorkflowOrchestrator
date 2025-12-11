@@ -443,8 +443,8 @@ steps:
 on:
   push:
     paths:
-      - 'src/**'
-      - 'package.json'
+      - "src/**"
+      - "package.json"
 
 jobs:
   build:
@@ -512,7 +512,7 @@ steps:
 ```yaml
 on:
   schedule:
-    - cron: '0 0 * * *'  # 毎日午前0時
+    - cron: "0 0 * * *" # 毎日午前0時
   push:
 
 jobs:

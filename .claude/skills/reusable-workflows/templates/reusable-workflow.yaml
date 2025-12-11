@@ -9,30 +9,30 @@ on:
     inputs:
       # String input with description
       environment:
-        description: 'Target environment (development|staging|production)'
+        description: "Target environment (development|staging|production)"
         required: true
         type: string
 
       # Boolean input with default
       debug-mode:
-        description: 'Enable debug logging'
+        description: "Enable debug logging"
         required: false
         type: boolean
         default: false
 
       # Number input with default
       timeout-minutes:
-        description: 'Job timeout in minutes'
+        description: "Job timeout in minutes"
         required: false
         type: number
         default: 30
 
       # Optional string with default
       node-version:
-        description: 'Node.js version to use'
+        description: "Node.js version to use"
         required: false
         type: string
-        default: '20'
+        default: "20"
 
     # === OUTPUTS ===
     outputs:
@@ -56,12 +56,12 @@ on:
       # Required secret
       API_TOKEN:
         required: true
-        description: 'API authentication token'
+        description: "API authentication token"
 
       # Optional secret
       SENTRY_DSN:
         required: false
-        description: 'Sentry error tracking DSN'
+        description: "Sentry error tracking DSN"
 
 # === JOBS ===
 jobs:
@@ -85,7 +85,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
-          cache: 'pnpm'
+          cache: "pnpm"
 
       # 3. Install dependencies
       - name: Install dependencies

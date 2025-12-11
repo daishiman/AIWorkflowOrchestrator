@@ -21,9 +21,9 @@
  *   node detect-flaky-tests.mjs --output flaky-report.json --threshold 0.05
  */
 
-import { execSync } from 'child_process';
-import { writeFileSync, existsSync } from 'fs';
-import { resolve } from 'path';
+import { execSync } from "child_process";
+import { writeFileSync, existsSync } from "fs";
+import { resolve } from "path";
 
 class FlakyTestDetector {
   constructor(options = {}) {
@@ -44,8 +44,8 @@ class FlakyTestDetector {
 
     try {
       const output = execSync(command, {
-        encoding: 'utf-8',
-        stdio: 'pipe',
+        encoding: "utf-8",
+        stdio: "pipe",
       });
       return { success: true, output };
     } catch (error) {
@@ -58,14 +58,14 @@ class FlakyTestDetector {
    * Playwrightコマンドを構築
    */
   buildCommand() {
-    let command = 'pnpm playwright test';
+    let command = "pnpm playwright test";
 
     if (this.testFile) {
       command += ` ${this.testFile}`;
     }
 
     command += ` --workers=${this.workers}`;
-    command += ' --reporter=json';
+    command += " --reporter=json";
 
     return command;
   }
@@ -76,11 +76,11 @@ class FlakyTestDetector {
   parseResults(output) {
     try {
       // Playwrightのjsonレポートをパース
-      const lines = output.split('\n');
-      const jsonLine = lines.find((line) => line.trim().startsWith('{'));
+      const lines = output.split("\n");
+      const jsonLine = lines.find((line) => line.trim().startsWith("{"));
 
       if (!jsonLine) {
-        console.warn('No JSON output found, parsing text output instead');
+        console.warn("No JSON output found, parsing text output instead");
         return this.parseTextOutput(output);
       }
 
@@ -103,7 +103,7 @@ class FlakyTestDetector {
 
       return testResults;
     } catch (error) {
-      console.error('Failed to parse JSON output:', error.message);
+      console.error("Failed to parse JSON output:", error.message);
       return this.parseTextOutput(output);
     }
   }
@@ -113,16 +113,16 @@ class FlakyTestDetector {
    */
   parseTextOutput(output) {
     const testResults = [];
-    const lines = output.split('\n');
+    const lines = output.split("\n");
 
     for (const line of lines) {
       // 例: "✓ test name (123ms)"
-      if (line.includes('✓') || line.includes('✗')) {
-        const status = line.includes('✓') ? 'passed' : 'failed';
-        const title = line.replace(/^[✓✗]\s+/, '').replace(/\s+\(\d+ms\)$/, '');
+      if (line.includes("✓") || line.includes("✗")) {
+        const status = line.includes("✓") ? "passed" : "failed";
+        const title = line.replace(/^[✓✗]\s+/, "").replace(/\s+\(\d+ms\)$/, "");
         testResults.push({
           title,
-          file: 'unknown',
+          file: "unknown",
           status,
           duration: 0,
           error: null,
@@ -158,17 +158,17 @@ class FlakyTestDetector {
       stats.total++;
 
       switch (test.status) {
-        case 'passed':
+        case "passed":
           stats.passed++;
           break;
-        case 'failed':
+        case "failed":
           stats.failed++;
           if (test.error) stats.errors.push(test.error);
           break;
-        case 'skipped':
+        case "skipped":
           stats.skipped++;
           break;
-        case 'timedOut':
+        case "timedOut":
           stats.timedOut++;
           break;
       }
@@ -195,7 +195,8 @@ class FlakyTestDetector {
           failureRate,
           avgDuration:
             stats.durations.length > 0
-              ? stats.durations.reduce((a, b) => a + b, 0) / stats.durations.length
+              ? stats.durations.reduce((a, b) => a + b, 0) /
+                stats.durations.length
               : 0,
         });
       }
@@ -211,13 +212,15 @@ class FlakyTestDetector {
    * 結果をコンソールに表示
    */
   printResults(flakyTests) {
-    console.log('\n' + '='.repeat(80));
+    console.log("\n" + "=".repeat(80));
     console.log(`Flaky Test Detection Report (${this.iterations} iterations)`);
-    console.log('='.repeat(80) + '\n');
+    console.log("=".repeat(80) + "\n");
 
     if (flakyTests.length === 0) {
-      console.log('✅ No flaky tests detected!');
-      console.log(`All tests passed consistently across ${this.iterations} runs.\n`);
+      console.log("✅ No flaky tests detected!");
+      console.log(
+        `All tests passed consistently across ${this.iterations} runs.\n`,
+      );
       return;
     }
 
@@ -227,7 +230,7 @@ class FlakyTestDetector {
       console.log(`❌ ${test.title}`);
       console.log(`   File: ${test.file}`);
       console.log(
-        `   Failure Rate: ${(test.failureRate * 100).toFixed(1)}% (${test.failed}/${test.total})`
+        `   Failure Rate: ${(test.failureRate * 100).toFixed(1)}% (${test.failed}/${test.total})`,
       );
       console.log(`   Avg Duration: ${Math.round(test.avgDuration)}ms`);
 
@@ -236,20 +239,22 @@ class FlakyTestDetector {
         // エラーメッセージの頻度を集計
         const errorCounts = {};
         for (const error of test.errors) {
-          const key = error.split('\n')[0]; // 最初の行のみ
+          const key = error.split("\n")[0]; // 最初の行のみ
           errorCounts[key] = (errorCounts[key] || 0) + 1;
         }
 
-        const sortedErrors = Object.entries(errorCounts).sort((a, b) => b[1] - a[1]);
+        const sortedErrors = Object.entries(errorCounts).sort(
+          (a, b) => b[1] - a[1],
+        );
         for (const [error, count] of sortedErrors.slice(0, 3)) {
           console.log(`     - (${count}x) ${error}`);
         }
       }
 
-      console.log('');
+      console.log("");
     }
 
-    console.log('='.repeat(80) + '\n');
+    console.log("=".repeat(80) + "\n");
   }
 
   /**
@@ -285,7 +290,7 @@ class FlakyTestDetector {
     };
 
     const outputPath = resolve(process.cwd(), this.outputFile);
-    writeFileSync(outputPath, JSON.stringify(report, null, 2), 'utf-8');
+    writeFileSync(outputPath, JSON.stringify(report, null, 2), "utf-8");
     console.log(`📄 Report saved to: ${outputPath}\n`);
   }
 
@@ -293,14 +298,14 @@ class FlakyTestDetector {
    * フレーキーテスト検出を実行
    */
   async run() {
-    console.log('Starting flaky test detection...\n');
+    console.log("Starting flaky test detection...\n");
     console.log(`Iterations: ${this.iterations}`);
     console.log(`Workers: ${this.workers}`);
     console.log(`Threshold: ${(this.threshold * 100).toFixed(1)}%`);
     if (this.testFile) {
       console.log(`Test File: ${this.testFile}`);
     }
-    console.log('');
+    console.log("");
 
     for (let i = 1; i <= this.iterations; i++) {
       process.stdout.write(`\rRunning iteration ${i}/${this.iterations}...`);
@@ -310,7 +315,7 @@ class FlakyTestDetector {
       this.aggregateResults(testResults);
     }
 
-    console.log('\n\nAnalyzing results...\n');
+    console.log("\n\nAnalyzing results...\n");
 
     const flakyTests = this.detectFlakyTests();
     this.printResults(flakyTests);
@@ -334,22 +339,22 @@ function parseArgs() {
 
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
-      case '--iterations':
+      case "--iterations":
         options.iterations = parseInt(args[++i], 10);
         break;
-      case '--test-file':
+      case "--test-file":
         options.testFile = args[++i];
         break;
-      case '--workers':
+      case "--workers":
         options.workers = parseInt(args[++i], 10);
         break;
-      case '--output':
+      case "--output":
         options.outputFile = args[++i];
         break;
-      case '--threshold':
+      case "--threshold":
         options.threshold = parseFloat(args[++i]);
         break;
-      case '--help':
+      case "--help":
         printHelp();
         process.exit(0);
       default:

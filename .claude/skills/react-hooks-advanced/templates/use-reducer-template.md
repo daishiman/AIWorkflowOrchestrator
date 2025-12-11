@@ -81,13 +81,13 @@ function ExampleComponent() {
 ## 非同期データフェッチテンプレート
 
 ```typescript
-import { useReducer, useEffect } from 'react';
+import { useReducer, useEffect } from "react";
 
 // ============================================
 // 状態の型定義
 // ============================================
 interface FetchState<T> {
-  status: 'idle' | 'loading' | 'success' | 'error';
+  status: "idle" | "loading" | "success" | "error";
   data: T | null;
   error: Error | null;
 }
@@ -96,17 +96,17 @@ interface FetchState<T> {
 // アクションの型定義
 // ============================================
 type FetchAction<T> =
-  | { type: 'FETCH_START' }
-  | { type: 'FETCH_SUCCESS'; payload: T }
-  | { type: 'FETCH_ERROR'; payload: Error }
-  | { type: 'RESET' };
+  | { type: "FETCH_START" }
+  | { type: "FETCH_SUCCESS"; payload: T }
+  | { type: "FETCH_ERROR"; payload: Error }
+  | { type: "RESET" };
 
 // ============================================
 // 初期状態
 // ============================================
 function getInitialState<T>(): FetchState<T> {
   return {
-    status: 'idle',
+    status: "idle",
     data: null,
     error: null,
   };
@@ -117,19 +117,19 @@ function getInitialState<T>(): FetchState<T> {
 // ============================================
 function fetchReducer<T>(
   state: FetchState<T>,
-  action: FetchAction<T>
+  action: FetchAction<T>,
 ): FetchState<T> {
   switch (action.type) {
-    case 'FETCH_START':
-      return { status: 'loading', data: null, error: null };
+    case "FETCH_START":
+      return { status: "loading", data: null, error: null };
 
-    case 'FETCH_SUCCESS':
-      return { status: 'success', data: action.payload, error: null };
+    case "FETCH_SUCCESS":
+      return { status: "success", data: action.payload, error: null };
 
-    case 'FETCH_ERROR':
-      return { status: 'error', data: null, error: action.payload };
+    case "FETCH_ERROR":
+      return { status: "error", data: null, error: action.payload };
 
-    case 'RESET':
+    case "RESET":
       return getInitialState<T>();
 
     default:
@@ -142,27 +142,23 @@ function fetchReducer<T>(
 // カスタムフック
 // ============================================
 function useFetchReducer<T>(fetchFn: () => Promise<T>) {
-  const [state, dispatch] = useReducer(
-    fetchReducer<T>,
-    null,
-    getInitialState
-  );
+  const [state, dispatch] = useReducer(fetchReducer<T>, null, getInitialState);
 
   useEffect(() => {
     let cancelled = false;
 
     const fetchData = async () => {
-      dispatch({ type: 'FETCH_START' });
+      dispatch({ type: "FETCH_START" });
 
       try {
         const data = await fetchFn();
         if (!cancelled) {
-          dispatch({ type: 'FETCH_SUCCESS', payload: data });
+          dispatch({ type: "FETCH_SUCCESS", payload: data });
         }
       } catch (error) {
         if (!cancelled) {
           dispatch({
-            type: 'FETCH_ERROR',
+            type: "FETCH_ERROR",
             payload: error instanceof Error ? error : new Error(String(error)),
           });
         }
@@ -183,7 +179,7 @@ function useFetchReducer<T>(fetchFn: () => Promise<T>) {
 ## フォーム状態管理テンプレート
 
 ```typescript
-import { useReducer, useCallback } from 'react';
+import { useReducer, useCallback } from "react";
 
 // ============================================
 // 状態の型定義
@@ -200,60 +196,60 @@ interface FormState<T extends Record<string, unknown>> {
 // アクションの型定義
 // ============================================
 type FormAction<T extends Record<string, unknown>> =
-  | { type: 'SET_FIELD'; field: keyof T; value: T[keyof T] }
-  | { type: 'SET_ERROR'; field: keyof T; error: string }
-  | { type: 'TOUCH_FIELD'; field: keyof T }
-  | { type: 'SET_ERRORS'; errors: Partial<Record<keyof T, string>> }
-  | { type: 'SUBMIT_START' }
-  | { type: 'SUBMIT_SUCCESS' }
-  | { type: 'SUBMIT_ERROR' }
-  | { type: 'RESET'; values: T };
+  | { type: "SET_FIELD"; field: keyof T; value: T[keyof T] }
+  | { type: "SET_ERROR"; field: keyof T; error: string }
+  | { type: "TOUCH_FIELD"; field: keyof T }
+  | { type: "SET_ERRORS"; errors: Partial<Record<keyof T, string>> }
+  | { type: "SUBMIT_START" }
+  | { type: "SUBMIT_SUCCESS" }
+  | { type: "SUBMIT_ERROR" }
+  | { type: "RESET"; values: T };
 
 // ============================================
 // リデューサー関数
 // ============================================
 function formReducer<T extends Record<string, unknown>>(
   state: FormState<T>,
-  action: FormAction<T>
+  action: FormAction<T>,
 ): FormState<T> {
   switch (action.type) {
-    case 'SET_FIELD':
+    case "SET_FIELD":
       return {
         ...state,
         values: { ...state.values, [action.field]: action.value },
         errors: { ...state.errors, [action.field]: undefined },
       };
 
-    case 'SET_ERROR':
+    case "SET_ERROR":
       return {
         ...state,
         errors: { ...state.errors, [action.field]: action.error },
         isValid: false,
       };
 
-    case 'TOUCH_FIELD':
+    case "TOUCH_FIELD":
       return {
         ...state,
         touched: { ...state.touched, [action.field]: true },
       };
 
-    case 'SET_ERRORS':
+    case "SET_ERRORS":
       return {
         ...state,
         errors: action.errors,
         isValid: Object.keys(action.errors).length === 0,
       };
 
-    case 'SUBMIT_START':
+    case "SUBMIT_START":
       return { ...state, isSubmitting: true };
 
-    case 'SUBMIT_SUCCESS':
+    case "SUBMIT_SUCCESS":
       return { ...state, isSubmitting: false };
 
-    case 'SUBMIT_ERROR':
+    case "SUBMIT_ERROR":
       return { ...state, isSubmitting: false };
 
-    case 'RESET':
+    case "RESET":
       return {
         values: action.values,
         errors: {},
@@ -281,15 +277,15 @@ function useForm<T extends Record<string, unknown>>(initialValues: T) {
   });
 
   const setField = useCallback((field: keyof T, value: T[keyof T]) => {
-    dispatch({ type: 'SET_FIELD', field, value });
+    dispatch({ type: "SET_FIELD", field, value });
   }, []);
 
   const touchField = useCallback((field: keyof T) => {
-    dispatch({ type: 'TOUCH_FIELD', field });
+    dispatch({ type: "TOUCH_FIELD", field });
   }, []);
 
   const reset = useCallback(() => {
-    dispatch({ type: 'RESET', values: initialValues });
+    dispatch({ type: "RESET", values: initialValues });
   }, [initialValues]);
 
   return {

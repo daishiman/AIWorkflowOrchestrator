@@ -11,8 +11,8 @@ Function Callingは、AIに構造化されたツール呼び出しを
 
 ```typescript
 interface FunctionDefinition {
-  name: string;           // 関数名（snake_case推奨）
-  description: string;    // 関数の説明（AIが判断に使用）
+  name: string; // 関数名（snake_case推奨）
+  description: string; // 関数の説明（AIが判断に使用）
   parameters: JSONSchema; // パラメータのJSON Schema
 }
 ```
@@ -33,11 +33,14 @@ const extractDataFunction = {
           type: "object",
           properties: {
             name: { type: "string" },
-            type: { type: "string", enum: ["person", "organization", "location"] },
-            confidence: { type: "number", minimum: 0, maximum: 1 }
+            type: {
+              type: "string",
+              enum: ["person", "organization", "location"],
+            },
+            confidence: { type: "number", minimum: 0, maximum: 1 },
           },
-          required: ["name", "type", "confidence"]
-        }
+          required: ["name", "type", "confidence"],
+        },
       },
       relationships: {
         type: "array",
@@ -46,13 +49,13 @@ const extractDataFunction = {
           properties: {
             source: { type: "string" },
             target: { type: "string" },
-            relation: { type: "string" }
-          }
-        }
-      }
+            relation: { type: "string" },
+          },
+        },
+      },
     },
-    required: ["entities"]
-  }
+    required: ["entities"],
+  },
 };
 ```
 
@@ -61,20 +64,21 @@ const extractDataFunction = {
 ### 1. 明確な関数名
 
 **すべきこと**:
+
 - snake_case形式
 - 動詞+名詞の形式
 - 具体的な動作を示す
 
 ```typescript
 // ✅ 良い例
-"extract_user_info"
-"analyze_sentiment"
-"generate_summary"
+"extract_user_info";
+"analyze_sentiment";
+"generate_summary";
 
 // ❌ 悪い例
-"process"        // 曖昧
-"doStuff"        // camelCase
-"UserExtractor"  // 名詞のみ
+"process"; // 曖昧
+"doStuff"; // camelCase
+"UserExtractor"; // 名詞のみ
 ```
 
 ### 2. 詳細な説明
@@ -82,10 +86,10 @@ const extractDataFunction = {
 ```typescript
 // ✅ 良い例
 description: "ユーザーのレビューテキストから感情分析を行い、" +
-             "ポジティブ/ネガティブ/ニュートラルのスコアを返す"
+  "ポジティブ/ネガティブ/ニュートラルのスコアを返す";
 
 // ❌ 悪い例
-description: "感情分析"
+description: "感情分析";
 ```
 
 ### 3. パラメータの説明
@@ -121,10 +125,10 @@ const transformFunction = {
     properties: {
       input_format: { type: "string", enum: ["json", "csv", "yaml"] },
       output_format: { type: "string", enum: ["json", "csv", "yaml"] },
-      data: { type: "string" }
+      data: { type: "string" },
     },
-    required: ["input_format", "output_format", "data"]
-  }
+    required: ["input_format", "output_format", "data"],
+  },
 };
 ```
 
@@ -140,16 +144,16 @@ const extractFunction = {
       document_type: {
         type: "string",
         enum: ["invoice", "contract", "resume"],
-        description: "文書の種類"
+        description: "文書の種類",
       },
       fields_to_extract: {
         type: "array",
         items: { type: "string" },
-        description: "抽出するフィールド名のリスト"
-      }
+        description: "抽出するフィールド名のリスト",
+      },
     },
-    required: ["document_type", "fields_to_extract"]
-  }
+    required: ["document_type", "fields_to_extract"],
+  },
 };
 ```
 
@@ -165,23 +169,23 @@ const classifyFunction = {
       category: {
         type: "string",
         enum: ["news", "blog", "academic", "social", "other"],
-        description: "主要カテゴリ"
+        description: "主要カテゴリ",
       },
       subcategories: {
         type: "array",
         items: { type: "string" },
         maxItems: 3,
-        description: "サブカテゴリ（最大3つ）"
+        description: "サブカテゴリ（最大3つ）",
       },
       confidence: {
         type: "number",
         minimum: 0,
         maximum: 1,
-        description: "分類の信頼度"
-      }
+        description: "分類の信頼度",
+      },
     },
-    required: ["category", "confidence"]
-  }
+    required: ["category", "confidence"],
+  },
 };
 ```
 
@@ -193,26 +197,27 @@ const classifyFunction = {
 const functionSet = [
   {
     name: "search_database",
-    description: "データベースを検索する"
+    description: "データベースを検索する",
   },
   {
     name: "create_record",
-    description: "新しいレコードを作成する"
+    description: "新しいレコードを作成する",
   },
   {
     name: "update_record",
-    description: "既存のレコードを更新する"
+    description: "既存のレコードを更新する",
   },
   {
     name: "delete_record",
-    description: "レコードを削除する"
-  }
+    description: "レコードを削除する",
+  },
 ];
 ```
 
 ### 関数選択の誘導
 
 AIが適切な関数を選択できるよう:
+
 - 各関数の説明を明確に差別化
 - 重複する機能を避ける
 - ユースケースを説明に含める

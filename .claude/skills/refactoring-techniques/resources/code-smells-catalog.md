@@ -12,11 +12,13 @@
 **定義**: メソッドの行数が多すぎる
 
 **検出基準**:
+
 - 30行を超えるメソッド
 - スクロールしないと全体が見えない
 - 複数の「段落」に分かれている
 
 **対処法**:
+
 - Extract Method
 - Replace Temp with Query
 - Introduce Parameter Object
@@ -26,11 +28,13 @@
 **定義**: メソッドのパラメータ数が多すぎる
 
 **検出基準**:
+
 - パラメータが4つ以上
 - 同じパラメータ群が複数メソッドで使用される
 - プリミティブ型のパラメータが連続
 
 **対処法**:
+
 - Introduce Parameter Object
 - Preserve Whole Object
 - Replace Parameter with Method Call
@@ -40,11 +44,13 @@
 **定義**: 同一または類似のコードが複数箇所に存在
 
 **検出基準**:
+
 - 3行以上の同一コードが2箇所以上
 - コピー&ペーストで作成されたコード
 - 微妙に異なる類似コード
 
 **対処法**:
+
 - Extract Method（同一クラス内）
 - Extract Superclass（兄弟クラス間）
 - Pull Up Method（親クラスへ移動）
@@ -54,11 +60,13 @@
 **定義**: 条件式が複雑で理解しにくい
 
 **検出基準**:
+
 - ネストが3段階以上
 - 条件が3つ以上の&&/||で結合
 - 条件の意図が読み取れない
 
 **対処法**:
+
 - Decompose Conditional
 - Replace Nested Conditional with Guard Clauses
 - Replace Conditional with Polymorphism
@@ -68,11 +76,13 @@
 **定義**: 意味不明な数値リテラルがコード中に存在
 
 **検出基準**:
+
 - 0, 1, -1 以外の数値リテラル
 - 数値の意味がコンテキストから不明
 - 同じ数値が複数箇所で使用
 
 **対処法**:
+
 - Replace Magic Number with Symbolic Constant
 - 定数またはenum定義
 
@@ -83,11 +93,13 @@
 **定義**: クラスが担当する責務が多すぎる
 
 **検出基準**:
+
 - 500行を超えるクラス
 - メソッド数が20を超える
 - 複数の異なる関心事を持つ
 
 **対処法**:
+
 - Extract Class
 - Extract Subclass
 - Extract Interface
@@ -97,11 +109,13 @@
 **定義**: 自クラスより他クラスのデータを多く使用
 
 **検出基準**:
+
 - 他クラスのgetterを3つ以上呼び出す
 - 自クラスのフィールドをほとんど使用しない
 - 計算ロジックが本来あるべき場所にない
 
 **対処法**:
+
 - Move Method
 - Extract Method + Move Method
 
@@ -110,11 +124,13 @@
 **定義**: 同じデータ群が複数箇所で一緒に使用される
 
 **検出基準**:
+
 - 同じ3つ以上のフィールドが複数クラスに存在
 - 同じパラメータ群が複数メソッドに存在
 - データがいつも一緒に渡される
 
 **対処法**:
+
 - Extract Class
 - Introduce Parameter Object
 - Preserve Whole Object
@@ -124,11 +140,13 @@
 **定義**: 基本データ型を概念の表現に過度に使用
 
 **検出基準**:
+
 - 文字列で型を表現（"ADMIN", "USER"）
 - 数値で状態を表現（0, 1, 2）
 - 配列で構造化データを表現
 
 **対処法**:
+
 - Replace Type Code with Class
 - Replace Type Code with Subclasses
 - Replace Array with Object
@@ -140,11 +158,13 @@
 **定義**: 一つのクラスが異なる理由で頻繁に変更される
 
 **検出基準**:
+
 - 機能追加で常に同じクラスを変更
 - 異なる種類の変更が同じクラスに集中
 - 責務が不明確
 
 **対処法**:
+
 - Extract Class
 - Split Phase
 
@@ -153,11 +173,13 @@
 **定義**: 一つの変更が多くのクラスに影響
 
 **検出基準**:
+
 - 小さな変更で多数のファイルを修正
 - 変更漏れが発生しやすい
 - 関連コードが分散している
 
 **対処法**:
+
 - Move Method
 - Move Field
 - Inline Class

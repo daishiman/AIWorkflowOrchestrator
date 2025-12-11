@@ -7,12 +7,12 @@ OAuth 2.0は、サードパーティアプリケーションがユーザーの�
 
 ## フロー種別
 
-| フロー | 用途 | クライアントタイプ |
-|-------|------|-----------------|
-| Authorization Code | Webアプリ、モバイルアプリ | Confidential/Public |
-| Authorization Code + PKCE | SPA、モバイルアプリ | Public |
-| Client Credentials | サービス間通信 | Confidential |
-| Device Code | IoT、スマートTV | Public |
+| フロー                    | 用途                      | クライアントタイプ  |
+| ------------------------- | ------------------------- | ------------------- |
+| Authorization Code        | Webアプリ、モバイルアプリ | Confidential/Public |
+| Authorization Code + PKCE | SPA、モバイルアプリ       | Public              |
+| Client Credentials        | サービス間通信            | Confidential        |
+| Device Code               | IoT、スマートTV           | Public              |
 
 ## Authorization Code Flow
 
@@ -38,7 +38,7 @@ OAuth 2.0は、サードパーティアプリケーションがユーザーの�
 ### 実装
 
 ```typescript
-import crypto from 'crypto';
+import crypto from "crypto";
 
 interface OAuthConfig {
   clientId: string;
@@ -65,10 +65,10 @@ class OAuth2Client {
    */
   getAuthorizationUrl(state: string): string {
     const params = new URLSearchParams({
-      response_type: 'code',
+      response_type: "code",
       client_id: this.config.clientId,
       redirect_uri: this.config.redirectUri,
-      scope: this.config.scopes.join(' '),
+      scope: this.config.scopes.join(" "),
       state, // CSRF対策
     });
 
@@ -80,13 +80,13 @@ class OAuth2Client {
    */
   async exchangeCodeForToken(code: string): Promise<TokenResponse> {
     const response = await fetch(this.config.tokenEndpoint, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        "Content-Type": "application/x-www-form-urlencoded",
         Authorization: `Basic ${this.getBasicAuth()}`,
       },
       body: new URLSearchParams({
-        grant_type: 'authorization_code',
+        grant_type: "authorization_code",
         code,
         redirect_uri: this.config.redirectUri,
       }),
@@ -105,13 +105,13 @@ class OAuth2Client {
    */
   async refreshAccessToken(refreshToken: string): Promise<TokenResponse> {
     const response = await fetch(this.config.tokenEndpoint, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        "Content-Type": "application/x-www-form-urlencoded",
         Authorization: `Basic ${this.getBasicAuth()}`,
       },
       body: new URLSearchParams({
-        grant_type: 'refresh_token',
+        grant_type: "refresh_token",
         refresh_token: refreshToken,
       }),
     });
@@ -126,8 +126,8 @@ class OAuth2Client {
 
   private getBasicAuth(): string {
     return Buffer.from(
-      `${this.config.clientId}:${this.config.clientSecret}`
-    ).toString('base64');
+      `${this.config.clientId}:${this.config.clientSecret}`,
+    ).toString("base64");
   }
 }
 ```
@@ -146,40 +146,40 @@ class PKCEGenerator {
   static generateCodeVerifier(): string {
     const buffer = crypto.randomBytes(32);
     return buffer
-      .toString('base64')
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=/g, '');
+      .toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=/g, "");
   }
 
   /**
    * Code Challengeを生成（S256メソッド）
    */
   static generateCodeChallenge(verifier: string): string {
-    const hash = crypto.createHash('sha256').update(verifier).digest();
+    const hash = crypto.createHash("sha256").update(verifier).digest();
     return hash
-      .toString('base64')
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=/g, '');
+      .toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=/g, "");
   }
 }
 
 class OAuth2PKCEClient {
-  constructor(private readonly config: Omit<OAuthConfig, 'clientSecret'>) {}
+  constructor(private readonly config: Omit<OAuthConfig, "clientSecret">) {}
 
   /**
    * 認可URLを生成（PKCE付き）
    */
   getAuthorizationUrl(state: string, codeChallenge: string): string {
     const params = new URLSearchParams({
-      response_type: 'code',
+      response_type: "code",
       client_id: this.config.clientId,
       redirect_uri: this.config.redirectUri,
-      scope: this.config.scopes.join(' '),
+      scope: this.config.scopes.join(" "),
       state,
       code_challenge: codeChallenge,
-      code_challenge_method: 'S256',
+      code_challenge_method: "S256",
     });
 
     return `${this.config.authorizationEndpoint}?${params}`;
@@ -190,15 +190,15 @@ class OAuth2PKCEClient {
    */
   async exchangeCodeForToken(
     code: string,
-    codeVerifier: string
+    codeVerifier: string,
   ): Promise<TokenResponse> {
     const response = await fetch(this.config.tokenEndpoint, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams({
-        grant_type: 'authorization_code',
+        grant_type: "authorization_code",
         code,
         redirect_uri: this.config.redirectUri,
         client_id: this.config.clientId,
@@ -218,12 +218,12 @@ class OAuth2PKCEClient {
 // 使用例
 const pkce = {
   verifier: PKCEGenerator.generateCodeVerifier(),
-  challenge: '',
+  challenge: "",
 };
 pkce.challenge = PKCEGenerator.generateCodeChallenge(pkce.verifier);
 
 // verifierはセッションに保存（コールバックで使用）
-sessionStorage.setItem('pkce_verifier', pkce.verifier);
+sessionStorage.setItem("pkce_verifier", pkce.verifier);
 
 // 認可URLにリダイレクト
 const authUrl = client.getAuthorizationUrl(state, pkce.challenge);
@@ -241,19 +241,19 @@ class OAuth2ClientCredentials {
       clientSecret: string;
       tokenEndpoint: string;
       scopes: string[];
-    }
+    },
   ) {}
 
   async getAccessToken(): Promise<TokenResponse> {
     const response = await fetch(this.config.tokenEndpoint, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        "Content-Type": "application/x-www-form-urlencoded",
         Authorization: `Basic ${this.getBasicAuth()}`,
       },
       body: new URLSearchParams({
-        grant_type: 'client_credentials',
-        scope: this.config.scopes.join(' '),
+        grant_type: "client_credentials",
+        scope: this.config.scopes.join(" "),
       }),
     });
 
@@ -267,8 +267,8 @@ class OAuth2ClientCredentials {
 
   private getBasicAuth(): string {
     return Buffer.from(
-      `${this.config.clientId}:${this.config.clientSecret}`
-    ).toString('base64');
+      `${this.config.clientId}:${this.config.clientSecret}`,
+    ).toString("base64");
   }
 }
 ```
@@ -314,7 +314,7 @@ class TokenManager {
       if (this.refreshToken) {
         tokenResponse = await this.client.refreshAccessToken(this.refreshToken);
       } else {
-        throw new Error('No refresh token available');
+        throw new Error("No refresh token available");
       }
 
       this.updateTokens(tokenResponse);
@@ -343,21 +343,21 @@ class TokenManager {
 class OAuthError extends Error {
   constructor(
     public readonly error: string,
-    public readonly description?: string
+    public readonly description?: string,
   ) {
     super(description || error);
-    this.name = 'OAuthError';
+    this.name = "OAuthError";
   }
 
   get isRetryable(): boolean {
-    return this.error === 'temporarily_unavailable';
+    return this.error === "temporarily_unavailable";
   }
 
   get requiresReauth(): boolean {
     return (
-      this.error === 'invalid_grant' ||
-      this.error === 'invalid_token' ||
-      this.error === 'access_denied'
+      this.error === "invalid_grant" ||
+      this.error === "invalid_token" ||
+      this.error === "access_denied"
     );
   }
 }
@@ -365,22 +365,22 @@ class OAuthError extends Error {
 // エラーハンドリング
 async function handleOAuthError(error: OAuthError): Promise<void> {
   switch (error.error) {
-    case 'invalid_grant':
+    case "invalid_grant":
       // リフレッシュトークン無効 → 再認証が必要
       await redirectToLogin();
       break;
 
-    case 'invalid_client':
+    case "invalid_client":
       // クライアント設定エラー → 設定確認
-      console.error('Invalid client credentials');
+      console.error("Invalid client credentials");
       break;
 
-    case 'invalid_scope':
+    case "invalid_scope":
       // スコープエラー → スコープ確認
-      console.error('Invalid scope requested');
+      console.error("Invalid scope requested");
       break;
 
-    case 'temporarily_unavailable':
+    case "temporarily_unavailable":
       // 一時的エラー → リトライ
       await sleep(5000);
       break;
@@ -398,14 +398,14 @@ async function handleOAuthError(error: OAuthError): Promise<void> {
 ```typescript
 // CSRF対策のstateパラメータ
 function generateState(): string {
-  const state = crypto.randomBytes(32).toString('hex');
-  sessionStorage.setItem('oauth_state', state);
+  const state = crypto.randomBytes(32).toString("hex");
+  sessionStorage.setItem("oauth_state", state);
   return state;
 }
 
 function validateState(returnedState: string): boolean {
-  const savedState = sessionStorage.getItem('oauth_state');
-  sessionStorage.removeItem('oauth_state');
+  const savedState = sessionStorage.getItem("oauth_state");
+  sessionStorage.removeItem("oauth_state");
   return savedState === returnedState;
 }
 ```
@@ -414,7 +414,7 @@ function validateState(returnedState: string): boolean {
 
 ```typescript
 // ❌ NG: localStorageに保存（XSS脆弱性）
-localStorage.setItem('access_token', token);
+localStorage.setItem("access_token", token);
 
 // ✅ OK: httpOnly Cookie（サーバー設定）
 // Set-Cookie: access_token=xxx; HttpOnly; Secure; SameSite=Strict
@@ -436,11 +436,13 @@ class TokenStore {
 ## チェックリスト
 
 ### 実装時
+
 - [ ] PKCEを使用しているか（パブリッククライアントの場合）？
 - [ ] stateパラメータでCSRF対策しているか？
 - [ ] トークンを安全に保存しているか？
 
 ### 運用時
+
 - [ ] トークン有効期限は適切か？
 - [ ] リフレッシュトークンのローテーションがあるか？
 - [ ] 認証失敗のモニタリングがあるか？

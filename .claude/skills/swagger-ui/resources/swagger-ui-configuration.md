@@ -7,29 +7,30 @@
 ```html
 <!DOCTYPE html>
 <html>
-<head>
-  <title>API Documentation</title>
-  <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css">
-</head>
-<body>
-  <div id="swagger-ui"></div>
-  <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
-  <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js"></script>
-  <script>
-    window.onload = function() {
-      const ui = SwaggerUIBundle({
-        url: "/openapi.yaml",
-        dom_id: '#swagger-ui',
-        presets: [
-          SwaggerUIBundle.presets.apis,
-          SwaggerUIStandalonePreset
-        ],
-        layout: "StandaloneLayout"
-      });
-      window.ui = ui;
-    }
-  </script>
-</body>
+  <head>
+    <title>API Documentation</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://unpkg.com/swagger-ui-dist/swagger-ui.css"
+    />
+  </head>
+  <body>
+    <div id="swagger-ui"></div>
+    <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+    <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-standalone-preset.js"></script>
+    <script>
+      window.onload = function () {
+        const ui = SwaggerUIBundle({
+          url: "/openapi.yaml",
+          dom_id: "#swagger-ui",
+          presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
+          layout: "StandaloneLayout",
+        });
+        window.ui = ui;
+      };
+    </script>
+  </body>
 </html>
 ```
 
@@ -50,15 +51,15 @@ pnpm install swagger-ui-express  # Express用
 ```javascript
 const config = {
   // OpenAPI仕様
-  url: '/openapi.yaml',
+  url: "/openapi.yaml",
   // または spec オブジェクトを直接指定
   // spec: openapiSpec,
 
   // DOM要素
-  dom_id: '#swagger-ui',
+  dom_id: "#swagger-ui",
 
   // 初期展開状態
-  docExpansion: 'list', // 'none' | 'list' | 'full'
+  docExpansion: "list", // 'none' | 'list' | 'full'
 
   // モデルセクション
   defaultModelsExpandDepth: 1, // -1で非表示、0で折りたたみ
@@ -71,13 +72,13 @@ const config = {
 
   // フィルタリング
   filter: true, // 検索フィルター表示
-  filterString: '', // 初期フィルター値
+  filterString: "", // 初期フィルター値
 
   // ソート
-  operationsSorter: 'alpha', // 'alpha' | 'method' | function
+  operationsSorter: "alpha", // 'alpha' | 'method' | function
 
   // タグのソート
-  tagsSorter: 'alpha',
+  tagsSorter: "alpha",
 
   // 深いリンク
   deepLinking: true, // URLハッシュでの操作リンク
@@ -90,11 +91,11 @@ const config = {
 const interactionConfig = {
   // Try it out
   tryItOutEnabled: true, // 初期状態でTry it outを有効
-  supportedSubmitMethods: ['get', 'post', 'put', 'patch', 'delete'],
+  supportedSubmitMethods: ["get", "post", "put", "patch", "delete"],
 
   // 認証
   persistAuthorization: true, // 認証情報をlocalStorageに保存
-  oauth2RedirectUrl: window.location.origin + '/oauth2-redirect.html',
+  oauth2RedirectUrl: window.location.origin + "/oauth2-redirect.html",
 
   // リクエスト設定
   validatorUrl: null, // バリデーターURL（nullで無効）
@@ -111,28 +112,23 @@ const interactionConfig = {
 ```javascript
 const customConfig = {
   // カスタムCSS
-  customCss: '.swagger-ui .topbar { display: none }',
-  customCssUrl: '/custom-swagger.css',
+  customCss: ".swagger-ui .topbar { display: none }",
+  customCssUrl: "/custom-swagger.css",
 
   // ページタイトル
-  customSiteTitle: 'My API Documentation',
+  customSiteTitle: "My API Documentation",
 
   // ファビコン（HTMLで設定）
   // customfavIcon: '/favicon.png',
 
   // プリセット
-  presets: [
-    SwaggerUIBundle.presets.apis,
-    SwaggerUIStandalonePreset
-  ],
+  presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
 
   // プラグイン
-  plugins: [
-    SwaggerUIBundle.plugins.DownloadUrl
-  ],
+  plugins: [SwaggerUIBundle.plugins.DownloadUrl],
 
   // レイアウト
-  layout: 'StandaloneLayout', // 'BaseLayout' | 'StandaloneLayout'
+  layout: "StandaloneLayout", // 'BaseLayout' | 'StandaloneLayout'
 };
 ```
 
@@ -144,18 +140,18 @@ const customConfig = {
 
 ```javascript
 const ui = SwaggerUIBundle({
-  url: '/openapi.yaml',
-  dom_id: '#swagger-ui',
+  url: "/openapi.yaml",
+  dom_id: "#swagger-ui",
 
   // 認証情報を事前設定
-  onComplete: function() {
+  onComplete: function () {
     // 開発環境のみ
-    if (process.env.NODE_ENV === 'development') {
-      ui.preauthorizeApiKey('BearerAuth', 'dev-jwt-token-here');
+    if (process.env.NODE_ENV === "development") {
+      ui.preauthorizeApiKey("BearerAuth", "dev-jwt-token-here");
     }
   },
 
-  persistAuthorization: true
+  persistAuthorization: true,
 });
 ```
 
@@ -163,20 +159,20 @@ const ui = SwaggerUIBundle({
 
 ```javascript
 const ui = SwaggerUIBundle({
-  url: '/openapi.yaml',
-  dom_id: '#swagger-ui',
+  url: "/openapi.yaml",
+  dom_id: "#swagger-ui",
 
-  oauth2RedirectUrl: window.location.origin + '/oauth2-redirect.html',
+  oauth2RedirectUrl: window.location.origin + "/oauth2-redirect.html",
 
   initOAuth: {
-    clientId: 'your-client-id',
-    clientSecret: 'your-client-secret', // 公開クライアントでは不要
-    realm: 'your-realm',
-    appName: 'your-app-name',
-    scopeSeparator: ' ',
-    scopes: 'read write',
-    usePkceWithAuthorizationCodeGrant: true
-  }
+    clientId: "your-client-id",
+    clientSecret: "your-client-secret", // 公開クライアントでは不要
+    realm: "your-realm",
+    appName: "your-app-name",
+    scopeSeparator: " ",
+    scopes: "read write",
+    usePkceWithAuthorizationCodeGrant: true,
+  },
 });
 ```
 
@@ -184,12 +180,12 @@ const ui = SwaggerUIBundle({
 
 ```javascript
 const ui = SwaggerUIBundle({
-  url: '/openapi.yaml',
-  dom_id: '#swagger-ui',
+  url: "/openapi.yaml",
+  dom_id: "#swagger-ui",
 
-  onComplete: function() {
-    ui.preauthorizeApiKey('ApiKeyAuth', 'your-api-key');
-  }
+  onComplete: function () {
+    ui.preauthorizeApiKey("ApiKeyAuth", "your-api-key");
+  },
 });
 ```
 
@@ -201,27 +197,27 @@ const ui = SwaggerUIBundle({
 
 ```javascript
 const ui = SwaggerUIBundle({
-  url: '/openapi.yaml',
-  dom_id: '#swagger-ui',
+  url: "/openapi.yaml",
+  dom_id: "#swagger-ui",
 
   requestInterceptor: (request) => {
     // カスタムヘッダー追加
-    request.headers['X-Custom-Header'] = 'value';
+    request.headers["X-Custom-Header"] = "value";
 
     // リクエストID追加
-    request.headers['X-Request-ID'] = crypto.randomUUID();
+    request.headers["X-Request-ID"] = crypto.randomUUID();
 
     // 認証トークン追加
-    const token = localStorage.getItem('auth_token');
+    const token = localStorage.getItem("auth_token");
     if (token) {
-      request.headers['Authorization'] = `Bearer ${token}`;
+      request.headers["Authorization"] = `Bearer ${token}`;
     }
 
     // ログ出力
-    console.log('Request:', request);
+    console.log("Request:", request);
 
     return request;
-  }
+  },
 });
 ```
 
@@ -229,21 +225,21 @@ const ui = SwaggerUIBundle({
 
 ```javascript
 const ui = SwaggerUIBundle({
-  url: '/openapi.yaml',
-  dom_id: '#swagger-ui',
+  url: "/openapi.yaml",
+  dom_id: "#swagger-ui",
 
   responseInterceptor: (response) => {
     // ログ出力
-    console.log('Response:', response);
+    console.log("Response:", response);
 
     // レスポンスヘッダーの処理
-    const rateLimit = response.headers['x-rate-limit-remaining'];
+    const rateLimit = response.headers["x-rate-limit-remaining"];
     if (rateLimit && parseInt(rateLimit) < 10) {
-      console.warn('Rate limit approaching:', rateLimit);
+      console.warn("Rate limit approaching:", rateLimit);
     }
 
     return response;
-  }
+  },
 });
 ```
 
@@ -254,13 +250,13 @@ const ui = SwaggerUIBundle({
 ### 基本的なプラグイン構造
 
 ```javascript
-const MyPlugin = function(system) {
+const MyPlugin = function (system) {
   return {
     // コンポーネントのオーバーライド
     components: {
       CustomComponent: (props) => {
         return <div>Custom Component</div>;
-      }
+      },
     },
 
     // ステート管理
@@ -268,31 +264,31 @@ const MyPlugin = function(system) {
       myPlugin: {
         // 初期状態
         initialState: {
-          count: 0
+          count: 0,
         },
 
         // アクション
         actions: {
-          increment: () => ({ type: 'INCREMENT' })
+          increment: () => ({ type: "INCREMENT" }),
         },
 
         // リデューサー
         reducers: {
-          INCREMENT: (state) => ({ ...state, count: state.count + 1 })
+          INCREMENT: (state) => ({ ...state, count: state.count + 1 }),
         },
 
         // セレクター
         selectors: {
-          getCount: (state) => state.get('count')
-        }
-      }
-    }
+          getCount: (state) => state.get("count"),
+        },
+      },
+    },
   };
 };
 
 const ui = SwaggerUIBundle({
-  url: '/openapi.yaml',
-  plugins: [MyPlugin]
+  url: "/openapi.yaml",
+  plugins: [MyPlugin],
 });
 ```
 
@@ -305,7 +301,7 @@ const ui = SwaggerUIBundle({
 ```javascript
 const performanceConfig = {
   // 初期は折りたたみ
-  docExpansion: 'none',
+  docExpansion: "none",
 
   // モデルセクション非表示
   defaultModelsExpandDepth: -1,
@@ -316,14 +312,14 @@ const performanceConfig = {
   // 遅延読み込み
   syntaxHighlight: {
     activated: true,
-    theme: 'agate'
+    theme: "agate",
   },
 
   // バリデーター無効
   validatorUrl: null,
 
   // Try it out初期無効
-  tryItOutEnabled: false
+  tryItOutEnabled: false,
 };
 ```
 
@@ -354,36 +350,36 @@ export default function ApiDocs() {
 
 ### よくある問題
 
-| 問題 | 原因 | 解決策 |
-|-----|------|--------|
-| CORS エラー | クロスオリジンリクエスト | サーバーでCORS許可 |
-| 仕様が読み込まれない | URLが間違い | 相対/絶対パス確認 |
-| 認証が保存されない | persistAuthorization未設定 | オプションを有効化 |
-| スタイルが崩れる | CSS競合 | スコープ付きCSS使用 |
-| Try it outが動かない | HTTPS/HTTP混在 | プロトコル統一 |
+| 問題                 | 原因                       | 解決策              |
+| -------------------- | -------------------------- | ------------------- |
+| CORS エラー          | クロスオリジンリクエスト   | サーバーでCORS許可  |
+| 仕様が読み込まれない | URLが間違い                | 相対/絶対パス確認   |
+| 認証が保存されない   | persistAuthorization未設定 | オプションを有効化  |
+| スタイルが崩れる     | CSS競合                    | スコープ付きCSS使用 |
+| Try it outが動かない | HTTPS/HTTP混在             | プロトコル統一      |
 
 ### デバッグ方法
 
 ```javascript
 const ui = SwaggerUIBundle({
-  url: '/openapi.yaml',
-  dom_id: '#swagger-ui',
+  url: "/openapi.yaml",
+  dom_id: "#swagger-ui",
 
   // デバッグ用フック
   onComplete: () => {
-    console.log('Swagger UI loaded');
-    console.log('Spec:', ui.specSelectors.specJson());
+    console.log("Swagger UI loaded");
+    console.log("Spec:", ui.specSelectors.specJson());
   },
 
   requestInterceptor: (req) => {
-    console.log('Request:', req);
+    console.log("Request:", req);
     return req;
   },
 
   responseInterceptor: (res) => {
-    console.log('Response:', res);
+    console.log("Response:", res);
     return res;
-  }
+  },
 });
 
 // グローバルアクセス

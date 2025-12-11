@@ -25,18 +25,18 @@ function parseArgs() {
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
 
-    if (arg === '--retries' || arg === '-r') {
+    if (arg === "--retries" || arg === "-r") {
       options.retries = parseInt(args[++i], 10);
-    } else if (arg === '--interval' || arg === '-i') {
+    } else if (arg === "--interval" || arg === "-i") {
       options.interval = parseInt(args[++i], 10);
-    } else if (arg === '--timeout' || arg === '-t') {
+    } else if (arg === "--timeout" || arg === "-t") {
       options.timeout = parseInt(args[++i], 10);
-    } else if (arg === '--verbose' || arg === '-v') {
+    } else if (arg === "--verbose" || arg === "-v") {
       options.verbose = true;
-    } else if (arg === '--help' || arg === '-h') {
+    } else if (arg === "--help" || arg === "-h") {
       printUsage();
       process.exit(0);
-    } else if (!arg.startsWith('-')) {
+    } else if (!arg.startsWith("-")) {
       options.url = arg;
     }
   }
@@ -72,10 +72,10 @@ async function checkHealth(url, timeout) {
   try {
     const start = Date.now();
     const response = await fetch(url, {
-      method: 'GET',
+      method: "GET",
       signal: controller.signal,
       headers: {
-        Accept: 'application/json',
+        Accept: "application/json",
       },
     });
 
@@ -98,7 +98,7 @@ async function checkHealth(url, timeout) {
   } catch (error) {
     clearTimeout(timeoutId);
 
-    if (error.name === 'AbortError') {
+    if (error.name === "AbortError") {
       return {
         success: false,
         error: `Timeout after ${timeout}s`,
@@ -138,13 +138,13 @@ async function main() {
   const options = parseArgs();
 
   if (!options.url) {
-    console.error('❌ Error: URL is required\n');
+    console.error("❌ Error: URL is required\n");
     printUsage();
     process.exit(1);
   }
 
   console.log(`\n🔍 Health Check: ${options.url}`);
-  console.log('─'.repeat(50));
+  console.log("─".repeat(50));
 
   let lastResult = null;
 
@@ -160,17 +160,19 @@ async function main() {
       console.log(`   Duration: ${formatDuration(result.duration)}`);
 
       if (options.verbose && result.body) {
-        console.log('\n📋 Response:');
+        console.log("\n📋 Response:");
         console.log(JSON.stringify(result.body, null, 2));
       }
 
       // Check for degraded status
-      if (result.body?.status === 'degraded') {
-        console.log('\n⚠️  Service is degraded');
+      if (result.body?.status === "degraded") {
+        console.log("\n⚠️  Service is degraded");
         if (result.body.checks) {
           for (const [name, check] of Object.entries(result.body.checks)) {
-            if (check.status !== 'pass') {
-              console.log(`   - ${name}: ${check.status} - ${check.message || ''}`);
+            if (check.status !== "pass") {
+              console.log(
+                `   - ${name}: ${check.status} - ${check.message || ""}`,
+              );
             }
           }
         }
@@ -189,7 +191,7 @@ async function main() {
       }
 
       if (options.verbose && result.body) {
-        console.log('\n📋 Response:');
+        console.log("\n📋 Response:");
         console.log(JSON.stringify(result.body, null, 2));
       }
 
@@ -201,14 +203,17 @@ async function main() {
   }
 
   // All retries exhausted
-  console.log('\n' + '═'.repeat(50));
-  console.log('❌ Health check failed after all retries');
+  console.log("\n" + "═".repeat(50));
+  console.log("❌ Health check failed after all retries");
 
   if (lastResult?.body?.checks) {
-    console.log('\n📋 Final check status:');
+    console.log("\n📋 Final check status:");
     for (const [name, check] of Object.entries(lastResult.body.checks)) {
-      const icon = check.status === 'pass' ? '✅' : check.status === 'warn' ? '⚠️' : '❌';
-      console.log(`   ${icon} ${name}: ${check.status}${check.message ? ` - ${check.message}` : ''}`);
+      const icon =
+        check.status === "pass" ? "✅" : check.status === "warn" ? "⚠️" : "❌";
+      console.log(
+        `   ${icon} ${name}: ${check.status}${check.message ? ` - ${check.message}` : ""}`,
+      );
     }
   }
 
@@ -216,6 +221,6 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error('Unexpected error:', error);
+  console.error("Unexpected error:", error);
   process.exit(1);
 });

@@ -55,6 +55,7 @@ model: sonnet
 
 引数未指定の場合:
 ユーザーに対話的に以下を質問:
+
 - 対象プラットフォーム（複数選択可）
 - コード署名の必要性
 - 配布方法（直接配布/ストア）
@@ -70,6 +71,7 @@ Task ツールで `.claude/agents/electron-builder.md` を起動:
 対象プラットフォーム: ${platform}
 
 依頼内容:
+
 - electron-builder.yml作成/更新
 - プラットフォーム固有設定
 - コード署名設定（必要時）
@@ -78,21 +80,25 @@ Task ツールで `.claude/agents/electron-builder.md` を起動:
 
 プラットフォーム別設定:
 【macOS】
+
 - DMG/ZIP生成
 - コード署名（Developer ID）
 - Notarization
 - エンタイトルメント
 
 【Windows】
+
 - NSIS/Portable生成
 - コード署名（Authenticode）
 - アイコン設定
 
 【Linux】
+
 - AppImage/deb/rpm生成
 - デスクトップエントリ
 
 成果物:
+
 - electron-builder.yml
 - build/entitlements.mac.plist（macOS）
 - scripts/notarize.js（macOS）
@@ -103,11 +109,13 @@ Task ツールで `.claude/agents/electron-builder.md` を起動:
 ### Phase 3: 確認と次のステップ
 
 **期待成果物:**
+
 - electron-builder設定
 - プラットフォーム固有ファイル
 - CI/CDワークフロー（オプション）
 
 **次のステップ案内:**
+
 - `npm run package` でローカルビルド
 - `/ai:release-electron-app`: 配布・自動更新設定
 - コード署名環境変数の設定

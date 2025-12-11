@@ -233,13 +233,15 @@ MVP定義:
 ```
 
 **垂直スライスの利点**:
+
 - ✅ 1機能 = 1フォルダで完結（認知負荷削減）
 - ✅ 機能追加・削除が高速（フォルダごと操作）
 - ✅ 機能間の独立性確保（相互依存禁止）
-- ✅ テストの局所化（__tests__/ で完結）
+- ✅ テストの局所化（**tests**/ で完結）
 - ✅ Registry登録のみで有効化（features/registry.ts）
 
 **共通インフラの分離**:
+
 - shared/infrastructure/ai/: 全機能で共有する AI クライアント
 - shared/infrastructure/database/: 全機能で共有する DB 接続
 - shared/infrastructure/discord/: 全機能で共有する Discord Bot

@@ -50,7 +50,7 @@ accuracy_test:
   evaluation:
     method: "comparison"
     metric: "accuracy"
-    threshold: 1.0  # 完全一致の場合
+    threshold: 1.0 # 完全一致の場合
 
   metadata:
     category: "accuracy"
@@ -395,23 +395,25 @@ test_result:
 # テスト実行レポート
 
 ## 概要
+
 - 実行日時: {{timestamp}}
 - テストスイート: {{suite_name}}
 - 対象プロンプト: {{prompt_version}}
 
 ## サマリー
 
-| カテゴリ | 合計 | 成功 | 失敗 | スキップ | 成功率 |
-|---------|------|------|------|----------|--------|
-| 正確性 | {{acc_total}} | {{acc_pass}} | {{acc_fail}} | {{acc_skip}} | {{acc_rate}}% |
-| 形式 | {{fmt_total}} | {{fmt_pass}} | {{fmt_fail}} | {{fmt_skip}} | {{fmt_rate}}% |
-| エッジ | {{edge_total}} | {{edge_pass}} | {{edge_fail}} | {{edge_skip}} | {{edge_rate}}% |
-| 安全性 | {{saf_total}} | {{saf_pass}} | {{saf_fail}} | {{saf_skip}} | {{saf_rate}}% |
-| **合計** | {{total}} | {{pass}} | {{fail}} | {{skip}} | **{{overall_rate}}%** |
+| カテゴリ | 合計           | 成功          | 失敗          | スキップ      | 成功率                |
+| -------- | -------------- | ------------- | ------------- | ------------- | --------------------- |
+| 正確性   | {{acc_total}}  | {{acc_pass}}  | {{acc_fail}}  | {{acc_skip}}  | {{acc_rate}}%         |
+| 形式     | {{fmt_total}}  | {{fmt_pass}}  | {{fmt_fail}}  | {{fmt_skip}}  | {{fmt_rate}}%         |
+| エッジ   | {{edge_total}} | {{edge_pass}} | {{edge_fail}} | {{edge_skip}} | {{edge_rate}}%        |
+| 安全性   | {{saf_total}}  | {{saf_pass}}  | {{saf_fail}}  | {{saf_skip}}  | {{saf_rate}}%         |
+| **合計** | {{total}}      | {{pass}}      | {{fail}}      | {{skip}}      | **{{overall_rate}}%** |
 
 ## 失敗したテスト
 
 ### {{failed_test_id}}
+
 - 説明: {{description}}
 - 期待: {{expected}}
 - 実際: {{actual}}
@@ -419,10 +421,10 @@ test_result:
 
 ## パフォーマンス統計
 
-| メトリクス | 平均 | 中央値 | p95 | p99 |
-|-----------|------|--------|-----|-----|
+| メトリクス     | 平均        | 中央値      | p95         | p99         |
+| -------------- | ----------- | ----------- | ----------- | ----------- |
 | レイテンシ(ms) | {{lat_avg}} | {{lat_med}} | {{lat_p95}} | {{lat_p99}} |
-| トークン数 | {{tok_avg}} | {{tok_med}} | {{tok_p95}} | {{tok_p99}} |
+| トークン数     | {{tok_avg}} | {{tok_med}} | {{tok_p95}} | {{tok_p99}} |
 
 ## 推奨事項
 

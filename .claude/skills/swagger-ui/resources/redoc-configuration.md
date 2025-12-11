@@ -7,19 +7,25 @@
 ```html
 <!DOCTYPE html>
 <html>
-<head>
-  <title>API Documentation</title>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
-  <style>
-    body { margin: 0; padding: 0; }
-  </style>
-</head>
-<body>
-  <redoc spec-url='/openapi.yaml'></redoc>
-  <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
-</body>
+  <head>
+    <title>API Documentation</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <redoc spec-url="/openapi.yaml"></redoc>
+    <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
+  </body>
 </html>
 ```
 
@@ -34,7 +40,7 @@ pnpm install @redocly/reference-docs  # 有料版
 ### React統合
 
 ```tsx
-import { RedocStandalone } from 'redoc';
+import { RedocStandalone } from "redoc";
 
 function ApiDocs() {
   return (
@@ -42,7 +48,7 @@ function ApiDocs() {
       specUrl="/openapi.yaml"
       options={{
         nativeScrollbars: true,
-        theme: { colors: { primary: { main: '#32329f' } } }
+        theme: { colors: { primary: { main: "#32329f" } } },
       }}
     />
   );
@@ -57,7 +63,7 @@ function ApiDocs() {
 
 ```html
 <redoc
-  spec-url='/openapi.yaml'
+  spec-url="/openapi.yaml"
   hide-download-button
   hide-hostname
   expand-responses="200,201"
@@ -75,45 +81,49 @@ function ApiDocs() {
 ### JavaScript設定
 
 ```javascript
-Redoc.init('/openapi.yaml', {
-  // 表示オプション
-  hideDownloadButton: false,
-  hideHostname: false,
-  hideLoading: false,
-  hideSingleRequestSampleTab: false,
-  expandDefaultServerVariables: false,
+Redoc.init(
+  "/openapi.yaml",
+  {
+    // 表示オプション
+    hideDownloadButton: false,
+    hideHostname: false,
+    hideLoading: false,
+    hideSingleRequestSampleTab: false,
+    expandDefaultServerVariables: false,
 
-  // レスポンス展開
-  expandResponses: '200,201',
+    // レスポンス展開
+    expandResponses: "200,201",
 
-  // プロパティ表示
-  requiredPropsFirst: true,
-  sortPropsAlphabetically: false,
-  sortEnumValuesAlphabetically: false,
-  sortOperationsAlphabetically: false,
-  sortTagsAlphabetically: false,
+    // プロパティ表示
+    requiredPropsFirst: true,
+    sortPropsAlphabetically: false,
+    sortEnumValuesAlphabetically: false,
+    sortOperationsAlphabetically: false,
+    sortTagsAlphabetically: false,
 
-  // レイアウト
-  pathInMiddlePanel: false,
-  nativeScrollbars: false,
-  scrollYOffset: 0,
+    // レイアウト
+    pathInMiddlePanel: false,
+    nativeScrollbars: false,
+    scrollYOffset: 0,
 
-  // JSON表示
-  jsonSampleExpandLevel: 2,
-  showExtensions: false,
+    // JSON表示
+    jsonSampleExpandLevel: 2,
+    showExtensions: false,
 
-  // ラベル
-  menuToggle: true,
+    // ラベル
+    menuToggle: true,
 
-  // スキーマ
-  disableSearch: false,
-  onlyRequiredInSamples: false,
+    // スキーマ
+    disableSearch: false,
+    onlyRequiredInSamples: false,
 
-  // テーマ
-  theme: {
-    // 以下参照
-  }
-}, document.getElementById('redoc-container'));
+    // テーマ
+    theme: {
+      // 以下参照
+    },
+  },
+  document.getElementById("redoc-container"),
+);
 ```
 
 ---
@@ -126,67 +136,67 @@ Redoc.init('/openapi.yaml', {
 const theme = {
   colors: {
     primary: {
-      main: '#32329f',
-      light: '#6868b3',
-      dark: '#1e1e5f',
-      contrastText: '#ffffff'
+      main: "#32329f",
+      light: "#6868b3",
+      dark: "#1e1e5f",
+      contrastText: "#ffffff",
     },
     success: {
-      main: '#00aa00',
-      light: '#66cc66',
-      dark: '#006600',
-      contrastText: '#ffffff'
+      main: "#00aa00",
+      light: "#66cc66",
+      dark: "#006600",
+      contrastText: "#ffffff",
     },
     warning: {
-      main: '#ffaa00',
-      light: '#ffcc66',
-      dark: '#996600',
-      contrastText: '#000000'
+      main: "#ffaa00",
+      light: "#ffcc66",
+      dark: "#996600",
+      contrastText: "#000000",
     },
     error: {
-      main: '#dd0000',
-      light: '#ff6666',
-      dark: '#880000',
-      contrastText: '#ffffff'
+      main: "#dd0000",
+      light: "#ff6666",
+      dark: "#880000",
+      contrastText: "#ffffff",
     },
     text: {
-      primary: '#333333',
-      secondary: '#666666'
+      primary: "#333333",
+      secondary: "#666666",
     },
     http: {
-      get: '#2f8132',
-      post: '#186faf',
-      put: '#95507c',
-      options: '#947014',
-      patch: '#bf581d',
-      delete: '#cc3333',
-      basic: '#707070',
-      link: '#07818F',
-      head: '#A23DAD'
+      get: "#2f8132",
+      post: "#186faf",
+      put: "#95507c",
+      options: "#947014",
+      patch: "#bf581d",
+      delete: "#cc3333",
+      basic: "#707070",
+      link: "#07818F",
+      head: "#A23DAD",
     },
     responses: {
       success: {
-        color: '#00aa00',
-        backgroundColor: '#e6ffe6'
+        color: "#00aa00",
+        backgroundColor: "#e6ffe6",
       },
       error: {
-        color: '#dd0000',
-        backgroundColor: '#ffe6e6'
+        color: "#dd0000",
+        backgroundColor: "#ffe6e6",
       },
       redirect: {
-        color: '#ff9900',
-        backgroundColor: '#fff3e6'
+        color: "#ff9900",
+        backgroundColor: "#fff3e6",
       },
       info: {
-        color: '#0066cc',
-        backgroundColor: '#e6f0ff'
-      }
+        color: "#0066cc",
+        backgroundColor: "#e6f0ff",
+      },
     },
     border: {
-      dark: '#cccccc',
-      light: '#eeeeee'
-    }
-  }
+      dark: "#cccccc",
+      light: "#eeeeee",
+    },
+  },
 };
 ```
 
@@ -195,36 +205,36 @@ const theme = {
 ```javascript
 const theme = {
   typography: {
-    fontSize: '14px',
-    lineHeight: '1.5em',
-    fontWeightRegular: '400',
-    fontWeightBold: '600',
-    fontWeightLight: '300',
+    fontSize: "14px",
+    lineHeight: "1.5em",
+    fontWeightRegular: "400",
+    fontWeightBold: "600",
+    fontWeightLight: "300",
     fontFamily: '"Roboto", "Helvetica Neue", Arial, sans-serif',
-    smoothing: 'antialiased',
+    smoothing: "antialiased",
     optimizeSpeed: true,
     headings: {
       fontFamily: '"Montserrat", sans-serif',
-      fontWeight: '400',
-      lineHeight: '1.2em'
+      fontWeight: "400",
+      lineHeight: "1.2em",
     },
     code: {
-      fontSize: '13px',
+      fontSize: "13px",
       fontFamily: '"Source Code Pro", monospace',
-      lineHeight: '1.4em',
-      fontWeight: '400',
-      color: '#c7254e',
-      backgroundColor: '#f9f2f4',
-      wrap: false
+      lineHeight: "1.4em",
+      fontWeight: "400",
+      color: "#c7254e",
+      backgroundColor: "#f9f2f4",
+      wrap: false,
     },
     links: {
-      color: '#32329f',
-      visited: '#32329f',
-      hover: '#6868b3',
-      textDecoration: 'none',
-      hoverTextDecoration: 'underline'
-    }
-  }
+      color: "#32329f",
+      visited: "#32329f",
+      hover: "#6868b3",
+      textDecoration: "none",
+      hoverTextDecoration: "underline",
+    },
+  },
 };
 ```
 
@@ -233,25 +243,25 @@ const theme = {
 ```javascript
 const theme = {
   sidebar: {
-    width: '260px',
-    backgroundColor: '#fafafa',
-    textColor: '#333333',
-    activeTextColor: '#32329f',
+    width: "260px",
+    backgroundColor: "#fafafa",
+    textColor: "#333333",
+    activeTextColor: "#32329f",
     groupItems: {
-      activeBackgroundColor: '#e8e8e8',
-      activeTextColor: '#32329f',
-      textTransform: 'uppercase'
+      activeBackgroundColor: "#e8e8e8",
+      activeTextColor: "#32329f",
+      textTransform: "uppercase",
     },
     level1Items: {
-      activeBackgroundColor: '#e8e8e8',
-      activeTextColor: '#32329f',
-      textTransform: 'none'
+      activeBackgroundColor: "#e8e8e8",
+      activeTextColor: "#32329f",
+      textTransform: "none",
     },
     arrow: {
-      size: '1.5em',
-      color: '#666666'
-    }
-  }
+      size: "1.5em",
+      color: "#666666",
+    },
+  },
 };
 ```
 
@@ -260,10 +270,10 @@ const theme = {
 ```javascript
 const theme = {
   rightPanel: {
-    backgroundColor: '#263238',
-    width: '40%',
-    textColor: '#ffffff'
-  }
+    backgroundColor: "#263238",
+    width: "40%",
+    textColor: "#ffffff",
+  },
 };
 ```
 
@@ -281,9 +291,9 @@ const theme = {
 
 /* ロゴ追加 */
 .api-info > h1::before {
-  content: '';
+  content: "";
   display: block;
-  background: url('/logo.png') no-repeat;
+  background: url("/logo.png") no-repeat;
   background-size: contain;
   width: 150px;
   height: 50px;
@@ -338,13 +348,13 @@ const theme = {
 
 ```tsx
 // app/docs/page.tsx
-'use client';
+"use client";
 
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 
 const RedocStandalone = dynamic(
-  () => import('redoc').then(mod => mod.RedocStandalone),
-  { ssr: false }
+  () => import("redoc").then((mod) => mod.RedocStandalone),
+  { ssr: false },
 );
 
 export default function DocsPage() {
@@ -356,9 +366,9 @@ export default function DocsPage() {
         hideDownloadButton: false,
         theme: {
           colors: {
-            primary: { main: '#32329f' }
-          }
-        }
+            primary: { main: "#32329f" },
+          },
+        },
       }}
     />
   );
@@ -369,11 +379,11 @@ export default function DocsPage() {
 
 ```tsx
 // pages/docs.tsx
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 
 const RedocStandalone = dynamic(
-  () => import('redoc').then(mod => mod.RedocStandalone),
-  { ssr: false }
+  () => import("redoc").then((mod) => mod.RedocStandalone),
+  { ssr: false },
 );
 
 export default function DocsPage() {
@@ -411,17 +421,17 @@ redocly build-docs openapi.yaml \
 theme:
   openapi:
     hideDownloadButton: false
-    expandResponses: '200,201'
+    expandResponses: "200,201"
     nativeScrollbars: true
     theme:
       colors:
         primary:
-          main: '#32329f'
+          main: "#32329f"
       typography:
-        fontSize: '14px'
-        fontFamily: 'system-ui, sans-serif'
+        fontSize: "14px"
+        fontFamily: "system-ui, sans-serif"
       sidebar:
-        width: '280px'
+        width: "280px"
 ```
 
 ---
@@ -431,9 +441,9 @@ theme:
 ### 大規模API向け
 
 ```javascript
-Redoc.init('/openapi.yaml', {
+Redoc.init("/openapi.yaml", {
   // 必要なレスポンスのみ展開
-  expandResponses: '200',
+  expandResponses: "200",
 
   // サンプル展開レベルを制限
   jsonSampleExpandLevel: 1,
@@ -445,7 +455,7 @@ Redoc.init('/openapi.yaml', {
   disableSearch: true,
 
   // 遅延読み込み
-  lazyRendering: true
+  lazyRendering: true,
 });
 ```
 
@@ -463,9 +473,9 @@ redocly build-docs openapi.yaml -o docs/index.html
 
 ## トラブルシューティング
 
-| 問題 | 原因 | 解決策 |
-|-----|------|--------|
-| 読み込みが遅い | 大規模API | `disableSearch: true`、静的生成 |
-| スタイルが崩れる | CSS競合 | スコープ付きCSS、Shadow DOM |
-| モバイルで表示崩れ | レスポンシブ未対応 | カスタムCSS追加 |
-| 日本語が文字化け | エンコーディング | UTF-8指定確認 |
+| 問題               | 原因               | 解決策                          |
+| ------------------ | ------------------ | ------------------------------- |
+| 読み込みが遅い     | 大規模API          | `disableSearch: true`、静的生成 |
+| スタイルが崩れる   | CSS競合            | スコープ付きCSS、Shadow DOM     |
+| モバイルで表示崩れ | レスポンシブ未対応 | カスタムCSS追加                 |
+| 日本語が文字化け   | エンコーディング   | UTF-8指定確認                   |

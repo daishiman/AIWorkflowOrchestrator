@@ -144,7 +144,7 @@ async function requestJITAccess(
   userId: string,
   secretName: string,
   duration: number,
-  justification: string
+  justification: string,
 ): Promise<AccessGrant> {
   const approval = await requestApproval({ userId, secretName, justification });
 

@@ -1,8 +1,8 @@
 # Composite Action Template
 # このテンプレートをコピーして、カスタムComposite Actionを作成してください
 
-name: 'Action Name'
-description: 'Action description - what this action does'
+name: "Action Name"
+description: "Action description - what this action does"
 
 # Optional: Author information
 # author: 'Your Name or Organization'
@@ -16,20 +16,20 @@ description: 'Action description - what this action does'
 inputs:
   # Required input example
   environment:
-    description: 'Deployment environment (dev, staging, prod)'
+    description: "Deployment environment (dev, staging, prod)"
     required: true
 
   # Optional input with default
   dry-run:
-    description: 'Run in dry-run mode without making actual changes'
+    description: "Run in dry-run mode without making actual changes"
     required: false
-    default: 'false'
+    default: "false"
 
   # Optional input
   working-directory:
-    description: 'Working directory for the action'
+    description: "Working directory for the action"
     required: false
-    default: '.'
+    default: "."
 
   # Advanced: Deprecated input
   # old-parameter:
@@ -40,20 +40,20 @@ inputs:
 # Output parameters
 outputs:
   result:
-    description: 'Result of the action execution'
+    description: "Result of the action execution"
     value: ${{ steps.execute.outputs.result }}
 
   success:
-    description: 'Whether the action succeeded'
+    description: "Whether the action succeeded"
     value: ${{ steps.execute.outputs.success }}
 
   duration:
-    description: 'Execution duration in seconds'
+    description: "Execution duration in seconds"
     value: ${{ steps.measure.outputs.duration }}
 
 # Action implementation
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     # Step 1: Validate inputs
     - name: Validate inputs

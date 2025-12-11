@@ -33,11 +33,13 @@ version: 1.0.0
 [スキルの目的、スコープ、対象ユーザーの詳細説明]
 
 **主要な価値**:
+
 - [価値1]
 - [価値2]
 - [価値3]
 
 **対象ユーザー**:
+
 - [ユーザー1]
 - [ユーザー2]
 
@@ -58,11 +60,13 @@ version: 1.0.0
 ## コマンドリファレンス
 
 ### リソース読み取り
+
 ```bash
 cat .claude/skills/[skill-name]/resources/[resource-name].md
 ```
 
 ### スクリプト実行
+
 ```bash
 node .claude/skills/[skill-name]/scripts/[script-name].mjs [args]
 ```
@@ -70,18 +74,22 @@ node .claude/skills/[skill-name]/scripts/[script-name].mjs [args]
 ## いつ使うか
 
 ### シナリオ1: [シナリオ名]
+
 **状況**: [状況説明]
 **適用条件**:
+
 - [ ] [条件1]
 - [ ] [条件2]
-**期待される成果**: [成果]
+      **期待される成果**: [成果]
 
 ### シナリオ2: [シナリオ名]
+
 **状況**: [状況説明]
 **適用条件**:
+
 - [ ] [条件1]
 - [ ] [条件2]
-**期待される成果**: [成果]
+      **期待される成果**: [成果]
 
 ## 核心概念
 
@@ -90,6 +98,7 @@ node .claude/skills/[skill-name]/scripts/[script-name].mjs [args]
 **定義**: [定義]
 
 **実践例**:
+
 ```
 [コード例またはシナリオ]
 ```
@@ -99,6 +108,7 @@ node .claude/skills/[skill-name]/scripts/[script-name].mjs [args]
 **定義**: [定義]
 
 **実践例**:
+
 ```
 [コード例またはシナリオ]
 ```
@@ -118,6 +128,7 @@ node .claude/skills/[skill-name]/scripts/[script-name].mjs [args]
 ## トラブルシューティング
 
 ### 問題1: [問題名]
+
 **症状**: [説明]
 **原因**: [理由]
 **解決策**: [修正方法]
@@ -133,6 +144,6 @@ node .claude/skills/[skill-name]/scripts/[script-name].mjs [args]
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | YYYY-MM-DD | 初版作成 |
+| バージョン | 日付       | 変更内容 |
+| ---------- | ---------- | -------- |
+| 1.0.0      | YYYY-MM-DD | 初版作成 |

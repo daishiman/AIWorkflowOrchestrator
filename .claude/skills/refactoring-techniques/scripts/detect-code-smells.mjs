@@ -14,15 +14,15 @@
  * - Magic Number (意味不明な数値リテラル)
  */
 
-import { readFileSync, readdirSync, statSync } from 'fs';
-import { join, extname } from 'path';
+import { readFileSync, readdirSync, statSync } from "fs";
+import { join, extname } from "path";
 
 // 設定
 const CONFIG = {
   maxMethodLines: 30,
   maxParameters: 4,
   maxNestingDepth: 3,
-  supportedExtensions: ['.ts', '.tsx', '.js', '.jsx'],
+  supportedExtensions: [".ts", ".tsx", ".js", ".jsx"],
 };
 
 // 結果格納
@@ -44,7 +44,7 @@ function getFiles(dir, files = []) {
     const stat = statSync(fullPath);
 
     if (stat.isDirectory()) {
-      if (!item.startsWith('.') && item !== 'node_modules') {
+      if (!item.startsWith(".") && item !== "node_modules") {
         getFiles(fullPath, files);
       }
     } else if (CONFIG.supportedExtensions.includes(extname(item))) {
@@ -60,13 +60,14 @@ function getFiles(dir, files = []) {
  */
 function detectLongMethods(content, filePath) {
   // 簡易的な関数検出（function, =>、メソッド定義）
-  const functionPattern = /(?:function\s+\w+|(?:async\s+)?(?:const|let|var)\s+\w+\s*=\s*(?:async\s*)?\([^)]*\)\s*=>|(?:async\s+)?\w+\s*\([^)]*\)\s*\{)/g;
+  const functionPattern =
+    /(?:function\s+\w+|(?:async\s+)?(?:const|let|var)\s+\w+\s*=\s*(?:async\s*)?\([^)]*\)\s*=>|(?:async\s+)?\w+\s*\([^)]*\)\s*\{)/g;
 
   let match;
-  const lines = content.split('\n');
+  const lines = content.split("\n");
 
   while ((match = functionPattern.exec(content)) !== null) {
-    const startLine = content.substring(0, match.index).split('\n').length;
+    const startLine = content.substring(0, match.index).split("\n").length;
     let braceCount = 0;
     let started = false;
     let endLine = startLine;
@@ -74,10 +75,10 @@ function detectLongMethods(content, filePath) {
     for (let i = startLine - 1; i < lines.length; i++) {
       const line = lines[i];
       for (const char of line) {
-        if (char === '{') {
+        if (char === "{") {
           braceCount++;
           started = true;
-        } else if (char === '}') {
+        } else if (char === "}") {
           braceCount--;
         }
       }
@@ -111,9 +112,9 @@ function detectLongParameterLists(content, filePath) {
     const params = match[1].trim();
     if (params) {
       // カンマで分割してパラメータ数をカウント
-      const paramCount = params.split(',').filter(p => p.trim()).length;
+      const paramCount = params.split(",").filter((p) => p.trim()).length;
       if (paramCount > CONFIG.maxParameters) {
-        const line = content.substring(0, match.index).split('\n').length;
+        const line = content.substring(0, match.index).split("\n").length;
         results.longParameterLists.push({
           file: filePath,
           line,
@@ -129,7 +130,7 @@ function detectLongParameterLists(content, filePath) {
  * 複雑な条件式（深いネスト）を検出
  */
 function detectComplexConditionals(content, filePath) {
-  const lines = content.split('\n');
+  const lines = content.split("\n");
   let currentNesting = 0;
   let maxNesting = 0;
   let maxNestingLine = 0;
@@ -166,7 +167,7 @@ function detectComplexConditionals(content, filePath) {
  * マジックナンバーを検出
  */
 function detectMagicNumbers(content, filePath) {
-  const lines = content.split('\n');
+  const lines = content.split("\n");
 
   // 除外パターン
   const excludePatterns = [
@@ -182,7 +183,7 @@ function detectMagicNumbers(content, filePath) {
     const line = lines[i];
 
     // 除外パターンに該当する場合はスキップ
-    if (excludePatterns.some(pattern => pattern.test(line))) {
+    if (excludePatterns.some((pattern) => pattern.test(line))) {
       continue;
     }
 
@@ -208,7 +209,7 @@ function detectMagicNumbers(content, filePath) {
  * ファイルを分析
  */
 function analyzeFile(filePath) {
-  const content = readFileSync(filePath, 'utf-8');
+  const content = readFileSync(filePath, "utf-8");
 
   detectLongMethods(content, filePath);
   detectLongParameterLists(content, filePath);
@@ -220,11 +221,13 @@ function analyzeFile(filePath) {
  * 結果を出力
  */
 function printResults() {
-  console.log('\n📊 コードスメル検出結果\n');
-  console.log('='.repeat(60));
+  console.log("\n📊 コードスメル検出結果\n");
+  console.log("=".repeat(60));
 
   // Long Methods
-  console.log(`\n🔴 Long Method (${CONFIG.maxMethodLines}行超): ${results.longMethods.length}件`);
+  console.log(
+    `\n🔴 Long Method (${CONFIG.maxMethodLines}行超): ${results.longMethods.length}件`,
+  );
   for (const item of results.longMethods.slice(0, 10)) {
     console.log(`   ${item.file}:${item.line} - ${item.lineCount}行`);
   }
@@ -233,7 +236,9 @@ function printResults() {
   }
 
   // Long Parameter Lists
-  console.log(`\n🟠 Long Parameter List (${CONFIG.maxParameters}パラメータ超): ${results.longParameterLists.length}件`);
+  console.log(
+    `\n🟠 Long Parameter List (${CONFIG.maxParameters}パラメータ超): ${results.longParameterLists.length}件`,
+  );
   for (const item of results.longParameterLists.slice(0, 10)) {
     console.log(`   ${item.file}:${item.line} - ${item.paramCount}パラメータ`);
   }
@@ -242,9 +247,13 @@ function printResults() {
   }
 
   // Complex Conditionals
-  console.log(`\n🟡 Complex Conditional (ネスト${CONFIG.maxNestingDepth}段階超): ${results.complexConditionals.length}件`);
+  console.log(
+    `\n🟡 Complex Conditional (ネスト${CONFIG.maxNestingDepth}段階超): ${results.complexConditionals.length}件`,
+  );
   for (const item of results.complexConditionals.slice(0, 10)) {
-    console.log(`   ${item.file}:${item.line} - ネスト${item.nestingDepth}段階`);
+    console.log(
+      `   ${item.file}:${item.line} - ネスト${item.nestingDepth}段階`,
+    );
   }
   if (results.complexConditionals.length > 10) {
     console.log(`   ... 他 ${results.complexConditionals.length - 10}件`);
@@ -266,24 +275,24 @@ function printResults() {
     results.complexConditionals.length +
     results.magicNumbers.length;
 
-  console.log('\n' + '='.repeat(60));
+  console.log("\n" + "=".repeat(60));
   console.log(`📈 合計: ${total}件のコードスメルを検出`);
 
   if (total === 0) {
-    console.log('✅ コードスメルは検出されませんでした');
+    console.log("✅ コードスメルは検出されませんでした");
   } else {
-    console.log('\n推奨アクション:');
+    console.log("\n推奨アクション:");
     if (results.longMethods.length > 0) {
-      console.log('  - Extract Methodでメソッドを分割');
+      console.log("  - Extract Methodでメソッドを分割");
     }
     if (results.longParameterLists.length > 0) {
-      console.log('  - Introduce Parameter Objectでパラメータをオブジェクト化');
+      console.log("  - Introduce Parameter Objectでパラメータをオブジェクト化");
     }
     if (results.complexConditionals.length > 0) {
-      console.log('  - Decompose Conditionalで条件式を分解');
+      console.log("  - Decompose Conditionalで条件式を分解");
     }
     if (results.magicNumbers.length > 0) {
-      console.log('  - Replace Magic Number with Symbolic Constantで定数化');
+      console.log("  - Replace Magic Number with Symbolic Constantで定数化");
     }
   }
 }
@@ -291,7 +300,7 @@ function printResults() {
 // メイン処理
 const args = process.argv.slice(2);
 if (args.length === 0) {
-  console.log('Usage: node detect-code-smells.mjs <directory>');
+  console.log("Usage: node detect-code-smells.mjs <directory>");
   process.exit(1);
 }
 

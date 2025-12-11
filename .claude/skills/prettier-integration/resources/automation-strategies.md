@@ -7,6 +7,7 @@
 **実装**: エディタ保存時フォーマット
 
 **メリット**:
+
 - 即座のフィードバック
 - 開発体験向上
 - 設定が簡単
@@ -20,11 +21,13 @@
 **実装**: lint-staged + Husky
 
 **メリット**:
+
 - チーム全体で強制
 - コミット前に自動フォーマット
 - CI/CD前の品質保証
 
 **設定**:
+
 ```json
 {
   "lint-staged": {
@@ -40,10 +43,12 @@
 **実装**: GitHub Actions等でフォーマットチェック
 
 **メリット**:
+
 - PR時の自動検証
 - フォーマット崩れをブロック
 
 **設定**:
+
 ```yaml
 - name: Check Prettier
   run: pnpm format:check
@@ -148,6 +153,7 @@ prettier --write --cache .
 ### 並列処理
 
 **lint-staged**:
+
 ```json
 {
   "lint-staged": {
@@ -187,7 +193,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
+          cache: "pnpm"
       - run: pnpm install
       - run: pnpm format:check
 ```
@@ -218,11 +224,13 @@ jobs:
 ## まとめ
 
 **推奨レベル**:
+
 1. エディタ統合（開発体験）
 2. コミットフック（チーム品質）
 3. CI/CD（最終防御）
 
 **パフォーマンス**:
+
 - キャッシュ有効化
 - 対象ファイル絞り込み
 - .prettierignore活用

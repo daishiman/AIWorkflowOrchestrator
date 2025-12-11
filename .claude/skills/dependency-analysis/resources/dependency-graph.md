@@ -54,7 +54,7 @@ package.json の dependencies/devDependencies を
 
 ```typescript
 // import/export文を解析
-import { readFile } from 'fs/promises';
+import { readFile } from "fs/promises";
 
 interface DependencyNode {
   path: string;
@@ -63,7 +63,7 @@ interface DependencyNode {
 }
 
 async function analyzeFile(filePath: string): Promise<DependencyNode> {
-  const content = await readFile(filePath, 'utf-8');
+  const content = await readFile(filePath, "utf-8");
 
   // import文を抽出
   const importRegex = /import\s+.*\s+from\s+['"]([^'"]+)['"]/g;
@@ -74,7 +74,8 @@ async function analyzeFile(filePath: string): Promise<DependencyNode> {
   }
 
   // export文を抽出
-  const exportRegex = /export\s+(?:default\s+)?(?:class|function|const|interface|type)\s+(\w+)/g;
+  const exportRegex =
+    /export\s+(?:default\s+)?(?:class|function|const|interface|type)\s+(\w+)/g;
   const exports: string[] = [];
   while ((match = exportRegex.exec(content)) !== null) {
     exports.push(match[1]);
@@ -93,10 +94,10 @@ interface DependencyGraph {
 }
 
 type DependencyType =
-  | 'import'      // 直接import
-  | 're-export'   // 再export
-  | 'type-only'   // 型のみ
-  | 'dynamic';    // 動的import
+  | "import" // 直接import
+  | "re-export" // 再export
+  | "type-only" // 型のみ
+  | "dynamic"; // 動的import
 ```
 
 ## ツール活用
@@ -133,12 +134,12 @@ depcruise src --include-only "^src" --output-type dot | dot -T svg > deps.svg
 ### TypeScript Compiler API
 
 ```typescript
-import * as ts from 'typescript';
+import * as ts from "typescript";
 
 function getImportsFromFile(sourceFile: ts.SourceFile): string[] {
   const imports: string[] = [];
 
-  ts.forEachChild(sourceFile, node => {
+  ts.forEachChild(sourceFile, (node) => {
     if (ts.isImportDeclaration(node)) {
       const moduleSpecifier = node.moduleSpecifier;
       if (ts.isStringLiteral(moduleSpecifier)) {

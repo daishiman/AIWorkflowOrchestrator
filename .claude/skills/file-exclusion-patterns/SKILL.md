@@ -22,7 +22,6 @@ description: |
 version: 1.0.0
 ---
 
-
 # File Exclusion Patterns
 
 ## 概要
@@ -35,15 +34,15 @@ version: 1.0.0
 
 ### Glob Patternの基本
 
-| パターン | 意味 | 例 |
-|----------|------|-----|
-| `*` | 任意の文字列（パス区切り除く） | `*.log` → access.log |
-| `**` | 任意の階層のディレクトリ | `**/node_modules` → a/b/node_modules |
-| `?` | 任意の1文字 | `file?.txt` → file1.txt |
-| `[abc]` | 文字クラス | `[Ff]ile` → File, file |
-| `[!abc]` | 否定文字クラス | `[!.]*.js` → .で始まらない.js |
-| `!(pattern)` | 否定パターン | `!(*.md)` → .md以外 |
-| `{a,b}` | 選択パターン | `*.{js,ts}` → .jsまたは.ts |
+| パターン     | 意味                           | 例                                   |
+| ------------ | ------------------------------ | ------------------------------------ |
+| `*`          | 任意の文字列（パス区切り除く） | `*.log` → access.log                 |
+| `**`         | 任意の階層のディレクトリ       | `**/node_modules` → a/b/node_modules |
+| `?`          | 任意の1文字                    | `file?.txt` → file1.txt              |
+| `[abc]`      | 文字クラス                     | `[Ff]ile` → File, file               |
+| `[!abc]`     | 否定文字クラス                 | `[!.]*.js` → .で始まらない.js        |
+| `!(pattern)` | 否定パターン                   | `!(*.md)` → .md以外                  |
+| `{a,b}`      | 選択パターン                   | `*.{js,ts}` → .jsまたは.ts           |
 
 ### 除外設計の原則
 
@@ -61,46 +60,41 @@ version: 1.0.0
 ```typescript
 const packageManagerPatterns = [
   // Node.js
-  '**/node_modules/**',
-  '**/package-lock.json',
-  '**/yarn.lock',
-  '**/pnpm-lock.yaml',
+  "**/node_modules/**",
+  "**/package-lock.json",
+  "**/yarn.lock",
+  "**/pnpm-lock.yaml",
 
   // Python
-  '**/__pycache__/**',
-  '**/*.pyc',
-  '**/.venv/**',
-  '**/venv/**',
+  "**/__pycache__/**",
+  "**/*.pyc",
+  "**/.venv/**",
+  "**/venv/**",
 
   // その他
-  '**/vendor/**',
-  '**/bower_components/**',
+  "**/vendor/**",
+  "**/bower_components/**",
 ];
 ```
 
 ### バージョン管理システム
 
 ```typescript
-const vcsPatterns = [
-  '**/.git/**',
-  '**/.svn/**',
-  '**/.hg/**',
-  '**/.bzr/**',
-];
+const vcsPatterns = ["**/.git/**", "**/.svn/**", "**/.hg/**", "**/.bzr/**"];
 ```
 
 ### ビルド成果物
 
 ```typescript
 const buildPatterns = [
-  '**/dist/**',
-  '**/build/**',
-  '**/out/**',
-  '**/.next/**',
-  '**/.nuxt/**',
-  '**/.output/**',
-  '**/coverage/**',
-  '**/.turbo/**',
+  "**/dist/**",
+  "**/build/**",
+  "**/out/**",
+  "**/.next/**",
+  "**/.nuxt/**",
+  "**/.output/**",
+  "**/coverage/**",
+  "**/.turbo/**",
 ];
 ```
 
@@ -109,22 +103,22 @@ const buildPatterns = [
 ```typescript
 const tempFilePatterns = [
   // エディタ
-  '**/*.swp',
-  '**/*.swo',
-  '**/*~',
-  '**/.#*',
-  '**/#*#',
+  "**/*.swp",
+  "**/*.swo",
+  "**/*~",
+  "**/.#*",
+  "**/#*#",
 
   // Office
-  '**/~$*',
-  '**/*.tmp',
+  "**/~$*",
+  "**/*.tmp",
 
   // 汎用
-  '**/*.temp',
-  '**/*.bak',
-  '**/*.backup',
-  '**/tmp/**',
-  '**/temp/**',
+  "**/*.temp",
+  "**/*.bak",
+  "**/*.backup",
+  "**/tmp/**",
+  "**/temp/**",
 ];
 ```
 
@@ -134,27 +128,24 @@ const tempFilePatterns = [
 const platformPatterns = {
   // macOS
   macos: [
-    '**/.DS_Store',
-    '**/.AppleDouble',
-    '**/.LSOverride',
-    '**/._*',
-    '**/.Spotlight-V100/**',
-    '**/.Trashes/**',
+    "**/.DS_Store",
+    "**/.AppleDouble",
+    "**/.LSOverride",
+    "**/._*",
+    "**/.Spotlight-V100/**",
+    "**/.Trashes/**",
   ],
 
   // Windows
   windows: [
-    '**/Thumbs.db',
-    '**/ehthumbs.db',
-    '**/Desktop.ini',
-    '**/$RECYCLE.BIN/**',
+    "**/Thumbs.db",
+    "**/ehthumbs.db",
+    "**/Desktop.ini",
+    "**/$RECYCLE.BIN/**",
   ],
 
   // Linux
-  linux: [
-    '**/.directory',
-    '**/*~',
-  ],
+  linux: ["**/.directory", "**/*~"],
 };
 ```
 
@@ -162,12 +153,12 @@ const platformPatterns = {
 
 ```typescript
 const idePatterns = [
-  '**/.idea/**',
-  '**/.vscode/**',
-  '**/*.sublime-*',
-  '**/.project',
-  '**/.classpath',
-  '**/.settings/**',
+  "**/.idea/**",
+  "**/.vscode/**",
+  "**/*.sublime-*",
+  "**/.project",
+  "**/.classpath",
+  "**/.settings/**",
 ];
 ```
 
@@ -185,26 +176,26 @@ function convertGitignoreToChokidar(gitignoreLine: string): string | null {
   let pattern = gitignoreLine.trim();
 
   // コメントと空行をスキップ
-  if (!pattern || pattern.startsWith('#')) {
+  if (!pattern || pattern.startsWith("#")) {
     return null;
   }
 
   // 否定パターンは非対応（スキップ）
-  if (pattern.startsWith('!')) {
+  if (pattern.startsWith("!")) {
     return null;
   }
 
   // 先頭の/を削除（相対パスに変換）
-  pattern = pattern.replace(/^\//, '');
+  pattern = pattern.replace(/^\//, "");
 
   // ディレクトリ指定（末尾の/）
-  if (pattern.endsWith('/')) {
-    pattern = pattern.slice(0, -1) + '/**';
+  if (pattern.endsWith("/")) {
+    pattern = pattern.slice(0, -1) + "/**";
   }
 
   // **/プレフィックスがない場合は追加
-  if (!pattern.startsWith('**/') && !pattern.startsWith('/')) {
-    pattern = '**/' + pattern;
+  if (!pattern.startsWith("**/") && !pattern.startsWith("/")) {
+    pattern = "**/" + pattern;
   }
 
   return pattern;
@@ -241,9 +232,9 @@ function buildExclusionPatterns(config: ExclusionConfig): string[] {
   }
   if (config.includePlatformFiles) {
     const platform = process.platform;
-    if (platform === 'darwin') {
+    if (platform === "darwin") {
       patterns.push(...platformPatterns.macos);
-    } else if (platform === 'win32') {
+    } else if (platform === "win32") {
       patterns.push(...platformPatterns.windows);
     } else {
       patterns.push(...platformPatterns.linux);
@@ -267,11 +258,11 @@ function buildExclusionPatterns(config: ExclusionConfig): string[] {
 
 ```typescript
 const minimalDevPatterns = [
-  '**/node_modules/**',
-  '**/.git/**',
-  '**/dist/**',
-  '**/*.tmp',
-  '**/.DS_Store',
+  "**/node_modules/**",
+  "**/.git/**",
+  "**/dist/**",
+  "**/*.tmp",
+  "**/.DS_Store",
 ];
 ```
 
@@ -280,28 +271,28 @@ const minimalDevPatterns = [
 ```typescript
 const standardDevPatterns = [
   // パッケージ
-  '**/node_modules/**',
+  "**/node_modules/**",
 
   // VCS
-  '**/.git/**',
+  "**/.git/**",
 
   // ビルド
-  '**/dist/**',
-  '**/build/**',
-  '**/.next/**',
+  "**/dist/**",
+  "**/build/**",
+  "**/.next/**",
 
   // 一時ファイル
-  '**/*.swp',
-  '**/*~',
-  '**/*.tmp',
+  "**/*.swp",
+  "**/*~",
+  "**/*.tmp",
 
   // プラットフォーム
-  '**/.DS_Store',
-  '**/Thumbs.db',
+  "**/.DS_Store",
+  "**/Thumbs.db",
 
   // ログ
-  '**/*.log',
-  '**/logs/**',
+  "**/*.log",
+  "**/logs/**",
 ];
 ```
 
@@ -313,14 +304,14 @@ const productionPatterns = [
   ...standardDevPatterns,
 
   // 追加の除外
-  '**/coverage/**',
-  '**/.turbo/**',
-  '**/.cache/**',
-  '**/test/**',
-  '**/tests/**',
-  '**/__tests__/**',
-  '**/*.test.*',
-  '**/*.spec.*',
+  "**/coverage/**",
+  "**/.turbo/**",
+  "**/.cache/**",
+  "**/test/**",
+  "**/tests/**",
+  "**/__tests__/**",
+  "**/*.test.*",
+  "**/*.spec.*",
 ];
 ```
 
@@ -334,12 +325,13 @@ const productionPatterns = [
 /**
  * パターンの効率性を評価
  */
-function evaluatePatternEfficiency(
-  pattern: string
-): { efficient: boolean; suggestion?: string } {
+function evaluatePatternEfficiency(pattern: string): {
+  efficient: boolean;
+  suggestion?: string;
+} {
   // ディレクトリ優先: ファイルパターンよりディレクトリパターンの方が効率的
-  if (!pattern.includes('/**') && !pattern.endsWith('/')) {
-    if (!pattern.includes('.')) {
+  if (!pattern.includes("/**") && !pattern.endsWith("/")) {
+    if (!pattern.includes(".")) {
       return {
         efficient: false,
         suggestion: `${pattern}/**（ディレクトリとして除外）`,
@@ -348,10 +340,10 @@ function evaluatePatternEfficiency(
   }
 
   // 曖昧なパターンの警告
-  if (pattern === '*' || pattern === '**') {
+  if (pattern === "*" || pattern === "**") {
     return {
       efficient: false,
-      suggestion: 'より具体的なパターンを使用してください',
+      suggestion: "より具体的なパターンを使用してください",
     };
   }
 
@@ -367,7 +359,7 @@ function evaluatePatternEfficiency(
  */
 async function analyzePatternCoverage(
   watchPath: string,
-  patterns: string[]
+  patterns: string[],
 ): Promise<{
   totalFiles: number;
   excludedFiles: number;
@@ -410,43 +402,43 @@ async function analyzePatternCoverage(
 
 ```typescript
 // 1. 過度に広いパターン
-ignored: '*' // すべて除外
+ignored: "*"; // すべて除外
 
 // 2. 重複するパターン
 ignored: [
-  '**/node_modules/**',
-  'node_modules/**',      // 重複
-  './node_modules/**',    // 重複
-]
+  "**/node_modules/**",
+  "node_modules/**", // 重複
+  "./node_modules/**", // 重複
+];
 
 // 3. ファイル単位の除外（非効率）
 ignored: [
-  '**/node_modules/package1/file1.js',
-  '**/node_modules/package1/file2.js',
+  "**/node_modules/package1/file1.js",
+  "**/node_modules/package1/file2.js",
   // ディレクトリごと除外すべき
-]
+];
 
 // 4. 拡張子のみの除外（意図しない除外の可能性）
-ignored: '*.json' // package.jsonも除外される
+ignored: "*.json"; // package.jsonも除外される
 ```
 
 ### ✅ 推奨パターン
 
 ```typescript
 // 1. 具体的なパターン
-ignored: '**/node_modules/**'
+ignored: "**/node_modules/**";
 
 // 2. 重複のない設計
-ignored: ['**/node_modules/**'] // 1つで十分
+ignored: ["**/node_modules/**"]; // 1つで十分
 
 // 3. ディレクトリ単位の除外
-ignored: ['**/node_modules/**'] // 効率的
+ignored: ["**/node_modules/**"]; // 効率的
 
 // 4. 必要に応じた例外
 ignored: [
-  '**/*.json',
-  '!**/package.json', // 例外（Chokidarでは非対応、フィルタリングで対応）
-]
+  "**/*.json",
+  "!**/package.json", // 例外（Chokidarでは非対応、フィルタリングで対応）
+];
 ```
 
 ---

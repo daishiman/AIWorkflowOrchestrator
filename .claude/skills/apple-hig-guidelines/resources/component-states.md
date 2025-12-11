@@ -4,16 +4,16 @@
 
 ### 基本状態
 
-| 状態 | 説明 | 視覚変化 | 触覚 |
-|-----|------|---------|------|
-| **Default** | 通常状態 | 標準外観 | なし |
-| **Hover** | ポインター接触（macOS/iPadOS） | 背景色変化 | なし |
-| **Pressed** | タップ/クリック中 | 暗く/縮小 | Impact |
-| **Focused** | キーボード/VoiceOverフォーカス | 青枠 | Selection |
-| **Selected** | 選択状態 | アクセント色 | Selection |
-| **Disabled** | 無効状態 | 50%透明度 | なし |
-| **Loading** | 読み込み中 | スピナー/シマー | なし |
-| **Error** | エラー状態 | 赤色/アイコン | Error |
+| 状態         | 説明                           | 視覚変化        | 触覚      |
+| ------------ | ------------------------------ | --------------- | --------- |
+| **Default**  | 通常状態                       | 標準外観        | なし      |
+| **Hover**    | ポインター接触（macOS/iPadOS） | 背景色変化      | なし      |
+| **Pressed**  | タップ/クリック中              | 暗く/縮小       | Impact    |
+| **Focused**  | キーボード/VoiceOverフォーカス | 青枠            | Selection |
+| **Selected** | 選択状態                       | アクセント色    | Selection |
+| **Disabled** | 無効状態                       | 50%透明度       | なし      |
+| **Loading**  | 読み込み中                     | スピナー/シマー | なし      |
+| **Error**    | エラー状態                     | 赤色/アイコン   | Error     |
 
 ---
 
@@ -277,8 +277,9 @@
   position: absolute;
   top: 2px;
   left: 2px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15),
-              0 1px 1px rgba(0, 0, 0, 0.16);
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.15),
+    0 1px 1px rgba(0, 0, 0, 0.16);
   transition: transform 200ms ease-out;
 }
 
@@ -460,8 +461,9 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15),
-              0 1px 1px rgba(0, 0, 0, 0.16);
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.15),
+    0 1px 1px rgba(0, 0, 0, 0.16);
   cursor: grab;
   transition: transform 100ms ease-out;
 }
@@ -526,8 +528,9 @@
 /* Segment Selected */
 .segment.selected {
   background: white;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12),
-              0 1px 1px rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.12),
+    0 1px 1px rgba(0, 0, 0, 0.04);
 }
 
 /* Segment Pressed */
@@ -655,8 +658,12 @@
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 ```
 
@@ -782,25 +789,25 @@
 
 ### アニメーション定義
 
-| 遷移 | Duration | Easing |
-|------|----------|--------|
-| Hover → Default | 150ms | ease-out |
-| Default → Pressed | 50ms | ease-in |
-| Pressed → Default | 200ms | ease-out |
-| Default → Focused | 100ms | ease-out |
-| Default → Selected | 200ms | ease-out |
-| Default → Disabled | 150ms | ease-out |
+| 遷移               | Duration | Easing   |
+| ------------------ | -------- | -------- |
+| Hover → Default    | 150ms    | ease-out |
+| Default → Pressed  | 50ms     | ease-in  |
+| Pressed → Default  | 200ms    | ease-out |
+| Default → Focused  | 100ms    | ease-out |
+| Default → Selected | 200ms    | ease-out |
+| Default → Disabled | 150ms    | ease-out |
 
 ### 触覚フィードバック対応
 
-| 状態変化 | Haptic Type | 強度 |
-|---------|------------|------|
-| タップ | Selection | 軽い |
-| プレス | Light Impact | 軽い |
-| 選択変更 | Selection | 軽い |
-| トグル | Medium Impact | 中 |
-| エラー | Error | パターン |
-| 成功 | Success | パターン |
+| 状態変化 | Haptic Type   | 強度     |
+| -------- | ------------- | -------- |
+| タップ   | Selection     | 軽い     |
+| プレス   | Light Impact  | 軽い     |
+| 選択変更 | Selection     | 軽い     |
+| トグル   | Medium Impact | 中       |
+| エラー   | Error         | パターン |
+| 成功     | Success       | パターン |
 
 ---
 
@@ -845,6 +852,7 @@ accessibilityTraits.insert(.adjustable)
 ## チェックリスト
 
 ### 全コンポーネント共通
+
 - [ ] 8状態すべて定義（Default, Hover, Pressed, Focused, Selected, Disabled, Loading, Error）
 - [ ] アニメーション遷移設定
 - [ ] 触覚フィードバック対応

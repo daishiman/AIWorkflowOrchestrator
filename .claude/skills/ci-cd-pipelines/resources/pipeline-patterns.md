@@ -11,14 +11,17 @@ Build → Test → Deploy
 ```
 
 **利点**:
+
 - シンプルで理解しやすい
 - デバッグが容易
 
 **欠点**:
+
 - 実行時間が長くなりやすい
 - 並列化の恩恵を受けられない
 
 **適用場面**:
+
 - 小規模プロジェクト
 - 依存関係が強いステージ
 
@@ -39,14 +42,17 @@ Deploy
 ```
 
 **利点**:
+
 - 実行時間の大幅短縮
 - 早期フィードバック
 
 **欠点**:
+
 - 設定が複雑
 - リソース使用量増加
 
 **適用場面**:
+
 - 中〜大規模プロジェクト
 - 独立したチェックが多い場合
 
@@ -65,14 +71,17 @@ Deploy
 ```
 
 **利点**:
+
 - ビルド成果物の再利用
 - テストの並列化
 
 **欠点**:
+
 - アーティファクト管理が必要
 - 設定が複雑
 
 **適用場面**:
+
 - テストが多いプロジェクト
 - ビルド時間が長い場合
 
@@ -85,14 +94,17 @@ Build → Test → Deploy Staging → Smoke Test → Deploy Production
 ```
 
 **利点**:
+
 - 本番デプロイ前の検証
 - 安全なロールアウト
 
 **欠点**:
+
 - パイプライン時間が長い
 - 環境管理のオーバーヘッド
 
 **適用場面**:
+
 - 本番環境への慎重なデプロイが必要
 - 複数環境がある場合
 
@@ -105,34 +117,34 @@ Build → Test → Deploy Staging → Smoke Test → Deploy Production
 │                     Trigger                          │
 │            (PR作成 / mainへのプッシュ)               │
 └─────────────────────────────────────────────────────┘
-                         │
-                         ▼
+│
+▼
 ┌─────────────────────────────────────────────────────┐
 │                  Checkout & Setup                    │
 │     (リポジトリクローン、依存関係キャッシュ復元)      │
 └─────────────────────────────────────────────────────┘
-                         │
-        ┌───────────────┼───────────────┐
-        ▼               ▼               ▼
+│
+┌───────────────┼───────────────┐
+▼               ▼               ▼
 ┌───────────┐    ┌───────────┐    ┌───────────┐
 │   Lint    │    │  Type     │    │  Build    │
 │           │    │  Check    │    │           │
 └───────────┘    └───────────┘    └───────────┘
-        │               │               │
-        └───────────────┼───────────────┘
-                        ▼
+│               │               │
+└───────────────┼───────────────┘
+▼
 ┌─────────────────────────────────────────────────────┐
 │                   Unit Tests                         │
 │               (カバレッジ計測含む)                   │
 └─────────────────────────────────────────────────────┘
-                        │
-                        ▼
+│
+▼
 ┌─────────────────────────────────────────────────────┐
 │                  Quality Gate                        │
 │    (カバレッジ閾値、Lint警告ゼロ、型エラーゼロ)      │
 └─────────────────────────────────────────────────────┘
-                        │
-                        ▼ (mainブランチのみ)
+│
+▼ (mainブランチのみ)
 ┌─────────────────────────────────────────────────────┐
 │                    Deploy                            │
 │             (Staging / Production)                   │
@@ -156,7 +168,7 @@ jobs:
     steps: [...]
 
   build:
-    needs: [lint, type-check]     # 両方成功後
+    needs: [lint, type-check] # 両方成功後
     runs-on: ubuntu-latest
     steps: [...]
 
@@ -180,12 +192,12 @@ jobs:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    continue-on-error: true       # 失敗しても続行
+    continue-on-error: true # 失敗しても続行
     steps: [...]
 
   type-check:
     runs-on: ubuntu-latest
-    steps: [...]                  # 失敗したら停止
+    steps: [...] # 失敗したら停止
 
   test:
     needs: [lint, type-check]
@@ -201,12 +213,14 @@ jobs:
 **目的**: デプロイ可能な成果物を生成
 
 **含めるべき処理**:
+
 - 依存関係インストール
 - TypeScriptコンパイル
 - アセットバンドル
 - 成果物アーティファクト化
 
 **成功基準**:
+
 - コンパイルエラーゼロ
 - 成果物が生成される
 
@@ -215,11 +229,13 @@ jobs:
 **目的**: コードの正確性を検証
 
 **含めるべき処理**:
+
 - ユニットテスト
 - 統合テスト
 - カバレッジ計測
 
 **成功基準**:
+
 - 全テストパス
 - カバレッジ閾値達成
 
@@ -228,12 +244,14 @@ jobs:
 **目的**: 品質基準の強制
 
 **含めるべきチェック**:
+
 - Lintエラーゼロ
 - 型エラーゼロ
 - カバレッジ閾値（例: 80%）
 - セキュリティ脆弱性ゼロ
 
 **成功基準**:
+
 - すべてのチェックがパス
 
 ### Deploy Stage
@@ -241,12 +259,14 @@ jobs:
 **目的**: 環境へのデプロイ
 
 **含めるべき処理**:
+
 - 環境変数設定
 - デプロイ実行
 - ヘルスチェック
 - 通知
 
 **成功基準**:
+
 - デプロイ成功
 - ヘルスチェックパス
 
@@ -255,6 +275,7 @@ jobs:
 ### 1. 巨大な単一ジョブ
 
 ❌ **避けるべき**:
+
 ```yaml
 jobs:
   all-in-one:
@@ -268,6 +289,7 @@ jobs:
 ```
 
 ✅ **推奨**:
+
 ```yaml
 jobs:
   lint:
@@ -283,14 +305,16 @@ jobs:
 ### 2. 依存関係の欠如
 
 ❌ **避けるべき**:
+
 ```yaml
 jobs:
   build: [...]
-  test: [...]   # buildを待たずに実行される
+  test: [...] # buildを待たずに実行される
   deploy: [...] # testを待たずに実行される
 ```
 
 ✅ **推奨**:
+
 ```yaml
 jobs:
   build: [...]
@@ -303,21 +327,23 @@ jobs:
 ### 3. 過度な直列化
 
 ❌ **避けるべき**:
+
 ```yaml
 jobs:
   lint:
     steps: [...]
   type-check:
-    needs: lint     # 不要な依存
+    needs: lint # 不要な依存
     steps: [...]
 ```
 
 ✅ **推奨**:
+
 ```yaml
 jobs:
   lint:
     steps: [...]
-  type-check:       # 並列実行
+  type-check: # 並列実行
     steps: [...]
 ```
 
@@ -341,7 +367,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
+          cache: "pnpm"
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
 
@@ -353,7 +379,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
+          cache: "pnpm"
       - run: pnpm install --frozen-lockfile
       - run: pnpm type-check
 
@@ -365,7 +391,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
+          cache: "pnpm"
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
 
@@ -378,7 +404,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
+          cache: "pnpm"
       - run: pnpm install --frozen-lockfile
       - run: pnpm test
 ```

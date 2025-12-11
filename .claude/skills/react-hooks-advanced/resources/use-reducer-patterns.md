@@ -9,13 +9,13 @@ Reduxの思想を取り入れ、アクションベースの状態更新を提供
 
 ### 適用基準
 
-| 基準 | useState | useReducer |
-|------|----------|------------|
-| 状態の複雑さ | 単純 | 複雑 |
-| 状態の関連性 | 独立 | 相互関連 |
-| 更新ロジック | シンプル | 複雑 |
-| テスト容易性 | - | 高い |
-| 状態遷移パターン | 少ない | 多い |
+| 基準             | useState | useReducer |
+| ---------------- | -------- | ---------- |
+| 状態の複雑さ     | 単純     | 複雑       |
+| 状態の関連性     | 独立     | 相互関連   |
+| 更新ロジック     | シンプル | 複雑       |
+| テスト容易性     | -        | 高い       |
+| 状態遷移パターン | 少ない   | 多い       |
 
 ### useReducerが適切なケース
 
@@ -151,40 +151,40 @@ interface FormState {
 }
 
 type FormAction =
-  | { type: 'change'; field: string; value: string }
-  | { type: 'blur'; field: string }
-  | { type: 'validate'; errors: Record<string, string> }
-  | { type: 'submit_start' }
-  | { type: 'submit_success' }
-  | { type: 'submit_error'; errors: Record<string, string> }
-  | { type: 'reset' };
+  | { type: "change"; field: string; value: string }
+  | { type: "blur"; field: string }
+  | { type: "validate"; errors: Record<string, string> }
+  | { type: "submit_start" }
+  | { type: "submit_success" }
+  | { type: "submit_error"; errors: Record<string, string> }
+  | { type: "reset" };
 
 function formReducer(state: FormState, action: FormAction): FormState {
   switch (action.type) {
-    case 'change':
+    case "change":
       return {
         ...state,
         values: { ...state.values, [action.field]: action.value },
-        errors: { ...state.errors, [action.field]: '' },
+        errors: { ...state.errors, [action.field]: "" },
       };
-    case 'blur':
+    case "blur":
       return {
         ...state,
         touched: { ...state.touched, [action.field]: true },
       };
-    case 'validate':
+    case "validate":
       return {
         ...state,
         errors: action.errors,
         isValid: Object.keys(action.errors).length === 0,
       };
-    case 'submit_start':
+    case "submit_start":
       return { ...state, isSubmitting: true };
-    case 'submit_success':
+    case "submit_success":
       return { ...state, isSubmitting: false };
-    case 'submit_error':
+    case "submit_error":
       return { ...state, isSubmitting: false, errors: action.errors };
-    case 'reset':
+    case "reset":
       return initialFormState;
     default:
       return state;
@@ -196,48 +196,51 @@ function formReducer(state: FormState, action: FormAction): FormState {
 
 ```typescript
 type WizardState =
-  | { step: 'personal'; data: { name?: string; email?: string } }
-  | { step: 'address'; data: { name: string; email: string; address?: string } }
-  | { step: 'confirm'; data: { name: string; email: string; address: string } }
-  | { step: 'complete'; data: { name: string; email: string; address: string } };
+  | { step: "personal"; data: { name?: string; email?: string } }
+  | { step: "address"; data: { name: string; email: string; address?: string } }
+  | { step: "confirm"; data: { name: string; email: string; address: string } }
+  | {
+      step: "complete";
+      data: { name: string; email: string; address: string };
+    };
 
 type WizardAction =
-  | { type: 'next'; payload?: Partial<WizardState['data']> }
-  | { type: 'back' }
-  | { type: 'reset' };
+  | { type: "next"; payload?: Partial<WizardState["data"]> }
+  | { type: "back" }
+  | { type: "reset" };
 
 function wizardReducer(state: WizardState, action: WizardAction): WizardState {
   switch (action.type) {
-    case 'next':
+    case "next":
       const newData = { ...state.data, ...action.payload };
 
       switch (state.step) {
-        case 'personal':
+        case "personal":
           if (newData.name && newData.email) {
-            return { step: 'address', data: newData as any };
+            return { step: "address", data: newData as any };
           }
           return state;
-        case 'address':
+        case "address":
           if (newData.address) {
-            return { step: 'confirm', data: newData as any };
+            return { step: "confirm", data: newData as any };
           }
           return state;
-        case 'confirm':
-          return { step: 'complete', data: newData as any };
+        case "confirm":
+          return { step: "complete", data: newData as any };
         default:
           return state;
       }
-    case 'back':
+    case "back":
       switch (state.step) {
-        case 'address':
-          return { step: 'personal', data: state.data };
-        case 'confirm':
-          return { step: 'address', data: state.data };
+        case "address":
+          return { step: "personal", data: state.data };
+        case "confirm":
+          return { step: "address", data: state.data };
         default:
           return state;
       }
-    case 'reset':
-      return { step: 'personal', data: {} };
+    case "reset":
+      return { step: "personal", data: {} };
     default:
       return state;
   }
@@ -250,12 +253,20 @@ function wizardReducer(state: WizardState, action: WizardAction): WizardState {
 
 ```typescript
 // ❌ 悪い例: 状態変更を記述
-{ type: 'SET_LOADING_TRUE' }
-{ type: 'UPDATE_COUNT' }
+{
+  type: "SET_LOADING_TRUE";
+}
+{
+  type: "UPDATE_COUNT";
+}
 
 // ✅ 良い例: 何が起こったかを記述
-{ type: 'fetch_started' }
-{ type: 'user_incremented_count' }
+{
+  type: "fetch_started";
+}
+{
+  type: "user_incremented_count";
+}
 ```
 
 ### 2. リデューサーの純粋性
@@ -263,7 +274,7 @@ function wizardReducer(state: WizardState, action: WizardAction): WizardState {
 ```typescript
 // ❌ 悪い例: 副作用あり
 function reducer(state, action) {
-  localStorage.setItem('state', JSON.stringify(state)); // 副作用
+  localStorage.setItem("state", JSON.stringify(state)); // 副作用
   return { ...state, count: state.count + 1 };
 }
 
@@ -273,7 +284,7 @@ function reducer(state, action) {
 }
 // 副作用はuseEffectで処理
 useEffect(() => {
-  localStorage.setItem('state', JSON.stringify(state));
+  localStorage.setItem("state", JSON.stringify(state));
 }, [state]);
 ```
 
@@ -336,22 +347,22 @@ function useAppContext() {
 ## テスト
 
 ```typescript
-describe('counterReducer', () => {
-  it('should increment count', () => {
+describe("counterReducer", () => {
+  it("should increment count", () => {
     const state = { count: 0, step: 1 };
-    const result = reducer(state, { type: 'increment' });
+    const result = reducer(state, { type: "increment" });
     expect(result.count).toBe(1);
   });
 
-  it('should decrement count', () => {
+  it("should decrement count", () => {
     const state = { count: 5, step: 2 };
-    const result = reducer(state, { type: 'decrement' });
+    const result = reducer(state, { type: "decrement" });
     expect(result.count).toBe(3);
   });
 
-  it('should reset to initial state', () => {
+  it("should reset to initial state", () => {
     const state = { count: 100, step: 5 };
-    const result = reducer(state, { type: 'reset' });
+    const result = reducer(state, { type: "reset" });
     expect(result).toEqual(initialState);
   });
 });

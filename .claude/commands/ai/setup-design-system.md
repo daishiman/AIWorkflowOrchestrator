@@ -67,6 +67,7 @@ ui-designerエージェントを起動し、以下を確認してもらいます
 ```
 
 **確認項目**:
+
 - [ ] 既存のTailwind CSS設定の有無
 - [ ] デザイントークン定義の有無
 - [ ] TypeScript設定（@/パスエイリアス）
@@ -75,6 +76,7 @@ ui-designerエージェントを起動し、以下を確認してもらいます
 ### ステップ1.2: 要件ヒアリング
 
 ui-designerエージェントが以下を確認:
+
 - ダークモード対応の必要性
 - ブレークポイント要件（デフォルト/カスタム）
 - カラーパレット方針（ブランドカラー等）
@@ -95,6 +97,7 @@ pnpm add class-variance-authority clsx tailwind-merge
 ```
 
 **追加パッケージ（必要に応じて）**:
+
 - `@tailwindcss/forms`: フォームスタイリング
 - `@tailwindcss/typography`: タイポグラフィ
 - `tailwindcss-animate`: アニメーション拡張
@@ -114,11 +117,13 @@ pnpm add -D @types/node
 ui-designerエージェントが `.claude/skills/design-system-architecture/SKILL.md` を参照し、3層トークンモデルを設計:
 
 **3層構造**:
+
 1. **Global Tokens**: 基本値（colors.blue.500, spacing.4等）
 2. **Alias Tokens**: セマンティック名（colors.primary, spacing.md等）
 3. **Component Tokens**: コンポーネント固有（button.bg.primary等）
 
 **成果物**: `src/styles/tokens/` ディレクトリ配下
+
 - `colors.ts`: カラートークン定義
 - `spacing.ts`: スペーシングトークン定義
 - `typography.ts`: タイポグラフィトークン定義
@@ -158,12 +163,14 @@ ui-designerエージェントが `.claude/skills/design-system-architecture/SKIL
 ui-designerエージェントが `.claude/skills/tailwind-css-patterns/SKILL.md` を参照し、設定ファイルを生成:
 
 **主要設定項目**:
+
 - `darkMode: "class"` - ダークモード設定
 - `content` - スキャン対象パス（src/app/, src/features/, src/components/）
 - `theme.extend` - デザイントークン統合
 - `plugins` - 必要なプラグイン
 
 **プロジェクト準拠**:
+
 - ハイブリッド構造対応（src/app/, src/features/）
 - CSS変数参照（hsl(var(--color-primary))）
 - TypeScript型安全性
@@ -217,6 +224,7 @@ src/
 ### ステップ6.2: 命名規則ドキュメント
 
 `docs/10-architecture/component-naming.md` 作成（存在しない場合）:
+
 - PascalCase命名
 - ファイル構造規約
 - Variantプロパティ命名
@@ -228,6 +236,7 @@ src/
 ### ステップ7.1: 設定検証
 
 ui-designerエージェントが以下を検証:
+
 - [ ] Tailwind CSSビルドが成功するか
 - [ ] TypeScript型エラーがないか
 - [ ] CSS変数が正しく参照されているか
@@ -242,6 +251,7 @@ pnpm build
 ### ステップ7.2: 使用ガイド作成
 
 `docs/10-architecture/design-system.md` 作成:
+
 - デザイントークンの使用方法
 - コンポーネント作成ガイドライン
 - Tailwindユーティリティのベストプラクティス
@@ -254,17 +264,20 @@ pnpm build
 ui-designerエージェントが以下を報告:
 
 **成果物サマリー**:
+
 - インストール済みパッケージリスト
 - 生成されたファイル一覧
 - デザイントークン体系概要
 - Next Steps（サンプルコンポーネント作成等）
 
 **品質メトリクス**:
+
 - トークンカバレッジ: 100%（全カテゴリ定義済み）
 - 設定整合性: 型エラー0件
 - ドキュメント化: 主要ガイド作成済み
 
 **推奨Next Actions**:
+
 1. `/ai:create-component Button primary` - サンプルボタン作成
 2. デザイントークンのカスタマイズ（ブランドカラー等）
 3. アクセシビリティ検証（カラーコントラスト等）
@@ -276,16 +289,19 @@ ui-designerエージェントが以下を報告:
 ### よくあるエラーと対処
 
 **pnpmインストール失敗**:
+
 - pnpmバージョン確認（9.x必須）
 - Node.jsバージョン確認（22.x LTS推奨）
 - キャッシュクリア: `pnpm store prune`
 
 **Tailwindビルドエラー**:
+
 - content設定の確認（正しいパスが指定されているか）
 - PostCSS設定の確認
 - globals.cssのインポート確認
 
 **型エラー**:
+
 - tsconfig.jsonのpaths設定確認
 - @types/node インストール確認
 - tailwind.config.ts の型定義確認
@@ -297,25 +313,30 @@ ui-designerエージェントが以下を報告:
 ### プロジェクト固有の考慮事項
 
 **ハイブリッドアーキテクチャ準拠**:
+
 - コンポーネントは `app/` または `features/` に配置
 - 共有コンポーネントは慎重に判断（機能間依存を避ける）
 
 **Clean Architecture依存関係**:
+
 - UIコンポーネントはビジネスロジック（shared/core/）に直接依存しない
-- 状態管理は別レイヤー（features/*/hooks/）
+- 状態管理は別レイヤー（features/\*/hooks/）
 
 **TDD対応**:
+
 - コンポーネントテストファイルは `__tests__/` に配置
 - Tailwindクラスの視覚テストは Playwright で実施
 
 ### 参考リソース
 
 **外部ドキュメント**:
+
 - Tailwind CSS: https://tailwindcss.com/docs
 - CVA: https://cva.style/docs
 - shadcn/ui: https://ui.shadcn.com/（デザインシステム参考実装）
 
 **内部ドキュメント**:
+
 - `docs/00-requirements/master_system_design.md`: プロジェクト設計書
 - `.claude/skills/design-system-architecture/SKILL.md`: デザインシステム設計原則
 - `.claude/skills/tailwind-css-patterns/SKILL.md`: Tailwind実装パターン

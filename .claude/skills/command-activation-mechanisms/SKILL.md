@@ -36,12 +36,14 @@ version: 1.0.0
 実行フローの完全理解により、効率的なコマンド設計ができます。
 
 **主要な価値**:
+
 - 2つの起動モードの完全理解
 - SlashCommand Tool活用方法
 - Extended Thinking統合
 - 実行フロー最適化
 
 **対象ユーザー**:
+
 - コマンドを作成するエージェント（@command-arch）
 - 自動起動を実装したい開発者
 - 実行フローを理解したいチーム
@@ -71,9 +73,11 @@ command-activation-mechanisms/
 ## いつ使うか
 
 ### シナリオ1: 自動起動の実装
+
 **状況**: CLAUDEmdから自動でコマンドを起動したい
 
 **適用条件**:
+
 - [ ] 特定のキーワードで自動起動したい
 - [ ] SlashCommand Toolの仕組みを理解したい
 - [ ] descriptionの最適化が必要
@@ -81,9 +85,11 @@ command-activation-mechanisms/
 **期待される成果**: 自動起動可能なコマンド
 
 ### シナリオ2: Extended Thinkingの活用
+
 **状況**: 深い思考を必要とするコマンドを作成したい
 
 **適用条件**:
+
 - [ ] 複雑な判断が必要
 - [ ] 詳細な分析が必要
 - [ ] 段階的な推論が必要
@@ -91,9 +97,11 @@ command-activation-mechanisms/
 **期待される成果**: Extended Thinking活用コマンド
 
 ### シナリオ3: 実行フローの理解
+
 **状況**: コマンド実行の内部動作を理解したい
 
 **適用条件**:
+
 - [ ] デバッグが必要
 - [ ] パフォーマンス最適化が必要
 - [ ] トラブルシューティングが必要
@@ -160,9 +168,9 @@ command-activation-mechanisms/
 ### SlashCommand Tool の仕組み
 
 **重要な制約**:
+
 ```yaml
-SlashCommand Tool が起動できるのは:
-  ✓ カスタムコマンド（.claude/commands/）
+SlashCommand Tool が起動できるのは: ✓ カスタムコマンド（.claude/commands/）
   ✗ ビルトインコマンド（/compact, /init等）
 
 条件:
@@ -178,18 +186,22 @@ SlashCommand Tool が起動できるのは:
 以下のキーワードを検出したら、対応するコマンドを実行:
 
 ## コミット関連
+
 - "commit", "コミット", "変更を保存"
   → `/commit` を実行
 
 ## レビュー関連
+
 - "review", "レビュー", "コードチェック"
   → `/code-review` を実行
 
 ## テスト関連
+
 - "test", "テスト", "動作確認"
   → `/run-tests` を実行
 
 ## デプロイ関連
+
 - "deploy", "デプロイ", "本番反映"
   → 環境を確認してから `/deploy:staging` または `/deploy:production`
 ```
@@ -225,11 +237,13 @@ SlashCommand Tool が起動できるのは:
 ### description の最適化
 
 **悪い例**:
+
 ```yaml
 description: Commit code
 ```
 
 **良い例**:
+
 ```yaml
 description: |
   Create a git commit following Conventional Commits specification.
@@ -241,6 +255,7 @@ description: |
 ```
 
 **最適化のポイント**:
+
 1. 詳細な説明（4-8行）
 2. トリガーキーワードを含める
 3. 使用タイミングを明記
@@ -269,27 +284,35 @@ description: Refactor code with careful analysis
 # Intelligent Refactoring
 
 ## Analysis Phase
+
 **Think carefully** about the code structure:
+
 1. Identify code smells
 2. Consider design patterns
 3. Analyze dependencies
 4. Evaluate maintainability
 
 ## Reasoning Phase
+
 **Reason about** the best refactoring approach:
+
 - What patterns would improve the code?
 - What are the risks?
 - What's the migration path?
 - How will this affect existing functionality?
 
 ## Planning Phase
+
 **Consider thoroughly** the implementation plan:
+
 - Step-by-step refactoring steps
 - Testing strategy
 - Rollback plan
 
 ## Implementation
+
 Apply the refactoring carefully with:
+
 - Incremental changes
 - Continuous testing
 - Documentation updates
@@ -320,12 +343,14 @@ Extended Thinking:
 ## Workflow Rules
 
 When user says:
+
 - "commit" → Execute `/commit`
 - "test" → Execute `/run-tests`
 - "deploy" → Execute `/deploy`
 ```
 
 **実行例**:
+
 ```
 ユーザー: "変更をコミットして"
 ↓
@@ -342,12 +367,14 @@ SlashCommand Tool: /commit 実行
 ## Contextual Triggers
 
 When user mentions deployment:
+
 - If mentioning "staging" → `/deploy:staging`
 - If mentioning "production" → `/deploy:production` (ask confirmation)
 - If no environment specified → Ask which environment
 ```
 
 **実行例**:
+
 ```
 ユーザー: "ステージングにデプロイして"
 ↓
@@ -364,6 +391,7 @@ SlashCommand Tool: /deploy:staging 実行
 ## Intent-based Triggers
 
 Analyze user intent:
+
 - If discussing code quality → Suggest `/code-review`
 - If discussing bugs → Suggest `/analyze-bug`
 - If discussing features → Suggest `/plan-feature`
@@ -376,6 +404,7 @@ Analyze user intent:
 **症状**: `/mycommand` を実行しても "Command not found"
 
 **確認事項**:
+
 1. ファイルが存在するか？
    ```bash
    ls .claude/commands/mycommand.md
@@ -388,6 +417,7 @@ Analyze user intent:
 **症状**: CLAUDE.md で設定したが自動起動しない
 
 **確認事項**:
+
 1. description が詳細か？（4-8行推奨）
 2. トリガーキーワードを含んでいるか？
 3. disable-model-invocation: true になっていないか？
@@ -398,6 +428,7 @@ Analyze user intent:
 **症状**: Extended Thinking キーワードを使っても深い思考にならない
 
 **確認事項**:
+
 1. キーワードが正確か？（"think carefully" 等）
 2. コマンドの複雑度が十分か？
 3. モデルが適切か？（Haiku では効果が薄い）
@@ -405,18 +436,23 @@ Analyze user intent:
 ## 詳細リソースの参照
 
 ### ユーザー明示起動
+
 詳細は `resources/user-explicit-activation.md` を参照
 
 ### SlashCommand Tool ガイド
+
 完全ガイドは `resources/slashcommand-tool-guide.md` を参照
 
 ### Extended Thinking トリガー
+
 詳細は `resources/extended-thinking-triggers.md` を参照
 
 ### 実行フロー図解
+
 図解集は `resources/execution-flow-diagrams.md` を参照
 
 ### テンプレート
+
 - 自動起動: `templates/auto-invocation-template.md`
 - Extended Thinking: `templates/extended-thinking-template.md`
 

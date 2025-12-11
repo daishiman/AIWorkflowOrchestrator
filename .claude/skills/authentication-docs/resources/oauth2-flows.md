@@ -2,13 +2,13 @@
 
 ## フロー選択ガイド
 
-| クライアント種別 | 推奨フロー | 理由 |
-|----------------|-----------|------|
-| Webアプリ（サーバーサイド） | Authorization Code | シークレット安全保持可能 |
-| SPA/モバイル | Authorization Code + PKCE | シークレット保持不可 |
-| CLIツール | Device Code | ブラウザ利用不可環境 |
-| サーバー間通信 | Client Credentials | ユーザー不在 |
-| 信頼済みアプリ | Resource Owner Password | 限定的使用のみ |
+| クライアント種別            | 推奨フロー                | 理由                     |
+| --------------------------- | ------------------------- | ------------------------ |
+| Webアプリ（サーバーサイド） | Authorization Code        | シークレット安全保持可能 |
+| SPA/モバイル                | Authorization Code + PKCE | シークレット保持不可     |
+| CLIツール                   | Device Code               | ブラウザ利用不可環境     |
+| サーバー間通信              | Client Credentials        | ユーザー不在             |
+| 信頼済みアプリ              | Resource Owner Password   | 限定的使用のみ           |
 
 ---
 
@@ -56,13 +56,13 @@ Host: auth.example.com
 &state=abc123xyz
 ```
 
-| パラメータ | 必須 | 説明 |
-|-----------|------|------|
-| response_type | ✅ | "code"を指定 |
-| client_id | ✅ | アプリケーションID |
-| redirect_uri | ✅ | コールバックURL（事前登録必須） |
-| scope | ✅ | 要求する権限（スペース区切り） |
-| state | ✅ | CSRF対策用ランダム値 |
+| パラメータ    | 必須 | 説明                            |
+| ------------- | ---- | ------------------------------- |
+| response_type | ✅   | "code"を指定                    |
+| client_id     | ✅   | アプリケーションID              |
+| redirect_uri  | ✅   | コールバックURL（事前登録必須） |
+| scope         | ✅   | 要求する権限（スペース区切り）  |
+| state         | ✅   | CSRF対策用ランダム値            |
 
 #### Step 7: 認可コード受け取り
 
@@ -134,19 +134,19 @@ function generateCodeVerifier() {
   const array = new Uint8Array(32);
   crypto.getRandomValues(array);
   return btoa(String.fromCharCode.apply(null, array))
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=/g, '');
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=/g, "");
 }
 
 async function generateCodeChallenge(verifier) {
   const encoder = new TextEncoder();
   const data = encoder.encode(verifier);
-  const digest = await crypto.subtle.digest('SHA-256', data);
+  const digest = await crypto.subtle.digest("SHA-256", data);
   return btoa(String.fromCharCode.apply(null, new Uint8Array(digest)))
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=/g, '');
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=/g, "");
 }
 ```
 
@@ -366,14 +366,14 @@ admin
 
 ### OAuth 2.0標準エラー
 
-| error | 説明 |
-|-------|------|
-| invalid_request | リクエストパラメータ不正 |
-| invalid_client | クライアント認証失敗 |
-| invalid_grant | 認可コード/リフレッシュトークン無効 |
-| unauthorized_client | クライアントに許可されていない |
-| unsupported_grant_type | grant_type未サポート |
-| invalid_scope | スコープ無効 |
+| error                  | 説明                                |
+| ---------------------- | ----------------------------------- |
+| invalid_request        | リクエストパラメータ不正            |
+| invalid_client         | クライアント認証失敗                |
+| invalid_grant          | 認可コード/リフレッシュトークン無効 |
+| unauthorized_client    | クライアントに許可されていない      |
+| unsupported_grant_type | grant_type未サポート                |
+| invalid_scope          | スコープ無効                        |
 
 **エラーレスポンス例:**
 

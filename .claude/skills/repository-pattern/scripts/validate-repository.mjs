@@ -14,13 +14,13 @@
  *   - DBの詳細が外部に漏れていないか
  */
 
-import { readFileSync, existsSync } from 'fs';
-import { resolve } from 'path';
+import { readFileSync, existsSync } from "fs";
+import { resolve } from "path";
 
 // 検証結果の定数
-const PASS = '✅';
-const FAIL = '❌';
-const WARN = '⚠️';
+const PASS = "✅";
+const FAIL = "❌";
+const WARN = "⚠️";
 
 /**
  * メイン検証関数
@@ -33,14 +33,14 @@ function validateRepository(filePath) {
     process.exit(1);
   }
 
-  const content = readFileSync(absolutePath, 'utf-8');
+  const content = readFileSync(absolutePath, "utf-8");
   const results = [];
   let passCount = 0;
   let failCount = 0;
   let warnCount = 0;
 
-  console.log('\n📋 Repository構造検証レポート');
-  console.log('='.repeat(50));
+  console.log("\n📋 Repository構造検証レポート");
+  console.log("=".repeat(50));
   console.log(`ファイル: ${filePath}\n`);
 
   // 1. インターフェース実装チェック
@@ -49,7 +49,9 @@ function validateRepository(filePath) {
     results.push(`${PASS} インターフェース実装: 検出`);
     passCount++;
   } else {
-    results.push(`${FAIL} インターフェース実装: 未検出 (implements IXxxRepository が必要)`);
+    results.push(
+      `${FAIL} インターフェース実装: 未検出 (implements IXxxRepository が必要)`,
+    );
     failCount++;
   }
 
@@ -59,7 +61,9 @@ function validateRepository(filePath) {
     results.push(`${PASS} toEntity変換関数: 検出`);
     passCount++;
   } else {
-    results.push(`${WARN} toEntity変換関数: 未検出 (DB→ドメイン変換の実装を推奨)`);
+    results.push(
+      `${WARN} toEntity変換関数: 未検出 (DB→ドメイン変換の実装を推奨)`,
+    );
     warnCount++;
   }
 
@@ -69,16 +73,18 @@ function validateRepository(filePath) {
     results.push(`${PASS} toRecord変換関数: 検出`);
     passCount++;
   } else {
-    results.push(`${WARN} toRecord変換関数: 未検出 (ドメイン→DB変換の実装を推奨)`);
+    results.push(
+      `${WARN} toRecord変換関数: 未検出 (ドメイン→DB変換の実装を推奨)`,
+    );
     warnCount++;
   }
 
   // 4. CRUD操作チェック
   const crudMethods = [
-    { name: 'add/create', pattern: /async\s+(?:add|create)\s*\(/ },
-    { name: 'findById', pattern: /async\s+findById\s*\(/ },
-    { name: 'update', pattern: /async\s+update\s*\(/ },
-    { name: 'remove/delete', pattern: /async\s+(?:remove|delete)\s*\(/ },
+    { name: "add/create", pattern: /async\s+(?:add|create)\s*\(/ },
+    { name: "findById", pattern: /async\s+findById\s*\(/ },
+    { name: "update", pattern: /async\s+update\s*\(/ },
+    { name: "remove/delete", pattern: /async\s+(?:remove|delete)\s*\(/ },
   ];
 
   crudMethods.forEach(({ name, pattern }) => {
@@ -93,8 +99,11 @@ function validateRepository(filePath) {
 
   // 5. DB詳細漏洩チェック
   const leakagePatterns = [
-    { name: 'SQL文字列', pattern: /['"`]SELECT\s|['"`]INSERT\s|['"`]UPDATE\s|['"`]DELETE\s/i },
-    { name: 'テーブル名直接参照', pattern: /FROM\s+['"`]?\w+['"`]?\s+WHERE/i },
+    {
+      name: "SQL文字列",
+      pattern: /['"`]SELECT\s|['"`]INSERT\s|['"`]UPDATE\s|['"`]DELETE\s/i,
+    },
+    { name: "テーブル名直接参照", pattern: /FROM\s+['"`]?\w+['"`]?\s+WHERE/i },
   ];
 
   leakagePatterns.forEach(({ name, pattern }) => {
@@ -118,7 +127,8 @@ function validateRepository(filePath) {
   }
 
   // 7. コンストラクタでのDB注入チェック
-  const constructorDbPattern = /constructor\s*\([^)]*(?:db|database|client|connection)[^)]*\)/i;
+  const constructorDbPattern =
+    /constructor\s*\([^)]*(?:db|database|client|connection)[^)]*\)/i;
   if (constructorDbPattern.test(content)) {
     results.push(`${PASS} DBクライアント注入: 検出`);
     passCount++;
@@ -128,12 +138,14 @@ function validateRepository(filePath) {
   }
 
   // 結果出力
-  console.log('検証結果:');
-  console.log('-'.repeat(50));
-  results.forEach(result => console.log(result));
+  console.log("検証結果:");
+  console.log("-".repeat(50));
+  results.forEach((result) => console.log(result));
 
-  console.log('\n' + '='.repeat(50));
-  console.log(`合計: ${PASS} ${passCount} / ${WARN} ${warnCount} / ${FAIL} ${failCount}`);
+  console.log("\n" + "=".repeat(50));
+  console.log(
+    `合計: ${PASS} ${passCount} / ${WARN} ${warnCount} / ${FAIL} ${failCount}`,
+  );
 
   // スコア計算
   const total = passCount + failCount + warnCount;
@@ -156,8 +168,10 @@ function validateRepository(filePath) {
 const args = process.argv.slice(2);
 
 if (args.length === 0) {
-  console.log('使用方法: node validate-repository.mjs <repository-file.ts>');
-  console.log('例: node validate-repository.mjs src/shared/infrastructure/database/repositories/WorkflowRepository.ts');
+  console.log("使用方法: node validate-repository.mjs <repository-file.ts>");
+  console.log(
+    "例: node validate-repository.mjs src/shared/infrastructure/database/repositories/WorkflowRepository.ts",
+  );
   process.exit(1);
 }
 

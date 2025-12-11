@@ -39,12 +39,12 @@ IWorkflowRecovery:       # リカバリ担当の役割
 
 ### 役割の特定方法
 
-| ステップ | 説明 | 例 |
-|---------|------|-----|
-| 1. クライアント特定 | インターフェースを使用するすべてのクライアントを列挙 | Controller, Scheduler, Monitor |
-| 2. 使用パターン分析 | 各クライアントが使用するメソッドを分析 | Controllerはcreate/executeを使用 |
-| 3. 役割グループ化 | 同様のメソッドセットを使用するクライアントをグループ化 | 実行関連、監視関連 |
-| 4. インターフェース抽出 | 各役割グループに対応するインターフェースを定義 | IWorkflowExecutor, IWorkflowMonitor |
+| ステップ                | 説明                                                   | 例                                  |
+| ----------------------- | ------------------------------------------------------ | ----------------------------------- |
+| 1. クライアント特定     | インターフェースを使用するすべてのクライアントを列挙   | Controller, Scheduler, Monitor      |
+| 2. 使用パターン分析     | 各クライアントが使用するメソッドを分析                 | Controllerはcreate/executeを使用    |
+| 3. 役割グループ化       | 同様のメソッドセットを使用するクライアントをグループ化 | 実行関連、監視関連                  |
+| 4. インターフェース抽出 | 各役割グループに対応するインターフェースを定義         | IWorkflowExecutor, IWorkflowMonitor |
 
 ## ワークフローエンジンの役割設計
 
@@ -198,15 +198,15 @@ FullFeaturedExecutor implements
 
 ### 一般的な組み合わせ
 
-| Executor種類 | 実装するインターフェース |
-|-------------|------------------------|
-| **シンプル** | IWorkflowExecutor |
-| **検証付き** | IWorkflowExecutor + IValidatable |
-| **リトライ付き** | IWorkflowExecutor + IRetryable |
-| **トランザクション** | IWorkflowExecutor + IValidatable + IRollbackable |
-| **監視付き** | IWorkflowExecutor + IProgressReporter + IMetricsProvider |
-| **スケジュール** | IWorkflowExecutor + ISchedulable + ILifecycleAware |
-| **フル機能** | すべて |
+| Executor種類         | 実装するインターフェース                                 |
+| -------------------- | -------------------------------------------------------- |
+| **シンプル**         | IWorkflowExecutor                                        |
+| **検証付き**         | IWorkflowExecutor + IValidatable                         |
+| **リトライ付き**     | IWorkflowExecutor + IRetryable                           |
+| **トランザクション** | IWorkflowExecutor + IValidatable + IRollbackable         |
+| **監視付き**         | IWorkflowExecutor + IProgressReporter + IMetricsProvider |
+| **スケジュール**     | IWorkflowExecutor + ISchedulable + ILifecycleAware       |
+| **フル機能**         | すべて                                                   |
 
 ## 型ガードの実装
 

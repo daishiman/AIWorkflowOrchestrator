@@ -62,6 +62,7 @@ model: sonnet
 **目的**: プロジェクトコンテキストの理解と既存ユースケースの確認
 
 **実行内容**:
+
 1. アクター名の確認（引数 `$1` または対話的に確認）
 2. プロジェクト設計書の参照（`docs/00-requirements/master_system_design.md`）
 3. 既存ユースケースの確認（重複防止）
@@ -90,6 +91,7 @@ grep -r "アクター: $1" docs/00-requirements/ 2>/dev/null || echo "該当な�
 **対象アクター**: `$1`（未指定の場合はプロジェクト全体のアクターを対象）
 
 **実行フェーズ**（req-analyst Phase 2ワークフロー）:
+
 1. **アクター特定**: `.claude/skills/use-case-modeling/resources/actor-identification.md` 参照
    - プライマリアクター・セカンダリアクターの明確化
    - 役割と権限の定義
@@ -102,6 +104,7 @@ grep -r "アクター: $1" docs/00-requirements/ 2>/dev/null || echo "該当な�
 4. **シナリオ検証**: `.claude/skills/use-case-modeling/scripts/validate-use-case.mjs` で網羅性確認
 
 **期待成果物**:
+
 - **ファイルパス**: `docs/00-requirements/use-cases.md`
 - **フォーマット**: `.claude/skills/use-case-modeling/templates/use-case-template.md` 準拠
 - **品質基準**:
@@ -113,6 +116,7 @@ grep -r "アクター: $1" docs/00-requirements/ 2>/dev/null || echo "該当な�
   - [ ] ユースケース品質スコア平均 8点以上
 
 **プロジェクト固有の考慮**（master_system_design.md 第1.5節準拠）:
+
 - [ ] ハイブリッド構造（shared/features）に基づくアクター分離
 - [ ] TDD原則（ユースケース → テスト → 実装）の起点となる記述
 - [ ] Clean Architecture の依存関係ルール（app → features → shared）を反映
@@ -122,6 +126,7 @@ grep -r "アクター: $1" docs/00-requirements/ 2>/dev/null || echo "該当な�
 **目的**: 生成されたユースケースの品質検証と完了確認
 
 **実行内容**:
+
 1. ユースケースファイルの存在確認
 2. フォーマット検証（テンプレート準拠チェック）
 3. 品質メトリクスの確認（フロー網羅性、品質スコア）
@@ -139,6 +144,7 @@ node .claude/skills/use-case-modeling/scripts/validate-use-case.mjs docs/00-requ
 ```
 
 **完了報告**:
+
 - ✅ 作成されたユースケースのID一覧
 - ✅ カバーされたアクターとゴール
 - ✅ フロー網羅性スコア
@@ -189,10 +195,12 @@ node .claude/skills/use-case-modeling/scripts/validate-use-case.mjs docs/00-requ
 **ゴール**: システムにログインする
 
 **事前条件**:
+
 - ユーザーアカウントが存在する
 - ユーザーが認証情報（メールアドレス、パスワード）を保持している
 
 **基本フロー**（正常系）:
+
 1. ユーザーがログインページにアクセス
 2. システムがログインフォームを表示
 3. ユーザーがメールアドレスとパスワードを入力
@@ -202,11 +210,13 @@ node .claude/skills/use-case-modeling/scripts/validate-use-case.mjs docs/00-requ
 7. システムがダッシュボードにリダイレクト
 
 **代替フロー**（条件分岐）:
+
 - 5a. メールアドレスが未登録の場合:
   - 5a1. システムが「アカウントが見つかりません」エラーを表示
   - 5a2. ユースケース終了
 
 **例外フロー**（エラー）:
+
 - E1. パスワードが不正の場合:
   - E1.1. システムが「パスワードが間違っています」エラーを表示
   - E1.2. 失敗回数をカウント
@@ -216,6 +226,7 @@ node .claude/skills/use-case-modeling/scripts/validate-use-case.mjs docs/00-requ
   - E2.2. リトライボタンを表示
 
 **事後条件**:
+
 - ユーザーがログイン状態になる
 - セッションが作成される
 - ダッシュボードが表示される

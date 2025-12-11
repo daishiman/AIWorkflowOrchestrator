@@ -5,10 +5,10 @@
  * 統合したセキュアなファイル監視の実装例
  */
 
-import * as path from 'path';
-import * as fs from 'fs/promises';
-import { Stats } from 'fs';
-import { EventEmitter } from 'events';
+import * as path from "path";
+import * as fs from "fs/promises";
+import { Stats } from "fs";
+import { EventEmitter } from "events";
 
 // ============================================================
 // 型定義
@@ -20,7 +20,7 @@ export interface SecurityConfig {
   /** 拒否するファイルパターン */
   deniedPatterns: RegExp[];
   /** シンボリックリンクポリシー */
-  symlinkPolicy: 'allow' | 'verify' | 'deny';
+  symlinkPolicy: "allow" | "verify" | "deny";
   /** シンボリックリンク許可ターゲット（verify時） */
   symlinkAllowedTargets?: string[];
   /** レート制限設定 */
@@ -35,7 +35,7 @@ export interface SecurityConfig {
 }
 
 export interface SecurityEvent {
-  type: 'blocked' | 'warning' | 'allowed';
+  type: "blocked" | "warning" | "allowed";
   reason: string;
   path: string;
   timestamp: Date;
@@ -67,7 +67,7 @@ const DEFAULT_DENIED_PATTERNS: RegExp[] = [
 const DEFAULT_CONFIG: SecurityConfig = {
   allowedDirs: [],
   deniedPatterns: DEFAULT_DENIED_PATTERNS,
-  symlinkPolicy: 'verify',
+  symlinkPolicy: "verify",
   rateLimit: {
     maxEvents: 1000,
     windowMs: 1000,
@@ -83,10 +83,10 @@ export class SecurityError extends Error {
   constructor(
     message: string,
     public readonly code: string,
-    public readonly path?: string
+    public readonly path?: string,
   ) {
     super(message);
-    this.name = 'SecurityError';
+    this.name = "SecurityError";
   }
 }
 
@@ -99,7 +99,7 @@ export class PathValidator {
 
   constructor(private config: SecurityConfig) {
     this.normalizedAllowedDirs = config.allowedDirs.map((dir) =>
-      path.resolve(path.normalize(dir))
+      path.resolve(path.normalize(dir)),
     );
   }
 
@@ -128,10 +128,10 @@ export class PathValidator {
       if (!this.isWithinAllowedDirs(normalized)) {
         return {
           valid: false,
-          error: 'Path outside allowed directories',
+          error: "Path outside allowed directories",
           securityEvent: {
-            type: 'blocked',
-            reason: 'PATH_OUTSIDE_ALLOWED',
+            type: "blocked",
+            reason: "PATH_OUTSIDE_ALLOWED",
             path: inputPath,
             timestamp: new Date(),
             details: { normalized, allowedDirs: this.normalizedAllowedDirs },
@@ -165,11 +165,11 @@ export class PathValidator {
 
   private checkSuspiciousPatterns(inputPath: string): ValidationResult {
     const suspiciousPatterns = [
-      { pattern: /\.\.\//, name: 'Parent directory traversal (../)' },
-      { pattern: /\.\.\\/, name: 'Parent directory traversal (..\)' },
-      { pattern: /%2e%2e/i, name: 'URL encoded traversal' },
-      { pattern: /%252e%252e/i, name: 'Double URL encoded traversal' },
-      { pattern: /\0/, name: 'Null byte injection' },
+      { pattern: /\.\.\//, name: "Parent directory traversal (../)" },
+      { pattern: /\.\.\\/, name: "Parent directory traversal (..\)" },
+      { pattern: /%2e%2e/i, name: "URL encoded traversal" },
+      { pattern: /%252e%252e/i, name: "Double URL encoded traversal" },
+      { pattern: /\0/, name: "Null byte injection" },
     ];
 
     for (const { pattern, name } of suspiciousPatterns) {
@@ -178,8 +178,8 @@ export class PathValidator {
           valid: false,
           error: `Suspicious pattern detected: ${name}`,
           securityEvent: {
-            type: 'blocked',
-            reason: 'SUSPICIOUS_PATTERN',
+            type: "blocked",
+            reason: "SUSPICIOUS_PATTERN",
             path: inputPath,
             timestamp: new Date(),
             details: { patternName: name },
@@ -195,7 +195,7 @@ export class PathValidator {
     return this.normalizedAllowedDirs.some(
       (allowedDir) =>
         normalizedPath.startsWith(allowedDir + path.sep) ||
-        normalizedPath === allowedDir
+        normalizedPath === allowedDir,
     );
   }
 
@@ -206,8 +206,8 @@ export class PathValidator {
           valid: false,
           error: `Path matches denied pattern: ${pattern.source}`,
           securityEvent: {
-            type: 'blocked',
-            reason: 'DENIED_PATTERN',
+            type: "blocked",
+            reason: "DENIED_PATTERN",
             path: normalizedPath,
             timestamp: new Date(),
             details: { pattern: pattern.source },
@@ -228,13 +228,13 @@ export class PathValidator {
       }
 
       // シンボリックリンク完全禁止
-      if (this.config.symlinkPolicy === 'deny') {
+      if (this.config.symlinkPolicy === "deny") {
         return {
           valid: false,
-          error: 'Symbolic links are not allowed',
+          error: "Symbolic links are not allowed",
           securityEvent: {
-            type: 'blocked',
-            reason: 'SYMLINK_DENIED',
+            type: "blocked",
+            reason: "SYMLINK_DENIED",
             path: filePath,
             timestamp: new Date(),
           },
@@ -242,7 +242,7 @@ export class PathValidator {
       }
 
       // シンボリックリンク許可
-      if (this.config.symlinkPolicy === 'allow') {
+      if (this.config.symlinkPolicy === "allow") {
         return { valid: true };
       }
 
@@ -255,16 +255,16 @@ export class PathValidator {
         const isAllowed = allowedTargets.some(
           (target) =>
             realPath.startsWith(path.resolve(target) + path.sep) ||
-            realPath === path.resolve(target)
+            realPath === path.resolve(target),
         );
 
         if (!isAllowed) {
           return {
             valid: false,
-            error: 'Symlink target outside allowed directories',
+            error: "Symlink target outside allowed directories",
             securityEvent: {
-              type: 'blocked',
-              reason: 'SYMLINK_TARGET_OUTSIDE',
+              type: "blocked",
+              reason: "SYMLINK_TARGET_OUTSIDE",
               path: filePath,
               timestamp: new Date(),
               details: { realPath, allowedTargets },
@@ -277,10 +277,10 @@ export class PathValidator {
       if (!this.isWithinAllowedDirs(realPath)) {
         return {
           valid: false,
-          error: 'Symlink target outside base directories',
+          error: "Symlink target outside base directories",
           securityEvent: {
-            type: 'blocked',
-            reason: 'SYMLINK_ESCAPE',
+            type: "blocked",
+            reason: "SYMLINK_ESCAPE",
             path: filePath,
             timestamp: new Date(),
             details: { realPath },
@@ -291,7 +291,7 @@ export class PathValidator {
       return { valid: true, normalizedPath: realPath };
     } catch (error) {
       // ファイルが存在しない場合は有効とみなす（作成イベントの可能性）
-      if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+      if ((error as NodeJS.ErrnoException).code === "ENOENT") {
         return { valid: true };
       }
       throw error;
@@ -310,7 +310,7 @@ export class RateLimiter {
   constructor(
     private maxEvents: number,
     private windowMs: number,
-    private onLimitExceeded?: (stats: { current: number; max: number }) => void
+    private onLimitExceeded?: (stats: { current: number; max: number }) => void,
   ) {}
 
   check(): boolean {
@@ -361,18 +361,18 @@ export class AuditLogger {
 
     const logEntry = {
       timestamp: event.timestamp.toISOString(),
-      level: event.type === 'blocked' ? 'SECURITY' : 'INFO',
+      level: event.type === "blocked" ? "SECURITY" : "INFO",
       event: event.reason,
       path: event.path,
       details: event.details,
     };
 
-    if (event.type === 'blocked') {
-      console.error('[SECURITY]', JSON.stringify(logEntry));
-    } else if (event.type === 'warning') {
-      console.warn('[SECURITY]', JSON.stringify(logEntry));
+    if (event.type === "blocked") {
+      console.error("[SECURITY]", JSON.stringify(logEntry));
+    } else if (event.type === "warning") {
+      console.warn("[SECURITY]", JSON.stringify(logEntry));
     } else {
-      console.log('[AUDIT]', JSON.stringify(logEntry));
+      console.log("[AUDIT]", JSON.stringify(logEntry));
     }
   }
 }
@@ -396,15 +396,15 @@ export class SecureFileWatcher extends EventEmitter {
       this.config.rateLimit.maxEvents,
       this.config.rateLimit.windowMs,
       (stats) => {
-        this.emit('rateLimitExceeded', stats);
+        this.emit("rateLimitExceeded", stats);
         this.auditLogger.log({
-          type: 'warning',
-          reason: 'RATE_LIMIT_EXCEEDED',
-          path: '',
+          type: "warning",
+          reason: "RATE_LIMIT_EXCEEDED",
+          path: "",
           timestamp: new Date(),
           details: stats,
         });
-      }
+      },
     );
     this.auditLogger = new AuditLogger(this.config.auditLog);
   }
@@ -413,12 +413,12 @@ export class SecureFileWatcher extends EventEmitter {
    * ファイルイベントを処理
    */
   async processEvent(
-    eventType: 'add' | 'change' | 'unlink',
-    filePath: string
+    eventType: "add" | "change" | "unlink",
+    filePath: string,
   ): Promise<boolean> {
     // レート制限チェック
     if (!this.rateLimiter.check()) {
-      this.emit('eventDropped', { eventType, filePath, reason: 'rate_limit' });
+      this.emit("eventDropped", { eventType, filePath, reason: "rate_limit" });
       return false;
     }
 
@@ -428,13 +428,13 @@ export class SecureFileWatcher extends EventEmitter {
     if (!result.valid) {
       if (result.securityEvent) {
         this.auditLogger.log(result.securityEvent);
-        this.emit('securityEvent', result.securityEvent);
+        this.emit("securityEvent", result.securityEvent);
       }
       return false;
     }
 
     // 正常なイベントを発火
-    this.emit('file', {
+    this.emit("file", {
       type: eventType,
       path: result.normalizedPath || filePath,
       originalPath: filePath,
@@ -442,8 +442,8 @@ export class SecureFileWatcher extends EventEmitter {
 
     // 監査ログ（許可されたアクセス）
     this.auditLogger.log({
-      type: 'allowed',
-      reason: 'FILE_ACCESS_ALLOWED',
+      type: "allowed",
+      reason: "FILE_ACCESS_ALLOWED",
       path: filePath,
       timestamp: new Date(),
       details: { eventType },
@@ -468,7 +468,7 @@ export class SecureFileWatcher extends EventEmitter {
 // Chokidar統合ラッパー
 // ============================================================
 
-import type { FSWatcher, WatchOptions } from 'chokidar';
+import type { FSWatcher, WatchOptions } from "chokidar";
 
 export interface SecureWatcherOptions extends WatchOptions {
   security: Partial<SecurityConfig>;
@@ -479,10 +479,10 @@ export interface SecureWatcherOptions extends WatchOptions {
  */
 export function createSecureWatcher(
   paths: string | string[],
-  options: SecureWatcherOptions
+  options: SecureWatcherOptions,
 ): { watcher: FSWatcher; security: SecureFileWatcher } {
   // 動的インポート（chokidarがインストールされている前提）
-  const chokidar = require('chokidar');
+  const chokidar = require("chokidar");
 
   const securityConfig: Partial<SecurityConfig> = {
     ...options.security,
@@ -498,7 +498,7 @@ export function createSecureWatcher(
   });
 
   // イベントをセキュリティレイヤー経由で処理
-  const secureHandler = (eventType: 'add' | 'change' | 'unlink') => {
+  const secureHandler = (eventType: "add" | "change" | "unlink") => {
     return async (filePath: string) => {
       const allowed = await secureWatcher.processEvent(eventType, filePath);
       if (!allowed) {
@@ -507,9 +507,9 @@ export function createSecureWatcher(
     };
   };
 
-  watcher.on('add', secureHandler('add'));
-  watcher.on('change', secureHandler('change'));
-  watcher.on('unlink', secureHandler('unlink'));
+  watcher.on("add", secureHandler("add"));
+  watcher.on("change", secureHandler("change"));
+  watcher.on("unlink", secureHandler("unlink"));
 
   return { watcher, security: secureWatcher };
 }

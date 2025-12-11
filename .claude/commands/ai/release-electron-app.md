@@ -54,6 +54,7 @@ model: sonnet
 アクション: "$ARGUMENTS"（setup/publish/version）
 
 アクション説明:
+
 - setup: 自動更新・配布の初期設定
 - publish: リリース実行
 - version: バージョン更新
@@ -72,18 +73,21 @@ Task ツールで `.claude/agents/electron-release.md` を起動:
 
 【setup の場合】
 依頼内容:
+
 - electron-updater設定
 - UpdateServiceクラス実装
 - 配布先設定（GitHub/S3）
 - リリースワークフロー作成
 
 成果物:
+
 - src/main/services/updateService.ts
 - electron-builder.yml（publish設定）
 - .github/workflows/release.yml
 
 【publish の場合】
 依頼内容:
+
 - リリース前チェック
 - CHANGELOG生成
 - Gitタグ作成
@@ -91,6 +95,7 @@ Task ツールで `.claude/agents/electron-release.md` を起動:
 
 【version の場合】
 依頼内容:
+
 - バージョン番号更新（patch/minor/major）
 - package.json更新
 - CHANGELOG更新
@@ -99,11 +104,13 @@ Task ツールで `.claude/agents/electron-release.md` を起動:
 ### Phase 3: 確認と次のステップ
 
 **期待成果物:**
+
 - 自動更新サービス
 - 配布設定
 - リリースワークフロー
 
 **次のステップ案内:**
+
 - setup後: テストビルドでの動作確認
 - publish準備: バージョン確認、CHANGELOG確認
 - リリース: `npm run publish`
@@ -126,19 +133,19 @@ Task ツールで `.claude/agents/electron-release.md` を起動:
 
 ## 配布オプション
 
-| 配布先 | 特徴 | 推奨ケース |
-|--------|------|-----------|
-| GitHub Releases | 無料、簡単 | OSS、小規模 |
-| S3/CloudFront | 高速、スケーラブル | 中〜大規模 |
-| 自前サーバー | 完全制御 | エンタープライズ |
+| 配布先          | 特徴               | 推奨ケース       |
+| --------------- | ------------------ | ---------------- |
+| GitHub Releases | 無料、簡単         | OSS、小規模      |
+| S3/CloudFront   | 高速、スケーラブル | 中〜大規模       |
+| 自前サーバー    | 完全制御           | エンタープライズ |
 
 ## リリースチャネル
 
-| チャネル | バージョン形式 | 対象 |
-|----------|---------------|------|
-| stable | 1.0.0 | 全ユーザー |
-| beta | 1.1.0-beta.1 | テスター |
-| alpha | 2.0.0-alpha.1 | 開発者 |
+| チャネル | バージョン形式 | 対象       |
+| -------- | -------------- | ---------- |
+| stable   | 1.0.0          | 全ユーザー |
+| beta     | 1.1.0-beta.1   | テスター   |
+| alpha    | 2.0.0-alpha.1  | 開発者     |
 
 ## 自動更新フロー
 

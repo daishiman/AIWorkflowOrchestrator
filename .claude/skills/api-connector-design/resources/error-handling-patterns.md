@@ -4,27 +4,27 @@
 
 ### HTTPステータスコードマッピング
 
-| 範囲 | カテゴリ | リトライ | 対応 |
-|-----|---------|--------|------|
-| 2xx | 成功 | - | 正常処理 |
-| 4xx | クライアントエラー | 基本的に不可 | リクエスト修正 |
-| 5xx | サーバーエラー | 可能 | リトライ/エスカレーション |
+| 範囲 | カテゴリ           | リトライ     | 対応                      |
+| ---- | ------------------ | ------------ | ------------------------- |
+| 2xx  | 成功               | -            | 正常処理                  |
+| 4xx  | クライアントエラー | 基本的に不可 | リクエスト修正            |
+| 5xx  | サーバーエラー     | 可能         | リトライ/エスカレーション |
 
 ### 詳細エラーコード
 
-| コード | 意味 | リトライ | 対応 |
-|-------|------|--------|------|
-| 400 | Bad Request | ❌ | リクエスト検証 |
-| 401 | Unauthorized | △ | 再認証 |
-| 403 | Forbidden | ❌ | 権限確認 |
-| 404 | Not Found | ❌ | リソース確認 |
-| 409 | Conflict | △ | 状態確認後リトライ |
-| 422 | Unprocessable Entity | ❌ | バリデーション確認 |
-| 429 | Too Many Requests | ✅ | バックオフ後リトライ |
-| 500 | Internal Server Error | ✅ | リトライ |
-| 502 | Bad Gateway | ✅ | リトライ |
-| 503 | Service Unavailable | ✅ | リトライ |
-| 504 | Gateway Timeout | ✅ | リトライ |
+| コード | 意味                  | リトライ | 対応                 |
+| ------ | --------------------- | -------- | -------------------- |
+| 400    | Bad Request           | ❌       | リクエスト検証       |
+| 401    | Unauthorized          | △        | 再認証               |
+| 403    | Forbidden             | ❌       | 権限確認             |
+| 404    | Not Found             | ❌       | リソース確認         |
+| 409    | Conflict              | △        | 状態確認後リトライ   |
+| 422    | Unprocessable Entity  | ❌       | バリデーション確認   |
+| 429    | Too Many Requests     | ✅       | バックオフ後リトライ |
+| 500    | Internal Server Error | ✅       | リトライ             |
+| 502    | Bad Gateway           | ✅       | リトライ             |
+| 503    | Service Unavailable   | ✅       | リトライ             |
+| 504    | Gateway Timeout       | ✅       | リトライ             |
 
 ## 2. エラークラス設計
 
@@ -37,10 +37,10 @@ class ApiError extends Error {
     message: string,
     public statusCode: number,
     public code: string,
-    public details?: Record<string, unknown>
+    public details?: Record<string, unknown>,
   ) {
     super(message);
-    this.name = 'ApiError';
+    this.name = "ApiError";
   }
 
   get isRetryable(): boolean {
@@ -51,16 +51,16 @@ class ApiError extends Error {
 // 認証エラー
 class AuthenticationError extends ApiError {
   constructor(message: string, details?: Record<string, unknown>) {
-    super(message, 401, 'AUTHENTICATION_ERROR', details);
-    this.name = 'AuthenticationError';
+    super(message, 401, "AUTHENTICATION_ERROR", details);
+    this.name = "AuthenticationError";
   }
 }
 
 // 認可エラー
 class AuthorizationError extends ApiError {
   constructor(message: string, details?: Record<string, unknown>) {
-    super(message, 403, 'AUTHORIZATION_ERROR', details);
-    this.name = 'AuthorizationError';
+    super(message, 403, "AUTHORIZATION_ERROR", details);
+    this.name = "AuthorizationError";
   }
 }
 
@@ -69,10 +69,10 @@ class RateLimitError extends ApiError {
   constructor(
     message: string,
     public retryAfter: number,
-    details?: Record<string, unknown>
+    details?: Record<string, unknown>,
   ) {
-    super(message, 429, 'RATE_LIMIT_ERROR', details);
-    this.name = 'RateLimitError';
+    super(message, 429, "RATE_LIMIT_ERROR", details);
+    this.name = "RateLimitError";
   }
 
   get isRetryable(): boolean {
@@ -85,18 +85,18 @@ class ValidationError extends ApiError {
   constructor(
     message: string,
     public validationErrors: Array<{ field: string; message: string }>,
-    details?: Record<string, unknown>
+    details?: Record<string, unknown>,
   ) {
-    super(message, 422, 'VALIDATION_ERROR', details);
-    this.name = 'ValidationError';
+    super(message, 422, "VALIDATION_ERROR", details);
+    this.name = "ValidationError";
   }
 }
 
 // ネットワークエラー
 class NetworkError extends ApiError {
   constructor(message: string, details?: Record<string, unknown>) {
-    super(message, 0, 'NETWORK_ERROR', details);
-    this.name = 'NetworkError';
+    super(message, 0, "NETWORK_ERROR", details);
+    this.name = "NetworkError";
   }
 
   get isRetryable(): boolean {
@@ -112,7 +112,7 @@ class NetworkError extends ApiError {
 ```typescript
 async function safeApiCall<T>(
   fn: () => Promise<T>,
-  context: string
+  context: string,
 ): Promise<{ data?: T; error?: ApiError }> {
   try {
     const data = await fn();
@@ -130,19 +130,18 @@ function normalizeError(error: unknown, context: string): ApiError {
 
   if (error instanceof Error) {
     // ネットワークエラー
-    if (error.message.includes('ECONNREFUSED') ||
-        error.message.includes('ETIMEDOUT')) {
+    if (
+      error.message.includes("ECONNREFUSED") ||
+      error.message.includes("ETIMEDOUT")
+    ) {
       return new NetworkError(`${context}: ${error.message}`);
     }
   }
 
   // 不明なエラー
-  return new ApiError(
-    `${context}: Unknown error`,
-    500,
-    'UNKNOWN_ERROR',
-    { originalError: String(error) }
-  );
+  return new ApiError(`${context}: Unknown error`, 500, "UNKNOWN_ERROR", {
+    originalError: String(error),
+  });
 }
 ```
 
@@ -155,7 +154,7 @@ type Result<T, E = ApiError> =
 
 async function fetchWithResult<T>(
   url: string,
-  options?: RequestInit
+  options?: RequestInit,
 ): Promise<Result<T>> {
   try {
     const response = await fetch(url, options);
@@ -170,13 +169,13 @@ async function fetchWithResult<T>(
   } catch (error) {
     return {
       success: false,
-      error: new NetworkError(String(error))
+      error: new NetworkError(String(error)),
     };
   }
 }
 
 // 使用例
-const result = await fetchWithResult<User>('/api/users/123');
+const result = await fetchWithResult<User>("/api/users/123");
 if (result.success) {
   console.log(result.data.name);
 } else {
@@ -213,12 +212,12 @@ class ErrorRecovery {
 const recovery = new ErrorRecovery();
 
 // 認証エラー時は再ログイン
-recovery.registerStrategy('AUTHENTICATION_ERROR', async () => {
+recovery.registerStrategy("AUTHENTICATION_ERROR", async () => {
   await refreshToken();
 });
 
 // Rate Limit時は待機
-recovery.registerStrategy('RATE_LIMIT_ERROR', async () => {
+recovery.registerStrategy("RATE_LIMIT_ERROR", async () => {
   await sleep(60000);
 });
 ```
@@ -248,7 +247,7 @@ class FallbackChain<T> {
       }
     }
 
-    throw lastError || new Error('All fallback strategies failed');
+    throw lastError || new Error("All fallback strategies failed");
   }
 }
 
@@ -272,10 +271,7 @@ class CacheFallback<T> {
     this.ttl = ttlMs;
   }
 
-  async fetchWithCache(
-    key: string,
-    fetchFn: () => Promise<T>
-  ): Promise<T> {
+  async fetchWithCache(key: string, fetchFn: () => Promise<T>): Promise<T> {
     try {
       const data = await fetchFn();
       this.cache.set(key, { data, timestamp: Date.now() });
@@ -283,7 +279,7 @@ class CacheFallback<T> {
     } catch (error) {
       const cached = this.cache.get(key);
       if (cached && Date.now() - cached.timestamp < this.ttl) {
-        console.warn('Using cached data due to fetch error');
+        console.warn("Using cached data due to fetch error");
         return cached.data;
       }
       throw error;
@@ -299,7 +295,7 @@ class CacheFallback<T> {
 ```typescript
 interface ErrorLog {
   timestamp: string;
-  level: 'error' | 'warn' | 'info';
+  level: "error" | "warn" | "info";
   error: {
     name: string;
     code: string;
@@ -318,15 +314,15 @@ interface ErrorLog {
 function logError(error: ApiError, context: Record<string, string>): void {
   const errorLog: ErrorLog = {
     timestamp: new Date().toISOString(),
-    level: error.isRetryable ? 'warn' : 'error',
+    level: error.isRetryable ? "warn" : "error",
     error: {
       name: error.name,
       code: error.code,
       statusCode: error.statusCode,
-      message: error.message
+      message: error.message,
     },
     context,
-    metadata: error.details
+    metadata: error.details,
   };
 
   console.log(JSON.stringify(errorLog));
@@ -365,15 +361,19 @@ class ErrorMetrics {
 
 ```typescript
 const userFriendlyMessages: Record<string, string> = {
-  'AUTHENTICATION_ERROR': 'セッションが期限切れです。再度ログインしてください。',
-  'AUTHORIZATION_ERROR': 'この操作を行う権限がありません。',
-  'RATE_LIMIT_ERROR': '一時的にリクエストが制限されています。しばらくお待ちください。',
-  'VALIDATION_ERROR': '入力内容に問題があります。',
-  'NETWORK_ERROR': 'ネットワーク接続を確認してください。',
-  'UNKNOWN_ERROR': '予期せぬエラーが発生しました。時間をおいて再度お試しください。'
+  AUTHENTICATION_ERROR: "セッションが期限切れです。再度ログインしてください。",
+  AUTHORIZATION_ERROR: "この操作を行う権限がありません。",
+  RATE_LIMIT_ERROR:
+    "一時的にリクエストが制限されています。しばらくお待ちください。",
+  VALIDATION_ERROR: "入力内容に問題があります。",
+  NETWORK_ERROR: "ネットワーク接続を確認してください。",
+  UNKNOWN_ERROR:
+    "予期せぬエラーが発生しました。時間をおいて再度お試しください。",
 };
 
 function getUserMessage(error: ApiError): string {
-  return userFriendlyMessages[error.code] || userFriendlyMessages['UNKNOWN_ERROR'];
+  return (
+    userFriendlyMessages[error.code] || userFriendlyMessages["UNKNOWN_ERROR"]
+  );
 }
 ```

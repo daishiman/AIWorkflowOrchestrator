@@ -333,6 +333,60 @@ Desktop アプリの認証機能で使用する型定義。
 
 ---
 
+## 6.8 ワークスペース型定義
+
+Desktop アプリの複数フォルダ管理機能で使用する型定義。
+
+### 6.8.1 Workspace
+
+ワークスペースの状態を表す型。
+
+| フィールド         | 型             | 説明                       |
+| ------------------ | -------------- | -------------------------- |
+| id                 | WorkspaceId    | ワークスペースID（固定値） |
+| folders            | FolderEntry[]  | 登録フォルダ一覧           |
+| lastSelectedFileId | FileId \| null | 最後に選択したファイルID   |
+| createdAt          | Date           | 作成日時                   |
+| updatedAt          | Date           | 更新日時                   |
+
+### 6.8.2 FolderEntry
+
+登録フォルダのエントリ。
+
+| フィールド    | 型            | 説明                 |
+| ------------- | ------------- | -------------------- |
+| id            | FolderId      | フォルダID（UUID）   |
+| path          | FolderPath    | 絶対パス             |
+| displayName   | string        | 表示名（フォルダ名） |
+| isExpanded    | boolean       | 展開状態             |
+| expandedPaths | Set\<string\> | 展開サブフォルダパス |
+| addedAt       | Date          | 追加日時             |
+
+### 6.8.3 Branded Types
+
+型安全性を高めるためのブランド型。
+
+| 型名        | ベース型 | 説明                                |
+| ----------- | -------- | ----------------------------------- |
+| WorkspaceId | string   | ワークスペースID（"default"固定）   |
+| FolderId    | string   | フォルダID（UUID形式）              |
+| FolderPath  | string   | フォルダパス（絶対パス、"/"で開始） |
+| FileId      | string   | ファイルID（UUID形式）              |
+| FilePath    | string   | ファイルパス（絶対パス、"/"で開始） |
+
+### 6.8.4 セキュリティ制約
+
+| 制約             | 実装                               |
+| ---------------- | ---------------------------------- |
+| パストラバーサル | ".." を含むパスは拒否              |
+| 絶対パス         | "/" で開始しないパスは拒否         |
+| パス正規化       | 連続スラッシュ・末尾スラッシュ除去 |
+| ファイルサイズ   | 10MB 上限                          |
+
+**実装場所**: `apps/desktop/src/renderer/store/types/workspace.ts`, `apps/desktop/src/main/ipc/validation.ts`
+
+---
+
 ## 関連ドキュメント
 
 - [アーキテクチャ設計](./05-architecture.md)

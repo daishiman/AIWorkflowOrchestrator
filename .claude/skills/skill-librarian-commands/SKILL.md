@@ -51,11 +51,13 @@ version: 1.0.0
 **目的**: 知識ドキュメントの品質を検証（構造、完全性、一貫性）
 
 **使用方法**:
+
 ```bash
 node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs <file.md>
 ```
 
 **検証項目**:
+
 - [ ] YAML Frontmatterの完全性
 - [ ] 必須セクションの存在
 - [ ] リンクの有効性
@@ -63,6 +65,7 @@ node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs <file.md
 - [ ] 500行制約遵守
 
 **出力例**:
+
 ```
 ✅ YAML Frontmatter: 完全
 ✅ 必須セクション: すべて存在
@@ -83,16 +86,19 @@ node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs <file.md
 **目的**: スキルディレクトリ全体のトークン使用量を見積もる
 
 **使用方法**:
+
 ```bash
 node .claude/skills/progressive-disclosure/scripts/calculate-token-usage.mjs <skill-directory>
 ```
 
 **計算対象**:
+
 - SKILL.md本文
 - resources/配下のすべてのファイル
 - templates/配下のテンプレート
 
 **出力例**:
+
 ```
 📊 トークン使用量分析:
 SKILL.md: 4,200 tokens
@@ -116,17 +122,20 @@ templates/: 1,800 tokens
 **目的**: スキルディレクトリの構造を分析し、改善提案を提供
 
 **使用方法**:
+
 ```bash
 node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs <skill-directory>
 ```
 
 **分析項目**:
+
 - ファイル階層構造
 - セクション数と深さ
 - リソース分割状況
 - 命名規約遵守
 
 **出力例**:
+
 ```
 📁 構造分析:
 階層: 3レベル（推奨範囲内）
@@ -149,11 +158,13 @@ node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs <sk
 **目的**: 単一ファイルのトークン数を見積もる
 
 **使用方法**:
+
 ```bash
 node .claude/skills/context-optimization/scripts/estimate-tokens.mjs <file.md>
 ```
 
 **出力例**:
+
 ```
 📄 ファイル: SKILL.md
 トークン数: 4,200
@@ -175,12 +186,14 @@ node .claude/skills/context-optimization/scripts/estimate-tokens.mjs <file.md>
 **パス**: `.claude/skills/knowledge-management/resources/seci-model-details.md`
 
 **内容**:
+
 - Socialization（共同化）: 暗黙知→暗黙知
 - Externalization（表出化）: 暗黙知→形式知
 - Combination（連結化）: 形式知→形式知
 - Internalization（内面化）: 形式知→暗黙知
 
 **参照コマンド**:
+
 ```bash
 cat .claude/skills/knowledge-management/resources/seci-model-details.md
 ```
@@ -195,11 +208,13 @@ cat .claude/skills/knowledge-management/resources/seci-model-details.md
 **パス**: `.claude/skills/progressive-disclosure/resources/three-layer-model.md`
 
 **内容**:
+
 - Layer 1: メタデータ（YAML Frontmatter）
 - Layer 2: 本文（SKILL.md概要）
 - Layer 3: リソース（詳細知識）
 
 **参照コマンド**:
+
 ```bash
 cat .claude/skills/progressive-disclosure/resources/three-layer-model.md
 ```
@@ -214,12 +229,14 @@ cat .claude/skills/progressive-disclosure/resources/three-layer-model.md
 **パス**: `.claude/skills/documentation-architecture/resources/splitting-patterns.md`
 
 **内容**:
+
 - トピック別分割（推奨）
 - レベル別分割（初級・中級・上級）
 - 機能別分割（設計・実装・検証）
 - ハイブリッド分割
 
 **参照コマンド**:
+
 ```bash
 cat .claude/skills/documentation-architecture/resources/splitting-patterns.md
 ```
@@ -234,11 +251,13 @@ cat .claude/skills/documentation-architecture/resources/splitting-patterns.md
 **パス**: `.claude/skills/context-optimization/resources/lazy-loading-patterns.md`
 
 **内容**:
+
 - インデックス駆動設計
 - リソース参照の段階的読み込み
 - トークン効率的なアクセスパターン
 
 **参照コマンド**:
+
 ```bash
 cat .claude/skills/context-optimization/resources/lazy-loading-patterns.md
 ```
@@ -253,11 +272,13 @@ cat .claude/skills/context-optimization/resources/lazy-loading-patterns.md
 **パス**: `.claude/skills/best-practices-curation/resources/information-source-evaluation.md`
 
 **内容**:
+
 - 信頼性評価基準（権威性、検証可能性、更新頻度）
 - 情報源ランキング（公式ドキュメント > 専門家著作 > コミュニティ）
 - 陳腐化リスク評価
 
 **参照コマンド**:
+
 ```bash
 cat .claude/skills/best-practices-curation/resources/information-source-evaluation.md
 ```
@@ -274,11 +295,13 @@ cat .claude/skills/best-practices-curation/resources/information-source-evaluati
 **パス**: `.claude/skills/knowledge-management/templates/knowledge-document-template.md`
 
 **内容**:
+
 - YAML Frontmatter構造
 - 必須セクション（概要、使用タイミング、主要概念、実践例）
 - 推奨セクション（関連スキル、参照資料）
 
 **参照コマンド**:
+
 ```bash
 cat .claude/skills/knowledge-management/templates/knowledge-document-template.md
 ```
@@ -293,6 +316,7 @@ cat .claude/skills/knowledge-management/templates/knowledge-document-template.md
 **パス**: `.claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml`
 
 **内容**:
+
 ```yaml
 ---
 name: skill-name
@@ -306,16 +330,17 @@ description: |
 
   Use proactively when [英語の発動条件].
 tools:
- - Read
- - Write
- - Grep
- - Bash
+  - Read
+  - Write
+  - Grep
+  - Bash
 tags: [tag1, tag2, tag3]
 version: 1.0.0
 ---
 ```
 
 **参照コマンド**:
+
 ```bash
 cat .claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml
 ```
@@ -330,6 +355,7 @@ cat .claude/skills/progressive-disclosure/templates/skill-metadata-template.yaml
 **パス**: `.claude/skills/documentation-architecture/templates/resource-structure.md`
 
 **内容**:
+
 ```
 skill-name/
 ├── SKILL.md
@@ -346,6 +372,7 @@ skill-name/
 ```
 
 **参照コマンド**:
+
 ```bash
 cat .claude/skills/documentation-architecture/templates/resource-structure.md
 ```
@@ -360,6 +387,7 @@ cat .claude/skills/documentation-architecture/templates/resource-structure.md
 **パス**: `.claude/skills/best-practices-curation/templates/evaluation-checklist.md`
 
 **内容**:
+
 - [ ] 情報源の信頼性確認
 - [ ] 内容の正確性検証
 - [ ] 更新日の確認
@@ -367,6 +395,7 @@ cat .claude/skills/documentation-architecture/templates/resource-structure.md
 - [ ] 実践可能性の評価
 
 **参照コマンド**:
+
 ```bash
 cat .claude/skills/best-practices-curation/templates/evaluation-checklist.md
 ```
@@ -378,6 +407,7 @@ cat .claude/skills/best-practices-curation/templates/evaluation-checklist.md
 ## コマンド使用フロー
 
 ### Phase 1: 知識収集
+
 ```bash
 # 情報源評価
 cat .claude/skills/best-practices-curation/resources/information-source-evaluation.md
@@ -390,6 +420,7 @@ cat .claude/skills/knowledge-management/resources/seci-model-details.md
 ```
 
 ### Phase 2: 構造設計
+
 ```bash
 # 3層開示モデル参照
 cat .claude/skills/progressive-disclosure/resources/three-layer-model.md
@@ -405,6 +436,7 @@ node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs <sk
 ```
 
 ### Phase 3: ファイル生成
+
 ```bash
 # 知識文書化テンプレート
 cat .claude/skills/knowledge-management/templates/knowledge-document-template.md
@@ -417,6 +449,7 @@ node .claude/skills/context-optimization/scripts/estimate-tokens.mjs <file.md>
 ```
 
 ### Phase 4: 品質保証
+
 ```bash
 # 品質検証
 node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs <skill-file.md>
@@ -443,16 +476,19 @@ node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs <sk
 ## ベストプラクティス
 
 ### スクリプト実行
+
 1. **事前条件確認**: Node.js 18+ がインストールされていることを確認
 2. **パス検証**: スクリプトパスの存在を確認してから実行
 3. **エラーハンドリング**: スクリプトエラー時は詳細ログを確認
 
 ### リソース参照
+
 1. **必要最小限**: 必要なリソースのみを読み込む（段階的ロード）
 2. **キャッシュ活用**: 一度読み込んだリソースは再利用
 3. **トークン意識**: 大きなリソースは必要時のみ参照
 
 ### テンプレート使用
+
 1. **プレースホルダー置換**: `{{placeholder}}` を実際の値に置換
 2. **カスタマイズ**: プロジェクト固有の要件に合わせて調整
 3. **バージョン管理**: テンプレートのバージョンを記録
@@ -462,9 +498,11 @@ node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs <sk
 ## トラブルシューティング
 
 ### スクリプトが実行できない
+
 **症状**: `node: command not found`
 **原因**: Node.jsがインストールされていない
 **解決策**:
+
 ```bash
 # Node.js 18以上をインストール
 # macOS
@@ -475,9 +513,11 @@ sudo apt install nodejs pnpm
 ```
 
 ### リソースが見つからない
+
 **症状**: `cat: no such file or directory`
 **原因**: リソースパスが間違っている
 **解決策**:
+
 ```bash
 # プロジェクトルートから相対パスで指定
 cd /path/to/AIWorkflowOrchestrator
@@ -485,6 +525,7 @@ cat .claude/skills/knowledge-management/resources/seci-model-details.md
 ```
 
 ### トークン計算が不正確
+
 **症状**: 実際のトークン数と見積もりが大きく異なる
 **原因**: 特殊文字やコードブロックの処理
 **解決策**: 実際にClaude Codeで読み込んで確認
@@ -494,6 +535,7 @@ cat .claude/skills/knowledge-management/resources/seci-model-details.md
 ## バージョン履歴
 
 ### 1.0.0 (2025-01-27)
+
 - 初版リリース
 - TypeScriptスクリプト実行ガイド（4種）
 - リソース参照（5種）

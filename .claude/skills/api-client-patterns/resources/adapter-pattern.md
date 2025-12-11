@@ -8,12 +8,14 @@ Adapterパターンは、外部APIのインターフェースを内部で期待�
 ## いつ使うか
 
 ### 適用条件
+
 - [ ] 外部APIのメソッド名やパラメータが内部規約と異なる
 - [ ] 外部APIのレスポンス形式を内部形式に変換したい
 - [ ] 外部API変更時の影響を局所化したい
 - [ ] 複数の類似外部サービスを統一インターフェースで扱いたい
 
 ### 適用しない条件
+
 - 外部APIと内部インターフェースがほぼ同一
 - 一度限りの単純なAPI呼び出し
 - 変換ロジックが不要な場合
@@ -74,7 +76,7 @@ class ExternalApiUserAdapter implements UserRepository {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    const response = await this.apiClient.get('/users', { email });
+    const response = await this.apiClient.get("/users", { email });
     if (response.data.length === 0) return null;
     return this.transformToUser(response.data[0]);
   }
@@ -191,14 +193,14 @@ class ApiAdapter {
         case 404:
           return new UserNotFoundError(`User not found`);
         case 401:
-          return new AuthenticationError('Invalid credentials');
+          return new AuthenticationError("Invalid credentials");
         case 429:
-          return new RateLimitError('Too many requests');
+          return new RateLimitError("Too many requests");
         default:
-          return new ExternalServiceError('External service error');
+          return new ExternalServiceError("External service error");
       }
     }
-    return new UnknownError('Unknown error occurred');
+    return new UnknownError("Unknown error occurred");
   }
 }
 ```
@@ -208,22 +210,22 @@ class ApiAdapter {
 ### Adapterのユニットテスト
 
 ```typescript
-describe('ExternalApiUserAdapter', () => {
-  describe('transformToUser', () => {
-    it('should transform external format to internal User', () => {
+describe("ExternalApiUserAdapter", () => {
+  describe("transformToUser", () => {
+    it("should transform external format to internal User", () => {
       const external: ExternalUserResponse = {
-        user_id: '123',
-        email_address: 'test@example.com',
-        full_name: 'Test User',
+        user_id: "123",
+        email_address: "test@example.com",
+        full_name: "Test User",
         created_timestamp: 1700000000,
       };
 
-      const result = adapter['transformToUser'](external);
+      const result = adapter["transformToUser"](external);
 
       expect(result).toEqual({
-        id: '123',
-        email: 'test@example.com',
-        displayName: 'Test User',
+        id: "123",
+        email: "test@example.com",
+        displayName: "Test User",
         createdAt: new Date(1700000000 * 1000),
       });
     });
@@ -234,16 +236,19 @@ describe('ExternalApiUserAdapter', () => {
 ## チェックリスト
 
 ### 設計時
+
 - [ ] 内部インターフェースが外部APIに依存していないか？
 - [ ] 変換ロジックがAdapter内に局所化されているか？
 - [ ] エラー変換が適切に行われているか？
 
 ### 実装時
+
 - [ ] 型安全な変換が実装されているか？
 - [ ] 欠損フィールドのデフォルト処理があるか？
 - [ ] 日付やタイムゾーンの変換が正しいか？
 
 ### テスト時
+
 - [ ] 変換ロジックのユニットテストがあるか？
 - [ ] エッジケース（null, undefined, 空配列）がテストされているか？
 - [ ] エラー変換がテストされているか？
@@ -267,7 +272,7 @@ class UserService {
 // NG: 変換が複数箇所に散在
 class Controller {
   async handler() {
-    const response = await this.api.get('/users');
+    const response = await this.api.get("/users");
     // ここで変換
     const user = {
       id: response.user_id,

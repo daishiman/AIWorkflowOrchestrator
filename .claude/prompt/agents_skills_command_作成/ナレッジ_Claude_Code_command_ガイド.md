@@ -70,15 +70,15 @@
 
 ### 1.2 スラッシュコマンド vs その他の機能
 
-|特性|スラッシュコマンド|スキル|エージェント|CLAUDE.md|
-|---|---|---|---|---|
-|**起動方法**|ユーザー明示（`/cmd`）|モデル判断（自動）|モデル判断 or 明示|常時ロード|
-|**用途**|特定ワークフロー実行|手続き的知識提供|タスク実行と判断|プロジェクト全体の文脈|
-|**パラメータ**|`$ARGUMENTS` サポート|なし|コンテキスト依存|静的|
-|**実行タイミング**|即座|必要時|委譲時|セッション開始時|
-|**トークン使用**|コマンド本文のみ|Progressive Disclosure|独立コンテキスト|常時消費|
-|**スコープ**|プロジェクト or ユーザー|同左|同左|プロジェクトのみ|
-|**バージョン管理**|Git可能|Git可能|Git可能|Git必須|
+| 特性               | スラッシュコマンド       | スキル                 | エージェント       | CLAUDE.md              |
+| ------------------ | ------------------------ | ---------------------- | ------------------ | ---------------------- |
+| **起動方法**       | ユーザー明示（`/cmd`）   | モデル判断（自動）     | モデル判断 or 明示 | 常時ロード             |
+| **用途**           | 特定ワークフロー実行     | 手続き的知識提供       | タスク実行と判断   | プロジェクト全体の文脈 |
+| **パラメータ**     | `$ARGUMENTS` サポート    | なし                   | コンテキスト依存   | 静的                   |
+| **実行タイミング** | 即座                     | 必要時                 | 委譲時             | セッション開始時       |
+| **トークン使用**   | コマンド本文のみ         | Progressive Disclosure | 独立コンテキスト   | 常時消費               |
+| **スコープ**       | プロジェクト or ユーザー | 同左                   | 同左               | プロジェクトのみ       |
+| **バージョン管理** | Git可能                  | Git可能                | Git可能            | Git必須                |
 
 #### 使い分けの原則
 
@@ -127,12 +127,15 @@ CLAUDE.mdを使うべき時:
 
 ```markdown
 # CLAUDE.md での設定
+
 ## ワークフロー
 
 コードレビューが必要な時:
+
 - `/code-review` コマンドを実行
 
 テスト作成時:
+
 - `/generate-tests` コマンドを実行
 ```
 
@@ -153,8 +156,7 @@ CLAUDE.mdを使うべき時:
 **重要な制約:**
 
 ```yaml
-SlashCommand Tool が起動できるのは:
-  ✓ カスタムコマンド（.claude/commands/）
+SlashCommand Tool が起動できるのは: ✓ カスタムコマンド（.claude/commands/）
   ✗ ビルトインコマンド（/compact, /init等）
 
 条件:
@@ -194,18 +196,22 @@ disable-model-invocation: false
 # Command Title
 
 ## 目的
+
 このコマンドが何をするかの説明
 
 ## 前提条件
+
 - 必要な環境
 - 依存関係
 
 ## 実行手順
+
 1. ステップ1
 2. ステップ2
 3. ステップ3
 
 ## 例
+
 使用例をここに記載
 ```
 
@@ -367,9 +373,8 @@ disable-model-invocation: true
 ```yaml
 ---
 description: Delete all temporary files and caches
-disable-model-invocation: true  # モデルが勝手に実行しないように
+disable-model-invocation: true # モデルが勝手に実行しないように
 ---
-
 # Cleanup Command
 
 ⚠️ このコマンドは破壊的な操作を行います。
@@ -390,6 +395,7 @@ Run Prettier on all JavaScript and TypeScript files:
 
 ```bash
 npx prettier --write "src/**/*.{js,ts,jsx,tsx}"
+```
 ````
 
 Verify formatting is correct.
@@ -611,6 +617,7 @@ description: Commit changes with message
 Commit message: $ARGUMENTS
 
 Steps:
+
 1. Stage all changes: `git add -A`
 2. Commit with message: `git commit -m "$ARGUMENTS"`
 3. Push: `git push`
@@ -637,6 +644,7 @@ Copy file from $1 to $2
 
 ```bash
 cp "$1" "$2"
+```
 ````
 
 Verify copy succeeded.
@@ -663,11 +671,14 @@ description: Deploy to environment
 Target environment: $ARGUMENTS
 
 ## Validation
+
 Check if $ARGUMENTS is valid:
+
 - Must be "staging" or "production"
 - If invalid, show error and exit
 
 ## Execution
+
 Proceed with deployment to $ARGUMENTS
 ```
 
@@ -683,9 +694,11 @@ description: Run tests with optional pattern
 Test pattern: $ARGUMENTS (default: all tests)
 
 ## Determine Pattern
+
 ```bash
 PATTERN="${$ARGUMENTS:-**/*.test.js}"
 pnpm test -- "$PATTERN"
+```
 ````
 
 ````
@@ -713,18 +726,23 @@ description: Refactor code with careful analysis
 # Intelligent Refactoring
 
 ## Analysis Phase
+
 **Think carefully** about the code structure:
+
 1. Identify code smells
 2. Consider design patterns
 3. Analyze dependencies
 
 ## Refactoring Plan
+
 **Reason about** the best refactoring approach:
+
 - What patterns would improve the code?
 - What are the risks?
 - What's the migration path?
 
 ## Implementation
+
 Apply the refactoring carefully
 ```
 
@@ -808,18 +826,22 @@ Apply the refactoring carefully
 以下のキーワードを検出したら、対応するコマンドを実行:
 
 ## コミット関連
+
 - "commit", "コミット", "変更を保存"
   → `/commit` を実行
 
 ## レビュー関連
+
 - "review", "レビュー", "コードチェック"
   → `/code-review` を実行
 
 ## テスト関連
+
 - "test", "テスト", "動作確認"
   → `/run-tests` を実行
 
 ## デプロイ関連
+
 - "deploy", "デプロイ", "本番反映"
   → 環境を確認してから `/deploy:staging` または `/deploy:production`
 ```
@@ -854,22 +876,27 @@ description: Full feature development pipeline
 Feature name: $ARGUMENTS
 
 ## Phase 1: Planning
+
 Execute `/plan-feature $ARGUMENTS`
 Wait for completion.
 
 ## Phase 2: Implementation
+
 Execute `/implement-feature $ARGUMENTS`
 Wait for completion.
 
 ## Phase 3: Testing
+
 Execute `/test-feature $ARGUMENTS`
 Wait for completion.
 
 ## Phase 4: Review
+
 Execute `/review-feature $ARGUMENTS`
 Wait for completion.
 
 ## Phase 5: Deployment
+
 Execute `/deploy-feature $ARGUMENTS staging`
 If successful, ask for production deployment approval.
 ```
@@ -888,6 +915,7 @@ description: Environment-aware command
 Target: $ARGUMENTS
 
 ## Environment Detection
+
 ```bash
 if [ "$ARGUMENTS" = "staging" ]; then
   BUCKET="staging-bucket"
@@ -899,6 +927,7 @@ else
   echo "Error: Invalid environment"
   exit 1
 fi
+```
 ````
 
 ## Pre-deployment Checks
@@ -1154,31 +1183,41 @@ description: API endpoint creation with best practices
 Endpoint: $ARGUMENTS
 
 ## Step 1: Design Review
+
 Refer to `api-design-patterns` skill:
+
 - RESTful principles
 - Naming conventions
 - Versioning strategy
 
 ## Step 2: Implementation
+
 Apply `error-handling-patterns` skill:
+
 - Unified error responses
 - HTTP status codes
 - Error logging
 
 ## Step 3: Validation
+
 Use `input-validation` skill:
+
 - Request body validation
 - Query parameter sanitization
 - Type checking
 
 ## Step 4: Documentation
+
 Leverage `api-documentation` skill:
+
 - OpenAPI spec generation
 - Example requests/responses
 - Error documentation
 
 ## Step 5: Testing
+
 Apply `api-testing` skill:
+
 - Unit test creation
 - Integration test setup
 - Contract testing
@@ -1272,28 +1311,29 @@ This command will:
 
 ```markdown
 ✓ 良いコマンド設計:
-/commit        - Git commit のみ
-/test          - テスト実行のみ
-/deploy        - デプロイのみ
+/commit - Git commit のみ
+/test - テスト実行のみ
+/deploy - デプロイのみ
 
 ✗ 悪いコマンド設計:
 /do-everything - commit, test, deploy 全部
-               → 柔軟性がない、デバッグ困難
+→ 柔軟性がない、デバッグ困難
 ```
 
 #### 原則2: 組み合わせ可能性の原則
 
 ```markdown
 個別コマンド:
-/test         - テスト実行
-/lint         - Lint実行
-/build        - ビルド実行
+/test - テスト実行
+/lint - Lint実行
+/build - ビルド実行
 
 組み合わせコマンド:
-/pre-commit   - test + lint を実行
-/ci-check     - test + lint + build を実行
+/pre-commit - test + lint を実行
+/ci-check - test + lint + build を実行
 
 利点:
+
 - 小さなコマンドは再利用可能
 - 大きなワークフローは組み合わせで構築
 - 保守が容易
@@ -1306,11 +1346,13 @@ This command will:
 
 ✓ 良い例:
 /format-code
+
 - 既にフォーマット済みなら何もしない
 - 複数回実行しても同じ結果
 
 ✗ 悪い例:
 /increment-version
+
 - 実行のたびにバージョンが上がる
 - 意図しない重複実行のリスク
 ```
@@ -1442,6 +1484,7 @@ argument-hint: [--env] [--verbose] [--dry-run]
 Parse arguments: $ARGUMENTS
 
 Check for flags:
+
 - --env: Target environment
 - --verbose: Detailed logging
 - --dry-run: Simulate only
@@ -1457,16 +1500,20 @@ description: Interactive component generator
 # Component Generator
 
 ## Step 1: Ask for component name
+
 Prompt user for component name
 
 ## Step 2: Ask for type
+
 - Functional or Class component?
 - With or without state?
 
 ## Step 3: Ask for tests
+
 - Include tests? (yes/no)
 
 ## Step 4: Generate
+
 Create component based on answers
 ```
 
@@ -1484,6 +1531,7 @@ description: Safe deployment with validation
 Environment: $ARGUMENTS
 
 ## Validation Phase
+
 ```bash
 # Check environment
 if [ -z "$ARGUMENTS" ]; then
@@ -1497,6 +1545,7 @@ if [ "$ARGUMENTS" != "staging" ] && [ "$ARGUMENTS" != "production" ]; then
   echo "Valid options: staging, production"
   exit 1
 fi
+```
 ````
 
 ## Pre-flight Checks
@@ -1639,11 +1688,13 @@ description: Debug-enabled command template
 Task: $ARGUMENTS
 
 ## Debug Mode Check
+
 ```bash
 if [ "$DEBUG" = "true" ]; then
   set -x  # Enable bash debugging
   echo "🔍 Debug mode enabled"
 fi
+```
 ````
 
 ## Execution with Logging
@@ -1694,6 +1745,7 @@ Total: 1,200 tokens vs 12,000 tokens
 
 ````markdown
 # 遅い（逐次実行）
+
 Run test suite... (60s)
 Wait for completion
 Run lint... (20s)
@@ -1702,11 +1754,13 @@ Run build... (40s)
 Total: 120s
 
 # 速い（並列実行）
+
 ```bash
 pnpm test &
 pnpm run lint &
 pnpm run build &
 wait
+```
 ````
 
 Total: 60s (最長タスクの時間)
@@ -1739,9 +1793,12 @@ Message: $ARGUMENTS
 
 ```markdown
 # .claude/commands/test/full.md
+
 ---
+
 description: Run complete test suite with coverage
 allowed-tools: Bash(pnpm*), Bash(jest*)
+
 ---
 
 # Full Test Suite
@@ -1756,9 +1813,12 @@ allowed-tools: Bash(pnpm*), Bash(jest*)
 
 ```markdown
 # .claude/commands/deploy/production.md
+
 ---
+
 description: Deploy to production with full checks
-disable-model-invocation: true  # 安全のため手動のみ
+disable-model-invocation: true # 安全のため手動のみ
+
 ---
 
 # Production Deployment

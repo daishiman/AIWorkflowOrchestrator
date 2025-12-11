@@ -17,9 +17,9 @@ description: |
   トリガーキーワード: format, prettier, フォーマット, 整形, code style
 argument-hint: "[target-pattern]"
 allowed-tools:
-   - Task
-   - Bash
-   - Edit
+  - Task
+  - Bash
+  - Edit
 model: sonnet
 ---
 

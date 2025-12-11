@@ -11,8 +11,8 @@
  *   --json            JSON形式で出力
  */
 
-import { readFileSync, readdirSync, statSync } from 'fs';
-import { join, extname } from 'path';
+import { readFileSync, readdirSync, statSync } from "fs";
+import { join, extname } from "path";
 
 // 脆弱性パターン定義
 const VULNERABILITY_PATTERNS = {
@@ -20,33 +20,34 @@ const VULNERABILITY_PATTERNS = {
   xss: [
     {
       pattern: /innerHTML\s*=/g,
-      message: 'innerHTML への直接代入は XSS 脆弱性の原因になります',
-      severity: 'high',
-      suggestion: 'textContent を使用するか、DOMPurify でサニタイズしてください',
+      message: "innerHTML への直接代入は XSS 脆弱性の原因になります",
+      severity: "high",
+      suggestion:
+        "textContent を使用するか、DOMPurify でサニタイズしてください",
     },
     {
       pattern: /outerHTML\s*=/g,
-      message: 'outerHTML への直接代入は XSS 脆弱性の原因になります',
-      severity: 'high',
-      suggestion: 'DOM操作メソッドを使用してください',
+      message: "outerHTML への直接代入は XSS 脆弱性の原因になります",
+      severity: "high",
+      suggestion: "DOM操作メソッドを使用してください",
     },
     {
       pattern: /document\.write\s*\(/g,
-      message: 'document.write は XSS 脆弱性の原因になります',
-      severity: 'high',
-      suggestion: 'DOM操作メソッドを使用してください',
+      message: "document.write は XSS 脆弱性の原因になります",
+      severity: "high",
+      suggestion: "DOM操作メソッドを使用してください",
     },
     {
       pattern: /dangerouslySetInnerHTML/g,
-      message: 'dangerouslySetInnerHTML は XSS リスクがあります',
-      severity: 'medium',
-      suggestion: 'DOMPurify でサニタイズするか、別の方法を検討してください',
+      message: "dangerouslySetInnerHTML は XSS リスクがあります",
+      severity: "medium",
+      suggestion: "DOMPurify でサニタイズするか、別の方法を検討してください",
     },
     {
       pattern: /\$\{[^}]+\}.*innerHTML/g,
-      message: 'テンプレートリテラルを innerHTML に使用しています',
-      severity: 'high',
-      suggestion: 'エスケープ処理を追加してください',
+      message: "テンプレートリテラルを innerHTML に使用しています",
+      severity: "high",
+      suggestion: "エスケープ処理を追加してください",
     },
   ],
 
@@ -54,33 +55,33 @@ const VULNERABILITY_PATTERNS = {
   sqlInjection: [
     {
       pattern: /`SELECT.*\$\{/gi,
-      message: 'テンプレートリテラルで SQL クエリを構築しています',
-      severity: 'critical',
-      suggestion: 'パラメータ化クエリまたは ORM を使用してください',
+      message: "テンプレートリテラルで SQL クエリを構築しています",
+      severity: "critical",
+      suggestion: "パラメータ化クエリまたは ORM を使用してください",
     },
     {
       pattern: /`INSERT.*\$\{/gi,
-      message: 'テンプレートリテラルで SQL クエリを構築しています',
-      severity: 'critical',
-      suggestion: 'パラメータ化クエリまたは ORM を使用してください',
+      message: "テンプレートリテラルで SQL クエリを構築しています",
+      severity: "critical",
+      suggestion: "パラメータ化クエリまたは ORM を使用してください",
     },
     {
       pattern: /`UPDATE.*\$\{/gi,
-      message: 'テンプレートリテラルで SQL クエリを構築しています',
-      severity: 'critical',
-      suggestion: 'パラメータ化クエリまたは ORM を使用してください',
+      message: "テンプレートリテラルで SQL クエリを構築しています",
+      severity: "critical",
+      suggestion: "パラメータ化クエリまたは ORM を使用してください",
     },
     {
       pattern: /`DELETE.*\$\{/gi,
-      message: 'テンプレートリテラルで SQL クエリを構築しています',
-      severity: 'critical',
-      suggestion: 'パラメータ化クエリまたは ORM を使用してください',
+      message: "テンプレートリテラルで SQL クエリを構築しています",
+      severity: "critical",
+      suggestion: "パラメータ化クエリまたは ORM を使用してください",
     },
     {
       pattern: /\+ ['"].*(?:SELECT|INSERT|UPDATE|DELETE)/gi,
-      message: '文字列連結で SQL クエリを構築しています',
-      severity: 'critical',
-      suggestion: 'パラメータ化クエリを使用してください',
+      message: "文字列連結で SQL クエリを構築しています",
+      severity: "critical",
+      suggestion: "パラメータ化クエリを使用してください",
     },
   ],
 
@@ -88,27 +89,27 @@ const VULNERABILITY_PATTERNS = {
   commandInjection: [
     {
       pattern: /exec\s*\(\s*`/g,
-      message: 'exec でテンプレートリテラルを使用しています',
-      severity: 'critical',
-      suggestion: 'execFile を使用し、引数を配列で渡してください',
+      message: "exec でテンプレートリテラルを使用しています",
+      severity: "critical",
+      suggestion: "execFile を使用し、引数を配列で渡してください",
     },
     {
       pattern: /exec\s*\([^,)]+\+/g,
-      message: 'exec で文字列連結を使用しています',
-      severity: 'critical',
-      suggestion: 'execFile を使用し、引数を配列で渡してください',
+      message: "exec で文字列連結を使用しています",
+      severity: "critical",
+      suggestion: "execFile を使用し、引数を配列で渡してください",
     },
     {
       pattern: /child_process.*exec\s*\(/g,
-      message: 'exec の使用は危険です',
-      severity: 'high',
-      suggestion: 'execFile または spawn を使用してください',
+      message: "exec の使用は危険です",
+      severity: "high",
+      suggestion: "execFile または spawn を使用してください",
     },
     {
       pattern: /shell:\s*true/g,
-      message: 'shell: true オプションは危険です',
-      severity: 'high',
-      suggestion: 'shell: false を使用し、引数を配列で渡してください',
+      message: "shell: true オプションは危険です",
+      severity: "high",
+      suggestion: "shell: false を使用し、引数を配列で渡してください",
     },
   ],
 
@@ -116,21 +117,21 @@ const VULNERABILITY_PATTERNS = {
   pathTraversal: [
     {
       pattern: /path\.join\s*\([^)]*req\.(params|query|body)/g,
-      message: 'ユーザー入力を直接パスに使用しています',
-      severity: 'high',
-      suggestion: 'パスをサニタイズし、ベースディレクトリを検証してください',
+      message: "ユーザー入力を直接パスに使用しています",
+      severity: "high",
+      suggestion: "パスをサニタイズし、ベースディレクトリを検証してください",
     },
     {
       pattern: /readFile.*req\.(params|query|body)/g,
-      message: 'ユーザー入力でファイルを読み込んでいます',
-      severity: 'high',
-      suggestion: '許可リストでパスを検証してください',
+      message: "ユーザー入力でファイルを読み込んでいます",
+      severity: "high",
+      suggestion: "許可リストでパスを検証してください",
     },
     {
       pattern: /\.\.[\\/]/g,
-      message: 'パストラバーサルパターンが含まれています',
-      severity: 'medium',
-      suggestion: 'パスを正規化して検証してください',
+      message: "パストラバーサルパターンが含まれています",
+      severity: "medium",
+      suggestion: "パスを正規化して検証してください",
     },
   ],
 
@@ -138,21 +139,21 @@ const VULNERABILITY_PATTERNS = {
   authentication: [
     {
       pattern: /password.*=.*['"][^'"]+['"]/gi,
-      message: 'ハードコードされたパスワードが含まれています',
-      severity: 'critical',
-      suggestion: '環境変数またはシークレット管理を使用してください',
+      message: "ハードコードされたパスワードが含まれています",
+      severity: "critical",
+      suggestion: "環境変数またはシークレット管理を使用してください",
     },
     {
       pattern: /api[_-]?key.*=.*['"][^'"]+['"]/gi,
-      message: 'ハードコードされた API キーが含まれています',
-      severity: 'critical',
-      suggestion: '環境変数を使用してください',
+      message: "ハードコードされた API キーが含まれています",
+      severity: "critical",
+      suggestion: "環境変数を使用してください",
     },
     {
       pattern: /secret.*=.*['"][^'"]+['"]/gi,
-      message: 'ハードコードされたシークレットが含まれています',
-      severity: 'critical',
-      suggestion: '環境変数またはシークレット管理を使用してください',
+      message: "ハードコードされたシークレットが含まれています",
+      severity: "critical",
+      suggestion: "環境変数またはシークレット管理を使用してください",
     },
   ],
 
@@ -160,36 +161,36 @@ const VULNERABILITY_PATTERNS = {
   other: [
     {
       pattern: /eval\s*\(/g,
-      message: 'eval の使用は危険です',
-      severity: 'high',
-      suggestion: '別の方法を検討してください',
+      message: "eval の使用は危険です",
+      severity: "high",
+      suggestion: "別の方法を検討してください",
     },
     {
       pattern: /new\s+Function\s*\(/g,
-      message: 'Function コンストラクタの使用は危険です',
-      severity: 'high',
-      suggestion: '別の方法を検討してください',
+      message: "Function コンストラクタの使用は危険です",
+      severity: "high",
+      suggestion: "別の方法を検討してください",
     },
     {
       pattern: /Math\.random\s*\(\)/g,
-      message: 'Math.random はセキュリティ用途には不適切です',
-      severity: 'low',
-      suggestion: 'crypto.randomBytes を使用してください',
+      message: "Math.random はセキュリティ用途には不適切です",
+      severity: "low",
+      suggestion: "crypto.randomBytes を使用してください",
     },
   ],
 };
 
 // ファイル拡張子フィルター
-const TARGET_EXTENSIONS = ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'];
+const TARGET_EXTENSIONS = [".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs"];
 
 // 行番号を取得
 function getLineNumber(content, index) {
-  return content.substring(0, index).split('\n').length;
+  return content.substring(0, index).split("\n").length;
 }
 
 // ファイルをスキャン
 function scanFile(filepath, options = {}) {
-  const content = readFileSync(filepath, 'utf-8');
+  const content = readFileSync(filepath, "utf-8");
   const findings = [];
 
   for (const [category, patterns] of Object.entries(VULNERABILITY_PATTERNS)) {
@@ -227,7 +228,9 @@ function scanDirectory(dir, options = {}) {
 
       if (stat.isDirectory()) {
         // node_modules, .git などをスキップ
-        if (!['node_modules', '.git', 'dist', 'build', '.next'].includes(entry)) {
+        if (
+          !["node_modules", ".git", "dist", "build", ".next"].includes(entry)
+        ) {
           walk(fullPath);
         }
       } else if (TARGET_EXTENSIONS.includes(extname(entry))) {
@@ -248,7 +251,7 @@ function formatResults(findings, options = {}) {
   }
 
   if (findings.length === 0) {
-    return '✅ 脆弱性は検出されませんでした';
+    return "✅ 脆弱性は検出されませんでした";
   }
 
   const grouped = {};
@@ -258,21 +261,21 @@ function formatResults(findings, options = {}) {
     grouped[key].push(finding);
   }
 
-  const severityOrder = ['critical', 'high', 'medium', 'low'];
+  const severityOrder = ["critical", "high", "medium", "low"];
   const severityLabels = {
-    critical: '🔴 CRITICAL',
-    high: '🟠 HIGH',
-    medium: '🟡 MEDIUM',
-    low: '🟢 LOW',
+    critical: "🔴 CRITICAL",
+    high: "🟠 HIGH",
+    medium: "🟡 MEDIUM",
+    low: "🟢 LOW",
   };
 
-  let output = '\n📊 脆弱性スキャン結果\n';
-  output += '═'.repeat(60) + '\n';
+  let output = "\n📊 脆弱性スキャン結果\n";
+  output += "═".repeat(60) + "\n";
 
   for (const severity of severityOrder) {
     if (grouped[severity] && grouped[severity].length > 0) {
       output += `\n${severityLabels[severity]} (${grouped[severity].length}件)\n`;
-      output += '─'.repeat(60) + '\n';
+      output += "─".repeat(60) + "\n";
 
       for (const finding of grouped[severity]) {
         output += `\n📁 ${finding.file}:${finding.line}\n`;
@@ -285,7 +288,7 @@ function formatResults(findings, options = {}) {
     }
   }
 
-  output += '\n' + '═'.repeat(60) + '\n';
+  output += "\n" + "═".repeat(60) + "\n";
   output += `📈 合計: ${findings.length}件の脆弱性を検出\n`;
   output += `   CRITICAL: ${grouped.critical?.length || 0}\n`;
   output += `   HIGH: ${grouped.high?.length || 0}\n`;
@@ -299,7 +302,7 @@ function formatResults(findings, options = {}) {
 function main() {
   const args = process.argv.slice(2);
 
-  if (args.length === 0 || args.includes('--help')) {
+  if (args.length === 0 || args.includes("--help")) {
     console.log(`
 脆弱性スキャンスクリプト
 
@@ -327,10 +330,10 @@ function main() {
     process.exit(0);
   }
 
-  const targetDir = args.find((a) => !a.startsWith('--'));
+  const targetDir = args.find((a) => !a.startsWith("--"));
   const options = {
-    fixSuggestions: args.includes('--fix-suggestions'),
-    json: args.includes('--json'),
+    fixSuggestions: args.includes("--fix-suggestions"),
+    json: args.includes("--json"),
   };
 
   try {
@@ -338,7 +341,9 @@ function main() {
     console.log(formatResults(findings, options));
 
     // 終了コード: CRITICAL/HIGHがあれば1
-    const hasCritical = findings.some((f) => f.severity === 'critical' || f.severity === 'high');
+    const hasCritical = findings.some(
+      (f) => f.severity === "critical" || f.severity === "high",
+    );
     process.exit(hasCritical ? 1 : 0);
   } catch (error) {
     console.error(`❌ エラー: ${error.message}`);

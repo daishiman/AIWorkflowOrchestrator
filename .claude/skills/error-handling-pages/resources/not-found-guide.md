@@ -64,16 +64,16 @@ export default async function PostPage({
 
 ```typescript
 // lib/data.ts
-import { notFound } from 'next/navigation'
+import { notFound } from "next/navigation";
 
 export async function getPost(slug: string) {
-  const post = await db.post.findUnique({ where: { slug } })
+  const post = await db.post.findUnique({ where: { slug } });
 
   if (!post) {
-    notFound()
+    notFound();
   }
 
-  return post
+  return post;
 }
 ```
 
@@ -369,15 +369,15 @@ export default function NotFound() {
 ```typescript
 // generateMetadataでnotFound()を使用しても404が返される
 export async function generateMetadata({ params }) {
-  const post = await getPost(params.slug)
+  const post = await getPost(params.slug);
 
   if (!post) {
     return {
-      title: 'Not Found',
-    }
+      title: "Not Found",
+    };
   }
 
-  return { title: post.title }
+  return { title: post.title };
 }
 ```
 

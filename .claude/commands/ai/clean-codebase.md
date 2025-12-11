@@ -37,12 +37,12 @@ description: |
   トリガーキーワード: clean code, dead code, unused files, コードクリーンアップ, 未使用コード削除
 argument-hint: "[--dry-run]"
 allowed-tools:
-   - Task
-   - Read
-   - Grep
-   - Glob
-   - Edit
-   - Bash(rm*)
+  - Task
+  - Read
+  - Grep
+  - Glob
+  - Edit
+  - Bash(rm*)
 model: sonnet
 ---
 
@@ -55,6 +55,7 @@ model: sonnet
 ### Phase 1: ドライランフラグ確認
 
 **引数検証**:
+
 ```bash
 dry_run=false
 if [[ "$ARGUMENTS" == "--dry-run" ]]; then
@@ -68,15 +69,18 @@ fi
 **使用エージェント**: `.claude/agents/code-quality.md`
 
 **エージェントへの依頼内容**:
-```markdown
+
+````markdown
 未使用コード・ファイルを検出してください。
 
 **要件**:
+
 1. 未使用インポート検出:
    ```bash
    # ESLint no-unused-vars
    pnpm lint --rule 'no-unused-vars: error'
    ```
+````
 
 2. 未使用ファイル検出:
    - すべてのTypeScriptファイルをスキャン
@@ -89,27 +93,33 @@ fi
    - 条件が常にfalseのif文
 
 4. 検出結果レポート:
+
    ```markdown
    ## クリーンアップ対象
 
    ### 未使用インポート（12件）
+
    - src/features/sample/executor.ts: `import { unused } from 'lib'`
    - src/app/page.tsx: `import React from 'react'`（React 17+不要）
 
    ### 未使用ファイル（5件）
+
    - src/utils/old-helper.ts（参照なし）
    - src/components/deprecated.tsx（参照なし）
 
    ### デッドコード（3件）
+
    - src/features/sample/executor.ts:45-50（到達不能）
    ```
 
 **スキル参照**:
+
 - `.claude/skills/code-smell-detection/SKILL.md` - デッドコード検出
 - `.claude/skills/dependency-analysis/SKILL.md` - 依存関係分析
 
 **成果物**: クリーンアップ候補リスト
-```
+
+````
 
 ### Phase 3: arch-policeエージェントを起動（影響範囲確認）
 
@@ -136,7 +146,7 @@ fi
 **スキル参照**: `.claude/skills/dependency-analysis/SKILL.md`
 
 **成果物**: 安全な削除候補リスト
-```
+````
 
 ### Phase 4: クリーンアップ実行
 
@@ -165,14 +175,17 @@ fi
 ## クリーンアップ完了
 
 ### 削除サマリー
+
 - 未使用インポート: ${import_count}件削除
 - 未使用ファイル: ${file_count}件削除
 - デッドコード: ${dead_code_count}行削除
 
 ### ディスク削減
+
 - 削減サイズ: ${size_reduced} KB
 
 ### Next Steps
+
 1. テスト実行: `pnpm test`（削除影響確認）
 2. ビルド確認: `pnpm build`
 3. コミット: `git commit -m "chore: remove unused code"`
@@ -198,7 +211,7 @@ fi
 
 ## クリーンアップレポート例
 
-```markdown
+````markdown
 # コードベースクリーンアップレポート
 
 実行日時: 2025-01-15 10:00:00
@@ -215,13 +228,15 @@ fi
 ### 未使用インポート削除（12件）
 
 1. `src/features/sample/executor.ts:3`
+
    ```typescript
    // Before
-   import { unused, used } from 'lib';
+   import { unused, used } from "lib";
 
    // After
-   import { used } from 'lib';
+   import { used } from "lib";
    ```
+````
 
 ### 未使用ファイル削除（5件）
 
@@ -244,7 +259,8 @@ fi
 ✅ テスト: すべて合格
 ✅ ビルド: 成功
 ✅ 型チェック: エラーなし
-```
+
+````
 
 ## トラブルシューティング
 
@@ -258,13 +274,14 @@ fi
 git checkout .
 
 # より慎重な削除（1ファイルずつ）
-```
+````
 
 ### 未使用と誤検出
 
 **原因**: 動的インポートやリフレクションによる参照
 
 **解決策**:
+
 ```bash
 # 除外リスト作成
 # .cleanupignore

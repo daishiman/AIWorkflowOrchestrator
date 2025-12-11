@@ -10,7 +10,7 @@ Zodスキーマ定義における実践的なパターンと設計原則をま�
 ### 文字列型
 
 ```typescript
-import { z } from 'zod';
+import { z } from "zod";
 
 // 基本的な文字列制約
 const stringPatterns = {
@@ -77,7 +77,7 @@ const otherPrimitives = {
   dateFromString: z.coerce.date(),
 
   // リテラル
-  status: z.literal('active'),
+  status: z.literal("active"),
 
   // null/undefined
   nullable: z.string().nullable(),
@@ -107,19 +107,25 @@ type User = z.infer<typeof userSchema>;
 
 ```typescript
 // 追加プロパティを拒否
-const strictSchema = z.object({
-  name: z.string(),
-}).strict();
+const strictSchema = z
+  .object({
+    name: z.string(),
+  })
+  .strict();
 
 // 追加プロパティを許可（型には含まれない）
-const looseSchema = z.object({
-  name: z.string(),
-}).passthrough();
+const looseSchema = z
+  .object({
+    name: z.string(),
+  })
+  .passthrough();
 
 // 追加プロパティを除去
-const stripSchema = z.object({
-  name: z.string(),
-}).strip();
+const stripSchema = z
+  .object({
+    name: z.string(),
+  })
+  .strip();
 ```
 
 ### ネストとフラット化
@@ -158,10 +164,11 @@ const arrayPatterns = {
   limitedSize: z.array(z.string()).min(1).max(10),
 
   // ユニークな要素（カスタムバリデーション）
-  uniqueStrings: z.array(z.string()).refine(
-    (items) => new Set(items).size === items.length,
-    { message: '重複する要素があります' }
-  ),
+  uniqueStrings: z
+    .array(z.string())
+    .refine((items) => new Set(items).size === items.length, {
+      message: "重複する要素があります",
+    }),
 
   // タプル型
   coordinate: z.tuple([z.number(), z.number()]),
@@ -178,13 +185,13 @@ const arrayPatterns = {
 const stringOrNumber = z.union([z.string(), z.number()]);
 
 // 列挙型
-const status = z.enum(['pending', 'approved', 'rejected']);
+const status = z.enum(["pending", "approved", "rejected"]);
 
 // ネイティブEnum
 enum UserRole {
-  Admin = 'admin',
-  User = 'user',
-  Guest = 'guest',
+  Admin = "admin",
+  User = "user",
+  Guest = "guest",
 }
 const roleSchema = z.nativeEnum(UserRole);
 ```
@@ -193,18 +200,18 @@ const roleSchema = z.nativeEnum(UserRole);
 
 ```typescript
 // タグ付きユニオン（推奨パターン）
-const eventSchema = z.discriminatedUnion('type', [
+const eventSchema = z.discriminatedUnion("type", [
   z.object({
-    type: z.literal('click'),
+    type: z.literal("click"),
     x: z.number(),
     y: z.number(),
   }),
   z.object({
-    type: z.literal('scroll'),
+    type: z.literal("scroll"),
     scrollY: z.number(),
   }),
   z.object({
-    type: z.literal('keypress'),
+    type: z.literal("keypress"),
     key: z.string(),
   }),
 ]);
@@ -282,10 +289,7 @@ const typedRecord = z.record(z.string(), z.number());
 // → Record<string, number>
 
 // キーの制約
-const enumKeyRecord = z.record(
-  z.enum(['a', 'b', 'c']),
-  z.number()
-);
+const enumKeyRecord = z.record(z.enum(["a", "b", "c"]), z.number());
 ```
 
 ## 再帰型パターン
@@ -301,7 +305,7 @@ const categorySchema: z.ZodType<Category> = z.lazy(() =>
   z.object({
     name: z.string(),
     children: z.array(categorySchema).optional(),
-  })
+  }),
 );
 
 // JSON型
@@ -315,7 +319,7 @@ const jsonSchema: z.ZodType<Json> = z.lazy(() =>
     z.null(),
     z.array(jsonSchema),
     z.record(jsonSchema),
-  ])
+  ]),
 );
 ```
 
@@ -332,9 +336,12 @@ const configSchema = z.object({
   createdAt: z.date().default(() => new Date()),
 
   // オプショナルとデフォルトの組み合わせ
-  options: z.object({
-    verbose: z.boolean(),
-  }).optional().default({ verbose: false }),
+  options: z
+    .object({
+      verbose: z.boolean(),
+    })
+    .optional()
+    .default({ verbose: false }),
 });
 ```
 
@@ -366,8 +373,8 @@ const userSchema = baseEntitySchema.extend({
 
 ```typescript
 // ブランド型で異なるID型を区別
-const userIdSchema = z.string().uuid().brand<'UserId'>();
-const postIdSchema = z.string().uuid().brand<'PostId'>();
+const userIdSchema = z.string().uuid().brand<"UserId">();
+const postIdSchema = z.string().uuid().brand<"PostId">();
 
 type UserId = z.infer<typeof userIdSchema>;
 type PostId = z.infer<typeof postIdSchema>;
@@ -429,6 +436,6 @@ const schema2 = z.object({ email: z.string().email() }); // 再利用すべき
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版リリース |
+| バージョン | 日付       | 変更内容     |
+| ---------- | ---------- | ------------ |
+| 1.0.0      | 2025-11-25 | 初版リリース |

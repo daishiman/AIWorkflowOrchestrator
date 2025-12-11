@@ -12,22 +12,23 @@
 
 ### スキル（10個）
 
-| # | スキル名 | 主要機能 | ファイル数 |
-|---|----------|----------|------------|
-| 1 | agile-project-management | スクラム/カンバン実践 | SKILL.md |
-| 2 | user-story-mapping | 要件可視化、MVP定義 | SKILL.md |
-| 3 | estimation-techniques | 見積もり、ベロシティ | SKILL.md + calculator.py |
-| 4 | stakeholder-communication | 報告、期待値管理 | SKILL.md + templates + scripts |
-| 5 | product-vision | ビジョン、OKR、ロードマップ | SKILL.md + okr-template.md |
-| 6 | prioritization-frameworks | RICE/MoSCoW/Kano | SKILL.md + rice-calculator.py |
-| 7 | metrics-tracking | メトリクス追跡、分析 | SKILL.md |
-| 8 | backlog-management | DEEP原則、リファインメント | SKILL.md |
-| 9 | sprint-planning | スプリント計画、キャパシティ | SKILL.md |
-| 10 | risk-management | リスク識別、軽減戦略 | SKILL.md |
+| #   | スキル名                  | 主要機能                     | ファイル数                     |
+| --- | ------------------------- | ---------------------------- | ------------------------------ |
+| 1   | agile-project-management  | スクラム/カンバン実践        | SKILL.md                       |
+| 2   | user-story-mapping        | 要件可視化、MVP定義          | SKILL.md                       |
+| 3   | estimation-techniques     | 見積もり、ベロシティ         | SKILL.md + calculator.py       |
+| 4   | stakeholder-communication | 報告、期待値管理             | SKILL.md + templates + scripts |
+| 5   | product-vision            | ビジョン、OKR、ロードマップ  | SKILL.md + okr-template.md     |
+| 6   | prioritization-frameworks | RICE/MoSCoW/Kano             | SKILL.md + rice-calculator.py  |
+| 7   | metrics-tracking          | メトリクス追跡、分析         | SKILL.md                       |
+| 8   | backlog-management        | DEEP原則、リファインメント   | SKILL.md                       |
+| 9   | sprint-planning           | スプリント計画、キャパシティ | SKILL.md                       |
+| 10  | risk-management           | リスク識別、軽減戦略         | SKILL.md                       |
 
 ### エージェント（改善版）
 
 **product-manager v3.0.0**
+
 - 10個のスキルを完全統合
 - 5フェーズの実行ワークフロー
 - 意思決定フレームワーク強化
@@ -59,23 +60,25 @@
 
 ✅ **検証項目**: 各フェーズでスキルが適切に活用されているか
 
-| Phase | 使用スキル | 統合状態 |
-|-------|-----------|----------|
-| Phase 1: ビジョン定義 | product-vision, risk-management | ✅ 完全統合 |
-| Phase 2: 要件収集 | user-story-mapping, stakeholder-communication | ✅ 完全統合 |
+| Phase                   | 使用スキル                                    | 統合状態    |
+| ----------------------- | --------------------------------------------- | ----------- |
+| Phase 1: ビジョン定義   | product-vision, risk-management               | ✅ 完全統合 |
+| Phase 2: 要件収集       | user-story-mapping, stakeholder-communication | ✅ 完全統合 |
 | Phase 3: バックログ構築 | backlog-management, prioritization-frameworks | ✅ 完全統合 |
-| Phase 4: スプリント実行 | sprint-planning, metrics-tracking | ✅ 完全統合 |
-| Phase 5: 継続的改善 | agile-project-management, risk-management | ✅ 完全統合 |
+| Phase 4: スプリント実行 | sprint-planning, metrics-tracking             | ✅ 完全統合 |
+| Phase 5: 継続的改善     | agile-project-management, risk-management     | ✅ 完全統合 |
 
 ### 3. ツールとテンプレート
 
 ✅ **検証項目**: 実用的なツールが提供されているか
 
 **スクリプト**:
+
 - `generate-status-report.sh` - ステータスレポート自動生成
 - `rice-calculator.py` - RICE Score計算ツール
 
 **テンプレート**:
+
 - `sprint-review-agenda.md` - スプリントレビューアジェンダ
 - `okr-template.md` - OKRテンプレート
 
@@ -108,36 +111,36 @@ graph TD
 
 ### 5. 完成度評価
 
-| 評価項目 | スコア | 備考 |
-|---------|--------|------|
-| スキルカバレッジ | 10/10 | 全領域を網羅 |
-| 実装品質 | 9/10 | 詳細かつ実用的 |
-| 統合度 | 10/10 | 完全統合 |
-| ドキュメント | 9/10 | 包括的 |
-| ツール提供 | 8/10 | 基本ツール完備 |
-| **総合評価** | **92%** | 優秀 |
+| 評価項目         | スコア  | 備考           |
+| ---------------- | ------- | -------------- |
+| スキルカバレッジ | 10/10   | 全領域を網羅   |
+| 実装品質         | 9/10    | 詳細かつ実用的 |
+| 統合度           | 10/10   | 完全統合       |
+| ドキュメント     | 9/10    | 包括的         |
+| ツール提供       | 8/10    | 基本ツール完備 |
+| **総合評価**     | **92%** | 優秀           |
 
 ## 機能マトリクス
 
 ### コア機能
 
-| 機能カテゴリー | 提供機能 | スキル | 成熟度 |
-|--------------|----------|--------|--------|
-| **プロジェクト管理** | スクラム実践、カンバン | agile-project-management | ⭐⭐⭐⭐⭐ |
-| **要件管理** | ストーリーマッピング、MVP定義 | user-story-mapping | ⭐⭐⭐⭐⭐ |
-| **計画と見積もり** | プランニングポーカー、ベロシティ | estimation-techniques | ⭐⭐⭐⭐⭐ |
-| **優先順位付け** | RICE, MoSCoW, Kano | prioritization-frameworks | ⭐⭐⭐⭐⭐ |
-| **進捗管理** | バーンダウン、累積フロー | metrics-tracking | ⭐⭐⭐⭐⭐ |
+| 機能カテゴリー       | 提供機能                         | スキル                    | 成熟度     |
+| -------------------- | -------------------------------- | ------------------------- | ---------- |
+| **プロジェクト管理** | スクラム実践、カンバン           | agile-project-management  | ⭐⭐⭐⭐⭐ |
+| **要件管理**         | ストーリーマッピング、MVP定義    | user-story-mapping        | ⭐⭐⭐⭐⭐ |
+| **計画と見積もり**   | プランニングポーカー、ベロシティ | estimation-techniques     | ⭐⭐⭐⭐⭐ |
+| **優先順位付け**     | RICE, MoSCoW, Kano               | prioritization-frameworks | ⭐⭐⭐⭐⭐ |
+| **進捗管理**         | バーンダウン、累積フロー         | metrics-tracking          | ⭐⭐⭐⭐⭐ |
 
 ### 拡張機能
 
-| 機能カテゴリー | 提供機能 | スキル | 成熟度 |
-|--------------|----------|--------|--------|
-| **コミュニケーション** | 報告書、ダッシュボード | stakeholder-communication | ⭐⭐⭐⭐⭐ |
-| **戦略策定** | ビジョン、OKR、ロードマップ | product-vision | ⭐⭐⭐⭐⭐ |
-| **バックログ管理** | DEEP原則、健全性管理 | backlog-management | ⭐⭐⭐⭐☆ |
-| **スプリント管理** | 計画、キャパシティ管理 | sprint-planning | ⭐⭐⭐⭐☆ |
-| **リスク管理** | 識別、評価、軽減 | risk-management | ⭐⭐⭐⭐☆ |
+| 機能カテゴリー         | 提供機能                    | スキル                    | 成熟度     |
+| ---------------------- | --------------------------- | ------------------------- | ---------- |
+| **コミュニケーション** | 報告書、ダッシュボード      | stakeholder-communication | ⭐⭐⭐⭐⭐ |
+| **戦略策定**           | ビジョン、OKR、ロードマップ | product-vision            | ⭐⭐⭐⭐⭐ |
+| **バックログ管理**     | DEEP原則、健全性管理        | backlog-management        | ⭐⭐⭐⭐☆  |
+| **スプリント管理**     | 計画、キャパシティ管理      | sprint-planning           | ⭐⭐⭐⭐☆  |
+| **リスク管理**         | 識別、評価、軽減            | risk-management           | ⭐⭐⭐⭐☆  |
 
 ## 使用ガイド
 
@@ -153,6 +156,7 @@ Task tool:
 ### 典型的なワークフロー
 
 1. **プロジェクト開始**
+
    ```
    Phase 1: ビジョンとゴール定義
    - スキル: product-vision, risk-management
@@ -160,6 +164,7 @@ Task tool:
    ```
 
 2. **要件定義**
+
    ```
    Phase 2: ストーリーマッピング
    - スキル: user-story-mapping, stakeholder-communication
@@ -167,6 +172,7 @@ Task tool:
    ```
 
 3. **バックログ作成**
+
    ```
    Phase 3: 優先順位付け
    - スキル: backlog-management, prioritization-frameworks
@@ -202,13 +208,13 @@ Task tool:
 
 ### よくある課題と対策
 
-| 課題 | 症状 | 対策 | 関連スキル |
-|------|------|------|-----------|
-| ベロシティ不安定 | スプリントごとに大きく変動 | Yesterday's Weather適用 | estimation-techniques |
-| スコープクリープ | スプリント中の要件追加 | 変更管理プロセス確立 | backlog-management |
-| ステークホルダー不満 | 期待値のズレ | コミュニケーション頻度増加 | stakeholder-communication |
-| 技術的負債蓄積 | 品質低下、速度低下 | 定期的な返済スプリント | risk-management |
-| チーム疲弊 | モチベーション低下 | 持続可能なペース維持 | sprint-planning |
+| 課題                 | 症状                       | 対策                       | 関連スキル                |
+| -------------------- | -------------------------- | -------------------------- | ------------------------- |
+| ベロシティ不安定     | スプリントごとに大きく変動 | Yesterday's Weather適用    | estimation-techniques     |
+| スコープクリープ     | スプリント中の要件追加     | 変更管理プロセス確立       | backlog-management        |
+| ステークホルダー不満 | 期待値のズレ               | コミュニケーション頻度増加 | stakeholder-communication |
+| 技術的負債蓄積       | 品質低下、速度低下         | 定期的な返済スプリント     | risk-management           |
+| チーム疲弊           | モチベーション低下         | 持続可能なペース維持       | sprint-planning           |
 
 ## 今後の拡張可能性
 

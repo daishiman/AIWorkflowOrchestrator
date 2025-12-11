@@ -9,6 +9,7 @@
 ### プロジェクト設定
 
 **`.vscode/settings.json`**:
+
 ```json
 {
   "editor.formatOnSave": true,
@@ -60,6 +61,7 @@
 ### プラグイン（vim-prettier）
 
 **.vimrc**:
+
 ```vim
 Plug 'prettier/vim-prettier', {
   \ 'do': 'yarn install',
@@ -118,6 +120,7 @@ indent_style = tab
 ```
 
 **Prettierとの関係**:
+
 - Prettierは`.editorconfig`を尊重
 - `indent_style`、`indent_size`、`end_of_line`を読み取り
 
@@ -126,16 +129,19 @@ indent_style = tab
 ### コミット対象
 
 **.vscode/settings.json**:
+
 - **コミット**: ✅（チーム全体で統一）
 - **パス**: `.vscode/settings.json`
 
 **.editorconfig**:
+
 - **コミット**: ✅（エディタ横断設定）
 - **パス**: `.editorconfig`
 
 ### 個人設定
 
 **個人の.vscode/settings.json**:
+
 - **コミット**: ❌（個人設定）
 - **パス**: `.vscode/settings.local.json`（gitignore追加）
 
@@ -144,15 +150,17 @@ indent_style = tab
 ### 保存時フォーマットが動作しない
 
 **チェック項目**:
+
 1. Prettier拡張がインストールされているか？
 2. `editor.defaultFormatter`が設定されているか？
 3. `.prettierrc`がプロジェクトルートにあるか？
 
 **デバッグ**:
+
 ```json
 {
-  "prettier.requireConfig": true,  // .prettierrc必須に
-  "prettier.configPath": ".prettierrc"  // 明示的パス指定
+  "prettier.requireConfig": true, // .prettierrc必須に
+  "prettier.configPath": ".prettierrc" // 明示的パス指定
 }
 ```
 
@@ -161,6 +169,7 @@ indent_style = tab
 **症状**: フォーマット後にESLintエラー
 
 **解決**:
+
 ```json
 {
   "editor.codeActionsOnSave": {
@@ -176,6 +185,7 @@ indent_style = tab
 **問題**: JSONはPrettierだが、JavaScriptは別のフォーマッター
 
 **解決**:
+
 ```json
 {
   "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -191,6 +201,7 @@ indent_style = tab
 ## まとめ
 
 **推奨構成**:
+
 - プロジェクト設定（`.vscode/settings.json`）をコミット
 - 保存時自動フォーマット有効化
 - ESLint --fixも自動実行

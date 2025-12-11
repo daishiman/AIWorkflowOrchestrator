@@ -80,13 +80,13 @@ class SomeExecutor:
 
 ## DIとの比較
 
-| 観点 | Service Locator | Dependency Injection |
-|------|-----------------|---------------------|
-| 依存の明示性 | 隠蔽される | 明示的 |
-| テスト容易性 | 困難 | 容易 |
-| 結合度 | 高い（Locatorに依存） | 低い |
-| コードの追跡 | 困難 | 容易 |
-| 推奨度 | 限定的 | 推奨 |
+| 観点         | Service Locator       | Dependency Injection |
+| ------------ | --------------------- | -------------------- |
+| 依存の明示性 | 隠蔽される            | 明示的               |
+| テスト容易性 | 困難                  | 容易                 |
+| 結合度       | 高い（Locatorに依存） | 低い                 |
+| コードの追跡 | 困難                  | 容易                 |
+| 推奨度       | 限定的                | 推奨                 |
 
 ## 使用すべき場面
 
@@ -202,9 +202,9 @@ TestServiceLocator extends ServiceLocator:
 
 ## 関連パターン
 
-| パターン | 関係 |
-|---------|------|
-| Dependency Injection | 推奨される代替 |
-| Registry | サービス管理の類似パターン |
-| Factory | サービス生成との組み合わせ |
-| Singleton | Locator自体の管理 |
+| パターン             | 関係                       |
+| -------------------- | -------------------------- |
+| Dependency Injection | 推奨される代替             |
+| Registry             | サービス管理の類似パターン |
+| Factory              | サービス生成との組み合わせ |
+| Singleton            | Locator自体の管理          |

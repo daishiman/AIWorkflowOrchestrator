@@ -17,7 +17,10 @@
 ```typescript
 interface MessageQueue {
   publish(queue: string, message: any): Promise<void>;
-  subscribe(queue: string, handler: (message: any) => Promise<void>): Promise<void>;
+  subscribe(
+    queue: string,
+    handler: (message: any) => Promise<void>,
+  ): Promise<void>;
 }
 
 class RedisMessageQueue implements MessageQueue {
@@ -31,7 +34,7 @@ class RedisMessageQueue implements MessageQueue {
     const payload = {
       id: generateUUID(),
       timestamp: new Date().toISOString(),
-      data: message
+      data: message,
     };
 
     await this.client.lpush(queue, JSON.stringify(payload));
@@ -39,7 +42,7 @@ class RedisMessageQueue implements MessageQueue {
 
   async subscribe(
     queue: string,
-    handler: (message: any) => Promise<void>
+    handler: (message: any) => Promise<void>,
   ): Promise<void> {
     while (true) {
       try {
@@ -51,7 +54,7 @@ class RedisMessageQueue implements MessageQueue {
           await handler(message);
         }
       } catch (error) {
-        console.error('Error processing message:', error);
+        console.error("Error processing message:", error);
         // エラー後に少し待機
         await sleep(1000);
       }
@@ -76,12 +79,12 @@ class MessageConsumer {
 
   constructor(
     private queue: MessageQueue,
-    private config: ConsumerConfig
+    private config: ConsumerConfig,
   ) {}
 
   async start(
     queueName: string,
-    handler: (message: any) => Promise<void>
+    handler: (message: any) => Promise<void>,
   ): Promise<void> {
     this.running = true;
 
@@ -97,7 +100,7 @@ class MessageConsumer {
 
   private async processNext(
     queueName: string,
-    handler: (message: any) => Promise<void>
+    handler: (message: any) => Promise<void>,
   ): Promise<void> {
     this.activeJobs++;
 
@@ -112,7 +115,7 @@ class MessageConsumer {
 
   private async processWithRetry(
     message: any,
-    handler: (message: any) => Promise<void>
+    handler: (message: any) => Promise<void>,
   ): Promise<void> {
     const retries = message.retries || 0;
 
@@ -129,7 +132,7 @@ class MessageConsumer {
         await this.queue.publish(this.config.deadLetterQueue, {
           ...message,
           error: error.message,
-          failedAt: new Date().toISOString()
+          failedAt: new Date().toISOString(),
         });
       }
     }
@@ -161,7 +164,7 @@ class EventBus implements PubSubClient {
         id: generateUUID(),
         topic,
         timestamp: new Date().toISOString(),
-        data: message
+        data: message,
       };
 
       for (const handler of handlers) {
@@ -195,9 +198,9 @@ class PatternEventBus extends EventBus {
     await super.publish(topic, message);
 
     // ワイルドカードマッチング
-    const parts = topic.split('.');
+    const parts = topic.split(".");
     for (let i = parts.length - 1; i >= 0; i--) {
-      const pattern = [...parts.slice(0, i), '*'].join('.');
+      const pattern = [...parts.slice(0, i), "*"].join(".");
       await super.publish(pattern, message);
     }
   }
@@ -216,11 +219,11 @@ interface EventFilter {
 class FilteredSubscriber {
   constructor(
     private eventBus: PubSubClient,
-    private filter: EventFilter
+    private filter: EventFilter,
   ) {}
 
   subscribe(handler: (message: any) => void): () => void {
-    return this.eventBus.subscribe('*', (message) => {
+    return this.eventBus.subscribe("*", (message) => {
       if (this.matchesFilter(message)) {
         handler(message);
       }
@@ -229,7 +232,7 @@ class FilteredSubscriber {
 
   private matchesFilter(message: any): boolean {
     if (this.filter.topic) {
-      if (typeof this.filter.topic === 'string') {
+      if (typeof this.filter.topic === "string") {
         if (message.topic !== this.filter.topic) return false;
       } else {
         if (!this.filter.topic.test(message.topic)) return false;
@@ -284,9 +287,9 @@ class SagaOrchestrator<TContext> {
 
       return context;
     } catch (error) {
-      console.error('Saga failed, starting compensation:', error);
+      console.error("Saga failed, starting compensation:", error);
       await this.compensate(context);
-      throw new SagaFailedError('Saga execution failed', error as Error);
+      throw new SagaFailedError("Saga execution failed", error as Error);
     }
   }
 
@@ -316,7 +319,7 @@ interface OrderContext {
 
 const orderSaga = new SagaOrchestrator<OrderContext>()
   .addStep({
-    name: 'Reserve Inventory',
+    name: "Reserve Inventory",
     execute: async (ctx) => {
       await inventoryService.reserve(ctx.orderId, ctx.items);
       return { ...ctx, inventoryReserved: true };
@@ -324,10 +327,10 @@ const orderSaga = new SagaOrchestrator<OrderContext>()
     compensate: async (ctx) => {
       await inventoryService.release(ctx.orderId);
       return { ...ctx, inventoryReserved: false };
-    }
+    },
   })
   .addStep({
-    name: 'Process Payment',
+    name: "Process Payment",
     execute: async (ctx) => {
       await paymentService.charge(ctx.userId, ctx.amount);
       return { ...ctx, paymentProcessed: true };
@@ -335,10 +338,10 @@ const orderSaga = new SagaOrchestrator<OrderContext>()
     compensate: async (ctx) => {
       await paymentService.refund(ctx.userId, ctx.amount);
       return { ...ctx, paymentProcessed: false };
-    }
+    },
   })
   .addStep({
-    name: 'Schedule Shipping',
+    name: "Schedule Shipping",
     execute: async (ctx) => {
       await shippingService.schedule(ctx.orderId);
       return { ...ctx, shippingScheduled: true };
@@ -346,7 +349,7 @@ const orderSaga = new SagaOrchestrator<OrderContext>()
     compensate: async (ctx) => {
       await shippingService.cancel(ctx.orderId);
       return { ...ctx, shippingScheduled: false };
-    }
+    },
   });
 ```
 
@@ -357,20 +360,20 @@ const orderSaga = new SagaOrchestrator<OrderContext>()
 interface SagaEvent {
   sagaId: string;
   stepName: string;
-  status: 'started' | 'completed' | 'failed';
+  status: "started" | "completed" | "failed";
   data: any;
 }
 
 class ChoreographySaga {
   constructor(
     private eventBus: PubSubClient,
-    private sagaId: string
+    private sagaId: string,
   ) {}
 
   async start(initialData: any): Promise<void> {
-    await this.eventBus.publish('saga.started', {
+    await this.eventBus.publish("saga.started", {
       sagaId: this.sagaId,
-      data: initialData
+      data: initialData,
     });
   }
 
@@ -382,19 +385,19 @@ class ChoreographySaga {
       execute: (data: any) => Promise<any>;
       onSuccess: string;
       onFailure: string;
-    }
+    },
   ): () => void {
     return eventBus.subscribe(config.listenTo, async (event) => {
       try {
         const result = await config.execute(event.data);
         await eventBus.publish(config.onSuccess, {
           sagaId: event.sagaId,
-          data: result
+          data: result,
         });
       } catch (error) {
         await eventBus.publish(config.onFailure, {
           sagaId: event.sagaId,
-          error: error.message
+          error: error.message,
         });
       }
     });
@@ -415,17 +418,17 @@ interface IdempotencyStore {
 class IdempotentProcessor {
   constructor(
     private store: IdempotencyStore,
-    private ttl: number = 86400 // 24時間
+    private ttl: number = 86400, // 24時間
   ) {}
 
   async process<T>(
     idempotencyKey: string,
-    operation: () => Promise<T>
+    operation: () => Promise<T>,
   ): Promise<T> {
     // 既存の結果を確認
     const existing = await this.store.get(idempotencyKey);
     if (existing) {
-      console.log('Returning cached result for key:', idempotencyKey);
+      console.log("Returning cached result for key:", idempotencyKey);
       return existing as T;
     }
 
@@ -459,11 +462,11 @@ class DeduplicatedConsumer {
 
   async process(
     message: { id: string; data: any },
-    handler: (data: any) => Promise<void>
+    handler: (data: any) => Promise<void>,
   ): Promise<boolean> {
     // 重複チェック
     if (this.processedIds.has(message.id)) {
-      console.log('Duplicate message ignored:', message.id);
+      console.log("Duplicate message ignored:", message.id);
       return false;
     }
 
@@ -535,8 +538,8 @@ const controller = new BackpressureController(10); // 最大10並列
 async function processMessages(messages: any[]): Promise<void> {
   await Promise.all(
     messages.map((msg) =>
-      controller.withBackpressure(() => processMessage(msg))
-    )
+      controller.withBackpressure(() => processMessage(msg)),
+    ),
   );
 }
 ```
@@ -557,20 +560,20 @@ interface DeadLetter {
 class DeadLetterManager {
   constructor(
     private dlqQueue: MessageQueue,
-    private dlqName: string
+    private dlqName: string,
   ) {}
 
   async moveToDeadLetter(
     message: any,
     error: Error,
-    sourceQueue: string
+    sourceQueue: string,
   ): Promise<void> {
     const deadLetter: DeadLetter = {
       originalMessage: message,
       error: error.message,
       failedAt: new Date(),
       retryCount: message.retries || 0,
-      queue: sourceQueue
+      queue: sourceQueue,
     };
 
     await this.dlqQueue.publish(this.dlqName, deadLetter);
@@ -578,7 +581,7 @@ class DeadLetterManager {
 
   async reprocess(
     targetQueue: MessageQueue,
-    filter?: (dl: DeadLetter) => boolean
+    filter?: (dl: DeadLetter) => boolean,
   ): Promise<number> {
     let count = 0;
 

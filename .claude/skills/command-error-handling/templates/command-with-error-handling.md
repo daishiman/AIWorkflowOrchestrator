@@ -12,11 +12,13 @@ allowed-tools: Read, Write, Edit, Bash
 # [コマンド名]
 
 ## 概要
+
 [コマンドの目的と機能]
 
 ## エラーハンドリング戦略
 
 ### 1. 事前検証（Pre-validation）
+
 実行前に条件をチェックします：
 
 - 引数の存在確認
@@ -27,6 +29,7 @@ allowed-tools: Read, Write, Edit, Bash
 ### 2. 実行時エラー処理
 
 #### 引数エラー
+
 ```
 if [ -z "$ARGUMENTS" ]; then
   echo "❌ エラー: 引数が必要です"
@@ -41,6 +44,7 @@ fi
 ```
 
 #### ファイルエラー
+
 ```
 if [ ! -f "$target_file" ]; then
   echo "❌ エラー: ファイルが見つかりません: $target_file"
@@ -53,6 +57,7 @@ fi
 ```
 
 #### 処理エラー
+
 ```
 result=$(process_command) || {
   echo "❌ エラー: 処理に失敗しました"
@@ -71,6 +76,7 @@ result=$(process_command) || {
 ### 3. リカバリー機能
 
 #### バックアップ作成
+
 ```
 backup_file="${target_file}.backup.$(date +%Y%m%d_%H%M%S)"
 cp "$target_file" "$backup_file"
@@ -78,6 +84,7 @@ echo "📦 バックアップを作成: $backup_file"
 ```
 
 #### ロールバック
+
 ```
 rollback() {
   if [ -f "$backup_file" ]; then
@@ -91,19 +98,23 @@ trap rollback ERR
 ## 処理フロー
 
 ### Step 1: 事前検証
+
 - 引数チェック
 - 環境チェック
 - 依存関係チェック
 
 ### Step 2: バックアップ
+
 - 変更対象のバックアップを作成
 - ロールバックポイントを設定
 
 ### Step 3: 処理実行
+
 - メイン処理を実行
 - 各ステップで結果を確認
 
 ### Step 4: 検証と完了
+
 - 処理結果の検証
 - 成功時: バックアップのクリーンアップ
 - 失敗時: ロールバックを実行
@@ -111,6 +122,7 @@ trap rollback ERR
 ## エラーメッセージガイドライン
 
 ### 良いエラーメッセージの例
+
 ```
 ❌ エラー: 設定ファイルが見つかりません
 
@@ -126,6 +138,7 @@ trap rollback ERR
 ```
 
 ### 避けるべきエラーメッセージ
+
 ```
 Error: Failed
 ```
@@ -133,12 +146,14 @@ Error: Failed
 ## 使用例
 
 ### 正常実行
+
 ```
 /[command-name] valid-input
 ✅ 処理が完了しました
 ```
 
 ### エラー発生時
+
 ```
 /[command-name] invalid-input
 ❌ エラー: 入力が無効です

@@ -74,6 +74,7 @@ model: sonnet
    - 本番環境の場合は警告表示
 
 2. **スキーマ確認**:
+
    ```bash
    # スキーマ定義を確認
    cat src/shared/infrastructure/database/schema.ts
@@ -143,28 +144,28 @@ model: sonnet
 2. **Phase 3: Seed実装**:
    - べき等性パターン適用（UPSERT）:
      ```typescript
-     await db.insert(workflows)
+     await db
+       .insert(workflows)
        .values(seedData)
        .onConflictDoUpdate({
          target: workflows.id,
-         set: { status: sql`excluded.status` }
+         set: { status: sql`excluded.status` },
        });
      ```
    - トランザクション管理:
      ```typescript
      await db.transaction(async (tx) => {
        await seedMasterData(tx);
-       if (env !== 'production') {
+       if (env !== "production") {
          await seedDevelopmentData(tx);
        }
      });
      ```
    - 環境別データ分離:
      ```typescript
-     const env = process.env.NODE_ENV || 'development';
-     const seedData = env === 'production'
-       ? masterData
-       : [...masterData, ...developmentData];
+     const env = process.env.NODE_ENV || "development";
+     const seedData =
+       env === "production" ? masterData : [...masterData, ...developmentData];
      ```
 
 3. **Phase 4: 信頼性保証**:
@@ -181,6 +182,7 @@ model: sonnet
 ### Phase 4: 完了報告と次のステップ
 
 **完了報告**:
+
 ```
 ✅ データベースシーディング完了
 
@@ -208,8 +210,8 @@ model: sonnet
 
 ## Arguments（引数）
 
-| 引数 | 説明 | デフォルト | 例 |
-|------|------|-----------|-----|
+| 引数          | 説明                                | デフォルト    | 例           |
+| ------------- | ----------------------------------- | ------------- | ------------ |
 | `environment` | 環境（development/test/production） | `development` | `production` |
 
 ## Examples（使用例）
@@ -221,6 +223,7 @@ model: sonnet
 ```
 
 **期待される動作**:
+
 - Fakerを使用したリアルなテストデータ生成（100件程度）
 - workflows テーブルに多様なステータスのサンプルデータ
 - 外部キー整合性を保った関連データ
@@ -232,6 +235,7 @@ model: sonnet
 ```
 
 **期待される動作**:
+
 - 最小限の再現可能なテストフィクスチャ
 - 各ステータス（PENDING, PROCESSING, COMPLETED, FAILED）のサンプルデータ
 - ユニットテスト用の既知データセット
@@ -243,6 +247,7 @@ model: sonnet
 ```
 
 **期待される動作**:
+
 - **実行前確認プロンプト**: "本番環境にシードを実行します。よろしいですか？ (y/N)"
 - マスターデータのみ投入（設定、ロール等）
 - 冪等性保証（再実行しても安全）
@@ -296,6 +301,7 @@ model: sonnet
 ### 問題1: 外部キー違反エラー
 
 **症状**:
+
 ```
 Error: insert or update on table "workflows" violates foreign key constraint
 ```
@@ -303,12 +309,13 @@ Error: insert or update on table "workflows" violates foreign key constraint
 **原因**: シード順序が不正（参照先データが未投入）
 
 **解決策**:
+
 ```typescript
 // 依存関係順に実行
 await db.transaction(async (tx) => {
-  await seedRoles(tx);      // 独立テーブル
-  await seedUsers(tx);      // rolesに依存
-  await seedWorkflows(tx);  // usersに依存
+  await seedRoles(tx); // 独立テーブル
+  await seedUsers(tx); // rolesに依存
+  await seedWorkflows(tx); // usersに依存
 });
 ```
 
@@ -317,6 +324,7 @@ await db.transaction(async (tx) => {
 **症状**: 大量データのシードに時間がかかる
 
 **解決策**:
+
 ```typescript
 // バッチインサート
 const BATCH_SIZE = 1000;
@@ -329,12 +337,15 @@ for (let i = 0; i < data.length; i += BATCH_SIZE) {
 ### 問題3: 本番環境に誤ってテストデータが投入
 
 **予防策**:
+
 ```typescript
 // 環境チェックを厳格に
-if (process.env.NODE_ENV === 'production') {
-  const answer = await prompt('本番環境にシードを実行します。よろしいですか？ (y/N)');
-  if (answer !== 'y') {
-    throw new Error('本番シード実行がキャンセルされました');
+if (process.env.NODE_ENV === "production") {
+  const answer = await prompt(
+    "本番環境にシードを実行します。よろしいですか？ (y/N)",
+  );
+  if (answer !== "y") {
+    throw new Error("本番シード実行がキャンセルされました");
   }
 }
 ```

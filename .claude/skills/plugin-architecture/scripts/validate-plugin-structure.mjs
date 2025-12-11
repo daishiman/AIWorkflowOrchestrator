@@ -14,20 +14,14 @@
  *   - テストファイルの存在
  */
 
-import { readdirSync, existsSync, readFileSync, statSync } from 'fs';
-import { resolve, join, basename } from 'path';
+import { readdirSync, existsSync, readFileSync, statSync } from "fs";
+import { resolve, join, basename } from "path";
 
 // ===== 検証ルール =====
 
-const REQUIRED_FILES = [
-  'executor.ts',
-  'schema.ts',
-];
+const REQUIRED_FILES = ["executor.ts", "schema.ts"];
 
-const RECOMMENDED_FILES = [
-  '__tests__/executor.test.ts',
-  'types.ts',
-];
+const RECOMMENDED_FILES = ["__tests__/executor.test.ts", "types.ts"];
 
 const EXECUTOR_PATTERNS = {
   interfaceImplementation: /implements\s+IWorkflowExecutor/,
@@ -105,9 +99,9 @@ function validateDirectory(dirPath) {
   }
 
   // executor.tsの内容チェック
-  const executorPath = join(absolutePath, 'executor.ts');
+  const executorPath = join(absolutePath, "executor.ts");
   if (existsSync(executorPath)) {
-    const content = readFileSync(executorPath, 'utf-8');
+    const content = readFileSync(executorPath, "utf-8");
 
     for (const [name, pattern] of Object.entries(EXECUTOR_PATTERNS)) {
       const passed = pattern.test(content);
@@ -129,61 +123,64 @@ function validateDirectory(dirPath) {
 }
 
 function printResults(results) {
-  console.log('\n🔍 プラグイン構造検証結果');
-  console.log('='.repeat(60));
+  console.log("\n🔍 プラグイン構造検証結果");
+  console.log("=".repeat(60));
   console.log(`📁 ディレクトリ: ${results.directory}`);
   console.log(`📛 プラグイン名: ${results.name}`);
-  console.log('');
+  console.log("");
 
   // 必須ファイル
-  console.log('📋 必須ファイル');
-  console.log('-'.repeat(40));
+  console.log("📋 必須ファイル");
+  console.log("-".repeat(40));
   for (const file of results.requiredFiles) {
-    const icon = file.exists ? '✅' : '❌';
+    const icon = file.exists ? "✅" : "❌";
     console.log(`  ${icon} ${file.file}`);
   }
 
   // 推奨ファイル
-  console.log('\n📋 推奨ファイル');
-  console.log('-'.repeat(40));
+  console.log("\n📋 推奨ファイル");
+  console.log("-".repeat(40));
   for (const file of results.recommendedFiles) {
-    const icon = file.exists ? '✅' : '⚠️';
+    const icon = file.exists ? "✅" : "⚠️";
     console.log(`  ${icon} ${file.file}`);
   }
 
   // Executorチェック
   if (results.executorChecks.length > 0) {
-    console.log('\n📋 Executor構造チェック');
-    console.log('-'.repeat(40));
+    console.log("\n📋 Executor構造チェック");
+    console.log("-".repeat(40));
     for (const check of results.executorChecks) {
-      const icon = check.passed ? '✅' : '❌';
+      const icon = check.passed ? "✅" : "❌";
       const label = formatCheckName(check.name);
       console.log(`  ${icon} ${label}`);
     }
   }
 
   // サマリー
-  console.log('\n' + '='.repeat(60));
-  console.log('📊 サマリー');
+  console.log("\n" + "=".repeat(60));
+  console.log("📊 サマリー");
   console.log(`   合計: ${results.summary.total}`);
   console.log(`   ✅ 合格: ${results.summary.passed}`);
   console.log(`   ⚠️ 警告: ${results.summary.warnings}`);
   console.log(`   ❌ 失敗: ${results.summary.failed}`);
 
-  const passRate = ((results.summary.passed / results.summary.total) * 100).toFixed(1);
+  const passRate = (
+    (results.summary.passed / results.summary.total) *
+    100
+  ).toFixed(1);
   console.log(`   📈 合格率: ${passRate}%`);
-  console.log('');
+  console.log("");
 }
 
 function formatCheckName(name) {
   const labels = {
-    interfaceImplementation: 'IWorkflowExecutorの実装',
-    typeProperty: 'type プロパティ',
-    displayNameProperty: 'displayName プロパティ',
-    descriptionProperty: 'description プロパティ',
-    inputSchema: 'inputSchema 定義',
-    outputSchema: 'outputSchema 定義',
-    executeMethod: 'execute メソッド',
+    interfaceImplementation: "IWorkflowExecutorの実装",
+    typeProperty: "type プロパティ",
+    displayNameProperty: "displayName プロパティ",
+    descriptionProperty: "description プロパティ",
+    inputSchema: "inputSchema 定義",
+    outputSchema: "outputSchema 定義",
+    executeMethod: "execute メソッド",
   };
   return labels[name] || name;
 }
@@ -194,10 +191,12 @@ function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.log('使用方法: node validate-plugin-structure.mjs <directory>');
-    console.log('');
-    console.log('例:');
-    console.log('  node validate-plugin-structure.mjs src/features/authentication');
+    console.log("使用方法: node validate-plugin-structure.mjs <directory>");
+    console.log("");
+    console.log("例:");
+    console.log(
+      "  node validate-plugin-structure.mjs src/features/authentication",
+    );
     process.exit(0);
   }
 

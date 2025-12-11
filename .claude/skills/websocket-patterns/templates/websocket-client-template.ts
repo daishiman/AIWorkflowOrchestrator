@@ -14,7 +14,11 @@
 // 型定義
 // ============================================================
 
-type ConnectionState = 'disconnected' | 'connecting' | 'connected' | 'reconnecting';
+type ConnectionState =
+  | "disconnected"
+  | "connecting"
+  | "connected"
+  | "reconnecting";
 
 interface WebSocketConfig {
   url: string;
@@ -37,7 +41,7 @@ interface WebSocketConfig {
 interface QueuedMessage {
   id: string;
   payload: unknown;
-  priority: 'high' | 'normal' | 'low';
+  priority: "high" | "normal" | "low";
   createdAt: number;
   attempts: number;
   maxAttempts: number;
@@ -58,7 +62,7 @@ interface WebSocketEvents {
 // ============================================================
 
 const DEFAULT_CONFIG: WebSocketConfig = {
-  url: '',
+  url: "",
   protocols: [],
   maxRetries: 10,
   baseDelay: 1000,
@@ -79,7 +83,7 @@ const DEFAULT_CONFIG: WebSocketConfig = {
 class WebSocketClient {
   private ws: WebSocket | null = null;
   private config: WebSocketConfig;
-  private state: ConnectionState = 'disconnected';
+  private state: ConnectionState = "disconnected";
 
   // 再接続
   private retryCount = 0;
@@ -106,11 +110,11 @@ class WebSocketClient {
   // ------------------------------------------------------------
 
   connect(): void {
-    if (this.state === 'connected' || this.state === 'connecting') {
+    if (this.state === "connected" || this.state === "connecting") {
       return;
     }
 
-    this.state = 'connecting';
+    this.state = "connecting";
     this.clearTimers();
 
     try {
@@ -126,10 +130,10 @@ class WebSocketClient {
     this.clearTimers();
 
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      this.ws.close(1000, 'Client disconnect');
+      this.ws.close(1000, "Client disconnect");
     }
 
-    this.state = 'disconnected';
+    this.state = "disconnected";
     this.ws = null;
     this.retryCount = 0;
   }
@@ -139,27 +143,27 @@ class WebSocketClient {
 
     this.ws.onopen = () => {
       this.clearConnectionTimeout();
-      this.state = 'connected';
+      this.state = "connected";
       this.retryCount = 0;
 
       this.startHeartbeat();
       this.flushQueue();
 
-      this.emit('connected', { timestamp: Date.now() });
+      this.emit("connected", { timestamp: Date.now() });
     };
 
     this.ws.onmessage = (event) => {
       try {
         const message = JSON.parse(event.data);
 
-        if (message.type === 'pong') {
+        if (message.type === "pong") {
           this.handlePong();
           return;
         }
 
-        this.emit('message', message);
+        this.emit("message", message);
       } catch (error) {
-        this.emit('error', { type: 'parse_error', error: error as Error });
+        this.emit("error", { type: "parse_error", error: error as Error });
       }
     };
 
@@ -168,18 +172,21 @@ class WebSocketClient {
       this.clearConnectionTimeout();
 
       if (event.wasClean) {
-        this.state = 'disconnected';
-        this.emit('disconnected', { reason: 'clean_close' });
+        this.state = "disconnected";
+        this.emit("disconnected", { reason: "clean_close" });
       } else if (this.config.autoReconnect) {
         this.scheduleReconnect();
       } else {
-        this.state = 'disconnected';
-        this.emit('disconnected', { reason: 'connection_lost' });
+        this.state = "disconnected";
+        this.emit("disconnected", { reason: "connection_lost" });
       }
     };
 
     this.ws.onerror = (error) => {
-      this.emit('error', { type: 'connection_error', error: error as unknown as Error });
+      this.emit("error", {
+        type: "connection_error",
+        error: error as unknown as Error,
+      });
     };
   }
 
@@ -189,17 +196,17 @@ class WebSocketClient {
 
   private scheduleReconnect(): void {
     if (this.retryCount >= this.config.maxRetries) {
-      this.state = 'disconnected';
-      this.emit('max_retries_reached', undefined);
+      this.state = "disconnected";
+      this.emit("max_retries_reached", undefined);
       return;
     }
 
-    this.state = 'reconnecting';
+    this.state = "reconnecting";
     this.retryCount++;
 
     const delay = this.calculateDelay(this.retryCount);
 
-    this.emit('reconnecting', {
+    this.emit("reconnecting", {
       attempt: this.retryCount,
       delay,
     });
@@ -222,7 +229,7 @@ class WebSocketClient {
 
   private startConnectionTimeout(): void {
     this.connectionTimeoutTimer = setTimeout(() => {
-      if (this.state === 'connecting') {
+      if (this.state === "connecting") {
         this.ws?.close();
         this.scheduleReconnect();
       }
@@ -260,14 +267,14 @@ class WebSocketClient {
       this.missedHeartbeats++;
 
       if (this.missedHeartbeats >= this.config.maxMissedHeartbeats) {
-        this.emit('heartbeat_timeout', undefined);
+        this.emit("heartbeat_timeout", undefined);
         this.ws?.close();
         return;
       }
     }
 
     this.pendingPing = true;
-    this.send({ type: 'ping', timestamp: Date.now() });
+    this.send({ type: "ping", timestamp: Date.now() });
 
     setTimeout(() => {
       if (this.pendingPing) {
@@ -285,10 +292,13 @@ class WebSocketClient {
   // メッセージ送信
   // ------------------------------------------------------------
 
-  send(payload: unknown, priority: 'high' | 'normal' | 'low' = 'normal'): string {
+  send(
+    payload: unknown,
+    priority: "high" | "normal" | "low" = "normal",
+  ): string {
     const id = this.generateId();
 
-    if (this.state === 'connected' && this.ws?.readyState === WebSocket.OPEN) {
+    if (this.state === "connected" && this.ws?.readyState === WebSocket.OPEN) {
       try {
         this.ws.send(JSON.stringify(payload));
         return id;
@@ -302,7 +312,11 @@ class WebSocketClient {
     return id;
   }
 
-  private enqueue(id: string, payload: unknown, priority: 'high' | 'normal' | 'low'): void {
+  private enqueue(
+    id: string,
+    payload: unknown,
+    priority: "high" | "normal" | "low",
+  ): void {
     if (this.queue.length >= this.config.queueMaxSize) {
       this.removeOldestFromQueue();
     }
@@ -320,7 +334,7 @@ class WebSocketClient {
   }
 
   private async flushQueue(): Promise<void> {
-    while (this.queue.length > 0 && this.state === 'connected') {
+    while (this.queue.length > 0 && this.state === "connected") {
       const message = this.queue.shift();
       if (!message) break;
 
@@ -343,7 +357,7 @@ class WebSocketClient {
 
   private removeOldestFromQueue(): void {
     // 低優先度から削除
-    const lowIdx = this.queue.findIndex((m) => m.priority === 'low');
+    const lowIdx = this.queue.findIndex((m) => m.priority === "low");
     if (lowIdx !== -1) {
       this.queue.splice(lowIdx, 1);
       return;
@@ -359,7 +373,7 @@ class WebSocketClient {
 
   on<K extends keyof WebSocketEvents>(
     event: K,
-    callback: (data: WebSocketEvents[K]) => void
+    callback: (data: WebSocketEvents[K]) => void,
   ): () => void {
     if (!this.listeners.has(event)) {
       this.listeners.set(event, new Set());
@@ -372,12 +386,15 @@ class WebSocketClient {
     };
   }
 
-  private emit<K extends keyof WebSocketEvents>(event: K, data: WebSocketEvents[K]): void {
+  private emit<K extends keyof WebSocketEvents>(
+    event: K,
+    data: WebSocketEvents[K],
+  ): void {
     this.listeners.get(event)?.forEach((callback) => callback(data));
   }
 
   private handleError(error: Error): void {
-    this.emit('error', { type: 'connection_error', error });
+    this.emit("error", { type: "connection_error", error });
 
     if (this.config.autoReconnect) {
       this.scheduleReconnect();
@@ -410,7 +427,7 @@ class WebSocketClient {
   }
 
   isConnected(): boolean {
-    return this.state === 'connected';
+    return this.state === "connected";
   }
 
   getQueueSize(): number {
@@ -426,5 +443,11 @@ class WebSocketClient {
 // エクスポート
 // ============================================================
 
-export { WebSocketClient, WebSocketConfig, ConnectionState, QueuedMessage, WebSocketEvents };
+export {
+  WebSocketClient,
+  WebSocketConfig,
+  ConnectionState,
+  QueuedMessage,
+  WebSocketEvents,
+};
 export default WebSocketClient;

@@ -31,6 +31,7 @@ jobs:
 ```
 
 **ポイント**:
+
 - `steps.<step_id>.outputs.<name>`でステップのoutputを参照
 - `needs.<job_id>.outputs.<name>`で他ジョブのoutputを参照
 
@@ -454,7 +455,7 @@ outputs:
 
 ```yaml
 outputs:
-  file-content: ${{ steps.read.outputs.content }}  # 大きすぎる
+  file-content: ${{ steps.read.outputs.content }} # 大きすぎる
 ```
 
 ### 2. Artifactsの使用
@@ -475,7 +476,7 @@ outputs:
 - uses: actions/upload-artifact@v4
   with:
     name: version
-    path: version.txt  # Outputsを使うべき
+    path: version.txt # Outputsを使うべき
 ```
 
 ### 3. Artifact名の命名規則
@@ -494,7 +495,7 @@ outputs:
 ```yaml
 - uses: actions/upload-artifact@v4
   with:
-    name: output  # 曖昧
+    name: output # 曖昧
     path: dist/
 ```
 
@@ -518,7 +519,7 @@ outputs:
 - uses: actions/upload-artifact@v4
   with:
     name: all
-    path: .  # 巨大なArtifact
+    path: . # 巨大なArtifact
 ```
 
 ## パフォーマンス最適化
@@ -595,7 +596,7 @@ jobs:
 - uses: actions/upload-artifact@v4
   with:
     name: node_modules
-    path: node_modules/  # 非効率
+    path: node_modules/ # 非効率
 ```
 
 ## トラブルシューティング
@@ -624,7 +625,7 @@ jobs:
       - uses: actions/upload-artifact@v4
 
   test:
-    needs: build  # 重要: needsで依存関係を明示
+    needs: build # 重要: needsで依存関係を明示
     steps:
       - uses: actions/download-artifact@v4
 ```
@@ -648,5 +649,6 @@ jobs:
 ---
 
 **関連リソース**:
+
 - [job-dependencies.md](./job-dependencies.md) - ジョブ依存関係管理
 - [templates/parallel-workflow.yaml](../templates/parallel-workflow.yaml) - 実装例

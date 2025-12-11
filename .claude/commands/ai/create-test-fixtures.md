@@ -88,18 +88,21 @@ Task ツールで `.claude/agents/unit-tester.md` を起動:
 フィクスチャタイプ: ${フィクスチャタイプ}
 
 依頼内容:
+
 - ユニットテスト用Fixture関数の作成
 - 型安全なデータ生成（TypeScript型推論）
 - テストダブルパターンの適用
 - デフォルト値と部分的オーバーライド対応
 
 必須要件:
+
 1. Fixtureファイル作成: `src/features/[機能名]/__tests__/fixtures/${フィクスチャタイプ}.ts`
 2. 型安全なファクトリ関数実装
 3. デフォルト値設定（正常系データ）
 4. 部分的オーバーライド対応（Partial<T>）
 
 期待成果物:
+
 - ユニットテスト用Fixture関数
 - TypeScript型推論付き
 ```
@@ -113,18 +116,21 @@ Task ツールで `.claude/agents/e2e-tester.md` を起動:
 フィクスチャタイプ: ${フィクスチャタイプ}
 
 依頼内容:
+
 - E2Eテスト用Fixtureとseeding戦略の作成
 - データ分離戦略適用（UUID、タイムスタンプ、Worker ID）
 - クリーンアップ戦略実装（Teardown）
 - 並列実行対応
 
 必須要件:
+
 1. Fixtureファイル作成: `tests/fixtures/${フィクスチャタイプ}.ts`
 2. Seeding戦略実装（API、DB、Fixture）
 3. データ分離戦略適用（並列実行時の競合防止）
 4. Teardownフック実装（テスト後のクリーンアップ）
 
 期待成果物:
+
 - E2Eテスト用Fixture関数
 - Seeding/Teardownスクリプト
 - 並列実行対応済み
@@ -150,10 +156,12 @@ Task ツールで `.claude/agents/e2e-tester.md` を起動:
 ✅ テストフィクスチャ作成完了
 
 📁 ユニットテスト用:
-- src/features/user-management/__tests__/fixtures/user.ts
+
+- src/features/user-management/**tests**/fixtures/user.ts
 - 型安全なファクトリ関数: createUserFixture()
 
 📁 E2Eテスト用:
+
 - tests/fixtures/user.ts
 - Seeding関数: seedUser()
 - Teardown関数: cleanupUsers()
@@ -161,23 +169,23 @@ Task ツールで `.claude/agents/e2e-tester.md` を起動:
 📖 使用例:
 
 // ユニットテスト
-import { createUserFixture } from './__tests__/fixtures/user';
+import { createUserFixture } from './**tests**/fixtures/user';
 
 const user = createUserFixture({
-  email: 'test@example.com',
-  role: 'admin'
+email: 'test@example.com',
+role: 'admin'
 });
 
 // E2Eテスト
 import { seedUser, cleanupUsers } from './fixtures/user';
 
 test.afterEach(async () => {
-  await cleanupUsers();
+await cleanupUsers();
 });
 
 test('user login', async () => {
-  const user = await seedUser({ email: 'test@example.com' });
-  // ...
+const user = await seedUser({ email: 'test@example.com' });
+// ...
 });
 ```
 

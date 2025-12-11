@@ -33,11 +33,13 @@ Clean Architecture の先駆けとなった概念。
 ### 1. Domain Model（最内層）
 
 **責務**:
+
 - エンティティ（Entity）
 - 値オブジェクト（Value Object）
 - ドメインイベント
 
 **特徴**:
+
 - 外部依存なし
 - 純粋なビジネスルール
 
@@ -48,27 +50,27 @@ export class Order {
     private readonly id: OrderId,
     private readonly customerId: CustomerId,
     private items: OrderItem[],
-    private status: OrderStatus
+    private status: OrderStatus,
   ) {}
 
   addItem(item: OrderItem): void {
-    if (this.status !== 'draft') {
-      throw new DomainError('Cannot modify non-draft order');
+    if (this.status !== "draft") {
+      throw new DomainError("Cannot modify non-draft order");
     }
     this.items.push(item);
   }
 
   submit(): void {
     if (this.items.length === 0) {
-      throw new DomainError('Cannot submit empty order');
+      throw new DomainError("Cannot submit empty order");
     }
-    this.status = 'submitted';
+    this.status = "submitted";
   }
 
   calculateTotal(): Money {
     return this.items.reduce(
       (sum, item) => sum.add(item.subtotal),
-      Money.zero()
+      Money.zero(),
     );
   }
 }
@@ -77,6 +79,7 @@ export class Order {
 ### 2. Domain Services
 
 **責務**:
+
 - 複数エンティティにまたがるビジネスロジック
 - リポジトリインターフェースの定義
 
@@ -111,6 +114,7 @@ export interface IOrderRepository {
 ### 3. Application Services
 
 **責務**:
+
 - ユースケースのオーケストレーション
 - トランザクション管理
 - DTO変換
@@ -122,21 +126,21 @@ export class OrderApplicationService {
     private orderRepository: IOrderRepository,
     private customerRepository: ICustomerRepository,
     private pricingService: PricingService,
-    private eventBus: IEventBus
+    private eventBus: IEventBus,
   ) {}
 
   async createOrder(dto: CreateOrderDTO): Promise<OrderDTO> {
     // トランザクション開始
     const customer = await this.customerRepository.findById(dto.customerId);
     if (!customer) {
-      throw new ApplicationError('Customer not found');
+      throw new ApplicationError("Customer not found");
     }
 
     const order = new Order(
       OrderId.generate(),
       customer.id,
-      dto.items.map(item => OrderItem.fromDTO(item)),
-      'draft'
+      dto.items.map((item) => OrderItem.fromDTO(item)),
+      "draft",
     );
 
     const discount = this.pricingService.calculateDiscount(order, customer);
@@ -155,6 +159,7 @@ export class OrderApplicationService {
 ### 4. Infrastructure（最外層）
 
 **責務**:
+
 - データベースアクセス
 - 外部API連携
 - フレームワーク統合
@@ -173,7 +178,9 @@ export class DrizzleOrderRepository implements IOrderRepository {
 
   async save(order: Order): Promise<void> {
     await db.transaction(async (tx) => {
-      await tx.insert(orders).values(this.toRow(order))
+      await tx
+        .insert(orders)
+        .values(this.toRow(order))
         .onConflictDoUpdate({ target: orders.id, set: this.toRow(order) });
 
       // 注文アイテムの保存
@@ -185,8 +192,8 @@ export class DrizzleOrderRepository implements IOrderRepository {
     return new Order(
       new OrderId(row.id),
       new CustomerId(row.customerId),
-      row.items.map(item => OrderItem.fromRow(item)),
-      row.status as OrderStatus
+      row.items.map((item) => OrderItem.fromRow(item)),
+      row.status as OrderStatus,
     );
   }
 }
@@ -194,13 +201,13 @@ export class DrizzleOrderRepository implements IOrderRepository {
 
 ## Clean Architecture との違い
 
-| 観点 | Onion Architecture | Clean Architecture |
-|------|-------------------|-------------------|
-| 提唱者 | Jeffrey Palermo (2008) | Robert C. Martin (2012) |
-| レイヤー数 | 4層（柔軟） | 4層（明確） |
-| 用語 | Domain Model, Services | Entities, Use Cases |
-| フォーカス | ドメイン中心 | ビジネスルール中心 |
-| 依存方向 | 外→内 | 外→内 |
+| 観点       | Onion Architecture     | Clean Architecture      |
+| ---------- | ---------------------- | ----------------------- |
+| 提唱者     | Jeffrey Palermo (2008) | Robert C. Martin (2012) |
+| レイヤー数 | 4層（柔軟）            | 4層（明確）             |
+| 用語       | Domain Model, Services | Entities, Use Cases     |
+| フォーカス | ドメイン中心           | ビジネスルール中心      |
+| 依存方向   | 外→内                  | 外→内                   |
 
 ## ディレクトリ構成
 

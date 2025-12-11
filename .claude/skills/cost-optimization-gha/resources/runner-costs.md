@@ -9,32 +9,33 @@ GitHub Actions のランナー選択はコストに大きく影響します。
 
 ### GitHub-hosted ランナー
 
-| ランナータイプ | CPU | RAM | 分単価 | 1000分あたり | 月間コスト (20回/日, 10分) |
-|-------------|-----|-----|--------|------------|----------------------|
-| **ubuntu-latest** | 4 | 16GB | $0.008 | $8 | $48 |
-| **ubuntu-latest-4-cores** | 4 | 16GB | $0.016 | $16 | $96 |
-| **ubuntu-latest-8-cores** | 8 | 32GB | $0.032 | $32 | $192 |
-| **ubuntu-latest-16-cores** | 16 | 64GB | $0.064 | $64 | $384 |
-| **windows-latest** | 4 | 16GB | $0.016 | $16 | $96 |
-| **windows-latest-8-cores** | 8 | 32GB | $0.032 | $32 | $192 |
-| **macos-13** | 4 | 14GB | $0.08 | $80 | $480 |
-| **macos-14** (M1) | 3 | 7GB | $0.16 | $160 | $960 |
-| **macos-14-large** (M1) | 6 | 14GB | $0.16 | $160 | $960 |
+| ランナータイプ             | CPU | RAM  | 分単価 | 1000分あたり | 月間コスト (20回/日, 10分) |
+| -------------------------- | --- | ---- | ------ | ------------ | -------------------------- |
+| **ubuntu-latest**          | 4   | 16GB | $0.008 | $8           | $48                        |
+| **ubuntu-latest-4-cores**  | 4   | 16GB | $0.016 | $16          | $96                        |
+| **ubuntu-latest-8-cores**  | 8   | 32GB | $0.032 | $32          | $192                       |
+| **ubuntu-latest-16-cores** | 16  | 64GB | $0.064 | $64          | $384                       |
+| **windows-latest**         | 4   | 16GB | $0.016 | $16          | $96                        |
+| **windows-latest-8-cores** | 8   | 32GB | $0.032 | $32          | $192                       |
+| **macos-13**               | 4   | 14GB | $0.08  | $80          | $480                       |
+| **macos-14** (M1)          | 3   | 7GB  | $0.16  | $160         | $960                       |
+| **macos-14-large** (M1)    | 6   | 14GB | $0.16  | $160         | $960                       |
 
 ### Self-hosted ランナー
 
-| インフラ | 初期コスト | 月間運用コスト | 実行コスト | ブレークイーブン |
-|---------|----------|--------------|----------|-------------|
-| **AWS EC2 (t3.medium)** | $0 | $30/月 | $0 | 4,000分/月 |
-| **AWS EC2 (t3.large)** | $0 | $60/月 | $0 | 8,000分/月 |
-| **オンプレミス** | $2,000 | $50/月 | $0 | 高頻度実行 |
-| **既存サーバー** | $0 | $0 | $0 | 即座に有益 |
+| インフラ                | 初期コスト | 月間運用コスト | 実行コスト | ブレークイーブン |
+| ----------------------- | ---------- | -------------- | ---------- | ---------------- |
+| **AWS EC2 (t3.medium)** | $0         | $30/月         | $0         | 4,000分/月       |
+| **AWS EC2 (t3.large)**  | $0         | $60/月         | $0         | 8,000分/月       |
+| **オンプレミス**        | $2,000     | $50/月         | $0         | 高頻度実行       |
+| **既存サーバー**        | $0         | $0             | $0         | 即座に有益       |
 
 ## ランナー選択戦略
 
 ### 1. OS 選択による最適化
 
 **コスト比較 (10分実行)**:
+
 - Linux: $0.08
 - Windows: $0.16 (2倍)
 - macOS (Intel): $0.80 (10倍)
@@ -69,7 +70,7 @@ jobs:
 ```yaml
 jobs:
   build:
-    runs-on: ubuntu-latest  # 最安
+    runs-on: ubuntu-latest # 最安
     steps:
       - run: pnpm run build
       - uses: actions/upload-artifact@v4
@@ -129,7 +130,7 @@ jobs:
 ```yaml
 jobs:
   lint:
-    runs-on: ubuntu-latest  # 4 CPU, 16GB
+    runs-on: ubuntu-latest # 4 CPU, 16GB
     steps:
       - run: pnpm run lint
     # 実行時間: 2分
@@ -141,7 +142,7 @@ jobs:
 ```yaml
 jobs:
   build:
-    runs-on: ubuntu-latest-8-cores  # 8 CPU, 32GB
+    runs-on: ubuntu-latest-8-cores # 8 CPU, 32GB
     steps:
       - run: pnpm run build
     # 標準ランナー: 10分 × $0.008/分 = $0.08
@@ -150,6 +151,7 @@ jobs:
 ```
 
 **コスト計算式**:
+
 ```
 標準ランナーコスト = 実行時間 × $0.008
 大型ランナーコスト = 実行時間/2 × $0.016
@@ -174,12 +176,12 @@ jobs:
 
 **実行頻度別の推奨**:
 
-| 実行パターン | 月間時間 | 推奨ランナー |
-|------------|---------|------------|
-| **低頻度** (1-2回/日) | <10時間 | GitHub-hosted |
+| 実行パターン           | 月間時間  | 推奨ランナー  |
+| ---------------------- | --------- | ------------- |
+| **低頻度** (1-2回/日)  | <10時間   | GitHub-hosted |
 | **中頻度** (5-10回/日) | 20-40時間 | GitHub-hosted |
-| **高頻度** (20+回/日) | 100+時間 | Self-hosted |
-| **継続的** (常時実行) | 720時間 | Self-hosted |
+| **高頻度** (20+回/日)  | 100+時間  | Self-hosted   |
+| **継続的** (常時実行)  | 720時間   | Self-hosted   |
 
 #### Self-hosted ランナーのセットアップ
 
@@ -197,12 +199,14 @@ jobs:
 ```
 
 **Self-hosted の利点**:
+
 - 実行コスト: $0
 - キャッシュ永続化
 - カスタマイズ可能
 - 専用リソース
 
 **Self-hosted のデメリット**:
+
 - 初期セットアップコスト
 - メンテナンス負担
 - セキュリティ管理
@@ -279,12 +283,12 @@ jobs:
 
 ### プラン別の無料枠
 
-| プラン | 無料枠 | Linux換算 | Windows換算 | macOS換算 |
-|--------|-------|-----------|------------|-----------|
-| **Free** | 2,000分 | 2,000分 | 1,000分 | 250分 |
-| **Pro** | 3,000分 | 3,000分 | 1,500分 | 375分 |
-| **Team** | 3,000分 | 3,000分 | 1,500分 | 375分 |
-| **Enterprise** | 50,000分 | 50,000分 | 25,000分 | 6,250分 |
+| プラン         | 無料枠   | Linux換算 | Windows換算 | macOS換算 |
+| -------------- | -------- | --------- | ----------- | --------- |
+| **Free**       | 2,000分  | 2,000分   | 1,000分     | 250分     |
+| **Pro**        | 3,000分  | 3,000分   | 1,500分     | 375分     |
+| **Team**       | 3,000分  | 3,000分   | 1,500分     | 375分     |
+| **Enterprise** | 50,000分 | 50,000分  | 25,000分    | 6,250分   |
 
 ### 無料枠内での最適化
 
@@ -292,9 +296,9 @@ jobs:
 jobs:
   # 無料枠を効率的に使用
   build:
-    runs-on: ubuntu-latest  # 最も効率的
+    runs-on: ubuntu-latest # 最も効率的
     steps:
-      - uses: actions/cache@v4  # キャッシングで時間短縮
+      - uses: actions/cache@v4 # キャッシングで時間短縮
       - run: pnpm ci
       - run: pnpm run build
 
@@ -322,14 +326,20 @@ gh api /repos/{owner}/{repo}/actions/runs \
 
 ```javascript
 // scripts/calculate-cost.mjs
-const runs = await fetch('https://api.github.com/repos/{owner}/{repo}/actions/runs');
+const runs = await fetch(
+  "https://api.github.com/repos/{owner}/{repo}/actions/runs",
+);
 const data = await runs.json();
 
 let totalCost = 0;
 for (const run of data.workflow_runs) {
-  const duration = (new Date(run.updated_at) - new Date(run.run_started_at)) / 60000;
-  const os = run.run_started_at.includes('ubuntu') ? 0.008 :
-             run.run_started_at.includes('windows') ? 0.016 : 0.08;
+  const duration =
+    (new Date(run.updated_at) - new Date(run.run_started_at)) / 60000;
+  const os = run.run_started_at.includes("ubuntu")
+    ? 0.008
+    : run.run_started_at.includes("windows")
+      ? 0.016
+      : 0.08;
   totalCost += duration * os;
 }
 

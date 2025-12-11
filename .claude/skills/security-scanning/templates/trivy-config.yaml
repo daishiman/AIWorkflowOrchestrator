@@ -18,8 +18,8 @@ severity:
 # 脆弱性タイプ
 vulnerability:
   type:
-    - os        # OSパッケージの脆弱性
-    - library   # ライブラリの脆弱性
+    - os # OSパッケージの脆弱性
+    - library # ライブラリの脆弱性
 
 # 修正版がない脆弱性を無視
 ignore-unfixed: true
@@ -47,8 +47,8 @@ db:
 
 # スキャナー設定
 scanners:
-  - vuln        # 脆弱性スキャン
-  - secret      # シークレット検出
+  - vuln # 脆弱性スキャン
+  - secret # シークレット検出
   # - misconfig   # 設定ミス検出（IaC用）
 
 # シークレット検出設定

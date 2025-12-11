@@ -198,12 +198,10 @@ cat .claude/skills/hallucination-prevention/templates/verification-checklist.md
 ### すべきこと
 
 1. **多層防御の実装**:
-
    - 1 層だけに頼らない
    - リスクに応じた層の選択
 
 2. **検証可能な出力設計**:
-
    - 信頼度フィールドの追加
    - 情報源フィールドの追加
 
@@ -214,12 +212,10 @@ cat .claude/skills/hallucination-prevention/templates/verification-checklist.md
 ### 避けるべきこと
 
 1. **過度な信頼**:
-
    - ❌ AI の出力を無条件に信用
    - ✅ 常に検証プロセスを通す
 
 2. **不適切なパラメータ**:
-
    - ❌ 事実抽出に Temperature=1.0
    - ✅ タスクに応じた適切な設定
 

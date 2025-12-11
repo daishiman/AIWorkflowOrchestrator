@@ -11,71 +11,71 @@ SEOとソーシャルシェアの最適化に必須の機能です。
 
 ```typescript
 // app/layout.tsx
-import type { Metadata } from 'next'
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'サイトタイトル',
-  description: 'サイトの説明文（160文字以内推奨）',
-}
+  title: "サイトタイトル",
+  description: "サイトの説明文（160文字以内推奨）",
+};
 ```
 
 ### 完全な設定例
 
 ```typescript
 // app/layout.tsx
-import type { Metadata } from 'next'
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   // 基本メタデータ
   title: {
-    default: 'サイト名',
-    template: '%s | サイト名', // 子ページで使用されるテンプレート
+    default: "サイト名",
+    template: "%s | サイト名", // 子ページで使用されるテンプレート
   },
-  description: 'サイトの説明文',
-  keywords: ['キーワード1', 'キーワード2'],
-  authors: [{ name: '作者名', url: 'https://example.com' }],
-  creator: '作成者',
-  publisher: '発行者',
+  description: "サイトの説明文",
+  keywords: ["キーワード1", "キーワード2"],
+  authors: [{ name: "作者名", url: "https://example.com" }],
+  creator: "作成者",
+  publisher: "発行者",
 
   // アイコン
   icons: {
-    icon: '/favicon.ico',
-    shortcut: '/shortcut-icon.png',
-    apple: '/apple-touch-icon.png',
+    icon: "/favicon.ico",
+    shortcut: "/shortcut-icon.png",
+    apple: "/apple-touch-icon.png",
     other: {
-      rel: 'apple-touch-icon-precomposed',
-      url: '/apple-touch-icon-precomposed.png',
+      rel: "apple-touch-icon-precomposed",
+      url: "/apple-touch-icon-precomposed.png",
     },
   },
 
   // マニフェスト
-  manifest: '/manifest.json',
+  manifest: "/manifest.json",
 
   // Open Graph
   openGraph: {
-    title: 'OGタイトル',
-    description: 'OG説明文',
-    url: 'https://example.com',
-    siteName: 'サイト名',
+    title: "OGタイトル",
+    description: "OG説明文",
+    url: "https://example.com",
+    siteName: "サイト名",
     images: [
       {
-        url: 'https://example.com/og.png',
+        url: "https://example.com/og.png",
         width: 1200,
         height: 630,
-        alt: 'OG画像の説明',
+        alt: "OG画像の説明",
       },
     ],
-    locale: 'ja_JP',
-    type: 'website',
+    locale: "ja_JP",
+    type: "website",
   },
 
   // Twitter Card
   twitter: {
-    card: 'summary_large_image',
-    title: 'Twitterタイトル',
-    description: 'Twitter説明文',
-    creator: '@username',
-    images: ['https://example.com/twitter.png'],
+    card: "summary_large_image",
+    title: "Twitterタイトル",
+    description: "Twitter説明文",
+    creator: "@username",
+    images: ["https://example.com/twitter.png"],
   },
 
   // 検索エンジン制御
@@ -85,31 +85,31 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
 
   // 検証
   verification: {
-    google: 'google-site-verification-code',
-    yandex: 'yandex-verification-code',
-    yahoo: 'yahoo-verification-code',
+    google: "google-site-verification-code",
+    yandex: "yandex-verification-code",
+    yahoo: "yahoo-verification-code",
   },
 
   // 代替言語
   alternates: {
-    canonical: 'https://example.com',
+    canonical: "https://example.com",
     languages: {
-      'en-US': 'https://example.com/en-US',
-      'ja-JP': 'https://example.com/ja-JP',
+      "en-US": "https://example.com/en-US",
+      "ja-JP": "https://example.com/ja-JP",
     },
   },
 
   // カテゴリ
-  category: 'technology',
-}
+  category: "technology",
+};
 ```
 
 ## 動的メタデータ
@@ -219,22 +219,22 @@ app/
 // app/layout.tsx
 export const metadata: Metadata = {
   title: {
-    default: 'My Site',
-    template: '%s | My Site',
+    default: "My Site",
+    template: "%s | My Site",
   },
-}
+};
 
 // app/blog/page.tsx
 export const metadata: Metadata = {
-  title: 'Blog', // → "Blog | My Site"
-}
+  title: "Blog", // → "Blog | My Site"
+};
 
 // app/blog/[slug]/page.tsx
 export async function generateMetadata({ params }) {
-  const post = await getPost(params.slug)
+  const post = await getPost(params.slug);
   return {
     title: post.title, // → "Post Title | My Site"
-  }
+  };
 }
 ```
 
@@ -244,9 +244,9 @@ export async function generateMetadata({ params }) {
 // テンプレートを無視して絶対的なタイトルを設定
 export const metadata: Metadata = {
   title: {
-    absolute: 'Custom Title', // → "Custom Title"（テンプレートを無視）
+    absolute: "Custom Title", // → "Custom Title"（テンプレートを無視）
   },
-}
+};
 ```
 
 ## ファイルベースのメタデータ
@@ -306,14 +306,15 @@ export default function Icon() {
 ```typescript
 // ✅ 良い例
 export const metadata: Metadata = {
-  title: '記事タイトル - サイト名', // 60文字以内
-}
+  title: "記事タイトル - サイト名", // 60文字以内
+};
 
 // ❌ 避けるべき例
 export const metadata: Metadata = {
-  title: 'ホーム', // 具体性がない
-  title: 'とても長いタイトルで、検索結果では途中で切れてしまう可能性があるタイトル', // 長すぎる
-}
+  title: "ホーム", // 具体性がない
+  title:
+    "とても長いタイトルで、検索結果では途中で切れてしまう可能性があるタイトル", // 長すぎる
+};
 ```
 
 ### Description最適化
@@ -322,14 +323,14 @@ export const metadata: Metadata = {
 // ✅ 良い例
 export const metadata: Metadata = {
   description:
-    'Next.js App RouterでのSEO最適化の完全ガイド。Metadata API、OGP設定、構造化データの実装方法を解説します。', // 120-160文字
-}
+    "Next.js App RouterでのSEO最適化の完全ガイド。Metadata API、OGP設定、構造化データの実装方法を解説します。", // 120-160文字
+};
 
 // ❌ 避けるべき例
 export const metadata: Metadata = {
-  description: 'ブログです', // 短すぎる
-  description: 'キーワード、キーワード、キーワード...', // キーワードスタッフィング
-}
+  description: "ブログです", // 短すぎる
+  description: "キーワード、キーワード、キーワード...", // キーワードスタッフィング
+};
 ```
 
 ### 多言語対応
@@ -337,14 +338,14 @@ export const metadata: Metadata = {
 ```typescript
 export const metadata: Metadata = {
   alternates: {
-    canonical: 'https://example.com/page',
+    canonical: "https://example.com/page",
     languages: {
-      'en-US': 'https://example.com/en/page',
-      'ja-JP': 'https://example.com/ja/page',
-      'x-default': 'https://example.com/page',
+      "en-US": "https://example.com/en/page",
+      "ja-JP": "https://example.com/ja/page",
+      "x-default": "https://example.com/page",
     },
   },
-}
+};
 ```
 
 ## チェックリスト

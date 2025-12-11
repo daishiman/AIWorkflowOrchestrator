@@ -19,7 +19,7 @@ class UserId {
 
   static fromString(value: string): UserId {
     if (!value || value.trim().length === 0) {
-      throw new InvalidUserIdError('UserIdは空にできません');
+      throw new InvalidUserIdError("UserIdは空にできません");
     }
     return new UserId(value);
   }
@@ -40,12 +40,12 @@ class UserId {
 class SequenceId {
   private constructor(
     private readonly prefix: string,
-    private readonly sequence: number
+    private readonly sequence: number,
   ) {}
 
   static of(prefix: string, sequence: number): SequenceId {
     if (sequence < 1) {
-      throw new InvalidSequenceError('連番は1以上である必要があります');
+      throw new InvalidSequenceError("連番は1以上である必要があります");
     }
     return new SequenceId(prefix, sequence);
   }
@@ -63,7 +63,7 @@ class SequenceId {
   }
 
   toString(): string {
-    return `${this.prefix}-${String(this.sequence).padStart(6, '0')}`;
+    return `${this.prefix}-${String(this.sequence).padStart(6, "0")}`;
   }
 }
 ```
@@ -74,7 +74,8 @@ class SequenceId {
 
 ```typescript
 class EmailAddress {
-  private static readonly PATTERN = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  private static readonly PATTERN =
+    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
   private constructor(private readonly value: string) {}
 
@@ -87,11 +88,11 @@ class EmailAddress {
   }
 
   get localPart(): string {
-    return this.value.split('@')[0];
+    return this.value.split("@")[0];
   }
 
   get domain(): string {
-    return this.value.split('@')[1];
+    return this.value.split("@")[1];
   }
 
   equals(other: EmailAddress): boolean {
@@ -115,27 +116,27 @@ class JapanesePhoneNumber {
 
   private constructor(
     private readonly value: string,
-    private readonly type: 'mobile' | 'landline'
+    private readonly type: "mobile" | "landline",
   ) {}
 
   static of(value: string): JapanesePhoneNumber {
-    const normalized = value.replace(/[-\s]/g, '');
+    const normalized = value.replace(/[-\s]/g, "");
 
     if (this.PATTERNS.mobile.test(value)) {
-      return new JapanesePhoneNumber(normalized, 'mobile');
+      return new JapanesePhoneNumber(normalized, "mobile");
     }
     if (this.PATTERNS.landline.test(value)) {
-      return new JapanesePhoneNumber(normalized, 'landline');
+      return new JapanesePhoneNumber(normalized, "landline");
     }
     throw new InvalidPhoneNumberError(value);
   }
 
   get isMobile(): boolean {
-    return this.type === 'mobile';
+    return this.type === "mobile";
   }
 
   format(): string {
-    if (this.type === 'mobile') {
+    if (this.type === "mobile") {
       return `${this.value.slice(0, 3)}-${this.value.slice(3, 7)}-${this.value.slice(7)}`;
     }
     // 固定電話のフォーマットは地域により異なる（簡略化）
@@ -163,7 +164,7 @@ class JapanesePostalCode {
   private constructor(private readonly value: string) {}
 
   static of(value: string): JapanesePostalCode {
-    const normalized = value.replace(/-/g, '');
+    const normalized = value.replace(/-/g, "");
     if (!this.PATTERN.test(value) || normalized.length !== 7) {
       throw new InvalidPostalCodeError(value);
     }
@@ -193,7 +194,7 @@ class Address {
     private readonly prefecture: Prefecture,
     private readonly city: string,
     private readonly street: string,
-    private readonly building: string | null
+    private readonly building: string | null,
   ) {}
 
   static create(
@@ -201,13 +202,13 @@ class Address {
     prefecture: string,
     city: string,
     street: string,
-    building?: string
+    building?: string,
   ): Address {
     if (!city || city.trim().length === 0) {
-      throw new InvalidAddressError('市区町村は必須です');
+      throw new InvalidAddressError("市区町村は必須です");
     }
     if (!street || street.trim().length === 0) {
-      throw new InvalidAddressError('番地は必須です');
+      throw new InvalidAddressError("番地は必須です");
     }
 
     return new Address(
@@ -215,7 +216,7 @@ class Address {
       Prefecture.fromName(prefecture),
       city.trim(),
       street.trim(),
-      building?.trim() || null
+      building?.trim() || null,
     );
   }
 
@@ -229,7 +230,7 @@ class Address {
     if (this.building) {
       parts.push(this.building);
     }
-    return parts.join(' ');
+    return parts.join(" ");
   }
 
   withBuilding(building: string): Address {
@@ -238,16 +239,18 @@ class Address {
       this.prefecture,
       this.city,
       this.street,
-      building
+      building,
     );
   }
 
   equals(other: Address): boolean {
-    return this.postalCode.equals(other.postalCode)
-        && this.prefecture.equals(other.prefecture)
-        && this.city === other.city
-        && this.street === other.street
-        && this.building === other.building;
+    return (
+      this.postalCode.equals(other.postalCode) &&
+      this.prefecture.equals(other.prefecture) &&
+      this.city === other.city &&
+      this.street === other.street &&
+      this.building === other.building
+    );
   }
 }
 ```
@@ -259,13 +262,13 @@ class Address {
 ```typescript
 class Money {
   private constructor(
-    private readonly amount: number,  // 最小通貨単位（円なら円、ドルならセント）
-    private readonly currency: Currency
+    private readonly amount: number, // 最小通貨単位（円なら円、ドルならセント）
+    private readonly currency: Currency,
   ) {}
 
   static of(amount: number, currency: Currency): Money {
     if (!Number.isInteger(amount)) {
-      throw new InvalidMoneyError('金額は整数である必要があります');
+      throw new InvalidMoneyError("金額は整数である必要があります");
     }
     return new Money(amount, currency);
   }
@@ -320,8 +323,7 @@ class Money {
   }
 
   equals(other: Money): boolean {
-    return this.amount === other.amount
-        && this.currency.equals(other.currency);
+    return this.amount === other.amount && this.currency.equals(other.currency);
   }
 
   toString(): string {
@@ -381,12 +383,12 @@ class Percentage {
 class DateRange {
   private constructor(
     private readonly start: Date,
-    private readonly end: Date
+    private readonly end: Date,
   ) {}
 
   static create(start: Date, end: Date): DateRange {
     if (start > end) {
-      throw new InvalidDateRangeError('開始日は終了日以前である必要があります');
+      throw new InvalidDateRangeError("開始日は終了日以前である必要があります");
     }
     return new DateRange(new Date(start), new Date(end));
   }
@@ -432,8 +434,10 @@ class DateRange {
   }
 
   equals(other: DateRange): boolean {
-    return this.start.getTime() === other.start.getTime()
-        && this.end.getTime() === other.end.getTime();
+    return (
+      this.start.getTime() === other.start.getTime() &&
+      this.end.getTime() === other.end.getTime()
+    );
   }
 
   toString(): string {
@@ -450,34 +454,41 @@ class TimeSlot {
     private readonly startHour: number,
     private readonly startMinute: number,
     private readonly endHour: number,
-    private readonly endMinute: number
+    private readonly endMinute: number,
   ) {}
 
   static create(
     startHour: number,
     startMinute: number,
     endHour: number,
-    endMinute: number
+    endMinute: number,
   ): TimeSlot {
     if (startHour < 0 || startHour > 23 || endHour < 0 || endHour > 23) {
-      throw new InvalidTimeError('時は0-23の範囲である必要があります');
+      throw new InvalidTimeError("時は0-23の範囲である必要があります");
     }
-    if (startMinute < 0 || startMinute > 59 || endMinute < 0 || endMinute > 59) {
-      throw new InvalidTimeError('分は0-59の範囲である必要があります');
+    if (
+      startMinute < 0 ||
+      startMinute > 59 ||
+      endMinute < 0 ||
+      endMinute > 59
+    ) {
+      throw new InvalidTimeError("分は0-59の範囲である必要があります");
     }
 
     const startTotal = startHour * 60 + startMinute;
     const endTotal = endHour * 60 + endMinute;
     if (startTotal >= endTotal) {
-      throw new InvalidTimeSlotError('開始時刻は終了時刻より前である必要があります');
+      throw new InvalidTimeSlotError(
+        "開始時刻は終了時刻より前である必要があります",
+      );
     }
 
     return new TimeSlot(startHour, startMinute, endHour, endMinute);
   }
 
   static fromStrings(start: string, end: string): TimeSlot {
-    const [sh, sm] = start.split(':').map(Number);
-    const [eh, em] = end.split(':').map(Number);
+    const [sh, sm] = start.split(":").map(Number);
+    const [eh, em] = end.split(":").map(Number);
     return TimeSlot.create(sh, sm, eh, em);
   }
 
@@ -497,15 +508,17 @@ class TimeSlot {
 
   format(): string {
     const formatTime = (h: number, m: number) =>
-      `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+      `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
     return `${formatTime(this.startHour, this.startMinute)}-${formatTime(this.endHour, this.endMinute)}`;
   }
 
   equals(other: TimeSlot): boolean {
-    return this.startHour === other.startHour
-        && this.startMinute === other.startMinute
-        && this.endHour === other.endHour
-        && this.endMinute === other.endMinute;
+    return (
+      this.startHour === other.startHour &&
+      this.startMinute === other.startMinute &&
+      this.endHour === other.endHour &&
+      this.endMinute === other.endMinute
+    );
   }
 
   toString(): string {
@@ -524,7 +537,7 @@ class Quantity {
 
   static of(value: number): Quantity {
     if (!Number.isInteger(value)) {
-      throw new InvalidQuantityError('数量は整数である必要があります');
+      throw new InvalidQuantityError("数量は整数である必要があります");
     }
     if (value < 0) {
       throw new NegativeQuantityError();
@@ -584,27 +597,27 @@ class PersonName {
     private readonly lastName: string,
     private readonly firstName: string,
     private readonly lastNameKana: string | null,
-    private readonly firstNameKana: string | null
+    private readonly firstNameKana: string | null,
   ) {}
 
   static create(
     lastName: string,
     firstName: string,
     lastNameKana?: string,
-    firstNameKana?: string
+    firstNameKana?: string,
   ): PersonName {
     if (!lastName || lastName.trim().length === 0) {
-      throw new InvalidNameError('姓は必須です');
+      throw new InvalidNameError("姓は必須です");
     }
     if (!firstName || firstName.trim().length === 0) {
-      throw new InvalidNameError('名は必須です');
+      throw new InvalidNameError("名は必須です");
     }
 
     return new PersonName(
       lastName.trim(),
       firstName.trim(),
       lastNameKana?.trim() || null,
-      firstNameKana?.trim() || null
+      firstNameKana?.trim() || null,
     );
   }
 
@@ -620,8 +633,9 @@ class PersonName {
   }
 
   equals(other: PersonName): boolean {
-    return this.lastName === other.lastName
-        && this.firstName === other.firstName;
+    return (
+      this.lastName === other.lastName && this.firstName === other.firstName
+    );
   }
 
   toString(): string {
@@ -634,15 +648,15 @@ class PersonName {
 
 ### パターン選択ガイド
 
-| 要件 | 推奨パターン |
-|-----|------------|
-| エンティティの識別子 | UserId / OrderId パターン |
-| メールアドレス | EmailAddress パターン |
-| 電話番号 | PhoneNumber パターン |
-| 住所 | Address + PostalCode パターン |
-| 金額 | Money パターン |
-| 割合 | Percentage パターン |
-| 日付範囲 | DateRange パターン |
-| 時間帯 | TimeSlot パターン |
-| 数量 | Quantity パターン |
-| 人名 | PersonName パターン |
+| 要件                 | 推奨パターン                  |
+| -------------------- | ----------------------------- |
+| エンティティの識別子 | UserId / OrderId パターン     |
+| メールアドレス       | EmailAddress パターン         |
+| 電話番号             | PhoneNumber パターン          |
+| 住所                 | Address + PostalCode パターン |
+| 金額                 | Money パターン                |
+| 割合                 | Percentage パターン           |
+| 日付範囲             | DateRange パターン            |
+| 時間帯               | TimeSlot パターン             |
+| 数量                 | Quantity パターン             |
+| 人名                 | PersonName パターン           |

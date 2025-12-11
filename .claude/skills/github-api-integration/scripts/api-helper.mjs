@@ -11,12 +11,14 @@
  *   node api-helper.mjs check-rate-limit
  */
 
-import { execSync } from 'child_process';
+import { execSync } from "child_process";
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
 
 if (!GITHUB_TOKEN) {
-  console.error('Error: GITHUB_TOKEN or GH_TOKEN environment variable is required');
+  console.error(
+    "Error: GITHUB_TOKEN or GH_TOKEN environment variable is required",
+  );
   process.exit(1);
 }
 
@@ -27,13 +29,13 @@ function gh(command) {
   try {
     return execSync(`gh ${command}`, {
       env: { ...process.env, GH_TOKEN: GITHUB_TOKEN },
-      encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'pipe']
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
     });
   } catch (error) {
-    console.error('gh command failed:', error.message);
+    console.error("gh command failed:", error.message);
     if (error.stderr) {
-      console.error('stderr:', error.stderr.toString());
+      console.error("stderr:", error.stderr.toString());
     }
     throw error;
   }
@@ -42,7 +44,7 @@ function gh(command) {
 /**
  * Execute curl command for GitHub API
  */
-function curl(endpoint, method = 'GET', data = null) {
+function curl(endpoint, method = "GET", data = null) {
   let command = `curl -s -X ${method} \
     -H "Authorization: token ${GITHUB_TOKEN}" \
     -H "Accept: application/vnd.github.v3+json" \
@@ -53,10 +55,10 @@ function curl(endpoint, method = 'GET', data = null) {
   }
 
   try {
-    const result = execSync(command, { encoding: 'utf-8' });
+    const result = execSync(command, { encoding: "utf-8" });
     return JSON.parse(result);
   } catch (error) {
-    console.error('API request failed:', error.message);
+    console.error("API request failed:", error.message);
     throw error;
   }
 }
@@ -65,15 +67,15 @@ function curl(endpoint, method = 'GET', data = null) {
  * Validate GitHub token
  */
 function validateToken() {
-  console.log('Validating GitHub token...');
+  console.log("Validating GitHub token...");
 
   try {
-    const result = gh('auth status');
-    console.log('✅ Token is valid');
+    const result = gh("auth status");
+    console.log("✅ Token is valid");
     console.log(result);
     return true;
   } catch (error) {
-    console.error('❌ Token is invalid or expired');
+    console.error("❌ Token is invalid or expired");
     return false;
   }
 }
@@ -82,30 +84,32 @@ function validateToken() {
  * Check API rate limit
  */
 function checkRateLimit() {
-  console.log('Checking API rate limit...\n');
+  console.log("Checking API rate limit...\n");
 
   try {
-    const result = gh('api rate_limit');
+    const result = gh("api rate_limit");
     const data = JSON.parse(result);
 
     const core = data.resources.core;
     const graphql = data.resources.graphql;
 
-    console.log('Core API:');
+    console.log("Core API:");
     console.log(`  Limit: ${core.limit}`);
     console.log(`  Used: ${core.used}`);
     console.log(`  Remaining: ${core.remaining}`);
     console.log(`  Resets at: ${new Date(core.reset * 1000).toLocaleString()}`);
 
-    console.log('\nGraphQL API:');
+    console.log("\nGraphQL API:");
     console.log(`  Limit: ${graphql.limit}`);
     console.log(`  Used: ${graphql.used}`);
     console.log(`  Remaining: ${graphql.remaining}`);
-    console.log(`  Resets at: ${new Date(graphql.reset * 1000).toLocaleString()}`);
+    console.log(
+      `  Resets at: ${new Date(graphql.reset * 1000).toLocaleString()}`,
+    );
 
     return data;
   } catch (error) {
-    console.error('Failed to check rate limit');
+    console.error("Failed to check rate limit");
     throw error;
   }
 }
@@ -113,11 +117,13 @@ function checkRateLimit() {
 /**
  * List issues for a repository
  */
-function listIssues(repo, state = 'open', limit = 10) {
+function listIssues(repo, state = "open", limit = 10) {
   console.log(`Listing ${state} issues for ${repo} (limit: ${limit})...\n`);
 
   try {
-    const result = gh(`issue list --repo ${repo} --state ${state} --limit ${limit} --json number,title,author,labels`);
+    const result = gh(
+      `issue list --repo ${repo} --state ${state} --limit ${limit} --json number,title,author,labels`,
+    );
     const issues = JSON.parse(result);
 
     if (issues.length === 0) {
@@ -125,19 +131,19 @@ function listIssues(repo, state = 'open', limit = 10) {
       return [];
     }
 
-    issues.forEach(issue => {
-      const labels = issue.labels.map(l => l.name).join(', ');
+    issues.forEach((issue) => {
+      const labels = issue.labels.map((l) => l.name).join(", ");
       console.log(`#${issue.number}: ${issue.title}`);
       console.log(`  Author: ${issue.author.login}`);
       if (labels) {
         console.log(`  Labels: ${labels}`);
       }
-      console.log('');
+      console.log("");
     });
 
     return issues;
   } catch (error) {
-    console.error('Failed to list issues');
+    console.error("Failed to list issues");
     throw error;
   }
 }
@@ -145,11 +151,15 @@ function listIssues(repo, state = 'open', limit = 10) {
 /**
  * List pull requests for a repository
  */
-function listPRs(repo, state = 'open', limit = 10) {
-  console.log(`Listing ${state} pull requests for ${repo} (limit: ${limit})...\n`);
+function listPRs(repo, state = "open", limit = 10) {
+  console.log(
+    `Listing ${state} pull requests for ${repo} (limit: ${limit})...\n`,
+  );
 
   try {
-    const result = gh(`pr list --repo ${repo} --state ${state} --limit ${limit} --json number,title,author,reviewDecision`);
+    const result = gh(
+      `pr list --repo ${repo} --state ${state} --limit ${limit} --json number,title,author,reviewDecision`,
+    );
     const prs = JSON.parse(result);
 
     if (prs.length === 0) {
@@ -157,16 +167,16 @@ function listPRs(repo, state = 'open', limit = 10) {
       return [];
     }
 
-    prs.forEach(pr => {
+    prs.forEach((pr) => {
       console.log(`#${pr.number}: ${pr.title}`);
       console.log(`  Author: ${pr.author.login}`);
-      console.log(`  Review Decision: ${pr.reviewDecision || 'None'}`);
-      console.log('');
+      console.log(`  Review Decision: ${pr.reviewDecision || "None"}`);
+      console.log("");
     });
 
     return prs;
   } catch (error) {
-    console.error('Failed to list pull requests');
+    console.error("Failed to list pull requests");
     throw error;
   }
 }
@@ -182,16 +192,16 @@ function createIssue(repo, title, body, labels = []) {
     let command = `issue create --repo ${repo} --title "${title}" --body "${body}"`;
 
     if (labels.length > 0) {
-      command += ` --label "${labels.join(',')}"`;
+      command += ` --label "${labels.join(",")}"`;
     }
 
     const result = gh(command);
-    console.log('✅ Issue created successfully');
+    console.log("✅ Issue created successfully");
     console.log(result);
 
     return result;
   } catch (error) {
-    console.error('❌ Failed to create issue');
+    console.error("❌ Failed to create issue");
     throw error;
   }
 }
@@ -203,11 +213,13 @@ function getRepoInfo(repo) {
   console.log(`Getting information for ${repo}...\n`);
 
   try {
-    const result = gh(`repo view ${repo} --json name,description,owner,isPrivate,stargazerCount,forkCount,defaultBranchRef`);
+    const result = gh(
+      `repo view ${repo} --json name,description,owner,isPrivate,stargazerCount,forkCount,defaultBranchRef`,
+    );
     const data = JSON.parse(result);
 
     console.log(`Repository: ${data.owner.login}/${data.name}`);
-    console.log(`Description: ${data.description || 'N/A'}`);
+    console.log(`Description: ${data.description || "N/A"}`);
     console.log(`Private: ${data.isPrivate}`);
     console.log(`Stars: ${data.stargazerCount}`);
     console.log(`Forks: ${data.forkCount}`);
@@ -215,7 +227,7 @@ function getRepoInfo(repo) {
 
     return data;
   } catch (error) {
-    console.error('Failed to get repository information');
+    console.error("Failed to get repository information");
     throw error;
   }
 }
@@ -227,24 +239,26 @@ function listReleases(repo, limit = 5) {
   console.log(`Listing releases for ${repo} (limit: ${limit})...\n`);
 
   try {
-    const result = gh(`release list --repo ${repo} --limit ${limit} --json tagName,name,isPrerelease,createdAt`);
+    const result = gh(
+      `release list --repo ${repo} --limit ${limit} --json tagName,name,isPrerelease,createdAt`,
+    );
     const releases = JSON.parse(result);
 
     if (releases.length === 0) {
-      console.log('No releases found');
+      console.log("No releases found");
       return [];
     }
 
-    releases.forEach(release => {
+    releases.forEach((release) => {
       console.log(`${release.tagName}: ${release.name}`);
       console.log(`  Prerelease: ${release.isPrerelease}`);
       console.log(`  Created: ${new Date(release.createdAt).toLocaleString()}`);
-      console.log('');
+      console.log("");
     });
 
     return releases;
   } catch (error) {
-    console.error('Failed to list releases');
+    console.error("Failed to list releases");
     throw error;
   }
 }
@@ -256,25 +270,27 @@ function searchRepos(query, limit = 10) {
   console.log(`Searching repositories: "${query}" (limit: ${limit})...\n`);
 
   try {
-    const data = curl(`/search/repositories?q=${encodeURIComponent(query)}&per_page=${limit}`);
+    const data = curl(
+      `/search/repositories?q=${encodeURIComponent(query)}&per_page=${limit}`,
+    );
 
     if (data.total_count === 0) {
-      console.log('No repositories found');
+      console.log("No repositories found");
       return [];
     }
 
     console.log(`Total results: ${data.total_count}\n`);
 
-    data.items.forEach(repo => {
+    data.items.forEach((repo) => {
       console.log(`${repo.full_name} (⭐ ${repo.stargazers_count})`);
-      console.log(`  ${repo.description || 'No description'}`);
+      console.log(`  ${repo.description || "No description"}`);
       console.log(`  ${repo.html_url}`);
-      console.log('');
+      console.log("");
     });
 
     return data.items;
   } catch (error) {
-    console.error('Failed to search repositories');
+    console.error("Failed to search repositories");
     throw error;
   }
 }
@@ -308,61 +324,61 @@ Environment:
 
   try {
     switch (command) {
-      case 'validate-token':
+      case "validate-token":
         validateToken();
         break;
 
-      case 'check-rate-limit':
+      case "check-rate-limit":
         checkRateLimit();
         break;
 
-      case 'list-issues':
+      case "list-issues":
         if (!args[1]) {
-          console.error('Error: Repository required (e.g., owner/repo)');
+          console.error("Error: Repository required (e.g., owner/repo)");
           process.exit(1);
         }
-        listIssues(args[1], args[2] || 'open', parseInt(args[3] || '10'));
+        listIssues(args[1], args[2] || "open", parseInt(args[3] || "10"));
         break;
 
-      case 'list-prs':
+      case "list-prs":
         if (!args[1]) {
-          console.error('Error: Repository required (e.g., owner/repo)');
+          console.error("Error: Repository required (e.g., owner/repo)");
           process.exit(1);
         }
-        listPRs(args[1], args[2] || 'open', parseInt(args[3] || '10'));
+        listPRs(args[1], args[2] || "open", parseInt(args[3] || "10"));
         break;
 
-      case 'create-issue':
+      case "create-issue":
         if (!args[1] || !args[2] || !args[3]) {
-          console.error('Error: Repository, title, and body required');
-          console.error('Usage: create-issue <owner/repo> <title> <body>');
+          console.error("Error: Repository, title, and body required");
+          console.error("Usage: create-issue <owner/repo> <title> <body>");
           process.exit(1);
         }
         createIssue(args[1], args[2], args[3]);
         break;
 
-      case 'get-repo':
+      case "get-repo":
         if (!args[1]) {
-          console.error('Error: Repository required (e.g., owner/repo)');
+          console.error("Error: Repository required (e.g., owner/repo)");
           process.exit(1);
         }
         getRepoInfo(args[1]);
         break;
 
-      case 'list-releases':
+      case "list-releases":
         if (!args[1]) {
-          console.error('Error: Repository required (e.g., owner/repo)');
+          console.error("Error: Repository required (e.g., owner/repo)");
           process.exit(1);
         }
-        listReleases(args[1], parseInt(args[2] || '5'));
+        listReleases(args[1], parseInt(args[2] || "5"));
         break;
 
-      case 'search-repos':
+      case "search-repos":
         if (!args[1]) {
-          console.error('Error: Search query required');
+          console.error("Error: Search query required");
           process.exit(1);
         }
-        searchRepos(args[1], parseInt(args[2] || '10'));
+        searchRepos(args[1], parseInt(args[2] || "10"));
         break;
 
       default:
@@ -370,7 +386,7 @@ Environment:
         process.exit(1);
     }
   } catch (error) {
-    console.error('\nCommand failed:', error.message);
+    console.error("\nCommand failed:", error.message);
     process.exit(1);
   }
 }

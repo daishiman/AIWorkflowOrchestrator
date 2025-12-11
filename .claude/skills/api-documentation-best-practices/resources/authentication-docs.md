@@ -86,16 +86,17 @@ curl -X GET https://api.example.com/v1/users \
 
 ### API Keyの種類
 
-| タイプ | プレフィックス | 用途 |
-|:-------|:---------------|:-----|
-| 本番用 | `sk_live_` | 本番環境 |
-| テスト用 | `sk_test_` | 開発・テスト環境 |
+| タイプ   | プレフィックス | 用途             |
+| :------- | :------------- | :--------------- |
+| 本番用   | `sk_live_`     | 本番環境         |
+| テスト用 | `sk_test_`     | 開発・テスト環境 |
 
 ## OAuth 2.0
 
 ### Authorization Code Flow
 
 1. **認可リクエスト**
+
 ```
 GET /oauth/authorize?
   response_type=code
@@ -106,6 +107,7 @@ GET /oauth/authorize?
 ```
 
 2. **コールバック**
+
 ```
 https://your-app.com/callback?
   code=authorization_code
@@ -113,6 +115,7 @@ https://your-app.com/callback?
 ```
 
 3. **トークン交換**
+
 ```http
 POST /oauth/token HTTP/1.1
 Content-Type: application/x-www-form-urlencoded
@@ -126,22 +129,24 @@ grant_type=authorization_code
 
 ### スコープ定義
 
-| スコープ | 説明 | 許可される操作 |
-|:---------|:-----|:---------------|
-| `read` | 読み取り | GET リクエスト |
-| `write` | 書き込み | POST, PUT, PATCH |
-| `delete` | 削除 | DELETE リクエスト |
-| `admin` | 管理者 | すべての操作 |
+| スコープ | 説明     | 許可される操作    |
+| :------- | :------- | :---------------- |
+| `read`   | 読み取り | GET リクエスト    |
+| `write`  | 書き込み | POST, PUT, PATCH  |
+| `delete` | 削除     | DELETE リクエスト |
+| `admin`  | 管理者   | すべての操作      |
 
 ## セキュリティベストプラクティス
 
 ### すべきこと
+
 - トークンは安全に保管（環境変数、Secret Manager）
 - HTTPSを必ず使用
 - トークンの有効期限を短く設定
 - Refresh Tokenを使用して更新
 
 ### 避けるべきこと
+
 - トークンをURLパラメータに含めない
 - トークンをログに出力しない
 - トークンをクライアントサイドに保存しない
@@ -149,8 +154,8 @@ grant_type=authorization_code
 
 ## エラーハンドリング
 
-| エラー | 対処方法 |
-|:-------|:---------|
-| 401 Unauthorized | トークンを再取得 |
-| 403 Forbidden | スコープを確認 |
-| Token Expired | Refresh Tokenで更新 |
+| エラー           | 対処方法            |
+| :--------------- | :------------------ |
+| 401 Unauthorized | トークンを再取得    |
+| 403 Forbidden    | スコープを確認      |
+| Token Expired    | Refresh Tokenで更新 |

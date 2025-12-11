@@ -168,9 +168,9 @@ paths:
   # 認証不要（公開エンドポイント）
   /health:
     get:
-      security: []  # グローバル設定をオーバーライド
+      security: [] # グローバル設定をオーバーライド
       responses:
-        '200':
+        "200":
           description: OK
 
   # 特定スコープ必須
@@ -181,7 +181,7 @@ paths:
             - admin
             - read:users
       responses:
-        '200':
+        "200":
           description: ユーザー一覧
 
   # 複数の認証方式（OR条件）
@@ -191,7 +191,7 @@ paths:
         - BearerAuth: []
         - ApiKeyHeader: []
       responses:
-        '200':
+        "200":
           description: データ
 
   # 複数の認証方式（AND条件）
@@ -199,9 +199,9 @@ paths:
     post:
       security:
         - BearerAuth: []
-          ApiKeyHeader: []  # 同じ配列内 = AND
+          ApiKeyHeader: [] # 同じ配列内 = AND
       responses:
-        '200':
+        "200":
           description: 両方の認証が必要
 ```
 
@@ -264,7 +264,7 @@ components:
       required: true
       schema:
         type: string
-        pattern: '^Bearer .+$'
+        pattern: "^Bearer .+$"
       description: Bearer トークン
 
     ApiKeyHeader:
@@ -332,7 +332,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
           examples:
             missing_token:
               summary: トークンなし
@@ -372,7 +372,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
           examples:
             insufficient_scope:
               summary: スコープ不足

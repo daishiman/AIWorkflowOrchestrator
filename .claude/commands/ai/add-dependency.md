@@ -51,6 +51,7 @@ model: sonnet
 ### Phase 1: 引数確認とパッケージマネージャー検出
 
 **引数検証**:
+
 ```bash
 # パッケージ名（必須）
 package_name: "$1"（例: zod, @types/node, react）
@@ -65,6 +66,7 @@ is_dev: "$2" == "--dev" ? true : false
 ```
 
 **パッケージマネージャー検出**:
+
 ```bash
 # ロックファイルから判定
 if [ -f "pnpm-lock.yaml" ]; then
@@ -83,16 +85,19 @@ fi
 **使用エージェント**: `.claude/agents/dep-mgr.md`
 
 **エージェントへの依頼内容**:
-```markdown
+
+````markdown
 パッケージ「${package_name}」を追加してください。
 
 **入力**:
+
 - パッケージ名: ${package_name}
 - インストールタイプ: ${is_dev ? "devDependency" : "dependency"}
 - パッケージマネージャー: ${pkg_manager}
 - 現在のpackage.json: ${cat package.json}
 
 **要件**:
+
 1. セキュリティ監査:
    - pnpm audit / pnpm audit 実行
    - 脆弱性スコア確認（Critical/High/Medium/Low）
@@ -109,6 +114,7 @@ fi
    - 重複依存の検出
 
 4. インストール実行:
+
    ```bash
    # pnpm の場合
    pnpm add ${package_name}${is_dev ? " -D" : ""}
@@ -116,35 +122,43 @@ fi
    # pnpm の場合
    pnpm install ${package_name}${is_dev ? " --save-dev" : " --save"}
    ```
+````
 
 5. 監査レポート生成:
+
    ```markdown
    ## パッケージ追加完了
 
    パッケージ: ${package_name}@${version}
 
    ### セキュリティスコア
+
    - 脆弱性: なし / Critical: 0, High: 0
    - ライセンス: MIT（互換性あり）
 
    ### 依存関係
+
    - 追加された依存: 3個
    - peerDependencies要件: react@>=18.0.0（既存バージョンで満たす）
 
    ### Next Steps
+
    1. 型定義のインストール（必要な場合）: pnpm add -D @types/${package_name}
    2. 使用例の確認
    3. テストへの追加
    ```
 
 **スキル参照**:
+
 - `.claude/skills/dependency-auditing/SKILL.md`
 - `.claude/skills/semantic-versioning/SKILL.md`
 
 **成果物**:
+
 - 更新されたpackage.json
 - 依存関係監査レポート
-```
+
+````
 
 ### Phase 3: 完了報告
 
@@ -167,7 +181,7 @@ fi
 1. 型定義のインストール（必要な場合）
 2. 使用箇所への import 追加
 3. テストへの追加
-```
+````
 
 ## 使用例
 
@@ -178,6 +192,7 @@ fi
 ```
 
 自動実行:
+
 1. パッケージマネージャー検出（pnpm）
 2. セキュリティ監査（脆弱性チェック、ライセンス確認）
 3. 最新安定版インストール
@@ -267,6 +282,7 @@ Commercial（商用不可）, Proprietary（独占的）
 **原因**: 必要な peer dependency が未インストール
 
 **解決策**:
+
 ```bash
 # 警告メッセージ確認
 WARN: react@18.0.0 requires peer dependency react-dom@>=18.0.0
@@ -280,6 +296,7 @@ pnpm add react-dom
 **原因**: 既存パッケージとバージョン要件が不一致
 
 **解決策**:
+
 ```bash
 # 競合パッケージ確認
 pnpm list [package-name]
@@ -295,6 +312,7 @@ pnpm list [package-name]
 **原因**: GPL等のコピーレフトライセンス検出
 
 **解決策**:
+
 ```bash
 # ライセンス確認
 pnpm info [package-name] license

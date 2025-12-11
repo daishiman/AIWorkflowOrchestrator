@@ -10,20 +10,26 @@
  *   YAML構文、Markdown構造、必須要素の検証結果を表示します。
  */
 
-import { readFileSync, existsSync } from 'fs';
-import { resolve, dirname } from 'path';
+import { readFileSync, existsSync } from "fs";
+import { resolve, dirname } from "path";
 
-const REQUIRED_YAML_FIELDS = ['name', 'description'];
-const OPTIONAL_YAML_FIELDS = ['tools', 'model', 'version'];
+const REQUIRED_YAML_FIELDS = ["name", "description"];
+const OPTIONAL_YAML_FIELDS = ["tools", "model", "version"];
 const REQUIRED_SECTIONS = [
-  { pattern: /^#\s+\w+/m, name: 'タイトル（H1）' },
-  { pattern: /^##\s+役割定義/m, name: '役割定義セクション' },
+  { pattern: /^#\s+\w+/m, name: "タイトル（H1）" },
+  { pattern: /^##\s+役割定義/m, name: "役割定義セクション" },
 ];
 const RECOMMENDED_SECTIONS = [
-  { pattern: /^##\s+(ワークフロー|タスク実行)/m, name: 'ワークフローセクション' },
-  { pattern: /^##\s+(ツール使用方針|ツール)/m, name: 'ツール使用方針セクション' },
-  { pattern: /^##\s+(品質基準|完了条件)/m, name: '品質基準セクション' },
-  { pattern: /^##\s+依存関係/m, name: '依存関係セクション' },
+  {
+    pattern: /^##\s+(ワークフロー|タスク実行)/m,
+    name: "ワークフローセクション",
+  },
+  {
+    pattern: /^##\s+(ツール使用方針|ツール)/m,
+    name: "ツール使用方針セクション",
+  },
+  { pattern: /^##\s+(品質基準|完了条件)/m, name: "品質基準セクション" },
+  { pattern: /^##\s+依存関係/m, name: "依存関係セクション" },
 ];
 
 class ValidationResult {
@@ -34,15 +40,15 @@ class ValidationResult {
   }
 
   addError(message) {
-    this.errors.push({ level: 'ERROR', message });
+    this.errors.push({ level: "ERROR", message });
   }
 
   addWarning(message) {
-    this.warnings.push({ level: 'WARNING', message });
+    this.warnings.push({ level: "WARNING", message });
   }
 
   addInfo(message) {
-    this.info.push({ level: 'INFO', message });
+    this.info.push({ level: "INFO", message });
   }
 
   get isValid() {
@@ -56,34 +62,37 @@ function parseYamlFrontmatter(content) {
 
   const raw = match[1];
   const parsed = {};
-  const lines = raw.split('\n');
+  const lines = raw.split("\n");
   let currentKey = null;
-  let multilineValue = '';
+  let multilineValue = "";
   let inMultiline = false;
 
   for (const line of lines) {
     if (!inMultiline && line.match(/^[\w-]+:/)) {
       if (currentKey && multilineValue) {
         parsed[currentKey] = multilineValue.trim();
-        multilineValue = '';
+        multilineValue = "";
       }
-      const colonIndex = line.indexOf(':');
+      const colonIndex = line.indexOf(":");
       const key = line.substring(0, colonIndex).trim();
       const value = line.substring(colonIndex + 1).trim();
       currentKey = key;
 
-      if (value === '|') {
+      if (value === "|") {
         inMultiline = true;
-      } else if (value.startsWith('[') && value.endsWith(']')) {
+      } else if (value.startsWith("[") && value.endsWith("]")) {
         // Array value like [Read, Write, Edit]
-        parsed[key] = value.slice(1, -1).split(',').map(s => s.trim());
+        parsed[key] = value
+          .slice(1, -1)
+          .split(",")
+          .map((s) => s.trim());
         currentKey = null;
       } else if (value) {
         parsed[key] = value;
         currentKey = null;
       }
     } else if (currentKey) {
-      multilineValue += line + '\n';
+      multilineValue += line + "\n";
     }
   }
 
@@ -98,7 +107,9 @@ function validateYaml(content, result) {
   const { raw, parsed } = parseYamlFrontmatter(content);
 
   if (!raw) {
-    result.addError('YAML Frontmatterが見つかりません。ファイルは---で始まる必要があります。');
+    result.addError(
+      "YAML Frontmatterが見つかりません。ファイルは---で始まる必要があります。",
+    );
     return;
   }
 
@@ -123,30 +134,38 @@ function validateYaml(content, result) {
 
   // Validate description length
   if (parsed.description) {
-    const descLines = parsed.description.split('\n').filter(l => l.trim()).length;
+    const descLines = parsed.description
+      .split("\n")
+      .filter((l) => l.trim()).length;
     if (descLines < 4) {
-      result.addWarning('descriptionは4行以上を推奨します');
+      result.addWarning("descriptionは4行以上を推奨します");
     }
     if (descLines > 15) {
-      result.addInfo('descriptionが長いです（15行超）。スキルへの分離を検討してください');
+      result.addInfo(
+        "descriptionが長いです（15行超）。スキルへの分離を検討してください",
+      );
     }
   }
 
   // Validate tools format
   if (parsed.tools) {
-    if (typeof parsed.tools === 'string' && !parsed.tools.startsWith('[')) {
-      result.addWarning('tools属性は配列形式 [Read, Write, ...] を推奨します');
+    if (typeof parsed.tools === "string" && !parsed.tools.startsWith("[")) {
+      result.addWarning("tools属性は配列形式 [Read, Write, ...] を推奨します");
     }
   }
 
   // Validate model
-  if (parsed.model && !['opus', 'sonnet', 'haiku'].includes(parsed.model)) {
-    result.addWarning(`model "${parsed.model}" は opus/sonnet/haiku のいずれかを推奨します`);
+  if (parsed.model && !["opus", "sonnet", "haiku"].includes(parsed.model)) {
+    result.addWarning(
+      `model "${parsed.model}" は opus/sonnet/haiku のいずれかを推奨します`,
+    );
   }
 
   // Validate version format
   if (parsed.version && !/^\d+\.\d+\.\d+$/.test(parsed.version)) {
-    result.addWarning(`version "${parsed.version}" はセマンティックバージョニング形式(x.y.z)を推奨します`);
+    result.addWarning(
+      `version "${parsed.version}" はセマンティックバージョニング形式(x.y.z)を推奨します`,
+    );
   }
 
   result.addInfo(`YAML解析完了: ${Object.keys(parsed).length}個のフィールド`);
@@ -181,7 +200,7 @@ function validateMarkdown(content, result) {
   // Check for unclosed code blocks
   const codeBlocks = content.match(/```/g) || [];
   if (codeBlocks.length % 2 !== 0) {
-    result.addError('閉じられていないコードブロックがあります');
+    result.addError("閉じられていないコードブロックがあります");
   }
 
   // Check for broken links to skill files
@@ -209,7 +228,7 @@ function validateMarkdown(content, result) {
 
 function validateContent(content, result) {
   // Check line count
-  const lines = content.split('\n');
+  const lines = content.split("\n");
   if (lines.length > 800) {
     result.addWarning(`ファイルが${lines.length}行あります（600行以下を推奨）`);
   } else {
@@ -217,56 +236,56 @@ function validateContent(content, result) {
   }
 
   // Check for "使用タイミング" section
-  if (!content.includes('使用タイミング')) {
-    result.addWarning('descriptionに「使用タイミング」の記載を推奨します');
+  if (!content.includes("使用タイミング")) {
+    result.addWarning("descriptionに「使用タイミング」の記載を推奨します");
   }
 
   // Check for English activation hints
-  if (!content.includes('Use proactively')) {
-    result.addInfo('英語のactivationヒントの追加を検討してください');
+  if (!content.includes("Use proactively")) {
+    result.addInfo("英語のactivationヒントの追加を検討してください");
   }
 }
 
 function printResults(result) {
-  console.log('═══════════════════════════════════════════════════════════');
-  console.log('                    エージェント検証レポート                  ');
-  console.log('═══════════════════════════════════════════════════════════');
+  console.log("═══════════════════════════════════════════════════════════");
+  console.log("                    エージェント検証レポート                  ");
+  console.log("═══════════════════════════════════════════════════════════");
 
   if (result.errors.length > 0) {
-    console.log('\n❌ エラー:');
+    console.log("\n❌ エラー:");
     for (const err of result.errors) {
       console.log(`   ${err.message}`);
     }
   }
 
   if (result.warnings.length > 0) {
-    console.log('\n⚠️  警告:');
+    console.log("\n⚠️  警告:");
     for (const warn of result.warnings) {
       console.log(`   ${warn.message}`);
     }
   }
 
   if (result.info.length > 0) {
-    console.log('\nℹ️  情報:');
+    console.log("\nℹ️  情報:");
     for (const info of result.info) {
       console.log(`   ${info.message}`);
     }
   }
 
-  console.log('\n───────────────────────────────────────────────────────────');
+  console.log("\n───────────────────────────────────────────────────────────");
   if (result.isValid) {
-    console.log('✅ 検証結果: 合格（エラーなし）');
+    console.log("✅ 検証結果: 合格（エラーなし）");
   } else {
     console.log(`❌ 検証結果: 不合格（${result.errors.length}個のエラー）`);
   }
-  console.log('═══════════════════════════════════════════════════════════');
+  console.log("═══════════════════════════════════════════════════════════");
 }
 
 function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.log('使用方法: node validate-agent.mjs <agent_file.md>');
+    console.log("使用方法: node validate-agent.mjs <agent_file.md>");
     process.exit(1);
   }
 
@@ -274,7 +293,7 @@ function main() {
   let content;
 
   try {
-    content = readFileSync(filePath, 'utf-8');
+    content = readFileSync(filePath, "utf-8");
   } catch (err) {
     console.error(`エラー: ファイル "${filePath}" を読み込めません`);
     process.exit(1);

@@ -10,6 +10,7 @@
 ### なぜ重要か
 
 rootユーザーでコンテナを実行すると：
+
 - コンテナ脱出時のリスク増大
 - ホストシステムへの影響範囲拡大
 - 最小権限の原則に違反
@@ -145,10 +146,10 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'myapp:test'
-          format: 'table'
-          exit-code: '1'
-          severity: 'CRITICAL,HIGH'
+          image-ref: "myapp:test"
+          format: "table"
+          exit-code: "1"
+          severity: "CRITICAL,HIGH"
 ```
 
 ## シークレット管理
@@ -312,6 +313,7 @@ RUN chmod 700 /app/logs
 **症状**: ファイル書き込みでpermission denied
 
 **対応**:
+
 ```dockerfile
 # 書き込み先の権限を設定
 RUN mkdir -p /app/data && chown appuser:appgroup /app/data
@@ -322,6 +324,7 @@ RUN mkdir -p /app/data && chown appuser:appgroup /app/data
 **症状**: スキャンで脆弱性検出
 
 **対応**:
+
 ```dockerfile
 # ベースイメージを更新
 FROM node:20-alpine
@@ -335,6 +338,7 @@ RUN apk upgrade --no-cache
 **症状**: 環境変数が設定されていない
 
 **対応**:
+
 ```bash
 # 実行時に渡す
 docker run -e API_KEY=$API_KEY myapp

@@ -40,6 +40,7 @@ model: sonnet
 **起動タイミング**: コマンド開始直後
 
 **引数引き渡し**:
+
 - `$ARGUMENTS`: `--dry-run` フラグ（オプション）
   - 指定時: デプロイシミュレーションのみ実行
 
@@ -61,6 +62,7 @@ model: sonnet
    - 通常時: Railway へのデプロイ実行
 
 **期待成果物**:
+
 - デプロイ前検証レポート
 - デプロイ実行の可否判定
 
@@ -92,6 +94,7 @@ model: sonnet
    - コミットハッシュ
 
 **期待成果物**:
+
 - デプロイ成功/失敗のレポート
 - デプロイURL
 - ロールバック手順（失敗時）
@@ -101,18 +104,22 @@ model: sonnet
 エージェントが以下のスキルを必要に応じて参照:
 
 **必須スキル（devops-eng）**:
+
 - `.claude/skills/deployment-strategies/SKILL.md`: デプロイ戦略
 - `.claude/skills/railway-integration/SKILL.md`: Railway統合
 
 **必須スキル（gha-workflow-architect）**:
+
 - `.claude/skills/deployment-verification/SKILL.md`: デプロイ検証
 
 **条件付きスキル**:
+
 - `.claude/skills/rollback-strategies/SKILL.md`: デプロイ失敗時のみ
 
 ## Phase 4: 検証と完了
 
 **検証基準**:
+
 - ✅ デプロイ前チェックがすべて成功している
 - ✅ ビルドが正常に完了している
 - ✅ Railwayへのデプロイが成功している

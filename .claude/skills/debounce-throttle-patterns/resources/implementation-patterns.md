@@ -12,7 +12,7 @@
  */
 function debounceAsync<T extends (...args: any[]) => Promise<any>>(
   fn: T,
-  delay: number
+  delay: number,
 ): (...args: Parameters<T>) => Promise<ReturnType<T>> {
   let timeoutId: NodeJS.Timeout | null = null;
   let pendingPromise: Promise<any> | null = null;
@@ -52,12 +52,12 @@ function debounceAsync<T extends (...args: any[]) => Promise<any>>(
 // 使用例
 const debouncedUpload = debounceAsync(async (file: string) => {
   await uploadFile(file);
-  return 'uploaded';
+  return "uploaded";
 }, 500);
 
 // 複数回呼び出しても、最後の1回だけ実行
-await debouncedUpload('file1.txt');
-await debouncedUpload('file2.txt'); // これだけ実行される
+await debouncedUpload("file1.txt");
+await debouncedUpload("file2.txt"); // これだけ実行される
 ```
 
 ### 2. 最大待機時間付きデバウンス
@@ -70,7 +70,7 @@ await debouncedUpload('file2.txt'); // これだけ実行される
 function debounceWithMaxWait<T extends (...args: any[]) => void>(
   fn: T,
   delay: number,
-  maxWait: number
+  maxWait: number,
 ): (...args: Parameters<T>) => void {
   let timeoutId: NodeJS.Timeout | null = null;
   let maxWaitTimeoutId: NodeJS.Timeout | null = null;
@@ -108,9 +108,13 @@ function debounceWithMaxWait<T extends (...args: any[]) => void>(
 }
 
 // 使用例: 300msデバウンス、最大2秒待機
-const handler = debounceWithMaxWait((data) => {
-  console.log('Processing:', data);
-}, 300, 2000);
+const handler = debounceWithMaxWait(
+  (data) => {
+    console.log("Processing:", data);
+  },
+  300,
+  2000,
+);
 ```
 
 ### 3. グループ化デバウンス
@@ -127,7 +131,7 @@ class GroupedDebouncer<K, V> {
   constructor(
     private fn: (key: K, value: V) => void,
     private delay: number,
-    private cleanupAfter: number = 60000
+    private cleanupAfter: number = 60000,
   ) {
     // 使われなくなったデバウンサーを定期的にクリーンアップ
     this.cleanupInterval = setInterval(() => {
@@ -139,7 +143,7 @@ class GroupedDebouncer<K, V> {
     if (!this.debouncers.has(key)) {
       this.debouncers.set(
         key,
-        debounceWithCancel((v: V) => this.fn(key, v), this.delay)
+        debounceWithCancel((v: V) => this.fn(key, v), this.delay),
       );
     }
     this.debouncers.get(key)!(value);
@@ -168,10 +172,10 @@ class GroupedDebouncer<K, V> {
 // 使用例
 const fileDebouncer = new GroupedDebouncer<string, void>(
   (path) => processFile(path),
-  300
+  300,
 );
 
-watcher.on('change', (path) => fileDebouncer.call(path, undefined));
+watcher.on("change", (path) => fileDebouncer.call(path, undefined));
 ```
 
 ---
@@ -193,7 +197,7 @@ class AdaptiveThrottler<T extends (...args: any[]) => void> {
     private fn: T,
     private minInterval: number,
     private maxInterval: number,
-    private escalationFactor: number = 1.5
+    private escalationFactor: number = 1.5,
   ) {
     this.currentInterval = minInterval;
   }
@@ -214,7 +218,7 @@ class AdaptiveThrottler<T extends (...args: any[]) => void> {
       if (this.consecutiveThrottles > 3) {
         this.currentInterval = Math.min(
           this.currentInterval * this.escalationFactor,
-          this.maxInterval
+          this.maxInterval,
         );
       }
     }
@@ -241,8 +245,8 @@ class TokenBucketThrottler<T extends (...args: any[]) => void> {
 
   constructor(
     private fn: T,
-    private bucketSize: number,    // 最大トークン数
-    private refillRate: number,    // トークン/秒
+    private bucketSize: number, // 最大トークン数
+    private refillRate: number, // トークン/秒
   ) {
     this.tokens = bucketSize;
     this.lastRefillTime = Date.now();
@@ -276,11 +280,7 @@ class TokenBucketThrottler<T extends (...args: any[]) => void> {
 }
 
 // 使用例: 最大10リクエスト、5リクエスト/秒でリフィル
-const apiThrottler = new TokenBucketThrottler(
-  (data) => sendToApi(data),
-  10,
-  5
-);
+const apiThrottler = new TokenBucketThrottler((data) => sendToApi(data), 10, 5);
 ```
 
 ### 3. 優先度付きスロットリング
@@ -301,7 +301,7 @@ class PriorityThrottler<T extends (...args: any[]) => void> {
 
   constructor(
     private fn: T,
-    private interval: number
+    private interval: number,
   ) {}
 
   call(priority: number, ...args: Parameters<T>): void {
@@ -351,22 +351,22 @@ class PriorityThrottler<T extends (...args: any[]) => void> {
 function throttleDebounce<T extends (...args: any[]) => void>(
   fn: T,
   throttleInterval: number,
-  debounceDelay: number
+  debounceDelay: number,
 ): (...args: Parameters<T>) => void {
   const throttled = throttle(fn, throttleInterval);
   const debounced = debounce(fn, debounceDelay);
 
   return (...args: Parameters<T>) => {
-    throttled(...args);  // 即座に実行（レート制限付き）
-    debounced(...args);  // 最後の状態を保証
+    throttled(...args); // 即座に実行（レート制限付き）
+    debounced(...args); // 最後の状態を保証
   };
 }
 
 // 使用例
 const handler = throttleDebounce(
   (text) => updatePreview(text),
-  200,   // 200msごとに更新
-  500    // 入力完了後に最終更新
+  200, // 200msごとに更新
+  500, // 入力完了後に最終更新
 );
 ```
 
@@ -403,7 +403,7 @@ class ManagedDebouncer<T extends (...args: any[]) => void> {
 // シャットダウンハンドラー
 const debouncer = new ManagedDebouncer(saveFile, 300);
 
-process.on('SIGTERM', async () => {
+process.on("SIGTERM", async () => {
   await debouncer.shutdown();
   process.exit(0);
 });

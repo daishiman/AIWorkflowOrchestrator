@@ -13,6 +13,7 @@
 ## 命名パターン
 
 ### パターン1: カテゴリプレフィックス
+
 ```bash
 git-commit.md
 git-push.md
@@ -21,6 +22,7 @@ docker-deploy.md
 ```
 
 ### パターン2: 機能グループ
+
 ```bash
 deploy-staging.md
 deploy-production.md
@@ -28,6 +30,7 @@ deploy-rollback.md
 ```
 
 ### パターン3: サブディレクトリ
+
 ```bash
 .claude/commands/
 ├── git/

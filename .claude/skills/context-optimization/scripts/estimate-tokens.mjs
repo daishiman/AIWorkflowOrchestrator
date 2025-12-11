@@ -8,15 +8,15 @@
  *        node estimate-tokens.mjs <directory>
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
 // ANSI color codes
 const colors = {
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  reset: '\x1b[0m'
+  red: "\x1b[31m",
+  green: "\x1b[32m",
+  yellow: "\x1b[33m",
+  reset: "\x1b[0m",
 };
 
 /**
@@ -29,7 +29,7 @@ const colors = {
  * Average: ~3 chars/token for mixed content
  */
 function estimateTokens(content) {
-  const lines = content.split('\n').length;
+  const lines = content.split("\n").length;
   const chars = content.length;
   const tokens = Math.ceil(chars / 3);
   const tokensPerLine = lines > 0 ? Math.ceil(tokens / lines) : 0;
@@ -43,27 +43,27 @@ function estimateTokens(content) {
 function getEvaluation(lines, tokens) {
   if (lines < 500 && tokens < 3000) {
     return {
-      status: '✅',
+      status: "✅",
       color: colors.green,
-      message: '最適サイズ（行数・トークン共に良好）'
+      message: "最適サイズ（行数・トークン共に良好）",
     };
   } else if (lines < 500) {
     return {
-      status: '⚠️',
+      status: "⚠️",
       color: colors.yellow,
-      message: '行数は良好だがトークン多め（内容を圧縮検討）'
+      message: "行数は良好だがトークン多め（内容を圧縮検討）",
     };
   } else if (lines < 550) {
     return {
-      status: '⚠️',
+      status: "⚠️",
       color: colors.yellow,
-      message: '500行超過、分割を検討（目標: 500行以内）'
+      message: "500行超過、分割を検討（目標: 500行以内）",
     };
   } else {
     return {
-      status: '✗',
+      status: "✗",
       color: colors.red,
-      message: '分割推奨（550行超過）'
+      message: "分割推奨（550行超過）",
     };
   }
 }
@@ -73,11 +73,13 @@ function getEvaluation(lines, tokens) {
  */
 function analyzeFile(filePath) {
   if (!fs.existsSync(filePath)) {
-    console.log(`${colors.red}Error: File not found: ${filePath}${colors.reset}`);
+    console.log(
+      `${colors.red}Error: File not found: ${filePath}${colors.reset}`,
+    );
     process.exit(1);
   }
 
-  const content = fs.readFileSync(filePath, 'utf-8');
+  const content = fs.readFileSync(filePath, "utf-8");
   const estimate = estimateTokens(content);
   const evaluation = getEvaluation(estimate.lines, estimate.tokens);
 
@@ -85,11 +87,13 @@ function analyzeFile(filePath) {
   console.log(`Lines: ${estimate.lines}`);
   console.log(`Characters: ${estimate.chars}`);
   console.log(`Estimated tokens: ${estimate.tokens}`);
-  console.log('');
-  console.log(`Status: ${evaluation.color}${evaluation.status} ${evaluation.message}${colors.reset}`);
-  console.log('');
-  console.log('参考:');
-  console.log('- 目標行数: <500行（推奨）、<550行（許容）');
+  console.log("");
+  console.log(
+    `Status: ${evaluation.color}${evaluation.status} ${evaluation.message}${colors.reset}`,
+  );
+  console.log("");
+  console.log("参考:");
+  console.log("- 目標行数: <500行（推奨）、<550行（許容）");
   console.log(`- 推定トークン/行: ${estimate.tokensPerLine} tokens/line`);
 }
 
@@ -101,10 +105,10 @@ function analyzeMultiple(targets) {
   let totalChars = 0;
   let totalTokens = 0;
 
-  console.log('==========================================');
-  console.log('Token Estimation Report');
-  console.log('==========================================');
-  console.log('');
+  console.log("==========================================");
+  console.log("Token Estimation Report");
+  console.log("==========================================");
+  console.log("");
 
   for (const target of targets) {
     if (!fs.existsSync(target)) {
@@ -116,27 +120,32 @@ function analyzeMultiple(targets) {
 
     if (stat.isDirectory()) {
       // Analyze all .md files in directory
-      const files = fs.readdirSync(target)
-        .filter(f => f.endsWith('.md'))
-        .map(f => path.join(target, f));
+      const files = fs
+        .readdirSync(target)
+        .filter((f) => f.endsWith(".md"))
+        .map((f) => path.join(target, f));
 
       for (const file of files) {
-        const content = fs.readFileSync(file, 'utf-8');
+        const content = fs.readFileSync(file, "utf-8");
         const estimate = estimateTokens(content);
         const evaluation = getEvaluation(estimate.lines, estimate.tokens);
 
-        console.log(`${path.basename(file)}: ${estimate.lines}行, ${estimate.tokens}トークン ${evaluation.status}`);
+        console.log(
+          `${path.basename(file)}: ${estimate.lines}行, ${estimate.tokens}トークン ${evaluation.status}`,
+        );
 
         totalLines += estimate.lines;
         totalChars += estimate.chars;
         totalTokens += estimate.tokens;
       }
     } else {
-      const content = fs.readFileSync(target, 'utf-8');
+      const content = fs.readFileSync(target, "utf-8");
       const estimate = estimateTokens(content);
       const evaluation = getEvaluation(estimate.lines, estimate.tokens);
 
-      console.log(`${path.basename(target)}: ${estimate.lines}行, ${estimate.tokens}トークン ${evaluation.status}`);
+      console.log(
+        `${path.basename(target)}: ${estimate.lines}行, ${estimate.tokens}トークン ${evaluation.status}`,
+      );
 
       totalLines += estimate.lines;
       totalChars += estimate.chars;
@@ -144,14 +153,16 @@ function analyzeMultiple(targets) {
     }
   }
 
-  console.log('');
-  console.log('------------------------------------------');
+  console.log("");
+  console.log("------------------------------------------");
   console.log(`合計: ${totalLines}行, ${totalTokens}トークン`);
 
   if (totalTokens < 20000) {
     console.log(`${colors.green}✅ 推奨範囲内（<20K tokens）${colors.reset}`);
   } else {
-    console.log(`${colors.yellow}⚠ 推奨範囲超過（>20K tokens）- 最適化を検討${colors.reset}`);
+    console.log(
+      `${colors.yellow}⚠ 推奨範囲超過（>20K tokens）- 最適化を検討${colors.reset}`,
+    );
   }
 }
 
@@ -162,12 +173,12 @@ function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.log('Usage: node estimate-tokens.mjs <file.md> [file2.md ...]');
-    console.log('       node estimate-tokens.mjs <directory>');
-    console.log('');
-    console.log('Examples:');
-    console.log('  node estimate-tokens.mjs ./SKILL.md');
-    console.log('  node estimate-tokens.mjs ./resources/');
+    console.log("Usage: node estimate-tokens.mjs <file.md> [file2.md ...]");
+    console.log("       node estimate-tokens.mjs <directory>");
+    console.log("");
+    console.log("Examples:");
+    console.log("  node estimate-tokens.mjs ./SKILL.md");
+    console.log("  node estimate-tokens.mjs ./resources/");
     process.exit(1);
   }
 

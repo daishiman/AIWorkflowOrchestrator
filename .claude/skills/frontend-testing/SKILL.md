@@ -144,29 +144,29 @@ describe('Button props', () => {
 
 ```typescript
 // packages/shared/ui/hooks/useLocalStorage.test.ts
-import { renderHook, act } from '@testing-library/react';
-import { describe, it, expect, beforeEach } from 'vitest';
-import { useLocalStorage } from './useLocalStorage';
+import { renderHook, act } from "@testing-library/react";
+import { describe, it, expect, beforeEach } from "vitest";
+import { useLocalStorage } from "./useLocalStorage";
 
-describe('useLocalStorage', () => {
+describe("useLocalStorage", () => {
   beforeEach(() => {
     localStorage.clear();
   });
 
-  it('returns initial value when no stored value exists', () => {
-    const { result } = renderHook(() => useLocalStorage('key', 'initial'));
-    expect(result.current[0]).toBe('initial');
+  it("returns initial value when no stored value exists", () => {
+    const { result } = renderHook(() => useLocalStorage("key", "initial"));
+    expect(result.current[0]).toBe("initial");
   });
 
-  it('updates stored value when setValue is called', () => {
-    const { result } = renderHook(() => useLocalStorage('key', 'initial'));
+  it("updates stored value when setValue is called", () => {
+    const { result } = renderHook(() => useLocalStorage("key", "initial"));
 
     act(() => {
-      result.current[1]('updated');
+      result.current[1]("updated");
     });
 
-    expect(result.current[0]).toBe('updated');
-    expect(localStorage.getItem('key')).toBe(JSON.stringify('updated'));
+    expect(result.current[0]).toBe("updated");
+    expect(localStorage.getItem("key")).toBe(JSON.stringify("updated"));
   });
 });
 ```
@@ -184,17 +184,17 @@ describe('useLocalStorage', () => {
 
 ```typescript
 // .storybook/main.ts
-import type { StorybookConfig } from '@storybook/react-vite';
+import type { StorybookConfig } from "@storybook/react-vite";
 
 const config: StorybookConfig = {
-  stories: ['../packages/shared/ui/**/*.stories.@(ts|tsx)'],
+  stories: ["../packages/shared/ui/**/*.stories.@(ts|tsx)"],
   addons: [
-    '@storybook/addon-a11y',
-    '@storybook/addon-interactions',
-    '@storybook/addon-viewport',
+    "@storybook/addon-a11y",
+    "@storybook/addon-interactions",
+    "@storybook/addon-viewport",
   ],
   framework: {
-    name: '@storybook/react-vite',
+    name: "@storybook/react-vite",
     options: {},
   },
 };
@@ -319,30 +319,30 @@ jobs:
 
 ```typescript
 // tests/a11y/accessibility.test.ts
-import { test, expect } from '@playwright/test';
-import AxeBuilder from '@axe-core/playwright';
+import { test, expect } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 
-test.describe('Accessibility', () => {
-  test('home page should not have a11y violations', async ({ page }) => {
-    await page.goto('/');
+test.describe("Accessibility", () => {
+  test("home page should not have a11y violations", async ({ page }) => {
+    await page.goto("/");
 
     const results = await new AxeBuilder({ page })
-      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
+      .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
       .analyze();
 
     expect(results.violations).toEqual([]);
   });
 
-  test('components should meet WCAG 2.1 AA', async ({ page }) => {
-    await page.goto('/storybook/iframe.html?id=primitives-button--primary');
+  test("components should meet WCAG 2.1 AA", async ({ page }) => {
+    await page.goto("/storybook/iframe.html?id=primitives-button--primary");
 
     const results = await new AxeBuilder({ page })
-      .include('#storybook-root')
+      .include("#storybook-root")
       .analyze();
 
     // 違反がある場合は詳細を出力
     if (results.violations.length > 0) {
-      console.log('Violations:', JSON.stringify(results.violations, null, 2));
+      console.log("Violations:", JSON.stringify(results.violations, null, 2));
     }
 
     expect(results.violations).toEqual([]);
@@ -393,46 +393,46 @@ describe('Button accessibility', () => {
 
 ```typescript
 // playwright.config.ts
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
-  testDir: './__tests__/e2e',
+  testDir: "./__tests__/e2e",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
+  reporter: "html",
   use: {
-    baseURL: 'http://localhost:3000',
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
+    baseURL: "http://localhost:3000",
+    trace: "on-first-retry",
+    screenshot: "only-on-failure",
   },
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
     },
     {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      name: "firefox",
+      use: { ...devices["Desktop Firefox"] },
     },
     {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      name: "webkit",
+      use: { ...devices["Desktop Safari"] },
     },
     // モバイルテスト
     {
-      name: 'Mobile Chrome',
-      use: { ...devices['Pixel 5'] },
+      name: "Mobile Chrome",
+      use: { ...devices["Pixel 5"] },
     },
     {
-      name: 'Mobile Safari',
-      use: { ...devices['iPhone 12'] },
+      name: "Mobile Safari",
+      use: { ...devices["iPhone 12"] },
     },
   ],
   webServer: {
-    command: 'pnpm dev',
-    url: 'http://localhost:3000',
+    command: "pnpm dev",
+    url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
   },
 });
@@ -442,32 +442,34 @@ export default defineConfig({
 
 ```typescript
 // __tests__/e2e/auth.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test.describe('Authentication', () => {
-  test('user can login with valid credentials', async ({ page }) => {
-    await page.goto('/login');
+test.describe("Authentication", () => {
+  test("user can login with valid credentials", async ({ page }) => {
+    await page.goto("/login");
 
     // フォーム入力
-    await page.getByLabel('Email').fill('user@example.com');
-    await page.getByLabel('Password').fill('password123');
+    await page.getByLabel("Email").fill("user@example.com");
+    await page.getByLabel("Password").fill("password123");
 
     // ログインボタンクリック
-    await page.getByRole('button', { name: 'ログイン' }).click();
+    await page.getByRole("button", { name: "ログイン" }).click();
 
     // ダッシュボードにリダイレクト
-    await expect(page).toHaveURL('/dashboard');
-    await expect(page.getByRole('heading', { name: 'ダッシュボード' })).toBeVisible();
+    await expect(page).toHaveURL("/dashboard");
+    await expect(
+      page.getByRole("heading", { name: "ダッシュボード" }),
+    ).toBeVisible();
   });
 
-  test('shows error with invalid credentials', async ({ page }) => {
-    await page.goto('/login');
+  test("shows error with invalid credentials", async ({ page }) => {
+    await page.goto("/login");
 
-    await page.getByLabel('Email').fill('wrong@example.com');
-    await page.getByLabel('Password').fill('wrongpassword');
-    await page.getByRole('button', { name: 'ログイン' }).click();
+    await page.getByLabel("Email").fill("wrong@example.com");
+    await page.getByLabel("Password").fill("wrongpassword");
+    await page.getByRole("button", { name: "ログイン" }).click();
 
-    await expect(page.getByRole('alert')).toContainText('認証に失敗しました');
+    await expect(page.getByRole("alert")).toContainText("認証に失敗しました");
   });
 });
 ```
@@ -480,33 +482,30 @@ test.describe('Authentication', () => {
 
 ```typescript
 // tests/mocks/handlers.ts
-import { http, HttpResponse } from 'msw';
+import { http, HttpResponse } from "msw";
 
 export const handlers = [
-  http.get('/api/users', () => {
+  http.get("/api/users", () => {
     return HttpResponse.json([
-      { id: 1, name: 'John Doe', email: 'john@example.com' },
-      { id: 2, name: 'Jane Doe', email: 'jane@example.com' },
+      { id: 1, name: "John Doe", email: "john@example.com" },
+      { id: 2, name: "Jane Doe", email: "jane@example.com" },
     ]);
   }),
 
-  http.post('/api/login', async ({ request }) => {
+  http.post("/api/login", async ({ request }) => {
     const body = await request.json();
 
-    if (body.email === 'user@example.com' && body.password === 'password123') {
-      return HttpResponse.json({ token: 'mock-token' });
+    if (body.email === "user@example.com" && body.password === "password123") {
+      return HttpResponse.json({ token: "mock-token" });
     }
 
-    return HttpResponse.json(
-      { error: '認証に失敗しました' },
-      { status: 401 }
-    );
+    return HttpResponse.json({ error: "認証に失敗しました" }, { status: 401 });
   }),
 ];
 
 // tests/mocks/server.ts
-import { setupServer } from 'msw/node';
-import { handlers } from './handlers';
+import { setupServer } from "msw/node";
+import { handlers } from "./handlers";
 
 export const server = setupServer(...handlers);
 ```
@@ -515,11 +514,11 @@ export const server = setupServer(...handlers);
 
 ```typescript
 // tests/setup.ts
-import '@testing-library/jest-dom/vitest';
-import { afterAll, afterEach, beforeAll } from 'vitest';
-import { server } from './mocks/server';
+import "@testing-library/jest-dom/vitest";
+import { afterAll, afterEach, beforeAll } from "vitest";
+import { server } from "./mocks/server";
 
-beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+beforeAll(() => server.listen({ onUnhandledRequest: "error" }));
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 ```
@@ -530,33 +529,33 @@ afterAll(() => server.close());
 
 ### 目標カバレッジ
 
-| カテゴリ | 目標 | 現状目安 |
-|---------|-----|---------|
-| **全体** | 80%+ | - |
-| **コンポーネント** | 90%+ | 重要UI要素 |
+| カテゴリ           | 目標 | 現状目安         |
+| ------------------ | ---- | ---------------- |
+| **全体**           | 80%+ | -                |
+| **コンポーネント** | 90%+ | 重要UI要素       |
 | **カスタムフック** | 95%+ | すべてのロジック |
-| **ユーティリティ** | 100% | すべての関数 |
+| **ユーティリティ** | 100% | すべての関数     |
 
 ### Vitest設定
 
 ```typescript
 // vitest.config.ts
-import { defineConfig } from 'vitest/config';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from "vitest/config";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
   test: {
-    environment: 'jsdom',
-    setupFiles: ['./tests/setup.ts'],
+    environment: "jsdom",
+    setupFiles: ["./tests/setup.ts"],
     coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      provider: "v8",
+      reporter: ["text", "json", "html"],
       exclude: [
-        'node_modules/',
-        '**/*.stories.tsx',
-        '**/*.test.tsx',
-        '**/index.ts',
+        "node_modules/",
+        "**/*.stories.tsx",
+        "**/*.test.tsx",
+        "**/index.ts",
       ],
       thresholds: {
         global: {
@@ -579,18 +578,18 @@ export default defineConfig({
 
 ```typescript
 // 良い例
-describe('Button', () => {
-  it('renders children correctly', () => {});
-  it('applies variant styles when variant prop is provided', () => {});
-  it('calls onClick handler when clicked', () => {});
-  it('does not call onClick when disabled', () => {});
+describe("Button", () => {
+  it("renders children correctly", () => {});
+  it("applies variant styles when variant prop is provided", () => {});
+  it("calls onClick handler when clicked", () => {});
+  it("does not call onClick when disabled", () => {});
 });
 
 // 悪い例
-describe('Button', () => {
-  it('test1', () => {});
-  it('works', () => {});
-  it('should work correctly', () => {});
+describe("Button", () => {
+  it("test1", () => {});
+  it("works", () => {});
+  it("should work correctly", () => {});
 });
 ```
 
@@ -604,7 +603,7 @@ describe('Button', () => {
 
 ```typescript
 // 良い例：具体的なアサーション
-expect(screen.getByRole('button', { name: 'Submit' })).toBeEnabled();
+expect(screen.getByRole("button", { name: "Submit" })).toBeEnabled();
 expect(result.current.value).toBe(42);
 
 // 悪い例：曖昧なアサーション

@@ -36,10 +36,12 @@
 ### Dummy（ダミー）
 
 **使用条件**:
+
 - [ ] テスト対象がこの依存を使用しない
 - [ ] コンストラクタの型を満たすだけ
 
 **実装例**:
+
 ```typescript
 const dummyLogger: ILogger = {
   log: () => {},
@@ -52,16 +54,18 @@ const dummyLogger: ILogger = {
 ### Stub（スタブ）
 
 **使用条件**:
+
 - [ ] テスト対象への入力を制御したい
 - [ ] 特定の条件下の動作をテストしたい
 - [ ] 外部サービスの応答をシミュレート
 
 **実装例**:
+
 ```typescript
 const stubRepository = {
   findById: vi.fn().mockResolvedValue({
-    id: 'user-1',
-    name: 'Test User',
+    id: "user-1",
+    name: "Test User",
   }),
 };
 ```
@@ -71,11 +75,13 @@ const stubRepository = {
 ### Spy（スパイ）
 
 **使用条件**:
+
 - [ ] 呼び出しが行われたことを確認したい
 - [ ] 呼び出し回数を検証したい
 - [ ] 本物の実装も使いたい
 
 **実装例**:
+
 ```typescript
 const spyLogger = {
   log: vi.fn(),
@@ -90,11 +96,13 @@ expect(spyLogger.log).toHaveBeenCalledTimes(2);
 ### Mock（モック）
 
 **使用条件**:
+
 - [ ] 引数を厳密に検証したい
 - [ ] 呼び出し順序が重要
 - [ ] 契約の遵守を確認したい
 
 **実装例**:
+
 ```typescript
 const mockPayment = {
   charge: vi.fn().mockResolvedValue({ success: true }),
@@ -103,7 +111,7 @@ const mockPayment = {
 // テスト後
 expect(mockPayment.charge).toHaveBeenCalledExactlyOnceWith({
   amount: 1000,
-  currency: 'JPY',
+  currency: "JPY",
 });
 ```
 
@@ -112,11 +120,13 @@ expect(mockPayment.charge).toHaveBeenCalledExactlyOnceWith({
 ### Fake（フェイク）
 
 **使用条件**:
+
 - [ ] 複雑な依存の代替が必要
 - [ ] 状態を持つ操作をテスト
 - [ ] 統合テストに使用
 
 **実装例**:
+
 ```typescript
 class FakeUserRepository implements IUserRepository {
   private users: Map<string, User> = new Map();
@@ -174,12 +184,12 @@ class FakeUserRepository implements IUserRepository {
 ## 検証方法の選択
 
 | テストダブル | 主な検証方法 |
-|-------------|-------------|
-| Dummy | なし |
-| Stub | 状態検証 |
-| Spy | 振る舞い検証 |
-| Mock | 振る舞い検証 |
-| Fake | 状態検証 |
+| ------------ | ------------ |
+| Dummy        | なし         |
+| Stub         | 状態検証     |
+| Spy          | 振る舞い検証 |
+| Mock         | 振る舞い検証 |
+| Fake         | 状態検証     |
 
 ## チェックリスト
 

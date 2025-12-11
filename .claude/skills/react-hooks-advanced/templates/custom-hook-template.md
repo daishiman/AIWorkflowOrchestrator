@@ -2,7 +2,7 @@
 
 ## 基本構造
 
-```typescript
+````typescript
 import { useState, useEffect, useCallback } from 'react';
 
 /**
@@ -39,12 +39,12 @@ export function {{hookName}}({{params}}): {{ReturnType}} {
     // 状態と関数を返す
   };
 }
-```
+````
 
 ## データフェッチフックテンプレート
 
 ```typescript
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
 
 interface UseFetchState<T> {
   data: T | null;
@@ -64,7 +64,7 @@ export function useFetch<T>(url: string): UseFetchReturn<T> {
   });
 
   const fetchData = useCallback(async () => {
-    setState(prev => ({ ...prev, isLoading: true, error: null }));
+    setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
     try {
       const response = await fetch(url);
@@ -77,7 +77,7 @@ export function useFetch<T>(url: string): UseFetchReturn<T> {
       setState({
         data: null,
         isLoading: false,
-        error: error instanceof Error ? error : new Error('Unknown error'),
+        error: error instanceof Error ? error : new Error("Unknown error"),
       });
     }
   }, [url]);
@@ -96,7 +96,7 @@ export function useFetch<T>(url: string): UseFetchReturn<T> {
 ## トグルフックテンプレート
 
 ```typescript
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from "react";
 
 interface UseToggleReturn {
   value: boolean;
@@ -108,7 +108,7 @@ interface UseToggleReturn {
 export function useToggle(initialValue = false): UseToggleReturn {
   const [value, setValue] = useState(initialValue);
 
-  const toggle = useCallback(() => setValue(v => !v), []);
+  const toggle = useCallback(() => setValue((v) => !v), []);
   const setTrue = useCallback(() => setValue(true), []);
   const setFalse = useCallback(() => setValue(false), []);
 
@@ -119,7 +119,7 @@ export function useToggle(initialValue = false): UseToggleReturn {
 ## フォーム入力フックテンプレート
 
 ```typescript
-import { useState, useCallback, ChangeEvent } from 'react';
+import { useState, useCallback, ChangeEvent } from "react";
 
 interface UseInputReturn {
   value: string;
@@ -131,14 +131,14 @@ interface UseInputReturn {
   };
 }
 
-export function useInput(initialValue = ''): UseInputReturn {
+export function useInput(initialValue = ""): UseInputReturn {
   const [value, setValue] = useState(initialValue);
 
   const onChange = useCallback(
     (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setValue(e.target.value);
     },
-    []
+    [],
   );
 
   const reset = useCallback(() => setValue(initialValue), [initialValue]);

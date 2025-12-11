@@ -3,9 +3,11 @@
 ## 1. God Class（神クラス）
 
 ### 説明
+
 あまりにも多くの責務を持つ大規模なクラス。
 
 ### 検出基準
+
 - 500行以上のコード
 - 20以上のメソッド
 - 10以上のフィールド
@@ -17,26 +19,50 @@
 // ❌ God Class
 class UserManager {
   // ユーザー管理
-  createUser() { /* ... */ }
-  updateUser() { /* ... */ }
-  deleteUser() { /* ... */ }
+  createUser() {
+    /* ... */
+  }
+  updateUser() {
+    /* ... */
+  }
+  deleteUser() {
+    /* ... */
+  }
 
   // 認証（別責務）
-  login() { /* ... */ }
-  logout() { /* ... */ }
-  refreshToken() { /* ... */ }
+  login() {
+    /* ... */
+  }
+  logout() {
+    /* ... */
+  }
+  refreshToken() {
+    /* ... */
+  }
 
   // メール送信（別責務）
-  sendWelcomeEmail() { /* ... */ }
-  sendPasswordResetEmail() { /* ... */ }
+  sendWelcomeEmail() {
+    /* ... */
+  }
+  sendPasswordResetEmail() {
+    /* ... */
+  }
 
   // 分析（別責務）
-  trackUserActivity() { /* ... */ }
-  generateUserReport() { /* ... */ }
+  trackUserActivity() {
+    /* ... */
+  }
+  generateUserReport() {
+    /* ... */
+  }
 
   // 課金（別責務）
-  processPayment() { /* ... */ }
-  handleSubscription() { /* ... */ }
+  processPayment() {
+    /* ... */
+  }
+  handleSubscription() {
+    /* ... */
+  }
 }
 ```
 
@@ -45,30 +71,54 @@ class UserManager {
 ```typescript
 // ✅ 責務を分割
 class UserService {
-  createUser() { /* ... */ }
-  updateUser() { /* ... */ }
-  deleteUser() { /* ... */ }
+  createUser() {
+    /* ... */
+  }
+  updateUser() {
+    /* ... */
+  }
+  deleteUser() {
+    /* ... */
+  }
 }
 
 class AuthService {
-  login() { /* ... */ }
-  logout() { /* ... */ }
-  refreshToken() { /* ... */ }
+  login() {
+    /* ... */
+  }
+  logout() {
+    /* ... */
+  }
+  refreshToken() {
+    /* ... */
+  }
 }
 
 class EmailService {
-  sendWelcomeEmail() { /* ... */ }
-  sendPasswordResetEmail() { /* ... */ }
+  sendWelcomeEmail() {
+    /* ... */
+  }
+  sendPasswordResetEmail() {
+    /* ... */
+  }
 }
 
 class AnalyticsService {
-  trackUserActivity() { /* ... */ }
-  generateUserReport() { /* ... */ }
+  trackUserActivity() {
+    /* ... */
+  }
+  generateUserReport() {
+    /* ... */
+  }
 }
 
 class PaymentService {
-  processPayment() { /* ... */ }
-  handleSubscription() { /* ... */ }
+  processPayment() {
+    /* ... */
+  }
+  handleSubscription() {
+    /* ... */
+  }
 }
 ```
 
@@ -77,9 +127,11 @@ class PaymentService {
 ## 2. Data Class（データクラス）
 
 ### 説明
+
 データのみを保持し、ほとんど振る舞いを持たないクラス。
 
 ### 検出基準
+
 - getter/setterのみ
 - ビジネスロジックがない
 - 外部から頻繁に操作される
@@ -98,10 +150,10 @@ class Order {
 // 外部でロジックを実行
 function processOrder(order: Order) {
   if (order.items.length === 0) {
-    throw new Error('Empty order');
+    throw new Error("Empty order");
   }
   order.total = order.items.reduce((sum, item) => sum + item.price, 0);
-  order.status = 'processing';
+  order.status = "processing";
 }
 ```
 
@@ -117,7 +169,7 @@ class Order {
   constructor(customerId: string) {
     this.customerId = customerId;
     this.items = [];
-    this.status = 'draft';
+    this.status = "draft";
   }
 
   addItem(item: OrderItem): void {
@@ -126,9 +178,9 @@ class Order {
 
   process(): void {
     if (this.items.length === 0) {
-      throw new Error('Empty order');
+      throw new Error("Empty order");
     }
-    this.status = 'processing';
+    this.status = "processing";
   }
 
   calculateTotal(): number {
@@ -142,9 +194,11 @@ class Order {
 ## 3. Feature Envy（機能の嫉妬）
 
 ### 説明
+
 自クラスよりも他クラスのデータに多くアクセスするメソッド。
 
 ### 検出基準
+
 - 他オブジェクトのgetter呼び出しが3回以上
 - 自クラスのメンバーへのアクセスが少ない
 
@@ -159,7 +213,7 @@ class Order {
     const membershipLevel = customer.getMembershipLevel();
     const orderHistory = customer.getOrderHistory();
 
-    if (membershipLevel === 'premium') {
+    if (membershipLevel === "premium") {
       return 0; // 無料配送
     }
 
@@ -182,7 +236,7 @@ class Order {
 // ✅ メソッドを適切なクラスに移動
 class Customer {
   calculateShippingCost(baseRate: number): number {
-    if (this.membershipLevel === 'premium') {
+    if (this.membershipLevel === "premium") {
       return 0;
     }
 
@@ -211,9 +265,11 @@ class Order {
 ## 4. Inappropriate Intimacy（不適切な親密さ）
 
 ### 説明
+
 クラスが他クラスの内部実装に過度に依存している状態。
 
 ### 検出基準
+
 - privateメンバーへの直接アクセス（リフレクション等）
 - 内部構造の知識に依存
 - 双方向の強い結合
@@ -235,10 +291,10 @@ class OrderReport {
   generate(order: Order): string {
     const items = order.getItems();
     // 内部構造に依存した操作
-    items.forEach(item => {
+    items.forEach((item) => {
       item.markAsReported(); // 副作用！
     });
-    return items.map(item => `${item.name}: ${item.price}`).join('\n');
+    return items.map((item) => `${item.name}: ${item.price}`).join("\n");
   }
 }
 ```
@@ -252,14 +308,14 @@ class Order {
 
   // 内部状態を保護
   getItemsSummary(): ReadonlyArray<{ name: string; price: number }> {
-    return this.items.map(item => ({
+    return this.items.map((item) => ({
       name: item.name,
-      price: item.price
+      price: item.price,
     }));
   }
 
   markAsReported(): void {
-    this.items.forEach(item => item.markAsReported());
+    this.items.forEach((item) => item.markAsReported());
   }
 }
 
@@ -267,7 +323,7 @@ class OrderReport {
   generate(order: Order): string {
     const summary = order.getItemsSummary();
     order.markAsReported();
-    return summary.map(item => `${item.name}: ${item.price}`).join('\n');
+    return summary.map((item) => `${item.name}: ${item.price}`).join("\n");
   }
 }
 ```
@@ -277,9 +333,11 @@ class OrderReport {
 ## 5. Refused Bequest（拒否された遺産）
 
 ### 説明
+
 継承したメソッドやプロパティを使用しない・オーバーライドして空実装にする。
 
 ### 検出基準
+
 - 継承したメソッドの空実装
 - 継承したメソッドで例外をスロー
 - 親クラスの機能をほとんど使用しない
@@ -290,17 +348,17 @@ class OrderReport {
 // ❌ Refused Bequest
 class Bird {
   fly(): void {
-    console.log('Flying...');
+    console.log("Flying...");
   }
 
   eat(): void {
-    console.log('Eating...');
+    console.log("Eating...");
   }
 }
 
 class Penguin extends Bird {
   fly(): void {
-    throw new Error('Penguins cannot fly'); // 拒否された遺産
+    throw new Error("Penguins cannot fly"); // 拒否された遺産
   }
 }
 ```
@@ -318,12 +376,18 @@ interface Flyable {
 }
 
 class Sparrow implements Eatable, Flyable {
-  eat(): void { console.log('Eating...'); }
-  fly(): void { console.log('Flying...'); }
+  eat(): void {
+    console.log("Eating...");
+  }
+  fly(): void {
+    console.log("Flying...");
+  }
 }
 
 class Penguin implements Eatable {
-  eat(): void { console.log('Eating fish...'); }
+  eat(): void {
+    console.log("Eating fish...");
+  }
   // flyは実装不要
 }
 ```

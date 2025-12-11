@@ -2,12 +2,12 @@
 
 ## 戦略一覧
 
-| 戦略 | 生成タイミング | 更新方法 | 適用ケース |
-|------|--------------|---------|-----------|
-| Static Generation | ビルド時 | 再ビルド | 静的コンテンツ、ブログ |
-| ISR | ビルド時 + 再検証 | revalidate間隔 | 定期更新コンテンツ |
-| Dynamic Rendering | リクエスト時 | 毎回 | ユーザー固有データ |
-| Streaming SSR | リクエスト時（段階的） | 毎回 | 大量データ |
+| 戦略              | 生成タイミング         | 更新方法       | 適用ケース             |
+| ----------------- | ---------------------- | -------------- | ---------------------- |
+| Static Generation | ビルド時               | 再ビルド       | 静的コンテンツ、ブログ |
+| ISR               | ビルド時 + 再検証      | revalidate間隔 | 定期更新コンテンツ     |
+| Dynamic Rendering | リクエスト時           | 毎回           | ユーザー固有データ     |
+| Streaming SSR     | リクエスト時（段階的） | 毎回           | 大量データ             |
 
 ## 判断フローチャート
 
@@ -34,8 +34,8 @@
 // デフォルトでStatic Generation（何も設定しない場合）
 
 // 明示的に設定
-export const dynamic = 'force-static'
-export const revalidate = false // 再検証しない
+export const dynamic = "force-static";
+export const revalidate = false; // 再検証しない
 ```
 
 ### 動的パラメータの静的生成
@@ -61,6 +61,7 @@ export default async function BlogPost({
 ```
 
 ### 適用ケース
+
 - マーケティングページ
 - ブログ記事（更新頻度が低い）
 - ドキュメンテーション
@@ -72,43 +73,44 @@ export default async function BlogPost({
 
 ```typescript
 // 時間ベースの再検証
-export const revalidate = 3600 // 1時間毎に再検証
+export const revalidate = 3600; // 1時間毎に再検証
 
 // または fetch 単位で設定
-const data = await fetch('https://api.example.com/data', {
-  next: { revalidate: 3600 }
-})
+const data = await fetch("https://api.example.com/data", {
+  next: { revalidate: 3600 },
+});
 ```
 
 ### On-Demand Revalidation
 
 ```typescript
 // app/api/revalidate/route.ts
-import { revalidatePath, revalidateTag } from 'next/cache'
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function POST(request: Request) {
-  const { path, tag, secret } = await request.json()
+  const { path, tag, secret } = await request.json();
 
   // シークレットチェック
   if (secret !== process.env.REVALIDATION_SECRET) {
-    return Response.json({ error: 'Invalid secret' }, { status: 401 })
+    return Response.json({ error: "Invalid secret" }, { status: 401 });
   }
 
   // パスベースの再検証
   if (path) {
-    revalidatePath(path)
+    revalidatePath(path);
   }
 
   // タグベースの再検証
   if (tag) {
-    revalidateTag(tag)
+    revalidateTag(tag);
   }
 
-  return Response.json({ revalidated: true })
+  return Response.json({ revalidated: true });
 }
 ```
 
 ### 適用ケース
+
 - ブログ（コメント付き）
 - ECサイト（在庫は1時間毎に更新）
 - ニュースサイト
@@ -120,14 +122,14 @@ export async function POST(request: Request) {
 
 ```typescript
 // 明示的にDynamic Rendering
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 // または動的関数の使用で自動的にDynamicになる
-import { cookies, headers } from 'next/headers'
+import { cookies, headers } from "next/headers";
 
 export default async function Page() {
-  const cookieStore = await cookies()
-  const headersList = await headers()
+  const cookieStore = await cookies();
+  const headersList = await headers();
   // この時点でDynamic Renderingになる
 }
 ```
@@ -135,12 +137,14 @@ export default async function Page() {
 ### 動的関数
 
 以下を使用すると自動的にDynamic Renderingになる:
+
 - `cookies()`
 - `headers()`
 - `searchParams` prop
 - `unstable_noStore()`
 
 ### 適用ケース
+
 - ダッシュボード（ユーザー固有）
 - 設定ページ
 - 検索結果（searchParams使用）
@@ -192,6 +196,7 @@ export default function Page() {
 ```
 
 ### 適用ケース
+
 - ダッシュボード（複数のデータソース）
 - 分析ページ
 - レポートページ
@@ -214,19 +219,19 @@ export const preferredRegion = 'auto' | 'global' | 'home' | string | string[]
 
 ```typescript
 // キャッシュ設定
-fetch(url, { cache: 'force-cache' })  // デフォルト、キャッシュ使用
-fetch(url, { cache: 'no-store' })      // キャッシュ無効
+fetch(url, { cache: "force-cache" }); // デフォルト、キャッシュ使用
+fetch(url, { cache: "no-store" }); // キャッシュ無効
 
 // 再検証設定
-fetch(url, { next: { revalidate: 3600 } })  // 時間ベース
-fetch(url, { next: { tags: ['posts'] } })   // タグベース
+fetch(url, { next: { revalidate: 3600 } }); // 時間ベース
+fetch(url, { next: { tags: ["posts"] } }); // タグベース
 ```
 
 ## パフォーマンス比較
 
-| 戦略 | TTFB | TTI | SEO | サーバー負荷 |
-|------|------|-----|-----|------------|
-| Static | 最速 | 最速 | 最良 | 最小 |
-| ISR | 速い | 速い | 良好 | 低 |
-| Dynamic | 遅い | 普通 | 良好 | 高 |
-| Streaming | 速い（部分） | 普通 | 良好 | 中 |
+| 戦略      | TTFB         | TTI  | SEO  | サーバー負荷 |
+| --------- | ------------ | ---- | ---- | ------------ |
+| Static    | 最速         | 最速 | 最良 | 最小         |
+| ISR       | 速い         | 速い | 良好 | 低           |
+| Dynamic   | 遅い         | 普通 | 良好 | 高           |
+| Streaming | 速い（部分） | 普通 | 良好 | 中           |

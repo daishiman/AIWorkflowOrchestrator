@@ -15,12 +15,14 @@
 **リスクレベル**: 低
 
 **推奨エージェント**:
+
 - コードレビューアー
 - セキュリティ監査
 - ドキュメント生成
 - 依存関係分析
 
 **例**:
+
 ```yaml
 ---
 name: code-reviewer
@@ -42,12 +44,14 @@ tools:
 **パス制限**: **必須**
 
 **推奨エージェント**:
+
 - コード実装者
 - ドキュメント生成
 - テストライター
 - リファクタリング専門家
 
 **例**:
+
 ```yaml
 ---
 name: feature-implementer
@@ -76,11 +80,13 @@ write_forbidden_paths:
 **パス制限**: 不要
 
 **推奨エージェント**:
+
 - プロジェクトオーケストレーター
 - ワークフロー管理
 - タスク委譲
 
 **例**:
+
 ```yaml
 ---
 name: project-orchestrator
@@ -104,11 +110,13 @@ tools:
 **承認要求**: **推奨**
 
 **推奨エージェント**:
+
 - デプロイメント管理
 - インフラ構築
 - CI/CD実行
 
 **例**:
+
 ```yaml
 ---
 name: deployment-manager
@@ -127,15 +135,15 @@ approval_required: true
 
 ## エージェントタイプ別ツール選択
 
-| エージェントタイプ | ツール | リスク | パス制限 | 承認要求 |
-|------------------|--------|--------|---------|---------|
-| **Analyzer** | Read, Grep, Glob | 低 | 不要 | 不要 |
-| **Reviewer** | Read, Grep, Glob | 低 | 不要 | 不要 |
-| **Implementer** | Read, Write, Edit, Grep | 中 | **必須** | 任意 |
-| **Refactorer** | Read, Write, Edit, MultiEdit, Grep | 中 | **必須** | 推奨 |
-| **Orchestrator** | Task, Read, Grep | 中 | 不要 | 不要 |
-| **Deployer** | Bash, Read, Write, Edit | 高 | **必須** | **推奨** |
-| **Tester** | Bash, Read, Write, Grep | 中 | 推奨 | 不要 |
+| エージェントタイプ | ツール                             | リスク | パス制限 | 承認要求 |
+| ------------------ | ---------------------------------- | ------ | -------- | -------- |
+| **Analyzer**       | Read, Grep, Glob                   | 低     | 不要     | 不要     |
+| **Reviewer**       | Read, Grep, Glob                   | 低     | 不要     | 不要     |
+| **Implementer**    | Read, Write, Edit, Grep            | 中     | **必須** | 任意     |
+| **Refactorer**     | Read, Write, Edit, MultiEdit, Grep | 中     | **必須** | 推奨     |
+| **Orchestrator**   | Task, Read, Grep                   | 中     | 不要     | 不要     |
+| **Deployer**       | Bash, Read, Write, Edit            | 高     | **必須** | **推奨** |
+| **Tester**         | Bash, Read, Write, Grep            | 中     | 推奨     | 不要     |
 
 ## ツール選択フローチャート
 
@@ -168,6 +176,7 @@ approval_required: true
 **目的**: 書き込みを許可するパスを明示
 
 **例**:
+
 ```yaml
 write_allowed_paths:
   - ".claude/agents/**/*.md"
@@ -177,6 +186,7 @@ write_allowed_paths:
 ```
 
 **パターン**:
+
 - `**`: すべてのサブディレクトリ
 - `*.md`: すべての.mdファイル
 - `src/**/*.ts`: srcディレクトリ以下のすべての.tsファイル
@@ -186,6 +196,7 @@ write_allowed_paths:
 **目的**: 書き込みを禁止するパスを明示（センシティブファイル保護）
 
 **例**:
+
 ```yaml
 write_forbidden_paths:
   - ".env"
@@ -198,6 +209,7 @@ write_forbidden_paths:
 ```
 
 **一般的な禁止パス**:
+
 - 環境変数ファイル: `.env`, `.env.local`
 - 認証鍵: `*.key`, `*.pem`, `*.crt`
 - Gitディレクトリ: `.git/**`
@@ -211,11 +223,13 @@ write_forbidden_paths:
 **目的**: すべての操作に承認を要求
 
 **例**:
+
 ```yaml
 approval_required: true
 ```
 
 **推奨ケース**:
+
 - 本番環境へのデプロイ
 - インフラ変更
 - データベース操作
@@ -225,6 +239,7 @@ approval_required: true
 **目的**: 特定のコマンドのみ承認を要求
 
 **例**:
+
 ```yaml
 approval_required_for:
   - "rm *"
@@ -319,6 +334,6 @@ approval_required: true
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-24 | 初版作成 |
+| バージョン | 日付       | 変更内容 |
+| ---------- | ---------- | -------- |
+| 1.0.0      | 2025-11-24 | 初版作成 |

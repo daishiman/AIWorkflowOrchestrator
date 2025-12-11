@@ -32,12 +32,14 @@ version: 1.0.0
 発見可能性が高く、一貫性のあるコマンド命名を実現できます。
 
 **主要な価値**:
+
 - 統一された命名規則
 - 発見可能性の向上
 - 命名衝突の回避
 - プロフェッショナルな印象
 
 **対象ユーザー**:
+
 - コマンドを作成するエージェント（@command-arch）
 - 命名規則を統一したい開発者
 - チーム全体で一貫性を保ちたいプロジェクト
@@ -65,9 +67,11 @@ command-naming-conventions/
 ## いつ使うか
 
 ### シナリオ1: 新規コマンド命名
+
 **状況**: 新しいコマンドの名前を決定したい
 
 **適用条件**:
+
 - [ ] 適切な動詞が不明
 - [ ] kebab-caseのルールを知らない
 - [ ] 既存コマンドとの一貫性を保ちたい
@@ -75,9 +79,11 @@ command-naming-conventions/
 **期待される成果**: 明確で一貫性のある命名
 
 ### シナリオ2: 名前空間設計
+
 **状況**: コマンドを論理的にグループ化したい
 
 **適用条件**:
+
 - [ ] 多数のコマンドがある
 - [ ] 命名衝突を避けたい
 - [ ] 組織化が必要
@@ -85,9 +91,11 @@ command-naming-conventions/
 **期待される成果**: 論理的な名前空間構造
 
 ### シナリオ3: 既存コマンドのリファクタリング
+
 **状況**: 既存コマンドの命名を改善したい
 
 **適用条件**:
+
 - [ ] 命名が不一致
 - [ ] 発見しにくい
 - [ ] 命名規則が統一されていない
@@ -150,22 +158,22 @@ command-naming-conventions/
 
 ### 主要な動詞
 
-| 動詞 | 用途 | 例 |
-|------|------|-----|
-| **create** | 新規作成 | create-component, create-migration |
-| **generate** | 自動生成 | generate-docs, generate-types |
-| **build** | ビルド | build-app, build-docker |
-| **deploy** | デプロイ | deploy-staging, deploy-production |
-| **test** | テスト | test-unit, test-e2e |
-| **run** | 実行 | run-migrations, run-benchmarks |
-| **analyze** | 分析 | analyze-bundle, analyze-performance |
-| **review** | レビュー | review-code, review-security |
-| **update** | 更新 | update-deps, update-version |
-| **delete** | 削除 | delete-cache, delete-temp-files |
-| **fix** | 修正 | fix-lint, fix-types |
-| **migrate** | 移行 | migrate-db, migrate-config |
-| **sync** | 同期 | sync-env, sync-remote |
-| **check** | チェック | check-types, check-security |
+| 動詞         | 用途     | 例                                  |
+| ------------ | -------- | ----------------------------------- |
+| **create**   | 新規作成 | create-component, create-migration  |
+| **generate** | 自動生成 | generate-docs, generate-types       |
+| **build**    | ビルド   | build-app, build-docker             |
+| **deploy**   | デプロイ | deploy-staging, deploy-production   |
+| **test**     | テスト   | test-unit, test-e2e                 |
+| **run**      | 実行     | run-migrations, run-benchmarks      |
+| **analyze**  | 分析     | analyze-bundle, analyze-performance |
+| **review**   | レビュー | review-code, review-security        |
+| **update**   | 更新     | update-deps, update-version         |
+| **delete**   | 削除     | delete-cache, delete-temp-files     |
+| **fix**      | 修正     | fix-lint, fix-types                 |
+| **migrate**  | 移行     | migrate-db, migrate-config          |
+| **sync**     | 同期     | sync-env, sync-remote               |
+| **check**    | チェック | check-types, check-security         |
 
 ### 動詞の優先順位
 
@@ -417,6 +425,7 @@ profile-[aspect]
 ### 既存コマンドの改善
 
 **ステップ1: 監査**
+
 ```bash
 # 既存コマンドを一覧表示
 ls -R .claude/commands/
@@ -429,6 +438,7 @@ ls -R .claude/commands/
 ```
 
 **ステップ2: 分類**
+
 ```
 カテゴリ別にグループ化:
   - Git操作
@@ -438,6 +448,7 @@ ls -R .claude/commands/
 ```
 
 **ステップ3: リネーム**
+
 ```
 命名規則適用:
   - 動詞ベース
@@ -446,6 +457,7 @@ ls -R .claude/commands/
 ```
 
 **ステップ4: 名前空間化**
+
 ```
 ディレクトリに移動:
   - git/
@@ -456,18 +468,23 @@ ls -R .claude/commands/
 ## 詳細リソースの参照
 
 ### 動詞ベース命名
+
 詳細は `resources/verb-based-naming.md` を参照
 
 ### kebab-caseガイド
+
 詳細は `resources/kebab-case-guide.md` を参照
 
 ### 名前空間設計
+
 詳細は `resources/namespace-design.md` を参照
 
 ### 命名チェックリスト
+
 完全版は `resources/naming-checklist.md` を参照
 
 ### テンプレート
+
 命名パターンテンプレートは `templates/naming-template.md` を参照
 
 ## コマンドリファレンス

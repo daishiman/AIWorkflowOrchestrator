@@ -40,11 +40,11 @@ description: |
 
 argument-hint: "[domain-name]"
 allowed-tools:
-- Task
-- Read
-- Write(src/shared/core/**|docs/**)
-- Edit
-- Grep
+  - Task
+  - Read
+  - Write(src/shared/core/**|docs/**)
+  - Edit
+  - Grep
 model: opus
 ---
 
@@ -67,6 +67,7 @@ model: opus
 ### Phase 2: domain-modeler エージェント起動
 
 3. **エージェント起動と委譲**
+
    ```
    `.claude/agents/domain-modeler.md` を起動
 
@@ -106,6 +107,7 @@ model: opus
 ## 品質基準
 
 ### 完了条件
+
 - [ ] Entity、ValueObject、Aggregateが適切に識別されている
 - [ ] ユビキタス言語がコードに反映されている
 - [ ] 値オブジェクトでプリミティブ型を置換している

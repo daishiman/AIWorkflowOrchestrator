@@ -91,10 +91,7 @@ updates:
 // renovate.json
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base",
-    ":disableRateLimiting"
-  ],
+  "extends": ["config:base", ":disableRateLimiting"],
   "schedule": ["before 9am on Monday"],
   "timezone": "Asia/Tokyo",
   "labels": ["dependencies", "automated"],
@@ -196,7 +193,7 @@ jobs:
         uses: lewagon/wait-on-check-action@v1.3.3
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-          check-name: 'test'
+          check-name: "test"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 10
 
@@ -227,8 +224,8 @@ on:
   pull_request:
     types: [closed]
     paths:
-      - 'package.json'
-      - 'pnpm-lock.yaml'
+      - "package.json"
+      - "pnpm-lock.yaml"
 
 jobs:
   update-changelog:
@@ -265,7 +262,7 @@ name: Weekly Upgrade Check
 
 on:
   schedule:
-    - cron: '0 9 * * 1'  # 毎週月曜 9:00 UTC
+    - cron: "0 9 * * 1" # 毎週月曜 9:00 UTC
   workflow_dispatch:
 
 jobs:
@@ -315,7 +312,7 @@ name: Security Scan
 
 on:
   schedule:
-    - cron: '0 3 * * *'  # 毎日 3:00 UTC
+    - cron: "0 3 * * *" # 毎日 3:00 UTC
   push:
     branches: [main]
 
@@ -363,12 +360,14 @@ jobs:
 ## チェックリスト
 
 ### 自動化設定時
+
 - [ ] Dependabot/Renovateを設定したか？
 - [ ] 自動マージ条件を定義したか？
 - [ ] セキュリティアラートを有効化したか？
 - [ ] 通知設定を行ったか？
 
 ### 運用時
+
 - [ ] 自動PRが正常に作成されているか？
 - [ ] CIが正常に動作しているか？
 - [ ] 自動マージが期待通りに動作しているか？

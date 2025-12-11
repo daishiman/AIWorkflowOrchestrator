@@ -10,37 +10,46 @@
 ## 改善手法
 
 ### 1. キャッシング
+
 ```markdown
 ## Check Cache
+
 If cache exists for $ARGUMENTS:
-  Load from cache
-  Skip expensive operation
+Load from cache
+Skip expensive operation
 ```
 
 ### 2. 早期リターン
+
 ```markdown
 ## Validation
+
 If invalid input:
-  Display error
-  Exit immediately  # 不要な処理をスキップ
+Display error
+Exit immediately # 不要な処理をスキップ
 ```
 
 ### 3. 遅延実行
+
 ```markdown
 ## Optional Analysis
+
 If --detailed flag:
-  Run expensive analysis
+Run expensive analysis
 Else:
-  Skip and continue  # デフォルトは高速パス
+Skip and continue # デフォルトは高速パス
 ```
 
 ### 4. バッチ処理
+
 ```markdown
 # ❌ 遅い
+
 For each file:
-  Process individually
+Process individually
 
 # ✅ 速い
+
 Collect all files
 Process in batch
 ```
@@ -48,6 +57,7 @@ Process in batch
 ## 測定
 
 コマンド実行時間を測定:
+
 ```bash
 time /command-name
 ```

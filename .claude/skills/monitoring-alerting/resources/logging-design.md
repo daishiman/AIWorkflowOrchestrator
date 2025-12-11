@@ -25,6 +25,7 @@
 ```
 
 **メリット**:
+
 - 検索・フィルタリングが容易
 - 自動解析が可能
 - 一貫したフォーマット
@@ -34,20 +35,20 @@
 
 ### 標準レベル
 
-| レベル | 用途 | 例 |
-|-------|------|-----|
-| ERROR | 即座の対応が必要なエラー | DB接続失敗、外部API障害 |
-| WARN | 注意が必要だが動作は継続 | レート制限接近、非推奨API使用 |
-| INFO | 重要な業務イベント | ユーザーログイン、注文完了 |
-| DEBUG | デバッグ用詳細情報 | 関数呼び出し、変数値 |
+| レベル | 用途                     | 例                            |
+| ------ | ------------------------ | ----------------------------- |
+| ERROR  | 即座の対応が必要なエラー | DB接続失敗、外部API障害       |
+| WARN   | 注意が必要だが動作は継続 | レート制限接近、非推奨API使用 |
+| INFO   | 重要な業務イベント       | ユーザーログイン、注文完了    |
+| DEBUG  | デバッグ用詳細情報       | 関数呼び出し、変数値          |
 
 ### 環境別設定
 
 ```typescript
 const LOG_LEVELS = {
-  production: 'info',   // ERROR, WARN, INFO
-  staging: 'info',      // ERROR, WARN, INFO
-  development: 'debug', // ERROR, WARN, INFO, DEBUG
+  production: "info", // ERROR, WARN, INFO
+  staging: "info", // ERROR, WARN, INFO
+  development: "debug", // ERROR, WARN, INFO, DEBUG
 } as const;
 ```
 
@@ -72,19 +73,19 @@ const LOG_LEVELS = {
 ```typescript
 interface LogEntry {
   // 必須
-  timestamp: string;        // ISO 8601形式
-  level: 'error' | 'warn' | 'info' | 'debug';
-  message: string;          // 人間が読める説明
+  timestamp: string; // ISO 8601形式
+  level: "error" | "warn" | "info" | "debug";
+  message: string; // 人間が読める説明
 
   // 推奨
-  correlationId?: string;   // リクエスト追跡用
-  service?: string;         // サービス名
-  environment?: string;     // 環境名
+  correlationId?: string; // リクエスト追跡用
+  service?: string; // サービス名
+  environment?: string; // 環境名
 
   // コンテキスト
-  userId?: string;          // ユーザー識別子
-  requestId?: string;       // リクエスト識別子
-  duration?: number;        // 処理時間（ms）
+  userId?: string; // ユーザー識別子
+  requestId?: string; // リクエスト識別子
+  duration?: number; // 処理時間（ms）
 
   // エラー固有
   error?: {
@@ -106,7 +107,11 @@ interface Logger {
 }
 
 function createLogger(baseContext: Record<string, unknown> = {}): Logger {
-  const log = (level: string, message: string, context?: Record<string, unknown>) => {
+  const log = (
+    level: string,
+    message: string,
+    context?: Record<string, unknown>,
+  ) => {
     const entry = {
       timestamp: new Date().toISOString(),
       level,
@@ -119,10 +124,10 @@ function createLogger(baseContext: Record<string, unknown> = {}): Logger {
   };
 
   return {
-    error: (msg, ctx) => log('error', msg, ctx),
-    warn: (msg, ctx) => log('warn', msg, ctx),
-    info: (msg, ctx) => log('info', msg, ctx),
-    debug: (msg, ctx) => log('debug', msg, ctx),
+    error: (msg, ctx) => log("error", msg, ctx),
+    warn: (msg, ctx) => log("warn", msg, ctx),
+    info: (msg, ctx) => log("info", msg, ctx),
+    debug: (msg, ctx) => log("debug", msg, ctx),
   };
 }
 ```
@@ -146,14 +151,14 @@ function createLogger(baseContext: Record<string, unknown> = {}): Logger {
 ### 実装
 
 ```typescript
-import { randomUUID } from 'crypto';
+import { randomUUID } from "crypto";
 
 // Express middleware
 export function correlationIdMiddleware(req, res, next) {
-  const correlationId = req.headers['x-correlation-id'] || randomUUID();
+  const correlationId = req.headers["x-correlation-id"] || randomUUID();
 
   req.correlationId = correlationId;
-  res.setHeader('x-correlation-id', correlationId);
+  res.setHeader("x-correlation-id", correlationId);
 
   next();
 }
@@ -172,14 +177,15 @@ export function createRequestLogger(req) {
 
 ```typescript
 // middleware.ts
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const correlationId = request.headers.get('x-correlation-id') || crypto.randomUUID();
+  const correlationId =
+    request.headers.get("x-correlation-id") || crypto.randomUUID();
 
   const response = NextResponse.next();
-  response.headers.set('x-correlation-id', correlationId);
+  response.headers.set("x-correlation-id", correlationId);
 
   return response;
 }
@@ -191,14 +197,14 @@ export function middleware(request: NextRequest) {
 
 ```typescript
 // リクエスト開始
-logger.info('Request started', {
+logger.info("Request started", {
   method: req.method,
   path: req.path,
-  userAgent: req.headers['user-agent'],
+  userAgent: req.headers["user-agent"],
 });
 
 // リクエスト完了
-logger.info('Request completed', {
+logger.info("Request completed", {
   method: req.method,
   path: req.path,
   status: res.statusCode,
@@ -212,14 +218,14 @@ logger.info('Request completed', {
 try {
   await someOperation();
 } catch (error) {
-  logger.error('Operation failed', {
+  logger.error("Operation failed", {
     error: {
       name: error.name,
       message: error.message,
       stack: error.stack,
     },
-    operation: 'someOperation',
-    input: sanitizeInput(input),  // 機密情報を除去
+    operation: "someOperation",
+    input: sanitizeInput(input), // 機密情報を除去
   });
 }
 ```
@@ -228,14 +234,14 @@ try {
 
 ```typescript
 // ユーザー認証
-logger.info('User authenticated', {
+logger.info("User authenticated", {
   userId: user.id,
-  method: 'password',
+  method: "password",
   ip: req.ip,
 });
 
 // 注文完了
-logger.info('Order completed', {
+logger.info("Order completed", {
   orderId: order.id,
   userId: user.id,
   amount: order.total,
@@ -255,13 +261,21 @@ logger.info('Order completed', {
 ### サニタイズ例
 
 ```typescript
-function sanitizeForLogging(obj: Record<string, unknown>): Record<string, unknown> {
-  const sensitiveKeys = ['password', 'token', 'apiKey', 'secret', 'authorization'];
+function sanitizeForLogging(
+  obj: Record<string, unknown>,
+): Record<string, unknown> {
+  const sensitiveKeys = [
+    "password",
+    "token",
+    "apiKey",
+    "secret",
+    "authorization",
+  ];
   const result = { ...obj };
 
   for (const key of Object.keys(result)) {
-    if (sensitiveKeys.some(k => key.toLowerCase().includes(k))) {
-      result[key] = '[REDACTED]';
+    if (sensitiveKeys.some((k) => key.toLowerCase().includes(k))) {
+      result[key] = "[REDACTED]";
     }
   }
 
@@ -269,7 +283,7 @@ function sanitizeForLogging(obj: Record<string, unknown>): Record<string, unknow
 }
 
 // 使用例
-logger.info('Request received', sanitizeForLogging(req.body));
+logger.info("Request received", sanitizeForLogging(req.body));
 ```
 
 ## パフォーマンス考慮
@@ -297,7 +311,7 @@ class BufferedLogger {
     if (this.buffer.length === 0) return;
 
     // バッチで送信
-    console.log(this.buffer.join('\n'));
+    console.log(this.buffer.join("\n"));
     this.buffer = [];
   }
 }
@@ -307,13 +321,14 @@ class BufferedLogger {
 
 ```typescript
 // 開発環境のみ詳細ログ
-if (process.env.NODE_ENV === 'development') {
-  logger.debug('Detailed debug info', { largeObject });
+if (process.env.NODE_ENV === "development") {
+  logger.debug("Detailed debug info", { largeObject });
 }
 
 // サンプリング
-if (Math.random() < 0.01) { // 1%のリクエストのみ
-  logger.debug('Sampled request details', { details });
+if (Math.random() < 0.01) {
+  // 1%のリクエストのみ
+  logger.debug("Sampled request details", { details });
 }
 ```
 
@@ -390,6 +405,7 @@ railway logs | jq 'select(.timestamp > "2024-01-15T10:00:00")'
 ### ログが見つからない
 
 **確認事項**:
+
 1. ログレベルの設定
 2. バッファリングのフラッシュ
 3. 出力先の設定
@@ -397,6 +413,7 @@ railway logs | jq 'select(.timestamp > "2024-01-15T10:00:00")'
 ### ログが多すぎる
 
 **対策**:
+
 1. ログレベルの調整
 2. サンプリングの導入
 3. 不要なログの削除
@@ -404,6 +421,7 @@ railway logs | jq 'select(.timestamp > "2024-01-15T10:00:00")'
 ### ログが役に立たない
 
 **改善策**:
+
 1. 相関IDの追加
 2. コンテキスト情報の充実
 3. エラー情報の詳細化

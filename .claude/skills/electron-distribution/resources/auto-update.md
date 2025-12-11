@@ -31,7 +31,7 @@ files:
     size: 12345678
 path: Your-App-1.2.3-win.exe
 sha512: base64-hash
-releaseDate: '2024-01-15T10:30:00.000Z'
+releaseDate: "2024-01-15T10:30:00.000Z"
 ```
 
 ## 実装パターン
@@ -40,9 +40,9 @@ releaseDate: '2024-01-15T10:30:00.000Z'
 
 ```typescript
 // main/services/updateService.ts
-import { autoUpdater, UpdateInfo, ProgressInfo } from 'electron-updater';
-import { app, BrowserWindow, ipcMain } from 'electron';
-import log from 'electron-log';
+import { autoUpdater, UpdateInfo, ProgressInfo } from "electron-updater";
+import { app, BrowserWindow, ipcMain } from "electron";
+import log from "electron-log";
 
 export class UpdateService {
   private mainWindow: BrowserWindow | null = null;
@@ -65,28 +65,28 @@ export class UpdateService {
   }
 
   private setupEventListeners(): void {
-    autoUpdater.on('checking-for-update', () => {
-      log.info('Checking for update...');
-      this.sendToRenderer('update:checking');
+    autoUpdater.on("checking-for-update", () => {
+      log.info("Checking for update...");
+      this.sendToRenderer("update:checking");
     });
 
-    autoUpdater.on('update-available', (info: UpdateInfo) => {
-      log.info('Update available:', info.version);
-      this.sendToRenderer('update:available', {
+    autoUpdater.on("update-available", (info: UpdateInfo) => {
+      log.info("Update available:", info.version);
+      this.sendToRenderer("update:available", {
         version: info.version,
         releaseNotes: info.releaseNotes,
         releaseDate: info.releaseDate,
       });
     });
 
-    autoUpdater.on('update-not-available', () => {
-      log.info('Update not available');
-      this.sendToRenderer('update:not-available');
+    autoUpdater.on("update-not-available", () => {
+      log.info("Update not available");
+      this.sendToRenderer("update:not-available");
     });
 
-    autoUpdater.on('download-progress', (progress: ProgressInfo) => {
+    autoUpdater.on("download-progress", (progress: ProgressInfo) => {
       log.info(`Download progress: ${progress.percent.toFixed(1)}%`);
-      this.sendToRenderer('update:progress', {
+      this.sendToRenderer("update:progress", {
         percent: progress.percent,
         bytesPerSecond: progress.bytesPerSecond,
         transferred: progress.transferred,
@@ -94,27 +94,27 @@ export class UpdateService {
       });
     });
 
-    autoUpdater.on('update-downloaded', (info: UpdateInfo) => {
-      log.info('Update downloaded:', info.version);
+    autoUpdater.on("update-downloaded", (info: UpdateInfo) => {
+      log.info("Update downloaded:", info.version);
       this.isUpdateDownloaded = true;
-      this.sendToRenderer('update:downloaded', {
+      this.sendToRenderer("update:downloaded", {
         version: info.version,
       });
     });
 
-    autoUpdater.on('error', (error) => {
-      log.error('Update error:', error);
-      this.sendToRenderer('update:error', {
+    autoUpdater.on("error", (error) => {
+      log.error("Update error:", error);
+      this.sendToRenderer("update:error", {
         message: error.message,
       });
     });
   }
 
   private setupIpcHandlers(): void {
-    ipcMain.handle('update:check', () => this.checkForUpdates());
-    ipcMain.handle('update:download', () => this.downloadUpdate());
-    ipcMain.handle('update:install', () => this.installUpdate());
-    ipcMain.handle('update:getStatus', () => ({
+    ipcMain.handle("update:check", () => this.checkForUpdates());
+    ipcMain.handle("update:download", () => this.downloadUpdate());
+    ipcMain.handle("update:install", () => this.installUpdate());
+    ipcMain.handle("update:getStatus", () => ({
       isDownloaded: this.isUpdateDownloaded,
     }));
   }
@@ -127,7 +127,7 @@ export class UpdateService {
     try {
       await autoUpdater.checkForUpdates();
     } catch (error) {
-      log.error('Check for updates failed:', error);
+      log.error("Check for updates failed:", error);
     }
   }
 
@@ -139,7 +139,7 @@ export class UpdateService {
     // アプリを終了して更新をインストール
     autoUpdater.quitAndInstall(
       false, // サイレントインストール
-      true   // インストール後に起動
+      true, // インストール後に起動
     );
   }
 }
@@ -152,7 +152,7 @@ export const updateService = new UpdateService();
 
 ```tsx
 // renderer/components/UpdateManager.tsx
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from "react";
 
 interface UpdateStatus {
   checking: boolean;
@@ -179,11 +179,11 @@ export function UpdateManager() {
     // イベントリスナーを設定
     const cleanups = [
       window.electronAPI.onUpdateChecking(() => {
-        setStatus(s => ({ ...s, checking: true }));
+        setStatus((s) => ({ ...s, checking: true }));
       }),
 
       window.electronAPI.onUpdateAvailable((info) => {
-        setStatus(s => ({
+        setStatus((s) => ({
           ...s,
           checking: false,
           available: true,
@@ -192,11 +192,11 @@ export function UpdateManager() {
       }),
 
       window.electronAPI.onUpdateNotAvailable(() => {
-        setStatus(s => ({ ...s, checking: false, available: false }));
+        setStatus((s) => ({ ...s, checking: false, available: false }));
       }),
 
       window.electronAPI.onUpdateProgress((info) => {
-        setStatus(s => ({
+        setStatus((s) => ({
           ...s,
           downloading: true,
           progress: info.percent,
@@ -204,7 +204,7 @@ export function UpdateManager() {
       }),
 
       window.electronAPI.onUpdateDownloaded((info) => {
-        setStatus(s => ({
+        setStatus((s) => ({
           ...s,
           downloading: false,
           downloaded: true,
@@ -213,7 +213,7 @@ export function UpdateManager() {
       }),
 
       window.electronAPI.onUpdateError((info) => {
-        setStatus(s => ({
+        setStatus((s) => ({
           ...s,
           checking: false,
           downloading: false,
@@ -227,7 +227,7 @@ export function UpdateManager() {
       window.electronAPI.checkForUpdates();
     }, 3000);
 
-    return () => cleanups.forEach(cleanup => cleanup());
+    return () => cleanups.forEach((cleanup) => cleanup());
   }, []);
 
   const handleDownload = useCallback(() => {
@@ -282,15 +282,15 @@ export function UpdateManager() {
 
 ```typescript
 // 安定版チャネル
-autoUpdater.channel = 'stable';
+autoUpdater.channel = "stable";
 autoUpdater.allowPrerelease = false;
 
 // ベータチャネル
-autoUpdater.channel = 'beta';
+autoUpdater.channel = "beta";
 autoUpdater.allowPrerelease = true;
 
 // アルファチャネル
-autoUpdater.channel = 'alpha';
+autoUpdater.channel = "alpha";
 autoUpdater.allowPrerelease = true;
 ```
 
@@ -305,19 +305,19 @@ alpha:  1.1.0-alpha.1, 2.0.0-alpha.1
 ### ユーザー設定との連携
 
 ```typescript
-import Store from 'electron-store';
+import Store from "electron-store";
 
 const store = new Store<{ updateChannel: string }>();
 
-function setUpdateChannel(channel: 'stable' | 'beta' | 'alpha'): void {
-  store.set('updateChannel', channel);
+function setUpdateChannel(channel: "stable" | "beta" | "alpha"): void {
+  store.set("updateChannel", channel);
   autoUpdater.channel = channel;
-  autoUpdater.allowPrerelease = channel !== 'stable';
+  autoUpdater.allowPrerelease = channel !== "stable";
 }
 
 // 起動時に設定を読み込み
-const savedChannel = store.get('updateChannel', 'stable');
-setUpdateChannel(savedChannel as 'stable' | 'beta' | 'alpha');
+const savedChannel = store.get("updateChannel", "stable");
+setUpdateChannel(savedChannel as "stable" | "beta" | "alpha");
 ```
 
 ## ロールバック戦略
@@ -328,19 +328,19 @@ setUpdateChannel(savedChannel as 'stable' | 'beta' | 'alpha');
 // 前のバージョンを保持
 const store = new Store<{ previousVersion: string }>();
 
-autoUpdater.on('update-downloaded', (info) => {
-  store.set('previousVersion', app.getVersion());
+autoUpdater.on("update-downloaded", (info) => {
+  store.set("previousVersion", app.getVersion());
 });
 
 // ロールバック機能
 async function rollback(): Promise<void> {
-  const previousVersion = store.get('previousVersion');
+  const previousVersion = store.get("previousVersion");
   if (previousVersion) {
     // 前のバージョンをダウンロード・インストール
     autoUpdater.setFeedURL({
-      provider: 'github',
-      owner: 'owner',
-      repo: 'repo',
+      provider: "github",
+      owner: "owner",
+      repo: "repo",
       // 特定バージョンを指定
     });
   }
@@ -351,9 +351,9 @@ async function rollback(): Promise<void> {
 
 ### よくある問題
 
-| 問題 | 原因 | 解決策 |
-|------|------|--------|
-| 更新が検出されない | キャッシュ | `autoUpdater.forceDevUpdateConfig = true` |
-| 署名エラー | 証明書の問題 | 署名設定を確認 |
-| ダウンロードが遅い | サーバー帯域 | CDN使用を検討 |
-| インストール失敗 | 権限不足 | 管理者権限で実行 |
+| 問題               | 原因         | 解決策                                    |
+| ------------------ | ------------ | ----------------------------------------- |
+| 更新が検出されない | キャッシュ   | `autoUpdater.forceDevUpdateConfig = true` |
+| 署名エラー         | 証明書の問題 | 署名設定を確認                            |
+| ダウンロードが遅い | サーバー帯域 | CDN使用を検討                             |
+| インストール失敗   | 権限不足     | 管理者権限で実行                          |

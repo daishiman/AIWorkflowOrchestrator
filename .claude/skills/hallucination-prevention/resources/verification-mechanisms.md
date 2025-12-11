@@ -12,12 +12,14 @@
 **目的**: 出力が期待される形式に従っているか確認
 
 **検証項目**:
+
 - スキーマ準拠
 - 型整合性
 - 必須フィールドの存在
 - 値の制約
 
 **実装例**:
+
 ```typescript
 function validateStructure(output: unknown, schema: z.ZodSchema) {
   const result = schema.safeParse(output);
@@ -25,7 +27,7 @@ function validateStructure(output: unknown, schema: z.ZodSchema) {
     return {
       valid: false,
       errors: result.error.issues,
-      suggestion: "スキーマに従って再生成してください"
+      suggestion: "スキーマに従って再生成してください",
     };
   }
   return { valid: true, data: result.data };
@@ -37,29 +39,31 @@ function validateStructure(output: unknown, schema: z.ZodSchema) {
 **目的**: 出力内容が入力と整合しているか確認
 
 **検証項目**:
+
 - 入力データとの整合性
 - 論理的一貫性
 - 矛盾の検出
 - 情報源のトレーサビリティ
 
 **実装例**:
+
 ```typescript
 interface ContentValidation {
-  inputReference: string;    // 参照した入力箇所
-  outputClaim: string;       // 出力の主張
-  isSupported: boolean;      // 入力で裏付けられているか
-  confidence: number;        // 確信度
+  inputReference: string; // 参照した入力箇所
+  outputClaim: string; // 出力の主張
+  isSupported: boolean; // 入力で裏付けられているか
+  confidence: number; // 確信度
 }
 
 function validateContent(
   output: OutputData,
-  input: InputData
+  input: InputData,
 ): ContentValidation[] {
-  return output.claims.map(claim => ({
+  return output.claims.map((claim) => ({
     inputReference: findReference(claim, input),
     outputClaim: claim.text,
     isSupported: checkSupport(claim, input),
-    confidence: calculateConfidence(claim, input)
+    confidence: calculateConfidence(claim, input),
   }));
 }
 ```
@@ -69,33 +73,36 @@ function validateContent(
 **目的**: AIの確信度が閾値を満たしているか確認
 
 **検証項目**:
+
 - 信頼度スコアの存在
 - 閾値の適用
 - 低信頼度項目のフラグ付け
 
 **閾値設定**:
+
 ```typescript
 const CONFIDENCE_THRESHOLDS = {
-  high_risk: 0.95,    // 法的・医療・金融
-  medium_risk: 0.80,  // 技術情報
-  low_risk: 0.60      // 一般情報
+  high_risk: 0.95, // 法的・医療・金融
+  medium_risk: 0.8, // 技術情報
+  low_risk: 0.6, // 一般情報
 };
 
 function validateConfidence(
   output: OutputWithConfidence,
-  riskLevel: keyof typeof CONFIDENCE_THRESHOLDS
+  riskLevel: keyof typeof CONFIDENCE_THRESHOLDS,
 ): ValidationResult {
   const threshold = CONFIDENCE_THRESHOLDS[riskLevel];
   const lowConfidenceItems = output.items.filter(
-    item => item.confidence < threshold
+    (item) => item.confidence < threshold,
   );
 
   return {
     valid: lowConfidenceItems.length === 0,
     lowConfidenceItems,
-    suggestion: lowConfidenceItems.length > 0
-      ? `${lowConfidenceItems.length}件の項目が信頼度閾値未満です`
-      : null
+    suggestion:
+      lowConfidenceItems.length > 0
+        ? `${lowConfidenceItems.length}件の項目が信頼度閾値未満です`
+        : null,
   };
 }
 ```
@@ -105,18 +112,22 @@ function validateConfidence(
 **目的**: 複数の方法で出力を検証
 
 **検証方法**:
+
 - 複数回生成による一致確認
 - 異なるモデルでの検証
 - 人間レビューとの照合
 
 **実装例**:
+
 ```typescript
 async function crossValidate(
   prompt: string,
-  iterations: number = 3
+  iterations: number = 3,
 ): Promise<CrossValidationResult> {
   const outputs = await Promise.all(
-    Array(iterations).fill(null).map(() => generateOutput(prompt))
+    Array(iterations)
+      .fill(null)
+      .map(() => generateOutput(prompt)),
   );
 
   const consensus = findConsensus(outputs);
@@ -126,9 +137,10 @@ async function crossValidate(
     consensusItems: consensus,
     disagreementItems: disagreements,
     agreementRate: consensus.length / (consensus.length + disagreements.length),
-    recommendation: disagreements.length > 0
-      ? "不一致項目は人間レビューを推奨"
-      : "一致率が高いため信頼性良好"
+    recommendation:
+      disagreements.length > 0
+        ? "不一致項目は人間レビューを推奨"
+        : "一致率が高いため信頼性良好",
   };
 }
 ```
@@ -181,7 +193,7 @@ interface ValidationFailure {
 async function handleValidationFailure(
   failure: ValidationFailure,
   originalPrompt: string,
-  maxRetries: number = 3
+  maxRetries: number = 3,
 ): Promise<RetryResult> {
   if (!failure.retryable || maxRetries <= 0) {
     return { success: false, escalate: true };
@@ -190,7 +202,7 @@ async function handleValidationFailure(
   // エラーをフィードバックとして含めて再試行
   const feedbackPrompt = `
     前回の出力に以下の問題がありました：
-    ${failure.errors.map(e => `- ${e.message}`).join('\n')}
+    ${failure.errors.map((e) => `- ${e.message}`).join("\n")}
 
     ${failure.suggestion}
 
@@ -207,7 +219,7 @@ async function handleValidationFailure(
   return handleValidationFailure(
     newValidation.failure,
     originalPrompt,
-    maxRetries - 1
+    maxRetries - 1,
   );
 }
 ```
@@ -223,9 +235,7 @@ interface EscalationRequest {
   suggestedActions: string[];
 }
 
-function escalateToHumanReview(
-  request: EscalationRequest
-): void {
+function escalateToHumanReview(request: EscalationRequest): void {
   // 人間レビューキューに追加
   // 通知を送信
   // ログを記録

@@ -7,10 +7,7 @@
 ```json
 {
   "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ]
+    "*.{ts,tsx,js,jsx}": ["eslint --fix", "prettier --write"]
   }
 }
 ```
@@ -48,11 +45,11 @@
 ```javascript
 // .lintstagedrc.js
 module.exports = {
-  '*.{ts,tsx}': (filenames) => [
-    `eslint --fix ${filenames.join(' ')}`,
-    `prettier --write ${filenames.join(' ')}`,
-    `vitest related --run ${filenames.join(' ')}`
-  ]
+  "*.{ts,tsx}": (filenames) => [
+    `eslint --fix ${filenames.join(" ")}`,
+    `prettier --write ${filenames.join(" ")}`,
+    `vitest related --run ${filenames.join(" ")}`,
+  ],
 };
 ```
 
@@ -62,11 +59,11 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  '*.{ts,tsx}': (filenames) => [
-    `eslint --fix ${filenames.join(' ')}`,
-    'tsc --noEmit',  // 全体の型チェック
-    `prettier --write ${filenames.join(' ')}`
-  ]
+  "*.{ts,tsx}": (filenames) => [
+    `eslint --fix ${filenames.join(" ")}`,
+    "tsc --noEmit", // 全体の型チェック
+    `prettier --write ${filenames.join(" ")}`,
+  ],
 };
 ```
 
@@ -76,17 +73,17 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  '*.{ts,tsx}': (filenames) => {
-    const commands = ['eslint --fix'];
+  "*.{ts,tsx}": (filenames) => {
+    const commands = ["eslint --fix"];
 
     // テストファイルならカバレッジチェック
-    if (filenames.some(f => f.includes('.test.'))) {
-      commands.push('vitest --coverage');
+    if (filenames.some((f) => f.includes(".test."))) {
+      commands.push("vitest --coverage");
     }
 
-    commands.push('prettier --write');
-    return commands.map(cmd => `${cmd} ${filenames.join(' ')}`);
-  }
+    commands.push("prettier --write");
+    return commands.map((cmd) => `${cmd} ${filenames.join(" ")}`);
+  },
 };
 ```
 
@@ -97,10 +94,10 @@ module.exports = {
 ```javascript
 // .lintstagedrc.js
 module.exports = {
-  '*.{ts,tsx}': {
-    chunkSize: 10,  // 10ファイルずつ処理
-    commands: ['eslint --fix', 'prettier --write']
-  }
+  "*.{ts,tsx}": {
+    chunkSize: 10, // 10ファイルずつ処理
+    commands: ["eslint --fix", "prettier --write"],
+  },
 };
 ```
 
@@ -109,10 +106,7 @@ module.exports = {
 ```json
 {
   "lint-staged": {
-    "*.{ts,tsx}": [
-      "eslint --cache --fix",
-      "prettier --cache --write"
-    ]
+    "*.{ts,tsx}": ["eslint --cache --fix", "prettier --cache --write"]
   }
 }
 ```
@@ -121,8 +115,8 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  concurrent: true,  // 並列実行（デフォルト）
-  '*.{ts,tsx}': ['eslint --fix', 'prettier --write']
+  concurrent: true, // 並列実行（デフォルト）
+  "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
 };
 ```
 
@@ -133,12 +127,13 @@ module.exports = {
 **デフォルト**: 1ファイルでもエラーならコミット中止
 
 **継続設定**:
+
 ```javascript
 module.exports = {
-  '*.{ts,tsx}': {
-    commands: ['eslint --fix', 'prettier --write'],
-    continueOnError: false  // デフォルト
-  }
+  "*.{ts,tsx}": {
+    commands: ["eslint --fix", "prettier --write"],
+    continueOnError: false, // デフォルト
+  },
 };
 ```
 
@@ -163,7 +158,7 @@ DEBUG=lint-staged* git commit
 {
   "lint-staged": {
     "*.{ts,tsx}": ["eslint --fix"],
-    "!**/*.test.ts": ["eslint --fix"]  // テスト除外
+    "!**/*.test.ts": ["eslint --fix"] // テスト除外
   }
 }
 ```
@@ -187,10 +182,7 @@ DEBUG=lint-staged* git commit
 ```json
 {
   "lint-staged": {
-    "*.ts": [
-      "eslint --fix",
-      "prettier --write"
-    ]
+    "*.ts": ["eslint --fix", "prettier --write"]
   }
 }
 ```
@@ -201,10 +193,10 @@ DEBUG=lint-staged* git commit
 
 ```javascript
 module.exports = {
-  '*.ts': (filenames) => [
-    `eslint --fix ${filenames.join(' ')}`,
-    `prettier --write ${filenames.join(' ')}`
-  ]
+  "*.ts": (filenames) => [
+    `eslint --fix ${filenames.join(" ")}`,
+    `prettier --write ${filenames.join(" ")}`,
+  ],
 };
 ```
 
@@ -228,14 +220,8 @@ module.exports = {
 
 ```javascript
 module.exports = {
-  'packages/*/src/**/*.{ts,tsx}': [
-    'eslint --fix',
-    'prettier --write'
-  ],
-  'apps/*/src/**/*.{ts,tsx}': [
-    'eslint --fix',
-    'vitest related --run'
-  ]
+  "packages/*/src/**/*.{ts,tsx}": ["eslint --fix", "prettier --write"],
+  "apps/*/src/**/*.{ts,tsx}": ["eslint --fix", "vitest related --run"],
 };
 ```
 
@@ -253,15 +239,18 @@ module.exports = {
 ## まとめ
 
 **基本構成**:
+
 - ソースコード: ESLint → Prettier
 - 設定/ドキュメント: Prettierのみ
 
 **最適化**:
+
 - chunkSize調整
 - キャッシュ有効化
 - 対象ファイル絞り込み
 
 **高度な使用**:
+
 - 関数形式で条件分岐
 - 関連テスト実行
 - Monorepo対応

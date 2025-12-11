@@ -137,15 +137,15 @@ const result: NewType = await getData();
 
 ```javascript
 // 古いモック
-jest.mock('package', () => ({
-  oldMethod: jest.fn()
+jest.mock("package", () => ({
+  oldMethod: jest.fn(),
 }));
 
 // 新しいモック（APIが変更された場合）
-jest.mock('package', () => ({
+jest.mock("package", () => ({
   newMethod: jest.fn(),
   // 後方互換性のためのラッパー
-  oldMethod: (...args) => newMethod({ args })
+  oldMethod: (...args) => newMethod({ args }),
 }));
 ```
 
@@ -155,16 +155,16 @@ jest.mock('package', () => ({
 
 ```javascript
 // integration.test.ts
-describe('Package Upgrade Integration', () => {
-  describe('Critical Path', () => {
-    it('should maintain user authentication flow', async () => {
+describe("Package Upgrade Integration", () => {
+  describe("Critical Path", () => {
+    it("should maintain user authentication flow", async () => {
       // 認証フローが以前と同様に動作することを確認
       const result = await authenticateUser(credentials);
       expect(result.token).toBeDefined();
       expect(result.user).toMatchObject(expectedUserShape);
     });
 
-    it('should maintain data processing', async () => {
+    it("should maintain data processing", async () => {
       // データ処理が同じ結果を返すことを確認
       const input = generateTestData();
       const result = await processData(input);
@@ -178,8 +178,8 @@ describe('Package Upgrade Integration', () => {
 
 ```javascript
 // snapshot.test.ts
-describe('Component Render', () => {
-  it('should render consistently after upgrade', () => {
+describe("Component Render", () => {
+  it("should render consistently after upgrade", () => {
     const component = render(<MyComponent data={testData} />);
     expect(component).toMatchSnapshot();
   });
@@ -195,24 +195,24 @@ describe('Component Render', () => {
 
 ```javascript
 // e2e/critical-paths.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test.describe('Post-Upgrade Verification', () => {
-  test('login flow works correctly', async ({ page }) => {
-    await page.goto('/login');
-    await page.fill('[name="email"]', 'test@example.com');
-    await page.fill('[name="password"]', 'password');
+test.describe("Post-Upgrade Verification", () => {
+  test("login flow works correctly", async ({ page }) => {
+    await page.goto("/login");
+    await page.fill('[name="email"]', "test@example.com");
+    await page.fill('[name="password"]', "password");
     await page.click('button[type="submit"]');
 
-    await expect(page).toHaveURL('/dashboard');
-    await expect(page.locator('.user-name')).toBeVisible();
+    await expect(page).toHaveURL("/dashboard");
+    await expect(page.locator(".user-name")).toBeVisible();
   });
 
-  test('checkout flow completes', async ({ page }) => {
+  test("checkout flow completes", async ({ page }) => {
     // チェックアウトフローのテスト
-    await page.goto('/products');
-    await page.click('.add-to-cart');
-    await page.click('.checkout-button');
+    await page.goto("/products");
+    await page.click(".add-to-cart");
+    await page.click(".checkout-button");
     // ...
   });
 });
@@ -228,8 +228,8 @@ name: Upgrade Testing
 on:
   pull_request:
     paths:
-      - 'package.json'
-      - 'pnpm-lock.yaml'
+      - "package.json"
+      - "pnpm-lock.yaml"
 
 jobs:
   static-analysis:
@@ -276,6 +276,7 @@ jobs:
 **原因**: APIが変更され、テストが古い動作を期待している
 
 **対応**:
+
 ```javascript
 // 古いテスト
 expect(result.data).toEqual([1, 2, 3]);
@@ -289,6 +290,7 @@ expect(result.items).toEqual([1, 2, 3]);
 **原因**: アップグレードによりコードが壊れた
 
 **対応**:
+
 1. アップグレードをロールバック
 2. 原因を調査
 3. コードを修正
@@ -299,31 +301,38 @@ expect(result.items).toEqual([1, 2, 3]);
 **原因**: テスト環境の設定が古い
 
 **対応**:
+
 ```javascript
 // jest.config.js の更新
 module.exports = {
   // 新しいトランスフォーマー設定
   transform: {
-    '^.+\\.tsx?$': ['ts-jest', {
-      // 新しい設定オプション
-    }]
-  }
+    "^.+\\.tsx?$": [
+      "ts-jest",
+      {
+        // 新しい設定オプション
+      },
+    ],
+  },
 };
 ```
 
 ## チェックリスト
 
 ### アップグレード前
+
 - [ ] 現在のテストカバレッジを確認したか？
 - [ ] ベースラインのテスト結果を記録したか？
 - [ ] 静的解析が100%通過するか？
 
 ### アップグレード中
+
 - [ ] テストを実行したか？
 - [ ] 失敗したテストを分類したか？
 - [ ] 適切な対応を行ったか？
 
 ### アップグレード後
+
 - [ ] 全テストが通過するか？
 - [ ] カバレッジが維持されているか？
 - [ ] E2Eテストが通過するか？

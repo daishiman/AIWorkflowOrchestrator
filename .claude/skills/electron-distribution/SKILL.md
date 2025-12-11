@@ -37,10 +37,12 @@ Electronアプリケーションの配布・自動更新専門知識
 ## 概要
 
 ### 目的
+
 Electronアプリケーションを効率的に配布し、
 シームレスな自動更新を提供する。
 
 ### 対象者
+
 - Electronアプリ開発者
 - DevOpsエンジニア
 - リリースマネージャー
@@ -51,13 +53,13 @@ Electronアプリケーションを効率的に配布し、
 
 ### 配布チャネル比較
 
-| 方法 | メリット | デメリット | 推奨ケース |
-|------|---------|-----------|-----------|
-| **GitHub Releases** | 無料、簡単 | 帯域制限あり | OSS、小規模 |
-| **S3/CloudFront** | 高速、スケーラブル | コスト | 中〜大規模 |
-| **Mac App Store** | 信頼性、発見性 | 審査、制約 | macOSメイン |
-| **Microsoft Store** | 信頼性、自動更新 | 審査 | Windowsメイン |
-| **自前サーバー** | 完全制御 | 運用負荷 | エンタープライズ |
+| 方法                | メリット           | デメリット   | 推奨ケース       |
+| ------------------- | ------------------ | ------------ | ---------------- |
+| **GitHub Releases** | 無料、簡単         | 帯域制限あり | OSS、小規模      |
+| **S3/CloudFront**   | 高速、スケーラブル | コスト       | 中〜大規模       |
+| **Mac App Store**   | 信頼性、発見性     | 審査、制約   | macOSメイン      |
+| **Microsoft Store** | 信頼性、自動更新   | 審査         | Windowsメイン    |
+| **自前サーバー**    | 完全制御           | 運用負荷     | エンタープライズ |
 
 ---
 
@@ -78,13 +80,13 @@ publish:
 
 ```typescript
 // main/services/updater.ts
-import { autoUpdater, UpdateInfo } from 'electron-updater';
-import { app, BrowserWindow, dialog } from 'electron';
-import log from 'electron-log';
+import { autoUpdater, UpdateInfo } from "electron-updater";
+import { app, BrowserWindow, dialog } from "electron";
+import log from "electron-log";
 
 // ログ設定
 autoUpdater.logger = log;
-log.transports.file.level = 'info';
+log.transports.file.level = "info";
 
 // 更新チェック設定
 autoUpdater.autoDownload = false;
@@ -100,40 +102,42 @@ export class UpdateService {
 
   private setupEventListeners(): void {
     // 更新確認中
-    autoUpdater.on('checking-for-update', () => {
-      this.sendToRenderer('update-status', { status: 'checking' });
+    autoUpdater.on("checking-for-update", () => {
+      this.sendToRenderer("update-status", { status: "checking" });
     });
 
     // 更新あり
-    autoUpdater.on('update-available', (info: UpdateInfo) => {
-      this.sendToRenderer('update-status', {
-        status: 'available',
+    autoUpdater.on("update-available", (info: UpdateInfo) => {
+      this.sendToRenderer("update-status", {
+        status: "available",
         version: info.version,
         releaseNotes: info.releaseNotes,
       });
 
       // ユーザーに確認
-      dialog.showMessageBox(this.mainWindow!, {
-        type: 'info',
-        title: '更新があります',
-        message: `バージョン ${info.version} が利用可能です。ダウンロードしますか？`,
-        buttons: ['後で', 'ダウンロード'],
-        defaultId: 1,
-      }).then(({ response }) => {
-        if (response === 1) {
-          autoUpdater.downloadUpdate();
-        }
-      });
+      dialog
+        .showMessageBox(this.mainWindow!, {
+          type: "info",
+          title: "更新があります",
+          message: `バージョン ${info.version} が利用可能です。ダウンロードしますか？`,
+          buttons: ["後で", "ダウンロード"],
+          defaultId: 1,
+        })
+        .then(({ response }) => {
+          if (response === 1) {
+            autoUpdater.downloadUpdate();
+          }
+        });
     });
 
     // 更新なし
-    autoUpdater.on('update-not-available', () => {
-      this.sendToRenderer('update-status', { status: 'up-to-date' });
+    autoUpdater.on("update-not-available", () => {
+      this.sendToRenderer("update-status", { status: "up-to-date" });
     });
 
     // ダウンロード進捗
-    autoUpdater.on('download-progress', (progress) => {
-      this.sendToRenderer('update-progress', {
+    autoUpdater.on("download-progress", (progress) => {
+      this.sendToRenderer("update-progress", {
         percent: progress.percent,
         bytesPerSecond: progress.bytesPerSecond,
         total: progress.total,
@@ -142,30 +146,32 @@ export class UpdateService {
     });
 
     // ダウンロード完了
-    autoUpdater.on('update-downloaded', (info: UpdateInfo) => {
-      this.sendToRenderer('update-status', {
-        status: 'downloaded',
+    autoUpdater.on("update-downloaded", (info: UpdateInfo) => {
+      this.sendToRenderer("update-status", {
+        status: "downloaded",
         version: info.version,
       });
 
-      dialog.showMessageBox(this.mainWindow!, {
-        type: 'info',
-        title: '更新の準備完了',
-        message: '更新をインストールするにはアプリを再起動してください。',
-        buttons: ['後で', '今すぐ再起動'],
-        defaultId: 1,
-      }).then(({ response }) => {
-        if (response === 1) {
-          autoUpdater.quitAndInstall(false, true);
-        }
-      });
+      dialog
+        .showMessageBox(this.mainWindow!, {
+          type: "info",
+          title: "更新の準備完了",
+          message: "更新をインストールするにはアプリを再起動してください。",
+          buttons: ["後で", "今すぐ再起動"],
+          defaultId: 1,
+        })
+        .then(({ response }) => {
+          if (response === 1) {
+            autoUpdater.quitAndInstall(false, true);
+          }
+        });
     });
 
     // エラー
-    autoUpdater.on('error', (error) => {
-      log.error('Update error:', error);
-      this.sendToRenderer('update-status', {
-        status: 'error',
+    autoUpdater.on("error", (error) => {
+      log.error("Update error:", error);
+      this.sendToRenderer("update-status", {
+        status: "error",
         message: error.message,
       });
     });
@@ -180,7 +186,7 @@ export class UpdateService {
     try {
       await autoUpdater.checkForUpdates();
     } catch (error) {
-      log.error('Check for updates failed:', error);
+      log.error("Check for updates failed:", error);
     }
   }
 
@@ -206,9 +212,9 @@ app.whenReady().then(() => {
   }, 3000);
 
   // IPC登録
-  ipcMain.handle('update:check', () => updateService.checkForUpdates());
-  ipcMain.handle('update:download', () => updateService.downloadUpdate());
-  ipcMain.handle('update:install', () => updateService.quitAndInstall());
+  ipcMain.handle("update:check", () => updateService.checkForUpdates());
+  ipcMain.handle("update:download", () => updateService.downloadUpdate());
+  ipcMain.handle("update:install", () => updateService.quitAndInstall());
 });
 ```
 
@@ -216,10 +222,16 @@ app.whenReady().then(() => {
 
 ```tsx
 // renderer/components/UpdateNotification.tsx
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 interface UpdateStatus {
-  status: 'checking' | 'available' | 'downloading' | 'downloaded' | 'up-to-date' | 'error';
+  status:
+    | "checking"
+    | "available"
+    | "downloading"
+    | "downloaded"
+    | "up-to-date"
+    | "error";
   version?: string;
   message?: string;
 }
@@ -245,17 +257,15 @@ export function UpdateNotification() {
     };
   }, []);
 
-  if (!status || status.status === 'up-to-date') {
+  if (!status || status.status === "up-to-date") {
     return null;
   }
 
   return (
     <div className="update-notification">
-      {status.status === 'checking' && (
-        <p>更新を確認中...</p>
-      )}
+      {status.status === "checking" && <p>更新を確認中...</p>}
 
-      {status.status === 'available' && (
+      {status.status === "available" && (
         <div>
           <p>バージョン {status.version} が利用可能です</p>
           <button onClick={() => window.electronAPI.downloadUpdate()}>
@@ -264,14 +274,14 @@ export function UpdateNotification() {
         </div>
       )}
 
-      {status.status === 'downloading' && progress && (
+      {status.status === "downloading" && progress && (
         <div>
           <p>ダウンロード中: {Math.round(progress.percent)}%</p>
           <progress value={progress.percent} max={100} />
         </div>
       )}
 
-      {status.status === 'downloaded' && (
+      {status.status === "downloaded" && (
         <div>
           <p>更新の準備完了</p>
           <button onClick={() => window.electronAPI.installUpdate()}>
@@ -280,7 +290,7 @@ export function UpdateNotification() {
         </div>
       )}
 
-      {status.status === 'error' && (
+      {status.status === "error" && (
         <p className="error">更新エラー: {status.message}</p>
       )}
     </div>
@@ -306,14 +316,14 @@ publish:
 ```typescript
 // main/services/updater.ts
 // チャネル設定
-function setUpdateChannel(channel: 'stable' | 'beta' | 'alpha'): void {
+function setUpdateChannel(channel: "stable" | "beta" | "alpha"): void {
   autoUpdater.channel = channel;
-  autoUpdater.allowPrerelease = channel !== 'stable';
+  autoUpdater.allowPrerelease = channel !== "stable";
   autoUpdater.allowDowngrade = false;
 }
 
 // ユーザー設定から読み込み
-const userSettings = store.get('updateChannel', 'stable');
+const userSettings = store.get("updateChannel", "stable");
 setUpdateChannel(userSettings);
 ```
 
@@ -342,7 +352,7 @@ publish:
   - provider: github
     owner: your-org
     repo: your-app
-    releaseType: release  # or draft, prerelease
+    releaseType: release # or draft, prerelease
     private: false
 ```
 
@@ -355,7 +365,7 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   release:
@@ -376,8 +386,8 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - run: npm ci
       - run: npm run build
@@ -453,14 +463,14 @@ resource "aws_cloudfront_distribution" "releases" {
 
 ```typescript
 // update-server/server.ts
-import express from 'express';
-import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import express from "express";
+import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 
 const app = express();
-const s3 = new S3Client({ region: 'us-east-1' });
+const s3 = new S3Client({ region: "us-east-1" });
 
 // 更新情報エンドポイント
-app.get('/update/:platform/:version', async (req, res) => {
+app.get("/update/:platform/:version", async (req, res) => {
   const { platform, version } = req.params;
 
   try {
@@ -478,17 +488,17 @@ app.get('/update/:platform/:version', async (req, res) => {
       res.status(204).send();
     }
   } catch (error) {
-    res.status(500).json({ error: 'Failed to check updates' });
+    res.status(500).json({ error: "Failed to check updates" });
   }
 });
 
 // ダウンロードエンドポイント
-app.get('/download/:platform/:version/:file', async (req, res) => {
+app.get("/download/:platform/:version/:file", async (req, res) => {
   const { platform, version, file } = req.params;
 
   // 署名付きURL生成
   const signedUrl = await generateSignedUrl(
-    `releases/${platform}/${version}/${file}`
+    `releases/${platform}/${version}/${file}`,
   );
 
   res.redirect(signedUrl);
@@ -503,13 +513,13 @@ app.listen(3000);
 
 ### 制約事項
 
-| 機能 | 通常配布 | MAS |
-|------|---------|-----|
-| 自動更新 | electron-updater | App Store |
-| サンドボックス | 任意 | 必須 |
-| ハードニングランタイム | 推奨 | 必須 |
-| 署名 | Developer ID | Mac App Store |
-| ネイティブモジュール | 可 | 制限あり |
+| 機能                   | 通常配布         | MAS           |
+| ---------------------- | ---------------- | ------------- |
+| 自動更新               | electron-updater | App Store     |
+| サンドボックス         | 任意             | 必須          |
+| ハードニングランタイム | 推奨             | 必須          |
+| 署名                   | Developer ID     | Mac App Store |
+| ネイティブモジュール   | 可               | 制限あり      |
 
 ### electron-builder設定
 
@@ -606,10 +616,12 @@ appx:
 ## 関連リソース
 
 ### 詳細ドキュメント
+
 - `resources/auto-update.md` - 自動更新詳細
 - `resources/release-channels.md` - チャネル管理
 - `resources/store-distribution.md` - ストア配布
 
 ### テンプレート・スクリプト
+
 - `templates/update-server.ts` - 更新サーバー
 - `scripts/release.sh` - リリーススクリプト

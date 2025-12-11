@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
       - run: pnpm ci
       - run: pnpm run lint
 
@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
       - run: pnpm ci
       - run: pnpm run type-check
 
@@ -41,7 +41,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
       - run: pnpm ci
       - run: pnpm run build
 
@@ -61,7 +61,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
       - run: pnpm ci
       - uses: actions/download-artifact@v4
         with:
@@ -76,7 +76,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
       - run: pnpm ci
       - uses: actions/download-artifact@v4
         with:
@@ -91,7 +91,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
       - run: pnpm ci
       - uses: actions/download-artifact@v4
         with:
@@ -132,7 +132,6 @@ jobs:
           # Deploy commands here
 
 ---
-
 # Example 2: Multi-platform Build with Aggregation
 name: Multi-platform Build
 
@@ -165,7 +164,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - run: pnpm ci
       - run: pnpm run build -- --target=${{ matrix.target }}
@@ -197,7 +196,6 @@ jobs:
           path: releases/
 
 ---
-
 # Example 3: Complex Dependency Graph
 name: Complex Pipeline
 
@@ -213,7 +211,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
       - run: pnpm ci
       - uses: actions/cache@v4
         with:
@@ -327,7 +325,15 @@ jobs:
 
   # Deploy (needs all tests to pass)
   deploy:
-    needs: [test-frontend, test-backend, test-integration, security-scan, build-frontend, build-backend]
+    needs:
+      [
+        test-frontend,
+        test-backend,
+        test-integration,
+        security-scan,
+        build-frontend,
+        build-backend,
+      ]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
@@ -347,7 +353,6 @@ jobs:
           # Deploy commands here
 
 ---
-
 # Example 4: Conditional Parallel Execution
 name: Conditional Pipeline
 
@@ -433,7 +438,6 @@ jobs:
       - run: echo "Deploy docs"
 
 ---
-
 # Example 5: Failure Handling with always()
 name: Robust Pipeline
 

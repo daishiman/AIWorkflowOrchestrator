@@ -36,6 +36,7 @@
 ### Level 1: ローカル状態
 
 **使用条件**:
+
 - 1つのコンポーネントでのみ使用
 - UIの一時的な状態（開閉、ホバー、フォーカス）
 - フォームの入力値（送信前）
@@ -60,6 +61,7 @@ function SearchInput() {
 ### Level 2: 親コンポーネントへの持ち上げ
 
 **使用条件**:
+
 - 親子間でデータを共有
 - 兄弟コンポーネント間でデータを同期
 - 親がデータの「真実の源」となる
@@ -109,20 +111,22 @@ function Parent() {
 ### Level 3: Context API
 
 **使用条件**:
+
 - 多くのコンポーネントで共有（3階層以上）
 - 「グローバル」的なデータ
 - 更新頻度が低い〜中程度
 
 ```typescript
 // テーマ、認証、言語設定などに適切
-const ThemeContext = createContext<Theme>('light');
+const ThemeContext = createContext<Theme>("light");
 const AuthContext = createContext<AuthState | null>(null);
-const LocaleContext = createContext<Locale>('ja');
+const LocaleContext = createContext<Locale>("ja");
 ```
 
 ### Level 4: 状態管理ライブラリ
 
 **使用条件**:
+
 - 複雑な状態ロジック
 - 高頻度の更新
 - 複数の状態間の依存関係
@@ -132,18 +136,21 @@ const LocaleContext = createContext<Locale>('ja');
 // Zustand例
 const useStore = create((set) => ({
   cart: [],
-  addItem: (item) => set((state) => ({
-    cart: [...state.cart, item]
-  })),
-  removeItem: (id) => set((state) => ({
-    cart: state.cart.filter(item => item.id !== id)
-  })),
+  addItem: (item) =>
+    set((state) => ({
+      cart: [...state.cart, item],
+    })),
+  removeItem: (id) =>
+    set((state) => ({
+      cart: state.cart.filter((item) => item.id !== id),
+    })),
 }));
 ```
 
 ### Level 5: サーバー状態
 
 **使用条件**:
+
 - サーバーからフェッチするデータ
 - キャッシュ、再検証が必要
 - 楽観的更新が必要
@@ -151,20 +158,20 @@ const useStore = create((set) => ({
 ```typescript
 // SWR / React Query
 const { data, error, isLoading } = useQuery({
-  queryKey: ['user', userId],
+  queryKey: ["user", userId],
   queryFn: () => fetchUser(userId),
 });
 ```
 
 ## 判断マトリックス
 
-| 特性 | ローカル | 持ち上げ | Context | ライブラリ | サーバー状態 |
-|------|----------|----------|---------|------------|--------------|
-| 使用範囲 | 単一 | 親子・兄弟 | 広範囲 | 広範囲 | 広範囲 |
-| 更新頻度 | 任意 | 任意 | 低〜中 | 高 | 低〜中 |
-| 複雑性 | 低 | 低 | 中 | 高 | 中 |
-| パフォーマンス | ✅ | ✅ | ⚠️ | ✅ | ✅ |
-| DevTools | ❌ | ❌ | ❌ | ✅ | ✅ |
+| 特性           | ローカル | 持ち上げ   | Context | ライブラリ | サーバー状態 |
+| -------------- | -------- | ---------- | ------- | ---------- | ------------ |
+| 使用範囲       | 単一     | 親子・兄弟 | 広範囲  | 広範囲     | 広範囲       |
+| 更新頻度       | 任意     | 任意       | 低〜中  | 高         | 低〜中       |
+| 複雑性         | 低       | 低         | 中      | 高         | 中           |
+| パフォーマンス | ✅       | ✅         | ⚠️      | ✅         | ✅           |
+| DevTools       | ❌       | ❌         | ❌      | ✅         | ✅           |
 
 ## アンチパターン
 
@@ -234,7 +241,7 @@ function Parent() {
 const MousePositionContext = createContext({ x: 0, y: 0 });
 
 // ✅ 良い例: 低頻度データのみContextに
-const ThemeContext = createContext('light');
+const ThemeContext = createContext("light");
 ```
 
 ## ベストプラクティス

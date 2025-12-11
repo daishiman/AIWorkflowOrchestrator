@@ -6,25 +6,25 @@
 
 ```typescript
 // 文字列パターン
-ignored: '**/node_modules/**'
+ignored: "**/node_modules/**";
 
 // 正規表現
-ignored: /node_modules|\.git/
+ignored: /node_modules|\.git/;
 
 // 関数
-ignored: (path: string) => path.includes('temp')
+ignored: (path: string) => path.includes("temp");
 
 // 配列（複数パターン）
 ignored: [
-  '**/node_modules/**',
-  '**/.git/**',
-  '**/dist/**',
-  '**/*.tmp',
-  '**/*.swp',
-  '**/~$*',           // Office一時ファイル
-  '**/.DS_Store',     // macOS
-  '**/Thumbs.db'      // Windows
-]
+  "**/node_modules/**",
+  "**/.git/**",
+  "**/dist/**",
+  "**/*.tmp",
+  "**/*.swp",
+  "**/~$*", // Office一時ファイル
+  "**/.DS_Store", // macOS
+  "**/Thumbs.db", // Windows
+];
 ```
 
 ### 2. awaitWriteFinish（書き込み完了待機）
@@ -41,6 +41,7 @@ awaitWriteFinish: {
 ```
 
 **推奨値**:
+
 - 小さいファイル（<1MB）: stabilityThreshold: 100, pollInterval: 50
 - 中程度のファイル（1-10MB）: stabilityThreshold: 300, pollInterval: 100
 - 大きいファイル（>10MB）: stabilityThreshold: 1000, pollInterval: 200
@@ -58,6 +59,7 @@ binaryInterval: 3000   // バイナリファイルのチェック間隔(ms)
 ```
 
 **usePolling: true が必要な環境**:
+
 - NFS（Network File System）
 - Docker volumes（bind mount）
 - VirtualBox共有フォルダ
@@ -68,13 +70,13 @@ binaryInterval: 3000   // バイナリファイルのチェック間隔(ms)
 
 ```typescript
 // 無制限（全サブディレクトリ）
-depth: undefined
+depth: undefined;
 
 // 直下のみ
-depth: 0
+depth: 0;
 
 // 2階層まで
-depth: 1
+depth: 1;
 ```
 
 ### 5. その他のオプション
@@ -115,18 +117,18 @@ const devConfig = {
   ignoreInitial: true,
   awaitWriteFinish: {
     stabilityThreshold: 100,
-    pollInterval: 50
+    pollInterval: 50,
   },
   usePolling: false,
   ignored: [
-    '**/node_modules/**',
-    '**/.git/**',
-    '**/dist/**',
-    '**/*.log',
-    '**/.DS_Store'
+    "**/node_modules/**",
+    "**/.git/**",
+    "**/dist/**",
+    "**/*.log",
+    "**/.DS_Store",
   ],
   followSymlinks: false,
-  ignorePermissionErrors: true
+  ignorePermissionErrors: true,
 };
 ```
 
@@ -134,13 +136,13 @@ const devConfig = {
 
 ```typescript
 const ciConfig = {
-  persistent: false,  // 一度だけスキャン
+  persistent: false, // 一度だけスキャン
   ignoreInitial: false, // 初期ファイルも検出
   awaitWriteFinish: false,
   usePolling: true,
   interval: 500,
-  ignored: ['**/node_modules/**'],
-  depth: 3
+  ignored: ["**/node_modules/**"],
+  depth: 3,
 };
 ```
 
@@ -152,14 +154,11 @@ const dockerConfig = {
   ignoreInitial: true,
   awaitWriteFinish: {
     stabilityThreshold: 500,
-    pollInterval: 100
+    pollInterval: 100,
   },
-  usePolling: true,  // 必須
+  usePolling: true, // 必須
   interval: 1000,
-  ignored: [
-    '**/node_modules/**',
-    '**/.git/**'
-  ]
+  ignored: ["**/node_modules/**", "**/.git/**"],
 };
 ```
 
@@ -171,14 +170,14 @@ const prodConfig = {
   ignoreInitial: true,
   awaitWriteFinish: {
     stabilityThreshold: 500,
-    pollInterval: 100
+    pollInterval: 100,
   },
-  usePolling: process.env.USE_POLLING === 'true',
-  interval: parseInt(process.env.POLL_INTERVAL || '1000'),
-  ignored: process.env.IGNORED_PATTERNS?.split(',') || [
-    '**/node_modules/**',
-    '**/.git/**'
-  ]
+  usePolling: process.env.USE_POLLING === "true",
+  interval: parseInt(process.env.POLL_INTERVAL || "1000"),
+  ignored: process.env.IGNORED_PATTERNS?.split(",") || [
+    "**/node_modules/**",
+    "**/.git/**",
+  ],
 };
 ```
 

@@ -16,49 +16,51 @@
  *   --verbose, -v 詳細出力
  */
 
-import { parseArgs } from 'util';
+import { parseArgs } from "util";
 
 const { values, positionals } = parseArgs({
   options: {
     header: {
-      type: 'string',
-      short: 'H',
+      type: "string",
+      short: "H",
       multiple: true,
-      default: []
+      default: [],
     },
     timeout: {
-      type: 'string',
-      short: 't',
-      default: '10000'
+      type: "string",
+      short: "t",
+      default: "10000",
     },
     method: {
-      type: 'string',
-      short: 'm',
-      default: 'GET'
+      type: "string",
+      short: "m",
+      default: "GET",
     },
     verbose: {
-      type: 'boolean',
-      short: 'v',
-      default: false
-    }
+      type: "boolean",
+      short: "v",
+      default: false,
+    },
   },
-  allowPositionals: true
+  allowPositionals: true,
 });
 
 const url = positionals[0];
 
 if (!url) {
-  console.log('使用方法: node test-api-connection.mjs <url> [options]');
-  console.log('');
-  console.log('オプション:');
-  console.log('  -H, --header   追加ヘッダー（複数指定可）');
-  console.log('  -t, --timeout  タイムアウト（ミリ秒、デフォルト: 10000）');
-  console.log('  -m, --method   HTTPメソッド（デフォルト: GET）');
-  console.log('  -v, --verbose  詳細出力');
-  console.log('');
-  console.log('例:');
-  console.log('  node test-api-connection.mjs https://api.github.com');
-  console.log('  node test-api-connection.mjs https://api.example.com -H "Authorization: Bearer xxx"');
+  console.log("使用方法: node test-api-connection.mjs <url> [options]");
+  console.log("");
+  console.log("オプション:");
+  console.log("  -H, --header   追加ヘッダー（複数指定可）");
+  console.log("  -t, --timeout  タイムアウト（ミリ秒、デフォルト: 10000）");
+  console.log("  -m, --method   HTTPメソッド（デフォルト: GET）");
+  console.log("  -v, --verbose  詳細出力");
+  console.log("");
+  console.log("例:");
+  console.log("  node test-api-connection.mjs https://api.github.com");
+  console.log(
+    '  node test-api-connection.mjs https://api.example.com -H "Authorization: Bearer xxx"',
+  );
   process.exit(1);
 }
 
@@ -68,7 +70,7 @@ if (!url) {
 function parseHeaders(headerStrings) {
   const headers = {};
   for (const header of headerStrings) {
-    const colonIndex = header.indexOf(':');
+    const colonIndex = header.indexOf(":");
     if (colonIndex === -1) {
       console.warn(`無効なヘッダー形式: ${header}`);
       continue;
@@ -91,11 +93,11 @@ async function testConnection(url, options) {
   console.log(`   タイムアウト: ${timeout}ms`);
 
   if (verbose && Object.keys(headers).length > 0) {
-    console.log('   ヘッダー:');
+    console.log("   ヘッダー:");
     for (const [key, value] of Object.entries(headers)) {
       // センシティブな値をマスク
-      const maskedValue = key.toLowerCase().includes('authorization')
-        ? value.substring(0, 10) + '...'
+      const maskedValue = key.toLowerCase().includes("authorization")
+        ? value.substring(0, 10) + "..."
         : value;
       console.log(`     ${key}: ${maskedValue}`);
     }
@@ -110,10 +112,10 @@ async function testConnection(url, options) {
     const response = await fetch(url, {
       method,
       headers: {
-        'User-Agent': 'API-Connection-Tester/1.0',
-        ...headers
+        "User-Agent": "API-Connection-Tester/1.0",
+        ...headers,
       },
-      signal: controller.signal
+      signal: controller.signal,
     });
 
     clearTimeout(timeoutId);
@@ -121,13 +123,13 @@ async function testConnection(url, options) {
     const endTime = Date.now();
     const duration = endTime - startTime;
 
-    console.log('\n📊 結果:');
+    console.log("\n📊 結果:");
     console.log(`   ステータス: ${response.status} ${response.statusText}`);
     console.log(`   レスポンス時間: ${duration}ms`);
 
     // レスポンスヘッダー
     if (verbose) {
-      console.log('\n   レスポンスヘッダー:');
+      console.log("\n   レスポンスヘッダー:");
       response.headers.forEach((value, key) => {
         console.log(`     ${key}: ${value}`);
       });
@@ -135,10 +137,10 @@ async function testConnection(url, options) {
 
     // Rate Limit情報
     const rateLimitHeaders = [
-      'x-ratelimit-limit',
-      'x-ratelimit-remaining',
-      'x-ratelimit-reset',
-      'retry-after'
+      "x-ratelimit-limit",
+      "x-ratelimit-remaining",
+      "x-ratelimit-reset",
+      "retry-after",
     ];
 
     const rateLimitInfo = {};
@@ -150,7 +152,7 @@ async function testConnection(url, options) {
     }
 
     if (Object.keys(rateLimitInfo).length > 0) {
-      console.log('\n   Rate Limit情報:');
+      console.log("\n   Rate Limit情報:");
       for (const [key, value] of Object.entries(rateLimitInfo)) {
         console.log(`     ${key}: ${value}`);
       }
@@ -159,20 +161,25 @@ async function testConnection(url, options) {
     // レスポンスボディ（一部）
     if (verbose) {
       try {
-        const contentType = response.headers.get('content-type') || '';
-        if (contentType.includes('application/json')) {
+        const contentType = response.headers.get("content-type") || "";
+        if (contentType.includes("application/json")) {
           const body = await response.json();
-          console.log('\n   レスポンスボディ (JSON):');
-          console.log('     ' + JSON.stringify(body, null, 2).replace(/\n/g, '\n     ').substring(0, 500));
+          console.log("\n   レスポンスボディ (JSON):");
+          console.log(
+            "     " +
+              JSON.stringify(body, null, 2)
+                .replace(/\n/g, "\n     ")
+                .substring(0, 500),
+          );
           if (JSON.stringify(body).length > 500) {
-            console.log('     ... (truncated)');
+            console.log("     ... (truncated)");
           }
         } else {
           const text = await response.text();
-          console.log('\n   レスポンスボディ:');
-          console.log('     ' + text.substring(0, 200));
+          console.log("\n   レスポンスボディ:");
+          console.log("     " + text.substring(0, 200));
           if (text.length > 200) {
-            console.log('     ... (truncated)');
+            console.log("     ... (truncated)");
           }
         }
       } catch (e) {
@@ -182,7 +189,7 @@ async function testConnection(url, options) {
 
     // 判定
     if (response.ok) {
-      console.log('\n✅ 接続成功');
+      console.log("\n✅ 接続成功");
       return true;
     } else {
       console.log(`\n⚠️  HTTPエラー: ${response.status}`);
@@ -192,16 +199,18 @@ async function testConnection(url, options) {
     const endTime = Date.now();
     const duration = endTime - startTime;
 
-    console.log('\n❌ 接続失敗');
+    console.log("\n❌ 接続失敗");
     console.log(`   エラー: ${error.message}`);
     console.log(`   経過時間: ${duration}ms`);
 
-    if (error.name === 'AbortError') {
-      console.log('   原因: タイムアウト');
-    } else if (error.code === 'ECONNREFUSED') {
-      console.log('   原因: 接続拒否（サーバーが起動していないか、URLが間違っています）');
-    } else if (error.code === 'ENOTFOUND') {
-      console.log('   原因: ホスト名を解決できません');
+    if (error.name === "AbortError") {
+      console.log("   原因: タイムアウト");
+    } else if (error.code === "ECONNREFUSED") {
+      console.log(
+        "   原因: 接続拒否（サーバーが起動していないか、URLが間違っています）",
+      );
+    } else if (error.code === "ENOTFOUND") {
+      console.log("   原因: ホスト名を解決できません");
     }
 
     return false;
@@ -218,7 +227,7 @@ async function main() {
     method: values.method,
     headers,
     timeout: values.timeout,
-    verbose: values.verbose
+    verbose: values.verbose,
   });
 
   process.exit(success ? 0 : 1);

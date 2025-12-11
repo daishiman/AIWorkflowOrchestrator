@@ -13,30 +13,30 @@
  *   node check-fk-integrity.mjs src/shared/infrastructure/database/schema.ts
  */
 
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
+import { readFileSync } from "fs";
+import { resolve } from "path";
 
 // 色定義
 const colors = {
-  red: '\x1b[31m',
-  yellow: '\x1b[33m',
-  green: '\x1b[32m',
-  blue: '\x1b[34m',
-  cyan: '\x1b[36m',
-  magenta: '\x1b[35m',
-  reset: '\x1b[0m',
+  red: "\x1b[31m",
+  yellow: "\x1b[33m",
+  green: "\x1b[32m",
+  blue: "\x1b[34m",
+  cyan: "\x1b[36m",
+  magenta: "\x1b[35m",
+  reset: "\x1b[0m",
 };
 
 /**
  * 問題の種類
  */
 const IssueType = {
-  NO_INDEX: 'no_index',
-  CASCADE_WITH_SOFT_DELETE: 'cascade_soft_delete',
-  CIRCULAR_REFERENCE: 'circular_reference',
-  MISSING_ON_DELETE: 'missing_on_delete',
-  NULLABLE_CASCADE: 'nullable_cascade',
-  DEEP_CASCADE: 'deep_cascade',
+  NO_INDEX: "no_index",
+  CASCADE_WITH_SOFT_DELETE: "cascade_soft_delete",
+  CIRCULAR_REFERENCE: "circular_reference",
+  MISSING_ON_DELETE: "missing_on_delete",
+  NULLABLE_CASCADE: "nullable_cascade",
+  DEEP_CASCADE: "deep_cascade",
 };
 
 /**
@@ -57,7 +57,7 @@ class FkIssue {
  * スキーマファイルを解析
  */
 function parseSchemaFile(filePath) {
-  const content = readFileSync(filePath, 'utf-8');
+  const content = readFileSync(filePath, "utf-8");
   const tables = [];
 
   // テーブル定義を抽出
@@ -74,10 +74,10 @@ function parseSchemaFile(filePath) {
     let inDefinition = false;
 
     for (let i = startIndex; i < content.length; i++) {
-      if (content[i] === '(') {
+      if (content[i] === "(") {
         braceCount++;
         inDefinition = true;
-      } else if (content[i] === ')') {
+      } else if (content[i] === ")") {
         braceCount--;
         if (inDefinition && braceCount === 0) {
           endIndex = i;
@@ -95,8 +95,9 @@ function parseSchemaFile(filePath) {
     const indexes = extractIndexes(tableDefinition);
 
     // ソフトデリートカラムの有無
-    const hasSoftDelete = tableDefinition.includes('deleted_at') ||
-      tableDefinition.includes('deletedAt');
+    const hasSoftDelete =
+      tableDefinition.includes("deleted_at") ||
+      tableDefinition.includes("deletedAt");
 
     tables.push({
       varName,
@@ -116,26 +117,28 @@ function parseSchemaFile(filePath) {
  */
 function extractForeignKeys(tableDefinition, tableName) {
   const fks = [];
-  const lines = tableDefinition.split('\n');
+  const lines = tableDefinition.split("\n");
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
 
     // .references() パターンを検出
-    const refMatch = line.match(/(\w+):\s*uuid\s*\(['"]([\w_]+)['"]\)([^,]*\.references\s*\(\s*\(\)\s*=>\s*(\w+)\.id)/);
+    const refMatch = line.match(
+      /(\w+):\s*uuid\s*\(['"]([\w_]+)['"]\)([^,]*\.references\s*\(\s*\(\)\s*=>\s*(\w+)\.id)/,
+    );
     if (refMatch) {
       const [, varName, columnName, modifiers, referencedTable] = refMatch;
 
       // ON DELETE 動作を抽出
       const onDeleteMatch = line.match(/onDelete:\s*['"](\w+)['"]/);
-      const onDelete = onDeleteMatch ? onDeleteMatch[1] : 'restrict';
+      const onDelete = onDeleteMatch ? onDeleteMatch[1] : "restrict";
 
       // ON UPDATE 動作を抽出
       const onUpdateMatch = line.match(/onUpdate:\s*['"](\w+)['"]/);
-      const onUpdate = onUpdateMatch ? onUpdateMatch[1] : 'cascade';
+      const onUpdate = onUpdateMatch ? onUpdateMatch[1] : "cascade";
 
       // NOT NULL かどうか
-      const isNotNull = modifiers.includes('.notNull()');
+      const isNotNull = modifiers.includes(".notNull()");
 
       fks.push({
         varName,
@@ -169,7 +172,7 @@ function extractIndexes(tableDefinition) {
     const restOfDef = tableDefinition.slice(match.index);
     const onMatch = restOfDef.match(/\.on\s*\(\s*([^)]+)\s*\)/);
     const columns = onMatch
-      ? onMatch[1].split(',').map((c) => c.trim().replace(/table\.\s*/, ''))
+      ? onMatch[1].split(",").map((c) => c.trim().replace(/table\.\s*/, ""))
       : [];
 
     indexes.push({
@@ -192,19 +195,21 @@ function checkFkIndexes(tables) {
     for (const fk of table.foreignKeys) {
       // この外部キーカラムにインデックスがあるか
       const hasIndex = table.indexes.some((idx) =>
-        idx.columns.some((col) => col === fk.varName || col === `table.${fk.varName}`)
+        idx.columns.some(
+          (col) => col === fk.varName || col === `table.${fk.varName}`,
+        ),
       );
 
       if (!hasIndex) {
         issues.push(
           new FkIssue(
             IssueType.NO_INDEX,
-            'warning',
+            "warning",
             table.tableName,
             fk.columnName,
-            '外部キーカラムにインデックスがありません',
-            `CREATE INDEX idx_${table.tableName}_${fk.columnName} ON ${table.tableName}(${fk.columnName}); を追加してください。`
-          )
+            "外部キーカラムにインデックスがありません",
+            `CREATE INDEX idx_${table.tableName}_${fk.columnName} ON ${table.tableName}(${fk.columnName}); を追加してください。`,
+          ),
         );
       }
     }
@@ -222,16 +227,16 @@ function checkCascadeSoftDelete(tables) {
   for (const table of tables) {
     if (table.hasSoftDelete) {
       for (const fk of table.foreignKeys) {
-        if (fk.onDelete === 'cascade') {
+        if (fk.onDelete === "cascade") {
           issues.push(
             new FkIssue(
               IssueType.CASCADE_WITH_SOFT_DELETE,
-              'error',
+              "error",
               table.tableName,
               fk.columnName,
-              'ソフトデリートカラムがあるテーブルでON DELETE CASCADEを使用しています',
-              'ON DELETE RESTRICTに変更し、アプリケーション層でソフトデリートを伝播させてください。'
-            )
+              "ソフトデリートカラムがあるテーブルでON DELETE CASCADEを使用しています",
+              "ON DELETE RESTRICTに変更し、アプリケーション層でソフトデリートを伝播させてください。",
+            ),
           );
         }
       }
@@ -285,12 +290,12 @@ function checkCircularReferences(tables) {
         issues.push(
           new FkIssue(
             IssueType.CIRCULAR_REFERENCE,
-            'warning',
-            cycle.join(' → '),
-            '-',
-            `循環参照が検出されました: ${cycle.join(' → ')}`,
-            'NULL許可による打破、関係テーブルへの分離、または設計の見直しを検討してください。'
-          )
+            "warning",
+            cycle.join(" → "),
+            "-",
+            `循環参照が検出されました: ${cycle.join(" → ")}`,
+            "NULL許可による打破、関係テーブルへの分離、または設計の見直しを検討してください。",
+          ),
         );
         break; // 1つの循環を報告すれば十分
       }
@@ -310,23 +315,25 @@ function checkMissingOnDelete(tables) {
     for (const fk of table.foreignKeys) {
       // デフォルトのrestrict以外が明示的に指定されていない場合
       // 実際にはDrizzleのデフォルトを使用しているかどうかを確認
-      if (!table.definition.includes(`onDelete:`) &&
-        table.definition.includes(`.references(`)) {
+      if (
+        !table.definition.includes(`onDelete:`) &&
+        table.definition.includes(`.references(`)
+      ) {
         // 明示的なonDelete指定がない場合（最初の1回のみ報告）
         const hasExplicitOnDelete = table.foreignKeys.some((f) =>
-          table.definition.includes(`onDelete:`)
+          table.definition.includes(`onDelete:`),
         );
 
         if (!hasExplicitOnDelete) {
           issues.push(
             new FkIssue(
               IssueType.MISSING_ON_DELETE,
-              'info',
+              "info",
               table.tableName,
               fk.columnName,
-              'ON DELETE動作が明示的に指定されていません（デフォルト: RESTRICT）',
-              '明示的にonDelete動作を指定することで、設計意図を明確にすることを推奨します。'
-            )
+              "ON DELETE動作が明示的に指定されていません（デフォルト: RESTRICT）",
+              "明示的にonDelete動作を指定することで、設計意図を明確にすることを推奨します。",
+            ),
           );
           break; // テーブルごとに1回のみ報告
         }
@@ -345,16 +352,16 @@ function checkNullableCascade(tables) {
 
   for (const table of tables) {
     for (const fk of table.foreignKeys) {
-      if (!fk.isNotNull && fk.onDelete === 'cascade') {
+      if (!fk.isNotNull && fk.onDelete === "cascade") {
         issues.push(
           new FkIssue(
             IssueType.NULLABLE_CASCADE,
-            'info',
+            "info",
             table.tableName,
             fk.columnName,
-            'NULL許可の外部キーでON DELETE CASCADEを使用しています',
-            '関連がオプショナルな場合、ON DELETE SET NULLの方が適切かもしれません。'
-          )
+            "NULL許可の外部キーでON DELETE CASCADEを使用しています",
+            "関連がオプショナルな場合、ON DELETE SET NULLの方が適切かもしれません。",
+          ),
         );
       }
     }
@@ -373,7 +380,7 @@ function checkDeepCascade(tables) {
   // CASCADE関係のグラフを構築
   for (const table of tables) {
     const cascadeDeps = table.foreignKeys
-      .filter((fk) => fk.onDelete === 'cascade')
+      .filter((fk) => fk.onDelete === "cascade")
       .map((fk) => fk.referencedTable);
     cascadeGraph.set(table.varName, cascadeDeps);
   }
@@ -396,12 +403,12 @@ function checkDeepCascade(tables) {
       issues.push(
         new FkIssue(
           IssueType.DEEP_CASCADE,
-          'warning',
+          "warning",
           table.tableName,
-          '-',
+          "-",
           `深いCASCADE削除連鎖（${depth}レベル）が検出されました`,
-          '大量削除によるパフォーマンス影響を考慮し、バッチ処理またはソフトデリートを検討してください。'
-        )
+          "大量削除によるパフォーマンス影響を考慮し、バッチ処理またはソフトデリートを検討してください。",
+        ),
       );
     }
   }
@@ -413,9 +420,9 @@ function checkDeepCascade(tables) {
  * レポートを出力
  */
 function printReport(tables, issues) {
-  console.log('\n' + '='.repeat(60));
-  console.log('外部キー整合性チェックレポート');
-  console.log('='.repeat(60) + '\n');
+  console.log("\n" + "=".repeat(60));
+  console.log("外部キー整合性チェックレポート");
+  console.log("=".repeat(60) + "\n");
 
   // サマリー
   const totalFks = tables.reduce((sum, t) => sum + t.foreignKeys.length, 0);
@@ -433,21 +440,24 @@ function printReport(tables, issues) {
   for (const table of tables) {
     if (table.foreignKeys.length === 0) continue;
 
-    const softDeleteMark = table.hasSoftDelete ? ` ${colors.magenta}[soft-delete]${colors.reset}` : '';
+    const softDeleteMark = table.hasSoftDelete
+      ? ` ${colors.magenta}[soft-delete]${colors.reset}`
+      : "";
     console.log(`📋 ${table.tableName}${softDeleteMark}`);
 
     for (const fk of table.foreignKeys) {
-      const nullMark = fk.isNotNull ? 'NOT NULL' : 'NULL OK';
-      const onDeleteColor = fk.onDelete === 'cascade'
-        ? colors.yellow
-        : fk.onDelete === 'restrict'
-          ? colors.green
-          : colors.blue;
+      const nullMark = fk.isNotNull ? "NOT NULL" : "NULL OK";
+      const onDeleteColor =
+        fk.onDelete === "cascade"
+          ? colors.yellow
+          : fk.onDelete === "restrict"
+            ? colors.green
+            : colors.blue;
 
       console.log(
         `   • ${fk.columnName} → ${fk.referencedTable}.id ` +
-        `[${nullMark}] ` +
-        `${onDeleteColor}ON DELETE ${fk.onDelete.toUpperCase()}${colors.reset}`
+          `[${nullMark}] ` +
+          `${onDeleteColor}ON DELETE ${fk.onDelete.toUpperCase()}${colors.reset}`,
       );
     }
     console.log();
@@ -455,7 +465,9 @@ function printReport(tables, issues) {
 
   // 問題レポート
   if (issues.length === 0) {
-    console.log(`${colors.green}✅ 問題は検出されませんでした。${colors.reset}\n`);
+    console.log(
+      `${colors.green}✅ 問題は検出されませんでした。${colors.reset}\n`,
+    );
     return;
   }
 
@@ -463,15 +475,15 @@ function printReport(tables, issues) {
 
   // 重要度別にグループ化
   const grouped = {
-    error: issues.filter((i) => i.severity === 'error'),
-    warning: issues.filter((i) => i.severity === 'warning'),
-    info: issues.filter((i) => i.severity === 'info'),
+    error: issues.filter((i) => i.severity === "error"),
+    warning: issues.filter((i) => i.severity === "warning"),
+    info: issues.filter((i) => i.severity === "info"),
   };
 
   const severityLabels = {
-    error: { label: 'エラー', color: colors.red },
-    warning: { label: '警告', color: colors.yellow },
-    info: { label: '情報', color: colors.blue },
+    error: { label: "エラー", color: colors.red },
+    warning: { label: "警告", color: colors.yellow },
+    info: { label: "情報", color: colors.blue },
   };
 
   for (const [severity, severityIssues] of Object.entries(grouped)) {
@@ -482,7 +494,9 @@ function printReport(tables, issues) {
     console.log(`\n### ${label} (${severityIssues.length}件) ###\n`);
 
     for (const issue of severityIssues) {
-      console.log(`${color}[${issue.type.toUpperCase()}]${colors.reset} ${issue.table}.${issue.column}`);
+      console.log(
+        `${color}[${issue.type.toUpperCase()}]${colors.reset} ${issue.table}.${issue.column}`,
+      );
       console.log(`  📝 ${issue.description}`);
       console.log(`  💡 ${issue.suggestion}`);
       console.log();
@@ -490,9 +504,9 @@ function printReport(tables, issues) {
   }
 
   // 推奨事項
-  console.log('='.repeat(60));
-  console.log('推奨事項');
-  console.log('='.repeat(60));
+  console.log("=".repeat(60));
+  console.log("推奨事項");
+  console.log("=".repeat(60));
   console.log(`
 1. すべての外部キーカラムにインデックスを設定
 2. ソフトデリートテーブルではON DELETE RESTRICTを使用
@@ -509,7 +523,7 @@ function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.error('使用方法: node check-fk-integrity.mjs <schema-file.ts>');
+    console.error("使用方法: node check-fk-integrity.mjs <schema-file.ts>");
     process.exit(1);
   }
 
@@ -521,7 +535,7 @@ function main() {
     const tables = parseSchemaFile(filePath);
 
     if (tables.length === 0) {
-      console.log('テーブル定義が見つかりませんでした。');
+      console.log("テーブル定義が見つかりませんでした。");
       process.exit(0);
     }
 

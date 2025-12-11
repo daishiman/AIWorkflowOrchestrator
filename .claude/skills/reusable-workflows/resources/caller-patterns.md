@@ -14,8 +14,8 @@ jobs:
   call-reusable:
     uses: ./.github/workflows/reusable-build.yml
     with:
-      node-version: '20'
-      environment: 'staging'
+      node-version: "20"
+      environment: "staging"
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 ```
@@ -60,8 +60,8 @@ jobs:
   build:
     uses: ./.github/workflows/build.yml
     with:
-      node-version: '20'
-      environment: 'production'
+      node-version: "20"
+      environment: "production"
       debug-mode: true
       timeout-minutes: 45
 ```
@@ -142,7 +142,7 @@ jobs:
   build:
     uses: ./.github/workflows/build.yml
     with:
-      node-version: '20'
+      node-version: "20"
 
   deploy:
     needs: build
@@ -312,7 +312,7 @@ on:
   pull_request:
 
 env:
-  NODE_VERSION: '20'
+  NODE_VERSION: "20"
 
 jobs:
   # Stage 1: Build
@@ -329,7 +329,7 @@ jobs:
     needs: build
     uses: ./.github/workflows/reusable-test.yml
     with:
-      test-type: 'unit'
+      test-type: "unit"
       build-id: ${{ needs.build.outputs.build-id }}
       node-version: ${{ env.NODE_VERSION }}
 
@@ -337,7 +337,7 @@ jobs:
     needs: build
     uses: ./.github/workflows/reusable-test.yml
     with:
-      test-type: 'integration'
+      test-type: "integration"
       build-id: ${{ needs.build.outputs.build-id }}
       node-version: ${{ env.NODE_VERSION }}
 
@@ -368,10 +368,18 @@ jobs:
   # Stage 4: Deploy (conditional)
   deploy-staging:
     if: github.ref == 'refs/heads/develop'
-    needs: [build, unit-test, integration-test, e2e-test, quality-check, security-scan]
+    needs:
+      [
+        build,
+        unit-test,
+        integration-test,
+        e2e-test,
+        quality-check,
+        security-scan,
+      ]
     uses: ./.github/workflows/reusable-deploy.yml
     with:
-      environment: 'staging'
+      environment: "staging"
       build-id: ${{ needs.build.outputs.build-id }}
     secrets: inherit
     environment:
@@ -380,10 +388,18 @@ jobs:
 
   deploy-production:
     if: github.ref == 'refs/heads/main'
-    needs: [build, unit-test, integration-test, e2e-test, quality-check, security-scan]
+    needs:
+      [
+        build,
+        unit-test,
+        integration-test,
+        e2e-test,
+        quality-check,
+        security-scan,
+      ]
     uses: ./.github/workflows/reusable-deploy.yml
     with:
-      environment: 'production'
+      environment: "production"
       build-id: ${{ needs.build.outputs.build-id }}
     secrets: inherit
     environment:

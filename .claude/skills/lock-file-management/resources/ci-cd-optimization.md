@@ -29,8 +29,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
 
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -73,8 +73,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm ci
@@ -103,8 +103,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'yarn'
+          node-version: "20"
+          cache: "yarn"
 
       - name: Install dependencies
         run: yarn install --immutable
@@ -353,11 +353,13 @@ CMD ["node", "dist/index.js"]
 ### すべきこと
 
 1. **frozen-lockfileを使用**
+
    ```bash
    pnpm install --frozen-lockfile
    ```
 
 2. **適切なキャッシュキーを設定**
+
    ```yaml
    key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
    ```
@@ -384,12 +386,14 @@ CMD ["node", "dist/index.js"]
 ## チェックリスト
 
 ### CI/CD設定時
+
 - [ ] ロックファイルベースのキャッシュを設定したか？
 - [ ] frozen-lockfileオプションを使用しているか？
 - [ ] キャッシュのリストアキーを設定したか？
 - [ ] 本番ビルドで devDependencies を除外しているか？
 
 ### パフォーマンス最適化時
+
 - [ ] インストール時間を測定したか？
 - [ ] キャッシュヒット率を確認したか？
 - [ ] 並列処理を活用しているか？

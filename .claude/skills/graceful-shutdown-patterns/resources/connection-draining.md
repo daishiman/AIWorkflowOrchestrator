@@ -45,9 +45,9 @@ class HttpDrain {
     this.isClosing = false;
 
     // 接続を追跡
-    server.on('connection', (socket) => {
+    server.on("connection", (socket) => {
       this.connections.add(socket);
-      socket.on('close', () => {
+      socket.on("close", () => {
         this.connections.delete(socket);
       });
     });
@@ -59,7 +59,7 @@ class HttpDrain {
     // 新規接続を停止
     return new Promise((resolve) => {
       this.server.close(() => {
-        console.log('Server stopped accepting connections');
+        console.log("Server stopped accepting connections");
         resolve();
       });
 
@@ -99,10 +99,10 @@ function configureServerForDrain(server) {
   server.headersTimeout = 66000;
 
   // ドレイン時にKeep-Aliveを無効化
-  server.on('request', (req, res) => {
+  server.on("request", (req, res) => {
     if (isShuttingDown) {
       // Connection: close を設定して接続を終了させる
-      res.setHeader('Connection', 'close');
+      res.setHeader("Connection", "close");
     }
   });
 
@@ -129,9 +129,9 @@ class WebSocketDrain {
         disconnectPromises.push(
           new Promise((resolve) => {
             // 切断理由を通知
-            client.close(1001, 'Server shutting down');
+            client.close(1001, "Server shutting down");
 
-            client.on('close', resolve);
+            client.on("close", resolve);
 
             // タイムアウト後に強制切断
             setTimeout(() => {
@@ -140,13 +140,13 @@ class WebSocketDrain {
               }
               resolve();
             }, timeoutMs);
-          })
+          }),
         );
       }
     });
 
     await Promise.all(disconnectPromises);
-    console.log('All WebSocket clients disconnected');
+    console.log("All WebSocket clients disconnected");
   }
 }
 ```
@@ -163,14 +163,17 @@ async function gracefulWebSocketShutdown(wss) {
       notifyPromises.push(
         new Promise((resolve) => {
           // シャットダウン通知メッセージ
-          client.send(JSON.stringify({
-            type: 'server_shutdown',
-            message: 'Server is shutting down, please reconnect'
-          }), (err) => {
-            if (err) console.warn('Failed to send shutdown message');
-            resolve();
-          });
-        })
+          client.send(
+            JSON.stringify({
+              type: "server_shutdown",
+              message: "Server is shutting down, please reconnect",
+            }),
+            (err) => {
+              if (err) console.warn("Failed to send shutdown message");
+              resolve();
+            },
+          );
+        }),
       );
     }
   });
@@ -208,7 +211,9 @@ class DatabaseDrain {
   }
 
   async drain(timeoutMs = 30000) {
-    console.log(`Draining database connections (active: ${this.activeQueries})`);
+    console.log(
+      `Draining database connections (active: ${this.activeQueries})`,
+    );
 
     // 進行中のクエリを待機
     const start = Date.now();
@@ -222,7 +227,7 @@ class DatabaseDrain {
 
     // プールを閉じる
     await this.pool.end();
-    console.log('Database pool closed');
+    console.log("Database pool closed");
   }
 }
 ```
@@ -242,7 +247,7 @@ class TransactionAwareDrain {
 
     this.activeTransactions.add(txId);
 
-    await client.query('BEGIN');
+    await client.query("BEGIN");
 
     // トランザクション完了時にセットから削除
     const originalRelease = client.release.bind(client);
@@ -260,7 +265,9 @@ class TransactionAwareDrain {
     const start = Date.now();
     while (this.activeTransactions.size > 0) {
       if (Date.now() - start > timeoutMs) {
-        console.error(`Transaction drain timeout: ${this.activeTransactions.size} active`);
+        console.error(
+          `Transaction drain timeout: ${this.activeTransactions.size} active`,
+        );
         // 警告: 強制終了するとデータ不整合の可能性
         break;
       }
@@ -297,18 +304,19 @@ async function drainBullQueue(queue) {
   await queue.pause(true);
 
   // 処理中のジョブを完了させる
-  console.log('Waiting for active jobs to complete...');
+  console.log("Waiting for active jobs to complete...");
 
   // 完了待機（isIdleがtrueになるまで）
-  const waitForIdle = () => new Promise((resolve) => {
-    const check = setInterval(async () => {
-      const counts = await queue.getJobCounts();
-      if (counts.active === 0) {
-        clearInterval(check);
-        resolve();
-      }
-    }, 1000);
-  });
+  const waitForIdle = () =>
+    new Promise((resolve) => {
+      const check = setInterval(async () => {
+        const counts = await queue.getJobCounts();
+        if (counts.active === 0) {
+          clearInterval(check);
+          resolve();
+        }
+      }, 1000);
+    });
 
   await waitForIdle();
 
@@ -332,12 +340,12 @@ async function drainBullQueue(queue) {
 
 ```javascript
 // 推奨: ヘルスチェックで503を返す
-app.get('/health', (req, res) => {
+app.get("/health", (req, res) => {
   if (isShuttingDown) {
-    res.status(503).json({ status: 'draining' });
+    res.status(503).json({ status: "draining" });
     return;
   }
-  res.json({ status: 'healthy' });
+  res.json({ status: "healthy" });
 });
 ```
 
@@ -364,7 +372,7 @@ class DrainMonitor {
       httpConnections: 0,
       wsConnections: 0,
       dbQueries: 0,
-      queueJobs: 0
+      queueJobs: 0,
     };
   }
 
@@ -373,11 +381,11 @@ class DrainMonitor {
   }
 
   log() {
-    console.log('Drain status:', JSON.stringify(this.metrics));
+    console.log("Drain status:", JSON.stringify(this.metrics));
   }
 
   isFullyDrained() {
-    return Object.values(this.metrics).every(v => v === 0);
+    return Object.values(this.metrics).every((v) => v === 0);
   }
 }
 

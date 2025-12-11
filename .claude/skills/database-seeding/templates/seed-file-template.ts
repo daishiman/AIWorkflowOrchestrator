@@ -166,18 +166,18 @@ async function seedOrdersAndItems(userList: ReturnType<typeof generateUser>[]) {
 
   for (const user of userList) {
     const orderData = generateMany(config.ordersPerUser, (i) =>
-      generateOrder(user.id, i)
+      generateOrder(user.id, i),
     );
 
     for (const order of orderData) {
       const itemData = generateMany(config.itemsPerOrder, (i) =>
-        generateOrderItem(order.id, i)
+        generateOrderItem(order.id, i),
       );
 
       // 合計金額を計算
       order.totalAmount = itemData.reduce(
         (sum, item) => sum + item.subtotal,
-        0
+        0,
       );
 
       await db.insert(orders).values(order).onConflictDoNothing();
@@ -275,7 +275,7 @@ export async function runSeeds(
     master?: boolean;
     development?: boolean;
     test?: boolean;
-  } = {}
+  } = {},
 ) {
   const { master = true, development = false, test = false } = options;
 

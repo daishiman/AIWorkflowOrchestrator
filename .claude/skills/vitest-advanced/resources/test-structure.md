@@ -11,16 +11,16 @@ Vitestのテスト構造とライフサイクルフックを効果的に使用�
 ### describe/it/test
 
 ```typescript
-import { describe, it, test, expect } from 'vitest';
+import { describe, it, test, expect } from "vitest";
 
 // describeでテストをグループ化
-describe('UserService', () => {
+describe("UserService", () => {
   // itまたはtestでテストケースを定義
-  it('should create user', () => {
+  it("should create user", () => {
     // テストロジック
   });
 
-  test('creates user with valid data', () => {
+  test("creates user with valid data", () => {
     // testはitのエイリアス
   });
 });
@@ -29,22 +29,22 @@ describe('UserService', () => {
 ### ネストしたdescribe
 
 ```typescript
-describe('UserService', () => {
-  describe('getUser', () => {
-    describe('when user exists', () => {
-      it('should return user data', () => {
+describe("UserService", () => {
+  describe("getUser", () => {
+    describe("when user exists", () => {
+      it("should return user data", () => {
         // テスト
       });
     });
 
-    describe('when user does not exist', () => {
-      it('should throw NotFoundError', () => {
+    describe("when user does not exist", () => {
+      it("should throw NotFoundError", () => {
         // テスト
       });
     });
   });
 
-  describe('createUser', () => {
+  describe("createUser", () => {
     // ...
   });
 });
@@ -56,19 +56,26 @@ describe('UserService', () => {
 
 ### フックの種類
 
-| フック | 実行タイミング |
-|--------|----------------|
-| `beforeAll` | 全テスト前に1回 |
-| `afterAll` | 全テスト後に1回 |
+| フック       | 実行タイミング   |
+| ------------ | ---------------- |
+| `beforeAll`  | 全テスト前に1回  |
+| `afterAll`   | 全テスト後に1回  |
 | `beforeEach` | 各テスト前に毎回 |
-| `afterEach` | 各テスト後に毎回 |
+| `afterEach`  | 各テスト後に毎回 |
 
 ### 使用例
 
 ```typescript
-import { describe, it, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
+import {
+  describe,
+  it,
+  beforeAll,
+  afterAll,
+  beforeEach,
+  afterEach,
+} from "vitest";
 
-describe('Database Operations', () => {
+describe("Database Operations", () => {
   // 全テスト前に1回だけ実行
   beforeAll(async () => {
     await database.connect();
@@ -89,7 +96,7 @@ describe('Database Operations', () => {
     await database.rollbackTransaction();
   });
 
-  it('should insert record', async () => {
+  it("should insert record", async () => {
     // テスト
   });
 });
@@ -111,13 +118,13 @@ beforeAll
 ### ネストしたdescribeでのフック
 
 ```typescript
-describe('Outer', () => {
-  beforeEach(() => console.log('outer beforeEach'));
+describe("Outer", () => {
+  beforeEach(() => console.log("outer beforeEach"));
 
-  describe('Inner', () => {
-    beforeEach(() => console.log('inner beforeEach'));
+  describe("Inner", () => {
+    beforeEach(() => console.log("inner beforeEach"));
 
-    it('test', () => {
+    it("test", () => {
       // 実行順: outer beforeEach → inner beforeEach → test
     });
   });
@@ -131,11 +138,11 @@ describe('Outer', () => {
 ### skip - テストをスキップ
 
 ```typescript
-describe.skip('Skipped suite', () => {
+describe.skip("Skipped suite", () => {
   // このスイート全体がスキップされる
 });
 
-it.skip('skipped test', () => {
+it.skip("skipped test", () => {
   // このテストがスキップされる
 });
 ```
@@ -143,11 +150,11 @@ it.skip('skipped test', () => {
 ### only - 特定のテストのみ実行
 
 ```typescript
-describe.only('Only this suite', () => {
+describe.only("Only this suite", () => {
   // このスイートのみ実行
 });
 
-it.only('only this test', () => {
+it.only("only this test", () => {
   // このテストのみ実行
 });
 ```
@@ -155,18 +162,18 @@ it.only('only this test', () => {
 ### todo - 未実装のテスト
 
 ```typescript
-it.todo('should implement this feature');
+it.todo("should implement this feature");
 ```
 
 ### concurrent - 並行実行
 
 ```typescript
-describe('Concurrent tests', () => {
-  it.concurrent('test 1', async () => {
+describe("Concurrent tests", () => {
+  it.concurrent("test 1", async () => {
     await someAsyncOperation();
   });
 
-  it.concurrent('test 2', async () => {
+  it.concurrent("test 2", async () => {
     await anotherAsyncOperation();
   });
 });
@@ -179,7 +186,7 @@ it.each([
   { input: 1, expected: 2 },
   { input: 2, expected: 4 },
   { input: 3, expected: 6 },
-])('double($input) should return $expected', ({ input, expected }) => {
+])("double($input) should return $expected", ({ input, expected }) => {
   expect(double(input)).toBe(expected);
 });
 
@@ -188,7 +195,7 @@ it.each([
   [1, 2],
   [2, 4],
   [3, 6],
-])('double(%i) should return %i', (input, expected) => {
+])("double(%i) should return %i", (input, expected) => {
   expect(double(input)).toBe(expected);
 });
 ```
@@ -198,7 +205,7 @@ it.each([
 ## Arrange-Act-Assert パターン
 
 ```typescript
-it('should calculate total price with discount', () => {
+it("should calculate total price with discount", () => {
   // Arrange - 準備
   const items = [
     { price: 100, quantity: 2 },

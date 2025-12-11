@@ -7,13 +7,13 @@
  * 3. public/openapi.yaml に仕様書を配置
  */
 
-'use client';
+"use client";
 
-import dynamic from 'next/dynamic';
-import 'swagger-ui-react/swagger-ui.css';
+import dynamic from "next/dynamic";
+import "swagger-ui-react/swagger-ui.css";
 
 // SSR無効化でSwagger UIを読み込み
-const SwaggerUI = dynamic(() => import('swagger-ui-react'), {
+const SwaggerUI = dynamic(() => import("swagger-ui-react"), {
   ssr: false,
   loading: () => (
     <div className="flex items-center justify-center min-h-screen">
@@ -64,7 +64,7 @@ export default function ApiDocsPage({}: ApiDocsPageProps) {
         deepLinking={true}
         // 認証プリセット（開発環境のみ）
         onComplete={(swaggerUi) => {
-          if (process.env.NODE_ENV === 'development') {
+          if (process.env.NODE_ENV === "development") {
             // 開発用トークンをプリセット（実際の値に置き換え）
             // swaggerUi.preauthorizeApiKey('BearerAuth', 'dev-token');
           }
@@ -78,8 +78,8 @@ export default function ApiDocsPage({}: ApiDocsPageProps) {
  * メタデータ設定（App Router用）
  */
 export const metadata = {
-  title: 'API Documentation',
-  description: 'Interactive API documentation powered by Swagger UI',
+  title: "API Documentation",
+  description: "Interactive API documentation powered by Swagger UI",
 };
 
 /**
@@ -87,16 +87,16 @@ export const metadata = {
  */
 export function AdvancedApiDocsPage() {
   const handleComplete = (swaggerUi: any) => {
-    console.log('Swagger UI loaded');
+    console.log("Swagger UI loaded");
 
     // カスタムインターセプター
     swaggerUi.getConfigs().requestInterceptor = (request: any) => {
       // リクエストIDを追加
-      request.headers['X-Request-ID'] = crypto.randomUUID();
+      request.headers["X-Request-ID"] = crypto.randomUUID();
 
       // ログ出力
-      if (process.env.NODE_ENV === 'development') {
-        console.log('API Request:', request);
+      if (process.env.NODE_ENV === "development") {
+        console.log("API Request:", request);
       }
 
       return request;
@@ -114,21 +114,22 @@ export function AdvancedApiDocsPage() {
       onComplete={handleComplete}
       requestInterceptor={(req) => {
         // グローバルヘッダー追加
-        const token = typeof window !== 'undefined'
-          ? localStorage.getItem('auth_token')
-          : null;
+        const token =
+          typeof window !== "undefined"
+            ? localStorage.getItem("auth_token")
+            : null;
 
         if (token) {
-          req.headers['Authorization'] = `Bearer ${token}`;
+          req.headers["Authorization"] = `Bearer ${token}`;
         }
 
         return req;
       }}
       responseInterceptor={(res) => {
         // レート制限警告
-        const remaining = res.headers?.['x-rate-limit-remaining'];
+        const remaining = res.headers?.["x-rate-limit-remaining"];
         if (remaining && parseInt(remaining) < 10) {
-          console.warn('Rate limit approaching:', remaining);
+          console.warn("Rate limit approaching:", remaining);
         }
         return res;
       }}

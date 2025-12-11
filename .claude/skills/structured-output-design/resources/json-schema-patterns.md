@@ -76,6 +76,7 @@
 ```
 
 **利用可能なformat**:
+
 - `date`: YYYY-MM-DD
 - `date-time`: ISO 8601
 - `email`: メールアドレス
@@ -120,7 +121,10 @@
       "items": {
         "type": "object",
         "properties": {
-          "category": { "type": "string", "enum": ["issue", "suggestion", "info"] },
+          "category": {
+            "type": "string",
+            "enum": ["issue", "suggestion", "info"]
+          },
           "description": { "type": "string" },
           "severity": { "type": "string", "enum": ["high", "medium", "low"] },
           "location": { "type": "string" }
@@ -225,9 +229,9 @@
 
 ```typescript
 interface ValidationError {
-  path: string;       // エラーが発生したフィールドのパス
-  code: string;       // エラーコード
-  message: string;    // 人間が読めるメッセージ
+  path: string; // エラーが発生したフィールドのパス
+  code: string; // エラーコード
+  message: string; // 人間が読めるメッセージ
   expected?: unknown; // 期待される値
   received?: unknown; // 実際の値
 }

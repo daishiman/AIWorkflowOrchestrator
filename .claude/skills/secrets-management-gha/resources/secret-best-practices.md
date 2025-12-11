@@ -5,6 +5,7 @@
 ### 1. 最小権限の原則 (Principle of Least Privilege)
 
 **ワークフローレベル**:
+
 ```yaml
 # ✅ 必要最小限のパーミッション
 permissions:
@@ -16,6 +17,7 @@ permissions: write-all
 ```
 
 **シークレットスコープ**:
+
 ```yaml
 # ✅ 環境ごとに分離
 jobs:
@@ -31,7 +33,7 @@ jobs:
 
 # ❌ 全環境で同じシークレット
 env:
-  API_KEY: ${{ secrets.API_KEY }}  # 本番と開発で共有
+  API_KEY: ${{ secrets.API_KEY }} # 本番と開発で共有
 ```
 
 ---
@@ -41,6 +43,7 @@ env:
 ### 1. ログ出力の注意
 
 **避けるべきパターン**:
+
 ```yaml
 # ❌ シークレットを直接echo
 - name: Debug
@@ -58,6 +61,7 @@ env:
 ```
 
 **安全なパターン**:
+
 ```yaml
 # ✅ シークレットは環境変数経由で使用のみ
 - name: Deploy
@@ -80,6 +84,7 @@ env:
 ### 2. GitHubの自動マスキング
 
 **マスキング動作**:
+
 ```yaml
 - name: Test masking
   run: |
@@ -89,6 +94,7 @@ env:
 ```
 
 **マスキングの制限**:
+
 ```yaml
 # ⚠️ Base64エンコードされたシークレットはマスキングされない可能性
 - name: Encode secret
@@ -110,6 +116,7 @@ env:
 ### 3. アーティファクトとキャッシュ
 
 **避けるべきパターン**:
+
 ```yaml
 # ❌ シークレットを含むファイルをアップロード
 - name: Upload config
@@ -126,6 +133,7 @@ env:
 ```
 
 **安全なパターン**:
+
 ```yaml
 # ✅ ビルド成果物のみアップロード
 - name: Build
@@ -137,7 +145,7 @@ env:
   uses: actions/upload-artifact@v3
   with:
     name: dist
-    path: dist/  # シークレット不含
+    path: dist/ # シークレット不含
 
 # ✅ .gitignoreパターン使用
 - uses: actions/upload-artifact@v3
@@ -156,10 +164,12 @@ env:
 ### 1. フォークからのPull Request
 
 **リスク**:
+
 - フォークリポジトリからのPRは、元のリポジトリのシークレットにアクセス可能
 - 悪意のあるコードによるシークレット窃取のリスク
 
 **安全なパターン**:
+
 ```yaml
 # ❌ pull_requestトリガーでシークレット使用
 name: CI
@@ -194,15 +204,16 @@ jobs:
 ### 2. ブランチ保護
 
 **GitHub設定**:
+
 ```yaml
 # .github/workflows/deploy.yml
 on:
   push:
-    branches: [main, 'release/*']  # 保護されたブランチのみ
+    branches: [main, "release/*"] # 保護されたブランチのみ
 
 jobs:
   deploy:
-    environment: production  # 環境保護も併用
+    environment: production # 環境保護も併用
     steps:
       - run: ./deploy.sh
         env:
@@ -210,6 +221,7 @@ jobs:
 ```
 
 **環境保護ルール**:
+
 1. Required reviewers: 承認者2名必須
 2. Wait timer: 5分待機
 3. Deployment branches: `main`と`release/*`のみ
@@ -221,11 +233,13 @@ jobs:
 ### 1. 定期ローテーション戦略
 
 **推奨サイクル**:
+
 - 本番環境: 90日
 - ステージング環境: 180日
 - 開発環境: 365日
 
 **ローテーション手順**:
+
 ```bash
 #!/bin/bash
 # secret-rotation.sh
@@ -250,16 +264,18 @@ gh workflow run deploy.yml
 ### 2. OIDC使用（推奨）
 
 **メリット**:
+
 - 自動ローテーション
 - 長期認証情報不要
 - 漏洩リスク最小化
 
 **実装例**:
+
 ```yaml
 jobs:
   deploy:
     permissions:
-      id-token: write  # 短期トークン自動生成
+      id-token: write # 短期トークン自動生成
       contents: read
     steps:
       - uses: aws-actions/configure-aws-credentials@v4
@@ -275,6 +291,7 @@ jobs:
 ### 1. シークレット使用の追跡
 
 **GitHub監査ログ**:
+
 ```bash
 # 組織レベルの監査ログ
 gh api /orgs/ORG-NAME/audit-log \
@@ -287,6 +304,7 @@ gh api /orgs/ORG-NAME/audit-log \
 ```
 
 **ワークフロー実行ログ**:
+
 ```yaml
 # ワークフロー内で使用記録
 - name: Log secret usage
@@ -299,6 +317,7 @@ gh api /orgs/ORG-NAME/audit-log \
 ### 2. アクセス制御レビュー
 
 **定期チェックリスト**:
+
 ```bash
 #!/bin/bash
 # audit-secrets.sh
@@ -317,6 +336,7 @@ gh api "orgs/ORG/actions/secrets" --jq '.secrets[] | {name, visibility, selected
 ```
 
 **レビュー項目**:
+
 - [ ] 未使用シークレットの削除
 - [ ] 過剰な権限スコープの確認
 - [ ] ローテーション履歴の確認
@@ -325,6 +345,7 @@ gh api "orgs/ORG/actions/secrets" --jq '.secrets[] | {name, visibility, selected
 ### 3. コンプライアンス要件
 
 **SOC 2 / ISO 27001対応**:
+
 ```yaml
 # コンプライアンス強化ワークフロー
 jobs:
@@ -367,6 +388,7 @@ jobs:
 ### 1. シークレットスキャン有効化
 
 **GitHub Secret Scanning**:
+
 ```yaml
 # リポジトリ設定で有効化
 # Settings → Security → Secret scanning
@@ -380,17 +402,19 @@ jobs:
 ```
 
 **カスタムパターン**:
+
 ```yaml
 # .github/secret_scanning.yml
 patterns:
   - name: Custom API Key
-    regex: 'myapp_[a-zA-Z0-9]{32}'
+    regex: "myapp_[a-zA-Z0-9]{32}"
     secret_type: custom_api_key
 ```
 
 ### 2. Pre-commit Hooks
 
 **git-secrets使用**:
+
 ```bash
 # インストール
 brew install git-secrets
@@ -407,6 +431,7 @@ git secrets --scan
 ```
 
 **pre-commit設定**:
+
 ```yaml
 # .pre-commit-config.yaml
 repos:
@@ -414,7 +439,7 @@ repos:
     rev: v1.4.0
     hooks:
       - id: detect-secrets
-        args: ['--baseline', '.secrets.baseline']
+        args: ["--baseline", ".secrets.baseline"]
 ```
 
 ### 3. ワークフロー内スキャン
@@ -451,6 +476,7 @@ jobs:
 ### 1. シークレット漏洩時の手順
 
 **即時対応**:
+
 ```bash
 # 1. シークレットを即座に無効化
 gh secret delete LEAKED_SECRET
@@ -468,6 +494,7 @@ gh api /repos/OWNER/REPO/actions/runs \
 ```
 
 **Gitヒストリークリーンアップ**:
+
 ```bash
 # BFG Repo-Cleaner使用
 git clone --mirror git@github.com:owner/repo.git
@@ -480,6 +507,7 @@ git push
 ### 2. インシデント報告
 
 **内部報告テンプレート**:
+
 ```markdown
 ## シークレット漏洩インシデント報告
 
@@ -489,15 +517,18 @@ git push
 **影響範囲**: Production環境
 
 ### 対応履歴
+
 1. [10:31] シークレット無効化
 2. [10:35] 新シークレット発行・登録
 3. [10:40] 影響調査開始
 4. [11:00] Gitヒストリークリーンアップ
 
 ### 根本原因
+
 開発者がテストコード内にハードコード
 
 ### 再発防止策
+
 - Pre-commit hookの強制
 - シークレットスキャン強化
 - 開発者向けトレーニング実施
@@ -510,6 +541,7 @@ git push
 ### 1. セキュアコーディングガイドライン
 
 **Do's**:
+
 ```yaml
 # ✅ 環境変数経由
 - run: ./script.sh
@@ -525,6 +557,7 @@ permissions:
 ```
 
 **Don'ts**:
+
 ```yaml
 # ❌ ハードコード
 - run: export API_KEY=secret123
@@ -540,6 +573,7 @@ permissions:
 ### 2. トレーニングチェックリスト
 
 開発者が理解すべき項目:
+
 - [ ] シークレットとは何か、なぜ保護が必要か
 - [ ] GitHub Secretsの設定方法
 - [ ] 環境変数での安全な使用方法
@@ -555,6 +589,7 @@ permissions:
 ### 1. シークレット管理サービス
 
 **HashiCorp Vault**:
+
 ```yaml
 - uses: hashicorp/vault-action@v3
   with:
@@ -565,6 +600,7 @@ permissions:
 ```
 
 **AWS Secrets Manager**:
+
 ```yaml
 - uses: aws-actions/aws-secretsmanager-get-secrets@v1
   with:
@@ -575,21 +611,24 @@ permissions:
 ```
 
 **Azure Key Vault**:
+
 ```yaml
 - uses: Azure/get-keyvault-secrets@v1
   with:
     keyvault: "my-vault"
-    secrets: 'db-password, api-key'
+    secrets: "db-password, api-key"
 ```
 
 ### 2. 監視・アラート
 
 **GitHub Advanced Security**:
+
 - Secret scanning alerts
 - Dependency vulnerability alerts
 - Code scanning (CodeQL)
 
 **サードパーティツール**:
+
 - GitGuardian
 - TruffleHog
 - Detect-secrets
@@ -601,21 +640,25 @@ permissions:
 ### セキュリティチェックリスト
 
 **設計時**:
+
 - [ ] 最小権限の原則を適用
 - [ ] 環境ごとにシークレット分離
 - [ ] OIDC認証を検討
 
 **実装時**:
+
 - [ ] シークレットをログ出力しない
 - [ ] 環境変数経由でのみ使用
 - [ ] pull_requestトリガーでシークレット使用しない
 
 **運用時**:
+
 - [ ] 定期的なローテーション（90日）
 - [ ] 監査ログレビュー
 - [ ] 未使用シークレット削除
 
 **インシデント対応**:
+
 - [ ] 即座に無効化
 - [ ] 影響範囲調査
 - [ ] Gitヒストリークリーンアップ

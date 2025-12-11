@@ -18,20 +18,20 @@ GitHub Actions ワークフローにおける最小権限の原則の実装とGI
 
 ### 権限スコープ一覧
 
-| スコープ | 読み取り | 書き込み | 用途 |
-|---------|---------|---------|------|
-| `actions` | ワークフロー実行確認 | ワークフローキャンセル | CI/CD管理 |
-| `checks` | チェック結果表示 | チェックステータス作成 | テスト結果報告 |
-| `contents` | ソースコード取得 | コミット、タグ作成 | リリース、変更管理 |
-| `deployments` | デプロイ状況確認 | デプロイステータス作成 | デプロイメント管理 |
-| `discussions` | ディスカッション読み取り | ディスカッション作成 | コミュニティ管理 |
-| `issues` | Issue読み取り | Issue作成、編集 | バグ報告自動化 |
-| `packages` | パッケージダウンロード | パッケージ公開 | パッケージレジストリ |
-| `pages` | Pages設定確認 | Pages デプロイ | 静的サイト公開 |
-| `pull-requests` | PR読み取り | PRコメント、ラベル | PR自動化 |
-| `repository-projects` | プロジェクト確認 | プロジェクト管理 | プロジェクト自動化 |
-| `security-events` | セキュリティアラート | アラート解決 | セキュリティ管理 |
-| `statuses` | ステータス確認 | コミットステータス作成 | CI/CD統合 |
+| スコープ              | 読み取り                 | 書き込み               | 用途                 |
+| --------------------- | ------------------------ | ---------------------- | -------------------- |
+| `actions`             | ワークフロー実行確認     | ワークフローキャンセル | CI/CD管理            |
+| `checks`              | チェック結果表示         | チェックステータス作成 | テスト結果報告       |
+| `contents`            | ソースコード取得         | コミット、タグ作成     | リリース、変更管理   |
+| `deployments`         | デプロイ状況確認         | デプロイステータス作成 | デプロイメント管理   |
+| `discussions`         | ディスカッション読み取り | ディスカッション作成   | コミュニティ管理     |
+| `issues`              | Issue読み取り            | Issue作成、編集        | バグ報告自動化       |
+| `packages`            | パッケージダウンロード   | パッケージ公開         | パッケージレジストリ |
+| `pages`               | Pages設定確認            | Pages デプロイ         | 静的サイト公開       |
+| `pull-requests`       | PR読み取り               | PRコメント、ラベル     | PR自動化             |
+| `repository-projects` | プロジェクト確認         | プロジェクト管理       | プロジェクト自動化   |
+| `security-events`     | セキュリティアラート     | アラート解決           | セキュリティ管理     |
+| `statuses`            | ステータス確認           | コミットステータス作成 | CI/CD統合            |
 
 ## 最小権限設定パターン
 
@@ -44,7 +44,7 @@ name: CI
 on: [push, pull_request]
 
 permissions:
-  contents: read  # ソースコード取得のみ
+  contents: read # ソースコード取得のみ
 
 jobs:
   test:
@@ -66,8 +66,8 @@ name: PR Automation
 on: pull_request
 
 permissions:
-  contents: read         # ソースコード取得
-  pull-requests: write   # PRコメント投稿
+  contents: read # ソースコード取得
+  pull-requests: write # PRコメント投稿
 
 jobs:
   comment:
@@ -97,10 +97,10 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 permissions:
-  contents: write  # タグ、リリース作成
+  contents: write # タグ、リリース作成
 
 jobs:
   release:
@@ -127,7 +127,7 @@ on:
 
 permissions:
   contents: read
-  packages: write  # GitHub Packagesへの公開
+  packages: write # GitHub Packagesへの公開
 
 jobs:
   publish:
@@ -154,8 +154,8 @@ on:
 
 permissions:
   contents: read
-  pages: write       # Pages デプロイ
-  id-token: write    # OIDC認証
+  pages: write # Pages デプロイ
+  id-token: write # OIDC認証
 
 jobs:
   deploy:
@@ -201,6 +201,7 @@ jobs:
 ```
 
 **ベストプラクティス**:
+
 - ワークフローレベル: 最も制限的（`contents: read`）
 - ジョブレベル: 必要なジョブのみ昇格
 
@@ -209,7 +210,7 @@ jobs:
 **ユースケース**: 外部サービスのみ使用（AWS、GCP、サードパーティAPI）
 
 ```yaml
-permissions: {}  # すべての権限拒否
+permissions: {} # すべての権限拒否
 
 jobs:
   deploy:
@@ -262,7 +263,7 @@ permissions:
 jobs:
   test:
     steps:
-      - run: pnpm test  # 読み取りのみで十分
+      - run: pnpm test # 読み取りのみで十分
 ```
 
 **攻撃**: 依存関係の脆弱性を悪用してコミット、Issue作成。
@@ -279,24 +280,25 @@ jobs:
   build:
     steps:
       - uses: actions/checkout@v4
-      - run: pnpm install  # 攻撃者のpackage.jsonが実行される
+      - run: pnpm install # 攻撃者のpackage.jsonが実行される
 ```
 
 **攻撃**: `package.json`の`postinstall`スクリプトでリポジトリ改ざん。
 
 **対策**:
+
 ```yaml
 on: pull_request_target
 permissions:
-  pull-requests: write  # 必要最小限
+  pull-requests: write # 必要最小限
 
 jobs:
   comment:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.base_ref }}  # ベースブランチのコード
-      - run: pnpm install  # 信頼できるコード
+          ref: ${{ github.base_ref }} # ベースブランチのコード
+      - run: pnpm install # 信頼できるコード
 ```
 
 ## リポジトリ設定の推奨事項
@@ -304,18 +306,21 @@ jobs:
 ### 1. デフォルト権限を制限
 
 Settings → Actions → General → Workflow permissions:
+
 - ✅ **Read repository contents and packages permissions**
 - ❌ Read and write permissions
 
 ### 2. フォーク PR の制限
 
 Settings → Actions → General → Fork pull request workflows:
+
 - ✅ **Require approval for first-time contributors**
 - ✅ **Require approval for all outside collaborators**
 
 ### 3. ワークフロー実行の制限
 
 Settings → Actions → General → Actions permissions:
+
 - ✅ **Allow select actions and reusable workflows**
 - 信頼できるアクションのみ許可
 
@@ -331,5 +336,6 @@ Settings → Actions → General → Actions permissions:
 ---
 
 **参考リンク**:
+
 - [Permissions for the GITHUB_TOKEN](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token)
 - [Security hardening for GitHub Actions](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions)

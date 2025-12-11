@@ -76,18 +76,21 @@
 
 // 同値クラス
 const equivalenceClasses = [
-  { score: -1, grade: 'Invalid', desc: '範囲外（負）' },
-  { score: 30, grade: 'F', desc: 'F評価' },
-  { score: 65, grade: 'D', desc: 'D評価' },
-  { score: 75, grade: 'C', desc: 'C評価' },
-  { score: 85, grade: 'B', desc: 'B評価' },
-  { score: 95, grade: 'A', desc: 'A評価' },
-  { score: 101, grade: 'Invalid', desc: '範囲外（超過）' },
+  { score: -1, grade: "Invalid", desc: "範囲外（負）" },
+  { score: 30, grade: "F", desc: "F評価" },
+  { score: 65, grade: "D", desc: "D評価" },
+  { score: 75, grade: "C", desc: "C評価" },
+  { score: 85, grade: "B", desc: "B評価" },
+  { score: 95, grade: "A", desc: "A評価" },
+  { score: 101, grade: "Invalid", desc: "範囲外（超過）" },
 ];
 
-it.each(equivalenceClasses)('score $score → $grade ($desc)', ({ score, grade }) => {
-  expect(calculateGrade(score)).toBe(grade);
-});
+it.each(equivalenceClasses)(
+  "score $score → $grade ($desc)",
+  ({ score, grade }) => {
+    expect(calculateGrade(score)).toBe(grade);
+  },
+);
 ```
 
 ### タイプによる分割
@@ -99,15 +102,15 @@ it.each(equivalenceClasses)('score $score → $grade ($desc)', ({ score, grade }
 
 // 同値クラス
 const equivalenceClasses = [
-  { ext: 'jpg', valid: true, desc: 'JPEG画像' },
-  { ext: 'png', valid: true, desc: 'PNG画像' },
-  { ext: 'gif', valid: true, desc: 'GIF画像' },
-  { ext: 'pdf', valid: false, desc: 'PDF（禁止）' },
-  { ext: 'exe', valid: false, desc: '実行ファイル（禁止）' },
-  { ext: '', valid: false, desc: '拡張子なし' },
+  { ext: "jpg", valid: true, desc: "JPEG画像" },
+  { ext: "png", valid: true, desc: "PNG画像" },
+  { ext: "gif", valid: true, desc: "GIF画像" },
+  { ext: "pdf", valid: false, desc: "PDF（禁止）" },
+  { ext: "exe", valid: false, desc: "実行ファイル（禁止）" },
+  { ext: "", valid: false, desc: "拡張子なし" },
 ];
 
-it.each(equivalenceClasses)('$ext → $valid ($desc)', ({ ext, valid }) => {
+it.each(equivalenceClasses)("$ext → $valid ($desc)", ({ ext, valid }) => {
   expect(isAllowedExtension(ext)).toBe(valid);
 });
 ```
@@ -123,16 +126,19 @@ it.each(equivalenceClasses)('$ext → $valid ($desc)', ({ ext, valid }) => {
 
 // 同値クラス
 const equivalenceClasses = [
-  { status: 'pending', canCancel: true, desc: '保留中' },
-  { status: 'processing', canCancel: false, desc: '処理中' },
-  { status: 'shipped', canCancel: false, desc: '発送済み' },
-  { status: 'delivered', canCancel: false, desc: '配達完了' },
+  { status: "pending", canCancel: true, desc: "保留中" },
+  { status: "processing", canCancel: false, desc: "処理中" },
+  { status: "shipped", canCancel: false, desc: "発送済み" },
+  { status: "delivered", canCancel: false, desc: "配達完了" },
 ];
 
-it.each(equivalenceClasses)('$status → canCancel=$canCancel', ({ status, canCancel }) => {
-  const order = createOrder({ status });
-  expect(order.canCancel()).toBe(canCancel);
-});
+it.each(equivalenceClasses)(
+  "$status → canCancel=$canCancel",
+  ({ status, canCancel }) => {
+    const order = createOrder({ status });
+    expect(order.canCancel()).toBe(canCancel);
+  },
+);
 ```
 
 ---
@@ -178,20 +184,20 @@ age:
 // 各クラスから1つずつ代表値を選択
 const testCases = [
   // 全て有効
-  { name: 'John', email: 'john@example.com', age: 30, valid: true },
+  { name: "John", email: "john@example.com", age: 30, valid: true },
 
   // name無効
-  { name: '', email: 'john@example.com', age: 30, valid: false },
-  { name: 'a'.repeat(51), email: 'john@example.com', age: 30, valid: false },
-  { name: null, email: 'john@example.com', age: 30, valid: false },
+  { name: "", email: "john@example.com", age: 30, valid: false },
+  { name: "a".repeat(51), email: "john@example.com", age: 30, valid: false },
+  { name: null, email: "john@example.com", age: 30, valid: false },
 
   // email無効
-  { name: 'John', email: 'invalid', age: 30, valid: false },
-  { name: 'John', email: '', age: 30, valid: false },
+  { name: "John", email: "invalid", age: 30, valid: false },
+  { name: "John", email: "", age: 30, valid: false },
 
   // age無効
-  { name: 'John', email: 'john@example.com', age: -1, valid: false },
-  { name: 'John', email: 'john@example.com', age: 151, valid: false },
+  { name: "John", email: "john@example.com", age: -1, valid: false },
+  { name: "John", email: "john@example.com", age: 151, valid: false },
 ];
 ```
 
@@ -210,27 +216,27 @@ const testCases = [
 // 境界値を含むテストケース
 const testCases = [
   // 無効クラスの境界
-  { age: -1, category: 'invalid' },
+  { age: -1, category: "invalid" },
 
   // VE1の境界
-  { age: 0, category: 'minor' },
-  { age: 17, category: 'minor' },
+  { age: 0, category: "minor" },
+  { age: 17, category: "minor" },
 
   // VE1/VE2の境界
-  { age: 18, category: 'adult' },
+  { age: 18, category: "adult" },
 
   // VE2の代表値
-  { age: 40, category: 'adult' },
+  { age: 40, category: "adult" },
 
   // VE2/VE3の境界
-  { age: 64, category: 'adult' },
-  { age: 65, category: 'senior' },
+  { age: 64, category: "adult" },
+  { age: 65, category: "senior" },
 
   // VE3の境界
-  { age: 150, category: 'senior' },
+  { age: 150, category: "senior" },
 
   // 無効クラスの境界
-  { age: 151, category: 'invalid' },
+  { age: 151, category: "invalid" },
 ];
 ```
 
@@ -262,15 +268,15 @@ it.each([
 ```typescript
 // 悪い例：nullを忘れている
 const testCases = [
-  { input: 'valid', expected: true },
-  { input: '', expected: false },
+  { input: "valid", expected: true },
+  { input: "", expected: false },
   // null/undefinedが抜けている
 ];
 
 // 良い例：全クラスを網羅
 const testCases = [
-  { input: 'valid', expected: true },
-  { input: '', expected: false },
+  { input: "valid", expected: true },
+  { input: "", expected: false },
   { input: null, expected: false },
   { input: undefined, expected: false },
 ];

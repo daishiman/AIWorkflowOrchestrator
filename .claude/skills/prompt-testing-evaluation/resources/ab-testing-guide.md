@@ -10,12 +10,14 @@ A/Bテストは、2つ以上のプロンプトバリアントを
 ### いつA/Bテストを行うか
 
 **適切な場面**:
+
 - プロンプトの改善候補がある
 - 変更の影響を定量化したい
 - リスクを最小化してデプロイしたい
 - データに基づく意思決定をしたい
 
 **不適切な場面**:
+
 - 明らかに一方が優れている
 - サンプルサイズが確保できない
 - 緊急の修正が必要
@@ -23,13 +25,13 @@ A/Bテストは、2つ以上のプロンプトバリアントを
 
 ### 基本用語
 
-| 用語 | 説明 |
-|------|------|
-| コントロール | 現行のプロンプト（A） |
-| トリートメント | 新しいプロンプト（B） |
+| 用語           | 説明                     |
+| -------------- | ------------------------ |
+| コントロール   | 現行のプロンプト（A）    |
+| トリートメント | 新しいプロンプト（B）    |
 | サンプルサイズ | テストに使用するデータ量 |
-| 統計的有意性 | 差が偶然でない確率 |
-| 効果量 | 改善の大きさ |
+| 統計的有意性   | 差が偶然でない確率       |
+| 効果量         | 改善の大きさ             |
 
 ## テスト設計
 
@@ -51,6 +53,7 @@ hypothesis:
 ### Step 2: サンプルサイズの決定
 
 **計算式（比率の差の検定）**:
+
 ```
 n = 2 × ((z_α + z_β)² × p × (1-p)) / d²
 
@@ -89,7 +92,7 @@ experiment_design:
       allocation: 50%
 
   segmentation:
-    - random  # ランダム割り当て
+    - random # ランダム割り当て
     # - user_based  # ユーザー単位
     # - request_based  # リクエスト単位
 
@@ -103,15 +106,9 @@ experiment_design:
 ### ランダム化
 
 ```typescript
-function assignVariant(
-  requestId: string,
-  variants: Variant[]
-): Variant {
+function assignVariant(requestId: string, variants: Variant[]): Variant {
   // 一貫したハッシュベースの割り当て
-  const hash = crypto
-    .createHash('md5')
-    .update(requestId)
-    .digest('hex');
+  const hash = crypto.createHash("md5").update(requestId).digest("hex");
 
   const value = parseInt(hash.substring(0, 8), 16) / 0xffffffff;
 
@@ -178,18 +175,19 @@ monitoring:
 ### 統計的検定
 
 **比率の差（精度など）**:
+
 ```typescript
 function chiSquareTest(
   controlSuccess: number,
   controlTotal: number,
   treatmentSuccess: number,
-  treatmentTotal: number
+  treatmentTotal: number,
 ): { pValue: number; significant: boolean } {
   // カイ二乗検定の実装
   const controlRate = controlSuccess / controlTotal;
   const treatmentRate = treatmentSuccess / treatmentTotal;
-  const pooledRate = (controlSuccess + treatmentSuccess) /
-                     (controlTotal + treatmentTotal);
+  const pooledRate =
+    (controlSuccess + treatmentSuccess) / (controlTotal + treatmentTotal);
 
   const expectedControl = controlTotal * pooledRate;
   const expectedTreatment = treatmentTotal * pooledRate;
@@ -203,16 +201,17 @@ function chiSquareTest(
 
   return {
     pValue,
-    significant: pValue < 0.05
+    significant: pValue < 0.05,
   };
 }
 ```
 
 **連続値（レイテンシなど）**:
+
 ```typescript
 function tTest(
   controlValues: number[],
-  treatmentValues: number[]
+  treatmentValues: number[],
 ): { pValue: number; significant: boolean } {
   const controlMean = mean(controlValues);
   const treatmentMean = mean(treatmentValues);
@@ -220,8 +219,8 @@ function tTest(
   const treatmentStd = standardDeviation(treatmentValues);
 
   const pooledStdError = Math.sqrt(
-    (controlStd ** 2 / controlValues.length) +
-    (treatmentStd ** 2 / treatmentValues.length)
+    controlStd ** 2 / controlValues.length +
+      treatmentStd ** 2 / treatmentValues.length,
   );
 
   const tStatistic = (treatmentMean - controlMean) / pooledStdError;
@@ -232,7 +231,7 @@ function tTest(
 
   return {
     pValue,
-    significant: pValue < 0.05
+    significant: pValue < 0.05,
   };
 }
 ```
@@ -243,24 +242,27 @@ function tTest(
 # A/Bテスト結果レポート
 
 ## 実験概要
+
 - 実験名: Prompt Clarity Improvement
 - 期間: 2024-01-15 〜 2024-01-22
 - サンプルサイズ: Control 1,000 / Treatment 1,000
 
 ## 結果サマリー
 
-| メトリクス | Control | Treatment | 差分 | p値 | 有意 |
-|-----------|---------|-----------|------|-----|------|
-| 精度 | 87.2% | 91.5% | +4.3% | 0.003 | ✓ |
-| レイテンシ | 1.2s | 1.3s | +8.3% | 0.12 | - |
-| トークン | 450 | 520 | +15.6% | 0.001 | ✓ |
+| メトリクス | Control | Treatment | 差分   | p値   | 有意 |
+| ---------- | ------- | --------- | ------ | ----- | ---- |
+| 精度       | 87.2%   | 91.5%     | +4.3%  | 0.003 | ✓    |
+| レイテンシ | 1.2s    | 1.3s      | +8.3%  | 0.12  | -    |
+| トークン   | 450     | 520       | +15.6% | 0.001 | ✓    |
 
 ## 結論
+
 - 精度は統計的に有意に改善（+4.3%）
 - レイテンシの増加は有意でない
 - トークン使用量が増加（+15.6%）
 
 ## 推奨
+
 Treatment（改善版）の採用を推奨。
 ただし、トークンコスト増加（約16%）を考慮し、
 コスト対効果を確認すること。
@@ -294,20 +296,21 @@ multivariate_test:
 ### バンディットテスト
 
 **Multi-Armed Bandit（MAB）**:
+
 ```typescript
 class ThompsonSampling {
   private alphas: Map<string, number> = new Map();
   private betas: Map<string, number> = new Map();
 
   constructor(variants: string[]) {
-    variants.forEach(v => {
+    variants.forEach((v) => {
       this.alphas.set(v, 1);
       this.betas.set(v, 1);
     });
   }
 
   selectVariant(): string {
-    let bestVariant = '';
+    let bestVariant = "";
     let bestSample = -1;
 
     for (const [variant, alpha] of this.alphas) {
@@ -334,6 +337,7 @@ class ThompsonSampling {
 ```
 
 **利点**:
+
 - 探索と活用のバランス
 - 劣勢バリアントへの露出を自動的に減少
 - より早い収束

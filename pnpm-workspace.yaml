@@ -1,8 +1,8 @@
 # モノレポ設定（Web/Desktop統合）
 packages:
-  - 'packages/*'
-  - 'apps/*'
-  - 'local-agent'
+  - "packages/*"
+  - "apps/*"
+  - "local-agent"
 
 # ネイティブモジュールのビルド設定
 onlyBuiltDependencies:

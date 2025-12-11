@@ -292,6 +292,27 @@
 | `theme:get-system`     | Renderer → Main | OSテーマ取得     |
 | `theme:system-changed` | Main → Renderer | OSテーマ変更通知 |
 
+### 5.7.3 ワークスペース状態管理
+
+| レイヤー         | 責務                                       | ファイル             |
+| ---------------- | ------------------------------------------ | -------------------- |
+| Main Process     | ファイルシステム操作、永続化（IPC経由）    | workspaceHandlers.ts |
+| Preload          | contextBridgeによるAPI公開                 | preload/index.ts     |
+| Renderer (Store) | Workspace状態保持（folders, selectedFile） | workspaceSlice.ts    |
+| Renderer (UI)    | WorkspaceSidebar, FolderEntryItem          | components/          |
+
+### 5.7.4 IPCチャネル設計（ワークスペース）
+
+| チャネル                   | 方向            | 用途               |
+| -------------------------- | --------------- | ------------------ |
+| `workspace:load`           | Renderer → Main | ワークスペース読込 |
+| `workspace:save`           | Renderer → Main | ワークスペース保存 |
+| `workspace:add-folder`     | Renderer → Main | フォルダ追加       |
+| `workspace:validate-paths` | Renderer → Main | パス有効性検証     |
+| `file:read`                | Renderer → Main | ファイル読込       |
+| `file:write`               | Renderer → Main | ファイル書込       |
+| `file:get-tree`            | Renderer → Main | ファイルツリー取得 |
+
 ---
 
 ## 5.8 認証アーキテクチャ（Supabase + Electron）

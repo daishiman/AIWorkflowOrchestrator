@@ -348,18 +348,18 @@
 
 ```typescript
 const frontendPatterns = [
-  '**/node_modules/**',
-  '**/dist/**',
-  '**/build/**',
-  '**/.next/**',
-  '**/.nuxt/**',
-  '**/coverage/**',
-  '**/.git/**',
-  '**/*.log',
-  '**/.DS_Store',
-  '**/Thumbs.db',
-  '**/*.swp',
-  '**/*~',
+  "**/node_modules/**",
+  "**/dist/**",
+  "**/build/**",
+  "**/.next/**",
+  "**/.nuxt/**",
+  "**/coverage/**",
+  "**/.git/**",
+  "**/*.log",
+  "**/.DS_Store",
+  "**/Thumbs.db",
+  "**/*.swp",
+  "**/*~",
 ];
 ```
 
@@ -367,17 +367,17 @@ const frontendPatterns = [
 
 ```typescript
 const backendPatterns = [
-  '**/node_modules/**',
-  '**/dist/**',
-  '**/build/**',
-  '**/coverage/**',
-  '**/.git/**',
-  '**/logs/**',
-  '**/*.log',
-  '**/.env',
-  '**/.env.local',
-  '**/.DS_Store',
-  '**/Thumbs.db',
+  "**/node_modules/**",
+  "**/dist/**",
+  "**/build/**",
+  "**/coverage/**",
+  "**/.git/**",
+  "**/logs/**",
+  "**/*.log",
+  "**/.env",
+  "**/.env.local",
+  "**/.DS_Store",
+  "**/Thumbs.db",
 ];
 ```
 
@@ -385,17 +385,17 @@ const backendPatterns = [
 
 ```typescript
 const pythonPatterns = [
-  '**/__pycache__/**',
-  '**/*.pyc',
-  '**/venv/**',
-  '**/.venv/**',
-  '**/dist/**',
-  '**/build/**',
-  '**/*.egg-info/**',
-  '**/.git/**',
-  '**/.pytest_cache/**',
-  '**/*.log',
-  '**/.DS_Store',
+  "**/__pycache__/**",
+  "**/*.pyc",
+  "**/venv/**",
+  "**/.venv/**",
+  "**/dist/**",
+  "**/build/**",
+  "**/*.egg-info/**",
+  "**/.git/**",
+  "**/.pytest_cache/**",
+  "**/*.log",
+  "**/.DS_Store",
 ];
 ```
 
@@ -403,20 +403,20 @@ const pythonPatterns = [
 
 ```typescript
 const monorepoPatterns = [
-  '**/node_modules/**',
-  '**/dist/**',
-  '**/build/**',
-  '**/.turbo/**',
-  '**/.next/**',
-  '**/coverage/**',
-  '**/.git/**',
-  '**/logs/**',
-  '**/*.log',
-  '**/.DS_Store',
-  '**/Thumbs.db',
+  "**/node_modules/**",
+  "**/dist/**",
+  "**/build/**",
+  "**/.turbo/**",
+  "**/.next/**",
+  "**/coverage/**",
+  "**/.git/**",
+  "**/logs/**",
+  "**/*.log",
+  "**/.DS_Store",
+  "**/Thumbs.db",
   // 各パッケージのビルド成果物
-  '**/packages/*/dist/**',
-  '**/apps/*/dist/**',
+  "**/packages/*/dist/**",
+  "**/apps/*/dist/**",
 ];
 ```
 

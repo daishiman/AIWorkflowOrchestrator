@@ -27,12 +27,12 @@ Retry-After: 60                 # リトライまでの秒数
 
 ### 主要APIのヘッダー形式
 
-| API | Limit | Remaining | Reset | Retry-After |
-|-----|-------|-----------|-------|-------------|
-| GitHub | X-RateLimit-Limit | X-RateLimit-Remaining | X-RateLimit-Reset | ✓ |
-| Twitter | x-rate-limit-limit | x-rate-limit-remaining | x-rate-limit-reset | ✓ |
-| Stripe | - | - | - | Retry-After |
-| OpenAI | x-ratelimit-limit-* | x-ratelimit-remaining-* | x-ratelimit-reset-* | ✓ |
+| API     | Limit                | Remaining                | Reset                | Retry-After |
+| ------- | -------------------- | ------------------------ | -------------------- | ----------- |
+| GitHub  | X-RateLimit-Limit    | X-RateLimit-Remaining    | X-RateLimit-Reset    | ✓           |
+| Twitter | x-rate-limit-limit   | x-rate-limit-remaining   | x-rate-limit-reset   | ✓           |
+| Stripe  | -                    | -                        | -                    | Retry-After |
+| OpenAI  | x-ratelimit-limit-\* | x-ratelimit-remaining-\* | x-ratelimit-reset-\* | ✓           |
 
 ## 基本的な429処理
 
@@ -41,7 +41,7 @@ Retry-After: 60                 # リトライまでの秒数
 ```typescript
 async function fetchWithRateLimitHandling(
   url: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<Response> {
   const response = await fetch(url, options);
 
@@ -57,7 +57,7 @@ async function fetchWithRateLimitHandling(
 
 function parseRetryAfter(response: Response): number {
   // Retry-After ヘッダーを確認
-  const retryAfter = response.headers.get('Retry-After');
+  const retryAfter = response.headers.get("Retry-After");
 
   if (retryAfter) {
     // 秒数の場合
@@ -74,7 +74,7 @@ function parseRetryAfter(response: Response): number {
   }
 
   // X-RateLimit-Reset を確認
-  const reset = response.headers.get('X-RateLimit-Reset');
+  const reset = response.headers.get("X-RateLimit-Reset");
   if (reset) {
     const resetTime = parseInt(reset, 10) * 1000;
     return Math.max(0, resetTime - Date.now());
@@ -85,7 +85,7 @@ function parseRetryAfter(response: Response): number {
 }
 
 function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 ```
 
@@ -106,20 +106,17 @@ class RateLimitedClient {
 
   constructor(
     private readonly baseUrl: string,
-    private readonly defaultWaitMs: number = 60000
+    private readonly defaultWaitMs: number = 60000,
   ) {}
 
-  async request(
-    path: string,
-    options: RequestInit = {}
-  ): Promise<Response> {
+  async request(path: string, options: RequestInit = {}): Promise<Response> {
     const endpoint = this.getEndpointKey(path);
 
     // 事前チェック: レート制限に近い場合は待機
     await this.waitIfNeeded(endpoint);
 
     // 重複リクエストの抑制
-    const pendingKey = `${options.method || 'GET'}:${path}`;
+    const pendingKey = `${options.method || "GET"}:${path}`;
     const pending = this.pendingRequests.get(pendingKey);
     if (pending) {
       return pending;
@@ -138,7 +135,7 @@ class RateLimitedClient {
   private async executeRequest(
     path: string,
     options: RequestInit,
-    endpoint: string
+    endpoint: string,
   ): Promise<Response> {
     const url = `${this.baseUrl}${path}`;
     const response = await fetch(url, options);
@@ -171,9 +168,9 @@ class RateLimitedClient {
   }
 
   private updateRateLimitInfo(endpoint: string, response: Response): void {
-    const limit = response.headers.get('X-RateLimit-Limit');
-    const remaining = response.headers.get('X-RateLimit-Remaining');
-    const reset = response.headers.get('X-RateLimit-Reset');
+    const limit = response.headers.get("X-RateLimit-Limit");
+    const remaining = response.headers.get("X-RateLimit-Remaining");
+    const reset = response.headers.get("X-RateLimit-Reset");
 
     if (limit && remaining && reset) {
       this.rateLimits.set(endpoint, {
@@ -191,7 +188,7 @@ class RateLimitedClient {
   private getEndpointKey(path: string): string {
     // パスからエンドポイントキーを生成
     // 例: /users/123 → /users/:id
-    return path.replace(/\/\d+/g, '/:id');
+    return path.replace(/\/\d+/g, "/:id");
   }
 
   getRateLimitInfo(path: string): RateLimitInfo | undefined {
@@ -216,7 +213,7 @@ class RequestQueue {
 
   constructor(
     private readonly requestsPerSecond: number = 10,
-    private readonly burstSize: number = 20
+    private readonly burstSize: number = 20,
   ) {}
 
   async enqueue(execute: () => Promise<Response>): Promise<Response> {
@@ -267,9 +264,9 @@ class RequestQueue {
 const queue = new RequestQueue(10, 20);
 
 const responses = await Promise.all([
-  queue.enqueue(() => fetch('/api/users/1')),
-  queue.enqueue(() => fetch('/api/users/2')),
-  queue.enqueue(() => fetch('/api/users/3')),
+  queue.enqueue(() => fetch("/api/users/1")),
+  queue.enqueue(() => fetch("/api/users/2")),
+  queue.enqueue(() => fetch("/api/users/3")),
 ]);
 ```
 
@@ -286,7 +283,7 @@ async function fetchWithExponentialBackoff(
     baseDelay?: number;
     maxDelay?: number;
     jitter?: number;
-  } = {}
+  } = {},
 ): Promise<Response> {
   const {
     maxRetries = 5,
@@ -327,14 +324,14 @@ async function fetchWithExponentialBackoff(
     }
   }
 
-  throw lastError || new Error('Max retries exceeded');
+  throw lastError || new Error("Max retries exceeded");
 }
 
 function calculateBackoff(
   attempt: number,
   baseDelay: number,
   maxDelay: number,
-  jitter: number
+  jitter: number,
 ): number {
   const exponential = baseDelay * Math.pow(2, attempt);
   const capped = Math.min(exponential, maxDelay);
@@ -351,14 +348,11 @@ function calculateBackoff(
 class ClientRateLimiter {
   private readonly bucket: TokenBucket;
 
-  constructor(
-    requestsPerMinute: number,
-    burstSize?: number
-  ) {
+  constructor(requestsPerMinute: number, burstSize?: number) {
     const ratePerSecond = requestsPerMinute / 60;
     this.bucket = new TokenBucket(
       burstSize || requestsPerMinute,
-      ratePerSecond
+      ratePerSecond,
     );
   }
 
@@ -390,26 +384,29 @@ class RateLimitError extends Error {
     public readonly retryAfter: number,
     public readonly limit?: number,
     public readonly remaining?: number,
-    public readonly resetAt?: number
+    public readonly resetAt?: number,
   ) {
     super(message);
-    this.name = 'RateLimitError';
+    this.name = "RateLimitError";
   }
 
   static fromResponse(response: Response): RateLimitError {
     return new RateLimitError(
-      'Rate limit exceeded',
+      "Rate limit exceeded",
       parseRetryAfter(response),
-      parseInt(response.headers.get('X-RateLimit-Limit') || '0', 10) || undefined,
-      parseInt(response.headers.get('X-RateLimit-Remaining') || '0', 10) || undefined,
-      parseInt(response.headers.get('X-RateLimit-Reset') || '0', 10) * 1000 || undefined
+      parseInt(response.headers.get("X-RateLimit-Limit") || "0", 10) ||
+        undefined,
+      parseInt(response.headers.get("X-RateLimit-Remaining") || "0", 10) ||
+        undefined,
+      parseInt(response.headers.get("X-RateLimit-Reset") || "0", 10) * 1000 ||
+        undefined,
     );
   }
 }
 
 // 使用例
 try {
-  const response = await rateLimitedClient.request('/api/data');
+  const response = await rateLimitedClient.request("/api/data");
 } catch (error) {
   if (error instanceof RateLimitError) {
     console.log(`Rate limited. Retry after ${error.retryAfter}ms`);
@@ -421,11 +418,13 @@ try {
 ## チェックリスト
 
 ### 実装時
+
 - [ ] Retry-Afterヘッダーを正しく解析しているか？
 - [ ] バックオフにジッターを追加しているか？
 - [ ] 最大リトライ回数を設定しているか？
 
 ### 運用時
+
 - [ ] レート制限エラーをモニタリングしているか？
 - [ ] APIのクォータ使用量を追跡しているか？
 - [ ] 予防的スロットリングを検討したか？

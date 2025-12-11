@@ -500,6 +500,97 @@ export interface AvatarRemoveResponse {
   };
 }
 
+// ===== Workspace operations =====
+
+export interface PersistedFolderEntry {
+  id: string;
+  path: string;
+  displayName: string;
+  isExpanded: boolean;
+  expandedPaths: string[];
+  addedAt: string;
+}
+
+export interface PersistedWorkspaceState {
+  version: 1;
+  folders: PersistedFolderEntry[];
+  lastSelectedFilePath: string | null;
+  updatedAt: string;
+}
+
+export interface WorkspaceLoadResponse {
+  success: boolean;
+  data?: PersistedWorkspaceState;
+  error?: {
+    code: "STORAGE_ERROR" | "PARSE_ERROR" | "UNKNOWN_ERROR";
+    message: string;
+  };
+}
+
+export interface WorkspaceSaveRequest {
+  state: PersistedWorkspaceState;
+}
+
+export interface WorkspaceSaveResponse {
+  success: boolean;
+  error?: {
+    code: "VALIDATION_ERROR" | "STORAGE_ERROR" | "UNKNOWN_ERROR";
+    message: string;
+  };
+}
+
+export interface WorkspaceAddFolderResponse {
+  success: boolean;
+  data?: {
+    path: string;
+    displayName: string;
+    exists: boolean;
+    isDirectory: boolean;
+  };
+  error?: {
+    code: "CANCELED" | "ACCESS_DENIED" | "NOT_DIRECTORY" | "UNKNOWN_ERROR";
+    message: string;
+  };
+}
+
+export interface WorkspaceRemoveFolderRequest {
+  folderId: string;
+}
+
+export interface WorkspaceRemoveFolderResponse {
+  success: boolean;
+  error?: {
+    code: "NOT_FOUND" | "VALIDATION_ERROR" | "UNKNOWN_ERROR";
+    message: string;
+  };
+}
+
+export interface WorkspaceValidatePathsRequest {
+  paths: string[];
+}
+
+export interface WorkspaceValidatePathsResponse {
+  success: boolean;
+  data?: {
+    validPaths: string[];
+    invalidPaths: Array<{
+      path: string;
+      reason: "NOT_FOUND" | "NOT_DIRECTORY" | "ACCESS_DENIED";
+    }>;
+  };
+  error?: {
+    code: "UNKNOWN_ERROR";
+    message: string;
+  };
+}
+
+export interface WorkspaceFolderChangedEvent {
+  folderId: string;
+  eventType: "add" | "change" | "unlink" | "addDir" | "unlinkDir";
+  filePath: string;
+  timestamp: Date;
+}
+
 // API Key operations
 export type AIProvider = "openai" | "anthropic" | "google" | "xai";
 
@@ -709,6 +800,21 @@ export interface ElectronAPI {
       request: ApiKeyValidateRequest,
     ) => Promise<ApiKeyValidateResponse>;
     list: () => Promise<ApiKeyListResponse>;
+  };
+
+  workspace: {
+    load: () => Promise<WorkspaceLoadResponse>;
+    save: (request: WorkspaceSaveRequest) => Promise<WorkspaceSaveResponse>;
+    addFolder: () => Promise<WorkspaceAddFolderResponse>;
+    removeFolder: (
+      request: WorkspaceRemoveFolderRequest,
+    ) => Promise<WorkspaceRemoveFolderResponse>;
+    validatePaths: (
+      request: WorkspaceValidatePathsRequest,
+    ) => Promise<WorkspaceValidatePathsResponse>;
+    onFolderChanged: (
+      callback: (event: WorkspaceFolderChangedEvent) => void,
+    ) => () => void;
   };
 
   // Generic invoke for IPC calls

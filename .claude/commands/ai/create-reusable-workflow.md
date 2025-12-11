@@ -38,6 +38,7 @@ model: sonnet
 **起動タイミング**: コマンド開始直後
 
 **引数引き渡し**:
+
 - `$ARGUMENTS`: ワークフロー名（例: setup-node, run-tests, deploy-app）
   - 未指定時: インタラクティブに用途を確認
 
@@ -63,6 +64,7 @@ model: sonnet
    - パラメータ指定例
 
 **期待成果物**:
+
 - `.github/workflows/reusable-{name}.yml`
 - 呼び出し例のドキュメント（コメント形式）
 
@@ -71,16 +73,19 @@ model: sonnet
 エージェントが以下のスキルを必要に応じて参照:
 
 **必須スキル**:
+
 - `.claude/skills/github-actions-syntax/SKILL.md`: ワークフロー構文・トリガー設定
 - `.claude/skills/reusable-workflows/SKILL.md`: 再利用可能ワークフローのパターン
 
 **条件付きスキル**:
+
 - `.claude/skills/workflow-inputs-outputs/SKILL.md`: 複雑な入出力設計が必要な場合
 - `.claude/skills/github-actions-security/SKILL.md`: シークレット受け渡しが必要な場合
 
 ## Phase 3: 検証と完了
 
 **検証基準**:
+
 - ✅ `workflow_call` トリガーが正しく設定されている
 - ✅ 入力パラメータが適切に定義されている（型・デフォルト値）
 - ✅ 出力値が必要に応じて定義されている

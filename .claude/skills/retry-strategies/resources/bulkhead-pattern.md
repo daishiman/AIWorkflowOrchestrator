@@ -49,14 +49,14 @@ class ThreadPoolBulkhead {
 
   constructor(
     private readonly maxConcurrent: number,
-    private readonly maxQueue: number
+    private readonly maxQueue: number,
   ) {
     this.semaphore = new Semaphore(maxConcurrent);
   }
 
   async execute<T>(fn: () => Promise<T>): Promise<T> {
     if (this.queue.length >= this.maxQueue) {
-      throw new BulkheadFullError('Queue is full');
+      throw new BulkheadFullError("Queue is full");
     }
 
     await this.semaphore.acquire();
@@ -117,7 +117,7 @@ class ConnectionPoolBulkhead {
 
   constructor(
     private readonly maxConnections: number,
-    private readonly factory: () => Connection
+    private readonly factory: () => Connection,
   ) {
     // プール初期化
     for (let i = 0; i < maxConnections; i++) {
@@ -152,11 +152,11 @@ class ConnectionPoolBulkhead {
 
 ### 基本パラメータ
 
-| パラメータ | 説明 | 考慮事項 |
-|-----------|------|---------|
-| maxConcurrent | 最大同時実行数 | サービスの処理能力に合わせる |
-| maxQueue | 最大キュー長 | 待機時間の許容度に合わせる |
-| timeout | 取得タイムアウト | ユーザー体験に影響 |
+| パラメータ    | 説明             | 考慮事項                     |
+| ------------- | ---------------- | ---------------------------- |
+| maxConcurrent | 最大同時実行数   | サービスの処理能力に合わせる |
+| maxQueue      | 最大キュー長     | 待機時間の許容度に合わせる   |
+| timeout       | 取得タイムアウト | ユーザー体験に影響           |
 
 ### サービス別設計
 
@@ -199,7 +199,7 @@ class BulkheadManager {
       const config = bulkheadConfigs[serviceName] || defaultConfig;
       this.bulkheads.set(
         serviceName,
-        new ThreadPoolBulkhead(config.maxConcurrent, config.maxQueue)
+        new ThreadPoolBulkhead(config.maxConcurrent, config.maxQueue),
       );
     }
     return this.bulkheads.get(serviceName)!;
@@ -213,8 +213,8 @@ class BulkheadManager {
 
 // 使用例
 const manager = new BulkheadManager();
-await manager.execute('payment', () => paymentApi.charge(amount));
-await manager.execute('inventory', () => inventoryApi.reserve(items));
+await manager.execute("payment", () => paymentApi.charge(amount));
+await manager.execute("inventory", () => inventoryApi.reserve(items));
 ```
 
 ### サーキットブレーカーとの組み合わせ
@@ -224,7 +224,7 @@ class ResilientClient {
   constructor(
     private readonly bulkhead: ThreadPoolBulkhead,
     private readonly circuitBreaker: CircuitBreaker,
-    private readonly retrier: RetryExecutor
+    private readonly retrier: RetryExecutor,
   ) {}
 
   async execute<T>(fn: () => Promise<T>): Promise<T> {
@@ -282,16 +282,19 @@ interface BulkheadMetrics {
 ## チェックリスト
 
 ### 設計時
+
 - [ ] サービスごとにバルクヘッドが分離されているか？
 - [ ] maxConcurrentがサービスの処理能力に合っているか？
 - [ ] 高優先度サービスに十分なリソースが割り当てられているか？
 
 ### 実装時
+
 - [ ] タイムアウトが設定されているか？
 - [ ] 拒否時の処理が実装されているか？
 - [ ] メトリクスが収集されているか？
 
 ### 運用時
+
 - [ ] 使用率がモニタリングされているか？
 - [ ] 拒否率にアラートが設定されているか？
 - [ ] リソース配分の調整が可能か？

@@ -4,12 +4,12 @@
 
 ### リスクレベル別
 
-| リスク | 操作 | 例 | 対策 |
-|--------|------|-----|------|
-| 低 | 追加のみ | カラム追加、テーブル作成 | 通常のマイグレーション |
-| 中 | 制約追加 | NOT NULL、外部キー | データ検証後に適用 |
-| 高 | 型変更 | カラム型変更、リネーム | 段階的移行 |
-| 最高 | 削除 | カラム削除、テーブル削除 | 多段階マイグレーション |
+| リスク | 操作     | 例                       | 対策                   |
+| ------ | -------- | ------------------------ | ---------------------- |
+| 低     | 追加のみ | カラム追加、テーブル作成 | 通常のマイグレーション |
+| 中     | 制約追加 | NOT NULL、外部キー       | データ検証後に適用     |
+| 高     | 型変更   | カラム型変更、リネーム   | 段階的移行             |
+| 最高   | 削除     | カラム削除、テーブル削除 | 多段階マイグレーション |
 
 ## 低リスク: 追加のみの変更
 
@@ -17,13 +17,15 @@
 
 ```typescript
 // 1. スキーマに追加
-export const notifications = pgTable('notifications', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id').notNull().references(() => users.id),
-  message: text('message').notNull(),
-  read: boolean('read').notNull().default(false),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
-})
+export const notifications = pgTable("notifications", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id),
+  message: text("message").notNull(),
+  read: boolean("read").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
 
 // 2. マイグレーション生成
 // pnpm db:generate --name create_notifications

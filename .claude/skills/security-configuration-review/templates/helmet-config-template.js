@@ -31,22 +31,22 @@ const helmetConfig = {
       mediaSrc: ["'self'"],
       frameSrc: ["'none'"],
       // HTTPS強制
-      upgradeInsecureRequests: []
+      upgradeInsecureRequests: [],
     },
     // CSP違反レポート収集
-    reportOnly: false,  // 開発環境: true、本番環境: false
+    reportOnly: false, // 開発環境: true、本番環境: false
   },
 
   // HTTP Strict Transport Security (HSTS)
   hsts: {
-    maxAge: 31536000,  // 1年（秒単位）
+    maxAge: 31536000, // 1年（秒単位）
     includeSubDomains: true,
-    preload: true  // hstspreload.org に登録する場合
+    preload: true, // hstspreload.org に登録する場合
   },
 
   // X-Frame-Options (Clickjacking対策)
   frameguard: {
-    action: 'deny'  // または 'sameorigin'
+    action: "deny", // または 'sameorigin'
   },
 
   // X-Content-Type-Options
@@ -54,7 +54,7 @@ const helmetConfig = {
 
   // X-DNS-Prefetch-Control
   dnsPrefetchControl: {
-    allow: false
+    allow: false,
   },
 
   // X-Download-Options (IE8専用、レガシー)
@@ -62,7 +62,7 @@ const helmetConfig = {
 
   // Referrer-Policy
   referrerPolicy: {
-    policy: 'no-referrer'  // または 'strict-origin-when-cross-origin'
+    policy: "no-referrer", // または 'strict-origin-when-cross-origin'
   },
 
   // Permissions-Policy (旧Feature-Policy)
@@ -74,8 +74,8 @@ const helmetConfig = {
       payment: ["'self'"],
       usb: ["'none'"],
       magnetometer: ["'none'"],
-      gyroscope: ["'none'"]
-    }
+      gyroscope: ["'none'"],
+    },
   },
 
   // X-Powered-By ヘッダー削除（情報漏洩防止）
@@ -84,25 +84,25 @@ const helmetConfig = {
   // Expect-CT (Certificate Transparency)
   expectCt: {
     enforce: true,
-    maxAge: 86400  // 24時間
-  }
+    maxAge: 86400, // 24時間
+  },
 };
 
 // 環境別設定
 const getHelmetConfig = (env = process.env.NODE_ENV) => {
-  if (env === 'development') {
+  if (env === "development") {
     return {
       ...helmetConfig,
       contentSecurityPolicy: {
         ...helmetConfig.contentSecurityPolicy,
-        reportOnly: true,  // 開発環境ではreport-onlyモード
+        reportOnly: true, // 開発環境ではreport-onlyモード
         directives: {
           ...helmetConfig.contentSecurityPolicy.directives,
-          scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],  // 開発時は緩く
-          styleSrc: ["'self'", "'unsafe-inline'"]
-        }
+          scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // 開発時は緩く
+          styleSrc: ["'self'", "'unsafe-inline'"],
+        },
       },
-      hsts: false  // localhost ではHSTS無効
+      hsts: false, // localhost ではHSTS無効
     };
   }
 
@@ -111,7 +111,7 @@ const getHelmetConfig = (env = process.env.NODE_ENV) => {
 
 module.exports = {
   helmetConfig,
-  getHelmetConfig
+  getHelmetConfig,
 };
 
 /**

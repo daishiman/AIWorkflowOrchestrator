@@ -3,16 +3,19 @@
 ## 定義
 
 > 「クライアントは、自分が使用しないメソッドに依存することを強制されるべきではない」
+>
 > - Robert C. Martin
 
 ## 核心概念
 
 ### 太ったインターフェースの問題
+
 - 不要なメソッドへの依存 → 不要な再コンパイル
 - 実装の複雑化 → 空のメソッドや例外の発生
 - 変更の波及 → 使わない機能の変更が影響
 
 ### 解決策
+
 - インターフェースをクライアントの視点で分割
 - 役割（Role）ベースのインターフェース設計
 - 必要最小限の依存
@@ -34,19 +37,19 @@ interface Worker {
 // ロボット作業者は食事も睡眠もしない
 class Robot implements Worker {
   work(): void {
-    console.log('Working...');
+    console.log("Working...");
   }
 
   eat(): void {
-    throw new Error('Robots do not eat'); // 不要なメソッド
+    throw new Error("Robots do not eat"); // 不要なメソッド
   }
 
   sleep(): void {
-    throw new Error('Robots do not sleep'); // 不要なメソッド
+    throw new Error("Robots do not sleep"); // 不要なメソッド
   }
 
   attendMeeting(): void {
-    throw new Error('Robots do not attend meetings');
+    throw new Error("Robots do not attend meetings");
   }
 
   writeReport(): void {
@@ -84,24 +87,30 @@ interface ReportWritable {
 }
 
 // 人間は全てを実装
-class HumanWorker implements
-  Workable,
-  Eatable,
-  Sleepable,
-  MeetingAttendable,
-  ReportWritable
+class HumanWorker
+  implements Workable, Eatable, Sleepable, MeetingAttendable, ReportWritable
 {
-  work(): void { /* ... */ }
-  eat(): void { /* ... */ }
-  sleep(): void { /* ... */ }
-  attendMeeting(): void { /* ... */ }
-  writeReport(): void { /* ... */ }
+  work(): void {
+    /* ... */
+  }
+  eat(): void {
+    /* ... */
+  }
+  sleep(): void {
+    /* ... */
+  }
+  attendMeeting(): void {
+    /* ... */
+  }
+  writeReport(): void {
+    /* ... */
+  }
 }
 
 // ロボットは必要なものだけ実装
 class Robot implements Workable {
   work(): void {
-    console.log('Working efficiently...');
+    console.log("Working efficiently...");
   }
 }
 
@@ -140,7 +149,7 @@ function processInput(input: Readable): void {
 }
 
 function saveOutput(output: Writable): void {
-  output.write('data');
+  output.write("data");
 }
 ```
 
@@ -200,11 +209,13 @@ grep -rn "throw.*not.*support\|throw.*not.*implement" src/
 ## 適用指針
 
 ### いつ分割するか
+
 - 一部のクライアントが一部のメソッドしか使わない
 - 空の実装や例外が発生している
 - インターフェースの変更が無関係なクライアントに影響
 
 ### いつ統合を許容するか
+
 - すべてのクライアントがすべてのメソッドを使う
 - メソッドが密接に関連している
 - 分割による複雑さが利益を上回る
@@ -212,11 +223,11 @@ grep -rn "throw.*not.*support\|throw.*not.*implement" src/
 ## 実践的なサイズ目安
 
 | インターフェースタイプ | 推奨メソッド数 |
-|----------------------|--------------|
-| コマンド/アクション | 1-2 |
-| リポジトリ | 3-5 |
-| サービス | 3-7 |
-| ファサード | 5-10 |
+| ---------------------- | -------------- |
+| コマンド/アクション    | 1-2            |
+| リポジトリ             | 3-5            |
+| サービス               | 3-7            |
+| ファサード             | 5-10           |
 
 ## チェックリスト
 

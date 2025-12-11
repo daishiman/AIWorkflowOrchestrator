@@ -9,13 +9,15 @@
  *   node validate-resource-definition.mjs <definition.json>
  */
 
-import { readFile } from 'fs/promises';
-import { existsSync } from 'fs';
+import { readFile } from "fs/promises";
+import { existsSync } from "fs";
 
 const definitionPath = process.argv[2];
 
 if (!definitionPath) {
-  console.log('使用方法: node validate-resource-definition.mjs <definition.json>');
+  console.log(
+    "使用方法: node validate-resource-definition.mjs <definition.json>",
+  );
   process.exit(1);
 }
 
@@ -33,7 +35,7 @@ function validateDefinition(definition) {
 
   // バージョン検証
   if (!definition.version) {
-    warnings.push('version フィールドがありません');
+    warnings.push("version フィールドがありません");
   }
 
   // リソース検証
@@ -55,7 +57,9 @@ function validateDefinition(definition) {
       }
 
       if (resource.mimeType && !isValidMimeType(resource.mimeType)) {
-        warnings.push(`${prefix}: mimeType '${resource.mimeType}' は一般的でない形式です`);
+        warnings.push(
+          `${prefix}: mimeType '${resource.mimeType}' は一般的でない形式です`,
+        );
       }
     });
   }
@@ -72,19 +76,23 @@ function validateDefinition(definition) {
         const templateVars = extractTemplateVariables(template.uriTemplate);
 
         if (template.parameters) {
-          const paramNames = template.parameters.map(p => p.name);
+          const paramNames = template.parameters.map((p) => p.name);
 
           // 未定義のテンプレート変数
-          templateVars.forEach(v => {
+          templateVars.forEach((v) => {
             if (!paramNames.includes(v)) {
-              errors.push(`${prefix}: テンプレート変数 '{${v}}' のパラメータ定義がありません`);
+              errors.push(
+                `${prefix}: テンプレート変数 '{${v}}' のパラメータ定義がありません`,
+              );
             }
           });
 
           // 未使用のパラメータ
-          paramNames.forEach(p => {
+          paramNames.forEach((p) => {
             if (!templateVars.includes(p)) {
-              warnings.push(`${prefix}: パラメータ '${p}' はテンプレートで使用されていません`);
+              warnings.push(
+                `${prefix}: パラメータ '${p}' はテンプレートで使用されていません`,
+              );
             }
           });
 
@@ -95,7 +103,9 @@ function validateDefinition(definition) {
             }
           });
         } else if (templateVars.length > 0) {
-          errors.push(`${prefix}: テンプレート変数がありますが、parameters が定義されていません`);
+          errors.push(
+            `${prefix}: テンプレート変数がありますが、parameters が定義されていません`,
+          );
         }
       }
 
@@ -122,9 +132,15 @@ function validateDefinition(definition) {
         }
 
         if (rule.strategy) {
-          const validStrategies = ['no-cache', 'cache-first', 'stale-while-revalidate'];
+          const validStrategies = [
+            "no-cache",
+            "cache-first",
+            "stale-while-revalidate",
+          ];
           if (!validStrategies.includes(rule.strategy)) {
-            errors.push(`${prefix}: strategy は ${validStrategies.join(', ')} のいずれかである必要があります`);
+            errors.push(
+              `${prefix}: strategy は ${validStrategies.join(", ")} のいずれかである必要があります`,
+            );
           }
         }
       });
@@ -143,8 +159,8 @@ function validateDefinition(definition) {
       if (!rule.operations || rule.operations.length === 0) {
         errors.push(`${prefix}: operations は必須です`);
       } else {
-        const validOps = ['read', 'list', 'subscribe'];
-        rule.operations.forEach(op => {
+        const validOps = ["read", "list", "subscribe"];
+        rule.operations.forEach((op) => {
           if (!validOps.includes(op)) {
             errors.push(`${prefix}: 無効な operation '${op}'`);
           }
@@ -177,23 +193,26 @@ function validateUri(uri) {
  */
 function isValidMimeType(mimeType) {
   const commonMimeTypes = [
-    'text/plain',
-    'text/markdown',
-    'text/html',
-    'text/css',
-    'text/csv',
-    'application/json',
-    'application/xml',
-    'application/javascript',
-    'application/octet-stream',
-    'application/x-yaml',
-    'image/png',
-    'image/jpeg',
-    'image/gif',
-    'image/svg+xml'
+    "text/plain",
+    "text/markdown",
+    "text/html",
+    "text/css",
+    "text/csv",
+    "application/json",
+    "application/xml",
+    "application/javascript",
+    "application/octet-stream",
+    "application/x-yaml",
+    "image/png",
+    "image/jpeg",
+    "image/gif",
+    "image/svg+xml",
   ];
 
-  return commonMimeTypes.includes(mimeType) || /^[a-z]+\/[a-z0-9.+-]+$/.test(mimeType);
+  return (
+    commonMimeTypes.includes(mimeType) ||
+    /^[a-z]+\/[a-z0-9.+-]+$/.test(mimeType)
+  );
 }
 
 /**
@@ -201,7 +220,7 @@ function isValidMimeType(mimeType) {
  */
 function extractTemplateVariables(template) {
   const matches = template.match(/\{(\w+)\}/g) || [];
-  return matches.map(m => m.slice(1, -1));
+  return matches.map((m) => m.slice(1, -1));
 }
 
 /**
@@ -214,19 +233,19 @@ function calculateStats(definition) {
     cachingEnabled: definition.caching?.enabled || false,
     cacheRuleCount: definition.caching?.rules?.length || 0,
     accessRuleCount: definition.access?.rules?.length || 0,
-    subscriptionsEnabled: definition.subscriptions?.enabled || false
+    subscriptionsEnabled: definition.subscriptions?.enabled || false,
   };
 
   // スキーム別カウント
   const schemes = new Map();
-  (definition.resources || []).forEach(r => {
+  (definition.resources || []).forEach((r) => {
     try {
       const url = new URL(r.uri);
-      const scheme = url.protocol.replace(':', '');
+      const scheme = url.protocol.replace(":", "");
       schemes.set(scheme, (schemes.get(scheme) || 0) + 1);
     } catch {}
   });
-  (definition.resourceTemplates || []).forEach(t => {
+  (definition.resourceTemplates || []).forEach((t) => {
     const match = t.uriTemplate.match(/^(\w+):\/\//);
     if (match) {
       const scheme = match[1];
@@ -242,22 +261,22 @@ function calculateStats(definition) {
  * 結果を表示
  */
 function displayResults(definition, errors, warnings, stats) {
-  console.log('\n🔍 リソース定義検証結果\n');
-  console.log('─'.repeat(50));
+  console.log("\n🔍 リソース定義検証結果\n");
+  console.log("─".repeat(50));
 
   // 統計情報
-  console.log('\n📊 統計:');
+  console.log("\n📊 統計:");
   console.log(`   リソース数: ${stats.resourceCount}`);
   console.log(`   テンプレート数: ${stats.templateCount}`);
-  console.log(`   キャッシュ: ${stats.cachingEnabled ? '有効' : '無効'}`);
+  console.log(`   キャッシュ: ${stats.cachingEnabled ? "有効" : "無効"}`);
   if (stats.cachingEnabled) {
     console.log(`   キャッシュルール数: ${stats.cacheRuleCount}`);
   }
   console.log(`   アクセスルール数: ${stats.accessRuleCount}`);
-  console.log(`   変更通知: ${stats.subscriptionsEnabled ? '有効' : '無効'}`);
+  console.log(`   変更通知: ${stats.subscriptionsEnabled ? "有効" : "無効"}`);
 
   if (Object.keys(stats.schemeDistribution).length > 0) {
-    console.log('   スキーム分布:');
+    console.log("   スキーム分布:");
     for (const [scheme, count] of Object.entries(stats.schemeDistribution)) {
       console.log(`     - ${scheme}: ${count}`);
     }
@@ -265,27 +284,27 @@ function displayResults(definition, errors, warnings, stats) {
 
   // エラー
   if (errors.length > 0) {
-    console.log('\n❌ エラー:');
-    errors.forEach(e => console.log(`   - ${e}`));
+    console.log("\n❌ エラー:");
+    errors.forEach((e) => console.log(`   - ${e}`));
   }
 
   // 警告
   if (warnings.length > 0) {
-    console.log('\n⚠️  警告:');
-    warnings.forEach(w => console.log(`   - ${w}`));
+    console.log("\n⚠️  警告:");
+    warnings.forEach((w) => console.log(`   - ${w}`));
   }
 
   // 最終判定
-  console.log('\n' + '─'.repeat(50));
+  console.log("\n" + "─".repeat(50));
   if (errors.length === 0) {
     if (warnings.length === 0) {
-      console.log('✅ リソース定義は有効です');
+      console.log("✅ リソース定義は有効です");
     } else {
-      console.log('⚠️  リソース定義は有効ですが、警告があります');
+      console.log("⚠️  リソース定義は有効ですが、警告があります");
     }
     return true;
   } else {
-    console.log('❌ リソース定義にエラーがあります');
+    console.log("❌ リソース定義にエラーがあります");
     return false;
   }
 }
@@ -295,7 +314,7 @@ function displayResults(definition, errors, warnings, stats) {
  */
 async function main() {
   try {
-    const content = await readFile(definitionPath, 'utf-8');
+    const content = await readFile(definitionPath, "utf-8");
     const definition = JSON.parse(content);
 
     const { errors, warnings } = validateDefinition(definition);
@@ -305,9 +324,9 @@ async function main() {
     process.exit(valid ? 0 : 1);
   } catch (error) {
     if (error instanceof SyntaxError) {
-      console.error('❌ JSONパースエラー:', error.message);
+      console.error("❌ JSONパースエラー:", error.message);
     } else {
-      console.error('❌ エラー:', error.message);
+      console.error("❌ エラー:", error.message);
     }
     process.exit(1);
   }

@@ -18,6 +18,7 @@ GitHub ActionsからDockerイメージをプッシュする際の各種コンテ
 ```
 
 **特徴**:
+
 - `GITHUB_TOKEN`は自動的に利用可能（Secrets設定不要）
 - リポジトリの`packages: write`権限が必要
 
@@ -25,18 +26,20 @@ GitHub ActionsからDockerイメージをプッシュする際の各種コンテ
 
 ```yaml
 permissions:
-  contents: read        # リポジトリ読み取り
-  packages: write       # GHCRへのプッシュ
+  contents: read # リポジトリ読み取り
+  packages: write # GHCRへのプッシュ
 ```
 
 ### パッケージの可視性
 
 **イメージ名の形式**:
+
 ```
 ghcr.io/OWNER/REPOSITORY:TAG
 ```
 
 **例**:
+
 ```yaml
 tags: |
   ghcr.io/${{ github.repository }}:latest
@@ -46,6 +49,7 @@ tags: |
 ### パッケージ権限管理
 
 GitHub UIで設定:
+
 1. リポジトリ → Packages
 2. パッケージ選択 → Settings
 3. Visibility（Public/Private）設定
@@ -64,12 +68,14 @@ GitHub UIで設定:
 ```
 
 **Secrets設定**:
+
 - `DOCKERHUB_USERNAME`: Docker Hubユーザー名
 - `DOCKERHUB_TOKEN`: Personal Access Token（パスワードではなくトークン推奨）
 
 ### Personal Access Token作成
 
 Docker Hubで:
+
 1. Account Settings → Security
 2. New Access Token
 3. Description入力、Read & Write権限選択
@@ -82,6 +88,7 @@ docker.io/USERNAME/REPOSITORY:TAG
 ```
 
 **例**:
+
 ```yaml
 tags: |
   docker.io/${{ secrets.DOCKERHUB_USERNAME }}/myapp:latest
@@ -91,11 +98,13 @@ tags: |
 ### レート制限対策
 
 Docker Hub無料プランのレート制限:
+
 - 未認証: 100 pulls/6時間
 - 認証済み: 200 pulls/6時間
 - Pro以上: 無制限
 
 **対策**:
+
 ```yaml
 # 認証してレート制限を緩和
 - name: Log in to Docker Hub
@@ -124,7 +133,7 @@ Docker Hub無料プランのレート制限:
   with:
     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    aws-region: us-east-1  # Public ECRはus-east-1固定
+    aws-region: us-east-1 # Public ECRはus-east-1固定
 
 - name: Log in to Amazon ECR Public
   uses: docker/login-action@v3
@@ -135,6 +144,7 @@ Docker Hub無料プランのレート制限:
 ```
 
 **イメージ名の形式**:
+
 ```
 public.ecr.aws/ALIAS/REPOSITORY:TAG
 ```
@@ -147,7 +157,7 @@ public.ecr.aws/ALIAS/REPOSITORY:TAG
   with:
     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    aws-region: ap-northeast-1  # 任意のリージョン
+    aws-region: ap-northeast-1 # 任意のリージョン
 
 - name: Log in to Amazon ECR
   id: login-ecr
@@ -162,6 +172,7 @@ public.ecr.aws/ALIAS/REPOSITORY:TAG
 ```
 
 **イメージ名の形式**:
+
 ```
 AWS_ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/REPOSITORY:TAG
 ```
@@ -174,9 +185,7 @@ AWS_ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/REPOSITORY:TAG
   "Statement": [
     {
       "Effect": "Allow",
-      "Action": [
-        "ecr:GetAuthorizationToken"
-      ],
+      "Action": ["ecr:GetAuthorizationToken"],
       "Resource": "*"
     },
     {
@@ -210,6 +219,7 @@ AWS_ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/REPOSITORY:TAG
 ```
 
 **IAM Roleの信頼ポリシー**:
+
 ```json
 {
   "Version": "2012-10-17",
@@ -259,6 +269,7 @@ AWS_ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/REPOSITORY:TAG
 ```
 
 **イメージ名の形式**:
+
 ```
 gcr.io/PROJECT_ID/REPOSITORY:TAG
 ```
@@ -286,11 +297,13 @@ gcr.io/PROJECT_ID/REPOSITORY:TAG
 ```
 
 **イメージ名の形式**:
+
 ```
 REGION-docker.pkg.dev/PROJECT_ID/REPOSITORY/IMAGE:TAG
 ```
 
 **リージョン例**:
+
 - `us-central1-docker.pkg.dev`
 - `asia-northeast1-docker.pkg.dev`
 - `europe-west1-docker.pkg.dev`
@@ -298,6 +311,7 @@ REGION-docker.pkg.dev/PROJECT_ID/REPOSITORY/IMAGE:TAG
 ### サービスアカウント権限
 
 必要なIAMロール:
+
 - `roles/artifactregistry.writer` または
 - `roles/storage.admin`（GCRの場合）
 
@@ -306,7 +320,7 @@ REGION-docker.pkg.dev/PROJECT_ID/REPOSITORY/IMAGE:TAG
 ```yaml
 permissions:
   contents: read
-  id-token: write  # OIDC用
+  id-token: write # OIDC用
 
 steps:
   - name: Authenticate to Google Cloud
@@ -352,6 +366,7 @@ steps:
 ```
 
 **イメージ名の形式**:
+
 ```
 REGISTRY_NAME.azurecr.io/REPOSITORY:TAG
 ```
@@ -370,6 +385,7 @@ REGISTRY_NAME.azurecr.io/REPOSITORY:TAG
 ### 管理者ユーザー有効化
 
 Azure Portal:
+
 1. Container Registry → Access keys
 2. Admin user: Enabled
 3. Username/Password をコピーしてGitHub Secretsに保存
@@ -441,8 +457,8 @@ password: ${{ secrets.REGISTRY_PASSWORD }}
 
 ```yaml
 permissions:
-  contents: read        # 最小限の読み取り権限
-  packages: write       # プッシュに必要な権限のみ
+  contents: read # 最小限の読み取り権限
+  packages: write # プッシュに必要な権限のみ
   # id-token: write     # OIDC使用時のみ追加
 ```
 
@@ -475,6 +491,7 @@ tags: |
 ### 認証エラー
 
 **GHCR**:
+
 ```yaml
 # 権限不足エラーの場合
 permissions:
@@ -486,6 +503,7 @@ permissions:
 ```
 
 **Docker Hub**:
+
 ```yaml
 # トークン/パスワードの確認
 - name: Debug credentials
@@ -509,7 +527,7 @@ permissions:
   uses: docker/build-push-action@v5
   with:
     context: .
-    pull: true  # 認証済みでpull
+    pull: true # 認証済みでpull
 ```
 
 ### マルチレジストリ認証の順序

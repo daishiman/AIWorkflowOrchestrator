@@ -23,6 +23,7 @@ app/
 ```
 
 Next.jsは自動的に：
+
 - 各ページを個別のチャンクに分割
 - 共有コード（layout）を別チャンクに抽出
 - 動的ルートは個別にバンドル
@@ -53,12 +54,12 @@ export default function RootLayout({ children }) {
 ### コンポーネントベース分割
 
 ```typescript
-import dynamic from 'next/dynamic'
+import dynamic from "next/dynamic";
 
 // 条件付きで表示されるコンポーネントを分割
-const Modal = dynamic(() => import('@/components/modal'))
-const Drawer = dynamic(() => import('@/components/drawer'))
-const Chart = dynamic(() => import('@/components/chart'), { ssr: false })
+const Modal = dynamic(() => import("@/components/modal"));
+const Drawer = dynamic(() => import("@/components/drawer"));
+const Chart = dynamic(() => import("@/components/chart"), { ssr: false });
 ```
 
 ### ライブラリ分割
@@ -66,17 +67,16 @@ const Chart = dynamic(() => import('@/components/chart'), { ssr: false })
 ```typescript
 // 大きなライブラリを分割
 const DatePicker = dynamic(() =>
-  import('react-datepicker').then((mod) => mod.default)
-)
+  import("react-datepicker").then((mod) => mod.default),
+);
 
 const Editor = dynamic(() =>
-  import('@tiptap/react').then((mod) => mod.EditorContent)
-)
+  import("@tiptap/react").then((mod) => mod.EditorContent),
+);
 
-const Map = dynamic(() =>
-  import('react-map-gl').then((mod) => mod.Map),
-  { ssr: false }
-)
+const Map = dynamic(() => import("react-map-gl").then((mod) => mod.Map), {
+  ssr: false,
+});
 ```
 
 ### 機能ベース分割
@@ -105,13 +105,13 @@ export const AdminUsers = dynamic(
 
 ```javascript
 // next.config.js
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-})
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
+});
 
 module.exports = withBundleAnalyzer({
   // 他の設定
-})
+});
 ```
 
 ```bash
@@ -135,28 +135,28 @@ ANALYZE=true pnpm run build
 
 ```typescript
 // ❌ 常にインポート
-import { heavyFunction } from '@/lib/heavy'
+import { heavyFunction } from "@/lib/heavy";
 
 export function Component({ condition }) {
   if (condition) {
-    return heavyFunction()
+    return heavyFunction();
   }
-  return null
+  return null;
 }
 
 // ✅ 条件付きで動的インポート
 export function Component({ condition }) {
-  const [result, setResult] = useState(null)
+  const [result, setResult] = useState(null);
 
   useEffect(() => {
     if (condition) {
-      import('@/lib/heavy').then((mod) => {
-        setResult(mod.heavyFunction())
-      })
+      import("@/lib/heavy").then((mod) => {
+        setResult(mod.heavyFunction());
+      });
     }
-  }, [condition])
+  }, [condition]);
 
-  return result
+  return result;
 }
 ```
 
@@ -164,15 +164,15 @@ export function Component({ condition }) {
 
 ```typescript
 // ❌ 全体インポート
-import _ from 'lodash'
-_.debounce(fn, 300)
+import _ from "lodash";
+_.debounce(fn, 300);
 
 // ✅ 個別インポート（Tree Shakingが効く）
-import debounce from 'lodash/debounce'
-debounce(fn, 300)
+import debounce from "lodash/debounce";
+debounce(fn, 300);
 
 // ✅ ESM対応ライブラリを使用
-import { debounce } from 'lodash-es'
+import { debounce } from "lodash-es";
 ```
 
 ### Barrel Exports の注意点
@@ -180,29 +180,29 @@ import { debounce } from 'lodash-es'
 ```typescript
 // ❌ Barrel export（Tree Shakingが効きにくい）
 // components/index.ts
-export { Button } from './button'
-export { Input } from './input'
-export { Modal } from './modal'
+export { Button } from "./button";
+export { Input } from "./input";
+export { Modal } from "./modal";
 // ...100個のコンポーネント
 
 // 使用側
-import { Button } from '@/components' // 全コンポーネントがバンドルされる可能性
+import { Button } from "@/components"; // 全コンポーネントがバンドルされる可能性
 
 // ✅ 直接インポート
-import { Button } from '@/components/button'
+import { Button } from "@/components/button";
 ```
 
 ### サードパーティライブラリの最適化
 
 ```typescript
 // moment.js → date-fns（より軽量）
-import { format } from 'date-fns'
+import { format } from "date-fns";
 
 // lodash → lodash-es + 個別インポート
-import debounce from 'lodash-es/debounce'
+import debounce from "lodash-es/debounce";
 
 // 巨大なライブラリは動的インポート
-const heavyLib = await import('heavy-library')
+const heavyLib = await import("heavy-library");
 ```
 
 ## Route Groups による分割
@@ -266,27 +266,27 @@ export default function Default() {
 module.exports = {
   experimental: {
     outputFileTracingExcludes: {
-      '*': [
-        'node_modules/@swc/core-linux-x64-gnu',
-        'node_modules/@swc/core-linux-x64-musl',
+      "*": [
+        "node_modules/@swc/core-linux-x64-gnu",
+        "node_modules/@swc/core-linux-x64-musl",
       ],
     },
   },
-}
+};
 ```
 
 ### 予算チェック
 
 ```javascript
 // scripts/check-bundle-size.js
-const fs = require('fs')
-const path = require('path')
+const fs = require("fs");
+const path = require("path");
 
 const BUDGET = {
-  'main': 100 * 1024,      // 100KB
-  'vendor': 300 * 1024,    // 300KB
-  'page': 50 * 1024,       // 50KB per page
-}
+  main: 100 * 1024, // 100KB
+  vendor: 300 * 1024, // 300KB
+  page: 50 * 1024, // 50KB per page
+};
 
 // ビルド後にチャンクサイズをチェック
 ```

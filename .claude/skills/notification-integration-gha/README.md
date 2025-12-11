@@ -25,8 +25,8 @@ notification-integration-gha/
 - name: Slack Notification
   uses: slackapi/slack-github-action@v1.24.0
   with:
-    channel-id: 'C1234567890'
-    slack-message: 'Deployment completed!'
+    channel-id: "C1234567890"
+    slack-message: "Deployment completed!"
   env:
     SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 ```
@@ -54,6 +54,7 @@ notification-integration-gha/
 ## 主要機能
 
 ### 通知パターン
+
 - ✅ 成功時・失敗時通知
 - 🔄 進行状況更新（スレッド型）
 - 🌿 ブランチ別・環境別通知
@@ -61,12 +62,14 @@ notification-integration-gha/
 - 📊 定期レポート（cron）
 
 ### サポートサービス
+
 - **Slack**: Incoming Webhook / Bot Token / Block Kit
 - **Discord**: Webhook / Embeds / Buttons
 - **MS Teams**: Incoming Webhook / MessageCard / Adaptive Cards
 - **Email**: SendGrid / AWS SES
 
 ### セキュリティ
+
 - Webhook URLはGitHub Secretsで管理
 - URL検証・マスキング
 - エラーハンドリング
@@ -129,6 +132,7 @@ node .claude/skills/notification-integration-gha/scripts/test-webhook.mjs \
 **原因**: BotがチャネルにいないまたはBot Token権限不足
 
 **解決策**:
+
 - Bot Token Scopeに`chat:write.public`を追加
 - または`/invite @bot-name`でBotを招待
 
@@ -137,6 +141,7 @@ node .claude/skills/notification-integration-gha/scripts/test-webhook.mjs \
 **原因**: レート制限（5リクエスト/2秒）
 
 **解決策**:
+
 ```yaml
 - name: Rate-limited notification
   run: |
@@ -151,6 +156,7 @@ node .claude/skills/notification-integration-gha/scripts/test-webhook.mjs \
 **原因**: JSON構文エラー
 
 **解決策**:
+
 ```bash
 # JSON検証してから送信
 echo "$PAYLOAD" | jq empty

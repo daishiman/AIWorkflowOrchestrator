@@ -14,10 +14,11 @@ on:
     branches:
       - main
       - develop
-      - 'releases/**'  # releases/ で始まるすべてのブランチ
+      - "releases/**" # releases/ で始まるすべてのブランチ
 ```
 
 **ワイルドカードパターン**:
+
 - `*` - 0個以上の文字（スラッシュ以外）
 - `**` - 0個以上の文字（スラッシュを含む）
 - `?` - 1文字
@@ -29,9 +30,9 @@ on:
   push:
     branches:
       - main
-      - 'feature/*'        # feature/xxx にマッチ
-      - 'feature/**'       # feature/xxx/yyy にもマッチ
-      - 'releases/v[0-9].*'  # releases/v1.x, releases/v2.x など
+      - "feature/*" # feature/xxx にマッチ
+      - "feature/**" # feature/xxx/yyy にもマッチ
+      - "releases/v[0-9].*" # releases/v1.x, releases/v2.x など
 ```
 
 ### ブランチの除外
@@ -40,11 +41,11 @@ on:
 on:
   push:
     branches:
-      - '**'  # すべてのブランチ
+      - "**" # すべてのブランチ
     branches-ignore:
-      - 'feature/**'
-      - 'test/**'
-      - 'renovate/**'
+      - "feature/**"
+      - "test/**"
+      - "renovate/**"
 ```
 
 **重要**: `branches` と `branches-ignore` は同時に使用できません。
@@ -76,18 +77,18 @@ on:
 on:
   push:
     paths:
-      - 'src/**'
-      - 'package.json'
-      - 'package-lock.json'
+      - "src/**"
+      - "package.json"
+      - "package-lock.json"
 ```
 
 ```yaml
 on:
   pull_request:
     paths:
-      - '**.ts'       # すべての .ts ファイル
-      - '**.tsx'      # すべての .tsx ファイル
-      - 'tsconfig.json'
+      - "**.ts" # すべての .ts ファイル
+      - "**.tsx" # すべての .tsx ファイル
+      - "tsconfig.json"
 ```
 
 ### パスの除外
@@ -96,10 +97,10 @@ on:
 on:
   push:
     paths-ignore:
-      - '*.md'
-      - 'docs/**'
-      - '.github/**'
-      - '!.github/workflows/**'  # .github/workflows は除外しない
+      - "*.md"
+      - "docs/**"
+      - ".github/**"
+      - "!.github/workflows/**" # .github/workflows は除外しない
 ```
 
 **除外の否定**: `!` を使用して除外から除外できます。
@@ -108,8 +109,8 @@ on:
 on:
   push:
     paths:
-      - 'src/**'
-      - '!src/test/**'  # src/ 配下だが src/test/ は除外
+      - "src/**"
+      - "!src/test/**" # src/ 配下だが src/test/ は除外
 ```
 
 ### パスとブランチの組み合わせ
@@ -121,8 +122,8 @@ on:
       - main
       - develop
     paths:
-      - 'src/**'
-      - 'package.json'
+      - "src/**"
+      - "package.json"
 ```
 
 **動作**: main または develop ブランチで、かつ src/ 配下または package.json が変更された場合のみトリガー。
@@ -135,15 +136,15 @@ on:
 on:
   push:
     tags:
-      - 'v*.*.*'      # v1.0.0, v2.3.4 など
-      - 'v*.*.*-rc.*' # v1.0.0-rc.1 など
+      - "v*.*.*" # v1.0.0, v2.3.4 など
+      - "v*.*.*-rc.*" # v1.0.0-rc.1 など
 ```
 
 ```yaml
 on:
   push:
     tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'  # セマンティックバージョン
+      - "v[0-9]+.[0-9]+.[0-9]+" # セマンティックバージョン
 ```
 
 ### タグの除外
@@ -152,10 +153,10 @@ on:
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
     tags-ignore:
-      - 'v*-beta'
-      - 'v*-alpha'
+      - "v*-beta"
+      - "v*-alpha"
 ```
 
 ### タグとブランチの使い分け
@@ -168,7 +169,7 @@ on:
       - main
       - develop
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 ```
 
 ## イベントアクションフィルター
@@ -179,12 +180,12 @@ on:
 on:
   pull_request:
     types:
-      - opened        # PR作成時
-      - synchronize   # PRへの新しいコミット
-      - reopened      # PR再オープン時
-      - labeled       # ラベル追加時
-      - unlabeled     # ラベル削除時
-      - ready_for_review  # Draft解除時
+      - opened # PR作成時
+      - synchronize # PRへの新しいコミット
+      - reopened # PR再オープン時
+      - labeled # ラベル追加時
+      - unlabeled # ラベル削除時
+      - ready_for_review # Draft解除時
 ```
 
 **デフォルトアクション**: `types` 未指定時は `opened`, `synchronize`, `reopened`。
@@ -206,8 +207,8 @@ on:
 on:
   release:
     types:
-      - published   # リリース公開時
-      - created     # リリース作成時
+      - published # リリース公開時
+      - created # リリース作成時
       - prereleased # プレリリース時
 ```
 
@@ -293,7 +294,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2  # 差分検出に必要
+          fetch-depth: 2 # 差分検出に必要
 
       - name: Check if frontend changed
         id: frontend_changed
@@ -337,7 +338,7 @@ on:
     branches:
       - main
       - develop
-      - 'release/**'
+      - "release/**"
 
 jobs:
   deploy-dev:
@@ -368,12 +369,12 @@ jobs:
 on:
   pull_request:
     paths:
-      - '**.ts'
-      - '**.tsx'
-      - '**.js'
-      - '**.jsx'
-      - '**.md'
-      - '**.json'
+      - "**.ts"
+      - "**.tsx"
+      - "**.js"
+      - "**.jsx"
+      - "**.md"
+      - "**.json"
 
 jobs:
   lint-code:
@@ -465,8 +466,8 @@ jobs:
 ```yaml
 on:
   schedule:
-    - cron: '0 2 * * 1-5'  # 平日午前2時
-    - cron: '0 6 * * 0,6'  # 週末午前6時
+    - cron: "0 2 * * 1-5" # 平日午前2時
+    - cron: "0 6 * * 0,6" # 週末午前6時
 
 jobs:
   backup:
@@ -488,7 +489,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Deployment environment'
+        description: "Deployment environment"
         required: true
         type: choice
         options:
@@ -496,7 +497,7 @@ on:
           - staging
           - production
       skip_tests:
-        description: 'Skip tests'
+        description: "Skip tests"
         type: boolean
         default: false
 
@@ -509,7 +510,7 @@ jobs:
 
   deploy:
     needs: test
-    if: always()  # テストがスキップされても実行
+    if: always() # テストがスキップされても実行
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to dev
@@ -587,8 +588,8 @@ jobs:
 on:
   pull_request:
     paths:
-      - 'packages/frontend/**'
-      - 'packages/backend/**'
+      - "packages/frontend/**"
+      - "packages/backend/**"
 
 jobs:
   detect-changes:

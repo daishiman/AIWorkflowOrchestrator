@@ -160,10 +160,7 @@ JSON Schemaの合成キーワード（allOf, oneOf, anyOf, not）を使った
       "required": ["petType", "breed"]
     }
   },
-  "oneOf": [
-    { "$ref": "#/$defs/Dog" },
-    { "$ref": "#/$defs/Cat" }
-  ]
+  "oneOf": [{ "$ref": "#/$defs/Dog" }, { "$ref": "#/$defs/Cat" }]
 }
 ```
 
@@ -450,10 +447,7 @@ null
       "required": ["status", "title", "content", "publishedAt"]
     }
   },
-  "oneOf": [
-    { "$ref": "#/$defs/Draft" },
-    { "$ref": "#/$defs/Published" }
-  ]
+  "oneOf": [{ "$ref": "#/$defs/Draft" }, { "$ref": "#/$defs/Published" }]
 }
 ```
 
@@ -480,14 +474,14 @@ null
     }
   ],
   "$defs": {
-    "v1Data": { },
-    "v2Data": { }
+    "v1Data": {},
+    "v2Data": {}
   }
 }
 ```
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版リリース |
+| バージョン | 日付       | 変更内容     |
+| ---------- | ---------- | ------------ |
+| 1.0.0      | 2025-11-25 | 初版リリース |

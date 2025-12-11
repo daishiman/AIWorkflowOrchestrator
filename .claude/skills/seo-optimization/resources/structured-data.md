@@ -54,264 +54,261 @@ export default function Page() {
 
 ```typescript
 const websiteSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: 'サイト名',
-  url: 'https://example.com',
-  description: 'サイトの説明',
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "サイト名",
+  url: "https://example.com",
+  description: "サイトの説明",
   potentialAction: {
-    '@type': 'SearchAction',
+    "@type": "SearchAction",
     target: {
-      '@type': 'EntryPoint',
-      urlTemplate: 'https://example.com/search?q={search_term_string}',
+      "@type": "EntryPoint",
+      urlTemplate: "https://example.com/search?q={search_term_string}",
     },
-    'query-input': 'required name=search_term_string',
+    "query-input": "required name=search_term_string",
   },
-}
+};
 ```
 
 ### Organization（組織）
 
 ```typescript
 const organizationSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: '組織名',
-  url: 'https://example.com',
-  logo: 'https://example.com/logo.png',
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "組織名",
+  url: "https://example.com",
+  logo: "https://example.com/logo.png",
   sameAs: [
-    'https://twitter.com/example',
-    'https://facebook.com/example',
-    'https://linkedin.com/company/example',
+    "https://twitter.com/example",
+    "https://facebook.com/example",
+    "https://linkedin.com/company/example",
   ],
   contactPoint: {
-    '@type': 'ContactPoint',
-    telephone: '+81-3-xxxx-xxxx',
-    contactType: 'customer service',
-    availableLanguage: ['Japanese', 'English'],
+    "@type": "ContactPoint",
+    telephone: "+81-3-xxxx-xxxx",
+    contactType: "customer service",
+    availableLanguage: ["Japanese", "English"],
   },
-}
+};
 ```
 
 ### Article（記事）
 
 ```typescript
 const articleSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  headline: '記事のタイトル',
-  description: '記事の説明',
-  image: [
-    'https://example.com/image1.jpg',
-    'https://example.com/image2.jpg',
-  ],
-  datePublished: '2024-01-15T08:00:00+09:00',
-  dateModified: '2024-01-20T10:00:00+09:00',
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "記事のタイトル",
+  description: "記事の説明",
+  image: ["https://example.com/image1.jpg", "https://example.com/image2.jpg"],
+  datePublished: "2024-01-15T08:00:00+09:00",
+  dateModified: "2024-01-20T10:00:00+09:00",
   author: {
-    '@type': 'Person',
-    name: '著者名',
-    url: 'https://example.com/author',
+    "@type": "Person",
+    name: "著者名",
+    url: "https://example.com/author",
   },
   publisher: {
-    '@type': 'Organization',
-    name: '発行者名',
+    "@type": "Organization",
+    name: "発行者名",
     logo: {
-      '@type': 'ImageObject',
-      url: 'https://example.com/logo.png',
+      "@type": "ImageObject",
+      url: "https://example.com/logo.png",
     },
   },
   mainEntityOfPage: {
-    '@type': 'WebPage',
-    '@id': 'https://example.com/article/example',
+    "@type": "WebPage",
+    "@id": "https://example.com/article/example",
   },
-}
+};
 ```
 
 ### BlogPosting（ブログ記事）
 
 ```typescript
 const blogPostingSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'BlogPosting',
-  headline: 'ブログ記事タイトル',
-  description: '概要',
-  image: 'https://example.com/blog-image.jpg',
-  datePublished: '2024-01-15',
-  dateModified: '2024-01-20',
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: "ブログ記事タイトル",
+  description: "概要",
+  image: "https://example.com/blog-image.jpg",
+  datePublished: "2024-01-15",
+  dateModified: "2024-01-20",
   author: {
-    '@type': 'Person',
-    name: '著者名',
+    "@type": "Person",
+    name: "著者名",
   },
-  keywords: ['Next.js', 'SEO', 'React'],
+  keywords: ["Next.js", "SEO", "React"],
   wordCount: 1500,
-  articleBody: '記事本文...',
-}
+  articleBody: "記事本文...",
+};
 ```
 
 ### BreadcrumbList（パンくずリスト）
 
 ```typescript
 const breadcrumbSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
   itemListElement: [
     {
-      '@type': 'ListItem',
+      "@type": "ListItem",
       position: 1,
-      name: 'ホーム',
-      item: 'https://example.com',
+      name: "ホーム",
+      item: "https://example.com",
     },
     {
-      '@type': 'ListItem',
+      "@type": "ListItem",
       position: 2,
-      name: 'ブログ',
-      item: 'https://example.com/blog',
+      name: "ブログ",
+      item: "https://example.com/blog",
     },
     {
-      '@type': 'ListItem',
+      "@type": "ListItem",
       position: 3,
-      name: '記事タイトル',
-      item: 'https://example.com/blog/article',
+      name: "記事タイトル",
+      item: "https://example.com/blog/article",
     },
   ],
-}
+};
 ```
 
 ### FAQPage（よくある質問）
 
 ```typescript
 const faqSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
   mainEntity: [
     {
-      '@type': 'Question',
-      name: '質問1',
+      "@type": "Question",
+      name: "質問1",
       acceptedAnswer: {
-        '@type': 'Answer',
-        text: '回答1',
+        "@type": "Answer",
+        text: "回答1",
       },
     },
     {
-      '@type': 'Question',
-      name: '質問2',
+      "@type": "Question",
+      name: "質問2",
       acceptedAnswer: {
-        '@type': 'Answer',
-        text: '回答2',
+        "@type": "Answer",
+        text: "回答2",
       },
     },
   ],
-}
+};
 ```
 
 ### Product（商品）
 
 ```typescript
 const productSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Product',
-  name: '商品名',
-  description: '商品説明',
-  image: 'https://example.com/product.jpg',
-  sku: 'SKU-12345',
+  "@context": "https://schema.org",
+  "@type": "Product",
+  name: "商品名",
+  description: "商品説明",
+  image: "https://example.com/product.jpg",
+  sku: "SKU-12345",
   brand: {
-    '@type': 'Brand',
-    name: 'ブランド名',
+    "@type": "Brand",
+    name: "ブランド名",
   },
   offers: {
-    '@type': 'Offer',
-    url: 'https://example.com/product',
-    priceCurrency: 'JPY',
-    price: '9800',
-    priceValidUntil: '2024-12-31',
-    availability: 'https://schema.org/InStock',
+    "@type": "Offer",
+    url: "https://example.com/product",
+    priceCurrency: "JPY",
+    price: "9800",
+    priceValidUntil: "2024-12-31",
+    availability: "https://schema.org/InStock",
     seller: {
-      '@type': 'Organization',
-      name: '販売者名',
+      "@type": "Organization",
+      name: "販売者名",
     },
   },
   aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: '4.5',
-    reviewCount: '100',
+    "@type": "AggregateRating",
+    ratingValue: "4.5",
+    reviewCount: "100",
   },
   review: [
     {
-      '@type': 'Review',
+      "@type": "Review",
       reviewRating: {
-        '@type': 'Rating',
-        ratingValue: '5',
+        "@type": "Rating",
+        ratingValue: "5",
       },
       author: {
-        '@type': 'Person',
-        name: 'レビュアー名',
+        "@type": "Person",
+        name: "レビュアー名",
       },
-      reviewBody: 'レビュー本文',
+      reviewBody: "レビュー本文",
     },
   ],
-}
+};
 ```
 
 ### LocalBusiness（店舗）
 
 ```typescript
 const localBusinessSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Restaurant', // または LocalBusiness, Store など
-  name: '店舗名',
-  image: 'https://example.com/store.jpg',
-  '@id': 'https://example.com',
-  url: 'https://example.com',
-  telephone: '+81-3-xxxx-xxxx',
+  "@context": "https://schema.org",
+  "@type": "Restaurant", // または LocalBusiness, Store など
+  name: "店舗名",
+  image: "https://example.com/store.jpg",
+  "@id": "https://example.com",
+  url: "https://example.com",
+  telephone: "+81-3-xxxx-xxxx",
   address: {
-    '@type': 'PostalAddress',
-    streetAddress: '渋谷区xxx 1-2-3',
-    addressLocality: '渋谷区',
-    addressRegion: '東京都',
-    postalCode: '150-0001',
-    addressCountry: 'JP',
+    "@type": "PostalAddress",
+    streetAddress: "渋谷区xxx 1-2-3",
+    addressLocality: "渋谷区",
+    addressRegion: "東京都",
+    postalCode: "150-0001",
+    addressCountry: "JP",
   },
   geo: {
-    '@type': 'GeoCoordinates',
+    "@type": "GeoCoordinates",
     latitude: 35.6595,
     longitude: 139.7004,
   },
   openingHoursSpecification: [
     {
-      '@type': 'OpeningHoursSpecification',
-      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-      opens: '09:00',
-      closes: '18:00',
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: "09:00",
+      closes: "18:00",
     },
   ],
-  priceRange: '¥¥',
-}
+  priceRange: "¥¥",
+};
 ```
 
 ### HowTo（ハウツー）
 
 ```typescript
 const howToSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  name: 'Next.jsアプリのデプロイ方法',
-  description: 'Vercelを使用したNext.jsアプリのデプロイ手順',
-  totalTime: 'PT15M',
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  name: "Next.jsアプリのデプロイ方法",
+  description: "Vercelを使用したNext.jsアプリのデプロイ手順",
+  totalTime: "PT15M",
   step: [
     {
-      '@type': 'HowToStep',
-      name: 'GitHubにプッシュ',
-      text: 'コードをGitHubリポジトリにプッシュします',
-      image: 'https://example.com/step1.png',
+      "@type": "HowToStep",
+      name: "GitHubにプッシュ",
+      text: "コードをGitHubリポジトリにプッシュします",
+      image: "https://example.com/step1.png",
     },
     {
-      '@type': 'HowToStep',
-      name: 'Vercelでインポート',
-      text: 'Vercelダッシュボードでリポジトリをインポートします',
-      image: 'https://example.com/step2.png',
+      "@type": "HowToStep",
+      name: "Vercelでインポート",
+      text: "Vercelダッシュボードでリポジトリをインポートします",
+      image: "https://example.com/step2.png",
     },
   ],
-}
+};
 ```
 
 ## 動的生成パターン

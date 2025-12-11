@@ -8,16 +8,16 @@
  * - 変更レポートを生成
  */
 
-import { readFileSync } from 'fs';
-import YAML from 'yaml';
+import { readFileSync } from "fs";
+import YAML from "yaml";
 
 const colors = {
-  reset: '\x1b[0m',
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  magenta: '\x1b[35m',
+  reset: "\x1b[0m",
+  red: "\x1b[31m",
+  green: "\x1b[32m",
+  yellow: "\x1b[33m",
+  blue: "\x1b[34m",
+  magenta: "\x1b[35m",
 };
 
 function log(color, symbol, message) {
@@ -26,11 +26,11 @@ function log(color, symbol, message) {
 
 function loadOpenAPISpec(filePath) {
   try {
-    const content = readFileSync(filePath, 'utf-8');
+    const content = readFileSync(filePath, "utf-8");
     return YAML.parse(content);
   } catch (error) {
-    log(colors.red, '❌', `ファイル読み込みエラー: ${filePath}`);
-    log(colors.red, '   ', error.message);
+    log(colors.red, "❌", `ファイル読み込みエラー: ${filePath}`);
+    log(colors.red, "   ", error.message);
     process.exit(1);
   }
 }
@@ -50,8 +50,8 @@ function compareSpecs(oldSpec, newSpec) {
   oldPaths.forEach((path) => {
     if (!newPaths.includes(path)) {
       breakingChanges.push({
-        type: 'endpoint_removed',
-        severity: 'critical',
+        type: "endpoint_removed",
+        severity: "critical",
         path,
         message: `エンドポイント削除: ${path}`,
       });
@@ -63,8 +63,8 @@ function compareSpecs(oldSpec, newSpec) {
       oldMethods.forEach((method) => {
         if (!newMethods.includes(method)) {
           breakingChanges.push({
-            type: 'method_removed',
-            severity: 'critical',
+            type: "method_removed",
+            severity: "critical",
             path,
             method,
             message: `メソッド削除: ${method.toUpperCase()} ${path}`,
@@ -80,8 +80,8 @@ function compareSpecs(oldSpec, newSpec) {
 
             if (!oldParam && newParam.required) {
               breakingChanges.push({
-                type: 'required_param_added',
-                severity: 'high',
+                type: "required_param_added",
+                severity: "high",
                 path,
                 method,
                 param: newParam.name,
@@ -96,8 +96,8 @@ function compareSpecs(oldSpec, newSpec) {
 
             if (!newParam) {
               breakingChanges.push({
-                type: 'param_removed',
-                severity: 'high',
+                type: "param_removed",
+                severity: "high",
                 path,
                 method,
                 param: oldParam.name,
@@ -107,9 +107,12 @@ function compareSpecs(oldSpec, newSpec) {
           });
 
           // 非推奨マーク
-          if (newSpec.paths[path][method].deprecated && !oldSpec.paths[path][method].deprecated) {
+          if (
+            newSpec.paths[path][method].deprecated &&
+            !oldSpec.paths[path][method].deprecated
+          ) {
             deprecations.push({
-              type: 'endpoint_deprecated',
+              type: "endpoint_deprecated",
               path,
               method,
               message: `非推奨マーク: ${method.toUpperCase()} ${path}`,
@@ -122,7 +125,7 @@ function compareSpecs(oldSpec, newSpec) {
       newMethods.forEach((method) => {
         if (!oldMethods.includes(method)) {
           nonBreakingChanges.push({
-            type: 'method_added',
+            type: "method_added",
             path,
             method,
             message: `新メソッド追加: ${method.toUpperCase()} ${path}`,
@@ -136,7 +139,7 @@ function compareSpecs(oldSpec, newSpec) {
   newPaths.forEach((path) => {
     if (!oldPaths.includes(path)) {
       nonBreakingChanges.push({
-        type: 'endpoint_added',
+        type: "endpoint_added",
         path,
         message: `新エンドポイント追加: ${path}`,
       });
@@ -149,9 +152,15 @@ function compareSpecs(oldSpec, newSpec) {
 function generateReport(oldVersion, newVersion, changes) {
   const { breakingChanges, nonBreakingChanges, deprecations } = changes;
 
-  console.log(`${colors.magenta}╔════════════════════════════════════════════════╗${colors.reset}`);
-  console.log(`${colors.magenta}║       API 破壊的変更検出レポート              ║${colors.reset}`);
-  console.log(`${colors.magenta}╚════════════════════════════════════════════════╝${colors.reset}\n`);
+  console.log(
+    `${colors.magenta}╔════════════════════════════════════════════════╗${colors.reset}`,
+  );
+  console.log(
+    `${colors.magenta}║       API 破壊的変更検出レポート              ║${colors.reset}`,
+  );
+  console.log(
+    `${colors.magenta}╚════════════════════════════════════════════════╝${colors.reset}\n`,
+  );
 
   console.log(`${colors.blue}📊 サマリー${colors.reset}`);
   console.log(`   旧バージョン: ${oldVersion}`);
@@ -162,10 +171,12 @@ function generateReport(oldVersion, newVersion, changes) {
 
   // 破壊的変更
   if (breakingChanges.length > 0) {
-    console.log(`${colors.red}🚨 破壊的変更（BREAKING CHANGES）${colors.reset}\n`);
+    console.log(
+      `${colors.red}🚨 破壊的変更（BREAKING CHANGES）${colors.reset}\n`,
+    );
 
     breakingChanges.forEach((change, index) => {
-      const icon = change.severity === 'critical' ? '🔴' : '🟡';
+      const icon = change.severity === "critical" ? "🔴" : "🟡";
       log(colors.red, `${icon}`, change.message);
     });
 
@@ -174,10 +185,12 @@ function generateReport(oldVersion, newVersion, changes) {
 
   // 非推奨化
   if (deprecations.length > 0) {
-    console.log(`${colors.yellow}⚠️  非推奨化（DEPRECATIONS）${colors.reset}\n`);
+    console.log(
+      `${colors.yellow}⚠️  非推奨化（DEPRECATIONS）${colors.reset}\n`,
+    );
 
     deprecations.forEach((change) => {
-      log(colors.yellow, '📝', change.message);
+      log(colors.yellow, "📝", change.message);
     });
 
     console.log();
@@ -185,10 +198,12 @@ function generateReport(oldVersion, newVersion, changes) {
 
   // 非破壊的変更
   if (nonBreakingChanges.length > 0) {
-    console.log(`${colors.green}✨ 非破壊的変更（NEW FEATURES）${colors.reset}\n`);
+    console.log(
+      `${colors.green}✨ 非破壊的変更（NEW FEATURES）${colors.reset}\n`,
+    );
 
     nonBreakingChanges.forEach((change) => {
-      log(colors.green, '➕', change.message);
+      log(colors.green, "➕", change.message);
     });
 
     console.log();
@@ -198,18 +213,22 @@ function generateReport(oldVersion, newVersion, changes) {
   console.log(`${colors.blue}📋 推奨アクション${colors.reset}\n`);
 
   if (breakingChanges.length > 0) {
-    log(colors.red, '1.', 'メジャーバージョンアップが必要です（例: v1 → v2）');
-    log(colors.red, '2.', '移行ガイドを作成してください');
-    log(colors.red, '3.', '最低4週間の移行期間を設定してください');
-    log(colors.red, '4.', 'Sunset ヘッダーを旧バージョンに追加してください');
+    log(colors.red, "1.", "メジャーバージョンアップが必要です（例: v1 → v2）");
+    log(colors.red, "2.", "移行ガイドを作成してください");
+    log(colors.red, "3.", "最低4週間の移行期間を設定してください");
+    log(colors.red, "4.", "Sunset ヘッダーを旧バージョンに追加してください");
   } else if (deprecations.length > 0) {
-    log(colors.yellow, '1.', '非推奨化アナウンスを公開してください');
-    log(colors.yellow, '2.', 'Deprecation ヘッダーを追加してください');
+    log(colors.yellow, "1.", "非推奨化アナウンスを公開してください");
+    log(colors.yellow, "2.", "Deprecation ヘッダーを追加してください");
   } else if (nonBreakingChanges.length > 0) {
-    log(colors.green, '1.', 'マイナーバージョンアップで問題ありません（例: v1.1 → v1.2）');
-    log(colors.green, '2.', 'CHANGELOG を更新してください');
+    log(
+      colors.green,
+      "1.",
+      "マイナーバージョンアップで問題ありません（例: v1.1 → v1.2）",
+    );
+    log(colors.green, "2.", "CHANGELOG を更新してください");
   } else {
-    log(colors.green, '✅', '変更は検出されませんでした');
+    log(colors.green, "✅", "変更は検出されませんでした");
   }
 
   console.log();
@@ -222,8 +241,10 @@ function generateReport(oldVersion, newVersion, changes) {
 const args = process.argv.slice(2);
 
 if (args.length < 2) {
-  console.log('使用方法: check-breaking-changes.js <旧仕様.yaml> <新仕様.yaml>');
-  console.log('例: check-breaking-changes.js openapi-v1.yaml openapi-v2.yaml');
+  console.log(
+    "使用方法: check-breaking-changes.js <旧仕様.yaml> <新仕様.yaml>",
+  );
+  console.log("例: check-breaking-changes.js openapi-v1.yaml openapi-v2.yaml");
   process.exit(1);
 }
 
@@ -232,8 +253,8 @@ const [oldSpecPath, newSpecPath] = args;
 const oldSpec = loadOpenAPISpec(oldSpecPath);
 const newSpec = loadOpenAPISpec(newSpecPath);
 
-const oldVersion = oldSpec.info?.version || 'unknown';
-const newVersion = newSpec.info?.version || 'unknown';
+const oldVersion = oldSpec.info?.version || "unknown";
+const newVersion = newSpec.info?.version || "unknown";
 
 const changes = compareSpecs(oldSpec, newSpec);
 const exitCode = generateReport(oldVersion, newVersion, changes);

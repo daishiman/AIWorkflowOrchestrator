@@ -44,6 +44,7 @@ model: sonnet
 ## 設計書参照
 
 このコマンドは以下の設計書章節に準拠します:
+
 - 第4章: ディレクトリ構造（ハイブリッドアーキテクチャ）
 - 第2章: 設定ファイル要件、テスト戦略
 - 第5章: Clean Architecture依存関係ルール
@@ -54,11 +55,13 @@ model: sonnet
 ### Phase 1: 設計書参照とスキル読み込み
 
 設計書を参照:
+
 ```
 docs/00-requirements/master_system_design.md
 ```
 
 必須スキルを読み込み:
+
 ```
 .claude/skills/clean-architecture-principles/SKILL.md
 .claude/skills/architectural-patterns/SKILL.md
@@ -70,9 +73,11 @@ docs/00-requirements/master_system_design.md
 
 **実行内容**:
 設計書第4.3節に記載された完全なディレクトリ構造を作成:
+
 - .claude/, docs/, src/shared/, src/features/, src/app/, local-agent/, .github/workflows/
 
 **参照スキル**:
+
 - `.claude/skills/clean-architecture-principles/SKILL.md`: 依存関係ルール（core → infrastructure → features → app）
 - `.claude/skills/architectural-patterns/SKILL.md`: ハイブリッド構造パターン
 
@@ -80,6 +85,7 @@ docs/00-requirements/master_system_design.md
 
 **実行内容**:
 設計書第2.5節に記載された全設定ファイルを作成:
+
 - tsconfig.json (strict mode, path alias)
 - eslint.config.js (Flat Config, boundaries plugin)
 - .prettierrc
@@ -90,6 +96,7 @@ docs/00-requirements/master_system_design.md
 - .env.example
 
 **参照スキル**:
+
 - `.claude/skills/code-style-guides/SKILL.md`: TypeScript/ESLint設定パターン
 - `.claude/skills/best-practices-curation/SKILL.md`: テスト・品質設定ベストプラクティス
 
@@ -97,12 +104,14 @@ docs/00-requirements/master_system_design.md
 
 **実行内容**:
 設計書第12.2節に記載されたワークフローを作成:
+
 - ci.yml (PR時の品質ゲート)
 - deploy.yml (Discord通知)
 - reusable-test.yml
 - .github/workflows/README.md (Mermaid可視化)
 
 **参照スキル**:
+
 - `.claude/skills/github-actions-syntax/SKILL.md`: ワークフロー構文
 - `.claude/skills/caching-strategies-gha/SKILL.md`: pnpm cache設定
 
@@ -110,6 +119,7 @@ docs/00-requirements/master_system_design.md
 
 **実行内容**:
 設計書第5章、第6章、第7章に記載されたコアファイルを作成:
+
 - src/shared/core/entities/workflow.ts (第5.2.3節)
 - src/shared/core/interfaces/IWorkflowExecutor.ts (第6.1節)
 - src/shared/core/errors/WorkflowError.ts (第7.1節)
@@ -118,6 +128,7 @@ docs/00-requirements/master_system_design.md
 - local-agent/ecosystem.config.js (第9.4節)
 
 **参照スキル**:
+
 - `.claude/skills/domain-driven-design/SKILL.md`: エンティティ設計
 - `.claude/skills/interface-segregation/SKILL.md`: インターフェース設計
 - `.claude/skills/zod-validation/SKILL.md`: スキーマバリデーション
@@ -125,6 +136,7 @@ docs/00-requirements/master_system_design.md
 ### Phase 6: 検証と報告
 
 **実行内容**:
+
 - 作成されたディレクトリ構造の表示
 - 設定ファイルの確認
 - 設計書準拠チェック（8項目）
@@ -132,28 +144,32 @@ docs/00-requirements/master_system_design.md
 ## 期待成果物
 
 **ディレクトリ構造** (設計書第4.3節):
+
 - ハイブリッドアーキテクチャ準拠のフォルダ構成
 
 **設定ファイル** (設計書第2.5節):
+
 - TypeScript、ESLint、Prettier、Vitest、Drizzle、Railway設定
 
 **コアファイル** (設計書第5-7章):
+
 - エンティティ、インターフェース、エラークラス、レジストリ、スキーマ
 
 **CI/CDワークフロー** (設計書第12.2節):
+
 - GitHub Actions（ci.yml、deploy.yml、reusable-test.yml）
 
 ## スキル参照（フェーズ別）
 
-| フェーズ | スキル | 用途 |
-|---------|--------|------|
-| Phase 2 | clean-architecture-principles | 依存関係ルール |
-| Phase 2 | architectural-patterns | ハイブリッド構造 |
-| Phase 3 | code-style-guides | 命名規則 |
-| Phase 4 | best-practices-curation | CI/CD設定 |
-| Phase 5 | domain-driven-design | エンティティ設計 |
-| Phase 5 | interface-segregation | インターフェース設計 |
-| Phase 5 | zod-validation | スキーマ設計 |
+| フェーズ | スキル                        | 用途                 |
+| -------- | ----------------------------- | -------------------- |
+| Phase 2  | clean-architecture-principles | 依存関係ルール       |
+| Phase 2  | architectural-patterns        | ハイブリッド構造     |
+| Phase 3  | code-style-guides             | 命名規則             |
+| Phase 4  | best-practices-curation       | CI/CD設定            |
+| Phase 5  | domain-driven-design          | エンティティ設計     |
+| Phase 5  | interface-segregation         | インターフェース設計 |
+| Phase 5  | zod-validation                | スキーマ設計         |
 
 ## 使用例
 

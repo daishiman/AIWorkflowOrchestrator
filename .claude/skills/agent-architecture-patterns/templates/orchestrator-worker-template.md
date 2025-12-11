@@ -85,14 +85,14 @@ version: 1.0.0
 
 ## 変数一覧
 
-| 変数 | 説明 | 例 |
-|------|------|------|
-| `{{orchestrator_name}}` | オーケストレーター名 | `code-review-orchestrator` |
-| `{{orchestrator_description}}` | オーケストレーターの説明 | `コードレビューを調整` |
-| `{{model}}` | 使用モデル | `sonnet` |
-| `{{worker_1_name}}` | ワーカー1の名前 | `style-checker` |
-| `{{worker_1_role}}` | ワーカー1の役割 | `スタイルガイド遵守チェック` |
-| `{{worker_1_tools}}` | ワーカー1のツール | `[Read, Grep]` |
+| 変数                           | 説明                     | 例                           |
+| ------------------------------ | ------------------------ | ---------------------------- |
+| `{{orchestrator_name}}`        | オーケストレーター名     | `code-review-orchestrator`   |
+| `{{orchestrator_description}}` | オーケストレーターの説明 | `コードレビューを調整`       |
+| `{{model}}`                    | 使用モデル               | `sonnet`                     |
+| `{{worker_1_name}}`            | ワーカー1の名前          | `style-checker`              |
+| `{{worker_1_role}}`            | ワーカー1の役割          | `スタイルガイド遵守チェック` |
+| `{{worker_1_tools}}`           | ワーカー1のツール        | `[Read, Grep]`               |
 
 ## 使用例
 

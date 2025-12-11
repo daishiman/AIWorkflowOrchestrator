@@ -31,6 +31,7 @@ jobs:
 ```
 
 **動作**:
+
 1. `setup`ジョブでマトリックスJSON生成
 2. `test`ジョブで`fromJSON()`でパース
 3. 2 OS × 3 Node = 6ジョブ実行
@@ -85,6 +86,7 @@ jobs:
 ```
 
 **動作**:
+
 - `services/api/`変更 → `api`のみテスト
 - `services/web/`と`services/worker/`変更 → 両方テスト
 - 変更なし → 全サービステスト
@@ -130,29 +132,30 @@ jobs:
 ### Node.jsスクリプトで生成
 
 **`.github/scripts/generate-matrix.mjs`**:
+
 ```javascript
-import { readFileSync, readdirSync } from 'fs';
-import { join } from 'path';
+import { readFileSync, readdirSync } from "fs";
+import { join } from "path";
 
 // package.jsonからサポートNode.jsバージョン取得
-const packageJson = JSON.parse(readFileSync('package.json', 'utf8'));
-const nodeVersions = packageJson.engines?.node
-  ?.match(/\d+/g)
-  ?.map(Number) || [18, 20, 22];
+const packageJson = JSON.parse(readFileSync("package.json", "utf8"));
+const nodeVersions = packageJson.engines?.node?.match(/\d+/g)?.map(Number) || [
+  18, 20, 22,
+];
 
 // 実際に存在するサービスを検出
-const services = readdirSync('services', { withFileTypes: true })
-  .filter(dirent => dirent.isDirectory())
-  .map(dirent => dirent.name);
+const services = readdirSync("services", { withFileTypes: true })
+  .filter((dirent) => dirent.isDirectory())
+  .map((dirent) => dirent.name);
 
 // マトリックス生成
 const matrix = {
-  os: ['ubuntu-latest', 'windows-latest', 'macos-latest'],
+  os: ["ubuntu-latest", "windows-latest", "macos-latest"],
   node: nodeVersions,
-  include: services.map(service => ({
+  include: services.map((service) => ({
     service,
-    'working-directory': `services/${service}`
-  }))
+    "working-directory": `services/${service}`,
+  })),
 };
 
 // GitHub Actions出力形式
@@ -160,6 +163,7 @@ console.log(JSON.stringify(matrix));
 ```
 
 **ワークフロー**:
+
 ```yaml
 jobs:
   generate-matrix:
@@ -225,11 +229,20 @@ jobs:
 ```
 
 **APIレスポンス例**:
+
 ```json
 {
   "environments": [
-    {"name": "prod-us", "region": "us-east-1", "url": "https://us.example.com"},
-    {"name": "prod-eu", "region": "eu-west-1", "url": "https://eu.example.com"}
+    {
+      "name": "prod-us",
+      "region": "us-east-1",
+      "url": "https://us.example.com"
+    },
+    {
+      "name": "prod-eu",
+      "region": "eu-west-1",
+      "url": "https://eu.example.com"
+    }
   ]
 }
 ```
@@ -241,17 +254,19 @@ jobs:
 ### 設定ファイルベースのマトリックス
 
 **`matrix-config.json`**:
+
 ```json
 {
   "browsers": [
-    {"name": "chrome", "version": "latest"},
-    {"name": "firefox", "version": "latest"},
-    {"name": "safari", "version": "16"}
+    { "name": "chrome", "version": "latest" },
+    { "name": "firefox", "version": "latest" },
+    { "name": "safari", "version": "16" }
   ]
 }
 ```
 
 **ワークフロー**:
+
 ```yaml
 jobs:
   setup:
@@ -347,6 +362,7 @@ jobs:
 ```
 
 **動作**:
+
 - `packages/auth/`変更 → `auth`パッケージを2 OS × 3 Node = 6ジョブ
 - `packages/api/`と`packages/db/`変更 → 両方を12ジョブ
 - 変更なし → `core`のみubuntu + Node 20で1ジョブ
@@ -478,7 +494,7 @@ jobs:
 
 ### 4. マトリックスのドキュメント化
 
-```yaml
+````yaml
 - id: set-matrix
   run: |
     MATRIX=$(generate-matrix.sh)
@@ -489,18 +505,18 @@ jobs:
     echo '```json' >> $GITHUB_STEP_SUMMARY
     echo "$MATRIX" | jq . >> $GITHUB_STEP_SUMMARY
     echo '```' >> $GITHUB_STEP_SUMMARY
-```
+````
 
 ---
 
 ## まとめ
 
-| 方法 | 用途 | 複雑度 |
-|------|------|--------|
-| `fromJSON()` | 基本的な動的マトリックス | 低 |
-| 変更ファイル検出 | 差分ビルド最適化 | 中 |
-| スクリプト生成 | 複雑なロジック | 中 |
-| API連携 | 外部システム統合 | 高 |
-| 設定ファイル | メンテナンス性重視 | 低 |
+| 方法             | 用途                     | 複雑度 |
+| ---------------- | ------------------------ | ------ |
+| `fromJSON()`     | 基本的な動的マトリックス | 低     |
+| 変更ファイル検出 | 差分ビルド最適化         | 中     |
+| スクリプト生成   | 複雑なロジック           | 中     |
+| API連携          | 外部システム統合         | 高     |
+| 設定ファイル     | メンテナンス性重視       | 低     |
 
 **推奨**: シンプルな動的マトリックスから開始、必要に応じて高度化

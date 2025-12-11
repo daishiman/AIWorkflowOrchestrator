@@ -18,11 +18,11 @@ feature/  ●──●──●        ●──●──●
 
 ### ブランチ構成
 
-| ブランチ | 目的 | 保護 |
-|:---------|:-----|:----:|
-| `main` | 本番公開版 | ○ |
-| `feature/*` | 新規・更新作業 | - |
-| `fix/*` | 誤り修正 | - |
+| ブランチ    | 目的           | 保護 |
+| :---------- | :------------- | :--: |
+| `main`      | 本番公開版     |  ○   |
+| `feature/*` | 新規・更新作業 |  -   |
+| `fix/*`     | 誤り修正       |  -   |
 
 ## ブランチ命名規則
 
@@ -34,13 +34,13 @@ feature/  ●──●──●        ●──●──●
 
 ### タイプ
 
-| タイプ | 用途 | 例 |
-|:-------|:-----|:---|
-| `feature` | 新規文書・機能 | `feature/api-authentication-guide` |
-| `update` | 既存文書の更新 | `update/installation-for-v2` |
-| `fix` | 誤り修正 | `fix/broken-links-readme` |
-| `refactor` | 構造変更 | `refactor/reorganize-tutorials` |
-| `translate` | 翻訳 | `translate/japanese-getting-started` |
+| タイプ      | 用途           | 例                                   |
+| :---------- | :------------- | :----------------------------------- |
+| `feature`   | 新規文書・機能 | `feature/api-authentication-guide`   |
+| `update`    | 既存文書の更新 | `update/installation-for-v2`         |
+| `fix`       | 誤り修正       | `fix/broken-links-readme`            |
+| `refactor`  | 構造変更       | `refactor/reorganize-tutorials`      |
+| `translate` | 翻訳           | `translate/japanese-getting-started` |
 
 ### 命名ルール
 
@@ -146,6 +146,7 @@ docs/v1.x  ●────●────●
 ### 予防策
 
 1. **こまめにmainをマージ**
+
    ```bash
    git fetch origin
    git merge origin/main
@@ -208,8 +209,8 @@ git remote prune origin
 
 ### 定期メンテナンス
 
-| タスク | 頻度 |
-|:-------|:-----|
-| マージ済みブランチの削除 | 週1回 |
-| 古いPRのクローズ | 月1回 |
-| ブランチ命名規則の監査 | 四半期 |
+| タスク                   | 頻度   |
+| :----------------------- | :----- |
+| マージ済みブランチの削除 | 週1回  |
+| 古いPRのクローズ         | 月1回  |
+| ブランチ命名規則の監査   | 四半期 |

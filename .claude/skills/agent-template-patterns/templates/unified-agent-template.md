@@ -55,6 +55,7 @@ version: 1.0.0
 **状況**: {{scenario_1_situation}}
 
 **適用条件**:
+
 - [ ] {{condition_1}}
 - [ ] {{condition_2}}
 - [ ] {{condition_3}}
@@ -66,6 +67,7 @@ version: 1.0.0
 **状況**: {{scenario_2_situation}}
 
 **適用条件**:
+
 - [ ] {{condition_1}}
 - [ ] {{condition_2}}
 
@@ -74,14 +76,17 @@ version: 1.0.0
 ## 前提条件
 
 ### 必要な知識
+
 - [ ] {{required_knowledge_1}}
 - [ ] {{required_knowledge_2}}
 
 ### 必要なツール
+
 - {{tool_1}}: {{tool_1_purpose}}
 - {{tool_2}}: {{tool_2_purpose}}
 
 ### 環境要件
+
 - {{env_requirement_1}}
 - {{env_requirement_2}}
 
@@ -92,6 +97,7 @@ version: 1.0.0
 **目的**: {{phase_1_purpose}}
 
 **ステップ**:
+
 1. **{{step_1_name}}**:
    - {{step_1_action_1}}
    - {{step_1_action_2}}
@@ -101,6 +107,7 @@ version: 1.0.0
    - {{step_2_action_2}}
 
 **判断基準**:
+
 - [ ] {{phase_1_criterion_1}}
 - [ ] {{phase_1_criterion_2}}
 
@@ -111,6 +118,7 @@ version: 1.0.0
 **目的**: {{phase_2_purpose}}
 
 **ステップ**:
+
 1. **{{step_1_name}}**:
    - {{step_1_action_1}}
    - {{step_1_action_2}}
@@ -120,6 +128,7 @@ version: 1.0.0
    - {{step_2_action_2}}
 
 **判断基準**:
+
 - [ ] {{phase_2_criterion_1}}
 - [ ] {{phase_2_criterion_2}}
 
@@ -130,6 +139,7 @@ version: 1.0.0
 **目的**: {{phase_3_purpose}}
 
 **ステップ**:
+
 1. **{{step_1_name}}**:
    - {{step_1_action_1}}
    - {{step_1_action_2}}
@@ -139,6 +149,7 @@ version: 1.0.0
    - {{step_2_action_2}}
 
 **判断基準**:
+
 - [ ] {{phase_3_criterion_1}}
 - [ ] {{phase_3_criterion_2}}
 
@@ -149,6 +160,7 @@ version: 1.0.0
 ### 使用タイミング
 
 このエージェントは以下の状況で使用してください:
+
 - {{use_timing_1}}
 - {{use_timing_2}}
 - {{use_timing_3}}
@@ -156,6 +168,7 @@ version: 1.0.0
 ### 依存スキル
 
 このエージェントは以下のスキルに依存しています:
+
 - **{{skill_1_name}}** (`.claude/skills/{{skill_1_path}}/SKILL.md`)
 - **{{skill_2_name}}** (`.claude/skills/{{skill_2_path}}/SKILL.md`)
 
@@ -205,6 +218,7 @@ version: 1.0.0
 **原因**: {{problem_1_cause}}
 
 **解決策**:
+
 1. {{solution_1_step_1}}
 2. {{solution_1_step_2}}
 3. {{solution_1_step_3}}
@@ -218,6 +232,7 @@ version: 1.0.0
 **原因**: {{problem_2_cause}}
 
 **解決策**:
+
 1. {{solution_2_step_1}}
 2. {{solution_2_step_2}}
 
@@ -231,6 +246,7 @@ version: 1.0.0
 ## 詳細リファレンス
 
 詳細な実装ガイドとツールは以下を参照:
+
 - {{resource_1_name}} (`resources/{{resource_1_file}}`)
 - {{template_1_name}} (`templates/{{template_1_file}}`)
 - {{script_1_name}} (`scripts/{{script_1_file}}`)
@@ -240,6 +256,7 @@ version: 1.0.0
 ### {{metric_1_name}}
 
 **評価基準**:
+
 - {{metric_1_criterion_1}}: {{metric_1_score_1}}
 - {{metric_1_criterion_2}}: {{metric_1_score_2}}
 
@@ -253,28 +270,32 @@ version: 1.0.0
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | {{date}} | 初版作成 |
+| バージョン | 日付     | 変更内容 |
+| ---------- | -------- | -------- |
+| 1.0.0      | {{date}} | 初版作成 |
 
 ## 使用上の注意
 
 ### このエージェントが得意なこと
+
 - {{strength_1}}
 - {{strength_2}}
 - {{strength_3}}
 
 ### このエージェントが行わないこと
+
 - {{not_responsible_1}}
 - {{not_responsible_2}}
 - {{not_responsible_3}}
 
 ### 推奨される使用フロー
+
 1. {{recommended_flow_1}}
 2. {{recommended_flow_2}}
 3. {{recommended_flow_3}}
 
 ### 参考文献
+
 - **『{{reference_book_1}}』** {{reference_author_1}}著
   - {{reference_chapter_1}}
 - **『{{reference_book_2}}』** {{reference_author_2}}著

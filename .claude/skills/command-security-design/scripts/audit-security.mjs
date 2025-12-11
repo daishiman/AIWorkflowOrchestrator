@@ -14,15 +14,15 @@
  *   node audit-security.mjs <command-file.md>
  */
 
-import fs from 'fs';
+import fs from "fs";
 
 const COLORS = {
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  reset: '\x1b[0m',
-  bold: '\x1b[1m'
+  red: "\x1b[31m",
+  green: "\x1b[32m",
+  yellow: "\x1b[33m",
+  blue: "\x1b[34m",
+  reset: "\x1b[0m",
+  bold: "\x1b[1m",
 };
 
 function log(type, message) {
@@ -30,29 +30,29 @@ function log(type, message) {
     error: `${COLORS.red}🚨${COLORS.reset}`,
     success: `${COLORS.green}✅${COLORS.reset}`,
     warning: `${COLORS.yellow}⚠️${COLORS.reset}`,
-    info: `${COLORS.blue}ℹ️${COLORS.reset}`
+    info: `${COLORS.blue}ℹ️${COLORS.reset}`,
   };
   console.log(`${icons[type]} ${message}`);
 }
 
 // 破壊的なパターン
 const DESTRUCTIVE_PATTERNS = [
-  { pattern: /rm\s+-[rf]+/g, description: '再帰的なファイル削除' },
-  { pattern: /delete|drop|truncate/gi, description: 'データ削除コマンド' },
-  { pattern: /production|prod\b/gi, description: '本番環境への参照' },
-  { pattern: /deploy.*production/gi, description: '本番デプロイ' },
-  { pattern: /force.*push|push.*force/gi, description: 'Git force push' },
-  { pattern: /--force|-f\s+/g, description: '強制フラグ' }
+  { pattern: /rm\s+-[rf]+/g, description: "再帰的なファイル削除" },
+  { pattern: /delete|drop|truncate/gi, description: "データ削除コマンド" },
+  { pattern: /production|prod\b/gi, description: "本番環境への参照" },
+  { pattern: /deploy.*production/gi, description: "本番デプロイ" },
+  { pattern: /force.*push|push.*force/gi, description: "Git force push" },
+  { pattern: /--force|-f\s+/g, description: "強制フラグ" },
 ];
 
 // 機密情報パターン
 const SECRET_PATTERNS = [
-  { pattern: /api[_-]?key/gi, description: 'API Key参照' },
-  { pattern: /password/gi, description: 'パスワード参照' },
-  { pattern: /secret/gi, description: 'Secret参照' },
-  { pattern: /token/gi, description: 'Token参照' },
-  { pattern: /private[_-]?key/gi, description: 'Private Key参照' },
-  { pattern: /\.env\b/g, description: '.envファイル参照' }
+  { pattern: /api[_-]?key/gi, description: "API Key参照" },
+  { pattern: /password/gi, description: "パスワード参照" },
+  { pattern: /secret/gi, description: "Secret参照" },
+  { pattern: /token/gi, description: "Token参照" },
+  { pattern: /private[_-]?key/gi, description: "Private Key参照" },
+  { pattern: /\.env\b/g, description: ".envファイル参照" },
 ];
 
 function parseFrontmatter(content) {
@@ -60,7 +60,7 @@ function parseFrontmatter(content) {
   if (!match) return {};
 
   const frontmatter = {};
-  const lines = match[1].split('\n');
+  const lines = match[1].split("\n");
 
   for (const line of lines) {
     const keyMatch = line.match(/^(\w[\w-]*)\s*:\s*(.+)/);
@@ -78,24 +78,26 @@ function analyzeSecurityRisks(content, frontmatter) {
     high: [],
     medium: [],
     low: [],
-    info: []
+    info: [],
   };
 
   // 1. allowed-tools の分析
-  const allowedTools = frontmatter['allowed-tools'];
+  const allowedTools = frontmatter["allowed-tools"];
   if (!allowedTools) {
-    findings.medium.push('allowed-tools が設定されていません。ツール使用が制限されません');
+    findings.medium.push(
+      "allowed-tools が設定されていません。ツール使用が制限されません",
+    );
   } else {
-    if (allowedTools.includes('*')) {
-      findings.high.push('allowed-tools にワイルドカード(*) が含まれています');
+    if (allowedTools.includes("*")) {
+      findings.high.push("allowed-tools にワイルドカード(*) が含まれています");
     }
-    if (allowedTools.includes('Bash') && !allowedTools.includes('(')) {
-      findings.medium.push('Bash が制限なしで許可されています');
+    if (allowedTools.includes("Bash") && !allowedTools.includes("(")) {
+      findings.medium.push("Bash が制限なしで許可されています");
     }
   }
 
   // 2. disable-model-invocation の分析
-  const disableInvocation = frontmatter['disable-model-invocation'];
+  const disableInvocation = frontmatter["disable-model-invocation"];
 
   // 3. 破壊的パターンの検出
   let hasDestructivePattern = false;
@@ -107,9 +109,9 @@ function analyzeSecurityRisks(content, frontmatter) {
   }
 
   // 破壊的なのに disable-model-invocation がない
-  if (hasDestructivePattern && disableInvocation !== 'true') {
+  if (hasDestructivePattern && disableInvocation !== "true") {
     findings.critical.push(
-      '破壊的な操作が含まれていますが、disable-model-invocation: true が設定されていません'
+      "破壊的な操作が含まれていますが、disable-model-invocation: true が設定されていません",
     );
   }
 
@@ -118,20 +120,26 @@ function analyzeSecurityRisks(content, frontmatter) {
     const matches = content.match(pattern);
     if (matches) {
       // 機密情報の保護チェックがあるか確認
-      const hasProtection = /check.*secret|secret.*check|detect.*secret/i.test(content);
+      const hasProtection = /check.*secret|secret.*check|detect.*secret/i.test(
+        content,
+      );
       if (hasProtection) {
         findings.info.push(`${description} - 保護チェックあり`);
       } else {
-        findings.medium.push(`${description} が含まれていますが、保護チェックがありません`);
+        findings.medium.push(
+          `${description} が含まれていますが、保護チェックがありません`,
+        );
       }
     }
   }
 
   // 5. ユーザー確認の検出
   if (hasDestructivePattern) {
-    const hasConfirmation = /confirm|approval|verify|are you sure/i.test(content);
+    const hasConfirmation = /confirm|approval|verify|are you sure/i.test(
+      content,
+    );
     if (!hasConfirmation) {
-      findings.high.push('破壊的な操作の前にユーザー確認がありません');
+      findings.high.push("破壊的な操作の前にユーザー確認がありません");
     }
   }
 
@@ -139,7 +147,7 @@ function analyzeSecurityRisks(content, frontmatter) {
   if (hasDestructivePattern) {
     const hasRollback = /rollback|undo|revert|backup/i.test(content);
     if (!hasRollback) {
-      findings.low.push('破壊的な操作のロールバック機能が見つかりません');
+      findings.low.push("破壊的な操作のロールバック機能が見つかりません");
     }
   }
 
@@ -156,11 +164,11 @@ function calculateRiskScore(findings) {
 }
 
 function getRiskLevel(score) {
-  if (score >= 50) return { level: 'CRITICAL', color: COLORS.red };
-  if (score >= 30) return { level: 'HIGH', color: COLORS.red };
-  if (score >= 15) return { level: 'MEDIUM', color: COLORS.yellow };
-  if (score >= 5) return { level: 'LOW', color: COLORS.green };
-  return { level: 'MINIMAL', color: COLORS.green };
+  if (score >= 50) return { level: "CRITICAL", color: COLORS.red };
+  if (score >= 30) return { level: "HIGH", color: COLORS.red };
+  if (score >= 15) return { level: "MEDIUM", color: COLORS.yellow };
+  if (score >= 5) return { level: "LOW", color: COLORS.green };
+  return { level: "MINIMAL", color: COLORS.green };
 }
 
 function main() {
@@ -187,11 +195,11 @@ Usage:
   const filePath = args[0];
 
   if (!fs.existsSync(filePath)) {
-    log('error', `ファイルが見つかりません: ${filePath}`);
+    log("error", `ファイルが見つかりません: ${filePath}`);
     process.exit(1);
   }
 
-  const content = fs.readFileSync(filePath, 'utf-8');
+  const content = fs.readFileSync(filePath, "utf-8");
   const frontmatter = parseFrontmatter(content);
 
   console.log(`\n${COLORS.bold}Security Audit: ${filePath}${COLORS.reset}\n`);
@@ -204,35 +212,37 @@ Usage:
   const { level, color } = getRiskLevel(riskScore);
 
   // 結果表示
-  console.log(`${COLORS.bold}Risk Score: ${color}${riskScore}/100 (${level})${COLORS.reset}\n`);
+  console.log(
+    `${COLORS.bold}Risk Score: ${color}${riskScore}/100 (${level})${COLORS.reset}\n`,
+  );
 
   if (findings.critical.length > 0) {
     console.log(`${COLORS.red}${COLORS.bold}CRITICAL:${COLORS.reset}`);
-    findings.critical.forEach(f => log('error', f));
+    findings.critical.forEach((f) => log("error", f));
     console.log();
   }
 
   if (findings.high.length > 0) {
     console.log(`${COLORS.red}HIGH:${COLORS.reset}`);
-    findings.high.forEach(f => log('warning', f));
+    findings.high.forEach((f) => log("warning", f));
     console.log();
   }
 
   if (findings.medium.length > 0) {
     console.log(`${COLORS.yellow}MEDIUM:${COLORS.reset}`);
-    findings.medium.forEach(f => log('warning', f));
+    findings.medium.forEach((f) => log("warning", f));
     console.log();
   }
 
   if (findings.low.length > 0) {
     console.log(`${COLORS.green}LOW:${COLORS.reset}`);
-    findings.low.forEach(f => log('info', f));
+    findings.low.forEach((f) => log("info", f));
     console.log();
   }
 
   if (findings.info.length > 0) {
     console.log(`${COLORS.blue}INFO:${COLORS.reset}`);
-    findings.info.forEach(f => log('info', f));
+    findings.info.forEach((f) => log("info", f));
     console.log();
   }
 
@@ -247,10 +257,10 @@ Usage:
   if (riskScore > 0) {
     console.log(`\n${COLORS.bold}Recommendations:${COLORS.reset}`);
     if (findings.critical.length > 0) {
-      console.log('  - disable-model-invocation: true を追加してください');
+      console.log("  - disable-model-invocation: true を追加してください");
     }
-    if (!frontmatter['allowed-tools']) {
-      console.log('  - allowed-tools で必要なツールのみを許可してください');
+    if (!frontmatter["allowed-tools"]) {
+      console.log("  - allowed-tools で必要なツールのみを許可してください");
     }
   }
 

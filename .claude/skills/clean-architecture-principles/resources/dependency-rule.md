@@ -23,21 +23,23 @@ Interface Adapters
 ### コード依存
 
 1. **import/require文**:
+
    ```typescript
    // ❌ 内側から外側への依存
    // entities/user.ts
-   import { DrizzleORM } from 'drizzle-orm';  // フレームワーク依存
+   import { DrizzleORM } from "drizzle-orm"; // フレームワーク依存
 
    // ✅ 正しい依存方向
    // infrastructure/user-repository.ts
-   import { User } from '../entities/user';   // 外側から内側へ
+   import { User } from "../entities/user"; // 外側から内側へ
    ```
 
 2. **型参照**:
+
    ```typescript
    // ❌ 内側が外側の型を参照
    // entities/user.ts
-   type DBUser = InferSelectModel<typeof users>;  // DB型への依存
+   type DBUser = InferSelectModel<typeof users>; // DB型への依存
 
    // ✅ 独自の型を定義
    // entities/user.ts
@@ -48,15 +50,19 @@ Interface Adapters
    ```
 
 3. **継承/実装**:
+
    ```typescript
    // ❌ 内側が外側のクラスを継承
    // entities/user.ts
-   class User extends ORMModel {}  // ORMクラスへの依存
+   class User extends ORMModel {} // ORMクラスへの依存
 
    // ✅ 純粋なドメインモデル
    // entities/user.ts
    class User {
-     constructor(public id: string, public name: string) {}
+     constructor(
+       public id: string,
+       public name: string,
+     ) {}
    }
    ```
 

@@ -159,7 +159,7 @@ docker-build-push:
   on:
     push:
       branches: [main]
-      tags: ['v*']
+      tags: ["v*"]
 
   jobs:
     build:
@@ -220,8 +220,8 @@ gpu-ml-training:
     push:
       branches: [main]
       paths:
-        - 'models/**'
-        - 'training/**'
+        - "models/**"
+        - "training/**"
 
   jobs:
     train:
@@ -232,7 +232,7 @@ gpu-ml-training:
         - name: Setup Python
           uses: actions/setup-python@v5
           with:
-            python-version: '3.11'
+            python-version: "3.11"
 
         - name: Install dependencies
           run: |
@@ -372,7 +372,7 @@ security-scan:
     pull_request:
       branches: [main]
     schedule:
-      - cron: '0 0 * * 0'  # 週次
+      - cron: "0 0 * * 0" # 週次
 
   jobs:
     scan:

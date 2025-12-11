@@ -15,19 +15,19 @@ TypeScriptが自動的に型を絞り込むことができます。
 ```typescript
 // 判別フィールド: status
 type ApiResponse<T> =
-  | { status: 'success'; data: T }
-  | { status: 'error'; error: { code: string; message: string } }
-  | { status: 'loading' };
+  | { status: "success"; data: T }
+  | { status: "error"; error: { code: string; message: string } }
+  | { status: "loading" };
 
 function handleResponse<T>(response: ApiResponse<T>) {
   switch (response.status) {
-    case 'success':
+    case "success":
       // response.data にアクセス可能
       return response.data;
-    case 'error':
+    case "error":
       // response.error にアクセス可能
       throw new Error(response.error.message);
-    case 'loading':
+    case "loading":
       // データなし
       return null;
   }
@@ -41,26 +41,26 @@ function handleResponse<T>(response: ApiResponse<T>) {
 ```typescript
 // フェッチ状態の管理
 type FetchState<T, E = Error> =
-  | { status: 'idle' }
-  | { status: 'loading' }
-  | { status: 'success'; data: T; timestamp: Date }
-  | { status: 'error'; error: E; retryCount: number };
+  | { status: "idle" }
+  | { status: "loading" }
+  | { status: "success"; data: T; timestamp: Date }
+  | { status: "error"; error: E; retryCount: number };
 
 // 使用例
 function useFetch<T>(url: string) {
-  const [state, setState] = useState<FetchState<T>>({ status: 'idle' });
+  const [state, setState] = useState<FetchState<T>>({ status: "idle" });
 
   async function fetch() {
-    setState({ status: 'loading' });
+    setState({ status: "loading" });
 
     try {
       const data = await fetchData<T>(url);
-      setState({ status: 'success', data, timestamp: new Date() });
+      setState({ status: "success", data, timestamp: new Date() });
     } catch (error) {
       setState({
-        status: 'error',
+        status: "error",
         error: error as Error,
-        retryCount: state.status === 'error' ? state.retryCount + 1 : 1
+        retryCount: state.status === "error" ? state.retryCount + 1 : 1,
       });
     }
   }
@@ -73,24 +73,24 @@ function useFetch<T>(url: string) {
 
 ```typescript
 type FormState<T> =
-  | { status: 'pristine'; values: T }
-  | { status: 'dirty'; values: T; changedFields: (keyof T)[] }
-  | { status: 'submitting'; values: T }
-  | { status: 'submitted'; values: T; response: unknown }
-  | { status: 'error'; values: T; errors: Record<keyof T, string[]> };
+  | { status: "pristine"; values: T }
+  | { status: "dirty"; values: T; changedFields: (keyof T)[] }
+  | { status: "submitting"; values: T }
+  | { status: "submitted"; values: T; response: unknown }
+  | { status: "error"; values: T; errors: Record<keyof T, string[]> };
 
 function getSubmitButtonText<T>(state: FormState<T>): string {
   switch (state.status) {
-    case 'pristine':
-      return '送信';
-    case 'dirty':
-      return '変更を保存';
-    case 'submitting':
-      return '送信中...';
-    case 'submitted':
-      return '送信完了';
-    case 'error':
-      return 'エラーを修正してください';
+    case "pristine":
+      return "送信";
+    case "dirty":
+      return "変更を保存";
+    case "submitting":
+      return "送信中...";
+    case "submitted":
+      return "送信完了";
+    case "error":
+      return "エラーを修正してください";
   }
 }
 ```
@@ -99,30 +99,36 @@ function getSubmitButtonText<T>(state: FormState<T>): string {
 
 ```typescript
 type AppEvent =
-  | { type: 'USER_LOGIN'; payload: { userId: string; email: string } }
-  | { type: 'USER_LOGOUT' }
-  | { type: 'DATA_FETCH_START'; payload: { resource: string } }
-  | { type: 'DATA_FETCH_SUCCESS'; payload: { resource: string; data: unknown } }
-  | { type: 'DATA_FETCH_ERROR'; payload: { resource: string; error: Error } };
+  | { type: "USER_LOGIN"; payload: { userId: string; email: string } }
+  | { type: "USER_LOGOUT" }
+  | { type: "DATA_FETCH_START"; payload: { resource: string } }
+  | { type: "DATA_FETCH_SUCCESS"; payload: { resource: string; data: unknown } }
+  | { type: "DATA_FETCH_ERROR"; payload: { resource: string; error: Error } };
 
 function eventReducer(state: AppState, event: AppEvent): AppState {
   switch (event.type) {
-    case 'USER_LOGIN':
+    case "USER_LOGIN":
       return { ...state, user: event.payload };
-    case 'USER_LOGOUT':
+    case "USER_LOGOUT":
       return { ...state, user: null };
-    case 'DATA_FETCH_START':
-      return { ...state, loading: { ...state.loading, [event.payload.resource]: true } };
-    case 'DATA_FETCH_SUCCESS':
+    case "DATA_FETCH_START":
+      return {
+        ...state,
+        loading: { ...state.loading, [event.payload.resource]: true },
+      };
+    case "DATA_FETCH_SUCCESS":
       return {
         ...state,
         data: { ...state.data, [event.payload.resource]: event.payload.data },
         loading: { ...state.loading, [event.payload.resource]: false },
       };
-    case 'DATA_FETCH_ERROR':
+    case "DATA_FETCH_ERROR":
       return {
         ...state,
-        errors: { ...state.errors, [event.payload.resource]: event.payload.error },
+        errors: {
+          ...state.errors,
+          [event.payload.resource]: event.payload.error,
+        },
         loading: { ...state.loading, [event.payload.resource]: false },
       };
   }
@@ -132,9 +138,7 @@ function eventReducer(state: AppState, event: AppEvent): AppState {
 ### Result型パターン
 
 ```typescript
-type Result<T, E = Error> =
-  | { ok: true; value: T }
-  | { ok: false; error: E };
+type Result<T, E = Error> = { ok: true; value: T } | { ok: false; error: E };
 
 // 成功を作成
 function ok<T>(value: T): Result<T, never> {
@@ -149,7 +153,7 @@ function err<E>(error: E): Result<never, E> {
 // Result型を使用した関数
 function divide(a: number, b: number): Result<number, string> {
   if (b === 0) {
-    return err('Division by zero');
+    return err("Division by zero");
   }
   return ok(a / b);
 }
@@ -170,7 +174,10 @@ function map<T, U, E>(result: Result<T, E>, fn: (value: T) => U): Result<U, E> {
   return result;
 }
 
-function flatMap<T, U, E>(result: Result<T, E>, fn: (value: T) => Result<U, E>): Result<U, E> {
+function flatMap<T, U, E>(
+  result: Result<T, E>,
+  fn: (value: T) => Result<U, E>,
+): Result<U, E> {
   if (result.ok) {
     return fn(result.value);
   }
@@ -181,9 +188,7 @@ function flatMap<T, U, E>(result: Result<T, E>, fn: (value: T) => Result<U, E>):
 ### Option型パターン
 
 ```typescript
-type Option<T> =
-  | { some: true; value: T }
-  | { some: false };
+type Option<T> = { some: true; value: T } | { some: false };
 
 function some<T>(value: T): Option<T> {
   return { some: true, value };
@@ -203,7 +208,7 @@ function findUser(id: string): Option<User> {
   return fromNullable(user);
 }
 
-const userOption = findUser('123');
+const userOption = findUser("123");
 if (userOption.some) {
   console.log(userOption.value.name);
 }
@@ -216,21 +221,21 @@ if (userOption.some) {
 ```typescript
 // ウィザード/ステップフォームの状態
 type WizardState<T extends Record<string, unknown>> =
-  | { step: 'personal'; data: Pick<T, 'name' | 'email'> | null }
-  | { step: 'address'; data: Pick<T, 'name' | 'email' | 'address'> }
-  | { step: 'payment'; data: Pick<T, 'name' | 'email' | 'address' | 'payment'> }
-  | { step: 'confirmation'; data: T }
-  | { step: 'completed'; data: T; orderId: string };
+  | { step: "personal"; data: Pick<T, "name" | "email"> | null }
+  | { step: "address"; data: Pick<T, "name" | "email" | "address"> }
+  | { step: "payment"; data: Pick<T, "name" | "email" | "address" | "payment"> }
+  | { step: "confirmation"; data: T }
+  | { step: "completed"; data: T; orderId: string };
 
 function canProceed(state: WizardState<FormData>): boolean {
   switch (state.step) {
-    case 'personal':
+    case "personal":
       return state.data !== null;
-    case 'address':
-    case 'payment':
-    case 'confirmation':
+    case "address":
+    case "payment":
+    case "confirmation":
       return true;
-    case 'completed':
+    case "completed":
       return false;
   }
 }
@@ -239,19 +244,19 @@ function canProceed(state: WizardState<FormData>): boolean {
 ### 権限ベースの型
 
 ```typescript
-type UserRole = 'guest' | 'user' | 'admin';
+type UserRole = "guest" | "user" | "admin";
 
 type UserWithRole =
-  | { role: 'guest' }
-  | { role: 'user'; userId: string; email: string }
-  | { role: 'admin'; userId: string; email: string; permissions: string[] };
+  | { role: "guest" }
+  | { role: "user"; userId: string; email: string }
+  | { role: "admin"; userId: string; email: string; permissions: string[] };
 
 function canAccessAdminPanel(user: UserWithRole): boolean {
-  return user.role === 'admin';
+  return user.role === "admin";
 }
 
 function getUserEmail(user: UserWithRole): string | null {
-  if (user.role === 'guest') {
+  if (user.role === "guest") {
     return null;
   }
   return user.email;
@@ -267,17 +272,17 @@ function assertNever(value: never): never {
 }
 
 type MessageType =
-  | { type: 'text'; content: string }
-  | { type: 'image'; url: string; alt: string }
-  | { type: 'video'; url: string; duration: number };
+  | { type: "text"; content: string }
+  | { type: "image"; url: string; alt: string }
+  | { type: "video"; url: string; duration: number };
 
 function renderMessage(message: MessageType): string {
   switch (message.type) {
-    case 'text':
+    case "text":
       return `<p>${message.content}</p>`;
-    case 'image':
+    case "image":
       return `<img src="${message.url}" alt="${message.alt}" />`;
-    case 'video':
+    case "video":
       return `<video src="${message.url}" data-duration="${message.duration}"></video>`;
     default:
       // 新しい type が追加されるとコンパイルエラー
@@ -289,19 +294,19 @@ function renderMessage(message: MessageType): string {
 ## Zodとの組み合わせ
 
 ```typescript
-import { z } from 'zod';
+import { z } from "zod";
 
 // Zodでdiscriminated unionを定義
-const resultSchema = z.discriminatedUnion('status', [
+const resultSchema = z.discriminatedUnion("status", [
   z.object({
-    status: z.literal('success'),
+    status: z.literal("success"),
     data: z.object({
       id: z.string(),
       name: z.string(),
     }),
   }),
   z.object({
-    status: z.literal('error'),
+    status: z.literal("error"),
     error: z.object({
       code: z.string(),
       message: z.string(),
@@ -315,7 +320,7 @@ type Result = z.infer<typeof resultSchema>;
 function processApiResponse(data: unknown): void {
   const result = resultSchema.parse(data);
 
-  if (result.status === 'success') {
+  if (result.status === "success") {
     console.log(result.data.name);
   } else {
     console.error(result.error.message);
@@ -330,13 +335,11 @@ function processApiResponse(data: unknown): void {
 ```typescript
 // ✅ 明確な判別フィールド名
 type GoodUnion =
-  | { kind: 'circle'; radius: number }
-  | { kind: 'square'; size: number };
+  | { kind: "circle"; radius: number }
+  | { kind: "square"; size: number };
 
 // ❌ 曖昧な判別フィールド名
-type BadUnion =
-  | { value: 'a'; data1: number }
-  | { value: 'b'; data2: string };
+type BadUnion = { value: "a"; data1: number } | { value: "b"; data2: string };
 ```
 
 ### 2. リテラル型の一貫性
@@ -344,14 +347,14 @@ type BadUnion =
 ```typescript
 // ✅ 一貫したリテラル型
 type ConsistentUnion =
-  | { type: 'CREATE'; payload: CreatePayload }
-  | { type: 'UPDATE'; payload: UpdatePayload }
-  | { type: 'DELETE'; payload: DeletePayload };
+  | { type: "CREATE"; payload: CreatePayload }
+  | { type: "UPDATE"; payload: UpdatePayload }
+  | { type: "DELETE"; payload: DeletePayload };
 
 // ❌ 混在するリテラル型
 type InconsistentUnion =
-  | { type: 'create'; payload: CreatePayload }
-  | { action: 'UPDATE'; data: UpdatePayload } // フィールド名が異なる
+  | { type: "create"; payload: CreatePayload }
+  | { action: "UPDATE"; data: UpdatePayload } // フィールド名が異なる
   | { type: 3; payload: DeletePayload }; // 数値リテラル
 ```
 
@@ -366,13 +369,13 @@ type BaseEvent = {
 
 // 拡張可能なイベント型
 type AppEvent =
-  | (BaseEvent & { type: 'login' })
-  | (BaseEvent & { type: 'logout' })
-  | (BaseEvent & { type: 'action'; action: string });
+  | (BaseEvent & { type: "login" })
+  | (BaseEvent & { type: "logout" })
+  | (BaseEvent & { type: "action"; action: string });
 ```
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版リリース |
+| バージョン | 日付       | 変更内容     |
+| ---------- | ---------- | ------------ |
+| 1.0.0      | 2025-11-25 | 初版リリース |

@@ -17,15 +17,15 @@
  *   - センシティブデータのペイロード含有
  */
 
-import { readFileSync, readdirSync, statSync } from 'fs';
-import { join, extname } from 'path';
+import { readFileSync, readdirSync, statSync } from "fs";
+import { join, extname } from "path";
 
 const colors = {
-  reset: '\x1b[0m',
-  red: '\x1b[31m',
-  green: '\x1b[32m',
-  yellow: '\x1b[33m',
-  cyan: '\x1b[36m'
+  reset: "\x1b[0m",
+  red: "\x1b[31m",
+  green: "\x1b[32m",
+  yellow: "\x1b[33m",
+  cyan: "\x1b[36m",
 };
 
 // セキュリティパターン
@@ -33,29 +33,29 @@ const patterns = {
   jwt: {
     sign: /jwt\.sign\s*\(/,
     verify: /jwt\.verify\s*\(/,
-    decode: /jwt\.decode\s*\(/
+    decode: /jwt\.decode\s*\(/,
   },
   algorithms: {
     safe: /(RS256|ES256|PS256)/,
     unsafe: /(HS256|none|HS384|HS512)/,
-    none: /['"]none['"]/
+    none: /['"]none['"]/,
   },
   storage: {
     localStorage: /localStorage\.(setItem|getItem).*token/i,
     sessionStorage: /sessionStorage\.(setItem|getItem).*token/i,
     cookie: /res\.cookie.*token/i,
-    memory: /const\s+\w*[Tt]oken\w*\s*=/
+    memory: /const\s+\w*[Tt]oken\w*\s*=/,
   },
   expiration: {
     exp: /exp.*:/,
     expiresIn: /expiresIn\s*:/,
-    maxAge: /maxAge\s*:/
+    maxAge: /maxAge\s*:/,
   },
   sensitive: {
     password: /password.*:/i,
     ssn: /ssn.*:/i,
-    creditCard: /(creditCard|cardNumber).*:/i
-  }
+    creditCard: /(creditCard|cardNumber).*:/i,
+  },
 };
 
 class TokenSecurityChecker {
@@ -69,12 +69,14 @@ class TokenSecurityChecker {
       noneAlgorithm: 0,
       unsafeStorage: 0,
       missingExpiration: 0,
-      sensitiveData: 0
+      sensitiveData: 0,
     };
   }
 
   check() {
-    console.log(`${colors.cyan}=== JWT/トークンセキュリティチェック ===${colors.reset}\n`);
+    console.log(
+      `${colors.cyan}=== JWT/トークンセキュリティチェック ===${colors.reset}\n`,
+    );
     console.log(`対象ディレクトリ: ${this.targetDir}\n`);
 
     this.scanDirectory(this.targetDir);
@@ -89,7 +91,11 @@ class TokenSecurityChecker {
       const stat = statSync(filePath);
 
       if (stat.isDirectory()) {
-        if (!file.startsWith('.') && file !== 'node_modules' && file !== 'dist') {
+        if (
+          !file.startsWith(".") &&
+          file !== "node_modules" &&
+          file !== "dist"
+        ) {
           this.scanDirectory(filePath);
         }
       } else if (this.isTargetFile(file)) {
@@ -100,13 +106,13 @@ class TokenSecurityChecker {
 
   isTargetFile(filename) {
     const ext = extname(filename);
-    return ['.js', '.ts', '.jsx', '.tsx', '.mjs'].includes(ext);
+    return [".js", ".ts", ".jsx", ".tsx", ".mjs"].includes(ext);
   }
 
   analyzeFile(filePath) {
     try {
-      const content = readFileSync(filePath, 'utf-8');
-      const lines = content.split('\n');
+      const content = readFileSync(filePath, "utf-8");
+      const lines = content.split("\n");
 
       let inJwtContext = false;
       let contextLines = [];
@@ -119,8 +125,12 @@ class TokenSecurityChecker {
           this.stats.jwtUsage++;
         } else if (inJwtContext) {
           contextLines.push(line);
-          if (line.includes(')') && !line.includes('(')) {
-            this.analyzeJwtContext(filePath, index - contextLines.length + 2, contextLines.join('\n'));
+          if (line.includes(")") && !line.includes("(")) {
+            this.analyzeJwtContext(
+              filePath,
+              index - contextLines.length + 2,
+              contextLines.join("\n"),
+            );
             inJwtContext = false;
           }
         }
@@ -139,16 +149,16 @@ class TokenSecurityChecker {
     const finding = {
       file: filePath,
       line: lineNumber,
-      type: 'jwt_usage',
-      issues: []
+      type: "jwt_usage",
+      issues: [],
     };
 
     // アルゴリズムチェック
     if (!patterns.algorithms.safe.test(context)) {
       if (patterns.algorithms.unsafe.test(context)) {
         finding.issues.push({
-          severity: 'medium',
-          message: 'HS256等の対称鍵アルゴリズム使用。RS256/ES256推奨'
+          severity: "medium",
+          message: "HS256等の対称鍵アルゴリズム使用。RS256/ES256推奨",
         });
         this.stats.unsafeAlgorithms++;
       }
@@ -159,17 +169,20 @@ class TokenSecurityChecker {
     // alg: none チェック
     if (patterns.algorithms.none.test(context)) {
       finding.issues.push({
-        severity: 'critical',
-        message: 'alg: none が検出されました（重大な脆弱性）'
+        severity: "critical",
+        message: "alg: none が検出されました（重大な脆弱性）",
       });
       this.stats.noneAlgorithm++;
     }
 
     // 有効期限チェック
-    if (!patterns.expiration.exp.test(context) && !patterns.expiration.expiresIn.test(context)) {
+    if (
+      !patterns.expiration.exp.test(context) &&
+      !patterns.expiration.expiresIn.test(context)
+    ) {
       finding.issues.push({
-        severity: 'high',
-        message: '有効期限（exp/expiresIn）が設定されていない可能性'
+        severity: "high",
+        message: "有効期限（exp/expiresIn）が設定されていない可能性",
       });
       this.stats.missingExpiration++;
     }
@@ -180,15 +193,17 @@ class TokenSecurityChecker {
   }
 
   checkAlgorithm(filePath, line, lineNumber) {
-    if (patterns.algorithms.none.test(line) && line.includes('alg')) {
+    if (patterns.algorithms.none.test(line) && line.includes("alg")) {
       this.findings.push({
         file: filePath,
         line: lineNumber,
-        type: 'algorithm',
-        issues: [{
-          severity: 'critical',
-          message: 'alg: none が検出されました'
-        }]
+        type: "algorithm",
+        issues: [
+          {
+            severity: "critical",
+            message: "alg: none が検出されました",
+          },
+        ],
       });
       this.stats.noneAlgorithm++;
     }
@@ -199,28 +214,33 @@ class TokenSecurityChecker {
       this.findings.push({
         file: filePath,
         line: lineNumber,
-        type: 'storage',
-        issues: [{
-          severity: 'medium',
-          message: 'LocalStorageにトークン保存（XSSリスク）。HttpOnly Cookie推奨'
-        }]
+        type: "storage",
+        issues: [
+          {
+            severity: "medium",
+            message:
+              "LocalStorageにトークン保存（XSSリスク）。HttpOnly Cookie推奨",
+          },
+        ],
       });
       this.stats.unsafeStorage++;
     }
   }
 
   checkSensitiveData(filePath, line, lineNumber) {
-    if (line.includes('jwt.sign') || line.includes('payload')) {
+    if (line.includes("jwt.sign") || line.includes("payload")) {
       for (const [dataType, pattern] of Object.entries(patterns.sensitive)) {
         if (pattern.test(line)) {
           this.findings.push({
             file: filePath,
             line: lineNumber,
-            type: 'sensitive_data',
-            issues: [{
-              severity: 'high',
-              message: `センシティブデータ（${dataType}）がペイロードに含まれている可能性`
-            }]
+            type: "sensitive_data",
+            issues: [
+              {
+                severity: "high",
+                message: `センシティブデータ（${dataType}）がペイロードに含まれている可能性`,
+              },
+            ],
           });
           this.stats.sensitiveData++;
         }
@@ -233,24 +253,38 @@ class TokenSecurityChecker {
 
     // 統計
     console.log(`JWT使用箇所: ${this.stats.jwtUsage}`);
-    console.log(`安全なアルゴリズム: ${colors.green}${this.stats.secureAlgorithms}${colors.reset}`);
-    console.log(`安全でないアルゴリズム: ${colors.yellow}${this.stats.unsafeAlgorithms}${colors.reset}`);
-    console.log(`alg: none 使用: ${colors.red}${this.stats.noneAlgorithm}${colors.reset}`);
-    console.log(`安全でないストレージ: ${colors.yellow}${this.stats.unsafeStorage}${colors.reset}`);
-    console.log(`有効期限未設定: ${colors.yellow}${this.stats.missingExpiration}${colors.reset}`);
-    console.log(`センシティブデータ含有: ${colors.red}${this.stats.sensitiveData}${colors.reset}\n`);
+    console.log(
+      `安全なアルゴリズム: ${colors.green}${this.stats.secureAlgorithms}${colors.reset}`,
+    );
+    console.log(
+      `安全でないアルゴリズム: ${colors.yellow}${this.stats.unsafeAlgorithms}${colors.reset}`,
+    );
+    console.log(
+      `alg: none 使用: ${colors.red}${this.stats.noneAlgorithm}${colors.reset}`,
+    );
+    console.log(
+      `安全でないストレージ: ${colors.yellow}${this.stats.unsafeStorage}${colors.reset}`,
+    );
+    console.log(
+      `有効期限未設定: ${colors.yellow}${this.stats.missingExpiration}${colors.reset}`,
+    );
+    console.log(
+      `センシティブデータ含有: ${colors.red}${this.stats.sensitiveData}${colors.reset}\n`,
+    );
 
     // Critical issues
-    const criticalFindings = this.findings.filter(f =>
-      f.issues.some(i => i.severity === 'critical')
+    const criticalFindings = this.findings.filter((f) =>
+      f.issues.some((i) => i.severity === "critical"),
     );
 
     if (criticalFindings.length > 0) {
-      console.log(`${colors.red}🚨 Critical Issues (${criticalFindings.length}):${colors.reset}`);
-      criticalFindings.forEach(f => {
+      console.log(
+        `${colors.red}🚨 Critical Issues (${criticalFindings.length}):${colors.reset}`,
+      );
+      criticalFindings.forEach((f) => {
         console.log(`  ${f.file}:${f.line}`);
-        f.issues.forEach(issue => {
-          if (issue.severity === 'critical') {
+        f.issues.forEach((issue) => {
+          if (issue.severity === "critical") {
             console.log(`    ${issue.message}`);
           }
         });
@@ -259,17 +293,20 @@ class TokenSecurityChecker {
     }
 
     // High issues
-    const highFindings = this.findings.filter(f =>
-      f.issues.some(i => i.severity === 'high') &&
-      !f.issues.some(i => i.severity === 'critical')
+    const highFindings = this.findings.filter(
+      (f) =>
+        f.issues.some((i) => i.severity === "high") &&
+        !f.issues.some((i) => i.severity === "critical"),
     );
 
     if (highFindings.length > 0) {
-      console.log(`${colors.red}⚠️  High Issues (${highFindings.length}):${colors.reset}`);
-      highFindings.slice(0, 10).forEach(f => {
+      console.log(
+        `${colors.red}⚠️  High Issues (${highFindings.length}):${colors.reset}`,
+      );
+      highFindings.slice(0, 10).forEach((f) => {
         console.log(`  ${f.file}:${f.line}`);
-        f.issues.forEach(issue => {
-          if (issue.severity === 'high') {
+        f.issues.forEach((issue) => {
+          if (issue.severity === "high") {
             console.log(`    ${issue.message}`);
           }
         });
@@ -295,16 +332,20 @@ class TokenSecurityChecker {
     // 総合評価
     const totalIssues = this.findings.length;
     if (totalIssues === 0) {
-      console.log(`${colors.green}✅ トークンセキュリティは良好です${colors.reset}\n`);
+      console.log(
+        `${colors.green}✅ トークンセキュリティは良好です${colors.reset}\n`,
+      );
     } else {
-      console.log(`${colors.yellow}検出された問題: ${totalIssues}件${colors.reset}`);
+      console.log(
+        `${colors.yellow}検出された問題: ${totalIssues}件${colors.reset}`,
+      );
       console.log(`詳細を確認し、修正してください\n`);
     }
   }
 }
 
 // メイン実行
-const targetDir = process.argv[2] || './src';
+const targetDir = process.argv[2] || "./src";
 
 try {
   const checker = new TokenSecurityChecker(targetDir);

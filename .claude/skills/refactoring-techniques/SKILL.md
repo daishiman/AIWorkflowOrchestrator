@@ -278,12 +278,10 @@ cat .claude/skills/refactoring-techniques/templates/refactoring-checklist.md
 ### すべきこと
 
 1. **テストを先に確保**:
-
    - リファクタリング前に包括的テストを確認
    - テストがなければ先にテストを書く
 
 2. **小さなステップで進める**:
-
    - 一度に一つの改善
    - 各ステップ後にテストを実行
 
@@ -294,12 +292,10 @@ cat .claude/skills/refactoring-techniques/templates/refactoring-checklist.md
 ### 避けるべきこと
 
 1. **複数の変更を同時に行う**:
-
    - ❌ Extract Method と Rename Variable を同時実行
    - ✅ 一つずつ実行して各ステップでテスト
 
 2. **テストなしでのリファクタリング**:
-
    - ❌ 「簡単だから大丈夫」という判断
    - ✅ 常にテストで振る舞いを保証
 

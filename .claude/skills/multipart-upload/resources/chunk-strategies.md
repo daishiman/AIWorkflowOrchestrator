@@ -9,13 +9,13 @@
 
 ### ファイルサイズベース
 
-| ファイルサイズ | 推奨チャンクサイズ | 理由 |
-|--------------|------------------|------|
-| < 10MB | 分割なし | オーバーヘッドが支配的 |
-| 10MB-100MB | 5MB | バランスが良い |
-| 100MB-500MB | 10MB | 効率と安定性のバランス |
-| 500MB-1GB | 20MB | 効率を優先 |
-| > 1GB | 50MB | メモリ効率と効率のバランス |
+| ファイルサイズ | 推奨チャンクサイズ | 理由                       |
+| -------------- | ------------------ | -------------------------- |
+| < 10MB         | 分割なし           | オーバーヘッドが支配的     |
+| 10MB-100MB     | 5MB                | バランスが良い             |
+| 100MB-500MB    | 10MB               | 効率と安定性のバランス     |
+| 500MB-1GB      | 20MB               | 効率を優先                 |
+| > 1GB          | 50MB               | メモリ効率と効率のバランス |
 
 ### ネットワーク品質による調整
 
@@ -46,7 +46,7 @@ function calculateChunks(fileSize: number, chunkSize: number) {
       index: i,
       start,
       end,
-      size: end - start
+      size: end - start,
     });
   }
 
@@ -64,11 +64,11 @@ function calculateChunks(fileSize: number, chunkSize: number) {
 
 ### 並列数の決定
 
-| ネットワーク状況 | 推奨並列数 | 理由 |
-|----------------|-----------|------|
-| LAN/高速回線 | 4-6 | 帯域を最大活用 |
-| 一般的な回線 | 2-3 | バランス重視 |
-| モバイル/不安定 | 1 | 信頼性優先 |
+| ネットワーク状況 | 推奨並列数 | 理由           |
+| ---------------- | ---------- | -------------- |
+| LAN/高速回線     | 4-6        | 帯域を最大活用 |
+| 一般的な回線     | 2-3        | バランス重視   |
+| モバイル/不安定  | 1          | 信頼性優先     |
 
 ### 順序管理
 
@@ -82,12 +82,12 @@ function calculateChunks(fileSize: number, chunkSize: number) {
 
 ```typescript
 interface UploadState {
-  uploadId: string;          // アップロードセッションID
-  filePath: string;          // ファイルパス
-  fileHash: string;          // ファイル全体のハッシュ
-  totalChunks: number;       // 総チャンク数
+  uploadId: string; // アップロードセッションID
+  filePath: string; // ファイルパス
+  fileHash: string; // ファイル全体のハッシュ
+  totalChunks: number; // 総チャンク数
   completedChunks: number[]; // 完了したチャンクインデックス
-  lastUpdated: Date;         // 最終更新時刻
+  lastUpdated: Date; // 最終更新時刻
 }
 ```
 

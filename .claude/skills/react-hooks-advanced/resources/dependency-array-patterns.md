@@ -40,7 +40,7 @@ useEffect(() => {
 
 ```typescript
 useEffect(() => {
-  console.log('Every render');
+  console.log("Every render");
 }); // 依存配列なし = 毎回実行
 ```
 
@@ -61,6 +61,7 @@ useEffect(() => {
 ```
 
 **使用ケース**:
+
 - 購読の開始/停止
 - イベントリスナーの登録/解除
 - 初期データのフェッチ（変化しない条件の場合）
@@ -140,8 +141,8 @@ callbackRef.current = callback;
 
 useEffect(() => {
   const handler = () => callbackRef.current();
-  window.addEventListener('resize', handler);
-  return () => window.removeEventListener('resize', handler);
+  window.addEventListener("resize", handler);
+  return () => window.removeEventListener("resize", handler);
 }, []); // refは依存に含めない
 ```
 
@@ -152,11 +153,13 @@ useEffect(() => {
 **症状**: useEffectが無限に実行される
 
 **原因チェックリスト**:
+
 - [ ] 依存配列に毎回新しいオブジェクト/配列がある
 - [ ] useEffectが依存を更新している
 - [ ] 依存配列の関数がメモ化されていない
 
 **解決策**:
+
 ```typescript
 // 原因: useEffect内で状態を更新し、その状態が依存に
 useEffect(() => {
@@ -165,7 +168,7 @@ useEffect(() => {
 
 // 解決: 関数型更新を使用
 useEffect(() => {
-  setData(prev => transform(prev));
+  setData((prev) => transform(prev));
 }, []); // 依存なし
 ```
 
@@ -200,6 +203,7 @@ useEffect(() => {
 **症状**: useEffectが必要以上に実行される
 
 **解決策**:
+
 ```typescript
 // 条件付き実行
 useEffect(() => {

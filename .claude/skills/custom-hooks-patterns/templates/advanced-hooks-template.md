@@ -5,7 +5,7 @@
 ### useFetch
 
 ```typescript
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from "react";
 
 interface UseFetchOptions<T> {
   enabled?: boolean;
@@ -29,7 +29,7 @@ interface UseFetchResult<T> {
  */
 export function useFetch<T>(
   url: string | null,
-  options: UseFetchOptions<T> = {}
+  options: UseFetchOptions<T> = {},
 ): UseFetchResult<T> {
   const { enabled = true, initialData, onSuccess, onError } = options;
 
@@ -63,8 +63,8 @@ export function useFetch<T>(
       setData(result);
       onSuccess?.(result);
     } catch (err) {
-      if (err instanceof Error && err.name === 'AbortError') return;
-      const error = err instanceof Error ? err : new Error('Unknown error');
+      if (err instanceof Error && err.name === "AbortError") return;
+      const error = err instanceof Error ? err : new Error("Unknown error");
       setError(error);
       onError?.(error);
     } finally {
@@ -87,7 +87,7 @@ export function useFetch<T>(
 ### useAsync
 
 ```typescript
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef } from "react";
 
 type AsyncFunction<T, Args extends unknown[]> = (...args: Args) => Promise<T>;
 
@@ -109,7 +109,7 @@ interface UseAsyncResult<T, Args extends unknown[]> {
  * <button onClick={() => execute(userId, userData)}>Update</button>
  */
 export function useAsync<T, Args extends unknown[]>(
-  asyncFunction: AsyncFunction<T, Args>
+  asyncFunction: AsyncFunction<T, Args>,
 ): UseAsyncResult<T, Args> {
   const [data, setData] = useState<T | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
@@ -117,27 +117,30 @@ export function useAsync<T, Args extends unknown[]>(
 
   const isMountedRef = useRef(true);
 
-  const execute = useCallback(async (...args: Args) => {
-    setIsLoading(true);
-    setError(null);
+  const execute = useCallback(
+    async (...args: Args) => {
+      setIsLoading(true);
+      setError(null);
 
-    try {
-      const result = await asyncFunction(...args);
-      if (isMountedRef.current) {
-        setData(result);
-        return result;
+      try {
+        const result = await asyncFunction(...args);
+        if (isMountedRef.current) {
+          setData(result);
+          return result;
+        }
+      } catch (err) {
+        if (isMountedRef.current) {
+          const error = err instanceof Error ? err : new Error("Unknown error");
+          setError(error);
+        }
+      } finally {
+        if (isMountedRef.current) {
+          setIsLoading(false);
+        }
       }
-    } catch (err) {
-      if (isMountedRef.current) {
-        const error = err instanceof Error ? err : new Error('Unknown error');
-        setError(error);
-      }
-    } finally {
-      if (isMountedRef.current) {
-        setIsLoading(false);
-      }
-    }
-  }, [asyncFunction]);
+    },
+    [asyncFunction],
+  );
 
   const reset = useCallback(() => {
     setData(undefined);
@@ -154,7 +157,7 @@ export function useAsync<T, Args extends unknown[]>(
 ### useForm
 
 ```typescript
-import { useState, useCallback, ChangeEvent, FormEvent } from 'react';
+import { useState, useCallback, ChangeEvent, FormEvent } from "react";
 
 type ValidationRule<T> = {
   validate: (value: T[keyof T], values: T) => boolean;
@@ -177,8 +180,10 @@ interface UseFormResult<T> {
   touched: Partial<Record<keyof T, boolean>>;
   isSubmitting: boolean;
   isValid: boolean;
-  handleChange: (field: keyof T) => (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  handleChange: (
+    field: keyof T,
+  ) => (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => void;
   handleBlur: (field: keyof T) => () => void;
   handleSubmit: (e: FormEvent) => Promise<void>;
@@ -196,7 +201,7 @@ interface UseFormResult<T> {
  * フォーム状態を管理するフック
  */
 export function useForm<T extends Record<string, unknown>>(
-  options: UseFormOptions<T>
+  options: UseFormOptions<T>,
 ): UseFormResult<T> {
   const { initialValues, validationSchema, onSubmit } = options;
 
@@ -205,17 +210,20 @@ export function useForm<T extends Record<string, unknown>>(
   const [touched, setTouched] = useState<Partial<Record<keyof T, boolean>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const validateField = useCallback((field: keyof T, value: T[keyof T]): string | undefined => {
-    const rules = validationSchema?.[field];
-    if (!rules) return undefined;
+  const validateField = useCallback(
+    (field: keyof T, value: T[keyof T]): string | undefined => {
+      const rules = validationSchema?.[field];
+      if (!rules) return undefined;
 
-    for (const rule of rules) {
-      if (!rule.validate(value, values)) {
-        return rule.message;
+      for (const rule of rules) {
+        if (!rule.validate(value, values)) {
+          return rule.message;
+        }
       }
-    }
-    return undefined;
-  }, [validationSchema, values]);
+      return undefined;
+    },
+    [validationSchema, values],
+  );
 
   const validateAllFields = useCallback((): boolean => {
     if (!validationSchema) return true;
@@ -235,54 +243,67 @@ export function useForm<T extends Record<string, unknown>>(
     return isValid;
   }, [values, validateField, validationSchema]);
 
-  const handleChange = useCallback((field: keyof T) => (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    const value = e.target.type === 'checkbox'
-      ? (e.target as HTMLInputElement).checked
-      : e.target.value;
+  const handleChange = useCallback(
+    (field: keyof T) =>
+      (
+        e: ChangeEvent<
+          HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+        >,
+      ) => {
+        const value =
+          e.target.type === "checkbox"
+            ? (e.target as HTMLInputElement).checked
+            : e.target.value;
 
-    setValues(prev => ({ ...prev, [field]: value }));
+        setValues((prev) => ({ ...prev, [field]: value }));
 
-    // タッチ済みならバリデーション
-    if (touched[field]) {
-      const error = validateField(field, value as T[keyof T]);
-      setErrors(prev => ({ ...prev, [field]: error }));
-    }
-  }, [touched, validateField]);
+        // タッチ済みならバリデーション
+        if (touched[field]) {
+          const error = validateField(field, value as T[keyof T]);
+          setErrors((prev) => ({ ...prev, [field]: error }));
+        }
+      },
+    [touched, validateField],
+  );
 
-  const handleBlur = useCallback((field: keyof T) => () => {
-    setTouched(prev => ({ ...prev, [field]: true }));
-    const error = validateField(field, values[field]);
-    setErrors(prev => ({ ...prev, [field]: error }));
-  }, [values, validateField]);
+  const handleBlur = useCallback(
+    (field: keyof T) => () => {
+      setTouched((prev) => ({ ...prev, [field]: true }));
+      const error = validateField(field, values[field]);
+      setErrors((prev) => ({ ...prev, [field]: error }));
+    },
+    [values, validateField],
+  );
 
-  const handleSubmit = useCallback(async (e: FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    async (e: FormEvent) => {
+      e.preventDefault();
 
-    // 全フィールドをタッチ済みに
-    const allTouched = Object.keys(values).reduce(
-      (acc, key) => ({ ...acc, [key]: true }),
-      {} as Record<keyof T, boolean>
-    );
-    setTouched(allTouched);
+      // 全フィールドをタッチ済みに
+      const allTouched = Object.keys(values).reduce(
+        (acc, key) => ({ ...acc, [key]: true }),
+        {} as Record<keyof T, boolean>,
+      );
+      setTouched(allTouched);
 
-    if (!validateAllFields()) return;
+      if (!validateAllFields()) return;
 
-    setIsSubmitting(true);
-    try {
-      await onSubmit(values);
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [values, validateAllFields, onSubmit]);
+      setIsSubmitting(true);
+      try {
+        await onSubmit(values);
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [values, validateAllFields, onSubmit],
+  );
 
   const setFieldValue = useCallback((field: keyof T, value: T[keyof T]) => {
-    setValues(prev => ({ ...prev, [field]: value }));
+    setValues((prev) => ({ ...prev, [field]: value }));
   }, []);
 
   const setFieldError = useCallback((field: keyof T, error: string) => {
-    setErrors(prev => ({ ...prev, [field]: error }));
+    setErrors((prev) => ({ ...prev, [field]: error }));
   }, []);
 
   const reset = useCallback(() => {
@@ -292,11 +313,14 @@ export function useForm<T extends Record<string, unknown>>(
     setIsSubmitting(false);
   }, [initialValues]);
 
-  const getFieldProps = useCallback((field: keyof T) => ({
-    value: values[field],
-    onChange: handleChange(field),
-    onBlur: handleBlur(field),
-  }), [values, handleChange, handleBlur]);
+  const getFieldProps = useCallback(
+    (field: keyof T) => ({
+      value: values[field],
+      onChange: handleChange(field),
+      onBlur: handleBlur(field),
+    }),
+    [values, handleChange, handleBlur],
+  );
 
   const isValid = Object.keys(errors).length === 0;
 
@@ -322,11 +346,11 @@ export function useForm<T extends Record<string, unknown>>(
 ### useReducerWithMiddleware
 
 ```typescript
-import { useReducer, useCallback, useRef, Reducer, Dispatch } from 'react';
+import { useReducer, useCallback, useRef, Reducer, Dispatch } from "react";
 
 type Middleware<S, A> = (
   getState: () => S,
-  dispatch: Dispatch<A>
+  dispatch: Dispatch<A>,
 ) => (next: Dispatch<A>) => Dispatch<A>;
 
 /**
@@ -335,7 +359,7 @@ type Middleware<S, A> = (
 export function useReducerWithMiddleware<S, A>(
   reducer: Reducer<S, A>,
   initialState: S,
-  middlewares: Middleware<S, A>[] = []
+  middlewares: Middleware<S, A>[] = [],
 ): [S, Dispatch<A>] {
   const [state, baseDispatch] = useReducer(reducer, initialState);
   const stateRef = useRef(state);
@@ -343,20 +367,23 @@ export function useReducerWithMiddleware<S, A>(
 
   const getState = useCallback(() => stateRef.current, []);
 
-  const dispatch = useCallback((action: A) => {
-    // ミドルウェアチェーンを構築
-    const chain = middlewares.map(middleware =>
-      middleware(getState, baseDispatch)
-    );
+  const dispatch = useCallback(
+    (action: A) => {
+      // ミドルウェアチェーンを構築
+      const chain = middlewares.map((middleware) =>
+        middleware(getState, baseDispatch),
+      );
 
-    // ミドルウェアを適用
-    const composedDispatch = chain.reduceRight(
-      (next, middleware) => middleware(next),
-      baseDispatch
-    );
+      // ミドルウェアを適用
+      const composedDispatch = chain.reduceRight(
+        (next, middleware) => middleware(next),
+        baseDispatch,
+      );
 
-    return composedDispatch(action);
-  }, [middlewares, getState, baseDispatch]);
+      return composedDispatch(action);
+    },
+    [middlewares, getState, baseDispatch],
+  );
 
   return [state, dispatch];
 }
@@ -364,21 +391,23 @@ export function useReducerWithMiddleware<S, A>(
 // ロギングミドルウェア例
 export const loggerMiddleware: Middleware<unknown, unknown> =
   (getState) => (next) => (action) => {
-    console.log('Previous State:', getState());
-    console.log('Action:', action);
+    console.log("Previous State:", getState());
+    console.log("Action:", action);
     const result = next(action);
-    console.log('Next State:', getState());
+    console.log("Next State:", getState());
     return result;
   };
 
 // 非同期アクションミドルウェア例
 export const thunkMiddleware: Middleware<unknown, unknown> =
   (getState, dispatch) => (next) => (action) => {
-    if (typeof action === 'function') {
-      return (action as (dispatch: typeof dispatch, getState: typeof getState) => unknown)(
-        dispatch,
-        getState
-      );
+    if (typeof action === "function") {
+      return (
+        action as (
+          dispatch: typeof dispatch,
+          getState: typeof getState,
+        ) => unknown
+      )(dispatch, getState);
     }
     return next(action);
   };
@@ -387,7 +416,7 @@ export const thunkMiddleware: Middleware<unknown, unknown> =
 ### useUndoRedo
 
 ```typescript
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo } from "react";
 
 interface UseUndoRedoResult<T> {
   state: T;
@@ -409,41 +438,47 @@ interface UseUndoRedoResult<T> {
  */
 export function useUndoRedo<T>(
   initialState: T,
-  maxHistory = 50
+  maxHistory = 50,
 ): UseUndoRedoResult<T> {
   const [history, setHistory] = useState<T[]>([initialState]);
   const [index, setIndex] = useState(0);
 
   const state = history[index];
 
-  const set = useCallback((newState: T) => {
-    setHistory(prev => {
-      // 現在位置以降の履歴を削除
-      const newHistory = prev.slice(0, index + 1);
-      newHistory.push(newState);
+  const set = useCallback(
+    (newState: T) => {
+      setHistory((prev) => {
+        // 現在位置以降の履歴を削除
+        const newHistory = prev.slice(0, index + 1);
+        newHistory.push(newState);
 
-      // 最大履歴数を超えたら古いものを削除
-      if (newHistory.length > maxHistory) {
-        newHistory.shift();
+        // 最大履歴数を超えたら古いものを削除
+        if (newHistory.length > maxHistory) {
+          newHistory.shift();
+          return newHistory;
+        }
         return newHistory;
-      }
-      return newHistory;
-    });
-    setIndex(prev => Math.min(prev + 1, maxHistory - 1));
-  }, [index, maxHistory]);
+      });
+      setIndex((prev) => Math.min(prev + 1, maxHistory - 1));
+    },
+    [index, maxHistory],
+  );
 
   const undo = useCallback(() => {
-    setIndex(prev => Math.max(prev - 1, 0));
+    setIndex((prev) => Math.max(prev - 1, 0));
   }, []);
 
   const redo = useCallback(() => {
-    setIndex(prev => Math.min(prev + 1, history.length - 1));
+    setIndex((prev) => Math.min(prev + 1, history.length - 1));
   }, [history.length]);
 
-  const reset = useCallback((newState?: T) => {
-    setHistory([newState ?? initialState]);
-    setIndex(0);
-  }, [initialState]);
+  const reset = useCallback(
+    (newState?: T) => {
+      setHistory([newState ?? initialState]);
+      setIndex(0);
+    },
+    [initialState],
+  );
 
   const canUndo = index > 0;
   const canRedo = index < history.length - 1;
@@ -467,9 +502,9 @@ export function useUndoRedo<T>(
 ### useWebSocket
 
 ```typescript
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from "react";
 
-type WebSocketStatus = 'connecting' | 'open' | 'closing' | 'closed';
+type WebSocketStatus = "connecting" | "open" | "closing" | "closed";
 
 interface UseWebSocketOptions {
   onOpen?: (event: Event) => void;
@@ -494,7 +529,7 @@ interface UseWebSocketResult<T> {
  */
 export function useWebSocket<T = unknown>(
   url: string,
-  options: UseWebSocketOptions = {}
+  options: UseWebSocketOptions = {},
 ): UseWebSocketResult<T> {
   const {
     onOpen,
@@ -506,7 +541,7 @@ export function useWebSocket<T = unknown>(
     reconnectAttempts = 5,
   } = options;
 
-  const [status, setStatus] = useState<WebSocketStatus>('closed');
+  const [status, setStatus] = useState<WebSocketStatus>("closed");
   const [lastMessage, setLastMessage] = useState<T | null>(null);
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -516,17 +551,17 @@ export function useWebSocket<T = unknown>(
   const connect = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) return;
 
-    setStatus('connecting');
+    setStatus("connecting");
     wsRef.current = new WebSocket(url);
 
     wsRef.current.onopen = (event) => {
-      setStatus('open');
+      setStatus("open");
       reconnectCountRef.current = 0;
       onOpen?.(event);
     };
 
     wsRef.current.onclose = (event) => {
-      setStatus('closed');
+      setStatus("closed");
       onClose?.(event);
 
       // 再接続
@@ -547,7 +582,16 @@ export function useWebSocket<T = unknown>(
     wsRef.current.onerror = (event) => {
       onError?.(event);
     };
-  }, [url, onOpen, onClose, onMessage, onError, reconnect, reconnectInterval, reconnectAttempts]);
+  }, [
+    url,
+    onOpen,
+    onClose,
+    onMessage,
+    onError,
+    reconnect,
+    reconnectInterval,
+    reconnectAttempts,
+  ]);
 
   const disconnect = useCallback(() => {
     if (reconnectTimerRef.current) {

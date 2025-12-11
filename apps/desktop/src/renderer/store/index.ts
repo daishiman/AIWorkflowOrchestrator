@@ -17,6 +17,10 @@ import {
   type DashboardSlice,
 } from "./slices/dashboardSlice";
 import { createAuthSlice, type AuthSlice } from "./slices/authSlice";
+import {
+  createWorkspaceSlice,
+  type WorkspaceSlice,
+} from "./slices/workspaceSlice";
 
 // Combined store type
 export type AppStore = NavigationSlice &
@@ -26,7 +30,8 @@ export type AppStore = NavigationSlice &
   SettingsSlice &
   UISlice &
   DashboardSlice &
-  AuthSlice;
+  AuthSlice &
+  WorkspaceSlice;
 
 // Custom storage for Set serialization
 const customStorage = {
@@ -74,6 +79,7 @@ export const useAppStore = create<AppStore>()(
         ...createUISlice(...args),
         ...createDashboardSlice(...args),
         ...createAuthSlice(...args),
+        ...createWorkspaceSlice(...args),
       }),
       {
         name: "knowledge-studio-store",
@@ -155,3 +161,24 @@ export const useUserAvatar = () =>
   useAppStore(
     (state) => state.profile?.avatarUrl ?? state.authUser?.avatarUrl ?? null,
   );
+
+// Workspace selectors
+export const useWorkspace = () => useAppStore((state) => state.workspace);
+export const useFolderFileTrees = () =>
+  useAppStore((state) => state.folderFileTrees);
+export const useWorkspaceLoading = () =>
+  useAppStore((state) => state.workspaceIsLoading);
+export const useWorkspaceError = () =>
+  useAppStore((state) => state.workspaceError);
+export const useLoadWorkspace = () =>
+  useAppStore((state) => state.loadWorkspace);
+export const useSaveWorkspace = () =>
+  useAppStore((state) => state.saveWorkspace);
+export const useAddFolder = () => useAppStore((state) => state.addFolder);
+export const useRemoveFolder = () => useAppStore((state) => state.removeFolder);
+export const useToggleFolderExpansion = () =>
+  useAppStore((state) => state.toggleFolderExpansion);
+export const useToggleSubfolder = () =>
+  useAppStore((state) => state.toggleSubfolder);
+export const useSetWorkspaceSelectedFile = () =>
+  useAppStore((state) => state.setWorkspaceSelectedFile);

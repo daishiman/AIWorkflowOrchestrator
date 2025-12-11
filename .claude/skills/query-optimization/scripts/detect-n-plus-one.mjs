@@ -17,8 +17,8 @@
  *   - SELECT COUNT が N 回以上連続
  */
 
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
+import { readFileSync } from "fs";
+import { resolve } from "path";
 
 // 設定
 const CONFIG = {
@@ -29,16 +29,16 @@ const CONFIG = {
 };
 
 // 結果の定数
-const WARN = '⚠️';
-const INFO = 'ℹ️';
-const ERROR = '❌';
-const OK = '✅';
+const WARN = "⚠️";
+const INFO = "ℹ️";
+const ERROR = "❌";
+const OK = "✅";
 
 /**
  * クエリログを解析
  */
 function parseQueryLog(content) {
-  const lines = content.split('\n').filter(line => line.trim());
+  const lines = content.split("\n").filter((line) => line.trim());
   const queries = [];
 
   for (const line of lines) {
@@ -50,11 +50,11 @@ function parseQueryLog(content) {
       const hasWhereIn = /WHERE\s+\w*id\s+IN\s*\(/i.test(line);
 
       queries.push({
-        original: line.substring(0, 100) + (line.length > 100 ? '...' : ''),
+        original: line.substring(0, 100) + (line.length > 100 ? "..." : ""),
         table: tableName,
         hasWhereId,
         hasWhereIn,
-        type: 'SELECT',
+        type: "SELECT",
       });
     }
   }
@@ -82,7 +82,7 @@ function detectNPlusOnePatterns(queries) {
       // パターン終了、しきい値以上なら記録
       if (currentCount >= CONFIG.threshold) {
         patterns.push({
-          type: 'SEQUENTIAL_ID_QUERIES',
+          type: "SEQUENTIAL_ID_QUERIES",
           table: currentTable,
           count: currentCount,
           startIndex,
@@ -101,7 +101,7 @@ function detectNPlusOnePatterns(queries) {
   // 最後のパターンをチェック
   if (currentCount >= CONFIG.threshold) {
     patterns.push({
-      type: 'SEQUENTIAL_ID_QUERIES',
+      type: "SEQUENTIAL_ID_QUERIES",
       table: currentTable,
       count: currentCount,
       startIndex,
@@ -123,11 +123,11 @@ function detectNPlusOnePatterns(queries) {
     if (count >= CONFIG.threshold * 2) {
       // 既に検出済みでなければ追加
       const alreadyDetected = patterns.some(
-        p => p.table === table && p.type === 'HIGH_FREQUENCY_TABLE'
+        (p) => p.table === table && p.type === "HIGH_FREQUENCY_TABLE",
       );
       if (!alreadyDetected) {
         patterns.push({
-          type: 'HIGH_FREQUENCY_TABLE',
+          type: "HIGH_FREQUENCY_TABLE",
           table,
           count,
           suggestion: `IN句を使用したバッチフェッチを検討してください`,
@@ -143,8 +143,8 @@ function detectNPlusOnePatterns(queries) {
  * レポートを生成
  */
 function generateReport(queries, patterns) {
-  console.log('\n📊 N+1問題検出レポート');
-  console.log('='.repeat(60));
+  console.log("\n📊 N+1問題検出レポート");
+  console.log("=".repeat(60));
 
   console.log(`\n${INFO} 分析対象: ${queries.length} クエリ`);
   console.log(`${INFO} 検出しきい値: ${CONFIG.threshold} 回以上の連続クエリ\n`);
@@ -155,7 +155,7 @@ function generateReport(queries, patterns) {
   }
 
   console.log(`${WARN} ${patterns.length} 件の潜在的なN+1パターンを検出\n`);
-  console.log('-'.repeat(60));
+  console.log("-".repeat(60));
 
   for (let i = 0; i < patterns.length; i++) {
     const pattern = patterns[i];
@@ -170,19 +170,19 @@ function generateReport(queries, patterns) {
 
     console.log(`\n推奨対応:`);
     switch (pattern.type) {
-      case 'SEQUENTIAL_ID_QUERIES':
+      case "SEQUENTIAL_ID_QUERIES":
         console.log(`  1. IN句を使用したバッチフェッチに変更`);
         console.log(`     例: WHERE id IN (?, ?, ...)`);
         console.log(`  2. または JOINを使用して1クエリで取得`);
         break;
-      case 'HIGH_FREQUENCY_TABLE':
+      case "HIGH_FREQUENCY_TABLE":
         console.log(`  1. DataLoaderパターンの導入を検討`);
         console.log(`  2. キャッシュの導入を検討`);
         break;
     }
   }
 
-  console.log('\n' + '='.repeat(60));
+  console.log("\n" + "=".repeat(60));
   console.log(`\n${ERROR} N+1問題の疑いがあります。修正を検討してください。\n`);
 }
 
@@ -193,20 +193,20 @@ function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.log('使用方法: node detect-n-plus-one.mjs <query-log-file>');
-    console.log('例: node detect-n-plus-one.mjs query.log');
+    console.log("使用方法: node detect-n-plus-one.mjs <query-log-file>");
+    console.log("例: node detect-n-plus-one.mjs query.log");
     process.exit(1);
   }
 
   let content;
 
-  if (args[0] === '--stdin') {
+  if (args[0] === "--stdin") {
     // 標準入力から読み取り
-    content = readFileSync(0, 'utf-8');
+    content = readFileSync(0, "utf-8");
   } else {
     const filePath = resolve(args[0]);
     try {
-      content = readFileSync(filePath, 'utf-8');
+      content = readFileSync(filePath, "utf-8");
     } catch (error) {
       console.error(`エラー: ファイルを読み取れません: ${filePath}`);
       process.exit(1);
@@ -216,8 +216,8 @@ function main() {
   const queries = parseQueryLog(content);
 
   if (queries.length === 0) {
-    console.log('警告: クエリが検出されませんでした。');
-    console.log('入力形式を確認してください（SELECT文を含む行が必要です）。');
+    console.log("警告: クエリが検出されませんでした。");
+    console.log("入力形式を確認してください（SELECT文を含む行が必要です）。");
     process.exit(0);
   }
 

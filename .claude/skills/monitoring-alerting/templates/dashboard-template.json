@@ -103,7 +103,13 @@
           "title": "レイテンシヒストグラム",
           "type": "histogram",
           "metric": "response_time_histogram",
-          "buckets": ["0-100ms", "100-250ms", "250-500ms", "500-1000ms", "1000ms+"],
+          "buckets": [
+            "0-100ms",
+            "100-250ms",
+            "250-500ms",
+            "500-1000ms",
+            "1000ms+"
+          ],
           "width": "50%"
         }
       ]
@@ -212,9 +218,7 @@
         {
           "title": "外部API状態",
           "type": "statusmap",
-          "metrics": [
-            { "name": "external_api_status", "label": "Status" }
-          ],
+          "metrics": [{ "name": "external_api_status", "label": "Status" }],
           "services": ["auth-provider", "payment-gateway", "email-service"],
           "width": "50%"
         },

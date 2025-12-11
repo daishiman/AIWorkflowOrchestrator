@@ -4,11 +4,11 @@
  * 大容量ファイル処理とバックプレッシャー管理のためのヘルパー
  */
 
-import { createReadStream, createWriteStream, stat } from 'fs';
-import { stat as statPromise } from 'fs/promises';
-import { pipeline } from 'stream/promises';
-import { Transform, TransformCallback, Readable, Writable } from 'stream';
-import { createGzip, createGunzip } from 'zlib';
+import { createReadStream, createWriteStream, stat } from "fs";
+import { stat as statPromise } from "fs/promises";
+import { pipeline } from "stream/promises";
+import { Transform, TransformCallback, Readable, Writable } from "stream";
+import { createGzip, createGunzip } from "zlib";
 
 // ============================================================
 // 型定義
@@ -46,7 +46,7 @@ export class ProgressTracker extends Transform {
   constructor(
     private totalBytes: number,
     private onProgress: ProgressCallback,
-    private progressIntervalMs: number = 100
+    private progressIntervalMs: number = 100,
   ) {
     super();
   }
@@ -54,7 +54,7 @@ export class ProgressTracker extends Transform {
   _transform(
     chunk: Buffer,
     encoding: BufferEncoding,
-    callback: TransformCallback
+    callback: TransformCallback,
   ): void {
     this.bytesProcessed += chunk.length;
     this.push(chunk);
@@ -76,20 +76,17 @@ export class ProgressTracker extends Transform {
 
   private emitProgress(): void {
     const elapsedMs = Date.now() - this.startTime;
-    const bytesPerSecond = elapsedMs > 0
-      ? (this.bytesProcessed / elapsedMs) * 1000
-      : 0;
+    const bytesPerSecond =
+      elapsedMs > 0 ? (this.bytesProcessed / elapsedMs) * 1000 : 0;
     const remainingBytes = this.totalBytes - this.bytesProcessed;
-    const estimatedRemainingMs = bytesPerSecond > 0
-      ? (remainingBytes / bytesPerSecond) * 1000
-      : 0;
+    const estimatedRemainingMs =
+      bytesPerSecond > 0 ? (remainingBytes / bytesPerSecond) * 1000 : 0;
 
     this.onProgress({
       bytesProcessed: this.bytesProcessed,
       totalBytes: this.totalBytes,
-      percent: this.totalBytes > 0
-        ? (this.bytesProcessed / this.totalBytes) * 100
-        : 0,
+      percent:
+        this.totalBytes > 0 ? (this.bytesProcessed / this.totalBytes) * 100 : 0,
       elapsedMs,
       estimatedRemainingMs,
       bytesPerSecond,
@@ -105,7 +102,7 @@ export class ProgressTracker extends Transform {
  * 行単位で処理するTransformストリーム
  */
 export abstract class LineTransform extends Transform {
-  private buffer = '';
+  private buffer = "";
 
   constructor() {
     super({ objectMode: false });
@@ -114,19 +111,19 @@ export abstract class LineTransform extends Transform {
   _transform(
     chunk: Buffer,
     encoding: BufferEncoding,
-    callback: TransformCallback
+    callback: TransformCallback,
   ): void {
     this.buffer += chunk.toString();
-    const lines = this.buffer.split('\n');
+    const lines = this.buffer.split("\n");
 
     // 最後の不完全な行を保持
-    this.buffer = lines.pop() || '';
+    this.buffer = lines.pop() || "";
 
     try {
       for (const line of lines) {
         const processed = this.processLine(line);
         if (processed !== null) {
-          this.push(processed + '\n');
+          this.push(processed + "\n");
         }
       }
       callback();
@@ -168,7 +165,7 @@ export class BatchTransform<T> extends Transform {
 
   constructor(
     private batchSize: number,
-    private processBatch: (batch: T[]) => Promise<Buffer | string>
+    private processBatch: (batch: T[]) => Promise<Buffer | string>,
   ) {
     super({ objectMode: true });
   }
@@ -176,7 +173,7 @@ export class BatchTransform<T> extends Transform {
   async _transform(
     item: T,
     encoding: BufferEncoding,
-    callback: TransformCallback
+    callback: TransformCallback,
   ): Promise<void> {
     this.batch.push(item);
 
@@ -219,7 +216,7 @@ export class BatchTransform<T> extends Transform {
 export async function copyFileWithProgress(
   source: string,
   destination: string,
-  options: CopyOptions = {}
+  options: CopyOptions = {},
 ): Promise<void> {
   const {
     highWaterMark = 64 * 1024,
@@ -236,7 +233,7 @@ export async function copyFileWithProgress(
     const progressTracker = new ProgressTracker(
       stats.size,
       onProgress,
-      progressInterval
+      progressInterval,
     );
 
     await pipeline(readStream, progressTracker, writeStream);
@@ -251,9 +248,13 @@ export async function copyFileWithProgress(
 export async function compressFile(
   source: string,
   destination: string,
-  options: CopyOptions = {}
+  options: CopyOptions = {},
 ): Promise<void> {
-  const { highWaterMark = 64 * 1024, onProgress, progressInterval = 100 } = options;
+  const {
+    highWaterMark = 64 * 1024,
+    onProgress,
+    progressInterval = 100,
+  } = options;
 
   const stats = await statPromise(source);
 
@@ -268,7 +269,7 @@ export async function compressFile(
   streams.push(createGzip());
   streams.push(createWriteStream(destination));
 
-  await pipeline(...streams as [Readable, ...Transform[], Writable]);
+  await pipeline(...(streams as [Readable, ...Transform[], Writable]));
 }
 
 /**
@@ -276,12 +277,12 @@ export async function compressFile(
  */
 export async function decompressFile(
   source: string,
-  destination: string
+  destination: string,
 ): Promise<void> {
   await pipeline(
     createReadStream(source),
     createGunzip(),
-    createWriteStream(destination)
+    createWriteStream(destination),
   );
 }
 
@@ -294,20 +295,20 @@ export async function decompressFile(
  */
 export async function processLargeFile(
   filePath: string,
-  processLine: (line: string, lineNumber: number) => Promise<void>
+  processLine: (line: string, lineNumber: number) => Promise<void>,
 ): Promise<number> {
   let lineNumber = 0;
-  let buffer = '';
+  let buffer = "";
 
   const readable = createReadStream(filePath, {
-    encoding: 'utf8',
+    encoding: "utf8",
     highWaterMark: 64 * 1024,
   });
 
   for await (const chunk of readable) {
     buffer += chunk;
-    const lines = buffer.split('\n');
-    buffer = lines.pop() || '';
+    const lines = buffer.split("\n");
+    buffer = lines.pop() || "";
 
     for (const line of lines) {
       await processLine(line, ++lineNumber);
@@ -327,7 +328,7 @@ export async function processLargeFile(
  */
 export async function streamToBuffer(
   stream: Readable,
-  maxSize: number = 100 * 1024 * 1024 // デフォルト100MB
+  maxSize: number = 100 * 1024 * 1024, // デフォルト100MB
 ): Promise<Buffer> {
   const chunks: Buffer[] = [];
   let totalSize = 0;
@@ -355,7 +356,7 @@ export async function streamToBuffer(
  */
 export async function writeWithBackpressure(
   writable: Writable,
-  data: Buffer | string
+  data: Buffer | string,
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     const ok = writable.write(data);
@@ -363,8 +364,8 @@ export async function writeWithBackpressure(
     if (ok) {
       resolve();
     } else {
-      writable.once('drain', resolve);
-      writable.once('error', reject);
+      writable.once("drain", resolve);
+      writable.once("error", reject);
     }
   });
 }
@@ -374,7 +375,7 @@ export async function writeWithBackpressure(
  */
 export async function writeChunksWithBackpressure(
   writable: Writable,
-  chunks: Iterable<Buffer | string>
+  chunks: Iterable<Buffer | string>,
 ): Promise<void> {
   for (const chunk of chunks) {
     await writeWithBackpressure(writable, chunk);

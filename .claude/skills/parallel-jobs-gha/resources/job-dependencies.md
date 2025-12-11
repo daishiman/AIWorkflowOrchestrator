@@ -14,7 +14,7 @@ jobs:
       - run: echo "First job"
 
   job2:
-    needs: job1  # job1が完了するまで待機
+    needs: job1 # job1が完了するまで待機
     runs-on: ubuntu-latest
     steps:
       - run: echo "Second job"
@@ -37,7 +37,7 @@ jobs:
       - run: pnpm run lint
 
   test:
-    needs: [build, lint]  # 両方の完了を待機
+    needs: [build, lint] # 両方の完了を待機
     runs-on: ubuntu-latest
     steps:
       - run: pnpm test
@@ -274,11 +274,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: exit 1  # 失敗するステップ
+      - run: exit 1 # 失敗するステップ
 
   report:
     needs: test
-    if: always()  # testの結果に関わらず実行
+    if: always() # testの結果に関わらず実行
     runs-on: ubuntu-latest
     steps:
       - run: echo "Generate report"
@@ -297,7 +297,7 @@ jobs:
 
   deploy:
     needs: test
-    if: success()  # testが成功した場合のみ
+    if: success() # testが成功した場合のみ
     runs-on: ubuntu-latest
     steps:
       - run: pnpm run deploy
@@ -316,7 +316,7 @@ jobs:
 
   notify-failure:
     needs: test
-    if: failure()  # testが失敗した場合のみ
+    if: failure() # testが失敗した場合のみ
     runs-on: ubuntu-latest
     steps:
       - run: echo "Send failure notification"
@@ -362,7 +362,7 @@ jobs:
       - run: pnpm run lint
 
   test:
-    needs: lint  # 不要な依存関係
+    needs: lint # 不要な依存関係
     runs-on: ubuntu-latest
     steps:
       - run: pnpm test
@@ -431,30 +431,30 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: pnpm run build  # 5分
+      - run: pnpm run build # 5分
 
   test:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - run: pnpm test  # 3分
+      - run: pnpm test # 3分
 
   deploy:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - run: pnpm run deploy  # 2分
+      - run: pnpm run deploy # 2分
 
   # 非クリティカルパス（並列実行）
   lint:
     runs-on: ubuntu-latest
     steps:
-      - run: pnpm run lint  # 1分
+      - run: pnpm run lint # 1分
 
   docs:
     runs-on: ubuntu-latest
     steps:
-      - run: pnpm run docs  # 2分
+      - run: pnpm run docs # 2分
 ```
 
 **合計実行時間**: 10分（クリティカルパス）、lintとdocsは並列実行
@@ -493,7 +493,7 @@ jobs:
 ```yaml
 jobs:
   A:
-    needs: B  # エラー: 循環依存
+    needs: B # エラー: 循環依存
     runs-on: ubuntu-latest
     steps:
       - run: echo "A"
@@ -557,7 +557,7 @@ jobs:
 jobs:
   long-running-job:
     runs-on: ubuntu-latest
-    timeout-minutes: 30  # 30分でタイムアウト
+    timeout-minutes: 30 # 30分でタイムアウト
     steps:
       - run: pnpm test
 ```
@@ -565,5 +565,6 @@ jobs:
 ---
 
 **関連リソース**:
+
 - [data-passing.md](./data-passing.md) - ジョブ間データ受け渡し
 - [templates/parallel-workflow.yaml](../templates/parallel-workflow.yaml) - 実装例

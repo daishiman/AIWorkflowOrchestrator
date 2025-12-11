@@ -11,10 +11,10 @@ WebSocket接続の各段階を適切に管理し、
 
 ```typescript
 type ConnectionState =
-  | 'disconnected'  // 未接続
-  | 'connecting'    // 接続中
-  | 'connected'     // 接続済み
-  | 'reconnecting'; // 再接続中
+  | "disconnected" // 未接続
+  | "connecting" // 接続中
+  | "connected" // 接続済み
+  | "reconnecting"; // 再接続中
 ```
 
 ### 状態遷移図
@@ -52,7 +52,7 @@ type ConnectionState =
 
 ```typescript
 ws.onopen = () => {
-  state = 'connected';
+  state = "connected";
   retryCount = 0;
 
   // ハートビート開始
@@ -61,7 +61,7 @@ ws.onopen = () => {
   // 待機中メッセージの送信
   flushMessageQueue();
 
-  emit('connected', { timestamp: Date.now() });
+  emit("connected", { timestamp: Date.now() });
 };
 ```
 
@@ -73,14 +73,14 @@ ws.onmessage = (event) => {
     const message = JSON.parse(event.data);
 
     // Pongレスポンスの処理
-    if (message.type === 'pong') {
+    if (message.type === "pong") {
       handlePong();
       return;
     }
 
-    emit('message', message);
+    emit("message", message);
   } catch (error) {
-    emit('error', { type: 'parse_error', error });
+    emit("error", { type: "parse_error", error });
   }
 };
 ```
@@ -93,8 +93,8 @@ ws.onclose = (event) => {
 
   if (event.wasClean) {
     // 正常終了
-    state = 'disconnected';
-    emit('disconnected', { reason: 'clean_close' });
+    state = "disconnected";
+    emit("disconnected", { reason: "clean_close" });
   } else {
     // 異常終了 → 再接続
     scheduleReconnect();
@@ -106,7 +106,7 @@ ws.onclose = (event) => {
 
 ```typescript
 ws.onerror = (error) => {
-  emit('error', { type: 'connection_error', error });
+  emit("error", { type: "connection_error", error });
 
   // エラー後は自動的にcloseイベントが発生
   // 再接続はoncloseで処理
@@ -117,12 +117,12 @@ ws.onerror = (error) => {
 
 ### 推奨パラメータ
 
-| パラメータ | 推奨値 | 説明 |
-|-----------|-------|------|
-| maxRetries | 10 | 最大再接続回数 |
-| baseDelay | 1000ms | 初回再接続待機時間 |
-| maxDelay | 30000ms | 最大再接続待機時間 |
-| connectionTimeout | 10000ms | 接続タイムアウト |
+| パラメータ        | 推奨値  | 説明               |
+| ----------------- | ------- | ------------------ |
+| maxRetries        | 10      | 最大再接続回数     |
+| baseDelay         | 1000ms  | 初回再接続待機時間 |
+| maxDelay          | 30000ms | 最大再接続待機時間 |
+| connectionTimeout | 10000ms | 接続タイムアウト   |
 
 ### 設定インターフェース
 
@@ -138,13 +138,13 @@ interface ConnectionConfig {
 }
 
 const DEFAULT_CONFIG: ConnectionConfig = {
-  url: '',
+  url: "",
   protocols: [],
   maxRetries: 10,
   baseDelay: 1000,
   maxDelay: 30000,
   connectionTimeout: 10000,
-  autoReconnect: true
+  autoReconnect: true,
 };
 ```
 
@@ -170,20 +170,20 @@ function calculateDelay(attempt: number): number {
 ```typescript
 function scheduleReconnect(): void {
   if (retryCount >= maxRetries) {
-    state = 'disconnected';
-    emit('max_retries_reached');
+    state = "disconnected";
+    emit("max_retries_reached");
     return;
   }
 
-  state = 'reconnecting';
+  state = "reconnecting";
   retryCount++;
 
   const delay = calculateDelay(retryCount);
 
-  emit('reconnecting', {
+  emit("reconnecting", {
     attempt: retryCount,
     delay,
-    nextRetryAt: Date.now() + delay
+    nextRetryAt: Date.now() + delay,
   });
 
   reconnectTimer = setTimeout(() => {
@@ -204,10 +204,10 @@ function disconnect(): void {
 
   // 接続のクローズ
   if (ws && ws.readyState === WebSocket.OPEN) {
-    ws.close(1000, 'Client disconnect');
+    ws.close(1000, "Client disconnect");
   }
 
-  state = 'disconnected';
+  state = "disconnected";
   ws = null;
 }
 ```

@@ -9,15 +9,15 @@ name: Docker Build and Push
 on:
   push:
     branches: [main, develop]
-    tags: ['v*']  # セマンティックバージョンタグ（v1.0.0等）
+    tags: ["v*"] # セマンティックバージョンタグ（v1.0.0等）
   pull_request:
     branches: [main]
   workflow_dispatch:
 
 env:
   # レジストリとイメージ名の設定（プロジェクトに応じて変更）
-  REGISTRY: ghcr.io  # or docker.io, or <aws_account_id>.dkr.ecr.<region>.amazonaws.com
-  IMAGE_NAME: ${{ github.repository }}  # owner/repo 形式
+  REGISTRY: ghcr.io # or docker.io, or <aws_account_id>.dkr.ecr.<region>.amazonaws.com
+  IMAGE_NAME: ${{ github.repository }} # owner/repo 形式
 
 # 同一ブランチでの並行実行を制御
 concurrency:
@@ -33,7 +33,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-      id-token: write  # OIDC認証用（AWS ECR等で必要）
+      id-token: write # OIDC認証用（AWS ECR等で必要）
 
     steps:
       - name: Checkout code
@@ -124,8 +124,8 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Dockerfile  # Dockerfileのパス
-          push: ${{ github.event_name != 'pull_request' }}  # PRではプッシュしない
+          file: ./Dockerfile # Dockerfileのパス
+          push: ${{ github.event_name != 'pull_request' }} # PRではプッシュしない
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
@@ -151,17 +151,17 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          severity: 'CRITICAL,HIGH'
-          exit-code: '1'  # 脆弱性が見つかった場合は失敗
+          format: "sarif"
+          output: "trivy-results.sarif"
+          severity: "CRITICAL,HIGH"
+          exit-code: "1" # 脆弱性が見つかった場合は失敗
 
       # スキャン結果をGitHub Security タブにアップロード
       - name: Upload Trivy results to GitHub Security
         if: always()
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: "trivy-results.sarif"
 
       # イメージ署名（Cosignを使用）
       # - name: Install Cosign

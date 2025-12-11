@@ -59,6 +59,7 @@ model: opus
 **1.2 引数がない場合の対話的収集**
 
 引数 `$1` が空の場合、repo-dev が以下を対話的に収集:
+
 - エンティティ名
 - Repository責務（CRUD操作、検索メソッド要件）
 - トランザクション境界要件
@@ -69,28 +70,33 @@ model: opus
 repo-dev エージェントが以下のスキルを参照しながら設計:
 
 **必須スキル（Phase 1-2）:**
+
 - `.claude/skills/repository-pattern/SKILL.md`: Repository設計原則、インターフェース設計
 - `.claude/skills/orm-best-practices/SKILL.md`: Drizzle ORMスキーマ確認、型安全クエリ
 - `.claude/skills/query-optimization/SKILL.md`: N+1問題解消、フェッチ戦略
 
 **必須スキル（Phase 3）:**
+
 - `.claude/skills/transaction-management/SKILL.md`: ACID特性、分離レベル、楽観的ロック
 - `.claude/skills/repository-pattern/resources/implementation-patterns.md`: 実装パターン
 - `.claude/skills/repository-pattern/resources/entity-mapping.md`: エンティティマッピング
 
 **推奨スキル（Phase 4）:**
+
 - `.claude/skills/connection-pooling/SKILL.md`: コネクションプール最適化（必要時）
 - `.claude/skills/query-optimization/templates/optimization-checklist.md`: パフォーマンス検証
 
 ## Phase 3: 成果物生成と検証
 
 **期待成果物:**
+
 - `src/shared/core/interfaces/I[EntityName]Repository.ts`: Repositoryインターフェース
 - `src/shared/infrastructure/database/repositories/[EntityName]Repository.ts`: Repository実装
 - TypeScript型定義、CRUD操作、検索メソッド、トランザクション管理
 - ユニットテストテンプレート（推奨）
 
 **検証項目（repo-devが実施）:**
+
 - ハイブリッドアーキテクチャ準拠（依存関係方向が正しい）
 - Repository パターン準拠（コレクション風API、ドメイン型返却）
 - N+1問題なし（効率的なフェッチ戦略）
@@ -100,5 +106,6 @@ repo-dev エージェントが以下のスキルを参照しながら設計:
 ---
 
 **注記:**
+
 - このコマンドは **ハブ専用** です。詳細な設計・実装は repo-dev エージェントに完全委譲されます。
 - すべてのRepositoryロジック、ORM活用、パフォーマンス最適化は参照スキルに定義されています。

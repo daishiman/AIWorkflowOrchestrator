@@ -137,7 +137,7 @@ interface IdempotentRequest {
 // サーバー側実装
 async function handleIdempotentRequest(
   key: string,
-  handler: () => Promise<Response>
+  handler: () => Promise<Response>,
 ): Promise<Response> {
   // 既存レスポンスをチェック
   const cached = await cache.get(`idempotency:${key}`);

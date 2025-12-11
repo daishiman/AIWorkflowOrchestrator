@@ -81,16 +81,22 @@ const optimalSchema = z.object({
 
 ```typescript
 // ❌ 無制限の配列
-const unboundedSchema = z.array(z.object({
-  id: z.string(),
-  data: z.string(),
-}));
+const unboundedSchema = z.array(
+  z.object({
+    id: z.string(),
+    data: z.string(),
+  }),
+);
 
 // ✅ サイズを制限
-const boundedSchema = z.array(z.object({
-  id: z.string(),
-  data: z.string(),
-})).max(1000); // 上限を設定
+const boundedSchema = z
+  .array(
+    z.object({
+      id: z.string(),
+      data: z.string(),
+    }),
+  )
+  .max(1000); // 上限を設定
 
 // より効率的な検証
 const efficientArraySchema = z.array(z.string()).min(1).max(100);
@@ -100,19 +106,25 @@ const efficientArraySchema = z.array(z.string()).min(1).max(100);
 
 ```typescript
 // strict() は追加のチェックを行うため遅くなる可能性
-const strictSchema = z.object({
-  name: z.string(),
-}).strict(); // 追加プロパティがあるとエラー
+const strictSchema = z
+  .object({
+    name: z.string(),
+  })
+  .strict(); // 追加プロパティがあるとエラー
 
 // passthrough() は追加プロパティを許可（高速）
-const passthroughSchema = z.object({
-  name: z.string(),
-}).passthrough();
+const passthroughSchema = z
+  .object({
+    name: z.string(),
+  })
+  .passthrough();
 
 // strip() は追加プロパティを除去（デフォルト動作と同じ）
-const stripSchema = z.object({
-  name: z.string(),
-}).strip();
+const stripSchema = z
+  .object({
+    name: z.string(),
+  })
+  .strip();
 ```
 
 ## バリデーション戦略の最適化
@@ -130,14 +142,18 @@ const slowSchema = z.object({
 });
 
 // ✅ 重要なフィールドを先に検証
-const fastSchema = z.object({
-  // 必須フィールドを先に（早期失敗）
-  required1: z.string(),
-  required2: z.string(),
-}).and(z.object({
-  optional1: z.string().optional(),
-  optional2: z.string().optional(),
-}));
+const fastSchema = z
+  .object({
+    // 必須フィールドを先に（早期失敗）
+    required1: z.string(),
+    required2: z.string(),
+  })
+  .and(
+    z.object({
+      optional1: z.string().optional(),
+      optional2: z.string().optional(),
+    }),
+  );
 ```
 
 ### 2. coerce vs transform
@@ -158,16 +174,16 @@ const transformSchema = z.string().transform((s) => parseInt(s, 10));
 ```typescript
 // ❌ union は順番に試行（遅い可能性）
 const unionSchema = z.union([
-  z.object({ type: z.literal('a'), dataA: z.string() }),
-  z.object({ type: z.literal('b'), dataB: z.number() }),
-  z.object({ type: z.literal('c'), dataC: z.boolean() }),
+  z.object({ type: z.literal("a"), dataA: z.string() }),
+  z.object({ type: z.literal("b"), dataB: z.number() }),
+  z.object({ type: z.literal("c"), dataC: z.boolean() }),
 ]);
 
 // ✅ discriminatedUnion は判別フィールドで直接判定（高速）
-const discriminatedSchema = z.discriminatedUnion('type', [
-  z.object({ type: z.literal('a'), dataA: z.string() }),
-  z.object({ type: z.literal('b'), dataB: z.number() }),
-  z.object({ type: z.literal('c'), dataC: z.boolean() }),
+const discriminatedSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("a"), dataA: z.string() }),
+  z.object({ type: z.literal("b"), dataB: z.number() }),
+  z.object({ type: z.literal("c"), dataC: z.boolean() }),
 ]);
 ```
 
@@ -197,14 +213,14 @@ async function validateItemsBatch(items: unknown[]) {
 ```typescript
 // 大量データの逐次処理
 async function* validateStream(
-  dataStream: AsyncIterable<unknown>
+  dataStream: AsyncIterable<unknown>,
 ): AsyncGenerator<ValidatedItem> {
   for await (const chunk of dataStream) {
     try {
       yield itemSchema.parse(chunk);
     } catch (error) {
       // エラーをログに記録して続行
-      console.error('Validation error:', error);
+      console.error("Validation error:", error);
     }
   }
 }
@@ -223,8 +239,8 @@ self.onmessage = (event) => {
 };
 
 // main.ts
-const worker = new Worker('./worker.ts');
-worker.postMessage({ data: largeData, schemaType: 'user' });
+const worker = new Worker("./worker.ts");
+worker.postMessage({ data: largeData, schemaType: "user" });
 worker.onmessage = (event) => {
   const result = event.data;
   // 結果を処理
@@ -255,10 +271,12 @@ if (result.success) {
 
 // 大量のバリデーションでは safeParse が推奨
 function validateMany(items: unknown[]) {
-  return items.map((item) => {
-    const result = schema.safeParse(item);
-    return result.success ? result.data : null;
-  }).filter(Boolean);
+  return items
+    .map((item) => {
+      const result = schema.safeParse(item);
+      return result.success ? result.data : null;
+    })
+    .filter(Boolean);
 }
 ```
 
@@ -274,16 +292,20 @@ function benchmark(name: string, fn: () => void, iterations = 10000) {
     fn();
   }
   const end = performance.now();
-  console.log(`${name}: ${(end - start).toFixed(2)}ms for ${iterations} iterations`);
-  console.log(`Average: ${((end - start) / iterations).toFixed(4)}ms per iteration`);
+  console.log(
+    `${name}: ${(end - start).toFixed(2)}ms for ${iterations} iterations`,
+  );
+  console.log(
+    `Average: ${((end - start) / iterations).toFixed(4)}ms per iteration`,
+  );
 }
 
 // 使用例
-benchmark('userSchema.parse', () => {
+benchmark("userSchema.parse", () => {
   userSchema.parse({
-    id: '123',
-    name: 'Test User',
-    email: 'test@example.com',
+    id: "123",
+    name: "Test User",
+    email: "test@example.com",
   });
 });
 ```
@@ -300,12 +322,15 @@ benchmark('userSchema.parse', () => {
 // ❌ 動的スキーマ生成
 function createSchema(fields: string[]) {
   const shape: Record<string, z.ZodString> = {};
-  fields.forEach((f) => { shape[f] = z.string(); });
+  fields.forEach((f) => {
+    shape[f] = z.string();
+  });
   return z.object(shape); // 毎回新しいスキーマを作成
 }
 
 // ❌ 過度な refine チェーン
-const overRefineSchema = z.string()
+const overRefineSchema = z
+  .string()
   .refine(check1)
   .refine(check2)
   .refine(check3)
@@ -318,7 +343,8 @@ const optimizedSchema = z.string().refine((val) => {
 });
 
 // ❌ 不要な transform
-const unnecessaryTransform = z.string()
+const unnecessaryTransform = z
+  .string()
   .transform((s) => s) // 何もしない transform
   .transform((s) => s.trim())
   .transform((s) => s); // 何もしない transform
@@ -329,6 +355,6 @@ const minimalTransform = z.string().transform((s) => s.trim());
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版リリース |
+| バージョン | 日付       | 変更内容     |
+| ---------- | ---------- | ------------ |
+| 1.0.0      | 2025-11-25 | 初版リリース |

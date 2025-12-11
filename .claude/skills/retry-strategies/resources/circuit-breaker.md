@@ -50,41 +50,44 @@
 
 ### 基本パラメータ
 
-| パラメータ | 推奨値 | 説明 |
-|-----------|--------|------|
-| failureThreshold | 5-10 | Open状態への遷移失敗回数 |
-| successThreshold | 2-3 | Half-Open→Closedの成功回数 |
-| timeout | 30-60秒 | Open状態の継続時間 |
-| halfOpenMaxCalls | 1-3 | Half-Open時の同時リクエスト数 |
+| パラメータ       | 推奨値  | 説明                          |
+| ---------------- | ------- | ----------------------------- |
+| failureThreshold | 5-10    | Open状態への遷移失敗回数      |
+| successThreshold | 2-3     | Half-Open→Closedの成功回数    |
+| timeout          | 30-60秒 | Open状態の継続時間            |
+| halfOpenMaxCalls | 1-3     | Half-Open時の同時リクエスト数 |
 
 ### 用途別推奨値
 
 #### 高可用性システム（即座の遮断）
+
 ```typescript
 const config = {
   failureThreshold: 3,
   successThreshold: 2,
-  timeout: 10000,       // 10秒
+  timeout: 10000, // 10秒
   halfOpenMaxCalls: 1,
 };
 ```
 
 #### 標準システム
+
 ```typescript
 const config = {
   failureThreshold: 5,
   successThreshold: 3,
-  timeout: 30000,       // 30秒
+  timeout: 30000, // 30秒
   halfOpenMaxCalls: 2,
 };
 ```
 
 #### 耐障害性重視
+
 ```typescript
 const config = {
   failureThreshold: 10,
   successThreshold: 5,
-  timeout: 60000,       // 60秒
+  timeout: 60000, // 60秒
   halfOpenMaxCalls: 3,
 };
 ```
@@ -95,9 +98,9 @@ const config = {
 
 ```typescript
 enum CircuitState {
-  CLOSED = 'CLOSED',
-  OPEN = 'OPEN',
-  HALF_OPEN = 'HALF_OPEN',
+  CLOSED = "CLOSED",
+  OPEN = "OPEN",
+  HALF_OPEN = "HALF_OPEN",
 }
 
 class CircuitBreaker<T> {
@@ -115,14 +118,14 @@ class CircuitBreaker<T> {
       if (this.shouldAttemptReset()) {
         this.transitionTo(CircuitState.HALF_OPEN);
       } else {
-        throw new CircuitOpenError('Circuit is open');
+        throw new CircuitOpenError("Circuit is open");
       }
     }
 
     // Half-Open時の同時リクエスト制限
     if (this.state === CircuitState.HALF_OPEN) {
       if (this.halfOpenCalls >= this.config.halfOpenMaxCalls) {
-        throw new CircuitOpenError('Circuit is half-open, max calls reached');
+        throw new CircuitOpenError("Circuit is half-open, max calls reached");
       }
       this.halfOpenCalls++;
     }
@@ -188,7 +191,7 @@ class CircuitBreaker<T> {
 
   private onStateChange(from: CircuitState, to: CircuitState): void {
     console.log({
-      event: 'circuit_state_change',
+      event: "circuit_state_change",
       from,
       to,
       failureCount: this.failureCount,
@@ -222,7 +225,7 @@ class CachedCircuitBreaker<T> extends CircuitBreaker<T> {
   async executeWithFallback(
     key: string,
     fn: () => Promise<T>,
-    fallbackFn?: () => T
+    fallbackFn?: () => T,
   ): Promise<T> {
     try {
       const result = await this.execute(fn);
@@ -253,7 +256,7 @@ class CachedCircuitBreaker<T> extends CircuitBreaker<T> {
 async function withDefaultFallback<T>(
   circuitBreaker: CircuitBreaker<T>,
   fn: () => Promise<T>,
-  defaultValue: T
+  defaultValue: T,
 ): Promise<T> {
   try {
     return await circuitBreaker.execute(fn);
@@ -280,9 +283,9 @@ class SlidingWindowCircuitBreaker {
     const windowStart = now - this.windowSize;
 
     // ウィンドウ内のイベントのみ
-    const windowEvents = this.window.filter(e => e.timestamp >= windowStart);
+    const windowEvents = this.window.filter((e) => e.timestamp >= windowStart);
 
-    const failures = windowEvents.filter(e => !e.success).length;
+    const failures = windowEvents.filter((e) => !e.success).length;
     const total = windowEvents.length;
 
     // エラー率ベースの判定
@@ -354,15 +357,15 @@ function checkAlerts(metrics: CircuitBreakerMetrics): void {
     metrics.state === CircuitState.OPEN &&
     metrics.timeInCurrentState > 5 * 60 * 1000 // 5分
   ) {
-    alert('Circuit breaker has been open for 5 minutes');
+    alert("Circuit breaker has been open for 5 minutes");
   }
 
   // 短時間で複数回の状態遷移
   const recentTransitions = metrics.stateTransitions.filter(
-    t => Date.now() - t.timestamp.getTime() < 60 * 1000
+    (t) => Date.now() - t.timestamp.getTime() < 60 * 1000,
   );
   if (recentTransitions.length > 10) {
-    alert('Circuit breaker is flapping');
+    alert("Circuit breaker is flapping");
   }
 }
 ```
@@ -370,16 +373,19 @@ function checkAlerts(metrics: CircuitBreakerMetrics): void {
 ## チェックリスト
 
 ### 設計時
+
 - [ ] 失敗閾値が外部サービスの特性に合っているか？
 - [ ] タイムアウトが適切か（短すぎ/長すぎない）？
 - [ ] フォールバック戦略が定義されているか？
 
 ### 実装時
+
 - [ ] 状態遷移がログに記録されているか？
 - [ ] メトリクスが収集されているか？
 - [ ] スレッドセーフか（必要な場合）？
 
 ### 運用時
+
 - [ ] 状態がモニタリング可能か？
 - [ ] アラートが設定されているか？
 - [ ] 閾値の調整が可能か？

@@ -124,7 +124,13 @@
       "constraints": ["minLength", "maxLength", "pattern", "format", "enum"]
     },
     "number": {
-      "constraints": ["minimum", "maximum", "exclusiveMinimum", "exclusiveMaximum", "multipleOf"]
+      "constraints": [
+        "minimum",
+        "maximum",
+        "exclusiveMinimum",
+        "exclusiveMaximum",
+        "multipleOf"
+      ]
     },
     "integer": {
       "constraints": ["minimum", "maximum"]

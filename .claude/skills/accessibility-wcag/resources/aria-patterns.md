@@ -86,11 +86,11 @@ function Modal({ isOpen, onClose, title, children }) {
   // Escapeで閉じる
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === "Escape") onClose();
     };
     if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-      return () => document.removeEventListener('keydown', handleEscape);
+      document.addEventListener("keydown", handleEscape);
+      return () => document.removeEventListener("keydown", handleEscape);
     }
   }, [isOpen, onClose]);
 
@@ -99,11 +99,7 @@ function Modal({ isOpen, onClose, title, children }) {
   return (
     <Portal>
       {/* オーバーレイ */}
-      <div
-        className="overlay"
-        aria-hidden="true"
-        onClick={onClose}
-      />
+      <div className="overlay" aria-hidden="true" onClick={onClose} />
       {/* ダイアログ */}
       <div
         ref={dialogRef}
@@ -133,16 +129,16 @@ function Tabs({ tabs }) {
     let newIndex = index;
 
     switch (e.key) {
-      case 'ArrowRight':
+      case "ArrowRight":
         newIndex = (index + 1) % tabs.length;
         break;
-      case 'ArrowLeft':
+      case "ArrowLeft":
         newIndex = (index - 1 + tabs.length) % tabs.length;
         break;
-      case 'Home':
+      case "Home":
         newIndex = 0;
         break;
-      case 'End':
+      case "End":
         newIndex = tabs.length - 1;
         break;
       default:
@@ -201,28 +197,28 @@ function Menu({ trigger, items }) {
 
   const handleKeyDown = (e: KeyboardEvent) => {
     switch (e.key) {
-      case 'ArrowDown':
+      case "ArrowDown":
         e.preventDefault();
         setActiveIndex((prev) => Math.min(prev + 1, items.length - 1));
         break;
-      case 'ArrowUp':
+      case "ArrowUp":
         e.preventDefault();
         setActiveIndex((prev) => Math.max(prev - 1, 0));
         break;
-      case 'Home':
+      case "Home":
         e.preventDefault();
         setActiveIndex(0);
         break;
-      case 'End':
+      case "End":
         e.preventDefault();
         setActiveIndex(items.length - 1);
         break;
-      case 'Escape':
+      case "Escape":
         setIsOpen(false);
         buttonRef.current?.focus();
         break;
-      case 'Enter':
-      case ' ':
+      case "Enter":
+      case " ":
         if (activeIndex >= 0) {
           e.preventDefault();
           items[activeIndex].onClick();
@@ -261,7 +257,7 @@ function Menu({ trigger, items }) {
               id={`menu-item-${index}`}
               role="menuitem"
               tabIndex={-1}
-              className={activeIndex === index ? 'active' : ''}
+              className={activeIndex === index ? "active" : ""}
               onClick={() => {
                 item.onClick();
                 setIsOpen(false);
@@ -282,35 +278,35 @@ function Menu({ trigger, items }) {
 ```tsx
 function Combobox({ options, value, onChange, placeholder }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [inputValue, setInputValue] = useState(value || '');
+  const [inputValue, setInputValue] = useState(value || "");
   const [activeIndex, setActiveIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
   const listboxId = useId();
 
   const filteredOptions = options.filter((opt) =>
-    opt.toLowerCase().includes(inputValue.toLowerCase())
+    opt.toLowerCase().includes(inputValue.toLowerCase()),
   );
 
   const handleKeyDown = (e: KeyboardEvent) => {
     switch (e.key) {
-      case 'ArrowDown':
+      case "ArrowDown":
         e.preventDefault();
         if (!isOpen) setIsOpen(true);
         setActiveIndex((prev) =>
-          Math.min(prev + 1, filteredOptions.length - 1)
+          Math.min(prev + 1, filteredOptions.length - 1),
         );
         break;
-      case 'ArrowUp':
+      case "ArrowUp":
         e.preventDefault();
         setActiveIndex((prev) => Math.max(prev - 1, 0));
         break;
-      case 'Enter':
+      case "Enter":
         if (activeIndex >= 0) {
           e.preventDefault();
           selectOption(filteredOptions[activeIndex]);
         }
         break;
-      case 'Escape':
+      case "Escape":
         setIsOpen(false);
         setActiveIndex(-1);
         break;
@@ -399,11 +395,11 @@ function Combobox({ options, value, onChange, placeholder }) {
 
 ### aria-liveの値
 
-| 値 | 説明 | 使用場面 |
-|----|------|----------|
-| `off` | 通知しない | デフォルト |
-| `polite` | 現在の作業終了後に通知 | ステータス更新 |
-| `assertive` | 即座に通知 | 重要なエラー |
+| 値          | 説明                   | 使用場面       |
+| ----------- | ---------------------- | -------------- |
+| `off`       | 通知しない             | デフォルト     |
+| `polite`    | 現在の作業終了後に通知 | ステータス更新 |
+| `assertive` | 即座に通知             | 重要なエラー   |
 
 ---
 
@@ -426,7 +422,7 @@ function useFocusTrap(containerRef: RefObject<HTMLElement>, isActive: boolean) {
     ] as HTMLElement;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') return;
+      if (e.key !== "Tab") return;
 
       if (e.shiftKey) {
         if (document.activeElement === firstElement) {
@@ -441,10 +437,10 @@ function useFocusTrap(containerRef: RefObject<HTMLElement>, isActive: boolean) {
       }
     };
 
-    container.addEventListener('keydown', handleKeyDown);
+    container.addEventListener("keydown", handleKeyDown);
     firstElement?.focus();
 
-    return () => container.removeEventListener('keydown', handleKeyDown);
+    return () => container.removeEventListener("keydown", handleKeyDown);
   }, [containerRef, isActive]);
 }
 ```

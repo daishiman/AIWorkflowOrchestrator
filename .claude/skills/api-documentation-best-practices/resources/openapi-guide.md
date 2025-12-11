@@ -22,7 +22,7 @@ paths:
     get:
       summary: ユーザー一覧取得
       responses:
-        '200':
+        "200":
           description: 成功
 
 components:
@@ -82,13 +82,13 @@ paths:
             type: string
             format: uuid
       responses:
-        '200':
+        "200":
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '404':
+                $ref: "#/components/schemas/User"
+        "404":
           description: Not Found
 ```
 
@@ -122,19 +122,19 @@ components:
 
 ## データ型
 
-| 型 | format | 説明 |
-|:---|:-------|:-----|
-| string | - | 文字列 |
-| string | date | ISO 8601日付 |
-| string | date-time | ISO 8601日時 |
-| string | uuid | UUID |
-| string | email | メールアドレス |
-| integer | int32 | 32ビット整数 |
-| integer | int64 | 64ビット整数 |
-| number | float | 浮動小数点 |
-| boolean | - | 真偽値 |
-| array | - | 配列 |
-| object | - | オブジェクト |
+| 型      | format    | 説明           |
+| :------ | :-------- | :------------- |
+| string  | -         | 文字列         |
+| string  | date      | ISO 8601日付   |
+| string  | date-time | ISO 8601日時   |
+| string  | uuid      | UUID           |
+| string  | email     | メールアドレス |
+| integer | int32     | 32ビット整数   |
+| integer | int64     | 64ビット整数   |
+| number  | float     | 浮動小数点     |
+| boolean | -         | 真偽値         |
+| array   | -         | 配列           |
+| object  | -         | オブジェクト   |
 
 ## 認証定義
 

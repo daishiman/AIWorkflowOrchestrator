@@ -37,11 +37,13 @@ version: 1.0.0
 体系的な技法です。最小限のテストで最大のバグ検出率を実現します。
 
 **核心原則**:
+
 - バグは境界値で発生しやすい
 - 同値クラス内の値は同じ動作をする
 - 効率的なテストは戦略的に設計する
 
 **対象ユーザー**:
+
 - ユニットテスター（@unit-tester）
 - 品質エンジニア（@quality-engineer）
 - ビジネスロジック実装者（@logic-dev）
@@ -169,43 +171,46 @@ BV4: 151  (EC3の境界)
 ```typescript
 it.each([
   // 同値クラス + 境界値
-  { input: -1, expected: false, desc: '下限未満' },
-  { input: 0, expected: true, desc: '下限' },
-  { input: 75, expected: true, desc: '中央値' },
-  { input: 150, expected: true, desc: '上限' },
-  { input: 151, expected: false, desc: '上限超過' },
-  { input: NaN, expected: false, desc: '非数値' },
-])('validateAge($input) should return $expected ($desc)', ({ input, expected }) => {
-  expect(validateAge(input)).toBe(expected);
-});
+  { input: -1, expected: false, desc: "下限未満" },
+  { input: 0, expected: true, desc: "下限" },
+  { input: 75, expected: true, desc: "中央値" },
+  { input: 150, expected: true, desc: "上限" },
+  { input: 151, expected: false, desc: "上限超過" },
+  { input: NaN, expected: false, desc: "非数値" },
+])(
+  "validateAge($input) should return $expected ($desc)",
+  ({ input, expected }) => {
+    expect(validateAge(input)).toBe(expected);
+  },
+);
 ```
 
 ## よくある境界値パターン
 
 ### 数値範囲
 
-| パターン | テスト値 |
-|---------|---------|
+| パターン        | テスト値               |
+| --------------- | ---------------------- |
 | `min ≤ x ≤ max` | min-1, min, max, max+1 |
 | `min < x < max` | min, min+1, max-1, max |
-| `x ≥ min` | min-1, min, min+1 |
-| `x ≤ max` | max-1, max, max+1 |
+| `x ≥ min`       | min-1, min, min+1      |
+| `x ≤ max`       | max-1, max, max+1      |
 
 ### 文字列長
 
-| パターン | テスト値 |
-|---------|---------|
-| `len = n` | n-1, n, n+1 |
-| `len ≤ max` | 0, 1, max-1, max, max+1 |
-| `min ≤ len ≤ max` | min-1, min, max, max+1 |
+| パターン          | テスト値                |
+| ----------------- | ----------------------- |
+| `len = n`         | n-1, n, n+1             |
+| `len ≤ max`       | 0, 1, max-1, max, max+1 |
+| `min ≤ len ≤ max` | min-1, min, max, max+1  |
 
 ### 配列サイズ
 
-| パターン | テスト値 |
-|---------|---------|
-| 空配列許可 | [], [1], [1,2,...n] |
-| 空配列禁止 | [], [1], [1,2] |
-| 最大n個 | [n-1個], [n個], [n+1個] |
+| パターン   | テスト値                |
+| ---------- | ----------------------- |
+| 空配列許可 | [], [1], [1,2,...n]     |
+| 空配列禁止 | [], [1], [1,2]          |
+| 最大n個    | [n-1個], [n個], [n+1個] |
 
 ## ベストプラクティス
 
@@ -277,12 +282,14 @@ it.each([
 ## 使用上の注意
 
 ### このスキルが得意なこと
+
 - 境界値分析（2値、3値、堅牢性テスト）の適用
 - 同値分割によるテストケース効率化
 - エッジケースカタログからの網羅的テスト設計
 - ペアワイズテスト等の組み合わせ戦略
 
 ### このスキルが行わないこと
+
 - テストコードの具体的な実装（→ vitest-advanced）
 - テストダブルの選択（→ test-doubles）
 - テスト命名の詳細（→ test-naming-conventions）
@@ -292,6 +299,6 @@ it.each([
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-26 | 初版作成 - 境界値分析と同値分割 |
+| バージョン | 日付       | 変更内容                        |
+| ---------- | ---------- | ------------------------------- |
+| 1.0.0      | 2025-11-26 | 初版作成 - 境界値分析と同値分割 |

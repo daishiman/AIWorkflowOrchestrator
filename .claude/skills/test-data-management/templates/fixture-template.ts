@@ -10,7 +10,7 @@
  * 3. 必要に応じてカスタマイズ
  */
 
-import { test as base } from '@playwright/test';
+import { test as base } from "@playwright/test";
 // {{API_SEEDER_PATH}} 例: '../helpers/api-seeder'
 // {{DB_SEEDER_PATH}} 例: '../helpers/db-seeder'
 // {{UNIQUE_GENERATOR_PATH}} 例: '../helpers/unique-generator'
@@ -81,7 +81,7 @@ export const test = base.extend<TestDataFixtures>({
        * @returns 一意のメールアドレス
        */
       email: (base: string): string => {
-        const [local, domain] = base.split('@');
+        const [local, domain] = base.split("@");
         return `${local}+w${workerIndex}_${timestamp}_${random()}@${domain}`;
       },
 
@@ -193,8 +193,8 @@ export const test = base.extend<TestDataFixtures>({
   testUser: async ({ apiSeeder, uniqueGen }, use) => {
     // デフォルトのテストユーザーデータ
     const userData = {
-      email: '{{DEFAULT_USER_EMAIL}}', // 例: 'testuser@example.com'
-      name: '{{DEFAULT_USER_NAME}}', // 例: 'Test User'
+      email: "{{DEFAULT_USER_EMAIL}}", // 例: 'testuser@example.com'
+      name: "{{DEFAULT_USER_NAME}}", // 例: 'Test User'
       // {{USER_ADDITIONAL_DEFAULTS}}
     };
 
@@ -213,8 +213,8 @@ export const test = base.extend<TestDataFixtures>({
   testProject: async ({ apiSeeder, testUser, uniqueGen }, use) => {
     // testUserに依存（testUserが先に作成される）
     const projectData = {
-      name: '{{DEFAULT_PROJECT_NAME}}', // 例: 'Test Project'
-      description: '{{DEFAULT_PROJECT_DESCRIPTION}}', // 例: 'E2E Test Project'
+      name: "{{DEFAULT_PROJECT_NAME}}", // 例: 'Test Project'
+      description: "{{DEFAULT_PROJECT_DESCRIPTION}}", // 例: 'E2E Test Project'
       ownerId: testUser.id,
       // {{PROJECT_ADDITIONAL_DEFAULTS}}
     };
@@ -243,7 +243,7 @@ export const test = base.extend<TestDataFixtures>({
 // エクスポート
 // ==============================================================================
 
-export { expect } from '@playwright/test';
+export { expect } from "@playwright/test";
 
 // ==============================================================================
 // 使用例

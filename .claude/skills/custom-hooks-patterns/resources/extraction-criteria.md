@@ -35,20 +35,20 @@
 // ❌ Before: 同じロジックが散在
 function ComponentA() {
   const [isOpen, setIsOpen] = useState(false);
-  const toggle = () => setIsOpen(prev => !prev);
+  const toggle = () => setIsOpen((prev) => !prev);
   // ...
 }
 
 function ComponentB() {
   const [isOpen, setIsOpen] = useState(false);
-  const toggle = () => setIsOpen(prev => !prev);
+  const toggle = () => setIsOpen((prev) => !prev);
   // ...
 }
 
 // ✅ After: カスタムフックに抽出
 function useToggle(initial = false) {
   const [value, setValue] = useState(initial);
-  const toggle = useCallback(() => setValue(prev => !prev), []);
+  const toggle = useCallback(() => setValue((prev) => !prev), []);
   return [value, toggle] as const;
 }
 
@@ -103,16 +103,19 @@ function useUser(userId) {
       .finally(() => setIsLoading(false));
   }, [userId]);
 
-  const updateUser = useCallback(async (data) => {
-    try {
-      const updated = await updateUserApi(userId, data);
-      setUser(updated);
-      return updated;
-    } catch (err) {
-      setError(err);
-      throw err;
-    }
-  }, [userId]);
+  const updateUser = useCallback(
+    async (data) => {
+      try {
+        const updated = await updateUserApi(userId, data);
+        setUser(updated);
+        return updated;
+      } catch (err) {
+        setError(err);
+        throw err;
+      }
+    },
+    [userId],
+  );
 
   return { user, isLoading, error, updateUser };
 }
@@ -130,16 +133,19 @@ function UserProfile({ userId }) {
 function useFormValidation(schema) {
   const [errors, setErrors] = useState({});
 
-  const validate = useCallback((values) => {
-    const result = schema.safeParse(values);
-    if (!result.success) {
-      const fieldErrors = result.error.flatten().fieldErrors;
-      setErrors(fieldErrors);
-      return false;
-    }
-    setErrors({});
-    return true;
-  }, [schema]);
+  const validate = useCallback(
+    (values) => {
+      const result = schema.safeParse(values);
+      if (!result.success) {
+        const fieldErrors = result.error.flatten().fieldErrors;
+        setErrors(fieldErrors);
+        return false;
+      }
+      setErrors({});
+      return true;
+    },
+    [schema],
+  );
 
   const clearErrors = useCallback(() => setErrors({}), []);
 
@@ -147,12 +153,12 @@ function useFormValidation(schema) {
 }
 
 // テスト
-describe('useFormValidation', () => {
-  it('should return errors for invalid data', () => {
+describe("useFormValidation", () => {
+  it("should return errors for invalid data", () => {
     const { result } = renderHook(() => useFormValidation(userSchema));
 
     act(() => {
-      result.current.validate({ email: 'invalid' });
+      result.current.validate({ email: "invalid" });
     });
 
     expect(result.current.errors.email).toBeDefined();
@@ -168,13 +174,13 @@ function useCart() {
   const [items, setItems] = useState<CartItem[]>([]);
 
   const addItem = useCallback((product: Product, quantity = 1) => {
-    setItems(prev => {
-      const existing = prev.find(item => item.productId === product.id);
+    setItems((prev) => {
+      const existing = prev.find((item) => item.productId === product.id);
       if (existing) {
-        return prev.map(item =>
+        return prev.map((item) =>
           item.productId === product.id
             ? { ...item, quantity: item.quantity + quantity }
-            : item
+            : item,
         );
       }
       return [...prev, { productId: product.id, product, quantity }];
@@ -182,29 +188,33 @@ function useCart() {
   }, []);
 
   const removeItem = useCallback((productId: string) => {
-    setItems(prev => prev.filter(item => item.productId !== productId));
+    setItems((prev) => prev.filter((item) => item.productId !== productId));
   }, []);
 
-  const updateQuantity = useCallback((productId: string, quantity: number) => {
-    if (quantity <= 0) {
-      removeItem(productId);
-      return;
-    }
-    setItems(prev =>
-      prev.map(item =>
-        item.productId === productId ? { ...item, quantity } : item
-      )
-    );
-  }, [removeItem]);
+  const updateQuantity = useCallback(
+    (productId: string, quantity: number) => {
+      if (quantity <= 0) {
+        removeItem(productId);
+        return;
+      }
+      setItems((prev) =>
+        prev.map((item) =>
+          item.productId === productId ? { ...item, quantity } : item,
+        ),
+      );
+    },
+    [removeItem],
+  );
 
   const total = useMemo(
-    () => items.reduce((sum, item) => sum + item.product.price * item.quantity, 0),
-    [items]
+    () =>
+      items.reduce((sum, item) => sum + item.product.price * item.quantity, 0),
+    [items],
   );
 
   const itemCount = useMemo(
     () => items.reduce((sum, item) => sum + item.quantity, 0),
-    [items]
+    [items],
   );
 
   return { items, addItem, removeItem, updateQuantity, total, itemCount };
@@ -218,7 +228,7 @@ function useCart() {
 ```typescript
 // ❌ 過度な抽象化
 function useBoolean(initial) {
-  return useState(initial);  // useStateをラップしただけ
+  return useState(initial); // useStateをラップしただけ
 }
 
 // ✅ シンプルに使う
@@ -260,12 +270,12 @@ function useAnimatedList(items) {
 
 ## 抽出の費用対効果
 
-| 要素 | 利益 | コスト |
-|------|------|--------|
-| 再利用 | 重複削減 | 抽象化の複雑さ |
-| テスト | 独立テスト可能 | テストコードの追加 |
-| 可読性 | コンポーネントの簡素化 | 間接参照の増加 |
-| 保守性 | 変更の局所化 | 認知負荷 |
+| 要素   | 利益                   | コスト             |
+| ------ | ---------------------- | ------------------ |
+| 再利用 | 重複削減               | 抽象化の複雑さ     |
+| テスト | 独立テスト可能         | テストコードの追加 |
+| 可読性 | コンポーネントの簡素化 | 間接参照の増加     |
+| 保守性 | 変更の局所化           | 認知負荷           |
 
 ## ベストプラクティス
 

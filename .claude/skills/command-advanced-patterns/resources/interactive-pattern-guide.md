@@ -16,18 +16,22 @@ description: [Command with confirmation]
 Target: $ARGUMENTS
 
 ## Step 1: Show Impact
+
 Display what will be affected:
+
 - Files to delete: [list]
 - Data to modify: [summary]
 
 ## Step 2: Request Confirmation
+
 Ask: "Proceed with deletion? (yes/no)"
 
 ## Step 3: Execute or Cancel
+
 If confirmed:
-  Execute operation
+Execute operation
 Else:
-  Cancel and exit
+Cancel and exit
 ```
 
 ## 実装例：安全な削除
@@ -42,38 +46,45 @@ description: Delete files with confirmation
 Files: $ARGUMENTS
 
 ## Impact Analysis
+
 List files matching pattern:
+
 - Count: [N] files
 - Size: [total size]
 - Locations: [directories]
 
 ## Confirmation
+
 Display warning:
 "⚠️ This will permanently delete [N] files ([size])"
 "Type 'DELETE' to confirm:"
 
 ## Execution
+
 If input == "DELETE":
-  Delete files
-  Display: "Deleted [N] files"
+Delete files
+Display: "Deleted [N] files"
 Else:
-  Display: "Cancelled"
-  Exit
+Display: "Cancelled"
+Exit
 ```
 
 ## 確認レベル
 
 ### Level 1: Yes/No
+
 ```markdown
 Proceed? (yes/no)
 ```
 
 ### Level 2: 明示的ワード
+
 ```markdown
 Type 'CONFIRM' to proceed:
 ```
 
 ### Level 3: ドライラン
+
 ```markdown
 Run with --dry-run first
 Show what would happen

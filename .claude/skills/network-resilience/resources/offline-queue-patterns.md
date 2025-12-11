@@ -11,19 +11,19 @@
 
 ```typescript
 interface QueuedTask {
-  id: string;              // 一意識別子（UUID推奨）
-  type: 'upload' | 'download' | 'sync';
+  id: string; // 一意識別子（UUID推奨）
+  type: "upload" | "download" | "sync";
   payload: {
-    filePath?: string;     // ファイルパス
-    url?: string;          // API URL
-    data?: unknown;        // 追加データ
+    filePath?: string; // ファイルパス
+    url?: string; // API URL
+    data?: unknown; // 追加データ
   };
-  priority: 'high' | 'normal' | 'low';
-  createdAt: string;       // ISO8601形式
-  retries: number;         // リトライ回数
-  lastAttempt?: string;    // 最終試行時刻
-  nextRetryAt?: string;    // 次回リトライ予定
-  error?: string;          // 最終エラー
+  priority: "high" | "normal" | "low";
+  createdAt: string; // ISO8601形式
+  retries: number; // リトライ回数
+  lastAttempt?: string; // 最終試行時刻
+  nextRetryAt?: string; // 次回リトライ予定
+  error?: string; // 最終エラー
 }
 ```
 
@@ -35,6 +35,7 @@ interface QueuedTask {
 ```
 
 **メリット**:
+
 - 行単位で追記可能
 - 部分的な破損時も他の行は読める
 - ストリーム処理が容易
@@ -44,16 +45,18 @@ interface QueuedTask {
 ### 1. エンキュー（追加）
 
 ```typescript
-async function enqueue(task: Omit<QueuedTask, 'id' | 'createdAt' | 'retries'>): Promise<string> {
+async function enqueue(
+  task: Omit<QueuedTask, "id" | "createdAt" | "retries">,
+): Promise<string> {
   const entry: QueuedTask = {
     ...task,
     id: generateUUID(),
     createdAt: new Date().toISOString(),
-    retries: 0
+    retries: 0,
   };
 
   // ファイルに追記
-  await appendFile(QUEUE_FILE, JSON.stringify(entry) + '\n');
+  await appendFile(QUEUE_FILE, JSON.stringify(entry) + "\n");
   return entry.id;
 }
 ```
@@ -98,7 +101,7 @@ async function requeue(task: QueuedTask, error: string): Promise<void> {
     retries: task.retries + 1,
     lastAttempt: new Date().toISOString(),
     nextRetryAt: calculateNextRetry(task.retries + 1),
-    error
+    error,
   };
 
   if (updated.retries > MAX_RETRIES) {
@@ -116,9 +119,9 @@ async function requeue(task: QueuedTask, error: string): Promise<void> {
 
 ```typescript
 const QUEUE_LIMITS = {
-  maxTasks: 1000,           // 最大タスク数
-  maxAgeHours: 168,         // 最大保持時間（7日）
-  maxFileSizeMB: 10         // 最大ファイルサイズ
+  maxTasks: 1000, // 最大タスク数
+  maxAgeHours: 168, // 最大保持時間（7日）
+  maxFileSizeMB: 10, // 最大ファイルサイズ
 };
 
 async function enforceQueueLimits(): Promise<void> {
@@ -126,15 +129,16 @@ async function enforceQueueLimits(): Promise<void> {
   const now = new Date();
 
   // 古いタスクを削除
-  tasks = tasks.filter(task => {
+  tasks = tasks.filter((task) => {
     const age = now.getTime() - new Date(task.createdAt).getTime();
     return age < QUEUE_LIMITS.maxAgeHours * 60 * 60 * 1000;
   });
 
   // サイズ超過時は古い順に削除
   if (tasks.length > QUEUE_LIMITS.maxTasks) {
-    tasks.sort((a, b) =>
-      new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    tasks.sort(
+      (a, b) =>
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
     );
     tasks = tasks.slice(-QUEUE_LIMITS.maxTasks);
   }
@@ -155,8 +159,8 @@ async function enforceQueueLimits(): Promise<void> {
 
 ```typescript
 interface DeadLetterEntry extends QueuedTask {
-  movedAt: string;        // デッドレターへ移動した時刻
-  reason: string;         // 移動理由
+  movedAt: string; // デッドレターへ移動した時刻
+  reason: string; // 移動理由
 }
 ```
 
@@ -185,8 +189,8 @@ async function atomicWrite(filePath: string, content: string): Promise<void> {
 
 ```typescript
 async function readQueueSafely(): Promise<QueuedTask[]> {
-  const content = await readFile(QUEUE_FILE, 'utf-8');
-  const lines = content.split('\n').filter(Boolean);
+  const content = await readFile(QUEUE_FILE, "utf-8");
+  const lines = content.split("\n").filter(Boolean);
 
   const tasks: QueuedTask[] = [];
   const corrupted: string[] = [];

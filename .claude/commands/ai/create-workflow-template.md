@@ -59,10 +59,12 @@ fi
 **使用エージェント**: `.claude/agents/gha-workflow-architect.md`
 
 **依頼内容**:
+
 ```markdown
 「${workflow_name}」ワークフローテンプレートを作成してください。
 
 **要件**:
+
 1. .github/workflow-templates/${workflow_name}.yml生成
 2. .github/workflow-templates/${workflow_name}.properties.json生成
 
@@ -79,6 +81,7 @@ fi
 ワークフロー: ${workflow_name}
 
 ### 成果物
+
 ✅ .github/workflow-templates/${workflow_name}.yml
 ✅ .github/workflow-templates/${workflow_name}.properties.json
 ```

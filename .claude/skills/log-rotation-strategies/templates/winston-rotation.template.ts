@@ -113,7 +113,7 @@ const errorFormat = winston.format((info) => {
 const jsonFormat = winston.format.combine(
   timestampFormat,
   errorFormat(),
-  winston.format.json()
+  winston.format.json(),
 );
 
 /**
@@ -126,7 +126,7 @@ const consoleFormat = winston.format.combine(
     const metaStr =
       Object.keys(meta).length > 0 ? ` ${JSON.stringify(meta)}` : "";
     return `${timestamp} [${service}] ${level}: ${message}${metaStr}`;
-  })
+  }),
 );
 
 // ============================================================
@@ -148,7 +148,7 @@ function createConsoleTransport(level: LogLevel): winston.transport {
  */
 function createFileTransport(
   config: Required<LoggerConfig>,
-  logType: "combined" | "error"
+  logType: "combined" | "error",
 ): DailyRotateFile {
   const filename =
     logType === "error"
@@ -251,7 +251,7 @@ export function createLogger(options: LoggerConfig): winston.Logger {
 export function createRequestLogger(
   logger: winston.Logger,
   requestId: string,
-  userId?: string
+  userId?: string,
 ): winston.Logger {
   return logger.child({
     requestId,
@@ -301,7 +301,7 @@ export function createHttpLogger(logger: winston.Logger) {
       statusCode: number;
       on: (event: string, handler: () => void) => void;
     },
-    next: () => void
+    next: () => void,
   ) => {
     const start = Date.now();
     const requestId = req.headers["x-request-id"] || generateRequestId();
@@ -312,8 +312,8 @@ export function createHttpLogger(logger: winston.Logger) {
         res.statusCode >= 500
           ? "error"
           : res.statusCode >= 400
-          ? "warn"
-          : "http";
+            ? "warn"
+            : "http";
 
       logger.log(level, "HTTP Request", {
         requestId,

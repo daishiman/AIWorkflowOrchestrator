@@ -1,48 +1,55 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import clsx from "clsx";
 import { GlassPanel } from "../../components/organisms/GlassPanel";
-import { FileTreeItem } from "../../components/molecules/FileTreeItem";
+import { WorkspaceSidebar } from "../../components/organisms/WorkspaceSidebar";
 import { TextArea } from "../../components/atoms/TextArea";
 import { Button } from "../../components/atoms/Button";
 import { ErrorDisplay } from "../../components/atoms/ErrorDisplay";
 import { EmptyState } from "../../components/atoms/EmptyState";
-import { useAppStore } from "../../store";
+import {
+  useAppStore,
+  useWorkspace,
+  useWorkspaceLoading,
+  useWorkspaceError,
+} from "../../store";
+import type { FolderId } from "../../store/types/workspace";
 
 export interface EditorViewProps {
   className?: string;
 }
 
 export const EditorView: React.FC<EditorViewProps> = ({ className }) => {
-  // Use flat store structure
-  const fileTree = useAppStore((state) => state.fileTree);
-  const selectedFile = useAppStore((state) => state.selectedFile);
+  // Workspace state
+  const workspace = useWorkspace();
+  const workspaceIsLoading = useWorkspaceLoading();
+  const workspaceError = useWorkspaceError();
+  const folderFileTrees = useAppStore((state) => state.folderFileTrees);
+  const loadWorkspace = useAppStore((state) => state.loadWorkspace);
+  const addFolder = useAppStore((state) => state.addFolder);
+  const removeFolder = useAppStore((state) => state.removeFolder);
+  const toggleFolderExpansion = useAppStore(
+    (state) => state.toggleFolderExpansion,
+  );
+  const toggleSubfolder = useAppStore((state) => state.toggleSubfolder);
+
+  // Editor state
   const editorContent = useAppStore((state) => state.editorContent);
   const hasUnsavedChanges = useAppStore((state) => state.hasUnsavedChanges);
-  const setSelectedFile = useAppStore((state) => state.setSelectedFile);
   const setEditorContent = useAppStore((state) => state.setEditorContent);
   const markAsSaved = useAppStore((state) => state.markAsSaved);
 
-  // Local state for loading and error
-  const [isLoading] = useState(false);
-  const [error] = useState<string | null>(null);
+  // Selected file state
+  const [selectedFilePath, setSelectedFilePath] = useState<string | null>(null);
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
+  const [unsavedFiles] = useState<Set<string>>(new Set());
 
-  // Map to expected structure
-  const files = fileTree.map((node) => ({
-    path: node.path,
-    name: node.name,
-    type: node.type,
-  }));
+  // Local state for saving
+  const [isSaving, setIsSaving] = useState(false);
 
-  const currentFile = selectedFile
-    ? {
-        path: selectedFile.path,
-        name: selectedFile.name,
-        content: editorContent,
-      }
-    : null;
-
-  const content = editorContent;
-  const isDirty = hasUnsavedChanges;
+  // Load workspace on mount
+  useEffect(() => {
+    loadWorkspace();
+  }, [loadWorkspace]);
 
   const handleContentChange = useCallback(
     (value: string) => {
@@ -52,67 +59,95 @@ export const EditorView: React.FC<EditorViewProps> = ({ className }) => {
   );
 
   const handleSave = useCallback(async () => {
-    if (currentFile) {
-      // Save logic would go here
+    if (!selectedFilePath) return;
+
+    setIsSaving(true);
+    try {
+      await window.electronAPI.file.write({
+        filePath: selectedFilePath,
+        content: editorContent,
+      });
       markAsSaved();
+    } catch (err) {
+      console.error("Failed to save file:", err);
+    } finally {
+      setIsSaving(false);
     }
-  }, [currentFile, markAsSaved]);
+  }, [selectedFilePath, editorContent, markAsSaved]);
 
   const handleFileSelect = useCallback(
-    (path: string) => {
-      const file = fileTree.find((f) => f.path === path);
-      if (file) {
-        setSelectedFile(file);
+    async (filePath: string) => {
+      setSelectedFilePath(filePath);
+
+      // Extract filename from path
+      const fileName = filePath.split("/").pop() || filePath;
+      setSelectedFileName(fileName);
+
+      // Load file content via IPC
+      try {
+        const response = await window.electronAPI.file.read({
+          filePath: filePath,
+        });
+        if (response.success && response.data) {
+          setEditorContent(response.data.content);
+          markAsSaved(); // Reset unsaved state when loading new file
+        }
+      } catch (err) {
+        console.error("Failed to load file:", err);
       }
     },
-    [fileTree, setSelectedFile],
+    [setEditorContent, markAsSaved],
   );
 
-  if (error) {
-    return <ErrorDisplay message={error} className={className} />;
+  const handleAddFolder = useCallback(async () => {
+    await addFolder();
+  }, [addFolder]);
+
+  const handleRemoveFolder = useCallback(
+    (folderId: FolderId) => {
+      removeFolder(folderId);
+    },
+    [removeFolder],
+  );
+
+  const handleToggleFolderExpansion = useCallback(
+    (folderId: FolderId) => {
+      toggleFolderExpansion(folderId);
+    },
+    [toggleFolderExpansion],
+  );
+
+  const handleToggleSubfolder = useCallback(
+    (folderId: FolderId, subfolderPath: string) => {
+      toggleSubfolder(folderId, subfolderPath);
+    },
+    [toggleSubfolder],
+  );
+
+  if (workspaceError) {
+    return <ErrorDisplay message={workspaceError} className={className} />;
   }
+
+  const isDirty = hasUnsavedChanges;
+  const isLoading = workspaceIsLoading || isSaving;
 
   return (
     <div className={clsx("flex h-full", className)} data-testid="editor-view">
-      {/* File Tree Sidebar */}
-      <aside className="w-64 border-r border-white/10 flex-shrink-0">
-        <div className="p-4">
-          <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">
-            ファイル
-          </h2>
-          {isLoading ? (
-            <p className="text-gray-400 text-sm">読み込み中...</p>
-          ) : files.length === 0 ? (
-            <p className="text-gray-400 text-sm">ファイルがありません</p>
-          ) : (
-            <nav aria-label="ファイルツリー">
-              <ul className="space-y-1" role="tree">
-                {files.map(
-                  (file: {
-                    path: string;
-                    name: string;
-                    type: "file" | "folder";
-                  }) => (
-                    <li key={file.path} role="none">
-                      <FileTreeItem
-                        node={{
-                          id: file.path,
-                          name: file.name,
-                          type: file.type,
-                          path: file.path,
-                        }}
-                        level={0}
-                        selected={currentFile?.path === file.path}
-                        onClick={() => handleFileSelect(file.path)}
-                      />
-                    </li>
-                  ),
-                )}
-              </ul>
-            </nav>
-          )}
-        </div>
-      </aside>
+      {/* Workspace Sidebar */}
+      <WorkspaceSidebar
+        workspace={workspace}
+        folderFileTrees={folderFileTrees}
+        selectedFile={selectedFilePath}
+        unsavedFiles={unsavedFiles}
+        onAddFolder={handleAddFolder}
+        onRemoveFolder={handleRemoveFolder}
+        onToggleFolderExpansion={handleToggleFolderExpansion}
+        onToggleSubfolder={handleToggleSubfolder}
+        onSelectFile={handleFileSelect}
+        isLoading={workspaceIsLoading}
+        error={workspaceError}
+        className="w-64 border-r border-white/10 flex-shrink-0"
+      />
 
       {/* Editor Main Area */}
       <main className="flex-1 flex flex-col min-w-0">
@@ -120,7 +155,7 @@ export const EditorView: React.FC<EditorViewProps> = ({ className }) => {
         <header className="flex items-center justify-between p-4 border-b border-white/10">
           <div className="flex items-center gap-2">
             <h1 className="text-lg font-semibold text-white truncate">
-              {currentFile ? currentFile.name : "ファイルを選択してください"}
+              {selectedFileName || "ファイルを選択してください"}
             </h1>
             {isDirty && (
               <span
@@ -136,29 +171,29 @@ export const EditorView: React.FC<EditorViewProps> = ({ className }) => {
               variant="primary"
               size="sm"
               onClick={handleSave}
-              disabled={!currentFile || !isDirty || isLoading}
+              disabled={!selectedFilePath || !isDirty || isLoading}
               aria-label="保存"
             >
-              保存
+              {isSaving ? "保存中..." : "保存"}
             </Button>
           </div>
         </header>
 
         {/* Editor Content */}
         <div className="flex-1 p-4 overflow-hidden">
-          {currentFile ? (
+          {selectedFilePath ? (
             <GlassPanel className="h-full">
               <TextArea
-                value={content}
+                value={editorContent}
                 onChange={handleContentChange}
                 placeholder="ここに内容を入力..."
                 disabled={isLoading}
                 className="h-full font-mono text-sm resize-none"
-                aria-label={`${currentFile.name}の編集`}
+                aria-label={`${selectedFileName}の編集`}
               />
             </GlassPanel>
           ) : (
-            <EmptyState title="左側のファイルツリーからファイルを選択してください" />
+            <EmptyState title="左側のワークスペースからファイルを選択してください" />
           )}
         </div>
       </main>

@@ -9,16 +9,19 @@
 ### なぜコマンドからエージェントを起動するのか？
 
 **コマンドの強み**:
+
 - ワークフロー定義と自動化
 - 繰り返し可能性
 - ユーザーインターフェース
 
 **エージェントの強み**:
+
 - 専門知識
 - 複雑な判断
 - ツール協調
 
 **統合の価値**:
+
 ```
 Command（ワークフロー定義）+ Agent（専門的判断）
 = 繰り返し可能な高度タスク実行
@@ -38,10 +41,13 @@ description: [タスク概要]
 Target: $ARGUMENTS
 
 ## Step 1: Prepare Context
+
 [コンテキスト情報の収集]
 
 ## Step 2: Invoke Expert Agent
+
 Call `@agent-name` with:
+
 - [パラメータ1]
 - [パラメータ2]
 - [パラメータ3]
@@ -49,13 +55,17 @@ Call `@agent-name` with:
 Wait for @agent-name to complete analysis.
 
 ## Step 3: Process Results
+
 Based on @agent-name feedback:
+
 - [結果処理1]
 - [結果処理2]
 - [結果処理3]
 
 ## Step 4: Output
+
 Display:
+
 - [出力1]
 - [出力2]
 - [出力3]
@@ -73,13 +83,17 @@ description: Run comprehensive code review workflow
 Target: $ARGUMENTS (default: current changes)
 
 ## Step 1: Prepare Context
+
 Gather information:
+
 - List changed files using `git diff --name-only`
 - Extract commit messages from `git log`
 - Identify related GitHub issues
 
 ## Step 2: Invoke Expert Agent
+
 Call `@code-reviewer` with:
+
 - Changed file list
 - Commit context
 - Review criteria (security, performance, maintainability)
@@ -87,7 +101,9 @@ Call `@code-reviewer` with:
 Wait for @code-reviewer to complete comprehensive analysis.
 
 ## Step 3: Process Results
+
 Based on @code-reviewer feedback:
+
 - Categorize issues by severity:
   - Critical: Security vulnerabilities, breaking changes
   - Major: Performance issues, design problems
@@ -96,7 +112,9 @@ Based on @code-reviewer feedback:
 - Prioritize fixes based on impact
 
 ## Step 4: Output
+
 Display formatted review summary:
+
 - Executive summary
 - Issues found (grouped by severity)
 - Detailed recommendations
@@ -107,12 +125,14 @@ Display formatted review summary:
 ### 使用シナリオ
 
 **適用条件**:
+
 - [ ] 専門的な判断が必要
 - [ ] 複雑な分析タスク
 - [ ] コンテキストに応じた適応が必要
 - [ ] ツールの協調的使用が必要
 
 **期待される成果**:
+
 - 一貫性のある高品質な分析
 - 専門知識に基づく判断
 - 繰り返し可能なワークフロー
@@ -131,22 +151,30 @@ description: [Multi-phase task with specialized agents]
 Target: $ARGUMENTS
 
 ## Phase 1: [First Specialization] (@agent-1)
+
 Invoke `@agent-1` to:
+
 - [タスク1]
 - [タスク2]
 
 ## Phase 2: [Second Specialization] (@agent-2)
+
 Invoke `@agent-2` with @agent-1 results:
+
 - Pass: [agent-1の結果]
 - Request: [具体的タスク]
 
 ## Phase 3: [Third Specialization] (@agent-3)
+
 Invoke `@agent-3` to:
+
 - Process @agent-1 and @agent-2 results
 - [最終タスク]
 
 ## Phase 4: Synthesis
+
 Combine all agent feedback:
+
 - [統合処理]
 ```
 
@@ -162,7 +190,9 @@ description: Comprehensive feature quality validation
 Feature: $ARGUMENTS
 
 ## Phase 1: Code Quality (@code-reviewer)
+
 Invoke `@code-reviewer` to analyze:
+
 - Code style and consistency
 - Best practices adherence
 - Potential bugs and code smells
@@ -171,7 +201,9 @@ Invoke `@code-reviewer` to analyze:
 Wait for completion and capture findings.
 
 ## Phase 2: Security Analysis (@security-auditor)
+
 Invoke `@security-auditor` to check:
+
 - Security vulnerabilities (OWASP Top 10)
 - Sensitive data exposure
 - Authentication/authorization issues
@@ -181,7 +213,9 @@ Invoke `@security-auditor` to check:
 Pass code-reviewer findings for context.
 
 ## Phase 3: Performance Review (@performance-analyzer)
+
 Invoke `@performance-analyzer` to evaluate:
+
 - Performance bottlenecks
 - Resource usage (CPU, memory, I/O)
 - Scalability concerns
@@ -191,7 +225,9 @@ Invoke `@performance-analyzer` to evaluate:
 Consider security constraints from Phase 2.
 
 ## Phase 4: Synthesis
+
 Combine all agent feedback:
+
 1. Calculate overall quality score:
    - Code Quality: 40%
    - Security: 35%
@@ -217,36 +253,47 @@ Combine all agent feedback:
 ### エージェント間通信パターン
 
 **シーケンシャル依存**:
+
 ```markdown
 ## Phase 1: Analysis (@analyzer)
+
 Invoke `@analyzer` to analyze codebase
 Capture: architecture_analysis
 
 ## Phase 2: Planning (@planner)
+
 Invoke `@planner` with analysis results:
+
 - Input: architecture_analysis from @analyzer
 - Request: Create refactoring plan
 
 Capture: refactoring_plan
 
 ## Phase 3: Execution (@executor)
+
 Invoke `@executor` with plan:
+
 - Input: refactoring_plan from @planner
 - Task: Execute planned changes
 
 Capture: execution_results
 
 ## Phase 4: Verification (@verifier)
+
 Invoke `@verifier` to verify:
+
 - Original issues from @analyzer resolved
 - Plan from @planner executed correctly
 - No new issues introduced by @executor
 ```
 
 **並列実行**:
+
 ```markdown
 ## Phase 1: Parallel Analysis
+
 Launch in parallel:
+
 - `@code-reviewer` for code quality
 - `@security-auditor` for security
 - `@performance-analyzer` for performance
@@ -254,7 +301,9 @@ Launch in parallel:
 Wait for all agents to complete.
 
 ## Phase 2: Synthesis
+
 Combine results from all three agents:
+
 - Merge findings
 - Resolve conflicts
 - Generate unified report
@@ -272,15 +321,19 @@ description: [Conditional agent invocation based on context]
 # [Command Name]
 
 ## Step 1: Context Analysis
+
 Analyze $ARGUMENTS to determine required expertise
 
 ## Step 2: Conditional Routing
+
 Based on analysis:
+
 - If condition A → Invoke `@agent-a`
 - If condition B → Invoke `@agent-b`
 - If condition C → Invoke `@agent-c`
 
 ## Step 3: Process Results
+
 Handle agent-specific output
 ```
 
@@ -296,39 +349,50 @@ description: Intelligent debugging with appropriate specialist
 Error: $ARGUMENTS
 
 ## Step 1: Error Classification
+
 Analyze error message and stack trace:
+
 - Extract error type
 - Identify affected component
 - Determine error domain
 
 ## Step 2: Specialist Selection
+
 Route to appropriate specialist:
 
 If error domain is "frontend":
-  - UI rendering issues → `@frontend-architect`
-  - React/component issues → `@react-specialist`
-  - CSS/styling issues → `@ui-designer`
+
+- UI rendering issues → `@frontend-architect`
+- React/component issues → `@react-specialist`
+- CSS/styling issues → `@ui-designer`
 
 If error domain is "backend":
-  - API errors → `@api-specialist`
-  - Database issues → `@dba-mgr`
-  - Authentication errors → `@auth-specialist`
+
+- API errors → `@api-specialist`
+- Database issues → `@dba-mgr`
+- Authentication errors → `@auth-specialist`
 
 If error domain is "performance":
-  - Slow queries → `@performance-engineer`
-  - Memory leaks → `@system-architect`
+
+- Slow queries → `@performance-engineer`
+- Memory leaks → `@system-architect`
 
 If error domain is "security":
-  - Vulnerabilities → `@security-engineer`
+
+- Vulnerabilities → `@security-engineer`
 
 ## Step 3: Invoke Selected Specialist
+
 Call selected agent with:
+
 - Full error context
 - Relevant code sections
 - System state information
 
 ## Step 4: Apply Solution
+
 Based on specialist recommendation:
+
 - Apply fix
 - Verify solution
 - Document resolution
@@ -346,18 +410,23 @@ description: [Multi-stage processing pipeline]
 # [Command Name]
 
 ## Stage 1: Ingestion (@ingestor)
+
 Input processing
 
 ## Stage 2: Transformation (@transformer)
+
 Data transformation
 
 ## Stage 3: Enrichment (@enricher)
+
 Data enrichment
 
 ## Stage 4: Validation (@validator)
+
 Quality assurance
 
 ## Stage 5: Output (@publisher)
+
 Result publication
 ```
 
@@ -373,42 +442,54 @@ description: Complete data processing pipeline
 Source: $ARGUMENTS
 
 ## Stage 1: Data Ingestion (@data-ingestor)
+
 Invoke `@data-ingestor` to:
+
 - Read data from source
 - Validate data format
 - Handle errors gracefully
 - Output: raw_data
 
 ## Stage 2: Data Cleaning (@data-cleaner)
+
 Invoke `@data-cleaner` with raw_data:
+
 - Remove duplicates
 - Handle missing values
 - Normalize formats
 - Output: clean_data
 
 ## Stage 3: Data Transformation (@data-transformer)
+
 Invoke `@data-transformer` with clean_data:
+
 - Apply business logic
 - Calculate derived fields
 - Aggregate data
 - Output: transformed_data
 
 ## Stage 4: Data Enrichment (@data-enricher)
+
 Invoke `@data-enricher` with transformed_data:
+
 - Add external data
 - Calculate analytics
 - Apply ML models
 - Output: enriched_data
 
 ## Stage 5: Quality Validation (@quality-validator)
+
 Invoke `@quality-validator` with enriched_data:
+
 - Verify data quality
 - Check business rules
 - Generate quality report
 - Output: validated_data, quality_report
 
 ## Stage 6: Publication (@data-publisher)
+
 Invoke `@data-publisher` with validated_data:
+
 - Write to destination
 - Update metadata
 - Trigger downstream processes
@@ -420,9 +501,11 @@ Invoke `@data-publisher` with validated_data:
 ### 1. エージェント起動の記述方法
 
 **明確な起動指示**:
+
 ```markdown
 ✓ 良い例:
 Call `@agent-name` with context:
+
 - Parameter 1: value
 - Parameter 2: value
 
@@ -435,9 +518,11 @@ Use @agent-name somehow
 ### 2. コンテキスト渡し
 
 **構造化されたコンテキスト**:
+
 ```markdown
 ✓ 良い例:
 Invoke `@code-reviewer` with:
+
 - Files: [list from git diff]
 - Scope: security, performance
 - Constraints: Must complete in 5 minutes
@@ -449,9 +534,11 @@ Invoke `@code-reviewer` with:
 ### 3. 結果処理
 
 **明示的な結果処理**:
+
 ```markdown
 ✓ 良い例:
 Based on @agent-name results:
+
 1. Extract recommendations
 2. Prioritize by severity
 3. Generate action items
@@ -464,12 +551,16 @@ Do something with the results
 ### 4. エラーハンドリング
 
 **堅牢なエラー処理**:
+
 ```markdown
 ✓ 良い例:
+
 ## Step 2: Invoke Agent
+
 Call `@agent-name` with context
 
 If @agent-name fails:
+
 - Log error details
 - Retry with reduced scope
 - If still fails, provide fallback analysis
@@ -484,6 +575,7 @@ Call @agent-name (hope it works)
 ### 1. エージェント選択
 
 **適切なエージェント選択**:
+
 - 専門性がタスクに合致している
 - スコープが明確に定義されている
 - 必要なツールアクセスを持っている
@@ -491,6 +583,7 @@ Call @agent-name (hope it works)
 ### 2. コンテキスト最適化
 
 **効率的なコンテキスト**:
+
 - 必要な情報のみを渡す
 - 構造化されたフォーマット
 - 優先度を明示
@@ -498,11 +591,14 @@ Call @agent-name (hope it works)
 ### 3. タイムアウト管理
 
 **適切なタイムアウト**:
+
 ```markdown
 ## Step 2: Invoke Agent (max 5 minutes)
+
 Call `@long-running-agent`
 
 If timeout:
+
 - Provide partial results
 - Suggest manual intervention
 - Log incomplete analysis
@@ -511,14 +607,18 @@ If timeout:
 ### 4. 結果検証
 
 **品質保証**:
+
 ```markdown
 ## Step 3: Verify Results
+
 Validate @agent-name output:
+
 - Check completeness
 - Verify format
 - Ensure actionability
 
 If validation fails:
+
 - Request clarification from agent
 - Apply fallback logic
 ```
@@ -530,11 +630,13 @@ If validation fails:
 **症状**: コマンド実行時にエージェントが呼び出されない
 
 **原因**:
+
 - `@agent-name`の記法が正しくない
 - エージェントが存在しない
 - メンション構文エラー
 
 **解決策**:
+
 ```markdown
 ✓ 正しい記法:
 Call `@code-reviewer` with context
@@ -550,26 +652,35 @@ Invoke agent: code-reviewer
 **症状**: Phase 2のエージェントがPhase 1の結果を認識しない
 
 **原因**:
+
 - 結果の明示的な受け渡しが不足
 - コンテキストの構造化が不十分
 
 **解決策**:
+
 ```markdown
 ✓ 良い例:
+
 ## Phase 1
+
 Call `@analyzer`
 Capture results as: analysis_findings
 
 ## Phase 2
+
 Call `@planner` with:
+
 - Input: analysis_findings from @analyzer
 - Task: Create refactoring plan
 
 ✗ 悪い例:
+
 ## Phase 1
+
 @analyzer does analysis
 
 ## Phase 2
+
 @planner creates plan (コンテキスト不明)
 ```
 
@@ -578,10 +689,12 @@ Call `@planner` with:
 **症状**: エージェント間の依存関係が複雑になりすぎる
 
 **原因**:
+
 - 過度に細分化されたフェーズ
 - 不明確な責任分離
 
 **解決策**:
+
 - エージェントの責任を再定義
 - フェーズを統合
 - より高レベルのエージェントを作成
@@ -597,5 +710,6 @@ Command → Agent統合パターンの重要ポイント:
 5. **検証**: 結果の品質を確認
 
 **次のステップ**:
+
 - `command-to-skill-patterns.md`: コマンド→スキル統合パターン
 - `composite-workflows.md`: Command + Agent + Skillの複合ワークフロー

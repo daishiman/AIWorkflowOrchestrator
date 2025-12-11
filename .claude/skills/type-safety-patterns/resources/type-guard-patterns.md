@@ -15,16 +15,16 @@ TypeScriptの型推論を活用するパターンを解説します。
 type Primitive = string | number | boolean | null | undefined;
 
 function processPrimitive(value: Primitive): string {
-  if (typeof value === 'string') {
+  if (typeof value === "string") {
     return value.toUpperCase();
   }
-  if (typeof value === 'number') {
+  if (typeof value === "number") {
     return value.toFixed(2);
   }
-  if (typeof value === 'boolean') {
-    return value ? 'Yes' : 'No';
+  if (typeof value === "boolean") {
+    return value ? "Yes" : "No";
   }
-  return 'N/A';
+  return "N/A";
 }
 
 // typeofで判別可能な型
@@ -56,7 +56,7 @@ function handleError(error: Error) {
   if (error instanceof ApiError) {
     console.log(`API Error ${error.statusCode}: ${error.message}`);
   } else if (error instanceof ValidationError) {
-    console.log(`Validation Error: ${error.fields.join(', ')}`);
+    console.log(`Validation Error: ${error.fields.join(", ")}`);
   } else {
     console.log(`Unknown Error: ${error.message}`);
   }
@@ -79,7 +79,7 @@ interface Fish {
 }
 
 function move(animal: Bird | Fish) {
-  if ('fly' in animal) {
+  if ("fly" in animal) {
     animal.fly();
   } else {
     animal.swim();
@@ -94,11 +94,11 @@ function move(animal: Bird | Fish) {
 ```typescript
 // 型述語を使用したカスタム型ガード
 function isString(value: unknown): value is string {
-  return typeof value === 'string';
+  return typeof value === "string";
 }
 
 function isNumber(value: unknown): value is number {
-  return typeof value === 'number' && !Number.isNaN(value);
+  return typeof value === "number" && !Number.isNaN(value);
 }
 
 function isNonNullable<T>(value: T): value is NonNullable<T> {
@@ -133,14 +133,14 @@ interface Admin extends User {
 // User型ガード
 function isUser(value: unknown): value is User {
   return (
-    typeof value === 'object' &&
+    typeof value === "object" &&
     value !== null &&
-    'id' in value &&
-    'name' in value &&
-    'email' in value &&
-    typeof (value as User).id === 'string' &&
-    typeof (value as User).name === 'string' &&
-    typeof (value as User).email === 'string'
+    "id" in value &&
+    "name" in value &&
+    "email" in value &&
+    typeof (value as User).id === "string" &&
+    typeof (value as User).name === "string" &&
+    typeof (value as User).email === "string"
   );
 }
 
@@ -148,7 +148,7 @@ function isUser(value: unknown): value is User {
 function isAdmin(value: unknown): value is Admin {
   return (
     isUser(value) &&
-    'permissions' in value &&
+    "permissions" in value &&
     Array.isArray((value as Admin).permissions)
   );
 }
@@ -159,23 +159,27 @@ function isAdmin(value: unknown): value is Admin {
 ```typescript
 // 型付き配列チェック
 function isStringArray(value: unknown): value is string[] {
-  return Array.isArray(value) && value.every((item) => typeof item === 'string');
+  return (
+    Array.isArray(value) && value.every((item) => typeof item === "string")
+  );
 }
 
 function isNumberArray(value: unknown): value is number[] {
-  return Array.isArray(value) && value.every((item) => typeof item === 'number');
+  return (
+    Array.isArray(value) && value.every((item) => typeof item === "number")
+  );
 }
 
 // ジェネリック配列型ガード
 function isArrayOf<T>(
   value: unknown,
-  guard: (item: unknown) => item is T
+  guard: (item: unknown) => item is T,
 ): value is T[] {
   return Array.isArray(value) && value.every(guard);
 }
 
 // 使用例
-const data: unknown = ['a', 'b', 'c'];
+const data: unknown = ["a", "b", "c"];
 if (isArrayOf(data, isString)) {
   // data は string[] として認識
   data.map((s) => s.toUpperCase());
@@ -185,7 +189,7 @@ if (isArrayOf(data, isString)) {
 ### Zodを使用した型ガード
 
 ```typescript
-import { z } from 'zod';
+import { z } from "zod";
 
 const userSchema = z.object({
   id: z.string().uuid(),
@@ -201,7 +205,9 @@ function isUser(value: unknown): value is User {
 }
 
 // より詳細なエラー情報が必要な場合
-function validateUser(value: unknown): { valid: true; data: User } | { valid: false; errors: z.ZodError } {
+function validateUser(
+  value: unknown,
+): { valid: true; data: User } | { valid: false; errors: z.ZodError } {
   const result = userSchema.safeParse(value);
   if (result.success) {
     return { valid: true, data: result.data };
@@ -217,14 +223,14 @@ function validateUser(value: unknown): { valid: true; data: User } | { valid: fa
 ```typescript
 // asserts キーワードを使用
 function assertIsString(value: unknown): asserts value is string {
-  if (typeof value !== 'string') {
+  if (typeof value !== "string") {
     throw new Error(`Expected string, got ${typeof value}`);
   }
 }
 
 function assertIsNonNull<T>(value: T): asserts value is NonNullable<T> {
   if (value === null || value === undefined) {
-    throw new Error('Value is null or undefined');
+    throw new Error("Value is null or undefined");
   }
 }
 
@@ -245,13 +251,13 @@ type ApiResponse<T> =
   | { success: false; error: { code: string; message: string } };
 
 function isSuccessResponse<T>(
-  response: ApiResponse<T>
+  response: ApiResponse<T>,
 ): response is { success: true; data: T } {
   return response.success === true;
 }
 
 function isErrorResponse<T>(
-  response: ApiResponse<T>
+  response: ApiResponse<T>,
 ): response is { success: false; error: { code: string; message: string } } {
   return response.success === false;
 }
@@ -272,20 +278,24 @@ async function fetchData<T>(url: string): Promise<T> {
 
 ```typescript
 type Shape =
-  | { kind: 'circle'; radius: number }
-  | { kind: 'rectangle'; width: number; height: number }
-  | { kind: 'triangle'; base: number; height: number };
+  | { kind: "circle"; radius: number }
+  | { kind: "rectangle"; width: number; height: number }
+  | { kind: "triangle"; base: number; height: number };
 
-function isCircle(shape: Shape): shape is { kind: 'circle'; radius: number } {
-  return shape.kind === 'circle';
+function isCircle(shape: Shape): shape is { kind: "circle"; radius: number } {
+  return shape.kind === "circle";
 }
 
-function isRectangle(shape: Shape): shape is { kind: 'rectangle'; width: number; height: number } {
-  return shape.kind === 'rectangle';
+function isRectangle(
+  shape: Shape,
+): shape is { kind: "rectangle"; width: number; height: number } {
+  return shape.kind === "rectangle";
 }
 
-function isTriangle(shape: Shape): shape is { kind: 'triangle'; base: number; height: number } {
-  return shape.kind === 'triangle';
+function isTriangle(
+  shape: Shape,
+): shape is { kind: "triangle"; base: number; height: number } {
+  return shape.kind === "triangle";
 }
 
 // 網羅性チェック付きの処理
@@ -312,10 +322,10 @@ function getArea(shape: Shape): number {
 ```typescript
 // ✅ 再利用可能な型ガードを作成
 const guards = {
-  isString: (value: unknown): value is string => typeof value === 'string',
-  isNumber: (value: unknown): value is number => typeof value === 'number',
+  isString: (value: unknown): value is string => typeof value === "string",
+  isNumber: (value: unknown): value is number => typeof value === "number",
   isObject: (value: unknown): value is Record<string, unknown> =>
-    typeof value === 'object' && value !== null,
+    typeof value === "object" && value !== null,
 };
 
 // 使用
@@ -331,7 +341,7 @@ function assertIsUser(value: unknown): asserts value is User {
   if (!isUser(value)) {
     throw new TypeError(
       `Invalid user object. Expected { id: string, name: string, email: string }, ` +
-      `got ${JSON.stringify(value)}`
+        `got ${JSON.stringify(value)}`,
     );
   }
 }
@@ -340,15 +350,15 @@ function assertIsUser(value: unknown): asserts value is User {
 ### 3. 型ガードのテスト
 
 ```typescript
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from "vitest";
 
-describe('isUser', () => {
-  it('should return true for valid user', () => {
-    const user = { id: '123', name: 'John', email: 'john@example.com' };
+describe("isUser", () => {
+  it("should return true for valid user", () => {
+    const user = { id: "123", name: "John", email: "john@example.com" };
     expect(isUser(user)).toBe(true);
   });
 
-  it('should return false for invalid user', () => {
+  it("should return false for invalid user", () => {
     expect(isUser(null)).toBe(false);
     expect(isUser({})).toBe(false);
     expect(isUser({ id: 123 })).toBe(false);
@@ -358,6 +368,6 @@ describe('isUser', () => {
 
 ## 変更履歴
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.0.0 | 2025-11-25 | 初版リリース |
+| バージョン | 日付       | 変更内容     |
+| ---------- | ---------- | ------------ |
+| 1.0.0      | 2025-11-25 | 初版リリース |

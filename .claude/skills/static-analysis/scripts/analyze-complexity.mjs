@@ -7,13 +7,13 @@
  * 出力: 複雑度統計、閾値違反一覧、推奨アクション
  */
 
-import { ESLint } from 'eslint';
-import { resolve } from 'path';
+import { ESLint } from "eslint";
+import { resolve } from "path";
 
-async function analyzeComplexity(targetDir = 'src') {
+async function analyzeComplexity(targetDir = "src") {
   const absolutePath = resolve(targetDir);
 
-  console.log('📊 Code Complexity Analysis\n');
+  console.log("📊 Code Complexity Analysis\n");
   console.log(`Target: ${absolutePath}\n`);
 
   try {
@@ -21,21 +21,23 @@ async function analyzeComplexity(targetDir = 'src') {
     const eslint = new ESLint({
       baseConfig: {
         parserOptions: {
-          ecmaVersion: 'latest',
-          sourceType: 'module'
+          ecmaVersion: "latest",
+          sourceType: "module",
         },
         rules: {
-          'complexity': ['warn', 0],  // すべての関数で複雑度を報告
-          'max-depth': ['warn', 0],
-          'max-lines-per-function': ['warn', 0],
-          'max-params': ['warn', 0]
-        }
+          complexity: ["warn", 0], // すべての関数で複雑度を報告
+          "max-depth": ["warn", 0],
+          "max-lines-per-function": ["warn", 0],
+          "max-params": ["warn", 0],
+        },
       },
-      useEslintrc: false
+      useEslintrc: false,
     });
 
     // ファイルをlint
-    const results = await eslint.lintFiles([`${absolutePath}/**/*.{ts,tsx,js,jsx}`]);
+    const results = await eslint.lintFiles([
+      `${absolutePath}/**/*.{ts,tsx,js,jsx}`,
+    ]);
 
     // 複雑度データ収集
     const complexityData = {
@@ -46,22 +48,22 @@ async function analyzeComplexity(targetDir = 'src') {
         complexity: [],
         maxDepth: [],
         maxLines: [],
-        maxParams: []
+        maxParams: [],
       },
       distribution: {
-        simple: 0,      // CC 1-5
-        moderate: 0,    // CC 6-10
-        complex: 0,     // CC 11-20
-        veryComplex: 0  // CC 21+
-      }
+        simple: 0, // CC 1-5
+        moderate: 0, // CC 6-10
+        complex: 0, // CC 11-20
+        veryComplex: 0, // CC 21+
+      },
     };
 
-    results.forEach(result => {
+    results.forEach((result) => {
       if (result.errorCount > 0 || result.warningCount > 0) {
         complexityData.files++;
 
-        result.messages.forEach(msg => {
-          if (msg.ruleId === 'complexity') {
+        result.messages.forEach((msg) => {
+          if (msg.ruleId === "complexity") {
             const complexity = extractComplexity(msg.message);
             complexityData.functions++;
             complexityData.totalComplexity += complexity;
@@ -75,10 +77,10 @@ async function analyzeComplexity(targetDir = 'src') {
             // 閾値違反（>10）
             if (complexity > 10) {
               complexityData.violations.complexity.push({
-                file: result.filePath.replace(process.cwd(), '.'),
+                file: result.filePath.replace(process.cwd(), "."),
                 line: msg.line,
                 complexity,
-                message: msg.message
+                message: msg.message,
               });
             }
           }
@@ -87,30 +89,40 @@ async function analyzeComplexity(targetDir = 'src') {
     });
 
     // レポート出力
-    console.log('📈 Complexity Statistics:\n');
+    console.log("📈 Complexity Statistics:\n");
 
     console.log(`  Files analyzed: ${complexityData.files}`);
     console.log(`  Functions found: ${complexityData.functions}`);
 
     if (complexityData.functions > 0) {
-      const avgComplexity = (complexityData.totalComplexity / complexityData.functions).toFixed(2);
+      const avgComplexity = (
+        complexityData.totalComplexity / complexityData.functions
+      ).toFixed(2);
       console.log(`  Average complexity: ${avgComplexity}`);
     }
 
-    console.log('\n  Distribution:');
-    console.log(`    Simple (1-5):      ${complexityData.distribution.simple} functions`);
-    console.log(`    Moderate (6-10):   ${complexityData.distribution.moderate} functions`);
-    console.log(`    Complex (11-20):   ${complexityData.distribution.complex} functions`);
-    console.log(`    Very Complex (21+): ${complexityData.distribution.veryComplex} functions`);
+    console.log("\n  Distribution:");
+    console.log(
+      `    Simple (1-5):      ${complexityData.distribution.simple} functions`,
+    );
+    console.log(
+      `    Moderate (6-10):   ${complexityData.distribution.moderate} functions`,
+    );
+    console.log(
+      `    Complex (11-20):   ${complexityData.distribution.complex} functions`,
+    );
+    console.log(
+      `    Very Complex (21+): ${complexityData.distribution.veryComplex} functions`,
+    );
 
     // 違反レポート
     if (complexityData.violations.complexity.length > 0) {
-      console.log('\n⚠️  Complexity Violations (>10):\n');
+      console.log("\n⚠️  Complexity Violations (>10):\n");
 
       // 複雑度降順でソート
       const sorted = complexityData.violations.complexity
         .sort((a, b) => b.complexity - a.complexity)
-        .slice(0, 10);  // Top 10
+        .slice(0, 10); // Top 10
 
       sorted.forEach((violation, index) => {
         console.log(`  ${index + 1}. ${violation.file}:${violation.line}`);
@@ -119,31 +131,38 @@ async function analyzeComplexity(targetDir = 'src') {
       });
 
       if (complexityData.violations.complexity.length > 10) {
-        console.log(`  ... and ${complexityData.violations.complexity.length - 10} more\n`);
+        console.log(
+          `  ... and ${complexityData.violations.complexity.length - 10} more\n`,
+        );
       }
     } else {
-      console.log('\n✅ No complexity violations detected\n');
+      console.log("\n✅ No complexity violations detected\n");
     }
 
     // 推奨アクション
-    console.log('💡 Recommendations:\n');
+    console.log("💡 Recommendations:\n");
 
     if (complexityData.distribution.veryComplex > 0) {
-      console.log(`  🔴 High Priority: Refactor ${complexityData.distribution.veryComplex} very complex functions`);
+      console.log(
+        `  🔴 High Priority: Refactor ${complexityData.distribution.veryComplex} very complex functions`,
+      );
     }
     if (complexityData.distribution.complex > 0) {
-      console.log(`  🟡 Medium Priority: Review ${complexityData.distribution.complex} complex functions`);
+      console.log(
+        `  🟡 Medium Priority: Review ${complexityData.distribution.complex} complex functions`,
+      );
     }
     if (complexityData.violations.complexity.length === 0) {
-      console.log('  ✅ Code quality is good. Continue maintaining low complexity.');
+      console.log(
+        "  ✅ Code quality is good. Continue maintaining low complexity.",
+      );
     }
 
     // Exit code
     const exitCode = complexityData.violations.complexity.length > 0 ? 1 : 0;
     process.exit(exitCode);
-
   } catch (error) {
-    console.error('❌ Analysis error:', error.message);
+    console.error("❌ Analysis error:", error.message);
     process.exit(1);
   }
 }
@@ -157,5 +176,5 @@ function extractComplexity(message) {
 }
 
 // CLI実行
-const targetDir = process.argv[2] || 'src';
+const targetDir = process.argv[2] || "src";
 analyzeComplexity(targetDir);

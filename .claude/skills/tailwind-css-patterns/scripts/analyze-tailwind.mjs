@@ -187,9 +187,7 @@ function detectIssues(classes, analysis) {
 
   // ダークモードの一貫性
   const colorClasses = classes.filter((c) => /^(bg-|text-)/.test(c));
-  const darkColorClasses = classes.filter((c) =>
-    /^dark:(bg-|text-)/.test(c)
-  );
+  const darkColorClasses = classes.filter((c) => /^dark:(bg-|text-)/.test(c));
   if (colorClasses.length > 5 && darkColorClasses.length === 0) {
     issues.push({
       type: "info",
@@ -212,7 +210,11 @@ function processDirectory(dirPath) {
     const filePath = path.join(dirPath, file);
     const stat = fs.statSync(filePath);
 
-    if (stat.isDirectory() && !file.startsWith(".") && file !== "node_modules") {
+    if (
+      stat.isDirectory() &&
+      !file.startsWith(".") &&
+      file !== "node_modules"
+    ) {
       allClasses = allClasses.concat(processDirectory(filePath));
     } else if (/\.(tsx?|jsx?|vue|svelte)$/.test(file)) {
       const content = fs.readFileSync(filePath, "utf-8");
@@ -230,9 +232,7 @@ async function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0) {
-    console.error(
-      "使用方法: node analyze-tailwind.mjs <file-or-directory>"
-    );
+    console.error("使用方法: node analyze-tailwind.mjs <file-or-directory>");
     process.exit(1);
   }
 
@@ -297,7 +297,7 @@ async function main() {
     .forEach(([category, count]) => {
       const bar = "█".repeat(Math.ceil(count / 3));
       console.log(
-        `  ${category.padEnd(15)}: ${count.toString().padStart(3)} ${bar}`
+        `  ${category.padEnd(15)}: ${count.toString().padStart(3)} ${bar}`,
       );
     });
 

@@ -37,7 +37,7 @@ const windows: Map<number, BrowserWindow> = new Map();
 function createWindow(id: string): BrowserWindow {
   const win = new BrowserWindow({
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
       nodeIntegration: false,
     },
@@ -45,7 +45,7 @@ function createWindow(id: string): BrowserWindow {
 
   windows.set(win.id, win);
 
-  win.on('closed', () => {
+  win.on("closed", () => {
     windows.delete(win.id);
   });
 
@@ -84,9 +84,16 @@ function createWindow(id: string): BrowserWindow {
 
 ```typescript
 // main/index.ts
-import { app, BrowserWindow, ipcMain, Menu, Tray, Notification } from 'electron';
-import { fileService } from './services/file';
-import { updateService } from './services/update';
+import {
+  app,
+  BrowserWindow,
+  ipcMain,
+  Menu,
+  Tray,
+  Notification,
+} from "electron";
+import { fileService } from "./services/file";
+import { updateService } from "./services/update";
 
 // アプリケーションライフサイクル
 app.whenReady().then(() => {
@@ -96,12 +103,12 @@ app.whenReady().then(() => {
 });
 
 // システムAPI呼び出し
-ipcMain.handle('file:read', async (_, path) => {
+ipcMain.handle("file:read", async (_, path) => {
   return fileService.readFile(path);
 });
 
 // ネイティブ機能
-ipcMain.handle('notification:show', (_, options) => {
+ipcMain.handle("notification:show", (_, options) => {
   new Notification(options).show();
 });
 ```
@@ -132,36 +139,36 @@ function App() {
 
 ```typescript
 // preload/index.ts - 最小限のAPI橋渡し
-import { contextBridge, ipcRenderer } from 'electron';
+import { contextBridge, ipcRenderer } from "electron";
 
 // 公開するAPI定義
 const api = {
   // ファイル操作
-  openFile: () => ipcRenderer.invoke('dialog:openFile'),
-  readFile: (path: string) => ipcRenderer.invoke('file:read', path),
+  openFile: () => ipcRenderer.invoke("dialog:openFile"),
+  readFile: (path: string) => ipcRenderer.invoke("file:read", path),
   saveFile: (path: string, content: string) =>
-    ipcRenderer.invoke('file:write', path, content),
+    ipcRenderer.invoke("file:write", path, content),
 
   // イベントリスナー
   onMenuAction: (callback: (action: string) => void) => {
     const handler = (_: any, action: string) => callback(action);
-    ipcRenderer.on('menu:action', handler);
-    return () => ipcRenderer.removeListener('menu:action', handler);
+    ipcRenderer.on("menu:action", handler);
+    return () => ipcRenderer.removeListener("menu:action", handler);
   },
 };
 
-contextBridge.exposeInMainWorld('electronAPI', api);
+contextBridge.exposeInMainWorld("electronAPI", api);
 ```
 
 ## プロセス分離の理由
 
 ### セキュリティ
 
-| リスク | Main | Renderer |
-|--------|------|----------|
-| XSS攻撃 | 低 | 高 |
-| RCE | 高 | 低（分離時） |
-| ファイルアクセス | 可 | 不可（分離時） |
+| リスク           | Main | Renderer       |
+| ---------------- | ---- | -------------- |
+| XSS攻撃          | 低   | 高             |
+| RCE              | 高   | 低（分離時）   |
+| ファイルアクセス | 可   | 不可（分離時） |
 
 ### 安定性
 
@@ -170,8 +177,8 @@ contextBridge.exposeInMainWorld('electronAPI', api);
 
 ```typescript
 // クラッシュ時のハンドリング
-win.webContents.on('render-process-gone', (event, details) => {
-  console.error('Renderer crashed:', details);
+win.webContents.on("render-process-gone", (event, details) => {
+  console.error("Renderer crashed:", details);
   // ウィンドウを再作成
   win.reload();
 });
@@ -184,11 +191,11 @@ win.webContents.on('render-process-gone', (event, details) => {
 
 ```typescript
 // 重い処理はWorkerで実行
-const worker = new Worker('./heavy-task.js');
+const worker = new Worker("./heavy-task.js");
 worker.postMessage({ data });
 worker.onmessage = (e) => {
   // 結果をRendererに送信
-  win.webContents.send('task:complete', e.data);
+  win.webContents.send("task:complete", e.data);
 };
 ```
 

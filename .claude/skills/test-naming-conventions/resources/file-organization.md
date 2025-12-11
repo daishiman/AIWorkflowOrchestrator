@@ -24,11 +24,13 @@ src/
 ```
 
 **利点**:
+
 - テストとソースの関係が明確
 - ファイル移動が容易
 - 関連ファイルが近くにある
 
 **欠点**:
+
 - ソースディレクトリが混在
 - テストのみのビルド除外が必要
 
@@ -52,15 +54,17 @@ tests/
 ```
 
 **利点**:
+
 - テストタイプ別に整理
 - ソースとテストの明確な分離
 - ビルド設定が簡単
 
 **欠点**:
+
 - パス管理が複雑
 - ソースとテストが離れる
 
-### パターン3: __tests__ディレクトリ
+### パターン3: **tests**ディレクトリ
 
 ```
 src/
@@ -73,6 +77,7 @@ src/
 ```
 
 **利点**:
+
 - Jestのデフォルト
 - テストが近くにある
 - ソースファイルと区別しやすい
@@ -114,28 +119,25 @@ user.service.e2e.test.ts       ← E2Eテスト
 ### vitest.config.ts
 
 ```typescript
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
     // テストファイルのパターン
-    include: [
-      'src/**/*.test.ts',
-      'tests/**/*.test.ts',
-    ],
+    include: ["src/**/*.test.ts", "tests/**/*.test.ts"],
 
     // 除外パターン
     exclude: [
-      'node_modules',
-      'dist',
-      '**/*.e2e.test.ts',  // E2Eは別で実行
+      "node_modules",
+      "dist",
+      "**/*.e2e.test.ts", // E2Eは別で実行
     ],
 
     // グローバルセットアップ
-    setupFiles: ['./tests/setup.ts'],
+    setupFiles: ["./tests/setup.ts"],
 
     // 環境
-    environment: 'node',
+    environment: "node",
   },
 });
 ```
@@ -219,12 +221,12 @@ tests/
 
 ```typescript
 // tests/setup.ts
-import { vi } from 'vitest';
+import { vi } from "vitest";
 
 // グローバルモック
-vi.mock('./src/config', () => ({
+vi.mock("./src/config", () => ({
   config: {
-    apiUrl: 'http://localhost:3000',
+    apiUrl: "http://localhost:3000",
   },
 }));
 
@@ -242,20 +244,20 @@ afterAll(() => {
 
 ```typescript
 // tests/factories/user.factory.ts
-import { User } from '../../src/types';
+import { User } from "../../src/types";
 
 export function createUser(overrides: Partial<User> = {}): User {
   return {
-    id: 'user-1',
-    name: 'Test User',
-    email: 'test@example.com',
+    id: "user-1",
+    name: "Test User",
+    email: "test@example.com",
     createdAt: new Date(),
     ...overrides,
   };
 }
 
 // 使用例
-const user = createUser({ name: 'Custom Name' });
+const user = createUser({ name: "Custom Name" });
 ```
 
 ---

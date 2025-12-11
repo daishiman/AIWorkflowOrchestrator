@@ -32,12 +32,14 @@ version: 1.0.0
 ユーザーフレンドリーで保守しやすいコマンドを作成できます。
 
 **主要な価値**:
+
 - 自己説明的なコマンド構造
 - 豊富な使用例
 - 実践的なトラブルシューティング
 - 一貫したドキュメンテーション
 
 **対象ユーザー**:
+
 - コマンドを作成するエージェント（@command-arch）
 - ドキュメントを充実させたい開発者
 - ユーザーフレンドリーなコマンドを作成したいチーム
@@ -66,9 +68,11 @@ command-documentation-patterns/
 ## いつ使うか
 
 ### シナリオ1: 新規コマンドのドキュメント作成
+
 **状況**: 新しいコマンドに適切なドキュメントを追加したい
 
 **適用条件**:
+
 - [ ] ドキュメント構造が不明
 - [ ] 何を書くべきかわからない
 - [ ] 一貫性のあるスタイルが欲しい
@@ -76,9 +80,11 @@ command-documentation-patterns/
 **期待される成果**: 完全なドキュメント
 
 ### シナリオ2: 使用例の追加
+
 **状況**: コマンドの使い方を示す例を追加したい
 
 **適用条件**:
+
 - [ ] 基本的な使用例のみ
 - [ ] 高度な使用例が欠けている
 - [ ] エッジケースの例が必要
@@ -86,9 +92,11 @@ command-documentation-patterns/
 **期待される成果**: 豊富な使用例
 
 ### シナリオ3: トラブルシューティングの追加
+
 **状況**: よくある問題と解決方法を文書化したい
 
 **適用条件**:
+
 - [ ] ユーザーが同じ問題で困っている
 - [ ] エラーメッセージが不明確
 - [ ] デバッグ方法が不明
@@ -99,7 +107,7 @@ command-documentation-patterns/
 
 ### 完全版テンプレート
 
-```markdown
+````markdown
 ---
 description: |
   [4-8行の詳細な説明]
@@ -111,30 +119,37 @@ argument-hint: [arg1] [arg2]
 # [Command Name]
 
 ## 📋 Purpose
+
 [このコマンドの目的]
 
 ## 📥 Input
+
 - `$ARGUMENTS`: [引数の説明]
 - `$1`: [第一引数]（必要な場合）
 - `$2`: [第二引数]（必要な場合）
 
 ## 📤 Output
+
 - [生成されるファイル]
 - [コンソール出力]
 - [副作用]
 
 ## ⚙️ Prerequisites
+
 - [必要な環境]
 - [依存関係]
 - [権限]
 
 ## 🔧 Configuration
+
 このコマンドが参照する設定:
+
 - `.env` ファイル
 - `package.json`
 - プロジェクト設定ファイル
 
 ## 🚀 Execution Steps
+
 1. [ステップ1]
 2. [ステップ2]
 3. [ステップ3]
@@ -142,22 +157,27 @@ argument-hint: [arg1] [arg2]
 ## 📝 Examples
 
 ### Example 1: Basic usage
+
 ```bash
 /command basic-input
 ```
+````
 
 Expected output:
+
 ```
 ✅ Operation completed successfully
 📁 Created: output.txt
 ```
 
 ### Example 2: Advanced usage
+
 ```bash
 /command advanced-input --flag
 ```
 
 Expected output:
+
 ```
 🔄 Processing with advanced options...
 ✅ Done
@@ -166,27 +186,33 @@ Expected output:
 ## 🐛 Troubleshooting
 
 ### Problem 1: [Common issue]
+
 **Symptoms**: [What user sees]
 
 **Solution**:
+
 1. [Step to fix]
 2. [Step to verify]
 
 ### Problem 2: [Another issue]
+
 **Symptoms**: [What user sees]
 
 **Solution**:
 [How to fix]
 
 ## ⚠️ Warnings
+
 - [Important warning 1]
 - [Important warning 2]
 
 ## 🔗 Related
+
 - [Related command 1]
 - [Related command 2]
 - [Documentation link]
-```
+
+````
 
 ### 最小版テンプレート
 
@@ -203,15 +229,17 @@ description: [Brief description]
 ## Usage
 ```bash
 /command [arguments]
-```
+````
 
 ## Example
+
 ```bash
 /command example-input
 ```
 
 Expected: [What happens]
-```
+
+````
 
 ## セクション別ガイド
 
@@ -227,27 +255,32 @@ This command creates a new React component with:
 - Export in index file
 
 Use this when you need a fully-configured component ready for development.
-```
+````
 
 **悪い例**:
+
 ```markdown
 ## Purpose
+
 Creates component
 ```
 
 ### Input セクション
 
 **詳細な説明**:
+
 ```markdown
 ## 📥 Input
 
 ### Required
+
 - `$ARGUMENTS`: Component name in PascalCase
   - Must be unique
   - Must not conflict with HTML elements
   - Example: `UserProfile`, `NavigationBar`
 
 ### Optional Environment Variables
+
 - `COMPONENT_TEMPLATE`: Custom template path
   - Default: `.claude/templates/component.tsx`
   - Override for project-specific templates
@@ -256,10 +289,12 @@ Creates component
 ### Output セクション
 
 **明確な期待値**:
+
 ```markdown
 ## 📤 Output
 
 ### Files Created
+
 - `src/components/[Name]/[Name].tsx` - Component implementation
 - `src/components/[Name]/[Name].test.tsx` - Unit tests
 - `src/components/[Name]/[Name].stories.tsx` - Storybook stories
@@ -267,70 +302,87 @@ Creates component
 
 ### Console Output
 ```
+
 ✅ Component created: UserProfile
 📁 Files created: 4
 🧪 Tests generated: 3
 📚 Story created: 1
 
 Next steps:
+
 1. cd src/components/UserProfile
 2. Review generated files
 3. pnpm test -- UserProfile
+
 ```
+
 ```
 
 ### Prerequisites セクション
 
 **包括的なリスト**:
+
 ```markdown
 ## ⚙️ Prerequisites
 
 ### Environment
+
 - Node.js >= 18.0.0
 - pnpm >= 9.0.0
 
 ### Dependencies
+
 - React >= 18.0.0
 - TypeScript >= 5.0.0
 - Testing Library installed
 
 ### Permissions
+
 - Write access to `src/components/` directory
 - Read access to template files
 
 ### Project Structure
+
 Required directories:
 ```
+
 src/
 └── components/
-    └── index.ts (must exist)
+└── index.ts (must exist)
+
 ```
+
 ```
 
 ## 使用例パターン
 
 ### レベル1: 基本的な使用
 
-```markdown
+````markdown
 ### Example 1: Basic Usage
+
 最もシンプルな形式:
 
 ```bash
 /create-component Button
 ```
+````
 
 What happens:
+
 1. Creates Button component in `src/components/Button/`
 2. Generates tests
 3. Updates exports
 
 Result:
+
 ```
 ✅ Button component created
 📁 4 files created
 🧪 3 tests passing
 ```
-```
+
+````
 
 ### レベル2: 一般的な使用
 
@@ -340,9 +392,10 @@ Props付きコンポーネント:
 
 ```bash
 /create-component UserCard
-```
+````
 
 Then define props when prompted:
+
 ```typescript
 interface UserCardProps {
   name: string;
@@ -352,7 +405,8 @@ interface UserCardProps {
 ```
 
 Result: Component with typed props interface
-```
+
+````
 
 ### レベル3: 高度な使用
 
@@ -363,15 +417,17 @@ Result: Component with typed props interface
 ```bash
 COMPONENT_TEMPLATE=.claude/templates/advanced-component.tsx \
 /create-component Dashboard
-```
+````
 
 This uses your custom template with:
+
 - Advanced state management
 - Custom hooks
 - Error boundaries
 
 Result: Fully-featured component
-```
+
+````
 
 ### レベル4: エッジケース
 
@@ -381,9 +437,10 @@ Result: Fully-featured component
 
 ```bash
 /create-component forms/LoginForm
-```
+````
 
 Creates:
+
 ```
 src/
 └── components/
@@ -395,7 +452,8 @@ src/
 ```
 
 Note: Parent directory `forms/` must exist
-```
+
+````
 
 ## トラブルシューティングパターン
 
@@ -406,10 +464,12 @@ Note: Parent directory `forms/` must exist
 
 ### Component already exists
 **Symptoms**:
-```
+````
+
 ❌ Error: Component 'Button' already exists
 📁 Found at: src/components/Button/
-```
+
+````
 
 **Cause**:
 A component with this name already exists in the project.
@@ -418,14 +478,15 @@ A component with this name already exists in the project.
 1. Choose a different name:
    ```bash
    /create-component PrimaryButton
-   ```
+````
 
 2. Or delete existing component first:
    ```bash
    rm -rf src/components/Button/
    /create-component Button
    ```
-```
+
+````
 
 ### パターン2: チェックリスト形式
 
@@ -445,8 +506,9 @@ If all checked and still failing:
 # Clear cache and rebuild
 rm -rf node_modules/.cache
 pnpm run build
-```
-```
+````
+
+````
 
 ### パターン3: FAQ形式
 
@@ -458,10 +520,11 @@ A: Yes, use forward slashes:
 ```bash
 /create-component forms/LoginForm
 /create-component modals/ConfirmDialog
-```
+````
 
 **Q: How do I use a custom template?**
 A: Set `COMPONENT_TEMPLATE` environment variable:
+
 ```bash
 export COMPONENT_TEMPLATE=./my-template.tsx
 /create-component MyComponent
@@ -469,10 +532,12 @@ export COMPONENT_TEMPLATE=./my-template.tsx
 
 **Q: Can I skip tests generation?**
 A: Not with this command. To create component only:
+
 ```bash
 /create-component-no-tests MyComponent
 ```
-```
+
+````
 
 ## ライティングスタイル
 
@@ -520,7 +585,7 @@ A: Not with this command. To create component only:
 🔗 Related / Links
 📁 Files
 🧪 Tests
-```
+````
 
 ### トーンとボイス
 
@@ -544,18 +609,23 @@ A: Not with this command. To create component only:
 ## 詳細リソースの参照
 
 ### セルフドキュメンティング構造
+
 詳細は `resources/self-documenting-structure.md` を参照
 
 ### 使用例パターン
+
 詳細は `resources/example-patterns.md` を参照
 
 ### トラブルシューティングガイド
+
 詳細は `resources/troubleshooting-guide.md` を参照
 
 ### ライティングスタイルガイド
+
 詳細は `resources/writing-style-guide.md` を参照
 
 ### テンプレート
+
 - 完全版: `templates/full-documentation-template.md`
 - 最小版: `templates/minimal-documentation-template.md`
 

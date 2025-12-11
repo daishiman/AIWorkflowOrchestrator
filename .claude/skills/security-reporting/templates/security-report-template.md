@@ -15,12 +15,12 @@
 
 ### 脆弱性サマリー
 
-| 重要度 | 件数 | ステータス |
-|-------|------|----------|
+| 重要度   | 件数               | ステータス          |
+| -------- | ------------------ | ------------------- |
 | Critical | {{CRITICAL_COUNT}} | {{CRITICAL_STATUS}} |
-| High | {{HIGH_COUNT}} | {{HIGH_STATUS}} |
-| Medium | {{MEDIUM_COUNT}} | {{MEDIUM_STATUS}} |
-| Low | {{LOW_COUNT}} | {{LOW_STATUS}} |
+| High     | {{HIGH_COUNT}}     | {{HIGH_STATUS}}     |
+| Medium   | {{MEDIUM_COUNT}}   | {{MEDIUM_STATUS}}   |
+| Low      | {{LOW_COUNT}}      | {{LOW_STATUS}}      |
 
 ### 主要発見事項（Top 5）
 
@@ -34,7 +34,7 @@
 
 1. ❗ {{IMMEDIATE_ACTION_1}}
 2. ❗ {{IMMEDIATE_ACTION_2}}
-3. ⚠️  {{IMMEDIATE_ACTION_3}}
+3. ⚠️ {{IMMEDIATE_ACTION_3}}
 
 ---
 
@@ -72,6 +72,7 @@
 **カテゴリ**: OWASP {{OWASP_CATEGORY}}
 
 **影響を受けるファイル**:
+
 - `{{FILE_PATH_1}}` (Line {{LINE_NUMBER_1}})
 - `{{FILE_PATH_2}}` (Line {{LINE_NUMBER_2}})
 
@@ -91,16 +92,19 @@
 **原則**: {{SECURITY_PRINCIPLE}}
 
 **Before**:
+
 ```{{LANGUAGE}}
 {{CODE_BEFORE}}
 ```
 
 **After**:
+
 ```{{LANGUAGE}}
 {{CODE_AFTER}}
 ```
 
 **実装ステップ**:
+
 1. {{STEP_1}}
 2. {{STEP_2}}
 3. {{STEP_3}}
@@ -109,6 +113,7 @@
 {{VERIFICATION_METHOD}}
 
 **参考資料**:
+
 - OWASP: {{OWASP_LINK}}
 - CWE: {{CWE_LINK}}
 
@@ -118,10 +123,10 @@
 
 ### Critical/High脆弱性
 
-| パッケージ | バージョン | CVE | CVSSスコア | 修正バージョン |
-|----------|-----------|-----|-----------|-------------|
-| {{PKG_1}} | {{VER_1}} | {{CVE_1}} | {{SCORE_1}} | {{FIX_1}} |
-| {{PKG_2}} | {{VER_2}} | {{CVE_2}} | {{SCORE_2}} | {{FIX_2}} |
+| パッケージ | バージョン | CVE       | CVSSスコア  | 修正バージョン |
+| ---------- | ---------- | --------- | ----------- | -------------- |
+| {{PKG_1}}  | {{VER_1}}  | {{CVE_1}} | {{SCORE_1}} | {{FIX_1}}      |
+| {{PKG_2}}  | {{VER_2}}  | {{CVE_2}} | {{SCORE_2}} | {{FIX_2}}      |
 
 ### 修正コマンド
 
@@ -144,15 +149,21 @@ pnpm install {{PACKAGE_NAME}}@{{FIXED_VERSION}}
 ### HTTPセキュリティヘッダー
 
 **検出された問題**:
+
 - {{HEADER_ISSUE_1}}
 - {{HEADER_ISSUE_2}}
 
 **推奨設定**:
+
 ```javascript
-app.use(helmet({
-  contentSecurityPolicy: { /* ... */ },
-  hsts: { maxAge: 31536000, includeSubDomains: true }
-}));
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      /* ... */
+    },
+    hsts: { maxAge: 31536000, includeSubDomains: true },
+  }),
+);
 ```
 
 ### CORS設定
@@ -161,11 +172,14 @@ app.use(helmet({
 {{CORS_ISSUES}}
 
 **推奨設定**:
+
 ```javascript
-app.use(cors({
-  origin: process.env.ALLOWED_ORIGINS.split(','),
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: process.env.ALLOWED_ORIGINS.split(","),
+    credentials: true,
+  }),
+);
 ```
 
 ---
@@ -174,23 +188,24 @@ app.use(cors({
 
 ### 実装が必要なエンドポイント
 
-| エンドポイント | 現状 | 推奨設定 | 優先度 |
-|-------------|------|---------|-------|
-| POST /api/login | なし | 5 req/15分 | High |
-| POST /api/register | なし | 3 req/1時間 | High |
-| GET /api/* | なし | 100 req/1時間 | Medium |
+| エンドポイント     | 現状 | 推奨設定      | 優先度 |
+| ------------------ | ---- | ------------- | ------ |
+| POST /api/login    | なし | 5 req/15分    | High   |
+| POST /api/register | なし | 3 req/1時間   | High   |
+| GET /api/\*        | なし | 100 req/1時間 | Medium |
 
 **実装例**:
+
 ```javascript
-const rateLimit = require('express-rate-limit');
+const rateLimit = require("express-rate-limit");
 
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5,
-  message: 'Too many login attempts'
+  message: "Too many login attempts",
 });
 
-app.post('/api/login', loginLimiter, loginHandler);
+app.post("/api/login", loginLimiter, loginHandler);
 ```
 
 ---
@@ -199,11 +214,11 @@ app.post('/api/login', loginLimiter, loginHandler);
 
 ### Phase 1: 緊急対応（即座～1週間）
 
-| タスク | 担当 | 期限 | ステータス |
-|-------|------|------|----------|
-| SQLインジェクション修正 | Backend | {{DEADLINE_1}} | 未着手 |
-| ハードコードAPIキー削除 | DevOps | {{DEADLINE_2}} | 未着手 |
-| Rate Limiting実装 | Backend | {{DEADLINE_3}} | 未着手 |
+| タスク                  | 担当    | 期限           | ステータス |
+| ----------------------- | ------- | -------------- | ---------- |
+| SQLインジェクション修正 | Backend | {{DEADLINE_1}} | 未着手     |
+| ハードコードAPIキー削除 | DevOps  | {{DEADLINE_2}} | 未着手     |
+| Rate Limiting実装       | Backend | {{DEADLINE_3}} | 未着手     |
 
 ### Phase 2: 早期対応（1-4週間）
 

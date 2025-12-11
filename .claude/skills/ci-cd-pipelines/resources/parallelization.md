@@ -20,24 +20,24 @@
 
 ```yaml
 jobs:
-  lint:                           # 並列実行
+  lint: # 並列実行
     runs-on: ubuntu-latest
     steps: [...]
 
-  type-check:                     # 並列実行
+  type-check: # 並列実行
     runs-on: ubuntu-latest
     steps: [...]
 
-  test:                           # 並列実行
+  test: # 並列実行
     runs-on: ubuntu-latest
     steps: [...]
 
-  build:                          # 並列実行
+  build: # 並列実行
     runs-on: ubuntu-latest
     steps: [...]
 
   deploy:
-    needs: [lint, type-check, test, build]  # すべて完了後
+    needs: [lint, type-check, test, build] # すべて完了後
     runs-on: ubuntu-latest
     steps: [...]
 ```
@@ -76,6 +76,7 @@ jobs:
 ```
 
 **生成されるジョブ**:
+
 - test (ubuntu-latest, node 18)
 - test (ubuntu-latest, node 20)
 - test (ubuntu-latest, node 22)
@@ -92,10 +93,10 @@ strategy:
     node: [18, 20, 22]
     exclude:
       - os: windows-latest
-        node: 18                  # Windows + Node 18 をスキップ
+        node: 18 # Windows + Node 18 をスキップ
     include:
       - os: macos-latest
-        node: 22                  # macOS + Node 22 を追加
+        node: 22 # macOS + Node 22 を追加
 ```
 
 ### 動的マトリクス
@@ -128,16 +129,18 @@ jobs:
 
 ```yaml
 strategy:
-  fail-fast: true                 # デフォルト
+  fail-fast: true # デフォルト
   matrix:
     node: [18, 20, 22]
 ```
 
 **利点**:
+
 - リソース節約
 - 早期フィードバック
 
 **欠点**:
+
 - 他のバージョンでの問題が見つからない
 
 ### 全ジョブ実行（fail-fast: false）
@@ -150,17 +153,19 @@ strategy:
 ```
 
 **利点**:
+
 - すべてのバージョンでの問題を検出
 - 包括的なテスト結果
 
 **欠点**:
+
 - 実行時間が長くなる可能性
 
 ### 推奨設定
 
 ```yaml
 strategy:
-  fail-fast: false               # 全バージョンテスト
+  fail-fast: false # 全バージョンテスト
   matrix:
     node: [18, 20, 22]
 ```
@@ -247,7 +252,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
+          cache: "pnpm"
       - run: pnpm install --frozen-lockfile
 
   lint:
@@ -259,8 +264,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'              # キャッシュから復元
-      - run: pnpm install --frozen-lockfile  # ほぼ即座
+          cache: "pnpm" # キャッシュから復元
+      - run: pnpm install --frozen-lockfile # ほぼ即座
       - run: pnpm lint
 ```
 
@@ -269,29 +274,32 @@ jobs:
 ### 1. 不要な依存関係
 
 ❌ **避けるべき**:
+
 ```yaml
 jobs:
   lint:
     runs-on: ubuntu-latest
 
   type-check:
-    needs: lint                    # 不要な依存
+    needs: lint # 不要な依存
     runs-on: ubuntu-latest
 ```
 
 ✅ **推奨**:
+
 ```yaml
 jobs:
   lint:
     runs-on: ubuntu-latest
 
-  type-check:                      # 並列実行
+  type-check: # 並列実行
     runs-on: ubuntu-latest
 ```
 
 ### 2. 過度なマトリクス
 
 ❌ **避けるべき**:
+
 ```yaml
 strategy:
   matrix:
@@ -301,6 +309,7 @@ strategy:
 ```
 
 ✅ **推奨**:
+
 ```yaml
 strategy:
   matrix:
@@ -308,37 +317,39 @@ strategy:
     os: [ubuntu-latest]
     include:
       - node: 22
-        os: windows-latest         # 代表テストのみ
+        os: windows-latest # 代表テストのみ
 ```
 
 ### 3. 共有リソースの競合
 
 ❌ **避けるべき**:
+
 ```yaml
 jobs:
   test-1:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "data" > shared.txt  # 競合の可能性
+      - run: echo "data" > shared.txt # 競合の可能性
 
   test-2:
     runs-on: ubuntu-latest
     steps:
-      - run: cat shared.txt            # ファイルが存在しない
+      - run: cat shared.txt # ファイルが存在しない
 ```
 
 ✅ **推奨**:
+
 ```yaml
 jobs:
   test-1:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "data" > test1.txt   # 独立したファイル
+      - run: echo "data" > test1.txt # 独立したファイル
 
   test-2:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "data" > test2.txt   # 独立したファイル
+      - run: echo "data" > test2.txt # 独立したファイル
 ```
 
 ## 最適化されたワークフロー例
@@ -360,7 +371,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
+          cache: "pnpm"
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
 
@@ -372,7 +383,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
+          cache: "pnpm"
       - run: pnpm install --frozen-lockfile
       - run: pnpm tsc --noEmit
 
@@ -385,7 +396,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
+          cache: "pnpm"
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - uses: actions/upload-artifact@v4
@@ -403,7 +414,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
+          cache: "pnpm"
       - run: pnpm install --frozen-lockfile
       - run: pnpm test
 

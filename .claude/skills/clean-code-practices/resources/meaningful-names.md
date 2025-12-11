@@ -12,6 +12,7 @@
 名前は「なぜ存在するか」「何をするか」「どう使うか」を伝えるべきです。
 
 **判断基準**:
+
 - 名前だけで何をするか分かるか？
 - コメントなしで理解できるか？
 - コンテキストがなくても意味が通じるか？
@@ -21,6 +22,7 @@
 プログラミングは共同作業であり、コードについて議論できる必要があります。
 
 **避けるべき例**:
+
 - `genymdhms` → `generationTimestamp`
 - `modymdhms` → `modificationTimestamp`
 
@@ -29,6 +31,7 @@
 単一の文字や数値定数は検索が困難です。
 
 **避けるべき例**:
+
 - `e` → `event` または `error`
 - `7` → `DAYS_PER_WEEK`
 
@@ -39,6 +42,7 @@
 変数名は内容を表す名詞または名詞句を使用します。
 
 **パターン**:
+
 - 単数形: 単一の値 (`user`, `order`)
 - 複数形: コレクション (`users`, `orderItems`)
 - 形容詞+名詞: 特定の状態 (`activeUser`, `completedOrders`)
@@ -48,6 +52,7 @@
 関数名は動詞または動詞句で始まります。
 
 **一般的な動詞**:
+
 - `get`: 値を取得
 - `set`: 値を設定
 - `calculate`: 計算
@@ -63,6 +68,7 @@
 ブール値を返す関数や変数は、is/has/can/shouldで始めます。
 
 **例**:
+
 - `isValid`, `isActive`, `isCompleted`
 - `hasPermission`, `hasChildren`
 - `canExecute`, `canDelete`
@@ -80,6 +86,7 @@
 ### 曖昧な名前
 
 **避けるべき例**:
+
 - `data`, `info`, `temp`, `value`, `result`
 - `doSomething`, `process`, `handle`
 
@@ -88,6 +95,7 @@
 ### 短すぎる名前
 
 **避けるべき例**:
+
 - `d`, `n`, `t` (ループ変数の`i`は例外)
 
 **対処**: 意味が伝わる最小限の長さを使用
@@ -95,6 +103,7 @@
 ### 長すぎる名前
 
 **避けるべき例**:
+
 - `theUserThatHasTheCorrectPermissionToAccessThisResource`
 
 **対処**: 冗長な情報を削除、コンテキストを活用
@@ -102,6 +111,7 @@
 ### エンコーディング
 
 **避けるべき例**:
+
 - ハンガリアン記法: `strName`, `intCount`
 - 接頭辞/接尾辞: `m_name`, `_name`, `name_`
 
