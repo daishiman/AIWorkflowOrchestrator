@@ -2,17 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { SettingsView } from "./index";
 
-// Mock useTheme hook
-const mockSetTheme = vi.fn();
-vi.mock("../../hooks/useTheme", () => ({
-  useTheme: () => ({
-    themeMode: "system" as const,
-    resolvedTheme: "dark" as const,
-    setTheme: mockSetTheme,
-    isDark: true,
-  }),
-}));
-
 // Mock AccountSection to avoid complex auth state dependencies
 vi.mock("../../components/organisms/AccountSection", () => ({
   AccountSection: () => (
@@ -136,20 +125,6 @@ describe("SettingsView", () => {
     });
   });
 
-  describe("外観設定", () => {
-    it("外観設定セクションを表示する", () => {
-      render(<SettingsView />);
-      expect(screen.getByText("外観設定")).toBeInTheDocument();
-    });
-
-    it("テーマボタンを表示する", () => {
-      render(<SettingsView />);
-      expect(screen.getByText("ライト")).toBeInTheDocument();
-      expect(screen.getByText("ダーク")).toBeInTheDocument();
-      expect(screen.getByText("システム")).toBeInTheDocument();
-    });
-  });
-
   describe("保存ボタン", () => {
     it("保存ボタンを表示する", () => {
       render(<SettingsView />);
@@ -187,12 +162,6 @@ describe("SettingsView", () => {
     it("RAG設定セクションにaria-labelledbyを持つ", () => {
       render(<SettingsView />);
       const section = screen.getByRole("region", { name: /RAG設定/ });
-      expect(section).toBeInTheDocument();
-    });
-
-    it("外観設定セクションにaria-labelledbyを持つ", () => {
-      render(<SettingsView />);
-      const section = screen.getByRole("region", { name: /外観設定/ });
       expect(section).toBeInTheDocument();
     });
   });

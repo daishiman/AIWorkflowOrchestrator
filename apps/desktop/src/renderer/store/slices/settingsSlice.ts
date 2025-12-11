@@ -1,5 +1,6 @@
 import { StateCreator } from "zustand";
 import type { UserProfile, ThemeMode, ResolvedTheme } from "../types";
+import { getThemeColorScheme } from "../types";
 
 export interface SettingsSlice {
   // State
@@ -35,6 +36,10 @@ function applyThemeToDOM(resolvedTheme: ResolvedTheme): void {
     // Set data-theme attribute
     document.documentElement.setAttribute("data-theme", resolvedTheme);
 
+    // Set color-scheme for native elements
+    const colorScheme = getThemeColorScheme(resolvedTheme);
+    document.documentElement.style.colorScheme = colorScheme;
+
     // Remove transition class after animation completes
     setTimeout(() => {
       document.documentElement.classList.remove("theme-transition");
@@ -42,18 +47,38 @@ function applyThemeToDOM(resolvedTheme: ResolvedTheme): void {
   }
 }
 
+// Helper to resolve theme based on system preference
+function resolveSystemTheme(): ResolvedTheme {
+  if (typeof window !== "undefined" && window.matchMedia) {
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)",
+    ).matches;
+    return prefersDark ? "kanagawa-dragon" : "kanagawa-lotus";
+  }
+  return "kanagawa-dragon"; // Default fallback
+}
+
+// Helper to resolve theme mode (unused but kept for future theme switching support)
+function _resolveTheme(mode: ThemeMode): ResolvedTheme {
+  if (mode === "system") {
+    return resolveSystemTheme();
+  }
+  // Direct theme modes
+  return mode as ResolvedTheme;
+}
+
 export const createSettingsSlice: StateCreator<
   SettingsSlice,
   [],
   [],
   SettingsSlice
-> = (set, get) => ({
+> = (set, _get) => ({
   // Initial state
   userProfile: defaultProfile,
   apiKey: "",
   autoSyncEnabled: true,
-  themeMode: "system",
-  resolvedTheme: "dark", // Default to dark
+  themeMode: "kanagawa-dragon", // Kanagawa Dragon固定（変更不可）
+  resolvedTheme: "kanagawa-dragon", // Default to Kanagawa Dragon
 
   // Actions
   setUserProfile: (profile) => {
@@ -74,77 +99,26 @@ export const createSettingsSlice: StateCreator<
     set({ autoSyncEnabled: enabled });
   },
 
-  setThemeMode: async (mode: ThemeMode) => {
-    try {
-      // Guard: Skip IPC if electronAPI is not available (e.g., browser dev mode)
-      if (!window.electronAPI?.theme?.set) {
-        // Fallback for browser mode
-        const resolvedTheme: ResolvedTheme = mode === "system" ? "dark" : mode;
-        set({ themeMode: mode, resolvedTheme });
-        applyThemeToDOM(resolvedTheme);
-        return;
-      }
-
-      // Call IPC to save and get resolved theme
-      const response = await window.electronAPI.theme.set({ mode });
-
-      if (response.success && response.data) {
-        const { mode: savedMode, resolvedTheme } = response.data;
-
-        // Update state
-        set({ themeMode: savedMode, resolvedTheme });
-
-        // Apply to DOM
-        applyThemeToDOM(resolvedTheme);
-      }
-    } catch (error) {
-      console.error("[SettingsSlice] Failed to set theme:", error);
-      // Fallback: still update local state
-      let resolvedTheme: ResolvedTheme;
-      if (mode === "system") {
-        // Try to get system theme
-        try {
-          const sysResponse = await window.electronAPI.theme.getSystem();
-          resolvedTheme = sysResponse.data?.resolvedTheme ?? "dark";
-        } catch {
-          resolvedTheme = "dark";
-        }
-      } else {
-        resolvedTheme = mode;
-      }
-
-      set({ themeMode: mode, resolvedTheme });
-      applyThemeToDOM(resolvedTheme);
-    }
+  setThemeMode: async (_mode: ThemeMode) => {
+    // テーマはKanagawa Dragon固定（変更不可）
+    // 変更リクエストを無視し、常にKanagawa Dragonを維持
+    const fixedTheme: ResolvedTheme = "kanagawa-dragon";
+    set({ themeMode: "kanagawa-dragon", resolvedTheme: fixedTheme });
+    applyThemeToDOM(fixedTheme);
   },
 
-  setResolvedTheme: (theme: ResolvedTheme) => {
-    set({ resolvedTheme: theme });
-    applyThemeToDOM(theme);
+  setResolvedTheme: (_theme: ResolvedTheme) => {
+    // テーマはKanagawa Dragon固定（変更不可）
+    const fixedTheme: ResolvedTheme = "kanagawa-dragon";
+    set({ resolvedTheme: fixedTheme });
+    applyThemeToDOM(fixedTheme);
   },
 
   initializeTheme: async () => {
-    try {
-      // Guard: Skip IPC if electronAPI is not available (e.g., browser dev mode)
-      if (!window.electronAPI?.theme?.get) {
-        // Use defaults for browser mode
-        const state = get();
-        applyThemeToDOM(state.resolvedTheme);
-        return;
-      }
-
-      const response = await window.electronAPI.theme.get();
-
-      if (response.success && response.data) {
-        const { mode, resolvedTheme } = response.data;
-        set({ themeMode: mode, resolvedTheme });
-        applyThemeToDOM(resolvedTheme);
-      }
-    } catch (error) {
-      console.error("[SettingsSlice] Failed to initialize theme:", error);
-      // Use defaults
-      const state = get();
-      applyThemeToDOM(state.resolvedTheme);
-    }
+    // テーマはKanagawa Dragon固定（変更不可）
+    // 初期化時も常にKanagawa Dragonを適用
+    const fixedTheme: ResolvedTheme = "kanagawa-dragon";
+    set({ themeMode: "kanagawa-dragon", resolvedTheme: fixedTheme });
+    applyThemeToDOM(fixedTheme);
   },
 });

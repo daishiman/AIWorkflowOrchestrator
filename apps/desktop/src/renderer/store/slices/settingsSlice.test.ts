@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import { createSettingsSlice, type SettingsSlice } from "./settingsSlice";
-import type { UserProfile, ThemeMode, ResolvedTheme } from "../types";
+import type { UserProfile } from "../types";
 
 // Mock window.electronAPI
 const mockElectronAPI = {
@@ -139,13 +139,14 @@ describe("settingsSlice", () => {
       );
 
       await newStore.setThemeMode("dark");
-      expect(store.themeMode).toBe("dark");
-      expect(store.resolvedTheme).toBe("dark");
+      // テーマはKanagawa Dragon固定
+      expect(store.themeMode).toBe("kanagawa-dragon");
+      expect(store.resolvedTheme).toBe("kanagawa-dragon");
 
       vi.stubGlobal("electronAPI", mockElectronAPI);
     });
 
-    it("electronAPI.theme.setが利用不可の場合、フォールバックで動作する", async () => {
+    it("electronAPI.theme.setが利用不可の場合もKanagawa Dragon固定", async () => {
       vi.stubGlobal("electronAPI", { theme: {} });
       const newStore = createSettingsSlice(
         mockSet as never,
@@ -154,13 +155,14 @@ describe("settingsSlice", () => {
       );
 
       await newStore.setThemeMode("light");
-      expect(store.themeMode).toBe("light");
-      expect(store.resolvedTheme).toBe("light");
+      // テーマはKanagawa Dragon固定
+      expect(store.themeMode).toBe("kanagawa-dragon");
+      expect(store.resolvedTheme).toBe("kanagawa-dragon");
 
       vi.stubGlobal("electronAPI", mockElectronAPI);
     });
 
-    it("systemモードの場合、resolvedThemeはdarkにフォールバックする", async () => {
+    it("systemモードを指定してもKanagawa Dragon固定", async () => {
       vi.stubGlobal("electronAPI", { theme: {} });
       const newStore = createSettingsSlice(
         mockSet as never,
@@ -169,70 +171,51 @@ describe("settingsSlice", () => {
       );
 
       await newStore.setThemeMode("system");
-      expect(store.themeMode).toBe("system");
-      expect(store.resolvedTheme).toBe("dark");
+      // テーマはKanagawa Dragon固定（変更不可）
+      expect(store.themeMode).toBe("kanagawa-dragon");
+      expect(store.resolvedTheme).toBe("kanagawa-dragon");
 
       vi.stubGlobal("electronAPI", mockElectronAPI);
     });
 
-    it("IPC成功時にテーマを設定する", async () => {
-      mockElectronAPI.theme.set.mockResolvedValue({
-        success: true,
-        data: {
-          mode: "dark" as ThemeMode,
-          resolvedTheme: "dark" as ResolvedTheme,
-        },
-      });
-
+    it("テーマは常にKanagawa Dragon固定", async () => {
+      // テーマはKanagawa Dragon固定（変更不可）
       await store.setThemeMode("dark");
-      expect(store.themeMode).toBe("dark");
-      expect(store.resolvedTheme).toBe("dark");
+      expect(store.themeMode).toBe("kanagawa-dragon");
+      expect(store.resolvedTheme).toBe("kanagawa-dragon");
     });
 
-    it("IPC失敗時にフォールバック処理を行う", async () => {
-      mockElectronAPI.theme.set.mockRejectedValue(new Error("IPC error"));
-      mockElectronAPI.theme.getSystem.mockRejectedValue(
-        new Error("System error"),
-      );
-
-      await store.setThemeMode("system");
-      expect(store.themeMode).toBe("system");
-      expect(store.resolvedTheme).toBe("dark");
-    });
-
-    it("IPC失敗時にシステムテーマを取得して設定する", async () => {
-      mockElectronAPI.theme.set.mockRejectedValue(new Error("IPC error"));
-      mockElectronAPI.theme.getSystem.mockResolvedValue({
-        data: { resolvedTheme: "light" as ResolvedTheme },
-      });
-
-      await store.setThemeMode("system");
-      expect(store.resolvedTheme).toBe("light");
-    });
-
-    it("IPC失敗かつlight/darkモードの場合、直接設定する", async () => {
-      mockElectronAPI.theme.set.mockRejectedValue(new Error("IPC error"));
-
+    it("任意のテーマを指定してもKanagawa Dragonのまま", async () => {
       await store.setThemeMode("light");
-      expect(store.themeMode).toBe("light");
-      expect(store.resolvedTheme).toBe("light");
+      expect(store.themeMode).toBe("kanagawa-dragon");
+      expect(store.resolvedTheme).toBe("kanagawa-dragon");
+    });
+
+    it("systemを指定してもKanagawa Dragonのまま", async () => {
+      await store.setThemeMode("system");
+      expect(store.themeMode).toBe("kanagawa-dragon");
+      expect(store.resolvedTheme).toBe("kanagawa-dragon");
     });
   });
 
   describe("setResolvedTheme", () => {
-    it("resolvedThemeを直接設定する", () => {
+    it("resolvedThemeは常にKanagawa Dragon固定", () => {
       store.setResolvedTheme("light");
-      expect(store.resolvedTheme).toBe("light");
+      // テーマは固定なのでkanagawa-dragonのまま
+      expect(store.resolvedTheme).toBe("kanagawa-dragon");
     });
 
-    it("DOMにテーマを適用する", () => {
+    it("DOMにKanagawa Dragonテーマを適用する", () => {
       store.setResolvedTheme("dark");
-      expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
+      // テーマは固定なのでkanagawa-dragonが適用される
+      expect(document.documentElement.getAttribute("data-theme")).toBe(
+        "kanagawa-dragon",
+      );
     });
   });
 
   describe("initializeTheme", () => {
-    it("electronAPIが利用不可の場合、デフォルトを使用する", async () => {
+    it("初期化時にKanagawa Dragonテーマが適用される", async () => {
       vi.stubGlobal("electronAPI", undefined);
       const newStore = createSettingsSlice(
         mockSet as never,
@@ -241,44 +224,18 @@ describe("settingsSlice", () => {
       );
 
       await newStore.initializeTheme();
-      expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
-
-      vi.stubGlobal("electronAPI", mockElectronAPI);
-    });
-
-    it("electronAPI.theme.getが利用不可の場合、デフォルトを使用する", async () => {
-      vi.stubGlobal("electronAPI", { theme: {} });
-      const newStore = createSettingsSlice(
-        mockSet as never,
-        (() => store) as never,
-        {} as never,
+      // テーマは常にKanagawa Dragon固定
+      expect(document.documentElement.getAttribute("data-theme")).toBe(
+        "kanagawa-dragon",
       );
 
-      await newStore.initializeTheme();
-      expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
-
       vi.stubGlobal("electronAPI", mockElectronAPI);
     });
 
-    it("IPC成功時にテーマを初期化する", async () => {
-      mockElectronAPI.theme.get.mockResolvedValue({
-        success: true,
-        data: {
-          mode: "light" as ThemeMode,
-          resolvedTheme: "light" as ResolvedTheme,
-        },
-      });
-
+    it("electronAPIの有無に関わらずKanagawa Dragonが適用される", async () => {
       await store.initializeTheme();
-      expect(store.themeMode).toBe("light");
-      expect(store.resolvedTheme).toBe("light");
-    });
-
-    it("IPC失敗時にデフォルトを使用する", async () => {
-      mockElectronAPI.theme.get.mockRejectedValue(new Error("IPC error"));
-
-      await store.initializeTheme();
-      expect(store.resolvedTheme).toBe("dark");
+      expect(store.themeMode).toBe("kanagawa-dragon");
+      expect(store.resolvedTheme).toBe("kanagawa-dragon");
     });
   });
 });

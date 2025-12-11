@@ -86,7 +86,7 @@ export const LocaleSelector: React.FC<LocaleSelectorProps> = ({
           isDisabled
             ? "opacity-50 cursor-not-allowed"
             : "hover:bg-white/10 hover:border-white/20",
-          isOpen && "ring-2 ring-[#0a84ff]",
+          isOpen && "ring-2 ring-[var(--status-primary)]",
         )}
       >
         <span lang={value}>{currentLocale?.label ?? value}</span>
@@ -103,7 +103,7 @@ export const LocaleSelector: React.FC<LocaleSelectorProps> = ({
           role="listbox"
           className={clsx(
             "absolute z-[100] w-full mt-1",
-            "bg-[#1c1c1e] border border-white/10 rounded-lg",
+            "bg-[var(--bg-secondary)] border border-white/10 rounded-lg",
             "shadow-xl overflow-hidden",
           )}
         >
@@ -119,7 +119,7 @@ export const LocaleSelector: React.FC<LocaleSelectorProps> = ({
                 "transition-colors duration-150",
                 "flex items-center justify-between",
                 value === locale.value
-                  ? "bg-[#0a84ff] text-white"
+                  ? "bg-[var(--status-primary)] text-white"
                   : "text-white/80 hover:bg-white/10",
               )}
             >

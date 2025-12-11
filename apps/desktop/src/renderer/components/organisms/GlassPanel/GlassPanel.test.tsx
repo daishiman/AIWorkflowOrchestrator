@@ -75,13 +75,13 @@ describe("GlassPanel", () => {
 
     it("glass背景スタイルを持つ", () => {
       const { container } = render(<GlassPanel>Content</GlassPanel>);
-      expect(container.firstChild).toHaveClass("bg-[rgba(30,30,30,0.6)]");
+      expect(container.firstChild).toHaveClass("bg-[var(--bg-glass)]");
     });
 
     it("borderスタイルを持つ", () => {
       const { container } = render(<GlassPanel>Content</GlassPanel>);
       expect(container.firstChild).toHaveClass("border");
-      expect(container.firstChild).toHaveClass("border-white/10");
+      expect(container.firstChild).toHaveClass("border-[var(--border-subtle)]");
     });
   });
 

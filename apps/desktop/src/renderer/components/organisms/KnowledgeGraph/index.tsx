@@ -14,11 +14,11 @@ export interface KnowledgeGraphProps {
   className?: string;
 }
 
-// Node colors by type
+// Node colors by type (Kanagawa Dragon palette)
 const NODE_COLORS = {
-  main: "#818cf8", // Indigo
-  document: "#34d399", // Emerald
-  concept: "#fbbf24", // Amber
+  main: "#8ba4b0", // dragonBlue - primary/info
+  document: "#87a987", // dragonGreen - success/document
+  concept: "#c4b28a", // dragonYellow - warning/concept
 } as const;
 
 // Force simulation parameters

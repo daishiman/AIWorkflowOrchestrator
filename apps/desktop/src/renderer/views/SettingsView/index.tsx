@@ -4,13 +4,10 @@ import { SettingsCard } from "../../components/organisms/SettingsCard";
 import { AccountSection } from "../../components/organisms/AccountSection";
 import { ApiKeysSection } from "../../components/organisms/ApiKeysSection";
 import { ProfileSection } from "./ProfileSection";
-import { FormField } from "../../components/molecules/FormField";
-import { ThemeSelector } from "../../components/molecules/ThemeSelector";
 import { Checkbox } from "../../components/atoms/Checkbox";
 import { Button } from "../../components/atoms/Button";
 import { ErrorDisplay } from "../../components/atoms/ErrorDisplay";
 import { useAppStore } from "../../store";
-import { useTheme } from "../../hooks/useTheme";
 
 export interface SettingsViewProps {
   className?: string;
@@ -22,9 +19,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
   const setAutoSyncEnabledAction = useAppStore(
     (state) => state.setAutoSyncEnabled,
   );
-
-  // Theme from useTheme hook
-  const { themeMode, setTheme } = useTheme();
 
   // Local state
   const [isLoading] = useState(false);
@@ -110,24 +104,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
                 disabled={isLoading}
               />
             </div>
-          </SettingsCard>
-        </section>
-
-        {/* Appearance Settings */}
-        <section role="region" aria-labelledby="appearance-settings-heading">
-          <SettingsCard
-            title="外観設定"
-            description="テーマとディスプレイ設定"
-            id="appearance-settings-heading"
-          >
-            <FormField label="テーマ" htmlFor="theme-label">
-              <ThemeSelector
-                value={themeMode}
-                onChange={setTheme}
-                disabled={isLoading}
-                aria-labelledby="theme-label"
-              />
-            </FormField>
           </SettingsCard>
         </section>
       </main>

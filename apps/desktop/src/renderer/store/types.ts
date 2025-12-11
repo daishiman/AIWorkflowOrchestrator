@@ -103,5 +103,54 @@ export interface WindowSize {
 export type RagConnectionStatus = "connected" | "disconnected" | "error";
 
 // テーマ型
-export type ThemeMode = "light" | "dark" | "system";
-export type ResolvedTheme = "light" | "dark";
+/**
+ * テーマモード
+ * - kanagawa-dragon: Kanagawa Dragon テーマ（デフォルト）
+ * - kanagawa-wave: Kanagawa Wave テーマ
+ * - kanagawa-lotus: Kanagawa Lotus テーマ（ライト）
+ * - light: ライトテーマ
+ * - dark: ダークテーマ
+ * - system: システム設定に従う
+ */
+export type ThemeMode =
+  | "kanagawa-dragon"
+  | "kanagawa-wave"
+  | "kanagawa-lotus"
+  | "light"
+  | "dark"
+  | "system";
+
+/**
+ * 解決済みテーマ
+ * systemモードを除いた実際に適用されるテーマ
+ */
+export type ResolvedTheme =
+  | "kanagawa-dragon"
+  | "kanagawa-wave"
+  | "kanagawa-lotus"
+  | "light"
+  | "dark";
+
+/**
+ * テーマカラースキーム
+ * テーマが持つ基本的な明暗の分類
+ */
+export type ThemeColorScheme = "light" | "dark";
+
+/**
+ * テーマからカラースキームを取得
+ * @param theme - 解決済みテーマ
+ * @returns カラースキーム（light または dark）
+ */
+export function getThemeColorScheme(theme: ResolvedTheme): ThemeColorScheme {
+  switch (theme) {
+    case "kanagawa-lotus":
+    case "light":
+      return "light";
+    case "kanagawa-dragon":
+    case "kanagawa-wave":
+    case "dark":
+    default:
+      return "dark";
+  }
+}

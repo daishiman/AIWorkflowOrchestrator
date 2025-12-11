@@ -24,7 +24,7 @@ describe("Button", () => {
     it("primaryバリアントのスタイルを適用する", () => {
       render(<Button variant="primary">Primary</Button>);
       const button = screen.getByRole("button");
-      expect(button).toHaveClass("bg-[#0a84ff]");
+      expect(button).toHaveClass("bg-[var(--status-primary)]");
     });
 
     it("secondaryバリアントのスタイルを適用する", () => {

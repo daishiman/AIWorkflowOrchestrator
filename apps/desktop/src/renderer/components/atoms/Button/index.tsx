@@ -41,9 +41,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variantStyles = {
       primary: clsx(
-        "bg-[#0a84ff] text-white",
+        "bg-[var(--status-primary)] text-white",
         "hover:opacity-90",
-        "focus:ring-[#0a84ff]",
+        "focus:ring-[var(--status-primary)]",
         "active:opacity-80",
       ),
       secondary: clsx(
