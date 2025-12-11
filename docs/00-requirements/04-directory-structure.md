@@ -157,22 +157,25 @@
 
 ### 4.5.1 main/（Main Process）
 
-| パス            | 役割                      |
-| --------------- | ------------------------- |
-| index.ts        | エントリーポイント        |
-| ipc/channels.ts | IPCチャネル定義（型定義） |
-| ipc/handlers/   | ハンドラー実装            |
-| services/       | バックグラウンドサービス  |
-| windows/        | ウィンドウ管理            |
-| config/         | 設定（security、app）     |
+| パス                  | 役割                      |
+| --------------------- | ------------------------- |
+| index.ts              | エントリーポイント        |
+| ipc/channels.ts       | IPCチャネル定義（型定義） |
+| ipc/handlers/         | ハンドラー実装            |
+| ipc/workspaceHandlers | ワークスペースIPC         |
+| ipc/validation.ts     | 入力バリデーション        |
+| services/             | バックグラウンドサービス  |
+| windows/              | ウィンドウ管理            |
+| config/               | 設定（security、app）     |
 
 ### 4.5.2 preload/（セキュリティ境界）
 
-| パス       | 役割                         |
-| ---------- | ---------------------------- |
-| index.ts   | contextBridge設定            |
-| api.ts     | Renderer公開API定義          |
-| types.d.ts | 型定義（window.electronAPI） |
+| パス        | 役割                          |
+| ----------- | ----------------------------- |
+| index.ts    | contextBridge設定             |
+| api.ts      | Renderer公開API定義           |
+| channels.ts | 許可IPCチャネルホワイトリスト |
+| types.d.ts  | 型定義（window.electronAPI）  |
 
 ### 4.5.3 renderer/（React UI）
 
@@ -207,13 +210,15 @@
 
 ### 4.5.6 renderer/store/（Zustand状態管理）
 
-| パス               | 役割                               |
-| ------------------ | ---------------------------------- |
-| index.ts           | 統合ストア（createAppStore）       |
-| slices/            | 機能別スライス                     |
-| slices/uiSlice     | UI状態（ビュー、ウィンドウサイズ） |
-| slices/editorSlice | エディタ状態（ファイル、フォルダ） |
-| slices/chatSlice   | チャット状態（メッセージ、入力）   |
+| パス                  | 役割                                   |
+| --------------------- | -------------------------------------- |
+| index.ts              | 統合ストア（createAppStore）           |
+| slices/               | 機能別スライス                         |
+| slices/uiSlice        | UI状態（ビュー、ウィンドウサイズ）     |
+| slices/editorSlice    | エディタ状態（ファイル、フォルダ）     |
+| slices/chatSlice      | チャット状態（メッセージ、入力）       |
+| slices/workspaceSlice | ワークスペース状態（複数フォルダ管理） |
+| types/workspace.ts    | Workspace型定義（Branded Types）       |
 
 ### 4.5.7 Electron 3プロセスモデル
 
