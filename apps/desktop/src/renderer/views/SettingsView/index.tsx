@@ -3,6 +3,7 @@ import clsx from "clsx";
 import { SettingsCard } from "../../components/organisms/SettingsCard";
 import { AccountSection } from "../../components/organisms/AccountSection";
 import { ApiKeysSection } from "../../components/organisms/ApiKeysSection";
+import { ProfileSection } from "./ProfileSection";
 import { FormField } from "../../components/molecules/FormField";
 import { ThemeSelector } from "../../components/molecules/ThemeSelector";
 import { Checkbox } from "../../components/atoms/Checkbox";
@@ -76,6 +77,14 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
         {/* API Keys Settings - 全4プロバイダー対応 */}
         <section role="region" aria-labelledby="api-keys-settings-heading">
           <ApiKeysSection />
+        </section>
+
+        {/* Profile Settings - 拡張プロフィール設定 */}
+        <section role="region" aria-labelledby="profile-settings-heading">
+          <h2 id="profile-settings-heading" className="sr-only">
+            プロフィール設定
+          </h2>
+          <ProfileSection />
         </section>
 
         {/* RAG Settings */}

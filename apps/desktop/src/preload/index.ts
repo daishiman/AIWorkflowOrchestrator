@@ -170,6 +170,24 @@ const electronAPI: ElectronAPI = {
       safeInvoke(IPC_CHANNELS.API_KEY_VALIDATE, request),
     list: () => safeInvoke(IPC_CHANNELS.API_KEY_LIST),
   },
+
+  // Generic invoke for IPC calls
+  invoke: <T>(channel: string, payload?: unknown): Promise<T> =>
+    safeInvoke<T>(channel, payload),
+
+  // Dialog APIs
+  dialog: {
+    showOpenDialog: (options: {
+      title?: string;
+      filters?: Array<{ name: string; extensions: string[] }>;
+      properties?: string[];
+    }) => safeInvoke("dialog:showOpenDialog", options),
+    showSaveDialog: (options: {
+      title?: string;
+      defaultPath?: string;
+      filters?: Array<{ name: string; extensions: string[] }>;
+    }) => safeInvoke("dialog:showSaveDialog", options),
+  },
 };
 
 // Use contextBridge APIs to expose Electron APIs to renderer

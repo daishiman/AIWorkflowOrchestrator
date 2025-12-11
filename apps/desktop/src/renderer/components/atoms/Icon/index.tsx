@@ -23,6 +23,7 @@ import {
   Settings,
   ChevronRight,
   ChevronDown,
+  ChevronUp,
   Play,
   Pause,
   Sun,
@@ -32,6 +33,7 @@ import {
   WifiOff,
   AlertTriangle,
   Upload,
+  Download,
   Trash2,
   Bot,
   Globe,
@@ -42,6 +44,8 @@ import {
   XCircle,
   Clock,
   AlertCircle,
+  Shield,
+  MapPin,
   type LucideIcon,
 } from "lucide-react";
 
@@ -68,6 +72,7 @@ export type IconName =
   | "settings"
   | "chevron-right"
   | "chevron-down"
+  | "chevron-up"
   | "play"
   | "pause"
   | "sun"
@@ -77,6 +82,7 @@ export type IconName =
   | "wifi-off"
   | "alert-triangle"
   | "upload"
+  | "download"
   | "trash-2"
   | "bot"
   | "globe"
@@ -86,7 +92,9 @@ export type IconName =
   | "lock"
   | "x-circle"
   | "clock"
-  | "alert-circle";
+  | "alert-circle"
+  | "shield"
+  | "map-pin";
 
 export interface IconProps extends React.SVGAttributes<SVGElement> {
   name: IconName;
@@ -119,6 +127,7 @@ const iconMap: Record<IconName, LucideIcon> = {
   settings: Settings,
   "chevron-right": ChevronRight,
   "chevron-down": ChevronDown,
+  "chevron-up": ChevronUp,
   play: Play,
   pause: Pause,
   sun: Sun,
@@ -128,6 +137,7 @@ const iconMap: Record<IconName, LucideIcon> = {
   "wifi-off": WifiOff,
   "alert-triangle": AlertTriangle,
   upload: Upload,
+  download: Download,
   "trash-2": Trash2,
   bot: Bot,
   globe: Globe,
@@ -138,6 +148,8 @@ const iconMap: Record<IconName, LucideIcon> = {
   "x-circle": XCircle,
   clock: Clock,
   "alert-circle": AlertCircle,
+  shield: Shield,
+  "map-pin": MapPin,
 };
 
 export const Icon = forwardRef<SVGSVGElement, IconProps>(

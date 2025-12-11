@@ -4,8 +4,9 @@
  * Main Process でプロフィール関連のIPC通信を処理する
  */
 
-import { ipcMain, BrowserWindow } from "electron";
+import { ipcMain, BrowserWindow, dialog } from "electron";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import * as fs from "fs/promises";
 import { IPC_CHANNELS } from "../../preload/channels";
 import { toLinkedProvider } from "@repo/shared/infrastructure/auth";
 import {
@@ -13,11 +14,26 @@ import {
   type ProfileUpdateFields,
   type LinkedProvider,
   type IPCResponse,
+  type ExtendedUserProfile,
+  type NotificationSettings,
+  type ProfileExportData,
+  type ProfileExportResponse,
+  type ProfileImportResponse,
+  type Timezone,
+  type Locale,
   isValidProvider,
   validateDisplayName,
   validateAvatarUrl,
   PROFILE_ERROR_CODES,
+  DEFAULT_NOTIFICATION_SETTINGS,
+  IMPORT_LIMITS,
 } from "@repo/shared/types/auth";
+import {
+  timezoneSchema,
+  localeSchema,
+  partialNotificationSettingsSchema,
+  profileExportDataSchema,
+} from "@repo/shared/schemas/auth";
 import { withValidation } from "../infrastructure/security/ipc-validator.js";
 import { syncProfileToMetadata } from "../infrastructure/profileSync.js";
 
@@ -31,40 +47,64 @@ export interface ProfileCache {
   updateCachedProfile: (profile: UserProfile) => Promise<void>;
 }
 
+/**
+ * 拡張プロフィールキャッシュ操作インターフェース
+ */
+export interface ExtendedProfileCache extends ProfileCache {
+  getCachedExtendedProfile?: () => Promise<ExtendedUserProfile | null>;
+  updateCachedExtendedProfile?: (profile: ExtendedUserProfile) => Promise<void>;
+}
+
 // === ヘルパー関数 ===
 
 /**
- * user_profilesテーブル不在エラーかどうかを判定
+ * user_profilesテーブルまたはカラム不在エラーかどうかを判定
  * エラーコード: PGRST200 (テーブル不在), PGRST116 (行が見つからない), 42P01 (PostgreSQLのテーブル不存在エラー)
- * または "schema cache", "does not exist", "user_profiles", "relation" を含むメッセージ
+ *              42703 (カラムが存在しない)
+ * または "schema cache", "does not exist", "user_profiles", "relation", "column" を含むメッセージ
  */
 function isUserProfilesTableError(error: {
   message: string;
   code?: string;
 }): boolean {
+  const errorPatterns = [
+    "schema cache",
+    "does not exist",
+    "user_profiles",
+    "relation",
+    "column",
+    "notification_settings",
+  ];
+  const errorCodes = ["PGRST200", "PGRST116", "42P01", "42703"];
+
   return (
-    error.message.includes("schema cache") ||
-    error.message.includes("does not exist") ||
-    error.message.includes("user_profiles") ||
-    error.message.includes("relation") ||
-    error.code === "PGRST200" ||
-    error.code === "PGRST116" ||
-    error.code === "42P01"
+    errorPatterns.some((pattern) =>
+      error.message.toLowerCase().includes(pattern.toLowerCase()),
+    ) || errorCodes.includes(error.code ?? "")
   );
 }
 
 /**
- * Supabaseのプロフィールデータを UserProfile 型に変換
+ * Supabaseのプロフィールデータの共通型
  */
-function toUserProfile(data: {
+interface SupabaseProfileData {
   id: string;
   display_name: string;
   email: string;
   avatar_url: string | null;
   plan: string;
+  timezone?: string;
+  locale?: string;
+  notification_settings?: NotificationSettings;
+  preferences?: Record<string, unknown>;
   created_at: string;
   updated_at: string;
-}): UserProfile {
+}
+
+/**
+ * Supabaseのプロフィールデータを UserProfile 型に変換
+ */
+function toUserProfile(data: SupabaseProfileData): UserProfile {
   return {
     id: data.id,
     displayName: data.display_name,
@@ -73,6 +113,20 @@ function toUserProfile(data: {
     plan: data.plan as UserProfile["plan"],
     createdAt: data.created_at,
     updatedAt: data.updated_at,
+  };
+}
+
+/**
+ * Supabaseのプロフィールデータを ExtendedUserProfile 型に変換
+ */
+function toExtendedUserProfile(data: SupabaseProfileData): ExtendedUserProfile {
+  return {
+    ...toUserProfile(data),
+    timezone: data.timezone ?? "Asia/Tokyo",
+    locale: (data.locale as Locale) ?? "ja",
+    notificationSettings:
+      data.notification_settings ?? DEFAULT_NOTIFICATION_SETTINGS,
+    preferences: data.preferences ?? {},
   };
 }
 
@@ -686,6 +740,717 @@ export function registerProfileHandlers(
                   ? error.message
                   : "Failed to delete account",
             },
+          };
+        }
+      },
+      { getAllowedWindows: () => [mainWindow] },
+    ),
+  );
+
+  // ========================================================================
+  // 拡張プロフィールハンドラー
+  // ========================================================================
+
+  // profile:update-timezone - タイムゾーン更新
+  ipcMain.handle(
+    IPC_CHANNELS.PROFILE_UPDATE_TIMEZONE,
+    withValidation(
+      IPC_CHANNELS.PROFILE_UPDATE_TIMEZONE,
+      async (
+        _event,
+        { timezone }: { timezone: Timezone },
+      ): Promise<IPCResponse<ExtendedUserProfile>> => {
+        try {
+          // バリデーション
+          const validation = timezoneSchema.safeParse(timezone);
+          if (!validation.success) {
+            return {
+              success: false,
+              error: {
+                code: PROFILE_ERROR_CODES.VALIDATION_FAILED,
+                message:
+                  validation.error.issues[0]?.message ?? "無効なタイムゾーン",
+              },
+            };
+          }
+
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+
+          if (!user) {
+            return {
+              success: false,
+              error: {
+                code: PROFILE_ERROR_CODES.UPDATE_FAILED,
+                message: "Not authenticated",
+              },
+            };
+          }
+
+          const { data, error } = await supabase
+            .from("user_profiles")
+            .update({
+              timezone: validation.data,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", user.id)
+            .select()
+            .single();
+
+          if (error) {
+            return {
+              success: false,
+              error: {
+                code: PROFILE_ERROR_CODES.UPDATE_FAILED,
+                message: "プロフィールの更新に失敗しました",
+              },
+            };
+          }
+
+          const profile = toExtendedUserProfile(data);
+
+          // キャッシュ更新
+          await cache.updateCachedProfile(profile);
+
+          return { success: true, data: profile };
+        } catch (error) {
+          console.error("[ProfileHandlers] タイムゾーン更新エラー:", error);
+          return {
+            success: false,
+            error: {
+              code: PROFILE_ERROR_CODES.UPDATE_FAILED,
+              message: "プロフィールの更新に失敗しました",
+            },
+          };
+        }
+      },
+      { getAllowedWindows: () => [mainWindow] },
+    ),
+  );
+
+  // profile:update-locale - ロケール更新
+  ipcMain.handle(
+    IPC_CHANNELS.PROFILE_UPDATE_LOCALE,
+    withValidation(
+      IPC_CHANNELS.PROFILE_UPDATE_LOCALE,
+      async (
+        _event,
+        { locale }: { locale: Locale },
+      ): Promise<IPCResponse<ExtendedUserProfile>> => {
+        try {
+          // バリデーション
+          const validation = localeSchema.safeParse(locale);
+          if (!validation.success) {
+            return {
+              success: false,
+              error: {
+                code: PROFILE_ERROR_CODES.VALIDATION_FAILED,
+                message:
+                  validation.error.issues[0]?.message ??
+                  "サポートされていない言語です",
+              },
+            };
+          }
+
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+
+          if (!user) {
+            return {
+              success: false,
+              error: {
+                code: PROFILE_ERROR_CODES.UPDATE_FAILED,
+                message: "Not authenticated",
+              },
+            };
+          }
+
+          const { data, error } = await supabase
+            .from("user_profiles")
+            .update({
+              locale: validation.data,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", user.id)
+            .select()
+            .single();
+
+          if (error) {
+            return {
+              success: false,
+              error: {
+                code: PROFILE_ERROR_CODES.UPDATE_FAILED,
+                message: "プロフィールの更新に失敗しました",
+              },
+            };
+          }
+
+          const profile = toExtendedUserProfile(data);
+
+          // キャッシュ更新
+          await cache.updateCachedProfile(profile);
+
+          return { success: true, data: profile };
+        } catch (error) {
+          console.error("[ProfileHandlers] ロケール更新エラー:", error);
+          return {
+            success: false,
+            error: {
+              code: PROFILE_ERROR_CODES.UPDATE_FAILED,
+              message: "プロフィールの更新に失敗しました",
+            },
+          };
+        }
+      },
+      { getAllowedWindows: () => [mainWindow] },
+    ),
+  );
+
+  // profile:update-notifications - 通知設定更新
+  ipcMain.handle(
+    IPC_CHANNELS.PROFILE_UPDATE_NOTIFICATIONS,
+    withValidation(
+      IPC_CHANNELS.PROFILE_UPDATE_NOTIFICATIONS,
+      async (
+        _event,
+        {
+          notificationSettings,
+        }: { notificationSettings: Partial<NotificationSettings> },
+      ): Promise<IPCResponse<ExtendedUserProfile>> => {
+        try {
+          // バリデーション
+          const validation =
+            partialNotificationSettingsSchema.safeParse(notificationSettings);
+          if (!validation.success) {
+            return {
+              success: false,
+              error: {
+                code: PROFILE_ERROR_CODES.VALIDATION_FAILED,
+                message:
+                  validation.error.issues[0]?.message ?? "無効な通知設定です",
+              },
+            };
+          }
+
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+
+          if (!user) {
+            return {
+              success: false,
+              error: {
+                code: PROFILE_ERROR_CODES.UPDATE_FAILED,
+                message: "Not authenticated",
+              },
+            };
+          }
+
+          // 現在の設定を取得してマージ
+          const { data: currentData, error: getError } = await supabase
+            .from("user_profiles")
+            .select("*")
+            .eq("id", user.id)
+            .single();
+
+          // user_profilesテーブルが存在しない or カラムがない場合はuser_metadataにフォールバック
+          if (getError && isUserProfilesTableError(getError)) {
+            console.warn(
+              "[ProfileHandlers] user_profiles テーブルが見つかりません。user_metadataで通知設定を管理します",
+            );
+
+            // 現在のuser_metadata取得
+            const currentMeta = (user.user_metadata ?? {}) as {
+              notification_settings?: NotificationSettings;
+            };
+            const currentSettings =
+              currentMeta.notification_settings ??
+              DEFAULT_NOTIFICATION_SETTINGS;
+            const mergedSettings = { ...currentSettings, ...validation.data };
+
+            // user_metadata に保存
+            const { data: authData, error: authError } =
+              await supabase.auth.updateUser({
+                data: { notification_settings: mergedSettings },
+              });
+
+            if (authError) {
+              return {
+                success: false,
+                error: {
+                  code: PROFILE_ERROR_CODES.UPDATE_FAILED,
+                  message: authError.message,
+                },
+              };
+            }
+
+            // user_metadataからプロフィールを構築
+            const fallbackProfile: ExtendedUserProfile = {
+              id: user.id,
+              displayName:
+                (authData.user?.user_metadata?.display_name as string) ??
+                (authData.user?.user_metadata?.name as string) ??
+                "ユーザー",
+              email: authData.user?.email ?? "",
+              avatarUrl:
+                (authData.user?.user_metadata?.avatar_url as string) ?? null,
+              plan: "free",
+              createdAt: authData.user?.created_at ?? new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+              timezone: "Asia/Tokyo",
+              locale: "ja",
+              notificationSettings: mergedSettings,
+              preferences: {},
+            };
+
+            await cache.updateCachedProfile(fallbackProfile);
+            return { success: true, data: fallbackProfile };
+          }
+
+          if (getError) {
+            console.error(
+              "[ProfileHandlers] 通知設定取得エラー:",
+              getError.message,
+              getError.code,
+            );
+            return {
+              success: false,
+              error: {
+                code: PROFILE_ERROR_CODES.UPDATE_FAILED,
+                message: "プロフィールの取得に失敗しました",
+              },
+            };
+          }
+
+          // notification_settingsカラムが存在するか確認
+          // user_profilesテーブルにカラムがない場合は直接user_metadataへ保存
+          const hasNotificationSettingsColumn =
+            currentData &&
+            Object.prototype.hasOwnProperty.call(
+              currentData,
+              "notification_settings",
+            );
+
+          if (!hasNotificationSettingsColumn) {
+            console.warn(
+              "[ProfileHandlers] notification_settingsカラムがありません（マイグレーション003未適用）。user_metadataで管理します",
+            );
+
+            // user_metadataから現在の設定を取得してマージ
+            const currentMeta = (user.user_metadata ?? {}) as {
+              notification_settings?: NotificationSettings;
+            };
+            const currentSettings =
+              currentMeta.notification_settings ??
+              DEFAULT_NOTIFICATION_SETTINGS;
+            const mergedSettings = { ...currentSettings, ...validation.data };
+
+            // user_metadata に保存
+            const { data: authData, error: authError } =
+              await supabase.auth.updateUser({
+                data: { notification_settings: mergedSettings },
+              });
+
+            if (authError) {
+              return {
+                success: false,
+                error: {
+                  code: PROFILE_ERROR_CODES.UPDATE_FAILED,
+                  message: authError.message,
+                },
+              };
+            }
+
+            const fallbackProfile: ExtendedUserProfile = {
+              id: user.id,
+              displayName:
+                (authData.user?.user_metadata?.display_name as string) ??
+                (authData.user?.user_metadata?.name as string) ??
+                currentData?.display_name ??
+                "ユーザー",
+              email: authData.user?.email ?? currentData?.email ?? "",
+              avatarUrl:
+                (authData.user?.user_metadata?.avatar_url as string) ??
+                currentData?.avatar_url ??
+                null,
+              plan: currentData?.plan ?? "free",
+              createdAt:
+                currentData?.created_at ??
+                authData.user?.created_at ??
+                new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+              timezone: currentData?.timezone ?? "Asia/Tokyo",
+              locale: (currentData?.locale as Locale) ?? "ja",
+              notificationSettings: mergedSettings,
+              preferences: currentData?.preferences ?? {},
+            };
+
+            await cache.updateCachedProfile(fallbackProfile);
+            return { success: true, data: fallbackProfile };
+          }
+
+          const currentSettings =
+            (currentData?.notification_settings as NotificationSettings) ??
+            DEFAULT_NOTIFICATION_SETTINGS;
+          const mergedSettings = { ...currentSettings, ...validation.data };
+
+          const { data, error } = await supabase
+            .from("user_profiles")
+            .update({
+              notification_settings: mergedSettings,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", user.id)
+            .select()
+            .single();
+
+          if (error) {
+            console.error(
+              "[ProfileHandlers] 通知設定更新エラー:",
+              error.message,
+              error.code,
+            );
+            // カラムが存在しない場合はuser_metadataにフォールバック
+            if (isUserProfilesTableError(error)) {
+              console.warn(
+                "[ProfileHandlers] notification_settingsカラムがありません。user_metadataで管理します",
+              );
+
+              const { data: authData, error: authError } =
+                await supabase.auth.updateUser({
+                  data: { notification_settings: mergedSettings },
+                });
+
+              if (authError) {
+                return {
+                  success: false,
+                  error: {
+                    code: PROFILE_ERROR_CODES.UPDATE_FAILED,
+                    message: authError.message,
+                  },
+                };
+              }
+
+              const fallbackProfile: ExtendedUserProfile = {
+                id: user.id,
+                displayName:
+                  (authData.user?.user_metadata?.display_name as string) ??
+                  (authData.user?.user_metadata?.name as string) ??
+                  "ユーザー",
+                email: authData.user?.email ?? "",
+                avatarUrl:
+                  (authData.user?.user_metadata?.avatar_url as string) ?? null,
+                plan: "free",
+                createdAt:
+                  authData.user?.created_at ?? new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                timezone: "Asia/Tokyo",
+                locale: "ja",
+                notificationSettings: mergedSettings,
+                preferences: {},
+              };
+
+              await cache.updateCachedProfile(fallbackProfile);
+              return { success: true, data: fallbackProfile };
+            }
+
+            return {
+              success: false,
+              error: {
+                code: PROFILE_ERROR_CODES.UPDATE_FAILED,
+                message: "プロフィールの更新に失敗しました",
+              },
+            };
+          }
+
+          const profile = toExtendedUserProfile(data);
+
+          // キャッシュ更新
+          await cache.updateCachedProfile(profile);
+
+          return { success: true, data: profile };
+        } catch (error) {
+          console.error("[ProfileHandlers] 通知設定更新エラー:", error);
+          return {
+            success: false,
+            error: {
+              code: PROFILE_ERROR_CODES.UPDATE_FAILED,
+              message: "プロフィールの更新に失敗しました",
+            },
+          };
+        }
+      },
+      { getAllowedWindows: () => [mainWindow] },
+    ),
+  );
+
+  // profile:export - プロフィールエクスポート
+  ipcMain.handle(
+    IPC_CHANNELS.PROFILE_EXPORT,
+    withValidation(
+      IPC_CHANNELS.PROFILE_EXPORT,
+      async (_event): Promise<ProfileExportResponse> => {
+        try {
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+
+          if (!user) {
+            return {
+              success: false,
+              error: "Not authenticated",
+            };
+          }
+
+          // プロフィール取得を試みる
+          const { data, error } = await supabase
+            .from("user_profiles")
+            .select("*")
+            .eq("id", user.id)
+            .single();
+
+          // user_profilesがない場合はuser_metadataからフォールバック
+          let displayName: string;
+          let timezone: string;
+          let locale: string;
+          let notificationSettings: NotificationSettings;
+          let preferences: Record<string, unknown>;
+          let plan: string;
+
+          if (error && isUserProfilesTableError(error)) {
+            // user_metadataから情報を取得
+            const meta = user.user_metadata ?? {};
+            displayName =
+              (meta.display_name as string) ??
+              (meta.name as string) ??
+              (meta.full_name as string) ??
+              "ユーザー";
+            timezone = "Asia/Tokyo";
+            locale = "ja";
+            notificationSettings =
+              (meta.notification_settings as NotificationSettings) ??
+              DEFAULT_NOTIFICATION_SETTINGS;
+            preferences = {};
+            plan = "free";
+          } else if (error || !data) {
+            return {
+              success: false,
+              error: "プロフィールの取得に失敗しました",
+            };
+          } else {
+            displayName = data.display_name;
+            timezone = data.timezone ?? "Asia/Tokyo";
+            locale = data.locale ?? "ja";
+            notificationSettings =
+              data.notification_settings ?? DEFAULT_NOTIFICATION_SETTINGS;
+            preferences = data.preferences ?? {};
+            plan = data.plan ?? "free";
+          }
+
+          // 連携プロバイダー情報を取得
+          const identities = user.identities ?? [];
+          const linkedProviders = identities.map((identity) => ({
+            provider: identity.provider as "google" | "github" | "discord",
+            linkedAt: identity.created_at ?? new Date().toISOString(),
+          }));
+
+          // エクスポートデータ作成（機密情報を除外、拡張情報を含む）
+          const exportData: ProfileExportData = {
+            version: "1.0",
+            exportedAt: new Date().toISOString(),
+            displayName,
+            timezone,
+            locale: locale as Locale,
+            notificationSettings,
+            preferences,
+            // 拡張情報
+            linkedProviders,
+            accountCreatedAt: user.created_at,
+            plan,
+          };
+
+          // ファイル保存ダイアログ
+          const result = await dialog.showSaveDialog(mainWindow, {
+            title: "プロフィール設定をエクスポート",
+            defaultPath: `profile-export-${new Date().toISOString().split("T")[0]}.json`,
+            filters: [{ name: "JSON", extensions: ["json"] }],
+          });
+
+          if (result.canceled || !result.filePath) {
+            return {
+              success: false,
+              error: "キャンセルされました",
+            };
+          }
+
+          // ファイル書き込み
+          await fs.writeFile(
+            result.filePath,
+            JSON.stringify(exportData, null, 2),
+            "utf-8",
+          );
+
+          return {
+            success: true,
+            filePath: result.filePath,
+          };
+        } catch (error) {
+          console.error("[ProfileHandlers] エクスポートエラー:", error);
+          return {
+            success: false,
+            error: "エクスポートに失敗しました",
+          };
+        }
+      },
+      { getAllowedWindows: () => [mainWindow] },
+    ),
+  );
+
+  // profile:import - プロフィールインポート
+  ipcMain.handle(
+    IPC_CHANNELS.PROFILE_IMPORT,
+    withValidation(
+      IPC_CHANNELS.PROFILE_IMPORT,
+      async (
+        _event,
+        { filePath }: { filePath: string },
+      ): Promise<ProfileImportResponse> => {
+        try {
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+
+          if (!user) {
+            return {
+              success: false,
+              error: "Not authenticated",
+            };
+          }
+
+          // ファイルサイズチェック
+          const stats = await fs.stat(filePath);
+          if (stats.size > IMPORT_LIMITS.MAX_FILE_SIZE) {
+            return {
+              success: false,
+              error: `ファイルサイズが大きすぎます（最大${IMPORT_LIMITS.MAX_FILE_SIZE / 1024 / 1024}MB）`,
+            };
+          }
+
+          // ファイル読み込み
+          const content = await fs.readFile(filePath, "utf-8");
+          let jsonData: unknown;
+          try {
+            jsonData = JSON.parse(content);
+          } catch {
+            return {
+              success: false,
+              error: "無効なJSONファイルです",
+            };
+          }
+
+          // バリデーション
+          const validation = profileExportDataSchema.safeParse(jsonData);
+          if (!validation.success) {
+            return {
+              success: false,
+              error:
+                validation.error.issues[0]?.message ??
+                "無効なエクスポートデータです",
+            };
+          }
+
+          const importData = validation.data;
+
+          // バージョンチェック
+          if (importData.version !== IMPORT_LIMITS.CURRENT_VERSION) {
+            return {
+              success: false,
+              error: `非対応のバージョンです（${importData.version}）`,
+            };
+          }
+
+          // プロフィール更新
+          const { data, error } = await supabase
+            .from("user_profiles")
+            .update({
+              display_name: importData.displayName,
+              timezone: importData.timezone,
+              locale: importData.locale,
+              notification_settings: importData.notificationSettings,
+              preferences: importData.preferences,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", user.id)
+            .select()
+            .single();
+
+          if (error) {
+            // user_profilesテーブルが存在しない場合はuser_metadataにフォールバック
+            if (isUserProfilesTableError(error)) {
+              console.warn(
+                "[ProfileHandlers] user_profiles テーブルが見つかりません。user_metadataにインポートします",
+              );
+
+              const { data: authData, error: authError } =
+                await supabase.auth.updateUser({
+                  data: {
+                    display_name: importData.displayName,
+                    notification_settings: importData.notificationSettings,
+                  },
+                });
+
+              if (authError) {
+                return {
+                  success: false,
+                  error: authError.message,
+                };
+              }
+
+              const fallbackProfile: ExtendedUserProfile = {
+                id: user.id,
+                displayName: importData.displayName,
+                email: authData.user?.email ?? "",
+                avatarUrl:
+                  (authData.user?.user_metadata?.avatar_url as string) ?? null,
+                plan: "free",
+                createdAt:
+                  authData.user?.created_at ?? new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                timezone: importData.timezone,
+                locale: importData.locale,
+                notificationSettings: importData.notificationSettings,
+                preferences: importData.preferences,
+              };
+
+              await cache.updateCachedProfile(fallbackProfile);
+              return {
+                success: true,
+                profile: fallbackProfile,
+              };
+            }
+
+            return {
+              success: false,
+              error: "プロフィールの更新に失敗しました",
+            };
+          }
+
+          const profile = toExtendedUserProfile(data);
+
+          // キャッシュ更新
+          await cache.updateCachedProfile(profile);
+
+          return {
+            success: true,
+            profile,
+          };
+        } catch (error) {
+          console.error("[ProfileHandlers] インポートエラー:", error);
+          return {
+            success: false,
+            error: "インポートに失敗しました",
           };
         }
       },

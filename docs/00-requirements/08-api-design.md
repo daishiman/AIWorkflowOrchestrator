@@ -379,7 +379,46 @@ interface IPCResponse<T> {
 | `profile:update`     | invoke   | `{ displayName?, avatarUrl? }` | `IPCResponse<UserProfile>`    |
 | `profile:delete`     | invoke   | `{ confirmEmail }`             | `IPCResponse<void>`           |
 
-### 8.13.4 IPCレスポンス形式
+### 8.13.4 プロフィール設定 IPC チャネル
+
+| チャネル                       | メソッド | 引数                       | 戻り値                             |
+| ------------------------------ | -------- | -------------------------- | ---------------------------------- |
+| `profile:update-notifications` | invoke   | `{ notificationSettings }` | `IPCResponse<ExtendedUserProfile>` |
+| `profile:export`               | invoke   | なし                       | `ProfileExportResponse`            |
+| `profile:import`               | invoke   | `{ filePath }`             | `ProfileImportResponse`            |
+
+**通知設定オブジェクト**:
+
+```typescript
+interface NotificationSettings {
+  email: boolean; // メール通知
+  desktop: boolean; // デスクトップ通知
+  sound: boolean; // 通知音
+  workflowComplete: boolean; // ワークフロー完了通知
+  workflowError: boolean; // ワークフローエラー通知
+}
+```
+
+**エクスポートデータ形式**:
+
+```typescript
+interface ProfileExportData {
+  version: "1.0";
+  exportedAt: string; // ISO 8601
+  displayName: string;
+  timezone: string; // IANA タイムゾーン
+  locale: string; // ja, en など
+  notificationSettings: NotificationSettings;
+  preferences: Record<string, unknown>;
+  linkedProviders?: LinkedProvider[]; // 連携プロバイダー一覧
+  accountCreatedAt?: string;
+  plan?: string;
+}
+```
+
+**セキュリティ注意**: エクスポートデータには email, avatarUrl, id, APIキーを含めない
+
+### 8.13.5 IPCレスポンス形式
 
 ```
 成功時:
@@ -398,7 +437,7 @@ interface IPCResponse<T> {
 }
 ```
 
-### 8.13.5 IPC エラーコード
+### 8.13.6 IPC エラーコード
 
 | コード               | 説明                 | 対処                         |
 | -------------------- | -------------------- | ---------------------------- |

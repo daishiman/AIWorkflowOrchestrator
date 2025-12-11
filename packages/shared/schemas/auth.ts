@@ -226,6 +226,248 @@ export const linkProviderArgsSchema = z.object({
 export type LinkProviderArgs = z.infer<typeof linkProviderArgsSchema>;
 
 // ============================================================================
+// 拡張プロフィール（タイムゾーン、ロケール、通知設定）
+// ============================================================================
+
+/**
+ * サポートするロケール
+ */
+export const SUPPORTED_LOCALES = ["ja", "en", "zh-CN", "zh-TW", "ko"] as const;
+
+/**
+ * タイムゾーンエラーメッセージ
+ */
+export const TIMEZONE_ERRORS = {
+  required: "タイムゾーンは必須です",
+  tooLong: "タイムゾーンは50文字以内で入力してください",
+  invalid: "無効なタイムゾーンです",
+} as const;
+
+/**
+ * ロケールエラーメッセージ
+ */
+export const LOCALE_ERRORS = {
+  invalid: `サポートされていない言語です。${SUPPORTED_LOCALES.join(", ")} のいずれかを指定してください`,
+} as const;
+
+/**
+ * タイムゾーンスキーマ
+ *
+ * IANAタイムゾーン形式を検証（例: Asia/Tokyo, America/New_York）
+ *
+ * @example
+ * ```typescript
+ * timezoneSchema.parse("Asia/Tokyo"); // "Asia/Tokyo"
+ * timezoneSchema.parse("Invalid/Timezone"); // ZodError (refineで検証)
+ * ```
+ */
+export const timezoneSchema = z
+  .string({
+    error: TIMEZONE_ERRORS.required,
+  })
+  .min(1, { error: TIMEZONE_ERRORS.required })
+  .max(50, { error: TIMEZONE_ERRORS.tooLong })
+  .refine(
+    (tz) => {
+      // Intl API を使用して検証
+      try {
+        Intl.DateTimeFormat(undefined, { timeZone: tz });
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    { message: TIMEZONE_ERRORS.invalid },
+  );
+
+/**
+ * Zodから推論されるTimezone型
+ */
+export type Timezone = z.infer<typeof timezoneSchema>;
+
+/**
+ * ロケールスキーマ
+ *
+ * サポートする言語のみ許可
+ *
+ * @example
+ * ```typescript
+ * localeSchema.parse("ja"); // "ja"
+ * localeSchema.parse("fr"); // ZodError: サポートされていない言語
+ * ```
+ */
+export const localeSchema = z.enum(SUPPORTED_LOCALES, {
+  error: LOCALE_ERRORS.invalid,
+});
+
+/**
+ * Zodから推論されるLocale型
+ */
+export type Locale = z.infer<typeof localeSchema>;
+
+/**
+ * 通知設定エラーメッセージ
+ */
+export const NOTIFICATION_SETTINGS_ERRORS = {
+  invalidType: "通知設定の値はboolean型である必要があります",
+} as const;
+
+/**
+ * 通知設定スキーマ
+ *
+ * @example
+ * ```typescript
+ * notificationSettingsSchema.parse({
+ *   email: true,
+ *   desktop: false,
+ *   sound: true,
+ *   workflowComplete: true,
+ *   workflowError: true,
+ * }); // OK
+ * ```
+ */
+export const notificationSettingsSchema = z.object({
+  email: z.boolean().default(true),
+  desktop: z.boolean().default(true),
+  sound: z.boolean().default(true),
+  workflowComplete: z.boolean().default(true),
+  workflowError: z.boolean().default(true),
+});
+
+/**
+ * Zodから推論されるNotificationSettings型
+ */
+export type NotificationSettings = z.infer<typeof notificationSettingsSchema>;
+
+/**
+ * 通知設定部分更新スキーマ
+ */
+export const partialNotificationSettingsSchema =
+  notificationSettingsSchema.partial();
+
+/**
+ * Zodから推論されるPartialNotificationSettings型
+ */
+export type PartialNotificationSettings = z.infer<
+  typeof partialNotificationSettingsSchema
+>;
+
+/**
+ * ユーザー設定スキーマ（将来の拡張用）
+ */
+export const userPreferencesSchema = z
+  .record(z.string(), z.unknown())
+  .default({});
+
+/**
+ * Zodから推論されるUserPreferences型
+ */
+export type UserPreferences = z.infer<typeof userPreferencesSchema>;
+
+// ============================================================================
+// 拡張プロフィールIPC引数スキーマ
+// ============================================================================
+
+/**
+ * タイムゾーン更新IPC引数スキーマ
+ */
+export const updateTimezoneArgsSchema = z.object({
+  timezone: timezoneSchema,
+});
+
+/**
+ * Zodから推論されるUpdateTimezoneArgs型
+ */
+export type UpdateTimezoneArgs = z.infer<typeof updateTimezoneArgsSchema>;
+
+/**
+ * ロケール更新IPC引数スキーマ
+ */
+export const updateLocaleArgsSchema = z.object({
+  locale: localeSchema,
+});
+
+/**
+ * Zodから推論されるUpdateLocaleArgs型
+ */
+export type UpdateLocaleArgs = z.infer<typeof updateLocaleArgsSchema>;
+
+/**
+ * 通知設定更新IPC引数スキーマ
+ */
+export const updateNotificationSettingsArgsSchema = z.object({
+  notificationSettings: partialNotificationSettingsSchema,
+});
+
+/**
+ * Zodから推論されるUpdateNotificationSettingsArgs型
+ */
+export type UpdateNotificationSettingsArgs = z.infer<
+  typeof updateNotificationSettingsArgsSchema
+>;
+
+/**
+ * プロフィールインポートIPC引数スキーマ
+ */
+export const profileImportArgsSchema = z.object({
+  filePath: z.string().min(1, { error: "ファイルパスは必須です" }),
+});
+
+/**
+ * Zodから推論されるProfileImportArgs型
+ */
+export type ProfileImportArgs = z.infer<typeof profileImportArgsSchema>;
+
+// ============================================================================
+// エクスポートデータスキーマ
+// ============================================================================
+
+/**
+ * エクスポート用連携プロバイダースキーマ
+ */
+export const exportedLinkedProviderSchema = z.object({
+  provider: oauthProviderSchema,
+  linkedAt: z.string(),
+});
+
+/**
+ * エクスポート用AIプロバイダー状態スキーマ
+ */
+export const exportedAIProviderStatusSchema = z.object({
+  provider: z.string(),
+  registered: z.boolean(),
+  lastValidatedAt: z.string().nullable(),
+});
+
+/**
+ * プロフィールエクスポートデータスキーマ
+ *
+ * インポート時のバリデーションに使用
+ */
+export const profileExportDataSchema = z.object({
+  version: z.literal("1.0"),
+  exportedAt: z.string().datetime(),
+  displayName: z
+    .string()
+    .min(1)
+    .max(100, { message: "表示名は100文字以内である必要があります" }),
+  timezone: timezoneSchema,
+  locale: localeSchema,
+  notificationSettings: notificationSettingsSchema,
+  preferences: userPreferencesSchema,
+  // 拡張フィールド（オプショナル - 下位互換性維持）
+  linkedProviders: z.array(exportedLinkedProviderSchema).optional(),
+  aiProviders: z.array(exportedAIProviderStatusSchema).optional(),
+  accountCreatedAt: z.string().optional(),
+  plan: z.string().optional(),
+});
+
+/**
+ * Zodから推論されるProfileExportData型
+ */
+export type ProfileExportData = z.infer<typeof profileExportDataSchema>;
+
+// ============================================================================
 // ユーティリティ
 // ============================================================================
 

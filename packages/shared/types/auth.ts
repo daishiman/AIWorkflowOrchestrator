@@ -54,6 +54,215 @@ export interface UserProfile {
   updatedAt: string;
 }
 
+// === 拡張プロフィール型 ===
+
+/**
+ * IANA タイムゾーン識別子
+ * @example "Asia/Tokyo", "America/New_York", "Europe/London"
+ */
+export type Timezone = string;
+
+/**
+ * BCP 47 言語タグ
+ * @example "ja", "en", "zh-CN", "zh-TW", "ko"
+ */
+export type Locale = "ja" | "en" | "zh-CN" | "zh-TW" | "ko";
+
+/**
+ * サポートするロケール一覧
+ */
+export const SUPPORTED_LOCALES: Locale[] = ["ja", "en", "zh-CN", "zh-TW", "ko"];
+
+/**
+ * ロケール表示名マッピング
+ */
+export const LOCALE_DISPLAY_NAMES: Record<Locale, string> = {
+  ja: "日本語",
+  en: "English",
+  "zh-CN": "简体中文",
+  "zh-TW": "繁體中文",
+  ko: "한국어",
+};
+
+/**
+ * 通知設定
+ */
+export interface NotificationSettings {
+  /** メール通知を受け取る */
+  email: boolean;
+  /** デスクトップ通知を表示する */
+  desktop: boolean;
+  /** 通知音を鳴らす */
+  sound: boolean;
+  /** ワークフロー完了時に通知 */
+  workflowComplete: boolean;
+  /** ワークフローエラー時に通知 */
+  workflowError: boolean;
+}
+
+/**
+ * デフォルトの通知設定
+ */
+export const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
+  email: true,
+  desktop: true,
+  sound: true,
+  workflowComplete: true,
+  workflowError: true,
+};
+
+/**
+ * ユーザー設定（将来の拡張用）
+ */
+export interface UserPreferences {
+  [key: string]: unknown;
+}
+
+/**
+ * デフォルトのユーザー設定
+ */
+export const DEFAULT_USER_PREFERENCES: UserPreferences = {};
+
+/**
+ * 拡張ユーザープロフィール
+ * 既存の UserProfile を拡張
+ */
+export interface ExtendedUserProfile extends UserProfile {
+  /** タイムゾーン (IANA形式) */
+  timezone: Timezone;
+  /** ロケール (BCP 47形式) */
+  locale: Locale;
+  /** 通知設定 */
+  notificationSettings: NotificationSettings;
+  /** ユーザー設定 */
+  preferences: UserPreferences;
+}
+
+/**
+ * デフォルトの拡張プロフィール値
+ */
+export const DEFAULT_EXTENDED_PROFILE: Pick<
+  ExtendedUserProfile,
+  "timezone" | "locale" | "notificationSettings" | "preferences"
+> = {
+  timezone: "Asia/Tokyo",
+  locale: "ja",
+  notificationSettings: DEFAULT_NOTIFICATION_SETTINGS,
+  preferences: DEFAULT_USER_PREFERENCES,
+};
+
+// === IPC ペイロード型 ===
+
+/**
+ * タイムゾーン更新ペイロード
+ */
+export interface UpdateTimezonePayload {
+  timezone: Timezone;
+}
+
+/**
+ * ロケール更新ペイロード
+ */
+export interface UpdateLocalePayload {
+  locale: Locale;
+}
+
+/**
+ * 通知設定更新ペイロード
+ */
+export interface UpdateNotificationSettingsPayload {
+  notificationSettings: Partial<NotificationSettings>;
+}
+
+/**
+ * プロフィールエクスポートレスポンス
+ */
+export interface ProfileExportResponse {
+  success: boolean;
+  filePath?: string;
+  error?: string;
+}
+
+/**
+ * プロフィールインポートペイロード
+ */
+export interface ProfileImportPayload {
+  filePath: string;
+}
+
+/**
+ * プロフィールインポートレスポンス
+ */
+export interface ProfileImportResponse {
+  success: boolean;
+  profile?: Partial<ExtendedUserProfile>;
+  error?: string;
+}
+
+/**
+ * 連携プロバイダー情報（エクスポート用）
+ */
+export interface ExportedLinkedProvider {
+  provider: OAuthProvider;
+  linkedAt: string;
+}
+
+/**
+ * AIプロバイダー登録状態（エクスポート用）
+ * セキュリティ: APIキー自体は含まない
+ */
+export interface ExportedAIProviderStatus {
+  provider: string;
+  registered: boolean;
+  lastValidatedAt: string | null;
+}
+
+/**
+ * プロフィールエクスポートデータ
+ *
+ * セキュリティ考慮事項:
+ * - email: 除外 (個人識別情報)
+ * - avatarUrl: 除外 (Supabase Storage URL = ユーザー識別可能)
+ * - id: 除外 (内部識別子)
+ * - APIキー: 除外 (機密情報)
+ */
+export interface ProfileExportData {
+  /** エクスポート形式バージョン */
+  version: "1.0";
+  /** エクスポート日時 (ISO 8601) */
+  exportedAt: string;
+  /** 表示名 */
+  displayName: string;
+  /** タイムゾーン (間接的位置情報として扱う) */
+  timezone: Timezone;
+  /** ロケール */
+  locale: Locale;
+  /** 通知設定 */
+  notificationSettings: NotificationSettings;
+  /** ユーザー設定 */
+  preferences: UserPreferences;
+  /** 連携プロバイダー一覧（オプション） */
+  linkedProviders?: ExportedLinkedProvider[];
+  /** AIプロバイダー登録状態（オプション、キー自体は含まない） */
+  aiProviders?: ExportedAIProviderStatus[];
+  /** アカウント作成日 */
+  accountCreatedAt?: string;
+  /** プラン情報（参照用） */
+  plan?: string;
+}
+
+/**
+ * インポート制限定数
+ */
+export const IMPORT_LIMITS = {
+  /** 最大ファイルサイズ (1MB) */
+  MAX_FILE_SIZE: 1024 * 1024,
+  /** 表示名最大長 */
+  MAX_DISPLAY_NAME_LENGTH: 100,
+  /** プロフィールエクスポートバージョン */
+  CURRENT_VERSION: "1.0" as const,
+} as const;
+
 /**
  * プロフィール更新可能フィールド
  */

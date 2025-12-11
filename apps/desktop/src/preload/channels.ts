@@ -59,6 +59,13 @@ export const IPC_CHANNELS = {
   PROFILE_LINK_PROVIDER: "profile:link-provider",
   PROFILE_UNLINK_PROVIDER: "profile:unlink-provider",
 
+  // Extended Profile operations
+  PROFILE_UPDATE_TIMEZONE: "profile:update-timezone",
+  PROFILE_UPDATE_LOCALE: "profile:update-locale",
+  PROFILE_UPDATE_NOTIFICATIONS: "profile:update-notifications",
+  PROFILE_EXPORT: "profile:export",
+  PROFILE_IMPORT: "profile:import",
+
   // Avatar operations
   AVATAR_UPLOAD: "avatar:upload",
   AVATAR_USE_PROVIDER: "avatar:use-provider",
@@ -73,6 +80,10 @@ export const IPC_CHANNELS = {
   API_KEY_DELETE: "apiKey:delete",
   API_KEY_VALIDATE: "apiKey:validate",
   API_KEY_LIST: "apiKey:list",
+
+  // Dialog operations
+  DIALOG_SHOW_OPEN: "dialog:showOpenDialog",
+  DIALOG_SHOW_SAVE: "dialog:showSaveDialog",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -114,6 +125,12 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.PROFILE_GET_PROVIDERS,
   IPC_CHANNELS.PROFILE_LINK_PROVIDER,
   IPC_CHANNELS.PROFILE_UNLINK_PROVIDER,
+  // Extended Profile channels
+  IPC_CHANNELS.PROFILE_UPDATE_TIMEZONE,
+  IPC_CHANNELS.PROFILE_UPDATE_LOCALE,
+  IPC_CHANNELS.PROFILE_UPDATE_NOTIFICATIONS,
+  IPC_CHANNELS.PROFILE_EXPORT,
+  IPC_CHANNELS.PROFILE_IMPORT,
   // Avatar channels
   IPC_CHANNELS.AVATAR_UPLOAD,
   IPC_CHANNELS.AVATAR_USE_PROVIDER,
@@ -126,6 +143,9 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.API_KEY_DELETE,
   IPC_CHANNELS.API_KEY_VALIDATE,
   IPC_CHANNELS.API_KEY_LIST,
+  // Dialog channels
+  IPC_CHANNELS.DIALOG_SHOW_OPEN,
+  IPC_CHANNELS.DIALOG_SHOW_SAVE,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [
