@@ -1,7 +1,20 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  useRef,
+  useMemo,
+} from "react";
 import clsx from "clsx";
 import { GlassPanel } from "../../components/organisms/GlassPanel";
 import { WorkspaceSidebar } from "../../components/organisms/WorkspaceSidebar";
+import type { SearchMatch } from "../../components/organisms/SearchPanel/FileSearchPanel";
+import {
+  UnifiedSearchPanel,
+  type SearchMode,
+  type UnifiedSearchPanelRef,
+} from "../../components/organisms/SearchPanel/UnifiedSearchPanel";
+import type { SearchResultItemProps } from "../../components/organisms/WorkspaceSearch/WorkspaceSearchPanel";
 import { TextArea } from "../../components/atoms/TextArea";
 import { Button } from "../../components/atoms/Button";
 import { ErrorDisplay } from "../../components/atoms/ErrorDisplay";
@@ -13,6 +26,7 @@ import {
   useWorkspaceError,
 } from "../../store";
 import type { FolderId } from "../../store/types/workspace";
+import type { FileNode } from "../../store/types";
 
 export interface EditorViewProps {
   className?: string;
@@ -46,10 +60,156 @@ export const EditorView: React.FC<EditorViewProps> = ({ className }) => {
   // Local state for saving
   const [isSaving, setIsSaving] = useState(false);
 
+  // Search panel state
+  const [isSearchPanelOpen, setIsSearchPanelOpen] = useState(false);
+  const [searchMode, setSearchMode] = useState<SearchMode>("file");
+  const [showReplace, setShowReplace] = useState(false);
+  const [_currentMatch, setCurrentMatch] = useState<SearchMatch | null>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const searchPanelRef = useRef<UnifiedSearchPanelRef>(null);
+
+  // Collect all file paths from file trees
+  const allFilePaths = useMemo(() => {
+    const paths: string[] = [];
+
+    const collectPaths = (nodes: FileNode[]) => {
+      for (const node of nodes) {
+        if (node.type === "file") {
+          paths.push(node.path);
+        } else if (node.children) {
+          collectPaths(node.children);
+        }
+      }
+    };
+
+    for (const fileTree of folderFileTrees.values()) {
+      collectPaths(fileTree);
+    }
+
+    return paths;
+  }, [folderFileTrees]);
+
+  // Get first workspace folder path
+  const workspacePath = useMemo(() => {
+    if (workspace.folders.length > 0) {
+      return workspace.folders[0].path;
+    }
+    return null;
+  }, [workspace.folders]);
+
   // Load workspace on mount
   useEffect(() => {
     loadWorkspace();
   }, [loadWorkspace]);
+
+  // Keyboard shortcut handler for search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Cmd+F (Mac) or Ctrl+F (Windows/Linux) to open file search
+      if ((e.metaKey || e.ctrlKey) && e.key === "f" && !e.shiftKey) {
+        e.preventDefault();
+        setSearchMode("file");
+        setShowReplace(false);
+        setIsSearchPanelOpen(true);
+      }
+      // Cmd+T (Mac) or Ctrl+T (Windows/Linux) to open file replace
+      if ((e.metaKey || e.ctrlKey) && e.key === "t" && !e.shiftKey) {
+        e.preventDefault();
+        setSearchMode("file");
+        setShowReplace(true);
+        setIsSearchPanelOpen(true);
+      }
+      // Cmd+Shift+F (Mac) or Ctrl+Shift+F (Windows/Linux) to open workspace search
+      if ((e.metaKey || e.ctrlKey) && e.key === "f" && e.shiftKey) {
+        e.preventDefault();
+        setSearchMode("workspace");
+        setShowReplace(false);
+        setIsSearchPanelOpen(true);
+      }
+      // Cmd+Shift+T (Mac) or Ctrl+Shift+T (Windows/Linux) to open workspace replace
+      if ((e.metaKey || e.ctrlKey) && e.key === "t" && e.shiftKey) {
+        e.preventDefault();
+        setSearchMode("workspace");
+        setShowReplace(true);
+        setIsSearchPanelOpen(true);
+      }
+      // Cmd+P (Mac) or Ctrl+P (Windows/Linux) to open file name search
+      if ((e.metaKey || e.ctrlKey) && e.key === "p") {
+        e.preventDefault();
+        setSearchMode("filename");
+        setShowReplace(false);
+        setIsSearchPanelOpen(true);
+      }
+      // F3 to go to next match, Shift+F3 to go to previous
+      if (e.key === "F3" && isSearchPanelOpen && searchMode === "file") {
+        e.preventDefault();
+        if (e.shiftKey) {
+          searchPanelRef.current?.goToPrev();
+        } else {
+          searchPanelRef.current?.goToNext();
+        }
+      }
+      // Cmd+N / Ctrl+N to go to next match (Vim-style)
+      if (
+        (e.metaKey || e.ctrlKey) &&
+        e.key === "n" &&
+        isSearchPanelOpen &&
+        searchMode === "file"
+      ) {
+        e.preventDefault();
+        if (e.shiftKey) {
+          searchPanelRef.current?.goToPrev();
+        } else {
+          searchPanelRef.current?.goToNext();
+        }
+      }
+      // Escape to close search
+      if (e.key === "Escape" && isSearchPanelOpen) {
+        setIsSearchPanelOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isSearchPanelOpen, searchMode]);
+
+  // Handle search navigation (scroll to match position and highlight)
+  const handleSearchNavigate = useCallback(
+    (match: SearchMatch) => {
+      setCurrentMatch(match);
+
+      if (!textAreaRef.current) return;
+
+      const textarea = textAreaRef.current;
+      const lines = editorContent.split("\n");
+
+      // Calculate character position from line/column (1-indexed)
+      let charPosition = 0;
+      for (let i = 0; i < match.line - 1 && i < lines.length; i++) {
+        charPosition += lines[i].length + 1; // +1 for newline
+      }
+      charPosition += match.column - 1;
+
+      // Select the matched text
+      const startPos = charPosition;
+      const endPos = charPosition + match.length;
+
+      // Focus and select to show highlight
+      textarea.focus();
+      textarea.setSelectionRange(startPos, endPos);
+
+      // Scroll to make the selection visible
+      const lineHeight = 20; // Approximate line height in pixels
+      const scrollTop = (match.line - 3) * lineHeight; // Scroll to 3 lines above the match
+      textarea.scrollTop = Math.max(0, scrollTop);
+    },
+    [editorContent],
+  );
+
+  // Handle search panel close
+  const handleSearchClose = useCallback(() => {
+    setIsSearchPanelOpen(false);
+  }, []);
 
   const handleContentChange = useCallback(
     (value: string) => {
@@ -97,6 +257,53 @@ export const EditorView: React.FC<EditorViewProps> = ({ className }) => {
       }
     },
     [setEditorContent, markAsSaved],
+  );
+
+  // Handle workspace search result click
+  const handleWorkspaceResultClick = useCallback(
+    async (result: SearchResultItemProps) => {
+      // Close search panel first
+      setIsSearchPanelOpen(false);
+
+      // Open the file
+      await handleFileSelect(result.filePath);
+
+      // After file loads, navigate to the match position
+      setTimeout(() => {
+        if (textAreaRef.current) {
+          const textarea = textAreaRef.current;
+
+          // We need to wait for content to be loaded
+          // Use the result's line/column to calculate position
+          const lines = textarea.value.split("\n");
+          let charPosition = 0;
+          for (let i = 0; i < result.lineNumber - 1 && i < lines.length; i++) {
+            charPosition += lines[i].length + 1;
+          }
+          charPosition += result.column - 1;
+
+          textarea.focus();
+          textarea.setSelectionRange(
+            charPosition,
+            charPosition + result.matchLength,
+          );
+
+          const lineHeight = 20;
+          const scrollTop = (result.lineNumber - 3) * lineHeight;
+          textarea.scrollTop = Math.max(0, scrollTop);
+        }
+      }, 100);
+    },
+    [handleFileSelect],
+  );
+
+  // Handle file name selection
+  const handleFileNameSelect = useCallback(
+    async (filePath: string) => {
+      await handleFileSelect(filePath);
+      setIsSearchPanelOpen(false);
+    },
+    [handleFileSelect],
   );
 
   const handleAddFolder = useCallback(async () => {
@@ -167,6 +374,21 @@ export const EditorView: React.FC<EditorViewProps> = ({ className }) => {
             )}
           </div>
           <div className="flex items-center gap-2">
+            {/* Search Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setSearchMode("file");
+                setShowReplace(false);
+                setIsSearchPanelOpen(!isSearchPanelOpen);
+              }}
+              aria-label="検索 (⌘F)"
+              title="検索 (⌘F / ⌘⇧F / ⌘P)"
+            >
+              🔍
+            </Button>
+            {/* Save Button */}
             <Button
               variant="primary"
               size="sm"
@@ -179,11 +401,32 @@ export const EditorView: React.FC<EditorViewProps> = ({ className }) => {
           </div>
         </header>
 
+        {/* Search Panel */}
+        {isSearchPanelOpen && (
+          <div className="border-b border-white/10">
+            <UnifiedSearchPanel
+              ref={searchPanelRef}
+              currentFilePath={selectedFilePath}
+              workspacePath={workspacePath}
+              allFilePaths={allFilePaths}
+              onFileSearchNavigate={handleSearchNavigate}
+              onWorkspaceResultClick={handleWorkspaceResultClick}
+              onFileNameSelect={handleFileNameSelect}
+              onClose={handleSearchClose}
+              onContentUpdated={setEditorContent}
+              initialMode={searchMode}
+              showReplace={showReplace}
+              className="bg-[var(--bg-secondary)]"
+            />
+          </div>
+        )}
+
         {/* Editor Content */}
         <div className="flex-1 p-4 overflow-hidden">
           {selectedFilePath ? (
             <GlassPanel className="h-full">
               <TextArea
+                ref={textAreaRef}
                 value={editorContent}
                 onChange={handleContentChange}
                 placeholder="ここに内容を入力..."

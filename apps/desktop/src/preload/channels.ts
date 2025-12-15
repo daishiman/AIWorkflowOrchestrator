@@ -6,6 +6,7 @@ export const IPC_CHANNELS = {
   FILE_GET_TREE: "file:get-tree",
   FILE_READ: "file:read",
   FILE_WRITE: "file:write",
+  FILE_RENAME: "file:rename",
   FILE_WATCH_START: "file:watch-start",
   FILE_WATCH_STOP: "file:watch-stop",
   FILE_CHANGED: "file:changed",
@@ -92,6 +93,17 @@ export const IPC_CHANNELS = {
   WORKSPACE_REMOVE_FOLDER: "workspace:remove-folder",
   WORKSPACE_VALIDATE_PATHS: "workspace:validate-paths",
   WORKSPACE_FOLDER_CHANGED: "workspace:folder-changed",
+
+  // Search operations
+  SEARCH_FILE_EXECUTE: "search:file:execute",
+  SEARCH_WORKSPACE_EXECUTE: "search:workspace:execute",
+
+  // Replace operations
+  REPLACE_FILE_SINGLE: "replace:file:single",
+  REPLACE_FILE_ALL: "replace:file:all",
+  REPLACE_WORKSPACE_ALL: "replace:workspace:all",
+  REPLACE_UNDO: "replace:undo",
+  REPLACE_REDO: "replace:redo",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -101,6 +113,7 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.FILE_GET_TREE,
   IPC_CHANNELS.FILE_READ,
   IPC_CHANNELS.FILE_WRITE,
+  IPC_CHANNELS.FILE_RENAME,
   IPC_CHANNELS.FILE_WATCH_START,
   IPC_CHANNELS.FILE_WATCH_STOP,
   IPC_CHANNELS.STORE_GET,
@@ -160,6 +173,15 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.WORKSPACE_ADD_FOLDER,
   IPC_CHANNELS.WORKSPACE_REMOVE_FOLDER,
   IPC_CHANNELS.WORKSPACE_VALIDATE_PATHS,
+  // Search channels
+  IPC_CHANNELS.SEARCH_FILE_EXECUTE,
+  IPC_CHANNELS.SEARCH_WORKSPACE_EXECUTE,
+  // Replace channels
+  IPC_CHANNELS.REPLACE_FILE_SINGLE,
+  IPC_CHANNELS.REPLACE_FILE_ALL,
+  IPC_CHANNELS.REPLACE_WORKSPACE_ALL,
+  IPC_CHANNELS.REPLACE_UNDO,
+  IPC_CHANNELS.REPLACE_REDO,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [

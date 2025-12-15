@@ -13,7 +13,8 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@renderer/*": ["src/renderer/*"]
+      "@renderer/*": ["src/renderer/*"],
+      "@/*": ["src/*"]
     }
   },
   "include": ["src/**/*"],

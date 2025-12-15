@@ -26,6 +26,8 @@ export interface WorkspaceSidebarProps {
   onToggleFolderExpansion: (folderId: FolderId) => void;
   onToggleSubfolder: (folderId: FolderId, subfolderPath: string) => void;
   onSelectFile: (filePath: string) => void;
+  /** ファイル/フォルダ名変更時のコールバック（オプション） */
+  onRename?: (oldPath: string, newPath: string) => void;
   isLoading?: boolean;
   error?: string | null;
   className?: string;

@@ -9,11 +9,23 @@
  * @vitest-environment happy-dom
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, within, cleanup } from "@testing-library/react";
+import {
+  render,
+  screen,
+  within,
+  cleanup,
+  waitFor,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/vitest";
 import type { WorkspaceSidebarProps } from "./WorkspaceSidebar";
 import { WorkspaceSidebar } from "./WorkspaceSidebar";
+
+// Mock useIpc for rename functionality
+const mockInvoke = vi.fn();
+vi.mock("@/hooks/useIpc", () => ({
+  useIpc: () => ({ invoke: mockInvoke }),
+}));
 import type {
   Workspace,
   FolderEntry,
@@ -93,6 +105,10 @@ describe("WorkspaceSidebar", () => {
   beforeEach(() => {
     cleanup();
     vi.clearAllMocks();
+    mockInvoke.mockResolvedValue({
+      success: true,
+      data: { oldPath: "", newPath: "" },
+    });
   });
 
   // ============================================
@@ -687,6 +703,294 @@ describe("WorkspaceSidebar", () => {
         <WorkspaceSidebar {...props} error="Test error" />,
       );
       expect(container.firstChild).toMatchSnapshot();
+    });
+  });
+
+  // ============================================
+  // ファイルリネーム機能テスト
+  // ============================================
+  describe("File Rename Functionality", () => {
+    it("ダブルクリックで編集モードに入る", async () => {
+      const props = createDefaultProps();
+      props.workspace = {
+        ...mockWorkspace,
+        folders: [{ ...mockFolderEntry, isExpanded: true }],
+      };
+      render(<WorkspaceSidebar {...props} />);
+
+      const fileItem = screen.getByTestId("file-tree-item-file-3");
+      await userEvent.dblClick(fileItem);
+
+      await waitFor(() => {
+        const input = screen.getByTestId("file-tree-rename-input");
+        expect(input).toBeInTheDocument();
+        expect(input).toHaveValue("package.json");
+      });
+    });
+
+    it("F2キーで編集モードに入る", async () => {
+      const props = createDefaultProps();
+      props.workspace = {
+        ...mockWorkspace,
+        folders: [{ ...mockFolderEntry, isExpanded: true }],
+      };
+      render(<WorkspaceSidebar {...props} />);
+
+      const fileItem = screen.getByTestId("file-tree-item-file-3");
+      fileItem.focus();
+      await userEvent.keyboard("{F2}");
+
+      await waitFor(() => {
+        const input = screen.getByTestId("file-tree-rename-input");
+        expect(input).toBeInTheDocument();
+      });
+    });
+
+    it("Enterキーでリネームを確定する", async () => {
+      const handleRename = vi.fn();
+      const props = createDefaultProps();
+      props.workspace = {
+        ...mockWorkspace,
+        folders: [{ ...mockFolderEntry, isExpanded: true }],
+      };
+      props.onRename = handleRename;
+      render(<WorkspaceSidebar {...props} />);
+
+      const fileItem = screen.getByTestId("file-tree-item-file-3");
+      await userEvent.dblClick(fileItem);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("file-tree-rename-input"),
+        ).toBeInTheDocument();
+      });
+
+      const input = screen.getByTestId("file-tree-rename-input");
+      await userEvent.clear(input);
+      await userEvent.type(input, "newname.json{enter}");
+
+      await waitFor(() => {
+        expect(mockInvoke).toHaveBeenCalledWith("file:rename", {
+          oldPath: "/Users/test/project/package.json",
+          newPath: "/Users/test/project/newname.json",
+        });
+      });
+    });
+
+    it("Escapeキーで編集をキャンセルする", async () => {
+      const props = createDefaultProps();
+      props.workspace = {
+        ...mockWorkspace,
+        folders: [{ ...mockFolderEntry, isExpanded: true }],
+      };
+      render(<WorkspaceSidebar {...props} />);
+
+      const fileItem = screen.getByTestId("file-tree-item-file-3");
+      await userEvent.dblClick(fileItem);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("file-tree-rename-input"),
+        ).toBeInTheDocument();
+      });
+
+      const input = screen.getByTestId("file-tree-rename-input");
+      await userEvent.type(input, "newname{escape}");
+
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId("file-tree-rename-input"),
+        ).not.toBeInTheDocument();
+      });
+
+      // Original name should still be displayed
+      expect(screen.getByText("package.json")).toBeInTheDocument();
+    });
+
+    it("入力がフォーカスを失うとリネームを実行する", async () => {
+      const props = createDefaultProps();
+      props.workspace = {
+        ...mockWorkspace,
+        folders: [{ ...mockFolderEntry, isExpanded: true }],
+      };
+      render(<WorkspaceSidebar {...props} />);
+
+      const fileItem = screen.getByTestId("file-tree-item-file-3");
+      await userEvent.dblClick(fileItem);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("file-tree-rename-input"),
+        ).toBeInTheDocument();
+      });
+
+      const input = screen.getByTestId("file-tree-rename-input");
+      await userEvent.clear(input);
+      await userEvent.type(input, "blurred.json");
+      input.blur();
+
+      await waitFor(() => {
+        expect(mockInvoke).toHaveBeenCalledWith("file:rename", {
+          oldPath: "/Users/test/project/package.json",
+          newPath: "/Users/test/project/blurred.json",
+        });
+      });
+    });
+
+    it("名前が変更されていない場合はリネームを実行しない", async () => {
+      const props = createDefaultProps();
+      props.workspace = {
+        ...mockWorkspace,
+        folders: [{ ...mockFolderEntry, isExpanded: true }],
+      };
+      render(<WorkspaceSidebar {...props} />);
+
+      const fileItem = screen.getByTestId("file-tree-item-file-3");
+      await userEvent.dblClick(fileItem);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("file-tree-rename-input"),
+        ).toBeInTheDocument();
+      });
+
+      const _input = screen.getByTestId("file-tree-rename-input");
+      await userEvent.keyboard("{enter}");
+
+      expect(mockInvoke).not.toHaveBeenCalled();
+    });
+
+    it("無効なファイル名の場合エラーを表示する", async () => {
+      const props = createDefaultProps();
+      props.workspace = {
+        ...mockWorkspace,
+        folders: [{ ...mockFolderEntry, isExpanded: true }],
+      };
+      render(<WorkspaceSidebar {...props} />);
+
+      const fileItem = screen.getByTestId("file-tree-item-file-3");
+      await userEvent.dblClick(fileItem);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("file-tree-rename-input"),
+        ).toBeInTheDocument();
+      });
+
+      const input = screen.getByTestId("file-tree-rename-input");
+      await userEvent.clear(input);
+      await userEvent.type(input, "invalid/name.json{enter}");
+
+      await waitFor(() => {
+        expect(screen.getByText(/invalid.*filename/i)).toBeInTheDocument();
+      });
+    });
+
+    it("リネーム失敗時にエラーを表示する", async () => {
+      mockInvoke.mockResolvedValue({
+        success: false,
+        error: "File already exists",
+      });
+
+      const props = createDefaultProps();
+      props.workspace = {
+        ...mockWorkspace,
+        folders: [{ ...mockFolderEntry, isExpanded: true }],
+      };
+      render(<WorkspaceSidebar {...props} />);
+
+      const fileItem = screen.getByTestId("file-tree-item-file-3");
+      await userEvent.dblClick(fileItem);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("file-tree-rename-input"),
+        ).toBeInTheDocument();
+      });
+
+      const input = screen.getByTestId("file-tree-rename-input");
+      await userEvent.clear(input);
+      await userEvent.type(input, "newname.json{enter}");
+
+      await waitFor(() => {
+        expect(screen.getByText(/file already exists/i)).toBeInTheDocument();
+      });
+    });
+
+    it("フォルダをダブルクリックでリネームモードに入る", async () => {
+      const props = createDefaultProps();
+      props.workspace = {
+        ...mockWorkspace,
+        folders: [{ ...mockFolderEntry, isExpanded: true }],
+      };
+      render(<WorkspaceSidebar {...props} />);
+
+      const folderItem = screen.getByTestId("file-tree-item-file-1");
+      await userEvent.dblClick(folderItem);
+
+      await waitFor(() => {
+        const input = screen.getByTestId("file-tree-rename-input");
+        expect(input).toBeInTheDocument();
+        expect(input).toHaveValue("src");
+      });
+    });
+
+    it("入力フィールドクリックは選択イベントを発火しない", async () => {
+      const handleSelectFile = vi.fn();
+      const props = createDefaultProps();
+      props.workspace = {
+        ...mockWorkspace,
+        folders: [{ ...mockFolderEntry, isExpanded: true }],
+      };
+      props.onSelectFile = handleSelectFile;
+      render(<WorkspaceSidebar {...props} />);
+
+      const fileItem = screen.getByTestId("file-tree-item-file-3");
+      await userEvent.dblClick(fileItem);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("file-tree-rename-input"),
+        ).toBeInTheDocument();
+      });
+
+      // Clear previous calls from double-click
+      handleSelectFile.mockClear();
+
+      // Click on the input field should not trigger selection (stopPropagation)
+      const input = screen.getByTestId("file-tree-rename-input");
+      await userEvent.click(input);
+
+      expect(handleSelectFile).not.toHaveBeenCalled();
+    });
+
+    it("拡張子なしのファイル名でリネームする", async () => {
+      const props = createDefaultProps();
+      props.workspace = {
+        ...mockWorkspace,
+        folders: [{ ...mockFolderEntry, isExpanded: true }],
+      };
+      render(<WorkspaceSidebar {...props} />);
+
+      const fileItem = screen.getByTestId("file-tree-item-file-3");
+      await userEvent.dblClick(fileItem);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("file-tree-rename-input"),
+        ).toBeInTheDocument();
+      });
+
+      const input = screen.getByTestId("file-tree-rename-input");
+      await userEvent.clear(input);
+      await userEvent.type(input, "Makefile{enter}");
+
+      await waitFor(() => {
+        expect(mockInvoke).toHaveBeenCalledWith("file:rename", {
+          oldPath: "/Users/test/project/package.json",
+          newPath: "/Users/test/project/Makefile",
+        });
+      });
     });
   });
 });

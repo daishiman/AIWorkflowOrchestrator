@@ -9,6 +9,7 @@ import type {
   GetFileTreeRequest,
   ReadFileRequest,
   WriteFileRequest,
+  RenameFileRequest,
   WatchStartRequest,
   StoreGetRequest,
   StoreSetRequest,
@@ -35,6 +36,13 @@ import type {
   WorkspaceRemoveFolderRequest,
   WorkspaceValidatePathsRequest,
   WorkspaceFolderChangedEvent,
+  SearchFileRequest,
+  SearchWorkspaceRequest,
+  ReplaceFileSingleRequest,
+  ReplaceFileAllRequest,
+  ReplaceWorkspaceAllRequest,
+  ReplaceUndoRequest,
+  ReplaceRedoRequest,
 } from "./types";
 
 // Type-safe invoke wrapper
@@ -73,6 +81,8 @@ const electronAPI: ElectronAPI = {
       safeInvoke(IPC_CHANNELS.FILE_READ, request),
     write: (request: WriteFileRequest) =>
       safeInvoke(IPC_CHANNELS.FILE_WRITE, request),
+    rename: (request: RenameFileRequest) =>
+      safeInvoke(IPC_CHANNELS.FILE_RENAME, request),
     watchStart: (request: WatchStartRequest) =>
       safeInvoke(IPC_CHANNELS.FILE_WATCH_START, request),
     watchStop: (watchId: string) =>
@@ -189,6 +199,26 @@ const electronAPI: ElectronAPI = {
         IPC_CHANNELS.WORKSPACE_FOLDER_CHANGED,
         callback,
       ),
+  },
+
+  search: {
+    executeFile: (request: SearchFileRequest) =>
+      safeInvoke(IPC_CHANNELS.SEARCH_FILE_EXECUTE, request),
+    executeWorkspace: (request: SearchWorkspaceRequest) =>
+      safeInvoke(IPC_CHANNELS.SEARCH_WORKSPACE_EXECUTE, request),
+  },
+
+  replace: {
+    fileSingle: (request: ReplaceFileSingleRequest) =>
+      safeInvoke(IPC_CHANNELS.REPLACE_FILE_SINGLE, request),
+    fileAll: (request: ReplaceFileAllRequest) =>
+      safeInvoke(IPC_CHANNELS.REPLACE_FILE_ALL, request),
+    workspaceAll: (request: ReplaceWorkspaceAllRequest) =>
+      safeInvoke(IPC_CHANNELS.REPLACE_WORKSPACE_ALL, request),
+    undo: (request: ReplaceUndoRequest) =>
+      safeInvoke(IPC_CHANNELS.REPLACE_UNDO, request),
+    redo: (request: ReplaceRedoRequest) =>
+      safeInvoke(IPC_CHANNELS.REPLACE_REDO, request),
   },
 
   // Generic invoke for IPC calls
