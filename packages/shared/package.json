@@ -48,6 +48,10 @@
     "./schemas/auth": {
       "types": "./dist/schemas/auth.d.ts",
       "import": "./dist/schemas/auth.js"
+    },
+    "./types/replace": {
+      "types": "./dist/src/types/replace.d.ts",
+      "import": "./dist/src/types/replace.js"
     }
   },
   "scripts": {

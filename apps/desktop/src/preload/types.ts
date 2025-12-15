@@ -50,6 +50,20 @@ export interface WriteFileResponse {
   error?: string;
 }
 
+export interface RenameFileRequest {
+  oldPath: string;
+  newPath: string;
+}
+
+export interface RenameFileResponse {
+  success: boolean;
+  data?: {
+    oldPath: string;
+    newPath: string;
+  };
+  error?: string;
+}
+
 export interface WatchStartRequest {
   watchPath: string;
   recursive?: boolean;
@@ -710,6 +724,7 @@ export interface ElectronAPI {
     getTree: (request: GetFileTreeRequest) => Promise<GetFileTreeResponse>;
     read: (request: ReadFileRequest) => Promise<ReadFileResponse>;
     write: (request: WriteFileRequest) => Promise<WriteFileResponse>;
+    rename: (request: RenameFileRequest) => Promise<RenameFileResponse>;
     watchStart: (request: WatchStartRequest) => Promise<WatchStartResponse>;
     watchStop: (watchId: string) => Promise<void>;
     onChanged: (callback: (event: FileChangedEvent) => void) => () => void;
@@ -817,6 +832,27 @@ export interface ElectronAPI {
     ) => () => void;
   };
 
+  search: {
+    executeFile: (request: SearchFileRequest) => Promise<SearchFileResponse>;
+    executeWorkspace: (
+      request: SearchWorkspaceRequest,
+    ) => Promise<SearchWorkspaceResponse>;
+  };
+
+  replace: {
+    fileSingle: (
+      request: ReplaceFileSingleRequest,
+    ) => Promise<ReplaceFileSingleResponse>;
+    fileAll: (
+      request: ReplaceFileAllRequest,
+    ) => Promise<ReplaceFileAllResponse>;
+    workspaceAll: (
+      request: ReplaceWorkspaceAllRequest,
+    ) => Promise<ReplaceWorkspaceAllResponse>;
+    undo: (request: ReplaceUndoRequest) => Promise<ReplaceUndoResponse>;
+    redo: (request: ReplaceRedoRequest) => Promise<ReplaceRedoResponse>;
+  };
+
   // Generic invoke for IPC calls
   invoke: <T>(channel: string, payload?: unknown) => Promise<T>;
 
@@ -833,6 +869,137 @@ export interface ElectronAPI {
       filters?: Array<{ name: string; extensions: string[] }>;
     }) => Promise<{ canceled: boolean; filePath?: string }>;
   };
+}
+
+// ===== Search operations =====
+
+export interface SearchMatch {
+  text: string;
+  line: number;
+  column: number;
+  length: number;
+}
+
+export interface SearchOptions {
+  caseSensitive: boolean;
+  wholeWord: boolean;
+  useRegex: boolean;
+}
+
+export interface SearchFileRequest {
+  filePath: string;
+  query: string;
+  options: SearchOptions;
+}
+
+export interface SearchFileResponse {
+  success: boolean;
+  data?: {
+    matches: SearchMatch[];
+    totalCount: number;
+  };
+  error?: string;
+}
+
+export interface SearchWorkspaceRequest {
+  rootPath: string;
+  query: string;
+  options: SearchOptions;
+  includePattern?: string;
+  excludePatterns?: string[];
+}
+
+export interface WorkspaceSearchMatch extends SearchMatch {
+  filePath: string;
+}
+
+export interface SearchWorkspaceResponse {
+  success: boolean;
+  data?: {
+    matches: WorkspaceSearchMatch[];
+    totalCount: number;
+    fileCount: number;
+  };
+  error?: string;
+}
+
+// ===== Replace operations =====
+
+export interface ReplaceOptions {
+  preserveCase: boolean;
+}
+
+export interface ReplaceFileSingleRequest {
+  filePath: string;
+  query: string;
+  replaceString: string;
+  match: SearchMatch;
+  searchOptions: SearchOptions;
+  replaceOptions: ReplaceOptions;
+}
+
+export interface ReplaceFileSingleResponse {
+  success: boolean;
+  data?: {
+    newContent: string;
+    undoGroupId: string;
+  };
+  error?: string;
+}
+
+export interface ReplaceFileAllRequest {
+  filePath: string;
+  query: string;
+  replaceString: string;
+  searchOptions: SearchOptions;
+  replaceOptions: ReplaceOptions;
+}
+
+export interface ReplaceFileAllResponse {
+  success: boolean;
+  data?: {
+    replacedCount: number;
+    undoGroupId: string;
+  };
+  error?: string;
+}
+
+export interface ReplaceWorkspaceAllRequest {
+  rootPath: string;
+  query: string;
+  replaceString: string;
+  searchOptions: SearchOptions;
+  replaceOptions: ReplaceOptions;
+  includePattern?: string;
+  excludePatterns?: string[];
+}
+
+export interface ReplaceWorkspaceAllResponse {
+  success: boolean;
+  data?: {
+    replacedCount: number;
+    fileCount: number;
+    undoGroupId: string;
+  };
+  error?: string;
+}
+
+export interface ReplaceUndoRequest {
+  undoGroupId: string;
+}
+
+export interface ReplaceUndoResponse {
+  success: boolean;
+  error?: string;
+}
+
+export interface ReplaceRedoRequest {
+  undoGroupId: string;
+}
+
+export interface ReplaceRedoResponse {
+  success: boolean;
+  error?: string;
 }
 
 // Global type declaration

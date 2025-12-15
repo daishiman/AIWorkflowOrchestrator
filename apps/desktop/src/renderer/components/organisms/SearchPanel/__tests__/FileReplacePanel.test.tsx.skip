@@ -1,0 +1,620 @@
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { axe, toHaveNoViolations } from "jest-axe";
+import { FileReplacePanel } from "../FileReplacePanel";
+
+expect.extend(toHaveNoViolations);
+
+// Mock IPC
+const mockInvoke = vi.fn();
+vi.mock("@/hooks/useIpc", () => ({
+  useIpc: () => ({ invoke: mockInvoke }),
+}));
+
+describe("FileReplacePanel", () => {
+  const user = userEvent.setup();
+
+  const defaultProps = {
+    filePath: "/test/file.ts",
+    onClose: vi.fn(),
+    onReplace: vi.fn(),
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockInvoke.mockResolvedValue({ matches: [], totalCount: 0 });
+  });
+
+  describe("レンダリング", () => {
+    it("should render search and replace input fields", () => {
+      render(<FileReplacePanel {...defaultProps} />);
+
+      expect(screen.getByRole("searchbox")).toBeInTheDocument();
+      expect(screen.getByPlaceholderText(/置換|replace/i)).toBeInTheDocument();
+    });
+
+    it("should render replace single and replace all buttons", () => {
+      render(<FileReplacePanel {...defaultProps} />);
+
+      expect(
+        screen.getByRole("button", { name: /置換|replace(?!.*all)/i }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /すべて置換|replace.*all/i }),
+      ).toBeInTheDocument();
+    });
+
+    it("should render preserve case option", () => {
+      render(<FileReplacePanel {...defaultProps} />);
+
+      expect(
+        screen.getByRole("checkbox", {
+          name: /大文字小文字.*保持|preserve.*case/i,
+        }),
+      ).toBeInTheDocument();
+    });
+
+    it("should render search options toggles", () => {
+      render(<FileReplacePanel {...defaultProps} />);
+
+      expect(
+        screen.getByRole("checkbox", {
+          name: /大文字.*小文字|case.*sensitive/i,
+        }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("checkbox", { name: /単語.*単位|whole.*word/i }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("checkbox", { name: /正規表現|regex/i }),
+      ).toBeInTheDocument();
+    });
+  });
+
+  describe("単一置換", () => {
+    beforeEach(() => {
+      mockInvoke.mockResolvedValue({
+        matches: [
+          { line: 1, column: 5, text: "test", length: 4 },
+          { line: 3, column: 10, text: "test", length: 4 },
+        ],
+        totalCount: 2,
+      });
+    });
+
+    it("should replace single match on button click", async () => {
+      render(<FileReplacePanel {...defaultProps} />);
+
+      const searchInput = screen.getByRole("searchbox");
+      const replaceInput = screen.getByPlaceholderText(/置換|replace/i);
+
+      await user.type(searchInput, "test{enter}");
+
+      await waitFor(() => {
+        expect(screen.getByText(/1.*\/.*2/)).toBeInTheDocument();
+      });
+
+      await user.type(replaceInput, "replaced");
+      const replaceButton = screen.getByRole("button", {
+        name: /置換|replace(?!.*all)/i,
+      });
+      await user.click(replaceButton);
+
+      expect(mockInvoke).toHaveBeenCalledWith(
+        "replace:file:single",
+        expect.objectContaining({
+          filePath: "/test/file.ts",
+          replaceString: "replaced",
+        }),
+      );
+    });
+
+    it("should move to next match after single replace", async () => {
+      mockInvoke
+        .mockResolvedValueOnce({
+          matches: [
+            { line: 1, column: 5, text: "test", length: 4 },
+            { line: 3, column: 10, text: "test", length: 4 },
+          ],
+          totalCount: 2,
+        })
+        .mockResolvedValueOnce({
+          success: true,
+          newContent: "modified content",
+        });
+
+      render(<FileReplacePanel {...defaultProps} />);
+
+      const searchInput = screen.getByRole("searchbox");
+      const replaceInput = screen.getByPlaceholderText(/置換|replace/i);
+
+      await user.type(searchInput, "test{enter}");
+      await waitFor(() => {
+        expect(screen.getByText(/1.*\/.*2/)).toBeInTheDocument();
+      });
+
+      await user.type(replaceInput, "new");
+      const replaceButton = screen.getByRole("button", {
+        name: /置換|replace(?!.*all)/i,
+      });
+      await user.click(replaceButton);
+
+      // Should show updated count and move to next
+      await waitFor(() => {
+        expect(screen.getByText(/2.*\/.*2|1.*\/.*1/)).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe("すべて置換", () => {
+    beforeEach(() => {
+      mockInvoke.mockResolvedValue({
+        matches: [
+          { line: 1, column: 5, text: "test", length: 4 },
+          { line: 3, column: 10, text: "test", length: 4 },
+          { line: 5, column: 15, text: "test", length: 4 },
+        ],
+        totalCount: 3,
+      });
+    });
+
+    it("should replace all matches on button click", async () => {
+      render(<FileReplacePanel {...defaultProps} />);
+
+      const searchInput = screen.getByRole("searchbox");
+      const replaceInput = screen.getByPlaceholderText(/置換|replace/i);
+
+      await user.type(searchInput, "test{enter}");
+      await waitFor(() => {
+        expect(screen.getByText(/3/)).toBeInTheDocument();
+      });
+
+      await user.type(replaceInput, "replaced");
+      const replaceAllButton = screen.getByRole("button", {
+        name: /すべて置換|replace.*all/i,
+      });
+      await user.click(replaceAllButton);
+
+      expect(mockInvoke).toHaveBeenCalledWith(
+        "replace:file:all",
+        expect.objectContaining({
+          filePath: "/test/file.ts",
+          replaceString: "replaced",
+        }),
+      );
+    });
+
+    it("should show confirmation dialog for replace all", async () => {
+      render(<FileReplacePanel {...defaultProps} />);
+
+      const searchInput = screen.getByRole("searchbox");
+      const replaceInput = screen.getByPlaceholderText(/置換|replace/i);
+
+      await user.type(searchInput, "test{enter}");
+      await waitFor(() => {
+        expect(screen.getByText(/3/)).toBeInTheDocument();
+      });
+
+      await user.type(replaceInput, "new");
+      const replaceAllButton = screen.getByRole("button", {
+        name: /すべて置換|replace.*all/i,
+      });
+      await user.click(replaceAllButton);
+
+      // Confirmation dialog should appear
+      await waitFor(() => {
+        expect(
+          screen.getByText(/確認|confirm|3.*件.*置換/i),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it("should update results after replace all", async () => {
+      mockInvoke
+        .mockResolvedValueOnce({
+          matches: [
+            { line: 1, column: 5, text: "test", length: 4 },
+            { line: 3, column: 10, text: "test", length: 4 },
+          ],
+          totalCount: 2,
+        })
+        .mockResolvedValueOnce({
+          success: true,
+          replacedCount: 2,
+        });
+
+      render(<FileReplacePanel {...defaultProps} />);
+
+      const searchInput = screen.getByRole("searchbox");
+      const replaceInput = screen.getByPlaceholderText(/置換|replace/i);
+
+      await user.type(searchInput, "test{enter}");
+      await waitFor(() => {
+        expect(screen.getByText(/2/)).toBeInTheDocument();
+      });
+
+      await user.type(replaceInput, "new");
+      const replaceAllButton = screen.getByRole("button", {
+        name: /すべて置換|replace.*all/i,
+      });
+      await user.click(replaceAllButton);
+
+      // Confirm if dialog appears
+      const confirmButton = screen.queryByRole("button", {
+        name: /はい|confirm|ok/i,
+      });
+      if (confirmButton) {
+        await user.click(confirmButton);
+      }
+
+      await waitFor(() => {
+        expect(screen.getByText(/完了|0.*件|replaced/i)).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe("プレビュー表示", () => {
+    beforeEach(() => {
+      mockInvoke.mockResolvedValue({
+        matches: [{ line: 1, column: 5, text: "test", length: 4 }],
+        totalCount: 1,
+      });
+    });
+
+    it("should show replacement preview", async () => {
+      render(<FileReplacePanel {...defaultProps} />);
+
+      const searchInput = screen.getByRole("searchbox");
+      const replaceInput = screen.getByPlaceholderText(/置換|replace/i);
+
+      await user.type(searchInput, "test{enter}");
+      await waitFor(() => {
+        expect(screen.getByText(/1/)).toBeInTheDocument();
+      });
+
+      await user.type(replaceInput, "replaced");
+
+      // Preview should show before/after
+      await waitFor(() => {
+        expect(screen.getByText(/test/)).toBeInTheDocument();
+        expect(screen.getByText(/replaced/)).toBeInTheDocument();
+      });
+    });
+
+    it("should highlight diff in preview", async () => {
+      render(<FileReplacePanel {...defaultProps} />);
+
+      const searchInput = screen.getByRole("searchbox");
+      const replaceInput = screen.getByPlaceholderText(/置換|replace/i);
+
+      await user.type(searchInput, "test{enter}");
+      await waitFor(() => {
+        expect(screen.getByText(/1/)).toBeInTheDocument();
+      });
+
+      await user.type(replaceInput, "new");
+
+      // Should have diff highlighting elements
+      const previewArea = screen.getByTestId("replace-preview");
+      expect(previewArea).toContainElement(
+        screen.getByText("test", { selector: ".removed" }) ||
+          screen.getByText("test"),
+      );
+    });
+  });
+
+  describe("大文字小文字保持", () => {
+    it("should preserve case in replacement", async () => {
+      mockInvoke.mockResolvedValue({
+        matches: [{ line: 1, column: 5, text: "TEST", length: 4 }],
+        totalCount: 1,
+      });
+
+      render(<FileReplacePanel {...defaultProps} />);
+
+      const searchInput = screen.getByRole("searchbox");
+      const replaceInput = screen.getByPlaceholderText(/置換|replace/i);
+      const preserveCaseToggle = screen.getByRole("checkbox", {
+        name: /大文字小文字.*保持|preserve.*case/i,
+      });
+
+      await user.type(searchInput, "test{enter}");
+      await waitFor(() => {
+        expect(screen.getByText(/1/)).toBeInTheDocument();
+      });
+
+      await user.click(preserveCaseToggle);
+      await user.type(replaceInput, "word");
+
+      const replaceButton = screen.getByRole("button", {
+        name: /置換|replace(?!.*all)/i,
+      });
+      await user.click(replaceButton);
+
+      expect(mockInvoke).toHaveBeenCalledWith(
+        "replace:file:single",
+        expect.objectContaining({
+          replaceOptions: expect.objectContaining({
+            preserveCase: true,
+          }),
+        }),
+      );
+    });
+
+    it("should show preview with case preserved", async () => {
+      mockInvoke.mockResolvedValue({
+        matches: [{ line: 1, column: 5, text: "HELLO", length: 5 }],
+        totalCount: 1,
+      });
+
+      render(<FileReplacePanel {...defaultProps} />);
+
+      const searchInput = screen.getByRole("searchbox");
+      const replaceInput = screen.getByPlaceholderText(/置換|replace/i);
+      const preserveCaseToggle = screen.getByRole("checkbox", {
+        name: /大文字小文字.*保持|preserve.*case/i,
+      });
+
+      await user.type(searchInput, "hello{enter}");
+      await waitFor(() => {
+        expect(screen.getByText(/1/)).toBeInTheDocument();
+      });
+
+      await user.click(preserveCaseToggle);
+      await user.type(replaceInput, "world");
+
+      // Preview should show "WORLD" (uppercase preserved)
+      await waitFor(() => {
+        expect(screen.getByText(/WORLD/)).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe("キーボードショートカット", () => {
+    it("should replace single on Cmd+Shift+1", async () => {
+      mockInvoke.mockResolvedValue({
+        matches: [{ line: 1, column: 5, text: "test", length: 4 }],
+        totalCount: 1,
+      });
+
+      render(<FileReplacePanel {...defaultProps} />);
+
+      const searchInput = screen.getByRole("searchbox");
+      const replaceInput = screen.getByPlaceholderText(/置換|replace/i);
+
+      await user.type(searchInput, "test{enter}");
+      await waitFor(() => {
+        expect(screen.getByText(/1/)).toBeInTheDocument();
+      });
+
+      await user.type(replaceInput, "new");
+      await user.keyboard("{Meta>}{Shift>}1{/Shift}{/Meta}");
+
+      expect(mockInvoke).toHaveBeenCalledWith(
+        "replace:file:single",
+        expect.anything(),
+      );
+    });
+
+    it("should replace all on Cmd+Shift+Enter", async () => {
+      mockInvoke.mockResolvedValue({
+        matches: [{ line: 1, column: 5, text: "test", length: 4 }],
+        totalCount: 1,
+      });
+
+      render(<FileReplacePanel {...defaultProps} />);
+
+      const searchInput = screen.getByRole("searchbox");
+      const replaceInput = screen.getByPlaceholderText(/置換|replace/i);
+
+      await user.type(searchInput, "test{enter}");
+      await waitFor(() => {
+        expect(screen.getByText(/1/)).toBeInTheDocument();
+      });
+
+      await user.type(replaceInput, "new");
+      await user.keyboard("{Meta>}{Shift>}{Enter}{/Shift}{/Meta}");
+
+      expect(mockInvoke).toHaveBeenCalledWith(
+        "replace:file:all",
+        expect.anything(),
+      );
+    });
+  });
+
+  describe("Undo/Redo", () => {
+    it("should enable undo after replace", async () => {
+      mockInvoke
+        .mockResolvedValueOnce({
+          matches: [{ line: 1, column: 5, text: "test", length: 4 }],
+          totalCount: 1,
+        })
+        .mockResolvedValueOnce({
+          success: true,
+          undoGroupId: "undo-123",
+        });
+
+      render(<FileReplacePanel {...defaultProps} />);
+
+      const searchInput = screen.getByRole("searchbox");
+      const replaceInput = screen.getByPlaceholderText(/置換|replace/i);
+
+      await user.type(searchInput, "test{enter}");
+      await waitFor(() => {
+        expect(screen.getByText(/1/)).toBeInTheDocument();
+      });
+
+      await user.type(replaceInput, "new");
+      const replaceButton = screen.getByRole("button", {
+        name: /置換|replace(?!.*all)/i,
+      });
+      await user.click(replaceButton);
+
+      await waitFor(() => {
+        const undoButton = screen.getByRole("button", {
+          name: /undo|元に戻す/i,
+        });
+        expect(undoButton).not.toBeDisabled();
+      });
+    });
+
+    it("should undo last replacement on button click", async () => {
+      mockInvoke
+        .mockResolvedValueOnce({
+          matches: [{ line: 1, column: 5, text: "test", length: 4 }],
+          totalCount: 1,
+        })
+        .mockResolvedValueOnce({
+          success: true,
+          undoGroupId: "undo-123",
+        });
+
+      render(<FileReplacePanel {...defaultProps} />);
+
+      const searchInput = screen.getByRole("searchbox");
+      const replaceInput = screen.getByPlaceholderText(/置換|replace/i);
+
+      await user.type(searchInput, "test{enter}");
+      await waitFor(() => {
+        expect(screen.getByText(/1/)).toBeInTheDocument();
+      });
+
+      await user.type(replaceInput, "new");
+      const replaceButton = screen.getByRole("button", {
+        name: /置換|replace(?!.*all)/i,
+      });
+      await user.click(replaceButton);
+
+      await waitFor(() => {
+        const undoButton = screen.getByRole("button", {
+          name: /undo|元に戻す/i,
+        });
+        expect(undoButton).not.toBeDisabled();
+      });
+
+      const undoButton = screen.getByRole("button", { name: /undo|元に戻す/i });
+      await user.click(undoButton);
+
+      expect(mockInvoke).toHaveBeenCalledWith(
+        "replace:undo",
+        expect.objectContaining({ undoGroupId: "undo-123" }),
+      );
+    });
+  });
+
+  describe("エラーハンドリング", () => {
+    it("should show error when replace fails", async () => {
+      mockInvoke
+        .mockResolvedValueOnce({
+          matches: [{ line: 1, column: 5, text: "test", length: 4 }],
+          totalCount: 1,
+        })
+        .mockRejectedValueOnce(new Error("Replace failed"));
+
+      render(<FileReplacePanel {...defaultProps} />);
+
+      const searchInput = screen.getByRole("searchbox");
+      const replaceInput = screen.getByPlaceholderText(/置換|replace/i);
+
+      await user.type(searchInput, "test{enter}");
+      await waitFor(() => {
+        expect(screen.getByText(/1/)).toBeInTheDocument();
+      });
+
+      await user.type(replaceInput, "new");
+      const replaceButton = screen.getByRole("button", {
+        name: /置換|replace(?!.*all)/i,
+      });
+      await user.click(replaceButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/エラー|error|failed/i)).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe("アクセシビリティ", () => {
+    it("should have no accessibility violations", async () => {
+      const { container } = render(<FileReplacePanel {...defaultProps} />);
+
+      const results = await axe(container);
+      expect(results).toHaveNoViolations();
+    });
+
+    it("should announce replacement results to screen readers", async () => {
+      mockInvoke
+        .mockResolvedValueOnce({
+          matches: [{ line: 1, column: 5, text: "test", length: 4 }],
+          totalCount: 1,
+        })
+        .mockResolvedValueOnce({
+          success: true,
+          replacedCount: 1,
+        });
+
+      render(<FileReplacePanel {...defaultProps} />);
+
+      const searchInput = screen.getByRole("searchbox");
+      const replaceInput = screen.getByPlaceholderText(/置換|replace/i);
+
+      await user.type(searchInput, "test{enter}");
+      await waitFor(() => {
+        expect(screen.getByText(/1/)).toBeInTheDocument();
+      });
+
+      await user.type(replaceInput, "new");
+      const replaceButton = screen.getByRole("button", {
+        name: /置換|replace(?!.*all)/i,
+      });
+      await user.click(replaceButton);
+
+      await waitFor(() => {
+        const liveRegion = screen.getByRole("status");
+        expect(liveRegion).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe("ボタン状態", () => {
+    it("should disable replace buttons when no matches", () => {
+      mockInvoke.mockResolvedValue({ matches: [], totalCount: 0 });
+
+      render(<FileReplacePanel {...defaultProps} />);
+
+      const replaceButton = screen.getByRole("button", {
+        name: /置換|replace(?!.*all)/i,
+      });
+      const replaceAllButton = screen.getByRole("button", {
+        name: /すべて置換|replace.*all/i,
+      });
+
+      expect(replaceButton).toBeDisabled();
+      expect(replaceAllButton).toBeDisabled();
+    });
+
+    it("should disable replace buttons when replace string is empty", async () => {
+      mockInvoke.mockResolvedValue({
+        matches: [{ line: 1, column: 5, text: "test", length: 4 }],
+        totalCount: 1,
+      });
+
+      render(<FileReplacePanel {...defaultProps} />);
+
+      const searchInput = screen.getByRole("searchbox");
+      await user.type(searchInput, "test{enter}");
+
+      await waitFor(() => {
+        expect(screen.getByText(/1/)).toBeInTheDocument();
+      });
+
+      // Replace input is empty
+      const replaceButton = screen.getByRole("button", {
+        name: /置換|replace(?!.*all)/i,
+      });
+
+      // Button should still be enabled for deletion (empty replacement)
+      expect(replaceButton).not.toBeDisabled();
+    });
+  });
+});

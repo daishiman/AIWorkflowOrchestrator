@@ -25,6 +25,8 @@ vi.mock("fs/promises", () => ({
   readFile: vi.fn(),
   writeFile: vi.fn(),
   stat: vi.fn(),
+  access: vi.fn(),
+  rename: vi.fn(),
 }));
 
 import { registerFileHandlers } from "./fileHandlers";
@@ -309,6 +311,200 @@ describe("fileHandlers", () => {
       expect(result).toEqual({
         success: false,
         error: "Disk full",
+      });
+    });
+  });
+
+  describe("FILE_RENAME handler", () => {
+    it("FILE_RENAMEハンドラーを登録する", () => {
+      expect(handlers.has(IPC_CHANNELS.FILE_RENAME)).toBe(true);
+    });
+
+    it("許可されたパスでファイルをリネームする", async () => {
+      const handler = handlers.get(IPC_CHANNELS.FILE_RENAME)!;
+
+      // ファイルが存在する
+      vi.mocked(fs.access).mockResolvedValueOnce(undefined);
+      // 新しいパスにはファイルが存在しない
+      vi.mocked(fs.access).mockRejectedValueOnce(new Error("ENOENT"));
+      vi.mocked(fs.rename).mockResolvedValue(undefined);
+
+      const result = await handler(
+        {},
+        {
+          oldPath: "/Users/test/Documents/oldfile.ts",
+          newPath: "/Users/test/Documents/newfile.ts",
+        },
+      );
+
+      expect(result).toEqual({
+        success: true,
+        data: {
+          oldPath: "/Users/test/Documents/oldfile.ts",
+          newPath: "/Users/test/Documents/newfile.ts",
+        },
+      });
+      expect(fs.rename).toHaveBeenCalledWith(
+        "/Users/test/Documents/oldfile.ts",
+        "/Users/test/Documents/newfile.ts",
+      );
+    });
+
+    it("許可されていないパス（oldPath）でエラーを返す", async () => {
+      const handler = handlers.get(IPC_CHANNELS.FILE_RENAME)!;
+
+      const result = await handler(
+        {},
+        {
+          oldPath: "/etc/passwd",
+          newPath: "/Users/test/Documents/newfile.ts",
+        },
+      );
+
+      expect(result).toEqual({
+        success: false,
+        error: "Validation error: Access denied: path is not allowed",
+      });
+      expect(fs.rename).not.toHaveBeenCalled();
+    });
+
+    it("許可されていないパス（newPath）でエラーを返す", async () => {
+      const handler = handlers.get(IPC_CHANNELS.FILE_RENAME)!;
+
+      const result = await handler(
+        {},
+        {
+          oldPath: "/Users/test/Documents/oldfile.ts",
+          newPath: "/etc/newfile.ts",
+        },
+      );
+
+      expect(result).toEqual({
+        success: false,
+        error: "Validation error: Access denied: path is not allowed",
+      });
+      expect(fs.rename).not.toHaveBeenCalled();
+    });
+
+    it("元のファイルが存在しない場合エラーを返す", async () => {
+      const handler = handlers.get(IPC_CHANNELS.FILE_RENAME)!;
+
+      // ファイルが存在しない
+      vi.mocked(fs.access).mockRejectedValueOnce(new Error("ENOENT"));
+
+      const result = await handler(
+        {},
+        {
+          oldPath: "/Users/test/Documents/nonexistent.ts",
+          newPath: "/Users/test/Documents/newfile.ts",
+        },
+      );
+
+      expect(result).toEqual({
+        success: false,
+        error:
+          "File or folder does not exist: /Users/test/Documents/nonexistent.ts",
+      });
+      expect(fs.rename).not.toHaveBeenCalled();
+    });
+
+    it("新しいパスにファイルが既に存在する場合エラーを返す", async () => {
+      const handler = handlers.get(IPC_CHANNELS.FILE_RENAME)!;
+
+      // 元ファイルが存在する
+      vi.mocked(fs.access).mockResolvedValueOnce(undefined);
+      // 新しいパスにもファイルが存在する
+      vi.mocked(fs.access).mockResolvedValueOnce(undefined);
+
+      const result = await handler(
+        {},
+        {
+          oldPath: "/Users/test/Documents/oldfile.ts",
+          newPath: "/Users/test/Documents/existingfile.ts",
+        },
+      );
+
+      expect(result).toEqual({
+        success: false,
+        error:
+          "A file or folder already exists at: /Users/test/Documents/existingfile.ts",
+      });
+      expect(fs.rename).not.toHaveBeenCalled();
+    });
+
+    it("リネーム操作が失敗した場合エラーを返す", async () => {
+      const handler = handlers.get(IPC_CHANNELS.FILE_RENAME)!;
+
+      // ファイルが存在する
+      vi.mocked(fs.access).mockResolvedValueOnce(undefined);
+      // 新しいパスにはファイルが存在しない
+      vi.mocked(fs.access).mockRejectedValueOnce(new Error("ENOENT"));
+      // リネーム操作が失敗
+      vi.mocked(fs.rename).mockRejectedValue(new Error("Permission denied"));
+
+      const result = await handler(
+        {},
+        {
+          oldPath: "/Users/test/Documents/oldfile.ts",
+          newPath: "/Users/test/Documents/newfile.ts",
+        },
+      );
+
+      expect(result).toEqual({
+        success: false,
+        error: "Permission denied",
+      });
+    });
+
+    it("フォルダのリネームができる", async () => {
+      const handler = handlers.get(IPC_CHANNELS.FILE_RENAME)!;
+
+      // フォルダが存在する
+      vi.mocked(fs.access).mockResolvedValueOnce(undefined);
+      // 新しいパスには存在しない
+      vi.mocked(fs.access).mockRejectedValueOnce(new Error("ENOENT"));
+      vi.mocked(fs.rename).mockResolvedValue(undefined);
+
+      const result = await handler(
+        {},
+        {
+          oldPath: "/Users/test/Documents/oldfolder",
+          newPath: "/Users/test/Documents/newfolder",
+        },
+      );
+
+      expect(result).toEqual({
+        success: true,
+        data: {
+          oldPath: "/Users/test/Documents/oldfolder",
+          newPath: "/Users/test/Documents/newfolder",
+        },
+      });
+    });
+
+    it("異なる親ディレクトリへの移動ができる", async () => {
+      const handler = handlers.get(IPC_CHANNELS.FILE_RENAME)!;
+
+      // ファイルが存在する
+      vi.mocked(fs.access).mockResolvedValueOnce(undefined);
+      // 新しいパスには存在しない
+      vi.mocked(fs.access).mockRejectedValueOnce(new Error("ENOENT"));
+      vi.mocked(fs.rename).mockResolvedValue(undefined);
+
+      const result = await handler(
+        {},
+        {
+          oldPath: "/Users/test/Documents/folder1/file.ts",
+          newPath: "/Users/test/Documents/folder2/file.ts",
+        },
+      );
+
+      expect(result).toEqual({
+        success: true,
+        data: {
+          oldPath: "/Users/test/Documents/folder1/file.ts",
+          newPath: "/Users/test/Documents/folder2/file.ts",
+        },
       });
     });
   });

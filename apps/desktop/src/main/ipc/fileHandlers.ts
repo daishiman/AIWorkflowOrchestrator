@@ -9,6 +9,8 @@ import type {
   ReadFileResponse,
   WriteFileRequest,
   WriteFileResponse,
+  RenameFileRequest,
+  RenameFileResponse,
   FileNode,
 } from "../../preload/types";
 import {
@@ -163,6 +165,67 @@ export function registerFileHandlers(): void {
         await fs.writeFile(request.filePath, request.content, { encoding });
 
         return { success: true };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : "Unknown error",
+        };
+      }
+    },
+  );
+
+  // Rename file or folder
+  ipcMain.handle(
+    IPC_CHANNELS.FILE_RENAME,
+    async (_event, request: RenameFileRequest): Promise<RenameFileResponse> => {
+      try {
+        // Validate old path
+        const oldPathValidation = validatePath(request.oldPath);
+        if (!oldPathValidation.valid) {
+          return createValidationErrorResponse(
+            oldPathValidation.error!,
+          ) as RenameFileResponse;
+        }
+
+        // Validate new path
+        const newPathValidation = validatePath(request.newPath);
+        if (!newPathValidation.valid) {
+          return createValidationErrorResponse(
+            newPathValidation.error!,
+          ) as RenameFileResponse;
+        }
+
+        // Check if old path exists
+        try {
+          await fs.access(request.oldPath);
+        } catch {
+          return {
+            success: false,
+            error: `File or folder does not exist: ${request.oldPath}`,
+          };
+        }
+
+        // Check if new path already exists
+        try {
+          await fs.access(request.newPath);
+          return {
+            success: false,
+            error: `A file or folder already exists at: ${request.newPath}`,
+          };
+        } catch {
+          // New path doesn't exist, which is what we want
+        }
+
+        // Perform rename
+        await fs.rename(request.oldPath, request.newPath);
+
+        return {
+          success: true,
+          data: {
+            oldPath: request.oldPath,
+            newPath: request.newPath,
+          },
+        };
       } catch (error) {
         return {
           success: false,

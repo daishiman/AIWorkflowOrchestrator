@@ -11,6 +11,8 @@ import {
   LogIn,
   Folder,
   FolderOpen,
+  FolderSearch,
+  File,
   FileText,
   Sparkles,
   Menu,
@@ -46,6 +48,13 @@ import {
   AlertCircle,
   Shield,
   MapPin,
+  Search,
+  CaseSensitive,
+  Regex,
+  WholeWord,
+  ArrowUp,
+  ArrowDown,
+  Replace,
   type LucideIcon,
 } from "lucide-react";
 
@@ -94,7 +103,16 @@ export type IconName =
   | "clock"
   | "alert-circle"
   | "shield"
-  | "map-pin";
+  | "map-pin"
+  | "search"
+  | "case-sensitive"
+  | "regex"
+  | "whole-word"
+  | "arrow-up"
+  | "arrow-down"
+  | "file"
+  | "folder-search"
+  | "replace";
 
 export interface IconProps extends React.SVGAttributes<SVGElement> {
   name: IconName;
@@ -150,6 +168,15 @@ const iconMap: Record<IconName, LucideIcon> = {
   "alert-circle": AlertCircle,
   shield: Shield,
   "map-pin": MapPin,
+  search: Search,
+  "case-sensitive": CaseSensitive,
+  regex: Regex,
+  "whole-word": WholeWord,
+  "arrow-up": ArrowUp,
+  "arrow-down": ArrowDown,
+  file: File,
+  "folder-search": FolderSearch,
+  replace: Replace,
 };
 
 export const Icon = forwardRef<SVGSVGElement, IconProps>(
