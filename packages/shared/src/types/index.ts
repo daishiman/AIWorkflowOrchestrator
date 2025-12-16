@@ -3,3 +3,6 @@
  */
 
 export * from "./replace";
+
+// RAG型定義
+export * from "./rag";

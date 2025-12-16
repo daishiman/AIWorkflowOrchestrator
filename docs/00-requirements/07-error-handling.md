@@ -67,6 +67,33 @@
 | ERR_5002 | NOT_IMPLEMENTED     | 未実装機能 |
 | ERR_5003 | CONFIGURATION_ERROR | 設定エラー |
 
+### 7.1.3 RAG固有エラーコード
+
+RAGパイプライン実装で使用するエラーコード。
+
+| カテゴリ     | エラーコード               | 説明                       |
+| ------------ | -------------------------- | -------------------------- |
+| ファイル     | FILE_NOT_FOUND             | ファイルが見つからない     |
+| ファイル     | FILE_READ_ERROR            | ファイル読み込みエラー     |
+| ファイル     | FILE_WRITE_ERROR           | ファイル書き込みエラー     |
+| ファイル     | UNSUPPORTED_FILE_TYPE      | 非対応ファイル形式         |
+| 変換         | CONVERSION_FAILED          | 変換処理失敗               |
+| 変換         | CONVERTER_NOT_FOUND        | コンバーターが見つからない |
+| データベース | DB_CONNECTION_ERROR        | DB接続エラー               |
+| データベース | DB_QUERY_ERROR             | クエリ実行エラー           |
+| データベース | DB_TRANSACTION_ERROR       | トランザクションエラー     |
+| データベース | RECORD_NOT_FOUND           | レコードが見つからない     |
+| 埋め込み     | EMBEDDING_GENERATION_ERROR | 埋め込み生成エラー         |
+| 埋め込み     | EMBEDDING_PROVIDER_ERROR   | プロバイダーエラー         |
+| 検索         | SEARCH_ERROR               | 検索処理エラー             |
+| 検索         | QUERY_PARSE_ERROR          | クエリ解析エラー           |
+| グラフ       | ENTITY_EXTRACTION_ERROR    | エンティティ抽出エラー     |
+| グラフ       | RELATION_EXTRACTION_ERROR  | 関係抽出エラー             |
+| グラフ       | COMMUNITY_DETECTION_ERROR  | コミュニティ検出エラー     |
+| 汎用         | VALIDATION_ERROR           | バリデーションエラー       |
+
+**実装場所**: `packages/shared/src/types/rag/errors.ts`
+
 ---
 
 ## 7.2 リトライ戦略

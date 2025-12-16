@@ -52,6 +52,10 @@
     "./types/replace": {
       "types": "./dist/src/types/replace.d.ts",
       "import": "./dist/src/types/replace.js"
+    },
+    "./types/rag": {
+      "types": "./dist/types/rag/index.d.ts",
+      "import": "./dist/types/rag/index.js"
     }
   },
   "scripts": {
