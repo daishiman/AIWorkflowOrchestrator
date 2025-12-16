@@ -97,7 +97,7 @@ Executor実行時に渡されるコンテキスト情報。
 
 ## 6.3 Result型
 
-成功・失敗を明示的に表現する型。例外を使わないエラーハンドリングに使用。
+成功・失敗を明示的に表現する型。例外を使わないエラーハンドリングに使用（Railway Oriented Programming）。
 
 ### 6.3.1 構造
 
@@ -106,14 +106,27 @@ Executor実行時に渡されるコンテキスト情報。
 | Success    | success: true, data: T   | 成功時のデータ     |
 | Failure    | success: false, error: E | 失敗時のエラー情報 |
 
-### 6.3.2 使用場面
+### 6.3.2 モナド操作
+
+| 操作       | メソッド   | 説明                                  |
+| ---------- | ---------- | ------------------------------------- |
+| 生成       | ok/err     | 成功値・エラー値を生成                |
+| 型ガード   | isOk/isErr | 成功・失敗を判定し、型を絞り込む      |
+| 変換       | map        | 成功値に関数を適用（Functor）         |
+| 合成       | flatMap    | 成功値にResult返却関数を適用（Monad） |
+| エラー変換 | mapErr     | エラー値に関数を適用                  |
+| 統合       | all        | 複数のResultを統合                    |
+
+### 6.3.3 使用場面
 
 | 場面             | 推奨                                       |
 | ---------------- | ------------------------------------------ |
 | バリデーション   | Result型を使用（失敗が想定される操作）     |
 | ビジネスロジック | Result型を使用（エラーを呼び出し元に伝播） |
 | 外部API呼び出し  | 例外をキャッチしてResult型に変換           |
-| UI層             | Result型のisSuccessをチェックして分岐      |
+| UI層             | isOk/isErrをチェックして分岐               |
+
+**実装場所**: `packages/shared/src/types/rag/result.ts`
 
 ---
 
@@ -384,6 +397,70 @@ Desktop アプリの複数フォルダ管理機能で使用する型定義。
 | ファイルサイズ   | 10MB 上限                          |
 
 **実装場所**: `apps/desktop/src/renderer/store/types/workspace.ts`, `apps/desktop/src/main/ipc/validation.ts`
+
+---
+
+## 6.9 RAG型定義
+
+RAGパイプライン実装で使用する共通型定義。
+
+### 6.9.1 Branded Types
+
+型安全なID管理のための名目的型付け。
+
+| 型名         | 説明                                   |
+| ------------ | -------------------------------------- |
+| FileId       | ファイルを一意に識別するID             |
+| ChunkId      | チャンク（分割テキスト）を一意に識別   |
+| ConversionId | 変換プロセスを一意に識別               |
+| EntityId     | エンティティ（知識グラフノード）を識別 |
+| RelationId   | 関係（知識グラフエッジ）を識別         |
+| CommunityId  | コミュニティ（クラスタ）を識別         |
+| EmbeddingId  | 埋め込みベクトルを識別                 |
+
+**機能**:
+
+- `create*()` - 既存文字列をID型に変換
+- `generate*()` - UUID v4形式の新規ID生成
+
+### 6.9.2 RAGエラー型
+
+統一されたエラーハンドリング。
+
+| エラーコード               | カテゴリ     | 説明                   |
+| -------------------------- | ------------ | ---------------------- |
+| FILE_NOT_FOUND             | ファイル     | ファイルが見つからない |
+| FILE_READ_ERROR            | ファイル     | ファイル読み込みエラー |
+| CONVERSION_FAILED          | 変換         | 変換処理失敗           |
+| DB_CONNECTION_ERROR        | データベース | DB接続エラー           |
+| DB_QUERY_ERROR             | データベース | クエリ実行エラー       |
+| EMBEDDING_GENERATION_ERROR | 埋め込み     | 埋め込み生成エラー     |
+| SEARCH_ERROR               | 検索         | 検索処理エラー         |
+| ENTITY_EXTRACTION_ERROR    | グラフ       | エンティティ抽出エラー |
+| RELATION_EXTRACTION_ERROR  | グラフ       | 関係抽出エラー         |
+| COMMUNITY_DETECTION_ERROR  | グラフ       | コミュニティ検出エラー |
+
+**ファクトリ関数**: `createRAGError(code, message, context?, cause?)`
+
+### 6.9.3 共通インターフェース
+
+**Repository パターン**:
+
+- DIP（依存性逆転原則）準拠のデータアクセス抽象化
+- `findById`, `findAll`, `create`, `update`, `delete`
+
+**Strategy パターン**:
+
+- `Converter<TInput, TOutput>` - ファイル変換の抽象化
+- `SearchStrategy<TQuery, TResult>` - 検索アルゴリズムの抽象化
+
+**ミックスイン**:
+
+- `Timestamped` - 作成日時・更新日時
+- `WithMetadata` - 任意のメタデータ
+- `PaginationParams` / `PaginatedResult` - ページネーション
+
+**実装場所**: `packages/shared/src/types/rag/*`
 
 ---
 

@@ -432,7 +432,7 @@ searchService.addStrategy('graph', GraphSearchStrategy);
 
 ## 関連ドキュメント
 
-- [CONV-01: ファイル選択機能](./task-01-file-selection.md)
+- [CONV-01: ファイル選択機能](../completed-tasks/task-01-file-selection.md)
 - [CONV-02: ファイル変換エンジン](./task-02-file-conversion-engine.md)
 - [CONV-03: JSONスキーマ定義](./task-03-json-schema-definition.md)
 - [CONV-04: データベース基盤](./task-04-database-version-management.md)
