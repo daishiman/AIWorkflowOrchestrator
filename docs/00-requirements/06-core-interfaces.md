@@ -387,6 +387,77 @@ Desktop アプリの複数フォルダ管理機能で使用する型定義。
 
 ---
 
+## 6.9 RAGファイル・変換ドメイン型定義
+
+### 6.9.1 概要
+
+RAGパイプラインにおけるファイル選択・変換処理の型定義とバリデーション。
+
+**実装場所**: `packages/shared/src/types/rag/file/`
+
+**主要型**:
+
+- `FileEntity`: ファイルメタデータを表すエンティティ
+- `ConversionEntity`: 変換処理の状態を管理するエンティティ
+- `FileType`: サポートされるMIMEタイプ（16種類）
+- `FileCategory`: ファイルのカテゴリ分類（text, code, document等）
+
+### 6.9.2 FileEntity型
+
+| プロパティ   | 型           | 説明                                      |
+| ------------ | ------------ | ----------------------------------------- |
+| id           | FileId       | ファイルの一意識別子（UUID）              |
+| name         | string       | ファイル名（1-255文字）                   |
+| path         | string       | ファイルパス                              |
+| mimeType     | FileType     | MIMEタイプ                                |
+| category     | FileCategory | カテゴリ                                  |
+| size         | number       | ファイルサイズ（バイト、10MB上限）        |
+| hash         | string       | SHA-256ハッシュ（64文字）                 |
+| encoding     | string       | 文字エンコーディング（デフォルト: utf-8） |
+| lastModified | Date         | 最終更新日時                              |
+| createdAt    | Date         | 作成日時                                  |
+| updatedAt    | Date         | 更新日時                                  |
+| metadata     | object       | 拡張メタデータ                            |
+
+### 6.9.3 サポートファイルタイプ
+
+| カテゴリ       | MIMEタイプ例                                       | 用途                       |
+| -------------- | -------------------------------------------------- | -------------------------- |
+| テキスト系     | text/plain, text/markdown, text/html               | ドキュメント、Markdown     |
+| コード系       | text/typescript, application/json                  | ソースコード、設定ファイル |
+| ドキュメント系 | application/pdf, application/vnd.openxmlformats-\* | PDF、Office文書            |
+
+### 6.9.4 バリデーション
+
+**Zodスキーマ**: すべての型に対応するZodスキーマを提供
+
+- 実行時型安全性を保証
+- 日本語エラーメッセージ対応
+- UUID形式、ファイルサイズ、ハッシュ形式等の検証
+
+**ユーティリティ関数**:
+
+- `getFileTypeFromExtension()`: 拡張子からMIMEタイプを推定
+- `calculateFileHash()`: SHA-256ハッシュ計算（非同期）
+- `formatFileSize()`: バイト数を人間可読形式に変換
+- `validateFileSize()`: ファイルサイズの妥当性検証
+
+**Result型**: Railway Oriented Programmingパターンによるエラーハンドリング
+
+### 6.9.5 設計原則
+
+| 原則           | 説明                                                 |
+| -------------- | ---------------------------------------------------- |
+| 型安全性       | Branded TypesによるID型の厳格化                      |
+| DRY原則        | 共有定数の一元管理                                   |
+| 不変性         | readonly修飾子による値の変更防止                     |
+| バリデーション | Zodスキーマによるランタイムバリデーション            |
+| テスト容易性   | 純粋関数による高いテスタビリティ（96.50%カバレッジ） |
+
+**参照**: `docs/30-workflows/file-conversion-schemas/` - 詳細な設計・実装ドキュメント
+
+---
+
 ## 関連ドキュメント
 
 - [アーキテクチャ設計](./05-architecture.md)
