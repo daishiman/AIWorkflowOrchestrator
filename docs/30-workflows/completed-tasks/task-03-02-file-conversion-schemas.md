@@ -1,14 +1,25 @@
 # CONV-03-02: ファイル・変換スキーマ定義
 
+> **✅ 完了** - 2025-12-16
+>
+> 実装・テスト・ドキュメントは以下を参照:
+>
+> - 実装: `packages/shared/src/types/rag/file/`
+> - ドキュメント: `docs/30-workflows/file-conversion-schemas/`
+> - 完了報告: `docs/30-workflows/file-conversion-schemas/task-completion-report.md`
+
+---
+
 ## 概要
 
-| 項目     | 内容                                  |
-| -------- | ------------------------------------- |
-| タスクID | CONV-03-02                            |
-| タスク名 | ファイル・変換スキーマ定義            |
-| 依存     | CONV-03-01                            |
-| 規模     | 小                                    |
-| 出力場所 | `packages/shared/src/types/rag/file/` |
+| 項目       | 内容                                  |
+| ---------- | ------------------------------------- |
+| タスクID   | CONV-03-02                            |
+| タスク名   | ファイル・変換スキーマ定義            |
+| 依存       | CONV-03-01                            |
+| 規模       | 小                                    |
+| 出力場所   | `packages/shared/src/types/rag/file/` |
+| ステータス | ✅ 完了                               |
 
 ## 目的
 

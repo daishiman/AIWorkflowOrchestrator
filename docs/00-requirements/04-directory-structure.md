@@ -103,11 +103,16 @@
 
 ### 4.3.4 types/（共通型定義）
 
-| パス             | 役割         |
-| ---------------- | ------------ |
-| [domain-name].ts | ドメイン型   |
-| api.ts           | API型        |
-| index.ts         | エクスポート |
+| パス                | 役割                                    |
+| ------------------- | --------------------------------------- |
+| [domain-name].ts    | ドメイン型                              |
+| api.ts              | API型                                   |
+| rag/file/           | RAGファイル・変換ドメイン型             |
+| rag/file/types.ts   | 型定義・定数・インターフェース          |
+| rag/file/schemas.ts | Zodスキーマ（ランタイムバリデーション） |
+| rag/file/utils.ts   | ユーティリティ関数                      |
+| rag/file/index.ts   | バレルエクスポート                      |
+| index.ts            | エクスポート                            |
 
 **依存方向**: types ← core ← infrastructure ← ui（逆方向禁止）
 
