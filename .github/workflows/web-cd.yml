@@ -19,10 +19,33 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # apps/web ディレクトリの存在をチェック
+  check:
+    name: Check Web App Exists
+    runs-on: ubuntu-latest
+    outputs:
+      web_exists: ${{ steps.check_dir.outputs.exists }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check if apps/web exists
+        id: check_dir
+        run: |
+          if [ -d "apps/web" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "✅ apps/web ディレクトリが存在します"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "⚠️ apps/web ディレクトリが存在しません。ワークフローをスキップします。"
+          fi
+
   ci:
     name: Validate Build
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    needs: check
+    if: needs.check.outputs.web_exists == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -55,8 +78,11 @@ jobs:
     name: Deploy to Railway
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    needs: ci
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: [check, ci]
+    if: |
+      needs.check.outputs.web_exists == 'true' &&
+      github.ref == 'refs/heads/main' &&
+      github.event_name == 'push'
     environment:
       name: production
     steps:
