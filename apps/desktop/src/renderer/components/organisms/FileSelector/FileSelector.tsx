@@ -234,6 +234,7 @@ export const FileSelector: React.FC = () => {
           )}
           <button
             type="button"
+            data-testid="file-select-button"
             onClick={handleOpenDialog}
             disabled={isLoading}
             className="select-button"
@@ -249,6 +250,7 @@ export const FileSelector: React.FC = () => {
           フィルター
           <select
             id="file-filter"
+            data-testid="file-filter-select"
             value={filterCategory}
             onChange={handleFilterChange}
             disabled={isLoading}
@@ -264,7 +266,7 @@ export const FileSelector: React.FC = () => {
 
       {/* Error Message */}
       {error && (
-        <div role="alert" className="error-message">
+        <div role="alert" data-testid="error-message" className="error-message">
           <span>{error}</span>
           <button
             type="button"
@@ -281,7 +283,9 @@ export const FileSelector: React.FC = () => {
       {hasSelectedFiles && (
         <div data-testid="selected-files-list" className="selected-files">
           <div className="files-header">
-            <span>{selectedFiles.length}件のファイル</span>
+            <span data-testid="file-count">
+              {selectedFiles.length}件のファイル
+            </span>
             <button
               type="button"
               onClick={handleClearFiles}
@@ -292,11 +296,16 @@ export const FileSelector: React.FC = () => {
           </div>
           <ul className="files-list">
             {selectedFiles.map((file: SelectedFile) => (
-              <li key={file.id} className="file-item">
+              <li
+                key={file.id}
+                data-testid="selected-file-item"
+                className="file-item"
+              >
                 <span className="file-name">{file.name}</span>
                 <span className="file-size">{formatFileSize(file.size)}</span>
                 <button
                   type="button"
+                  data-testid="file-delete-button"
                   onClick={() => handleRemoveFile(file.id)}
                   aria-label="削除"
                   className="remove-button"
