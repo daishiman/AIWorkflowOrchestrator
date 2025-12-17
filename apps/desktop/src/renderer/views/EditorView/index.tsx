@@ -15,6 +15,11 @@ import {
   type UnifiedSearchPanelRef,
 } from "../../components/organisms/SearchPanel/UnifiedSearchPanel";
 import type { SearchResultItemProps } from "../../components/organisms/WorkspaceSearch/WorkspaceSearchPanel";
+import { FileSelectorTrigger } from "../../components/organisms/FileSelectorTrigger";
+import {
+  FileSelectorModal,
+  useFileSelectorModal,
+} from "../../components/organisms/FileSelectorModal";
 import { TextArea } from "../../components/atoms/TextArea";
 import { Button } from "../../components/atoms/Button";
 import { ErrorDisplay } from "../../components/atoms/ErrorDisplay";
@@ -25,6 +30,7 @@ import {
   useWorkspaceLoading,
   useWorkspaceError,
 } from "../../store";
+import type { SelectedFile } from "@repo/shared/types";
 import type { FolderId } from "../../store/types/workspace";
 import type { FileNode } from "../../store/types";
 
@@ -67,6 +73,14 @@ export const EditorView: React.FC<EditorViewProps> = ({ className }) => {
   const [_currentMatch, setCurrentMatch] = useState<SearchMatch | null>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const searchPanelRef = useRef<UnifiedSearchPanelRef>(null);
+
+  // File selector modal state
+  const {
+    isOpen: isFileSelectorOpen,
+    openModal: openFileSelector,
+    closeModal: closeFileSelector,
+    confirmSelection,
+  } = useFileSelectorModal();
 
   // Collect all file paths from file trees
   const allFilePaths = useMemo(() => {
@@ -306,6 +320,17 @@ export const EditorView: React.FC<EditorViewProps> = ({ className }) => {
     [handleFileSelect],
   );
 
+  // Handle file selector confirmation
+  const handleFileSelectorConfirm = useCallback(
+    (files: SelectedFile[]) => {
+      // Open the first selected file in the editor
+      if (files.length > 0) {
+        handleFileSelect(files[0].path);
+      }
+    },
+    [handleFileSelect],
+  );
+
   const handleAddFolder = useCallback(async () => {
     await addFolder();
   }, [addFolder]);
@@ -374,6 +399,14 @@ export const EditorView: React.FC<EditorViewProps> = ({ className }) => {
             )}
           </div>
           <div className="flex items-center gap-2">
+            {/* File Selector Button */}
+            <FileSelectorTrigger
+              onClick={openFileSelector}
+              variant="compact"
+              size="sm"
+              label="ファイルを追加"
+              data-testid="file-selector-trigger"
+            />
             {/* Search Button */}
             <Button
               variant="ghost"
@@ -440,6 +473,18 @@ export const EditorView: React.FC<EditorViewProps> = ({ className }) => {
           )}
         </div>
       </main>
+
+      {/* File Selector Modal */}
+      <FileSelectorModal
+        open={isFileSelectorOpen}
+        onClose={closeFileSelector}
+        onConfirm={(files) => {
+          confirmSelection();
+          handleFileSelectorConfirm(files);
+        }}
+        title="ファイルを選択"
+        data-testid="file-selector-modal"
+      />
     </div>
   );
 };

@@ -104,6 +104,12 @@ export const IPC_CHANNELS = {
   REPLACE_WORKSPACE_ALL: "replace:workspace:all",
   REPLACE_UNDO: "replace:undo",
   REPLACE_REDO: "replace:redo",
+
+  // File Selection operations
+  FILE_SELECTION_OPEN_DIALOG: "file-selection:open-dialog",
+  FILE_SELECTION_GET_METADATA: "file-selection:get-metadata",
+  FILE_SELECTION_GET_MULTIPLE_METADATA: "file-selection:get-multiple-metadata",
+  FILE_SELECTION_VALIDATE_PATH: "file-selection:validate-path",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -182,6 +188,11 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.REPLACE_WORKSPACE_ALL,
   IPC_CHANNELS.REPLACE_UNDO,
   IPC_CHANNELS.REPLACE_REDO,
+  // File Selection channels
+  IPC_CHANNELS.FILE_SELECTION_OPEN_DIALOG,
+  IPC_CHANNELS.FILE_SELECTION_GET_METADATA,
+  IPC_CHANNELS.FILE_SELECTION_GET_MULTIPLE_METADATA,
+  IPC_CHANNELS.FILE_SELECTION_VALIDATE_PATH,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [

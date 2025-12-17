@@ -13,6 +13,7 @@ import { registerApiKeyHandlers } from "./apiKeyHandlers";
 import { registerDialogHandlers } from "./dialogHandlers";
 import { registerWorkspaceHandlers } from "./workspaceHandlers";
 import { registerSearchHandlers } from "./searchHandlers";
+import { registerFileSelectionHandlers } from "./fileSelectionHandlers";
 import {
   getSupabaseClient,
   createSecureStorage,
@@ -34,6 +35,7 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
   registerThemeHandlers();
   registerWorkspaceHandlers();
   registerSearchHandlers();
+  registerFileSelectionHandlers();
 
   // Register handlers that need window reference
   registerWindowHandlers(mainWindow);

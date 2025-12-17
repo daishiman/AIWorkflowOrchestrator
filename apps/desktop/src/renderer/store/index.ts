@@ -21,6 +21,10 @@ import {
   createWorkspaceSlice,
   type WorkspaceSlice,
 } from "./slices/workspaceSlice";
+import {
+  createFileSelectionSlice,
+  type FileSelectionSlice,
+} from "./slices/fileSelectionSlice";
 
 // Combined store type
 export type AppStore = NavigationSlice &
@@ -31,7 +35,8 @@ export type AppStore = NavigationSlice &
   UISlice &
   DashboardSlice &
   AuthSlice &
-  WorkspaceSlice;
+  WorkspaceSlice &
+  FileSelectionSlice;
 
 // Custom storage for Set serialization
 const customStorage = {
@@ -80,6 +85,7 @@ export const useAppStore = create<AppStore>()(
         ...createDashboardSlice(...args),
         ...createAuthSlice(...args),
         ...createWorkspaceSlice(...args),
+        ...createFileSelectionSlice(...args),
       }),
       {
         name: "knowledge-studio-store",
@@ -182,3 +188,37 @@ export const useToggleSubfolder = () =>
   useAppStore((state) => state.toggleSubfolder);
 export const useSetWorkspaceSelectedFile = () =>
   useAppStore((state) => state.setWorkspaceSelectedFile);
+
+// File selection selectors
+export const useSelectedFiles = () =>
+  useAppStore((state) => state.selectedFiles);
+export const useHasSelectedFiles = () =>
+  useAppStore((state) => state.selectedFiles.length > 0);
+export const useFileFilterCategory = () =>
+  useAppStore((state) => state.filterCategory);
+export const useFileSelectionIsDragging = () =>
+  useAppStore((state) => state.isDragging);
+export const useFileSelectionIsLoading = () =>
+  useAppStore((state) => state.isLoading);
+export const useFileSelectionError = () => useAppStore((state) => state.error);
+export const useLastSelectedId = () =>
+  useAppStore((state) => state.lastSelectedId);
+
+// File selection actions
+export const useAddFiles = () => useAppStore((state) => state.addFiles);
+export const useRemoveFile = () => useAppStore((state) => state.removeFile);
+export const useRemoveFiles = () => useAppStore((state) => state.removeFiles);
+export const useClearFiles = () => useAppStore((state) => state.clearFiles);
+export const useReorderFile = () => useAppStore((state) => state.reorderFile);
+export const useSetFileFilterCategory = () =>
+  useAppStore((state) => state.setFilterCategory);
+export const useSetFileSelectionIsDragging = () =>
+  useAppStore((state) => state.setIsDragging);
+export const useSetFileSelectionIsLoading = () =>
+  useAppStore((state) => state.setIsLoading);
+export const useSetFileSelectionError = () =>
+  useAppStore((state) => state.setError);
+export const useClearFileSelectionError = () =>
+  useAppStore((state) => state.clearError);
+export const useResetFileSelection = () =>
+  useAppStore((state) => state.resetFileSelection);
