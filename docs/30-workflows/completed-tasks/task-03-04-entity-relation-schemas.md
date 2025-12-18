@@ -26,29 +26,79 @@ import type { EntityId, RelationId, CommunityId, ChunkId } from "../branded";
 import type { Timestamped, WithMetadata } from "../interfaces";
 
 /**
- * エンティティタイプ
+ * エンティティタイプ（48種類：あらゆる分野の情報に対応）
  */
 export const EntityTypes = {
-  // 汎用
+  // 1. 人物・組織カテゴリ
   PERSON: "person",
   ORGANIZATION: "organization",
+  ROLE: "role",
+  TEAM: "team",
+
+  // 2. 場所・時間カテゴリ
   LOCATION: "location",
   DATE: "date",
   EVENT: "event",
 
-  // 技術ドメイン
-  TECHNOLOGY: "technology",
-  CONCEPT: "concept",
+  // 3. ビジネス・経営カテゴリ
+  COMPANY: "company",
   PRODUCT: "product",
+  SERVICE: "service",
+  BRAND: "brand",
+  STRATEGY: "strategy",
+  METRIC: "metric",
+  BUSINESS_PROCESS: "business_process",
+  MARKET: "market",
+  CUSTOMER: "customer",
+
+  // 4. 技術全般カテゴリ（コード以外も含む）
+  TECHNOLOGY: "technology",
+  TOOL: "tool",
+  METHOD: "method",
+  STANDARD: "standard",
+  PROTOCOL: "protocol",
+
+  // 5. コード・ソフトウェアカテゴリ
+  PROGRAMMING_LANGUAGE: "programming_language",
+  FRAMEWORK: "framework",
+  LIBRARY: "library",
   API: "api",
   FUNCTION: "function",
   CLASS: "class",
+  MODULE: "module",
 
-  // ドキュメント
+  // 6. 抽象概念カテゴリ
+  CONCEPT: "concept",
+  THEORY: "theory",
+  PRINCIPLE: "principle",
+  PATTERN: "pattern",
+  MODEL: "model",
+
+  // 7. ドキュメント構造カテゴリ
   DOCUMENT: "document",
+  CHAPTER: "chapter",
   SECTION: "section",
+  PARAGRAPH: "paragraph",
+  HEADING: "heading",
 
-  // その他
+  // 8. ドキュメント要素カテゴリ
+  KEYWORD: "keyword",
+  SUMMARY: "summary",
+  FIGURE: "figure",
+  TABLE: "table",
+  LIST: "list",
+  QUOTE: "quote",
+  CODE_SNIPPET: "code_snippet",
+  FORMULA: "formula",
+  EXAMPLE: "example",
+
+  // 9. メディアカテゴリ
+  IMAGE: "image",
+  VIDEO: "video",
+  AUDIO: "audio",
+  DIAGRAM: "diagram",
+
+  // 10. その他カテゴリ
   OTHER: "other",
 } as const;
 
@@ -188,22 +238,70 @@ import { z } from "zod";
 import { uuidSchema, timestampedSchema, metadataSchema } from "../schemas";
 
 /**
- * エンティティタイプスキーマ
+ * エンティティタイプスキーマ（48種類）
  */
 export const entityTypeSchema = z.enum([
+  // 1. 人物・組織カテゴリ
   "person",
   "organization",
+  "role",
+  "team",
+  // 2. 場所・時間カテゴリ
   "location",
   "date",
   "event",
-  "technology",
-  "concept",
+  // 3. ビジネス・経営カテゴリ
+  "company",
   "product",
+  "service",
+  "brand",
+  "strategy",
+  "metric",
+  "business_process",
+  "market",
+  "customer",
+  // 4. 技術全般カテゴリ
+  "technology",
+  "tool",
+  "method",
+  "standard",
+  "protocol",
+  // 5. コード・ソフトウェアカテゴリ
+  "programming_language",
+  "framework",
+  "library",
   "api",
   "function",
   "class",
+  "module",
+  // 6. 抽象概念カテゴリ
+  "concept",
+  "theory",
+  "principle",
+  "pattern",
+  "model",
+  // 7. ドキュメント構造カテゴリ
   "document",
+  "chapter",
   "section",
+  "paragraph",
+  "heading",
+  // 8. ドキュメント要素カテゴリ
+  "keyword",
+  "summary",
+  "figure",
+  "table",
+  "list",
+  "quote",
+  "code_snippet",
+  "formula",
+  "example",
+  // 9. メディアカテゴリ
+  "image",
+  "video",
+  "audio",
+  "diagram",
+  // 10. その他カテゴリ
   "other",
 ]);
 
@@ -469,22 +567,75 @@ export const generateCommunityName = (members: EntityEntity[]): string => {
 };
 
 /**
- * エンティティタイプのカテゴリ分類
+ * エンティティタイプのカテゴリ分類（10カテゴリ）
  */
 export const getEntityTypeCategory = (type: EntityType): string => {
   const categories: Record<string, EntityType[]> = {
-    person: [EntityTypes.PERSON],
-    place: [EntityTypes.LOCATION, EntityTypes.ORGANIZATION],
-    time: [EntityTypes.DATE, EntityTypes.EVENT],
-    technical: [
-      EntityTypes.TECHNOLOGY,
-      EntityTypes.CONCEPT,
+    "person-org": [
+      EntityTypes.PERSON,
+      EntityTypes.ORGANIZATION,
+      EntityTypes.ROLE,
+      EntityTypes.TEAM,
+    ],
+    "place-time": [EntityTypes.LOCATION, EntityTypes.DATE, EntityTypes.EVENT],
+    business: [
+      EntityTypes.COMPANY,
       EntityTypes.PRODUCT,
+      EntityTypes.SERVICE,
+      EntityTypes.BRAND,
+      EntityTypes.STRATEGY,
+      EntityTypes.METRIC,
+      EntityTypes.BUSINESS_PROCESS,
+      EntityTypes.MARKET,
+      EntityTypes.CUSTOMER,
+    ],
+    technology: [
+      EntityTypes.TECHNOLOGY,
+      EntityTypes.TOOL,
+      EntityTypes.METHOD,
+      EntityTypes.STANDARD,
+      EntityTypes.PROTOCOL,
+    ],
+    "code-software": [
+      EntityTypes.PROGRAMMING_LANGUAGE,
+      EntityTypes.FRAMEWORK,
+      EntityTypes.LIBRARY,
       EntityTypes.API,
       EntityTypes.FUNCTION,
       EntityTypes.CLASS,
+      EntityTypes.MODULE,
     ],
-    document: [EntityTypes.DOCUMENT, EntityTypes.SECTION],
+    abstract: [
+      EntityTypes.CONCEPT,
+      EntityTypes.THEORY,
+      EntityTypes.PRINCIPLE,
+      EntityTypes.PATTERN,
+      EntityTypes.MODEL,
+    ],
+    "doc-structure": [
+      EntityTypes.DOCUMENT,
+      EntityTypes.CHAPTER,
+      EntityTypes.SECTION,
+      EntityTypes.PARAGRAPH,
+      EntityTypes.HEADING,
+    ],
+    "doc-element": [
+      EntityTypes.KEYWORD,
+      EntityTypes.SUMMARY,
+      EntityTypes.FIGURE,
+      EntityTypes.TABLE,
+      EntityTypes.LIST,
+      EntityTypes.QUOTE,
+      EntityTypes.CODE_SNIPPET,
+      EntityTypes.FORMULA,
+      EntityTypes.EXAMPLE,
+    ],
+    media: [
+      EntityTypes.IMAGE,
+      EntityTypes.VIDEO,
+      EntityTypes.AUDIO,
+      EntityTypes.DIAGRAM,
+    ],
     other: [EntityTypes.OTHER],
   };
 
