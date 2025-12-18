@@ -103,16 +103,25 @@
 
 ### 4.3.4 types/（共通型定義）
 
-| パス                | 役割                                    |
-| ------------------- | --------------------------------------- |
-| [domain-name].ts    | ドメイン型                              |
-| api.ts              | API型                                   |
-| rag/file/           | RAGファイル・変換ドメイン型             |
-| rag/file/types.ts   | 型定義・定数・インターフェース          |
-| rag/file/schemas.ts | Zodスキーマ（ランタイムバリデーション） |
-| rag/file/utils.ts   | ユーティリティ関数                      |
-| rag/file/index.ts   | バレルエクスポート                      |
-| index.ts            | エクスポート                            |
+| パス                 | 役割                                    |
+| -------------------- | --------------------------------------- |
+| [domain-name].ts     | ドメイン型                              |
+| api.ts               | API型                                   |
+| rag/branded.ts       | RAG Branded Type定義（ID型）            |
+| rag/interfaces.ts    | RAG共通インターフェース                 |
+| rag/errors.ts        | RAGエラー型                             |
+| rag/result.ts        | Result型（Railway Oriented Programming) |
+| rag/file/            | RAGファイル・変換ドメイン型             |
+| rag/file/types.ts    | 型定義・定数・インターフェース          |
+| rag/file/schemas.ts  | Zodスキーマ（ランタイムバリデーション） |
+| rag/file/utils.ts    | ユーティリティ関数                      |
+| rag/file/index.ts    | バレルエクスポート                      |
+| rag/graph/           | Knowledge Graph型定義                   |
+| rag/graph/types.ts   | Entity・Relation・Community型定義       |
+| rag/graph/schemas.ts | Zodスキーマ（カスタム制約含む）         |
+| rag/graph/utils.ts   | PageRank、正規化等のユーティリティ      |
+| rag/graph/index.ts   | バレルエクスポート                      |
+| index.ts             | エクスポート                            |
 
 **依存方向**: types ← core ← infrastructure ← ui（逆方向禁止）
 

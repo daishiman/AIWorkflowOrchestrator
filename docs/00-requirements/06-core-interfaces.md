@@ -725,6 +725,77 @@ RAGパイプラインにおけるテキストチャンク分割と埋め込み�
 
 **参照**: `docs/30-workflows/rag-chunk-embedding/` - 詳細な設計・実装ドキュメント
 
+### 6.9.7 Knowledge Graph型定義
+
+GraphRAGにおけるKnowledge Graph構造の型定義。Entity-Relation-Communityモデルに基づく。
+
+**実装場所**: `packages/shared/src/types/rag/graph/`
+
+#### 主要Entity型
+
+| 型名            | 役割       | 説明                                  |
+| --------------- | ---------- | ------------------------------------- |
+| EntityEntity    | ノード     | Knowledge Graphの頂点（エンティティ） |
+| RelationEntity  | エッジ     | Knowledge Graphの辺（関係性）         |
+| CommunityEntity | クラスター | 意味的に関連するエンティティ群        |
+
+#### EntityEntity型（ノード）
+
+| プロパティ     | 型                   | 説明                         |
+| -------------- | -------------------- | ---------------------------- |
+| id             | EntityId             | エンティティID（UUID）       |
+| name           | string               | エンティティ名               |
+| normalizedName | string               | 正規化名                     |
+| type           | EntityType           | エンティティタイプ（52種類） |
+| embedding      | Float32Array \| null | ベクトル埋め込み             |
+| importance     | number               | 重要度スコア（0.0〜1.0）     |
+
+**エンティティタイプ**: 52種類を10カテゴリに分類（人物・組織、場所・時間、ビジネス・経営、技術全般、コード・ソフトウェア、抽象概念、ドキュメント構造、ドキュメント要素、メディア、その他）
+
+#### RelationEntity型（エッジ）
+
+| プロパティ | 型                 | 説明                   |
+| ---------- | ------------------ | ---------------------- |
+| id         | RelationId         | 関係ID（UUID）         |
+| sourceId   | EntityId           | 始点エンティティID     |
+| targetId   | EntityId           | 終点エンティティID     |
+| type       | RelationType       | 関係タイプ（23種類）   |
+| weight     | number             | 関係の強さ（0.0〜1.0） |
+| evidence   | RelationEvidence[] | 証拠（必須1件以上）    |
+
+**関係タイプ**: 23種類を6カテゴリに分類（汎用関係、時間的関係、技術的関係、階層関係、参照関係、人物関係）
+
+**制約**: Self-loop禁止（`sourceId !== targetId`）
+
+#### CommunityEntity型（クラスター）
+
+| プロパティ      | 型                  | 説明                       |
+| --------------- | ------------------- | -------------------------- |
+| id              | CommunityId         | コミュニティID（UUID）     |
+| level           | number              | 階層レベル（0=ルート）     |
+| parentId        | CommunityId \| null | 親コミュニティID           |
+| memberEntityIds | EntityId[]          | メンバーエンティティID配列 |
+| memberCount     | number              | メンバー数                 |
+| summary         | string              | コミュニティ要約           |
+
+**階層制約**: level 0は`parentId === null`
+
+#### ユーティリティ関数
+
+| 関数                      | 説明                         |
+| ------------------------- | ---------------------------- |
+| normalizeEntityName       | エンティティ名の正規化       |
+| calculateEntityImportance | 簡易PageRankによる重要度計算 |
+| getInverseRelationType    | 関係の逆関係取得             |
+| generateCommunityName     | コミュニティ名の自動生成     |
+| calculateGraphDensity     | グラフ密度計算               |
+
+**バリデーション**: Zodスキーマによるランタイムバリデーション（カスタム制約含む）
+
+**テストカバレッジ**: 99.2%（230テストケース）
+
+**詳細参照**: `docs/00-requirements/05-architecture.md` セクション5.6
+
 ---
 
 ## 関連ドキュメント
