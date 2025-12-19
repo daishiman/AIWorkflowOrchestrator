@@ -10,6 +10,11 @@ import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import type { FileNode } from "../../../../store/types";
 import type { WorkspaceSelectedFile } from "../types";
 
+/**
+ * フォルダの選択状態
+ */
+export type SelectionState = "unselected" | "indeterminate" | "selected";
+
 export interface UseWorkspaceFileSelectionOptions {
   selectionMode?: "single" | "multiple";
   maxSelection?: number;
@@ -35,6 +40,59 @@ export interface UseWorkspaceFileSelectionReturn {
 
   /** 選択可能かどうか */
   canSelect: (filePath: string) => boolean;
+
+  /**
+   * フォルダ一括選択/解除
+   *
+   * @param folderPath - フォルダのパス
+   * @param folder - フォルダノード
+   * @param folderId - 所属フォルダID
+   */
+  toggleFolder: (
+    folderPath: string,
+    folder: FileNode,
+    folderId: string,
+  ) => void;
+
+  /**
+   * フォルダの選択状態を取得
+   *
+   * @param folder - フォルダノード
+   * @returns 選択状態（unselected | indeterminate | selected）
+   */
+  getSelectionState: (folder: FileNode) => SelectionState;
+}
+
+/**
+ * フォルダ配下の全ファイルを再帰的に取得
+ *
+ * @param node - 走査開始ノード
+ * @returns 配下の全ファイル（フォルダは含まない）
+ *
+ * @example
+ * const folder: FileNode = {
+ *   type: "folder",
+ *   children: [
+ *     { type: "file", path: "/a.txt" },
+ *     { type: "folder", children: [{ type: "file", path: "/b.txt" }] }
+ *   ]
+ * };
+ * getAllFilesInFolder(folder); // => [{ type: "file", path: "/a.txt" }, { type: "file", path: "/b.txt" }]
+ */
+function getAllFilesInFolder(node: FileNode): FileNode[] {
+  // 型ガード: nodeがundefinedの場合
+  if (!node) {
+    return [];
+  }
+
+  // ベースケース: ファイルノードの場合、自身を返す
+  if (node.type === "file") {
+    return [node];
+  }
+
+  // 再帰ケース: フォルダノードの場合、子ノードを再帰的に処理
+  // flatMapで結果を平坦化
+  return node.children?.flatMap(getAllFilesInFolder) ?? [];
 }
 
 /**
@@ -183,6 +241,104 @@ export function useWorkspaceFileSelection(
     setSelectedFiles((prev) => prev.filter((f) => f.path !== filePath));
   }, []);
 
+  /**
+   * フォルダの選択状態を計算
+   *
+   * @param folder - 選択状態を計算するフォルダノード
+   * @returns 選択状態（unselected | indeterminate | selected）
+   *
+   * @complexity O(n) where n = フォルダ配下のファイル数
+   */
+  const getSelectionState = useCallback(
+    (folder: FileNode): SelectionState => {
+      // Step 1: 配下の全ファイルを取得
+      const files = getAllFilesInFolder(folder);
+
+      // Step 2: 空フォルダの場合は未選択扱い
+      if (files.length === 0) {
+        return "unselected";
+      }
+
+      // Step 3: 選択されているファイル数をカウント
+      const selectedCount = files.filter((file) =>
+        selectedPaths.has(file.path),
+      ).length;
+
+      // Step 4: 選択状態を判定
+      if (selectedCount === 0) {
+        return "unselected";
+      }
+      if (selectedCount === files.length) {
+        return "selected";
+      }
+      return "indeterminate";
+    },
+    [selectedPaths],
+  );
+
+  /**
+   * フォルダの一括選択/解除を切り替え
+   *
+   * @param folderPath - フォルダのパス（将来拡張用）
+   * @param folder - フォルダノード
+   * @param folderId - 所属フォルダID
+   *
+   * @behavior
+   * - 全選択状態: 全ファイルを解除
+   * - 未選択/部分選択状態: 全ファイルを選択
+   */
+  const toggleFolder = useCallback(
+    (folderPath: string, folder: FileNode, folderId: string) => {
+      // Step 1: 配下の全ファイルを取得
+      const files = getAllFilesInFolder(folder);
+
+      // Step 2: 空フォルダの場合は何もしない
+      if (files.length === 0) {
+        return;
+      }
+
+      // Step 3: 現在の選択状態を取得
+      const currentState = getSelectionState(folder);
+
+      // Step 4: 状態に応じた処理
+      if (currentState === "selected") {
+        // 全選択 → 全解除: 配下ファイルをすべて削除
+        setSelectedFiles((prev) => {
+          const filePaths = new Set(files.map((f) => f.path));
+          return prev.filter((f) => !filePaths.has(f.path));
+        });
+      } else {
+        // 未選択/部分選択 → 全選択: 未選択ファイルを追加
+        setSelectedFiles((prev) => {
+          const existingPaths = new Set(prev.map((f) => f.path));
+
+          // 未選択かつ拡張子フィルターを通過するファイルのみ追加
+          const newFiles = files
+            .filter(
+              (file) =>
+                !existingPaths.has(file.path) &&
+                isExtensionAllowed(file.name, allowedExtensions),
+            )
+            .map((file) => ({
+              id: file.id,
+              name: file.name,
+              path: file.path,
+              folderId,
+            }));
+
+          // maxSelection制限の適用
+          if (maxSelection > 0) {
+            const remainingSlots = maxSelection - prev.length;
+            return [...prev, ...newFiles.slice(0, remainingSlots)];
+          }
+
+          return [...prev, ...newFiles];
+        });
+      }
+    },
+    [getSelectionState, allowedExtensions, maxSelection],
+  );
+
   return {
     selectedPaths,
     selectedFiles,
@@ -190,5 +346,7 @@ export function useWorkspaceFileSelection(
     clearSelection,
     removeFile,
     canSelect,
+    toggleFolder,
+    getSelectionState,
   };
 }

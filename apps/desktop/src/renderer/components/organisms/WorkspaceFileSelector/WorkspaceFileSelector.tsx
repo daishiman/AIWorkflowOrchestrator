@@ -83,6 +83,8 @@ export const WorkspaceFileSelector: React.FC<WorkspaceFileSelectorProps> = ({
     toggleFile,
     clearSelection,
     removeFile,
+    toggleFolder,
+    getSelectionState,
   } = useWorkspaceFileSelection({
     selectionMode,
     maxSelection,
@@ -130,6 +132,19 @@ export const WorkspaceFileSelector: React.FC<WorkspaceFileSelectorProps> = ({
       toggleFile(filePath, file, folderId);
     },
     [folders, folderFileTrees, toggleFile],
+  );
+
+  // フォルダ一括選択ハンドラ
+  const handleFolderSelectionToggle = useCallback(
+    (folderPath: string, folder: FileNode) => {
+      const folderId = findFolderIdForFile(
+        folderPath,
+        folders,
+        folderFileTrees,
+      );
+      toggleFolder(folderPath, folder, folderId);
+    },
+    [folders, folderFileTrees, toggleFolder],
   );
 
   // 空状態
@@ -213,7 +228,9 @@ export const WorkspaceFileSelector: React.FC<WorkspaceFileSelectorProps> = ({
                         onFileToggle={handleFileToggle}
                         onFolderToggle={handleFolderToggle}
                         depth={1}
-                        fileOnly
+                        fileOnly={false}
+                        getSelectionState={getSelectionState}
+                        onFolderSelectionToggle={handleFolderSelectionToggle}
                       />
                     ))}
                   </div>
