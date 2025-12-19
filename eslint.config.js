@@ -17,6 +17,7 @@ export default tseslint.config(
       ".claude/**",
       ".kamui/**",
       ".husky/**",
+      ".worktrees/**",
       "scripts/**",
       "**/*.mjs",
       "pnpm-lock.yaml",
