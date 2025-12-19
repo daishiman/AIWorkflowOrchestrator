@@ -12,6 +12,7 @@
 | レイヤー         | ディレクトリ                    | 責務                                   | 依存許可                           | 共有範囲      |
 | ---------------- | ------------------------------- | -------------------------------------- | ---------------------------------- | ------------- |
 | 共通ドメイン     | packages/shared/core/           | 共通エンティティ、インターフェース定義 | なし（外部依存ゼロ）               | Web + Desktop |
+| 型定義層         | packages/shared/src/types/rag/  | RAG型定義、Zodスキーマ、バリデーション | なし（外部依存ゼロ）               | Web + Desktop |
 | 共通UI           | packages/shared/ui/             | UIコンポーネント、Design Tokens        | shared/core のみ                   | Web + Desktop |
 | 共通インフラ     | packages/shared/infrastructure/ | DB、AI、Discord等の共通サービス        | shared/core のみ                   | Web + Desktop |
 | 機能プラグイン   | apps/web/features/              | 機能ごとのビジネスロジック             | shared/\*                          | Web専用       |
@@ -29,8 +30,9 @@
 | apps/web/features/              | packages/shared/infrastructure/, packages/shared/core/ |
 | apps/desktop/renderer/          | packages/shared/ui/, packages/shared/core/             |
 | apps/desktop/main/              | packages/shared/infrastructure/, packages/shared/core/ |
-| packages/shared/infrastructure/ | packages/shared/core/                                  |
-| packages/shared/ui/             | packages/shared/core/                                  |
+| packages/shared/infrastructure/ | packages/shared/core/, packages/shared/src/types/rag/  |
+| packages/shared/ui/             | packages/shared/core/, packages/shared/src/types/rag/  |
+| packages/shared/src/types/rag/  | なし（外部依存ゼロ）                                   |
 | packages/shared/core/           | なし（外部依存ゼロ）                                   |
 
 **違反検出**:

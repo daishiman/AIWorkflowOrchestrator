@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@repo/shared": "workspace:*",
-    "next": "^15.1.2",
+    "next": "^15.5.9",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "zod": "^3.23.8"
