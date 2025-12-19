@@ -83,6 +83,25 @@ describe("SelectableFileTreeItem", () => {
       expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
     });
 
+    it("チェックボックスのonChangeイベントでファイルを選択できる", async () => {
+      const onFileToggle = vi.fn();
+      render(
+        <SelectableFileTreeItem
+          {...defaultProps}
+          onFileToggle={onFileToggle}
+          selectionMode="multiple"
+        />,
+      );
+
+      const checkbox = screen.getByRole("checkbox");
+      await user.click(checkbox);
+
+      expect(onFileToggle).toHaveBeenCalledWith(
+        mockFileNode.path,
+        mockFileNode,
+      );
+    });
+
     it("クリックで選択コールバックが呼ばれる", async () => {
       const onFileToggle = vi.fn();
       render(
@@ -220,6 +239,24 @@ describe("SelectableFileTreeItem", () => {
       expect(onFileToggle).toHaveBeenCalled();
     });
 
+    it("Enterキーでファイルを選択できる", () => {
+      const onFileToggle = vi.fn();
+      render(
+        <SelectableFileTreeItem
+          {...defaultProps}
+          onFileToggle={onFileToggle}
+        />,
+      );
+
+      const item = screen.getByRole("treeitem");
+      fireEvent.keyDown(item, { key: "Enter", code: "Enter" });
+
+      expect(onFileToggle).toHaveBeenCalledWith(
+        mockFileNode.path,
+        mockFileNode,
+      );
+    });
+
     it("Enterキーでフォルダを展開/折りたたみできる", () => {
       const onFolderToggle = vi.fn();
       render(
@@ -348,6 +385,202 @@ describe("SelectableFileTreeItem", () => {
 
       // hover状態のスタイルが適用されることを確認
       expect(item).toHaveClass(/hover/);
+    });
+  });
+
+  describe("フォルダチェックボックス（一括選択）", () => {
+    const mockGetSelectionState = vi.fn();
+    const mockOnFolderSelectionToggle = vi.fn();
+
+    beforeEach(() => {
+      mockGetSelectionState.mockReturnValue("unselected");
+      mockOnFolderSelectionToggle.mockClear();
+    });
+
+    it("getSelectionStateとonFolderSelectionToggleがあるとき、フォルダにチェックボックスが表示される", () => {
+      render(
+        <SelectableFileTreeItem
+          {...defaultProps}
+          node={mockFolderNode}
+          selectionMode="multiple"
+          getSelectionState={mockGetSelectionState}
+          onFolderSelectionToggle={mockOnFolderSelectionToggle}
+        />,
+      );
+
+      const checkboxes = screen.getAllByRole("checkbox");
+      expect(checkboxes.length).toBeGreaterThan(0);
+    });
+
+    it("getSelectionStateがないときフォルダにチェックボックスが表示されない", () => {
+      render(
+        <SelectableFileTreeItem
+          {...defaultProps}
+          node={mockFolderNode}
+          selectionMode="multiple"
+        />,
+      );
+
+      // チェックボックスが存在しないことを確認
+      expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
+    });
+
+    it("selectionMode=singleのときフォルダチェックボックスが表示されない", () => {
+      render(
+        <SelectableFileTreeItem
+          {...defaultProps}
+          node={mockFolderNode}
+          selectionMode="single"
+          getSelectionState={mockGetSelectionState}
+          onFolderSelectionToggle={mockOnFolderSelectionToggle}
+        />,
+      );
+
+      expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
+    });
+
+    it("unselected状態のフォルダチェックボックスが正しく表示される", () => {
+      mockGetSelectionState.mockReturnValue("unselected");
+
+      render(
+        <SelectableFileTreeItem
+          {...defaultProps}
+          node={mockFolderNode}
+          selectionMode="multiple"
+          getSelectionState={mockGetSelectionState}
+          onFolderSelectionToggle={mockOnFolderSelectionToggle}
+        />,
+      );
+
+      const checkbox = screen.getByRole("checkbox") as HTMLInputElement;
+      expect(checkbox.checked).toBe(false);
+      expect(checkbox.indeterminate).toBe(false);
+      expect(checkbox).toHaveAttribute("aria-checked", "false");
+    });
+
+    it("indeterminate状態のフォルダチェックボックスが正しく表示される", () => {
+      mockGetSelectionState.mockReturnValue("indeterminate");
+
+      render(
+        <SelectableFileTreeItem
+          {...defaultProps}
+          node={mockFolderNode}
+          selectionMode="multiple"
+          getSelectionState={mockGetSelectionState}
+          onFolderSelectionToggle={mockOnFolderSelectionToggle}
+        />,
+      );
+
+      const checkbox = screen.getByRole("checkbox") as HTMLInputElement;
+      expect(checkbox.checked).toBe(false);
+      expect(checkbox.indeterminate).toBe(true);
+      expect(checkbox).toHaveAttribute("aria-checked", "mixed");
+    });
+
+    it("selected状態のフォルダチェックボックスが正しく表示される", () => {
+      mockGetSelectionState.mockReturnValue("selected");
+
+      render(
+        <SelectableFileTreeItem
+          {...defaultProps}
+          node={mockFolderNode}
+          selectionMode="multiple"
+          getSelectionState={mockGetSelectionState}
+          onFolderSelectionToggle={mockOnFolderSelectionToggle}
+        />,
+      );
+
+      const checkbox = screen.getByRole("checkbox") as HTMLInputElement;
+      expect(checkbox.checked).toBe(true);
+      expect(checkbox.indeterminate).toBe(false);
+      expect(checkbox).toHaveAttribute("aria-checked", "true");
+    });
+
+    it("フォルダチェックボックスをクリックするとonFolderSelectionToggleが呼ばれる", async () => {
+      mockGetSelectionState.mockReturnValue("unselected");
+
+      render(
+        <SelectableFileTreeItem
+          {...defaultProps}
+          node={mockFolderNode}
+          selectionMode="multiple"
+          getSelectionState={mockGetSelectionState}
+          onFolderSelectionToggle={mockOnFolderSelectionToggle}
+        />,
+      );
+
+      const checkbox = screen.getByRole("checkbox");
+      await user.click(checkbox);
+
+      expect(mockOnFolderSelectionToggle).toHaveBeenCalledWith(
+        mockFolderNode.path,
+        mockFolderNode,
+      );
+    });
+
+    it("フォルダチェックボックスにaria-labelが設定されている", () => {
+      mockGetSelectionState.mockReturnValue("unselected");
+
+      render(
+        <SelectableFileTreeItem
+          {...defaultProps}
+          node={mockFolderNode}
+          selectionMode="multiple"
+          getSelectionState={mockGetSelectionState}
+          onFolderSelectionToggle={mockOnFolderSelectionToggle}
+        />,
+      );
+
+      const checkbox = screen.getByRole("checkbox");
+      expect(checkbox).toHaveAttribute(
+        "aria-label",
+        `${mockFolderNode.name} フォルダを選択`,
+      );
+    });
+
+    it("Spaceキーでフォルダ一括選択が呼ばれる", () => {
+      mockGetSelectionState.mockReturnValue("unselected");
+
+      render(
+        <SelectableFileTreeItem
+          {...defaultProps}
+          node={mockFolderNode}
+          selectionMode="multiple"
+          getSelectionState={mockGetSelectionState}
+          onFolderSelectionToggle={mockOnFolderSelectionToggle}
+        />,
+      );
+
+      const item = screen.getByRole("treeitem");
+      fireEvent.keyDown(item, { key: " ", code: "Space" });
+
+      expect(mockOnFolderSelectionToggle).toHaveBeenCalledWith(
+        mockFolderNode.path,
+        mockFolderNode,
+      );
+    });
+
+    it("ChevronアイコンをクリックするとonFolderToggleが呼ばれる", async () => {
+      const onFolderToggle = vi.fn();
+      mockGetSelectionState.mockReturnValue("unselected");
+
+      render(
+        <SelectableFileTreeItem
+          {...defaultProps}
+          node={mockFolderNode}
+          selectionMode="multiple"
+          onFolderToggle={onFolderToggle}
+          getSelectionState={mockGetSelectionState}
+          onFolderSelectionToggle={mockOnFolderSelectionToggle}
+        />,
+      );
+
+      const chevron = screen.getByLabelText(/展開/);
+      await user.click(chevron);
+
+      expect(onFolderToggle).toHaveBeenCalledWith(mockFolderNode.path);
+      // フォルダ選択コールバックは呼ばれない（Chevronのクリックは展開のみ）
+      expect(mockOnFolderSelectionToggle).not.toHaveBeenCalled();
     });
   });
 });

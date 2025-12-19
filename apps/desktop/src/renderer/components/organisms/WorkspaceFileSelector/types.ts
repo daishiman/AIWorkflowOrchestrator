@@ -6,6 +6,7 @@
 
 import type { FileNode } from "../../../store/types";
 import type { FolderId } from "../../../store/types/workspace";
+import type { SelectionState } from "./hooks/useWorkspaceFileSelection";
 
 /**
  * 選択されたワークスペースファイル
@@ -113,6 +114,20 @@ export interface SelectableFileTreeItemProps {
   depth: number;
   /** ファイルのみ選択可能にする（フォルダは選択不可） */
   fileOnly?: boolean;
+
+  /**
+   * フォルダの選択状態を取得する関数
+   * @param folder - フォルダノード
+   * @returns 選択状態（unselected | indeterminate | selected）
+   */
+  getSelectionState?: (folder: FileNode) => SelectionState;
+
+  /**
+   * フォルダ一括選択/解除を切り替える関数
+   * @param folderPath - フォルダのパス
+   * @param folder - フォルダノード
+   */
+  onFolderSelectionToggle?: (folderPath: string, folder: FileNode) => void;
 }
 
 /**

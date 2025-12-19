@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useAppStore, useCurrentView, useResponsiveMode } from "./store";
-import { AuthGuard } from "./components/AuthGuard";
+// TEMPORARY: AuthGuard disabled for manual testing of WorkspaceFileSelector (T-08-1)
+// import { AuthGuard } from "./components/AuthGuard";
 import { AppDock } from "./components/organisms/AppDock";
 import { DynamicIsland } from "./components/molecules/DynamicIsland";
 import { DashboardView } from "./views/DashboardView";
@@ -49,44 +50,46 @@ function App(): JSX.Element {
   const isDesktop = responsiveMode === "desktop";
 
   return (
-    <AuthGuard>
-      <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)] flex">
-        {/* App Dock - Left side on desktop, bottom on mobile */}
-        {isDesktop ? (
+    // TEMPORARY: AuthGuard disabled for manual testing of WorkspaceFileSelector (T-08-1)
+    // TODO: Re-enable after manual testing is complete
+    // <AuthGuard>
+    <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)] flex">
+      {/* App Dock - Left side on desktop, bottom on mobile */}
+      {isDesktop ? (
+        <AppDock
+          currentView={currentView}
+          onViewChange={handleViewChange}
+          mode="desktop"
+        />
+      ) : null}
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Dynamic Island */}
+        <div className="flex justify-center pt-4 pb-2">
+          <DynamicIsland
+            status={dynamicIsland.status}
+            message={dynamicIsland.message}
+            visible={dynamicIsland.visible}
+          />
+        </div>
+
+        {/* View Content */}
+        <main className="flex-1 overflow-auto p-6">{renderView()}</main>
+      </div>
+
+      {/* Mobile Bottom Navigation */}
+      {!isDesktop ? (
+        <div className="fixed bottom-0 left-0 right-0">
           <AppDock
             currentView={currentView}
             onViewChange={handleViewChange}
-            mode="desktop"
+            mode="mobile"
           />
-        ) : null}
-
-        {/* Main Content Area */}
-        <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Dynamic Island */}
-          <div className="flex justify-center pt-4 pb-2">
-            <DynamicIsland
-              status={dynamicIsland.status}
-              message={dynamicIsland.message}
-              visible={dynamicIsland.visible}
-            />
-          </div>
-
-          {/* View Content */}
-          <main className="flex-1 overflow-auto p-6">{renderView()}</main>
         </div>
-
-        {/* Mobile Bottom Navigation */}
-        {!isDesktop ? (
-          <div className="fixed bottom-0 left-0 right-0">
-            <AppDock
-              currentView={currentView}
-              onViewChange={handleViewChange}
-              mode="mobile"
-            />
-          </div>
-        ) : null}
-      </div>
-    </AuthGuard>
+      ) : null}
+    </div>
+    // </AuthGuard>
   );
 }
 

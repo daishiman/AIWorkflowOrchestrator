@@ -32,6 +32,8 @@ export default defineConfig({
         "src/renderer/App.tsx",
         "src/main/ipc/__mocks__/**",
         "src/main/services/watcher/**",
+        "**/index.ts", // エクスポート用ファイル
+        "**/types.ts", // 型定義ファイル
       ],
     },
   },
