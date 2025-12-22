@@ -39,17 +39,5 @@ export const useAuthState = (): AuthGuardDisplayState => {
 
   const authState = getAuthState({ isLoading, isAuthenticated });
 
-  // デバッグ用ログ（開発環境のみ）
-  if (import.meta.env.DEV) {
-    console.log(
-      "[useAuthState] isLoading:",
-      isLoading,
-      "isAuthenticated:",
-      isAuthenticated,
-      "→ authState:",
-      authState,
-    );
-  }
-
   return authState;
 };
