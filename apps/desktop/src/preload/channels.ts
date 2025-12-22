@@ -51,6 +51,7 @@ export const IPC_CHANNELS = {
   AUTH_REFRESH: "auth:refresh",
   AUTH_STATE_CHANGED: "auth:state-changed",
   AUTH_CHECK_ONLINE: "auth:check-online",
+  AUTH_TEST_CALLBACK: "auth:test-callback", // 開発用: コールバックURLを手動送信
 
   // Profile operations
   PROFILE_GET: "profile:get",
@@ -145,6 +146,7 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.AUTH_GET_SESSION,
   IPC_CHANNELS.AUTH_REFRESH,
   IPC_CHANNELS.AUTH_CHECK_ONLINE,
+  IPC_CHANNELS.AUTH_TEST_CALLBACK, // 開発用
   // Profile channels
   IPC_CHANNELS.PROFILE_GET,
   IPC_CHANNELS.PROFILE_UPDATE,

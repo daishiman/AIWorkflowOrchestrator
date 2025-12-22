@@ -525,18 +525,41 @@ Knowledge Graphのエッジ（辺）を表現するEntity型。
 | Preload      | contextBridge による安全な API 公開         | preload/index.ts                    |
 | Renderer     | 認証状態管理（Zustand）、UI                 | authSlice.ts, AccountSection.tsx    |
 
-### 5.9.3 カスタムプロトコル認証フロー
+### 5.9.3 カスタムプロトコル認証フロー（実装済み）
+
+**詳細フロー**:
 
 ```
 1. Renderer: login(provider) 呼び出し
 2. Main: Supabase OAuth URL 生成、外部ブラウザで開く
 3. ブラウザ: OAuth 認証完了
 4. Supabase: aiworkflow://auth/callback#access_token=xxx にリダイレクト
-5. Main: カスタムプロトコルでコールバック受信
-6. Main: トークンを SafeStorage に保存
-7. Main → Renderer: auth:state-changed イベント送信
-8. Renderer: 認証状態を更新
+5. Main: カスタムプロトコルでコールバック受信（app.on('open-url')）
+6. Main: URLからaccess_token/refresh_tokenを抽出
+7. Main: Refresh TokenをsafeStorage.encryptString()で暗号化
+8. Main: 暗号化トークンをelectron-storeに保存
+9. Main → Renderer: auth:state-changed イベント送信
+10. Renderer: Zustand storeの認証状態を更新
 ```
+
+**実装ファイル**:
+
+- `apps/desktop/src/main/index.ts:105-188` - カスタムプロトコル処理
+- `apps/desktop/src/main/infrastructure/secureStorage.ts` - トークン暗号化
+- `apps/desktop/src/main/ipc/authHandlers.ts` - IPCハンドラー
+- `apps/desktop/src/renderer/store/slices/authSlice.ts` - 状態管理
+
+**セキュリティ考慮事項**:
+
+| 項目                | 実装状況    | 説明                       |
+| ------------------- | ----------- | -------------------------- |
+| contextIsolation    | ✅ 有効     | main/index.ts:54           |
+| nodeIntegration     | ✅ 無効     | main/index.ts:55           |
+| sandbox             | ✅ 有効     | main/index.ts:53           |
+| IPC Validation      | ✅ 実装済み | authHandlers.ts:77,145,187 |
+| Refresh Token暗号化 | ✅ 実装済み | secureStorage.ts           |
+| State parameter検証 | ❌ 未実装   | DEBT-SEC-001               |
+| PKCE実装            | ❌ 未実装   | DEBT-SEC-002               |
 
 ### 5.9.4 IPCチャネル（認証）
 
@@ -555,13 +578,15 @@ Knowledge Graphのエッジ（辺）を表現するEntity型。
 
 ### 5.9.5 認証UIコンポーネント
 
-| コンポーネント | 層       | 責務                                   | ファイル                                |
-| -------------- | -------- | -------------------------------------- | --------------------------------------- |
-| AuthGuard      | HOC      | 認証状態によるルーティング制御         | components/AuthGuard/index.tsx          |
-| LoadingScreen  | molecule | 認証確認中のローディング画面表示       | components/AuthGuard/LoadingScreen.tsx  |
-| AuthView       | view     | ログイン画面表示（OAuthボタン配置）    | views/AuthView/index.tsx                |
-| AccountSection | organism | アカウント設定UI（プロフィール・連携） | components/organisms/AccountSection/    |
-| ProviderIcon   | atom     | OAuthプロバイダーアイコン表示          | components/atoms/ProviderIcon/index.tsx |
+| コンポーネント | 層       | 責務                                   | ファイル                                   | テストカバレッジ   |
+| -------------- | -------- | -------------------------------------- | ------------------------------------------ | ------------------ |
+| AuthGuard      | HOC      | 認証状態によるルーティング制御         | components/AuthGuard/index.tsx             | 100% (67/67 tests) |
+| useAuthState   | hook     | 認証状態取得ロジック                   | components/AuthGuard/hooks/useAuthState.ts | 100%               |
+| getAuthState   | util     | 状態判定純粋関数                       | components/AuthGuard/utils/getAuthState.ts | 100% (5/5 tests)   |
+| LoadingScreen  | molecule | 認証確認中のローディング画面表示       | components/AuthGuard/LoadingScreen.tsx     | 100%               |
+| AuthView       | view     | ログイン画面表示（OAuthボタン配置）    | views/AuthView/index.tsx                   | -                  |
+| AccountSection | organism | アカウント設定UI（プロフィール・連携） | components/organisms/AccountSection/       | -                  |
+| ProviderIcon   | atom     | OAuthプロバイダーアイコン表示          | components/atoms/ProviderIcon/index.tsx    | -                  |
 
 ### 5.9.6 認証状態遷移
 
@@ -582,11 +607,25 @@ stateDiagram-v2
 | authenticated   | children          | 認証済み（メインUI）   |
 | unauthenticated | AuthView          | 未認証（ログイン画面） |
 
+### 5.9.7 技術的負債
+
+ログイン機能復旧プロジェクト（2025-12-22完了）で発見された技術的負債:
+
+| ID            | 項目                          | 深刻度 | 優先度 | 工数    | 説明                                                                                         |
+| ------------- | ----------------------------- | ------ | ------ | ------- | -------------------------------------------------------------------------------------------- |
+| DEBT-SEC-001  | State parameter検証           | Medium | Medium | 2-3時間 | CSRF攻撃対策として、OAuth認証開始時にstateパラメータを生成・保存し、コールバック時に検証する |
+| DEBT-SEC-002  | PKCE実装                      | Medium | Low    | 3-4時間 | OAuth 2.1準拠のため、code_verifier/code_challenge生成と検証を実装する                        |
+| DEBT-SEC-003  | カスタムプロトコルURL詳細検証 | Low    | Low    | 1-2時間 | aiworkflow://スキーム確認のみでなく、パス検証とクエリパラメータ検証を追加する                |
+| DEBT-CODE-001 | 構造化ログ追加                | Low    | Low    | 2時間   | エラーログにタイムスタンプ・コンテキストを含める構造化ログを実装する                         |
+| DEBT-CODE-002 | エラーメッセージ一元管理      | Low    | Low    | 1時間   | エラーメッセージを定数ファイルに一元管理する                                                 |
+
+**対応方針**: 次のスプリントで計画的に対応する。現在の実装でも基本的なセキュリティ要件は満たしている。
+
 ---
 
 ## 5.10 セキュリティアーキテクチャ
 
-### 5.9.1 レイヤー別セキュリティ
+### 5.10.1 レイヤー別セキュリティ
 
 | レイヤー           | セキュリティ対策                                   |
 | ------------------ | -------------------------------------------------- |
@@ -595,7 +634,7 @@ stateDiagram-v2
 | インフラ層         | 暗号化通信、機密情報の安全な保存                   |
 | データ層           | パラメータ化クエリ、最小権限の原則                 |
 
-### 5.8.2 認証フロー
+### 5.10.2 認証フロー
 
 **Web（Discord OAuth）**:
 
@@ -612,7 +651,7 @@ stateDiagram-v2
 3. サーバー側でキーを検証
 4. 一致しない場合は401エラー
 
-### 5.8.3 データ保護
+### 5.10.3 データ保護
 
 | 対象              | 保護方法                                 |
 | ----------------- | ---------------------------------------- |

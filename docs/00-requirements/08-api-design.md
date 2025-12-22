@@ -257,13 +257,21 @@
 
 Electron Desktop アプリでは、IPC 通信で認証機能を提供する。
 
-| チャネル            | 用途                 | Request                       | Response                           |
-| ------------------- | -------------------- | ----------------------------- | ---------------------------------- |
-| `auth:login`        | OAuth ログイン開始   | `{ provider: OAuthProvider }` | `IPCResponse<void>`                |
-| `auth:logout`       | ログアウト           | なし                          | `IPCResponse<void>`                |
-| `auth:get-session`  | セッション取得       | なし                          | `IPCResponse<AuthSession>`         |
-| `auth:refresh`      | トークンリフレッシュ | なし                          | `IPCResponse<AuthSession>`         |
-| `auth:check-online` | オンライン状態確認   | なし                          | `IPCResponse<{ online: boolean }>` |
+**実装ファイル**:
+
+- ハンドラー: `apps/desktop/src/main/ipc/authHandlers.ts`
+- チャンネル定義: `apps/desktop/src/preload/channels.ts`
+- Preload公開: `apps/desktop/src/preload/index.ts`
+
+**チャンネル一覧**:
+
+| チャネル            | 用途                 | Request                       | Response                           | 実装箇所            | セキュリティ       |
+| ------------------- | -------------------- | ----------------------------- | ---------------------------------- | ------------------- | ------------------ |
+| `auth:login`        | OAuth ログイン開始   | `{ provider: OAuthProvider }` | `IPCResponse<void>`                | authHandlers.ts:77  | withValidation適用 |
+| `auth:logout`       | ログアウト           | なし                          | `IPCResponse<void>`                | authHandlers.ts:145 | withValidation適用 |
+| `auth:get-session`  | セッション取得       | なし                          | `IPCResponse<AuthSession>`         | authHandlers.ts:187 | withValidation適用 |
+| `auth:refresh`      | トークンリフレッシュ | なし                          | `IPCResponse<AuthSession>`         | authHandlers.ts     | withValidation適用 |
+| `auth:check-online` | オンライン状態確認   | なし                          | `IPCResponse<{ online: boolean }>` | authHandlers.ts     | withValidation適用 |
 
 ### 8.11.2 プロフィール IPC チャネル
 
@@ -317,6 +325,69 @@ interface IPCResponse<T> {
   data?: T;
   error?: { code: string; message: string };
 }
+```
+
+### 8.11.5 認証状態管理
+
+**状態遷移**:
+
+```
+checking → authenticated: セッション復元成功
+checking → unauthenticated: セッションなし
+unauthenticated → authenticated: ログイン成功
+authenticated → unauthenticated: ログアウト
+```
+
+**状態とUI表示の対応**:
+
+| 状態            | AuthGuard表示内容 | 説明                   |
+| --------------- | ----------------- | ---------------------- |
+| checking        | LoadingScreen     | セッション確認中       |
+| authenticated   | children          | 認証済み（メインUI）   |
+| unauthenticated | AuthView          | 未認証（ログイン画面） |
+
+**実装コンポーネント**:
+
+| コンポーネント | ファイル                                     | 責務                   |
+| -------------- | -------------------------------------------- | ---------------------- |
+| AuthGuard      | `components/AuthGuard/index.tsx`             | 認証状態による表示制御 |
+| useAuthState   | `components/AuthGuard/hooks/useAuthState.ts` | 認証状態取得フック     |
+| getAuthState   | `components/AuthGuard/utils/getAuthState.ts` | 状態判定純粋関数       |
+| LoadingScreen  | `components/AuthGuard/LoadingScreen.tsx`     | ローディング画面       |
+| AuthView       | `views/AuthView/index.tsx`                   | ログイン画面           |
+
+### 8.11.6 IPCセキュリティ実装
+
+**withValidationラッパー**:
+
+すべての認証関連IPCハンドラーは`withValidation`でラップされ、以下を検証:
+
+1. webContentsに対応するBrowserWindowの存在確認
+2. DevToolsからの呼び出し検出・拒否
+3. 許可されたウィンドウリストとの照合
+
+**実装ファイル**: `apps/desktop/src/main/infrastructure/security/ipc-validator.ts`
+
+**チャンネルホワイトリスト**:
+
+認証関連チャンネルは`channels.ts`で明示的に許可リストに登録:
+
+```typescript
+// apps/desktop/src/preload/channels.ts
+export const ALLOWED_CHANNELS = {
+  invoke: [
+    IPC_CHANNELS.AUTH.LOGIN, // "auth:login"
+    IPC_CHANNELS.AUTH.LOGOUT, // "auth:logout"
+    IPC_CHANNELS.AUTH.GET_SESSION, // "auth:get-session"
+    IPC_CHANNELS.AUTH.REFRESH, // "auth:refresh"
+    IPC_CHANNELS.AUTH.CHECK_ONLINE, // "auth:check-online"
+    // ...
+  ],
+  on: [
+    IPC_CHANNELS.AUTH.STATE_CHANGED, // "auth:state-changed"
+    // ...
+  ],
+} as const;
 ```
 
 ---
