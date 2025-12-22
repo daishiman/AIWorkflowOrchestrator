@@ -62,6 +62,43 @@ Executor実行時に渡されるコンテキスト情報。
 
 ---
 
+## 6.1A IConverter インターフェース
+
+> **詳細設計**: `docs/30-workflows/completed-tasks/conversion-base/requirements-interface.md`
+> **実装**: `packages/shared/src/services/conversion/types.ts`
+
+ファイル変換処理の共通インターフェース。すべてのコンバーター実装が準拠する。
+
+### 6.1A.1 必須プロパティ
+
+| プロパティ           | 型                  | 説明                     |
+| -------------------- | ------------------- | ------------------------ |
+| `id`                 | `string`            | コンバーターID（一意）   |
+| `name`               | `string`            | コンバーター名（表示用） |
+| `supportedMimeTypes` | `readonly string[]` | サポートMIMEタイプ       |
+| `priority`           | `number`            | 優先度（高いほど優先）   |
+
+### 6.1A.2 必須メソッド
+
+| メソッド                        | 戻り値                                       | 説明               |
+| ------------------------------- | -------------------------------------------- | ------------------ |
+| `canConvert(input)`             | `boolean`                                    | 変換可能性の判定   |
+| `convert(input, options?)`      | `Promise<Result<ConverterOutput, RAGError>>` | ファイル変換実行   |
+| `estimateProcessingTime(input)` | `number`                                     | 推定処理時間（ms） |
+
+### 6.1A.3 使用例
+
+```typescript
+import { globalConverterRegistry } from "@repo/shared/services/conversion";
+
+const result = globalConverterRegistry.findConverter(input);
+if (result.success) {
+  const converted = await result.data.convert(input);
+}
+```
+
+---
+
 ## 6.2 IRepository インターフェース
 
 データアクセスの抽象化。各エンティティごとに実装する。
@@ -600,7 +637,7 @@ RAGパイプラインにおけるファイル選択・変換処理の型定義�
 | バリデーション | Zodスキーマによるランタイムバリデーション            |
 | テスト容易性   | 純粋関数による高いテスタビリティ（96.50%カバレッジ） |
 
-**参照**: `docs/30-workflows/file-conversion-schemas/` - 詳細な設計・実装ドキュメント
+**参照**: `docs/30-workflows/completed-tasks/file-conversion-schemas/` - 詳細な設計・実装ドキュメント
 
 ### 6.9.6 チャンク・埋め込み型定義
 
@@ -723,7 +760,7 @@ RAGパイプラインにおけるテキストチャンク分割と埋め込み�
 
 **バリデーション**: すべての型に対応するZodスキーマを提供し、実行時型安全性を保証。
 
-**参照**: `docs/30-workflows/rag-chunk-embedding/` - 詳細な設計・実装ドキュメント
+**参照**: `docs/30-workflows/completed-tasks/rag-chunk-embedding/` - 詳細な設計・実装ドキュメント
 
 ### 6.9.7 Knowledge Graph型定義
 
@@ -913,7 +950,7 @@ HybridRAG検索エンジンのクエリ・結果インターフェース。Keywo
 
 **テスト品質**: 123テストケース、96.93%カバレッジ達成（types, schemas, utils, type-inference, zod-validation）
 
-**参照**: `docs/30-workflows/rag-search-system/` - 詳細な設計・実装ドキュメント
+**参照**: `docs/30-workflows/completed-tasks/rag-search-system/` - 詳細な設計・実装ドキュメント
 
 ---
 

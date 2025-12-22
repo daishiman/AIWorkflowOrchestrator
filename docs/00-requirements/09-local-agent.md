@@ -329,8 +329,7 @@
 
 ## 関連ドキュメント
 
-- [Electron デスクトップアプリ仕様](./15-electron-app.md)
 - [環境変数](./13-environment-variables.md)
 - [デプロイメント](./12-deployment.md)
 - [REST API 設計原則](./08-api-design.md)
-- [データベース設計](./03-database-design.md)
+- [データベース設計](./15-database-design.md)
