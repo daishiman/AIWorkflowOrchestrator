@@ -79,6 +79,8 @@ RAGパイプライン実装で使用するエラーコード。
 | ファイル     | UNSUPPORTED_FILE_TYPE      | 非対応ファイル形式         |
 | 変換         | CONVERSION_FAILED          | 変換処理失敗               |
 | 変換         | CONVERTER_NOT_FOUND        | コンバーターが見つからない |
+| **変換**     | **TIMEOUT**                | **変換処理タイムアウト**   |
+| **変換**     | **RESOURCE_EXHAUSTED**     | **同時実行数超過**         |
 | データベース | DB_CONNECTION_ERROR        | DB接続エラー               |
 | データベース | DB_QUERY_ERROR             | クエリ実行エラー           |
 | データベース | DB_TRANSACTION_ERROR       | トランザクションエラー     |
