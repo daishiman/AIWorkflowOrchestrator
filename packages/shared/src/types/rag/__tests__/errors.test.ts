@@ -123,9 +123,9 @@ describe("ErrorCodes定数", () => {
   });
 
   describe("ErrorCodesの網羅性", () => {
-    it("すべてのエラーコードが19個定義されていること", () => {
+    it("すべてのエラーコードが21個定義されていること", () => {
       const codes = Object.keys(ErrorCodes);
-      expect(codes).toHaveLength(19);
+      expect(codes).toHaveLength(21); // TIMEOUT, RESOURCE_EXHAUSTED追加により19→21
     });
 
     it("すべての値がUPPER_SNAKE_CASE形式であること", () => {
@@ -164,7 +164,7 @@ describe("ErrorCode型", () => {
 
   it("すべてのErrorCodesの値がErrorCode型として有効であること", () => {
     const codes: ErrorCode[] = Object.values(ErrorCodes);
-    expect(codes).toHaveLength(19);
+    expect(codes).toHaveLength(21); // TIMEOUT, RESOURCE_EXHAUSTED追加により19→21
   });
 });
 

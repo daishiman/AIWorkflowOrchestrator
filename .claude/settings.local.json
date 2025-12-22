@@ -66,7 +66,8 @@
       "Bash(pnpm --filter @repo/desktop remove:*)",
       "WebSearch",
       "WebFetch(domain:docs.railway.com)",
-      "SlashCommand(/ai:design-architecture:*)"
+      "SlashCommand(/ai:design-architecture:*)",
+      "Bash(pkill:*)"
     ],
     "deny": [],
     "ask": []
