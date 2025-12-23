@@ -84,17 +84,31 @@ Turso Cloud DB（本番環境）
 ### ディレクトリ構成
 
 ```
-packages/shared/infrastructure/db/
-├── schema/
-│   ├── index.ts          # スキーマエントリーポイント（全テーブルをre-export）
-│   ├── workflows.ts      # ワークフロー関連テーブル
-│   ├── users.ts          # ユーザー設定
-│   ├── sync.ts           # 同期メタデータ
-│   └── audit.ts          # 監査ログ
-├── migrations/           # 自動生成されるSQLマイグレーション
-├── seed/                 # テストデータシード
-├── client.ts             # DB接続クライアント
-└── types.ts              # 型エクスポート
+packages/shared/
+├── src/
+│   ├── db/
+│   │   └── schema/
+│   │       ├── index.ts          # スキーマエントリーポイント（全テーブルをre-export）
+│   │       └── chat-history.ts   # チャット履歴スキーマ（chat_sessions, chat_messages）
+│   ├── repositories/
+│   │   ├── chat-session-repository.ts  # セッションリポジトリ
+│   │   └── chat-message-repository.ts  # メッセージリポジトリ
+│   ├── features/
+│   │   └── chat-history/
+│   │       ├── chat-history-service.ts # チャット履歴サービス
+│   │       ├── constants.ts            # 定数定義
+│   │       └── date-formatter.ts       # 日付フォーマッタ
+│   ├── types/
+│   │   ├── chat-session.ts       # セッション型定義
+│   │   ├── chat-message.ts       # メッセージ型定義
+│   │   └── llm-metadata.ts       # LLMメタデータ型定義
+│   └── ipc/
+│       └── channels.ts           # IPCチャネル定義
+├── drizzle/
+│   └── migrations/
+│       ├── 0001_create_chat_history.sql  # テーブル作成
+│       └── 0002_add_covering_index.sql   # カバリングインデックス追加
+└── drizzle.config.ts             # Drizzle設定
 ```
 
 ### テーブル設計
@@ -322,23 +336,107 @@ Supabase Auth と連携するユーザープロフィールテーブル。
 | conflict_resolution | TEXT | NO   | last_write_wins / manual / merge                |
 | last_error          | TEXT | YES  | 最後に発生したエラーメッセージ                  |
 
+#### chat_sessions（チャットセッション）
+
+ユーザーとAIアシスタント間の会話セッションを管理する。
+
+| カラム               | 型      | NULL | 説明                                       |
+| -------------------- | ------- | ---- | ------------------------------------------ |
+| id                   | TEXT    | NO   | UUID主キー（v4）                           |
+| user_id              | TEXT    | NO   | ユーザーID（将来の認証機能との連携用）     |
+| title                | TEXT    | NO   | セッションタイトル（3〜100文字）           |
+| created_at           | TEXT    | NO   | 作成日時（ISO 8601形式、UTC）              |
+| updated_at           | TEXT    | NO   | 最終更新日時（ISO 8601形式、UTC）          |
+| message_count        | INTEGER | NO   | メッセージ総数（非正規化フィールド）       |
+| is_favorite          | INTEGER | NO   | お気に入りフラグ（0: false, 1: true）      |
+| is_pinned            | INTEGER | NO   | ピン留めフラグ（0: false, 1: true）        |
+| pin_order            | INTEGER | YES  | ピン留め時の表示順序（1〜10）              |
+| last_message_preview | TEXT    | YES  | 最終メッセージのプレビュー（最大50文字）   |
+| metadata             | JSON    | NO   | 拡張メタデータ（将来の拡張用）             |
+| deleted_at           | TEXT    | YES  | 削除日時（ソフトデリート用、ISO 8601形式） |
+
+**設計上の注意点**:
+
+- `is_favorite`, `is_pinned` はSQLiteがBOOLEAN型をネイティブサポートしないため INTEGER を使用
+- ピン留めは最大10件まで（ビジネスルール制約）
+- `message_count`, `last_message_preview` は検索・表示最適化のための非正規化フィールド
+- ソフトデリートを採用し、`deleted_at`がNULLでないレコードは論理削除済みとして扱う
+
+#### chat_messages（チャットメッセージ）
+
+セッション内の個別の発言（ユーザーまたはアシスタント）を管理する。
+
+| カラム        | 型      | NULL | 説明                                                   |
+| ------------- | ------- | ---- | ------------------------------------------------------ |
+| id            | TEXT    | NO   | UUID主キー（v4）                                       |
+| session_id    | TEXT    | NO   | 親セッションID（外部キー: ON DELETE CASCADE）          |
+| role          | TEXT    | NO   | メッセージロール（user / assistant）                   |
+| content       | TEXT    | NO   | メッセージ本文（1〜100,000文字）                       |
+| message_index | INTEGER | NO   | セッション内の順序（0から連番）                        |
+| timestamp     | TEXT    | NO   | メッセージ送信日時（ISO 8601形式、UTC）                |
+| llm_provider  | TEXT    | YES  | LLMプロバイダー名（openai / anthropic / google / xai） |
+| llm_model     | TEXT    | YES  | LLMモデル名（例: claude-3-5-sonnet-20241022）          |
+| llm_metadata  | JSON    | YES  | トークン使用量、応答時間、モデルパラメータ等           |
+| attachments   | JSON    | NO   | 添付ファイル情報（JSON配列形式）                       |
+| system_prompt | TEXT    | YES  | システムプロンプト（将来対応）                         |
+| metadata      | JSON    | NO   | 拡張メタデータ（将来の拡張用）                         |
+
+**llm_metadata の構造**:
+
+```json
+{
+  "version": "20241022",
+  "temperature": 0.7,
+  "maxTokens": 4096,
+  "tokenUsage": {
+    "inputTokens": 45,
+    "outputTokens": 320,
+    "totalTokens": 365
+  },
+  "responseTimeMs": 1234
+}
+```
+
+**設計上の注意点**:
+
+- `session_id`には`ON DELETE CASCADE`を設定し、親セッション削除時にメッセージも削除
+- `UNIQUE(session_id, message_index)` で一意性を保証
+- `llm_provider`, `llm_model`, `llm_metadata` はアシスタント応答のみで使用
+- `attachments` は将来のファイル添付機能に対応
+
+**参照ドキュメント**:
+
+- スキーマ実装: `packages/shared/src/db/schema/chat-history.ts`
+- マイグレーション: `packages/shared/drizzle/migrations/0001_create_chat_history.sql`
+- 詳細設計: `docs/30-workflows/chat-history-persistence/metadata-specification.md`
+- UI設計: `docs/30-workflows/chat-history-persistence/ui-ux-design.md`
+
 ### インデックス設計
 
-| テーブル            | インデックス名               | カラム                 | 用途                   |
-| ------------------- | ---------------------------- | ---------------------- | ---------------------- |
-| workflows           | idx_workflows_status         | status                 | ステータス検索         |
-| workflows           | idx_workflows_deleted_at     | deleted_at             | アクティブレコード取得 |
-| workflows           | idx_workflows_status_deleted | status, deleted_at     | 複合検索の高速化       |
-| workflow_steps      | idx_steps_workflow_id        | workflow_id            | 親子関係の取得         |
-| workflow_steps      | idx_steps_order              | workflow_id, order     | 順序通りの取得         |
-| workflow_executions | idx_executions_workflow_id   | workflow_id            | 履歴検索               |
-| workflow_executions | idx_executions_status        | status                 | 実行中/失敗の検索      |
-| workflow_executions | idx_executions_started_at    | started_at             | 時系列ソート           |
-| user_profiles       | idx_profiles_deleted_at      | deleted_at             | 有効ユーザー取得       |
-| api_keys            | idx_api_keys_user_id         | user_id                | ユーザー別キー取得     |
-| audit_logs          | idx_audit_event_type         | event_type             | イベント種別検索       |
-| audit_logs          | idx_audit_entity             | entity_type, entity_id | エンティティ別履歴     |
-| audit_logs          | idx_audit_timestamp          | timestamp              | 時系列検索             |
+| テーブル            | インデックス名                      | カラム                        | 用途                                   |
+| ------------------- | ----------------------------------- | ----------------------------- | -------------------------------------- |
+| workflows           | idx_workflows_status                | status                        | ステータス検索                         |
+| workflows           | idx_workflows_deleted_at            | deleted_at                    | アクティブレコード取得                 |
+| workflows           | idx_workflows_status_deleted        | status, deleted_at            | 複合検索の高速化                       |
+| workflow_steps      | idx_steps_workflow_id               | workflow_id                   | 親子関係の取得                         |
+| workflow_steps      | idx_steps_order                     | workflow_id, order            | 順序通りの取得                         |
+| workflow_executions | idx_executions_workflow_id          | workflow_id                   | 履歴検索                               |
+| workflow_executions | idx_executions_status               | status                        | 実行中/失敗の検索                      |
+| workflow_executions | idx_executions_started_at           | started_at                    | 時系列ソート                           |
+| user_profiles       | idx_profiles_deleted_at             | deleted_at                    | 有効ユーザー取得                       |
+| api_keys            | idx_api_keys_user_id                | user_id                       | ユーザー別キー取得                     |
+| audit_logs          | idx_audit_event_type                | event_type                    | イベント種別検索                       |
+| audit_logs          | idx_audit_entity                    | entity_type, entity_id        | エンティティ別履歴                     |
+| audit_logs          | idx_audit_timestamp                 | timestamp                     | 時系列検索                             |
+| chat_sessions       | idx_chat_sessions_user_id           | user_id                       | ユーザー別セッション取得               |
+| chat_sessions       | idx_chat_sessions_created_at        | created_at                    | 作成日時降順ソート                     |
+| chat_sessions       | idx_chat_sessions_is_pinned         | user_id, is_pinned, pin_order | ピン留めセッション取得                 |
+| chat_sessions       | idx_chat_sessions_deleted_at        | deleted_at                    | 有効セッション取得                     |
+| chat_messages       | idx_chat_messages_session_id        | session_id                    | セッション別メッセージ取得             |
+| chat_messages       | idx_chat_messages_timestamp         | timestamp                     | 時系列検索                             |
+| chat_messages       | idx_chat_messages_role              | role                          | ロール別フィルタリング                 |
+| chat_messages       | idx_chat_messages_session_timestamp | session_id, timestamp         | カバリングインデックス（日時降順取得） |
+| chat_messages       | idx_chat_messages_session_message   | session_id, message_index     | メッセージ順序の一意性保証（UNIQUE）   |
 
 ---
 
