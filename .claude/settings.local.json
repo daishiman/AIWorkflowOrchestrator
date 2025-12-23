@@ -68,7 +68,8 @@
       "WebFetch(domain:docs.railway.com)",
       "SlashCommand(/ai:design-architecture:*)",
       "Bash(pnpm audit:*)",
-      "Bash(pkill:*)"
+      "Bash(pkill:*)",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []
