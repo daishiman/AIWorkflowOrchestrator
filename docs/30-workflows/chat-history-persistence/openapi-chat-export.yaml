@@ -1,0 +1,916 @@
+openapi: 3.1.0
+info:
+  title: Chat History Export API
+  description: |
+    チャット履歴をMarkdown/JSON形式でエクスポートするためのREST API。
+
+    ## 認証
+    全エンドポイントはセッションベースの認証（Bearer Token）が必要です。
+
+    ## エラー形式
+    エラーレスポンスはRFC 7807 (Problem Details for HTTP APIs) 形式に準拠しています。
+
+    ## レートリミット
+    - 単一エクスポート: 60リクエスト/分
+    - 一括エクスポート: 10リクエスト/分
+    - プレビュー: 120リクエスト/分
+  version: 1.0.0
+  contact:
+    name: AIWorkflowOrchestrator Team
+  license:
+    name: MIT
+    identifier: MIT
+
+servers:
+  - url: http://localhost:3000/api/v1
+    description: ローカル開発環境
+  - url: https://api.example.com/v1
+    description: 本番環境
+
+tags:
+  - name: Export
+    description: チャット履歴エクスポート操作
+  - name: Preview
+    description: エクスポートプレビュー
+
+paths:
+  /sessions/{sessionId}/export:
+    get:
+      operationId: exportSession
+      summary: 単一セッションのエクスポート
+      description: |
+        指定したセッションをMarkdownまたはJSON形式でエクスポートします。
+        全メッセージまたは選択したメッセージのみをエクスポートできます。
+      tags:
+        - Export
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+        - $ref: "#/components/parameters/ExportFormat"
+        - $ref: "#/components/parameters/ExportRange"
+        - $ref: "#/components/parameters/MessageIds"
+        - $ref: "#/components/parameters/IncludeMetadata"
+        - $ref: "#/components/parameters/Download"
+      responses:
+        "200":
+          description: エクスポート成功
+          headers:
+            X-Export-Format:
+              description: エクスポート形式
+              schema:
+                type: string
+                enum: [markdown, json]
+            X-Message-Count:
+              description: エクスポートされたメッセージ数
+              schema:
+                type: integer
+            X-Total-Tokens:
+              description: 総トークン数
+              schema:
+                type: integer
+            Content-Disposition:
+              description: ダウンロード時のファイル名
+              schema:
+                type: string
+          content:
+            text/markdown:
+              schema:
+                type: string
+              example: |
+                # React開発についての質問
+
+                **作成日**: 2025-12-20 14:30:00
+                **メッセージ数**: 24件
+
+                ---
+
+                ## ユーザー (2025-12-20 14:30:15)
+
+                ReactのuseEffectフックについて教えてください。
+
+                ---
+
+                ## アシスタント (2025-12-20 14:30:18)
+
+                **モデル**: anthropic/claude-3-5-sonnet-20241022
+
+                useEffectは副作用を扱うためのReact Hookです...
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExportJsonResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /sessions/export/batch:
+    post:
+      operationId: batchExportSessions
+      summary: 複数セッションの一括エクスポート
+      description: |
+        複数のセッションを一括でエクスポートし、ZIPアーカイブとして返却します。
+        最大50セッションまで同時にエクスポートできます。
+      tags:
+        - Export
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BatchExportRequest"
+            examples:
+              basic:
+                summary: 基本的な一括エクスポート
+                value:
+                  sessionIds:
+                    - "01HWQV8N4G0PXRJ6K8M2Y3Z5"
+                    - "01HWQV8N4G0PXRJ6K8M2Y3Z8"
+                  format: markdown
+                  includeMetadata: true
+              json:
+                summary: JSON形式での一括エクスポート
+                value:
+                  sessionIds:
+                    - "01HWQV8N4G0PXRJ6K8M2Y3Z5"
+                  format: json
+                  includeMetadata: false
+      responses:
+        "200":
+          description: 一括エクスポート成功（ZIPファイル）
+          headers:
+            X-Export-Count:
+              description: エクスポートされたセッション数
+              schema:
+                type: integer
+            X-Total-Messages:
+              description: 総メッセージ数
+              schema:
+                type: integer
+            Content-Disposition:
+              schema:
+                type: string
+                example: 'attachment; filename="chat_export_20251220_160000.zip"'
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+        "207":
+          description: 一部成功（一部のセッションでエラー）
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PartialSuccessResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /sessions/{sessionId}/preview:
+    get:
+      operationId: getExportPreview
+      summary: エクスポートプレビュー
+      description: |
+        エクスポート前にファイルサイズ推定やメッセージ数を確認できます。
+        ファイル形式ごとの推定サイズを返却します。
+      tags:
+        - Preview
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/SessionId"
+        - $ref: "#/components/parameters/ExportFormat"
+      responses:
+        "200":
+          description: プレビュー取得成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExportPreviewResponse"
+              example:
+                sessionId: "01HWQV8N4G0PXRJ6K8M2Y3Z5"
+                title: "React開発についての質問"
+                messageCount: 24
+                totalTokens: 4520
+                estimatedFileSize:
+                  markdown: 15234
+                  json: 28456
+                dateRange:
+                  firstMessage: "2025-12-20T14:30:15.000Z"
+                  lastMessage: "2025-12-20T15:45:00.000Z"
+                modelUsage:
+                  "anthropic/claude-3-5-sonnet-20241022": 12
+                  "openai/gpt-4": 0
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: セッショントークンによる認証
+
+  parameters:
+    SessionId:
+      name: sessionId
+      in: path
+      required: true
+      description: セッションID（ULID形式）
+      schema:
+        type: string
+        pattern: "^[0-9A-Z]{26}$"
+        example: "01HWQV8N4G0PXRJ6K8M2Y3Z5"
+
+    ExportFormat:
+      name: format
+      in: query
+      required: false
+      description: エクスポート形式
+      schema:
+        type: string
+        enum: [markdown, json]
+        default: markdown
+      example: markdown
+
+    ExportRange:
+      name: range
+      in: query
+      required: false
+      description: エクスポート範囲
+      schema:
+        type: string
+        enum: [all, selected]
+        default: all
+      example: all
+
+    MessageIds:
+      name: messageIds
+      in: query
+      required: false
+      description: |
+        選択したメッセージID（カンマ区切り）。
+        range=selected の場合に必須。
+      schema:
+        type: string
+      example: "msg1,msg2,msg3"
+
+    IncludeMetadata:
+      name: includeMetadata
+      in: query
+      required: false
+      description: LLMメタデータを含めるか
+      schema:
+        type: boolean
+        default: true
+      example: true
+
+    Download:
+      name: download
+      in: query
+      required: false
+      description: ファイルダウンロードモード（Content-Dispositionヘッダーを付与）
+      schema:
+        type: boolean
+        default: false
+      example: false
+
+  schemas:
+    # ============================================================
+    # Export Response Schemas
+    # ============================================================
+
+    ExportJsonResponse:
+      type: object
+      required:
+        - session
+        - messages
+        - exportMetadata
+      properties:
+        session:
+          $ref: "#/components/schemas/ExportSession"
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExportMessage"
+        exportMetadata:
+          $ref: "#/components/schemas/ExportMetadata"
+      example:
+        session:
+          id: "01HWQV8N4G0PXRJ6K8M2Y3Z5"
+          title: "React開発についての質問"
+          createdAt: "2025-12-20T14:30:00.000Z"
+          updatedAt: "2025-12-20T15:45:00.000Z"
+          messageCount: 24
+          totalTokens: 4520
+          tags: ["react", "frontend"]
+        messages:
+          - id: "01HWQV8N4G0PXRJ6K8M2Y3Z6"
+            role: user
+            content: "ReactのuseEffectフックについて教えてください。"
+            timestamp: "2025-12-20T14:30:15.000Z"
+            attachments: []
+          - id: "01HWQV8N4G0PXRJ6K8M2Y3Z7"
+            role: assistant
+            content: "useEffectは副作用を扱うためのReact Hookです..."
+            timestamp: "2025-12-20T14:30:18.000Z"
+            attachments: []
+            llmMetadata:
+              provider: anthropic
+              model: claude-3-5-sonnet-20241022
+              version: "20241022"
+              temperature: 0.7
+              maxTokens: 4096
+              tokenUsage:
+                inputTokens: 45
+                outputTokens: 320
+                totalTokens: 365
+              responseTimeMs: 1234
+        exportMetadata:
+          exportedAt: "2025-12-20T16:00:00.000Z"
+          format: json
+          range: all
+          version: "1.0.0"
+
+    ExportSession:
+      type: object
+      required:
+        - id
+        - title
+        - createdAt
+        - updatedAt
+        - messageCount
+        - totalTokens
+        - tags
+      properties:
+        id:
+          type: string
+          description: セッションID（ULID形式）
+          example: "01HWQV8N4G0PXRJ6K8M2Y3Z5"
+        title:
+          type: string
+          description: セッションタイトル
+          example: "React開発についての質問"
+        createdAt:
+          type: string
+          format: date-time
+          description: 作成日時（ISO 8601）
+          example: "2025-12-20T14:30:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: 最終更新日時（ISO 8601）
+          example: "2025-12-20T15:45:00.000Z"
+        messageCount:
+          type: integer
+          minimum: 0
+          description: メッセージ総数
+          example: 24
+        totalTokens:
+          type: integer
+          minimum: 0
+          description: 総トークン数
+          example: 4520
+        tags:
+          type: array
+          items:
+            type: string
+          description: タグ一覧
+          example: ["react", "frontend"]
+
+    ExportMessage:
+      type: object
+      required:
+        - id
+        - role
+        - content
+        - timestamp
+        - attachments
+      properties:
+        id:
+          type: string
+          description: メッセージID（ULID形式）
+          example: "01HWQV8N4G0PXRJ6K8M2Y3Z6"
+        role:
+          type: string
+          enum: [user, assistant]
+          description: メッセージロール
+          example: user
+        content:
+          type: string
+          description: メッセージ内容
+          example: "ReactのuseEffectフックについて教えてください。"
+        timestamp:
+          type: string
+          format: date-time
+          description: 送信日時（ISO 8601）
+          example: "2025-12-20T14:30:15.000Z"
+        attachments:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExportAttachment"
+          description: 添付ファイル一覧
+        llmMetadata:
+          $ref: "#/components/schemas/LlmMetadata"
+
+    ExportAttachment:
+      type: object
+      required:
+        - id
+        - fileName
+        - mimeType
+        - fileSize
+      properties:
+        id:
+          type: string
+          description: 添付ファイルID
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        fileName:
+          type: string
+          description: ファイル名
+          example: "screenshot.png"
+        mimeType:
+          type: string
+          description: MIMEタイプ
+          example: "image/png"
+        fileSize:
+          type: integer
+          minimum: 0
+          description: ファイルサイズ（バイト）
+          example: 1234567
+        data:
+          type: string
+          format: byte
+          description: base64エンコードされたファイルデータ（オプション）
+        path:
+          type: string
+          description: ファイルパス（オプション）
+          example: "attachments/session-123/msg-456/file.png"
+
+    LlmMetadata:
+      type: object
+      description: LLM応答のメタデータ（assistantメッセージのみ）
+      required:
+        - provider
+        - model
+      properties:
+        provider:
+          type: string
+          description: LLMプロバイダー名
+          enum: [openai, anthropic, google, xai]
+          example: anthropic
+        model:
+          type: string
+          description: モデル名
+          example: claude-3-5-sonnet-20241022
+        version:
+          type: string
+          description: モデルバージョン
+          example: "20241022"
+        temperature:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 2
+          description: 温度パラメータ
+          example: 0.7
+        maxTokens:
+          type: integer
+          minimum: 1
+          description: 最大トークン数
+          example: 4096
+        tokenUsage:
+          $ref: "#/components/schemas/TokenUsage"
+        responseTimeMs:
+          type: integer
+          minimum: 0
+          description: 応答時間（ミリ秒）
+          example: 1234
+
+    TokenUsage:
+      type: object
+      required:
+        - inputTokens
+        - outputTokens
+      properties:
+        inputTokens:
+          type: integer
+          minimum: 0
+          description: 入力トークン数
+          example: 45
+        outputTokens:
+          type: integer
+          minimum: 0
+          description: 出力トークン数
+          example: 320
+        totalTokens:
+          type: integer
+          minimum: 0
+          description: 合計トークン数
+          example: 365
+
+    ExportMetadata:
+      type: object
+      required:
+        - exportedAt
+        - format
+        - range
+        - version
+      properties:
+        exportedAt:
+          type: string
+          format: date-time
+          description: エクスポート日時（ISO 8601）
+          example: "2025-12-20T16:00:00.000Z"
+        format:
+          type: string
+          enum: [markdown, json]
+          description: エクスポート形式
+          example: json
+        range:
+          type: string
+          enum: [all, selected]
+          description: エクスポート範囲
+          example: all
+        version:
+          type: string
+          description: エクスポートフォーマットバージョン
+          example: "1.0.0"
+
+    # ============================================================
+    # Batch Export Schemas
+    # ============================================================
+
+    BatchExportRequest:
+      type: object
+      required:
+        - sessionIds
+      properties:
+        sessionIds:
+          type: array
+          items:
+            type: string
+            pattern: "^[0-9A-Z]{26}$"
+          minItems: 1
+          maxItems: 50
+          description: エクスポート対象のセッションID一覧
+          example:
+            - "01HWQV8N4G0PXRJ6K8M2Y3Z5"
+            - "01HWQV8N4G0PXRJ6K8M2Y3Z8"
+        format:
+          type: string
+          enum: [markdown, json]
+          default: markdown
+          description: エクスポート形式
+        includeMetadata:
+          type: boolean
+          default: true
+          description: LLMメタデータを含めるか
+
+    PartialSuccessResponse:
+      type: object
+      required:
+        - type
+        - title
+        - status
+        - detail
+        - results
+        - successCount
+        - errorCount
+      properties:
+        type:
+          type: string
+          format: uri
+          example: "https://api.example.com/responses/partial-success"
+        title:
+          type: string
+          example: "Partial Export Success"
+        status:
+          type: integer
+          example: 207
+        detail:
+          type: string
+          example: "Some sessions could not be exported"
+        instance:
+          type: string
+          example: "/api/v1/sessions/export/batch"
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/BatchExportResult"
+        successCount:
+          type: integer
+          minimum: 0
+          example: 2
+        errorCount:
+          type: integer
+          minimum: 0
+          example: 1
+
+    BatchExportResult:
+      type: object
+      required:
+        - sessionId
+        - status
+      properties:
+        sessionId:
+          type: string
+          example: "01HWQV8N4G0PXRJ6K8M2Y3Z5"
+        status:
+          type: string
+          enum: [success, error]
+        filename:
+          type: string
+          description: エクスポート成功時のファイル名
+          example: "React開発についての質問.md"
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: "SESSION_NOT_FOUND"
+            message:
+              type: string
+              example: "Session not found"
+
+    # ============================================================
+    # Preview Schemas
+    # ============================================================
+
+    ExportPreviewResponse:
+      type: object
+      required:
+        - sessionId
+        - title
+        - messageCount
+        - totalTokens
+        - estimatedFileSize
+        - dateRange
+        - modelUsage
+      properties:
+        sessionId:
+          type: string
+          example: "01HWQV8N4G0PXRJ6K8M2Y3Z5"
+        title:
+          type: string
+          example: "React開発についての質問"
+        messageCount:
+          type: integer
+          minimum: 0
+          example: 24
+        totalTokens:
+          type: integer
+          minimum: 0
+          example: 4520
+        estimatedFileSize:
+          type: object
+          required:
+            - markdown
+            - json
+          properties:
+            markdown:
+              type: integer
+              description: Markdown形式の推定ファイルサイズ（バイト）
+              example: 15234
+            json:
+              type: integer
+              description: JSON形式の推定ファイルサイズ（バイト）
+              example: 28456
+        dateRange:
+          type: object
+          required:
+            - firstMessage
+            - lastMessage
+          properties:
+            firstMessage:
+              type: string
+              format: date-time
+              example: "2025-12-20T14:30:15.000Z"
+            lastMessage:
+              type: string
+              format: date-time
+              example: "2025-12-20T15:45:00.000Z"
+        modelUsage:
+          type: object
+          description: "モデル別使用回数（キー: provider/model）"
+          additionalProperties:
+            type: integer
+          example:
+            "anthropic/claude-3-5-sonnet-20241022": 12
+            "openai/gpt-4": 0
+
+    # ============================================================
+    # Error Schemas (RFC 7807 Problem Details)
+    # ============================================================
+
+    ProblemDetails:
+      type: object
+      required:
+        - type
+        - title
+        - status
+        - detail
+        - instance
+      properties:
+        type:
+          type: string
+          format: uri
+          description: エラータイプを識別するURI
+          example: "https://api.example.com/errors/validation"
+        title:
+          type: string
+          description: エラータイトル
+          example: "Validation Error"
+        status:
+          type: integer
+          description: HTTPステータスコード
+          example: 400
+        detail:
+          type: string
+          description: エラーの詳細説明
+          example: "format must be 'markdown' or 'json'"
+        instance:
+          type: string
+          description: エラーが発生したリソースパス
+          example: "/api/v1/sessions/01HWQV8N4G0PXRJ6K8M2Y3Z5/export"
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/FieldError"
+
+    FieldError:
+      type: object
+      required:
+        - field
+        - message
+        - code
+      properties:
+        field:
+          type: string
+          description: エラーが発生したフィールド名
+          example: "format"
+        message:
+          type: string
+          description: エラーメッセージ
+          example: "Invalid format: 'xml'. Allowed values: markdown, json"
+        code:
+          type: string
+          description: エラーコード
+          example: "INVALID_FORMAT"
+
+  responses:
+    BadRequest:
+      description: 不正なリクエスト
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+          examples:
+            invalidFormat:
+              summary: 不正なエクスポート形式
+              value:
+                type: "https://api.example.com/errors/validation"
+                title: "Validation Error"
+                status: 400
+                detail: "format must be 'markdown' or 'json'"
+                instance: "/api/v1/sessions/01HWQV8N4G0PXRJ6K8M2Y3Z5/export"
+                errors:
+                  - field: "format"
+                    message: "Invalid format: 'xml'. Allowed values: markdown, json"
+                    code: "INVALID_FORMAT"
+            missingMessageIds:
+              summary: messageIds未指定
+              value:
+                type: "https://api.example.com/errors/validation"
+                title: "Missing Message IDs"
+                status: 400
+                detail: "messageIds parameter is required when range is 'selected'"
+                instance: "/api/v1/sessions/01HWQV8N4G0PXRJ6K8M2Y3Z5/export"
+            tooManySessions:
+              summary: セッション数超過
+              value:
+                type: "https://api.example.com/errors/validation"
+                title: "Too Many Sessions"
+                status: 400
+                detail: "Maximum 50 sessions can be exported at once"
+                instance: "/api/v1/sessions/export/batch"
+                maxAllowed: 50
+                requested: 75
+
+    Unauthorized:
+      description: 認証エラー
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+          example:
+            type: "https://api.example.com/errors/unauthorized"
+            title: "Unauthorized"
+            status: 401
+            detail: "Valid authentication token required"
+            instance: "/api/v1/sessions/01HWQV8N4G0PXRJ6K8M2Y3Z5/export"
+
+    NotFound:
+      description: リソースが見つからない
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+          example:
+            type: "https://api.example.com/errors/not-found"
+            title: "Session Not Found"
+            status: 404
+            detail: "Session with ID '01HWQV8N4G0PXRJ6K8M2Y3Z5' not found"
+            instance: "/api/v1/sessions/01HWQV8N4G0PXRJ6K8M2Y3Z5/export"
+
+    UnprocessableEntity:
+      description: 処理不可能なエンティティ
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ProblemDetails"
+              - type: object
+                properties:
+                  invalidMessageIds:
+                    type: array
+                    items:
+                      type: string
+          example:
+            type: "https://api.example.com/errors/unprocessable"
+            title: "Invalid Message Selection"
+            status: 422
+            detail: "One or more message IDs do not belong to the specified session"
+            instance: "/api/v1/sessions/01HWQV8N4G0PXRJ6K8M2Y3Z5/export"
+            invalidMessageIds: ["msg999", "msg888"]
+
+    TooManyRequests:
+      description: レートリミット超過
+      headers:
+        X-RateLimit-Limit:
+          schema:
+            type: integer
+          description: レートリミットの上限
+        X-RateLimit-Remaining:
+          schema:
+            type: integer
+          description: 残りリクエスト数
+        X-RateLimit-Reset:
+          schema:
+            type: integer
+          description: リセット時刻（UNIXタイムスタンプ）
+        Retry-After:
+          schema:
+            type: integer
+          description: 再試行までの待機時間（秒）
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ProblemDetails"
+              - type: object
+                properties:
+                  retryAfter:
+                    type: integer
+          example:
+            type: "https://api.example.com/errors/rate-limit"
+            title: "Rate Limit Exceeded"
+            status: 429
+            detail: "Too many export requests. Please wait before trying again."
+            instance: "/api/v1/sessions/01HWQV8N4G0PXRJ6K8M2Y3Z5/export"
+            retryAfter: 45
+
+    InternalServerError:
+      description: サーバー内部エラー
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ProblemDetails"
+          example:
+            type: "https://api.example.com/errors/internal"
+            title: "Internal Server Error"
+            status: 500
+            detail: "An unexpected error occurred while processing the request"
+            instance: "/api/v1/sessions/01HWQV8N4G0PXRJ6K8M2Y3Z5/export"

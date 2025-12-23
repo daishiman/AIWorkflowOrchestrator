@@ -26,8 +26,8 @@
       "import": "./dist/infrastructure/database/index.js"
     },
     "./types": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/types/index.js"
+      "types": "./dist/src/types/index.d.ts",
+      "import": "./dist/src/types/index.js"
     },
     "./types/auth": {
       "types": "./dist/types/auth.d.ts",
@@ -71,11 +71,13 @@
     "@supabase/supabase-js": "^2.86.2",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.39.0",
+    "react-router-dom": "^7.11.0",
     "zod": "^4.1.13"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
     "better-sqlite3": "^12.5.0",
+    "drizzle-kit": "^0.31.8",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
   }
