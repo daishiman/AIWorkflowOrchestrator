@@ -63,7 +63,7 @@ importers:
         version: link:../../packages/shared
       next:
         specifier: ^15.5.9
-        version: 15.5.9(@babel/core@7.28.5)(@playwright/test@1.57.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 15.5.9(@playwright/test@1.57.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -152,6 +152,9 @@ importers:
       react-markdown:
         specifier: ^10.1.0
         version: 10.1.0(@types/react@18.3.27)(react@18.3.1)
+      react-router-dom:
+        specifier: ^7.11.0
+        version: 7.11.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       rehype-highlight:
         specifier: ^7.0.2
         version: 7.0.2
@@ -12865,7 +12868,7 @@ snapshots:
 
   neo-async@2.6.2: {}
 
-  next@15.5.9(@babel/core@7.28.5)(@playwright/test@1.57.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  next@15.5.9(@playwright/test@1.57.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       "@next/env": 15.5.9
       "@swc/helpers": 0.5.15
@@ -12873,7 +12876,7 @@ snapshots:
       postcss: 8.4.31
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      styled-jsx: 5.1.6(@babel/core@7.28.5)(react@18.3.1)
+      styled-jsx: 5.1.6(react@18.3.1)
     optionalDependencies:
       "@next/swc-darwin-arm64": 15.5.7
       "@next/swc-darwin-x64": 15.5.7
@@ -13782,12 +13785,10 @@ snapshots:
     dependencies:
       inline-style-parser: 0.2.7
 
-  styled-jsx@5.1.6(@babel/core@7.28.5)(react@18.3.1):
+  styled-jsx@5.1.6(react@18.3.1):
     dependencies:
       client-only: 0.0.1
       react: 18.3.1
-    optionalDependencies:
-      "@babel/core": 7.28.5
 
   sucrase@3.35.1:
     dependencies:
