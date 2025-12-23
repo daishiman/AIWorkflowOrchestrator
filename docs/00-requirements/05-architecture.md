@@ -578,15 +578,15 @@ Knowledge Graphのエッジ（辺）を表現するEntity型。
 
 ### 5.9.5 認証UIコンポーネント
 
-| コンポーネント | 層       | 責務                                   | ファイル                                   | テストカバレッジ   |
-| -------------- | -------- | -------------------------------------- | ------------------------------------------ | ------------------ |
-| AuthGuard      | HOC      | 認証状態によるルーティング制御         | components/AuthGuard/index.tsx             | 100% (67/67 tests) |
-| useAuthState   | hook     | 認証状態取得ロジック                   | components/AuthGuard/hooks/useAuthState.ts | 100%               |
-| getAuthState   | util     | 状態判定純粋関数                       | components/AuthGuard/utils/getAuthState.ts | 100% (5/5 tests)   |
-| LoadingScreen  | molecule | 認証確認中のローディング画面表示       | components/AuthGuard/LoadingScreen.tsx     | 100%               |
-| AuthView       | view     | ログイン画面表示（OAuthボタン配置）    | views/AuthView/index.tsx                   | -                  |
-| AccountSection | organism | アカウント設定UI（プロフィール・連携） | components/organisms/AccountSection/       | -                  |
-| ProviderIcon   | atom     | OAuthプロバイダーアイコン表示          | components/atoms/ProviderIcon/index.tsx    | -                  |
+| コンポーネント | 層       | 責務                                   | ファイル                                   | テストカバレッジ    |
+| -------------- | -------- | -------------------------------------- | ------------------------------------------ | ------------------- |
+| AuthGuard      | HOC      | 認証状態によるルーティング制御         | components/AuthGuard/index.tsx             | 100% (67/67 tests)  |
+| useAuthState   | hook     | 認証状態取得ロジック                   | components/AuthGuard/hooks/useAuthState.ts | 100%                |
+| getAuthState   | util     | 状態判定純粋関数                       | components/AuthGuard/utils/getAuthState.ts | 100% (5/5 tests)    |
+| LoadingScreen  | molecule | 認証確認中のローディング画面表示       | components/AuthGuard/LoadingScreen.tsx     | 100%                |
+| AuthView       | view     | ログイン画面表示（OAuthボタン配置）    | views/AuthView/index.tsx                   | -                   |
+| AccountSection | organism | アカウント設定UI（プロフィール・連携） | components/organisms/AccountSection/       | 93% (115/115 tests) |
+| ProviderIcon   | atom     | OAuthプロバイダーアイコン表示          | components/atoms/ProviderIcon/index.tsx    | 100%                |
 
 ### 5.9.6 認証状態遷移
 
