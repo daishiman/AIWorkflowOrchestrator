@@ -6,7 +6,39 @@
  * @module AuthGuard/types
  */
 
+import type { ReactNode } from "react";
 import type { AuthUser } from "../../../preload/types";
+
+// ============================================================
+// AuthGuard表示状態型定義
+// ============================================================
+
+/**
+ * 認証ガードの表示状態を表す型
+ *
+ * 各状態の意味:
+ * - `checking`: 認証状態を確認中（ローディング表示）
+ * - `authenticated`: 認証済み（子コンポーネントを表示）
+ * - `unauthenticated`: 未認証（ログイン画面を表示）
+ */
+export type AuthGuardDisplayState =
+  | "checking"
+  | "authenticated"
+  | "unauthenticated";
+
+/**
+ * AuthGuardコンポーネントのProps
+ */
+export interface AuthGuardProps {
+  /** 認証済み時に表示する子コンポーネント */
+  children: ReactNode;
+
+  /**
+   * ローディング中に表示するカスタムコンポーネント
+   * @default LoadingScreen
+   */
+  fallback?: ReactNode;
+}
 
 // ============================================================
 // エクスポート型定義

@@ -1,34 +1,8 @@
-import React from "react";
-import { useAppStore } from "../../store";
+import type { FC } from "react";
 import { AuthView } from "../../views/AuthView";
 import { LoadingScreen } from "./LoadingScreen";
-
-/**
- * 認証ガードの表示状態を表す型
- *
- * 各状態の意味:
- * - `checking`: 認証状態を確認中（ローディング表示）
- * - `authenticated`: 認証済み（子コンポーネントを表示）
- * - `unauthenticated`: 未認証（ログイン画面を表示）
- *
- * @remarks
- * より厳密な型定義（Discriminated Union）は `./types.ts` を参照
- */
-type AuthGuardDisplayState = "checking" | "authenticated" | "unauthenticated";
-
-/**
- * AuthGuardコンポーネントのProps
- */
-export interface AuthGuardProps {
-  /** 認証済み時に表示する子コンポーネント */
-  children: React.ReactNode;
-
-  /**
-   * ローディング中に表示するカスタムコンポーネント
-   * @default LoadingScreen
-   */
-  fallback?: React.ReactNode;
-}
+import { useAuthState } from "./hooks/useAuthState";
+import type { AuthGuardProps } from "./types";
 
 /**
  * 認証ガードコンポーネント
@@ -52,29 +26,15 @@ export interface AuthGuardProps {
  * </AuthGuard>
  * ```
  */
-export const AuthGuard: React.FC<AuthGuardProps> = ({ children, fallback }) => {
-  const isAuthenticated = useAppStore((state) => state.isAuthenticated);
-  const isLoading = useAppStore((state) => state.isLoading);
-
-  /**
-   * 現在の認証状態を判定する
-   *
-   * @returns 現在のAuthGuardDisplayState
-   */
-  const getAuthState = (): AuthGuardDisplayState => {
-    if (isLoading) return "checking";
-    if (isAuthenticated) return "authenticated";
-    return "unauthenticated";
-  };
-
-  const authState = getAuthState();
+export const AuthGuard: FC<AuthGuardProps> = ({ children, fallback }) => {
+  const authState = useAuthState();
 
   switch (authState) {
     case "checking":
-      return <>{fallback ?? <LoadingScreen />}</>;
+      return fallback ?? <LoadingScreen />;
 
     case "authenticated":
-      return <>{children}</>;
+      return children;
 
     case "unauthenticated":
       return <AuthView />;
@@ -90,7 +50,13 @@ AuthGuard.displayName = "AuthGuard";
 export { LoadingScreen } from "./LoadingScreen";
 export { AuthErrorBoundary } from "./AuthErrorBoundary";
 export type { AuthErrorBoundaryProps } from "./AuthErrorBoundary";
-export type { AuthGuardState, AuthError, AuthErrorCode } from "./types";
+export type {
+  AuthGuardProps,
+  AuthGuardDisplayState,
+  AuthGuardState,
+  AuthError,
+  AuthErrorCode,
+} from "./types";
 export {
   isAuthenticated,
   isChecking,
@@ -99,3 +65,8 @@ export {
   hasExpiresAt,
   assertNever,
 } from "./types";
+
+// ユーティリティ・フックの再エクスポート
+export { useAuthState } from "./hooks/useAuthState";
+export { getAuthState } from "./utils/getAuthState";
+export type { AuthStateInput } from "./utils/getAuthState";

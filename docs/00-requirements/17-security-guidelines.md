@@ -59,6 +59,25 @@ Electron Desktop アプリでは Supabase Auth を使用し、OAuth 2.0 PKCE フ
 
 **対応プロバイダー**: Google, GitHub, Discord
 
+**OAuth認証フロー実装状況**:
+
+| 項目                   | 状態        | 説明                                                |
+| ---------------------- | ----------- | --------------------------------------------------- |
+| カスタムプロトコル     | ✅ 実装済み | `aiworkflow://auth/callback` で認証コールバック受信 |
+| Refresh Token暗号化    | ✅ 実装済み | safeStorage.encryptString()で暗号化後保存           |
+| Access Tokenメモリ保持 | ✅ 実装済み | Zustand storeでメモリ上のみ保持                     |
+| State parameter検証    | ❌ 未実装   | DEBT-SEC-001として技術的負債に記録                  |
+| PKCE実装               | ❌ 未実装   | DEBT-SEC-002として技術的負債に記録                  |
+
+**実装ファイル**:
+
+| ファイル                                                | 責務                   |
+| ------------------------------------------------------- | ---------------------- |
+| `apps/desktop/src/main/index.ts:105-188`                | カスタムプロトコル処理 |
+| `apps/desktop/src/main/infrastructure/secureStorage.ts` | トークン暗号化・復号化 |
+| `apps/desktop/src/main/ipc/authHandlers.ts`             | 認証IPCハンドラー      |
+| `apps/desktop/src/renderer/store/slices/authSlice.ts`   | 認証状態管理           |
+
 **認証フロー（PKCE）**:
 
 1. アプリが PKCE code_verifier を生成
@@ -68,12 +87,12 @@ Electron Desktop アプリでは Supabase Auth を使用し、OAuth 2.0 PKCE フ
 
 **セキュリティ設定**:
 
-| 設定項目         | 値    | 理由                                |
-| ---------------- | ----- | ----------------------------------- |
-| contextIsolation | true  | Preload スクリプトの分離            |
-| nodeIntegration  | false | Renderer からのシステムアクセス防止 |
-| sandbox          | true  | Chromium サンドボックスの有効化     |
-| webSecurity      | true  | Same-Origin ポリシーの強制          |
+| 設定項目         | 値    | 実装箇所         | 理由                                |
+| ---------------- | ----- | ---------------- | ----------------------------------- |
+| contextIsolation | true  | main/index.ts:54 | Preload スクリプトの分離            |
+| nodeIntegration  | false | main/index.ts:55 | Renderer からのシステムアクセス防止 |
+| sandbox          | true  | main/index.ts:53 | Chromium サンドボックスの有効化     |
+| webSecurity      | true  | -                | Same-Origin ポリシーの強制          |
 
 **Discord OAuth設定の注意点**:
 
@@ -94,6 +113,35 @@ Electron Desktop アプリでは Supabase Auth を使用し、OAuth 2.0 PKCE フ
 | 「〇〇でログイン」 | 非推奨（新規/既存の区別を想起させる） |
 
 例: 「Googleで続ける」「GitHubで続ける」「Discordで続ける」
+
+### 17.2.1.3 カスタムプロトコルのセキュリティ考慮事項
+
+**実装状況**:
+
+| 項目               | 状態        | 説明                                              |
+| ------------------ | ----------- | ------------------------------------------------- |
+| プロトコル登録     | ✅ 実装済み | electron-builder.ymlで`aiworkflow://`を登録       |
+| コールバック処理   | ✅ 実装済み | app.setAsDefaultProtocolClient()で受信            |
+| トークン抽出       | ✅ 実装済み | URLフラグメントからaccess_token/refresh_token抽出 |
+| トークン暗号化保存 | ✅ 実装済み | safeStorage.encryptString()でRefresh Token暗号化  |
+| URL検証            | ⚠️ 一部実装 | aiworkflow://スキーム確認のみ、詳細検証は未実装   |
+
+**セキュリティリスクと対策**:
+
+| リスク                | 対策状況    | 技術的負債                          |
+| --------------------- | ----------- | ----------------------------------- |
+| CSRF攻撃              | ⚠️ 一部対策 | State parameter検証（DEBT-SEC-001） |
+| 認可コード横取り      | ⚠️ 一部対策 | PKCE実装（DEBT-SEC-002）            |
+| 不正なコールバックURL | ⚠️ 基本対策 | URL詳細検証（DEBT-SEC-003）         |
+
+**worktree使用時の注意事項**:
+
+macOSのLaunchServicesキャッシュにより、削除されたworktreeのパスが残ることがある。
+
+**対策**:
+
+- ✅ Gitフック（.husky/post-checkout）による自動クリーンアップ
+- ✅ 手動スクリプト（scripts/setup-worktree.sh）による修復
 
 **認証完了メッセージ**:
 
@@ -219,6 +267,35 @@ Electron Desktop アプリでは Supabase Auth を使用し、OAuth 2.0 PKCE フ
 - OSのキーチェーン（macOS）/Credential Manager（Windows）を活用する
 - 認証トークン、APIキーの保存に使用する
 - アプリアンインストール時に自動削除される
+
+**認証トークン保存（実装済み）**:
+
+- **Refresh Token**: safeStorage.encryptString()で暗号化後、electron-storeに保存
+- **Access Token**: メモリ上のみ保持（Zustand store）
+- **保存場所**: `apps/desktop/src/main/infrastructure/secureStorage.ts`
+
+**実装例**:
+
+```typescript
+// Refresh Tokenの暗号化保存
+if (safeStorage.isEncryptionAvailable()) {
+  const encrypted = safeStorage.encryptString(token);
+  getStore().set(REFRESH_TOKEN_KEY, encrypted.toString("base64"));
+}
+
+// Refresh Tokenの復号化取得
+const encryptedBase64 = getStore().get(REFRESH_TOKEN_KEY) as string | undefined;
+if (encryptedBase64) {
+  const encrypted = Buffer.from(encryptedBase64, "base64");
+  return safeStorage.decryptString(encrypted);
+}
+```
+
+**暗号化利用不可時の動作**:
+
+- `safeStorage.isEncryptionAvailable()` が `false` の場合
+- Refresh Tokenは保存されない（セッション維持不可）
+- 警告ログを出力
 
 **禁止事項**:
 

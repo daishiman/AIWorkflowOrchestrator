@@ -52,6 +52,8 @@
 | apps/web/          | Next.js Webアプリ                                               |
 | apps/desktop/      | Electronデスクトップアプリ                                      |
 | local-agent/       | ローカルファイル監視エージェント                                |
+| scripts/           | **プロジェクト管理スクリプト（setup-worktree.sh等）**           |
+| .husky/            | **Gitフック（post-checkout等）**                                |
 | .github/workflows/ | CI/CDワークフロー                                               |
 | 設定ファイル群     | package.json、tsconfig.json等                                   |
 
@@ -60,6 +62,23 @@
 - packages/shared/: 4階層（core → infrastructure → ui → types）で依存方向を制御
 - apps/: 各アプリは独立してデプロイ可能
 - docs/: 番号プレフィックスで整理（参照しやすい）
+
+### 4.2.1 docs/ 詳細構造
+
+| パス                                                    | 役割                               |
+| ------------------------------------------------------- | ---------------------------------- |
+| 00-requirements/                                        | システム要件定義                   |
+| 00-requirements/05-architecture.md                      | アーキテクチャ設計                 |
+| 00-requirements/08-api-design.md                        | API設計                            |
+| 00-requirements/17-security-guidelines.md               | セキュリティガイドライン           |
+| 10-design/                                              | 設計ドキュメント                   |
+| 20-specifications/                                      | 仕様書                             |
+| 30-workflows/                                           | **ワークフロー・プロジェクト記録** |
+| 30-workflows/login-recovery/                            | **ログイン機能復旧プロジェクト**   |
+| 30-workflows/login-recovery/README.md                   | プロジェクト完全ガイド             |
+| 30-workflows/login-recovery/step11-final-review.md      | 最終レビュー結果                   |
+| 30-workflows/login-recovery/step12-manual-test-guide.md | 手動テストガイド                   |
+| 99-adr/                                                 | Architecture Decision Records      |
 
 ---
 
@@ -171,16 +190,19 @@
 
 ### 4.5.1 main/（Main Process）
 
-| パス                  | 役割                      |
-| --------------------- | ------------------------- |
-| index.ts              | エントリーポイント        |
-| ipc/channels.ts       | IPCチャネル定義（型定義） |
-| ipc/handlers/         | ハンドラー実装            |
-| ipc/workspaceHandlers | ワークスペースIPC         |
-| ipc/validation.ts     | 入力バリデーション        |
-| services/             | バックグラウンドサービス  |
-| windows/              | ウィンドウ管理            |
-| config/               | 設定（security、app）     |
+| パス                                     | 役割                            |
+| ---------------------------------------- | ------------------------------- |
+| index.ts                                 | エントリーポイント              |
+| ipc/channels.ts                          | IPCチャネル定義（型定義）       |
+| ipc/handlers/                            | ハンドラー実装                  |
+| ipc/authHandlers.ts                      | 認証IPC（withValidation適用）   |
+| ipc/workspaceHandlers.ts                 | ワークスペースIPC               |
+| ipc/validation.ts                        | 入力バリデーション              |
+| infrastructure/secureStorage.ts          | トークン暗号化（safeStorage）   |
+| infrastructure/security/ipc-validator.ts | IPC送信元検証（withValidation） |
+| services/                                | バックグラウンドサービス        |
+| windows/                                 | ウィンドウ管理                  |
+| config/                                  | 設定（security、app）           |
 
 ### 4.5.2 preload/（セキュリティ境界）
 
@@ -206,16 +228,31 @@
 
 ### 4.5.4 renderer/components/（Atomic Design）
 
-| パス       | 役割                                         |
-| ---------- | -------------------------------------------- |
-| atoms/     | 基本UI要素（Button、Input、Icon、Badge等）   |
-| molecules/ | 複合要素（Tooltip、NavIcon、FileTreeItem等） |
-| organisms/ | 機能単位（AppDock、Sidebar、GlassPanel等）   |
+| パス                                              | 役割                                         |
+| ------------------------------------------------- | -------------------------------------------- |
+| atoms/                                            | 基本UI要素（Button、Input、Icon、Badge等）   |
+| molecules/                                        | 複合要素（Tooltip、NavIcon、FileTreeItem等） |
+| organisms/                                        | 機能単位（AppDock、Sidebar、GlassPanel等）   |
+| AuthGuard/                                        | **認証ガード（HOC）**                        |
+| AuthGuard/index.tsx                               | 認証状態による表示制御                       |
+| AuthGuard/LoadingScreen.tsx                       | ローディング画面                             |
+| AuthGuard/types.ts                                | AuthGuard型定義                              |
+| AuthGuard/hooks/useAuthState.ts                   | 認証状態取得フック                           |
+| AuthGuard/utils/getAuthState.ts                   | 状態判定純粋関数                             |
+| AuthGuard/AuthGuard.test.tsx                      | AuthGuardテスト（67 tests）                  |
+| AuthGuard/utils/getAuthState.test.ts              | getAuthState単体テスト（5 tests）            |
+| organisms/AccountSection/                         | **アカウント管理セクション**                 |
+| AccountSection/index.tsx                          | プロフィール・アバター・連携管理UI           |
+| AccountSection/AccountSection.test.tsx            | 基本機能テスト（55 tests）                   |
+| AccountSection/AccountSection.portal.test.tsx     | Portal機能テスト（27 tests）                 |
+| AccountSection/AccountSection.a11y.test.tsx       | アクセシビリティテスト（15 tests）           |
+| AccountSection/AccountSection.edge-cases.test.tsx | エッジケーステスト（18 tests）               |
 
 ### 4.5.5 renderer/views/（画面構成）
 
 | パス           | 役割                                   |
 | -------------- | -------------------------------------- |
+| AuthView/      | **ログイン画面（OAuthボタン配置）**    |
 | DashboardView/ | ダッシュボード（統計・アクティビティ） |
 | EditorView/    | エディタ（ファイルツリー・編集）       |
 | ChatView/      | AIチャット                             |
@@ -224,15 +261,16 @@
 
 ### 4.5.6 renderer/store/（Zustand状態管理）
 
-| パス                  | 役割                                   |
-| --------------------- | -------------------------------------- |
-| index.ts              | 統合ストア（createAppStore）           |
-| slices/               | 機能別スライス                         |
-| slices/uiSlice        | UI状態（ビュー、ウィンドウサイズ）     |
-| slices/editorSlice    | エディタ状態（ファイル、フォルダ）     |
-| slices/chatSlice      | チャット状態（メッセージ、入力）       |
-| slices/workspaceSlice | ワークスペース状態（複数フォルダ管理） |
-| types/workspace.ts    | Workspace型定義（Branded Types）       |
+| パス                  | 役割                                           |
+| --------------------- | ---------------------------------------------- |
+| index.ts              | 統合ストア（createAppStore）                   |
+| slices/               | 機能別スライス                                 |
+| slices/authSlice      | **認証状態（ログイン、トークン、セッション）** |
+| slices/uiSlice        | UI状態（ビュー、ウィンドウサイズ）             |
+| slices/editorSlice    | エディタ状態（ファイル、フォルダ）             |
+| slices/chatSlice      | チャット状態（メッセージ、入力）               |
+| slices/workspaceSlice | ワークスペース状態（複数フォルダ管理）         |
+| types/workspace.ts    | Workspace型定義（Branded Types）               |
 
 ### 4.5.7 Electron 3プロセスモデル
 
@@ -267,18 +305,20 @@
 
 ## 4.8 ルートの設定ファイル群
 
-| ファイル            | 役割                   |
-| ------------------- | ---------------------- |
-| package.json        | ワークスペースルート   |
-| pnpm-workspace.yaml | pnpmワークスペース設定 |
-| tsconfig.json       | TypeScript基本設定     |
-| tsconfig.base.json  | 共通TypeScript設定     |
-| .eslintrc.js        | ESLint設定             |
-| .prettierrc         | Prettier設定           |
-| vitest.config.ts    | Vitest設定             |
-| .env.example        | 環境変数サンプル       |
-| .gitignore          | Git無視設定            |
-| README.md           | プロジェクト説明       |
+| ファイル                  | 役割                                   |
+| ------------------------- | -------------------------------------- |
+| package.json              | ワークスペースルート                   |
+| pnpm-workspace.yaml       | pnpmワークスペース設定                 |
+| tsconfig.json             | TypeScript基本設定                     |
+| tsconfig.base.json        | 共通TypeScript設定                     |
+| .eslintrc.js              | ESLint設定                             |
+| .prettierrc               | Prettier設定                           |
+| vitest.config.ts          | Vitest設定                             |
+| .env.example              | 環境変数サンプル                       |
+| .gitignore                | Git無視設定                            |
+| .husky/post-checkout      | **worktree切替時の自動クリーンアップ** |
+| scripts/setup-worktree.sh | **worktree手動セットアップスクリプト** |
+| README.md                 | プロジェクト説明                       |
 
 ---
 

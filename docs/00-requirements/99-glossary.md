@@ -49,13 +49,18 @@
 
 ## UI/デザイン用語
 
-| 用語          | 定義                                                                            |
-| ------------- | ------------------------------------------------------------------------------- |
-| Design Tokens | デザイン要素を抽象化した変数。Global、Alias、Component の3層構造                |
-| Headless UI   | スタイルを持たないロジックのみの UI コンポーネント。Radix UI が代表例           |
-| Atomic Design | コンポーネント階層。本システムでは Primitives/Patterns/Features/Templates の4層 |
-| Apple HIG     | Apple Human Interface Guidelines。macOS アプリのデザインガイドライン            |
-| shadcn/ui     | Radix UI をベースにした再利用可能なコンポーネント集                             |
+| 用語                    | 定義                                                                                          |
+| ----------------------- | --------------------------------------------------------------------------------------------- |
+| Design Tokens           | デザイン要素を抽象化した変数。Global、Alias、Component の3層構造                              |
+| Headless UI             | スタイルを持たないロジックのみの UI コンポーネント。Radix UI が代表例                         |
+| Atomic Design           | コンポーネント階層。本システムでは Primitives/Patterns/Features/Templates の4層               |
+| Apple HIG               | Apple Human Interface Guidelines。macOS アプリのデザインガイドライン                          |
+| shadcn/ui               | Radix UI をベースにした再利用可能なコンポーネント集                                           |
+| React Portal            | React の`createPortal` API。DOM階層の任意の位置にコンポーネントをレンダリングする機能         |
+| Stacking Context        | CSS の z-index が有効な範囲を決定するレイヤー。`backdrop-filter`, `transform`等で作成される   |
+| WAI-ARIA Menu Pattern   | キーボードナビゲーション、フォーカス管理を定義したアクセシビリティパターン（role="menu"使用） |
+| createPortal            | React Portal を作成する関数。`createPortal(children, domNode)` で document.body 等に描画可能  |
+| getBoundingClientRect() | DOM 要素の位置・サイズを取得する API。Portal の位置計算に使用                                 |
 
 ## テスト用語
 

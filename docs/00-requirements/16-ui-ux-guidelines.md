@@ -678,13 +678,50 @@ linkedProviders.filter((p) => p.avatarUrl && p.avatarUrl !== currentAvatarUrl);
 
 **z-index管理（Portal使用）**:
 
-アバターメニューはCSS stacking contextの問題（`backdrop-blur`による新しいスタッキングコンテキスト作成）を回避するため、ReactのcreatePortalを使用して`document.body`直下にレンダリングする。
+アバターメニューはCSS stacking contextの問題（`backdrop-filter: blur()`による新しいスタッキングコンテキスト作成）を回避するため、ReactのcreatePortalを使用して`document.body`直下にレンダリングする。
 
 | 要素             | z-index値 | 理由                                 |
 | ---------------- | --------- | ------------------------------------ |
 | アバターメニュー | z-[9999]  | 他の要素より確実に前面に表示         |
 | 確認ダイアログ   | z-[100]   | メニューより低く、コンテンツより高い |
 | GlassPanel       | z-auto    | 通常のスタッキング順序に従う         |
+
+**Portal実装のポイント**:
+
+```typescript
+// React Portalでdocument.body直下に描画
+createPortal(
+  <div
+    role="menu"
+    className="fixed w-48 z-[9999]"
+    style={{ top: menuPosition.top, left: menuPosition.left }}
+  >
+    {/* メニュー項目 */}
+  </div>,
+  document.body
+)
+```
+
+**位置計算**:
+
+- `getBoundingClientRect()`でトリガーボタンの位置を取得
+- `top`: `rect.bottom + 8`（ボタンの下に8pxスペース）
+- `left`: `rect.left`（ボタンの左端に揃える）
+
+**WAI-ARIA Menu Pattern準拠**:
+
+| 要件                 | 実装                                       |
+| -------------------- | ------------------------------------------ |
+| role="menu"          | メニューコンテナに設定                     |
+| role="menuitem"      | 各メニュー項目に設定                       |
+| aria-label           | メニュー・ボタンに明確なラベル             |
+| aria-expanded        | トリガーボタンにメニュー開閉状態を反映     |
+| aria-haspopup="menu" | トリガーボタンに設定                       |
+| フォーカス管理       | メニューopen時に最初の項目へ自動フォーカス |
+| Escapeキー           | メニュークローズ＋トリガーボタンへ復帰     |
+| アウトサイドクリック | メニュー・ボタン外クリックでクローズ       |
+
+詳細な実装パターンは [16.16 Portal実装パターン](#1616-portal実装パターン) を参照。
 
 ---
 
@@ -1233,6 +1270,341 @@ linkedProviders.filter((p) => p.avatarUrl && p.avatarUrl !== currentAvatarUrl);
 - フォルダ選択時: 「フォルダ名 を選択しました。N件のファイルを追加」
 - フォルダ解除時: 「フォルダ名 の選択を解除しました。N件のファイルを削除」
 - indeterminate状態: 「フォルダ名 の一部のファイルが選択されています」
+
+---
+
+## 16.16 Portal実装パターン
+
+### 16.16.1 概要
+
+React Portal（`createPortal`）を使用して、CSS stacking contextの制約から脱出し、要素を確実に最前面に表示するための実装パターン。
+
+**適用場面**:
+
+- ドロップダウンメニュー、ツールチップ、モーダルなど、親要素のstacking contextから独立させる必要がある要素
+- `backdrop-filter: blur()`、`filter`、`transform`などstacking contextを作成するCSSプロパティを持つ親要素の子孫要素
+
+### 16.16.2 Stacking Context問題の理解
+
+**問題**: CSS stacking contextが作成されると、子要素の`z-index`は親のstacking context内でのみ有効になる。
+
+```typescript
+// 問題のあるパターン
+<div className="backdrop-blur-xl"> {/* 新しいstacking context作成 */}
+  <div className="z-[9999]"> {/* このz-indexは親context内でのみ有効 */}
+    メニュー
+  </div>
+</div>
+```
+
+**Stacking Contextを作成するCSSプロパティ**:
+
+- `backdrop-filter: blur()`
+- `filter: blur()`, `filter: drop-shadow()` など
+- `transform`（`translateZ(0)` 含む）
+- `opacity < 1`
+- `position: fixed` + `transform`
+- `will-change: transform, opacity` など
+
+**解決策**: React Portalで`document.body`直下にレンダリング
+
+```typescript
+// 解決パターン
+createPortal(
+  <div className="fixed z-[9999]">メニュー</div>,
+  document.body
+)
+```
+
+### 16.16.3 基本実装パターン
+
+**必須要素**:
+
+1. メニュー位置を保持するstate
+2. メニュー表示状態のboolean state
+3. トリガーボタンのref
+4. メニュー要素のref（アウトサイドクリック判定用）
+
+```typescript
+// State管理
+const [isMenuOpen, setIsMenuOpen] = useState(false);
+const [menuPosition, setMenuPosition] = useState<MenuPosition | null>(null);
+const triggerRef = useRef<HTMLDivElement>(null);
+const menuRef = useRef<HTMLDivElement>(null);
+
+// MenuPosition型定義
+interface MenuPosition {
+  top: number;
+  left: number;
+}
+```
+
+**位置計算ヘルパー関数**:
+
+```typescript
+const calculateMenuPosition = useCallback((): MenuPosition | null => {
+  if (!triggerRef.current) return null;
+  const rect = triggerRef.current.getBoundingClientRect();
+  return {
+    top: rect.bottom + 8, // トリガーの下に8pxスペース
+    left: rect.left, // 左端を揃える
+  };
+}, []);
+```
+
+**メニュートグルハンドラー**:
+
+```typescript
+const handleToggleMenu = useCallback(() => {
+  setIsMenuOpen((prev) => {
+    if (!prev) {
+      const position = calculateMenuPosition();
+      setMenuPosition(position);
+    } else {
+      setMenuPosition(null);
+    }
+    return !prev;
+  });
+}, [calculateMenuPosition]);
+```
+
+**Portal描画**:
+
+```typescript
+{isMenuOpen && menuPosition && createPortal(
+  <div
+    ref={menuRef}
+    role="menu"
+    aria-label="メニュー"
+    className="fixed w-48 bg-[var(--bg-secondary)] border border-white/10 rounded-lg shadow-lg z-[9999]"
+    style={{ top: menuPosition.top, left: menuPosition.left }}
+  >
+    {/* メニュー項目 */}
+  </div>,
+  document.body
+)}
+```
+
+### 16.16.4 イベントハンドリング
+
+**アウトサイドクリックで閉じる**:
+
+```typescript
+useEffect(() => {
+  const handleClickOutside = (event: MouseEvent) => {
+    const target = event.target as Node;
+    const isInsideTrigger = triggerRef.current?.contains(target);
+    const isInsideMenu = menuRef.current?.contains(target);
+
+    if (!isInsideTrigger && !isInsideMenu) {
+      closeMenu();
+    }
+  };
+
+  if (isMenuOpen) {
+    document.addEventListener("mousedown", handleClickOutside);
+  }
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, [isMenuOpen, closeMenu]);
+```
+
+**Escapeキーで閉じる**:
+
+```typescript
+useEffect(() => {
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === "Escape" && isMenuOpen) {
+      closeMenu(true); // フォーカスをトリガーに戻す
+    }
+  };
+
+  if (isMenuOpen) {
+    document.addEventListener("keydown", handleKeyDown);
+  }
+
+  return () => {
+    document.removeEventListener("keydown", handleKeyDown);
+  };
+}, [isMenuOpen, closeMenu]);
+```
+
+**メニュークローズヘルパー**:
+
+```typescript
+const closeMenu = useCallback((returnFocus = false) => {
+  setIsMenuOpen(false);
+  setMenuPosition(null);
+  if (returnFocus) {
+    const button = triggerRef.current?.querySelector("button");
+    button?.focus();
+  }
+}, []);
+```
+
+### 16.16.5 WAI-ARIA Menu Pattern実装
+
+**必須ARIA属性**:
+
+```typescript
+// トリガーボタン
+<button
+  aria-label="メニューを開く"
+  aria-expanded={isMenuOpen}
+  aria-haspopup="menu"
+  onClick={handleToggleMenu}
+>
+  トリガー
+</button>
+
+// メニューコンテナ
+<div
+  role="menu"
+  aria-label="メニュー"
+>
+  <button role="menuitem" onClick={handleAction1}>
+    アクション1
+  </button>
+  <button role="menuitem" onClick={handleAction2}>
+    アクション2
+  </button>
+</div>
+```
+
+**フォーカス管理**:
+
+```typescript
+// メニューopen時に最初の項目へフォーカス移動
+useEffect(() => {
+  if (isMenuOpen && menuRef.current) {
+    requestAnimationFrame(() => {
+      const firstMenuItem = menuRef.current?.querySelector(
+        '[role="menuitem"]',
+      ) as HTMLElement;
+      firstMenuItem?.focus();
+    });
+  }
+}, [isMenuOpen]);
+```
+
+### 16.16.6 テスト設計
+
+**必須テストケース**:
+
+| カテゴリ             | テスト内容                           |
+| -------------------- | ------------------------------------ |
+| Portal描画           | `document.body`直下への描画確認      |
+| z-index              | `z-[9999]`が適用されていることを確認 |
+| 位置計算             | トリガーボタンの下に正しく配置       |
+| アウトサイドクリック | メニュー外クリックで閉じる           |
+| Escapeキー           | Escキーでクローズ＋フォーカス復帰    |
+| ARIA属性             | role, aria-expanded, aria-label等    |
+| フォーカス管理       | メニューopen時の自動フォーカス移動   |
+| メモリリーク防止     | useEffect cleanupによるリスナー解除  |
+
+**テスト例**:
+
+```typescript
+it('Portal要素がdocument.body直下に描画されること', async () => {
+  render(<ComponentWithPortal />);
+  const button = screen.getByRole('button', { name: /メニューを開く/i });
+  await userEvent.click(button);
+
+  const menu = document.body.querySelector('[role="menu"]');
+  expect(menu).toBeInTheDocument();
+  expect(menu?.parentElement).toBe(document.body);
+});
+
+it('z-index: 9999が適用されていること', async () => {
+  render(<ComponentWithPortal />);
+  await userEvent.click(screen.getByRole('button'));
+
+  const menu = document.body.querySelector('[role="menu"]');
+  expect(menu).toHaveClass('z-[9999]');
+});
+```
+
+### 16.16.7 パフォーマンス最適化
+
+**useCallbackによるメモ化**:
+
+```typescript
+// 位置計算関数のメモ化
+const calculateMenuPosition = useCallback((): MenuPosition | null => {
+  // ...
+}, []);
+
+// メニュークローズ関数のメモ化
+const closeMenu = useCallback((returnFocus = false) => {
+  // ...
+}, []);
+```
+
+**requestAnimationFrameの使用**:
+
+Portal要素のレンダリング完了を待ってからフォーカス移動を実行：
+
+```typescript
+useEffect(() => {
+  if (isMenuOpen && menuRef.current) {
+    requestAnimationFrame(() => {
+      // Portalレンダリング後にフォーカス移動
+      const firstMenuItem = menuRef.current?.querySelector('[role="menuitem"]');
+      firstMenuItem?.focus();
+    });
+  }
+}, [isMenuOpen]);
+```
+
+### 16.16.8 ベストプラクティス
+
+| 原則                    | 説明                                                            |
+| ----------------------- | --------------------------------------------------------------- |
+| 最小限の使用            | Portalは必要な場合のみ使用（通常のDOM階層で解決できるなら不要） |
+| メモリリーク防止        | useEffect cleanupでイベントリスナーを必ず解除                   |
+| アクセシビリティ必須    | WAI-ARIA Patternに完全準拠                                      |
+| 位置計算の最適化        | useCallbackでメモ化                                             |
+| テストカバレッジ80%以上 | Portal機能は包括的にテスト                                      |
+| TypeScript型安全性      | MenuPosition型など、明示的な型定義                              |
+
+### 16.16.9 注意事項
+
+**避けるべきパターン**:
+
+- ❌ Portalを多用する（パフォーマンス低下）
+- ❌ イベントリスナーのクリーンアップ忘れ（メモリリーク）
+- ❌ ARIA属性の省略（アクセシビリティ違反）
+- ❌ フォーカス管理の省略（キーボードナビゲーション不可）
+
+**推奨パターン**:
+
+- ✅ 必要最小限のPortal使用
+- ✅ useEffect cleanupでリスナー解除
+- ✅ WAI-ARIA Pattern完全準拠
+- ✅ 包括的なテストカバレッジ（≥80%）
+
+### 16.16.10 実装チェックリスト
+
+Portal実装時に確認すべき項目：
+
+- [ ] MenuPosition型を定義
+- [ ] calculateMenuPosition()ヘルパー関数を実装
+- [ ] closeMenu()ヘルパー関数を実装
+- [ ] アウトサイドクリックハンドラーをuseEffectで実装
+- [ ] EscapeキーハンドラーをuseEffectで実装
+- [ ] フォーカス管理をuseEffectで実装（requestAnimationFrame使用）
+- [ ] ARIA属性を完備（role, aria-expanded, aria-haspopup, aria-label）
+- [ ] useEffect cleanupでイベントリスナー解除
+- [ ] テストカバレッジ80%以上を達成
+- [ ] axe-core自動テストでWCAG 2.1 AA違反0件
+
+### 16.16.11 参考実装
+
+**実装例**: `apps/desktop/src/renderer/components/organisms/AccountSection/index.tsx`
+**テスト例**: `apps/desktop/src/renderer/components/organisms/AccountSection/AccountSection.portal.test.tsx`
+**タスクドキュメント**: `docs/30-workflows/auth-ui-z-index-fix/`
 
 ---
 
