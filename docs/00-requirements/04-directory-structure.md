@@ -228,19 +228,25 @@
 
 ### 4.5.4 renderer/components/（Atomic Design）
 
-| パス                                 | 役割                                         |
-| ------------------------------------ | -------------------------------------------- |
-| atoms/                               | 基本UI要素（Button、Input、Icon、Badge等）   |
-| molecules/                           | 複合要素（Tooltip、NavIcon、FileTreeItem等） |
-| organisms/                           | 機能単位（AppDock、Sidebar、GlassPanel等）   |
-| AuthGuard/                           | **認証ガード（HOC）**                        |
-| AuthGuard/index.tsx                  | 認証状態による表示制御                       |
-| AuthGuard/LoadingScreen.tsx          | ローディング画面                             |
-| AuthGuard/types.ts                   | AuthGuard型定義                              |
-| AuthGuard/hooks/useAuthState.ts      | 認証状態取得フック                           |
-| AuthGuard/utils/getAuthState.ts      | 状態判定純粋関数                             |
-| AuthGuard/AuthGuard.test.tsx         | AuthGuardテスト（67 tests）                  |
-| AuthGuard/utils/getAuthState.test.ts | getAuthState単体テスト（5 tests）            |
+| パス                                              | 役割                                         |
+| ------------------------------------------------- | -------------------------------------------- |
+| atoms/                                            | 基本UI要素（Button、Input、Icon、Badge等）   |
+| molecules/                                        | 複合要素（Tooltip、NavIcon、FileTreeItem等） |
+| organisms/                                        | 機能単位（AppDock、Sidebar、GlassPanel等）   |
+| AuthGuard/                                        | **認証ガード（HOC）**                        |
+| AuthGuard/index.tsx                               | 認証状態による表示制御                       |
+| AuthGuard/LoadingScreen.tsx                       | ローディング画面                             |
+| AuthGuard/types.ts                                | AuthGuard型定義                              |
+| AuthGuard/hooks/useAuthState.ts                   | 認証状態取得フック                           |
+| AuthGuard/utils/getAuthState.ts                   | 状態判定純粋関数                             |
+| AuthGuard/AuthGuard.test.tsx                      | AuthGuardテスト（67 tests）                  |
+| AuthGuard/utils/getAuthState.test.ts              | getAuthState単体テスト（5 tests）            |
+| organisms/AccountSection/                         | **アカウント管理セクション**                 |
+| AccountSection/index.tsx                          | プロフィール・アバター・連携管理UI           |
+| AccountSection/AccountSection.test.tsx            | 基本機能テスト（55 tests）                   |
+| AccountSection/AccountSection.portal.test.tsx     | Portal機能テスト（27 tests）                 |
+| AccountSection/AccountSection.a11y.test.tsx       | アクセシビリティテスト（15 tests）           |
+| AccountSection/AccountSection.edge-cases.test.tsx | エッジケーステスト（18 tests）               |
 
 ### 4.5.5 renderer/views/（画面構成）
 
