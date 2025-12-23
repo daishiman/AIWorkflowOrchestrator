@@ -249,6 +249,82 @@
 | GET      | /api/health    | ヘルスチェック | 不要 |
 | GET      | /api/v1/status | 詳細ステータス | 必要 |
 
+### 8.10.5 チャット履歴
+
+チャットセッションとメッセージの管理、エクスポート機能を提供する。
+
+| メソッド | パス                           | 説明                   | 認証 |
+| -------- | ------------------------------ | ---------------------- | ---- |
+| GET      | /api/v1/sessions               | セッション一覧取得     | 必要 |
+| GET      | /api/v1/sessions/{id}          | セッション詳細取得     | 必要 |
+| POST     | /api/v1/sessions               | セッション作成         | 必要 |
+| PATCH    | /api/v1/sessions/{id}          | セッション更新         | 必要 |
+| DELETE   | /api/v1/sessions/{id}          | セッション削除         | 必要 |
+| GET      | /api/v1/sessions/{id}/messages | メッセージ一覧取得     | 必要 |
+| POST     | /api/v1/sessions/{id}/messages | メッセージ追加         | 必要 |
+| GET      | /api/v1/sessions/{id}/export   | セッションエクスポート | 必要 |
+| POST     | /api/v1/sessions/export/batch  | 一括エクスポート       | 必要 |
+| GET      | /api/v1/sessions/{id}/preview  | エクスポートプレビュー | 必要 |
+
+**実装ファイル**:
+
+| 種別        | パス                                                                  |
+| ----------- | --------------------------------------------------------------------- |
+| 型定義      | `packages/shared/src/types/chat-session.ts`                           |
+| 型定義      | `packages/shared/src/types/chat-message.ts`                           |
+| リポジトリ  | `packages/shared/src/repositories/chat-session-repository.ts`         |
+| リポジトリ  | `packages/shared/src/repositories/chat-message-repository.ts`         |
+| サービス    | `packages/shared/src/features/chat-history/chat-history-service.ts`   |
+| IPCチャネル | `packages/shared/src/ipc/channels.ts`                                 |
+| 詳細設計    | `docs/30-workflows/chat-history-persistence/api-design.md`            |
+| OpenAPI仕様 | `docs/30-workflows/chat-history-persistence/openapi-chat-export.yaml` |
+
+**デスクトップアプリUI実装**:
+
+```
+apps/desktop/src/
+├── renderer/
+│   └── views/
+│       └── ChatHistoryView/
+│           └── index.tsx           # チャット履歴詳細ビュー
+└── components/
+    └── chat/
+        ├── index.ts                # コンポーネントエクスポート
+        ├── types.ts                # チャットUI型定義
+        ├── ChatHistoryList.tsx     # セッション一覧
+        ├── ChatHistoryListItem.tsx # セッションアイテム
+        ├── ChatHistoryListStates.tsx # 一覧状態コンポーネント
+        ├── ChatHistorySearch.tsx   # 検索・フィルター
+        ├── ChatHistoryExport.tsx   # エクスポートダイアログ
+        ├── DeleteConfirmDialog.tsx # 削除確認ダイアログ
+        └── chat-search-utils.ts    # 検索ユーティリティ
+```
+
+**ルーティング**:
+
+| パス                       | コンポーネント  | 説明                   |
+| -------------------------- | --------------- | ---------------------- |
+| `/chat/history/:sessionId` | ChatHistoryView | セッション詳細表示     |
+| `/chat/history`            | -（未実装）     | セッション一覧（TODO） |
+
+**エクスポートAPI詳細**:
+
+エクスポートエンドポイントは以下のクエリパラメータをサポート:
+
+| パラメータ      | 型                   | 説明                                        |
+| --------------- | -------------------- | ------------------------------------------- |
+| format          | `markdown` \| `json` | エクスポート形式（デフォルト: markdown）    |
+| range           | `all` \| `selected`  | エクスポート範囲（デフォルト: all）         |
+| messageIds      | string[]             | 選択メッセージID（range=selected時必須）    |
+| includeMetadata | boolean              | LLMメタデータを含めるか（デフォルト: true） |
+| download        | boolean              | ファイルダウンロードモード                  |
+
+**レスポンス形式**:
+
+- Markdown形式: `Content-Type: text/markdown; charset=utf-8`
+- JSON形式: `Content-Type: application/json; charset=utf-8`
+- 一括エクスポート: `Content-Type: application/zip`
+
 ---
 
 ## 8.11 Desktop IPC API（認証・プロフィール）
