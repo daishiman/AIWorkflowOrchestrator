@@ -155,7 +155,7 @@ profile/avatar更新時に両データソースが同期されることを検証
 
 ##### 使用エージェント
 
-- **エージェント**: `@unit-tester`
+- **エージェント**: `.claude/agents/unit-tester.md`
 - **選定理由**: ユニットテスト作成の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -163,8 +163,8 @@ profile/avatar更新時に両データソースが同期されることを検証
 
 | スキル名       | 活用方法                      |
 | -------------- | ----------------------------- |
-| test-doubles   | Supabase クライアントのモック |
-| tdd-principles | Red-Green-Refactorサイクル    |
+| .claude/skills/test-doubles/SKILL.md   | Supabase クライアントのモック |
+| .claude/skills/tdd-principles/SKILL.md | Red-Green-Refactorサイクル    |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -215,7 +215,7 @@ pnpm --filter @repo/desktop test:run profileHandlers
 
 ##### 使用エージェント
 
-- **エージェント**: `@logic-dev`
+- **エージェント**: `.claude/agents/logic-dev.md`
 - **選定理由**: ビジネスロジック実装の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -272,7 +272,7 @@ export async function syncMetadataToProfile(
 
 ##### 使用エージェント
 
-- **エージェント**: `@logic-dev`
+- **エージェント**: `.claude/agents/logic-dev.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 修正箇所
@@ -313,7 +313,7 @@ await syncProfileToMetadata(supabase, { display_name });
 
 ##### 使用エージェント
 
-- **エージェント**: `@logic-dev`
+- **エージェント**: `.claude/agents/logic-dev.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 修正箇所
@@ -364,7 +364,7 @@ pnpm --filter @repo/desktop test:run profileHandlers avatarHandlers
 
 ##### 使用エージェント
 
-- **エージェント**: `@code-quality`
+- **エージェント**: `.claude/agents/code-quality.md`
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 完了条件

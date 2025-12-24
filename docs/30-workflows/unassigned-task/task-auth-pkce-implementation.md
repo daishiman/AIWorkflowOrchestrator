@@ -13,7 +13,7 @@
 | ステータス       | 未実施                        |
 | 発見元           | Phase 7（最終レビューゲート） |
 | 発見日           | 2025-12-22                    |
-| 発見エージェント | @auth-specialist              |
+| 発見エージェント | .claude/agents/auth-specialist.md              |
 
 ---
 
@@ -23,7 +23,7 @@
 
 OAuth 2.1では、すべてのOAuthクライアント（Webアプリ、ネイティブアプリ、SPAを問わず）にPKCE（Proof Key for Code Exchange）の実装が必須となります。
 
-ログイン機能復旧プロジェクト（2025-12-22完了）の最終レビューゲートで、@auth-specialistがPKCE未実装を技術的負債として指摘しました。
+ログイン機能復旧プロジェクト（2025-12-22完了）の最終レビューゲートで、.claude/agents/auth-specialist.mdがPKCE未実装を技術的負債として指摘しました。
 
 ### 1.2 問題点・課題
 
@@ -177,7 +177,7 @@ Supabase Auth v2のPKCE対応状況を調査してください。
 
 #### 使用エージェント
 
-- **エージェント**: @auth-specialist
+- **エージェント**: .claude/agents/auth-specialist.md
 - **選定理由**: OAuth認証実装の専門家。Supabase Auth APIの仕様確認に最適。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -185,7 +185,7 @@ Supabase Auth v2のPKCE対応状況を調査してください。
 
 | スキル名     | 活用方法                      |
 | ------------ | ----------------------------- |
-| oauth2-flows | OAuth 2.0/2.1仕様の理解と調査 |
+| .claude/skills/oauth2-flows/SKILL.md | OAuth 2.0/2.1仕様の理解と調査 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -238,7 +238,7 @@ PKCE code_verifier/code_challenge生成・検証ロジックを実装し、単�
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: 単体テスト作成とTDD実践の専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -246,9 +246,9 @@ PKCE code_verifier/code_challenge生成・検証ロジックを実装し、単�
 
 | スキル名             | 活用方法                           |
 | -------------------- | ---------------------------------- |
-| tdd-principles       | TDD Red-Green-Refactorサイクル実践 |
-| clean-code-practices | 高品質なPKCEManagerコード作成      |
-| test-doubles         | Vitest vi.useFakeTimers()活用      |
+| .claude/skills/tdd-principles/SKILL.md       | TDD Red-Green-Refactorサイクル実践 |
+| .claude/skills/clean-code-practices/SKILL.md | 高品質なPKCEManagerコード作成      |
+| .claude/skills/test-doubles/SKILL.md         | Vitest vi.useFakeTimers()活用      |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -291,7 +291,7 @@ OAuth認証開始時にcode_challengeを生成し、Supabase OAuth URLに含め�
 
 #### 使用エージェント
 
-- **エージェント**: @auth-specialist
+- **エージェント**: .claude/agents/auth-specialist.md
 - **選定理由**: OAuth 2.1/PKCE実装の専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -299,7 +299,7 @@ OAuth認証開始時にcode_challengeを生成し、Supabase OAuth URLに含め�
 
 | スキル名     | 活用方法                            |
 | ------------ | ----------------------------------- |
-| oauth2-flows | OAuth 2.0/2.1フローへのPKCE追加実装 |
+| .claude/skills/oauth2-flows/SKILL.md | OAuth 2.0/2.1フローへのPKCE追加実装 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -341,7 +341,7 @@ OAuth認証開始時にcode_challengeを生成し、Supabase OAuth URLに含め�
 
 #### 使用エージェント
 
-- **エージェント**: @auth-specialist
+- **エージェント**: .claude/agents/auth-specialist.md
 - **選定理由**: OAuth 2.1/PKCE実装の専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -349,8 +349,8 @@ OAuth認証開始時にcode_challengeを生成し、Supabase OAuth URLに含め�
 
 | スキル名             | 活用方法                            |
 | -------------------- | ----------------------------------- |
-| oauth2-flows         | OAuth 2.1コールバック処理のPKCE実装 |
-| clean-code-practices | エラーハンドリングの適切な実装      |
+| .claude/skills/oauth2-flows/SKILL.md         | OAuth 2.1コールバック処理のPKCE実装 |
+| .claude/skills/clean-code-practices/SKILL.md | エラーハンドリングの適切な実装      |
 
 - **参照**: `.claude/skills/skill_list.md`
 

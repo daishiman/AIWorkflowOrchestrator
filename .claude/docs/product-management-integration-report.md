@@ -14,16 +14,16 @@
 
 | #   | スキル名                  | 主要機能                     | ファイル数                     |
 | --- | ------------------------- | ---------------------------- | ------------------------------ |
-| 1   | agile-project-management  | スクラム/カンバン実践        | SKILL.md                       |
-| 2   | user-story-mapping        | 要件可視化、MVP定義          | SKILL.md                       |
-| 3   | estimation-techniques     | 見積もり、ベロシティ         | SKILL.md + calculator.py       |
-| 4   | stakeholder-communication | 報告、期待値管理             | SKILL.md + templates + scripts |
-| 5   | product-vision            | ビジョン、OKR、ロードマップ  | SKILL.md + okr-template.md     |
-| 6   | prioritization-frameworks | RICE/MoSCoW/Kano             | SKILL.md + rice-calculator.py  |
-| 7   | metrics-tracking          | メトリクス追跡、分析         | SKILL.md                       |
-| 8   | backlog-management        | DEEP原則、リファインメント   | SKILL.md                       |
-| 9   | sprint-planning           | スプリント計画、キャパシティ | SKILL.md                       |
-| 10  | risk-management           | リスク識別、軽減戦略         | SKILL.md                       |
+| 1   | .claude/skills/agile-project-management/SKILL.md  | スクラム/カンバン実践        | SKILL.md                       |
+| 2   | .claude/skills/user-story-mapping/SKILL.md        | 要件可視化、MVP定義          | SKILL.md                       |
+| 3   | .claude/skills/estimation-techniques/SKILL.md     | 見積もり、ベロシティ         | SKILL.md + calculator.py       |
+| 4   | .claude/skills/stakeholder-communication/SKILL.md | 報告、期待値管理             | SKILL.md + templates + scripts |
+| 5   | .claude/skills/product-vision/SKILL.md            | ビジョン、OKR、ロードマップ  | SKILL.md + okr-template.md     |
+| 6   | .claude/skills/prioritization-frameworks/SKILL.md | RICE/MoSCoW/Kano             | SKILL.md + rice-calculator.py  |
+| 7   | .claude/skills/metrics-tracking/SKILL.md          | メトリクス追跡、分析         | SKILL.md                       |
+| 8   | .claude/skills/backlog-management/SKILL.md        | DEEP原則、リファインメント   | SKILL.md                       |
+| 9   | .claude/skills/sprint-planning/SKILL.md           | スプリント計画、キャパシティ | SKILL.md                       |
+| 10  | .claude/skills/risk-management/SKILL.md           | リスク識別、軽減戦略         | SKILL.md                       |
 
 ### エージェント（改善版）
 
@@ -62,11 +62,11 @@
 
 | Phase                   | 使用スキル                                    | 統合状態    |
 | ----------------------- | --------------------------------------------- | ----------- |
-| Phase 1: ビジョン定義   | product-vision, risk-management               | ✅ 完全統合 |
-| Phase 2: 要件収集       | user-story-mapping, stakeholder-communication | ✅ 完全統合 |
-| Phase 3: バックログ構築 | backlog-management, prioritization-frameworks | ✅ 完全統合 |
-| Phase 4: スプリント実行 | sprint-planning, metrics-tracking             | ✅ 完全統合 |
-| Phase 5: 継続的改善     | agile-project-management, risk-management     | ✅ 完全統合 |
+| Phase 1: ビジョン定義   | .claude/skills/product-vision/SKILL.md, .claude/skills/risk-management/SKILL.md               | ✅ 完全統合 |
+| Phase 2: 要件収集       | .claude/skills/user-story-mapping/SKILL.md, .claude/skills/stakeholder-communication/SKILL.md | ✅ 完全統合 |
+| Phase 3: バックログ構築 | .claude/skills/backlog-management/SKILL.md, .claude/skills/prioritization-frameworks/SKILL.md | ✅ 完全統合 |
+| Phase 4: スプリント実行 | .claude/skills/sprint-planning/SKILL.md, .claude/skills/metrics-tracking/SKILL.md             | ✅ 完全統合 |
+| Phase 5: 継続的改善     | .claude/skills/agile-project-management/SKILL.md, .claude/skills/risk-management/SKILL.md     | ✅ 完全統合 |
 
 ### 3. ツールとテンプレート
 
@@ -126,21 +126,21 @@ graph TD
 
 | 機能カテゴリー       | 提供機能                         | スキル                    | 成熟度     |
 | -------------------- | -------------------------------- | ------------------------- | ---------- |
-| **プロジェクト管理** | スクラム実践、カンバン           | agile-project-management  | ⭐⭐⭐⭐⭐ |
-| **要件管理**         | ストーリーマッピング、MVP定義    | user-story-mapping        | ⭐⭐⭐⭐⭐ |
-| **計画と見積もり**   | プランニングポーカー、ベロシティ | estimation-techniques     | ⭐⭐⭐⭐⭐ |
-| **優先順位付け**     | RICE, MoSCoW, Kano               | prioritization-frameworks | ⭐⭐⭐⭐⭐ |
-| **進捗管理**         | バーンダウン、累積フロー         | metrics-tracking          | ⭐⭐⭐⭐⭐ |
+| **プロジェクト管理** | スクラム実践、カンバン           | .claude/skills/agile-project-management/SKILL.md  | ⭐⭐⭐⭐⭐ |
+| **要件管理**         | ストーリーマッピング、MVP定義    | .claude/skills/user-story-mapping/SKILL.md        | ⭐⭐⭐⭐⭐ |
+| **計画と見積もり**   | プランニングポーカー、ベロシティ | .claude/skills/estimation-techniques/SKILL.md     | ⭐⭐⭐⭐⭐ |
+| **優先順位付け**     | RICE, MoSCoW, Kano               | .claude/skills/prioritization-frameworks/SKILL.md | ⭐⭐⭐⭐⭐ |
+| **進捗管理**         | バーンダウン、累積フロー         | .claude/skills/metrics-tracking/SKILL.md          | ⭐⭐⭐⭐⭐ |
 
 ### 拡張機能
 
 | 機能カテゴリー         | 提供機能                    | スキル                    | 成熟度     |
 | ---------------------- | --------------------------- | ------------------------- | ---------- |
-| **コミュニケーション** | 報告書、ダッシュボード      | stakeholder-communication | ⭐⭐⭐⭐⭐ |
-| **戦略策定**           | ビジョン、OKR、ロードマップ | product-vision            | ⭐⭐⭐⭐⭐ |
-| **バックログ管理**     | DEEP原則、健全性管理        | backlog-management        | ⭐⭐⭐⭐☆  |
-| **スプリント管理**     | 計画、キャパシティ管理      | sprint-planning           | ⭐⭐⭐⭐☆  |
-| **リスク管理**         | 識別、評価、軽減            | risk-management           | ⭐⭐⭐⭐☆  |
+| **コミュニケーション** | 報告書、ダッシュボード      | .claude/skills/stakeholder-communication/SKILL.md | ⭐⭐⭐⭐⭐ |
+| **戦略策定**           | ビジョン、OKR、ロードマップ | .claude/skills/product-vision/SKILL.md            | ⭐⭐⭐⭐⭐ |
+| **バックログ管理**     | DEEP原則、健全性管理        | .claude/skills/backlog-management/SKILL.md        | ⭐⭐⭐⭐☆  |
+| **スプリント管理**     | 計画、キャパシティ管理      | .claude/skills/sprint-planning/SKILL.md           | ⭐⭐⭐⭐☆  |
+| **リスク管理**         | 識別、評価、軽減            | .claude/skills/risk-management/SKILL.md           | ⭐⭐⭐⭐☆  |
 
 ## 使用ガイド
 
@@ -210,11 +210,11 @@ Task tool:
 
 | 課題                 | 症状                       | 対策                       | 関連スキル                |
 | -------------------- | -------------------------- | -------------------------- | ------------------------- |
-| ベロシティ不安定     | スプリントごとに大きく変動 | Yesterday's Weather適用    | estimation-techniques     |
-| スコープクリープ     | スプリント中の要件追加     | 変更管理プロセス確立       | backlog-management        |
-| ステークホルダー不満 | 期待値のズレ               | コミュニケーション頻度増加 | stakeholder-communication |
-| 技術的負債蓄積       | 品質低下、速度低下         | 定期的な返済スプリント     | risk-management           |
-| チーム疲弊           | モチベーション低下         | 持続可能なペース維持       | sprint-planning           |
+| ベロシティ不安定     | スプリントごとに大きく変動 | Yesterday's Weather適用    | .claude/skills/estimation-techniques/SKILL.md     |
+| スコープクリープ     | スプリント中の要件追加     | 変更管理プロセス確立       | .claude/skills/backlog-management/SKILL.md        |
+| ステークホルダー不満 | 期待値のズレ               | コミュニケーション頻度増加 | .claude/skills/stakeholder-communication/SKILL.md |
+| 技術的負債蓄積       | 品質低下、速度低下         | 定期的な返済スプリント     | .claude/skills/risk-management/SKILL.md           |
+| チーム疲弊           | モチベーション低下         | 持続可能なペース維持       | .claude/skills/sprint-planning/SKILL.md           |
 
 ## 今後の拡張可能性
 
@@ -228,9 +228,9 @@ Task tool:
 
 ### 統合可能な他エージェント
 
-- `@req-analyst` - 技術仕様策定
-- `@spec-writer` - 仕様書作成
-- `@arch-police` - アーキテクチャ監査
+- `.claude/agents/req-analyst.md` - 技術仕様策定
+- `.claude/agents/spec-writer.md` - 仕様書作成
+- `.claude/agents/arch-police.md` - アーキテクチャ監査
 - `@quality-engineer` - 品質保証
 
 ## 結論

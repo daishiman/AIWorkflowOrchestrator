@@ -1,261 +1,116 @@
 ---
-name: matrix-builds
+name: .claude/skills/matrix-builds/SKILL.md
 description: |
   GitHub Actionsのマトリックスビルド戦略（strategy.matrix）の設計と最適化。
   複数のOS、バージョン、環境での並列テスト実行、動的マトリックス生成、include/exclude条件、
   fail-fast制御、max-parallel設定による効率的なCI/CDパイプライン構築を支援。
-
+  
+  📖 参照書籍:
+  - 『Don't Make Me Think』（Steve Krug）: ユーザビリティ
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/matrix-builds/resources/dynamic-matrix.md`: fromJSON活用、変更ファイルベースの動的テスト選択、条件付きマトリックス生成
-  - `.claude/skills/matrix-builds/resources/matrix-strategy.md`: include/exclude構文、fail-fast制御、max-parallel設定、マトリックス変数アクセス
-  - `.claude/skills/matrix-builds/scripts/generate-matrix.mjs`: マトリックス設定の自動生成（OS/バージョン組み合わせ、YAML出力）
-  - `.claude/skills/matrix-builds/templates/matrix-template.yaml`: マルチOS・マルチバージョンテスト用マトリックスビルドテンプレート
-
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/dynamic-matrix.md`: fromJSON活用、変更ファイルベースの動的テスト選択、条件付きマトリックス生成
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/matrix-strategy.md`: include/exclude構文、fail-fast制御、max-parallel設定、マトリックス変数アクセス
+  - `scripts/generate-matrix.mjs`: マトリックス設定の自動生成（OS/バージョン組み合わせ、YAML出力）
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/matrix-template.yaml`: マルチOS・マルチバージョンテスト用マトリックスビルドテンプレート
+  
+  Use proactively when handling matrix builds tasks.
 version: 1.0.0
-triggers:
-  - "複数バージョンでのテスト実行"
-  - "マルチOS対応のビルド"
-  - "マトリックスビルド設定"
-  - "動的マトリックス生成"
-  - "並列ビルド最適化"
-related_skills:
-  - .claude/skills/github-actions-syntax/SKILL.md
-  - .claude/skills/parallel-jobs-gha/SKILL.md
-  - .claude/skills/conditional-execution-gha/SKILL.md
-  - .claude/skills/caching-strategies-gha/SKILL.md
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "Don't Make Me Think"
+    author: "Steve Krug"
+    concepts:
+      - "ユーザビリティ"
+      - "情報設計"
 ---
 
 # Matrix Builds Skill
 
-GitHub Actions のマトリックスビルド戦略による効率的な並列実行パターン。
+## 概要
 
-## ディレクトリ構造
+GitHub Actionsのマトリックスビルド戦略（strategy.matrix）の設計と最適化。
+複数のOS、バージョン、環境での並列テスト実行、動的マトリックス生成、include/exclude条件、
+fail-fast制御、max-parallel設定による効率的なCI/CDパイプライン構築を支援。
 
-```
-.claude/skills/matrix-builds/
-├── SKILL.md                          # このファイル（概要とクイックリファレンス）
-├── resources/
-│   ├── matrix-strategy.md           # strategy.matrix構文詳細
-│   └── dynamic-matrix.md            # 動的マトリックス生成
-├── templates/
-│   └── matrix-template.yaml         # マトリックス設定テンプレート
-└── scripts/
-    └── generate-matrix.mjs          # マトリックス設定ジェネレーター
-```
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
----
 
-## コマンドリファレンス
+## ワークフロー
 
-### リソース参照
+### Phase 1: 目的と前提の整理
 
-```bash
-# マトリックス戦略詳細（基本構文、include/exclude、制御オプション）
-cat .claude/skills/matrix-builds/resources/matrix-strategy.md
+**目的**: タスクの目的と前提条件を明確にする
 
-# 動的マトリックス生成（fromJSON、出力ベースマトリックス）
-cat .claude/skills/matrix-builds/resources/dynamic-matrix.md
-```
+**アクション**:
 
-### テンプレート使用
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-```bash
-# マトリックス設定テンプレート
-cat .claude/skills/matrix-builds/templates/matrix-template.yaml
-```
+### Phase 2: スキル適用
 
-### スクリプト実行
+**目的**: スキルの指針に従って具体的な作業を進める
 
-```bash
-# マトリックス設定生成
-node .claude/skills/matrix-builds/scripts/generate-matrix.mjs --os "ubuntu,windows,macos" --node "18,20,22"
-```
+**アクション**:
 
----
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-## 基本マトリックスパターン
+### Phase 3: 検証と記録
 
-### 1. シンプルマトリックス
+**目的**: 成果物の検証と実行記録の保存
 
-```yaml
-jobs:
-  test:
-    strategy:
-      matrix:
-        node-version: [18, 20, 22]
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-```
+**アクション**:
 
-**結果**: 9 個のジョブ（3 OS × 3 Node.js） = 並列実行
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
----
-
-### 2. include/exclude パターン
-
-```yaml
-strategy:
-  matrix:
-    os: [ubuntu-latest, windows-latest]
-    node: [18, 20]
-    include:
-      # 特定の組み合わせに追加設定
-      - os: ubuntu-latest
-        node: 22
-        experimental: true
-    exclude:
-      # Windows + Node 18は除外
-      - os: windows-latest
-        node: 18
-```
-
-**結果**: 5 ジョブ（2×2 - 1 除外 + 1 追加）
-
----
-
-### 3. fail-fast 制御
-
-```yaml
-strategy:
-  fail-fast: false # 1つ失敗しても全て実行
-  matrix:
-    node: [18, 20, 22]
-```
-
-**用途**: 全バージョンのテスト結果を取得したい場合
-
----
-
-### 4. max-parallel 制限
-
-```yaml
-strategy:
-  max-parallel: 2 # 同時実行2ジョブまで
-  matrix:
-    region: [us-east-1, us-west-2, eu-west-1, ap-northeast-1]
-```
-
-**用途**: API 制限やリソース節約
-
----
-
-### 5. 動的マトリックス（fromJSON）
-
-```yaml
-jobs:
-  setup:
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
-    steps:
-      - id: set-matrix
-        run: echo "matrix={\"node\":[18,20,22]}" >> $GITHUB_OUTPUT
-
-  test:
-    needs: setup
-    strategy:
-      matrix: ${{ fromJSON(needs.setup.outputs.matrix) }}
-    runs-on: ubuntu-latest
-```
-
-**用途**: 変更ファイルに基づく動的テスト選択
-
----
-
-## マトリックス変数アクセス
-
-### 基本アクセス
-
-```yaml
-steps:
-  - name: マトリックス値を表示
-    run: |
-      echo "OS: ${{ matrix.os }}"
-      echo "Node: ${{ matrix.node-version }}"
-      echo "Experimental: ${{ matrix.experimental || 'false' }}"
-```
-
-### 条件分岐
-
-```yaml
-steps:
-  - name: Windows専用ステップ
-    if: matrix.os == 'windows-latest'
-    run: choco install some-package
-
-  - name: 実験的ビルド専用
-    if: matrix.experimental == true
-    run: pnpm run test:experimental
-```
-
----
 
 ## ベストプラクティス
 
-### 1. マトリックス次元の選択
+### すべきこと
+- resources/Level1_basics.md を参照し、適用範囲を明確にする
+- resources/Level2_intermediate.md を参照し、実務手順を整理する
 
-**推奨**: 2-3 次元まで（OS × Version × Feature）
-**理由**: 組み合わせ爆発を防ぐ（3×3×3 = 27 ジョブ）
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
 
-### 2. fail-fast 戦略
+## コマンドリファレンス
 
-- **開発中**: `fail-fast: false`（全結果確認）
-- **本番 CI**: `fail-fast: true`（高速フィードバック）
-
-### 3. max-parallel 調整
-
-- **無制限**: GitHub 無料プラン（20 並列）
-- **制限**: 外部 API やリソース制約がある場合
-
-### 4. キャッシュとの組み合わせ
-
-```yaml
-strategy:
-  matrix:
-    node: [18, 20, 22]
-steps:
-  - uses: actions/setup-node@v4
-    with:
-      node-version: ${{ matrix.node }}
-      cache: "pnpm" # マトリックス別にキャッシュ
+### リソース読み取り
+```bash
+cat .claude/skills/matrix-builds/resources/Level1_basics.md
+cat .claude/skills/matrix-builds/resources/Level2_intermediate.md
+cat .claude/skills/matrix-builds/resources/Level3_advanced.md
+cat .claude/skills/matrix-builds/resources/Level4_expert.md
+cat .claude/skills/matrix-builds/resources/dynamic-matrix.md
+cat .claude/skills/matrix-builds/resources/legacy-skill.md
+cat .claude/skills/matrix-builds/resources/matrix-strategy.md
 ```
 
----
+### スクリプト実行
+```bash
+node .claude/skills/matrix-builds/scripts/generate-matrix.mjs --help
+node .claude/skills/matrix-builds/scripts/log_usage.mjs --help
+node .claude/skills/matrix-builds/scripts/validate-skill.mjs --help
+```
 
-## 関連スキル
+### テンプレート参照
+```bash
+cat .claude/skills/matrix-builds/templates/matrix-template.yaml
+```
 
-| スキル名                      | パス                                                | 用途                     |
-| ----------------------------- | --------------------------------------------------- | ------------------------ |
-| **github-actions-syntax**     | `.claude/skills/github-actions-syntax/SKILL.md`     | 基本構文理解             |
-| **parallel-jobs-gha**         | `.claude/skills/parallel-jobs-gha/SKILL.md`         | ジョブ並列化             |
-| **conditional-execution-gha** | `.claude/skills/conditional-execution-gha/SKILL.md` | マトリックス条件分岐     |
-| **caching-strategies-gha**    | `.claude/skills/caching-strategies-gha/SKILL.md`    | マトリックス別キャッシュ |
+## 変更履歴
 
----
-
-## 使用タイミング
-
-✅ **このスキルを使う場合**:
-
-- 複数の OS/バージョン/環境でテストが必要
-- クロスプラットフォーム互換性検証
-- 並列実行による高速化が必要
-
-❌ **不要な場合**:
-
-- 単一環境のみのテスト
-- 順次実行が必須のジョブ
-- 極めてシンプルな CI/CD
-
----
-
-**詳細情報**: `resources/`ディレクトリ参照
-**テンプレート**: `templates/matrix-template.yaml`
-**ツール**: `scripts/generate-matrix.mjs`
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

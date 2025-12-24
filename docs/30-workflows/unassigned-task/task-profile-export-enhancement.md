@@ -173,7 +173,7 @@ AIプロバイダー情報を含むエクスポートのテストを作成する
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: エクスポート機能のユニットテスト作成
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -202,7 +202,7 @@ AIプロバイダー情報を含むエクスポートのテストを作成する
 
 #### 使用エージェント
 
-- **エージェント**: @logic-dev
+- **エージェント**: .claude/agents/logic-dev.md
 - **選定理由**: ビジネスロジック実装
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -210,8 +210,8 @@ AIプロバイダー情報を含むエクスポートのテストを作成する
 
 | スキル名             | 活用方法                       |
 | -------------------- | ------------------------------ |
-| type-safety-patterns | 型安全なエクスポートデータ構築 |
-| api-client-patterns  | APIキー状態取得の実装          |
+| .claude/skills/type-safety-patterns/SKILL.md | 型安全なエクスポートデータ構築 |
+| .claude/skills/api-client-patterns/SKILL.md  | APIキー状態取得の実装          |
 
 - **参照**: `.claude/skills/skill_list.md`
 

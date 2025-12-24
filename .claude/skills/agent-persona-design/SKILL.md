@@ -1,202 +1,114 @@
 ---
-name: agent-persona-design
+name: .claude/skills/agent-persona-design/SKILL.md
 description: |
   エージェントペルソナ設計を専門とするスキル。実在する専門家の思想をエージェントに移植します。
-
+  
   📖 参照書籍:
   - 『The Society of Mind（心の社会）』（Marvin Minsky）: 小さなエージェント群による知性実現
   - 『Thinking, Fast and Slow（ファスト&スロー）』（Daniel Kahneman）: 専門家の思考パターンモデリング
-
+  
   📚 リソース参照:
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
   - `resources/expert-modeling-guide.md`: 専門家モデリングガイド
-  - `templates/persona-template.md`: ペルソナ設計テンプレート
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
   - `scripts/analyze-persona.mjs`: ペルソナ分析スクリプト
   - `scripts/log_usage.mjs`: 使用記録・自動レベルアップスクリプト
-
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/persona-template.md`: ペルソナ設計テンプレート
+  
   Use proactively when designing agent personas or selecting expert models.
 version: 2.0.0
 level: 2
-last_updated: 2025-12-23
+last_updated: 2025-12-24
 references:
-  - book: "The Society of Mind"
+  - book: "The Society of Mind（心の社会）"
     author: "Marvin Minsky"
     concepts:
-      - "小さな特化型エージェントの集合体としての知性"
-      - "単一責任原則"
-  - book: "Thinking, Fast and Slow"
+      - "小さなエージェント群による知性実現"
+  - book: "Thinking, Fast and Slow（ファスト&スロー）"
     author: "Daniel Kahneman"
     concepts:
-      - "専門家の直感的判断パターン"
-      - "System 1/System 2思考のモデル化"
+      - "専門家の思考パターンモデリング"
 ---
 
 # Agent Persona Design
 
 ## 概要
 
-エージェントペルソナ設計は、実在する専門家をモデルとするか、
-明確な役割定義に基づいてエージェントの人格を設計する方法論です。
+エージェントペルソナ設計を専門とするスキル。実在する専門家の思想をエージェントに移植します。
 
-**主要な価値**:
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-- 専門家の思想により、一貫性のある判断が可能
-- 明確な役割により、責務が明確化
-- 設計原則により、実装の指針が提供される
 
 ## ワークフロー
 
-### Phase 1: 設計方針の決定
+### Phase 1: 目的と前提の整理
 
-**目的**: ペルソナ設計の方針を決定する
-
-**背景**: 専門分野によって専門家モデルベースか役割ベースかが異なる
-
-**ゴール**: 設計方針が決定され、次フェーズに進める状態
+**目的**: タスクの目的と前提条件を明確にする
 
 **アクション**:
 
-1. 対象ドメインに明確な第一人者が存在するか調査
-2. 存在する場合 → 専門家モデルベース設計
-3. 存在しない場合 → 役割ベース設計
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-**期待成果物**:
+### Phase 2: スキル適用
 
-- 設計方針の決定事項
-- 専門家候補リスト（専門家モデルの場合）
-
-**完了条件**:
-
-- [ ] 設計方針が決定されている
-- [ ] 専門家が特定されている（専門家モデルの場合）
-
----
-
-### Phase 2: ペルソナ設計
-
-**目的**: エージェントのペルソナを設計する
-
-**背景**: ペルソナが明確でないと、エージェントの判断に一貫性がなくなる
-
-**ゴール**: ペルソナが完全に定義された状態
+**目的**: スキルの指針に従って具体的な作業を進める
 
 **アクション**:
 
-専門家モデルベースの場合:
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-1. 専門家の代表的著作（1-3冊）を特定
-2. 核心概念を抽出（3-5項目）
-3. エージェント動作への適用方法を定義
+### Phase 3: 検証と記録
 
-役割ベースの場合:
-
-1. 「あなたは○○です」で始まる明確な役割を定義
-2. 専門分野を列挙（3-5項目）
-3. 責任範囲と制約を明確化
-
-**期待成果物**:
-
-- ペルソナ定義書
-- 設計原則リスト
-- 制約リスト
-
-**完了条件**:
-
-- [ ] ペルソナが明確に定義されている
-- [ ] 参照書籍が特定されている（専門家モデルの場合）
-- [ ] 設計原則が定義されている
-
----
-
-### Phase 3: 検証と最適化
-
-**目的**: ペルソナ設計を検証し、最適化する
-
-**背景**: 設計の一貫性と適用可能性を確認する必要がある
-
-**ゴール**: ペルソナが検証され、適用可能な状態
+**目的**: 成果物の検証と実行記録の保存
 
 **アクション**:
 
-1. ペルソナの一貫性を確認
-2. 単一責任原則を満たしているか検証
-3. 必要に応じて `scripts/analyze-persona.mjs` を実行
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-**期待成果物**:
-
-- 検証レポート
-- 最適化されたペルソナ定義
-
-**完了条件**:
-
-- [ ] ペルソナの一貫性が確認されている
-- [ ] 単一責任原則を満たしている
-- [ ] エージェントとして適用可能
-
----
 
 ## ベストプラクティス
 
 ### すべきこと
-
-- 第一人者を選定する（専門家モデルの場合）
-- 代表的著作から核心概念を抽出する
-- 思想に一貫性を持たせる
-- 明確な役割定義を行う（役割ベースの場合）
-- 具体的な専門分野を列挙する
-- 測定可能な責任範囲を設定する
+- resources/Level1_basics.md を参照し、適用範囲を明確にする
+- resources/Level2_intermediate.md を参照し、実務手順を整理する
 
 ### 避けるべきこと
-
-- マイナーな専門家の選定
-- 思想の歪曲
-- 無関係な原則の追加
-- 曖昧な役割定義
-- 抽象的な専門分野
-- 不明確な責任範囲
-
----
-
-## 関連スキル
-
-- **agent-structure-design** (`.claude/skills/agent-structure-design/SKILL.md`): YAML Frontmatter・ワークフロー設計
-- **agent-architecture-patterns** (`.claude/skills/agent-architecture-patterns/SKILL.md`): アーキテクチャパターンと設計原則
+- アンチパターンや注意点を確認せずに進めることを避ける
 
 ## コマンドリファレンス
 
-このスキルで使用可能なリソース・スクリプトへのアクセス方法:
-
-### リソース参照
-
+### リソース読み取り
 ```bash
-# 専門家モデリングガイド
+cat .claude/skills/agent-persona-design/resources/Level1_basics.md
+cat .claude/skills/agent-persona-design/resources/Level2_intermediate.md
+cat .claude/skills/agent-persona-design/resources/Level3_advanced.md
+cat .claude/skills/agent-persona-design/resources/Level4_expert.md
 cat .claude/skills/agent-persona-design/resources/expert-modeling-guide.md
+cat .claude/skills/agent-persona-design/resources/legacy-skill.md
 ```
 
 ### スクリプト実行
-
 ```bash
-# ペルソナ分析スクリプト
-node .claude/skills/agent-persona-design/scripts/analyze-persona.mjs <agent_file.md>
-
-# 使用記録スクリプト
-node .claude/skills/agent-persona-design/scripts/log_usage.mjs \
-  --result success \
-  --phase "Phase2" \
-  --agent "meta-agent-designer"
+node .claude/skills/agent-persona-design/scripts/analyze-persona.mjs --help
+node .claude/skills/agent-persona-design/scripts/log_usage.mjs --help
+node .claude/skills/agent-persona-design/scripts/validate-skill.mjs --help
 ```
 
 ### テンプレート参照
-
 ```bash
-# ペルソナテンプレート
 cat .claude/skills/agent-persona-design/templates/persona-template.md
 ```
 
 ## 変更履歴
 
-詳細な変更履歴は `CHANGELOG.md` を参照してください。
-
-| バージョン | 日付       | 変更内容                 |
-| ---------- | ---------- | ------------------------ |
-| 2.0.0      | 2025-12-23 | 参照書籍フィールドを追加 |
-| 1.0.0      | 2025-12-11 | 初版作成                 |
+| Version | Date | Changes |
+| --- | --- | --- |
+| 2.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

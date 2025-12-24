@@ -1,948 +1,654 @@
-# スキル追記用テンプレート
+# スキル一覧
 
-## 1. PM / プロダクトオーナー
+最終更新日: 2025-12-24
 
-- **エージェント名:** `@product-manager`
-- **エージェントの配置:** `.claude/agents/product-manager.md`
+## 1. API Document Writer
 
-```markdown
-- **必要なスキル**:
-  | スキル名 | 概要 |
-  |---------|------|
-  | **agile-project-management** | スクラム・カンバンの実践知識、バックログ管理手法 |
-  | **user-story-mapping** | ユーザーストーリーの作成、優先順位付け、エピック分割 |
-  | **estimation-techniques** | ストーリーポイント、プランニングポーカー、相対見積もり |
-  | **stakeholder-communication** | ステークホルダー管理、進捗報告、期待値調整 |
-  | **product-vision** | ビジョンボード作成、OKR 設定、プロダクトロードマップ策定 |
-  | **prioritization-frameworks** | MoSCoW 法、RICE Scoring、Kano Model |
-  | **metrics-tracking** | ベロシティ計測、バーンダウンチャート、リードタイム分析 |
-```
-
-## 2. 仕様策定アナリスト
-
-- **エージェント名:** `@req-analyst`
-- **エージェントの配置:** `.claude/agents/req-analyst.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                                   | パス                                                             | 概要                                                                              |
-| ------------------------------------------ | ---------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| **requirements-engineering**               | `.claude/skills/requirements-engineering/SKILL.md`               | Karl Wiegers 方法論、MoSCoW 優先度、曖昧性検出、トリアージフレームワーク          |
-| **use-case-modeling**                      | `.claude/skills/use-case-modeling/SKILL.md`                      | アクター識別、シナリオパターン、ユースケース関係（include/extend/generalization） |
-| **acceptance-criteria-writing**            | `.claude/skills/acceptance-criteria-writing/SKILL.md`            | Given-When-Then 形式、テスト可能性基準、エッジケースパターン                      |
-| **interview-techniques**                   | `.claude/skills/interview-techniques/SKILL.md`                   | 5W1H フレームワーク、Why 分析（5 Whys）、質問タイプ分類                           |
-| **functional-non-functional-requirements** | `.claude/skills/functional-non-functional-requirements/SKILL.md` | FR/NFR 分類、FURPS+品質モデル、測定可能な目標定義                                 |
-| **requirements-verification**              | `.claude/skills/requirements-verification/SKILL.md`              | 要件の一貫性・完全性・検証可能性の評価、トレーサビリティマトリクス                |
-| **requirements-documentation**             | `.claude/skills/requirements-documentation/SKILL.md`             | 要件文書構造、ハンドオフプロトコル、成果物テンプレート                            |
-| **ambiguity-elimination**                  | `.claude/skills/ambiguity-elimination/SKILL.md`                  | 曖昧性検出・排除パターン、明確化テンプレート                                      |
-```
-
-## 3. テクニカルライター
-
-- **エージェント名:** `@spec-writer`
-- **エージェントの配置:** `.claude/agents/spec-writer.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                              | パス                                                        | 概要                                             |
-| ------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------ |
-| **markdown-advanced-syntax**          | `.claude/skills/markdown-advanced-syntax/SKILL.md`          | Mermaid 図、テーブル、コードブロックの活用       |
-| **technical-documentation-standards** | `.claude/skills/technical-documentation-standards/SKILL.md` | IEEE 830、DRY 原則、Documentation as Code        |
-| **api-documentation-best-practices**  | `.claude/skills/api-documentation-best-practices/SKILL.md`  | OpenAPI、Swagger、エンドポイント記述             |
-| **structured-writing**                | `.claude/skills/structured-writing/SKILL.md`                | DITA、トピックベースライティング、モジュール構造 |
-| **version-control-for-docs**          | `.claude/skills/version-control-for-docs/SKILL.md`          | Git Diff 活用、変更履歴管理、レビューフロー      |
-```
-
-## 4. アーキテクチャ・ポリス
-
-- **エージェント名:** `@arch-police`
-- **エージェントの配置:** `.claude/agents/arch-police.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                          | パス                                                    | 概要                                                     |
-| --------------------------------- | ------------------------------------------------------- | -------------------------------------------------------- |
-| **clean-architecture-principles** | `.claude/skills/clean-architecture-principles/SKILL.md` | 依存関係ルール、レイヤー構造、プロジェクト固有マッピング |
-| **solid-principles**              | `.claude/skills/solid-principles/SKILL.md`              | SRP, OCP, LSP, ISP, DIP の評価基準と検出パターン         |
-| **dependency-analysis**           | `.claude/skills/dependency-analysis/SKILL.md`           | 依存グラフ構築、循環依存検出、安定度メトリクス           |
-| **architectural-patterns**        | `.claude/skills/architectural-patterns/SKILL.md`        | Hexagonal, Onion, Vertical Slice パターンの評価          |
-| **code-smell-detection**          | `.claude/skills/code-smell-detection/SKILL.md`          | クラス/メソッドスメル、アーキテクチャアンチパターン      |
-```
-
-## 5. UI コンポーネント設計
-
-- **エージェント名:** `@ui-designer`
-- **エージェントの配置:** `.claude/agents/ui-designer.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                           | パス                                                     | 概要                                                                                       |
-| ---------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| **design-system-architecture**     | `.claude/skills/design-system-architecture/SKILL.md`     | コンポーネント規約、デザイントークン、Figma/コード統合                                     |
-| **component-composition-patterns** | `.claude/skills/component-composition-patterns/SKILL.md` | Slot/Compound/Controlled-Uncontrolled パターン、再利用性と拡張性の追求                     |
-| **headless-ui-principles**         | `.claude/skills/headless-ui-principles/SKILL.md`         | 見た目非依存 UI、ロジックとプレゼンテーションの分離                                        |
-| **tailwind-css-patterns**          | `.claude/skills/tailwind-css-patterns/SKILL.md`          | カスタムユーティリティ、デザイントークン連携、アクセシビリティ                             |
-| **accessibility-wcag**             | `.claude/skills/accessibility-wcag/SKILL.md`             | WCAG 2.1、ARIA、キーボード・モバイル完全対応                                               |
-| **apple-hig-guidelines**           | `.claude/skills/apple-hig-guidelines/SKILL.md`           | Apple HIG 準拠設計、iOS/iPadOS/macOS/watchOS/visionOS 対応、角丸・シャドウ・アニメーション |
-```
-
-## 6. ページ/ルーティング実装
-
-- **エージェント名:** `@router-dev`
-- **エージェントの配置:** `.claude/agents/router-dev.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                       | パス                                                 | 概要                                                                     |
-| ------------------------------ | ---------------------------------------------------- | ------------------------------------------------------------------------ |
-| **nextjs-app-router**          | `.claude/skills/nextjs-app-router/SKILL.md`          | App Router アーキテクチャ、Server/Client Components 分離、Dynamic Routes |
-| **server-components-patterns** | `.claude/skills/server-components-patterns/SKILL.md` | サーバーサイドデータフェッチ、Suspense 活用、キャッシュ戦略              |
-| **seo-optimization**           | `.claude/skills/seo-optimization/SKILL.md`           | Metadata API、OGP/Twitter Cards、構造化データ（JSON-LD）                 |
-| **web-performance**            | `.claude/skills/web-performance/SKILL.md`            | 動的インポート、next/image 最適化、Code Splitting、Core Web Vitals       |
-| **error-handling-pages**       | `.claude/skills/error-handling-pages/SKILL.md`       | error.tsx、not-found.tsx、global-error.tsx、loading.tsx                  |
-```
-
-## 7. クライアント状態管理
-
-- **エージェント名:** `@state-manager`
-- **エージェントの配置:** `.claude/agents/state-manager.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                           | パス                                                     | 概要                                                         |
-| ---------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------ |
-| **react-hooks-advanced**           | `.claude/skills/react-hooks-advanced/SKILL.md`           | useEffect, useCallback, useMemo, useReducer の適切な使い分け |
-| **data-fetching-strategies**       | `.claude/skills/data-fetching-strategies/SKILL.md`       | SWR, React Query、キャッシュ戦略、Optimistic Updates         |
-| **state-lifting**                  | `.claude/skills/state-lifting/SKILL.md`                  | State Lifting、Context API、Props Drilling 回避              |
-| **custom-hooks-patterns**          | `.claude/skills/custom-hooks-patterns/SKILL.md`          | ロジック再利用、関心の分離                                   |
-| **error-boundary**                 | `.claude/skills/error-boundary/SKILL.md`                 | Error Boundary 実装、Fallback UI 設計                        |
-| **performance-optimization-react** | `.claude/skills/performance-optimization-react/SKILL.md` | React.memo、Profiler、再レンダリング最適化パターン           |
-```
-
-## 8. ドメインモデラー
-
-- **エージェント名:** `@domain-modeler`
-
-- **エージェントの配置:** `.claude/agents/domain-modeler.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                  | パス                                            | 概要                                                |
-| ------------------------- | ----------------------------------------------- | --------------------------------------------------- |
-| **domain-driven-design**  | `.claude/skills/domain-driven-design/SKILL.md`  | Entity, Value Object, Aggregate, Repository Pattern |
-| **ubiquitous-language**   | `.claude/skills/ubiquitous-language/SKILL.md`   | ドメインエキスパートとの共通言語、用語集作成        |
-| **value-object-patterns** | `.claude/skills/value-object-patterns/SKILL.md` | 不変性、型安全性、ビジネスルールのカプセル化        |
-| **domain-services**       | `.claude/skills/domain-services/SKILL.md`       | ドメインロジックの集約、エンティティ間の協調        |
-| **bounded-context**       | `.claude/skills/bounded-context/SKILL.md`       | コンテキスト境界の定義、サブドメイン分割            |
-```
-
-## 9. ワークフローエンジン実装
-
-- **エージェント名:** `@workflow-engine`
-
-- **エージェントの配置:** `.claude/agents/workflow-engine.md`
-
-```markdown
-- **参照スキル（パス: `.claude/skills/[スキル名]/SKILL.md`）**:
-
-| スキル名                       | パス                                                 | 概要                                                                         |
-| ------------------------------ | ---------------------------------------------------- | ---------------------------------------------------------------------------- |
-| **design-patterns-behavioral** | `.claude/skills/design-patterns-behavioral/SKILL.md` | Strategy, Template Method, Command, Chain of Responsibility, Observer, State |
-| **plugin-architecture**        | `.claude/skills/plugin-architecture/SKILL.md`        | レジストリパターン、動的ロード、依存性注入、プラグインライフサイクル         |
-| **interface-segregation**      | `.claude/skills/interface-segregation/SKILL.md`      | ISP 準拠設計、Fat Interface 検出、ロールベースインターフェース               |
-| **factory-patterns**           | `.claude/skills/factory-patterns/SKILL.md`           | Factory Method, Abstract Factory, Builder, Registry Factory                  |
-| **open-closed-principle**      | `.claude/skills/open-closed-principle/SKILL.md`      | 拡張メカニズム、OCP 準拠パターン、OCP へのリファクタリング                   |
-```
-
-## 10. 外部連携ゲートウェイ
-
-- **エージェント名:** `@gateway-dev`
-
-- **エージェントの配置:** `.claude/agents/gateway-dev.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                 | パス                                           | 概要                                                   |
-| ------------------------ | ---------------------------------------------- | ------------------------------------------------------ |
-| **api-client-patterns**  | `.claude/skills/api-client-patterns/SKILL.md`  | Adapter Pattern、Facade Pattern、Anti-Corruption Layer |
-| **retry-strategies**     | `.claude/skills/retry-strategies/SKILL.md`     | Exponential Backoff、Circuit Breaker、Bulkhead         |
-| **http-best-practices**  | `.claude/skills/http-best-practices/SKILL.md`  | ステータスコード、タイムアウト、べき等性               |
-| **authentication-flows** | `.claude/skills/authentication-flows/SKILL.md` | OAuth 2.0、JWT、API Key 管理                           |
-| **rate-limiting**        | `.claude/skills/rate-limiting/SKILL.md`        | レート制限対応、キューイング、スロットリング           |
-```
-
-## 11. スキーマ定義
-
-- **エージェント名:** `@schema-def`
-
-- **エージェントの配置:** `.claude/agents/schema-def.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                 | パス                                           | 概要                                                  |
-| ------------------------ | ---------------------------------------------- | ----------------------------------------------------- |
-| **zod-validation**       | `.claude/skills/zod-validation/SKILL.md`       | Zod スキーマ定義、型推論、カスタムバリデーション      |
-| **type-safety-patterns** | `.claude/skills/type-safety-patterns/SKILL.md` | TypeScript 厳格モード、型ガード、Discriminated Unions |
-| **input-sanitization**   | `.claude/skills/input-sanitization/SKILL.md`   | XSS 対策、SQL インジェクション対策、エスケープ処理    |
-| **error-message-design** | `.claude/skills/error-message-design/SKILL.md` | ユーザーフレンドリーなエラーメッセージ、i18n 対応     |
-| **json-schema**          | `.claude/skills/json-schema/SKILL.md`          | JSON Schema 仕様、スキーマバージョニング              |
-```
-
-## 12. ビジネスロジック実装
-
-- **エージェント名:** `@logic-dev`
-
-- **エージェントの配置:** `.claude/agents/logic-dev.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                   | パス                                             | 概要                                                                |
-| -------------------------- | ------------------------------------------------ | ------------------------------------------------------------------- |
-| **refactoring-techniques** | `.claude/skills/refactoring-techniques/SKILL.md` | Extract Method、Replace Temp with Query、Introduce Parameter Object |
-| **tdd-red-green-refactor** | `.claude/skills/tdd-red-green-refactor/SKILL.md` | テスト駆動開発サイクル、テストファースト                            |
-| **clean-code-practices**   | `.claude/skills/clean-code-practices/SKILL.md`   | 意味のある命名、小さな関数、DRY 原則                                |
-| **transaction-script**     | `.claude/skills/transaction-script/SKILL.md`     | シンプルな手続き型ロジック、適切な粒度                              |
-| **test-doubles**           | `.claude/skills/test-doubles/SKILL.md`           | Mock, Stub, Fake, Spy の使い分け                                    |
-```
-
-## 13. AI プロンプトエンジニア
-
-- **エージェント名:** `@prompt-eng`
-
-- **エージェントの配置:** `.claude/agents/prompt-eng.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                          | パス                                                    | 概要                                                     |
-| --------------------------------- | ------------------------------------------------------- | -------------------------------------------------------- |
-| **prompt-engineering-for-agents** | `.claude/skills/prompt-engineering-for-agents/SKILL.md` | エージェント向けプロンプト設計、システムプロンプト最適化 |
-| **context-optimization**          | `.claude/skills/context-optimization/SKILL.md`          | コンテキストウィンドウ最適化、トークン削減技術           |
-| **agent-persona-design**          | `.claude/skills/agent-persona-design/SKILL.md`          | エージェントペルソナ設計、役割付与、専門性の強化         |
-| **documentation-architecture**    | `.claude/skills/documentation-architecture/SKILL.md`    | ドキュメント構造設計、階層化                             |
-| **best-practices-curation**       | `.claude/skills/best-practices-curation/SKILL.md`       | ベストプラクティス収集、品質検証、評価基準               |
-| **structured-output-design**      | `.claude/skills/structured-output-design/SKILL.md`      | JSON Mode、Function Calling、Schema-based Output         |
-| **hallucination-prevention**      | `.claude/skills/hallucination-prevention/SKILL.md`      | 3 層防御、パラメータ調整、検証ステップ                   |
-| **few-shot-learning-patterns**    | `.claude/skills/few-shot-learning-patterns/SKILL.md`    | 例示設計、Shot 数戦略、ドメイン別パターン                |
-| **chain-of-thought-reasoning**    | `.claude/skills/chain-of-thought-reasoning/SKILL.md`    | CoT 推論、Self-Consistency、推論パターン                 |
-| **prompt-testing-evaluation**     | `.claude/skills/prompt-testing-evaluation/SKILL.md`     | A/B テスト、評価メトリクス、自動評価                     |
-| **prompt-versioning-management**  | `.claude/skills/prompt-versioning-management/SKILL.md`  | バージョン管理、デプロイ戦略、ロールバック               |
-```
-
-## 14. DB スキーマ設計
-
-- **エージェント名:** `@db-architect`
-- **エージェントの配置:** `.claude/agents/db-architect.md`
-- **バージョン:** v2.0.0
-- **ステータス:** ✅ 実装完了
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                    | パス                                              | 概要                                                                             |
-| --------------------------- | ------------------------------------------------- | -------------------------------------------------------------------------------- |
-| **database-normalization**  | `.claude/skills/database-normalization/SKILL.md`  | 第 1〜5 正規形、BCNF、意図的な非正規化、更新異常回避                             |
-| **indexing-strategies**     | `.claude/skills/indexing-strategies/SKILL.md`     | B-Tree インデックス、部分インデックス、式インデックス、カバリングインデックス    |
-| **sql-anti-patterns**       | `.claude/skills/sql-anti-patterns/SKILL.md`       | ジェイウォーク、EAV、Polymorphic Associations、25 種のアンチパターン回避         |
-| **json-optimization**       | `.claude/skills/json-optimization/SKILL.md`       | JSON 式インデックス戦略、JSON 関数最適化、Zod スキーマ統合、SQLite/Turso 対応    |
-| **foreign-key-constraints** | `.claude/skills/foreign-key-constraints/SKILL.md` | CASCADE 動作戦略、ソフトデリート統合、循環参照回避                               |
-| **transaction-management**  | `.claude/skills/transaction-management/SKILL.md`  | ACID 特性、分離レベル、楽観的/悲観的ロック、デッドロック回避                     |
-| **query-optimization**      | `.claude/skills/query-optimization/SKILL.md`      | EXPLAIN QUERY PLAN、N+1 問題検出、JOIN 最適化、インデックスチューニング          |
-| **database-migrations**     | `.claude/skills/database-migrations/SKILL.md`     | Drizzle Kit、ゼロダウンタイムマイグレーション、ロールバック計画、Expand-Contract |
-```
-
-## 15. リポジトリ実装
-
-- **エージェント名:** `@repo-dev`
-- **エージェントの配置:** `.claude/agents/repo-dev.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                   | パス                                             | 概要                                                             |
-| -------------------------- | ------------------------------------------------ | ---------------------------------------------------------------- |
-| **repository-pattern**     | `.claude/skills/repository-pattern/SKILL.md`     | コレクション風インターフェース、ドメイン型返却                   |
-| **query-optimization**     | `.claude/skills/query-optimization/SKILL.md`     | N+1 問題回避、Eager/Lazy Loading、JOIN 戦略                      |
-| **transaction-management** | `.claude/skills/transaction-management/SKILL.md` | ACID 特性、トランザクション境界、ロールバック処理                |
-| **orm-best-practices**     | `.claude/skills/orm-best-practices/SKILL.md`     | Drizzle ORM の効率的利用、Raw SQL との使い分け                   |
-| **database-migrations**    | `.claude/skills/database-migrations/SKILL.md`    | スキーマバージョニング、データマイグレーション、ロールバック計画 |
-```
-
-## 16. DevOps/CI エンジニア
-
-- **エージェント名:** `@devops-eng`
-- **エージェントの配置:** `.claude/agents/devops-eng.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                   | パス                                             | 概要                                                           |
-| -------------------------- | ------------------------------------------------ | -------------------------------------------------------------- |
-| **ci-cd-pipelines**        | `.claude/skills/ci-cd-pipelines/SKILL.md`        | GitHub Actions、デプロイパイプライン設計、ステージング環境     |
-| **infrastructure-as-code** | `.claude/skills/infrastructure-as-code/SKILL.md` | 構成管理の自動化、環境変数管理、Secret 管理                    |
-| **deployment-strategies**  | `.claude/skills/deployment-strategies/SKILL.md`  | Blue-Green Deployment、Canary Release、ロールバック戦略        |
-| **monitoring-alerting**    | `.claude/skills/monitoring-alerting/SKILL.md`    | ヘルスチェック、ログ集約、メトリクス可視化                     |
-| **docker-best-practices**  | `.claude/skills/docker-best-practices/SKILL.md`  | マルチステージビルド、レイヤーキャッシュ、セキュリティスキャン |
-| **security-scanning**      | `.claude/skills/security-scanning/SKILL.md`      | 依存関係脆弱性、コンテナスキャン、SBOM 生成、シークレット検出  |
-```
-
-## 17. ファイル監視 (Watcher)
-
-- **エージェント名:** `@local-watcher`
-- **エージェントの配置:** `.claude/agents/local-watcher.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                       | パス                                                 | 概要                                                             |
-| ------------------------------ | ---------------------------------------------------- | ---------------------------------------------------------------- |
-| **event-driven-file-watching** | `.claude/skills/event-driven-file-watching/SKILL.md` | Chokidar によるファイル監視、Observer Pattern、EventEmitter 設計 |
-| **debounce-throttle-patterns** | `.claude/skills/debounce-throttle-patterns/SKILL.md` | イベント最適化、連続発火防止、デバウンス・スロットリング実装     |
-| **file-exclusion-patterns**    | `.claude/skills/file-exclusion-patterns/SKILL.md`    | .gitignore 互換除外パターン、glob pattern、効率的フィルタリング  |
-| **nodejs-stream-processing**   | `.claude/skills/nodejs-stream-processing/SKILL.md`   | ストリーム処理、バックプレッシャー管理、大容量ファイル処理       |
-| **graceful-shutdown-patterns** | `.claude/skills/graceful-shutdown-patterns/SKILL.md` | シグナルハンドリング、リソースクリーンアップ、終了処理           |
-| **file-watcher-security**      | `.claude/skills/file-watcher-security/SKILL.md`      | パストラバーサル防止、シンボリックリンク検証、サンドボックス     |
-| **file-watcher-observability** | `.claude/skills/file-watcher-observability/SKILL.md` | Prometheus メトリクス、構造化ログ、アラート設計                  |
-```
-
-## 18. ネットワーク同期 (Sync)
-
-- **エージェント名:** `@local-sync`
-- **エージェントの配置:** `.claude/agents/local-sync.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                        | パス                                                  | 概要                                                       |
-| ------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------- |
-| **multipart-upload**            | `.claude/skills/multipart-upload/SKILL.md`            | FormData、チャンクアップロード、進捗追跡、チェックサム検証 |
-| **network-resilience**          | `.claude/skills/network-resilience/SKILL.md`          | オフラインキュー、再接続ロジック、状態同期、データ整合性   |
-| **retry-strategies**            | `.claude/skills/retry-strategies/SKILL.md`            | 指数バックオフ、ジッター、サーキットブレーカー             |
-| **multi-agent-systems**         | `.claude/skills/multi-agent-systems/SKILL.md`         | エージェント間連携、ハンドオフプロトコル                   |
-| **agent-architecture-patterns** | `.claude/skills/agent-architecture-patterns/SKILL.md` | エージェント構造、依存スキル設計パターン                   |
-```
-
-## 19. プロセス管理
-
-- **エージェント名:** `@process-mgr`
-- **エージェントの配置:** `.claude/agents/process-mgr.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                         | パス                                                   | 概要                                                           |
-| -------------------------------- | ------------------------------------------------------ | -------------------------------------------------------------- |
-| **pm2-ecosystem-config**         | `.claude/skills/pm2-ecosystem-config/SKILL.md`         | PM2 設定オプション、クラスタリング、環境変数管理               |
-| **process-lifecycle-management** | `.claude/skills/process-lifecycle-management/SKILL.md` | プロセス状態、シグナル処理、子プロセス管理                     |
-| **graceful-shutdown-patterns**   | `.claude/skills/graceful-shutdown-patterns/SKILL.md`   | シャットダウンシーケンス、リソースクリーンアップ、接続ドレイン |
-| **log-rotation-strategies**      | `.claude/skills/log-rotation-strategies/SKILL.md`      | pm2-logrotate、Winston、ログ集約、ディスク管理                 |
-| **memory-monitoring-strategies** | `.claude/skills/memory-monitoring-strategies/SKILL.md` | メモリメトリクス、リーク検出、ヒープ分析                       |
-```
-
-## 20. ユニットテスター
-
-- **エージェント名:** `@unit-tester`
-- **エージェントの配置:** `.claude/agents/unit-tester.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                    | パス                                              | 概要                                                          |
-| --------------------------- | ------------------------------------------------- | ------------------------------------------------------------- |
-| **tdd-principles**          | `.claude/skills/tdd-principles/SKILL.md`          | Red-Green-Refactor サイクル、テストファースト、小さなステップ |
-| **test-doubles**            | `.claude/skills/test-doubles/SKILL.md`            | Mock、Stub、Spy、Fake、Dummy の使い分け                       |
-| **vitest-advanced**         | `.claude/skills/vitest-advanced/SKILL.md`         | テスト構造、モッキング、非同期テスト、カバレッジ最適化        |
-| **boundary-value-analysis** | `.claude/skills/boundary-value-analysis/SKILL.md` | 境界値テスト、等価分割、エッジケース網羅                      |
-| **test-naming-conventions** | `.claude/skills/test-naming-conventions/SKILL.md` | Should 形式、Given-When-Then、Arrange-Act-Assert              |
-```
-
-## 21. E2E テスター
-
-- **エージェント名:** `@e2e-tester`
-- **エージェントの配置:** `.claude/agents/e2e-tester.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                      | パス                                                | 概要                                              |
-| ----------------------------- | --------------------------------------------------- | ------------------------------------------------- |
-| **playwright-testing**        | `.claude/skills/playwright-testing/SKILL.md`        | Playwright ブラウザ自動化、セレクタ戦略、待機戦略 |
-| **test-data-management**      | `.claude/skills/test-data-management/SKILL.md`      | Seeding、Teardown、テストデータ分離               |
-| **flaky-test-prevention**     | `.claude/skills/flaky-test-prevention/SKILL.md`     | リトライロジック、明示的待機、非決定性排除        |
-| **visual-regression-testing** | `.claude/skills/visual-regression-testing/SKILL.md` | スクリーンショット比較、CSS アニメーション考慮    |
-| **api-mocking**               | `.claude/skills/api-mocking/SKILL.md`               | MSW、Nock、モックサーバー構築                     |
-```
-
-## 22. コード品質管理者 (Linter)
-
-- **エージェント名:** `@code-quality`
-- **エージェントの配置:** `.claude/agents/code-quality.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                 | パス                                           | 概要                                                        |
-| ------------------------ | ---------------------------------------------- | ----------------------------------------------------------- |
-| **eslint-configuration** | `.claude/skills/eslint-configuration/SKILL.md` | ESLint ルール設定、パーサー、プラグイン統合、競合解決       |
-| **prettier-integration** | `.claude/skills/prettier-integration/SKILL.md` | Prettier 統合、責務分離、エディタ統合、自動フォーマット戦略 |
-| **static-analysis**      | `.claude/skills/static-analysis/SKILL.md`      | 循環的複雑度、認知的複雑度、保守性指標、Code Smells 検出    |
-| **code-style-guides**    | `.claude/skills/code-style-guides/SKILL.md`    | Airbnb、Google、Standard スタイルガイド選択と適用           |
-| **commit-hooks**         | `.claude/skills/commit-hooks/SKILL.md`         | Husky、lint-staged 統合、pre-commit 品質ゲート              |
-```
-
-## 23. 認証・認可スペシャリスト
-
-- **エージェント名:** `@auth-specialist`
-- **エージェントの配置:** `.claude/agents/auth-specialist.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                | パス                                          | 概要                                                                                                 |
-| ----------------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| **oauth2-flows**        | `.claude/skills/oauth2-flows/SKILL.md`        | Authorization Code Flow、PKCE、Refresh Token、セキュリティベストプラクティス、トークンストレージ戦略 |
-| **session-management**  | `.claude/skills/session-management/SKILL.md`  | JWT/Database/Hybrid 戦略、Cookie 属性設定、トークンライフサイクル、セッション固定・ハイジャック対策  |
-| **rbac-implementation** | `.claude/skills/rbac-implementation/SKILL.md` | ロール設計、権限モデル、多層アクセス制御（ミドルウェア/API ルート/データ層）、ポリシーエンジン       |
-| **nextauth-patterns**   | `.claude/skills/nextauth-patterns/SKILL.md`   | NextAuth.js v5 設定、プロバイダー設定、Drizzle アダプター統合、セッションコールバック、型安全性      |
-| **security-headers**    | `.claude/skills/security-headers/SKILL.md`    | CSP、HSTS、X-Frame-Options、Referrer-Policy、CSRF/XSS 対策、Cookie 属性安全化                        |
-```
-
-## 24. セキュリティ監査人
-
-- **エージェント名:** `@sec-auditor`
-- **エージェントの配置:** `.claude/agents/sec-auditor.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                                  | パス                                                            | 概要                                                   |
-| ----------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------ |
-| **authentication-authorization-security** | `.claude/skills/authentication-authorization-security/SKILL.md` | 認証・認可機構のセキュリティ評価、OAuth、JWT、RBAC     |
-| **cryptographic-practices**               | `.claude/skills/cryptographic-practices/SKILL.md`               | 暗号化アルゴリズム、CSPRNG、鍵管理                     |
-| **security-configuration-review**         | `.claude/skills/security-configuration-review/SKILL.md`         | セキュリティヘッダー、CORS、環境変数レビュー           |
-| **dependency-security-scanning**          | `.claude/skills/dependency-security-scanning/SKILL.md`          | 依存関係脆弱性、pnpm audit、CVE評価                    |
-| **code-static-analysis-security**         | `.claude/skills/code-static-analysis-security/SKILL.md`         | SQLインジェクション、XSS、コマンドインジェクション検出 |
-| **rate-limiting**                         | `.claude/skills/rate-limiting/SKILL.md`                         | Token Bucket、Leaky Bucket、Sliding Window             |
-| **input-sanitization**                    | `.claude/skills/input-sanitization/SKILL.md`                    | パラメータタンパリング防止、エンコード処理             |
-| **security-reporting**                    | `.claude/skills/security-reporting/SKILL.md`                    | セキュリティレポート生成、リスク評価                   |
-```
-
-## 26. ロギング・監視設計者
-
-- **エージェント名:** `@sre-observer`
-- **エージェントの配置:** `.claude/agents/sre-observer.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                  | パス                                            | 概要                                                                 |
-| ------------------------- | ----------------------------------------------- | -------------------------------------------------------------------- |
-| **structured-logging**    | `.claude/skills/structured-logging/SKILL.md`    | JSON 形式ログ、コンテキスト情報、ログレベル、相関 ID、PII マスキング |
-| **observability-pillars** | `.claude/skills/observability-pillars/SKILL.md` | ログ、メトリクス、トレースの統合、OpenTelemetry、サンプリング戦略    |
-| **slo-sli-design**        | `.claude/skills/slo-sli-design/SKILL.md`        | Service Level Objectives、Error Budget、SLI 設計                     |
-| **alert-design**          | `.claude/skills/alert-design/SKILL.md`          | アラート閾値設定、通知ルーティング、Alert Fatigue 回避、適応的閾値   |
-| **distributed-tracing**   | `.claude/skills/distributed-tracing/SKILL.md`   | OpenTelemetry、トレース ID、スパン管理、W3C Trace Context            |
-```
-
-## 27. データベース管理者 (DBA)
-
-- **エージェント名:** `@dba-mgr`
-- **エージェントの配置:** `.claude/agents/dba-mgr.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                       | パス                                                 | 概要                                                               |
-| ------------------------------ | ---------------------------------------------------- | ------------------------------------------------------------------ |
-| **database-migrations**        | `.claude/skills/database-migrations/SKILL.md`        | Drizzle ORM マイグレーション、Up/Down 可逆的変更、移行期間パターン |
-| **backup-recovery**            | `.claude/skills/backup-recovery/SKILL.md`            | 多層防御バックアップ、RPO/RTO 設計、災害復旧計画（Turso レプリカ） |
-| **query-performance-tuning**   | `.claude/skills/query-performance-tuning/SKILL.md`   | EXPLAIN QUERY PLAN、インデックス戦略、N+1 問題解決、SQLite 最適化  |
-| **database-seeding**           | `.claude/skills/database-seeding/SKILL.md`           | 環境別 Seeding、べき等性設計、ファクトリパターン                   |
-| **connection-pooling**         | `.claude/skills/connection-pooling/SKILL.md`         | libSQL 接続プーリング、サーバーレス対応、タイムアウト設定          |
-| **vector-search-alternatives** | `.claude/skills/vector-search-alternatives/SKILL.md` | ベクトル検索代替案、類似度検索、RAG パターン（外部サービス統合）   |
-| **database-monitoring**        | `.claude/skills/database-monitoring/SKILL.md`        | SQLite/Turso 統計、スロークエリ監視、アラート設計                  |
-```
-
-## 28. API ドキュメント作成者
-
-- **エージェント名:** `@api-doc-writer`
+- **エージェント名:** `.claude/agents/api-doc-writer.md`
 - **エージェントの配置:** `.claude/agents/api-doc-writer.md`
 
-```markdown
-- **必要なスキル**:
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/openapi-specification/SKILL.md** | `.claude/skills/openapi-specification/SKILL.md` | OpenAPI 3.x仕様設計、スキーマ定義、path定義 |
+| **.claude/skills/swagger-ui/SKILL.md** | `.claude/skills/swagger-ui/SKILL.md` | インタラクティブドキュメント、API Explorer構築 |
+| **.claude/skills/api-versioning/SKILL.md** | `.claude/skills/api-versioning/SKILL.md` | バージョニング戦略、破壊的変更管理の実務指針 |
+| **.claude/skills/request-response-examples/SKILL.md** | `.claude/skills/request-response-examples/SKILL.md` | cURLサンプル、SDK例、レスポンス例 |
+| **.claude/skills/authentication-docs/SKILL.md** | `.claude/skills/authentication-docs/SKILL.md` | OAuth、API Key、認証フロー図解 |
+| **.claude/skills/api-documentation-best-practices/SKILL.md** | `.claude/skills/api-documentation-best-practices/SKILL.md` | DX設計、自己完結型ドキュメントの実務指針 |
 
-| スキル名                      | 概要                                          |
-| ----------------------------- | --------------------------------------------- |
-| **openapi-specification**     | OpenAPI 3.x、スキーマ定義、エンドポイント記述 |
-| **swagger-ui**                | Swagger UI 設定、Interactive API Docs         |
-| **api-versioning**            | バージョニング戦略、非推奨化、互換性維持      |
-| **request-response-examples** | サンプルリクエスト、レスポンス、エラーケース  |
-| **authentication-docs**       | 認証フロー図解、トークン取得手順              |
-```
+## 2. Architecture Police
 
-## 29. ユーザーマニュアル作成者
+- **エージェント名:** `.claude/agents/arch-police.md`
+- **エージェントの配置:** `.claude/agents/arch-police.md`
 
-- **エージェント名:** `@manual-writer`
-- **エージェントの配置:** `.claude/agents/manual-writer.md`
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/clean-architecture-principles/SKILL.md** | `.claude/skills/clean-architecture-principles/SKILL.md` | 依存関係ルール、レイヤー構造、プロジェクト固有マッピング |
+| **.claude/skills/solid-principles/SKILL.md** | `.claude/skills/solid-principles/SKILL.md` | SRP, OCP, LSP, ISP, DIP の評価基準と検出パターン |
+| **.claude/skills/dependency-analysis/SKILL.md** | `.claude/skills/dependency-analysis/SKILL.md` | 依存グラフ構築、循環依存検出、安定度メトリクス |
+| **.claude/skills/architectural-patterns/SKILL.md** | `.claude/skills/architectural-patterns/SKILL.md` | Hexagonal, Onion, Vertical Slice パターンの評価 |
+| **.claude/skills/code-smell-detection/SKILL.md** | `.claude/skills/code-smell-detection/SKILL.md` | クラス/メソッドスメル、アーキテクチャアンチパターン |
 
-```markdown
-- **必要なスキル**:
+## 3. Auth Specialist
 
-| スキル名                     | 概要                                         |
-| ---------------------------- | -------------------------------------------- |
-| **user-centric-writing**     | ユーザー視点、タスク指向、平易な言葉         |
-| **tutorial-design**          | ステップバイステップ、スクリーンショット活用 |
-| **troubleshooting-guides**   | FAQ、エラーメッセージ解説、解決策提示        |
-| **information-architecture** | ドキュメント構造、ナビゲーション設計         |
-| **localization-i18n**        | 多言語対応、文化的配慮、翻訳管理             |
-```
+- **エージェント名:** `.claude/agents/auth-specialist.md`
+- **エージェントの配置:** `.claude/agents/auth-specialist.md`
 
-## 30. 依存パッケージ管理者
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/oauth2-flows/SKILL.md** | `.claude/skills/oauth2-flows/SKILL.md` | Authorization Code Flow、PKCE |
+| **.claude/skills/session-management/SKILL.md** | `.claude/skills/session-management/SKILL.md` | セッション戦略、トークンライフサイクル、署名検証 |
+| **.claude/skills/rbac-implementation/SKILL.md** | `.claude/skills/rbac-implementation/SKILL.md` | ロールベースアクセス制御、ポリシーエンジン、権限マトリクス |
+| **.claude/skills/nextauth-patterns/SKILL.md** | `.claude/skills/nextauth-patterns/SKILL.md` | NextAuth.js設定、カスタムプロバイダー、コールバック |
+| **.claude/skills/security-headers/SKILL.md** | `.claude/skills/security-headers/SKILL.md` | CSP、HSTS、X-Frame-Options、CSRF対策 |
 
-- **エージェント名:** `@dep-mgr`
-- **エージェントの配置:** `.claude/agents/dep-mgr.md`
+## 4. Code Quality Manager
 
-```markdown
-- **必要なスキル**:
+- **エージェント名:** `.claude/agents/code-quality.md`
+- **エージェントの配置:** `.claude/agents/code-quality.md`
 
-| スキル名                           | パス                                                     | 概要                                               |
-| ---------------------------------- | -------------------------------------------------------- | -------------------------------------------------- |
-| **semantic-versioning**            | `.claude/skills/semantic-versioning/SKILL.md`            | Major、Minor、Patch バージョン理解、破壊的変更対応 |
-| **dependency-auditing**            | `.claude/skills/dependency-auditing/SKILL.md`            | pnpm/pnpm audit、CVSS 評価、脆弱性スキャン         |
-| **lock-file-management**           | `.claude/skills/lock-file-management/SKILL.md`           | pnpm-lock.yaml、整合性検証、競合解決               |
-| **upgrade-strategies**             | `.claude/skills/upgrade-strategies/SKILL.md`             | 段階的アップグレード、TDD 統合、ロールバック       |
-| **monorepo-dependency-management** | `.claude/skills/monorepo-dependency-management/SKILL.md` | pnpm Workspace、バージョン同期、影響分析           |
-```
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/eslint-configuration/SKILL.md** | `.claude/skills/eslint-configuration/SKILL.md` | Flat Config、カスタムルール、プラグイン統合 |
+| **.claude/skills/prettier-integration/SKILL.md** | `.claude/skills/prettier-integration/SKILL.md` | ESLint統合、保存時自動フォーマット、設定共有 |
+| **.claude/skills/static-analysis/SKILL.md** | `.claude/skills/static-analysis/SKILL.md` | 循環的複雑度、認知的複雑度、重複検出の実務指針 |
+| **.claude/skills/code-style-guides/SKILL.md** | `.claude/skills/code-style-guides/SKILL.md` | Airbnb/Google/Standard、業界標準適用 |
+| **.claude/skills/commit-hooks/SKILL.md** | `.claude/skills/commit-hooks/SKILL.md` | Husky、lint-staged、pre-commit品質ゲート |
 
-## 31. フック構成管理者
+## 5. Command Architect - スラッシュコマンド作成エージェント
 
-- **エージェント名:** `@hook-master`
-- **エージェントの配置:** `.claude/agents/hook-master.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                          | パス                                                    | 概要                                 |
-| --------------------------------- | ------------------------------------------------------- | ------------------------------------ |
-| **git-hooks-concepts**            | `.claude/skills/git-hooks-concepts/SKILL.md`            | Git Hooks の基本概念とライフサイクル |
-| **claude-code-hooks**             | `.claude/skills/claude-code-hooks/SKILL.md`             | Claude Code フックシステム設定       |
-| **automation-scripting**          | `.claude/skills/automation-scripting/SKILL.md`          | Bash/Node.js 自動化スクリプト作成    |
-| **linting-formatting-automation** | `.claude/skills/linting-formatting-automation/SKILL.md` | ESLint/Prettier 統合と Hook 実装     |
-| **approval-gates**                | `.claude/skills/approval-gates/SKILL.md`                | 承認ゲート設計とセキュリティパターン |
-```
-
-## 32. コマンド・オーケストレーター
-
-- **エージェント名:** `@command-arch`
+- **エージェント名:** `.claude/agents/command-arch.md`
 - **エージェントの配置:** `.claude/agents/command-arch.md`
 
-```markdown
-- **必要なスキル**:
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/command-naming-conventions/SKILL.md** | `.claude/skills/command-naming-conventions/SKILL.md` | 命名規則確認時の実務指針の実践ガイドの要点整理 |
+| **.claude/skills/command-placement-priority/SKILL.md** | `.claude/skills/command-placement-priority/SKILL.md` | 配置決定時の実務指針の実践ガイドの要点整理 |
+| **.claude/skills/command-structure-fundamentals/SKILL.md** | `.claude/skills/command-structure-fundamentals/SKILL.md` | Frontmatter設計時（必須）の実務指針 |
+| **.claude/skills/command-arguments-system/SKILL.md** | `.claude/skills/command-arguments-system/SKILL.md` | 引数システム設計時（必須）の実務指針の実践ガイド |
+| **.claude/skills/command-basic-patterns/SKILL.md** | `.claude/skills/command-basic-patterns/SKILL.md` | 実装パターン選択時（必須）の実務指針の実践ガイド |
+| **.claude/skills/command-advanced-patterns/SKILL.md** | `.claude/skills/command-advanced-patterns/SKILL.md` | 高度パターン必要時のみの実務指針の実践ガイド |
+| **.claude/skills/command-activation-mechanisms/SKILL.md** | `.claude/skills/command-activation-mechanisms/SKILL.md` | 自動起動設計時のみの実務指針の実践ガイド |
+| **.claude/skills/command-security-design/SKILL.md** | `.claude/skills/command-security-design/SKILL.md` | セキュリティレビュー時（必須）の実務指針 |
+| **.claude/skills/command-error-handling/SKILL.md** | `.claude/skills/command-error-handling/SKILL.md` | エラーハンドリング設計時の実務指針の実践ガイド |
+| **.claude/skills/command-documentation-patterns/SKILL.md** | `.claude/skills/command-documentation-patterns/SKILL.md` | ドキュメント作成時の実務指針の実践ガイド |
+| **.claude/skills/command-best-practices/SKILL.md** | `.claude/skills/command-best-practices/SKILL.md` | ベストプラクティスレビュー時（必須）の実務指針 |
+| **.claude/skills/command-performance-optimization/SKILL.md** | `.claude/skills/command-performance-optimization/SKILL.md` | 最適化必要時のみの実務指針の実践ガイドの要点整理 |
+| **.claude/skills/command-agent-skill-integration/SKILL.md** | `.claude/skills/command-agent-skill-integration/SKILL.md` | エージェント統合時のみの実務指針の実践ガイド |
+| **.claude/skills/skill-name/SKILL.md** | `.claude/skills/skill-name/SKILL.md` | `@.claude/skills/skill-name/SKILL.md` |
 
-| スキル名                             | パス                                                       | 概要                                                               |
-| ------------------------------------ | ---------------------------------------------------------- | ------------------------------------------------------------------ |
-| **command-structure-fundamentals**   | `.claude/skills/command-structure-fundamentals/SKILL.md`   | Claude Code スラッシュコマンドの基本構造                           |
-| **command-arguments-system**         | `.claude/skills/command-arguments-system/SKILL.md`         | コマンド引数システム（$ARGUMENTS、位置引数）                       |
-| **command-security-design**          | `.claude/skills/command-security-design/SKILL.md`          | コマンドのセキュリティ設計                                         |
-| **command-basic-patterns**           | `.claude/skills/command-basic-patterns/SKILL.md`           | 4 つの基本実装パターン                                             |
-| **command-advanced-patterns**        | `.claude/skills/command-advanced-patterns/SKILL.md`        | 高度な実装パターン（パイプライン、メタコマンド、インタラクティブ） |
-| **command-agent-skill-integration**  | `.claude/skills/command-agent-skill-integration/SKILL.md`  | コマンド、エージェント、スキルの統合（三位一体）                   |
-| **command-activation-mechanisms**    | `.claude/skills/command-activation-mechanisms/SKILL.md`    | コマンドの起動メカニズム                                           |
-| **command-error-handling**           | `.claude/skills/command-error-handling/SKILL.md`           | コマンドのエラーハンドリング                                       |
-| **command-naming-conventions**       | `.claude/skills/command-naming-conventions/SKILL.md`       | コマンドの命名規則                                                 |
-| **command-documentation-patterns**   | `.claude/skills/command-documentation-patterns/SKILL.md`   | コマンドのドキュメンテーション                                     |
-| **command-placement-priority**       | `.claude/skills/command-placement-priority/SKILL.md`       | コマンドの配置場所と優先順位                                       |
-| **command-best-practices**           | `.claude/skills/command-best-practices/SKILL.md`           | コマンド設計のベストプラクティス                                   |
-| **command-performance-optimization** | `.claude/skills/command-performance-optimization/SKILL.md` | コマンドのパフォーマンス最適化                                     |
-```
+## 6. DB Schema Architect
 
-## 33. メタ・エージェント設計者
-
-- **エージェント名:** `@meta-agent-designer`
-- **エージェントの配置:** `.claude/agents/meta-agent-designer.md`
-
-```markdown
-- **必要なスキル**:
-
-  | スキル名                             | パス                                                       | 概要                                                                                   |
-  | ------------------------------------ | ---------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-  | **agent-architecture-patterns**      | `.claude/skills/agent-architecture-patterns/SKILL.md`      | オーケストレーター・ワーカー、ハブアンドスポーク、パイプライン、ステートマシンパターン |
-  | **agent-structure-design**           | `.claude/skills/agent-structure-design/SKILL.md`           | YAML Frontmatter 設計、システムプロンプト構造、5 段階ワークフロー設計                  |
-  | **agent-dependency-design**          | `.claude/skills/agent-dependency-design/SKILL.md`          | スキル依存、エージェント依存、ハンドオフプロトコル、循環依存検出                       |
-  | **agent-quality-standards**          | `.claude/skills/agent-quality-standards/SKILL.md`          | 5 カテゴリ品質基準（構造、設計原則、セキュリティ、ドキュメンテーション、統合）         |
-  | **agent-validation-testing**         | `.claude/skills/agent-validation-testing/SKILL.md`         | 正常系・エッジケース・異常系テスト、YAML/Markdown 構文検証                             |
-  | **agent-template-patterns**          | `.claude/skills/agent-template-patterns/SKILL.md`          | 再利用可能エージェントテンプレート、変数設計、インスタンス化スクリプト                 |
-  | **project-architecture-integration** | `.claude/skills/project-architecture-integration/SKILL.md` | ハイブリッドアーキテクチャ（shared/features）、データベース設計、REST API              |
-  | **agent-persona-design**             | `.claude/skills/agent-persona-design/SKILL.md`             | ペルソナ定義、役割の明確化、制約設定                                                   |
-  | **tool-permission-management**       | `.claude/skills/tool-permission-management/SKILL.md`       | 最小権限、ツールアクセス制御                                                           |
-  | **multi-agent-systems**              | `.claude/skills/multi-agent-systems/SKILL.md`              | エージェント間協調、メッセージパッシング                                               |
-  | **prompt-engineering-for-agents**    | `.claude/skills/prompt-engineering-for-agents/SKILL.md`    | System Prompt、Few-Shot Examples                                                       |
-  | **agent-lifecycle-management**       | `.claude/skills/agent-lifecycle-management/SKILL.md`       | 起動、実行、終了、状態管理                                                             |
-```
-
-## 34. スキル・ナレッジエンジニア
-
-- **エージェント名:** `@skill-librarian`
-- **エージェントの配置:** `.claude/agents/skill-librarian.md`
-- **バージョン:** v3.0.0 (2025-11-28 リファクタリング)
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                       | パス                                                 | 概要                                                         |
-| ------------------------------ | ---------------------------------------------------- | ------------------------------------------------------------ |
-| **knowledge-management**       | `.claude/skills/knowledge-management/SKILL.md`       | SECI モデルに基づく組織知識の形式知化と共有                  |
-| **progressive-disclosure**     | `.claude/skills/progressive-disclosure/SKILL.md`     | 3 層開示モデルによるトークン効率と知識スケーラビリティの両立 |
-| **documentation-architecture** | `.claude/skills/documentation-architecture/SKILL.md` | ドキュメント構造設計、リソース分割、階層設計                 |
-| **context-optimization**       | `.claude/skills/context-optimization/SKILL.md`       | トークン使用量の最小化と必要情報の効率的抽出                 |
-| **best-practices-curation**    | `.claude/skills/best-practices-curation/SKILL.md`    | ベストプラクティスの収集、評価、統合、更新                   |
-| **skill-librarian-commands**   | `.claude/skills/skill-librarian-commands/SKILL.md`   | スキル管理コマンド・スクリプト参照、バリデーションツール     |
-| **skill-creation-workflow**    | `.claude/skills/skill-creation-workflow/SKILL.md`    | スキル作成・軽量化・改善の3ワークフロー、品質ゲート          |
-```
-
-## 35. MCP ツール統合スペシャリスト
-
-- **エージェント名:** `@mcp-integrator`
-- **エージェントの配置:** `.claude/agents/mcp-integrator.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                  | 概要                                      |
-| ------------------------- | ----------------------------------------- |
-| **mcp-protocol**          | Model Context Protocol 仕様、ツール定義   |
-| **api-connector-design**  | RESTful API、GraphQL、WebSocket 統合      |
-| **tool-security**         | API Key 管理、Rate Limiting、権限スコープ |
-| **resource-oriented-api** | リソース指向設計、CRUD 操作               |
-| **integration-patterns**  | Adapter、Facade、Gateway パターン         |
-```
-
-## 36. GitHub Actions ワークフロー・アーキテクト
-
-- **エージェント名:** `@gha-workflow-architect`
-- **エージェントの配置:** `.claude/agents/gha-workflow-architect.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                         | パス                                                   | 概要                                                                                      |
-| -------------------------------- | ------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
-| **github-actions-syntax**        | `.claude/skills/github-actions-syntax/SKILL.md`        | ワークフロー構文、YAML 構造、イベントトリガー、ジョブ・ステップ定義                       |
-| **github-actions-expressions**   | `.claude/skills/github-actions-expressions/SKILL.md`   | Expression 構文、コンテキストオブジェクト、関数（contains、startsWith 等）                |
-| **github-actions-debugging**     | `.claude/skills/github-actions-debugging/SKILL.md`     | デバッグログ（ACTIONS_STEP_DEBUG）、ステップサマリー、annotations、トラブルシューティング |
-| **workflow-templates**           | `.claude/skills/workflow-templates/SKILL.md`           | Organization workflow templates、スターターワークフロー、プロジェクトタイプ別テンプレート |
-| **reusable-workflows**           | `.claude/skills/reusable-workflows/SKILL.md`           | 再利用可能ワークフロー設計、workflow_call、inputs/outputs/secrets 定義                    |
-| **matrix-builds**                | `.claude/skills/matrix-builds/SKILL.md`                | マトリクス戦略、OS/言語バージョン組み合わせテスト、include/exclude                        |
-| **caching-strategies-gha**       | `.claude/skills/caching-strategies-gha/SKILL.md`       | actions/cache、依存関係キャッシュ、ビルドキャッシュ最適化、キャッシュキー設計             |
-| **secrets-management-gha**       | `.claude/skills/secrets-management-gha/SKILL.md`       | Repository/Environment/Organization Secrets、OIDC 認証、Vault 統合                        |
-| **self-hosted-runners**          | `.claude/skills/self-hosted-runners/SKILL.md`          | セルフホステッドランナー設定、スケーリング、セキュリティ強化、ラベル管理                  |
-| **parallel-jobs-gha**            | `.claude/skills/parallel-jobs-gha/SKILL.md`            | 依存関係グラフ（needs）、並列実行最適化、ジョブ間データ受け渡し                           |
-| **conditional-execution-gha**    | `.claude/skills/conditional-execution-gha/SKILL.md`    | if 条件、イベントフィルタリング、パスフィルタ、ブランチフィルタ                           |
-| **artifact-management-gha**      | `.claude/skills/artifact-management-gha/SKILL.md`      | actions/upload-artifact、actions/download-artifact、保持期間設定、ジョブ間共有            |
-| **deployment-environments-gha**  | `.claude/skills/deployment-environments-gha/SKILL.md`  | 環境（Environment）設定、承認フロー、デプロイメントプロテクション、環境 URL               |
-| **notification-integration-gha** | `.claude/skills/notification-integration-gha/SKILL.md` | Slack/Discord/Email 通知、ステータスバッジ、コミットステータス API                        |
-| **cost-optimization-gha**        | `.claude/skills/cost-optimization-gha/SKILL.md`        | 実行時間短縮、キャッシュ活用、不要ワークフロー抑制、if 条件での早期終了                   |
-| **docker-build-push-action**     | `.claude/skills/docker-build-push-action/SKILL.md`     | docker/build-push-action、マルチプラットフォームビルド、BuildKit、レジストリプッシュ      |
-| **github-api-integration**       | `.claude/skills/github-api-integration/SKILL.md`       | GitHub REST/GraphQL API、gh CLI 活用、トークン管理、自動化パターン                        |
-| **workflow-security**            | `.claude/skills/workflow-security/SKILL.md`            | トークン権限制限、スクリプトインジェクション対策、依存関係の固定（pinning）               |
-| **composite-actions**            | `.claude/skills/composite-actions/SKILL.md`            | コンポジットアクション作成、ローカルアクション、アクション公開、再利用性設計              |
-| **concurrency-control**          | `.claude/skills/concurrency-control/SKILL.md`          | 同時実行制御（concurrency）、キャンセル戦略（cancel-in-progress）、グループ設計           |
-```
-
----
-
-## 共通スキル（複数エージェントで使用）
-
-以下のスキルは、上記の特定エージェントに限らず、複数のエージェントで共有されます。
-
-### WebSocket 通信パターン
-
-- **スキル名:** `websocket-patterns`
-- **パス:** `.claude/skills/websocket-patterns/SKILL.md`
-- **バージョン:** v1.0.0
-
-```markdown
-- **概要**: WebSocket による双方向リアルタイム通信パターン
-
-| リソース名               | パス                                                                  | 概要                                                         |
-| ------------------------ | --------------------------------------------------------------------- | ------------------------------------------------------------ |
-| **connection-lifecycle** | `.claude/skills/websocket-patterns/resources/connection-lifecycle.md` | 接続ライフサイクル（open/close/error/message）、状態遷移管理 |
-| **heartbeat-strategies** | `.claude/skills/websocket-patterns/resources/heartbeat-strategies.md` | Ping-Pong による接続維持と死活監視                           |
-| **message-queueing**     | `.claude/skills/websocket-patterns/resources/message-queueing.md`     | 接続断時のメッセージバッファリングと順序保証送信             |
-
-- **使用エージェント**: @local-sync, @gateway-dev
-```
-
----
-
-## 新規スキル - E2E テスト関連 (2025-11-26 追加)
-
-以下のスキルは @e2e-tester エージェント専用に作成されました:
-
-| スキル名                      | パス                                                | 概要                                              |
-| ----------------------------- | --------------------------------------------------- | ------------------------------------------------- |
-| **playwright-testing**        | `.claude/skills/playwright-testing/SKILL.md`        | Playwright ブラウザ自動化、セレクタ戦略、待機戦略 |
-| **test-data-management**      | `.claude/skills/test-data-management/SKILL.md`      | Seeding、Teardown、テストデータ分離               |
-| **flaky-test-prevention**     | `.claude/skills/flaky-test-prevention/SKILL.md`     | リトライロジック、明示的待機、非決定性排除        |
-| **visual-regression-testing** | `.claude/skills/visual-regression-testing/SKILL.md` | スクリーンショット比較、CSS アニメーション考慮    |
-| **api-mocking**               | `.claude/skills/api-mocking/SKILL.md`               | MSW、Nock、モックサーバー構築                     |
-
----
-
-## 新規スキル - セキュリティ監査関連 (2025-11-26 追加)
-
-以下のスキルは @sec-auditor エージェント軽量化に伴い作成されました:
-
-| スキル名                                  | パス                                                            | 概要                                                          |
-| ----------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------- |
-| **authentication-authorization-security** | `.claude/skills/authentication-authorization-security/SKILL.md` | 認証・認可機構のセキュリティ評価、OAuth 2.0、JWT、RBAC/ABAC   |
-| **cryptographic-practices**               | `.claude/skills/cryptographic-practices/SKILL.md`               | 暗号化アルゴリズム評価、CSPRNG、鍵管理、弱い暗号排除          |
-| **security-configuration-review**         | `.claude/skills/security-configuration-review/SKILL.md`         | セキュリティヘッダー、CORS、環境変数、CSP 設定レビュー        |
-| **dependency-security-scanning**          | `.claude/skills/dependency-security-scanning/SKILL.md`          | 依存関係脆弱性スキャン、pnpm audit、Snyk、CVE 評価            |
-| **code-static-analysis-security**         | `.claude/skills/code-static-analysis-security/SKILL.md`         | SAST、SQL インジェクション、XSS、コマンドインジェクション検出 |
-| **security-reporting**                    | `.claude/skills/security-reporting/SKILL.md`                    | セキュリティレポート生成、リスク評価、アクションプラン策定    |
-
----
-
-## 新規スキル - Secret 管理関連 (2025-11-26 追加)
-
-以下のスキルは @secret-mgr エージェント専用に作成されました:
-
-| スキル名                           | パス                                                     | 概要                                                                                    |
-| ---------------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| **secret-management-architecture** | `.claude/skills/secret-management-architecture/SKILL.md` | Secret 管理方式選択、階層的管理設計、アクセス制御マトリクス、Rotation 戦略              |
-| **zero-trust-security**            | `.claude/skills/zero-trust-security/SKILL.md`            | Zero Trust 5 原則、RBAC/ABAC 実装、JIT アクセス、継続的検証、異常検知                   |
-| **gitignore-management**           | `.claude/skills/gitignore-management/SKILL.md`           | .gitignore 設計、機密ファイルパターン、プロジェクト固有除外、検証手法                   |
-| **pre-commit-security**            | `.claude/skills/pre-commit-security/SKILL.md`            | pre-commit hook 実装、機密情報検出パターン、Git 履歴スキャン、git-secrets/gitleaks 統合 |
-| **encryption-key-lifecycle**       | `.claude/skills/encryption-key-lifecycle/SKILL.md`       | 暗号化アルゴリズム選定、鍵生成・保管・使用・Rotation・廃棄の全フェーズ                  |
-| **environment-isolation**          | `.claude/skills/environment-isolation/SKILL.md`          | 環境分離 4 レベル、環境別 Secret 管理、クロスアカウント制御、データマスキング           |
-| **railway-turso-management**       | `.claude/skills/railway-turso-management/SKILL.md`       | Railway Secrets、Variables、Turso統合、Railway CLI、一時ファイルセキュリティ            |
-| **github-actions-security**        | `.claude/skills/github-actions-security/SKILL.md`        | GitHub Secrets、Environment Secrets、ログマスキング、CI/CD 品質ゲート統合               |
-
----
-
-## 新規スキル - SRE/オブザーバビリティ関連 (2025-11-26 追加)
-
-以下のスキルは @sre-observer エージェント専用に作成されました:
-
-| スキル名                  | パス                                            | 概要                                                                                            |
-| ------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| **structured-logging**    | `.claude/skills/structured-logging/SKILL.md`    | JSON 形式ログ、ログレベル階層、相関 ID 体系、PII マスキング、ログスキーマ設計                   |
-| **observability-pillars** | `.claude/skills/observability-pillars/SKILL.md` | ログ・メトリクス・トレース三本柱統合、OpenTelemetry、サンプリング戦略、高カーディナリティデータ |
-| **slo-sli-design**        | `.claude/skills/slo-sli-design/SKILL.md`        | SLI 設計、SLO 設定フレームワーク、エラーバジェット計算・管理、ダッシュボード可視化              |
-| **alert-design**          | `.claude/skills/alert-design/SKILL.md`          | アクション可能アラート設計、Alert Fatigue 回避、適応的閾値、通知ルーティング                    |
-| **distributed-tracing**   | `.claude/skills/distributed-tracing/SKILL.md`   | トレース構造設計、W3C Trace Context、スパン設計、ボトルネック特定                               |
-
----
-
-## 新規スキル - 認証・認可関連 (2025-11-26 追加)
-
-以下のスキルは @auth-specialist エージェント軽量化により作成されました:
-
-| スキル名                | パス                                          | 概要                                                                                                                    |
-| ----------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| **oauth2-flows**        | `.claude/skills/oauth2-flows/SKILL.md`        | OAuth 2.0 認可フロー（Authorization Code、PKCE、Refresh Token）、セキュリティベストプラクティス、トークンストレージ戦略 |
-| **session-management**  | `.claude/skills/session-management/SKILL.md`  | セッション戦略（JWT/Database/Hybrid）、Cookie 属性設定、トークンライフサイクル管理、セッション固定・ハイジャック対策    |
-| **rbac-implementation** | `.claude/skills/rbac-implementation/SKILL.md` | ロールベースアクセス制御、ロール設計、権限モデル、多層アクセス制御、ポリシーエンジン構築                                |
-| **nextauth-patterns**   | `.claude/skills/nextauth-patterns/SKILL.md`   | NextAuth.js v5 設定パターン、プロバイダー設定、Drizzle アダプター統合、セッションコールバックカスタマイズ               |
-| **security-headers**    | `.claude/skills/security-headers/SKILL.md`    | セキュリティヘッダー設定（CSP、HSTS、X-Frame-Options）、CSRF/XSS 対策、Cookie 属性安全化                                |
-
-````
-
----
-
-## 新規スキル - APIドキュメント関連 (2025-11-27 追加)
-
-以下のスキルは @api-doc-writer エージェント v2.1.0 軽量化に伴い作成されました:
+- **エージェント名:** `.claude/agents/db-architect.md`
+- **エージェントの配置:** `.claude/agents/db-architect.md`
 
 | スキル名 | パス | 概要 |
-|---------|------|------|
-| **openapi-specification** | `.claude/skills/openapi-specification/SKILL.md` | OpenAPI 3.x仕様設計、スキーマ定義パターン、セキュリティスキーム、バリデーション |
-| **swagger-ui** | `.claude/skills/swagger-ui/SKILL.md` | Swagger UI/ReDoc設定、Next.js統合、カスタマイズ、CI/CD統合 |
-| **api-versioning** | `.claude/skills/api-versioning/SKILL.md` | バージョニング戦略（URL Path/Header/Query）、非推奨化プロセス、破壊的変更管理 |
-| **request-response-examples** | `.claude/skills/request-response-examples/SKILL.md` | cURL/SDK別サンプル、RFC 7807エラーレスポンス、エラーカタログ |
-| **authentication-docs** | `.claude/skills/authentication-docs/SKILL.md` | OAuth 2.0フロー図解、トークン管理、セキュリティベストプラクティス |
+| --- | --- | --- |
+| **.claude/skills/database-normalization/SKILL.md** | `.claude/skills/database-normalization/SKILL.md` | 正規化理論（1NF〜5NF）と意図的非正規化 |
+| **.claude/skills/indexing-strategies/SKILL.md** | `.claude/skills/indexing-strategies/SKILL.md` | SQLiteインデックス戦略（B-Tree、部分インデックス） |
+| **.claude/skills/sql-anti-patterns/SKILL.md** | `.claude/skills/sql-anti-patterns/SKILL.md` | ジェイウォーク、EAV、Polymorphic Associations回避 |
+| **.claude/skills/json-optimization/SKILL.md** | `.claude/skills/json-optimization/SKILL.md` | SQLite JSON1拡張による柔軟なスキーマ設計 |
+| **.claude/skills/foreign-key-constraints/SKILL.md** | `.claude/skills/foreign-key-constraints/SKILL.md` | 参照整合性とCASCADE動作の実務指針 |
+| **.claude/skills/transaction-management/SKILL.md** | `.claude/skills/transaction-management/SKILL.md` | トランザクション分離レベルと整合性の実務指針 |
+| **.claude/skills/query-optimization/SKILL.md** | `.claude/skills/query-optimization/SKILL.md` | クエリプラン分析とパフォーマンスチューニング |
+| **.claude/skills/database-migrations/SKILL.md** | `.claude/skills/database-migrations/SKILL.md` | 安全なマイグレーション戦略の実務指針の実践ガイド |
 
----
+## 7. Database Administrator (DBA)
 
-## 新規スキル - ユーザーマニュアル作成関連 (2025-11-27 追加)
-
-以下のスキルは @manual-writer エージェント軽量化（v2.0.0）により作成されました:
+- **エージェント名:** `.claude/agents/dba-mgr.md`
+- **エージェントの配置:** `.claude/agents/dba-mgr.md`
 
 | スキル名 | パス | 概要 |
-|---------|------|------|
-| **user-centric-writing** | `.claude/skills/user-centric-writing/SKILL.md` | ユーザー中心ライティング、Kathy Sierraの5原則、タスク指向、平易な言葉、Flesch可読性測定スクリプト |
-| **tutorial-design** | `.claude/skills/tutorial-design/SKILL.md` | チュートリアル設計、3段階学習パスモデル、ステップバイステップ構造、完了時間見積もりスクリプト |
-| **troubleshooting-guides** | `.claude/skills/troubleshooting-guides/SKILL.md` | 診断フロー設計、エラー分類体系（1000-5999）、FAQ構造設計、解決策優先度付け |
-| **information-architecture** | `.claude/skills/information-architecture/SKILL.md` | ドキュメント階層設計、3クリックルール、ナビゲーションパターン、サイトマップテンプレート、リンク検証スクリプト |
-| **localization-i18n** | `.claude/skills/localization-i18n/SKILL.md` | 国際化対応、翻訳しやすい文章設計、多言語ディレクトリ構造、文化的配慮、翻訳準備度チェックスクリプト |
+| --- | --- | --- |
+| **.claude/skills/database-migrations/SKILL.md** | `.claude/skills/database-migrations/SKILL.md` | Drizzle Kit、Up/Down可逆変更、Blue-Green移行 |
+| **.claude/skills/backup-recovery/SKILL.md** | `.claude/skills/backup-recovery/SKILL.md` | 多層防御、RPO/RTO設計、災害復旧の実務指針 |
+| **.claude/skills/query-performance-tuning/SKILL.md** | `.claude/skills/query-performance-tuning/SKILL.md` | EXPLAIN QUERY PLAN、インデックス最適化、クエリ書き換え |
+| **.claude/skills/database-seeding/SKILL.md** | `.claude/skills/database-seeding/SKILL.md` | 環境別Seeding、べき等性、ファクトリパターン |
+| **.claude/skills/connection-pooling/SKILL.md** | `.claude/skills/connection-pooling/SKILL.md` | libSQL接続最適化、ローカル/リモート切り替え |
+| **.claude/skills/database-monitoring/SKILL.md** | `.claude/skills/database-monitoring/SKILL.md` | SQLite統計情報、スロークエリログ、アラート |
 
----
+## 8. .claude/agents/dep-mgr.md - 依存パッケージ管理者
 
-## 新規スキル - Meta-Agent Designer関連 (2025-11-27 追加)
+- **エージェント名:** `.claude/agents/dep-mgr.md`
+- **エージェントの配置:** `.claude/agents/dep-mgr.md`
 
-以下のスキルは @meta-agent-designer エージェント v2.1.0 に伴い、スクリプトとテンプレートが追加されました:
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/semantic-versioning/SKILL.md** | `.claude/skills/semantic-versioning/SKILL.md` | Major/Minor/Patch判断、破壊的変更検出、SemVer範囲指定 |
+| **.claude/skills/dependency-auditing/SKILL.md** | `.claude/skills/dependency-auditing/SKILL.md` | pnpm audit、pnpm audit、CVSS評価、脆弱性トリアージ |
+| **.claude/skills/lock-file-management/SKILL.md** | `.claude/skills/lock-file-management/SKILL.md` | pnpm-lock.yaml整合性、競合解決、決定性ビルド |
+| **.claude/skills/upgrade-strategies/SKILL.md** | `.claude/skills/upgrade-strategies/SKILL.md` | 段階的更新、互換性マトリクス、ロールバック手順 |
+| **.claude/skills/monorepo-dependency-management/SKILL.md** | `.claude/skills/monorepo-dependency-management/SKILL.md` | pnpmワークスペース、バージョン同期、影響分析 |
 
-| スキル名 | パス | 追加コンポーネント |
-|---------|------|-------------------|
-| **agent-quality-standards** | `.claude/skills/agent-quality-standards/SKILL.md` | `scripts/calculate-quality-score.mjs` - 品質スコア算出 |
-| **agent-validation-testing** | `.claude/skills/agent-validation-testing/SKILL.md` | `scripts/validate-agent.mjs`, `templates/test-case-template.json` |
-| **project-architecture-integration** | `.claude/skills/project-architecture-integration/SKILL.md` | `scripts/check-architecture-compliance.mjs`, `templates/architecture-compliance-checklist.md` |
-| **agent-persona-design** | `.claude/skills/agent-persona-design/SKILL.md` | `scripts/analyze-persona.mjs`, `templates/persona-template.md` |
-| **tool-permission-management** | `.claude/skills/tool-permission-management/SKILL.md` | `scripts/analyze-permissions.mjs`, `templates/permission-template.yaml` |
-| **multi-agent-systems** | `.claude/skills/multi-agent-systems/SKILL.md` | `scripts/analyze-collaboration.mjs`, `templates/handoff-protocol-template.json` |
-| **prompt-engineering-for-agents** | `.claude/skills/prompt-engineering-for-agents/SKILL.md` | `scripts/analyze-prompt.mjs`, `templates/prompt-template.md` |
-| **agent-lifecycle-management** | `.claude/skills/agent-lifecycle-management/SKILL.md` | `scripts/check-lifecycle.mjs`, `templates/lifecycle-template.md` |
+## 9. DevOps/CI Engineer
 
-### スキル詳細
+- **エージェント名:** `.claude/agents/devops-eng.md`
+- **エージェントの配置:** `.claude/agents/devops-eng.md`
 
-#### user-centric-writing
-- **パス**: `.claude/skills/user-centric-writing/SKILL.md`
-- **リソース**: `resources/plain-language-guide.md` - 平易な言葉ガイド、技術用語→日常語変換辞書
-- **テンプレート**: `templates/persona-template.md` - ユーザーペルソナ定義テンプレート
-- **スクリプト**: `scripts/measure-readability.mjs` - Flesch Reading Ease スコア測定
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/ci-cd-pipelines/SKILL.md** | `.claude/skills/ci-cd-pipelines/SKILL.md` | GitHub Actions、並列化、キャッシュ戦略 |
+| **.claude/skills/infrastructure-as-code/SKILL.md** | `.claude/skills/infrastructure-as-code/SKILL.md` | Railway、環境変数、IaC原則の実務指針 |
+| **.claude/skills/deployment-strategies/SKILL.md** | `.claude/skills/deployment-strategies/SKILL.md` | Blue-Green、Canary、ロールバック戦略 |
+| **.claude/skills/monitoring-alerting/SKILL.md** | `.claude/skills/monitoring-alerting/SKILL.md` | ゴールデンシグナル、アラート設計の実務指針 |
+| **.claude/skills/docker-best-practices/SKILL.md** | `.claude/skills/docker-best-practices/SKILL.md` | マルチステージビルド、セキュリティの実務指針 |
+| **.claude/skills/security-scanning/SKILL.md** | `.claude/skills/security-scanning/SKILL.md` | 脆弱性スキャン、SBOM、シークレット検出 |
 
-#### tutorial-design
-- **パス**: `.claude/skills/tutorial-design/SKILL.md`
-- **リソース**: `resources/learning-path-design.md` - 学習パス設計ガイド（レベル1-3構造）
-- **テンプレート**: `templates/tutorial-template.md` - 標準チュートリアルテンプレート
-- **スクリプト**: `scripts/estimate-completion-time.mjs` - チュートリアル完了時間見積もり
+## 10. Domain Modeler
 
-#### troubleshooting-guides
-- **パス**: `.claude/skills/troubleshooting-guides/SKILL.md`
-- **リソース**: `resources/problem-classification.md` - 問題分類とエスカレーションフロー
-- **テンプレート**: `templates/diagnosis-flow-template.md` - 診断フローチャートテンプレート
-- **テンプレート**: `templates/error-explanation-template.md` - エラー解説テンプレート
+- **エージェント名:** `.claude/agents/domain-modeler.md`
+- **エージェントの配置:** `.claude/agents/domain-modeler.md`
 
-#### information-architecture
-- **パス**: `.claude/skills/information-architecture/SKILL.md`
-- **リソース**: `resources/navigation-patterns.md` - ナビゲーション設計パターン集
-- **テンプレート**: `templates/sitemap-template.md` - サイトマップ設計テンプレート
-- **スクリプト**: `scripts/validate-links.mjs` - 内部リンク整合性検証
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/domain-driven-design/SKILL.md** | `.claude/skills/domain-driven-design/SKILL.md` | DDDの原則と実践パターン（Phase 1-2必須） |
+| **.claude/skills/ubiquitous-language/SKILL.md** | `.claude/skills/ubiquitous-language/SKILL.md` | ユビキタス言語の確立手法（Phase 1, 4必須） |
+| **.claude/skills/value-object-patterns/SKILL.md** | `.claude/skills/value-object-patterns/SKILL.md` | 値オブジェクト設計パターン（Phase 2必須） |
+| **.claude/skills/domain-services/SKILL.md** | `.claude/skills/domain-services/SKILL.md` | ドメインサービスの配置設計（Phase 3推奨） |
+| **.claude/skills/bounded-context/SKILL.md** | `.claude/skills/bounded-context/SKILL.md` | 境界付けられたコンテキスト定義（Phase 1推奨） |
 
-#### localization-i18n
-- **パス**: `.claude/skills/localization-i18n/SKILL.md`
-- **リソース**: `resources/translation-ready-writing.md` - 翻訳準備ライティングガイド
-- **テンプレート**: `templates/multilingual-doc-template.md` - 多言語ドキュメント構造テンプレート
-- **スクリプト**: `scripts/check-translation-ready.mjs` - 翻訳準備度チェック・スコアリング
+## 11. E2E Tester Agent
 
----
+- **エージェント名:** `.claude/agents/e2e-tester.md`
+- **エージェントの配置:** `.claude/agents/e2e-tester.md`
 
-## 新規スキル - Electronデスクトップアプリ開発関連 (2025-12-02 追加)
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/playwright-testing/SKILL.md** | `.claude/skills/playwright-testing/SKILL.md` | ブラウザ自動化、セレクタ戦略、待機戦略、並列実行 |
+| **.claude/skills/test-data-management/SKILL.md** | `.claude/skills/test-data-management/SKILL.md` | Seeding、Teardown、データ分離、トランザクション管理 |
+| **.claude/skills/flaky-test-prevention/SKILL.md** | `.claude/skills/flaky-test-prevention/SKILL.md` | リトライロジック、明示的待機、非決定性排除、時刻モック |
+| **.claude/skills/visual-regression-testing/SKILL.md** | `.claude/skills/visual-regression-testing/SKILL.md` | スクリーンショット比較、ピクセルdiff、CSS対応 |
+| **.claude/skills/api-mocking/SKILL.md** | `.claude/skills/api-mocking/SKILL.md` | MSW、Nock、モックサーバー、リクエスト/レスポンス制御 |
 
-以下のスキルは Electron チーム（@electron-architect, @electron-ui-dev, @electron-security, @electron-builder, @electron-release）エージェント用に作成されました:
+## 12. Electron Architect
 
-### 37. Electron アーキテクト
-
-- **エージェント名:** `@electron-architect`
+- **エージェント名:** `.claude/agents/electron-architect.md`
 - **エージェントの配置:** `.claude/agents/electron-architect.md`
 
-```markdown
-- **必要なスキル**:
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/electron-architecture/SKILL.md** | `.claude/skills/electron-architecture/SKILL.md` | Main/Renderer分離、IPC設計、コンテキストブリッジ |
 
-| スキル名                    | パス                                              | 概要                                                               |
-| --------------------------- | ------------------------------------------------- | ------------------------------------------------------------------ |
-| **electron-architecture**   | `.claude/skills/electron-architecture/SKILL.md`   | Main/Renderer分離、IPC設計、contextBridge、プロジェクト構造        |
-````
+## 13. Electron Builder
 
-### 38. Electron UI Developer
-
-- **エージェント名:** `@electron-ui-dev`
-- **エージェントの配置:** `.claude/agents/electron-ui-dev.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                 | パス                                           | 概要                                                              |
-| ------------------------ | ---------------------------------------------- | ----------------------------------------------------------------- |
-| **electron-ui-patterns** | `.claude/skills/electron-ui-patterns/SKILL.md` | BrowserWindow管理、メニュー、ダイアログ、通知、トレイ、カスタムUI |
-| **accessibility-wcag**   | `.claude/skills/accessibility-wcag/SKILL.md`   | WCAG準拠、ARIAパターン、キーボードナビゲーション                  |
-```
-
-### 39. Electron Security Engineer
-
-- **エージェント名:** `@electron-security`
-- **エージェントの配置:** `.claude/agents/electron-security.md`
-
-```markdown
-- **必要なスキル**:
-
-| スキル名                        | パス                                                  | 概要                                                   |
-| ------------------------------- | ----------------------------------------------------- | ------------------------------------------------------ |
-| **electron-security-hardening** | `.claude/skills/electron-security-hardening/SKILL.md` | サンドボックス、CSP設定、IPC安全性、依存関係脆弱性監査 |
-```
-
-### 40. Electron Builder
-
-- **エージェント名:** `@electron-builder`
+- **エージェント名:** `.claude/agents/electron-builder.md`
 - **エージェントの配置:** `.claude/agents/electron-builder.md`
 
-```markdown
-- **必要なスキル**:
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/electron-packaging/SKILL.md** | `.claude/skills/electron-packaging/SKILL.md` | electron-builder、コード署名、アイコン |
 
-| スキル名               | パス                                         | 概要                                                           |
-| ---------------------- | -------------------------------------------- | -------------------------------------------------------------- |
-| **electron-packaging** | `.claude/skills/electron-packaging/SKILL.md` | electron-builder設定、コード署名、アイコン生成、インストーラー |
-```
+## 14. Electron DevOps
 
-### 41. Electron Release Manager
+- **エージェント名:** `.claude/agents/electron-devops.md`
+- **エージェントの配置:** `.claude/agents/electron-devops.md`
 
-- **エージェント名:** `@electron-release`
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/electron-packaging/SKILL.md** | `.claude/skills/electron-packaging/SKILL.md` | electron-builder、コード署名、アイコン |
+| **.claude/skills/electron-distribution/SKILL.md** | `.claude/skills/electron-distribution/SKILL.md` | 自動更新、リリースチャネル、配布の実務指針 |
+
+## 15. Electron Release Manager
+
+- **エージェント名:** `.claude/agents/electron-release.md`
 - **エージェントの配置:** `.claude/agents/electron-release.md`
 
-```markdown
-- **必要なスキル**:
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/electron-distribution/SKILL.md** | `.claude/skills/electron-distribution/SKILL.md` | 自動更新、リリースチャネル、配布の実務指針 |
 
-| スキル名                  | パス                                            | 概要                                                                 |
-| ------------------------- | ----------------------------------------------- | -------------------------------------------------------------------- |
-| **electron-distribution** | `.claude/skills/electron-distribution/SKILL.md` | electron-updater、自動更新、リリースチャネル、GitHub Releases/S3配布 |
-```
+## 16. Electron Security Engineer
 
-### Electronスキル詳細
+- **エージェント名:** `.claude/agents/electron-security.md`
+- **エージェントの配置:** `.claude/agents/electron-security.md`
 
-#### electron-architecture
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/electron-security-hardening/SKILL.md** | `.claude/skills/electron-security-hardening/SKILL.md` | サンドボックス、CSP、IPC安全性の実務指針 |
 
-- **パス**: `.claude/skills/electron-architecture/SKILL.md`
-- **リソース**: `resources/process-model.md` - Main/Renderer/Preloadプロセスモデル
-- **リソース**: `resources/ipc-patterns.md` - IPC通信パターン（invoke/handle、send/on）
-- **テンプレート**: `templates/main-process.ts` - Mainプロセスエントリーポイント
-- **テンプレート**: `templates/preload.ts` - セキュアなPreloadスクリプト
-- **スクリプト**: `scripts/analyze-ipc.mjs` - IPCチャネル分析・可視化
+## 17. Electron UI Developer
 
-#### electron-ui-patterns
+- **エージェント名:** `.claude/agents/electron-ui-dev.md`
+- **エージェントの配置:** `.claude/agents/electron-ui-dev.md`
 
-- **パス**: `.claude/skills/electron-ui-patterns/SKILL.md`
-- **リソース**: `resources/window-management.md` - BrowserWindow管理パターン
-- **リソース**: `resources/native-ui.md` - ネイティブUI要素（メニュー、ダイアログ、トレイ）
-- **テンプレート**: `templates/frameless-window.ts` - カスタムタイトルバー付きウィンドウ
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/electron-ui-patterns/SKILL.md** | `.claude/skills/electron-ui-patterns/SKILL.md` | BrowserWindow、メニュー、ダイアログ、トレイ |
+| **.claude/skills/accessibility-wcag/SKILL.md** | `.claude/skills/accessibility-wcag/SKILL.md` | WCAG準拠、ARIAパターンの実務指針 |
 
-#### electron-security-hardening
+## 18. Frontend Tester
 
-- **パス**: `.claude/skills/electron-security-hardening/SKILL.md`
-- **リソース**: `resources/csp-configuration.md` - Content Security Policy設定ガイド
-- **テンプレート**: `templates/secure-preload.ts` - セキュアなPreloadテンプレート
-- **スクリプト**: `scripts/security-audit.mjs` - セキュリティ設定監査スクリプト
+- **エージェント名:** `.claude/agents/frontend-tester.md`
+- **エージェントの配置:** `.claude/agents/frontend-tester.md`
 
-#### electron-packaging
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/frontend-testing/SKILL.md** | `.claude/skills/frontend-testing/SKILL.md` | テストピラミッド、Vitest、RTL、Chromatic、axe-core |
 
-- **パス**: `.claude/skills/electron-packaging/SKILL.md`
-- **リソース**: `resources/code-signing.md` - コード署名ガイド（macOS/Windows）
-- **テンプレート**: `templates/electron-builder.yml` - electron-builder設定テンプレート
-- **スクリプト**: `scripts/generate-icons.mjs` - マルチプラットフォームアイコン生成
+## 19. Gateway Developer (外部連携ゲートウェイ開発者)
 
-#### electron-distribution
+- **エージェント名:** `.claude/agents/gateway-dev.md`
+- **エージェントの配置:** `.claude/agents/gateway-dev.md`
 
-- **パス**: `.claude/skills/electron-distribution/SKILL.md`
-- **リソース**: `resources/auto-update.md` - 自動更新実装ガイド
-- **テンプレート**: `templates/update-server.ts` - カスタム更新サーバーテンプレート
-- **スクリプト**: `scripts/release-helper.mjs` - リリース自動化ヘルパー
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/api-client-patterns/SKILL.md** | `.claude/skills/api-client-patterns/SKILL.md` | Adapter/Facade/Anti-Corruption Layer設計 |
+| **.claude/skills/retry-strategies/SKILL.md** | `.claude/skills/retry-strategies/SKILL.md` | Exponential Backoff、Circuit Breaker |
+| **.claude/skills/http-best-practices/SKILL.md** | `.claude/skills/http-best-practices/SKILL.md` | ステータスコード処理、べき等性、接続管理 |
+| **.claude/skills/authentication-flows/SKILL.md** | `.claude/skills/authentication-flows/SKILL.md` | OAuth 2.0、JWT、API Key管理 |
+| **.claude/skills/rate-limiting/SKILL.md** | `.claude/skills/rate-limiting/SKILL.md` | Rate-Limitヘッダー、429処理、バックオフ戦略 |
+
+## 20. GitHub Actions ワークフロー・アーキテクト
+
+- **エージェント名:** `.claude/agents/gha-workflow-architect.md`
+- **エージェントの配置:** `.claude/agents/gha-workflow-architect.md`
+
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/github-actions-syntax/SKILL.md** | `.claude/skills/github-actions-syntax/SKILL.md` | on/jobs/steps構文、トリガーイベント、スケジュール |
+| **.claude/skills/github-actions-expressions/SKILL.md** | `.claude/skills/github-actions-expressions/SKILL.md` | ${{ }}式、github/env/secrets/needs コンテキスト |
+| **.claude/skills/github-actions-debugging/SKILL.md** | `.claude/skills/github-actions-debugging/SKILL.md` | ACTIONS_STEP_DEBUG、ログ出力、失敗調査 |
+| **.claude/skills/workflow-templates/SKILL.md** | `.claude/skills/workflow-templates/SKILL.md` | Node.js/Python/Docker、CI/CD/デプロイテンプレート |
+| **.claude/skills/reusable-workflows/SKILL.md** | `.claude/skills/reusable-workflows/SKILL.md` | workflow_call、inputs/outputs、secrets継承 |
+| **.claude/skills/matrix-builds/SKILL.md** | `.claude/skills/matrix-builds/SKILL.md` | strategy.matrix、include/exclude、並列実行 |
+| **.claude/skills/caching-strategies-gha/SKILL.md** | `.claude/skills/caching-strategies-gha/SKILL.md` | actions/cache、キー設計、restore-keys、ヒット率 |
+| **.claude/skills/secrets-management-gha/SKILL.md** | `.claude/skills/secrets-management-gha/SKILL.md` | GitHub Secrets、OIDC、最小権限トークン、環境変数 |
+| **.claude/skills/self-hosted-runners/SKILL.md** | `.claude/skills/self-hosted-runners/SKILL.md` | セルフホスト設定、スケール、セキュリティ |
+| **.claude/skills/parallel-jobs-gha/SKILL.md** | `.claude/skills/parallel-jobs-gha/SKILL.md` | needs依存、並列実行、タイムアウト制御 |
+| **.claude/skills/conditional-execution-gha/SKILL.md** | `.claude/skills/conditional-execution-gha/SKILL.md` | if条件、success()/failure() |
+| **.claude/skills/artifact-management-gha/SKILL.md** | `.claude/skills/artifact-management-gha/SKILL.md` | actions/upload-artifact、ジョブ間受け渡し、保持期間 |
+| **.claude/skills/deployment-environments-gha/SKILL.md** | `.claude/skills/deployment-environments-gha/SKILL.md` | environment設定、承認フロー、デプロイ保護ルール |
+| **.claude/skills/notification-integration-gha/SKILL.md** | `.claude/skills/notification-integration-gha/SKILL.md` | Slack/Discord/Teams通知、ステータスバッジ |
+| **.claude/skills/cost-optimization-gha/SKILL.md** | `.claude/skills/cost-optimization-gha/SKILL.md` | 実行時間削減、キャッシュ活用、並列化、if条件最適化 |
+| **.claude/skills/docker-build-push-action/SKILL.md** | `.claude/skills/docker-build-push-action/SKILL.md` | docker/build-push-action、マルチプラットフォーム |
+| **.claude/skills/github-api-integration/SKILL.md** | `.claude/skills/github-api-integration/SKILL.md` | GitHub REST/GraphQL API、GITHUB_TOKEN |
+| **.claude/skills/workflow-security/SKILL.md** | `.claude/skills/workflow-security/SKILL.md` | 最小権限、シークレット漏洩防止、依存性検証 |
+| **.claude/skills/composite-actions/SKILL.md** | `.claude/skills/composite-actions/SKILL.md` | action.yml、inputs/outputs、ステップ再利用 |
+| **.claude/skills/concurrency-control/SKILL.md** | `.claude/skills/concurrency-control/SKILL.md` | concurrency.group、cancel-in-progress |
+
+## 21. Hook Master
+
+- **エージェント名:** `.claude/agents/hook-master.md`
+- **エージェントの配置:** `.claude/agents/hook-master.md`
+
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/git-hooks-concepts/SKILL.md** | `.claude/skills/git-hooks-concepts/SKILL.md` | pre-commit、pre-push、ライフサイクル、Husky設定 |
+| **.claude/skills/claude-code-hooks/SKILL.md** | `.claude/skills/claude-code-hooks/SKILL.md` | UserPromptSubmit、PreToolUse、PostToolUse |
+| **.claude/skills/automation-scripting/SKILL.md** | `.claude/skills/automation-scripting/SKILL.md` | Bash/Node.js自動化、exit code管理、エラーハンドリング |
+| **.claude/skills/linting-formatting-automation/SKILL.md** | `.claude/skills/linting-formatting-automation/SKILL.md` | ESLint/Prettier統合、lint-staged、自動修正 |
+| **.claude/skills/approval-gates/SKILL.md** | `.claude/skills/approval-gates/SKILL.md` | 危険操作検出、確認フロー、ホワイトリスト設計 |
+
+## 22. Network Sync Agent (Local ⇄ Cloud)
+
+- **エージェント名:** `.claude/agents/local-sync.md`
+- **エージェントの配置:** `.claude/agents/local-sync.md`
+
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/multipart-upload/SKILL.md** | `.claude/skills/multipart-upload/SKILL.md` | チャンク分割、S3 Multipart、進捗追跡、並列アップロード |
+| **.claude/skills/network-resilience/SKILL.md** | `.claude/skills/network-resilience/SKILL.md` | オフライン対応、再接続、Queue管理、整合性保証 |
+| **.claude/skills/retry-strategies/SKILL.md** | `.claude/skills/retry-strategies/SKILL.md` | 指数バックオフ、ジッター、Circuit Breaker、タイムアウト |
+| **.claude/skills/websocket-patterns/SKILL.md** | `.claude/skills/websocket-patterns/SKILL.md` | 専門知識と実行手順の参照の実務指針の実践ガイド |
+| **.claude/skills/agent-architecture-patterns/SKILL.md** | `.claude/skills/agent-architecture-patterns/SKILL.md` | 専門知識と実行手順の参照の実務指針の実践ガイド |
+| **.claude/skills/multi-agent-systems/SKILL.md** | `.claude/skills/multi-agent-systems/SKILL.md` | 専門知識と実行手順の参照の実務指針の実践ガイド |
+
+## 23. Local File Watcher Agent
+
+- **エージェント名:** `.claude/agents/local-watcher.md`
+- **エージェントの配置:** `.claude/agents/local-watcher.md`
+
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/event-driven-file-watching/SKILL.md** | `.claude/skills/event-driven-file-watching/SKILL.md` | Chokidar設定、Observer Pattern、EventEmitter |
+| **.claude/skills/debounce-throttle-patterns/SKILL.md** | `.claude/skills/debounce-throttle-patterns/SKILL.md` | イベント最適化、連続発火防止、タイミング制御 |
+| **.claude/skills/file-exclusion-patterns/SKILL.md** | `.claude/skills/file-exclusion-patterns/SKILL.md` | .gitignore互換除外パターン、glob pattern |
+| **.claude/skills/nodejs-stream-processing/SKILL.md** | `.claude/skills/nodejs-stream-processing/SKILL.md` | ストリーム処理、バックプレッシャー管理の実務指針 |
+| **.claude/skills/graceful-shutdown-patterns/SKILL.md** | `.claude/skills/graceful-shutdown-patterns/SKILL.md` | シグナルハンドリング、リソースクリーンアップ |
+| **.claude/skills/file-watcher-security/SKILL.md** | `.claude/skills/file-watcher-security/SKILL.md` | パストラバーサル防止、symlink検証、サンドボックス |
+| **.claude/skills/file-watcher-observability/SKILL.md** | `.claude/skills/file-watcher-observability/SKILL.md` | Prometheusメトリクス、構造化ログ、アラート |
+
+## 24. Logic Developer
+
+- **エージェント名:** `.claude/agents/logic-dev.md`
+- **エージェントの配置:** `.claude/agents/logic-dev.md`
+
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/refactoring-techniques/SKILL.md** | `.claude/skills/refactoring-techniques/SKILL.md` | リファクタリング技法とコードスメル検出の実務指針 |
+| **.claude/skills/tdd-red-green-refactor/SKILL.md** | `.claude/skills/tdd-red-green-refactor/SKILL.md` | テスト駆動開発とRed-Green-Refactorサイクル |
+| **.claude/skills/clean-code-practices/SKILL.md** | `.claude/skills/clean-code-practices/SKILL.md` | Clean Codeプラクティスと命名規約 |
+| **.claude/skills/transaction-script/SKILL.md** | `.claude/skills/transaction-script/SKILL.md` | トランザクションスクリプトパターンとExecutor実装 |
+| **.claude/skills/test-doubles/SKILL.md** | `.claude/skills/test-doubles/SKILL.md` | テストダブル選択とモック戦略の実務指針の実践ガイド |
+
+## 25. ユーザーマニュアル作成者 (Manual Writer)
+
+- **エージェント名:** `.claude/agents/manual-writer.md`
+- **エージェントの配置:** `.claude/agents/manual-writer.md`
+
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/user-centric-writing/SKILL.md** | `.claude/skills/user-centric-writing/SKILL.md` | ユーザー視点、タスク指向、平易な言葉、能力向上 |
+| **.claude/skills/tutorial-design/SKILL.md** | `.claude/skills/tutorial-design/SKILL.md` | ステップバイステップ、学習パス、目標設定、達成感 |
+| **.claude/skills/troubleshooting-guides/SKILL.md** | `.claude/skills/troubleshooting-guides/SKILL.md` | FAQ、エラー解説、診断フロー、解決策提示 |
+| **.claude/skills/information-architecture/SKILL.md** | `.claude/skills/information-architecture/SKILL.md` | ドキュメント構造、ナビゲーション、検索性 |
+| **.claude/skills/localization-i18n/SKILL.md** | `.claude/skills/localization-i18n/SKILL.md` | 多言語対応、文化的配慮、翻訳メモリの実務指針 |
+
+## 26. MCP ツール統合スペシャリスト
+
+- **エージェント名:** `.claude/agents/mcp-integrator.md`
+- **エージェントの配置:** `.claude/agents/mcp-integrator.md`
+
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/mcp-protocol/SKILL.md** | `.claude/skills/mcp-protocol/SKILL.md` | MCPプロトコル仕様、JSON-RPC、サーバー・ツール・リソース定義 |
+| **.claude/skills/api-connector-design/SKILL.md** | `.claude/skills/api-connector-design/SKILL.md` | API統合設計、認証フロー、Rate Limiting、リトライ戦略 |
+| **.claude/skills/tool-security/SKILL.md** | `.claude/skills/tool-security/SKILL.md` | API Key管理、最小権限スコープ、入力検証、OAuth2統合 |
+| **.claude/skills/resource-oriented-api/SKILL.md** | `.claude/skills/resource-oriented-api/SKILL.md` | リソースURI設計、キャッシュ戦略、バージョニング |
+| **.claude/skills/integration-patterns/SKILL.md** | `.claude/skills/integration-patterns/SKILL.md` | Adapter、Facade、Gateway、同期・非同期統合 |
+
+## 27. Meta-Agent Designer
+
+- **エージェント名:** `.claude/agents/meta-agent-designer.md`
+- **エージェントの配置:** `.claude/agents/meta-agent-designer.md`
+
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/agent-architecture-patterns/SKILL.md** | `.claude/skills/agent-architecture-patterns/SKILL.md` | アーキテクチャパターン選択と設計原則の実務指針 |
+| **.claude/skills/agent-structure-design/SKILL.md** | `.claude/skills/agent-structure-design/SKILL.md` | YAML Frontmatter・ワークフロー設計 |
+| **.claude/skills/agent-persona-design/SKILL.md** | `.claude/skills/agent-persona-design/SKILL.md` | ペルソナ・役割定義の実務指針の実践ガイド |
+| **.claude/skills/tool-permission-management/SKILL.md** | `.claude/skills/tool-permission-management/SKILL.md` | ツール権限・パス制限設定の実務指針の実践ガイド |
+| **.claude/skills/agent-dependency-design/SKILL.md** | `.claude/skills/agent-dependency-design/SKILL.md` | 依存関係・ハンドオフ設計の実務指針の実践ガイド |
+| **.claude/skills/multi-agent-systems/SKILL.md** | `.claude/skills/multi-agent-systems/SKILL.md` | マルチエージェント協調パターンの実務指針 |
+| **.claude/skills/project-architecture-integration/SKILL.md** | `.claude/skills/project-architecture-integration/SKILL.md` | プロジェクト固有要件統合の実務指針の実践ガイド |
+| **.claude/skills/agent-quality-standards/SKILL.md** | `.claude/skills/agent-quality-standards/SKILL.md` | 品質基準・メトリクス設定の実務指針の実践ガイド |
+| **.claude/skills/agent-validation-testing/SKILL.md** | `.claude/skills/agent-validation-testing/SKILL.md` | 構文検証・テストケース作成の実務指針の実践ガイド |
+| **.claude/skills/agent-template-patterns/SKILL.md** | `.claude/skills/agent-template-patterns/SKILL.md` | テンプレートパターン適用の実務指針の実践ガイド |
+| **.claude/skills/prompt-engineering-for-agents/SKILL.md** | `.claude/skills/prompt-engineering-for-agents/SKILL.md` | System Prompt最適化の実務指針 |
+| **.claude/skills/agent-lifecycle-management/SKILL.md** | `.claude/skills/agent-lifecycle-management/SKILL.md` | ライフサイクル・バージョン管理の実務指針 |
+
+## 28. Process Manager
+
+- **エージェント名:** `.claude/agents/process-mgr.md`
+- **エージェントの配置:** `.claude/agents/process-mgr.md`
+
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/pm2-ecosystem-config/SKILL.md** | `.claude/skills/pm2-ecosystem-config/SKILL.md` | PM2設定オプション、実行モード、リソース制限 |
+| **.claude/skills/log-rotation-strategies/SKILL.md** | `.claude/skills/log-rotation-strategies/SKILL.md` | pm2-logrotate、ログストレージ管理、世代管理 |
+| **.claude/skills/memory-monitoring-strategies/SKILL.md** | `.claude/skills/memory-monitoring-strategies/SKILL.md` | メモリリーク検出、max_memory_restart設定 |
+| **.claude/skills/graceful-shutdown-patterns/SKILL.md** | `.claude/skills/graceful-shutdown-patterns/SKILL.md` | Zero-Downtime Deployment、kill_timeout設定 |
+| **.claude/skills/health-check-implementation/SKILL.md** | `.claude/skills/health-check-implementation/SKILL.md` | ヘルスチェックエンドポイント、wait_ready設定 |
+| **.claude/skills/process-lifecycle-management/SKILL.md** | `.claude/skills/process-lifecycle-management/SKILL.md` | 専門知識と実行手順の参照の実務指針の実践ガイド |
+
+## 29. Product Manager
+
+- **エージェント名:** `.claude/agents/product-manager.md`
+- **エージェントの配置:** `.claude/agents/product-manager.md`
+
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/agile-project-management/SKILL.md** | `.claude/skills/agile-project-management/SKILL.md` | スクラム・カンバン手法、アジャイル原則の実務指針 |
+| **.claude/skills/sprint-planning/SKILL.md** | `.claude/skills/sprint-planning/SKILL.md` | スプリントゴール設定、キャパシティプランニング |
+| **.claude/skills/user-story-mapping/SKILL.md** | `.claude/skills/user-story-mapping/SKILL.md` | ユーザージャーニー可視化、MVP特定の実務指針 |
+| **.claude/skills/estimation-techniques/SKILL.md** | `.claude/skills/estimation-techniques/SKILL.md` | ストーリーポイント、プランニングポーカー、ベロシティ計測、TDD工数考慮 |
+| **.claude/skills/stakeholder-communication/SKILL.md** | `.claude/skills/stakeholder-communication/SKILL.md` | 進捗報告、期待値調整、透明性確保の実務指針 |
+| **.claude/skills/product-vision/SKILL.md** | `.claude/skills/product-vision/SKILL.md` | OKR設定、ロードマップ作成、ビジョン策定 |
+| **.claude/skills/prioritization-frameworks/SKILL.md** | `.claude/skills/prioritization-frameworks/SKILL.md` | MoSCoW法、RICE Scoring、価値評価 |
+| **.claude/skills/metrics-tracking/SKILL.md** | `.claude/skills/metrics-tracking/SKILL.md` | ベロシティ、バーンダウン、サイクルタイム測定 |
+| **.claude/skills/backlog-management/SKILL.md** | `.claude/skills/backlog-management/SKILL.md` | バックログリファインメント、技術的負債管理 |
+| **.claude/skills/risk-management/SKILL.md** | `.claude/skills/risk-management/SKILL.md` | リスク特定、評価、緩和戦略の実務指針の実践ガイド |
+
+## 30. Prompt Engineering Specialist
+
+- **エージェント名:** `.claude/agents/prompt-eng.md`
+- **エージェントの配置:** `.claude/agents/prompt-eng.md`
+
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/chain-of-thought/SKILL.md** | `.claude/skills/chain-of-thought/SKILL.md` | 段階的推論と思考連鎖パターンの実務指針の実践ガイド |
+| **.claude/skills/few-shot-learning-patterns/SKILL.md** | `.claude/skills/few-shot-learning-patterns/SKILL.md` | 効果的な例示選択と文脈構成の実務指針の実践ガイド |
+| **.claude/skills/role-prompting/SKILL.md** | `.claude/skills/role-prompting/SKILL.md` | ペルソナ設計と専門家ロール割り当ての実務指針 |
+| **.claude/skills/prompt-versioning-management/SKILL.md** | `.claude/skills/prompt-versioning-management/SKILL.md` | バージョン管理と段階的改善の実務指針の実践ガイド |
+| **.claude/skills/hallucination-prevention/SKILL.md** | `.claude/skills/hallucination-prevention/SKILL.md` | 幻覚抑制と根拠ベース推論の実務指針の実践ガイド |
+| **.claude/skills/structured-output/SKILL.md** | `.claude/skills/structured-output/SKILL.md` | JSON/XML/Markdownの構造化出力設計 |
+| **.claude/skills/context-window-optimization/SKILL.md** | `.claude/skills/context-window-optimization/SKILL.md` | トークン効率とコンテキスト最適化の実務指針 |
+| **.claude/skills/error-recovery-prompts/SKILL.md** | `.claude/skills/error-recovery-prompts/SKILL.md` | エラー処理と自己修正プロンプトの実務指針 |
+| **.claude/skills/prompt-injection-defense/SKILL.md** | `.claude/skills/prompt-injection-defense/SKILL.md` | プロンプトインジェクション対策の実務指針 |
+| **.claude/skills/multi-turn-conversation/SKILL.md** | `.claude/skills/multi-turn-conversation/SKILL.md` | 文脈保持と会話継続設計の実務指針の実践ガイド |
+| **.claude/skills/task-decomposition/SKILL.md** | `.claude/skills/task-decomposition/SKILL.md` | 複雑タスクの段階的分解の実務指針の実践ガイド |
+| **.claude/skills/prompt-engineering-for-agents/SKILL.md** | `.claude/skills/prompt-engineering-for-agents/SKILL.md` | 専門知識と実行手順の参照の実務指針の実践ガイド |
+| **.claude/skills/structured-output-design/SKILL.md** | `.claude/skills/structured-output-design/SKILL.md` | 専門知識と実行手順の参照の実務指針の実践ガイド |
+| **.claude/skills/chain-of-thought-reasoning/SKILL.md** | `.claude/skills/chain-of-thought-reasoning/SKILL.md` | 専門知識と実行手順の参照の実務指針の実践ガイド |
+| **.claude/skills/prompt-testing-evaluation/SKILL.md** | `.claude/skills/prompt-testing-evaluation/SKILL.md` | 専門知識と実行手順の参照の実務指針の実践ガイド |
+| **.claude/skills/context-optimization/SKILL.md** | `.claude/skills/context-optimization/SKILL.md` | 専門知識と実行手順の参照の実務指針の実践ガイド |
+| **.claude/skills/agent-persona-design/SKILL.md** | `.claude/skills/agent-persona-design/SKILL.md` | 専門知識と実行手順の参照の実務指針の実践ガイド |
+| **.claude/skills/documentation-architecture/SKILL.md** | `.claude/skills/documentation-architecture/SKILL.md` | `.claude/skills/documentation-architectu |
+| **.claude/skills/best-practices-curation/SKILL.md** | `.claude/skills/best-practices-curation/SKILL.md` | `.claude/skills/best-practices-curation/ |
+
+## 31. Repository Developer
+
+- **エージェント名:** `.claude/agents/repo-dev.md`
+- **エージェントの配置:** `.claude/agents/repo-dev.md`
+
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/repository-pattern/SKILL.md** | `.claude/skills/repository-pattern/SKILL.md` | リポジトリパターン、コレクション風API、抽象化設計 |
+| **.claude/skills/orm-best-practices/SKILL.md** | `.claude/skills/orm-best-practices/SKILL.md` | Drizzle ORM TypeScript型安全クエリ、スキーマ定義 |
+| **.claude/skills/transaction-management/SKILL.md** | `.claude/skills/transaction-management/SKILL.md` | ACID特性、分離レベル、楽観的ロック、ロールバック |
+| **.claude/skills/query-optimization/SKILL.md** | `.claude/skills/query-optimization/SKILL.md` | N+1問題解消、実行計画分析、インデックス活用 |
+| **.claude/skills/connection-pooling/SKILL.md** | `.claude/skills/connection-pooling/SKILL.md` | コネクションプール管理、リソース最適化の実務指針 |
+| **.claude/skills/database-migrations/SKILL.md** | `.claude/skills/database-migrations/SKILL.md` | 専門知識と実行手順の参照の実務指針の実践ガイド |
+
+## 32. Requirements Analyst
+
+- **エージェント名:** `.claude/agents/req-analyst.md`
+- **エージェントの配置:** `.claude/agents/req-analyst.md`
+
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/requirements-triage/SKILL.md** | `.claude/skills/requirements-triage/SKILL.md` | MoSCoW分類、リスク評価、優先順位付けフレームワーク |
+| **.claude/skills/ambiguity-elimination/SKILL.md** | `.claude/skills/ambiguity-elimination/SKILL.md` | 5つの曖昧性パターン検出、定性→定量変換、具体化技法 |
+| **.claude/skills/use-case-modeling/SKILL.md** | `.claude/skills/use-case-modeling/SKILL.md` | アクター識別、基本/代替/例外フロー、シナリオ構造化 |
+| **.claude/skills/acceptance-criteria-writing/SKILL.md** | `.claude/skills/acceptance-criteria-writing/SKILL.md` | Given-When-Then形式、正常系/異常系/境界値シナリオ |
+| **.claude/skills/functional-non-functional-requirements/SKILL.md** | `.claude/skills/functional-non-functional-requirements/SKILL.md` | FR/NFR分類、FURPS+/ISO 25010品質特性、測定可能性 |
+| **.claude/skills/interview-techniques/SKILL.md** | `.claude/skills/interview-techniques/SKILL.md` | 5W1H質問法、オープン/クローズド質問、隠れたニーズ抽出 |
+| **.claude/skills/requirements-verification/SKILL.md** | `.claude/skills/requirements-verification/SKILL.md` | 一貫性/完全性/検証可能性評価、品質メトリクス |
+| **.claude/skills/requirements-documentation/SKILL.md** | `.claude/skills/requirements-documentation/SKILL.md` | 標準ドキュメント構造、レビュー準備、ハンドオフプロトコル |
+
+## 33. ページ/ルーティング実装エージェント (router-dev)
+
+- **エージェント名:** `.claude/agents/router-dev.md`
+- **エージェントの配置:** `.claude/agents/router-dev.md`
+
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/nextjs-app-router/SKILL.md** | `.claude/skills/nextjs-app-router/SKILL.md` | App Router、Server Components |
+| **.claude/skills/server-components-patterns/SKILL.md** | `.claude/skills/server-components-patterns/SKILL.md` | RSC、Streaming SSR、Suspense境界 |
+| **.claude/skills/seo-optimization/SKILL.md** | `.claude/skills/seo-optimization/SKILL.md` | メタデータAPI、動的OG画像、sitemap.xml生成 |
+| **.claude/skills/web-performance/SKILL.md** | `.claude/skills/web-performance/SKILL.md` | 画像・フォント最適化、Dynamic Import、バンドル最適化 |
+| **.claude/skills/error-boundary/SKILL.md** | `.claude/skills/error-boundary/SKILL.md` | error.tsx、global-error.tsx、not-found.tsx |
+| **.claude/skills/data-fetching-strategies/SKILL.md** | `.claude/skills/data-fetching-strategies/SKILL.md` | loading.tsx、Suspense、エラー/ローディング状態管理 |
+
+## 34. Schema Definition Specialist
+
+- **エージェント名:** `.claude/agents/schema-def.md`
+- **エージェントの配置:** `.claude/agents/schema-def.md`
+
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/zod-validation/SKILL.md** | `.claude/skills/zod-validation/SKILL.md` | Zod型推論、バリデーションルール、カスタムエラーメッセージ |
+| **.claude/skills/type-safety-patterns/SKILL.md** | `.claude/skills/type-safety-patterns/SKILL.md` | TypeScript高度な型、ブランド型、型ガード関数 |
+| **.claude/skills/api-contract-design/SKILL.md** | `.claude/skills/api-contract-design/SKILL.md` | リクエスト/レスポンススキーマ、OpenAPI連携 |
+| **.claude/skills/form-validation/SKILL.md** | `.claude/skills/form-validation/SKILL.md` | フロントエンド連携、react-hook-form統合 |
+| **.claude/skills/data-transformation/SKILL.md** | `.claude/skills/data-transformation/SKILL.md` | parse/safeParse、transform、preprocess処理 |
+| **.claude/skills/input-sanitization/SKILL.md** | `.claude/skills/input-sanitization/SKILL.md` | `.claude/skills/input-sanitization/SKILL |
+| **.claude/skills/error-message-design/SKILL.md** | `.claude/skills/error-message-design/SKILL.md` | `.claude/skills/error-message-design/SKI |
+| **.claude/skills/json-schema/SKILL.md** | `.claude/skills/json-schema/SKILL.md` | `.claude/skills/json-schema/SKILL.md`（Op |
+
+## 35. Security Auditor Agent
+
+- **エージェント名:** `.claude/agents/sec-auditor.md`
+- **エージェントの配置:** `.claude/agents/sec-auditor.md`
+
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/authentication-authorization-security/SKILL.md** | `.claude/skills/authentication-authorization-security/SKILL.md` | OAuth、JWT、RBAC、セッション攻撃対策 |
+| **.claude/skills/cryptographic-practices/SKILL.md** | `.claude/skills/cryptographic-practices/SKILL.md` | AES-256、SHA-256、CSPRNG、鍵ローテーション |
+| **.claude/skills/security-configuration-review/SKILL.md** | `.claude/skills/security-configuration-review/SKILL.md` | CSP、HSTS、CORS、X-Frame-Options設定 |
+| **.claude/skills/dependency-security-scanning/SKILL.md** | `.claude/skills/dependency-security-scanning/SKILL.md` | pnpm audit、Snyk、CVE評価、SBOM管理 |
+| **.claude/skills/code-static-analysis-security/SKILL.md** | `.claude/skills/code-static-analysis-security/SKILL.md` | SQLi、XSS、コマンドインジェクション検出 |
+| **.claude/skills/rate-limiting/SKILL.md** | `.claude/skills/rate-limiting/SKILL.md` | Token Bucket、固定窓、スライディング窓、DoS対策 |
+| **.claude/skills/input-sanitization/SKILL.md** | `.claude/skills/input-sanitization/SKILL.md` | DOMPurify、Zod検証、ホワイトリスト方式 |
+| **.claude/skills/security-reporting/SKILL.md** | `.claude/skills/security-reporting/SKILL.md` | CVSS評価、リスクマトリクス、修復優先度 |
+| **.claude/skills/ci-cd-pipelines/SKILL.md** | `.claude/skills/ci-cd-pipelines/SKILL.md` | 専門知識と実行手順の参照の実務指針の実践ガイド |
+
+## 36. 機密情報管理者 (Secret Manager)
+
+- **エージェント名:** `.claude/agents/secret-mgr.md`
+- **エージェントの配置:** `.claude/agents/secret-mgr.md`
+
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/secret-management-architecture/SKILL.md** | `.claude/skills/secret-management-architecture/SKILL.md` | Secret管理方式、階層設計、KMS統合 |
+| **.claude/skills/zero-trust-security/SKILL.md** | `.claude/skills/zero-trust-security/SKILL.md` | 最小権限、継続的検証、JITアクセス、境界なしセキュリティ |
+| **.claude/skills/gitignore-management/SKILL.md** | `.claude/skills/gitignore-management/SKILL.md` | .gitignore設計、除外パターン、セキュアデフォルト |
+| **.claude/skills/pre-commit-security/SKILL.md** | `.claude/skills/pre-commit-security/SKILL.md` | git-secrets、detect-secrets、履歴スキャン |
+| **.claude/skills/encryption-key-lifecycle/SKILL.md** | `.claude/skills/encryption-key-lifecycle/SKILL.md` | AES-256-GCM、鍵ローテーション、Key Derivation |
+| **.claude/skills/environment-isolation/SKILL.md** | `.claude/skills/environment-isolation/SKILL.md` | dev/staging/prod分離、最小権限、VPC設計 |
+| **.claude/skills/railway-secrets-management/SKILL.md** | `.claude/skills/railway-secrets-management/SKILL.md` | Railway Variables、Service Variables |
+| **.claude/skills/github-actions-security/SKILL.md** | `.claude/skills/github-actions-security/SKILL.md` | GitHub Secrets、OIDC、最小権限トークン |
+| **.claude/skills/tool-permission-management/SKILL.md** | `.claude/skills/tool-permission-management/SKILL.md` | Claude Codeツール権限、最小権限原則 |
+| **.claude/skills/best-practices-curation/SKILL.md** | `.claude/skills/best-practices-curation/SKILL.md` | NIST、CIS Benchmarks、OWASP |
+| **.claude/skills/project-architecture-integration/SKILL.md** | `.claude/skills/project-architecture-integration/SKILL.md` | ハイブリッドアーキテクチャ統合の実務指針 |
+| **.claude/skills/agent-architecture-patterns/SKILL.md** | `.claude/skills/agent-architecture-patterns/SKILL.md` | セキュリティファースト設計パターンの実務指針 |
+| **.claude/skills/context-optimization/SKILL.md** | `.claude/skills/context-optimization/SKILL.md` | トークン効率、Progressive Disclosure |
+
+## 37. Skill Librarian
+
+- **エージェント名:** `.claude/agents/skill-librarian.md`
+- **エージェントの配置:** `.claude/agents/skill-librarian.md`
+
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/knowledge-management/SKILL.md** | `.claude/skills/knowledge-management/SKILL.md` | SECIモデル適用、暗黙知→形式知変換、知識キュレーションフレームワーク |
+| **.claude/skills/progressive-disclosure/SKILL.md** | `.claude/skills/progressive-disclosure/SKILL.md` | 3層開示モデル設計、メタデータ最適化、スキル発動率向上（20%→84%） |
+| **.claude/skills/documentation-architecture/SKILL.md** | `.claude/skills/documentation-architecture/SKILL.md` | 500行制約に基づくファイル分割、トピック別・レベル別・機能別分割パターン |
+| **.claude/skills/context-optimization/SKILL.md** | `.claude/skills/context-optimization/SKILL.md` | トークン60-80%削減、遅延読み込みパターン、インデックス駆動設計 |
+| **.claude/skills/best-practices-curation/SKILL.md** | `.claude/skills/best-practices-curation/SKILL.md` | 情報源信頼性評価、3軸品質スコアリング、陳腐化防止戦略 |
+| **.claude/skills/skill-creation-workflow/SKILL.md** | `.claude/skills/skill-creation-workflow/SKILL.md` | 新規スキル作成・既存改善の5フェーズワークフロー、進捗トラッキング |
+| **.claude/skills/skill-librarian-commands/SKILL.md** | `.claude/skills/skill-librarian-commands/SKILL.md` | スキルリソース・スクリプト・テンプレート参照コマンド体系 |
+| **.claude/skills/skill-name-1/SKILL.md** | `.claude/skills/skill-name-1/SKILL.md` | 簡潔な説明の実務指針の実践ガイドの要点整理 |
+| **.claude/skills/skill-name-2/SKILL.md** | `.claude/skills/skill-name-2/SKILL.md` | 簡潔な説明の実務指針の実践ガイドの要点整理 |
+| **.claude/skills/skill-name/SKILL.md** | `.claude/skills/skill-name/SKILL.md` | 専門知識と実行手順の参照の実務指針の実践ガイド |
+
+## 38. Spec Writer（仕様書作成エージェント）
+
+- **エージェント名:** `.claude/agents/spec-writer.md`
+- **エージェントの配置:** `.claude/agents/spec-writer.md`
+
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/markdown-advanced-syntax/SKILL.md** | `.claude/skills/markdown-advanced-syntax/SKILL.md` | Mermaid図、テーブル、コードブロック活用 |
+| **.claude/skills/technical-documentation-standards/SKILL.md** | `.claude/skills/technical-documentation-standards/SKILL.md` | IEEE 830、DRY原則、Doc as Code |
+| **.claude/skills/api-documentation-best-practices/SKILL.md** | `.claude/skills/api-documentation-best-practices/SKILL.md` | OpenAPI、エンドポイント記述、リクエスト/レスポンス例 |
+| **.claude/skills/structured-writing/SKILL.md** | `.claude/skills/structured-writing/SKILL.md` | DITA、トピックベース、モジュール構造 |
+| **.claude/skills/version-control-for-docs/SKILL.md** | `.claude/skills/version-control-for-docs/SKILL.md` | Git Diff、変更履歴、レビューフロー |
+
+## 39. SRE Observer - ロギング・監視設計者
+
+- **エージェント名:** `.claude/agents/sre-observer.md`
+- **エージェントの配置:** `.claude/agents/sre-observer.md`
+
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/structured-logging/SKILL.md** | `.claude/skills/structured-logging/SKILL.md` | JSON形式、ログレベル、相関ID、PIIマスキング、Winston/Pino |
+| **.claude/skills/observability-pillars/SKILL.md** | `.claude/skills/observability-pillars/SKILL.md` | ログ・メトリクス・トレース統合、OpenTelemetry、ゴールデンシグナル |
+| **.claude/skills/slo-sli-design/SKILL.md** | `.claude/skills/slo-sli-design/SKILL.md` | SLO/SLI定義、エラーバジェット、可用性目標、レイテンシ |
+| **.claude/skills/alert-design/SKILL.md** | `.claude/skills/alert-design/SKILL.md` | アラート閾値、Fatigue回避、PagerDuty統合、エスカレーション |
+| **.claude/skills/distributed-tracing/SKILL.md** | `.claude/skills/distributed-tracing/SKILL.md` | W3C Trace Context、スパン設計、Jaeger/Zipkin |
+
+## 40. State Manager
+
+- **エージェント名:** `.claude/agents/state-manager.md`
+- **エージェントの配置:** `.claude/agents/state-manager.md`
+
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/react-hooks-advanced/SKILL.md** | `.claude/skills/react-hooks-advanced/SKILL.md` | useEffect依存配列、useCallback/useMemo最適化 |
+| **.claude/skills/data-fetching-strategies/SKILL.md** | `.claude/skills/data-fetching-strategies/SKILL.md` | SWR/React Query、キャッシュ戦略 |
+| **.claude/skills/state-lifting/SKILL.md** | `.claude/skills/state-lifting/SKILL.md` | 状態配置判断、Props Drilling回避、共通親決定 |
+| **.claude/skills/custom-hooks-patterns/SKILL.md** | `.claude/skills/custom-hooks-patterns/SKILL.md` | ロジック抽出、再利用可能フック設計、関心分離 |
+| **.claude/skills/error-boundary/SKILL.md** | `.claude/skills/error-boundary/SKILL.md` | Error Boundary実装、フォールバックUI、非同期エラーハンドリング |
+| **.claude/skills/performance-optimization-react/SKILL.md** | `.claude/skills/performance-optimization-react/SKILL.md` | React.memo、Profiler、再レンダリング最適化 |
+
+## 41. UI Designer
+
+- **エージェント名:** `.claude/agents/ui-designer.md`
+- **エージェントの配置:** `.claude/agents/ui-designer.md`
+
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/design-system-architecture/SKILL.md** | `.claude/skills/design-system-architecture/SKILL.md` | デザイントークン管理、コンポーネント規約、Figma統合 |
+| **.claude/skills/component-composition-patterns/SKILL.md** | `.claude/skills/component-composition-patterns/SKILL.md` | Slot/Compound/Render Props |
+| **.claude/skills/headless-ui-principles/SKILL.md** | `.claude/skills/headless-ui-principles/SKILL.md` | ロジックとプレゼンテーション分離、WAI-ARIAパターン |
+| **.claude/skills/tailwind-css-patterns/SKILL.md** | `.claude/skills/tailwind-css-patterns/SKILL.md` | ユーティリティファースト、カスタムクラス、レスポンシブ |
+| **.claude/skills/accessibility-wcag/SKILL.md** | `.claude/skills/accessibility-wcag/SKILL.md` | WCAG 2.1 AA準拠、ARIA、キーボードナビゲーション |
+| **.claude/skills/apple-hig-guidelines/SKILL.md** | `.claude/skills/apple-hig-guidelines/SKILL.md` | iOS/macOS/visionOSネイティブ品質、3テーマ、6原則 |
+
+## 42. Unit Tester
+
+- **エージェント名:** `.claude/agents/unit-tester.md`
+- **エージェントの配置:** `.claude/agents/unit-tester.md`
+
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/tdd-principles/SKILL.md** | `.claude/skills/tdd-principles/SKILL.md` | Red-Green-Refactorサイクル、テストファースト、小さなステップ |
+| **.claude/skills/test-doubles/SKILL.md** | `.claude/skills/test-doubles/SKILL.md` | Mock、Stub、Spy、Fakeの使い分け、モック戦略 |
+| **.claude/skills/vitest-advanced/SKILL.md** | `.claude/skills/vitest-advanced/SKILL.md` | スナップショット、カバレッジ、並列実行、モック機能 |
+| **.claude/skills/boundary-value-analysis/SKILL.md** | `.claude/skills/boundary-value-analysis/SKILL.md` | 境界値テスト、等価分割、異常系網羅、エッジケース |
+| **.claude/skills/test-naming-conventions/SKILL.md** | `.claude/skills/test-naming-conventions/SKILL.md` | Given-When-Then、should + 動詞 |
+
+## 43. Workflow Engine
+
+- **エージェント名:** `.claude/agents/workflow-engine.md`
+- **エージェントの配置:** `.claude/agents/workflow-engine.md`
+
+| スキル名 | パス | 概要 |
+| --- | --- | --- |
+| **.claude/skills/design-patterns-behavioral/SKILL.md** | `.claude/skills/design-patterns-behavioral/SKILL.md` | Strategy、Template Method、Command |
+| **.claude/skills/plugin-architecture/SKILL.md** | `.claude/skills/plugin-architecture/SKILL.md` | 動的ロード、レジストリパターン、依存性注入、Plugin Lifecycle |
+| **.claude/skills/interface-segregation/SKILL.md** | `.claude/skills/interface-segregation/SKILL.md` | ISP準拠インターフェース設計、Fat Interface検出 |
+| **.claude/skills/factory-patterns/SKILL.md** | `.claude/skills/factory-patterns/SKILL.md` | Factory Method、Abstract Factory、Builder |
+| **.claude/skills/open-closed-principle/SKILL.md** | `.claude/skills/open-closed-principle/SKILL.md` | OCP準拠拡張性設計、拡張ポイント、リファクタリング |
+
+## 共通スキル
+
+| スキル名 | パス | 概要 | 使用エージェント |
+| --- | --- | --- | --- |
+| **.claude/skills/accessibility-wcag/SKILL.md** | `.claude/skills/accessibility-wcag/SKILL.md` | Webアクセシビリティ（WCAG）ガイドラインとインクルーシブデザイン実装の専門 | .claude/agents/electron-ui-dev.md, .claude/agents/ui-designer.md |
+| **.claude/skills/agent-architecture-patterns/SKILL.md** | `.claude/skills/agent-architecture-patterns/SKILL.md` | マービン・ミンスキーの『心の社会』に基づくエージェントアーキテクチャパターンと | .claude/agents/local-sync.md, .claude/agents/meta-agent-designer.md, .claude/agents/secret-mgr.md |
+| **.claude/skills/agent-persona-design/SKILL.md** | `.claude/skills/agent-persona-design/SKILL.md` | エージェントペルソナ設計を専門とするスキル | .claude/agents/meta-agent-designer.md, .claude/agents/prompt-eng.md |
+| **.claude/skills/api-documentation-best-practices/SKILL.md** | `.claude/skills/api-documentation-best-practices/SKILL.md` | OpenAPI、Swagger、RESTful | .claude/agents/api-doc-writer.md, .claude/agents/spec-writer.md |
+| **.claude/skills/best-practices-curation/SKILL.md** | `.claude/skills/best-practices-curation/SKILL.md` | ベストプラクティスの収集、評価、統合、更新を体系的に行うスキル | .claude/agents/prompt-eng.md, .claude/agents/secret-mgr.md, .claude/agents/skill-librarian.md |
+| **.claude/skills/ci-cd-pipelines/SKILL.md** | `.claude/skills/ci-cd-pipelines/SKILL.md` | ジーン・キムのDevOps原則に基づくCI/CDパイプライン設計と実装を専門とす | .claude/agents/devops-eng.md, .claude/agents/sec-auditor.md |
+| **.claude/skills/connection-pooling/SKILL.md** | `.claude/skills/connection-pooling/SKILL.md` | データベース接続管理の専門スキル。 サーバーレス環境での接続管理 | .claude/agents/dba-mgr.md, .claude/agents/repo-dev.md |
+| **.claude/skills/context-optimization/SKILL.md** | `.claude/skills/context-optimization/SKILL.md` | トークン使用量の最小化と必要情報の効率的抽出を専門とするスキル。 遅延読み込み | .claude/agents/prompt-eng.md, .claude/agents/secret-mgr.md, .claude/agents/skill-librarian.md |
+| **.claude/skills/data-fetching-strategies/SKILL.md** | `.claude/skills/data-fetching-strategies/SKILL.md` | Reactにおけるデータフェッチとキャッシュのベストプラクティスを専門とするスキ | .claude/agents/router-dev.md, .claude/agents/state-manager.md |
+| **.claude/skills/database-migrations/SKILL.md** | `.claude/skills/database-migrations/SKILL.md` | スコット・アンブラーの『Refactoring Databases』に基づく | .claude/agents/db-architect.md, .claude/agents/dba-mgr.md, .claude/agents/repo-dev.md |
+| **.claude/skills/documentation-architecture/SKILL.md** | `.claude/skills/documentation-architecture/SKILL.md` | ドキュメント構造設計、リソース分割、階層設計を専門とするスキル | .claude/agents/prompt-eng.md, .claude/agents/skill-librarian.md |
+| **.claude/skills/electron-distribution/SKILL.md** | `.claude/skills/electron-distribution/SKILL.md` | Electronアプリケーションの配布・自動更新専門知識 | .claude/agents/electron-devops.md, .claude/agents/electron-release.md |
+| **.claude/skills/electron-packaging/SKILL.md** | `.claude/skills/electron-packaging/SKILL.md` | Electronアプリケーションのビルド・パッケージング専門知識 | .claude/agents/electron-builder.md, .claude/agents/electron-devops.md |
+| **.claude/skills/error-boundary/SKILL.md** | `.claude/skills/error-boundary/SKILL.md` | ReactにおけるErrorの実務指針の実践ガイド | .claude/agents/router-dev.md, .claude/agents/state-manager.md |
+| **.claude/skills/graceful-shutdown-patterns/SKILL.md** | `.claude/skills/graceful-shutdown-patterns/SKILL.md` | Node.jsアプリケーションのGraceful | .claude/agents/local-watcher.md, .claude/agents/process-mgr.md |
+| **.claude/skills/input-sanitization/SKILL.md** | `.claude/skills/input-sanitization/SKILL.md` | ユーザー入力のサニタイズとセキュリティ対策を専門とするスキル。 XSS | .claude/agents/schema-def.md, .claude/agents/sec-auditor.md |
+| **.claude/skills/multi-agent-systems/SKILL.md** | `.claude/skills/multi-agent-systems/SKILL.md` | マルチエージェントシステム設計を専門とするスキル。 エージェント間協調 | .claude/agents/local-sync.md, .claude/agents/meta-agent-designer.md |
+| **.claude/skills/project-architecture-integration/SKILL.md** | `.claude/skills/project-architecture-integration/SKILL.md` | プロジェクト固有のアーキテクチャ設計原則を専門とするスキル | .claude/agents/meta-agent-designer.md, .claude/agents/secret-mgr.md |
+| **.claude/skills/prompt-engineering-for-agents/SKILL.md** | `.claude/skills/prompt-engineering-for-agents/SKILL.md` | エージェント向けプロンプトエンジニアリングを専門とするスキル | .claude/agents/meta-agent-designer.md, .claude/agents/prompt-eng.md |
+| **.claude/skills/query-optimization/SKILL.md** | `.claude/skills/query-optimization/SKILL.md` | Vlad MihaltseaとMarkus | .claude/agents/db-architect.md, .claude/agents/repo-dev.md |
+| **.claude/skills/rate-limiting/SKILL.md** | `.claude/skills/rate-limiting/SKILL.md` | Rate Limitingとクォータ管理のベストプラクティスを提供します | .claude/agents/gateway-dev.md, .claude/agents/sec-auditor.md |
+| **.claude/skills/retry-strategies/SKILL.md** | `.claude/skills/retry-strategies/SKILL.md` | 外部APIの一時的障害に対するリトライ戦略とサーキットブレーカーパターンを専門と | .claude/agents/gateway-dev.md, .claude/agents/local-sync.md |
+| **.claude/skills/skill-name/SKILL.md** | `.claude/skills/skill-name/SKILL.md` | スキル命名と識別子設計の指針を提供するスキル | .claude/agents/command-arch.md, .claude/agents/skill-librarian.md |
+| **.claude/skills/test-doubles/SKILL.md** | `.claude/skills/test-doubles/SKILL.md` | テストダブル（Mock、Stub、Fake | .claude/agents/logic-dev.md, .claude/agents/unit-tester.md |
+| **.claude/skills/tool-permission-management/SKILL.md** | `.claude/skills/tool-permission-management/SKILL.md` | ツール権限管理とセキュリティ制御を専門とするスキル | .claude/agents/meta-agent-designer.md, .claude/agents/secret-mgr.md |
+| **.claude/skills/transaction-management/SKILL.md** | `.claude/skills/transaction-management/SKILL.md` | ACID特性を保証するトランザクション設計と実装を専門とするスキル | .claude/agents/db-architect.md, .claude/agents/repo-dev.md |

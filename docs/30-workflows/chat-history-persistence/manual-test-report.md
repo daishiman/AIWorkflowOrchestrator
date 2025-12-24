@@ -4,7 +4,7 @@
 
 **テスト実施日**: 2024-12-23
 **対象フェーズ**: Phase 8 - 手動テスト検証
-**テスト実施者**: @frontend-tester
+**テスト実施者**: .claude/agents/frontend-tester.md
 **テスト環境**: macOS (darwin), Electron Desktop App
 
 ---

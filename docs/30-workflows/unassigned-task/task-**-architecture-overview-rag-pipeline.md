@@ -456,6 +456,6 @@ searchService.addStrategy('graph', GraphSearchStrategy);
 
 | 日付       | 更新内容                                                   | 担当       |
 | ---------- | ---------------------------------------------------------- | ---------- |
-| 2025-12-15 | 初版作成（RAGアーキテクチャ統合）                          | @logic-dev |
-| 2025-12-15 | 最新論文反映（Contextual Retrieval, CRAG, GraphRAG等）     | @logic-dev |
-| 2025-12-15 | **HybridRAG統合版に全面改訂（CONV-08追加、90%+精度目標）** | @logic-dev |
+| 2025-12-15 | 初版作成（RAGアーキテクチャ統合）                          | .claude/agents/logic-dev.md |
+| 2025-12-15 | 最新論文反映（Contextual Retrieval, CRAG, GraphRAG等）     | .claude/agents/logic-dev.md |
+| 2025-12-15 | **HybridRAG統合版に全面改訂（CONV-08追加、90%+精度目標）** | .claude/agents/logic-dev.md |

@@ -4,7 +4,7 @@
 
 title: チャット履歴メタデータ仕様書
 version: 1.0.0
-author: @spec-writer
+author: .claude/agents/spec-writer.md
 created: 2025-12-20
 status: draft
 parent_task: T-00-2
@@ -645,7 +645,7 @@ try {
 
 | バージョン | 日付       | 変更内容                                  | 変更者       |
 | ---------- | ---------- | ----------------------------------------- | ------------ |
-| 1.0.0      | 2025-12-20 | 初版作成 - T-00-2タスクの成果物として作成 | @spec-writer |
+| 1.0.0      | 2025-12-20 | 初版作成 - T-00-2タスクの成果物として作成 | .claude/agents/spec-writer.md |
 
 ---
 

@@ -6,7 +6,7 @@
 | ---------- | ------------------- |
 | 文書ID     | UI-USER-PROFILE-001 |
 | 作成日     | 2025-12-10          |
-| 担当者     | @ui-designer        |
+| 担当者     | .claude/agents/ui-designer.md        |
 | ステータス | 確定                |
 | 関連タスク | T-01-3              |
 
@@ -598,4 +598,4 @@ apps/desktop/src/renderer/
 
 | 版  | 日付       | 変更内容 | 担当者       |
 | --- | ---------- | -------- | ------------ |
-| 1.0 | 2025-12-10 | 初版作成 | @ui-designer |
+| 1.0 | 2025-12-10 | 初版作成 | .claude/agents/ui-designer.md |

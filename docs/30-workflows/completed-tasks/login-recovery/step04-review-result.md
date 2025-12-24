@@ -12,10 +12,10 @@
 
 | エージェント       | 役割                 | 判定   |
 | ------------------ | -------------------- | ------ |
-| @sec-auditor       | セキュリティ設計     | (未完) |
-| @auth-specialist   | 認証フローの妥当性   | MAJOR  |
-| @electron-security | Electronセキュリティ | MAJOR  |
-| @arch-police       | アーキテクチャ整合性 | PASS   |
+| .claude/agents/sec-auditor.md       | セキュリティ設計     | (未完) |
+| .claude/agents/auth-specialist.md   | 認証フローの妥当性   | MAJOR  |
+| .claude/agents/electron-security.md | Electronセキュリティ | MAJOR  |
+| .claude/agents/arch-police.md       | アーキテクチャ整合性 | PASS   |
 
 ### 1.2 レビュー方法
 
@@ -236,12 +236,12 @@
 
 ## 4. レビュー結果詳細
 
-### 4.1 @sec-auditor
+### 4.1 .claude/agents/sec-auditor.md
 
 **判定**: 未完了（レビュー途中で終了）
 **所見**: 他エージェントの結果で補完
 
-### 4.2 @auth-specialist
+### 4.2 .claude/agents/auth-specialist.md
 
 **判定**: MAJOR
 **主要指摘**:
@@ -254,7 +254,7 @@
 
 **実装確認後の再評価**: MINOR（復旧タスクとしては問題なし）
 
-### 4.3 @electron-security
+### 4.3 .claude/agents/electron-security.md
 
 **判定**: MAJOR
 **主要指摘**:
@@ -267,7 +267,7 @@
 
 **実装確認後の再評価**: MINOR（復旧タスクとしては問題なし）
 
-### 4.4 @arch-police
+### 4.4 .claude/agents/arch-police.md
 
 **判定**: PASS ✅
 **所見**:
@@ -396,9 +396,9 @@
 
 | エージェント       | 初期判定 | 実装確認後 | 最終判定 |
 | ------------------ | -------- | ---------- | -------- |
-| @auth-specialist   | MAJOR    | MINOR      | MINOR    |
-| @electron-security | MAJOR    | MINOR      | MINOR    |
-| @arch-police       | PASS     | PASS       | PASS     |
+| .claude/agents/auth-specialist.md   | MAJOR    | MINOR      | MINOR    |
+| .claude/agents/electron-security.md | MAJOR    | MINOR      | MINOR    |
+| .claude/agents/arch-police.md       | PASS     | PASS       | PASS     |
 | **総合判定**       | MAJOR    | MINOR      | **PASS** |
 
 **再評価理由**:
@@ -479,5 +479,5 @@
 ---
 
 **レビュー完了日時**: 2025-12-20
-**レビュー担当**: @sec-auditor, @auth-specialist, @electron-security, @arch-police
+**レビュー担当**: .claude/agents/sec-auditor.md, .claude/agents/auth-specialist.md, .claude/agents/electron-security.md, .claude/agents/arch-police.md
 **最終承認者**: [このレビュー結果を確認した開発者]

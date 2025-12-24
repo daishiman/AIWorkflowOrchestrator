@@ -11,7 +11,7 @@
 | 優先度           | 必須                   |
 | ステータス       | 完了                   |
 | 作成日           | 2025-12-09             |
-| 作成エージェント | @api-doc-writer        |
+| 作成エージェント | .claude/agents/api-doc-writer.md        |
 
 ---
 

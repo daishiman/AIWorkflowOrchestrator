@@ -1,7 +1,7 @@
 ---
 title: [システム名] ソフトウェア要件仕様書
 version: 1.0.0
-author: @spec-writer
+author: .claude/agents/spec-writer.md
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 status: draft

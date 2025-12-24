@@ -1,451 +1,116 @@
 ---
-name: github-actions-security
+name: .claude/skills/github-actions-security/SKILL.md
 description: |
-    GitHub Actionsセキュリティスキル。Repository/Environment Secrets、
-    ログマスキング、品質ゲート統合、CI/CDパイプラインセキュリティを提供します。
-    使用タイミング:
-    - GitHub Actionsワークフローのセキュリティを強化する時
-    - Environment Secretsを設定する時
-    - CI/CD品質ゲートを統合する時
-    - Secret露出防止を実装する時
-    - デプロイワークフローを設計する時
-    Use when securing GitHub Actions workflows, configuring environment
-    secrets, implementing quality gates, or preventing secret exposure.
-
+  GitHub Actionsセキュリティスキル。Repository/Environment Secrets、
+  ログマスキング、品質ゲート統合、CI/CDパイプラインセキュリティを提供します。
+  使用タイミング:
+  
+  📖 参照書籍:
+  - 『Web Application Security』（Andrew Hoffman）: 脅威モデリング
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/github-actions-security/resources/workflow-security-patterns.md`: Secret管理・ログマスキング・権限設定のセキュアなワークフローパターン
-  - `.claude/skills/github-actions-security/templates/github-actions-deploy-template.yml`: 環境保護ルール付きデプロイワークフローテンプレート
-
-  Use proactively when implementing github-actions-security patterns or solving related problems.
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/workflow-security-patterns.md`: workflow-security-patterns のパターン集
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/github-actions-deploy-template.yml`: github-actions-deploy-template のテンプレート
+  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
+  
+  Use proactively when handling github actions security tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "Web Application Security"
+    author: "Andrew Hoffman"
+    concepts:
+      - "脅威モデリング"
+      - "セキュア設計"
 ---
 
 # GitHub Actions Security
 
 ## 概要
 
-GitHub Actions は強力な CI/CD プラットフォームですが、適切なセキュリティ設定なしでは
-Secret が露出するリスクがあります。このスキルは、GitHub Actions 固有のセキュリティ
-ベストプラクティスと Secret 管理手法を提供します。
-
-## Repository Secrets vs Environment Secrets
-
-### Repository Secrets
-
-**特徴**:
-
-- すべてのワークフローからアクセス可能
-- 承認不要
-- 環境による制限なし
-
-**用途**:
-
-- ビルド用トークン（DOCKER_USERNAME、DOCKER_PASSWORD）
-- コードカバレッジトークン（CODECOV_TOKEN）
-- 低リスク Secret
-
-**設定方法**:
-
-```
-GitHub Repo
-→ Settings
-→ Secrets and variables → Actions
-→ Repository secrets
-→ New repository secret
-→ Name: CODECOV_TOKEN
-→ Secret: <token>
-→ Add secret
-```
-
-### Environment Secrets
-
-**特徴**:
-
-- 特定環境のワークフローのみアクセス
-- 承認・保護ルール設定可能
-- デプロイメントブランチ制限可能
-
-**用途**:
-
-- デプロイ用トークン（RAILWAY_TOKEN）
-- 環境別 Secret（DATABASE_URL、API_KEY）
-- 本番通知用 Webhook（DISCORD_WEBHOOK_URL）
-
-**推奨構成**:
-
-```
-GitHub Repo → Settings → Environments
-
-├── development
-│   └── Secrets:
-│       - RAILWAY_TOKEN (dev deployment)
-│       - DATABASE_URL (dev)
-│   └── Protection rules: なし
-│
-├── staging
-│   └── Secrets:
-│       - RAILWAY_TOKEN (staging deployment)
-│       - DATABASE_URL (staging)
-│   └── Protection rules: なし
-│
-└── production
-    └── Secrets:
-        - RAILWAY_TOKEN (prod deployment)
-        - DATABASE_URL (prod)
-        - DISCORD_WEBHOOK_URL (prod notifications)
-    └── Protection rules:
-        ✅ Required reviewers: @devops-team
-        ✅ Wait timer: 5 minutes
-        ✅ Deployment branches: main only
-```
-
-## GitHub Actions での Secret 使用
-
-### 基本的な使用
-
-```yaml
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    environment: production # Environment Secret使用
-
-    steps:
-      - name: Deploy
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: |
-          echo "Token: $RAILWAY_TOKEN"  # 自動マスク → Token: ***
-          ./deploy.sh
-```
-
-### 動的環境選択
-
-```yaml
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
-    # ブランチに応じて環境を動的決定
-    environment:
-      name: ${{ github.ref == 'refs/heads/main' && 'production' || github.ref == 'refs/heads/staging' && 'staging' || 'development' }}
-
-    steps:
-      - name: Deploy
-        env:
-          # 環境別Secretが自動選択される
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: |
-          railway up --detach
-```
-
-## Secret 露出防止
-
-### 1. 自動ログマスキング
-
-GitHub Actions は自動的に Secret をマスクしますが、**完全ではありません**。
-
-```yaml
-# ✅ 安全: 直接使用はマスクされる
-- run: echo "Secret: ${{ secrets.API_KEY }}"
-  # 出力: Secret: ***
-
-# ❌ 危険: Base64エンコードでマスク回避される
-- run: echo "${{ secrets.API_KEY }}" | base64
-  # 出力: c2stcHJvai1hYmMxMjM0NTY3ODkw（マスクされない！）
-
-# ❌ 危険: JSONに埋め込むとマスクされない場合がある
-- run: echo '{"key":"${{ secrets.API_KEY }}"}'
-  # マスクされない可能性
-```
-
-**対策**: Secret を加工せず直接使用、ファイル化・エンコード禁止
-
-### 2. デバッグログ制御
-
-```yaml
-# ❌ 危険: デバッグログ有効でSecret露出リスク
-- name: Deploy
-  env:
-    ACTIONS_STEP_DEBUG: true # 詳細ログ出力
-    SECRET: ${{ secrets.SECRET }}
-
-# ✅ 安全: 本番環境ではデバッグログ無効
-- name: Deploy
-  env:
-    SECRET: ${{ secrets.SECRET }}
-  # ACTIONS_STEP_DEBUGは設定しない
-```
-
-### 3. アーティファクト保護
-
-```yaml
-# ❌ 危険: Secretを含むファイルをアーティファクトにアップロード
-- run: |
-    echo "API_KEY=${{ secrets.API_KEY }}" > config.env
-
-- uses: actions/upload-artifact@v4
-  with:
-    name: config
-    path: config.env # Secret が公開される！
-
-# ✅ 安全: Secretはアーティファクトに含めない
-- name: Create config (non-secret only)
-  run: |
-    echo "API_BASE_URL=${{ vars.API_BASE_URL }}" > config.env
-
-- uses: actions/upload-artifact@v4
-  with:
-    name: config
-    path: config.env # 非機密情報のみ
-```
-
-### 4. Pull Request でのフォーク制限
-
-```yaml
-on:
-  pull_request:
-    types: [opened, synchronize]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-
-    # フォークからのPRではSecretを使用しない
-    if: github.event.pull_request.head.repo.full_name == github.repository
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Run tests
-        env:
-          API_KEY: ${{ secrets.API_KEY }} # フォークPRでは空
-        run: pnpm test
-```
-
-## CI/CD 品質ゲート統合
-
-### 4 段階品質ゲート
-
-```yaml
-jobs:
-  # Gate 1: Secret Scan
-  secret-scan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: gitleaks/gitleaks-action@v2
-
-  # Gate 2: Lint & Type Check
-  lint:
-    needs: secret-scan
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: pnpm ci
-      - run: pnpm run lint
-      - run: pnpm run type-check
-
-  # Gate 3: Tests
-  test:
-    needs: lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: pnpm ci
-      - run: pnpm test
-
-  # Gate 4: Build
-  build:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: pnpm ci
-      - run: pnpm run build
-
-  # すべてのゲート通過後のみデプロイ
-  deploy:
-    needs: [secret-scan, lint, test, build]
-    runs-on: ubuntu-latest
-    environment: production
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Deploy
-        run: ./deploy.sh
-```
-
-### ゲート失敗時の動作
-
-```yaml
-# ゲート失敗時は後続ジョブをスキップ
-deploy:
-  needs: [secret-scan, lint, test, build]
-  if: success() # すべて成功時のみ実行
-```
-
-## 環境保護ルール
-
-### 本番環境の推奨設定
-
-```
-GitHub Repo
-→ Settings
-→ Environments
-→ production
-→ Protection rules:
-
-✅ Required reviewers: 1+ reviewers
-   - @devops-team
-   - @security-team
-
-✅ Wait timer: 5 minutes
-   - 誤操作防止のための待機時間
-
-✅ Deployment branches: Selected branches
-   - main ブランチのみ許可
-
-✅ Deployment protection rules:
-   - Prevent self-review（自己承認禁止）
-```
-
-### ステージング環境の推奨設定
-
-```
-staging:
-  Protection rules:
-    - Required reviewers: なし
-    - Wait timer: なし
-    - Deployment branches: main, staging
-```
-
-## Secret Rotation 統合
-
-### GitHub Secrets の更新
+GitHub Actionsセキュリティスキル。Repository/Environment Secrets、
+ログマスキング、品質ゲート統合、CI/CDパイプラインセキュリティを提供します。
+使用タイミング:
 
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+
+
+## ワークフロー
+
+### Phase 1: 目的と前提の整理
+
+**目的**: タスクの目的と前提条件を明確にする
+
+**アクション**:
+
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
+
+### Phase 2: スキル適用
+
+**目的**: スキルの指針に従って具体的な作業を進める
+
+**アクション**:
+
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
+
+### Phase 3: 検証と記録
+
+**目的**: 成果物の検証と実行記録の保存
+
+**アクション**:
+
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
+
+
+## ベストプラクティス
+
+### すべきこと
+- GitHub Actionsワークフローのセキュリティを強化する時
+- Environment Secretsを設定する時
+- CI/CD品質ゲートを統合する時
+- Secret露出防止を実装する時
+- デプロイワークフローを設計する時
+
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
+
+## コマンドリファレンス
+
+### リソース読み取り
 ```bash
-# GitHub CLIを使用（推奨）
-gh secret set RAILWAY_TOKEN --body "new-token-value"
-
-# または、GitHub UI経由
-# Repo → Settings → Secrets → RAILWAY_TOKEN → Update
+cat .claude/skills/github-actions-security/resources/Level1_basics.md
+cat .claude/skills/github-actions-security/resources/Level2_intermediate.md
+cat .claude/skills/github-actions-security/resources/Level3_advanced.md
+cat .claude/skills/github-actions-security/resources/Level4_expert.md
+cat .claude/skills/github-actions-security/resources/legacy-skill.md
+cat .claude/skills/github-actions-security/resources/workflow-security-patterns.md
 ```
 
-### Rotation 後の検証
-
-```yaml
-name: Validate Secrets
-
-on:
-  workflow_dispatch:
-
-jobs:
-  validate:
-    runs-on: ubuntu-latest
-    environment: production
-
-    steps:
-      - name: Test Railway Token
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: |
-          pnpm install -g @railway/cli
-          railway status || exit 1
-          echo "✅ RAILWAY_TOKEN is valid"
-
-      - name: Test Database Connection
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: |
-          psql "$DATABASE_URL" -c "SELECT 1" || exit 1
-          echo "✅ DATABASE_URL is valid"
+### スクリプト実行
+```bash
+node .claude/skills/github-actions-security/scripts/log_usage.mjs --help
+node .claude/skills/github-actions-security/scripts/validate-skill.mjs --help
 ```
 
-## 通知統合
-
-### デプロイ成功通知
-
-```yaml
-- name: Notify success
-  if: success()
-  env:
-    DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-  run: |
-    curl -X POST "$DISCORD_WEBHOOK_URL" \
-      -H "Content-Type: application/json" \
-      -d "{
-        \"embeds\": [{
-          \"title\": \"✅ Deployment Successful\",
-          \"description\": \"Deployed to **${{ github.environment }}**\",
-          \"color\": 3066993,
-          \"fields\": [
-            {\"name\": \"Branch\", \"value\": \"${{ github.ref_name }}\"},
-            {\"name\": \"Commit\", \"value\": \"[\`${GITHUB_SHA:0:7}\`](${{ github.event.head_commit.url }})\"},
-            {\"name\": \"Author\", \"value\": \"${{ github.actor }}\"}
-          ]
-        }]
-      }"
+### テンプレート参照
+```bash
+cat .claude/skills/github-actions-security/templates/github-actions-deploy-template.yml
 ```
 
-### デプロイ失敗通知
+## 変更履歴
 
-```yaml
-- name: Notify failure
-  if: failure()
-  env:
-    DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-  run: |
-    curl -X POST "$DISCORD_WEBHOOK_URL" \
-      -H "Content-Type: application/json" \
-      -d "{
-        \"embeds\": [{
-          \"title\": \"❌ Deployment Failed\",
-          \"description\": \"Failed to deploy to **${{ github.environment }}**\",
-          \"color\": 15158332,
-          \"fields\": [
-            {\"name\": \"Workflow\", \"value\": \"[View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\"}
-          ]
-        }]
-      }"
-```
-
-## 実装チェックリスト
-
-### GitHub Secrets 設定
-
-- [ ] Environment Secrets が環境別に分離されているか？
-- [ ] 本番環境に保護ルールが設定されているか？
-- [ ] Repository Secrets が低リスク Secret のみか？
-
-### ワークフローセキュリティ
-
-- [ ] Secret がログに露出しないか？
-- [ ] デバッグログが本番で無効か？
-- [ ] アーティファクトに Secret が含まれないか？
-- [ ] フォーク PR で Secret が使用されないか？
-
-### 品質ゲート
-
-- [ ] Secret Scan が最初のゲートとして設定されているか？
-- [ ] ゲート失敗時にデプロイがブロックされるか？
-- [ ] すべてのゲート通過後のみデプロイされるか？
-
-## 関連スキル
-
-- `.claude/skills/railway-secrets-management/SKILL.md` - Railway 統合
-- `.claude/skills/zero-trust-security/SKILL.md` - アクセス制御
-- `.claude/skills/pre-commit-security/SKILL.md` - Secret スキャン
-- `.claude/skills/environment-isolation/SKILL.md` - 環境分離
-
-## リソースファイル
-
-- `resources/workflow-security-patterns.md` - セキュアなワークフローパターン
-
-## テンプレート
-
-- `templates/github-actions-deploy-template.yml` - デプロイワークフローテンプレート
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

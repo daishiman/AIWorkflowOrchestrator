@@ -13,7 +13,7 @@
 | ステータス       | 未実施                                    |
 | 発見元           | Phase 7-1 UI/UXレビュー                   |
 | 発見日           | 2024-12-17                                |
-| 発見エージェント | @ui-designer                              |
+| 発見エージェント | .claude/agents/ui-designer.md                              |
 
 ---
 
@@ -138,7 +138,7 @@ CSS変数参照をTailwindカスタムクラスに統一する。
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: デザインシステム整合性の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -195,7 +195,7 @@ colors: {
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: アニメーション設計の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -248,7 +248,7 @@ transitionDuration: {
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: レスポンシブデザインの専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -302,7 +302,7 @@ transitionDuration: {
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: コード品質改善の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -330,7 +330,7 @@ UIの見た目が意図通りであることを確認する。
 
 #### 使用エージェント
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 - **選定理由**: フロントエンドテストの専門家
 - **参照**: `.claude/agents/agent_list.md`
 

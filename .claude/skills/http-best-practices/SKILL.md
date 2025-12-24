@@ -1,208 +1,119 @@
 ---
-name: http-best-practices
+name: .claude/skills/http-best-practices/SKILL.md
 description: |
   HTTPプロトコルを正しく効率的に活用するためのベストプラクティス集。
-
+  
+  📖 参照書籍:
+  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/http-best-practices/resources/status-codes.md`: 2xx/4xx/5xxステータスコードの適切な使い分け
-  - `.claude/skills/http-best-practices/resources/idempotency.md`: 冪等性設計と冪等キー実装
-  - `.claude/skills/http-best-practices/resources/connection-management.md`: Keep-Alive、コネクションプーリング、HTTP/2最適化
-  - `.claude/skills/http-best-practices/resources/headers-best-practices.md`: 標準ヘッダー活用とカスタムヘッダー設計
-
-  専門分野:
-  - HTTPステータスコード: 2xx/4xx/5xx系の適切な使い分けとエラー設計
-  - 冪等性設計: 冪等キー実装とリトライセーフなAPI設計
-  - コネクション管理: Keep-Alive、コネクションプーリング、HTTP/2マルチプレキシング
-  - ヘッダー設計: Content-Type/Accept交渉、キャッシュ制御、カスタムヘッダー
-
-  使用タイミング:
-  - RESTful APIを設計・実装する時
-  - HTTPクライアントを実装する時
-  - API通信のパフォーマンスを最適化する時
-  - エラーハンドリング戦略を設計する時
-
-  Use proactively when designing RESTful APIs, implementing HTTP clients,
-  or optimizing API communication.
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/connection-management.md`: Keep-Alive、コネクションプーリング、HTTP/2最適化
+  - `resources/headers-best-practices.md`: 標準ヘッダー活用とカスタムヘッダー設計
+  - `resources/idempotency.md`: 冪等性設計と冪等キー実装
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/status-codes.md`: 2xx/4xx/5xxステータスコードの適切な使い分け
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-http-client.mjs`: httpclientを検証するスクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/http-client-template.ts`: http-client-template のテンプレート
+  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
+  
+  Use proactively when handling http best practices tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "The Pragmatic Programmer"
+    author: "Andrew Hunt, David Thomas"
+    concepts:
+      - "実践的改善"
+      - "品質維持"
 ---
 
 # HTTP Best Practices スキル
 
 ## 概要
 
-HTTP プロトコルを正しく効率的に活用するためのベストプラクティス集。
-ステータスコード、冪等性、コネクション管理、ヘッダー設計など、
-堅牢な API 通信を実現するための知識を提供します。
+HTTPプロトコルを正しく効率的に活用するためのベストプラクティス集。
 
-## 対象エージェント
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-- @gateway-dev
-- @backend-architect
-- @api-doc-writer
-
-## 含まれるリソース
-
-### 1. HTTP ステータスコード (resources/status-codes.md)
-
-- 2xx 成功系の適切な使い分け
-- 4xx クライアントエラーの設計
-- 5xx サーバーエラーのハンドリング
-- カスタムエラーレスポンス設計
-
-### 2. 冪等性設計 (resources/idempotency.md)
-
-- HTTP メソッドと冪等性
-- 冪等キーの実装
-- リトライセーフな API 設計
-- 重複リクエスト防止
-
-### 3. コネクション管理 (resources/connection-management.md)
-
-- Keep-Alive 最適化
-- コネクションプーリング
-- HTTP/2 マルチプレキシング
-- コネクションタイムアウト設計
-
-### 4. ヘッダー設計 (resources/headers-best-practices.md)
-
-- 標準ヘッダーの活用
-- カスタムヘッダー設計
-- Content-Type/Accept 交渉
-- キャッシュ制御ヘッダー
 
 ## ワークフロー
 
-```
-1. 要件分析
-   ├── APIの特性を把握
-   ├── 必要なステータスコードを特定
-   └── 冪等性要件を確認
+### Phase 1: 目的と前提の整理
 
-2. 設計
-   ├── エンドポイント設計
-   ├── エラーレスポンス設計
-   └── ヘッダー戦略策定
+**目的**: タスクの目的と前提条件を明確にする
 
-3. 実装
-   ├── HTTPクライアント設定
-   ├── ステータスコードハンドリング
-   └── コネクション管理設定
+**アクション**:
 
-4. 検証
-   ├── エラーシナリオテスト
-   ├── 冪等性テスト
-   └── パフォーマンステスト
-```
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
+
+### Phase 2: スキル適用
+
+**目的**: スキルの指針に従って具体的な作業を進める
+
+**アクション**:
+
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
+
+### Phase 3: 検証と記録
+
+**目的**: 成果物の検証と実行記録の保存
+
+**アクション**:
+
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
+
 
 ## ベストプラクティス
 
-### ステータスコード選択
+### すべきこと
+- RESTful APIを設計・実装する時
+- HTTPクライアントを実装する時
+- API通信のパフォーマンスを最適化する時
+- エラーハンドリング戦略を設計する時
 
-```typescript
-// 成功レスポンス
-200 OK           // 取得・更新成功（ボディあり）
-201 Created      // リソース作成成功（Locationヘッダー必須）
-202 Accepted     // 非同期処理受付
-204 No Content   // 削除成功（ボディなし）
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
 
-// クライアントエラー
-400 Bad Request  // リクエスト形式エラー
-401 Unauthorized // 認証エラー
-403 Forbidden    // 認可エラー
-404 Not Found    // リソース未存在
-409 Conflict     // 競合（楽観ロック失敗など）
-422 Unprocessable Entity // バリデーションエラー
-429 Too Many Requests    // レート制限
+## コマンドリファレンス
 
-// サーバーエラー
-500 Internal Server Error // 予期しないエラー
-502 Bad Gateway           // 上流サービスエラー
-503 Service Unavailable   // 一時的利用不可
-504 Gateway Timeout       // 上流タイムアウト
+### リソース読み取り
+```bash
+cat .claude/skills/http-best-practices/resources/Level1_basics.md
+cat .claude/skills/http-best-practices/resources/Level2_intermediate.md
+cat .claude/skills/http-best-practices/resources/Level3_advanced.md
+cat .claude/skills/http-best-practices/resources/Level4_expert.md
+cat .claude/skills/http-best-practices/resources/connection-management.md
+cat .claude/skills/http-best-practices/resources/headers-best-practices.md
+cat .claude/skills/http-best-practices/resources/idempotency.md
+cat .claude/skills/http-best-practices/resources/legacy-skill.md
+cat .claude/skills/http-best-practices/resources/status-codes.md
 ```
 
-### 冪等性設計
-
-```typescript
-// 冪等キー実装
-interface IdempotentRequest {
-  headers: {
-    "Idempotency-Key": string; // クライアント生成UUID
-  };
-}
-
-// サーバー側実装
-async function handleIdempotentRequest(
-  key: string,
-  handler: () => Promise<Response>,
-): Promise<Response> {
-  // 既存レスポンスをチェック
-  const cached = await cache.get(`idempotency:${key}`);
-  if (cached) return cached;
-
-  // 新規実行
-  const response = await handler();
-
-  // キャッシュに保存（24時間）
-  await cache.set(`idempotency:${key}`, response, 86400);
-
-  return response;
-}
+### スクリプト実行
+```bash
+node .claude/skills/http-best-practices/scripts/log_usage.mjs --help
+node .claude/skills/http-best-practices/scripts/validate-http-client.mjs --help
+node .claude/skills/http-best-practices/scripts/validate-skill.mjs --help
 ```
 
-### コネクション最適化
-
-```typescript
-// Node.js HTTPエージェント設定
-import { Agent } from "http";
-
-const agent = new Agent({
-  keepAlive: true, // コネクション再利用
-  keepAliveMsecs: 30000, // Keep-Alive間隔
-  maxSockets: 50, // 最大同時接続数
-  maxFreeSockets: 10, // 待機コネクション数
-  timeout: 30000, // ソケットタイムアウト
-});
-
-// fetch使用時
-const response = await fetch(url, {
-  agent,
-  signal: AbortSignal.timeout(10000),
-});
+### テンプレート参照
+```bash
+cat .claude/skills/http-best-practices/templates/http-client-template.ts
 ```
 
-## 品質チェックリスト
+## 変更履歴
 
-### 設計時
-
-- [ ] 各エンドポイントに適切なステータスコードが定義されているか？
-- [ ] エラーレスポンス形式が統一されているか？
-- [ ] 冪等でないエンドポイントに冪等キーが実装されているか？
-
-### 実装時
-
-- [ ] Content-Type/Accept が正しく設定されているか？
-- [ ] タイムアウトが適切に設定されているか？
-- [ ] コネクションプールが設定されているか？
-
-### 運用時
-
-- [ ] ステータスコード別のメトリクスが収集されているか？
-- [ ] コネクションリークが監視されているか？
-- [ ] エラー率にアラートが設定されているか？
-
-## 参考資料
-
-- **RFC 7231**: HTTP/1.1 Semantics and Content
-- **RFC 7232**: HTTP/1.1 Conditional Requests
-- **RFC 9110**: HTTP Semantics
-- **『RESTful Web APIs』** Leonard Richardson 著
-
-## 関連スキル
-
-- api-client-patterns: API クライアント実装パターン
-- retry-strategies: リトライ・サーキットブレーカー
-- rate-limiting: レート制限実装
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

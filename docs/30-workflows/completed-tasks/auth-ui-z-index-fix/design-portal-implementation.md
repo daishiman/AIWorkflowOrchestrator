@@ -6,7 +6,7 @@
 | -------- | ------------------------------------------ |
 | 文書ID   | DESIGN-AUTH-UI-002                         |
 | 作成日   | 2025-12-20                                 |
-| 作成者   | @ui-designer                               |
+| 作成者   | .claude/agents/ui-designer.md                               |
 | 対象機能 | AccountSection - アバター編集メニュー      |
 | 関連要件 | [REQ-AUTH-UI-002](./requirements-ui-ux.md) |
 
@@ -570,6 +570,6 @@ apps/desktop/src/renderer/components/organisms/AccountSection/index.tsx
 
 | 役割           | 名前             | 日付                | 署名 |
 | -------------- | ---------------- | ------------------- | ---- |
-| 設計者         | @ui-designer     | 2025-12-20          | ✓    |
-| アーキテクチャ | @arch-police     | _（Phase 2で記入）_ |      |
-| テスト         | @frontend-tester | _（Phase 2で記入）_ |      |
+| 設計者         | .claude/agents/ui-designer.md     | 2025-12-20          | ✓    |
+| アーキテクチャ | .claude/agents/arch-police.md     | _（Phase 2で記入）_ |      |
+| テスト         | .claude/agents/frontend-tester.md | _（Phase 2で記入）_ |      |

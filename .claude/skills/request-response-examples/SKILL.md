@@ -1,109 +1,121 @@
 ---
-name: request-response-examples
+name: .claude/skills/request-response-examples/SKILL.md
 description: |
   APIリクエスト・レスポンスの具体的なサンプル作成と
   エラーケースドキュメント化のための知識とテンプレート
-
+  
+  📖 参照書籍:
+  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/request-response-examples/resources/error-response-standards.md`: エラーレスポンス標準ガイド
-  - `.claude/skills/request-response-examples/resources/example-design-patterns.md`: リクエスト・レスポンス例 設計パターン
-  - `.claude/skills/request-response-examples/resources/sdk-examples.md`: 言語別SDKサンプル作成ガイド
-  - `.claude/skills/request-response-examples/scripts/generate-curl-examples.js`: OpenAPI 仕様から cURL コマンド例を生成するスクリプト
-  - `.claude/skills/request-response-examples/scripts/validate-examples.js`: OpenAPI 仕様内の example 検証スクリプト
-  - `.claude/skills/request-response-examples/templates/curl-examples.md`: cURLサンプルテンプレート
-  - `.claude/skills/request-response-examples/templates/error-catalog.md`: エラーカタログテンプレート
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/error-response-standards.md`: エラーレスポンス標準ガイド
+  - `resources/example-design-patterns.md`: リクエスト・レスポンス例 設計パターン
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/sdk-examples.md`: 言語別SDKサンプル作成ガイド
+  - `scripts/generate-curl-examples.js`: OpenAPI 仕様から cURL コマンド例を生成するスクリプト
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-examples.js`: OpenAPI 仕様内の example 検証スクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/curl-examples.md`: cURLサンプルテンプレート
+  - `templates/error-catalog.md`: エラーカタログテンプレート
+  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
+  
+  Use proactively when handling request response examples tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "The Pragmatic Programmer"
+    author: "Andrew Hunt, David Thomas"
+    concepts:
+      - "実践的改善"
+      - "品質維持"
 ---
 
 # Request/Response Examples スキル
 
 ## 概要
 
-API ドキュメントにおける具体的なリクエスト・レスポンス例、
-エラーケース、エッジケースの効果的な文書化手法を提供します。
+APIリクエスト・レスポンスの具体的なサンプル作成と
+エラーケースドキュメント化のための知識とテンプレート
 
-## 知識ドメイン
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-### 1. リクエスト例設計
 
-- cURL コマンド形式
-- 言語別 SDK サンプル（JavaScript, Python, Go, etc.）
-- HTTP リクエスト生フォーマット
-- 必須/オプションパラメータの明示
+## ワークフロー
 
-### 2. レスポンス例設計
+### Phase 1: 目的と前提の整理
 
-- 成功レスポンス（200, 201, 204）
-- ページネーション付きリスト
-- ネストしたリソース表現
-- HATEOAS リンク
+**目的**: タスクの目的と前提条件を明確にする
 
-### 3. エラーレスポンス
+**アクション**:
 
-- RFC 7807 Problem Details 形式
-- エラーコード体系
-- バリデーションエラー詳細
-- リトライ可能性の明示
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-### 4. エッジケース
+### Phase 2: スキル適用
 
-- 空配列・null 値
-- 大量データ
-- 特殊文字・Unicode
-- タイムゾーン・日付形式
+**目的**: スキルの指針に従って具体的な作業を進める
 
-### 5. インタラクティブ例
+**アクション**:
 
-- Try It Out 機能
-- サンドボックス環境
-- テストデータ戦略
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-## リソース
+### Phase 3: 検証と記録
 
-| ファイル                                | 内容                             |
-| --------------------------------------- | -------------------------------- |
-| `resources/example-design-patterns.md`  | 効果的なサンプル設計パターン     |
-| `resources/error-response-standards.md` | エラーレスポンス標準（RFC 7807） |
-| `resources/sdk-examples.md`             | 言語別 SDK サンプル作成ガイド    |
+**目的**: 成果物の検証と実行記録の保存
 
-## テンプレート
+**アクション**:
 
-| ファイル                     | 用途                       |
-| ---------------------------- | -------------------------- |
-| `templates/curl-examples.md` | cURL コマンドテンプレート  |
-| `templates/error-catalog.md` | エラーカタログテンプレート |
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-## 使用方法
 
-```
-このスキルを使用して：
-1. APIエンドポイントの具体的なリクエスト例を作成
-2. 成功・エラーレスポンスの両方を文書化
-3. 開発者が即座に使えるコードスニペットを提供
-4. エッジケースとその処理方法を明示
+## ベストプラクティス
+
+### すべきこと
+- resources/Level1_basics.md を参照し、適用範囲を明確にする
+- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
+
+## コマンドリファレンス
+
+### リソース読み取り
+```bash
+cat .claude/skills/request-response-examples/resources/Level1_basics.md
+cat .claude/skills/request-response-examples/resources/Level2_intermediate.md
+cat .claude/skills/request-response-examples/resources/Level3_advanced.md
+cat .claude/skills/request-response-examples/resources/Level4_expert.md
+cat .claude/skills/request-response-examples/resources/error-response-standards.md
+cat .claude/skills/request-response-examples/resources/example-design-patterns.md
+cat .claude/skills/request-response-examples/resources/legacy-skill.md
+cat .claude/skills/request-response-examples/resources/sdk-examples.md
 ```
 
-## 適用対象
+### スクリプト実行
+```bash
+.claude/skills/request-response-examples/scripts/generate-curl-examples.js
+node .claude/skills/request-response-examples/scripts/log_usage.mjs --help
+.claude/skills/request-response-examples/scripts/validate-examples.js
+node .claude/skills/request-response-examples/scripts/validate-skill.mjs --help
+```
 
-- REST API ドキュメント
-- GraphQL API サンプル
-- WebSocket メッセージ例
-- SDK リファレンス
-- チュートリアル・クイックスタート
-
-## 関連スキル
-
-| スキル                           | パス                                                       | 関連性                                   |
-| -------------------------------- | ---------------------------------------------------------- | ---------------------------------------- |
-| openapi-specification            | `.claude/skills/openapi-specification/SKILL.md`            | OpenAPI 仕様書内の examples 定義         |
-| authentication-docs              | `.claude/skills/authentication-docs/SKILL.md`              | 認証リクエスト/レスポンス例              |
-| api-documentation-best-practices | `.claude/skills/api-documentation-best-practices/SKILL.md` | API ドキュメント全体のベストプラクティス |
+### テンプレート参照
+```bash
+cat .claude/skills/request-response-examples/templates/curl-examples.md
+cat .claude/skills/request-response-examples/templates/error-catalog.md
+```
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                                                             |
-| ---------- | ---------- | ------------------------------------------------------------------------------------ |
-| 1.0.0      | 2025-11-27 | 初版リリース。リクエスト/レスポンス例設計パターン、RFC 7807 エラー標準、SDK 例を追加 |
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

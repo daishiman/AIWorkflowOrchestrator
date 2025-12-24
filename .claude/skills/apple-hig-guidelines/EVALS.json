@@ -1,0 +1,120 @@
+{
+  "skill_name": "apple-hig-guidelines",
+  "current_level": 1,
+  "levels": {
+    "1": {
+      "level": 1,
+      "name": "基礎",
+      "requirements": {
+        "min_usage_count": 0,
+        "min_success_rate": 0.0,
+        "min_satisfaction_score": 0.0,
+        "required_resources": [
+          "SKILL.md"
+        ]
+      },
+      "success_criteria": [
+        "SKILL.mdが存在し、基本タスクが実行可能"
+      ]
+    },
+    "2": {
+      "level": 2,
+      "name": "中級",
+      "requirements": {
+        "min_usage_count": 10,
+        "min_success_rate": 0.8,
+        "min_satisfaction_score": 0.7,
+        "required_resources": [
+          "SKILL.md",
+          "resources/Level1_basics.md",
+          "scripts/check-hig-compliance.mjs"
+        ]
+      },
+      "success_criteria": [
+        "10回以上使用され、成功率80%以上"
+      ]
+    },
+    "3": {
+      "level": 3,
+      "name": "上級",
+      "requirements": {
+        "min_usage_count": 50,
+        "min_success_rate": 0.9,
+        "min_satisfaction_score": 0.8,
+        "required_resources": [
+          "SKILL.md",
+          "resources/Level1_basics.md",
+          "resources/Level2_intermediate.md",
+          "resources/Level3_advanced.md",
+          "resources/Level4_expert.md",
+          "resources/accessibility-specs.md",
+          "resources/app-icons-specifications.md",
+          "resources/component-states.md",
+          "resources/design-themes.md",
+          "resources/interaction-patterns.md",
+          "resources/launch-screens.md",
+          "resources/layout-grid-system.md",
+          "resources/legacy-skill.md",
+          "resources/notifications.md",
+          "resources/platform-specifics.md",
+          "resources/typography-colors.md",
+          "resources/ui-components.md",
+          "resources/visual-design-specs.md",
+          "resources/widgets-live-activities.md",
+          "scripts/check-hig-compliance.mjs",
+          "scripts/log_usage.mjs",
+          "scripts/validate-skill.mjs",
+          "templates/hig-design-checklist.md"
+        ]
+      },
+      "success_criteria": [
+        "50回以上使用され、成功率90%以上"
+      ]
+    },
+    "4": {
+      "level": 4,
+      "name": "専門",
+      "requirements": {
+        "min_usage_count": 100,
+        "min_success_rate": 0.95,
+        "min_satisfaction_score": 0.9,
+        "required_resources": [
+          "SKILL.md",
+          "resources/Level1_basics.md",
+          "resources/Level2_intermediate.md",
+          "resources/Level3_advanced.md",
+          "resources/Level4_expert.md",
+          "resources/accessibility-specs.md",
+          "resources/app-icons-specifications.md",
+          "resources/component-states.md",
+          "resources/design-themes.md",
+          "resources/interaction-patterns.md",
+          "resources/launch-screens.md",
+          "resources/layout-grid-system.md",
+          "resources/legacy-skill.md",
+          "resources/notifications.md",
+          "resources/platform-specifics.md",
+          "resources/typography-colors.md",
+          "resources/ui-components.md",
+          "resources/visual-design-specs.md",
+          "resources/widgets-live-activities.md",
+          "scripts/check-hig-compliance.mjs",
+          "scripts/log_usage.mjs",
+          "scripts/validate-skill.mjs",
+          "templates/hig-design-checklist.md",
+          "LOGS.md"
+        ]
+      },
+      "success_criteria": [
+        "100回以上使用され、成功率95%以上"
+      ]
+    }
+  },
+  "metrics": {
+    "total_usage_count": 0,
+    "success_count": 0,
+    "failure_count": 0,
+    "average_satisfaction": 0.0,
+    "last_evaluated": "2025-12-24T00:00:00Z"
+  }
+}

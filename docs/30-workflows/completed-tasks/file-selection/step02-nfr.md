@@ -2,7 +2,7 @@
 
 > **ドキュメントID**: CONV-01-NFR
 > **作成日**: 2025-12-16
-> **作成者**: @req-analyst, @electron-security
+> **作成者**: .claude/agents/req-analyst.md, .claude/agents/electron-security.md
 > **ステータス**: 承認待ち
 > **関連ドキュメント**: [step01-requirements.md](./step01-requirements.md)
 
@@ -20,9 +20,9 @@
 
 ### 1.2 対象読者
 
-- 実装エンジニア（@electron-ui-dev, @sec-auditor）
-- テストエンジニア（@unit-tester, @e2e-tester）
-- セキュリティレビュアー（@electron-security）
+- 実装エンジニア（.claude/agents/electron-ui-dev.md, .claude/agents/sec-auditor.md）
+- テストエンジニア（.claude/agents/unit-tester.md, .claude/agents/e2e-tester.md）
+- セキュリティレビュアー（.claude/agents/electron-security.md）
 
 ---
 
@@ -644,9 +644,9 @@ pnpm --filter @repo/desktop test:a11y
 
 | 役割                   | 名前               | 日付       | 承認状況 |
 | ---------------------- | ------------------ | ---------- | -------- |
-| NFR定義者              | @req-analyst       | 2025-12-16 | 作成済み |
-| セキュリティレビュアー | @electron-security |            | 未承認   |
-| パフォーマンス確認     | @code-quality      |            | 未承認   |
+| NFR定義者              | .claude/agents/req-analyst.md       | 2025-12-16 | 作成済み |
+| セキュリティレビュアー | .claude/agents/electron-security.md |            | 未承認   |
+| パフォーマンス確認     | .claude/agents/code-quality.md      |            | 未承認   |
 | 最終承認者             |                    |            | 未承認   |
 
 ---
@@ -655,4 +655,4 @@ pnpm --filter @repo/desktop test:a11y
 
 | バージョン | 日付       | 変更内容 | 変更者                           |
 | ---------- | ---------- | -------- | -------------------------------- |
-| 1.0        | 2025-12-16 | 初版作成 | @req-analyst, @electron-security |
+| 1.0        | 2025-12-16 | 初版作成 | .claude/agents/req-analyst.md, .claude/agents/electron-security.md |

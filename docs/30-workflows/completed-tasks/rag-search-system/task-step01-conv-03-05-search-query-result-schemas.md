@@ -162,7 +162,7 @@ HybridRAG検索エンジンで使用する全型（SearchQuery、SearchResult、
 
 #### 使用エージェント
 
-- **エージェント**: @req-analyst
+- **エージェント**: .claude/agents/req-analyst.md
 - **選定理由**:
   - 要求工学の専門家（Karl Wiegers方法論）であり、曖昧性検出・トリアージフレームワークに精通
   - Given-When-Then形式による検証可能な受け入れ基準を記述できる
@@ -173,9 +173,9 @@ HybridRAG検索エンジンで使用する全型（SearchQuery、SearchResult、
 
 | スキル名                                   | 活用方法                                                                       |
 | ------------------------------------------ | ------------------------------------------------------------------------------ |
-| **requirements-engineering**               | MoSCoW優先度付け、曖昧性検出、検証可能な要件文の作成                           |
-| **functional-non-functional-requirements** | 機能要件（型定義）と非機能要件（パフォーマンス、保守性）の分離                 |
-| **acceptance-criteria-writing**            | Given-When-Then形式での受け入れ基準記述（例: Given型定義、When利用、Then推論） |
+| **.claude/skills/requirements-engineering/SKILL.md**               | MoSCoW優先度付け、曖昧性検出、検証可能な要件文の作成                           |
+| **.claude/skills/functional-non-functional-requirements/SKILL.md** | 機能要件（型定義）と非機能要件（パフォーマンス、保守性）の分離                 |
+| **.claude/skills/acceptance-criteria-writing/SKILL.md**            | Given-When-Then形式での受け入れ基準記述（例: Given型定義、When利用、Then推論） |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -229,7 +229,7 @@ types.tsの全型インターフェース・列挙型の設計を行う。
 
 #### 使用エージェント
 
-- **エージェント**: @schema-def
+- **エージェント**: .claude/agents/schema-def.md
 - **選定理由**:
   - Zod・TypeScript厳格モードの専門家であり、型安全性パターンに精通
   - Discriminated Unions、型ガード、Branded Typeの適切な使用を設計できる
@@ -240,8 +240,8 @@ types.tsの全型インターフェース・列挙型の設計を行う。
 
 | スキル名                 | 活用方法                                                             |
 | ------------------------ | -------------------------------------------------------------------- |
-| **type-safety-patterns** | Discriminated Unions、型ガード、Branded Type活用による型安全性の強化 |
-| **zod-validation**       | Zodスキーマと型定義の整合性を保つための設計（型推論の最大活用）      |
+| **.claude/skills/type-safety-patterns/SKILL.md** | Discriminated Unions、型ガード、Branded Type活用による型安全性の強化 |
+| **.claude/skills/zod-validation/SKILL.md**       | Zodスキーマと型定義の整合性を保つための設計（型推論の最大活用）      |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -294,7 +294,7 @@ schemas.tsの全Zodスキーマとバリデーションルールを設計する�
 
 #### 使用エージェント
 
-- **エージェント**: @schema-def
+- **エージェント**: .claude/agents/schema-def.md
 - **選定理由**:
   - Zod専門家であり、カスタムバリデーション（refine、superRefine）の設計に精通
   - 型推論を最大限活用し、型とスキーマの一貫性を保つ設計ができる
@@ -305,8 +305,8 @@ schemas.tsの全Zodスキーマとバリデーションルールを設計する�
 
 | スキル名                 | 活用方法                                                                 |
 | ------------------------ | ------------------------------------------------------------------------ |
-| **zod-validation**       | Zodスキーマ定義、カスタムバリデーション（refine）、型推論の活用          |
-| **error-message-design** | ユーザーフレンドリーなバリデーションエラーメッセージの設計（日本語対応） |
+| **.claude/skills/zod-validation/SKILL.md**       | Zodスキーマ定義、カスタムバリデーション（refine）、型推論の活用          |
+| **.claude/skills/error-message-design/SKILL.md** | ユーザーフレンドリーなバリデーションエラーメッセージの設計（日本語対応） |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -359,7 +359,7 @@ utils.tsの全ユーティリティ関数（calculateRRFScore、normalizeScores�
 
 #### 使用エージェント
 
-- **エージェント**: @logic-dev
+- **エージェント**: .claude/agents/logic-dev.md
 - **選定理由**:
   - ビジネスロジック実装の専門家（Martin Fowler）であり、純粋関数設計に精通
   - TDDサイクル（Red-Green-Refactor）を前提とした設計ができる
@@ -370,8 +370,8 @@ utils.tsの全ユーティリティ関数（calculateRRFScore、normalizeScores�
 
 | スキル名                   | 活用方法                                  |
 | -------------------------- | ----------------------------------------- |
-| **clean-code-practices**   | 小さな関数、意味のある命名、DRY原則の適用 |
-| **tdd-red-green-refactor** | テストケースを前提とした関数仕様設計      |
+| **.claude/skills/clean-code-practices/SKILL.md**   | 小さな関数、意味のある命名、DRY原則の適用 |
+| **.claude/skills/tdd-red-green-refactor/SKILL.md** | テストケースを前提とした関数仕様設計      |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -414,35 +414,35 @@ Phase 1で設計した型定義、Zodスキーマ、ユーティリティ関数�
 
 | エージェント  | レビュー観点           | 選定理由                                                                            |
 | ------------- | ---------------------- | ----------------------------------------------------------------------------------- |
-| @req-analyst  | 要件充足性             | 要件定義段階で定義した全要件が設計に反映されているか確認                            |
-| @arch-police  | アーキテクチャ整合性   | Clean Architecture原則遵守、依存関係逆転の原則（DIP）確認、CONV-03-01との整合性検証 |
-| @schema-def   | 型安全性・スキーマ設計 | TypeScript型推論、Zodバリデーションルールの妥当性、readonly修飾子の適切性確認       |
-| @db-architect | データ構造設計         | JSON活用設計、インデックス戦略（将来的な検索最適化）の考慮確認                      |
+| .claude/agents/req-analyst.md  | 要件充足性             | 要件定義段階で定義した全要件が設計に反映されているか確認                            |
+| .claude/agents/arch-police.md  | アーキテクチャ整合性   | Clean Architecture原則遵守、依存関係逆転の原則（DIP）確認、CONV-03-01との整合性検証 |
+| .claude/agents/schema-def.md   | 型安全性・スキーマ設計 | TypeScript型推論、Zodバリデーションルールの妥当性、readonly修飾子の適切性確認       |
+| .claude/agents/db-architect.md | データ構造設計         | JSON活用設計、インデックス戦略（将来的な検索最適化）の考慮確認                      |
 
 - **参照**: `.claude/agents/agent_list.md`
 
 #### レビューチェックリスト
 
-**要件充足性** (@req-analyst)
+**要件充足性** (.claude/agents/req-analyst.md)
 
 - [ ] T-00-1で定義した全型要件が設計に含まれているか
 - [ ] 受け入れ基準（Given-When-Then）が満たされる設計か
 - [ ] スコープ外の機能が含まれていないか
 
-**アーキテクチャ整合性** (@arch-police)
+**アーキテクチャ整合性** (.claude/agents/arch-police.md)
 
 - [ ] CONV-03-01のBranded Type（ChunkId、EntityId等）が正しく参照されているか
 - [ ] 外部依存（データベース、API）への依存がドメイン型に混入していないか
 - [ ] 依存関係逆転の原則（DIP）が守られているか
 
-**型安全性・スキーマ設計** (@schema-def)
+**型安全性・スキーマ設計** (.claude/agents/schema-def.md)
 
 - [ ] readonly修飾子が適切に使用され、不変性が保証されているか
 - [ ] Discriminated Unions、型ガードが適切に設計されているか
 - [ ] Zodスキーマと型定義が一貫しているか（z.inferで推論可能か）
 - [ ] カスタムバリデーション（refine）が適切に設計されているか
 
-**データ構造設計** (@db-architect)
+**データ構造設計** (.claude/agents/db-architect.md)
 
 - [ ] JSON活用設計（SQLite JSON1拡張対応）が考慮されているか
 - [ ] 将来的なインデックス設計（検索最適化）に適した構造か
@@ -505,7 +505,7 @@ utils.tsの全ユーティリティ関数のテストケース（正常系・異
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**:
   - TDD専門家（Kent Beck）であり、Red-Green-Refactorサイクルに精通
   - 境界値分析・等価分割によるテストケース設計ができる
@@ -516,9 +516,9 @@ utils.tsの全ユーティリティ関数のテストケース（正常系・異
 
 | スキル名                    | 活用方法                                                 |
 | --------------------------- | -------------------------------------------------------- |
-| **tdd-principles**          | Red-Green-Refactorサイクル、テストファースト設計         |
-| **boundary-value-analysis** | 境界値テスト（空配列、最小値、最大値、null等）、等価分割 |
-| **vitest-advanced**         | Vitestテスト構造、非同期テスト、モッキング               |
+| **.claude/skills/tdd-principles/SKILL.md**          | Red-Green-Refactorサイクル、テストファースト設計         |
+| **.claude/skills/boundary-value-analysis/SKILL.md** | 境界値テスト（空配列、最小値、最大値、null等）、等価分割 |
+| **.claude/skills/vitest-advanced/SKILL.md**         | Vitestテスト構造、非同期テスト、モッキング               |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -580,7 +580,7 @@ schemas.tsの全Zodスキーマの正常系・異常系バリデーションテ�
 
 #### 使用エージェント
 
-- **エージェント**: @schema-def
+- **エージェント**: .claude/agents/schema-def.md
 - **選定理由**:
   - Zodバリデーション専門家であり、refine、superRefineのテストケース設計に精通
   - エラーメッセージの検証、型推論のテストケース設計ができる
@@ -590,8 +590,8 @@ schemas.tsの全Zodスキーマの正常系・異常系バリデーションテ�
 
 | スキル名            | 活用方法                                              |
 | ------------------- | ----------------------------------------------------- |
-| **zod-validation**  | Zodスキーマバリデーションテスト、エラーメッセージ検証 |
-| **vitest-advanced** | Vitestテスト構造、非同期テスト                        |
+| **.claude/skills/zod-validation/SKILL.md**  | Zodスキーマバリデーションテスト、エラーメッセージ検証 |
+| **.claude/skills/vitest-advanced/SKILL.md** | Vitestテスト構造、非同期テスト                        |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -653,7 +653,7 @@ types.tsの全型定義を実装する。
 
 #### 使用エージェント
 
-- **エージェント**: @schema-def
+- **エージェント**: .claude/agents/schema-def.md
 - **選定理由**:
   - TypeScript型定義の専門家であり、Discriminated Unions、型ガード、Branded Typeの実装に精通
   - Clean Architecture原則に基づいた型定義（外部依存を持たないドメイン型）を実装できる
@@ -663,7 +663,7 @@ types.tsの全型定義を実装する。
 
 | スキル名                 | 活用方法                                         |
 | ------------------------ | ------------------------------------------------ |
-| **type-safety-patterns** | Discriminated Unions、型ガード、Branded Type実装 |
+| **.claude/skills/type-safety-patterns/SKILL.md** | Discriminated Unions、型ガード、Branded Type実装 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -724,7 +724,7 @@ schemas.tsの全Zodスキーマを実装する。
 
 #### 使用エージェント
 
-- **エージェント**: @schema-def
+- **エージェント**: .claude/agents/schema-def.md
 - **選定理由**:
   - Zod専門家であり、カスタムバリデーション（refine、superRefine）の実装に精通
   - エラーメッセージの国際化対応（日本語）ができる
@@ -734,8 +734,8 @@ schemas.tsの全Zodスキーマを実装する。
 
 | スキル名                 | 活用方法                                                                 |
 | ------------------------ | ------------------------------------------------------------------------ |
-| **zod-validation**       | Zodスキーマ実装、カスタムバリデーション（refine）、型推論の活用          |
-| **error-message-design** | ユーザーフレンドリーなバリデーションエラーメッセージの実装（日本語対応） |
+| **.claude/skills/zod-validation/SKILL.md**       | Zodスキーマ実装、カスタムバリデーション（refine）、型推論の活用          |
+| **.claude/skills/error-message-design/SKILL.md** | ユーザーフレンドリーなバリデーションエラーメッセージの実装（日本語対応） |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -796,7 +796,7 @@ utils.tsの全ユーティリティ関数を実装する。
 
 #### 使用エージェント
 
-- **エージェント**: @logic-dev
+- **エージェント**: .claude/agents/logic-dev.md
 - **選定理由**:
   - ビジネスロジック実装の専門家（Martin Fowler）であり、純粋関数設計に精通
   - TDDサイクル（Red-Green-Refactor）に従った実装ができる
@@ -807,8 +807,8 @@ utils.tsの全ユーティリティ関数を実装する。
 
 | スキル名                   | 活用方法                                         |
 | -------------------------- | ------------------------------------------------ |
-| **clean-code-practices**   | 小さな関数、意味のある命名、DRY原則の適用        |
-| **tdd-red-green-refactor** | Red-Green-Refactorサイクル、テストファースト実装 |
+| **.claude/skills/clean-code-practices/SKILL.md**   | 小さな関数、意味のある命名、DRY原則の適用        |
+| **.claude/skills/tdd-red-green-refactor/SKILL.md** | Red-Green-Refactorサイクル、テストファースト実装 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -866,7 +866,7 @@ index.tsのバレルエクスポート設定を実装する。
 
 #### 使用エージェント
 
-- **エージェント**: @logic-dev
+- **エージェント**: .claude/agents/logic-dev.md
 - **選定理由**:
   - TypeScriptモジュールシステムに精通しており、バレルエクスポートのベストプラクティスを適用できる
 - **参照**: `.claude/agents/agent_list.md`
@@ -921,7 +921,7 @@ index.tsのバレルエクスポート設定を実装する。
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**:
   - コード品質管理の専門家（Nicholas C. Zakas）であり、ESLint、Prettier、静的解析に精通
   - Clean Code原則（意味のある命名、小さな関数、DRY原則）を適用できる
@@ -932,9 +932,9 @@ index.tsのバレルエクスポート設定を実装する。
 
 | スキル名                   | 活用方法                                                            |
 | -------------------------- | ------------------------------------------------------------------- |
-| **clean-code-practices**   | 意味のある命名、小さな関数、DRY原則の適用                           |
-| **refactoring-techniques** | Extract Method、Replace Temp with Query、Introduce Parameter Object |
-| **eslint-configuration**   | ESLintルール設定、自動修正、競合解決                                |
+| **.claude/skills/clean-code-practices/SKILL.md**   | 意味のある命名、小さな関数、DRY原則の適用                           |
+| **.claude/skills/refactoring-techniques/SKILL.md** | Extract Method、Replace Temp with Query、Introduce Parameter Object |
+| **.claude/skills/eslint-configuration/SKILL.md**   | ESLintルール設定、自動修正、競合解決                                |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -996,7 +996,7 @@ pnpm --filter @repo/shared test:run
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**:
   - TDD専門家であり、テストカバレッジ最適化に精通
   - Vitestカバレッジレポートの分析ができる
@@ -1048,7 +1048,7 @@ ESLint、TypeScript型チェックを実行する。
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**:
   - ESLint、TypeScript型チェックの専門家
   - 静的解析結果の分析ができる
@@ -1112,36 +1112,36 @@ ESLint、TypeScript型チェックを実行する。
 
 | エージェント  | レビュー観点           | 選定理由                                                                      |
 | ------------- | ---------------------- | ----------------------------------------------------------------------------- |
-| @code-quality | コード品質             | Clean Code原則、可読性、保守性の確認                                          |
-| @arch-police  | アーキテクチャ遵守     | Clean Architecture原則、CONV-03-01との整合性確認                              |
-| @unit-tester  | テスト品質             | テストカバレッジ、境界値テスト、テストの可読性確認                            |
-| @schema-def   | 型安全性・スキーマ設計 | TypeScript型推論、Zodバリデーションルールの妥当性、readonly修飾子の適切性確認 |
+| .claude/agents/code-quality.md | コード品質             | Clean Code原則、可読性、保守性の確認                                          |
+| .claude/agents/arch-police.md  | アーキテクチャ遵守     | Clean Architecture原則、CONV-03-01との整合性確認                              |
+| .claude/agents/unit-tester.md  | テスト品質             | テストカバレッジ、境界値テスト、テストの可読性確認                            |
+| .claude/agents/schema-def.md   | 型安全性・スキーマ設計 | TypeScript型推論、Zodバリデーションルールの妥当性、readonly修飾子の適切性確認 |
 
 - **参照**: `.claude/agents/agent_list.md`
 
 #### レビューチェックリスト
 
-**コード品質** (@code-quality)
+**コード品質** (.claude/agents/code-quality.md)
 
 - [ ] Clean Code原則（意味のある命名、小さな関数、DRY原則）が適用されているか
 - [ ] 可読性・保守性が確保されているか
 - [ ] 適切なエラーハンドリングがあるか
 - [ ] 過度な複雑性がないか
 
-**アーキテクチャ遵守** (@arch-police)
+**アーキテクチャ遵守** (.claude/agents/arch-police.md)
 
 - [ ] 実装がアーキテクチャ設計に従っているか
 - [ ] CONV-03-01のBranded Typeが正しく使用されているか
 - [ ] SOLID原則への準拠がなされているか
 
-**テスト品質** (@unit-tester)
+**テスト品質** (.claude/agents/unit-tester.md)
 
 - [ ] テストカバレッジが十分か（80%以上）
 - [ ] テストケースが適切に設計されているか
 - [ ] 境界値・異常系のテストがあるか
 - [ ] テストの可読性・保守性が確保されているか
 
-**型安全性・スキーマ設計** (@schema-def)
+**型安全性・スキーマ設計** (.claude/agents/schema-def.md)
 
 - [ ] TypeScript型推論が正しく機能しているか
 - [ ] Zodスキーマと型定義が一貫しているか
@@ -1205,7 +1205,7 @@ TypeScript型推論が実際のコードエディタ（VSCode）で正しく機�
 
 #### 使用エージェント
 
-- **エージェント**: @schema-def
+- **エージェント**: .claude/agents/schema-def.md
 - **選定理由**:
   - TypeScript型推論の専門家であり、型推論の動作確認ができる
 - **参照**: `.claude/agents/agent_list.md`
@@ -1262,7 +1262,7 @@ TypeScript型推論が実際のコードエディタ（VSCode）で正しく機�
 
 #### 使用エージェント
 
-- **エージェント**: @schema-def
+- **エージェント**: .claude/agents/schema-def.md
 - **選定理由**:
   - Zodバリデーション専門家であり、エラーメッセージの検証ができる
 - **参照**: `.claude/agents/agent_list.md`
@@ -1340,7 +1340,7 @@ TypeScript型推論が実際のコードエディタ（VSCode）で正しく機�
 
 ##### 使用エージェント
 
-- **エージェント**: @spec-writer
+- **エージェント**: .claude/agents/spec-writer.md
 - **選定理由**:
   - テクニカルライター専門家であり、Documentation as Code実践者
   - 既存ドキュメント構造を維持しながら、概要のみを追記できる
@@ -1388,7 +1388,7 @@ Phase 7レビューまたはPhase 8手動テストで発見された未完了タ
 
 ##### 使用エージェント
 
-- **エージェント**: @spec-writer
+- **エージェント**: .claude/agents/spec-writer.md
 - **選定理由**:
   - 100人中100人が実行可能な粒度でタスク指示書を作成できる
   - Why-What-Howの構造でタスクを明確化できる
@@ -1398,8 +1398,8 @@ Phase 7レビューまたはPhase 8手動テストで発見された未完了タ
 
 | スキル名                        | 活用方法                               |
 | ------------------------------- | -------------------------------------- |
-| **requirements-engineering**    | タスク要件の明確化、受け入れ基準の記述 |
-| **acceptance-criteria-writing** | Given-When-Then形式での完了条件記述    |
+| **.claude/skills/requirements-engineering/SKILL.md**    | タスク要件の明確化、受け入れ基準の記述 |
+| **.claude/skills/acceptance-criteria-writing/SKILL.md** | Given-When-Then形式での完了条件記述    |
 
 - **参照**: `.claude/skills/skill_list.md`
 

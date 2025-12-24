@@ -1,26 +1,20 @@
 ---
 description: |
-  ESLintによるコード品質チェックを実行し、潜在的な問題を特定します。
-  自動修正オプション付きでLint実行し、結果をレポートします。
+  ESLintによるコード品質チェックを実行し、潜在的な問題を特定します。自動修正オプション付きでLint実行し、結果をレポートします。
+  実行は専門エージェントに委譲します。
 
   🤖 起動エージェント:
-  - `.claude/agents/code-quality.md` (メイン)
-
-  📚 利用可能スキル (フェーズ別):
-  - Phase 1 (準備): `.claude/skills/eslint-configuration/SKILL.md`
-  - Phase 2 (実行): `.claude/skills/linting-formatting-automation/SKILL.md`
-  - Phase 3 (検証): `.claude/skills/code-smell-detection/SKILL.md` (必要時)
+  - `.claude/agents/code-quality.md`: メイン
 
   ⚙️ このコマンドの設定:
-  - model: sonnet (軽量・高速)
-  - allowed-tools: Task, Bash(pnpm run lint*|pnpm lint*|eslint*), Write(docs/quality-reports/**)
+  - argument-hint: [--fix]
+  - allowed-tools: Task（エージェント起動のみ）
+  - model: sonnet
 
   トリガーキーワード: lint, eslint, code quality, コードチェック, 静的解析
 argument-hint: "[--fix]"
 allowed-tools:
   - Task
-  - Bash
-  - Write
 model: sonnet
 ---
 
@@ -28,31 +22,43 @@ model: sonnet
 
 ## 目的
 
-ESLintを実行してコード品質を分析し、潜在的な問題を特定し、オプションで自動修正を適用します。
+`.claude/commands/ai/lint.md` の入力を受け取り、専門エージェントに実行を委譲します。
 
-## Phase 1: 準備
+## エージェント起動フロー
 
-1. `.claude/agents/code-quality.md` エージェントをLintコンテキストで起動
-2. `.claude/skills/eslint-configuration/SKILL.md` を参照してプロジェクト固有のESLint設定を確認
-3. 引数解析: `$ARGUMENTS` から `--fix` フラグを検出
+### Phase 1: メインの実行
 
-## Phase 2: 実行
+**目的**: メインに関するタスクを実行し、結果を整理する
 
-1. `.claude/skills/linting-formatting-automation/SKILL.md` を参照して自動化パターンを確認
-2. 検出されたパッケージマネージャーに基づいてLintコマンドを実行:
-   - `pnpm lint` (優先)
-   - `pnpm run lint`
-   - `npx eslint .`
-3. `--fix` フラグが指定されている場合: コマンドに `--fix` を追加
-4. 出力とエラーメッセージをキャプチャ
+**背景**: 専門知識が必要なため専門エージェントに委譲する
 
-## Phase 3: 検証
+**ゴール**: メインの結果と次アクションが提示された状態
 
-1. `.claude/agents/code-quality.md` エージェントからLint結果を分析
-2. サマリーレポート生成:
-   - 発見された問題の総数（エラー/警告）
-   - 自動修正された数（該当する場合）
-   - 手動対応が必要な重要問題
-3. 問題が見つかった場合: 詳細レポートを `docs/quality-reports/lint-report-[timestamp].md` に書き込み
+**起動エージェント**: `.claude/agents/code-quality.md`
 
-**期待される成果物**: アクション可能な推奨事項を含むLint実行レポート
+Task ツールで `.claude/agents/code-quality.md` を起動:
+
+**コンテキスト**:
+
+- 引数: $ARGUMENTS（[--fix]）
+
+**依頼内容**:
+
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
+
+**期待成果物**:
+
+- `docs/quality-reports/`
+- `docs/quality-reports/lint-report-`
+
+**完了条件**:
+
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
+
+## 使用例
+
+```bash
+/ai:lint [--fix]
+```

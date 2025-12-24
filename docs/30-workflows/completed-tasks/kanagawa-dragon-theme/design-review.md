@@ -7,7 +7,7 @@
 | サブタスクID | T-02-1                                    |
 | フェーズ     | Phase 2: 設計レビューゲート               |
 | 作成日       | 2025-12-12                                |
-| レビュアー   | @arch-police, @ui-designer, @code-quality |
+| レビュアー   | .claude/agents/arch-police.md, .claude/agents/ui-designer.md, .claude/agents/code-quality.md |
 
 ---
 
@@ -22,7 +22,7 @@
 
 ---
 
-## 2. アーキテクチャ整合性レビュー (@arch-police)
+## 2. アーキテクチャ整合性レビュー (.claude/agents/arch-police.md)
 
 ### 2.1 チェック項目
 
@@ -39,7 +39,7 @@
 
 ---
 
-## 3. UI/UX設計レビュー (@ui-designer)
+## 3. UI/UX設計レビュー (.claude/agents/ui-designer.md)
 
 ### 3.1 チェック項目
 
@@ -58,7 +58,7 @@
 
 ---
 
-## 4. コード品質レビュー (@code-quality)
+## 4. コード品質レビュー (.claude/agents/code-quality.md)
 
 ### 4.1 チェック項目
 
@@ -100,9 +100,9 @@
 
 | レビュアー    | 承認 | 日時       |
 | ------------- | ---- | ---------- |
-| @arch-police  | ✓    | 2025-12-12 |
-| @ui-designer  | ✓    | 2025-12-12 |
-| @code-quality | ✓    | 2025-12-12 |
+| .claude/agents/arch-police.md  | ✓    | 2025-12-12 |
+| .claude/agents/ui-designer.md  | ✓    | 2025-12-12 |
+| .claude/agents/code-quality.md | ✓    | 2025-12-12 |
 
 ### 6.2 次フェーズへの移行
 

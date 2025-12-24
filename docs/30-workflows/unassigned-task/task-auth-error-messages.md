@@ -13,7 +13,7 @@
 | ステータス       | 未実施                        |
 | 発見元           | Phase 7（最終レビューゲート） |
 | 発見日           | 2025-12-22                    |
-| 発見エージェント | @code-quality                 |
+| 発見エージェント | .claude/agents/code-quality.md                 |
 
 ---
 
@@ -23,7 +23,7 @@
 
 現在の認証関連エラーメッセージは、各ファイルに直接記述されており、一貫性の確保や国際化対応が困難です。
 
-ログイン機能復旧プロジェクト（2025-12-22完了）の最終レビューゲートで、@code-qualityがエラーメッセージ の一元管理を推奨しました。
+ログイン機能復旧プロジェクト（2025-12-22完了）の最終レビューゲートで、.claude/agents/code-quality.mdがエラーメッセージ の一元管理を推奨しました。
 
 ### 1.2 問題点・課題
 
@@ -170,7 +170,7 @@ Phase 4: ドキュメント更新
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: コード品質改善の専門家。DRY原則に基づくリファクタリングに最適。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -178,8 +178,8 @@ Phase 4: ドキュメント更新
 
 | スキル名               | 活用方法                               |
 | ---------------------- | -------------------------------------- |
-| clean-code-practices   | DRY原則に基づく定数ファイル設計        |
-| refactoring-techniques | エラーメッセージ一元化リファクタリング |
+| .claude/skills/clean-code-practices/SKILL.md   | DRY原則に基づく定数ファイル設計        |
+| .claude/skills/refactoring-techniques/SKILL.md | エラーメッセージ一元化リファクタリング |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -224,7 +224,7 @@ Phase 4: ドキュメント更新
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: リファクタリングの専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -232,8 +232,8 @@ Phase 4: ドキュメント更新
 
 | スキル名               | 活用方法                                 |
 | ---------------------- | ---------------------------------------- |
-| refactoring-techniques | エラーメッセージ置き換えリファクタリング |
-| clean-code-practices   | DRY原則の適用                            |
+| .claude/skills/refactoring-techniques/SKILL.md | エラーメッセージ置き換えリファクタリング |
+| .claude/skills/clean-code-practices/SKILL.md   | DRY原則の適用                            |
 
 - **参照**: `.claude/skills/skill_list.md`
 

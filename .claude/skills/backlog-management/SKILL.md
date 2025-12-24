@@ -1,402 +1,116 @@
 ---
-name: backlog-management
+name: .claude/skills/backlog-management/SKILL.md
 description: |
   プロダクトバックログの作成、管理、リファインメントの体系的手法。
   継続的に優先順位を調整し、常に実装可能な状態を維持する
   バックログ管理のベストプラクティスを提供します。
-
+  
+  📖 参照書籍:
+  - 『Agile Estimating and Planning』（Mike Cohn）: 見積もり
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/backlog-management/resources/deep-principles.md`: DEEP原則の詳細ガイド（適切な詳細化、創発的管理、見積もり、優先順位付け）
-  - `.claude/skills/backlog-management/templates/user-story-template.md`: As-I want-So that形式のユーザーストーリーテンプレート
-  - `.claude/skills/backlog-management/scripts/analyze-backlog.mjs`: バックログの健全性を分析するNode.jsスクリプト
-
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/deep-principle-guide.md`: deep-principle-guide のガイド
+  - `resources/deep-principles.md`: DEEP原則の詳細ガイド（適切な詳細化、創発的管理、見積もり、優先順位付け）
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `scripts/analyze-backlog.mjs`: バックログの健全性を分析するNode.jsスクリプト
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/user-story-template.md`: As-I want-So that形式のユーザーストーリーテンプレート
+  
+  Use proactively when handling backlog management tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "Agile Estimating and Planning"
+    author: "Mike Cohn"
+    concepts:
+      - "見積もり"
+      - "計画"
 ---
 
 # バックログ管理スキル
 
 ## 概要
 
-健全なバックログの維持により、チームが常に最も価値の高い作業に
-集中できる環境を構築し、予測可能な価値提供を実現します。
+プロダクトバックログの作成、管理、リファインメントの体系的手法。
+継続的に優先順位を調整し、常に実装可能な状態を維持する
+バックログ管理のベストプラクティスを提供します。
 
-## いつ使うか
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-- プロダクトバックログの初期構築
-- 定期的なバックログリファインメント
-- スプリント計画の準備
-- 技術的負債の管理
-- ステークホルダー要求の整理
 
-## バックログの構造
+## ワークフロー
 
-### 階層モデル
+### Phase 1: 目的と前提の整理
 
-```
-Theme (テーマ)
-  ↓
-Initiative (イニシアチブ)
-  ↓
-Epic (エピック)
-  ↓
-User Story (ユーザーストーリー)
-  ↓
-Task/Sub-task (タスク)
-```
+**目的**: タスクの目的と前提条件を明確にする
 
-### DEEP原則
+**アクション**:
 
-#### Detailed appropriately（適切に詳細化）
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-```
-Now (次の1-2スプリント):
-- 完全に詳細化
-- 受け入れ基準明確
-- 見積もり完了
+### Phase 2: スキル適用
 
-Next (2-4スプリント先):
-- 概要レベルで理解
-- 大まかな見積もり
+**目的**: スキルの指針に従って具体的な作業を進める
 
-Later (それ以降):
-- アイデアレベル
-- 相対的なサイズ感のみ
-```
+**アクション**:
 
-#### Estimated（見積もり済み）
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-```
-詳細度に応じた見積もり:
-- エピック: T-Shirt Size (XL, L, M, S)
-- ストーリー: ストーリーポイント (1-13)
-- タスク: 時間 (1-8h)
-```
+### Phase 3: 検証と記録
 
-#### Emergent（創発的）
+**目的**: 成果物の検証と実行記録の保存
 
-```
-継続的な進化:
-- 新規アイテムの追加
-- 既存アイテムの更新
-- 不要アイテムの削除
-- 優先順位の調整
+**アクション**:
+
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
+
+
+## ベストプラクティス
+
+### すべきこと
+- resources/Level1_basics.md を参照し、適用範囲を明確にする
+- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
+
+## コマンドリファレンス
+
+### リソース読み取り
+```bash
+cat .claude/skills/backlog-management/resources/Level1_basics.md
+cat .claude/skills/backlog-management/resources/Level2_intermediate.md
+cat .claude/skills/backlog-management/resources/Level3_advanced.md
+cat .claude/skills/backlog-management/resources/Level4_expert.md
+cat .claude/skills/backlog-management/resources/deep-principle-guide.md
+cat .claude/skills/backlog-management/resources/deep-principles.md
+cat .claude/skills/backlog-management/resources/legacy-skill.md
 ```
 
-#### Prioritized（優先順位付け）
-
-```
-価値による並び順:
-- ビジネス価値
-- リスク削減
-- 技術的依存
-- 学習機会
+### スクリプト実行
+```bash
+node .claude/skills/backlog-management/scripts/analyze-backlog.mjs --help
+node .claude/skills/backlog-management/scripts/log_usage.mjs --help
+node .claude/skills/backlog-management/scripts/validate-skill.mjs --help
 ```
 
-## バックログリファインメント
-
-### 定期的なセッション
-
-```
-頻度: 週1-2回
-時間: スプリント容量の10%
-参加者:
-- プロダクトオーナー（必須）
-- 開発チーム代表（必須）
-- スクラムマスター（推奨）
-- ステークホルダー（必要時）
+### テンプレート参照
+```bash
+cat .claude/skills/backlog-management/templates/user-story-template.md
 ```
 
-### リファインメント活動
-
-#### アイテムの詳細化
-
-```
-プロセス:
-1. ストーリーの説明
-2. 質疑応答
-3. 受け入れ基準の定義
-4. 技術的考慮事項の追加
-5. 依存関係の確認
-```
-
-#### 分割と統合
-
-```
-分割が必要な場合:
-- 13ポイント超のストーリー
-- 複数の価値提供
-- 異なるペルソナ
-- 技術的に分離可能
-
-統合が有効な場合:
-- 1ポイント未満の細かい作業
-- 強い依存関係
-- 同一機能の複数側面
-```
-
-#### 受け入れ基準の定義
-
-```
-Given-When-Thenフォーマット:
-
-Given [前提条件/初期状態]
-When [実行するアクション]
-Then [期待される結果]
-
-例:
-Given ユーザーがログイン済み
-When プロフィール編集ボタンをクリック
-Then 編集フォームが表示され、現在の情報が入力済み
-```
-
-### Definition of Ready
-
-```
-ストーリーが「Ready」の条件:
-□ ユーザー価値が明確
-□ 受け入れ基準が定義済み
-□ 見積もり完了
-□ 依存関係が解決済み
-□ テスト方法が明確
-□ 1スプリントで完了可能
-```
-
-## バックログパターン
-
-### 機能バックログ
-
-```
-構成:
-- 新機能: 60-70%
-- 改善: 20-30%
-- バグ修正: 5-10%
-- 技術的負債: 5-10%
-
-管理方法:
-- ユーザー価値で優先順位付け
-- エピック単位で進捗管理
-- フィーチャートグルで制御
-```
-
-### 技術バックログ
-
-```
-カテゴリー:
-- アーキテクチャ改善
-- パフォーマンス最適化
-- セキュリティ強化
-- 技術的負債返済
-- ツール/インフラ更新
-
-バランス:
-- 各スプリントに20%割当
-- 四半期ごとに負債スプリント
-- リスクベースで優先順位付け
-```
-
-### 実験バックログ
-
-```
-構成:
-- A/Bテスト
-- プロトタイプ
-- 概念実証（PoC）
-- 市場検証
-
-管理:
-- 仮説駆動
-- 学習目標明確化
-- タイムボックス設定
-- 結果の測定と判断
-```
-
-## バックログメトリクス
-
-### 健全性指標
-
-```
-バックログ年齢:
-- 平均年齢 < 3ヶ月（健全）
-- 最古アイテム < 6ヶ月
-- 定期的な棚卸し実施
-
-Ready率:
-- 次2スプリント分: 100%
-- 次3-4スプリント: 50%以上
-- それ以降: 概要レベル
-
-バックログサイズ:
-- 3-6ヶ月分の作業量
-- 大きすぎると管理困難
-- 小さすぎると計画困難
-```
-
-### フロー効率
-
-```
-サイクルタイム分布:
-- Small (1-3pt): 1-3日
-- Medium (5-8pt): 3-5日
-- Large (13pt): 5-10日
-
-スループット:
-- 週あたりの完了アイテム数
-- トレンドの監視
-- ボトルネックの特定
-```
-
-## ツールと自動化
-
-### バックログ管理ツール
-
-```
-基本機能:
-- 階層構造サポート
-- ドラッグ&ドロップ
-- フィルタリング/検索
-- 一括編集
-- 履歴追跡
-
-推奨ツール:
-- Jira
-- Azure DevOps
-- Linear
-- Shortcut
-- Trello (簡易版)
-```
-
-### 自動化ルール
-
-```yaml
-automation_rules:
-  stale_items:
-    condition: age > 6_months
-    action: flag_for_review
-
-  large_stories:
-    condition: points > 13
-    action: prompt_for_split
-
-  missing_criteria:
-    condition: acceptance_criteria.empty?
-    action: block_from_sprint
-
-  dependency_check:
-    condition: has_blocked_by
-    action: verify_dependency_ready
-```
-
-## バックログ整理術
-
-### 定期的な棚卸し
-
-```
-四半期レビュー:
-1. 全アイテムの妥当性確認
-2. 陳腐化したアイテムの削除
-3. 優先順位の大幅見直し
-4. 新規テーマの追加
-
-判断基準:
-- まだ必要か？
-- 価値は変わっていないか？
-- もっと良い方法はないか？
-- 他と統合できないか？
-```
-
-### アイテムのライフサイクル
-
-```
-Idea → Evaluated → Ready → In Progress → Done → Archived
-
-各ステージの期限:
-- Idea: 最大1ヶ月
-- Evaluated: 最大3ヶ月
-- Ready: 最大2スプリント
-- In Progress: 1スプリント
-- Done: 即座にアーカイブ
-```
-
-## コミュニケーション
-
-### ステークホルダー向け
-
-```
-バックログビュー:
-- ロードマップビュー（時系列）
-- テーマ別ビュー（カテゴリー）
-- 進捗ビュー（完了率）
-
-更新通知:
-- 重要度変更
-- 新規エピック追加
-- スケジュール変更
-- ブロッカー発生
-```
-
-### チーム向け
-
-```
-Sprint Planning向け:
-- Readyアイテムリスト
-- 依存関係マップ
-- 技術的考慮事項
-- リスクと前提条件
-
-Daily Scrum向け:
-- 進行中アイテム
-- ブロッカー
-- 次の優先アイテム
-```
-
-## アンチパターンと対策
-
-### 巨大バックログ
-
-**症状**: 1000+アイテム、管理不能
-**対策**: 定期的な棚卸し、アーカイブ活用
-
-### ゾンビストーリー
-
-**症状**: 何スプリントも残り続ける
-**対策**: 期限設定、自動アーカイブ
-
-### 詳細化不足
-
-**症状**: スプリント開始時に混乱
-**対策**: Definition of Ready徹底
-
-### 技術タスクの混入
-
-**症状**: ユーザー価値が不明確
-**対策**: 別バックログ or サブタスク化
-
-## チェックリスト
-
-### 日次確認
-
-- [ ] ブロッカーは解決されているか
-- [ ] 新規要求は記録されているか
-- [ ] 進行中アイテムは更新されているか
-
-### 週次確認
-
-- [ ] リファインメントセッション実施
-- [ ] 次スプリントの準備状況
-- [ ] メトリクスの確認
-
-### 月次確認
-
-- [ ] バックログ健全性レビュー
-- [ ] 優先順位の大幅見直し
-- [ ] ステークホルダー同期
-
-## 関連スキル
-
-- `user-story-mapping` - ストーリー作成
-- `prioritization-frameworks` - 優先順位付け
-- `estimation-techniques` - 見積もり
-- `agile-project-management` - スプリント計画
+## 変更履歴
+
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

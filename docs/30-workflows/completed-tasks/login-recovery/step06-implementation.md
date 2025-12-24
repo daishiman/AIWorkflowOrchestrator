@@ -3,7 +3,7 @@
 **タスクID**: T-04-1
 **実行日時**: 2025-12-20
 **フェーズ**: Phase 4 - 実装（TDD: Green）
-**担当エージェント**: @auth-specialist
+**担当エージェント**: .claude/agents/auth-specialist.md
 
 ---
 
@@ -188,7 +188,7 @@ pnpm --filter @repo/desktop test:coverage
 
 ### 既存実装の確認
 
-@auth-specialistエージェントの分析により、以下が確認されました：
+.claude/agents/auth-specialist.mdエージェントの分析により、以下が確認されました：
 
 1. **AuthGuard実装**: 正しく実装済み
    - `isLoading`と`isAuthenticated`を使用

@@ -15,10 +15,10 @@
 
 | タスクID | タスク名                   | 判定 | 使用エージェント   | レポート                    |
 | -------- | -------------------------- | :--: | ------------------ | --------------------------- |
-| T-01-1   | CSP設計検証                |  ✅  | @electron-security | step02-csp-review.md        |
-| T-01-2   | 入力バリデーション設計検証 |  ✅  | @sec-auditor       | step03-validation-review.md |
-| T-01-3   | IPC検証設計確認            |  ✅  | @electron-security | step04-ipc-review.md        |
-| T-01-4   | Renderer状態設計検証       |  ✅  | @sec-auditor       | step05-state-review.md      |
+| T-01-1   | CSP設計検証                |  ✅  | .claude/agents/electron-security.md | step02-csp-review.md        |
+| T-01-2   | 入力バリデーション設計検証 |  ✅  | .claude/agents/sec-auditor.md       | step03-validation-review.md |
+| T-01-3   | IPC検証設計確認            |  ✅  | .claude/agents/electron-security.md | step04-ipc-review.md        |
+| T-01-4   | Renderer状態設計検証       |  ✅  | .claude/agents/sec-auditor.md       | step05-state-review.md      |
 
 ---
 
@@ -131,9 +131,9 @@
 
 **レビュー担当エージェント**:
 
-- @electron-security: Electronセキュリティ観点
-- @sec-auditor: 一般セキュリティ観点
-- @arch-police: アーキテクチャ整合性観点
+- .claude/agents/electron-security.md: Electronセキュリティ観点
+- .claude/agents/sec-auditor.md: 一般セキュリティ観点
+- .claude/agents/arch-police.md: アーキテクチャ整合性観点
 
 ---
 

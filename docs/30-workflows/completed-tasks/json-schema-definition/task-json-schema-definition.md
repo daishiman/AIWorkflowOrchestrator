@@ -19,7 +19,7 @@
 | ステータス       | 未実施                      |
 | 発見元           | 初期要件定義                |
 | 発見日           | 2025-12-15                  |
-| 発見エージェント | @schema-def                 |
+| 発見エージェント | .claude/agents/schema-def.md                 |
 
 ---
 
@@ -191,18 +191,18 @@ graph TD
 
 #### 使用エージェント
 
-- **エージェント**: @domain-modeler
+- **エージェント**: .claude/agents/domain-modeler.md
 - **選定理由**: ドメインモデルの設計、データ構造の設計に特化しており、変換結果という中核ドメインの要件定義に最適
-- **代替候補**: @req-analyst（要件分析が主目的の場合）
+- **代替候補**: .claude/agents/req-analyst.md（要件分析が主目的の場合）
 - **参照**: `.claude/agents/agent_list.md`
 
 #### 活用スキル
 
 | スキル名            | 活用方法                                                   | 選定理由                                     |
 | ------------------- | ---------------------------------------------------------- | -------------------------------------------- |
-| ubiquitous-language | 変換、メタデータ、バージョン等の用語を統一                 | チーム間の認識齟齬防止、ドメイン用語の明確化 |
-| bounded-context     | 変換ドメインのコンテキスト境界を明確化                     | 責務の明確化、他ドメインとの境界定義         |
-| domain-services     | バージョン管理ロジックをドメインサービスとして切り出し検討 | ビジネスルールの適切な配置                   |
+| .claude/skills/ubiquitous-language/SKILL.md | 変換、メタデータ、バージョン等の用語を統一                 | チーム間の認識齟齬防止、ドメイン用語の明確化 |
+| .claude/skills/bounded-context/SKILL.md     | 変換ドメインのコンテキスト境界を明確化                     | 責務の明確化、他ドメインとの境界定義         |
+| .claude/skills/domain-services/SKILL.md     | バージョン管理ロジックをドメインサービスとして切り出し検討 | ビジネスルールの適切な配置                   |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -254,7 +254,7 @@ RAGパイプライン用のチャンク構造、埋め込みメタデータ、�
 
 #### 使用エージェント
 
-- **エージェント**: @domain-modeler
+- **エージェント**: .claude/agents/domain-modeler.md
 - **選定理由**: チャンク、埋め込みというドメイン概念のモデリングに特化
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -262,8 +262,8 @@ RAGパイプライン用のチャンク構造、埋め込みメタデータ、�
 
 | スキル名            | 活用方法                                               | 選定理由                 |
 | ------------------- | ------------------------------------------------------ | ------------------------ |
-| ubiquitous-language | チャンク、埋め込み、Contextual Retrieval等の用語を統一 | 最新研究用語の正確な定義 |
-| bounded-context     | RAGドメインのコンテキスト境界を明確化                  | 変換ドメインとの境界定義 |
+| .claude/skills/ubiquitous-language/SKILL.md | チャンク、埋め込み、Contextual Retrieval等の用語を統一 | 最新研究用語の正確な定義 |
+| .claude/skills/bounded-context/SKILL.md     | RAGドメインのコンテキスト境界を明確化                  | 変換ドメインとの境界定義 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -315,7 +315,7 @@ RAGパイプライン用のチャンク構造、埋め込みメタデータ、�
 
 #### 使用エージェント
 
-- **エージェント**: @req-analyst
+- **エージェント**: .claude/agents/req-analyst.md
 - **選定理由**: 検索機能という機能要件の分析・整理に特化
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -323,8 +323,8 @@ RAGパイプライン用のチャンク構造、埋め込みメタデータ、�
 
 | スキル名                               | 活用方法                           | 選定理由                     |
 | -------------------------------------- | ---------------------------------- | ---------------------------- |
-| functional-non-functional-requirements | 検索速度、精度等の非機能要件も整理 | 機能要件と非機能要件の明確化 |
-| use-case-modeling                      | 検索ユースケースのモデリング       | 検索シナリオの可視化         |
+| .claude/skills/functional-non-functional-requirements/SKILL.md | 検索速度、精度等の非機能要件も整理 | 機能要件と非機能要件の明確化 |
+| .claude/skills/use-case-modeling/SKILL.md                      | 検索ユースケースのモデリング       | 検索シナリオの可視化         |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -377,7 +377,7 @@ Phase 0で定義した要件に基づき、実装可能な構造に落とし込�
 
 #### 使用エージェント
 
-- **エージェント**: @schema-def
+- **エージェント**: .claude/agents/schema-def.md
 - **選定理由**: スキーマ定義・型設計に特化したエージェントであり、TypeScript型とZodスキーマの一貫性を保つ設計に最適
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -385,8 +385,8 @@ Phase 0で定義した要件に基づき、実装可能な構造に落とし込�
 
 | スキル名             | 活用方法                                      | 選定理由                           |
 | -------------------- | --------------------------------------------- | ---------------------------------- |
-| zod-validation       | Zodスキーマの設計、バリデーションルールの定義 | ランタイムバリデーションの実装基盤 |
-| type-safety-patterns | z.infer<>による型推論の最大化、型ガードの設計 | 型安全性の確保、型推論の活用       |
+| .claude/skills/zod-validation/SKILL.md       | Zodスキーマの設計、バリデーションルールの定義 | ランタイムバリデーションの実装基盤 |
+| .claude/skills/type-safety-patterns/SKILL.md | z.infer<>による型推論の最大化、型ガードの設計 | 型安全性の確保、型推論の活用       |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -439,7 +439,7 @@ RAG関連型のTypeScript型定義とZodスキーマを設計する。
 
 #### 使用エージェント
 
-- **エージェント**: @schema-def
+- **エージェント**: .claude/agents/schema-def.md
 - **選定理由**: スキーマ定義・型設計に特化したエージェントであり、複雑なunion型の設計に最適
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -447,8 +447,8 @@ RAG関連型のTypeScript型定義とZodスキーマを設計する。
 
 | スキル名             | 活用方法                                                  | 選定理由                                         |
 | -------------------- | --------------------------------------------------------- | ------------------------------------------------ |
-| zod-validation       | union型のZodスキーマ設計（z.union、z.discriminatedUnion） | ChunkingStrategy、EmbeddingModelのバリデーション |
-| type-safety-patterns | discriminated union型の設計                               | 型安全な戦略・モデル切り替え                     |
+| .claude/skills/zod-validation/SKILL.md       | union型のZodスキーマ設計（z.union、z.discriminatedUnion） | ChunkingStrategy、EmbeddingModelのバリデーション |
+| .claude/skills/type-safety-patterns/SKILL.md | discriminated union型の設計                               | 型安全な戦略・モデル切り替え                     |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -501,7 +501,7 @@ Phase 0で定義したハイブリッド検索要件に基づき、検索クエ�
 
 #### 使用エージェント
 
-- **エージェント**: @schema-def
+- **エージェント**: .claude/agents/schema-def.md
 - **選定理由**: スキーマ定義・型設計に特化したエージェントであり、複雑な検索クエリ型の設計に最適
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -509,8 +509,8 @@ Phase 0で定義したハイブリッド検索要件に基づき、検索クエ�
 
 | スキル名             | 活用方法                                              | 選定理由                                        |
 | -------------------- | ----------------------------------------------------- | ----------------------------------------------- |
-| zod-validation       | オプショナルフィールドのZodスキーマ設計（z.optional） | SearchFilters、SearchResultMetadataの柔軟な設計 |
-| type-safety-patterns | union型、オプショナル型の設計                         | 型安全な検索クエリ構築                          |
+| .claude/skills/zod-validation/SKILL.md       | オプショナルフィールドのZodスキーマ設計（z.optional） | SearchFilters、SearchResultMetadataの柔軟な設計 |
+| .claude/skills/type-safety-patterns/SKILL.md | union型、オプショナル型の設計                         | 型安全な検索クエリ構築                          |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -554,37 +554,37 @@ Phase 0で定義したハイブリッド検索要件に基づき、検索クエ�
 
 | エージェント    | レビュー観点         | 選定理由                                                                    |
 | --------------- | -------------------- | --------------------------------------------------------------------------- |
-| @arch-police    | アーキテクチャ整合性 | クリーンアーキテクチャのレイヤー違反、依存関係逆転の原則（DIP）の検証に特化 |
-| @domain-modeler | ドメインモデル妥当性 | ユビキタス言語の適切な使用、エンティティ・値オブジェクトの境界の検証に特化  |
-| @sec-auditor    | セキュリティ設計     | Zodスキーマによる入力検証の妥当性、XSS/インジェクション対策の確認に特化     |
-| @schema-def     | 型定義品質           | TypeScript型とZodスキーマの一貫性、型推論の正しさの検証に特化               |
+| .claude/agents/arch-police.md    | アーキテクチャ整合性 | クリーンアーキテクチャのレイヤー違反、依存関係逆転の原則（DIP）の検証に特化 |
+| .claude/agents/domain-modeler.md | ドメインモデル妥当性 | ユビキタス言語の適切な使用、エンティティ・値オブジェクトの境界の検証に特化  |
+| .claude/agents/sec-auditor.md    | セキュリティ設計     | Zodスキーマによる入力検証の妥当性、XSS/インジェクション対策の確認に特化     |
+| .claude/agents/schema-def.md     | 型定義品質           | TypeScript型とZodスキーマの一貫性、型推論の正しさの検証に特化               |
 
 - **参照**: `.claude/agents/agent_list.md`
 
 #### レビューチェックリスト
 
-**アーキテクチャ整合性** (@arch-police)
+**アーキテクチャ整合性** (.claude/agents/arch-police.md)
 
 - [ ] クリーンアーキテクチャのレイヤー違反がないか
 - [ ] 依存関係逆転の原則（DIP）が守られているか
 - [ ] 既存設計との整合性があるか
 - [ ] packages/shared/がプレゼンテーション層に依存していないか
 
-**ドメインモデル妥当性** (@domain-modeler)
+**ドメインモデル妥当性** (.claude/agents/domain-modeler.md)
 
 - [ ] ユビキタス言語が適切に使用されているか（変換、チャンク、埋め込み等）
 - [ ] エンティティ・値オブジェクトの境界が適切か
 - [ ] ドメインルールが正しく表現されているか（バージョン管理、論理削除等）
 - [ ] bounded contextの境界が明確か（変換ドメイン、RAGドメイン、検索ドメイン）
 
-**セキュリティ設計** (@sec-auditor)
+**セキュリティ設計** (.claude/agents/sec-auditor.md)
 
 - [ ] Zodスキーマによる入力検証が適切か
 - [ ] XSS対策（文字列フィールドのサニタイズ）が考慮されているか
 - [ ] インジェクション対策（特殊文字のエスケープ）が考慮されているか
 - [ ] 機密情報（認証トークン等）の取り扱いが適切か
 
-**型定義品質** (@schema-def)
+**型定義品質** (.claude/agents/schema-def.md)
 
 - [ ] TypeScript型とZodスキーマの一貫性があるか
 - [ ] z.infer<>による型推論が正しく機能するか
@@ -647,7 +647,7 @@ conversion.schema.tsのバリデーションテストを作成する。
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: ユニットテストの設計・実装に特化したエージェントであり、Zodスキーマのバリデーションテストに最適
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -655,9 +655,9 @@ conversion.schema.tsのバリデーションテストを作成する。
 
 | スキル名                | 活用方法                                       | 選定理由                    |
 | ----------------------- | ---------------------------------------------- | --------------------------- |
-| boundary-value-analysis | 境界値のテスト設計（空文字列、最大長、null等） | エッジケースの検証          |
-| test-data-management    | 有効/無効データのセット管理                    | テストデータの体系的管理    |
-| tdd-principles          | Red→Green→Refactorサイクルの遵守               | TDDのベストプラクティス適用 |
+| .claude/skills/boundary-value-analysis/SKILL.md | 境界値のテスト設計（空文字列、最大長、null等） | エッジケースの検証          |
+| .claude/skills/test-data-management/SKILL.md    | 有効/無効データのセット管理                    | テストデータの体系的管理    |
+| .claude/skills/tdd-principles/SKILL.md          | Red→Green→Refactorサイクルの遵守               | TDDのベストプラクティス適用 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -716,7 +716,7 @@ file-info.schema.tsのバリデーションテストを作成する。
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: ユニットテストの設計・実装に特化したエージェント
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -724,8 +724,8 @@ file-info.schema.tsのバリデーションテストを作成する。
 
 | スキル名                | 活用方法                                    | 選定理由                 |
 | ----------------------- | ------------------------------------------- | ------------------------ |
-| boundary-value-analysis | ファイルサイズの境界値テスト（0、最大値等） | エッジケースの検証       |
-| test-data-management    | MIMEタイプの有効/無効データセット管理       | テストデータの体系的管理 |
+| .claude/skills/boundary-value-analysis/SKILL.md | ファイルサイズの境界値テスト（0、最大値等） | エッジケースの検証       |
+| .claude/skills/test-data-management/SKILL.md    | MIMEタイプの有効/無効データセット管理       | テストデータの体系的管理 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -783,7 +783,7 @@ chunk.schema.tsのバリデーションテストを作成する。
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: ユニットテストの設計・実装に特化したエージェント
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -791,8 +791,8 @@ chunk.schema.tsのバリデーションテストを作成する。
 
 | スキル名                | 活用方法                                    | 選定理由              |
 | ----------------------- | ------------------------------------------- | --------------------- |
-| boundary-value-analysis | トークン数の境界値テスト（0、最大値等）     | エッジケースの検証    |
-| test-data-management    | チャンキング戦略の有効/無効データセット管理 | union型の網羅的テスト |
+| .claude/skills/boundary-value-analysis/SKILL.md | トークン数の境界値テスト（0、最大値等）     | エッジケースの検証    |
+| .claude/skills/test-data-management/SKILL.md    | チャンキング戦略の有効/無効データセット管理 | union型の網羅的テスト |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -850,7 +850,7 @@ embedding.schema.tsのバリデーションテストを作成する。
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: ユニットテストの設計・実装に特化したエージェント
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -858,8 +858,8 @@ embedding.schema.tsのバリデーションテストを作成する。
 
 | スキル名                | 活用方法                                  | 選定理由              |
 | ----------------------- | ----------------------------------------- | --------------------- |
-| boundary-value-analysis | ベクトル次元数の境界値テスト              | エッジケースの検証    |
-| test-data-management    | EmbeddingModelの有効/無効データセット管理 | union型の網羅的テスト |
+| .claude/skills/boundary-value-analysis/SKILL.md | ベクトル次元数の境界値テスト              | エッジケースの検証    |
+| .claude/skills/test-data-management/SKILL.md    | EmbeddingModelの有効/無効データセット管理 | union型の網羅的テスト |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -917,7 +917,7 @@ search.schema.tsのバリデーションテストを作成する。
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: ユニットテストの設計・実装に特化したエージェント
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -925,8 +925,8 @@ search.schema.tsのバリデーションテストを作成する。
 
 | スキル名                | 活用方法                              | 選定理由              |
 | ----------------------- | ------------------------------------- | --------------------- |
-| boundary-value-analysis | limitの境界値テスト（0、最大値等）    | エッジケースの検証    |
-| test-data-management    | SearchModeの有効/無効データセット管理 | union型の網羅的テスト |
+| .claude/skills/boundary-value-analysis/SKILL.md | limitの境界値テスト（0、最大値等）    | エッジケースの検証    |
+| .claude/skills/test-data-management/SKILL.md    | SearchModeの有効/無効データセット管理 | union型の網羅的テスト |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -987,7 +987,7 @@ conversion.ts、conversion.schema.tsを実装する。
 
 #### 使用エージェント
 
-- **エージェント**: @schema-def
+- **エージェント**: .claude/agents/schema-def.md
 - **選定理由**: スキーマ定義の実装に特化したエージェント
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -995,8 +995,8 @@ conversion.ts、conversion.schema.tsを実装する。
 
 | スキル名             | 活用方法                                            | 選定理由                          |
 | -------------------- | --------------------------------------------------- | --------------------------------- |
-| zod-validation       | Zodスキーマの実装（z.object、z.string、z.number等） | バリデーションの実装              |
-| type-safety-patterns | z.infer<>による型推論の活用                         | TypeScript型とZodスキーマの一貫性 |
+| .claude/skills/zod-validation/SKILL.md       | Zodスキーマの実装（z.object、z.string、z.number等） | バリデーションの実装              |
+| .claude/skills/type-safety-patterns/SKILL.md | z.infer<>による型推論の活用                         | TypeScript型とZodスキーマの一貫性 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1055,7 +1055,7 @@ file-info.ts、file-info.schema.tsを実装する。
 
 #### 使用エージェント
 
-- **エージェント**: @schema-def
+- **エージェント**: .claude/agents/schema-def.md
 - **選定理由**: スキーマ定義の実装に特化したエージェント
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1063,8 +1063,8 @@ file-info.ts、file-info.schema.tsを実装する。
 
 | スキル名             | 活用方法                    | 選定理由                          |
 | -------------------- | --------------------------- | --------------------------------- |
-| zod-validation       | Zodスキーマの実装           | バリデーションの実装              |
-| type-safety-patterns | z.infer<>による型推論の活用 | TypeScript型とZodスキーマの一貫性 |
+| .claude/skills/zod-validation/SKILL.md       | Zodスキーマの実装           | バリデーションの実装              |
+| .claude/skills/type-safety-patterns/SKILL.md | z.infer<>による型推論の活用 | TypeScript型とZodスキーマの一貫性 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1122,7 +1122,7 @@ chunk.ts、chunk.schema.tsを実装する。
 
 #### 使用エージェント
 
-- **エージェント**: @schema-def
+- **エージェント**: .claude/agents/schema-def.md
 - **選定理由**: スキーマ定義の実装に特化したエージェント
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1130,8 +1130,8 @@ chunk.ts、chunk.schema.tsを実装する。
 
 | スキル名             | 活用方法                                       | 選定理由                         |
 | -------------------- | ---------------------------------------------- | -------------------------------- |
-| zod-validation       | union型のZodスキーマ実装（z.union、z.literal） | ChunkingStrategyのバリデーション |
-| type-safety-patterns | discriminated union型の実装                    | 型安全な戦略切り替え             |
+| .claude/skills/zod-validation/SKILL.md       | union型のZodスキーマ実装（z.union、z.literal） | ChunkingStrategyのバリデーション |
+| .claude/skills/type-safety-patterns/SKILL.md | discriminated union型の実装                    | 型安全な戦略切り替え             |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1190,7 +1190,7 @@ embedding.ts、embedding.schema.tsを実装する。
 
 #### 使用エージェント
 
-- **エージェント**: @schema-def
+- **エージェント**: .claude/agents/schema-def.md
 - **選定理由**: スキーマ定義の実装に特化したエージェント
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1198,8 +1198,8 @@ embedding.ts、embedding.schema.tsを実装する。
 
 | スキル名             | 活用方法                                       | 選定理由                       |
 | -------------------- | ---------------------------------------------- | ------------------------------ |
-| zod-validation       | union型のZodスキーマ実装（z.union、z.literal） | EmbeddingModelのバリデーション |
-| type-safety-patterns | union型の実装                                  | 型安全なモデル切り替え         |
+| .claude/skills/zod-validation/SKILL.md       | union型のZodスキーマ実装（z.union、z.literal） | EmbeddingModelのバリデーション |
+| .claude/skills/type-safety-patterns/SKILL.md | union型の実装                                  | 型安全なモデル切り替え         |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1258,7 +1258,7 @@ search.ts、search.schema.tsを実装する。
 
 #### 使用エージェント
 
-- **エージェント**: @schema-def
+- **エージェント**: .claude/agents/schema-def.md
 - **選定理由**: スキーマ定義の実装に特化したエージェント
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1266,8 +1266,8 @@ search.ts、search.schema.tsを実装する。
 
 | スキル名             | 活用方法                                               | 選定理由                                  |
 | -------------------- | ------------------------------------------------------ | ----------------------------------------- |
-| zod-validation       | union型、オプショナル型のZodスキーマ実装（z.optional） | SearchMode、SearchFiltersのバリデーション |
-| type-safety-patterns | union型、オプショナル型の実装                          | 型安全な検索クエリ構築                    |
+| .claude/skills/zod-validation/SKILL.md       | union型、オプショナル型のZodスキーマ実装（z.optional） | SearchMode、SearchFiltersのバリデーション |
+| .claude/skills/type-safety-patterns/SKILL.md | union型、オプショナル型の実装                          | 型安全な検索クエリ構築                    |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1328,7 +1328,7 @@ z.infer<>による型推論を最大化し、型安全性を向上させる。
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: コード品質改善、リファクタリングに特化したエージェント
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1336,8 +1336,8 @@ z.infer<>による型推論を最大化し、型安全性を向上させる。
 
 | スキル名               | 活用方法                      | 選定理由                           |
 | ---------------------- | ----------------------------- | ---------------------------------- |
-| type-safety-patterns   | z.infer<>による型推論の最大化 | 型定義とバリデーションの一貫性確保 |
-| refactoring-techniques | 動作を変えずに内部構造を改善  | 安全なリファクタリング             |
+| .claude/skills/type-safety-patterns/SKILL.md   | z.infer<>による型推論の最大化 | 型定義とバリデーションの一貫性確保 |
+| .claude/skills/refactoring-techniques/SKILL.md | 動作を変えずに内部構造を改善  | 安全なリファクタリング             |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1394,7 +1394,7 @@ JSDocコメント追加、命名改善、重複コード削減を行う。
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: コード品質改善、リファクタリングに特化したエージェント
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1402,8 +1402,8 @@ JSDocコメント追加、命名改善、重複コード削減を行う。
 
 | スキル名               | 活用方法               | 選定理由             |
 | ---------------------- | ---------------------- | -------------------- |
-| clean-code-practices   | 命名改善、コメント追加 | 可読性・保守性の向上 |
-| refactoring-techniques | 重複コード削減         | DRY原則の適用        |
+| .claude/skills/clean-code-practices/SKILL.md   | 命名改善、コメント追加 | 可読性・保守性の向上 |
+| .claude/skills/refactoring-techniques/SKILL.md | 重複コード削減         | DRY原則の適用        |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1464,7 +1464,7 @@ pnpm --filter @repo/shared test:run
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: ユニットテストの実行・検証に特化したエージェント
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1472,7 +1472,7 @@ pnpm --filter @repo/shared test:run
 
 | スキル名             | 活用方法                           | 選定理由           |
 | -------------------- | ---------------------------------- | ------------------ |
-| test-data-management | テストデータの管理、カバレッジ分析 | テスト網羅性の確認 |
+| .claude/skills/test-data-management/SKILL.md | テストデータの管理、カバレッジ分析 | テスト網羅性の確認 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1521,7 +1521,7 @@ TypeScript型エラー、ESLint警告の解消を行う。
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: コード品質チェックに特化したエージェント
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1529,7 +1529,7 @@ TypeScript型エラー、ESLint警告の解消を行う。
 
 | スキル名             | 活用方法       | 選定理由         |
 | -------------------- | -------------- | ---------------- |
-| clean-code-practices | Lint警告の解消 | コード品質の確保 |
+| .claude/skills/clean-code-practices/SKILL.md | Lint警告の解消 | コード品質の確保 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1578,7 +1578,7 @@ Zodスキーマの入力検証、XSS/インジェクション対策の確認を�
 
 #### 使用エージェント
 
-- **エージェント**: @sec-auditor
+- **エージェント**: .claude/agents/sec-auditor.md
 - **選定理由**: セキュリティ監査に特化したエージェント
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1586,7 +1586,7 @@ Zodスキーマの入力検証、XSS/インジェクション対策の確認を�
 
 | スキル名                      | 活用方法                      | 選定理由             |
 | ----------------------------- | ----------------------------- | -------------------- |
-| security-configuration-review | Zodスキーマのセキュリティ検証 | 入力検証の妥当性確認 |
+| .claude/skills/security-configuration-review/SKILL.md | Zodスキーマのセキュリティ検証 | 入力検証の妥当性確認 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1659,36 +1659,36 @@ Phase 6の自動検証だけでは検出できない設計判断やベストプ�
 
 | エージェント  | レビュー観点       | 選定理由                                                                         |
 | ------------- | ------------------ | -------------------------------------------------------------------------------- |
-| @code-quality | コード品質         | コーディング規約への準拠、可読性・保守性の確保の検証に特化                       |
-| @arch-police  | アーキテクチャ遵守 | 実装がアーキテクチャ設計に従っているか、レイヤー間の依存関係が適切かの検証に特化 |
-| @unit-tester  | テスト品質         | テストカバレッジ、テストケース設計、境界値・異常系テストの検証に特化             |
-| @sec-auditor  | セキュリティ       | OWASP Top 10への対応、入力検証・サニタイズの実装の検証に特化                     |
+| .claude/agents/code-quality.md | コード品質         | コーディング規約への準拠、可読性・保守性の確保の検証に特化                       |
+| .claude/agents/arch-police.md  | アーキテクチャ遵守 | 実装がアーキテクチャ設計に従っているか、レイヤー間の依存関係が適切かの検証に特化 |
+| .claude/agents/unit-tester.md  | テスト品質         | テストカバレッジ、テストケース設計、境界値・異常系テストの検証に特化             |
+| .claude/agents/sec-auditor.md  | セキュリティ       | OWASP Top 10への対応、入力検証・サニタイズの実装の検証に特化                     |
 
 - **参照**: `.claude/agents/agent_list.md`
 
 #### レビューチェックリスト
 
-**コード品質** (@code-quality)
+**コード品質** (.claude/agents/code-quality.md)
 
 - [ ] コーディング規約への準拠
 - [ ] 可読性・保守性の確保
 - [ ] 適切なエラーハンドリング（該当する場合）
 - [ ] 過度な複雑性の有無
 
-**アーキテクチャ遵守** (@arch-police)
+**アーキテクチャ遵守** (.claude/agents/arch-police.md)
 
 - [ ] 実装がアーキテクチャ設計に従っているか
 - [ ] レイヤー間の依存関係が適切か（packages/shared/がプレゼンテーション層に依存していないか）
 - [ ] SOLID原則への準拠
 
-**テスト品質** (@unit-tester)
+**テスト品質** (.claude/agents/unit-tester.md)
 
 - [ ] テストカバレッジが十分か（80%以上推奨）
 - [ ] テストケースが適切に設計されているか
 - [ ] 境界値・異常系のテストがあるか
 - [ ] テストの可読性・保守性
 
-**セキュリティ** (@sec-auditor)
+**セキュリティ** (.claude/agents/sec-auditor.md)
 
 - [ ] OWASP Top 10への対応（該当する場合）
 - [ ] 入力検証・サニタイズの実装（Zodスキーマによる検証）
@@ -1707,7 +1707,7 @@ Phase 6の自動検証だけでは検出できない設計判断やベストプ�
 ##### 指示書作成フロー
 
 1. 各担当エージェントが課題に対する指示書を作成
-2. @spec-writerが指示書の品質を検証
+2. .claude/agents/spec-writer.mdが指示書の品質を検証
 3. 品質基準を満たさない場合は担当エージェントが修正
 
 ##### 指示書出力先
@@ -1770,7 +1770,7 @@ Phase 6の自動検証だけでは検出できない設計判断やベストプ�
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: テストケースの設計・実行に特化したエージェント
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1849,7 +1849,7 @@ Phase 6の自動検証だけでは検出できない設計判断やベストプ�
 
 ##### 使用エージェント
 
-- **エージェント**: @spec-writer
+- **エージェント**: .claude/agents/spec-writer.md
 - **選定理由**: 技術仕様書の作成・更新に特化したエージェント
 - **参照**: `.claude/agents/agent_list.md`
 

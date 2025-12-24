@@ -20,9 +20,9 @@
 
 | エージェント | レビュー観点          | 担当領域                                       |
 | ------------ | --------------------- | ---------------------------------------------- |
-| @arch-police | アーキテクチャ整合性  | Clean Architecture遵守、依存関係逆転の原則確認 |
-| @schema-def  | 型安全性・Zodスキーマ | 型の一貫性、Zodスキーマの厳密性確認            |
-| @logic-dev   | ロジック正確性        | ベクトル操作ロジックの数学的正確性確認         |
+| .claude/agents/arch-police.md | アーキテクチャ整合性  | Clean Architecture遵守、依存関係逆転の原則確認 |
+| .claude/agents/schema-def.md  | 型安全性・Zodスキーマ | 型の一貫性、Zodスキーマの厳密性確認            |
+| .claude/agents/logic-dev.md   | ロジック正確性        | ベクトル操作ロジックの数学的正確性確認         |
 
 ### 1.3 レビュー対象ドキュメント
 
@@ -38,7 +38,7 @@
 
 ---
 
-## 2. @arch-police によるレビュー（アーキテクチャ整合性）
+## 2. .claude/agents/arch-police.md によるレビュー（アーキテクチャ整合性）
 
 ### 2.1 レビューチェックリスト
 
@@ -223,7 +223,7 @@ utils.ts (ランタイムコード: ユーティリティ関数)
 
 ---
 
-### 2.3 @arch-police レビュー総評
+### 2.3 .claude/agents/arch-police.md レビュー総評
 
 **判定**: **PASS**
 
@@ -238,7 +238,7 @@ utils.ts (ランタイムコード: ユーティリティ関数)
 
 ---
 
-## 3. @schema-def によるレビュー（型安全性・Zodスキーマ）
+## 3. .claude/agents/schema-def.md によるレビュー（型安全性・Zodスキーマ）
 
 ### 3.1 レビューチェックリスト
 
@@ -489,7 +489,7 @@ task-step01-02-schemas-design.md 8.2節（1160-1173行）のエラーメッセ�
 
 ---
 
-### 3.3 @schema-def レビュー総評
+### 3.3 .claude/agents/schema-def.md レビュー総評
 
 **判定**: **PASS**
 
@@ -505,7 +505,7 @@ task-step01-02-schemas-design.md 8.2節（1160-1173行）のエラーメッセ�
 
 ---
 
-## 4. @logic-dev によるレビュー（ロジック正確性）
+## 4. .claude/agents/logic-dev.md によるレビュー（ロジック正確性）
 
 ### 4.1 レビューチェックリスト
 
@@ -833,7 +833,7 @@ totalTokens = Math.ceil(asciiTokens + nonAsciiTokens);
 
 ---
 
-### 4.3 @logic-dev レビュー総評
+### 4.3 .claude/agents/logic-dev.md レビュー総評
 
 **判定**: **PASS**
 
@@ -867,9 +867,9 @@ totalTokens = Math.ceil(asciiTokens + nonAsciiTokens);
 
 **3つのエージェント観点すべてでPASS判定**:
 
-- **@arch-police**: アーキテクチャ整合性、依存関係、レイヤー分離がすべて適切 ✅
-- **@schema-def**: 型安全性、Zodスキーマの厳密性、エラーメッセージの品質がすべて優秀 ✅
-- **@logic-dev**: ベクトル操作、Base64変換、トークン推定のロジックがすべて数学的に正確 ✅
+- **.claude/agents/arch-police.md**: アーキテクチャ整合性、依存関係、レイヤー分離がすべて適切 ✅
+- **.claude/agents/schema-def.md**: 型安全性、Zodスキーマの厳密性、エラーメッセージの品質がすべて優秀 ✅
+- **.claude/agents/logic-dev.md**: ベクトル操作、Base64変換、トークン推定のロジックがすべて数学的に正確 ✅
 
 **設計の強み**:
 
@@ -901,14 +901,14 @@ totalTokens = Math.ceil(asciiTokens + nonAsciiTokens);
 
 ## 6. チェックリスト完了確認
 
-### 6.1 @arch-police チェックリスト
+### 6.1 .claude/agents/arch-police.md チェックリスト
 
 - [x] Branded Typesの適切な活用（ChunkId、EmbeddingId）
 - [x] CONV-03-01の基本型（Result、Timestamped、WithMetadata）との整合性
 - [x] レイヤー違反の不在（外部依存がない）
 - [x] 依存関係逆転の原則（DIP）の遵守
 
-### 6.2 @schema-def チェックリスト
+### 6.2 .claude/agents/schema-def.md チェックリスト
 
 - [x] 全型にreadonly修飾子が適用されている
 - [x] 列挙型が適切に定義されている（ChunkingStrategy、EmbeddingProvider）
@@ -916,7 +916,7 @@ totalTokens = Math.ceil(asciiTokens + nonAsciiTokens);
 - [x] refineによる複合条件バリデーションが適切
 - [x] エラーメッセージがユーザーフレンドリー
 
-### 6.3 @logic-dev チェックリスト
+### 6.3 .claude/agents/logic-dev.md チェックリスト
 
 - [x] ベクトル正規化ロジックが数学的に正しい（L2正規化）
 - [x] コサイン類似度・ユークリッド距離の計算式が正確
@@ -937,7 +937,7 @@ totalTokens = Math.ceil(asciiTokens + nonAsciiTokens);
 | 項目         | 内容                                                            |
 | ------------ | --------------------------------------------------------------- |
 | 実施日       | 2025-01-19                                                      |
-| レビュワー   | @arch-police、@schema-def、@logic-dev（3エージェント）          |
+| レビュワー   | .claude/agents/arch-police.md、.claude/agents/schema-def.md、.claude/agents/logic-dev.md（3エージェント）          |
 | レビュー時間 | 約40分（ドキュメント読込15分 + レビュー実施20分 + 結果作成5分） |
 | レビュー対象 | 3ドキュメント（4137行） + 3参照ファイル（547行）                |
 | 総合判定     | **PASS**                                                        |

@@ -292,7 +292,7 @@ AuthGuardコンポーネントの動作要件を定義する。
 
 #### 使用エージェント
 
-- **エージェント**: `@req-analyst`
+- **エージェント**: `.claude/agents/req-analyst.md`
 - **選定理由**: 要求工学の専門家として、既存実装を踏まえた要件整理ができる
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -338,7 +338,7 @@ OAuth認証（Google/GitHub/Discord）のバックエンドは実装済み。フ
 
 #### 使用エージェント
 
-- **エージェント**: `@ui-designer`
+- **エージェント**: `.claude/agents/ui-designer.md`
 - **選定理由**: UI/UXデザインの専門家として、既存デザインシステムとの整合性を保てる
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -386,7 +386,7 @@ AuthGuardコンポーネントの設計
 
 #### 使用エージェント
 
-- **エージェント**: `@router-dev`
+- **エージェント**: `.claude/agents/router-dev.md`
 - **選定理由**: 画面遷移・ガードパターンの設計専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -467,7 +467,7 @@ const useAuthGuard = () => {
 
 #### 使用エージェント
 
-- **エージェント**: `@ui-designer`
+- **エージェント**: `.claude/agents/ui-designer.md`
 - **選定理由**: UIコンポーネント設計の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -537,26 +537,26 @@ const AuthView: React.FC<AuthViewProps> = ({ onLoginSuccess, onLoginError }) => 
 
 | エージェント         | レビュー観点         | 選定理由               |
 | -------------------- | -------------------- | ---------------------- |
-| `@arch-police`       | アーキテクチャ整合性 | 既存設計との整合性確認 |
-| `@frontend-tester`   | テスタビリティ       | テスト容易性の確認     |
-| `@electron-security` | Electronセキュリティ | IPC連携の安全性確認    |
+| `.claude/agents/arch-police.md`       | アーキテクチャ整合性 | 既存設計との整合性確認 |
+| `.claude/agents/frontend-tester.md`   | テスタビリティ       | テスト容易性の確認     |
+| `.claude/agents/electron-security.md` | Electronセキュリティ | IPC連携の安全性確認    |
 
 - **参照**: `.claude/agents/agent_list.md`
 
 #### レビューチェックリスト
 
-**アーキテクチャ整合性** (`@arch-police`)
+**アーキテクチャ整合性** (`.claude/agents/arch-police.md`)
 
 - [ ] 既存authSliceとの連携が適切か
 - [ ] AtomicDesignパターンに準拠しているか
 - [ ] 状態管理の責務分離が適切か
 
-**テスタビリティ** (`@frontend-tester`)
+**テスタビリティ** (`.claude/agents/frontend-tester.md`)
 
 - [ ] コンポーネントがテスト可能な設計か
 - [ ] モック可能なインターフェースか
 
-**Electronセキュリティ** (`@electron-security`)
+**Electronセキュリティ** (`.claude/agents/electron-security.md`)
 
 - [ ] IPC連携が安全か
 - [ ] 認証状態の漏洩リスクがないか
@@ -593,7 +593,7 @@ AuthGuardのテスト作成
 
 #### 使用エージェント
 
-- **エージェント**: `@frontend-tester`
+- **エージェント**: `.claude/agents/frontend-tester.md`
 - **選定理由**: React Testing Libraryを活用したテスト設計の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -643,7 +643,7 @@ AuthViewのテスト作成
 
 #### 使用エージェント
 
-- **エージェント**: `@frontend-tester`
+- **エージェント**: `.claude/agents/frontend-tester.md`
 - **選定理由**: React Testing Libraryを活用したテスト設計の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -695,7 +695,7 @@ AuthGuardコンポーネントの実装
 
 #### 使用エージェント
 
-- **エージェント**: `@router-dev`
+- **エージェント**: `.claude/agents/router-dev.md`
 - **選定理由**: 画面遷移・ガードパターンの実装専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -745,7 +745,7 @@ AuthViewコンポーネントの実装
 
 #### 使用エージェント
 
-- **エージェント**: `@ui-designer`
+- **エージェント**: `.claude/agents/ui-designer.md`
 - **選定理由**: UIコンポーネント実装の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -795,7 +795,7 @@ AuthGuardをApp.tsxに統合し、認証フローを完成させる。
 
 #### 使用エージェント
 
-- **エージェント**: `@router-dev`
+- **エージェント**: `.claude/agents/router-dev.md`
 - **選定理由**: 画面遷移・アプリ構造の統合専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -865,7 +865,7 @@ const App: React.FC = () => {
 
 #### 使用エージェント
 
-- **エージェント**: `@code-quality`
+- **エージェント**: `.claude/agents/code-quality.md`
 - **選定理由**: コード品質改善の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -898,7 +898,7 @@ const App: React.FC = () => {
 
 #### 使用エージェント
 
-- **エージェント**: `@unit-tester`
+- **エージェント**: `.claude/agents/unit-tester.md`
 - **選定理由**: テスト実行・品質検証の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -928,10 +928,10 @@ const App: React.FC = () => {
 
 | エージェント         | レビュー観点         | 選定理由                     |
 | -------------------- | -------------------- | ---------------------------- |
-| `@code-quality`      | コード品質           | コーディング規約・可読性確認 |
-| `@arch-police`       | アーキテクチャ遵守   | 既存設計との整合性確認       |
-| `@frontend-tester`   | テスト品質           | テストカバレッジ・設計確認   |
-| `@electron-security` | Electronセキュリティ | IPC連携の安全性確認          |
+| `.claude/agents/code-quality.md`      | コード品質           | コーディング規約・可読性確認 |
+| `.claude/agents/arch-police.md`       | アーキテクチャ遵守   | 既存設計との整合性確認       |
+| `.claude/agents/frontend-tester.md`   | テスト品質           | テストカバレッジ・設計確認   |
+| `.claude/agents/electron-security.md` | Electronセキュリティ | IPC連携の安全性確認          |
 
 #### 完了条件
 

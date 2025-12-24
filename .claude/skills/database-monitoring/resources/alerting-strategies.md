@@ -230,7 +230,7 @@ async function sendToPagerDuty(alert) {
       payload: {
         summary: alert.title,
         severity: alert.severity,
-        source: "database-monitoring",
+        source: ".claude/skills/database-monitoring/SKILL.md",
         custom_details: alert.details,
       },
     }),

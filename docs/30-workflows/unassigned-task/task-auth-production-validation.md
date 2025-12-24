@@ -170,7 +170,7 @@ pnpm run package
 
 #### 使用エージェント
 
-- **エージェント**: @electron-devops
+- **エージェント**: .claude/agents/electron-devops.md
 - **選定理由**: Electronビルド・パッケージングの専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -178,7 +178,7 @@ pnpm run package
 
 | スキル名           | 活用方法                     |
 | ------------------ | ---------------------------- |
-| electron-packaging | electron-builderによるビルド |
+| .claude/skills/electron-packaging/SKILL.md | electron-builderによるビルド |
 
 - **参照**: `.claude/skills/skill_list.md`
 

@@ -1,414 +1,122 @@
 ---
-name: dependency-auditing
+name: .claude/skills/dependency-auditing/SKILL.md
 description: |
-    セキュリティ脆弱性の検出、評価、対応戦略を専門とするスキル。
-    CVE/GHSA識別子の理解、重大度評価（CVSS）、修正優先度の決定方法論を提供します。
-    専門分野:
-    - 脆弱性検出: pnpm audit、pnpm audit等のツール活用
-    - 重大度評価: CVSSスコアに基づくリスク分類
-    - 修正優先度決定: ビジネス影響と技術的影響の評価
-    - パッチ戦略: 安全なアップグレードパスの特定
-    使用タイミング:
-    - 依存関係のセキュリティ監査を実施する時
-    - 脆弱性レポートを評価する時
-    - セキュリティパッチの適用優先度を決定する時
-    - CI/CDパイプラインにセキュリティチェックを統合する時
-    Use proactively when conducting security audits,
-    evaluating vulnerability reports, or determining patch priorities.
-
+  セキュリティ脆弱性の検出、評価、対応戦略を専門とするスキル。
+  CVE/GHSA識別子の理解、重大度評価（CVSS）、修正優先度の決定方法論を提供します。
+  専門分野:
+  
+  📖 参照書籍:
+  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/dependency-auditing/resources/ci-cd-integration.md`: CI/CDパイプラインへのセキュリティスキャン統合パターン
-  - `.claude/skills/dependency-auditing/resources/cvss-scoring-guide.md`: CVSS重大度評価とリスク分類の詳細ガイド
-  - `.claude/skills/dependency-auditing/resources/remediation-strategies.md`: 脆弱性修正とパッチ適用の戦略的アプローチ
-  - `.claude/skills/dependency-auditing/resources/vulnerability-detection.md`: 脆弱性検出ツールの活用方法と比較
-  - `.claude/skills/dependency-auditing/templates/vulnerability-assessment-template.md`: 脆弱性評価の標準化されたレポートテンプレート
-  - `.claude/skills/dependency-auditing/scripts/security-audit.mjs`: 包括的なセキュリティ監査を実行する自動化スクリプト
-
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/ci-cd-integration.md`: ci-cd-integration の詳細ガイド
+  - `resources/cvss-scoring-guide.md`: cvss-scoring-guide のガイド
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/remediation-strategies.md`: remediation-strategies の詳細ガイド
+  - `resources/vulnerability-detection.md`: vulnerability-detection の詳細ガイド
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/security-audit.mjs`: セキュリティを監査するスクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/vulnerability-assessment-template.md`: vulnerability-assessment-template のテンプレート
+  
+  Use proactively when handling dependency auditing tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "The Pragmatic Programmer"
+    author: "Andrew Hunt, David Thomas"
+    concepts:
+      - "実践的改善"
+      - "品質維持"
 ---
 
 # Dependency Auditing
 
 ## 概要
 
-このスキルは、依存関係のセキュリティ脆弱性を検出、評価し、
-適切な対応戦略を策定するための方法論を提供します。
+セキュリティ脆弱性の検出、評価、対応戦略を専門とするスキル。
+CVE/GHSA識別子の理解、重大度評価（CVSS）、修正優先度の決定方法論を提供します。
+専門分野:
 
-セキュリティ監査は現代のソフトウェア開発において不可欠であり、
-自動化されたツールと人間の判断を組み合わせた包括的なアプローチが必要です。
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-**主要な価値**:
-
-- 脆弱性の早期発見による被害防止
-- リスクベースの優先順位付けによる効率的な対応
-- 継続的なセキュリティ監視体制の構築
-
-**対象ユーザー**:
-
-- 依存関係を管理するエージェント（@dep-mgr）
-- セキュリティを担当するエンジニア
-- DevSecOps チーム
-
-## リソース構造
-
-```
-dependency-auditing/
-├── SKILL.md                                    # 本ファイル（概要とワークフロー）
-├── resources/
-│   ├── vulnerability-detection.md              # 脆弱性検出方法
-│   ├── cvss-scoring-guide.md                   # CVSS重大度評価ガイド
-│   ├── remediation-strategies.md               # 修正戦略
-│   └── ci-cd-integration.md                    # CI/CD統合パターン
-├── scripts/
-│   └── security-audit.mjs                      # セキュリティ監査スクリプト
-└── templates/
-    └── vulnerability-assessment-template.md    # 脆弱性評価テンプレート
-```
-
-## コマンドリファレンス
-
-このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
-
-### リソース読み取り
-
-```bash
-# 脆弱性検出方法
-cat .claude/skills/dependency-auditing/resources/vulnerability-detection.md
-
-# CVSS重大度評価ガイド
-cat .claude/skills/dependency-auditing/resources/cvss-scoring-guide.md
-
-# 修正戦略
-cat .claude/skills/dependency-auditing/resources/remediation-strategies.md
-
-# CI/CD統合パターン
-cat .claude/skills/dependency-auditing/resources/ci-cd-integration.md
-```
-
-### スクリプト実行
-
-```bash
-# セキュリティ監査スクリプト
-node .claude/skills/dependency-auditing/scripts/security-audit.mjs [--fix] [--json]
-
-# 例: 脆弱性をJSON形式で出力
-node .claude/skills/dependency-auditing/scripts/security-audit.mjs --json
-```
-
-### テンプレート参照
-
-```bash
-# 脆弱性評価テンプレート
-cat .claude/skills/dependency-auditing/templates/vulnerability-assessment-template.md
-```
-
-## いつ使うか
-
-### シナリオ 1: 定期セキュリティ監査
-
-**状況**: プロジェクトの依存関係を定期的に監査したい
-
-**適用条件**:
-
-- [ ] 最後の監査から 1 週間以上経過
-- [ ] 新しい依存関係が追加された
-- [ ] セキュリティポリシーでの定期監査要件がある
-
-**期待される成果**: 脆弱性レポートと対応計画
-
-### シナリオ 2: 脆弱性アラート対応
-
-**状況**: セキュリティアドバイザリーやアラートを受け取った
-
-**適用条件**:
-
-- [ ] 依存関係に関するセキュリティアラートを受信
-- [ ] GitHub Dependabot からの通知がある
-- [ ] 外部からの脆弱性報告を受けた
-
-**期待される成果**: 影響評価と修正優先度の決定
-
-### シナリオ 3: CI/CD パイプライン統合
-
-**状況**: 継続的なセキュリティチェックを自動化したい
-
-**適用条件**:
-
-- [ ] CI/CD パイプラインが構築されている
-- [ ] 自動化されたセキュリティゲートが必要
-- [ ] セキュリティ基準の継続的な遵守が必要
-
-**期待される成果**: 自動化されたセキュリティチェック体制
-
-## 脆弱性重大度分類
-
-### Critical (CVSS 9.0-10.0)
-
-**特徴**:
-
-- リモートコード実行（RCE）の可能性
-- 認証バイパス
-- 特権エスカレーション
-
-**対応優先度**: 🔴 即座（24 時間以内）
-
-**推奨アプローチ**:
-
-1. 影響を受けるシステムの即時評価
-2. 一時的な緩和策の適用（可能な場合）
-3. パッチの即時適用またはアップグレード
-4. インシデント対応プロセスの開始
-
-### High (CVSS 7.0-8.9)
-
-**特徴**:
-
-- 機密データの漏洩
-- サービス拒否攻撃（DoS）
-- クロスサイトスクリプティング（XSS）
-
-**対応優先度**: 🟠 緊急（72 時間以内）
-
-**推奨アプローチ**:
-
-1. 影響範囲の詳細調査
-2. 利用可能なパッチの確認
-3. テスト環境での検証
-4. 計画的なパッチ適用
-
-### Medium (CVSS 4.0-6.9)
-
-**特徴**:
-
-- 限定的な情報漏洩
-- ローカル特権エスカレーション
-- 部分的なサービス影響
-
-**対応優先度**: 🟡 計画的（1-2 週間以内）
-
-**推奨アプローチ**:
-
-1. 次回の定期メンテナンスで対応
-2. 依存関係更新計画に組み込み
-3. リスク軽減策の検討
-
-### Low (CVSS 0.1-3.9)
-
-**特徴**:
-
-- 軽微な情報漏洩
-- 攻撃困難または影響限定的
-- 特定の条件でのみ発生
-
-**対応優先度**: 🟢 通常（次回リリースまで）
-
-**推奨アプローチ**:
-
-1. 次回の依存関係更新時に対応
-2. リスク受容の判断も検討
-3. モニタリングの継続
-
-## 監査ツール一覧
-
-### パッケージマネージャー内蔵ツール
-
-| ツール | コマンド     | 出力形式      |
-| ------ | ------------ | ------------- |
-| pnpm   | `pnpm audit` | テキスト/JSON |
-| pnpm   | `pnpm audit` | テキスト/JSON |
-| yarn   | `yarn audit` | テキスト/JSON |
-
-### サードパーティツール
-
-| ツール                 | 特徴                       | 用途                 |
-| ---------------------- | -------------------------- | -------------------- |
-| Snyk                   | 商用グレード、豊富な DB    | エンタープライズ     |
-| OWASP Dependency-Check | オープンソース、多言語対応 | CI/CD 統合           |
-| Trivy                  | コンテナ＋依存関係、高速   | Docker 環境          |
-| Grype                  | 軽量、SBOM 対応            | コンテナセキュリティ |
 
 ## ワークフロー
 
-### Phase 1: 脆弱性検出
+### Phase 1: 目的と前提の整理
 
-**目的**: プロジェクトの依存関係に存在する脆弱性を特定
+**目的**: タスクの目的と前提条件を明確にする
 
-**ステップ**:
+**アクション**:
 
-1. パッケージマネージャーの監査コマンドを実行
-2. 検出された脆弱性のリストを取得
-3. 各脆弱性の詳細情報を収集
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-**判断基準**:
+### Phase 2: スキル適用
 
-- [ ] 監査コマンドが正常に実行されたか？
-- [ ] 全ての依存関係（直接・間接）がスキャンされたか？
-- [ ] 結果が最新のデータベースに基づいているか？
+**目的**: スキルの指針に従って具体的な作業を進める
 
-### Phase 2: リスク評価
+**アクション**:
 
-**目的**: 検出された脆弱性のビジネス影響を評価
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-**ステップ**:
+### Phase 3: 検証と記録
 
-1. CVSS スコアに基づく重大度分類
-2. 攻撃可能性の評価（エクスプロイト有無）
-3. プロジェクト固有の影響評価
-4. 優先順位の決定
+**目的**: 成果物の検証と実行記録の保存
 
-**判断基準**:
+**アクション**:
 
-- [ ] 各脆弱性の CVSS スコアを確認したか？
-- [ ] 既知のエクスプロイトが存在するか？
-- [ ] 脆弱なコードが実際に使用されているか？
-- [ ] ビジネスへの影響度を評価したか？
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-### Phase 3: 修正戦略策定
-
-**目的**: 各脆弱性に対する適切な対応策を決定
-
-**ステップ**:
-
-1. 利用可能なパッチ/アップグレードの確認
-2. 修正による影響範囲の評価
-3. 修正計画の策定
-4. 一時的な緩和策の検討
-
-**判断基準**:
-
-- [ ] パッチが利用可能か？
-- [ ] アップグレードパスが明確か？
-- [ ] 破壊的変更の有無を確認したか？
-- [ ] ロールバック計画があるか？
-
-### Phase 4: 修正実施と検証
-
-**目的**: 脆弱性を安全に修正し、システムの健全性を確認
-
-**ステップ**:
-
-1. テスト環境での修正適用
-2. 回帰テストの実行
-3. 本番環境への適用
-4. 修正後の再監査
-
-**判断基準**:
-
-- [ ] 修正後に脆弱性が解消されたか？
-- [ ] 新たな脆弱性が導入されていないか？
-- [ ] システムが正常に動作しているか？
-- [ ] 監査レポートが更新されたか？
 
 ## ベストプラクティス
 
 ### すべきこと
-
-1. **定期的な監査**:
-   - 最低週次での自動監査
-   - 依存関係変更時の即時監査
-   - リリース前の必須監査
-
-2. **多層的なセキュリティ**:
-   - 複数のツールを組み合わせる
-   - 手動レビューと自動化の併用
-   - 深い依存関係まで検査
-
-3. **迅速な対応**:
-   - Critical/High は即時対応
-   - セキュリティアラートの即時通知設定
-   - インシデント対応プロセスの整備
+- 依存関係のセキュリティ監査を実施する時
+- 脆弱性レポートを評価する時
+- セキュリティパッチの適用優先度を決定する時
+- CI/CDパイプラインにセキュリティチェックを統合する時
 
 ### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
 
-1. **脆弱性の無視**:
-   - ❌ 「うちには関係ない」と決めつける
-   - ✅ 影響範囲を正確に評価してから判断
+## コマンドリファレンス
 
-2. **過度な依存**:
-   - ❌ 自動ツールだけに頼る
-   - ✅ 手動レビューと組み合わせる
+### リソース読み取り
+```bash
+cat .claude/skills/dependency-auditing/resources/Level1_basics.md
+cat .claude/skills/dependency-auditing/resources/Level2_intermediate.md
+cat .claude/skills/dependency-auditing/resources/Level3_advanced.md
+cat .claude/skills/dependency-auditing/resources/Level4_expert.md
+cat .claude/skills/dependency-auditing/resources/ci-cd-integration.md
+cat .claude/skills/dependency-auditing/resources/cvss-scoring-guide.md
+cat .claude/skills/dependency-auditing/resources/legacy-skill.md
+cat .claude/skills/dependency-auditing/resources/remediation-strategies.md
+cat .claude/skills/dependency-auditing/resources/vulnerability-detection.md
+```
 
-3. **場当たり的な対応**:
-   - ❌ 脆弱性ごとに個別対応
-   - ✅ 体系的なセキュリティ管理プロセス
+### スクリプト実行
+```bash
+node .claude/skills/dependency-auditing/scripts/log_usage.mjs --help
+node .claude/skills/dependency-auditing/scripts/security-audit.mjs --help
+node .claude/skills/dependency-auditing/scripts/validate-skill.mjs --help
+```
 
-## トラブルシューティング
-
-### 問題 1: 誤検知（False Positive）
-
-**症状**: 実際には影響を受けない脆弱性が報告される
-
-**原因**:
-
-- 脆弱なコードパスが実行されない
-- 環境固有の条件が満たされない
-- 古い脆弱性データベース
-
-**解決策**:
-
-1. 脆弱なコードの使用状況を確認
-2. 環境条件を評価
-3. ツールのデータベースを更新
-4. 必要に応じて例外リストに追加（文書化必須）
-
-### 問題 2: パッチが利用できない
-
-**症状**: 脆弱性が報告されるが、修正版がリリースされていない
-
-**対応**:
-
-1. 一時的な緩和策を検討（WAF 設定、入力検証強化等）
-2. 代替パッケージへの移行を検討
-3. パッケージメンテナーへの報告/催促
-4. リスクを文書化し、モニタリングを強化
-
-### 問題 3: 依存関係の競合
-
-**症状**: パッチを適用すると他の依存関係と競合する
-
-**解決策**:
-
-1. 競合の原因となるパッケージを特定
-2. 両方を更新できるバージョンを探す
-3. 必要に応じて overrides/resolutions を使用
-4. 長期的にはモジュール構成の見直し
-
-## 関連スキル
-
-- **semantic-versioning** (`.claude/skills/semantic-versioning/SKILL.md`): バージョン変更の影響評価
-- **upgrade-strategies** (`.claude/skills/upgrade-strategies/SKILL.md`): 安全なアップグレード手法
-- **lock-file-management** (`.claude/skills/lock-file-management/SKILL.md`): 依存関係の固定と再現性
-
-## メトリクス
-
-### セキュリティ監査の効果測定
-
-**測定指標**:
-
-- 脆弱性検出から修正までの平均時間（MTTR）
-- Critical/High 脆弱性の残存数
-- 監査カバレッジ率
-- 誤検知率
-
-**目標値**:
-
-- Critical MTTR: <24 時間
-- High MTTR: <72 時間
-- 残存 Critical/High: 0 件
-- 監査カバレッジ: 100%
+### テンプレート参照
+```bash
+cat .claude/skills/dependency-auditing/templates/vulnerability-assessment-template.md
+```
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                  |
-| ---------- | ---------- | ----------------------------------------- |
-| 1.0.0      | 2025-11-27 | 初版作成 - セキュリティ監査フレームワーク |
-
-## 参考文献
-
-- **NVD (National Vulnerability Database)**: https://nvd.nist.gov/
-- **CVSS Calculator**: https://www.first.org/cvss/calculator/3.1
-- **GitHub Advisory Database**: https://github.com/advisories
-- **pnpm Security Advisories**: https://www.npmjs.com/advisories
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

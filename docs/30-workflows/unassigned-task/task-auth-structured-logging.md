@@ -13,7 +13,7 @@
 | ステータス       | 未実施                        |
 | 発見元           | Phase 7（最終レビューゲート） |
 | 発見日           | 2025-12-22                    |
-| 発見エージェント | @code-quality                 |
+| 発見エージェント | .claude/agents/code-quality.md                 |
 
 ---
 
@@ -28,7 +28,7 @@
 - ログの解析・フィルタリングが困難
 - トラブルシューティング時の情報不足
 
-ログイン機能復旧プロジェクト（2025-12-22完了）の最終レビューゲートで、@code-qualityが構造化ログの追加を推奨しました。
+ログイン機能復旧プロジェクト（2025-12-22完了）の最終レビューゲートで、.claude/agents/code-quality.mdが構造化ログの追加を推奨しました。
 
 ### 1.2 問題点・課題
 
@@ -182,7 +182,7 @@ Phase 4: 手動テスト
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: 単体テスト作成とTDD実践の専門家。ユーティリティ実装に最適。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -190,8 +190,8 @@ Phase 4: 手動テスト
 
 | スキル名             | 活用方法                           |
 | -------------------- | ---------------------------------- |
-| tdd-principles       | TDD Red-Green-Refactorサイクル実践 |
-| clean-code-practices | 高品質なロガー実装                 |
+| .claude/skills/tdd-principles/SKILL.md       | TDD Red-Green-Refactorサイクル実践 |
+| .claude/skills/clean-code-practices/SKILL.md | 高品質なロガー実装                 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -237,7 +237,7 @@ logger.error("OAuth initiation failed", { provider, errorCode: error.code }, err
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: リファクタリングの専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -245,8 +245,8 @@ logger.error("OAuth initiation failed", { provider, errorCode: error.code }, err
 
 | スキル名               | 活用方法                     |
 | ---------------------- | ---------------------------- |
-| refactoring-techniques | ログ置き換えリファクタリング |
-| clean-code-practices   | コード品質改善               |
+| .claude/skills/refactoring-techniques/SKILL.md | ログ置き換えリファクタリング |
+| .claude/skills/clean-code-practices/SKILL.md   | コード品質改善               |
 
 - **参照**: `.claude/skills/skill_list.md`
 

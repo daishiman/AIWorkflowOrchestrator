@@ -2,7 +2,7 @@
 
 **監査日**: {{AUDIT_DATE}}
 **プロジェクト**: {{PROJECT_NAME}}
-**監査者**: @sec-auditor
+**監査者**: .claude/agents/sec-auditor.md
 
 ---
 

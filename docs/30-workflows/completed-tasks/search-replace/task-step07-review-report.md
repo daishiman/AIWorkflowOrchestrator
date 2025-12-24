@@ -4,10 +4,10 @@
 
 | レビュー           | エージェント     | 判定         |
 | ------------------ | ---------------- | ------------ |
-| コード品質         | @code-quality    | **MINOR**    |
-| アーキテクチャ遵守 | @arch-police     | **MINOR**    |
-| セキュリティ       | @sec-auditor     | **MINOR**    |
-| テスト品質         | @frontend-tester | **PASS** (※) |
+| コード品質         | .claude/agents/code-quality.md    | **MINOR**    |
+| アーキテクチャ遵守 | .claude/agents/arch-police.md     | **MINOR**    |
+| セキュリティ       | .claude/agents/sec-auditor.md     | **MINOR**    |
+| テスト品質         | .claude/agents/frontend-tester.md | **PASS** (※) |
 
 **総合判定: MINOR** - 軽微な指摘あり、対応後 Phase 8 へ進行可能
 
@@ -15,7 +15,7 @@
 
 ---
 
-## 1. コード品質レビュー (@code-quality)
+## 1. コード品質レビュー (.claude/agents/code-quality.md)
 
 ### 判定: MINOR
 
@@ -37,7 +37,7 @@
 
 ---
 
-## 2. アーキテクチャ遵守レビュー (@arch-police)
+## 2. アーキテクチャ遵守レビュー (.claude/agents/arch-police.md)
 
 ### 判定: MINOR
 
@@ -74,7 +74,7 @@ Main (searchHandlers → SearchService → SearchEngine)
 
 ---
 
-## 3. セキュリティレビュー (@sec-auditor)
+## 3. セキュリティレビュー (.claude/agents/sec-auditor.md)
 
 ### 判定: MINOR
 
@@ -106,7 +106,7 @@ Main (searchHandlers → SearchService → SearchEngine)
 
 ---
 
-## 4. テスト品質レビュー (@frontend-tester)
+## 4. テスト品質レビュー (.claude/agents/frontend-tester.md)
 
 ### 判定: PASS
 

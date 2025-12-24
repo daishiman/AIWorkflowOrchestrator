@@ -1,297 +1,115 @@
 ---
-name: test-naming-conventions
+name: .claude/skills/test-naming-conventions/SKILL.md
 description: |
   テストの命名規則とドキュメンテーションを専門とするスキル。
-
+  
+  📖 参照書籍:
+  - 『Test-Driven Development: By Example』（Kent Beck）: Red-Green-Refactor
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/test-naming-conventions/resources/describe-structure.md`: Describe Structureリソース
-  - `.claude/skills/test-naming-conventions/resources/file-organization.md`: File Organizationリソース
-  - `.claude/skills/test-naming-conventions/resources/naming-patterns.md`: Naming Patternsリソース
-
-  - `.claude/skills/test-naming-conventions/templates/naming-guide.md`: Naming Guideテンプレート
-
-  - `.claude/skills/test-naming-conventions/scripts/test-name-linter.mjs`: Test Name Linterスクリプト
-
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/describe-structure.md`: Describe Structureリソース
+  - `resources/file-organization.md`: File Organizationリソース
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/naming-patterns.md`: Naming Patternsリソース
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/test-name-linter.mjs`: Test Name Linterスクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/naming-guide.md`: Naming Guideテンプレート
+  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
+  
+  Use proactively when handling test naming conventions tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "Test-Driven Development: By Example"
+    author: "Kent Beck"
+    concepts:
+      - "Red-Green-Refactor"
+      - "テスト設計"
 ---
 
 # Test Naming Conventions
 
 ## 概要
 
-良いテスト名は、テストが失敗した時に何が問題かをすぐに理解できます。
-このスキルでは、説明的で一貫性のあるテスト命名規則を提供します。
+テストの命名規則とドキュメンテーションを専門とするスキル。
 
-**核心原則**:
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-- テスト名は仕様書である
-- 失敗時に何が問題か分かる
-- 一貫性のある命名パターン
 
-**対象ユーザー**:
+## ワークフロー
 
-- ユニットテスター（@unit-tester）
-- 品質エンジニア（@quality-engineer）
-- すべての開発者
+### Phase 1: 目的と前提の整理
 
-## リソース構造
+**目的**: タスクの目的と前提条件を明確にする
 
-```
-test-naming-conventions/
-├── SKILL.md                              # 本ファイル
-├── resources/
-│   ├── naming-patterns.md                # 命名パターン一覧
-│   ├── describe-structure.md             # describe構造
-│   └── file-organization.md              # ファイル構成
-├── scripts/
-│   └── test-name-linter.mjs              # テスト命名規則チェッカー
-└── templates/
-    └── naming-guide.md                   # 命名ガイドテンプレート
-```
+**アクション**:
 
-## コマンドリファレンス
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-### リソース読み取り
+### Phase 2: スキル適用
 
-```bash
-# 命名パターン一覧
-cat .claude/skills/test-naming-conventions/resources/naming-patterns.md
+**目的**: スキルの指針に従って具体的な作業を進める
 
-# describe構造
-cat .claude/skills/test-naming-conventions/resources/describe-structure.md
+**アクション**:
 
-# ファイル構成
-cat .claude/skills/test-naming-conventions/resources/file-organization.md
-```
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-### スクリプト実行
+### Phase 3: 検証と記録
 
-```bash
-# テスト命名規則チェック
-# テストファイルの命名規則をチェックし、改善提案を出力
-node .claude/skills/test-naming-conventions/scripts/test-name-linter.mjs <test-file>
+**目的**: 成果物の検証と実行記録の保存
 
-# 例
-node .claude/skills/test-naming-conventions/scripts/test-name-linter.mjs src/__tests__/user-service.test.ts
-```
+**アクション**:
 
-## クイックリファレンス
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-### 推奨パターン
-
-```typescript
-// should + 動詞 + 期待される結果
-it("should return user when id is valid", () => {});
-
-// should + 動詞 + when + 条件
-it("should throw error when user is not found", () => {});
-
-// should + not + 動詞 + when + 条件
-it("should not allow login when password is invalid", () => {});
-```
-
-**詳細**: `resources/naming-patterns.md`
-
-### describe 構造
-
-```typescript
-describe("UserService", () => {
-  describe("getUser", () => {
-    describe("when user exists", () => {
-      it("should return user data", () => {});
-    });
-
-    describe("when user does not exist", () => {
-      it("should throw NotFoundError", () => {});
-    });
-  });
-});
-```
-
-**詳細**: `resources/describe-structure.md`
-
-## 命名の黄金ルール
-
-### 1. 何をテストしているか明確に
-
-```typescript
-// ❌ 悪い例
-it("test1", () => {});
-it("works", () => {});
-it("user test", () => {});
-
-// ✅ 良い例
-it("should return user when valid id is provided", () => {});
-it("should throw NotFoundError when user does not exist", () => {});
-```
-
-### 2. 入力と期待結果を含める
-
-```typescript
-// ❌ 入力が不明確
-it("should validate email", () => {});
-
-// ✅ 入力と結果が明確
-it("should return true when email has valid format", () => {});
-it("should return false when email lacks @ symbol", () => {});
-```
-
-### 3. 実装詳細ではなく振る舞いを記述
-
-```typescript
-// ❌ 実装詳細
-it("should call repository.findById", () => {});
-
-// ✅ 振る舞い
-it("should return user data from database", () => {});
-```
-
-### 4. 具体的な条件を記述
-
-```typescript
-// ❌ 曖昧
-it("should handle edge cases", () => {});
-
-// ✅ 具体的
-it("should return empty array when no users match criteria", () => {});
-it("should throw ValidationError when age is negative", () => {});
-```
-
-## パターン別ガイド
-
-### should 形式（推奨）
-
-```typescript
-// 基本形
-it("should [動詞] [期待結果]", () => {});
-
-// 条件付き
-it("should [動詞] [期待結果] when [条件]", () => {});
-
-// 例
-it("should return sum of two numbers", () => {});
-it("should throw error when divisor is zero", () => {});
-it("should send email when user registers", () => {});
-```
-
-### Given-When-Then 形式
-
-```typescript
-describe("UserService", () => {
-  describe("given a valid user id", () => {
-    describe("when getUser is called", () => {
-      it("then it should return the user", () => {});
-    });
-  });
-
-  describe("given an invalid user id", () => {
-    describe("when getUser is called", () => {
-      it("then it should throw NotFoundError", () => {});
-    });
-  });
-});
-```
-
-### BDD 形式
-
-```typescript
-describe("User Registration", () => {
-  context("with valid data", () => {
-    it("creates a new user", () => {});
-    it("sends welcome email", () => {});
-  });
-
-  context("with invalid email", () => {
-    it("rejects the registration", () => {});
-  });
-});
-```
-
-## アンチパターン
-
-### ❌ 曖昧な名前
-
-```typescript
-it("test", () => {});
-it("works", () => {});
-it("should work correctly", () => {});
-```
-
-### ❌ 重複した情報
-
-```typescript
-// describeで既にUserServiceと書いているのに繰り返す
-describe("UserService", () => {
-  it("UserService should return user", () => {});
-});
-```
-
-### ❌ 実装詳細の暴露
-
-```typescript
-it("should call database.query with SELECT * FROM users", () => {});
-```
-
-### ❌ 複数の振る舞いを 1 つのテストに
-
-```typescript
-it("should validate, save, and send email", () => {});
-```
 
 ## ベストプラクティス
 
 ### すべきこと
-
-1. **一貫性を保つ**: プロジェクト全体で同じパターン
-2. **具体的に書く**: 何をどうしたらどうなるか
-3. **読みやすく**: 英語として自然に読める
-4. **ドメイン用語を使用**: ビジネス用語を反映
+- resources/Level1_basics.md を参照し、適用範囲を明確にする
+- resources/Level2_intermediate.md を参照し、実務手順を整理する
 
 ### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
 
-1. **略語の使用**: `usr`より`user`
-2. **技術用語の濫用**: ビジネス視点で記述
-3. **長すぎる名前**: 必要な情報のみ
-4. **コピペ**: 各テストに固有の説明
+## コマンドリファレンス
 
-## 関連スキル
+### リソース読み取り
+```bash
+cat .claude/skills/test-naming-conventions/resources/Level1_basics.md
+cat .claude/skills/test-naming-conventions/resources/Level2_intermediate.md
+cat .claude/skills/test-naming-conventions/resources/Level3_advanced.md
+cat .claude/skills/test-naming-conventions/resources/Level4_expert.md
+cat .claude/skills/test-naming-conventions/resources/describe-structure.md
+cat .claude/skills/test-naming-conventions/resources/file-organization.md
+cat .claude/skills/test-naming-conventions/resources/legacy-skill.md
+cat .claude/skills/test-naming-conventions/resources/naming-patterns.md
+```
 
-- **tdd-principles** (`.claude/skills/tdd-principles/SKILL.md`): TDD の基本原則
-- **test-doubles** (`.claude/skills/test-doubles/SKILL.md`): テストダブル
-- **vitest-advanced** (`.claude/skills/vitest-advanced/SKILL.md`): Vitest 高度な使い方
-- **boundary-value-analysis** (`.claude/skills/boundary-value-analysis/SKILL.md`): 境界値分析
+### スクリプト実行
+```bash
+node .claude/skills/test-naming-conventions/scripts/log_usage.mjs --help
+node .claude/skills/test-naming-conventions/scripts/test-name-linter.mjs --help
+node .claude/skills/test-naming-conventions/scripts/validate-skill.mjs --help
+```
 
-## 参考文献
-
-- **『Clean Code』** Robert C. Martin 著
-  - Chapter 9: Unit Tests
-- **『xUnit Test Patterns』** Gerard Meszaros 著
-- **BDD（Behavior-Driven Development）**: Dan North
-
----
-
-## 使用上の注意
-
-### このスキルが得意なこと
-
-- Should 形式、Given-When-Then、Arrange-Act-Assert 形式の選定
-- describe 階層構造の設計
-- テストファイルの命名と配置
-- テスト名の自己文書化
-
-### このスキルが行わないこと
-
-- テストコードの具体的な実装（→ vitest-advanced）
-- テストケースの設計手法（→ boundary-value-analysis）
-- TDD サイクルの原則（→ tdd-principles）
-
----
+### テンプレート参照
+```bash
+cat .claude/skills/test-naming-conventions/templates/naming-guide.md
+```
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                  |
-| ---------- | ---------- | ------------------------- |
-| 1.0.0      | 2025-11-26 | 初版作成 - テスト命名規則 |
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

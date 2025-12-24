@@ -221,8 +221,8 @@ web-development/
 **ステップ3**: リソースファイルの作成
 
 - schema-design.md: 300行
-- indexing-strategies.md: 250行
-- query-optimization.md: 250行
+- .claude/skills/indexing-strategies/SKILL.md.md: 250行
+- .claude/skills/query-optimization/SKILL.md.md: 250行
 
 **検証**:
 

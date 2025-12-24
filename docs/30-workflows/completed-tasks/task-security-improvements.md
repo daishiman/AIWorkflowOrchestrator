@@ -40,11 +40,11 @@ Phase 5.5最終レビューで発見された改善推奨項目:
 
 | 優先度 | 項目                    | 担当               |
 | :----: | ----------------------- | ------------------ |
-|   中   | macOSでのsandbox明示化  | @electron-security |
-|   中   | CSP違反レポーティング   | @electron-security |
-|   低   | IPC境界値テスト追加     | @unit-tester       |
-|   低   | Reduxエラー状態の詳細化 | @code-quality      |
-|   低   | auth:logoutスキーマ追加 | @arch-police       |
+|   中   | macOSでのsandbox明示化  | .claude/agents/electron-security.md |
+|   中   | CSP違反レポーティング   | .claude/agents/electron-security.md |
+|   低   | IPC境界値テスト追加     | .claude/agents/unit-tester.md       |
+|   低   | Reduxエラー状態の詳細化 | .claude/agents/code-quality.md      |
+|   低   | auth:logoutスキーマ追加 | .claude/agents/arch-police.md       |
 
 これらは即座の対応不要であり、次回リファクタリング時に検討。
 
@@ -54,7 +54,7 @@ Phase 5.5最終レビューで発見された改善推奨項目:
 
 ## 背景と目的
 
-Phase 5.5 Final Review Gate において、`@electron-security` エージェントによるセキュリティレビューで以下の改善点が指摘された：
+Phase 5.5 Final Review Gate において、`.claude/agents/electron-security.md` エージェントによるセキュリティレビューで以下の改善点が指摘された：
 
 1. **Content Security Policy (CSP) 未設定**
 2. **入力値バリデーション不足**
@@ -334,10 +334,10 @@ apps/desktop/src/main/security/
 
 | 項目               | 検証方法             | 担当エージェント   |
 | ------------------ | -------------------- | ------------------ |
-| CSP設定            | DevTools Console確認 | @electron-security |
-| 入力バリデーション | 単体テスト           | @unit-tester       |
-| IPC検証            | 統合テスト           | @e2e-tester        |
-| 状態最小化         | コードレビュー       | @sec-auditor       |
+| CSP設定            | DevTools Console確認 | .claude/agents/electron-security.md |
+| 入力バリデーション | 単体テスト           | .claude/agents/unit-tester.md       |
+| IPC検証            | 統合テスト           | .claude/agents/e2e-tester.md        |
+| 状態最小化         | コードレビュー       | .claude/agents/sec-auditor.md       |
 
 ### 6.2 セキュリティレビュー
 
@@ -353,7 +353,7 @@ apps/desktop/src/main/security/
 - [ ] IPC呼び出し元の検証が実装されている
 - [ ] Renderer側で機密トークンが保持されていない
 - [ ] セキュリティテストがすべてパスしている
-- [ ] `@electron-security` レビューで PASS 評価
+- [ ] `.claude/agents/electron-security.md` レビューで PASS 評価
 
 ## 関連ドキュメント
 

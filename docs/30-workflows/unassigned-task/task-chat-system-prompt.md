@@ -13,7 +13,7 @@
 | ステータス       | 未実施                               |
 | 発見元           | ユーザー要望                         |
 | 発見日           | 2025-12-11                           |
-| 発見エージェント | @product-manager                     |
+| 発見エージェント | .claude/agents/product-manager.md                     |
 
 ---
 
@@ -76,9 +76,9 @@ LLMとのチャットにおいて、システムプロンプトはAIの振る舞
 
 ## 3. 主要な使用エージェント
 
-- **@ui-designer**: 設定UIの設計
-- **@state-manager**: プロンプト状態管理
-- **@logic-dev**: テンプレート管理ロジック
+- **.claude/agents/ui-designer.md**: 設定UIの設計
+- **.claude/agents/state-manager.md**: プロンプト状態管理
+- **.claude/agents/logic-dev.md**: テンプレート管理ロジック
 
 ---
 

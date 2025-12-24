@@ -4,7 +4,7 @@
 
 - **分析日**: {{date}}
 - **分析対象**: {{target}}
-- **分析担当**: @arch-police
+- **分析担当**: .claude/agents/arch-police.md
 
 ---
 
@@ -164,7 +164,7 @@ graph TD
 
 ### A. 使用ツール
 
-- dependency-analysis スクリプト
+- .claude/skills/dependency-analysis/SKILL.md スクリプト
 - madge
 - dependency-cruiser
 

@@ -13,7 +13,7 @@
 | ステータス       | 未実施                           |
 | 発見元           | Phase 7 - 最終レビューゲート     |
 | 発見日           | 2025-12-12                       |
-| 発見エージェント | @sec-auditor                     |
+| 発見エージェント | .claude/agents/sec-auditor.md                     |
 
 ---
 
@@ -21,7 +21,7 @@
 
 ### 1.1 背景
 
-検索・置換機能のT-07-1最終レビューにおいて、@sec-auditorエージェントが以下の2つのセキュリティ改善点を指摘した：
+検索・置換機能のT-07-1最終レビューにおいて、.claude/agents/sec-auditor.mdエージェントが以下の2つのセキュリティ改善点を指摘した：
 
 1. **SR-001**: シンボリックリンク未チェック（GlobResolver）
 2. **SR-002**: バックアップディレクトリ権限設定不足（FileBackupManager）
@@ -165,17 +165,17 @@ Phase 6: 品質保証
 
 #### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @sec-auditor, @unit-tester
-- **選定理由**: セキュリティテストの設計には@sec-auditorの知見が必要、テスト実装には@unit-testerが最適
+- **エージェント**: .claude/agents/sec-auditor.md, .claude/agents/unit-tester.md
+- **選定理由**: セキュリティテストの設計には.claude/agents/sec-auditor.mdの知見が必要、テスト実装には.claude/agents/unit-tester.mdが最適
 - **参照**: `.claude/agents/agent_list.md`
 
 #### 活用スキルリスト（動的選定）
 
 | スキル名                      | 活用方法                         | 選定理由             |
 | ----------------------------- | -------------------------------- | -------------------- |
-| tdd-principles                | Red-Green-Refactorサイクルの遵守 | TDDの原則に従うため  |
-| security-configuration-review | セキュリティ設定の検証           | 権限設定テストに必要 |
-| boundary-value-analysis       | 境界値テスト                     | エッジケースの検証   |
+| .claude/skills/tdd-principles/SKILL.md                | Red-Green-Refactorサイクルの遵守 | TDDの原則に従うため  |
+| .claude/skills/security-configuration-review/SKILL.md | セキュリティ設定の検証           | 権限設定テストに必要 |
+| .claude/skills/boundary-value-analysis/SKILL.md       | 境界値テスト                     | エッジケースの検証   |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -234,16 +234,16 @@ describe("バックアップディレクトリ権限", () => {
 
 #### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @sec-auditor, @logic-dev
-- **選定理由**: セキュリティ実装には@sec-auditorの監督が必要、実装自体は@logic-devが担当
+- **エージェント**: .claude/agents/sec-auditor.md, .claude/agents/logic-dev.md
+- **選定理由**: セキュリティ実装には.claude/agents/sec-auditor.mdの監督が必要、実装自体は.claude/agents/logic-dev.mdが担当
 - **参照**: `.claude/agents/agent_list.md`
 
 #### 活用スキルリスト（動的選定）
 
 | スキル名                    | 活用方法                               | 選定理由                         |
 | --------------------------- | -------------------------------------- | -------------------------------- |
-| electron-security-hardening | Electronセキュリティベストプラクティス | デスクトップアプリのセキュリティ |
-| type-safety-patterns        | 型安全な実装                           | エラーハンドリングの型定義       |
+| .claude/skills/electron-security-hardening/SKILL.md | Electronセキュリティベストプラクティス | デスクトップアプリのセキュリティ |
+| .claude/skills/type-safety-patterns/SKILL.md        | 型安全な実装                           | エラーハンドリングの型定義       |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -277,7 +277,7 @@ describe("バックアップディレクトリ権限", () => {
 
 #### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @code-quality, @sec-auditor
+- **エージェント**: .claude/agents/code-quality.md, .claude/agents/sec-auditor.md
 - **選定理由**: コード品質とセキュリティの両面から検証
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -306,7 +306,7 @@ describe("バックアップディレクトリ権限", () => {
 
 #### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @sec-auditor, @code-quality
+- **エージェント**: .claude/agents/sec-auditor.md, .claude/agents/code-quality.md
 - **選定理由**: セキュリティと品質の最終検証
 - **参照**: `.claude/agents/agent_list.md`
 

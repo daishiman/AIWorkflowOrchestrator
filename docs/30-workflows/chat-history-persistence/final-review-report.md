@@ -12,11 +12,11 @@
 
 | レビュー観点   | 担当エージェント | 評価      | Critical | High  | Medium | Minor   |
 | -------------- | ---------------- | --------- | -------- | ----- | ------ | ------- |
-| コード品質     | @code-quality    | MINOR     | 0        | 1     | 0      | 5       |
-| アーキテクチャ | @arch-police     | **MAJOR** | **3**    | **5** | 3      | 複数    |
-| データベース   | @db-architect    | **MAJOR** | **2**    | 0     | **1**  | 複数    |
-| テスト品質     | @unit-tester     | MINOR     | 0        | 0     | 3      | 複数    |
-| セキュリティ   | @sec-auditor     | PASS      | 0        | 0     | 1      | 2       |
+| コード品質     | .claude/agents/code-quality.md    | MINOR     | 0        | 1     | 0      | 5       |
+| アーキテクチャ | .claude/agents/arch-police.md     | **MAJOR** | **3**    | **5** | 3      | 複数    |
+| データベース   | .claude/agents/db-architect.md    | **MAJOR** | **2**    | 0     | **1**  | 複数    |
+| テスト品質     | .claude/agents/unit-tester.md     | MINOR     | 0        | 0     | 3      | 複数    |
+| セキュリティ   | .claude/agents/sec-auditor.md     | PASS      | 0        | 0     | 1      | 2       |
 | **合計**       | -                | **MAJOR** | **5**    | **6** | **8**  | **10+** |
 
 ---
@@ -45,7 +45,7 @@
 
 ## 🚨 Critical違反（5件）
 
-### C-01: ドメイン層のインフラ依存（@arch-police）
+### C-01: ドメイン層のインフラ依存（.claude/agents/arch-police.md）
 
 **違反内容**: `ChatSession.ts`, `ChatMessage.ts` がDrizzle ORMに直接依存
 
@@ -61,7 +61,7 @@
 
 ---
 
-### C-02: 型定義の重複（@arch-police）
+### C-02: 型定義の重複（.claude/agents/arch-police.md）
 
 **違反内容**: `types/`, `domain/`, `db/schema/` で型定義が3重複
 
@@ -77,7 +77,7 @@
 
 ---
 
-### C-03: リポジトリ配置の誤り（@arch-police）
+### C-03: リポジトリ配置の誤り（.claude/agents/arch-police.md）
 
 **違反内容**: リポジトリ具象実装がドメイン層と同階層
 
@@ -92,7 +92,7 @@
 
 ---
 
-### C-04: 外部キーインデックス欠落（@db-architect）
+### C-04: 外部キーインデックス欠落（.claude/agents/db-architect.md）
 
 **違反内容**: `chat_messages.sessionId` にインデックスなし
 
@@ -112,7 +112,7 @@ CREATE INDEX idx_chat_messages_session_id ON chat_messages(session_id);
 
 ---
 
-### C-05: 外部キーCASCADE動作未定義（@db-architect）
+### C-05: 外部キーCASCADE動作未定義（.claude/agents/db-architect.md）
 
 **違反内容**: `sessionId` 外部キー制約に `onDelete` 未指定
 
@@ -129,7 +129,7 @@ CREATE INDEX idx_chat_messages_session_id ON chat_messages(session_id);
 
 ## 🟠 High違反（6件）
 
-### H-01: アプリケーションサービスの肥大化（@arch-police）
+### H-01: アプリケーションサービスの肥大化（.claude/agents/arch-police.md）
 
 **違反内容**: `ChatHistoryService` が複数の責務を持つGod Object
 
@@ -139,7 +139,7 @@ CREATE INDEX idx_chat_messages_session_id ON chat_messages(session_id);
 
 ---
 
-### H-02: ドメインエンティティの貧血モデル（@arch-police）
+### H-02: ドメインエンティティの貧血モデル（.claude/agents/arch-police.md）
 
 **違反内容**: `ChatSession`, `ChatMessage` がデータ構造のみでビジネスロジックなし
 
@@ -149,7 +149,7 @@ CREATE INDEX idx_chat_messages_session_id ON chat_messages(session_id);
 
 ---
 
-### H-03: エラーハンドリングの不統一（@arch-police）
+### H-03: エラーハンドリングの不統一（.claude/agents/arch-police.md）
 
 **違反内容**: Result型とtry-catchが混在
 
@@ -159,7 +159,7 @@ CREATE INDEX idx_chat_messages_session_id ON chat_messages(session_id);
 
 ---
 
-### H-04: UIコンポーネントの直接的なサービス依存（@arch-police）
+### H-04: UIコンポーネントの直接的なサービス依存（.claude/agents/arch-police.md）
 
 **違反内容**: UIがアプリケーションサービスに直接依存
 
@@ -169,7 +169,7 @@ CREATE INDEX idx_chat_messages_session_id ON chat_messages(session_id);
 
 ---
 
-### H-05: データベーススキーマとドメインモデルの密結合（@arch-police）
+### H-05: データベーススキーマとドメインモデルの密結合（.claude/agents/arch-police.md）
 
 **違反内容**: Drizzleスキーマとドメインモデルが1:1対応
 
@@ -179,7 +179,7 @@ CREATE INDEX idx_chat_messages_session_id ON chat_messages(session_id);
 
 ---
 
-### H-06: ChatHistoryList.tsx の循環的複雑度（@code-quality）
+### H-06: ChatHistoryList.tsx の循環的複雑度（.claude/agents/code-quality.md）
 
 **違反内容**: handleDelete関数が40行超、複雑すぎる
 
@@ -191,20 +191,20 @@ CREATE INDEX idx_chat_messages_session_id ON chat_messages(session_id);
 
 ## 🟡 Medium違反（8件）
 
-1. **正規化違反（messageCount）** - @db-architect
-2. **バリデーションロジックの分散** - @arch-police
-3. **テストコードの不足（domain/application）** - @arch-police
-4. **ドキュメントの不足（ADR）** - @arch-police
-5. **Desktop側カバレッジ不足** - @unit-tester
-6. **境界値テストの不足** - @unit-tester
-7. **エラーハンドリングテストの不足** - @unit-tester
-8. **マジックナンバーの残存** - @code-quality
+1. **正規化違反（messageCount）** - .claude/agents/db-architect.md
+2. **バリデーションロジックの分散** - .claude/agents/arch-police.md
+3. **テストコードの不足（domain/application）** - .claude/agents/arch-police.md
+4. **ドキュメントの不足（ADR）** - .claude/agents/arch-police.md
+5. **Desktop側カバレッジ不足** - .claude/agents/unit-tester.md
+6. **境界値テストの不足** - .claude/agents/unit-tester.md
+7. **エラーハンドリングテストの不足** - .claude/agents/unit-tester.md
+8. **マジックナンバーの残存** - .claude/agents/code-quality.md
 
 ---
 
 ## ✅ 良好な実装
 
-### セキュリティ（@sec-auditor）
+### セキュリティ（.claude/agents/sec-auditor.md）
 
 - ✅ XSS対策: Reactの自動エスケープ、dangerouslySetInnerHTMLなし
 - ✅ SQLインジェクション対策: Drizzle ORMパラメータ化クエリ
@@ -212,13 +212,13 @@ CREATE INDEX idx_chat_messages_session_id ON chat_messages(session_id);
 - ✅ 型安全性: TypeScript厳格モード
 - ✅ ソフトデリート: deletedAtによる論理削除
 
-### コード品質（@code-quality）
+### コード品質（.claude/agents/code-quality.md）
 
 - ✅ 型安全性の徹底: Zodスキーマによる実行時型検証
 - ✅ 責務の分離: Service/Repository/UIレイヤー分離
 - ✅ 早期リターンの活用: 条件分岐で適切に使用
 
-### テスト品質（@unit-tester）
+### テスト品質（.claude/agents/unit-tester.md）
 
 - ✅ shared層の高カバレッジ: 86.89%
 - ✅ AAA構造の明確化: テストが読みやすい
@@ -243,7 +243,7 @@ CREATE INDEX idx_chat_messages_session_id ON chat_messages(session_id);
   - Use Caseパターン導入
   - Rich Domain Model化
   - DIパターン実装（React Context）
-- **参照**: @arch-police レビュー指摘C-01〜C-03, H-01〜H-05
+- **参照**: .claude/agents/arch-police.md レビュー指摘C-01〜C-03, H-01〜H-05
 
 #### 2. データベーススキーマ最適化
 
@@ -257,7 +257,7 @@ CREATE INDEX idx_chat_messages_session_id ON chat_messages(session_id);
   - CHECK制約追加
   - 論理削除対応部分インデックス追加
   - messageCount削除検討
-- **参照**: @db-architect レビュー指摘C-04, C-05, M-01
+- **参照**: .claude/agents/db-architect.md レビュー指摘C-04, C-05, M-01
 
 ### 高優先度（コード品質改善）
 
@@ -270,7 +270,7 @@ CREATE INDEX idx_chat_messages_session_id ON chat_messages(session_id);
 - **内容**:
   - handleDelete関数のカスタムフック化
   - 循環的複雑度削減（40行 → 10-15行）
-- **参照**: @code-quality レビュー指摘H-06
+- **参照**: .claude/agents/code-quality.md レビュー指摘H-06
 
 #### 4. desktop側テストカバレッジ向上
 
@@ -284,7 +284,7 @@ CREATE INDEX idx_chat_messages_session_id ON chat_messages(session_id);
   - ChatHistoryExport: ファイルシステム連携テスト
   - 境界値テスト: 空配列、最大長、特殊文字
   - 目標: 37.72% → 80%
-- **参照**: @unit-tester レビュー指摘
+- **参照**: .claude/agents/unit-tester.md レビュー指摘
 
 ### 中優先度（品質向上）
 
@@ -297,7 +297,7 @@ CREATE INDEX idx_chat_messages_session_id ON chat_messages(session_id);
 - **内容**:
   - SEARCH_DEBOUNCE_MS、UI_CONSTANTS等を定数化
   - constants.tsに集約
-- **参照**: @code-quality レビュー指摘
+- **参照**: .claude/agents/code-quality.md レビュー指摘
 
 #### 6. エラーメッセージ統一
 
@@ -308,7 +308,7 @@ CREATE INDEX idx_chat_messages_session_id ON chat_messages(session_id);
 - **内容**:
   - ERROR_MESSAGESオブジェクトの作成
   - エラーメッセージの一元管理
-- **参照**: @code-quality レビュー指摘
+- **参照**: .claude/agents/code-quality.md レビュー指摘
 
 ---
 
@@ -346,7 +346,7 @@ CREATE INDEX idx_chat_messages_session_id ON chat_messages(session_id);
 
 ## 📝 各レビュー詳細
 
-### 1. コード品質レビュー（@code-quality）
+### 1. コード品質レビュー（.claude/agents/code-quality.md）
 
 **評価**: MINOR
 **レビュアー**: Nicholas C. Zakas哲学準拠
@@ -368,7 +368,7 @@ CREATE INDEX idx_chat_messages_session_id ON chat_messages(session_id);
 
 ---
 
-### 2. アーキテクチャレビュー（@arch-police）
+### 2. アーキテクチャレビュー（.claude/agents/arch-police.md）
 
 **評価**: MAJOR
 **レビュアー**: Robert C. Martin (Uncle Bob) 準拠
@@ -399,7 +399,7 @@ CREATE INDEX idx_chat_messages_session_id ON chat_messages(session_id);
 
 ---
 
-### 3. データベース設計レビュー（@db-architect）
+### 3. データベース設計レビュー（.claude/agents/db-architect.md）
 
 **評価**: MAJOR
 
@@ -432,7 +432,7 @@ ALTER TABLE chat_messages ADD CONSTRAINT chk_role
 
 ---
 
-### 4. テスト品質レビュー（@unit-tester）
+### 4. テスト品質レビュー（.claude/agents/unit-tester.md）
 
 **評価**: MINOR
 
@@ -460,7 +460,7 @@ ALTER TABLE chat_messages ADD CONSTRAINT chk_role
 
 ---
 
-### 5. セキュリティレビュー（@sec-auditor）
+### 5. セキュリティレビュー（.claude/agents/sec-auditor.md）
 
 **評価**: PASS（未完了タスク記録済み）
 

@@ -13,7 +13,7 @@
 | ステータス       | 未実施                                       |
 | 発見元           | Phase 7（最終レビューゲート）- E2Eテスト実行 |
 | 発見日           | 2025-12-23                                   |
-| 発見エージェント | @e2e-tester                                  |
+| 発見エージェント | .claude/agents/e2e-tester.md                                  |
 
 ---
 
@@ -226,7 +226,7 @@ API仕様の定義のみ。実装は行わない。
 
 #### 使用エージェント
 
-- **エージェント**: @api-doc-writer
+- **エージェント**: .claude/agents/api-doc-writer.md
 - **選定理由**: REST API設計、OpenAPI仕様書作成、エンドポイント定義の専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -234,9 +234,9 @@ API仕様の定義のみ。実装は行わない。
 
 | スキル名                  | 活用方法                               |
 | ------------------------- | -------------------------------------- |
-| openapi-specification     | OpenAPI 3.x形式でエンドポイント定義    |
-| request-response-examples | サンプルリクエスト/レスポンスの作成    |
-| zod-validation            | リクエスト/レスポンスのZodスキーマ定義 |
+| .claude/skills/openapi-specification/SKILL.md     | OpenAPI 3.x形式でエンドポイント定義    |
+| .claude/skills/request-response-examples/SKILL.md | サンプルリクエスト/レスポンスの作成    |
+| .claude/skills/zod-validation/SKILL.md            | リクエスト/レスポンスのZodスキーマ定義 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -323,7 +323,7 @@ TDD原則に基づき、実装前にテストを作成し、仕様を明確化�
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: TDD原則、境界値分析、等価分割によるテストケース設計の専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -331,9 +331,9 @@ TDD原則に基づき、実装前にテストを作成し、仕様を明確化�
 
 | スキル名                | 活用方法                               |
 | ----------------------- | -------------------------------------- |
-| tdd-principles          | Red-Green-Refactorサイクルの実践       |
-| boundary-value-analysis | メッセージ数、トークン数の境界値テスト |
-| test-naming-conventions | Given-When-Then形式のテストケース命名  |
+| .claude/skills/tdd-principles/SKILL.md          | Red-Green-Refactorサイクルの実践       |
+| .claude/skills/boundary-value-analysis/SKILL.md | メッセージ数、トークン数の境界値テスト |
+| .claude/skills/test-naming-conventions/SKILL.md | Given-When-Then形式のテストケース命名  |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -404,7 +404,7 @@ UI実装前にテストを作成し、期待される動作を明確化する。
 
 #### 使用エージェント
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 - **選定理由**: フロントエンドコンポーネントテスト、React Testing Library、アクセシビリティテストの専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -412,9 +412,9 @@ UI実装前にテストを作成し、期待される動作を明確化する。
 
 | スキル名                | 活用方法                         |
 | ----------------------- | -------------------------------- |
-| tdd-principles          | テストファースト開発             |
-| accessibility-wcag      | アクセシビリティテストケース設計 |
-| test-naming-conventions | 明確なテストケース命名           |
+| .claude/skills/tdd-principles/SKILL.md          | テストファースト開発             |
+| .claude/skills/accessibility-wcag/SKILL.md      | アクセシビリティテストケース設計 |
+| .claude/skills/test-naming-conventions/SKILL.md | 明確なテストケース命名           |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -488,7 +488,7 @@ TDDサイクルのGreen段階。テストを通すための最小限の実装を
 
 #### 使用エージェント
 
-- **エージェント**: @logic-dev
+- **エージェント**: .claude/agents/logic-dev.md
 - **選定理由**: ビジネスロジック実装、TDD準拠開発、Clean Code原則の専門家。プレビュー情報計算ロジックの実装に最適。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -496,10 +496,10 @@ TDDサイクルのGreen段階。テストを通すための最小限の実装を
 
 | スキル名               | 活用方法                         |
 | ---------------------- | -------------------------------- |
-| tdd-red-green-refactor | テストを通すための最小限実装     |
-| clean-code-practices   | 意味のある命名、小さな関数       |
-| zod-validation         | リクエストバリデーション         |
-| query-optimization     | DBクエリ最適化（メッセージ取得） |
+| .claude/skills/tdd-red-green-refactor/SKILL.md | テストを通すための最小限実装     |
+| .claude/skills/clean-code-practices/SKILL.md   | 意味のある命名、小さな関数       |
+| .claude/skills/zod-validation/SKILL.md         | リクエストバリデーション         |
+| .claude/skills/query-optimization/SKILL.md     | DBクエリ最適化（メッセージ取得） |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -611,7 +611,7 @@ TDDサイクルのGreen段階。APIが完成したので、フロントエンド
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: モジュラー設計、非同期データ表示、ローディング状態管理、エラーハンドリングUIの専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -619,11 +619,11 @@ TDDサイクルのGreen段階。APIが完成したので、フロントエンド
 
 | スキル名                       | 活用方法                                        |
 | ------------------------------ | ----------------------------------------------- |
-| component-composition-patterns | Controlled Component パターン                   |
-| accessibility-wcag             | aria-label、role、キーボード操作                |
-| apple-hig-guidelines           | Apple HIG準拠のデザイン                         |
-| error-boundary                 | エラー発生時のFallback UI                       |
-| react-hooks-advanced           | useState, useEffect, useCallback による状態管理 |
+| .claude/skills/component-composition-patterns/SKILL.md | Controlled Component パターン                   |
+| .claude/skills/accessibility-wcag/SKILL.md             | aria-label、role、キーボード操作                |
+| .claude/skills/apple-hig-guidelines/SKILL.md           | Apple HIG準拠のデザイン                         |
+| .claude/skills/error-boundary/SKILL.md                 | エラー発生時のFallback UI                       |
+| .claude/skills/react-hooks-advanced/SKILL.md           | useState, useEffect, useCallback による状態管理 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -747,7 +747,7 @@ Green状態達成後、コードの可読性・パフォーマンス・型安全
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: リファクタリング、Clean Code原則、SOLID原則の専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -755,10 +755,10 @@ Green状態達成後、コードの可読性・パフォーマンス・型安全
 
 | スキル名                       | 活用方法                                      |
 | ------------------------------ | --------------------------------------------- |
-| refactoring-techniques         | Extract Method、Simplify Conditional パターン |
-| clean-code-practices           | 意味のある命名、小さな関数                    |
-| type-safety-patterns           | 型推論最大化                                  |
-| performance-optimization-react | React.memo、useCallback最適化                 |
+| .claude/skills/refactoring-techniques/SKILL.md         | Extract Method、Simplify Conditional パターン |
+| .claude/skills/clean-code-practices/SKILL.md           | 意味のある命名、小さな関数                    |
+| .claude/skills/type-safety-patterns/SKILL.md           | 型推論最大化                                  |
+| .claude/skills/performance-optimization-react/SKILL.md | React.memo、useCallback最適化                 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -837,7 +837,7 @@ E2Eテスト実行と結果検証のみ。
 
 #### 使用エージェント
 
-- **エージェント**: @e2e-tester
+- **エージェント**: .claude/agents/e2e-tester.md
 - **選定理由**: Playwrightブラウザ自動化、E2Eシナリオ検証の専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -845,9 +845,9 @@ E2Eテスト実行と結果検証のみ。
 
 | スキル名              | 活用方法                            |
 | --------------------- | ----------------------------------- |
-| playwright-testing    | Playwrightセレクタ戦略、waitFor戦略 |
-| flaky-test-prevention | 非決定性排除、明示的待機            |
-| api-mocking           | プレビューAPIモック設定確認         |
+| .claude/skills/playwright-testing/SKILL.md    | Playwrightセレクタ戦略、waitFor戦略 |
+| .claude/skills/flaky-test-prevention/SKILL.md | 非決定性排除、明示的待機            |
+| .claude/skills/api-mocking/SKILL.md           | プレビューAPIモック設定確認         |
 
 - **参照**: `.claude/skills/skill_list.md`
 

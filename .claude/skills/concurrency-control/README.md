@@ -125,9 +125,9 @@ done
 
 ## 📖 関連スキル
 
-- **github-actions-syntax**: 基本構文と式の評価
-- **deployment-environments-gha**: 環境ベースのデプロイメント
-- **workflow-security**: セキュアな並行実行制御
+- **.claude/skills/github-actions-syntax/SKILL.md**: 基本構文と式の評価
+- **.claude/skills/deployment-environments-gha/SKILL.md**: 環境ベースのデプロイメント
+- **.claude/skills/workflow-security/SKILL.md**: セキュアな並行実行制御
 
 ## 🎓 学習パス
 
@@ -182,7 +182,7 @@ concurrency:
 ## 📝 メンテナンス
 
 - **最終更新**: 2025-11-27
-- **メンテナ**: @gha-workflow-architect
+- **メンテナ**: .claude/agents/gha-workflow-architect.md
 - **バージョン**: 1.0.0
 
 ## 🔗 外部リソース

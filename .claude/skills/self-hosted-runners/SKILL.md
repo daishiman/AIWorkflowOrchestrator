@@ -1,166 +1,114 @@
 ---
-name: self-hosted-runners
+name: .claude/skills/self-hosted-runners/SKILL.md
 description: |
   GitHub Actions セルフホストランナーの設計と管理。
-
+  
+  📖 参照書籍:
+  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/self-hosted-runners/resources/runner-labels.md`: Runner Labelsリソース
-  - `.claude/skills/self-hosted-runners/resources/runner-security.md`: Runner Securityリソース
-  - `.claude/skills/self-hosted-runners/resources/runner-setup.md`: Runner Setupリソース
-
-  - `.claude/skills/self-hosted-runners/templates/runner-workflow.yaml`: Runner Workflowテンプレート
-
-  - `.claude/skills/self-hosted-runners/scripts/check-runner-status.mjs`: Check Runner Statusスクリプト
-
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/runner-labels.md`: Runner Labelsリソース
+  - `resources/runner-security.md`: Runner Securityリソース
+  - `resources/runner-setup.md`: Runner Setupリソース
+  - `scripts/check-runner-status.mjs`: Check Runner Statusスクリプト
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/runner-workflow.yaml`: Runner Workflowテンプレート
+  
+  Use proactively when handling self hosted runners tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "The Pragmatic Programmer"
+    author: "Andrew Hunt, David Thomas"
+    concepts:
+      - "実践的改善"
+      - "品質維持"
 ---
 
 # Self-Hosted Runners Skill
 
-GitHub Actions セルフホストランナーの設計、セットアップ、管理スキル。
+## 概要
 
-## ディレクトリ構造
+GitHub Actions セルフホストランナーの設計と管理。
 
-```
-.claude/skills/self-hosted-runners/
-├── SKILL.md                    # このファイル（概要）
-├── resources/
-│   ├── runner-setup.md         # インストールと設定詳細
-│   ├── runner-labels.md        # ラベル設計とターゲティング
-│   └── runner-security.md      # セキュリティ強化ガイド
-├── templates/
-│   └── runner-workflow.yaml    # ワークフロー例集
-└── scripts/
-    └── check-runner-status.mjs # ステータスチェッカー
-```
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+
+
+## ワークフロー
+
+### Phase 1: 目的と前提の整理
+
+**目的**: タスクの目的と前提条件を明確にする
+
+**アクション**:
+
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
+
+### Phase 2: スキル適用
+
+**目的**: スキルの指針に従って具体的な作業を進める
+
+**アクション**:
+
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
+
+### Phase 3: 検証と記録
+
+**目的**: 成果物の検証と実行記録の保存
+
+**アクション**:
+
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
+
+
+## ベストプラクティス
+
+### すべきこと
+- resources/Level1_basics.md を参照し、適用範囲を明確にする
+- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
 
 ## コマンドリファレンス
 
+### リソース読み取り
 ```bash
-# リソース参照
-cat .claude/skills/self-hosted-runners/resources/runner-setup.md
+cat .claude/skills/self-hosted-runners/resources/Level1_basics.md
+cat .claude/skills/self-hosted-runners/resources/Level2_intermediate.md
+cat .claude/skills/self-hosted-runners/resources/Level3_advanced.md
+cat .claude/skills/self-hosted-runners/resources/Level4_expert.md
+cat .claude/skills/self-hosted-runners/resources/legacy-skill.md
 cat .claude/skills/self-hosted-runners/resources/runner-labels.md
 cat .claude/skills/self-hosted-runners/resources/runner-security.md
+cat .claude/skills/self-hosted-runners/resources/runner-setup.md
+```
 
-# テンプレート
+### スクリプト実行
+```bash
+node .claude/skills/self-hosted-runners/scripts/check-runner-status.mjs --help
+node .claude/skills/self-hosted-runners/scripts/log_usage.mjs --help
+node .claude/skills/self-hosted-runners/scripts/validate-skill.mjs --help
+```
+
+### テンプレート参照
+```bash
 cat .claude/skills/self-hosted-runners/templates/runner-workflow.yaml
-
-# ステータス確認
-node .claude/skills/self-hosted-runners/scripts/check-runner-status.mjs [owner] [repo]
 ```
 
-## ランナータイプ
+## 変更履歴
 
-| タイプ           | 用途         | 特徴               |
-| ---------------- | ------------ | ------------------ |
-| **永続的**       | 長期稼働     | 常時起動、環境維持 |
-| **エフェメラル** | ジョブ毎破棄 | セキュリティ重視   |
-| **コンテナ**     | Docker 環境  | 分離、スケール     |
-| **VM/物理**      | 専用 HW      | GPU、特殊環境      |
-
-## runs-on パターン
-
-```yaml
-# 基本
-runs-on: self-hosted
-
-# ラベル複数（AND条件）
-runs-on: [self-hosted, linux, x64, gpu]
-
-# マトリクス
-strategy:
-  matrix:
-    runner: [self-hosted-linux, self-hosted-windows]
-runs-on: ${{ matrix.runner }}
-
-# 条件分岐
-runs-on: ${{ github.ref == 'refs/heads/main' && '[self-hosted, production]' || '[self-hosted, staging]' }}
-```
-
-## 主要ユースケース
-
-```yaml
-# プライベート環境アクセス
-jobs:
-  build:
-    runs-on: [self-hosted, internal-network]
-    steps:
-      - uses: actions/checkout@v4
-      - run: curl http://internal-api.company.local
-
-# GPU利用
-jobs:
-  train:
-    runs-on: [self-hosted, gpu, cuda-11.8]
-    steps:
-      - run: python train.py --gpu
-
-# エフェメラルランナー
-jobs:
-  secure:
-    runs-on: [self-hosted, ephemeral, isolated]
-    steps:
-      - uses: actions/checkout@v4
-      - run: ./build.sh
-```
-
-## ラベル設計
-
-### システムラベル（自動）
-
-- `self-hosted`, `linux`/`windows`/`macOS`, `x64`/`ARM`/`ARM64`
-
-### カスタムラベル推奨パターン
-
-```bash
-# 環境: [production, staging, development]
-# ハードウェア: [gpu, cuda-11, high-memory, ssd]
-# ネットワーク: [internal-network, vpn-enabled]
-# セキュリティ: [ephemeral, isolated, sandboxed]
-# 用途: [build-server, test-server, deploy-server]
-```
-
-## セキュリティベストプラクティス
-
-```bash
-# 1. エフェメラルモード（ジョブ後に自動削除）
-./config.sh --url https://github.com/owner/repo --token TOKEN --ephemeral
-
-# 2. 専用ユーザー（権限制限）
-sudo useradd -m -s /bin/bash github-runner
-sudo su - github-runner
-
-# 3. ネットワーク分離（必要最小限のアクセス）
-sudo iptables -A OUTPUT -d github.com -j ACCEPT
-sudo iptables -A OUTPUT -j DROP
-```
-
-詳細は `resources/runner-security.md` を参照してください。
-
-## トラブルシューティング
-
-```bash
-# ステータス確認
-node .claude/skills/self-hosted-runners/scripts/check-runner-status.mjs owner repo
-sudo systemctl status actions.runner.*
-
-# ログ確認
-tail -f /opt/actions-runner/_diag/Runner_*.log
-tail -f /opt/actions-runner/_diag/Worker_*.log
-```
-
-## 関連スキル
-
-- **github-actions-syntax**: `.claude/skills/github-actions-syntax/SKILL.md` - ワークフロー基本構文
-- **workflow-security**: `.claude/skills/workflow-security/SKILL.md` - セキュリティベストプラクティス
-- **docker-build-push-action**: `.claude/skills/docker-build-push-action/SKILL.md` - コンテナベースランナー
-- **deployment-environments-gha**: `.claude/skills/deployment-environments-gha/SKILL.md` - 環境別デプロイ
-
-## 参考リンク
-
-- [Self-hosted runners - GitHub Docs](https://docs.github.com/en/actions/hosting-your-own-runners)
-- [Runner groups](https://docs.github.com/en/actions/hosting-your-own-runners/managing-access-to-self-hosted-runners-using-groups)
-- [Security hardening](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#hardening-for-self-hosted-runners)
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

@@ -1,182 +1,116 @@
 ---
-name: multi-agent-systems
+name: .claude/skills/multi-agent-systems/SKILL.md
 description: |
   マルチエージェントシステム設計を専門とするスキル。
   エージェント間協調、ハンドオフプロトコル、情報受け渡しにより、
   効果的な分散システムを構築します。
-
+  
+  📖 参照書籍:
+  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 手順設計
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/multi-agent-systems/resources/collaboration-patterns.md`: Collaboration Patterns
-  - `.claude/skills/multi-agent-systems/scripts/analyze-collaboration.mjs`: 協調パターン検証とハンドオフプロトコル分析スクリプト
-  - `.claude/skills/multi-agent-systems/templates/handoff-protocol-template.json`: エージェント間情報受け渡しの標準化されたJSONフォーマットテンプレート
-
-  専門分野:
-  - 協調パターン: 委譲、連鎖、並行、フィードバック
-  - ハンドオフプロトコル: 標準化された情報受け渡しフォーマット
-  - 依存関係: 前提、後続、並行、サブエージェントの定義
-  - メッセージング: JSON形式の標準化
-
-  使用タイミング:
-  - 複数エージェントの協調を設計する時
-  - ハンドオフプロトコルを定義する時
-  - エージェント間の依存関係を設計する時
-
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/collaboration-patterns.md`: Collaboration Patterns
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `scripts/analyze-collaboration.mjs`: 協調パターン検証とハンドオフプロトコル分析スクリプト
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/handoff-protocol-template.json`: エージェント間情報受け渡しの標準化されたJSONフォーマットテンプレート
+  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
+  
   Use proactively when designing multi-agent collaboration or handoff protocols.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "The Pragmatic Programmer"
+    author: "Andrew Hunt, David Thomas"
+    concepts:
+      - "手順設計"
+      - "実践的改善"
 ---
 
 # Multi-Agent Systems
 
 ## 概要
 
-マルチエージェントシステム設計は、複数のエージェントが協調して
-複雑なタスクを実行するシステムを構築する方法論です。
+マルチエージェントシステム設計を専門とするスキル。
+エージェント間協調、ハンドオフプロトコル、情報受け渡しにより、
+効果的な分散システムを構築します。
 
-**主要な価値**:
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-- 協調パターンにより、タスク分割が明確化
-- 標準化されたプロトコルにより、情報受け渡しが容易
-- 依存関係の明確化により、システムの健全性が保たれる
 
 ## ワークフロー
 
-### Phase 1: 協調パターンの選択
+### Phase 1: 目的と前提の整理
 
-**4 つの協調パターン**:
+**目的**: タスクの目的と前提条件を明確にする
 
-#### 1. 委譲（Delegation）
+**アクション**:
 
-上位エージェントが下位エージェントにタスクを委譲
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-```
-オーケストレーター → ワーカー1
-                  → ワーカー2
-```
+### Phase 2: スキル適用
 
-#### 2. 連鎖（Chaining）
+**目的**: スキルの指針に従って具体的な作業を進める
 
-エージェントが順次処理を引き継ぐ
+**アクション**:
 
-```
-エージェント1 → エージェント2 → エージェント3
-```
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-#### 3. 並行（Parallel）
+### Phase 3: 検証と記録
 
-複数エージェントが独立して並行実行
+**目的**: 成果物の検証と実行記録の保存
 
-```
-エージェント1 ┐
-エージェント2 ├→ 統合
-エージェント3 ┘
-```
+**アクション**:
 
-#### 4. フィードバック（Feedback）
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-後続エージェントが前段に結果をフィードバック
-
-```
-エージェント1 ⇄ エージェント2
-```
-
-### Phase 2: ハンドオフプロトコル設計
-
-**標準フォーマット**:
-
-```json
-{
-  "from_agent": "agent-name",
-  "to_agent": "next-agent",
-  "status": "completed|partial|failed",
-  "summary": "実施内容サマリー",
-  "artifacts": ["file1.md"],
-  "context": {
-    "key_decisions": [],
-    "unresolved_issues": [],
-    "next_steps": []
-  },
-  "metadata": {
-    "duration": "5m30s",
-    "model_used": "sonnet",
-    "token_count": 15420
-  }
-}
-```
-
-**必須情報**:
-
-- from_agent, to_agent
-- status
-- summary
-- artifacts
-- context
-
-### Phase 3: 依存関係の定義
-
-**依存関係の種類**:
-
-- **前提エージェント**: このエージェントの前に実行
-- **後続エージェント**: このエージェントの後に実行
-- **並行エージェント**: 並行実行可能
-- **サブエージェント**: 委譲対象
 
 ## ベストプラクティス
 
-✅ **すべきこと**:
+### すべきこと
+- 複数エージェントの協調を設計する時
+- ハンドオフプロトコルを定義する時
+- エージェント間の依存関係を設計する時
 
-- 標準化されたハンドオフプロトコル使用
-- 依存関係の明確化
-- 循環依存の回避
-
-❌ **避けるべきこと**:
-
-- 独自フォーマットの使用
-- 曖昧な依存関係
-- 循環依存の放置
-
-## 関連スキル
-
-- **agent-architecture-patterns** (`.claude/skills/agent-architecture-patterns/SKILL.md`)
-- **agent-dependency-design** (`.claude/skills/agent-dependency-design/SKILL.md`)
-
-## 詳細リファレンス
-
-詳細な実装ガイドとツールは以下を参照:
-
-- 協調パターン (`resources/collaboration-patterns.md`)
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
 
 ## コマンドリファレンス
 
-このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
-
 ### リソース読み取り
-
 ```bash
-# 協調パターンのガイドを読み取る
+cat .claude/skills/multi-agent-systems/resources/Level1_basics.md
+cat .claude/skills/multi-agent-systems/resources/Level2_intermediate.md
+cat .claude/skills/multi-agent-systems/resources/Level3_advanced.md
+cat .claude/skills/multi-agent-systems/resources/Level4_expert.md
 cat .claude/skills/multi-agent-systems/resources/collaboration-patterns.md
+cat .claude/skills/multi-agent-systems/resources/legacy-skill.md
 ```
 
-### 他のスキルのスクリプトを活用
-
+### スクリプト実行
 ```bash
-# エージェント構造検証
-node .claude/skills/agent-structure-design/scripts/validate-structure.mjs <agent_file.md>
+node .claude/skills/multi-agent-systems/scripts/analyze-collaboration.mjs --help
+node .claude/skills/multi-agent-systems/scripts/log_usage.mjs --help
+node .claude/skills/multi-agent-systems/scripts/validate-skill.mjs --help
+```
 
-# 循環依存チェック
-node .claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs
-
-# アーキテクチャパターン検証
-node .claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs <agent_file.md>
-
-# ドキュメント構造分析
-node .claude/skills/documentation-architecture/scripts/analyze-structure.mjs <doc_directory>
+### テンプレート参照
+```bash
+cat .claude/skills/multi-agent-systems/templates/handoff-protocol-template.json
 ```
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容 |
-| ---------- | ---------- | -------- |
-| 1.0.0      | 2025-11-24 | 初版作成 |
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

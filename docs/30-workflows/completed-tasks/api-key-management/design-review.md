@@ -18,10 +18,10 @@
 
 | エージェント       | レビュー観点         | 担当範囲                                     |
 | ------------------ | -------------------- | -------------------------------------------- |
-| @arch-police       | アーキテクチャ整合性 | レイヤー構造、依存関係、既存設計との整合     |
-| @sec-auditor       | セキュリティ設計     | 暗号化、アクセス制御、ログ漏洩防止           |
-| @electron-security | Electronセキュリティ | safeStorage、IPC、Renderer分離               |
-| @domain-modeler    | ドメインモデル妥当性 | エンティティ、値オブジェクト、ドメインルール |
+| .claude/agents/arch-police.md       | アーキテクチャ整合性 | レイヤー構造、依存関係、既存設計との整合     |
+| .claude/agents/sec-auditor.md       | セキュリティ設計     | 暗号化、アクセス制御、ログ漏洩防止           |
+| .claude/agents/electron-security.md | Electronセキュリティ | safeStorage、IPC、Renderer分離               |
+| .claude/agents/domain-modeler.md    | ドメインモデル妥当性 | エンティティ、値オブジェクト、ドメインルール |
 
 ### 1.2 総合判定
 
@@ -33,7 +33,7 @@
 
 ---
 
-## 2. アーキテクチャ整合性レビュー (@arch-police)
+## 2. アーキテクチャ整合性レビュー (.claude/agents/arch-police.md)
 
 ### 2.1 レイヤー違反チェック
 
@@ -64,7 +64,7 @@
 
 ---
 
-## 3. セキュリティ設計レビュー (@sec-auditor)
+## 3. セキュリティ設計レビュー (.claude/agents/sec-auditor.md)
 
 ### 3.1 暗号化方式の適切性
 
@@ -109,7 +109,7 @@
 
 ---
 
-## 4. Electronセキュリティレビュー (@electron-security)
+## 4. Electronセキュリティレビュー (.claude/agents/electron-security.md)
 
 ### 4.1 safeStorageの正しい使用
 
@@ -151,7 +151,7 @@
 
 ---
 
-## 5. ドメインモデル妥当性レビュー (@domain-modeler)
+## 5. ドメインモデル妥当性レビュー (.claude/agents/domain-modeler.md)
 
 ### 5.1 エンティティ・値オブジェクトの境界
 
@@ -234,25 +234,25 @@
 
 ## 8. 完了条件チェックリスト
 
-### 8.1 アーキテクチャ整合性 (@arch-police)
+### 8.1 アーキテクチャ整合性 (.claude/agents/arch-police.md)
 
 - [x] レイヤー違反がないか
 - [x] 依存関係逆転の原則(DIP)が守られているか
 - [x] 既存設計との整合性
 
-### 8.2 セキュリティ設計 (@sec-auditor)
+### 8.2 セキュリティ設計 (.claude/agents/sec-auditor.md)
 
 - [x] 暗号化方式の適切性
 - [x] アクセス制御の設計
 - [x] ログ出力からの機密情報漏洩防止
 
-### 8.3 Electronセキュリティ (@electron-security)
+### 8.3 Electronセキュリティ (.claude/agents/electron-security.md)
 
 - [x] safeStorageの正しい使用
 - [x] IPC通信の安全性
 - [x] Renderer側からの直接アクセス防止
 
-### 8.4 ドメインモデル妥当性 (@domain-modeler)
+### 8.4 ドメインモデル妥当性 (.claude/agents/domain-modeler.md)
 
 - [x] エンティティ・値オブジェクトの境界が適切か
 - [x] ドメインルールが正しく表現されているか
@@ -279,10 +279,10 @@
 
 | 役割                         | エージェント       | 判定    | 日時       |
 | ---------------------------- | ------------------ | ------- | ---------- |
-| アーキテクチャレビュー       | @arch-police       | ✅ PASS | 2025-12-10 |
-| セキュリティレビュー         | @sec-auditor       | ✅ PASS | 2025-12-10 |
-| Electronセキュリティレビュー | @electron-security | ✅ PASS | 2025-12-10 |
-| ドメインモデルレビュー       | @domain-modeler    | ✅ PASS | 2025-12-10 |
+| アーキテクチャレビュー       | .claude/agents/arch-police.md       | ✅ PASS | 2025-12-10 |
+| セキュリティレビュー         | .claude/agents/sec-auditor.md       | ✅ PASS | 2025-12-10 |
+| Electronセキュリティレビュー | .claude/agents/electron-security.md | ✅ PASS | 2025-12-10 |
+| ドメインモデルレビュー       | .claude/agents/domain-modeler.md    | ✅ PASS | 2025-12-10 |
 
 ---
 
@@ -290,4 +290,4 @@
 
 | バージョン | 日付       | 変更内容 | 作成者                                                          |
 | ---------- | ---------- | -------- | --------------------------------------------------------------- |
-| 1.0.0      | 2025-12-10 | 初版作成 | @arch-police, @sec-auditor, @electron-security, @domain-modeler |
+| 1.0.0      | 2025-12-10 | 初版作成 | .claude/agents/arch-police.md, .claude/agents/sec-auditor.md, .claude/agents/electron-security.md, .claude/agents/domain-modeler.md |

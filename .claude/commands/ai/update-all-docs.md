@@ -1,202 +1,129 @@
 ---
 description: |
   全ドキュメントの一括更新を行うコマンド。
-
-  コードベースの変更に追従してドキュメント（仕様書、API、マニュアル）を
-  自動的に更新し、コードとドキュメントの乖離を防ぎます。
+  実行は専門エージェントに委譲します。
 
   🤖 起動エージェント:
-  - Phase 2: `.claude/agents/spec-writer.md` - 仕様書更新専門
-  - Phase 3: `.claude/agents/api-doc-writer.md` - API仕様書更新専門
-  - Phase 4: `.claude/agents/manual-writer.md` - ユーザーマニュアル更新専門
-
-  📚 利用可能スキル（エージェントが参照）:
-  - `.claude/skills/markdown-advanced-syntax/SKILL.md` - Markdown構造化、Mermaid図
-  - `.claude/skills/api-documentation-best-practices/SKILL.md` - OpenAPI、エンドポイント記述
-  - `.claude/skills/version-control-for-docs/SKILL.md` - 変更履歴管理、差分分析
-  - `.claude/skills/technical-documentation-standards/SKILL.md` - IEEE 830、Documentation as Code
+  - `.claude/agents/spec-writer.md`: 仕様書更新専門
+  - `.claude/agents/api-doc-writer.md`: API仕様書更新専門
+  - `.claude/agents/manual-writer.md`: ユーザーマニュアル更新専門
 
   ⚙️ このコマンドの設定:
-  - argument-hint: なし
-  - allowed-tools: 3エージェント起動とドキュメント更新用
-    • Task: 3エージェント起動用
-    • Read: 既存ドキュメント・コード確認用
-    • Edit: ドキュメント更新用
-    • Write(docs/**): 新規ドキュメント生成用
-  - model: sonnet（標準的なドキュメント更新タスク）
-
-  📋 成果物:
-  - 更新された仕様書（`docs/20-specifications/`）
-  - 更新されたAPI仕様（`docs/30-api/`）
-  - 更新されたマニュアル（`docs/40-manuals/`）
-
-  🎯 更新対象:
-  - コード変更に追従した仕様書
-  - APIエンドポイント仕様
-  - ユーザーマニュアル
-  - アーキテクチャ図
+  - allowed-tools: Task（エージェント起動のみ）
+  - model: sonnet
 
   トリガーキーワード: update docs, documentation, ドキュメント更新, 仕様書更新
-argument-hint: ""
 allowed-tools:
   - Task
-  - Read
-  - Edit
-  - Write(docs/**)
 model: sonnet
 ---
 
 # 全ドキュメント一括更新
 
-このコマンドは、全ドキュメントを一括更新します。
+## 目的
 
-## 📋 実行フロー
+`.claude/commands/ai/update-all-docs.md` の入力を受け取り、専門エージェントに実行を委譲します。
 
-### Phase 1: 変更内容の分析
+## エージェント起動フロー
 
-**Git差分確認**:
+### Phase 1: 仕様書更新専門の実行
 
-```bash
-# 前回のドキュメント更新以降の変更
-git log --since="last-doc-update" --oneline
+**目的**: 仕様書更新専門に関するタスクを実行し、結果を整理する
 
-# 変更ファイル一覧
-git diff HEAD~10 --name-only | grep "src/"
-```
+**背景**: 専門知識が必要なため専門エージェントに委譲する
 
-### Phase 2: spec-writerエージェントを起動（仕様書更新）
+**ゴール**: 仕様書更新専門の結果と次アクションが提示された状態
 
-**使用エージェント**: `.claude/agents/spec-writer.md`
+**起動エージェント**: `.claude/agents/spec-writer.md`
 
-**依頼内容**:
+Task ツールで `.claude/agents/spec-writer.md` を起動:
 
-```markdown
-仕様書（`docs/20-specifications/`）を更新してください。
+**コンテキスト**:
 
-**変更内容**: ${git diff summary}
-
-**要件**:
-
-1. 機能仕様書の更新:
-   - 新機能追加の反映
-   - 変更箇所の更新
-   - 図表の更新（Mermaid）
-
-2. データフロー図の更新
-
-3. 変更履歴の追記
-
-**スキル参照**:
-
-- `.claude/skills/markdown-advanced-syntax/SKILL.md`
-- `.claude/skills/technical-documentation-standards/SKILL.md`
-
-**成果物**: 更新された仕様書（Markdown）
-```
-
-### Phase 3: api-doc-writerエージェントを起動（API仕様更新）
-
-**使用エージェント**: `.claude/agents/api-doc-writer.md`
+- 引数: なし
 
 **依頼内容**:
 
-```markdown
-API仕様書（`docs/30-api/`）を更新してください。
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
 
-**変更内容**: ${API route changes}
+**期待成果物**:
 
-**要件**:
+- `docs/20-specifications/`
+- `docs/30-api/`
+- `docs/40-manuals/`
 
-1. エンドポイント仕様更新:
-   - 新規エンドポイント追加
-   - リクエスト/レスポンススキーマ更新
-   - エラーレスポンス追加
+**完了条件**:
 
-2. サンプルリクエスト更新
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
 
-3. OpenAPI仕様更新（該当する場合）
+### Phase 2: API仕様書更新専門の実行
 
-**スキル参照**: `.claude/skills/api-documentation-best-practices/SKILL.md`
+**目的**: API仕様書更新専門に関するタスクを実行し、結果を整理する
 
-**成果物**: 更新されたAPI仕様書
-```
+**背景**: 専門知識が必要なため専門エージェントに委譲する
 
-### Phase 4: manual-writerエージェントを起動（マニュアル更新）
+**ゴール**: API仕様書更新専門の結果と次アクションが提示された状態
 
-**使用エージェント**: `.claude/agents/manual-writer.md`
+**起動エージェント**: `.claude/agents/api-doc-writer.md`
+
+Task ツールで `.claude/agents/api-doc-writer.md` を起動:
+
+**コンテキスト**:
+
+- 引数: なし
 
 **依頼内容**:
 
-```markdown
-ユーザーマニュアル（`docs/40-manuals/`）を更新してください。
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
 
-**変更内容**: ${feature changes}
+**期待成果物**:
 
-**要件**:
+- `docs/20-specifications/`
+- `docs/30-api/`
+- `docs/40-manuals/`
 
-1. 使用方法の更新:
-   - 新機能の使用例追加
-   - UI変更の反映
-   - トラブルシューティング追加
+**完了条件**:
 
-2. スクリーンショット更新（必要時）
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
 
-**スキル参照**: `.claude/skills/progressive-disclosure/SKILL.md`
+### Phase 3: ユーザーマニュアル更新専門の実行
 
-**成果物**: 更新されたマニュアル
-```
+**目的**: ユーザーマニュアル更新専門に関するタスクを実行し、結果を整理する
 
-### Phase 5: 完了報告
+**背景**: 専門知識が必要なため専門エージェントに委譲する
 
-```markdown
-## ドキュメント更新完了
+**ゴール**: ユーザーマニュアル更新専門の結果と次アクションが提示された状態
 
-### 更新サマリー
+**起動エージェント**: `.claude/agents/manual-writer.md`
 
-- 仕様書: ${spec_updated}件更新
-- API仕様: ${api_updated}件更新
-- マニュアル: ${manual_updated}件更新
+Task ツールで `.claude/agents/manual-writer.md` を起動:
 
-### 主な変更
+**コンテキスト**:
 
-- 新機能追加: ${new_features}
-- APIエンドポイント: ${new_endpoints}
-- UI変更: ${ui_changes}
+- 引数: なし
 
-### Next Steps
+**依頼内容**:
 
-1. ドキュメントレビュー
-2. コミット: git commit -m "docs: update all documentation"
-```
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
+
+**期待成果物**:
+
+- `docs/20-specifications/`
+- `docs/30-api/`
+- `docs/40-manuals/`
+
+**完了条件**:
+
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
 
 ## 使用例
 
 ```bash
 /ai:update-all-docs
 ```
-
-自動実行:
-
-1. 変更内容分析（Git差分）
-2. 仕様書更新（spec-writer）
-3. API仕様更新（api-doc-writer）
-4. マニュアル更新（manual-writer）
-5. 完了報告
-
-## ベストプラクティス
-
-### 定期更新スケジュール
-
-```bash
-# スプリント終了時（2週間毎）
-/ai:update-all-docs
-
-# または機能追加直後
-/ai:update-all-docs
-```
-
-## 参照
-
-- spec-writer: `.claude/agents/spec-writer.md`
-- api-doc-writer: `.claude/agents/api-doc-writer.md`
-- manual-writer: `.claude/agents/manual-writer.md`

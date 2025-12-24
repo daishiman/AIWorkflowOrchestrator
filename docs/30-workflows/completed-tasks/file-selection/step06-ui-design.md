@@ -2,7 +2,7 @@
 
 > **ドキュメントID**: CONV-01-UI
 > **作成日**: 2025-12-16
-> **作成者**: @ui-designer
+> **作成者**: .claude/agents/ui-designer.md
 > **ステータス**: 承認待ち
 > **関連ドキュメント**: [step03-type-design.md](./step03-type-design.md), [step05-store-design.md](./step05-store-design.md)
 
@@ -1300,7 +1300,7 @@ describe("FileSelector アクセシビリティ", () => {
 
 | 役割             | 名前         | 日付       | 承認状況 |
 | ---------------- | ------------ | ---------- | -------- |
-| UIデザイナー     | @ui-designer | 2025-12-16 | 作成済み |
+| UIデザイナー     | .claude/agents/ui-designer.md | 2025-12-16 | 作成済み |
 | アクセシビリティ |              |            | 未承認   |
 | 最終承認者       |              |            | 未承認   |
 
@@ -1310,4 +1310,4 @@ describe("FileSelector アクセシビリティ", () => {
 
 | バージョン | 日付       | 変更内容 | 変更者       |
 | ---------- | ---------- | -------- | ------------ |
-| 1.0        | 2025-12-16 | 初版作成 | @ui-designer |
+| 1.0        | 2025-12-16 | 初版作成 | .claude/agents/ui-designer.md |

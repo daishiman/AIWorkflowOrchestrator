@@ -13,7 +13,7 @@
 | ステータス       | 未実施                                 |
 | 発見元           | AUTH-UI-002 最終レビュー（Phase 7）    |
 | 発見日           | 2025-12-20                             |
-| 発見エージェント | @code-quality（T-07-1最終レビュー）    |
+| 発見エージェント | .claude/agents/code-quality.md（T-07-1最終レビュー）    |
 | 関連タスク       | AUTH-UI-002                            |
 
 ---
@@ -214,18 +214,18 @@ Portal作成とDOM API呼び出しに防御的プログラミング（null check
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: 防御的プログラミング、Clean Code原則、エラーハンドリングパターンの専門家。コード品質とデバッグ性向上に精通。
-- **代替候補**: @logic-dev（ビジネスロジック専門だが、今回はコード品質改善のため@code-qualityが最適）
+- **代替候補**: .claude/agents/logic-dev.md（ビジネスロジック専門だが、今回はコード品質改善のため.claude/agents/code-quality.mdが最適）
 - **参照**: `.claude/agents/agent_list.md`
 
 #### 活用スキル
 
 | スキル名                | 活用方法                              | 選定理由                                 |
 | ----------------------- | ------------------------------------- | ---------------------------------------- |
-| clean-code-practices    | 防御的プログラミング、null check      | エッジケース対応のベストプラクティス適用 |
+| .claude/skills/clean-code-practices/SKILL.md    | 防御的プログラミング、null check      | エッジケース対応のベストプラクティス適用 |
 | error-handling-patterns | try-catch、フォールバック値、ログ出力 | 適切なエラーハンドリング戦略が必要       |
-| refactoring-techniques  | Extract Method維持、既存コードの保全  | 既存の綺麗な構造を崩さずに改善           |
+| .claude/skills/refactoring-techniques/SKILL.md  | Extract Method維持、既存コードの保全  | 既存の綺麗な構造を崩さずに改善           |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -267,7 +267,7 @@ document.body null ケースとgetBoundingClientRect例外ケースのエッジ�
 
 #### 使用エージェント
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 - **選定理由**: React Testing Libraryのエッジケーステスト設計専門家。Object.definePropertyやconsole.errorモックに精通。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -275,9 +275,9 @@ document.body null ケースとgetBoundingClientRect例外ケースのエッジ�
 
 | スキル名                | 活用方法                                   | 選定理由                            |
 | ----------------------- | ------------------------------------------ | ----------------------------------- |
-| boundary-value-analysis | エッジケースの特定（null、例外）           | エラーハンドリングの境界値テスト    |
-| test-doubles            | console.errorスパイ、Object.defineProperty | エラーログ検証とDOM操作モックが必要 |
-| vitest-advanced         | vi.spyOn、モック復元、例外テスト           | Vitestの高度なモック機能が必要      |
+| .claude/skills/boundary-value-analysis/SKILL.md | エッジケースの特定（null、例外）           | エラーハンドリングの境界値テスト    |
+| .claude/skills/test-doubles/SKILL.md            | console.errorスパイ、Object.defineProperty | エラーログ検証とDOM操作モックが必要 |
+| .claude/skills/vitest-advanced/SKILL.md         | vi.spyOn、モック復元、例外テスト           | Vitestの高度なモック機能が必要      |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -306,7 +306,7 @@ UI/UXガイドラインの16.16.9セクション（注意事項）に防御的�
 
 #### 使用エージェント
 
-- **エージェント**: @spec-writer
+- **エージェント**: .claude/agents/spec-writer.md
 - **選定理由**: テクニカルライターとして、ベストプラクティスを適切にドキュメント化できる。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -315,7 +315,7 @@ UI/UXガイドラインの16.16.9セクション（注意事項）に防御的�
 | スキル名                 | 活用方法                                   | 選定理由                               |
 | ------------------------ | ------------------------------------------ | -------------------------------------- |
 | technical-writing        | 防御的プログラミングパターンの明確な文書化 | 他の開発者が理解・適用できる記述が必要 |
-| markdown-advanced-syntax | コードブロック、テーブルの適切な使用       | ガイドライン文書の可読性確保           |
+| .claude/skills/markdown-advanced-syntax/SKILL.md | コードブロック、テーブルの適切な使用       | ガイドライン文書の可読性確保           |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -468,5 +468,5 @@ UI/UXガイドラインの16.16.9セクション（注意事項）に防御的�
 ---
 
 **作成日時**: 2025-12-20 23:35
-**作成者**: @spec-writer（T-09-1サブタスク9.2）
+**作成者**: .claude/agents/spec-writer.md（T-09-1サブタスク9.2）
 **次回レビュー**: 実装完了時

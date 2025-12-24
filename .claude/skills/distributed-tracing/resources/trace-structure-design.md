@@ -353,4 +353,4 @@ Span 5: Notification       20ms  (4%)
 
 このスキルを使用するエージェント:
 
-- `@sre-observer` - ロギング・監視設計者 (.claude/agents/sre-observer.md:982)
+- `.claude/agents/sre-observer.md` - ロギング・監視設計者 (.claude/agents/sre-observer.md:982)

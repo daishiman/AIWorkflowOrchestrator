@@ -1,217 +1,113 @@
 ---
-name: security-headers
+name: .claude/skills/security-headers/SKILL.md
 description: |
   Webアプリケーションセキュリティヘッダーの設定パターン。
-
+  
+  📖 参照書籍:
+  - 『Web Application Security』（Andrew Hoffman）: 脅威モデリング
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/security-headers/resources/csp-configuration.md`: Csp Configurationリソース
-  - `.claude/skills/security-headers/resources/csrf-prevention.md`: Csrf Preventionリソース
-
-  - `.claude/skills/security-headers/templates/nextjs-security-headers-template.js`: Nextjs Security Headersテンプレート
-
-  - `.claude/skills/security-headers/scripts/validate-security-headers.mjs`: Validate Security Headersスクリプト
-
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/csp-configuration.md`: Csp Configurationリソース
+  - `resources/csrf-prevention.md`: Csrf Preventionリソース
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-security-headers.mjs`: Validate Security Headersスクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/nextjs-security-headers-template.js`: Nextjs Security Headersテンプレート
+  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
+  
+  Use proactively when handling security headers tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "Web Application Security"
+    author: "Andrew Hoffman"
+    concepts:
+      - "脅威モデリング"
+      - "セキュア設計"
 ---
 
 # Security Headers
 
-## スキル概要
+## 概要
 
-**コアドメイン**:
+Webアプリケーションセキュリティヘッダーの設定パターン。
 
-- セキュリティヘッダー設定
-- Content Security Policy（CSP）
-- CSRF/XSS/Clickjacking 対策
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-## 必須セキュリティヘッダー
 
-### 1. Content-Security-Policy（CSP）
+## ワークフロー
 
-**目的**: XSS 攻撃とデータインジェクション攻撃を防止
+### Phase 1: 目的と前提の整理
 
-**基本設定**:
+**目的**: タスクの目的と前提条件を明確にする
 
-```typescript
-const cspHeader = `
-  default-src 'self';
-  script-src 'self' 'unsafe-inline' 'unsafe-eval';
-  style-src 'self' 'unsafe-inline';
-  img-src 'self' data: https:;
-  font-src 'self';
-  connect-src 'self';
-  frame-ancestors 'none';
-`
-  .replace(/\s{2,}/g, " ")
-  .trim();
-```
+**アクション**:
 
-**推奨設定（厳格）**:
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-```typescript
-const strictCspHeader = `
-  default-src 'self';
-  script-src 'self';
-  style-src 'self';
-  img-src 'self' data:;
-  font-src 'self';
-  connect-src 'self';
-  frame-ancestors 'none';
-  base-uri 'self';
-  form-action 'self';
-`
-  .replace(/\s{2,}/g, " ")
-  .trim();
-```
+### Phase 2: スキル適用
 
-### 2. X-Frame-Options
+**目的**: スキルの指針に従って具体的な作業を進める
 
-**目的**: Clickjacking 攻撃を防止
+**アクション**:
 
-```typescript
-'X-Frame-Options': 'DENY'
-// または
-'X-Frame-Options': 'SAMEORIGIN'
-```
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-### 3. X-Content-Type-Options
+### Phase 3: 検証と記録
 
-**目的**: MIME タイプスニッフィング攻撃を防止
+**目的**: 成果物の検証と実行記録の保存
 
-```typescript
-'X-Content-Type-Options': 'nosniff'
-```
+**アクション**:
 
-### 4. Strict-Transport-Security（HSTS）
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-**目的**: HTTPS 接続を強制
 
-```typescript
-'Strict-Transport-Security': 'max-age=31536000; includeSubDomains'
-```
+## ベストプラクティス
 
-### 5. Referrer-Policy
+### すべきこと
+- resources/Level1_basics.md を参照し、適用範囲を明確にする
+- resources/Level2_intermediate.md を参照し、実務手順を整理する
 
-**目的**: リファラー情報の制御
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
 
-```typescript
-'Referrer-Policy': 'strict-origin-when-cross-origin'
-```
+## コマンドリファレンス
 
-### 6. Permissions-Policy
-
-**目的**: ブラウザ機能へのアクセス制御
-
-```typescript
-'Permissions-Policy': 'camera=(), microphone=(), geolocation=()'
-```
-
-## Next.js での設定
-
-### next.config.js
-
-```javascript
-const nextConfig = {
-  async headers() {
-    return [
-      {
-        source: "/:path*",
-        headers: [
-          {
-            key: "Content-Security-Policy",
-            value: cspHeader,
-          },
-          {
-            key: "X-Frame-Options",
-            value: "DENY",
-          },
-          {
-            key: "X-Content-Type-Options",
-            value: "nosniff",
-          },
-          {
-            key: "Strict-Transport-Security",
-            value: "max-age=31536000; includeSubDomains",
-          },
-          {
-            key: "Referrer-Policy",
-            value: "strict-origin-when-cross-origin",
-          },
-          {
-            key: "Permissions-Policy",
-            value: "camera=(), microphone=(), geolocation=()",
-          },
-        ],
-      },
-    ];
-  },
-};
-```
-
-## CSRF 対策
-
-### SameSite Cookie 属性
-
-```typescript
-cookies().set("session_token", token, {
-  sameSite: "lax", // またはstrict
-});
-```
-
-### CSRF トークン検証（追加保護）
-
-```typescript
-// ミドルウェア
-export async function verifyCsrfToken(request: Request): Promise<boolean> {
-  if (request.method === "GET" || request.method === "HEAD") {
-    return true; // 読み取りのみ操作はスキップ
-  }
-
-  const token = request.headers.get("X-CSRF-Token");
-  const sessionToken = cookies().get("csrf_token")?.value;
-
-  return token === sessionToken;
-}
-```
-
-## リソース参照
-
+### リソース読み取り
 ```bash
+cat .claude/skills/security-headers/resources/Level1_basics.md
+cat .claude/skills/security-headers/resources/Level2_intermediate.md
+cat .claude/skills/security-headers/resources/Level3_advanced.md
+cat .claude/skills/security-headers/resources/Level4_expert.md
 cat .claude/skills/security-headers/resources/csp-configuration.md
 cat .claude/skills/security-headers/resources/csrf-prevention.md
+cat .claude/skills/security-headers/resources/legacy-skill.md
 ```
 
-## テンプレート参照
+### スクリプト実行
+```bash
+node .claude/skills/security-headers/scripts/log_usage.mjs --help
+node .claude/skills/security-headers/scripts/validate-security-headers.mjs --help
+node .claude/skills/security-headers/scripts/validate-skill.mjs --help
+```
 
+### テンプレート参照
 ```bash
 cat .claude/skills/security-headers/templates/nextjs-security-headers-template.js
 ```
 
-## スクリプト実行
+## 変更履歴
 
-```bash
-node .claude/skills/security-headers/scripts/validate-security-headers.mjs next.config.js
-```
-
-## 判断基準
-
-- [ ] すべての OWASP 推奨ヘッダーが設定されているか？
-- [ ] CSP はアプリケーション要件と互換性があるか？
-- [ ] CSRF 対策は多層化されているか？
-- [ ] Cookie 属性は適切か（HttpOnly、Secure、SameSite）？
-
-## ベストプラクティス
-
-1. **CSP 厳格化**: 'unsafe-inline'/'unsafe-eval'を避ける
-2. **HSTS 有効化**: HTTPS 強制
-3. **SameSite Cookie**: Lax/Strict 推奨
-4. **多層 CSRF 対策**: SameSite + CSRF トークン
-
-## バージョン履歴
-
-| バージョン | 日付       | 変更内容                                        |
-| ---------- | ---------- | ----------------------------------------------- |
-| 1.0.0      | 2025-11-26 | 初版リリース - セキュリティヘッダー設定パターン |
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

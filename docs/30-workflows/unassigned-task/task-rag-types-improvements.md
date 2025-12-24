@@ -13,7 +13,7 @@
 | ステータス       | 未実施                                 |
 | 発見元           | Phase 7 最終レビューゲート             |
 | 発見日           | 2025-12-16                             |
-| 発見エージェント | @code-quality, @unit-tester            |
+| 発見エージェント | .claude/agents/code-quality.md, .claude/agents/unit-tester.md            |
 
 ---
 
@@ -22,13 +22,13 @@
 ### 1.1 背景
 
 CONV-03-01「RAG基本型・共通インターフェース定義」の最終レビューゲート（Phase 7）において、
-3エージェント並列レビュー（@code-quality, @arch-police, @unit-tester）を実施した。
+3エージェント並列レビュー（.claude/agents/code-quality.md, .claude/agents/arch-police.md, .claude/agents/unit-tester.md）を実施した。
 
 レビュー結果：
 
-- `@code-quality`: MINOR判定 - JSDoc改善を推奨
-- `@arch-police`: PASS判定 - 問題なし
-- `@unit-tester`: MINOR判定 - 境界値テスト追加を推奨
+- `.claude/agents/code-quality.md`: MINOR判定 - JSDoc改善を推奨
+- `.claude/agents/arch-police.md`: PASS判定 - 問題なし
+- `.claude/agents/unit-tester.md`: MINOR判定 - 境界値テスト追加を推奨
 
 現状でも本番使用可能な品質であり、機能・アーキテクチャ面での問題はないが、
 ドキュメント品質とテスト網羅性の観点で改善の余地がある。
@@ -167,18 +167,18 @@ Phase 9: ドキュメント更新
 
 #### 使用エージェントリスト（動的選定）
 
-- **エージェント**: `@unit-tester`
+- **エージェント**: `.claude/agents/unit-tester.md`
 - **選定理由**: 境界値テストの設計・実装に特化したエージェント
-- **代替候補**: `@frontend-tester`（フロントエンド寄りの場合）
+- **代替候補**: `.claude/agents/frontend-tester.md`（フロントエンド寄りの場合）
 - **参照**: `.claude/agents/agent_list.md`
 
 #### 活用スキルリスト（動的選定）
 
 | スキル名                  | 活用方法                               | 選定理由                     |
 | ------------------------- | -------------------------------------- | ---------------------------- |
-| `boundary-value-analysis` | 境界値の特定と網羅的なテストケース設計 | 境界値テスト設計の体系的手法 |
-| `tdd-principles`          | Red-Green-Refactorサイクルの遵守       | TDDプロセスの品質確保        |
-| `zod-validation`          | Zodスキーマの境界値テスト設計          | Zodスキーマ固有のテスト観点  |
+| `.claude/skills/boundary-value-analysis/SKILL.md` | 境界値の特定と網羅的なテストケース設計 | 境界値テスト設計の体系的手法 |
+| `.claude/skills/tdd-principles/SKILL.md`          | Red-Green-Refactorサイクルの遵守       | TDDプロセスの品質確保        |
+| `.claude/skills/zod-validation/SKILL.md`          | Zodスキーマの境界値テスト設計          | Zodスキーマ固有のテスト観点  |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -215,17 +215,17 @@ JSDocの改善とテストを通すための実装を行う。
 
 #### 使用エージェントリスト（動的選定）
 
-- **エージェント**: `@code-quality`
+- **エージェント**: `.claude/agents/code-quality.md`
 - **選定理由**: JSDocの品質改善に特化したエージェント
-- **代替候補**: `@logic-dev`（ロジック変更が必要な場合）
+- **代替候補**: `.claude/agents/logic-dev.md`（ロジック変更が必要な場合）
 - **参照**: `.claude/agents/agent_list.md`
 
 #### 活用スキルリスト（動的選定）
 
 | スキル名               | 活用方法                  | 選定理由                     |
 | ---------------------- | ------------------------- | ---------------------------- |
-| `code-style-guides`    | JSDoc記法の標準化         | 一貫したドキュメントスタイル |
-| `type-safety-patterns` | @templateタグの適切な使用 | 型安全性の向上               |
+| `.claude/skills/code-style-guides/SKILL.md`    | JSDoc記法の標準化         | 一貫したドキュメントスタイル |
+| `.claude/skills/type-safety-patterns/SKILL.md` | @templateタグの適切な使用 | 型安全性の向上               |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -263,7 +263,7 @@ JSDocの改善とテストを通すための実装を行う。
 
 #### 使用エージェントリスト（動的選定）
 
-- **エージェント**: `@unit-tester`
+- **エージェント**: `.claude/agents/unit-tester.md`
 - **選定理由**: テスト実行と品質検証に特化
 - **参照**: `.claude/agents/agent_list.md`
 

@@ -13,7 +13,7 @@
 | ステータス       | 未実施                                   |
 | 発見元           | ユーザー要望                             |
 | 発見日           | 2025-12-11                               |
-| 発見エージェント | @product-manager                         |
+| 発見エージェント | .claude/agents/product-manager.md                         |
 
 ---
 
@@ -100,10 +100,10 @@
 
 ## 3. 主要な使用エージェント
 
-- **@ui-designer**: 連携UI・差分プレビューの設計
-- **@electron-architect**: ファイルシステムとチャットの連携
-- **@logic-dev**: コンテキスト管理・適用ロジック
-- **@state-manager**: ワークスペース・チャット状態の同期
+- **.claude/agents/ui-designer.md**: 連携UI・差分プレビューの設計
+- **.claude/agents/electron-architect.md**: ファイルシステムとチャットの連携
+- **.claude/agents/logic-dev.md**: コンテキスト管理・適用ロジック
+- **.claude/agents/state-manager.md**: ワークスペース・チャット状態の同期
 
 ---
 

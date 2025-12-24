@@ -130,7 +130,7 @@ UI/UX要件とアクセシビリティ要件の明文化
 
 #### 使用エージェント
 
-- **エージェント**: @req-analyst
+- **エージェント**: .claude/agents/req-analyst.md
 - **選定理由**: 要件定義の専門家として、ユーザー視点での機能要件を明確化できる。曖昧性を排除し、検証可能な受け入れ基準を定義する能力を持つ。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -138,9 +138,9 @@ UI/UX要件とアクセシビリティ要件の明文化
 
 | スキル名                               | 活用方法                                                       |
 | -------------------------------------- | -------------------------------------------------------------- |
-| requirements-engineering               | MoSCoW優先度設定、曖昧性検出、検証可能な要件定義               |
-| acceptance-criteria-writing            | Given-When-Then形式での受け入れ基準作成                        |
-| functional-non-functional-requirements | 機能要件（メニュー表示）と非機能要件（アクセシビリティ）の分類 |
+| .claude/skills/requirements-engineering/SKILL.md               | MoSCoW優先度設定、曖昧性検出、検証可能な要件定義               |
+| .claude/skills/acceptance-criteria-writing/SKILL.md            | Given-When-Then形式での受け入れ基準作成                        |
+| .claude/skills/functional-non-functional-requirements/SKILL.md | 機能要件（メニュー表示）と非機能要件（アクセシビリティ）の分類 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -192,7 +192,7 @@ Portal実装の技術設計とアーキテクチャ決定
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: React UIコンポーネント設計の専門家として、Portal実装パターンとアクセシビリティを考慮した設計ができる。Component Composition Patternsとアクセシビリティ基準（WCAG）に精通している。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -200,9 +200,9 @@ Portal実装の技術設計とアーキテクチャ決定
 
 | スキル名                       | 活用方法                                                       |
 | ------------------------------ | -------------------------------------------------------------- |
-| component-composition-patterns | Portal使用時のコンポーネント構造設計、状態管理の適切な配置     |
-| react-hooks-advanced           | useStateとuseRefを使用したメニュー位置計算とDOM参照            |
-| accessibility-wcag             | Portal化されたメニューのキーボードナビゲーションとARIA属性設計 |
+| .claude/skills/component-composition-patterns/SKILL.md | Portal使用時のコンポーネント構造設計、状態管理の適切な配置     |
+| .claude/skills/react-hooks-advanced/SKILL.md           | useStateとuseRefを使用したメニュー位置計算とDOM参照            |
+| .claude/skills/accessibility-wcag/SKILL.md             | Portal化されたメニューのキーボードナビゲーションとARIA属性設計 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -243,28 +243,28 @@ Portal実装はReactの高度な機能であり、アクセシビリティやパ
 
 | エージェント     | レビュー観点                | 選定理由                                                     |
 | ---------------- | --------------------------- | ------------------------------------------------------------ |
-| @arch-police     | アーキテクチャ整合性        | コンポーネント構造とクリーンアーキテクチャ原則への準拠を確認 |
-| @ui-designer     | UI/UX設計とアクセシビリティ | Portal使用時のアクセシビリティとユーザビリティを評価         |
-| @frontend-tester | テスト容易性                | Portal化されたコンポーネントのテスト戦略と実装可能性を確認   |
+| .claude/agents/arch-police.md     | アーキテクチャ整合性        | コンポーネント構造とクリーンアーキテクチャ原則への準拠を確認 |
+| .claude/agents/ui-designer.md     | UI/UX設計とアクセシビリティ | Portal使用時のアクセシビリティとユーザビリティを評価         |
+| .claude/agents/frontend-tester.md | テスト容易性                | Portal化されたコンポーネントのテスト戦略と実装可能性を確認   |
 
 - **参照**: `.claude/agents/agent_list.md`
 
 #### レビューチェックリスト
 
-**アーキテクチャ整合性** (@arch-police)
+**アーキテクチャ整合性** (.claude/agents/arch-police.md)
 
 - [ ] コンポーネントの責務が単一であるか
 - [ ] 既存のコンポーネント構造と整合性があるか
 - [ ] SOLID原則（特にSRP）に違反していないか
 
-**UI/UX設計とアクセシビリティ** (@ui-designer)
+**UI/UX設計とアクセシビリティ** (.claude/agents/ui-designer.md)
 
 - [ ] WCAG 2.1 AA基準を満たしているか
 - [ ] キーボードナビゲーションが適切に設計されているか
 - [ ] ARIA属性が正しく設計されているか
 - [ ] ユーザビリティが損なわれていないか
 
-**テスト容易性** (@frontend-tester)
+**テスト容易性** (.claude/agents/frontend-tester.md)
 
 - [ ] Portal化されたコンポーネントがテスト可能か
 - [ ] モック戦略が明確か
@@ -325,7 +325,7 @@ Portal機能の検証テスト作成
 
 #### 使用エージェント
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 - **選定理由**: フロントエンドテストの専門家として、Portalを含むコンポーネントテスト戦略に精通。React Testing LibraryとVitestを使用したTDDアプローチを実践できる。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -333,9 +333,9 @@ Portal機能の検証テスト作成
 
 | スキル名                | 活用方法                                           |
 | ----------------------- | -------------------------------------------------- |
-| vitest-advanced         | Vitestを使用したコンポーネントテストの作成         |
-| tdd-principles          | Red-Green-Refactorサイクルの実践、テストファースト |
-| boundary-value-analysis | Portal表示/非表示、位置計算の境界値テスト          |
+| .claude/skills/vitest-advanced/SKILL.md         | Vitestを使用したコンポーネントテストの作成         |
+| .claude/skills/tdd-principles/SKILL.md          | Red-Green-Refactorサイクルの実践、テストファースト |
+| .claude/skills/boundary-value-analysis/SKILL.md | Portal表示/非表示、位置計算の境界値テスト          |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -395,7 +395,7 @@ Portal機能の実装
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: React UIコンポーネント実装の専門家として、Portalパターンを適切に実装できる。アクセシビリティとパフォーマンスを考慮した実装が可能。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -403,9 +403,9 @@ Portal機能の実装
 
 | スキル名                       | 活用方法                                             |
 | ------------------------------ | ---------------------------------------------------- |
-| component-composition-patterns | Portal使用時のコンポーネント構造とComposition実装    |
-| react-hooks-advanced           | useStateとuseRefを使用したメニュー位置計算と状態管理 |
-| accessibility-wcag             | ARIA属性の実装、キーボードイベントハンドリング       |
+| .claude/skills/component-composition-patterns/SKILL.md | Portal使用時のコンポーネント構造とComposition実装    |
+| .claude/skills/react-hooks-advanced/SKILL.md           | useStateとuseRefを使用したメニュー位置計算と状態管理 |
+| .claude/skills/accessibility-wcag/SKILL.md             | ARIA属性の実装、キーボードイベントハンドリング       |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -466,7 +466,7 @@ Portal実装が動作するようになったが、コードの品質向上の�
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: コード品質管理の専門家として、Clean Code原則に基づくリファクタリングを実施できる。可読性、保守性、型安全性の向上に精通している。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -474,9 +474,9 @@ Portal実装が動作するようになったが、コードの品質向上の�
 
 | スキル名               | 活用方法                                              |
 | ---------------------- | ----------------------------------------------------- |
-| refactoring-techniques | Extract Method、Replace Temp with Queryパターンの適用 |
-| clean-code-practices   | 意味のある命名、小さな関数、DRY原則の適用             |
-| type-safety-patterns   | TypeScript型定義の強化、型ガードの追加                |
+| .claude/skills/refactoring-techniques/SKILL.md | Extract Method、Replace Temp with Queryパターンの適用 |
+| .claude/skills/clean-code-practices/SKILL.md   | 意味のある命名、小さな関数、DRY原則の適用             |
+| .claude/skills/type-safety-patterns/SKILL.md   | TypeScript型定義の強化、型ガードの追加                |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -539,7 +539,7 @@ pnpm --filter @repo/desktop test:run AccountSection
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: 品質管理の専門家として、テスト実行、Lint、型チェック、アクセシビリティ検証の統合的な実施と評価ができる。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -547,10 +547,10 @@ pnpm --filter @repo/desktop test:run AccountSection
 
 | スキル名             | 活用方法                                        |
 | -------------------- | ----------------------------------------------- |
-| vitest-advanced      | テストカバレッジの測定と評価                    |
-| eslint-configuration | ESLintルールの実行と違反検出                    |
-| prettier-integration | コードフォーマットの検証                        |
-| accessibility-wcag   | アクセシビリティ基準（WCAG 2.1 AA）への準拠確認 |
+| .claude/skills/vitest-advanced/SKILL.md      | テストカバレッジの測定と評価                    |
+| .claude/skills/eslint-configuration/SKILL.md | ESLintルールの実行と違反検出                    |
+| .claude/skills/prettier-integration/SKILL.md | コードフォーマットの検証                        |
+| .claude/skills/accessibility-wcag/SKILL.md   | アクセシビリティ基準（WCAG 2.1 AA）への準拠確認 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -592,29 +592,29 @@ Phase 6の自動検証だけでは検出できない設計判断やベストプ�
 
 | エージェント     | レビュー観点            | 選定理由                                                             |
 | ---------------- | ----------------------- | -------------------------------------------------------------------- |
-| @code-quality    | コード品質              | コーディング規約準拠、可読性、保守性、エラーハンドリングの評価       |
-| @ui-designer     | UI/UXとアクセシビリティ | Portal実装がユーザビリティとアクセシビリティ基準を満たしているか確認 |
-| @frontend-tester | テスト品質              | テストカバレッジ、テストケース設計、境界値テストの妥当性評価         |
+| .claude/agents/code-quality.md    | コード品質              | コーディング規約準拠、可読性、保守性、エラーハンドリングの評価       |
+| .claude/agents/ui-designer.md     | UI/UXとアクセシビリティ | Portal実装がユーザビリティとアクセシビリティ基準を満たしているか確認 |
+| .claude/agents/frontend-tester.md | テスト品質              | テストカバレッジ、テストケース設計、境界値テストの妥当性評価         |
 
 - **参照**: `.claude/agents/agent_list.md`
 
 #### レビューチェックリスト
 
-**コード品質** (@code-quality)
+**コード品質** (.claude/agents/code-quality.md)
 
 - [ ] コーディング規約への準拠
 - [ ] 可読性・保守性の確保
 - [ ] 適切なエラーハンドリング
 - [ ] 過度な複雑性の有無
 
-**UI/UXとアクセシビリティ** (@ui-designer)
+**UI/UXとアクセシビリティ** (.claude/agents/ui-designer.md)
 
 - [ ] WCAG 2.1 AA基準への準拠
 - [ ] キーボードナビゲーションの実装
 - [ ] ARIA属性の適切な使用
 - [ ] ユーザビリティの確保
 
-**テスト品質** (@frontend-tester)
+**テスト品質** (.claude/agents/frontend-tester.md)
 
 - [ ] テストカバレッジが十分か
 - [ ] テストケースが適切に設計されているか
@@ -677,7 +677,7 @@ Phase 6の自動検証だけでは検出できない設計判断やベストプ�
 
 #### 使用エージェント
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 - **選定理由**: フロントエンド手動テストの専門家として、ユーザー視点でのテストシナリオ作成と実行計画を策定できる。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -756,7 +756,7 @@ Phase 6の自動検証だけでは検出できない設計判断やベストプ�
 
 ##### 使用エージェント
 
-- **エージェント**: @spec-writer
+- **エージェント**: .claude/agents/spec-writer.md
 - **選定理由**: テクニカルライターとして、実装した内容を適切にドキュメント化できる。Documentation as Code原則に従った更新が可能。
 - **参照**: `.claude/agents/agent_list.md`
 

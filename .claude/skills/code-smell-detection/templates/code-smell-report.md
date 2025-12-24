@@ -4,7 +4,7 @@
 
 - **分析日**: {{date}}
 - **分析対象**: {{target}}
-- **分析担当**: @arch-police
+- **分析担当**: .claude/agents/arch-police.md
 
 ---
 

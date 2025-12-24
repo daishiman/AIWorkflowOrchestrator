@@ -9,7 +9,7 @@
 | 親タスクID       | TASK-SEARCH-REPLACE-001                                   |
 | フェーズ         | Phase 0: 要件定義                                         |
 | ステータス       | 完了                                                      |
-| 担当エージェント | @req-analyst                                              |
+| 担当エージェント | .claude/agents/req-analyst.md                                              |
 | 作成日           | 2025-12-12                                                |
 | 参照タスク仕様書 | `docs/30-workflows/search-replace/task-search-replace.md` |
 | 前提サブタスク   | T-00-1（ファイル内検索要件定義）                          |
@@ -517,4 +517,4 @@ interface ReplacePreview {
 
 | 日付       | 版  | 変更内容 | 担当         |
 | ---------- | --- | -------- | ------------ |
-| 2025-12-12 | 1.0 | 初版作成 | @req-analyst |
+| 2025-12-12 | 1.0 | 初版作成 | .claude/agents/req-analyst.md |

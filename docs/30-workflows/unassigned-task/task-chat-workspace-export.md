@@ -13,7 +13,7 @@
 | ステータス       | 未実施                                 |
 | 発見元           | Phase 7（最終レビューゲート）          |
 | 発見日           | 2025-12-23                             |
-| 発見エージェント | @product-manager                       |
+| 発見エージェント | .claude/agents/product-manager.md                       |
 
 ---
 
@@ -187,7 +187,7 @@ Phase 9: ドキュメント更新
 
 ##### 使用エージェントリスト
 
-- **エージェント**: @req-analyst
+- **エージェント**: .claude/agents/req-analyst.md
 - **選定理由**: 要件の明確化、ユースケース分析に精通
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -195,8 +195,8 @@ Phase 9: ドキュメント更新
 
 | スキル名                    | 活用方法           | 選定理由                   |
 | --------------------------- | ------------------ | -------------------------- |
-| use-case-modeling           | ユースケース図作成 | ユーザー操作フローの可視化 |
-| acceptance-criteria-writing | 受け入れ基準定義   | 検証可能な基準の策定       |
+| .claude/skills/use-case-modeling/SKILL.md           | ユースケース図作成 | ユーザー操作フローの可視化 |
+| .claude/skills/acceptance-criteria-writing/SKILL.md | 受け入れ基準定義   | 検証可能な基準の策定       |
 
 ##### 成果物
 
@@ -226,7 +226,7 @@ workspace_assetsテーブルを拡張し、チャット成果物を管理でき�
 
 ##### 使用エージェントリスト
 
-- **エージェント**: @db-architect
+- **エージェント**: .claude/agents/db-architect.md
 - **選定理由**: テーブル拡張、外部キー制約、インデックス設計に精通
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -234,9 +234,9 @@ workspace_assetsテーブルを拡張し、チャット成果物を管理でき�
 
 | スキル名                | 活用方法                    | 選定理由                   |
 | ----------------------- | --------------------------- | -------------------------- |
-| database-normalization  | アセットテーブル設計        | 正規化と非正規化のバランス |
-| foreign-key-constraints | セッション-アセット関連付け | 参照整合性の確保           |
-| indexing-strategies     | 検索最適化インデックス      | クエリパフォーマンス向上   |
+| .claude/skills/database-normalization/SKILL.md  | アセットテーブル設計        | 正規化と非正規化のバランス |
+| .claude/skills/foreign-key-constraints/SKILL.md | セッション-アセット関連付け | 参照整合性の確保           |
+| .claude/skills/indexing-strategies/SKILL.md     | 検索最適化インデックス      | クエリパフォーマンス向上   |
 
 ##### 成果物
 
@@ -265,7 +265,7 @@ workspace_assetsテーブルを拡張し、チャット成果物を管理でき�
 
 ##### 使用エージェントリスト
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: Apple HIG準拠のUI設計、アクセシビリティ対応に精通
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -273,9 +273,9 @@ workspace_assetsテーブルを拡張し、チャット成果物を管理でき�
 
 | スキル名               | 活用方法               | 選定理由            |
 | ---------------------- | ---------------------- | ------------------- |
-| apple-hig-guidelines   | ダイアログUI設計       | macOSネイティブ体験 |
-| accessibility-wcag     | アクセシブルな操作設計 | WCAG 2.1 AA準拠     |
-| progressive-disclosure | 段階的な情報表示       | 情報過多の防止      |
+| .claude/skills/apple-hig-guidelines/SKILL.md   | ダイアログUI設計       | macOSネイティブ体験 |
+| .claude/skills/accessibility-wcag/SKILL.md     | アクセシブルな操作設計 | WCAG 2.1 AA準拠     |
+| .claude/skills/progressive-disclosure/SKILL.md | 段階的な情報表示       | 情報過多の防止      |
 
 ##### 成果物
 
@@ -300,9 +300,9 @@ workspace_assetsテーブルを拡張し、チャット成果物を管理でき�
 
 | エージェント  | レビュー観点             | 選定理由                   |
 | ------------- | ------------------------ | -------------------------- |
-| @arch-police  | アーキテクチャ整合性     | 既存設計との整合性確認     |
-| @db-architect | データベース設計の妥当性 | スキーマ品質検証           |
-| @sec-auditor  | セキュリティ考慮事項     | ファイル操作のセキュリティ |
+| .claude/agents/arch-police.md  | アーキテクチャ整合性     | 既存設計との整合性確認     |
+| .claude/agents/db-architect.md | データベース設計の妥当性 | スキーマ品質検証           |
+| .claude/agents/sec-auditor.md  | セキュリティ考慮事項     | ファイル操作のセキュリティ |
 
 #### 完了条件
 
@@ -326,7 +326,7 @@ workspace_assetsテーブルを拡張し、チャット成果物を管理でき�
 
 ##### 使用エージェントリスト
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: TDDパターン、モック設計に精通
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -353,7 +353,7 @@ workspace_assetsテーブルを拡張し、チャット成果物を管理でき�
 
 ##### 使用エージェントリスト
 
-- **エージェント**: @db-architect
+- **エージェント**: .claude/agents/db-architect.md
 - **選定理由**: Drizzle ORM、マイグレーション実装に精通
 
 ##### 成果物
@@ -373,7 +373,7 @@ workspace_assetsテーブルを拡張し、チャット成果物を管理でき�
 
 ##### 使用エージェントリスト
 
-- **エージェント**: @logic-dev
+- **エージェント**: .claude/agents/logic-dev.md
 - **選定理由**: ドメインロジック、サービス層実装に精通
 
 ##### 成果物
@@ -392,7 +392,7 @@ workspace_assetsテーブルを拡張し、チャット成果物を管理でき�
 
 ##### 使用エージェントリスト
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: Reactコンポーネント実装、Apple HIG準拠に精通
 
 ##### 成果物
@@ -527,5 +527,5 @@ Phase 7最終レビューにて、チャット履歴機能の将来拡張とし�
 
 | バージョン | 日付       | 変更内容                      | 変更者             |
 | ---------- | ---------- | ----------------------------- | ------------------ |
-| 1.0.0      | 2025-12-11 | 初版作成                      | @product-manager   |
+| 1.0.0      | 2025-12-11 | 初版作成                      | .claude/agents/product-manager.md   |
 | 1.1.0      | 2025-12-23 | Mitasukテンプレート準拠に拡充 | Phase 9 タスク記録 |

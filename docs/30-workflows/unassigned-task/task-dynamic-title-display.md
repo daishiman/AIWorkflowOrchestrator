@@ -23,7 +23,7 @@
 | ステータス       | 未実施                         |
 | 発見元           | ユーザー要望                   |
 | 発見日           | 2025-12-12                     |
-| 発見エージェント | @product-manager               |
+| 発見エージェント | .claude/agents/product-manager.md               |
 
 ---
 
@@ -152,15 +152,15 @@ graph TD
 
 #### 使用エージェント
 
-- **エージェント**: @req-analyst, @ui-designer
+- **エージェント**: .claude/agents/req-analyst.md, .claude/agents/ui-designer.md
 - **選定理由**: UX観点での要件分析が必要
 
 #### 活用スキル
 
 | スキル名             | 活用方法               |
 | -------------------- | ---------------------- |
-| accessibility-wcag   | アクセシビリティ要件   |
-| apple-hig-guidelines | デスクトップUIパターン |
+| .claude/skills/accessibility-wcag/SKILL.md   | アクセシビリティ要件   |
+| .claude/skills/apple-hig-guidelines/SKILL.md | デスクトップUIパターン |
 
 #### 成果物
 
@@ -220,15 +220,15 @@ TruncatedTitleコンポーネントの設計のみを担当。
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: UIコンポーネント設計の専門性
 
 #### 活用スキル
 
 | スキル名                       | 活用方法           |
 | ------------------------------ | ------------------ |
-| component-composition-patterns | コンポーネント設計 |
-| type-safety-patterns           | Props型定義        |
+| .claude/skills/component-composition-patterns/SKILL.md | コンポーネント設計 |
+| .claude/skills/type-safety-patterns/SKILL.md           | Props型定義        |
 
 #### 成果物
 
@@ -308,7 +308,7 @@ EditorHeaderのレイアウト設計のみを担当。
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 
 #### 成果物
 

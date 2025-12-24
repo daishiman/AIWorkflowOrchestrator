@@ -9,7 +9,7 @@
 | バージョン       | 1.0.0                      |
 | ステータス       | Draft                      |
 | 作成日           | 2025-12-18                 |
-| 作成エージェント | @ui-designer               |
+| 作成エージェント | .claude/agents/ui-designer.md               |
 | 対象ファイル     | SelectableFileTreeItem.tsx |
 
 ---
@@ -445,4 +445,4 @@ className =
 
 | バージョン | 日付       | 更新者       | 更新内容 |
 | ---------- | ---------- | ------------ | -------- |
-| 1.0.0      | 2025-12-18 | @ui-designer | 初版作成 |
+| 1.0.0      | 2025-12-18 | .claude/agents/ui-designer.md | 初版作成 |

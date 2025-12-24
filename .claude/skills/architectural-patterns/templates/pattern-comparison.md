@@ -4,7 +4,7 @@
 
 - **作成日**: {{date}}
 - **対象プロジェクト**: {{project}}
-- **作成者**: @arch-police
+- **作成者**: .claude/agents/arch-police.md
 
 ---
 

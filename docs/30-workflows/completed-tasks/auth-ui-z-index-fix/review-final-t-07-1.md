@@ -14,10 +14,10 @@
 
 ## 🎯 レビュー観点別評価
 
-### 1. コード品質レビュー (@code-quality)
+### 1. コード品質レビュー (.claude/agents/code-quality.md)
 
 **判定**: **PASS** ✅
-**レポート**: `docs/30-workflows/auth-ui-z-index-fix/review-code-quality.md`（@code-qualityエージェント出力）
+**レポート**: `docs/30-workflows/auth-ui-z-index-fix/review-code-quality.md`（.claude/agents/code-quality.mdエージェント出力）
 
 #### 評価サマリー
 
@@ -52,7 +52,7 @@
 
 ---
 
-### 2. UI/UXとアクセシビリティレビュー (@ui-designer)
+### 2. UI/UXとアクセシビリティレビュー (.claude/agents/ui-designer.md)
 
 **判定**: **PASS** ✅
 **レポート**: `docs/30-workflows/auth-ui-z-index-fix/review-ui-ux-accessibility.md`
@@ -95,7 +95,7 @@
 
 ---
 
-### 3. テスト品質レビュー (@frontend-tester)
+### 3. テスト品質レビュー (.claude/agents/frontend-tester.md)
 
 **判定**: **PASS** ✅（95/100点）
 **レポート**: エージェント出力参照
@@ -153,7 +153,7 @@
 
 ### 改善提案の優先度マトリクス
 
-| 優先度    | @code-quality           | @ui-designer              | @frontend-tester      | 対応時期           |
+| 優先度    | .claude/agents/code-quality.md           | .claude/agents/ui-designer.md              | .claude/agents/frontend-tester.md      | 対応時期           |
 | --------- | ----------------------- | ------------------------- | --------------------- | ------------------ |
 | 🔴 HIGH   | -                       | -                         | -                     | -                  |
 | 🟡 MEDIUM | Portal防御的実装（2件） | Viewport外判定（2件）     | -                     | 次回イテレーション |
@@ -182,7 +182,7 @@ T-07-1の完了条件を確認：
 
 - [x] **レビュー結果が文書化されている**
   - quality-report.md（T-06-1品質ゲート検証）
-  - review-ui-ux-accessibility.md（@ui-designerレビュー）
+  - review-ui-ux-accessibility.md（.claude/agents/ui-designer.mdレビュー）
   - 本ドキュメント（T-07-1最終レビュー統合）
 
 ---
@@ -276,7 +276,7 @@ T-07-1の完了条件を確認：
 ### 品質保証
 
 - [品質ゲート検証レポート](./quality-report.md)（T-06-1）
-- [UI/UXアクセシビリティレビュー](./review-ui-ux-accessibility.md)（@ui-designer）
+- [UI/UXアクセシビリティレビュー](./review-ui-ux-accessibility.md)（.claude/agents/ui-designer.md）
 - [手動テスト結果](./manual-test-report.md)（T-08-1）
 
 ### 実装

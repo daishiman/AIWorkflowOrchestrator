@@ -948,7 +948,7 @@ HybridRAG検索エンジンのクエリ・結果インターフェース。Keywo
 | isEntityResult    | SearchResultItemがEntity結果か判定    |
 | isCommunityResult | SearchResultItemがCommunity結果か判定 |
 
-**テスト品質**: 123テストケース、96.93%カバレッジ達成（types, schemas, utils, type-inference, zod-validation）
+**テスト品質**: 123テストケース、96.93%カバレッジ達成（types, schemas, utils, type-inference, .claude/skills/zod-validation/SKILL.md）
 
 **参照**: `docs/30-workflows/completed-tasks/rag-search-system/` - 詳細な設計・実装ドキュメント
 

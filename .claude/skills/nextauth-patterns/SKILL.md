@@ -1,210 +1,119 @@
 ---
-name: nextauth-patterns
+name: .claude/skills/nextauth-patterns/SKILL.md
 description: |
   NextAuth.js v5の設定とカスタマイズパターン。
   プロバイダー設定、アダプター統合、セッション戦略、
   コールバックカスタマイズ、型安全性の確保を提供。
-
+  
+  📖 参照書籍:
+  - 『Web Application Security』（Andrew Hoffman）: 脅威モデリング
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/nextauth-patterns/resources/provider-configurations.md`: NextAuth.js Provider Configurations
-  - `.claude/skills/nextauth-patterns/resources/session-callbacks-guide.md`: NextAuth.js Session Callbacks Guide
-  - `.claude/skills/nextauth-patterns/scripts/validate-nextauth-config.mjs`: NextAuth.js設定ファイルの妥当性検証とプロバイダー設定・コールバック実装の検査スクリプト
-  - `.claude/skills/nextauth-patterns/templates/nextauth-config-template.ts`: Google/GitHub OAuth統合・Drizzleアダプター・JWT/Databaseセッション戦略を含むauth.ts設定テンプレート
-
-  使用タイミング:
-  - NextAuth.jsの初期設定時
-  - OAuth 2.0プロバイダー統合時
-  - セッション戦略（JWT/Database）の実装時
-  - カスタムページ・コールバックの実装時
-  - Drizzleアダプター統合時
-
-  関連スキル:
-  - `.claude/skills/oauth2-flows/SKILL.md` - OAuth 2.0基礎
-  - `.claude/skills/session-management/SKILL.md` - セッション戦略
-  - `.claude/skills/rbac-implementation/SKILL.md` - セッションへのロール統合
-
-  Use when implementing NextAuth.js, configuring authentication providers,
-  or customizing authentication flows in Next.js applications.
-
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/provider-configurations.md`: NextAuth.js Provider Configurations
+  - `resources/session-callbacks-guide.md`: NextAuth.js Session Callbacks Guide
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-nextauth-config.mjs`: NextAuth.js設定ファイルの妥当性検証とプロバイダー設定・コールバック実装の検査スクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/nextauth-config-template.ts`: Google/GitHub OAuth統合・Drizzleアダプター・JWT/Databaseセッション戦略を含むauth.ts設定テンプレート
+  
+  Use proactively when handling nextauth patterns tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "Web Application Security"
+    author: "Andrew Hoffman"
+    concepts:
+      - "脅威モデリング"
+      - "セキュア設計"
 ---
 
 # NextAuth.js Patterns
 
-## スキル概要
+## 概要
 
-**コアドメイン**:
+NextAuth.js v5の設定とカスタマイズパターン。
+プロバイダー設定、アダプター統合、セッション戦略、
+コールバックカスタマイズ、型安全性の確保を提供。
 
-- NextAuth.js v5設定
-- プロバイダー設定
-- アダプター統合
-- セッションコールバック
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-## 基本設定
 
-### auth.ts設定
+## ワークフロー
 
-```typescript
-import NextAuth from "next-auth";
-import Google from "next-auth/providers/google";
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import { db } from "@/infrastructure/database";
+### Phase 1: 目的と前提の整理
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: DrizzleAdapter(db),
-  providers: [
-    Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-  ],
-  session: {
-    strategy: "jwt", // or 'database'
-    maxAge: 30 * 24 * 60 * 60, // 30日
-  },
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.role = user.role;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (token) {
-        session.user.role = token.role;
-      }
-      return session;
-    },
-  },
-});
-```
+**目的**: タスクの目的と前提条件を明確にする
 
-### Route Handler設定
+**アクション**:
 
-```typescript
-// app/api/auth/[...nextauth]/route.ts
-import { handlers } from "@/auth";
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-export const { GET, POST } = handlers;
-```
+### Phase 2: スキル適用
 
-## プロバイダー設定
+**目的**: スキルの指針に従って具体的な作業を進める
 
-### Google OAuth 2.0
+**アクション**:
 
-```typescript
-import Google from "next-auth/providers/google";
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-Google({
-  clientId: process.env.GOOGLE_CLIENT_ID!,
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-  authorization: {
-    params: {
-      scope: "openid email profile",
-      prompt: "select_account", // アカウント選択強制
-    },
-  },
-});
-```
+### Phase 3: 検証と記録
 
-### GitHub OAuth 2.0
+**目的**: 成果物の検証と実行記録の保存
 
-```typescript
-import GitHub from "next-auth/providers/github";
+**アクション**:
 
-GitHub({
-  clientId: process.env.GITHUB_CLIENT_ID!,
-  clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-  authorization: {
-    params: {
-      scope: "read:user user:email",
-    },
-  },
-});
-```
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-## アダプター統合
 
-### Drizzle Adapter
+## ベストプラクティス
 
-```typescript
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import { db } from "@/infrastructure/database";
+### すべきこと
+- NextAuth.jsの初期設定時
+- OAuth 2.0プロバイダー統合時
+- セッション戦略（JWT/Database）の実装時
+- カスタムページ・コールバックの実装時
+- Drizzleアダプター統合時
 
-export const { handlers, auth } = NextAuth({
-  adapter: DrizzleAdapter(db),
-  // 必須テーブル: users, accounts, sessions, verificationTokens
-});
-```
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
 
-## セッションコールバック
+## コマンドリファレンス
 
-### ロール情報の追加
-
-```typescript
-callbacks: {
-  async jwt({ token, user, trigger }) {
-    // 初回ログイン時
-    if (user) {
-      token.role = user.role;
-      token.userId = user.id;
-    }
-
-    // セッション更新時
-    if (trigger === 'update') {
-      const updatedUser = await db.users.findOne({ id: token.userId });
-      token.role = updatedUser.role;
-    }
-
-    return token;
-  },
-
-  async session({ session, token }) {
-    session.user.id = token.userId;
-    session.user.role = token.role;
-    return session;
-  },
-}
-```
-
-## リソース参照
-
+### リソース読み取り
 ```bash
+cat .claude/skills/nextauth-patterns/resources/Level1_basics.md
+cat .claude/skills/nextauth-patterns/resources/Level2_intermediate.md
+cat .claude/skills/nextauth-patterns/resources/Level3_advanced.md
+cat .claude/skills/nextauth-patterns/resources/Level4_expert.md
+cat .claude/skills/nextauth-patterns/resources/legacy-skill.md
 cat .claude/skills/nextauth-patterns/resources/provider-configurations.md
-cat .claude/skills/nextauth-patterns/resources/adapter-integration.md
+cat .claude/skills/nextauth-patterns/resources/session-callbacks-guide.md
 ```
 
-## テンプレート参照
+### スクリプト実行
+```bash
+node .claude/skills/nextauth-patterns/scripts/log_usage.mjs --help
+node .claude/skills/nextauth-patterns/scripts/validate-nextauth-config.mjs --help
+node .claude/skills/nextauth-patterns/scripts/validate-skill.mjs --help
+```
 
+### テンプレート参照
 ```bash
 cat .claude/skills/nextauth-patterns/templates/nextauth-config-template.ts
 ```
 
-## スクリプト実行
+## 変更履歴
 
-```bash
-node .claude/skills/nextauth-patterns/scripts/validate-nextauth-config.mjs auth.ts
-```
-
-## 判断基準
-
-- [ ] プロバイダーは正しく設定されているか？
-- [ ] セッション戦略は非機能要件と整合しているか？
-- [ ] セッションにロール情報が含まれているか？
-- [ ] 型安全性は保証されているか？
-
-## ベストプラクティス
-
-1. **JWT戦略**: スケーラブル、ステートレス
-2. **Database戦略**: セキュア、即座無効化可能
-3. **型拡張**: next-auth.d.tsで型定義拡張
-4. **環境変数**: シークレット管理
-
-## バージョン履歴
-
-| バージョン | 日付       | 変更内容                              |
-| ---------- | ---------- | ------------------------------------- |
-| 1.0.0      | 2025-11-26 | 初版リリース - NextAuth.js v5パターン |
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

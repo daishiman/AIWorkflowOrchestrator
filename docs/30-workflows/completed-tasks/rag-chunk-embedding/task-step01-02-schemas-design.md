@@ -2,7 +2,7 @@
 
 **タスクID**: CONV-03-03 / T-01-2
 **作成日**: 2025-12-18
-**担当エージェント**: @schema-def
+**担当エージェント**: .claude/agents/schema-def.md
 **ステータス**: 設計中
 
 ---
@@ -1697,9 +1697,9 @@ export const createValidChunkEntity = (
 
 本設計書はPhase 2で以下のエージェントによってレビューされる:
 
-- **@arch-police**: CONV-03-01との整合性、スキーマ構造の一貫性
-- **@schema-def**: Zodスキーマの厳密性、型推論の正確性
-- **@logic-dev**: 複合条件制約の妥当性、境界値の合理性
+- **.claude/agents/arch-police.md**: CONV-03-01との整合性、スキーマ構造の一貫性
+- **.claude/agents/schema-def.md**: Zodスキーマの厳密性、型推論の正確性
+- **.claude/agents/logic-dev.md**: 複合条件制約の妥当性、境界値の合理性
 
 想定されるレビュー指摘:
 
@@ -1721,4 +1721,4 @@ export const createValidChunkEntity = (
 
 | 日付       | バージョン | 変更内容 | 変更者      |
 | ---------- | ---------- | -------- | ----------- |
-| 2025-12-18 | 1.0.0      | 初版作成 | @schema-def |
+| 2025-12-18 | 1.0.0      | 初版作成 | .claude/agents/schema-def.md |

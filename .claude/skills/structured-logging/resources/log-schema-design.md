@@ -322,4 +322,4 @@ interface Logger {
 
 このスキルを使用するエージェント:
 
-- `@sre-observer` - ロギング・監視設計者 (.claude/agents/sre-observer.md:978)
+- `.claude/agents/sre-observer.md` - ロギング・監視設計者 (.claude/agents/sre-observer.md:978)

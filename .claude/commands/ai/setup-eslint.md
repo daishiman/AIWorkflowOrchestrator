@@ -1,215 +1,66 @@
 ---
 description: |
   ESLint設定の最適化を行うコマンド。
-
-  プロジェクトに適したスタイルガイド（Airbnb/Google/Standard）を選択し、
-  ESLint Flat Config形式で設定ファイルを生成・更新します。
+  実行は専門エージェントに委譲します。
 
   🤖 起動エージェント:
-  - Phase 2: `.claude/agents/code-quality.md` - コード品質・静的解析専門エージェント
-
-  📚 利用可能スキル（code-qualityエージェントが参照）:
-  - `.claude/skills/eslint-configuration/SKILL.md` - Flat Config設定、ルール選択、プラグイン統合
-  - `.claude/skills/code-style-guides/SKILL.md` - Airbnb/Google/Standard比較、選択基準
-  - `.claude/skills/linting-automation/SKILL.md` - pre-commit hooks、CI/CD統合、自動修正
+  - `.claude/agents/code-quality.md`: コード品質・静的解析専門エージェント
 
   ⚙️ このコマンドの設定:
-  - argument-hint: "[style-guide]"（airbnb/google/standard、デフォルト: airbnb）
-  - allowed-tools: ESLint設定用
-    • Task: code-qualityエージェント起動用
-    • Bash(pnpm*|pnpm*): ESLintパッケージインストール専用
-    • Read: 既存設定確認用
-    • Write: eslint.config.js生成用
-    • Edit: package.json scripts更新用
-  - model: sonnet（標準的なESLint設定タスク）
-
-  📋 成果物:
-  - `eslint.config.js`（Flat Config形式）
-  - 更新されたpackage.json（lint scripts）
-  - `.eslintignore`
-
-  🎯 スタイルガイド:
-  - **Airbnb**（推奨、React向け）: 厳格、React Best Practices
-  - **Google**: モダン、読みやすさ重視
-  - **Standard**: シンプル、設定レス
+  - argument-hint: [style-guide]
+  - allowed-tools: Task（エージェント起動のみ）
+  - model: sonnet
 
   トリガーキーワード: eslint, linting, code style, コードスタイル, 静的解析
 argument-hint: "[style-guide]"
 allowed-tools:
   - Task
-  - Bash(pnpm*)
-  - Read
-  - Write
-  - Edit
 model: sonnet
 ---
 
 # ESLint設定
 
-このコマンドは、ESLintの設定を最適化します。
+## 目的
 
-## 📋 実行フロー
+`.claude/commands/ai/setup-eslint.md` の入力を受け取り、専門エージェントに実行を委譲します。
 
-### Phase 1: スタイルガイドの選択
+## エージェント起動フロー
 
-**引数検証**:
+### Phase 1: コード品質・静的解析専門エージェントの実行
 
-```bash
-style_guide="${ARGUMENTS:-airbnb}"
+**目的**: コード品質・静的解析専門エージェントに関するタスクを実行し、結果を整理する
 
-if ! [[ "$style_guide" =~ ^(airbnb|google|standard)$ ]]; then
-  エラー: 無効なスタイルガイドです
-  使用可能: airbnb, google, standard
-fi
-```
+**背景**: 専門知識が必要なため専門エージェントに委譲する
 
-### Phase 2: code-qualityエージェントを起動
+**ゴール**: コード品質・静的解析専門エージェントの結果と次アクションが提示された状態
 
-**使用エージェント**: `.claude/agents/code-quality.md`
+**起動エージェント**: `.claude/agents/code-quality.md`
 
-**エージェントへの依頼内容**:
+Task ツールで `.claude/agents/code-quality.md` を起動:
 
-````markdown
-ESLint設定を「${style_guide}」スタイルガイドで構築してください。
+**コンテキスト**:
 
-**要件**:
+- 引数: $ARGUMENTS（[style-guide]）
 
-1. 必要パッケージのインストール:
-   ```bash
-   # Airbnb の場合
-   pnpm add -D eslint \
-     @typescript-eslint/parser \
-     @typescript-eslint/eslint-plugin \
-     eslint-config-airbnb-base \
-     eslint-config-airbnb-typescript \
-     eslint-plugin-import
-   ```
-````
+**依頼内容**:
 
-2. eslint.config.js生成（Flat Config）:
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
 
-   ```javascript
-   import js from "@eslint/js";
-   import typescript from "@typescript-eslint/eslint-plugin";
-   import parser from "@typescript-eslint/parser";
+**期待成果物**:
 
-   export default [
-     js.configs.recommended,
-     {
-       files: ["**/*.ts", "**/*.tsx"],
-       languageOptions: {
-         parser,
-         parserOptions: {
-           project: "./tsconfig.json",
-         },
-       },
-       plugins: { "@typescript-eslint": typescript },
-       rules: {
-         // Airbnb rules
-         "@typescript-eslint/no-unused-vars": "error",
-         "@typescript-eslint/no-explicit-any": "warn",
-       },
-     },
-   ];
-   ```
+- `.github/workflows/lint.yml`
+- `package.json`
+- `tsconfig.json`
+- `eslint.config.js`
 
-3. package.json scripts追加:
+**完了条件**:
 
-   ```json
-   {
-     "scripts": {
-       "lint": "eslint .",
-       "lint:fix": "eslint . --fix"
-     }
-   }
-   ```
-
-4. .eslintignore生成:
-   ```
-   node_modules/
-   .next/
-   out/
-   build/
-   dist/
-   ```
-
-**スキル参照**:
-
-- `.claude/skills/eslint-configuration/SKILL.md` - Flat Config設定方法
-- `.claude/skills/code-style-guides/SKILL.md` - スタイルガイド比較
-
-**成果物**: eslint.config.js、package.json、.eslintignore
-
-````
-
-### Phase 3: 完了報告
-
-```markdown
-## ESLint設定完了
-
-スタイルガイド: ${style_guide}
-
-### 設定内容
-✅ Flat Config形式
-✅ TypeScript対応
-✅ ${style_guide} ルール適用
-
-### Next Steps
-1. リント実行: `pnpm lint`
-2. 自動修正: `pnpm lint:fix`
-3. pre-commit hook設定（推奨）
-````
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
 
 ## 使用例
 
-### Airbnb（推奨、React向け）
-
 ```bash
-/ai:setup-eslint airbnb
+/ai:setup-eslint [style-guide]
 ```
-
-### Google（モダン、読みやすさ重視）
-
-```bash
-/ai:setup-eslint google
-```
-
-### Standard（シンプル、設定レス）
-
-```bash
-/ai:setup-eslint standard
-```
-
-## スタイルガイド比較
-
-| 特徴     | Airbnb           | Google | Standard             |
-| -------- | ---------------- | ------ | -------------------- |
-| 厳格度   | 高               | 中     | 低                   |
-| React    | ✅               | ⚠️     | ⚠️                   |
-| 設定量   | 多               | 中     | 少                   |
-| 推奨用途 | React/TypeScript | 汎用   | シンプルプロジェクト |
-
-## ベストプラクティス
-
-### pre-commit hook統合
-
-```bash
-# Husky + lint-staged
-pnpm add -D husky lint-staged
-
-# .husky/pre-commit
-pnpm run lint:fix
-```
-
-### CI/CD統合
-
-```yaml
-# .github/workflows/lint.yml
-- name: Run ESLint
-  run: pnpm lint
-```
-
-## 参照
-
-- code-quality: `.claude/agents/code-quality.md`
-- eslint-configuration: `.claude/skills/eslint-configuration/SKILL.md`

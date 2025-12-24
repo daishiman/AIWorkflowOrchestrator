@@ -1,282 +1,120 @@
 ---
-name: api-connector-design
+name: .claude/skills/api-connector-design/SKILL.md
 description: |
   外部APIとの統合設計パターンに関する専門知識。
   RESTful API、GraphQL、WebSocket等の統合設計と実装指針を提供します。
-
+  
+  📖 参照書籍:
+  - 『RESTful Web APIs』（Leonard Richardson）: リソース設計
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/api-connector-design/resources/authentication-flows.md`: OAuth 2.0、API Key、JWTなどの認証フロー詳細
-  - `.claude/skills/api-connector-design/resources/error-handling-patterns.md`: API統合におけるエラーハンドリングパターン
-  - `.claude/skills/api-connector-design/resources/rate-limiting-strategies.md`: Rate Limiting対策とリトライ戦略
-  - `.claude/skills/api-connector-design/templates/api-client-template.ts`: APIクライアント実装テンプレート
-  - `.claude/skills/api-connector-design/templates/auth-config-template.json`: 認証設定ファイルテンプレート
-  - `.claude/skills/api-connector-design/scripts/test-api-connection.mjs`: API接続テストスクリプト
-
-  使用タイミング:
-  - 外部API（Google Drive, Slack, GitHub等）との統合設計時
-  - 認証フロー（OAuth 2.0, API Key等）の実装設計時
-  - Rate Limitingやリトライ戦略の設計時
-  - API統合アーキテクチャのレビュー時
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/authentication-flows.md`: OAuth 2.0、API Key、JWTなどの認証フロー詳細
+  - `resources/error-handling-patterns.md`: API統合におけるエラーハンドリングパターン
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/rate-limiting-strategies.md`: Rate Limiting対策とリトライ戦略
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/test-api-connection.mjs`: API接続テストスクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/api-client-template.ts`: APIクライアント実装テンプレート
+  - `templates/auth-config-template.json`: 認証設定ファイルテンプレート
+  
+  Use proactively when handling api connector design tasks.
 version: 1.0.1
-tags: [api, integration, rest, graphql, websocket, authentication]
-related_skills:
-  - .claude/skills/mcp-protocol/SKILL.md
-  - .claude/skills/tool-security/SKILL.md
-  - .claude/skills/integration-patterns/SKILL.md
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "RESTful Web APIs"
+    author: "Leonard Richardson"
+    concepts:
+      - "リソース設計"
+      - "HTTP設計"
 ---
 
 # API Connector Design スキル
 
 ## 概要
 
-外部APIとの統合において、適切な設計パターンと実装指針を提供します。RESTful API、GraphQL、WebSocketなど様々なAPI形式に対応し、認証、エラーハンドリング、パフォーマンス最適化を網羅します。
+外部APIとの統合設計パターンに関する専門知識。
+RESTful API、GraphQL、WebSocket等の統合設計と実装指針を提供します。
 
-## API統合タイプ分類
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-### 1. RESTful API
 
-**特徴**:
+## ワークフロー
 
-- HTTPメソッドによるCRUD操作
-- ステートレス通信
-- リソース指向設計
+### Phase 1: 目的と前提の整理
 
-**設計パターン**:
+**目的**: タスクの目的と前提条件を明確にする
 
-```
-GET    /resources          - リソース一覧取得
-GET    /resources/{id}     - 個別リソース取得
-POST   /resources          - リソース作成
-PUT    /resources/{id}     - リソース更新（全体）
-PATCH  /resources/{id}     - リソース更新（部分）
-DELETE /resources/{id}     - リソース削除
-```
+**アクション**:
 
-**ベストプラクティス**:
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-- Content-Type: application/json の一貫した使用
-- 適切なHTTPステータスコードの返却
-- HALまたはJSON:APIフォーマットの採用検討
+### Phase 2: スキル適用
 
-### 2. GraphQL
+**目的**: スキルの指針に従って具体的な作業を進める
 
-**特徴**:
+**アクション**:
 
-- スキーマベースの型システム
-- 単一エンドポイント
-- 柔軟なクエリ構造
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-**設計パターン**:
+### Phase 3: 検証と記録
 
-```graphql
-query {
-  user(id: "123") {
-    name
-    email
-    posts {
-      title
-    }
-  }
-}
+**目的**: 成果物の検証と実行記録の保存
 
-mutation {
-  createUser(input: { name: "John" }) {
-    id
-    name
-  }
-}
-```
+**アクション**:
 
-**ベストプラクティス**:
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-- N+1問題の回避（DataLoader使用）
-- 複雑度制限の実装
-- 適切なエラーハンドリング
 
-### 3. WebSocket
+## ベストプラクティス
 
-**特徴**:
+### すべきこと
+- 外部API（Google Drive, Slack, GitHub等）との統合設計時
+- 認証フロー（OAuth 2.0, API Key等）の実装設計時
+- Rate Limitingやリトライ戦略の設計時
+- API統合アーキテクチャのレビュー時
 
-- 双方向リアルタイム通信
-- 持続的接続
-- 低レイテンシ
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
 
-**設計パターン**:
+## コマンドリファレンス
 
-```
-Client <──────────────> Server
-    │ CONNECT              │
-    │ ─────────────────────▶
-    │ MESSAGE              │
-    │ ◀────────────────────│
-    │ MESSAGE              │
-    │ ─────────────────────▶
-    │ DISCONNECT           │
-    │ ─────────────────────▶
-```
-
-**ベストプラクティス**:
-
-- ハートビートによる接続維持
-- 再接続ロジックの実装
-- メッセージキューイング
-
-### 4. Webhook
-
-**特徴**:
-
-- イベント駆動型
-- プッシュ型通知
-- 非同期処理
-
-**設計パターン**:
-
-```
-┌─────────┐   Event発生   ┌──────────┐   POST   ┌─────────┐
-│ Service │ ────────────▶ │ Webhook  │ ────────▶│ Your    │
-│         │               │ Endpoint │          │ Server  │
-└─────────┘               └──────────┘          └─────────┘
-```
-
-## 認証・認可パターン
-
-### API Key認証
-
-```javascript
-// ヘッダーベース
-headers: {
-  'X-API-Key': process.env.API_KEY
-}
-
-// クエリパラメータベース（非推奨）
-url: `${baseUrl}?api_key=${apiKey}`
-```
-
-**セキュリティ考慮事項**:
-
-- [ ] 環境変数での管理
-- [ ] HTTPS通信の強制
-- [ ] ローテーション計画
-
-### OAuth 2.0
-
-**Authorization Code Flow**:
-
-```
-1. Client → Authorization Server: 認可リクエスト
-2. User: ログイン・承認
-3. Authorization Server → Client: 認可コード
-4. Client → Authorization Server: トークンリクエスト
-5. Authorization Server → Client: アクセストークン
-```
-
-**実装チェックリスト**:
-
-- [ ] state パラメータによるCSRF対策
-- [ ] PKCE（Proof Key for Code Exchange）実装
-- [ ] リフレッシュトークンの安全な保存
-- [ ] トークン有効期限管理
-
-### JWT（JSON Web Token）
-
-```javascript
-// トークン構造
-header.payload.signature
-
-// 検証ステップ
-1. 署名検証
-2. 有効期限（exp）チェック
-3. 発行者（iss）検証
-4. 対象者（aud）検証
-```
-
-## Rate Limiting対策
-
-### 検出方法
-
-```javascript
-// レスポンスヘッダーから制限情報を取得
-const rateLimitInfo = {
-  limit: response.headers["X-RateLimit-Limit"],
-  remaining: response.headers["X-RateLimit-Remaining"],
-  reset: response.headers["X-RateLimit-Reset"],
-};
-```
-
-### リトライ戦略
-
-**指数バックオフ**:
-
-```javascript
-const delay = Math.min(
-  initialDelay * Math.pow(backoffFactor, attempt),
-  maxDelay,
-);
-// ジッターを追加（同時リトライ回避）
-const jitteredDelay = delay * (0.5 + Math.random());
-```
-
-**リトライ条件**:
-| HTTPステータス | リトライ可能 | 説明 |
-|---------------|-------------|------|
-| 429 | ✅ | Too Many Requests |
-| 500 | ✅ | Internal Server Error |
-| 502 | ✅ | Bad Gateway |
-| 503 | ✅ | Service Unavailable |
-| 504 | ✅ | Gateway Timeout |
-| 400 | ❌ | Bad Request |
-| 401 | ❌ | Unauthorized |
-| 403 | ❌ | Forbidden |
-| 404 | ❌ | Not Found |
-
-## 設計時の判断基準
-
-### API統合チェックリスト
-
-- [ ] 適切なAPI統合タイプが選択されているか？
-- [ ] 認証方式はセキュリティ要件を満たすか？
-- [ ] Rate Limitingとリトライ戦略は定義されているか？
-- [ ] タイムアウト設定は適切か？
-- [ ] エラーハンドリングは網羅的か？
-
-### パフォーマンスチェックリスト
-
-- [ ] 接続プーリングが実装されているか？
-- [ ] キャッシュ戦略が定義されているか？
-- [ ] ペイロードサイズは最適化されているか？
-- [ ] 圧縮（gzip）が有効か？
-
-## リソース参照
-
-詳細なパターンと実装例については以下を参照:
-
-- **認証フロー詳細**: `cat .claude/skills/api-connector-design/resources/authentication-flows.md`
-- **Rate Limiting戦略**: `cat .claude/skills/api-connector-design/resources/rate-limiting-strategies.md`
-- **エラーハンドリング**: `cat .claude/skills/api-connector-design/resources/error-handling-patterns.md`
-
-## テンプレート参照
-
-- **APIクライアントテンプレート**: `cat .claude/skills/api-connector-design/templates/api-client-template.ts`
-- **認証設定テンプレート**: `cat .claude/skills/api-connector-design/templates/auth-config-template.json`
-
-## スクリプト実行
-
+### リソース読み取り
 ```bash
-# API接続テスト
-node .claude/skills/api-connector-design/scripts/test-api-connection.mjs <base-url>
-
-# 認証フロー検証
-node .claude/skills/api-connector-design/scripts/validate-auth-flow.mjs <config.json>
+cat .claude/skills/api-connector-design/resources/Level1_basics.md
+cat .claude/skills/api-connector-design/resources/Level2_intermediate.md
+cat .claude/skills/api-connector-design/resources/Level3_advanced.md
+cat .claude/skills/api-connector-design/resources/Level4_expert.md
+cat .claude/skills/api-connector-design/resources/authentication-flows.md
+cat .claude/skills/api-connector-design/resources/error-handling-patterns.md
+cat .claude/skills/api-connector-design/resources/legacy-skill.md
+cat .claude/skills/api-connector-design/resources/rate-limiting-strategies.md
 ```
 
-## 関連スキル
+### スクリプト実行
+```bash
+node .claude/skills/api-connector-design/scripts/log_usage.mjs --help
+node .claude/skills/api-connector-design/scripts/test-api-connection.mjs --help
+node .claude/skills/api-connector-design/scripts/validate-skill.mjs --help
+```
 
-| スキル                                          | 用途             |
-| ----------------------------------------------- | ---------------- |
-| `.claude/skills/mcp-protocol/SKILL.md`          | MCP設定          |
-| `.claude/skills/tool-security/SKILL.md`         | セキュリティ設定 |
-| `.claude/skills/resource-oriented-api/SKILL.md` | リソース設計     |
-| `.claude/skills/integration-patterns/SKILL.md`  | 統合パターン     |
+### テンプレート参照
+```bash
+cat .claude/skills/api-connector-design/templates/api-client-template.ts
+cat .claude/skills/api-connector-design/templates/auth-config-template.json
+```
+
+## 変更履歴
+
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.1 | 2025-12-24 | Spec alignment and required artifacts added |

@@ -1,284 +1,112 @@
 ---
-name: troubleshooting-guides
+name: .claude/skills/troubleshooting-guides/SKILL.md
 description: |
   問題解決を効率化するトラブルシューティングガイドの設計スキル。
-
+  
+  📖 参照書籍:
+  - 『Don't Make Me Think』（Steve Krug）: ユーザビリティ
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/troubleshooting-guides/resources/problem-classification.md`: Problem Classificationリソース
-
-  - `.claude/skills/troubleshooting-guides/templates/diagnosis-flow-template.md`: Diagnosis Flowテンプレート
-  - `.claude/skills/troubleshooting-guides/templates/error-explanation-template.md`: Error Explanationテンプレート
-
-  - `.claude/skills/troubleshooting-guides/scripts/validate-diagnostic-flow.mjs`: Validate Diagnostic Flowスクリプト
-
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/problem-classification.md`: Problem Classificationリソース
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-diagnostic-flow.mjs`: Validate Diagnostic Flowスクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/diagnosis-flow-template.md`: Diagnosis Flowテンプレート
+  - `templates/error-explanation-template.md`: Error Explanationテンプレート
+  
+  Use proactively when handling troubleshooting guides tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "Don't Make Me Think"
+    author: "Steve Krug"
+    concepts:
+      - "ユーザビリティ"
+      - "情報設計"
 ---
 
 # Troubleshooting Guides スキル
 
 ## 概要
 
-このスキルは、ユーザーが自力で問題を解決できるよう支援する
-トラブルシューティングガイドの設計・作成技術を提供します。
-診断フロー、エラー分類、段階的な解決策の提示方法を扱います。
+問題解決を効率化するトラブルシューティングガイドの設計スキル。
 
-## 問題解決パターンの体系化
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-### 診断フロー設計原則
 
-1. **症状の分類**: 問題を明確なカテゴリに分類
-2. **原因特定チェックリスト**: 段階的に原因を絞り込む質問セット
-3. **解決方法の優先順位付け**: 成功率と難易度に基づく順序
-4. **エスカレーションパス**: セルフサービス解決不可時の明確な誘導
+## ワークフロー
 
-### 診断フローチャート構造
+### Phase 1: 目的と前提の整理
 
-```
-問題発生
-   ↓
-症状の特定
-   ↓
-カテゴリ分類 ─┬─ 接続問題
-              ├─ 認証問題
-              ├─ データ問題
-              └─ 操作問題
-   ↓
-原因の特定（チェックリスト）
-   ↓
-解決策の適用
-   ↓
-解決？─┬─ Yes → 完了
-       └─ No → 次の解決策 or エスカレーション
-```
+**目的**: タスクの目的と前提条件を明確にする
 
-## エラー分類体系
+**アクション**:
 
-### プロジェクト標準エラーコード
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-| コード範囲 | カテゴリ               | ユーザー対応         |
-| ---------- | ---------------------- | -------------------- |
-| 1000-1999  | Validation Error       | 入力を修正して再試行 |
-| 2000-2999  | Business Error         | 権限・リソースを確認 |
-| 3000-3999  | External Service Error | 時間をおいて再試行   |
-| 4000-4999  | Infrastructure Error   | サポートに連絡       |
-| 5000-5999  | Internal Error         | 即座にサポートに連絡 |
+### Phase 2: スキル適用
 
-### ユーザー向けエラー説明テンプレート
+**目的**: スキルの指針に従って具体的な作業を進める
 
-```markdown
-## エラー: [エラーコード] [エラー名]
+**アクション**:
 
-### 意味
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-[ユーザーが理解できる言葉でエラーの意味を説明]
+### Phase 3: 検証と記録
 
-### 原因
+**目的**: 成果物の検証と実行記録の保存
 
-[考えられる原因をリストアップ]
+**アクション**:
 
-### 解決方法
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-#### 方法 1: [最も一般的な解決策]
 
-1. [手順 1]
-2. [手順 2]
+## ベストプラクティス
 
-#### 方法 2: [代替の解決策]
+### すべきこと
+- resources/Level1_basics.md を参照し、適用範囲を明確にする
+- resources/Level2_intermediate.md を参照し、実務手順を整理する
 
-1. [手順 1]
-2. [手順 2]
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
 
-### 解決しない場合
+## コマンドリファレンス
 
-[サポートへの連絡方法]
-```
-
-## FAQ 構造設計
-
-### FAQ 組織化パターン
-
-```markdown
-# よくある質問（FAQ）
-
-## カテゴリ: [機能/操作別]
-
-### Q: [ユーザーが実際に使う言葉での質問]
-
-**A**: [簡潔な回答]
-
-[必要に応じて詳細説明]
-
-**関連**:
-
-- [関連する FAQ]
-- [関連するドキュメント]
-```
-
-### 効果的な FAQ 質問の書き方
-
-| 悪い例           | 良い例                                                                 |
-| ---------------- | ---------------------------------------------------------------------- |
-| 「認証について」 | 「パスワードを忘れた場合はどうすればよいですか？」                     |
-| 「エラー対処」   | 「「接続できません」というエラーが表示されたらどうすればよいですか？」 |
-| 「設定変更」     | 「通知メールの受信を停止するにはどうすればよいですか？」               |
-
-### FAQ 優先順位付け
-
-| 基準           | 説明                         | 重み |
-| -------------- | ---------------------------- | ---- |
-| 頻度           | 問い合わせ件数               | 高   |
-| 影響度         | 業務への影響                 | 中   |
-| 緊急性         | 即座の対応が必要か           | 中   |
-| 自己解決可能性 | ユーザーが自分で解決できるか | 高   |
-
-## 解決策の記述
-
-### 段階的解決手順
-
-```markdown
-### 解決方法
-
-#### ステップ 1: [最も簡単な確認]
-
-- [ ] [確認項目]
-- 結果: [期待される結果]
-
-→ 解決した場合は完了。解決しない場合は次へ。
-
-#### ステップ 2: [次の確認/操作]
-
-- [ ] [確認項目]
-- 結果: [期待される結果]
-
-→ 解決した場合は完了。解決しない場合は次へ。
-
-#### ステップ 3: [より詳細な対応]
-
-...
-```
-
-### 解決策の優先順位
-
-1. **自己解決可能**: ユーザーが単独で実行可能
-2. **設定変更**: 管理者権限が必要だが自己解決可能
-3. **再起動/リセット**: サービス影響があるが自己解決可能
-4. **サポート連絡**: 専門的な対応が必要
-
-## エラーメッセージ解説
-
-### 解説構造
-
-```markdown
-## エラー: "[エラーメッセージ全文]"
-
-### これは何ですか？
-
-[専門用語を使わない説明]
-
-### なぜ起こりましたか？
-
-[最も一般的な原因]
-
-- [原因 1]
-- [原因 2]
-
-### どうすればよいですか？
-
-**今すぐできること**:
-
-1. [即座に試せる対処法]
-
-**それでも解決しない場合**:
-
-1. [追加の対処法]
-
-### データへの影響
-
-[作業中のデータがどうなるか]
-
-### 予防方法
-
-[今後同じエラーを避けるには]
-```
-
-## 検索性の最適化
-
-### キーワード設計
-
-```markdown
-<!-- 検索用キーワード（非表示） -->
-
-[//]: # "keywords: ログイン, 接続, エラー, 認証, パスワード"
-```
-
-### 症状ベースのインデックス
-
-```markdown
-## 症状から探す
-
-### 「○○ できない」
-
-- [ログインできない](#login-issues)
-- [ファイルを保存できない](#save-issues)
-- [データが表示されない](#display-issues)
-
-### 「○○ が遅い」
-
-- [ページの読み込みが遅い](#slow-loading)
-- [処理が終わらない](#long-processing)
-
-### 「○○ が表示される」
-
-- [エラーメッセージが表示される](#error-messages)
-- [警告が表示される](#warnings)
-```
-
-## トラブルシューティングチェックリスト
-
-### ガイド品質チェック
-
-- [ ] 問題の症状が明確に記述されているか？
-- [ ] ユーザーの言葉で問題が表現されているか？
-- [ ] 原因の特定方法が段階的に示されているか？
-- [ ] 複数の解決方法が提示されているか？
-- [ ] 各解決方法の成功率や難易度が示されているか？
-- [ ] サポートへのエスカレーションパスがあるか？
-
-### ユーザビリティチェック
-
-- [ ] 専門用語を避けているか？
-- [ ] 手順は具体的か？
-- [ ] スクリーンショットが必要な箇所にあるか？
-- [ ] 検索しやすい構造か？
-
-## スクリプトリファレンス
-
+### リソース読み取り
 ```bash
-# 診断フロー検証
-node .claude/skills/troubleshooting-guides/scripts/validate-diagnostic-flow.mjs docs/troubleshooting/
-
-# 検証項目:
-# - エラーコードの一意性（1000-5999範囲）
-# - 診断ステップの存在
-# - 解決策の存在と成功率
-# - 内部リンクの有効性
-# - 診断フローの完全性
+cat .claude/skills/troubleshooting-guides/resources/Level1_basics.md
+cat .claude/skills/troubleshooting-guides/resources/Level2_intermediate.md
+cat .claude/skills/troubleshooting-guides/resources/Level3_advanced.md
+cat .claude/skills/troubleshooting-guides/resources/Level4_expert.md
+cat .claude/skills/troubleshooting-guides/resources/legacy-skill.md
+cat .claude/skills/troubleshooting-guides/resources/problem-classification.md
 ```
 
-## リソース参照
+### スクリプト実行
+```bash
+node .claude/skills/troubleshooting-guides/scripts/log_usage.mjs --help
+node .claude/skills/troubleshooting-guides/scripts/validate-diagnostic-flow.mjs --help
+node .claude/skills/troubleshooting-guides/scripts/validate-skill.mjs --help
+```
 
-| リソース                   | パス                                                                            | 内容                                   |
-| -------------------------- | ------------------------------------------------------------------------------- | -------------------------------------- |
-| **診断フローテンプレート** | `.claude/skills/troubleshooting-guides/templates/diagnosis-flow-template.md`    | 診断フローチャート作成用               |
-| **エラー解説テンプレート** | `.claude/skills/troubleshooting-guides/templates/error-explanation-template.md` | エラーメッセージ解説用                 |
-| **問題分類ガイド**         | `.claude/skills/troubleshooting-guides/resources/problem-classification.md`     | 問題カテゴリ分類の詳細                 |
-| **診断フロー検証**         | `.claude/skills/troubleshooting-guides/scripts/validate-diagnostic-flow.mjs`    | トラブルシューティングドキュメント検証 |
+### テンプレート参照
+```bash
+cat .claude/skills/troubleshooting-guides/templates/diagnosis-flow-template.md
+cat .claude/skills/troubleshooting-guides/templates/error-explanation-template.md
+```
 
-## 関連スキル
+## 変更履歴
 
-- `.claude/skills/user-centric-writing/SKILL.md`: ユーザー中心ライティング
-- `.claude/skills/tutorial-design/SKILL.md`: チュートリアル設計
-- `.claude/skills/information-architecture/SKILL.md`: ドキュメント構造設計
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

@@ -13,7 +13,7 @@
 | ステータス       | 未実施                           |
 | 発見元           | ユーザー要望                     |
 | 発見日           | 2025-12-11                       |
-| 発見エージェント | @product-manager                 |
+| 発見エージェント | .claude/agents/product-manager.md                 |
 
 ---
 
@@ -126,10 +126,10 @@ Phase 9: ドキュメント更新
 
 ### 主要な使用エージェント
 
-- **@ui-designer**: インライン編集UIの設計・実装
-- **@electron-architect**: ファイルシステム操作の設計
-- **@unit-tester**: TDDでのテスト作成
-- **@electron-security**: ファイル操作のセキュリティ検証
+- **.claude/agents/ui-designer.md**: インライン編集UIの設計・実装
+- **.claude/agents/electron-architect.md**: ファイルシステム操作の設計
+- **.claude/agents/unit-tester.md**: TDDでのテスト作成
+- **.claude/agents/electron-security.md**: ファイル操作のセキュリティ検証
 
 ---
 

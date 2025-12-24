@@ -6,7 +6,7 @@
 | -------- | ------------------------------------- |
 | 文書ID   | REQ-AUTH-UI-002                       |
 | 作成日   | 2025-12-20                            |
-| 作成者   | @req-analyst                          |
+| 作成者   | .claude/agents/req-analyst.md                          |
 | 対象機能 | AccountSection - アバター編集メニュー |
 | 優先度   | MoSCoW: Must Have                     |
 
@@ -376,6 +376,6 @@ import { createPortal } from "react-dom";
 
 | 役割           | 名前             | 日付                | 署名 |
 | -------------- | ---------------- | ------------------- | ---- |
-| 要件アナリスト | @req-analyst     | 2025-12-20          | ✓    |
-| 設計レビュアー | @ui-designer     | _（Phase 2で記入）_ |      |
-| QAレビュアー   | @frontend-tester | _（Phase 2で記入）_ |      |
+| 要件アナリスト | .claude/agents/req-analyst.md     | 2025-12-20          | ✓    |
+| 設計レビュアー | .claude/agents/ui-designer.md     | _（Phase 2で記入）_ |      |
+| QAレビュアー   | .claude/agents/frontend-tester.md | _（Phase 2で記入）_ |      |

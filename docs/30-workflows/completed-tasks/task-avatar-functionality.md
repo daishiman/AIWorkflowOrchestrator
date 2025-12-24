@@ -156,7 +156,7 @@ Phase 6: ドキュメント更新
 
 #### 使用エージェント
 
-- **エージェント**: `@req-analyst`
+- **エージェント**: `.claude/agents/req-analyst.md`
 - **選定理由**: 問題の根本原因を分析し、要件を明確化
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -271,7 +271,7 @@ USING (
 
 #### 使用エージェント
 
-- **エージェント**: `@db-architect`
+- **エージェント**: `.claude/agents/db-architect.md`
 - **選定理由**: Supabase Storage のポリシー設計
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -301,7 +301,7 @@ USING (
 
 #### 使用エージェント
 
-- **エージェント**: `@unit-tester`
+- **エージェント**: `.claude/agents/unit-tester.md`
 - **選定理由**: TDD原則に基づいたテスト設計
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -353,7 +353,7 @@ pnpm --filter @repo/desktop test:run
 
 #### 使用エージェント
 
-- **エージェント**: `@logic-dev`, `@electron-architect`
+- **エージェント**: `.claude/agents/logic-dev.md`, `.claude/agents/electron-architect.md`
 - **選定理由**: ビジネスロジック修正と Electron アーキテクチャの専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -461,7 +461,7 @@ pnpm --filter @repo/desktop test:run
 
 #### 使用エージェント
 
-- **エージェント**: `@code-quality`
+- **エージェント**: `.claude/agents/code-quality.md`
 - **選定理由**: コード品質改善の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -518,32 +518,32 @@ pnpm --filter @repo/desktop test:run
 
 | エージェント    | レビュー観点     |
 | --------------- | ---------------- |
-| `@code-quality` | コード品質       |
-| `@sec-auditor`  | セキュリティ     |
-| `@unit-tester`  | テスト品質       |
-| `@ui-designer`  | UIフィードバック |
+| `.claude/agents/code-quality.md` | コード品質       |
+| `.claude/agents/sec-auditor.md`  | セキュリティ     |
+| `.claude/agents/unit-tester.md`  | テスト品質       |
+| `.claude/agents/ui-designer.md`  | UIフィードバック |
 
 #### レビューチェックリスト
 
-**セキュリティ** (`@sec-auditor`)
+**セキュリティ** (`.claude/agents/sec-auditor.md`)
 
 - [ ] ファイルアップロードのサニタイズ
 - [ ] RLS ポリシーの適切性
 - [ ] ファイルサイズ・形式の検証
 
-**コード品質** (`@code-quality`)
+**コード品質** (`.claude/agents/code-quality.md`)
 
 - [ ] エラーハンドリングの網羅性
 - [ ] ログ出力の適切性
 - [ ] コードの可読性
 
-**テスト品質** (`@unit-tester`)
+**テスト品質** (`.claude/agents/unit-tester.md`)
 
 - [ ] テストカバレッジ
 - [ ] エッジケースの網羅
 - [ ] モックの適切性
 
-**UIフィードバック** (`@ui-designer`)
+**UIフィードバック** (`.claude/agents/ui-designer.md`)
 
 - [ ] エラーメッセージの分かりやすさ
 - [ ] ローディング状態の表示

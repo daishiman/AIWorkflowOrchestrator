@@ -1,199 +1,116 @@
 ---
-name: context-optimization
+name: .claude/skills/context-optimization/SKILL.md
 description: |
-    トークン使用量の最小化と必要情報の効率的抽出を専門とするスキル。
-    遅延読み込み、インデックス駆動設計、圧縮と精錬により、
-    コンテキストウィンドウを最適活用します。
-    専門分野:
-    - 遅延読み込み: 必要な時に必要な情報のみロード
-    - インデックス設計: 目次駆動、効率的なナビゲーション
-    - 圧縮と精錬: 冗長性排除、本質的情報の抽出
-    - トークン見積もり: 使用量の予測と最適化
-    使用タイミング:
-    - トークン使用量を削減する必要がある時
-    - 大量の情報を効率的に提供したい時
-    - コンテキスト汚染を防ぎたい時
-    - 情報アクセスを最適化する時
-    Use proactively when optimizing token usage, implementing lazy loading,
-    or minimizing context pollution.
-
+  トークン使用量の最小化と必要情報の効率的抽出を専門とするスキル。
+  遅延読み込み、インデックス駆動設計、圧縮と精錬により、
+  コンテキストウィンドウを最適活用します。
+  
+  📖 参照書籍:
+  - 『High Performance Browser Networking』（Ilya Grigorik）: パフォーマンス測定
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/context-optimization/resources/compression-techniques.md`: 冗長性排除と本質的情報抽出のテクニック
-  - `.claude/skills/context-optimization/resources/index-driven-design.md`: 目次駆動の効率的なナビゲーション設計
-  - `.claude/skills/context-optimization/resources/lazy-loading-patterns.md`: 必要時のみロードする遅延読み込みパターン
-  - `.claude/skills/context-optimization/scripts/estimate-tokens.mjs`: トークン使用量の自動計算スクリプト
-  - `.claude/skills/context-optimization/scripts/estimate-tokens.sh`: トークン使用量の自動計算スクリプト（シェル版）
-
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/compression-techniques.md`: compression-techniques の詳細ガイド
+  - `resources/index-driven-design.md`: index-driven-design の詳細ガイド
+  - `resources/lazy-loading-patterns.md`: lazy-loading-patterns のパターン集
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `scripts/estimate-tokens.mjs`: estimatetokensを処理するスクリプト
+  - `scripts/estimate-tokens.sh`: estimatetokensを処理するスクリプト
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  
+  Use proactively when handling context optimization tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "High Performance Browser Networking"
+    author: "Ilya Grigorik"
+    concepts:
+      - "パフォーマンス測定"
+      - "最適化"
 ---
 
 # Context Optimization
 
 ## 概要
 
-コンテキスト最適化は、限られたコンテキストウィンドウを最大限に活用するための戦略です。
-必要最小限の情報提供、段階的なロード、効率的な参照設計により、
-トークン使用量を60-80%削減しながら、必要な知識を確実に提供します。
+トークン使用量の最小化と必要情報の効率的抽出を専門とするスキル。
+遅延読み込み、インデックス駆動設計、圧縮と精錬により、
+コンテキストウィンドウを最適活用します。
 
-**主要な価値**:
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-- トークン使用量の大幅削減（60-80%）
-- コンテキスト汚染の防止
-- 必要な情報への高速アクセス
-- スケーラブルな知識提供
-
-## リソース構造
-
-```
-context-optimization/
-├── SKILL.md
-├── resources/
-│   ├── lazy-loading-patterns.md
-│   ├── index-driven-design.md
-│   └── compression-techniques.md
-└── scripts/
-    └── estimate-tokens.sh
-```
-
-### リソース種別
-
-- **遅延読み込み** (`resources/lazy-loading-patterns.md`): 必要な時に必要な情報のみロード
-- **インデックス設計** (`resources/index-driven-design.md`): 目次駆動、効率的なナビゲーション
-- **圧縮テクニック** (`resources/compression-techniques.md`): 冗長性排除、本質的情報の抽出
-- **トークン見積もりスクリプト** (`scripts/estimate-tokens.mjs`): トークン使用量の自動計算（TypeScript）
-
-## コマンドリファレンス
-
-このスキルで使用可能なリソース、スクリプト、テンプレートへのアクセスコマンド:
-
-### リソース読み取り
-
-```bash
-# 遅延読み込みパターン
-cat .claude/skills/context-optimization/resources/lazy-loading-patterns.md
-
-# インデックス駆動設計
-cat .claude/skills/context-optimization/resources/index-driven-design.md
-
-# 圧縮テクニック
-cat .claude/skills/context-optimization/resources/compression-techniques.md
-```
-
-### スクリプト実行
-
-```bash
-# 単一ファイルのトークン見積もり（TypeScript）
-node .claude/skills/context-optimization/scripts/estimate-tokens.mjs <file.md>
-
-# ディレクトリ内の全ファイルを分析
-node .claude/skills/context-optimization/scripts/estimate-tokens.mjs <directory>
-
-# 例: SKILL.mdのトークン見積もり
-node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/skills/context-optimization/SKILL.md
-
-# 例: リソースディレクトリの分析
-node .claude/skills/context-optimization/scripts/estimate-tokens.mjs .claude/skills/context-optimization/resources/
-```
-
-## いつ使うか
-
-### シナリオ1: トークン削減
-
-**状況**: スキルのトークン使用量が20Kを超えている
-
-**適用条件**:
-
-- [ ] 総トークン数が20K以上
-- [ ] コンテキストウィンドウを圧迫
-- [ ] 削減の余地がある
-
-**期待される成果**: 60-80%の削減
-
-### シナリオ2: 遅延読み込みの実装
-
-**状況**: すべての情報を事前ロードしている
-
-**適用条件**:
-
-- [ ] 多数のリソースファイルがある
-- [ ] すべてを同時に使うことは稀
-- [ ] 段階的な参照が可能
-
-**期待される成果**: 必要時のみロードする設計
 
 ## ワークフロー
 
-### Phase 1: 遅延読み込み設計
+### Phase 1: 目的と前提の整理
 
-**原則**: 全リソースの事前ロード禁止
+**目的**: タスクの目的と前提条件を明確にする
 
-**方法**:
+**アクション**:
 
-- SKILL.mdにインデックスを提供
-- 必要なリソースのみ参照
-- エージェントが判断して選択
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-**リソース**: `resources/lazy-loading-patterns.md`
+### Phase 2: スキル適用
 
-### Phase 2: インデックス駆動設計
+**目的**: スキルの指針に従って具体的な作業を進める
 
-**原則**: SKILL.mdは「目次」として機能
+**アクション**:
 
-**方法**:
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-- リソース構造セクションでディレクトリツリー提示
-- 各Phaseで対応するリソースを明示
-- リソース選択ガイドを提供
+### Phase 3: 検証と記録
 
-**リソース**: `resources/index-driven-design.md`
+**目的**: 成果物の検証と実行記録の保存
 
-### Phase 3: 圧縮と精錬
+**アクション**:
 
-**原則**: 冗長性を排除、本質のみ抽出
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-**方法**:
-
-- 重複削除（DRY原則）
-- 例の最小化（2-3個）
-- 概念要素中心（具体例は最小限）
-
-**リソース**: `resources/compression-techniques.md`
 
 ## ベストプラクティス
 
 ### すべきこと
-
-1. **SKILL.mdは500行以内**: 厳守
-2. **インデックスを充実**: リソース構造セクション必須
-3. **参照を明確に**: どこに何があるか常に明示
+- トークン使用量を削減する必要がある時
+- 大量の情報を効率的に提供したい時
+- コンテキスト汚染を防ぎたい時
+- 情報アクセスを最適化する時
 
 ### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
 
-1. **全ロード**: すべてのリソースを一度に参照しない
-2. **冗長性**: 同じ情報を複数箇所に書かない
-3. **過度な詳細**: 本質的でない情報は削除
+## コマンドリファレンス
 
-## メトリクス
+### リソース読み取り
+```bash
+cat .claude/skills/context-optimization/resources/Level1_basics.md
+cat .claude/skills/context-optimization/resources/Level2_intermediate.md
+cat .claude/skills/context-optimization/resources/Level3_advanced.md
+cat .claude/skills/context-optimization/resources/Level4_expert.md
+cat .claude/skills/context-optimization/resources/compression-techniques.md
+cat .claude/skills/context-optimization/resources/index-driven-design.md
+cat .claude/skills/context-optimization/resources/lazy-loading-patterns.md
+cat .claude/skills/context-optimization/resources/legacy-skill.md
+```
 
-### トークン削減率
-
-**目標**: 60-80%
-
-### 情報アクセス時間
-
-**目標**: <2分
+### スクリプト実行
+```bash
+node .claude/skills/context-optimization/scripts/estimate-tokens.mjs --help
+.claude/skills/context-optimization/scripts/estimate-tokens.sh
+node .claude/skills/context-optimization/scripts/log_usage.mjs --help
+node .claude/skills/context-optimization/scripts/validate-skill.mjs --help
+```
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                          |
-| ---------- | ---------- | --------------------------------- |
-| 1.0.0      | 2025-11-23 | 初版作成 - コンテキスト最適化戦略 |
-
-## 関連スキル
-
-- **progressive-disclosure** (`.claude/skills/progressive-disclosure/SKILL.md`): 3層開示モデル
-- **knowledge-management** (`.claude/skills/knowledge-management/SKILL.md`): 知識の体系化
-- **documentation-architecture** (`.claude/skills/documentation-architecture/SKILL.md`): ドキュメント構造設計
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

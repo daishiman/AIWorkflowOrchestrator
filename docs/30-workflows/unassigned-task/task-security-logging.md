@@ -13,7 +13,7 @@
 | ステータス       | 未実施                             |
 | 発見元           | Phase 6 - セキュリティ監査         |
 | 発見日           | 2024-12-23                         |
-| 発見エージェント | @sec-auditor                       |
+| 発見エージェント | .claude/agents/sec-auditor.md                       |
 
 ---
 
@@ -182,7 +182,7 @@ Phase 9: ドキュメント更新
 
 ##### 使用エージェント
 
-- **エージェント**: `@sre-observer`
+- **エージェント**: `.claude/agents/sre-observer.md`
 - **選定理由**: ログ記録・監視の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -190,9 +190,9 @@ Phase 9: ドキュメント更新
 
 | スキル名                | 活用方法               |
 | ----------------------- | ---------------------- |
-| log-rotation-strategies | ログローテーション実装 |
-| metrics-tracking        | ログイベント定義       |
-| clean-code-practices    | 可読性の高い実装       |
+| .claude/skills/log-rotation-strategies/SKILL.md | ログローテーション実装 |
+| .claude/skills/metrics-tracking/SKILL.md        | ログイベント定義       |
+| .claude/skills/clean-code-practices/SKILL.md    | 可読性の高い実装       |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -278,7 +278,7 @@ chat-history-service の各メソッドにログ記録を組み込む。
 
 ##### 使用エージェント
 
-- **エージェント**: `@logic-dev`
+- **エージェント**: `.claude/agents/logic-dev.md`
 - **選定理由**: ビジネスロジック層への統合実装の専門家
 - **参照**: `.claude/agents/agent_list.md`
 

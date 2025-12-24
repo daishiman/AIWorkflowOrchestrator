@@ -2,7 +2,7 @@
 
 **タスクID**: CONV-03-03
 **作成日**: 2025-12-18
-**担当エージェント**: @req-analyst
+**担当エージェント**: .claude/agents/req-analyst.md
 **形式**: Given-When-Then（テスト駆動開発対応）
 
 ---
@@ -1332,17 +1332,17 @@ expect(elapsed).toBeLessThan(100);
 
 | 受け入れ基準 | 検証方法                      | 検証者        | ステータス |
 | ------------ | ----------------------------- | ------------- | ---------- |
-| AC-01〜06    | 単体テスト（types.test.ts）   | @unit-tester  | 未実施     |
-| AC-07〜13    | 単体テスト（schemas.test.ts） | @unit-tester  | 未実施     |
-| AC-14〜20    | 単体テスト（utils.test.ts）   | @unit-tester  | 未実施     |
-| AC-21〜22    | TypeScript型チェック          | @code-quality | 未実施     |
-| AC-24        | カバレッジレポート            | @unit-tester  | 未実施     |
-| AC-25        | `tsc --noEmit`                | @code-quality | 未実施     |
-| AC-26        | ESLint実行                    | @code-quality | 未実施     |
-| AC-27〜28    | 統合テスト（index.test.ts）   | @unit-tester  | 未実施     |
-| AC-29〜31    | エッジケーステスト            | @unit-tester  | 未実施     |
-| AC-32〜33    | パフォーマンステスト          | @unit-tester  | 未実施     |
-| AC-34        | コードレビュー                | @code-quality | 未実施     |
+| AC-01〜06    | 単体テスト（types.test.ts）   | .claude/agents/unit-tester.md  | 未実施     |
+| AC-07〜13    | 単体テスト（schemas.test.ts） | .claude/agents/unit-tester.md  | 未実施     |
+| AC-14〜20    | 単体テスト（utils.test.ts）   | .claude/agents/unit-tester.md  | 未実施     |
+| AC-21〜22    | TypeScript型チェック          | .claude/agents/code-quality.md | 未実施     |
+| AC-24        | カバレッジレポート            | .claude/agents/unit-tester.md  | 未実施     |
+| AC-25        | `tsc --noEmit`                | .claude/agents/code-quality.md | 未実施     |
+| AC-26        | ESLint実行                    | .claude/agents/code-quality.md | 未実施     |
+| AC-27〜28    | 統合テスト（index.test.ts）   | .claude/agents/unit-tester.md  | 未実施     |
+| AC-29〜31    | エッジケーステスト            | .claude/agents/unit-tester.md  | 未実施     |
+| AC-32〜33    | パフォーマンステスト          | .claude/agents/unit-tester.md  | 未実施     |
+| AC-34        | コードレビュー                | .claude/agents/code-quality.md | 未実施     |
 | MV-01〜03    | 手動検証                      | 実装者        | 未実施     |
 
 ---
@@ -1375,4 +1375,4 @@ expect(elapsed).toBeLessThan(100);
 
 | 日付       | バージョン | 変更内容 | 変更者       |
 | ---------- | ---------- | -------- | ------------ |
-| 2025-12-18 | 1.0.0      | 初版作成 | @req-analyst |
+| 2025-12-18 | 1.0.0      | 初版作成 | .claude/agents/req-analyst.md |

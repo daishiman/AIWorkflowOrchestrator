@@ -74,10 +74,10 @@
 ### 理由
 
 1. **Phase 7最終レビュー**:
-   - @code-quality: PASS（指摘事項なし）
-   - @arch-police: PASS（指摘事項なし）
-   - @unit-tester: PASS（指摘事項なし）
-   - @sec-auditor: PASS（指摘事項なし）
+   - .claude/agents/code-quality.md: PASS（指摘事項なし）
+   - .claude/agents/arch-police.md: PASS（指摘事項なし）
+   - .claude/agents/unit-tester.md: PASS（指摘事項なし）
+   - .claude/agents/sec-auditor.md: PASS（指摘事項なし）
 
 2. **Phase 8手動テスト**:
    - 不具合発見: 0件

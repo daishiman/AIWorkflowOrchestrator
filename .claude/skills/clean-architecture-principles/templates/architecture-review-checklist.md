@@ -4,7 +4,7 @@
 
 - **レビュー日**: {{date}}
 - **レビュー対象**: {{target}}
-- **レビュー担当**: @arch-police
+- **レビュー担当**: .claude/agents/arch-police.md
 
 ---
 

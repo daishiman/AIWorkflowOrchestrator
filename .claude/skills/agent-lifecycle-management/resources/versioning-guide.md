@@ -269,8 +269,8 @@ version: 1.5.0
 
 | エージェント    | スキル                      | 互換バージョン    |
 | --------------- | --------------------------- | ----------------- |
-| my-agent v1.5.0 | agent-architecture-patterns | >= 1.0.0, < 2.0.0 |
-| my-agent v1.5.0 | agent-structure-design      | >= 1.2.0, < 2.0.0 |
+| my-agent v1.5.0 | .claude/skills/agent-architecture-patterns/SKILL.md | >= 1.0.0, < 2.0.0 |
+| my-agent v1.5.0 | .claude/skills/agent-structure-design/SKILL.md      | >= 1.2.0, < 2.0.0 |
 
 ## ベストプラクティス
 

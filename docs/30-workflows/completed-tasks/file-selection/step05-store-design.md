@@ -2,7 +2,7 @@
 
 > **ドキュメントID**: CONV-01-STORE
 > **作成日**: 2025-12-16
-> **作成者**: @state-manager
+> **作成者**: .claude/agents/state-manager.md
 > **ステータス**: 承認待ち
 > **関連ドキュメント**: [step03-type-design.md](./step03-type-design.md), [step04-ipc-design.md](./step04-ipc-design.md)
 
@@ -919,7 +919,7 @@ describe("fileSelectionSlice", () => {
 
 | 役割           | 名前           | 日付       | 承認状況 |
 | -------------- | -------------- | ---------- | -------- |
-| 状態管理設計者 | @state-manager | 2025-12-16 | 作成済み |
+| 状態管理設計者 | .claude/agents/state-manager.md | 2025-12-16 | 作成済み |
 | アーキテクト   |                |            | 未承認   |
 | 最終承認者     |                |            | 未承認   |
 
@@ -929,4 +929,4 @@ describe("fileSelectionSlice", () => {
 
 | バージョン | 日付       | 変更内容 | 変更者         |
 | ---------- | ---------- | -------- | -------------- |
-| 1.0        | 2025-12-16 | 初版作成 | @state-manager |
+| 1.0        | 2025-12-16 | 初版作成 | .claude/agents/state-manager.md |

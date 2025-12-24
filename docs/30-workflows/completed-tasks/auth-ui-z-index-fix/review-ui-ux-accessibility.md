@@ -2,7 +2,7 @@
 
 **対象**: AccountSection Portal実装
 **レビュー日時**: 2025-12-20 23:10
-**レビュアー**: @ui-designer
+**レビュアー**: .claude/agents/ui-designer.md
 
 ---
 

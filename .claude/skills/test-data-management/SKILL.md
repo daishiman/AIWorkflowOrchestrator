@@ -1,234 +1,114 @@
 ---
-name: test-data-management
+name: .claude/skills/test-data-management/SKILL.md
 description: |
   E2Eテストのためのテストデータ管理戦略。
-
+  
+  📖 参照書籍:
+  - 『Test-Driven Development: By Example』（Kent Beck）: Red-Green-Refactor
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/test-data-management/resources/cleanup-patterns.md`: Cleanup Patternsリソース
-  - `.claude/skills/test-data-management/resources/data-isolation-techniques.md`: Data Isolation Techniquesリソース
-  - `.claude/skills/test-data-management/resources/seeding-strategies.md`: Seeding Strategiesリソース
-
-  - `.claude/skills/test-data-management/templates/fixture-template.ts`: Fixtureテンプレート
-
-  - `.claude/skills/test-data-management/scripts/generate-test-data.mjs`: Generate Test Dataスクリプト
-
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/cleanup-patterns.md`: Cleanup Patternsリソース
+  - `resources/data-isolation-techniques.md`: Data Isolation Techniquesリソース
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/seeding-strategies.md`: Seeding Strategiesリソース
+  - `scripts/generate-test-data.mjs`: Generate Test Dataスクリプト
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/fixture-template.ts`: Fixtureテンプレート
+  
+  Use proactively when handling test data management tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "Test-Driven Development: By Example"
+    author: "Kent Beck"
+    concepts:
+      - "Red-Green-Refactor"
+      - "テスト設計"
 ---
 
 # Test Data Management Skill
 
 ## 概要
 
-E2E テストのためのテストデータ管理戦略。Seeding（データ準備）、Teardown（クリーンアップ）、データ分離技術を提供。
+E2Eテストのためのテストデータ管理戦略。
 
-## 核心概念
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-### 1. Seeding（データ準備）戦略
 
-**目的**: テスト実行前に必要なデータを準備
+## ワークフロー
 
-```typescript
-// APIによるSeeding
-test.beforeEach(async ({ request }) => {
-  await request.post("/api/users", {
-    data: { name: "Test User", email: "test@example.com" },
-  });
-});
+### Phase 1: 目的と前提の整理
 
-// Fixtureファイル使用
-import testData from "./fixtures/users.json";
+**目的**: タスクの目的と前提条件を明確にする
 
-test.beforeEach(async ({ request }) => {
-  for (const user of testData) {
-    await request.post("/api/users", { data: user });
-  }
-});
-```
+**アクション**:
 
-### 2. Teardown（クリーンアップ）戦略
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-**目的**: テスト実行後にデータを削除
+### Phase 2: スキル適用
 
-```typescript
-test.afterEach(async ({ request }) => {
-  // テストデータ削除
-  await request.delete("/api/users/test@example.com");
-});
+**目的**: スキルの指針に従って具体的な作業を進める
 
-// データベース直接クリーンアップ
-test.afterEach(async () => {
-  await db.query('DELETE FROM users WHERE email LIKE "test-%"');
-});
-```
+**アクション**:
 
-### 3. テストデータ分離
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-**並列実行時のデータ競合回避**:
+### Phase 3: 検証と記録
 
-```typescript
-test("ユーザー作成", async ({ page }) => {
-  // 一意なデータ生成
-  const uniqueEmail = `user-${Date.now()}@example.com`;
-  const uniqueId = crypto.randomUUID();
+**目的**: 成果物の検証と実行記録の保存
 
-  await page.goto("/register");
-  await page.getByLabel("Email").fill(uniqueEmail);
-  // ...
-});
-```
+**アクション**:
 
-## 実装パターン
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-### パターン 1: Fixture-based パターン
-
-```typescript
-// fixtures/test-user.ts
-export const test = base.extend({
-  testUser: async ({ request }, use) => {
-    // Setup
-    const user = {
-      name: "Test User",
-      email: `test-${Date.now()}@example.com`,
-    };
-    const response = await request.post("/api/users", { data: user });
-    const createdUser = await response.json();
-
-    // テストに渡す
-    await use(createdUser);
-
-    // Cleanup
-    await request.delete(`/api/users/${createdUser.id}`);
-  },
-});
-
-// テスト使用
-test("ユーザープロフィール表示", async ({ page, testUser }) => {
-  await page.goto(`/users/${testUser.id}`);
-  await expect(page.getByText(testUser.name)).toBeVisible();
-});
-```
-
-### パターン 2: Database Seeding
-
-```typescript
-// setup/seed-database.ts
-import { PrismaClient } from "@prisma/client";
-
-export async function seedDatabase() {
-  const prisma = new PrismaClient();
-
-  await prisma.user.createMany({
-    data: [
-      { name: "User 1", email: "user1@test.com" },
-      { name: "User 2", email: "user2@test.com" },
-    ],
-  });
-
-  await prisma.$disconnect();
-}
-
-// tests/users.spec.ts
-test.beforeAll(async () => {
-  await seedDatabase();
-});
-
-test.afterAll(async () => {
-  const prisma = new PrismaClient();
-  await prisma.user.deleteMany({ where: { email: { endsWith: "@test.com" } } });
-  await prisma.$disconnect();
-});
-```
-
-### パターン 3: トランザクションベース
-
-```typescript
-test.describe("トランザクション使用", () => {
-  let transactionId;
-
-  test.beforeEach(async ({ request }) => {
-    // トランザクション開始
-    const response = await request.post("/api/transactions/begin");
-    transactionId = (await response.json()).id;
-  });
-
-  test.afterEach(async ({ request }) => {
-    // ロールバック
-    await request.post(`/api/transactions/${transactionId}/rollback`);
-  });
-
-  test("データ作成テスト", async ({ page }) => {
-    // トランザクション内でデータ操作
-    // ...
-  });
-});
-```
 
 ## ベストプラクティス
 
-### DO（推奨）
+### すべきこと
+- resources/Level1_basics.md を参照し、適用範囲を明確にする
+- resources/Level2_intermediate.md を参照し、実務手順を整理する
 
-1. **一意なテストデータ生成**:
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
 
-```typescript
-const email = `test-${crypto.randomUUID()}@example.com`;
-const timestamp = Date.now();
+## コマンドリファレンス
+
+### リソース読み取り
+```bash
+cat .claude/skills/test-data-management/resources/Level1_basics.md
+cat .claude/skills/test-data-management/resources/Level2_intermediate.md
+cat .claude/skills/test-data-management/resources/Level3_advanced.md
+cat .claude/skills/test-data-management/resources/Level4_expert.md
+cat .claude/skills/test-data-management/resources/cleanup-patterns.md
+cat .claude/skills/test-data-management/resources/data-isolation-techniques.md
+cat .claude/skills/test-data-management/resources/legacy-skill.md
+cat .claude/skills/test-data-management/resources/seeding-strategies.md
 ```
 
-2. **最小限のデータセット**:
-
-```typescript
-// ✅ 必要最小限
-await createUser({ name: "Test", email: "test@example.com" });
-
-// ❌ 過剰なデータ
-await create100Users(); // 不要
+### スクリプト実行
+```bash
+node .claude/skills/test-data-management/scripts/generate-test-data.mjs --help
+node .claude/skills/test-data-management/scripts/log_usage.mjs --help
+node .claude/skills/test-data-management/scripts/validate-skill.mjs --help
 ```
 
-3. **クリーンアップの確実な実行**:
-
-```typescript
-test.afterEach(async () => {
-  // 必ずクリーンアップ
-});
+### テンプレート参照
+```bash
+cat .claude/skills/test-data-management/templates/fixture-template.ts
 ```
 
-### DON'T（非推奨）
+## 変更履歴
 
-1. **固定データへの依存を避ける**:
-
-```typescript
-// ❌ 固定データ（他テストと競合）
-await page.fill('[name="email"]', "fixed@example.com");
-
-// ✅ 動的データ
-await page.fill('[name="email"]', `test-${Date.now()}@example.com`);
-```
-
-2. **グローバルステートを避ける**:
-
-```typescript
-// ❌
-let globalUser; // 避けるべき
-
-// ✅
-test.beforeEach(async ({ }, testInfo) => {
-  const user = { ... }; // テストスコープ内
-});
-```
-
-## リソース
-
-- [resources/seeding-strategies.md](resources/seeding-strategies.md) - Seeding 戦略詳細（API、DB、Fixture）
-- [resources/cleanup-patterns.md](resources/cleanup-patterns.md) - クリーンアップパターンとベストプラクティス
-- [resources/data-isolation-techniques.md](resources/data-isolation-techniques.md) - 並列実行時のデータ分離技術
-- [scripts/generate-test-data.mjs](scripts/generate-test-data.mjs) - テストデータ生成スクリプト
-- [templates/fixture-template.ts](templates/fixture-template.ts) - Playwright の fixture 拡張テンプレート
-
-## 関連スキル
-
-- **playwright-testing** (`.claude/skills/playwright-testing/SKILL.md`): Playwright の基本操作
-- **flaky-test-prevention** (`.claude/skills/flaky-test-prevention/SKILL.md`): テスト安定化
-- **api-mocking** (`.claude/skills/api-mocking/SKILL.md`): API モック
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

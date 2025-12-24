@@ -1,27 +1,19 @@
 ---
 description: |
-  HuskyとLint-stagedを使用したPre-commit hooksの設定を行います。
-  コミット前にLintとフォーマットを自動実行するGit hooksをセットアップします。
+  HuskyとLint-stagedを使用したPre-commit hooksの設定を行います。コミット前にLintとフォーマットを自動実行するGit hooksをセットアップします。
+  実行は専門エージェントに委譲します。
 
   🤖 起動エージェント:
-  - `.claude/agents/hook-master.md` (メイン - Git hooks専門)
-  - `.claude/agents/code-quality.md` (補助 - 品質チェック設定)
-
-  📚 利用可能スキル (フェーズ別):
-  - Phase 1 (準備): `.claude/skills/git-hooks-concepts/SKILL.md`
-  - Phase 2 (実装): `.claude/skills/commit-hooks/SKILL.md`, `.claude/skills/linting-formatting-automation/SKILL.md`
-  - Phase 3 (検証): `.claude/skills/git-hooks-concepts/SKILL.md`
+  - `.claude/agents/hook-master.md`: メイン - Git hooks専門
+  - `.claude/agents/code-quality.md`: 補助 - 品質チェック設定
 
   ⚙️ このコマンドの設定:
-  - model: sonnet (セットアップタスク)
-  - allowed-tools: Task, Write, Bash(npx husky*|pnpm*)
+  - allowed-tools: Task（エージェント起動のみ）
+  - model: sonnet
 
   トリガーキーワード: pre-commit, git hooks, husky, lint-staged, 品質自動化
-argument-hint: ""
 allowed-tools:
   - Task
-  - Write
-  - Bash
 model: sonnet
 ---
 
@@ -29,41 +21,74 @@ model: sonnet
 
 ## 目的
 
-コミット前にコード品質基準を強制する自動化されたPre-commit hooksを設定します。
+`.claude/commands/ai/setup-pre-commit.md` の入力を受け取り、専門エージェントに実行を委譲します。
 
-## Phase 1: 準備
+## エージェント起動フロー
 
-1. `.claude/agents/hook-master.md` エージェントをPre-commitセットアップコンテキストで起動
-2. `.claude/skills/git-hooks-concepts/SKILL.md` を参照してGit hooksの基礎を確認
-3. 既存のセットアップを確認:
-   - `.husky/` ディレクトリの存在確認
-   - `package.json` のhusky/lint-staged設定確認
-   - パッケージマネージャーの特定（pnpm/pnpm/yarn）
+### Phase 1: メイン - Git hooks専門の実行
 
-## Phase 2: 実装
+**目的**: メイン - Git hooks専門に関するタスクを実行し、結果を整理する
 
-1. `.claude/skills/commit-hooks/SKILL.md` を参照してHook実装パターンを確認
-2. `.claude/skills/linting-formatting-automation/SKILL.md` を参照して自動化ワークフローを確認
-3. `.claude/agents/hook-master.md` エージェントにHookセットアップを委譲:
-   - 必要に応じてhuskyとlint-stagedをインストール: `pnpm add -D husky lint-staged`
-   - huskyを初期化: `npx husky init`
-   - Pre-commit hookファイルを作成: `.husky/pre-commit`
-4. `.claude/agents/code-quality.md` エージェントに品質チェック設定を委譲:
-   - `package.json` または `.lintstagedrc.json` にlint-stagedを設定
-   - ファイルパターンとコマンドを定義（eslint --fix、prettier --write）
-5. Writeツールを使用してHook設定を書き込み
+**背景**: 専門知識が必要なため専門エージェントに委譲する
 
-## Phase 3: 検証
+**ゴール**: メイン - Git hooks専門の結果と次アクションが提示された状態
 
-1. `.claude/skills/git-hooks-concepts/SKILL.md` を参照して検証アプローチを確認
-2. `.claude/agents/hook-master.md` エージェントからHook実行をテスト:
-   - テストコミットシナリオを作成
-   - Hookが正しくトリガーされることを確認
-   - LintとフォーマットがYes行されることを確認
-3. セットアップサマリーを生成:
-   - インストールされた依存関係
-   - Hook設定の詳細
-   - チーム向け使用方法
-4. README.mdに使用方法を追記（オプション）
+**起動エージェント**: `.claude/agents/hook-master.md`
 
-**期待される成果物**: ドキュメント付きの完全に設定されたPre-commit hooks
+Task ツールで `.claude/agents/hook-master.md` を起動:
+
+**コンテキスト**:
+
+- 引数: なし
+
+**依頼内容**:
+
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
+
+**期待成果物**:
+
+- `package.json`
+- `README.md`
+
+**完了条件**:
+
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
+
+### Phase 2: 補助 - 品質チェック設定の実行
+
+**目的**: 補助 - 品質チェック設定に関するタスクを実行し、結果を整理する
+
+**背景**: 専門知識が必要なため専門エージェントに委譲する
+
+**ゴール**: 補助 - 品質チェック設定の結果と次アクションが提示された状態
+
+**起動エージェント**: `.claude/agents/code-quality.md`
+
+Task ツールで `.claude/agents/code-quality.md` を起動:
+
+**コンテキスト**:
+
+- 引数: なし
+
+**依頼内容**:
+
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
+
+**期待成果物**:
+
+- `package.json`
+- `README.md`
+
+**完了条件**:
+
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
+
+## 使用例
+
+```bash
+/ai:setup-pre-commit
+```

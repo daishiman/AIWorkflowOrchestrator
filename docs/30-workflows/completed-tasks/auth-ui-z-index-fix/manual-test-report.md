@@ -402,7 +402,7 @@ it('アクセシビリティ違反がないこと (axe-core)', async () => {
 
 - [品質ゲート検証](./quality-report.md)（T-06-1）
 - [最終レビュー統合](./review-final-t-07-1.md)（T-07-1）
-- [UI/UXアクセシビリティレビュー](./review-ui-ux-accessibility.md)（@ui-designer）
+- [UI/UXアクセシビリティレビュー](./review-ui-ux-accessibility.md)（.claude/agents/ui-designer.md）
 
 ### 実装
 

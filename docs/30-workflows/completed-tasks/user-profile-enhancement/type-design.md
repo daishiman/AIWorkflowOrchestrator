@@ -6,7 +6,7 @@
 | ---------- | --------------------- |
 | 文書ID     | TYPE-USER-PROFILE-001 |
 | 作成日     | 2025-12-10            |
-| 担当者     | @schema-def           |
+| 担当者     | .claude/agents/schema-def.md           |
 | ステータス | 確定                  |
 | 関連タスク | T-01-2                |
 
@@ -713,4 +713,4 @@ export function TimezoneSelector({ value, onChange }: TimezoneSelectorProps) {
 
 | 版  | 日付       | 変更内容 | 担当者      |
 | --- | ---------- | -------- | ----------- |
-| 1.0 | 2025-12-10 | 初版作成 | @schema-def |
+| 1.0 | 2025-12-10 | 初版作成 | .claude/agents/schema-def.md |

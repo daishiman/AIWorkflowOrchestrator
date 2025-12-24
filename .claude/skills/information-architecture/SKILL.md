@@ -1,277 +1,117 @@
 ---
-name: information-architecture
+name: .claude/skills/information-architecture/SKILL.md
 description: |
-    ユーザーが必要な情報を素早く見つけられるドキュメント構造設計スキル。
-    階層設計、ナビゲーション、情報粒度管理の技術を提供。
-    使用タイミング:
-    - ドキュメント全体の構造を設計する時
-    - ナビゲーション設計を行う時
-    - 情報の粒度を決定する時
-    - ドキュメントサイトを構築する時
-    トリガーキーワード:
-    - 「ドキュメント構造」「情報設計」「ナビゲーション」
-    - 「階層構造」「サイト設計」「目次設計」
-
+  ユーザーが必要な情報を素早く見つけられるドキュメント構造設計スキル。
+  階層設計、ナビゲーション、情報粒度管理の技術を提供。
+  使用タイミング:
+  
+  📖 参照書籍:
+  - 『Clean Architecture』（Robert C. Martin）: 依存関係ルール
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/information-architecture/resources/navigation-patterns.md`: グローバルナビ、パンくずリスト、サイドナビのベストプラクティス
-  - `.claude/skills/information-architecture/templates/sitemap-template.md`: ドキュメント構造設計用サイトマップテンプレート
-  - `.claude/skills/information-architecture/scripts/validate-links.mjs`: 内部リンク整合性と破損リンク検証スクリプト
-
-  Use proactively when implementing information-architecture patterns or solving related problems.
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/navigation-patterns.md`: navigation-patterns のパターン集
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-links.mjs`: linksを検証するスクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/sitemap-template.md`: sitemap-template のテンプレート
+  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
+  
+  Use proactively when handling information architecture tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "Clean Architecture"
+    author: "Robert C. Martin"
+    concepts:
+      - "依存関係ルール"
+      - "境界の設計"
 ---
 
 # Information Architecture スキル
 
 ## 概要
 
-このスキルは、ユーザーが必要な情報を効率的に発見・理解できる
-ドキュメント構造の設計技術を提供します。
-ドナルド・ノーマンのメンタルモデルの概念に基づき、
-ユーザーの期待に沿った情報構造を設計します。
+ユーザーが必要な情報を素早く見つけられるドキュメント構造設計スキル。
+階層設計、ナビゲーション、情報粒度管理の技術を提供。
+使用タイミング:
 
-## ドキュメント階層設計
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-### 階層設計原則
 
-1. **3 クリックルール**: 任意の情報へ 3 クリック以内でアクセス
-2. **7±2 の法則**: 各レベルの選択肢は 5-9 個に制限
-3. **プログレッシブ・ディスクロージャ**: 詳細は段階的に開示
-4. **予測可能性**: ユーザーの期待に沿った構造
+## ワークフロー
 
-### 標準階層構造
+### Phase 1: 目的と前提の整理
 
-```
-ドキュメントルート
-├── はじめに/
-│   ├── クイックスタート
-│   ├── インストール
-│   └── システム要件
-├── チュートリアル/
-│   ├── 基本チュートリアル/
-│   │   ├── チュートリアル1
-│   │   └── チュートリアル2
-│   └── 応用チュートリアル/
-├── ガイド/
-│   ├── 機能ガイド/
-│   └── ベストプラクティス/
-├── リファレンス/
-│   ├── API
-│   ├── 設定
-│   └── コマンド
-├── トラブルシューティング/
-│   ├── よくある問題
-│   └── FAQ
-└── 付録/
-    ├── 用語集
-    └── 変更履歴
-```
+**目的**: タスクの目的と前提条件を明確にする
 
-### プロジェクト構造への準拠
+**アクション**:
 
-既存プロジェクトの `docs/` 構造に準拠:
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-- **番号付けディレクトリ**: 00-requirements, 10-architecture など
-- **ユーザーマニュアル**: 独立したサブディレクトリ
-- **多言語対応**: 言語別ディレクトリ（ja/, en/）
+### Phase 2: スキル適用
 
-## ナビゲーション設計
+**目的**: スキルの指針に従って具体的な作業を進める
 
-### ナビゲーション要素
+**アクション**:
 
-| 要素           | 目的                   | 配置場所            |
-| -------------- | ---------------------- | ------------------- |
-| グローバルナビ | 主要セクションへの移動 | ヘッダー/サイドバー |
-| パンくずリスト | 現在位置の明示         | ページ上部          |
-| サイドナビ     | セクション内の移動     | 左サイドバー        |
-| ページ内目次   | 長いページの移動       | 右サイドバー        |
-| 関連リンク     | 関連情報への誘導       | ページ下部          |
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-### パンくずリスト設計
+### Phase 3: 検証と記録
 
-```markdown
-ホーム > チュートリアル > 基本 > 最初のプロジェクト
+**目的**: 成果物の検証と実行記録の保存
+
+**アクション**:
+
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
+
+
+## ベストプラクティス
+
+### すべきこと
+- ドキュメント全体の構造を設計する時
+- ナビゲーション設計を行う時
+- 情報の粒度を決定する時
+- ドキュメントサイトを構築する時
+
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
+
+## コマンドリファレンス
+
+### リソース読み取り
+```bash
+cat .claude/skills/information-architecture/resources/Level1_basics.md
+cat .claude/skills/information-architecture/resources/Level2_intermediate.md
+cat .claude/skills/information-architecture/resources/Level3_advanced.md
+cat .claude/skills/information-architecture/resources/Level4_expert.md
+cat .claude/skills/information-architecture/resources/legacy-skill.md
+cat .claude/skills/information-architecture/resources/navigation-patterns.md
 ```
 
-### 「次へ/前へ」ナビゲーション
-
-```markdown
----
-← 前: [前のトピック](./previous.md)
-→ 次: [次のトピック](./next.md)
----
+### スクリプト実行
+```bash
+node .claude/skills/information-architecture/scripts/log_usage.mjs --help
+node .claude/skills/information-architecture/scripts/validate-links.mjs --help
+node .claude/skills/information-architecture/scripts/validate-skill.mjs --help
 ```
 
-## 情報粒度管理
-
-### ページタイプ別の粒度
-
-| タイプ         | 目的           | 語数目安     | 詳細度 |
-| -------------- | -------------- | ------------ | ------ |
-| 概要           | 全体像の理解   | 300-500 語   | 低     |
-| ガイド         | 操作方法の説明 | 800-1500 語  | 中     |
-| チュートリアル | 手順の詳細     | 1000-2000 語 | 高     |
-| リファレンス   | 完全な仕様     | 制限なし     | 最高   |
-
-### 情報の分割基準
-
-**分割すべき場合**:
-
-- 1 ページが 3000 語を超える
-- 3 つ以上の独立したトピックを含む
-- スクロールが 5 画面分を超える
-
-**統合すべき場合**:
-
-- 関連する情報が別ページにある
-- ユーザーが頻繁に行き来する
-- 1 ページで完結すべきタスク
-
-## ページ構造設計
-
-### 標準ページテンプレート
-
-```markdown
-# [ページタイトル]
-
-> [ページの要約（1-2 文）]
-
-## 概要/はじめに
-
-[このページで学ぶこと/できるようになること]
-
-## メインコンテンツ
-
-### セクション 1
-
-[内容]
-
-### セクション 2
-
-[内容]
-
-## まとめ
-
-[キーポイントの箇条書き]
-
-## 次のステップ
-
-- [関連トピック 1]
-- [関連トピック 2]
-
-## 関連情報
-
-- [参照ドキュメント 1]
-- [参照ドキュメント 2]
+### テンプレート参照
+```bash
+cat .claude/skills/information-architecture/templates/sitemap-template.md
 ```
 
-### 見出しレベルのガイドライン
+## 変更履歴
 
-| レベル    | 用途           | 例                  |
-| --------- | -------------- | ------------------- |
-| H1 (#)    | ページタイトル | 1 ページに 1 つのみ |
-| H2 (##)   | 主要セクション | 3-7 個推奨          |
-| H3 (###)  | サブセクション | 各 H2 内に 2-5 個   |
-| H4 (####) | 詳細項目       | 必要に応じて        |
-
-## 検索性の最適化
-
-### キーワード設計
-
-**ユーザーが使う言葉を想定**:
-
-- 専門用語と一般用語の両方を含める
-- 類義語を考慮
-- よくあるスペルミスも対応
-
-### ファイル命名規約
-
-```
-❌ 悪い例: doc1.md, guide.md, new-page.md
-✅ 良い例: getting-started.md, user-authentication.md, error-handling.md
-```
-
-### 検索しやすいメタデータ
-
-```yaml
----
-title: ユーザー認証ガイド
-description: ログインと認証の設定方法を説明します
-keywords: ログイン, 認証, パスワード, SSO
-category: ガイド
----
-```
-
-## クロスリファレンス設計
-
-### リンク種別
-
-| リンク種別 | 用途               | 記法例                        |
-| ---------- | ------------------ | ----------------------------- |
-| 内部リンク | 同一ドキュメント内 | `[セクション名](#section)`    |
-| 相対リンク | 別ページ           | `[ページ名](./other-page.md)` |
-| 外部リンク | 外部サイト         | `[サイト名](https://...)`     |
-
-### 効果的なリンクテキスト
-
-```markdown
-❌ 悪い例: 詳細は[こちら](./details.md)を参照
-
-✅ 良い例: 詳細は[認証設定ガイド](./auth-settings.md)を参照
-```
-
-### 関連ドキュメントセクション
-
-```markdown
-## 関連ドキュメント
-
-- **前提知識**: [基本設定ガイド](./basic-settings.md)
-- **詳細情報**: [高度な認証設定](./advanced-auth.md)
-- **トラブルシューティング**: [認証エラーの解決](./auth-errors.md)
-```
-
-## モバイル対応
-
-### レスポンシブ設計原則
-
-1. **重要な情報を先に**: モバイルでは上部に
-2. **折りたたみ活用**: 詳細は展開式に
-3. **タップ可能なサイズ**: リンクは十分な間隔で
-4. **簡潔な見出し**: 長い見出しは折り返しで読みにくい
-
-## チェックリスト
-
-### 構造チェック
-
-- [ ] 階層が 3-4 レベル以内か？
-- [ ] 各レベルの選択肢は 7±2 個以内か？
-- [ ] 任意のページへ 3 クリック以内でアクセス可能か？
-
-### ナビゲーションチェック
-
-- [ ] パンくずリストがあるか？
-- [ ] 次へ/前へのリンクがあるか？
-- [ ] 関連ドキュメントへのリンクがあるか？
-
-### 検索性チェック
-
-- [ ] ファイル名は説明的か？
-- [ ] メタデータは適切に設定されているか？
-- [ ] リンクテキストは内容を示しているか？
-
-## リソース参照
-
-| リソース                     | パス                                                                       | 内容                     |
-| ---------------------------- | -------------------------------------------------------------------------- | ------------------------ |
-| **サイトマップテンプレート** | `.claude/skills/information-architecture/templates/sitemap-template.md`    | ドキュメント構造設計用   |
-| **リンク検証スクリプト**     | `.claude/skills/information-architecture/scripts/validate-links.mjs`       | 内部リンクの整合性確認   |
-| **ナビゲーションパターン**   | `.claude/skills/information-architecture/resources/navigation-patterns.md` | ナビゲーション設計の詳細 |
-
-## 関連スキル
-
-- `.claude/skills/user-centric-writing/SKILL.md`: ユーザー中心ライティング
-- `.claude/skills/tutorial-design/SKILL.md`: チュートリアル設計
-- `.claude/skills/localization-i18n/SKILL.md`: 多言語化対応
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

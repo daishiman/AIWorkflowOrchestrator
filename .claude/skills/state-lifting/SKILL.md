@@ -1,247 +1,118 @@
 ---
-name: state-lifting
+name: .claude/skills/state-lifting/SKILL.md
 description: |
   Reactにおける状態の持ち上げ（Lifting State Up）と状態配置戦略の専門スキル。
-
+  
+  📖 参照書籍:
+  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/state-lifting/resources/colocation-principles.md`: Colocation Principlesリソース
-  - `.claude/skills/state-lifting/resources/context-patterns.md`: Context Patternsリソース
-  - `.claude/skills/state-lifting/resources/prop-drilling-solutions.md`: Prop Drilling Solutionsリソース
-  - `.claude/skills/state-lifting/resources/state-placement-guide.md`: State Placement Guideリソース
-
-  - `.claude/skills/state-lifting/templates/compound-component-template.md`: Compound Componentテンプレート
-  - `.claude/skills/state-lifting/templates/context-provider-template.md`: Context Providerテンプレート
-
-  - `.claude/skills/state-lifting/scripts/analyze-state-structure.mjs`: Analyze State Structureスクリプト
-
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/colocation-principles.md`: Colocation Principlesリソース
+  - `resources/context-patterns.md`: Context Patternsリソース
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/prop-drilling-solutions.md`: Prop Drilling Solutionsリソース
+  - `resources/state-placement-guide.md`: State Placement Guideリソース
+  - `scripts/analyze-state-structure.mjs`: Analyze State Structureスクリプト
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/compound-component-template.md`: Compound Componentテンプレート
+  - `templates/context-provider-template.md`: Context Providerテンプレート
+  
+  Use proactively when handling state lifting tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "The Pragmatic Programmer"
+    author: "Andrew Hunt, David Thomas"
+    concepts:
+      - "実践的改善"
+      - "品質維持"
 ---
 
 # State Lifting
 
 ## 概要
 
-このスキルは、React における状態配置と状態共有の設計パターンを提供します。
-「状態はそれを必要とする最も近い共通の親に配置する」という原則に基づき、
-コンポーネントアーキテクチャを設計します。
+Reactにおける状態の持ち上げ（Lifting State Up）と状態配置戦略の専門スキル。
 
-**核心思想**: 状態は使用場所に最も近い場所に配置し、必要な場合のみ持ち上げる
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-**主要な価値**:
 
-- 適切な状態配置によるコンポーネント設計の明確化
-- Prop Drilling 問題の効果的な解決
-- パフォーマンスを考慮した Context 設計
+## ワークフロー
 
-## リソース構造
+### Phase 1: 目的と前提の整理
 
-```
-state-lifting/
-├── SKILL.md                                    # 本ファイル（概要とワークフロー）
-├── resources/
-│   ├── state-placement-guide.md               # 状態配置判断ガイド
-│   ├── colocation-principles.md               # コロケーション原則
-│   ├── context-patterns.md                    # Context APIパターン
-│   └── prop-drilling-solutions.md             # Prop Drilling解決策
-├── scripts/
-│   └── analyze-state-structure.mjs            # 状態構造分析スクリプト
-└── templates/
-    ├── context-provider-template.md           # Contextテンプレート
-    └── compound-component-template.md         # コンパウンドコンポーネントテンプレート
-```
+**目的**: タスクの目的と前提条件を明確にする
+
+**アクション**:
+
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
+
+### Phase 2: スキル適用
+
+**目的**: スキルの指針に従って具体的な作業を進める
+
+**アクション**:
+
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
+
+### Phase 3: 検証と記録
+
+**目的**: 成果物の検証と実行記録の保存
+
+**アクション**:
+
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
+
+
+## ベストプラクティス
+
+### すべきこと
+- resources/Level1_basics.md を参照し、適用範囲を明確にする
+- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
 
 ## コマンドリファレンス
 
 ### リソース読み取り
-
 ```bash
-# 状態配置ガイド
-cat .claude/skills/state-lifting/resources/state-placement-guide.md
-
-# コロケーション原則
+cat .claude/skills/state-lifting/resources/Level1_basics.md
+cat .claude/skills/state-lifting/resources/Level2_intermediate.md
+cat .claude/skills/state-lifting/resources/Level3_advanced.md
+cat .claude/skills/state-lifting/resources/Level4_expert.md
 cat .claude/skills/state-lifting/resources/colocation-principles.md
-
-# Context APIパターン
 cat .claude/skills/state-lifting/resources/context-patterns.md
-
-# Prop Drilling解決策
+cat .claude/skills/state-lifting/resources/legacy-skill.md
 cat .claude/skills/state-lifting/resources/prop-drilling-solutions.md
+cat .claude/skills/state-lifting/resources/state-placement-guide.md
 ```
 
 ### スクリプト実行
-
 ```bash
-# 状態構造分析
-node .claude/skills/state-lifting/scripts/analyze-state-structure.mjs <file.tsx>
+node .claude/skills/state-lifting/scripts/analyze-state-structure.mjs --help
+node .claude/skills/state-lifting/scripts/log_usage.mjs --help
+node .claude/skills/state-lifting/scripts/validate-skill.mjs --help
 ```
 
 ### テンプレート参照
-
 ```bash
-# Contextプロバイダーテンプレート
-cat .claude/skills/state-lifting/templates/context-provider-template.md
-
-# コンパウンドコンポーネントテンプレート
 cat .claude/skills/state-lifting/templates/compound-component-template.md
+cat .claude/skills/state-lifting/templates/context-provider-template.md
 ```
-
-## いつ使うか
-
-### シナリオ 1: 状態配置の判断
-
-**状況**: 新しい状態をどこに配置すべきか迷っている
-
-**適用条件**:
-
-- [ ] 状態を使用するコンポーネントが特定されている
-- [ ] 状態の更新頻度が把握されている
-- [ ] コンポーネントツリーの構造が理解されている
-
-**期待される成果**: 最適な状態配置の決定
-
-### シナリオ 2: 状態の持ち上げ
-
-**状況**: 複数のコンポーネントで同じ状態を共有したい
-
-**適用条件**:
-
-- [ ] 共有が必要なコンポーネントが明確
-- [ ] 状態の所有者が決まっている
-- [ ] 更新パターンが定義されている
-
-**期待される成果**: 効果的な状態共有の実装
-
-### シナリオ 3: Prop Drilling 解決
-
-**状況**: 深いコンポーネント階層で props が多段階で渡されている
-
-**適用条件**:
-
-- [ ] Prop Drilling が 3 階層以上ある
-- [ ] 中間コンポーネントが props を使用していない
-- [ ] コードの保守性が低下している
-
-**期待される成果**: 適切なパターンによる Prop Drilling 解消
-
-## 知識領域
-
-### 領域 1: 状態配置の判断基準
-
-| 基準                 | ローカル  | 持ち上げ   | グローバル     |
-| -------------------- | --------- | ---------- | -------------- |
-| 使用コンポーネント数 | 1         | 2-5        | 多数           |
-| 更新頻度             | 高頻度 OK | 中程度     | 低頻度推奨     |
-| 永続性               | 不要      | 不要       | 必要な場合あり |
-| アクセスパターン     | 単一      | 親子・兄弟 | 任意           |
-
-**詳細は**: `resources/state-placement-guide.md` を参照
-
-### 領域 2: コロケーション原則
-
-**原則**: 状態は使用する場所の近くに配置する
-
-```
-状態を持ち上げすぎない
-├── 不要な再レンダリングを防ぐ
-├── コンポーネントの独立性を保つ
-└── テストとデバッグを容易にする
-
-必要な時だけ持ち上げる
-├── 複数コンポーネントで共有が必要
-├── 親が子の状態を制御する必要がある
-└── 状態の同期が必要
-```
-
-**詳細は**: `resources/colocation-principles.md` を参照
-
-### 領域 3: Context API パターン
-
-**使用基準**:
-
-- プロップドリリングが 3 階層以上
-- 「グローバル」なデータ（テーマ、認証、言語）
-- 頻繁に変更されないデータ
-
-**パフォーマンス考慮**:
-
-- Context を分割する（読み取り用/書き込み用）
-- メモ化を活用する
-- 更新範囲を最小化する
-
-**詳細は**: `resources/context-patterns.md` を参照
-
-### 領域 4: Prop Drilling 解決パターン
-
-| パターン                   | 適用ケース               | 複雑性 |
-| -------------------------- | ------------------------ | ------ |
-| 状態の持ち上げ             | 共通の親がある           | 低     |
-| コンポジション             | 中間コンポーネントが不要 | 低     |
-| Context API                | グローバル的なデータ     | 中     |
-| Render Props               | 柔軟な描画制御           | 中     |
-| コンパウンドコンポーネント | 関連コンポーネント群     | 高     |
-
-**詳細は**: `resources/prop-drilling-solutions.md` を参照
-
-## ワークフロー
-
-### Phase 1: 状態分析
-
-1. 状態を使用するコンポーネントを特定
-2. コンポーネントツリー内の位置を確認
-3. 状態の更新頻度と使用パターンを分析
-
-### Phase 2: 配置決定
-
-1. コロケーション原則に基づいて初期配置を決定
-2. 持ち上げが必要か判断
-3. 持ち上げ先（共通の親）を特定
-
-### Phase 3: 実装
-
-1. 状態とハンドラを適切なコンポーネントに配置
-2. props または Context で子に渡す
-3. 必要に応じてメモ化を適用
-
-### Phase 4: 検証
-
-1. 再レンダリングの範囲を確認
-2. コンポーネントの責務が明確か確認
-3. テスト容易性を確認
-
-## 設計原則
-
-### 最小持ち上げの原則
-
-状態は必要最小限の高さにのみ持ち上げる。
-過度な持ち上げは不要な再レンダリングと複雑性を招く。
-
-### コロケーションの原則
-
-状態は、それを使用するコードの近くに配置する。
-物理的な近さがコードの理解と保守を助ける。
-
-### 単一責任の原則
-
-各コンポーネントは一つの状態の「所有者」となる。
-所有者が状態の更新を制御し、子は読み取りのみ。
-
-### 明示的データフローの原則
-
-データの流れを明示的に保つ。
-暗黙的な状態共有より、明示的な props 渡しを優先。
-
-## 関連スキル
-
-- `.claude/skills/react-hooks-advanced/SKILL.md` - useState/useReducer 選択
-- `.claude/skills/data-fetching-strategies/SKILL.md` - サーバー状態管理
-- `.claude/skills/custom-hooks-patterns/SKILL.md` - 状態ロジックの抽出
-- `.claude/skills/error-boundary/SKILL.md` - エラー状態の伝播
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容     |
-| ---------- | ---------- | ------------ |
-| 1.0.0      | 2025-11-25 | 初版リリース |
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

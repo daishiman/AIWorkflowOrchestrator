@@ -1,280 +1,122 @@
 ---
-name: distributed-tracing
+name: .claude/skills/distributed-tracing/SKILL.md
 description: |
-    分散トレーシングとOpenTelemetry統合の専門スキル。
-    マイクロサービスアーキテクチャにおけるリクエストフローの可視化とボトルネック特定を提供します。
-    使用タイミング:
-    - 分散システムのリクエストフロー を可視化する時
-    - OpenTelemetryで分散トレーシングを導入する時
-    - トレースIDとスパンIDを設計する時
-    - サービス間の呼び出し関係を追跡する時
-    - レイテンシボトルネックを特定する時
-    - W3C Trace Contextでトレースを伝播させる時
-    活性化キーワード: distributed tracing, OpenTelemetry, span, trace ID,
-    W3C Trace Context, Jaeger, Zipkin, trace propagation, bottleneck
-
+  分散トレーシングとOpenTelemetry統合の専門スキル。
+  マイクロサービスアーキテクチャにおけるリクエストフローの可視化とボトルネック特定を提供します。
+  使用タイミング:
+  
+  📖 参照書籍:
+  - 『Observability Engineering』（Charity Majors）: ログ設計
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/distributed-tracing/resources/span-design-guide.md`: スパンの適切な粒度設計、命名規則、属性設計ガイド
-  - `.claude/skills/distributed-tracing/resources/trace-structure-design.md`: トレース構造とスパン階層の設計パターン
-  - `.claude/skills/distributed-tracing/resources/w3c-trace-context.md`: W3C Trace Context標準準拠の実装ガイド
-  - `.claude/skills/distributed-tracing/templates/tracing-config.ts`: OpenTelemetryトレーシング設定のTypeScriptテンプレート
-  - `.claude/skills/distributed-tracing/scripts/analyze-trace.mjs`: トレースデータ分析とボトルネック特定スクリプト
-
-  Use proactively when implementing distributed-tracing patterns or solving related problems.
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/span-design-guide.md`: span-design-guide のガイド
+  - `resources/trace-structure-design.md`: trace-structure-design の詳細ガイド
+  - `resources/w3c-trace-context.md`: w3c-trace-context の詳細ガイド
+  - `scripts/analyze-trace.mjs`: traceを分析するスクリプト
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/tracing-config.ts`: tracing-config のテンプレート
+  
+  Use proactively when handling distributed tracing tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "Observability Engineering"
+    author: "Charity Majors"
+    concepts:
+      - "ログ設計"
+      - "メトリクス"
 ---
 
 # Distributed Tracing - 分散トレーシング
 
 ## 概要
 
-分散トレーシングは、マイクロサービスやサーバーレスアーキテクチャにおいて、
-単一リクエストがシステム全体をどのように流れるかを可視化する技術です。
+分散トレーシングとOpenTelemetry統合の専門スキル。
+マイクロサービスアーキテクチャにおけるリクエストフローの可視化とボトルネック特定を提供します。
+使用タイミング:
 
-このスキルは、OpenTelemetry の標準と『Mastering Distributed Tracing』に基づく
-実践的な分散トレーシング設計と実装知識を提供します。
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-## 核心概念
 
-### 1. トレースの構造
+## ワークフロー
 
-#### トレース（Trace）
+### Phase 1: 目的と前提の整理
 
-**定義**: 単一リクエストのエンドツーエンドの流れ
+**目的**: タスクの目的と前提条件を明確にする
 
-**構成要素**: 複数のスパン（Span）の集合
+**アクション**:
 
-**例**:
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-```
-Trace: "ユーザー注文処理"
-├─ Span 1: API Gateway (100ms)
-├─ Span 2: Order Service (80ms)
-│  ├─ Span 2.1: Database Query (30ms)
-│  └─ Span 2.2: Payment API Call (40ms)
-└─ Span 3: Notification Service (20ms)
-```
+### Phase 2: スキル適用
 
-#### スパン（Span）
+**目的**: スキルの指針に従って具体的な作業を進める
 
-**定義**: 処理の一単位（関数呼び出し、API 呼び出し等）
+**アクション**:
 
-**属性**:
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-- **Span ID**: スパン識別子（16 バイト Hex）
-- **Trace ID**: 所属トレース識別子（16 バイト Hex）
-- **Parent Span ID**: 親スパン識別子
-- **開始時刻**: スパン開始のタイムスタンプ
-- **終了時刻**: スパン終了のタイムスタンプ
-- **Duration**: 処理時間（終了時刻 - 開始時刻）
-- **Attributes**: カスタム属性（user_id、endpoint 等）
-- **Events**: スパン内のイベント（ログ等）
-- **Status**: 成功/失敗
+### Phase 3: 検証と記録
 
-### 2. トレース ID/スパン ID 設計
+**目的**: 成果物の検証と実行記録の保存
 
-#### Trace ID
+**アクション**:
 
-**フォーマット**: 16 バイト（32 文字 Hex）
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-```
-例: 4bf92f3577b34da6a3ce929d0e0e4736
-```
 
-**生成**:
+## ベストプラクティス
 
-- エントリーポイント（API Gateway、Load Balancer）で生成
-- 外部から受信した場合は引き継ぐ（W3C Trace Context）
+### すべきこと
+- 分散システムのリクエストフロー を可視化する時
+- OpenTelemetryで分散トレーシングを導入する時
+- トレースIDとスパンIDを設計する時
+- サービス間の呼び出し関係を追跡する時
+- レイテンシボトルネックを特定する時
+- W3C Trace Contextでトレースを伝播させる時
 
-**伝播**:
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
 
-- すべてのサービス間通信で引き継ぐ
-- HTTP ヘッダー `traceparent` で伝達
+## コマンドリファレンス
 
-#### Span ID
-
-**フォーマット**: 8 バイト（16 文字 Hex）
-
-```
-例: 00f067aa0ba902b7
-```
-
-**生成**:
-
-- 各スパン開始時に生成
-- 親スパン ID として子スパンに引き継がれる
-
-### 3. W3C Trace Context
-
-**標準ヘッダー**:
-
-```
-traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
-             |   |                                |                |
-             version  trace-id (32 hex)         span-id (16 hex)  flags
-```
-
-**フィールド**:
-
-- **version**: 常に `00`
-- **trace-id**: トレース識別子（32 文字 Hex）
-- **span-id**: 現在のスパン識別子（16 文字 Hex）
-- **flags**: サンプリング等のフラグ（01 = sampled）
-
-**伝播方法**:
-
-```typescript
-// リクエスト送信時
-const response = await fetch("https://downstream-service/api", {
-  headers: {
-    traceparent: `00-${traceId}-${spanId}-01`,
-  },
-});
-
-// リクエスト受信時
-const traceContext = parseTraceParent(req.headers["traceparent"]);
-```
-
-### 4. スパン設計原則
-
-#### ビジネスロジック単位
-
-**良いスパン**:
-
-```
-✅ "process_order" - ビジネス的意味がある
-✅ "validate_payment" - 明確な処理単位
-✅ "send_notification" - 独立した機能
-```
-
-**悪いスパン**:
-
-```
-❌ "function_A" - 意味不明
-❌ "line_123" - 技術的すぎる
-❌ "do_stuff" - 曖昧
-```
-
-#### 適切な粒度
-
-**粗すぎる**:
-
-```
-❌ 1つのスパンで全処理 → ボトルネック特定不可
-```
-
-**細かすぎる**:
-
-```
-❌ 1行ごとにスパン → オーバーヘッド大、ノイズ
-```
-
-**適切**:
-
-```
-✅ ビジネスロジックの意味のある単位
-✅ ボトルネック特定に有用な粒度
-```
-
-### 5. サンプリング戦略
-
-#### ヘッドベースサンプリング
-
-**定義**: リクエスト受信時に記録するか決定
-
-**利点**: シンプル、リソース予測可能
-
-**実装**:
-
-```typescript
-const samplingRate = 0.01; // 1%
-const shouldSample = Math.random() < samplingRate;
-```
-
-#### テールベースサンプリング
-
-**定義**: リクエスト完了後に記録するか決定
-
-**利点**: エラーリクエストを確実に記録
-
-**条件**:
-
-```yaml
-tail_sampling:
-  policies:
-    - name: errors
-      type: status_code
-      status_code: { status_codes: [ERROR] }
-    - name: slow_requests
-      type: latency
-      latency: { threshold_ms: 1000 }
-    - name: baseline
-      type: probabilistic
-      probabilistic: { sampling_percentage: 1 }
-```
-
-## 実装チェックリスト
-
-### 基本設定
-
-- [ ] OpenTelemetry がインストール・設定されているか？
-- [ ] 自動計装が有効化されているか？
-- [ ] トレースエクスポーターが設定されているか（Jaeger、Zipkin 等）？
-
-### トレーシング設計
-
-- [ ] Trace ID が全サービスで一貫しているか？
-- [ ] W3C Trace Context に準拠しているか？
-- [ ] スパンがビジネスロジックの意味のある単位か？
-- [ ] スパン属性に診断に有用な情報が含まれるか？
-
-### ログ統合
-
-- [ ] ログに trace_id/span_id が含まれるか？
-- [ ] ログからトレーシングシステムにナビゲート可能か？
-
-### サンプリング
-
-- [ ] エラーリクエストは 100%記録されるか？
-- [ ] 正常リクエストは適切にサンプリングされるか（1-10%）？
-- [ ] サンプリング率は診断能力とコストをバランスしているか？
-
-## 関連リソース
-
-詳細な実装パターンと設計ガイドは以下のリソースを参照:
-
-- **トレース構造設計**: `.claude/skills/distributed-tracing/resources/trace-structure-design.md`
-- **W3C Trace Context 実装**: `.claude/skills/distributed-tracing/resources/w3c-trace-context.md`
-- **スパン設計ガイド**: `.claude/skills/distributed-tracing/resources/span-design-guide.md`
-- **トレーシング設定テンプレート**: `.claude/skills/distributed-tracing/templates/tracing-config.ts`
-
-## 関連スキル
-
-このスキルは以下のスキルと連携します:
-
-- `.claude/skills/observability-pillars/SKILL.md` - ログ・メトリクスとの統合
-- `.claude/skills/structured-logging/SKILL.md` - ログへの trace_id 埋め込み
-
-## 使用例
-
-### 開発環境での利用
-
+### リソース読み取り
 ```bash
-# このスキルを参照
-cat .claude/skills/distributed-tracing/SKILL.md
-
-# W3C Trace Context実装を確認
+cat .claude/skills/distributed-tracing/resources/Level1_basics.md
+cat .claude/skills/distributed-tracing/resources/Level2_intermediate.md
+cat .claude/skills/distributed-tracing/resources/Level3_advanced.md
+cat .claude/skills/distributed-tracing/resources/Level4_expert.md
+cat .claude/skills/distributed-tracing/resources/legacy-skill.md
+cat .claude/skills/distributed-tracing/resources/span-design-guide.md
+cat .claude/skills/distributed-tracing/resources/trace-structure-design.md
 cat .claude/skills/distributed-tracing/resources/w3c-trace-context.md
+```
 
-# トレーシング設定テンプレートを使用
+### スクリプト実行
+```bash
+node .claude/skills/distributed-tracing/scripts/analyze-trace.mjs --help
+node .claude/skills/distributed-tracing/scripts/log_usage.mjs --help
+node .claude/skills/distributed-tracing/scripts/validate-skill.mjs --help
+```
+
+### テンプレート参照
+```bash
 cat .claude/skills/distributed-tracing/templates/tracing-config.ts
 ```
 
-## 参照文献
+## 変更履歴
 
-- Yuri Shkuro, 『Mastering Distributed Tracing』, Packt, 2019
-- OpenTelemetry Documentation, https://opentelemetry.io/docs/
-- W3C Trace Context Specification, https://www.w3.org/TR/trace-context/
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

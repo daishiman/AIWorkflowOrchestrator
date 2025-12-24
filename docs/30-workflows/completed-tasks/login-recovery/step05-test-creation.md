@@ -3,7 +3,7 @@
 **タスクID**: T-03-1
 **実行日時**: 2025-12-20
 **フェーズ**: Phase 3 - テスト作成（TDD: Red）
-**担当エージェント**: @unit-tester
+**担当エージェント**: .claude/agents/unit-tester.md
 
 ---
 

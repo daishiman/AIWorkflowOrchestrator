@@ -1,22 +1,39 @@
 ---
-name: security-scanning
+name: .claude/skills/security-scanning/SKILL.md
 description: |
-
+  CI/CD パイプラインに統合するセキュリティスキャンの設計と実装を支援するスキルです。
+  依存関係の脆弱性検出、コンテナイメージスキャン、SBOM の生成を対象とします。
+  
+  📖 参照書籍:
+  - 『Web Application Security』（Andrew Hoffman）: 脅威モデリング
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/security-scanning/resources/container-scanning.md`: Container Scanningリソース
-  - `.claude/skills/security-scanning/resources/dependency-scanning.md`: Dependency Scanningリソース
-  - `.claude/skills/security-scanning/resources/sbom-generation.md`: Sbom Generationリソース
-  - `.claude/skills/security-scanning/resources/secret-detection.md`: Secret Detectionリソース
-
-  - `.claude/skills/security-scanning/templates/security-scan-workflow.yml`: Security Scan Workflowテンプレート
-  - `.claude/skills/security-scanning/templates/trivy-config.yaml`: Trivy Configテンプレート
-
-  - `.claude/skills/security-scanning/scripts/scan-dependencies.mjs`: Scan Dependenciesスクリプト
-
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/container-scanning.md`: Container Scanningリソース
+  - `resources/dependency-scanning.md`: Dependency Scanningリソース
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/sbom-generation.md`: Sbom Generationリソース
+  - `resources/secret-detection.md`: Secret Detectionリソース
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/scan-dependencies.mjs`: Scan Dependenciesスクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/security-scan-workflow.yml`: Security Scan Workflowテンプレート
+  - `templates/trivy-config.yaml`: Trivy Configテンプレート
+  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
+  
+  Use proactively when handling security scanning tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "Web Application Security"
+    author: "Andrew Hoffman"
+    concepts:
+      - "脅威モデリング"
+      - "セキュア設計"
 ---
 
 # セキュリティスキャン
@@ -26,122 +43,79 @@ version: 1.0.0
 CI/CD パイプラインに統合するセキュリティスキャンの設計と実装を支援するスキルです。
 依存関係の脆弱性検出、コンテナイメージスキャン、SBOM の生成を対象とします。
 
-## 対象読者
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-- DevOps エンジニア
-- セキュリティエンジニア
-- CI/CD パイプライン設計者
 
-## スキャンの種類
+## ワークフロー
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                  セキュリティスキャン                      │
-├─────────────────────────────────────────────────────────┤
-│  依存関係スキャン    コンテナスキャン    コードスキャン    │
-│  ├─ pnpm audit       ├─ Trivy           ├─ CodeQL        │
-│  ├─ pnpm audit      ├─ Grype           ├─ Semgrep       │
-│  └─ Snyk            └─ Snyk Container  └─ ESLint        │
-│                                           Security      │
-├─────────────────────────────────────────────────────────┤
-│  SBOM生成           シークレット検出                      │
-│  ├─ Syft            ├─ TruffleHog                       │
-│  └─ CycloneDX       └─ GitLeaks                         │
-└─────────────────────────────────────────────────────────┘
-```
+### Phase 1: 目的と前提の整理
 
-## リソース
+**目的**: タスクの目的と前提条件を明確にする
 
-詳細なガイドは以下を参照:
+**アクション**:
 
-| リソース                                             | 内容                                |
-| ---------------------------------------------------- | ----------------------------------- |
-| [依存関係スキャン](resources/dependency-scanning.md) | pnpm/pnpm audit、Snyk 統合          |
-| [コンテナスキャン](resources/container-scanning.md)  | Trivy、Grype によるイメージスキャン |
-| [SBOM 生成](resources/sbom-generation.md)            | ソフトウェア部品表の作成            |
-| [シークレット検出](resources/secret-detection.md)    | コード内の機密情報検出              |
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-## テンプレート
+### Phase 2: スキル適用
 
-| テンプレート                                                       | 用途                                    |
-| ------------------------------------------------------------------ | --------------------------------------- |
-| [security-scan-workflow.yml](templates/security-scan-workflow.yml) | GitHub Actions セキュリティワークフロー |
-| [trivy-config.yaml](templates/trivy-config.yaml)                   | Trivy 設定ファイル                      |
+**目的**: スキルの指針に従って具体的な作業を進める
 
-## スクリプト
+**アクション**:
 
-| スクリプト                                             | 機能                   |
-| ------------------------------------------------------ | ---------------------- |
-| [scan-dependencies.mjs](scripts/scan-dependencies.mjs) | 依存関係脆弱性チェック |
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-## クイックスタート
+### Phase 3: 検証と記録
 
-### 1. 依存関係スキャン（ローカル）
+**目的**: 成果物の検証と実行記録の保存
 
-```bash
-# pnpm audit（推奨）
-pnpm audit
+**アクション**:
 
-# pnpm audit
-pnpm audit
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-# 詳細レポート
-pnpm audit --json > audit-report.json
-```
-
-### 2. コンテナスキャン（Trivy）
-
-```bash
-# イメージスキャン
-trivy image myapp:latest
-
-# 重大な脆弱性のみ
-trivy image --severity CRITICAL,HIGH myapp:latest
-
-# CI/CD用（脆弱性があれば失敗）
-trivy image --exit-code 1 --severity HIGH,CRITICAL myapp:latest
-```
-
-### 3. GitHub Actions 統合
-
-```yaml
-# .github/workflows/security.yml
-name: Security Scan
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-  schedule:
-    - cron: "0 0 * * 1" # 毎週月曜
-
-jobs:
-  dependency-scan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - run: pnpm audit --audit-level=high
-```
-
-## 重大度レベル
-
-| レベル   | 対応               | SLA         |
-| -------- | ------------------ | ----------- |
-| Critical | 即時修正必須       | 24 時間以内 |
-| High     | 優先修正           | 1 週間以内  |
-| Medium   | 計画的修正         | 1 ヶ月以内  |
-| Low      | 次回リリースで検討 | 任意        |
 
 ## ベストプラクティス
 
-1. **シフトレフト**: 開発段階で早期にスキャン
-2. **自動化**: CI/CD パイプラインに統合
-3. **継続的監視**: 定期スキャンをスケジュール
-4. **SBOM 管理**: ソフトウェア構成を可視化
-5. **例外管理**: 誤検知はポリシーで除外
+### すべきこと
+- resources/Level1_basics.md を参照し、適用範囲を明確にする
+- resources/Level2_intermediate.md を参照し、実務手順を整理する
 
-## 関連スキル
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
 
-- [CI/CD パイプライン](../ci-cd-pipelines/SKILL.md) - セキュリティスキャンの統合先
-- [Docker ベストプラクティス](../docker-best-practices/SKILL.md) - コンテナセキュリティ
+## コマンドリファレンス
+
+### リソース読み取り
+```bash
+cat .claude/skills/security-scanning/resources/Level1_basics.md
+cat .claude/skills/security-scanning/resources/Level2_intermediate.md
+cat .claude/skills/security-scanning/resources/Level3_advanced.md
+cat .claude/skills/security-scanning/resources/Level4_expert.md
+cat .claude/skills/security-scanning/resources/container-scanning.md
+cat .claude/skills/security-scanning/resources/dependency-scanning.md
+cat .claude/skills/security-scanning/resources/legacy-skill.md
+cat .claude/skills/security-scanning/resources/sbom-generation.md
+cat .claude/skills/security-scanning/resources/secret-detection.md
+```
+
+### スクリプト実行
+```bash
+node .claude/skills/security-scanning/scripts/log_usage.mjs --help
+node .claude/skills/security-scanning/scripts/scan-dependencies.mjs --help
+node .claude/skills/security-scanning/scripts/validate-skill.mjs --help
+```
+
+### テンプレート参照
+```bash
+cat .claude/skills/security-scanning/templates/security-scan-workflow.yml
+cat .claude/skills/security-scanning/templates/trivy-config.yaml
+```
+
+## 変更履歴
+
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

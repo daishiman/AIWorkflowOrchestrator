@@ -1,367 +1,109 @@
 ---
-name: stakeholder-communication
+name: .claude/skills/stakeholder-communication/SKILL.md
 description: |
   ステークホルダー管理、進捗報告、期待値調整の体系的コミュニケーション手法。
-
+  
+  📖 参照書籍:
+  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/stakeholder-communication/templates/sprint-review-agenda.md`: Sprint Review Agendaテンプレート
-
-  - `.claude/skills/stakeholder-communication/scripts/generate-status-report.sh`: Generate Status Reportスクリプト
-
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `scripts/generate-status-report.sh`: Generate Status Reportスクリプト
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/sprint-review-agenda.md`: Sprint Review Agendaテンプレート
+  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
+  
+  Use proactively when handling stakeholder communication tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "The Pragmatic Programmer"
+    author: "Andrew Hunt, David Thomas"
+    concepts:
+      - "実践的改善"
+      - "品質維持"
 ---
 
 # ステークホルダーコミュニケーションスキル
 
 ## 概要
 
-多様なステークホルダーとの効果的なコミュニケーションを通じて、
-期待値の調整と透明性の確保を実現する手法を体系化します。
+ステークホルダー管理、進捗報告、期待値調整の体系的コミュニケーション手法。
 
-## いつ使うか
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-- プロジェクト開始時のステークホルダー分析
-- 定期的な進捗報告とレビュー
-- 変更や遅延の通知と調整
-- 意思決定の促進とエスカレーション
-- プロジェクト完了時の報告と振り返り
 
-## コア概念
+## ワークフロー
 
-### ステークホルダー分析
+### Phase 1: 目的と前提の整理
 
-#### Power-Interest Grid
+**目的**: タスクの目的と前提条件を明確にする
 
-```
-高影響力・高関心 → 密接な管理
-高影響力・低関心 → 満足維持
-低影響力・高関心 → 情報提供
-低影響力・低関心 → 最小限監視
-```
+**アクション**:
 
-#### RACI Matrix
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-```
-R: Responsible（実行責任）
-A: Accountable（説明責任）
-C: Consulted（相談対象）
-I: Informed（情報共有）
-```
+### Phase 2: スキル適用
 
-### コミュニケーション戦略
+**目的**: スキルの指針に従って具体的な作業を進める
 
-#### Push vs Pull
+**アクション**:
 
-- **Push 型**: 積極的な情報配信（メール、会議、レポート）
-- **Pull 型**: 必要時の情報取得（Wiki、ダッシュボード、ポータル）
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-#### フォーマル vs インフォーマル
+### Phase 3: 検証と記録
 
-- **フォーマル**: 公式文書、定例会議、承認プロセス
-- **インフォーマル**: 立ち話、チャット、ランチミーティング
+**目的**: 成果物の検証と実行記録の保存
 
-## コミュニケーションプラン
+**アクション**:
 
-### ステークホルダーマッピング
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-```
-| 名前/役割 | 関心事 | 影響力 | 頻度 | 方法 | 担当 |
-|----------|-------|--------|-----|------|-----|
-| CEO      | ROI   | 高     | 月次 | 報告書 | PO |
-| CTO      | 技術  | 高     | 週次 | 会議  | TL |
-| ユーザー  | 機能  | 中     | 随時 | SNS  | CS |
-```
 
-### 報告頻度マトリクス
+## ベストプラクティス
 
-```
-日次: デイリースクラム（開発チーム）
-週次: ステータス報告（部門長）
-隔週: スプリントレビュー（ステークホルダー）
-月次: エグゼクティブサマリー（経営層）
-四半期: 戦略レビュー（取締役会）
+### すべきこと
+- resources/Level1_basics.md を参照し、適用範囲を明確にする
+- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
+
+## コマンドリファレンス
+
+### リソース読み取り
+```bash
+cat .claude/skills/stakeholder-communication/resources/Level1_basics.md
+cat .claude/skills/stakeholder-communication/resources/Level2_intermediate.md
+cat .claude/skills/stakeholder-communication/resources/Level3_advanced.md
+cat .claude/skills/stakeholder-communication/resources/Level4_expert.md
+cat .claude/skills/stakeholder-communication/resources/legacy-skill.md
 ```
 
-## 進捗報告テクニック
-
-### ダッシュボード設計
-
-```
-必須要素:
-- 全体進捗（%）
-- バーンダウンチャート
-- ベロシティトレンド
-- リスクステータス
-- 次のマイルストーン
+### スクリプト実行
+```bash
+.claude/skills/stakeholder-communication/scripts/generate-status-report.sh
+node .claude/skills/stakeholder-communication/scripts/log_usage.mjs --help
+node .claude/skills/stakeholder-communication/scripts/validate-skill.mjs --help
 ```
 
-### ステータスレポート構成
-
-```
-1. エグゼクティブサマリー（1段落）
-2. 主要成果（箇条書き3-5項目）
-3. 進捗メトリクス（グラフ/表）
-4. 課題とリスク（優先度付き）
-5. 次のステップ（明確な期日）
-6. 支援要請事項（具体的）
+### テンプレート参照
+```bash
+cat .claude/skills/stakeholder-communication/templates/sprint-review-agenda.md
 ```
 
-### ビジュアルコミュニケーション
+## 変更履歴
 
-```
-推奨チャート:
-- バーンダウン: 作業残量の推移
-- バーンアップ: 完了作業の累積
-- ベロシティ: スプリント生産性
-- 累積フロー: 各状態の作業量
-- ガントチャート: タイムライン
-```
-
-## 期待値マネジメント
-
-### 期待値のキャリブレーション
-
-```
-プロセス:
-1. 初期期待値の明確化
-2. 実現可能性の評価
-3. ギャップの可視化
-4. 調整案の提示
-5. 合意形成
-```
-
-### スコープクリープ防止
-
-```
-対策:
-- 変更管理プロセスの確立
-- 影響分析の実施
-- トレードオフの明確化
-- 承認プロセスの遵守
-```
-
-### 悪い知らせの伝え方
-
-```
-構造:
-1. 事実の簡潔な説明
-2. 影響の明確化
-3. 原因分析
-4. 対策案の提示
-5. 支援要請
-```
-
-## 会議ファシリテーション
-
-### スプリントレビュー
-
-```
-アジェンダ（60分）:
-- オープニング（5分）
-- スプリントゴール確認（5分）
-- デモンストレーション（30分）
-- フィードバック収集（15分）
-- 次スプリント予告（5分）
-```
-
-### ステークホルダー会議
-
-```
-準備:
-- アジェンダの事前送付
-- 資料の事前配布
-- 決定事項の明確化
-- タイムキーパー指定
-
-実施:
-- 目的の再確認
-- 時間管理
-- 議事録作成
-- アクションアイテム確認
-
-フォローアップ:
-- 議事録の共有（24時間以内）
-- アクションの追跡
-- 次回日程の確定
-```
-
-## 文書コミュニケーション
-
-### メール作成のベストプラクティス
-
-```
-構成:
-- 件名: [プロジェクト名] 具体的な内容
-- 冒頭: 目的と必要なアクション
-- 本文: 構造化された情報
-- 締め: 期限と連絡先
-
-原則:
-- 1メール1トピック
-- アクション明確化
-- CC/BCCの適切な使用
-```
-
-### プレゼンテーション資料
-
-```
-10-20-30ルール:
-- 10枚以内のスライド
-- 20分以内のプレゼン
-- 30pt以上のフォント
-
-構成:
-1. 課題提起
-2. 解決策提案
-3. 実装計画
-4. 期待効果
-5. 必要リソース
-```
-
-## コンフリクト管理
-
-### 対立の種類
-
-```
-- タスク対立: 目標や戦略の違い
-- プロセス対立: 方法論の違い
-- 関係対立: 個人的な摩擦
-```
-
-### 解決アプローチ
-
-```
-- 競争: Win-Lose（緊急時）
-- 協調: Win-Win（理想的）
-- 妥協: 部分的満足（現実的）
-- 回避: 先送り（一時的）
-- 適応: 相手優先（関係重視）
-```
-
-## 文化的配慮
-
-### ハイコンテキスト vs ローコンテキスト
-
-```
-ハイコンテキスト文化:
-- 間接的表現
-- 非言語重視
-- 関係性重視
-
-ローコンテキスト文化:
-- 直接的表現
-- 明文化重視
-- タスク重視
-```
-
-### タイムゾーン管理
-
-```
-グローバルチーム対応:
-- ローテーション会議
-- 非同期コミュニケーション
-- 録画/議事録の活用
-- コアタイムの設定
-```
-
-## 危機コミュニケーション
-
-### エスカレーションパス
-
-```
-Level 1: チームリード
-Level 2: 部門マネージャー
-Level 3: 事業部長
-Level 4: 役員
-Level 5: CEO
-```
-
-### 危機対応プロトコル
-
-```
-1. 事実確認（30分以内）
-2. 影響評価（1時間以内）
-3. 初期通知（2時間以内）
-4. 対策立案（4時間以内）
-5. 詳細報告（24時間以内）
-```
-
-## ツールとチャネル
-
-### コミュニケーションツール選択
-
-```
-即時性高・記録性低: 対面、電話
-即時性高・記録性高: チャット、ビデオ会議
-即時性低・記録性高: メール、文書
-即時性低・記録性低: 掲示板
-```
-
-### 推奨ツール
-
-```
-- Slack/Teams: 日常コミュニケーション
-- Zoom/Meet: オンライン会議
-- Confluence/Wiki: ドキュメント管理
-- Jira/Asana: タスク管理
-- Miro/Mural: ビジュアルコラボレーション
-```
-
-## メトリクスと改善
-
-### コミュニケーション効果測定
-
-```
-定量指標:
-- 会議時間の削減率
-- 決定までのリードタイム
-- ステークホルダー満足度
-
-定性指標:
-- 情報の透明性
-- 信頼関係の強さ
-- チームの心理的安全性
-```
-
-### フィードバックループ
-
-```
-収集方法:
-- 定期的なサーベイ
-- 1on1ミーティング
-- レトロスペクティブ
-- 360度フィードバック
-```
-
-## チェックリスト
-
-### 報告書作成前
-
-- [ ] 対象読者は明確か
-- [ ] キーメッセージは 3 つ以内か
-- [ ] データは最新か
-- [ ] ビジュアルは効果的か
-
-### 会議前
-
-- [ ] 目的とゴールは明確か
-- [ ] 参加者は適切か
-- [ ] 資料は事前共有したか
-- [ ] 時間配分は現実的か
-
-### プロジェクト開始時
-
-- [ ] ステークホルダー分析完了
-- [ ] コミュニケーション計画作成
-- [ ] エスカレーションパス確定
-- [ ] ツールとチャネル合意
-
-## 関連スキル
-
-- `agile-project-management` - スクラムイベント
-- `product-vision` - ビジョン共有
-- `metrics-tracking` - データ可視化
-- `prioritization-frameworks` - 意思決定
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

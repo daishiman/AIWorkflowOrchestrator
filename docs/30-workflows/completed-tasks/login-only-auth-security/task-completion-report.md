@@ -75,10 +75,10 @@
 
 | エージェント       | 観点                 | 判定 | スコア |
 | ------------------ | -------------------- | :--: | :----: |
-| @electron-security | Electronセキュリティ | PASS | 9.6/10 |
-| @sec-auditor       | OWASP Top 10対応     | PASS | 10/10  |
-| @code-quality      | コード品質           | PASS | 97/100 |
-| @arch-police       | アーキテクチャ整合性 | PASS |   -    |
+| .claude/agents/electron-security.md | Electronセキュリティ | PASS | 9.6/10 |
+| .claude/agents/sec-auditor.md       | OWASP Top 10対応     | PASS | 10/10  |
+| .claude/agents/code-quality.md      | コード品質           | PASS | 97/100 |
+| .claude/agents/arch-police.md       | アーキテクチャ整合性 | PASS |   -    |
 
 **総合評価: A (優秀)**
 

@@ -1,234 +1,116 @@
 ---
-name: conditional-execution-gha
+name: .claude/skills/conditional-execution-gha/SKILL.md
 description: |
-    GitHub Actions 条件付き実行の完全ガイド。
-    専門分野:
-    - if条件: ステータス関数、式構文、論理演算子
-    - イベントフィルタリング: パス/ブランチ/タグフィルター、イベントベース条件
-    - ジョブ/ステップ制御: 条件付きスキップ、失敗時実行、クリーンアップステップ
-    - コンテキスト活用: github/needs/secrets/matrix コンテキストによる動的制御
-    使用タイミング:
-    - ジョブやステップを特定条件下でのみ実行したい時
-    - 失敗時のクリーンアップ/通知を実装する時
-    - ブランチ/パス/イベント別に実行を制御する時
-    - マトリックスビルドの一部を条件付きで実行する時
-
+  GitHub Actions 条件付き実行の完全ガイド。
+  専門分野:
+  
+  📖 参照書籍:
+  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/conditional-execution-gha/resources/event-filtering.md`: イベント、パス、ブランチ、タグフィルターの詳細設定パターン
-  - `.claude/skills/conditional-execution-gha/resources/if-conditions.md`: if構文、ステータス関数、式評価の完全リファレンス
-  - `.claude/skills/conditional-execution-gha/templates/conditional-workflow.yaml`: 条件付き実行を使用したワークフローのサンプル実装
-  - `.claude/skills/conditional-execution-gha/scripts/analyze-conditions.mjs`: 条件式の分析と最適化を行う自動化スクリプト
-
-  Use proactively when implementing conditional-execution-gha patterns or solving related problems.
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/event-filtering.md`: event-filtering の詳細ガイド
+  - `resources/if-conditions.md`: if-conditions の詳細ガイド
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `scripts/analyze-conditions.mjs`: conditionsを分析するスクリプト
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/conditional-workflow.yaml`: conditional-workflow のテンプレート
+  
+  Use proactively when handling conditional execution gha tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "The Pragmatic Programmer"
+    author: "Andrew Hunt, David Thomas"
+    concepts:
+      - "実践的改善"
+      - "品質維持"
 ---
 
 # GitHub Actions Conditional Execution
 
 ## 概要
 
-このスキルは、GitHub Actions での条件付き実行パターンを体系的に提供します。
-if 条件、イベントフィルタリング、ステータス関数を活用した効率的なワークフロー制御を実現します。
+GitHub Actions 条件付き実行の完全ガイド。
+専門分野:
 
-**主要な価値**:
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-- ステータス関数による柔軟な実行制御
-- イベント/パス/ブランチフィルタリングによるトリガー最適化
-- 失敗時処理とクリーンアップの実装
-- コンテキスト活用による動的条件分岐
 
-## ディレクトリ構造
+## ワークフロー
 
-```
-conditional-execution-gha/
-├── SKILL.md                          # 本ファイル
-├── resources/
-│   ├── if-conditions.md              # if構文、ステータス関数、式評価
-│   └── event-filtering.md            # イベントフィルター、パス/ブランチ条件
-├── templates/
-│   └── conditional-workflow.yaml     # 条件付き実行のサンプル
-└── scripts/
-    └── analyze-conditions.mjs        # 条件式の分析と最適化ツール
-```
+### Phase 1: 目的と前提の整理
 
-## コマンドリファレンス
+**目的**: タスクの目的と前提条件を明確にする
 
-```bash
-# if条件とステータス関数の詳細
-cat .claude/skills/conditional-execution-gha/resources/if-conditions.md
+**アクション**:
 
-# イベントフィルタリングとパス条件
-cat .claude/skills/conditional-execution-gha/resources/event-filtering.md
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-# 条件付き実行のサンプルワークフロー
-cat .claude/skills/conditional-execution-gha/templates/conditional-workflow.yaml
+### Phase 2: スキル適用
 
-# 条件式の分析と最適化提案
-node .claude/skills/conditional-execution-gha/scripts/analyze-conditions.mjs <workflow.yml>
-```
+**目的**: スキルの指針に従って具体的な作業を進める
 
-## ステータス関数
+**アクション**:
 
-| 関数          | 前ステップ成功 | 前ステップ失敗 | 前ステップスキップ | キャンセル時 |
-| ------------- | -------------- | -------------- | ------------------ | ------------ |
-| `success()`   | ✅ 実行        | ❌ スキップ    | ❌ スキップ        | ❌ スキップ  |
-| `always()`    | ✅ 実行        | ✅ 実行        | ✅ 実行            | ❌ スキップ  |
-| `failure()`   | ❌ スキップ    | ✅ 実行        | ❌ スキップ        | ❌ スキップ  |
-| `cancelled()` | ❌ スキップ    | ❌ スキップ    | ❌ スキップ        | ✅ 実行      |
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-## 一般的な if パターン
+### Phase 3: 検証と記録
 
-| パターン             | 条件式                                                            | 用途                               |
-| -------------------- | ----------------------------------------------------------------- | ---------------------------------- |
-| **成功時のみ**       | `if: success()`                                                   | 前のステップがすべて成功した場合   |
-| **常に実行**         | `if: always()`                                                    | 前のステップの結果に関係なく実行   |
-| **失敗時のみ**       | `if: failure()`                                                   | いずれかのステップが失敗した場合   |
-| **キャンセル時**     | `if: cancelled()`                                                 | ワークフローがキャンセルされた場合 |
-| **main ブランチ**    | `if: github.ref == 'refs/heads/main'`                             | main ブランチでのみ実行            |
-| **PR のみ**          | `if: github.event_name == 'pull_request'`                         | PR イベントでのみ実行              |
-| **特定ラベル**       | `if: contains(github.event.pull_request.labels.*.name, 'deploy')` | 特定ラベル付き PR のみ             |
-| **依存ジョブ成功**   | `if: needs.build.result == 'success'`                             | 依存ジョブが成功した場合           |
-| **シークレット存在** | `if: secrets.API_KEY != ''`                                       | シークレットが設定されている場合   |
-| **マトリックス条件** | `if: matrix.os == 'ubuntu-latest'`                                | マトリックスの特定値のみ           |
+**目的**: 成果物の検証と実行記録の保存
 
-## 条件式の構文
+**アクション**:
 
-### 基本構文
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-```yaml
-# ステップレベル
-- name: Deploy
-  if: github.ref == 'refs/heads/main'
-  run: pnpm run deploy
-
-# ジョブレベル
-deploy:
-  if: github.event_name == 'push'
-  runs-on: ubuntu-latest
-```
-
-### 論理演算子
-
-```yaml
-# AND
-if: github.ref == 'refs/heads/main' && success()
-
-# OR
-if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-
-# NOT
-if: "!cancelled()"
-
-# 複数行（括弧は使用不可）
-if: |
-  github.ref == 'refs/heads/main' &&
-  github.event_name == 'push' &&
-  success()
-```
-
-### 関数
-
-```yaml
-# contains() - 配列/文字列検索
-if: contains(github.event.pull_request.labels.*.name, 'deploy')
-if: contains(github.ref, 'refs/tags/')
-
-# startsWith() / endsWith()
-if: startsWith(github.ref, 'refs/heads/feature/')
-if: endsWith(github.ref, '-beta')
-```
-
-## イベントフィルタリング
-
-### ブランチフィルター
-
-```yaml
-on:
-  push:
-    branches: [main, "releases/**"]
-    branches-ignore: ["feature/**"]
-```
-
-### パスフィルター
-
-```yaml
-on:
-  push:
-    paths: ["src/**", "package.json"]
-    paths-ignore: ["*.md", "docs/**"]
-```
-
-### タグフィルター
-
-```yaml
-on:
-  push:
-    tags: ["v*.*.*", "!v*.*.*-beta"]
-```
-
-## 実践的なパターン
-
-### 失敗時の通知
-
-```yaml
-- name: Notify on failure
-  if: failure()
-  run: curl -X POST $SLACK_WEBHOOK -d '{"text":"Build failed!"}'
-```
-
-### 条件付きデプロイメント
-
-```yaml
-deploy:
-  needs: [build, test]
-  if: |
-    github.ref == 'refs/heads/main' &&
-    needs.build.result == 'success' &&
-    needs.test.result == 'success'
-  runs-on: ubuntu-latest
-```
-
-### マトリックス条件
-
-```yaml
-strategy:
-  matrix:
-    os: [ubuntu-latest, windows-latest, macos-latest]
-
-steps:
-  - name: Unix tests
-    if: matrix.os != 'windows-latest'
-    run: ./run-unix-tests.sh
-```
-
-### 常にクリーンアップ
-
-```yaml
-- name: Cleanup
-  if: always() && !cancelled()
-  run: docker-compose down
-```
 
 ## ベストプラクティス
 
-1. **on: レベルでフィルタリング**: `branches`, `paths` はワークフロー開始前に評価されるため効率的
-2. **ジョブレベルで条件設定**: すべてのステップに同じ条件を書くより明確
-3. **ステータス関数を明示**: `always()`/`failure()` で意図を明確に
-4. **シークレットは存在チェックのみ**: `secrets.KEY != ''` (値の直接比較は危険)
-5. **複雑な条件は複数行で**: `|` を使って読みやすく
+### すべきこと
+- ジョブやステップを特定条件下でのみ実行したい時
+- 失敗時のクリーンアップ/通知を実装する時
+- ブランチ/パス/イベント別に実行を制御する時
+- マトリックスビルドの一部を条件付きで実行する時
 
-## 関連スキル
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
 
-| スキル名                       | パス                                                 | 関連性                 |
-| ------------------------------ | ---------------------------------------------------- | ---------------------- |
-| **github-actions-syntax**      | `.claude/skills/github-actions-syntax/SKILL.md`      | ワークフロー構文の基礎 |
-| **github-actions-expressions** | `.claude/skills/github-actions-expressions/SKILL.md` | 式構文とコンテキスト   |
-| **concurrency-control**        | `.claude/skills/concurrency-control/SKILL.md`        | 並行実行制御           |
-| **matrix-builds**              | `.claude/skills/matrix-builds/SKILL.md`              | マトリックス戦略       |
+## コマンドリファレンス
 
----
+### リソース読み取り
+```bash
+cat .claude/skills/conditional-execution-gha/resources/Level1_basics.md
+cat .claude/skills/conditional-execution-gha/resources/Level2_intermediate.md
+cat .claude/skills/conditional-execution-gha/resources/Level3_advanced.md
+cat .claude/skills/conditional-execution-gha/resources/Level4_expert.md
+cat .claude/skills/conditional-execution-gha/resources/event-filtering.md
+cat .claude/skills/conditional-execution-gha/resources/if-conditions.md
+cat .claude/skills/conditional-execution-gha/resources/legacy-skill.md
+```
 
-**詳細情報**: 各リソースファイルには、より詳細な構文、使用例、ベストプラクティスが含まれています。
+### スクリプト実行
+```bash
+node .claude/skills/conditional-execution-gha/scripts/analyze-conditions.mjs --help
+node .claude/skills/conditional-execution-gha/scripts/log_usage.mjs --help
+node .claude/skills/conditional-execution-gha/scripts/validate-skill.mjs --help
+```
+
+### テンプレート参照
+```bash
+cat .claude/skills/conditional-execution-gha/templates/conditional-workflow.yaml
+```
+
+## 変更履歴
+
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

@@ -5,7 +5,7 @@
 title: チャット履歴永続化機能 設計レビュー報告書
 version: 1.0.0
 date: 2025-12-20
-reviewers: @req-analyst, @arch-police, @db-architect, @ui-designer, @sec-auditor
+reviewers: .claude/agents/req-analyst.md, .claude/agents/arch-police.md, .claude/agents/db-architect.md, .claude/agents/ui-designer.md, .claude/agents/sec-auditor.md
 status: PASS (MINOR指摘あり)
 parent_task: T-02-1
 
@@ -36,18 +36,18 @@ Phase 1で作成された全設計ドキュメントを5つの観点からレビ
 
 | レビュー観点           | 担当エージェント | 評価     | MAJOR | MINOR  |
 | ---------------------- | ---------------- | -------- | ----- | ------ |
-| 要件充足性             | @req-analyst     | PASS     | 0     | 2      |
-| アーキテクチャ整合性   | @arch-police     | PASS     | 0     | 3      |
-| データベース設計妥当性 | @db-architect    | PASS     | 0     | 2      |
-| UI/UX設計              | @ui-designer     | PASS     | 0     | 1      |
-| セキュリティ設計       | @sec-auditor     | PASS     | 0     | 2      |
+| 要件充足性             | .claude/agents/req-analyst.md     | PASS     | 0     | 2      |
+| アーキテクチャ整合性   | .claude/agents/arch-police.md     | PASS     | 0     | 3      |
+| データベース設計妥当性 | .claude/agents/db-architect.md    | PASS     | 0     | 2      |
+| UI/UX設計              | .claude/agents/ui-designer.md     | PASS     | 0     | 1      |
+| セキュリティ設計       | .claude/agents/sec-auditor.md     | PASS     | 0     | 2      |
 | **合計**               | -                | **PASS** | **0** | **10** |
 
 ---
 
 ## 2. 詳細レビュー結果
 
-### 2.1 要件充足性レビュー（@req-analyst）
+### 2.1 要件充足性レビュー（.claude/agents/req-analyst.md）
 
 #### 総合評価: PASS
 
@@ -95,7 +95,7 @@ Phase 1で作成された全設計ドキュメントを5つの観点からレビ
 
 ---
 
-### 2.2 アーキテクチャ整合性レビュー（@arch-police）
+### 2.2 アーキテクチャ整合性レビュー（.claude/agents/arch-police.md）
 
 #### 総合評価: PASS
 
@@ -147,7 +147,7 @@ Phase 1で作成された全設計ドキュメントを5つの観点からレビ
 
 ---
 
-### 2.3 データベース設計妥当性レビュー（@db-architect）
+### 2.3 データベース設計妥当性レビュー（.claude/agents/db-architect.md）
 
 #### 総合評価: PASS
 
@@ -194,7 +194,7 @@ Phase 1で作成された全設計ドキュメントを5つの観点からレビ
 
 ---
 
-### 2.4 UI/UX設計レビュー（@ui-designer）
+### 2.4 UI/UX設計レビュー（.claude/agents/ui-designer.md）
 
 #### 総合評価: PASS
 
@@ -240,7 +240,7 @@ Phase 1で作成された全設計ドキュメントを5つの観点からレビ
 
 ---
 
-### 2.5 セキュリティ設計レビュー（@sec-auditor）
+### 2.5 セキュリティ設計レビュー（.claude/agents/sec-auditor.md）
 
 #### 総合評価: PASS
 
@@ -350,11 +350,11 @@ Phase 1で作成された全設計ドキュメントを5つの観点からレビ
 
 以下のレビュー参加者全員が承認：
 
-- @req-analyst - 要件充足性: ✅ 承認
-- @arch-police - アーキテクチャ整合性: ✅ 承認
-- @db-architect - データベース設計妥当性: ✅ 承認
-- @ui-designer - UI/UX設計: ✅ 承認
-- @sec-auditor - セキュリティ設計: ✅ 承認
+- .claude/agents/req-analyst.md - 要件充足性: ✅ 承認
+- .claude/agents/arch-police.md - アーキテクチャ整合性: ✅ 承認
+- .claude/agents/db-architect.md - データベース設計妥当性: ✅ 承認
+- .claude/agents/ui-designer.md - UI/UX設計: ✅ 承認
+- .claude/agents/sec-auditor.md - セキュリティ設計: ✅ 承認
 
 ### 5.2 実装フェーズへの引き継ぎ事項
 
@@ -385,7 +385,7 @@ Phase 1で作成された全設計ドキュメントを5つの観点からレビ
 
 | バージョン | 日付       | 変更内容                        | 変更者                                                                |
 | ---------- | ---------- | ------------------------------- | --------------------------------------------------------------------- |
-| 1.0.0      | 2025-12-20 | 初版作成 - T-02-1タスクの成果物 | @req-analyst, @arch-police, @db-architect, @ui-designer, @sec-auditor |
+| 1.0.0      | 2025-12-20 | 初版作成 - T-02-1タスクの成果物 | .claude/agents/req-analyst.md, .claude/agents/arch-police.md, .claude/agents/db-architect.md, .claude/agents/ui-designer.md, .claude/agents/sec-auditor.md |
 
 ---
 

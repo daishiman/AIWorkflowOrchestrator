@@ -9,9 +9,13 @@
         "min_usage_count": 0,
         "min_success_rate": 0.0,
         "min_satisfaction_score": 0.0,
-        "required_resources": ["SKILL.md"]
+        "required_resources": [
+          "SKILL.md"
+        ]
       },
-      "success_criteria": ["SKILL.mdが存在し、基本的なペルソナ設計が可能"]
+      "success_criteria": [
+        "SKILL.mdが存在し、基本タスクが実行可能"
+      ]
     },
     "2": {
       "level": 2,
@@ -22,13 +26,12 @@
         "min_satisfaction_score": 0.7,
         "required_resources": [
           "SKILL.md",
-          "resources/expert-modeling-guide.md",
+          "resources/Level1_basics.md",
           "scripts/analyze-persona.mjs"
         ]
       },
       "success_criteria": [
-        "10回以上使用され、成功率80%以上",
-        "resourcesとscriptsを活用した設計が可能"
+        "10回以上使用され、成功率80%以上"
       ]
     },
     "3": {
@@ -40,14 +43,20 @@
         "min_satisfaction_score": 0.8,
         "required_resources": [
           "SKILL.md",
+          "resources/Level1_basics.md",
+          "resources/Level2_intermediate.md",
+          "resources/Level3_advanced.md",
+          "resources/Level4_expert.md",
           "resources/expert-modeling-guide.md",
+          "resources/legacy-skill.md",
           "scripts/analyze-persona.mjs",
+          "scripts/log_usage.mjs",
+          "scripts/validate-skill.mjs",
           "templates/persona-template.md"
         ]
       },
       "success_criteria": [
-        "50回以上使用され、成功率90%以上",
-        "Progressive Disclosure設計が適用されている"
+        "50回以上使用され、成功率90%以上"
       ]
     },
     "4": {
@@ -59,15 +68,21 @@
         "min_satisfaction_score": 0.9,
         "required_resources": [
           "SKILL.md",
+          "resources/Level1_basics.md",
+          "resources/Level2_intermediate.md",
+          "resources/Level3_advanced.md",
+          "resources/Level4_expert.md",
           "resources/expert-modeling-guide.md",
+          "resources/legacy-skill.md",
           "scripts/analyze-persona.mjs",
+          "scripts/log_usage.mjs",
+          "scripts/validate-skill.mjs",
           "templates/persona-template.md",
           "LOGS.md"
         ]
       },
       "success_criteria": [
-        "100回以上使用され、成功率95%以上",
-        "フィードバックループが機能している"
+        "100回以上使用され、成功率95%以上"
       ]
     }
   },
@@ -76,6 +91,6 @@
     "success_count": 0,
     "failure_count": 0,
     "average_satisfaction": 0.0,
-    "last_evaluated": "2025-12-23T00:00:00Z"
+    "last_evaluated": "2025-12-24T00:00:00Z"
   }
 }

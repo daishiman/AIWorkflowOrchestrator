@@ -8,7 +8,7 @@
 | フェーズ         | Phase 1: 設計                              |
 | 目的             | schemas.ts に定義するZodスキーマの詳細設計 |
 | 成果物           | Zodスキーマの詳細設計書                    |
-| 担当エージェント | @schema-def                                |
+| 担当エージェント | .claude/agents/schema-def.md                                |
 
 ---
 

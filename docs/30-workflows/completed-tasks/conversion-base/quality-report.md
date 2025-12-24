@@ -7,7 +7,7 @@
 | 検証日         | 2025-12-21                                         |
 | 対象フェーズ   | Phase 4（実装）、Phase 5（リファクタリング）完了後 |
 | 対象モジュール | packages/shared/src/services/conversion/           |
-| 検証者         | @code-quality                                      |
+| 検証者         | .claude/agents/code-quality.md                                      |
 
 ---
 
@@ -510,7 +510,7 @@ Test Files  34 passed (34)
 
 ## 17. 承認
 
-**品質検証責任者**: @code-quality
+**品質検証責任者**: .claude/agents/code-quality.md
 
 **承認日**: 2025-12-21
 

@@ -1,190 +1,120 @@
 ---
-name: reusable-workflows
+name: .claude/skills/reusable-workflows/SKILL.md
 description: |
   GitHub Actions再利用可能ワークフローの設計と実装。
   workflow_call イベント、入力/出力/シークレット定義、呼び出しパターン、
   合成設計、継承、チェーンパターンの専門知識を提供。
-
+  
+  📖 参照書籍:
+  - 『Continuous Delivery』（Jez Humble）: パイプライン
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/reusable-workflows/resources/caller-patterns.md`: Caller Patternsリソース
-  - `.claude/skills/reusable-workflows/resources/design-patterns.md`: Design Patternsリソース
-  - `.claude/skills/reusable-workflows/resources/workflow-call-syntax.md`: Workflow Call Syntaxリソース
-
-  - `.claude/skills/reusable-workflows/templates/caller-workflow.yaml`: Caller Workflowテンプレート
-  - `.claude/skills/reusable-workflows/templates/reusable-workflow.yaml`: Reusable Workflowテンプレート
-
-  - `.claude/skills/reusable-workflows/scripts/validate-reusable.mjs`: Validate Reusableスクリプト
-
-  Use proactively when implementing reusable workflows, workflow composition patterns,
-  or standardizing CI/CD processes across multiple projects.
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/caller-patterns.md`: Caller Patternsリソース
+  - `resources/design-patterns.md`: Design Patternsリソース
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/workflow-call-syntax.md`: Workflow Call Syntaxリソース
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-reusable.mjs`: Validate Reusableスクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/caller-workflow.yaml`: Caller Workflowテンプレート
+  - `templates/reusable-workflow.yaml`: Reusable Workflowテンプレート
+  
+  Use proactively when handling reusable workflows tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "Continuous Delivery"
+    author: "Jez Humble"
+    concepts:
+      - "パイプライン"
+      - "自動化"
 ---
 
 # Reusable Workflows Skill
 
-GitHub Actions 再利用可能ワークフローの設計と実装の専門知識。
+## 概要
 
-## 📁 Directory Structure
+GitHub Actions再利用可能ワークフローの設計と実装。
+workflow_call イベント、入力/出力/シークレット定義、呼び出しパターン、
+合成設計、継承、チェーンパターンの専門知識を提供。
 
-```
-.claude/skills/reusable-workflows/
-├── SKILL.md                          # このファイル (~150-200行)
-├── resources/
-│   ├── workflow-call-syntax.md       # workflow_call詳細定義
-│   ├── caller-patterns.md            # 呼び出しパターン
-│   └── design-patterns.md            # 合成・継承・チェーン
-├── templates/
-│   ├── reusable-workflow.yaml        # 再利用可能ワークフロー
-│   └── caller-workflow.yaml          # 呼び出し側テンプレート
-└── scripts/
-    └── validate-reusable.mjs         # 検証スクリプト
-```
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-## 🎯 Core Concept
 
-再利用可能ワークフローは `workflow_call` イベントで定義され、他のワークフローから呼び出し可能:
+## ワークフロー
 
-```yaml
-# .github/workflows/reusable-build.yml
-name: Reusable Build
+### Phase 1: 目的と前提の整理
 
-on:
-  workflow_call:
-    inputs:
-      node-version:
-        required: true
-        type: string
-    outputs:
-      build-id:
-        value: ${{ jobs.build.outputs.build-id }}
-    secrets:
-      NPM_TOKEN:
-        required: true
+**目的**: タスクの目的と前提条件を明確にする
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    outputs:
-      build-id: ${{ steps.build.outputs.id }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ inputs.node-version }}
-      - run: pnpm ci
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-```
+**アクション**:
 
-## 📚 Command Reference
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-### リソース参照
+### Phase 2: スキル適用
 
+**目的**: スキルの指針に従って具体的な作業を進める
+
+**アクション**:
+
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
+
+### Phase 3: 検証と記録
+
+**目的**: 成果物の検証と実行記録の保存
+
+**アクション**:
+
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
+
+
+## ベストプラクティス
+
+### すべきこと
+- resources/Level1_basics.md を参照し、適用範囲を明確にする
+- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
+
+## コマンドリファレンス
+
+### リソース読み取り
 ```bash
-# workflow_call 構文詳細
-cat .claude/skills/reusable-workflows/resources/workflow-call-syntax.md
-
-# 呼び出しパターン
+cat .claude/skills/reusable-workflows/resources/Level1_basics.md
+cat .claude/skills/reusable-workflows/resources/Level2_intermediate.md
+cat .claude/skills/reusable-workflows/resources/Level3_advanced.md
+cat .claude/skills/reusable-workflows/resources/Level4_expert.md
 cat .claude/skills/reusable-workflows/resources/caller-patterns.md
-
-# 設計パターン
 cat .claude/skills/reusable-workflows/resources/design-patterns.md
+cat .claude/skills/reusable-workflows/resources/legacy-skill.md
+cat .claude/skills/reusable-workflows/resources/workflow-call-syntax.md
 ```
 
-### テンプレート使用
-
+### スクリプト実行
 ```bash
-# 再利用可能ワークフローテンプレート
-cat .claude/skills/reusable-workflows/templates/reusable-workflow.yaml
+node .claude/skills/reusable-workflows/scripts/log_usage.mjs --help
+node .claude/skills/reusable-workflows/scripts/validate-reusable.mjs --help
+node .claude/skills/reusable-workflows/scripts/validate-skill.mjs --help
+```
 
-# 呼び出し側テンプレート
+### テンプレート参照
+```bash
 cat .claude/skills/reusable-workflows/templates/caller-workflow.yaml
+cat .claude/skills/reusable-workflows/templates/reusable-workflow.yaml
 ```
 
-### 検証
+## 変更履歴
 
-```bash
-# 再利用可能ワークフロー検証
-node .claude/skills/reusable-workflows/scripts/validate-reusable.mjs <workflow.yml>
-```
-
-## 🔄 Calling Reusable Workflows
-
-```yaml
-# .github/workflows/ci.yml
-name: CI
-
-on: [push]
-
-jobs:
-  build:
-    uses: ./.github/workflows/reusable-build.yml
-    with:
-      node-version: "20"
-    secrets:
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-  test:
-    needs: build
-    uses: ./.github/workflows/reusable-test.yml
-    with:
-      build-id: ${{ needs.build.outputs.build-id }}
-```
-
-## 💡 Key Features
-
-### Input Types
-
-- `string`: テキスト値
-- `boolean`: true/false
-- `number`: 数値
-
-### Output Propagation
-
-ジョブ出力をワークフロー出力として伝播:
-
-```yaml
-outputs:
-  result:
-    value: ${{ jobs.main.outputs.result }}
-```
-
-### Secret Inheritance
-
-```yaml
-# すべてのシークレットを継承
-secrets: inherit
-
-# または個別に指定
-secrets:
-  TOKEN: ${{ secrets.TOKEN }}
-```
-
-## 🎨 Design Patterns
-
-1. **Composition**: 複数ワークフローを組み合わせる
-2. **Inheritance**: 基本ワークフローを継承
-3. **Chaining**: ワークフローを連鎖実行
-4. **Matrix**: 複数構成で並列実行
-
-詳細は `resources/design-patterns.md` を参照。
-
-## 🔗 Related Skills
-
-- **github-actions-syntax**: `.claude/skills/github-actions-syntax/SKILL.md`
-- **github-actions-expressions**: `.claude/skills/github-actions-expressions/SKILL.md`
-- **composite-actions**: `.claude/skills/composite-actions/SKILL.md`
-- **workflow-templates**: `.claude/skills/workflow-templates/SKILL.md`
-
-## 📖 When to Use
-
-- 共通 CI/CD パターンの標準化
-- 複数プロジェクト間でワークフローを共有
-- ワークフローロジックの重複を削減
-- チーム全体で一貫したパイプライン
-- メンテナンスコストの削減
-
-詳細な構文、呼び出しパターン、設計パターンは `resources/` を参照してください。
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

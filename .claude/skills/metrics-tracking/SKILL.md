@@ -1,475 +1,104 @@
 ---
-name: metrics-tracking
+name: .claude/skills/metrics-tracking/SKILL.md
 description: |
   ベロシティ計測、バーンダウンチャート、リードタイム分析など
   アジャイルメトリクスの追跡と分析手法。データに基づく継続的改善と
   予測可能な開発を実現します。
-
+  
+  📖 参照書籍:
+  - 『Observability Engineering』（Charity Majors）: ログ設計
+  
   📚 リソース参照:
-  このスキルにはリソースファイルがありません。
-
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  
+  Use proactively when handling metrics tracking tasks.
 version: 1.1.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "Observability Engineering"
+    author: "Charity Majors"
+    concepts:
+      - "ログ設計"
+      - "メトリクス"
 ---
 
 # メトリクス追跡スキル
 
 ## 概要
 
-開発プロセスとプロダクトのメトリクスを体系的に追跡・分析し、
-データドリブンな意思決定と継続的改善を実現します。
+ベロシティ計測、バーンダウンチャート、リードタイム分析など
+アジャイルメトリクスの追跡と分析手法。データに基づく継続的改善と
+予測可能な開発を実現します。
 
-## いつ使うか
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-- スプリントの進捗管理
-- チームパフォーマンスの測定
-- リリース予測と計画
-- プロセス改善の効果測定
-- ステークホルダー報告
 
-## 主要メトリクス
+## ワークフロー
 
-### 開発メトリクス
+### Phase 1: 目的と前提の整理
 
-#### ベロシティ
+**目的**: タスクの目的と前提条件を明確にする
 
-```
-定義: 完了ストーリーポイント / スプリント
+**アクション**:
 
-用途:
-- スプリント計画の容量見積もり
-- リリース日予測
-- チーム生産性の追跡
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-計算:
-- 単純平均: (直近3スプリントの合計) / 3
-- 加重平均: 新しいデータに重み付け
-- 外れ値除外: 異常値を除いた平均
-```
+### Phase 2: スキル適用
 
-#### バーンダウン/バーンアップ
+**目的**: スキルの指針に従って具体的な作業を進める
 
-```
-バーンダウン:
-- 縦軸: 残作業量
-- 横軸: 時間
-- 理想線: 直線的な減少
-- 実績線: 実際の進捗
+**アクション**:
 
-バーンアップ:
-- 縦軸: 完了作業量
-- 横軸: 時間
-- スコープライン: 総作業量
-- 実績線: 累積完了量
-```
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-#### サイクルタイム
+### Phase 3: 検証と記録
 
-```
-定義: 作業開始から完了までの時間
+**目的**: 成果物の検証と実行記録の保存
 
-計測ポイント:
-- コミット → デプロイ
-- 開発開始 → レビュー完了
-- バックログ → Done
+**アクション**:
 
-改善指標:
-- 平均サイクルタイム短縮
-- 分散の削減（予測可能性向上）
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
+
+
+## ベストプラクティス
+
+### すべきこと
+- resources/Level1_basics.md を参照し、適用範囲を明確にする
+- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
+
+## コマンドリファレンス
+
+### リソース読み取り
+```bash
+cat .claude/skills/metrics-tracking/resources/Level1_basics.md
+cat .claude/skills/metrics-tracking/resources/Level2_intermediate.md
+cat .claude/skills/metrics-tracking/resources/Level3_advanced.md
+cat .claude/skills/metrics-tracking/resources/Level4_expert.md
+cat .claude/skills/metrics-tracking/resources/legacy-skill.md
 ```
 
-#### リードタイム
-
+### スクリプト実行
+```bash
+node .claude/skills/metrics-tracking/scripts/log_usage.mjs --help
+node .claude/skills/metrics-tracking/scripts/validate-skill.mjs --help
 ```
-定義: 要求から価値提供までの時間
-
-計測:
-- 顧客要求 → 本番リリース
-- アイデア → 収益化
-- バグ報告 → 修正完了
-
-ボトルネック分析:
-- 待機時間の可視化
-- プロセス改善ポイント特定
-```
-
-### 品質メトリクス
-
-#### 欠陥密度
-
-```
-計算式:
-欠陥密度 = 欠陥数 / コードサイズ（KLOC）
-
-レベル:
-- 優秀: < 0.1 defects/KLOC
-- 良好: 0.1-0.5 defects/KLOC
-- 改善必要: > 1.0 defects/KLOC
-```
-
-#### テストカバレッジ
-
-```
-種類:
-- ライン（行）カバレッジ
-- ブランチ（分岐）カバレッジ
-- 機能カバレッジ
-
-目標値（プロジェクト標準）:
-- 全体: 60%以上（MVP では努力目標、本番投入前は必達）
-- 重要ロジック（Executor等）: 80%以上
-- エラーハンドリング: 100%
-
-レベル別目標:
-- 単体テスト（ユニットテスト）: 60-80%
-- 統合テスト: 主要フロー 100%、API エンドポイント 80%以上
-- E2Eテスト: クリティカルパス 100%、補助フロー 50%以上
-
-測定ツール:
-- Vitest（カバレッジレポート自動生成）
-- 配置: features/[機能名]/__tests__/executor.test.ts
-```
-
-#### 技術的負債比率
-
-```
-SQALE Rating:
-A: < 5% (優秀)
-B: 5-10% (良好)
-C: 10-20% (許容範囲)
-D: 20-50% (要改善)
-E: > 50% (危険)
-
-計算:
-修正コスト / 開発コスト × 100
-```
-
-### ビジネスメトリクス
-
-#### プロダクトメトリクス
-
-```
-活動指標:
-- DAU (Daily Active Users)
-- MAU (Monthly Active Users)
-- DAU/MAU比率 (Stickiness)
-
-エンゲージメント:
-- セッション長
-- ページビュー/セッション
-- 機能利用率
-
-収益指標:
-- MRR (Monthly Recurring Revenue)
-- ARR (Annual Recurring Revenue)
-- ARPU (Average Revenue Per User)
-- LTV (Lifetime Value)
-- CAC (Customer Acquisition Cost)
-```
-
-#### 顧客メトリクス
-
-```
-満足度:
-- NPS (Net Promoter Score)
-- CSAT (Customer Satisfaction)
-- CES (Customer Effort Score)
-
-リテンション:
-- チャーン率
-- リテンション率
-- 復活率
-
-サポート:
-- First Response Time
-- Resolution Time
-- Ticket Volume
-```
-
-## 可視化手法
-
-### ダッシュボード設計
-
-#### 階層構造
-
-```
-Level 1: Executive Dashboard
-- 主要KPI
-- トレンド
-- アラート
-
-Level 2: Management Dashboard
-- チームメトリクス
-- プロジェクト状況
-- リソース利用
-
-Level 3: Team Dashboard
-- スプリント進捗
-- 個人パフォーマンス
-- 技術メトリクス
-```
-
-#### ビジュアル要素
-
-```
-グラフ選択:
-- トレンド: 折れ線グラフ
-- 比較: 棒グラフ
-- 構成: 円グラフ/積み上げ
-- 相関: 散布図
-- 分布: ヒストグラム
-- 進捗: ゲージ/プログレスバー
-```
-
-### 累積フローダイアグラム
-
-```
-構成要素:
-- 各状態の作業量を積み上げ表示
-- 時系列での変化を可視化
-
-分析ポイント:
-- WIPの増減
-- ボトルネック（膨らみ）
-- サイクルタイム（横幅）
-- スループット（傾き）
-```
-
-### コントロールチャート
-
-```
-要素:
-- 中心線: 平均値
-- 管理限界線: ±3σ
-- データポイント: 実測値
-
-異常検知:
-- 管理限界外
-- 連続7点が片側
-- トレンド（上昇/下降）
-- 周期的パターン
-```
-
-## 分析手法
-
-### トレンド分析
-
-```python
-# 移動平均
-def moving_average(data, window=3):
-    return [sum(data[i:i+window])/window
-            for i in range(len(data)-window+1)]
-
-# 線形回帰
-def trend_line(x, y):
-    n = len(x)
-    slope = (n*sum(x*y) - sum(x)*sum(y)) /
-            (n*sum(x**2) - sum(x)**2)
-    intercept = (sum(y) - slope*sum(x)) / n
-    return slope, intercept
-```
-
-### 相関分析
-
-```
-相関係数の解釈:
-0.7-1.0: 強い正の相関
-0.3-0.7: 中程度の正の相関
--0.3-0.3: 相関なし
--0.7--0.3: 中程度の負の相関
--1.0--0.7: 強い負の相関
-```
-
-### 予測モデル
-
-```
-ベロシティベース予測:
-完了予定 = 残ポイント / 平均ベロシティ
-
-信頼区間:
-- 楽観的: 最大ベロシティ使用
-- 現実的: 平均ベロシティ使用
-- 悲観的: 最小ベロシティ使用
-
-モンテカルロシミュレーション:
-- 過去データから確率分布生成
-- 1000回シミュレーション
-- 信頼区間の算出
-```
-
-## アラートと自動化
-
-### しきい値設定
-
-```yaml
-alerts:
-  velocity_drop:
-    condition: velocity < average * 0.8
-    action: notify_team_lead
-
-  burndown_behind:
-    condition: actual > ideal * 1.2
-    action: escalate_to_manager
-
-  quality_degradation:
-    condition: defect_rate > threshold
-    action: trigger_code_review
-
-  customer_churn:
-    condition: churn_rate > 5%
-    action: alert_customer_success
-```
-
-### 自動レポート
-
-```
-日次:
-- スタンドアップ用メトリクス
-- ブロッカー/リスク
-- 昨日の成果
-
-週次:
-- スプリント進捗
-- ベロシティトレンド
-- 品質メトリクス
-
-月次:
-- KPIダッシュボード
-- トレンド分析
-- 改善提案
-```
-
-## メトリクス選定ガイド
-
-### フェーズ別推奨メトリクス
-
-```
-立ち上げ期:
-- 基本的なベロシティ
-- シンプルなバーンダウン
-- 重要バグ数
-
-成長期:
-- サイクルタイム
-- テストカバレッジ
-- 顧客満足度
-
-成熟期:
-- リードタイム
-- 技術的負債
-- イノベーション率
-```
-
-### アンチメトリクス
-
-```
-避けるべき:
-- コード行数での生産性測定
-- 個人のストーリーポイント比較
-- バグ数ゼロの強制
-- 100%稼働率の追求
-```
-
-## ツール選定
-
-### オープンソース
-
-```
-- Grafana: 汎用ダッシュボード
-- Prometheus: メトリクス収集
-- ELK Stack: ログ分析
-- Jenkins: CI/CDメトリクス
-```
-
-### 商用ツール
-
-```
-- Jira: アジャイルメトリクス
-- Datadog: APM/監視
-- New Relic: パフォーマンス
-- Mixpanel: プロダクト分析
-```
-
-## 改善サイクル
-
-### Plan-Do-Check-Act
-
-```
-Plan:
-- メトリクス選定
-- 目標値設定
-- 測定方法決定
-
-Do:
-- データ収集
-- 可視化実装
-- チーム共有
-
-Check:
-- 分析実施
-- 異常検知
-- トレンド把握
-
-Act:
-- 改善実施
-- プロセス変更
-- 効果測定
-```
-
-### レトロスペクティブ連携
-
-```
-データ準備:
-- メトリクスサマリー
-- トレンドグラフ
-- 異常値の説明
-
-議論ポイント:
-- 数値の背景
-- 改善機会
-- アクションアイテム
-
-フォローアップ:
-- 改善効果の測定
-- 新メトリクスの追加
-- 目標値の調整
-```
-
-## チェックリスト
-
-### メトリクス導入時
-
-- [ ] 目的は明確か
-- [ ] 測定方法は定義されているか
-- [ ] データ収集は自動化可能か
-- [ ] チームの負担は最小か
-- [ ] 行動につながるか
-
-### 運用時
-
-- [ ] 定期的にレビューしているか
-- [ ] トレンドを追跡しているか
-- [ ] 異常に気づける仕組みがあるか
-- [ ] 改善につながっているか
-- [ ] 形骸化していないか
-
-## 関連スキル
-
-- `agile-project-management` - スクラムメトリクス
-- `estimation-techniques` - 見積もり精度
-- `stakeholder-communication` - レポーティング
-- `product-vision` - KPI 設定
 
 ## 変更履歴
 
-### v1.1.0 (2025-11-28)
-
-- **master_system_design.md 準拠対応**:
-  - テストカバレッジ目標を master_system_design.md 第2.4節に合わせて更新
-  - プロジェクト標準カバレッジ目標を明記（全体60%、重要ロジック80%）
-  - 測定ツール（Vitest）とテストファイル配置を追加
-  - レベル別目標の具体化（ユニット・統合・E2E）
-
-### v1.0.0 (2025-11-27)
-
-- 初版作成
-- ベロシティ、バーンダウン、サイクルタイム、リードタイム等のアジャイルメトリクスを体系化
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.1.0 | 2025-12-24 | Spec alignment and required artifacts added |

@@ -13,7 +13,7 @@
 | ステータス       | 未実施                        |
 | 発見元           | Phase 7（最終レビューゲート） |
 | 発見日           | 2025-12-22                    |
-| 発見エージェント | @electron-security            |
+| 発見エージェント | .claude/agents/electron-security.md            |
 
 ---
 
@@ -23,7 +23,7 @@
 
 現在のカスタムプロトコル（`aiworkflow://`）コールバック処理では、URLスキームの確認のみで、パスやクエリパラメータの詳細検証を行っていません。
 
-ログイン機能復旧プロジェクト（2025-12-22完了）の最終レビューゲートで、@electron-securityが詳細なURL検証が未実装であることを指摘しました。
+ログイン機能復旧プロジェクト（2025-12-22完了）の最終レビューゲートで、.claude/agents/electron-security.mdが詳細なURL検証が未実装であることを指摘しました。
 
 ### 1.2 問題点・課題
 
@@ -180,7 +180,7 @@ Phase 5: ドキュメント更新
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: 単体テスト作成とTDD実践の専門家。セキュリティ関連の検証ロジック実装に適している。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -188,8 +188,8 @@ Phase 5: ドキュメント更新
 
 | スキル名             | 活用方法                           |
 | -------------------- | ---------------------------------- |
-| tdd-principles       | TDD Red-Green-Refactorサイクル実践 |
-| clean-code-practices | 高品質な検証ロジック作成           |
+| .claude/skills/tdd-principles/SKILL.md       | TDD Red-Green-Refactorサイクル実践 |
+| .claude/skills/clean-code-practices/SKILL.md | 高品質な検証ロジック作成           |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -233,7 +233,7 @@ Phase 5: ドキュメント更新
 
 #### 使用エージェント
 
-- **エージェント**: @electron-security
+- **エージェント**: .claude/agents/electron-security.md
 - **選定理由**: Electronセキュリティの専門家。カスタムプロトコル処理のセキュリティ強化に最適。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -241,8 +241,8 @@ Phase 5: ドキュメント更新
 
 | スキル名                    | 活用方法                         |
 | --------------------------- | -------------------------------- |
-| electron-security-hardening | Electronアプリのセキュリティ強化 |
-| clean-code-practices        | エラーハンドリングの適切な実装   |
+| .claude/skills/electron-security-hardening/SKILL.md | Electronアプリのセキュリティ強化 |
+| .claude/skills/clean-code-practices/SKILL.md        | エラーハンドリングの適切な実装   |
 
 - **参照**: `.claude/skills/skill_list.md`
 

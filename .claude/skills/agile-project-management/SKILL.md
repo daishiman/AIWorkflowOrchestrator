@@ -1,308 +1,106 @@
 ---
-name: agile-project-management
+name: .claude/skills/agile-project-management/SKILL.md
 description: |
   スクラム・カンバンの実践知識とアジャイルプロジェクト管理の体系的手法。
   ジェフ・サザーランドのスクラムフレームワークを基盤として、
   イテレーティブ開発とチームの自己組織化を実現します。
-
+  
+  📖 参照書籍:
+  - 『Agile Estimating and Planning』（Mike Cohn）: 見積もり
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  (リソースファイルなし - 本体に含まれています)
-
-  専門分野:
-  - スクラムフレームワーク: 役割・イベント・成果物の実践
-  - カンバン手法: WIPリミット・フロー最適化
-  - スプリント運営: 計画・実行・レビュー・振り返り
-  - アジャイル原則: マニフェストに基づく価値観
-
-  使用タイミング:
-  - プロジェクト開始時のフレームワーク選択
-  - スプリント計画とイテレーション管理
-  - チーム編成と役割定義
-  - アジャイル原則の導入と教育
-
-  Use proactively when planning sprints, managing iterations,
-  or introducing agile practices to teams.
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  
+  Use proactively when handling agile project management tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "Agile Estimating and Planning"
+    author: "Mike Cohn"
+    concepts:
+      - "見積もり"
+      - "計画"
 ---
 
 # アジャイルプロジェクト管理スキル
 
 ## 概要
 
-スクラムとカンバンを中心としたアジャイル手法の実践的知識を体系化。
-チームの生産性を最大化し、変化に適応的なプロジェクト運営を実現します。
+スクラム・カンバンの実践知識とアジャイルプロジェクト管理の体系的手法。
+ジェフ・サザーランドのスクラムフレームワークを基盤として、
+イテレーティブ開発とチームの自己組織化を実現します。
 
-## いつ使うか
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
+
+## ワークフロー
+
+### Phase 1: 目的と前提の整理
+
+**目的**: タスクの目的と前提条件を明確にする
+
+**アクション**:
+
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
+
+### Phase 2: スキル適用
+
+**目的**: スキルの指針に従って具体的な作業を進める
+
+**アクション**:
+
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
+
+### Phase 3: 検証と記録
+
+**目的**: 成果物の検証と実行記録の保存
+
+**アクション**:
+
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
+
+
+## ベストプラクティス
+
+### すべきこと
 - プロジェクト開始時のフレームワーク選択
 - スプリント計画とイテレーション管理
 - チーム編成と役割定義
 - アジャイル原則の導入と教育
-- 既存プロセスのアジャイル変革
 
-## コア概念
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
 
-### スクラムフレームワーク
+## コマンドリファレンス
 
-#### 3つの役割
-
-1. **プロダクトオーナー**
-   - バックログの管理と優先順位付け
-   - ステークホルダーとの調整
-   - ビジネス価値の最大化
-
-2. **スクラムマスター**
-   - プロセスのファシリテーション
-   - 障害の除去
-   - チームの保護と支援
-
-3. **開発チーム**
-   - 自己組織化による実装
-   - スプリントゴールへのコミット
-   - 品質への責任
-
-#### 5つのイベント
-
-1. **スプリント** (1-4週間のタイムボックス)
-2. **スプリント計画** (What と How の決定)
-3. **デイリースクラム** (15分の同期)
-4. **スプリントレビュー** (成果物のデモ)
-5. **レトロスペクティブ** (プロセス改善)
-
-#### 3つの成果物
-
-1. **プロダクトバックログ** (要求事項の順序付きリスト)
-2. **スプリントバックログ** (スプリントで実施する作業)
-3. **インクリメント** (完成した価値の増分)
-
-### カンバン原則
-
-#### 4つの基本原則
-
-1. **今あるものから始める** - 革命的変化より進化的改善
-2. **漸進的・進化的変化を追求** - 小さな改善の積み重ね
-3. **現在のプロセスを尊重** - 既存の役割と責任を維持
-4. **リーダーシップを奨励** - すべてのレベルでの改善提案
-
-#### 6つの実践
-
-1. **ワークフローの可視化** - ボードによる状態管理
-2. **WIP（進行中作業）の制限** - 同時並行作業の制御
-3. **フローの管理** - ボトルネックの特定と解消
-4. **ポリシーの明確化** - ルールと基準の透明化
-5. **フィードバックループ** - 定期的な振り返り
-6. **協調的改善** - データに基づく実験と学習
-
-## 実践パターン
-
-### パターン1: スプリント計画の実施
-
-```
-準備フェーズ:
-1. プロダクトバックログのリファインメント
-2. 前スプリントのベロシティ確認
-3. チームキャパシティの評価
-
-計画フェーズ:
-1. スプリントゴールの設定
-2. バックログアイテムの選択
-3. タスクへの分解
-4. 工数見積もり
-5. コミットメントの確認
+### リソース読み取り
+```bash
+cat .claude/skills/agile-project-management/resources/Level1_basics.md
+cat .claude/skills/agile-project-management/resources/Level2_intermediate.md
+cat .claude/skills/agile-project-management/resources/Level3_advanced.md
+cat .claude/skills/agile-project-management/resources/Level4_expert.md
+cat .claude/skills/agile-project-management/resources/legacy-skill.md
 ```
 
-### パターン2: デイリースクラムの運営
-
-```
-標準フォーマット:
-- 昨日やったこと
-- 今日やること
-- 阻害要因
-
-改善されたフォーマット:
-- スプリントゴールへの進捗
-- 本日のフォーカス
-- 支援が必要な事項
+### スクリプト実行
+```bash
+node .claude/skills/agile-project-management/scripts/log_usage.mjs --help
+node .claude/skills/agile-project-management/scripts/validate-skill.mjs --help
 ```
 
-### パターン3: レトロスペクティブ手法
+## 変更履歴
 
-```
-手法選択:
-- Start/Stop/Continue
-- KPT (Keep/Problem/Try)
-- 4Ls (Liked/Learned/Lacked/Longed for)
-- Mad/Sad/Glad
-- Sailboat (風/錨)
-```
-
-## ツールボックス
-
-### ベロシティ計測
-
-```
-ベロシティ = 完了ストーリーポイント / スプリント
-
-移動平均 = (直近3スプリントの合計) / 3
-
-予測完了日 = 残ポイント / 平均ベロシティ
-```
-
-### バーンダウンチャート
-
-```
-理想線: 開始時の総ポイントから0への直線
-実績線: 各日の残作業量をプロット
-差分分析: 遅れ/進み具合の可視化
-```
-
-### 累積フローダイアグラム
-
-```
-各状態の作業量を時系列で積み上げ表示
-- ボトルネック: 幅が広がる箇所
-- サイクルタイム: 横軸の幅
-- スループット: 完了ラインの傾き
-```
-
-## チーム成熟度モデル
-
-### レベル1: 形成期 (Forming)
-
-- 役割と責任の学習
-- プロセスの理解
-- 基本的な実践
-
-### レベル2: 混乱期 (Storming)
-
-- 役割の調整
-- プロセスへの疑問
-- 初期の失敗と学習
-
-### レベル3: 統一期 (Norming)
-
-- チームの結束
-- プロセスの安定
-- 予測可能なベロシティ
-
-### レベル4: 機能期 (Performing)
-
-- 自己組織化の実現
-- 継続的改善
-- 高い生産性
-
-### レベル5: 変革期 (Transforming)
-
-- 他チームへの影響
-- イノベーションの創出
-- 組織変革のリード
-
-## スケーリング戦略
-
-### SAFe (Scaled Agile Framework)
-
-- PI (Program Increment) 計画
-- ART (Agile Release Train)
-- Value Stream
-
-### LeSS (Large-Scale Scrum)
-
-- One Product Backlog
-- Sprint同期
-- Overall Retrospective
-
-### Scrum of Scrums
-
-- 代表者による調整
-- 依存関係の管理
-- 統合の計画
-
-## メトリクスと測定
-
-### 開発メトリクス
-
-- ベロシティ
-- スプリント目標達成率
-- エピック完了率
-
-### 品質メトリクス
-
-- 欠陥脱出率
-- 技術的負債比率
-- コードカバレッジ
-
-### ビジネスメトリクス
-
-- Time to Market
-- ROI
-- 顧客満足度
-
-## アンチパターンと対策
-
-### アンチパターン1: ウォーターフォール・スクラム
-
-**症状**: スプリント内で分析→設計→実装→テストの順次実行
-**対策**: 垂直スライスでの実装、継続的統合
-
-### アンチパターン2: スクラムバット
-
-**症状**: 「スクラムだが...」という例外だらけの運用
-**対策**: 原則への回帰、段階的な改善
-
-### アンチパターン3: ゾンビスクラム
-
-**症状**: 形式的な実践、改善の停滞
-**対策**: レトロスペクティブの活性化、実験的取り組み
-
-## チェックリスト
-
-### スプリント開始前
-
-- [ ] バックログはリファインメント済みか
-- [ ] スプリントゴールは明確か
-- [ ] チームキャパシティは把握済みか
-- [ ] 依存関係は解決済みか
-
-### スプリント中
-
-- [ ] デイリースクラムは機能しているか
-- [ ] バーンダウンは健全か
-- [ ] 阻害要因は除去されているか
-- [ ] スコープクリープは防げているか
-
-### スプリント終了時
-
-- [ ] Definition of Doneを満たしているか
-- [ ] デモ可能な成果物があるか
-- [ ] ベロシティは記録されたか
-- [ ] 改善アクションは特定されたか
-
-## 参考リソース
-
-### 書籍
-
-- 『スクラム』ジェフ・サザーランド
-- 『カンバン仕事術』マーカス・ハマーバーグ
-- 『アジャイルサムライ』Jonathan Rasmusson
-
-### 認定資格
-
-- CSM (Certified ScrumMaster)
-- CSPO (Certified Scrum Product Owner)
-- PSM (Professional Scrum Master)
-
-### オンラインリソース
-
-- Scrum Guide (scrumguides.org)
-- Agile Manifesto (agilemanifesto.org)
-- Kanban University
-
-## 関連スキル
-
-- `user-story-mapping` - 要件の可視化
-- `estimation-techniques` - 見積もり手法
-- `metrics-tracking` - 進捗測定
-- `stakeholder-communication` - ステークホルダー管理
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

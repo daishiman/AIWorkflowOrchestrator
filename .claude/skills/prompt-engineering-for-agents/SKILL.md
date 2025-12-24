@@ -1,157 +1,116 @@
 ---
-name: prompt-engineering-for-agents
+name: .claude/skills/prompt-engineering-for-agents/SKILL.md
 description: |
   エージェント向けプロンプトエンジニアリングを専門とするスキル。
   System Prompt設計、Few-Shot Examples、Role Prompting技術により、
   高品質なエージェント動作を実現します。
-
+  
+  📖 参照書籍:
+  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 手順設計
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/prompt-engineering-for-agents/resources/system-prompt-patterns.md`: System Prompt Patterns
-  - `.claude/skills/prompt-engineering-for-agents/scripts/analyze-prompt.mjs`: analyze-prompt.mjs
-  - `.claude/skills/prompt-engineering-for-agents/templates/prompt-template.md`: プロンプト設計テンプレート
-
-  専門分野:
-  - System Prompt設計: 構造化と明確性
-  - Role Prompting: 役割付与による性能向上
-  - Few-Shot Examples: 具体例による学習
-  - コンテキスト強化: 役割に関連する知識ベース提供
-
-  使用タイミング:
-  - System Promptを設計する時
-  - エージェントの動作を最適化する時
-  - 具体例を追加する時
-
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/system-prompt-patterns.md`: System Prompt Patterns
+  - `scripts/analyze-prompt.mjs`: analyze-prompt.mjs
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/prompt-template.md`: プロンプト設計テンプレート
+  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
+  
   Use proactively when designing system prompts or optimizing agent behavior.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "The Pragmatic Programmer"
+    author: "Andrew Hunt, David Thomas"
+    concepts:
+      - "手順設計"
+      - "実践的改善"
 ---
 
 # Prompt Engineering for Agents
 
 ## 概要
 
-プロンプトエンジニアリングは、AIエージェントの動作を最適化するための
-System Prompt設計技術です。
+エージェント向けプロンプトエンジニアリングを専門とするスキル。
+System Prompt設計、Few-Shot Examples、Role Prompting技術により、
+高品質なエージェント動作を実現します。
 
-**主要な価値**:
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-- 明確な役割付与により、一貫性が向上
-- 具体例により、期待される動作が明確化
-- 構造化により、理解しやすさが向上
 
 ## ワークフロー
 
-### Phase 1: Role Prompting
+### Phase 1: 目的と前提の整理
 
-**基本形式**:
+**目的**: タスクの目的と前提条件を明確にする
 
-```markdown
-あなたは **[役割名]** です。
+**アクション**:
 
-[役割の説明]
-```
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-**効果**:
+### Phase 2: スキル適用
 
-- 役割の明確化
-- 一貫性のある判断
-- 専門性の向上
+**目的**: スキルの指針に従って具体的な作業を進める
 
-### Phase 2: System Prompt構造化
+**アクション**:
 
-**推奨構造**:
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-1. 役割定義
-2. 専門分野
-3. 責任範囲
-4. 制約
-5. タスク実行時の動作
-6. ツール使用方針
-7. 品質基準
+### Phase 3: 検証と記録
 
-### Phase 3: Few-Shot Examples
+**目的**: 成果物の検証と実行記録の保存
 
-**提供方法**:
+**アクション**:
 
-```markdown
-## 例
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-### 例1: [シナリオ]
-
-入力: [入力例]
-出力: [期待される出力]
-
-### 例2: [シナリオ]
-
-...
-```
-
-**推奨数**: 2-3個（最小限）
-
-### Phase 4: コンテキスト強化
-
-**方法**:
-
-- スキル参照による知識提供
-- プロジェクト固有ドキュメントへの参照
-- 判断基準の明示
 
 ## ベストプラクティス
 
-✅ **すべきこと**:
+### すべきこと
+- System Promptを設計する時
+- エージェントの動作を最適化する時
+- 具体例を追加する時
 
-- 明確な役割定義
-- 構造化されたSystem Prompt
-- 最小限の具体例
-
-❌ **避けるべきこと**:
-
-- 曖昧な役割
-- 非構造化なPrompt
-- 過度な具体例
-
-## 関連スキル
-
-- **agent-persona-design** (`.claude/skills/agent-persona-design/SKILL.md`)
-- **agent-structure-design** (`.claude/skills/agent-structure-design/SKILL.md`)
-
-## 詳細リファレンス
-
-詳細な実装ガイドとツールは以下を参照:
-
-- System Promptパターン (`resources/system-prompt-patterns.md`)
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
 
 ## コマンドリファレンス
 
-このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
-
 ### リソース読み取り
-
 ```bash
-# System Promptパターンのガイドを読み取る
+cat .claude/skills/prompt-engineering-for-agents/resources/Level1_basics.md
+cat .claude/skills/prompt-engineering-for-agents/resources/Level2_intermediate.md
+cat .claude/skills/prompt-engineering-for-agents/resources/Level3_advanced.md
+cat .claude/skills/prompt-engineering-for-agents/resources/Level4_expert.md
+cat .claude/skills/prompt-engineering-for-agents/resources/legacy-skill.md
 cat .claude/skills/prompt-engineering-for-agents/resources/system-prompt-patterns.md
 ```
 
-### 他のスキルのスクリプトを活用
-
+### スクリプト実行
 ```bash
-# エージェント構造検証
-node .claude/skills/agent-structure-design/scripts/validate-structure.mjs <agent_file.md>
+node .claude/skills/prompt-engineering-for-agents/scripts/analyze-prompt.mjs --help
+node .claude/skills/prompt-engineering-for-agents/scripts/log_usage.mjs --help
+node .claude/skills/prompt-engineering-for-agents/scripts/validate-skill.mjs --help
+```
 
-# トークン見積もり
-node .claude/skills/context-optimization/scripts/estimate-tokens.mjs <file.md>
-
-# トークン使用量計算
-node .claude/skills/progressive-disclosure/scripts/calculate-token-usage.mjs <file.md>
-
-# 知識ドキュメントの品質検証
-node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs <file.md>
+### テンプレート参照
+```bash
+cat .claude/skills/prompt-engineering-for-agents/templates/prompt-template.md
 ```
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容 |
-| ---------- | ---------- | -------- |
-| 1.0.0      | 2025-11-24 | 初版作成 |
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

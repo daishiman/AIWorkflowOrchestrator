@@ -14,7 +14,7 @@
 | **Go**              | `ci-template.yaml`         | `~/go/pkg/mod`      | `go test ./...`     | バイナリファイル  |
 | **Rust**            | `ci-template.yaml`         | `~/.cargo`          | `cargo test`        | `target/release/` |
 | **Docker**          | `docker-template.yaml`     | Docker layer cache  | -                   | イメージ          |
-| **Mono-repo**       | カスタム + `matrix-builds` | プロジェクト別      | 複数                | 複数              |
+| **Mono-repo**       | カスタム + `.claude/skills/matrix-builds/SKILL.md` | プロジェクト別      | 複数                | 複数              |
 
 ---
 

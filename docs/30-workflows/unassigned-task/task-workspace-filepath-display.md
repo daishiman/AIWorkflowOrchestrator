@@ -13,7 +13,7 @@
 | ステータス       | 未実施                             |
 | 発見元           | ユーザー要望                       |
 | 発見日           | 2025-12-11                         |
-| 発見エージェント | @product-manager                   |
+| 発見エージェント | .claude/agents/product-manager.md                   |
 
 ---
 
@@ -139,7 +139,7 @@ Phase 9: ドキュメント更新
 
 #### 使用エージェント
 
-- **エージェント**: @req-analyst
+- **エージェント**: .claude/agents/req-analyst.md
 - **選定理由**: 要件の収集・分析に特化したエージェント
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -147,8 +147,8 @@ Phase 9: ドキュメント更新
 
 | スキル名                 | 活用方法                       |
 | ------------------------ | ------------------------------ |
-| requirements-engineering | 要件の明確化と検証可能性の確保 |
-| use-case-modeling        | ユーザーシナリオの特定         |
+| .claude/skills/requirements-engineering/SKILL.md | 要件の明確化と検証可能性の確保 |
+| .claude/skills/use-case-modeling/SKILL.md        | ユーザーシナリオの特定         |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -184,7 +184,7 @@ UI/UXを考慮したファイルパス表示の設計を行う。
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: UI/UX設計とアクセシビリティに特化
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -192,9 +192,9 @@ UI/UXを考慮したファイルパス表示の設計を行う。
 
 | スキル名                   | 活用方法                   |
 | -------------------------- | -------------------------- |
-| design-system-architecture | デザインシステムとの整合性 |
-| accessibility-wcag         | WCAG準拠の確保             |
-| tailwind-css-patterns      | 適切なスタイリング         |
+| .claude/skills/design-system-architecture/SKILL.md | デザインシステムとの整合性 |
+| .claude/skills/accessibility-wcag/SKILL.md         | WCAG準拠の確保             |
+| .claude/skills/tailwind-css-patterns/SKILL.md      | 適切なスタイリング         |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -222,8 +222,8 @@ UI/UXを考慮したファイルパス表示の設計を行う。
 
 | エージェント | レビュー観点         | 選定理由                 |
 | ------------ | -------------------- | ------------------------ |
-| @arch-police | アーキテクチャ整合性 | コンポーネント設計の検証 |
-| @ui-designer | UI/UX品質            | ユーザビリティの確認     |
+| .claude/agents/arch-police.md | アーキテクチャ整合性 | コンポーネント設計の検証 |
+| .claude/agents/ui-designer.md | UI/UX品質            | ユーザビリティの確認     |
 
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -252,7 +252,7 @@ UI/UXを考慮したファイルパス表示の設計を行う。
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: TDD原則に基づくテスト作成
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -260,9 +260,9 @@ UI/UXを考慮したファイルパス表示の設計を行う。
 
 | スキル名                | 活用方法                   |
 | ----------------------- | -------------------------- |
-| tdd-principles          | Red-Green-Refactorサイクル |
-| boundary-value-analysis | 境界値テストの設計         |
-| vitest-advanced         | Vitestでのテスト実装       |
+| .claude/skills/tdd-principles/SKILL.md          | Red-Green-Refactorサイクル |
+| .claude/skills/boundary-value-analysis/SKILL.md | 境界値テストの設計         |
+| .claude/skills/vitest-advanced/SKILL.md         | Vitestでのテスト実装       |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -299,7 +299,7 @@ pnpm --filter @repo/desktop test:run
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: UIコンポーネントの実装
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -307,8 +307,8 @@ pnpm --filter @repo/desktop test:run
 
 | スキル名                       | 活用方法                       |
 | ------------------------------ | ------------------------------ |
-| component-composition-patterns | 再利用可能なコンポーネント設計 |
-| tailwind-css-patterns          | 適切なスタイリング             |
+| .claude/skills/component-composition-patterns/SKILL.md | 再利用可能なコンポーネント設計 |
+| .claude/skills/tailwind-css-patterns/SKILL.md          | 適切なスタイリング             |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -345,7 +345,7 @@ pnpm --filter @repo/desktop test:run
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: コード品質の改善
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -383,7 +383,7 @@ pnpm --filter @repo/desktop test:run
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: 品質検証
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -405,9 +405,9 @@ pnpm --filter @repo/desktop test:run
 
 | エージェント  | レビュー観点 | 選定理由             |
 | ------------- | ------------ | -------------------- |
-| @code-quality | コード品質   | 実装品質の確認       |
-| @ui-designer  | UI/UX        | ユーザビリティ確認   |
-| @unit-tester  | テスト品質   | テストカバレッジ確認 |
+| .claude/agents/code-quality.md | コード品質   | 実装品質の確認       |
+| .claude/agents/ui-designer.md  | UI/UX        | ユーザビリティ確認   |
+| .claude/agents/unit-tester.md  | テスト品質   | テストカバレッジ確認 |
 
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -457,7 +457,7 @@ pnpm --filter @repo/desktop test:run
 
 #### 使用エージェント
 
-- **エージェント**: @spec-writer
+- **エージェント**: .claude/agents/spec-writer.md
 - **選定理由**: ドキュメント作成
 - **参照**: `.claude/agents/agent_list.md`
 

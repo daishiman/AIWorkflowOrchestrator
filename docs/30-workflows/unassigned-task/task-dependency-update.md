@@ -13,7 +13,7 @@
 | ステータス       | 未実施                                         |
 | 発見元           | Phase 6 - セキュリティ監査（依存関係スキャン） |
 | 発見日           | 2024-12-23                                     |
-| 発見エージェント | @sec-auditor                                   |
+| 発見エージェント | .claude/agents/sec-auditor.md                                   |
 
 ---
 
@@ -174,7 +174,7 @@ Phase 9: ドキュメント更新
 
 ##### 使用エージェント
 
-- **エージェント**: `@dep-mgr`
+- **エージェント**: `.claude/agents/dep-mgr.md`
 - **選定理由**: 依存関係管理とセマンティックバージョニングの専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -182,8 +182,8 @@ Phase 9: ドキュメント更新
 
 | スキル名                     | 活用方法           |
 | ---------------------------- | ------------------ |
-| semantic-versioning          | バージョン選定基準 |
-| dependency-security-scanning | 脆弱性評価         |
+| .claude/skills/semantic-versioning/SKILL.md          | バージョン選定基準 |
+| .claude/skills/dependency-security-scanning/SKILL.md | 脆弱性評価         |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -227,7 +227,7 @@ Phase 9: ドキュメント更新
 
 ##### 使用エージェント
 
-- **エージェント**: `@dep-mgr`
+- **エージェント**: `.claude/agents/dep-mgr.md`
 - **選定理由**: 依存関係更新戦略の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -263,7 +263,7 @@ Phase 9: ドキュメント更新
 
 ##### 使用エージェント
 
-- **エージェント**: `@unit-tester`
+- **エージェント**: `.claude/agents/unit-tester.md`
 - **選定理由**: テスト設計の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -299,7 +299,7 @@ viteを最新版に更新する。
 
 ##### 使用エージェント
 
-- **エージェント**: `@dep-mgr`
+- **エージェント**: `.claude/agents/dep-mgr.md`
 - **選定理由**: パッケージ更新の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -343,7 +343,7 @@ drizzle-kitを最新版に更新する。
 
 ##### 使用エージェント
 
-- **エージェント**: `@dep-mgr`
+- **エージェント**: `.claude/agents/dep-mgr.md`
 - **選定理由**: パッケージ更新の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -388,7 +388,7 @@ pnpm audit
 
 ##### 使用エージェント
 
-- **エージェント**: `@unit-tester`
+- **エージェント**: `.claude/agents/unit-tester.md`
 - **選定理由**: 統合テスト実行の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -425,9 +425,9 @@ pnpm audit
 
 | エージェント | レビュー観点       | 選定理由               |
 | ------------ | ------------------ | ---------------------- |
-| @sec-auditor | 脆弱性解消確認     | pnpm audit結果の検証   |
-| @dep-mgr     | 依存関係整合性     | バージョン互換性の確認 |
-| @devops-eng  | ビルドパイプライン | CI/CDへの影響確認      |
+| .claude/agents/sec-auditor.md | 脆弱性解消確認     | pnpm audit結果の検証   |
+| .claude/agents/dep-mgr.md     | 依存関係整合性     | バージョン互換性の確認 |
+| .claude/agents/devops-eng.md  | ビルドパイプライン | CI/CDへの影響確認      |
 
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -494,7 +494,7 @@ pnpm audit
 
 ##### 使用エージェント
 
-- **エージェント**: `@spec-writer`
+- **エージェント**: `.claude/agents/spec-writer.md`
 - **選定理由**: システムドキュメント更新の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
