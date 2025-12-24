@@ -13,7 +13,7 @@
 | ステータス       | 未実施                                 |
 | 発見元           | AUTH-UI-002 最終レビュー（Phase 7）    |
 | 発見日           | 2025-12-20                             |
-| 発見エージェント | @ui-designer（T-07-1最終レビュー）     |
+| 発見エージェント | .claude/agents/ui-designer.md（T-07-1最終レビュー）     |
 | 関連タスク       | AUTH-UI-002                            |
 
 ---
@@ -191,17 +191,17 @@ calculateMenuPosition()関数にViewport境界判定ロジックを追加し、�
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: リファクタリングとコード品質改善の専門家。条件分岐の追加と可読性維持に精通。
-- **代替候補**: @ui-designer（UI実装の専門家だが、今回はロジック改善のため@code-qualityが最適）
+- **代替候補**: .claude/agents/ui-designer.md（UI実装の専門家だが、今回はロジック改善のため.claude/agents/code-quality.mdが最適）
 - **参照**: `.claude/agents/agent_list.md`
 
 #### 活用スキル
 
 | スキル名               | 活用方法                                              | 選定理由                           |
 | ---------------------- | ----------------------------------------------------- | ---------------------------------- |
-| refactoring-techniques | Extract Method維持、条件分岐の最適化                  | 既存ヘルパー関数を拡張する必要あり |
-| clean-code-practices   | マジックナンバー除去（MENU_HEIGHT定数化）、意図明確化 | 定数定義と条件分岐の可読性が重要   |
+| .claude/skills/refactoring-techniques/SKILL.md | Extract Method維持、条件分岐の最適化                  | 既存ヘルパー関数を拡張する必要あり |
+| .claude/skills/clean-code-practices/SKILL.md   | マジックナンバー除去（MENU_HEIGHT定数化）、意図明確化 | 定数定義と条件分岐の可読性が重要   |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -241,7 +241,7 @@ calculateMenuPosition()関数にViewport境界判定ロジックを追加し、�
 
 #### 使用エージェント
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 - **選定理由**: React Testing Libraryとビジュアル系の境界値テスト設計に精通。window/DOMモックの専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -249,9 +249,9 @@ calculateMenuPosition()関数にViewport境界判定ロジックを追加し、�
 
 | スキル名                | 活用方法                                       | 選定理由                             |
 | ----------------------- | ---------------------------------------------- | ------------------------------------ |
-| boundary-value-analysis | 境界値ケースの特定（画面下部、ギリギリ収まる） | Viewport境界の境界値テストに必須     |
-| vitest-advanced         | window.innerHeightモック、非同期テスト         | DOMプロパティのモックが必要          |
-| test-naming-conventions | テスト名の明確化（日本語/英語）                | 境界値テストであることを明示する必要 |
+| .claude/skills/boundary-value-analysis/SKILL.md | 境界値ケースの特定（画面下部、ギリギリ収まる） | Viewport境界の境界値テストに必須     |
+| .claude/skills/vitest-advanced/SKILL.md         | window.innerHeightモック、非同期テスト         | DOMプロパティのモックが必要          |
+| .claude/skills/test-naming-conventions/SKILL.md | テスト名の明確化（日本語/英語）                | 境界値テストであることを明示する必要 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -279,7 +279,7 @@ UI/UXガイドラインの16.16.3セクション（基本実装パターン）�
 
 #### 使用エージェント
 
-- **エージェント**: @spec-writer
+- **エージェント**: .claude/agents/spec-writer.md
 - **選定理由**: テクニカルライターとして、実装パターンを適切にドキュメント化できる。Single Source of Truth原則の遵守に精通。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -288,7 +288,7 @@ UI/UXガイドラインの16.16.3セクション（基本実装パターン）�
 | スキル名                 | 活用方法                                     | 選定理由                                 |
 | ------------------------ | -------------------------------------------- | ---------------------------------------- |
 | technical-writing        | 実装パターンの明確な文書化                   | 他の開発者が理解・再利用できる記述が必要 |
-| markdown-advanced-syntax | コードブロック、テーブル、リストの適切な使用 | ガイドライン文書の可読性確保             |
+| .claude/skills/markdown-advanced-syntax/SKILL.md | コードブロック、テーブル、リストの適切な使用 | ガイドライン文書の可読性確保             |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -426,5 +426,5 @@ calculateMenuPosition()にwindow.innerHeightとの比較を追加し、
 ---
 
 **作成日時**: 2025-12-20 23:30
-**作成者**: @spec-writer（T-09-1サブタスク9.2）
+**作成者**: .claude/agents/spec-writer.md（T-09-1サブタスク9.2）
 **次回レビュー**: 実装完了時

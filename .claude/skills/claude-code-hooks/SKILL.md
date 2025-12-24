@@ -1,129 +1,114 @@
 ---
-name: claude-code-hooks
+name: .claude/skills/claude-code-hooks/SKILL.md
 description: |
   ## 概要
+  
+  📖 参照書籍:
+  - 『Learning React』（Alex Banks, Eve Porcello）: コンポーネント設計
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/claude-code-hooks/resources/claude-code-guidelines.md`: Claude Code ガイドライン
-  - `.claude/skills/claude-code-hooks/resources/quality-metrics.md`: カバレッジ80%・複雑度10以下・脆弱性0個などの定量的品質基準とメトリクス収集方法
-  - `.claude/skills/claude-code-hooks/templates/claude-commit-template.sh`: !/bin/bash
-  - `.claude/skills/claude-code-hooks/templates/claude-quality-template.sh`: !/bin/bash
-  - `.claude/skills/claude-code-hooks/scripts/validate-claude-quality.mjs`: Claude Code Quality Validation Script
-
-  専門分野:
-  - (要追加)
-
-  使用タイミング:
-  - (要追加)
-
-  Use proactively when (要追加).
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/claude-code-guidelines.md`: Claude Code ガイドライン
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/quality-metrics.md`: カバレッジ80%・複雑度10以下・脆弱性0個などの定量的品質基準とメトリクス収集方法
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-claude-quality.mjs`: Claude Code Quality Validation Script
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/claude-commit-template.sh`: !/bin/bash
+  - `templates/claude-quality-template.sh`: !/bin/bash
+  
+  Use proactively when handling claude code hooks tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "Learning React"
+    author: "Alex Banks, Eve Porcello"
+    concepts:
+      - "コンポーネント設計"
+      - "パフォーマンス"
 ---
 
 # Claude Code フック実装
 
 ## 概要
 
-Claude Code (Claude Codeツール) 統合時のGit Hooks実装パターン
+## 概要
 
-## 核心概念
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-### 1. Claude Code特有の課題
 
-- Claudeが生成したコードの品質保証
-- 自動修正の妥当性検証
-- マルチターン编集の一貫性確認
+## ワークフロー
 
-### 2. フック戦略
+### Phase 1: 目的と前提の整理
 
-```
-Claude編集 → pre-commit → 品質チェック → コミット許可
-```
+**目的**: タスクの目的と前提条件を明確にする
 
-### 3. 検証対象
+**アクション**:
 
-- 生成されたコードの型安全性
-- テストカバレッジ維持
-- エラーメッセージの明確さ
-- セキュリティベストプラクティス準拠
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-## 設計原則
+### Phase 2: スキル適用
 
-### 1. 二重検証（Dual Validation）
+**目的**: スキルの指針に従って具体的な作業を進める
 
-- Claudeが提案 → フックが検証 → マージ前再確認
+**アクション**:
 
-### 2. 段階的リリース（Phased Release）
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-- 開発環境: すべてのチェック有効
-- ステージング: 重要なチェックのみ
-- 本番環境: 最小限のオーバーヘッド
+### Phase 3: 検証と記録
 
-### 3. 学習フィードバック（Learning Feedback）
+**目的**: 成果物の検証と実行記録の保存
 
-- フック失敗 → Claudeへフィードバック
-- パターン蓄積 → プロンプト改善
+**アクション**:
 
-### 4. 人間の裁量（Human Override）
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-- `--no-verify` で緊急対応可能
-- ただし記録・追跡必須
 
-## 実装パターン
+## ベストプラクティス
 
-### パターン1: 型安全性チェック
+### すべきこと
+- resources/Level1_basics.md を参照し、適用範囲を明確にする
+- resources/Level2_intermediate.md を参照し、実務手順を整理する
 
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
+
+## コマンドリファレンス
+
+### リソース読み取り
 ```bash
-#!/bin/bash
-# Claude生成コードの型チェック
-npx tsc --noEmit || {
-  echo "⚠️ Type errors in Claude-generated code"
-  exit 1
-}
+cat .claude/skills/claude-code-hooks/resources/Level1_basics.md
+cat .claude/skills/claude-code-hooks/resources/Level2_intermediate.md
+cat .claude/skills/claude-code-hooks/resources/Level3_advanced.md
+cat .claude/skills/claude-code-hooks/resources/Level4_expert.md
+cat .claude/skills/claude-code-hooks/resources/claude-code-guidelines.md
+cat .claude/skills/claude-code-hooks/resources/legacy-skill.md
+cat .claude/skills/claude-code-hooks/resources/quality-metrics.md
 ```
 
-### パターン2: テストカバレッジ検証
-
+### スクリプト実行
 ```bash
-#!/bin/bash
-# テストカバレッジが低下していないか確認
-COVERAGE=$(pnpm run test:coverage 2>&1 | grep "Coverage" | awk '{print $2}')
-THRESHOLD=80
-if [ ${COVERAGE%\%} -lt $THRESHOLD ]; then
-  echo "❌ Coverage below threshold: $COVERAGE < $THRESHOLD%"
-  exit 1
-fi
+node .claude/skills/claude-code-hooks/scripts/log_usage.mjs --help
+node .claude/skills/claude-code-hooks/scripts/validate-claude-quality.mjs --help
+node .claude/skills/claude-code-hooks/scripts/validate-skill.mjs --help
 ```
 
-### パターン3: セキュリティスキャン
-
+### テンプレート参照
 ```bash
-#!/bin/bash
-# Claude生成コードのセキュリティチェック
-pnpm audit --production || exit 1
-grep -r "TODO\|FIXME\|HACK" src/ && exit 1
+cat .claude/skills/claude-code-hooks/templates/claude-commit-template.sh
+cat .claude/skills/claude-code-hooks/templates/claude-quality-template.sh
 ```
 
-## 関連スキル
+## 変更履歴
 
-- `.claude/skills/git-hooks-concepts/SKILL.md`: Git Hooks基本
-- `.claude/skills/automation-scripting/SKILL.md`: スクリプト自動化
-- `.claude/skills/approval-gates/SKILL.md`: 承認ゲート
-
-## 参照リソース
-
-### 詳細リソース
-
-- `.claude/skills/claude-code-hooks/resources/claude-code-guidelines.md`: Claude Code ガイドライン
-- `.claude/skills/claude-code-hooks/resources/quality-metrics.md`: 品質指標定義
-
-### テンプレート
-
-- `.claude/skills/claude-code-hooks/templates/claude-commit-template.sh`: Claudeコミットテンプレート
-- `.claude/skills/claude-code-hooks/templates/claude-quality-template.sh`: 品質チェックテンプレート
-
-### スクリプト
-
-- `.claude/skills/claude-code-hooks/scripts/validate-claude-quality.mjs`: Claude生成コード品質検証
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

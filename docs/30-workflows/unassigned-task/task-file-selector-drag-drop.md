@@ -141,7 +141,7 @@ Phase 6: 品質保証
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: D&D UIパターンの専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -149,8 +149,8 @@ Phase 6: 品質保証
 
 | スキル名               | 活用方法            |
 | ---------------------- | ------------------- |
-| architectural-patterns | D&D設計パターン選定 |
-| type-safety-patterns   | 型定義設計          |
+| .claude/skills/architectural-patterns/SKILL.md | D&D設計パターン選定 |
+| .claude/skills/type-safety-patterns/SKILL.md   | 型定義設計          |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -189,7 +189,7 @@ Phase 6: 品質保証
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: テスト設計の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -246,7 +246,7 @@ D&Dロジックをカスタムフックとして実装する。
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: React hooks実装の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -300,7 +300,7 @@ export function useDragAndDrop(
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: UIコンポーネント実装の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -356,7 +356,7 @@ export const DraggableFileTreeItem: React.FC<DraggableFileTreeItemProps> = ({
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: UIコンポーネント実装の専門家
 - **参照**: `.claude/agents/agent_list.md`
 

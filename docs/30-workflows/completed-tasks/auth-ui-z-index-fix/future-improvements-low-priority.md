@@ -273,8 +273,8 @@ it("メニュー開閉を100回繰り返してもメモリリークしないこ�
 ### レビュー結果
 
 - [最終レビュー統合](./review-final-t-07-1.md)（T-07-1）
-- [コード品質レビュー]（@code-quality出力）
-- [テスト品質レビュー]（@frontend-tester出力）
+- [コード品質レビュー]（.claude/agents/code-quality.md出力）
+- [テスト品質レビュー]（.claude/agents/frontend-tester.md出力）
 
 ### 実装
 

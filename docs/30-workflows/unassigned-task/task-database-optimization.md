@@ -13,7 +13,7 @@
 | ステータス       | 未実施                                   |
 | 発見元           | Phase 7 - 最終レビューゲート             |
 | 発見日           | 2024-12-23                               |
-| 発見エージェント | @db-architect                            |
+| 発見エージェント | .claude/agents/db-architect.md                            |
 
 ---
 
@@ -21,7 +21,7 @@
 
 ### 1.1 背景
 
-Phase 7の最終レビュー（@db-architect）で、チャット履歴データベーススキーマに**重大なパフォーマンス問題とデータ整合性リスク**が発見されました。
+Phase 7の最終レビュー（.claude/agents/db-architect.md）で、チャット履歴データベーススキーマに**重大なパフォーマンス問題とデータ整合性リスク**が発見されました。
 
 **検出された違反**:
 
@@ -218,7 +218,7 @@ Phase 9: ドキュメント更新
 
 ##### 使用エージェント
 
-- **エージェント**: `@db-architect`
+- **エージェント**: `.claude/agents/db-architect.md`
 - **選定理由**: データベース最適化の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -226,9 +226,9 @@ Phase 9: ドキュメント更新
 
 | スキル名                | 活用方法                   |
 | ----------------------- | -------------------------- |
-| indexing-strategies     | インデックス設計パターン   |
-| foreign-key-constraints | CASCADE戦略決定            |
-| query-optimization      | クエリパフォーマンス最適化 |
+| .claude/skills/indexing-strategies/SKILL.md     | インデックス設計パターン   |
+| .claude/skills/foreign-key-constraints/SKILL.md | CASCADE戦略決定            |
+| .claude/skills/query-optimization/SKILL.md      | クエリパフォーマンス最適化 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -272,7 +272,7 @@ Phase 9: ドキュメント更新
 
 ##### 使用エージェント
 
-- **エージェント**: `@dba-mgr`
+- **エージェント**: `.claude/agents/dba-mgr.md`
 - **選定理由**: マイグレーション実装の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -394,7 +394,7 @@ messageCountの削除可否をパフォーマンステストで判断する。
 
 ##### 使用エージェント
 
-- **エージェント**: `@sre-observer`
+- **エージェント**: `.claude/agents/sre-observer.md`
 - **選定理由**: パフォーマンス測定・分析の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -466,7 +466,7 @@ describe("messageCount パフォーマンステスト", () => {
 
 ##### 使用エージェント
 
-- **エージェント**: `@sre-observer`
+- **エージェント**: `.claude/agents/sre-observer.md`
 - **選定理由**: パフォーマンス監視・分析の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -474,8 +474,8 @@ describe("messageCount パフォーマンステスト", () => {
 
 | スキル名                 | 活用方法                     |
 | ------------------------ | ---------------------------- |
-| query-performance-tuning | クエリチューニング検証       |
-| database-monitoring      | パフォーマンスメトリクス収集 |
+| .claude/skills/query-performance-tuning/SKILL.md | クエリチューニング検証       |
+| .claude/skills/database-monitoring/SKILL.md      | パフォーマンスメトリクス収集 |
 
 - **参照**: `.claude/skills/skill_list.md`
 

@@ -7,7 +7,7 @@
 | タスクID         | T-01-4                                                |
 | 検証日           | 2025-12-09                                            |
 | 対象ファイル     | `apps/desktop/src/renderer/store/slices/authSlice.ts` |
-| 使用エージェント | @sec-auditor                                          |
+| 使用エージェント | .claude/agents/sec-auditor.md                                          |
 | 判定             | **PASS**                                              |
 
 ---

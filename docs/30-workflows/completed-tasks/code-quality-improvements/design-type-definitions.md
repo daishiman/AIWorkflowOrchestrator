@@ -11,7 +11,7 @@
 | 優先度           | 必須                           |
 | ステータス       | 完了                           |
 | 作成日           | 2025-12-09                     |
-| 作成エージェント | @domain-modeler                |
+| 作成エージェント | .claude/agents/domain-modeler.md                |
 
 ---
 

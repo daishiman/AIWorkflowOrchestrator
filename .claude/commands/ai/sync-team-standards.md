@@ -1,108 +1,92 @@
 ---
 description: |
   チームコーディング規約の同期を行うコマンド。
-
-  チーム全体のコーディング規約、ベストプラクティスを.claude/CLAUDE.mdに統合し、
-  全メンバーが最新の基準に従えるようにします。
+  実行は専門エージェントに委譲します。
 
   🤖 起動エージェント:
-  - Phase 2: `.claude/agents/code-quality.md` - コーディング規約専門
-  - Phase 3: `.claude/agents/skill-librarian.md` - ベストプラクティス収集専門
-
-  📚 利用可能スキル（エージェントが参照）:
-  - `.claude/skills/code-style-guides/SKILL.md` - コーディング規約、スタイルガイド
-  - `.claude/skills/best-practices-curation/SKILL.md` - ベストプラクティス収集・整理
-  - `.claude/skills/knowledge-management/SKILL.md` - 知識管理、ドキュメント構造化
+  - `.claude/agents/code-quality.md`: コーディング規約専門
+  - `.claude/agents/skill-librarian.md`: ベストプラクティス収集専門
 
   ⚙️ このコマンドの設定:
-  - argument-hint: なし
-  - allowed-tools: 規約同期用
-    • Task: code-quality/skill-librarianエージェント起動用
-    • Read: 既存CLAUDE.md、コードベース確認用
-    • Edit: CLAUDE.md更新用
-  - model: sonnet（標準的な規約同期タスク）
-
-  📋 成果物:
-  - 更新された`.claude/CLAUDE.md`
-
-  🎯 同期対象:
-  - コーディング規約
-  - 命名規則
-  - アーキテクチャルール
-  - ベストプラクティス
+  - allowed-tools: Task（エージェント起動のみ）
+  - model: sonnet
 
   トリガーキーワード: team standards, coding standards, チーム規約, コーディング規約
-argument-hint: ""
 allowed-tools:
   - Task
-  - Read
-  - Edit
 model: sonnet
 ---
 
 # チーム規約同期
 
-このコマンドは、チームコーディング規約を同期します。
+## 目的
 
-## 📋 実行フロー
+`.claude/commands/ai/sync-team-standards.md` の入力を受け取り、専門エージェントに実行を委譲します。
 
-### Phase 1: 現在の規約確認
+## エージェント起動フロー
 
-```bash
-if [ -f ".claude/CLAUDE.md" ]; then
-  echo "既存CLAUDE.md確認"
-  cat .claude/CLAUDE.md
-fi
-```
+### Phase 1: コーディング規約専門の実行
 
-### Phase 2: code-qualityエージェントを起動
+**目的**: コーディング規約専門に関するタスクを実行し、結果を整理する
 
-**使用エージェント**: `.claude/agents/code-quality.md`
+**背景**: 専門知識が必要なため専門エージェントに委譲する
+
+**ゴール**: コーディング規約専門の結果と次アクションが提示された状態
+
+**起動エージェント**: `.claude/agents/code-quality.md`
+
+Task ツールで `.claude/agents/code-quality.md` を起動:
+
+**コンテキスト**:
+
+- 引数: なし
 
 **依頼内容**:
 
-```markdown
-チームコーディング規約を`.claude/CLAUDE.md`に統合してください。
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
 
-**要件**:
+**期待成果物**:
 
-1. コーディング規約の整理
-2. 命名規則の明確化
-3. アーキテクチャルールの統合
+- `.claude/CLAUDE.md`
 
-**スキル参照**:
+**完了条件**:
 
-- `.claude/skills/code-style-guides/SKILL.md`
-- `.claude/skills/best-practices-curation/SKILL.md`
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
 
-**成果物**: 更新されたCLAUDE.md
-```
+### Phase 2: ベストプラクティス収集専門の実行
 
-### Phase 3: 完了報告
+**目的**: ベストプラクティス収集専門に関するタスクを実行し、結果を整理する
 
-```markdown
-## チーム規約同期完了
+**背景**: 専門知識が必要なため専門エージェントに委譲する
 
-### 更新内容
+**ゴール**: ベストプラクティス収集専門の結果と次アクションが提示された状態
 
-- コーディング規約: 更新
-- 命名規則: 明確化
-- アーキテクチャルール: 統合
+**起動エージェント**: `.claude/agents/skill-librarian.md`
 
-### Next Steps
+Task ツールで `.claude/agents/skill-librarian.md` を起動:
 
-1. チームレビュー
-2. Git commit
-```
+**コンテキスト**:
+
+- 引数: なし
+
+**依頼内容**:
+
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
+
+**期待成果物**:
+
+- `.claude/CLAUDE.md`
+
+**完了条件**:
+
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
 
 ## 使用例
 
 ```bash
 /ai:sync-team-standards
 ```
-
-## 参照
-
-- code-quality: `.claude/agents/code-quality.md`
-- skill-librarian: `.claude/agents/skill-librarian.md`
-- code-style-guides: `.claude/skills/code-style-guides/SKILL.md`

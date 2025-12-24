@@ -54,10 +54,10 @@
 
 | レビュー観点       | エージェント  | 判定    | 指摘事項 |
 | ------------------ | ------------- | ------- | -------- |
-| アーキテクチャ遵守 | @arch-police  | ✅ PASS | なし     |
-| コード品質         | @code-quality | ✅ PASS | なし     |
-| スキーマ品質       | @schema-def   | ✅ PASS | なし     |
-| テスト品質         | @unit-tester  | ✅ PASS | なし     |
+| アーキテクチャ遵守 | .claude/agents/arch-police.md  | ✅ PASS | なし     |
+| コード品質         | .claude/agents/code-quality.md | ✅ PASS | なし     |
+| スキーマ品質       | .claude/agents/schema-def.md   | ✅ PASS | なし     |
+| テスト品質         | .claude/agents/unit-tester.md  | ✅ PASS | なし     |
 
 ---
 
@@ -127,10 +127,10 @@
 
 ### Phase 7: 最終レビューゲート
 
-- [x] アーキテクチャ遵守確認（@arch-police PASS）
-- [x] コード品質確認（@code-quality PASS）
-- [x] スキーマ品質確認（@schema-def PASS）
-- [x] テスト品質確認（@unit-tester PASS）
+- [x] アーキテクチャ遵守確認（.claude/agents/arch-police.md PASS）
+- [x] コード品質確認（.claude/agents/code-quality.md PASS）
+- [x] スキーマ品質確認（.claude/agents/schema-def.md PASS）
+- [x] テスト品質確認（.claude/agents/unit-tester.md PASS）
 
 ### Phase 8: 手動テスト
 

@@ -135,10 +135,10 @@ node .claude/skills/composite-actions/scripts/validate-action.mjs <path-to-actio
 
 | スキル                         | 用途                       |
 | ------------------------------ | -------------------------- |
-| **github-actions-syntax**      | 基本構文とワークフロー構造 |
-| **github-actions-expressions** | 式と関数の使用             |
-| **reusable-workflows**         | ジョブレベルの再利用       |
-| **workflow-templates**         | 組織全体のテンプレート     |
+| **.claude/skills/github-actions-syntax/SKILL.md**      | 基本構文とワークフロー構造 |
+| **.claude/skills/github-actions-expressions/SKILL.md** | 式と関数の使用             |
+| **.claude/skills/reusable-workflows/SKILL.md**         | ジョブレベルの再利用       |
+| **.claude/skills/workflow-templates/SKILL.md**         | 組織全体のテンプレート     |
 
 ## 📝 例
 

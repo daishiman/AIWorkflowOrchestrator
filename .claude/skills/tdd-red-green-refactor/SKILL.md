@@ -1,294 +1,119 @@
 ---
-name: tdd-red-green-refactor
+name: .claude/skills/tdd-red-green-refactor/SKILL.md
 description: |
   ケント・ベックのテスト駆動開発（TDD）サイクルを専門とするスキル。
-
+  
+  📖 参照書籍:
+  - 『Test-Driven Development: By Example』（Kent Beck）: Red-Green-Refactor
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/tdd-red-green-refactor/resources/green-phase.md`: Green Phaseリソース
-  - `.claude/skills/tdd-red-green-refactor/resources/red-phase.md`: Red Phaseリソース
-  - `.claude/skills/tdd-red-green-refactor/resources/refactor-phase.md`: Refactor Phaseリソース
-  - `.claude/skills/tdd-red-green-refactor/resources/tdd-anti-patterns.md`: Tdd Anti Patternsリソース
-  - `.claude/skills/tdd-red-green-refactor/resources/test-naming.md`: Test Namingリソース
-
-  - `.claude/skills/tdd-red-green-refactor/templates/test-template.md`: Testテンプレート
-
-  - `.claude/skills/tdd-red-green-refactor/scripts/analyze-coverage.mjs`: Analyze Coverageスクリプト
-
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/green-phase.md`: Green Phaseリソース
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/red-phase.md`: Red Phaseリソース
+  - `resources/refactor-phase.md`: Refactor Phaseリソース
+  - `resources/tdd-anti-patterns.md`: Tdd Anti Patternsリソース
+  - `resources/test-naming.md`: Test Namingリソース
+  - `scripts/analyze-coverage.mjs`: Analyze Coverageスクリプト
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/test-template.md`: Testテンプレート
+  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
+  
+  Use proactively when handling tdd red green refactor tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "Test-Driven Development: By Example"
+    author: "Kent Beck"
+    concepts:
+      - "Red-Green-Refactor"
+      - "テスト設計"
 ---
 
 # TDD Red-Green-Refactor
 
 ## 概要
 
-このスキルは、ケント・ベックが提唱したテスト駆動開発（TDD）の実践方法を提供します。
-TDD は「テストを先に書き、そのテストを通す最小限のコードを実装し、その後リファクタリングで改善する」
-サイクルを繰り返す開発手法です。
+ケント・ベックのテスト駆動開発（TDD）サイクルを専門とするスキル。
 
-**核心原則**:
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-- テストは実装の仕様書となる
-- 小さなステップで確実に進む
-- 常に動作するコードを維持する
-
-**対象ユーザー**:
-
-- ビジネスロジック実装エージェント（@logic-dev）
-- ユニットテスト担当（@unit-tester）
-- 品質を重視する開発者
-
-## リソース構造
-
-```
-tdd-red-green-refactor/
-├── SKILL.md                              # 本ファイル
-├── resources/
-│   ├── red-phase.md                      # Redフェーズ詳細ガイド
-│   ├── green-phase.md                    # Greenフェーズ詳細ガイド
-│   ├── refactor-phase.md                 # Refactorフェーズ詳細ガイド
-│   ├── test-naming.md                    # テスト命名規則
-│   └── tdd-anti-patterns.md              # TDDアンチパターン
-├── scripts/
-│   └── analyze-coverage.mjs              # テストカバレッジ分析
-└── templates/
-    └── test-template.md                  # テストファイルテンプレート
-```
-
-## コマンドリファレンス
-
-### リソース読み取り
-
-```bash
-# Redフェーズ詳細
-cat .claude/skills/tdd-red-green-refactor/resources/red-phase.md
-
-# Greenフェーズ詳細
-cat .claude/skills/tdd-red-green-refactor/resources/green-phase.md
-
-# Refactorフェーズ詳細
-cat .claude/skills/tdd-red-green-refactor/resources/refactor-phase.md
-
-# テスト命名規則
-cat .claude/skills/tdd-red-green-refactor/resources/test-naming.md
-
-# TDDアンチパターン
-cat .claude/skills/tdd-red-green-refactor/resources/tdd-anti-patterns.md
-```
-
-### スクリプト実行
-
-```bash
-# テストカバレッジ分析
-node .claude/skills/tdd-red-green-refactor/scripts/analyze-coverage.mjs src/features/
-```
-
-### テンプレート参照
-
-```bash
-# テストファイルテンプレート
-cat .claude/skills/tdd-red-green-refactor/templates/test-template.md
-```
-
-## Red-Green-Refactor サイクル
-
-### Phase 1: Red（レッド）
-
-**目的**: 失敗するテストを書いて、実装すべき仕様を明確化
-
-**手順**:
-
-1. 実装したい機能の最小単位を決定
-2. その機能を検証するテストを書く
-3. テストを実行して失敗を確認
-
-**判断基準**:
-
-- [ ] テストが具体的で検証可能か？
-- [ ] テストが適切な理由で失敗しているか？
-- [ ] 失敗メッセージが明確か？
-
-**詳細**: `resources/red-phase.md`
-
-### Phase 2: Green（グリーン）
-
-**目的**: テストを通す最小限のコードを実装
-
-**手順**:
-
-1. テストを通すための最小限のコードを書く
-2. 「汚くても良い」の精神で、まずは動かす
-3. テストがグリーンになることを確認
-
-**判断基準**:
-
-- [ ] テストが通っているか？
-- [ ] 最小限の実装になっているか？
-- [ ] 過剰な実装をしていないか（YAGNI）？
-
-**詳細**: `resources/green-phase.md`
-
-### Phase 3: Refactor（リファクタリング）
-
-**目的**: テストを通した状態でコードを改善
-
-**手順**:
-
-1. 重複を排除
-2. 命名を改善
-3. 構造を最適化
-4. 各変更後にテストを実行
-
-**判断基準**:
-
-- [ ] テストが通り続けているか？
-- [ ] コードの可読性が向上したか？
-- [ ] 重複が排除されたか？
-
-**詳細**: `resources/refactor-phase.md`
-
-## テスト命名規則
-
-### Given-When-Then 形式
-
-**構造**:
-
-- **Given**: 前提条件
-- **When**: アクション
-- **Then**: 期待結果
-
-### Arrange-Act-Assert 形式
-
-**構造**:
-
-- **Arrange**: テストデータの準備
-- **Act**: テスト対象の実行
-- **Assert**: 結果の検証
-
-### 命名パターン
-
-**推奨形式**: `should + 期待動作 + when + 条件`
-
-**具体例**:
-
-- `should return true when input is valid`
-- `should throw error when user not found`
-- `should calculate total including tax`
-
-**詳細**: `resources/test-naming.md`
-
-## TDD の利点
-
-### 品質面
-
-- **バグの早期発見**: 実装前にテストを書くため、仕様の曖昧さが明確になる
-- **回帰防止**: テストスイートがセーフティネットとして機能
-- **設計改善**: テスト可能な設計が自然に生まれる
-
-### 開発効率面
-
-- **デバッグ時間削減**: 問題が小さい単位で発見される
-- **自信を持った変更**: テストがあるので安心してリファクタリングできる
-- **ドキュメント効果**: テストが実装の仕様書になる
 
 ## ワークフロー
 
-### 新機能実装時
+### Phase 1: 目的と前提の整理
 
-```
-1. 機能要件を理解
-   ↓
-2. [Red] 最初のテストを書く
-   ↓
-3. [Green] 最小限の実装
-   ↓
-4. [Refactor] コード改善
-   ↓
-5. 2-4を繰り返す
-   ↓
-6. すべての要件がテストでカバーされたら完了
-```
+**目的**: タスクの目的と前提条件を明確にする
 
-### バグ修正時
+**アクション**:
 
-```
-1. バグを再現するテストを書く（Red）
-   ↓
-2. テストが失敗することを確認
-   ↓
-3. バグを修正（Green）
-   ↓
-4. テストが通ることを確認
-   ↓
-5. 必要ならリファクタリング
-```
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
+
+### Phase 2: スキル適用
+
+**目的**: スキルの指針に従って具体的な作業を進める
+
+**アクション**:
+
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
+
+### Phase 3: 検証と記録
+
+**目的**: 成果物の検証と実行記録の保存
+
+**アクション**:
+
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
+
 
 ## ベストプラクティス
 
 ### すべきこと
-
-1. **小さなステップで進める**:
-   - 一度に一つのテストだけを追加
-   - 各テストは一つのことだけを検証
-
-2. **テストを先に書く**:
-   - 実装前にテストを書く習慣をつける
-   - テストが仕様書になることを意識
-
-3. **リファクタリングを怠らない**:
-   - Green になったらすぐリファクタリング
-   - 技術的負債を貯めない
+- resources/Level1_basics.md を参照し、適用範囲を明確にする
+- resources/Level2_intermediate.md を参照し、実務手順を整理する
 
 ### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
 
-1. **複数のテストを同時に書く**:
-   - ❌ 10 個のテストを書いてから実装
-   - ✅ 1 個ずつテスト → 実装を繰り返す
+## コマンドリファレンス
 
-2. **テストを後回しにする**:
-   - ❌ 「後でテストを書く」
-   - ✅ テストファーストを徹底
+### リソース読み取り
+```bash
+cat .claude/skills/tdd-red-green-refactor/resources/Level1_basics.md
+cat .claude/skills/tdd-red-green-refactor/resources/Level2_intermediate.md
+cat .claude/skills/tdd-red-green-refactor/resources/Level3_advanced.md
+cat .claude/skills/tdd-red-green-refactor/resources/Level4_expert.md
+cat .claude/skills/tdd-red-green-refactor/resources/green-phase.md
+cat .claude/skills/tdd-red-green-refactor/resources/legacy-skill.md
+cat .claude/skills/tdd-red-green-refactor/resources/red-phase.md
+cat .claude/skills/tdd-red-green-refactor/resources/refactor-phase.md
+cat .claude/skills/tdd-red-green-refactor/resources/tdd-anti-patterns.md
+cat .claude/skills/tdd-red-green-refactor/resources/test-naming.md
+```
 
-3. **過剰な実装**:
-   - ❌ 「将来必要になるかも」で余計な機能を追加
-   - ✅ テストで要求された機能だけを実装
+### スクリプト実行
+```bash
+node .claude/skills/tdd-red-green-refactor/scripts/analyze-coverage.mjs --help
+node .claude/skills/tdd-red-green-refactor/scripts/log_usage.mjs --help
+node .claude/skills/tdd-red-green-refactor/scripts/validate-skill.mjs --help
+```
 
-**詳細**: `resources/tdd-anti-patterns.md`
-
-## 関連スキル
-
-- **refactoring-techniques** (`.claude/skills/refactoring-techniques/SKILL.md`): Refactor フェーズで使用
-- **clean-code-practices** (`.claude/skills/clean-code-practices/SKILL.md`): 可読性向上
-- **test-doubles** (`.claude/skills/test-doubles/SKILL.md`): モック・スタブの使用
-
-## メトリクス
-
-### テストカバレッジ
-
-**目標**: 80%以上
-
-### テスト実行時間
-
-**目標**: ユニットテストは 1 秒以内
-
-### テスト/実装比率
-
-**目安**: 実装コード 100 行あたりテスト 80-120 行
-
-## 参考文献
-
-- **『テスト駆動開発』** ケント・ベック著
-  - 第 1 部: The Money Example
-  - 第 2 部: The xUnit Example
-  - 第 3 部: Patterns for Test-Driven Development
-
-- **『実践テスト駆動開発』** Steve Freeman, Nat Pryce 著
-  - Growing Object-Oriented Software, Guided by Tests
+### テンプレート参照
+```bash
+cat .claude/skills/tdd-red-green-refactor/templates/test-template.md
+```
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                 |
-| ---------- | ---------- | ---------------------------------------- |
-| 1.0.0      | 2025-11-25 | 初版作成 - ケント・ベックの TDD サイクル |
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

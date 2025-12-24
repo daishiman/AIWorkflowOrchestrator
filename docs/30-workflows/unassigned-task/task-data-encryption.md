@@ -13,7 +13,7 @@
 | ステータス       | 未実施                              |
 | 発見元           | Phase 6 - セキュリティ監査          |
 | 発見日           | 2025-12-23                          |
-| 発見エージェント | @sec-auditor                        |
+| 発見エージェント | .claude/agents/sec-auditor.md                        |
 | バージョン       | 1.0.0                               |
 | 最終更新         | 2025-12-23                          |
 | 旧タスクID       | SECURITY-002（Phase 9-2で統一命名） |
@@ -195,7 +195,7 @@ OWASP A02対策として、適切な暗号化要件を定義する必要があ�
 
 ##### 使用エージェント
 
-- **エージェント**: `@sec-auditor`
+- **エージェント**: `.claude/agents/sec-auditor.md`
 - **選定理由**: 暗号化要件・NIST/FIPS基準に精通
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -203,8 +203,8 @@ OWASP A02対策として、適切な暗号化要件を定義する必要があ�
 
 | スキル名                      | 活用方法                   |
 | ----------------------------- | -------------------------- |
-| cryptographic-practices       | 暗号化アルゴリズム選定     |
-| security-configuration-review | キー管理ベストプラクティス |
+| .claude/skills/cryptographic-practices/SKILL.md       | 暗号化アルゴリズム選定     |
+| .claude/skills/security-configuration-review/SKILL.md | キー管理ベストプラクティス |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -256,7 +256,7 @@ OWASP A02対策として、適切な暗号化要件を定義する必要があ�
 
 ##### 使用エージェント
 
-- **エージェント**: `@sec-auditor`
+- **エージェント**: `.claude/agents/sec-auditor.md`
 - **選定理由**: 暗号化アーキテクチャ設計の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -264,8 +264,8 @@ OWASP A02対策として、適切な暗号化要件を定義する必要があ�
 
 | スキル名                | 活用方法                |
 | ----------------------- | ----------------------- |
-| cryptographic-practices | AES-256-GCM、PBKDF2設計 |
-| architectural-patterns  | 暗号化レイヤーの設計    |
+| .claude/skills/cryptographic-practices/SKILL.md | AES-256-GCM、PBKDF2設計 |
+| .claude/skills/architectural-patterns/SKILL.md  | 暗号化レイヤーの設計    |
 | dependency-management   | SQLCipherライセンス評価 |
 
 - **参照**: `.claude/skills/skill_list.md`
@@ -306,28 +306,28 @@ OWASP A02対策として、適切な暗号化要件を定義する必要があ�
 
 | エージェント  | レビュー観点           | 選定理由                               |
 | ------------- | ---------------------- | -------------------------------------- |
-| @sec-auditor  | 暗号化強度確認         | NIST/FIPS基準への準拠確認              |
-| @db-architect | DB設計影響評価         | SQLCipher導入時のDB設計への影響確認    |
-| @sre-observer | パフォーマンス影響評価 | 暗号化・復号化のパフォーマンス影響確認 |
+| .claude/agents/sec-auditor.md  | 暗号化強度確認         | NIST/FIPS基準への準拠確認              |
+| .claude/agents/db-architect.md | DB設計影響評価         | SQLCipher導入時のDB設計への影響確認    |
+| .claude/agents/sre-observer.md | パフォーマンス影響評価 | 暗号化・復号化のパフォーマンス影響確認 |
 
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### レビューチェックリスト
 
-**暗号化強度** (@sec-auditor)
+**暗号化強度** (.claude/agents/sec-auditor.md)
 
 - [ ] アルゴリズムが現代の標準に準拠しているか（AES-256-GCM推奨）
 - [ ] キー導出関数が適切か（PBKDF2 100,000回以上、またはArgon2）
 - [ ] IVが適切に生成されているか（暗号学的安全な乱数）
 - [ ] 認証タグが検証されているか（GCMモード）
 
-**データベース設計** (@db-architect)
+**データベース設計** (.claude/agents/db-architect.md)
 
 - [ ] スキーマ変更が最小限か
 - [ ] 既存データのマイグレーション方法が明確か
 - [ ] インデックス設計への影響がないか
 
-**パフォーマンス** (@sre-observer)
+**パフォーマンス** (.claude/agents/sre-observer.md)
 
 - [ ] 暗号化・復号化のオーバーヘッドが許容範囲か
 - [ ] 大量データ処理時の性能劣化が評価されているか
@@ -365,7 +365,7 @@ OWASP A02対策として、適切な暗号化要件を定義する必要があ�
 
 ##### 使用エージェント
 
-- **エージェント**: `@unit-tester`
+- **エージェント**: `.claude/agents/unit-tester.md`
 - **選定理由**: TDD原則に基づくテスト設計の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -373,9 +373,9 @@ OWASP A02対策として、適切な暗号化要件を定義する必要があ�
 
 | スキル名                | 活用方法                   |
 | ----------------------- | -------------------------- |
-| tdd-principles          | Red-Green-Refactorサイクル |
-| boundary-value-analysis | 暗号化境界値テスト         |
-| test-doubles            | 暗号化モジュールのモック化 |
+| .claude/skills/tdd-principles/SKILL.md          | Red-Green-Refactorサイクル |
+| .claude/skills/boundary-value-analysis/SKILL.md | 暗号化境界値テスト         |
+| .claude/skills/test-doubles/SKILL.md            | 暗号化モジュールのモック化 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -430,7 +430,7 @@ pnpm --filter @repo/shared test:run encryption
 
 ##### 使用エージェント
 
-- **エージェント**: `@sec-auditor`
+- **エージェント**: `.claude/agents/sec-auditor.md`
 - **選定理由**: 暗号化実装のベストプラクティス知識
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -438,8 +438,8 @@ pnpm --filter @repo/shared test:run encryption
 
 | スキル名                | 活用方法              |
 | ----------------------- | --------------------- |
-| cryptographic-practices | AES-256-GCM実装       |
-| type-safety-patterns    | 型安全な暗号化API設計 |
+| .claude/skills/cryptographic-practices/SKILL.md | AES-256-GCM実装       |
+| .claude/skills/type-safety-patterns/SKILL.md    | 型安全な暗号化API設計 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -489,7 +489,7 @@ pnpm --filter @repo/shared test:run encryption
 
 ##### 使用エージェント
 
-- **エージェント**: `@repo-dev`
+- **エージェント**: `.claude/agents/repo-dev.md`
 - **選定理由**: リポジトリパターン実装の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -497,8 +497,8 @@ pnpm --filter @repo/shared test:run encryption
 
 | スキル名                      | 活用方法             |
 | ----------------------------- | -------------------- |
-| repository-pattern            | 暗号化レイヤーの統合 |
-| clean-architecture-principles | レイヤー分離の維持   |
+| .claude/skills/repository-pattern/SKILL.md            | 暗号化レイヤーの統合 |
+| .claude/skills/clean-architecture-principles/SKILL.md | レイヤー分離の維持   |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -547,7 +547,7 @@ pnpm --filter @repo/shared test:run chat-history
 
 ##### 使用エージェント
 
-- **エージェント**: `@dba-mgr`
+- **エージェント**: `.claude/agents/dba-mgr.md`
 - **選定理由**: データマイグレーションの専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -600,7 +600,7 @@ pnpm --filter @repo/shared test:run chat-history
 
 ##### 使用エージェント
 
-- **エージェント**: `@code-quality`
+- **エージェント**: `.claude/agents/code-quality.md`
 - **選定理由**: Clean Code実践の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -608,8 +608,8 @@ pnpm --filter @repo/shared test:run chat-history
 
 | スキル名               | 活用方法                |
 | ---------------------- | ----------------------- |
-| refactoring-techniques | Extract Method、DRY原則 |
-| clean-code-practices   | 可読性向上              |
+| .claude/skills/refactoring-techniques/SKILL.md | Extract Method、DRY原則 |
+| .claude/skills/clean-code-practices/SKILL.md   | 可読性向上              |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -647,7 +647,7 @@ pnpm --filter @repo/shared test:run chat-history
 
 ##### 使用エージェント
 
-- **エージェント**: `@unit-tester`（テスト実行）、`@sre-observer`（パフォーマンス）
+- **エージェント**: `.claude/agents/unit-tester.md`（テスト実行）、`.claude/agents/sre-observer.md`（パフォーマンス）
 - **選定理由**: テスト実行とパフォーマンス分析の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -655,7 +655,7 @@ pnpm --filter @repo/shared test:run chat-history
 
 | スキル名                 | 活用方法           |
 | ------------------------ | ------------------ |
-| tdd-principles           | TDD品質基準の検証  |
+| .claude/skills/tdd-principles/SKILL.md           | TDD品質基準の検証  |
 | performance-benchmarking | パフォーマンス測定 |
 
 - **参照**: `.claude/skills/skill_list.md`
@@ -694,26 +694,26 @@ pnpm --filter @repo/shared test:run chat-history
 
 | エージェント  | レビュー観点   | 選定理由                         |
 | ------------- | -------------- | -------------------------------- |
-| @sec-auditor  | 暗号化実装検証 | 暗号化ベストプラクティス準拠確認 |
-| @code-quality | コード品質確認 | Clean Code原則準拠確認           |
-| @sre-observer | 本番稼働性確認 | 性能・信頼性の最終確認           |
+| .claude/agents/sec-auditor.md  | 暗号化実装検証 | 暗号化ベストプラクティス準拠確認 |
+| .claude/agents/code-quality.md | コード品質確認 | Clean Code原則準拠確認           |
+| .claude/agents/sre-observer.md | 本番稼働性確認 | 性能・信頼性の最終確認           |
 
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### レビューチェックリスト
 
-**暗号化実装** (@sec-auditor)
+**暗号化実装** (.claude/agents/sec-auditor.md)
 
 - [ ] OWASP A02が完全に解消されているか
 - [ ] キー管理が安全か
 - [ ] 暗号化強度が十分か
 
-**コード品質** (@code-quality)
+**コード品質** (.claude/agents/code-quality.md)
 
 - [ ] エラーハンドリングが適切か
 - [ ] 可読性・保守性が確保されているか
 
-**本番稼働性** (@sre-observer)
+**本番稼働性** (.claude/agents/sre-observer.md)
 
 - [ ] パフォーマンスが許容範囲か
 - [ ] メモリリークがないか
@@ -744,7 +744,7 @@ pnpm --filter @repo/shared test:run chat-history
 
 ##### 使用エージェント
 
-- **エージェント**: `@e2e-tester`
+- **エージェント**: `.claude/agents/e2e-tester.md`
 - **選定理由**: 実環境動作確認の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -804,7 +804,7 @@ pnpm --filter @repo/shared test:run chat-history
 
 ##### 使用エージェント
 
-- **エージェント**: `@spec-writer`
+- **エージェント**: `.claude/agents/spec-writer.md`
 - **選定理由**: システムドキュメント更新の専門家
 - **参照**: `.claude/agents/agent_list.md`
 

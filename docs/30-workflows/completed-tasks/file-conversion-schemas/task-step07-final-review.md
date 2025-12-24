@@ -15,12 +15,12 @@ CONV-03-02（ファイル・変換スキーマ定義）の最終コードレビ�
 
 | エージェント  | レビュー観点       | 判定    | 指摘事項 |
 | ------------- | ------------------ | ------- | -------- |
-| @arch-police  | アーキテクチャ遵守 | ✅ PASS | なし     |
-| @code-quality | コード品質         | ✅ PASS | なし     |
-| @schema-def   | スキーマ品質       | ✅ PASS | なし     |
-| @unit-tester  | テスト品質         | ✅ PASS | なし     |
+| .claude/agents/arch-police.md  | アーキテクチャ遵守 | ✅ PASS | なし     |
+| .claude/agents/code-quality.md | コード品質         | ✅ PASS | なし     |
+| .claude/agents/schema-def.md   | スキーマ品質       | ✅ PASS | なし     |
+| .claude/agents/unit-tester.md  | テスト品質         | ✅ PASS | なし     |
 
-### @arch-police: アーキテクチャ遵守レビュー
+### .claude/agents/arch-police.md: アーキテクチャ遵守レビュー
 
 **判定**: ✅ PASS
 
@@ -35,7 +35,7 @@ CONV-03-02（ファイル・変換スキーマ定義）の最終コードレビ�
 - SRP: 各ファイルが単一の責務を持つ
 - OCP: `as const` による拡張可能な設計
 
-### @code-quality: コード品質レビュー
+### .claude/agents/code-quality.md: コード品質レビュー
 
 **判定**: ✅ PASS
 
@@ -50,7 +50,7 @@ CONV-03-02（ファイル・変換スキーマ定義）の最終コードレビ�
 - Result型による一貫したエラーハンドリング
 - 関数の長さ・複雑性が適切
 
-### @schema-def: スキーマ品質レビュー
+### .claude/agents/schema-def.md: スキーマ品質レビュー
 
 **判定**: ✅ PASS
 
@@ -64,7 +64,7 @@ CONV-03-02（ファイル・変換スキーマ定義）の最終コードレビ�
 - 文字列長、数値範囲、正規表現パターンが適切
 - 日本語エラーメッセージが全フィールドに設定済み
 
-### @unit-tester: テスト品質レビュー
+### .claude/agents/unit-tester.md: テスト品質レビュー
 
 **判定**: ✅ PASS
 

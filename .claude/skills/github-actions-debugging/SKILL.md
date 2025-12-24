@@ -1,200 +1,116 @@
 ---
-name: github-actions-debugging
+name: .claude/skills/github-actions-debugging/SKILL.md
 description: |
-    GitHub Actionsワークフロー実行時のデバッグとトラブルシューティング。
-    **自動発動条件**:
-    - GitHub Actionsのエラーログ分析が必要な時
-    - ワークフロー実行の失敗原因を特定する時
-    - デバッグログを有効化する必要がある時
-    - シークレット、権限、キャッシュの問題をトラブルシュートする時
-    - ランナー環境の問題を診断する時
-    **主要キーワード**: debug, troubleshoot, error, failed workflow, ACTIONS_STEP_DEBUG, workflow logs, permission denied, cache miss
-
+  GitHub Actionsワークフロー実行時のデバッグとトラブルシューティング。
+  **自動発動条件**:
+  
+  📖 参照書籍:
+  - 『Continuous Delivery』（Jez Humble）: パイプライン
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/github-actions-debugging/resources/debug-logging.md`: ACTIONS_STEP_DEBUG/ACTIONS_RUNNER_DEBUGによるデバッグログ有効化ガイド
-  - `.claude/skills/github-actions-debugging/resources/diagnostic-commands.md`: コンテキスト検査・環境ダンプ・ランナー情報取得コマンドリファレンス
-  - `.claude/skills/github-actions-debugging/resources/troubleshooting-guide.md`: 一般的なエラーパターンと解決策ガイド
-  - `.claude/skills/github-actions-debugging/templates/debug-workflow.yaml`: デバッグ有効化ワークフローテンプレート
-  - `.claude/skills/github-actions-debugging/scripts/analyze-logs.mjs`: ワークフローログ分析スクリプト
-
-  Use proactively when implementing github-actions-debugging patterns or solving related problems.
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/debug-logging.md`: debug-logging の詳細ガイド
+  - `resources/diagnostic-commands.md`: diagnostic-commands の詳細ガイド
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/troubleshooting-guide.md`: troubleshooting-guide のガイド
+  - `scripts/analyze-logs.mjs`: ログを分析するスクリプト
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/debug-workflow.yaml`: debug-workflow のテンプレート
+  
+  Use proactively when handling github actions debugging tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "Continuous Delivery"
+    author: "Jez Humble"
+    concepts:
+      - "パイプライン"
+      - "自動化"
 ---
 
 # GitHub Actions Debugging Skill
 
-GitHub Actions ワークフローの実行エラー診断、デバッグログ有効化、トラブルシューティングの専門知識を提供します。
+## 概要
 
-## スキルの目的
+GitHub Actionsワークフロー実行時のデバッグとトラブルシューティング。
+**自動発動条件**:
 
-1. **デバッグログ有効化**: ACTIONS_STEP_DEBUG、ACTIONS_RUNNER_DEBUG の設定
-2. **エラー診断**: 一般的なエラーパターンの特定と解決
-3. **診断コマンド**: コンテキスト検査、環境ダンプ、ランナー情報取得
-4. **トラブルシューティング**: 権限、シークレット、キャッシュ、タイムアウト問題の解決
-5. **ログ分析**: ワークフロー実行ログの効率的な分析
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-## ディレクトリ構造
 
-```
-.claude/skills/github-actions-debugging/
-├── SKILL.md                           # このファイル
-├── resources/
-│   ├── debug-logging.md               # デバッグログ有効化ガイド
-│   ├── troubleshooting-guide.md       # 一般的なエラーと解決策
-│   └── diagnostic-commands.md         # 診断用コマンドリファレンス
-├── templates/
-│   └── debug-workflow.yaml            # デバッグ有効化ワークフロー
-└── scripts/
-    └── analyze-logs.mjs               # ログ分析スクリプト
-```
+## ワークフロー
 
-## コマンドリファレンス
+### Phase 1: 目的と前提の整理
 
-### リソース参照
+**目的**: タスクの目的と前提条件を明確にする
 
-```bash
-# デバッグログ有効化の詳細
-cat .claude/skills/github-actions-debugging/resources/debug-logging.md
+**アクション**:
 
-# 一般的なエラーのトラブルシューティング
-cat .claude/skills/github-actions-debugging/resources/troubleshooting-guide.md
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-# 診断コマンドリファレンス
-cat .claude/skills/github-actions-debugging/resources/diagnostic-commands.md
-```
+### Phase 2: スキル適用
 
-### テンプレートとスクリプト
+**目的**: スキルの指針に従って具体的な作業を進める
 
-```bash
-# デバッグ有効化ワークフローテンプレート
-cat .claude/skills/github-actions-debugging/templates/debug-workflow.yaml
+**アクション**:
 
-# ワークフローログの分析
-node .claude/skills/github-actions-debugging/scripts/analyze-logs.mjs <log-file>
-```
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-## クイックリファレンス
+### Phase 3: 検証と記録
 
-### デバッグログ有効化
+**目的**: 成果物の検証と実行記録の保存
 
-| 方法                     | スコープ               | 用途                       |
-| ------------------------ | ---------------------- | -------------------------- |
-| **ACTIONS_STEP_DEBUG**   | リポジトリシークレット | ステップ実行の詳細ログ     |
-| **ACTIONS_RUNNER_DEBUG** | リポジトリシークレット | ランナープロセスの診断ログ |
-| **debug()**              | ワークフロー内         | カスタムデバッグメッセージ |
+**アクション**:
 
-### よくあるエラーパターン
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-| エラー                 | 原因                  | 解決策リソース              |
-| ---------------------- | --------------------- | --------------------------- |
-| **Permission denied**  | GITHUB_TOKEN 権限不足 | troubleshooting-guide.md §1 |
-| **Cache miss**         | キャッシュキー不一致  | troubleshooting-guide.md §2 |
-| **Timeout**            | ジョブ実行時間超過    | troubleshooting-guide.md §3 |
-| **Secret not found**   | シークレット未設定    | troubleshooting-guide.md §4 |
-| **Runner out of disk** | ディスク容量不足      | diagnostic-commands.md §3   |
-
-## 診断フェーズ
-
-### Phase 1: エラー特定
-
-```bash
-# ログからエラーパターンを抽出
-node .claude/skills/github-actions-debugging/scripts/analyze-logs.mjs workflow.log
-```
-
-### Phase 2: デバッグログ有効化
-
-```yaml
-# リポジトリシークレットに設定
-ACTIONS_STEP_DEBUG: true
-ACTIONS_RUNNER_DEBUG: true
-```
-
-### Phase 3: コンテキスト検査
-
-```yaml
-- name: Dump GitHub context
-  run: echo '${{ toJSON(github) }}'
-```
-
-### Phase 4: 環境診断
-
-```yaml
-- name: Check runner environment
-  run: |
-    echo "OS: $RUNNER_OS"
-    df -h
-    env | sort
-```
-
-## 基本的なデバッグワークフロー
-
-```yaml
-name: Debug Workflow
-on: [push]
-
-jobs:
-  debug:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Enable debug logging
-        run: echo "::debug::Debug logging enabled"
-
-      - name: Dump contexts
-        run: |
-          echo "GitHub: ${{ toJSON(github) }}"
-          echo "Env: ${{ toJSON(env) }}"
-```
-
-詳細は `templates/debug-workflow.yaml` を参照してください。
-
-## 使用パターン
-
-### パターン 1: エラーログ分析
-
-```bash
-# 1. ワークフローログをダウンロード
-gh run view <run-id> --log > workflow.log
-
-# 2. ログを分析
-node .claude/skills/github-actions-debugging/scripts/analyze-logs.mjs workflow.log
-
-# 3. トラブルシューティングガイドを参照
-cat .claude/skills/github-actions-debugging/resources/troubleshooting-guide.md
-```
-
-### パターン 2: デバッグログ有効化
-
-```bash
-# 1. リポジトリシークレットを設定
-gh secret set ACTIONS_STEP_DEBUG --body "true"
-
-# 2. ワークフローを再実行
-gh run rerun <run-id> --debug
-```
-
-## 関連スキル
-
-- **github-actions-syntax** (`.claude/skills/github-actions-syntax/SKILL.md`): ワークフロー構文の基礎
-- **workflow-security** (`.claude/skills/workflow-security/SKILL.md`): 権限とシークレット管理
-- **github-api-integration** (`.claude/skills/github-api-integration/SKILL.md`): GitHub API でのワークフロー操作
 
 ## ベストプラクティス
 
-1. **段階的デバッグ**: ACTIONS_STEP_DEBUG → カスタムログ → ACTIONS_RUNNER_DEBUG
-2. **コンテキスト検査**: エラー時は常に github、env、job コンテキストをダンプ
-3. **ログ分析**: スクリプトを使用して効率的にエラーパターンを抽出
-4. **環境再現**: ローカルで `act` を使用してワークフローをテスト
-5. **権限最小化**: デバッグ後は ACTIONS\_\*\_DEBUG シークレットを削除
+### すべきこと
+- resources/Level1_basics.md を参照し、適用範囲を明確にする
+- resources/Level2_intermediate.md を参照し、実務手順を整理する
 
----
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
 
-**このスキルの使い方**:
+## コマンドリファレンス
 
-1. エラーが発生したら `troubleshooting-guide.md` でパターンを検索
-2. デバッグログが必要なら `debug-logging.md` を参照
-3. 環境診断が必要なら `diagnostic-commands.md` を参照
-4. テンプレートをベースにデバッグワークフローを作成
+### リソース読み取り
+```bash
+cat .claude/skills/github-actions-debugging/resources/Level1_basics.md
+cat .claude/skills/github-actions-debugging/resources/Level2_intermediate.md
+cat .claude/skills/github-actions-debugging/resources/Level3_advanced.md
+cat .claude/skills/github-actions-debugging/resources/Level4_expert.md
+cat .claude/skills/github-actions-debugging/resources/debug-logging.md
+cat .claude/skills/github-actions-debugging/resources/diagnostic-commands.md
+cat .claude/skills/github-actions-debugging/resources/legacy-skill.md
+cat .claude/skills/github-actions-debugging/resources/troubleshooting-guide.md
+```
+
+### スクリプト実行
+```bash
+node .claude/skills/github-actions-debugging/scripts/analyze-logs.mjs --help
+node .claude/skills/github-actions-debugging/scripts/log_usage.mjs --help
+node .claude/skills/github-actions-debugging/scripts/validate-skill.mjs --help
+```
+
+### テンプレート参照
+```bash
+cat .claude/skills/github-actions-debugging/templates/debug-workflow.yaml
+```
+
+## 変更履歴
+
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

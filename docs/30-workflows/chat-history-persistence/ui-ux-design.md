@@ -4,7 +4,7 @@
 
 title: チャット履歴永続化 UI/UX設計書
 version: 1.0.0
-author: @ui-designer
+author: .claude/agents/ui-designer.md
 created: 2025-12-20
 status: draft
 parent_task: T-01-2
@@ -700,7 +700,7 @@ button:focus-visible {
 
 | バージョン | 日付       | 変更内容                        | 変更者       |
 | ---------- | ---------- | ------------------------------- | ------------ |
-| 1.0.0      | 2025-12-20 | 初版作成 - T-01-2タスクの成果物 | @ui-designer |
+| 1.0.0      | 2025-12-20 | 初版作成 - T-01-2タスクの成果物 | .claude/agents/ui-designer.md |
 
 ---
 

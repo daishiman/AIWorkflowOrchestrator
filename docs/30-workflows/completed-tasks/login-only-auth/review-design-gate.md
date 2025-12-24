@@ -22,14 +22,14 @@
 
 | エージェント         | レビュー観点         | 判定  |
 | -------------------- | -------------------- | ----- |
-| `@arch-police`       | アーキテクチャ整合性 | MINOR |
-| `@electron-security` | セキュリティ設計     | MINOR |
-| `@sec-auditor`       | 脆弱性リスク         | MINOR |
-| `@schema-def`        | スキーマ設計         | PASS  |
+| `.claude/agents/arch-police.md`       | アーキテクチャ整合性 | MINOR |
+| `.claude/agents/electron-security.md` | セキュリティ設計     | MINOR |
+| `.claude/agents/sec-auditor.md`       | 脆弱性リスク         | MINOR |
+| `.claude/agents/schema-def.md`        | スキーマ設計         | PASS  |
 
 ---
 
-## 1. アーキテクチャ整合性レビュー (@arch-police)
+## 1. アーキテクチャ整合性レビュー (.claude/agents/arch-police.md)
 
 ### 判定: MINOR
 
@@ -61,7 +61,7 @@
 
 ---
 
-## 2. Electronセキュリティ設計レビュー (@electron-security)
+## 2. Electronセキュリティ設計レビュー (.claude/agents/electron-security.md)
 
 ### 判定: MINOR
 
@@ -96,7 +96,7 @@
 
 ---
 
-## 3. 脆弱性リスク評価レビュー (@sec-auditor)
+## 3. 脆弱性リスク評価レビュー (.claude/agents/sec-auditor.md)
 
 ### 判定: MINOR
 
@@ -141,7 +141,7 @@
 
 ---
 
-## 4. Zodスキーマ設計レビュー (@schema-def)
+## 4. Zodスキーマ設計レビュー (.claude/agents/schema-def.md)
 
 ### 判定: PASS
 
@@ -202,25 +202,25 @@
 
 ### レビューチェックリスト
 
-**アーキテクチャ整合性** (`@arch-police`)
+**アーキテクチャ整合性** (`.claude/agents/arch-police.md`)
 
 - [x] CSPモジュールがMain Processの責務に適切に配置されている
 - [x] 状態設計がMain/Renderer分離原則に準拠している
 - [x] 依存関係が逆転していない
 
-**セキュリティ設計** (`@electron-security`)
+**セキュリティ設計** (`.claude/agents/electron-security.md`)
 
 - [x] CSPディレクティブが十分に厳格である
 - [x] IPC検証がすべての認証関連channelをカバーしている
 - [x] トークンがRenderer Processに露出しない設計である
 
-**脆弱性リスク** (`@sec-auditor`)
+**脆弱性リスク** (`.claude/agents/sec-auditor.md`)
 
 - [x] XSS攻撃ベクトルが適切に防御されている
 - [x] 入力バリデーションがすべてのユーザー入力をカバーしている
 - [x] エラーメッセージが機密情報を漏洩しない
 
-**スキーマ設計** (`@schema-def`)
+**スキーマ設計** (`.claude/agents/schema-def.md`)
 
 - [x] Zodスキーマが型安全である
 - [x] エラーメッセージがユーザーフレンドリーである
@@ -256,7 +256,7 @@ Phase 2では以下のテスト作成タスクを実施:
 | 役割               | 担当              | 日時       |
 | ------------------ | ----------------- | ---------- |
 | 設計者             | Claude Code       | 2025-12-09 |
-| @arch-police       | Claude Code Agent | 2025-12-09 |
-| @electron-security | Claude Code Agent | 2025-12-09 |
-| @sec-auditor       | Claude Code Agent | 2025-12-09 |
-| @schema-def        | Claude Code Agent | 2025-12-09 |
+| .claude/agents/arch-police.md       | Claude Code Agent | 2025-12-09 |
+| .claude/agents/electron-security.md | Claude Code Agent | 2025-12-09 |
+| .claude/agents/sec-auditor.md       | Claude Code Agent | 2025-12-09 |
+| .claude/agents/schema-def.md        | Claude Code Agent | 2025-12-09 |

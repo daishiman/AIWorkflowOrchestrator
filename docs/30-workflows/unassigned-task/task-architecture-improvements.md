@@ -12,7 +12,7 @@
 
 ## 背景と目的
 
-Phase 5.5 Final Review Gate において、`@arch-police` エージェントによるアーキテクチャレビューで以下の改善点が指摘された：
+Phase 5.5 Final Review Gate において、`.claude/agents/arch-police.md` エージェントによるアーキテクチャレビューで以下の改善点が指摘された：
 
 1. **LoadingScreen の配置検討**（atoms/ への移動候補）
 2. **アニメーション定義の抽出**
@@ -387,10 +387,10 @@ export * from "./AuthGuard";
 
 | 項目                   | 検証方法       | 担当エージェント |
 | ---------------------- | -------------- | ---------------- |
-| Atomic Design準拠      | コードレビュー | @arch-police     |
-| コンポーネント依存関係 | 依存グラフ確認 | @arch-police     |
-| 再利用性               | 使用箇所の確認 | @code-quality    |
-| テスト通過             | 自動テスト     | @unit-tester     |
+| Atomic Design準拠      | コードレビュー | .claude/agents/arch-police.md     |
+| コンポーネント依存関係 | 依存グラフ確認 | .claude/agents/arch-police.md     |
+| 再利用性               | 使用箇所の確認 | .claude/agents/code-quality.md    |
+| テスト通過             | 自動テスト     | .claude/agents/unit-tester.md     |
 
 ### 5.2 アーキテクチャレビュー
 
@@ -425,7 +425,7 @@ AccountSection (organism)
 - [ ] 共通アニメーション定義が tailwind.config.js に追加されている
 - [ ] エクスポート構造が整理されている
 - [ ] 全テストが通過している
-- [ ] `@arch-police` レビューで PASS 評価
+- [ ] `.claude/agents/arch-police.md` レビューで PASS 評価
 
 ## 関連ドキュメント
 

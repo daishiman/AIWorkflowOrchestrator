@@ -150,6 +150,11 @@
         "hooks": [
           {
             "type": "command",
+            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/requirements-sync.sh",
+            "timeout": 120
+          },
+          {
+            "type": "command",
             "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/notify-completion.sh",
             "timeout": 30
           }

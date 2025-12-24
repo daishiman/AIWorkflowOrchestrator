@@ -1,232 +1,123 @@
 ---
-name: code-style-guides
+name: .claude/skills/code-style-guides/SKILL.md
 description: |
   業界標準コードスタイルガイドの選択と適用の専門知識。
   Airbnb、Google、Standard等のスタイルガイド適用とカスタマイズを行います。
-
+  
+  📖 参照書籍:
+  - 『Clean Code』（Robert C. Martin）: 命名と意図の明確化
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/code-style-guides/resources/style-guide-comparison.md`: 主要スタイルガイド(Airbnb、Google、Standard)の比較
-  - `.claude/skills/code-style-guides/resources/customization-patterns.md`: スタイルガイドのカスタマイズパターン
-  - `.claude/skills/code-style-guides/resources/migration-strategies.md`: スタイルガイド移行戦略
-  - `.claude/skills/code-style-guides/templates/airbnb-base.json`: Airbnbスタイルベース設定
-  - `.claude/skills/code-style-guides/templates/google.json`: Googleスタイル設定
-  - `.claude/skills/code-style-guides/templates/standard.json`: Standardスタイル設定
-  - `.claude/skills/code-style-guides/scripts/detect-style.mjs`: プロジェクトのコードスタイル自動検出スクリプト
-
-  使用タイミング:
-  - プロジェクトのスタイルガイドを選択する時
-  - 既存コードパターンに基づいてスタイルを決定する時
-  - チーム規約とスタイルガイドを整合させる時
-  - カスタムスタイルルールを設計する時
-  - スタイルガイド移行を計画する時
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/customization-patterns.md`: スタイルガイドのカスタマイズパターン
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/migration-strategies.md`: スタイルガイド移行戦略
+  - `resources/style-guide-comparison.md`: 主要スタイルガイド(Airbnb、Google、Standard)の比較
+  - `scripts/detect-style.mjs`: プロジェクトのコードスタイル自動検出スクリプト
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/airbnb-base.json`: Airbnbスタイルベース設定
+  - `templates/google.json`: Googleスタイル設定
+  - `templates/standard.json`: Standardスタイル設定
+  
+  Use proactively when handling code style guides tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "Clean Code"
+    author: "Robert C. Martin"
+    concepts:
+      - "命名と意図の明確化"
+      - "小さな関数設計"
 ---
 
 # Code Style Guides Skill
 
 ## 概要
 
-このスキルは、主要なJavaScript/TypeScriptスタイルガイドの選択と適用を支援します。
+業界標準コードスタイルガイドの選択と適用の専門知識。
+Airbnb、Google、Standard等のスタイルガイド適用とカスタマイズを行います。
 
-## 主要スタイルガイド
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-### 1. Airbnb JavaScript Style Guide
 
-**特徴**:
+## ワークフロー
 
-- 最も広範なコミュニティ採用
-- 厳格なルールセット
-- React推奨設定あり
+### Phase 1: 目的と前提の整理
 
-**適用方法**:
+**目的**: タスクの目的と前提条件を明確にする
 
-```json
-{
-  "extends": [
-    "airbnb-base", // JavaScript
-    "airbnb", // React含む
-    "airbnb-typescript" // TypeScript
-  ]
-}
-```
+**アクション**:
 
-**主要ルール**:
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-- セミコロン必須
-- シングルクォート推奨
-- 末尾カンマ推奨
-- アロー関数優先
+### Phase 2: スキル適用
 
-**適用プロジェクト**:
+**目的**: スキルの指針に従って具体的な作業を進める
 
-- React/TypeScriptプロジェクト
-- 高品質基準を求めるチーム
-- コミュニティ標準に従いたい場合
+**アクション**:
 
-### 2. Google JavaScript Style Guide
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-**特徴**:
+### Phase 3: 検証と記録
 
-- Google社内標準
-- 実用主義
-- TypeScript公式推奨に近い
+**目的**: 成果物の検証と実行記録の保存
 
-**適用方法**:
+**アクション**:
 
-```json
-{
-  "extends": ["google"]
-}
-```
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-**主要ルール**:
 
-- セミコロン必須
-- シングルクォート推奨
-- インデント2スペース
-- const/let推奨（var禁止）
+## ベストプラクティス
 
-**適用プロジェクト**:
+### すべきこと
+- プロジェクトのスタイルガイドを選択する時
+- 既存コードパターンに基づいてスタイルを決定する時
+- チーム規約とスタイルガイドを整合させる時
+- カスタムスタイルルールを設計する時
+- スタイルガイド移行を計画する時
 
-- エンタープライズプロジェクト
-- TypeScript中心の開発
-- 実用性重視
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
 
-### 3. Standard JS
+## コマンドリファレンス
 
-**特徴**:
-
-- セミコロンなし
-- 設定ゼロ（opinionated）
-- シンプル
-
-**適用方法**:
-
-```json
-{
-  "extends": ["standard"]
-}
-```
-
-**主要ルール**:
-
-- セミコロンなし
-- シングルクォート
-- インデント2スペース
-- スペース多用
-
-**適用プロジェクト**:
-
-- 設定を最小化したい場合
-- セミコロンなし派
-- Node.jsプロジェクト
-
-## カスタマイズ戦略
-
-### ベース継承 + オーバーライド
-
-```json
-{
-  "extends": ["airbnb-base"],
-  "rules": {
-    // プロジェクト固有ルールで上書き
-    "no-console": "off", // 開発中はconsole許可
-    "max-len": ["error", { "code": 100 }] // 行長を100に緩和
-  }
-}
-```
-
-### 段階的適用
-
-**Phase 1: 基本ルールのみ**:
-
-- eslint:recommended
-- 必須エラールールのみ
-
-**Phase 2: スタイルガイド導入**:
-
-- airbnb-base追加
-- warnレベルで運用
-
-**Phase 3: 厳格化**:
-
-- warnをerrorに格上げ
-- 追加ルール有効化
-
-## スタイルガイド選択フローチャート
-
-```
-プロジェクトタイプ?
-├─ React? → Airbnb
-├─ TypeScript? → Airbnb TypeScript or Google
-├─ Node.js? → Standard or Airbnb Base
-└─ シンプル重視? → Standard
-```
-
-## 既存コード分析
-
-### パターン検出
-
-**インデント**:
-
+### リソース読み取り
 ```bash
-# スペース使用率を確認
-grep -r "^  " src/ | wc -l  # 2スペース
-grep -r "^    " src/ | wc -l  # 4スペース
-grep -r "^\t" src/ | wc -l  # タブ
-```
-
-**セミコロン**:
-
-```bash
-# セミコロン使用率
-grep -r ";" src/**/*.js | wc -l
-```
-
-## 詳細リソース
-
-```bash
-# スタイルガイド比較
-cat .claude/skills/code-style-guides/resources/style-guide-comparison.md
-
-# カスタマイズパターン
+cat .claude/skills/code-style-guides/resources/Level1_basics.md
+cat .claude/skills/code-style-guides/resources/Level2_intermediate.md
+cat .claude/skills/code-style-guides/resources/Level3_advanced.md
+cat .claude/skills/code-style-guides/resources/Level4_expert.md
 cat .claude/skills/code-style-guides/resources/customization-patterns.md
-
-# 移行戦略
+cat .claude/skills/code-style-guides/resources/legacy-skill.md
 cat .claude/skills/code-style-guides/resources/migration-strategies.md
+cat .claude/skills/code-style-guides/resources/style-guide-comparison.md
 ```
 
-## テンプレート
-
+### スクリプト実行
 ```bash
-# Airbnb基本設定
+node .claude/skills/code-style-guides/scripts/detect-style.mjs --help
+node .claude/skills/code-style-guides/scripts/log_usage.mjs --help
+node .claude/skills/code-style-guides/scripts/validate-skill.mjs --help
+```
+
+### テンプレート参照
+```bash
 cat .claude/skills/code-style-guides/templates/airbnb-base.json
-
-# Google設定
 cat .claude/skills/code-style-guides/templates/google.json
-
-# Standard設定
 cat .claude/skills/code-style-guides/templates/standard.json
 ```
 
-## スクリプト
+## 変更履歴
 
-```bash
-# スタイル自動検出
-node .claude/skills/code-style-guides/scripts/detect-style.mjs [src-directory]
-```
-
-## 関連スキル
-
-- `.claude/skills/eslint-configuration/SKILL.md`: ESLint設定基盤
-- `.claude/skills/prettier-integration/SKILL.md`: フォーマット統合
-
-## 参考文献
-
-- **Airbnb JavaScript Style Guide**: https://github.com/airbnb/javascript
-- **Google JavaScript Style Guide**: https://google.github.io/styleguide/jsguide.html
-- **StandardJS**: https://standardjs.com/
-- **『Clean Code』** Robert C. Martin著
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

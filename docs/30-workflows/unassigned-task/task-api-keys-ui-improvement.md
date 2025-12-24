@@ -22,7 +22,7 @@
 | ステータス       | 未実施                       |
 | 発見元           | ユーザー要望                 |
 | 発見日           | 2025-12-12                   |
-| 発見エージェント | @product-manager             |
+| 発見エージェント | .claude/agents/product-manager.md             |
 
 ---
 
@@ -163,15 +163,15 @@ UIデザイン統一の要件定義のみを担当。
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: UIデザインの専門性
 
 #### 活用スキル
 
 | スキル名             | 活用方法               |
 | -------------------- | ---------------------- |
-| apple-hig-guidelines | デスクトップUIパターン |
-| code-style-guides    | スタイル統一           |
+| .claude/skills/apple-hig-guidelines/SKILL.md | デスクトップUIパターン |
+| .claude/skills/code-style-guides/SKILL.md    | スタイル統一           |
 
 #### 成果物
 
@@ -208,7 +208,7 @@ ApiKeysSectionのスタイル変更を設計する。
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: UIスタイル設計の専門性
 
 #### 成果物
@@ -241,7 +241,7 @@ ApiKeysSectionのスタイル変更を設計する。
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 
 #### 成果物
 
@@ -297,7 +297,7 @@ ApiKeysSectionのスタイル更新のみを担当。
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: UIコンポーネント実装の専門性
 
 #### 成果物

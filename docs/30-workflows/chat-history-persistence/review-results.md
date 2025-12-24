@@ -4,7 +4,7 @@
 
 title: T-02-1 設計レビュー統合結果
 version: 1.0.0
-reviewers: @req-analyst, @arch-police, @db-architect, @ui-designer, @sec-auditor
+reviewers: .claude/agents/req-analyst.md, .claude/agents/arch-police.md, .claude/agents/db-architect.md, .claude/agents/ui-designer.md, .claude/agents/sec-auditor.md
 review_date: 2025-12-22
 status: 完了
 parent_task: T-02-1
@@ -29,15 +29,15 @@ parent_task: T-02-1
 
 | レビュー観点         | エージェント  | 判定（修正前） | 判定（修正後） | 主要指摘事項                                 |
 | -------------------- | ------------- | -------------- | -------------- | -------------------------------------------- |
-| 要件充足性           | @req-analyst  | MINOR          | **PASS**       | 曖昧な表現の解消、トレーサビリティ向上       |
-| アーキテクチャ整合性 | @arch-police  | MINOR          | **PASS**       | IPCチャネル定数化、インターフェース定義推奨  |
-| データベース設計     | @db-architect | MAJOR          | **PASS**       | カバリングインデックス追加（実装済み）       |
-| UI/UX設計            | @ui-designer  | MINOR          | **PASS**       | コントラスト比実測、フォーカススタイル詳細化 |
-| セキュリティ設計     | @sec-auditor  | MINOR          | **PASS**       | Electronセキュリティ設定確認済み             |
+| 要件充足性           | .claude/agents/req-analyst.md  | MINOR          | **PASS**       | 曖昧な表現の解消、トレーサビリティ向上       |
+| アーキテクチャ整合性 | .claude/agents/arch-police.md  | MINOR          | **PASS**       | IPCチャネル定数化、インターフェース定義推奨  |
+| データベース設計     | .claude/agents/db-architect.md | MAJOR          | **PASS**       | カバリングインデックス追加（実装済み）       |
+| UI/UX設計            | .claude/agents/ui-designer.md  | MINOR          | **PASS**       | コントラスト比実測、フォーカススタイル詳細化 |
+| セキュリティ設計     | .claude/agents/sec-auditor.md  | MINOR          | **PASS**       | Electronセキュリティ設定確認済み             |
 
 ---
 
-## 1. 要件充足性レビュー (@req-analyst)
+## 1. 要件充足性レビュー (.claude/agents/req-analyst.md)
 
 ### 判定: PASS（修正後）
 
@@ -63,7 +63,7 @@ parent_task: T-02-1
 
 ---
 
-## 2. アーキテクチャ整合性レビュー (@arch-police)
+## 2. アーキテクチャ整合性レビュー (.claude/agents/arch-police.md)
 
 ### 判定: PASS（修正後）
 
@@ -90,7 +90,7 @@ parent_task: T-02-1
 
 ---
 
-## 3. データベース設計妥当性レビュー (@db-architect)
+## 3. データベース設計妥当性レビュー (.claude/agents/db-architect.md)
 
 ### 判定: PASS（修正後）
 
@@ -123,7 +123,7 @@ parent_task: T-02-1
 
 ---
 
-## 4. UI/UX設計レビュー (@ui-designer)
+## 4. UI/UX設計レビュー (.claude/agents/ui-designer.md)
 
 ### 判定: PASS（修正後）
 
@@ -166,7 +166,7 @@ parent_task: T-02-1
 
 ---
 
-## 5. セキュリティ設計レビュー (@sec-auditor)
+## 5. セキュリティ設計レビュー (.claude/agents/sec-auditor.md)
 
 ### 判定: PASS（既存実装確認済み）
 
@@ -319,11 +319,11 @@ export const IPC_CHANNELS = {
 
 | エージェント  | 判定 | 承認日     | コメント                                                      |
 | ------------- | ---- | ---------- | ------------------------------------------------------------- |
-| @req-analyst  | PASS | 2025-12-22 | 要件定義の品質は高く、軽微な改善点は対応済み                  |
-| @arch-police  | PASS | 2025-12-22 | Clean Architecture原則を適切に遵守、IPCチャネル定数化完了     |
-| @db-architect | PASS | 2025-12-22 | 基本インデックス実装済み、カバリングインデックス追加完了      |
-| @ui-designer  | PASS | 2025-12-22 | WCAG 2.1 AA準拠、コントラスト比・フォーカススタイル詳細化完了 |
-| @sec-auditor  | PASS | 2025-12-22 | Electronセキュリティ設定は既に完璧、CSP設定実装済み           |
+| .claude/agents/req-analyst.md  | PASS | 2025-12-22 | 要件定義の品質は高く、軽微な改善点は対応済み                  |
+| .claude/agents/arch-police.md  | PASS | 2025-12-22 | Clean Architecture原則を適切に遵守、IPCチャネル定数化完了     |
+| .claude/agents/db-architect.md | PASS | 2025-12-22 | 基本インデックス実装済み、カバリングインデックス追加完了      |
+| .claude/agents/ui-designer.md  | PASS | 2025-12-22 | WCAG 2.1 AA準拠、コントラスト比・フォーカススタイル詳細化完了 |
+| .claude/agents/sec-auditor.md  | PASS | 2025-12-22 | Electronセキュリティ設定は既に完璧、CSP設定実装済み           |
 
 ---
 
@@ -368,7 +368,7 @@ export const IPC_CHANNELS = {
 
 ## 承認
 
-**レビューリーダー**: @req-analyst
+**レビューリーダー**: .claude/agents/req-analyst.md
 **承認日**: 2025-12-22
 **次フェーズ**: Phase 3（テスト作成）へ進行
 

@@ -1,240 +1,114 @@
 ---
-name: transaction-script
+name: .claude/skills/transaction-script/SKILL.md
 description: |
   マーティン・ファウラーのPofEAAに基づくトランザクションスクリプトパターンを専門とするスキル。
-
+  
+  📖 参照書籍:
+  - 『Designing Data-Intensive Applications』（Martin Kleppmann）: データモデリング
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/transaction-script/resources/domain-model-comparison.md`: Domain Model Comparisonリソース
-  - `.claude/skills/transaction-script/resources/executor-pattern.md`: Executor Patternリソース
-  - `.claude/skills/transaction-script/resources/pattern-overview.md`: Pattern Overviewリソース
-
-  - `.claude/skills/transaction-script/templates/executor-template.md`: Executorテンプレート
-
-  - `.claude/skills/transaction-script/scripts/analyze-executor.mjs`: Analyze Executorスクリプト
-
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/domain-model-comparison.md`: Domain Model Comparisonリソース
+  - `resources/executor-pattern.md`: Executor Patternリソース
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/pattern-overview.md`: Pattern Overviewリソース
+  - `scripts/analyze-executor.mjs`: Analyze Executorスクリプト
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/executor-template.md`: Executorテンプレート
+  
+  Use proactively when handling transaction script tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "Designing Data-Intensive Applications"
+    author: "Martin Kleppmann"
+    concepts:
+      - "データモデリング"
+      - "パフォーマンス"
 ---
 
 # Transaction Script
 
 ## 概要
 
-トランザクションスクリプトは、マーティン・ファウラーが『Patterns of Enterprise Application Architecture (PofEAA)』で
-解説したビジネスロジック組織化パターンです。一つのスクリプト（手続き）で一つのビジネストランザクションを実現します。
+マーティン・ファウラーのPofEAAに基づくトランザクションスクリプトパターンを専門とするスキル。
 
-**核心原則**:
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-- 一つのリクエストに対して一つのスクリプト
-- 手続き型のシンプルなロジック
-- 理解しやすく変更しやすい
-
-**対象ユーザー**:
-
-- ビジネスロジック実装エージェント（@logic-dev）
-- シンプルな CRUD 操作を実装する開発者
-- 既存の手続き型コードを整理したい開発者
-
-## リソース構造
-
-```
-transaction-script/
-├── SKILL.md                              # 本ファイル
-├── resources/
-│   ├── pattern-overview.md               # パターンの詳細解説
-│   ├── domain-model-comparison.md        # ドメインモデルとの比較
-│   └── executor-pattern.md               # Executorパターンの実装
-├── scripts/
-│   └── analyze-executor.mjs              # Executor分析スクリプト
-└── templates/
-    └── executor-template.md              # Executor実装テンプレート
-```
-
-## コマンドリファレンス
-
-### リソース読み取り
-
-```bash
-# パターン詳細
-cat .claude/skills/transaction-script/resources/pattern-overview.md
-
-# ドメインモデルとの比較
-cat .claude/skills/transaction-script/resources/domain-model-comparison.md
-
-# Executorパターン
-cat .claude/skills/transaction-script/resources/executor-pattern.md
-```
-
-### スクリプト実行
-
-```bash
-# Executor分析（実装の品質チェック）
-node .claude/skills/transaction-script/scripts/analyze-executor.mjs src/features/
-```
-
-### テンプレート参照
-
-```bash
-# Executor実装テンプレート
-cat .claude/skills/transaction-script/templates/executor-template.md
-```
-
-## パターンの特徴
-
-### 構造
-
-各トランザクションは独立したスクリプト（関数/メソッド）として実装されます。
-
-**典型的な流れ**:
-
-1. 入力の検証
-2. データの取得（リポジトリ経由）
-3. ビジネスロジックの実行
-4. データの永続化
-5. 結果の返却
-
-### 利点
-
-- **シンプル**: 理解しやすい手続き型
-- **直接的**: リクエストと処理の 1 対 1 対応
-- **変更容易**: 影響範囲が限定的
-- **デバッグ容易**: 処理フローが明確
-
-### 欠点
-
-- **重複**: 類似ロジックが各スクリプトに重複しやすい
-- **スケール困難**: ロジックが複雑になると管理が困難
-- **ドメイン知識分散**: ビジネスルールが散在しやすい
-
-## 適用条件
-
-### トランザクションスクリプトが適切な場合
-
-- [ ] ビジネスロジックがシンプル
-- [ ] CRUD 操作が中心
-- [ ] ドメインモデルが不要または過剰
-- [ ] チームが手続き型に慣れている
-- [ ] 短期プロジェクト
-
-### ドメインモデルを検討すべき場合
-
-- [ ] ビジネスルールが複雑
-- [ ] 同じルールが複数箇所で必要
-- [ ] エンティティ間の関係が複雑
-- [ ] 長期的な保守が必要
-
-**詳細**: `resources/domain-model-comparison.md`
-
-## Executor パターン
-
-### 概要
-
-プロジェクト固有のトランザクションスクリプト実装パターンです。
-各機能のビジネスロジックを Executor クラスとして実装します。
-
-### 構造
-
-```
-features/
-└── [機能名]/
-    ├── schema.ts      # 入出力スキーマ（Zod）
-    ├── executor.ts    # ビジネスロジック（Transaction Script）
-    └── __tests__/     # テスト
-```
-
-### インターフェース
-
-```typescript
-interface IWorkflowExecutor {
-  execute(input: Input): Promise<Output>;
-}
-```
-
-**詳細**: `resources/executor-pattern.md`
 
 ## ワークフロー
 
-### トランザクションスクリプト実装
+### Phase 1: 目的と前提の整理
 
-```
-1. 要件の理解
-   ↓
-2. 入出力の定義（スキーマ）
-   ↓
-3. テストの作成（TDD）
-   ↓
-4. スクリプトの実装
-   - 入力検証
-   - データ取得
-   - ロジック実行
-   - 永続化
-   - 結果返却
-   ↓
-5. リファクタリング
-   ↓
-6. 検証
-```
+**目的**: タスクの目的と前提条件を明確にする
 
-### 判断フロー
+**アクション**:
 
-```
-ビジネスロジック実装
-  ↓
-[質問] ロジックはシンプルか？
-  ├─ Yes → Transaction Script
-  └─ No  → Domain Modelを検討
-  ↓
-[質問] 同じルールが複数箇所で必要か？
-  ├─ Yes → 共通関数に抽出、またはDomain Model
-  └─ No  → Transaction Scriptを継続
-```
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
+
+### Phase 2: スキル適用
+
+**目的**: スキルの指針に従って具体的な作業を進める
+
+**アクション**:
+
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
+
+### Phase 3: 検証と記録
+
+**目的**: 成果物の検証と実行記録の保存
+
+**アクション**:
+
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
+
 
 ## ベストプラクティス
 
 ### すべきこと
-
-1. **一つのスクリプトは一つのトランザクション**:
-   - 責任を明確に
-   - 関数名でトランザクションを表現
-
-2. **共通ロジックの抽出**:
-   - 重複を発見したら共通関数に
-   - ただし早すぎる抽象化は避ける
-
-3. **テスト駆動**:
-   - スクリプトごとにテストを作成
-   - エッジケースをカバー
+- resources/Level1_basics.md を参照し、適用範囲を明確にする
+- resources/Level2_intermediate.md を参照し、実務手順を整理する
 
 ### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
 
-1. **巨大なスクリプト**:
-   - ❌ 100 行を超えるスクリプト
-   - ✅ 適切に分割して呼び出し
+## コマンドリファレンス
 
-2. **過度な抽象化**:
-   - ❌ シンプルなロジックに複雑なパターンを適用
-   - ✅ シンプルさを維持
+### リソース読み取り
+```bash
+cat .claude/skills/transaction-script/resources/Level1_basics.md
+cat .claude/skills/transaction-script/resources/Level2_intermediate.md
+cat .claude/skills/transaction-script/resources/Level3_advanced.md
+cat .claude/skills/transaction-script/resources/Level4_expert.md
+cat .claude/skills/transaction-script/resources/domain-model-comparison.md
+cat .claude/skills/transaction-script/resources/executor-pattern.md
+cat .claude/skills/transaction-script/resources/legacy-skill.md
+cat .claude/skills/transaction-script/resources/pattern-overview.md
+```
 
-3. **ビジネスルールの散在**:
-   - ❌ 同じルールが複数スクリプトに重複
-   - ✅ 共通関数に抽出
+### スクリプト実行
+```bash
+node .claude/skills/transaction-script/scripts/analyze-executor.mjs --help
+node .claude/skills/transaction-script/scripts/log_usage.mjs --help
+node .claude/skills/transaction-script/scripts/validate-skill.mjs --help
+```
 
-## 関連スキル
-
-- **refactoring-techniques** (`.claude/skills/refactoring-techniques/SKILL.md`): コードの改善
-- **tdd-red-green-refactor** (`.claude/skills/tdd-red-green-refactor/SKILL.md`): テスト駆動開発
-- **domain-driven-design** (`.claude/skills/domain-driven-design/SKILL.md`): 複雑なドメインの場合
-
-## 参考文献
-
-- **『Patterns of Enterprise Application Architecture』** マーティン・ファウラー著
-  - 第 9 章: Domain Logic Patterns
-  - Transaction Script (110-115 ページ)
+### テンプレート参照
+```bash
+cat .claude/skills/transaction-script/templates/executor-template.md
+```
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                       |
-| ---------- | ---------- | ---------------------------------------------- |
-| 1.0.0      | 2025-11-25 | 初版作成 - PofEAA のトランザクションスクリプト |
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

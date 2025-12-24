@@ -635,4 +635,4 @@ export type { ApiKeyIpcChannel, ApiKeyPreloadApi };
 
 | バージョン | 日付       | 変更内容 | 作成者          |
 | ---------- | ---------- | -------- | --------------- |
-| 1.0.0      | 2025-12-10 | 初版作成 | @domain-modeler |
+| 1.0.0      | 2025-12-10 | 初版作成 | .claude/agents/domain-modeler.md |

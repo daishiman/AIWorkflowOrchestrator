@@ -13,7 +13,7 @@
 | ステータス       | 未実施                                                  |
 | 発見元           | Phase 0 (非機能要件定義) - NFR-WS-001                   |
 | 発見日           | 2025-12-11                                              |
-| 発見エージェント | @req-analyst                                            |
+| 発見エージェント | .claude/agents/req-analyst.md                                            |
 
 ---
 
@@ -142,7 +142,7 @@ Phase 9: ドキュメント更新
 
 #### 使用エージェント
 
-- **エージェント**: @sre-observer
+- **エージェント**: .claude/agents/sre-observer.md
 - **選定理由**: パフォーマンス要件の定義に精通
 
 #### 完了条件
@@ -163,14 +163,14 @@ Phase 9: ドキュメント更新
 
 #### 使用エージェント
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 - **選定理由**: Reactパフォーマンス最適化の専門家
 
 #### 活用スキル
 
 | スキル名           | 活用方法                   |
 | ------------------ | -------------------------- |
-| web-performance    | 仮想スクロールパターン設計 |
+| .claude/skills/web-performance/SKILL.md    | 仮想スクロールパターン設計 |
 | react-optimization | メモ化、useMemo活用        |
 
 ---
@@ -220,7 +220,7 @@ describe('VirtualScroll Performance', () => {
 
 ##### 使用エージェント
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 
 ---
 
@@ -257,8 +257,8 @@ describe('VirtualScroll Performance', () => {
 
 | エージェント     | レビュー観点   | 選定理由                       |
 | ---------------- | -------------- | ------------------------------ |
-| @sre-observer    | パフォーマンス | 目標値達成確認                 |
-| @frontend-tester | 実装品質       | 仮想スクロール実装の妥当性確認 |
+| .claude/agents/sre-observer.md    | パフォーマンス | 目標値達成確認                 |
+| .claude/agents/frontend-tester.md | 実装品質       | 仮想スクロール実装の妥当性確認 |
 
 ---
 
@@ -375,4 +375,4 @@ describe("Virtual Scroll Performance", () => {
 
 | バージョン | 日付       | 変更者       | 変更内容                    |
 | ---------- | ---------- | ------------ | --------------------------- |
-| 1.0.0      | 2025-12-11 | @req-analyst | 初版作成(NFR-001単一タスク) |
+| 1.0.0      | 2025-12-11 | .claude/agents/req-analyst.md | 初版作成(NFR-001単一タスク) |

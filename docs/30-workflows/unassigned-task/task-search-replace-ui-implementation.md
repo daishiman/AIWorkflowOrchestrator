@@ -153,7 +153,7 @@ main↔renderer間の通信を確立し、コアロジックをUI から呼び�
 
 #### 使用エージェント
 
-- **エージェント**: @electron-architect
+- **エージェント**: .claude/agents/electron-architect.md
 - **選定理由**: Electron IPC通信の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -198,7 +198,7 @@ contextBridge.exposeInMainWorld("searchAPI", {
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer, @frontend-tester
+- **エージェント**: .claude/agents/ui-designer.md, .claude/agents/frontend-tester.md
 - **選定理由**: UIコンポーネント実装とテストの専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -229,7 +229,7 @@ contextBridge.exposeInMainWorld("searchAPI", {
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer, @frontend-tester
+- **エージェント**: .claude/agents/ui-designer.md, .claude/agents/frontend-tester.md
 - **選定理由**: UIコンポーネント実装とテストの専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -260,7 +260,7 @@ contextBridge.exposeInMainWorld("searchAPI", {
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer, @frontend-tester
+- **エージェント**: .claude/agents/ui-designer.md, .claude/agents/frontend-tester.md
 - **選定理由**: UIコンポーネント実装とテストの専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -291,7 +291,7 @@ contextBridge.exposeInMainWorld("searchAPI", {
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer, @frontend-tester
+- **エージェント**: .claude/agents/ui-designer.md, .claude/agents/frontend-tester.md
 - **選定理由**: UIコンポーネント実装とテストの専門家
 - **参照**: `.claude/agents/agent_list.md`
 

@@ -232,7 +232,7 @@ pnpm --filter @repo/desktop build
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: UI/UX設計の専門家。ユーザビリティ向上施策の要件定義に最適
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -240,8 +240,8 @@ pnpm --filter @repo/desktop build
 
 | スキル名               | 活用方法                                           |
 | ---------------------- | -------------------------------------------------- |
-| accessibility-wcag     | ARIA属性・キーボード操作のアクセシビリティ要件定義 |
-| progressive-disclosure | 情報の段階的開示（ホバー→詳細表示）の設計          |
+| .claude/skills/accessibility-wcag/SKILL.md     | ARIA属性・キーボード操作のアクセシビリティ要件定義 |
+| .claude/skills/progressive-disclosure/SKILL.md | 情報の段階的開示（ホバー→詳細表示）の設計          |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -282,7 +282,7 @@ pnpm --filter @repo/desktop build
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: コンポーネントAPI設計・再利用性を考慮した設計が得意
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -290,9 +290,9 @@ pnpm --filter @repo/desktop build
 
 | スキル名              | 活用方法                                   |
 | --------------------- | ------------------------------------------ |
-| custom-hooks-patterns | useTooltipカスタムフックの設計             |
-| type-safety-patterns  | TypeScript型定義の設計（Props、State）     |
-| accessibility-wcag    | ARIA属性の設計（role, aria-describedby等） |
+| .claude/skills/custom-hooks-patterns/SKILL.md | useTooltipカスタムフックの設計             |
+| .claude/skills/type-safety-patterns/SKILL.md  | TypeScript型定義の設計（Props、State）     |
+| .claude/skills/accessibility-wcag/SKILL.md    | ARIA属性の設計（role, aria-describedby等） |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -325,9 +325,9 @@ pnpm --filter @repo/desktop build
 
 | エージェント     | レビュー観点         | 選定理由                                   |
 | ---------------- | -------------------- | ------------------------------------------ |
-| @ui-designer     | UI/UX設計の妥当性    | コンポーネント設計・ユーザビリティの専門家 |
-| @frontend-tester | テスタビリティ       | テスト容易性の確認                         |
-| @arch-police     | アーキテクチャ整合性 | 既存UIコンポーネントとの整合性確認         |
+| .claude/agents/ui-designer.md     | UI/UX設計の妥当性    | コンポーネント設計・ユーザビリティの専門家 |
+| .claude/agents/frontend-tester.md | テスタビリティ       | テスト容易性の確認                         |
+| .claude/agents/arch-police.md     | アーキテクチャ整合性 | 既存UIコンポーネントとの整合性確認         |
 
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -344,26 +344,26 @@ pnpm --filter @repo/desktop build
 
 #### レビューチェックリスト
 
-**UI/UX設計** (@ui-designer)
+**UI/UX設計** (.claude/agents/ui-designer.md)
 
 - [ ] ツールチップ表示タイミングは適切か（0.5秒遅延等）
 - [ ] 表示内容は過不足ないか
 - [ ] ポジション調整ロジックは適切か
 - [ ] ダークモード対応が考慮されているか
 
-**アクセシビリティ** (@ui-designer)
+**アクセシビリティ** (.claude/agents/ui-designer.md)
 
 - [ ] ARIA属性が適切に設計されているか
 - [ ] キーボード操作でも情報取得可能か
 - [ ] スクリーンリーダー対応が考慮されているか
 
-**テスタビリティ** (@frontend-tester)
+**テスタビリティ** (.claude/agents/frontend-tester.md)
 
 - [ ] ユニットテストが書きやすい設計か
 - [ ] E2Eテストで検証可能か
 - [ ] モック化が容易か
 
-**アーキテクチャ整合性** (@arch-police)
+**アーキテクチャ整合性** (.claude/agents/arch-police.md)
 
 - [ ] 既存のUIコンポーネントとの一貫性があるか
 - [ ] Atomic Design原則に従っているか
@@ -397,7 +397,7 @@ pnpm --filter @repo/desktop build
 
 #### 使用エージェント
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 - **選定理由**: Reactコンポーネントのテスト設計・実装の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -405,9 +405,9 @@ pnpm --filter @repo/desktop build
 
 | スキル名                | 活用方法                      |
 | ----------------------- | ----------------------------- |
-| tdd-principles          | TDDサイクルに基づくテスト設計 |
-| test-doubles            | モック・スタブの活用          |
-| boundary-value-analysis | 境界値テストケース設計        |
+| .claude/skills/tdd-principles/SKILL.md          | TDDサイクルに基づくテスト設計 |
+| .claude/skills/test-doubles/SKILL.md            | モック・スタブの活用          |
+| .claude/skills/boundary-value-analysis/SKILL.md | 境界値テストケース設計        |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -462,7 +462,7 @@ pnpm --filter @repo/desktop test
 
 #### 使用エージェント
 
-- **エージェント**: @e2e-tester
+- **エージェント**: .claude/agents/e2e-tester.md
 - **選定理由**: Playwright E2Eテストの専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -470,8 +470,8 @@ pnpm --filter @repo/desktop test
 
 | スキル名           | 活用方法                     |
 | ------------------ | ---------------------------- |
-| playwright-testing | E2Eテストシナリオ設計・実装  |
-| accessibility-wcag | アクセシビリティテストケース |
+| .claude/skills/playwright-testing/SKILL.md | E2Eテストシナリオ設計・実装  |
+| .claude/skills/accessibility-wcag/SKILL.md | アクセシビリティテストケース |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -525,7 +525,7 @@ pnpm --filter @repo/desktop test:e2e
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: Reactコンポーネント実装の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -533,9 +533,9 @@ pnpm --filter @repo/desktop test:e2e
 
 | スキル名              | 活用方法             |
 | --------------------- | -------------------- |
-| custom-hooks-patterns | useTooltipフック実装 |
-| state-lifting         | ツールチップ状態管理 |
-| accessibility-wcag    | ARIA属性実装         |
+| .claude/skills/custom-hooks-patterns/SKILL.md | useTooltipフック実装 |
+| .claude/skills/state-lifting/SKILL.md         | ツールチップ状態管理 |
+| .claude/skills/accessibility-wcag/SKILL.md    | ARIA属性実装         |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -594,7 +594,7 @@ pnpm --filter @repo/desktop test
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: ファイル情報表示UIの実装に最適
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -602,7 +602,7 @@ pnpm --filter @repo/desktop test
 
 | スキル名             | 活用方法           |
 | -------------------- | ------------------ |
-| type-safety-patterns | ファイル情報型定義 |
+| .claude/skills/type-safety-patterns/SKILL.md | ファイル情報型定義 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -654,7 +654,7 @@ pnpm --filter @repo/desktop test
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: 既存コンポーネントへの機能追加の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -709,7 +709,7 @@ pnpm --filter @repo/desktop test:e2e
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: コード品質・可読性改善の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -717,8 +717,8 @@ pnpm --filter @repo/desktop test:e2e
 
 | スキル名               | 活用方法                                 |
 | ---------------------- | ---------------------------------------- |
-| clean-code-practices   | 命名改善・重複排除                       |
-| refactoring-techniques | Extract Function等のリファクタリング技法 |
+| .claude/skills/clean-code-practices/SKILL.md   | 命名改善・重複排除                       |
+| .claude/skills/refactoring-techniques/SKILL.md | Extract Function等のリファクタリング技法 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -767,7 +767,7 @@ pnpm --filter @repo/desktop test
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: 品質検証・メトリクス確認の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -775,8 +775,8 @@ pnpm --filter @repo/desktop test
 
 | スキル名             | 活用方法                 |
 | -------------------- | ------------------------ |
-| code-smell-detection | コード臭の検出           |
-| accessibility-wcag   | アクセシビリティ基準確認 |
+| .claude/skills/code-smell-detection/SKILL.md | コード臭の検出           |
+| .claude/skills/accessibility-wcag/SKILL.md   | アクセシビリティ基準確認 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -821,9 +821,9 @@ pnpm --filter @repo/desktop test
 
 | エージェント     | レビュー観点 | 選定理由                               |
 | ---------------- | ------------ | -------------------------------------- |
-| @code-quality    | コード品質   | 可読性・保守性の最終確認               |
-| @ui-designer     | UI/UX実装    | デザイン実装の妥当性確認               |
-| @frontend-tester | テスト品質   | テストカバレッジ・テストケースの妥当性 |
+| .claude/agents/code-quality.md    | コード品質   | 可読性・保守性の最終確認               |
+| .claude/agents/ui-designer.md     | UI/UX実装    | デザイン実装の妥当性確認               |
+| .claude/agents/frontend-tester.md | テスト品質   | テストカバレッジ・テストケースの妥当性 |
 
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -840,21 +840,21 @@ pnpm --filter @repo/desktop test
 
 #### レビューチェックリスト
 
-**コード品質** (@code-quality)
+**コード品質** (.claude/agents/code-quality.md)
 
 - [ ] コーディング規約への準拠
 - [ ] 可読性・保守性の確保
 - [ ] 適切なエラーハンドリング
 - [ ] 過度な複雑性がない
 
-**UI/UX実装** (@ui-designer)
+**UI/UX実装** (.claude/agents/ui-designer.md)
 
 - [ ] 設計通りに実装されている
 - [ ] ユーザビリティが高い
 - [ ] ダークモード対応が適切
 - [ ] アニメーションがスムーズ
 
-**テスト品質** (@frontend-tester)
+**テスト品質** (.claude/agents/frontend-tester.md)
 
 - [ ] テストカバレッジが十分
 - [ ] 境界値・異常系のテストがある
@@ -887,7 +887,7 @@ pnpm --filter @repo/desktop test
 
 #### 使用エージェント
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 - **選定理由**: 手動テストケース設計の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -933,7 +933,7 @@ pnpm --filter @repo/desktop test
 
 #### 使用エージェント
 
-- **エージェント**: @manual-writer
+- **エージェント**: .claude/agents/manual-writer.md
 - **選定理由**: UI/UXガイドラインドキュメント作成の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -966,7 +966,7 @@ pnpm --filter @repo/desktop test
 
 #### 使用エージェント
 
-- **エージェント**: @prompt-eng
+- **エージェント**: .claude/agents/prompt-eng.md
 - **選定理由**: コミットメッセージの自動生成が得意
 - **参照**: `.claude/agents/agent_list.md`
 

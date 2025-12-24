@@ -1,396 +1,104 @@
 ---
-name: user-story-mapping
+name: .claude/skills/user-story-mapping/SKILL.md
 description: |
   ユーザーストーリーの作成、優先順位付け、エピック分割の体系的手法。
   ユーザーの視点から要件を構造化し、価値提供の流れを可視化します。
-
-  専門分野:
-  - ストーリー作成: As a/I want/So that形式、INVEST基準
-  - ストーリーマッピング: アクティビティ、タスク、リリース計画
-  - 優先順位付け: MoSCoW、価値ベース、リスクベース評価
-  - エピック分解: 垂直スライス、MVP定義、段階的リリース
-
+  
+  📖 参照書籍:
+  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
+  
   📚 リソース参照:
-  このスキルにはリソースファイルがありません。
-
-  使用タイミング:
-  - プロジェクト初期の要件探索時
-  - バックログの構造化と整理時
-  - MVPスコープの定義時
-  - リリース計画の策定時
-
-  Use proactively when exploring requirements, structuring backlogs,
-  or defining MVP scope with user-centric perspectives.
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  
+  Use proactively when handling user story mapping tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "The Pragmatic Programmer"
+    author: "Andrew Hunt, David Thomas"
+    concepts:
+      - "実践的改善"
+      - "品質維持"
 ---
 
 # ユーザーストーリーマッピングスキル
 
 ## 概要
 
-ユーザーの視点から要件を構造化し、価値提供の流れを可視化。
-共通理解の形成と MVP スコープの特定を支援します。
+ユーザーストーリーの作成、優先順位付け、エピック分割の体系的手法。
+ユーザーの視点から要件を構造化し、価値提供の流れを可視化します。
 
-## いつ使うか
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-- プロジェクト初期の要件探索
-- バックログの構造化と整理
-- MVP スコープの定義
-- リリース計画の策定
-- チーム間の認識合わせ
 
-## コア概念
+## ワークフロー
 
-### ユーザーストーリーの構造
+### Phase 1: 目的と前提の整理
 
-#### 基本フォーマット
+**目的**: タスクの目的と前提条件を明確にする
 
-```
-As a [ユーザータイプ]
-I want [機能/アクション]
-So that [価値/目的]
-```
+**アクション**:
 
-#### 受け入れ基準
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-```
-Given [前提条件]
-When [アクション]
-Then [期待結果]
-```
+### Phase 2: スキル適用
 
-### ストーリーマップの構成要素
+**目的**: スキルの指針に従って具体的な作業を進める
 
-#### 横軸: ユーザージャーニー
+**アクション**:
 
-1. **バックボーン** - 大きなアクティビティの流れ
-2. **ウォーキングスケルトン** - 最小限の通貫フロー
-3. **タイムライン** - 時系列での体験
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-#### 縦軸: 優先度と詳細度
+### Phase 3: 検証と記録
 
-1. **エピック** - 大きな機能群
-2. **ユーザーストーリー** - 実装可能な単位
-3. **タスク** - 技術的な作業項目
+**目的**: 成果物の検証と実行記録の保存
 
-## ストーリーマッピングプロセス
+**アクション**:
 
-### Step 1: ペルソナとゴールの定義
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-```
-ペルソナテンプレート:
-- 名前と役割
-- 背景と経験
-- ゴールと動機
-- ペインポイント
-- 成功の定義
-```
 
-### Step 2: バックボーンの構築
+## ベストプラクティス
 
-```
-アクティビティの識別:
-1. ユーザーの主要な行動を列挙
-2. 時系列で並べる
-3. グループ化して命名
-4. 依存関係を確認
+### すべきこと
+- プロジェクト初期の要件探索時
+- バックログの構造化と整理時
+- MVPスコープの定義時
+- リリース計画の策定時
+
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
+
+## コマンドリファレンス
+
+### リソース読み取り
+```bash
+cat .claude/skills/user-story-mapping/resources/Level1_basics.md
+cat .claude/skills/user-story-mapping/resources/Level2_intermediate.md
+cat .claude/skills/user-story-mapping/resources/Level3_advanced.md
+cat .claude/skills/user-story-mapping/resources/Level4_expert.md
+cat .claude/skills/user-story-mapping/resources/legacy-skill.md
 ```
 
-### Step 3: ストーリーの配置
-
-```
-詳細化のプロセス:
-1. 各アクティビティを分解
-2. ストーリーカードを作成
-3. 縦軸に優先度で配置
-4. 依存関係をマーク
+### スクリプト実行
+```bash
+node .claude/skills/user-story-mapping/scripts/log_usage.mjs --help
+node .claude/skills/user-story-mapping/scripts/validate-skill.mjs --help
 ```
 
-### Step 4: リリースラインの設定
-
-```
-MVP定義:
-- 最小限の価値提供
-- エンドツーエンドの動作
-- 学習可能な成果
-- 測定可能な指標
-```
-
-## ストーリーの品質基準
-
-### INVEST 原則
-
-#### Independent (独立性)
-
-- 他のストーリーに依存しない
-- 順序変更が可能
-- 並行実装が可能
-
-#### Negotiable (交渉可能性)
-
-- 実装方法は固定しない
-- 詳細は開発時に決定
-- 代替案の検討余地
-
-#### Valuable (価値)
-
-- ユーザーにとっての価値
-- ビジネス価値が明確
-- 測定可能な成果
-
-#### Estimable (見積可能性)
-
-- サイズが予測可能
-- 複雑度が理解可能
-- リスクが特定済み
-
-#### Small (小ささ)
-
-- 1 スプリントで完了
-- レビュー可能な粒度
-- テスト可能な範囲
-
-#### Testable (テスト可能性)
-
-- 受け入れ基準が明確
-- 自動テスト可能
-- デモ可能な成果
-
-## エピック分割パターン
-
-### パターン 1: ワークフロー分割
-
-```
-エピック: ユーザー管理
-↓
-- ユーザー登録
-- ログイン
-- パスワードリセット
-- プロフィール編集
-```
-
-### パターン 2: ビジネスルール分割
-
-```
-エピック: 価格計算
-↓
-- 基本価格計算
-- 割引適用
-- 税計算
-- 送料計算
-```
-
-### パターン 3: データ分割
-
-```
-エピック: レポート生成
-↓
-- 日次レポート
-- 週次レポート
-- 月次レポート
-- カスタムレポート
-```
-
-### パターン 4: CRUD 分割
-
-```
-エピック: 商品管理
-↓
-- 商品作成 (Create)
-- 商品表示 (Read)
-- 商品更新 (Update)
-- 商品削除 (Delete)
-```
-
-### パターン 5: パフォーマンス分割
-
-```
-エピック: 検索機能
-↓
-- 基本検索 (単純)
-- 詳細検索 (複雡)
-- 高速検索 (キャッシュ)
-- リアルタイム検索
-```
-
-### パターン 6: 垂直スライス分割（プロジェクト固有）
-
-**このプロジェクトのハイブリッドアーキテクチャ対応**:
-
-```
-エピック: AI ワークフロー実行機能
-↓ 垂直スライスで分割（features/[機能名]/）
-- YouTube動画要約（features/youtube-summarize/）
-  - schema.ts: 入出力スキーマ（Zod）
-  - executor.ts: IWorkflowExecutor実装
-  - __tests__/executor.test.ts: TDDテスト
-- 議事録文字起こし（features/meeting-transcribe/）
-  - schema.ts
-  - executor.ts
-  - __tests__/executor.test.ts
-- [新機能]（features/新機能名/）
-  - 同じ構造を繰り返し
-```
-
-**垂直スライスの利点**:
-
-- ✅ 1機能 = 1フォルダで完結（認知負荷削減）
-- ✅ 機能追加・削除が高速（フォルダごと操作）
-- ✅ 機能間の独立性確保（相互依存禁止）
-- ✅ テストの局所化（**tests**/ で完結）
-- ✅ Registry登録のみで有効化（features/registry.ts）
-
-**共通インフラの分離**:
-
-- shared/infrastructure/ai/: 全機能で共有する AI クライアント
-- shared/infrastructure/database/: 全機能で共有する DB 接続
-- shared/infrastructure/discord/: 全機能で共有する Discord Bot
-- shared/core/: ドメイン共通要素（IWorkflowExecutor, WorkflowError等）
-
-## ストーリーテンプレート集
-
-### 認証系ストーリー
-
-```
-As a 新規ユーザー
-I want メールアドレスで登録する
-So that サービスを利用開始できる
-
-受け入れ基準:
-- 有効なメールアドレスの検証
-- パスワード強度の確認
-- 確認メールの送信
-- 重複登録の防止
-```
-
-### データ管理系ストーリー
-
-```
-As a 管理者
-I want CSVでデータをエクスポートする
-So that 外部ツールで分析できる
-
-受け入れ基準:
-- フィルタ条件の保持
-- 文字コード選択
-- 大量データの分割処理
-- ダウンロード通知
-```
-
-### 通知系ストーリー
-
-```
-As a ユーザー
-I want 重要な更新を通知で受け取る
-So that タイムリーに対応できる
-
-受け入れ基準:
-- 通知設定のカスタマイズ
-- 複数チャネル対応
-- 既読/未読管理
-- 通知の一括操作
-```
-
-## 優先順位付け手法
-
-### MoSCoW 法
-
-- **Must have** - 必須要件
-- **Should have** - 重要要件
-- **Could have** - あれば良い
-- **Won't have** - 今回は対象外
-
-### Value vs Effort Matrix
-
-```
-高価値・低工数 → 最優先
-高価値・高工数 → 計画的実施
-低価値・低工数 → 余裕時実施
-低価値・高工数 → 実施しない
-```
-
-### Kano Model
-
-- **基本品質** - あって当然
-- **性能品質** - 多いほど良い
-- **魅力品質** - 驚きと喜び
-
-## 可視化ツール
-
-### 物理的ツール
-
-- 付箋とホワイトボード
-- インデックスカード
-- マスキングテープ
-
-### デジタルツール
-
-- Miro / Mural
-- StoriesOnBoard
-- CardBoard
-- Jira + Easy Agile
-
-## アンチパターンと対策
-
-### アンチパターン 1: 技術タスクのストーリー化
-
-**症状**: 「データベースを設定する」のような技術的なストーリー
-**対策**: ユーザー価値にフォーカス、技術タスクはサブタスク化
-
-### アンチパターン 2: 巨大ストーリー
-
-**症状**: 1 スプリントで完了不可能なストーリー
-**対策**: INVEST 原則でチェック、分割パターンの適用
-
-### アンチパターン 3: 曖昧な受け入れ基準
-
-**症状**: 「うまく動く」「速い」のような主観的基準
-**対策**: 測定可能な基準、具体的なシナリオ
-
-## ワークショップファシリテーション
-
-### 準備
-
-- [ ] 参加者の選定（ステークホルダー、開発チーム）
-- [ ] ペルソナの事前作成
-- [ ] 会場とツールの準備
-- [ ] タイムボックスの設定
-
-### 実施
-
-- [ ] アイスブレイク（10 分）
-- [ ] ペルソナ確認（15 分）
-- [ ] バックボーン作成（30 分）
-- [ ] ストーリー配置（60 分）
-- [ ] MVP 議論（30 分）
-- [ ] 次のステップ（15 分）
-
-### フォローアップ
-
-- [ ] デジタル化
-- [ ] 詳細化セッション
-- [ ] 見積もりセッション
-- [ ] バックログへの転記
-
-## チェックリスト
-
-### ストーリー作成時
-
-- [ ] ユーザー視点で記述されているか
-- [ ] 価値が明確か
-- [ ] INVEST 原則を満たすか
-- [ ] 受け入れ基準があるか
-
-### マップレビュー時
-
-- [ ] ユーザージャーニー全体が見えるか
-- [ ] MVP は最小か
-- [ ] 依存関係は明確か
-- [ ] リスクは特定されているか
-
-## 関連スキル
-
-- `agile-project-management` - アジャイル実践
-- `estimation-techniques` - 見積もり
-- `prioritization-frameworks` - 優先順位付け
-- `product-vision` - ビジョン策定
+## 変更履歴
+
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

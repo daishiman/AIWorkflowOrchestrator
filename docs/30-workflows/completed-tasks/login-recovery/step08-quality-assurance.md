@@ -3,7 +3,7 @@
 **タスクID**: T-06-1
 **実行日時**: 2025-12-20
 **フェーズ**: Phase 6 - 品質保証
-**担当**: @unit-tester, @sec-auditor
+**担当**: .claude/agents/unit-tester.md, .claude/agents/sec-auditor.md
 
 ---
 

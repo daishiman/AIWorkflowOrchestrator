@@ -1,138 +1,68 @@
 ---
 description: |
-  監視・アラートシステムの設計と設定。
-  SLO/SLI定義、ダッシュボード構築、アラートルール設定を含む包括的な監視基盤を構築します。
+  監視・アラートシステムの設計と設定。 SLO/SLI定義、ダッシュボード構築、アラートルール設定を含む包括的な監視基盤を構築します。
+  実行は専門エージェントに委譲します。
 
   🤖 起動エージェント:
   - `.claude/agents/sre-observer.md`: ロギング・監視設計専門エージェント
 
-  📚 利用可能スキル（sre-observerエージェントが必要時に参照）:
-  **Phase 2（SLO/SLI設計時）:** slo-sli-design（必須）
-  **Phase 4（アラート設計時）:** alert-design（必須）, slo-sli-design
-  **補助スキル:** observability-pillars, distributed-tracing
-
   ⚙️ このコマンドの設定:
-  - argument-hint: サービス名（オプション）
-  - allowed-tools: エージェント起動と監視設定用
-    • Task: sre-observerエージェント起動
-    • Read: ソースコード、既存設定
-    • Write(config/monitoring.*|docs/observability/**): 監視設定、ランブック
-    • Grep: メトリクス記録箇所確認
-  - model: sonnet（監視設計・設定タスク）
+  - argument-hint: [service-name]
+  - allowed-tools: Task（エージェント起動のみ）
+  - model: sonnet
 
   トリガーキーワード: monitoring, alert, slo, sli, dashboard, observability
 argument-hint: "[service-name]"
 allowed-tools:
   - Task
-  - Read
-  - Write(config/monitoring.*|docs/observability/**)
-  - Grep
 model: sonnet
 ---
 
 # 監視・アラート設定コマンド
 
-あなたは `/ai:setup-monitoring` コマンドを実行します。
-
 ## 目的
 
-SRE原則に基づく監視・アラートシステムを設計し、
-SLO/SLI定義、ダッシュボード、アラートルールを含む包括的な可観測性基盤を構築します。
+`.claude/commands/ai/setup-monitoring.md` の入力を受け取り、専門エージェントに実行を委譲します。
 
-## 実行フロー
+## エージェント起動フロー
 
-### Phase 1: エージェント起動準備
+### Phase 1: ロギング・監視設計専門エージェントの実行
 
-**ユーザー引数の処理:**
+**目的**: ロギング・監視設計専門エージェントに関するタスクを実行し、結果を整理する
 
-- `$1` (service-name): 監視対象サービス名（オプション、デフォルト: プロジェクト名）
+**背景**: 専門知識が必要なため専門エージェントに委譲する
 
-**コンテキスト収集:**
+**ゴール**: ロギング・監視設計専門エージェントの結果と次アクションが提示された状態
 
-```bash
-# プロジェクト名取得
-cat package.json | grep '"name"'
+**起動エージェント**: `.claude/agents/sre-observer.md`
 
-# 既存メトリクス確認
-grep -r "metric\|measure" src/
+Task ツールで `.claude/agents/sre-observer.md` を起動:
 
-# master_system_design.md 参照
-cat docs/00-requirements/master_system_design.md | grep -A 20 "workflows"
-```
+**コンテキスト**:
 
-### Phase 2: sre-observer エージェント起動
+- 引数: $ARGUMENTS（[service-name]）
 
-````typescript
-`.claude/agents/sre-observer.md` を起動し、以下を依頼:
+**依頼内容**:
 
-**タスク**: 監視・アラートシステムの設計と設定
-**フォーカス**: slo-sli-design, alert-designスキルを中心に活用
-
-**入力情報**:
-- サービス名: $SERVICE_NAME
-- プロジェクトコンテキスト: master_system_design.md
-- 既存メトリクス: grep結果
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
 
 **期待成果物**:
-1. **SLO/SLI定義** (`docs/observability/slo-sli.md`):
-   - ワークフロー成功率SLI: 成功/total workflows
-   - レイテンシSLI: p95レスポンスタイム < 30秒
-   - 可用性SLI: uptime > 99.9%
-   - エラーバジェット管理ポリシー
 
-2. **アラートルール** (`config/monitoring.alerts.yaml`):
-   ```yaml
-   alerts:
-     - name: workflow_failure_rate_high
-       condition: failure_rate > 5%
-       severity: critical
-       notification: discord_webhook
+- `docs/observability/`
+- `docs/00-requirements/master_system_design.md`
+- `docs/observability/slo-sli.md`
+- `docs/observability/dashboard-design.md`
+- `docs/observability/runbook.md`
+- `package.json`
 
-     - name: response_time_p95_slow
-       condition: p95_latency > 30s
-       severity: warning
-       notification: email
+**完了条件**:
 
-     - name: error_budget_depleted
-       condition: error_budget < 10%
-       severity: critical
-````
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
 
-3. **ダッシュボード設計** (`docs/observability/dashboard-design.md`):
-   - ゴールデンシグナル（Latency, Traffic, Errors, Saturation）
-   - ワークフロー成功率・失敗率
-   - エラーバジェット消費状況
-   - システムリソース使用率
+## 使用例
 
-4. **ランブック** (`docs/observability/runbook.md`):
-   - アラート対応手順
-   - エスカレーションフロー
-   - よくある問題と解決策
-
-**設計要件**:
-
-- Alert Fatigue回避（誤検知 < 5%）
-- すべてのアラートがアクション可能
-- SLOベースのアラート設計
-- ユーザー体験を反映するSLI
-
-```
-
-### Phase 3: 完了報告
-
-エージェントからの成果物を受け取り、ユーザーに以下を報告:
-- ✅ 定義されたSLI/SLO一覧
-- 📊 アラートルール数
-  - Critical: X件
-  - Warning: X件
-  - Info: X件
-- 🎯 エラーバジェット設定
-- 📖 ランブックページ数
-- 💡 推奨される次のステップ（実装・統合等）
-
-## 注意事項
-
-- このコマンドは監視設計のみを行い、詳細はエージェントに委譲
-- 実際のモニタリングツール統合は別途実施
-- SLO/SLIはビジネス要件に応じて調整が必要
+```bash
+/ai:setup-monitoring [service-name]
 ```

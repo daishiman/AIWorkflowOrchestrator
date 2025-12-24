@@ -16,14 +16,14 @@
 
 | エージェント       | 観点                 |   判定   | スコア |
 | ------------------ | -------------------- | :------: | :----: |
-| @electron-security | Electronセキュリティ | **PASS** | 9.6/10 |
-| @sec-auditor       | OWASP Top 10対応     | **PASS** | 10/10  |
-| @code-quality      | コード品質           | **PASS** | 97/100 |
-| @arch-police       | アーキテクチャ整合性 | **PASS** |   -    |
+| .claude/agents/electron-security.md | Electronセキュリティ | **PASS** | 9.6/10 |
+| .claude/agents/sec-auditor.md       | OWASP Top 10対応     | **PASS** | 10/10  |
+| .claude/agents/code-quality.md      | コード品質           | **PASS** | 97/100 |
+| .claude/agents/arch-police.md       | アーキテクチャ整合性 | **PASS** |   -    |
 
 ---
 
-## @electron-security 最終レビュー結果
+## .claude/agents/electron-security.md 最終レビュー結果
 
 ### CSP設定
 
@@ -60,7 +60,7 @@
 
 ---
 
-## @sec-auditor 最終レビュー結果
+## .claude/agents/sec-auditor.md 最終レビュー結果
 
 ### OWASP Top 10対応
 
@@ -93,7 +93,7 @@
 
 ---
 
-## @code-quality 最終レビュー結果
+## .claude/agents/code-quality.md 最終レビュー結果
 
 ### コーディング規約
 
@@ -149,7 +149,7 @@
 
 ---
 
-## @arch-police 最終レビュー結果
+## .claude/agents/arch-police.md 最終レビュー結果
 
 ### アーキテクチャ準拠
 
@@ -210,11 +210,11 @@
 
 | 優先度 | 項目                    | 担当               |
 | :----: | ----------------------- | ------------------ |
-|   中   | macOSでのsandbox明示化  | @electron-security |
-|   中   | CSP違反レポーティング   | @electron-security |
-|   低   | IPC境界値テスト追加     | @unit-tester       |
-|   低   | Reduxエラー状態の詳細化 | @code-quality      |
-|   低   | auth:logoutスキーマ追加 | @arch-police       |
+|   中   | macOSでのsandbox明示化  | .claude/agents/electron-security.md |
+|   中   | CSP違反レポーティング   | .claude/agents/electron-security.md |
+|   低   | IPC境界値テスト追加     | .claude/agents/unit-tester.md       |
+|   低   | Reduxエラー状態の詳細化 | .claude/agents/code-quality.md      |
+|   低   | auth:logoutスキーマ追加 | .claude/agents/arch-police.md       |
 
 これらはすべて**即座の修正不要**であり、将来的な改善項目として記録されます。
 

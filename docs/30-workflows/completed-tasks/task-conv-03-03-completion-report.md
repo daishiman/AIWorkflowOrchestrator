@@ -94,19 +94,19 @@
 
 **レビュー結果**:
 
-1. **@code-quality**: PASS
+1. **.claude/agents/code-quality.md**: PASS
    - ESLint 0エラー
    - DRY原則遵守（24重複削除）
    - 定数化によるマジックナンバー排除
    - 包括的JSDocドキュメント
 
-2. **@arch-police**: PASS
+2. **.claude/agents/arch-police.md**: PASS
    - 4ファイル構成（types/schemas/utils/index）準拠
    - CONV-03-01基礎型統合（Timestamped/WithMetadata）
    - SOLID原則遵守（SRP/OCP/ISP）
    - readonly修飾子による不変性保証
 
-3. **@unit-tester**: PASS
+3. **.claude/agents/unit-tester.md**: PASS
    - カバレッジ99.53%（目標80%+大幅超過）
    - 355テスト 100%成功
    - 39境界値テスト
@@ -339,9 +339,9 @@
 
 | レビュー      | 検出項目                       | 改善結果             |
 | ------------- | ------------------------------ | -------------------- |
-| @code-quality | 24箇所の重複、マジックナンバー | DRY原則適用、定数化  |
-| @arch-police  | アーキテクチャ準拠性確認       | CONV-03-01完全統合   |
-| @unit-tester  | テスト網羅性確認               | 99.53%カバレッジ達成 |
+| .claude/agents/code-quality.md | 24箇所の重複、マジックナンバー | DRY原則適用、定数化  |
+| .claude/agents/arch-police.md  | アーキテクチャ準拠性確認       | CONV-03-01完全統合   |
+| .claude/agents/unit-tester.md  | テスト網羅性確認               | 99.53%カバレッジ達成 |
 
 ---
 

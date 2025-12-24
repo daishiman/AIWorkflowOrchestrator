@@ -11,9 +11,9 @@
 
 | レビュー観点       | 担当エージェント | 判定      |
 | ------------------ | ---------------- | --------- |
-| コード品質         | `@code-quality`  | **MINOR** |
-| アーキテクチャ遵守 | `@arch-police`   | **PASS**  |
-| テスト品質         | `@unit-tester`   | **MINOR** |
+| コード品質         | `.claude/agents/code-quality.md`  | **MINOR** |
+| アーキテクチャ遵守 | `.claude/agents/arch-police.md`   | **PASS**  |
+| テスト品質         | `.claude/agents/unit-tester.md`   | **MINOR** |
 
 **総合判定**: ✅ **PASS** - 全レビュー観点でPASSまたはMINOR判定
 
@@ -21,7 +21,7 @@
 
 ## 1. コード品質レビュー結果
 
-**担当**: `@code-quality`
+**担当**: `.claude/agents/code-quality.md`
 **判定**: MINOR
 
 ### チェックリスト
@@ -71,7 +71,7 @@ export interface VectorStore<TMetadata extends Metadata = Metadata> {}
 
 ## 2. アーキテクチャ遵守レビュー結果
 
-**担当**: `@arch-police`
+**担当**: `.claude/agents/arch-police.md`
 **判定**: PASS
 
 ### チェックリスト
@@ -119,7 +119,7 @@ packages/shared/src/types/rag/
 
 ## 3. テスト品質レビュー結果
 
-**担当**: `@unit-tester`
+**担当**: `.claude/agents/unit-tester.md`
 **判定**: MINOR
 
 ### チェックリスト
@@ -215,8 +215,8 @@ RAG基本型・共通インターフェース（CONV-03-01）は、全レビュ�
 
 **レビュー実施者**:
 
-- `@code-quality` (agentId: a60a5e0)
-- `@arch-police` (agentId: ae21e09)
-- `@unit-tester` (agentId: aeb05ca)
+- `.claude/agents/code-quality.md` (agentId: a60a5e0)
+- `.claude/agents/arch-police.md` (agentId: ae21e09)
+- `.claude/agents/unit-tester.md` (agentId: aeb05ca)
 
 **レビュー完了日**: 2025-12-16

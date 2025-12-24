@@ -989,7 +989,7 @@ export const createMockEntityEntity = (
    - normalizeEntityName, getInverseRelationType等を設計
 
 3. **T-02-1: 設計レビューゲート**
-   - @arch-police, @domain-modeler, @schema-defによるレビュー
+   - .claude/agents/arch-police.md, .claude/agents/domain-modeler.md, .claude/agents/schema-def.mdによるレビュー
 
 ---
 

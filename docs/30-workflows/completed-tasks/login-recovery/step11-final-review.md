@@ -3,7 +3,7 @@
 **タスクID**: T-07-1
 **実行日時**: 2025-12-21
 **フェーズ**: Phase 7 - 最終レビューゲート
-**レビュアー**: @code-quality, @auth-specialist, @sec-auditor, @electron-security
+**レビュアー**: .claude/agents/code-quality.md, .claude/agents/auth-specialist.md, .claude/agents/sec-auditor.md, .claude/agents/electron-security.md
 
 ---
 
@@ -17,10 +17,10 @@
 
 | エージェント       | 判定                  | 主な評価                                         |
 | ------------------ | --------------------- | ------------------------------------------------ |
-| @code-quality      | **MINOR**             | コード品質は良好、エラーハンドリング改善余地あり |
-| @auth-specialist   | ~~MAJOR~~ → **MINOR** | 一部指摘が実装と矛盾、実装確認後に再評価         |
-| @sec-auditor       | **PASS**              | safeStorage使用、CSRF対策実装済み                |
-| @electron-security | ~~MAJOR~~ → **MINOR** | 基本的なセキュリティは確保、詳細検証は技術的負債 |
+| .claude/agents/code-quality.md      | **MINOR**             | コード品質は良好、エラーハンドリング改善余地あり |
+| .claude/agents/auth-specialist.md   | ~~MAJOR~~ → **MINOR** | 一部指摘が実装と矛盾、実装確認後に再評価         |
+| .claude/agents/sec-auditor.md       | **PASS**              | safeStorage使用、CSRF対策実装済み                |
+| .claude/agents/electron-security.md | ~~MAJOR~~ → **MINOR** | 基本的なセキュリティは確保、詳細検証は技術的負債 |
 
 ---
 
@@ -30,8 +30,8 @@
 
 #### 1. トークン暗号化保存
 
-**@auth-specialist指摘**: Access Token平文保存（MAJOR）
-**@sec-auditor評価**: safeStorage使用（PASS）
+**.claude/agents/auth-specialist.md指摘**: Access Token平文保存（MAJOR）
+**.claude/agents/sec-auditor.md評価**: safeStorage使用（PASS）
 
 **実装確認** (`apps/desktop/src/main/infrastructure/secureStorage.ts:37-39`):
 
@@ -45,14 +45,14 @@ if (safeStorage.isEncryptionAvailable()) {
 **結論**: ✅ **Refresh Tokenは暗号化保存されている**
 
 - macOS Keychain / Windows DPAPIを使用
-- @sec-auditorの評価が正しい
-- @auth-specialistの指摘は誤り
+- .claude/agents/sec-auditor.mdの評価が正しい
+- .claude/agents/auth-specialist.mdの指摘は誤り
 
 ---
 
 #### 2. IPC通信のバリデーション
 
-**@electron-security指摘**: withValidation未使用（MAJOR）
+**.claude/agents/electron-security.md指摘**: withValidation未使用（MAJOR）
 
 **実装確認** (`apps/desktop/src/main/ipc/authHandlers.ts:77, 145, 187`):
 
@@ -72,14 +72,14 @@ ipcMain.handle(
 **結論**: ✅ **withValidationが全authハンドラーで使用されている**
 
 - 送信元検証実装済み
-- @electron-securityの指摘は誤り
+- .claude/agents/electron-security.mdの指摘は誤り
 
 ---
 
 #### 3. State parameter検証（CSRF対策）
 
-**@sec-auditor評価**: CSRF対策実装済み（PASS）
-**@electron-security指摘**: State検証不足（MAJOR）
+**.claude/agents/sec-auditor.md評価**: CSRF対策実装済み（PASS）
+**.claude/agents/electron-security.md指摘**: State検証不足（MAJOR）
 
 **実装確認** (`apps/desktop/src/main/index.ts:105-188`):
 
@@ -97,7 +97,7 @@ async function handleAuthCallback(url: string): Promise<void> {
 
 **結論**: ❌ **State parameter検証は未実装**
 
-- @electron-securityの指摘が正しい
+- .claude/agents/electron-security.mdの指摘が正しい
 - 技術的負債DEBT-SEC-001として既に記録済み
 - ただし、Supabase OAuth実装では直接トークンを返すため、CSRF攻撃リスクは限定的
 
@@ -105,7 +105,7 @@ async function handleAuthCallback(url: string): Promise<void> {
 
 #### 4. PKCE実装
 
-**@auth-specialist指摘**: PKCE未実装（MAJOR）
+**.claude/agents/auth-specialist.md指摘**: PKCE未実装（MAJOR）
 
 **実装確認**:
 
@@ -114,7 +114,7 @@ async function handleAuthCallback(url: string): Promise<void> {
 
 **結論**: ❌ **PKCE未実装**
 
-- @auth-specialistの指摘が正しい
+- .claude/agents/auth-specialist.mdの指摘が正しい
 - 技術的負債DEBT-SEC-002として既に記録済み
 - OAuth 2.1ではPKCE必須だが、Supabase v2はまだサポート中
 

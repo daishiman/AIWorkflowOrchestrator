@@ -9,7 +9,7 @@
 | 親タスクID       | TASK-SEARCH-REPLACE-001          |
 | フェーズ         | Phase 1: 設計                    |
 | ステータス       | 完了                             |
-| 担当エージェント | @electron-architect              |
+| 担当エージェント | .claude/agents/electron-architect.md              |
 | 作成日           | 2025-12-12                       |
 | 参照要件定義書   | `task-step00-1`, `task-step00-3` |
 
@@ -1418,4 +1418,4 @@ export function validateFilePath(
 
 | 日付       | 版  | 変更内容 | 担当                |
 | ---------- | --- | -------- | ------------------- |
-| 2025-12-12 | 1.0 | 初版作成 | @electron-architect |
+| 2025-12-12 | 1.0 | 初版作成 | .claude/agents/electron-architect.md |

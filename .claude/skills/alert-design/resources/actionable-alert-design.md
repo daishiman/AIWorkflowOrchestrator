@@ -326,4 +326,4 @@ for: 5m # 5分間継続した場合のみ
 
 このスキルを使用するエージェント:
 
-- `@sre-observer` - ロギング・監視設計者 (.claude/agents/sre-observer.md:981)
+- `.claude/agents/sre-observer.md` - ロギング・監視設計者 (.claude/agents/sre-observer.md:981)

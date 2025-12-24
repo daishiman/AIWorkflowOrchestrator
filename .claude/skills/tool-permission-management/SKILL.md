@@ -1,184 +1,110 @@
 ---
-name: tool-permission-management
+name: .claude/skills/tool-permission-management/SKILL.md
 description: |
   ツール権限管理とセキュリティ制御を専門とするスキル。
-
+  
+  📖 参照書籍:
+  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/tool-permission-management/resources/tool-selection-matrix.md`: Tool Selection Matrixリソース
-
-  - `.claude/skills/tool-permission-management/templates/permission-template.yaml`: Permissionテンプレート
-
-  - `.claude/skills/tool-permission-management/scripts/analyze-permissions.mjs`: Analyze Permissionsスクリプト
-
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/tool-selection-matrix.md`: Tool Selection Matrixリソース
+  - `scripts/analyze-permissions.mjs`: Analyze Permissionsスクリプト
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/permission-template.yaml`: Permissionテンプレート
+  
+  Use proactively when handling tool permission management tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "The Pragmatic Programmer"
+    author: "Andrew Hunt, David Thomas"
+    concepts:
+      - "実践的改善"
+      - "品質維持"
 ---
 
 # Tool Permission Management
 
 ## 概要
 
-ツール権限管理は、最小権限の原則に基づき、エージェントに必要最小限の
-ツール権限のみを付与するセキュリティ設計手法です。
+ツール権限管理とセキュリティ制御を専門とするスキル。
 
-**主要な価値**:
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-- 最小権限によりセキュリティリスクを最小化
-- パス制限により誤操作を防止
-- 承認要求により危険な操作を制御
 
 ## ワークフロー
 
-### Phase 1: ツール選択
+### Phase 1: 目的と前提の整理
 
-**ツール選択の判断フロー**:
+**目的**: タスクの目的と前提条件を明確にする
 
-```
-エージェントの役割は？
-├─ 分析・レビュー → [Read, Grep, Glob]
-├─ 実装・生成 → [Read, Write, Edit, Grep]
-├─ 委譲・調整 → [Task, Read]
-└─ デプロイ・管理 → [Bash, Read, Write, Edit, Task]
-```
+**アクション**:
 
-**ツールカテゴリ**:
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-#### 読み取り専用 `[Read, Grep, Glob]`
+### Phase 2: スキル適用
 
-- 用途: 分析、レビュー、監査
-- リスク: 低
-- パス制限: 不要（読み取り のみ）
+**目的**: スキルの指針に従って具体的な作業を進める
 
-#### 読み書き `[Read, Write, Edit, Grep]`
+**アクション**:
 
-- 用途: 実装、生成、変換
-- リスク: 中
-- パス制限: **必須**
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-#### オーケストレーター `[Task, Read]`
+### Phase 3: 検証と記録
 
-- 用途: マルチエージェント調整
-- リスク: 中
-- パス制限: 不要
+**目的**: 成果物の検証と実行記録の保存
 
-#### フル権限 `[Bash, Read, Write, Edit, Task]`
+**アクション**:
 
-- 用途: デプロイ、インフラ管理
-- リスク: 高
-- パス制限: **必須**
-- 承認要求: **推奨**
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-### Phase 2: パス制限の設定
-
-**write_allowed_paths**:
-
-```yaml
-write_allowed_paths:
-  - ".claude/agents/**/*.md"
-  - "src/features/**/*.ts"
-  - "docs/**/*.md"
-```
-
-**write_forbidden_paths**:
-
-```yaml
-write_forbidden_paths:
-  - ".env"
-  - "**/*.key"
-  - "**/*.pem"
-  - ".git/**"
-  - "node_modules/**"
-```
-
-### Phase 3: 承認要求の設定
-
-**approval_required**:
-
-```yaml
-approval_required: true
-```
-
-**approval_required_for**:
-
-```yaml
-approval_required_for:
-  - "rm *"
-  - "git push"
-  - "pnpm publish"
-```
-
-### Phase 4: Bash 制限
-
-**許可されるコマンド**:
-
-```yaml
-approved_commands:
-  - "ls"
-  - "find"
-  - "grep"
-  - "git status"
-```
-
-**禁止されるコマンド**:
-
-- `rm -rf`
-- `sudo`
-- `curl | sh`
-- `wget | sh`
 
 ## ベストプラクティス
 
-✅ **すべきこと**:
+### すべきこと
+- resources/Level1_basics.md を参照し、適用範囲を明確にする
+- resources/Level2_intermediate.md を参照し、実務手順を整理する
 
-- 必要最小限のツールのみ選択
-- パス制限を必ず設定（Write/Edit 使用時）
-- 危険な操作に承認要求
-
-❌ **避けるべきこと**:
-
-- 不要なツール権限の付与
-- パス制限の省略
-- 承認なしの危険操作
-
-## 関連スキル
-
-- **agent-structure-design** (`.claude/skills/agent-structure-design/SKILL.md`)
-- **agent-quality-standards** (`.claude/skills/agent-quality-standards/SKILL.md`)
-
-## 詳細リファレンス
-
-詳細な実装ガイドとツールは以下を参照:
-
-- ツール選択マトリックス (`resources/tool-selection-matrix.md`)
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
 
 ## コマンドリファレンス
 
-このスキルで使用可能なリソース、テンプレートへのアクセスコマンド:
-
 ### リソース読み取り
-
 ```bash
-# ツール選択マトリックスを読み取る
+cat .claude/skills/tool-permission-management/resources/Level1_basics.md
+cat .claude/skills/tool-permission-management/resources/Level2_intermediate.md
+cat .claude/skills/tool-permission-management/resources/Level3_advanced.md
+cat .claude/skills/tool-permission-management/resources/Level4_expert.md
+cat .claude/skills/tool-permission-management/resources/legacy-skill.md
 cat .claude/skills/tool-permission-management/resources/tool-selection-matrix.md
 ```
 
-### 他のスキルのスクリプトを活用
-
+### スクリプト実行
 ```bash
-# エージェント構造検証（ツール権限も含む）
-node .claude/skills/agent-structure-design/scripts/validate-structure.mjs <agent_file.md>
+node .claude/skills/tool-permission-management/scripts/analyze-permissions.mjs --help
+node .claude/skills/tool-permission-management/scripts/log_usage.mjs --help
+node .claude/skills/tool-permission-management/scripts/validate-skill.mjs --help
+```
 
-# アーキテクチャパターン検証
-node .claude/skills/agent-architecture-patterns/scripts/validate-architecture.mjs <agent_file.md>
-
-# 知識ドキュメントの品質検証
-node .claude/skills/knowledge-management/scripts/validate-knowledge.mjs <file.md>
+### テンプレート参照
+```bash
+cat .claude/skills/tool-permission-management/templates/permission-template.yaml
 ```
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容 |
-| ---------- | ---------- | -------- |
-| 1.0.0      | 2025-11-24 | 初版作成 |
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

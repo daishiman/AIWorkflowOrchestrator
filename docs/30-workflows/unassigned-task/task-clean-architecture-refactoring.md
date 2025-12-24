@@ -13,7 +13,7 @@
 | ステータス       | 未実施                                                   |
 | 発見元           | Phase 7 - 最終レビューゲート                             |
 | 発見日           | 2024-12-23                                               |
-| 発見エージェント | @arch-police                                             |
+| 発見エージェント | .claude/agents/arch-police.md                                             |
 
 ---
 
@@ -21,7 +21,7 @@
 
 ### 1.1 背景
 
-Phase 7の最終レビュー（@arch-police）で、チャット履歴機能のアーキテクチャが**Clean Architectureの基本原則に重大な違反**をしていることが発見されました。
+Phase 7の最終レビュー（.claude/agents/arch-police.md）で、チャット履歴機能のアーキテクチャが**Clean Architectureの基本原則に重大な違反**をしていることが発見されました。
 
 **アーキテクチャ準拠率**: **45%** (9/20項目)
 
@@ -291,7 +291,7 @@ Clean Architecture準拠の詳細要件と移行戦略を定義する。
 
 ##### 使用エージェント
 
-- **エージェント**: `@arch-police`
+- **エージェント**: `.claude/agents/arch-police.md`
 - **選定理由**: Clean Architectureの専門家、準拠状況を既にレビュー済み
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -299,9 +299,9 @@ Clean Architecture準拠の詳細要件と移行戦略を定義する。
 
 | スキル名                      | 活用方法               |
 | ----------------------------- | ---------------------- |
-| clean-architecture-principles | レイヤー分離要件定義   |
-| domain-driven-design          | ドメインモデル要件定義 |
-| solid-principles              | SOLID準拠基準設定      |
+| .claude/skills/clean-architecture-principles/SKILL.md | レイヤー分離要件定義   |
+| .claude/skills/domain-driven-design/SKILL.md          | ドメインモデル要件定義 |
+| .claude/skills/solid-principles/SKILL.md              | SOLID準拠基準設定      |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -345,7 +345,7 @@ Clean Architecture準拠の新しいディレクトリ構造・クラス設計�
 
 ##### 使用エージェント
 
-- **エージェント**: `@arch-police`
+- **エージェント**: `.claude/agents/arch-police.md`
 - **選定理由**: Clean Architecture設計の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -353,10 +353,10 @@ Clean Architecture準拠の新しいディレクトリ構造・クラス設計�
 
 | スキル名                      | 活用方法           |
 | ----------------------------- | ------------------ |
-| clean-architecture-principles | レイヤー分離設計   |
-| domain-driven-design          | ドメインモデル設計 |
+| .claude/skills/clean-architecture-principles/SKILL.md | レイヤー分離設計   |
+| .claude/skills/domain-driven-design/SKILL.md          | ドメインモデル設計 |
 | dependency-inversion          | DIPパターン適用    |
-| repository-pattern            | リポジトリ抽象化   |
+| .claude/skills/repository-pattern/SKILL.md            | リポジトリ抽象化   |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -390,27 +390,27 @@ Clean Architecture準拠の新しいディレクトリ構造・クラス設計�
 
 | エージェント    | レビュー観点           | 選定理由                     |
 | --------------- | ---------------------- | ---------------------------- |
-| @arch-police    | Clean Architecture準拠 | アーキテクチャ原則の専門家   |
-| @domain-modeler | ドメインモデル妥当性   | DDD実践の専門家              |
-| @code-quality   | 実装可能性評価         | リファクタリング実践の専門家 |
+| .claude/agents/arch-police.md    | Clean Architecture準拠 | アーキテクチャ原則の専門家   |
+| .claude/agents/domain-modeler.md | ドメインモデル妥当性   | DDD実践の専門家              |
+| .claude/agents/code-quality.md   | 実装可能性評価         | リファクタリング実践の専門家 |
 
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### レビューチェックリスト
 
-**Clean Architecture** (@arch-police)
+**Clean Architecture** (.claude/agents/arch-police.md)
 
 - [ ] 依存関係ルールが守られているか
 - [ ] レイヤー分離が明確か
 - [ ] SOLID原則に準拠しているか
 
-**ドメインモデル** (@domain-modeler)
+**ドメインモデル** (.claude/agents/domain-modeler.md)
 
 - [ ] ドメインロジックがエンティティに集約されているか
 - [ ] 値オブジェクトの境界が適切か
 - [ ] ユビキタス言語が反映されているか
 
-**実装可能性** (@code-quality)
+**実装可能性** (.claude/agents/code-quality.md)
 
 - [ ] 段階的な移行が可能か
 - [ ] リスクが適切に管理されているか
@@ -450,7 +450,7 @@ Clean Architecture準拠の新しいディレクトリ構造・クラス設計�
 
 ##### 使用エージェント
 
-- **エージェント**: `@unit-tester`
+- **エージェント**: `.claude/agents/unit-tester.md`
 - **選定理由**: TDD原則に基づくテスト設計の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -458,9 +458,9 @@ Clean Architecture準拠の新しいディレクトリ構造・クラス設計�
 
 | スキル名                | 活用方法           |
 | ----------------------- | ------------------ |
-| tdd-principles          | Red-Green-Refactor |
-| test-doubles            | モック・スタブ設計 |
-| boundary-value-analysis | 境界値テスト       |
+| .claude/skills/tdd-principles/SKILL.md          | Red-Green-Refactor |
+| .claude/skills/test-doubles/SKILL.md            | モック・スタブ設計 |
+| .claude/skills/boundary-value-analysis/SKILL.md | 境界値テスト       |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -514,7 +514,7 @@ Drizzle依存を除去し、純粋なドメインエンティティを実装す�
 
 ##### 使用エージェント
 
-- **エージェント**: `@domain-modeler`
+- **エージェント**: `.claude/agents/domain-modeler.md`
 - **選定理由**: DDD実践、ドメインモデル実装の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -522,8 +522,8 @@ Drizzle依存を除去し、純粋なドメインエンティティを実装す�
 
 | スキル名              | 活用方法                   |
 | --------------------- | -------------------------- |
-| domain-driven-design  | Rich Domain Model実装      |
-| value-object-patterns | 値オブジェクト実装         |
+| .claude/skills/domain-driven-design/SKILL.md  | Rich Domain Model実装      |
+| .claude/skills/value-object-patterns/SKILL.md | 値オブジェクト実装         |
 | result-type-pattern   | Result型エラーハンドリング |
 
 - **参照**: `.claude/skills/skill_list.md`
@@ -577,7 +577,7 @@ ChatHistoryServiceを単一責務のUse Caseに分割する。
 
 ##### 使用エージェント
 
-- **エージェント**: `@logic-dev`
+- **エージェント**: `.claude/agents/logic-dev.md`
 - **選定理由**: アプリケーション層ロジック実装の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -585,7 +585,7 @@ ChatHistoryServiceを単一責務のUse Caseに分割する。
 
 | スキル名                      | 活用方法         |
 | ----------------------------- | ---------------- |
-| clean-architecture-principles | Use Case層の実装 |
+| .claude/skills/clean-architecture-principles/SKILL.md | Use Case層の実装 |
 | command-query-separation      | CQRSパターン適用 |
 | railway-oriented-programming  | Result型での実装 |
 
@@ -636,7 +636,7 @@ pnpm --filter @repo/shared test:run use-cases
 
 ##### 使用エージェント
 
-- **エージェント**: `@repo-dev`
+- **エージェント**: `.claude/agents/repo-dev.md`
 - **選定理由**: リポジトリパターン実装の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -644,9 +644,9 @@ pnpm --filter @repo/shared test:run use-cases
 
 | スキル名                      | 活用方法                |
 | ----------------------------- | ----------------------- |
-| repository-pattern            | リポジトリ抽象化        |
+| .claude/skills/repository-pattern/SKILL.md            | リポジトリ抽象化        |
 | mapper-pattern                | ドメイン-永続化マッパー |
-| clean-architecture-principles | レイヤー分離            |
+| .claude/skills/clean-architecture-principles/SKILL.md | レイヤー分離            |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -688,7 +688,7 @@ UI層の直接的なサービス依存を解消し、DIパターンを実装す�
 
 ##### 使用エージェント
 
-- **エージェント**: `@state-manager`
+- **エージェント**: `.claude/agents/state-manager.md`
 - **選定理由**: React Context、カスタムフック設計の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -696,7 +696,7 @@ UI層の直接的なサービス依存を解消し、DIパターンを実装す�
 
 | スキル名              | 活用方法           |
 | --------------------- | ------------------ |
-| custom-hooks-patterns | カスタムフック設計 |
+| .claude/skills/custom-hooks-patterns/SKILL.md | カスタムフック設計 |
 | context-api-patterns  | React Context DI   |
 | dependency-injection  | DIパターン適用     |
 
@@ -741,7 +741,7 @@ UI層の直接的なサービス依存を解消し、DIパターンを実装す�
 
 ##### 使用エージェント
 
-- **エージェント**: `@arch-police`
+- **エージェント**: `.claude/agents/arch-police.md`
 - **選定理由**: 型定義の責務分離の専門家
 - **参照**: `.claude/agents/agent_list.md`
 

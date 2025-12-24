@@ -13,7 +13,7 @@
 | ステータス       | 未実施                                     |
 | 発見元           | AUTH-UI-002 最終レビュー（Phase 7）        |
 | 発見日           | 2025-12-20                                 |
-| 発見エージェント | @ui-designer（T-07-1最終レビュー）         |
+| 発見エージェント | .claude/agents/ui-designer.md（T-07-1最終レビュー）         |
 | 関連タスク       | AUTH-UI-002                                |
 
 ---
@@ -182,16 +182,16 @@ Phase 3: ドキュメント更新（UI/UXガイドライン16.16.8更新）
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: アクセシビリティとデザインシステムの専門家。Tailwind CSS arbitrary variantsに精通し、WCAG基準対応の経験豊富。
-- **代替候補**: @code-quality（コード品質専門だが、今回はUI/アクセシビリティのため@ui-designerが最適）
+- **代替候補**: .claude/agents/code-quality.md（コード品質専門だが、今回はUI/アクセシビリティのため.claude/agents/ui-designer.mdが最適）
 - **参照**: `.claude/agents/agent_list.md`
 
 #### 活用スキル
 
 | スキル名           | 活用方法                                   | 選定理由                           |
 | ------------------ | ------------------------------------------ | ---------------------------------- |
-| accessibility-wcag | WCAG 2.1 AAA対応、視覚障害者向けUI設計     | 高コントラストモードはWCAG AAA関連 |
+| .claude/skills/accessibility-wcag/SKILL.md | WCAG 2.1 AAA対応、視覚障害者向けUI設計     | 高コントラストモードはWCAG AAA関連 |
 | tailwind-advanced  | Arbitrary Variants活用、メディアクエリ統合 | Tailwind CSSの高度な機能が必要     |
 
 - **参照**: `.claude/skills/skill_list.md`
@@ -231,7 +231,7 @@ Phase 3: ドキュメント更新（UI/UXガイドライン16.16.8更新）
 
 #### 使用エージェント
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 - **選定理由**: アクセシビリティテストとメディアクエリモックの専門家。axe-core統合とReact Testing Library活用に精通。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -239,8 +239,8 @@ Phase 3: ドキュメント更新（UI/UXガイドライン16.16.8更新）
 
 | スキル名           | 活用方法                              | 選定理由                       |
 | ------------------ | ------------------------------------- | ------------------------------ |
-| accessibility-wcag | WCAG基準検証、axe-coreテスト          | アクセシビリティ準拠確認が必要 |
-| vitest-advanced    | window.matchMediaモック、非同期テスト | メディアクエリのモックが必要   |
+| .claude/skills/accessibility-wcag/SKILL.md | WCAG基準検証、axe-coreテスト          | アクセシビリティ準拠確認が必要 |
+| .claude/skills/vitest-advanced/SKILL.md    | window.matchMediaモック、非同期テスト | メディアクエリのモックが必要   |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -268,7 +268,7 @@ UI/UXガイドラインの16.16.8セクション（ベストプラクティス�
 
 #### 使用エージェント
 
-- **エージェント**: @spec-writer
+- **エージェント**: .claude/agents/spec-writer.md
 - **選定理由**: テクニカルライターとして、アクセシビリティパターンを適切にドキュメント化できる。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -277,7 +277,7 @@ UI/UXガイドラインの16.16.8セクション（ベストプラクティス�
 | スキル名                 | 活用方法                               | 選定理由                                 |
 | ------------------------ | -------------------------------------- | ---------------------------------------- |
 | technical-writing        | アクセシビリティパターンの明確な文書化 | 他の開発者が理解・再利用できる記述が必要 |
-| markdown-advanced-syntax | コードブロック、テーブルの適切な使用   | ガイドライン文書の可読性確保             |
+| .claude/skills/markdown-advanced-syntax/SKILL.md | コードブロック、テーブルの適切な使用   | ガイドライン文書の可読性確保             |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -421,5 +421,5 @@ UI/UXガイドラインの16.16.8セクション（ベストプラクティス�
 ---
 
 **作成日時**: 2025-12-20 23:35
-**作成者**: @spec-writer（T-09-1サブタスク9.2）
+**作成者**: .claude/agents/spec-writer.md（T-09-1サブタスク9.2）
 **次回レビュー**: 実装完了時

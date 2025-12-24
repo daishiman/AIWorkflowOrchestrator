@@ -18,9 +18,9 @@
 
 | 役割           | エージェント     | レビュー観点           |
 | -------------- | ---------------- | ---------------------- |
-| アーキテクチャ | @arch-police     | アーキテクチャ整合性   |
-| UI/UX設計      | @ui-designer     | アクセシビリティ・UX   |
-| テスト         | @frontend-tester | テスト容易性・品質保証 |
+| アーキテクチャ | .claude/agents/arch-police.md     | アーキテクチャ整合性   |
+| UI/UX設計      | .claude/agents/ui-designer.md     | アクセシビリティ・UX   |
+| テスト         | .claude/agents/frontend-tester.md | テスト容易性・品質保証 |
 
 ### 1.2 レビュー判定基準
 
@@ -33,7 +33,7 @@
 
 ---
 
-## 2. アーキテクチャレビュー (@arch-police)
+## 2. アーキテクチャレビュー (.claude/agents/arch-police.md)
 
 ### 2.1 Portal使用の妥当性
 
@@ -114,7 +114,7 @@ menuPosition !== null ↔ isAvatarMenuOpen === true
 
 ---
 
-## 3. UI/UX設計レビュー (@ui-designer)
+## 3. UI/UX設計レビュー (.claude/agents/ui-designer.md)
 
 ### 3.1 アクセシビリティ設計の妥当性
 
@@ -171,7 +171,7 @@ menuPosition !== null ↔ isAvatarMenuOpen === true
 
 ---
 
-## 4. テスト容易性レビュー (@frontend-tester)
+## 4. テスト容易性レビュー (.claude/agents/frontend-tester.md)
 
 ### 4.1 テスト可能性
 
@@ -318,9 +318,9 @@ Element.prototype.getBoundingClientRect = vi.fn(() => ({
 
 | 役割           | エージェント           | 判定      | 日付           | 署名  |
 | -------------- | ---------------------- | --------- | -------------- | ----- |
-| アーキテクチャ | @arch-police           | PASS      | 2025-12-20     | ✓     |
-| UI/UX設計      | @ui-designer           | MINOR     | 2025-12-20     | ✓     |
-| テスト         | @frontend-tester       | PASS      | 2025-12-20     | ✓     |
+| アーキテクチャ | .claude/agents/arch-police.md           | PASS      | 2025-12-20     | ✓     |
+| UI/UX設計      | .claude/agents/ui-designer.md           | MINOR     | 2025-12-20     | ✓     |
+| テスト         | .claude/agents/frontend-tester.md       | PASS      | 2025-12-20     | ✓     |
 | **総合判定**   | **Design Review Gate** | **MINOR** | **2025-12-20** | **✓** |
 
 ---
@@ -331,6 +331,6 @@ Element.prototype.getBoundingClientRect = vi.fn(() => ({
 
 **次タスク**: T-02-2（設計ドキュメント修正） → T-03-1（Portal機能テスト作成 - TDD Red）
 
-**担当**: @ui-designer（設計ドキュメント修正）
+**担当**: .claude/agents/ui-designer.md（設計ドキュメント修正）
 
 **期限**: Phase 3開始前（即時）

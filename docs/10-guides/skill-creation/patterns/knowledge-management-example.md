@@ -1,15 +1,15 @@
-# スキル作成パターン: knowledge-management実例
+# スキル作成パターン: .claude/skills/knowledge-management/SKILL.md実例
 
 ## 概要
 
-このドキュメントは、skill-librarianエージェントから **knowledge-management** スキルを分離・作成した実例をパターンとして記録したものです。
+このドキュメントは、skill-librarianエージェントから **.claude/skills/knowledge-management/SKILL.md** スキルを分離・作成した実例をパターンとして記録したものです。
 他のスキル作成時の参考として活用できます。
 
 ## 実施情報
 
 - **作成日**: 2025-11-23
 - **対象エージェント**: skill-librarian (1849行)
-- **作成スキル**: knowledge-management
+- **作成スキル**: .claude/skills/knowledge-management/SKILL.md
 - **最終行数**: SKILL.md 408行（500行以内 ✓）
 
 ---
@@ -22,14 +22,14 @@
 
 1. skill-librarianエージェント(1849行)の全体を読み込み
 2. agent_list.mdから必要な5つのスキルを特定:
-   - knowledge-management
-   - progressive-disclosure
-   - documentation-architecture
-   - context-optimization
-   - best-practices-curation
+   - .claude/skills/knowledge-management/SKILL.md
+   - .claude/skills/progressive-disclosure/SKILL.md
+   - .claude/skills/documentation-architecture/SKILL.md
+   - .claude/skills/context-optimization/SKILL.md
+   - .claude/skills/best-practices-curation/SKILL.md
 3. 各スキルの役割と行数目標を決定
 
-**knowledge-managementの役割定義**:
+**.claude/skills/knowledge-management/SKILL.mdの役割定義**:
 
 - SECIモデルの適用
 - 暗黙知→形式知変換
@@ -194,7 +194,7 @@ version: 1.0.0
 1. **明確な役割定義**:
    - SECIモデルに特化
    - 知識管理のフレームワーク提供
-   - 他のスキル（progressive-disclosure等）との明確な分離
+   - 他のスキル（.claude/skills/progressive-disclosure/SKILL.md等）との明確な分離
 
 2. **適切なリソース分割**:
    - SECIの各フェーズごとに独立したリソース
@@ -350,7 +350,7 @@ version: 1.0.0
 - ヘルプメッセージ
 - 実行権限: `chmod +x`
 
-**knowledge-managementでの実装**:
+**.claude/skills/knowledge-management/SKILL.mdでの実装**:
 
 ```bash
 #!/bin/bash
@@ -412,7 +412,7 @@ set -e
 
 ## 次回への適用
 
-### progressive-disclosure スキル作成時
+### .claude/skills/progressive-disclosure/SKILL.md スキル作成時
 
 **予想される構造**:
 
@@ -437,7 +437,7 @@ progressive-disclosure/
 - パターン3: スクリプト提供（トークン計算の自動化）
 - パターン4: テンプレート提供（スキル作成テンプレート）
 
-### documentation-architecture スキル作成時
+### .claude/skills/documentation-architecture/SKILL.md スキル作成時
 
 **予想される構造**:
 
@@ -496,7 +496,7 @@ documentation-architecture/
 
 ## メトリクス
 
-### knowledge-management スキル
+### .claude/skills/knowledge-management/SKILL.md スキル
 
 **ファイル数**: 10
 
@@ -527,7 +527,7 @@ documentation-architecture/
 ### 効率化のポイント
 
 1. **テンプレートの再利用**:
-   - knowledge-managementのSKILL.mdをベースに
+   - .claude/skills/knowledge-management/SKILL.mdのSKILL.mdをベースに
    - セクション構成をそのまま活用
    - 内容を対象スキルに合わせて変更
 
@@ -563,10 +563,10 @@ documentation-architecture/
 
 このパターンを用いて、残り4つのスキルを作成:
 
-1. **progressive-disclosure** - このパターンを直接適用
-2. **documentation-architecture** - 構造設計に特化したバリエーション
-3. **context-optimization** - 最適化に特化したバリエーション
-4. **best-practices-curation** - キュレーションに特化したバリエーション
+1. **.claude/skills/progressive-disclosure/SKILL.md** - このパターンを直接適用
+2. **.claude/skills/documentation-architecture/SKILL.md** - 構造設計に特化したバリエーション
+3. **.claude/skills/context-optimization/SKILL.md** - 最適化に特化したバリエーション
+4. **.claude/skills/best-practices-curation/SKILL.md** - キュレーションに特化したバリエーション
 
 **期待される効果**:
 

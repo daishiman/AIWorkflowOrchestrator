@@ -22,7 +22,7 @@ Electron IPCによるネイティブダイアログ呼び出し、ファイル�
 | ステータス       | 未実施               |
 | 発見元           | 初期要件定義         |
 | 発見日           | 2025-12-15           |
-| 発見エージェント | @req-analyst         |
+| 発見エージェント | .claude/agents/req-analyst.md         |
 
 ---
 
@@ -157,7 +157,7 @@ graph TD
 
 #### 使用エージェント
 
-- **エージェント**: @req-analyst
+- **エージェント**: .claude/agents/req-analyst.md
 - **選定理由**: 要件の抽出・整理・明確化に特化したエージェントであり、Karl Wiegersの要求工学手法に基づいた体系的な要件定義が可能
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -165,9 +165,9 @@ graph TD
 
 | スキル名                               | 活用方法                         |
 | -------------------------------------- | -------------------------------- |
-| functional-non-functional-requirements | 機能要件・非機能要件の分類と整理 |
-| use-case-modeling                      | ユーザー視点でのユースケース特定 |
-| acceptance-criteria-writing            | 受け入れ基準の明確化             |
+| .claude/skills/functional-non-functional-requirements/SKILL.md | 機能要件・非機能要件の分類と整理 |
+| .claude/skills/use-case-modeling/SKILL.md                      | ユーザー視点でのユースケース特定 |
+| .claude/skills/acceptance-criteria-writing/SKILL.md            | 受け入れ基準の明確化             |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -218,17 +218,17 @@ Electronアプリケーションでのファイル操作は、セキュリティ
 
 #### 使用エージェント
 
-- **エージェント**: @req-analyst
+- **エージェント**: .claude/agents/req-analyst.md
 - **選定理由**: 非機能要件の体系的な整理・定義に精通
-- **補助エージェント**: @electron-security（セキュリティ観点）
+- **補助エージェント**: .claude/agents/electron-security.md（セキュリティ観点）
 - **参照**: `.claude/agents/agent_list.md`
 
 #### 活用スキル
 
 | スキル名                               | 活用方法                    |
 | -------------------------------------- | --------------------------- |
-| functional-non-functional-requirements | NFR分類と測定可能な目標定義 |
-| electron-security-hardening            | Electronセキュリティ要件    |
+| .claude/skills/functional-non-functional-requirements/SKILL.md | NFR分類と測定可能な目標定義 |
+| .claude/skills/electron-security-hardening/SKILL.md            | Electronセキュリティ要件    |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -281,7 +281,7 @@ TypeScriptの型安全性を最大限活用し、ファイル情報の構造を�
 
 #### 使用エージェント
 
-- **エージェント**: @schema-def
+- **エージェント**: .claude/agents/schema-def.md
 - **選定理由**: Zodスキーマ定義と型安全な設計に特化したエージェント
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -289,8 +289,8 @@ TypeScriptの型安全性を最大限活用し、ファイル情報の構造を�
 
 | スキル名             | 活用方法                       |
 | -------------------- | ------------------------------ |
-| zod-validation       | Zodスキーマによる型定義        |
-| type-safety-patterns | TypeScript厳格モードでの型設計 |
+| .claude/skills/zod-validation/SKILL.md       | Zodスキーマによる型定義        |
+| .claude/skills/type-safety-patterns/SKILL.md | TypeScript厳格モードでの型設計 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -341,7 +341,7 @@ IPC通信の設計（チャネル名、リクエスト/レスポンス形式）
 
 #### 使用エージェント
 
-- **エージェント**: @electron-architect
+- **エージェント**: .claude/agents/electron-architect.md
 - **選定理由**: Electron固有のMain/Renderer分離、IPC設計に精通したエージェント
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -349,8 +349,8 @@ IPC通信の設計（チャネル名、リクエスト/レスポンス形式）
 
 | スキル名                    | 活用方法                           |
 | --------------------------- | ---------------------------------- |
-| electron-architecture       | Main/Renderer分離、IPC通信パターン |
-| electron-security-hardening | contextBridge、CSP設定             |
+| .claude/skills/electron-architecture/SKILL.md       | Main/Renderer分離、IPC通信パターン |
+| .claude/skills/electron-security-hardening/SKILL.md | contextBridge、CSP設定             |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -401,7 +401,7 @@ Zustandストアの設計（状態、アクション、セレクタ）
 
 #### 使用エージェント
 
-- **エージェント**: @state-manager
+- **エージェント**: .claude/agents/state-manager.md
 - **選定理由**: React状態管理（Zustand/SWR/React Query）に特化したエージェント
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -409,8 +409,8 @@ Zustandストアの設計（状態、アクション、セレクタ）
 
 | スキル名                 | 活用方法                         |
 | ------------------------ | -------------------------------- |
-| data-fetching-strategies | 非同期データフェッチ戦略         |
-| custom-hooks-patterns    | カスタムフックによるロジック分離 |
+| .claude/skills/data-fetching-strategies/SKILL.md | 非同期データフェッチ戦略         |
+| .claude/skills/custom-hooks-patterns/SKILL.md    | カスタムフックによるロジック分離 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -460,7 +460,7 @@ FileSelectorコンポーネントのUI/UX設計
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: UIコンポーネント設計、アクセシビリティ、デザインシステムに特化
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -468,9 +468,9 @@ FileSelectorコンポーネントのUI/UX設計
 
 | スキル名                       | 活用方法                     |
 | ------------------------------ | ---------------------------- |
-| component-composition-patterns | Composition パターンでの設計 |
-| accessibility-wcag             | WCAG準拠のアクセシビリティ   |
-| tailwind-css-patterns          | Tailwind CSSでのスタイリング |
+| .claude/skills/component-composition-patterns/SKILL.md | Composition パターンでの設計 |
+| .claude/skills/accessibility-wcag/SKILL.md             | WCAG準拠のアクセシビリティ   |
+| .claude/skills/tailwind-css-patterns/SKILL.md          | Tailwind CSSでのスタイリング |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -511,27 +511,27 @@ FileSelectorコンポーネントのUI/UX設計
 
 | エージェント       | レビュー観点          | 選定理由                               |
 | ------------------ | --------------------- | -------------------------------------- |
-| @arch-police       | アーキテクチャ整合性  | クリーンアーキテクチャ準拠の検証       |
-| @electron-security | Electron セキュリティ | IPC通信のセキュリティ検証              |
-| @ui-designer       | UI/UX設計             | アクセシビリティ・ユーザビリティの検証 |
+| .claude/agents/arch-police.md       | アーキテクチャ整合性  | クリーンアーキテクチャ準拠の検証       |
+| .claude/agents/electron-security.md | Electron セキュリティ | IPC通信のセキュリティ検証              |
+| .claude/agents/ui-designer.md       | UI/UX設計             | アクセシビリティ・ユーザビリティの検証 |
 
 - **参照**: `.claude/agents/agent_list.md`
 
 #### レビューチェックリスト
 
-**アーキテクチャ整合性** (@arch-police)
+**アーキテクチャ整合性** (.claude/agents/arch-police.md)
 
 - [ ] クリーンアーキテクチャのレイヤー違反がないか
 - [ ] 依存関係逆転の原則(DIP)が守られているか
 - [ ] 既存設計との整合性があるか
 
-**Electronセキュリティ** (@electron-security)
+**Electronセキュリティ** (.claude/agents/electron-security.md)
 
 - [ ] contextBridgeを適切に使用しているか
 - [ ] IPC通信が安全か
 - [ ] ファイルパス検証が考慮されているか
 
-**UI/UX設計** (@ui-designer)
+**UI/UX設計** (.claude/agents/ui-designer.md)
 
 - [ ] アクセシビリティが考慮されているか
 - [ ] ユーザビリティが確保されているか
@@ -592,7 +592,7 @@ TDDの原則に従い、実装前にテストを作成することで、期待�
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: TDD原則に基づくユニットテスト設計・実装に特化
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -600,8 +600,8 @@ TDDの原則に従い、実装前にテストを作成することで、期待�
 
 | スキル名                | 活用方法                   |
 | ----------------------- | -------------------------- |
-| tdd-principles          | Red-Green-Refactorサイクル |
-| boundary-value-analysis | 境界値テスト               |
+| .claude/skills/tdd-principles/SKILL.md          | Red-Green-Refactorサイクル |
+| .claude/skills/boundary-value-analysis/SKILL.md | 境界値テスト               |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -658,7 +658,7 @@ IPCハンドラのユニットテスト作成
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: モック・スタブを活用したユニットテストに精通
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -666,8 +666,8 @@ IPCハンドラのユニットテスト作成
 
 | スキル名        | 活用方法                      |
 | --------------- | ----------------------------- |
-| test-doubles    | Electron dialog APIのモック化 |
-| vitest-advanced | Vitestでの非同期テスト        |
+| .claude/skills/test-doubles/SKILL.md    | Electron dialog APIのモック化 |
+| .claude/skills/vitest-advanced/SKILL.md | Vitestでの非同期テスト        |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -725,7 +725,7 @@ Zustandストアのユニットテスト作成
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: 状態管理ライブラリのテストパターンに精通
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -733,8 +733,8 @@ Zustandストアのユニットテスト作成
 
 | スキル名       | 活用方法           |
 | -------------- | ------------------ |
-| tdd-principles | 状態遷移のテスト   |
-| test-doubles   | ストアの分離テスト |
+| .claude/skills/tdd-principles/SKILL.md | 状態遷移のテスト   |
+| .claude/skills/test-doubles/SKILL.md   | ストアの分離テスト |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -792,7 +792,7 @@ FileSelectorのコンポーネントテスト作成
 
 #### 使用エージェント
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 - **選定理由**: コンポーネントテスト（React Testing Library）に特化
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -800,9 +800,9 @@ FileSelectorのコンポーネントテスト作成
 
 | スキル名           | 活用方法                     |
 | ------------------ | ---------------------------- |
-| playwright-testing | コンポーネントテストパターン |
-| test-doubles       | IPCモック化                  |
-| accessibility-wcag | アクセシビリティテスト       |
+| .claude/skills/playwright-testing/SKILL.md | コンポーネントテストパターン |
+| .claude/skills/test-doubles/SKILL.md       | IPCモック化                  |
+| .claude/skills/accessibility-wcag/SKILL.md | アクセシビリティテスト       |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -863,7 +863,7 @@ TDDのGreenフェーズとして、テストを通すための最小限の実装
 
 #### 使用エージェント
 
-- **エージェント**: @schema-def
+- **エージェント**: .claude/agents/schema-def.md
 - **選定理由**: Zodスキーマ定義と型推論に特化
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -871,8 +871,8 @@ TDDのGreenフェーズとして、テストを通すための最小限の実装
 
 | スキル名             | 活用方法        |
 | -------------------- | --------------- |
-| zod-validation       | Zodスキーマ実装 |
-| type-safety-patterns | 型安全な実装    |
+| .claude/skills/zod-validation/SKILL.md       | Zodスキーマ実装 |
+| .claude/skills/type-safety-patterns/SKILL.md | 型安全な実装    |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -930,7 +930,7 @@ IPCハンドラの実装
 
 #### 使用エージェント
 
-- **エージェント**: @electron-ui-dev
+- **エージェント**: .claude/agents/electron-ui-dev.md
 - **選定理由**: Electron UIコンポーネント・ダイアログ実装に特化
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -938,8 +938,8 @@ IPCハンドラの実装
 
 | スキル名                    | 活用方法               |
 | --------------------------- | ---------------------- |
-| electron-ui-patterns        | ダイアログ実装パターン |
-| electron-security-hardening | IPC通信のセキュリティ  |
+| .claude/skills/electron-ui-patterns/SKILL.md        | ダイアログ実装パターン |
+| .claude/skills/electron-security-hardening/SKILL.md | IPC通信のセキュリティ  |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -997,7 +997,7 @@ Zustandストアの実装
 
 #### 使用エージェント
 
-- **エージェント**: @state-manager
+- **エージェント**: .claude/agents/state-manager.md
 - **選定理由**: Zustand状態管理の実装に精通
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1005,8 +1005,8 @@ Zustandストアの実装
 
 | スキル名              | 活用方法           |
 | --------------------- | ------------------ |
-| custom-hooks-patterns | カスタムフック実装 |
-| state-lifting         | 状態の適切な配置   |
+| .claude/skills/custom-hooks-patterns/SKILL.md | カスタムフック実装 |
+| .claude/skills/state-lifting/SKILL.md         | 状態の適切な配置   |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1064,7 +1064,7 @@ FileSelectorコンポーネントの実装
 
 #### 使用エージェント
 
-- **エージェント**: @electron-ui-dev
+- **エージェント**: .claude/agents/electron-ui-dev.md
 - **選定理由**: Electron UIコンポーネント実装に特化
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1072,9 +1072,9 @@ FileSelectorコンポーネントの実装
 
 | スキル名                       | 活用方法                 |
 | ------------------------------ | ------------------------ |
-| component-composition-patterns | Compositionパターン実装  |
-| accessibility-wcag             | ARIA属性の実装           |
-| tailwind-css-patterns          | Tailwindでのスタイリング |
+| .claude/skills/component-composition-patterns/SKILL.md | Compositionパターン実装  |
+| .claude/skills/accessibility-wcag/SKILL.md             | ARIA属性の実装           |
+| .claude/skills/tailwind-css-patterns/SKILL.md          | Tailwindでのスタイリング |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1136,7 +1136,7 @@ TDDのRefactorフェーズとして、テストが通る状態を維持しなが
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: コード品質改善、リファクタリングに特化
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1144,8 +1144,8 @@ TDDのRefactorフェーズとして、テストが通る状態を維持しなが
 
 | スキル名               | 活用方法             |
 | ---------------------- | -------------------- |
-| refactoring-techniques | リファクタリング手法 |
-| clean-code-practices   | クリーンコード原則   |
+| .claude/skills/refactoring-techniques/SKILL.md | リファクタリング手法 |
+| .claude/skills/clean-code-practices/SKILL.md   | クリーンコード原則   |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1208,17 +1208,17 @@ pnpm --filter @repo/shared test:run
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: コード品質検証に特化
-- **補助エージェント**: @sec-auditor（セキュリティ検証）
+- **補助エージェント**: .claude/agents/sec-auditor.md（セキュリティ検証）
 - **参照**: `.claude/agents/agent_list.md`
 
 #### 活用スキル
 
 | スキル名             | 活用方法 |
 | -------------------- | -------- |
-| eslint-configuration | Lint検証 |
-| static-analysis      | 静的解析 |
+| .claude/skills/eslint-configuration/SKILL.md | Lint検証 |
+| .claude/skills/static-analysis/SKILL.md      | 静的解析 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1272,16 +1272,16 @@ pnpm --filter @repo/shared test:run
 
 #### 使用エージェント
 
-- **エージェント**: @arch-police
+- **エージェント**: .claude/agents/arch-police.md
 - **選定理由**: アーキテクチャ準拠の最終確認
-- **補助エージェント**: @sec-auditor（セキュリティ最終確認）
+- **補助エージェント**: .claude/agents/sec-auditor.md（セキュリティ最終確認）
 - **参照**: `.claude/agents/agent_list.md`
 
 #### 活用スキル
 
 | スキル名                   | 活用方法               |
 | -------------------------- | ---------------------- |
-| architectural-patterns     | アーキテクチャ準拠確認 |
+| .claude/skills/architectural-patterns/SKILL.md     | アーキテクチャ準拠確認 |
 | code-review-best-practices | レビューチェックリスト |
 
 - **参照**: `.claude/skills/skill_list.md`
@@ -1335,7 +1335,7 @@ pnpm --filter @repo/shared test:run
 
 #### 使用エージェント
 
-- **エージェント**: @e2e-tester
+- **エージェント**: .claude/agents/e2e-tester.md
 - **選定理由**: E2Eテストとユーザー体験検証に特化
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1343,8 +1343,8 @@ pnpm --filter @repo/shared test:run
 
 | スキル名           | 活用方法             |
 | ------------------ | -------------------- |
-| playwright-testing | E2Eテスト実行        |
-| accessibility-wcag | アクセシビリティ確認 |
+| .claude/skills/playwright-testing/SKILL.md | E2Eテスト実行        |
+| .claude/skills/accessibility-wcag/SKILL.md | アクセシビリティ確認 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1410,17 +1410,17 @@ pnpm --filter @repo/shared test:run
 
 #### 使用エージェント
 
-- **エージェント**: @api-doc-writer
+- **エージェント**: .claude/agents/api-doc-writer.md
 - **選定理由**: API仕様書作成に特化
-- **補助エージェント**: @manual-writer（ユーザードキュメント）
+- **補助エージェント**: .claude/agents/manual-writer.md（ユーザードキュメント）
 - **参照**: `.claude/agents/agent_list.md`
 
 #### 活用スキル
 
 | スキル名                         | 活用方法         |
 | -------------------------------- | ---------------- |
-| api-documentation-best-practices | API仕様書作成    |
-| markdown-advanced-syntax         | ドキュメント記述 |
+| .claude/skills/api-documentation-best-practices/SKILL.md | API仕様書作成    |
+| .claude/skills/markdown-advanced-syntax/SKILL.md         | ドキュメント記述 |
 
 - **参照**: `.claude/skills/skill_list.md`
 

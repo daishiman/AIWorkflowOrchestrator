@@ -100,51 +100,51 @@ AIが最適な組み合わせを動的に判断する。以下はガイドライ
 記載のないエージェントも agent_list.md を参照して活用可能。
 
     要件・仕様:
-      主要候補: ["@req-analyst", "@spec-writer", "@product-manager"]
+      主要候補: [".claude/agents/req-analyst.md", ".claude/agents/spec-writer.md", ".claude/agents/product-manager.md"]
       選定基準: "要件の明確化、仕様書作成、優先度決定が必要な場合"
 
     設計・アーキテクチャ:
-      主要候補: ["@arch-police", "@domain-modeler", "@electron-architect"]
+      主要候補: [".claude/agents/arch-police.md", ".claude/agents/domain-modeler.md", ".claude/agents/electron-architect.md"]
       選定基準: "構造設計、レイヤー分離、ドメインモデリングが必要な場合"
 
     フロントエンド:
-      主要候補: ["@ui-designer", "@router-dev", "@state-manager", "@frontend-tester"]
+      主要候補: [".claude/agents/ui-designer.md", ".claude/agents/router-dev.md", ".claude/agents/state-manager.md", ".claude/agents/frontend-tester.md"]
       選定基準: "UI実装、ルーティング、状態管理、フロントテストが必要な場合"
 
     バックエンド:
-      主要候補: ["@logic-dev", "@gateway-dev", "@workflow-engine", "@schema-def"]
+      主要候補: [".claude/agents/logic-dev.md", ".claude/agents/gateway-dev.md", ".claude/agents/workflow-engine.md", ".claude/agents/schema-def.md"]
       選定基準: "ビジネスロジック、API連携、スキーマ定義が必要な場合"
 
     データベース:
-      主要候補: ["@db-architect", "@dba-mgr", "@repo-dev"]
+      主要候補: [".claude/agents/db-architect.md", ".claude/agents/dba-mgr.md", ".claude/agents/repo-dev.md"]
       選定基準: "スキーマ設計、クエリ最適化、マイグレーションが必要な場合"
 
     テスト:
-      主要候補: ["@unit-tester", "@e2e-tester", "@frontend-tester"]
+      主要候補: [".claude/agents/unit-tester.md", ".claude/agents/e2e-tester.md", ".claude/agents/frontend-tester.md"]
       選定基準: "テスト種別（ユニット/E2E/コンポーネント）に応じて選定"
 
     品質・レビュー:
-      主要候補: ["@code-quality", "@arch-police", "@sec-auditor"]
+      主要候補: [".claude/agents/code-quality.md", ".claude/agents/arch-police.md", ".claude/agents/sec-auditor.md"]
       選定基準: "コード品質、アーキテクチャ整合性、セキュリティ検証に応じて選定"
 
     セキュリティ:
-      主要候補: ["@sec-auditor", "@auth-specialist", "@secret-mgr", "@electron-security"]
+      主要候補: [".claude/agents/sec-auditor.md", ".claude/agents/auth-specialist.md", ".claude/agents/secret-mgr.md", ".claude/agents/electron-security.md"]
       選定基準: "対象領域（認証/監査/機密情報/Electron）に応じて選定"
 
     インフラ・運用:
-      主要候補: ["@devops-eng", "@sre-observer", "@process-mgr"]
+      主要候補: [".claude/agents/devops-eng.md", ".claude/agents/sre-observer.md", ".claude/agents/process-mgr.md"]
       選定基準: "CI/CD、監視、プロセス管理が必要な場合"
 
     ドキュメント:
-      主要候補: ["@spec-writer", "@api-doc-writer", "@manual-writer"]
+      主要候補: [".claude/agents/spec-writer.md", ".claude/agents/api-doc-writer.md", ".claude/agents/manual-writer.md"]
       選定基準: "ドキュメント種別（仕様書/API/マニュアル）に応じて選定"
 
     Electron:
-      主要候補: ["@electron-architect", "@electron-ui-dev", "@electron-security", "@electron-devops"]
+      主要候補: [".claude/agents/electron-architect.md", ".claude/agents/electron-ui-dev.md", ".claude/agents/electron-security.md", ".claude/agents/electron-devops.md"]
       選定基準: "Electron固有の設計、UI、セキュリティ、ビルドに応じて選定"
 
     Git・PR作成:
-      主要候補: ["@devops-eng", "@command-arch", "@prompt-eng"]
+      主要候補: [".claude/agents/devops-eng.md", ".claude/agents/command-arch.md", ".claude/agents/prompt-eng.md"]
       選定基準: "Git操作、PR作成、コミットメッセージ生成が必要な場合"
 
 複合タスクの選定例:
@@ -154,15 +154,15 @@ AIが最適な組み合わせを動的に判断する。以下はガイドライ
 
     例1_認証機能実装:
       領域: "セキュリティ + フロントエンド + バックエンド"
-      候補組み合わせ: "@auth-specialist（主）, @ui-designer, @logic-dev"
+      候補組み合わせ: ".claude/agents/auth-specialist.md（主）, .claude/agents/ui-designer.md, .claude/agents/logic-dev.md"
 
     例2_パフォーマンス改善:
       領域: "データベース + バックエンド + 監視"
-      候補組み合わせ: "@dba-mgr（主）, @repo-dev, @sre-observer"
+      候補組み合わせ: ".claude/agents/dba-mgr.md（主）, .claude/agents/repo-dev.md, .claude/agents/sre-observer.md"
 
     例3_新規画面追加:
       領域: "フロントエンド + テスト"
-      候補組み合わせ: "@ui-designer（主）, @router-dev, @frontend-tester"
+      候補組み合わせ: ".claude/agents/ui-designer.md（主）, .claude/agents/router-dev.md, .claude/agents/frontend-tester.md"
 
 選定時の注意: - "agent_list.md に記載の全エージェントが選定対象"
 
@@ -213,7 +213,7 @@ AIが最適な組み合わせを動的に判断する。以下はガイドライ
     "スラッシュコマンド":
       定義: |
         Claude Codeで実行するカスタムコマンド。
-        `/ai:xxx` 形式で記述される（例: /ai:setup-auth, /ai:generate-unit-tests）。
+        `/ai:xxx` 形式で記述される（例: .claude/commands/ai/setup-auth.md, .claude/commands/ai/generate-unit-tests.md）。
         ターミナルのシェルコマンドではなく、Claude Code内で実行される。
         利用可能なコマンドは `.claude/commands/ai/command_list.md` を参照。
 
@@ -381,9 +381,9 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
         - コンポーネントごと
         - レイヤーごと（ドメイン、アプリケーション、インフラ等）
       スラッシュコマンド候補:
-        - "/ai:design-architecture"
-        - "/ai:design-api"
-        - "/ai:design-database"
+        - ".claude/commands/ai/design-architecture.md"
+        - ".claude/commands/ai/design-api.md"
+        - ".claude/commands/ai/design-database.md"
         - "/ai:design-ui"
       成果物: "docs/30-workflows/{{機能名}}/task-step{{N+1}}-{{設計名}}.md"
       参照: ".claude/agents/agent_list.md から設計系エージェントを選定"
@@ -415,49 +415,49 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
           全ての観点が必須ではなく、タスクに関連する観点のみ実施する。
 
         要件充足性:
-          候補エージェント: ["@req-analyst", "@product-manager", "@spec-writer"]
+          候補エージェント: [".claude/agents/req-analyst.md", ".claude/agents/product-manager.md", ".claude/agents/spec-writer.md"]
           チェック項目:
             - "要件が明確かつ検証可能か"
             - "スコープが適切に定義されているか"
             - "受け入れ基準が具体的か"
 
         アーキテクチャ整合性:
-          候補エージェント: ["@arch-police", "@domain-modeler"]
+          候補エージェント: [".claude/agents/arch-police.md", ".claude/agents/domain-modeler.md"]
           チェック項目:
             - "クリーンアーキテクチャのレイヤー違反がないか"
             - "依存関係逆転の原則(DIP)が守られているか"
             - "既存設計との整合性があるか"
 
         ドメインモデル妥当性:
-          候補エージェント: ["@domain-modeler", "@logic-dev"]
+          候補エージェント: [".claude/agents/domain-modeler.md", ".claude/agents/logic-dev.md"]
           チェック項目:
             - "ユビキタス言語が適切に使用されているか"
             - "エンティティ・値オブジェクトの境界が適切か"
             - "ドメインルールが正しく表現されているか"
 
         セキュリティ設計:
-          候補エージェント: ["@sec-auditor", "@auth-specialist", "@electron-security"]
+          候補エージェント: [".claude/agents/sec-auditor.md", ".claude/agents/auth-specialist.md", ".claude/agents/electron-security.md"]
           チェック項目:
             - "セキュリティ上の考慮漏れがないか"
             - "認証・認可の設計が適切か"
             - "データ保護の方針が明確か"
 
         UI/UX設計:
-          候補エージェント: ["@ui-designer", "@frontend-tester"]
+          候補エージェント: [".claude/agents/ui-designer.md", ".claude/agents/frontend-tester.md"]
           チェック項目:
             - "アクセシビリティが考慮されているか"
             - "ユーザビリティが確保されているか"
             - "デザインシステムとの整合性があるか"
 
         データベース設計:
-          候補エージェント: ["@db-architect", "@dba-mgr"]
+          候補エージェント: [".claude/agents/db-architect.md", ".claude/agents/dba-mgr.md"]
           チェック項目:
             - "正規化が適切か"
             - "インデックス設計が考慮されているか"
             - "パフォーマンス影響が検討されているか"
 
         API設計:
-          候補エージェント: ["@api-doc-writer", "@gateway-dev"]
+          候補エージェント: [".claude/agents/api-doc-writer.md", ".claude/agents/gateway-dev.md"]
           チェック項目:
             - "REST原則に従っているか"
             - "エラーハンドリングが適切か"
@@ -487,9 +487,9 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
         - 機能ごと
         - レイヤーごと（フロントエンド、バックエンド等）
       スラッシュコマンド候補:
-        - "/ai:generate-unit-tests"
+        - ".claude/commands/ai/generate-unit-tests.md"
         - "/ai:generate-integration-tests"
-        - "/ai:generate-e2e-tests"
+        - ".claude/commands/ai/generate-e2e-tests.md"
         - "/ai:write-test-cases"
       検証: "テストを実行してRed（失敗）を確認"
       成果物: "docs/30-workflows/{{機能名}}/task-step{{N+3}}-{{テスト設計名}}.md"
@@ -578,7 +578,7 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
           各観点に最適なエージェントを動的に選定する。
 
         コード品質:
-          候補エージェント: ["@code-quality", "@arch-police"]
+          候補エージェント: [".claude/agents/code-quality.md", ".claude/agents/arch-police.md"]
           チェック項目:
             - "コーディング規約への準拠"
             - "可読性・保守性の確保"
@@ -586,14 +586,14 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
             - "過度な複雑性の有無"
 
         アーキテクチャ遵守:
-          候補エージェント: ["@arch-police", "@domain-modeler"]
+          候補エージェント: [".claude/agents/arch-police.md", ".claude/agents/domain-modeler.md"]
           チェック項目:
             - "実装がアーキテクチャ設計に従っているか"
             - "レイヤー間の依存関係が適切か"
             - "SOLID原則への準拠"
 
         テスト品質:
-          候補エージェント: ["@unit-tester", "@e2e-tester", "@frontend-tester"]
+          候補エージェント: [".claude/agents/unit-tester.md", ".claude/agents/e2e-tester.md", ".claude/agents/frontend-tester.md"]
           チェック項目:
             - "テストカバレッジが十分か"
             - "テストケースが適切に設計されているか"
@@ -601,7 +601,7 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
             - "テストの可読性・保守性"
 
         セキュリティ:
-          候補エージェント: ["@sec-auditor", "@auth-specialist", "@electron-security", "@secret-mgr"]
+          候補エージェント: [".claude/agents/sec-auditor.md", ".claude/agents/auth-specialist.md", ".claude/agents/electron-security.md", ".claude/agents/secret-mgr.md"]
           チェック項目:
             - "OWASP Top 10への対応"
             - "入力検証・サニタイズの実装"
@@ -609,35 +609,35 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
             - "機密情報の適切な取り扱い"
 
         パフォーマンス:
-          候補エージェント: ["@sre-observer", "@dba-mgr", "@repo-dev"]
+          候補エージェント: [".claude/agents/sre-observer.md", ".claude/agents/dba-mgr.md", ".claude/agents/repo-dev.md"]
           チェック項目:
             - "N+1問題等のパフォーマンス問題の有無"
             - "適切なログ出力の実装"
             - "監視・メトリクス収集の準備"
 
         フロントエンド（該当する場合）:
-          候補エージェント: ["@ui-designer", "@frontend-tester", "@state-manager"]
+          候補エージェント: [".claude/agents/ui-designer.md", ".claude/agents/frontend-tester.md", ".claude/agents/state-manager.md"]
           チェック項目:
             - "アクセシビリティ(WCAG)への準拠"
             - "レスポンシブデザインの実装"
             - "ユーザビリティの確保"
 
         バックエンドAPI（該当する場合）:
-          候補エージェント: ["@api-doc-writer", "@gateway-dev", "@schema-def"]
+          候補エージェント: [".claude/agents/api-doc-writer.md", ".claude/agents/gateway-dev.md", ".claude/agents/schema-def.md"]
           チェック項目:
             - "API設計の一貫性"
             - "エラーレスポンスの適切性"
             - "バージョニング戦略"
 
         データベース（該当する場合）:
-          候補エージェント: ["@db-architect", "@dba-mgr", "@repo-dev"]
+          候補エージェント: [".claude/agents/db-architect.md", ".claude/agents/dba-mgr.md", ".claude/agents/repo-dev.md"]
           チェック項目:
             - "スキーマ設計の妥当性"
             - "インデックス設計の適切性"
             - "マイグレーションの安全性"
 
         Electron（該当する場合）:
-          候補エージェント: ["@electron-security", "@electron-architect", "@electron-ui-dev"]
+          候補エージェント: [".claude/agents/electron-security.md", ".claude/agents/electron-architect.md", ".claude/agents/electron-ui-dev.md"]
           チェック項目:
             - "IPC通信のセキュリティ"
             - "CSP設定の適切性"
@@ -655,16 +655,16 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
           - "選定理由を明記"
 
         領域別候補エージェント:
-          セキュリティ課題: ["@sec-auditor", "@electron-security", "@auth-specialist"]
-          アーキテクチャ課題: ["@arch-police", "@domain-modeler"]
-          コード品質課題: ["@code-quality", "@logic-dev"]
-          テスト課題: ["@unit-tester", "@e2e-tester", "@frontend-tester"]
-          パフォーマンス課題: ["@sre-observer", "@dba-mgr"]
-          UI/UX課題: ["@ui-designer", "@frontend-tester"]
-          API課題: ["@api-doc-writer", "@gateway-dev"]
-          データベース課題: ["@db-architect", "@dba-mgr"]
-          要件課題: ["@req-analyst", "@product-manager"]
-          仕様書作成: ["@spec-writer", "@manual-writer"]
+          セキュリティ課題: [".claude/agents/sec-auditor.md", ".claude/agents/electron-security.md", ".claude/agents/auth-specialist.md"]
+          アーキテクチャ課題: [".claude/agents/arch-police.md", ".claude/agents/domain-modeler.md"]
+          コード品質課題: [".claude/agents/code-quality.md", ".claude/agents/logic-dev.md"]
+          テスト課題: [".claude/agents/unit-tester.md", ".claude/agents/e2e-tester.md", ".claude/agents/frontend-tester.md"]
+          パフォーマンス課題: [".claude/agents/sre-observer.md", ".claude/agents/dba-mgr.md"]
+          UI/UX課題: [".claude/agents/ui-designer.md", ".claude/agents/frontend-tester.md"]
+          API課題: [".claude/agents/api-doc-writer.md", ".claude/agents/gateway-dev.md"]
+          データベース課題: [".claude/agents/db-architect.md", ".claude/agents/dba-mgr.md"]
+          要件課題: [".claude/agents/req-analyst.md", ".claude/agents/product-manager.md"]
+          仕様書作成: [".claude/agents/spec-writer.md", ".claude/agents/manual-writer.md"]
 
         作成フロー:
           1. "レビューで課題を発見"
@@ -794,12 +794,22 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
         Phase_9_1:
           名称: "システムドキュメント更新"
           更新対象: "docs/00-requirements/ 配下の関連ドキュメント"
-          スラッシュコマンド: "/ai:update-all-docs"
+          スラッシュコマンド: ".claude/commands/ai/update-all-docs.md"
           更新原則:
             - "概要のみ記載（詳細な実装説明は不要）"
             - "システム構築に必要十分な情報のみ追記"
             - "既存ドキュメントの構造・フォーマットを維持"
             - "Single Source of Truth原則を遵守（重複記載禁止）"
+          スキル同期:
+            目的: "要求仕様の更新をスキルへ反映する"
+            実行コマンド:
+              - "python3 scripts/sync_requirements_to_skills.py"
+              - "python3 scripts/update_skill_levels.py"
+            自動化:
+              - ".claude/settings.local.json の Stop フックに requirements-sync.sh を設定する"
+            補足:
+              - "SKILL.md は requirements-index の参照が不足している場合のみ更新"
+              - "要求仕様の詳細は SKILL.md に再記述せず、docs/00-requirements を参照する"
           更新判断基準: |
             以下の場合にドキュメント更新が必要：
 
@@ -905,6 +915,7 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
 
       成果物:
         - "docs/00-requirements/ 配下の更新されたドキュメント"
+        - ".claude/skills/**/resources/requirements-index.md の更新"
         - "docs/30-workflows/unassigned-task/ 配下の未完了タスクドキュメント"
       参照: ".claude/agents/agent_list.md からtechnical-writer, spec-writerエージェントを選定"
 
@@ -920,9 +931,9 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
         PRマージは必ずユーザーがGitHub UIで手動実行する。
 
       推奨エージェント:
-        - "@devops-eng: Git/CI/CD、GitHub Actions、デプロイフロー"
-        - "@command-arch: ワークフロー定型化、コマンドオーケストレーション"
-        - "@prompt-eng: コミットメッセージ・PR本文の自動生成"
+        - ".claude/agents/devops-eng.md: Git/CI/CD、GitHub Actions、デプロイフロー"
+        - ".claude/agents/command-arch.md: ワークフロー定型化、コマンドオーケストレーション"
+        - ".claude/agents/prompt-eng.md: コミットメッセージ・PR本文の自動生成"
 
       実行内容:
         1. "差分確認（git status, git diff）"
@@ -934,7 +945,7 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
         7. "ユーザーにマージ可能を通知"
 
       スラッシュコマンド候補:
-        - "/ai:create-pr"
+        - ".claude/commands/ai/create-pr.md"
         - "/ai:commit-and-pr"
         - "/ai:prepare-merge"
 
@@ -1134,7 +1145,7 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
 
       参照:
         - ".kamui/prompt/merge-prompt.txt"
-        - ".claude/agents/agent_list.md から@devops-eng, @command-arch, @prompt-engを選定"
+        - ".claude/agents/agent_list.md から.claude/agents/devops-eng.md, .claude/agents/command-arch.md, .claude/agents/prompt-eng.mdを選定"
 
       重要事項:
         - "PRマージは必ずユーザーがGitHub UIで手動実行する"
@@ -2025,7 +2036,7 @@ Phase -1からPhase 10までの全フェーズを含む。
 
       ##### 指示書作成フロー
       1. 各担当エージェントが課題に対する指示書を作成
-      2. @spec-writerが指示書の品質を検証
+      2. .claude/agents/spec-writer.mdが指示書の品質を検証
       3. 品質基準を満たさない場合は担当エージェントが修正
 
       ##### 指示書出力先
@@ -2178,6 +2189,16 @@ Phase -1からPhase 10までの全フェーズを含む。
       - 既存ドキュメントの構造・フォーマットを維持
       - Single Source of Truth原則を遵守
 
+      ##### スキル同期（必要時）
+      docs/00-requirements を更新した場合はスキル索引を同期する。
+      SKILL.md は requirements-index の参照が不足している場合のみ更新する。
+
+      **ターミナル実行コマンド**
+      ```bash
+      python3 scripts/sync_requirements_to_skills.py
+      python3 scripts/update_skill_levels.py
+      ```
+
       ---
 
       #### サブタスク 9.2: 未完了タスク・追加タスク記録
@@ -2273,15 +2294,15 @@ Phase -1からPhase 10までの全フェーズを含む。
       - **参照**: `.claude/commands/ai/command_list.md`
 
       #### 使用エージェント
-      - **エージェント**: @prompt-eng
+      - **エージェント**: .claude/agents/prompt-eng.md
       - **選定理由**: コミットメッセージの自動生成が得意
       - **参照**: `.claude/agents/agent_list.md`
 
       #### 活用スキル
       | スキル名 | 活用方法 |
       |----------|----------|
-      | semantic-versioning | Conventional Commits形式のコミットメッセージ生成 |
-      | git-hooks-concepts | Pre-commit hooks理解とコミット前検証 |
+      | .claude/skills/semantic-versioning/SKILL.md | Conventional Commits形式のコミットメッセージ生成 |
+      | .claude/skills/git-hooks-concepts/SKILL.md | Pre-commit hooks理解とコミット前検証 |
       - **参照**: `.claude/skills/skill_list.md`
 
       #### 実行手順
@@ -2387,15 +2408,15 @@ Phase -1からPhase 10までの全フェーズを含む。
       - **参照**: `.claude/commands/ai/command_list.md`
 
       #### 使用エージェント
-      - **エージェント**: @devops-eng
+      - **エージェント**: .claude/agents/devops-eng.md
       - **選定理由**: GitHub操作・PR作成の専門家
       - **参照**: `.claude/agents/agent_list.md`
 
       #### 活用スキル
       | スキル名 | 活用方法 |
       |----------|----------|
-      | semantic-versioning | PRタイトル生成（Conventional Commits準拠） |
-      | markdown-advanced-syntax | PR本文のマークダウンフォーマット |
+      | .claude/skills/semantic-versioning/SKILL.md | PRタイトル生成（Conventional Commits準拠） |
+      | .claude/skills/markdown-advanced-syntax/SKILL.md | PR本文のマークダウンフォーマット |
       - **参照**: `.claude/skills/skill_list.md`
 
       #### 実行手順
@@ -2501,15 +2522,15 @@ Phase -1からPhase 10までの全フェーズを含む。
       - **参照**: `.claude/commands/ai/command_list.md`
 
       #### 使用エージェント
-      - **エージェント**: @prompt-eng
+      - **エージェント**: .claude/agents/prompt-eng.md
       - **選定理由**: 技術的な補足説明の生成が得意
       - **参照**: `.claude/agents/agent_list.md`
 
       #### 活用スキル
       | スキル名 | 活用方法 |
       |----------|----------|
-      | markdown-advanced-syntax | コメントのマークダウンフォーマット |
-      | api-documentation-best-practices | 技術的詳細の構造化された説明 |
+      | .claude/skills/markdown-advanced-syntax/SKILL.md | コメントのマークダウンフォーマット |
+      | .claude/skills/api-documentation-best-practices/SKILL.md | 技術的詳細の構造化された説明 |
       - **参照**: `.claude/skills/skill_list.md`
 
       #### 実行手順
@@ -2587,15 +2608,15 @@ Phase -1からPhase 10までの全フェーズを含む。
       - **参照**: `.claude/commands/ai/command_list.md`
 
       #### 使用エージェント
-      - **エージェント**: @devops-eng
+      - **エージェント**: .claude/agents/devops-eng.md
       - **選定理由**: CI/CD監視の専門家
       - **参照**: `.claude/agents/agent_list.md`
 
       #### 活用スキル
       | スキル名 | 活用方法 |
       |----------|----------|
-      | github-actions-debugging | CI/CD失敗時のデバッグ・原因特定 |
-      | metrics-tracking | CI実行時間・ステータスの監視 |
+      | .claude/skills/github-actions-debugging/SKILL.md | CI/CD失敗時のデバッグ・原因特定 |
+      | .claude/skills/metrics-tracking/SKILL.md | CI実行時間・ステータスの監視 |
       - **参照**: `.claude/skills/skill_list.md`
 
       #### 実行手順
@@ -2678,15 +2699,15 @@ Phase -1からPhase 10までの全フェーズを含む。
       - **参照**: `.claude/commands/ai/command_list.md`
 
       #### 使用エージェント
-      - **エージェント**: @devops-eng
+      - **エージェント**: .claude/agents/devops-eng.md
       - **選定理由**: Git/GitHub操作・マージフローの専門家
       - **参照**: `.claude/agents/agent_list.md`
 
       #### 活用スキル
       | スキル名 | 活用方法 |
       |----------|----------|
-      | stakeholder-communication | ユーザーへの明確な通知メッセージ生成 |
-      | markdown-advanced-syntax | 通知内容のフォーマット |
+      | .claude/skills/stakeholder-communication/SKILL.md | ユーザーへの明確な通知メッセージ生成 |
+      | .claude/skills/markdown-advanced-syntax/SKILL.md | 通知内容のフォーマット |
       - **参照**: `.claude/skills/skill_list.md`
 
       #### 通知内容

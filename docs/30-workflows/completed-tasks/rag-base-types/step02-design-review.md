@@ -20,13 +20,13 @@
 
 | エージェント      | レビュー観点         | 担当セクション |
 | ----------------- | -------------------- | -------------- |
-| `@arch-police`    | アーキテクチャ整合性 | セクション2    |
-| `@schema-def`     | スキーマ設計妥当性   | セクション3    |
-| `@domain-modeler` | ドメインモデル妥当性 | セクション4    |
+| `.claude/agents/arch-police.md`    | アーキテクチャ整合性 | セクション2    |
+| `.claude/agents/schema-def.md`     | スキーマ設計妥当性   | セクション3    |
+| `.claude/agents/domain-modeler.md` | ドメインモデル妥当性 | セクション4    |
 
 ---
 
-## 2. アーキテクチャ整合性レビュー（@arch-police）
+## 2. アーキテクチャ整合性レビュー（.claude/agents/arch-police.md）
 
 ### 2.1 レビューチェックリスト
 
@@ -110,7 +110,7 @@ index.ts    ←──┴─ (すべてを再エクスポート)
 
 ---
 
-## 3. スキーマ設計妥当性レビュー（@schema-def）
+## 3. スキーマ設計妥当性レビュー（.claude/agents/schema-def.md）
 
 ### 3.1 レビューチェックリスト
 
@@ -213,7 +213,7 @@ limit: z.number()
 
 ---
 
-## 4. ドメインモデル妥当性レビュー（@domain-modeler）
+## 4. ドメインモデル妥当性レビュー（.claude/agents/domain-modeler.md）
 
 ### 4.1 レビューチェックリスト
 
@@ -326,9 +326,9 @@ export interface Success<T> {
 
 | レビュー観点         | エージェント      | 判定     | MINOR指摘 | MAJOR指摘 |
 | -------------------- | ----------------- | -------- | --------- | --------- |
-| アーキテクチャ整合性 | `@arch-police`    | **PASS** | 0         | 0         |
-| スキーマ設計妥当性   | `@schema-def`     | **PASS** | 1         | 0         |
-| ドメインモデル妥当性 | `@domain-modeler` | **PASS** | 0         | 0         |
+| アーキテクチャ整合性 | `.claude/agents/arch-police.md`    | **PASS** | 0         | 0         |
+| スキーマ設計妥当性   | `.claude/agents/schema-def.md`     | **PASS** | 1         | 0         |
+| ドメインモデル妥当性 | `.claude/agents/domain-modeler.md` | **PASS** | 0         | 0         |
 
 ### 5.2 総合判定
 
@@ -375,9 +375,9 @@ export interface Success<T> {
 
 | 役割                   | エージェント      | 判定 | 日時       |
 | ---------------------- | ----------------- | ---- | ---------- |
-| アーキテクチャレビュー | `@arch-police`    | PASS | 2025-12-16 |
-| スキーマレビュー       | `@schema-def`     | PASS | 2025-12-16 |
-| ドメインモデルレビュー | `@domain-modeler` | PASS | 2025-12-16 |
+| アーキテクチャレビュー | `.claude/agents/arch-police.md`    | PASS | 2025-12-16 |
+| スキーマレビュー       | `.claude/agents/schema-def.md`     | PASS | 2025-12-16 |
+| ドメインモデルレビュー | `.claude/agents/domain-modeler.md` | PASS | 2025-12-16 |
 
 ---
 

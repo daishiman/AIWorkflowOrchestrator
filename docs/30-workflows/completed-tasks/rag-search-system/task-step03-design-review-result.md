@@ -3,7 +3,7 @@
 **バージョン**: 1.0.0
 **作成日**: 2025-12-18
 **レビュー実施日**: 2025-12-18
-**レビュー参加エージェント**: @req-analyst, @arch-police, @schema-def, @db-architect
+**レビュー参加エージェント**: .claude/agents/req-analyst.md, .claude/agents/arch-police.md, .claude/agents/schema-def.md, .claude/agents/db-architect.md
 
 ---
 
@@ -22,10 +22,10 @@
 
 | エージェント  | レビュー観点           | 判定  |
 | ------------- | ---------------------- | ----- |
-| @req-analyst  | 要件充足性             | MINOR |
-| @arch-police  | アーキテクチャ整合性   | PASS  |
-| @schema-def   | 型安全性・スキーマ設計 | MINOR |
-| @db-architect | データ構造設計         | MINOR |
+| .claude/agents/req-analyst.md  | 要件充足性             | MINOR |
+| .claude/agents/arch-police.md  | アーキテクチャ整合性   | PASS  |
+| .claude/agents/schema-def.md   | 型安全性・スキーマ設計 | MINOR |
+| .claude/agents/db-architect.md | データ構造設計         | MINOR |
 
 ---
 
@@ -39,8 +39,8 @@
 - アーキテクチャ原則（Clean Architecture、DIP）に従っている
 - 型安全性は高く、readonly修飾子も適切に使用されている
 - **ただし、以下の重要な改善点が存在する:**
-  1. エラー型がCONV-03-01のRAGError/Result<T,E>パターンと統合されていない（@req-analyst - MAJOR）
-  2. JSON活用設計でGenerated Columnによるインデックス最適化が不足（@db-architect - MAJOR）
+  1. エラー型がCONV-03-01のRAGError/Result<T,E>パターンと統合されていない（.claude/agents/req-analyst.md - MAJOR）
+  2. JSON活用設計でGenerated Columnによるインデックス最適化が不足（.claude/agents/db-architect.md - MAJOR）
 
 **次のアクション**:
 
@@ -53,7 +53,7 @@
 
 ### 3.1 MAJOR指摘（2件）
 
-#### MAJOR-001: エラー型統合（@req-analyst）
+#### MAJOR-001: エラー型統合（.claude/agents/req-analyst.md）
 
 **カテゴリ**: 型定義
 
@@ -91,7 +91,7 @@ function calculateRRFScore(...): Result<RRFResult[], InvalidWeightsError | Empty
 
 ---
 
-#### MAJOR-002: JSON最適化とGenerated Column（@db-architect）
+#### MAJOR-002: JSON最適化とGenerated Column（.claude/agents/db-architect.md）
 
 **カテゴリ**: データ構造
 
@@ -131,7 +131,7 @@ categoryIdx: index('idx_rag_files_category').on(table.metadataCategory),
 
 ### 3.2 MINOR指摘（6件）
 
-#### MINOR-001: 共通インターフェース拡張（@req-analyst）
+#### MINOR-001: 共通インターフェース拡張（.claude/agents/req-analyst.md）
 
 **指摘**: SearchStrategy型がCONV-03-01の`SearchStrategy<TQuery, TResult>`を拡張していない
 
@@ -141,7 +141,7 @@ categoryIdx: index('idx_rag_files_category').on(table.metadataCategory),
 
 ---
 
-#### MINOR-002: ページネーション対応（@req-analyst）
+#### MINOR-002: ページネーション対応（.claude/agents/req-analyst.md）
 
 **指摘**: SearchResultが`PaginatedResult<SearchResultItem>`形式を採用していない
 
@@ -151,7 +151,7 @@ categoryIdx: index('idx_rag_files_category').on(table.metadataCategory),
 
 ---
 
-#### MINOR-003: importパス不整合（@req-analyst）
+#### MINOR-003: importパス不整合（.claude/agents/req-analyst.md）
 
 **指摘**: 設計書では`../branded-types`、要件定義書では`../branded`
 
@@ -161,7 +161,7 @@ categoryIdx: index('idx_rag_files_category').on(table.metadataCategory),
 
 ---
 
-#### MINOR-004: タイポ修正（@req-analyst）
+#### MINOR-004: タイポ修正（.claude/agents/req-analyst.md）
 
 **指摘**: Zodスキーマ設計書のグローバルエラーマップにタイポ（シングルクォート未閉）
 
@@ -171,7 +171,7 @@ categoryIdx: index('idx_rag_files_category').on(table.metadataCategory),
 
 ---
 
-#### MINOR-005: SearchResult型のreadonly（@schema-def）
+#### MINOR-005: SearchResult型のreadonly（.claude/agents/schema-def.md）
 
 **指摘**: SearchResult型の`results`プロパティにreadonly修飾子が欠けている
 
@@ -181,7 +181,7 @@ categoryIdx: index('idx_rag_files_category').on(table.metadataCategory),
 
 ---
 
-#### MINOR-006: file_hash一意性制約（@db-architect）
+#### MINOR-006: file_hash一意性制約（.claude/agents/db-architect.md）
 
 **指摘**: `file_hash`の一意性制約がスキーマレベルで定義されていない
 
@@ -195,11 +195,11 @@ categoryIdx: index('idx_rag_files_category').on(table.metadataCategory),
 
 | ID       | エージェント  | カテゴリ         | 指摘内容                                 |
 | -------- | ------------- | ---------------- | ---------------------------------------- |
-| INFO-001 | @arch-police  | 命名整合性       | SourceType重複確認                       |
-| INFO-002 | @schema-def   | エラーメッセージ | 日本語統一                               |
-| INFO-003 | @req-analyst  | スコープ外       | スキーマバージョニング戦略（有益な追加） |
-| INFO-004 | @req-analyst  | ユーティリティ   | expandQuery同義語辞書依存                |
-| INFO-005 | @db-architect | JSON検証         | JSON検証スキーマの強化                   |
+| INFO-001 | .claude/agents/arch-police.md  | 命名整合性       | SourceType重複確認                       |
+| INFO-002 | .claude/agents/schema-def.md   | エラーメッセージ | 日本語統一                               |
+| INFO-003 | .claude/agents/req-analyst.md  | スコープ外       | スキーマバージョニング戦略（有益な追加） |
+| INFO-004 | .claude/agents/req-analyst.md  | ユーティリティ   | expandQuery同義語辞書依存                |
+| INFO-005 | .claude/agents/db-architect.md | JSON検証         | JSON検証スキーマの強化                   |
 
 ---
 
@@ -236,7 +236,7 @@ categoryIdx: index('idx_rag_files_category').on(table.metadataCategory),
 
 ## 5. レビュー観点別評価
 
-### 5.1 要件充足性（@req-analyst）
+### 5.1 要件充足性（.claude/agents/req-analyst.md）
 
 | 評価項目                 | 状態       | 詳細                          |
 | ------------------------ | ---------- | ----------------------------- |
@@ -248,7 +248,7 @@ categoryIdx: index('idx_rag_files_category').on(table.metadataCategory),
 
 ---
 
-### 5.2 アーキテクチャ整合性（@arch-police）
+### 5.2 アーキテクチャ整合性（.claude/agents/arch-police.md）
 
 | 評価項目           | 状態   | 詳細                                                |
 | ------------------ | ------ | --------------------------------------------------- |
@@ -259,7 +259,7 @@ categoryIdx: index('idx_rag_files_category').on(table.metadataCategory),
 
 ---
 
-### 5.3 型安全性・スキーマ設計（@schema-def）
+### 5.3 型安全性・スキーマ設計（.claude/agents/schema-def.md）
 
 | 評価項目               | 状態       | 詳細                             |
 | ---------------------- | ---------- | -------------------------------- |
@@ -271,7 +271,7 @@ categoryIdx: index('idx_rag_files_category').on(table.metadataCategory),
 
 ---
 
-### 5.4 データ構造設計（@db-architect）
+### 5.4 データ構造設計（.claude/agents/db-architect.md）
 
 | 評価項目           | 状態               | 詳細                     |
 | ------------------ | ------------------ | ------------------------ |

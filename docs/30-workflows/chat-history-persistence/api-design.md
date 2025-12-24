@@ -4,7 +4,7 @@
 
 title: チャット履歴エクスポートAPI設計書
 version: 1.0.0
-author: @api-doc-writer
+author: .claude/agents/api-doc-writer.md
 created: 2025-12-20
 status: draft
 parent_task: T-01-3
@@ -1072,7 +1072,7 @@ Cache-Control: no-store, max-age=0
 
 | バージョン | 日付       | 変更内容                        | 変更者          |
 | ---------- | ---------- | ------------------------------- | --------------- |
-| 1.0.0      | 2025-12-20 | 初版作成 - T-01-3タスクの成果物 | @api-doc-writer |
+| 1.0.0      | 2025-12-20 | 初版作成 - T-01-3タスクの成果物 | .claude/agents/api-doc-writer.md |
 
 ---
 

@@ -168,7 +168,7 @@ TOTP、SMS、WebAuthn等のMFA方式を比較し、優先順位を決定する�
 
 #### 使用エージェント
 
-- **エージェント**: @sec-auditor
+- **エージェント**: .claude/agents/sec-auditor.md
 - **選定理由**: セキュリティ要件定義の専門家。MFA方式の比較検討に最適。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -176,8 +176,8 @@ TOTP、SMS、WebAuthn等のMFA方式を比較し、優先順位を決定する�
 
 | スキル名            | 活用方法                 |
 | ------------------- | ------------------------ |
-| rbac-implementation | 認証・認可設計           |
-| oauth2-flows        | OAuth 2.0拡張としてのMFA |
+| .claude/skills/rbac-implementation/SKILL.md | 認証・認可設計           |
+| .claude/skills/oauth2-flows/SKILL.md        | OAuth 2.0拡張としてのMFA |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -218,7 +218,7 @@ Supabase Auth のMFA対応状況を調査してください。
 
 #### 使用エージェント
 
-- **エージェント**: @auth-specialist
+- **エージェント**: .claude/agents/auth-specialist.md
 - **選定理由**: Supabase Auth APIの専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -226,7 +226,7 @@ Supabase Auth のMFA対応状況を調査してください。
 
 | スキル名     | 活用方法                |
 | ------------ | ----------------------- |
-| oauth2-flows | Supabase Auth仕様の理解 |
+| .claude/skills/oauth2-flows/SKILL.md | Supabase Auth仕様の理解 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -269,7 +269,7 @@ MFA有効化・認証フローのUI/UXを設計する。
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: UI/UX設計の専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -277,8 +277,8 @@ MFA有効化・認証フローのUI/UXを設計する。
 
 | スキル名               | 活用方法                 |
 | ---------------------- | ------------------------ |
-| accessibility-wcag     | アクセシブルなMFA UI設計 |
-| progressive-disclosure | MFA設定の段階的公開      |
+| .claude/skills/accessibility-wcag/SKILL.md     | アクセシブルなMFA UI設計 |
+| .claude/skills/progressive-disclosure/SKILL.md | MFA設定の段階的公開      |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -326,7 +326,7 @@ MFA実装に使用するライブラリ・プロバイダーを選定する。
 
 #### 使用エージェント
 
-- **エージェント**: @auth-specialist
+- **エージェント**: .claude/agents/auth-specialist.md
 - **選定理由**: 認証技術の専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -334,7 +334,7 @@ MFA実装に使用するライブラリ・プロバイダーを選定する。
 
 | スキル名            | 活用方法                   |
 | ------------------- | -------------------------- |
-| dependency-auditing | ライブラリセキュリティ確認 |
+| .claude/skills/dependency-auditing/SKILL.md | ライブラリセキュリティ確認 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -376,7 +376,7 @@ MFA実装に必要なタスクを洗い出し、実装計画を策定する。
 
 #### 使用エージェント
 
-- **エージェント**: @spec-writer
+- **エージェント**: .claude/agents/spec-writer.md
 - **選定理由**: タスク指示書作成の専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -384,8 +384,8 @@ MFA実装に必要なタスクを洗い出し、実装計画を策定する。
 
 | スキル名                               | 活用方法         |
 | -------------------------------------- | ---------------- |
-| functional-non-functional-requirements | 要件の洗い出し   |
-| acceptance-criteria-writing            | 受け入れ基準定義 |
+| .claude/skills/functional-non-functional-requirements/SKILL.md | 要件の洗い出し   |
+| .claude/skills/acceptance-criteria-writing/SKILL.md            | 受け入れ基準定義 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -428,7 +428,7 @@ MFA実装の要件定義書を作成する。
 
 #### 使用エージェント
 
-- **エージェント**: @req-analyst
+- **エージェント**: .claude/agents/req-analyst.md
 - **選定理由**: 要件定義の専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -436,8 +436,8 @@ MFA実装の要件定義書を作成する。
 
 | スキル名                               | 活用方法         |
 | -------------------------------------- | ---------------- |
-| functional-non-functional-requirements | 要件定義書作成   |
-| acceptance-criteria-writing            | 受け入れ基準定義 |
+| .claude/skills/functional-non-functional-requirements/SKILL.md | 要件定義書作成   |
+| .claude/skills/acceptance-criteria-writing/SKILL.md            | 受け入れ基準定義 |
 
 - **参照**: `.claude/skills/skill_list.md`
 

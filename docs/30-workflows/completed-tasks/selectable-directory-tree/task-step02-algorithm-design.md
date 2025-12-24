@@ -9,7 +9,7 @@
 | バージョン       | 1.0.0                        |
 | ステータス       | Draft                        |
 | 作成日           | 2025-12-18                   |
-| 作成エージェント | @arch-police                 |
+| 作成エージェント | .claude/agents/arch-police.md                 |
 | 対象ファイル     | useWorkspaceFileSelection.ts |
 
 ---
@@ -552,4 +552,4 @@ const createMockFolder = (files: string[]): FileNode => ({
 
 | バージョン | 日付       | 更新者       | 更新内容 |
 | ---------- | ---------- | ------------ | -------- |
-| 1.0.0      | 2025-12-18 | @arch-police | 初版作成 |
+| 1.0.0      | 2025-12-18 | .claude/agents/arch-police.md | 初版作成 |

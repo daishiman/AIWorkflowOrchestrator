@@ -1,14 +1,20 @@
 ---
 description: |
   Electron自動更新システム構築（electron-updater）
+  実行は専門エージェントに委譲します。
+
+  🤖 起動エージェント:
+  - `.claude/agents/electron-devops.md`: 担当エージェント
+
+  ⚙️ このコマンドの設定:
+  - argument-hint: [--provider github|s3|generic]
+  - allowed-tools: Task（エージェント起動のみ）
+  - model: sonnet
+
+  トリガーキーワード: electron updater, auto update, electron-updater, update provider, 自動更新, アップデート, 配布
+argument-hint: "[--provider github|s3|generic]"
 allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Grep
-  - Glob
-  - Bash
-argument-hint: [--provider github|s3|generic]
+  - Task
 model: sonnet
 ---
 
@@ -16,236 +22,44 @@ model: sonnet
 
 ## 目的
 
-electron-updaterを使用した自動更新システムを構築します。
-更新サービス、IPC統合、更新通知UIまで一貫して実装します。
+`.claude/commands/ai/setup-electron-updater.md` の入力を受け取り、専門エージェントに実行を委譲します。
 
-## 使用方法
+## エージェント起動フロー
 
-```bash
-/ai:setup-electron-updater [--provider github|s3|generic]
-```
+### Phase 1: 担当エージェントの実行
 
-### 引数
+**目的**: 担当エージェントに関するタスクを実行し、結果を整理する
 
-- `--provider` (オプション): 配布先プロバイダー
-  - `github`: GitHub Releases（デフォルト）
-  - `s3`: AWS S3
-  - `generic`: カスタムサーバー
+**背景**: 専門知識が必要なため専門エージェントに委譲する
 
-## 実行フロー
+**ゴール**: 担当エージェントの結果と次アクションが提示された状態
 
-### Phase 1: 要件確認
+**起動エージェント**: `.claude/agents/electron-devops.md`
 
-1. 配布先プロバイダーの確認
-2. リリースチャネル設計（stable/beta/alpha）
-3. 更新UIの要件確認
+Task ツールで `.claude/agents/electron-devops.md` を起動:
 
-### Phase 2: electron-builder設定
+**コンテキスト**:
 
-```yaml
-# electron-builder.yml
-publish:
-  provider: github
-  owner: your-org
-  repo: your-app
-  releaseType: release
-```
+- 引数: $ARGUMENTS（[--provider github|s3|generic]）
 
-### Phase 3: UpdateService実装
+**依頼内容**:
 
-```typescript
-// src/main/services/updateService.ts
-import { autoUpdater } from "electron-updater";
-import { BrowserWindow, ipcMain } from "electron";
+- コマンドの目的に沿って実行する
+- 結果と次アクションを提示する
 
-export class UpdateService {
-  private mainWindow: BrowserWindow | null = null;
+**期待成果物**:
 
-  constructor() {
-    autoUpdater.autoDownload = false;
-    autoUpdater.autoInstallOnAppQuit = true;
-    this.setupEventHandlers();
-  }
+- `src/main/services/updateService.ts`
+- `src/main/ipc/update.ts`
+- `src/renderer/hooks/useAutoUpdate.ts`
 
-  private setupEventHandlers(): void {
-    autoUpdater.on("checking-for-update", () => {
-      this.sendToRenderer("update-checking");
-    });
+**完了条件**:
 
-    autoUpdater.on("update-available", (info) => {
-      this.sendToRenderer("update-available", info);
-    });
-
-    autoUpdater.on("update-not-available", () => {
-      this.sendToRenderer("update-not-available");
-    });
-
-    autoUpdater.on("download-progress", (progress) => {
-      this.sendToRenderer("update-progress", progress);
-    });
-
-    autoUpdater.on("update-downloaded", (info) => {
-      this.sendToRenderer("update-downloaded", info);
-    });
-
-    autoUpdater.on("error", (error) => {
-      this.sendToRenderer("update-error", error.message);
-    });
-  }
-
-  setMainWindow(window: BrowserWindow): void {
-    this.mainWindow = window;
-  }
-
-  async checkForUpdates(): Promise<void> {
-    try {
-      await autoUpdater.checkForUpdates();
-    } catch (error) {
-      console.error("Update check failed:", error);
-    }
-  }
-
-  async downloadUpdate(): Promise<void> {
-    await autoUpdater.downloadUpdate();
-  }
-
-  quitAndInstall(): void {
-    autoUpdater.quitAndInstall();
-  }
-
-  private sendToRenderer(channel: string, data?: unknown): void {
-    this.mainWindow?.webContents.send(channel, data);
-  }
-}
-```
-
-### Phase 4: IPC統合
-
-```typescript
-// src/main/ipc/update.ts
-import { ipcMain } from "electron";
-import { UpdateService } from "../services/updateService";
-
-export function registerUpdateHandlers(updateService: UpdateService): void {
-  ipcMain.handle("update:check", async () => {
-    await updateService.checkForUpdates();
-  });
-
-  ipcMain.handle("update:download", async () => {
-    await updateService.downloadUpdate();
-  });
-
-  ipcMain.handle("update:install", () => {
-    updateService.quitAndInstall();
-  });
-}
-```
-
-### Phase 5: Renderer側フック
-
-```typescript
-// src/renderer/hooks/useAutoUpdate.ts
-import { useState, useEffect } from "react";
-
-export function useAutoUpdate() {
-  const [status, setStatus] = useState<
-    "idle" | "checking" | "available" | "downloading" | "ready"
-  >("idle");
-  const [progress, setProgress] = useState(0);
-  const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null);
-
-  useEffect(() => {
-    window.electronAPI.onUpdateStatus((event, data) => {
-      switch (event) {
-        case "update-checking":
-          setStatus("checking");
-          break;
-        case "update-available":
-          setStatus("available");
-          setUpdateInfo(data);
-          break;
-        case "update-progress":
-          setStatus("downloading");
-          setProgress(data.percent);
-          break;
-        case "update-downloaded":
-          setStatus("ready");
-          break;
-      }
-    });
-  }, []);
-
-  const checkForUpdates = () => window.electronAPI.checkForUpdates();
-  const downloadUpdate = () => window.electronAPI.downloadUpdate();
-  const installUpdate = () => window.electronAPI.installUpdate();
-
-  return {
-    status,
-    progress,
-    updateInfo,
-    checkForUpdates,
-    downloadUpdate,
-    installUpdate,
-  };
-}
-```
-
-## エージェント起動
-
-Task ツールで `@electron-devops` エージェントを起動し、以下を依頼:
-
-コンテキスト:
-
-- プロバイダー: "$ARGUMENTS" または "github"
-
-@electron-devops エージェントに以下を依頼:
-
-- Phase 1: 要件確認と配布戦略設計
-- Phase 2: electron-builder publish設定
-- Phase 3: UpdateService実装
-- Phase 4: IPC統合
-- Phase 5: Renderer側フック/UI
-
-期待される成果物:
-
-- electron-builder.yml（publish設定追加）
-- src/main/services/updateService.ts
-- src/main/ipc/update.ts
-- src/renderer/hooks/useAutoUpdate.ts
-
-品質基準:
-
-- すべてのイベントがハンドリングされている
-- エラーハンドリングが実装されている
-- Renderer側に状態が通知されている
-
-## 成果物
-
-- `electron-builder.yml` - publish設定追加
-- `src/main/services/updateService.ts` - 更新サービス
-- `src/main/ipc/update.ts` - IPCハンドラー
-- `src/renderer/hooks/useAutoUpdate.ts` - Reactフック
+- [ ] 主要な結果と根拠が整理されている
+- [ ] 次のアクションが提示されている
 
 ## 使用例
 
 ```bash
-# GitHub Releases を使用
-/ai:setup-electron-updater
-
-# S3 を使用
-/ai:setup-electron-updater --provider s3
-
-# カスタムサーバー
-/ai:setup-electron-updater --provider generic
+/ai:setup-electron-updater [--provider github|s3|generic]
 ```
-
-## 注意事項
-
-- 署名済みビルドでテストすること
-- 開発環境では自動更新は動作しない
-- リリース前に必ずテストすること
-
-## 参照
-
-- `.claude/agents/electron-devops.md`
-- `.claude/skills/electron-distribution/SKILL.md`

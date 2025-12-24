@@ -179,9 +179,9 @@ Phase 6: 品質保証
 
 #### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: UIナビゲーション設計の専門家であり、Apple HIG準拠の判断ができる
-- **代替候補**: @product-manager（ユーザー体験の観点からの判断）
+- **代替候補**: .claude/agents/product-manager.md（ユーザー体験の観点からの判断）
 - **参照**: `.claude/agents/agent_list.md`
 
 #### 成果物
@@ -213,7 +213,7 @@ Phase 6: 品質保証
 
 #### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 - **選定理由**: Reactコンポーネントのテスト、特にルーティング関連のテストに精通
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -221,8 +221,8 @@ Phase 6: 品質保証
 
 | スキル名                | 活用方法                         | 選定理由                                       |
 | ----------------------- | -------------------------------- | ---------------------------------------------- |
-| test-doubles            | react-router-domのモック作成     | ナビゲーションテストにはルーターのモックが必要 |
-| boundary-value-analysis | ナビゲーション状態の境界値テスト | 正常系・異常系の網羅                           |
+| .claude/skills/test-doubles/SKILL.md            | react-router-domのモック作成     | ナビゲーションテストにはルーターのモックが必要 |
+| .claude/skills/boundary-value-analysis/SKILL.md | ナビゲーション状態の境界値テスト | 正常系・異常系の網羅                           |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -256,7 +256,7 @@ Phase 6: 品質保証
 
 #### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: UIコンポーネントの実装、特にApple HIG準拠のボタン実装に精通
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -264,8 +264,8 @@ Phase 6: 品質保証
 
 | スキル名             | 活用方法                   | 選定理由                  |
 | -------------------- | -------------------------- | ------------------------- |
-| apple-hig-guidelines | ボタンのスタイリング・配置 | macOSネイティブ体験の実現 |
-| accessibility-wcag   | aria-label、フォーカス管理 | WCAG 2.1 AA準拠           |
+| .claude/skills/apple-hig-guidelines/SKILL.md | ボタンのスタイリング・配置 | macOSネイティブ体験の実現 |
+| .claude/skills/accessibility-wcag/SKILL.md   | aria-label、フォーカス管理 | WCAG 2.1 AA準拠           |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -299,7 +299,7 @@ Phase 6: 品質保証
 
 #### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: コード品質改善、可読性向上の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -329,7 +329,7 @@ Phase 6: 品質保証
 
 #### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @frontend-tester, @sec-auditor
+- **エージェント**: .claude/agents/frontend-tester.md, .claude/agents/sec-auditor.md
 - **選定理由**: フロントエンド品質検証とセキュリティ観点の両方が必要
 - **参照**: `.claude/agents/agent_list.md`
 

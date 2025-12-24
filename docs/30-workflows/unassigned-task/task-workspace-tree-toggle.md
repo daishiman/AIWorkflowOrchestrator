@@ -21,7 +21,7 @@
 | ステータス       | 未着手                               |
 | 発見元           | ユーザー要望                         |
 | 発見日           | 2025-12-12                           |
-| 発見エージェント | @product-manager                     |
+| 発見エージェント | .claude/agents/product-manager.md                     |
 
 ---
 
@@ -148,15 +148,15 @@ graph TD
 
 #### 使用エージェント
 
-- **エージェント**: @req-analyst, @ui-designer
+- **エージェント**: .claude/agents/req-analyst.md, .claude/agents/ui-designer.md
 - **選定理由**: 要件定義にはUX観点の分析が重要
 
 #### 活用スキル
 
 | スキル名             | 活用方法                     |
 | -------------------- | ---------------------------- |
-| accessibility-wcag   | キーボードナビゲーション要件 |
-| apple-hig-guidelines | デスクトップUI規約確認       |
+| .claude/skills/accessibility-wcag/SKILL.md   | キーボードナビゲーション要件 |
+| .claude/skills/apple-hig-guidelines/SKILL.md | デスクトップUI規約確認       |
 
 #### 成果物
 
@@ -193,15 +193,15 @@ graph TD
 
 #### 使用エージェント
 
-- **エージェント**: @state-manager
+- **エージェント**: .claude/agents/state-manager.md
 - **選定理由**: Zustand状態管理の専門性
 
 #### 活用スキル
 
 | スキル名             | 活用方法         |
 | -------------------- | ---------------- |
-| state-lifting        | 状態管理設計     |
-| type-safety-patterns | TypeScript型定義 |
+| .claude/skills/state-lifting/SKILL.md        | 状態管理設計     |
+| .claude/skills/type-safety-patterns/SKILL.md | TypeScript型定義 |
 
 #### 成果物
 
@@ -236,15 +236,15 @@ UIコンポーネントの設計のみを担当。
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: UIコンポーネント設計の専門性
 
 #### 活用スキル
 
 | スキル名                       | 活用方法           |
 | ------------------------------ | ------------------ |
-| component-composition-patterns | コンポーネント設計 |
-| electron-ui-patterns           | デスクトップUI設計 |
+| .claude/skills/component-composition-patterns/SKILL.md | コンポーネント設計 |
+| .claude/skills/electron-ui-patterns/SKILL.md           | デスクトップUI設計 |
 
 #### 成果物
 
@@ -276,7 +276,7 @@ UIコンポーネントの設計のみを担当。
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 
 #### 成果物
 

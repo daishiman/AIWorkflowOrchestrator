@@ -216,9 +216,9 @@ AIWorkflowOrchestrator/
 
 | エージェント     | 観点                  | 判定        | 主要評価                         |
 | ---------------- | --------------------- | ----------- | -------------------------------- |
-| @code-quality    | コード品質            | **PASS** ✅ | 複雑度60%削減、保守性大幅向上    |
-| @ui-designer     | UI/UXアクセシビリティ | **PASS** ✅ | WCAG 2.1 AA 100%達成             |
-| @frontend-tester | テスト品質            | **PASS** ✅ | 95/100点、包括的テストカバレッジ |
+| .claude/agents/code-quality.md    | コード品質            | **PASS** ✅ | 複雑度60%削減、保守性大幅向上    |
+| .claude/agents/ui-designer.md     | UI/UXアクセシビリティ | **PASS** ✅ | WCAG 2.1 AA 100%達成             |
+| .claude/agents/frontend-tester.md | テスト品質            | **PASS** ✅ | 95/100点、包括的テストカバレッジ |
 
 **改善提案**: 11件（HIGH: 0件、MEDIUM: 4件、LOW: 7件）
 
@@ -472,7 +472,7 @@ WCAG 2.1 AA violations: 0件
 
 - [品質ゲート検証](./quality-report.md)（T-06-1）
 - [最終レビュー結果](./review-final-t-07-1.md)（T-07-1）
-- [UI/UXレビュー](./review-ui-ux-accessibility.md)（@ui-designer）
+- [UI/UXレビュー](./review-ui-ux-accessibility.md)（.claude/agents/ui-designer.md）
 - [手動テスト結果](./manual-test-report.md)（T-08-1）
 
 ### 実装

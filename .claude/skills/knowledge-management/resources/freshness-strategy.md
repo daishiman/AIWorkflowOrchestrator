@@ -282,27 +282,27 @@ grep -r "request.isUnauthenticated" .claude/skills/  # 廃止されたAPI
 - 対象: 最も頻繁に参照される知識
 - 実施タイミング: 毎月初旬
 - 所要時間: 2-3時間
-- 担当: @skill-librarian
+- 担当: .claude/agents/skill-librarian.md
 
 **四半期レビュー** (参照頻度Middle 60%):
 
 - 対象: 一般的に参照される知識
 - 実施タイミング: 四半期末
 - 所要時間: 1日
-- 担当: @skill-librarian + 関連エージェント
+- 担当: .claude/agents/skill-librarian.md + 関連エージェント
 
 **半年レビュー** (参照頻度Bottom 20%):
 
 - 対象: 稀に参照される知識
 - 実施タイミング: 半年ごと
 - 所要時間: 半日
-- 担当: @skill-librarian
+- 担当: .claude/agents/skill-librarian.md
 
 **緊急レビュー**:
 
 - トリガー: セキュリティ脆弱性発見、重大なバグ報告
 - 実施タイミング: 即座
-- 担当: @skill-librarian（最優先対応）
+- 担当: .claude/agents/skill-librarian.md（最優先対応）
 
 ### イベント駆動更新
 

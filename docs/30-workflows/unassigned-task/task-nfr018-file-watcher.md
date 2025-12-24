@@ -13,7 +13,7 @@
 | ステータス       | 未実施                                                  |
 | 発見元           | Phase 0 (非機能要件定義) - NFR-WS-001                   |
 | 発見日           | 2025-12-11                                              |
-| 発見エージェント | @req-analyst                                            |
+| 発見エージェント | .claude/agents/req-analyst.md                                            |
 
 ---
 
@@ -156,7 +156,7 @@ Phase 9: ドキュメント更新
 
 ##### 使用エージェント
 
-- **エージェント**: @electron-architect
+- **エージェント**: .claude/agents/electron-architect.md
 
 ---
 
@@ -170,14 +170,14 @@ Phase 9: ドキュメント更新
 
 ##### 使用エージェント
 
-- **エージェント**: @electron-security
+- **エージェント**: .claude/agents/electron-security.md
 
 ##### 活用スキル
 
 | スキル名                    | 活用方法               |
 | --------------------------- | ---------------------- |
-| electron-security-hardening | 監視対象の制限         |
-| event-driven-file-watching  | セキュアなイベント処理 |
+| .claude/skills/electron-security-hardening/SKILL.md | 監視対象の制限         |
+| .claude/skills/event-driven-file-watching/SKILL.md  | セキュアなイベント処理 |
 
 ---
 
@@ -403,4 +403,4 @@ const DEFAULT_IGNORED_PATTERNS = [
 
 | バージョン | 日付       | 変更者       | 変更内容                    |
 | ---------- | ---------- | ------------ | --------------------------- |
-| 1.0.0      | 2025-12-11 | @req-analyst | 初版作成(NFR-018単一タスク) |
+| 1.0.0      | 2025-12-11 | .claude/agents/req-analyst.md | 初版作成(NFR-018単一タスク) |

@@ -737,4 +737,4 @@ console.error(`[ApiKeyStorage] Invalid key: ${apiKey}`); // ❌
 
 | バージョン | 日付       | 変更内容 | 作成者              |
 | ---------- | ---------- | -------- | ------------------- |
-| 1.0.0      | 2025-12-10 | 初版作成 | @electron-architect |
+| 1.0.0      | 2025-12-10 | 初版作成 | .claude/agents/electron-architect.md |

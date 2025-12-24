@@ -177,7 +177,7 @@ Phase 5: テスト実行
 
 #### 使用エージェント
 
-- **エージェント**: @db-architect
+- **エージェント**: .claude/agents/db-architect.md
 - **選定理由**: データベース設計の専門家。スキーマ設計とマイグレーション作成に最適。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -185,8 +185,8 @@ Phase 5: テスト実行
 
 | スキル名               | 活用方法               |
 | ---------------------- | ---------------------- |
-| database-normalization | 適切なスキーマ設計     |
-| indexing-strategies    | 検索パフォーマンス向上 |
+| .claude/skills/database-normalization/SKILL.md | 適切なスキーマ設計     |
+| .claude/skills/indexing-strategies/SKILL.md    | 検索パフォーマンス向上 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -231,7 +231,7 @@ Phase 5: テスト実行
 
 #### 使用エージェント
 
-- **エージェント**: @logic-dev
+- **エージェント**: .claude/agents/logic-dev.md
 - **選定理由**: ビジネスロジック実装の専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -239,7 +239,7 @@ Phase 5: テスト実行
 
 | スキル名             | 活用方法             |
 | -------------------- | -------------------- |
-| clean-code-practices | 高品質なサービス実装 |
+| .claude/skills/clean-code-practices/SKILL.md | 高品質なサービス実装 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -281,7 +281,7 @@ Phase 5: テスト実行
 
 #### 使用エージェント
 
-- **エージェント**: @auth-specialist
+- **エージェント**: .claude/agents/auth-specialist.md
 - **選定理由**: 認証フローの専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -289,7 +289,7 @@ Phase 5: テスト実行
 
 | スキル名     | 活用方法                    |
 | ------------ | --------------------------- |
-| oauth2-flows | OAuth認証フローへの監査追加 |
+| .claude/skills/oauth2-flows/SKILL.md | OAuth認証フローへの監査追加 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -330,7 +330,7 @@ Settings画面にログイン履歴を表示するUIを実装する。
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: UIコンポーネント実装の専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -338,8 +338,8 @@ Settings画面にログイン履歴を表示するUIを実装する。
 
 | スキル名              | 活用方法                   |
 | --------------------- | -------------------------- |
-| custom-hooks-patterns | Reactカスタムフック実装    |
-| clean-code-practices  | 高品質なコンポーネント実装 |
+| .claude/skills/custom-hooks-patterns/SKILL.md | Reactカスタムフック実装    |
+| .claude/skills/clean-code-practices/SKILL.md  | 高品質なコンポーネント実装 |
 
 - **参照**: `.claude/skills/skill_list.md`
 

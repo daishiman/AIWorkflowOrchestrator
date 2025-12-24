@@ -6,7 +6,7 @@
 | ------------------------ | ------------------------------------------------------- |
 | レビュー日               | 2025-12-21                                              |
 | 対象フェーズ             | Phase 6（品質保証）完了後                               |
-| レビュー参加エージェント | @code-quality, @arch-police, @unit-tester, @sec-auditor |
+| レビュー参加エージェント | .claude/agents/code-quality.md, .claude/agents/arch-police.md, .claude/agents/unit-tester.md, .claude/agents/sec-auditor.md |
 | 対象モジュール           | packages/shared/src/services/conversion/                |
 
 ---
@@ -17,10 +17,10 @@
 
 | レビュー観点       | 担当エージェント | 判定        |
 | ------------------ | ---------------- | ----------- |
-| コード品質         | @code-quality    | ✅ **PASS** |
-| アーキテクチャ遵守 | @arch-police     | ✅ **PASS** |
-| テスト品質         | @unit-tester     | ✅ **PASS** |
-| セキュリティ       | @sec-auditor     | ✅ **PASS** |
+| コード品質         | .claude/agents/code-quality.md    | ✅ **PASS** |
+| アーキテクチャ遵守 | .claude/agents/arch-police.md     | ✅ **PASS** |
+| テスト品質         | .claude/agents/unit-tester.md     | ✅ **PASS** |
+| セキュリティ       | .claude/agents/sec-auditor.md     | ✅ **PASS** |
 
 **最終判定**: **すべての観点でPASS** ✅
 
@@ -28,7 +28,7 @@
 
 ## レビュー観点別評価
 
-### 観点1: コード品質 (@code-quality)
+### 観点1: コード品質 (.claude/agents/code-quality.md)
 
 #### 総合判定: ✅ PASS
 
@@ -78,7 +78,7 @@
 
 ---
 
-### 観点2: アーキテクチャ遵守 (@arch-police)
+### 観点2: アーキテクチャ遵守 (.claude/agents/arch-police.md)
 
 #### 総合判定: ✅ PASS
 
@@ -139,7 +139,7 @@ index.ts (すべてをエクスポート)
 
 ---
 
-### 観点3: テスト品質 (@unit-tester)
+### 観点3: テスト品質 (.claude/agents/unit-tester.md)
 
 #### 総合判定: ✅ PASS（スコア: 85/100）
 
@@ -222,7 +222,7 @@ class TestConverter extends BaseConverter {
 
 ---
 
-### 観点4: セキュリティ (@sec-auditor)
+### 観点4: セキュリティ (.claude/agents/sec-auditor.md)
 
 #### 総合判定: ✅ PASS
 
@@ -278,27 +278,27 @@ createRAGError(
 
 ## 統合チェックリスト
 
-### コード品質 (@code-quality)
+### コード品質 (.claude/agents/code-quality.md)
 
 - [x] コーディング規約に準拠しているか
 - [x] 可読性が確保されているか
 - [x] 適切なエラーハンドリングが実装されているか
 - [x] 過度な複雑性がないか
 
-### アーキテクチャ遵守 (@arch-police)
+### アーキテクチャ遵守 (.claude/agents/arch-police.md)
 
 - [x] 実装がアーキテクチャ設計に従っているか
 - [x] レイヤー間の依存関係が適切か
 - [x] SOLID原則に準拠しているか
 
-### テスト品質 (@unit-tester)
+### テスト品質 (.claude/agents/unit-tester.md)
 
 - [x] テストカバレッジが十分か（93.2% > 80%）
 - [x] テストケースが適切に設計されているか
 - [x] 境界値・異常系のテストがあるか
 - [x] テストの可読性・保守性が確保されているか
 
-### セキュリティ (@sec-auditor)
+### セキュリティ (.claude/agents/sec-auditor.md)
 
 - [x] 入力検証・サニタイズが適切に実装されているか
 - [x] エラーメッセージから機密情報が漏洩しないか
@@ -471,10 +471,10 @@ createRAGError(ErrorCodes.TIMEOUT, `Conversion timeout after ${timeout}ms`, {
 
 **レビュー責任者**:
 
-- コード品質: @code-quality - **PASS承認** ✅
-- アーキテクチャ: @arch-police - **PASS承認** ✅
-- テスト品質: @unit-tester - **PASS承認** ✅
-- セキュリティ: @sec-auditor - **PASS承認** ✅
+- コード品質: .claude/agents/code-quality.md - **PASS承認** ✅
+- アーキテクチャ: .claude/agents/arch-police.md - **PASS承認** ✅
+- テスト品質: .claude/agents/unit-tester.md - **PASS承認** ✅
+- セキュリティ: .claude/agents/sec-auditor.md - **PASS承認** ✅
 
 **承認日**: 2025-12-21
 

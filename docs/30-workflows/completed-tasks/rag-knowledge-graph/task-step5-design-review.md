@@ -22,9 +22,9 @@
 
 | エージェント    | レビュー観点         | 担当レビュー項目                 |
 | --------------- | -------------------- | -------------------------------- |
-| @arch-police    | アーキテクチャ整合性 | 依存関係、レイヤー構造、循環依存 |
-| @domain-modeler | ドメインモデル妥当性 | Entity/VO境界、ユビキタス言語    |
-| @schema-def     | スキーマ設計品質     | Zod整合性、バリデーション網羅性  |
+| .claude/agents/arch-police.md    | アーキテクチャ整合性 | 依存関係、レイヤー構造、循環依存 |
+| .claude/agents/domain-modeler.md | ドメインモデル妥当性 | Entity/VO境界、ユビキタス言語    |
+| .claude/agents/schema-def.md     | スキーマ設計品質     | Zod整合性、バリデーション網羅性  |
 
 ---
 
@@ -40,7 +40,7 @@
 
 ---
 
-## 3. アーキテクチャ整合性レビュー（@arch-police）
+## 3. アーキテクチャ整合性レビュー（.claude/agents/arch-police.md）
 
 ### 3.1 依存関係の検証
 
@@ -106,7 +106,7 @@ graph/index.ts → graph/types.ts, graph/schemas.ts, graph/utils.ts
 
 ---
 
-## 4. ドメインモデル妥当性レビュー（@domain-modeler）
+## 4. ドメインモデル妥当性レビュー（.claude/agents/domain-modeler.md）
 
 ### 4.1 Entity/Value Object/Aggregate境界
 
@@ -168,7 +168,7 @@ graph/index.ts → graph/types.ts, graph/schemas.ts, graph/utils.ts
 
 ---
 
-## 5. スキーマ設計品質レビュー（@schema-def）
+## 5. スキーマ設計品質レビュー（.claude/agents/schema-def.md）
 
 ### 5.1 Zodスキーマとtypes.tsの一致
 
@@ -293,19 +293,19 @@ graph/index.ts → graph/types.ts, graph/schemas.ts, graph/utils.ts
 
 ### 8.1 レビューチェックリスト
 
-**アーキテクチャ整合性** (@arch-police)
+**アーキテクチャ整合性** (.claude/agents/arch-police.md)
 
 - [x] 依存関係が内向き（types.ts → schemas.ts → utils.ts）になっているか
 - [x] CONV-03-01の共通インターフェースを適切に継承しているか
 - [x] 循環依存が発生していないか
 
-**ドメインモデル妥当性** (@domain-modeler)
+**ドメインモデル妥当性** (.claude/agents/domain-modeler.md)
 
 - [x] EntityEntity, RelationEntity, CommunityEntityの境界が適切か
 - [x] ユビキタス言語（Entity, Relation, Community）が一貫して使用されているか
 - [x] 値オブジェクト（EntityType, RelationType）が適切に定義されているか
 
-**スキーマ設計品質** (@schema-def)
+**スキーマ設計品質** (.claude/agents/schema-def.md)
 
 - [x] Zodスキーマがtypes.tsの型定義と完全に一致しているか
 - [x] バリデーションルール（min, max, regex）が適切に設定されているか
@@ -344,7 +344,7 @@ graph/index.ts → graph/types.ts, graph/schemas.ts, graph/utils.ts
 
 | 日付       | 変更者                                     | 変更内容                     |
 | ---------- | ------------------------------------------ | ---------------------------- |
-| 2025-12-18 | @arch-police, @domain-modeler, @schema-def | 初版作成（設計レビュー完了） |
+| 2025-12-18 | .claude/agents/arch-police.md, .claude/agents/domain-modeler.md, .claude/agents/schema-def.md | 初版作成（設計レビュー完了） |
 
 ---
 

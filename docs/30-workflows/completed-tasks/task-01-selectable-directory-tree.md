@@ -14,7 +14,7 @@
 | 発見元           | Phase 1: 設計（file-selector-integration） |
 | 発見日           | 2025-12-16                                 |
 | 更新日           | 2025-12-17                                 |
-| 発見エージェント | @arch-police                               |
+| 発見エージェント | .claude/agents/arch-police.md                               |
 | 前提タスク       | file-selector-integration（完了済み）      |
 
 ---
@@ -172,7 +172,7 @@ Phase 6: 品質保証
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: テスト設計の専門家
 
 #### テストケース

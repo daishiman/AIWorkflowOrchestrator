@@ -2,7 +2,7 @@
 
 > **ドキュメントID**: CONV-01-IPC
 > **作成日**: 2025-12-16
-> **作成者**: @electron-architect
+> **作成者**: .claude/agents/electron-architect.md
 > **ステータス**: 承認待ち
 > **関連ドキュメント**: [step02-nfr.md](./step02-nfr.md), [step03-type-design.md](./step03-type-design.md)
 
@@ -1260,8 +1260,8 @@ try {
 
 | 役割             | 名前                | 日付       | 承認状況 |
 | ---------------- | ------------------- | ---------- | -------- |
-| IPC設計者        | @electron-architect | 2025-12-16 | 作成済み |
-| セキュリティ確認 | @electron-security  |            | 未承認   |
+| IPC設計者        | .claude/agents/electron-architect.md | 2025-12-16 | 作成済み |
+| セキュリティ確認 | .claude/agents/electron-security.md  |            | 未承認   |
 | 最終承認者       |                     |            | 未承認   |
 
 ---
@@ -1270,4 +1270,4 @@ try {
 
 | バージョン | 日付       | 変更内容 | 変更者              |
 | ---------- | ---------- | -------- | ------------------- |
-| 1.0        | 2025-12-16 | 初版作成 | @electron-architect |
+| 1.0        | 2025-12-16 | 初版作成 | .claude/agents/electron-architect.md |

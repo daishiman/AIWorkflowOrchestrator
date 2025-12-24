@@ -13,7 +13,7 @@
 | ステータス       | 未実施                                       |
 | 発見元           | ユーザー要望                                 |
 | 発見日           | 2025-12-11                                   |
-| 発見エージェント | @product-manager                             |
+| 発見エージェント | .claude/agents/product-manager.md                             |
 
 ---
 
@@ -154,19 +154,19 @@ Phase 9: ドキュメント更新
 
 #### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @req-analyst, @product-manager
-- **選定理由**: @req-analyst は要件の収集・分析に特化、@product-manager はビジネス価値とユーザー価値の観点から要件を整理
-- **代替候補**: @domain-modeler（イベントのドメインモデリング観点）
+- **エージェント**: .claude/agents/req-analyst.md, .claude/agents/product-manager.md
+- **選定理由**: .claude/agents/req-analyst.md は要件の収集・分析に特化、.claude/agents/product-manager.md はビジネス価値とユーザー価値の観点から要件を整理
+- **代替候補**: .claude/agents/domain-modeler.md（イベントのドメインモデリング観点）
 - **参照**: `.claude/agents/agent_list.md`
 
 #### 活用スキルリスト（動的選定）
 
 | スキル名                 | 活用方法                       | 選定理由                         |
 | ------------------------ | ------------------------------ | -------------------------------- |
-| requirements-engineering | 収集イベントの要件定義         | 検証可能な要件の明確化           |
-| use-case-modeling        | 分析ユースケースの特定         | どんな分析をしたいかを明確にする |
-| metrics-tracking         | KPIと計測指標の定義            | 収集すべきメトリクスの特定       |
-| interview-techniques     | ステークホルダーへのヒアリング | 分析ニーズの把握                 |
+| .claude/skills/requirements-engineering/SKILL.md | 収集イベントの要件定義         | 検証可能な要件の明確化           |
+| .claude/skills/use-case-modeling/SKILL.md        | 分析ユースケースの特定         | どんな分析をしたいかを明確にする |
+| .claude/skills/metrics-tracking/SKILL.md         | KPIと計測指標の定義            | 収集すべきメトリクスの特定       |
+| .claude/skills/interview-techniques/SKILL.md     | ステークホルダーへのヒアリング | 分析ニーズの把握                 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -206,16 +206,16 @@ Phase 9: ドキュメント更新
 
 ##### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @arch-police, @electron-architect
-- **選定理由**: @arch-police はクリーンアーキテクチャの観点から設計検証、@electron-architect はElectronアプリ特有のメイン/レンダラープロセス間のデータフローを設計
-- **代替候補**: @sre-observer（データパイプラインの観点）
+- **エージェント**: .claude/agents/arch-police.md, .claude/agents/electron-architect.md
+- **選定理由**: .claude/agents/arch-police.md はクリーンアーキテクチャの観点から設計検証、.claude/agents/electron-architect.md はElectronアプリ特有のメイン/レンダラープロセス間のデータフローを設計
+- **代替候補**: .claude/agents/sre-observer.md（データパイプラインの観点）
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 活用スキルリスト（動的選定）
 
 | スキル名                      | 活用方法                   | 選定理由                        |
 | ----------------------------- | -------------------------- | ------------------------------- |
-| clean-architecture-principles | レイヤー分離の設計         | 疎結合なトラッキング基盤        |
+| .claude/skills/clean-architecture-principles/SKILL.md | レイヤー分離の設計         | 疎結合なトラッキング基盤        |
 | event-driven-architecture     | イベント駆動の設計パターン | 柔軟なイベント収集              |
 | electron-ipc-patterns         | IPC通信パターン            | メイン/レンダラー間のデータ送信 |
 
@@ -253,18 +253,18 @@ Phase 9: ドキュメント更新
 
 ##### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @db-architect, @schema-def
-- **選定理由**: @db-architect はデータベース設計の観点、@schema-def はイベントスキーマの型安全性を確保
-- **代替候補**: @dba-mgr（クエリパフォーマンスの観点）
+- **エージェント**: .claude/agents/db-architect.md, .claude/agents/schema-def.md
+- **選定理由**: .claude/agents/db-architect.md はデータベース設計の観点、.claude/agents/schema-def.md はイベントスキーマの型安全性を確保
+- **代替候補**: .claude/agents/dba-mgr.md（クエリパフォーマンスの観点）
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 活用スキルリスト（動的選定）
 
 | スキル名               | 活用方法                         | 選定理由               |
 | ---------------------- | -------------------------------- | ---------------------- |
-| database-normalization | スキーマ正規化                   | 効率的なデータ保存     |
-| indexing-strategies    | インデックス設計                 | 分析クエリの高速化     |
-| zod-validation         | イベントスキーマのバリデーション | 型安全なイベントデータ |
+| .claude/skills/database-normalization/SKILL.md | スキーマ正規化                   | 効率的なデータ保存     |
+| .claude/skills/indexing-strategies/SKILL.md    | インデックス設計                 | 分析クエリの高速化     |
+| .claude/skills/zod-validation/SKILL.md         | イベントスキーマのバリデーション | 型安全なイベントデータ |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -302,18 +302,18 @@ Phase 9: ドキュメント更新
 
 ##### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @api-doc-writer, @logic-dev
-- **選定理由**: @api-doc-writer はSDK APIの設計ドキュメント作成、@logic-dev は実装観点からのAPI設計
-- **代替候補**: @gateway-dev（外部連携観点）
+- **エージェント**: .claude/agents/api-doc-writer.md, .claude/agents/logic-dev.md
+- **選定理由**: .claude/agents/api-doc-writer.md はSDK APIの設計ドキュメント作成、.claude/agents/logic-dev.md は実装観点からのAPI設計
+- **代替候補**: .claude/agents/gateway-dev.md（外部連携観点）
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 活用スキルリスト（動的選定）
 
 | スキル名                         | 活用方法            | 選定理由                         |
 | -------------------------------- | ------------------- | -------------------------------- |
-| api-client-patterns              | SDK APIパターン設計 | 使いやすいAPI                    |
-| type-safety-patterns             | 型安全なAPI設計     | TypeScriptでの型安全性           |
-| api-documentation-best-practices | SDK ドキュメント    | 開発者フレンドリーなドキュメント |
+| .claude/skills/api-client-patterns/SKILL.md              | SDK APIパターン設計 | 使いやすいAPI                    |
+| .claude/skills/type-safety-patterns/SKILL.md             | 型安全なAPI設計     | TypeScriptでの型安全性           |
+| .claude/skills/api-documentation-best-practices/SKILL.md | SDK ドキュメント    | 開発者フレンドリーなドキュメント |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -350,9 +350,9 @@ Phase 9: ドキュメント更新
 
 ##### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: ダッシュボードUIのデザインとユーザビリティ設計に特化
-- **代替候補**: @frontend-tester（表示テストの観点）
+- **代替候補**: .claude/agents/frontend-tester.md（表示テストの観点）
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 活用スキルリスト（動的選定）
@@ -360,8 +360,8 @@ Phase 9: ドキュメント更新
 | スキル名               | 活用方法                     | 選定理由             |
 | ---------------------- | ---------------------------- | -------------------- |
 | data-visualization     | チャート・グラフ設計         | 効果的なデータ可視化 |
-| progressive-disclosure | 段階的な情報開示             | 情報過多を防ぐUI     |
-| accessibility-wcag     | アクセシブルなダッシュボード | 誰でも使えるUI       |
+| .claude/skills/progressive-disclosure/SKILL.md | 段階的な情報開示             | 情報過多を防ぐUI     |
+| .claude/skills/accessibility-wcag/SKILL.md     | アクセシブルなダッシュボード | 誰でも使えるUI       |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -390,35 +390,35 @@ Phase 9: ドキュメント更新
 
 | エージェント  | レビュー観点               | 選定理由                             |
 | ------------- | -------------------------- | ------------------------------------ |
-| @arch-police  | アーキテクチャ整合性       | クリーンアーキテクチャとの整合性確認 |
-| @sec-auditor  | プライバシー・セキュリティ | 個人情報の取り扱いの適切性           |
-| @db-architect | データベース設計           | スキーマ・パフォーマンスの妥当性     |
-| @ui-designer  | UI/UX                      | ダッシュボードの使いやすさ           |
+| .claude/agents/arch-police.md  | アーキテクチャ整合性       | クリーンアーキテクチャとの整合性確認 |
+| .claude/agents/sec-auditor.md  | プライバシー・セキュリティ | 個人情報の取り扱いの適切性           |
+| .claude/agents/db-architect.md | データベース設計           | スキーマ・パフォーマンスの妥当性     |
+| .claude/agents/ui-designer.md  | UI/UX                      | ダッシュボードの使いやすさ           |
 
 - **参照**: `.claude/agents/agent_list.md`
 
 #### レビューチェックリスト
 
-**アーキテクチャ整合性** (@arch-police)
+**アーキテクチャ整合性** (.claude/agents/arch-police.md)
 
 - [ ] クリーンアーキテクチャのレイヤー違反がないか
 - [ ] 既存のアーキテクチャと整合しているか
 - [ ] トラッキング機能が疎結合に設計されているか
 
-**プライバシー・セキュリティ** (@sec-auditor)
+**プライバシー・セキュリティ** (.claude/agents/sec-auditor.md)
 
 - [ ] 収集するデータに個人情報が含まれていないか
 - [ ] オプトアウト機能が設計されているか
 - [ ] データの保存期間が定義されているか
 - [ ] GDPR/個人情報保護法への対応が考慮されているか
 
-**データベース設計** (@db-architect)
+**データベース設計** (.claude/agents/db-architect.md)
 
 - [ ] スキーマが正規化されているか
 - [ ] 適切なインデックスが設計されているか
 - [ ] 大量データに対するパフォーマンスが考慮されているか
 
-**UI/UX** (@ui-designer)
+**UI/UX** (.claude/agents/ui-designer.md)
 
 - [ ] ダッシュボードが直感的に使えるか
 - [ ] 必要な情報が適切に可視化されているか
@@ -451,18 +451,18 @@ Phase 9: ドキュメント更新
 
 ##### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: TDD原則に基づくテスト作成に特化
-- **代替候補**: @e2e-tester（統合テスト観点）
+- **代替候補**: .claude/agents/e2e-tester.md（統合テスト観点）
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 活用スキルリスト（動的選定）
 
 | スキル名                | 活用方法                   | 選定理由           |
 | ----------------------- | -------------------------- | ------------------ |
-| tdd-principles          | Red-Green-Refactorサイクル | テスト駆動開発     |
-| test-doubles            | モック・スタブの活用       | 外部依存の分離     |
-| boundary-value-analysis | 境界値テスト               | エッジケースの検出 |
+| .claude/skills/tdd-principles/SKILL.md          | Red-Green-Refactorサイクル | テスト駆動開発     |
+| .claude/skills/test-doubles/SKILL.md            | モック・スタブの活用       | 外部依存の分離     |
+| .claude/skills/boundary-value-analysis/SKILL.md | 境界値テスト               | エッジケースの検出 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -500,9 +500,9 @@ pnpm --filter @repo/shared test:run
 
 ##### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 - **選定理由**: Reactコンポーネントのテストに特化
-- **代替候補**: @unit-tester（ロジックテスト観点）
+- **代替候補**: .claude/agents/unit-tester.md（ロジックテスト観点）
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### TDD検証: Red状態確認
@@ -540,9 +540,9 @@ pnpm --filter @repo/desktop test:run
 
 ##### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @logic-dev
+- **エージェント**: .claude/agents/logic-dev.md
 - **選定理由**: ビジネスロジックの実装に特化
-- **代替候補**: @electron-ui-dev（Electron固有の実装）
+- **代替候補**: .claude/agents/electron-ui-dev.md（Electron固有の実装）
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 活用スキルリスト（動的選定）
@@ -590,9 +590,9 @@ pnpm --filter @repo/shared test:run
 
 ##### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @dba-mgr
+- **エージェント**: .claude/agents/dba-mgr.md
 - **選定理由**: マイグレーション作成とDB管理に特化
-- **代替候補**: @db-architect（設計レビュー観点）
+- **代替候補**: .claude/agents/db-architect.md（設計レビュー観点）
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 完了条件
@@ -621,9 +621,9 @@ pnpm --filter @repo/shared test:run
 
 ##### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @gateway-dev, @repo-dev
-- **選定理由**: @gateway-dev はAPI設計・実装、@repo-dev はデータアクセス層の実装
-- **代替候補**: @logic-dev（ビジネスロジック観点）
+- **エージェント**: .claude/agents/gateway-dev.md, .claude/agents/repo-dev.md
+- **選定理由**: .claude/agents/gateway-dev.md はAPI設計・実装、.claude/agents/repo-dev.md はデータアクセス層の実装
+- **代替候補**: .claude/agents/logic-dev.md（ビジネスロジック観点）
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 完了条件
@@ -652,9 +652,9 @@ pnpm --filter @repo/shared test:run
 
 ##### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @ui-designer, @state-manager
-- **選定理由**: @ui-designer はUI実装、@state-manager はダッシュボードの状態管理
-- **代替候補**: @router-dev（ルーティング観点）
+- **エージェント**: .claude/agents/ui-designer.md, .claude/agents/state-manager.md
+- **選定理由**: .claude/agents/ui-designer.md はUI実装、.claude/agents/state-manager.md はダッシュボードの状態管理
+- **代替候補**: .claude/agents/router-dev.md（ルーティング観点）
 - **参照**: `.claude/agents/agent_list.md`
 
 ##### 活用スキルリスト（動的選定）
@@ -663,7 +663,7 @@ pnpm --filter @repo/shared test:run
 | --------------------- | ------------------------ | ---------------- |
 | react-chart-libraries | グラフコンポーネント実装 | データ可視化     |
 | zustand-patterns      | ダッシュボード状態管理   | 効率的な状態管理 |
-| tailwind-css-patterns | スタイリング             | 一貫したデザイン |
+| .claude/skills/tailwind-css-patterns/SKILL.md | スタイリング             | 一貫したデザイン |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -702,9 +702,9 @@ pnpm --filter @repo/desktop test:run
 
 #### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: コード品質改善に特化
-- **代替候補**: @arch-police（構造改善観点）
+- **代替候補**: .claude/agents/arch-police.md（構造改善観点）
 - **参照**: `.claude/agents/agent_list.md`
 
 #### TDD検証: 継続Green確認
@@ -743,9 +743,9 @@ pnpm test:all
 
 #### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @code-quality, @sec-auditor
-- **選定理由**: @code-quality は品質検証、@sec-auditor はプライバシー・セキュリティ検証
-- **代替候補**: @unit-tester（テストカバレッジ観点）
+- **エージェント**: .claude/agents/code-quality.md, .claude/agents/sec-auditor.md
+- **選定理由**: .claude/agents/code-quality.md は品質検証、.claude/agents/sec-auditor.md はプライバシー・セキュリティ検証
+- **代替候補**: .claude/agents/unit-tester.md（テストカバレッジ観点）
 - **参照**: `.claude/agents/agent_list.md`
 
 #### 完了条件
@@ -768,11 +768,11 @@ pnpm test:all
 
 | エージェント  | レビュー観点               | 選定理由                       |
 | ------------- | -------------------------- | ------------------------------ |
-| @code-quality | コード品質                 | 実装品質の確認                 |
-| @arch-police  | アーキテクチャ遵守         | 設計との整合性確認             |
-| @sec-auditor  | セキュリティ・プライバシー | 個人情報保護の確認             |
-| @ui-designer  | UI/UX                      | ダッシュボードの使いやすさ確認 |
-| @e2e-tester   | 統合テスト                 | エンドツーエンドの動作確認     |
+| .claude/agents/code-quality.md | コード品質                 | 実装品質の確認                 |
+| .claude/agents/arch-police.md  | アーキテクチャ遵守         | 設計との整合性確認             |
+| .claude/agents/sec-auditor.md  | セキュリティ・プライバシー | 個人情報保護の確認             |
+| .claude/agents/ui-designer.md  | UI/UX                      | ダッシュボードの使いやすさ確認 |
+| .claude/agents/e2e-tester.md   | 統合テスト                 | エンドツーエンドの動作確認     |
 
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -827,9 +827,9 @@ pnpm test:all
 
 #### 使用エージェントリスト（動的選定）
 
-- **エージェント**: @spec-writer, @api-doc-writer
-- **選定理由**: @spec-writer は仕様ドキュメント作成、@api-doc-writer はSDK APIドキュメント作成
-- **代替候補**: @manual-writer（ユーザー向けドキュメント観点）
+- **エージェント**: .claude/agents/spec-writer.md, .claude/agents/api-doc-writer.md
+- **選定理由**: .claude/agents/spec-writer.md は仕様ドキュメント作成、.claude/agents/api-doc-writer.md はSDK APIドキュメント作成
+- **代替候補**: .claude/agents/manual-writer.md（ユーザー向けドキュメント観点）
 - **参照**: `.claude/agents/agent_list.md`
 
 #### 完了条件

@@ -27,92 +27,92 @@
 
 **必須スキル**:
 
-- `agent-persona-design`: ペルソナと役割定義
+- `.claude/skills/agent-persona-design/SKILL.md`: ペルソナと役割定義
 
 **オプションスキル**:
 
-- `agent-architecture-patterns`: 既存パターンの確認
+- `.claude/skills/agent-architecture-patterns/SKILL.md`: 既存パターンの確認
 
 **判断基準**:
 
-- [ ] 専門家モデリングが必要か？ → agent-persona-design
-- [ ] 役割ベース設計が適切か？ → agent-persona-design
-- [ ] 既存アーキテクチャパターンに該当するか？ → agent-architecture-patterns
+- [ ] 専門家モデリングが必要か？ → .claude/skills/agent-persona-design/SKILL.md
+- [ ] 役割ベース設計が適切か？ → .claude/skills/agent-persona-design/SKILL.md
+- [ ] 既存アーキテクチャパターンに該当するか？ → .claude/skills/agent-architecture-patterns/SKILL.md
 
 ### Phase 2: エージェント構造の設計
 
 **必須スキル**:
 
-- `agent-structure-design`: YAML Frontmatter、システムプロンプト設計
-- `tool-permission-management`: ツール権限設定
+- `.claude/skills/agent-structure-design/SKILL.md`: YAML Frontmatter、システムプロンプト設計
+- `.claude/skills/tool-permission-management/SKILL.md`: ツール権限設定
 
 **オプションスキル**:
 
-- `agent-architecture-patterns`: パターン適用
-- `prompt-engineering-for-agents`: プロンプト最適化
+- `.claude/skills/agent-architecture-patterns/SKILL.md`: パターン適用
+- `.claude/skills/prompt-engineering-for-agents/SKILL.md`: プロンプト最適化
 
 **判断基準**:
 
-- [ ] YAML Frontmatterを設計する必要があるか？ → agent-structure-design（必須）
-- [ ] ファイル操作が必要か？ → tool-permission-management（必須）
-- [ ] アーキテクチャパターンを適用するか？ → agent-architecture-patterns
-- [ ] プロンプトチューニングが必要か？ → prompt-engineering-for-agents
+- [ ] YAML Frontmatterを設計する必要があるか？ → .claude/skills/agent-structure-design/SKILL.md（必須）
+- [ ] ファイル操作が必要か？ → .claude/skills/tool-permission-management/SKILL.md（必須）
+- [ ] アーキテクチャパターンを適用するか？ → .claude/skills/agent-architecture-patterns/SKILL.md
+- [ ] プロンプトチューニングが必要か？ → .claude/skills/prompt-engineering-for-agents/SKILL.md
 
 ### Phase 3: 依存関係とインターフェースの設計
 
 **必須スキル**:
 
-- `agent-dependency-design`: スキル参照、エージェント間協調
+- `.claude/skills/agent-dependency-design/SKILL.md`: スキル参照、エージェント間協調
 
 **オプションスキル**:
 
-- `multi-agent-systems`: マルチエージェント協調パターン
+- `.claude/skills/multi-agent-systems/SKILL.md`: マルチエージェント協調パターン
 
 **判断基準**:
 
-- [ ] スキルに依存するか？ → agent-dependency-design（必須）
-- [ ] 他のエージェントと協調するか？ → agent-dependency-design（必須）
-- [ ] 3つ以上のエージェントが連携するか？ → multi-agent-systems
+- [ ] スキルに依存するか？ → .claude/skills/agent-dependency-design/SKILL.md（必須）
+- [ ] 他のエージェントと協調するか？ → .claude/skills/agent-dependency-design/SKILL.md（必須）
+- [ ] 3つ以上のエージェントが連携するか？ → .claude/skills/multi-agent-systems/SKILL.md
 
 ### Phase 4: 品質基準とチェックリストの定義
 
 **必須スキル**:
 
-- `agent-quality-standards`: 完了条件、品質メトリクス
-- `agent-lifecycle-management`: ライフサイクル管理
+- `.claude/skills/agent-quality-standards/SKILL.md`: 完了条件、品質メトリクス
+- `.claude/skills/agent-lifecycle-management/SKILL.md`: ライフサイクル管理
 
 **オプションスキル**:
 
-- `project-architecture-integration`: プロジェクト準拠確認
+- `.claude/skills/project-architecture-integration/SKILL.md`: プロジェクト準拠確認
 
 **判断基準**:
 
-- [ ] 完了条件を定義する必要があるか？ → agent-quality-standards（必須）
-- [ ] エラーハンドリング戦略が必要か？ → agent-quality-standards（必須）
-- [ ] 複雑なライフサイクルを持つか？ → agent-lifecycle-management（必須）
-- [ ] プロジェクト構造に準拠する必要があるか？ → project-architecture-integration
+- [ ] 完了条件を定義する必要があるか？ → .claude/skills/agent-quality-standards/SKILL.md（必須）
+- [ ] エラーハンドリング戦略が必要か？ → .claude/skills/agent-quality-standards/SKILL.md（必須）
+- [ ] 複雑なライフサイクルを持つか？ → .claude/skills/agent-lifecycle-management/SKILL.md（必須）
+- [ ] プロジェクト構造に準拠する必要があるか？ → .claude/skills/project-architecture-integration/SKILL.md
 
 ### Phase 5: ファイル生成と検証
 
 **必須スキル**:
 
-- `agent-validation-testing`: 構文検証、テストケース作成
-- `agent-template-patterns`: テンプレート適用
+- `.claude/skills/agent-validation-testing/SKILL.md`: 構文検証、テストケース作成
+- `.claude/skills/agent-template-patterns/SKILL.md`: テンプレート適用
 
 **オプションスキル**:
 
-- `project-architecture-integration`: アーキテクチャ準拠チェック
+- `.claude/skills/project-architecture-integration/SKILL.md`: アーキテクチャ準拠チェック
 
 **判断基準**:
 
-- [ ] YAML構文検証が必要か？ → agent-validation-testing（必須）
-- [ ] テストケースを作成するか？ → agent-validation-testing（必須）
-- [ ] テンプレートを使用するか？ → agent-template-patterns（必須）
-- [ ] プロジェクトアーキテクチャへの準拠確認が必要か？ → project-architecture-integration
+- [ ] YAML構文検証が必要か？ → .claude/skills/agent-validation-testing/SKILL.md（必須）
+- [ ] テストケースを作成するか？ → .claude/skills/agent-validation-testing/SKILL.md（必須）
+- [ ] テンプレートを使用するか？ → .claude/skills/agent-template-patterns/SKILL.md（必須）
+- [ ] プロジェクトアーキテクチャへの準拠確認が必要か？ → .claude/skills/project-architecture-integration/SKILL.md
 
 ## スキル参照タイミングの詳細判断基準
 
-### agent-architecture-patternsを参照するタイミング
+### .claude/skills/agent-architecture-patterns/SKILL.mdを参照するタイミング
 
 **必須条件**:
 
@@ -130,7 +130,7 @@
 cat .claude/skills/agent-architecture-patterns/SKILL.md
 ```
 
-### agent-structure-designを参照するタイミング
+### .claude/skills/agent-structure-design/SKILL.mdを参照するタイミング
 
 **必須条件**:
 
@@ -144,7 +144,7 @@ cat .claude/skills/agent-architecture-patterns/SKILL.md
 cat .claude/skills/agent-structure-design/SKILL.md
 ```
 
-### agent-dependency-designを参照するタイミング
+### .claude/skills/agent-dependency-design/SKILL.mdを参照するタイミング
 
 **必須条件**:
 
@@ -161,7 +161,7 @@ cat .claude/skills/agent-structure-design/SKILL.md
 cat .claude/skills/agent-dependency-design/SKILL.md
 ```
 
-### agent-quality-standardsを参照するタイミング
+### .claude/skills/agent-quality-standards/SKILL.mdを参照するタイミング
 
 **必須条件**:
 
@@ -178,7 +178,7 @@ cat .claude/skills/agent-dependency-design/SKILL.md
 cat .claude/skills/agent-quality-standards/SKILL.md
 ```
 
-### agent-validation-testingを参照するタイミング
+### .claude/skills/agent-validation-testing/SKILL.mdを参照するタイミング
 
 **必須条件**:
 
@@ -196,7 +196,7 @@ cat .claude/skills/agent-quality-standards/SKILL.md
 cat .claude/skills/agent-validation-testing/SKILL.md
 ```
 
-### agent-template-patternsを参照するタイミング
+### .claude/skills/agent-template-patterns/SKILL.mdを参照するタイミング
 
 **必須条件**:
 
@@ -214,7 +214,7 @@ cat .claude/skills/agent-validation-testing/SKILL.md
 cat .claude/skills/agent-template-patterns/SKILL.md
 ```
 
-### project-architecture-integrationを参照するタイミング
+### .claude/skills/project-architecture-integration/SKILL.mdを参照するタイミング
 
 **必須条件**:
 
@@ -231,7 +231,7 @@ cat .claude/skills/agent-template-patterns/SKILL.md
 cat .claude/skills/project-architecture-integration/SKILL.md
 ```
 
-### agent-persona-designを参照するタイミング
+### .claude/skills/agent-persona-design/SKILL.mdを参照するタイミング
 
 **必須条件**:
 
@@ -248,7 +248,7 @@ cat .claude/skills/project-architecture-integration/SKILL.md
 cat .claude/skills/agent-persona-design/SKILL.md
 ```
 
-### tool-permission-managementを参照するタイミング
+### .claude/skills/tool-permission-management/SKILL.mdを参照するタイミング
 
 **必須条件**:
 
@@ -265,7 +265,7 @@ cat .claude/skills/agent-persona-design/SKILL.md
 cat .claude/skills/tool-permission-management/SKILL.md
 ```
 
-### multi-agent-systemsを参照するタイミング
+### .claude/skills/multi-agent-systems/SKILL.mdを参照するタイミング
 
 **必須条件**:
 
@@ -282,7 +282,7 @@ cat .claude/skills/tool-permission-management/SKILL.md
 cat .claude/skills/multi-agent-systems/SKILL.md
 ```
 
-### prompt-engineering-for-agentsを参照するタイミング
+### .claude/skills/prompt-engineering-for-agents/SKILL.mdを参照するタイミング
 
 **オプション条件**:
 
@@ -296,7 +296,7 @@ cat .claude/skills/multi-agent-systems/SKILL.md
 cat .claude/skills/prompt-engineering-for-agents/SKILL.md
 ```
 
-### agent-lifecycle-managementを参照するタイミング
+### .claude/skills/agent-lifecycle-management/SKILL.mdを参照するタイミング
 
 **必須条件**:
 
@@ -370,7 +370,7 @@ Phase 5: 検証
 ### 循環依存エラー
 
 - **症状**: エージェント間で循環参照が発生
-- **対処**: `agent-dependency-design`の循環依存検出スクリプトを実行
+- **対処**: `.claude/skills/agent-dependency-design/SKILL.md`の循環依存検出スクリプトを実行
   ```bash
   node .claude/skills/agent-dependency-design/scripts/check-circular-deps.mjs [agent-file.md]
   ```
@@ -378,7 +378,7 @@ Phase 5: 検証
 ### YAML構文エラー
 
 - **症状**: Frontmatterが正しく解析されない
-- **対処**: `agent-structure-design`の構造検証スクリプトを実行
+- **対処**: `.claude/skills/agent-structure-design/SKILL.md`の構造検証スクリプトを実行
   ```bash
   node .claude/skills/agent-structure-design/scripts/validate-structure.mjs [agent-file.md]
   ```
@@ -386,7 +386,7 @@ Phase 5: 検証
 ### 品質基準未達
 
 - **症状**: 品質スコアが基準を下回る
-- **対処**: `agent-quality-standards`の品質スコア算出スクリプトを実行
+- **対処**: `.claude/skills/agent-quality-standards/SKILL.md`の品質スコア算出スクリプトを実行
   ```bash
   node .claude/skills/agent-quality-standards/scripts/calculate-quality-score.mjs [agent-file.md]
   ```
@@ -398,7 +398,7 @@ Phase 5: 検証
 1. **Phase別に必要なスキルをまとめて参照**
    - Phase 1開始時: persona-design
    - Phase 2開始時: structure-design + tool-permission + architecture-patterns
-   - Phase 3開始時: dependency-design + multi-agent-systems
+   - Phase 3開始時: dependency-design + .claude/skills/multi-agent-systems/SKILL.md
    - Phase 4開始時: quality-standards + lifecycle-management
    - Phase 5開始時: validation-testing + template-patterns
 

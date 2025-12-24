@@ -13,7 +13,7 @@
 | ステータス       | 未実施                                       |
 | 発見元           | Phase 7（最終レビューゲート）- E2Eテスト実行 |
 | 発見日           | 2025-12-23                                   |
-| 発見エージェント | @e2e-tester                                  |
+| 発見エージェント | .claude/agents/e2e-tester.md                                  |
 
 ---
 
@@ -199,7 +199,7 @@ Phase 6: 品質保証
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: ユニットテスト作成の専門家。TDD原則に基づいた境界値分析・等価分割によるテストケース設計に精通。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -207,9 +207,9 @@ Phase 6: 品質保証
 
 | スキル名                | 活用方法                                                                 |
 | ----------------------- | ------------------------------------------------------------------------ |
-| tdd-principles          | Red-Green-Refactorサイクルの実践、テストファースト開発                   |
-| boundary-value-analysis | チェックボックス選択パターンの境界値テスト（0件選択、1件選択、全件選択） |
-| test-naming-conventions | Given-When-Then形式のテストケース命名                                    |
+| .claude/skills/tdd-principles/SKILL.md          | Red-Green-Refactorサイクルの実践、テストファースト開発                   |
+| .claude/skills/boundary-value-analysis/SKILL.md | チェックボックス選択パターンの境界値テスト（0件選択、1件選択、全件選択） |
+| .claude/skills/test-naming-conventions/SKILL.md | Given-When-Then形式のテストケース命名                                    |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -284,19 +284,19 @@ TDDサイクルのGreen段階。テストを通すための最小限の実装を
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: モジュラー設計、Composition パターン、アクセシビリティ（WCAG）、Apple HIG準拠のUI実装に精通。チェックボックスUIの適切な実装と状態管理を担当。
-- **代替候補**: @frontend-tester（テスト観点からの実装）も検討したが、UI設計の専門性を優先
+- **代替候補**: .claude/agents/frontend-tester.md（テスト観点からの実装）も検討したが、UI設計の専門性を優先
 - **参照**: `.claude/agents/agent_list.md`
 
 #### 活用スキル
 
 | スキル名                       | 活用方法                                            | 選定理由                                   |
 | ------------------------------ | --------------------------------------------------- | ------------------------------------------ |
-| component-composition-patterns | Controlled Component パターンでチェックボックス実装 | 状態管理の責務を親に委譲し、再利用性を確保 |
-| accessibility-wcag             | aria-label、role、キーボード操作対応                | WCAG 2.1 AA準拠のチェックボックス実装      |
-| apple-hig-guidelines           | Apple HIG準拠のチェックボックスデザイン             | 既存デザインシステムとの整合性確保         |
-| state-lifting                  | 選択状態を親コンポーネント（ChatHistoryView）で管理 | 単一情報源の原則を遵守                     |
+| .claude/skills/component-composition-patterns/SKILL.md | Controlled Component パターンでチェックボックス実装 | 状態管理の責務を親に委譲し、再利用性を確保 |
+| .claude/skills/accessibility-wcag/SKILL.md             | aria-label、role、キーボード操作対応                | WCAG 2.1 AA準拠のチェックボックス実装      |
+| .claude/skills/apple-hig-guidelines/SKILL.md           | Apple HIG準拠のチェックボックスデザイン             | 既存デザインシステムとの整合性確保         |
+| .claude/skills/state-lifting/SKILL.md                  | 選択状態を親コンポーネント（ChatHistoryView）で管理 | 単一情報源の原則を遵守                     |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -409,7 +409,7 @@ Green状態達成後、コードの可読性・保守性・型安全性を向上
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: Clean Code原則、SOLID原則、リファクタリングパターンの専門家。コードの可読性と保守性向上に精通。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -417,9 +417,9 @@ Green状態達成後、コードの可読性・保守性・型安全性を向上
 
 | スキル名               | 活用方法                                                |
 | ---------------------- | ------------------------------------------------------- |
-| refactoring-techniques | Extract Method、Introduce Parameter Object パターン適用 |
-| clean-code-practices   | 意味のある命名、小さな関数、DRY原則の適用               |
-| type-safety-patterns   | TypeScript 型推論の最大化、型ガード実装                 |
+| .claude/skills/refactoring-techniques/SKILL.md | Extract Method、Introduce Parameter Object パターン適用 |
+| .claude/skills/clean-code-practices/SKILL.md   | 意味のある命名、小さな関数、DRY原則の適用               |
+| .claude/skills/type-safety-patterns/SKILL.md   | TypeScript 型推論の最大化、型ガード実装                 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -498,7 +498,7 @@ E2Eテスト実行と結果検証のみ。
 
 #### 使用エージェント
 
-- **エージェント**: @e2e-tester
+- **エージェント**: .claude/agents/e2e-tester.md
 - **選定理由**: Playwrightブラウザ自動化、E2Eシナリオ検証、フレーキーテスト防止の専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -506,9 +506,9 @@ E2Eテスト実行と結果検証のみ。
 
 | スキル名              | 活用方法                                     |
 | --------------------- | -------------------------------------------- |
-| playwright-testing    | Playwrightセレクタ戦略、waitFor戦略でE2E実行 |
-| flaky-test-prevention | 非決定性排除、明示的待機でテスト安定化       |
-| test-data-management  | テストデータの整合性確認                     |
+| .claude/skills/playwright-testing/SKILL.md    | Playwrightセレクタ戦略、waitFor戦略でE2E実行 |
+| .claude/skills/flaky-test-prevention/SKILL.md | 非決定性排除、明示的待機でテスト安定化       |
+| .claude/skills/test-data-management/SKILL.md  | テストデータの整合性確認                     |
 
 - **参照**: `.claude/skills/skill_list.md`
 

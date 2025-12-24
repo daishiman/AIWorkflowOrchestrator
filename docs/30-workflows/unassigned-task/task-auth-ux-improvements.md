@@ -152,7 +152,7 @@ Phase 4: テスト実行
 
 #### 使用エージェント
 
-- **エージェント**: @logic-dev
+- **エージェント**: .claude/agents/logic-dev.md
 - **選定理由**: ビジネスロジック実装の専門家。エラー判定ロジックの実装に最適。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -160,7 +160,7 @@ Phase 4: テスト実行
 
 | スキル名             | 活用方法             |
 | -------------------- | -------------------- |
-| clean-code-practices | 高品質なロジック実装 |
+| .claude/skills/clean-code-practices/SKILL.md | 高品質なロジック実装 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -202,7 +202,7 @@ Phase 4: テスト実行
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: UIコンポーネント実装の専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -210,8 +210,8 @@ Phase 4: テスト実行
 
 | スキル名              | 活用方法                   |
 | --------------------- | -------------------------- |
-| custom-hooks-patterns | Reactカスタムフック実装    |
-| clean-code-practices  | 高品質なコンポーネント実装 |
+| .claude/skills/custom-hooks-patterns/SKILL.md | Reactカスタムフック実装    |
+| .claude/skills/clean-code-practices/SKILL.md  | 高品質なコンポーネント実装 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -255,7 +255,7 @@ Phase 4: テスト実行
 
 #### 使用エージェント
 
-- **エージェント**: @logic-dev
+- **エージェント**: .claude/agents/logic-dev.md
 - **選定理由**: ビジネスロジック実装の専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -263,8 +263,8 @@ Phase 4: テスト実行
 
 | スキル名             | 活用方法             |
 | -------------------- | -------------------- |
-| state-lifting        | Zustand状態管理      |
-| clean-code-practices | 高品質なロジック実装 |
+| .claude/skills/state-lifting/SKILL.md        | Zustand状態管理      |
+| .claude/skills/clean-code-practices/SKILL.md | 高品質なロジック実装 |
 
 - **参照**: `.claude/skills/skill_list.md`
 

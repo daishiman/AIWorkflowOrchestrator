@@ -356,4 +356,4 @@ rate(http_requests_total{status=~"5..", user_id!=""}[5m])
 
 このスキルを使用するエージェント:
 
-- `@sre-observer` - ロギング・監視設計者 (.claude/agents/sre-observer.md:979)
+- `.claude/agents/sre-observer.md` - ロギング・監視設計者 (.claude/agents/sre-observer.md:979)

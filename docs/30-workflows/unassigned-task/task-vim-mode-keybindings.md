@@ -13,7 +13,7 @@
 | ステータス       | 未実施                      |
 | 発見元           | ユーザー要望                |
 | 発見日           | 2025-12-11                  |
-| 発見エージェント | @product-manager            |
+| 発見エージェント | .claude/agents/product-manager.md            |
 
 ---
 
@@ -187,11 +187,11 @@ Phase 9: ドキュメント更新
 
 ### 主要な使用エージェント
 
-- **@arch-police**: Vimモードエンジンのアーキテクチャ設計
-- **@logic-dev**: キーバインド・モード管理ロジックの実装
-- **@ui-designer**: モード表示UI・設定UIの設計
-- **@unit-tester**: TDDでのテスト作成
-- **@e2e-tester**: Vimキーバインドの統合テスト
+- **.claude/agents/arch-police.md**: Vimモードエンジンのアーキテクチャ設計
+- **.claude/agents/logic-dev.md**: キーバインド・モード管理ロジックの実装
+- **.claude/agents/ui-designer.md**: モード表示UI・設定UIの設計
+- **.claude/agents/unit-tester.md**: TDDでのテスト作成
+- **.claude/agents/e2e-tester.md**: Vimキーバインドの統合テスト
 
 ---
 

@@ -1,166 +1,102 @@
 ---
-name: automation-scripting
+name: .claude/skills/automation-scripting/SKILL.md
 description: |
   ## 概要
+  
+  📖 参照書籍:
+  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/automation-scripting/resources/script-patterns.md`: スクリプトパターン集
-
-  専門分野:
-  - (要追加)
-
-  使用タイミング:
-  - (要追加)
-
-  Use proactively when (要追加).
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/script-patterns.md`: スクリプトパターン集
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  
+  Use proactively when handling automation scripting tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "The Pragmatic Programmer"
+    author: "Andrew Hunt, David Thomas"
+    concepts:
+      - "実践的改善"
+      - "品質維持"
 ---
 
 # 自動化スクリプティング
 
 ## 概要
 
-開発タスクの自動化に必要なスクリプティングパターンとベストプラクティス
+## 概要
 
-## 核心概念
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-### 1. スクリプトの役割
 
-- 反復的な手作業の自動化
-- CI/CDパイプラインの実装
-- 環境セットアップの標準化
+## ワークフロー
 
-### 2. スクリプト言語の選択
+### Phase 1: 目的と前提の整理
 
-| 用途         | 言語         | 理由                       |
-| ------------ | ------------ | -------------------------- |
-| Gitフック    | Bash         | 標準搭載                   |
-| ビルド       | Node.js/pnpm | フロントエンドエコシステム |
-| データ処理   | Python       | 豊富なライブラリ           |
-| システム管理 | Bash         | OS統合                     |
+**目的**: タスクの目的と前提条件を明確にする
 
-### 3. スクリプト設計の原則
+**アクション**:
 
-- 単一責任: 1スクリプト = 1タスク
-- 冪等性: 何度実行しても同じ結果
-- 可視性: エラー出力は明確に
-- テスト可能性: 関数化・モジュール化
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-## 設計パターン
+### Phase 2: スキル適用
 
-### パターン1: チェック・実行・検証
+**目的**: スキルの指針に従って具体的な作業を進める
 
+**アクション**:
+
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
+
+### Phase 3: 検証と記録
+
+**目的**: 成果物の検証と実行記録の保存
+
+**アクション**:
+
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
+
+
+## ベストプラクティス
+
+### すべきこと
+- resources/Level1_basics.md を参照し、適用範囲を明確にする
+- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
+
+## コマンドリファレンス
+
+### リソース読み取り
 ```bash
-#!/bin/bash
-# 前提条件チェック → 処理実行 → 結果検証
-
-# チェック
-if [ ! -d "src" ]; then
-  echo "Error: src directory not found"
-  exit 1
-fi
-
-# 実行
-pnpm run build
-
-# 検証
-if [ ! -f "dist/index.js" ]; then
-  echo "Error: Build output not found"
-  exit 1
-fi
+cat .claude/skills/automation-scripting/resources/Level1_basics.md
+cat .claude/skills/automation-scripting/resources/Level2_intermediate.md
+cat .claude/skills/automation-scripting/resources/Level3_advanced.md
+cat .claude/skills/automation-scripting/resources/Level4_expert.md
+cat .claude/skills/automation-scripting/resources/legacy-skill.md
+cat .claude/skills/automation-scripting/resources/script-patterns.md
 ```
 
-### パターン2: エラーハンドリング
-
+### スクリプト実行
 ```bash
-#!/bin/bash
-set -euo pipefail  # 厳密モード
-trap 'echo "Error on line $LINENO"' ERR
-
-# エラー発生時も実行
-cleanup() {
-  rm -f temp_file
-  pkill -P $$ || true
-}
-trap cleanup EXIT
+node .claude/skills/automation-scripting/scripts/log_usage.mjs --help
+node .claude/skills/automation-scripting/scripts/validate-skill.mjs --help
 ```
 
-### パターン3: 並列実行
+## 変更履歴
 
-```bash
-#!/bin/bash
-# 複数のタスクを並列化
-
-task1 &
-PID1=$!
-
-task2 &
-PID2=$!
-
-wait $PID1 $PID2
-echo "All tasks completed"
-```
-
-## 実装パターン
-
-### パターン1: ビルドスクリプト
-
-```bash
-#!/bin/bash
-# 自動ビルド・最適化
-
-pnpm run clean
-pnpm run build
-pnpm run optimize
-pnpm run test
-```
-
-### パターン2: デプロイスクリプト
-
-```bash
-#!/bin/bash
-# 本番環境へのデプロイ自動化
-
-check_branch
-run_tests
-build_production
-backup_current
-deploy_new
-verify_deployment
-```
-
-### パターン3: セットアップスクリプト
-
-```bash
-#!/bin/bash
-# 開発環境の初期化
-
-install_dependencies
-configure_git_hooks
-setup_database
-generate_env_file
-```
-
-## 関連スキル
-
-- `.claude/skills/git-hooks-concepts/SKILL.md`: Gitフック統合
-- `.claude/skills/linting-formatting-automation/SKILL.md`: コード品質自動化
-- `.claude/skills/approval-gates/SKILL.md`: 承認プロセス自動化
-
-## 参照リソース
-
-### 詳細リソース
-
-- `.claude/skills/automation-scripting/resources/script-patterns.md`: スクリプトパターン集
-- `.claude/skills/automation-scripting/resources/error-handling.md`: エラーハンドリング
-
-### テンプレート
-
-- `.claude/skills/automation-scripting/templates/generic-script-template.sh`: 汎用スクリプト
-- `.claude/skills/automation-scripting/templates/parallel-runner-template.sh`: 並列実行テンプレート
-
-### スクリプト
-
-- `.claude/skills/automation-scripting/scripts/validate-scripts.mjs`: スクリプト検証ツール
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

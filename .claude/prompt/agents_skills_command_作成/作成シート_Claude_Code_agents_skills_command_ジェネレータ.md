@@ -344,8 +344,8 @@ version: { { 1.0.0 } }
   2. {{concept2}}
   3. {{concept3}}
 - **本エージェントへの適用**: {{how to apply}}
-- **参照スキル**: `{{skill-name}}`
-- **参照コマンド**: `/{{command-name}}`
+- **参照スキル**: `.claude/skills/{{skill-name}}/SKILL.md`
+- **参照コマンド**: `.claude/commands/ai/{{command-name}}.md`
 
 #### 『{{Book Title 2}}』（必要な場合）
 
@@ -1028,9 +1028,9 @@ disable-model-invocation: {{true|false}}
 
 ### 依存関係
 
-- スキル: `{{skill-name}}`
-- コマンド: `/{{other-command}}`
-- エージェント: `@{{agent-name}}`
+- スキル: `.claude/skills/{{skill-name}}/SKILL.md`
+- コマンド: `.claude/commands/ai/{{other-command}}.md`
+- エージェント: `.claude/agents/{{agent-name}}.md`
 
 ## 実行手順
 
@@ -1051,7 +1051,7 @@ disable-model-invocation: {{true|false}}
 
 ### Step 2: スキル参照
 
-**参照するスキル**: `{{skill-name}}`
+**参照するスキル**: `.claude/skills/{{skill-name}}/SKILL.md`
 
 **参照方法**:
 
@@ -1081,7 +1081,7 @@ fi
 
 ### Step 4: エージェント起動（必要な場合）
 
-**起動するエージェント**: `@{{agent-name}}`
+**起動するエージェント**: `.claude/agents/{{agent-name}}.md`
 
 **委譲内容**: {{what to delegate}}
 
@@ -2480,7 +2480,7 @@ metrics:
 | スキル名                    | 参照タイミング | 参照方法                | 必須/推奨 |
 | --------------------------- | -------------- | ----------------------- | --------- |
 | clean-architecture-patterns | Phase 1, 2     | `cat .../SKILL.md`      | 必須      |
-| solid-principles            | Phase 2        | `cat .../SKILL.md`      | 必須      |
+| .claude/skills/solid-principles/SKILL.md            | Phase 2        | `cat .../SKILL.md`      | 必須      |
 | refactoring-patterns        | Phase 3        | `cat .../resources/...` | 推奨      |
 
 ### 使用コマンド

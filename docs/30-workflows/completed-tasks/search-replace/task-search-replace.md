@@ -20,7 +20,7 @@
 | ステータス       | 未実施                     |
 | 発見元           | ユーザー要望               |
 | 発見日           | 2025-12-11                 |
-| 発見エージェント | @product-manager           |
+| 発見エージェント | .claude/agents/product-manager.md           |
 
 ---
 
@@ -247,7 +247,7 @@ graph TD
 
 #### 使用エージェント
 
-- **エージェント**: @req-analyst
+- **エージェント**: .claude/agents/req-analyst.md
 - **選定理由**: 要求工学の専門家として、曖昧な要望を検証可能な要件に変換する能力を持つ
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -255,9 +255,9 @@ graph TD
 
 | スキル名                               | 活用方法                                 |
 | -------------------------------------- | ---------------------------------------- |
-| requirements-engineering               | MoSCoW 優先度でファイル内検索要件を分類  |
-| acceptance-criteria-writing            | Given-When-Then 形式で受け入れ基準を定義 |
-| functional-non-functional-requirements | FR/NFR を明確に分類                      |
+| .claude/skills/requirements-engineering/SKILL.md               | MoSCoW 優先度でファイル内検索要件を分類  |
+| .claude/skills/acceptance-criteria-writing/SKILL.md            | Given-When-Then 形式で受け入れ基準を定義 |
+| .claude/skills/functional-non-functional-requirements/SKILL.md | FR/NFR を明確に分類                      |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -308,7 +308,7 @@ graph TD
 
 #### 使用エージェント
 
-- **エージェント**: @req-analyst
+- **エージェント**: .claude/agents/req-analyst.md
 - **選定理由**: 検索機能との整合性を考慮した要件定義が可能
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -316,9 +316,9 @@ graph TD
 
 | スキル名                    | 活用方法                                    |
 | --------------------------- | ------------------------------------------- |
-| requirements-engineering    | 置換機能の要件を体系的に整理                |
-| acceptance-criteria-writing | 置換操作のシナリオを Given-When-Then で定義 |
-| use-case-modeling           | 単一置換、全置換、Undo のユースケース定義   |
+| .claude/skills/requirements-engineering/SKILL.md    | 置換機能の要件を体系的に整理                |
+| .claude/skills/acceptance-criteria-writing/SKILL.md | 置換操作のシナリオを Given-When-Then で定義 |
+| .claude/skills/use-case-modeling/SKILL.md           | 単一置換、全置換、Undo のユースケース定義   |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -369,7 +369,7 @@ graph TD
 
 #### 使用エージェント
 
-- **エージェント**: @req-analyst
+- **エージェント**: .claude/agents/req-analyst.md
 - **選定理由**: ステークホルダーヒアリングと要件整理の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -377,9 +377,9 @@ graph TD
 
 | スキル名                 | 活用方法                                         |
 | ------------------------ | ------------------------------------------------ |
-| requirements-engineering | ワークスペース検索の要件を体系的に整理           |
-| use-case-modeling        | 検索→結果表示→ジャンプのユースケースシナリオ作成 |
-| interview-techniques     | ユーザー要望を 5W1H で深堀り                     |
+| .claude/skills/requirements-engineering/SKILL.md | ワークスペース検索の要件を体系的に整理           |
+| .claude/skills/use-case-modeling/SKILL.md        | 検索→結果表示→ジャンプのユースケースシナリオ作成 |
+| .claude/skills/interview-techniques/SKILL.md     | ユーザー要望を 5W1H で深堀り                     |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -430,7 +430,7 @@ graph TD
 
 #### 使用エージェント
 
-- **エージェント**: @req-analyst
+- **エージェント**: .claude/agents/req-analyst.md
 - **選定理由**: リスクを考慮した要件定義が可能
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -438,9 +438,9 @@ graph TD
 
 | スキル名                               | 活用方法                               |
 | -------------------------------------- | -------------------------------------- |
-| requirements-engineering               | 安全性要件を含めた体系的な整理         |
-| functional-non-functional-requirements | セキュリティ・安全性の NFR を明確化    |
-| use-case-modeling                      | 置換→確認→実行→Undo のユースケース定義 |
+| .claude/skills/requirements-engineering/SKILL.md               | 安全性要件を含めた体系的な整理         |
+| .claude/skills/functional-non-functional-requirements/SKILL.md | セキュリティ・安全性の NFR を明確化    |
+| .claude/skills/use-case-modeling/SKILL.md                      | 置換→確認→実行→Undo のユースケース定義 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -493,7 +493,7 @@ graph TD
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: モジュラー設計原則とアクセシビリティ基準（WCAG）を満たすUI設計の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -501,10 +501,10 @@ graph TD
 
 | スキル名                       | 活用方法                                         |
 | ------------------------------ | ------------------------------------------------ |
-| design-system-architecture     | デザイントークンを活用した一貫性のあるUI設計     |
-| component-composition-patterns | Slot/Compound パターンで拡張可能な検索パネル設計 |
-| accessibility-wcag             | WCAG 2.1 AA 準拠、キーボードナビゲーション設計   |
-| apple-hig-guidelines           | macOS ネイティブライクな検索パネル設計           |
+| .claude/skills/design-system-architecture/SKILL.md     | デザイントークンを活用した一貫性のあるUI設計     |
+| .claude/skills/component-composition-patterns/SKILL.md | Slot/Compound パターンで拡張可能な検索パネル設計 |
+| .claude/skills/accessibility-wcag/SKILL.md             | WCAG 2.1 AA 準拠、キーボードナビゲーション設計   |
+| .claude/skills/apple-hig-guidelines/SKILL.md           | macOS ネイティブライクな検索パネル設計           |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -555,7 +555,7 @@ graph TD
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: 検索UIとの一貫性を保ちながら置換固有のUIを設計できる
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -563,8 +563,8 @@ graph TD
 
 | スキル名                       | 活用方法                             |
 | ------------------------------ | ------------------------------------ |
-| component-composition-patterns | 検索パネルを拡張する形での置換UI設計 |
-| accessibility-wcag             | 置換操作のアクセシビリティ確保       |
+| .claude/skills/component-composition-patterns/SKILL.md | 検索パネルを拡張する形での置換UI設計 |
+| .claude/skills/accessibility-wcag/SKILL.md             | 置換操作のアクセシビリティ確保       |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -614,7 +614,7 @@ graph TD
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: 複雑なUIコンポーネントの設計経験と、パフォーマンスを考慮した設計能力
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -622,9 +622,9 @@ graph TD
 
 | スキル名                       | 活用方法                                       |
 | ------------------------------ | ---------------------------------------------- |
-| component-composition-patterns | 検索結果リスト、フィルタ、プレビューの複合設計 |
-| headless-ui-principles         | ロジックとプレゼンテーションの分離設計         |
-| tailwind-css-patterns          | レスポンシブな検索結果パネルのスタイリング     |
+| .claude/skills/component-composition-patterns/SKILL.md | 検索結果リスト、フィルタ、プレビューの複合設計 |
+| .claude/skills/headless-ui-principles/SKILL.md         | ロジックとプレゼンテーションの分離設計         |
+| .claude/skills/tailwind-css-patterns/SKILL.md          | レスポンシブな検索結果パネルのスタイリング     |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -674,7 +674,7 @@ graph TD
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: 安全性を考慮したUI設計が可能
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -682,8 +682,8 @@ graph TD
 
 | スキル名                       | 活用方法                                   |
 | ------------------------------ | ------------------------------------------ |
-| component-composition-patterns | 確認ダイアログ、プレビューを含む複合UI設計 |
-| accessibility-wcag             | 確認操作のアクセシビリティ確保             |
+| .claude/skills/component-composition-patterns/SKILL.md | 確認ダイアログ、プレビューを含む複合UI設計 |
+| .claude/skills/accessibility-wcag/SKILL.md             | 確認操作のアクセシビリティ確保             |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -733,18 +733,18 @@ graph TD
 
 #### 使用エージェント
 
-- **エージェント**: @electron-architect
+- **エージェント**: .claude/agents/electron-architect.md
 - **選定理由**: Electron アプリケーションの Main/Renderer 分離、IPC 設計の専門家
-- **代替候補**: @logic-dev（純粋なロジック設計の場合）
+- **代替候補**: .claude/agents/logic-dev.md（純粋なロジック設計の場合）
 - **参照**: `.claude/agents/agent_list.md`
 
 #### 活用スキル
 
 | スキル名                      | 活用方法                                       |
 | ----------------------------- | ---------------------------------------------- |
-| electron-architecture         | Main/Renderer プロセス間の検索ロジック分離設計 |
-| clean-architecture-principles | 検索ロジックのレイヤー分離                     |
-| interface-segregation         | 検索インターフェースの適切な分割               |
+| .claude/skills/electron-architecture/SKILL.md         | Main/Renderer プロセス間の検索ロジック分離設計 |
+| .claude/skills/clean-architecture-principles/SKILL.md | 検索ロジックのレイヤー分離                     |
+| .claude/skills/interface-segregation/SKILL.md         | 検索インターフェースの適切な分割               |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -795,7 +795,7 @@ graph TD
 
 #### 使用エージェント
 
-- **エージェント**: @electron-architect
+- **エージェント**: .claude/agents/electron-architect.md
 - **選定理由**: トランザクション管理とIPC設計を統合した設計が可能
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -803,8 +803,8 @@ graph TD
 
 | スキル名               | 活用方法                                 |
 | ---------------------- | ---------------------------------------- |
-| electron-architecture  | ファイル操作を伴う置換のプロセス分離設計 |
-| transaction-management | 置換操作のトランザクション設計           |
+| .claude/skills/electron-architecture/SKILL.md  | ファイル操作を伴う置換のプロセス分離設計 |
+| .claude/skills/transaction-management/SKILL.md | 置換操作のトランザクション設計           |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -845,34 +845,34 @@ graph TD
 
 | エージェント       | レビュー観点          | 選定理由                                |
 | ------------------ | --------------------- | --------------------------------------- |
-| @arch-police       | アーキテクチャ整合性  | Clean Architecture 違反・DIP 違反の検出 |
-| @ui-designer       | UI/UX 設計            | アクセシビリティ・ユーザビリティの確認  |
-| @electron-security | Electron セキュリティ | IPC 通信の安全性確認                    |
-| @req-analyst       | 要件充足性            | 要件が設計に正しく反映されているか確認  |
+| .claude/agents/arch-police.md       | アーキテクチャ整合性  | Clean Architecture 違反・DIP 違反の検出 |
+| .claude/agents/ui-designer.md       | UI/UX 設計            | アクセシビリティ・ユーザビリティの確認  |
+| .claude/agents/electron-security.md | Electron セキュリティ | IPC 通信の安全性確認                    |
+| .claude/agents/req-analyst.md       | 要件充足性            | 要件が設計に正しく反映されているか確認  |
 
 - **参照**: `.claude/agents/agent_list.md`
 
 #### レビューチェックリスト
 
-**要件充足性** (@req-analyst)
+**要件充足性** (.claude/agents/req-analyst.md)
 
 - [ ] 検索要件（T-00-1, T-00-3）が設計に反映されているか
 - [ ] 置換要件（T-00-2, T-00-4）が設計に反映されているか
 - [ ] 受け入れ基準が設計で満たせるか
 
-**アーキテクチャ整合性** (@arch-police)
+**アーキテクチャ整合性** (.claude/agents/arch-police.md)
 
 - [ ] Clean Architecture のレイヤー違反がないか
 - [ ] 依存関係逆転の原則(DIP)が守られているか
 - [ ] 既存設計との整合性があるか
 
-**UI/UX 設計** (@ui-designer)
+**UI/UX 設計** (.claude/agents/ui-designer.md)
 
 - [ ] アクセシビリティが考慮されているか
 - [ ] 検索UIと置換UIの一貫性があるか
 - [ ] デザインシステムとの整合性があるか
 
-**Electron セキュリティ** (@electron-security)
+**Electron セキュリティ** (.claude/agents/electron-security.md)
 
 - [ ] IPC 通信のセキュリティが確保されているか
 - [ ] contextBridge の適切な使用が設計されているか
@@ -932,7 +932,7 @@ TDD の原則に従い、テストを先に書くことで設計の妥当性を�
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: TDD の専門家として、境界値分析とモック活用に精通
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -940,9 +940,9 @@ TDD の原則に従い、テストを先に書くことで設計の妥当性を�
 
 | スキル名                | 活用方法                                         |
 | ----------------------- | ------------------------------------------------ |
-| tdd-principles          | Red-Green-Refactor サイクルの Red フェーズ実行   |
-| boundary-value-analysis | 空文字列、特殊文字、大きなファイルの境界値テスト |
-| test-doubles            | ファイルシステムのモック作成                     |
+| .claude/skills/tdd-principles/SKILL.md          | Red-Green-Refactor サイクルの Red フェーズ実行   |
+| .claude/skills/boundary-value-analysis/SKILL.md | 空文字列、特殊文字、大きなファイルの境界値テスト |
+| .claude/skills/test-doubles/SKILL.md            | ファイルシステムのモック作成                     |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1001,7 +1001,7 @@ pnpm --filter @repo/desktop test:run -- search.test.ts
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: トランザクション的な操作のテスト設計に精通
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1009,9 +1009,9 @@ pnpm --filter @repo/desktop test:run -- search.test.ts
 
 | スキル名                | 活用方法                                       |
 | ----------------------- | ---------------------------------------------- |
-| tdd-principles          | Red-Green-Refactor サイクルの Red フェーズ実行 |
-| test-doubles            | ファイル操作のモック作成                       |
-| boundary-value-analysis | 空置換、大量置換の境界値テスト                 |
+| .claude/skills/tdd-principles/SKILL.md          | Red-Green-Refactor サイクルの Red フェーズ実行 |
+| .claude/skills/test-doubles/SKILL.md            | ファイル操作のモック作成                       |
+| .claude/skills/boundary-value-analysis/SKILL.md | 空置換、大量置換の境界値テスト                 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1069,7 +1069,7 @@ UIコンポーネントはユーザーとの接点であり、アクセシビリ
 
 #### 使用エージェント
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 - **選定理由**: コンポーネントテスト、アクセシビリティテストの専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1077,9 +1077,9 @@ UIコンポーネントはユーザーとの接点であり、アクセシビリ
 
 | スキル名             | 活用方法                                        |
 | -------------------- | ----------------------------------------------- |
-| vitest-advanced      | Vitest + React Testing Library によるテスト作成 |
-| accessibility-wcag   | axe-core によるアクセシビリティテスト           |
-| test-data-management | テストデータの分離と管理                        |
+| .claude/skills/vitest-advanced/SKILL.md      | Vitest + React Testing Library によるテスト作成 |
+| .claude/skills/accessibility-wcag/SKILL.md   | axe-core によるアクセシビリティテスト           |
+| .claude/skills/test-data-management/SKILL.md | テストデータの分離と管理                        |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1136,7 +1136,7 @@ pnpm --filter @repo/desktop test:run -- SearchPanel.test.tsx
 
 #### 使用エージェント
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 - **選定理由**: UIコンポーネントテストの専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1144,8 +1144,8 @@ pnpm --filter @repo/desktop test:run -- SearchPanel.test.tsx
 
 | スキル名           | 活用方法                                        |
 | ------------------ | ----------------------------------------------- |
-| vitest-advanced    | Vitest + React Testing Library によるテスト作成 |
-| accessibility-wcag | 置換操作のアクセシビリティテスト                |
+| .claude/skills/vitest-advanced/SKILL.md    | Vitest + React Testing Library によるテスト作成 |
+| .claude/skills/accessibility-wcag/SKILL.md | 置換操作のアクセシビリティテスト                |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1205,7 +1205,7 @@ TDD の Green フェーズとして、テストを通すための最小限の実
 
 #### 使用エージェント
 
-- **エージェント**: @logic-dev
+- **エージェント**: .claude/agents/logic-dev.md
 - **選定理由**: ビジネスロジック実装の専門家として、可読性とテスト容易性を重視した実装が可能
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1213,9 +1213,9 @@ TDD の Green フェーズとして、テストを通すための最小限の実
 
 | スキル名               | 活用方法                    |
 | ---------------------- | --------------------------- |
-| tdd-red-green-refactor | Green フェーズの実装        |
-| clean-code-practices   | 可読性の高いコード作成      |
-| type-safety-patterns   | TypeScript の型安全性を活用 |
+| .claude/skills/tdd-red-green-refactor/SKILL.md | Green フェーズの実装        |
+| .claude/skills/clean-code-practices/SKILL.md   | 可読性の高いコード作成      |
+| .claude/skills/type-safety-patterns/SKILL.md   | TypeScript の型安全性を活用 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1275,7 +1275,7 @@ pnpm --filter @repo/desktop test:run -- search
 
 #### 使用エージェント
 
-- **エージェント**: @logic-dev
+- **エージェント**: .claude/agents/logic-dev.md
 - **選定理由**: トランザクション的な置換処理の実装に適している
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1283,8 +1283,8 @@ pnpm --filter @repo/desktop test:run -- search
 
 | スキル名           | 活用方法                       |
 | ------------------ | ------------------------------ |
-| transaction-script | 置換操作のトランザクション管理 |
-| test-doubles       | ファイル操作のモック           |
+| .claude/skills/transaction-script/SKILL.md | 置換操作のトランザクション管理 |
+| .claude/skills/test-doubles/SKILL.md       | ファイル操作のモック           |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1343,17 +1343,17 @@ pnpm --filter @repo/desktop test:run -- replace
 
 #### 使用エージェント
 
-- **エージェント**: @logic-dev
+- **エージェント**: .claude/agents/logic-dev.md
 - **選定理由**: 複雑な非同期処理と並列処理の実装に適している
-- **代替候補**: @local-watcher（ファイル監視連携の場合）
+- **代替候補**: .claude/agents/local-watcher.md（ファイル監視連携の場合）
 - **参照**: `.claude/agents/agent_list.md`
 
 #### 活用スキル
 
 | スキル名                   | 活用方法                          |
 | -------------------------- | --------------------------------- |
-| event-driven-file-watching | ファイルシステムの効率的な走査    |
-| file-exclusion-patterns    | .gitignore 互換の除外パターン処理 |
+| .claude/skills/event-driven-file-watching/SKILL.md | ファイルシステムの効率的な走査    |
+| .claude/skills/file-exclusion-patterns/SKILL.md    | .gitignore 互換の除外パターン処理 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1413,7 +1413,7 @@ pnpm --filter @repo/desktop test:run -- workspaceSearch
 
 #### 使用エージェント
 
-- **エージェント**: @logic-dev
+- **エージェント**: .claude/agents/logic-dev.md
 - **選定理由**: バッチ処理と確認フローの実装に適している
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1421,7 +1421,7 @@ pnpm --filter @repo/desktop test:run -- workspaceSearch
 
 | スキル名               | 活用方法                               |
 | ---------------------- | -------------------------------------- |
-| transaction-management | 複数ファイル置換のトランザクション管理 |
+| .claude/skills/transaction-management/SKILL.md | 複数ファイル置換のトランザクション管理 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1485,7 +1485,7 @@ TDD の Refactor フェーズとして、Green を維持しながらコード品
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: コード品質管理の専門家として、リファクタリングパターンに精通
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1493,9 +1493,9 @@ TDD の Refactor フェーズとして、Green を維持しながらコード品
 
 | スキル名               | 活用方法                               |
 | ---------------------- | -------------------------------------- |
-| refactoring-techniques | Extract Method、重複排除パターンの適用 |
-| clean-code-practices   | 意味のある命名、小さな関数への分割     |
-| static-analysis        | 複雑度メトリクスの改善                 |
+| .claude/skills/refactoring-techniques/SKILL.md | Extract Method、重複排除パターンの適用 |
+| .claude/skills/clean-code-practices/SKILL.md   | 意味のある命名、小さな関数への分割     |
+| .claude/skills/static-analysis/SKILL.md        | 複雑度メトリクスの改善                 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1557,7 +1557,7 @@ pnpm --filter @repo/desktop test:run
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: 品質基準の検証と報告の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1565,8 +1565,8 @@ pnpm --filter @repo/desktop test:run
 
 | スキル名             | 活用方法                   |
 | -------------------- | -------------------------- |
-| static-analysis      | コード品質メトリクスの検証 |
-| eslint-configuration | Lint ルール違反のチェック  |
+| .claude/skills/static-analysis/SKILL.md      | コード品質メトリクスの検証 |
+| .claude/skills/eslint-configuration/SKILL.md | Lint ルール違反のチェック  |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -1632,35 +1632,35 @@ pnpm --filter @repo/desktop test:run
 
 | エージェント     | レビュー観点       | 選定理由                               |
 | ---------------- | ------------------ | -------------------------------------- |
-| @code-quality    | コード品質         | コーディング規約・可読性・保守性の確認 |
-| @arch-police     | アーキテクチャ遵守 | レイヤー違反・SOLID 原則の確認         |
-| @sec-auditor     | セキュリティ       | 入力検証・XSS 対策の確認               |
-| @frontend-tester | テスト品質         | テストカバレッジ・テスト設計の確認     |
+| .claude/agents/code-quality.md    | コード品質         | コーディング規約・可読性・保守性の確認 |
+| .claude/agents/arch-police.md     | アーキテクチャ遵守 | レイヤー違反・SOLID 原則の確認         |
+| .claude/agents/sec-auditor.md     | セキュリティ       | 入力検証・XSS 対策の確認               |
+| .claude/agents/frontend-tester.md | テスト品質         | テストカバレッジ・テスト設計の確認     |
 
 - **参照**: `.claude/agents/agent_list.md`
 
 #### レビューチェックリスト
 
-**コード品質** (@code-quality)
+**コード品質** (.claude/agents/code-quality.md)
 
 - [ ] コーディング規約への準拠
 - [ ] 可読性・保守性の確保
 - [ ] 適切なエラーハンドリング
 - [ ] 過度な複雑性の有無
 
-**アーキテクチャ遵守** (@arch-police)
+**アーキテクチャ遵守** (.claude/agents/arch-police.md)
 
 - [ ] 実装がアーキテクチャ設計に従っているか
 - [ ] レイヤー間の依存関係が適切か
 - [ ] SOLID 原則への準拠
 
-**セキュリティ** (@sec-auditor)
+**セキュリティ** (.claude/agents/sec-auditor.md)
 
 - [ ] 入力検証・サニタイズの実装
 - [ ] 正規表現の ReDoS 対策
 - [ ] IPC 通信の安全性
 
-**テスト品質** (@frontend-tester)
+**テスト品質** (.claude/agents/frontend-tester.md)
 
 - [ ] テストカバレッジが十分か
 - [ ] テストケースが適切に設計されているか
@@ -1716,7 +1716,7 @@ pnpm --filter @repo/desktop test:run
 
 #### 使用エージェント
 
-- **エージェント**: @frontend-tester
+- **エージェント**: .claude/agents/frontend-tester.md
 - **選定理由**: E2E テストとユーザビリティテストの専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -1800,7 +1800,7 @@ pnpm --filter @repo/desktop test:run
 
 ##### 使用エージェント
 
-- **エージェント**: @spec-writer
+- **エージェント**: .claude/agents/spec-writer.md
 - **選定理由**: ドキュメント作成・更新の専門家
 - **参照**: `.claude/agents/agent_list.md`
 

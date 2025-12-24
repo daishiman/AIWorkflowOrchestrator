@@ -16,13 +16,13 @@
 
 | エージェント       | 観点                  |   判定    |      指摘数      |
 | ------------------ | --------------------- | :-------: | :--------------: |
-| @electron-security | CSP / IPC検証         | **MAJOR** | MAJOR:2, MINOR:4 |
-| @sec-auditor       | バリデーション / 状態 | **PASS**  |     MINOR:4      |
-| @arch-police       | アーキテクチャ整合性  | **PASS**  |     MINOR:3      |
+| .claude/agents/electron-security.md | CSP / IPC検証         | **MAJOR** | MAJOR:2, MINOR:4 |
+| .claude/agents/sec-auditor.md       | バリデーション / 状態 | **PASS**  |     MINOR:4      |
+| .claude/agents/arch-police.md       | アーキテクチャ整合性  | **PASS**  |     MINOR:3      |
 
 ---
 
-## @electron-security レビュー結果
+## .claude/agents/electron-security.md レビュー結果
 
 ### CSP設計
 
@@ -68,7 +68,7 @@
 
 ---
 
-## @sec-auditor レビュー結果
+## .claude/agents/sec-auditor.md レビュー結果
 
 ### 入力バリデーション設計
 
@@ -107,7 +107,7 @@
 
 ---
 
-## @arch-police レビュー結果
+## .claude/agents/arch-police.md レビュー結果
 
 ### レイヤー分離
 
@@ -153,7 +153,7 @@
 
 ### 判定: **MINOR** (条件付きPASS)
 
-@electron-securityがMAJOR判定を出しましたが、指摘内容を精査した結果:
+.claude/agents/electron-security.mdがMAJOR判定を出しましたが、指摘内容を精査した結果:
 
 1. **エラーハンドリングの一貫性欠如**:
    - step04-ipc-review.mdを確認すると、`withValidation()`ラッパーが提供されており、エラーハンドリングは実装済み
@@ -165,7 +165,7 @@
 ### 結論
 
 既存実装は設計検証レポート(step02-05)で確認された通り、基本的なセキュリティ要件を満たしています。
-@electron-securityのMAJOR指摘は、実装詳細の確認不足による誤認の可能性が高いです。
+.claude/agents/electron-security.mdのMAJOR指摘は、実装詳細の確認不足による誤認の可能性が高いです。
 
 ---
 
@@ -186,25 +186,25 @@
 
 ## チェックリスト完了状況
 
-### CSP設計 (@electron-security)
+### CSP設計 (.claude/agents/electron-security.md)
 
 - [x] CSP設定が環境別に分離されているか
 - [x] 本番環境で厳格なポリシーが適用されるか
 - [x] Supabase接続が適切に許可されているか
 
-### 入力バリデーション (@sec-auditor)
+### 入力バリデーション (.claude/agents/sec-auditor.md)
 
 - [x] XSS対策が十分か
 - [x] ホワイトリスト方式が採用されているか
 - [x] エラーメッセージが適切か
 
-### IPC検証 (@electron-security)
+### IPC検証 (.claude/agents/electron-security.md)
 
 - [x] sender検証が全認証IPCに適用されているか
 - [x] ログ出力が適切か
 - [x] エラーハンドリングが適切か（`withValidation()`で実装済み）
 
-### Renderer状態 (@sec-auditor)
+### Renderer状態 (.claude/agents/sec-auditor.md)
 
 - [x] 機密情報が保持されていないか
 - [x] セッション管理が適切か

@@ -6,7 +6,7 @@
 | ------------------------ | ------------------------------------------- |
 | レビュー日               | 2025-12-20                                  |
 | 対象フェーズ             | Phase 1（設計）                             |
-| レビュー参加エージェント | @arch-police, @domain-modeler, @req-analyst |
+| レビュー参加エージェント | .claude/agents/arch-police.md, .claude/agents/domain-modeler.md, .claude/agents/req-analyst.md |
 | 対象ドキュメント数       | 6件                                         |
 
 ---
@@ -34,7 +34,7 @@
 
 ## レビュー観点別評価
 
-### 観点1: アーキテクチャ整合性 (@arch-police)
+### 観点1: アーキテクチャ整合性 (.claude/agents/arch-police.md)
 
 #### チェックリスト結果
 
@@ -131,7 +131,7 @@ export class ConversionError extends DomainError {
 
 ---
 
-### 観点2: ドメインモデル妥当性 (@domain-modeler)
+### 観点2: ドメインモデル妥当性 (.claude/agents/domain-modeler.md)
 
 #### チェックリスト結果
 
@@ -266,7 +266,7 @@ export class FilePath {
 
 ---
 
-### 観点3: 要件充足性 (@req-analyst)
+### 観点3: 要件充足性 (.claude/agents/req-analyst.md)
 
 #### チェックリスト結果
 
@@ -387,26 +387,26 @@ docs/30-workflows/conversion-base/design-metadata-extractor.md
 
 | ID       | アクション                           | 対応工数 | 担当        |
 | -------- | ------------------------------------ | -------- | ----------- |
-| MINOR-01 | `design-metadata-extractor.md`の作成 | 2-4時間  | @schema-def |
+| MINOR-01 | `design-metadata-extractor.md`の作成 | 2-4時間  | .claude/agents/schema-def.md |
 
 ### 優先度：中（Phase 4進行前に対応推奨）
 
 | ID       | アクション                                   | 対応工数 | 担当         |
 | -------- | -------------------------------------------- | -------- | ------------ |
-| MINOR-02 | 既存IDocumentConverterとの関係を設計書に明記 | 1時間    | @arch-police |
-| MINOR-03 | エラー型の統合方針を設計書に明記             | 1時間    | @arch-police |
-| MINOR-04 | 既存型定義との関係性をdesign-types.mdに追記  | 1-2時間  | @schema-def  |
+| MINOR-02 | 既存IDocumentConverterとの関係を設計書に明記 | 1時間    | .claude/agents/arch-police.md |
+| MINOR-03 | エラー型の統合方針を設計書に明記             | 1時間    | .claude/agents/arch-police.md |
+| MINOR-04 | 既存型定義との関係性をdesign-types.mdに追記  | 1-2時間  | .claude/agents/schema-def.md  |
 
 ### 優先度：低（実装中に対応可）
 
 | ID       | アクション                            | 対応工数 | 担当            |
 | -------- | ------------------------------------- | -------- | --------------- |
-| MINOR-05 | 用語集との一貫性確保                  | 30分     | @domain-modeler |
-| MINOR-06 | Priority値オブジェクトの設計          | 1時間    | @domain-modeler |
-| MINOR-07 | タイムアウトルールのドキュメント化    | 30分     | @req-analyst    |
-| MINOR-08 | FilePath値オブジェクトの設計          | 1時間    | @schema-def     |
-| MINOR-09 | 受け入れ基準のGiven-When-Then形式変換 | 2時間    | @req-analyst    |
-| MINOR-10 | エラーコード一覧の確認と追加          | 30分     | @req-analyst    |
+| MINOR-05 | 用語集との一貫性確保                  | 30分     | .claude/agents/domain-modeler.md |
+| MINOR-06 | Priority値オブジェクトの設計          | 1時間    | .claude/agents/domain-modeler.md |
+| MINOR-07 | タイムアウトルールのドキュメント化    | 30分     | .claude/agents/req-analyst.md    |
+| MINOR-08 | FilePath値オブジェクトの設計          | 1時間    | .claude/agents/schema-def.md     |
+| MINOR-09 | 受け入れ基準のGiven-When-Then形式変換 | 2時間    | .claude/agents/req-analyst.md    |
+| MINOR-10 | エラーコード一覧の確認と追加          | 30分     | .claude/agents/req-analyst.md    |
 
 ---
 
@@ -507,9 +507,9 @@ docs/30-workflows/conversion-base/design-metadata-extractor.md
 
 ### 承認者
 
-- **アーキテクチャ**: @arch-police - **MINOR承認**（軽微な改善推奨、実装進行可）
-- **ドメインモデル**: @domain-modeler - **MINOR承認**（軽微な改善推奨、実装進行可）
-- **要件充足**: @req-analyst - **MINOR承認**（軽微な改善推奨、実装進行可）
+- **アーキテクチャ**: .claude/agents/arch-police.md - **MINOR承認**（軽微な改善推奨、実装進行可）
+- **ドメインモデル**: .claude/agents/domain-modeler.md - **MINOR承認**（軽微な改善推奨、実装進行可）
+- **要件充足**: .claude/agents/req-analyst.md - **MINOR承認**（軽微な改善推奨、実装進行可）
 
 ---
 

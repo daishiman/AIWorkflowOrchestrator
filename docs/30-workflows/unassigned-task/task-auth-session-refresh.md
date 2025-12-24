@@ -172,7 +172,7 @@ Phase 4: 手動テスト
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: サービス実装とTDD実践の専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -180,9 +180,9 @@ Phase 4: 手動テスト
 
 | スキル名             | 活用方法                           |
 | -------------------- | ---------------------------------- |
-| tdd-principles       | TDD Red-Green-Refactorサイクル実践 |
-| clean-code-practices | 高品質なサービス実装               |
-| test-doubles         | Vitest vi.useFakeTimers()活用      |
+| .claude/skills/tdd-principles/SKILL.md       | TDD Red-Green-Refactorサイクル実践 |
+| .claude/skills/clean-code-practices/SKILL.md | 高品質なサービス実装               |
+| .claude/skills/test-doubles/SKILL.md         | Vitest vi.useFakeTimers()活用      |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -227,7 +227,7 @@ Phase 4: 手動テスト
 
 #### 使用エージェント
 
-- **エージェント**: @auth-specialist
+- **エージェント**: .claude/agents/auth-specialist.md
 - **選定理由**: 認証状態管理の専門家。
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -235,8 +235,8 @@ Phase 4: 手動テスト
 
 | スキル名      | 活用方法                          |
 | ------------- | --------------------------------- |
-| state-lifting | Zustand状態管理とIPC連携          |
-| oauth2-flows  | OAuth 2.0トークンリフレッシュ実装 |
+| .claude/skills/state-lifting/SKILL.md | Zustand状態管理とIPC連携          |
+| .claude/skills/oauth2-flows/SKILL.md  | OAuth 2.0トークンリフレッシュ実装 |
 
 - **参照**: `.claude/skills/skill_list.md`
 

@@ -230,7 +230,7 @@ async function notifySlowQuery(slowQueries) {
    - インデックス不足、テーブルスキャンをチェック
 
 3. **最適化**
-   - query-performance-tuning スキルを参照
+   - .claude/skills/query-performance-tuning/SKILL.md スキルを参照
    - インデックス追加、クエリ書き換えを検討
 
 4. **予防**

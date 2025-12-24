@@ -201,8 +201,8 @@ cat .claude/skills/{{スキル2パス}}/SKILL.md
 ## 専門知識の参照
 
 このエージェントは以下のスキルに依存しています:
-- **agent-architecture-patterns** (`.claude/skills/agent-architecture-patterns/SKILL.md`)
-- **agent-structure-design** (`.claude/skills/agent-structure-design/SKILL.md`)
+- **.claude/skills/agent-architecture-patterns/SKILL.md** (`.claude/skills/agent-architecture-patterns/SKILL.md`)
+- **.claude/skills/agent-structure-design/SKILL.md** (`.claude/skills/agent-structure-design/SKILL.md`)
 
 🔴 起動時にこれらのスキルを必ず読み込んでください:
 

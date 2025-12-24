@@ -13,7 +13,7 @@
 | ステータス       | 未実施                 |
 | 発見元           | ユーザー要望           |
 | 発見日           | 2025-12-11             |
-| 発見エージェント | @product-manager       |
+| 発見エージェント | .claude/agents/product-manager.md       |
 
 ---
 
@@ -95,10 +95,10 @@
 
 ## 3. 主要な使用エージェント
 
-- **@db-architect**: 履歴データスキーマ設計
-- **@ui-designer**: 履歴一覧UIの設計
-- **@logic-dev**: 保存・検索ロジック
-- **@repo-dev**: データアクセス層
+- **.claude/agents/db-architect.md**: 履歴データスキーマ設計
+- **.claude/agents/ui-designer.md**: 履歴一覧UIの設計
+- **.claude/agents/logic-dev.md**: 保存・検索ロジック
+- **.claude/agents/repo-dev.md**: データアクセス層
 
 ---
 

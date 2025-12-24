@@ -592,7 +592,7 @@ density = relationCount / maxEdges
 
 | 日付       | 変更者       | 変更内容               |
 | ---------- | ------------ | ---------------------- |
-| 2025-12-18 | @req-analyst | 初版作成（T-00-1完了） |
+| 2025-12-18 | .claude/agents/req-analyst.md | 初版作成（T-00-1完了） |
 
 ---
 

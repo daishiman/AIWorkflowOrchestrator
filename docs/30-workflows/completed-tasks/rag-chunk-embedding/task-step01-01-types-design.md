@@ -2,7 +2,7 @@
 
 **タスクID**: CONV-03-03 / T-01-1
 **作成日**: 2025-12-18
-**担当エージェント**: @schema-def
+**担当エージェント**: .claude/agents/schema-def.md
 **ステータス**: 設計中
 
 ---
@@ -1260,21 +1260,21 @@ export interface EmbeddingGenerationResult { /* ... */ }
 
 ## 12. 設計レビューポイント（Phase 2で使用）
 
-### @arch-police によるレビュー観点
+### .claude/agents/arch-police.md によるレビュー観点
 
 - [ ] Branded Typesの適切な活用
 - [ ] CONV-03-01との整合性
 - [ ] 依存関係逆転の原則（DIP）遵守（外部依存なし）
 - [ ] レイヤー違反の不在
 
-### @schema-def によるレビュー観点
+### .claude/agents/schema-def.md によるレビュー観点
 
 - [ ] 型の一貫性（命名規則、構造）
 - [ ] readonly修飾子の完全適用
 - [ ] 型推論の正確性
 - [ ] JSDocコメントの完全性
 
-### @logic-dev によるレビュー観点
+### .claude/agents/logic-dev.md によるレビュー観点
 
 - [ ] ChunkPositionの境界値制約の妥当性
 - [ ] ChunkingConfigの複合条件の妥当性
@@ -1298,7 +1298,7 @@ Phase 4（実装）での実装順序:
 
 | 日付       | バージョン | 変更内容 | 変更者      |
 | ---------- | ---------- | -------- | ----------- |
-| 2025-12-18 | 1.0.0      | 初版作成 | @schema-def |
+| 2025-12-18 | 1.0.0      | 初版作成 | .claude/agents/schema-def.md |
 
 ---
 
@@ -1385,9 +1385,9 @@ graph TD
 
 本設計書はPhase 2で以下のエージェントによってレビューされる:
 
-- **@arch-police**: アーキテクチャ整合性、CONV-03-01との統合
-- **@schema-def**: 型の一貫性、型安全性
-- **@logic-dev**: 境界値制約の妥当性
+- **.claude/agents/arch-police.md**: アーキテクチャ整合性、CONV-03-01との統合
+- **.claude/agents/schema-def.md**: 型の一貫性、型安全性
+- **.claude/agents/logic-dev.md**: 境界値制約の妥当性
 
 レビューで指摘される可能性のある項目:
 

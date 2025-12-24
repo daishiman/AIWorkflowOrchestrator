@@ -3,7 +3,7 @@
 **タスクID**: T-05-1
 **実行日時**: 2025-12-20
 **フェーズ**: Phase 5 - リファクタリング（TDD: Refactor）
-**担当エージェント**: @code-quality
+**担当エージェント**: .claude/agents/code-quality.md
 
 ---
 

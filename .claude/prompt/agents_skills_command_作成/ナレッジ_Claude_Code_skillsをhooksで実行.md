@@ -1829,7 +1829,7 @@ Scott Spenceさんによる200以上のテストでの検証結果：
 
 ```bash
 echo 'INSTRUCTION: If the prompt matches any available skill keywords,
-use Skill(skill-name) to activate it.'
+use Skill(.claude/skills/skill-name/SKILL.md) to activate it.'
 ```
 
 **問題点**: これは受動的な提案に過ぎず、Claudeは簡単に無視してしまう。
@@ -2220,7 +2220,7 @@ Step 1 - EVALUATE EVERY SKILL:
    - Detailed reason
 
 Step 2 - ACTIVATE ALL YES SKILLS IMMEDIATELY:
-   Use Skill(skill-name) for EVERY YES evaluation
+   Use Skill(.claude/skills/skill-name/SKILL.md) for EVERY YES evaluation
    NO EXCEPTIONS - This is NOT optional
 
 Step 3 - ONLY THEN PROCEED TO IMPLEMENTATION:

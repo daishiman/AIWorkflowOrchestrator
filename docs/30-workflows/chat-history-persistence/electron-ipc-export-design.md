@@ -4,7 +4,7 @@
 
 title: Electron IPCエクスポート設計書
 version: 1.0.0
-author: @electron-architect
+author: .claude/agents/electron-architect.md
 created: 2025-12-22
 status: draft
 parent_task: T-01-4
@@ -695,4 +695,4 @@ if (process.env.NODE_ENV === "development") {
 
 | バージョン | 日付       | 変更内容                        | 変更者              |
 | ---------- | ---------- | ------------------------------- | ------------------- |
-| 1.0.0      | 2025-12-22 | 初版作成 - T-01-4タスクの成果物 | @electron-architect |
+| 1.0.0      | 2025-12-22 | 初版作成 - T-01-4タスクの成果物 | .claude/agents/electron-architect.md |

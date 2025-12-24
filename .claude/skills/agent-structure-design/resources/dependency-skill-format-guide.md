@@ -54,7 +54,7 @@ grep -c "^\s*-\s*\`\.claude/skills/" agent-file.md
 **各スキルは必ずフルパスで記載**:
 
 - ✅ `.claude/skills/clean-code-practices/SKILL.md`
-- ❌ `clean-code-practices` （スキル名のみ）
+- ❌ `.claude/skills/clean-code-practices/SKILL.md` （スキル名のみ）
 - ❌ `./skills/clean-code-practices/SKILL.md` （相対パス短縮形）
 
 **パス構造**:
@@ -307,7 +307,7 @@ grep -c "^\s*-\s*\`\.claude/skills/" .claude/agents/agent-name.md
 
 ### 問題2: パスが相対形式
 
-**症状**: `.claude/skills/...` ではなく `./skills/...` や `skill-name` のみ
+**症状**: `.claude/skills/...` ではなく `./skills/...` や `.claude/skills/skill-name/SKILL.md` のみ
 
 **原因**: フルパス形式ルールの未適用
 

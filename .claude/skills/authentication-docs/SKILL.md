@@ -1,111 +1,120 @@
 ---
-name: authentication-docs
+name: .claude/skills/authentication-docs/SKILL.md
 description: |
   API認証・認可フローの図解とドキュメント化、
   トークン取得手順の明確な説明のための知識とテンプレート
-
+  
+  📖 参照書籍:
+  - 『Web Application Security』（Andrew Hoffman）: 脅威モデリング
+  
   📚 リソース参照:
-  このスキルには以下のリソースが含まれています。
-  必要に応じて該当するリソースを参照してください:
-
-  - `.claude/skills/authentication-docs/resources/oauth2-flows.md`: OAuth 2.0各種フロー(Authorization Code、Client Credentials等)の詳細解説
-  - `.claude/skills/authentication-docs/resources/token-management.md`: トークン取得・更新・有効期限管理
-  - `.claude/skills/authentication-docs/resources/security-best-practices.md`: 認証セキュリティベストプラクティス
-  - `.claude/skills/authentication-docs/templates/auth-quickstart.md`: 認証クイックスタートガイドテンプレート
-  - `.claude/skills/authentication-docs/templates/oauth2-diagrams.md`: OAuth 2.0フローシーケンス図テンプレート(Mermaid形式)
-  - `.claude/skills/authentication-docs/scripts/generate-auth-flow-diagram.sh`: 認証フロー図自動生成スクリプト
-  - `.claude/skills/authentication-docs/scripts/test-auth-endpoint.sh`: 認証エンドポイントテストスクリプト
-
+  - `resources/Level1_basics.md`: レベル1の基礎ガイド
+  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
+  - `resources/Level3_advanced.md`: レベル3の応用ガイド
+  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `resources/oauth2-flows.md`: OAuth 2.0各種フロー(Authorization Code、Client Credentials等)の詳細解説
+  - `resources/security-best-practices.md`: 認証セキュリティベストプラクティス
+  - `resources/token-management.md`: トークン取得・更新・有効期限管理
+  - `scripts/generate-auth-flow-diagram.sh`: 認証フロー図自動生成スクリプト
+  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
+  - `scripts/test-auth-endpoint.sh`: 認証エンドポイントテストスクリプト
+  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
+  - `templates/auth-quickstart.md`: 認証クイックスタートガイドテンプレート
+  - `templates/oauth2-diagrams.md`: OAuth 2.0フローシーケンス図テンプレート(Mermaid形式)
+  
+  Use proactively when handling authentication docs tasks.
 version: 1.0.0
+level: 1
+last_updated: 2025-12-24
+references:
+  - book: "Web Application Security"
+    author: "Andrew Hoffman"
+    concepts:
+      - "脅威モデリング"
+      - "セキュア設計"
 ---
 
 # Authentication Docs スキル
 
 ## 概要
 
-API認証・認可メカニズムの効果的なドキュメント化手法を提供します。
-OAuth 2.0フロー、API Key認証、JWT取得手順などを
-開発者が理解しやすい形式で文書化します。
+API認証・認可フローの図解とドキュメント化、
+トークン取得手順の明確な説明のための知識とテンプレート
 
-## 知識ドメイン
+詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
 
-### 1. 認証方式
 
-- API Key認証（ヘッダー/クエリ）
-- Bearer Token認証
-- Basic認証
-- OAuth 2.0各種フロー
-- OpenID Connect
+## ワークフロー
 
-### 2. OAuth 2.0フロー
+### Phase 1: 目的と前提の整理
 
-- Authorization Code Flow（+ PKCE）
-- Client Credentials Flow
-- Device Code Flow
-- Implicit Flow（非推奨）
+**目的**: タスクの目的と前提条件を明確にする
 
-### 3. トークン管理
+**アクション**:
 
-- アクセストークン取得
-- リフレッシュトークン使用
-- トークン有効期限管理
-- スコープと権限
+1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
+2. 必要な resources/scripts/templates を特定
 
-### 4. セキュリティ考慮
+### Phase 2: スキル適用
 
-- シークレット管理
-- CORS設定
-- レート制限
-- 監査ログ
+**目的**: スキルの指針に従って具体的な作業を進める
 
-### 5. 図解・可視化
+**アクション**:
 
-- シーケンス図（Mermaid）
-- フロー図
-- 状態遷移図
+1. 関連リソースやテンプレートを参照しながら作業を実施
+2. 重要な判断点をメモとして残す
 
-## リソース
+### Phase 3: 検証と記録
 
-| ファイル                               | 内容                               |
-| -------------------------------------- | ---------------------------------- |
-| `resources/oauth2-flows.md`            | OAuth 2.0各フローの詳細解説        |
-| `resources/token-management.md`        | トークン取得・更新・管理           |
-| `resources/security-best-practices.md` | 認証セキュリティベストプラクティス |
+**目的**: 成果物の検証と実行記録の保存
 
-## テンプレート
+**アクション**:
 
-| ファイル                       | 用途                          |
-| ------------------------------ | ----------------------------- |
-| `templates/auth-quickstart.md` | 認証クイックスタートガイド    |
-| `templates/oauth2-diagrams.md` | OAuth 2.0フロー図テンプレート |
+1. `scripts/validate-skill.mjs` でスキル構造を確認
+2. 成果物が目的に合致するか確認
+3. `scripts/log_usage.mjs` を実行して記録を残す
 
-## 使用方法
 
-```
-このスキルを使用して：
-1. 認証方式の選択と説明
-2. OAuth 2.0フローの図解作成
-3. トークン取得手順のステップバイステップガイド
-4. セキュリティ考慮事項の文書化
+## ベストプラクティス
+
+### すべきこと
+- resources/Level1_basics.md を参照し、適用範囲を明確にする
+- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+### 避けるべきこと
+- アンチパターンや注意点を確認せずに進めることを避ける
+
+## コマンドリファレンス
+
+### リソース読み取り
+```bash
+cat .claude/skills/authentication-docs/resources/Level1_basics.md
+cat .claude/skills/authentication-docs/resources/Level2_intermediate.md
+cat .claude/skills/authentication-docs/resources/Level3_advanced.md
+cat .claude/skills/authentication-docs/resources/Level4_expert.md
+cat .claude/skills/authentication-docs/resources/legacy-skill.md
+cat .claude/skills/authentication-docs/resources/oauth2-flows.md
+cat .claude/skills/authentication-docs/resources/security-best-practices.md
+cat .claude/skills/authentication-docs/resources/token-management.md
 ```
 
-## 適用対象
+### スクリプト実行
+```bash
+.claude/skills/authentication-docs/scripts/generate-auth-flow-diagram.sh
+node .claude/skills/authentication-docs/scripts/log_usage.mjs --help
+.claude/skills/authentication-docs/scripts/test-auth-endpoint.sh
+node .claude/skills/authentication-docs/scripts/validate-skill.mjs --help
+```
 
-- API認証ドキュメント
-- OAuth 2.0統合ガイド
-- SDKクイックスタート
-- セキュリティガイドライン
-
-## 関連スキル
-
-| スキル                           | パス                                                       | 関連性                                  |
-| -------------------------------- | ---------------------------------------------------------- | --------------------------------------- |
-| openapi-specification            | `.claude/skills/openapi-specification/SKILL.md`            | OpenAPIセキュリティスキーム定義         |
-| request-response-examples        | `.claude/skills/request-response-examples/SKILL.md`        | 認証リクエスト/レスポンス例             |
-| api-documentation-best-practices | `.claude/skills/api-documentation-best-practices/SKILL.md` | APIドキュメント全体のベストプラクティス |
+### テンプレート参照
+```bash
+cat .claude/skills/authentication-docs/templates/auth-quickstart.md
+cat .claude/skills/authentication-docs/templates/oauth2-diagrams.md
+```
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                                                          |
-| ---------- | ---------- | --------------------------------------------------------------------------------- |
-| 1.0.0      | 2025-11-27 | 初版リリース。OAuth 2.0フロー、トークン管理、セキュリティベストプラクティスを追加 |
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |

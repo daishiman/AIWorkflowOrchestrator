@@ -13,7 +13,7 @@
 | ステータス       | 未実施                     |
 | 発見元           | ユーザー要望               |
 | 発見日           | 2025-12-11                 |
-| 発見エージェント | @product-manager           |
+| 発見エージェント | .claude/agents/product-manager.md           |
 
 ---
 
@@ -178,10 +178,10 @@ Phase 9: ドキュメント更新
 
 ### 主要な使用エージェント
 
-- **@ui-designer**: 検索UI/UXの設計・実装
-- **@logic-dev**: 検索・置換ロジックの実装
-- **@unit-tester**: TDDでのテスト作成
-- **@frontend-tester**: UIコンポーネントのテスト
+- **.claude/agents/ui-designer.md**: 検索UI/UXの設計・実装
+- **.claude/agents/logic-dev.md**: 検索・置換ロジックの実装
+- **.claude/agents/unit-tester.md**: TDDでのテスト作成
+- **.claude/agents/frontend-tester.md**: UIコンポーネントのテスト
 
 ---
 

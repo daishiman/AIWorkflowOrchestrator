@@ -13,7 +13,7 @@
 | ステータス       | 未実施                             |
 | 発見元           | Phase 7-2 アクセシビリティレビュー |
 | 発見日           | 2024-12-17                         |
-| 発見エージェント | @ui-designer                       |
+| 発見エージェント | .claude/agents/ui-designer.md                       |
 
 ---
 
@@ -147,7 +147,7 @@ WCAG 2.1 AA準拠を検証するテストを作成する。
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester
+- **エージェント**: .claude/agents/unit-tester.md
 - **選定理由**: アクセシビリティテストの専門知識を持つ
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -155,8 +155,8 @@ WCAG 2.1 AA準拠を検証するテストを作成する。
 
 | スキル名           | 活用方法                 |
 | ------------------ | ------------------------ |
-| accessibility-wcag | WCAG準拠テストケース設計 |
-| test-doubles       | モック作成               |
+| .claude/skills/accessibility-wcag/SKILL.md | WCAG準拠テストケース設計 |
+| .claude/skills/test-doubles/SKILL.md       | モック作成               |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -199,7 +199,7 @@ pnpm --filter @repo/desktop test:run -- accessibility.test.tsx
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: アクセシビリティUI実装の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -207,8 +207,8 @@ pnpm --filter @repo/desktop test:run -- accessibility.test.tsx
 
 | スキル名              | 活用方法               |
 | --------------------- | ---------------------- |
-| accessibility-wcag    | WCAG 2.4.3準拠実装     |
-| custom-hooks-patterns | フォーカストラップhook |
+| .claude/skills/accessibility-wcag/SKILL.md    | WCAG 2.4.3準拠実装     |
+| .claude/skills/custom-hooks-patterns/SKILL.md | フォーカストラップhook |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -268,7 +268,7 @@ export function useFocusTrap(
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: aria属性の正しい使用法を熟知
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -348,7 +348,7 @@ export function useFocusTrap(
 
 #### 使用エージェント
 
-- **エージェント**: @ui-designer
+- **エージェント**: .claude/agents/ui-designer.md
 - **選定理由**: aria-live実装パターンを熟知
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -403,7 +403,7 @@ return (
 
 #### 使用エージェント
 
-- **エージェント**: @code-quality
+- **エージェント**: .claude/agents/code-quality.md
 - **選定理由**: コード品質改善の専門家
 - **参照**: `.claude/agents/agent_list.md`
 
@@ -432,7 +432,7 @@ return (
 
 #### 使用エージェント
 
-- **エージェント**: @unit-tester, @e2e-tester
+- **エージェント**: .claude/agents/unit-tester.md, .claude/agents/e2e-tester.md
 - **選定理由**: テスト実行と品質確認の専門エージェント
 - **参照**: `.claude/agents/agent_list.md`
 

@@ -9,7 +9,7 @@
 **例**:
 
 - `schema-design.md`
-- `query-optimization.md`
+- `.claude/skills/query-optimization/SKILL.md.md`
 - `error-handling.md`
 
 ### パターン2: フェーズ別
@@ -37,9 +37,9 @@
 
 **例**:
 
-- `knowledge-management`
-- `progressive-disclosure`
-- `documentation-architecture`
+- `.claude/skills/knowledge-management/SKILL.md`
+- `.claude/skills/progressive-disclosure/SKILL.md`
+- `.claude/skills/documentation-architecture/SKILL.md`
 
 ## 一貫性の確保
 
