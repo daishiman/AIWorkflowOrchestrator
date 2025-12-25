@@ -71,11 +71,15 @@
     "@supabase/supabase-js": "^2.86.2",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.39.0",
+    "papaparse": "^5.5.3",
     "react-router-dom": "^7.11.0",
+    "turndown": "^7.2.0",
     "zod": "^4.1.13"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
+    "@types/papaparse": "^5.3.16",
+    "@types/turndown": "^5.0.5",
     "better-sqlite3": "^12.5.0",
     "drizzle-kit": "^0.31.8",
     "typescript": "^5.7.2",
