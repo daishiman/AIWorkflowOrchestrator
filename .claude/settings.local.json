@@ -84,7 +84,8 @@
       "mcp__playwright__browser_navigate_back",
       "mcp__playwright__browser_press_key",
       "mcp__playwright__browser_resize",
-      "mcp__playwright__browser_close"
+      "mcp__playwright__browser_close",
+      "Skill(ai:create-component)"
     ],
     "deny": [],
     "ask": []
