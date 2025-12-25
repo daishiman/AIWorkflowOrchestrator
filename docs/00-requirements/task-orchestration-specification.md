@@ -13,7 +13,7 @@
 プロジェクト概要:
 最上位目的: |
 ユーザーから与えられた複雑なタスクを単一責務の原則に基づいて分解し、
-各サブタスクに最適なスラッシュコマンド・エージェント・スキルの組み合わせを選定し、
+各サブタスクに最適なスラッシュコマンドを選定し、
 そのまま実行可能な仕様書ドキュメントを生成する。
 
     背景コンテキスト: |
@@ -37,14 +37,14 @@
       含む:
         - Git Worktree環境の準備
         - タスク分解と構造化
-        - コマンド・エージェント・スキルの選定
+        - コマンド選定
         - 実行順序の定義
         - 品質基準の設定
         - PR作成・CI確認・マージ準備のフロー
       含まない:
         - 具体的なソースコードの作成
         - 実際のコマンド実行
-        - 技術選択の決定（エージェントに委任）
+        - 技術選択の決定
         - PRの手動マージ（ユーザーが実施）
 
 # =============================================================================
@@ -55,7 +55,7 @@
 
 参照ファイル:
 説明: |
-コマンド・エージェント・スキルの選定は、以下のファイルを参照して行う。
+コマンド選定は、以下のファイルを参照して行う。
 具体的な選定判断はこれらのファイルの内容に基づいて動的に決定する。
 
 ファイル一覧:
@@ -67,109 +67,9 @@
       パス: ".claude/commands/ai/command_list.md"
       用途: "利用可能な全/ai:コマンドとオプションを参照"
 
-    エージェント定義:
-      パス: ".claude/agents/agent_list.md"
-      用途: "各エージェントの専門性・責務を参照"
-
-    スキル定義:
-      パス: ".claude/skills/skill_list.md"
-      用途: "各スキルの詳細定義と適用方法を参照"
-
     Git/PRワークフロー:
       パス: ".kamui/prompt/merge-prompt.txt"
       用途: "PR作成・コミット・CI確認のワークフロー参照"
-
-# =============================================================================
-
-# Layer 2.5: 動的エージェント選定ルール
-
-# =============================================================================
-
-動的エージェント選定:
-基本原則: |
-エージェント選定は固定ではなく、タスクの性質・対象領域・複雑度に応じて
-AIが最適な組み合わせを動的に判断する。以下はガイドラインであり、
-タスク固有の要件に応じて柔軟に選定・組み合わせを行うこと。
-
-選定判断プロセス: 1. タスクの主要領域を特定（UI/API/DB/セキュリティ/インフラ等）2. 必要な専門性を洗い出す3. `.claude/agents/agent_list.md` から最適なエージェントを選定 4. 複合領域の場合は複数エージェントを組み合わせる 5. 選定理由を明記する
-
-領域別エージェント候補:
-説明: |
-以下は参考例であり、AIはタスクの具体的な内容に基づいて
-最も適切なエージェントを自由に選定すること。
-記載のないエージェントも agent_list.md を参照して活用可能。
-
-    要件・仕様:
-      主要候補: [".claude/agents/req-analyst.md", ".claude/agents/spec-writer.md", ".claude/agents/product-manager.md"]
-      選定基準: "要件の明確化、仕様書作成、優先度決定が必要な場合"
-
-    設計・アーキテクチャ:
-      主要候補: [".claude/agents/arch-police.md", ".claude/agents/domain-modeler.md", ".claude/agents/electron-architect.md"]
-      選定基準: "構造設計、レイヤー分離、ドメインモデリングが必要な場合"
-
-    フロントエンド:
-      主要候補: [".claude/agents/ui-designer.md", ".claude/agents/router-dev.md", ".claude/agents/state-manager.md", ".claude/agents/frontend-tester.md"]
-      選定基準: "UI実装、ルーティング、状態管理、フロントテストが必要な場合"
-
-    バックエンド:
-      主要候補: [".claude/agents/logic-dev.md", ".claude/agents/gateway-dev.md", ".claude/agents/workflow-engine.md", ".claude/agents/schema-def.md"]
-      選定基準: "ビジネスロジック、API連携、スキーマ定義が必要な場合"
-
-    データベース:
-      主要候補: [".claude/agents/db-architect.md", ".claude/agents/dba-mgr.md", ".claude/agents/repo-dev.md"]
-      選定基準: "スキーマ設計、クエリ最適化、マイグレーションが必要な場合"
-
-    テスト:
-      主要候補: [".claude/agents/unit-tester.md", ".claude/agents/e2e-tester.md", ".claude/agents/frontend-tester.md"]
-      選定基準: "テスト種別（ユニット/E2E/コンポーネント）に応じて選定"
-
-    品質・レビュー:
-      主要候補: [".claude/agents/code-quality.md", ".claude/agents/arch-police.md", ".claude/agents/sec-auditor.md"]
-      選定基準: "コード品質、アーキテクチャ整合性、セキュリティ検証に応じて選定"
-
-    セキュリティ:
-      主要候補: [".claude/agents/sec-auditor.md", ".claude/agents/auth-specialist.md", ".claude/agents/secret-mgr.md", ".claude/agents/electron-security.md"]
-      選定基準: "対象領域（認証/監査/機密情報/Electron）に応じて選定"
-
-    インフラ・運用:
-      主要候補: [".claude/agents/devops-eng.md", ".claude/agents/sre-observer.md", ".claude/agents/process-mgr.md"]
-      選定基準: "CI/CD、監視、プロセス管理が必要な場合"
-
-    ドキュメント:
-      主要候補: [".claude/agents/spec-writer.md", ".claude/agents/api-doc-writer.md", ".claude/agents/manual-writer.md"]
-      選定基準: "ドキュメント種別（仕様書/API/マニュアル）に応じて選定"
-
-    Electron:
-      主要候補: [".claude/agents/electron-architect.md", ".claude/agents/electron-ui-dev.md", ".claude/agents/electron-security.md", ".claude/agents/electron-devops.md"]
-      選定基準: "Electron固有の設計、UI、セキュリティ、ビルドに応じて選定"
-
-    Git・PR作成:
-      主要候補: [".claude/agents/devops-eng.md", ".claude/agents/command-arch.md", ".claude/agents/prompt-eng.md"]
-      選定基準: "Git操作、PR作成、コミットメッセージ生成が必要な場合"
-
-複合タスクの選定例:
-説明: |
-複数領域にまたがるタスクでは、主担当と補助エージェントを組み合わせる。
-以下は例示であり、AIは実際のタスク内容に基づいて最適な組み合わせを判断する。
-
-    例1_認証機能実装:
-      領域: "セキュリティ + フロントエンド + バックエンド"
-      候補組み合わせ: ".claude/agents/auth-specialist.md（主）, .claude/agents/ui-designer.md, .claude/agents/logic-dev.md"
-
-    例2_パフォーマンス改善:
-      領域: "データベース + バックエンド + 監視"
-      候補組み合わせ: ".claude/agents/dba-mgr.md（主）, .claude/agents/repo-dev.md, .claude/agents/sre-observer.md"
-
-    例3_新規画面追加:
-      領域: "フロントエンド + テスト"
-      候補組み合わせ: ".claude/agents/ui-designer.md（主）, .claude/agents/router-dev.md, .claude/agents/frontend-tester.md"
-
-選定時の注意: - "agent_list.md に記載の全エージェントが選定対象"
-
-- "固定的な選定を避け、タスクの具体的な要件に基づいて判断"
-- "選定理由を必ず記載し、なぜそのエージェントが最適かを説明"
-- "必要に応じて複数エージェントの協調を設計"
-- "記載例にないエージェントの組み合わせも積極的に検討"
 
 # =============================================================================
 
@@ -185,7 +85,7 @@ AIが最適な組み合わせを動的に判断する。以下はガイドライ
 単一のGitリポジトリから複数の作業ディレクトリを作成する機能。
 各Worktreeは独立したブランチを持ち、本体ブランチに影響を与えずに開発できる。
 タスクごとに独立した環境を作成し、並行開発や実験的変更を安全に実施するために使用する。
-命名規則: ".worktrees/task-{timestamp}-{hash}"
+命名規則: ".worktrees/task-{timestamp}"
 用途: "タスクごとの独立した開発環境の提供"
 
     "タスク分解":
@@ -237,7 +137,7 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
         優先度: "必須"
 
       - ID: "CONST_WORKTREE_NAMING"
-        内容: "Worktree名は `.worktrees/task-{timestamp}-{hash}` 形式とすること"
+        内容: "Worktree名は `.worktrees/task-{timestamp}` 形式とすること"
         優先度: "必須"
 
       - ID: "CONST_WORKTREE_MIGRATION"
@@ -337,7 +237,7 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
         これにより、本体ブランチを保護し、タスク間の干渉を防ぐ。
       実行内容:
         - タスク識別子の生成（タイムスタンプ + ランダムハッシュ）
-        - Git Worktreeの作成（`.worktrees/task-{timestamp}-{hash}`）
+        - Git Worktreeの作成（`.worktrees/task-{timestamp}`）
         - 新規ブランチの作成（Worktreeと同名）
         - 作業ディレクトリの移動
         - 環境の初期化確認（依存関係インストール、ビルド確認等）
@@ -368,7 +268,6 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
         - "/ai:analyze-requirements"
         - "/ai:write-specification"
       成果物: "docs/30-workflows/{{機能名}}/task-step{{N}}-{{要件定義名}}.md 配下の要件ドキュメント"
-      参照: ".claude/agents/agent_list.md から要件分析系エージェントを選定"
 
     Phase_1:
       名称: "設計"
@@ -381,87 +280,26 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
         - コンポーネントごと
         - レイヤーごと（ドメイン、アプリケーション、インフラ等）
       スラッシュコマンド候補:
-        - ".claude/commands/ai/design-architecture.md"
-        - ".claude/commands/ai/design-api.md"
-        - ".claude/commands/ai/design-database.md"
-        - "/ai:design-ui"
+        - ".claude/commands/ai/design-architecture.md" (/ai:design-architecture)
+        - ".claude/commands/ai/design-api.md" (/ai:design-api)
+        - ".claude/commands/ai/design-database.md" (/ai:design-database)
+        - ※ その他、.claude/commands/ai/command_list.md から設計関連コマンドを選定
       成果物: "docs/30-workflows/{{機能名}}/task-step{{N+1}}-{{設計名}}.md"
-      参照: ".claude/agents/agent_list.md から設計系エージェントを選定"
 
     Phase_2:
       名称: "設計レビューゲート"
       ID接頭辞: "T-02"
       目的: |
-        実装開始前に要件・設計の妥当性を複数エージェントで検証する。
+        実装開始前に要件・設計の妥当性を検証する。
         問題を早期発見し、実装フェーズでの手戻りを最小化する。
       背景: |
         設計ミスが実装後に発見されると修正コストが大幅に増加する。
         「Shift Left」原則に基づき、問題を可能な限り早期に検出する。
 
-      エージェント選定方針: |
-        レビュー参加エージェントはタスクの対象領域に応じて動的に選定する。
-        以下は代表的なレビュー観点と候補エージェントの例であり、
-        AIはタスク固有の要件に基づいて最適な組み合わせを判断すること。
-
       スラッシュコマンド候補:
-        - "/ai:review-design"
-        - "/ai:validate-architecture"
-        - "/ai:review-security"
-
-      レビュー観点（動的選定）:
-        説明: |
-          タスクの性質に応じて必要なレビュー観点を選択し、
-          各観点に最適なエージェントを選定する。
-          全ての観点が必須ではなく、タスクに関連する観点のみ実施する。
-
-        要件充足性:
-          候補エージェント: [".claude/agents/req-analyst.md", ".claude/agents/product-manager.md", ".claude/agents/spec-writer.md"]
-          チェック項目:
-            - "要件が明確かつ検証可能か"
-            - "スコープが適切に定義されているか"
-            - "受け入れ基準が具体的か"
-
-        アーキテクチャ整合性:
-          候補エージェント: [".claude/agents/arch-police.md", ".claude/agents/domain-modeler.md"]
-          チェック項目:
-            - "クリーンアーキテクチャのレイヤー違反がないか"
-            - "依存関係逆転の原則(DIP)が守られているか"
-            - "既存設計との整合性があるか"
-
-        ドメインモデル妥当性:
-          候補エージェント: [".claude/agents/domain-modeler.md", ".claude/agents/logic-dev.md"]
-          チェック項目:
-            - "ユビキタス言語が適切に使用されているか"
-            - "エンティティ・値オブジェクトの境界が適切か"
-            - "ドメインルールが正しく表現されているか"
-
-        セキュリティ設計:
-          候補エージェント: [".claude/agents/sec-auditor.md", ".claude/agents/auth-specialist.md", ".claude/agents/electron-security.md"]
-          チェック項目:
-            - "セキュリティ上の考慮漏れがないか"
-            - "認証・認可の設計が適切か"
-            - "データ保護の方針が明確か"
-
-        UI/UX設計:
-          候補エージェント: [".claude/agents/ui-designer.md", ".claude/agents/frontend-tester.md"]
-          チェック項目:
-            - "アクセシビリティが考慮されているか"
-            - "ユーザビリティが確保されているか"
-            - "デザインシステムとの整合性があるか"
-
-        データベース設計:
-          候補エージェント: [".claude/agents/db-architect.md", ".claude/agents/dba-mgr.md"]
-          チェック項目:
-            - "正規化が適切か"
-            - "インデックス設計が考慮されているか"
-            - "パフォーマンス影響が検討されているか"
-
-        API設計:
-          候補エージェント: [".claude/agents/api-doc-writer.md", ".claude/agents/gateway-dev.md"]
-          チェック項目:
-            - "REST原則に従っているか"
-            - "エラーハンドリングが適切か"
-            - "バージョニング戦略が明確か"
+        - ".claude/commands/ai/review-architecture.md" (/ai:review-architecture)
+        - ".claude/commands/ai/security-audit.md" (/ai:security-audit)
+        - ※ その他、.claude/commands/ai/command_list.md からレビュー・監査関連コマンドを選定
 
       レビュー結果判定:
         PASS: "全レビュー観点で問題なし → Phase 3へ進行"
@@ -474,7 +312,6 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
         両方の問題: "Phase 0（要件定義）へ戻る"
 
       成果物: "docs/30-workflows/{{機能名}}/task-step{{N+2}}-design-review.md"
-      参照: ".claude/agents/agent_list.md から要件・設計・セキュリティ系エージェントを選定"
 
     Phase_3:
       名称: "テスト作成 (TDD: Red)"
@@ -487,13 +324,12 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
         - 機能ごと
         - レイヤーごと（フロントエンド、バックエンド等）
       スラッシュコマンド候補:
-        - ".claude/commands/ai/generate-unit-tests.md"
-        - "/ai:generate-integration-tests"
-        - ".claude/commands/ai/generate-e2e-tests.md"
-        - "/ai:write-test-cases"
+        - ".claude/commands/ai/generate-unit-tests.md" (/ai:generate-unit-tests)
+        - ".claude/commands/ai/generate-e2e-tests.md" (/ai:generate-e2e-tests)
+        - ".claude/commands/ai/generate-component-tests.md" (/ai:generate-component-tests)
+        - ※ その他、.claude/commands/ai/command_list.md からテスト関連コマンドを選定
       検証: "テストを実行してRed（失敗）を確認"
       成果物: "docs/30-workflows/{{機能名}}/task-step{{N+3}}-{{テスト設計名}}.md"
-      参照: ".claude/agents/agent_list.md からテスト系エージェントを選定"
 
     Phase_4:
       名称: "実装 (TDD: Green)"
@@ -512,7 +348,6 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
         - "/ai:implement-logic"
       検証: "テストを実行してGreen（成功）を確認"
       成果物: "docs/30-workflows/{{機能名}}/task-step{{N+4}}-{{実装名}}.md"
-      参照: ".claude/agents/agent_list.md から実装系エージェントを選定"
 
     Phase_5:
       名称: "リファクタリング (TDD: Refactor)"
@@ -530,7 +365,6 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
         - "/ai:optimize-performance"
       検証: "テストを再実行して継続成功を確認"
       成果物: "docs/30-workflows/{{機能名}}/task-step{{N+5}}-{{リファクタリング名}}.md"
-      参照: ".claude/agents/agent_list.md から品質系エージェントを選定"
 
     Phase_6:
       名称: "品質保証"
@@ -550,134 +384,26 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
         - "テスト網羅性: カバレッジ基準達成"
         - "セキュリティ: 重大な脆弱性の不在"
       成果物: "docs/30-workflows/{{機能名}}/task-step{{N+6}}-{{レポート名}}.md"
-      参照: ".claude/agents/agent_list.md からQA/セキュリティ系エージェントを選定"
 
     Phase_7:
       名称: "最終レビューゲート"
       ID接頭辞: "T-07"
       目的: |
         実装完了後、ドキュメント更新前に全体的な品質・整合性を検証する。
-        複数の専門エージェントによる多角的レビューで見落としを防ぐ。
+        多角的レビューで見落としを防ぐ。
       背景: |
         Phase 6の自動検証だけでは検出できない設計判断や
-        ベストプラクティス違反を人間的視点で確認する。
-
-      エージェント選定方針: |
-        最終レビューはタスクの実装内容に応じて必要な観点・エージェントを動的に選定する。
-        AIはタスク固有の要件と実装領域に基づいて最適な組み合わせを判断すること。
-        以下は参考例であり、全ての観点を網羅する必要はない。
+        ベストプラクティス違反を確認する。
 
       スラッシュコマンド候補:
-        - "/ai:final-review"
-        - "/ai:review-implementation"
-        - "/ai:validate-quality"
+        - ".claude/commands/ai/code-review-complete.md" (/ai:code-review-complete)
+        - ※ その他、.claude/commands/ai/command_list.md からレビュー・品質検証関連コマンドを選定
 
-      レビュー観点（動的選定）:
-        説明: |
-          実装した内容の領域に応じて必要なレビュー観点を選択し、
-          各観点に最適なエージェントを動的に選定する。
-
-        コード品質:
-          候補エージェント: [".claude/agents/code-quality.md", ".claude/agents/arch-police.md"]
-          チェック項目:
-            - "コーディング規約への準拠"
-            - "可読性・保守性の確保"
-            - "適切なエラーハンドリング"
-            - "過度な複雑性の有無"
-
-        アーキテクチャ遵守:
-          候補エージェント: [".claude/agents/arch-police.md", ".claude/agents/domain-modeler.md"]
-          チェック項目:
-            - "実装がアーキテクチャ設計に従っているか"
-            - "レイヤー間の依存関係が適切か"
-            - "SOLID原則への準拠"
-
-        テスト品質:
-          候補エージェント: [".claude/agents/unit-tester.md", ".claude/agents/e2e-tester.md", ".claude/agents/frontend-tester.md"]
-          チェック項目:
-            - "テストカバレッジが十分か"
-            - "テストケースが適切に設計されているか"
-            - "境界値・異常系のテストがあるか"
-            - "テストの可読性・保守性"
-
-        セキュリティ:
-          候補エージェント: [".claude/agents/sec-auditor.md", ".claude/agents/auth-specialist.md", ".claude/agents/electron-security.md", ".claude/agents/secret-mgr.md"]
-          チェック項目:
-            - "OWASP Top 10への対応"
-            - "入力検証・サニタイズの実装"
-            - "認証・認可の適切な実装"
-            - "機密情報の適切な取り扱い"
-
-        パフォーマンス:
-          候補エージェント: [".claude/agents/sre-observer.md", ".claude/agents/dba-mgr.md", ".claude/agents/repo-dev.md"]
-          チェック項目:
-            - "N+1問題等のパフォーマンス問題の有無"
-            - "適切なログ出力の実装"
-            - "監視・メトリクス収集の準備"
-
-        フロントエンド（該当する場合）:
-          候補エージェント: [".claude/agents/ui-designer.md", ".claude/agents/frontend-tester.md", ".claude/agents/state-manager.md"]
-          チェック項目:
-            - "アクセシビリティ(WCAG)への準拠"
-            - "レスポンシブデザインの実装"
-            - "ユーザビリティの確保"
-
-        バックエンドAPI（該当する場合）:
-          候補エージェント: [".claude/agents/api-doc-writer.md", ".claude/agents/gateway-dev.md", ".claude/agents/schema-def.md"]
-          チェック項目:
-            - "API設計の一貫性"
-            - "エラーレスポンスの適切性"
-            - "バージョニング戦略"
-
-        データベース（該当する場合）:
-          候補エージェント: [".claude/agents/db-architect.md", ".claude/agents/dba-mgr.md", ".claude/agents/repo-dev.md"]
-          チェック項目:
-            - "スキーマ設計の妥当性"
-            - "インデックス設計の適切性"
-            - "マイグレーションの安全性"
-
-        Electron（該当する場合）:
-          候補エージェント: [".claude/agents/electron-security.md", ".claude/agents/electron-architect.md", ".claude/agents/electron-ui-dev.md"]
-          チェック項目:
-            - "IPC通信のセキュリティ"
-            - "CSP設定の適切性"
-            - "自動更新機能の安全性"
-
-      未完了タスク指示書作成:
-        方針: |
-          レビューで発見された課題の性質に応じて、最適なエージェントを動的に選定する。
-          以下は参考例であり、AIは課題の具体的な内容に基づいて判断すること。
-
-        エージェント選定の考え方:
-          - "課題の主要領域を特定（セキュリティ/品質/テスト/UI等）"
-          - "その領域に最も精通したエージェントを選定"
-          - "複合的な課題の場合は複数エージェントを組み合わせ"
-          - "選定理由を明記"
-
-        領域別候補エージェント:
-          セキュリティ課題: [".claude/agents/sec-auditor.md", ".claude/agents/electron-security.md", ".claude/agents/auth-specialist.md"]
-          アーキテクチャ課題: [".claude/agents/arch-police.md", ".claude/agents/domain-modeler.md"]
-          コード品質課題: [".claude/agents/code-quality.md", ".claude/agents/logic-dev.md"]
-          テスト課題: [".claude/agents/unit-tester.md", ".claude/agents/e2e-tester.md", ".claude/agents/frontend-tester.md"]
-          パフォーマンス課題: [".claude/agents/sre-observer.md", ".claude/agents/dba-mgr.md"]
-          UI/UX課題: [".claude/agents/ui-designer.md", ".claude/agents/frontend-tester.md"]
-          API課題: [".claude/agents/api-doc-writer.md", ".claude/agents/gateway-dev.md"]
-          データベース課題: [".claude/agents/db-architect.md", ".claude/agents/dba-mgr.md"]
-          要件課題: [".claude/agents/req-analyst.md", ".claude/agents/product-manager.md"]
-          仕様書作成: [".claude/agents/spec-writer.md", ".claude/agents/manual-writer.md"]
-
-        作成フロー:
-          1. "レビューで課題を発見"
-          2. "課題の性質・領域を分析"
-          3. "最適なエージェントを動的に選定（選定理由を明記）"
-          4. "選定されたエージェントが指示書を作成"
-          5. "指示書の品質を検証"
-
-        指示書品質チェック項目:
+      指示書品質チェック項目:
           - "Why（なぜ必要か）が明確に記述されているか"
           - "What（何を達成するか）が具体的に定義されているか"
           - "How（どのように実行するか）が詳細に説明されているか"
-          - "Claude Codeスラッシュコマンド（/ai:xxx形式）・エージェント・スキルが選定されているか"
+          - "Claude Codeスラッシュコマンド（/ai:xxx形式）が選定されているか"
           - "完了条件が検証可能な形で定義されているか"
           - "前提条件・依存関係が明記されているか"
           - "テストケース/検証方法が記載されているか"
@@ -709,7 +435,6 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
         手順: "ユーザーに問題を報告し、戻り先と対応方針を協議する"
 
       成果物: "docs/30-workflows/{{機能名}}/task-step{{N+7}}-final-review.md"
-      参照: ".claude/agents/agent_list.md からQA/セキュリティ/対象領域別エージェントを選定"
 
     Phase_8:
       名称: "手動テスト検証"
@@ -771,7 +496,6 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
           |----|----------|-----------|----------|----------|----------|----------|------|
 
       成果物: "docs/30-workflows/{{機能名}}/task-step{{N+8}}-manual-test.md"
-      参照: ".claude/agents/agent_list.md からQA系エージェントを選定"
 
       完了条件:
         - "すべての手動テストケースが実行済み"
@@ -800,16 +524,6 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
             - "システム構築に必要十分な情報のみ追記"
             - "既存ドキュメントの構造・フォーマットを維持"
             - "Single Source of Truth原則を遵守（重複記載禁止）"
-          スキル同期:
-            目的: "要求仕様の更新をスキルへ反映する"
-            実行コマンド:
-              - "python3 scripts/sync_requirements_to_skills.py"
-              - "python3 scripts/update_skill_levels.py"
-            自動化:
-              - ".claude/settings.local.json の Stop フックに requirements-sync.sh を設定する"
-            補足:
-              - "SKILL.md は requirements-index の参照が不足している場合のみ更新"
-              - "要求仕様の詳細は SKILL.md に再記述せず、docs/00-requirements を参照する"
           更新判断基準: |
             以下の場合にドキュメント更新が必要：
 
@@ -917,7 +631,6 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
         - "docs/00-requirements/ 配下の更新されたドキュメント"
         - ".claude/skills/**/resources/requirements-index.md の更新"
         - "docs/30-workflows/unassigned-task/ 配下の未完了タスクドキュメント"
-      参照: ".claude/agents/agent_list.md からtechnical-writer, spec-writerエージェントを選定"
 
     Phase_10:
       名称: "PR作成・CI確認・マージ準備"
@@ -930,11 +643,6 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
         差分からPR作成・CI確認までの一連のフローを自動化する。
         PRマージは必ずユーザーがGitHub UIで手動実行する。
 
-      推奨エージェント:
-        - ".claude/agents/devops-eng.md: Git/CI/CD、GitHub Actions、デプロイフロー"
-        - ".claude/agents/command-arch.md: ワークフロー定型化、コマンドオーケストレーション"
-        - ".claude/agents/prompt-eng.md: コミットメッセージ・PR本文の自動生成"
-
       実行内容:
         1. "差分確認（git status, git diff）"
         2. "コミット作成（Conventional Commits形式）"
@@ -945,9 +653,9 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
         7. "ユーザーにマージ可能を通知"
 
       スラッシュコマンド候補:
-        - ".claude/commands/ai/create-pr.md"
-        - "/ai:commit-and-pr"
-        - "/ai:prepare-merge"
+        - ".claude/commands/ai/commit.md" (/ai:commit)
+        - ".claude/commands/ai/create-pr.md" (/ai:create-pr)
+        - ※ その他、.claude/commands/ai/command_list.md からGit・PR関連コマンドを選定
 
       サブタスク:
         T-10-1:
@@ -1145,7 +853,6 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
 
       参照:
         - ".kamui/prompt/merge-prompt.txt"
-        - ".claude/agents/agent_list.md から.claude/agents/devops-eng.md, .claude/agents/command-arch.md, .claude/agents/prompt-eng.mdを選定"
 
       重要事項:
         - "PRマージは必ずユーザーがGitHub UIで手動実行する"
@@ -1188,7 +895,6 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
       | ステータス | 未実施 |
       | 発見元 | {{発見元フェーズ}} |
       | 発見日 | {{YYYY-MM-DD}} |
-      | 発見エージェント | {{エージェント名}} |
 
       ---
 
@@ -1256,23 +962,14 @@ T-00-1: 認証要件定義、T-00-2: API要件定義 のように分割する。
 
       #### Claude Code スラッシュコマンド
       > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
+      > タスクに最適なコマンドを `.claude/commands/ai/command_list.md` から選定して実行してください
 
       ```
-      {{スラッシュコマンド}}
+      {{タスク内容に応じて .claude/commands/ai/command_list.md から適切なコマンドをすべて選定}}
+      # 例: /ai:design-architecture, /ai:generate-unit-tests, /ai:create-component など
       ```
       - **参照**: `.claude/commands/ai/command_list.md`
-
-      #### 使用エージェントリスト（動的選定）
-      - **エージェント**: {{タスク内容に基づいて最適なエージェントを選定}}
-      - **選定理由**: {{なぜこのエージェントが最適かを具体的に説明}}
-      - **代替候補**: {{他に検討したエージェントがあれば記載}}
-      - **参照**: `.claude/agents/agent_list.md`
-
-      #### 活用スキルリスト（動的選定）
-      | スキル名 | 活用方法 | 選定理由 |
-      |----------|----------|----------|
-      {{タスク内容に基づいて最適なスキルを選定}}
-      - **参照**: `.claude/skills/skill_list.md`
+      - **選定方法**: コマンドリストの「トリガーキーワード」と「目的」を参照し、タスクに最も適したコマンドを選択
 
       #### 成果物
       {{このフェーズの成果物}}
@@ -1352,8 +1049,8 @@ Phase -1からPhase 10までの全フェーズを含む。
       | 項目 | 内容 |
       |------|------|
       | タスクID | {{タスクID}} |
-      | Worktreeパス | `.worktrees/task-{{timestamp}}-{{hash}}` |
-      | ブランチ名 | `task-{{timestamp}}-{{hash}}` |
+      | Worktreeパス | `.worktrees/task-{{timestamp}}` |
+      | ブランチ名 | `task-{{timestamp}}` |
       | タスク名 | {{タスク名}} |
       | 分類 | {{要件/改善/バグ修正/リファクタリング/セキュリティ/パフォーマンス}} |
       | 対象機能 | {{対象機能}} |
@@ -1378,7 +1075,7 @@ Phase -1からPhase 10までの全フェーズを含む。
       ### 成果物一覧
       | 種別 | 成果物 | 配置先 |
       |------|--------|--------|
-      | 環境 | Git Worktree環境 | `.worktrees/task-{{timestamp}}-{{hash}}` |
+      | 環境 | Git Worktree環境 | `.worktrees/task-{{timestamp}}` |
       | 機能 | {{機能成果物}} | {{パス}} |
       | ドキュメント | {{ドキュメント成果物}} | {{パス}} |
       | 品質 | {{テスト・品質レポート}} | {{パス}} |
@@ -1388,11 +1085,9 @@ Phase -1からPhase 10までの全フェーズを含む。
 
       ## 参照ファイル
 
-      本仕様書のコマンド・エージェント・スキル選定は以下を参照：
+      本仕様書のコマンド選定は以下を参照：
       - `docs/00-requirements/master_system_design.md` - システム要件
       - `.claude/commands/ai/command_list.md` - /ai:コマンド定義
-      - `.claude/agents/agent_list.md` - エージェント定義
-      - `.claude/skills/skill_list.md` - スキル定義
       - `.kamui/prompt/merge-prompt.txt` - Git/PRワークフロー
 
       ---
@@ -1456,11 +1151,12 @@ Phase -1からPhase 10までの全フェーズを含む。
       > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
       ```
-      /ai:create-worktree
+      # 現時点では専用のスラッシュコマンドは存在しません
+      # 以下のBashコマンドを使用してください
       ```
       - **参照**: `.claude/commands/ai/command_list.md`
 
-      #### 実行手順（スラッシュコマンドがない場合）
+      #### 実行手順
 
       **1. タスク識別子の生成**
       ```bash
@@ -1495,15 +1191,11 @@ Phase -1からPhase 10までの全フェーズを含む。
       pnpm build
       ```
 
-      #### 使用エージェント
-      - **エージェント**: なし（Bashコマンド直接実行）
-      - **選定理由**: 定型的なGit操作のためエージェント不要
-
       #### 成果物
       | 成果物 | パス | 内容 |
       |--------|------|------|
-      | Git Worktree環境 | `.worktrees/task-{{timestamp}}-{{hash}}` | 独立した作業ディレクトリ |
-      | 新規ブランチ | `task-{{timestamp}}-{{hash}}` | タスク専用ブランチ |
+      | Git Worktree環境 | `.worktrees/task-{{timestamp}}` | 独立した作業ディレクトリ |
+      | 新規ブランチ | `task-{{timestamp}}` | タスク専用ブランチ |
       | 初期化済み環境 | - | 依存関係インストール・ビルド完了 |
 
       #### 完了条件
@@ -1555,6 +1247,16 @@ Phase -1からPhase 10までの全フェーズを含む。
       {{#each Phase0サブタスク}}
       ### {{ID}}: {{名称}}
 
+      #### Claude Code スラッシュコマンド
+      > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
+      > ⚠️ Worktreeディレクトリ (`.worktrees/task-{{timestamp}}`) 内で実行してください
+      > タスクに最適なコマンドを `.claude/commands/ai/command_list.md` から選定して実行してください
+
+      ```
+      {{タスク内容に応じて .claude/commands/ai/command_list.md から適切なコマンドをすべて選定}}
+      ```
+      - **選定方法**: コマンドリストの「トリガーキーワード」と「目的」を参照し、タスクに最も適したコマンドを選択
+
       #### 目的
       {{目的の詳細説明}}
 
@@ -1563,28 +1265,6 @@ Phase -1からPhase 10までの全フェーズを含む。
 
       #### 責務（単一責務）
       {{このサブタスクが担う唯一の責務}}
-
-      #### Claude Code スラッシュコマンド
-      > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
-      > ⚠️ Worktreeディレクトリ (`.worktrees/task-{{timestamp}}-{{hash}}`) 内で実行してください
-
-      ```
-      {{スラッシュコマンド}}
-      ```
-      - **参照**: `.claude/commands/ai/command_list.md`
-
-      #### 使用エージェント
-      - **エージェント**: {{エージェント名}}
-      - **選定理由**: {{選定理由}}
-      - **参照**: `.claude/agents/agent_list.md`
-
-      #### 活用スキル
-      | スキル名 | 活用方法 |
-      |----------|----------|
-      {{#each スキル}}
-      | {{スキル名}} | {{活用方法}} |
-      {{/each}}
-      - **参照**: `.claude/skills/skill_list.md`
 
       #### 成果物
       | 成果物 | パス | 内容 |
@@ -1610,6 +1290,16 @@ Phase -1からPhase 10までの全フェーズを含む。
       {{#each Phase1サブタスク}}
       ### {{ID}}: {{名称}}
 
+      #### Claude Code スラッシュコマンド
+      > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
+      > ⚠️ Worktreeディレクトリ (`.worktrees/task-{{timestamp}}`) 内で実行してください
+      > タスクに最適なコマンドを `.claude/commands/ai/command_list.md` から選定して実行してください
+
+      ```
+      {{タスク内容に応じて .claude/commands/ai/command_list.md から適切なコマンドをすべて選定}}
+      ```
+      - **選定方法**: コマンドリストの「トリガーキーワード」と「目的」を参照し、タスクに最も適したコマンドを選択
+
       #### 目的
       {{目的の詳細説明}}
 
@@ -1618,28 +1308,6 @@ Phase -1からPhase 10までの全フェーズを含む。
 
       #### 責務（単一責務）
       {{このサブタスクが担う唯一の責務}}
-
-      #### Claude Code スラッシュコマンド
-      > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
-      > ⚠️ Worktreeディレクトリ (`.worktrees/task-{{timestamp}}-{{hash}}`) 内で実行してください
-
-      ```
-      {{スラッシュコマンド}}
-      ```
-      - **参照**: `.claude/commands/ai/command_list.md`
-
-      #### 使用エージェント
-      - **エージェント**: {{エージェント名}}
-      - **選定理由**: {{選定理由}}
-      - **参照**: `.claude/agents/agent_list.md`
-
-      #### 活用スキル
-      | スキル名 | 活用方法 |
-      |----------|----------|
-      {{#each スキル}}
-      | {{スキル名}} | {{活用方法}} |
-      {{/each}}
-      - **参照**: `.claude/skills/skill_list.md`
 
       #### 成果物
       | 成果物 | パス | 内容 |
@@ -1665,32 +1333,28 @@ Phase -1からPhase 10までの全フェーズを含む。
       {{#each 設計レビューサブタスク}}
       ### {{ID}}: {{名称}}
 
+      #### Claude Code スラッシュコマンド
+      > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
+      > ⚠️ Worktreeディレクトリ (`.worktrees/task-{{timestamp}}`) 内で実行してください
+      > タスクに最適なコマンドを `.claude/commands/ai/command_list.md` から選定して実行してください
+
+      ```
+      {{タスク内容に応じて .claude/commands/ai/command_list.md から適切なコマンドをすべて選定}}
+      ```
+      - **選定方法**: コマンドリストの「トリガーキーワード」と「目的」を参照し、タスクに最も適したコマンドを選択
+
       #### 目的
       {{目的の詳細説明}}
 
       #### 背景
       {{このサブタスクが必要な背景}}
 
-      #### レビュー参加エージェント
-      | エージェント | レビュー観点 | 選定理由 |
-      |-------------|-------------|----------|
-      {{#each 参加エージェント}}
-      | {{エージェント名}} | {{レビュー観点}} | {{選定理由}} |
-      {{/each}}
-      - **参照**: `.claude/agents/agent_list.md`
-
-      #### Claude Code スラッシュコマンド
-      > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
-      > ⚠️ Worktreeディレクトリ (`.worktrees/task-{{timestamp}}-{{hash}}`) 内で実行してください
-
-      ```
-      {{スラッシュコマンド}}
-      ```
-      - **参照**: `.claude/commands/ai/command_list.md`
+      #### 責務（単一責務）
+      {{このサブタスクが担う唯一の責務}}
 
       #### レビューチェックリスト
       {{#each レビュー観点}}
-      **{{観点名}}** ({{担当エージェント}})
+      **{{観点名}}**
       {{#each チェック項目}}
       - [ ] {{項目}}
       {{/each}}
@@ -1706,6 +1370,13 @@ Phase -1からPhase 10までの全フェーズを含む。
       |-----------|--------|
       {{#each 戻り先基準}}
       | {{問題種類}} | {{戻り先フェーズ}} |
+      {{/each}}
+
+      #### 成果物
+      | 成果物 | パス | 内容 |
+      |--------|------|------|
+      {{#each 成果物}}
+      | {{名称}} | {{パス}} | {{内容}} |
       {{/each}}
 
       #### 完了条件
@@ -1725,6 +1396,16 @@ Phase -1からPhase 10までの全フェーズを含む。
       {{#each Phase3サブタスク}}
       ### {{ID}}: {{名称}}
 
+      #### Claude Code スラッシュコマンド
+      > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
+      > ⚠️ Worktreeディレクトリ (`.worktrees/task-{{timestamp}}`) 内で実行してください
+      > タスクに最適なコマンドを `.claude/commands/ai/command_list.md` から選定して実行してください
+
+      ```
+      {{タスク内容に応じて .claude/commands/ai/command_list.md から適切なコマンドをすべて選定}}
+      ```
+      - **選定方法**: コマンドリストの「トリガーキーワード」と「目的」を参照し、タスクに最も適したコマンドを選択
+
       #### 目的
       {{目的の詳細説明}}
 
@@ -1733,28 +1414,6 @@ Phase -1からPhase 10までの全フェーズを含む。
 
       #### 責務（単一責務）
       {{このサブタスクが担う唯一の責務}}
-
-      #### Claude Code スラッシュコマンド
-      > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
-      > ⚠️ Worktreeディレクトリ (`.worktrees/task-{{timestamp}}-{{hash}}`) 内で実行してください
-
-      ```
-      {{スラッシュコマンド}}
-      ```
-      - **参照**: `.claude/commands/ai/command_list.md`
-
-      #### 使用エージェント
-      - **エージェント**: {{エージェント名}}
-      - **選定理由**: {{選定理由}}
-      - **参照**: `.claude/agents/agent_list.md`
-
-      #### 活用スキル
-      | スキル名 | 活用方法 |
-      |----------|----------|
-      {{#each スキル}}
-      | {{スキル名}} | {{活用方法}} |
-      {{/each}}
-      - **参照**: `.claude/skills/skill_list.md`
 
       #### 成果物
       | 成果物 | パス | 内容 |
@@ -1786,6 +1445,16 @@ Phase -1からPhase 10までの全フェーズを含む。
       {{#each Phase4サブタスク}}
       ### {{ID}}: {{名称}}
 
+      #### Claude Code スラッシュコマンド
+      > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
+      > ⚠️ Worktreeディレクトリ (`.worktrees/task-{{timestamp}}`) 内で実行してください
+      > タスクに最適なコマンドを `.claude/commands/ai/command_list.md` から選定して実行してください
+
+      ```
+      {{タスク内容に応じて .claude/commands/ai/command_list.md から適切なコマンドをすべて選定}}
+      ```
+      - **選定方法**: コマンドリストの「トリガーキーワード」と「目的」を参照し、タスクに最も適したコマンドを選択
+
       #### 目的
       {{目的の詳細説明}}
 
@@ -1794,28 +1463,6 @@ Phase -1からPhase 10までの全フェーズを含む。
 
       #### 責務（単一責務）
       {{このサブタスクが担う唯一の責務}}
-
-      #### Claude Code スラッシュコマンド
-      > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
-      > ⚠️ Worktreeディレクトリ (`.worktrees/task-{{timestamp}}-{{hash}}`) 内で実行してください
-
-      ```
-      {{スラッシュコマンド}}
-      ```
-      - **参照**: `.claude/commands/ai/command_list.md`
-
-      #### 使用エージェント
-      - **エージェント**: {{エージェント名}}
-      - **選定理由**: {{選定理由}}
-      - **参照**: `.claude/agents/agent_list.md`
-
-      #### 活用スキル
-      | スキル名 | 活用方法 |
-      |----------|----------|
-      {{#each スキル}}
-      | {{スキル名}} | {{活用方法}} |
-      {{/each}}
-      - **参照**: `.claude/skills/skill_list.md`
 
       #### 成果物
       | 成果物 | パス | 内容 |
@@ -1847,6 +1494,16 @@ Phase -1からPhase 10までの全フェーズを含む。
       {{#each Phase5サブタスク}}
       ### {{ID}}: {{名称}}
 
+      #### Claude Code スラッシュコマンド
+      > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
+      > ⚠️ Worktreeディレクトリ (`.worktrees/task-{{timestamp}}`) 内で実行してください
+      > タスクに最適なコマンドを `.claude/commands/ai/command_list.md` から選定して実行してください
+
+      ```
+      {{タスク内容に応じて .claude/commands/ai/command_list.md から適切なコマンドをすべて選定}}
+      ```
+      - **選定方法**: コマンドリストの「トリガーキーワード」と「目的」を参照し、タスクに最も適したコマンドを選択
+
       #### 目的
       {{目的の詳細説明}}
 
@@ -1855,28 +1512,6 @@ Phase -1からPhase 10までの全フェーズを含む。
 
       #### 責務（単一責務）
       {{このサブタスクが担う唯一の責務}}
-
-      #### Claude Code スラッシュコマンド
-      > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
-      > ⚠️ Worktreeディレクトリ (`.worktrees/task-{{timestamp}}-{{hash}}`) 内で実行してください
-
-      ```
-      {{スラッシュコマンド}}
-      ```
-      - **参照**: `.claude/commands/ai/command_list.md`
-
-      #### 使用エージェント
-      - **エージェント**: {{エージェント名}}
-      - **選定理由**: {{選定理由}}
-      - **参照**: `.claude/agents/agent_list.md`
-
-      #### 活用スキル
-      | スキル名 | 活用方法 |
-      |----------|----------|
-      {{#each スキル}}
-      | {{スキル名}} | {{活用方法}} |
-      {{/each}}
-      - **参照**: `.claude/skills/skill_list.md`
 
       #### 成果物
       | 成果物 | パス | 内容 |
@@ -1908,6 +1543,16 @@ Phase -1からPhase 10までの全フェーズを含む。
       {{#each Phase6サブタスク}}
       ### {{ID}}: {{名称}}
 
+      #### Claude Code スラッシュコマンド
+      > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
+      > ⚠️ Worktreeディレクトリ (`.worktrees/task-{{timestamp}}`) 内で実行してください
+      > タスクに最適なコマンドを `.claude/commands/ai/command_list.md` から選定して実行してください
+
+      ```
+      {{タスク内容に応じて .claude/commands/ai/command_list.md から適切なコマンドをすべて選定}}
+      ```
+      - **選定方法**: コマンドリストの「トリガーキーワード」と「目的」を参照し、タスクに最も適したコマンドを選択
+
       #### 目的
       {{目的の詳細説明}}
 
@@ -1916,28 +1561,6 @@ Phase -1からPhase 10までの全フェーズを含む。
 
       #### 責務（単一責務）
       {{このサブタスクが担う唯一の責務}}
-
-      #### Claude Code スラッシュコマンド
-      > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
-      > ⚠️ Worktreeディレクトリ (`.worktrees/task-{{timestamp}}-{{hash}}`) 内で実行してください
-
-      ```
-      {{スラッシュコマンド}}
-      ```
-      - **参照**: `.claude/commands/ai/command_list.md`
-
-      #### 使用エージェント
-      - **エージェント**: {{エージェント名}}
-      - **選定理由**: {{選定理由}}
-      - **参照**: `.claude/agents/agent_list.md`
-
-      #### 活用スキル
-      | スキル名 | 活用方法 |
-      |----------|----------|
-      {{#each スキル}}
-      | {{スキル名}} | {{活用方法}} |
-      {{/each}}
-      - **参照**: `.claude/skills/skill_list.md`
 
       #### 成果物
       | 成果物 | パス | 内容 |
@@ -1984,41 +1607,34 @@ Phase -1からPhase 10までの全フェーズを含む。
       {{#each 最終レビューサブタスク}}
       ### {{ID}}: {{名称}}
 
+      #### Claude Code スラッシュコマンド
+      > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
+      > ⚠️ Worktreeディレクトリ (`.worktrees/task-{{timestamp}}`) 内で実行してください
+      > タスクに最適なコマンドを `.claude/commands/ai/command_list.md` から選定して実行してください
+
+      ```
+      {{タスク内容に応じて .claude/commands/ai/command_list.md から適切なコマンドをすべて選定}}
+      ```
+      - **選定方法**: コマンドリストの「トリガーキーワード」と「目的」を参照し、タスクに最も適したコマンドを選択
+
       #### 目的
       {{目的の詳細説明}}
 
       #### 背景
       {{このサブタスクが必要な背景}}
 
-      #### レビュー参加エージェント
-      | エージェント | レビュー観点 | 選定理由 |
-      |-------------|-------------|----------|
-      {{#each 参加エージェント}}
-      | {{エージェント名}} | {{レビュー観点}} | {{選定理由}} |
-      {{/each}}
-      - **参照**: `.claude/agents/agent_list.md`
-
-      #### Claude Code スラッシュコマンド
-      > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
-      > ⚠️ Worktreeディレクトリ (`.worktrees/task-{{timestamp}}-{{hash}}`) 内で実行してください
-
-      ```
-      {{スラッシュコマンド}}
-      ```
-      - **参照**: `.claude/commands/ai/command_list.md`
-
       #### 対象領域別追加レビュー（該当する場合のみ）
       {{#if 追加レビュー}}
-      | 対象領域 | エージェント | レビュー観点 |
-      |---------|-------------|-------------|
+      | 対象領域 | レビュー観点 |
+      |---------|-------------|
       {{#each 追加レビュー}}
-      | {{対象領域}} | {{エージェント名}} | {{レビュー観点}} |
+      | {{対象領域}} | {{レビュー観点}} |
       {{/each}}
       {{/if}}
 
       #### レビューチェックリスト
       {{#each レビュー観点}}
-      **{{観点名}}** ({{担当エージェント}})
+      **{{観点名}}**
       {{#each チェック項目}}
       - [ ] {{項目}}
       {{/each}}
@@ -2027,17 +1643,12 @@ Phase -1からPhase 10までの全フェーズを含む。
       #### 未完了タスク指示書作成（該当する場合）
 
       {{#if 未完了タスク}}
-      ##### 発見された課題と担当エージェント
-      | 課題ID | 課題名 | 分類 | 担当エージェント | 選定理由 |
-      |--------|--------|------|------------------|----------|
+      ##### 発見された課題
+      | 課題ID | 課題名 | 分類 |
+      |--------|--------|------|
       {{#each 未完了タスク}}
-      | {{課題ID}} | {{課題名}} | {{分類}} | {{担当エージェント}} | {{選定理由}} |
+      | {{課題ID}} | {{課題名}} | {{分類}} |
       {{/each}}
-
-      ##### 指示書作成フロー
-      1. 各担当エージェントが課題に対する指示書を作成
-      2. .claude/agents/spec-writer.mdが指示書の品質を検証
-      3. 品質基準を満たさない場合は担当エージェントが修正
 
       ##### 指示書出力先
       `docs/30-workflows/unassigned-task/`
@@ -2045,7 +1656,6 @@ Phase -1からPhase 10までの全フェーズを含む。
       ##### 各課題の指示書概要
       {{#each 未完了タスク指示書}}
       ###### {{課題ID}}: {{課題名}}
-      - **担当エージェント**: {{担当エージェント}}
       - **出力ファイル**: {{出力ファイルパス}}
       - **Why（なぜ必要か）**: {{背景概要}}
       - **What（何を達成するか）**: {{目的概要}}
@@ -2056,7 +1666,7 @@ Phase -1からPhase 10までの全フェーズを含む。
       | 課題ID | Why | What | How | スラッシュコマンド | 完了条件 | 検証方法 | 判定 |
       |--------|-----|------|-----|-------------------|----------|----------|------|
       {{#each 指示書品質検証}}
-      | {{課題ID}} | {{Why}} | {{What}} | {{How}} | {{スラッシュコマンド}} | {{完了条件}} | {{検証方法}} | {{判定}} |
+      | {{課題ID}} | {{Why}} | {{What}} | {{How}} | {{スラッシュコマンド（.claude/commands/ai/command_list.md参照）}} | {{完了条件}} | {{検証方法}} | {{判定}} |
       {{/each}}
       {{/if}}
 
@@ -2095,28 +1705,27 @@ Phase -1からPhase 10までの全フェーズを含む。
       {{#each 手動テストサブタスク}}
       ### {{ID}}: {{名称}}
 
+      #### Claude Code スラッシュコマンド
+      > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
+      > ⚠️ Worktreeディレクトリ (`.worktrees/task-{{timestamp}}`) 内で実行してください
+      > タスクに最適なコマンドを `.claude/commands/ai/command_list.md` から選定して実行してください
+
+      ```
+      {{タスク内容に応じて .claude/commands/ai/command_list.md から適切なコマンドをすべて選定}}
+      ```
+      - **選定方法**: コマンドリストの「トリガーキーワード」と「目的」を参照し、タスクに最も適したコマンドを選択
+
       #### 目的
       {{目的の詳細説明}}
 
       #### 背景
       {{このサブタスクが必要な背景}}
 
+      #### 責務（単一責務）
+      {{このサブタスクが担う唯一の責務}}
+
       #### テスト分類
       {{テスト分類: 機能テスト/UI・UXテスト/統合テスト/リグレッションテスト}}
-
-      #### Claude Code スラッシュコマンド
-      > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
-      > ⚠️ Worktreeディレクトリ (`.worktrees/task-{{timestamp}}-{{hash}}`) 内で実行してください
-
-      ```
-      {{スラッシュコマンド}}
-      ```
-      - **参照**: `.claude/commands/ai/command_list.md`
-
-      #### 使用エージェント
-      - **エージェント**: {{エージェント名}}
-      - **選定理由**: {{選定理由}}
-      - **参照**: `.claude/agents/agent_list.md`
 
       #### 手動テストケース
 
@@ -2156,7 +1765,13 @@ Phase -1からPhase 10までの全フェーズを含む。
       ### {{ID}}: {{名称}}
 
       #### 目的
-      {{目的}}
+      {{目的の詳細説明}}
+
+      #### 背景
+      {{このサブタスクが必要な背景}}
+
+      #### 責務（単一責務）
+      {{このサブタスクが担う唯一の責務}}
 
       #### 前提条件
       - [ ] Phase 6の品質ゲートをすべて通過
@@ -2168,20 +1783,25 @@ Phase -1からPhase 10までの全フェーズを含む。
 
       #### サブタスク 9.1: システムドキュメント更新
 
-      ##### 更新対象ドキュメント
-      {{更新対象ドキュメント}}
-
       ##### Claude Code スラッシュコマンド
       > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
-      > ⚠️ Worktreeディレクトリ (`.worktrees/task-{{timestamp}}-{{hash}}`) 内で実行してください
+      > ⚠️ Worktreeディレクトリ (`.worktrees/task-{{timestamp}}`) 内で実行してください
 
       ```
       /ai:update-all-docs
       ```
-      - **参照**: `.claude/commands/ai/command_list.md`
 
-      ##### 使用エージェント
-      {{エージェント情報}}
+      #### 目的
+      {{目的の詳細説明}}
+
+      #### 背景
+      {{このサブタスクが必要な背景}}
+
+      #### 責務（単一責務）
+      {{このサブタスクが担う唯一の責務}}
+
+      ##### 更新対象ドキュメント
+      {{更新対象ドキュメント}}
 
       ##### 更新原則
       - 概要のみ記載（詳細な実装説明は不要）
@@ -2189,19 +1809,55 @@ Phase -1からPhase 10までの全フェーズを含む。
       - 既存ドキュメントの構造・フォーマットを維持
       - Single Source of Truth原則を遵守
 
-      ##### スキル同期（必要時）
-      docs/00-requirements を更新した場合はスキル索引を同期する。
-      SKILL.md は requirements-index の参照が不足している場合のみ更新する。
+      ##### 更新手順
 
-      **ターミナル実行コマンド**
-      ```bash
-      python3 scripts/sync_requirements_to_skills.py
-      python3 scripts/update_skill_levels.py
-      ```
+      **1. Requirementsドキュメントの更新**
+
+      ワークツリー上で実装した内容を `docs/00-requirements/` の適切なドキュメントに追記する。
+
+      - 実装内容に関連する要件ファイルを特定
+      - 該当セクションに概要レベルの情報を追記
+      - 既存の構造・フォーマットを維持
+
+      **2. スキルドキュメントの更新（該当する場合）**
+
+      `docs/00-requirements/requirements-skill-map.json` を参照し、更新したRequirementsファイルに関連するスキルも更新する。
+
+      手順:
+      1. `requirements-skill-map.json` を開く
+      2. 更新したRequirementsファイルのエントリを確認
+      3. `"skills"` 配列に記載されているスキル名を確認
+      4. 該当するスキル（`.claude/skills/<スキル名>/SKILL.md`）を開く
+      5. `## 📚 Requirements References` セクションに追記（不足している場合のみ）
+      6. スキル内容が古い場合は必要に応じて更新
+
+      例: `docs/00-requirements/05-architecture.md` を更新した場合
+      - `requirements-skill-map.json` で確認 → `"architectural-patterns"`, `"clean-architecture-principles"` などがマッピングされている
+      - `.claude/skills/architectural-patterns/SKILL.md` の Requirements References セクションを確認・更新
+      - `.claude/skills/clean-architecture-principles/SKILL.md` の Requirements References セクションを確認・更新
 
       ---
 
       #### サブタスク 9.2: 未完了タスク・追加タスク記録
+
+      ##### Claude Code スラッシュコマンド
+      > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
+      > ⚠️ Worktreeディレクトリ (`.worktrees/task-{{timestamp}}`) 内で実行してください
+      > タスクに最適なコマンドを `.claude/commands/ai/command_list.md` から選定して実行してください
+
+      ```
+      {{タスク内容に応じて .claude/commands/ai/command_list.md から適切なコマンドをすべて選定}}
+      ```
+      - **選定方法**: コマンドリストの「トリガーキーワード」と「目的」を参照し、タスクに最も適したコマンドを選択
+
+      #### 目的
+      {{目的の詳細説明}}
+
+      #### 背景
+      {{このサブタスクが必要な背景}}
+
+      #### 責務（単一責務）
+      {{このサブタスクが担う唯一の責務}}
 
       ##### 出力先
       `docs/30-workflows/unassigned-task/`
@@ -2212,21 +1868,6 @@ Phase -1からPhase 10までの全フェーズを含む。
       ##### ファイル命名規則
       - 要件系: `requirements-{{機能領域}}.md`
       - 改善系: `task-{{改善領域}}-improvements.md`
-
-      ##### Claude Code スラッシュコマンド
-      > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
-      > ⚠️ Worktreeディレクトリ (`.worktrees/task-{{timestamp}}-{{hash}}`) 内で実行してください
-
-      ```
-      {{スラッシュコマンド}}
-      ```
-      - **参照**: `.claude/commands/ai/command_list.md`
-
-      ##### 使用エージェント
-      {{エージェント情報}}
-
-      ##### 活用スキル
-      {{スキル情報}}
 
       ##### 指示書としての品質基準
       生成されるタスク指示書は以下を満たすこと：
@@ -2251,7 +1892,6 @@ Phase -1からPhase 10までの全フェーズを含む。
       **実行手順**
       - [ ] フェーズ構成が明確である
       - [ ] 各フェーズにClaude Codeスラッシュコマンド（/ai:xxx形式）が記載されている
-      - [ ] 使用エージェント・スキルが選定されている
       - [ ] 各フェーズの成果物・完了条件が定義されている
 
       **検証・完了**
@@ -2264,8 +1904,21 @@ Phase -1からPhase 10までの全フェーズを含む。
 
       ---
 
+      #### 成果物
+      | 成果物 | パス | 内容 |
+      |--------|------|------|
+      {{#each 成果物}}
+      | {{名称}} | {{パス}} | {{内容}} |
+      {{/each}}
+
       #### 完了条件
-      {{完了条件}}
+      {{#each 完了条件}}
+      - [ ] {{条件}}
+      {{/each}}
+
+      #### 依存関係
+      - **前提**: {{前提サブタスク}}
+      - **後続**: {{後続サブタスク}}
 
       ---
       {{/each}}
@@ -2276,34 +1929,25 @@ Phase -1からPhase 10までの全フェーズを含む。
 
       ### T-10-1: 差分確認・コミット作成
 
-      #### 目的
-      Git Worktree内の変更をConventional Commits形式でコミットする。
-
-      #### 背景
-      実装完了後、変更内容を適切なコミットメッセージで記録する必要がある。
-
-      #### 責務（単一責務）
-      差分確認とコミット作成のみを担当する。
-
       #### Claude Code スラッシュコマンド
       > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
       ```
-      /ai:commit-and-pr
+      # コミット作成
+      /ai:commit
+
+      # その後、PR作成が必要な場合は
+      /ai:create-pr
       ```
-      - **参照**: `.claude/commands/ai/command_list.md`
 
-      #### 使用エージェント
-      - **エージェント**: .claude/agents/prompt-eng.md
-      - **選定理由**: コミットメッセージの自動生成が得意
-      - **参照**: `.claude/agents/agent_list.md`
+      #### 目的
+      {{目的の詳細説明}}
 
-      #### 活用スキル
-      | スキル名 | 活用方法 |
-      |----------|----------|
-      | .claude/skills/semantic-versioning/SKILL.md | Conventional Commits形式のコミットメッセージ生成 |
-      | .claude/skills/git-hooks-concepts/SKILL.md | Pre-commit hooks理解とコミット前検証 |
-      - **参照**: `.claude/skills/skill_list.md`
+      #### 背景
+      {{このサブタスクが必要な背景}}
+
+      #### 責務（単一責務）
+      {{このサブタスクが担う唯一の責務}}
 
       #### 実行手順
 
@@ -2365,7 +2009,7 @@ Phase -1からPhase 10までの全フェーズを含む。
       - タイムスタンプ付き議事録の生成機能
       - Discord通知のサポート
 
-      Closes #42
+      Closes {{issue}}
 
       🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -2391,33 +2035,13 @@ Phase -1からPhase 10までの全フェーズを含む。
       ### T-10-2: PR作成
 
       #### 目的
-      実装完了した変更をGitHubにPull Requestとして作成し、レビュー可能な状態にする。
+      {{目的の詳細説明}}
 
       #### 背景
-      コミット後、変更を本体ブランチにマージするためにPRを作成する必要がある。
+      {{このサブタスクが必要な背景}}
 
       #### 責務（単一責務）
-      PRの作成のみを担当する。
-
-      #### Claude Code スラッシュコマンド
-      > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
-
-      ```
-      /ai:create-pr
-      ```
-      - **参照**: `.claude/commands/ai/command_list.md`
-
-      #### 使用エージェント
-      - **エージェント**: .claude/agents/devops-eng.md
-      - **選定理由**: GitHub操作・PR作成の専門家
-      - **参照**: `.claude/agents/agent_list.md`
-
-      #### 活用スキル
-      | スキル名 | 活用方法 |
-      |----------|----------|
-      | .claude/skills/semantic-versioning/SKILL.md | PRタイトル生成（Conventional Commits準拠） |
-      | .claude/skills/markdown-advanced-syntax/SKILL.md | PR本文のマークダウンフォーマット |
-      - **参照**: `.claude/skills/skill_list.md`
+      {{このサブタスクが担う唯一の責務}}
 
       #### 実行手順
 
@@ -2505,33 +2129,22 @@ Phase -1からPhase 10までの全フェーズを含む。
       ### T-10-3: PR補足コメント追加
 
       #### 目的
-      PR作成後、実装の詳細やレビュー観点を補足コメントとして追加する。
+      {{目的の詳細説明}}
 
       #### 背景
-      PR本文だけでは伝えきれない技術的詳細や注意点を、追加コメントで補足する必要がある。
+      {{このサブタスクが必要な背景}}
 
       #### 責務（単一責務）
-      PR補足コメントの投稿のみを担当する。
+      {{このサブタスクが担う唯一の責務}}
 
       #### Claude Code スラッシュコマンド
-      > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
+      > ⚠️ 現時点では専用のスラッシュコマンドは存在しません
 
       ```
-      /ai:add-pr-comment
+      # 以下のBashコマンド（gh CLI）を使用してください
+      # 実行手順を参照
       ```
       - **参照**: `.claude/commands/ai/command_list.md`
-
-      #### 使用エージェント
-      - **エージェント**: .claude/agents/prompt-eng.md
-      - **選定理由**: 技術的な補足説明の生成が得意
-      - **参照**: `.claude/agents/agent_list.md`
-
-      #### 活用スキル
-      | スキル名 | 活用方法 |
-      |----------|----------|
-      | .claude/skills/markdown-advanced-syntax/SKILL.md | コメントのマークダウンフォーマット |
-      | .claude/skills/api-documentation-best-practices/SKILL.md | 技術的詳細の構造化された説明 |
-      - **参照**: `.claude/skills/skill_list.md`
 
       #### 実行手順
 
@@ -2591,33 +2204,22 @@ Phase -1からPhase 10までの全フェーズを含む。
       ### T-10-4: CI/CD完了確認
 
       #### 目的
-      GitHub ActionsのCI/CDが全て完了し、全チェックがpassであることを確認する。
+      {{目的の詳細説明}}
 
       #### 背景
-      CI未完了またはfail状態でマージすると、品質問題が本体ブランチに混入する恐れがある。
+      {{このサブタスクが必要な背景}}
 
       #### 責務（単一責務）
-      CI/CDステータスの確認と完了待機のみを担当する。
+      {{このサブタスクが担う唯一の責務}}
 
       #### Claude Code スラッシュコマンド
-      > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
+      > ⚠️ 現時点では専用のスラッシュコマンドは存在しません
 
       ```
-      /ai:check-ci-status
+      # 以下のBashコマンド（gh CLI）を使用してください
+      # 実行手順を参照
       ```
       - **参照**: `.claude/commands/ai/command_list.md`
-
-      #### 使用エージェント
-      - **エージェント**: .claude/agents/devops-eng.md
-      - **選定理由**: CI/CD監視の専門家
-      - **参照**: `.claude/agents/agent_list.md`
-
-      #### 活用スキル
-      | スキル名 | 活用方法 |
-      |----------|----------|
-      | .claude/skills/github-actions-debugging/SKILL.md | CI/CD失敗時のデバッグ・原因特定 |
-      | .claude/skills/metrics-tracking/SKILL.md | CI実行時間・ステータスの監視 |
-      - **参照**: `.claude/skills/skill_list.md`
 
       #### 実行手順
 
@@ -2682,33 +2284,21 @@ Phase -1からPhase 10までの全フェーズを含む。
       ### T-10-5: ユーザーへマージ可能通知
 
       #### 目的
-      CI完了後、ユーザーにマージ準備が整ったことを通知する。
+      {{目的の詳細説明}}
 
       #### 背景
-      全てのCI/CDが完了し、品質が保証されたことを確認した上で、ユーザーに最終マージ実施を依頼する必要がある。
+      {{このサブタスクが必要な背景}}
 
       #### 責務（単一責務）
-      マージ準備完了の通知のみを担当する。
+      {{このサブタスクが担う唯一の責務}}
 
       #### Claude Code スラッシュコマンド
-      > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
+      > ⚠️ 現時点では専用のスラッシュコマンドは存在しません
 
       ```
-      /ai:notify-merge-ready
+      # 通知内容を直接出力してください
       ```
       - **参照**: `.claude/commands/ai/command_list.md`
-
-      #### 使用エージェント
-      - **エージェント**: .claude/agents/devops-eng.md
-      - **選定理由**: Git/GitHub操作・マージフローの専門家
-      - **参照**: `.claude/agents/agent_list.md`
-
-      #### 活用スキル
-      | スキル名 | 活用方法 |
-      |----------|----------|
-      | .claude/skills/stakeholder-communication/SKILL.md | ユーザーへの明確な通知メッセージ生成 |
-      | .claude/skills/markdown-advanced-syntax/SKILL.md | 通知内容のフォーマット |
-      - **参照**: `.claude/skills/skill_list.md`
 
       #### 通知内容
       ```
@@ -2819,7 +2409,7 @@ Phase -1からPhase 10までの全フェーズを含む。
 必須事項:
 
 - "タスク開始時に必ずGit Worktreeを作成する（Phase -1）"
-- "Git Worktree名は`.worktrees/task-{timestamp}-{hash}`形式とする"
+- "Git Worktree名は`.worktrees/task-{timestamp}`形式とする"
 - "Git Worktree作成後、そのディレクトリに移動して作業する"
 - "全ての実装作業をWorktreeディレクトリ内で実施する"
 - "ユーザーからの元の指示文を必ず冒頭に記載する"
@@ -2836,7 +2426,7 @@ Phase -1からPhase 10までの全フェーズを含む。
 - "Phase 10（PR作成・CI確認・マージ準備）は必ず含める"
 - "各フェーズ内でも単一責務で複数サブタスクに分割する"
 - "各サブタスクにスラッシュコマンド候補を記載する"
-- "スラッシュコマンド・エージェント・スキルは参照ファイルから選定する"
+- "スラッシュコマンドは参照ファイルから選定する"
 - "各スラッシュコマンドは/ai:プレフィックス付きのClaude Code形式で記述する（ターミナルコマンドではない）"
 - "docs/00-requirements/master_system_design.md の「ディレクトリ構造」を遵守する"
 - "レビューで問題発見時は影響範囲に応じた適切なフェーズへ戻る"
@@ -2872,19 +2462,10 @@ AIへの委任事項: - "具体的な技術選択"
 - "実装の詳細設計"
 - "テストケースの具体的な記述"
 - "コード品質メトリクスの具体的な目標値"
-- "タスク内容に基づく最適なエージェント・スキルの選定"
-- "複合領域タスクでのエージェント組み合わせの判断"
 - "レビュー観点の取捨選択（タスクに関連する観点のみ選択）"
 - "Git Worktree識別子の生成（タイムスタンプ + ランダムハッシュ）"
 - "コミットメッセージの生成"
 - "PR本文・コメントの生成"
-
-エージェント選定の原則: - "固定的な選定を避け、タスクの具体的な要件に基づいて動的に判断"
-
-- "選定理由を必ず明記（なぜそのエージェントが最適かを説明）"
-- "agent_list.md に記載の全エージェントが選定対象"
-- "記載例にないエージェントの組み合わせも積極的に検討"
-- "複合領域の場合は主担当と補助エージェントを組み合わせる"
 
 # =============================================================================
 
@@ -2895,17 +2476,17 @@ AIへの委任事項: - "具体的な技術選択"
 開始トリガー: |
 ユーザーが具体的なタスク内容を提供した時点で、以下のフローで仕様書を生成する：
 
--1. Git Worktree環境準備（Phase -1）【最優先】- タスク識別子生成（`task-$(date +%s)-$(openssl rand -hex 4)`）- `.worktrees/task-{timestamp}-{hash}` 形式でWorktree作成 - 新規ブランチ作成（Worktreeと同名）- 作成したWorktreeディレクトリへ移動 - 環境初期化確認（依存関係インストール、ビルド確認）
+-1. Git Worktree環境準備（Phase -1）【最優先】- タスク識別子生成（`task-$(date +%s)-$(openssl rand -hex 4)`）- `.worktrees/task-{timestamp}` 形式でWorktree作成 - 新規ブランチ作成（Worktreeと同名）- 作成したWorktreeディレクトリへ移動 - 環境初期化確認（依存関係インストール、ビルド確認）
 
 0. ユーザーの元の指示を保存（最優先）
 
-1. 参照ファイルを読み込み、利用可能なコマンド・エージェント・スキルを把握
+1. 参照ファイルを読み込み、利用可能なコマンドを把握
 
 2. タスクタイプを特定（新規機能/バグ修正/リファクタリング等）
 
 3. 各フェーズ内で単一責務に基づいてサブタスクを分解
 
-4. 各サブタスクに最適なコマンド・エージェント・スキルを選定
+4. 各サブタスクに最適なコマンドを選定
 
 5. 各サブタスクの目的・背景を詳細に記述
 
@@ -2918,8 +2499,6 @@ AIへの委任事項: - "具体的な技術選択"
 
 - docs/00-requirements/master_system_design.md
 - .claude/commands/ai/command_list.md
-- .claude/agents/agent_list.md
-- .claude/skills/skill_list.md
 - .kamui/prompt/merge-prompt.txt
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   ユーザーからのタスクを待機中...
