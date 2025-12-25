@@ -34,14 +34,14 @@ Phase 1で作成された全設計ドキュメントを5つの観点からレビ
 
 ### 1.3 レビュー結果サマリー
 
-| レビュー観点           | 担当エージェント | 評価     | MAJOR | MINOR  |
-| ---------------------- | ---------------- | -------- | ----- | ------ |
-| 要件充足性             | .claude/agents/req-analyst.md     | PASS     | 0     | 2      |
-| アーキテクチャ整合性   | .claude/agents/arch-police.md     | PASS     | 0     | 3      |
-| データベース設計妥当性 | .claude/agents/db-architect.md    | PASS     | 0     | 2      |
-| UI/UX設計              | .claude/agents/ui-designer.md     | PASS     | 0     | 1      |
-| セキュリティ設計       | .claude/agents/sec-auditor.md     | PASS     | 0     | 2      |
-| **合計**               | -                | **PASS** | **0** | **10** |
+| レビュー観点           | 担当エージェント               | 評価     | MAJOR | MINOR  |
+| ---------------------- | ------------------------------ | -------- | ----- | ------ |
+| 要件充足性             | .claude/agents/req-analyst.md  | PASS     | 0     | 2      |
+| アーキテクチャ整合性   | .claude/agents/arch-police.md  | PASS     | 0     | 3      |
+| データベース設計妥当性 | .claude/agents/db-architect.md | PASS     | 0     | 2      |
+| UI/UX設計              | .claude/agents/ui-designer.md  | PASS     | 0     | 1      |
+| セキュリティ設計       | .claude/agents/sec-auditor.md  | PASS     | 0     | 2      |
+| **合計**               | -                              | **PASS** | **0** | **10** |
 
 ---
 
@@ -383,8 +383,8 @@ Phase 1で作成された全設計ドキュメントを5つの観点からレビ
 
 ## 6. 変更履歴
 
-| バージョン | 日付       | 変更内容                        | 変更者                                                                |
-| ---------- | ---------- | ------------------------------- | --------------------------------------------------------------------- |
+| バージョン | 日付       | 変更内容                        | 変更者                                                                                                                                                     |
+| ---------- | ---------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1.0.0      | 2025-12-20 | 初版作成 - T-02-1タスクの成果物 | .claude/agents/req-analyst.md, .claude/agents/arch-police.md, .claude/agents/db-architect.md, .claude/agents/ui-designer.md, .claude/agents/sec-auditor.md |
 
 ---

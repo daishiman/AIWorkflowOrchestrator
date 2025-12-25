@@ -2,7 +2,7 @@
 
 ## 概要
 
-authentication flows に関するベストプラクティスと判断基準を整理するスキル。
+.claude/skills/authentication flows/SKILL.md に関するベストプラクティスと判断基準を整理するスキル。
 
 Progressive Disclosure 設計とトークン最適化の実践方法を整理します。
 
@@ -14,20 +14,25 @@ Progressive Disclosure 設計とトークン最適化の実践方法を整理し
 ## 詳細ガイド
 
 ### Progressive Disclosure 設計
+
 - まず Level1/Level2 で要点だけを確認し、必要に応じて詳細リソースへ拡張する
 - 説明量が過剰な場合は要約を作り、必要な箇所のみを参照する
 
 ### トークン最適化
+
 - 目的に直結しない情報は後回しにし、必須項目を優先して読み込む
 - 参照回数が多い資料は要点メモを作って再利用する
 
 ### 高度知識の扱い
+
 - 専用の高度リソースはありません
 
 ### 判断基準
+
 - 検証が必要な場合は参照系スクリプトを優先する
 
 ### スクリプト分類
+
 - 参照系: `scripts/validate-auth-config.mjs`, `scripts/validate-skill.mjs`
 - その他: `scripts/log_usage.mjs`
 - テンプレートは出力一貫性の維持に活用する

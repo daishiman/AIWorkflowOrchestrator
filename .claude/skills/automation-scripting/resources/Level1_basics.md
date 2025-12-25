@@ -2,7 +2,7 @@
 
 ## 概要
 
-automation scripting に関するベストプラクティスと判断基準を整理するスキル。
+.claude/skills/automation scripting/SKILL.md に関するベストプラクティスと判断基準を整理するスキル。
 
 SKILL.md の内容だけで完結する基本運用を扱います。
 
@@ -14,26 +14,33 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
+
 - Use proactively when handling automation scripting tasks.
 
 ### 必要な知識
-- 対象領域: automation scripting に関するベストプラクティスと判断基準を整理するスキル。
+
+- 対象領域: .claude/skills/automation scripting/SKILL.md に関するベストプラクティスと判断基準を整理するスキル。
 - 主要概念: スクリプトパターン集 / パターン1: 構造化スクリプト / パターン2: ビルド自動化 / 自動化スクリプティング / 核心概念
 - 実務指針: SKILL.md のベストプラクティスを守る
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - 目的・前提・判断根拠・次のアクションが明記されている
 
 ### 参照書籍
+
 - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - テンプレートはありません
 
 ## 実践手順
