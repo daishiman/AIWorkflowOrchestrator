@@ -25,6 +25,7 @@ import {
   type SearchResultItemProps,
 } from "../WorkspaceSearch/WorkspaceSearchPanel";
 import { Icon, type IconName } from "../../atoms/Icon";
+import { Button } from "../../atoms/Button";
 
 export type SearchMode = "file" | "workspace" | "filename";
 
@@ -187,6 +188,75 @@ export const UnifiedSearchPanel = forwardRef<
       [],
     );
 
+    // =========================================================================
+    // レンダリングヘルパー: 各検索モードのコンテンツを返す
+    // =========================================================================
+    const renderSearchContent = () => {
+      switch (searchMode) {
+        case "file":
+          return currentFilePath ? (
+            <FileSearchPanel
+              key={`file-search-${searchMode}-${currentFilePath}`}
+              ref={fileSearchRef}
+              filePath={currentFilePath}
+              onNavigate={onFileSearchNavigate}
+              onClose={onClose}
+              onContentUpdated={onContentUpdated}
+              initialShowReplace={isReplaceMode}
+              onReplaceModeChange={setInternalReplaceMode}
+              className="border-b-0"
+            />
+          ) : (
+            <div className="px-4 py-8 flex flex-col items-center gap-4 text-center">
+              <Icon name="search" size={48} className="text-slate-600" />
+              <div>
+                <p className="text-slate-400 text-sm mb-3">
+                  ファイル内検索を使用するには、まずファイルを開いてください。
+                </p>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setSearchMode("workspace")}
+                  className="text-slate-300"
+                >
+                  グローバル検索を使用
+                </Button>
+              </div>
+            </div>
+          );
+
+        case "workspace":
+          return workspacePath ? (
+            <WorkspaceSearchPanel
+              key={`workspace-search-${searchMode}`}
+              workspacePath={workspacePath}
+              onResultClick={handleWorkspaceResultClick}
+              initialShowReplace={isReplaceMode}
+              onReplaceModeChange={setInternalReplaceMode}
+              className="border-none"
+            />
+          ) : (
+            <div className="px-4 py-8 text-center text-slate-500 text-sm">
+              ワークスペースにフォルダを追加してください
+            </div>
+          );
+
+        case "filename":
+          return (
+            <FileNameSearchPanel
+              key={`filename-search-${searchMode}`}
+              files={allFilePaths}
+              onSelectFile={handleFileNameSelect}
+              onClose={onClose}
+              className="border-b-0"
+            />
+          );
+
+        default:
+          return null;
+      }
+    };
+
     return (
       <div
         className={clsx("flex flex-col bg-slate-800", className)}
@@ -244,54 +314,7 @@ export const UnifiedSearchPanel = forwardRef<
         </div>
 
         {/* Search Panel Content */}
-        <div className="flex-1">
-          {searchMode === "file" && currentFilePath && (
-            <FileSearchPanel
-              key={`file-search-${searchMode}-${currentFilePath}`}
-              ref={fileSearchRef}
-              filePath={currentFilePath}
-              onNavigate={onFileSearchNavigate}
-              onClose={onClose}
-              onContentUpdated={onContentUpdated}
-              initialShowReplace={isReplaceMode}
-              onReplaceModeChange={setInternalReplaceMode}
-              className="border-b-0"
-            />
-          )}
-
-          {searchMode === "file" && !currentFilePath && (
-            <div className="px-4 py-8 text-center text-slate-500 text-sm">
-              ファイルを選択してください
-            </div>
-          )}
-
-          {searchMode === "workspace" && workspacePath && (
-            <WorkspaceSearchPanel
-              key={`workspace-search-${searchMode}`}
-              workspacePath={workspacePath}
-              onResultClick={handleWorkspaceResultClick}
-              initialShowReplace={isReplaceMode}
-              onReplaceModeChange={setInternalReplaceMode}
-              className="border-none"
-            />
-          )}
-
-          {searchMode === "workspace" && !workspacePath && (
-            <div className="px-4 py-8 text-center text-slate-500 text-sm">
-              ワークスペースにフォルダを追加してください
-            </div>
-          )}
-
-          {searchMode === "filename" && (
-            <FileNameSearchPanel
-              key={`filename-search-${searchMode}`}
-              files={allFilePaths}
-              onSelectFile={handleFileNameSelect}
-              onClose={onClose}
-              className="border-b-0"
-            />
-          )}
-        </div>
+        <div className="flex-1">{renderSearchContent()}</div>
       </div>
     );
   },

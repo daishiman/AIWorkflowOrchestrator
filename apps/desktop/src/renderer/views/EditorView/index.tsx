@@ -122,14 +122,16 @@ export const EditorView: React.FC<EditorViewProps> = ({ className }) => {
       // Cmd+F (Mac) or Ctrl+F (Windows/Linux) to open file search
       if ((e.metaKey || e.ctrlKey) && e.key === "f" && !e.shiftKey) {
         e.preventDefault();
-        setSearchMode("file");
+        // ファイルが選択されている場合はfileモード、なければworkspaceモード
+        setSearchMode(selectedFilePath ? "file" : "workspace");
         setShowReplace(false);
         setIsSearchPanelOpen(true);
       }
       // Cmd+T (Mac) or Ctrl+T (Windows/Linux) to open file replace
       if ((e.metaKey || e.ctrlKey) && e.key === "t" && !e.shiftKey) {
         e.preventDefault();
-        setSearchMode("file");
+        // ファイルが選択されている場合はfileモード、なければworkspaceモード
+        setSearchMode(selectedFilePath ? "file" : "workspace");
         setShowReplace(true);
         setIsSearchPanelOpen(true);
       }
@@ -185,7 +187,7 @@ export const EditorView: React.FC<EditorViewProps> = ({ className }) => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isSearchPanelOpen, searchMode]);
+  }, [isSearchPanelOpen, searchMode, selectedFilePath]);
 
   // Handle search navigation (scroll to match position and highlight)
   const handleSearchNavigate = useCallback(

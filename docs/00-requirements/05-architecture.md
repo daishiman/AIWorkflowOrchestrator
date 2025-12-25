@@ -157,6 +157,77 @@
 | Factory         | `createConverterInput()`  | 型安全なオブジェクト生成   |
 | Singleton       | `globalConverterRegistry` | グローバルインスタンス提供 |
 
+### 5.2A.2B 実装済みコンバーター
+
+**実装場所**: `packages/shared/src/services/conversion/converters/`
+
+| コンバーター       | サポートMIME                        | 優先度 | 主要機能                             | 実装状況  |
+| ------------------ | ----------------------------------- | ------ | ------------------------------------ | --------- |
+| HTMLConverter      | text/html                           | 10     | HTML→Markdown、script/style除去      | ✅ 実装済 |
+| CSVConverter       | text/csv, text/tab-separated-values | 5      | CSV/TSV→テーブル、区切り文字自動検出 | ✅ 実装済 |
+| JSONConverter      | application/json                    | 5      | JSON→構造化Markdown、ネスト対応      | ✅ 実装済 |
+| PlainTextConverter | text/plain                          | 0      | BOM除去、改行コード正規化            | ⏸️ 未実装 |
+
+#### HTMLConverter
+
+**ファイル**: `html-converter.ts`
+
+**機能**:
+
+- Turndownライブラリを使用したHTML→Markdown変換
+- `<script>`/`<style>`タグの自動除去
+- HTMLエンティティのデコード
+- メタデータ抽出（title, description, keywords, lang属性）
+
+**メタデータ抽出**:
+
+- `title`: `<title>`タグから抽出
+- `description`: `<meta name="description">`から抽出
+- `keywords`: `<meta name="keywords">`から抽出
+- `lang`: `<html lang="...">`属性から抽出
+
+#### CSVConverter
+
+**ファイル**: `csv-converter.ts`
+
+**機能**:
+
+- CSV/TSV形式→Markdownテーブル変換
+- 区切り文字の自動検出（カンマ/タブ）
+- ダブルクォートによるエスケープ処理
+- 改行を含むセルの対応
+
+**メタデータ抽出**:
+
+- `rowCount`: データ行数（ヘッダー除く）
+- `columnCount`: 列数
+- `delimiter`: 検出された区切り文字
+
+#### JSONConverter
+
+**ファイル**: `json-converter.ts`
+
+**機能**:
+
+- JSON→構造化Markdown変換
+- ネスト構造対応（オブジェクト・配列）
+- 再帰的な階層表現
+- プリミティブ値の適切なフォーマット
+
+**メタデータ抽出**:
+
+- `depth`: JSONの最大ネスト深度
+- `keyCount`: 総キー数（オブジェクトのみ）
+
+#### PlainTextConverter（未実装）
+
+**タスク**: QUALITY-02（品質向上タスク）
+**実装予定機能**:
+
+- UTF-8/UTF-16/UTF-32 BOM除去
+- 改行コード正規化（CRLF/CR → LF）
+- 文字エンコーディング検出
+
 ### 5.2A.3 品質指標
 
 | 指標             | 実績      |
