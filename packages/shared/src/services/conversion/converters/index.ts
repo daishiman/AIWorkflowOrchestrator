@@ -11,6 +11,7 @@
 export { HTMLConverter } from "./html-converter";
 export { CSVConverter } from "./csv-converter";
 export { JSONConverter } from "./json-converter";
+export { PlainTextConverter } from "./plain-text-converter";
 
 // =============================================================================
 // インポート（登録用）
@@ -20,6 +21,7 @@ import { globalConverterRegistry } from "../converter-registry";
 import { HTMLConverter } from "./html-converter";
 import { CSVConverter } from "./csv-converter";
 import { JSONConverter } from "./json-converter";
+import { PlainTextConverter } from "./plain-text-converter";
 
 // =============================================================================
 // 登録関数
@@ -39,6 +41,7 @@ let isRegistered = false;
  * 1. HTMLConverter (priority: 10) - HTML形式の保持が重要
  * 2. JSONConverter (priority: 5) - 構造化データの保持
  * 3. CSVConverter (priority: 5) - 表形式データの保持
+ * 4. PlainTextConverter (priority: 0) - フォールバック用
  *
  * この関数はアプリケーション起動時に1回だけ呼び出す。
  * 複数回呼び出しても二重登録はされない。
@@ -72,6 +75,7 @@ export function registerDefaultConverters(): {
     new HTMLConverter(), // priority: 10
     new JSONConverter(), // priority: 5
     new CSVConverter(), // priority: 5
+    new PlainTextConverter(), // priority: 0 (フォールバック)
   ];
 
   // グローバルレジストリに一括登録
