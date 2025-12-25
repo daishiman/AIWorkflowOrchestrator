@@ -1,0 +1,430 @@
+# Git Workflow Guide - 差分からPRまで
+
+現在の差分を最適な粒度でブランチ作成→コミット→プルリクエスト作成→PRコメント追加まで実施してください。
+
+## 🎯 推奨エージェント
+
+Git操作を行う際は、`.claude/agents/agent_list.md` から最適なエージェントを選定してください。
+
+推奨エージェント:
+
+- @devops-eng: Git/CI/CD、GitHub Actions、デプロイフロー
+- @command-arch: ワークフロー定型化、コマンドオーケストレーション
+- @prompt-eng: コミットメッセージ・PR本文の自動生成
+
+---
+
+## ⚠️ 重要: マージは手動実行
+
+PRマージはユーザーが手動で実行します。
+
+### AIの役割
+
+1. 差分分析 → ブランチ作成・コミット
+2. PR本文を生成してPR作成
+3. PR作成後、追加の補足コメントを投稿（変更の詳細や注意点等）
+4. CI/CDステータス確認（`gh pr checks <PR番号>`）
+5. CI完了後、ユーザーに「GitHub UIでマージ可能です」と報告
+6. .kamui配下のファイルもPRに上げる
+
+### ユーザーの役割
+
+- GitHub Web UIで最終確認してマージ実行
+- マージ後、必要に応じてワークツリー削除
+
+---
+
+## プロジェクト情報
+
+- リポジトリ: `/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator`
+- メインブランチ: `main`
+- パッケージマネージャー: pnpm（必須）
+- 技術スタック: Next.js 15 / TypeScript 5 / Electron / Drizzle ORM
+- CI/CD: GitHub Actions（lint/typecheck/test/security/build）
+- Pre-commit: husky + lint-staged（ESLint/Prettier自動実行）
+
+---
+
+## ワークフロー
+
+### 1. ブランチ作成
+
+#### Worktreeを使う場合（推奨）
+
+```bash
+TASK_NAME="feature/task-name"
+WORKTREE_DIR=".worktrees/${TASK_NAME##*/}"
+git worktree add "${WORKTREE_DIR}" -b "${TASK_NAME}" main
+cd "${WORKTREE_DIR}"
+```
+
+#### 通常のブランチ作成
+
+```bash
+TASK_NAME="feature/task-name"
+git checkout -b "${TASK_NAME}" main
+```
+
+ブランチ命名規則:
+
+- `feature/機能名` - 新機能
+- `fix/バグ名` - バグ修正
+- `refactor/対象` - リファクタリング
+- `docs/対象` - ドキュメント
+- `test/対象` - テスト追加
+
+### 2. コミット
+
+コミット前チェック（自動実行される場合は省略可）:
+
+```bash
+pnpm typecheck && pnpm lint && pnpm test
+```
+
+コミット実行:
+
+```bash
+git add .
+git commit -m "$(cat <<'EOF'
+<type>(<scope>): <subject>
+
+<body>
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+EOF
+)"
+```
+
+Conventional Commits タイプ:
+
+- `feat` - 新機能
+- `fix` - バグ修正
+- `refactor` - リファクタリング
+- `docs` - ドキュメント
+- `test` - テスト
+- `chore` - その他（依存関係更新等）
+- `ci` - CI/CD
+
+スコープ例: `features`, `shared`, `api`, `db`, `docs`, `infra`, `config`
+
+### 3. PR作成とコメント追加
+
+ステップ1: PR作成
+
+```bash
+git push -u origin "${TASK_NAME}"
+
+gh pr create --title "<type>(<scope>): <subject>" --body "$(cat <<'EOF'
+## 概要
+
+<!-- この PR の目的と背景を記述 -->
+
+## 変更内容
+
+<!-- 主な変更点をリストアップ -->
+-
+-
+-
+
+## 変更タイプ
+
+<!-- 該当するものにチェック -->
+- [ ] 🐛 バグ修正 (bug fix)
+- [ ] ✨ 新機能 (new feature)
+- [ ] 🔨 リファクタリング (refactoring)
+- [ ] 📝 ドキュメント (documentation)
+- [ ] 🧪 テスト (test)
+- [ ] 🔧 設定変更 (configuration)
+- [ ] 🚀 CI/CD (continuous integration)
+
+## テスト
+
+<!-- 実施したテストにチェック -->
+- [ ] ユニットテスト実行 (`pnpm test`)
+- [ ] 型チェック実行 (`pnpm typecheck`)
+- [ ] ESLint チェック実行 (`pnpm lint`)
+- [ ] ビルド確認 (`pnpm build`)
+- [ ] 手動テスト実施
+
+## 関連 Issue
+
+<!-- 関連するIssue番号 -->
+Closes #
+
+## 破壊的変更
+
+<!-- 破壊的変更がある場合は詳細を記述 -->
+- [ ] この PR には破壊的変更が含まれます
+
+<!-- 破壊的変更の詳細 -->
+
+## スクリーンショット
+
+<!-- UI変更がある場合は添付 -->
+
+## チェックリスト
+
+- [ ] コードが既存のスタイルに従っている
+- [ ] 必要に応じてドキュメントを更新した
+- [ ] 新規・変更機能にテストを追加した
+- [ ] すべてのテストがローカルで成功する
+- [ ] Pre-commit hooks が成功する
+
+## その他
+
+<!-- 追加情報や補足事項 -->
+
+---
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+EOF
+)" --base main
+```
+
+ステップ2: PRコメント追加
+
+PR作成後、追加の補足コメントを投稿します。
+
+```bash
+# PR番号を取得
+PR_NUMBER=$(gh pr view --json number -q .number)
+
+# コメント投稿
+gh pr comment "${PR_NUMBER}" --body "$(cat <<'EOF'
+## 📝 実装の詳細
+
+<!-- 変更の技術的詳細や設計判断の理由 -->
+
+## ⚠️ レビュー時の注意点
+
+<!-- レビュアーが確認すべき重要なポイント -->
+
+## 🔍 テスト方法
+
+<!-- 動作確認の手順や再現方法 -->
+
+## 📚 参考資料
+
+<!-- 関連ドキュメントやIssue、外部リンク等 -->
+
+---
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+EOF
+)"
+```
+
+コメント生成のガイドライン:
+
+- 実装の詳細: アーキテクチャ変更、技術選定の理由、トレードオフ等
+- 注意点: 破壊的変更、パフォーマンス影響、セキュリティ考慮事項等
+- テスト方法: 手動テストの手順、エッジケースの確認方法
+- 参考資料: 関連Issue、設計ドキュメント、外部記事等
+
+コメントは差分の内容に応じて具体的に記述してください。
+
+### 4. CI/CD完了確認
+
+必須: マージ前にCIが全て完了していることを確認
+
+```bash
+# CIステータス確認
+gh pr checks <PR番号>
+
+# 全てのチェックが pass になるまで待機
+# pending/in_progress がある場合は待機継続
+```
+
+待機ループ例:
+
+```bash
+for i in {1..10}; do
+  gh pr checks <PR番号>
+  if gh pr checks <PR番号> 2>&1 | grep -qE "(pending|in_progress)"; then
+    echo "CI実行中... 30秒後に再確認"
+    sleep 30
+  else
+    echo "CI完了"
+    break
+  fi
+done
+```
+
+### 5. マージ（手動）
+
+AIはここまで:
+
+- CI完了を確認
+- ユーザーに「GitHub UIでマージ可能です」と報告
+
+ユーザーが実行:
+
+1. GitHub Web UIで PR を開く
+2. CI結果を最終確認（全て ✅ pass）
+3. 「Squash and merge」クリック
+4. 「Delete branch」にチェック
+
+### 6. マージ後の同期（必要に応じて）
+
+```bash
+cd /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator
+git checkout main
+git pull origin main
+
+# Worktreeを使っていた場合のみ
+git worktree remove "${WORKTREE_DIR}"
+git fetch --prune
+```
+
+---
+
+## トラブルシューティング
+
+### CIが失敗した場合
+
+```bash
+# ローカルで再現
+pnpm typecheck  # 型エラー
+pnpm lint       # Lint
+pnpm test       # テスト
+pnpm build      # ビルド
+
+# 修正後
+git add .
+git commit -m "fix: resolve CI errors"
+git push
+```
+
+### Worktreeが削除できない場合
+
+```bash
+git worktree remove --force "${WORKTREE_DIR}"
+# or
+rm -rf "${WORKTREE_DIR}" && git worktree prune
+```
+
+### 未コミット変更がある場合
+
+```bash
+git stash push -m "一時保存"
+# 作業後
+git stash pop
+```
+
+### マージ競合が発生した場合
+
+```bash
+# main の最新を取り込む
+git fetch origin main
+git merge origin/main
+
+# 競合解決
+# ... ファイルを手動編集 ...
+git add .
+git commit -m "merge: resolve conflicts with main branch"
+git push
+```
+
+### 間違ったブランチで作業してしまった場合
+
+```bash
+# 正しいブランチを作成
+git checkout -b correct-branch-name
+
+# 変更をコミット
+git add .
+git commit -m "fix: move changes to correct branch"
+
+# 間違ったブランチは削除
+git branch -D wrong-branch-name
+```
+
+### コミットメッセージを修正したい場合
+
+```bash
+# 最新のコミットメッセージを修正（push前のみ）
+git commit --amend
+
+# push済みの場合は新しいコミットを追加
+git commit -m "docs: fix typo in previous commit message"
+```
+
+---
+
+## 安全性チェックリスト
+
+### コミット前
+
+- [ ] `git status` で変更内容確認
+- [ ] `git diff` で差分確認
+- [ ] テスト/型チェック/Lint 実行（Pre-commit hookが自動実行）
+
+### PR作成前
+
+- [ ] コミットメッセージが Conventional Commits 形式
+- [ ] Claude Code署名が含まれている
+- [ ] セルフレビュー実施
+
+### マージ前（ユーザー確認）
+
+- [ ] CI（GitHub Actions）が全て pass ← 最重要
+- [ ] `gh pr checks <PR番号>` で全チェック完了確認
+- [ ] pending/in_progress がないこと
+
+---
+
+## コミットメッセージ規約詳細
+
+### コミットメッセージのルール
+
+- ✅ subject は50文字以内を推奨
+- ✅ subject は現在形・命令形で記述（"Add" not "Added"）
+- ✅ body は72文字で改行を推奨
+- ✅ 複数の変更は複数のコミットに分割
+- ✅ Claude Code署名は必須
+- ✅ 日本語のみのメッセージ（英語禁止）
+- ❌ "fix", "update", "changes" のみのメッセージは禁止
+
+### コミット例
+
+#### 例1: 新機能追加
+
+```
+feat(features): 会議文字起こしワークフローを追加
+
+- 音声文字起こしのためのWhisper API統合
+- タイムスタンプ付き議事録の生成機能
+- Discord通知のサポート
+
+Closes #42
+
+🤖 [Claude Code](https://claude.com/claude-code)で生成
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+#### 例2: バグ修正
+
+```
+fix(executor): AI APIタイムアウトを適切に処理
+
+- 指数バックオフを使用した再試行ロジックの実装
+- エラーメッセージの改善
+- 詳細なロギングの追加
+
+Related to #38
+
+🤖 [Claude Code](https://claude.com/claude-code)で生成
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+---
+
+## システム仕様参照
+
+詳細は以下を参照:
+
+- マスター設計書: `docs/00-requirements/master_system_design.md`

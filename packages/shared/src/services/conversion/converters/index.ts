@@ -14,6 +14,7 @@ export { JSONConverter } from "./json-converter";
 export { MarkdownConverter } from "./markdown-converter";
 export { CodeConverter } from "./code-converter";
 export { YAMLConverter } from "./yaml-converter";
+export { PlainTextConverter } from "./plain-text-converter";
 
 // =============================================================================
 // インポート（登録用）
@@ -26,6 +27,7 @@ import { JSONConverter } from "./json-converter";
 import { MarkdownConverter } from "./markdown-converter";
 import { CodeConverter } from "./code-converter";
 import { YAMLConverter } from "./yaml-converter";
+import { PlainTextConverter } from "./plain-text-converter";
 
 // =============================================================================
 // 登録関数
@@ -48,6 +50,7 @@ let isRegistered = false;
  * 4. YAMLConverter (priority: 10) - YAML構造抽出
  * 5. JSONConverter (priority: 5) - 構造化データの保持
  * 6. CSVConverter (priority: 5) - 表形式データの保持
+ * 7. PlainTextConverter (priority: 0) - フォールバック用
  *
  * この関数はアプリケーション起動時に1回だけ呼び出す。
  * 複数回呼び出しても二重登録はされない。
@@ -84,6 +87,7 @@ export function registerDefaultConverters(): {
     new YAMLConverter(), // priority: 10
     new JSONConverter(), // priority: 5
     new CSVConverter(), // priority: 5
+    new PlainTextConverter(), // priority: 0 (フォールバック)
   ];
 
   // グローバルレジストリに一括登録
