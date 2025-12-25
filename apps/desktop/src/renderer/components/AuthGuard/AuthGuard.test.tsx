@@ -7,10 +7,18 @@ vi.mock("../../views/AuthView", () => ({
   AuthView: () => <div data-testid="auth-view">AuthView</div>,
 }));
 
+// Mock devMockAuth to prevent auto-login in tests
+vi.mock("../../utils/devMockAuth", () => ({
+  isDevMode: vi.fn(() => false),
+  getMockAuthData: vi.fn(),
+  logDevModeStatus: vi.fn(),
+}));
+
 // Mock store state factory
 const createMockState = (overrides = {}) => ({
   isAuthenticated: false,
   isLoading: true,
+  setDevModeAuth: vi.fn(),
   ...overrides,
 });
 
