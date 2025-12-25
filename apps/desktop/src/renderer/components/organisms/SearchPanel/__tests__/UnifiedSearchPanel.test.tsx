@@ -1,7 +1,7 @@
 /**
  * UnifiedSearchPanel Component Tests
  *
- * 統合検索パネルのテスト
+ * 統合検索パネルのテスト（実装に基づくpropsベーステスト）
  *
  * @vitest-environment happy-dom
  */
@@ -20,18 +20,31 @@ const mockGoToNext = vi.fn();
 const mockGoToPrev = vi.fn();
 
 // Mock child components to avoid their complexity
-vi.mock("../FileSearchPanel", () => ({
-  FileSearchPanel: vi
-    .fn()
-    .mockImplementation(
-      ({ filePath, onClose, onContentUpdated, initialShowReplace }, ref) => {
+vi.mock("../FileSearchPanel", async () => {
+  const React = await import("react");
+  return {
+    FileSearchPanel: React.forwardRef(
+      (
+        {
+          filePath,
+          onClose,
+          onContentUpdated,
+          initialShowReplace,
+        }: {
+          filePath: string;
+          onClose?: () => void;
+          onContentUpdated?: (content: string) => void;
+          initialShowReplace?: boolean;
+        },
+        ref,
+      ) => {
         // Expose goToNext/goToPrev through ref if provided
-        if (ref && typeof ref === "object" && "current" in ref) {
-          ref.current = {
-            goToNext: mockGoToNext,
-            goToPrev: mockGoToPrev,
-          };
-        }
+        React.useImperativeHandle(ref, () => ({
+          goToNext: mockGoToNext,
+          goToPrev: mockGoToPrev,
+          focusInput: vi.fn(),
+        }));
+
         return (
           <div
             data-testid="file-search-panel"
@@ -52,7 +65,8 @@ vi.mock("../FileSearchPanel", () => ({
         );
       },
     ),
-}));
+  };
+});
 
 vi.mock("../FileNameSearchPanel", () => ({
   FileNameSearchPanel: vi.fn(({ files, onSelectFile, onClose: _onClose }) => (
@@ -316,7 +330,9 @@ describe("UnifiedSearchPanel", () => {
       );
 
       expect(
-        screen.getByText(/ファイルを選択してください/i),
+        screen.getByText(
+          /ファイル内検索を使用するには、まずファイルを開いてください/i,
+        ),
       ).toBeInTheDocument();
     });
 
@@ -566,6 +582,56 @@ describe("UnifiedSearchPanel", () => {
 
       await waitFor(() => {
         expect(screen.getByTestId("filename-search-panel")).toBeInTheDocument();
+      });
+    });
+
+    it("should call goToNext method on ref", () => {
+      const ref = createRef<UnifiedSearchPanelRef>();
+      render(<UnifiedSearchPanel {...defaultProps} ref={ref} />);
+
+      // Call goToNext
+      ref.current?.goToNext();
+
+      // Verify that the mock was called
+      expect(mockGoToNext).toHaveBeenCalled();
+    });
+
+    it("should call goToPrev method on ref", () => {
+      const ref = createRef<UnifiedSearchPanelRef>();
+      render(<UnifiedSearchPanel {...defaultProps} ref={ref} />);
+
+      // Call goToPrev
+      ref.current?.goToPrev();
+
+      // Verify that the mock was called
+      expect(mockGoToPrev).toHaveBeenCalled();
+    });
+  });
+
+  // ============================================
+  // 「グローバル検索を使用」ボタンのテスト
+  // ============================================
+  describe("Fallback to Workspace Search", () => {
+    it("should switch to workspace mode when clicking 'Use Global Search' button", async () => {
+      render(
+        <UnifiedSearchPanel
+          {...defaultProps}
+          currentFilePath={null}
+          initialMode="file"
+        />,
+      );
+
+      // Find and click the button to switch to workspace search
+      const button = screen.getByRole("button", {
+        name: /グローバル検索を使用/i,
+      });
+      await user.click(button);
+
+      // Should switch to workspace search mode
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("workspace-search-panel"),
+        ).toBeInTheDocument();
       });
     });
   });
