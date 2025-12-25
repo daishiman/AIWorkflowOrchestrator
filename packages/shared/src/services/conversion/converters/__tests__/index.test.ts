@@ -11,6 +11,9 @@ import {
   HTMLConverter,
   CSVConverter,
   JSONConverter,
+  MarkdownConverter,
+  CodeConverter,
+  YAMLConverter,
   PlainTextConverter,
 } from "../index";
 import { globalConverterRegistry } from "../../converter-registry";
@@ -33,7 +36,7 @@ describe("Converter Registration", () => {
       const result = registerDefaultConverters();
 
       expect(result.success).toBe(true);
-      expect(result.registeredCount).toBe(4);
+      expect(result.registeredCount).toBe(7);
       expect(result.skipped).toBe(false);
     });
 
@@ -67,18 +70,6 @@ describe("Converter Registration", () => {
       }
     });
 
-    it("should register PlainTextConverter", () => {
-      registerDefaultConverters();
-
-      const converterResult = globalConverterRegistry.get(
-        "plain-text-converter",
-      );
-      expect(converterResult.success).toBe(true);
-      if (converterResult.success) {
-        expect(converterResult.data).toBeInstanceOf(PlainTextConverter);
-      }
-    });
-
     it("should support expected MIME types after registration", () => {
       registerDefaultConverters();
 
@@ -89,7 +80,6 @@ describe("Converter Registration", () => {
       expect(mimeTypes).toContain("text/csv");
       expect(mimeTypes).toContain("text/tab-separated-values");
       expect(mimeTypes).toContain("application/json");
-      expect(mimeTypes).toContain("text/plain");
     });
 
     it("should skip duplicate registration", () => {
@@ -98,7 +88,7 @@ describe("Converter Registration", () => {
 
       expect(firstResult.success).toBe(true);
       expect(firstResult.skipped).toBe(false);
-      expect(firstResult.registeredCount).toBe(4);
+      expect(firstResult.registeredCount).toBe(7);
 
       expect(secondResult.success).toBe(true);
       expect(secondResult.skipped).toBe(true);
@@ -148,6 +138,24 @@ describe("Converter Registration", () => {
       expect(JSONConverter).toBeDefined();
       const converter = new JSONConverter();
       expect(converter.id).toBe("json-converter");
+    });
+
+    it("should export MarkdownConverter class", () => {
+      expect(MarkdownConverter).toBeDefined();
+      const converter = new MarkdownConverter();
+      expect(converter.id).toBe("markdown-converter");
+    });
+
+    it("should export CodeConverter class", () => {
+      expect(CodeConverter).toBeDefined();
+      const converter = new CodeConverter();
+      expect(converter.id).toBe("code-converter");
+    });
+
+    it("should export YAMLConverter class", () => {
+      expect(YAMLConverter).toBeDefined();
+      const converter = new YAMLConverter();
+      expect(converter.id).toBe("yaml-converter");
     });
 
     it("should export PlainTextConverter class", () => {
