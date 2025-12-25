@@ -451,4 +451,24 @@ export abstract class BaseConverter implements IConverter {
   protected getVersion(): string {
     return "1.0.0";
   }
+
+  /**
+   * コンテンツを最大長でトリミング
+   *
+   * maxLengthが指定されている場合、コンテンツをその長さで切り詰める。
+   * 指定がない場合、またはコンテンツが最大長以下の場合はそのまま返す。
+   *
+   * @param content - トリミング対象のコンテンツ
+   * @param maxLength - 最大長（undefinedの場合は制限なし）
+   * @returns トリミングされたコンテンツ
+   */
+  protected trimContent(
+    content: string,
+    maxLength: number | undefined,
+  ): string {
+    if (maxLength === undefined || content.length <= maxLength) {
+      return content;
+    }
+    return content.slice(0, maxLength);
+  }
 }

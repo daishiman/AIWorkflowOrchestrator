@@ -454,8 +454,9 @@ searchService.addStrategy('graph', GraphSearchStrategy);
 
 ## 更新履歴
 
-| 日付       | 更新内容                                                   | 担当       |
-| ---------- | ---------------------------------------------------------- | ---------- |
-| 2025-12-15 | 初版作成（RAGアーキテクチャ統合）                          | .claude/agents/logic-dev.md |
-| 2025-12-15 | 最新論文反映（Contextual Retrieval, CRAG, GraphRAG等）     | .claude/agents/logic-dev.md |
-| 2025-12-15 | **HybridRAG統合版に全面改訂（CONV-08追加、90%+精度目標）** | .claude/agents/logic-dev.md |
+| 日付       | 更新内容                                                                         | 担当                        |
+| ---------- | -------------------------------------------------------------------------------- | --------------------------- |
+| 2025-12-15 | 初版作成（RAGアーキテクチャ統合）                                                | .claude/agents/logic-dev.md |
+| 2025-12-15 | 最新論文反映（Contextual Retrieval, CRAG, GraphRAG等）                           | .claude/agents/logic-dev.md |
+| 2025-12-15 | **HybridRAG統合版に全面改訂（CONV-08追加、90%+精度目標）**                       | .claude/agents/logic-dev.md |
+| 2025-12-25 | **CONV-04-01完了: Drizzle ORM基盤実装（chat_sessions/messages、9インデックス）** | Manual (T-09-1)             |

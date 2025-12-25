@@ -148,7 +148,9 @@ export const chatMessages = sqliteTable(
      * 親セッションID
      * 外部キー制約: ON DELETE CASCADE
      */
-    sessionId: text("session_id").notNull(),
+    sessionId: text("session_id")
+      .notNull()
+      .references(() => chatSessions.id, { onDelete: "cascade" }),
 
     /**
      * メッセージロール

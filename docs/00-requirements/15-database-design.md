@@ -87,9 +87,13 @@ Turso Cloud DB（本番環境）
 packages/shared/
 ├── src/
 │   ├── db/
-│   │   └── schema/
-│   │       ├── index.ts          # スキーマエントリーポイント（全テーブルをre-export）
-│   │       └── chat-history.ts   # チャット履歴スキーマ（chat_sessions, chat_messages）
+│   │   ├── schema/
+│   │   │   ├── index.ts          # スキーマエントリーポイント（全テーブルをre-export）✅ 実装済み
+│   │   │   └── chat-history.ts   # チャット履歴スキーマ（chat_sessions, chat_messages）✅ 実装済み
+│   │   ├── env.ts                # 環境変数管理（Zod検証）✅ 実装済み
+│   │   ├── migrate.ts            # マイグレーション実行スクリプト ✅ 実装済み
+│   │   ├── utils.ts              # データベースユーティリティ関数 ✅ 実装済み
+│   │   └── index.ts              # データベースクライアントエクスポート ✅ 実装済み
 │   ├── repositories/
 │   │   ├── chat-session-repository.ts  # セッションリポジトリ
 │   │   └── chat-message-repository.ts  # メッセージリポジトリ
@@ -106,10 +110,168 @@ packages/shared/
 │       └── channels.ts           # IPCチャネル定義
 ├── drizzle/
 │   └── migrations/
-│       ├── 0001_create_chat_history.sql  # テーブル作成
-│       └── 0002_add_covering_index.sql   # カバリングインデックス追加
-└── drizzle.config.ts             # Drizzle設定
+│       ├── 0000_complete_rictor.sql      # 初期マイグレーション
+│       ├── 0001_nice_unicorn.sql         # チャット履歴テーブル + インデックス ✅ 生成済み
+│       └── meta/
+│           ├── _journal.json             # マイグレーション履歴
+│           ├── 0000_snapshot.json        # スナップショット（初期）
+│           └── 0001_snapshot.json        # スナップショット（チャット履歴）
+└── drizzle.config.ts             # Drizzle設定 ✅ 実装済み
 ```
+
+### Drizzle ORM基盤モジュール
+
+データベース操作の基盤となるモジュール群の実装詳細。
+
+#### env.ts - 環境変数管理
+
+**目的**: データベース接続に必要な環境変数の取得とバリデーション
+
+**主要機能**:
+
+| 関数名                  | 説明                                       | 戻り値            |
+| ----------------------- | ------------------------------------------ | ----------------- |
+| `getDatabaseEnv()`      | 環境変数を取得し、Zodスキーマで検証        | `DatabaseEnv`     |
+| `getDatabaseUrl()`      | 接続URL取得（TURSO_DATABASE_URL優先）      | `string`          |
+| `isCloudMode()`         | クラウドモード判定（libsql://で始まるURL） | `boolean`         |
+| `validateDatabaseEnv()` | 環境変数の妥当性検証                       | `SafeParseResult` |
+
+**Zodスキーマ定義**:
+
+```typescript
+export const databaseEnvSchema = z
+  .object({
+    TURSO_DATABASE_URL: z.string().optional(),
+    TURSO_AUTH_TOKEN: z.string().optional(),
+    LOCAL_DB_PATH: z.string().optional(),
+    DATABASE_MODE: z.enum(["local", "cloud"]).optional().default("local"),
+  })
+  .refine(
+    (data) => {
+      // クラウドモードの場合、AUTH_TOKENが必須
+      if (data.DATABASE_MODE === "cloud") {
+        return !!data.TURSO_AUTH_TOKEN;
+      }
+      if (data.TURSO_DATABASE_URL?.startsWith("libsql://")) {
+        return !!data.TURSO_AUTH_TOKEN;
+      }
+      return true;
+    },
+    {
+      message: "TURSO_AUTH_TOKEN is required for cloud mode",
+      path: ["TURSO_AUTH_TOKEN"],
+    },
+  );
+```
+
+**実装状況**: ✅ 完了（T-04-1）
+
+#### migrate.ts - マイグレーション実行
+
+**目的**: Drizzle Kitで生成されたマイグレーションファイルの実行
+
+**主要機能**:
+
+| 関数名            | 説明                                      | 戻り値          |
+| ----------------- | ----------------------------------------- | --------------- |
+| `runMigrations()` | マイグレーションフォルダ内のSQLを順次実行 | `Promise<void>` |
+
+**実装例**:
+
+```typescript
+export async function runMigrations(): Promise<void> {
+  const libsqlClient = initializeClient();
+  const db = drizzle(libsqlClient);
+
+  try {
+    await migrate(db, { migrationsFolder: MIGRATIONS_FOLDER });
+    console.log("Migrations completed successfully!");
+  } catch (error) {
+    console.error("Migration failed:", error);
+    throw error;
+  }
+}
+```
+
+**マイグレーションフォルダパス**: `packages/shared/drizzle/migrations/`
+
+**実装状況**: ✅ 完了（T-04-1）
+
+#### utils.ts - ユーティリティ関数
+
+**目的**: データベース操作の共通ユーティリティ提供
+
+**主要機能**:
+
+| 関数名               | 説明                                   | 戻り値             |
+| -------------------- | -------------------------------------- | ------------------ |
+| `initializeClient()` | libSQLクライアントの初期化             | `Client`           |
+| `getConnectionUrl()` | 環境に応じた接続URL取得                | `string`           |
+| `isOnline()`         | ネットワーク接続状態の確認（将来実装） | `Promise<boolean>` |
+
+**クライアント初期化ロジック**:
+
+- ローカルモード (`file:`): 認証トークン不要
+- クラウドモード (`libsql://`): 認証トークン必須
+- エラー時の自動リトライ（最大3回、指数バックオフ）
+
+**実装状況**: ✅ 完了（T-04-1）
+
+#### index.ts - データベースクライアントエクスポート
+
+**目的**: データベースクライアントとスキーマの一元管理
+
+**エクスポート内容**:
+
+```typescript
+// クライアント
+export { db } from "./client";
+
+// スキーマ
+export * from "./schema";
+
+// ユーティリティ
+export { initializeClient, getConnectionUrl } from "./utils";
+export { runMigrations } from "./migrate";
+export { getDatabaseEnv, getDatabaseUrl, isCloudMode } from "./env";
+```
+
+**使用例**:
+
+```typescript
+import { db, chatSessions, chatMessages } from "@repo/shared/db";
+
+// クエリ実行
+const sessions = await db.select().from(chatSessions);
+```
+
+**実装状況**: ✅ 完了（T-04-1）
+
+#### drizzle.config.ts - Drizzle Kit設定
+
+**目的**: マイグレーション生成とDrizzle Studioの設定
+
+**設定内容**:
+
+| 設定項目  | 値                          | 説明                         |
+| --------- | --------------------------- | ---------------------------- |
+| `schema`  | `./dist/src/db/schema/*.js` | コンパイル後のスキーマパス   |
+| `out`     | `./drizzle/migrations`      | マイグレーション出力先       |
+| `dialect` | `sqlite`                    | データベース方言             |
+| `verbose` | `true`                      | 詳細ログ出力                 |
+| `strict`  | `true`                      | 厳密モード（型チェック強化） |
+
+**関連npmスクリプト**:
+
+```json
+{
+  "db:generate": "drizzle-kit generate",
+  "db:migrate": "tsx src/db/migrate.ts",
+  "db:studio": "drizzle-kit studio"
+}
+```
+
+**実装状況**: ✅ 完了（T-04-10）
 
 ### テーブル設計
 
@@ -406,10 +568,18 @@ Supabase Auth と連携するユーザープロフィールテーブル。
 
 **参照ドキュメント**:
 
-- スキーマ実装: `packages/shared/src/db/schema/chat-history.ts`
-- マイグレーション: `packages/shared/drizzle/migrations/0001_create_chat_history.sql`
-- 詳細設計: `docs/30-workflows/chat-history-persistence/metadata-specification.md`
-- UI設計: `docs/30-workflows/chat-history-persistence/ui-ux-design.md`
+- スキーマ実装: `packages/shared/src/db/schema/chat-history.ts` ✅
+- データベース基盤モジュール:
+  - 環境変数管理: `packages/shared/src/db/env.ts` ✅
+  - マイグレーション実行: `packages/shared/src/db/migrate.ts` ✅
+  - ユーティリティ: `packages/shared/src/db/utils.ts` ✅
+  - クライアントエクスポート: `packages/shared/src/db/index.ts` ✅
+- マイグレーション: `packages/shared/drizzle/migrations/0001_nice_unicorn.sql` ✅
+- Drizzle設定: `packages/shared/drizzle.config.ts` ✅
+- 詳細設計: `docs/30-workflows/rag-pipeline/conv-04-01-table-schema-design.md` ✅
+- インデックス戦略: `docs/30-workflows/rag-pipeline/conv-04-01-index-strategy-design.md` ✅
+- 設計レビュー: `docs/30-workflows/rag-pipeline/conv-07-02-p0-improvement-review.md` ✅
+- 手動テスト結果: `docs/30-workflows/rag-pipeline/conv-08-01-manual-test-results.md` ✅
 
 ### インデックス設計
 
