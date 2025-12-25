@@ -76,7 +76,6 @@ pnpm --filter @repo/desktop dev
 
 - **security-check.sh**: 機密ファイルへのアクセス防止
 - **dangerous-command-check.sh**: 危険コマンドの警告
-- **backup-create.sh**: 編集前の自動バックアップ
 
 ### 通知（Stop）
 

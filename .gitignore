@@ -47,6 +47,7 @@ logs/
 tmp/
 temp/
 *.tmp
+*.bak
 
 # Next.js
 .next/
