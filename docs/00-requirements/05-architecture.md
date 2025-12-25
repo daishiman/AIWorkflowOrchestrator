@@ -166,7 +166,7 @@
 | HTMLConverter      | text/html                           | 10     | HTML→Markdown、script/style除去      | ✅ 実装済 |
 | CSVConverter       | text/csv, text/tab-separated-values | 5      | CSV/TSV→テーブル、区切り文字自動検出 | ✅ 実装済 |
 | JSONConverter      | application/json                    | 5      | JSON→構造化Markdown、ネスト対応      | ✅ 実装済 |
-| PlainTextConverter | text/plain                          | 0      | BOM除去、改行コード正規化            | ⏸️ 未実装 |
+| PlainTextConverter | text/plain                          | 0      | BOM除去、改行コード正規化            | ✅ 実装済 |
 
 #### HTMLConverter
 
@@ -219,23 +219,41 @@
 - `depth`: JSONの最大ネスト深度
 - `keyCount`: 総キー数（オブジェクトのみ）
 
-#### PlainTextConverter（未実装）
+#### PlainTextConverter
 
-**タスク**: QUALITY-02（品質向上タスク）
-**実装予定機能**:
+**ファイル**: `plain-text-converter.ts`
 
-- UTF-8/UTF-16/UTF-32 BOM除去
+**機能**:
+
+- UTF-8 BOM（U+FEFF）の自動検出と除去
 - 改行コード正規化（CRLF/CR → LF）
-- 文字エンコーディング検出
+- テキストからのメタデータ抽出（行数、単語数、文字数）
+- フォールバックコンバーター（優先度0）として機能
+
+**メタデータ抽出**:
+
+- `lineCount`: 行数（改行で分割）
+- `wordCount`: 単語数（空白区切り）
+- `charCount`: 文字数（改行含む）
+- `encoding`: 文字エンコーディング（固定値"UTF-8"）
+
+**設計上の特徴**:
+
+- Template Methodパターン（BaseConverter継承）
+- 最低優先度（priority: 0）によりフォールバックとして機能
+- BOM除去と改行正規化を変換フロー内で自動実行
+- MetadataExtractorを活用した統一的なメタデータ抽出
 
 ### 5.2A.3 品質指標
 
-| 指標             | 実績      |
-| ---------------- | --------- |
-| テストカバレッジ | 93.2%     |
-| テスト数         | 194ケース |
-| 実装行数         | 2,180行   |
-| ドキュメント     | 15件      |
+| 指標             | 実績                |
+| ---------------- | ------------------- |
+| 実装コンバーター | 4種類               |
+| テストカバレッジ | 91.95% (Statement)  |
+| テスト数         | 175ケース           |
+| 実装行数         | 1,648行             |
+| ドキュメント     | 20件以上            |
+| 品質スコア       | 99.4/100 (最新実績) |
 
 ---
 

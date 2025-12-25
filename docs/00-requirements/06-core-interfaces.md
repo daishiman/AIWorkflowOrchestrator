@@ -106,7 +106,7 @@ if (result.success) {
 | HTMLConverter      | text/html                           | 10     | HTML→Markdown、script/style除去      | ✅ 実装済 |
 | CSVConverter       | text/csv, text/tab-separated-values | 5      | CSV/TSV→テーブル、区切り文字自動検出 | ✅ 実装済 |
 | JSONConverter      | application/json                    | 5      | JSON→構造化Markdown、ネスト対応      | ✅ 実装済 |
-| PlainTextConverter | text/plain                          | 0      | BOM除去、改行コード正規化            | ⏸️ 未実装 |
+| PlainTextConverter | text/plain                          | 0      | BOM除去、改行コード正規化            | ✅ 実装済 |
 
 #### HTMLConverter
 
@@ -249,13 +249,11 @@ if (result.success) {
 }
 ```
 
-#### PlainTextConverter（未実装）
+#### PlainTextConverter
 
-**予定ファイルパス**: `packages/shared/src/services/conversion/converters/plain-text-converter.ts`
+**ファイルパス**: `packages/shared/src/services/conversion/converters/plain-text-converter.ts`
 
-**関連タスク**: `docs/30-workflows/unassigned-task/task-plaintext-converter-implementation.md` (QUALITY-02)
-
-**予定API**:
+**実装タスク**: `docs/30-workflows/completed-tasks/task-plaintext-converter-implementation.md` (QUALITY-02 ✅ 完了)
 
 ```typescript
 import { PlainTextConverter } from "@repo/shared/services/conversion/converters/plain-text-converter";
@@ -282,6 +280,9 @@ if (result.success) {
   // テキストコンテンツ
   // 改行あり
   // (BOMが除去され、改行コードがLFに正規化される)
+
+  console.log(result.value.extractedMetadata);
+  // { lineCount: 2, wordCount: 2, charCount: 25, encoding: 'UTF-8' }
 }
 ```
 
