@@ -65,20 +65,31 @@
 
 ### 4.2.1 docs/ 詳細構造
 
-| パス                                                    | 役割                               |
-| ------------------------------------------------------- | ---------------------------------- |
-| 00-requirements/                                        | システム要件定義                   |
-| 00-requirements/05-architecture.md                      | アーキテクチャ設計                 |
-| 00-requirements/08-api-design.md                        | API設計                            |
-| 00-requirements/17-security-guidelines.md               | セキュリティガイドライン           |
-| 10-design/                                              | 設計ドキュメント                   |
-| 20-specifications/                                      | 仕様書                             |
-| 30-workflows/                                           | **ワークフロー・プロジェクト記録** |
-| 30-workflows/login-recovery/                            | **ログイン機能復旧プロジェクト**   |
-| 30-workflows/login-recovery/README.md                   | プロジェクト完全ガイド             |
-| 30-workflows/login-recovery/step11-final-review.md      | 最終レビュー結果                   |
-| 30-workflows/login-recovery/step12-manual-test-guide.md | 手動テストガイド                   |
-| 99-adr/                                                 | Architecture Decision Records      |
+| パス                                                      | 役割                               |
+| --------------------------------------------------------- | ---------------------------------- |
+| 00-requirements/                                          | システム要件定義                   |
+| 00-requirements/05-architecture.md                        | アーキテクチャ設計                 |
+| 00-requirements/08-api-design.md                          | API設計                            |
+| 00-requirements/17-security-guidelines.md                 | セキュリティガイドライン           |
+| 10-design/                                                | 設計ドキュメント                   |
+| 20-specifications/                                        | 仕様書                             |
+| 30-api/                                                   | **APIリファレンス**                |
+| 30-api/converters/                                        | コンバーターAPI仕様                |
+| 30-api/converters/markdown-converter.md                   | MarkdownConverter API              |
+| 30-api/converters/code-converter.md                       | CodeConverter API                  |
+| 30-api/converters/yaml-converter.md                       | YAMLConverter API                  |
+| 30-workflows/                                             | **ワークフロー・プロジェクト記録** |
+| 30-workflows/rag-conversion-system/                       | RAG変換システムプロジェクト        |
+| 30-workflows/rag-conversion-system/manual-test-report.md  | 手動テスト結果レポート             |
+| 30-workflows/rag-conversion-system/quality-report.md      | 品質保証レポート                   |
+| 30-workflows/rag-conversion-system/final-review-report.md | 最終レビューレポート               |
+| 30-workflows/login-recovery/                              | **ログイン機能復旧プロジェクト**   |
+| 30-workflows/login-recovery/README.md                     | プロジェクト完全ガイド             |
+| 30-workflows/login-recovery/step11-final-review.md        | 最終レビュー結果                   |
+| 30-workflows/login-recovery/step12-manual-test-guide.md   | 手動テストガイド                   |
+| 40-manuals/                                               | **ユーザー/開発者マニュアル**      |
+| 40-manuals/rag-conversion-guide.md                        | RAG変換システム使用ガイド          |
+| 99-adr/                                                   | Architecture Decision Records      |
 
 ---
 
@@ -142,7 +153,46 @@
 | rag/graph/index.ts   | バレルエクスポート                      |
 | index.ts             | エクスポート                            |
 
-**依存方向**: types ← core ← infrastructure ← ui（逆方向禁止）
+### 4.3.5 src/services/（ドメインサービス層）
+
+| パス                                                       | 役割                                           |
+| ---------------------------------------------------------- | ---------------------------------------------- |
+| conversion/                                                | **ファイル変換サービス**                       |
+| conversion/types.ts                                        | 変換関連型定義（IConverter, ConverterInput等） |
+| conversion/base-converter.ts                               | BaseConverter抽象クラス（Template Method）     |
+| conversion/converter-registry.ts                           | ConverterRegistry（Repository Pattern）        |
+| conversion/conversion-service.ts                           | ConversionService（統括サービス）              |
+| conversion/converters/                                     | **各種コンバーター実装**                       |
+| conversion/converters/index.ts                             | コンバーター登録・エクスポート                 |
+| conversion/converters/html-converter.ts                    | HTMLConverter実装                              |
+| conversion/converters/csv-converter.ts                     | CSVConverter実装                               |
+| conversion/converters/json-converter.ts                    | JSONConverter実装                              |
+| conversion/converters/markdown-converter.ts                | MarkdownConverter実装                          |
+| conversion/converters/code-converter.ts                    | CodeConverter実装                              |
+| conversion/converters/yaml-converter.ts                    | YAMLConverter実装                              |
+| conversion/converters/**tests**/                           | **コンバーターユニットテスト**                 |
+| conversion/converters/**tests**/index.test.ts              | 登録処理テスト                                 |
+| conversion/converters/**tests**/markdown-converter.test.ts | MarkdownConverterテスト（54ケース）            |
+| conversion/converters/**tests**/code-converter.test.ts     | CodeConverterテスト（51ケース）                |
+| conversion/converters/**tests**/yaml-converter.test.ts     | YAMLConverterテスト（61ケース）                |
+| conversion/**manual-tests**/                               | **手動テストスクリプト**                       |
+| conversion/**manual-tests**/run-manual-tests.ts            | 手動テスト実行スクリプト                       |
+| conversion/**manual-tests**/fixtures/                      | テスト用サンプルファイル                       |
+| conversion/**manual-tests**/fixtures/sample.md             | Markdownサンプル                               |
+| conversion/**manual-tests**/fixtures/sample.ts             | TypeScriptサンプル                             |
+| conversion/**manual-tests**/fixtures/sample.js             | JavaScriptサンプル                             |
+| conversion/**manual-tests**/fixtures/sample.py             | Pythonサンプル                                 |
+| conversion/**manual-tests**/fixtures/sample.yaml           | YAMLサンプル                                   |
+| conversion/**manual-tests**/fixtures/empty.md              | 空ファイルサンプル                             |
+
+**サービス層の特徴**:
+
+- shared/types/rag のみに依存（外部ライブラリ依存を最小化）
+- Result型でエラーハンドリング
+- 100%テストカバレッジ（Phase 6で検証済み）
+- Template Method・Repository・Singletonパターン適用
+
+**依存方向**: types ← core ← infrastructure ← ui ← services（逆方向禁止）
 
 ---
 

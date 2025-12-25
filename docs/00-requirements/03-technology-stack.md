@@ -613,6 +613,21 @@ export default tseslint.config(
 }
 ```
 
+**RAG変換システムの依存関係方針**:
+
+- **外部ライブラリ依存ゼロ**: Markdown/Code/YAMLコンバーターは標準ライブラリのみで実装
+- **正規表現ベース解析**: AST解析ライブラリ（@babel/parser, typescript等）を使わず軽量化
+- **既存依存の活用**: HTMLConverter（turndown）, CSVConverter（papaparse）, JSONConverter（標準JSON.parse）
+
+**将来の依存追加候補**:
+
+| ライブラリ      | 用途                    | 導入タイミング           | サイズ影響 |
+| --------------- | ----------------------- | ------------------------ | ---------- |
+| `pdf-parse`     | PDFConverter実装時      | PlainTextConverter完了後 | +500KB     |
+| `mammoth`       | DocxConverter実装時     | PDF対応後                | +200KB     |
+| `xlsx`          | ExcelConverter実装時    | Docx対応後               | +800KB     |
+| `@babel/parser` | AST-based解析への移行時 | CONV-DEBT-002対応時      | +1.2MB     |
+
 ---
 
 ## 8. 依存関係管理戦略

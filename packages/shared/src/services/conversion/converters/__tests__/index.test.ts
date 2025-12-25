@@ -11,6 +11,9 @@ import {
   HTMLConverter,
   CSVConverter,
   JSONConverter,
+  MarkdownConverter,
+  CodeConverter,
+  YAMLConverter,
 } from "../index";
 import { globalConverterRegistry } from "../../converter-registry";
 
@@ -32,7 +35,7 @@ describe("Converter Registration", () => {
       const result = registerDefaultConverters();
 
       expect(result.success).toBe(true);
-      expect(result.registeredCount).toBe(3);
+      expect(result.registeredCount).toBe(6);
       expect(result.skipped).toBe(false);
     });
 
@@ -84,7 +87,7 @@ describe("Converter Registration", () => {
 
       expect(firstResult.success).toBe(true);
       expect(firstResult.skipped).toBe(false);
-      expect(firstResult.registeredCount).toBe(3);
+      expect(firstResult.registeredCount).toBe(6);
 
       expect(secondResult.success).toBe(true);
       expect(secondResult.skipped).toBe(true);
@@ -134,6 +137,24 @@ describe("Converter Registration", () => {
       expect(JSONConverter).toBeDefined();
       const converter = new JSONConverter();
       expect(converter.id).toBe("json-converter");
+    });
+
+    it("should export MarkdownConverter class", () => {
+      expect(MarkdownConverter).toBeDefined();
+      const converter = new MarkdownConverter();
+      expect(converter.id).toBe("markdown-converter");
+    });
+
+    it("should export CodeConverter class", () => {
+      expect(CodeConverter).toBeDefined();
+      const converter = new CodeConverter();
+      expect(converter.id).toBe("code-converter");
+    });
+
+    it("should export YAMLConverter class", () => {
+      expect(YAMLConverter).toBeDefined();
+      const converter = new YAMLConverter();
+      expect(converter.id).toBe("yaml-converter");
     });
   });
 });

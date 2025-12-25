@@ -96,6 +96,75 @@ RAGパイプライン実装で使用するエラーコード。
 
 **実装場所**: `packages/shared/src/types/rag/errors.ts`
 
+#### RAG変換システムのエラーコード詳細
+
+**ConversionService層のエラー**:
+
+| エラーコード          | 発生タイミング                     | リトライ       | 対処方法                                     |
+| --------------------- | ---------------------------------- | -------------- | -------------------------------------------- |
+| `RESOURCE_EXHAUSTED`  | 同時実行数が最大値（5件）に到達    | 可能（待機後） | 処理中のタスク完了を待つ                     |
+| `TIMEOUT`             | 変換処理が60秒以内に完了しない     | 条件付き       | タイムアウト時間を延長、またはファイルを分割 |
+| `CONVERTER_NOT_FOUND` | 対応コンバーターが登録されていない | 不可           | コンバーター実装またはMIMEタイプ確認         |
+
+**個別Converter層のエラー**:
+
+| エラーコード        | 発生タイミング | 例                                   | 対処方法           |
+| ------------------- | -------------- | ------------------------------------ | ------------------ |
+| `VALIDATION_FAILED` | 入力検証失敗   | MIMEタイプ不一致、最大ネスト深度超過 | 入力データを修正   |
+| `CONVERSION_FAILED` | 変換処理失敗   | YAML構文エラー、正規表現マッチ失敗   | ファイル内容を修正 |
+
+**エラーコンテキスト情報**:
+
+すべてのRAGエラーは以下のコンテキスト情報を含む：
+
+```typescript
+interface RAGErrorContext {
+  converterId?: string; // エラー発生元コンバーターID
+  fileId?: string; // 処理対象ファイルID
+  mimeType?: string; // ファイルのMIMEタイプ
+  filePath?: string; // ファイルパス（オプション）
+
+  // エラー固有の追加情報
+  maxDepth?: number; // YAML: ネスト深度
+  timeout?: number; // TIMEOUT: タイムアウト時間（ms）
+  currentConversions?: number; // RESOURCE_EXHAUSTED: 現在の実行数
+}
+```
+
+**エラー使用例**:
+
+```typescript
+// ConversionService: 同時実行数超過
+createRAGError(
+  ErrorCodes.RESOURCE_EXHAUSTED,
+  `Maximum concurrent conversions reached: 5`,
+  {
+    currentConversions: 5,
+    maxConcurrentConversions: 5,
+  },
+);
+
+// Converter: 変換失敗
+createRAGError(
+  ErrorCodes.CONVERSION_FAILED,
+  `YAML conversion failed: Invalid syntax at line 42`,
+  {
+    converterId: "yaml-converter",
+    fileId: "file-abc123",
+    mimeType: "application/x-yaml",
+    filePath: "/path/to/config.yaml",
+  },
+  originalError, // cause として元のエラーを保持
+);
+
+// Converter: タイムアウト
+createRAGError(ErrorCodes.TIMEOUT, `Conversion timeout after 60000ms`, {
+  converterId: "code-converter",
+  fileId: "file-xyz789",
+  timeout: 60000,
+});
+```
+
 ---
 
 ## 7.2 リトライ戦略

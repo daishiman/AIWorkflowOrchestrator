@@ -11,6 +11,9 @@
 export { HTMLConverter } from "./html-converter";
 export { CSVConverter } from "./csv-converter";
 export { JSONConverter } from "./json-converter";
+export { MarkdownConverter } from "./markdown-converter";
+export { CodeConverter } from "./code-converter";
+export { YAMLConverter } from "./yaml-converter";
 
 // =============================================================================
 // インポート（登録用）
@@ -20,6 +23,9 @@ import { globalConverterRegistry } from "../converter-registry";
 import { HTMLConverter } from "./html-converter";
 import { CSVConverter } from "./csv-converter";
 import { JSONConverter } from "./json-converter";
+import { MarkdownConverter } from "./markdown-converter";
+import { CodeConverter } from "./code-converter";
+import { YAMLConverter } from "./yaml-converter";
 
 // =============================================================================
 // 登録関数
@@ -37,8 +43,11 @@ let isRegistered = false;
  *
  * 優先度順（高い順）:
  * 1. HTMLConverter (priority: 10) - HTML形式の保持が重要
- * 2. JSONConverter (priority: 5) - 構造化データの保持
- * 3. CSVConverter (priority: 5) - 表形式データの保持
+ * 2. MarkdownConverter (priority: 10) - Markdown構造抽出
+ * 3. CodeConverter (priority: 10) - コード構造抽出
+ * 4. YAMLConverter (priority: 10) - YAML構造抽出
+ * 5. JSONConverter (priority: 5) - 構造化データの保持
+ * 6. CSVConverter (priority: 5) - 表形式データの保持
  *
  * この関数はアプリケーション起動時に1回だけ呼び出す。
  * 複数回呼び出しても二重登録はされない。
@@ -70,6 +79,9 @@ export function registerDefaultConverters(): {
   // コンバーターインスタンスを生成
   const converters = [
     new HTMLConverter(), // priority: 10
+    new MarkdownConverter(), // priority: 10
+    new CodeConverter(), // priority: 10
+    new YAMLConverter(), // priority: 10
     new JSONConverter(), // priority: 5
     new CSVConverter(), // priority: 5
   ];
