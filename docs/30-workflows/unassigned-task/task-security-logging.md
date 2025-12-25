@@ -13,7 +13,7 @@
 | ステータス       | 未実施                             |
 | 発見元           | Phase 6 - セキュリティ監査         |
 | 発見日           | 2024-12-23                         |
-| 発見エージェント | .claude/agents/sec-auditor.md                       |
+| 発見エージェント | .claude/agents/sec-auditor.md      |
 
 ---
 
@@ -175,7 +175,7 @@ Phase 9: ドキュメント更新
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:implement security-logger
+/ai:implement-business-logic security-logger
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -188,8 +188,8 @@ Phase 9: ドキュメント更新
 
 ##### 活用スキル
 
-| スキル名                | 活用方法               |
-| ----------------------- | ---------------------- |
+| スキル名                                        | 活用方法               |
+| ----------------------------------------------- | ---------------------- |
 | .claude/skills/log-rotation-strategies/SKILL.md | ログローテーション実装 |
 | .claude/skills/metrics-tracking/SKILL.md        | ログイベント定義       |
 | .claude/skills/clean-code-practices/SKILL.md    | 可読性の高い実装       |
@@ -271,7 +271,7 @@ chat-history-service の各メソッドにログ記録を組み込む。
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:implement logging-integration
+/ai:implement-business-logic logging-integration
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`

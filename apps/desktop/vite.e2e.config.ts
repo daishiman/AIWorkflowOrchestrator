@@ -21,8 +21,8 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
   },
-  // electronAPIのモック用グローバル変数
+  // E2E環境フラグのみ定義（electronAPIはaddInitScriptで注入）
   define: {
-    "window.electronAPI": JSON.stringify(undefined),
+    "import.meta.env.VITE_E2E_MODE": JSON.stringify("true"),
   },
 });

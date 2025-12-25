@@ -13,7 +13,7 @@
 | ステータス       | 未実施                                   |
 | 発見元           | Phase 7 - 最終レビューゲート             |
 | 発見日           | 2024-12-23                               |
-| 発見エージェント | .claude/agents/db-architect.md                            |
+| 発見エージェント | .claude/agents/db-architect.md           |
 
 ---
 
@@ -224,8 +224,8 @@ Phase 9: ドキュメント更新
 
 ##### 活用スキル
 
-| スキル名                | 活用方法                   |
-| ----------------------- | -------------------------- |
+| スキル名                                        | 活用方法                   |
+| ----------------------------------------------- | -------------------------- |
 | .claude/skills/indexing-strategies/SKILL.md     | インデックス設計パターン   |
 | .claude/skills/foreign-key-constraints/SKILL.md | CASCADE戦略決定            |
 | .claude/skills/query-optimization/SKILL.md      | クエリパフォーマンス最適化 |
@@ -387,7 +387,7 @@ messageCountの削除可否をパフォーマンステストで判断する。
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:benchmark database-query
+/ai:analyze-performance database-query
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -459,7 +459,7 @@ describe("messageCount パフォーマンステスト", () => {
 
 ```
 /ai:run-all-tests --coverage
-/ai:benchmark database-performance
+/ai:analyze-performance database-performance
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -472,8 +472,8 @@ describe("messageCount パフォーマンステスト", () => {
 
 ##### 活用スキル
 
-| スキル名                 | 活用方法                     |
-| ------------------------ | ---------------------------- |
+| スキル名                                         | 活用方法                     |
+| ------------------------------------------------ | ---------------------------- |
 | .claude/skills/query-performance-tuning/SKILL.md | クエリチューニング検証       |
 | .claude/skills/database-monitoring/SKILL.md      | パフォーマンスメトリクス収集 |
 

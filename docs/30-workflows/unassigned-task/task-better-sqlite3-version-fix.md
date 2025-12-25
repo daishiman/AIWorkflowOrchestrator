@@ -191,7 +191,7 @@ better-sqlite3を現在のNode.jsバージョンで再ビルドし、テスト�
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:rebuild-native-modules --module "better-sqlite3"
+# /ai:rebuild-native-modules (pnpm rebuild推奨) --module "better-sqlite3"
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -204,8 +204,8 @@ better-sqlite3を現在のNode.jsバージョンで再ビルドし、テスト�
 
 #### 活用スキル
 
-| スキル名              | 活用方法                           |
-| --------------------- | ---------------------------------- |
+| スキル名                                      | 活用方法                           |
+| --------------------------------------------- | ---------------------------------- |
 | .claude/skills/dependency-auditing/SKILL.md   | ネイティブモジュールの依存関係分析 |
 | .claude/skills/environment-isolation/SKILL.md | 環境間の依存関係分離               |
 
@@ -255,7 +255,7 @@ Node.jsバージョンを明示的に管理し、環境間の不一致を防止�
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:setup-node-version-management --current-version "v20.0.0"
+/ai:setup-dev-env --current-version "v20.0.0"
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -268,8 +268,8 @@ Node.jsバージョンを明示的に管理し、環境間の不一致を防止�
 
 #### 活用スキル
 
-| スキル名               | 活用方法                 |
-| ---------------------- | ------------------------ |
+| スキル名                                       | 活用方法                 |
+| ---------------------------------------------- | ------------------------ |
 | .claude/skills/environment-isolation/SKILL.md  | 環境変数・バージョン管理 |
 | .claude/skills/infrastructure-as-code/SKILL.md | 環境設定のコード化       |
 
@@ -367,7 +367,7 @@ echo "✅ Node.jsバージョン: $CURRENT_VERSION"
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:update-contributing-docs --section "environment-setup"
+/ai:update-readme --section "environment-setup"
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -484,7 +484,7 @@ GitHub ActionsのNode.jsバージョンが.nvmrcと一致していることを�
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:update-ci-node-version --version-file ".nvmrc"
+/ai:optimize-ci-performance --version-file ".nvmrc"
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`

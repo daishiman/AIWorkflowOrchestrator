@@ -13,7 +13,7 @@
 | ステータス       | 未実施                                         |
 | 発見元           | Phase 6 - セキュリティ監査（依存関係スキャン） |
 | 発見日           | 2024-12-23                                     |
-| 発見エージェント | .claude/agents/sec-auditor.md                                   |
+| 発見エージェント | .claude/agents/sec-auditor.md                  |
 
 ---
 
@@ -167,7 +167,7 @@ Phase 9: ドキュメント更新
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:define-requirements dependency-update
+/ai:gather-requirements dependency-update
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -180,8 +180,8 @@ Phase 9: ドキュメント更新
 
 ##### 活用スキル
 
-| スキル名                     | 活用方法           |
-| ---------------------------- | ------------------ |
+| スキル名                                             | 活用方法           |
+| ---------------------------------------------------- | ------------------ |
 | .claude/skills/semantic-versioning/SKILL.md          | バージョン選定基準 |
 | .claude/skills/dependency-security-scanning/SKILL.md | 脆弱性評価         |
 
@@ -423,8 +423,8 @@ pnpm audit
 
 ##### レビュー参加エージェント
 
-| エージェント | レビュー観点       | 選定理由               |
-| ------------ | ------------------ | ---------------------- |
+| エージェント                  | レビュー観点       | 選定理由               |
+| ----------------------------- | ------------------ | ---------------------- |
 | .claude/agents/sec-auditor.md | 脆弱性解消確認     | pnpm audit結果の検証   |
 | .claude/agents/dep-mgr.md     | 依存関係整合性     | バージョン互換性の確認 |
 | .claude/agents/devops-eng.md  | ビルドパイプライン | CI/CDへの影響確認      |
