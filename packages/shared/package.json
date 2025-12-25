@@ -65,9 +65,13 @@
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx src/db/migrate.ts",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@libsql/client": "^0.15.15",
     "@supabase/supabase-js": "^2.86.2",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.39.0",
@@ -76,8 +80,10 @@
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
+    "@vitest/coverage-v8": "^2.1.9",
     "better-sqlite3": "^12.5.0",
     "drizzle-kit": "^0.31.8",
+    "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
   }
