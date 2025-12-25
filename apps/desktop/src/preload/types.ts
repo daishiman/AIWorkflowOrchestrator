@@ -140,6 +140,7 @@ export interface AIChatRequest {
   message: string;
   conversationId?: string;
   ragEnabled?: boolean;
+  systemPrompt?: string;
 }
 
 export interface AIChatResponse {

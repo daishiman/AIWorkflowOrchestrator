@@ -13,7 +13,7 @@
 | ステータス       | 未実施                               |
 | 発見元           | ユーザー要望                         |
 | 発見日           | 2025-12-11                           |
-| 発見エージェント | .claude/agents/product-manager.md                     |
+| 発見エージェント | .claude/agents/product-manager.md    |
 
 ---
 

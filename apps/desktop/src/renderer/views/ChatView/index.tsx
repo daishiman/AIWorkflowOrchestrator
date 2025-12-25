@@ -56,8 +56,8 @@ export const ChatView: React.FC<ChatViewProps> = ({ className }) => {
   // ----------------------------------------
   // Store Actions
   // ----------------------------------------
-  const addMessage = useAppStore((state) => state.addMessage);
   const setChatInput = useAppStore((state) => state.setChatInput);
+  const sendMessage = useAppStore((state) => state.sendMessage);
 
   // ----------------------------------------
   // Local State
@@ -72,26 +72,14 @@ export const ChatView: React.FC<ChatViewProps> = ({ className }) => {
   // ----------------------------------------
   // Callbacks - メッセージ送信
   // ----------------------------------------
-  const createAndSendMessage = useCallback(
-    (content: string) => {
-      const newMessage = {
-        id: Date.now().toString(),
-        role: "user" as const,
-        content,
-        timestamp: new Date(),
-      };
-      addMessage(newMessage);
-      setChatInput("");
-    },
-    [addMessage, setChatInput],
-  );
-
-  const handleSend = useCallback(() => {
+  const handleSend = useCallback(async () => {
     const trimmedInput = chatInput.trim();
     if (trimmedInput && !isSending) {
-      createAndSendMessage(chatInput);
+      // Send message to LLM with system prompt
+      await sendMessage(chatInput);
+      setChatInput("");
     }
-  }, [chatInput, isSending, createAndSendMessage]);
+  }, [chatInput, isSending, sendMessage, setChatInput]);
 
   const handleInputChange = useCallback(
     (value: string) => {
