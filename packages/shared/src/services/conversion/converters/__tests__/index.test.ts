@@ -14,6 +14,7 @@ import {
   MarkdownConverter,
   CodeConverter,
   YAMLConverter,
+  PlainTextConverter,
 } from "../index";
 import { globalConverterRegistry } from "../../converter-registry";
 
@@ -35,7 +36,7 @@ describe("Converter Registration", () => {
       const result = registerDefaultConverters();
 
       expect(result.success).toBe(true);
-      expect(result.registeredCount).toBe(6);
+      expect(result.registeredCount).toBe(7);
       expect(result.skipped).toBe(false);
     });
 
@@ -87,7 +88,7 @@ describe("Converter Registration", () => {
 
       expect(firstResult.success).toBe(true);
       expect(firstResult.skipped).toBe(false);
-      expect(firstResult.registeredCount).toBe(6);
+      expect(firstResult.registeredCount).toBe(7);
 
       expect(secondResult.success).toBe(true);
       expect(secondResult.skipped).toBe(true);
@@ -155,6 +156,12 @@ describe("Converter Registration", () => {
       expect(YAMLConverter).toBeDefined();
       const converter = new YAMLConverter();
       expect(converter.id).toBe("yaml-converter");
+    });
+
+    it("should export PlainTextConverter class", () => {
+      expect(PlainTextConverter).toBeDefined();
+      const converter = new PlainTextConverter();
+      expect(converter.id).toBe("plain-text-converter");
     });
   });
 });
