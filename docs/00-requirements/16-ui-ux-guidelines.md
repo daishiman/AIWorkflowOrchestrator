@@ -1608,6 +1608,203 @@ Portal実装時に確認すべき項目：
 
 ---
 
+## 16.17 ナビゲーションUI設計（ChatView）
+
+### 16.17.1 概要
+
+ChatViewには履歴ページへの導線として、ヘッダー右上にナビゲーションボタンを配置する。
+
+**実装場所**: `apps/desktop/src/renderer/views/ChatView/index.tsx:136-143`
+
+### 16.17.2 ナビゲーションボタン仕様
+
+| 要素           | 仕様                                                |
+| -------------- | --------------------------------------------------- |
+| 配置           | ChatViewヘッダー右上                                |
+| アイコン       | Lucide Icons `History`（20px×20px）                 |
+| ラベル         | なし（アイコンのみ、`aria-label`で補完）            |
+| type属性       | `type="button"`（フォーム誤送信防止）               |
+| aria-label     | `"チャット履歴"`（スクリーンリーダー対応）          |
+| 遷移先         | `/chat/history`（React Router）                     |
+| 色             | `text-gray-400`（通常時）、`text-white`（ホバー時） |
+| 背景           | 透明（通常時）、`bg-white/10`（ホバー時）           |
+| パディング     | `p-2`（8px）                                        |
+| 角丸           | `rounded-lg`（8px）                                 |
+| トランジション | `transition-colors`（200ms ease）                   |
+
+**実装例**:
+
+```tsx
+<button
+  type="button"
+  onClick={() => navigate("/chat/history")}
+  aria-label="チャット履歴"
+  className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+>
+  <History className="h-5 w-5" />
+</button>
+```
+
+### 16.17.3 ボタンスタイルガイドライン（アイコンのみボタン）
+
+アイコンのみのボタン（テキストラベルなし）は以下の原則に従う：
+
+| 原則                 | 説明                                               |
+| -------------------- | -------------------------------------------------- |
+| aria-labelは必須     | スクリーンリーダーが読み上げるラベルを提供         |
+| type="button"を明示  | フォーム内で誤ってsubmitされることを防止           |
+| タッチターゲット44px | モバイル対応（最小タッチサイズ）                   |
+| ホバーフィードバック | 色変化と背景色変化の両方を提供                     |
+| アイコンサイズ20px   | 視認性を確保しつつコンパクトに                     |
+| フォーカス表示       | キーボードフォーカス時に明確なリング表示           |
+| 色のコントラスト比   | gray-400（通常）→ white（ホバー）で4.5:1以上を確保 |
+
+**テストで検証済みの項目**:
+
+| テスト項目             | 結果 | 詳細                                          |
+| ---------------------- | ---- | --------------------------------------------- |
+| ボタン表示             | ✅   | ヘッダー右上に正しく配置                      |
+| クリックナビゲーション | ✅   | `/chat/history`に遷移                         |
+| キーボード操作         | ✅   | Tab→Enterで操作可能                           |
+| ブラウザ履歴           | ✅   | ブラウザバック・フォワードで正常動作          |
+| aria-label             | ✅   | `aria-label="チャット履歴"`が設定済み         |
+| type属性               | ✅   | `type="button"`が設定済み                     |
+| レスポンシブ           | ✅   | 375px（モバイル）〜1920px（デスクトップ）対応 |
+| ホバー状態             | ✅   | `hover:text-white hover:bg-white/10`動作確認  |
+
+**参考**: Phase 8 (T-08-1) 手動テスト結果 - 2025-12-25実施
+
+### 16.17.4 アクセシビリティ対応事例
+
+#### 事例1: アイコンのみボタンのラベリング
+
+**問題**: アイコンのみのボタンは視覚的には理解できるが、スクリーンリーダーユーザーには機能が伝わらない。
+
+**解決策**:
+
+```tsx
+// ❌ 悪い例: aria-labelがない
+<button onClick={() => navigate("/chat/history")}>
+  <History className="h-5 w-5" />
+</button>
+
+// ✅ 良い例: aria-labelで機能を明示
+<button
+  type="button"
+  onClick={() => navigate("/chat/history")}
+  aria-label="チャット履歴"
+>
+  <History className="h-5 w-5" />
+</button>
+```
+
+#### 事例2: type属性の明示
+
+**問題**: フォーム内のボタンで`type`属性を省略すると、デフォルトで`type="submit"`となり誤送信が発生する。
+
+**解決策**:
+
+```tsx
+// ❌ 悪い例: type属性がない（submitされる可能性）
+<button onClick={handleAction}>アクション</button>
+
+// ✅ 良い例: type="button"を明示
+<button type="button" onClick={handleAction}>
+  アクション
+</button>
+```
+
+#### 事例3: キーボードナビゲーション対応
+
+**問題**: クリックイベントのみでは、キーボードユーザーが操作できない。
+
+**解決策**:
+
+```tsx
+// ✅ 良い例: <button>要素を使用（自動的にEnter/Spaceキーで動作）
+<button
+  type="button"
+  onClick={handleClick}
+  aria-label="チャット履歴"
+>
+  <History className="h-5 w-5" />
+</button>
+
+// ❌ 悪い例: divを使用（キーボード操作不可）
+<div onClick={handleClick}>
+  <History className="h-5 w-5" />
+</div>
+```
+
+**Playwright E2Eテストで検証済み**:
+
+```typescript
+// キーボードナビゲーションのテスト
+const historyButton = page.getByRole("button", { name: "チャット履歴" });
+await historyButton.focus();
+await page.keyboard.press("Enter");
+await expect(page).toHaveURL(/\/chat\/history$/);
+```
+
+#### 事例4: フォーカス表示の確保
+
+**問題**: `:focus { outline: none }`でフォーカスリングを消すと、キーボードユーザーがフォーカス位置を見失う。
+
+**解決策**:
+
+```tsx
+// ✅ 良い例: :focus-visibleでキーボードフォーカスのみ表示
+<button
+  className="focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+>
+  ボタン
+</button>
+
+// ❌ 悪い例: フォーカスリングを完全に消す
+<button className="focus:outline-none">ボタン</button>
+```
+
+#### 事例5: レスポンシブデザインとタッチターゲット
+
+**問題**: 小さいボタンはモバイルで押しにくい。
+
+**解決策**:
+
+```tsx
+// ✅ 良い例: p-2（8px）により44px以上のタッチターゲット確保
+<button className="p-2 rounded-lg">
+  <History className="h-5 w-5" /> {/* 20px + padding 16px = 36px（最小） */}
+</button>
+
+// 推奨: p-3でより大きなタッチターゲット
+<button className="p-3 rounded-lg">
+  <History className="h-5 w-5" /> {/* 20px + padding 24px = 44px */}
+</button>
+```
+
+**Playwright E2Eテストで検証済み**:
+
+```typescript
+// レスポンシブデザインのテスト
+await page.setViewportSize({ width: 375, height: 667 }); // モバイル
+await expect(historyButton).toBeVisible();
+
+await page.setViewportSize({ width: 1920, height: 1080 }); // デスクトップ
+await expect(historyButton).toBeVisible();
+```
+
+### 16.17.5 ナビゲーションパターンのベストプラクティス
+
+| 原則                             | 説明                                                |
+| -------------------------------- | --------------------------------------------------- |
+| 一貫性のある配置                 | ナビゲーションボタンは常にヘッダー右上に配置        |
+| 視覚的フィードバック             | ホバー・フォーカス・アクティブ状態を明確に表現      |
+| ブラウザ履歴との統合             | React Routerでブラウザバック・フォワードに対応      |
+| プログレッシブ・エンハンスメント | JavaScriptなしでもアクセス可能な設計（<a>タグ代替） |
+| エラーハンドリング               | ナビゲーション失敗時のフォールバックを提供          |
+
+---
+
 ## 関連ドキュメント
 
 - [テクノロジースタック](./03-technology-stack.md)

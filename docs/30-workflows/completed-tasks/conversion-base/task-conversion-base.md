@@ -196,7 +196,7 @@ graph TD
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:define-requirements --scope "ファイル変換基盤" --output "docs/30-workflows/conversion-base/requirements-foundation.md"
+/ai:gather-requirements --scope "ファイル変換基盤" --output "docs/30-workflows/conversion-base/requirements-foundation.md"
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -209,8 +209,8 @@ graph TD
 
 #### 活用スキル
 
-| スキル名                               | 活用方法                           |
-| -------------------------------------- | ---------------------------------- |
+| スキル名                                                       | 活用方法                           |
+| -------------------------------------------------------------- | ---------------------------------- |
 | .claude/skills/functional-non-functional-requirements/SKILL.md | 機能要件と非機能要件の体系的な整理 |
 | .claude/skills/acceptance-criteria-writing/SKILL.md            | 受け入れ基準の明確化               |
 
@@ -255,7 +255,7 @@ T-00-1で定義した全体要件を、具体的なインターフェース仕�
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:define-interface-spec --target "IConverter, ConverterInput, ConverterOutput" --output "docs/30-workflows/conversion-base/requirements-interface.md"
+/ai:write-spec --target "IConverter, ConverterInput, ConverterOutput" --output "docs/30-workflows/conversion-base/requirements-interface.md"
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -268,8 +268,8 @@ T-00-1で定義した全体要件を、具体的なインターフェース仕�
 
 #### 活用スキル
 
-| スキル名              | 活用方法                           |
-| --------------------- | ---------------------------------- |
+| スキル名                                      | 活用方法                           |
+| --------------------------------------------- | ---------------------------------- |
 | .claude/skills/interface-segregation/SKILL.md | インターフェース分離の原則適用     |
 | .claude/skills/type-safety-patterns/SKILL.md  | 型安全性を確保する設計パターン適用 |
 
@@ -316,7 +316,7 @@ types.tsに含まれる全型定義の詳細設計
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:design-types --module "conversion" --output "docs/30-workflows/conversion-base/design-types.md"
+# # /ai:design-types (手動設計推奨) (手動設計推奨) --module "conversion" --output "docs/30-workflows/conversion-base/design-types.md"
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -329,8 +329,8 @@ types.tsに含まれる全型定義の詳細設計
 
 #### 活用スキル
 
-| スキル名             | 活用方法                              |
-| -------------------- | ------------------------------------- |
+| スキル名                                     | 活用方法                              |
+| -------------------------------------------- | ------------------------------------- |
 | .claude/skills/type-safety-patterns/SKILL.md | 型安全性確保のパターン適用            |
 | .claude/skills/zod-validation/SKILL.md       | Zodによるランタイムバリデーション設計 |
 
@@ -375,7 +375,7 @@ BaseConverterクラスの構造設計
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:design-abstract-class --name "BaseConverter" --output "docs/30-workflows/conversion-base/design-base-converter.md"
+# # /ai:design-abstract-class (手動設計推奨) (手動設計推奨) --name "BaseConverter" --output "docs/30-workflows/conversion-base/design-base-converter.md"
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -388,8 +388,8 @@ BaseConverterクラスの構造設計
 
 #### 活用スキル
 
-| スキル名                      | 活用方法                           |
-| ----------------------------- | ---------------------------------- |
+| スキル名                                              | 活用方法                           |
+| ----------------------------------------------------- | ---------------------------------- |
 | .claude/skills/clean-architecture-principles/SKILL.md | クリーンアーキテクチャ原則の適用   |
 | .claude/skills/solid-principles/SKILL.md              | SOLID原則（特にOCP、LSP）の適用    |
 | .claude/skills/factory-patterns/SKILL.md              | テンプレートメソッドパターンの適用 |
@@ -435,7 +435,7 @@ ConverterRegistryクラスの構造設計
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:design-registry --name "ConverterRegistry" --output "docs/30-workflows/conversion-base/design-registry.md"
+# # /ai:design-registry (手動設計推奨) (手動設計推奨) --name "ConverterRegistry" --output "docs/30-workflows/conversion-base/design-registry.md"
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -448,8 +448,8 @@ ConverterRegistryクラスの構造設計
 
 #### 活用スキル
 
-| スキル名           | 活用方法                 |
-| ------------------ | ------------------------ |
+| スキル名                                   | 活用方法                 |
+| ------------------------------------------ | ------------------------ |
 | .claude/skills/repository-pattern/SKILL.md | リポジトリパターンの適用 |
 | .claude/skills/factory-patterns/SKILL.md   | ファクトリパターンの適用 |
 
@@ -494,7 +494,7 @@ ConversionServiceクラスの構造設計
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:design-service --name "ConversionService" --output "docs/30-workflows/conversion-base/design-service.md"
+# # /ai:design-service (手動設計推奨) (手動設計推奨) --name "ConversionService" --output "docs/30-workflows/conversion-base/design-service.md"
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -507,8 +507,8 @@ ConversionServiceクラスの構造設計
 
 #### 活用スキル
 
-| スキル名                      | 活用方法                         |
-| ----------------------------- | -------------------------------- |
+| スキル名                                              | 活用方法                         |
+| ----------------------------------------------------- | -------------------------------- |
 | .claude/skills/clean-architecture-principles/SKILL.md | アプリケーションサービス層の設計 |
 | .claude/skills/transaction-management/SKILL.md        | タイムアウト・同時実行制御の設計 |
 
@@ -548,8 +548,8 @@ ConversionServiceクラスの構造設計
 
 #### レビュー参加エージェント
 
-| エージェント    | レビュー観点         | 選定理由                             |
-| --------------- | -------------------- | ------------------------------------ |
+| エージェント                     | レビュー観点         | 選定理由                             |
+| -------------------------------- | -------------------- | ------------------------------------ |
 | .claude/agents/arch-police.md    | アーキテクチャ整合性 | クリーンアーキテクチャ原則の遵守確認 |
 | .claude/agents/domain-modeler.md | ドメインモデル妥当性 | 変換ドメインの概念整合性確認         |
 | .claude/agents/req-analyst.md    | 要件充足性           | 要件漏れ・矛盾の確認                 |
@@ -640,8 +640,8 @@ TypeScriptの型システムを活用し、コンパイル時に型エラーが�
 
 #### 活用スキル
 
-| スキル名             | 活用方法           |
-| -------------------- | ------------------ |
+| スキル名                                     | 活用方法           |
+| -------------------------------------------- | ------------------ |
 | .claude/skills/tdd-principles/SKILL.md       | TDDサイクルの実践  |
 | .claude/skills/test-data-management/SKILL.md | テストデータの設計 |
 
@@ -707,8 +707,8 @@ BaseConverterクラスのテスト作成
 
 #### 活用スキル
 
-| スキル名                | 活用方法             |
-| ----------------------- | -------------------- |
+| スキル名                                        | 活用方法             |
+| ----------------------------------------------- | -------------------- |
 | .claude/skills/tdd-principles/SKILL.md          | TDDサイクルの実践    |
 | .claude/skills/test-doubles/SKILL.md            | モック・スタブの活用 |
 | .claude/skills/boundary-value-analysis/SKILL.md | 境界値テスト設計     |
@@ -775,8 +775,8 @@ ConverterRegistryクラスのテスト作成
 
 #### 活用スキル
 
-| スキル名             | 活用方法          |
-| -------------------- | ----------------- |
+| スキル名                                     | 活用方法          |
+| -------------------------------------------- | ----------------- |
 | .claude/skills/tdd-principles/SKILL.md       | TDDサイクルの実践 |
 | .claude/skills/test-data-management/SKILL.md | テストデータ管理  |
 
@@ -842,8 +842,8 @@ ConversionServiceクラスのテスト作成
 
 #### 活用スキル
 
-| スキル名                | 活用方法                               |
-| ----------------------- | -------------------------------------- |
+| スキル名                                        | 活用方法                               |
+| ----------------------------------------------- | -------------------------------------- |
 | .claude/skills/tdd-principles/SKILL.md          | TDDサイクルの実践                      |
 | .claude/skills/test-doubles/SKILL.md            | モック・スタブの活用                   |
 | .claude/skills/boundary-value-analysis/SKILL.md | タイムアウト・同時実行数の境界値テスト |
@@ -910,8 +910,8 @@ MetadataExtractorのテスト作成
 
 #### 活用スキル
 
-| スキル名                | 活用方法                           |
-| ----------------------- | ---------------------------------- |
+| スキル名                                        | 活用方法                           |
+| ----------------------------------------------- | ---------------------------------- |
 | .claude/skills/tdd-principles/SKILL.md          | TDDサイクルの実践                  |
 | .claude/skills/boundary-value-analysis/SKILL.md | テキスト長・特殊文字の境界値テスト |
 
@@ -966,7 +966,7 @@ types.tsの実装
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:implement --target "packages/shared/src/services/conversion/types.ts" --design "docs/30-workflows/conversion-base/design-types.md"
+/ai:implement-business-logic --target "packages/shared/src/services/conversion/types.ts" --design "docs/30-workflows/conversion-base/design-types.md"
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -979,8 +979,8 @@ types.tsの実装
 
 #### 活用スキル
 
-| スキル名             | 活用方法                   |
-| -------------------- | -------------------------- |
+| スキル名                                     | 活用方法                   |
+| -------------------------------------------- | -------------------------- |
 | .claude/skills/type-safety-patterns/SKILL.md | 型安全性確保のパターン実装 |
 
 - **参照**: `.claude/skills/skill_list.md`
@@ -1032,7 +1032,7 @@ base-converter.tsの実装
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:implement --target "packages/shared/src/services/conversion/base-converter.ts" --design "docs/30-workflows/conversion-base/design-base-converter.md"
+/ai:implement-business-logic --target "packages/shared/src/services/conversion/base-converter.ts" --design "docs/30-workflows/conversion-base/design-base-converter.md"
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -1045,8 +1045,8 @@ base-converter.tsの実装
 
 #### 活用スキル
 
-| スキル名                      | 活用方法                           |
-| ----------------------------- | ---------------------------------- |
+| スキル名                                              | 活用方法                           |
+| ----------------------------------------------------- | ---------------------------------- |
 | .claude/skills/clean-architecture-principles/SKILL.md | クリーンアーキテクチャ原則の実装   |
 | .claude/skills/solid-principles/SKILL.md              | SOLID原則の実装                    |
 | .claude/skills/factory-patterns/SKILL.md              | テンプレートメソッドパターンの実装 |
@@ -1100,7 +1100,7 @@ converter-registry.tsの実装
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:implement --target "packages/shared/src/services/conversion/converter-registry.ts" --design "docs/30-workflows/conversion-base/design-registry.md"
+/ai:implement-business-logic --target "packages/shared/src/services/conversion/converter-registry.ts" --design "docs/30-workflows/conversion-base/design-registry.md"
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -1113,8 +1113,8 @@ converter-registry.tsの実装
 
 #### 活用スキル
 
-| スキル名           | 活用方法                 |
-| ------------------ | ------------------------ |
+| スキル名                                   | 活用方法                 |
+| ------------------------------------------ | ------------------------ |
 | .claude/skills/repository-pattern/SKILL.md | リポジトリパターンの実装 |
 | .claude/skills/factory-patterns/SKILL.md   | ファクトリパターンの実装 |
 
@@ -1167,7 +1167,7 @@ conversion-service.tsの実装
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:implement --target "packages/shared/src/services/conversion/conversion-service.ts" --design "docs/30-workflows/conversion-base/design-service.md"
+/ai:implement-business-logic --target "packages/shared/src/services/conversion/conversion-service.ts" --design "docs/30-workflows/conversion-base/design-service.md"
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -1180,8 +1180,8 @@ conversion-service.tsの実装
 
 #### 活用スキル
 
-| スキル名                      | 活用方法                         |
-| ----------------------------- | -------------------------------- |
+| スキル名                                              | 活用方法                         |
+| ----------------------------------------------------- | -------------------------------- |
 | .claude/skills/clean-architecture-principles/SKILL.md | サービスレイヤーの実装           |
 | .claude/skills/transaction-management/SKILL.md        | タイムアウト・同時実行制御の実装 |
 
@@ -1234,7 +1234,7 @@ metadata-extractor.tsの実装
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:implement --target "packages/shared/src/services/conversion/metadata-extractor.ts"
+/ai:implement-business-logic --target "packages/shared/src/services/conversion/metadata-extractor.ts"
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -1247,8 +1247,8 @@ metadata-extractor.tsの実装
 
 #### 活用スキル
 
-| スキル名             | 活用方法                 |
-| -------------------- | ------------------------ |
+| スキル名                                     | 活用方法                 |
+| -------------------------------------------- | ------------------------ |
 | .claude/skills/clean-code-practices/SKILL.md | クリーンコード原則の実装 |
 
 - **参照**: `.claude/skills/skill_list.md`
@@ -1300,7 +1300,7 @@ index.tsの実装
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:create-barrel-export --target "packages/shared/src/services/conversion/"
+# /ai:create-barrel-export (手動作成推奨) --target "packages/shared/src/services/conversion/"
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -1313,8 +1313,8 @@ index.tsの実装
 
 #### 活用スキル
 
-| スキル名                      | 活用方法             |
-| ----------------------------- | -------------------- |
+| スキル名                                              | 活用方法             |
+| ----------------------------------------------------- | -------------------- |
 | .claude/skills/clean-architecture-principles/SKILL.md | モジュール境界の整理 |
 
 - **参照**: `.claude/skills/skill_list.md`
@@ -1380,8 +1380,8 @@ pnpm --filter @repo/shared test
 
 #### 活用スキル
 
-| スキル名               | 活用方法                       |
-| ---------------------- | ------------------------------ |
+| スキル名                                       | 活用方法                       |
+| ---------------------------------------------- | ------------------------------ |
 | .claude/skills/refactoring-techniques/SKILL.md | リファクタリングパターンの適用 |
 | .claude/skills/clean-code-practices/SKILL.md   | クリーンコード原則の適用       |
 | .claude/skills/code-smell-detection/SKILL.md   | コードスメルの検出と除去       |
@@ -1437,7 +1437,7 @@ pnpm --filter @repo/shared test
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:quality-check --target "packages/shared/src/services/conversion/" --report "docs/30-workflows/conversion-base/quality-report.md"
+/ai:code-review-complete packages/shared/src/services/conversion/
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -1450,9 +1450,9 @@ pnpm --filter @repo/shared test
 
 #### 活用スキル
 
-| スキル名             | 活用方法                   |
-| -------------------- | -------------------------- |
-| code-quality         | コード品質メトリクスの測定 |
+| スキル名                                     | 活用方法                   |
+| -------------------------------------------- | -------------------------- |
+| code-quality                                 | コード品質メトリクスの測定 |
 | .claude/skills/test-data-management/SKILL.md | テストカバレッジの測定     |
 
 - **参照**: `.claude/skills/skill_list.md`
@@ -1515,8 +1515,8 @@ Phase 6の自動検証では検出できない設計判断やベストプラク�
 
 #### レビュー参加エージェント
 
-| エージェント  | レビュー観点       | 選定理由                                   |
-| ------------- | ------------------ | ------------------------------------------ |
+| エージェント                   | レビュー観点       | 選定理由                                   |
+| ------------------------------ | ------------------ | ------------------------------------------ |
 | .claude/agents/code-quality.md | コード品質         | コーディング規約・可読性・保守性の確認     |
 | .claude/agents/arch-police.md  | アーキテクチャ遵守 | クリーンアーキテクチャ原則の遵守確認       |
 | .claude/agents/unit-tester.md  | テスト品質         | テストカバレッジ・テストケースの妥当性確認 |
@@ -1734,7 +1734,7 @@ Phase 6の自動検証では検出できない設計判断やベストプラク�
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:create-task-spec --from-review "docs/30-workflows/conversion-base/final-review.md"
+# /ai:create-task-spec (手動作成推奨) --from-review "docs/30-workflows/conversion-base/final-review.md"
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -1747,8 +1747,8 @@ Phase 6の自動検証では検出できない設計判断やベストプラク�
 
 ##### 活用スキル
 
-| スキル名                    | 活用方法         |
-| --------------------------- | ---------------- |
+| スキル名                                            | 活用方法         |
+| --------------------------------------------------- | ---------------- |
 | .claude/skills/acceptance-criteria-writing/SKILL.md | 完了条件の明確化 |
 
 - **参照**: `.claude/skills/skill_list.md`

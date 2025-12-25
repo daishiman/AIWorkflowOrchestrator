@@ -13,7 +13,7 @@
 | ステータス       | 未実施                                                   |
 | 発見元           | Phase 7 - 最終レビューゲート                             |
 | 発見日           | 2024-12-23                                               |
-| 発見エージェント | .claude/agents/arch-police.md                                             |
+| 発見エージェント | .claude/agents/arch-police.md                            |
 
 ---
 
@@ -284,7 +284,7 @@ Clean Architecture準拠の詳細要件と移行戦略を定義する。
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:define-requirements architecture-refactoring
+/ai:gather-requirements architecture-refactoring
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -297,8 +297,8 @@ Clean Architecture準拠の詳細要件と移行戦略を定義する。
 
 ##### 活用スキル
 
-| スキル名                      | 活用方法               |
-| ----------------------------- | ---------------------- |
+| スキル名                                              | 活用方法               |
+| ----------------------------------------------------- | ---------------------- |
 | .claude/skills/clean-architecture-principles/SKILL.md | レイヤー分離要件定義   |
 | .claude/skills/domain-driven-design/SKILL.md          | ドメインモデル要件定義 |
 | .claude/skills/solid-principles/SKILL.md              | SOLID準拠基準設定      |
@@ -351,11 +351,11 @@ Clean Architecture準拠の新しいディレクトリ構造・クラス設計�
 
 ##### 活用スキル
 
-| スキル名                      | 活用方法           |
-| ----------------------------- | ------------------ |
+| スキル名                                              | 活用方法           |
+| ----------------------------------------------------- | ------------------ |
 | .claude/skills/clean-architecture-principles/SKILL.md | レイヤー分離設計   |
 | .claude/skills/domain-driven-design/SKILL.md          | ドメインモデル設計 |
-| dependency-inversion          | DIPパターン適用    |
+| dependency-inversion                                  | DIPパターン適用    |
 | .claude/skills/repository-pattern/SKILL.md            | リポジトリ抽象化   |
 
 - **参照**: `.claude/skills/skill_list.md`
@@ -388,8 +388,8 @@ Clean Architecture準拠の新しいディレクトリ構造・クラス設計�
 
 ##### レビュー参加エージェント
 
-| エージェント    | レビュー観点           | 選定理由                     |
-| --------------- | ---------------------- | ---------------------------- |
+| エージェント                     | レビュー観点           | 選定理由                     |
+| -------------------------------- | ---------------------- | ---------------------------- |
 | .claude/agents/arch-police.md    | Clean Architecture準拠 | アーキテクチャ原則の専門家   |
 | .claude/agents/domain-modeler.md | ドメインモデル妥当性   | DDD実践の専門家              |
 | .claude/agents/code-quality.md   | 実装可能性評価         | リファクタリング実践の専門家 |
@@ -456,8 +456,8 @@ Clean Architecture準拠の新しいディレクトリ構造・クラス設計�
 
 ##### 活用スキル
 
-| スキル名                | 活用方法           |
-| ----------------------- | ------------------ |
+| スキル名                                        | 活用方法           |
+| ----------------------------------------------- | ------------------ |
 | .claude/skills/tdd-principles/SKILL.md          | Red-Green-Refactor |
 | .claude/skills/test-doubles/SKILL.md            | モック・スタブ設計 |
 | .claude/skills/boundary-value-analysis/SKILL.md | 境界値テスト       |
@@ -507,7 +507,7 @@ Drizzle依存を除去し、純粋なドメインエンティティを実装す�
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:implement domain-entities
+/ai:implement-business-logic domain-entities
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -520,11 +520,11 @@ Drizzle依存を除去し、純粋なドメインエンティティを実装す�
 
 ##### 活用スキル
 
-| スキル名              | 活用方法                   |
-| --------------------- | -------------------------- |
+| スキル名                                      | 活用方法                   |
+| --------------------------------------------- | -------------------------- |
 | .claude/skills/domain-driven-design/SKILL.md  | Rich Domain Model実装      |
 | .claude/skills/value-object-patterns/SKILL.md | 値オブジェクト実装         |
-| result-type-pattern   | Result型エラーハンドリング |
+| result-type-pattern                           | Result型エラーハンドリング |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -570,7 +570,7 @@ ChatHistoryServiceを単一責務のUse Caseに分割する。
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:implement use-cases
+/ai:implement-business-logic use-cases
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -583,11 +583,11 @@ ChatHistoryServiceを単一責務のUse Caseに分割する。
 
 ##### 活用スキル
 
-| スキル名                      | 活用方法         |
-| ----------------------------- | ---------------- |
+| スキル名                                              | 活用方法         |
+| ----------------------------------------------------- | ---------------- |
 | .claude/skills/clean-architecture-principles/SKILL.md | Use Case層の実装 |
-| command-query-separation      | CQRSパターン適用 |
-| railway-oriented-programming  | Result型での実装 |
+| command-query-separation                              | CQRSパターン適用 |
+| railway-oriented-programming                          | Result型での実装 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -629,7 +629,7 @@ pnpm --filter @repo/shared test:run use-cases
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:implement infrastructure-layer
+/ai:implement-business-logic infrastructure-layer
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -642,10 +642,10 @@ pnpm --filter @repo/shared test:run use-cases
 
 ##### 活用スキル
 
-| スキル名                      | 活用方法                |
-| ----------------------------- | ----------------------- |
+| スキル名                                              | 活用方法                |
+| ----------------------------------------------------- | ----------------------- |
 | .claude/skills/repository-pattern/SKILL.md            | リポジトリ抽象化        |
-| mapper-pattern                | ドメイン-永続化マッパー |
+| mapper-pattern                                        | ドメイン-永続化マッパー |
 | .claude/skills/clean-architecture-principles/SKILL.md | レイヤー分離            |
 
 - **参照**: `.claude/skills/skill_list.md`
@@ -681,7 +681,7 @@ UI層の直接的なサービス依存を解消し、DIパターンを実装す�
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:implement dependency-injection
+/ai:implement-business-logic dependency-injection
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -694,11 +694,11 @@ UI層の直接的なサービス依存を解消し、DIパターンを実装す�
 
 ##### 活用スキル
 
-| スキル名              | 活用方法           |
-| --------------------- | ------------------ |
+| スキル名                                      | 活用方法           |
+| --------------------------------------------- | ------------------ |
 | .claude/skills/custom-hooks-patterns/SKILL.md | カスタムフック設計 |
-| context-api-patterns  | React Context DI   |
-| dependency-injection  | DIパターン適用     |
+| context-api-patterns                          | React Context DI   |
+| dependency-injection                          | DIパターン適用     |
 
 - **参照**: `.claude/skills/skill_list.md`
 

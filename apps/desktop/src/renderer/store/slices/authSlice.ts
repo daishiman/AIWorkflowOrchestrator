@@ -148,6 +148,7 @@ export interface AuthSlice {
   deleteAccount: (confirmEmail: string) => Promise<boolean>;
   setAuthError: (error: string | null) => void;
   clearAuth: () => void;
+  setDevModeAuth: (user: AuthUser) => void;
 }
 
 export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
@@ -686,6 +687,18 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
       sessionExpiresAt: null, // トークンは含まない
       profile: null,
       linkedProviders: [],
+      authError: null,
+    });
+  },
+
+  setDevModeAuth: (user: AuthUser) => {
+    // 開発モード専用: モックユーザーで認証状態を設定
+    set({
+      isAuthenticated: true,
+      authUser: user,
+      sessionExpiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24時間後
+      isLoading: false,
+      isOffline: false,
       authError: null,
     });
   },

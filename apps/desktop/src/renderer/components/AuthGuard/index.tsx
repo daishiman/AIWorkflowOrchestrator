@@ -1,8 +1,15 @@
 import type { FC } from "react";
+import { useEffect } from "react";
 import { AuthView } from "../../views/AuthView";
 import { LoadingScreen } from "./LoadingScreen";
 import { useAuthState } from "./hooks/useAuthState";
 import type { AuthGuardProps } from "./types";
+import {
+  isDevMode,
+  getMockAuthData,
+  logDevModeStatus,
+} from "../../utils/devMockAuth";
+import { useAppStore } from "../../store";
 
 /**
  * 認証ガードコンポーネント
@@ -11,6 +18,8 @@ import type { AuthGuardProps } from "./types";
  * - checking: ローディング画面（またはカスタムfallback）を表示
  * - authenticated: 子コンポーネントを表示
  * - unauthenticated: ログイン画面（AuthView）を表示
+ *
+ * 開発環境（E2E、Worktree等）では自動的にモックユーザーでログインします。
  *
  * @component
  * @example
@@ -28,6 +37,20 @@ import type { AuthGuardProps } from "./types";
  */
 export const AuthGuard: FC<AuthGuardProps> = ({ children, fallback }) => {
   const authState = useAuthState();
+  const setDevModeAuth = useAppStore((state) => state.setDevModeAuth);
+
+  // 開発モードでの自動ログイン
+  useEffect(() => {
+    if (isDevMode() && authState === "unauthenticated") {
+      const mockData = getMockAuthData();
+
+      console.log("[AuthGuard] 🔧 Development mode: auto-login with mock user");
+      logDevModeStatus();
+
+      // モックユーザーで認証状態を設定
+      setDevModeAuth(mockData.user);
+    }
+  }, [authState, setDevModeAuth]);
 
   switch (authState) {
     case "checking":
@@ -37,6 +60,10 @@ export const AuthGuard: FC<AuthGuardProps> = ({ children, fallback }) => {
       return children;
 
     case "unauthenticated":
+      // 開発モードの場合、ローディング画面を表示（useEffectで自動ログイン中）
+      if (isDevMode()) {
+        return fallback ?? <LoadingScreen />;
+      }
       return <AuthView />;
   }
 };

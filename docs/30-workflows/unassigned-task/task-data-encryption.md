@@ -13,7 +13,7 @@
 | ステータス       | 未実施                              |
 | 発見元           | Phase 6 - セキュリティ監査          |
 | 発見日           | 2025-12-23                          |
-| 発見エージェント | .claude/agents/sec-auditor.md                        |
+| 発見エージェント | .claude/agents/sec-auditor.md       |
 | バージョン       | 1.0.0                               |
 | 最終更新         | 2025-12-23                          |
 | 旧タスクID       | SECURITY-002（Phase 9-2で統一命名） |
@@ -188,7 +188,7 @@ OWASP A02対策として、適切な暗号化要件を定義する必要があ�
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:define-requirements security-encryption
+/ai:gather-requirements security-encryption
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -201,8 +201,8 @@ OWASP A02対策として、適切な暗号化要件を定義する必要があ�
 
 ##### 活用スキル
 
-| スキル名                      | 活用方法                   |
-| ----------------------------- | -------------------------- |
+| スキル名                                              | 活用方法                   |
+| ----------------------------------------------------- | -------------------------- |
 | .claude/skills/cryptographic-practices/SKILL.md       | 暗号化アルゴリズム選定     |
 | .claude/skills/security-configuration-review/SKILL.md | キー管理ベストプラクティス |
 
@@ -262,11 +262,11 @@ OWASP A02対策として、適切な暗号化要件を定義する必要があ�
 
 ##### 活用スキル
 
-| スキル名                | 活用方法                |
-| ----------------------- | ----------------------- |
+| スキル名                                        | 活用方法                |
+| ----------------------------------------------- | ----------------------- |
 | .claude/skills/cryptographic-practices/SKILL.md | AES-256-GCM、PBKDF2設計 |
 | .claude/skills/architectural-patterns/SKILL.md  | 暗号化レイヤーの設計    |
-| dependency-management   | SQLCipherライセンス評価 |
+| dependency-management                           | SQLCipherライセンス評価 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -304,8 +304,8 @@ OWASP A02対策として、適切な暗号化要件を定義する必要があ�
 
 ##### レビュー参加エージェント
 
-| エージェント  | レビュー観点           | 選定理由                               |
-| ------------- | ---------------------- | -------------------------------------- |
+| エージェント                   | レビュー観点           | 選定理由                               |
+| ------------------------------ | ---------------------- | -------------------------------------- |
 | .claude/agents/sec-auditor.md  | 暗号化強度確認         | NIST/FIPS基準への準拠確認              |
 | .claude/agents/db-architect.md | DB設計影響評価         | SQLCipher導入時のDB設計への影響確認    |
 | .claude/agents/sre-observer.md | パフォーマンス影響評価 | 暗号化・復号化のパフォーマンス影響確認 |
@@ -371,8 +371,8 @@ OWASP A02対策として、適切な暗号化要件を定義する必要があ�
 
 ##### 活用スキル
 
-| スキル名                | 活用方法                   |
-| ----------------------- | -------------------------- |
+| スキル名                                        | 活用方法                   |
+| ----------------------------------------------- | -------------------------- |
 | .claude/skills/tdd-principles/SKILL.md          | Red-Green-Refactorサイクル |
 | .claude/skills/boundary-value-analysis/SKILL.md | 暗号化境界値テスト         |
 | .claude/skills/test-doubles/SKILL.md            | 暗号化モジュールのモック化 |
@@ -423,7 +423,7 @@ pnpm --filter @repo/shared test:run encryption
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:implement encryption-core
+/ai:implement-business-logic encryption-core
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -436,8 +436,8 @@ pnpm --filter @repo/shared test:run encryption
 
 ##### 活用スキル
 
-| スキル名                | 活用方法              |
-| ----------------------- | --------------------- |
+| スキル名                                        | 活用方法              |
+| ----------------------------------------------- | --------------------- |
 | .claude/skills/cryptographic-practices/SKILL.md | AES-256-GCM実装       |
 | .claude/skills/type-safety-patterns/SKILL.md    | 型安全な暗号化API設計 |
 
@@ -482,7 +482,7 @@ pnpm --filter @repo/shared test:run encryption
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:implement encryption-integration
+/ai:implement-business-logic encryption-integration
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -495,8 +495,8 @@ pnpm --filter @repo/shared test:run encryption
 
 ##### 活用スキル
 
-| スキル名                      | 活用方法             |
-| ----------------------------- | -------------------- |
+| スキル名                                              | 活用方法             |
+| ----------------------------------------------------- | -------------------- |
 | .claude/skills/repository-pattern/SKILL.md            | 暗号化レイヤーの統合 |
 | .claude/skills/clean-architecture-principles/SKILL.md | レイヤー分離の維持   |
 
@@ -540,7 +540,7 @@ pnpm --filter @repo/shared test:run chat-history
 > ⚠️ 以下はターミナルコマンドではなく、Claude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:implement data-migration
+/ai:implement-business-logic data-migration
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -606,8 +606,8 @@ pnpm --filter @repo/shared test:run chat-history
 
 ##### 活用スキル
 
-| スキル名               | 活用方法                |
-| ---------------------- | ----------------------- |
+| スキル名                                       | 活用方法                |
+| ---------------------------------------------- | ----------------------- |
 | .claude/skills/refactoring-techniques/SKILL.md | Extract Method、DRY原則 |
 | .claude/skills/clean-code-practices/SKILL.md   | 可読性向上              |
 
@@ -640,7 +640,7 @@ pnpm --filter @repo/shared test:run chat-history
 
 ```
 /ai:run-all-tests --coverage
-/ai:benchmark encryption-performance
+/ai:analyze-performance encryption-performance
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -653,10 +653,10 @@ pnpm --filter @repo/shared test:run chat-history
 
 ##### 活用スキル
 
-| スキル名                 | 活用方法           |
-| ------------------------ | ------------------ |
-| .claude/skills/tdd-principles/SKILL.md           | TDD品質基準の検証  |
-| performance-benchmarking | パフォーマンス測定 |
+| スキル名                               | 活用方法           |
+| -------------------------------------- | ------------------ |
+| .claude/skills/tdd-principles/SKILL.md | TDD品質基準の検証  |
+| performance-benchmarking               | パフォーマンス測定 |
 
 - **参照**: `.claude/skills/skill_list.md`
 
@@ -692,8 +692,8 @@ pnpm --filter @repo/shared test:run chat-history
 
 ##### レビュー参加エージェント
 
-| エージェント  | レビュー観点   | 選定理由                         |
-| ------------- | -------------- | -------------------------------- |
+| エージェント                   | レビュー観点   | 選定理由                         |
+| ------------------------------ | -------------- | -------------------------------- |
 | .claude/agents/sec-auditor.md  | 暗号化実装検証 | 暗号化ベストプラクティス準拠確認 |
 | .claude/agents/code-quality.md | コード品質確認 | Clean Code原則準拠確認           |
 | .claude/agents/sre-observer.md | 本番稼働性確認 | 性能・信頼性の最終確認           |

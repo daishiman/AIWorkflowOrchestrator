@@ -1,6 +1,17 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { ChatView } from "./index";
+
+// Mock react-router-dom useNavigate
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
 
 // Mock store state - flat structure matching actual store
 const createMockState = (overrides = {}) => ({
@@ -40,9 +51,15 @@ vi.mock("../../store", () => ({
   ),
 }));
 
+// Helper function to render ChatView with MemoryRouter
+const renderWithRouter = (ui: React.ReactElement) => {
+  return render(<MemoryRouter>{ui}</MemoryRouter>);
+};
+
 describe("ChatView", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
+    mockNavigate.mockClear();
     const { useAppStore } = await import("../../store");
     vi.mocked(useAppStore).mockImplementation(((
       selector: (state: ReturnType<typeof createMockState>) => unknown,
@@ -188,6 +205,103 @@ describe("ChatView", () => {
   describe("displayName", () => {
     it("displayNameが設定されている", () => {
       expect(ChatView.displayName).toBe("ChatView");
+    });
+  });
+
+  // ==========================================================================
+  // TDD Red: ナビゲーションテスト（Phase 3: T-03-1）
+  // - 以下のテストは未実装の機能をテストするため、現時点ではすべて失敗する
+  // - Phase 4で実装を行い、テストがGreen（成功）になることを確認する
+  // ==========================================================================
+  describe("ナビゲーション", () => {
+    describe("履歴ボタン表示", () => {
+      it("履歴ボタンがヘッダーに表示される", () => {
+        renderWithRouter(<ChatView />);
+
+        // 履歴ボタンが存在することを確認
+        const historyButton = screen.getByRole("button", {
+          name: "チャット履歴",
+        });
+        expect(historyButton).toBeInTheDocument();
+      });
+
+      it("履歴ボタンにHistoryアイコンが含まれる", () => {
+        renderWithRouter(<ChatView />);
+
+        // 履歴ボタン内にアイコンが存在することを確認
+        const historyButton = screen.getByRole("button", {
+          name: "チャット履歴",
+        });
+        // lucide-reactのHistoryアイコンはsvg要素
+        expect(historyButton.querySelector("svg")).toBeInTheDocument();
+      });
+    });
+
+    describe("履歴ボタンの遷移動作", () => {
+      it("履歴ボタンクリックで/chat/historyへ遷移する", () => {
+        renderWithRouter(<ChatView />);
+
+        const historyButton = screen.getByRole("button", {
+          name: "チャット履歴",
+        });
+        fireEvent.click(historyButton);
+
+        // useNavigateが/chat/historyで呼び出されることを確認
+        expect(mockNavigate).toHaveBeenCalledWith("/chat/history");
+        expect(mockNavigate).toHaveBeenCalledTimes(1);
+      });
+
+      it("キーボードで履歴ボタンにフォーカスして操作できる", () => {
+        renderWithRouter(<ChatView />);
+
+        const historyButton = screen.getByRole("button", {
+          name: "チャット履歴",
+        });
+
+        // キーボードナビゲーションのテスト：フォーカス可能であることを確認
+        historyButton.focus();
+        expect(document.activeElement).toBe(historyButton);
+
+        // フォーカス後のクリック操作（キーボードでのアクティベーション）
+        fireEvent.click(historyButton);
+        expect(mockNavigate).toHaveBeenCalledWith("/chat/history");
+      });
+    });
+
+    describe("アクセシビリティ", () => {
+      it("履歴ボタンにaria-labelが設定されている", () => {
+        renderWithRouter(<ChatView />);
+
+        const historyButton = screen.getByRole("button", {
+          name: "チャット履歴",
+        });
+
+        // aria-label属性が正しく設定されていることを確認
+        expect(historyButton).toHaveAttribute("aria-label", "チャット履歴");
+      });
+
+      it("履歴ボタンがtype=buttonを持つ", () => {
+        renderWithRouter(<ChatView />);
+
+        const historyButton = screen.getByRole("button", {
+          name: "チャット履歴",
+        });
+
+        // フォーム送信を防ぐためtype=buttonであることを確認
+        expect(historyButton).toHaveAttribute("type", "button");
+      });
+
+      it("履歴ボタンにフォーカス可能である", () => {
+        renderWithRouter(<ChatView />);
+
+        const historyButton = screen.getByRole("button", {
+          name: "チャット履歴",
+        });
+
+        // ボタンにフォーカスが当たることを確認
+        historyButton.focus();
+        expect(document.activeElement).toBe(historyButton);
+      });
     });
   });
 });

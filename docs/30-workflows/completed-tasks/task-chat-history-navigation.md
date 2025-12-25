@@ -172,7 +172,7 @@ Phase 6: 品質保証
 > 以下はClaude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:design-review --scope=ui --target=chat-history-navigation
+/ai:review-architecture --scope=ui --target=chat-history-navigation
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -219,8 +219,8 @@ Phase 6: 品質保証
 
 #### 活用スキルリスト（動的選定）
 
-| スキル名                | 活用方法                         | 選定理由                                       |
-| ----------------------- | -------------------------------- | ---------------------------------------------- |
+| スキル名                                        | 活用方法                         | 選定理由                                       |
+| ----------------------------------------------- | -------------------------------- | ---------------------------------------------- |
 | .claude/skills/test-doubles/SKILL.md            | react-router-domのモック作成     | ナビゲーションテストにはルーターのモックが必要 |
 | .claude/skills/boundary-value-analysis/SKILL.md | ナビゲーション状態の境界値テスト | 正常系・異常系の網羅                           |
 
@@ -249,7 +249,7 @@ Phase 6: 品質保証
 > 以下はClaude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:implement --target=ChatView --feature=history-navigation
+/ai:implement-business-logic --target=ChatView --feature=history-navigation
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
@@ -262,8 +262,8 @@ Phase 6: 品質保証
 
 #### 活用スキルリスト（動的選定）
 
-| スキル名             | 活用方法                   | 選定理由                  |
-| -------------------- | -------------------------- | ------------------------- |
+| スキル名                                     | 活用方法                   | 選定理由                  |
+| -------------------------------------------- | -------------------------- | ------------------------- |
 | .claude/skills/apple-hig-guidelines/SKILL.md | ボタンのスタイリング・配置 | macOSネイティブ体験の実現 |
 | .claude/skills/accessibility-wcag/SKILL.md   | aria-label、フォーカス管理 | WCAG 2.1 AA準拠           |
 
@@ -322,7 +322,7 @@ Phase 6: 品質保証
 > 以下はClaude Code内で実行するスラッシュコマンドです
 
 ```
-/ai:quality-check --scope=frontend --target=ChatView
+/ai:code-review-complete apps/desktop/src/renderer/views/ChatView
 ```
 
 - **参照**: `.claude/commands/ai/command_list.md`
