@@ -1518,6 +1518,122 @@ HybridRAG検索エンジンのクエリ・結果インターフェース。Keywo
 
 ---
 
+## 6.9 LLM チャット関連型定義（Desktop IPC）
+
+### 6.9.1 概要
+
+Electronデスクトップアプリでは、Renderer ProcessからMain ProcessへのIPC通信でLLMチャット機能を提供する。型定義は共通インターフェースとして実装される。
+
+**実装ファイル**:
+
+- `apps/desktop/src/preload/types.ts` - IPC型定義
+- `apps/desktop/src/renderer/store/types.ts` - Store型定義
+
+### 6.9.2 IPC 型定義
+
+#### AIChatRequest
+
+LLMへのメッセージ送信リクエスト型。
+
+| フィールド     | 型      | 必須 | 説明                                   |
+| -------------- | ------- | ---- | -------------------------------------- |
+| message        | string  | ✓    | ユーザーメッセージ                     |
+| systemPrompt   | string  | -    | システムプロンプト（AIの振る舞い指定） |
+| ragEnabled     | boolean | ✓    | RAG機能有効化フラグ                    |
+| conversationId | string  | -    | 会話ID（既存会話の続きの場合に指定）   |
+
+#### AIChatResponse
+
+LLMからの応答型。
+
+| フィールド          | 型       | 説明                                |
+| ------------------- | -------- | ----------------------------------- |
+| success             | boolean  | 成功/失敗フラグ                     |
+| data.message        | string   | AI応答メッセージ                    |
+| data.conversationId | string   | 会話ID                              |
+| data.ragSources     | string[] | RAG参照元ファイルパス（任意）       |
+| error               | string   | エラーメッセージ（success=false時） |
+
+#### AICheckConnectionResponse
+
+AI/RAG接続状態確認の応答型。
+
+| フィールド            | 型                                       | 説明                   |
+| --------------------- | ---------------------------------------- | ---------------------- |
+| success               | boolean                                  | 成功/失敗フラグ        |
+| data.status           | "connected" \| "disconnected" \| "error" | 接続状態               |
+| data.indexedDocuments | number                                   | インデックス済み文書数 |
+| data.lastSyncTime     | Date                                     | 最終同期時刻           |
+
+#### AIIndexRequest
+
+RAGドキュメントインデックス作成リクエスト型。
+
+| フィールド | 型      | 必須 | 説明                         |
+| ---------- | ------- | ---- | ---------------------------- |
+| folderPath | string  | ✓    | インデックス対象フォルダパス |
+| recursive  | boolean | ✓    | 再帰的検索フラグ             |
+
+#### AIIndexResponse
+
+インデックス作成結果の応答型。
+
+| フィールド        | 型                        | 説明                           |
+| ----------------- | ------------------------- | ------------------------------ |
+| success           | boolean                   | 成功/失敗フラグ                |
+| data.indexedCount | number                    | インデックス化されたファイル数 |
+| data.skippedCount | number                    | スキップされたファイル数       |
+| data.errors       | Array<{filePath, reason}> | エラー発生ファイル             |
+
+### 6.9.3 Store 型定義
+
+#### LLMProvider
+
+LLMプロバイダー情報型。
+
+| フィールド | 型            | 説明                     |
+| ---------- | ------------- | ------------------------ |
+| id         | LLMProviderId | プロバイダーID（Enum型） |
+| name       | string        | プロバイダー名（表示用） |
+| models     | LLMModel[]    | 利用可能なモデル一覧     |
+
+#### LLMModel
+
+LLMモデル情報型。
+
+| フィールド | 型     | 説明               |
+| ---------- | ------ | ------------------ |
+| id         | string | モデルID           |
+| name       | string | モデル名（表示用） |
+
+#### LLMProviderId
+
+プロバイダーID列挙型。OpenAI、Anthropic、Google、xAIの4つの値を持つ。
+
+#### ChatMessage
+
+チャットメッセージ型。
+
+| フィールド  | 型                    | 説明                           |
+| ----------- | --------------------- | ------------------------------ |
+| id          | string                | メッセージID                   |
+| role        | "user" \| "assistant" | メッセージ送信者               |
+| content     | string                | メッセージ内容                 |
+| timestamp   | Date                  | 送信日時                       |
+| isStreaming | boolean               | ストリーミング中フラグ（任意） |
+
+#### RagConnectionStatus
+
+RAG接続状態型。connected（接続済み）、disconnected（切断）、error（エラー）の3つの状態を持つ。
+
+### 6.9.4 型安全性の保証
+
+- すべての型はTypeScriptで厳密に定義
+- IPC通信時の型チェックはPreload層で実施
+- ランタイムバリデーションは不要（型システムで保証）
+
+---
+
 ## 関連ドキュメント
 
 - [アーキテクチャ設計](./05-architecture.md)

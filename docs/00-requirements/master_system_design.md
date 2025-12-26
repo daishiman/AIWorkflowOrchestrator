@@ -143,6 +143,35 @@
 | デスクトップ   | Electron safeStorage + electron-store | OSキーチェーン連携 |
 | クラウド（DB） | Turso api_keys テーブル               | AES-256-GCM        |
 
+### AIチャット機能（Desktop）
+
+Electronデスクトップアプリでは、ユーザーがLLMプロバイダーとモデルを選択してAIとチャットできる機能を提供。
+
+**主要機能**:
+
+| 機能                   | 説明                                                               |
+| ---------------------- | ------------------------------------------------------------------ |
+| LLM選択                | 複数プロバイダー（OpenAI, Anthropic, Google, xAI）とモデルから選択 |
+| システムプロンプト設定 | AIの回答スタイルをカスタマイズするプロンプト設定                   |
+| RAGモード              | ナレッジベースを参照した回答生成                                   |
+| 会話履歴管理           | ローカルDBに会話を保存                                             |
+
+**対応LLMモデル**:
+
+| プロバイダー | モデル                           | コンテキストウィンドウ |
+| ------------ | -------------------------------- | ---------------------- |
+| OpenAI       | gpt-5.2-instant, gpt-4           | 400K, 8K               |
+| Anthropic    | claude-sonnet-4.5, claude-3-opus | 200K (1M beta), 200K   |
+| Google       | gemini-3-flash, gemini-pro       | 1M, 32K                |
+| xAI          | grok-4.1-fast, grok-1            | 2M, 8K                 |
+
+**アーキテクチャ**:
+
+- **IPC通信**: Renderer → Main プロセス間でメッセージ送信（`AI_CHAT` チャネル）
+- **状態管理**: Zustand chatSliceで選択状態とメッセージ履歴を管理
+- **UI**: LLMSelector（プロバイダー/モデル選択）+ SystemPromptPanel（プロンプト編集）
+- **詳細**: [アーキテクチャ設計 5.8.7](./05-architecture.md#587-ipcチャネル設計チャットllm選択)、[UI/UX 16.18-16.19](./16-ui-ux-guidelines.md#1618-システムプロンプト設定ui)
+
 ---
 
 ## ドキュメント管理

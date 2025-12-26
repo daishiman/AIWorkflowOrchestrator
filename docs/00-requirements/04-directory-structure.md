@@ -265,19 +265,20 @@
 
 ### 4.5.1 main/（Main Process）
 
-| パス                                     | 役割                            |
-| ---------------------------------------- | ------------------------------- |
-| index.ts                                 | エントリーポイント              |
-| ipc/channels.ts                          | IPCチャネル定義（型定義）       |
-| ipc/handlers/                            | ハンドラー実装                  |
-| ipc/authHandlers.ts                      | 認証IPC（withValidation適用）   |
-| ipc/workspaceHandlers.ts                 | ワークスペースIPC               |
-| ipc/validation.ts                        | 入力バリデーション              |
-| infrastructure/secureStorage.ts          | トークン暗号化（safeStorage）   |
-| infrastructure/security/ipc-validator.ts | IPC送信元検証（withValidation） |
-| services/                                | バックグラウンドサービス        |
-| windows/                                 | ウィンドウ管理                  |
-| config/                                  | 設定（security、app）           |
+| パス                                     | 役割                                                             |
+| ---------------------------------------- | ---------------------------------------------------------------- |
+| index.ts                                 | エントリーポイント                                               |
+| ipc/channels.ts                          | IPCチャネル定義（型定義）                                        |
+| ipc/handlers/                            | ハンドラー実装                                                   |
+| ipc/authHandlers.ts                      | 認証IPC（withValidation適用）                                    |
+| ipc/workspaceHandlers.ts                 | ワークスペースIPC                                                |
+| ipc/aiHandlers.ts                        | **AI/LLM チャットIPC（AI_CHAT、AI_CHECK_CONNECTION、AI_INDEX）** |
+| ipc/validation.ts                        | 入力バリデーション                                               |
+| infrastructure/secureStorage.ts          | トークン暗号化（safeStorage）                                    |
+| infrastructure/security/ipc-validator.ts | IPC送信元検証（withValidation）                                  |
+| services/                                | バックグラウンドサービス                                         |
+| windows/                                 | ウィンドウ管理                                                   |
+| config/                                  | 設定（security、app）                                            |
 
 ### 4.5.2 preload/（セキュリティ境界）
 
@@ -303,25 +304,27 @@
 
 ### 4.5.4 renderer/components/（Atomic Design）
 
-| パス                                              | 役割                                         |
-| ------------------------------------------------- | -------------------------------------------- |
-| atoms/                                            | 基本UI要素（Button、Input、Icon、Badge等）   |
-| molecules/                                        | 複合要素（Tooltip、NavIcon、FileTreeItem等） |
-| organisms/                                        | 機能単位（AppDock、Sidebar、GlassPanel等）   |
-| AuthGuard/                                        | **認証ガード（HOC）**                        |
-| AuthGuard/index.tsx                               | 認証状態による表示制御                       |
-| AuthGuard/LoadingScreen.tsx                       | ローディング画面                             |
-| AuthGuard/types.ts                                | AuthGuard型定義                              |
-| AuthGuard/hooks/useAuthState.ts                   | 認証状態取得フック                           |
-| AuthGuard/utils/getAuthState.ts                   | 状態判定純粋関数                             |
-| AuthGuard/AuthGuard.test.tsx                      | AuthGuardテスト（67 tests）                  |
-| AuthGuard/utils/getAuthState.test.ts              | getAuthState単体テスト（5 tests）            |
-| organisms/AccountSection/                         | **アカウント管理セクション**                 |
-| AccountSection/index.tsx                          | プロフィール・アバター・連携管理UI           |
-| AccountSection/AccountSection.test.tsx            | 基本機能テスト（55 tests）                   |
-| AccountSection/AccountSection.portal.test.tsx     | Portal機能テスト（27 tests）                 |
-| AccountSection/AccountSection.a11y.test.tsx       | アクセシビリティテスト（15 tests）           |
-| AccountSection/AccountSection.edge-cases.test.tsx | エッジケーステスト（18 tests）               |
+| パス                                              | 役割                                                                 |
+| ------------------------------------------------- | -------------------------------------------------------------------- |
+| atoms/                                            | 基本UI要素（Button、Input、Icon、Badge等）                           |
+| molecules/                                        | 複合要素（Tooltip、NavIcon、FileTreeItem等）                         |
+| molecules/LLMSelector/                            | **LLMプロバイダー/モデル選択ドロップダウン（100%テストカバレッジ）** |
+| molecules/ChatMessage/                            | チャットメッセージ表示コンポーネント                                 |
+| organisms/                                        | 機能単位（AppDock、Sidebar、GlassPanel等）                           |
+| AuthGuard/                                        | **認証ガード（HOC）**                                                |
+| AuthGuard/index.tsx                               | 認証状態による表示制御                                               |
+| AuthGuard/LoadingScreen.tsx                       | ローディング画面                                                     |
+| AuthGuard/types.ts                                | AuthGuard型定義                                                      |
+| AuthGuard/hooks/useAuthState.ts                   | 認証状態取得フック                                                   |
+| AuthGuard/utils/getAuthState.ts                   | 状態判定純粋関数                                                     |
+| AuthGuard/AuthGuard.test.tsx                      | AuthGuardテスト（67 tests）                                          |
+| AuthGuard/utils/getAuthState.test.ts              | getAuthState単体テスト（5 tests）                                    |
+| organisms/AccountSection/                         | **アカウント管理セクション**                                         |
+| AccountSection/index.tsx                          | プロフィール・アバター・連携管理UI                                   |
+| AccountSection/AccountSection.test.tsx            | 基本機能テスト（55 tests）                                           |
+| AccountSection/AccountSection.portal.test.tsx     | Portal機能テスト（27 tests）                                         |
+| AccountSection/AccountSection.a11y.test.tsx       | アクセシビリティテスト（15 tests）                                   |
+| AccountSection/AccountSection.edge-cases.test.tsx | エッジケーステスト（18 tests）                                       |
 
 ### 4.5.5 renderer/views/（画面構成）
 
@@ -336,16 +339,16 @@
 
 ### 4.5.6 renderer/store/（Zustand状態管理）
 
-| パス                  | 役割                                           |
-| --------------------- | ---------------------------------------------- |
-| index.ts              | 統合ストア（createAppStore）                   |
-| slices/               | 機能別スライス                                 |
-| slices/authSlice      | **認証状態（ログイン、トークン、セッション）** |
-| slices/uiSlice        | UI状態（ビュー、ウィンドウサイズ）             |
-| slices/editorSlice    | エディタ状態（ファイル、フォルダ）             |
-| slices/chatSlice      | チャット状態（メッセージ、入力）               |
-| slices/workspaceSlice | ワークスペース状態（複数フォルダ管理）         |
-| types/workspace.ts    | Workspace型定義（Branded Types）               |
+| パス                  | 役割                                                                            |
+| --------------------- | ------------------------------------------------------------------------------- |
+| index.ts              | 統合ストア（createAppStore）                                                    |
+| slices/               | 機能別スライス                                                                  |
+| slices/authSlice      | **認証状態（ログイン、トークン、セッション）**                                  |
+| slices/uiSlice        | UI状態（ビュー、ウィンドウサイズ）                                              |
+| slices/editorSlice    | エディタ状態（ファイル、フォルダ）                                              |
+| slices/chatSlice      | **チャット状態（メッセージ、入力、LLM選択、システムプロンプト、テンプレート）** |
+| slices/workspaceSlice | ワークスペース状態（複数フォルダ管理）                                          |
+| types/workspace.ts    | Workspace型定義（Branded Types）                                                |
 
 ### 4.5.7 Electron 3プロセスモデル
 

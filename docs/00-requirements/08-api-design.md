@@ -466,6 +466,64 @@ export const ALLOWED_CHANNELS = {
 } as const;
 ```
 
+### 8.11.7 AI/チャット IPC チャネル
+
+Electronデスクトップアプリでは、IPC通信でAIチャット機能とLLM選択機能を提供する。
+
+**実装ファイル**:
+
+- ハンドラー: `apps/desktop/src/main/ipc/aiHandlers.ts`
+- チャンネル定義: `apps/desktop/src/preload/channels.ts`
+- 型定義: `apps/desktop/src/preload/types.ts`
+
+**チャンネル一覧**:
+
+| チャネル              | 用途                            | Request        | Response                  | 実装箇所              |
+| --------------------- | ------------------------------- | -------------- | ------------------------- | --------------------- |
+| `AI_CHAT`             | LLMへのメッセージ送信と応答取得 | AIChatRequest  | AIChatResponse            | aiHandlers.ts:21-89   |
+| `AI_CHECK_CONNECTION` | LLM/RAG接続状態確認             | なし           | AICheckConnectionResponse | aiHandlers.ts:93-112  |
+| `AI_INDEX`            | RAGドキュメントインデックス作成 | AIIndexRequest | AIIndexResponse           | aiHandlers.ts:116-143 |
+
+**型定義詳細**: 型定義は[コアインターフェース 6.9](./06-core-interfaces.md#69-llm-チャット関連型定義desktop-ipc)を参照。
+
+**LLM選択状態管理**:
+
+- **Store**: Zustand chatSlice
+- **状態**: currentProviderId（"openai" | "anthropic" | "google" | "xai"）、currentModelId
+- **初期値**: OpenAI gpt-5.2-instant
+- **切り替え**: リアルタイム（確認ダイアログなし）
+
+**対応LLMプロバイダー**:
+
+| プロバイダー | モデル例                         | コンテキストウィンドウ |
+| ------------ | -------------------------------- | ---------------------- |
+| OpenAI       | gpt-5.2-instant, gpt-4           | 400K, 8K               |
+| Anthropic    | claude-sonnet-4.5, claude-3-opus | 200K (1M beta), 200K   |
+| Google       | gemini-3-flash, gemini-pro       | 1M, 32K                |
+| xAI          | grok-4.1-fast, grok-1            | 2M, 8K                 |
+
+**統合仕様**:
+
+- LLM選択とシステムプロンプトは独立して設定可能
+- メッセージ送信時、両方の設定を`AI_CHAT` IPCリクエストに含める
+- プロバイダー/モデル切り替え時もシステムプロンプトは保持される
+- 会話履歴は保持されるが、各モデルは独立して動作
+
+**セキュリティ考慮事項**:
+
+| 項目                       | 対策                                          |
+| -------------------------- | --------------------------------------------- |
+| APIキー保護                | Electron SafeStorageで暗号化保存              |
+| プロンプトインジェクション | ローカルアプリのため影響限定的                |
+| XSS攻撃                    | React自動エスケープ + IPC経由で文字列のみ送信 |
+| レート制限対応             | プロバイダー側のレート制限エラーを通知        |
+
+**参照**:
+
+- 詳細仕様: [アーキテクチャ設計 5.8.7](./05-architecture.md#587-ipcチャネル設計チャットllm選択)
+- 型定義: [コアインターフェース 6.9](./06-core-interfaces.md#69-llm-チャット関連型定義desktop-ipc)
+- UI仕様: [UI/UX 16.19](./16-ui-ux-guidelines.md#1619-llm選択機能chat-llm-switching)
+
 ---
 
 ## 8.12 エンドポイント命名規則
