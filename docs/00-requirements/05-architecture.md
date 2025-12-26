@@ -1041,6 +1041,42 @@ Knowledge Graphのエッジ（辺）を表現するEntity型。
 | `file:write`               | Renderer → Main | ファイル書込       |
 | `file:get-tree`            | Renderer → Main | ファイルツリー取得 |
 
+### 5.8.5 システムプロンプト状態管理
+
+| レイヤー         | 責務                                  | ファイル                                   |
+| ---------------- | ------------------------------------- | ------------------------------------------ |
+| Main Process     | electron-store永続化（IPC経由）       | storeHandlers.ts                           |
+| Preload          | contextBridgeによるAPI公開            | preload/index.ts                           |
+| Renderer (Store) | テンプレート状態保持、バリデーション  | systemPromptTemplateSlice.ts, chatSlice.ts |
+| Renderer (UI)    | SystemPromptPanel、SaveTemplateDialog | components/organisms/                      |
+
+**状態構造**:
+
+| State                         | 型                 | 責務                            | Slice                        |
+| ----------------------------- | ------------------ | ------------------------------- | ---------------------------- |
+| `systemPrompt`                | `string`           | 現在のシステムプロンプト        | chatSlice.ts                 |
+| `systemPromptUpdatedAt`       | `Date \| null`     | 最終更新日時                    | chatSlice.ts                 |
+| `selectedTemplateId`          | `string \| null`   | 選択中のテンプレートID          | chatSlice.ts                 |
+| `templates`                   | `PromptTemplate[]` | プリセット+カスタムテンプレート | systemPromptTemplateSlice.ts |
+| `isSystemPromptPanelExpanded` | `boolean`          | パネル展開状態                  | chatSlice.ts                 |
+| `isSaveTemplateDialogOpen`    | `boolean`          | 保存ダイアログ表示状態          | systemPromptTemplateSlice.ts |
+
+### 5.8.6 IPCチャネル設計（システムプロンプト）
+
+| チャネル       | 方向            | 用途                     |
+| -------------- | --------------- | ------------------------ |
+| `store:get`    | Renderer → Main | electron-storeデータ取得 |
+| `store:set`    | Renderer → Main | electron-storeデータ保存 |
+| `store:delete` | Renderer → Main | electron-storeデータ削除 |
+
+**データ永続化**:
+
+- **保存先**: electron-store（`~/.config/AIWorkflowOrchestrator/config.json`）
+- **キー**: `systemPromptTemplates`
+- **形式**: `PromptTemplate[]` JSON配列
+- **暗号化**: 不要（機密性低いユーザー設定）
+- **同期**: 保存・削除時に即座にelectron-storeへ書き込み
+
 ---
 
 ## 5.9 認証アーキテクチャ（Supabase + Electron）

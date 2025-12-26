@@ -12,6 +12,9 @@ import { GlassPanel } from "../../components/organisms/GlassPanel";
 import { ChatInput } from "../../components/organisms/ChatInput";
 import { ChatMessage } from "../../components/molecules/ChatMessage";
 import { ErrorDisplay } from "../../components/atoms/ErrorDisplay";
+import { SystemPromptPanel } from "../../components/organisms/SystemPromptPanel";
+import { SystemPromptToggleButton } from "../../components/atoms/SystemPromptToggleButton";
+import { SaveTemplateDialog } from "../../components/organisms/SaveTemplateDialog";
 import { useAppStore } from "../../store";
 
 // ============================================
@@ -54,10 +57,68 @@ export const ChatView: React.FC<ChatViewProps> = ({ className }) => {
   const isRagEnabled = ragConnectionStatus === "connected";
 
   // ----------------------------------------
+  // Store State - システムプロンプト関連
+  // ----------------------------------------
+  const isSystemPromptPanelExpanded = useAppStore(
+    (state) => state.isSystemPromptPanelExpanded,
+  );
+  const systemPrompt = useAppStore((state) => state.systemPrompt || "");
+  const templates = useAppStore((state) => state.templates || []);
+  const selectedTemplateId = useAppStore((state) => state.selectedTemplateId);
+  const isSaveTemplateDialogOpen = useAppStore(
+    (state) => state.isSaveTemplateDialogOpen,
+  );
+
+  // ----------------------------------------
   // Store Actions
   // ----------------------------------------
-  const addMessage = useAppStore((state) => state.addMessage);
   const setChatInput = useAppStore((state) => state.setChatInput);
+  const sendMessage = useAppStore((state) => state.sendMessage);
+  const toggleSystemPromptPanel = useAppStore(
+    (state) => state.toggleSystemPromptPanel,
+  );
+  const setSystemPrompt = useAppStore((state) => state.setSystemPrompt);
+  const clearSystemPrompt = useAppStore((state) => state.clearSystemPrompt);
+  const openSaveTemplateDialog = useAppStore(
+    (state) => state.openSaveTemplateDialog,
+  );
+  const closeSaveTemplateDialog = useAppStore(
+    (state) => state.closeSaveTemplateDialog,
+  );
+  const saveTemplate = useAppStore((state) => state.saveTemplate);
+  const deleteTemplate = useAppStore((state) => state.deleteTemplate);
+  const initializeTemplates = useAppStore((state) => state.initializeTemplates);
+
+  // ----------------------------------------
+  // Effects - テンプレート初期化
+  // ----------------------------------------
+  useEffect(() => {
+    initializeTemplates();
+  }, [initializeTemplates]);
+
+  // ----------------------------------------
+  // Callbacks - システムプロンプト
+  // ----------------------------------------
+  const handleSelectTemplate = useCallback(
+    (template: (typeof templates)[number]) => {
+      setSystemPrompt(template.content);
+    },
+    [setSystemPrompt],
+  );
+
+  const handleSaveTemplate = useCallback(() => {
+    openSaveTemplateDialog();
+  }, [openSaveTemplateDialog]);
+
+  const handleConfirmSaveTemplate = useCallback(
+    async (name: string) => {
+      await saveTemplate(name, systemPrompt);
+      closeSaveTemplateDialog();
+    },
+    [saveTemplate, systemPrompt, closeSaveTemplateDialog],
+  );
+
+  const existingTemplateNames = templates.map((t) => t.name);
 
   // ----------------------------------------
   // Local State
@@ -72,26 +133,14 @@ export const ChatView: React.FC<ChatViewProps> = ({ className }) => {
   // ----------------------------------------
   // Callbacks - メッセージ送信
   // ----------------------------------------
-  const createAndSendMessage = useCallback(
-    (content: string) => {
-      const newMessage = {
-        id: Date.now().toString(),
-        role: "user" as const,
-        content,
-        timestamp: new Date(),
-      };
-      addMessage(newMessage);
-      setChatInput("");
-    },
-    [addMessage, setChatInput],
-  );
-
-  const handleSend = useCallback(() => {
+  const handleSend = useCallback(async () => {
     const trimmedInput = chatInput.trim();
     if (trimmedInput && !isSending) {
-      createAndSendMessage(chatInput);
+      // Send message to LLM with system prompt
+      await sendMessage(chatInput);
+      setChatInput("");
     }
-  }, [chatInput, isSending, createAndSendMessage]);
+  }, [chatInput, isSending, sendMessage, setChatInput]);
 
   const handleInputChange = useCallback(
     (value: string) => {
@@ -143,9 +192,41 @@ export const ChatView: React.FC<ChatViewProps> = ({ className }) => {
         </button>
       </header>
 
+      {/* システムプロンプトトグルボタン */}
+      <div className="px-4 pt-3">
+        <SystemPromptToggleButton
+          isExpanded={isSystemPromptPanelExpanded}
+          onClick={toggleSystemPromptPanel}
+          hasContent={systemPrompt.trim().length > 0}
+          disabled={isSending}
+        />
+      </div>
+
+      {/* システムプロンプトパネル */}
+      {isSystemPromptPanelExpanded && (
+        <div className="px-4 pb-3">
+          <SystemPromptPanel
+            isExpanded={isSystemPromptPanelExpanded}
+            systemPrompt={systemPrompt}
+            onSystemPromptChange={setSystemPrompt}
+            templates={templates}
+            selectedTemplateId={selectedTemplateId}
+            onSelectTemplate={handleSelectTemplate}
+            onSaveTemplate={handleSaveTemplate}
+            onDeleteTemplate={deleteTemplate}
+            onClear={clearSystemPrompt}
+          />
+        </div>
+      )}
+
       {/* メッセージエリア: チャット履歴またはエンプティステート */}
       <main className="flex-1 overflow-auto p-4">
-        <div role="log" aria-label="チャット履歴" className="h-full">
+        <div
+          role="log"
+          aria-label="チャット履歴"
+          data-testid="message-list"
+          className="h-full"
+        >
           {hasMessages ? (
             <div className="space-y-4">
               {chatMessages.map((message) => (
@@ -186,6 +267,15 @@ export const ChatView: React.FC<ChatViewProps> = ({ className }) => {
           />
         </GlassPanel>
       </footer>
+
+      {/* テンプレート保存ダイアログ */}
+      <SaveTemplateDialog
+        isOpen={isSaveTemplateDialogOpen}
+        onClose={closeSaveTemplateDialog}
+        onSave={handleConfirmSaveTemplate}
+        previewContent={systemPrompt}
+        existingNames={existingTemplateNames}
+      />
     </div>
   );
 };

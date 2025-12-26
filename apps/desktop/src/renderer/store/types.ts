@@ -102,6 +102,16 @@ export interface WindowSize {
 // RAG接続状態型
 export type RagConnectionStatus = "connected" | "disconnected" | "error";
 
+// プロンプトテンプレート型
+export interface PromptTemplate {
+  id: string;
+  name: string;
+  content: string;
+  isPreset: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 // テーマ型
 /**
  * テーマモード
