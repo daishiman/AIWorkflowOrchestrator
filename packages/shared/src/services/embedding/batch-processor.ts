@@ -5,7 +5,7 @@
  */
 
 import type {
-  EmbeddingModelId,
+  EmbeddingModelId as _EmbeddingModelId,
   EmbedOptions,
   EmbeddingResult,
   RateLimitConfig,
@@ -14,7 +14,10 @@ import type { IEmbeddingProvider } from "./providers/interfaces";
 import { RateLimiter } from "./utils/rate-limiter";
 import { RetryHandler, DEFAULT_RETRY_OPTIONS } from "./utils/retry-handler";
 import { MetricsCollector } from "./utils/metrics-collector";
-import { RateLimitError, EmbeddingError } from "./types/errors";
+import {
+  RateLimitError,
+  EmbeddingError as _EmbeddingError,
+} from "./types/errors";
 import { sleep } from "./utils/async-utils";
 
 /**
@@ -438,7 +441,7 @@ export class EmbeddingBatchProcessor {
       result: emb.result,
     }));
 
-    const remappedErrors = result.errors.map((err, idx) => ({
+    const remappedErrors = result.errors.map((err, _idx) => ({
       index: retryableErrors[err.index].index,
       error: err.error,
       retryable: err.retryable,

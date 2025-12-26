@@ -39,7 +39,7 @@ class MockQwen3EmbeddingGenerator {
     },
   ) {}
 
-  async generate(text: string): Promise<number[]> {
+  async generate(_text: string): Promise<number[]> {
     // Qwen3はモックデータのみ（実際のAPIエンドポイントが不明のため）
     console.log("   ⚠️  Qwen3モックデータを使用");
 

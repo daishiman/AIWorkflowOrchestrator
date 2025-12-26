@@ -154,6 +154,7 @@ async function testErrorHandling() {
         model: "text-embedding-3-small",
         maxTokens: 8192,
       });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await generator.generate(null as any);
       console.log(
         "   ❌ エラーが発生しませんでした（期待: バリデーションエラー）",

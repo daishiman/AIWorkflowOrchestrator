@@ -98,7 +98,7 @@ export abstract class BaseEmbeddingProvider implements IEmbeddingProvider {
         model: String(this.modelId),
         processingTimeMs,
       };
-    } catch (error) {
+    } catch {
       const processingTimeMs = Date.now() - startTime;
 
       // エラーメトリクス記録
@@ -228,7 +228,7 @@ export abstract class BaseEmbeddingProvider implements IEmbeddingProvider {
       const testText = "health check";
       await this.embed(testText, { timeout: 5000 });
       return true;
-    } catch (error) {
+    } catch {
       return false;
     }
   }

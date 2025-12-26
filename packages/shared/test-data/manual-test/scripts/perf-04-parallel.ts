@@ -4,13 +4,13 @@
  * 品質ゲート: 並列度に応じて処理時間が短縮されること
  */
 
-import { promises as fs } from "node:fs";
+import { promises as _fs } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const baseDir = join(__dirname, "..");
+const _baseDir = join(__dirname, "..");
 
 const QUALITY_GATE = {
   minThroughput: 100, // chunks/min
@@ -43,7 +43,7 @@ class MockChunker {
  * 埋め込み生成器
  */
 class MockEmbeddingGenerator {
-  async generate(text: string): Promise<number[]> {
+  async generate(_text: string): Promise<number[]> {
     await new Promise((resolve) => setTimeout(resolve, 10)); // 10ms/リクエスト
 
     const embedding = Array.from(

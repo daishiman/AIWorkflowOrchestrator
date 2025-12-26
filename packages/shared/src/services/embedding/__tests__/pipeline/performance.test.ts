@@ -7,7 +7,7 @@
  * - スループット: ≥ 100チャンク/分
  */
 
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach as _beforeEach, vi } from "vitest";
 import {
   EmbeddingPipeline,
   PipelineMetricsCollector,
@@ -74,7 +74,7 @@ function createPerformanceMockEmbeddingService(
     }),
     embedBatch: vi
       .fn()
-      .mockImplementation(async (texts: string[], options?: unknown) => {
+      .mockImplementation(async (texts: string[], _options?: unknown) => {
         // バッチ処理の遅延をシミュレート（並列処理のため単純な乗算ではない）
         const batchDelay = Math.min(delayMs * 2, delayMs * texts.length * 0.1);
         await new Promise((r) => setTimeout(r, batchDelay));

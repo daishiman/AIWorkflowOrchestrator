@@ -45,7 +45,7 @@ class MockOpenAIEmbeddingGenerator {
   }
 
   async generate(text: string): Promise<number[]> {
-    const startTime = Date.now();
+    const _startTime = Date.now();
 
     // 実際のOpenAI APIを呼び出す場合のコード（モックではランダムベクトルを返す）
     const useMockData = !this.config.apiKey.startsWith("sk-proj-");
@@ -92,7 +92,7 @@ class MockOpenAIEmbeddingGenerator {
 
       const data = await response.json();
       return data.data[0].embedding;
-    } catch (error) {
+    } catch {
       console.error("   ❌ API呼び出し失敗、モックデータにフォールバック");
       // フォールバック: モックデータ
       const dimensions = this.config.dimensions || 1536;
@@ -145,7 +145,7 @@ async function testOpenAIEmbedding() {
       dimensions: 1536,
     });
 
-    const startTime = Date.now();
+    const _startTime = Date.now();
     const results: EmbeddingResult[] = [];
 
     for (let i = 0; i < chunks.length; i++) {
@@ -236,7 +236,7 @@ async function testOpenAIEmbedding() {
       totalTimeMs: totalTime,
       outputPath,
     };
-  } catch (error) {
+  } catch {
     console.error("❌ エラー発生:", error);
     throw error;
   }

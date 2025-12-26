@@ -4,13 +4,13 @@
  * 品質ゲート: 5分以内に完了
  */
 
-import { promises as fs } from "node:fs";
+import { promises as _fs } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const baseDir = join(__dirname, "..");
+const _baseDir = join(__dirname, "..");
 
 const QUALITY_GATE = {
   maxProcessingTimeMs: 300_000, // 5分

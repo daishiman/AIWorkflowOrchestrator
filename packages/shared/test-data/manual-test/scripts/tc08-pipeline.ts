@@ -209,6 +209,7 @@ async function testPipeline() {
         result:
           parsed.length > 0 &&
           parsed.every(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (item: any) =>
               item.content &&
               item.embedding &&

@@ -2,7 +2,7 @@
  * 埋め込みバッチプロセッサーテスト
  */
 
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach as _beforeEach, vi } from "vitest";
 import {
   EmbeddingBatchProcessor,
   DEFAULT_BATCH_CONFIG,
@@ -273,7 +273,7 @@ describe("EmbeddingBatchProcessor", () => {
             processingTimeMs: 10,
           };
         },
-        async embedBatch(texts: string[]) {
+        async embedBatch(_texts: string[]) {
           return {
             embeddings: [],
             errors: [],

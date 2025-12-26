@@ -15,12 +15,12 @@ import type {
   PipelineOutput,
   PipelineProgress,
   StageTimings,
-  ChunkWithEmbedding,
+  ChunkWithEmbedding as _ChunkWithEmbedding,
   PipelineMetric,
 } from "./types";
 import {
   PipelineError,
-  PreprocessingError,
+  PreprocessingError as _PreprocessingError,
   ChunkingError,
   EmbeddingStageError,
 } from "./errors";
@@ -384,6 +384,7 @@ export class EmbeddingPipeline {
     processed = processed.replace(/\n{3,}/g, "\n\n");
 
     // 制御文字を削除（改行・タブは除く）
+    // eslint-disable-next-line no-control-regex
     processed = processed.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
 
     return processed;

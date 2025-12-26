@@ -7,7 +7,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { FixedChunkingStrategy } from "../strategies/fixed-chunking-strategy";
 import { MockTokenizer } from "./mocks";
-import type { FixedChunkingOptions, Chunk } from "../types";
+import type { FixedChunkingOptions, Chunk as _Chunk } from "../types";
 
 describe("FixedChunkingStrategy", () => {
   let strategy: FixedChunkingStrategy;

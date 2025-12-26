@@ -8,7 +8,10 @@ import { RateLimiter } from "../../utils/rate-limiter";
 import { CircuitBreaker } from "../../utils/circuit-breaker";
 import { RetryHandler, DEFAULT_RETRY_OPTIONS } from "../../utils/retry-handler";
 import { MetricsCollector } from "../../utils/metrics-collector";
-import { ProviderError, TimeoutError } from "../../types/errors";
+import {
+  ProviderError,
+  TimeoutError as _TimeoutError,
+} from "../../types/errors";
 
 // fetch をモック
 const mockFetch = vi.fn();
@@ -144,7 +147,7 @@ describe("Qwen3EmbeddingProvider", () => {
         }),
       });
 
-      const result = await provider.embed("テスト文章");
+      const _result = await provider.embed("テスト文章");
 
       expect(result.embedding).toEqual(mockEmbedding);
       expect(result.model).toBe("EMB-001");
@@ -164,7 +167,7 @@ describe("Qwen3EmbeddingProvider", () => {
         }),
       });
 
-      const result = await provider.embed("テスト", { dimensions: 1024 });
+      const _result = await provider.embed("テスト", { dimensions: 1024 });
 
       // リクエストボディの確認
       const callArgs = mockFetch.mock.calls[0];
@@ -229,7 +232,7 @@ describe("Qwen3EmbeddingProvider", () => {
       });
 
       const texts = ["テスト1", "テスト2", "テスト3"];
-      const result = await provider.embedBatch(texts);
+      const _result = await provider.embedBatch(texts);
 
       expect(result.embeddings).toHaveLength(3);
       expect(result.totalProcessingTimeMs).toBeGreaterThanOrEqual(0);
@@ -270,14 +273,14 @@ describe("Qwen3EmbeddingProvider", () => {
         }),
       });
 
-      const result = await provider.healthCheck();
+      const _result = await provider.healthCheck();
       expect(result).toBe(true);
     });
 
     it("エラー時にfalseを返す", async () => {
       mockFetch.mockRejectedValueOnce(new Error("Connection failed"));
 
-      const result = await provider.healthCheck();
+      const _result = await provider.healthCheck();
       expect(result).toBe(false);
     });
   });

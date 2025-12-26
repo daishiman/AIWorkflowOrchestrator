@@ -69,7 +69,7 @@ class MockEmbeddingGeneratorWithRateLimit {
   private callCount = 0;
   private rateLimitThreshold = 5; // 5回に1回レート制限エラーをシミュレート
 
-  async generate(text: string): Promise<number[]> {
+  async generate(_text: string): Promise<number[]> {
     this.callCount++;
 
     // レート制限をシミュレート

@@ -16,7 +16,7 @@ import {
 import type {
   ChunkingInput,
   ContextualChunk,
-  ContextualEmbeddingsOptions,
+  ContextualEmbeddingsOptions as _ContextualEmbeddingsOptions,
 } from "../types";
 
 describe("ChunkingService Integration Tests", () => {
