@@ -31,12 +31,19 @@ export function CharacterCounter({
 
   return (
     <div
+      id="character-counter"
+      data-testid="character-counter"
       className={clsx("text-right text-xs", colorClass, className)}
       role="status"
       aria-live={ariaLive}
       aria-atomic="true"
     >
       {current.toLocaleString()} / {max.toLocaleString()} 文字
+      {percentage >= 95 && (
+        <span className="sr-only" data-testid="character-limit-warning">
+          文字数制限に達しています
+        </span>
+      )}
     </div>
   );
 }

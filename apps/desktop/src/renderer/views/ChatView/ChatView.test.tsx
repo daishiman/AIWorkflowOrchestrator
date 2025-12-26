@@ -35,6 +35,8 @@ const createMockState = (overrides = {}) => ({
   chatInput: "",
   isSending: false,
   ragConnectionStatus: "connected" as const,
+  systemPrompt: "",
+  isSystemPromptPanelExpanded: false,
   addMessage: vi.fn(),
   setChatInput: vi.fn(),
   setIsSending: vi.fn(),
@@ -42,6 +44,19 @@ const createMockState = (overrides = {}) => ({
   updateMessage: vi.fn(),
   clearMessages: vi.fn(),
   sendMessage: vi.fn().mockResolvedValue(undefined),
+  toggleSystemPromptPanel: vi.fn(),
+  setSystemPrompt: vi.fn(),
+  clearSystemPrompt: vi.fn(),
+  // SystemPromptTemplateSlice
+  templates: [],
+  selectedTemplateId: null,
+  isSaveTemplateDialogOpen: false,
+  initializeTemplates: vi.fn(),
+  saveTemplate: vi.fn().mockResolvedValue(undefined),
+  deleteTemplate: vi.fn().mockResolvedValue(undefined),
+  openSaveTemplateDialog: vi.fn(),
+  closeSaveTemplateDialog: vi.fn(),
+  selectTemplate: vi.fn(),
   ...overrides,
 });
 
