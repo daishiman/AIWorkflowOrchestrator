@@ -437,7 +437,7 @@ searchService.addStrategy('graph', GraphSearchStrategy);
 - [CONV-03: JSONスキーマ定義](./task-03-json-schema-definition.md)
 - [CONV-04: データベース基盤](./task-04-database-version-management.md)
 - [CONV-05: 履歴/ログ管理](./task-05-history-log-management.md)
-- [CONV-06: 埋め込み + エンティティ抽出](./task-06-embedding-generation-pipeline.md)
+- [CONV-06: 埋め込み + エンティティ抽出](../completed-tasks/task-06-embedding-generation-pipeline.md)
 - [CONV-07: HybridRAG検索エンジン](./task-07-hybrid-search-engine.md)
 - **[CONV-08: Knowledge Graph構築](./task-08-knowledge-graph-construction.md)** ← NEW
 

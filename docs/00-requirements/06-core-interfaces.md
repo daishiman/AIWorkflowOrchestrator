@@ -1634,6 +1634,158 @@ RAG接続状態型。connected（接続済み）、disconnected（切断）、er
 
 ---
 
+## 6.10 Embedding Generation 型定義
+
+> **実装**: `packages/shared/src/services/embedding/`, `packages/shared/src/services/chunking/`
+> **詳細設計**: `docs/30-workflows/embedding-generation-pipeline/`
+
+### 6.10.1 プロバイダーインターフェース
+
+#### IEmbeddingProvider
+
+Embedding生成プロバイダーの共通インターフェース。モデルID、プロバイダー名、次元数、最大トークン数をプロパティとして持ち、単一テキストの埋め込み生成（embed）、バッチ処理（embedBatch）、トークン数カウント（countTokens）、ヘルスチェック（healthCheck）のメソッドを提供する。
+
+**実装例**:
+
+- OpenAIEmbeddingProvider: text-embedding-3-small（1536次元）
+- Qwen3EmbeddingProvider: qwen3-embedding（768次元）
+
+#### ChunkingStrategy
+
+テキストをチャンクに分割する戦略インターフェース。chunk()メソッドでテキストとオプションを受け取り、チャンク配列を返す。
+
+**実装例**:
+
+- MarkdownChunkingStrategy: セクション単位でチャンク
+- CodeChunkingStrategy: クラス/関数単位でチャンク
+- FixedSizeChunkingStrategy: 固定トークン数でチャンク
+- SemanticChunkingStrategy: 意味的境界でチャンク
+
+### 6.10.2 データ型
+
+#### Chunk
+
+チャンクデータ型。ID、コンテンツ、トークン数、位置情報（start/end）、メタデータ（documentId、sectionTitle、chunkIndex等）を持つ。
+
+#### EmbeddingResult
+
+単一埋め込み生成の結果型。埋め込みベクトル（number配列）、トークン数、モデル名、処理時間（ミリ秒）を含む。
+
+#### BatchEmbeddingResult
+
+バッチ埋め込み生成の結果型。埋め込み結果配列、エラー配列（インデックスとエラーメッセージ）、合計トークン数、合計処理時間を含む。
+
+### 6.10.3 設定型
+
+#### PipelineConfig
+
+パイプライン設定型。チャンキング設定（戦略とオプション）、埋め込み設定（モデルID、フォールバックチェーン、オプション、バッチオプション）、重複排除設定を含む。
+
+#### ChunkingOptions
+
+チャンキングオプション型。チャンクサイズ（デフォルト: 512）、オーバーラップ（デフォルト: 50）、最小チャンクサイズ（デフォルト: 100）、改行保持フラグを含む。
+
+#### BatchEmbedOptions
+
+バッチ埋め込みオプション型。バッチサイズ（デフォルト: 50）、並行実行数（デフォルト: 2）、バッチ間遅延（ミリ秒）、進捗コールバックを含む。
+
+#### DeduplicationConfig
+
+重複排除設定型。有効化フラグ、方法（hash/similarity/both）、類似度閾値（デフォルト: 0.95）を含む。
+
+### 6.10.4 出力型
+
+#### PipelineOutput
+
+パイプライン出力型。ドキュメントID、チャンク配列、埋め込み配列、処理済みチャンク数、生成済み埋め込み数、削除済み重複数、キャッシュヒット数、合計処理時間、ステージ別タイミングを含む。
+
+#### StageTimings
+
+ステージ別処理時間型。前処理、チャンキング、埋め込み、重複排除、ストレージの各ステージの処理時間（ミリ秒）を含む。
+
+### 6.10.5 信頼性設定型
+
+#### RetryOptions
+
+リトライオプション型。最大リトライ回数（デフォルト: 3）、初期遅延（デフォルト: 1000ms）、最大遅延（デフォルト: 30000ms）、バックオフ乗数（デフォルト: 2）、ジッター有効化フラグ（デフォルト: true）を含む。
+
+#### RateLimitConfig
+
+レート制限設定型。1分あたりリクエスト数、1分あたりトークン数を含む。
+
+#### CircuitBreakerConfig
+
+サーキットブレーカー設定型。失敗閾値（デフォルト: 5）、成功閾値（デフォルト: 2）、タイムアウト（デフォルト: 60000ms）を含む。
+
+### 6.10.6 メトリクス型
+
+#### EmbeddingMetric
+
+埋め込み生成メトリクス型。モデルID、トークン数、処理時間、成功フラグ、エラーメッセージ（任意）を含む。
+
+#### PipelineMetric
+
+パイプラインメトリクス型。ドキュメントID、処理済みチャンク数、生成済み埋め込み数、削除済み重複数、キャッシュヒット数、合計処理時間、成功フラグ、エラー（任意）、タイムスタンプを含む。
+
+### 6.10.7 エラー型
+
+#### EmbeddingError
+
+埋め込み生成基底エラークラス。メッセージとオプションを受け取る。
+
+**派生エラー**:
+
+- ProviderError: プロバイダー固有のエラー
+- RateLimitError: レート制限エラー
+- TimeoutError: タイムアウトエラー
+- TokenLimitError: トークン制限超過エラー
+- CircuitBreakerError: サーキットブレーカーエラー
+
+#### PipelineError
+
+パイプライン基底エラークラス。ステージ情報と原因エラーを含む。
+
+**派生エラー**:
+
+- PreprocessingError: 前処理エラー
+- ChunkingError: チャンキングエラー
+- EmbeddingStageError: 埋め込み生成エラー
+- DeduplicationError: 重複排除エラー
+
+### 6.10.8 列挙型
+
+#### DocumentType
+
+ドキュメントタイプ列挙型。markdown、code、text、jsonの4つの値を持つ。
+
+#### ChunkingStrategy（列挙型）
+
+チャンキング戦略列挙型。fixed（固定サイズ）、markdown（Markdown構造）、code（コード構造）、semantic（意味的境界）の4つの値を持つ。
+
+#### EmbeddingModelId
+
+埋め込みモデルID列挙型。EMB-001（OpenAI text-embedding-3-small）、EMB-002（Qwen3 embedding）、またはカスタムモデル名（string）を持つ。
+
+#### ProviderName
+
+プロバイダー名列挙型。openai、qwen3、またはカスタムプロバイダー名（string）を持つ。
+
+#### PipelineStage
+
+パイプラインステージ列挙型。preprocessing（前処理）、chunking（チャンキング）、embedding（埋め込み生成）、deduplication（重複排除）、storage（ストレージ保存）の5つの値を持つ。
+
+#### CircuitState
+
+サーキットブレーカー状態列挙型。CLOSED（正常）、OPEN（遮断）、HALF_OPEN（半開）の3つの状態を持つ。
+
+**品質メトリクス**:
+
+- テストカバレッジ: 91.39% (Statement)、87.13% (Branch)、86.79% (Function)
+- 全104件の自動テスト成功
+- 全14件の手動テスト成功
+
+---
+
 ## 関連ドキュメント
 
 - [アーキテクチャ設計](./05-architecture.md)

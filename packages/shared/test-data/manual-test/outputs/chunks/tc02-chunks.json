@@ -1,0 +1,24 @@
+[
+  {
+    "content": "export interface User {\n  id: string;\n  name: string;\n  email: string;\n  createdAt?: Date;\n  updatedAt?: Date;\n}",
+    "metadata": {
+      "filePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20251226-000434/packages/shared/test-data/manual-test/code/simple.ts",
+      "type": "interface",
+      "name": "User",
+      "chunkIndex": 0,
+      "totalChunks": 2
+    },
+    "size": 112
+  },
+  {
+    "content": "export class UserService {\n  private users: Map<string, User> = new Map();\n\n  async createUser(user: User): Promise<void> {\n    if (this.users.has(user.id)) {\n      throw new Error(\"User already exists\");\n    }\n    this.users.set(user.id, user);\n  }\n\n  async getUser(id: string): Promise<User | undefined> {\n    return this.users.get(id);\n  }\n\n  async listUsers(): Promise<User[]> {\n    return Array.from(this.users.values());\n  }\n}",
+    "metadata": {
+      "filePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20251226-000434/packages/shared/test-data/manual-test/code/simple.ts",
+      "type": "class",
+      "name": "UserService",
+      "chunkIndex": 1,
+      "totalChunks": 2
+    },
+    "size": 432
+  }
+]
