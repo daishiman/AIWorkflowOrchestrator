@@ -35,12 +35,28 @@ const createMockState = (overrides = {}) => ({
   chatInput: "",
   isSending: false,
   ragConnectionStatus: "connected" as const,
+  systemPrompt: "",
+  isSystemPromptPanelExpanded: false,
   addMessage: vi.fn(),
   setChatInput: vi.fn(),
   setIsSending: vi.fn(),
   setRagConnectionStatus: vi.fn(),
   updateMessage: vi.fn(),
   clearMessages: vi.fn(),
+  sendMessage: vi.fn().mockResolvedValue(undefined),
+  toggleSystemPromptPanel: vi.fn(),
+  setSystemPrompt: vi.fn(),
+  clearSystemPrompt: vi.fn(),
+  // SystemPromptTemplateSlice
+  templates: [],
+  selectedTemplateId: null,
+  isSaveTemplateDialogOpen: false,
+  initializeTemplates: vi.fn(),
+  saveTemplate: vi.fn().mockResolvedValue(undefined),
+  deleteTemplate: vi.fn().mockResolvedValue(undefined),
+  openSaveTemplateDialog: vi.fn(),
+  closeSaveTemplateDialog: vi.fn(),
+  selectTemplate: vi.fn(),
   ...overrides,
 });
 
@@ -133,8 +149,8 @@ describe("ChatView", () => {
   });
 
   describe("送信", () => {
-    it("入力値があれば送信ボタンクリックでaddMessageを呼び出す", async () => {
-      const mockAddMessage = vi.fn();
+    it("入力値があれば送信ボタンクリックでsendMessageを呼び出す", async () => {
+      const mockSendMessage = vi.fn().mockResolvedValue(undefined);
       const { useAppStore } = await import("../../store");
       vi.mocked(useAppStore).mockImplementation(((
         selector: (state: ReturnType<typeof createMockState>) => unknown,
@@ -142,14 +158,14 @@ describe("ChatView", () => {
         selector(
           createMockState({
             chatInput: "テストメッセージ",
-            addMessage: mockAddMessage,
+            sendMessage: mockSendMessage,
           }),
         )) as never);
 
       render(<ChatView />);
       const sendButton = screen.getByRole("button", { name: "送信" });
       fireEvent.click(sendButton);
-      expect(mockAddMessage).toHaveBeenCalled();
+      expect(mockSendMessage).toHaveBeenCalledWith("テストメッセージ");
     });
   });
 
