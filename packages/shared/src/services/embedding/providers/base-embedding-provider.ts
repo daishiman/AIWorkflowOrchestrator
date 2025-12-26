@@ -98,7 +98,7 @@ export abstract class BaseEmbeddingProvider implements IEmbeddingProvider {
         model: String(this.modelId),
         processingTimeMs,
       };
-    } catch {
+    } catch (err) {
       const processingTimeMs = Date.now() - startTime;
 
       // エラーメトリクス記録
@@ -107,12 +107,12 @@ export abstract class BaseEmbeddingProvider implements IEmbeddingProvider {
         tokenCount: 0,
         processingTimeMs,
         success: false,
-        error: error instanceof Error ? error.message : String(error),
+        error: err instanceof Error ? err.message : String(err),
       });
 
       throw new EmbeddingError(
-        `Embedding failed for model ${this.modelId}: ${error instanceof Error ? error.message : String(error)}`,
-        { cause: error },
+        `Embedding failed for model ${this.modelId}: ${err instanceof Error ? err.message : String(err)}`,
+        { cause: err },
       );
     }
   }
