@@ -758,20 +758,40 @@ export default tseslint.config(
 
 ### 7.2 apps/desktop (Electron)
 
-```jsonc
-// apps/desktop/package.json
-{
-  "name": "@repo/desktop",
-  "dependencies": {
-    "electron": "^33.0.0",
-    "electron-builder": "^25.0.0",
-    "@repo/shared": "workspace:*",
-  },
-  "devDependencies": {
-    "electron-vite": "^2.0.0",
-  },
-}
-```
+デスクトップアプリケーションでは、Electronフレームワークを使用し、Reactで構築されたUIとNode.jsバックエンドを統合する。
+
+**主要依存関係**:
+
+| パッケージ       | バージョン | 用途                                       |
+| ---------------- | ---------- | ------------------------------------------ |
+| electron         | ^33.0.0    | デスクトップアプリケーションフレームワーク |
+| electron-builder | ^25.0.0    | ビルド・パッケージング                     |
+| zustand          | ^5.0.2     | クライアント状態管理（認証、チャット、UI） |
+| react            | ^19.0.0    | UIライブラリ                               |
+| react-router-dom | ^7.1.1     | ページルーティング                         |
+| @repo/shared     | workspace  | 共有ライブラリ                             |
+
+**開発依存関係**:
+
+| パッケージ       | 用途                         |
+| ---------------- | ---------------------------- |
+| electron-vite    | 開発サーバー・ホットリロード |
+| vitest           | ユニットテスト               |
+| @testing-library | Reactコンポーネントテスト    |
+
+**状態管理（Zustand）**:
+
+デスクトップアプリではZustandを採用し、以下のスライスで状態を管理する。
+
+| スライス       | 管理する状態                                                  |
+| -------------- | ------------------------------------------------------------- |
+| authSlice      | 認証状態（ログイン、トークン、セッション）                    |
+| chatSlice      | チャット状態（メッセージ、入力、LLM選択、システムプロンプト） |
+| uiSlice        | UI状態（ビュー、ウィンドウサイズ、テーマ）                    |
+| editorSlice    | エディタ状態（ファイル、フォルダ）                            |
+| workspaceSlice | ワークスペース状態（複数フォルダ管理）                        |
+
+Zustandを採用した理由は、シンプルなAPI、TypeScript完全対応、React Hooksとの親和性、小規模から中規模アプリケーションに最適なパフォーマンスによる。
 
 ### 7.3 packages/shared (共有ライブラリ)
 

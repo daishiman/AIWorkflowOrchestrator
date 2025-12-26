@@ -7,6 +7,7 @@ This is a medium-sized document for pipeline integration testing.
 ## Features
 
 The Embedding Generation Pipeline provides:
+
 - Intelligent chunking
 - Multi-model support
 - Batch processing

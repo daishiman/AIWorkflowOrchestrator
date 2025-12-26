@@ -1467,12 +1467,12 @@ Redis統合後:
 
 ### 10.1 詳細レポート
 
-| レポート                                                               | 内容                     |
-| ---------------------------------------------------------------------- | ------------------------ |
+| レポート                                                 | 内容                     |
+| -------------------------------------------------------- | ------------------------ |
 | [refactor.md](refactor.md)                               | リファクタリング結果     |
-| [run-all-tests.md](../../reports/run-all-tests.md)                     | 自動テスト結果           |
-| [analysis-report.md](analysis-report.md)             | パフォーマンス分析       |
-| [review-final.md](./review-final.md)                                   | 最終レビュー             |
+| [run-all-tests.md](../../reports/run-all-tests.md)       | 自動テスト結果           |
+| [analysis-report.md](analysis-report.md)                 | パフォーマンス分析       |
+| [review-final.md](./review-final.md)                     | 最終レビュー             |
 | [manual-test-execution.md](manual-test-execution.md)     | 手動テスト               |
 | [performance-test-manual.md](performance-test-manual.md) | 手動パフォーマンステスト |
 

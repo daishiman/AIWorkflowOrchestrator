@@ -1518,6 +1518,122 @@ HybridRAG検索エンジンのクエリ・結果インターフェース。Keywo
 
 ---
 
+## 6.9 LLM チャット関連型定義（Desktop IPC）
+
+### 6.9.1 概要
+
+Electronデスクトップアプリでは、Renderer ProcessからMain ProcessへのIPC通信でLLMチャット機能を提供する。型定義は共通インターフェースとして実装される。
+
+**実装ファイル**:
+
+- `apps/desktop/src/preload/types.ts` - IPC型定義
+- `apps/desktop/src/renderer/store/types.ts` - Store型定義
+
+### 6.9.2 IPC 型定義
+
+#### AIChatRequest
+
+LLMへのメッセージ送信リクエスト型。
+
+| フィールド     | 型      | 必須 | 説明                                   |
+| -------------- | ------- | ---- | -------------------------------------- |
+| message        | string  | ✓    | ユーザーメッセージ                     |
+| systemPrompt   | string  | -    | システムプロンプト（AIの振る舞い指定） |
+| ragEnabled     | boolean | ✓    | RAG機能有効化フラグ                    |
+| conversationId | string  | -    | 会話ID（既存会話の続きの場合に指定）   |
+
+#### AIChatResponse
+
+LLMからの応答型。
+
+| フィールド          | 型       | 説明                                |
+| ------------------- | -------- | ----------------------------------- |
+| success             | boolean  | 成功/失敗フラグ                     |
+| data.message        | string   | AI応答メッセージ                    |
+| data.conversationId | string   | 会話ID                              |
+| data.ragSources     | string[] | RAG参照元ファイルパス（任意）       |
+| error               | string   | エラーメッセージ（success=false時） |
+
+#### AICheckConnectionResponse
+
+AI/RAG接続状態確認の応答型。
+
+| フィールド            | 型                                       | 説明                   |
+| --------------------- | ---------------------------------------- | ---------------------- |
+| success               | boolean                                  | 成功/失敗フラグ        |
+| data.status           | "connected" \| "disconnected" \| "error" | 接続状態               |
+| data.indexedDocuments | number                                   | インデックス済み文書数 |
+| data.lastSyncTime     | Date                                     | 最終同期時刻           |
+
+#### AIIndexRequest
+
+RAGドキュメントインデックス作成リクエスト型。
+
+| フィールド | 型      | 必須 | 説明                         |
+| ---------- | ------- | ---- | ---------------------------- |
+| folderPath | string  | ✓    | インデックス対象フォルダパス |
+| recursive  | boolean | ✓    | 再帰的検索フラグ             |
+
+#### AIIndexResponse
+
+インデックス作成結果の応答型。
+
+| フィールド        | 型                        | 説明                           |
+| ----------------- | ------------------------- | ------------------------------ |
+| success           | boolean                   | 成功/失敗フラグ                |
+| data.indexedCount | number                    | インデックス化されたファイル数 |
+| data.skippedCount | number                    | スキップされたファイル数       |
+| data.errors       | Array<{filePath, reason}> | エラー発生ファイル             |
+
+### 6.9.3 Store 型定義
+
+#### LLMProvider
+
+LLMプロバイダー情報型。
+
+| フィールド | 型            | 説明                     |
+| ---------- | ------------- | ------------------------ |
+| id         | LLMProviderId | プロバイダーID（Enum型） |
+| name       | string        | プロバイダー名（表示用） |
+| models     | LLMModel[]    | 利用可能なモデル一覧     |
+
+#### LLMModel
+
+LLMモデル情報型。
+
+| フィールド | 型     | 説明               |
+| ---------- | ------ | ------------------ |
+| id         | string | モデルID           |
+| name       | string | モデル名（表示用） |
+
+#### LLMProviderId
+
+プロバイダーID列挙型。OpenAI、Anthropic、Google、xAIの4つの値を持つ。
+
+#### ChatMessage
+
+チャットメッセージ型。
+
+| フィールド  | 型                    | 説明                           |
+| ----------- | --------------------- | ------------------------------ |
+| id          | string                | メッセージID                   |
+| role        | "user" \| "assistant" | メッセージ送信者               |
+| content     | string                | メッセージ内容                 |
+| timestamp   | Date                  | 送信日時                       |
+| isStreaming | boolean               | ストリーミング中フラグ（任意） |
+
+#### RagConnectionStatus
+
+RAG接続状態型。connected（接続済み）、disconnected（切断）、error（エラー）の3つの状態を持つ。
+
+### 6.9.4 型安全性の保証
+
+- すべての型はTypeScriptで厳密に定義
+- IPC通信時の型チェックはPreload層で実施
+- ランタイムバリデーションは不要（型システムで保証）
+
+---
+
 ## 6.10 Embedding Generation 型定義
 
 > **実装**: `packages/shared/src/services/embedding/`, `packages/shared/src/services/chunking/`
@@ -1527,318 +1643,144 @@ HybridRAG検索エンジンのクエリ・結果インターフェース。Keywo
 
 #### IEmbeddingProvider
 
-```typescript
-interface IEmbeddingProvider {
-  readonly modelId: EmbeddingModelId;
-  readonly providerName: ProviderName;
-  readonly dimensions: number;
-  readonly maxTokens: number;
-
-  embed(text: string, options?: EmbedOptions): Promise<EmbeddingResult>;
-  embedBatch(
-    texts: string[],
-    options?: BatchEmbedOptions,
-  ): Promise<BatchEmbeddingResult>;
-  countTokens(text: string): number;
-  healthCheck(): Promise<boolean>;
-}
-```
+Embedding生成プロバイダーの共通インターフェース。モデルID、プロバイダー名、次元数、最大トークン数をプロパティとして持ち、単一テキストの埋め込み生成（embed）、バッチ処理（embedBatch）、トークン数カウント（countTokens）、ヘルスチェック（healthCheck）のメソッドを提供する。
 
 **実装例**:
 
-- `OpenAIEmbeddingProvider`: text-embedding-3-small (1536次元)
-- `Qwen3EmbeddingProvider`: qwen3-embedding (768次元)
+- OpenAIEmbeddingProvider: text-embedding-3-small（1536次元）
+- Qwen3EmbeddingProvider: qwen3-embedding（768次元）
 
 #### ChunkingStrategy
 
-```typescript
-interface ChunkingStrategy {
-  chunk(text: string, options?: ChunkingOptions): Chunk[];
-}
-```
+テキストをチャンクに分割する戦略インターフェース。chunk()メソッドでテキストとオプションを受け取り、チャンク配列を返す。
 
 **実装例**:
 
-- `MarkdownChunkingStrategy`: セクション単位でチャンク
-- `CodeChunkingStrategy`: クラス/関数単位でチャンク
-- `FixedSizeChunkingStrategy`: 固定トークン数でチャンク
-- `SemanticChunkingStrategy`: 意味的境界でチャンク
+- MarkdownChunkingStrategy: セクション単位でチャンク
+- CodeChunkingStrategy: クラス/関数単位でチャンク
+- FixedSizeChunkingStrategy: 固定トークン数でチャンク
+- SemanticChunkingStrategy: 意味的境界でチャンク
 
 ### 6.10.2 データ型
 
 #### Chunk
 
-```typescript
-interface Chunk {
-  id: string;
-  content: string;
-  tokenCount: number;
-  position: {
-    start: number;
-    end: number;
-  };
-  metadata: {
-    documentId?: string;
-    sectionTitle?: string;
-    chunkIndex?: number;
-    [key: string]: unknown;
-  };
-}
-```
+チャンクデータ型。ID、コンテンツ、トークン数、位置情報（start/end）、メタデータ（documentId、sectionTitle、chunkIndex等）を持つ。
 
 #### EmbeddingResult
 
-```typescript
-interface EmbeddingResult {
-  embedding: number[];
-  tokenCount: number;
-  model: string;
-  processingTimeMs: number;
-}
-```
+単一埋め込み生成の結果型。埋め込みベクトル（number配列）、トークン数、モデル名、処理時間（ミリ秒）を含む。
 
 #### BatchEmbeddingResult
 
-```typescript
-interface BatchEmbeddingResult {
-  embeddings: EmbeddingResult[];
-  errors: Array<{
-    index: number;
-    error: string;
-  }>;
-  totalTokens: number;
-  totalProcessingTimeMs: number;
-}
-```
+バッチ埋め込み生成の結果型。埋め込み結果配列、エラー配列（インデックスとエラーメッセージ）、合計トークン数、合計処理時間を含む。
 
 ### 6.10.3 設定型
 
 #### PipelineConfig
 
-```typescript
-interface PipelineConfig {
-  chunking: {
-    strategy: ChunkingStrategy;
-    options: ChunkingOptions;
-  };
-  embedding: {
-    modelId: EmbeddingModelId;
-    fallbackChain?: EmbeddingModelId[];
-    options?: EmbedOptions;
-    batchOptions?: BatchEmbedOptions;
-  };
-  deduplication?: DeduplicationConfig;
-}
-```
+パイプライン設定型。チャンキング設定（戦略とオプション）、埋め込み設定（モデルID、フォールバックチェーン、オプション、バッチオプション）、重複排除設定を含む。
 
 #### ChunkingOptions
 
-```typescript
-interface ChunkingOptions {
-  chunkSize: number; // デフォルト: 512
-  overlap: number; // デフォルト: 50
-  minChunkSize?: number; // デフォルト: 100
-  preserveNewlines?: boolean;
-}
-```
+チャンキングオプション型。チャンクサイズ（デフォルト: 512）、オーバーラップ（デフォルト: 50）、最小チャンクサイズ（デフォルト: 100）、改行保持フラグを含む。
 
 #### BatchEmbedOptions
 
-```typescript
-interface BatchEmbedOptions extends EmbedOptions {
-  batchSize?: number; // デフォルト: 50
-  concurrency?: number; // デフォルト: 2
-  delayBetweenBatches?: number; // ms
-  onProgress?: (current: number, total: number) => void;
-}
-```
+バッチ埋め込みオプション型。バッチサイズ（デフォルト: 50）、並行実行数（デフォルト: 2）、バッチ間遅延（ミリ秒）、進捗コールバックを含む。
 
 #### DeduplicationConfig
 
-```typescript
-interface DeduplicationConfig {
-  enabled: boolean;
-  method: "hash" | "similarity" | "both";
-  similarityThreshold: number; // デフォルト: 0.95
-}
-```
+重複排除設定型。有効化フラグ、方法（hash/similarity/both）、類似度閾値（デフォルト: 0.95）を含む。
 
 ### 6.10.4 出力型
 
 #### PipelineOutput
 
-```typescript
-interface PipelineOutput {
-  documentId: string;
-  chunks: Chunk[];
-  embeddings: number[][];
-  chunksProcessed: number;
-  embeddingsGenerated: number;
-  duplicatesRemoved: number;
-  cacheHits: number;
-  totalProcessingTimeMs: number;
-  stageTimings: StageTimings;
-}
-```
+パイプライン出力型。ドキュメントID、チャンク配列、埋め込み配列、処理済みチャンク数、生成済み埋め込み数、削除済み重複数、キャッシュヒット数、合計処理時間、ステージ別タイミングを含む。
 
 #### StageTimings
 
-```typescript
-interface StageTimings {
-  preprocessing: number;
-  chunking: number;
-  embedding: number;
-  deduplication: number;
-  storage: number;
-}
-```
+ステージ別処理時間型。前処理、チャンキング、埋め込み、重複排除、ストレージの各ステージの処理時間（ミリ秒）を含む。
 
 ### 6.10.5 信頼性設定型
 
 #### RetryOptions
 
-```typescript
-interface RetryOptions {
-  maxRetries: number; // デフォルト: 3
-  initialDelayMs: number; // デフォルト: 1000
-  maxDelayMs: number; // デフォルト: 30000
-  backoffMultiplier: number; // デフォルト: 2
-  jitter: boolean; // デフォルト: true
-}
-```
+リトライオプション型。最大リトライ回数（デフォルト: 3）、初期遅延（デフォルト: 1000ms）、最大遅延（デフォルト: 30000ms）、バックオフ乗数（デフォルト: 2）、ジッター有効化フラグ（デフォルト: true）を含む。
 
 #### RateLimitConfig
 
-```typescript
-interface RateLimitConfig {
-  requestsPerMinute: number;
-  tokensPerMinute: number;
-}
-```
+レート制限設定型。1分あたりリクエスト数、1分あたりトークン数を含む。
 
 #### CircuitBreakerConfig
 
-```typescript
-interface CircuitBreakerConfig {
-  failureThreshold: number; // デフォルト: 5
-  successThreshold: number; // デフォルト: 2
-  timeout: number; // デフォルト: 60000
-}
-```
+サーキットブレーカー設定型。失敗閾値（デフォルト: 5）、成功閾値（デフォルト: 2）、タイムアウト（デフォルト: 60000ms）を含む。
 
 ### 6.10.6 メトリクス型
 
 #### EmbeddingMetric
 
-```typescript
-interface EmbeddingMetric {
-  modelId: EmbeddingModelId;
-  tokenCount: number;
-  processingTimeMs: number;
-  success: boolean;
-  error?: string;
-}
-```
+埋め込み生成メトリクス型。モデルID、トークン数、処理時間、成功フラグ、エラーメッセージ（任意）を含む。
 
 #### PipelineMetric
 
-```typescript
-interface PipelineMetric {
-  documentId: string;
-  chunksProcessed: number;
-  embeddingsGenerated: number;
-  duplicatesRemoved: number;
-  cacheHits: number;
-  totalProcessingTimeMs: number;
-  success: boolean;
-  error?: PipelineError;
-  timestamp: number;
-}
-```
+パイプラインメトリクス型。ドキュメントID、処理済みチャンク数、生成済み埋め込み数、削除済み重複数、キャッシュヒット数、合計処理時間、成功フラグ、エラー（任意）、タイムスタンプを含む。
 
 ### 6.10.7 エラー型
 
 #### EmbeddingError
 
-```typescript
-class EmbeddingError extends Error {
-  constructor(message: string, options?: ErrorOptions);
-}
-```
+埋め込み生成基底エラークラス。メッセージとオプションを受け取る。
 
 **派生エラー**:
 
-- `ProviderError`: プロバイダー固有のエラー
-- `RateLimitError`: レート制限エラー
-- `TimeoutError`: タイムアウトエラー
-- `TokenLimitError`: トークン制限超過エラー
-- `CircuitBreakerError`: サーキットブレーカーエラー
+- ProviderError: プロバイダー固有のエラー
+- RateLimitError: レート制限エラー
+- TimeoutError: タイムアウトエラー
+- TokenLimitError: トークン制限超過エラー
+- CircuitBreakerError: サーキットブレーカーエラー
 
 #### PipelineError
 
-```typescript
-class PipelineError extends Error {
-  stage?: PipelineStage;
-  cause?: Error;
-}
-```
+パイプライン基底エラークラス。ステージ情報と原因エラーを含む。
 
 **派生エラー**:
 
-- `PreprocessingError`: 前処理エラー
-- `ChunkingError`: チャンキングエラー
-- `EmbeddingStageError`: 埋め込み生成エラー
-- `DeduplicationError`: 重複排除エラー
+- PreprocessingError: 前処理エラー
+- ChunkingError: チャンキングエラー
+- EmbeddingStageError: 埋め込み生成エラー
+- DeduplicationError: 重複排除エラー
 
 ### 6.10.8 列挙型
 
 #### DocumentType
 
-```typescript
-type DocumentType = "markdown" | "code" | "text" | "json";
-```
+ドキュメントタイプ列挙型。markdown、code、text、jsonの4つの値を持つ。
 
-#### ChunkingStrategy
+#### ChunkingStrategy（列挙型）
 
-```typescript
-type ChunkingStrategy = "fixed" | "markdown" | "code" | "semantic";
-```
+チャンキング戦略列挙型。fixed（固定サイズ）、markdown（Markdown構造）、code（コード構造）、semantic（意味的境界）の4つの値を持つ。
 
 #### EmbeddingModelId
 
-```typescript
-type EmbeddingModelId =
-  | "EMB-001" // OpenAI text-embedding-3-small
-  | "EMB-002" // Qwen3 embedding
-  | string; // カスタムモデル
-```
+埋め込みモデルID列挙型。EMB-001（OpenAI text-embedding-3-small）、EMB-002（Qwen3 embedding）、またはカスタムモデル名（string）を持つ。
 
 #### ProviderName
 
-```typescript
-type ProviderName = "openai" | "qwen3" | string; // カスタムプロバイダー
-```
+プロバイダー名列挙型。openai、qwen3、またはカスタムプロバイダー名（string）を持つ。
 
 #### PipelineStage
 
-```typescript
-type PipelineStage =
-  | "preprocessing"
-  | "chunking"
-  | "embedding"
-  | "deduplication"
-  | "storage";
-```
+パイプラインステージ列挙型。preprocessing（前処理）、chunking（チャンキング）、embedding（埋め込み生成）、deduplication（重複排除）、storage（ストレージ保存）の5つの値を持つ。
 
 #### CircuitState
 
-```typescript
-type CircuitState = "CLOSED" | "OPEN" | "HALF_OPEN";
-```
+サーキットブレーカー状態列挙型。CLOSED（正常）、OPEN（遮断）、HALF_OPEN（半開）の3つの状態を持つ。
 
 **品質メトリクス**:
 
-- テストカバレッジ: 91.39% (Statement), 87.13% (Branch), 86.79% (Function)
+- テストカバレッジ: 91.39% (Statement)、87.13% (Branch)、86.79% (Function)
 - 全104件の自動テスト成功
 - 全14件の手動テスト成功
 

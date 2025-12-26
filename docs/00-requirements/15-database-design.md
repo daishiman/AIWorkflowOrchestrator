@@ -528,20 +528,20 @@ Supabase Auth と連携するユーザープロフィールテーブル。
 
 セッション内の個別の発言（ユーザーまたはアシスタント）を管理する。
 
-| カラム        | 型      | NULL | 説明                                                   |
-| ------------- | ------- | ---- | ------------------------------------------------------ |
-| id            | TEXT    | NO   | UUID主キー（v4）                                       |
-| session_id    | TEXT    | NO   | 親セッションID（外部キー: ON DELETE CASCADE）          |
-| role          | TEXT    | NO   | メッセージロール（user / assistant）                   |
-| content       | TEXT    | NO   | メッセージ本文（1〜100,000文字）                       |
-| message_index | INTEGER | NO   | セッション内の順序（0から連番）                        |
-| timestamp     | TEXT    | NO   | メッセージ送信日時（ISO 8601形式、UTC）                |
-| llm_provider  | TEXT    | YES  | LLMプロバイダー名（openai / anthropic / google / xai） |
-| llm_model     | TEXT    | YES  | LLMモデル名（例: claude-3-5-sonnet-20241022）          |
-| llm_metadata  | JSON    | YES  | トークン使用量、応答時間、モデルパラメータ等           |
-| attachments   | JSON    | NO   | 添付ファイル情報（JSON配列形式）                       |
-| system_prompt | TEXT    | YES  | システムプロンプト（将来対応）                         |
-| metadata      | JSON    | NO   | 拡張メタデータ（将来の拡張用）                         |
+| カラム        | 型      | NULL | 説明                                                                          |
+| ------------- | ------- | ---- | ----------------------------------------------------------------------------- |
+| id            | TEXT    | NO   | UUID主キー（v4）                                                              |
+| session_id    | TEXT    | NO   | 親セッションID（外部キー: ON DELETE CASCADE）                                 |
+| role          | TEXT    | NO   | メッセージロール（user / assistant）                                          |
+| content       | TEXT    | NO   | メッセージ本文（1〜100,000文字）                                              |
+| message_index | INTEGER | NO   | セッション内の順序（0から連番）                                               |
+| timestamp     | TEXT    | NO   | メッセージ送信日時（ISO 8601形式、UTC）                                       |
+| llm_provider  | TEXT    | YES  | **LLMプロバイダー名（Phase 9で実装済み: openai / anthropic / google / xai）** |
+| llm_model     | TEXT    | YES  | **LLMモデル名（Phase 9で実装済み、例: gpt-5.2-instant, claude-sonnet-4.5）**  |
+| llm_metadata  | JSON    | YES  | トークン使用量、応答時間、モデルパラメータ等                                  |
+| attachments   | JSON    | NO   | 添付ファイル情報（JSON配列形式）                                              |
+| system_prompt | TEXT    | YES  | **システムプロンプト（Phase 9で実装済み、AI振る舞いカスタマイズ用）**         |
+| metadata      | JSON    | NO   | 拡張メタデータ（将来の拡張用）                                                |
 
 **llm_metadata の構造**:
 
