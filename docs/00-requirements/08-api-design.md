@@ -778,6 +778,174 @@ if (result.success) {
 
 ---
 
+## 8.16 Embedding Generation API
+
+> **実装**: `packages/shared/src/services/embedding/`
+
+### 8.16.1 主要インターフェース
+
+#### ドキュメント埋め込み処理
+
+**メソッド**: `EmbeddingPipeline.process()`
+
+```typescript
+process(
+  input: PipelineInput,
+  config?: PipelineConfig,
+  onProgress?: (progress: PipelineProgress) => void
+): Promise<PipelineOutput>
+```
+
+**入力パラメータ**:
+
+| パラメータ                                | 型           | 説明                               |
+| ----------------------------------------- | ------------ | ---------------------------------- |
+| `input.documentId`                        | string       | ドキュメント識別子                 |
+| `input.documentType`                      | DocumentType | markdown / code / text             |
+| `input.text`                              | string       | ドキュメントテキスト               |
+| `input.metadata`                          | object       | メタデータ（オプション）           |
+| `config.chunking.strategy`                | string       | fixed / markdown / code / semantic |
+| `config.chunking.options.chunkSize`       | number       | 512（デフォルト）                  |
+| `config.embedding.modelId`                | string       | EMB-002等                          |
+| `config.embedding.batchOptions.batchSize` | number       | 50（デフォルト）                   |
+| `onProgress`                              | function     | 進捗コールバック                   |
+
+**出力パラメータ**:
+
+| フィールド              | 型         | 説明                   |
+| ----------------------- | ---------- | ---------------------- |
+| `documentId`            | string     | ドキュメントID         |
+| `chunks`                | Chunk[]    | 生成されたチャンク配列 |
+| `embeddings`            | number[][] | 埋め込みベクトル配列   |
+| `chunksProcessed`       | number     | 処理されたチャンク数   |
+| `embeddingsGenerated`   | number     | 生成された埋め込み数   |
+| `duplicatesRemoved`     | number     | 重複排除数             |
+| `cacheHits`             | number     | キャッシュヒット数     |
+| `totalProcessingTimeMs` | number     | 総処理時間（ms）       |
+| `stageTimings`          | object     | ステージ別処理時間     |
+
+#### 単一埋め込み生成
+
+**メソッド**: `EmbeddingService.embed()`
+
+```typescript
+embed(
+  text: string,
+  options?: EmbedOptions
+): Promise<EmbeddingResult>
+```
+
+**入力パラメータ**:
+
+| パラメータ        | 型           | 説明                 |
+| ----------------- | ------------ | -------------------- |
+| `text`            | string       | 埋め込み対象テキスト |
+| `options.timeout` | number       | タイムアウト（ms）   |
+| `options.retry`   | RetryOptions | リトライ設定         |
+
+**出力パラメータ**:
+
+| フィールド         | 型       | 説明             |
+| ------------------ | -------- | ---------------- |
+| `embedding`        | number[] | 埋め込みベクトル |
+| `tokenCount`       | number   | トークン数       |
+| `model`            | string   | 使用モデル       |
+| `processingTimeMs` | number   | 処理時間（ms）   |
+
+#### バッチ埋め込み生成
+
+**メソッド**: `EmbeddingService.embedBatch()`
+
+```typescript
+embedBatch(
+  texts: string[],
+  options?: BatchEmbedOptions
+): Promise<BatchEmbeddingResult>
+```
+
+**入力パラメータ**:
+
+| パラメータ                    | 型       | 説明                           |
+| ----------------------------- | -------- | ------------------------------ |
+| `texts`                       | string[] | テキスト配列                   |
+| `options.batchSize`           | number   | バッチサイズ（デフォルト: 50） |
+| `options.concurrency`         | number   | 並列度（デフォルト: 2）        |
+| `options.delayBetweenBatches` | number   | バッチ間遅延（ms）             |
+| `options.onProgress`          | function | 進捗コールバック               |
+
+**出力パラメータ**:
+
+| フィールド              | 型                    | 説明             |
+| ----------------------- | --------------------- | ---------------- |
+| `embeddings`            | EmbeddingResult[]     | 埋め込み結果配列 |
+| `errors`                | Array<{index, error}> | エラー配列       |
+| `totalTokens`           | number                | 総トークン数     |
+| `totalProcessingTimeMs` | number                | 総処理時間（ms） |
+
+#### チャンキング
+
+**メソッド**: `ChunkingService.chunk()`
+
+```typescript
+chunk(
+  input: ChunkingInput,
+  config: ChunkingConfig
+): Promise<ChunkingOutput>
+```
+
+**入力パラメータ**:
+
+| パラメータ                 | 型               | 説明                     |
+| -------------------------- | ---------------- | ------------------------ |
+| `input.text`               | string           | チャンキング対象テキスト |
+| `input.documentType`       | DocumentType     | ドキュメントタイプ       |
+| `config.strategy`          | ChunkingStrategy | チャンキング戦略         |
+| `config.options.chunkSize` | number           | 512（デフォルト）        |
+| `config.options.overlap`   | number           | 50（デフォルト）         |
+
+**出力パラメータ**:
+
+| フィールド                | 型      | 説明               |
+| ------------------------- | ------- | ------------------ |
+| `chunks`                  | Chunk[] | チャンク配列       |
+| `statistics.totalChunks`  | number  | 総チャンク数       |
+| `statistics.totalTokens`  | number  | 総トークン数       |
+| `statistics.avgChunkSize` | number  | 平均チャンクサイズ |
+| `statistics.minChunkSize` | number  | 最小チャンクサイズ |
+| `statistics.maxChunkSize` | number  | 最大チャンクサイズ |
+
+### 8.16.2 エラーコード
+
+| コード                  | 説明                     | HTTPステータス |
+| ----------------------- | ------------------------ | -------------- |
+| `EMBEDDING_ERROR`       | 埋め込み生成エラー       | 500            |
+| `PROVIDER_ERROR`        | プロバイダーエラー       | 502            |
+| `RATE_LIMIT_ERROR`      | レート制限超過           | 429            |
+| `TIMEOUT_ERROR`         | タイムアウト             | 504            |
+| `TOKEN_LIMIT_ERROR`     | トークン制限超過         | 400            |
+| `CIRCUIT_BREAKER_ERROR` | サーキットブレーカー開放 | 503            |
+| `CHUNKING_ERROR`        | チャンキングエラー       | 500            |
+| `PREPROCESSING_ERROR`   | 前処理エラー             | 500            |
+| `DEDUPLICATION_ERROR`   | 重複排除エラー           | 500            |
+
+### 8.16.3 パフォーマンス指標
+
+**品質ゲート基準**:
+
+| 指標                 | 基準値           | 実測値（Phase 8） |
+| -------------------- | ---------------- | ----------------- |
+| 1000チャンク処理時間 | ≤ 5分            | 2.17秒            |
+| メモリ使用量         | ≤ 500MB          | 8.90MB            |
+| スループット         | ≥ 100 chunks/min | 27,667 chunks/min |
+
+**推奨設定**:
+
+- バッチサイズ: 50チャンク/バッチ
+- 並列度: 2
+- リトライ: 最大3回
+
+---
+
 ## 関連ドキュメント
 
 - [エラーハンドリング仕様](./07-error-handling.md)

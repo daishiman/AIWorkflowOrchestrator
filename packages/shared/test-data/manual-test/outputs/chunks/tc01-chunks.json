@@ -1,0 +1,52 @@
+[
+  {
+    "content": "# Simple Markdown Test\n",
+    "metadata": {
+      "filePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20251226-000434/packages/shared/test-data/manual-test/markdown/simple.md",
+      "sectionTitle": "Simple Markdown Test",
+      "chunkIndex": 0,
+      "totalChunks": 5
+    },
+    "size": 23
+  },
+  {
+    "content": "## Introduction\n\nThis is a simple markdown document for testing chunking functionality.\n",
+    "metadata": {
+      "filePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20251226-000434/packages/shared/test-data/manual-test/markdown/simple.md",
+      "sectionTitle": "Introduction",
+      "chunkIndex": 1,
+      "totalChunks": 5
+    },
+    "size": 88
+  },
+  {
+    "content": "## Features\n\n- Feature 1: Text splitting\n- Feature 2: Metadata extraction\n- Feature 3: Context preservation\n",
+    "metadata": {
+      "filePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20251226-000434/packages/shared/test-data/manual-test/markdown/simple.md",
+      "sectionTitle": "Features",
+      "chunkIndex": 2,
+      "totalChunks": 5
+    },
+    "size": 108
+  },
+  {
+    "content": "## Code Example\n\n```typescript\nconst example = \"Hello, World!\";\nconsole.log(example);\n```\n",
+    "metadata": {
+      "filePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20251226-000434/packages/shared/test-data/manual-test/markdown/simple.md",
+      "sectionTitle": "Code Example",
+      "chunkIndex": 3,
+      "totalChunks": 5
+    },
+    "size": 90
+  },
+  {
+    "content": "## Conclusion\n\nThis document tests basic markdown chunking.\n",
+    "metadata": {
+      "filePath": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20251226-000434/packages/shared/test-data/manual-test/markdown/simple.md",
+      "sectionTitle": "Conclusion",
+      "chunkIndex": 4,
+      "totalChunks": 5
+    },
+    "size": 60
+  }
+]

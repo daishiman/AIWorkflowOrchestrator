@@ -75,8 +75,10 @@
     "@supabase/supabase-js": "^2.86.2",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.39.0",
+    "openai": "^6.15.0",
     "papaparse": "^5.5.3",
     "react-router-dom": "^7.11.0",
+    "tiktoken": "^1.0.22",
     "turndown": "^7.2.0",
     "zod": "^4.1.13"
   },

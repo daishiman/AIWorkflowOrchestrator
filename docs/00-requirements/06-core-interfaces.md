@@ -1518,6 +1518,332 @@ HybridRAG検索エンジンのクエリ・結果インターフェース。Keywo
 
 ---
 
+## 6.10 Embedding Generation 型定義
+
+> **実装**: `packages/shared/src/services/embedding/`, `packages/shared/src/services/chunking/`
+> **詳細設計**: `docs/30-workflows/embedding-generation-pipeline/`
+
+### 6.10.1 プロバイダーインターフェース
+
+#### IEmbeddingProvider
+
+```typescript
+interface IEmbeddingProvider {
+  readonly modelId: EmbeddingModelId;
+  readonly providerName: ProviderName;
+  readonly dimensions: number;
+  readonly maxTokens: number;
+
+  embed(text: string, options?: EmbedOptions): Promise<EmbeddingResult>;
+  embedBatch(
+    texts: string[],
+    options?: BatchEmbedOptions,
+  ): Promise<BatchEmbeddingResult>;
+  countTokens(text: string): number;
+  healthCheck(): Promise<boolean>;
+}
+```
+
+**実装例**:
+
+- `OpenAIEmbeddingProvider`: text-embedding-3-small (1536次元)
+- `Qwen3EmbeddingProvider`: qwen3-embedding (768次元)
+
+#### ChunkingStrategy
+
+```typescript
+interface ChunkingStrategy {
+  chunk(text: string, options?: ChunkingOptions): Chunk[];
+}
+```
+
+**実装例**:
+
+- `MarkdownChunkingStrategy`: セクション単位でチャンク
+- `CodeChunkingStrategy`: クラス/関数単位でチャンク
+- `FixedSizeChunkingStrategy`: 固定トークン数でチャンク
+- `SemanticChunkingStrategy`: 意味的境界でチャンク
+
+### 6.10.2 データ型
+
+#### Chunk
+
+```typescript
+interface Chunk {
+  id: string;
+  content: string;
+  tokenCount: number;
+  position: {
+    start: number;
+    end: number;
+  };
+  metadata: {
+    documentId?: string;
+    sectionTitle?: string;
+    chunkIndex?: number;
+    [key: string]: unknown;
+  };
+}
+```
+
+#### EmbeddingResult
+
+```typescript
+interface EmbeddingResult {
+  embedding: number[];
+  tokenCount: number;
+  model: string;
+  processingTimeMs: number;
+}
+```
+
+#### BatchEmbeddingResult
+
+```typescript
+interface BatchEmbeddingResult {
+  embeddings: EmbeddingResult[];
+  errors: Array<{
+    index: number;
+    error: string;
+  }>;
+  totalTokens: number;
+  totalProcessingTimeMs: number;
+}
+```
+
+### 6.10.3 設定型
+
+#### PipelineConfig
+
+```typescript
+interface PipelineConfig {
+  chunking: {
+    strategy: ChunkingStrategy;
+    options: ChunkingOptions;
+  };
+  embedding: {
+    modelId: EmbeddingModelId;
+    fallbackChain?: EmbeddingModelId[];
+    options?: EmbedOptions;
+    batchOptions?: BatchEmbedOptions;
+  };
+  deduplication?: DeduplicationConfig;
+}
+```
+
+#### ChunkingOptions
+
+```typescript
+interface ChunkingOptions {
+  chunkSize: number; // デフォルト: 512
+  overlap: number; // デフォルト: 50
+  minChunkSize?: number; // デフォルト: 100
+  preserveNewlines?: boolean;
+}
+```
+
+#### BatchEmbedOptions
+
+```typescript
+interface BatchEmbedOptions extends EmbedOptions {
+  batchSize?: number; // デフォルト: 50
+  concurrency?: number; // デフォルト: 2
+  delayBetweenBatches?: number; // ms
+  onProgress?: (current: number, total: number) => void;
+}
+```
+
+#### DeduplicationConfig
+
+```typescript
+interface DeduplicationConfig {
+  enabled: boolean;
+  method: "hash" | "similarity" | "both";
+  similarityThreshold: number; // デフォルト: 0.95
+}
+```
+
+### 6.10.4 出力型
+
+#### PipelineOutput
+
+```typescript
+interface PipelineOutput {
+  documentId: string;
+  chunks: Chunk[];
+  embeddings: number[][];
+  chunksProcessed: number;
+  embeddingsGenerated: number;
+  duplicatesRemoved: number;
+  cacheHits: number;
+  totalProcessingTimeMs: number;
+  stageTimings: StageTimings;
+}
+```
+
+#### StageTimings
+
+```typescript
+interface StageTimings {
+  preprocessing: number;
+  chunking: number;
+  embedding: number;
+  deduplication: number;
+  storage: number;
+}
+```
+
+### 6.10.5 信頼性設定型
+
+#### RetryOptions
+
+```typescript
+interface RetryOptions {
+  maxRetries: number; // デフォルト: 3
+  initialDelayMs: number; // デフォルト: 1000
+  maxDelayMs: number; // デフォルト: 30000
+  backoffMultiplier: number; // デフォルト: 2
+  jitter: boolean; // デフォルト: true
+}
+```
+
+#### RateLimitConfig
+
+```typescript
+interface RateLimitConfig {
+  requestsPerMinute: number;
+  tokensPerMinute: number;
+}
+```
+
+#### CircuitBreakerConfig
+
+```typescript
+interface CircuitBreakerConfig {
+  failureThreshold: number; // デフォルト: 5
+  successThreshold: number; // デフォルト: 2
+  timeout: number; // デフォルト: 60000
+}
+```
+
+### 6.10.6 メトリクス型
+
+#### EmbeddingMetric
+
+```typescript
+interface EmbeddingMetric {
+  modelId: EmbeddingModelId;
+  tokenCount: number;
+  processingTimeMs: number;
+  success: boolean;
+  error?: string;
+}
+```
+
+#### PipelineMetric
+
+```typescript
+interface PipelineMetric {
+  documentId: string;
+  chunksProcessed: number;
+  embeddingsGenerated: number;
+  duplicatesRemoved: number;
+  cacheHits: number;
+  totalProcessingTimeMs: number;
+  success: boolean;
+  error?: PipelineError;
+  timestamp: number;
+}
+```
+
+### 6.10.7 エラー型
+
+#### EmbeddingError
+
+```typescript
+class EmbeddingError extends Error {
+  constructor(message: string, options?: ErrorOptions);
+}
+```
+
+**派生エラー**:
+
+- `ProviderError`: プロバイダー固有のエラー
+- `RateLimitError`: レート制限エラー
+- `TimeoutError`: タイムアウトエラー
+- `TokenLimitError`: トークン制限超過エラー
+- `CircuitBreakerError`: サーキットブレーカーエラー
+
+#### PipelineError
+
+```typescript
+class PipelineError extends Error {
+  stage?: PipelineStage;
+  cause?: Error;
+}
+```
+
+**派生エラー**:
+
+- `PreprocessingError`: 前処理エラー
+- `ChunkingError`: チャンキングエラー
+- `EmbeddingStageError`: 埋め込み生成エラー
+- `DeduplicationError`: 重複排除エラー
+
+### 6.10.8 列挙型
+
+#### DocumentType
+
+```typescript
+type DocumentType = "markdown" | "code" | "text" | "json";
+```
+
+#### ChunkingStrategy
+
+```typescript
+type ChunkingStrategy = "fixed" | "markdown" | "code" | "semantic";
+```
+
+#### EmbeddingModelId
+
+```typescript
+type EmbeddingModelId =
+  | "EMB-001" // OpenAI text-embedding-3-small
+  | "EMB-002" // Qwen3 embedding
+  | string; // カスタムモデル
+```
+
+#### ProviderName
+
+```typescript
+type ProviderName = "openai" | "qwen3" | string; // カスタムプロバイダー
+```
+
+#### PipelineStage
+
+```typescript
+type PipelineStage =
+  | "preprocessing"
+  | "chunking"
+  | "embedding"
+  | "deduplication"
+  | "storage";
+```
+
+#### CircuitState
+
+```typescript
+type CircuitState = "CLOSED" | "OPEN" | "HALF_OPEN";
+```
+
+**品質メトリクス**:
+
+- テストカバレッジ: 91.39% (Statement), 87.13% (Branch), 86.79% (Function)
+- 全104件の自動テスト成功
+- 全14件の手動テスト成功
+
+---
+
 ## 関連ドキュメント
 
 - [アーキテクチャ設計](./05-architecture.md)
