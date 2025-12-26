@@ -581,6 +581,89 @@ Supabase Auth と連携するユーザープロフィールテーブル。
 - 設計レビュー: `docs/30-workflows/rag-pipeline/conv-07-02-p0-improvement-review.md` ✅
 - 手動テスト結果: `docs/30-workflows/rag-pipeline/conv-08-01-manual-test-results.md` ✅
 
+#### files（RAGファイルメタデータ）
+
+RAGパイプラインに投入されるファイルのメタデータを管理する。
+
+| カラム        | 型      | NULL | 説明                                                 |
+| ------------- | ------- | ---- | ---------------------------------------------------- |
+| id            | TEXT    | NO   | 主キー（ULID形式を推奨）                             |
+| name          | TEXT    | NO   | ファイル名（拡張子を含む）                           |
+| path          | TEXT    | NO   | ファイルの絶対パス                                   |
+| mime_type     | TEXT    | NO   | MIMEタイプ（例: "text/markdown", "application/pdf"） |
+| category      | TEXT    | NO   | ファイルカテゴリ（例: "document", "code", "data"）   |
+| size          | INTEGER | NO   | ファイルサイズ（バイト単位）                         |
+| hash          | TEXT    | NO   | SHA-256ハッシュ値（重複排除に使用）                  |
+| encoding      | TEXT    | NO   | 文字エンコーディング（デフォルト: "utf-8"）          |
+| last_modified | INTEGER | NO   | ファイルシステム上の最終更新日時                     |
+| metadata      | JSON    | NO   | カスタムメタデータ（デフォルト: "{}"）               |
+| created_at    | INTEGER | NO   | レコード作成日時（UNIX時刻）                         |
+| updated_at    | INTEGER | NO   | レコード更新日時（UNIX時刻）                         |
+| deleted_at    | INTEGER | YES  | 論理削除日時（ソフトデリート用）                     |
+
+**設計上の注意点**:
+
+- `hash`カラムで重複ファイルを検出し、同一ファイルの再登録を防止
+- ソフトデリート対応により、削除されたファイルも履歴として保持可能
+- 1つのファイルは複数のチャンク（chunksテーブル）を持つ（1:N関係）
+
+#### chunks（RAGチャンク + FTS5全文検索）
+
+ファイルを分割したチャンクを管理し、FTS5による全文検索を提供する。
+
+| カラム             | 型      | NULL | 説明                                               |
+| ------------------ | ------- | ---- | -------------------------------------------------- |
+| id                 | TEXT    | NO   | UUID主キー                                         |
+| file_id            | TEXT    | NO   | 親ファイルID（外部キー: ON DELETE CASCADE）        |
+| content            | TEXT    | NO   | チャンク本文（FTS5インデックスに同期）             |
+| contextual_content | TEXT    | YES  | コンテキスト付きテキスト（親見出し等を含む）       |
+| chunk_index        | INTEGER | NO   | ファイル内のチャンク順序（0始まり）                |
+| start_line         | INTEGER | YES  | 開始行番号（1始まり）                              |
+| end_line           | INTEGER | YES  | 終了行番号                                         |
+| start_char         | INTEGER | YES  | 開始文字位置（バイトオフセット、0始まり）          |
+| end_char           | INTEGER | YES  | 終了文字位置                                       |
+| parent_header      | TEXT    | YES  | 親見出しテキスト（Markdown階層構造）               |
+| strategy           | TEXT    | NO   | チャンキング戦略（fixed_size/semantic/sentence等） |
+| token_count        | INTEGER | YES  | トークン数（OpenAI tiktoken cl100k_base基準）      |
+| hash               | TEXT    | NO   | SHA-256ハッシュ（重複検出用、UNIQUE制約）          |
+| prev_chunk_id      | TEXT    | YES  | 前のチャンクID（自己参照外部キー）                 |
+| next_chunk_id      | TEXT    | YES  | 次のチャンクID（自己参照外部キー）                 |
+| overlap_tokens     | INTEGER | NO   | オーバーラップトークン数（デフォルト: 0）          |
+| metadata           | JSON    | YES  | 拡張メタデータ（言語、関数名、重要度など）         |
+| created_at         | INTEGER | NO   | 作成日時（UNIX時刻）                               |
+| updated_at         | INTEGER | NO   | 更新日時（UNIX時刻）                               |
+
+**設計上の注意点**:
+
+- `file_id`には`ON DELETE CASCADE`を設定し、親ファイル削除時にチャンクも自動削除
+- FTS5仮想テーブル（`chunks_fts`）とトリガーにより全文検索インデックスと自動同期
+- `token_count`は意図的非正規化（tiktoken計算コスト削減のため）
+- チャンク間の連続性を`prev_chunk_id`/`next_chunk_id`で管理
+
+**FTS5全文検索**:
+
+| 機能           | 説明                                               |
+| -------------- | -------------------------------------------------- |
+| 仮想テーブル   | `chunks_fts` - External Content Tableパターン      |
+| トークナイザー | `unicode61 remove_diacritics 2` - 日本語/英語対応  |
+| スコアリング   | BM25 + Sigmoid正規化（0-1スケール）                |
+| 検索モード     | キーワード検索、フレーズ検索、NEAR検索（近接検索） |
+| 同期方式       | INSERT/UPDATE/DELETEトリガーによる自動同期         |
+
+**参照ドキュメント**:
+
+- スキーマ実装:
+  - `packages/shared/src/db/schema/files.ts` ✅
+  - `packages/shared/src/db/schema/chunks.ts` ✅
+  - `packages/shared/src/db/schema/chunks-fts.ts` ✅
+- 検索クエリ: `packages/shared/src/db/queries/chunks-search.ts` ✅
+- マイグレーション:
+  - `packages/shared/drizzle/migrations/0002_short_norrin_radd.sql` ✅ (files/conversions/extractedMetadata)
+  - `packages/shared/drizzle/migrations/0003_create_chunks_fts.sql` ✅ (chunks + FTS5)
+- 詳細設計: `docs/30-workflows/rag-conversion-system/requirements-chunks-fts5.md` ✅
+- テスト結果: `docs/30-workflows/rag-conversion-system/manual-test-report-chunks-fts5.md` ✅
+- 最終レビュー: `docs/30-workflows/rag-conversion-system/final-review-chunks-fts5.md` ✅
+
 ### インデックス設計
 
 | テーブル            | インデックス名                      | カラム                        | 用途                                   |
@@ -607,6 +690,15 @@ Supabase Auth と連携するユーザープロフィールテーブル。
 | chat_messages       | idx_chat_messages_role              | role                          | ロール別フィルタリング                 |
 | chat_messages       | idx_chat_messages_session_timestamp | session_id, timestamp         | カバリングインデックス（日時降順取得） |
 | chat_messages       | idx_chat_messages_session_message   | session_id, message_index     | メッセージ順序の一意性保証（UNIQUE）   |
+| files               | files_hash_idx                      | hash                          | 重複ファイル検出（UNIQUE）             |
+| files               | files_path_idx                      | path                          | ファイルパス検索                       |
+| files               | files_mime_type_idx                 | mime_type                     | MIMEタイプ別フィルタリング             |
+| files               | files_category_idx                  | category                      | カテゴリ別ファイル一覧取得             |
+| files               | files_created_at_idx                | created_at                    | 時系列ソート                           |
+| chunks              | idx_chunks_file_id                  | file_id                       | ファイル単位の全チャンク取得           |
+| chunks              | idx_chunks_hash                     | hash                          | 重複チャンク検出（UNIQUE）             |
+| chunks              | idx_chunks_chunk_index              | file_id, chunk_index          | ファイル内の順序付きチャンク取得       |
+| chunks              | idx_chunks_strategy                 | strategy                      | 戦略別チャンク統計                     |
 
 ---
 
