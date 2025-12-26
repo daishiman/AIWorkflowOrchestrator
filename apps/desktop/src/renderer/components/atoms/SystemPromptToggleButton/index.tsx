@@ -26,6 +26,7 @@ export function SystemPromptToggleButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
+      data-testid="system-prompt-toggle-button"
       className={clsx(
         "relative flex items-center justify-center",
         "w-8 h-8 rounded-md",

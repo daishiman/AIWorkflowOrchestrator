@@ -25,6 +25,11 @@ export function isDevMode(): boolean {
     return false;
   }
 
+  // 🔧 一時的な修正: 開発環境では常に認証をスキップ
+  // TODO: 認証機能を復活させる際にこの行を削除
+  // 関連タスク: docs/30-workflows/unassigned-task/task-auth-callback-url-scheme.md
+  return true;
+
   // E2E環境フラグ
   if (import.meta.env.VITE_E2E_MODE === "true") {
     return true;
@@ -70,11 +75,14 @@ export interface MockSession {
 
 /**
  * デフォルトのモックユーザー
+ *
+ * NOTE: 認証機能が復活するまで、実際のユーザー情報を使用
+ * 実際のユーザーID: 34d1ff23-db41-4201-9ede-4ba55b6ea202
  */
 export const DEFAULT_MOCK_USER: MockUser = {
-  id: "dev-user-123",
-  email: "dev@example.com",
-  displayName: "Development User",
+  id: "34d1ff23-db41-4201-9ede-4ba55b6ea202",
+  email: "daishimanju@gmail.com",
+  displayName: "Daishi Manju",
   avatarUrl: null,
   provider: "google" as OAuthProvider,
   createdAt: new Date().toISOString(),

@@ -12,7 +12,7 @@ export interface SystemPromptPanelProps {
   templates: PromptTemplate[];
   selectedTemplateId?: string | null;
   onSelectTemplate: (template: PromptTemplate) => void;
-  onSaveTemplate: (content: string) => void;
+  onSaveTemplate: () => void;
   onDeleteTemplate?: (templateId: string) => void;
   onClear: () => void;
   className?: string;
@@ -41,13 +41,10 @@ export function SystemPromptPanel({
 
   const hasContent = systemPrompt.trim().length > 0;
 
-  const handleSaveClick = () => {
-    onSaveTemplate(systemPrompt);
-  };
-
   return (
     <div
       id="system-prompt-panel"
+      data-testid="system-prompt-panel"
       role="region"
       aria-labelledby="system-prompt-label"
       className={clsx(
@@ -66,7 +63,7 @@ export function SystemPromptPanel({
         templates={templates}
         selectedTemplateId={selectedTemplateId}
         onSelectTemplate={onSelectTemplate}
-        onSaveClick={handleSaveClick}
+        onSaveClick={onSaveTemplate}
         onClearClick={onClear}
         hasContent={hasContent}
         onDeleteTemplate={onDeleteTemplate}
