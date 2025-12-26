@@ -778,11 +778,123 @@ if (result.success) {
 
 ---
 
-## 8.16 Embedding Generation API
+## 8.16 チャンク検索API（RAG全文検索）
+
+### 8.16.1 概要
+
+FTS5全文検索機能を利用したチャンク検索APIの設計。将来的にREST APIまたはElectron IPCとして実装予定。
+
+**実装状況**: データベース層（chunks-search.ts）のみ実装済み、API層は未実装
+
+### 8.16.2 検索エンドポイント（将来実装）
+
+#### キーワード検索
+
+**エンドポイント**: `POST /api/v1/chunks/search/keyword`
+
+**リクエストボディ**:
+
+| フィールド      | 型     | 必須 | 説明                                    |
+| --------------- | ------ | ---- | --------------------------------------- |
+| query           | string | Yes  | 検索クエリ（複数キーワードOR検索）      |
+| fileId          | string | No   | ファイルIDで絞り込み（ULID形式）        |
+| limit           | number | No   | 取得件数（デフォルト: 10、最大: 100）   |
+| offset          | number | No   | オフセット（デフォルト: 0）             |
+| highlightTags   | object | No   | ハイライトタグ（開始/終了タグ）         |
+| bm25ScaleFactor | number | No   | BM25スケールファクタ（デフォルト: 0.3） |
+
+**レスポンス**:
+
+| フィールド            | 型      | 説明                                 |
+| --------------------- | ------- | ------------------------------------ |
+| results               | array   | 検索結果配列                         |
+| results[].id          | string  | チャンクID                           |
+| results[].content     | string  | チャンク本文                         |
+| results[].highlighted | string  | ハイライト適用済み本文（オプション） |
+| results[].score       | number  | 関連度スコア（0.0 - 1.0）            |
+| results[].fileId      | string  | 親ファイルID                         |
+| results[].chunkIndex  | number  | ファイル内の順序                     |
+| totalCount            | number  | 総ヒット数                           |
+| hasMore               | boolean | 次ページの有無                       |
+
+#### フレーズ検索
+
+**エンドポイント**: `POST /api/v1/chunks/search/phrase`
+
+**リクエストボディ**: キーワード検索と同じ（queryは完全一致フレーズ）
+
+**動作**: 語順を保持した完全一致検索
+
+#### NEAR検索（近接検索）
+
+**エンドポイント**: `POST /api/v1/chunks/search/near`
+
+**リクエストボディ**:
+
+| フィールド   | 型       | 必須 | 説明                                |
+| ------------ | -------- | ---- | ----------------------------------- |
+| terms        | string[] | Yes  | 検索キーワード配列（2個以上）       |
+| nearDistance | number   | No   | 近接距離（デフォルト: 5、最大: 50） |
+| fileId       | string   | No   | ファイルIDで絞り込み                |
+| limit        | number   | No   | 取得件数                            |
+| offset       | number   | No   | オフセット                          |
+
+**動作**: 指定距離内にすべてのキーワードが出現するチャンクを検索
+
+### 8.16.3 性能目標
+
+| 指標               | 目標値（10,000チャンク） | 備考             |
+| ------------------ | ------------------------ | ---------------- |
+| キーワード検索速度 | < 100ms                  | 95パーセンタイル |
+| フレーズ検索速度   | < 100ms                  | 95パーセンタイル |
+| NEAR検索速度       | < 150ms                  | 95パーセンタイル |
+| 並行検索（10req）  | < 100ms（平均）          | スループット維持 |
+
+### 8.16.4 使用例（データベース層）
+
+現在実装済みのデータベース層APIの使用例：
+
+```typescript
+// キーワード検索
+import { searchChunksByKeyword } from "@repo/shared/db/queries/chunks-search";
+
+const results = await searchChunksByKeyword(db, {
+  query: "TypeScript JavaScript",
+  limit: 10,
+  offset: 0,
+});
+
+// フレーズ検索
+const phraseResults = await searchChunksByPhrase(db, {
+  query: "typed superset",
+  limit: 10,
+});
+
+// NEAR検索
+const nearResults = await searchChunksByNear(db, ["JavaScript", "library"], {
+  nearDistance: 5,
+  limit: 10,
+});
+```
+
+### 8.16.5 実装ステータス
+
+| レイヤー       | 実装状況    | 備考                       |
+| -------------- | ----------- | -------------------------- |
+| データベース層 | ✅ 実装済み | `queries/chunks-search.ts` |
+| サービス層     | 未実装      | 将来追加予定               |
+| REST API層     | 未実装      | Next.js App Router         |
+| Desktop IPC層  | 未実装      | Electron IPC               |
+
+**参照実装**: `packages/shared/src/db/queries/chunks-search.ts`
+
+---
+
+## 8.17 Embedding Generation API
 
 > **実装**: `packages/shared/src/services/embedding/`
 
-### 8.16.1 主要インターフェース
+### 8.17.1 主要インターフェース
 
 #### ドキュメント埋め込み処理
 
@@ -869,80 +981,69 @@ embedBatch(
 | ----------------------------- | -------- | ------------------------------ |
 | `texts`                       | string[] | テキスト配列                   |
 | `options.batchSize`           | number   | バッチサイズ（デフォルト: 50） |
-| `options.concurrency`         | number   | 並列度（デフォルト: 2）        |
-| `options.delayBetweenBatches` | number   | バッチ間遅延（ms）             |
-| `options.onProgress`          | function | 進捗コールバック               |
+| `options.concurrency`         | number   | 並列数（デフォルト: 2）        |
+| `options.enableDeduplication` | boolean  | 重複排除（デフォルト: true）   |
 
 **出力パラメータ**:
 
-| フィールド              | 型                    | 説明             |
-| ----------------------- | --------------------- | ---------------- |
-| `embeddings`            | EmbeddingResult[]     | 埋め込み結果配列 |
-| `errors`                | Array<{index, error}> | エラー配列       |
-| `totalTokens`           | number                | 総トークン数     |
-| `totalProcessingTimeMs` | number                | 総処理時間（ms） |
+| フィールド         | 型         | 説明                 |
+| ------------------ | ---------- | -------------------- |
+| `embeddings`       | number[][] | 埋め込みベクトル配列 |
+| `duplicatesRemoved | number     | 重複排除数           |
+| `totalTimeMs`      | number     | 総処理時間（ms）     |
 
-#### チャンキング
+#### チャンク生成
 
 **メソッド**: `ChunkingService.chunk()`
 
 ```typescript
 chunk(
-  input: ChunkingInput,
-  config: ChunkingConfig
-): Promise<ChunkingOutput>
+  document: Document,
+  strategy: ChunkingStrategy,
+  options?: ChunkingOptions
+): Promise<Chunk[]>
 ```
 
 **入力パラメータ**:
 
-| パラメータ                 | 型               | 説明                     |
-| -------------------------- | ---------------- | ------------------------ |
-| `input.text`               | string           | チャンキング対象テキスト |
-| `input.documentType`       | DocumentType     | ドキュメントタイプ       |
-| `config.strategy`          | ChunkingStrategy | チャンキング戦略         |
-| `config.options.chunkSize` | number           | 512（デフォルト）        |
-| `config.options.overlap`   | number           | 50（デフォルト）         |
+| パラメータ            | 型               | 説明                            |
+| --------------------- | ---------------- | ------------------------------- |
+| `document.id`         | string           | ドキュメントID                  |
+| `document.type`       | DocumentType     | markdown / code / text          |
+| `document.content`    | string           | ドキュメント本文                |
+| `strategy`            | ChunkingStrategy | fixed / markdown / code / ...   |
+| `options.chunkSize`   | number           | チャンクサイズ（デフォルト512） |
+| `options.overlapSize` | number           | オーバーラップ（デフォルト50）  |
 
 **出力パラメータ**:
 
-| フィールド                | 型      | 説明               |
-| ------------------------- | ------- | ------------------ |
-| `chunks`                  | Chunk[] | チャンク配列       |
-| `statistics.totalChunks`  | number  | 総チャンク数       |
-| `statistics.totalTokens`  | number  | 総トークン数       |
-| `statistics.avgChunkSize` | number  | 平均チャンクサイズ |
-| `statistics.minChunkSize` | number  | 最小チャンクサイズ |
-| `statistics.maxChunkSize` | number  | 最大チャンクサイズ |
+| フィールド                | 型     | 説明                 |
+| ------------------------- | ------ | -------------------- |
+| `chunks[].content`        | string | チャンク本文         |
+| `chunks[].metadata.index` | number | チャンクインデックス |
+| `chunks[].metadata.type`  | string | チャンクタイプ       |
+| `chunks[].size`           | number | サイズ（文字数）     |
 
-### 8.16.2 エラーコード
+### 8.17.2 エラーコード
 
-| コード                  | 説明                     | HTTPステータス |
-| ----------------------- | ------------------------ | -------------- |
-| `EMBEDDING_ERROR`       | 埋め込み生成エラー       | 500            |
-| `PROVIDER_ERROR`        | プロバイダーエラー       | 502            |
-| `RATE_LIMIT_ERROR`      | レート制限超過           | 429            |
-| `TIMEOUT_ERROR`         | タイムアウト             | 504            |
-| `TOKEN_LIMIT_ERROR`     | トークン制限超過         | 400            |
-| `CIRCUIT_BREAKER_ERROR` | サーキットブレーカー開放 | 503            |
-| `CHUNKING_ERROR`        | チャンキングエラー       | 500            |
-| `PREPROCESSING_ERROR`   | 前処理エラー             | 500            |
-| `DEDUPLICATION_ERROR`   | 重複排除エラー           | 500            |
+| エラーコード              | 説明                         | HTTPステータス |
+| ------------------------- | ---------------------------- | -------------- |
+| `EMB_INVALID_INPUT`       | 入力パラメータが不正         | 400            |
+| `EMB_PROVIDER_ERROR`      | プロバイダAPIエラー          | 502            |
+| `EMB_CIRCUIT_OPEN`        | サーキットブレーカーが開状態 | 503            |
+| `EMB_RATE_LIMIT_EXCEEDED` | レート制限超過               | 429            |
+| `EMB_TIMEOUT`             | タイムアウト                 | 504            |
+| `EMB_CACHE_ERROR`         | キャッシュエラー             | 500            |
 
-### 8.16.3 パフォーマンス指標
+### 8.17.3 性能指標
 
-**品質ゲート基準**:
-
-| 指標                 | 基準値           | 実測値（Phase 8） |
-| -------------------- | ---------------- | ----------------- |
-| 1000チャンク処理時間 | ≤ 5分            | 2.17秒            |
-| メモリ使用量         | ≤ 500MB          | 8.90MB            |
-| スループット         | ≥ 100 chunks/min | 27,667 chunks/min |
-
-**推奨設定**:
-
-- バッチサイズ: 50チャンク/バッチ
-- 並列度: 2
-- リトライ: 最大3回
+| 指標                         | 値      |
+| ---------------------------- | ------- |
+| 1000チャンク処理時間         | 2.17秒  |
+| メモリ使用量（1000チャンク） | 8.9MB   |
+| キャッシュヒット率           | 95%以上 |
+| 重複排除率                   | 10-15%  |
+| 差分更新高速化               | 4.34倍  |
 
 ---
 

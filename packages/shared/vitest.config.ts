@@ -13,7 +13,7 @@ export default defineConfig({
         "dist/",
         "**/*.test.ts",
         "**/__tests__/**",
-        "**/index.ts", // バレルエクスポートファイルを除外
+        "**/index.ts", // 全バレルエクスポートファイルを除外
 
         // 設定ファイル（実行時コードなし）
         "vitest.config.ts",
@@ -21,13 +21,14 @@ export default defineConfig({
 
         // 純粋な型定義ファイル（実行時コードなし）
         "**/interfaces.ts",
-        "shared/types/**", // 型定義のみ
-        "src/types/**/*.ts", // RAG型定義は実装済み
-        "!src/types/rag/**", // RAG型は含める
-        "core/interfaces/**", // インターフェース定義
+        "core/interfaces/**",
+        "shared/types/**",
+        "src/types/**/*.ts",
+        "!src/types/rag/**", // RAG型の実装ファイルは含める
 
         // スキーマ定義（Drizzle ORM - 実行コードなし）
         "src/db/schema/**",
+        "infrastructure/database/schema/**",
 
         // IPC定義（定数定義のみ）
         "src/ipc/channels.ts",
@@ -35,7 +36,13 @@ export default defineConfig({
         // 未実装/外部依存ファイル
         "infrastructure/auth/supabase-client.ts",
         "infrastructure/database/client.ts",
+        "infrastructure/database/repositories/**",
         "src/db/migrate.ts",
+        "src/repositories/**",
+        "src/features/chat-history/**",
+
+        // ユーティリティ（未テスト）
+        "utils/**",
 
         // UIトークン定義（定数のみ）
         "ui/tokens/colors.ts",

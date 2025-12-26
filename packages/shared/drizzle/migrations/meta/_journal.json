@@ -15,6 +15,13 @@
       "when": 1766640148363,
       "tag": "0001_nice_unicorn",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1766715202411,
+      "tag": "0002_short_norrin_radd",
+      "breakpoints": true
     }
   ]
 }

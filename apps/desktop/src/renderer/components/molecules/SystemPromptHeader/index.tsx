@@ -46,6 +46,7 @@ export function SystemPromptHeader({
 
   return (
     <div
+      data-testid="system-prompt-header"
       className={clsx(
         "flex items-center justify-between",
         "p-3 border-b border-white/10",
@@ -65,6 +66,7 @@ export function SystemPromptHeader({
           type="button"
           onClick={onSaveClick}
           disabled={isSaveDisabled}
+          data-testid="save-template-button"
           className={clsx(
             BUTTON_BASE_CLASSES,
             isSaveDisabled && "opacity-50 cursor-not-allowed",
@@ -79,6 +81,7 @@ export function SystemPromptHeader({
           type="button"
           onClick={onClearClick}
           disabled={isClearDisabled}
+          data-testid="clear-prompt-button"
           className={clsx(
             BUTTON_BASE_CLASSES,
             isClearDisabled && "opacity-50 cursor-not-allowed",

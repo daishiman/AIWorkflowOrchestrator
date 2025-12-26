@@ -85,7 +85,9 @@
       "mcp__playwright__browser_press_key",
       "mcp__playwright__browser_resize",
       "mcp__playwright__browser_close",
-      "Skill(ai:create-component)"
+      "Skill(ai:create-component)",
+      "Skill(ai:write-spec)",
+      "Skill(ai:design-database)"
     ],
     "deny": [],
     "ask": []

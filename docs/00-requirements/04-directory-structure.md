@@ -122,6 +122,31 @@
 | external/[service-name]/ | 外部サービス（Discord等）                 |
 | logging/                 | ログ基盤                                  |
 
+### 4.3.2.1 packages/shared/src/db/（データベース詳細構造）
+
+| パス                                    | 役割                                           |
+| --------------------------------------- | ---------------------------------------------- |
+| **スキーマ定義**                        |                                                |
+| schema/index.ts                         | スキーマエントリーポイント（re-export）        |
+| schema/chat-history.ts                  | チャット履歴スキーマ                           |
+| schema/files.ts                         | RAGファイルメタデータスキーマ                  |
+| schema/chunks.ts                        | RAGチャンクスキーマ + FTS5                     |
+| schema/chunks-fts.ts                    | FTS5仮想テーブル管理関数                       |
+| schema/conversions.ts                   | ファイル変換履歴スキーマ                       |
+| schema/extracted-metadata.ts            | 抽出メタデータスキーマ                         |
+| schema/relations.ts                     | テーブル間リレーション定義                     |
+| **検索クエリ**                          |                                                |
+| queries/chunks-search.ts                | FTS5全文検索クエリ（キーワード/フレーズ/NEAR） |
+| **データベース基盤**                    |                                                |
+| env.ts                                  | 環境変数管理（Zod検証）                        |
+| migrate.ts                              | マイグレーション実行スクリプト                 |
+| utils.ts                                | データベースユーティリティ関数                 |
+| index.ts                                | データベースクライアントエクスポート           |
+| **テスト**                              |                                                |
+| schema/**tests**/chunks.test.ts         | chunksスキーマテスト                           |
+| schema/**tests**/chunks-fts.test.ts     | FTS5管理関数テスト（7ケース）                  |
+| queries/**tests**/chunks-search.test.ts | FTS5検索クエリテスト（74ケース）               |
+
 ### 4.3.3 ui/（共通UIコンポーネント層）
 
 | パス        | 役割                                      |

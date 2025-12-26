@@ -343,6 +343,59 @@ const client = createClient({
 export const db = drizzle(client, { schema });
 ```
 
+### 4.2.1 SQLite FTS5（全文検索）
+
+| 項目           | 値                                |
+| -------------- | --------------------------------- |
+| バージョン     | SQLite 3.45.x以降（FTS5組み込み） |
+| トークナイザー | unicode61 remove_diacritics 2     |
+| 実装パターン   | External Content Table            |
+
+**選定理由**:
+
+1. **SQLite組み込み**: 追加の検索エンジン不要、運用コスト削減
+2. **BM25スコアリング**: 関連度の高い検索結果を提供
+3. **日本語対応**: unicode61トークナイザーで日本語・英語混在テキストに対応
+4. **高速検索**: インデックスベースの全文検索、10,000チャンクで100ms以下
+5. **Turso互換**: libSQL/Tursoでそのまま利用可能
+
+**FTS5の特徴**:
+
+| 機能             | 説明                                         |
+| ---------------- | -------------------------------------------- |
+| External Content | データ重複なし、chunksテーブルを参照         |
+| トリガー同期     | INSERT/UPDATE/DELETE時の自動インデックス更新 |
+| 複数検索モード   | キーワード/フレーズ/NEAR（近接）検索         |
+| ハイライト機能   | 検索キーワードのハイライト表示               |
+| スニペット生成   | 検索結果の文脈付きプレビュー                 |
+
+**代替案との比較**:
+
+| 選択肢        | 利点               | 採用しなかった理由               |
+| ------------- | ------------------ | -------------------------------- |
+| Elasticsearch | 高機能、スケール性 | 運用コスト、個人開発に過剰       |
+| Meilisearch   | タイポ許容、UI優秀 | 別プロセス必要、メモリ消費       |
+| ベクトル検索  | セマンティック検索 | コスト高、FTS5との併用を将来検討 |
+
+**使用例**:
+
+```typescript
+// キーワード検索
+import { searchChunksByKeyword } from "@repo/shared/db/queries/chunks-search";
+
+const results = await searchChunksByKeyword(db, {
+  query: "TypeScript JavaScript",
+  limit: 10,
+});
+// → BM25スコアでランク付けされた検索結果
+```
+
+**参照ドキュメント**:
+
+- 設計詳細: [05-architecture.md](./05-architecture.md) - セクション5.10.5
+- データベース設計: [15-database-design.md](./15-database-design.md) - chunksテーブル
+- API設計: [08-api-design.md](./08-api-design.md) - セクション8.16
+
 ### 4.3 Zod
 
 | 項目           | 値       |

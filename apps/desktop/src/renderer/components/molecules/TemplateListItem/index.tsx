@@ -53,6 +53,7 @@ export function TemplateListItem({
       role="option"
       aria-selected={isSelected}
       aria-label={template.name}
+      data-testid={`template-item-${template.name}`}
       tabIndex={-1}
       onClick={handleClick}
       onKeyDown={handleKeyDown}

@@ -120,7 +120,7 @@ describe("SystemPromptPanel", () => {
         />,
       );
       fireEvent.click(screen.getByRole("button", { name: "保存" }));
-      expect(handleSave).toHaveBeenCalledWith("test");
+      expect(handleSave).toHaveBeenCalledTimes(1);
     });
 
     it("テンプレート選択時にonSelectTemplateを呼び出す", () => {

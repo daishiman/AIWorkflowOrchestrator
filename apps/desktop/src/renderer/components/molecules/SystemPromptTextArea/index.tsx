@@ -88,6 +88,7 @@ export function SystemPromptTextArea({
       maxLength={maxLength}
       placeholder={placeholder}
       disabled={disabled}
+      data-testid="system-prompt-textarea"
       style={{
         minHeight: `${TEXTAREA_MIN_HEIGHT}px`,
         maxHeight: `${TEXTAREA_MAX_HEIGHT}px`,
@@ -108,6 +109,8 @@ export function SystemPromptTextArea({
       aria-label="システムプロンプト入力"
       aria-describedby="character-counter"
       aria-invalid={isOverLimit}
+      role="textbox"
+      aria-multiline="true"
     />
   );
 }

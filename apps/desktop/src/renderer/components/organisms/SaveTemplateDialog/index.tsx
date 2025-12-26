@@ -98,12 +98,14 @@ export function SaveTemplateDialog({
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
       onClick={handleOverlayClick}
+      data-testid="save-template-dialog-overlay"
     >
       <div
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="dialog-title"
+        data-testid="save-template-dialog"
         className={clsx(
           "w-full max-w-md mx-auto",
           "bg-[var(--bg-glass,#1f1f28)] border border-white/10 rounded-lg",
@@ -142,6 +144,7 @@ export function SaveTemplateDialog({
               value={name}
               onChange={(e) => setName(e.target.value)}
               maxLength={MAX_NAME_LENGTH + 10} // Allow typing beyond limit to show error
+              data-testid="template-name-input"
               className={clsx(
                 "w-full px-3 py-2",
                 "bg-black/20 border rounded-md",
@@ -183,6 +186,7 @@ export function SaveTemplateDialog({
             <button
               type="button"
               onClick={onClose}
+              data-testid="save-template-cancel-button"
               className={clsx(
                 "px-4 py-2 rounded-md",
                 "text-sm text-white/80",
@@ -195,6 +199,7 @@ export function SaveTemplateDialog({
             <button
               type="submit"
               disabled={!isValid}
+              data-testid="save-template-confirm-button"
               className={clsx(
                 "px-4 py-2 rounded-md",
                 "text-sm",

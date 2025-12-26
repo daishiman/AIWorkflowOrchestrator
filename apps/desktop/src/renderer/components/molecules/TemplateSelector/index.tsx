@@ -108,6 +108,7 @@ export function TemplateSelector({
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         disabled={disabled}
+        data-testid="template-selector"
         className={clsx(
           "flex items-center justify-between",
           "w-48 px-3 py-2",
@@ -137,6 +138,7 @@ export function TemplateSelector({
       {isOpen && (
         <ul
           ref={listboxRef}
+          data-testid="template-list"
           role="listbox"
           aria-activedescendant={
             selectedTemplateId

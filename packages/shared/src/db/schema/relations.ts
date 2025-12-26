@@ -2,6 +2,7 @@ import { relations } from "drizzle-orm";
 import { files } from "./files";
 import { conversions } from "./conversions";
 import { extractedMetadata } from "./extracted-metadata";
+import { chunks } from "./chunks";
 
 /**
  * filesテーブルのリレーション定義
@@ -24,6 +25,9 @@ import { extractedMetadata } from "./extracted-metadata";
 export const filesRelations = relations(files, ({ many }) => ({
   /** 変換履歴リスト（1:N） */
   conversions: many(conversions),
+
+  /** チャンクリスト（1:N） */
+  chunks: many(chunks),
 }));
 
 /**
@@ -104,3 +108,73 @@ export const extractedMetadataRelations = relations(
     }),
   }),
 );
+
+/**
+ * chunksテーブルのリレーション定義
+ *
+ * @remarks
+ * - file: 1つのチャンクは1つのファイルに属する（N:1）
+ *   - chunks.fileId → files.id
+ * - prevChunk: 前のチャンクへの自己参照（1:1, nullable）
+ *   - chunks.prevChunkId → chunks.id
+ * - nextChunk: 次のチャンクへの自己参照（1:1, nullable）
+ *   - chunks.nextChunkId → chunks.id
+ *
+ * カスケード削除の流れ:
+ * ファイル削除 → 全チャンク削除（CASCADE）
+ *
+ * @example
+ * ```typescript
+ * // チャンクと関連するファイル、隣接チャンクを一括取得
+ * const chunkWithRelations = await db.query.chunks.findFirst({
+ *   where: eq(chunks.id, chunkId),
+ *   with: {
+ *     file: true,      // N:1 relation
+ *     prevChunk: true, // 1:1 self-reference
+ *     nextChunk: true, // 1:1 self-reference
+ *   },
+ * });
+ *
+ * // ファイルの全チャンクを順序付きで取得
+ * const fileWithChunks = await db.query.files.findFirst({
+ *   where: eq(files.id, fileId),
+ *   with: {
+ *     chunks: {
+ *       orderBy: (chunks, { asc }) => [asc(chunks.chunkIndex)],
+ *     },
+ *   },
+ * });
+ * ```
+ */
+export const chunksRelations = relations(chunks, ({ one }) => ({
+  /**
+   * 親ファイル（N:1）
+   * chunks.fileId → files.id
+   */
+  file: one(files, {
+    fields: [chunks.fileId],
+    references: [files.id],
+  }),
+
+  /**
+   * 前のチャンク（1:1, nullable）
+   * chunks.prevChunkId → chunks.id
+   * @description 連結リスト構造で前のチャンクを参照
+   */
+  prevChunk: one(chunks, {
+    fields: [chunks.prevChunkId],
+    references: [chunks.id],
+    relationName: "prevChunkRelation",
+  }),
+
+  /**
+   * 次のチャンク（1:1, nullable）
+   * chunks.nextChunkId → chunks.id
+   * @description 連結リスト構造で次のチャンクを参照
+   */
+  nextChunk: one(chunks, {
+    fields: [chunks.nextChunkId],
+    references: [chunks.id],
+    relationName: "nextChunkRelation",
+  }),
+}));

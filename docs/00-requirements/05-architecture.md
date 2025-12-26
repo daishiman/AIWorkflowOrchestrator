@@ -1168,6 +1168,42 @@ Knowledge Graphのエッジ（辺）を表現するEntity型。
 | `file:write`               | Renderer → Main | ファイル書込       |
 | `file:get-tree`            | Renderer → Main | ファイルツリー取得 |
 
+### 5.8.5 システムプロンプト状態管理
+
+| レイヤー         | 責務                                  | ファイル                                   |
+| ---------------- | ------------------------------------- | ------------------------------------------ |
+| Main Process     | electron-store永続化（IPC経由）       | storeHandlers.ts                           |
+| Preload          | contextBridgeによるAPI公開            | preload/index.ts                           |
+| Renderer (Store) | テンプレート状態保持、バリデーション  | systemPromptTemplateSlice.ts, chatSlice.ts |
+| Renderer (UI)    | SystemPromptPanel、SaveTemplateDialog | components/organisms/                      |
+
+**状態構造**:
+
+| State                         | 型                 | 責務                            | Slice                        |
+| ----------------------------- | ------------------ | ------------------------------- | ---------------------------- |
+| `systemPrompt`                | `string`           | 現在のシステムプロンプト        | chatSlice.ts                 |
+| `systemPromptUpdatedAt`       | `Date \| null`     | 最終更新日時                    | chatSlice.ts                 |
+| `selectedTemplateId`          | `string \| null`   | 選択中のテンプレートID          | chatSlice.ts                 |
+| `templates`                   | `PromptTemplate[]` | プリセット+カスタムテンプレート | systemPromptTemplateSlice.ts |
+| `isSystemPromptPanelExpanded` | `boolean`          | パネル展開状態                  | chatSlice.ts                 |
+| `isSaveTemplateDialogOpen`    | `boolean`          | 保存ダイアログ表示状態          | systemPromptTemplateSlice.ts |
+
+### 5.8.6 IPCチャネル設計（システムプロンプト）
+
+| チャネル       | 方向            | 用途                     |
+| -------------- | --------------- | ------------------------ |
+| `store:get`    | Renderer → Main | electron-storeデータ取得 |
+| `store:set`    | Renderer → Main | electron-storeデータ保存 |
+| `store:delete` | Renderer → Main | electron-storeデータ削除 |
+
+**データ永続化**:
+
+- **保存先**: electron-store（`~/.config/AIWorkflowOrchestrator/config.json`）
+- **キー**: `systemPromptTemplates`
+- **形式**: `PromptTemplate[]` JSON配列
+- **暗号化**: 不要（機密性低いユーザー設定）
+- **同期**: 保存・削除時に即座にelectron-storeへ書き込み
+
 ---
 
 ## 5.9 認証アーキテクチャ（Supabase + Electron）
@@ -1368,6 +1404,78 @@ RAGパイプラインの型定義は4ファイル構成で実装される。
 | 純粋関数      | 副作用のないユーティリティ関数                        |
 | テスト容易性  | TDD実装により99.53%カバレッジを達成                   |
 | Single Source | 型定義とZodスキーマの二重定義を避け、スキーマから導出 |
+
+### 5.10.5 FTS5全文検索アーキテクチャ
+
+RAGシステムのコア機能として、SQLite FTS5による高速全文検索を実装する。
+
+#### アーキテクチャパターン
+
+**External Content Table Pattern**を採用し、データ重複を回避しながらFTS5の高速検索を実現。
+
+| コンポーネント         | 役割                                | 実装場所                   |
+| ---------------------- | ----------------------------------- | -------------------------- |
+| chunksテーブル         | チャンクデータ本体（Content Table） | `schema/chunks.ts`         |
+| chunks_fts仮想テーブル | FTS5検索インデックス                | `schema/chunks-fts.ts`     |
+| トリガー               | INSERT/UPDATE/DELETE時の自動同期    | マイグレーションSQL        |
+| 検索クエリ             | BM25スコアリング + 3種の検索モード  | `queries/chunks-search.ts` |
+
+#### 検索モード
+
+| 検索モード     | 用途                     | FTS5構文例                        |
+| -------------- | ------------------------ | --------------------------------- |
+| キーワード検索 | 複数キーワードのOR検索   | `TypeScript JavaScript`           |
+| フレーズ検索   | 完全一致（語順保持）     | `"typed superset"`                |
+| NEAR検索       | 近接検索（距離指定可能） | `NEAR("JavaScript" "library", 5)` |
+
+#### スコアリング方式
+
+**BM25 + Sigmoid正規化**により0-1スケールの関連度スコアを提供：
+
+```
+正規化スコア = 1 / (1 + exp(-scale_factor * bm25_score))
+```
+
+| パラメータ   | デフォルト値 | 説明                   |
+| ------------ | ------------ | ---------------------- |
+| scale_factor | 0.3          | スコア分布の調整       |
+| スコア範囲   | 0.0 - 1.0    | 高い値ほど関連度が高い |
+
+#### 同期方式
+
+**トリガーベースの自動同期**により、chunksテーブルとchunks_fts仮想テーブルの整合性を保証：
+
+| 操作   | トリガー          | 処理内容                                  |
+| ------ | ----------------- | ----------------------------------------- |
+| INSERT | chunks_fts_insert | chunks_ftsにrowid, content, contextを挿入 |
+| UPDATE | chunks_fts_update | chunks_ftsのcontent, contextを更新        |
+| DELETE | chunks_fts_delete | chunks_ftsから該当rowidを削除             |
+
+#### トークナイザー設定
+
+**unicode61トークナイザー**により日本語・英語の混在テキストに対応：
+
+| 設定       | 値                              | 説明                         |
+| ---------- | ------------------------------- | ---------------------------- |
+| tokenize   | `unicode61 remove_diacritics 2` | Unicode正規化 + 分音記号除去 |
+| 日本語対応 | ✅ ひらがな、カタカナ、漢字     | 文字単位でトークン化         |
+| 英語対応   | ✅ 単語単位                     | スペース区切りで分割         |
+
+#### 性能特性
+
+| 指標               | 実測値（3チャンク） | 目標（10,000チャンク） |
+| ------------------ | ------------------- | ---------------------- |
+| キーワード検索速度 | < 10ms              | < 100ms                |
+| フレーズ検索速度   | < 10ms              | < 100ms                |
+| NEAR検索速度       | < 10ms              | < 150ms                |
+| インデックスサイズ | 微小                | データサイズの15-20%   |
+
+**参照ドキュメント**:
+
+- 詳細設計: `docs/30-workflows/rag-conversion-system/requirements-chunks-fts5.md`
+- スキーマ設計: `docs/30-workflows/rag-conversion-system/design-chunks-schema.md`
+- FTS5設計: `docs/30-workflows/rag-conversion-system/design-chunks-fts5.md`
+- 検索設計: `docs/30-workflows/rag-conversion-system/design-chunks-search.md`
 
 ---
 
