@@ -7,31 +7,22 @@ description: |
   - 『RESTful Web APIs』（Leonard Richardson）: リソース設計
   
   📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/cicd-integration.md`: Cicd Integrationリソース
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/redoc-configuration.md`: Redoc Configurationリソース
-  - `resources/swagger-ui-configuration.md`: Swagger Ui Configurationリソース
+  - `references/Level1_basics.md`: レベル1の基礎ガイド
+  - `references/Level2_intermediate.md`: レベル2の実務ガイド
+  - `references/Level3_advanced.md`: レベル3の応用ガイド
+  - `references/Level4_expert.md`: レベル4の専門ガイド
+  - `references/cicd-integration.md`: Cicd Integrationリソース
+  - `references/legacy-skill.md`: 旧SKILL.mdの全文
+  - `references/redoc-configuration.md`: Redoc Configurationリソース
+  - `references/swagger-ui-configuration.md`: Swagger Ui Configurationリソース
   - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
   - `scripts/setup-swagger-ui.sh`: Setup Swagger Uiスクリプト
   - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
   - `scripts/validate-swagger-config.js`: Validate Swagger Configスクリプト
-  - `templates/swagger-config.json`: Swagger Configテンプレート
-  - `templates/swagger-ui-nextjs.tsx`: Swagger Ui Nextjsテンプレート
+  - `assets/swagger-config.json`: Swagger Configテンプレート
+  - `assets/swagger-ui-nextjs.tsx`: Swagger Ui Nextjsテンプレート
   
   Use proactively when handling swagger ui tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "RESTful Web APIs"
-    author: "Leonard Richardson"
-    concepts:
-      - "リソース設計"
-      - "HTTP設計"
 ---
 
 # Swagger UI スキル
@@ -40,7 +31,7 @@ references:
 
 Swagger UI / ReDocなどのインタラクティブAPIドキュメントツールの設定と統合を専門とするスキル。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
 
 ## ワークフロー
@@ -51,8 +42,8 @@ Swagger UI / ReDocなどのインタラクティブAPIドキュメントツー�
 
 **アクション**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要な references/scripts/templates を特定
 
 ### Phase 2: スキル適用
 
@@ -77,8 +68,8 @@ Swagger UI / ReDocなどのインタラクティブAPIドキュメントツー�
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+- references/Level1_basics.md を参照し、適用範囲を明確にする
+- references/Level2_intermediate.md を参照し、実務手順を整理する
 
 ### 避けるべきこと
 - アンチパターンや注意点を確認せずに進めることを避ける
@@ -87,14 +78,14 @@ Swagger UI / ReDocなどのインタラクティブAPIドキュメントツー�
 
 ### リソース読み取り
 ```bash
-cat .claude/skills/swagger-ui/resources/Level1_basics.md
-cat .claude/skills/swagger-ui/resources/Level2_intermediate.md
-cat .claude/skills/swagger-ui/resources/Level3_advanced.md
-cat .claude/skills/swagger-ui/resources/Level4_expert.md
-cat .claude/skills/swagger-ui/resources/cicd-integration.md
-cat .claude/skills/swagger-ui/resources/legacy-skill.md
-cat .claude/skills/swagger-ui/resources/redoc-configuration.md
-cat .claude/skills/swagger-ui/resources/swagger-ui-configuration.md
+cat .claude/skills/swagger-ui/references/Level1_basics.md
+cat .claude/skills/swagger-ui/references/Level2_intermediate.md
+cat .claude/skills/swagger-ui/references/Level3_advanced.md
+cat .claude/skills/swagger-ui/references/Level4_expert.md
+cat .claude/skills/swagger-ui/references/cicd-integration.md
+cat .claude/skills/swagger-ui/references/legacy-skill.md
+cat .claude/skills/swagger-ui/references/redoc-configuration.md
+cat .claude/skills/swagger-ui/references/swagger-ui-configuration.md
 ```
 
 ### スクリプト実行
@@ -107,8 +98,8 @@ node .claude/skills/swagger-ui/scripts/validate-skill.mjs --help
 
 ### テンプレート参照
 ```bash
-cat .claude/skills/swagger-ui/templates/swagger-config.json
-cat .claude/skills/swagger-ui/templates/swagger-ui-nextjs.tsx
+cat .claude/skills/swagger-ui/assets/swagger-config.json
+cat .claude/skills/swagger-ui/assets/swagger-ui-nextjs.tsx
 ```
 
 ## 変更履歴

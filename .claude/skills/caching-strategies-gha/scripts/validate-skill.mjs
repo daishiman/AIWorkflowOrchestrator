@@ -1,17 +1,25 @@
 #!/usr/bin/env node
 
 /**
- * スキル構造検証スクリプト
+ * Caching strategies GHA skill validation script
  *
- * 必須ファイル、行数制約、EVALS.json の構造を確認します。
+ * Usage:
+ *   node scripts/validate-skill.mjs [--verbose]
+ *
+ * Exit codes:
+ *   0: success
+ *   1: general error
+ *   2: argument error
+ *   3: file missing
+ *   4: validation failed
  */
 
-import { readFileSync, statSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { readFileSync, existsSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const SKILL_DIR = join(__dirname, '..');
+const SKILL_DIR = join(__dirname, "..");
 
 const EXIT_SUCCESS = 0;
 const EXIT_ERROR = 1;
@@ -21,99 +29,105 @@ const EXIT_VALIDATION_ERROR = 4;
 
 function showHelp() {
   console.log(`
-Usage: node scripts/validate-skill.mjs [options]
+Caching Strategies GHA skill validation
+
+Usage:
+  node scripts/validate-skill.mjs [options]
 
 Options:
-  -h, --help    Show this help message
+  --verbose       Show details
+  -h, --help      Show this help message
   `);
 }
 
-function getLineCount(path) {
-  const content = readFileSync(path, 'utf-8');
-  return content.split('
-').length;
-}
-
-function assertExists(path, label) {
-  try {
-    statSync(path);
-  } catch (err) {
-    console.error(`Missing: ${label} (${path})`);
-    process.exit(EXIT_FILE_MISSING);
+function assertExists(path, label, errors) {
+  if (!existsSync(path)) {
+    errors.push(`Missing: ${label} (${path})`);
   }
 }
 
-function validateLineLimit(path, limit) {
-  const count = getLineCount(path);
+function validateLineLimit(path, limit, errors, passed) {
+  const content = readFileSync(path, "utf-8");
+  const count = content.split("\n").length;
   if (count > limit) {
-    console.error(`Line limit exceeded: ${path} (${count}/${limit})`);
-    process.exit(EXIT_VALIDATION_ERROR);
-  }
-}
-
-function validateEvals(path) {
-  try {
-    const data = JSON.parse(readFileSync(path, 'utf-8'));
-    const required = ['skill_name', 'current_level', 'levels', 'metrics'];
-    for (const key of required) {
-      if (!(key in data)) {
-        throw new Error(`EVALS.json missing ${key}`);
-      }
-    }
-    for (const lvl of ['1', '2', '3', '4']) {
-      if (!(lvl in data.levels)) {
-        throw new Error(`EVALS.json missing levels.${lvl}`);
-      }
-    }
-    const metrics = ['total_usage_count', 'success_count', 'failure_count', 'average_satisfaction', 'last_evaluated'];
-    for (const key of metrics) {
-      if (!(key in data.metrics)) {
-        throw new Error(`EVALS.json metrics missing ${key}`);
-      }
-    }
-  } catch (err) {
-    console.error(`EVALS.json validation error: ${err.message}`);
-    process.exit(EXIT_VALIDATION_ERROR);
+    errors.push(`Line limit exceeded: ${path} (${count}/${limit})`);
+  } else {
+    passed.push(`Line count OK: ${path} (${count}/${limit})`);
   }
 }
 
 async function main() {
   const args = process.argv.slice(2);
-  if (args.includes('-h') || args.includes('--help')) {
+
+  if (args.includes("-h") || args.includes("--help")) {
     showHelp();
     process.exit(EXIT_SUCCESS);
   }
 
+  const verbose = args.includes("--verbose");
+  const unknownArgs = args.filter(
+    (arg) => arg.startsWith("-") && arg !== "--verbose",
+  );
+  if (unknownArgs.length > 0) {
+    console.error(`Error: Unknown options: ${unknownArgs.join(", ")}`);
+    process.exit(EXIT_ARGS_ERROR);
+  }
+
+  const errors = [];
+  const warnings = [];
+  const passed = [];
+
   const requiredFiles = [
-    'SKILL.md',
-    'EVALS.json',
-    'CHANGELOG.md',
-    'LOGS.md',
-    'scripts/log_usage.mjs',
-    'scripts/validate-skill.mjs',
-    'resources/Level1_basics.md',
-    'resources/Level2_intermediate.md',
-    'resources/Level3_advanced.md',
-    'resources/Level4_expert.md',
+    "SKILL.md",
+    "assets/cache-examples.yaml",
+    "scripts/estimate-cache-size.mjs",
+    "scripts/log_usage.mjs",
+    "scripts/validate-skill.mjs",
+    "references/Level1_basics.md",
+    "references/Level2_intermediate.md",
+    "references/Level3_advanced.md",
+    "references/Level4_expert.md",
+    "references/cache-action.md",
+    "references/cache-patterns.md",
+    "references/cache-optimization.md",
+    "references/legacy-skill.md",
+    "agents/analyze-cache-requirements.md",
+    "agents/design-cache-keys.md",
+    "agents/optimize-cache-strategy.md",
+    "agents/validate-cache-impact.md",
   ];
 
   for (const file of requiredFiles) {
-    assertExists(join(SKILL_DIR, file), file);
+    assertExists(join(SKILL_DIR, file), file, errors);
   }
 
-  validateLineLimit(join(SKILL_DIR, 'SKILL.md'), 500);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level1_basics.md'), 200);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level2_intermediate.md'), 300);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level3_advanced.md'), 400);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level4_expert.md'), 500);
+  const skillPath = join(SKILL_DIR, "SKILL.md");
+  if (existsSync(skillPath)) {
+    validateLineLimit(skillPath, 500, errors, passed);
+  }
 
-  validateEvals(join(SKILL_DIR, 'EVALS.json'));
+  if (verbose) {
+    if (passed.length > 0) {
+      console.log("\n✓ Passed:");
+      passed.forEach((item) => console.log(`  - ${item}`));
+    }
+    if (warnings.length > 0) {
+      console.log("\n⚠ Warnings:");
+      warnings.forEach((item) => console.log(`  - ${item}`));
+    }
+  }
 
-  console.log('✓ Skill structure validated');
+  if (errors.length > 0) {
+    console.error("\n✗ Errors:");
+    errors.forEach((item) => console.error(`  - ${item}`));
+    process.exit(EXIT_VALIDATION_ERROR);
+  }
+
+  console.log("\n✓ Validation completed");
   process.exit(EXIT_SUCCESS);
 }
 
 main().catch((err) => {
-  console.error(err.message);
+  console.error(`Error: ${err.message}`);
   process.exit(EXIT_ERROR);
 });

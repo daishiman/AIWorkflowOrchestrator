@@ -1,115 +1,150 @@
 ---
-name: .claude/skills/test-naming-conventions/SKILL.md
+name: test-naming-conventions
 description: |
-  テストの命名規則とドキュメンテーションを専門とするスキル。
-  
-  📖 参照書籍:
-  - 『Test-Driven Development: By Example』（Kent Beck）: Red-Green-Refactor
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/describe-structure.md`: Describe Structureリソース
-  - `resources/file-organization.md`: File Organizationリソース
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/naming-patterns.md`: Naming Patternsリソース
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/test-name-linter.mjs`: Test Name Linterスクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/naming-guide.md`: Naming Guideテンプレート
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when handling test naming conventions tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Test-Driven Development: By Example"
-    author: "Kent Beck"
-    concepts:
-      - "Red-Green-Refactor"
-      - "テスト設計"
+  テスト命名規則の専門スキル。テストケース命名、ファイル構造、可読性向上を提供します。
+
+  Anchors:
+  • 『xUnit Test Patterns』（Gerard Meszaros） / 適用: テスト命名 / 目的: 可読性向上
+
+  Trigger:
+  テスト命名規則策定時、テストファイル構造設計時、テスト可読性改善時に使用
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# Test Naming Conventions
+# テスト命名規則スキル
 
 ## 概要
 
-テストの命名規則とドキュメンテーションを専門とするスキル。
+テストの命名規則とドキュメンテーション戦略を専門とするスキル。テストコードの可読性を向上させ、テスト構造を標準化し、保守性を高めることを目的とします。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+このスキルでは以下のレベルのガイダンスを提供します：
 
+- **Level 1（基礎）**: テスト命名の基本パターンと `describe-it` 構造
+- **Level 2（実務）**: ファイル組織、ネーミング戦略、実装パターン
+- **Level 3（応用）**: 複雑なテスト構造、パターン設計、大規模プロジェクト対応
+- **Level 4（専門）**: フレームワーク別最適化、チーム標準化、自動化戦略
+
+このスキルの詳細は、`references/` ディレクトリの各レベルガイド、テンプレート、スクリプトを参照してください。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件分析と計画
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: タスクの要件、プロジェクト規模、既存テスト構造を把握する
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. テスト対象のプロジェクト構成とテストフレームワークを確認
+2. `references/Level1_basics.md` でテスト命名の基本原則を確認
+3. `references/requirements-index.md` で要求仕様の全体像を把握
+4. 既存のテスト命名規則があるか確認（リファクタリング vs 新規作成）
+5. `assets/naming-guide.md` で対応するテンプレートを確認
+6. 必要な resources、scripts、assets を特定
 
-### Phase 3: 検証と記録
+**出力**: 適用するレベル、対象スコープ、実装パターンを決定
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: 規則設計と実装
+
+**目的**: プロジェクトに適切なテスト命名規則を設計・実装する
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. `references/Level2_intermediate.md` で実務的なテスト設計を確認
+2. `references/naming-patterns.md` から適切なパターンを選択
+3. `references/describe-structure.md` で describe/it 構造を最適化
+4. `references/file-organization.md` でファイル名の命名規則を決定
+5. プロジェクトのテストコードに規則を適用
+6. `scripts/test-name-linter.mjs` で命名規則の遵守を検証
+7. 重要な設計判断をドキュメント化
 
+**出力**: テスト命名規則の実装、リンター設定、チームガイドライン
+
+### Phase 3: 検証とドキュメント化
+
+**目的**: 実装の品質を確認し、知見を記録・共有する
+
+**アクション**:
+
+1. `scripts/validate-skill.mjs` でスキル適用の構造を検証
+2. テストコードの可読性と一貫性をレビュー
+3. `references/Level3_advanced.md` や `references/Level4_expert.md` で高度なパターンを確認（必要に応じて）
+4. `scripts/log_usage.mjs` で実行記録と成果を記録
+5. チーム向けナレッジドキュメント（命名ガイドラインなど）を作成
+6. 今後の改善点と学習成果を整理
+
+**出力**: 検証済みのテスト命名規則、チーム向けドキュメント、実行記録
+
+## Task仕様ナビ
+
+| Phase | Task               | 関連リソース                            | 出力物               | 検証方法       |
+| ----- | ------------------ | --------------------------------------- | -------------------- | -------------- |
+| 1     | 要件分析           | Level1_basics.md, requirements-index.md | スコープ定義書       | Check-list確認 |
+| 1     | フレームワーク確認 | Level2_intermediate.md                  | フレームワーク対応表 | パターン照合   |
+| 2     | パターン選択       | naming-patterns.md                      | パターン選択メモ     | 既存コード確認 |
+| 2     | describe/it 設計   | describe-structure.md                   | 構造定義書           | リンター検証   |
+| 2     | ファイル命名設計   | file-organization.md                    | ファイル命名規則     | ファイル名確認 |
+| 2     | 規則適用           | naming-guide.md template                | 修正済みテストコード | 手動レビュー   |
+| 2     | リンター実行       | test-name-linter.mjs script             | リント結果           | エラーなし     |
+| 3     | 構造検証           | validate-skill.mjs script               | 検証レポート         | 成功確認       |
+| 3     | ドキュメント作成   | Level3_advanced.md, Level4_expert.md    | チームガイド         | レビュー承認   |
+| 3     | 記録保存           | log_usage.mjs script                    | 使用ログ             | ログ確認       |
 
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+- **基礎から始める**: `references/Level1_basics.md` で基本原則を理解してから段階的に進める
+- **プロジェクト規模を考慮**: 小規模プロジェクトと大規模プロジェクトで異なるパターンを適用
+- **テストフレームワークに合わせる**: Jest、Vitest、Mocha など各フレームワークの特性に対応したパターンを選択
+- **チーム全体で標準化**: 個人的な好みではなく、チーム全体が遵守できる規則を設計
+- **自動検証を組み込む**: `test-name-linter.mjs` を CI パイプラインに統合
+- **段階的に改善**: 既存コードベースへの影響を最小化しながら段階的に改善
+- **ドキュメントを保守する**: 規則変更時は必ず関連ドキュメントも更新
+- **負例を共有**: アンチパターンや注意点を明記し、チームの学習を加速
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- **規則なしに命名する**: テスト可読性は品質の基本。統一性なく名前を付けると後で大きな負債に
+- **言語ごとに異なる規則**: 同一プロジェクトで言語別に命名規則を変えると混乱を招く
+- **あいまいな describe ブロック**: describe ブロックは機能単位を明確に。何を描写しているか不明確は避ける
+- **過度に長いテスト名**: テスト名は説明的だが、100文字を超えるような過度な長さは避ける
+- **特殊文字や記号の乱用**: 統一されていない記号やアンダースコアの多用は混乱を招く
+- **ベストプラクティスの無視**: すでに確立したパターンを無視した独自規則は導入を避ける
+- **自動化ツールの未使用**: リンターやバリデータを使わずに手動チェックのみでは運用困難
 
-### リソース読み取り
-```bash
-cat .claude/skills/test-naming-conventions/resources/Level1_basics.md
-cat .claude/skills/test-naming-conventions/resources/Level2_intermediate.md
-cat .claude/skills/test-naming-conventions/resources/Level3_advanced.md
-cat .claude/skills/test-naming-conventions/resources/Level4_expert.md
-cat .claude/skills/test-naming-conventions/resources/describe-structure.md
-cat .claude/skills/test-naming-conventions/resources/file-organization.md
-cat .claude/skills/test-naming-conventions/resources/legacy-skill.md
-cat .claude/skills/test-naming-conventions/resources/naming-patterns.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/test-naming-conventions/scripts/log_usage.mjs --help
-node .claude/skills/test-naming-conventions/scripts/test-name-linter.mjs --help
-node .claude/skills/test-naming-conventions/scripts/validate-skill.mjs --help
-```
+### ガイドドキュメント
 
-### テンプレート参照
-```bash
-cat .claude/skills/test-naming-conventions/templates/naming-guide.md
-```
+- **references/Level1_basics.md**: テスト命名の基本原則、基本パターン、はじめの一歩
+- **references/Level2_intermediate.md**: 実務的なテスト設計、ファイル組織、チーム標準化
+- **references/Level3_advanced.md**: 複雑なテスト構造、高度なパターン、スケーラブル設計
+- **references/Level4_expert.md**: フレームワーク最適化、自動化戦略、組織レベルの標準化
+- **references/naming-patterns.md**: 各テストフレームワーク別のパターンカタログ
+- **references/describe-structure.md**: describe/it ブロック構造のベストプラクティス
+- **references/file-organization.md**: テストファイルの組織とネーミング戦略
+- **references/requirements-index.md**: 要求仕様の索引（docs/00-requirements と同期）
+
+### スクリプト・ツール
+
+- **scripts/test-name-linter.mjs**: テスト名の命名規則遵守を自動チェック
+- **scripts/validate-skill.mjs**: スキル適用の構造を検証、エラーを報告
+- **scripts/log_usage.mjs**: スキル使用記録を自動保存・評価
+
+### テンプレート・例
+
+- **assets/naming-guide.md**: 組織向けテスト命名ガイドラインのテンプレート
+- **references/legacy-skill.md**: 旧スキル定義（参考資料）
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                                                                                                      |
+| ------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠。YAML frontmatter更新、日本語本文化、Task仕様ナビ追加、ワークフロー詳細化、ベストプラクティス充実 |
+| 1.0.0   | 2025-12-24 | 初期バージョン。基本構成とリソース参照を実装                                                                                 |

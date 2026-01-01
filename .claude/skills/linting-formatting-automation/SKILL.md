@@ -1,108 +1,264 @@
 ---
-name: .claude/skills/linting-formatting-automation/SKILL.md
+name: linting-formatting-automation
 description: |
-  コード品質とフォーマット自動化の専門スキル。
-  ESLint、Prettier、Biome、Stylelintなどのリンターとフォーマッターのセットアップ、
-  設定、CI/CD統合、pre-commitフック構築、エディタ統合を提供します。
-  
-  📖 参照書籍:
-  - 『Designing Data-Intensive Applications』（Martin Kleppmann）: データモデリング
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when handling linting formatting automation tasks.
-version: 1.0.0
+  Code quality and formatting automation specialist. Provides setup, configuration, CI/CD integration, pre-commit hook construction, and editor integration for linters and formatters like ESLint, Prettier, Biome, and Stylelint.
+
+  Anchors:
+  • ESLint Official Documentation / Apply: Rule configuration and plugin integration / Purpose: Ensure correct API usage and best practices
+  • Prettier Philosophy / Apply: Opinionated formatting decisions / Purpose: Minimize configuration bikeshedding
+  • Biome Performance Model / Apply: Rust-based tooling migration / Purpose: Optimize development workflow speed
+
+  Trigger:
+  Use when setting up linting/formatting for new projects, integrating code quality checks into CI/CD pipelines, configuring pre-commit hooks for consistent style enforcement, or migrating between linting tools (ESLint to Biome, etc).
+  Keywords: eslint, prettier, biome, lint, format, pre-commit, husky, lint-staged, code quality
+version: 2.0.0
 level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Designing Data-Intensive Applications"
-    author: "Martin Kleppmann"
-    concepts:
-      - "データモデリング"
-      - "パフォーマンス"
+last_updated: 2025-12-31
+tags:
+  - code-quality
+  - automation
+  - ci-cd
+  - tooling
+dependencies:
+  - .claude/skills/code-style-guides
+  - .claude/skills/ci-cd-pipelines
 ---
 
-# リンティング・フォーマット自動化スキル
+# Linting & Formatting Automation Skill
 
-## 概要
+## Overview
 
-コード品質とフォーマット自動化の専門スキル。
-ESLint、Prettier、Biome、Stylelintなどのリンターとフォーマッターのセットアップ、
-設定、CI/CD統合、pre-commitフック構築、エディタ統合を提供します。
+This skill provides expertise in setting up and maintaining automated code quality through linting and formatting tools. It ensures consistent code style and early error detection across projects.
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+**Key Value Propositions**:
 
+- Automated consistent code style maintenance
+- Early detection of potential bugs
+- Streamlined code reviews (reduced style discussions)
 
-## ワークフロー
+**When to Apply**: New project setup, CI/CD integration, tool migration, pre-commit hook configuration
 
-### Phase 1: 目的と前提の整理
+## Workflow
 
-**目的**: タスクの目的と前提条件を明確にする
+### Phase 1: Planning & Assessment
 
-**アクション**:
+**Purpose**: Determine appropriate tooling strategy
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+**Actions**:
 
-### Phase 2: スキル適用
+1. Assess project requirements (language, framework, team size)
+2. Choose tool combination (see `references/tool-comparison.md`)
+3. Review `references/Level1_basics.md` for foundational concepts
 
-**目的**: スキルの指針に従って具体的な作業を進める
+**Decision Points**:
 
-**アクション**:
+- Simple project with minimal customization needs? → Consider Biome
+- Complex project requiring extensive plugin ecosystem? → Consider ESLint + Prettier
+- Migration from existing setup? → Review `references/migration-strategies.md`
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+### Phase 2: Configuration Setup
 
-### Phase 3: 検証と記録
+**Purpose**: Implement chosen tooling strategy
 
-**目的**: 成果物の検証と実行記録の保存
+**Task Assignment**:
 
-**アクション**:
+- For ESLint setup → Use `agents/setup-eslint.md`
+- For Prettier setup → Use `agents/setup-prettier.md`
+- For Biome setup → Use `agents/setup-biome.md`
+- For tool migration → Use `agents/migrate-tools.md`
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+**Resources**:
 
+- Configuration templates: `assets/`
+- Detailed guides: `references/Level2_intermediate.md`
 
-## ベストプラクティス
+### Phase 3: Integration
 
-### すべきこと
-- 新規プロジェクトのリンター/フォーマッター初期設定時
-- 既存プロジェクトのコード品質改善時
-- CI/CDパイプラインへのリント追加時
-- pre-commitフック構築時
-- ESLint → Biomeなどのツール移行時
+**Purpose**: Integrate with development workflow
 
-### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
+**Task Assignment**:
 
-## コマンドリファレンス
+- Pre-commit hooks → Use `agents/setup-precommit.md`
+- CI/CD pipeline → Use `agents/setup-cicd.md`
+- Editor integration → Reference `references/editor-integration.md`
 
-### リソース読み取り
+**Resources**:
+
+- GitHub Actions templates: `assets/github-actions-lint.yml`
+- Husky configuration: `references/pre-commit-patterns.md`
+
+### Phase 4: Validation & Documentation
+
+**Purpose**: Ensure setup works correctly and team understands it
+
+**Actions**:
+
+1. Run validation tests (commit, PR simulation)
+2. Document team guidelines in project README
+3. Record completion with `scripts/log_usage.mjs`
+
+## Task Specifications
+
+### Available Tasks (agents/)
+
+| Task              | File                        | When to Use                | Input                  | Output              |
+| ----------------- | --------------------------- | -------------------------- | ---------------------- | ------------------- |
+| ESLint Setup      | `agents/setup-eslint.md`    | New ESLint configuration   | Project type, language | ESLint config files |
+| Prettier Setup    | `agents/setup-prettier.md`  | New Prettier configuration | Style preferences      | Prettier config     |
+| Biome Setup       | `agents/setup-biome.md`     | All-in-one solution        | Project requirements   | Biome config        |
+| Tool Migration    | `agents/migrate-tools.md`   | Switching tools            | Current/target tools   | Migration plan      |
+| Pre-commit Hooks  | `agents/setup-precommit.md` | Commit validation          | Hook requirements      | Husky + lint-staged |
+| CI/CD Integration | `agents/setup-cicd.md`      | PR quality gates           | CI platform            | Workflow files      |
+
+## Knowledge References
+
+### Progressive Disclosure Layers
+
+**Level 1 (Basics)**: `references/Level1_basics.md`
+
+- Core concepts and terminology
+- Quick start guide
+- Common use cases
+
+**Level 2 (Intermediate)**: `references/Level2_intermediate.md`
+
+- Tool comparison and selection criteria
+- Configuration patterns
+- Pre-commit hook setup
+
+**Level 3 (Advanced)**: `references/Level3_advanced.md`
+
+- Custom rule development
+- Performance optimization
+- Complex CI/CD integration
+
+**Level 4 (Expert)**: `references/Level4_expert.md`
+
+- Tool migration strategies
+- Multi-project standardization
+- Enterprise-scale deployment
+
+### Specialized References
+
+- `references/tool-comparison.md`: ESLint vs Prettier vs Biome
+- `references/migration-strategies.md`: Moving between tools
+- `references/editor-integration.md`: VS Code, JetBrains setup
+- `references/troubleshooting.md`: Common issues and solutions
+- `references/pre-commit-patterns.md`: Hook configuration patterns
+
+## Scripts
+
+### Execution Scripts
+
+**log_usage.mjs**: Record skill usage for feedback loop
+
 ```bash
-cat .claude/skills/linting-formatting-automation/resources/Level1_basics.md
-cat .claude/skills/linting-formatting-automation/resources/Level2_intermediate.md
-cat .claude/skills/linting-formatting-automation/resources/Level3_advanced.md
-cat .claude/skills/linting-formatting-automation/resources/Level4_expert.md
-cat .claude/skills/linting-formatting-automation/resources/legacy-skill.md
+node scripts/log_usage.mjs --result success --phase "setup" --notes "ESLint configured"
 ```
 
-### スクリプト実行
+**validate-skill.mjs**: Verify skill structure compliance
+
 ```bash
-node .claude/skills/linting-formatting-automation/scripts/log_usage.mjs --help
-node .claude/skills/linting-formatting-automation/scripts/validate-skill.mjs --help
+node scripts/validate-skill.mjs
 ```
 
-## 変更履歴
+## Assets (Output Templates)
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+### Configuration Templates
+
+- `assets/eslint.config.js`: ESLint flat config template
+- `assets/.prettierrc.json`: Prettier configuration
+- `assets/biome.json`: Biome configuration
+- `assets/.eslintrc.legacy.json`: ESLint legacy config (pre-v9)
+
+### Workflow Templates
+
+- `assets/github-actions-lint.yml`: GitHub Actions lint workflow
+- `assets/gitlab-ci-lint.yml`: GitLab CI lint job
+- `assets/pre-commit-config.json`: Husky + lint-staged setup
+
+### Integration Templates
+
+- `assets/vscode-settings.json`: VS Code recommended settings
+- `assets/package-scripts.json`: npm/pnpm script snippets
+
+## Best Practices
+
+### Do's
+
+1. Start with recommended presets, customize incrementally
+2. Use caching (`--cache`) for performance
+3. Integrate with editor for immediate feedback
+4. Make CI checks required before merge
+5. Document team-specific overrides
+
+### Don'ts
+
+1. Over-customize beyond recognition (stay close to standards)
+2. Abuse `eslint-disable` comments (fix root cause)
+3. Engage in formatting debates (accept opinionated defaults)
+4. Skip cache configuration (impacts DX significantly)
+
+## Quick Reference
+
+### Tool Selection Decision Tree
+
+```
+Need extensive plugins/customization?
+├─ Yes → ESLint + Prettier
+└─ No → Is performance critical?
+    ├─ Yes → Biome
+    └─ No → ESLint + Prettier (battle-tested)
+```
+
+### Common Commands
+
+```bash
+# ESLint
+pnpm eslint . --fix
+pnpm eslint . --cache --max-warnings 0
+
+# Prettier
+pnpm prettier --write .
+pnpm prettier --check .
+
+# Biome
+pnpm biome check --write .
+pnpm biome ci .
+```
+
+## Validation Checklist
+
+### Initial Setup
+
+- [ ] Tool installed and configured
+- [ ] Scripts added to package.json
+- [ ] Editor integration verified
+- [ ] Cache directories in .gitignore
+
+### Pre-commit Hooks
+
+- [ ] Husky installed and initialized
+- [ ] lint-staged configured
+- [ ] Hooks tested locally
+- [ ] Team documentation updated
+
+### CI/CD Integration
+
+- [ ] Workflow file created
+- [ ] Caching configured
+- [ ] PR checks enforced
+- [ ] Error reporting clear
+
+## Related Skills
+
+- `.claude/skills/code-style-guides/SKILL.md`: Code style guidelines
+- `.claude/skills/clean-code-practices/SKILL.md`: Clean code principles
+- `.claude/skills/ci-cd-pipelines/SKILL.md`: CI/CD automation
+
+## Changelog
+
+| Version | Date       | Changes                                                                                    |
+| ------- | ---------- | ------------------------------------------------------------------------------------------ |
+| 2.0.0   | 2025-12-31 | Restructured to 18-skills.md specification with agents/, enhanced references/, and assets/ |
+| 1.0.0   | 2025-12-24 | Initial spec alignment                                                                     |

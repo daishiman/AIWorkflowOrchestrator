@@ -1,35 +1,24 @@
 ---
-name: .claude/skills/transaction-script/SKILL.md
+name: transaction-script
 description: |
   マーティン・ファウラーのPofEAAに基づくトランザクションスクリプトパターンを専門とするスキル。
-  
-  📖 参照書籍:
-  - 『Designing Data-Intensive Applications』（Martin Kleppmann）: データモデリング
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/domain-model-comparison.md`: Domain Model Comparisonリソース
-  - `resources/executor-pattern.md`: Executor Patternリソース
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/pattern-overview.md`: Pattern Overviewリソース
-  - `scripts/analyze-executor.mjs`: Analyze Executorスクリプト
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/executor-template.md`: Executorテンプレート
-  
-  Use proactively when handling transaction script tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Designing Data-Intensive Applications"
-    author: "Martin Kleppmann"
-    concepts:
-      - "データモデリング"
-      - "パフォーマンス"
+  シンプルなビジネスロジックを手続き型で組織化し、CRUDベースのアプリケーション開発を効率化します。
+
+  Anchors:
+  • Patterns of Enterprise Application Architecture (Martin Fowler) / 適用: パターン定義と適用条件 / 目的: 適切なパターン選択
+  • Designing Data-Intensive Applications (Martin Kleppmann) / 適用: データモデリング / 目的: 手続き型アプローチの妥当性検証
+
+  Trigger:
+  Use when implementing simple business logic, CRUD operations, building quick prototypes, or when domain model overhead is not justified.
+  transaction script, executor pattern, procedural business logic, simple CRUD, PofEAA
+
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
 ---
 
 # Transaction Script
@@ -37,78 +26,102 @@ references:
 ## 概要
 
 マーティン・ファウラーのPofEAAに基づくトランザクションスクリプトパターンを専門とするスキル。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+ビジネスロジックを手続き型で組織化し、各リクエストに対して一つのスクリプトが直接処理を実行するパターンを提供します。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件分析
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: ビジネス要件がトランザクションスクリプトに適しているか判断
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. ビジネス要件の複雑度を評価
+2. CRUD操作の比率を確認
+3. `references/pattern-overview.md` でパターン適用条件を確認
+4. `references/domain-model-comparison.md` で代替パターンと比較
 
-### Phase 3: 検証と記録
+**Task**: `agents/analyze-requirements.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: Executor設計
+
+**目的**: トランザクションスクリプトの具体的な設計を行う
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. スクリプトの入出力インターフェースを定義
+2. 処理フロー（検証→取得→ロジック→永続化→返却）を設計
+3. `references/executor-pattern.md` で実装パターンを参照
+4. `assets/executor-template.md` をベースに設計
 
+**Task**: `agents/design-executor.md` を参照
+
+### Phase 3: 実装
+
+**目的**: 設計に基づいてトランザクションスクリプトを実装
+
+**アクション**:
+
+1. Executorクラス/関数を実装
+2. エラーハンドリングを追加
+3. `scripts/analyze-executor.mjs` で設計検証
+4. `scripts/validate-skill.mjs` でスキル構造を確認
+
+**Task**: `agents/implement-executor.md` を参照
+
+## Task仕様（ナビゲーション）
+
+| Task                 | 起動タイミング | 入力             | 出力               |
+| -------------------- | -------------- | ---------------- | ------------------ |
+| analyze-requirements | Phase 1開始時  | ビジネス要件     | パターン適用判断書 |
+| design-executor      | Phase 2開始時  | パターン適用判断 | Executor設計書     |
+| implement-executor   | Phase 3開始時  | Executor設計書   | 実装済みスクリプト |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+- 一つのスクリプトは一つのトランザクション
+- 明確な関数名でトランザクションを表現（例: `processOrder`, `cancelSubscription`）
+- 共通ロジックは関数に抽出
+- 処理フローを上から下へ読める形で記述
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- 巨大なスクリプト（100行超）
+- 深いネスト（3段階超）
+- 過度な抽象化（シンプルさを維持）
+- ドメインモデルが必要なほど複雑なロジック
 
-### リソース読み取り
-```bash
-cat .claude/skills/transaction-script/resources/Level1_basics.md
-cat .claude/skills/transaction-script/resources/Level2_intermediate.md
-cat .claude/skills/transaction-script/resources/Level3_advanced.md
-cat .claude/skills/transaction-script/resources/Level4_expert.md
-cat .claude/skills/transaction-script/resources/domain-model-comparison.md
-cat .claude/skills/transaction-script/resources/executor-pattern.md
-cat .claude/skills/transaction-script/resources/legacy-skill.md
-cat .claude/skills/transaction-script/resources/pattern-overview.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/transaction-script/scripts/analyze-executor.mjs --help
-node .claude/skills/transaction-script/scripts/log_usage.mjs --help
-node .claude/skills/transaction-script/scripts/validate-skill.mjs --help
-```
+### references/（詳細知識）
 
-### テンプレート参照
-```bash
-cat .claude/skills/transaction-script/templates/executor-template.md
-```
+| リソース         | パス                                                                               | 内容                 |
+| ---------------- | ---------------------------------------------------------------------------------- | -------------------- |
+| パターン概要     | See [references/pattern-overview.md](references/pattern-overview.md)               | 構造・実装・適用条件 |
+| Executor Pattern | See [references/executor-pattern.md](references/executor-pattern.md)               | Executor実装パターン |
+| Domain Model比較 | See [references/domain-model-comparison.md](references/domain-model-comparison.md) | 代替パターンとの比較 |
+
+### scripts/（決定論的処理）
+
+| スクリプト             | 用途               | 使用例                                            |
+| ---------------------- | ------------------ | ------------------------------------------------- |
+| `analyze-executor.mjs` | Executor設計の検証 | `node scripts/analyze-executor.mjs --path <file>` |
+| `validate-skill.mjs`   | スキル構造検証     | `node scripts/validate-skill.mjs`                 |
+| `log_usage.mjs`        | 使用記録           | `node scripts/log_usage.mjs --result success`     |
+
+### assets/（テンプレート）
+
+| テンプレート           | 用途                     |
+| ---------------------- | ------------------------ |
+| `executor-template.md` | Executor実装テンプレート |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                                 |
+| ------- | ---------- | ------------------------------------------------------- |
+| 2.0.0   | 2026-01-01 | 18-skills.md準拠、Anchors/Trigger追加、ワークフロー改善 |
+| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added             |

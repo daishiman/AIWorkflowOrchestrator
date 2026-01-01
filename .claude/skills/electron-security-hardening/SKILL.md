@@ -1,112 +1,121 @@
 ---
-name: .claude/skills/electron-security-hardening/SKILL.md
+name: electron-security-hardening
 description: |
-  Electronデスクトップアプリケーションのセキュリティ強化専門知識
-  
-  📖 参照書籍:
-  - 『Web Application Security』（Andrew Hoffman）: 脅威モデリング
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/csp-configuration.md`: Content Security Policy詳細設定
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/security-audit.mjs`: セキュリティを監査するスクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/secure-preload.ts`: セキュアPreloadテンプレート
-  
-  Use proactively when handling electron security hardening tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Web Application Security"
-    author: "Andrew Hoffman"
-    concepts:
-      - "脅威モデリング"
-      - "セキュア設計"
+  Electronデスクトップアプリケーションのセキュリティ強化専門知識。
+  XSS、コードインジェクション、プロセス隔離違反などの脅威から保護。
+
+  Anchors:
+  • Electron Security / 適用: プロセス隔離・IPC保護 / 目的: 安全なデスクトップアプリ
+  • OWASP / 適用: 脆弱性評価・脅威モデリング / 目的: 継続的なセキュリティ監査
+  • Content Security Policy / 適用: CSP実装 / 目的: XSS防御とリソース制限
+
+  Trigger:
+  Use when implementing Electron security hardening, configuring CSP, designing secure IPC channels, conducting security audits, managing vulnerabilities, or implementing sandboxing.
+  electron security, CSP, IPC protection, context isolation, sandbox, preload
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# .claude/skills/electron-security-hardening/SKILL.md
+# Electron Security Hardening
 
 ## 概要
 
-Electronデスクトップアプリケーションのセキュリティ強化専門知識
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+Electronデスクトップアプリケーションをセキュリティ脅威から保護するための包括的なスキル。
+CSP、IPC通信の保護、プロセス隔離、サンドボックス化、脆弱性管理の実装パターンを提供。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: セキュリティ評価
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 現状のセキュリティ状態を評価
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. `scripts/security-audit.mjs` でアプリケーションを監査
+2. `agents/security-audit.md` に従ってセキュリティ評価
+3. 優先順位付きの改善計画を策定
+
+### Phase 2: セキュリティ実装
+
+**目的**: セキュリティ対策を実装
+
+**アクション**:
+
+1. `agents/csp-configuration.md` でCSPを実装
+2. `agents/ipc-protection.md` でIPC保護
+3. `agents/process-isolation.md` でプロセス隔離
+4. `agents/sandboxing.md` でサンドボックス化
+5. `agents/vulnerability-management.md` で脆弱性管理
 
 ### Phase 3: 検証と記録
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: 実装を検証し記録
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. CSP違反チェック、IPC動作確認
+2. `scripts/log_usage.mjs` で記録
 
+## Task仕様ナビ
+
+| Task                     | 起動タイミング     | 入力             | 出力               |
+| ------------------------ | ------------------ | ---------------- | ------------------ |
+| security-audit           | セキュリティ評価時 | プロジェクトパス | 監査レポート       |
+| csp-configuration        | CSP設定時          | 監査レポート     | CSP設定ファイル    |
+| ipc-protection           | IPC保護設計時      | アプリ要件       | Preloadスクリプト  |
+| process-isolation        | プロセス隔離実装時 | 監査レポート     | BrowserWindow設定  |
+| sandboxing               | サンドボックス化時 | 権限要件         | サンドボックス設定 |
+| vulnerability-management | 脆弱性管理設定時   | 依存関係情報     | CI/CD設定          |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- Electronアプリのセキュリティを強化する時
-- CSP設定を実装する時
-- IPCチャネルを安全に設計する時
-- 依存関係の脆弱性を監査する時
+
+- **最小権限原則**: `nodeIntegration: false`, `contextIsolation: true`
+- **厳密なCSP**: `default-src 'none'`から始める
+- **IPC検証**: すべてのIPC通信にスキーマ検証
+- **脆弱性監視**: 定期的な`pnpm audit`実行
+- **サンドボックス**: OS固有のサンドボックス機能を活用
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- **nodeIntegration有効化**: セキュリティリスク
+- **検証なしIPC**: ユーザー入力の検証は必須
+- **依存関係放置**: セキュリティパッチの無視
+- **機密情報ハードコード**: 設定ファイルへの埋め込み
 
-### リソース読み取り
-```bash
-cat .claude/skills/electron-security-hardening/resources/Level1_basics.md
-cat .claude/skills/electron-security-hardening/resources/Level2_intermediate.md
-cat .claude/skills/electron-security-hardening/resources/Level3_advanced.md
-cat .claude/skills/electron-security-hardening/resources/Level4_expert.md
-cat .claude/skills/electron-security-hardening/resources/csp-configuration.md
-cat .claude/skills/electron-security-hardening/resources/legacy-skill.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/electron-security-hardening/scripts/log_usage.mjs --help
-node .claude/skills/electron-security-hardening/scripts/security-audit.mjs --help
-node .claude/skills/electron-security-hardening/scripts/validate-skill.mjs --help
-```
+### references/（詳細知識）
 
-### テンプレート参照
-```bash
-cat .claude/skills/electron-security-hardening/templates/secure-preload.ts
-```
+| リソース    | パス                                                                   | 用途               |
+| ----------- | ---------------------------------------------------------------------- | ------------------ |
+| CSP設定詳細 | See [references/csp-configuration.md](references/csp-configuration.md) | ディレクティブ詳細 |
+
+### scripts/（決定論的処理）
+
+| スクリプト           | 用途               | 使用例                                                          |
+| -------------------- | ------------------ | --------------------------------------------------------------- |
+| `security-audit.mjs` | セキュリティ監査   | `node scripts/security-audit.mjs --path ./src`                  |
+| `log_usage.mjs`      | フィードバック記録 | `node scripts/log_usage.mjs --result success --phase "Phase 3"` |
+
+### assets/（テンプレート）
+
+| テンプレート        | 用途                          |
+| ------------------- | ----------------------------- |
+| `secure-preload.ts` | セキュアなPreloadテンプレート |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                              |
+| ------- | ---------- | ------------------------------------ |
+| 3.0.0   | 2026-01-01 | 18-skills.md仕様完全準拠、構造最適化 |
+| 2.0.0   | 2025-12-31 | Task仕様ナビテーブル追加             |
+| 1.0.0   | 2025-12-24 | 初版作成                             |

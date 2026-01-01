@@ -9,31 +9,22 @@ description: |
   - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
   
   📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/command-injection-prevention.md`: execFileによるシェルコマンド実行と許可リスト検証パターン
-  - `resources/file-upload-security.md`: MIMEタイプ検証、パストラバーサル対策、サイズ制限実装
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/sql-injection-prevention.md`: パラメータ化クエリとORMによるSQLインジェクション防止
-  - `resources/xss-prevention.md`: HTMLエスケープ、CSP、DOMベースXSS対策の実装パターン
+  - `references/Level1_basics.md`: レベル1の基礎ガイド
+  - `references/Level2_intermediate.md`: レベル2の実務ガイド
+  - `references/Level3_advanced.md`: レベル3の応用ガイド
+  - `references/Level4_expert.md`: レベル4の専門ガイド
+  - `references/command-injection-prevention.md`: execFileによるシェルコマンド実行と許可リスト検証パターン
+  - `references/file-upload-security.md`: MIMEタイプ検証、パストラバーサル対策、サイズ制限実装
+  - `references/legacy-skill.md`: 旧SKILL.mdの全文
+  - `references/sql-injection-prevention.md`: パラメータ化クエリとORMによるSQLインジェクション防止
+  - `references/xss-prevention.md`: HTMLエスケープ、CSP、DOMベースXSS対策の実装パターン
   - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
   - `scripts/scan-vulnerabilities.mjs`: コードベースのXSS/SQLインジェクション脆弱性スキャン
   - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/sanitization-utils.ts`: 入力検証とサニタイズユーティリティ関数テンプレート
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
+  - `assets/sanitization-utils.ts`: 入力検証とサニタイズユーティリティ関数テンプレート
+  - `references/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
   
   Use proactively when handling input sanitization tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "実践的改善"
-      - "品質維持"
 ---
 
 # Input Sanitization
@@ -44,7 +35,7 @@ references:
 XSS、SQLインジェクション、コマンドインジェクションなどの攻撃を防止し、
 安全なデータ処理を実現します。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
 
 ## ワークフロー
@@ -55,8 +46,8 @@ XSS、SQLインジェクション、コマンドインジェクションなど�
 
 **アクション**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要な references/scripts/templates を特定
 
 ### Phase 2: スキル適用
 
@@ -93,15 +84,15 @@ XSS、SQLインジェクション、コマンドインジェクションなど�
 
 ### リソース読み取り
 ```bash
-cat .claude/skills/input-sanitization/resources/Level1_basics.md
-cat .claude/skills/input-sanitization/resources/Level2_intermediate.md
-cat .claude/skills/input-sanitization/resources/Level3_advanced.md
-cat .claude/skills/input-sanitization/resources/Level4_expert.md
-cat .claude/skills/input-sanitization/resources/command-injection-prevention.md
-cat .claude/skills/input-sanitization/resources/file-upload-security.md
-cat .claude/skills/input-sanitization/resources/legacy-skill.md
-cat .claude/skills/input-sanitization/resources/sql-injection-prevention.md
-cat .claude/skills/input-sanitization/resources/xss-prevention.md
+cat .claude/skills/input-sanitization/references/Level1_basics.md
+cat .claude/skills/input-sanitization/references/Level2_intermediate.md
+cat .claude/skills/input-sanitization/references/Level3_advanced.md
+cat .claude/skills/input-sanitization/references/Level4_expert.md
+cat .claude/skills/input-sanitization/references/command-injection-prevention.md
+cat .claude/skills/input-sanitization/references/file-upload-security.md
+cat .claude/skills/input-sanitization/references/legacy-skill.md
+cat .claude/skills/input-sanitization/references/sql-injection-prevention.md
+cat .claude/skills/input-sanitization/references/xss-prevention.md
 ```
 
 ### スクリプト実行
@@ -113,7 +104,7 @@ node .claude/skills/input-sanitization/scripts/validate-skill.mjs --help
 
 ### テンプレート参照
 ```bash
-cat .claude/skills/input-sanitization/templates/sanitization-utils.ts
+cat .claude/skills/input-sanitization/assets/sanitization-utils.ts
 ```
 
 ## 変更履歴

@@ -1,100 +1,70 @@
 {
-  "skill_name": "transaction-script",
-  "current_level": 1,
-  "levels": {
-    "1": {
-      "level": 1,
-      "name": "基礎",
-      "requirements": {
-        "min_usage_count": 0,
-        "min_success_rate": 0.0,
-        "min_satisfaction_score": 0.0,
-        "required_resources": [
-          "SKILL.md"
-        ]
+  "skill": "transaction-script",
+  "version": "2.0.0",
+  "lastUpdated": "2025-12-31",
+  "metrics": {
+    "totalExecutions": 0,
+    "successfulExecutions": 0,
+    "failedExecutions": 0,
+    "successRate": 0,
+    "averageExecutionTime": null
+  },
+  "levelProgress": {
+    "currentLevel": 1,
+    "requirements": {
+      "level1": {
+        "minExecutions": 5,
+        "minSuccessRate": 0.6,
+        "achieved": false
       },
-      "success_criteria": [
-        "SKILL.mdが存在し、基本タスクが実行可能"
-      ]
-    },
-    "2": {
-      "level": 2,
-      "name": "中級",
-      "requirements": {
-        "min_usage_count": 10,
-        "min_success_rate": 0.8,
-        "min_satisfaction_score": 0.7,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "scripts/analyze-executor.mjs"
-        ]
+      "level2": {
+        "minExecutions": 15,
+        "minSuccessRate": 0.75,
+        "achieved": false
       },
-      "success_criteria": [
-        "10回以上使用され、成功率80%以上"
-      ]
-    },
-    "3": {
-      "level": 3,
-      "name": "上級",
-      "requirements": {
-        "min_usage_count": 50,
-        "min_success_rate": 0.9,
-        "min_satisfaction_score": 0.8,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/domain-model-comparison.md",
-          "resources/executor-pattern.md",
-          "resources/legacy-skill.md",
-          "resources/pattern-overview.md",
-          "scripts/analyze-executor.mjs",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/executor-template.md"
-        ]
+      "level3": {
+        "minExecutions": 30,
+        "minSuccessRate": 0.85,
+        "achieved": false
       },
-      "success_criteria": [
-        "50回以上使用され、成功率90%以上"
-      ]
-    },
-    "4": {
-      "level": 4,
-      "name": "専門",
-      "requirements": {
-        "min_usage_count": 100,
-        "min_success_rate": 0.95,
-        "min_satisfaction_score": 0.9,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/domain-model-comparison.md",
-          "resources/executor-pattern.md",
-          "resources/legacy-skill.md",
-          "resources/pattern-overview.md",
-          "scripts/analyze-executor.mjs",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/executor-template.md",
-          "LOGS.md"
-        ]
-      },
-      "success_criteria": [
-        "100回以上使用され、成功率95%以上"
-      ]
+      "level4": {
+        "minExecutions": 50,
+        "minSuccessRate": 0.9,
+        "achieved": false
+      }
     }
   },
-  "metrics": {
-    "total_usage_count": 0,
-    "success_count": 0,
-    "failure_count": 0,
-    "average_satisfaction": 0.0,
-    "last_evaluated": "2025-12-24T00:00:00Z"
-  }
+  "taskMetrics": {
+    "analyze-requirements": {
+      "executions": 0,
+      "successes": 0,
+      "failures": 0,
+      "successRate": 0
+    },
+    "design-executor": {
+      "executions": 0,
+      "successes": 0,
+      "failures": 0,
+      "successRate": 0
+    },
+    "implement-executor": {
+      "executions": 0,
+      "successes": 0,
+      "failures": 0,
+      "successRate": 0
+    }
+  },
+  "qualityIndicators": {
+    "codeQuality": {
+      "lintErrors": [],
+      "typeErrors": [],
+      "testCoverage": null
+    },
+    "userFeedback": {
+      "positiveCount": 0,
+      "negativeCount": 0,
+      "averageRating": null
+    }
+  },
+  "improvementSuggestions": []
 }

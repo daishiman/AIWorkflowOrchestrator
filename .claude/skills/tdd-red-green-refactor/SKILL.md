@@ -7,21 +7,21 @@ description: |
   - 『Test-Driven Development: By Example』（Kent Beck）: Red-Green-Refactor
   
   📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/green-phase.md`: Green Phaseリソース
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/red-phase.md`: Red Phaseリソース
-  - `resources/refactor-phase.md`: Refactor Phaseリソース
-  - `resources/tdd-anti-patterns.md`: Tdd Anti Patternsリソース
-  - `resources/test-naming.md`: Test Namingリソース
+  - `references/Level1_basics.md`: レベル1の基礎ガイド
+  - `references/Level2_intermediate.md`: レベル2の実務ガイド
+  - `references/Level3_advanced.md`: レベル3の応用ガイド
+  - `references/Level4_expert.md`: レベル4の専門ガイド
+  - `references/green-phase.md`: Green Phaseリソース
+  - `references/legacy-skill.md`: 旧SKILL.mdの全文
+  - `references/red-phase.md`: Red Phaseリソース
+  - `references/refactor-phase.md`: Refactor Phaseリソース
+  - `references/tdd-anti-patterns.md`: Tdd Anti Patternsリソース
+  - `references/test-naming.md`: Test Namingリソース
   - `scripts/analyze-coverage.mjs`: Analyze Coverageスクリプト
   - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
   - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/test-template.md`: Testテンプレート
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
+  - `assets/test-template.md`: Testテンプレート
+  - `references/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
   
   Use proactively when handling tdd red green refactor tasks.
 version: 1.0.0
@@ -41,7 +41,7 @@ references:
 
 ケント・ベックのテスト駆動開発（TDD）サイクルを専門とするスキル。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
 
 ## ワークフロー
@@ -52,8 +52,8 @@ references:
 
 **アクション**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要な references/scripts/templates を特定
 
 ### Phase 2: スキル適用
 
@@ -78,8 +78,8 @@ references:
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+- references/Level1_basics.md を参照し、適用範囲を明確にする
+- references/Level2_intermediate.md を参照し、実務手順を整理する
 
 ### 避けるべきこと
 - アンチパターンや注意点を確認せずに進めることを避ける
@@ -88,16 +88,16 @@ references:
 
 ### リソース読み取り
 ```bash
-cat .claude/skills/tdd-red-green-refactor/resources/Level1_basics.md
-cat .claude/skills/tdd-red-green-refactor/resources/Level2_intermediate.md
-cat .claude/skills/tdd-red-green-refactor/resources/Level3_advanced.md
-cat .claude/skills/tdd-red-green-refactor/resources/Level4_expert.md
-cat .claude/skills/tdd-red-green-refactor/resources/green-phase.md
-cat .claude/skills/tdd-red-green-refactor/resources/legacy-skill.md
-cat .claude/skills/tdd-red-green-refactor/resources/red-phase.md
-cat .claude/skills/tdd-red-green-refactor/resources/refactor-phase.md
-cat .claude/skills/tdd-red-green-refactor/resources/tdd-anti-patterns.md
-cat .claude/skills/tdd-red-green-refactor/resources/test-naming.md
+cat .claude/skills/tdd-red-green-refactor/references/Level1_basics.md
+cat .claude/skills/tdd-red-green-refactor/references/Level2_intermediate.md
+cat .claude/skills/tdd-red-green-refactor/references/Level3_advanced.md
+cat .claude/skills/tdd-red-green-refactor/references/Level4_expert.md
+cat .claude/skills/tdd-red-green-refactor/references/green-phase.md
+cat .claude/skills/tdd-red-green-refactor/references/legacy-skill.md
+cat .claude/skills/tdd-red-green-refactor/references/red-phase.md
+cat .claude/skills/tdd-red-green-refactor/references/refactor-phase.md
+cat .claude/skills/tdd-red-green-refactor/references/tdd-anti-patterns.md
+cat .claude/skills/tdd-red-green-refactor/references/test-naming.md
 ```
 
 ### スクリプト実行
@@ -109,7 +109,7 @@ node .claude/skills/tdd-red-green-refactor/scripts/validate-skill.mjs --help
 
 ### テンプレート参照
 ```bash
-cat .claude/skills/tdd-red-green-refactor/templates/test-template.md
+cat .claude/skills/tdd-red-green-refactor/assets/test-template.md
 ```
 
 ## 変更履歴

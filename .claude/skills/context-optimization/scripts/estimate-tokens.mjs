@@ -178,7 +178,7 @@ function main() {
     console.log("");
     console.log("Examples:");
     console.log("  node estimate-tokens.mjs ./SKILL.md");
-    console.log("  node estimate-tokens.mjs ./resources/");
+    console.log("  node estimate-tokens.mjs ./references/");
     process.exit(1);
   }
 

@@ -1,101 +1,149 @@
 ---
-name: .claude/skills/notification-integration-gha/SKILL.md
+name: notification-integration-gha
 description: |
-  GitHub Actions通知統合スキル - Slack、Discord、MS Teams、Email等への自動通知設定。
-  以下の場合に自動発動:
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/discord-teams.md`: Discord・MS Teams統合ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/slack-integration.md`: Slack統合詳細ガイド
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/test-webhook.mjs`: Slack/Discord/TeamsのWebhook URLに対するメッセージ送信テストスクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/notification-workflow.yaml`: Slack/Discord/Teams/Emailへの成功・失敗通知を含むGitHub Actionsワークフロー実例集
-  
-  Use proactively when handling notification integration gha tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "実践的改善"
-      - "品質維持"
+  GitHub Actions notification integration skill for Slack, Discord, MS Teams, and Email. Automates build/deployment status notifications with customizable success/failure messages and interactive elements.
+
+  Anchors:
+  • The Pragmatic Programmer (Andrew Hunt, David Thomas) / 適用: Automation and feedback loops / 目的: Establish rapid feedback through automated notifications
+  • GitHub Actions best practices / 適用: Workflow design and secret management / 目的: Secure and maintainable notification setup
+
+  Trigger:
+  Use when setting up notifications, configuring webhooks, adding Slack/Discord/Teams/Email alerts to workflows, troubleshooting notification failures, or implementing status reporting.
+  Keywords: slack notification, discord webhook, teams alert, github actions notify, workflow status, deployment notification, build alert
+version: 1.1.0
+last_updated: 2025-12-31
+tags:
+  - github-actions
+  - notifications
+  - slack
+  - discord
+  - teams
+  - automation
 ---
 
 # GitHub Actions Notification Integration Skill
 
 ## 概要
 
-GitHub Actions通知統合スキル - Slack、Discord、MS Teams、Email等への自動通知設定。
-以下の場合に自動発動:
+このスキルは GitHub Actions のワークフローに通知機能を統合する専門知識を提供します。Slack、Discord、MS Teams、Email への自動通知設定を、セキュアで保守性の高い方法で実装します。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+基礎から始める場合は `references/Level1_basics.md` を、実務での実装は `references/Level2_intermediate.md` を参照してください。
 
+## Task仕様（ナビゲーション）
+
+以下のTaskファイルを必要に応じて起動してください：
+
+| Task                   | ファイル                  | 使用タイミング               |
+| ---------------------- | ------------------------- | ---------------------------- |
+| Slack統合              | `agents/setup-slack.md`   | Slackへの通知を設定する際    |
+| Discord統合            | `agents/setup-discord.md` | Discordへの通知を設定する際  |
+| MS Teams統合           | `agents/setup-teams.md`   | MS Teamsへの通知を設定する際 |
+| トラブルシューティング | `agents/troubleshoot.md`  | 通知が機能しない場合         |
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件定義と選択
 
-**目的**: タスクの目的と前提条件を明確にする
+**目的**: 通知要件を明確にし、適切な通知サービスと統合方法を選択する
 
-**アクション**:
+**判断ポイント**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+- 通知先プラットフォーム（Slack/Discord/Teams/Email）
+- 通知タイミング（成功時/失敗時/両方）
+- メッセージ内容（シンプル/詳細/インタラクティブ）
 
-### Phase 2: スキル適用
+**Task選択**:
 
-**目的**: スキルの指針に従って具体的な作業を進める
+- Slack統合: `agents/setup-slack.md` を使用
+- Discord統合: `agents/setup-discord.md` を使用
+- MS Teams統合: `agents/setup-teams.md` を使用
+- 複数サービス統合: 各Taskを組み合わせて実行
 
-**アクション**:
+**参照リソース**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+- 基礎理解: `references/Level1_basics.md`
+- サービス別詳細: `references/slack-integration.md`, `references/discord-teams.md`
 
-### Phase 3: 検証と記録
+### Phase 2: 実装
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: Webhook/トークン設定とワークフロー定義を行う
 
-**アクション**:
+**実装手順**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. GitHub Secretsの設定（Webhook URL、Bot Token等）
+2. ワークフロー定義（`assets/notification-workflow.yaml` を参照）
+3. メッセージフォーマット調整
 
+**Task実行**:
+
+- 選択したTaskファイル（`agents/*.md`）の実行仕様に従って実装
+- Taskは独立した作業窓として実行し、成果物をメインに返す
+
+**参照リソース**:
+
+- 実務ガイド: `references/Level2_intermediate.md`
+- テンプレート: `assets/notification-workflow.yaml`
+
+### Phase 3: テストと検証
+
+**目的**: 通知が正しく動作することを確認する
+
+**検証手順**:
+
+1. Webhook URLの有効性確認: `scripts/test-webhook.mjs` を実行
+2. テストワークフロー実行
+3. 通知受信確認
+
+**トラブルシューティング**:
+
+- 通知失敗時: `agents/troubleshoot.md` のTaskを起動
+- 高度な問題: `references/Level3_advanced.md` を参照
+
+### Phase 4: 記録
+
+**目的**: 実行結果を記録し、継続的改善に活用する
+
+**記録方法**:
+
+```bash
+node scripts/log_usage.mjs --result success --phase "Phase2" --notes "Slack通知を実装"
+```
 
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+- Secretsを安全に管理（環境変数やリポジトリシークレットを使用）
+- メッセージに必要な情報を含める（リポジトリ、ブランチ、コミット、作者）
+- 成功と失敗で異なるメッセージを送信
+- Webhook URLをテストしてから本番適用
+- `references/Level1_basics.md` で基礎を確認
+- `references/Level2_intermediate.md` で実装パターンを学習
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
+
+- Webhook URLやトークンをハードコード
+- すべての通知を同じチャネルに送信
+- エラー情報なしで失敗通知を送る
+- テスト不十分のまま本番適用
+- アンチパターンを確認せずに実装
 
 ## コマンドリファレンス
 
 ### リソース読み取り
+
 ```bash
-cat .claude/skills/notification-integration-gha/resources/Level1_basics.md
-cat .claude/skills/notification-integration-gha/resources/Level2_intermediate.md
-cat .claude/skills/notification-integration-gha/resources/Level3_advanced.md
-cat .claude/skills/notification-integration-gha/resources/Level4_expert.md
-cat .claude/skills/notification-integration-gha/resources/discord-teams.md
-cat .claude/skills/notification-integration-gha/resources/legacy-skill.md
-cat .claude/skills/notification-integration-gha/resources/slack-integration.md
+cat .claude/skills/notification-integration-gha/references/Level1_basics.md
+cat .claude/skills/notification-integration-gha/references/Level2_intermediate.md
+cat .claude/skills/notification-integration-gha/references/Level3_advanced.md
+cat .claude/skills/notification-integration-gha/references/Level4_expert.md
+cat .claude/skills/notification-integration-gha/references/discord-teams.md
+cat .claude/skills/notification-integration-gha/references/legacy-skill.md
+cat .claude/skills/notification-integration-gha/references/slack-integration.md
 ```
 
 ### スクリプト実行
+
 ```bash
 node .claude/skills/notification-integration-gha/scripts/log_usage.mjs --help
 node .claude/skills/notification-integration-gha/scripts/test-webhook.mjs --help
@@ -103,12 +151,35 @@ node .claude/skills/notification-integration-gha/scripts/validate-skill.mjs --he
 ```
 
 ### テンプレート参照
+
 ```bash
-cat .claude/skills/notification-integration-gha/templates/notification-workflow.yaml
+cat .claude/skills/notification-integration-gha/assets/notification-workflow.yaml
 ```
+
+## リソース参照パス
+
+### references/ (知識の外部化)
+
+- `references/Level1_basics.md`: 基礎概念と前提知識
+- `references/Level2_intermediate.md`: 実務パターンと実装ガイド
+- `references/Level3_advanced.md`: 高度な設定とカスタマイズ
+- `references/Level4_expert.md`: エキスパート向けトピック
+- `references/slack-integration.md`: Slack統合詳細
+- `references/discord-teams.md`: Discord・MS Teams統合詳細
+
+### scripts/ (決定論的処理)
+
+- `scripts/log_usage.mjs`: 使用記録と自動評価
+- `scripts/test-webhook.mjs`: Webhook URL動作確認
+- `scripts/validate-skill.mjs`: スキル構造検証
+
+### assets/ (出力素材)
+
+- `assets/notification-workflow.yaml`: ワークフロー実装例
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                                                                  |
+| ------- | ---------- | ---------------------------------------------------------------------------------------- |
+| 1.1.0   | 2025-12-31 | Updated to 18-skills.md spec: new description format, Task navigation, agents/ structure |
+| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added                                              |

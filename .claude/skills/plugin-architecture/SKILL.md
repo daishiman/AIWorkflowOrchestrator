@@ -1,44 +1,25 @@
 ---
-name: .claude/skills/plugin-architecture/SKILL.md
+name: plugin-architecture
 description: |
-  動的な機能拡張を可能にするプラグインアーキテクチャの設計を専門とするスキル。
+  プラグインアーキテクチャの専門スキル。
   レジストリパターン、動的ロード、依存性注入を活用し、
-  機能追加時の既存コード修正を不要にする拡張性の高いシステム設計を提供します。
-  
-  📖 参照書籍:
-  - 『Clean Architecture』（Robert C. Martin）: 依存関係ルール
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/dependency-injection.md`: Constructor Injection、DI Container設計によるプラグイン間疎結合化
-  - `resources/dynamic-loading.md`: Eager/Lazy/On-Demand Loading、自動登録・手動登録パターン
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/plugin-lifecycle.md`: プラグインのロード、初期化、有効化、無効化、アンロードフック管理
-  - `resources/registry-pattern.md`: 型安全なプラグインRegistry、登録・取得・検索パターン
-  - `resources/service-locator.md`: Service Locatorパターンの設計と適切な使用場面
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-plugin-structure.mjs`: プラグインディレクトリ構造とインターフェース実装を検証
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/plugin-implementation.md`: IPlugin実装、ライフサイクルフック、依存性注入を含むプラグインテンプレート
-  - `templates/registry-implementation.md`: 型安全なRegistry実装テンプレート（Map-based、CRUD操作含む）
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when handling plugin architecture tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Clean Architecture"
-    author: "Robert C. Martin"
-    concepts:
-      - "依存関係ルール"
-      - "境界の設計"
+  拡張ポイント設計とプラグインAPI、動的ロードを提供します。
+
+  Anchors:
+  • 『Clean Architecture』（Robert C. Martin） / 適用: 拡張性設計 / 目的: 柔軟性確保
+
+  Trigger:
+  プラグインシステム設計時、拡張ポイント実装時、動的ロード設計時に使用
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# Plugin Architecture
+# プラグインアーキテクチャ
 
 ## 概要
 
@@ -46,8 +27,7 @@ references:
 レジストリパターン、動的ロード、依存性注入を活用し、
 機能追加時の既存コード修正を不要にする拡張性の高いシステム設計を提供します。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
 ## ワークフロー
 
@@ -57,8 +37,9 @@ references:
 
 **アクション**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要なリソース/スクリプト/テンプレートを特定
+3. アーキテクチャの要件（レジストリ設計、ロード戦略、DI方式）を定義
 
 ### Phase 2: スキル適用
 
@@ -66,8 +47,10 @@ references:
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 関連リソース（registry-pattern.md、dependency-injection.md、dynamic-loading.md）を参照
+2. 適切なパターンテンプレート（plugin-implementation.md、registry-implementation.md）を使用
+3. プラグインライフサイクルと依存性注入の設計を実施
+4. 重要な判断点をメモとして残す
 
 ### Phase 3: 検証と記録
 
@@ -75,53 +58,72 @@ references:
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. `scripts/validate-plugin-structure.mjs` でプラグイン構造を検証
+2. `scripts/validate-skill.mjs` でスキル構造を確認
+3. 成果物が目的に合致するか確認
+4. `scripts/log_usage.mjs` を実行して記録を残す
 
+## Task仕様ナビ
+
+| Task                         | リソース                | スクリプト                    | テンプレート               |
+| ---------------------------- | ----------------------- | ----------------------------- | -------------------------- |
+| プラグインの基本概念習得     | Level1_basics.md        | validate-skill.mjs            | -                          |
+| レジストリパターン実装       | registry-pattern.md     | validate-plugin-structure.mjs | registry-implementation.md |
+| 動的ロード戦略の選択         | dynamic-loading.md      | validate-plugin-structure.mjs | plugin-implementation.md   |
+| 依存性注入の設計             | dependency-injection.md | validate-plugin-structure.mjs | plugin-implementation.md   |
+| プラグインライフサイクル管理 | plugin-lifecycle.md     | validate-plugin-structure.mjs | plugin-implementation.md   |
+| Service Locatorパターン      | service-locator.md      | validate-plugin-structure.mjs | -                          |
+| 実務的な設計パターン         | Level2_intermediate.md  | validate-plugin-structure.mjs | registry-implementation.md |
+| 応用的なテクニック           | Level3_advanced.md      | validate-skill.mjs            | -                          |
+| エキスパート知見             | Level4_expert.md        | log_usage.mjs                 | -                          |
 
 ## ベストプラクティス
 
 ### すべきこと
+
 - ワークフローエンジンのプラグインシステムを構築する時
 - 機能の動的追加・削除が必要な時
 - 疎結合なモジュール設計が必要な時
 - 拡張ポイントを提供するフレームワークを設計する時
+- 型安全なプラグイン登録メカニズムを実装する時
+- ロード順序の依存性を明確に管理する時
 
 ### 避けるべきこと
+
 - アンチパターンや注意点を確認せずに進めることを避ける
+- プラグイン間の循環依存を許可することを避ける
+- グローバル状態を使用してプラグイン間通信を行うことを避ける
+- 型安全性なしでプラグインレジストリを実装することを避ける
 
-## コマンドリファレンス
+## リソース参照
 
-### リソース読み取り
-```bash
-cat .claude/skills/plugin-architecture/resources/Level1_basics.md
-cat .claude/skills/plugin-architecture/resources/Level2_intermediate.md
-cat .claude/skills/plugin-architecture/resources/Level3_advanced.md
-cat .claude/skills/plugin-architecture/resources/Level4_expert.md
-cat .claude/skills/plugin-architecture/resources/dependency-injection.md
-cat .claude/skills/plugin-architecture/resources/dynamic-loading.md
-cat .claude/skills/plugin-architecture/resources/legacy-skill.md
-cat .claude/skills/plugin-architecture/resources/plugin-lifecycle.md
-cat .claude/skills/plugin-architecture/resources/registry-pattern.md
-cat .claude/skills/plugin-architecture/resources/service-locator.md
-```
+### リソースファイル
 
-### スクリプト実行
-```bash
-node .claude/skills/plugin-architecture/scripts/log_usage.mjs --help
-node .claude/skills/plugin-architecture/scripts/validate-plugin-structure.mjs --help
-node .claude/skills/plugin-architecture/scripts/validate-skill.mjs --help
-```
+- `references/Level1_basics.md` - プラグインアーキテクチャの基礎概念
+- `references/Level2_intermediate.md` - 実装パターンと設計判断
+- `references/Level3_advanced.md` - 高度なテクニックとスケーリング
+- `references/Level4_expert.md` - エキスパートレベルの知見
+- `references/registry-pattern.md` - 型安全なレジストリ実装パターン
+- `references/dependency-injection.md` - DI Container設計とパターン
+- `references/dynamic-loading.md` - ロード戦略（Eager/Lazy/On-Demand）
+- `references/plugin-lifecycle.md` - ロード、初期化、有効化、無効化、アンロード
+- `references/service-locator.md` - Service Locatorパターンの比較検討
+- `references/legacy-skill.md` - 旧SKILL.mdの全文
+- `references/requirements-index.md` - 要求仕様の索引
 
-### テンプレート参照
-```bash
-cat .claude/skills/plugin-architecture/templates/plugin-implementation.md
-cat .claude/skills/plugin-architecture/templates/registry-implementation.md
-```
+### スクリプト
+
+- `scripts/validate-plugin-structure.mjs` - プラグインディレクトリ構造とインターフェース実装の検証
+- `scripts/validate-skill.mjs` - スキル構造検証
+- `scripts/log_usage.mjs` - 使用記録と自動評価
+
+### テンプレート
+
+- `assets/plugin-implementation.md` - IPlugin実装、ライフサイクルフック、依存性注入を含むプラグインテンプレート
+- `assets/registry-implementation.md` - 型安全なRegistry実装テンプレート（Map-based、CRUD操作含む）
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                                                                                 |
+| ------- | ---------- | ------------------------------------------------------------------------------------------------------- |
+| 1.0.0   | 2025-12-31 | 18-skills.md仕様に基づいて完全更新: Trigger/Anchorsの追加、Task仕様ナビ追加、リソース参照セクション統合 |

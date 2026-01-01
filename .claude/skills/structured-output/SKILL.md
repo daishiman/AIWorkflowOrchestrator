@@ -7,23 +7,15 @@ description: |
   - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
   
   📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
+  - `references/Level1_basics.md`: レベル1の基礎ガイド
+  - `references/Level2_intermediate.md`: レベル2の実務ガイド
+  - `references/Level3_advanced.md`: レベル3の応用ガイド
+  - `references/Level4_expert.md`: レベル4の専門ガイド
   - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
   - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
+  - `references/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
   
   Use proactively when designing structured outputs or schemas.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "実践的改善"
 ---
 
 # Structured Output
@@ -32,7 +24,7 @@ references:
 
 構造化出力の設計と検証手順を提供するスキル。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
 
 ## ワークフロー
@@ -43,8 +35,8 @@ references:
 
 **アクション**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要な references/scripts/templates を特定
 
 ### Phase 2: スキル適用
 
@@ -69,8 +61,8 @@ references:
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+- references/Level1_basics.md を参照し、適用範囲を明確にする
+- references/Level2_intermediate.md を参照し、実務手順を整理する
 
 ### 避けるべきこと
 - アンチパターンや注意点を確認せずに進めることを避ける
@@ -79,10 +71,10 @@ references:
 
 ### リソース読み取り
 ```bash
-cat .claude/skills/structured-output/resources/Level1_basics.md
-cat .claude/skills/structured-output/resources/Level2_intermediate.md
-cat .claude/skills/structured-output/resources/Level3_advanced.md
-cat .claude/skills/structured-output/resources/Level4_expert.md
+cat .claude/skills/structured-output/references/Level1_basics.md
+cat .claude/skills/structured-output/references/Level2_intermediate.md
+cat .claude/skills/structured-output/references/Level3_advanced.md
+cat .claude/skills/structured-output/references/Level4_expert.md
 ```
 
 ### スクリプト実行

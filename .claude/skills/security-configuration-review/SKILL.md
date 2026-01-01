@@ -1,46 +1,37 @@
 ---
-name: .claude/skills/security-configuration-review/SKILL.md
+name: security-configuration-review
 description: |
-  セキュリティ関連設定のレビューとベストプラクティスを提供します。
-  
-  📖 参照書籍:
-  - 『Web Application Security』（Andrew Hoffman）: 脅威モデリング
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/security-headers-guide.md`: Security Headers Guideリソース
-  - `scripts/check-security-headers.mjs`: Check Security Headersスクリプト
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/cors-config-template.js`: Cors Configテンプレート
-  - `templates/helmet-config-template.js`: Helmet Configテンプレート
-  - `templates/security-checklist.md`: Security Checklistテンプレート
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when handling security configuration review tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Web Application Security"
-    author: "Andrew Hoffman"
-    concepts:
-      - "脅威モデリング"
-      - "セキュア設計"
+  セキュリティ関連設定のレビュー、構成監査、セキュリティベースライン確認を統一的に実施するスキル。脅威モデリングに基づいた設定評価とベストプラクティスの適用を通じて、アプリケーションのセキュリティ態勢を向上させます。
+
+  Anchors:
+  • 『Web Application Security』（Andrew Hoffman） / 適用: セキュリティ設定監査 / 目的: セキュリティ態勢の向上
+
+  Trigger:
+  セキュリティ設定レビュー、構成監査、セキュリティベースライン確認時に使用。セキュリティヘッダー設定、CORS設定、認証・認可の監査などの場面で自動選択対象。
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Security Configuration Review
 
 ## 概要
 
-セキュリティ関連設定のレビューとベストプラクティスを提供します。
+セキュリティ関連設定のレビュー、構成監査、セキュリティベースライン確認を統一的に実施するスキルです。脅威モデリングに基づいた設定評価とベストプラクティスの適用を通じて、アプリケーションのセキュリティ態勢を向上させます。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+本スキルは以下を対象とします：
 
+- **セキュリティヘッダー** (CSP, X-Frame-Options, X-Content-Type-Options など)
+- **認証・認可設定** (JWT, CORS, OAuth2 フロー)
+- **暗号化と通信セキュリティ** (TLS/SSL, 鍵管理)
+- **サードパーティ依存関係** (ライブラリのセキュリティリスク)
+- **コンプライアンス要件** (GDPR, PCI-DSS など)
+
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
 ## ワークフロー
 
@@ -50,8 +41,8 @@ references:
 
 **アクション**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要な references/scripts/templates を特定
 
 ### Phase 2: スキル適用
 
@@ -72,44 +63,75 @@ references:
 2. 成果物が目的に合致するか確認
 3. `scripts/log_usage.mjs` を実行して記録を残す
 
+## Task仕様ナビ
+
+| Task                       | 対応リソース                          | 主な検査項目                         | 推奨スクリプト               |
+| -------------------------- | ------------------------------------- | ------------------------------------ | ---------------------------- |
+| セキュリティヘッダー監査   | `references/security-headers-guide.md` | CSP, X-Frame-Options, HSTS 等        | `check-security-headers.mjs` |
+| CORS設定レビュー           | `assets/cors-config-template.js`   | オリジン検証, メソッド制限, 認証情報 | -                            |
+| 認証・認可監査             | `references/Level2_intermediate.md`    | JWT トークン, Session 管理, RBAC     | -                            |
+| 依存パッケージ脆弱性確認   | `references/requirements-index.md`     | CVE, ライセンス要件                  | -                            |
+| セキュリティチェックリスト | `assets/security-checklist.md`     | OWASP Top 10, CWE 対応               | -                            |
+| Helmet設定最適化           | `assets/helmet-config-template.js` | ミドルウェア構成, ベストプラクティス | -                            |
+| コンプライアンス確認       | `references/Level3_advanced.md`        | GDPR, PCI-DSS, SOC2                  | -                            |
+| 脅威モデル分析             | `references/Level4_expert.md`          | 攻撃面, リスク評価, 優先度付け       | -                            |
 
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+- `references/Level1_basics.md` を参照し、適用範囲を明確にする
+- `references/Level2_intermediate.md` を参照し、実務手順を整理する
+- **脅威モデリング** に基づいて、攻撃面と優先度を把握する
+- **OWASP Top 10** に対応した設定チェックを実施する
+- セキュリティヘッダーは **段階的に** 導入し、アプリケーション動作を確認する
+- **定期的に** 脆弱性情報を確認し、依存パッケージを更新する
+- セキュリティ設定の **変更履歴と根拠** を記録する
 
 ### 避けるべきこと
+
 - アンチパターンや注意点を確認せずに進めることを避ける
+- セキュリティヘッダーを **厳格に設定しすぎて** アプリケーション機能を破損させる
+- **古い設定** のまま進める（定期的にレビューを実施）
+- コンプライアンス要件を **見落とす** （業界標準の確認が重要）
+- 脆弱性スキャンの結果を **無視する**
 
-## コマンドリファレンス
+## リソース参照
 
-### リソース読み取り
-```bash
-cat .claude/skills/security-configuration-review/resources/Level1_basics.md
-cat .claude/skills/security-configuration-review/resources/Level2_intermediate.md
-cat .claude/skills/security-configuration-review/resources/Level3_advanced.md
-cat .claude/skills/security-configuration-review/resources/Level4_expert.md
-cat .claude/skills/security-configuration-review/resources/legacy-skill.md
-cat .claude/skills/security-configuration-review/resources/security-headers-guide.md
-```
+### 📖 References（参考文献と学習リソース）
 
-### スクリプト実行
-```bash
-node .claude/skills/security-configuration-review/scripts/check-security-headers.mjs --help
-node .claude/skills/security-configuration-review/scripts/log_usage.mjs --help
-node .claude/skills/security-configuration-review/scripts/validate-skill.mjs --help
-```
+| カテゴリ       | リソース                              | 説明                                       |
+| -------------- | ------------------------------------- | ------------------------------------------ |
+| **基礎知識**   | `references/Level1_basics.md`          | セキュリティ設定の基本概念とチェックリスト |
+| **実務ガイド** | `references/Level2_intermediate.md`    | 実践的なセキュリティ監査手順               |
+| **応用技法**   | `references/Level3_advanced.md`        | 高度な脅威モデリングとリスク評価           |
+| **専門知識**   | `references/Level4_expert.md`          | エンタープライズセキュリティ戦略           |
+| **業界標準**   | `references/requirements-index.md`     | OWASP, NIST, GDPR 等のコンプライアンス要件 |
+| **特定技術**   | `references/security-headers-guide.md` | HTTP セキュリティヘッダーの詳細ガイド      |
 
-### テンプレート参照
-```bash
-cat .claude/skills/security-configuration-review/templates/cors-config-template.js
-cat .claude/skills/security-configuration-review/templates/helmet-config-template.js
-cat .claude/skills/security-configuration-review/templates/security-checklist.md
-```
+### 🔧 Scripts（自動化スクリプト）
+
+| スクリプト                   | 用途                     | コマンド                                         |
+| ---------------------------- | ------------------------ | ------------------------------------------------ |
+| `check-security-headers.mjs` | セキュリティヘッダー検証 | `node scripts/check-security-headers.mjs --help` |
+| `validate-skill.mjs`         | スキル構造の検証         | `node scripts/validate-skill.mjs --help`         |
+| `log_usage.mjs`              | 使用記録と自動評価       | `node scripts/log_usage.mjs --help`              |
+
+### 📋 Templates（テンプレート集）
+
+| テンプレート                | 用途                           | 参照パス                              |
+| --------------------------- | ------------------------------ | ------------------------------------- |
+| `cors-config-template.js`   | CORS設定の実装例               | `assets/cors-config-template.js`   |
+| `helmet-config-template.js` | Helmet ミドルウェア設定例      | `assets/helmet-config-template.js` |
+| `security-checklist.md`     | セキュリティ監査チェックリスト | `assets/security-checklist.md`     |
+
+### 📚 Legacy（旧バージョンリソース）
+
+- `references/legacy-skill.md`: 旧 SKILL.md の完全版（参考用）
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                                                                                                                                                                                                                         |
+| ------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様への完全準拠。YAML frontmatterにAnchorsとTriggerを追加。Task仕様ナビテーブルを実装。リソース参照セクションを整理し、References/Scripts/Templatesの3階層に構成。ベストプラクティスを「すべきこと」「避けるべきこと」で大幅拡充。 |
+| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added                                                                                                                                                                                                     |

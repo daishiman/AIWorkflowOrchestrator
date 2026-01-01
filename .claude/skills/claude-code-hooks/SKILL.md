@@ -1,114 +1,124 @@
 ---
-name: .claude/skills/claude-code-hooks/SKILL.md
+name: claude-code-hooks
 description: |
-  ## 概要
-  
-  📖 参照書籍:
-  - 『Learning React』（Alex Banks, Eve Porcello）: コンポーネント設計
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/claude-code-guidelines.md`: Claude Code ガイドライン
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/quality-metrics.md`: カバレッジ80%・複雑度10以下・脆弱性0個などの定量的品質基準とメトリクス収集方法
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-claude-quality.mjs`: Claude Code Quality Validation Script
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/claude-commit-template.sh`: !/bin/bash
-  - `templates/claude-quality-template.sh`: !/bin/bash
-  
-  Use proactively when handling claude code hooks tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Learning React"
-    author: "Alex Banks, Eve Porcello"
-    concepts:
-      - "コンポーネント設計"
-      - "パフォーマンス"
+  Claude Code の hooks 設計・実装・検証を支援し、セッション/ツール連携の自動化と品質ゲートを安全に構築するスキル。
+  イベント（SessionStart/PreToolUse/PostToolUse/Stop）の選定、スクリプト設計、検証フローを整理する。
+
+  Anchors:
+  • Claude Code Documentation / 適用: Hook events and configuration / 目的: 正しいイベント選定
+  • Continuous Delivery (Jez Humble) / 適用: 自動化と検証 / 目的: 品質ゲート設計
+  • The Pragmatic Programmer (Hunt/Thomas) / 適用: 自動化と安全性 / 目的: 安全なフック運用
+
+  Trigger:
+  Use when configuring Claude Code hooks, designing pre/post tool automation, writing hook scripts, or validating hook-driven workflows.
+  claude code hooks, pretooluse, posttooluse, sessionstart, stop, hook scripts, automation
 ---
-
-# Claude Code フック実装
-
-## 概要
+# claude-code-hooks
 
 ## 概要
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+Claude Code の hooks を設計・実装・検証し、開発フローの自動化と品質ゲートを安全に構築する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件整理
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: フックの目的とイベント選定を明確にする。
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 対象タスクの目的と禁止事項を整理する。
+2. 発火イベント（SessionStart/PreToolUse/PostToolUse/Stop）を選定する。
+3. 監視対象の品質指標とログ方針を定義する。
+
+**Task**: `agents/analyze-hook-requirements.md` を参照
+
+### Phase 2: 設計と実装
+
+**目的**: フック構成とスクリプトの仕様を固める。
+
+**アクション**:
+
+1. フック構成（対象イベント、条件、実行順）を設計する。
+2. スクリプトの責務と入出力を定義する。
+3. 既存テンプレートを使って安全な実装方針を決める。
+
+**Task**: `agents/design-hook-configuration.md` を参照
 
 ### Phase 3: 検証と記録
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: フック動作と品質ゲートを検証し記録する。
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. 検証スクリプトで構成と品質指標を確認する。
+2. エラーと警告の原因を記録し、改善点を整理する。
+3. 使用ログと評価情報を更新する。
 
+**Task**: `agents/validate-hook-integration.md` を参照
+
+## Task仕様ナビ
+
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-hook-requirements | Phase 1開始時 | 目的/制約/対象イベント | 要件整理メモ、イベント選定表 |
+| design-hook-configuration | Phase 2開始時 | 要件整理メモ | フック構成案、スクリプト設計案 |
+| validate-hook-integration | Phase 3開始時 | フック構成案 | 検証レポート、ログ更新内容 |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+| 推奨事項 | 理由 |
+| --- | --- |
+| 目的と禁止事項を先に定義する | 予期しない副作用を避けるため |
+| 参照資料は段階的に読み込む | トークンと時間を節約するため |
+| 検証スクリプトを先に実行する | 早期に失敗を検出するため |
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+| 禁止事項 | 問題点 |
+| --- | --- |
+| すべてのイベントに一律でフックを付与する | 実行コストと誤動作が増える |
+| ログ方針を決めずに実行する | 調査や改善が困難になる |
+| 検証抜きで運用に入る | 品質ゲートが形骸化する |
 
-### リソース読み取り
-```bash
-cat .claude/skills/claude-code-hooks/resources/Level1_basics.md
-cat .claude/skills/claude-code-hooks/resources/Level2_intermediate.md
-cat .claude/skills/claude-code-hooks/resources/Level3_advanced.md
-cat .claude/skills/claude-code-hooks/resources/Level4_expert.md
-cat .claude/skills/claude-code-hooks/resources/claude-code-guidelines.md
-cat .claude/skills/claude-code-hooks/resources/legacy-skill.md
-cat .claude/skills/claude-code-hooks/resources/quality-metrics.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/claude-code-hooks/scripts/log_usage.mjs --help
-node .claude/skills/claude-code-hooks/scripts/validate-claude-quality.mjs --help
-node .claude/skills/claude-code-hooks/scripts/validate-skill.mjs --help
-```
+### scripts/（決定論的処理）
 
-### テンプレート参照
-```bash
-cat .claude/skills/claude-code-hooks/templates/claude-commit-template.sh
-cat .claude/skills/claude-code-hooks/templates/claude-quality-template.sh
-```
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| `scripts/validate-claude-quality.mjs` | 品質指標の検証 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
 
-## 変更履歴
+### references/（詳細知識）
 
-| Version | Date | Changes |
+| リソース | パス | 読込条件 |
 | --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 実装前の整理時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 情報量が多い時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
+| ガイドライン | [references/claude-code-guidelines.md](references/claude-code-guidelines.md) | 設計判断時 |
+| 品質指標 | [references/quality-metrics.md](references/quality-metrics.md) | 品質ゲート設計時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+| イベント一覧 | [references/hook-event-matrix.md](references/hook-event-matrix.md) | イベント選定時 |
+
+### assets/（テンプレート・素材）
+
+| アセット | 用途 |
+| --- | --- |
+| `assets/claude-commit-template.sh` | コミット前検証テンプレート |
+| `assets/claude-quality-template.sh` | 品質ゲートテンプレート |
+
+### 運用ファイル
+
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

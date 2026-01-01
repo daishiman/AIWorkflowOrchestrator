@@ -1,116 +1,121 @@
 ---
-name: .claude/skills/command-naming-conventions/SKILL.md
+name: command-naming-conventions
 description: |
-  コマンドの命名規則を専門とするスキル。
-  動詞ベース命名、kebab-case、名前空間の活用、
-  発見可能性の高い命名設計を提供します。
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 手順設計
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/naming-rules.md`: kebab-case形式・動詞ベース命名・2-4語の長さ制限と一貫性保持の基本ルールと命名パターン集
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-naming.mjs`: 命名規則検証スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/naming-checklist.md`: kebab-case確認・動詞開始・3-20文字範囲・目的推測可能性・重複回避の5項目チェックリスト
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when handling command naming conventions tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "手順設計"
-      - "実践的改善"
----
+  コマンド命名規則（動詞ベース命名/kebab-case/名前空間/発見可能性）を整理し、一貫した命名設計と見直しを支援するスキル。
+  命名ルール、チェックリスト運用、検証手順を一貫して整理する。
 
-# Command Naming Conventions
+  Anchors:
+  • The Pragmatic Programmer (Andrew Hunt, David Thomas) / 適用: 命名規則の一貫性 / 目的: 実践的な命名の安定化
+  • Clean Code (Robert C. Martin) / 適用: 意図が伝わる命名 / 目的: 自己説明性の向上
+
+  Trigger:
+  Use when defining command naming conventions, reviewing naming consistency, or designing namespace structures.
+  command naming, kebab-case, verb-based naming, namespace design, discoverability
+---
+# command-naming-conventions
 
 ## 概要
 
-コマンドの命名規則を専門とするスキル。
-動詞ベース命名、kebab-case、名前空間の活用、
-発見可能性の高い命名設計を提供します。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+コマンド命名規則（動詞ベース命名/kebab-case/名前空間/発見可能性）を整理し、一貫した命名設計と見直しを支援する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件整理
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 命名の目的と制約を明確化する。
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 対象コマンドと命名対象を整理する。
+2. 既存命名の傾向と制約を整理する。
+3. 参照ガイドとチェックリストを確認する。
+
+**Task**: `agents/analyze-naming-requirements.md` を参照
+
+### Phase 2: 命名設計
+
+**目的**: 命名ルールと命名パターンを具体化する。
+
+**アクション**:
+
+1. 動詞/名詞/名前空間の構造を定義する。
+2. 命名ルールと例外を整理する。
+3. チェックリストで整合性を確認する。
+
+**Task**: `agents/design-naming-conventions.md` を参照
 
 ### Phase 3: 検証と記録
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: 命名の整合性を検証し、記録を残す。
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. 命名検証スクリプトで整合性を確認する。
+2. 検証結果と改善点を整理する。
+3. ログと評価情報を更新する。
 
+**Task**: `agents/validate-naming-conventions.md` を参照
+
+## Task仕様ナビ
+
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-naming-requirements | Phase 1開始時 | 命名対象/制約 | 要件整理メモ、命名候補 |
+| design-naming-conventions | Phase 2開始時 | 要件整理メモ | 命名ルール、例外方針 |
+| validate-naming-conventions | Phase 3開始時 | 命名ルール | 検証レポート、改善方針 |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- コマンド名を決定する時
-- 名前空間構造を設計する時
-- 既存コマンドとの一貫性を保ちたい時
+
+| 推奨事項 | 理由 |
+| --- | --- |
+| 命名の意図を明確にする | 誤解を減らすため |
+| 既存命名との整合を確認する | 一貫性を保つため |
+| 例外ルールを記録する | 変更時の混乱を防ぐため |
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+| 禁止事項 | 問題点 |
+| --- | --- |
+| ルールを曖昧にする | 命名のばらつきが出る |
+| チェックを省略する | 意図しない命名になる |
+| 記録を残さない | 改善が続かない |
 
-### リソース読み取り
-```bash
-cat .claude/skills/command-naming-conventions/resources/Level1_basics.md
-cat .claude/skills/command-naming-conventions/resources/Level2_intermediate.md
-cat .claude/skills/command-naming-conventions/resources/Level3_advanced.md
-cat .claude/skills/command-naming-conventions/resources/Level4_expert.md
-cat .claude/skills/command-naming-conventions/resources/legacy-skill.md
-cat .claude/skills/command-naming-conventions/resources/naming-rules.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/command-naming-conventions/scripts/log_usage.mjs --help
-node .claude/skills/command-naming-conventions/scripts/validate-naming.mjs --help
-node .claude/skills/command-naming-conventions/scripts/validate-skill.mjs --help
-```
+### scripts/（決定論的処理）
 
-### テンプレート参照
-```bash
-cat .claude/skills/command-naming-conventions/templates/naming-checklist.md
-```
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/validate-naming.mjs` | 命名規則検証 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
 
-## 変更履歴
+### references/（詳細知識）
 
-| Version | Date | Changes |
+| リソース | パス | 読込条件 |
 | --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 命名設計時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細設計時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
+| 命名ルール | [references/naming-rules.md](references/naming-rules.md) | ルール確認時 |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 要件参照時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+
+### assets/（テンプレート・素材）
+
+| アセット | 用途 |
+| --- | --- |
+| `assets/naming-checklist.md` | 命名チェックリスト |
+
+### 運用ファイル
+
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

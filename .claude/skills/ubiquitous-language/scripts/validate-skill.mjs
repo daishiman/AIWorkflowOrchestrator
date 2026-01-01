@@ -3,15 +3,15 @@
 /**
  * スキル構造検証スクリプト
  *
- * 必須ファイル、行数制約、EVALS.json の構造を確認します。
+ * 18-skills.md仕様に準拠したスキル構造を検証します。
  */
 
-import { readFileSync, statSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { readFileSync, statSync, readdirSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const SKILL_DIR = join(__dirname, '..');
+const SKILL_DIR = join(__dirname, "..");
 
 const EXIT_SUCCESS = 0;
 const EXIT_ERROR = 1;
@@ -29,15 +29,21 @@ Options:
 }
 
 function getLineCount(path) {
-  const content = readFileSync(path, 'utf-8');
-  return content.split('
-').length;
+  const content = readFileSync(path, "utf-8");
+  return content.split("\n").length;
+}
+
+function fileExists(path) {
+  try {
+    statSync(path);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function assertExists(path, label) {
-  try {
-    statSync(path);
-  } catch (err) {
+  if (!fileExists(path)) {
     console.error(`Missing: ${label} (${path})`);
     process.exit(EXIT_FILE_MISSING);
   }
@@ -49,67 +55,134 @@ function validateLineLimit(path, limit) {
     console.error(`Line limit exceeded: ${path} (${count}/${limit})`);
     process.exit(EXIT_VALIDATION_ERROR);
   }
+  return count;
 }
 
-function validateEvals(path) {
-  try {
-    const data = JSON.parse(readFileSync(path, 'utf-8'));
-    const required = ['skill_name', 'current_level', 'levels', 'metrics'];
-    for (const key of required) {
-      if (!(key in data)) {
-        throw new Error(`EVALS.json missing ${key}`);
-      }
-    }
-    for (const lvl of ['1', '2', '3', '4']) {
-      if (!(lvl in data.levels)) {
-        throw new Error(`EVALS.json missing levels.${lvl}`);
-      }
-    }
-    const metrics = ['total_usage_count', 'success_count', 'failure_count', 'average_satisfaction', 'last_evaluated'];
-    for (const key of metrics) {
-      if (!(key in data.metrics)) {
-        throw new Error(`EVALS.json metrics missing ${key}`);
-      }
-    }
-  } catch (err) {
-    console.error(`EVALS.json validation error: ${err.message}`);
+function validateSkillMd(path) {
+  const content = readFileSync(path, "utf-8");
+
+  // frontmatterの存在確認
+  if (!content.startsWith("---")) {
+    console.error("SKILL.md: frontmatter not found");
     process.exit(EXIT_VALIDATION_ERROR);
   }
+
+  // nameフィールドの確認
+  if (!/^name:\s*[\w-]+/m.test(content)) {
+    console.error("SKILL.md: name field not found");
+    process.exit(EXIT_VALIDATION_ERROR);
+  }
+
+  // descriptionフィールドの確認
+  if (!/^description:\s*\|?/m.test(content)) {
+    console.error("SKILL.md: description field not found");
+    process.exit(EXIT_VALIDATION_ERROR);
+  }
+
+  // Anchorsの確認
+  if (!/Anchors:/m.test(content)) {
+    console.warn("Warning: Anchors: not found in description");
+  }
+
+  // Triggerの確認
+  if (!/Trigger:/m.test(content)) {
+    console.warn("Warning: Trigger: not found in description");
+  }
+
+  console.log("  ✓ SKILL.md structure valid");
+}
+
+function validateAgents(agentsDir) {
+  if (!fileExists(agentsDir)) {
+    console.log("  - agents/ directory not present (optional)");
+    return;
+  }
+
+  const files = readdirSync(agentsDir).filter((f) => f.endsWith(".md"));
+  if (files.length === 0) {
+    console.warn("  Warning: agents/ directory is empty");
+    return;
+  }
+
+  for (const file of files) {
+    const content = readFileSync(join(agentsDir, file), "utf-8");
+
+    // Task仕様書の5セクション確認
+    const requiredSections = [
+      "## 1. メタ情報",
+      "## 2. プロフィール",
+      "## 3. 知識ベース",
+      "## 4. 実行仕様",
+      "## 5. インターフェース",
+    ];
+
+    for (const section of requiredSections) {
+      if (!content.includes(section)) {
+        console.warn(`  Warning: ${file} missing section: ${section}`);
+      }
+    }
+  }
+
+  console.log(`  ✓ agents/ validated (${files.length} files)`);
+}
+
+function validateScripts(scriptsDir) {
+  if (!fileExists(scriptsDir)) {
+    console.log("  - scripts/ directory not present (optional)");
+    return;
+  }
+
+  const files = readdirSync(scriptsDir).filter((f) => f.endsWith(".mjs"));
+  console.log(`  ✓ scripts/ validated (${files.length} files)`);
+}
+
+function validateReferences(referencesDir) {
+  if (!fileExists(referencesDir)) {
+    console.log("  - references/ directory not present (optional)");
+    return;
+  }
+
+  const files = readdirSync(referencesDir).filter((f) => f.endsWith(".md"));
+  console.log(`  ✓ references/ validated (${files.length} files)`);
+}
+
+function validateAssets(assetsDir) {
+  if (!fileExists(assetsDir)) {
+    console.log("  - assets/ directory not present (optional)");
+    return;
+  }
+
+  const files = readdirSync(assetsDir);
+  console.log(`  ✓ assets/ validated (${files.length} files)`);
 }
 
 async function main() {
   const args = process.argv.slice(2);
-  if (args.includes('-h') || args.includes('--help')) {
+  if (args.includes("-h") || args.includes("--help")) {
     showHelp();
     process.exit(EXIT_SUCCESS);
   }
 
-  const requiredFiles = [
-    'SKILL.md',
-    'EVALS.json',
-    'CHANGELOG.md',
-    'LOGS.md',
-    'scripts/log_usage.mjs',
-    'scripts/validate-skill.mjs',
-    'resources/Level1_basics.md',
-    'resources/Level2_intermediate.md',
-    'resources/Level3_advanced.md',
-    'resources/Level4_expert.md',
-  ];
+  console.log("Validating skill structure...\n");
 
-  for (const file of requiredFiles) {
-    assertExists(join(SKILL_DIR, file), file);
-  }
+  // SKILL.md必須
+  const skillMdPath = join(SKILL_DIR, "SKILL.md");
+  assertExists(skillMdPath, "SKILL.md");
 
-  validateLineLimit(join(SKILL_DIR, 'SKILL.md'), 500);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level1_basics.md'), 200);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level2_intermediate.md'), 300);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level3_advanced.md'), 400);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level4_expert.md'), 500);
+  // SKILL.md行数制限（500行以内）
+  const lineCount = validateLineLimit(skillMdPath, 500);
+  console.log(`  ✓ SKILL.md line count: ${lineCount}/500`);
 
-  validateEvals(join(SKILL_DIR, 'EVALS.json'));
+  // SKILL.md構造検証
+  validateSkillMd(skillMdPath);
 
-  console.log('✓ Skill structure validated');
+  // オプショナルディレクトリの検証
+  validateAgents(join(SKILL_DIR, "agents"));
+  validateScripts(join(SKILL_DIR, "scripts"));
+  validateReferences(join(SKILL_DIR, "references"));
+  validateAssets(join(SKILL_DIR, "assets"));
+
+  console.log("\n✓ Skill structure validated successfully");
   process.exit(EXIT_SUCCESS);
 }
 

@@ -8,18 +8,18 @@ description: |
   - 『High Performance Browser Networking』（Ilya Grigorik）: パフォーマンス測定
   
   📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/context-splitting.md`: Context分割戦略
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/profiler-measurement.md`: React DevTools Profiler測定方法
-  - `resources/re-rendering-patterns.md`: 再レンダリングパターン
-  - `resources/react-memo-guide.md`: React.memo活用ガイド
+  - `references/Level1_basics.md`: レベル1の基礎ガイド
+  - `references/Level2_intermediate.md`: レベル2の実務ガイド
+  - `references/Level3_advanced.md`: レベル3の応用ガイド
+  - `references/Level4_expert.md`: レベル4の専門ガイド
+  - `references/context-splitting.md`: Context分割戦略
+  - `references/legacy-skill.md`: 旧SKILL.mdの全文
+  - `references/profiler-measurement.md`: React DevTools Profiler測定方法
+  - `references/re-rendering-patterns.md`: 再レンダリングパターン
+  - `references/react-memo-guide.md`: React.memo活用ガイド
   - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
   - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/optimization-checklist.md`: 最適化チェックリスト
+  - `assets/optimization-checklist.md`: 最適化チェックリスト
   
   Use proactively when handling performance optimization react tasks.
 version: 1.0.0
@@ -40,7 +40,7 @@ references:
 Reactアプリケーションのパフォーマンス最適化を専門とするスキル。
 ダン・アブラモフの思想に基づき、測定駆動の最適化アプローチを提供します。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
 
 ## ワークフロー
@@ -51,8 +51,8 @@ Reactアプリケーションのパフォーマンス最適化を専門とする
 
 **アクション**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要な references/scripts/templates を特定
 
 ### Phase 2: スキル適用
 
@@ -89,15 +89,15 @@ Reactアプリケーションのパフォーマンス最適化を専門とする
 
 ### リソース読み取り
 ```bash
-cat .claude/skills/performance-optimization-react/resources/Level1_basics.md
-cat .claude/skills/performance-optimization-react/resources/Level2_intermediate.md
-cat .claude/skills/performance-optimization-react/resources/Level3_advanced.md
-cat .claude/skills/performance-optimization-react/resources/Level4_expert.md
-cat .claude/skills/performance-optimization-react/resources/context-splitting.md
-cat .claude/skills/performance-optimization-react/resources/legacy-skill.md
-cat .claude/skills/performance-optimization-react/resources/profiler-measurement.md
-cat .claude/skills/performance-optimization-react/resources/re-rendering-patterns.md
-cat .claude/skills/performance-optimization-react/resources/react-memo-guide.md
+cat .claude/skills/performance-optimization-react/references/Level1_basics.md
+cat .claude/skills/performance-optimization-react/references/Level2_intermediate.md
+cat .claude/skills/performance-optimization-react/references/Level3_advanced.md
+cat .claude/skills/performance-optimization-react/references/Level4_expert.md
+cat .claude/skills/performance-optimization-react/references/context-splitting.md
+cat .claude/skills/performance-optimization-react/references/legacy-skill.md
+cat .claude/skills/performance-optimization-react/references/profiler-measurement.md
+cat .claude/skills/performance-optimization-react/references/re-rendering-patterns.md
+cat .claude/skills/performance-optimization-react/references/react-memo-guide.md
 ```
 
 ### スクリプト実行
@@ -108,7 +108,7 @@ node .claude/skills/performance-optimization-react/scripts/validate-skill.mjs --
 
 ### テンプレート参照
 ```bash
-cat .claude/skills/performance-optimization-react/templates/optimization-checklist.md
+cat .claude/skills/performance-optimization-react/assets/optimization-checklist.md
 ```
 
 ## 変更履歴

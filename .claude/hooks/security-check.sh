@@ -17,8 +17,8 @@ COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty')
 FORBIDDEN_FILE_PATTERNS=(
   "\.env$"
   "\.env\."
-  "secrets"
-  "credentials"
+  "/\.secrets"  # 隠しディレクトリのみ
+  "credentials\..*"  # credentials配下のみ
   "\.pem$"
   "\.key$"
   "id_rsa"
@@ -30,13 +30,32 @@ FORBIDDEN_FILE_PATTERNS=(
   "secret_key"
 )
 
+# 除外パターン（ドキュメンテーション・スキル定義）
+ALLOWED_PATTERNS=(
+  "\.claude/skills/.*/SKILL\.md$"
+  "\.claude/skills/.*/resources/"
+  "\.claude/skills/.*/scripts/"
+  "\.claude/agents/"
+)
+
 # Write/Edit操作の場合
 if [[ "$TOOL_NAME" == "Write" || "$TOOL_NAME" == "Edit" ]]; then
   if [[ -n "$FILE_PATH" && "$FILE_PATH" != "null" ]]; then
-    for pattern in "${FORBIDDEN_FILE_PATTERNS[@]}"; do
-      if [[ "$FILE_PATH" =~ $pattern ]]; then
-        # JSON形式で拒否決定を出力
-        cat << EOF
+    # 除外パターンをチェック
+    is_allowed=false
+    for allowed in "${ALLOWED_PATTERNS[@]}"; do
+      if [[ "$FILE_PATH" =~ $allowed ]]; then
+        is_allowed=true
+        break
+      fi
+    done
+
+    # 除外されていない場合、禁止パターンをチェック
+    if [[ "$is_allowed" == "false" ]]; then
+      for pattern in "${FORBIDDEN_FILE_PATTERNS[@]}"; do
+        if [[ "$FILE_PATH" =~ $pattern ]]; then
+          # JSON形式で拒否決定を出力
+          cat << EOF
 {
   "hookSpecificOutput": {
     "hookEventName": "PreToolUse",
@@ -47,9 +66,10 @@ if [[ "$TOOL_NAME" == "Write" || "$TOOL_NAME" == "Edit" ]]; then
   "stopReason": "Security: Protected file pattern matched"
 }
 EOF
-        exit 2
-      fi
-    done
+          exit 2
+        fi
+      done
+    fi
   fi
 fi
 

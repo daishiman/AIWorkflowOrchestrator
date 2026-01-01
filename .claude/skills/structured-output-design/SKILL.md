@@ -7,19 +7,19 @@ description: |
   - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
   
   📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/function-calling-guide.md`: Function Calling Guideリソース
-  - `resources/json-schema-patterns.md`: Json Schema Patternsリソース
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/zod-integration.md`: Zod Integrationリソース
+  - `references/Level1_basics.md`: レベル1の基礎ガイド
+  - `references/Level2_intermediate.md`: レベル2の実務ガイド
+  - `references/Level3_advanced.md`: レベル3の応用ガイド
+  - `references/Level4_expert.md`: レベル4の専門ガイド
+  - `references/function-calling-guide.md`: Function Calling Guideリソース
+  - `references/json-schema-patterns.md`: Json Schema Patternsリソース
+  - `references/legacy-skill.md`: 旧SKILL.mdの全文
+  - `references/zod-integration.md`: Zod Integrationリソース
   - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
   - `scripts/validate-schema.mjs`: Validate Schemaスクリプト
   - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/json-schema-template.json`: Json Schemaテンプレート
-  - `templates/zod-schema-template.ts`: Zod Schemaテンプレート
+  - `assets/json-schema-template.json`: Json Schemaテンプレート
+  - `assets/zod-schema-template.ts`: Zod Schemaテンプレート
   
   Use proactively when handling structured output design tasks.
 version: 1.0.0
@@ -39,7 +39,7 @@ references:
 
 AIからの構造化出力設計を専門とするスキル。JSON Schema、Zod、
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
 
 ## ワークフロー
@@ -50,8 +50,8 @@ AIからの構造化出力設計を専門とするスキル。JSON Schema、Zod�
 
 **アクション**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要な references/scripts/templates を特定
 
 ### Phase 2: スキル適用
 
@@ -76,8 +76,8 @@ AIからの構造化出力設計を専門とするスキル。JSON Schema、Zod�
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+- references/Level1_basics.md を参照し、適用範囲を明確にする
+- references/Level2_intermediate.md を参照し、実務手順を整理する
 
 ### 避けるべきこと
 - アンチパターンや注意点を確認せずに進めることを避ける
@@ -86,14 +86,14 @@ AIからの構造化出力設計を専門とするスキル。JSON Schema、Zod�
 
 ### リソース読み取り
 ```bash
-cat .claude/skills/structured-output-design/resources/Level1_basics.md
-cat .claude/skills/structured-output-design/resources/Level2_intermediate.md
-cat .claude/skills/structured-output-design/resources/Level3_advanced.md
-cat .claude/skills/structured-output-design/resources/Level4_expert.md
-cat .claude/skills/structured-output-design/resources/function-calling-guide.md
-cat .claude/skills/structured-output-design/resources/json-schema-patterns.md
-cat .claude/skills/structured-output-design/resources/legacy-skill.md
-cat .claude/skills/structured-output-design/resources/zod-integration.md
+cat .claude/skills/structured-output-design/references/Level1_basics.md
+cat .claude/skills/structured-output-design/references/Level2_intermediate.md
+cat .claude/skills/structured-output-design/references/Level3_advanced.md
+cat .claude/skills/structured-output-design/references/Level4_expert.md
+cat .claude/skills/structured-output-design/references/function-calling-guide.md
+cat .claude/skills/structured-output-design/references/json-schema-patterns.md
+cat .claude/skills/structured-output-design/references/legacy-skill.md
+cat .claude/skills/structured-output-design/references/zod-integration.md
 ```
 
 ### スクリプト実行
@@ -105,8 +105,8 @@ node .claude/skills/structured-output-design/scripts/validate-skill.mjs --help
 
 ### テンプレート参照
 ```bash
-cat .claude/skills/structured-output-design/templates/json-schema-template.json
-cat .claude/skills/structured-output-design/templates/zod-schema-template.ts
+cat .claude/skills/structured-output-design/assets/json-schema-template.json
+cat .claude/skills/structured-output-design/assets/zod-schema-template.ts
 ```
 
 ## 変更履歴

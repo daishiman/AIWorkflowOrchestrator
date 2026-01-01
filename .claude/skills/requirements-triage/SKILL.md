@@ -1,116 +1,128 @@
 ---
-name: .claude/skills/requirements-triage/SKILL.md
+name: requirements-triage
 description: |
-  要求のトリアージと優先順位付けスキル。MoSCoW分類、リスク評価、実現可能性評価により、
-  実装すべき要件を決定します。
-  
-  📖 参照書籍:
-  - 『Don't Make Me Think』（Steve Krug）: ユーザビリティ
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/moscow-framework-guide.md`: moscow-framework-guide のガイド
-  - `resources/moscow-framework.md`: MoSCoW分類の詳細ガイド（Must/Should/Could/Won't）とバランスガイドライン
-  - `scripts/calculate-priority.mjs`: 優先度スコアを自動計算しMoSCoW分類を行うNode.jsスクリプト
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/triage-matrix.md`: 要件評価マトリクステンプレート（ビジネス価値、実現可能性、リスク、コスト）
-  
-  Use proactively when handling requirements triage tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Don't Make Me Think"
-    author: "Steve Krug"
-    concepts:
-      - "ユーザビリティ"
-      - "情報設計"
+  複数の要件や要望を体系的に分析・評価し、実装する項目を決定するスキル。
+  MoSCoW分類、優先度スコアリング、影響分析を提供します。
+
+  Anchors:
+  • 『Software Requirements』（Karl Wiegers） / 適用: 要件優先順位付け / 目的: リソース最適配分
+  • 『Lean Analytics』（Alistair Croll, Benjamin Yoskovitz） / 適用: ビジネス価値評価 / 目的: 戦略的決定支援
+
+  Trigger:
+  要件トリアージ時、優先順位付け時、スコープ決定時に使用
+
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# Requirements Triage
+# 要件トリアージスキル
 
 ## 概要
 
-要求のトリアージと優先順位付けスキル。MoSCoW分類、リスク評価、実現可能性評価により、
-実装すべき要件を決定します。
+要件トリアージスキルは、複数の要望や要件が存在する場合に、それらを体系的に分析・評価し、実装するべき項目を決定するスキルです。MoSCoW分類によるカテゴリ分け、ビジネス価値の評価、実現可能性の判定、リスク分析、コスト推定を通じて、限られたリソースの中で最大の価値を提供する要件セットを決定します。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+本スキルは、プロジェクト初期段階での要件整理から、開発中の追加要望への対応まで、様々なシーンで活用できます。詳細な背景知識と実務ガイドは、段階別リソース（Level1～4）を参照してください。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件の収集と前提条件の確認
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: トリアージに必要な情報を整理し、評価基準を設定する
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. すべての要件・要望をリストアップする
+2. プロジェクトの制約（期限、予算、人員、技術制約）を確認
+3. ビジネス目標と成功基準を明確にする
+4. `references/Level1_basics.md` と `references/Level2_intermediate.md` で基本フレームワークを確認
 
-### Phase 3: 検証と記録
+### Phase 2: 要件の分析と優先順位付け
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: MoSCoW分類とスコアリングにより、要件を階層化する
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. 各要件をMust/Should/Could/Won'tに分類する（`references/moscow-framework.md` 参照）
+2. ビジネス価値、実現可能性、リスク、コストを評価する
+3. `scripts/calculate-priority.mjs` で優先度スコアを計算
+4. `assets/triage-matrix.md` を使用して結果を可視化する
+5. 重要な判断根拠をドキュメント化する
 
+### Phase 3: 決定の検証と記録
+
+**目的**: 評価の妥当性を確認し、実行可能な要件セットを確定する
+
+**アクション**:
+
+1. MoSCoW分類が適切か、ステークホルダーと共に検証する
+2. 現実的なスケジュールとリソース配分を確認する
+3. `scripts/validate-skill.mjs` でスキル適用の完全性を確認
+4. `scripts/log_usage.mjs` で使用記録と自動評価を実施
+5. 最終的な要件セットをプロジェクト計画に反映する
+
+## Task仕様ナビ
+
+| Phase   | Task         | 入力                                 | 出力                 | リソース               |
+| ------- | ------------ | ------------------------------------ | -------------------- | ---------------------- |
+| Phase 1 | 要件収集     | 要望リスト、制約条件                 | 整理済み要件一覧     | Level1_basics.md       |
+| Phase 1 | 前提条件確認 | ビジネス要件書、プロジェクト計画     | 評価基準定義         | Level2_intermediate.md |
+| Phase 2 | MoSCoW分類   | 整理済み要件、評価基準               | 分類済み要件表       | moscow-framework.md    |
+| Phase 2 | スコアリング | 分類済み要件、評価基準               | スコア付き優先度表   | calculate-priority.mjs |
+| Phase 2 | 可視化       | スコア付き優先度表                   | 評価マトリクス       | triage-matrix.md       |
+| Phase 3 | 検証         | 評価マトリクス、ステークホルダー意見 | 検証済みセット       | Level3_advanced.md     |
+| Phase 3 | 記録         | スキル適用実績                       | 利用ログ、品質スコア | log_usage.mjs          |
 
 ## ベストプラクティス
 
 ### すべきこと
-- プロジェクト開始時の要求整理
-- 複数の要望がある場合の優先順位決定
-- リソース制約下での実装範囲の確定
-- 要件のリスク評価が必要な時
+
+1. **早期の要件整理**: プロジェクト開始時に全要望をリストアップし、優先度を付ける
+2. **複数基準での評価**: ビジネス価値、技術難易度、リスク、コストの4観点から評価する
+3. **ステークホルダーの合意**: 重要な優先度判断について、関連者との確認を取る
+4. **ドキュメント化**: 判断根拠を明確に記録し、後からの変更要求に対応できる準備をする
+5. **リソース制約の現実的評価**: 理想と現実のギャップを埋める調整を丁寧に行う
+6. **定期的な見直し**: プロジェクト進行に伴い、優先度の再評価を検討する
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+1. **定量的根拠なしの判断**: 感覚的な優先度付けを避け、評価基準を明確にする
+2. **すべてをMustと判定**: 本当に必須かを厳密に判定し、バランスの取れた分類を目指す
+3. **ステークホルダー合意なしの決定**: 優先度の最終決定前に必ず関連者に相談する
+4. **リソース見積の過度な楽観**: 実現可能性を過大評価し、後から計画変更が必要になる状態を避ける
+5. **要件記録の省略**: "なぜそこが優先されたのか"を後から追跡できない状態にしない
 
-### リソース読み取り
-```bash
-cat .claude/skills/requirements-triage/resources/Level1_basics.md
-cat .claude/skills/requirements-triage/resources/Level2_intermediate.md
-cat .claude/skills/requirements-triage/resources/Level3_advanced.md
-cat .claude/skills/requirements-triage/resources/Level4_expert.md
-cat .claude/skills/requirements-triage/resources/legacy-skill.md
-cat .claude/skills/requirements-triage/resources/moscow-framework-guide.md
-cat .claude/skills/requirements-triage/resources/moscow-framework.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/requirements-triage/scripts/calculate-priority.mjs --help
-node .claude/skills/requirements-triage/scripts/log_usage.mjs --help
-node .claude/skills/requirements-triage/scripts/validate-skill.mjs --help
-```
+### レベル別ガイド
 
-### テンプレート参照
-```bash
-cat .claude/skills/requirements-triage/templates/triage-matrix.md
-```
+- **references/Level1_basics.md**: 要件トリアージの基本概念と初級テクニック
+- **references/Level2_intermediate.md**: 実務的な優先度付けテクニックと事例
+- **references/Level3_advanced.md**: 複雑な状況での評価方法と組織的アプローチ
+- **references/Level4_expert.md**: 戦略的なスコープ管理と高度な意思決定フレームワーク
+
+### フレームワークとテンプレート
+
+- **references/moscow-framework.md**: MoSCoW分類の詳細ガイド（Must/Should/Could/Won't）
+- **references/moscow-framework-guide.md**: MoSCoW適用時の実践的アドバイス
+- **assets/triage-matrix.md**: 4象限マトリクス（ビジネス価値 vs 実現可能性）テンプレート
+
+### 自動化スクリプト
+
+- **scripts/calculate-priority.mjs**: 複数基準に基づいた優先度スコア自動計算ツール
+- **scripts/log_usage.mjs**: スキル使用記録と自動評価ログ記録スクリプト
+- **scripts/validate-skill.mjs**: スキル適用の完全性検証スクリプト
+
+### レガシー資料
+
+- **references/legacy-skill.md**: 旧仕様のSKILL.md全文（参考資料）
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | 日付       | 変更内容                                               |
+| ------- | ---------- | ------------------------------------------------------ |
+| 1.0.0   | 2025-12-31 | 18-skills.md仕様に準拠、Task仕様ナビ追加、全文日本語化 |

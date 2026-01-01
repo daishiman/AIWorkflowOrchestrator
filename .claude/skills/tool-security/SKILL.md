@@ -7,31 +7,22 @@ description: |
   - 『Web Application Security』（Andrew Hoffman）: 脅威モデリング
   
   📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/api-key-management.md`: Api Key Managementリソース
-  - `resources/input-validation-guide.md`: Input Validation Guideリソース
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/permission-patterns.md`: Permission Patternsリソース
+  - `references/Level1_basics.md`: レベル1の基礎ガイド
+  - `references/Level2_intermediate.md`: レベル2の実務ガイド
+  - `references/Level3_advanced.md`: レベル3の応用ガイド
+  - `references/Level4_expert.md`: レベル4の専門ガイド
+  - `references/api-key-management.md`: Api Key Managementリソース
+  - `references/input-validation-guide.md`: Input Validation Guideリソース
+  - `references/legacy-skill.md`: 旧SKILL.mdの全文
+  - `references/permission-patterns.md`: Permission Patternsリソース
   - `scripts/check-env-vars.mjs`: Check Env Varsスクリプト
   - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
   - `scripts/validate-security-config.mjs`: Validate Security Configスクリプト
   - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/audit-log-schema.json`: Audit Log Schemaテンプレート
-  - `templates/security-config-template.json`: Security Configテンプレート
+  - `assets/audit-log-schema.json`: Audit Log Schemaテンプレート
+  - `assets/security-config-template.json`: Security Configテンプレート
   
   Use proactively when handling tool security tasks.
-version: 1.0.1
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Web Application Security"
-    author: "Andrew Hoffman"
-    concepts:
-      - "脅威モデリング"
-      - "セキュア設計"
 ---
 
 # Tool Security スキル
@@ -40,7 +31,7 @@ references:
 
 MCPツールとAPI統合におけるセキュリティ設計の専門知識。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
 
 ## ワークフロー
@@ -51,8 +42,8 @@ MCPツールとAPI統合におけるセキュリティ設計の専門知識。
 
 **アクション**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要な references/scripts/templates を特定
 
 ### Phase 2: スキル適用
 
@@ -77,8 +68,8 @@ MCPツールとAPI統合におけるセキュリティ設計の専門知識。
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+- references/Level1_basics.md を参照し、適用範囲を明確にする
+- references/Level2_intermediate.md を参照し、実務手順を整理する
 
 ### 避けるべきこと
 - アンチパターンや注意点を確認せずに進めることを避ける
@@ -87,14 +78,14 @@ MCPツールとAPI統合におけるセキュリティ設計の専門知識。
 
 ### リソース読み取り
 ```bash
-cat .claude/skills/tool-security/resources/Level1_basics.md
-cat .claude/skills/tool-security/resources/Level2_intermediate.md
-cat .claude/skills/tool-security/resources/Level3_advanced.md
-cat .claude/skills/tool-security/resources/Level4_expert.md
-cat .claude/skills/tool-security/resources/api-key-management.md
-cat .claude/skills/tool-security/resources/input-validation-guide.md
-cat .claude/skills/tool-security/resources/legacy-skill.md
-cat .claude/skills/tool-security/resources/permission-patterns.md
+cat .claude/skills/tool-security/references/Level1_basics.md
+cat .claude/skills/tool-security/references/Level2_intermediate.md
+cat .claude/skills/tool-security/references/Level3_advanced.md
+cat .claude/skills/tool-security/references/Level4_expert.md
+cat .claude/skills/tool-security/references/api-key-management.md
+cat .claude/skills/tool-security/references/input-validation-guide.md
+cat .claude/skills/tool-security/references/legacy-skill.md
+cat .claude/skills/tool-security/references/permission-patterns.md
 ```
 
 ### スクリプト実行
@@ -107,8 +98,8 @@ node .claude/skills/tool-security/scripts/validate-skill.mjs --help
 
 ### テンプレート参照
 ```bash
-cat .claude/skills/tool-security/templates/audit-log-schema.json
-cat .claude/skills/tool-security/templates/security-config-template.json
+cat .claude/skills/tool-security/assets/audit-log-schema.json
+cat .claude/skills/tool-security/assets/security-config-template.json
 ```
 
 ## 変更履歴

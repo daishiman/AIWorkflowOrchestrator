@@ -1,102 +1,119 @@
 ---
-name: .claude/skills/automation-scripting/SKILL.md
+name: automation-scripting
 description: |
-  ## 概要
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/script-patterns.md`: スクリプトパターン集
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  
-  Use proactively when handling automation scripting tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "実践的改善"
-      - "品質維持"
+  自動化スクリプト（Bash/Python/Node）の設計・実装・運用を支援するスキル。
+  冪等性、エラーハンドリング、ログ設計、CI/CD統合の指針を整理します。
+
+  Anchors:
+  • The Pragmatic Programmer / 適用: 自動化の実務 / 目的: 再現性の高いスクリプト設計
+  • Automation Pipeline Patterns / 適用: ワークフロー設計 / 目的: 反復作業の効率化
+  • Unix Philosophy / 適用: スクリプト構成 / 目的: 小さな責務分離
+
+  Trigger:
+  Use when designing automation scripts, adding error handling/logging, or integrating scripts into CI/CD pipelines.
+allowed-tools:
+  - bash
+  - node
 ---
 
 # 自動化スクリプティング
 
 ## 概要
 
-## 概要
+再利用可能で保守性の高いスクリプトを設計し、反復作業を自動化する。
+詳細は `references/` に外部化し、必要時に参照する。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+- テンプレは `assets/script-template.sh`
+- 実装パターンは `references/script-patterns.md`
 
 ## ワークフロー
 
 ### Phase 1: 目的と前提の整理
 
-**目的**: タスクの目的と前提条件を明確にする
+**目的**: 自動化対象と制約を整理する
 
 **アクション**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+1. `references/Level1_basics.md` で基礎概念を確認
+2. 自動化対象の範囲と入出力を整理
+3. 実行環境と権限の制約を確認
 
-### Phase 2: スキル適用
+**Task**: `agents/analyze-automation-context.md`
 
-**目的**: スキルの指針に従って具体的な作業を進める
+### Phase 2: スクリプト設計と実装
+
+**目的**: 冪等性とエラーハンドリングを含む設計を行う
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. `references/Level2_intermediate.md` で実装パターンを確認
+2. `assets/script-template.sh` を基に構造を決定
+3. ログとエラー処理を設計する
+
+**Task**:
+- `agents/design-automation-script.md`
+- `agents/implement-automation-script.md`
 
 ### Phase 3: 検証と記録
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: スクリプトの検証と記録を行う
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. 実行結果を確認して改善点を整理
+2. `scripts/validate-skill.mjs` で構造検証
+3. `scripts/log_usage.mjs` で改善記録
 
+**Task**: `agents/validate-automation-script.md`
+
+## Task仕様ナビ
+
+| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |
+| --- | --- | --- | --- | --- | --- |
+| コンテキスト整理 | 目的と制約の整理 | 要件情報 | 目的メモ | `references/Level1_basics.md` | Phase 1 |
+| 設計 | 冪等性・エラー設計 | 目的メモ | 設計メモ | `references/Level2_intermediate.md` | Phase 2 前半 |
+| 実装 | スクリプト実装 | 設計メモ | 実装結果 | `assets/script-template.sh` | Phase 2 後半 |
+| 検証 | 動作検証と改善 | 実装結果 | 検証レポート | `references/Level3_advanced.md` | Phase 3 |
 
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+- 冪等性を前提に設計する
+- 失敗時のエラー出力を明示する
+- 実行ログを必ず残す
+- 実行環境の差分を考慮する
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- ハードコードされたパスやシークレット
+- 例外処理なしの実行
+- 実行結果の検証を省略する
 
-### リソース読み取り
-```bash
-cat .claude/skills/automation-scripting/resources/Level1_basics.md
-cat .claude/skills/automation-scripting/resources/Level2_intermediate.md
-cat .claude/skills/automation-scripting/resources/Level3_advanced.md
-cat .claude/skills/automation-scripting/resources/Level4_expert.md
-cat .claude/skills/automation-scripting/resources/legacy-skill.md
-cat .claude/skills/automation-scripting/resources/script-patterns.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/automation-scripting/scripts/log_usage.mjs --help
-node .claude/skills/automation-scripting/scripts/validate-skill.mjs --help
-```
+### 参照資料
+
+- `references/Level1_basics.md`: 基礎概念
+- `references/Level2_intermediate.md`: 実装パターン
+- `references/Level3_advanced.md`: CI/CD統合
+- `references/Level4_expert.md`: 分散処理と高度運用
+- `references/script-patterns.md`: スクリプトパターン
+- `references/legacy-skill.md`: 旧版要約（移行時のみ参照）
+
+### スクリプト
+
+- `scripts/validate-skill.mjs`: スキル構造検証
+- `scripts/log_usage.mjs`: 実行ログ記録
+
+### テンプレート
+
+- `assets/script-template.sh`: スクリプトテンプレ
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                             |
+| ------- | ---------- | --------------------------------------------------- |
+| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、assets追加            |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に準拠                              |
+| 1.0.0   | 2025-12-24 | 初版作成                                            |

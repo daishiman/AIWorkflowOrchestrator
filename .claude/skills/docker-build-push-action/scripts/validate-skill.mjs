@@ -30,8 +30,7 @@ Options:
 
 function getLineCount(path) {
   const content = readFileSync(path, 'utf-8');
-  return content.split('
-').length;
+  return content.split('\n').length;
 }
 
 function assertExists(path, label) {
@@ -91,10 +90,23 @@ async function main() {
     'LOGS.md',
     'scripts/log_usage.mjs',
     'scripts/validate-skill.mjs',
-    'resources/Level1_basics.md',
-    'resources/Level2_intermediate.md',
-    'resources/Level3_advanced.md',
-    'resources/Level4_expert.md',
+    'scripts/analyze-dockerfile.mjs',
+    'assets/build-push-requirements-template.md',
+    'assets/registry-checklist.md',
+    'assets/workflow-evaluation-template.md',
+    'assets/docker-workflow.yaml',
+    'agents/analyze-build-push-requirements.md',
+    'agents/design-workflow-configuration.md',
+    'agents/implement-build-push-pipeline.md',
+    'agents/validate-build-push-workflow.md',
+    'references/Level1_basics.md',
+    'references/Level2_intermediate.md',
+    'references/Level3_advanced.md',
+    'references/Level4_expert.md',
+    'references/build-push-syntax.md',
+    'references/registry-auth.md',
+    'references/requirements-index.md',
+    'references/legacy-skill.md',
   ];
 
   for (const file of requiredFiles) {
@@ -102,10 +114,10 @@ async function main() {
   }
 
   validateLineLimit(join(SKILL_DIR, 'SKILL.md'), 500);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level1_basics.md'), 200);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level2_intermediate.md'), 300);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level3_advanced.md'), 400);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level4_expert.md'), 500);
+  validateLineLimit(join(SKILL_DIR, 'references/Level1_basics.md'), 200);
+  validateLineLimit(join(SKILL_DIR, 'references/Level2_intermediate.md'), 300);
+  validateLineLimit(join(SKILL_DIR, 'references/Level3_advanced.md'), 400);
+  validateLineLimit(join(SKILL_DIR, 'references/Level4_expert.md'), 500);
 
   validateEvals(join(SKILL_DIR, 'EVALS.json'));
 

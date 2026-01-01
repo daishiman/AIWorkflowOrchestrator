@@ -91,10 +91,10 @@ async function main() {
     'LOGS.md',
     'scripts/log_usage.mjs',
     'scripts/validate-skill.mjs',
-    'resources/Level1_basics.md',
-    'resources/Level2_intermediate.md',
-    'resources/Level3_advanced.md',
-    'resources/Level4_expert.md',
+    'references/Level1_basics.md',
+    'references/Level2_intermediate.md',
+    'references/Level3_advanced.md',
+    'references/Level4_expert.md',
   ];
 
   for (const file of requiredFiles) {
@@ -102,10 +102,10 @@ async function main() {
   }
 
   validateLineLimit(join(SKILL_DIR, 'SKILL.md'), 500);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level1_basics.md'), 200);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level2_intermediate.md'), 300);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level3_advanced.md'), 400);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level4_expert.md'), 500);
+  validateLineLimit(join(SKILL_DIR, 'references/Level1_basics.md'), 200);
+  validateLineLimit(join(SKILL_DIR, 'references/Level2_intermediate.md'), 300);
+  validateLineLimit(join(SKILL_DIR, 'references/Level3_advanced.md'), 400);
+  validateLineLimit(join(SKILL_DIR, 'references/Level4_expert.md'), 500);
 
   validateEvals(join(SKILL_DIR, 'EVALS.json'));
 

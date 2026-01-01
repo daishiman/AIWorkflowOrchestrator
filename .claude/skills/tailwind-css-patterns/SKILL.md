@@ -9,19 +9,19 @@ description: |
   - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
   
   📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/cva-guide.md`: CVA Guideリソース
-  - `resources/dark-mode-guide.md`: Dark Mode Guideリソース
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/responsive-patterns.md`: Responsive Patternsリソース
+  - `references/Level1_basics.md`: レベル1の基礎ガイド
+  - `references/Level2_intermediate.md`: レベル2の実務ガイド
+  - `references/Level3_advanced.md`: レベル3の応用ガイド
+  - `references/Level4_expert.md`: レベル4の専門ガイド
+  - `references/cva-guide.md`: CVA Guideリソース
+  - `references/dark-mode-guide.md`: Dark Mode Guideリソース
+  - `references/legacy-skill.md`: 旧SKILL.mdの全文
+  - `references/responsive-patterns.md`: Responsive Patternsリソース
   - `scripts/analyze-tailwind.mjs`: Analyze Tailwindスクリプト
   - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
   - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/component-variants-template.tsx`: Component Variantsテンプレート
-  - `templates/tailwind-config-template.js`: Tailwind Configテンプレート
+  - `assets/component-variants-template.tsx`: Component Variantsテンプレート
+  - `assets/tailwind-config-template.js`: Tailwind Configテンプレート
   
   Use proactively when handling tailwind css patterns tasks.
 version: 1.0.0
@@ -43,7 +43,7 @@ Tailwind CSSを活用した効率的で保守性の高いスタイリングパ�
 Class Variance Authority (CVA)、Tailwind Merge、レスポンシブデザイン、
 ダークモード対応の実装パターンを提供します。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
 
 ## ワークフロー
@@ -54,8 +54,8 @@ Class Variance Authority (CVA)、Tailwind Merge、レスポンシブデザイン
 
 **アクション**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要な references/scripts/templates を特定
 
 ### Phase 2: スキル適用
 
@@ -80,8 +80,8 @@ Class Variance Authority (CVA)、Tailwind Merge、レスポンシブデザイン
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+- references/Level1_basics.md を参照し、適用範囲を明確にする
+- references/Level2_intermediate.md を参照し、実務手順を整理する
 
 ### 避けるべきこと
 - アンチパターンや注意点を確認せずに進めることを避ける
@@ -90,14 +90,14 @@ Class Variance Authority (CVA)、Tailwind Merge、レスポンシブデザイン
 
 ### リソース読み取り
 ```bash
-cat .claude/skills/tailwind-css-patterns/resources/Level1_basics.md
-cat .claude/skills/tailwind-css-patterns/resources/Level2_intermediate.md
-cat .claude/skills/tailwind-css-patterns/resources/Level3_advanced.md
-cat .claude/skills/tailwind-css-patterns/resources/Level4_expert.md
-cat .claude/skills/tailwind-css-patterns/resources/cva-guide.md
-cat .claude/skills/tailwind-css-patterns/resources/dark-mode-guide.md
-cat .claude/skills/tailwind-css-patterns/resources/legacy-skill.md
-cat .claude/skills/tailwind-css-patterns/resources/responsive-patterns.md
+cat .claude/skills/tailwind-css-patterns/references/Level1_basics.md
+cat .claude/skills/tailwind-css-patterns/references/Level2_intermediate.md
+cat .claude/skills/tailwind-css-patterns/references/Level3_advanced.md
+cat .claude/skills/tailwind-css-patterns/references/Level4_expert.md
+cat .claude/skills/tailwind-css-patterns/references/cva-guide.md
+cat .claude/skills/tailwind-css-patterns/references/dark-mode-guide.md
+cat .claude/skills/tailwind-css-patterns/references/legacy-skill.md
+cat .claude/skills/tailwind-css-patterns/references/responsive-patterns.md
 ```
 
 ### スクリプト実行
@@ -109,8 +109,8 @@ node .claude/skills/tailwind-css-patterns/scripts/validate-skill.mjs --help
 
 ### テンプレート参照
 ```bash
-cat .claude/skills/tailwind-css-patterns/templates/component-variants-template.tsx
-cat .claude/skills/tailwind-css-patterns/templates/tailwind-config-template.js
+cat .claude/skills/tailwind-css-patterns/assets/component-variants-template.tsx
+cat .claude/skills/tailwind-css-patterns/assets/tailwind-config-template.js
 ```
 
 ## 変更履歴

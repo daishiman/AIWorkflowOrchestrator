@@ -1,118 +1,141 @@
 ---
-name: .claude/skills/sprint-planning/SKILL.md
+name: sprint-planning
 description: |
-  効果的なスプリント計画の立案と実行管理手法。
-  チームが一丸となって価値を提供できる明確な目標と実行計画を策定します。
-  
-  📖 参照書籍:
-  - 『Agile Estimating and Planning』（Mike Cohn）: 見積もり
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/capacity-planning-guide.md`: capacity-planning-guide のガイド
-  - `resources/capacity-planning.md`: チームキャパシティ計算の詳細ガイド（計算式、調整要因、ツール活用）
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `scripts/calculate-capacity.mjs`: キャパシティ自動計算ツール（Node.js実行可能、ストーリーポイント変換）
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/sprint-plan-template.md`: スプリント計画標準テンプレート（ゴール、キャパシティ、リスク、成功基準含む）
-  - `templates/sprint-planning-template.md`: sprint-planning-template のテンプレート
-  
-  Use proactively when handling sprint planning tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Agile Estimating and Planning"
-    author: "Mike Cohn"
-    concepts:
-      - "見積もり"
-      - "計画"
+  スプリント計画の体系的な立案と実行管理。チームキャパシティの可視化、タスク分解、
+  リスク管理を通じて、価値提供と持続可能な速度（サステーナブルペース）を両立させます。
+
+  Anchors:
+  • 『Agile Estimating and Planning』（Mike Cohn） / 適用: 見積もり・計画手法 / 目的: スプリント計画の方法論習得
+  • ストーリーポイント / 適用: キャパシティ計算・タスク見積もり / 目的: チーム能力の可視化と予測精度向上
+
+  Trigger:
+  スプリント計画、アジャイル開発サイクル設計、イテレーション管理、チームキャパシティ計算、スプリントゴール設定時に使用。
+
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # スプリント計画スキル
 
 ## 概要
 
-効果的なスプリント計画の立案と実行管理手法。
-チームが一丸となって価値を提供できる明確な目標と実行計画を策定します。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+チームの能力を可視化し、スプリント内で実現可能な価値提供計画を立案するスキル。
+キャパシティプランニング、タスク分解、リスク管理の段階的ワークフローで、
+持続可能な開発速度と高い予測精度を実現します。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: スプリント計画の準備
 
-**目的**: タスクの目的と前提条件を明確にする
+**目的**: スプリント計画に必要な基礎情報を整理し、チーム体制を確認する
 
-**アクション**:
+**実施内容**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+- チームメンバーのキャパシティ（稼働日数・休暇）を把握
+- 前スプリントの実績（ベロシティ）を確認
+- プロダクトバックログの優先順位を確認
+- スプリント期間・スプリントゴール（案）を共有
 
-### Phase 2: スキル適用
+**参照**: `references/Level1_basics.md` でスプリント計画の基礎概念を確認してください。
 
-**目的**: スキルの指針に従って具体的な作業を進める
+### Phase 2: スプリント計画セッションの実施
 
-**アクション**:
+**目的**: チームでスプリント内容を具体的に計画し、コミットメントを取る
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+**実施内容**:
 
-### Phase 3: 検証と記録
+- ストーリーポイント見積もり（リファインメント or スプリント計画内で実施）
+- タスク分解と責任者アサイン
+- 技術的リスク・依存関係の洗い出し
+- キャパシティに基づくスコープ確定
+- スプリントゴール・完了定義の確定
 
-**目的**: 成果物の検証と実行記録の保存
+**参照**: `references/Level2_intermediate.md` で見積もり手法と参画パターンを確認。
+`references/capacity-planning.md` でキャパシティ計算の詳細公式を参照。
+`scripts/calculate-capacity.mjs` でチームキャパシティを自動計算。
 
-**アクション**:
+### Phase 3: スプリント実行と進捗追跡
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+**目的**: スプリント内のタスク進行状況を記録し、必要に応じて計画を調整する
 
+**実施内容**:
+
+- デイリースタンドアップ実施
+- 進捗ボードの更新（To Do → In Progress → Done）
+- 未達タスクの早期発見と対策検討
+- スプリント終盤のリスク評価
+- スプリント終了時のレトロスペクティブ準備
+
+**参照**: `references/Level3_advanced.md` で計画変更判断基準を確認。
+成果物は `assets/sprint-plan-template.md` を使用。
+
+## Task仕様ナビ
+
+| フェーズ    | タスク名                   | 実施タイミング       | 入力                                           | 出力                            | 参照リソース                                                         |
+| ----------- | -------------------------- | -------------------- | ---------------------------------------------- | ------------------------------- | -------------------------------------------------------------------- |
+| **Phase 1** | キャパシティ把握           | スプリント計画開始前 | チームメンバー一覧、稼働予定、前スプリント実績 | キャパシティ表（時間/ポイント） | `references/Level1_basics.md`, `scripts/calculate-capacity.mjs`       |
+| **Phase 1** | スプリント目標の仮定       | 計画セッション開始時 | プロダクトマネージャーのスプリント案           | スプリント目標（ドラフト）      | `references/Level1_basics.md`                                         |
+| **Phase 2** | ストーリーポイント見積もり | 計画セッション内     | バックログアイテムの詳細記述                   | 各アイテムのポイント            | `references/Level2_intermediate.md`, `references/capacity-planning.md` |
+| **Phase 2** | タスク分解と責任者アサイン | 計画セッション内     | 見積もり済みアイテム                           | タスク一覧（責任者・期限付き）  | `assets/sprint-plan-template.md`                                  |
+| **Phase 2** | リスク・依存関係の洗い出し | 計画セッション後半   | タスク一覧、チーム体制                         | リスク登録簿、依存関係図        | `references/Level2_intermediate.md`                                   |
+| **Phase 3** | デイリートラッキング       | スプリント毎日       | 各タスクの進捗状況                             | 進捗ボード更新                  | `references/Level3_advanced.md`                                       |
+| **Phase 3** | 完了定義の確認と完了判定   | 毎タスク終了時       | タスク成果物                                   | 品質確認チェックリスト          | `assets/sprint-plan-template.md`                                  |
 
 ## ベストプラクティス
 
 ### すべきこと
-- スプリント開始時の計画セッション
-- キャパシティプランニング時
-- スプリントゴールの設定時
-- タスク分解とコミットメント時
+
+- **計画セッション前の準備を徹底**: バックログのリファインメント、見積もり推定値の事前共有で会議効率化
+- **ベロシティ（前実績）に基づくキャパシティ計算**: 楽観的な見積もりを避け、実績値から現実的なスコープを決定
+- **スプリントゴールの明確化**: 「何を成し遂げるか」を全員が理解し、個別タスクとの連動を示す
+- **日次トラッキングと早期対応**: 毎日の進捗確認で障害を早期発見し、スプリント終盤の混乱を回避
+- **完了定義の厳格適用**: DoD（Definition of Done）に基づき、本当に「完了」したタスクのみをカウント
+- **定期的なキャパシティ調整**: 休暇・緊急対応で実キャパシティが変わった場合は計画を見直す
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- **楽観的な見積もりと過度なコミットメント**: ベロシティ無視、未実績技術への過信
+- **スプリント計画の分散・個別対応**: 全員同席での計画会議を避け、結果として齟齬が生じる
+- **依存関係の無視**: 外部チーム・レビュー待ちの潜在時間をキャパシティに含めない
+- **完了定義の曖昧さ**: コード品質・テスト・ドキュメント要件を明記しないまま進める
+- **予期しない割り込みへの無抵抗**: 新規リクエストをスプリント途中で無制限に追加し、スコープクリープ化
+- **レトロスペクティブの省略**: 改善フィードバックを蓄積せず、毎スプリント同じ問題が繰り返される
 
-### リソース読み取り
-```bash
-cat .claude/skills/sprint-planning/resources/Level1_basics.md
-cat .claude/skills/sprint-planning/resources/Level2_intermediate.md
-cat .claude/skills/sprint-planning/resources/Level3_advanced.md
-cat .claude/skills/sprint-planning/resources/Level4_expert.md
-cat .claude/skills/sprint-planning/resources/capacity-planning-guide.md
-cat .claude/skills/sprint-planning/resources/capacity-planning.md
-cat .claude/skills/sprint-planning/resources/legacy-skill.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/sprint-planning/scripts/calculate-capacity.mjs --help
-node .claude/skills/sprint-planning/scripts/log_usage.mjs --help
-node .claude/skills/sprint-planning/scripts/validate-skill.mjs --help
-```
+### 段階別ガイド
 
-### テンプレート参照
-```bash
-cat .claude/skills/sprint-planning/templates/sprint-plan-template.md
-cat .claude/skills/sprint-planning/templates/sprint-planning-template.md
-```
+詳細な知識は以下の段階別リソースを参照：
+
+- **基礎（Level 1）**: `references/Level1_basics.md` - スプリント計画の基本概念、流れ
+- **実務（Level 2）**: `references/Level2_intermediate.md` - 見積もり手法、プランニングポーカー、参加パターン
+- **応用（Level 3）**: `references/Level3_advanced.md` - 計画の柔軟性、リスク判断、複雑なシナリオ対応
+- **専門（Level 4）**: `references/Level4_expert.md` - 大規模スプリント、マルチチーム計画、企業規模の最適化
+
+### キャパシティプランニング
+
+- `references/capacity-planning-guide.md` - キャパシティ計算の基本ガイド
+- `references/capacity-planning.md` - 詳細計算式、調整要因、ツール活用方法
+- `scripts/calculate-capacity.mjs` - チームキャパシティを自動計算（`--help` で使用方法確認）
+
+### テンプレートと出力
+
+- `assets/sprint-plan-template.md` - スプリント計画標準テンプレート（目標、キャパシティ、リスク、成功基準）
+- `assets/sprint-planning-template.md` - スプリント計画フォーム
+
+### スクリプトと自動化
+
+- `scripts/log_usage.mjs` - 使用記録・自動評価スクリプト（フィードバックループ用）
+- `scripts/validate-skill.mjs` - スキル構造検証
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                                                                   |
+| ------- | ---------- | ----------------------------------------------------------------------------------------- |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠。Anchors/Trigger統合、Task仕様ナビ追加、ベストプラクティス充実 |
+| 1.0.0   | 2025-12-24 | 初期バージョン                                                                            |

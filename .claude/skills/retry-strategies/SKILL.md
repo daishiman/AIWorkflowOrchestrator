@@ -1,119 +1,147 @@
 ---
-name: .claude/skills/retry-strategies/SKILL.md
+name: retry-strategies
 description: |
-  外部APIの一時的障害に対するリトライ戦略とサーキットブレーカーパターンを専門とするスキル。
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/bulkhead-pattern.md`: Bulkhead Patternリソース
-  - `resources/circuit-breaker.md`: Circuit Breakerリソース
-  - `resources/exponential-backoff.md`: Exponential Backoffリソース
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/timeout-strategies.md`: Timeout Strategiesリソース
-  - `scripts/analyze-retry-config.mjs`: Analyze Retry Configスクリプト
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/circuit-breaker-template.ts`: Circuit Breakerテンプレート
-  - `templates/retry-wrapper-template.ts`: Retry Wrapperテンプレート
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when handling retry strategies tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "実践的改善"
-      - "品質維持"
+  Design and implement retry mechanisms, circuit breakers, and resilience patterns for external API calls and distributed systems. Covers exponential backoff, bulkhead patterns, timeout strategies, and failure handling.
+
+  Anchors:
+  • The Pragmatic Programmer (Andrew Hunt, David Thomas) / 適用: エラーハンドリング設計・実用的な回復戦略 / 目的: 実践的な改善アプローチの適用
+  • Resilience patterns from distributed systems / 適用: Circuit Breaker・Bulkhead・Timeout設計 / 目的: システムの耐障害性確保
+
+  Trigger:
+  Use when implementing retry logic, circuit breakers, API resilience patterns, handling transient failures, designing timeout strategies, or preventing cascading failures in distributed systems.
+  Keywords: retry, backoff, circuit breaker, bulkhead, timeout, resilience, failure handling, API errors, transient failures, rate limiting
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
 ---
 
 # Retry Strategies
 
 ## 概要
 
-外部APIの一時的障害に対するリトライ戦略とサーキットブレーカーパターンを専門とするスキル。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+Design and implement resilient retry mechanisms and failure handling patterns for distributed systems. This skill provides expertise in circuit breakers, exponential backoff, bulkhead patterns, and timeout strategies to handle transient failures in external API calls.
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+本スキルは3つのTaskで構成されます。各Taskは独立したコンテキストで実行され、入出力を明確に定義します。
 
-**目的**: タスクの目的と前提条件を明確にする
+### Phase 1: Requirements Analysis
 
-**アクション**:
+**Task**: `agents/analyze-requirements.md`
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+**目的**: Analyze the system context and determine appropriate resilience patterns
 
-### Phase 2: スキル適用
+**入力**:
 
-**目的**: スキルの指針に従って具体的な作業を進める
+- System architecture description
+- API dependencies and SLAs
+- Current failure patterns (if any)
+- Performance requirements
 
-**アクション**:
+**出力**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+- Recommended resilience patterns
+- Configuration parameters (retry counts, timeouts, thresholds)
+- Risk assessment and trade-offs
 
-### Phase 3: 検証と記録
+**実行タイミング**: プロジェクト開始時、既存システムの改善時
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: Strategy Implementation
 
-**アクション**:
+**Task**: `agents/implement-strategy.md`
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+**目的**: Implement the selected resilience patterns with proper configuration
 
+**入力**:
+
+- Phase 1の推奨パターンと設定
+- Target codebase and technology stack
+- Integration points
+
+**出力**:
+
+- Implementation code (retry logic, circuit breaker, etc.)
+- Configuration files
+- Unit test cases
+
+**実行タイミング**: 要件分析完了後
+
+### Phase 3: Validation and Monitoring
+
+**Task**: `agents/validate-results.md`
+
+**目的**: Validate implementation and establish monitoring
+
+**入力**:
+
+- Phase 2の実装コード
+- Test scenarios
+- Production metrics requirements
+
+**出力**:
+
+- Test results and validation report
+- Monitoring setup recommendations
+- Usage log entry
+
+**実行タイミング**: 実装完了後、本番デプロイ前
 
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+- 適切なパターンを選択する前に `references/Level1_basics.md` で基礎を確認
+- 実装前に `references/Level2_intermediate.md` で実務手順を整理
+- Exponential backoffを使用し、固定間隔リトライを避ける
+- Circuit breakerで障害の連鎖を防ぐ
+- タイムアウト値は測定に基づいて設定する
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- 無限リトライの実装（必ず上限を設ける）
+- 即座のリトライ（バックオフなし）
+- エラーの種類を区別しない一律のリトライ
+- モニタリングなしでの本番投入
 
-### リソース読み取り
-```bash
-cat .claude/skills/retry-strategies/resources/Level1_basics.md
-cat .claude/skills/retry-strategies/resources/Level2_intermediate.md
-cat .claude/skills/retry-strategies/resources/Level3_advanced.md
-cat .claude/skills/retry-strategies/resources/Level4_expert.md
-cat .claude/skills/retry-strategies/resources/bulkhead-pattern.md
-cat .claude/skills/retry-strategies/resources/circuit-breaker.md
-cat .claude/skills/retry-strategies/resources/exponential-backoff.md
-cat .claude/skills/retry-strategies/resources/legacy-skill.md
-cat .claude/skills/retry-strategies/resources/timeout-strategies.md
-```
+## リソース
 
-### スクリプト実行
-```bash
-node .claude/skills/retry-strategies/scripts/analyze-retry-config.mjs --help
-node .claude/skills/retry-strategies/scripts/log_usage.mjs --help
-node .claude/skills/retry-strategies/scripts/validate-skill.mjs --help
-```
+### Knowledge References
 
-### テンプレート参照
-```bash
-cat .claude/skills/retry-strategies/templates/circuit-breaker-template.ts
-cat .claude/skills/retry-strategies/templates/retry-wrapper-template.ts
-```
+Progressive Disclosureに従い、必要時のみ参照してください。
+
+**基礎知識** (Phase 1で参照):
+
+- **Level 1 Basics**: See [references/Level1_basics.md](references/Level1_basics.md) - スキルの適用範囲と基本概念
+- **Level 2 Intermediate**: See [references/Level2_intermediate.md](references/Level2_intermediate.md) - 実務手順と判断基準
+
+**詳細知識** (Phase 2で必要に応じて参照):
+
+- **Exponential Backoff**: See [references/exponential-backoff.md](references/exponential-backoff.md) - バックオフアルゴリズムの実装詳細
+- **Circuit Breaker**: See [references/circuit-breaker.md](references/circuit-breaker.md) - 状態遷移としきい値設定
+- **Bulkhead Pattern**: See [references/bulkhead-pattern.md](references/bulkhead-pattern.md) - リソース分離パターン
+- **Timeout Strategies**: See [references/timeout-strategies.md](references/timeout-strategies.md) - タイムアウト設計ガイド
+
+**高度な知識** (複雑なケースで参照):
+
+- **Level 3 Advanced**: See [references/Level3_advanced.md](references/Level3_advanced.md) - 応用パターンと組み合わせ
+- **Level 4 Expert**: See [references/Level4_expert.md](references/Level4_expert.md) - エッジケースと最適化
+
+### Scripts
+
+- `scripts/analyze-retry-config.mjs`: Analyze retry configuration for issues and recommendations
+- `scripts/validate-skill.mjs`: Validate skill structure compliance
+- `scripts/log_usage.mjs`: Record skill usage and update metrics
+
+### Assets
+
+- `assets/circuit-breaker-template.ts`: TypeScript circuit breaker implementation template
+- `assets/retry-wrapper-template.ts`: Reusable retry wrapper with exponential backoff
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                             |
+| ------- | ---------- | --------------------------------------------------- |
+| 1.1.0   | 2025-12-31 | Updated to 18-skills.md spec with agents/ and EVALS |
+| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added         |

@@ -8,16 +8,16 @@ description: |
   - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
   
   📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/railway-secrets-guide.md`: railway-secrets-guide のガイド
-  - `resources/railway-turso-guide.md`: Railway Turso 詳細ガイド
+  - `references/Level1_basics.md`: レベル1の基礎ガイド
+  - `references/Level2_intermediate.md`: レベル2の実務ガイド
+  - `references/Level3_advanced.md`: レベル3の応用ガイド
+  - `references/Level4_expert.md`: レベル4の専門ガイド
+  - `references/legacy-skill.md`: 旧SKILL.mdの全文
+  - `references/railway-secrets-guide.md`: railway-secrets-guide のガイド
+  - `references/railway-turso-guide.md`: Railway Turso 詳細ガイド
   - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
   - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
+  - `references/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
   
   Use proactively when handling railway turso management tasks.
 version: 1.0.0
@@ -38,7 +38,7 @@ references:
 Railway Database管理スキル。Railway環境グループ、Variables vs Secrets、
 Turso integration、Railway CLI統合、一時ファイルセキュリティを提供します。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
 
 ## ワークフロー
@@ -49,8 +49,8 @@ Turso integration、Railway CLI統合、一時ファイルセキュリティを�
 
 **アクション**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要な references/scripts/templates を特定
 
 ### Phase 2: スキル適用
 
@@ -88,13 +88,13 @@ Turso integration、Railway CLI統合、一時ファイルセキュリティを�
 
 ### リソース読み取り
 ```bash
-cat .claude/skills/railway-turso-management/resources/Level1_basics.md
-cat .claude/skills/railway-turso-management/resources/Level2_intermediate.md
-cat .claude/skills/railway-turso-management/resources/Level3_advanced.md
-cat .claude/skills/railway-turso-management/resources/Level4_expert.md
-cat .claude/skills/railway-turso-management/resources/legacy-skill.md
-cat .claude/skills/railway-turso-management/resources/railway-secrets-guide.md
-cat .claude/skills/railway-turso-management/resources/railway-turso-guide.md
+cat .claude/skills/railway-turso-management/references/Level1_basics.md
+cat .claude/skills/railway-turso-management/references/Level2_intermediate.md
+cat .claude/skills/railway-turso-management/references/Level3_advanced.md
+cat .claude/skills/railway-turso-management/references/Level4_expert.md
+cat .claude/skills/railway-turso-management/references/legacy-skill.md
+cat .claude/skills/railway-turso-management/references/railway-secrets-guide.md
+cat .claude/skills/railway-turso-management/references/railway-turso-guide.md
 ```
 
 ### スクリプト実行

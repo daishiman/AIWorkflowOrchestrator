@@ -7,21 +7,21 @@ description: |
   - 『RESTful Web APIs』（Leonard Richardson）: リソース設計
   
   📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/caching-strategies.md`: Caching Strategiesリソース
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/resource-transformation.md`: Resource Transformationリソース
-  - `resources/uri-scheme-guide.md`: Uri Scheme Guideリソース
+  - `references/Level1_basics.md`: レベル1の基礎ガイド
+  - `references/Level2_intermediate.md`: レベル2の実務ガイド
+  - `references/Level3_advanced.md`: レベル3の応用ガイド
+  - `references/Level4_expert.md`: レベル4の専門ガイド
+  - `references/caching-strategies.md`: Caching Strategiesリソース
+  - `references/legacy-skill.md`: 旧SKILL.mdの全文
+  - `references/resource-transformation.md`: Resource Transformationリソース
+  - `references/uri-scheme-guide.md`: Uri Scheme Guideリソース
   - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
   - `scripts/validate-resource-definition.mjs`: Validate Resource Definitionスクリプト
   - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
   - `scripts/validate-uri.mjs`: Validate Uriスクリプト
-  - `templates/resource-definition-template.json`: Resource Definitionテンプレート
-  - `templates/resource-provider-template.ts`: Resource Providerテンプレート
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
+  - `assets/resource-definition-template.json`: Resource Definitionテンプレート
+  - `assets/resource-provider-template.ts`: Resource Providerテンプレート
+  - `references/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
   
   Use proactively when handling resource oriented api tasks.
 version: 1.0.1
@@ -41,7 +41,7 @@ references:
 
 MCPのリソース指向API設計パターンに関する専門知識。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
 
 ## ワークフロー
@@ -52,8 +52,8 @@ MCPのリソース指向API設計パターンに関する専門知識。
 
 **アクション**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要な references/scripts/templates を特定
 
 ### Phase 2: スキル適用
 
@@ -78,8 +78,8 @@ MCPのリソース指向API設計パターンに関する専門知識。
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+- references/Level1_basics.md を参照し、適用範囲を明確にする
+- references/Level2_intermediate.md を参照し、実務手順を整理する
 
 ### 避けるべきこと
 - アンチパターンや注意点を確認せずに進めることを避ける
@@ -88,14 +88,14 @@ MCPのリソース指向API設計パターンに関する専門知識。
 
 ### リソース読み取り
 ```bash
-cat .claude/skills/resource-oriented-api/resources/Level1_basics.md
-cat .claude/skills/resource-oriented-api/resources/Level2_intermediate.md
-cat .claude/skills/resource-oriented-api/resources/Level3_advanced.md
-cat .claude/skills/resource-oriented-api/resources/Level4_expert.md
-cat .claude/skills/resource-oriented-api/resources/caching-strategies.md
-cat .claude/skills/resource-oriented-api/resources/legacy-skill.md
-cat .claude/skills/resource-oriented-api/resources/resource-transformation.md
-cat .claude/skills/resource-oriented-api/resources/uri-scheme-guide.md
+cat .claude/skills/resource-oriented-api/references/Level1_basics.md
+cat .claude/skills/resource-oriented-api/references/Level2_intermediate.md
+cat .claude/skills/resource-oriented-api/references/Level3_advanced.md
+cat .claude/skills/resource-oriented-api/references/Level4_expert.md
+cat .claude/skills/resource-oriented-api/references/caching-strategies.md
+cat .claude/skills/resource-oriented-api/references/legacy-skill.md
+cat .claude/skills/resource-oriented-api/references/resource-transformation.md
+cat .claude/skills/resource-oriented-api/references/uri-scheme-guide.md
 ```
 
 ### スクリプト実行
@@ -108,8 +108,8 @@ node .claude/skills/resource-oriented-api/scripts/validate-uri.mjs --help
 
 ### テンプレート参照
 ```bash
-cat .claude/skills/resource-oriented-api/templates/resource-definition-template.json
-cat .claude/skills/resource-oriented-api/templates/resource-provider-template.ts
+cat .claude/skills/resource-oriented-api/assets/resource-definition-template.json
+cat .claude/skills/resource-oriented-api/assets/resource-provider-template.ts
 ```
 
 ## 変更履歴

@@ -1,32 +1,19 @@
 ---
-name: .claude/skills/metrics-tracking/SKILL.md
+name: メトリクス追跡
 description: |
   ベロシティ計測、バーンダウンチャート、リードタイム分析など
   アジャイルメトリクスの追跡と分析手法。データに基づく継続的改善と
   予測可能な開発を実現します。
-  
-  📖 参照書籍:
-  - 『Observability Engineering』（Charity Majors）: ログ設計
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  
-  Use proactively when handling metrics tracking tasks.
-version: 1.1.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Observability Engineering"
-    author: "Charity Majors"
-    concepts:
-      - "ログ設計"
-      - "メトリクス"
+
+  Anchors: velocity, burndown, leadtime, metrics, team-performance, continuous-improvement
+
+  Triggers:
+  - メトリクス計測が必要な場合
+  - チームのパフォーマンス分析が必要な場合
+  - バーンダウンチャート、ベロシティ追跡が必要な場合
+  - リードタイム改善の分析が必要な場合
+  - データ駆動の意思決定支援が必要な場合
+
 ---
 
 # メトリクス追跡スキル
@@ -37,68 +24,133 @@ references:
 アジャイルメトリクスの追跡と分析手法。データに基づく継続的改善と
 予測可能な開発を実現します。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: メトリクス要件の整理と計画
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 追跡対象となるメトリクスを定義し、計測計画を策定する
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. ビジネスゴールと技術的なボトルネックを確認
+2. 計測対象とするメトリクス（ベロシティ、リードタイム、デプロイ頻度など）を特定
+3. 計測ツール、計測間隔、データ保持期間を決定
+4. `references/Level1_basics.md` でメトリクスの基本を確認
+5. `references/Level2_intermediate.md` で実装手法を検討
 
-### Phase 3: 検証と記録
+### Phase 2: メトリクス計測の実装と自動化
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: メトリクス計測システムを実装し、継続的なデータ収集を確立する
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. 計測ツールの設定（Jira、GitHub Projects、Grafana等）
+2. データパイプラインの構築（集計スクリプト、可視化ダッシュボード等）
+3. 異常検知アラートの設定
+4. `references/Level3_advanced.md` で高度な分析手法を学習
+5. メトリクス計測の自動化スクリプトを実装
 
+### Phase 3: 分析、改善、記録
+
+**目的**: メトリクスデータを分析して継続的改善を実施し、成果を記録する
+
+**アクション**:
+
+1. 週次・月次のメトリクスレビューを実施
+2. トレンド分析と根本原因分析を実施
+3. 改善施策を立案・実施・検証
+4. `references/Level4_expert.md` で組織的なメトリクス戦略を学習
+5. `scripts/log_usage.mjs` で分析結果と改善実績を記録
+6. `scripts/validate-skill.mjs` で計測の妥当性を検証
+
+## Task仕様ナビ
+
+メトリクス追跡スキルの実装タスク一覧です。各タスクに対応するレベルと実装パターンを参照してください。
+
+| Task                 | レベル | Phase | 概要                                         | リソース参照           |
+| -------------------- | ------ | ----- | -------------------------------------------- | ---------------------- |
+| メトリクス定義       | L1     | 1     | ビジネスゴール達成に必要なメトリクスを定義   | Level1_basics.md       |
+| ベロシティ計測       | L2     | 2     | スプリント単位のベロシティを自動計測         | Level2_intermediate.md |
+| バーンダウン追跡     | L2     | 2     | スプリント進捗をバーンダウンチャートで可視化 | Level2_intermediate.md |
+| リードタイム分析     | L2     | 2     | 課題から完了までのリードタイムを計測・分析   | Level2_intermediate.md |
+| デプロイメント頻度   | L3     | 2     | デプロイメント頻度と成功率を自動計測         | Level3_advanced.md     |
+| 変更失敗率分析       | L3     | 2     | デプロイメント失敗と本番障害を自動検出・分析 | Level3_advanced.md     |
+| MTTR（平均修復時間） | L3     | 2     | インシデント検知から復旧までの時間を計測     | Level3_advanced.md     |
+| 異常検知・アラート   | L3     | 2     | メトリクスの異常値を自動検知し通知           | Level3_advanced.md     |
+| メトリクス可視化     | L2     | 2     | ダッシュボードでメトリクスを可視化           | Level2_intermediate.md |
+| トレンド分析         | L3     | 3     | 時系列データからトレンドを抽出               | Level3_advanced.md     |
+| 根本原因分析         | L4     | 3     | メトリクス悪化の根本原因を特定               | Level4_expert.md       |
+| データドリブン改善   | L4     | 3     | メトリクスに基づく継続的改善計画             | Level4_expert.md       |
+| 組織的メトリクス戦略 | L4     | 3     | チーム・組織全体のメトリクス体系を構築       | Level4_expert.md       |
 
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+- メトリクス計測を開始する前に、ビジネスゴールと計測目的を明確にする
+- `references/Level1_basics.md` でメトリクス選択の基本原則を確認する
+- `references/Level2_intermediate.md` で計測ツール選定と実装手順を学習する
+- 計測対象、計測間隔、データ保持期間を定義書に明記する
+- 複数の視点からメトリクスを分析し、単一のメトリクスに依存しない
+- メトリクスダッシュボードを週次・月次でレビューする定例を設定する
+- 計測結果から仮説を立てて、根本原因分析を実施する
+- `references/Level3_advanced.md` で異常検知やトレンド分析の高度な手法を学習する
+- 改善施策の実施前後でメトリクスを比較し、改善効果を定量的に評価する
+- チームメンバーが計測ツールを使用できるよう教育・サポートする
+- `scripts/validate-skill.mjs` で定期的に計測システムの妥当性を検証する
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- 目的を明確にせずに、多くのメトリクスを同時に計測すること（計測コストの増加と分析の迷走につながる）
+- 単一のメトリクスに過度に依存して判断すること（ゲーミングやモラル低下を招く）
+- メトリクスの時系列データを保持せずに、単期の値だけを見ること（トレンド分析ができない）
+- チームへのメトリクス公開時に、個人の評価に直結させること（心理的安全性の低下につながる）
+- 計測ツールの設定が煩雑すぎて、データ入力が負担になること
+- 異常値が発生したときに、根本原因を調査せずに無視すること
+- メトリクスが外部依存や予測不可能な要因の影響を受けていることを見落とすこと
+- `references/Level4_expert.md` でのメトリクス戦略学習なしに、組織全体のメトリクス体系を設計すること
 
-### リソース読み取り
-```bash
-cat .claude/skills/metrics-tracking/resources/Level1_basics.md
-cat .claude/skills/metrics-tracking/resources/Level2_intermediate.md
-cat .claude/skills/metrics-tracking/resources/Level3_advanced.md
-cat .claude/skills/metrics-tracking/resources/Level4_expert.md
-cat .claude/skills/metrics-tracking/resources/legacy-skill.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/metrics-tracking/scripts/log_usage.mjs --help
-node .claude/skills/metrics-tracking/scripts/validate-skill.mjs --help
-```
+このスキルの詳細な実装ガイダンスは以下のリソースで提供されています。
+
+### レベル別ガイド
+
+- **Level1_basics.md**: メトリクス追跡の基本概念、メトリクス選択の原則、基本的なベロシティとバーンダウンの計測方法
+- **Level2_intermediate.md**: リードタイム分析、複数チームでのメトリクス計測、ダッシュボード実装、Jira/GitHub Projects連携
+- **Level3_advanced.md**: デプロイメント頻度・変更失敗率・MTTR計測、異常検知とアラート設定、時系列分析とトレンド抽出
+- **Level4_expert.md**: 組織的なメトリクス戦略、DORA Metricsフレームワーク、心理的安全性とメトリクスの関係、データドリブン文化の構築
+
+### スクリプトとテンプレート
+
+- **log_usage.mjs**: メトリクス分析結果と改善実績を自動ログ。使用履歴を蓄積して継続的改善を支援
+  ```bash
+  node .claude/skills/metrics-tracking/scripts/log_usage.mjs --help
+  ```
+- **validate-skill.mjs**: メトリクス計測システムの設定と妥当性を検証
+  ```bash
+  node .claude/skills/metrics-tracking/scripts/validate-skill.mjs --help
+  ```
+
+### 参考文献
+
+このスキルの知識体系は以下の書籍を参考にしています：
+
+- **『Accelerate: The Science of Lean Software and DevOps』** (Nicole Forsgren, Jez Humble, Gene Kim)
+  - デプロイメント頻度、リードタイム、変更失敗率、MTTRのDORA 4つの重要メトリクス
+  - 科学的根拠に基づくメトリクス選択
+  - チーム文化とメトリクスの関係性
+
+- **『Observability Engineering』** (Charity Majors, Liz Fong-Jones, Gidi Meir Morris)
+  - ログ、メトリクス、トレースの統合的な活用
+  - メトリクスの実装パターン
+  - 異常検知と根本原因分析の方法論
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.1.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                                                                                                                                                       |
+| ------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.2.0   | 2025-12-31 | 18-skills.md仕様への完全準拠：Triggers（日本語）、Anchors、allowed-tools を追加；Task仕様ナビ（テーブル形式）を実装；ベストプラクティスを詳細化；リソース参照セクションを拡充 |
+| 1.1.0   | 2025-12-24 | Spec alignment and required artifacts added                                                                                                                                   |

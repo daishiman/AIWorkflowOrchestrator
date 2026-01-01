@@ -1,116 +1,133 @@
 ---
-name: .claude/skills/chain-of-thought-reasoning/SKILL.md
+name: chain-of-thought-reasoning
 description: |
-  Chain-of-Thought（思考の連鎖）推論パターンを提供するスキル。
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 手順設計
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/cot-fundamentals.md`: Chain-of-Thought 基礎理論
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/prompting-techniques.md`: CoTプロンプティング技法
-  - `resources/reasoning-patterns.md`: 演繹・帰納・類推・仮説検証・分割統治・逆問題・比較分析の7つの推論パターンと適用場面
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/cot-prompt-templates.md`: CoTプロンプトテンプレート
-  - `templates/self-consistency-template.md`: Self-Consistencyテンプレート
-  
-  Use proactively when designing prompts requiring.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "手順設計"
-      - "実践的改善"
+  推論パターンを選択し、根拠サマリーを短く提示するためのプロンプト設計スキル。
+  自己一貫性の比較、推論パターンの適用、説明の明確化を通じて、再現性の高い結論を導く。
+
+  Anchors:
+  • The Pragmatic Programmer / 適用: 手順設計 / 目的: 実践的な整理
+  • Reasoning and Logic / 適用: 推論パターン / 目的: 一貫性のある説明
+  • Self-Consistency (Wang et al.) / 適用: 複数案比較 / 目的: 精度向上
+
+  Trigger:
+  Use when selecting reasoning patterns, designing prompts for structured explanations, or comparing multiple solution paths for higher confidence.
+allowed-tools:
+  - bash
+  - node
 ---
 
 # Chain-of-Thought Reasoning
 
 ## 概要
 
-Chain-of-Thought（思考の連鎖）推論パターンを提供するスキル。
+推論パターンの選択と、短い根拠サマリーの提示を支援する。
+詳細は `references/` に外部化し、必要時に参照する。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+- プロンプト例: `assets/cot-prompt-templates.md`
+- 自己一貫性テンプレ: `assets/self-consistency-template.md`
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件整理
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 推論の目的と出力形式を整理する
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. `references/Level1_basics.md` で基礎概念を確認
+2. 出力形式と許容粒度を整理
+3. 必要な推論パターン候補を列挙
 
-### Phase 3: 検証と記録
+**Task**: `agents/analyze-reasoning-requirements.md`
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: パターン選択
+
+**目的**: 適切な推論パターンを選択する
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. `references/reasoning-patterns.md` を参照
+2. タスクタイプに合う推論パターンを選定
+3. 補助パターンの併用可否を整理
 
+**Task**: `agents/select-reasoning-patterns.md`
+
+### Phase 3: プロンプト設計
+
+**目的**: 説明サマリーを出すプロンプトを設計する
+
+**アクション**:
+
+1. `references/prompting-techniques.md` を参照
+2. `assets/cot-prompt-templates.md` を調整
+3. `assets/self-consistency-template.md` の適用可否を確認
+
+**Task**: `agents/design-reasoning-prompts.md`
+
+### Phase 4: 検証と記録
+
+**目的**: 生成結果を検証し記録する
+
+**アクション**:
+
+1. `references/Level4_expert.md` で検証観点を確認
+2. 生成結果の一貫性を検証
+3. `scripts/validate-skill.mjs` で構造検証
+4. `scripts/log_usage.mjs` で記録
+
+**Task**: `agents/validate-reasoning-output.md`
+
+## Task仕様ナビ
+
+| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |
+| --- | --- | --- | --- | --- | --- |
+| 要件整理 | 目的/粒度整理 | 依頼内容 | 要件メモ | `references/Level1_basics.md` | Phase 1 |
+| パターン選択 | 推論パターン選定 | 要件メモ | パターンメモ | `references/reasoning-patterns.md` | Phase 2 |
+| プロンプト設計 | テンプレ調整 | パターンメモ | プロンプト案 | `assets/cot-prompt-templates.md` | Phase 3 |
+| 検証 | 一貫性確認 | プロンプト案 | 検証メモ | `references/Level4_expert.md` | Phase 4 |
 
 ## ベストプラクティス
 
 ### すべきこと
-- 複雑な推論が必要な時
-- 回答の根拠を明示したい時
-- 多段階の論理的思考が必要な時
-- AIの思考プロセスを検証したい時
+
+- 出力形式と粒度を明確にする
+- 推論パターンをタスクに合わせて選ぶ
+- 複数案の比較で一貫性を確認する
+- 根拠は短く要約する
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- 出力粒度を曖昧にする
+- パターン選択を省略する
+- 長文の推論過程をそのまま出力する
 
-### リソース読み取り
-```bash
-cat .claude/skills/chain-of-thought-reasoning/resources/Level1_basics.md
-cat .claude/skills/chain-of-thought-reasoning/resources/Level2_intermediate.md
-cat .claude/skills/chain-of-thought-reasoning/resources/Level3_advanced.md
-cat .claude/skills/chain-of-thought-reasoning/resources/Level4_expert.md
-cat .claude/skills/chain-of-thought-reasoning/resources/cot-fundamentals.md
-cat .claude/skills/chain-of-thought-reasoning/resources/legacy-skill.md
-cat .claude/skills/chain-of-thought-reasoning/resources/prompting-techniques.md
-cat .claude/skills/chain-of-thought-reasoning/resources/reasoning-patterns.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/chain-of-thought-reasoning/scripts/log_usage.mjs --help
-node .claude/skills/chain-of-thought-reasoning/scripts/validate-skill.mjs --help
-```
+### 参照資料
 
-### テンプレート参照
-```bash
-cat .claude/skills/chain-of-thought-reasoning/templates/cot-prompt-templates.md
-cat .claude/skills/chain-of-thought-reasoning/templates/self-consistency-template.md
-```
+- `references/Level1_basics.md`: 基礎概念
+- `references/Level2_intermediate.md`: パターン適用
+- `references/Level3_advanced.md`: 自己一貫性
+- `references/Level4_expert.md`: 検証/改善
+- `references/cot-fundamentals.md`: 推論整理の基礎
+- `references/prompting-techniques.md`: プロンプト設計
+- `references/reasoning-patterns.md`: 推論パターン
+- `references/legacy-skill.md`: 旧版要約（移行時のみ）
+
+### スクリプト
+
+- `scripts/log_usage.mjs`: 実行ログ記録
+- `scripts/validate-skill.mjs`: スキル構造検証
+
+### テンプレート
+
+- `assets/cot-prompt-templates.md`: プロンプト例
+- `assets/self-consistency-template.md`: 自己一貫性テンプレ
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                             |
+| ------- | ---------- | --------------------------------------------------- |
+| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠                           |
+| 1.0.0   | 2025-12-24 | 初版作成                                            |

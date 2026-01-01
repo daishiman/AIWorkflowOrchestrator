@@ -1,97 +1,147 @@
 ---
-name: .claude/skills/data-transformation/SKILL.md
+name: data-transformation
 description: |
-  データ変換パイプライン設計の指針を提供するスキル。
-  
-  📖 参照書籍:
-  - 『Designing Data-Intensive Applications』（Martin Kleppmann）: データモデリング
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  
-  Use proactively when designing data transformation pipelines.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Designing Data-Intensive Applications"
-    author: "Martin Kleppmann"
-    concepts:
-      - "データモデリング"
----
+  データ変換パイプラインの設計・実装・検証を整理するスキル。
+  スキーママッピング、ETL設計、品質確認までの実務フローを提供する。
 
-# Data Transformation
+  Anchors:
+  • Designing Data-Intensive Applications / 適用: データモデリング / 目的: 変換の整合性確保
+  • Designing Data-Intensive Applications / 適用: スキーマ設計 / 目的: マッピングの明確化
+  • Designing Data-Intensive Applications / 適用: パイプライン設計 / 目的: 伸縮性と監視性の確保
+
+  Trigger:
+  Use when designing data transformation pipelines, defining schema mappings, implementing ETL processes, or optimizing data flows.
+  data transformation, schema mapping, etl design, pipeline optimization, data modeling
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+---
+# data-transformation
 
 ## 概要
 
-データ変換パイプライン設計の指針を提供するスキル。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+データ変換の要件整理から設計・実装・検証までを一貫して支援し、堅牢な変換パイプラインを構築する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件整理
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 入出力・制約・品質要件を整理する。
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 入出力データと目的を整理する。
+2. 品質要件と許容遅延を確認する。
+3. 変換ステップの候補を洗い出す。
 
-### Phase 3: 検証と記録
+**Task**: `agents/analyze-transformation-requirements.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: 設計
+
+**目的**: スキーママッピングとパイプライン構成を設計する。
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. `references/schema-mapping-guide.md` でマッピング方針を確認する。
+2. `references/etl-design-patterns.md` でETL設計を整理する。
+3. 変換フローと検証点を定義する。
 
+**Task**: `agents/design-transformation-architecture.md` を参照
+
+### Phase 3: 実装
+
+**目的**: 変換処理を実装し、品質チェックを組み込む。
+
+**アクション**:
+
+1. `assets/etl-pipeline-template.md` を参照して実装する。
+2. `scripts/analyze-transformations.mjs` で変換点を確認する。
+3. 変更点を記録する。
+
+**Task**: `agents/implement-transformation-pipeline.md` を参照
+
+### Phase 4: 検証と運用
+
+**目的**: 変換品質を検証し、運用記録を残す。
+
+**アクション**:
+
+1. `assets/transformation-validation-checklist.md` で検証する。
+2. `scripts/log_usage.mjs` で記録を更新する。
+3. 改善点を整理する。
+
+**Task**: `agents/validate-transformation-quality.md` を参照
+
+## Task仕様ナビ
+
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-transformation-requirements | Phase 1開始時 | 入出力情報 | 要件メモ、制約一覧 |
+| design-transformation-architecture | Phase 2開始時 | 要件メモ | マッピング設計、フロー定義 |
+| implement-transformation-pipeline | Phase 3開始時 | 設計方針 | 実装メモ、変更点 |
+| validate-transformation-quality | Phase 4開始時 | 実装メモ | 検証レポート、改善提案 |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+| 推奨事項 | 理由 |
+| --- | --- |
+| 入出力スキーマを明確にする | 変換の整合性を保つ |
+| 検証ポイントを定義する | 早期検知につながる |
+| 変換ステップを分割する | 再利用と保守性が高まる |
+| ログとメトリクスを残す | 運用改善に役立つ |
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+| 禁止事項 | 問題点 |
+| --- | --- |
+| スキーマ無しの変換 | データ破損リスク |
+| 例外処理の欠落 | 失敗時の影響が大きい |
+| 変更履歴の未記録 | 再現性が失われる |
 
-### リソース読み取り
-```bash
-cat .claude/skills/data-transformation/resources/Level1_basics.md
-cat .claude/skills/data-transformation/resources/Level2_intermediate.md
-cat .claude/skills/data-transformation/resources/Level3_advanced.md
-cat .claude/skills/data-transformation/resources/Level4_expert.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/data-transformation/scripts/log_usage.mjs --help
-node .claude/skills/data-transformation/scripts/validate-skill.mjs --help
-```
+### scripts/（決定論的処理）
 
-## 変更履歴
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/analyze-transformations.mjs` | 変換ポイントの分析 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
 
-| Version | Date | Changes |
+### references/（詳細知識）
+
+| リソース | パス | 読込条件 |
 | --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 実装時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 検証時 |
+| スキーママッピング | [references/schema-mapping-guide.md](references/schema-mapping-guide.md) | 設計時 |
+| ETL設計 | [references/etl-design-patterns.md](references/etl-design-patterns.md) | 設計時 |
+| 品質評価 | [references/data-quality-metrics.md](references/data-quality-metrics.md) | 検証時 |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+
+### assets/（テンプレート・素材）
+
+| アセット | 用途 |
+| --- | --- |
+| `assets/etl-pipeline-template.md` | パイプライン設計テンプレート |
+| `assets/schema-mapping-template.md` | スキーママッピング整理 |
+| `assets/transformation-validation-checklist.md` | 検証チェックリスト |
+
+### 運用ファイル
+
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

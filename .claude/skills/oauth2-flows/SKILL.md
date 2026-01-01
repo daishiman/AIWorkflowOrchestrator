@@ -9,31 +9,22 @@ description: |
   - 『Web Application Security』（Andrew Hoffman）: 脅威モデリング
   
   📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/authorization-code-flow.md`: Authorization Code Flow 詳細実装
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/pkce-implementation.md`: PKCE (Proof Key for Code Exchange) 実装詳細
-  - `resources/security-checklist.md`: OAuth 2.0 セキュリティチェックリスト
-  - `resources/token-storage-strategies.md`: トークンストレージ戦略
+  - `references/Level1_basics.md`: レベル1の基礎ガイド
+  - `references/Level2_intermediate.md`: レベル2の実務ガイド
+  - `references/Level3_advanced.md`: レベル3の応用ガイド
+  - `references/Level4_expert.md`: レベル4の専門ガイド
+  - `references/authorization-code-flow.md`: Authorization Code Flow 詳細実装
+  - `references/legacy-skill.md`: 旧SKILL.mdの全文
+  - `references/pkce-implementation.md`: PKCE (Proof Key for Code Exchange) 実装詳細
+  - `references/security-checklist.md`: OAuth 2.0 セキュリティチェックリスト
+  - `references/token-storage-strategies.md`: トークンストレージ戦略
   - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
   - `scripts/validate-oauth-config.mjs`: OAuth 2.0設定のセキュリティ検証（state・redirect_uri・スコープ・トークンストレージの妥当性確認）
   - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/auth-code-flow-template.ts`: サーバーサイドOAuth認可コードフロー実装（state検証・トークン交換・エラーハンドリング含む）
-  - `templates/pkce-implementation-template.ts`: SPA/モバイル向けPKCE実装（Code Verifier生成・SHA-256チャレンジ・検証フロー含む）
+  - `assets/auth-code-flow-template.ts`: サーバーサイドOAuth認可コードフロー実装（state検証・トークン交換・エラーハンドリング含む）
+  - `assets/pkce-implementation-template.ts`: SPA/モバイル向けPKCE実装（Code Verifier生成・SHA-256チャレンジ・検証フロー含む）
   
   Use proactively when handling oauth2 flows tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Web Application Security"
-    author: "Andrew Hoffman"
-    concepts:
-      - "脅威モデリング"
-      - "セキュア設計"
 ---
 
 # OAuth 2.0 Flows Implementation
@@ -44,7 +35,7 @@ OAuth 2.0認可フローの実装パターンとセキュリティベストプ�
 Authorization Code Flow、PKCE、Refresh Token Flowの正確な実装を提供。
 Aaron PareckiのOAuth 2.0 Simplifiedに基づく実践的ガイダンス。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
 
 ## ワークフロー
@@ -55,8 +46,8 @@ Aaron PareckiのOAuth 2.0 Simplifiedに基づく実践的ガイダンス。
 
 **アクション**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要な references/scripts/templates を特定
 
 ### Phase 2: スキル適用
 
@@ -94,15 +85,15 @@ Aaron PareckiのOAuth 2.0 Simplifiedに基づく実践的ガイダンス。
 
 ### リソース読み取り
 ```bash
-cat .claude/skills/oauth2-flows/resources/Level1_basics.md
-cat .claude/skills/oauth2-flows/resources/Level2_intermediate.md
-cat .claude/skills/oauth2-flows/resources/Level3_advanced.md
-cat .claude/skills/oauth2-flows/resources/Level4_expert.md
-cat .claude/skills/oauth2-flows/resources/authorization-code-flow.md
-cat .claude/skills/oauth2-flows/resources/legacy-skill.md
-cat .claude/skills/oauth2-flows/resources/pkce-implementation.md
-cat .claude/skills/oauth2-flows/resources/security-checklist.md
-cat .claude/skills/oauth2-flows/resources/token-storage-strategies.md
+cat .claude/skills/oauth2-flows/references/Level1_basics.md
+cat .claude/skills/oauth2-flows/references/Level2_intermediate.md
+cat .claude/skills/oauth2-flows/references/Level3_advanced.md
+cat .claude/skills/oauth2-flows/references/Level4_expert.md
+cat .claude/skills/oauth2-flows/references/authorization-code-flow.md
+cat .claude/skills/oauth2-flows/references/legacy-skill.md
+cat .claude/skills/oauth2-flows/references/pkce-implementation.md
+cat .claude/skills/oauth2-flows/references/security-checklist.md
+cat .claude/skills/oauth2-flows/references/token-storage-strategies.md
 ```
 
 ### スクリプト実行
@@ -114,8 +105,8 @@ node .claude/skills/oauth2-flows/scripts/validate-skill.mjs --help
 
 ### テンプレート参照
 ```bash
-cat .claude/skills/oauth2-flows/templates/auth-code-flow-template.ts
-cat .claude/skills/oauth2-flows/templates/pkce-implementation-template.ts
+cat .claude/skills/oauth2-flows/assets/auth-code-flow-template.ts
+cat .claude/skills/oauth2-flows/assets/pkce-implementation-template.ts
 ```
 
 ## 変更履歴

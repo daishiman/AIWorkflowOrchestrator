@@ -1,104 +1,65 @@
 {
   "skill_name": "mcp-protocol",
-  "current_level": 1,
-  "levels": {
-    "1": {
-      "level": 1,
-      "name": "基礎",
-      "requirements": {
-        "min_usage_count": 0,
-        "min_success_rate": 0.0,
-        "min_satisfaction_score": 0.0,
-        "required_resources": [
-          "SKILL.md"
-        ]
-      },
-      "success_criteria": [
-        "SKILL.mdが存在し、基本タスクが実行可能"
-      ]
+  "version": "1.0.1",
+  "metrics": {
+    "total_uses": 0,
+    "successful_uses": 0,
+    "failed_uses": 0,
+    "success_rate": 0.0,
+    "last_updated": null
+  },
+  "level_criteria": {
+    "Level1": {
+      "name": "Basics",
+      "min_uses": 0,
+      "min_success_rate": 0.0,
+      "achieved": true,
+      "description": "基本的なMCP設定とツール定義の理解"
     },
-    "2": {
-      "level": 2,
-      "name": "中級",
-      "requirements": {
-        "min_usage_count": 10,
-        "min_success_rate": 0.8,
-        "min_satisfaction_score": 0.7,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "scripts/log_usage.mjs"
-        ]
-      },
-      "success_criteria": [
-        "10回以上使用され、成功率80%以上"
-      ]
+    "Level2": {
+      "name": "Intermediate",
+      "min_uses": 5,
+      "min_success_rate": 0.7,
+      "achieved": false,
+      "description": "リソース・スクリプト・テンプレートの活用"
     },
-    "3": {
-      "level": 3,
-      "name": "上級",
-      "requirements": {
-        "min_usage_count": 50,
-        "min_success_rate": 0.9,
-        "min_satisfaction_score": 0.8,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/config-examples.md",
-          "resources/legacy-skill.md",
-          "resources/mcp-specification.md",
-          "resources/troubleshooting.md",
-          "scripts/log_usage.mjs",
-          "scripts/validate-mcp-config.mjs",
-          "scripts/validate-skill.mjs",
-          "scripts/validate-tool-schema.mjs",
-          "templates/server-config-template.json",
-          "templates/tool-definition-template.json"
-        ]
-      },
-      "success_criteria": [
-        "50回以上使用され、成功率90%以上"
-      ]
+    "Level3": {
+      "name": "Advanced",
+      "min_uses": 15,
+      "min_success_rate": 0.8,
+      "achieved": false,
+      "description": "複雑なツール定義と最適化パターンの適用"
     },
-    "4": {
-      "level": 4,
-      "name": "専門",
-      "requirements": {
-        "min_usage_count": 100,
-        "min_success_rate": 0.95,
-        "min_satisfaction_score": 0.9,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/config-examples.md",
-          "resources/legacy-skill.md",
-          "resources/mcp-specification.md",
-          "resources/troubleshooting.md",
-          "scripts/log_usage.mjs",
-          "scripts/validate-mcp-config.mjs",
-          "scripts/validate-skill.mjs",
-          "scripts/validate-tool-schema.mjs",
-          "templates/server-config-template.json",
-          "templates/tool-definition-template.json",
-          "LOGS.md"
-        ]
-      },
-      "success_criteria": [
-        "100回以上使用され、成功率95%以上"
-      ]
+    "Level4": {
+      "name": "Expert",
+      "min_uses": 30,
+      "min_success_rate": 0.9,
+      "achieved": false,
+      "description": "高度なトラブルシューティングとアーキテクチャ設計"
     }
   },
-  "metrics": {
-    "total_usage_count": 0,
-    "success_count": 0,
-    "failure_count": 0,
-    "average_satisfaction": 0.0,
-    "last_evaluated": "2025-12-24T00:00:00Z"
-  }
+  "phase_metrics": {
+    "analyze-requirements": {
+      "total": 0,
+      "success": 0,
+      "failure": 0
+    },
+    "configure-server": {
+      "total": 0,
+      "success": 0,
+      "failure": 0
+    },
+    "validate-implementation": {
+      "total": 0,
+      "success": 0,
+      "failure": 0
+    },
+    "troubleshoot-issues": {
+      "total": 0,
+      "success": 0,
+      "failure": 0
+    }
+  },
+  "common_issues": [],
+  "improvement_suggestions": []
 }

@@ -8,16 +8,16 @@ description: |
   - 『Web Application Security』（Andrew Hoffman）: 脅威モデリング
   
   📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/detection-pattern-library.md`: Secret Detection Pattern Library
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `references/Level1_basics.md`: レベル1の基礎ガイド
+  - `references/Level2_intermediate.md`: レベル2の実務ガイド
+  - `references/Level3_advanced.md`: レベル3の応用ガイド
+  - `references/Level4_expert.md`: レベル4の専門ガイド
+  - `references/detection-pattern-library.md`: Secret Detection Pattern Library
+  - `references/legacy-skill.md`: 旧SKILL.mdの全文
   - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
   - `scripts/setup-git-security.mjs`: Git Security Setup Script
   - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/pre-commit-hook-template.sh`: Pre-commit Hook Template for Secret Detection
+  - `assets/pre-commit-hook-template.sh`: Pre-commit Hook Template for Secret Detection
   
   Use proactively when handling pre commit security tasks.
 version: 1.0.0
@@ -38,7 +38,7 @@ references:
 pre-commit hookセキュリティスキル。機密情報検出パターン、
 git-secrets/gitleaks統合、チーム展開戦略、Git履歴スキャンを提供します。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
 
 ## ワークフロー
@@ -49,8 +49,8 @@ git-secrets/gitleaks統合、チーム展開戦略、Git履歴スキャンを提
 
 **アクション**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要な references/scripts/templates を特定
 
 ### Phase 2: スキル適用
 
@@ -88,12 +88,12 @@ git-secrets/gitleaks統合、チーム展開戦略、Git履歴スキャンを提
 
 ### リソース読み取り
 ```bash
-cat .claude/skills/pre-commit-security/resources/Level1_basics.md
-cat .claude/skills/pre-commit-security/resources/Level2_intermediate.md
-cat .claude/skills/pre-commit-security/resources/Level3_advanced.md
-cat .claude/skills/pre-commit-security/resources/Level4_expert.md
-cat .claude/skills/pre-commit-security/resources/detection-pattern-library.md
-cat .claude/skills/pre-commit-security/resources/legacy-skill.md
+cat .claude/skills/pre-commit-security/references/Level1_basics.md
+cat .claude/skills/pre-commit-security/references/Level2_intermediate.md
+cat .claude/skills/pre-commit-security/references/Level3_advanced.md
+cat .claude/skills/pre-commit-security/references/Level4_expert.md
+cat .claude/skills/pre-commit-security/references/detection-pattern-library.md
+cat .claude/skills/pre-commit-security/references/legacy-skill.md
 ```
 
 ### スクリプト実行
@@ -105,7 +105,7 @@ node .claude/skills/pre-commit-security/scripts/validate-skill.mjs --help
 
 ### テンプレート参照
 ```bash
-cat .claude/skills/pre-commit-security/templates/pre-commit-hook-template.sh
+cat .claude/skills/pre-commit-security/assets/pre-commit-hook-template.sh
 ```
 
 ## 変更履歴

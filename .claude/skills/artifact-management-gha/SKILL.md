@@ -1,118 +1,125 @@
 ---
-name: .claude/skills/artifact-management-gha/SKILL.md
+name: artifact-management-gha
 description: |
-  GitHub Actionsのアーティファクト管理スキル。
-  ビルド成果物のアップロード・ダウンロード、ジョブ間/ワークフロー間でのデータ共有、
-  保持期間設定、パス指定パターン、クリーンアップ戦略を提供。
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/download-artifact.md`: Download Artifact 詳細
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/retention-optimization.md`: 保持期間とストレージ最適化
-  - `resources/upload-artifact.md`: Upload Artifact 詳細
-  - `scripts/cleanup-artifacts.mjs`: GitHub Actions Artifact Cleanup Script
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/artifact-workflow.yaml`: GitHub Actions Artifact Management ワークフロー例
-  
-  Use proactively when handling artifact management gha tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "実践的改善"
-      - "品質維持"
+  GitHub Actions のアーティファクト管理（upload/download、ジョブ間共有、保持期間、クリーンアップ）の設計と実装を支援するスキル。
+  データ受け渡しの設計、容量最適化、保管期間戦略を整理し、再現性の高い成果物管理を実現します。
+
+  Anchors:
+  • The Pragmatic Programmer / 適用: 成果物管理の実践的改善 / 目的: 確実な共有と品質維持
+  • GitHub Actions Artifacts / 適用: upload/download仕様 / 目的: 正しい設定と制限理解
+  • Lean Waste Reduction / 適用: 保持期間と容量管理 / 目的: ストレージ最適化
+
+  Trigger:
+  Use when designing or implementing GitHub Actions artifact upload/download flows, job-to-job data sharing, retention policies, or cleanup automation.
+allowed-tools:
+  - bash
+  - node
 ---
 
-# Artifact Management (GitHub Actions)
+# アーティファクト管理（GitHub Actions）
 
 ## 概要
 
-GitHub Actionsのアーティファクト管理スキル。
-ビルド成果物のアップロード・ダウンロード、ジョブ間/ワークフロー間でのデータ共有、
-保持期間設定、パス指定パターン、クリーンアップ戦略を提供。
+GitHub Actions ワークフロー内で成果物を管理するための設計・実装・検証の手順を提供する。
+必要な詳細は `references/` に外部化し、必要時にのみ参照する。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+- ワークフロー例は `assets/artifact-workflow.yaml` を使用
+- 仕様確認は `references/upload-artifact.md` と `references/download-artifact.md` を参照
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 目的と利用パターンの整理
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: アーティファクトの用途と制約を明確化する
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. `references/Level1_basics.md` で基礎概念を確認
+2. ジョブ間/ワークフロー間の共有要件を整理
+3. 期待される保持期間と容量制約を整理
 
-### Phase 3: 検証と記録
+**Task**: `agents/analyze-artifact-context.md`
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: 設計と実装
+
+**目的**: アップロード/ダウンロードのフローと保持戦略を設計する
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. `assets/artifact-workflow.yaml` を基にフローを構成
+2. `references/upload-artifact.md` でアップロード仕様を確認
+3. `references/download-artifact.md` でダウンロード仕様を確認
+4. `references/retention-optimization.md` で保持期間を決定
 
+**Task**:
+- `agents/design-artifact-flow.md`
+- `agents/implement-artifact-steps.md`
+
+### Phase 3: 検証と最適化
+
+**目的**: 実装の信頼性とストレージ効率を確認する
+
+**アクション**:
+
+1. `scripts/validate-skill.mjs` でスキル構造を検証
+2. `scripts/cleanup-artifacts.mjs` で削除戦略を検討
+3. `scripts/log_usage.mjs` で改善フィードバックを記録
+
+**Task**: `agents/optimize-retention.md`
+
+## Task仕様ナビ
+
+| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |
+| --- | --- | --- | --- | --- | --- |
+| 利用パターン整理 | 目的と制約の整理 | ワークフロー要件 | 利用パターン要約 | `references/Level1_basics.md` | Phase 1 |
+| フロー設計 | upload/downloadの設計 | 利用パターン要約 | フロー設計メモ | `assets/artifact-workflow.yaml` | Phase 2 前半 |
+| 実装手順整理 | 設定手順の明確化 | フロー設計メモ | 実装チェックリスト | `references/upload-artifact.md` | Phase 2 後半 |
+| 保持最適化 | 保持期間と削除戦略 | 実装チェックリスト | 最適化メモ | `references/retention-optimization.md` | Phase 3 |
 
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+- 利用パターン（ジョブ間/ワークフロー間）を明確化する
+- retention-days を目的に合わせて明示する
+- アーティファクト名に識別子（SHA/Run ID）を含める
+- 容量削減のために不要ファイルを除外する
+- クリーンアップの方針を事前に決める
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- 保持期間の無制限設定
+- 古い成果物を参照するフロー設計
+- 圧縮前の不要ファイル削除を省略する
+- cleanup を手動運用だけに依存する
 
-### リソース読み取り
-```bash
-cat .claude/skills/artifact-management-gha/resources/Level1_basics.md
-cat .claude/skills/artifact-management-gha/resources/Level2_intermediate.md
-cat .claude/skills/artifact-management-gha/resources/Level3_advanced.md
-cat .claude/skills/artifact-management-gha/resources/Level4_expert.md
-cat .claude/skills/artifact-management-gha/resources/download-artifact.md
-cat .claude/skills/artifact-management-gha/resources/legacy-skill.md
-cat .claude/skills/artifact-management-gha/resources/retention-optimization.md
-cat .claude/skills/artifact-management-gha/resources/upload-artifact.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/artifact-management-gha/scripts/cleanup-artifacts.mjs --help
-node .claude/skills/artifact-management-gha/scripts/log_usage.mjs --help
-node .claude/skills/artifact-management-gha/scripts/validate-skill.mjs --help
-```
+### 参照資料
 
-### テンプレート参照
-```bash
-cat .claude/skills/artifact-management-gha/templates/artifact-workflow.yaml
-```
+- `references/Level1_basics.md`: 基本概念と最小チェック
+- `references/Level2_intermediate.md`: 実装パターン
+- `references/Level3_advanced.md`: 複数アーティファクト運用
+- `references/Level4_expert.md`: 最適化とトラブルシュート
+- `references/upload-artifact.md`: upload-artifact の仕様
+- `references/download-artifact.md`: download-artifact の仕様
+- `references/retention-optimization.md`: 保持期間と容量最適化
+- `references/legacy-skill.md`: 旧版要約（移行時のみ参照）
+
+### スクリプト
+
+- `scripts/cleanup-artifacts.mjs`: アーティファクト削除の補助
+- `scripts/validate-skill.mjs`: スキル構造検証
+- `scripts/log_usage.mjs`: 実行ログ記録
+
+### テンプレート
+
+- `assets/artifact-workflow.yaml`: ワークフロー例
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                             |
+| ------- | ---------- | --------------------------------------------------- |
+| 2.0.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |
+| 1.0.1   | 2025-12-31 | 18-skills.md 仕様に準拠し、Task仕様ナビ追加         |
+| 1.0.0   | 2025-12-24 | 初版作成                                            |

@@ -1,111 +1,130 @@
 ---
-name: .claude/skills/user-centric-writing/SKILL.md
+name: user-centric-writing
 description: |
-  キャシー・シエラの『Badass: Making Users Awesome』に基づく
-  
-  📖 参照書籍:
-  - 『Software Requirements』（Karl Wiegers）: 要求分析
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/plain-language-guide.md`: Plain Language Guideリソース
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/measure-readability.mjs`: Measure Readabilityスクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/persona-template.md`: Personaテンプレート
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when handling user centric writing tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Software Requirements"
-    author: "Karl Wiegers"
-    concepts:
-      - "要求分析"
-      - "仕様化"
+  ユーザー中心のドキュメント・文章作成を専門とするスキル。
+  読者のニーズと理解度に合わせた明確で効果的なコンテンツを作成する。
+
+  Anchors:
+  • Badass: Making Users Awesome (Kathy Sierra) / 適用: ユーザー成功の視点 / 目的: 読者を成功させる文章設計
+  • Plain Language Guidelines / 適用: 明確で簡潔な文章 / 目的: 理解しやすいコンテンツ
+
+  Trigger:
+  Use when creating user documentation, writing help content, drafting user guides,
+  improving content readability, designing persona-based content, or reviewing text for clarity.
+version: 1.1.0
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# User-Centric Writing スキル
+# User-Centric Writing
 
 ## 概要
 
-キャシー・シエラの『Badass: Making Users Awesome』に基づく
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+ユーザー中心のドキュメント・文章作成を専門とするスキル。キャシー・シエラの『Badass: Making Users Awesome』の考え方を適用し、読者が目的を達成できるコンテンツを設計・作成する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: ペルソナ分析
 
-**目的**: タスクの目的と前提条件を明確にする
+**目的**: 読者のニーズ、スキルレベル、目標を理解する
 
-**アクション**:
+**Task**: `agents/persona-analysis.md`
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+**入力**:
 
-### Phase 2: スキル適用
+- 対象読者の情報、プロダクトの文脈
 
-**目的**: スキルの指針に従って具体的な作業を進める
+**出力**:
 
-**アクション**:
+- ペルソナ定義、読者のゴール
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+### Phase 2: コンテンツ設計・作成
 
-### Phase 3: 検証と記録
+**目的**: ペルソナに最適化されたコンテンツを作成する
 
-**目的**: 成果物の検証と実行記録の保存
+**Task**: `agents/content-drafting.md`
 
-**アクション**:
+**入力**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+- ペルソナ定義、コンテンツ要件
 
+**出力**:
+
+- ドキュメント草稿
+
+### Phase 3: 読みやすさレビュー
+
+**目的**: コンテンツの明確さと読みやすさを検証・改善する
+
+**Task**: `agents/readability-review.md`
+
+**入力**:
+
+- ドキュメント草稿
+
+**出力**:
+
+- 改善されたドキュメント、読みやすさスコア
+
+## Task仕様（ナビゲーション）
+
+| Task                  | 役割               | 参照先                         |
+| --------------------- | ------------------ | ------------------------------ |
+| persona-analysis.md   | ペルソナ分析       | `agents/persona-analysis.md`   |
+| content-drafting.md   | コンテンツ作成     | `agents/content-drafting.md`   |
+| readability-review.md | 読みやすさレビュー | `agents/readability-review.md` |
 
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+- **読者優先**: 読者が何を達成したいかを最初に考える
+- **シンプルな言葉**: 専門用語は避け、必要な場合は説明を追加
+- **構造化**: 見出し、箇条書き、短い段落で情報を整理
+- **アクション指向**: 読者が次に何をすべきかを明確に
+- **一貫性**: 用語、スタイル、トーンを統一
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- 読者のレベルを考慮せずに専門用語を多用
+- 一文に複数の概念を詰め込む
+- 受動態の多用（能動態を優先）
+- 曖昧な指示や説明
 
-### リソース読み取り
-```bash
-cat .claude/skills/user-centric-writing/resources/Level1_basics.md
-cat .claude/skills/user-centric-writing/resources/Level2_intermediate.md
-cat .claude/skills/user-centric-writing/resources/Level3_advanced.md
-cat .claude/skills/user-centric-writing/resources/Level4_expert.md
-cat .claude/skills/user-centric-writing/resources/legacy-skill.md
-cat .claude/skills/user-centric-writing/resources/plain-language-guide.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/user-centric-writing/scripts/log_usage.mjs --help
-node .claude/skills/user-centric-writing/scripts/measure-readability.mjs --help
-node .claude/skills/user-centric-writing/scripts/validate-skill.mjs --help
-```
+### 知識リソース（references/）
 
-### テンプレート参照
-```bash
-cat .claude/skills/user-centric-writing/templates/persona-template.md
-```
+| リソース                  | 読むタイミング     | 内容                     |
+| ------------------------- | ------------------ | ------------------------ |
+| `Level1_basics.md`        | スキル初学者       | 基本概念と使用タイミング |
+| `Level2_intermediate.md`  | Phase実行中        | 実務手順と判断基準       |
+| `Level3_advanced.md`      | 複雑な状況に遭遇時 | 応用パターンと高度な技法 |
+| `Level4_expert.md`        | 大規模プロジェクト | 専門的知見               |
+| `plain-language-guide.md` | Phase 3実行時      | Plain Languageの詳細     |
+
+### スクリプト（scripts/）
+
+| スクリプト                | 用途               | 実行タイミング |
+| ------------------------- | ------------------ | -------------- |
+| `measure-readability.mjs` | 読みやすさ測定     | Phase 3完了後  |
+| `validate-skill.mjs`      | スキル構造検証     | スキル更新後   |
+| `log_usage.mjs`           | 使用記録・自動評価 | 各Phase完了後  |
+
+### アセット（assets/）
+
+| アセット              | 用途                     | 使用タイミング |
+| --------------------- | ------------------------ | -------------- |
+| `persona-template.md` | ペルソナ定義テンプレート | Phase 1実行時  |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                             |
+| ------- | ---------- | --------------------------------------------------- |
+| 1.1.0   | 2026-01-01 | 18-skills.md仕様準拠、agents/作成、ワークフロー改善 |
+| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added         |

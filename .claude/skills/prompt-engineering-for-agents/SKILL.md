@@ -9,17 +9,17 @@ description: |
   - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 手順設計
   
   📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/system-prompt-patterns.md`: System Prompt Patterns
+  - `references/Level1_basics.md`: レベル1の基礎ガイド
+  - `references/Level2_intermediate.md`: レベル2の実務ガイド
+  - `references/Level3_advanced.md`: レベル3の応用ガイド
+  - `references/Level4_expert.md`: レベル4の専門ガイド
+  - `references/legacy-skill.md`: 旧SKILL.mdの全文
+  - `references/system-prompt-patterns.md`: System Prompt Patterns
   - `scripts/analyze-prompt.mjs`: analyze-prompt.mjs
   - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
   - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/prompt-template.md`: プロンプト設計テンプレート
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
+  - `assets/prompt-template.md`: プロンプト設計テンプレート
+  - `references/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
   
   Use proactively when designing system prompts or optimizing agent behavior.
 version: 1.0.0
@@ -41,7 +41,7 @@ references:
 System Prompt設計、Few-Shot Examples、Role Prompting技術により、
 高品質なエージェント動作を実現します。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
 
 ## ワークフロー
@@ -52,8 +52,8 @@ System Prompt設計、Few-Shot Examples、Role Prompting技術により、
 
 **アクション**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要な references/scripts/templates を特定
 
 ### Phase 2: スキル適用
 
@@ -89,12 +89,12 @@ System Prompt設計、Few-Shot Examples、Role Prompting技術により、
 
 ### リソース読み取り
 ```bash
-cat .claude/skills/prompt-engineering-for-agents/resources/Level1_basics.md
-cat .claude/skills/prompt-engineering-for-agents/resources/Level2_intermediate.md
-cat .claude/skills/prompt-engineering-for-agents/resources/Level3_advanced.md
-cat .claude/skills/prompt-engineering-for-agents/resources/Level4_expert.md
-cat .claude/skills/prompt-engineering-for-agents/resources/legacy-skill.md
-cat .claude/skills/prompt-engineering-for-agents/resources/system-prompt-patterns.md
+cat .claude/skills/prompt-engineering-for-agents/references/Level1_basics.md
+cat .claude/skills/prompt-engineering-for-agents/references/Level2_intermediate.md
+cat .claude/skills/prompt-engineering-for-agents/references/Level3_advanced.md
+cat .claude/skills/prompt-engineering-for-agents/references/Level4_expert.md
+cat .claude/skills/prompt-engineering-for-agents/references/legacy-skill.md
+cat .claude/skills/prompt-engineering-for-agents/references/system-prompt-patterns.md
 ```
 
 ### スクリプト実行
@@ -106,7 +106,7 @@ node .claude/skills/prompt-engineering-for-agents/scripts/validate-skill.mjs --h
 
 ### テンプレート参照
 ```bash
-cat .claude/skills/prompt-engineering-for-agents/templates/prompt-template.md
+cat .claude/skills/prompt-engineering-for-agents/assets/prompt-template.md
 ```
 
 ## 変更履歴

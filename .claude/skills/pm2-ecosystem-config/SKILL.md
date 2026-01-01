@@ -1,49 +1,36 @@
 ---
-name: .claude/skills/pm2-ecosystem-config/SKILL.md
+name: pm2-ecosystem-config
 description: |
-  PM2エコシステム設定の設計と最適化を専門とするスキル。
-  Alexandre Strzelewiczの思想に基づき、ecosystem.config.js の
-  構成、実行モード選択、環境設定、監視設定を体系的に設計します。
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/config-structure-guide.md`: ecosystem.config.js構造（apps配列、必須/推奨オプション、共通設定）
-  - `resources/environment-management.md`: env階層設計、env_production分離、機密情報外部化パターン
-  - `resources/execution-modes.md`: fork vs cluster選択基準、instances数決定、負荷タイプ別最適化
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-ecosystem.mjs`: ecosystem.config.js構文検証と設定項目の整合性チェック
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/ecosystem.config.template.js`: PM2設定ファイルテンプレート（実行モード、再起動戦略、環境変数含む）
-  
-  Use proactively when designing PM2 configurations, optimizing.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "実践的改善"
-      - "品質維持"
+  PM2エコシステム設定の専門スキル。
+  プロセス管理、クラスタモード、ログ設定、環境管理を提供します。
+
+  Anchors:
+  • 『PM2 Documentation』（Keymetrics） / 適用: プロセス管理 / 目的: 運用自動化
+  • 『The Pragmatic Programmer』（Andrew Hunt, David Thomas） / 適用: 実践的実装 / 目的: 品質向上
+
+  Trigger:
+  PM2設定時、プロセス管理設計時、Node.jsアプリデプロイ時に使用
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# PM2 Ecosystem Configuration
+# PM2 Ecosystem Configuration スキル
 
 ## 概要
 
-PM2エコシステム設定の設計と最適化を専門とするスキル。
-Alexandre Strzelewiczの思想に基づき、ecosystem.config.js の
-構成、実行モード選択、環境設定、監視設定を体系的に設計します。
+PM2エコシステム設定の設計と最適化を専門とするスキル。ecosystem.config.js の構成、実行モード選択、環境設定、監視設定を体系的に設計し、Node.jsアプリケーションのプロセス管理を最適化します。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+このスキルは以下のタスクに対応します：
 
+- ecosystem.config.js の新規作成と既存設定の最適化
+- fork モードと cluster モードの選択と実装
+- 環境変数管理と本番環境構築
+- プロセス監視とエラーハンドリング設定
 
 ## ワークフロー
 
@@ -53,8 +40,8 @@ Alexandre Strzelewiczの思想に基づき、ecosystem.config.js の
 
 **アクション**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要な references/scripts/templates を特定
 
 ### Phase 2: スキル適用
 
@@ -75,46 +62,60 @@ Alexandre Strzelewiczの思想に基づき、ecosystem.config.js の
 2. 成果物が目的に合致するか確認
 3. `scripts/log_usage.mjs` を実行して記録を残す
 
-
 ## ベストプラクティス
 
 ### すべきこと
+
 - PM2でNode.jsアプリケーションを管理する時
 - ecosystem.config.jsを新規作成する時
 - 既存PM2設定を最適化する時
 - 本番環境でのプロセス管理設定を設計する時
 
 ### 避けるべきこと
+
 - アンチパターンや注意点を確認せずに進めることを避ける
+- 実行モードを適切に選択せずにデフォルト設定を使用する
+- 環境変数の階層設計を計画しないまま実装する
+- 監視設定と再起動戦略の組み合わせを検討しない
 
-## コマンドリファレンス
+## Task仕様ナビ
 
-### リソース読み取り
-```bash
-cat .claude/skills/pm2-ecosystem-config/resources/Level1_basics.md
-cat .claude/skills/pm2-ecosystem-config/resources/Level2_intermediate.md
-cat .claude/skills/pm2-ecosystem-config/resources/Level3_advanced.md
-cat .claude/skills/pm2-ecosystem-config/resources/Level4_expert.md
-cat .claude/skills/pm2-ecosystem-config/resources/config-structure-guide.md
-cat .claude/skills/pm2-ecosystem-config/resources/environment-management.md
-cat .claude/skills/pm2-ecosystem-config/resources/execution-modes.md
-cat .claude/skills/pm2-ecosystem-config/resources/legacy-skill.md
-```
+| タスク                   | リソース                              | スクリプト                       | テンプレート                             |
+| ------------------------ | ------------------------------------- | -------------------------------- | ---------------------------------------- |
+| Level 1: 基礎設定        | `references/Level1_basics.md`          | `scripts/validate-skill.mjs`     | `assets/ecosystem.config.template.js` |
+| Level 2: 実務設定        | `references/Level2_intermediate.md`    | `scripts/validate-ecosystem.mjs` | `assets/ecosystem.config.template.js` |
+| Level 3: 応用最適化      | `references/Level3_advanced.md`        | `scripts/validate-skill.mjs`     | `assets/ecosystem.config.template.js` |
+| Level 4: 専門構築        | `references/Level4_expert.md`          | `scripts/validate-ecosystem.mjs` | `assets/ecosystem.config.template.js` |
+| ecosystem.config.js 設計 | `references/config-structure-guide.md` | `scripts/validate-ecosystem.mjs` | `assets/ecosystem.config.template.js` |
+| 環境管理戦略             | `references/environment-management.md` | `scripts/validate-skill.mjs`     | `assets/ecosystem.config.template.js` |
+| 実行モード選択           | `references/execution-modes.md`        | `scripts/validate-ecosystem.mjs` | `assets/ecosystem.config.template.js` |
+| 使用記録・評価           | `references/legacy-skill.md`           | `scripts/log_usage.mjs`          | N/A                                      |
 
-### スクリプト実行
-```bash
-node .claude/skills/pm2-ecosystem-config/scripts/log_usage.mjs --help
-node .claude/skills/pm2-ecosystem-config/scripts/validate-ecosystem.mjs --help
-node .claude/skills/pm2-ecosystem-config/scripts/validate-skill.mjs --help
-```
+## リソース参照
 
-### テンプレート参照
-```bash
-cat .claude/skills/pm2-ecosystem-config/templates/ecosystem.config.template.js
-```
+### references/
+
+- **Level1_basics.md**: PM2基礎、設定ファイルの基本構造、簡単な例
+- **Level2_intermediate.md**: 実務的な設定パターン、環境分離、監視設定
+- **Level3_advanced.md**: パフォーマンス最適化、cluster モード、負荷分散
+- **Level4_expert.md**: 高度なシナリオ、複雑な環境構築、トラブルシューティング
+- **config-structure-guide.md**: ecosystem.config.js の完全な構造ガイド、apps配列、必須/推奨オプション
+- **environment-management.md**: env 階層設計、env_production の分離、機密情報外部化パターン
+- **execution-modes.md**: fork vs cluster モード選択基準、instances 決定方法、負荷タイプ別最適化
+- **legacy-skill.md**: 旧 SKILL.md の全文、参考用
+
+### scripts/
+
+- **log_usage.mjs**: スキル使用記録・自動評価スクリプト
+- **validate-ecosystem.mjs**: ecosystem.config.js の構文検証と設定項目の整合性チェック
+- **validate-skill.mjs**: スキル構造検証スクリプト
+
+### assets/
+
+- **ecosystem.config.template.js**: PM2 設定ファイルテンプレート（実行モード、再起動戦略、環境変数含む）
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                                                                             |
+| ------- | ---------- | --------------------------------------------------------------------------------------------------- |
+| 1.0.0   | 2025-12-31 | 18-skills.md仕様に準拠。Anchors/Trigger追加、Task仕様ナビテーブル追加、リソース参照セクション再編成 |

@@ -9,30 +9,21 @@ description: |
   - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
   
   📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/offline-queue-patterns.md`: オフラインキュー設計パターン
-  - `resources/reconnection-strategies.md`: 指数バックオフ・ジッター・ヘルスチェックによる自動再接続アルゴリズム
-  - `resources/state-synchronization.md`: ローカル・リモート間のデータ整合性保証と競合解決戦略（タイムスタンプ・サーバー優先・手動解決）
+  - `references/Level1_basics.md`: レベル1の基礎ガイド
+  - `references/Level2_intermediate.md`: レベル2の実務ガイド
+  - `references/Level3_advanced.md`: レベル3の応用ガイド
+  - `references/Level4_expert.md`: レベル4の専門ガイド
+  - `references/legacy-skill.md`: 旧SKILL.mdの全文
+  - `references/offline-queue-patterns.md`: オフラインキュー設計パターン
+  - `references/reconnection-strategies.md`: 指数バックオフ・ジッター・ヘルスチェックによる自動再接続アルゴリズム
+  - `references/state-synchronization.md`: ローカル・リモート間のデータ整合性保証と競合解決戦略（タイムスタンプ・サーバー優先・手動解決）
   - `scripts/analyze-network-config.mjs`: ネットワーク設定の妥当性検証とヘルスチェック間隔・タイムアウト値の推奨スクリプト
   - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
   - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/connection-manager-template.ts`: 接続状態管理・自動再接続・イベント通知を提供する接続マネージャーテンプレート
-  - `templates/offline-queue-template.ts`: JSONL形式の永続キュー実装とFIFO順序保証・べき等性確保テンプレート
+  - `assets/connection-manager-template.ts`: 接続状態管理・自動再接続・イベント通知を提供する接続マネージャーテンプレート
+  - `assets/offline-queue-template.ts`: JSONL形式の永続キュー実装とFIFO順序保証・べき等性確保テンプレート
   
   Use proactively when implementing network-aware applications.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "実践的改善"
-      - "品質維持"
 ---
 
 # Network Resilience
@@ -43,7 +34,7 @@ references:
 アンドリュー・タネンバウムの『分散システム』に基づき、
 部分障害からの自動復旧とデータ整合性保証を設計します。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
 
 ## ワークフロー
@@ -54,8 +45,8 @@ references:
 
 **アクション**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要な references/scripts/templates を特定
 
 ### Phase 2: スキル適用
 
@@ -92,14 +83,14 @@ references:
 
 ### リソース読み取り
 ```bash
-cat .claude/skills/network-resilience/resources/Level1_basics.md
-cat .claude/skills/network-resilience/resources/Level2_intermediate.md
-cat .claude/skills/network-resilience/resources/Level3_advanced.md
-cat .claude/skills/network-resilience/resources/Level4_expert.md
-cat .claude/skills/network-resilience/resources/legacy-skill.md
-cat .claude/skills/network-resilience/resources/offline-queue-patterns.md
-cat .claude/skills/network-resilience/resources/reconnection-strategies.md
-cat .claude/skills/network-resilience/resources/state-synchronization.md
+cat .claude/skills/network-resilience/references/Level1_basics.md
+cat .claude/skills/network-resilience/references/Level2_intermediate.md
+cat .claude/skills/network-resilience/references/Level3_advanced.md
+cat .claude/skills/network-resilience/references/Level4_expert.md
+cat .claude/skills/network-resilience/references/legacy-skill.md
+cat .claude/skills/network-resilience/references/offline-queue-patterns.md
+cat .claude/skills/network-resilience/references/reconnection-strategies.md
+cat .claude/skills/network-resilience/references/state-synchronization.md
 ```
 
 ### スクリプト実行
@@ -111,8 +102,8 @@ node .claude/skills/network-resilience/scripts/validate-skill.mjs --help
 
 ### テンプレート参照
 ```bash
-cat .claude/skills/network-resilience/templates/connection-manager-template.ts
-cat .claude/skills/network-resilience/templates/offline-queue-template.ts
+cat .claude/skills/network-resilience/assets/connection-manager-template.ts
+cat .claude/skills/network-resilience/assets/offline-queue-template.ts
 ```
 
 ## 変更履歴

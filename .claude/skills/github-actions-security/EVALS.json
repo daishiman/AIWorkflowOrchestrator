@@ -1,94 +1,88 @@
 {
   "skill_name": "github-actions-security",
-  "current_level": 1,
-  "levels": {
-    "1": {
-      "level": 1,
-      "name": "基礎",
-      "requirements": {
-        "min_usage_count": 0,
-        "min_success_rate": 0.0,
-        "min_satisfaction_score": 0.0,
-        "required_resources": [
-          "SKILL.md"
-        ]
-      },
-      "success_criteria": [
-        "SKILL.mdが存在し、基本タスクが実行可能"
-      ]
+  "version": "2.0.0",
+  "metrics": {
+    "total_usage": 0,
+    "successful_executions": 0,
+    "failed_executions": 0,
+    "success_rate": 0,
+    "current_level": 1,
+    "last_updated": null
+  },
+  "level_criteria": {
+    "level_1": {
+      "min_usage": 0,
+      "min_success_rate": 0,
+      "description": "基礎レベル - SKILL.mdの理解と基本的なセキュリティ対策の適用"
     },
-    "2": {
-      "level": 2,
-      "name": "中級",
-      "requirements": {
-        "min_usage_count": 10,
-        "min_success_rate": 0.8,
-        "min_satisfaction_score": 0.7,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "scripts/log_usage.mjs"
-        ]
-      },
-      "success_criteria": [
-        "10回以上使用され、成功率80%以上"
-      ]
+    "level_2": {
+      "min_usage": 5,
+      "min_success_rate": 0.7,
+      "description": "実務レベル - Environment Secrets、ログマスキング、権限管理の実装"
     },
-    "3": {
-      "level": 3,
-      "name": "上級",
-      "requirements": {
-        "min_usage_count": 50,
-        "min_success_rate": 0.9,
-        "min_satisfaction_score": 0.8,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/legacy-skill.md",
-          "resources/workflow-security-patterns.md",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/github-actions-deploy-template.yml"
-        ]
-      },
-      "success_criteria": [
-        "50回以上使用され、成功率90%以上"
-      ]
+    "level_3": {
+      "min_usage": 15,
+      "min_success_rate": 0.8,
+      "description": "応用レベル - 脅威モデリング、高度なワークフロー設計、品質ゲート統合"
     },
-    "4": {
-      "level": 4,
-      "name": "専門",
-      "requirements": {
-        "min_usage_count": 100,
-        "min_success_rate": 0.95,
-        "min_satisfaction_score": 0.9,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/legacy-skill.md",
-          "resources/workflow-security-patterns.md",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/github-actions-deploy-template.yml",
-          "LOGS.md"
-        ]
-      },
-      "success_criteria": [
-        "100回以上使用され、成功率95%以上"
-      ]
+    "level_4": {
+      "min_usage": 30,
+      "min_success_rate": 0.9,
+      "description": "専門レベル - エンタープライズセキュリティ、コンプライアンス対応、包括的リスク管理"
     }
   },
-  "metrics": {
-    "total_usage_count": 0,
-    "success_count": 0,
-    "failure_count": 0,
-    "average_satisfaction": 0.0,
-    "last_evaluated": "2025-12-24T00:00:00Z"
+  "task_metrics": {
+    "secrets_configuration": {
+      "usage_count": 0,
+      "success_count": 0,
+      "failure_count": 0,
+      "avg_duration_seconds": null,
+      "last_executed": null
+    },
+    "log_masking": {
+      "usage_count": 0,
+      "success_count": 0,
+      "failure_count": 0,
+      "avg_duration_seconds": null,
+      "last_executed": null
+    },
+    "quality_gate": {
+      "usage_count": 0,
+      "success_count": 0,
+      "failure_count": 0,
+      "avg_duration_seconds": null,
+      "last_executed": null
+    },
+    "permission_management": {
+      "usage_count": 0,
+      "success_count": 0,
+      "failure_count": 0,
+      "avg_duration_seconds": null,
+      "last_executed": null
+    },
+    "threat_modeling": {
+      "usage_count": 0,
+      "success_count": 0,
+      "failure_count": 0,
+      "avg_duration_seconds": null,
+      "last_executed": null
+    }
+  },
+  "common_issues": [],
+  "improvement_suggestions": [],
+  "reference_usage": {
+    "Level1_basics.md": 0,
+    "Level2_intermediate.md": 0,
+    "Level3_advanced.md": 0,
+    "Level4_expert.md": 0,
+    "workflow-security-patterns.md": 0,
+    "requirements-index.md": 0,
+    "legacy-skill.md": 0
+  },
+  "quality_metrics": {
+    "avg_security_issues_found": 0,
+    "avg_security_issues_resolved": 0,
+    "compliance_checks_passed": 0,
+    "compliance_checks_total": 0
   }
 }

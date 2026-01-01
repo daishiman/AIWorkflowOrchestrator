@@ -1,119 +1,139 @@
 ---
-name: .claude/skills/workflow-templates/SKILL.md
+name: workflow-templates
 description: |
-  GitHub Actions ワークフローテンプレートの選択、カスタマイズ、生成スキル
-  
-  📖 参照書籍:
-  - 『Continuous Delivery』（Jez Humble）: パイプライン
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/project-type-selection.md`: Project Type Selectionリソース
-  - `resources/template-types.md`: Template Typesリソース
-  - `scripts/generate-workflow.mjs`: Generate Workflowスクリプト
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/cd-template.yaml`: CD（継続的デプロイ）テンプレート：環境別デプロイ、ヘルスチェック、通知統合
-  - `templates/ci-template.yaml`: CI（継続的統合）テンプレート：Lint、テスト、ビルド、複数バージョン対応
-  - `templates/docker-template.yaml`: Dockerテンプレート
-  - `templates/nodejs-template.yaml`: Nodejsテンプレート
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when handling workflow templates tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Continuous Delivery"
-    author: "Jez Humble"
-    concepts:
-      - "パイプライン"
-      - "自動化"
+  GitHub Actionsワークフローテンプレートの専門スキル。
+  組織標準テンプレート、スターターワークフロー設計を提供します。
+
+  Anchors:
+  - Continuous Delivery（Jez Humble）/ 適用: CI/CDパイプライン設計 / 目的: 継続的デリバリー実現
+  - GitHub Actions Documentation（GitHub公式）/ 適用: ワークフロー構文 / 目的: 標準準拠
+  - GitHub Actions starter-workflows / 適用: テンプレートベース / 目的: ベストプラクティス適用
+
+  Trigger:
+  ワークフローテンプレート選定時、CIパイプライン構築時、CDパイプライン構築時、ワークフロー最適化時に使用
+
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Workflow Templates
 
 ## 概要
 
-GitHub Actions ワークフローテンプレートの選択、カスタマイズ、生成スキル
+GitHub Actions ワークフローテンプレートの選択、カスタマイズ、生成に関する包括的なスキル。4つの専門エージェントによる体系的なワークフロー構築を提供します。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+## エージェント構成
 
+| エージェント       | 役割               | 主な機能                                               |
+| ------------------ | ------------------ | ------------------------------------------------------ |
+| template-selector  | テンプレート選定   | プロジェクト分析、テンプレート推奨、カスタマイズガイド |
+| ci-builder         | CIパイプライン構築 | Lint/Test/Build ジョブ設計、キャッシュ戦略             |
+| cd-builder         | CDパイプライン構築 | マルチ環境デプロイ、承認フロー、ロールバック           |
+| workflow-optimizer | ワークフロー最適化 | キャッシュ最適化、並列実行、条件付き実行               |
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件分析とテンプレート選定
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: プロジェクト要件を分析し、最適なテンプレートを選定
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. `template-selector` でプロジェクトタイプを分析
+2. `references/project-type-selection.md` に基づくテンプレート選定
+3. カスタマイズポイントの特定
 
-### Phase 3: 検証と記録
+### Phase 2: パイプライン構築
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: CI/CDパイプラインの実装
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. `ci-builder` でCIパイプラインを構築
+2. `cd-builder` でCDパイプラインを構築
+3. 環境別設定とシークレット管理
 
+### Phase 3: 最適化と検証
+
+**目的**: パフォーマンス最適化と動作確認
+
+**アクション**:
+
+1. `workflow-optimizer` でキャッシュ・並列実行を最適化
+2. `scripts/validate-skill.mjs` でスキル構造検証
+3. `scripts/log_usage.mjs` で使用記録
+
+## Task仕様ナビ
+
+| タスク             | 担当エージェント   | 参照リソース                  |
+| ------------------ | ------------------ | ----------------------------- |
+| テンプレート選定   | template-selector  | `project-type-selection.md`   |
+| CIパイプライン構築 | ci-builder         | `assets/ci-template.yaml`     |
+| CDパイプライン構築 | cd-builder         | `assets/cd-template.yaml`     |
+| Node.js環境構築    | ci-builder         | `assets/nodejs-template.yaml` |
+| Dockerビルド       | cd-builder         | `assets/docker-template.yaml` |
+| キャッシュ最適化   | workflow-optimizer | `template-types.md`           |
 
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+- `template-selector` でプロジェクト要件を分析してから開始する
+- 最小限のテンプレートから始めて段階的に拡張する
+- キャッシュ戦略を早期に設計する
+- マルチ環境では環境保護ルールを設定する
+- 定期的に `workflow-optimizer` でパフォーマンスを確認する
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- 要件分析なしのテンプレート選択
+- キャッシュなしでの大規模依存関係インストール
+- 本番環境への承認フローなしのデプロイ
+- 過度に複雑なワークフロー設計
 
-### リソース読み取り
-```bash
-cat .claude/skills/workflow-templates/resources/Level1_basics.md
-cat .claude/skills/workflow-templates/resources/Level2_intermediate.md
-cat .claude/skills/workflow-templates/resources/Level3_advanced.md
-cat .claude/skills/workflow-templates/resources/Level4_expert.md
-cat .claude/skills/workflow-templates/resources/legacy-skill.md
-cat .claude/skills/workflow-templates/resources/project-type-selection.md
-cat .claude/skills/workflow-templates/resources/template-types.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/workflow-templates/scripts/generate-workflow.mjs --help
-node .claude/skills/workflow-templates/scripts/log_usage.mjs --help
-node .claude/skills/workflow-templates/scripts/validate-skill.mjs --help
-```
+### エージェント
 
-### テンプレート参照
-```bash
-cat .claude/skills/workflow-templates/templates/cd-template.yaml
-cat .claude/skills/workflow-templates/templates/ci-template.yaml
-cat .claude/skills/workflow-templates/templates/docker-template.yaml
-cat .claude/skills/workflow-templates/templates/nodejs-template.yaml
-```
+| エージェント                   | 説明                       |
+| ------------------------------ | -------------------------- |
+| `agents/template-selector.md`  | テンプレート選定の詳細仕様 |
+| `agents/ci-builder.md`         | CIパイプライン構築         |
+| `agents/cd-builder.md`         | CDパイプライン構築         |
+| `agents/workflow-optimizer.md` | ワークフロー最適化         |
+
+### リファレンス
+
+| リソース                               | 説明                     |
+| -------------------------------------- | ------------------------ |
+| `references/project-type-selection.md` | プロジェクトタイプ別選定 |
+| `references/template-types.md`         | テンプレートタイプ詳細   |
+
+### テンプレート
+
+| テンプレート                  | 説明           |
+| ----------------------------- | -------------- |
+| `assets/ci-template.yaml`     | CIパイプライン |
+| `assets/cd-template.yaml`     | CDパイプライン |
+| `assets/docker-template.yaml` | Dockerビルド   |
+| `assets/nodejs-template.yaml` | Node.js環境    |
+
+### スクリプト
+
+| スクリプト                   | 説明           | 使用方法                             |
+| ---------------------------- | -------------- | ------------------------------------ |
+| `scripts/validate-skill.mjs` | スキル構造検証 | `node scripts/validate-skill.mjs -v` |
+| `scripts/log_usage.mjs`      | 使用記録       | `node scripts/log_usage.mjs`         |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| バージョン | 日付       | 変更内容                                      |
+| ---------- | ---------- | --------------------------------------------- |
+| 2.0.0      | 2026-01-01 | 4エージェント体制への再構成、18-skills.md準拠 |
+| 1.1.0      | 2025-12-31 | Task仕様ナビテーブル追加、日本語記述統一      |
+| 1.0.0      | 2025-12-24 | 初版リリース                                  |

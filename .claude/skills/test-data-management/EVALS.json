@@ -1,100 +1,95 @@
 {
-  "skill_name": "test-data-management",
-  "current_level": 1,
-  "levels": {
-    "1": {
-      "level": 1,
-      "name": "基礎",
-      "requirements": {
-        "min_usage_count": 0,
-        "min_success_rate": 0.0,
-        "min_satisfaction_score": 0.0,
-        "required_resources": [
-          "SKILL.md"
-        ]
-      },
-      "success_criteria": [
-        "SKILL.mdが存在し、基本タスクが実行可能"
-      ]
+  "skill": "test-data-management",
+  "version": "2.0.0",
+  "metrics": {
+    "total_uses": 0,
+    "successful_uses": 0,
+    "failed_uses": 0,
+    "success_rate": 0,
+    "last_used": null,
+    "created_at": "2025-12-31T00:00:00Z"
+  },
+  "phase_metrics": {
+    "fixture_design": {
+      "uses": 0,
+      "success": 0,
+      "failure": 0
     },
-    "2": {
-      "level": 2,
-      "name": "中級",
-      "requirements": {
-        "min_usage_count": 10,
-        "min_success_rate": 0.8,
-        "min_satisfaction_score": 0.7,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "scripts/generate-test-data.mjs"
-        ]
-      },
-      "success_criteria": [
-        "10回以上使用され、成功率80%以上"
-      ]
+    "seeding_strategy": {
+      "uses": 0,
+      "success": 0,
+      "failure": 0
     },
-    "3": {
-      "level": 3,
-      "name": "上級",
-      "requirements": {
-        "min_usage_count": 50,
-        "min_success_rate": 0.9,
-        "min_satisfaction_score": 0.8,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/cleanup-patterns.md",
-          "resources/data-isolation-techniques.md",
-          "resources/legacy-skill.md",
-          "resources/seeding-strategies.md",
-          "scripts/generate-test-data.mjs",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/fixture-template.ts"
-        ]
-      },
-      "success_criteria": [
-        "50回以上使用され、成功率90%以上"
-      ]
+    "data_isolation": {
+      "uses": 0,
+      "success": 0,
+      "failure": 0
     },
-    "4": {
-      "level": 4,
-      "name": "専門",
-      "requirements": {
-        "min_usage_count": 100,
-        "min_success_rate": 0.95,
-        "min_satisfaction_score": 0.9,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/cleanup-patterns.md",
-          "resources/data-isolation-techniques.md",
-          "resources/legacy-skill.md",
-          "resources/seeding-strategies.md",
-          "scripts/generate-test-data.mjs",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/fixture-template.ts",
-          "LOGS.md"
-        ]
-      },
-      "success_criteria": [
-        "100回以上使用され、成功率95%以上"
-      ]
+    "cleanup": {
+      "uses": 0,
+      "success": 0,
+      "failure": 0
     }
   },
-  "metrics": {
-    "total_usage_count": 0,
-    "success_count": 0,
-    "failure_count": 0,
-    "average_satisfaction": 0.0,
-    "last_evaluated": "2025-12-24T00:00:00Z"
+  "task_metrics": {
+    "fixture-design": {
+      "uses": 0,
+      "success": 0,
+      "failure": 0,
+      "avg_duration_ms": null
+    },
+    "seeding-strategy": {
+      "uses": 0,
+      "success": 0,
+      "failure": 0,
+      "avg_duration_ms": null
+    },
+    "data-isolation": {
+      "uses": 0,
+      "success": 0,
+      "failure": 0,
+      "avg_duration_ms": null
+    },
+    "cleanup-implementation": {
+      "uses": 0,
+      "success": 0,
+      "failure": 0,
+      "avg_duration_ms": null
+    }
+  },
+  "level_progression": {
+    "current_level": "Level1_basics",
+    "level_requirements": {
+      "Level1_basics": {
+        "min_uses": 0,
+        "min_success_rate": 0,
+        "achieved": true
+      },
+      "Level2_intermediate": {
+        "min_uses": 5,
+        "min_success_rate": 0.7,
+        "achieved": false
+      },
+      "Level3_advanced": {
+        "min_uses": 15,
+        "min_success_rate": 0.8,
+        "achieved": false
+      },
+      "Level4_expert": {
+        "min_uses": 30,
+        "min_success_rate": 0.9,
+        "achieved": false
+      }
+    }
+  },
+  "quality_metrics": {
+    "avg_fixture_reusability": null,
+    "avg_test_isolation_score": null,
+    "avg_cleanup_reliability": null
+  },
+  "feedback": {
+    "common_issues": [],
+    "improvement_suggestions": [],
+    "success_patterns": []
   }
 }

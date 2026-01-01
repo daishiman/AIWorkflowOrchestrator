@@ -1,45 +1,31 @@
 ---
-name: .claude/skills/session-management/SKILL.md
+name: session-management
 description: |
   セッション管理とトークンライフサイクル戦略の実装パターン。
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/cookie-attributes-guide.md`: Cookie Attributes Guideリソース
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/session-strategy-comparison.md`: Session Strategy Comparisonリソース
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-session-config.mjs`: Validate Session Configスクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/database-session-template.ts`: Database Sessionテンプレート
-  - `templates/jwt-session-template.ts`: Jwt Sessionテンプレート
-  
-  Use proactively when handling session management tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "実践的改善"
-      - "品質維持"
+  セッション設計、トークン管理、セキュリティ対策を提供します。
+
+  Anchors:
+  • 『The Pragmatic Programmer』（Andrew Hunt, David Thomas） / 適用: セッション管理 / 目的: 実践的改善と品質維持
+
+  Trigger:
+  セッション管理実装、認証状態維持、セッションセキュリティ設計、トークンリフレッシュ戦略検討時に使用
+
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# Session Management
+# セッション管理
 
 ## 概要
 
-セッション管理とトークンライフサイクル戦略の実装パターン。
+セッション管理とトークンライフサイクル戦略の実装パターン。ユーザー認証後のセッション状態管理、トークン有効期限の制御、リフレッシュトークンの運用、セキュアなセッション永続化などの実装パターンを提供します。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
 ## ワークフロー
 
@@ -49,17 +35,20 @@ references:
 
 **アクション**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+1. セッション戦略の要件を整理（DB保存 vs JWT、有効期限、リフレッシュ戦略）
+2. `references/session-strategy-comparison.md` で実装アプローチを検討
+3. 必要なテンプレートとリソースを特定
 
 ### Phase 2: スキル適用
 
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: スキルの指針に従って具体的な実装を進める
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 選定したパターン（JWT or Database Session）に対応するテンプレートを参照
+2. `references/Level2_intermediate.md` で実務手順を確認
+3. Cookie属性やセキュリティ設定を `references/cookie-attributes-guide.md` で確認
+4. テンプレートをプロジェクトに適応させて実装
 
 ### Phase 3: 検証と記録
 
@@ -67,48 +56,74 @@ references:
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. `scripts/validate-session-config.mjs` でセッション設定を検証
+2. 実装がセキュリティ要件を満たしているか確認
+3. `scripts/log_usage.mjs` を実行して実装記録を残す
 
+## Task仕様ナビ
+
+| タスク               | リソース                       | スクリプト                  | テンプレート                 |
+| -------------------- | ------------------------------ | --------------------------- | ---------------------------- |
+| JWT実装基礎          | Level1_basics.md               | validate-skill.mjs          | jwt-session-template.ts      |
+| DBセッション実装     | Level2_intermediate.md         | validate-session-config.mjs | database-session-template.ts |
+| セキュリティ設定     | cookie-attributes-guide.md     | log_usage.mjs               | -                            |
+| 実装パターン選定     | session-strategy-comparison.md | -                           | -                            |
+| 高度なトークン戦略   | Level3_advanced.md             | -                           | -                            |
+| エキスパートパターン | Level4_expert.md               | -                           | -                            |
 
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+- セッション戦略を明確に定義してから実装を開始する（JWT vs DB Session の選定根拠）
+- `references/Level2_intermediate.md` で実務的な注意点を確認する
+- HttpOnly、Secure、SameSite などのCookie属性を `references/cookie-attributes-guide.md` で確認
+- トークン有効期限とリフレッシュ戦略を事前に計画する
+- 本番環境におけるセキュリティ設定を `scripts/validate-session-config.mjs` で検証する
+- ユーザーのログアウト時にセッション状態を完全にクリアする
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- セッションIDをURLパラメータに含める（キャッシュやログに記録されるリスク）
+- 短すぎるトークン有効期限の設定（UXが低下）
+- 長すぎるトークン有効期限の設定（セキュリティリスク）
+- リフレッシュトークンをメモリのみに保存（ページリロードで消失）
+- CSRF保護なしでステートフルセッションを使用する
+- セッション情報を暗号化せずにクライアント側に保存する
+- セッション有効期限のアイドルタイムアウト仕様がない実装
 
-### リソース読み取り
+## リソース参照
+
+### 学習リソース（references/）
+
 ```bash
-cat .claude/skills/session-management/resources/Level1_basics.md
-cat .claude/skills/session-management/resources/Level2_intermediate.md
-cat .claude/skills/session-management/resources/Level3_advanced.md
-cat .claude/skills/session-management/resources/Level4_expert.md
-cat .claude/skills/session-management/resources/cookie-attributes-guide.md
-cat .claude/skills/session-management/resources/legacy-skill.md
-cat .claude/skills/session-management/resources/session-strategy-comparison.md
+cat .claude/skills/session-management/references/Level1_basics.md
+cat .claude/skills/session-management/references/Level2_intermediate.md
+cat .claude/skills/session-management/references/Level3_advanced.md
+cat .claude/skills/session-management/references/Level4_expert.md
+cat .claude/skills/session-management/references/cookie-attributes-guide.md
+cat .claude/skills/session-management/references/legacy-skill.md
+cat .claude/skills/session-management/references/session-strategy-comparison.md
 ```
 
-### スクリプト実行
+### スクリプト・ツール（scripts/）
+
 ```bash
 node .claude/skills/session-management/scripts/log_usage.mjs --help
 node .claude/skills/session-management/scripts/validate-session-config.mjs --help
 node .claude/skills/session-management/scripts/validate-skill.mjs --help
 ```
 
-### テンプレート参照
+### 実装テンプレート（assets/）
+
 ```bash
-cat .claude/skills/session-management/templates/database-session-template.ts
-cat .claude/skills/session-management/templates/jwt-session-template.ts
+cat .claude/skills/session-management/assets/database-session-template.ts
+cat .claude/skills/session-management/assets/jwt-session-template.ts
 ```
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                                                    |
+| ------- | ---------- | -------------------------------------------------------------------------- |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に準拠、Task仕様ナビテーブル追加、ベストプラクティス充実化 |
+| 1.0.0   | 2025-12-24 | スキル構造の整形と必須アーティファクト追加                                 |

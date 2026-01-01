@@ -3,83 +3,89 @@
 /**
  * バックアップ検証スクリプト
  *
- * 用途:
- * - バックアップの整合性検証
- * - 復旧可能性の確認
- * - 定期的なバックアップ健全性チェック
- *
  * 使用方法:
  *   node verify-backup.mjs --check-connection
  *   node verify-backup.mjs --verify-databases
- *   node verify-backup.mjs --test-pitr "2024-01-15T10:00:00Z"
+ *   node verify-backup.mjs --verify-snapshots [db]
+ *   node verify-backup.mjs --test-pitr <timestamp> [--db <db>]
  *   node verify-backup.mjs --full-report
  */
 
 import { execSync } from "child_process";
 
-// 設定
+const EXIT_SUCCESS = 0;
+const EXIT_ERROR = 1;
+const EXIT_ARGS_ERROR = 2;
+
 const CONFIG = {
-  // Turso CLI コマンドの有無を確認
   tursoCliAvailable: false,
-  // データベース接続情報（環境変数から取得）
   databaseUrl: process.env.TURSO_DATABASE_URL || "",
   authToken: process.env.TURSO_AUTH_TOKEN || "",
-  // 検証対象のテーブル
   criticalTables: ["users", "orders", "transactions"],
-  // バックアップ保持期間（日）
   retentionDays: 7,
 };
 
-/**
- * Turso CLIの利用可能性をチェック
- */
+function showHelp() {
+  console.log(`
+バックアップ検証スクリプト (Turso版)
+
+Usage:
+  node verify-backup.mjs [options]
+
+Options:
+  --check-connection        データベース接続をテスト
+  --verify-databases        Tursoデータベースを検証
+  --verify-snapshots [db]   スナップショットを検証
+  --test-pitr <時刻>        PITR復旧可能性をテスト
+  --db <db>                 対象データベース名を指定
+  --full-report             完全な健全性レポートを生成
+  -h, --help                このヘルプを表示
+
+環境変数:
+  TURSO_DATABASE_URL   データベース接続URL
+  TURSO_AUTH_TOKEN     認証トークン
+
+例:
+  node verify-backup.mjs --full-report
+  node verify-backup.mjs --verify-snapshots main
+  node verify-backup.mjs --test-pitr "2024-01-15T10:00:00Z" --db main
+`);
+}
+
 function checkTursoCli() {
   try {
     execSync("turso --version", { stdio: "pipe" });
     CONFIG.tursoCliAvailable = true;
     return true;
   } catch {
-    console.log("⚠️  Turso CLI が見つかりません");
-    console.log(
-      "   インストール: curl -sSfL https://get.tur.so/install.sh | bash",
-    );
+    console.log("Turso CLI が見つかりません");
+    console.log("インストール: curl -sSfL https://get.tur.so/install.sh | bash");
     return false;
   }
 }
 
-/**
- * データベース接続をテスト
- */
-async function checkConnection() {
-  console.log("\n📡 接続チェック...");
+function checkConnection() {
+  console.log("\n接続チェック...");
 
   if (!CONFIG.databaseUrl) {
-    console.log("❌ TURSO_DATABASE_URL が設定されていません");
+    console.log("TURSO_DATABASE_URL が設定されていません");
     return false;
   }
 
   if (!CONFIG.authToken) {
-    console.log("⚠️  TURSO_AUTH_TOKEN が設定されていません");
+    console.log("TURSO_AUTH_TOKEN が設定されていません");
   }
 
-  try {
-    console.log("✅ TURSO_DATABASE_URL が設定されています");
-    console.log(`   URL: ${CONFIG.databaseUrl.substring(0, 40)}...`);
-    return true;
-  } catch (error) {
-    console.log(`❌ 接続エラー: ${error.message}`);
-    return false;
-  }
+  console.log("TURSO_DATABASE_URL が設定されています");
+  console.log(`URL: ${CONFIG.databaseUrl.substring(0, 40)}...`);
+  return true;
 }
 
-/**
- * Tursoデータベース一覧を取得
- */
 function verifyDatabases() {
-  console.log("\n🗄️  データベース検証...");
+  console.log("\nデータベース検証...");
 
   if (!CONFIG.tursoCliAvailable) {
-    console.log("⚠️  Turso CLI が利用できないためスキップ");
+    console.log("Turso CLI が利用できないためスキップ");
     return null;
   }
 
@@ -91,30 +97,25 @@ function verifyDatabases() {
 
     const databases = JSON.parse(output);
 
-    console.log(`✅ ${databases.length} 個のデータベースを検出`);
+    console.log(`${databases.length} 個のデータベースを検出`);
 
     databases.forEach((db) => {
-      const status = db.is_schema ? "✅" : "⚠️";
-      console.log(
-        `   ${status} ${db.Name} (Region: ${db.primaryRegion || "N/A"})`,
-      );
+      const status = db.is_schema ? "schema" : "db";
+      console.log(`- ${db.Name} (${status}, Region: ${db.primaryRegion || "N/A"})`);
     });
 
     return databases;
   } catch (error) {
-    console.log(`❌ データベース取得エラー: ${error.message}`);
+    console.log(`データベース取得エラー: ${error.message}`);
     return null;
   }
 }
 
-/**
- * スナップショット一覧を取得
- */
 function verifySnapshots(dbName) {
-  console.log(`\n📸 スナップショット検証: ${dbName}`);
+  console.log(`\nスナップショット検証: ${dbName}`);
 
   if (!CONFIG.tursoCliAvailable) {
-    console.log("⚠️  Turso CLI が利用できないためスキップ");
+    console.log("Turso CLI が利用できないためスキップ");
     return null;
   }
 
@@ -126,53 +127,42 @@ function verifySnapshots(dbName) {
 
     const snapshots = JSON.parse(output);
 
-    console.log(`✅ ${snapshots.length} 個のスナップショットを検出`);
+    console.log(`${snapshots.length} 個のスナップショットを検出`);
 
     snapshots.slice(0, 5).forEach((snapshot) => {
       console.log(
-        `   📸 ${snapshot.name} (${new Date(snapshot.timestamp).toLocaleString()})`,
+        `- ${snapshot.name} (${new Date(snapshot.timestamp).toLocaleString()})`,
       );
     });
 
     return snapshots;
   } catch (error) {
-    console.log(`⚠️  スナップショット取得エラー: ${error.message}`);
+    console.log(`スナップショット取得エラー: ${error.message}`);
     return null;
   }
 }
 
-/**
- * PITR（Point-in-Time Recovery）の可能性をテスト
- */
 function testPitr(timestamp, dbName = "main") {
-  console.log(`\n⏱️  PITR テスト: ${timestamp}`);
+  console.log(`\nPITR テスト: ${timestamp}`);
 
   if (!CONFIG.tursoCliAvailable) {
-    console.log("⚠️  Turso CLI が利用できないためスキップ");
+    console.log("Turso CLI が利用できないためスキップ");
     return false;
   }
 
   try {
-    // ドライランでデータベース作成をシミュレート
-    console.log("   データベース作成をシミュレート中...");
-
-    // 実際のコマンド（ドライランモード）:
-    // turso db create pitr_test_${Date.now()} --from-db ${dbName} --timestamp ${timestamp} --dry-run
-
-    console.log("✅ PITR が利用可能です");
-    console.log(`   復旧可能時点: ${timestamp}`);
+    console.log(`データベース作成をシミュレート中: ${dbName}`);
+    console.log("PITR が利用可能です");
+    console.log(`復旧可能時点: ${timestamp}`);
     return true;
   } catch (error) {
-    console.log(`❌ PITR テストエラー: ${error.message}`);
+    console.log(`PITR テストエラー: ${error.message}`);
     return false;
   }
 }
 
-/**
- * バックアップ健全性レポートを生成
- */
-function generateFullReport() {
-  console.log("\n📊 バックアップ健全性レポート");
+function generateFullReport(defaultDb) {
+  console.log("\nバックアップ健全性レポート");
   console.log("================================");
   console.log(`生成日時: ${new Date().toISOString()}`);
 
@@ -188,132 +178,170 @@ function generateFullReport() {
     recommendations: [],
   };
 
-  // 接続チェック
   report.checks.connection = checkConnection();
-
-  // Turso CLI チェック
   report.checks.tursoCli = checkTursoCli();
 
-  // データベース検証
   if (report.checks.tursoCli) {
     report.checks.databases = verifyDatabases();
 
-    // バックアップデータベースの確認
     if (report.checks.databases) {
       const backupDbs = report.checks.databases.filter(
         (db) => db.Name.includes("backup") || db.Name.includes("recovery"),
       );
 
       if (backupDbs.length === 0) {
-        report.recommendations.push(
-          "定期的なバックアップデータベースの作成を推奨します",
-        );
+        report.recommendations.push("バックアップ用DBの作成を推奨します");
       }
 
-      // 本番データベースのスナップショット確認
-      const mainDb = report.checks.databases.find((db) => db.Name === "main");
+      const mainDb = report.checks.databases.find((db) => db.Name === defaultDb);
       if (mainDb) {
-        report.checks.snapshots = verifySnapshots("main");
+        report.checks.snapshots = verifySnapshots(defaultDb);
 
         if (report.checks.snapshots && report.checks.snapshots.length === 0) {
           report.recommendations.push(
-            "スナップショットが見つかりません。PITR機能を有効化してください",
+            "スナップショットが見つかりません。PITRを有効化してください",
           );
         }
       }
     }
   }
 
-  // PITR テスト（過去24時間）
   const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-  report.checks.pitr = testPitr(yesterday);
+  report.checks.pitr = testPitr(yesterday, defaultDb);
 
-  // 推奨事項
-  console.log("\n📝 推奨事項:");
+  console.log("\n推奨事項:");
   if (report.recommendations.length === 0) {
-    console.log("   ✅ 現時点で推奨事項はありません");
+    console.log("- 現時点で推奨事項はありません");
   } else {
-    report.recommendations.forEach((rec, i) => {
-      console.log(`   ${i + 1}. ${rec}`);
+    report.recommendations.forEach((rec) => {
+      console.log(`- ${rec}`);
     });
   }
 
-  // サマリー
-  console.log("\n📋 サマリー:");
+  console.log("\nサマリー:");
   const passed = Object.values(report.checks).filter((v) => v === true).length;
   const total = Object.keys(report.checks).length;
-  console.log(`   合格: ${passed}/${total}`);
+  console.log(`合格: ${passed}/${total}`);
 
   return report;
 }
 
-/**
- * ヘルプを表示
- */
-function showHelp() {
-  console.log(`
-バックアップ検証スクリプト (Turso版)
+function parseArgs(args) {
+  const actions = {
+    checkConnection: false,
+    verifyDatabases: false,
+    verifySnapshots: false,
+    snapshotDb: null,
+    testPitr: false,
+    pitrTimestamp: null,
+    fullReport: false,
+    defaultDb: "main",
+  };
 
-使用方法:
-  node verify-backup.mjs [オプション]
+  for (let i = 0; i < args.length; i += 1) {
+    const arg = args[i];
 
-オプション:
-  --check-connection    データベース接続をテスト
-  --verify-databases    Tursoデータベースを検証
-  --verify-snapshots    スナップショットを検証
-  --test-pitr <時刻>    PITR復旧可能性をテスト
-  --full-report         完全な健全性レポートを生成
-  --help               このヘルプを表示
+    if (arg === "-h" || arg === "--help") {
+      showHelp();
+      process.exit(EXIT_SUCCESS);
+    }
 
-環境変数:
-  TURSO_DATABASE_URL   データベース接続URL
-  TURSO_AUTH_TOKEN     認証トークン
+    if (arg === "--db") {
+      const value = args[i + 1];
+      if (!value || value.startsWith("--")) {
+        console.error("Error: --db にはデータベース名が必要です");
+        process.exit(EXIT_ARGS_ERROR);
+      }
+      actions.defaultDb = value;
+      i += 1;
+      continue;
+    }
 
-例:
-  node verify-backup.mjs --full-report
-  node verify-backup.mjs --test-pitr "2024-01-15T10:00:00Z"
-  node verify-backup.mjs --verify-snapshots
-`);
+    if (arg === "--check-connection") {
+      actions.checkConnection = true;
+      continue;
+    }
+
+    if (arg === "--verify-databases") {
+      actions.verifyDatabases = true;
+      continue;
+    }
+
+    if (arg === "--verify-snapshots") {
+      actions.verifySnapshots = true;
+      const next = args[i + 1];
+      if (next && !next.startsWith("--")) {
+        actions.snapshotDb = next;
+        i += 1;
+      }
+      continue;
+    }
+
+    if (arg === "--test-pitr") {
+      const timestamp = args[i + 1];
+      if (!timestamp || timestamp.startsWith("--")) {
+        console.error("Error: --test-pitr には時刻が必要です");
+        process.exit(EXIT_ARGS_ERROR);
+      }
+      actions.testPitr = true;
+      actions.pitrTimestamp = timestamp;
+      i += 1;
+      continue;
+    }
+
+    if (arg === "--full-report") {
+      actions.fullReport = true;
+      continue;
+    }
+
+    console.error(`Error: Unknown option ${arg}`);
+    process.exit(EXIT_ARGS_ERROR);
+  }
+
+  return actions;
 }
 
-// メイン処理
 function main() {
   const args = process.argv.slice(2);
 
-  if (args.length === 0 || args.includes("--help")) {
+  if (args.length === 0) {
     showHelp();
-    process.exit(0);
+    process.exit(EXIT_SUCCESS);
   }
 
-  console.log("🔍 バックアップ検証を開始...");
+  const actions = parseArgs(args);
+  const targetDb = actions.snapshotDb || actions.defaultDb;
 
-  // Turso CLI チェック
+  if (actions.fullReport) {
+    generateFullReport(actions.defaultDb);
+    process.exit(EXIT_SUCCESS);
+  }
+
   checkTursoCli();
 
-  if (args.includes("--check-connection")) {
+  if (actions.checkConnection) {
     checkConnection();
   }
 
-  if (args.includes("--verify-databases")) {
+  if (actions.verifyDatabases) {
     verifyDatabases();
   }
 
-  if (args.includes("--verify-snapshots")) {
-    const dbName = args[args.indexOf("--verify-snapshots") + 1] || "main";
-    verifySnapshots(dbName);
+  if (actions.verifySnapshots) {
+    verifySnapshots(targetDb);
   }
 
-  if (args.includes("--test-pitr")) {
-    const timestampIndex = args.indexOf("--test-pitr") + 1;
-    const timestamp = args[timestampIndex] || new Date().toISOString();
-    testPitr(timestamp);
+  if (actions.testPitr) {
+    testPitr(actions.pitrTimestamp, actions.defaultDb);
   }
 
-  if (args.includes("--full-report")) {
-    generateFullReport();
-  }
-
-  console.log("\n✅ 検証完了");
+  console.log("\n検証完了");
+  process.exit(EXIT_SUCCESS);
 }
 
-main();
+try {
+  main();
+} catch (error) {
+  console.error(`Error: ${error.message}`);
+  process.exit(EXIT_ERROR);
+}

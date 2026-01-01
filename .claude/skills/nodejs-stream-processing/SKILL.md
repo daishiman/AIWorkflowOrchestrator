@@ -9,15 +9,15 @@ description: |
   - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
   
   📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/backpressure-guide.md`: バックプレッシャーガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `references/Level1_basics.md`: レベル1の基礎ガイド
+  - `references/Level2_intermediate.md`: レベル2の実務ガイド
+  - `references/Level3_advanced.md`: レベル3の応用ガイド
+  - `references/Level4_expert.md`: レベル4の専門ガイド
+  - `references/backpressure-guide.md`: バックプレッシャーガイド
+  - `references/legacy-skill.md`: 旧SKILL.mdの全文
   - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
   - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/stream-utils.ts`: Readable/Writable/Transform/Duplexストリームの実装パターンとpipeline()による安全なチェーン構築テンプレート
+  - `assets/stream-utils.ts`: Readable/Writable/Transform/Duplexストリームの実装パターンとpipeline()による安全なチェーン構築テンプレート
   
   Use proactively when handling nodejs stream processing tasks.
 version: 1.0.0
@@ -39,7 +39,7 @@ Node.jsにおけるストリーム処理とバックプレッシャー管理の�
 大容量ファイルの効率的処理、メモリ使用量の最適化、
 Readable/Writable/Transform/Duplexストリームの適切な活用方法を提供。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
 
 ## ワークフロー
@@ -50,8 +50,8 @@ Readable/Writable/Transform/Duplexストリームの適切な活用方法を提�
 
 **アクション**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要な references/scripts/templates を特定
 
 ### Phase 2: スキル適用
 
@@ -89,12 +89,12 @@ Readable/Writable/Transform/Duplexストリームの適切な活用方法を提�
 
 ### リソース読み取り
 ```bash
-cat .claude/skills/nodejs-stream-processing/resources/Level1_basics.md
-cat .claude/skills/nodejs-stream-processing/resources/Level2_intermediate.md
-cat .claude/skills/nodejs-stream-processing/resources/Level3_advanced.md
-cat .claude/skills/nodejs-stream-processing/resources/Level4_expert.md
-cat .claude/skills/nodejs-stream-processing/resources/backpressure-guide.md
-cat .claude/skills/nodejs-stream-processing/resources/legacy-skill.md
+cat .claude/skills/nodejs-stream-processing/references/Level1_basics.md
+cat .claude/skills/nodejs-stream-processing/references/Level2_intermediate.md
+cat .claude/skills/nodejs-stream-processing/references/Level3_advanced.md
+cat .claude/skills/nodejs-stream-processing/references/Level4_expert.md
+cat .claude/skills/nodejs-stream-processing/references/backpressure-guide.md
+cat .claude/skills/nodejs-stream-processing/references/legacy-skill.md
 ```
 
 ### スクリプト実行
@@ -105,7 +105,7 @@ node .claude/skills/nodejs-stream-processing/scripts/validate-skill.mjs --help
 
 ### テンプレート参照
 ```bash
-cat .claude/skills/nodejs-stream-processing/templates/stream-utils.ts
+cat .claude/skills/nodejs-stream-processing/assets/stream-utils.ts
 ```
 
 ## 変更履歴

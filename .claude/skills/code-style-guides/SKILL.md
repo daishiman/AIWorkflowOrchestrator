@@ -1,123 +1,125 @@
 ---
-name: .claude/skills/code-style-guides/SKILL.md
+name: code-style-guides
 description: |
-  業界標準コードスタイルガイドの選択と適用の専門知識。
-  Airbnb、Google、Standard等のスタイルガイド適用とカスタマイズを行います。
-  
-  📖 参照書籍:
-  - 『Clean Code』（Robert C. Martin）: 命名と意図の明確化
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/customization-patterns.md`: スタイルガイドのカスタマイズパターン
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/migration-strategies.md`: スタイルガイド移行戦略
-  - `resources/style-guide-comparison.md`: 主要スタイルガイド(Airbnb、Google、Standard)の比較
-  - `scripts/detect-style.mjs`: プロジェクトのコードスタイル自動検出スクリプト
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/airbnb-base.json`: Airbnbスタイルベース設定
-  - `templates/google.json`: Googleスタイル設定
-  - `templates/standard.json`: Standardスタイル設定
-  
-  Use proactively when handling code style guides tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Clean Code"
-    author: "Robert C. Martin"
-    concepts:
-      - "命名と意図の明確化"
-      - "小さな関数設計"
----
+  主要コードスタイルガイドの比較と適用を整理し、チーム規約の統一と移行を支援するスキル。
+  Airbnb/Google/Standardの選定、カスタマイズ、移行計画を扱う。
 
-# Code Style Guides Skill
+  Anchors:
+  • Clean Code (Robert C. Martin) / 適用: 命名と意図の明確化 / 目的: 可読性の向上
+  • Style Guide Comparison / 適用: ガイド選定 / 目的: 適合性評価
+  • Migration Patterns / 適用: 移行計画 / 目的: 変更影響の最小化
+
+  Trigger:
+  Use when selecting or migrating style guides, unifying team conventions, or customizing linting rules.
+  code style guide, ESLint config, Prettier rules, migration, coding conventions
+---
+# code-style-guides
 
 ## 概要
 
-業界標準コードスタイルガイドの選択と適用の専門知識。
-Airbnb、Google、Standard等のスタイルガイド適用とカスタマイズを行います。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+主要スタイルガイドの比較と適用方針を整理し、設定と運用の一貫性を確保する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 現状整理
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 現行スタイルと要件を明確化する。
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 既存コードのスタイル傾向を把握する。
+2. チームの規約と制約を整理する。
+3. 比較対象となるガイドを選定する。
+
+**Task**: `agents/analyze-style-requirements.md` を参照
+
+### Phase 2: 適用設計
+
+**目的**: 選定ガイドの適用方針と移行計画を作る。
+
+**アクション**:
+
+1. ガイドの差分と適用ルールを整理する。
+2. カスタマイズ方針と例外ルールを定義する。
+3. 移行ステップとレビュー基準を決める。
+
+**Task**: `agents/design-style-adoption.md` を参照
 
 ### Phase 3: 検証と記録
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: 設定適用の検証と記録を行う。
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. スタイル検出スクリプトで現状を確認する。
+2. 設定差分と影響範囲を整理する。
+3. ログと評価情報を更新する。
 
+**Task**: `agents/validate-style-rollout.md` を参照
+
+## Task仕様ナビ
+
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-style-requirements | Phase 1開始時 | 既存コード/規約 | 要件整理メモ、比較対象一覧 |
+| design-style-adoption | Phase 2開始時 | 要件整理メモ | 適用方針、移行計画 |
+| validate-style-rollout | Phase 3開始時 | 適用方針 | 検証レポート、記録更新内容 |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- プロジェクトのスタイルガイドを選択する時
-- 既存コードパターンに基づいてスタイルを決定する時
-- チーム規約とスタイルガイドを整合させる時
-- カスタムスタイルルールを設計する時
-- スタイルガイド移行を計画する時
+
+| 推奨事項 | 理由 |
+| --- | --- |
+| 既存規約と差分を明確化する | 影響範囲を把握するため |
+| 例外ルールを最小化する | ガイドの一貫性を保つため |
+| 移行計画を段階化する | 変更負荷を下げるため |
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+| 禁止事項 | 問題点 |
+| --- | --- |
+| ルール変更を一括適用する | レビュー負荷が増える |
+| 例外を無制限に追加する | ルールが形骸化する |
+| 検証を省略する | 不整合が残る |
 
-### リソース読み取り
-```bash
-cat .claude/skills/code-style-guides/resources/Level1_basics.md
-cat .claude/skills/code-style-guides/resources/Level2_intermediate.md
-cat .claude/skills/code-style-guides/resources/Level3_advanced.md
-cat .claude/skills/code-style-guides/resources/Level4_expert.md
-cat .claude/skills/code-style-guides/resources/customization-patterns.md
-cat .claude/skills/code-style-guides/resources/legacy-skill.md
-cat .claude/skills/code-style-guides/resources/migration-strategies.md
-cat .claude/skills/code-style-guides/resources/style-guide-comparison.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/code-style-guides/scripts/detect-style.mjs --help
-node .claude/skills/code-style-guides/scripts/log_usage.mjs --help
-node .claude/skills/code-style-guides/scripts/validate-skill.mjs --help
-```
+### scripts/（決定論的処理）
 
-### テンプレート参照
-```bash
-cat .claude/skills/code-style-guides/templates/airbnb-base.json
-cat .claude/skills/code-style-guides/templates/google.json
-cat .claude/skills/code-style-guides/templates/standard.json
-```
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/detect-style.mjs` | 既存スタイルの検出 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
 
-## 変更履歴
+### references/（詳細知識）
 
-| Version | Date | Changes |
+| リソース | パス | 読込条件 |
 | --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Level1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
+| Level2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 適用設計時 |
+| Level3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細比較時 |
+| Level4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
+| 比較ガイド | [references/style-guide-comparison.md](references/style-guide-comparison.md) | ガイド選定時 |
+| カスタマイズ | [references/customization-patterns.md](references/customization-patterns.md) | 例外設計時 |
+| 移行戦略 | [references/migration-strategies.md](references/migration-strategies.md) | 移行計画時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+
+### assets/（テンプレート・素材）
+
+| アセット | 用途 |
+| --- | --- |
+| `assets/airbnb-base.json` | Airbnb設定ベース |
+| `assets/google.json` | Google設定ベース |
+| `assets/standard.json` | Standard設定ベース |
+
+### 運用ファイル
+
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

@@ -30,8 +30,7 @@ Options:
 
 function getLineCount(path) {
   const content = readFileSync(path, 'utf-8');
-  return content.split('
-').length;
+  return content.split('\n').length;
 }
 
 function assertExists(path, label) {
@@ -90,11 +89,27 @@ async function main() {
     'CHANGELOG.md',
     'LOGS.md',
     'scripts/log_usage.mjs',
+    'scripts/test-hooks.mjs',
     'scripts/validate-skill.mjs',
-    'resources/Level1_basics.md',
-    'resources/Level2_intermediate.md',
-    'resources/Level3_advanced.md',
-    'resources/Level4_expert.md',
+    'assets/hook-requirements-template.md',
+    'assets/hook-policy-checklist.md',
+    'assets/pre-commit-basic.sh',
+    'assets/commit-msg-template.sh',
+    'assets/pre-push-template.sh',
+    'assets/lint-staged-advanced.js',
+    'agents/analyze-hook-requirements.md',
+    'agents/design-hook-configuration.md',
+    'agents/implement-hook-setup.md',
+    'agents/validate-hook-setup.md',
+    'references/Level1_basics.md',
+    'references/Level2_intermediate.md',
+    'references/Level3_advanced.md',
+    'references/Level4_expert.md',
+    'references/husky-configuration.md',
+    'references/lint-staged-patterns.md',
+    'references/performance-optimization.md',
+    'references/requirements-index.md',
+    'references/legacy-skill.md',
   ];
 
   for (const file of requiredFiles) {
@@ -102,10 +117,10 @@ async function main() {
   }
 
   validateLineLimit(join(SKILL_DIR, 'SKILL.md'), 500);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level1_basics.md'), 200);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level2_intermediate.md'), 300);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level3_advanced.md'), 400);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level4_expert.md'), 500);
+  validateLineLimit(join(SKILL_DIR, 'references/Level1_basics.md'), 200);
+  validateLineLimit(join(SKILL_DIR, 'references/Level2_intermediate.md'), 300);
+  validateLineLimit(join(SKILL_DIR, 'references/Level3_advanced.md'), 400);
+  validateLineLimit(join(SKILL_DIR, 'references/Level4_expert.md'), 500);
 
   validateEvals(join(SKILL_DIR, 'EVALS.json'));
 

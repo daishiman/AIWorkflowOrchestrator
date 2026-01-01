@@ -1,33 +1,37 @@
 ---
-name: .claude/skills/graceful-shutdown-patterns/SKILL.md
+name: graceful-shutdown-patterns
 description: |
   Node.jsアプリケーションのGraceful Shutdown実装を専門とするスキル。
   Twelve-Factor Appの「廃棄容易性」原則に基づき、優雅なプロセス終了、
   リソースクリーンアップ、接続ドレイン、タイムアウト処理を設計します。
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/connection-draining.md`: connection-draining の詳細ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/resource-cleanup.md`: resource-cleanup の詳細ガイド
-  - `resources/shutdown-sequence.md`: shutdown-sequence の詳細ガイド
-  - `resources/shutdown-strategies.md`: shutdown-strategies の詳細ガイド
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/test-graceful-shutdown.mjs`: gracefulshutdownをテストするスクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/graceful-shutdown.template.ts`: graceful-shutdown.template のテンプレート
-  - `templates/shutdown-manager.ts`: shutdown-manager のテンプレート
-  
-  Use proactively when designing shutdown sequences, implementing.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
+
+  **Anchors (参照ポイント)**:
+  - L1: 基礎的なシグナルハンドリング
+  - L2: リソースクリーンアップとドレイン処理
+  - L3: 複合システムでのシャットダウン設計
+  - L4: エンタープライズレベルのフェイルセーフ
+
+  **Triggers (発動条件)**:
+  - Node.jsアプリケーションの終了処理を設計する時
+  - リソースリークを防ぐクリーンアップを実装する時
+  - ゼロダウンタイムデプロイを実現する時
+  - PM2やDocker環境でのgraceful reload設定時
+  - SIGTERMやSIGINTシグナル処理が必要な時
+
+allowed-tools:
+  - read-file
+  - grep
+  - bash
+  - code-editor
+
+version: 2.0.0
+level: 2
+last_updated: 2025-12-31
+anchors:
+  - L1
+  - L2
+  - L3
+  - L4
 references:
   - book: "The Pragmatic Programmer"
     author: "Andrew Hunt, David Thomas"
@@ -40,12 +44,18 @@ references:
 
 ## 概要
 
-Node.jsアプリケーションのGraceful Shutdown実装を専門とするスキル。
-Twelve-Factor Appの「廃棄容易性」原則に基づき、優雅なプロセス終了、
-リソースクリーンアップ、接続ドレイン、タイムアウト処理を設計します。
+Node.jsアプリケーションのGraceful Shutdown実装を専門とするスキル。Twelve-Factor Appの「廃棄容易性」原則に基づき、優雅なプロセス終了、リソースクリーンアップ、接続ドレイン、タイムアウト処理を設計します。詳細な手順や背景は各リソースレベルを参照してください。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+## Task仕様ナビ
 
+| タスク                       | Anchor | フェーズ | リソース               | 目的                               |
+| ---------------------------- | ------ | -------- | ---------------------- | ---------------------------------- |
+| 基本的なシグナルハンドリング | L1     | 1-2      | Level1_basics.md       | SIGTERMとSIGINTの処理方法を学習    |
+| リソースクリーンアップ設計   | L2     | 2-3      | resource-cleanup.md    | DB接続やストリームのクローズ方法   |
+| 接続ドレイン実装             | L2     | 2-3      | connection-draining.md | 既存リクエストの完了待機           |
+| シャットダウンシーケンス     | L3     | 2-3      | shutdown-sequence.md   | 段階的な終了処理の順序設計         |
+| シャットダウン戦略選択       | L3     | 1-2      | shutdown-strategies.md | タイムアウト、フォースキル、再起動 |
+| エンタープライズパターン     | L4     | 3        | Level4_expert.md       | 複雑なシステムでの実装             |
 
 ## ワークフロー
 
@@ -55,8 +65,8 @@ Twelve-Factor Appの「廃棄容易性」原則に基づき、優雅なプロセ
 
 **アクション**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要な references/scripts/templates を特定
 
 ### Phase 2: スキル適用
 
@@ -77,48 +87,56 @@ Twelve-Factor Appの「廃棄容易性」原則に基づき、優雅なプロセ
 2. 成果物が目的に合致するか確認
 3. `scripts/log_usage.mjs` を実行して記録を残す
 
-
 ## ベストプラクティス
 
 ### すべきこと
-- アプリケーションの終了処理を設計する時
-- リソースリークを防ぐクリーンアップを実装する時
-- ゼロダウンタイムデプロイを実現する時
-- PM2でのgraceful reload設定時
+
+- アプリケーションの終了処理を設計する時に各Levelのリソースを段階的に参照する
+- リソースリークを防ぐクリーンアップを実装する時にresource-cleanup.mdを参照する
+- ゼロダウンタイムデプロイを実現する時にconnection-draining.mdを確認する
+- PM2やDocker環境でのgraceful reload設定時にshutdown-strategies.mdを参照する
+- SIGTERMやSIGINTシグナル処理時にLevel1_basics.mdから学習を開始する
+- 複雑なシステムの場合はLevel3_advanced.mdとLevel4_expert.mdで実装パターンを確認する
 
 ### 避けるべきこと
+
+- シグナルハンドリングなしで即座にプロセスを終了させる
+- リソースの明示的なクローズなしにアプリケーションを終了させる
+- 既存リクエストの完了を待たずに接続を切断する
+- タイムアウトなしに無限待機させる
+- エラーハンドリングなしにシャットダウンシーケンスを実装する
 - アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+## リソース参照
 
-### リソース読み取り
-```bash
-cat .claude/skills/graceful-shutdown-patterns/resources/Level1_basics.md
-cat .claude/skills/graceful-shutdown-patterns/resources/Level2_intermediate.md
-cat .claude/skills/graceful-shutdown-patterns/resources/Level3_advanced.md
-cat .claude/skills/graceful-shutdown-patterns/resources/Level4_expert.md
-cat .claude/skills/graceful-shutdown-patterns/resources/connection-draining.md
-cat .claude/skills/graceful-shutdown-patterns/resources/legacy-skill.md
-cat .claude/skills/graceful-shutdown-patterns/resources/resource-cleanup.md
-cat .claude/skills/graceful-shutdown-patterns/resources/shutdown-sequence.md
-cat .claude/skills/graceful-shutdown-patterns/resources/shutdown-strategies.md
-```
+### 学習リソース（段階的学習）
 
-### スクリプト実行
-```bash
-node .claude/skills/graceful-shutdown-patterns/scripts/log_usage.mjs --help
-node .claude/skills/graceful-shutdown-patterns/scripts/test-graceful-shutdown.mjs --help
-node .claude/skills/graceful-shutdown-patterns/scripts/validate-skill.mjs --help
-```
+- **Level1_basics.md**: シグナルハンドリングの基礎とプロセス終了の基本
+- **Level2_intermediate.md**: リソースクリーンアップと接続ドレインの実装
+- **Level3_advanced.md**: 複合システムでのシャットダウン設計
+- **Level4_expert.md**: エンタープライズレベルのフェイルセーフと監視
 
-### テンプレート参照
-```bash
-cat .claude/skills/graceful-shutdown-patterns/templates/graceful-shutdown.template.ts
-cat .claude/skills/graceful-shutdown-patterns/templates/shutdown-manager.ts
-```
+### 実装リソース（テーマ別）
+
+- **connection-draining.md**: HTTP接続の段階的クローズとリクエスト完了待機
+- **resource-cleanup.md**: DB接続、ファイルハンドル、ストリームのクローズ
+- **shutdown-sequence.md**: シャットダウン処理の段階的実行順序
+- **shutdown-strategies.md**: タイムアウト、フォースキル、再起動の戦略選択
+
+### 実装テンプレート
+
+- **graceful-shutdown.template.ts**: 基本的なGraceful Shutdown実装テンプレート
+- **shutdown-manager.ts**: 複数リソースの管理スキームテンプレート
+
+### 検証スクリプト
+
+- **validate-skill.mjs**: スキル構造とリソースの整合性確認
+- **test-graceful-shutdown.mjs**: Graceful Shutdown実装のテスト
+- **log_usage.mjs**: スキル使用記録と自動評価
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                                                                                                                                    |
+| ------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に準拠。YAML frontmatterに allowed-tools と anchors を追加、Task仕様ナビテーブルを追加、リソース参照を再構成、日本語による Triggers を追加 |
+| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added                                                                                                                |

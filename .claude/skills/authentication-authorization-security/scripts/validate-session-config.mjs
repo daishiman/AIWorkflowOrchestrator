@@ -16,7 +16,24 @@
  *   - セッションストア設定
  */
 
-import { readFileSync } from "fs";
+import { readFileSync, existsSync } from "fs";
+
+const EXIT_SUCCESS = 0;
+const EXIT_ERROR = 1;
+const EXIT_ARGS_ERROR = 2;
+const EXIT_FILE_MISSING = 3;
+
+function showHelp() {
+  console.log(`
+セッション設定検証
+
+Usage:
+  node validate-session-config.mjs <target-file>
+
+Options:
+  -h, --help    このヘルプを表示
+  `);
+}
 
 const colors = {
   reset: "\x1b[0m",
@@ -309,15 +326,39 @@ class SessionConfigValidator {
 }
 
 // メイン実行
-const targetFile = process.argv[2];
-
-if (!targetFile) {
-  console.error(
-    `${colors.red}使用方法: node validate-session-config.mjs <target-file>${colors.reset}`,
-  );
-  console.error(`例: node validate-session-config.mjs src/auth/session.ts`);
-  process.exit(1);
+const args = process.argv.slice(2);
+if (args.includes("-h") || args.includes("--help")) {
+  showHelp();
+  process.exit(EXIT_SUCCESS);
 }
 
-const validator = new SessionConfigValidator(targetFile);
-validator.validate();
+if (args.length !== 1) {
+  console.error(
+    `${colors.red}Error: target file is required${colors.reset}`,
+  );
+  showHelp();
+  process.exit(EXIT_ARGS_ERROR);
+}
+
+const targetFile = args[0];
+if (targetFile.startsWith("-")) {
+  console.error(`${colors.red}Error: invalid target file${colors.reset}`);
+  showHelp();
+  process.exit(EXIT_ARGS_ERROR);
+}
+
+if (!existsSync(targetFile)) {
+  console.error(
+    `${colors.red}Error: target file not found: ${targetFile}${colors.reset}`,
+  );
+  process.exit(EXIT_FILE_MISSING);
+}
+
+try {
+  const validator = new SessionConfigValidator(targetFile);
+  validator.validate();
+  process.exit(EXIT_SUCCESS);
+} catch (error) {
+  console.error(`${colors.red}エラー: ${error.message}${colors.reset}`);
+  process.exit(EXIT_ERROR);
+}

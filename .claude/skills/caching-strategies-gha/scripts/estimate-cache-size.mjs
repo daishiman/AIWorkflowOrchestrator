@@ -5,27 +5,17 @@
  *
  * Usage:
  *   node estimate-cache-size.mjs <directory>
- *   node estimate-cache-size.mjs ~/.pnpm
- *   node estimate-cache-size.mjs node_modules
- *
- * Features:
- * - ディレクトリサイズの計算
- * - 圧縮後のサイズ見積もり（gzip圧縮率を考慮）
- * - ファイルタイプ別の内訳
- * - GitHub Actions 10GB制限との比較
+ *   node estimate-cache-size.mjs <directory> --limit 10
  */
 
 import { readdir, stat } from "fs/promises";
 import { join, extname } from "path";
-import { createReadStream } from "fs";
-import { createGzip } from "zlib";
-import { pipeline } from "stream/promises";
 
-// GitHub Actions のキャッシュ制限
-const CACHE_LIMIT_GB = 10;
-const CACHE_LIMIT_BYTES = CACHE_LIMIT_GB * 1024 * 1024 * 1024;
+const EXIT_SUCCESS = 0;
+const EXIT_ERROR = 1;
+const EXIT_ARGS_ERROR = 2;
 
-// ファイルタイプ別の平均圧縮率（経験則）
+const DEFAULT_LIMIT_GB = 10;
 const COMPRESSION_RATIOS = {
   ".js": 0.3,
   ".ts": 0.3,
@@ -40,7 +30,6 @@ const COMPRESSION_RATIOS = {
   ".xml": 0.3,
   ".yml": 0.4,
   ".yaml": 0.4,
-  // バイナリファイル（圧縮済み）
   ".png": 0.95,
   ".jpg": 0.98,
   ".jpeg": 0.98,
@@ -51,13 +40,77 @@ const COMPRESSION_RATIOS = {
   ".woff": 0.95,
   ".woff2": 0.95,
   ".ttf": 0.95,
-  // デフォルト
   default: 0.5,
 };
 
+function showHelp() {
+  console.log(`
+GitHub Actions Cache Size Estimator
+
+Usage:
+  node estimate-cache-size.mjs <directory> [--limit <gb>]
+
+Options:
+  --limit <gb>  キャッシュ制限 (default: 10)
+  -h, --help    このヘルプを表示
+
+Examples:
+  node estimate-cache-size.mjs ~/.pnpm
+  node estimate-cache-size.mjs node_modules --limit 5
+`);
+}
+
+function parseArgs(args) {
+  const options = {
+    directory: null,
+    limitGb: DEFAULT_LIMIT_GB,
+  };
+
+  for (let i = 0; i < args.length; i += 1) {
+    const arg = args[i];
+
+    if (arg === "-h" || arg === "--help") {
+      showHelp();
+      process.exit(EXIT_SUCCESS);
+    }
+
+    if (arg === "--limit") {
+      const value = args[i + 1];
+      if (!value || value.startsWith("--")) {
+        console.error("Error: --limit requires a value");
+        process.exit(EXIT_ARGS_ERROR);
+      }
+      const parsed = Number.parseFloat(value);
+      if (Number.isNaN(parsed) || parsed <= 0) {
+        console.error("Error: --limit must be a positive number");
+        process.exit(EXIT_ARGS_ERROR);
+      }
+      options.limitGb = parsed;
+      i += 1;
+      continue;
+    }
+
+    if (arg.startsWith("-")) {
+      console.error(`Error: Unknown option ${arg}`);
+      process.exit(EXIT_ARGS_ERROR);
+    }
+
+    if (!options.directory) {
+      options.directory = arg;
+    } else {
+      console.error("Error: multiple directories provided");
+      process.exit(EXIT_ARGS_ERROR);
+    }
+  }
+
+  return options;
+}
+
 class CacheSizeEstimator {
-  constructor(directory) {
+  constructor(directory, limitGb) {
     this.directory = directory;
+    this.limitGb = limitGb;
+    this.limitBytes = limitGb * 1024 * 1024 * 1024;
     this.totalSize = 0;
     this.totalFiles = 0;
     this.filesByExt = {};
@@ -66,14 +119,14 @@ class CacheSizeEstimator {
   }
 
   async analyze() {
-    console.log(`🔍 Analyzing directory: ${this.directory}\n`);
+    console.log(`Analyzing directory: ${this.directory}\n`);
 
     try {
       await this.scanDirectory(this.directory);
       this.printResults();
     } catch (error) {
-      console.error(`❌ Error: ${error.message}`);
-      process.exit(1);
+      console.error(`Error: ${error.message}`);
+      process.exit(EXIT_ERROR);
     }
   }
 
@@ -81,8 +134,8 @@ class CacheSizeEstimator {
     let entries;
     try {
       entries = await readdir(dir, { withFileTypes: true });
-    } catch (error) {
-      console.error(`⚠️  Cannot read directory: ${dir}`);
+    } catch {
+      console.error(`Warning: cannot read directory: ${dir}`);
       return;
     }
 
@@ -90,7 +143,6 @@ class CacheSizeEstimator {
       const fullPath = join(dir, entry.name);
 
       if (entry.isDirectory()) {
-        // node_modules/.cache などのキャッシュディレクトリをスキップ
         if (entry.name === ".git" || entry.name === ".DS_Store") {
           continue;
         }
@@ -108,22 +160,20 @@ class CacheSizeEstimator {
       const ext = extname(filePath).toLowerCase();
 
       this.totalSize += size;
-      this.totalFiles++;
+      this.totalFiles += 1;
 
-      // 拡張子別の集計
       this.filesByExt[ext] = (this.filesByExt[ext] || 0) + 1;
       this.sizeByExt[ext] = (this.sizeByExt[ext] || 0) + size;
 
-      // 大きなファイルを記録（>10MB）
       if (size > 10 * 1024 * 1024) {
         this.largeFiles.push({
           path: filePath,
-          size: size,
-          ext: ext,
+          size,
+          ext,
         });
       }
-    } catch (error) {
-      // ファイル読み取りエラーは無視
+    } catch {
+      // ignore file errors
     }
   }
 
@@ -139,15 +189,13 @@ class CacheSizeEstimator {
   }
 
   printResults() {
-    console.log("📊 Cache Size Analysis\n");
-    console.log("═".repeat(60));
+    console.log("Cache Size Analysis\n");
+    console.log("=".repeat(60));
 
-    // 基本情報
-    console.log(`\n📁 Directory: ${this.directory}`);
-    console.log(`📄 Total files: ${this.totalFiles.toLocaleString()}`);
-    console.log(`💾 Total size: ${this.formatBytes(this.totalSize)}`);
+    console.log(`\nDirectory: ${this.directory}`);
+    console.log(`Total files: ${this.totalFiles.toLocaleString()}`);
+    console.log(`Total size: ${this.formatBytes(this.totalSize)}`);
 
-    // 圧縮後のサイズ見積もり
     const compressedSize = this.estimateCompressedSize();
     const compressionRatio = (
       (1 - compressedSize / this.totalSize) *
@@ -155,37 +203,32 @@ class CacheSizeEstimator {
     ).toFixed(1);
 
     console.log(
-      `\n🗜️  Estimated compressed size: ${this.formatBytes(compressedSize)}`,
+      `\nEstimated compressed size: ${this.formatBytes(compressedSize)}`,
     );
-    console.log(`   Compression ratio: ${compressionRatio}%`);
+    console.log(`Compression ratio: ${compressionRatio}%`);
 
-    // GitHub Actions 制限との比較
-    const percentOfLimit = ((compressedSize / CACHE_LIMIT_BYTES) * 100).toFixed(
+    const percentOfLimit = ((compressedSize / this.limitBytes) * 100).toFixed(
       1,
     );
-    console.log(`\n📏 GitHub Actions Cache Limit`);
-    console.log(`   Limit: ${CACHE_LIMIT_GB}GB`);
-    console.log(`   Usage: ${percentOfLimit}% of limit`);
+    console.log(`\nCache limit: ${this.limitGb}GB`);
+    console.log(`Usage: ${percentOfLimit}% of limit`);
 
-    if (compressedSize > CACHE_LIMIT_BYTES) {
+    if (compressedSize > this.limitBytes) {
       console.log(
-        `   ⚠️  WARNING: Exceeds cache limit by ${this.formatBytes(compressedSize - CACHE_LIMIT_BYTES)}`,
+        `Warning: exceeds limit by ${this.formatBytes(compressedSize - this.limitBytes)}`,
       );
     } else if (percentOfLimit > 80) {
-      console.log(
-        `   ⚠️  WARNING: Approaching cache limit (>${percentOfLimit}%)`,
-      );
+      console.log(`Warning: approaching limit (${percentOfLimit}%)`);
     } else {
-      console.log(`   ✅ Within cache limit`);
+      console.log("Within cache limit");
     }
 
-    // ファイルタイプ別の内訳（上位10件）
-    console.log(`\n📋 Top File Types by Size\n`);
-    console.log("─".repeat(60));
+    console.log(`\nTop File Types by Size\n`);
+    console.log("-".repeat(60));
     console.log(
       ` ${"Ext".padEnd(10)} ${"Count".padStart(8)}  ${"Size".padStart(12)}  ${"%".padStart(6)}`,
     );
-    console.log("─".repeat(60));
+    console.log("-".repeat(60));
 
     const sortedExts = Object.entries(this.sizeByExt)
       .sort(([, a], [, b]) => b - a)
@@ -201,10 +244,9 @@ class CacheSizeEstimator {
       );
     }
 
-    // 大きなファイル
     if (this.largeFiles.length > 0) {
-      console.log(`\n⚠️  Large Files (>10MB)\n`);
-      console.log("─".repeat(60));
+      console.log(`\nLarge Files (>10MB)\n`);
+      console.log("-".repeat(60));
 
       this.largeFiles
         .sort((a, b) => b.size - a.size)
@@ -217,22 +259,20 @@ class CacheSizeEstimator {
         });
     }
 
-    // 推奨事項
-    console.log(`\n💡 Recommendations\n`);
-    console.log("─".repeat(60));
+    console.log(`\nRecommendations\n`);
+    console.log("-".repeat(60));
 
-    if (compressedSize > CACHE_LIMIT_BYTES) {
-      console.log("   • Split cache into multiple smaller caches");
-      console.log("   • Exclude unnecessary files or directories");
-      console.log("   • Consider using cache-from/cache-to for Docker builds");
+    if (compressedSize > this.limitBytes) {
+      console.log("  • Split cache into multiple smaller caches");
+      console.log("  • Exclude unnecessary files or directories");
+      console.log("  • Consider docker cache-to/cache-from");
     } else if (percentOfLimit > 80) {
-      console.log("   • Monitor cache size growth");
-      console.log("   • Review if all cached files are necessary");
+      console.log("  • Monitor cache size growth");
+      console.log("  • Review if all cached files are necessary");
     }
 
     if (this.largeFiles.length > 0) {
-      console.log("   • Review large files - can they be excluded?");
-      console.log("   • Consider separate caches for large binaries");
+      console.log("  • Review large files for exclusion");
     }
 
     const textExtensions = [
@@ -251,12 +291,10 @@ class CacheSizeEstimator {
     const textPercent = (textSize / this.totalSize) * 100;
 
     if (textPercent > 50) {
-      console.log(
-        "   • High percentage of text files - good compression expected",
-      );
+      console.log("  • High percentage of text files - good compression expected");
     }
 
-    console.log("\n" + "═".repeat(60) + "\n");
+    console.log("\n" + "=".repeat(60) + "\n");
   }
 
   formatBytes(bytes) {
@@ -270,35 +308,24 @@ class CacheSizeEstimator {
   }
 }
 
-// メイン処理
 async function main() {
   const args = process.argv.slice(2);
-
   if (args.length === 0) {
-    console.log(`
-GitHub Actions Cache Size Estimator
-
-Usage:
-  node estimate-cache-size.mjs <directory>
-
-Examples:
-  node estimate-cache-size.mjs ~/.pnpm
-  node estimate-cache-size.mjs node_modules
-  node estimate-cache-size.mjs target/
-  node estimate-cache-size.mjs .next/cache
-
-This tool analyzes directory size and estimates compressed size
-to help you stay within GitHub Actions 10GB cache limit.
-    `);
-    process.exit(1);
+    showHelp();
+    process.exit(EXIT_ARGS_ERROR);
   }
 
-  const directory = args[0];
-  const estimator = new CacheSizeEstimator(directory);
+  const options = parseArgs(args);
+  if (!options.directory) {
+    showHelp();
+    process.exit(EXIT_ARGS_ERROR);
+  }
+
+  const estimator = new CacheSizeEstimator(options.directory, options.limitGb);
   await estimator.analyze();
 }
 
 main().catch((error) => {
-  console.error(`❌ Fatal error: ${error.message}`);
-  process.exit(1);
+  console.error(`Error: ${error.message}`);
+  process.exit(EXIT_ERROR);
 });

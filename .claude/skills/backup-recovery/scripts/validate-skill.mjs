@@ -30,8 +30,7 @@ Options:
 
 function getLineCount(path) {
   const content = readFileSync(path, 'utf-8');
-  return content.split('
-').length;
+  return content.split('\n').length;
 }
 
 function assertExists(path, label) {
@@ -89,12 +88,28 @@ async function main() {
     'EVALS.json',
     'CHANGELOG.md',
     'LOGS.md',
+    'scripts/verify-backup.mjs',
     'scripts/log_usage.mjs',
     'scripts/validate-skill.mjs',
-    'resources/Level1_basics.md',
-    'resources/Level2_intermediate.md',
-    'resources/Level3_advanced.md',
-    'resources/Level4_expert.md',
+    'assets/backup-policy-template.md',
+    'assets/recovery-runbook-template.md',
+    'assets/recovery-validation-checklist.md',
+    'agents/analyze-recovery-requirements.md',
+    'agents/define-rpo-rto.md',
+    'agents/design-backup-strategy.md',
+    'agents/create-recovery-runbook.md',
+    'agents/validate-recovery-readiness.md',
+    'references/Level1_basics.md',
+    'references/Level2_intermediate.md',
+    'references/Level3_advanced.md',
+    'references/Level4_expert.md',
+    'references/backup-strategy-layers.md',
+    'references/disaster-recovery-planning.md',
+    'references/recovery-procedures.md',
+    'references/rpo-rto-design.md',
+    'references/turso-backup-guide.md',
+    'references/requirements-index.md',
+    'references/legacy-skill.md',
   ];
 
   for (const file of requiredFiles) {
@@ -102,10 +117,10 @@ async function main() {
   }
 
   validateLineLimit(join(SKILL_DIR, 'SKILL.md'), 500);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level1_basics.md'), 200);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level2_intermediate.md'), 300);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level3_advanced.md'), 400);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level4_expert.md'), 500);
+  validateLineLimit(join(SKILL_DIR, 'references/Level1_basics.md'), 200);
+  validateLineLimit(join(SKILL_DIR, 'references/Level2_intermediate.md'), 300);
+  validateLineLimit(join(SKILL_DIR, 'references/Level3_advanced.md'), 400);
+  validateLineLimit(join(SKILL_DIR, 'references/Level4_expert.md'), 500);
 
   validateEvals(join(SKILL_DIR, 'EVALS.json'));
 

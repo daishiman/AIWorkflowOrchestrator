@@ -1,114 +1,148 @@
 ---
-name: .claude/skills/requirements-documentation/SKILL.md
+name: requirements-documentation
 description: |
-  要件ドキュメントの構造化、品質メトリクス、ハンドオフプロトコルを提供します。
-  カール・ウィーガーズの要求工学理論に基づき、ステークホルダーと開発チームの両方にとって
-  有用なドキュメントを作成します。
-  
-  📖 参照書籍:
-  - 『Don't Make Me Think』（Steve Krug）: ユーザビリティ
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/requirements-document-template.md`: 要件定義書の標準テンプレート（セクション構造と記述例）
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when documenting requirements or preparing for stakeholder reviews.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Don't Make Me Think"
-    author: "Steve Krug"
-    concepts:
-      - "ユーザビリティ"
-      - "情報設計"
+  要件ドキュメントの専門スキル。
+  要件仕様書、ユースケース記述、トレーサビリティを提供します。
+
+  Anchors:
+  • 『Software Requirements』（Karl Wiegers） / 適用: 要件管理 / 目的: 明確な仕様
+  • 『Don't Make Me Think』（Steve Krug） / 適用: 情報設計 / 目的: ユーザビリティ
+
+  Trigger:
+  要件ドキュメント作成時、仕様書記述時、要件トレーサビリティ設計時に使用
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# Requirements Documentation
+# 要件ドキュメンテーション
 
 ## 概要
 
-要件ドキュメントの構造化、品質メトリクス、ハンドオフプロトコルを提供します。
-カール・ウィーガーズの要求工学理論に基づき、ステークホルダーと開発チームの両方にとって
-有用なドキュメントを作成します。
+要件ドキュメントの構造化、品質メトリクス、ハンドオフプロトコルを提供します。カール・ウィーガーズの要求工学理論に基づき、ステークホルダーと開発チームの両方にとって有用なドキュメントを作成します。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+このスキルは以下の場面で活用されます：
 
+- 要件定義書や仕様書の作成
+- 要件ドキュメントの標準構造の設計
+- ステークホルダーレビューの準備
+- 設計フェーズへのハンドオフ実施
+- ドキュメント品質基準の適用
+
+詳細な実装手順は `references/Level1_basics.md`（基礎）と `references/Level2_intermediate.md`（実務）を参照してください。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件収集と分析
 
-**目的**: タスクの目的と前提条件を明確にする
+**目的**: ステークホルダーからの要件を収集し、ドキュメント化の準備を整える
 
-**アクション**:
+**主要タスク**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+1. `references/Level1_basics.md` で要件ドキュメントの基本構造を確認
+2. 関連ステークホルダー、制約条件、依存関係を把握
+3. ドキュメント作成に必要なレベル（Level 1-4）を決定
+4. テンプレート（`assets/requirements-document-template.md`）を選定
 
-### Phase 2: スキル適用
+**成果物**: 要件収集チェックリスト、ステークホルダー分析表
 
-**目的**: スキルの指針に従って具体的な作業を進める
+### Phase 2: ドキュメント構造設計と実装
 
-**アクション**:
+**目的**: 収集した要件を標準化されたドキュメント形式で設計・実装する
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+**主要タスク**:
 
-### Phase 3: 検証と記録
+1. `references/Level2_intermediate.md` で実務的な構成パターンを確認
+2. テンプレートを基に要件定義書の構造を設計
+3. 要件ごとの優先度、受入基準、依存関係を整理
+4. `references/Level3_advanced.md` で高度なテクニック確認（必要に応じて）
 
-**目的**: 成果物の検証と実行記録の保存
+**成果物**: 初期要件定義書ドラフト、要件マトリックス
 
-**アクション**:
+### Phase 3: 検証、レビュー、最終化
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+**目的**: ドキュメントの品質を確保し、ステークホルダーの承認を得る
 
+**主要タスク**:
+
+1. `scripts/validate-skill.mjs` でドキュメント構造の妥当性を検証
+2. ステークホルダーレビューを実施し、フィードバックを収集
+3. `references/requirements-index.md` と整合性を確認
+4. 最終ドキュメントを確定し、設計フェーズへのハンドオフを準備
+5. `scripts/log_usage.mjs` で実行記録を保存
+
+**成果物**: 最終要件定義書、ハンドオフレポート、品質メトリクス
+
+## Task 仕様ナビ
+
+各要件ドキュメンテーションのタスク種別と対応リソースの関連付け：
+
+| Task 種別                    | 説明                                     | 対応リソース                         | 推奨レベル | 成果物                       |
+| ---------------------------- | ---------------------------------------- | ------------------------------------ | ---------- | ---------------------------- |
+| **要件収集**                 | ステークホルダーインタビューと要件の抽出 | Level1_basics.md                     | Level 1-2  | 要件リスト、ユースケース     |
+| **要件分析**                 | 収集した要件の優先度付けと分類           | Level2_intermediate.md               | Level 2-3  | 要件マトリックス、優先度表   |
+| **要件ドキュメント作成**     | 標準テンプレートを使用した定義書の作成   | requirements-document-template.md    | Level 2-3  | 要件定義書ドラフト           |
+| **受入基準定義**             | 各要件に対する検証基準の設定             | Level3_advanced.md                   | Level 3    | 受入基準表、検証計画         |
+| **品質検証**                 | ドキュメント構造と内容の妥当性確認       | validate-skill.mjs                   | Level 2-3  | 品質レポート、修正指摘       |
+| **ステークホルダーレビュー** | 関係者による承認プロセス                 | Level2_intermediate.md               | Level 2-3  | レビューコメント、修正案     |
+| **ハンドオフ準備**           | 設計フェーズへの引き継ぎ書類作成         | Level3_advanced.md, Level4_expert.md | Level 3-4  | ハンドオフドキュメント       |
+| **メトリクス記録**           | スキル利用の自動評価と記録               | log_usage.mjs                        | 全Level    | 使用ログ、メトリクスレポート |
 
 ## ベストプラクティス
 
 ### すべきこと
-- 要件定義書、要件仕様書を作成する時
-- 要件ドキュメントの標準構造が必要な時
-- ステークホルダーレビューの準備をする時
-- 設計フェーズへのハンドオフを行う時
-- ドキュメントの品質基準を適用する時
+
+- **早期段階でのテンプレート採用**: プロジェクト開始時に `assets/requirements-document-template.md` を活用し、一貫性のあるドキュメント構造を確立する
+- **段階的なレベル適用**: Level1_basics.md で基本を理解してからLevel2以上の実務ガイドに進む
+- **ステークホルダー参画**: 要件収集・分析段階から関係者を巻き込み、合意形成を進める
+- **受入基準の明確化**: 各要件に対して、検証可能で計測可能な基準を定義する
+- **品質チェック**: `scripts/validate-skill.mjs` を用いてドキュメント構造を検証し、欠落や矛盾を早期に発見
+- **変更管理**: 要件の追加・変更があった場合、ハンドオフ前に影響範囲を把握し記録
+- **優先度の明示**: MoSCoW法（Must/Should/Could/Won't）など標準的な優先度分類を使用
+- **ドキュメント保守**: `references/requirements-index.md` と実ドキュメントの整合性を定期的に確認
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- **テンプレート無視**: フォーマットを統一せず自由記述で進めることで、後段階での混乱や手戻りが発生
+- **不正確な受入基準**: 曖昧または測定不可能な基準を設定すると、検証フェーズで紛争が生じる
+- **ステークホルダー未確認**: 要件を確定する前に関係者からの承認を得ないと、後の修正コストが増加
+- **優先度の曖昧性**: すべての要件を同等レベルで扱うと、実装計画立案時に判断が困難になる
+- **ハンドオフ遅延**: 最終化前に設計フェーズへの引き継ぎを始めると、要件変更が連鎖的に発生
+- **品質検証スキップ**: `validate-skill.mjs` の実行を省くと、構造的な欠落に気づかず進むリスク
+- **要件トレーサビリティ欠如**: 要件から実装、テストへの対応関係を記録しないと、網羅性の確認が困難
 
-### リソース読み取り
-```bash
-cat .claude/skills/requirements-documentation/resources/Level1_basics.md
-cat .claude/skills/requirements-documentation/resources/Level2_intermediate.md
-cat .claude/skills/requirements-documentation/resources/Level3_advanced.md
-cat .claude/skills/requirements-documentation/resources/Level4_expert.md
-cat .claude/skills/requirements-documentation/resources/legacy-skill.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/requirements-documentation/scripts/log_usage.mjs --help
-node .claude/skills/requirements-documentation/scripts/validate-skill.mjs --help
-```
+### 学習リソース（レベル別ガイド）
 
-### テンプレート参照
-```bash
-cat .claude/skills/requirements-documentation/templates/requirements-document-template.md
-```
+| リソース                             | 内容                                                   | 用途                                             |
+| ------------------------------------ | ------------------------------------------------------ | ------------------------------------------------ |
+| **references/Level1_basics.md**       | 要件ドキュメンテーションの基本概念と標準構造           | プロジェクト初期段階、チーム全体への教育         |
+| **references/Level2_intermediate.md** | 実務的なドキュメント構成パターンとステークホルダー管理 | 実際のドキュメント作成、レビュープロセス         |
+| **references/Level3_advanced.md**     | 複雑な要件分析、優先度付け、トレーサビリティ管理       | 大規模プロジェクト、多数ステークホルダー環境     |
+| **references/Level4_expert.md**       | 規制対応、品質保証フレームワーク、ベストプラクティス   | ミッションクリティカルシステム、業界標準への準拠 |
+
+### テンプレートとツール
+
+| リソース                                     | 説明                                                       | 実行方法                                             |
+| -------------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------- |
+| **assets/requirements-document-template.md** | 要件定義書の標準テンプレート（セクション構造と記述例含む） | テキストエディタで開き、プロジェクト用にカスタマイズ |
+| **references/requirements-index.md**          | 要求仕様の索引（docs/00-requirements と同期）              | 要件の一覧確認、参照用ドキュメント                   |
+| **scripts/validate-skill.mjs**               | ドキュメント構造の妥当性検証スクリプト                     | `node scripts/validate-skill.mjs [document-path]`    |
+| **scripts/log_usage.mjs**                    | スキル利用の自動評価・記録スクリプト                       | `node scripts/log_usage.mjs --help` で詳細確認       |
+
+### 参考文献
+
+- **『Don't Make Me Think』**（Steve Krug）: ユーザビリティと情報設計の基本原則
+- **カール・ウィーガーズの要求工学理論**: 本スキルの根本的な哲学的背景
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                                                                                                                                                                   |
+| ------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様への全面更新：YAML frontmatterを標準化、Triggerを日本語化、Task仕様ナビテーブルを追加、ワークフローを詳細化、ベストプラクティスを充実化、リソース参照をテーブル形式で整理 |
+| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added                                                                                                                                               |

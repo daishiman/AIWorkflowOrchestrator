@@ -9,19 +9,19 @@ description: |
   - 『Test-Driven Development: By Example』（Kent Beck）: Red-Green-Refactor
   
   📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/ab-testing-guide.md`: プロンプトA/Bテスト設計（サンプルサイズ、メトリクス、成功基準）
-  - `resources/automated-evaluation.md`: LLM-as-a-Judge、自動スコアリング、回帰テスト自動化手法
-  - `resources/evaluation-metrics.md`: 精度、一貫性、完全性、レイテンシ、コスト等の定量評価指標
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
+  - `references/Level1_basics.md`: レベル1の基礎ガイド
+  - `references/Level2_intermediate.md`: レベル2の実務ガイド
+  - `references/Level3_advanced.md`: レベル3の応用ガイド
+  - `references/Level4_expert.md`: レベル4の専門ガイド
+  - `references/ab-testing-guide.md`: プロンプトA/Bテスト設計（サンプルサイズ、メトリクス、成功基準）
+  - `references/automated-evaluation.md`: LLM-as-a-Judge、自動スコアリング、回帰テスト自動化手法
+  - `references/evaluation-metrics.md`: 精度、一貫性、完全性、レイテンシ、コスト等の定量評価指標
+  - `references/legacy-skill.md`: 旧SKILL.mdの全文
   - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
   - `scripts/prompt-evaluator.mjs`: Prompt Evaluator Script
   - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/evaluation-rubric.md`: 評価ルーブリックテンプレート
-  - `templates/test-case-template.md`: テストケーステンプレート
+  - `assets/evaluation-rubric.md`: 評価ルーブリックテンプレート
+  - `assets/test-case-template.md`: テストケーステンプレート
   
   Use proactively when handling prompt testing evaluation tasks.
 version: 1.0.0
@@ -43,7 +43,7 @@ references:
 A/Bテスト、評価メトリクス、自動化されたプロンプト品質保証により、
 本番環境で信頼性の高いプロンプトを実現します。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
 
 ## ワークフロー
@@ -54,8 +54,8 @@ A/Bテスト、評価メトリクス、自動化されたプロンプト品質�
 
 **アクション**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要な references/scripts/templates を特定
 
 ### Phase 2: スキル適用
 
@@ -92,14 +92,14 @@ A/Bテスト、評価メトリクス、自動化されたプロンプト品質�
 
 ### リソース読み取り
 ```bash
-cat .claude/skills/prompt-testing-evaluation/resources/Level1_basics.md
-cat .claude/skills/prompt-testing-evaluation/resources/Level2_intermediate.md
-cat .claude/skills/prompt-testing-evaluation/resources/Level3_advanced.md
-cat .claude/skills/prompt-testing-evaluation/resources/Level4_expert.md
-cat .claude/skills/prompt-testing-evaluation/resources/ab-testing-guide.md
-cat .claude/skills/prompt-testing-evaluation/resources/automated-evaluation.md
-cat .claude/skills/prompt-testing-evaluation/resources/evaluation-metrics.md
-cat .claude/skills/prompt-testing-evaluation/resources/legacy-skill.md
+cat .claude/skills/prompt-testing-evaluation/references/Level1_basics.md
+cat .claude/skills/prompt-testing-evaluation/references/Level2_intermediate.md
+cat .claude/skills/prompt-testing-evaluation/references/Level3_advanced.md
+cat .claude/skills/prompt-testing-evaluation/references/Level4_expert.md
+cat .claude/skills/prompt-testing-evaluation/references/ab-testing-guide.md
+cat .claude/skills/prompt-testing-evaluation/references/automated-evaluation.md
+cat .claude/skills/prompt-testing-evaluation/references/evaluation-metrics.md
+cat .claude/skills/prompt-testing-evaluation/references/legacy-skill.md
 ```
 
 ### スクリプト実行
@@ -111,8 +111,8 @@ node .claude/skills/prompt-testing-evaluation/scripts/validate-skill.mjs --help
 
 ### テンプレート参照
 ```bash
-cat .claude/skills/prompt-testing-evaluation/templates/evaluation-rubric.md
-cat .claude/skills/prompt-testing-evaluation/templates/test-case-template.md
+cat .claude/skills/prompt-testing-evaluation/assets/evaluation-rubric.md
+cat .claude/skills/prompt-testing-evaluation/assets/test-case-template.md
 ```
 
 ## 変更履歴

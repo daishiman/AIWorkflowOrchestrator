@@ -1,112 +1,117 @@
 ---
-name: .claude/skills/electron-ui-patterns/SKILL.md
+name: electron-ui-patterns
 description: |
-  ElectronデスクトップアプリケーションのUI実装パターンと設計知識
-  
-  📖 参照書籍:
-  - 『Don't Make Me Think』（Steve Krug）: ユーザビリティ
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/native-ui.md`: ネイティブUI要素（メニュー、ダイアログ、通知）
-  - `resources/window-management.md`: BrowserWindow管理詳細
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/frameless-window.ts`: フレームレスウィンドウテンプレート
-  
-  Use proactively when handling electron ui patterns tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Don't Make Me Think"
-    author: "Steve Krug"
-    concepts:
-      - "ユーザビリティ"
-      - "情報設計"
+  ElectronデスクトップアプリケーションのUI実装パターンと設計知識。
+  BrowserWindow管理、ネイティブUI要素、フレームレスウィンドウを提供。
+
+  Anchors:
+  • Electron API / 適用: BrowserWindow・Menu・Tray / 目的: ネイティブUI実装
+  • Don't Make Me Think / 適用: ウィンドウレイアウト / 目的: ユーザビリティ向上
+  • Electron Security / 適用: preload・contextIsolation / 目的: セキュアなUI実装
+
+  Trigger:
+  Use when configuring BrowserWindow, implementing custom titlebars, designing native menus, developing system tray apps, or building frameless windows.
+  BrowserWindow, Menu, Tray, frameless window, custom titlebar, native UI
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# .claude/skills/electron-ui-patterns/SKILL.md
+# Electron UI Patterns
 
 ## 概要
 
-ElectronデスクトップアプリケーションのUI実装パターンと設計知識
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+ElectronデスクトップアプリケーションのUI実装パターンと設計知識を提供。
+BrowserWindow管理、ネイティブUI要素の活用、フレームレスウィンドウの実装を支援する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: UI要件の整理
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 実装対象のUI要素を特定
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 実装対象を特定（BrowserWindow、メニュー、ダイアログ）
+2. `references/` で対応するパターンを確認
+3. プロジェクト要件に合致するパターンを選定
+
+### Phase 2: UI実装
+
+**目的**: UIパターンに従って実装
+
+**アクション**:
+
+1. 該当する`agents/`のTask仕様書を参照
+2. `assets/frameless-window.ts` などテンプレートを活用
+3. BrowserWindow設定、スタイリング、イベントハンドリングを実装
+4. ネイティブUI要素（メニュー、ダイアログ、トレイ）を統合
 
 ### Phase 3: 検証と記録
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: 動作検証と記録
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. ウィンドウ表示、メニュー動作をテスト
+2. `scripts/log_usage.mjs` で記録
 
+## Task仕様ナビ
+
+| Task                | 起動タイミング             | 入力             | 出力                  |
+| ------------------- | -------------------------- | ---------------- | --------------------- |
+| browserwindow-setup | BrowserWindow設定時        | プロジェクト要件 | 初期化コード・preload |
+| custom-titlebar     | カスタムタイトルバー実装時 | デザイン仕様     | フレームレス設定・CSS |
+| native-menu         | ネイティブメニュー実装時   | 機能要件         | メニュー構築コード    |
+| system-tray         | システムトレイ設定時       | アイコン画像     | Tray設定コード        |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- BrowserWindowを作成・設定する時
-- ネイティブメニューを実装する時
-- カスタムタイトルバーを設計する時
-- システムトレイアプリを作成する時
+
+- **コンテキスト分離**: preload.jsでコンテキストを分離
+- **BrowserWindow最小化**: 必要最小限の機能のみ有効化
+- **IPC通信**: メインとレンダラーの分離
+- **ネイティブUI活用**: プラットフォーム固有のMenu/Dialog/Tray
+- **状態永続化**: ウィンドウ位置・サイズを保存
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- **nodeIntegration有効化**: セキュリティリスク
+- **enableRemoteModule使用**: 直接APIアクセスは避ける
+- **synchronous IPC**: 非同期通信を使用
+- **プラットフォーム差異無視**: Windows/macOS/Linuxの違いを考慮
 
-### リソース読み取り
-```bash
-cat .claude/skills/electron-ui-patterns/resources/Level1_basics.md
-cat .claude/skills/electron-ui-patterns/resources/Level2_intermediate.md
-cat .claude/skills/electron-ui-patterns/resources/Level3_advanced.md
-cat .claude/skills/electron-ui-patterns/resources/Level4_expert.md
-cat .claude/skills/electron-ui-patterns/resources/legacy-skill.md
-cat .claude/skills/electron-ui-patterns/resources/native-ui.md
-cat .claude/skills/electron-ui-patterns/resources/window-management.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/electron-ui-patterns/scripts/log_usage.mjs --help
-node .claude/skills/electron-ui-patterns/scripts/validate-skill.mjs --help
-```
+### references/（詳細知識）
 
-### テンプレート参照
-```bash
-cat .claude/skills/electron-ui-patterns/templates/frameless-window.ts
-```
+| リソース       | パス                                                                   | 用途                 |
+| -------------- | ---------------------------------------------------------------------- | -------------------- |
+| ネイティブUI   | See [references/native-ui.md](references/native-ui.md)                 | メニュー・ダイアログ |
+| ウィンドウ管理 | See [references/window-management.md](references/window-management.md) | BrowserWindow詳細    |
+
+### scripts/（決定論的処理）
+
+| スクリプト      | 用途               | 使用例                                                          |
+| --------------- | ------------------ | --------------------------------------------------------------- |
+| `log_usage.mjs` | フィードバック記録 | `node scripts/log_usage.mjs --result success --phase "Phase 3"` |
+
+### assets/（テンプレート）
+
+| テンプレート          | 用途                               |
+| --------------------- | ---------------------------------- |
+| `frameless-window.ts` | フレームレスウィンドウテンプレート |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                              |
+| ------- | ---------- | ------------------------------------ |
+| 2.0.0   | 2026-01-01 | 18-skills.md仕様完全準拠、構造最適化 |
+| 1.0.0   | 2025-12-31 | 初版作成                             |

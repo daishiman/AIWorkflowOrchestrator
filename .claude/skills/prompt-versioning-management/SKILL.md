@@ -9,18 +9,18 @@ description: |
   - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 手順設計
   
   📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/deployment-patterns.md`: Blue-Green、Canary、Feature Flagなどのデプロイ戦略と実装手順
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/rollback-procedures.md`: 即座・段階的ロールバック手順とフォールバック設計パターン
-  - `resources/versioning-strategies.md`: セマンティックバージョニング、変更分類、依存関係管理の詳細
+  - `references/Level1_basics.md`: レベル1の基礎ガイド
+  - `references/Level2_intermediate.md`: レベル2の実務ガイド
+  - `references/Level3_advanced.md`: レベル3の応用ガイド
+  - `references/Level4_expert.md`: レベル4の専門ガイド
+  - `references/deployment-patterns.md`: Blue-Green、Canary、Feature Flagなどのデプロイ戦略と実装手順
+  - `references/legacy-skill.md`: 旧SKILL.mdの全文
+  - `references/rollback-procedures.md`: 即座・段階的ロールバック手順とフォールバック設計パターン
+  - `references/versioning-strategies.md`: セマンティックバージョニング、変更分類、依存関係管理の詳細
   - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
   - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/changelog-template.md`: 変更ログテンプレート
-  - `templates/deployment-checklist.md`: デプロイチェックリスト
+  - `assets/changelog-template.md`: 変更ログテンプレート
+  - `assets/deployment-checklist.md`: デプロイチェックリスト
   
   Use proactively when handling prompt versioning management tasks.
 version: 1.0.0
@@ -42,7 +42,7 @@ references:
 バージョン管理、デプロイ戦略、ロールバック、変更追跡により、
 本番環境で安全かつ効率的なプロンプト運用を実現します。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
 
 
 ## ワークフロー
@@ -53,8 +53,8 @@ references:
 
 **アクション**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
+2. 必要な references/scripts/templates を特定
 
 ### Phase 2: スキル適用
 
@@ -91,14 +91,14 @@ references:
 
 ### リソース読み取り
 ```bash
-cat .claude/skills/prompt-versioning-management/resources/Level1_basics.md
-cat .claude/skills/prompt-versioning-management/resources/Level2_intermediate.md
-cat .claude/skills/prompt-versioning-management/resources/Level3_advanced.md
-cat .claude/skills/prompt-versioning-management/resources/Level4_expert.md
-cat .claude/skills/prompt-versioning-management/resources/deployment-patterns.md
-cat .claude/skills/prompt-versioning-management/resources/legacy-skill.md
-cat .claude/skills/prompt-versioning-management/resources/rollback-procedures.md
-cat .claude/skills/prompt-versioning-management/resources/versioning-strategies.md
+cat .claude/skills/prompt-versioning-management/references/Level1_basics.md
+cat .claude/skills/prompt-versioning-management/references/Level2_intermediate.md
+cat .claude/skills/prompt-versioning-management/references/Level3_advanced.md
+cat .claude/skills/prompt-versioning-management/references/Level4_expert.md
+cat .claude/skills/prompt-versioning-management/references/deployment-patterns.md
+cat .claude/skills/prompt-versioning-management/references/legacy-skill.md
+cat .claude/skills/prompt-versioning-management/references/rollback-procedures.md
+cat .claude/skills/prompt-versioning-management/references/versioning-strategies.md
 ```
 
 ### スクリプト実行
@@ -109,8 +109,8 @@ node .claude/skills/prompt-versioning-management/scripts/validate-skill.mjs --he
 
 ### テンプレート参照
 ```bash
-cat .claude/skills/prompt-versioning-management/templates/changelog-template.md
-cat .claude/skills/prompt-versioning-management/templates/deployment-checklist.md
+cat .claude/skills/prompt-versioning-management/assets/changelog-template.md
+cat .claude/skills/prompt-versioning-management/assets/deployment-checklist.md
 ```
 
 ## 変更履歴

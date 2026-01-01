@@ -1,98 +1,79 @@
 {
-  "skill_name": "zero-trust-security",
-  "current_level": 1,
+  "skillName": "zero-trust-security",
+  "version": "2.0.0",
+  "lastUpdated": "2026-01-01",
   "levels": {
-    "1": {
-      "level": 1,
-      "name": "基礎",
-      "requirements": {
-        "min_usage_count": 0,
-        "min_success_rate": 0.0,
-        "min_satisfaction_score": 0.0,
-        "required_resources": [
-          "SKILL.md"
-        ]
-      },
-      "success_criteria": [
-        "SKILL.mdが存在し、基本タスクが実行可能"
+    "beginner": {
+      "description": "ゼロトラスト原則の基礎理解",
+      "criteria": [
+        "「信頼しない、常に検証する」の原則を説明できる",
+        "認証と認可の違いを理解している",
+        "最小権限の原則を適用できる"
       ]
     },
-    "2": {
-      "level": 2,
-      "name": "中級",
-      "requirements": {
-        "min_usage_count": 10,
-        "min_success_rate": 0.8,
-        "min_satisfaction_score": 0.7,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "scripts/log_usage.mjs"
-        ]
-      },
-      "success_criteria": [
-        "10回以上使用され、成功率80%以上"
+    "intermediate": {
+      "description": "認証・認可システムの実装",
+      "criteria": [
+        "MFAを適切に設計・実装できる",
+        "RBACポリシーを設計できる",
+        "JWTベースの認証フローを実装できる"
       ]
     },
-    "3": {
-      "level": 3,
-      "name": "上級",
-      "requirements": {
-        "min_usage_count": 50,
-        "min_success_rate": 0.9,
-        "min_satisfaction_score": 0.8,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/continuous-verification-implementation.md",
-          "resources/jit-access-patterns.md",
-          "resources/legacy-skill.md",
-          "resources/rbac-implementation.md",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/access-policy-template.yaml"
-        ]
-      },
-      "success_criteria": [
-        "50回以上使用され、成功率90%以上"
+    "advanced": {
+      "description": "継続的検証と動的ポリシー",
+      "criteria": [
+        "継続的認証を実装できる",
+        "リスクベース認証を設計できる",
+        "マイクロセグメンテーションを適用できる"
       ]
     },
-    "4": {
-      "level": 4,
-      "name": "専門",
-      "requirements": {
-        "min_usage_count": 100,
-        "min_success_rate": 0.95,
-        "min_satisfaction_score": 0.9,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/continuous-verification-implementation.md",
-          "resources/jit-access-patterns.md",
-          "resources/legacy-skill.md",
-          "resources/rbac-implementation.md",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/access-policy-template.yaml",
-          "LOGS.md"
-        ]
-      },
-      "success_criteria": [
-        "100回以上使用され、成功率95%以上"
+    "expert": {
+      "description": "エンタープライズゼロトラスト設計",
+      "criteria": [
+        "組織全体のゼロトラストアーキテクチャを設計できる",
+        "UEBAを活用した異常検出を実装できる",
+        "コンプライアンス要件に対応できる"
       ]
     }
   },
   "metrics": {
-    "total_usage_count": 0,
-    "success_count": 0,
-    "failure_count": 0,
-    "average_satisfaction": 0.0,
-    "last_evaluated": "2025-12-24T00:00:00Z"
-  }
+    "authCoverage": {
+      "target": "100%",
+      "description": "認証が必要なエンドポイントのカバー率"
+    },
+    "mfaAdoption": {
+      "target": ">= 90%",
+      "description": "MFA有効ユーザー率"
+    },
+    "policyCompliance": {
+      "target": ">= 95%",
+      "description": "ポリシー準拠率"
+    },
+    "trustScoreAccuracy": {
+      "target": ">= 85%",
+      "description": "信頼スコアの精度"
+    }
+  },
+  "evaluationCriteria": [
+    {
+      "id": "identity-verification",
+      "description": "継続的なID検証が実装されている",
+      "weight": 0.25
+    },
+    {
+      "id": "access-control",
+      "description": "最小権限原則に基づくアクセス制御",
+      "weight": 0.25
+    },
+    {
+      "id": "policy-enforcement",
+      "description": "ポリシーが全リクエストで適用されている",
+      "weight": 0.25
+    },
+    {
+      "id": "trust-evaluation",
+      "description": "動的な信頼評価が行われている",
+      "weight": 0.25
+    }
+  ]
 }

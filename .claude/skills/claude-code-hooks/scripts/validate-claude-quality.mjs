@@ -54,7 +54,7 @@ class QualityValidator {
         log.success(`Coverage: ${lineCoverage}%`);
       }
     } catch (error) {
-      this.results.warning = "Could not determine coverage";
+      this.results.warnings.push("Could not determine coverage");
       log.warning("Could not determine coverage");
     }
   }

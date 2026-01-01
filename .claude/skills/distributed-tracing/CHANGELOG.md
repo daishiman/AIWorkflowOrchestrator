@@ -1,11 +1,7 @@
-# Changelog
+# 変更履歴
 
-## [1.0.0] - 2025-12-24
+このファイルにはスキルの主な変更が記録されます。
 
-### Added
-- Spec-aligned metadata and required artifacts
-- scripts/log_usage.mjs for feedback loop
-- scripts/validate-skill.mjs for structure checks
+## [0.1.0] - 2026-01-02
 
-### Changed
-- SKILL.md structure aligned to specification
+- distributed-tracing の初期成果物を作成。

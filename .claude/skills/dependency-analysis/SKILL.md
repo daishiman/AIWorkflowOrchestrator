@@ -1,120 +1,148 @@
 ---
-name: .claude/skills/dependency-analysis/SKILL.md
+name: dependency-analysis
 description: |
-  ソフトウェアの依存関係分析と循環参照検出を専門とするスキル。
-  依存関係グラフの構築、循環依存の検出、安定度メトリクスの算出により、
-  アーキテクチャの健全性を評価します。
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/circular-dependency.md`: circular-dependency の詳細ガイド
-  - `resources/dependency-graph.md`: dependency-graph の詳細ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/stability-metrics.md`: stability-metrics の詳細ガイド
-  - `scripts/analyze-dependencies.mjs`: 依存関係を分析するスクリプト
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/dependency-report.md`: dependency-report のテンプレート
-  
-  Use proactively when handling dependency analysis tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "実践的改善"
-      - "品質維持"
----
+  依存関係の可視化、循環依存検出、安定度評価を体系化するスキル。
+  アーキテクチャの健全性を測定し、改善優先度を整理する。
 
-# Dependency Analysis
+  Anchors:
+  • Clean Architecture / 適用: 安定依存の原則 / 目的: 依存方向の評価
+  • Refactoring / 適用: 依存解消パターン / 目的: 循環依存の改善
+  • Graph Algorithms / 適用: 強連結成分 / 目的: 循環依存の検出
+
+  Trigger:
+  Use when analyzing module dependencies, detecting circular references, calculating stability metrics, or planning dependency refactoring.
+  dependency graph, circular dependency, stability metrics, coupling, sdp violation
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+---
+# dependency-analysis
 
 ## 概要
 
-ソフトウェアの依存関係分析と循環参照検出を専門とするスキル。
-依存関係グラフの構築、循環依存の検出、安定度メトリクスの算出により、
-アーキテクチャの健全性を評価します。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+依存関係の抽出から評価・改善提案までを一貫して支援し、保守性の高い構造を維持する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 依存関係整理
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 対象範囲と依存抽出条件を整理する。
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. `references/Level1_basics.md` で基本概念を確認する。
+2. `assets/dependency-analysis-checklist.md` で要件を整理する。
+3. `references/requirements-index.md` で要件整合を確認する。
 
-### Phase 3: 検証と記録
+**Task**: `agents/analyze-dependencies.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: 循環依存評価
+
+**目的**: 循環依存の検出と優先度を整理する。
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. `scripts/analyze-dependencies.mjs` で依存グラフを生成する。
+2. `references/circular-dependency.md` で解消方針を確認する。
+3. 影響範囲を整理する。
 
+**Task**: `agents/detect-cycles.md` を参照
+
+### Phase 3: 安定度評価
+
+**目的**: 安定度メトリクスを算出し、改善対象を整理する。
+
+**アクション**:
+
+1. `references/stability-metrics.md` で評価指標を確認する。
+2. Ca/Ce と不安定度を計算する。
+3. `assets/dependency-report.md` に結果を記録する。
+
+**Task**: `agents/calculate-stability.md` を参照
+
+### Phase 4: 可視化と検証
+
+**目的**: 結果を可視化し、改善提案をまとめる。
+
+**アクション**:
+
+1. `assets/graph-visualization-template.md` で可視化形式を整理する。
+2. `agents/visualize-graph.md` の観点で整理する。
+3. `scripts/log_usage.mjs` で記録を更新する。
+
+**Task**: `agents/visualize-graph.md` を参照
+
+## Task仕様ナビ
+
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-dependencies | Phase 1開始時 | 対象範囲 | 依存抽出条件、要件メモ |
+| detect-cycles | Phase 2開始時 | 依存グラフ | 循環依存一覧、優先度 |
+| calculate-stability | Phase 3開始時 | 依存グラフ | 安定度レポート |
+| visualize-graph | Phase 4開始時 | 分析結果 | 可視化コード、改善提案 |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- モジュール間の依存関係を可視化する時
-- 循環参照を検出・解消する時
-- アーキテクチャの安定性を評価する時
-- リファクタリングの影響範囲を分析する時
+
+| 推奨事項 | 理由 |
+| --- | --- |
+| 依存抽出条件を明示する | 誤検知を減らせる |
+| 循環依存の優先度を付ける | 改善順序が明確になる |
+| 安定度を定量化する | 説明責任を果たせる |
+| 可視化で共有する | 合意形成がしやすい |
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 依存グラフを放置する | 改善が進まない |
+| 優先度を付けない | 効果が薄い |
+| メトリクスを記録しない | 追跡ができない |
+| 可視化なしで共有 | 誤解が生まれる |
 
-### リソース読み取り
-```bash
-cat .claude/skills/dependency-analysis/resources/Level1_basics.md
-cat .claude/skills/dependency-analysis/resources/Level2_intermediate.md
-cat .claude/skills/dependency-analysis/resources/Level3_advanced.md
-cat .claude/skills/dependency-analysis/resources/Level4_expert.md
-cat .claude/skills/dependency-analysis/resources/circular-dependency.md
-cat .claude/skills/dependency-analysis/resources/dependency-graph.md
-cat .claude/skills/dependency-analysis/resources/legacy-skill.md
-cat .claude/skills/dependency-analysis/resources/stability-metrics.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/dependency-analysis/scripts/analyze-dependencies.mjs --help
-node .claude/skills/dependency-analysis/scripts/log_usage.mjs --help
-node .claude/skills/dependency-analysis/scripts/validate-skill.mjs --help
-```
+### scripts/（決定論的処理）
 
-### テンプレート参照
-```bash
-cat .claude/skills/dependency-analysis/templates/dependency-report.md
-```
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/analyze-dependencies.mjs` | 依存関係分析 |
+| `scripts/validate-skill.mjs` | スキル構造検証 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
 
-## 変更履歴
+### references/（詳細知識）
 
-| Version | Date | Changes |
+| リソース | パス | 読込条件 |
 | --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 循環依存評価時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 安定度評価時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 検証時 |
+| 循環依存 | [references/circular-dependency.md](references/circular-dependency.md) | 循環評価時 |
+| 依存グラフ | [references/dependency-graph.md](references/dependency-graph.md) | 抽出時 |
+| 安定度指標 | [references/stability-metrics.md](references/stability-metrics.md) | 評価時 |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+
+### assets/（テンプレート・素材）
+
+| アセット | 用途 |
+| --- | --- |
+| `assets/dependency-report.md` | 分析レポート |
+| `assets/dependency-analysis-checklist.md` | 依存分析チェックリスト |
+| `assets/graph-visualization-template.md` | 可視化テンプレート |
+
+### 運用ファイル
+
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |
