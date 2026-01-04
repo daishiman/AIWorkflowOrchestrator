@@ -1,116 +1,124 @@
 ---
-name: .claude/skills/multi-agent-systems/SKILL.md
+name: multi-agent-systems
 description: |
   マルチエージェントシステム設計を専門とするスキル。
-  エージェント間協調、ハンドオフプロトコル、情報受け渡しにより、
-  効果的な分散システムを構築します。
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 手順設計
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/collaboration-patterns.md`: Collaboration Patterns
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `scripts/analyze-collaboration.mjs`: 協調パターン検証とハンドオフプロトコル分析スクリプト
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/handoff-protocol-template.json`: エージェント間情報受け渡しの標準化されたJSONフォーマットテンプレート
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when designing multi-agent collaboration or handoff protocols.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "手順設計"
-      - "実践的改善"
+  複数のエージェント間の効果的な協調、ハンドオフプロトコルの設計、情報受け渡しメカニズムにより、
+  スケーラブルで保守性の高い分散システムを構築する。
+
+  Anchors:
+  • Building Microservices (Sam Newman) / 適用: サービス間の協調設計 / 目的: 疎結合で信頼性の高いエージェント連携
+  • Patterns of Enterprise Application Architecture (Martin Fowler) / 適用: ハンドオフパターン / 目的: 明確なプロトコル設計
+  • Working Effectively with Legacy Code (Michael Feathers) / 適用: 既存システムとの統合 / 目的: 段階的なエージェント導入
+
+  Trigger:
+  Use when designing multi-agent collaboration, defining handoff protocols, optimizing inter-agent communication, or managing agent dependencies.
+  multi-agent, agent collaboration, handoff protocol, delegation, chaining, parallel agents, feedback loop, orchestration
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+  - Task
 ---
 
-# Multi-Agent Systems
+# マルチエージェントシステム設計
 
 ## 概要
 
-マルチエージェントシステム設計を専門とするスキル。
-エージェント間協調、ハンドオフプロトコル、情報受け渡しにより、
-効果的な分散システムを構築します。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+複数のインテリジェントエージェントが協働するシステムの設計と実装を専門とするスキル。
+エージェント間の効果的なコミュニケーション、ハンドオフプロトコルの実装、情報受け渡しの最適化を通じて、
+スケーラブルで信頼性の高い分散システムを構築する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件分析と協調パターン選定
 
-**目的**: タスクの目的と前提条件を明確にする
+**目的**: マルチエージェントシステムの要件を分析し、最適な協調パターンを選定
 
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**参照エージェント**: `agents/requirements-analyst.md`
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. ビジネス要件と制約条件を分析
+2. `references/collaboration-patterns.md` で協調パターンを理解
+3. 4パターン（委譲・連鎖・並行・フィードバック）から最適なものを選定
+4. エージェント数、役割、相互作用パターンを特定
 
-### Phase 3: 検証と記録
+### Phase 2: プロトコル設計と実装
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: ハンドオフプロトコルと協調メカニズムを設計・実装
+
+**参照エージェント**: `agents/protocol-designer.md`
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. `assets/handoff-protocol-template.json` を参考にプロトコル定義
+2. エージェント間の依存関係グラフを作成
+3. 情報受け渡しフロー（input/output）を明確化
+4. エラーハンドリングと同期メカニズムを設計
+5. `scripts/analyze-collaboration.mjs` で設計を検証
 
+### Phase 3: 品質検証と最適化
+
+**目的**: 成果物の品質確認と実装の最適化
+
+**参照エージェント**: `agents/quality-validator.md`
+
+**アクション**:
+
+1. エージェント間の通信オーバーヘッドを分析
+2. スケーラビリティと信頼性を検証
+3. 終了条件とタイムアウトの妥当性を確認（特にフィードバックパターン）
+4. `scripts/log_usage.mjs` で実行記録を保存
+
+## リソース参照
+
+### 参照ドキュメント
+
+| ドキュメント                                                                 | 内容                       |
+| ---------------------------------------------------------------------------- | -------------------------- |
+| [references/basics.md](references/basics.md)                                 | マルチエージェント基本概念 |
+| [references/patterns.md](references/patterns.md)                             | 実装パターン、設計戦略     |
+| [references/collaboration-patterns.md](references/collaboration-patterns.md) | 4協調パターン詳細          |
+
+### エージェント
+
+| エージェント                     | 役割                       |
+| -------------------------------- | -------------------------- |
+| `agents/requirements-analyst.md` | 要件分析、協調パターン選定 |
+| `agents/protocol-designer.md`    | ハンドオフプロトコル設計   |
+| `agents/quality-validator.md`    | 品質検証、最適化提案       |
+
+### スクリプト
+
+| スクリプト                          | 用途                       |
+| ----------------------------------- | -------------------------- |
+| `scripts/analyze-collaboration.mjs` | 協調パターン分析、設計検証 |
+| `scripts/validate-skill.mjs`        | スキル構造検証             |
+| `scripts/log_usage.mjs`             | 使用記録                   |
+
+### テンプレート
+
+| テンプレート                            | 用途                     |
+| --------------------------------------- | ------------------------ |
+| `assets/handoff-protocol-template.json` | ハンドオフプロトコル定義 |
 
 ## ベストプラクティス
 
 ### すべきこと
-- 複数エージェントの協調を設計する時
-- ハンドオフプロトコルを定義する時
-- エージェント間の依存関係を設計する時
+
+- 明確なハンドオフプロトコル定義（標準フォーマット使用）
+- エラーハンドリング戦略の事前設計
+- 終了条件とタイムアウトの設定（特にフィードバックパターン）
+- 依存関係の可視化とドキュメント化
+- 非同期通信の活用（スケーラビリティ確保）
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
-
-### リソース読み取り
-```bash
-cat .claude/skills/multi-agent-systems/resources/Level1_basics.md
-cat .claude/skills/multi-agent-systems/resources/Level2_intermediate.md
-cat .claude/skills/multi-agent-systems/resources/Level3_advanced.md
-cat .claude/skills/multi-agent-systems/resources/Level4_expert.md
-cat .claude/skills/multi-agent-systems/resources/collaboration-patterns.md
-cat .claude/skills/multi-agent-systems/resources/legacy-skill.md
-```
-
-### スクリプト実行
-```bash
-node .claude/skills/multi-agent-systems/scripts/analyze-collaboration.mjs --help
-node .claude/skills/multi-agent-systems/scripts/log_usage.mjs --help
-node .claude/skills/multi-agent-systems/scripts/validate-skill.mjs --help
-```
-
-### テンプレート参照
-```bash
-cat .claude/skills/multi-agent-systems/templates/handoff-protocol-template.json
-```
-
-## 変更履歴
-
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+- 循環依存（エージェント間の循環参照）
+- 無限フィードバックループ（終了条件なし）
+- 過度な並行化（リソース枯渇）
+- プロトコルなしの通信
+- エラーハンドリングの省略

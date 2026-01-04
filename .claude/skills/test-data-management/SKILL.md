@@ -1,114 +1,141 @@
 ---
-name: .claude/skills/test-data-management/SKILL.md
+name: test-data-management
 description: |
-  E2Eテストのためのテストデータ管理戦略。
-  
-  📖 参照書籍:
-  - 『Test-Driven Development: By Example』（Kent Beck）: Red-Green-Refactor
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/cleanup-patterns.md`: Cleanup Patternsリソース
-  - `resources/data-isolation-techniques.md`: Data Isolation Techniquesリソース
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/seeding-strategies.md`: Seeding Strategiesリソース
-  - `scripts/generate-test-data.mjs`: Generate Test Dataスクリプト
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/fixture-template.ts`: Fixtureテンプレート
-  
-  Use proactively when handling test data management tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Test-Driven Development: By Example"
-    author: "Kent Beck"
-    concepts:
-      - "Red-Green-Refactor"
-      - "テスト設計"
+  テストデータの設計・生成・隔離・クリーンアップを体系化するスキル。
+  E2E/統合/単体テストの再現性を高め、データ依存による不安定化を防ぐ。
+
+  Anchors:
+  • Test-Driven Development: By Example / 適用: テストデータ設計 / 目的: 再現性と最小実装
+  • Growing Object-Oriented Software, Guided by Tests / 適用: フィクスチャ設計 / 目的: 依存性の分離
+
+  Trigger:
+  Use when planning or implementing test data setup, seeding, isolation, or cleanup.
+  test data, fixture, seeding, teardown
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# Test Data Management Skill
+# Test Data Management
 
 ## 概要
 
-E2Eテストのためのテストデータ管理戦略。
+テストに必要なデータを再現性高く用意し、テスト間の干渉を防ぐための実務スキル。フィクスチャ設計、シーディング戦略、データ分離、クリーンアップの判断を一貫した手順で支援する。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+---
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件とデータ境界の整理
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: テスト対象のデータ要件と分離境界を明確にする
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. テスト目的と対象ドメインを整理する
+2. 必要なエンティティと依存関係を洗い出す
+3. データ分離と再利用の境界を決める
+4. 制約と禁止事項（本番データ禁止など）を明文化する
 
-### Phase 3: 検証と記録
+**Task**: `agents/data-requirement-mapping.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: フィクスチャ/シーディング設計
+
+**目的**: 再現性と運用性を両立したデータ投入方式を設計する
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. フィクスチャ方針と生成方式を選択する
+2. シーディングの順序と依存を定義する
+3. 生成テンプレートと自動生成スクリプトを整備する
+4. 失敗時のロールバック手順を決める
 
+**Task**: `agents/fixture-strategy-design.md` を参照
+
+### Phase 3: 検証とクリーンアップ
+
+**目的**: データの再現性とクリーンアップの確実性を検証する
+
+**アクション**:
+
+1. 生成データの一意性と妥当性を確認する
+2. テスト実行後のクリーンアップ結果を検証する
+3. 再実行時の状態再現性を評価する
+4. 実行記録を残す
+
+**Task**: `agents/cleanup-validation.md` を参照
+
+---
+
+## Task仕様ナビ
+
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| data-requirement-mapping | Phase 1 開始時 | テスト目的/対象 | テストデータ要件定義 |
+| fixture-strategy-design | Phase 2 開始時 | 要件定義/制約 | フィクスチャ設計書 |
+| cleanup-validation | Phase 3 開始時 | 生成データ/実行結果 | クリーンアップ検証レポート |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
+
+---
 
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+| 推奨事項 | 理由 |
+| --- | --- |
+| テスト目的とデータ境界を最初に定義する | 生成範囲の過不足を防ぐため |
+| 一意性の担保方法を固定する | 並列実行時の衝突を避けるため |
+| シーディング順序を明記する | 依存関係の破綻を防ぐため |
+| クリーンアップを自動化する | 再現性と安定運用のため |
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 本番データを直接使用する | セキュリティと再現性のリスク |
+| グローバル共有データに依存する | テストの独立性が崩れる |
+| クリーンアップ確認を省略する | 後続テストの汚染につながる |
 
-### リソース読み取り
-```bash
-cat .claude/skills/test-data-management/resources/Level1_basics.md
-cat .claude/skills/test-data-management/resources/Level2_intermediate.md
-cat .claude/skills/test-data-management/resources/Level3_advanced.md
-cat .claude/skills/test-data-management/resources/Level4_expert.md
-cat .claude/skills/test-data-management/resources/cleanup-patterns.md
-cat .claude/skills/test-data-management/resources/data-isolation-techniques.md
-cat .claude/skills/test-data-management/resources/legacy-skill.md
-cat .claude/skills/test-data-management/resources/seeding-strategies.md
-```
+---
 
-### スクリプト実行
-```bash
-node .claude/skills/test-data-management/scripts/generate-test-data.mjs --help
-node .claude/skills/test-data-management/scripts/log_usage.mjs --help
-node .claude/skills/test-data-management/scripts/validate-skill.mjs --help
-```
+## リソース参照
 
-### テンプレート参照
-```bash
-cat .claude/skills/test-data-management/templates/fixture-template.ts
-```
+### scripts/（決定論的処理）
+
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/generate-test-data.mjs` | テストデータを生成する |
+| `scripts/validate-skill.mjs` | スキル構造と必須成果物を検証する |
+| `scripts/log_usage.mjs` | 実行記録を保存する |
+
+### references/（詳細知識）
+
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| 基礎概念 | [references/Level1_basics.md](references/Level1_basics.md) | Phase 1 で参照 |
+| 実務パターン | [references/Level2_intermediate.md](references/Level2_intermediate.md) | Phase 2 で参照 |
+| 応用戦略 | [references/Level3_advanced.md](references/Level3_advanced.md) | 高度化時に参照 |
+| エキスパート | [references/Level4_expert.md](references/Level4_expert.md) | 大規模対応時に参照 |
+| クリーンアップ | [references/cleanup-patterns.md](references/cleanup-patterns.md) | Phase 3 で参照 |
+| データ分離 | [references/data-isolation-techniques.md](references/data-isolation-techniques.md) | Phase 1 で参照 |
+| シーディング | [references/seeding-strategies.md](references/seeding-strategies.md) | Phase 2 で参照 |
+
+### assets/（テンプレート・素材）
+
+| アセット | 用途 |
+| --- | --- |
+| `assets/fixture-template.ts` | フィクスチャ実装の雛形 |
 
 ## 変更履歴
 
 | Version | Date | Changes |
 | --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| 3.0.0 | 2026-01-02 | スキル構造を刷新し、Task仕様と検証フローを再設計 |
+| 2.0.0 | 2025-12-31 | 18-skills.md仕様への準拠、Task仕様ナビ整備 |
+| 1.0.0 | 2025-12-24 | 初期バージョン |

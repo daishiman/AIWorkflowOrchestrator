@@ -30,8 +30,7 @@ Options:
 
 function getLineCount(path) {
   const content = readFileSync(path, 'utf-8');
-  return content.split('
-').length;
+  return content.split('\n').length;
 }
 
 function assertExists(path, label) {
@@ -91,10 +90,26 @@ async function main() {
     'LOGS.md',
     'scripts/log_usage.mjs',
     'scripts/validate-skill.mjs',
-    'resources/Level1_basics.md',
-    'resources/Level2_intermediate.md',
-    'resources/Level3_advanced.md',
-    'resources/Level4_expert.md',
+    'scripts/analyze-image.mjs',
+    'assets/docker-requirements-template.md',
+    'assets/dockerfile-review-checklist.md',
+    'assets/image-evaluation-template.md',
+    'assets/nodejs-dockerfile-template.dockerfile',
+    'assets/docker-compose-template.yml',
+    'agents/analyze-docker-requirements.md',
+    'agents/design-dockerfile-plan.md',
+    'agents/implement-container-setup.md',
+    'agents/validate-image-quality.md',
+    'references/Level1_basics.md',
+    'references/Level2_intermediate.md',
+    'references/Level3_advanced.md',
+    'references/Level4_expert.md',
+    'references/dockerfile-optimization.md',
+    'references/image-security.md',
+    'references/multi-stage-builds.md',
+    'references/local-development.md',
+    'references/requirements-index.md',
+    'references/legacy-skill.md',
   ];
 
   for (const file of requiredFiles) {
@@ -102,10 +117,10 @@ async function main() {
   }
 
   validateLineLimit(join(SKILL_DIR, 'SKILL.md'), 500);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level1_basics.md'), 200);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level2_intermediate.md'), 300);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level3_advanced.md'), 400);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level4_expert.md'), 500);
+  validateLineLimit(join(SKILL_DIR, 'references/Level1_basics.md'), 200);
+  validateLineLimit(join(SKILL_DIR, 'references/Level2_intermediate.md'), 300);
+  validateLineLimit(join(SKILL_DIR, 'references/Level3_advanced.md'), 400);
+  validateLineLimit(join(SKILL_DIR, 'references/Level4_expert.md'), 500);
 
   validateEvals(join(SKILL_DIR, 'EVALS.json'));
 

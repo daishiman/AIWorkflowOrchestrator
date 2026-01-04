@@ -1,122 +1,158 @@
 ---
-name: .claude/skills/prompt-testing-evaluation/SKILL.md
+name: prompt-testing-evaluation
 description: |
-  プロンプトのテスト、評価、反復改善を専門とするスキル。
-  A/Bテスト、評価メトリクス、自動化されたプロンプト品質保証により、
-  本番環境で信頼性の高いプロンプトを実現します。
-  
-  📖 参照書籍:
-  - 『Test-Driven Development: By Example』（Kent Beck）: Red-Green-Refactor
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/ab-testing-guide.md`: プロンプトA/Bテスト設計（サンプルサイズ、メトリクス、成功基準）
-  - `resources/automated-evaluation.md`: LLM-as-a-Judge、自動スコアリング、回帰テスト自動化手法
-  - `resources/evaluation-metrics.md`: 精度、一貫性、完全性、レイテンシ、コスト等の定量評価指標
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/prompt-evaluator.mjs`: Prompt Evaluator Script
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/evaluation-rubric.md`: 評価ルーブリックテンプレート
-  - `templates/test-case-template.md`: テストケーステンプレート
-  
-  Use proactively when handling prompt testing evaluation tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Test-Driven Development: By Example"
-    author: "Kent Beck"
-    concepts:
-      - "Red-Green-Refactor"
-      - "テスト設計"
+  プロンプトのテスト、評価、反復改善を専門とするスキル。A/Bテスト、評価メトリクス、自動化されたプロンプト品質保証により、本番環境で信頼性の高いプロンプトを実現します。
+
+  Anchors:
+  • Test-Driven Development: By Example (Kent Beck) / 適用: Red-Green-Refactorサイクル / 目的: 反復的な品質改善
+  • LLM-as-a-Judge pattern / 適用: 自動評価とスコアリング / 目的: スケーラブルな品質評価
+  • A/B Testing for AI Systems / 適用: プロンプト比較実験設計 / 目的: データドリブンな改善
+
+  Trigger:
+  Use when testing prompts, evaluating prompt quality, running A/B tests on prompts, implementing automated prompt evaluation, or establishing continuous prompt improvement cycles.
+  Keywords: prompt testing, A/B testing, evaluation metrics, LLM-as-a-judge, prompt quality, automated evaluation, regression testing
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Prompt Testing & Evaluation
 
 ## 概要
 
-プロンプトのテスト、評価、反復改善を専門とするスキル。
-A/Bテスト、評価メトリクス、自動化されたプロンプト品質保証により、
-本番環境で信頼性の高いプロンプトを実現します。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+プロンプトのテスト、評価、反復改善を専門とするスキル。テスト設計、A/Bテスト、LLM-as-Judge自動評価、評価メトリクス分析を通じて、本番環境で信頼性の高いプロンプトを実現します。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: テスト設計
 
-**目的**: タスクの目的と前提条件を明確にする
+**目的**: プロンプトのテストケースと評価基準を設計
 
-**アクション**:
+**Task**: `agents/test-design.md`
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+**入力**:
 
-### Phase 2: スキル適用
+- プロンプト
+- 期待動作の概要
+- 評価観点
 
-**目的**: スキルの指針に従って具体的な作業を進める
+**出力**:
 
-**アクション**:
+- テストケース一覧（正常系・異常系・エッジケース）
+- 評価ルブリック（スコアリング基準）
+- テスト実行計画
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+**実行タイミング**: 新規プロンプト作成時、プロンプト改善前
 
-### Phase 3: 検証と記録
+### Phase 2: 評価実行
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: 設計に基づきテストを実行し、スコアを算出
 
-**アクション**:
+**Task**: `agents/evaluation-execution.md`
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+**入力**:
 
+- Phase 1 のテストケースとルブリック
+- プロンプトバージョン（A/Bテスト時は複数）
+
+**出力**:
+
+- スコアリング結果
+- A/Bテスト結果（統計的有意性含む）
+- 評価ログ
+
+**実行タイミング**: テスト設計完了後、プロンプト比較時
+
+### Phase 3: 分析・改善
+
+**目的**: 評価結果を分析し、改善提案と次イテレーションを計画
+
+**Task**: `agents/analysis-improvement.md`
+
+**入力**:
+
+- Phase 2 のスコアリング結果
+- A/Bテスト結果
+- 評価ルブリック
+
+**出力**:
+
+- 分析レポート（弱点・傾向）
+- 改善アクションプラン
+- 次イテレーションのテスト計画
+
+**実行タイミング**: 評価完了後、改善サイクル開始時
+
+## Task仕様
+
+| Task                 | 起動タイミング | 入力                     | 出力                     |
+| -------------------- | -------------- | ------------------------ | ------------------------ |
+| test-design          | Phase 1開始時  | プロンプト・評価観点     | テストケース・ルブリック |
+| evaluation-execution | Phase 2開始時  | テストケース・バージョン | スコアリング・統計結果   |
+| analysis-improvement | Phase 3開始時  | スコア結果・ルブリック   | 分析・改善プラン         |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
+
+- [agents/test-design.md](agents/test-design.md)
+- [agents/evaluation-execution.md](agents/evaluation-execution.md)
+- [agents/analysis-improvement.md](agents/analysis-improvement.md)
 
 ## ベストプラクティス
 
 ### すべきこと
-- プロンプトの品質を定量的に評価したい時
-- 複数のプロンプト候補を比較したい時
-- プロンプトの継続的改善サイクルを確立したい時
-- 本番デプロイ前の品質保証を行いたい時
+
+- テスト実行前に期待値と評価基準を定義（テストファースト）
+- 正常系・異常系・エッジケースを網羅的に設計
+- A/Bテストで統計的有意性を確保（N≥30）
+- LLM-as-Judgeを活用したスケーラブルな自動評価
+- 継続的改善サイクル（PDCA）を確立
+- すべての評価結果をログに残す
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- 評価基準なしのテスト実行
+- サンプルサイズ不足のA/Bテスト
+- 主観的・非再現的な評価
+- 改善せずに同じテストを繰り返す
+- 盲検評価を怠る（バイアス混入）
 
-### リソース読み取り
-```bash
-cat .claude/skills/prompt-testing-evaluation/resources/Level1_basics.md
-cat .claude/skills/prompt-testing-evaluation/resources/Level2_intermediate.md
-cat .claude/skills/prompt-testing-evaluation/resources/Level3_advanced.md
-cat .claude/skills/prompt-testing-evaluation/resources/Level4_expert.md
-cat .claude/skills/prompt-testing-evaluation/resources/ab-testing-guide.md
-cat .claude/skills/prompt-testing-evaluation/resources/automated-evaluation.md
-cat .claude/skills/prompt-testing-evaluation/resources/evaluation-metrics.md
-cat .claude/skills/prompt-testing-evaluation/resources/legacy-skill.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/prompt-testing-evaluation/scripts/log_usage.mjs --help
-node .claude/skills/prompt-testing-evaluation/scripts/prompt-evaluator.mjs --help
-node .claude/skills/prompt-testing-evaluation/scripts/validate-skill.mjs --help
-```
+### references/（詳細知識）
 
-### テンプレート参照
-```bash
-cat .claude/skills/prompt-testing-evaluation/templates/evaluation-rubric.md
-cat .claude/skills/prompt-testing-evaluation/templates/test-case-template.md
-```
+| リソース                   | パス                                                                     | 内容             |
+| -------------------------- | ------------------------------------------------------------------------ | ---------------- |
+| 基礎知識                   | [references/Level1_basics.md](references/Level1_basics.md)               | 基礎概念と用語   |
+| 実務パターン               | [references/Level2_intermediate.md](references/Level2_intermediate.md)   | 実務での適用     |
+| 高度な評価手法             | [references/Level3_advanced.md](references/Level3_advanced.md)           | 高度な評価技法   |
+| 専門トラブルシューティング | [references/Level4_expert.md](references/Level4_expert.md)               | 専門的な問題解決 |
+| A/Bテストガイド            | [references/ab-testing-guide.md](references/ab-testing-guide.md)         | A/Bテスト設計    |
+| 自動評価                   | [references/automated-evaluation.md](references/automated-evaluation.md) | LLM-as-Judge     |
+| 評価メトリクス             | [references/evaluation-metrics.md](references/evaluation-metrics.md)     | スコアリング基準 |
+
+### scripts/（決定論的処理）
+
+| スクリプト             | 用途           | 使用例                                                                  |
+| ---------------------- | -------------- | ----------------------------------------------------------------------- |
+| `prompt-evaluator.mjs` | プロンプト評価 | `node scripts/prompt-evaluator.mjs --prompt "..." --rubric rubric.json` |
+| `log_usage.mjs`        | 使用履歴記録   | `node scripts/log_usage.mjs --result success --phase design`            |
+| `validate-skill.mjs`   | 構造検証       | `node scripts/validate-skill.mjs`                                       |
+
+### assets/（テンプレート）
+
+| テンプレート            | 用途                       |
+| ----------------------- | -------------------------- |
+| `evaluation-rubric.md`  | 評価ルブリックテンプレート |
+| `test-case-template.md` | テストケーステンプレート   |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                                   |
+| ------- | ---------- | --------------------------------------------------------- |
+| 3.0.0   | 2026-01-02 | 18-skills.md仕様完全準拠: 3 Tasks追加、ワークフロー体系化 |
+| 2.0.0   | 2026-01-02 | Trigger英語化、Anchors追加                                |
+| 1.0.0   | 2025-12-24 | 初版: 基本構造とリソース整備                              |

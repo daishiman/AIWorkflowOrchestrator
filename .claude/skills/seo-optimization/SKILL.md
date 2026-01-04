@@ -1,118 +1,130 @@
 ---
-name: .claude/skills/seo-optimization/SKILL.md
+name: seo-optimization
 description: |
-  Next.js Metadata APIを活用したSEO最適化を専門とするスキル。
-  
-  📖 参照書籍:
-  - 『High Performance Browser Networking』（Ilya Grigorik）: パフォーマンス測定
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/metadata-api-guide.md`: Metadata Api Guideリソース
-  - `resources/ogp-twitter-cards.md`: Ogp Twitter Cardsリソース
-  - `resources/sitemap-robots.md`: Sitemap Robotsリソース
-  - `resources/structured-data.md`: Structured Dataリソース
-  - `scripts/analyze-seo.mjs`: Analyze Seoスクリプト
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/metadata-template.md`: Metadataテンプレート
-  - `templates/structured-data-template.md`: Structured Dataテンプレート
-  
-  Use proactively when handling seo optimization tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "High Performance Browser Networking"
-    author: "Ilya Grigorik"
-    concepts:
-      - "パフォーマンス測定"
-      - "最適化"
+  SEO最適化の専門スキル。Next.js Metadata APIを活用した検索エンジン対策、ソーシャルメディア最適化、構造化データマークアップを提供する。
+
+  Anchors:
+  • Google SEO Starter Guide / 適用: メタデータ設定と構造化データ / 目的: 検索可視性向上
+  • Web Vitals Guide / 適用: パフォーマンス最適化 / 目的: ユーザー体験向上
+  • Schema.org Documentation / 適用: 構造化データマークアップ / 目的: リッチリザルト対応
+
+  Trigger:
+  Use when implementing SEO optimization, setting up metadata, adding structured data markup, configuring OGP, or optimizing for search engines.
+  SEO, metadata, OGP, Twitter Cards, structured data, JSON-LD, sitemap, robots.txt
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# SEO Optimization
+# SEO最適化
 
 ## 概要
 
-Next.js Metadata APIを活用したSEO最適化を専門とするスキル。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+Next.js Metadata APIを活用したSEO最適化を実装するスキル。メタデータ設定、OGP/Twitter Cards、構造化データ、Sitemap/robots.txtをカバーする。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+```
+analyze-requirements → implement-metadata → validate-seo
+```
 
-**目的**: タスクの目的と前提条件を明確にする
+### Phase 1: 要件分析
 
-**アクション**:
+**目的**: SEO要件と対象ページを特定する
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**Task**: `agents/requirements-analysis.md` を参照
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 対象ページの特定
+2. 実装範囲の決定（Metadata/OGP/構造化データ）
+3. 競合分析（任意）
+
+### Phase 2: メタデータ実装
+
+**目的**: SEO要素を実装する
+
+**Task**: `agents/metadata-implementation.md` を参照
+
+**アクション**:
+
+1. Next.js Metadata API設定
+2. OGP/Twitter Cardsメタタグ設定
+3. JSON-LD構造化データ実装
+4. Sitemap/robots.txt設定
 
 ### Phase 3: 検証と記録
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: SEO設定の検証と記録
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. メタデータの正確性を確認
+2. Google Rich Results Testで構造化データを検証
+3. `scripts/log_usage.mjs` で記録
 
+## Task仕様ナビ
+
+| Task                    | 責務           | 入力       | 出力               |
+| ----------------------- | -------------- | ---------- | ------------------ |
+| requirements-analysis   | 要件分析       | ページ情報 | SEO要件定義        |
+| metadata-implementation | メタデータ実装 | SEO要件    | 実装済みメタデータ |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+| 推奨事項                        | 理由                     |
+| ------------------------------- | ------------------------ |
+| 各ページにユニークなtitleを設定 | 検索結果での識別性向上   |
+| descriptionは160文字以内に      | 検索結果での切り捨て防止 |
+| OGP画像は1200x630pxで用意       | SNS共有時の最適表示      |
+| canonicalタグを設定する         | 重複コンテンツ問題の回避 |
+| 構造化データを検証する          | エラーのない実装を保証   |
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+| 禁止事項                   | 問題点               |
+| -------------------------- | -------------------- |
+| タイトルの重複             | 検索エンジンの混乱   |
+| キーワードスタッフィング   | ペナルティのリスク   |
+| robots.txtでの完全ブロック | インデックス除外     |
+| 構造化データのエラー放置   | リッチリザルト非表示 |
 
-### リソース読み取り
-```bash
-cat .claude/skills/seo-optimization/resources/Level1_basics.md
-cat .claude/skills/seo-optimization/resources/Level2_intermediate.md
-cat .claude/skills/seo-optimization/resources/Level3_advanced.md
-cat .claude/skills/seo-optimization/resources/Level4_expert.md
-cat .claude/skills/seo-optimization/resources/legacy-skill.md
-cat .claude/skills/seo-optimization/resources/metadata-api-guide.md
-cat .claude/skills/seo-optimization/resources/ogp-twitter-cards.md
-cat .claude/skills/seo-optimization/resources/sitemap-robots.md
-cat .claude/skills/seo-optimization/resources/structured-data.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/seo-optimization/scripts/analyze-seo.mjs --help
-node .claude/skills/seo-optimization/scripts/log_usage.mjs --help
-node .claude/skills/seo-optimization/scripts/validate-skill.mjs --help
-```
+### references/（詳細知識）
 
-### テンプレート参照
-```bash
-cat .claude/skills/seo-optimization/templates/metadata-template.md
-cat .claude/skills/seo-optimization/templates/structured-data-template.md
-```
+| リソース       | パス                                                                 | 読込条件         |
+| -------------- | -------------------------------------------------------------------- | ---------------- |
+| Metadata API   | [references/metadata-api-guide.md](references/metadata-api-guide.md) | メタデータ実装時 |
+| OGP/Twitter    | [references/ogp-twitter-cards.md](references/ogp-twitter-cards.md)   | OGP設定時        |
+| 構造化データ   | [references/structured-data.md](references/structured-data.md)       | JSON-LD実装時    |
+| Sitemap/robots | [references/sitemap-robots.md](references/sitemap-robots.md)         | クローラー対策時 |
+
+### scripts/（決定論的処理）
+
+| スクリプト                | 機能               |
+| ------------------------- | ------------------ |
+| `scripts/log_usage.mjs`   | 使用記録と自動評価 |
+| `scripts/analyze-seo.mjs` | SEO分析            |
+
+### assets/（テンプレート）
+
+| アセット                             | 用途                     |
+| ------------------------------------ | ------------------------ |
+| `assets/metadata-template.md`        | Metadata設定テンプレート |
+| `assets/structured-data-template.md` | JSON-LDテンプレート      |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                            |
+| ------- | ---------- | -------------------------------------------------- |
+| 2.0.0   | 2026-01-02 | 18-skills仕様完全準拠、agents/を責務ベースに再構成 |
+| 1.0.0   | 2025-12-31 | 初版                                               |

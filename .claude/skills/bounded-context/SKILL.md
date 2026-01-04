@@ -1,116 +1,132 @@
 ---
-name: .claude/skills/bounded-context/SKILL.md
+name: bounded-context
 description: |
-  ドメイン駆動設計における境界付けられたコンテキストの設計と実装を専門とするスキル。
-  
-  📖 参照書籍:
-  - 『Domain-Driven Design』（Eric Evans）: ドメインモデル
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/context-identification.md`: コンテキストの特定方法
-  - `resources/context-mapping-patterns.md`: コンテキストマッピングパターン
-  - `resources/integration-strategies.md`: 同期統合（REST/gRPC/GraphQL）と非同期統合（イベント駆動・メッセージキュー）の技術的実装パターンとトレードオフ分析
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `scripts/analyze-context-boundaries.mjs`: コンテキスト境界分析スクリプト
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/context-map-template.md`: コンテキストマップテンプレート
-  
-  Use proactively when handling bounded context tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Domain-Driven Design"
-    author: "Eric Evans"
-    concepts:
-      - "ドメインモデル"
-      - "境界づけられたコンテキスト"
+  ドメイン駆動設計における境界付けられたコンテキストの特定、境界定義、コンテキストマップ作成、統合戦略設計を支援するスキル。
+  チーム責務の整理、モデルの分離、連携方式の選定を体系化する。
+
+  Anchors:
+  • Domain-Driven Design / 適用: 境界設計 / 目的: ドメイン境界の明確化
+  • Implementing Domain-Driven Design / 適用: コンテキストマップ / 目的: 統合パターンの適用
+  • Context Mapping (Brandolini) / 適用: 境界調整 / 目的: チーム間協調の整理
+
+  Trigger:
+  Use when defining domain boundaries, creating context maps, choosing integration strategies, or clarifying team ownership for services/modules.
+allowed-tools:
+  - bash
+  - node
 ---
 
 # Bounded Context
 
 ## 概要
 
-ドメイン駆動設計における境界付けられたコンテキストの設計と実装を専門とするスキル。
+境界付けられたコンテキストを定義し、コンテキストマップと統合戦略を整理する。
+詳細は `references/` に外部化し、必要時に参照する。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+- コンテキストマップテンプレ: `assets/context-map-template.md`
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: コンテキスト特定
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: ドメイン境界の候補を整理する
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. `references/Level1_basics.md` で基礎概念を確認
+2. `references/context-identification.md` で特定手法を確認
+3. ドメインの用語境界と責務を整理
 
-### Phase 3: 検証と記録
+**Task**: `agents/analyze-domain-contexts.md`
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: コンテキストマッピング
+
+**目的**: コンテキスト間の関係性を可視化する
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. `references/context-mapping-patterns.md` を参照
+2. `assets/context-map-template.md` でコンテキストマップを作成
+3. 境界衝突や共有領域を整理
 
+**Task**: `agents/design-context-map.md`
+
+### Phase 3: 統合戦略設計
+
+**目的**: 境界間の連携方式を定義する
+
+**アクション**:
+
+1. `references/integration-strategies.md` を参照
+2. 同期/非同期の統合方式を選定
+3. 共有カーネルやACL方針を整理
+
+**Task**: `agents/define-integration-contracts.md`
+
+### Phase 4: 検証と記録
+
+**目的**: 境界設計の妥当性を確認し記録する
+
+**アクション**:
+
+1. `scripts/analyze-context-boundaries.mjs` で境界候補を分析
+2. `references/Level4_expert.md` を確認
+3. `scripts/validate-skill.mjs` で構造検証
+4. `scripts/log_usage.mjs` で記録
+
+**Task**: `agents/validate-context-design.md`
+
+## Task仕様ナビ
+
+| Task | 役割 | 入力 | 出力 | 参照先 | 実行タイミング |
+| --- | --- | --- | --- | --- | --- |
+| コンテキスト特定 | 境界候補整理 | ドメイン情報 | 候補メモ | `references/context-identification.md` | Phase 1 |
+| コンテキストマップ | 関係整理 | 候補メモ | コンテキストマップ | `assets/context-map-template.md` | Phase 2 |
+| 統合設計 | 連携方式整理 | コンテキストマップ | 統合方針 | `references/integration-strategies.md` | Phase 3 |
+| 検証 | 境界妥当性確認 | 統合方針 | 検証メモ | `references/Level4_expert.md` | Phase 4 |
 
 ## ベストプラクティス
 
 ### すべきこと
-- システムのドメイン境界を定義する時
-- 複数のコンテキスト間の連携を設計する時
-- マイクロサービスやモジュールの分割を検討する時
-- チーム間の責任範囲を明確にする時
+
+- 用語境界を明確にする
+- コンテキスト間の依存を可視化する
+- 統合方式の責任分担を定義する
+- 共有領域を最小限に抑える
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- 境界の根拠を曖昧にする
+- 共有カーネルを過剰に広げる
+- 統合方式を決めずに実装する
 
-### リソース読み取り
-```bash
-cat .claude/skills/bounded-context/resources/Level1_basics.md
-cat .claude/skills/bounded-context/resources/Level2_intermediate.md
-cat .claude/skills/bounded-context/resources/Level3_advanced.md
-cat .claude/skills/bounded-context/resources/Level4_expert.md
-cat .claude/skills/bounded-context/resources/context-identification.md
-cat .claude/skills/bounded-context/resources/context-mapping-patterns.md
-cat .claude/skills/bounded-context/resources/integration-strategies.md
-cat .claude/skills/bounded-context/resources/legacy-skill.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/bounded-context/scripts/analyze-context-boundaries.mjs --help
-node .claude/skills/bounded-context/scripts/log_usage.mjs --help
-node .claude/skills/bounded-context/scripts/validate-skill.mjs --help
-```
+### 参照資料
 
-### テンプレート参照
-```bash
-cat .claude/skills/bounded-context/templates/context-map-template.md
-```
+- `references/Level1_basics.md`: 基礎概念
+- `references/Level2_intermediate.md`: 運用設計
+- `references/Level3_advanced.md`: 併用戦略
+- `references/Level4_expert.md`: 監査と最適化
+- `references/context-identification.md`: コンテキスト特定
+- `references/context-mapping-patterns.md`: コンテキストマップ
+- `references/integration-strategies.md`: 統合戦略
+- `references/legacy-skill.md`: 旧版要約（移行時のみ）
+
+### スクリプト
+
+- `scripts/analyze-context-boundaries.mjs`: 境界分析
+- `scripts/validate-skill.mjs`: スキル構造検証
+- `scripts/log_usage.mjs`: 実行ログ記録
+
+### テンプレート
+
+- `assets/context-map-template.md`: コンテキストマップ
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                             |
+| ------- | ---------- | --------------------------------------------------- |
+| 2.1.0   | 2025-12-31 | 18-skills準拠、Task仕様追加、scripts整備            |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠                           |
+| 1.0.0   | 2025-12-24 | 初版作成                                            |

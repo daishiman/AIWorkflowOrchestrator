@@ -87,7 +87,8 @@
       "mcp__playwright__browser_close",
       "Skill(ai:create-component)",
       "Skill(ai:write-spec)",
-      "Skill(ai:design-database)"
+      "Skill(ai:design-database)",
+      "Skill"
     ],
     "deny": [],
     "ask": []

@@ -1,113 +1,148 @@
 ---
-name: .claude/skills/deployment-environments-gha/SKILL.md
+name: deployment-environments-gha
 description: |
-  GitHub Actions の environments を設計し、承認フローと保護ルールを安全に運用するスキル。
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/approval-workflows.md`: 承認者設定、待機タイマー、デプロイゲートの実装パターン
-  - `resources/environment-config.md`: 環境設定、保護ルール、シークレット管理の詳細ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `scripts/check-environment.mjs`: 環境ステータスと設定を確認する診断スクリプト
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/deployment-workflow.yaml`: 複数環境への段階的デプロイの実装サンプル
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when implementing .claude/skills/deployment-environments-gha/SKILL.md patterns or solving related problems.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "実践的改善"
-      - "品質維持"
----
+  GitHub Actions の environments 設計、承認フロー、シークレット運用を体系化するスキル。
+  複数環境の保護ルールと段階的デプロイを整理する。
 
-# Deployment Environments Skill (GitHub Actions)
+  Anchors:
+  • Release It! / 適用: 環境分離 / 目的: 本番保護
+  • GitHub Actions / 適用: environments と approval / 目的: 標準的な運用設計
+  • The Pragmatic Programmer / 適用: 自動化 / 目的: 手順の一貫性
+
+  Trigger:
+  Use when setting up multi-environment deployments, approval gates, protection rules, or environment-specific secrets in GitHub Actions.
+  github actions environments, approval workflow, deployment gates, environment secrets
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+---
+# deployment-environments-gha
 
 ## 概要
 
-GitHub Actions の environments を設計し、承認フローと保護ルールを安全に運用するスキル。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+GitHub Actions の環境設計から承認・シークレット・デプロイ戦略までを一貫して支援する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 環境セットアップ
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 環境と保護ルールを整理する。
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. `references/environment-config.md` で設定方法を確認する。
+2. `assets/environment-setup-checklist.md` で要件を整理する。
+3. `references/requirements-index.md` で要件整合を確認する。
 
-### Phase 3: 検証と記録
+**Task**: `agents/environment-setup.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: 承認フロー設計
+
+**目的**: 承認ゲートとデプロイ条件を設計する。
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. `references/approval-workflows.md` で承認パターンを確認する。
+2. `assets/approval-workflow-template.md` でフローを整理する。
+3. 例外条件を記録する。
 
+**Task**: `agents/approval-workflow-design.md` を参照
+
+### Phase 3: シークレット管理
+
+**目的**: 環境別シークレットと変数を整理する。
+
+**アクション**:
+
+1. `assets/secrets-plan-template.md` で要件を整理する。
+2. シークレットの管理方針を記録する。
+3. ローテーション計画を整理する。
+
+**Task**: `agents/secrets-management.md` を参照
+
+### Phase 4: デプロイ戦略設計
+
+**目的**: 段階的デプロイと検証フローを設計する。
+
+**アクション**:
+
+1. `assets/deployment-workflow.yaml` で実装例を確認する。
+2. `agents/deployment-strategy.md` の観点で設計する。
+3. `scripts/log_usage.mjs` で記録を更新する。
+
+**Task**: `agents/deployment-strategy.md` を参照
+
+## Task仕様ナビ
+
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| environment-setup | Phase 1開始時 | 要件 | 環境設定メモ |
+| approval-workflow-design | Phase 2開始時 | 環境設定 | 承認フロー設計 |
+| secrets-management | Phase 3開始時 | 設定方針 | シークレット計画 |
+| deployment-strategy | Phase 4開始時 | 設計メモ | デプロイ戦略 |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+| 推奨事項 | 理由 |
+| --- | --- |
+| 環境ごとに保護ルールを設定する | 誤デプロイを防止できる |
+| 承認フローを明文化する | 運用ミスを減らせる |
+| シークレットを分離する | 情報漏えいを防げる |
+| デプロイ戦略を段階化する | 影響を最小化できる |
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 全環境を同一設定で運用 | 本番保護が弱い |
+| 承認手順を省略 | 誤変更のリスク |
+| シークレットの共通化 | 露出リスクが増える |
+| 戻し手順を省略 | 障害対応が遅れる |
 
-### リソース読み取り
-```bash
-cat .claude/skills/deployment-environments-gha/resources/Level1_basics.md
-cat .claude/skills/deployment-environments-gha/resources/Level2_intermediate.md
-cat .claude/skills/deployment-environments-gha/resources/Level3_advanced.md
-cat .claude/skills/deployment-environments-gha/resources/Level4_expert.md
-cat .claude/skills/deployment-environments-gha/resources/approval-workflows.md
-cat .claude/skills/deployment-environments-gha/resources/environment-config.md
-cat .claude/skills/deployment-environments-gha/resources/legacy-skill.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/deployment-environments-gha/scripts/check-environment.mjs --help
-node .claude/skills/deployment-environments-gha/scripts/log_usage.mjs --help
-node .claude/skills/deployment-environments-gha/scripts/validate-skill.mjs --help
-```
+### scripts/（決定論的処理）
 
-### テンプレート参照
-```bash
-cat .claude/skills/deployment-environments-gha/templates/deployment-workflow.yaml
-```
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/check-environment.mjs` | 環境設定チェック |
+| `scripts/validate-skill.mjs` | スキル構造検証 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
 
-## 変更履歴
+### references/（詳細知識）
 
-| Version | Date | Changes |
+| リソース | パス | 読込条件 |
 | --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 承認設計時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | シークレット管理時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 運用時 |
+| 承認フロー | [references/approval-workflows.md](references/approval-workflows.md) | 承認設計時 |
+| 環境設定 | [references/environment-config.md](references/environment-config.md) | 設定時 |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+
+### assets/（テンプレート・素材）
+
+| アセット | 用途 |
+| --- | --- |
+| `assets/deployment-workflow.yaml` | デプロイYAML例 |
+| `assets/environment-setup-checklist.md` | 環境設定チェック |
+| `assets/approval-workflow-template.md` | 承認フロー整理 |
+| `assets/secrets-plan-template.md` | シークレット計画 |
+
+### 運用ファイル
+
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

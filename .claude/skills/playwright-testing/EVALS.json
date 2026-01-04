@@ -1,92 +1,37 @@
 {
   "skill_name": "playwright-testing",
-  "current_level": 1,
+  "current_level": 2,
   "levels": {
     "1": {
-      "level": 1,
-      "name": "基礎",
-      "requirements": {
-        "min_usage_count": 0,
-        "min_success_rate": 0.0,
-        "min_satisfaction_score": 0.0,
-        "required_resources": [
-          "SKILL.md"
-        ]
-      },
-      "success_criteria": [
-        "SKILL.mdが存在し、基本タスクが実行可能"
+      "description": "基本的なPlaywright E2Eテストを作成できる",
+      "criteria": [
+        "Playwrightのテストを初期化・設定できる",
+        "基本的なセレクタでDOM要素を取得できる",
+        "クリック・入力・ナビゲーションの基本操作を実装できる"
       ]
     },
     "2": {
-      "level": 2,
-      "name": "中級",
-      "requirements": {
-        "min_usage_count": 10,
-        "min_success_rate": 0.8,
-        "min_satisfaction_score": 0.7,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "scripts/log_usage.mjs"
-        ]
-      },
-      "success_criteria": [
-        "10回以上使用され、成功率80%以上"
+      "description": "安定したテストを設計し、フレーキーテストを防げる",
+      "criteria": [
+        "適切な待機戦略を選択できる（locator.waitFor, expect.toBeVisible）",
+        "アクセシビリティセレクタを優先して使用できる",
+        "並列実行・ブラウザコンテキスト分離を実装できる"
       ]
     },
     "3": {
-      "level": 3,
-      "name": "上級",
-      "requirements": {
-        "min_usage_count": 50,
-        "min_success_rate": 0.9,
-        "min_satisfaction_score": 0.8,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/legacy-skill.md",
-          "resources/playwright-best-practices.md",
-          "resources/selector-strategies.md",
-          "resources/waiting-strategies.md",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "scripts/validate-test-structure.mjs",
-          "templates/test-template.ts"
-        ]
-      },
-      "success_criteria": [
-        "50回以上使用され、成功率90%以上"
+      "description": "高度なテスト設計と最適化を実施できる",
+      "criteria": [
+        "テストデータ管理戦略を確立できる",
+        "APIモッキングとネットワーク制御を活用できる",
+        "Page Object Modelで保守性を向上できる"
       ]
     },
     "4": {
-      "level": 4,
-      "name": "専門",
-      "requirements": {
-        "min_usage_count": 100,
-        "min_success_rate": 0.95,
-        "min_satisfaction_score": 0.9,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/legacy-skill.md",
-          "resources/playwright-best-practices.md",
-          "resources/selector-strategies.md",
-          "resources/waiting-strategies.md",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "scripts/validate-test-structure.mjs",
-          "templates/test-template.ts",
-          "LOGS.md"
-        ]
-      },
-      "success_criteria": [
-        "100回以上使用され、成功率95%以上"
+      "description": "E2Eテスト基盤を構築し、CI/CD統合を実現できる",
+      "criteria": [
+        "クロスブラウザテストを体系化できる",
+        "CI/CDパイプラインに統合できる",
+        "チーム全体でテスト品質を維持できる"
       ]
     }
   },
@@ -95,6 +40,33 @@
     "success_count": 0,
     "failure_count": 0,
     "average_satisfaction": 0.0,
-    "last_evaluated": "2025-12-24T00:00:00Z"
+    "last_evaluated": "2026-01-02T06:00:00Z",
+    "phase_metrics": {
+      "setup": {
+        "count": 0,
+        "avg_duration_minutes": 0,
+        "success_rate": 0.0
+      },
+      "implement": {
+        "count": 0,
+        "avg_duration_minutes": 0,
+        "success_rate": 0.0
+      },
+      "stabilize": {
+        "count": 0,
+        "avg_duration_minutes": 0,
+        "success_rate": 0.0
+      },
+      "optimize": {
+        "count": 0,
+        "avg_duration_minutes": 0,
+        "success_rate": 0.0
+      }
+    }
+  },
+  "quality_indicators": {
+    "flaky_test_rate": 0.0,
+    "test_stability_score": 0.0,
+    "selector_quality_score": 0.0
   }
 }

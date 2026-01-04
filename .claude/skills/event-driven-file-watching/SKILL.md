@@ -1,118 +1,130 @@
 ---
-name: .claude/skills/event-driven-file-watching/SKILL.md
+name: event-driven-file-watching
 description: |
-  Ryan Dahlのイベント駆動・非同期I/O思想に基づくファイルシステム監視の専門知識。
-  Chokidarライブラリを中心に、Observer Patternによる効率的なファイル変更検知、
-  クロスプラットフォーム対応、EventEmitterによる疎結合な通知システムを提供。
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/chokidar-config-reference.md`: chokidar-config-reference のリファレンス
-  - `resources/event-emitter-patterns.md`: event-emitter-patterns のパターン集
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/watcher-template.ts`: watcher-template のテンプレート
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when handling event driven file watching tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "実践的改善"
-      - "品質維持"
+  Chokidarライブラリを中心としたファイルシステム監視の専門スキル。
+  Observer Patternによる効率的なファイル変更検知、クロスプラットフォーム対応、
+  EventEmitterによる疎結合な通知システムを設計・実装する。
+
+  Anchors:
+  • Node.js EventEmitter / 適用: イベント駆動設計 / 目的: 疎結合な通知メカニズム
+  • Chokidar Documentation / 適用: ファイル監視設定 / 目的: クロスプラットフォーム監視
+  • Observer Pattern (GoF) / 適用: イベント通知設計 / 目的: 変更検知と通知の分離
+
+  Trigger:
+  Use when implementing file system watching, Chokidar configuration, file change detection, or event-based file monitoring systems.
+  file watching, chokidar, fs watch, file change, event emitter, observer pattern, hot reload
+
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Event-Driven File Watching
 
 ## 概要
 
-Ryan Dahlのイベント駆動・非同期I/O思想に基づくファイルシステム監視の専門知識。
-Chokidarライブラリを中心に、Observer Patternによる効率的なファイル変更検知、
-クロスプラットフォーム対応、EventEmitterによる疎結合な通知システムを提供。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+Chokidarライブラリを使用したファイルシステム監視の設計・実装スキル。Observer Patternに基づく疎結合なイベント通知システムを構築し、クロスプラットフォームで動作する効率的な監視機構を提供する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: アーキテクチャ設計
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: ファイル監視システムのアーキテクチャを設計
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 監視要件の整理（対象パス、イベントタイプ）
+2. 実行環境の確認（OS、ファイル数）
+3. Chokidar設定の設計
+4. イベントフローの設計
 
-### Phase 3: 検証と記録
+**Task**: `agents/watcher-architect.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: イベントハンドラ実装
+
+**目的**: Observer Patternに基づくイベントハンドラを実装
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. Chokidar watcher の初期化
+2. イベントハンドラの実装
+3. エラーハンドリングの追加
+4. リソースクリーンアップの実装
 
+**Task**: `agents/event-handler-implementer.md` を参照
+
+### Phase 3: パフォーマンス最適化
+
+**目的**: メモリ・CPU・スループットの最適化
+
+**アクション**:
+
+1. debounce/throttle の適用
+2. ignored パターンの最適化
+3. polling vs native の選択
+4. メモリリーク対策
+
+**Task**: `agents/performance-optimizer.md` を参照
+
+## Task仕様（ナビゲーション）
+
+| Task                      | 起動タイミング | 入力       | 出力                 |
+| ------------------------- | -------------- | ---------- | -------------------- |
+| watcher-architect         | Phase 1開始時  | 監視要件   | アーキテクチャ設計書 |
+| event-handler-implementer | Phase 2開始時  | 設計書     | 実装コード           |
+| performance-optimizer     | Phase 3開始時  | 実装コード | 最適化済みコード     |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- Chokidarによるファイル監視システムを設計・実装する時
-- Observer Patternでイベント通知を設計する時
-- ファイルシステムイベントのハンドリングを実装する時
-- クロスプラットフォーム対応の監視設定を決定する時
-- 監視方式（native fsevents vs polling）を選択する時
+
+- `awaitWriteFinish` で書き込み完了を待機
+- `ignored` パターンでnode_modules等を除外
+- エラーイベントを必ずハンドル
+- `watcher.close()` でリソース解放
+- debounce で高頻度イベントを制御
+- 相対パスより絶対パスを使用
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- 大規模ディレクトリでの再帰監視（要フィルタ）
+- polling を不要に有効化（パフォーマンス低下）
+- watcher の close 忘れ（メモリリーク）
+- ready イベント前のファイル操作
+- 同期処理をイベントハンドラ内で実行
 
-### リソース読み取り
-```bash
-cat .claude/skills/event-driven-file-watching/resources/Level1_basics.md
-cat .claude/skills/event-driven-file-watching/resources/Level2_intermediate.md
-cat .claude/skills/event-driven-file-watching/resources/Level3_advanced.md
-cat .claude/skills/event-driven-file-watching/resources/Level4_expert.md
-cat .claude/skills/event-driven-file-watching/resources/chokidar-config-reference.md
-cat .claude/skills/event-driven-file-watching/resources/event-emitter-patterns.md
-cat .claude/skills/event-driven-file-watching/resources/legacy-skill.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/event-driven-file-watching/scripts/log_usage.mjs --help
-node .claude/skills/event-driven-file-watching/scripts/validate-skill.mjs --help
-```
+### references/（詳細知識）
 
-### テンプレート参照
-```bash
-cat .claude/skills/event-driven-file-watching/templates/watcher-template.ts
-```
+| リソース                 | パス                                                                                   | 用途             |
+| ------------------------ | -------------------------------------------------------------------------------------- | ---------------- |
+| Chokidar設定リファレンス | See [references/chokidar-config-reference.md](references/chokidar-config-reference.md) | オプション詳細   |
+| EventEmitterパターン     | See [references/event-emitter-patterns.md](references/event-emitter-patterns.md)       | イベント通知設計 |
+
+### scripts/（決定論的処理）
+
+| スクリプト           | 用途               | 使用例                                        |
+| -------------------- | ------------------ | --------------------------------------------- |
+| `log_usage.mjs`      | フィードバック記録 | `node scripts/log_usage.mjs --result success` |
+| `validate-skill.mjs` | スキル構造検証     | `node scripts/validate-skill.mjs`             |
+
+### assets/（テンプレート）
+
+| テンプレート          | 用途                         |
+| --------------------- | ---------------------------- |
+| `watcher-template.ts` | ファイル監視実装テンプレート |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                            |
+| ------- | ---------- | ---------------------------------- |
+| 2.0.0   | 2026-01-01 | 18-skills.md完全準拠版として再構築 |
+| 1.1.0   | 2025-12-31 | agents実装、EVALS/LOGS追加         |
+| 1.0.0   | 2025-12-24 | 初版作成                           |

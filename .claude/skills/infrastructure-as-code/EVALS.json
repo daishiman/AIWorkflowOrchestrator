@@ -1,104 +1,75 @@
 {
   "skill_name": "infrastructure-as-code",
-  "current_level": 1,
-  "levels": {
-    "1": {
-      "level": 1,
-      "name": "基礎",
-      "requirements": {
-        "min_usage_count": 0,
-        "min_success_rate": 0.0,
-        "min_satisfaction_score": 0.0,
-        "required_resources": [
-          "SKILL.md"
-        ]
-      },
-      "success_criteria": [
-        "SKILL.mdが存在し、基本タスクが実行可能"
-      ]
-    },
-    "2": {
-      "level": 2,
-      "name": "中級",
-      "requirements": {
-        "min_usage_count": 10,
-        "min_success_rate": 0.8,
-        "min_satisfaction_score": 0.7,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "scripts/log_usage.mjs"
-        ]
-      },
-      "success_criteria": [
-        "10回以上使用され、成功率80%以上"
-      ]
-    },
-    "3": {
-      "level": 3,
-      "name": "上級",
-      "requirements": {
-        "min_usage_count": 50,
-        "min_success_rate": 0.9,
-        "min_satisfaction_score": 0.8,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/environment-variables.md",
-          "resources/iac-principles.md",
-          "resources/legacy-skill.md",
-          "resources/railway-integration.md",
-          "resources/secrets-management.md",
-          "scripts/log_usage.mjs",
-          "scripts/validate-env.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/env-example-template.txt",
-          "templates/railway-json-template.json"
-        ]
-      },
-      "success_criteria": [
-        "50回以上使用され、成功率90%以上"
-      ]
-    },
-    "4": {
-      "level": 4,
-      "name": "専門",
-      "requirements": {
-        "min_usage_count": 100,
-        "min_success_rate": 0.95,
-        "min_satisfaction_score": 0.9,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/environment-variables.md",
-          "resources/iac-principles.md",
-          "resources/legacy-skill.md",
-          "resources/railway-integration.md",
-          "resources/secrets-management.md",
-          "scripts/log_usage.mjs",
-          "scripts/validate-env.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/env-example-template.txt",
-          "templates/railway-json-template.json",
-          "LOGS.md"
-        ]
-      },
-      "success_criteria": [
-        "100回以上使用され、成功率95%以上"
-      ]
-    }
-  },
+  "version": "1.0.0",
+  "level": 1,
   "metrics": {
-    "total_usage_count": 0,
+    "usage_count": 0,
     "success_count": 0,
     "failure_count": 0,
-    "average_satisfaction": 0.0,
-    "last_evaluated": "2025-12-24T00:00:00Z"
-  }
+    "success_rate": 0,
+    "last_used": null,
+    "average_duration_minutes": null
+  },
+  "level_criteria": {
+    "level_1": {
+      "description": "基礎的な環境変数管理とRailway構成",
+      "requirements": {
+        "usage_count": 5,
+        "success_rate": 0.6
+      },
+      "achieved": false
+    },
+    "level_2": {
+      "description": "実務レベルのSecret管理と複数環境対応",
+      "requirements": {
+        "usage_count": 15,
+        "success_rate": 0.75
+      },
+      "achieved": false
+    },
+    "level_3": {
+      "description": "応用レベルの自動化とCI/CD統合",
+      "requirements": {
+        "usage_count": 30,
+        "success_rate": 0.85
+      },
+      "achieved": false
+    },
+    "level_4": {
+      "description": "専門家レベルのマルチクラウド・マルチ環境管理",
+      "requirements": {
+        "usage_count": 50,
+        "success_rate": 0.9
+      },
+      "achieved": false
+    }
+  },
+  "feedback": {
+    "strengths": [],
+    "weaknesses": [],
+    "improvement_suggestions": []
+  },
+  "task_metrics": {
+    "environment-design": {
+      "usage_count": 0,
+      "success_count": 0,
+      "average_duration_minutes": null
+    },
+    "secret-manager": {
+      "usage_count": 0,
+      "success_count": 0,
+      "average_duration_minutes": null
+    },
+    "railway-configurator": {
+      "usage_count": 0,
+      "success_count": 0,
+      "average_duration_minutes": null
+    },
+    "railway-validator": {
+      "usage_count": 0,
+      "success_count": 0,
+      "average_duration_minutes": null
+    }
+  },
+  "last_updated": "2025-12-31T08:09:00Z"
 }

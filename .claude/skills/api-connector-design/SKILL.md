@@ -1,120 +1,117 @@
 ---
-name: .claude/skills/api-connector-design/SKILL.md
+name: api-connector-design
 description: |
-  外部APIとの統合設計パターンに関する専門知識。
-  RESTful API、GraphQL、WebSocket等の統合設計と実装指針を提供します。
-  
-  📖 参照書籍:
-  - 『RESTful Web APIs』（Leonard Richardson）: リソース設計
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/authentication-flows.md`: OAuth 2.0、API Key、JWTなどの認証フロー詳細
-  - `resources/error-handling-patterns.md`: API統合におけるエラーハンドリングパターン
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/rate-limiting-strategies.md`: Rate Limiting対策とリトライ戦略
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/test-api-connection.mjs`: API接続テストスクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/api-client-template.ts`: APIクライアント実装テンプレート
-  - `templates/auth-config-template.json`: 認証設定ファイルテンプレート
-  
-  Use proactively when handling api connector design tasks.
-version: 1.0.1
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "RESTful Web APIs"
-    author: "Leonard Richardson"
-    concepts:
-      - "リソース設計"
-      - "HTTP設計"
+  外部APIとの統合設計パターンに関する専門知識。RESTful API、GraphQL、WebSocket等の統合設計と実装指針を提供します。
+
+  Anchors:
+  • 『RESTful Web APIs』（Leonard Richardson）/ 適用: RESTful API設計、HTTPセマンティクス / 目的: リソース中心の設計パターン理解
+  • 『Building Microservices』（Sam Newman）/ 適用: APIコントラクト設計、マイクロサービス間通信 / 目的: サービス境界の明確化
+
+  Trigger:
+  Use when designing authentication flows (OAuth 2.0, API Key, JWT), implementing rate limiting and retry strategies, or reviewing API integration architecture.
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# API Connector Design スキル
+# API Connector Design
 
 ## 概要
 
-外部APIとの統合設計パターンに関する専門知識。
-RESTful API、GraphQL、WebSocket等の統合設計と実装指針を提供します。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+外部APIとの統合設計パターンを専門とするスキル。RESTful、GraphQL、WebSocket等のAPI統合の設計と実装を支援します。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 統合要件の整理
 
-**目的**: タスクの目的と前提条件を明確にする
+**目的**: APIの型、認証要件、制約を明確化
 
-**アクション**:
+**タスク**:
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+- APIの種類（REST/GraphQL/WebSocket）を特定
+- 認証方式（OAuth 2.0/API Key/JWT等）を確認
+- Rate Limit、タイムアウト、リトライポリシーを把握
 
-### Phase 2: スキル適用
+**Task**: `agents/analyze-connector-context.md` を参照
 
-**目的**: スキルの指針に従って具体的な作業を進める
+### Phase 2: 統合設計の実装
 
-**アクション**:
+**目的**: 認証、エラーハンドリング、リトライロジックの設計
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+**タスク**:
 
-### Phase 3: 検証と記録
+- `references/authentication-flows.md` で認証フロー選択
+- `references/error-handling-patterns.md` でエラーハンドリング設計
+- `references/rate-limiting-strategies.md` でリトライ戦略を適用
+- テンプレートから実装コード生成
 
-**目的**: 成果物の検証と実行記録の保存
+**Task**: `agents/design-connector.md` を参照
 
-**アクション**:
+### Phase 3: 検証と最適化
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+**目的**: 設計の完全性とベストプラクティス準拠を確認
 
+**タスク**:
+
+- エッジケース（接続失敗、タイムアウト）の処理確認
+- API仕様との整合性チェック
+- パフォーマンス・セキュリティ要件の検証
+
+**Task**: `agents/validate-connector.md` を参照
+
+## Task仕様ナビ
+
+| Task                   | 入力                      | 出力                      | 複雑度 |
+| ---------------------- | ------------------------- | ------------------------- | ------ |
+| 認証フロー設計         | API仕様、認可要件         | auth-config-template.json | 中     |
+| APIクライアント実装    | エンドポイント、認証      | APIクライアントコード     | 高     |
+| エラーハンドリング設計 | エラー仕様、リトライ      | エラーハンドリング手順    | 中     |
+| Rate Limit対応         | API制限仕様、トラフィック | リトライ・バックオフ戦略  | 低     |
+| 統合アーキレビュー     | 設計書、実装コード        | レビューコメント、改善案  | 高     |
 
 ## ベストプラクティス
 
 ### すべきこと
-- 外部API（Google Drive, Slack, GitHub等）との統合設計時
-- 認証フロー（OAuth 2.0, API Key等）の実装設計時
-- Rate Limitingやリトライ戦略の設計時
-- API統合アーキテクチャのレビュー時
+
+- 外部API（Google Drive、Slack、GitHub等）との統合設計時にこのスキルを使用
+- 複数の認証方式を検討し、API要件に最適なものを選択
+- エラーハンドリング（タイムアウト、リトライ、バックオフ）を最初から設計に含める
+- Rate Limitingやクォータ管理を実装設計の段階で考慮
+- テンプレートを参照して実装の一貫性を保証
+- セキュリティレビュー（認証情報の扱い、暗号化通信）を実施
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- 認証方式を軽く考えて後付けする（最初から設計に含めること）
+- エラーハンドリングを「エラーが起きたら例外」で済ませる（具体的なリトライ戦略が必須）
+- Rate Limitに対応しないまま実装を進める（接続失敗の原因になる）
+- APIドキュメントを確認しないまま実装を始める（余分な手戻りが発生）
+- 認証トークンやAPIキーをコード内に埋め込む（設定ファイル化すること）
 
-### リソース読み取り
-```bash
-cat .claude/skills/api-connector-design/resources/Level1_basics.md
-cat .claude/skills/api-connector-design/resources/Level2_intermediate.md
-cat .claude/skills/api-connector-design/resources/Level3_advanced.md
-cat .claude/skills/api-connector-design/resources/Level4_expert.md
-cat .claude/skills/api-connector-design/resources/authentication-flows.md
-cat .claude/skills/api-connector-design/resources/error-handling-patterns.md
-cat .claude/skills/api-connector-design/resources/legacy-skill.md
-cat .claude/skills/api-connector-design/resources/rate-limiting-strategies.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/api-connector-design/scripts/log_usage.mjs --help
-node .claude/skills/api-connector-design/scripts/test-api-connection.mjs --help
-node .claude/skills/api-connector-design/scripts/validate-skill.mjs --help
-```
+- `references/Level1_basics.md`: 基礎概念と標準パターン
+- `references/Level2_intermediate.md`: 実装レベルの詳細ガイド
+- `references/Level3_advanced.md`: マイクロサービス間通信等の応用パターン
+- `references/Level4_expert.md`: 複雑な統合シナリオと最適化
+- `references/authentication-flows.md`: OAuth 2.0、API Key、JWT等の詳細比較
+- `references/error-handling-patterns.md`: エラー分類、リトライ戦略、タイムアウト管理
+- `references/rate-limiting-strategies.md`: Rate Limit検出、バックオフ、トークンバケット
 
-### テンプレート参照
-```bash
-cat .claude/skills/api-connector-design/templates/api-client-template.ts
-cat .claude/skills/api-connector-design/templates/auth-config-template.json
-```
+## 関連スキル
+
+- `.claude/skills/api-client-patterns`: クライアント実装パターンの詳細
+- `.claude/skills/api-contract-design`: APIコントラクト設計
+- `.claude/skills/authentication-flows`: 認証フロー実装
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.1 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                     |
+| ------- | ---------- | ------------------------------------------- |
+| 2.0.0   | 2025-12-31 | agents/3ファイル追加、Phase別Task参照を追加 |
+| 1.0.2   | 2025-12-31 | 18-skills.md仕様への準拠、Task仕様ナビ追加  |
+| 1.0.1   | 2025-12-24 | アーティファクト追加とspec整合化            |

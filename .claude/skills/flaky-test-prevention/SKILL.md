@@ -1,122 +1,119 @@
 ---
-name: .claude/skills/flaky-test-prevention/SKILL.md
+name: flaky-test-prevention
 description: |
-  フレーキー（不安定）なテストを防止する技術。
-  非決定性の排除、リトライロジック、安定性向上パターンを提供します。
-  専門分野:
-  
-  📖 参照書籍:
-  - 『Test-Driven Development: By Example』（Kent Beck）: Red-Green-Refactor
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/non-determinism-patterns.md`: non-determinism-patterns のパターン集
-  - `resources/retry-strategies.md`: .claude/skills/retry-strategies/SKILL.md の詳細ガイド
-  - `resources/stability-checklist.md`: stability-checklist のチェックリスト
-  - `scripts/detect-flaky-tests.mjs`: detectflakytestsを処理するスクリプト
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/stable-test-template.ts`: stable-test-template のテンプレート
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when handling flaky test prevention tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Test-Driven Development: By Example"
-    author: "Kent Beck"
-    concepts:
-      - "Red-Green-Refactor"
-      - "テスト設計"
+  フレーキー（不安定）なテストを検出・修正するスキル。非決定性の排除、リトライロジック、テスト安定性向上パターンを提供。並列実行時の問題解決やタイミング依存の除去を支援。
+
+  Anchors:
+  • Test-Driven Development（Kent Beck） / 適用: Red-Green-Refactor / 目的: 安定したテスト設計
+  • xUnit Test Patterns（Gerard Meszaros） / 適用: テストダブル / 目的: 非決定性の隔離
+  • Continuous Delivery（Jez Humble） / 適用: パイプライン信頼性 / 目的: CI/CDの安定化
+
+  Trigger:
+  Use when tests fail intermittently, detecting flaky tests, eliminating non-determinism in tests, fixing timing-dependent failures, or stabilizing CI/CD pipelines.
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Task
 ---
 
-# Flaky Test Prevention Skill
+# フレーキーテスト防止
 
 ## 概要
 
-フレーキー（不安定）なテストを防止する技術。
-非決定性の排除、リトライロジック、安定性向上パターンを提供します。
-専門分野:
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+フレーキー（不安定）なテストを検出・修正するスキル。非決定性の排除、リトライロジック、テスト安定性向上パターンを提供し、CI/CDパイプラインの信頼性を向上させる。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: フレーキーテスト検出
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 不安定なテストを特定し、原因を分類
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. [references/non-determinism-patterns.md](references/non-determinism-patterns.md) で非決定性パターンを確認
+2. `scripts/detect-flaky-tests.mjs` でテストの安定性を分析
+3. 失敗パターン（タイミング、並列、外部依存）を分類
 
-### Phase 3: 検証と記録
+**Task**: [agents/detect-flaky-tests.md](agents/detect-flaky-tests.md) を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: 非決定性分析
+
+**目的**: フレーキーテストの根本原因を特定
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. タイミング依存（sleep、setTimeout）を特定
+2. 外部依存（DB、API、ファイルシステム）を特定
+3. 並列実行時の競合状態を分析
 
+**Task**: [agents/analyze-non-determinism.md](agents/analyze-non-determinism.md) を参照
+
+### Phase 3: 修正実装
+
+**目的**: 安定性向上パターンの適用
+
+**アクション**:
+
+1. [references/retry-strategies.md](references/retry-strategies.md) でリトライ戦略を確認
+2. [references/stability-checklist.md](references/stability-checklist.md) でチェックリストを確認
+3. [assets/stable-test-template.ts](assets/stable-test-template.ts) を参考に修正
+4. 修正後のテストを検証
+
+**Task**: [agents/implement-fixes.md](agents/implement-fixes.md) を参照
+
+## Task仕様ナビ
+
+| Task                                                                   | 用途                 | 入力           | 出力                 |
+| ---------------------------------------------------------------------- | -------------------- | -------------- | -------------------- |
+| [agents/detect-flaky-tests.md](agents/detect-flaky-tests.md)           | フレーキーテスト検出 | テストスイート | 不安定テストリスト   |
+| [agents/analyze-non-determinism.md](agents/analyze-non-determinism.md) | 非決定性分析         | 不安定テスト   | 根本原因分析結果     |
+| [agents/implement-fixes.md](agents/implement-fixes.md)                 | 修正実装             | 根本原因分析   | 修正済みテストコード |
 
 ## ベストプラクティス
 
 ### すべきこと
-- テストが時々失敗する時
-- テスト実行結果が不安定な時
-- 並列実行時の問題が発生する時
-- 固定時間待機を排除する必要がある時
-- 非決定的要素（時刻、ランダム性）を制御する時
+
+- テスト失敗パターンを記録・分析する
+- 固定時間待機（sleep）を条件付き待機に置き換える
+- 外部依存をモック・スタブで置き換える
+- テストデータを各テストで独立させる
+- 並列実行時のリソース競合を防ぐ
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- 失敗したテストを単にリトライで隠す
+- グローバル状態に依存するテスト
+- 実行順序に依存するテスト
+- 共有リソースへの同時アクセス
 
-### リソース読み取り
-```bash
-cat .claude/skills/flaky-test-prevention/resources/Level1_basics.md
-cat .claude/skills/flaky-test-prevention/resources/Level2_intermediate.md
-cat .claude/skills/flaky-test-prevention/resources/Level3_advanced.md
-cat .claude/skills/flaky-test-prevention/resources/Level4_expert.md
-cat .claude/skills/flaky-test-prevention/resources/legacy-skill.md
-cat .claude/skills/flaky-test-prevention/resources/non-determinism-patterns.md
-cat .claude/skills/flaky-test-prevention/resources/retry-strategies.md
-cat .claude/skills/flaky-test-prevention/resources/stability-checklist.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/flaky-test-prevention/scripts/detect-flaky-tests.mjs --help
-node .claude/skills/flaky-test-prevention/scripts/log_usage.mjs --help
-node .claude/skills/flaky-test-prevention/scripts/validate-skill.mjs --help
-```
+### references/（詳細知識）
 
-### テンプレート参照
-```bash
-cat .claude/skills/flaky-test-prevention/templates/stable-test-template.ts
-```
+| リソース             | パス                                                                             | 内容                   |
+| -------------------- | -------------------------------------------------------------------------------- | ---------------------- |
+| 非決定性パターン     | [references/non-determinism-patterns.md](references/non-determinism-patterns.md) | 原因パターンと解決策   |
+| リトライ戦略         | [references/retry-strategies.md](references/retry-strategies.md)                 | 適切なリトライ実装     |
+| 安定性チェックリスト | [references/stability-checklist.md](references/stability-checklist.md)           | テスト安定化の確認項目 |
+
+### assets/（テンプレート）
+
+| テンプレート            | 用途                   |
+| ----------------------- | ---------------------- |
+| stable-test-template.ts | 安定したテストの実装例 |
+
+### scripts/（検出・検証）
+
+| スクリプト             | 用途                 | 使用例                                          |
+| ---------------------- | -------------------- | ----------------------------------------------- |
+| detect-flaky-tests.mjs | フレーキーテスト検出 | `node scripts/detect-flaky-tests.mjs --runs 10` |
+| log_usage.mjs          | 利用記録             | `node scripts/log_usage.mjs --result success`   |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                                      |
+| ------- | ---------- | ------------------------------------------------------------ |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様に完全準拠。frontmatter修正、references/整理 |
+| 1.0.0   | 2025-12-24 | 初版作成                                                     |

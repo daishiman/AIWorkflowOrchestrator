@@ -1,124 +1,153 @@
 ---
-name: .claude/skills/data-fetching-strategies/SKILL.md
+name: data-fetching-strategies
 description: |
-  Reactにおけるデータフェッチとキャッシュのベストプラクティスを専門とするスキル。
-  SWR、React Queryを活用した効率的なサーバー状態管理を提供します。
-  専門分野:
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/caching-patterns.md`: caching-patterns のパターン集
-  - `resources/error-loading-states.md`: error-loading-states の詳細ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/library-comparison.md`: library-comparison の詳細ガイド
-  - `resources/optimistic-updates.md`: optimistic-updates の詳細ガイド
-  - `scripts/analyze-data-fetching.mjs`: datafetchingを分析するスクリプト
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/react-query-hook-template.md`: react-query-hook-template のテンプレート
-  - `templates/swr-hook-template.md`: swr-hook-template のテンプレート
-  
-  Use proactively when handling data fetching strategies tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "実践的改善"
-      - "品質維持"
----
+  Reactアプリのデータフェッチ、キャッシュ、エラーハンドリング、楽観的更新を整理するスキル。
+  ライブラリ選定から設計・実装・検証までの実務フローを提供する。
 
-# Data Fetching Strategies
+  Anchors:
+  • Stale-While-Revalidate Pattern / 適用: キャッシュ戦略 / 目的: サーバー状態の一貫性確保
+  • React Query vs SWR / 適用: ライブラリ選定 / 目的: 要件に最適な選択
+  • MSW / 適用: テスト環境構築 / 目的: API依存の排除
+
+  Trigger:
+  Use when implementing data fetching patterns, cache strategies, error handling, optimistic updates, or choosing between SWR and React Query.
+  data fetching, cache strategy, swr, react query, optimistic updates, error handling
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+---
+# data-fetching-strategies
 
 ## 概要
 
-Reactにおけるデータフェッチとキャッシュのベストプラクティスを専門とするスキル。
-SWR、React Queryを活用した効率的なサーバー状態管理を提供します。
-専門分野:
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+サーバー状態の取得と更新に関する設計・実装・検証の基準を提供し、安定したデータフェッチを実現する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件整理
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 取得対象・更新頻度・UX要件を整理する。
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 取得対象と更新頻度を整理する。
+2. エラーハンドリングとローディング要件を整理する。
+3. 既存ライブラリの有無を確認する。
 
-### Phase 3: 検証と記録
+**Task**: `agents/analyze-fetching-requirements.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: 設計
+
+**目的**: ライブラリ選定とキャッシュ設計を行う。
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. `references/library-comparison.md` でライブラリを比較する。
+2. `references/caching-patterns.md` でキャッシュ方針を設計する。
+3. `references/query-key-guidelines.md` でキー設計を決める。
 
+**Task**: `agents/design-fetching-architecture.md` を参照
+
+### Phase 3: 実装
+
+**目的**: データフェッチを実装し、最適化を反映する。
+
+**アクション**:
+
+1. `assets/swr-hook-template.md` と `assets/react-query-hook-template.md` を参照する。
+2. `references/optimistic-updates.md` で更新方針を確認する。
+3. `scripts/analyze-data-fetching.mjs` で実装の傾向を確認する。
+
+**Task**: `agents/implement-fetching-patterns.md` を参照
+
+### Phase 4: 検証と記録
+
+**目的**: 実装品質を検証し、運用記録を残す。
+
+**アクション**:
+
+1. `references/error-loading-states.md` でUI状態を確認する。
+2. `assets/fetching-review-checklist.md` でレビューする。
+3. `scripts/log_usage.mjs` で記録を更新する。
+
+**Task**: `agents/validate-fetching-quality.md` を参照
+
+## Task仕様ナビ
+
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-fetching-requirements | Phase 1開始時 | 取得対象/制約 | 要件メモ、優先度一覧 |
+| design-fetching-architecture | Phase 2開始時 | 要件メモ | 設計方針、キャッシュ方針 |
+| implement-fetching-patterns | Phase 3開始時 | 設計方針 | 実装メモ、変更内容 |
+| validate-fetching-quality | Phase 4開始時 | 実装メモ | 検証レポート、改善提案 |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- データフェッチライブラリを選定する時
-- キャッシュ戦略を設計する時
-- 楽観的更新を実装する時
-- サーバー状態とクライアント状態を分離する時
+
+| 推奨事項 | 理由 |
+| --- | --- |
+| ライブラリ選定を明確にする | 運用負荷を減らす |
+| キャッシュ方針を決める | UXを安定させる |
+| エラーハンドリングを統一する | 回復性を高める |
+| 楽観的更新のロールバックを用意する | 失敗時の整合性確保 |
+| テスト観点を整理する | 回帰を防ぐ |
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+| 禁止事項 | 問題点 |
+| --- | --- |
+| ライブラリの併用 | 保守性が低下する |
+| キャッシュ無しの実装 | 遅延と負荷が増える |
+| エラーの握りつぶし | 問題検知が遅れる |
+| 状態の混在 | 保守性が落ちる |
 
-### リソース読み取り
-```bash
-cat .claude/skills/data-fetching-strategies/resources/Level1_basics.md
-cat .claude/skills/data-fetching-strategies/resources/Level2_intermediate.md
-cat .claude/skills/data-fetching-strategies/resources/Level3_advanced.md
-cat .claude/skills/data-fetching-strategies/resources/Level4_expert.md
-cat .claude/skills/data-fetching-strategies/resources/caching-patterns.md
-cat .claude/skills/data-fetching-strategies/resources/error-loading-states.md
-cat .claude/skills/data-fetching-strategies/resources/legacy-skill.md
-cat .claude/skills/data-fetching-strategies/resources/library-comparison.md
-cat .claude/skills/data-fetching-strategies/resources/optimistic-updates.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/data-fetching-strategies/scripts/analyze-data-fetching.mjs --help
-node .claude/skills/data-fetching-strategies/scripts/log_usage.mjs --help
-node .claude/skills/data-fetching-strategies/scripts/validate-skill.mjs --help
-```
+### scripts/（決定論的処理）
 
-### テンプレート参照
-```bash
-cat .claude/skills/data-fetching-strategies/templates/react-query-hook-template.md
-cat .claude/skills/data-fetching-strategies/templates/swr-hook-template.md
-```
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/analyze-data-fetching.mjs` | データフェッチの分析 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
 
-## 変更履歴
+### references/（詳細知識）
 
-| Version | Date | Changes |
+| リソース | パス | 読込条件 |
 | --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 実装時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 検証時 |
+| ライブラリ比較 | [references/library-comparison.md](references/library-comparison.md) | 選定時 |
+| キャッシュパターン | [references/caching-patterns.md](references/caching-patterns.md) | キャッシュ設計時 |
+| エラー/ローディング | [references/error-loading-states.md](references/error-loading-states.md) | UI設計時 |
+| 楽観的更新 | [references/optimistic-updates.md](references/optimistic-updates.md) | 更新設計時 |
+| キー設計 | [references/query-key-guidelines.md](references/query-key-guidelines.md) | キー設計時 |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+
+### assets/（テンプレート・素材）
+
+| アセット | 用途 |
+| --- | --- |
+| `assets/swr-hook-template.md` | SWRフックテンプレート |
+| `assets/react-query-hook-template.md` | React Queryフックテンプレート |
+| `assets/fetching-requirements-template.md` | 要件整理テンプレート |
+| `assets/cache-policy-matrix.md` | キャッシュ方針整理 |
+| `assets/fetching-review-checklist.md` | 実装レビュー観点 |
+
+### 運用ファイル
+
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

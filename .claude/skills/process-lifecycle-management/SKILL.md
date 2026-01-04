@@ -1,121 +1,129 @@
 ---
-name: .claude/skills/process-lifecycle-management/SKILL.md
+name: process-lifecycle-management
 description: |
   Node.jsプロセスのライフサイクル管理を専門とするスキル。
   Linuxカーネルのプロセス管理思想に基づき、プロセスの生成、実行、
   監視、終了までの完全な制御と、シグナル処理、ゾンビプロセス回避を設計します。
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/child-process-patterns.md`: 子プロセス管理パターン
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/process-states.md`: プロセス状態管理ガイド
-  - `resources/signal-handling.md`: SIGTERM、SIGINT、SIGHUPの適切なハンドリングとGraceful Shutdown実装
-  - `scripts/check-process-health.mjs`: プロセスヘルスチェックスクリプト
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/signal-handler.template.ts`: Signal Handler Template
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when handling process lifecycle management tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "実践的改善"
-      - "品質維持"
+
+  Anchors:
+  • The Pragmatic Programmer（Andrew Hunt, David Thomas）/ 適用: プロセス管理 / 目的: 実践的改善と品質維持
+
+  Trigger:
+  process lifecycle management, application startup and shutdown control, graceful shutdown implementation, signal handler design, PM2 process management configuration
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# Process Lifecycle Management
+# プロセスライフサイクル管理
 
 ## 概要
 
-Node.jsプロセスのライフサイクル管理を専門とするスキル。
-Linuxカーネルのプロセス管理思想に基づき、プロセスの生成、実行、
-監視、終了までの完全な制御と、シグナル処理、ゾンビプロセス回避を設計します。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+Node.jsプロセスのライフサイクル管理を専門とするスキル。Linuxカーネルのプロセス管理思想に基づき、プロセスの生成、実行、監視、終了までの完全な制御と、シグナル処理、ゾンビプロセス回避を設計します。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: ライフサイクル分析
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: プロセスの要件と状態遷移を分析
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. アプリケーションの起動・終了要件を特定
+2. 管理対象プロセス（親・子）を洗い出し
+3. 必要なシグナル処理を決定
+4. 状態遷移図を設計
 
-### Phase 3: 検証と記録
+**Task**: `agents/analyze-lifecycle.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: シグナルハンドラ実装
+
+**目的**: Graceful Shutdownとシグナル処理を実装
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. `assets/signal-handler.template.ts` を基にハンドラーを実装
+2. SIGTERM、SIGINT、SIGHUPの処理を定義
+3. クリーンアップ関数を登録
+4. タイムアウト処理を設定
 
+**Task**: `agents/implement-handlers.md` を参照
+
+### Phase 3: シャットダウン検証
+
+**目的**: 実装したシグナルハンドラの動作を検証
+
+**アクション**:
+
+1. `scripts/check-process-health.mjs` で動作確認
+2. シグナル送信テストを実施
+3. リソースリークを検証
+4. PM2との連携を確認
+
+**Task**: `agents/validate-shutdown.md` を参照
+
+## Task仕様ナビ
+
+| Task               | 起動タイミング | 入力                     | 出力                 |
+| ------------------ | -------------- | ------------------------ | -------------------- |
+| analyze-lifecycle  | Phase 1開始時  | アプリケーション要件情報 | ライフサイクル設計書 |
+| implement-handlers | Phase 2開始時  | ライフサイクル設計       | シグナルハンドラ実装 |
+| validate-shutdown  | Phase 3開始時  | 実装済みハンドラ         | 検証結果レポート     |
 
 ## ベストプラクティス
 
 ### すべきこと
+
 - Node.jsプロセスの起動・終了フローを設計する時
 - シグナルハンドラーを実装する時
 - 子プロセスの管理戦略を決定する時
 - PM2でプロセスを管理する設定を行う時
+- Graceful Shutdownの実装時にタイムアウトを設定する
+- クリーンアップ関数を逆順（後入れ先出し）で実行する
 
 ### 避けるべきこと
+
 - アンチパターンや注意点を確認せずに進めることを避ける
+- graceful shutdownの実装なしに本番環境へ展開することを避ける
+- シグナルハンドラーなしのプロセス管理を避ける
+- 子プロセスの終了確認なしの設計を避ける
+- SIGKILLへのハンドラー登録（不可能）を試みることを避ける
 
-## コマンドリファレンス
+## リソース参照
 
-### リソース読み取り
-```bash
-cat .claude/skills/process-lifecycle-management/resources/Level1_basics.md
-cat .claude/skills/process-lifecycle-management/resources/Level2_intermediate.md
-cat .claude/skills/process-lifecycle-management/resources/Level3_advanced.md
-cat .claude/skills/process-lifecycle-management/resources/Level4_expert.md
-cat .claude/skills/process-lifecycle-management/resources/child-process-patterns.md
-cat .claude/skills/process-lifecycle-management/resources/legacy-skill.md
-cat .claude/skills/process-lifecycle-management/resources/process-states.md
-cat .claude/skills/process-lifecycle-management/resources/signal-handling.md
-```
+### references/
 
-### スクリプト実行
-```bash
-node .claude/skills/process-lifecycle-management/scripts/check-process-health.mjs --help
-node .claude/skills/process-lifecycle-management/scripts/log_usage.mjs --help
-node .claude/skills/process-lifecycle-management/scripts/validate-skill.mjs --help
-```
+| リソース           | パス                                   | 用途                           |
+| ------------------ | -------------------------------------- | ------------------------------ |
+| 基本概念           | `references/basics.md`                 | プロセス管理の基本理論         |
+| 実装パターン       | `references/patterns.md`               | パターンのナビゲーション       |
+| シグナル処理       | `references/signal-handling.md`        | シグナルハンドリング詳細ガイド |
+| プロセス状態       | `references/process-states.md`         | 状態遷移とライフサイクル管理   |
+| 子プロセスパターン | `references/child-process-patterns.md` | 子プロセス管理の実装パターン集 |
 
-### テンプレート参照
-```bash
-cat .claude/skills/process-lifecycle-management/templates/signal-handler.template.ts
-```
+### scripts/
+
+| スクリプト                 | 用途                   | 使用例                                  |
+| -------------------------- | ---------------------- | --------------------------------------- |
+| `check-process-health.mjs` | プロセスヘルスチェック | `node scripts/check-process-health.mjs` |
+| `validate-skill.mjs`       | スキル構造検証         | `node scripts/validate-skill.mjs`       |
+| `log_usage.mjs`            | 使用記録と自動評価     | `node scripts/log_usage.mjs`            |
+
+### assets/
+
+| テンプレート                 | 用途                           |
+| ---------------------------- | ------------------------------ |
+| `signal-handler.template.ts` | Signal Handler実装テンプレート |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                                                                      |
+| ------- | ---------- | -------------------------------------------------------------------------------------------- |
+| 2.1.0   | 2026-01-02 | 18-skills.md完全準拠: references/構造変更（Level1-4→basics/patterns）、validate-shutdown追加 |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様準拠版に再構築: agents/Task仕様書追加、references統合                        |
+| 1.1.0   | 2025-12-31 | Anchors/Trigger追加、Task仕様ナビ（テーブル形式）追加                                        |
+| 1.0.0   | 2025-12-24 | 初版作成                                                                                     |

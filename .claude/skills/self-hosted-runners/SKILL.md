@@ -1,114 +1,142 @@
 ---
-name: .claude/skills/self-hosted-runners/SKILL.md
+name: self-hosted-runners
 description: |
-  GitHub Actions セルフホストランナーの設計と管理。
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/runner-labels.md`: Runner Labelsリソース
-  - `resources/runner-security.md`: Runner Securityリソース
-  - `resources/runner-setup.md`: Runner Setupリソース
-  - `scripts/check-runner-status.mjs`: Check Runner Statusスクリプト
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/runner-workflow.yaml`: Runner Workflowテンプレート
-  
-  Use proactively when handling self hosted runners tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "実践的改善"
-      - "品質維持"
+  GitHub Actionsセルフホストランナーの設計、セットアップ、セキュリティ管理を行うスキル。
+  インストールから運用、トラブルシューティングまでの完全なライフサイクル管理を提供する。
+
+  Anchors:
+  • GitHub Actions Documentation / 適用: セルフホストランナー公式仕様 / 目的: 正確なAPI使用と設定
+  • CIS Benchmark for Linux / 適用: ランナーホストのセキュリティ / 目的: セキュリティ強化
+  • The Pragmatic Programmer / 適用: 実践的改善 / 目的: 段階的な実装と継続的改善
+
+  Trigger:
+  Use when setting up self-hosted runners, configuring runner labels, implementing security measures, troubleshooting runner issues, or optimizing runner performance.
+  self-hosted, runner, GitHub Actions, ephemeral, labels, security, setup, configuration
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# Self-Hosted Runners Skill
+# Self-Hosted Runners
 
 ## 概要
 
-GitHub Actions セルフホストランナーの設計と管理。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+GitHub Actionsセルフホストランナーの設計と管理を支援するスキル。ランナーのセットアップ、ラベル設計、セキュリティ強化、トラブルシューティングをカバーする。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+```
+plan-runner → setup-runner → secure-runner → validate-runner
+```
 
-**目的**: タスクの目的と前提条件を明確にする
+### Phase 1: 計画
 
-**アクション**:
+**目的**: ランナー要件を分析し、構成を計画する
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**Task**: `agents/plan-runner.md` を参照
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. ワークフロー要件の分析（OS、アーキテクチャ、依存関係）
+2. ランナータイプの決定（永続/エフェメラル）
+3. ラベル設計
 
-### Phase 3: 検証と記録
+### Phase 2: セットアップ
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: ランナーをインストールし設定する
+
+**Task**: `agents/setup-runner.md` を参照
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. ランナーパッケージのインストール
+2. GitHubへの登録
+3. サービスとしての設定
 
+### Phase 3: セキュリティ強化
+
+**目的**: ランナーのセキュリティを強化する
+
+**Task**: `agents/secure-runner.md` を参照
+
+**アクション**:
+
+1. 専用ユーザーでの実行設定
+2. ファイアウォール設定
+3. ログ監視設定
+
+### Phase 4: 検証と記録
+
+**目的**: ランナーの動作確認と記録
+
+**アクション**:
+
+1. テストワークフローでの動作確認
+2. ステータス監視の設定
+3. `scripts/log_usage.mjs` で記録
+
+## Task仕様ナビ
+
+| Task          | 責務             | 入力             | 出力             |
+| ------------- | ---------------- | ---------------- | ---------------- |
+| plan-runner   | 要件分析・計画   | ワークフロー要件 | ランナー構成計画 |
+| setup-runner  | インストール設定 | 構成計画         | 稼働ランナー     |
+| secure-runner | セキュリティ強化 | 稼働ランナー     | 強化済みランナー |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+| 推奨事項                     | 理由                           |
+| ---------------------------- | ------------------------------ |
+| 専用ユーザーで実行する       | 権限分離によるセキュリティ向上 |
+| エフェメラルモードを検討する | クリーンな環境で毎回実行       |
+| ラベルを適切に設計する       | ワークフローの柔軟性向上       |
+| 定期的にアップデートする     | セキュリティパッチの適用       |
+| ログ監視を設定する           | 問題の早期発見                 |
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+| 禁止事項                     | 問題点                     |
+| ---------------------------- | -------------------------- |
+| rootで実行する               | セキュリティリスクが高い   |
+| パブリックリポジトリで使用   | 悪意あるコードの実行リスク |
+| シークレットをランナーに保存 | 認証情報漏洩のリスク       |
+| アップデートを怠る           | 脆弱性が放置される         |
 
-### リソース読み取り
-```bash
-cat .claude/skills/self-hosted-runners/resources/Level1_basics.md
-cat .claude/skills/self-hosted-runners/resources/Level2_intermediate.md
-cat .claude/skills/self-hosted-runners/resources/Level3_advanced.md
-cat .claude/skills/self-hosted-runners/resources/Level4_expert.md
-cat .claude/skills/self-hosted-runners/resources/legacy-skill.md
-cat .claude/skills/self-hosted-runners/resources/runner-labels.md
-cat .claude/skills/self-hosted-runners/resources/runner-security.md
-cat .claude/skills/self-hosted-runners/resources/runner-setup.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/self-hosted-runners/scripts/check-runner-status.mjs --help
-node .claude/skills/self-hosted-runners/scripts/log_usage.mjs --help
-node .claude/skills/self-hosted-runners/scripts/validate-skill.mjs --help
-```
+### references/（詳細知識）
 
-### テンプレート参照
-```bash
-cat .claude/skills/self-hosted-runners/templates/runner-workflow.yaml
-```
+| リソース     | パス                                                           | 読込条件           |
+| ------------ | -------------------------------------------------------------- | ------------------ |
+| セットアップ | [references/runner-setup.md](references/runner-setup.md)       | インストール時     |
+| ラベル設計   | [references/runner-labels.md](references/runner-labels.md)     | ラベル設計時       |
+| セキュリティ | [references/runner-security.md](references/runner-security.md) | セキュリティ強化時 |
+
+### scripts/（決定論的処理）
+
+| スクリプト                        | 機能                   |
+| --------------------------------- | ---------------------- |
+| `scripts/log_usage.mjs`           | 使用記録と自動評価     |
+| `scripts/check-runner-status.mjs` | ランナーステータス確認 |
+
+### assets/（テンプレート）
+
+| アセット                      | 用途                       |
+| ----------------------------- | -------------------------- |
+| `assets/runner-workflow.yaml` | ランナー使用ワークフロー例 |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                            |
+| ------- | ---------- | -------------------------------------------------- |
+| 3.0.0   | 2026-01-02 | 18-skills仕様完全準拠、agents/を責務ベースに再構成 |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に基づきリファクタリング           |
+| 1.0.0   | 2025-12-24 | 初版                                               |

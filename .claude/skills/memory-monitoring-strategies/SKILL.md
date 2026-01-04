@@ -1,118 +1,136 @@
 ---
-name: .claude/skills/memory-monitoring-strategies/SKILL.md
+name: memory-monitoring-strategies
 description: |
-  Node.jsアプリケーションのメモリ監視とリーク検出を専門とするスキル。
-  PM2、V8ヒープ分析、メモリプロファイリングを活用した効率的なメモリ管理を設計します。
-  
-  📖 参照書籍:
-  - 『Observability Engineering』（Charity Majors）: ログ設計
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/heap-analysis.md`: heapdump取得、Chrome DevTools分析、スナップショット比較、リーク原因特定
-  - `resources/leak-detection.md`: リーク兆候の検出、継続的増加パターン、GC効果測定、原因診断手法
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/memory-metrics.md`: RSS/heapUsed/heapTotal/external各メトリクス説明、警告閾値設定
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/memory-monitor.mjs`: メモリ使用量のリアルタイム監視（PID/PM2アプリ指定、閾値アラート）
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/memory-tracker.template.ts`: PM2カスタムメトリクス実装テンプレート（TypeScript、io.metric活用）
-  
-  Use proactively when handling memory monitoring strategies tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Observability Engineering"
-    author: "Charity Majors"
-    concepts:
-      - "ログ設計"
-      - "メトリクス"
+  Node.jsアプリケーションのメモリ監視とリーク検出パターン。PM2、V8ヒープ分析、メモリプロファイリングを活用した効率的メモリ管理を提供。
+
+  Anchors:
+  • Observability Engineering / 適用: メモリメトリクスとアラート / 目的: 本番監視
+  • Systems Performance / 適用: ヒープ分析とプロファイリング / 目的: メモリ最適化
+  • Node.js Documentation / 適用: process.memoryUsage、V8ヒープ統計 / 目的: API活用
+
+  Trigger:
+  Use when setting up memory monitoring, investigating memory leaks, configuring PM2 memory limits,
+  analyzing heap dumps, or designing production memory alerting strategies.
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Memory Monitoring Strategies
 
+> **相対パス**: `SKILL.md`
+> **読込条件**: スキル使用時（自動）
+
+---
+
 ## 概要
 
-Node.jsアプリケーションのメモリ監視とリーク検出を専門とするスキル。
-PM2、V8ヒープ分析、メモリプロファイリングを活用した効率的なメモリ管理を設計します。
+Node.js アプリケーションのメモリ監視とリーク検出パターン。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+**対象領域**:
 
+| 領域           | 説明                                |
+| -------------- | ----------------------------------- |
+| メトリクス監視 | RSS/heapUsed/heapTotal/external     |
+| リーク検出     | 継続的増加パターン、原因診断        |
+| ヒープ分析     | heapdump 取得、Chrome DevTools 分析 |
+| PM2 統合       | メモリ制限、カスタムメトリクス      |
+
+---
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 監視戦略設計
 
-**目的**: タスクの目的と前提条件を明確にする
+**Task**: `agents/basic-monitoring-setup.md`
 
-**アクション**:
+| 入力       | 出力     |
+| ---------- | -------- |
+| アプリ特性 | 監視戦略 |
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+**参照**: `references/basics.md`, `references/memory-metrics.md`
 
-### Phase 2: スキル適用
+### Phase 2: 実装
 
-**目的**: スキルの指針に従って具体的な作業を進める
+**Task**: `agents/pm2-memory-monitoring.md`
 
-**アクション**:
+| 入力     | 出力     |
+| -------- | -------- |
+| 監視戦略 | 監視実装 |
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+**参照**: `references/patterns.md`, `assets/`
 
-### Phase 3: 検証と記録
+### Phase 3: リーク検出・分析
 
-**目的**: 成果物の検証と実行記録の保存
+**Task**: `agents/memory-leak-detection.md`, `agents/heap-dump-analysis.md`
 
-**アクション**:
+| 入力       | 出力         |
+| ---------- | ------------ |
+| メモリ異常 | 原因レポート |
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+**参照**: `references/heap-analysis.md`, `references/leak-detection.md`
 
+---
 
 ## ベストプラクティス
 
-### すべきこと
-- メモリ使用量の監視を設定する時
-- メモリリークを調査する時
-- PM2のメモリ制限を設定する時
-- ヒープ分析を行う時
+| すべきこと                                     | 避けるべきこと                 |
+| ---------------------------------------------- | ------------------------------ |
+| 複数メトリクス（RSS, heapUsed, heapTotal）監視 | 単一メトリクスのみ依存         |
+| 段階的閾値（Warning + Critical）設定           | 過剰アラート設定               |
+| 定期的ヒープダンプ取得                         | 本番でいきなり分析             |
+| PM2 メモリ制限との併用                         | リーク原因の推測（裏付けなし） |
+| GC 効果の測定                                  | メモリ制限の過度な厳格化       |
 
-### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
+---
 
-## コマンドリファレンス
+## Task ナビゲーション
 
-### リソース読み取り
-```bash
-cat .claude/skills/memory-monitoring-strategies/resources/Level1_basics.md
-cat .claude/skills/memory-monitoring-strategies/resources/Level2_intermediate.md
-cat .claude/skills/memory-monitoring-strategies/resources/Level3_advanced.md
-cat .claude/skills/memory-monitoring-strategies/resources/Level4_expert.md
-cat .claude/skills/memory-monitoring-strategies/resources/heap-analysis.md
-cat .claude/skills/memory-monitoring-strategies/resources/leak-detection.md
-cat .claude/skills/memory-monitoring-strategies/resources/legacy-skill.md
-cat .claude/skills/memory-monitoring-strategies/resources/memory-metrics.md
-```
+| Task                                    | 目的             | 参照リソース        |
+| --------------------------------------- | ---------------- | ------------------- |
+| `basic-monitoring-setup.md`             | 基本監視設定     | `memory-metrics.md` |
+| `pm2-memory-monitoring.md`              | PM2 監視         | `patterns.md`       |
+| `memory-leak-detection.md`              | リーク検出       | `leak-detection.md` |
+| `heap-dump-analysis.md`                 | ヒープ分析       | `heap-analysis.md`  |
+| `alert-threshold-configuration.md`      | アラート設定     | `memory-metrics.md` |
+| `realtime-monitoring-implementation.md` | リアルタイム監視 | `patterns.md`       |
 
-### スクリプト実行
-```bash
-node .claude/skills/memory-monitoring-strategies/scripts/log_usage.mjs --help
-node .claude/skills/memory-monitoring-strategies/scripts/memory-monitor.mjs --help
-node .claude/skills/memory-monitoring-strategies/scripts/validate-skill.mjs --help
-```
+---
 
-### テンプレート参照
-```bash
-cat .claude/skills/memory-monitoring-strategies/templates/memory-tracker.template.ts
-```
+## リソース参照
 
-## 変更履歴
+### References
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| ファイル            | 内容                               | 読込条件         |
+| ------------------- | ---------------------------------- | ---------------- |
+| `basics.md`         | メモリ監視基礎概念、メトリクス概要 | 初回使用時       |
+| `patterns.md`       | PM2 統合、アラート、GC 監視        | 設計時           |
+| `memory-metrics.md` | 各メトリクス詳細定義と閾値設定     | メトリクス設計時 |
+| `heap-analysis.md`  | heapdump 取得・DevTools 分析       | リーク調査時     |
+| `leak-detection.md` | リーク兆候検出・原因診断           | リーク調査時     |
+
+### Assets
+
+| ファイル                     | 内容                               |
+| ---------------------------- | ---------------------------------- |
+| `memory-tracker.template.ts` | PM2 カスタムメトリクステンプレート |
+
+### Scripts
+
+| スクリプト           | 用途                   |
+| -------------------- | ---------------------- |
+| `memory-monitor.mjs` | リアルタイムメモリ監視 |
+| `validate-skill.mjs` | スキル検証             |
+| `log_usage.mjs`      | 使用記録               |
+
+---
+
+## 関連スキル
+
+- `logging-observability` - オブザーバビリティ設計
+- `graceful-shutdown` - 適切なリソースクリーンアップ
+- `health-check-implementation` - ヘルスチェック設計

@@ -54,21 +54,21 @@ function validateLineLimit(path, limit) {
 function validateEvals(path) {
   try {
     const data = JSON.parse(readFileSync(path, 'utf-8'));
-    const required = ['skill_name', 'current_level', 'levels', 'metrics'];
+    const required = ['skill', 'version', 'metrics', 'evaluationCriteria', 'levelProgression'];
     for (const key of required) {
       if (!(key in data)) {
         throw new Error(`EVALS.json missing ${key}`);
       }
     }
-    for (const lvl of ['1', '2', '3', '4']) {
-      if (!(lvl in data.levels)) {
-        throw new Error(`EVALS.json missing levels.${lvl}`);
-      }
+    // Check metrics structure
+    if (!data.metrics.usage || !data.metrics.performance || !data.metrics.quality) {
+      throw new Error('EVALS.json metrics missing required sections');
     }
-    const metrics = ['total_usage_count', 'success_count', 'failure_count', 'average_satisfaction', 'last_evaluated'];
-    for (const key of metrics) {
-      if (!(key in data.metrics)) {
-        throw new Error(`EVALS.json metrics missing ${key}`);
+    // Check level progression
+    const levels = ['level1', 'level2', 'level3', 'level4'];
+    for (const lvl of levels) {
+      if (!(lvl in data.levelProgression)) {
+        throw new Error(`EVALS.json missing levelProgression.${lvl}`);
       }
     }
   } catch (err) {
@@ -87,14 +87,13 @@ async function main() {
   const requiredFiles = [
     'SKILL.md',
     'EVALS.json',
-    'CHANGELOG.md',
     'LOGS.md',
     'scripts/log_usage.mjs',
     'scripts/validate-skill.mjs',
-    'resources/Level1_basics.md',
-    'resources/Level2_intermediate.md',
-    'resources/Level3_advanced.md',
-    'resources/Level4_expert.md',
+    'references/Level1_basics.md',
+    'references/Level2_intermediate.md',
+    'references/Level3_advanced.md',
+    'references/Level4_expert.md',
   ];
 
   for (const file of requiredFiles) {
@@ -102,10 +101,10 @@ async function main() {
   }
 
   validateLineLimit(join(SKILL_DIR, 'SKILL.md'), 500);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level1_basics.md'), 200);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level2_intermediate.md'), 300);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level3_advanced.md'), 400);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level4_expert.md'), 500);
+  validateLineLimit(join(SKILL_DIR, 'references/Level1_basics.md'), 200);
+  validateLineLimit(join(SKILL_DIR, 'references/Level2_intermediate.md'), 300);
+  validateLineLimit(join(SKILL_DIR, 'references/Level3_advanced.md'), 400);
+  validateLineLimit(join(SKILL_DIR, 'references/Level4_expert.md'), 500);
 
   validateEvals(join(SKILL_DIR, 'EVALS.json'));
 

@@ -1,116 +1,124 @@
 ---
-name: .claude/skills/command-structure-fundamentals/SKILL.md
+name: command-structure-fundamentals
 description: |
-  Claude Codeスラッシュコマンドの基本構造を専門とするスキル。
-  YAML Frontmatter（description、argument-hint、allowed-tools、model、disable-model-invocation）
-  と本文パターン、ファイル構造の理解を提供します。
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 手順設計
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/yaml-frontmatter-reference.md`: YAMLフロントマター完全リファレンス
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-command.mjs`: コマンド構造検証スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/minimal-command.md`: 最小構成コマンドテンプレート
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when handling command structure fundamentals tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "手順設計"
-      - "実践的改善"
----
+  Claude Code スラッシュコマンドの基本構造（YAML frontmatter/本文パターン/ファイル構造）を整理し、最小構成と設計判断を支援するスキル。
+  frontmatter設計、本文パターン、配置ルールを一貫して整理する。
 
-# Command Structure Fundamentals
+  Anchors:
+  • The Pragmatic Programmer (Andrew Hunt, David Thomas) / 適用: 構造設計の実務 / 目的: コマンド構造の再現性確保
+  • 18-skills.md 仕様 / 適用: スキル構造の整合 / 目的: frontmatter規約の統一
+
+  Trigger:
+  Use when designing slash command structure, defining YAML frontmatter fields, or establishing consistent command composition patterns.
+  command structure, YAML frontmatter, command composition, minimal command template
+---
+# command-structure-fundamentals
 
 ## 概要
 
-Claude Codeスラッシュコマンドの基本構造を専門とするスキル。
-YAML Frontmatter（description、argument-hint、allowed-tools、model、disable-model-invocation）
-と本文パターン、ファイル構造の理解を提供します。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+Claude Code スラッシュコマンドの基本構造（YAML frontmatter/本文パターン/ファイル構造）を整理し、最小構成と設計判断を支援する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件整理
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 必須フィールドと目的を明確化する。
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 目的と対象コマンドを整理する。
+2. 必須 frontmatter と本文要素を整理する。
+3. 参照ガイドとテンプレートを確認する。
+
+**Task**: `agents/analyze-structure-requirements.md` を参照
+
+### Phase 2: 構造設計
+
+**目的**: frontmatter/本文/配置ルールを具体化する。
+
+**アクション**:
+
+1. frontmatter 仕様と本文パターンを定義する。
+2. ファイル構造と配置ルールを整理する。
+3. テンプレートで表現を統一する。
+
+**Task**: `agents/design-command-structure.md` を参照
 
 ### Phase 3: 検証と記録
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: コマンド構造を検証し、記録を残す。
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. 検証スクリプトで構造整合を確認する。
+2. 検証結果と改善点を整理する。
+3. ログと評価情報を更新する。
 
+**Task**: `agents/validate-command-structure.md` を参照
+
+## Task仕様ナビ
+
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-structure-requirements | Phase 1開始時 | 目的/対象 | 要件整理メモ、必須項目 |
+| design-command-structure | Phase 2開始時 | 要件整理メモ | 構造設計、配置ルール |
+| validate-command-structure | Phase 3開始時 | 構造設計 | 検証レポート、改善方針 |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- 新しいコマンドの基本構造を設計する時
-- YAML Frontmatterの各フィールドの意味と使い方を理解する時
-- コマンドファイルの最小構成を知りたい時
+
+| 推奨事項 | 理由 |
+| --- | --- |
+| 必須フィールドを先に整理する | 実装漏れを防ぐため |
+| テンプレートで構造を統一する | 読みやすさが保てるため |
+| 検証と記録を実施する | 改善が継続できるため |
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+| 禁止事項 | 問題点 |
+| --- | --- |
+| frontmatter を曖昧にする | 実行要件が不明確になる |
+| 本文パターンを混在させる | 構造が崩れる |
+| 記録を残さない | 改善が続かない |
 
-### リソース読み取り
-```bash
-cat .claude/skills/command-structure-fundamentals/resources/Level1_basics.md
-cat .claude/skills/command-structure-fundamentals/resources/Level2_intermediate.md
-cat .claude/skills/command-structure-fundamentals/resources/Level3_advanced.md
-cat .claude/skills/command-structure-fundamentals/resources/Level4_expert.md
-cat .claude/skills/command-structure-fundamentals/resources/legacy-skill.md
-cat .claude/skills/command-structure-fundamentals/resources/yaml-frontmatter-reference.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/command-structure-fundamentals/scripts/log_usage.mjs --help
-node .claude/skills/command-structure-fundamentals/scripts/validate-command.mjs --help
-node .claude/skills/command-structure-fundamentals/scripts/validate-skill.mjs --help
-```
+### scripts/（決定論的処理）
 
-### テンプレート参照
-```bash
-cat .claude/skills/command-structure-fundamentals/templates/minimal-command.md
-```
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/validate-command.mjs` | コマンド構造検証 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
 
-## 変更履歴
+### references/（詳細知識）
 
-| Version | Date | Changes |
+| リソース | パス | 読込条件 |
 | --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 構造設計時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細設計時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
+| frontmatter参照 | [references/yaml-frontmatter-reference.md](references/yaml-frontmatter-reference.md) | 仕様確認時 |
+| 仕様: description | [references/specification-18.3.4-description.md](references/specification-18.3.4-description.md) | description整理時 |
+| 仕様: 本文セクション | [references/specification-18.3.6-body-sections.md](references/specification-18.3.6-body-sections.md) | 本文設計時 |
+| 仕様: エージェント起動 | [references/specification-18.3.7-agent-launch-flow.md](references/specification-18.3.7-agent-launch-flow.md) | エージェント起動設計時 |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 要件参照時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+
+### assets/（テンプレート・素材）
+
+| アセット | 用途 |
+| --- | --- |
+| `assets/minimal-command.md` | 最小構成コマンドテンプレート |
+
+### 運用ファイル
+
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

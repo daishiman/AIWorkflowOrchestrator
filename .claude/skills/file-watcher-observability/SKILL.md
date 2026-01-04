@@ -1,117 +1,119 @@
 ---
-name: .claude/skills/file-watcher-observability/SKILL.md
+name: file-watcher-observability
 description: |
-  ファイル監視システムの可観測性（Observability）設計と実装。
-  Metrics、Logs、Tracesの3本柱に基づくPrometheus/Grafana統合パターンを提供。
-  専門分野:
-  
-  📖 参照書籍:
-  - 『Observability Engineering』（Charity Majors）: ログ設計
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/grafana-dashboard.json`: grafana-dashboard の詳細ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `scripts/health-check.sh`: ヘルスを検証するスクリプト
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/metrics-collector.ts`: metrics-collector のテンプレート
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when handling file watcher observability tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Observability Engineering"
-    author: "Charity Majors"
-    concepts:
-      - "ログ設計"
-      - "メトリクス"
+  ファイル監視システムの可観測性（Observability）を3本柱（Metrics、Logs、Traces）に基づいて実装するスキル。Prometheus/Grafana統合でSLA遵守測定、パフォーマンス監視、障害根本原因分析を支援。
+
+  Anchors:
+  • Observability Engineering（Charity Majors） / 適用: 3本柱設計 / 目的: メトリクス・ログ・トレースの統合
+  • Google SRE Book / 適用: ゴールデンシグナル / 目的: SLI/SLO設計
+  • Prometheus Documentation / 適用: メトリクス命名規則 / 目的: 標準準拠の実装
+
+  Trigger:
+  Use when implementing observability for file watcher systems, setting up Prometheus/Grafana monitoring, designing SLI/SLO metrics, or analyzing production performance issues.
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Task
 ---
 
-# .claude/skills/file-watcher-observability/SKILL.md
+# ファイル監視システムの可観測性設計
 
 ## 概要
 
-ファイル監視システムの可観測性（Observability）設計と実装。
-Metrics、Logs、Tracesの3本柱に基づくPrometheus/Grafana統合パターンを提供。
-専門分野:
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+ファイル監視システムに対してMetrics・Logs・Tracesの3本柱を統合し、Prometheus/Grafanaで本番環境のパフォーマンスを定量的に監視・分析するスキル。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: メトリクス設計
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: SLA要件からメトリクス定義とSLI/SLOを設計
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. [references/basics.md](references/basics.md) で可観測性の基本概念を確認
+2. ゴールデンシグナル（Latency、Traffic、Errors、Saturation）を定義
+3. Prometheus命名規則に準拠したメトリクス名を設計
+4. SLI/SLO目標値を明文化
 
-### Phase 3: 検証と記録
+**Task**: [agents/metrics-design.md](agents/metrics-design.md) を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: 可観測性セットアップ
+
+**目的**: Prometheus/Grafana/Logs/Tracesの統合実装
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. [references/patterns.md](references/patterns.md) で実装パターンを確認
+2. [assets/metrics-collector.ts](assets/metrics-collector.ts) をカスタマイズ
+3. [assets/grafana-dashboard.json](assets/grafana-dashboard.json) でダッシュボード構築
+4. アラートルールを定義
 
+**Task**: [agents/observability-setup.md](agents/observability-setup.md) を参照
+
+### Phase 3: 検証と運用
+
+**目的**: 設定の検証と運用開始
+
+**アクション**:
+
+1. `scripts/validate-observability.mjs --all` で設定を検証
+2. 本番環境へのデプロイ
+3. アラート通知先の設定
+4. `scripts/log_usage.mjs --result success` で記録
+
+## Task仕様ナビ
+
+| Task                                                           | 用途           | 入力             | 出力                      |
+| -------------------------------------------------------------- | -------------- | ---------------- | ------------------------- |
+| [agents/metrics-design.md](agents/metrics-design.md)           | メトリクス設計 | SLA要件          | メトリクス定義書・SLO仕様 |
+| [agents/observability-setup.md](agents/observability-setup.md) | セットアップ   | メトリクス定義書 | 設定ファイル群            |
 
 ## ベストプラクティス
 
 ### すべきこと
-- 本番環境でのファイル監視のパフォーマンス監視が必要な時
-- SLA遵守のための定量的測定が必要な時
-- 障害の根本原因分析（RCA）を実施する時
-- キャパシティプランニングのデータ収集時
+
+- SLA定義を明確にしてからメトリクスを設計する
+- ゴールデンシグナル4つを必ずカバーする
+- ダッシュボードはオンコール対応者向けに最小限の情報に絞る
+- アラート閾値は実運用データに基づいて調整する
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- 測定設計なしで実装を始める
+- すべてのメトリクスを取得しようとする（コスト増大）
+- ラベルに高カーディナリティ値（ファイルパス等）を使用する
+- ダッシュボードを情報過多にする
 
-### リソース読み取り
-```bash
-cat .claude/skills/file-watcher-observability/resources/Level1_basics.md
-cat .claude/skills/file-watcher-observability/resources/Level2_intermediate.md
-cat .claude/skills/file-watcher-observability/resources/Level3_advanced.md
-cat .claude/skills/file-watcher-observability/resources/Level4_expert.md
-cat .claude/skills/file-watcher-observability/resources/grafana-dashboard.json
-cat .claude/skills/file-watcher-observability/resources/legacy-skill.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-.claude/skills/file-watcher-observability/scripts/health-check.sh
-node .claude/skills/file-watcher-observability/scripts/log_usage.mjs --help
-node .claude/skills/file-watcher-observability/scripts/validate-skill.mjs --help
-```
+### references/（詳細知識）
 
-### テンプレート参照
-```bash
-cat .claude/skills/file-watcher-observability/templates/metrics-collector.ts
-```
+| リソース     | パス                                             | 内容                               |
+| ------------ | ------------------------------------------------ | ---------------------------------- |
+| 基本概念     | [references/basics.md](references/basics.md)     | 3本柱・ゴールデンシグナル・SLI/SLO |
+| 実装パターン | [references/patterns.md](references/patterns.md) | Prometheus/Grafana設定例           |
+
+### assets/（テンプレート）
+
+| テンプレート           | 用途                      |
+| ---------------------- | ------------------------- |
+| metrics-collector.ts   | メトリクス収集コード      |
+| grafana-dashboard.json | Grafanaダッシュボード設定 |
+
+### scripts/（検証・記録）
+
+| スクリプト                 | 用途           | 使用例                                          |
+| -------------------------- | -------------- | ----------------------------------------------- |
+| validate-observability.mjs | 設定検証       | `node scripts/validate-observability.mjs --all` |
+| log_usage.mjs              | 利用記録       | `node scripts/log_usage.mjs --result success`   |
+| health-check.sh            | ヘルスチェック | `./scripts/health-check.sh`                     |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                                           |
+| ------- | ---------- | ----------------------------------------------------------------- |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様に完全準拠。agents/を2つに統合、references/を刷新 |
+| 1.1.0   | 2025-12-31 | frontmatter改訂、構成再編                                         |
+| 1.0.0   | 2025-12-24 | 初版作成                                                          |

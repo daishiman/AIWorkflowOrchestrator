@@ -1,11 +1,11 @@
 # Changelog
 
-## [1.0.0] - 2025-12-24
+## [1.1.0] - 2026-01-02
 
-### Added
-- Spec-aligned metadata and required artifacts
-- scripts/log_usage.mjs for feedback loop
-- scripts/validate-skill.mjs for structure checks
+- ワークフロー再設計
+- Task仕様ナビとagents追加
+- 参照パスと検証スクリプトの整合性更新
 
-### Changed
-- SKILL.md structure aligned to specification
+## [1.0.0] - 2025-12-31
+
+- 初版作成

@@ -1,38 +1,18 @@
 ---
-name: .claude/skills/github-actions-expressions/SKILL.md
+name: github-actions-expressions
 description: |
   GitHub Actionsのワークフローで使用できる式構文とコンテキストオブジェクトを専門とするスキル。
   ${{ }}構文、演算子、リテラル、組み込み関数、および利用可能なすべてのコンテキスト（github, env, job, steps, runner, secrets, needs, matrix, inputs）を提供します。
-  専門分野:
-  
-  📖 参照書籍:
-  - 『Continuous Delivery』（Jez Humble）: パイプライン
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/builtin-functions.md`: builtin-functions の詳細ガイド
-  - `resources/conditional-patterns.md`: conditional-patterns のパターン集
-  - `resources/context-objects.md`: context-objects の詳細ガイド
-  - `resources/expression-syntax.md`: expression-syntax の詳細ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-expressions.mjs`: expressionsを検証するスクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/expression-examples.yaml`: expression-examples のテンプレート
-  
-  Use proactively when handling github actions expressions tasks.
+
+  Anchors:
+  • Continuous Delivery (Jez Humble) / 適用: パイプライン設計とCI/CD自動化 / 目的: 信頼性の高いワークフロー式の設計
+
+  Trigger:
+  Use when implementing conditional execution (if:), referencing step outputs, generating dynamic values, or utilizing context information (branch names, commit SHA, event types) in GitHub Actions workflows.
+  Keywords: github actions, workflow, expressions, context, ${{ }}, if condition, matrix, secrets, steps output
 version: 1.0.0
 level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Continuous Delivery"
-    author: "Jez Humble"
-    concepts:
-      - "パイプライン"
-      - "自動化"
+last_updated: 2025-12-31
 ---
 
 # GitHub Actions Expressions
@@ -41,82 +21,131 @@ references:
 
 GitHub Actionsのワークフローで使用できる式構文とコンテキストオブジェクトを専門とするスキル。
 ${{ }}構文、演算子、リテラル、組み込み関数、および利用可能なすべてのコンテキスト（github, env, job, steps, runner, secrets, needs, matrix, inputs）を提供します。
-専門分野:
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+**適用範囲**: GitHub Actionsワークフローを使用するすべてのリポジトリ
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件分析とタスク起動
 
-**目的**: タスクの目的と前提条件を明確にする
+**目的**: ワークフロー要件を分析し、適切な式設計を行う
 
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**タスク**: Expression Analyzer (`agents/expression-analyzer.md`)
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. ワークフロー要件を明確化（条件分岐、動的値生成、コンテキスト使用）
+2. [references/context-objects.md](references/context-objects.md) でコンテキストを選択
+3. Expression Analyzer タスクを起動し、式設計仕様書を作成
+   - 使用コンテキストの選択
+   - 組み込み関数の選定
+   - 適用パターンの特定
+
+**成果物**: 式設計仕様書（使用コンテキスト、関数、パターン、エッジケース含む）
+
+### Phase 2: 式の実装
+
+**目的**: 設計された式を正確なYAML形式で実装する
+
+**タスク**: Expression Implementer (`agents/expression-implementer.md`)
+
+**アクション**:
+
+1. `references/expression-syntax.md` で構文規則を確認
+2. Expression Implementer タスクを起動し、式を実装
+   - 設計仕様書に基づく実装
+   - `assets/expression-examples.yaml` のテンプレート形式に準拠
+   - 説明コメントとエッジケース対応を追加
+
+**成果物**: 実装済みワークフロー式（YAML形式、コメント、使用例含む）
 
 ### Phase 3: 検証と記録
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: 実装された式の品質を検証し、実行記録を保存する
+
+**タスク**: Expression Validator (`agents/expression-validator.md`)
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. Expression Validator タスクを起動し、検証を実施
+   - `scripts/validate-expressions.mjs` で構文検証
+   - `references/conditional-patterns.md` でアンチパターン確認
+   - エッジケーステスト実施
+2. 検証レポートを確認し、必要に応じて修正
+3. `scripts/log_usage.mjs` で実行記録を保存
 
+**成果物**: 検証レポート、修正提案、ログ記録
+
+## Task仕様（実行直前に参照）
+
+### Expression Analyzer
+
+- **パス**: `agents/expression-analyzer.md`
+- **役割**: ワークフロー要件を分析し、適切な式設計を行う
+- **入力**: ワークフロー要件、既存ワークフローファイル（任意）
+- **出力**: 式設計仕様書（コンテキスト、関数、パターン、エッジケース）
+- **参照**: `references/context-objects.md`, `references/builtin-functions.md`, `references/conditional-patterns.md`
+
+### Expression Implementer
+
+- **パス**: `agents/expression-implementer.md`
+- **役割**: 設計された式を正確なYAML形式で実装する
+- **入力**: 式設計仕様書
+- **出力**: 実装済みワークフロー式（YAML、コメント、使用例）
+- **参照**: `references/expression-syntax.md`, `assets/expression-examples.yaml`
+
+### Expression Validator
+
+- **パス**: `agents/expression-validator.md`
+- **役割**: 実装された式の品質を検証する
+- **入力**: 実装済みワークフロー式、式設計仕様書（参照用）
+- **出力**: 検証レポート（構文、ロジック、セキュリティ、パフォーマンス）
+- **参照**: `scripts/validate-expressions.mjs`, `references/conditional-patterns.md`
 
 ## ベストプラクティス
 
 ### すべきこと
-- ワークフローで条件付き実行（if:）を設定する時
-- ステップ出力を参照したり、動的に値を生成する時
-- コンテキスト情報（ブランチ名、コミットSHA、イベントタイプ）を使用する時
-- 組み込み関数で文字列操作やJSON処理を行う時
+
+- 必ず `references/context-objects.md` でコンテキストの利用可能性を確認
+- `references/builtin-functions.md` から適切な関数を選択
+- `references/conditional-patterns.md` の推奨パターンを適用
+- セキュリティリスク（secrets の不適切な使用）に注意
+- エッジケースを考慮した設計・実装
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- コンテキストや関数の仕様を確認せずに進めること
+- `references/conditional-patterns.md` のアンチパターンを使用すること
+- 検証なしで本番環境に適用すること
+- 複雑すぎる式（可読性・保守性の低下）
 
-### リソース読み取り
-```bash
-cat .claude/skills/github-actions-expressions/resources/Level1_basics.md
-cat .claude/skills/github-actions-expressions/resources/Level2_intermediate.md
-cat .claude/skills/github-actions-expressions/resources/Level3_advanced.md
-cat .claude/skills/github-actions-expressions/resources/Level4_expert.md
-cat .claude/skills/github-actions-expressions/resources/builtin-functions.md
-cat .claude/skills/github-actions-expressions/resources/conditional-patterns.md
-cat .claude/skills/github-actions-expressions/resources/context-objects.md
-cat .claude/skills/github-actions-expressions/resources/expression-syntax.md
-cat .claude/skills/github-actions-expressions/resources/legacy-skill.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/github-actions-expressions/scripts/log_usage.mjs --help
-node .claude/skills/github-actions-expressions/scripts/validate-expressions.mjs --help
-node .claude/skills/github-actions-expressions/scripts/validate-skill.mjs --help
-```
+### references/（知識外部化）
 
-### テンプレート参照
-```bash
-cat .claude/skills/github-actions-expressions/templates/expression-examples.yaml
-```
+| リソース     | パス                                                                     | 内容                                     |
+| ------------ | ------------------------------------------------------------------------ | ---------------------------------------- |
+| コンテキスト | [references/context-objects.md](references/context-objects.md)           | github, env, job, steps等のコンテキスト  |
+| 組み込み関数 | [references/builtin-functions.md](references/builtin-functions.md)       | 文字列関数、配列関数、型変換等           |
+| 条件パターン | [references/conditional-patterns.md](references/conditional-patterns.md) | ブランチ/イベント条件、アンチパターン    |
+| 式構文       | [references/expression-syntax.md](references/expression-syntax.md)       | ${{ }}構文、演算子、リテラル、エスケープ |
+
+### scripts/（決定論的処理）
+
+| スクリプト                 | 用途               | 使用例                                                  |
+| -------------------------- | ------------------ | ------------------------------------------------------- |
+| `validate-expressions.mjs` | 式の構文検証       | `node scripts/validate-expressions.mjs <workflow-file>` |
+| `log_usage.mjs`            | フィードバック記録 | `node scripts/log_usage.mjs --result success`           |
+| `validate-skill.mjs`       | 構造検証           | `node scripts/validate-skill.mjs`                       |
+
+### assets/（テンプレート）
+
+| テンプレート               | 用途                 |
+| -------------------------- | -------------------- |
+| `expression-examples.yaml` | 標準的な式パターン集 |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                                                               |
+| ------- | ---------- | ------------------------------------------------------------------------------------- |
+| 1.1.0   | 2026-01-02 | references/を整理、Level1-4削除、18-skills.md仕様準拠                                 |
+| 1.0.0   | 2025-12-31 | 18-skills.md仕様準拠: agents/追加、EVALS.json/LOGS.md作成、Progressive Disclosure適用 |

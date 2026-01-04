@@ -1,92 +1,37 @@
 {
   "skill_name": "performance-optimization-react",
-  "current_level": 1,
+  "current_level": 2,
   "levels": {
     "1": {
-      "level": 1,
-      "name": "基礎",
-      "requirements": {
-        "min_usage_count": 0,
-        "min_success_rate": 0.0,
-        "min_satisfaction_score": 0.0,
-        "required_resources": [
-          "SKILL.md"
-        ]
-      },
-      "success_criteria": [
-        "SKILL.mdが存在し、基本タスクが実行可能"
+      "description": "React DevTools Profilerで測定し、ボトルネックを特定できる",
+      "criteria": [
+        "Profilerでレンダリング時間を測定できる",
+        "再レンダリング回数を記録できる",
+        "ボトルネックコンポーネントを特定できる"
       ]
     },
     "2": {
-      "level": 2,
-      "name": "中級",
-      "requirements": {
-        "min_usage_count": 10,
-        "min_success_rate": 0.8,
-        "min_satisfaction_score": 0.7,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "scripts/log_usage.mjs"
-        ]
-      },
-      "success_criteria": [
-        "10回以上使用され、成功率80%以上"
+      "description": "React.memo、useCallback、useMemoを適切に適用できる",
+      "criteria": [
+        "測定に基づいて最適化手法を選択できる",
+        "依存配列を正確に設定できる",
+        "最適化前後の効果を測定できる"
       ]
     },
     "3": {
-      "level": 3,
-      "name": "上級",
-      "requirements": {
-        "min_usage_count": 50,
-        "min_success_rate": 0.9,
-        "min_satisfaction_score": 0.8,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/context-splitting.md",
-          "resources/legacy-skill.md",
-          "resources/profiler-measurement.md",
-          "resources/re-rendering-patterns.md",
-          "resources/react-memo-guide.md",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/optimization-checklist.md"
-        ]
-      },
-      "success_criteria": [
-        "50回以上使用され、成功率90%以上"
+      "description": "Context分割やコンポーネント設計でパフォーマンスを最適化できる",
+      "criteria": [
+        "Context更新の影響範囲を分析できる",
+        "適切なContext分割戦略を設計できる",
+        "コンポーネント構造を最適化できる"
       ]
     },
     "4": {
-      "level": 4,
-      "name": "専門",
-      "requirements": {
-        "min_usage_count": 100,
-        "min_success_rate": 0.95,
-        "min_satisfaction_score": 0.9,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/context-splitting.md",
-          "resources/legacy-skill.md",
-          "resources/profiler-measurement.md",
-          "resources/re-rendering-patterns.md",
-          "resources/react-memo-guide.md",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/optimization-checklist.md",
-          "LOGS.md"
-        ]
-      },
-      "success_criteria": [
-        "100回以上使用され、成功率95%以上"
+      "description": "体系的なパフォーマンス最適化プロセスを確立できる",
+      "criteria": [
+        "チーム全体で測定駆動の最適化を実践できる",
+        "最適化プロセスを文書化・共有できる",
+        "継続的なパフォーマンス監視体制を構築できる"
       ]
     }
   },
@@ -95,6 +40,28 @@
     "success_count": 0,
     "failure_count": 0,
     "average_satisfaction": 0.0,
-    "last_evaluated": "2025-12-24T00:00:00Z"
+    "last_evaluated": "2026-01-02T06:00:00Z",
+    "phase_metrics": {
+      "analyze": {
+        "count": 0,
+        "avg_duration_minutes": 0,
+        "success_rate": 0.0
+      },
+      "optimize": {
+        "count": 0,
+        "avg_duration_minutes": 0,
+        "success_rate": 0.0
+      },
+      "validate": {
+        "count": 0,
+        "avg_duration_minutes": 0,
+        "success_rate": 0.0
+      }
+    }
+  },
+  "quality_indicators": {
+    "rendering_time_reduction_avg": 0.0,
+    "re-render_count_reduction_avg": 0.0,
+    "optimization_accuracy": 0.0
   }
 }

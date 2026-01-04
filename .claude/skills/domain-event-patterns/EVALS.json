@@ -1,0 +1,71 @@
+{
+  "skill_name": "domain-event-patterns",
+  "version": "2.0.0",
+  "current_level": 1,
+  "metrics": {
+    "total_usage_count": 0,
+    "success_count": 0,
+    "failure_count": 0,
+    "last_evaluated": null
+  },
+  "levels": {
+    "1": {
+      "description": "基本的なドメインイベントの設計が可能",
+      "requirements": {
+        "min_usage_count": 0,
+        "min_success_rate": 0.0
+      }
+    },
+    "2": {
+      "description": "イベントストアとハンドラーを実装可能",
+      "requirements": {
+        "min_usage_count": 10,
+        "min_success_rate": 0.7
+      }
+    },
+    "3": {
+      "description": "イベントソーシングパターンを適用可能",
+      "requirements": {
+        "min_usage_count": 25,
+        "min_success_rate": 0.8
+      }
+    },
+    "4": {
+      "description": "CQRS/ESアーキテクチャ全体を設計・実装可能",
+      "requirements": {
+        "min_usage_count": 50,
+        "min_success_rate": 0.9
+      }
+    }
+  },
+  "task_metrics": {
+    "event_designer": {
+      "uses": 0,
+      "successes": 0,
+      "failures": 0
+    },
+    "event_store_implementer": {
+      "uses": 0,
+      "successes": 0,
+      "failures": 0
+    },
+    "event_handler_builder": {
+      "uses": 0,
+      "successes": 0,
+      "failures": 0
+    },
+    "event_sourcing_architect": {
+      "uses": 0,
+      "successes": 0,
+      "failures": 0
+    }
+  },
+  "common_issues": [],
+  "improvement_suggestions": [],
+  "feedback_summary": {
+    "positive_count": 0,
+    "negative_count": 0,
+    "neutral_count": 0,
+    "recent_feedback": []
+  }
+}

@@ -1,125 +1,56 @@
 ---
-name: .claude/skills/ci-cd-pipelines/SKILL.md
+name: ci-cd-pipelines
 description: |
-  ジーン・キムのDevOps原則に基づくCI/CDパイプライン設計と実装を専門とするスキル。
-  
-  📖 参照書籍:
-  - 『Continuous Delivery』（Jez Humble）: パイプライン
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/caching-strategies.md`: pnpm/pnpm/yarn依存関係キャッシュ、Next.js/Turboビルドキャッシュの実装パターンと10GB制限対策
-  - `resources/github-actions-syntax.md`: GitHub Actions構文リファレンス
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/parallelization.md`: 並列化とマトリクスビルド
-  - `resources/pipeline-patterns.md`: パイプラインアーキテクチャパターン
-  - `resources/quality-gates.md`: 静的チェック・テスト・セキュリティの3層品質ゲートとブランチ保護設定パターン
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `scripts/validate-workflow.mjs`: GitHub Actions Workflow Validator
-  - `templates/ci-workflow-template.yml`: CI Workflow Template
-  - `templates/deploy-workflow-template.yml`: Deploy Workflow Template
-  - `templates/reusable-workflow-template.yml`: Reusable Workflow Template
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when handling ci cd pipelines tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Continuous Delivery"
-    author: "Jez Humble"
-    concepts:
-      - "パイプライン"
-      - "自動化"
+  GitHub Actionsを用いたCI/CDパイプラインの設計・実装・最適化を支援する。品質ゲート、並列化、キャッシング、デプロイ戦略、可観測性の判断を含む。Use when: GitHub Actionsワークフローの新規作成・改善、CI/CD自動化、品質ゲート設計、並列化やキャッシュ最適化が必要なとき。
+  Anchors: Continuous Delivery, DevOps, GitHub Actions workflow architecture
+  Trigger: ci/cd pipeline design, github actions workflow, quality gate, caching strategy, parallel jobs, deployment automation
 ---
 
 # CI/CD Pipelines
 
-## 概要
+## Quick Start
 
-ジーン・キムのDevOps原則に基づくCI/CDパイプライン設計と実装を専門とするスキル。
+- 目的、対象リポジトリ、実行環境、デプロイ先、制約を確認する。
+- `references/pipeline-patterns.md` からパイプラインパターンを選ぶ。
+- `assets/` のテンプレートから開始し、必要に応じて再利用可能ワークフローに分割する。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+## Workflow
 
+1. 要件を整理し、トリガー、対象ブランチ、環境分離、品質基準を確定する。
+2. ステージとジョブ依存関係を設計し、品質ゲートを定義する。
+3. 並列化とキャッシュ戦略を設計し、コストと実行時間のトレードオフを判断する。
+4. テンプレートを基にワークフローを実装し、必要な権限とシークレットを設定する。
+5. `scripts/validate-workflow.mjs` で構文検証を行い、結果を記録する。
+6. `scripts/log_usage.mjs` で改善フィードバックを残す。
 
-## ワークフロー
+## Agents
 
-### Phase 1: 目的と前提の整理
+- `agents/pipeline-requirements.md` - 要件整理とトリガー定義のために使う。
+- `agents/pipeline-design.md` - ステージ構成、品質ゲート、並列化設計のために使う。
+- `agents/pipeline-implementation.md` - 実装手順とテンプレート適用のために使う。
+- `agents/pipeline-validation.md` - 構文検証、品質チェック、改善提案のために使う。
 
-**目的**: タスクの目的と前提条件を明確にする
+## References
 
-**アクション**:
+- `references/Level1_basics.md` - GitHub Actions基本構文を確認するときに読む。
+- `references/Level2_intermediate.md` - 実務的なワークフロー設計パターンを確認するときに読む。
+- `references/Level3_advanced.md` - 最適化や高度な構成が必要なときに読む。
+- `references/Level4_expert.md` - カスタムアクションやスケーリングを検討するときに読む。
+- `references/github-actions-syntax.md` - 構文やコンテキストを参照するときに読む。
+- `references/pipeline-patterns.md` - パイプライン構成パターンを選ぶときに読む。
+- `references/quality-gates.md` - 品質ゲートの設計基準を確認するときに読む。
+- `references/parallelization.md` - マトリクスやジョブ分割を設計するときに読む。
+- `references/caching-strategies.md` - キャッシュキー設計とサイズ管理を検討するときに読む。
+- `references/requirements-index.md` - 要件整理の観点を確認するときに読む。
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+## Assets
 
-### Phase 2: スキル適用
+- `assets/ci-workflow-template.yml` - CI用の標準テンプレートとして使う。
+- `assets/deploy-workflow-template.yml` - CD/デプロイ用の標準テンプレートとして使う。
+- `assets/reusable-workflow-template.yml` - 再利用可能ワークフローの雛形として使う。
 
-**目的**: スキルの指針に従って具体的な作業を進める
+## Scripts
 
-**アクション**:
-
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
-
-### Phase 3: 検証と記録
-
-**目的**: 成果物の検証と実行記録の保存
-
-**アクション**:
-
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
-
-
-## ベストプラクティス
-
-### すべきこと
-- GitHub Actionsワークフローを新規作成・最適化する時
-- CI/CDパイプラインの品質ゲートを設計する時
-- ビルド・テストの並列化による高速化が必要な時
-- 再利用可能なワークフローパターンを設計する時
-
-### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
-
-## コマンドリファレンス
-
-### リソース読み取り
-```bash
-cat .claude/skills/ci-cd-pipelines/resources/Level1_basics.md
-cat .claude/skills/ci-cd-pipelines/resources/Level2_intermediate.md
-cat .claude/skills/ci-cd-pipelines/resources/Level3_advanced.md
-cat .claude/skills/ci-cd-pipelines/resources/Level4_expert.md
-cat .claude/skills/ci-cd-pipelines/resources/caching-strategies.md
-cat .claude/skills/ci-cd-pipelines/resources/github-actions-syntax.md
-cat .claude/skills/ci-cd-pipelines/resources/legacy-skill.md
-cat .claude/skills/ci-cd-pipelines/resources/parallelization.md
-cat .claude/skills/ci-cd-pipelines/resources/pipeline-patterns.md
-cat .claude/skills/ci-cd-pipelines/resources/quality-gates.md
-```
-
-### スクリプト実行
-```bash
-node .claude/skills/ci-cd-pipelines/scripts/log_usage.mjs --help
-node .claude/skills/ci-cd-pipelines/scripts/validate-skill.mjs --help
-node .claude/skills/ci-cd-pipelines/scripts/validate-workflow.mjs --help
-```
-
-### テンプレート参照
-```bash
-cat .claude/skills/ci-cd-pipelines/templates/ci-workflow-template.yml
-cat .claude/skills/ci-cd-pipelines/templates/deploy-workflow-template.yml
-cat .claude/skills/ci-cd-pipelines/templates/reusable-workflow-template.yml
-```
-
-## 変更履歴
-
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+- `scripts/validate-workflow.mjs` - ワークフロー構文を検証するときに使う。
+- `scripts/log_usage.mjs` - 実行結果と改善点を記録するときに使う。
+- `scripts/validate-skill.mjs` - スキル構造の簡易検証に使う。

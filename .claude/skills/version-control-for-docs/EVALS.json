@@ -1,106 +1,79 @@
 {
-  "skill_name": "version-control-for-docs",
-  "current_level": 1,
+  "skillName": "version-control-for-docs",
+  "version": "2.0.0",
+  "lastUpdated": "2026-01-01",
   "levels": {
-    "1": {
-      "level": 1,
-      "name": "基礎",
-      "requirements": {
-        "min_usage_count": 0,
-        "min_success_rate": 0.0,
-        "min_satisfaction_score": 0.0,
-        "required_resources": [
-          "SKILL.md"
-        ]
-      },
-      "success_criteria": [
-        "SKILL.mdが存在し、基本タスクが実行可能"
+    "beginner": {
+      "description": "基本的なバージョン管理操作の理解",
+      "criteria": [
+        "Gitの基本コマンドを使用できる",
+        "ブランチの作成とマージを理解している",
+        "コミットメッセージの基本形式を適用できる"
       ]
     },
-    "2": {
-      "level": 2,
-      "name": "中級",
-      "requirements": {
-        "min_usage_count": 10,
-        "min_success_rate": 0.8,
-        "min_satisfaction_score": 0.7,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "scripts/generate-changelog.mjs"
-        ]
-      },
-      "success_criteria": [
-        "10回以上使用され、成功率80%以上"
+    "intermediate": {
+      "description": "ブランチ戦略とコミット規約の適用",
+      "criteria": [
+        "GitHub Flow/Git Flowを選択・適用できる",
+        "Conventional Commitsを実践できる",
+        "PRテンプレートを作成できる"
       ]
     },
-    "3": {
-      "level": 3,
-      "name": "上級",
-      "requirements": {
-        "min_usage_count": 50,
-        "min_success_rate": 0.9,
-        "min_satisfaction_score": 0.8,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/branch-strategy.md",
-          "resources/changelog-generation.md",
-          "resources/commit-conventions.md",
-          "resources/git-diff-guide.md",
-          "resources/legacy-skill.md",
-          "resources/review-workflow.md",
-          "scripts/generate-changelog.mjs",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/changelog-template.md",
-          "templates/pr-template.md"
-        ]
-      },
-      "success_criteria": [
-        "50回以上使用され、成功率90%以上"
+    "advanced": {
+      "description": "Changelog生成とレビュープロセス最適化",
+      "criteria": [
+        "自動Changelog生成を設定できる",
+        "効果的なPRレビューを実施できる",
+        "マージ戦略を最適化できる"
       ]
     },
-    "4": {
-      "level": 4,
-      "name": "専門",
-      "requirements": {
-        "min_usage_count": 100,
-        "min_success_rate": 0.95,
-        "min_satisfaction_score": 0.9,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/branch-strategy.md",
-          "resources/changelog-generation.md",
-          "resources/commit-conventions.md",
-          "resources/git-diff-guide.md",
-          "resources/legacy-skill.md",
-          "resources/review-workflow.md",
-          "scripts/generate-changelog.mjs",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/changelog-template.md",
-          "templates/pr-template.md",
-          "LOGS.md"
-        ]
-      },
-      "success_criteria": [
-        "100回以上使用され、成功率95%以上"
+    "expert": {
+      "description": "複雑な履歴管理とワークフロー設計",
+      "criteria": [
+        "複雑なマージ・リベース戦略を設計できる",
+        "大規模チームのドキュメント管理を最適化できる",
+        "CI/CDとの統合を設計できる"
       ]
     }
   },
   "metrics": {
-    "total_usage_count": 0,
-    "success_count": 0,
-    "failure_count": 0,
-    "average_satisfaction": 0.0,
-    "last_evaluated": "2025-12-24T00:00:00Z"
-  }
+    "branchNamingCompliance": {
+      "target": ">= 95%",
+      "description": "ブランチ命名規則準拠率"
+    },
+    "commitMessageQuality": {
+      "target": ">= 90%",
+      "description": "コミットメッセージ規約準拠率"
+    },
+    "prReviewCoverage": {
+      "target": "100%",
+      "description": "PRレビュー実施率"
+    },
+    "changelogAccuracy": {
+      "target": ">= 95%",
+      "description": "Changelog正確性"
+    }
+  },
+  "evaluationCriteria": [
+    {
+      "id": "branch-strategy",
+      "description": "適切なブランチ戦略が策定されている",
+      "weight": 0.25
+    },
+    {
+      "id": "commit-conventions",
+      "description": "コミットメッセージ規約が適用されている",
+      "weight": 0.25
+    },
+    {
+      "id": "changelog-generation",
+      "description": "Changelogが正確に生成されている",
+      "weight": 0.25
+    },
+    {
+      "id": "review-workflow",
+      "description": "レビューワークフローが効率的",
+      "weight": 0.25
+    }
+  ]
 }

@@ -3,11 +3,10 @@
 /**
  * スキル使用記録スクリプト
  *
- * このスクリプトはスキルの使用実績を記録し、自動的にレベルアップを評価します。
- * エージェントの最終Phaseで呼び出されることを想定しています。
+ * 使用ログを LOGS.md に記録し、EVALS.json があればメトリクスを更新する。
  */
 
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync, writeFileSync, existsSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -20,7 +19,7 @@ const EXIT_ARGS_ERROR = 2;
 
 function showHelp() {
   console.log(`
-Usage: node log_usage.mjs [options]
+Usage: node scripts/log_usage.mjs [options]
 
 Options:
   --result <success|failure>  実行結果（必須）
@@ -28,7 +27,33 @@ Options:
   --agent <name>              実行したエージェント名（任意）
   --notes <text>              追加のフィードバックメモ（任意）
   -h, --help                  このヘルプを表示
-  `);
+`);
+}
+
+function ensureLogsFile(logsPath) {
+  if (existsSync(logsPath)) {
+    return readFileSync(logsPath, "utf-8");
+  }
+
+  const today = new Date().toISOString().split("T")[0];
+  const initial = `# 使用ログ: retry-strategies\n\n## 概要\n\nこのファイルはスキルの使用履歴とフィードバックを記録します。\n\n## 記録形式\n\n\`\`\`\n## YYYY-MM-DD HH:MM\n- **結果**: success | failure\n- **Phase**: Phase X\n- **エージェント**: agent-name\n- **ノート**: 追加メモ\n\`\`\`\n\n## 使用履歴\n\n<!-- LOGS -->\n\n---\n\n_最終更新: ${today}_\n`;
+
+  writeFileSync(logsPath, initial, "utf-8");
+  return initial;
+}
+
+function updateLastUpdated(content, date) {
+  if (content.includes("_最終更新:")) {
+    return content.replace(/_最終更新: .*_/m, `_最終更新: ${date}_`);
+  }
+  return `${content}\n_最終更新: ${date}_\n`;
+}
+
+function appendLog(content, entry) {
+  if (content.includes("<!-- LOGS -->")) {
+    return content.replace("<!-- LOGS -->", `${entry}\n\n<!-- LOGS -->`);
+  }
+  return `${content}\n${entry}\n`;
 }
 
 async function main() {
@@ -39,7 +64,6 @@ async function main() {
     process.exit(EXIT_SUCCESS);
   }
 
-  // 引数解析
   const getArg = (name) => {
     const index = args.indexOf(name);
     return index !== -1 && args[index + 1] ? args[index + 1] : null;
@@ -51,126 +75,61 @@ async function main() {
   const notes = getArg("--notes") || "";
 
   if (!result || !["success", "failure"].includes(result)) {
-    console.error(
-      "Error: --result は success または failure を指定してください",
-    );
+    console.error("Error: --result は success または failure を指定してください");
     process.exit(EXIT_ARGS_ERROR);
   }
 
-  const timestamp = new Date().toISOString();
+  const timestamp = new Date();
+  const date = timestamp.toISOString().split("T")[0];
+  const timeLabel = timestamp.toISOString().replace("T", " ").slice(0, 16);
 
-  // 1. LOGS.md に追記
   const logsPath = join(SKILL_DIR, "LOGS.md");
-  const logEntry = `
-## [実行日時: ${timestamp}]
+  const logsContent = ensureLogsFile(logsPath);
 
-- 実行者: ${agent}
-- Phase: ${phase}
-- 結果: ${result}
-- フィードバック: ${notes || "なし"}
-
----
-`;
+  const logEntry = `## ${timeLabel}\n- **結果**: ${result}\n- **Phase**: ${phase}\n- **エージェント**: ${agent}\n- **ノート**: ${notes || "なし"}`;
 
   try {
-    const logsContent = readFileSync(logsPath, "utf-8");
-    const updatedLogs = logsContent.replace(
-      "（ログエントリはここに追記されます）",
-      `${logEntry}\n（ログエントリはここに追記されます）`,
-    );
+    let updatedLogs = appendLog(logsContent, logEntry);
+    updatedLogs = updateLastUpdated(updatedLogs, date);
     writeFileSync(logsPath, updatedLogs, "utf-8");
-    console.log(`✓ LOGS.md に記録を追記しました`);
-  } catch (err) {
-    console.error(`Error: LOGS.md の更新に失敗しました: ${err.message}`);
+    console.log("✓ LOGS.md に記録を追記しました");
+  } catch (error) {
+    console.error(`Error: LOGS.md の更新に失敗しました: ${error.message}`);
     process.exit(EXIT_ERROR);
   }
 
-  // 2. EVALS.json を更新
   const evalsPath = join(SKILL_DIR, "EVALS.json");
+  if (existsSync(evalsPath)) {
+    try {
+      const evalsData = JSON.parse(readFileSync(evalsPath, "utf-8"));
 
-  try {
-    const evalsData = JSON.parse(readFileSync(evalsPath, "utf-8"));
-
-    // メトリクス更新
-    evalsData.metrics.total_usage_count += 1;
-    if (result === "success") {
-      evalsData.metrics.success_count += 1;
-    } else {
-      evalsData.metrics.failure_count += 1;
-    }
-    evalsData.metrics.last_evaluated = timestamp;
-
-    // 成功率計算
-    const successRate =
-      evalsData.metrics.total_usage_count > 0
-        ? evalsData.metrics.success_count / evalsData.metrics.total_usage_count
-        : 0;
-
-    console.log(
-      `✓ メトリクス更新: 使用回数=${evalsData.metrics.total_usage_count}, 成功率=${(successRate * 100).toFixed(1)}%`,
-    );
-
-    // 3. レベルアップ条件チェック
-    const currentLevel = evalsData.current_level;
-    const nextLevel = currentLevel + 1;
-
-    if (evalsData.levels[nextLevel]) {
-      const requirements = evalsData.levels[nextLevel].requirements;
-      const canLevelUp =
-        evalsData.metrics.total_usage_count >= requirements.min_usage_count &&
-        successRate >= requirements.min_success_rate;
-
-      if (canLevelUp) {
-        evalsData.current_level = nextLevel;
-        console.log(
-          `🎉 レベルアップ: Level ${currentLevel} → Level ${nextLevel}`,
-        );
-
-        // 4. SKILL.md の level を更新
-        const skillPath = join(SKILL_DIR, "SKILL.md");
-        let skillContent = readFileSync(skillPath, "utf-8");
-        skillContent = skillContent.replace(
-          /^level: \d+$/m,
-          `level: ${nextLevel}`,
-        );
-        skillContent = skillContent.replace(
-          /^last_updated: .*$/m,
-          `last_updated: ${timestamp.split("T")[0]}`,
-        );
-        writeFileSync(skillPath, skillContent, "utf-8");
-        console.log(`✓ SKILL.md の level を ${nextLevel} に更新しました`);
-
-        // 5. CHANGELOG.md に追記
-        const changelogPath = join(SKILL_DIR, "CHANGELOG.md");
-        const changelogContent = readFileSync(changelogPath, "utf-8");
-        const newVersion = `${evalsData.current_level}.0.0`;
-        const changelogEntry = `
-## [${newVersion}] - ${timestamp.split("T")[0]}
-
-### Changed
-- 自動レベルアップ: Level ${currentLevel} → Level ${nextLevel}
-- 使用回数: ${evalsData.metrics.total_usage_count}回
-- 成功率: ${(successRate * 100).toFixed(1)}%
-
-`;
-        const updatedChangelog = changelogEntry + changelogContent;
-        writeFileSync(changelogPath, updatedChangelog, "utf-8");
-        console.log(`✓ CHANGELOG.md にバージョン ${newVersion} を追記しました`);
+      if (evalsData.metrics) {
+        evalsData.metrics.total_usage_count =
+          (evalsData.metrics.total_usage_count || 0) + 1;
+        if (result === "success") {
+          evalsData.metrics.success_count =
+            (evalsData.metrics.success_count || 0) + 1;
+        } else {
+          evalsData.metrics.failure_count =
+            (evalsData.metrics.failure_count || 0) + 1;
+        }
+        evalsData.metrics.last_evaluated = timestamp.toISOString();
       }
-    }
 
-    // EVALS.json を保存
-    writeFileSync(evalsPath, JSON.stringify(evalsData, null, 2), "utf-8");
-    console.log(`✓ EVALS.json を更新しました`);
-  } catch (err) {
-    console.error(`Error: EVALS.json の処理に失敗しました: ${err.message}`);
-    process.exit(EXIT_ERROR);
+      writeFileSync(evalsPath, JSON.stringify(evalsData, null, 2), "utf-8");
+      console.log("✓ EVALS.json を更新しました");
+    } catch (error) {
+      console.error(`Error: EVALS.json の処理に失敗しました: ${error.message}`);
+      process.exit(EXIT_ERROR);
+    }
+  } else {
+    console.log("ℹ️  EVALS.json が見つからないため更新をスキップしました");
   }
 
   process.exit(EXIT_SUCCESS);
 }
 
-main().catch((err) => {
-  console.error(err.message);
+main().catch((error) => {
+  console.error(error.message);
   process.exit(EXIT_ERROR);
 });

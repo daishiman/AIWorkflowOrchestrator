@@ -1,102 +1,69 @@
 {
   "skill_name": "reusable-workflows",
-  "current_level": 1,
-  "levels": {
-    "1": {
-      "level": 1,
-      "name": "基礎",
-      "requirements": {
-        "min_usage_count": 0,
-        "min_success_rate": 0.0,
-        "min_satisfaction_score": 0.0,
-        "required_resources": [
-          "SKILL.md"
-        ]
-      },
-      "success_criteria": [
-        "SKILL.mdが存在し、基本タスクが実行可能"
-      ]
+  "version": "1.1.0",
+  "level": 1,
+  "metrics": {
+    "total_executions": 0,
+    "successful_executions": 0,
+    "failed_executions": 0,
+    "success_rate": 0.0,
+    "last_updated": "2025-12-31T00:00:00Z"
+  },
+  "level_criteria": {
+    "level_1": {
+      "min_executions": 0,
+      "min_success_rate": 0.0,
+      "description": "基礎レベル - workflow_call構文の基本使用"
     },
-    "2": {
-      "level": 2,
-      "name": "中級",
-      "requirements": {
-        "min_usage_count": 10,
-        "min_success_rate": 0.8,
-        "min_satisfaction_score": 0.7,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "scripts/log_usage.mjs"
-        ]
-      },
-      "success_criteria": [
-        "10回以上使用され、成功率80%以上"
-      ]
+    "level_2": {
+      "min_executions": 5,
+      "min_success_rate": 0.6,
+      "description": "中級レベル - 入力・出力・シークレット管理"
     },
-    "3": {
-      "level": 3,
-      "name": "上級",
-      "requirements": {
-        "min_usage_count": 50,
-        "min_success_rate": 0.9,
-        "min_satisfaction_score": 0.8,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/caller-patterns.md",
-          "resources/design-patterns.md",
-          "resources/legacy-skill.md",
-          "resources/workflow-call-syntax.md",
-          "scripts/log_usage.mjs",
-          "scripts/validate-reusable.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/caller-workflow.yaml",
-          "templates/reusable-workflow.yaml"
-        ]
-      },
-      "success_criteria": [
-        "50回以上使用され、成功率90%以上"
-      ]
+    "level_3": {
+      "min_executions": 15,
+      "min_success_rate": 0.75,
+      "description": "上級レベル - ワークフロー合成・継承パターン"
     },
-    "4": {
-      "level": 4,
-      "name": "専門",
-      "requirements": {
-        "min_usage_count": 100,
-        "min_success_rate": 0.95,
-        "min_satisfaction_score": 0.9,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/caller-patterns.md",
-          "resources/design-patterns.md",
-          "resources/legacy-skill.md",
-          "resources/workflow-call-syntax.md",
-          "scripts/log_usage.mjs",
-          "scripts/validate-reusable.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/caller-workflow.yaml",
-          "templates/reusable-workflow.yaml",
-          "LOGS.md"
-        ]
-      },
-      "success_criteria": [
-        "100回以上使用され、成功率95%以上"
-      ]
+    "level_4": {
+      "min_executions": 30,
+      "min_success_rate": 0.85,
+      "description": "エキスパートレベル - エンタープライズ設計最適化"
     }
   },
-  "metrics": {
-    "total_usage_count": 0,
-    "success_count": 0,
-    "failure_count": 0,
-    "average_satisfaction": 0.0,
-    "last_evaluated": "2025-12-24T00:00:00Z"
-  }
+  "phase_metrics": {
+    "phase_1_requirements_analysis": {
+      "executions": 0,
+      "success": 0,
+      "avg_duration_minutes": 0
+    },
+    "phase_2_skill_application": {
+      "executions": 0,
+      "success": 0,
+      "avg_duration_minutes": 0
+    },
+    "phase_3_validation_logging": {
+      "executions": 0,
+      "success": 0,
+      "avg_duration_minutes": 0
+    }
+  },
+  "agent_metrics": {
+    "workflow_analyzer": {
+      "executions": 0,
+      "success": 0,
+      "common_patterns": []
+    },
+    "workflow_implementer": {
+      "executions": 0,
+      "success": 0,
+      "common_issues": []
+    },
+    "workflow_validator": {
+      "executions": 0,
+      "success": 0,
+      "validation_failures": []
+    }
+  },
+  "improvement_suggestions": []
 }

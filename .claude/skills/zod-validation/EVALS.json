@@ -3,102 +3,61 @@
   "current_level": 1,
   "levels": {
     "1": {
-      "level": 1,
-      "name": "基礎",
+      "name": "Basic",
+      "description": "基本的なZodスキーマ定義とsafeParse使用",
       "requirements": {
         "min_usage_count": 0,
-        "min_success_rate": 0.0,
-        "min_satisfaction_score": 0.0,
-        "required_resources": [
-          "SKILL.md"
-        ]
-      },
-      "success_criteria": [
-        "SKILL.mdが存在し、基本タスクが実行可能"
-      ]
+        "min_success_rate": 0
+      }
     },
     "2": {
-      "level": 2,
-      "name": "中級",
+      "name": "Intermediate",
+      "description": "refine/superRefineによるカスタムバリデーション、エラーハンドリング",
       "requirements": {
-        "min_usage_count": 10,
-        "min_success_rate": 0.8,
-        "min_satisfaction_score": 0.7,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "scripts/log_usage.mjs"
-        ]
-      },
-      "success_criteria": [
-        "10回以上使用され、成功率80%以上"
-      ]
+        "min_usage_count": 5,
+        "min_success_rate": 0.7
+      }
     },
     "3": {
-      "level": 3,
-      "name": "上級",
+      "name": "Advanced",
+      "description": "react-hook-form統合、非同期バリデーション、APIハンドラ統合",
       "requirements": {
-        "min_usage_count": 50,
-        "min_success_rate": 0.9,
-        "min_satisfaction_score": 0.8,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/custom-validation-techniques.md",
-          "resources/legacy-skill.md",
-          "resources/performance-optimization.md",
-          "resources/schema-definition-patterns.md",
-          "resources/type-inference-guide.md",
-          "scripts/log_usage.mjs",
-          "scripts/validate-schema.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/api-schema-template.ts",
-          "templates/schema-template.ts"
-        ]
-      },
-      "success_criteria": [
-        "50回以上使用され、成功率90%以上"
-      ]
+        "min_usage_count": 15,
+        "min_success_rate": 0.8
+      }
     },
     "4": {
-      "level": 4,
-      "name": "専門",
+      "name": "Expert",
+      "description": "複雑なスキーマ設計、パフォーマンス最適化、型安全なAPIレイヤー構築",
       "requirements": {
-        "min_usage_count": 100,
-        "min_success_rate": 0.95,
-        "min_satisfaction_score": 0.9,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/custom-validation-techniques.md",
-          "resources/legacy-skill.md",
-          "resources/performance-optimization.md",
-          "resources/schema-definition-patterns.md",
-          "resources/type-inference-guide.md",
-          "scripts/log_usage.mjs",
-          "scripts/validate-schema.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/api-schema-template.ts",
-          "templates/schema-template.ts",
-          "LOGS.md"
-        ]
-      },
-      "success_criteria": [
-        "100回以上使用され、成功率95%以上"
-      ]
+        "min_usage_count": 30,
+        "min_success_rate": 0.9
+      }
     }
   },
   "metrics": {
-    "total_usage_count": 0,
-    "success_count": 0,
+    "total_usage_count": 2,
+    "success_count": 2,
     "failure_count": 0,
-    "average_satisfaction": 0.0,
-    "last_evaluated": "2025-12-24T00:00:00Z"
+    "average_satisfaction": 5,
+    "last_evaluated": "2026-01-01T00:00:00.000Z"
+  },
+  "capabilities": {
+    "schema_design": [
+      "primitives",
+      "objects",
+      "arrays",
+      "unions",
+      "discriminated_unions",
+      "transformations"
+    ],
+    "validation": [
+      "safeParse",
+      "refine",
+      "superRefine",
+      "async",
+      "error_formatting"
+    ],
+    "integration": ["react_hook_form", "next_app_router", "api_validation"]
   }
 }

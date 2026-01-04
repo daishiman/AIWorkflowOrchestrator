@@ -55,8 +55,52 @@ async function testHooks() {
     results.failed.push("pre-commit hook missing");
   }
 
-  // 3. lint-staged設定確認
-  console.log("\n📋 Step 3: lint-staged Configuration Check");
+  // 3. commit-msgフック確認
+  console.log("\n📋 Step 3: commit-msg Hook Check");
+
+  try {
+    const commitMsgPath = resolve(".husky/commit-msg");
+    await access(commitMsgPath);
+    const content = await readFile(commitMsgPath, "utf-8");
+
+    console.log("  ✅ commit-msg hook exists");
+
+    if (content.includes("commitlint")) {
+      console.log("  ✅ commitlint is configured");
+      results.passed.push("commit-msg hook");
+    } else {
+      console.log("  ⚠️  commitlint not found in commit-msg");
+      results.warnings.push("commitlint not configured");
+    }
+  } catch {
+    console.log("  ❌ commit-msg hook not found");
+    results.failed.push("commit-msg hook missing");
+  }
+
+  // 4. pre-pushフック確認
+  console.log("\n📋 Step 4: pre-push Hook Check");
+
+  try {
+    const prePushPath = resolve(".husky/pre-push");
+    await access(prePushPath);
+    const content = await readFile(prePushPath, "utf-8");
+
+    console.log("  ✅ pre-push hook exists");
+
+    if (content.includes("test")) {
+      console.log("  ✅ pre-push includes test command");
+      results.passed.push("pre-push hook");
+    } else {
+      console.log("  ⚠️  test command not found in pre-push");
+      results.warnings.push("pre-push test not configured");
+    }
+  } catch {
+    console.log("  ❌ pre-push hook not found");
+    results.failed.push("pre-push hook missing");
+  }
+
+  // 5. lint-staged設定確認
+  console.log("\n📋 Step 5: lint-staged Configuration Check");
 
   try {
     const packageJson = JSON.parse(
@@ -84,8 +128,8 @@ async function testHooks() {
     results.failed.push("package.json missing");
   }
 
-  // 4. パフォーマンステスト（dry-run）
-  console.log("\n📋 Step 4: Performance Dry-run");
+  // 6. パフォーマンステスト（dry-run）
+  console.log("\n📋 Step 6: Performance Dry-run");
 
   try {
     const start = Date.now();
@@ -112,8 +156,8 @@ async function testHooks() {
     results.failed.push("Dry-run execution");
   }
 
-  // 5. Git hooks path確認
-  console.log("\n📋 Step 5: Git Hooks Path Check");
+  // 7. Git hooks path確認
+  console.log("\n📋 Step 7: Git Hooks Path Check");
 
   try {
     const hooksPath = execSync("git config core.hooksPath", {

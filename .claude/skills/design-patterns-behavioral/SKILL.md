@@ -1,130 +1,153 @@
 ---
-name: .claude/skills/design-patterns-behavioral/SKILL.md
+name: design-patterns-behavioral
 description: |
-  GoF（Gang of Four）の行動パターンを専門とするスキル。
-  エリック・ガンマの『デザインパターン』に基づき、オブジェクト間の通信と
-  責務の分散を効果的に設計するパターンを提供します。
-  
-  📖 参照書籍:
-  - 『Design Patterns』（Erich Gamma et al.）: 設計パターン
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/chain-of-responsibility-pattern.md`: chain-of-responsibility-pattern の詳細ガイド
-  - `resources/command-pattern.md`: command-pattern の詳細ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/observer-pattern.md`: observer-pattern の詳細ガイド
-  - `resources/pattern-selection-guide.md`: pattern-selection-guide のガイド
-  - `resources/state-pattern.md`: state-pattern の詳細ガイド
-  - `resources/strategy-pattern.md`: strategy-pattern の詳細ガイド
-  - `resources/template-method-pattern.md`: template-method-pattern の詳細ガイド
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-pattern-usage.mjs`: patternusageを検証するスクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/strategy-implementation.md`: strategy-implementation のテンプレート
-  - `templates/template-method-implementation.md`: template-method-implementation のテンプレート
-  
-  Use proactively when handling design patterns behavioral tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Design Patterns"
-    author: "Erich Gamma et al."
-    concepts:
-      - "設計パターン"
-      - "拡張性"
----
+  GoFの行動パターンを用いて、オブジェクト間の責務分散と通信設計を支援するスキル。
+  パターン選定、実装方針、検証手順を体系化する。
 
-# Design Patterns - Behavioral
+  Anchors:
+  • Design Patterns / 適用: 行動パターンの設計理論 / 目的: 相互作用の整理
+  • Command Pattern / 適用: 操作の実行・取り消し / 目的: 実行制御の柔軟化
+  • Strategy Pattern / 適用: アルゴリズム切替 / 目的: 変更容易性の確保
+
+  Trigger:
+  Use when designing flexible object collaboration, selecting behavioral patterns, or validating pattern usage in implementations.
+  behavioral design patterns, strategy, command, observer, state, template method
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+---
+# design-patterns-behavioral
 
 ## 概要
 
-GoF（Gang of Four）の行動パターンを専門とするスキル。
-エリック・ガンマの『デザインパターン』に基づき、オブジェクト間の通信と
-責務の分散を効果的に設計するパターンを提供します。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+GoFの行動パターンを用いて、責務分散・通信設計・検証を支援する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件整理
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 課題と制約を整理し、対象パターンの候補を明確化する。
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. `references/Level1_basics.md` で基本概念を確認する。
+2. `assets/pattern-requirements-template.md` で要件を整理する。
+3. `references/requirements-index.md` で要件整合を確認する。
 
-### Phase 3: 検証と記録
+**Task**: `agents/analyze-pattern-requirements.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: パターン設計
+
+**目的**: 行動パターンの選定と設計方針を決定する。
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. `references/pattern-selection-guide.md` で選定基準を確認する。
+2. `assets/pattern-selection-checklist.md` で判断観点を揃える。
+3. 個別パターンのガイドを参照する。
 
+**Task**: `agents/design-pattern-application.md` を参照
+
+### Phase 3: 実装と構成
+
+**目的**: パターンの実装方針を整理し、テンプレートに反映する。
+
+**アクション**:
+
+1. `assets/strategy-implementation.md` を参照して構成を整理する。
+2. `assets/template-method-implementation.md` を参照して設計を整理する。
+3. 必要なパターンの実装メモを作成する。
+
+**Task**: `agents/implement-pattern-solution.md` を参照
+
+### Phase 4: 検証と記録
+
+**目的**: 適用結果を検証し、改善サイクルを回す。
+
+**アクション**:
+
+1. `scripts/validate-pattern-usage.mjs` で適用を検証する。
+2. `assets/pattern-evaluation-template.md` で評価を整理する。
+3. `scripts/log_usage.mjs` で記録を更新する。
+
+**Task**: `agents/validate-pattern-usage.md` を参照
+
+## Task仕様ナビ
+
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-pattern-requirements | Phase 1開始時 | 課題/制約 | パターン候補、要件メモ |
+| design-pattern-application | Phase 2開始時 | 要件メモ | 選定結果、設計方針 |
+| implement-pattern-solution | Phase 3開始時 | 設計方針 | 実装方針メモ、構成案 |
+| validate-pattern-usage | Phase 4開始時 | 実装方針メモ | 検証レポート、改善提案 |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- ワークフローエンジンでアルゴリズムの切り替えが必要な時
-- 共通処理フローを定義し、個別実装を分離したい時
-- 操作の実行、取り消し、キューイングが必要な時
-- イベント駆動アーキテクチャを設計する時
+
+| 推奨事項 | 理由 |
+| --- | --- |
+| パターン選定理由を明記する | 変更時の判断が明確になる |
+| 責務境界を明文化する | 依存が過剰になるのを防ぐ |
+| 検証結果を記録する | 改善が継続する |
+| 既存設計との整合を確認する | 不整合による複雑化を防ぐ |
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 目的が曖昧なまま適用 | 過剰設計になる |
+| 似た責務の重複 | 読みにくくなる |
+| 検証を省略する | 目的未達のまま残る |
 
-### リソース読み取り
-```bash
-cat .claude/skills/design-patterns-behavioral/resources/Level1_basics.md
-cat .claude/skills/design-patterns-behavioral/resources/Level2_intermediate.md
-cat .claude/skills/design-patterns-behavioral/resources/Level3_advanced.md
-cat .claude/skills/design-patterns-behavioral/resources/Level4_expert.md
-cat .claude/skills/design-patterns-behavioral/resources/chain-of-responsibility-pattern.md
-cat .claude/skills/design-patterns-behavioral/resources/command-pattern.md
-cat .claude/skills/design-patterns-behavioral/resources/legacy-skill.md
-cat .claude/skills/design-patterns-behavioral/resources/observer-pattern.md
-cat .claude/skills/design-patterns-behavioral/resources/pattern-selection-guide.md
-cat .claude/skills/design-patterns-behavioral/resources/state-pattern.md
-cat .claude/skills/design-patterns-behavioral/resources/strategy-pattern.md
-cat .claude/skills/design-patterns-behavioral/resources/template-method-pattern.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/design-patterns-behavioral/scripts/log_usage.mjs --help
-node .claude/skills/design-patterns-behavioral/scripts/validate-pattern-usage.mjs --help
-node .claude/skills/design-patterns-behavioral/scripts/validate-skill.mjs --help
-```
+### scripts/（決定論的処理）
 
-### テンプレート参照
-```bash
-cat .claude/skills/design-patterns-behavioral/templates/strategy-implementation.md
-cat .claude/skills/design-patterns-behavioral/templates/template-method-implementation.md
-```
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/validate-pattern-usage.mjs` | パターン適用の検証 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
 
-## 変更履歴
+### references/（詳細知識）
 
-| Version | Date | Changes |
+| リソース | パス | 読込条件 |
 | --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 実装時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善時 |
+| パターン選定 | [references/pattern-selection-guide.md](references/pattern-selection-guide.md) | 選定時 |
+| Chain of Responsibility | [references/chain-of-responsibility-pattern.md](references/chain-of-responsibility-pattern.md) | 適用時 |
+| Command | [references/command-pattern.md](references/command-pattern.md) | 適用時 |
+| Observer | [references/observer-pattern.md](references/observer-pattern.md) | 適用時 |
+| State | [references/state-pattern.md](references/state-pattern.md) | 適用時 |
+| Strategy | [references/strategy-pattern.md](references/strategy-pattern.md) | 適用時 |
+| Template Method | [references/template-method-pattern.md](references/template-method-pattern.md) | 適用時 |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 仕様確認時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+
+### assets/（テンプレート・素材）
+
+| アセット | 用途 |
+| --- | --- |
+| `assets/pattern-requirements-template.md` | 要件整理テンプレート |
+| `assets/pattern-selection-checklist.md` | 選定チェックリスト |
+| `assets/pattern-evaluation-template.md` | 検証テンプレート |
+| `assets/strategy-implementation.md` | Strategy実装テンプレート |
+| `assets/template-method-implementation.md` | Template Method実装テンプレート |
+
+### 運用ファイル
+
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

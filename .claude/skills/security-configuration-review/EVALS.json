@@ -1,100 +1,67 @@
 {
   "skill_name": "security-configuration-review",
-  "current_level": 1,
-  "levels": {
-    "1": {
-      "level": 1,
-      "name": "基礎",
-      "requirements": {
-        "min_usage_count": 0,
-        "min_success_rate": 0.0,
-        "min_satisfaction_score": 0.0,
-        "required_resources": [
-          "SKILL.md"
-        ]
-      },
-      "success_criteria": [
-        "SKILL.mdが存在し、基本タスクが実行可能"
-      ]
-    },
-    "2": {
-      "level": 2,
-      "name": "中級",
-      "requirements": {
-        "min_usage_count": 10,
-        "min_success_rate": 0.8,
-        "min_satisfaction_score": 0.7,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "scripts/check-security-headers.mjs"
-        ]
-      },
-      "success_criteria": [
-        "10回以上使用され、成功率80%以上"
-      ]
-    },
-    "3": {
-      "level": 3,
-      "name": "上級",
-      "requirements": {
-        "min_usage_count": 50,
-        "min_success_rate": 0.9,
-        "min_satisfaction_score": 0.8,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/legacy-skill.md",
-          "resources/security-headers-guide.md",
-          "scripts/check-security-headers.mjs",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/cors-config-template.js",
-          "templates/helmet-config-template.js",
-          "templates/security-checklist.md"
-        ]
-      },
-      "success_criteria": [
-        "50回以上使用され、成功率90%以上"
-      ]
-    },
-    "4": {
-      "level": 4,
-      "name": "専門",
-      "requirements": {
-        "min_usage_count": 100,
-        "min_success_rate": 0.95,
-        "min_satisfaction_score": 0.9,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/legacy-skill.md",
-          "resources/security-headers-guide.md",
-          "scripts/check-security-headers.mjs",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/cors-config-template.js",
-          "templates/helmet-config-template.js",
-          "templates/security-checklist.md",
-          "LOGS.md"
-        ]
-      },
-      "success_criteria": [
-        "100回以上使用され、成功率95%以上"
-      ]
-    }
-  },
+  "version": "2.0.0",
   "metrics": {
-    "total_usage_count": 0,
+    "total_uses": 0,
     "success_count": 0,
     "failure_count": 0,
-    "average_satisfaction": 0.0,
-    "last_evaluated": "2025-12-24T00:00:00Z"
+    "success_rate": 0,
+    "last_used": null,
+    "created_at": "2025-12-31T00:00:00Z"
+  },
+  "level_criteria": {
+    "Level1_basics": {
+      "min_uses": 0,
+      "min_success_rate": 0,
+      "description": "基本的なセキュリティ設定レビュー"
+    },
+    "Level2_intermediate": {
+      "min_uses": 5,
+      "min_success_rate": 0.7,
+      "description": "実務的なセキュリティ監査手順"
+    },
+    "Level3_advanced": {
+      "min_uses": 15,
+      "min_success_rate": 0.8,
+      "description": "高度な脅威モデリングとリスク評価"
+    },
+    "Level4_expert": {
+      "min_uses": 30,
+      "min_success_rate": 0.9,
+      "description": "エンタープライズセキュリティ戦略"
+    }
+  },
+  "current_level": "Level1_basics",
+  "phase_metrics": {
+    "security-headers-audit": {
+      "uses": 0,
+      "success": 0,
+      "failure": 0
+    },
+    "cors-review": {
+      "uses": 0,
+      "success": 0,
+      "failure": 0
+    },
+    "authentication-audit": {
+      "uses": 0,
+      "success": 0,
+      "failure": 0
+    },
+    "dependency-scan": {
+      "uses": 0,
+      "success": 0,
+      "failure": 0
+    },
+    "compliance-check": {
+      "uses": 0,
+      "success": 0,
+      "failure": 0
+    },
+    "threat-model-analysis": {
+      "uses": 0,
+      "success": 0,
+      "failure": 0
+    }
   }
 }

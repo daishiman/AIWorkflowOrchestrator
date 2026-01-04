@@ -1,96 +1,125 @@
 {
   "skill_name": "foreign-key-constraints",
-  "current_level": 1,
-  "levels": {
-    "1": {
-      "level": 1,
-      "name": "基礎",
-      "requirements": {
-        "min_usage_count": 0,
-        "min_success_rate": 0.0,
-        "min_satisfaction_score": 0.0,
-        "required_resources": [
-          "SKILL.md"
-        ]
+  "version": "2.0.0",
+  "last_updated": "2025-12-31",
+  "metrics": {
+    "total_executions": 0,
+    "successful_executions": 0,
+    "failed_executions": 0,
+    "success_rate": 0,
+    "average_execution_time_minutes": 0,
+    "phase_metrics": {
+      "Phase 1: Design Review": {
+        "executions": 0,
+        "success": 0,
+        "failure": 0,
+        "success_rate": 0
       },
-      "success_criteria": [
-        "SKILL.mdが存在し、基本タスクが実行可能"
-      ]
-    },
-    "2": {
-      "level": 2,
-      "name": "中級",
-      "requirements": {
-        "min_usage_count": 10,
-        "min_success_rate": 0.8,
-        "min_satisfaction_score": 0.7,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "scripts/check-fk-integrity.mjs"
-        ]
+      "Phase 2: CASCADE Selection": {
+        "executions": 0,
+        "success": 0,
+        "failure": 0,
+        "success_rate": 0
       },
-      "success_criteria": [
-        "10回以上使用され、成功率80%以上"
-      ]
-    },
-    "3": {
-      "level": 3,
-      "name": "上級",
-      "requirements": {
-        "min_usage_count": 50,
-        "min_success_rate": 0.9,
-        "min_satisfaction_score": 0.8,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/cascade-patterns.md",
-          "resources/legacy-skill.md",
-          "scripts/check-fk-integrity.mjs",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/fk-design-checklist.md"
-        ]
+      "Phase 3: Circular Detection": {
+        "executions": 0,
+        "success": 0,
+        "failure": 0,
+        "success_rate": 0
       },
-      "success_criteria": [
-        "50回以上使用され、成功率90%以上"
-      ]
-    },
-    "4": {
-      "level": 4,
-      "name": "専門",
-      "requirements": {
-        "min_usage_count": 100,
-        "min_success_rate": 0.95,
-        "min_satisfaction_score": 0.9,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/cascade-patterns.md",
-          "resources/legacy-skill.md",
-          "scripts/check-fk-integrity.mjs",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/fk-design-checklist.md",
-          "LOGS.md"
-        ]
-      },
-      "success_criteria": [
-        "100回以上使用され、成功率95%以上"
-      ]
+      "Phase 4: Soft Delete Integration": {
+        "executions": 0,
+        "success": 0,
+        "failure": 0,
+        "success_rate": 0
+      }
     }
   },
-  "metrics": {
-    "total_usage_count": 0,
-    "success_count": 0,
-    "failure_count": 0,
-    "average_satisfaction": 0.0,
-    "last_evaluated": "2025-12-24T00:00:00Z"
-  }
+  "level_progression": {
+    "current_level": 1,
+    "level_criteria": {
+      "Level 1": {
+        "description": "基本的なFK制約設計",
+        "requirements": {
+          "total_executions": 0,
+          "success_rate": 0,
+          "phases_mastered": []
+        },
+        "achieved": true,
+        "achieved_date": "2025-12-31"
+      },
+      "Level 2": {
+        "description": "CASCADE動作の適切な選択",
+        "requirements": {
+          "total_executions": 10,
+          "success_rate": 80,
+          "phases_mastered": ["Phase 1", "Phase 2"]
+        },
+        "achieved": false,
+        "achieved_date": null
+      },
+      "Level 3": {
+        "description": "循環参照の検出と解消",
+        "requirements": {
+          "total_executions": 25,
+          "success_rate": 85,
+          "phases_mastered": ["Phase 1", "Phase 2", "Phase 3"]
+        },
+        "achieved": false,
+        "achieved_date": null
+      },
+      "Level 4": {
+        "description": "ソフトデリート統合の完全な理解",
+        "requirements": {
+          "total_executions": 50,
+          "success_rate": 90,
+          "phases_mastered": ["Phase 1", "Phase 2", "Phase 3", "Phase 4"]
+        },
+        "achieved": false,
+        "achieved_date": null
+      }
+    }
+  },
+  "quality_metrics": {
+    "avg_issues_found_per_review": 0,
+    "critical_issues_prevented": 0,
+    "circular_references_detected": 0,
+    "circular_references_resolved": 0,
+    "soft_delete_integrations": 0
+  },
+  "feedback_summary": {
+    "positive_feedback_count": 0,
+    "improvement_suggestions": [],
+    "common_issues": [],
+    "user_satisfaction_score": 0
+  },
+  "improvement_targets": [
+    {
+      "target": "Increase Phase 1 success rate to 90%",
+      "current_value": 0,
+      "target_value": 90,
+      "priority": "high",
+      "status": "in_progress"
+    },
+    {
+      "target": "Reduce average execution time to under 15 minutes",
+      "current_value": 0,
+      "target_value": 15,
+      "priority": "medium",
+      "status": "in_progress"
+    },
+    {
+      "target": "Achieve 100% circular reference detection accuracy",
+      "current_value": 0,
+      "target_value": 100,
+      "priority": "high",
+      "status": "in_progress"
+    }
+  ],
+  "notes": [
+    "Metrics are automatically updated by scripts/log_usage.mjs",
+    "Level progression is evaluated after each execution",
+    "Quality metrics help identify areas for skill improvement",
+    "Feedback is collected through --notes parameter in log_usage.mjs"
+  ]
 }

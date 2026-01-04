@@ -1,114 +1,137 @@
 ---
-name: .claude/skills/localization-i18n/SKILL.md
+name: localization-i18n
 description: |
-  多言語対応ドキュメントの設計・翻訳準備スキル。
-  国際化（i18n）と地域化（l10n）のベストプラクティスを提供。
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/translation-ready-writing.md`: 翻訳しやすい文章の原則、文化依存表現の回避、プレースホルダー設計、品質チェック項目
-  - `scripts/check-translation-ready.mjs`: i18n対応度の自動チェック（文化依存表現検出、プレースホルダー検証）
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/multilingual-doc-template.md`: 多言語ドキュメント構造テンプレート（言語別ディレクトリ、共通リソース）
-  
-  Use proactively when handling localization i18n tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "実践的改善"
-      - "品質維持"
+  多言語ドキュメントと国際化の専門スキル。i18n/l10nベストプラクティス、翻訳準備ライティング、多言語構造設計、グローバルコンテンツ品質保証を提供。
+
+  Anchors:
+  • The Culture Map (Erin Meyer) / 適用: 文化適応戦略 / 目的: 地域特化ローカライゼーション
+  • Everybody Writes (Ann Handley) / 適用: 翻訳可能コンテンツ作成 / 目的: 明確で翻訳しやすい原文
+
+  Trigger:
+  Use when designing multilingual documentation, preparing content for translation, implementing i18n frameworks, or validating localization quality.
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# Localization & i18n スキル
+# Localization & i18n
 
 ## 概要
 
-多言語対応ドキュメントの設計・翻訳準備スキル。
-国際化（i18n）と地域化（l10n）のベストプラクティスを提供。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+多言語対応ドキュメントの設計・翻訳準備スキル。国際化（i18n）と地域化（l10n）のベストプラクティスを提供し、計画から品質保証まで段階的に支援する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 戦略計画
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: ローカライゼーション戦略を策定
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 対象言語・地域の優先順位を決定
+2. 文化的配慮事項を特定
+3. リソース計画とタイムラインを作成
 
-### Phase 3: 検証と記録
+**Task**: `agents/plan-strategy.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: コンテンツ準備
+
+**目的**: 翻訳に適した原文を作成
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. 翻訳しやすい文章に書き換え
+2. 用語集を作成
+3. プレースホルダーを設計
 
+**Task**: `agents/prepare-content.md` を参照
+
+### Phase 3: 実装
+
+**目的**: i18nフレームワークを実装
+
+**アクション**:
+
+1. i18n設定ファイルを作成
+2. 言語リソースファイルを生成
+3. コードにi18n対応を実装
+
+**Task**: `agents/implement-i18n.md` を参照
+
+### Phase 4: 品質検証
+
+**目的**: ローカライゼーション品質を検証
+
+**アクション**:
+
+1. 翻訳品質を評価
+2. 文化的適合性を確認
+3. 技術的な問題を検出
+
+**Task**: `agents/validate-quality.md` を参照
+
+## Task仕様（ナビゲーション）
+
+| Task             | 起動タイミング | 入力             | 出力                   |
+| ---------------- | -------------- | ---------------- | ---------------------- |
+| plan-strategy    | Phase 1開始時  | プロジェクト要件 | 戦略計画書             |
+| prepare-content  | Phase 2開始時  | 戦略計画書       | 翻訳準備済みコンテンツ |
+| implement-i18n   | Phase 3開始時  | コンテンツ       | i18n実装コード         |
+| validate-quality | Phase 4開始時  | 実装コード       | 品質レポート           |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- 多言語ドキュメントを設計する時
-- 翻訳しやすい原文を作成する時
-- ローカライゼーションワークフローを構築する時
-- 文化的適応を考慮する時
+
+| 推奨事項                     | 理由                     |
+| ---------------------------- | ------------------------ |
+| 名前付きプレースホルダー使用 | 翻訳者にコンテキスト提供 |
+| 用語集を作成・維持           | 一貫性確保               |
+| 段階的に実装                 | 各ステップで検証可能     |
+| 文化的配慮を事前調査         | 地域適合性を確保         |
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+| 禁止事項                 | 問題点               |
+| ------------------------ | -------------------- |
+| 文化依存表現（慣用句等） | 翻訳困難・誤解を招く |
+| 番号のみプレースホルダー | コンテキスト不明     |
+| 翻訳者への情報不足       | 品質低下             |
+| 一度に全体をi18n化       | 問題特定困難         |
 
-### リソース読み取り
-```bash
-cat .claude/skills/localization-i18n/resources/Level1_basics.md
-cat .claude/skills/localization-i18n/resources/Level2_intermediate.md
-cat .claude/skills/localization-i18n/resources/Level3_advanced.md
-cat .claude/skills/localization-i18n/resources/Level4_expert.md
-cat .claude/skills/localization-i18n/resources/legacy-skill.md
-cat .claude/skills/localization-i18n/resources/translation-ready-writing.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/localization-i18n/scripts/check-translation-ready.mjs --help
-node .claude/skills/localization-i18n/scripts/log_usage.mjs --help
-node .claude/skills/localization-i18n/scripts/validate-skill.mjs --help
-```
+### scripts/（決定論的処理）
 
-### テンプレート参照
-```bash
-cat .claude/skills/localization-i18n/templates/multilingual-doc-template.md
-```
+| スクリプト                    | 用途               |
+| ----------------------------- | ------------------ |
+| `check-translation-ready.mjs` | 翻訳準備度チェック |
+| `log_usage.mjs`               | 使用記録           |
+
+### references/（詳細知識）
+
+| リソース       | パス                                                                               | 読込条件         |
+| -------------- | ---------------------------------------------------------------------------------- | ---------------- |
+| 基礎知識       | [references/basics.md](references/basics.md)                                       | 初回使用時       |
+| 翻訳準備ガイド | [references/translation-ready-writing.md](references/translation-ready-writing.md) | コンテンツ準備時 |
+
+### assets/（テンプレート）
+
+| アセット                       | 用途                       |
+| ------------------------------ | -------------------------- |
+| `multilingual-doc-template.md` | 多言語ドキュメント構造雛形 |
+| `i18n-config.json`             | i18n設定テンプレート       |
+| `messages.json`                | 言語リソースファイル例     |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                            |
+| ------- | ---------- | ---------------------------------- |
+| 2.1.0   | 2026-01-02 | 18-skills.md仕様に完全準拠で再構築 |
+| 2.0.0   | 2025-12-31 | 構造改善                           |

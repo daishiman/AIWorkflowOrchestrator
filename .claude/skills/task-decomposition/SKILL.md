@@ -1,98 +1,129 @@
 ---
-name: .claude/skills/task-decomposition/SKILL.md
+name: task-decomposition
 description: |
-  タスク分解と段階的実行の手順を提供するスキル。
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when breaking tasks into executable steps.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "実践的改善"
+  複雑なタスクを目的・成果・制約から分解し、実行可能な作業単位に落とし込むスキル。
+  依存関係、優先順位、検証条件まで整理して、実行計画を一貫した形で提示する。
+
+  Anchors:
+  • PMBOK Guide / 適用: WBS作成 / 目的: 分解粒度と成果物の整合
+  • User Story Mapping (Jeff Patton) / 適用: 価値分解 / 目的: 価値順序の可視化
+  • The Pragmatic Programmer / 適用: 反復計画 / 目的: 実行可能性の担保
+
+  Trigger:
+  Use when breaking down complex work, clarifying ambiguous tasks, or planning phased execution.
+  task decomposition, work breakdown, WBS, dependency mapping, phased planning
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# Task Decomposition
+# task-decomposition
 
 ## 概要
 
-タスク分解と段階的実行の手順を提供するスキル。
+複雑な要求を実行可能なタスクへ分解し、依存関係と検証条件を明確化するスキル。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+---
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 目的と境界の確定
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 目的、成果、スコープ、前提を確定する。
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 目的と成果物を一文で表現する
+2. スコープ内外と制約を整理する
+3. 成功条件と検証方法を定義する
 
-### Phase 3: 検証と記録
+**Task**: `agents/define-scope.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: 分解と構造化
+
+**目的**: 実行可能なタスクへ分解し、依存関係を構造化する。
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. 成果物ベースでタスクを分解する
+2. 依存関係と順序を整理する
+3. 見積もりと完了条件を付与する
 
+**Task**: `agents/build-breakdown.md` を参照
+
+### Phase 3: 検証と調整
+
+**目的**: 分解計画の妥当性を検証し、必要な修正を行う。
+
+**アクション**:
+
+1. 目的との整合性と依存の抜け漏れを確認する
+2. リスクと検証項目を明文化する
+3. 改善点と再分解の判断を行う
+
+**Task**: `agents/validate-plan.md` を参照
+
+---
+
+## Task仕様ナビ
+
+| Task             | 起動タイミング | 入力                 | 出力                 |
+| ---------------- | -------------- | -------------------- | -------------------- |
+| define-scope     | Phase 1開始時  | ユーザー要求         | 目的・境界定義       |
+| build-breakdown  | Phase 2開始時  | 目的・境界定義       | 分解タスク一覧       |
+| validate-plan    | Phase 3開始時  | 分解タスク一覧       | 検証済み分解計画     |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
+
+---
 
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+| 推奨事項                         | 理由                               |
+| -------------------------------- | ---------------------------------- |
+| 目的と成果物を最初に確定する     | 分解の軸がぶれない                 |
+| 依存関係を明示する               | 実行順序の誤りを防ぐ               |
+| 完了条件を明文化する             | 検証可能な計画になる               |
+| 粒度を揃えて分解する             | 見積もりと進捗が管理しやすい       |
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+| 禁止事項                       | 問題点                             |
+| ------------------------------ | ---------------------------------- |
+| 目的が曖昧なまま分解する       | 作業が散漫になりやすい             |
+| 依存関係を暗黙にする           | 手戻りが増える                     |
+| 完了条件を曖昧にする           | 受け入れ判断が不明確になる         |
 
-### リソース読み取り
-```bash
-cat .claude/skills/task-decomposition/resources/Level1_basics.md
-cat .claude/skills/task-decomposition/resources/Level2_intermediate.md
-cat .claude/skills/task-decomposition/resources/Level3_advanced.md
-cat .claude/skills/task-decomposition/resources/Level4_expert.md
-```
+---
 
-### スクリプト実行
-```bash
-node .claude/skills/task-decomposition/scripts/log_usage.mjs --help
-node .claude/skills/task-decomposition/scripts/validate-skill.mjs --help
-```
+## リソース参照
 
-## 変更履歴
+### scripts/（決定論的処理）
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| スクリプト                           | 機能                           |
+| ------------------------------------ | ------------------------------ |
+| `scripts/validate-decomposition.mjs` | 分解計画の必須項目を検証する   |
+| `scripts/log_usage.mjs`              | 使用記録をLOGS.mdに記録する    |
+
+### references/（詳細知識）
+
+| リソース     | パス                                                 | 読込条件     |
+| ------------ | ---------------------------------------------------- | ------------ |
+| 基礎         | [references/Level1_basics.md](references/Level1_basics.md)     | 初回利用時   |
+| 実務パターン | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 分解実行時   |
+| 高度手法     | [references/Level3_advanced.md](references/Level3_advanced.md) | 複雑案件時   |
+| エキスパート | [references/Level4_expert.md](references/Level4_expert.md)     | 調整フェーズ |
+
+### assets/（テンプレート）
+
+| アセット                                   | 用途                         |
+| ------------------------------------------ | ---------------------------- |
+| `assets/task-breakdown-template.md`        | タスク分解の計画テンプレート |
+| `assets/dependency-matrix-template.md`     | 依存関係マトリクス雛形       |
+

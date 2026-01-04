@@ -1,116 +1,120 @@
 ---
-name: .claude/skills/command-documentation-patterns/SKILL.md
+name: command-documentation-patterns
 description: |
-  コマンドのドキュメンテーションを専門とするスキル。
-  セルフドキュメンティング構造、使用例、トラブルシューティング、
-  ユーザーフレンドリーな説明の作成方法を提供します。
-  
-  📖 参照書籍:
-  - 『Software Requirements』（Karl Wiegers）: 要求分析
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/documentation-guide.md`: セルフドキュメンティング構造とMarkdownセクション構成ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-docs.mjs`: コマンドドキュメントの完全性検証スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/command-documentation.md`: description/argument-hint/allowed-toolsを含むコマンドテンプレート
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when handling command documentation patterns tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Software Requirements"
-    author: "Karl Wiegers"
-    concepts:
-      - "要求分析"
-      - "仕様化"
----
+  コマンドのドキュメント設計（セルフドキュメンティング構造/使用例/トラブルシューティング）を整理し、説明の一貫性と読みやすさを支援するスキル。
+  章構成、記述ルール、検証手順を一貫して整理する。
 
-# Command Documentation Patterns
+  Anchors:
+  • Software Requirements (Karl Wiegers) / 適用: 要求の言語化と構造化 / 目的: 説明品質の安定化
+
+  Trigger:
+  Use when documenting commands, creating usage examples, or designing troubleshooting sections for command workflows.
+  command documentation, usage examples, troubleshooting, self-documenting structure
+---
+# command-documentation-patterns
 
 ## 概要
 
-コマンドのドキュメンテーションを専門とするスキル。
-セルフドキュメンティング構造、使用例、トラブルシューティング、
-ユーザーフレンドリーな説明の作成方法を提供します。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+コマンドのドキュメント設計（セルフドキュメンティング構造/使用例/トラブルシューティング）を整理し、説明の一貫性と読みやすさを支援する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件整理
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: ドキュメントの目的と読者像を明確化する。
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 対象コマンドと読者を整理する。
+2. 必要な章構成と使用例を決める。
+3. 参照ガイドとテンプレートを確認する。
+
+**Task**: `agents/analyze-documentation-requirements.md` を参照
+
+### Phase 2: ドキュメント設計
+
+**目的**: ドキュメント構造と記述ルールを具体化する。
+
+**アクション**:
+
+1. セクション構成と見出しを設計する。
+2. 例とトラブルシューティングを設計する。
+3. テンプレートで表現を統一する。
+
+**Task**: `agents/design-documentation-structure.md` を参照
 
 ### Phase 3: 検証と記録
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: ドキュメント品質を検証し、記録を残す。
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. 検証スクリプトで完全性を確認する。
+2. 検証結果と改善点を整理する。
+3. ログと評価情報を更新する。
 
+**Task**: `agents/validate-documentation.md` を参照
+
+## Task仕様ナビ
+
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-documentation-requirements | Phase 1開始時 | 対象コマンド/読者 | 要件整理メモ、章構成案 |
+| design-documentation-structure | Phase 2開始時 | 要件整理メモ | ドキュメント設計案、テンプレ適用案 |
+| validate-documentation | Phase 3開始時 | ドキュメント設計案 | 検証レポート、改善方針 |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- コマンドのドキュメントを作成する時
-- 使用例を充実させたい時
-- トラブルシューティングセクションを追加する時
+
+| 推奨事項 | 理由 |
+| --- | --- |
+| 読者像を明確にする | 説明粒度が合うため |
+| 例と手順を並記する | 利用時の迷いが減るため |
+| 検証スクリプトで完全性を確認する | 抜け漏れを防ぐため |
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 章構成を曖昧にする | 読みづらくなる |
+| 例を省略する | 利用者が迷う |
+| 記録を残さない | 改善が続かない |
 
-### リソース読み取り
-```bash
-cat .claude/skills/command-documentation-patterns/resources/Level1_basics.md
-cat .claude/skills/command-documentation-patterns/resources/Level2_intermediate.md
-cat .claude/skills/command-documentation-patterns/resources/Level3_advanced.md
-cat .claude/skills/command-documentation-patterns/resources/Level4_expert.md
-cat .claude/skills/command-documentation-patterns/resources/documentation-guide.md
-cat .claude/skills/command-documentation-patterns/resources/legacy-skill.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/command-documentation-patterns/scripts/log_usage.mjs --help
-node .claude/skills/command-documentation-patterns/scripts/validate-docs.mjs --help
-node .claude/skills/command-documentation-patterns/scripts/validate-skill.mjs --help
-```
+### scripts/（決定論的処理）
 
-### テンプレート参照
-```bash
-cat .claude/skills/command-documentation-patterns/templates/command-documentation.md
-```
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/validate-docs.mjs` | ドキュメント完全性検証 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
 
-## 変更履歴
+### references/（詳細知識）
 
-| Version | Date | Changes |
+| リソース | パス | 読込条件 |
 | --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細設計時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
+| ドキュメントガイド | [references/documentation-guide.md](references/documentation-guide.md) | 章構成設計時 |
+| 要求仕様索引 | [references/requirements-index.md](references/requirements-index.md) | 要件参照時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+
+### assets/（テンプレート・素材）
+
+| アセット | 用途 |
+| --- | --- |
+| `assets/command-documentation.md` | コマンドドキュメントテンプレート |
+
+### 運用ファイル
+
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

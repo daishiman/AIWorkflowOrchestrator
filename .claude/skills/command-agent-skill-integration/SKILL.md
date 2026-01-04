@@ -1,125 +1,126 @@
 ---
-name: .claude/skills/command-agent-skill-integration/SKILL.md
+name: command-agent-skill-integration
 description: |
-  コマンド、エージェント、スキルの統合を専門とするスキル。
-  三位一体の概念、コマンド→エージェント起動パターン、コマンド→スキル参照パターン、
-  複合ワークフローの設計を提供します。
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 手順設計
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/command-to-agent-patterns.md`: コマンドからエージェント呼び出しパターン
-  - `resources/command-to-skill-patterns.md`: コマンドからスキル参照パターン
-  - `resources/composite-workflows.md`: 複合ワークフロー設計
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/trinity-architecture.md`: コマンド・エージェント・スキル三位一体アーキテクチャ
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-integration.mjs`: エージェント参照・スキル参照・連携パターンの正確性検証とTrinity Architectureの統合チェック
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/agent-invocation-template.md`: エージェント起動テンプレート
-  - `templates/composite-workflow-template.md`: 複合ワークフローテンプレート
-  - `templates/skill-reference-template.md`: スキル参照テンプレート
-  
-  Use proactively when handling command agent skill integration tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "手順設計"
-      - "実践的改善"
----
+  コマンド/エージェント/スキルの統合設計を整理し、連携パターンと複合ワークフローを支援するスキル。
+  起動パターン、参照パターン、統合検証の手順を一貫して整理する。
 
-# Command-Agent-Skill Integration
+  Anchors:
+  • The Pragmatic Programmer (Andrew Hunt, David Thomas) / 適用: 連携手順の設計 / 目的: 再現性の確保
+  • Multi-Agent Systems (Wooldridge) / 適用: エージェント連携 / 目的: 協調設計の整理
+  • Workflow Patterns (van der Aalst) / 適用: 複合ワークフロー / 目的: 実行フローの明確化
+
+  Trigger:
+  Use when integrating commands with agents and skills, designing composite workflows, or validating integration rules.
+  command agent skill integration, composite workflow, agent invocation, skill reference
+---
+# command-agent-skill-integration
 
 ## 概要
 
-コマンド、エージェント、スキルの統合を専門とするスキル。
-三位一体の概念、コマンド→エージェント起動パターン、コマンド→スキル参照パターン、
-複合ワークフローの設計を提供します。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+コマンドとエージェント、スキルの連携パターンを整理し、統合フローの設計と検証を行う。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件整理
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 統合対象と連携要件を明確化する。
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 統合対象（コマンド/エージェント/スキル）を整理する。
+2. 起動パターンと参照パターンを選定する。
+3. 参照すべきアーキテクチャ資料を確認する。
+
+**Task**: `agents/analyze-integration-requirements.md` を参照
+
+### Phase 2: 統合設計
+
+**目的**: 連携パターンとワークフロー設計を具体化する。
+
+**アクション**:
+
+1. コマンド→エージェント/スキルの連携フローを設計する。
+2. 複合ワークフローをテンプレートで整理する。
+3. 例外ケースとガードレールを定義する。
+
+**Task**: `agents/design-integration-flow.md` を参照
 
 ### Phase 3: 検証と記録
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: 統合ルールを検証し、記録を残す。
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. 統合検証スクリプトで整合性を確認する。
+2. 検証結果と改善点を記録する。
+3. ログと評価情報を更新する。
 
+**Task**: `agents/validate-integration.md` を参照
+
+## Task仕様ナビ
+
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-integration-requirements | Phase 1開始時 | 統合対象/要件 | 要件整理メモ、参照一覧 |
+| design-integration-flow | Phase 2開始時 | 要件整理メモ | 連携フロー設計、テンプレ適用案 |
+| validate-integration | Phase 3開始時 | 連携フロー設計 | 検証レポート、改善方針 |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- コマンドからエージェントを起動したい時
-- コマンド内でスキルを参照したい時
-- Command-Agent-Skillの協調ワークフローを設計する時
+
+| 推奨事項 | 理由 |
+| --- | --- |
+| 連携パターンを明確に選定する | 連携ミスを防ぐため |
+| テンプレートを活用する | 実装の一貫性が保てるため |
+| 統合検証を実行する | 逸脱を検知するため |
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 連携仕様を省略する | 実装がブレる |
+| 例外処理を後回しにする | 障害時に対応できない |
+| 記録を残さない | 改善が続かない |
 
-### リソース読み取り
-```bash
-cat .claude/skills/command-agent-skill-integration/resources/Level1_basics.md
-cat .claude/skills/command-agent-skill-integration/resources/Level2_intermediate.md
-cat .claude/skills/command-agent-skill-integration/resources/Level3_advanced.md
-cat .claude/skills/command-agent-skill-integration/resources/Level4_expert.md
-cat .claude/skills/command-agent-skill-integration/resources/command-to-agent-patterns.md
-cat .claude/skills/command-agent-skill-integration/resources/command-to-skill-patterns.md
-cat .claude/skills/command-agent-skill-integration/resources/composite-workflows.md
-cat .claude/skills/command-agent-skill-integration/resources/legacy-skill.md
-cat .claude/skills/command-agent-skill-integration/resources/trinity-architecture.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/command-agent-skill-integration/scripts/log_usage.mjs --help
-node .claude/skills/command-agent-skill-integration/scripts/validate-integration.mjs --help
-node .claude/skills/command-agent-skill-integration/scripts/validate-skill.mjs --help
-```
+### scripts/（決定論的処理）
 
-### テンプレート参照
-```bash
-cat .claude/skills/command-agent-skill-integration/templates/agent-invocation-template.md
-cat .claude/skills/command-agent-skill-integration/templates/composite-workflow-template.md
-cat .claude/skills/command-agent-skill-integration/templates/skill-reference-template.md
-```
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/validate-integration.mjs` | 統合パターン検証 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
 
-## 変更履歴
+### references/（詳細知識）
 
-| Version | Date | Changes |
+| リソース | パス | 読込条件 |
 | --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Level1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
+| Level2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 連携設計時 |
+| Level3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細設計時 |
+| Level4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
+| 起動パターン | [references/command-to-agent-patterns.md](references/command-to-agent-patterns.md) | 起動設計時 |
+| スキル参照 | [references/command-to-skill-patterns.md](references/command-to-skill-patterns.md) | 参照設計時 |
+| 複合ワークフロー | [references/composite-workflows.md](references/composite-workflows.md) | 複合設計時 |
+| Trinity構成 | [references/trinity-architecture.md](references/trinity-architecture.md) | 構成確認時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+
+### assets/（テンプレート・素材）
+
+| アセット | 用途 |
+| --- | --- |
+| `assets/agent-invocation-template.md` | エージェント起動テンプレート |
+| `assets/skill-reference-template.md` | スキル参照テンプレート |
+| `assets/composite-workflow-template.md` | 複合ワークフローテンプレート |
+
+### 運用ファイル
+
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

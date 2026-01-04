@@ -1,0 +1,14 @@
+{
+  "items": [
+    {
+      "id": "item-001",
+      "label": "example",
+      "status": "ok"
+    }
+  ],
+  "summary": {
+    "count": 1,
+    "status": "ok"
+  },
+  "errors": []
+}

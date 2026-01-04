@@ -1,118 +1,122 @@
 ---
-name: .claude/skills/gitignore-management/SKILL.md
+name: gitignore-management
 description: |
-  .gitignore設計と管理スキル。機密ファイルパターン、プロジェクト固有除外、
-  プラットフォーム別パターン、.gitignore検証手法を提供します。
-  使用タイミング:
-  
-  📖 参照書籍:
-  - 『Pro Git』（Scott Chacon）: ブランチ戦略
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/pattern-library.md`: pattern-library の詳細ガイド
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-gitignore.mjs`: gitignoreを検証するスクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/gitignore-template.txt`: gitignore-template のテンプレート
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when handling gitignore management tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Pro Git"
-    author: "Scott Chacon"
-    concepts:
-      - "ブランチ戦略"
-      - "履歴管理"
+  .gitignore設計と管理スキル。機密ファイルパターン、プロジェクト固有除外、プラットフォーム別パターン、.gitignore検証手法を提供。
+
+  Anchors:
+  • Pro Git (Scott Chacon) / 適用: バージョン管理 / 目的: 除外パターンの基礎
+  • The Pragmatic Programmer / 適用: 実践的改善 / 目的: 効率的なパターン設計
+  • GitHub gitignore templates / 適用: 言語別テンプレート / 目的: 標準パターン
+
+  Trigger:
+  Use when designing gitignore files, adding sensitive file patterns, configuring project-specific exclusions, validating gitignore patterns, or optimizing cross-platform exclusion rules.
+  gitignore, ignore patterns, secrets, env files, build artifacts, cache
+allowed-tools:
+  - Bash
+  - Read
+  - Write
+  - Edit
+  - Glob
+  - Grep
 ---
 
-# .gitignore Management
+# .gitignore 管理スキル
 
 ## 概要
 
-.gitignore設計と管理スキル。機密ファイルパターン、プロジェクト固有除外、
-プラットフォーム別パターン、.gitignore検証手法を提供します。
-使用タイミング:
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+.gitignore設計と管理スキル。機密ファイルパターン、プロジェクト固有除外、プラットフォーム別パターン、.gitignore検証手法を提供。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件分析
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: プロジェクトの除外パターン要件を把握
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. プロジェクトタイプ（Node.js、Python等）を特定
+2. 機密ファイル（.env、秘密鍵）の存在を確認
+3. ビルド成果物とキャッシュディレクトリを特定
 
-### Phase 3: 検証と記録
+**Task**: `agents/analyze-requirements.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: パターン設計
+
+**目的**: 適切な除外パターンを設計
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. `assets/gitignore-template.txt` をベースに作成
+2. プロジェクト固有パターンを追加
+3. クロスプラットフォーム対応を確認
 
+**Task**: `agents/design-patterns.md` を参照
+
+### Phase 3: 検証
+
+**目的**: .gitignoreの正確性を検証
+
+**アクション**:
+
+1. `scripts/validate-gitignore.mjs` で検証
+2. 意図しないファイル除外がないか確認
+3. `scripts/log_usage.mjs` でフィードバック記録
+
+**Task**: `agents/validate-gitignore.md` を参照
+
+## Task仕様ナビ
+
+| Task                 | 起動タイミング | 入力         | 出力               |
+| -------------------- | -------------- | ------------ | ------------------ |
+| analyze-requirements | Phase 1開始時  | プロジェクト | 要件リスト         |
+| design-patterns      | Phase 2開始時  | 要件リスト   | .gitignoreパターン |
+| validate-gitignore   | Phase 3開始時  | .gitignore   | 検証レポート       |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- .gitignoreを新規作成する時
-- .gitignoreに機密パターンを追加する時
-- プロジェクト固有の除外パターンを設計する時
-- .gitignoreの完全性を検証する時
-- Gitignoreベストプラクティスを適用する時
+
+- 機密ファイル（.env、秘密鍵、API キー）を最優先で除外する
+- プロジェクト固有のビルド出力・キャッシュを明確に列挙する
+- クロスプラットフォーム対応（OS別、エディタ別）を考慮する
+- `scripts/validate-gitignore.mjs` で定期的に検証する
+- パターンの意図をコメントで記録する
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- ワイルドカード `*` だけで除外パターンを定義しない
+- 既に追跡済みの機密ファイルを後から追加しただけにしない（履歴から削除が必要）
+- 特定ディレクトリを除外しながら中のファイルを追跡する矛盾した設定
+- 不要になったパターンの削除を忘れない
 
-### リソース読み取り
-```bash
-cat .claude/skills/gitignore-management/resources/Level1_basics.md
-cat .claude/skills/gitignore-management/resources/Level2_intermediate.md
-cat .claude/skills/gitignore-management/resources/Level3_advanced.md
-cat .claude/skills/gitignore-management/resources/Level4_expert.md
-cat .claude/skills/gitignore-management/resources/legacy-skill.md
-cat .claude/skills/gitignore-management/resources/pattern-library.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/gitignore-management/scripts/log_usage.mjs --help
-node .claude/skills/gitignore-management/scripts/validate-gitignore.mjs --help
-node .claude/skills/gitignore-management/scripts/validate-skill.mjs --help
-```
+### references/（詳細知識）
 
-### テンプレート参照
-```bash
-cat .claude/skills/gitignore-management/templates/gitignore-template.txt
-```
+| リソース           | パス                                                               | 内容             |
+| ------------------ | ------------------------------------------------------------------ | ---------------- |
+| 基礎知識           | See [references/basics.md](references/basics.md)                   | 構文とパターン   |
+| 実装パターン       | See [references/patterns.md](references/patterns.md)               | 実践的パターン集 |
+| パターンライブラリ | See [references/pattern-library.md](references/pattern-library.md) | 検証済みパターン |
+
+### scripts/（決定論的処理）
+
+| スクリプト               | 用途               | 使用例                                                  |
+| ------------------------ | ------------------ | ------------------------------------------------------- |
+| `validate-gitignore.mjs` | パターン検証       | `node scripts/validate-gitignore.mjs --file .gitignore` |
+| `log_usage.mjs`          | フィードバック記録 | `node scripts/log_usage.mjs --result success`           |
+
+### assets/（テンプレート）
+
+| テンプレート             | 用途                       |
+| ------------------------ | -------------------------- |
+| `gitignore-template.txt` | 汎用.gitignoreテンプレート |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                              |
+| ------- | ---------- | ------------------------------------ |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様完全準拠、構造再編成 |
+| 1.0.0   | 2025-12-31 | 初版                                 |

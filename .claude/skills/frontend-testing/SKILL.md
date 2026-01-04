@@ -1,100 +1,165 @@
 ---
-name: .claude/skills/frontend-testing/SKILL.md
+name: frontend-testing
 description: |
-  フロントエンドテスト戦略の体系化と実践パターン
-  
-  📖 参照書籍:
-  - 『Test-Driven Development: By Example』（Kent Beck）: Red-Green-Refactor
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  
-  Use proactively when handling frontend testing tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Test-Driven Development: By Example"
-    author: "Kent Beck"
-    concepts:
-      - "Red-Green-Refactor"
-      - "テスト設計"
+  Comprehensive frontend testing strategy encompassing component tests, visual regression, accessibility, and E2E testing for modern web applications using Vitest, React Testing Library, Playwright, and Storybook.
+
+  Anchors:
+  • Test-Driven Development: By Example (Kent Beck) / Apply: Red-Green-Refactor cycle / Purpose: Guide test-first development workflow
+  • Testing Library Guiding Principles / Apply: Query priorities and user-centric testing / Purpose: Ensure tests resemble user behavior
+  • WCAG 2.1 AA Standards / Apply: Automated accessibility testing / Purpose: Ensure inclusive UI components
+
+  Trigger:
+  Use when implementing or improving frontend tests, setting up test infrastructure, debugging failing tests, improving test coverage, or establishing testing best practices for React/Next.js applications.
+  vitest, react testing library, playwright, storybook, component test, e2e test, visual regression, accessibility testing, test coverage, mock service worker
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+  - Task
 ---
 
 # Frontend Testing Skill
 
 ## 概要
 
-フロントエンドテスト戦略の体系化と実践パターン
+フロントエンドアプリケーションの包括的なテスト戦略を提供する。テストピラミッドに基づき、ユニットテスト、コンポーネントテスト、統合テスト、E2Eテスト、ビジュアルリグレッションテスト、アクセシビリティテストを体系化する。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+**適用範囲**: React/Next.js アプリケーション、Electron デスクトップアプリ、モノレポ構成のフロントエンド
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: テスト戦略の策定
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: プロジェクトに適したテスト戦略を決定する
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. [references/basics.md](references/basics.md) でテストピラミッドと基本概念を確認
+2. プロジェクトの特性に応じたテストレイヤーを選択
+3. カバレッジ目標とテスト方針を決定
 
-### Phase 3: 検証と記録
+**Task**: `agents/test-strategist.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: テスト環境のセットアップ
+
+**目的**: 必要なテストツールとインフラを構築する
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. Vitest、React Testing Library、Playwright、Storybook を設定
+2. MSW でモック環境を構築
+3. [references/basics.md](references/basics.md) でMSW基本パターンを確認
 
+**Task**: `agents/test-environment-engineer.md` を参照
+
+### Phase 3: テストの実装
+
+**目的**: 戦略に基づいて具体的なテストを作成する
+
+**アクション**:
+
+1. テストレイヤーに応じたTask仕様を参照
+   - コンポーネントテスト: `agents/component-test-writer.md`
+   - ビジュアルリグレッションテスト: `agents/visual-regression-tester.md`
+   - アクセシビリティテスト: `agents/accessibility-tester.md`
+   - E2Eテスト: `agents/e2e-test-writer.md`
+2. [assets/](assets/) のテンプレートを活用して効率的に実装
+3. [references/patterns.md](references/patterns.md) でパターンとベストプラクティスを確認
+
+### Phase 4: テストの実行と改善
+
+**目的**: テストを実行し、継続的に改善する
+
+**アクション**:
+
+1. テストを実行してカバレッジを測定
+2. 失敗したテストをデバッグ
+3. [references/patterns.md](references/patterns.md) で高度なパターンを確認
+4. `scripts/log_usage.mjs` で使用実績を記録
+
+## Task仕様（ナビゲーション）
+
+| Task                      | 起動タイミング | 入力               | 出力                  |
+| ------------------------- | -------------- | ------------------ | --------------------- |
+| test-strategist           | Phase 1        | プロジェクト要件   | テスト戦略            |
+| test-environment-engineer | Phase 2        | テスト戦略         | 設定ファイル          |
+| component-test-writer     | Phase 3        | コンポーネント仕様 | Vitest + RTL テスト   |
+| visual-regression-tester  | Phase 3        | UIコンポーネント   | Storybook + Chromatic |
+| accessibility-tester      | Phase 3        | UIコンポーネント   | axe-coreテスト        |
+| e2e-test-writer           | Phase 3        | ユーザーフロー     | Playwright テスト     |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+- テストピラミッドに従い、ユニット/コンポーネントテストを厚くする（70-80%）
+- Testing Library の優先クエリ（`getByRole`, `getByLabelText`）を使用
+- ユーザー視点でテストを書く（実装詳細に依存しない）
+- テストの独立性を保つ（各テストは他のテストに依存しない）
+- Task実行前に該当する `agents/*.md` を読み、入出力を確認する
+- Phase完了後に `scripts/log_usage.mjs` で記録を残す
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- E2Eテストに過度に依存する（遅い、脆い）
+- 実装詳細をテストする（クラス名、内部state）
+- グローバルな状態を共有する（テスト間の依存を生む）
+- 過度なモック（実際の動作と乖離）
+- すべてのreferencesを一度に読む（必要な時に必要なものだけ）
 
-### リソース読み取り
-```bash
-cat .claude/skills/frontend-testing/resources/Level1_basics.md
-cat .claude/skills/frontend-testing/resources/Level2_intermediate.md
-cat .claude/skills/frontend-testing/resources/Level3_advanced.md
-cat .claude/skills/frontend-testing/resources/Level4_expert.md
-cat .claude/skills/frontend-testing/resources/legacy-skill.md
-```
+**詳細**: See [references/patterns.md](references/patterns.md) → アンチパターン
 
-### スクリプト実行
-```bash
-node .claude/skills/frontend-testing/scripts/log_usage.mjs --help
-node .claude/skills/frontend-testing/scripts/validate-skill.mjs --help
-```
+## リソース参照
+
+### references/（知識外部化）
+
+| リソース   | パス                                             | 内容                                        |
+| ---------- | ------------------------------------------------ | ------------------------------------------- |
+| 基礎知識   | [references/basics.md](references/basics.md)     | テストピラミッド、クエリ優先順位、MSW基本   |
+| パターン集 | [references/patterns.md](references/patterns.md) | コンポーネント/E2E/アクセシビリティパターン |
+
+### scripts/（決定論的処理）
+
+| スクリプト           | 用途               | 使用例                                        |
+| -------------------- | ------------------ | --------------------------------------------- |
+| `log_usage.mjs`      | フィードバック記録 | `node scripts/log_usage.mjs --result success` |
+| `validate-skill.mjs` | 構造検証           | `node scripts/validate-skill.mjs`             |
+
+### assets/（テンプレート）
+
+| テンプレート                  | 用途                     |
+| ----------------------------- | ------------------------ |
+| `component-test-template.tsx` | コンポーネントテスト雛形 |
+| `e2e-test-template.ts`        | E2Eテスト雛形            |
+
+## カバレッジ目標
+
+| カテゴリ       | 目標       | 重要度 |
+| -------------- | ---------- | ------ |
+| ユーティリティ | 100%       | 必須   |
+| カスタムフック | 95%+       | 必須   |
+| コンポーネント | 90%+       | 高     |
+| 統合テスト     | 70%+       | 中     |
+| E2Eテスト      | 主要フロー | 高     |
+
+## トラブルシューティング
+
+| 問題                 | 参照先                                           | 主な原因          |
+| -------------------- | ------------------------------------------------ | ----------------- |
+| テストタイムアウト   | [references/patterns.md](references/patterns.md) | waitForの使い方   |
+| モックが効かない     | [references/basics.md](references/basics.md)     | MSWハンドラー設定 |
+| アクセシビリティ違反 | `agents/accessibility-tester.md`                 | aria属性の不足    |
+| E2Eテストがflaky     | [references/patterns.md](references/patterns.md) | 明示的な待機不足  |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                                       |
+| ------- | ---------- | ------------------------------------------------------------- |
+| 2.1.0   | 2026-01-02 | references/を整理、assets/にテンプレート追加                  |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様準拠、agents/追加、Progressive Disclosure適用 |
+| 1.0.0   | 2025-12-24 | 初版作成                                                      |

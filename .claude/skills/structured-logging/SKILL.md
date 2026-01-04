@@ -1,117 +1,132 @@
 ---
-name: .claude/skills/structured-logging/SKILL.md
+name: structured-logging
 description: |
-  構造化ログシステム設計の専門スキル。JSON形式ログ、ログレベル階層、
-  
-  📖 参照書籍:
-  - 『Observability Engineering』（Charity Majors）: ログ設計
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/log-level-guide.md`: Log Level Guideリソース
-  - `resources/log-schema-design.md`: Log Schema Designリソース
-  - `resources/pii-masking-patterns.md`: Pii Masking Patternsリソース
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-log-format.mjs`: Validate Log Formatスクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/log-format-examples.json`: Log Format Examplesテンプレート
-  - `templates/logger-template.ts`: Loggerテンプレート
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when handling structured logging tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Observability Engineering"
-    author: "Charity Majors"
-    concepts:
-      - "ログ設計"
-      - "メトリクス"
+  構造化ログのスキーマ設計、ログレベル設計、PIIマスキング、JSONログ実装を支援するスキル。
+  ログ要件整理から検証までを一貫して整理する。
+
+  Anchors:
+  • Observability Engineering / 適用: ログ設計 / 目的: 可観測性向上
+  • 12-Factor App / 適用: 構造化ログ / 目的: JSONログ標準化
+
+  Trigger:
+  Use when designing JSON log schemas, defining log levels, applying PII masking, or improving observability.
+  structured logging, json logs, log schema, log levels, pii masking
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# Structured Logging - 構造化ロギング設計
+# structured-logging
 
 ## 概要
 
-構造化ログシステム設計の専門スキル。JSON形式ログ、ログレベル階層、
+ログの要件整理からスキーマ設計、PIIマスキング、検証までを体系化する。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+---
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件整理
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: ログ対象イベントと保存要件を整理する
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. `references/Level1_basics.md` で基本指針を確認する
+2. イベント一覧と検索要件を整理する
 
-### Phase 3: 検証と記録
+**Task**: `agents/slog-001-requirements.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: スキーマとレベル設計
+
+**目的**: ログスキーマとレベル体系を定義する
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. `references/log-schema-design.md` を参照する
+2. `references/log-level-guide.md` を参照する
+3. `assets/log-format-examples.json` を確認する
 
+**Task**: `agents/slog-002-schema-design.md` を参照
+
+### Phase 3: 実装と検証
+
+**目的**: PIIマスキングとログ検証を行う
+
+**アクション**:
+
+1. `references/pii-masking-patterns.md` を参照する
+2. `assets/logger-template.ts` を適用する
+3. `scripts/validate-log-format.mjs` でログ形式を検証する
+
+**Task**: `agents/slog-003-implementation-review.md` を参照
+
+---
+
+## Task仕様ナビ
+
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| slog-001-requirements | Phase 1開始時 | システム概要、監視目的 | ログ要件メモ |
+| slog-002-schema-design | Phase 2開始時 | ログ要件メモ、既存ログ例 | ログスキーマ |
+| slog-003-implementation-review | Phase 3開始時 | ログスキーマ、ログ出力例 | 実装検証レポート |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
+**注記**: Task名は目的に合わせて定義する
+
+---
 
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+| 推奨事項 | 理由 |
+| --- | --- |
+| JSON形式で統一する | 検索と集計が容易になる |
+| 必須フィールドを固定化する | 分析の一貫性が保てる |
+| PIIを分類してマスキングする | セキュリティ事故を防ぐ |
+| ログレベルの基準を定義する | 重要度の優先順位が明確になる |
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+| 禁止事項 | 問題点 |
+| --- | --- |
+| プレーンテキストのみのログ | 解析が難しくなる |
+| INFOの乱用 | ノイズが増えて監視精度が下がる |
+| PIIの生ログ出力 | セキュリティリスクが高まる |
+| スキーマ変更の未記録 | 監視ルールが破綻する |
 
-### リソース読み取り
-```bash
-cat .claude/skills/structured-logging/resources/Level1_basics.md
-cat .claude/skills/structured-logging/resources/Level2_intermediate.md
-cat .claude/skills/structured-logging/resources/Level3_advanced.md
-cat .claude/skills/structured-logging/resources/Level4_expert.md
-cat .claude/skills/structured-logging/resources/legacy-skill.md
-cat .claude/skills/structured-logging/resources/log-level-guide.md
-cat .claude/skills/structured-logging/resources/log-schema-design.md
-cat .claude/skills/structured-logging/resources/pii-masking-patterns.md
-```
+---
 
-### スクリプト実行
-```bash
-node .claude/skills/structured-logging/scripts/log_usage.mjs --help
-node .claude/skills/structured-logging/scripts/validate-log-format.mjs --help
-node .claude/skills/structured-logging/scripts/validate-skill.mjs --help
-```
+## リソース参照
 
-### テンプレート参照
-```bash
-cat .claude/skills/structured-logging/templates/log-format-examples.json
-cat .claude/skills/structured-logging/templates/logger-template.ts
-```
+### scripts/（決定論的処理）
 
-## 変更履歴
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/validate-log-format.mjs` | ログ形式の検証 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
+| `scripts/log_usage.mjs` | 使用記録の保存 |
 
-| Version | Date | Changes |
+### references/（詳細知識）
+
+| リソース | パス | 読込条件 |
 | --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| 基礎指針 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
+| 実務指針 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 実装計画時 |
+| 応用指針 | [references/Level3_advanced.md](references/Level3_advanced.md) | 運用設計時 |
+| 専門指針 | [references/Level4_expert.md](references/Level4_expert.md) | 高度な最適化時 |
+| レベル設計 | [references/log-level-guide.md](references/log-level-guide.md) | ログレベル定義時 |
+| スキーマ設計 | [references/log-schema-design.md](references/log-schema-design.md) | スキーマ設計時 |
+| PIIマスキング | [references/pii-masking-patterns.md](references/pii-masking-patterns.md) | マスキング設計時 |
+
+### assets/（テンプレート・素材）
+
+| アセット | 用途 |
+| --- | --- |
+| `assets/log-format-examples.json` | ログ形式の例 |
+| `assets/logger-template.ts` | ロガー実装テンプレート |

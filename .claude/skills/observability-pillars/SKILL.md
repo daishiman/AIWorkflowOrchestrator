@@ -1,121 +1,133 @@
 ---
-name: .claude/skills/observability-pillars/SKILL.md
+name: observability-pillars
 description: |
-  オブザーバビリティの三本柱（ログ・メトリクス・トレース）の統合設計スキル。
-  Charity Majorsの『Observability Engineering』に基づく実践的な統合パターンを提供します。
-  
-  📖 参照書籍:
-  - 『Observability Engineering』（Charity Majors）: ログ設計
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/integration-patterns.md`: ログ・メトリクス・トレースの相関ID統合と双方向ナビゲーション（メトリクス異常→ログ→トレース）設計
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/opentelemetry-guide.md`: OpenTelemetry導入ガイド
-  - `resources/sampling-strategies.md`: サンプリング戦略設計
-  - `scripts/analyze-telemetry.mjs`: テレメトリデータの相関ID一貫性検証とサンプリング率・高カーディナリティデータ分析スクリプト
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/integration-config.ts`: OpenTelemetry自動計装・スパン属性設定・相関ID伝播を含む三本柱統合設定テンプレート
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when handling observability pillars tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Observability Engineering"
-    author: "Charity Majors"
-    concepts:
-      - "ログ設計"
-      - "メトリクス"
+  オブザーバビリティ三本柱（ログ・メトリクス・トレース）の統合設計スキル。
+  相関IDによる連携と双方向ナビゲーション（メトリクス→ログ→トレース）を実現。
+
+  Anchors:
+  • Observability Engineering (Charity Majors) / 適用: 三本柱統合パターン / 目的: 高カーディナリティObservability
+  • Google SRE Book / 適用: メトリクス設計とSLI/SLO / 目的: 信頼性エンジニアリング
+  • W3C Trace Context / 適用: 分散トレーシング標準 / 目的: 相互運用可能なトレース伝播
+
+  Trigger:
+  Use when integrating logs, metrics, and traces with correlation IDs, designing bi-directional navigation between pillars, implementing OpenTelemetry, or setting up high-cardinality observability.
+  observability, three pillars, logs, metrics, traces, correlation ID, OpenTelemetry, tracing, distributed systems
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# Observability Pillars - オブザーバビリティ三本柱統合
+# Observability Pillars
 
 ## 概要
 
-オブザーバビリティの三本柱（ログ・メトリクス・トレース）の統合設計スキル。
-Charity Majorsの『Observability Engineering』に基づく実践的な統合パターンを提供します。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+オブザーバビリティ三本柱（ログ・メトリクス・トレース）の統合設計スキル。
+Charity Majorsの『Observability Engineering』に基づき、相関IDによる連携と双方向ナビゲーションを実現する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 現状分析
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 既存のObservability成熟度を評価
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 現在のログ・メトリクス・トレース実装状況を調査
+2. 相関IDの有無と一貫性を確認
+3. ナビゲーション経路（メトリクス→ログ→トレース）を評価
 
-### Phase 3: 検証と記録
+**Task**: `agents/analyze-pillars.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: 統合設計
+
+**目的**: 三本柱の統合アーキテクチャを設計
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. 相関ID体系（Request ID、Trace ID）を設計
+2. コンテキスト伝播方式を選定（同期/非同期）
+3. 双方向ナビゲーション経路を設計
 
+**Task**: `agents/design-integration.md` を参照
+
+### Phase 3: 実装
+
+**目的**: 統合パターンを実装
+
+**アクション**:
+
+1. ミドルウェアで相関ID生成・伝播を実装
+2. ログ・メトリクス・トレースにID埋め込み
+3. ダッシュボードでナビゲーションリンクを設定
+
+**Task**: `agents/implement-correlation.md` を参照
+
+## Task仕様（ナビゲーション）
+
+| Task                  | 起動タイミング | 入力         | 出力           |
+| --------------------- | -------------- | ------------ | -------------- |
+| analyze-pillars       | Phase 1開始時  | 現行システム | 成熟度評価結果 |
+| design-integration    | Phase 2開始時  | 評価結果     | 統合設計書     |
+| implement-correlation | Phase 3開始時  | 設計書       | 実装済みコード |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
+
+## 三本柱の役割
+
+| 柱      | 目的             | 強み               | 弱み               |
+| ------- | ---------------- | ------------------ | ------------------ |
+| Logs    | イベント詳細記録 | 高カーディナリティ | 検索コスト高       |
+| Metrics | 集約数値監視     | 低コスト、長期保持 | 詳細コンテキスト欠 |
+| Traces  | リクエストフロー | 分散システム可視化 | サンプリング必要   |
+
+## 相関ID体系
+
+| ID Type    | スコープ           | フォーマット            | 生成タイミング     |
+| ---------- | ------------------ | ----------------------- | ------------------ |
+| Request ID | 単一HTTPリクエスト | UUID v4                 | リクエスト受信時   |
+| Trace ID   | 分散システム全体   | W3C Trace Context (16B) | エントリーポイント |
+| Span ID    | 単一操作           | 8バイトHex              | 各スパン開始時     |
 
 ## ベストプラクティス
 
 ### すべきこと
-- ログ、メトリクス、トレースを統合的に設計する時
-- 相関IDで三本柱を連携させる時
-- メトリクス異常から該当ログへナビゲートする仕組みを構築する時
-- OpenTelemetryで三本柱を統一する時
-- 高カーディナリティデータを設計する時
-- オブザーバビリティ戦略を立案する時
+
+- 統一相関ID: すべての柱でrequest_id/trace_idを共有
+- 双方向ナビゲーション: メトリクス ⇄ ログ ⇄ トレース
+- 自動相関: 異常検知時に関連情報を自動収集
+- 一貫性: タイムスタンプ・サービス名・環境を統一
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- 三本柱が独立: 相関IDなしで各々が孤立
+- メトリクスのみ依存: ログとトレースがない
+- 過剰な高カーディナリティ: メトリクスに数百万のラベル
+- PIIの無防備な記録: 個人情報をマスキングせず記録
 
-### リソース読み取り
-```bash
-cat .claude/skills/observability-pillars/resources/Level1_basics.md
-cat .claude/skills/observability-pillars/resources/Level2_intermediate.md
-cat .claude/skills/observability-pillars/resources/Level3_advanced.md
-cat .claude/skills/observability-pillars/resources/Level4_expert.md
-cat .claude/skills/observability-pillars/resources/integration-patterns.md
-cat .claude/skills/observability-pillars/resources/legacy-skill.md
-cat .claude/skills/observability-pillars/resources/opentelemetry-guide.md
-cat .claude/skills/observability-pillars/resources/sampling-strategies.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/observability-pillars/scripts/analyze-telemetry.mjs --help
-node .claude/skills/observability-pillars/scripts/log_usage.mjs --help
-node .claude/skills/observability-pillars/scripts/validate-skill.mjs --help
-```
+### references/（詳細知識）
 
-### テンプレート参照
-```bash
-cat .claude/skills/observability-pillars/templates/integration-config.ts
-```
+| リソース            | パス                                                                         | 用途                       |
+| ------------------- | ---------------------------------------------------------------------------- | -------------------------- |
+| 基礎知識            | See [references/basics.md](references/basics.md)                             | 三本柱の基本概念           |
+| 統合パターン        | See [references/integration-patterns.md](references/integration-patterns.md) | 相関ID・ナビゲーション設計 |
+| OpenTelemetryガイド | See [references/opentelemetry-guide.md](references/opentelemetry-guide.md)   | OTel導入手順               |
+| サンプリング戦略    | See [references/sampling-strategies.md](references/sampling-strategies.md)   | トレースサンプリング設計   |
+
+### assets/（テンプレート）
+
+| リソース | パス                           | 用途                              |
+| -------- | ------------------------------ | --------------------------------- |
+| 統合設定 | `assets/integration-config.ts` | OpenTelemetry統合設定テンプレート |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                    |
+| ------- | ---------- | -------------------------- |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様に完全準拠 |
+| 1.0.0   | 2025-12-24 | 初期実装                   |

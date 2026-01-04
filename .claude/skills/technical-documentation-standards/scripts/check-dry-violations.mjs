@@ -1,67 +1,102 @@
 #!/usr/bin/env node
+
 /**
  * DRY違反検出スクリプト
- *
- * 使用方法:
- *   node check-dry-violations.mjs <directory>
- *
- * 機能:
- *   - 指定ディレクトリ内のMarkdownファイルを走査
- *   - 重複するフレーズを検出
- *   - 共通化の提案を出力
  */
 
-import { readFileSync, readdirSync, statSync } from "fs";
-import { join, basename, relative } from "path";
+import { readFileSync, readdirSync, statSync } from 'fs';
+import { join, relative } from 'path';
 
-const MIN_PHRASE_LENGTH = 20;
-const MIN_OCCURRENCES = 2;
+const EXIT_SUCCESS = 0;
+const EXIT_ERROR = 1;
+const EXIT_ARGS_ERROR = 2;
+const EXIT_FILE_MISSING = 3;
+const EXIT_VALIDATION_ERROR = 4;
+
+function showHelp() {
+  console.log(`
+Usage: node scripts/check-dry-violations.mjs --dir <path> [options]
+
+Options:
+  --dir <path>            対象ディレクトリ（必須）
+  --min-length <number>   最小フレーズ長（既定: 20）
+  --min-occurrences <num> 重複回数（既定: 2）
+  -h, --help              ヘルプ表示
+`);
+}
+
+function getArg(args, name) {
+  const index = args.indexOf(name);
+  return index !== -1 ? args[index + 1] : null;
+}
 
 function getAllMarkdownFiles(dir, files = []) {
   const entries = readdirSync(dir);
-
   for (const entry of entries) {
     const fullPath = join(dir, entry);
     const stat = statSync(fullPath);
-
-    if (stat.isDirectory() && !entry.startsWith(".")) {
+    if (stat.isDirectory() && !entry.startsWith('.')) {
       getAllMarkdownFiles(fullPath, files);
-    } else if (entry.endsWith(".md")) {
+    } else if (entry.endsWith('.md')) {
       files.push(fullPath);
     }
   }
-
   return files;
 }
 
 function extractPhrases(content, minLength) {
   const phrases = [];
-  const lines = content.split("\n");
-
+  const lines = content.split(/\r?\n/);
   for (const line of lines) {
-    // コードブロック内はスキップ
-    if (line.startsWith("```") || line.startsWith("    ")) continue;
-    // 見出しはスキップ
-    if (line.startsWith("#")) continue;
-
-    // 意味のあるフレーズを抽出
+    if (line.startsWith('```') || line.startsWith('    ')) continue;
+    if (line.startsWith('#')) continue;
     const trimmed = line.trim();
     if (trimmed.length >= minLength) {
       phrases.push(trimmed);
     }
   }
-
   return phrases;
 }
 
-function findDuplicates(files, baseDir) {
+async function main() {
+  const args = process.argv.slice(2);
+  if (args.includes('-h') || args.includes('--help')) {
+    showHelp();
+    process.exit(EXIT_SUCCESS);
+  }
+
+  const dir = getArg(args, '--dir');
+  const minLengthArg = getArg(args, '--min-length');
+  const minOccurrencesArg = getArg(args, '--min-occurrences');
+  const minLength = minLengthArg ? Number(minLengthArg) : 20;
+  const minOccurrences = minOccurrencesArg ? Number(minOccurrencesArg) : 2;
+
+  if (!dir) {
+    console.error('Error: --dir is required');
+    process.exit(EXIT_ARGS_ERROR);
+  }
+  if (Number.isNaN(minLength) || minLength <= 0) {
+    console.error('Error: --min-length must be a positive number');
+    process.exit(EXIT_ARGS_ERROR);
+  }
+  if (Number.isNaN(minOccurrences) || minOccurrences <= 1) {
+    console.error('Error: --min-occurrences must be greater than 1');
+    process.exit(EXIT_ARGS_ERROR);
+  }
+
+  let files;
+  try {
+    files = getAllMarkdownFiles(dir);
+  } catch {
+    console.error(`Error: cannot read directory: ${dir}`);
+    process.exit(EXIT_FILE_MISSING);
+  }
+
   const phraseLocations = new Map();
-
   for (const file of files) {
-    const content = readFileSync(file, "utf-8");
-    const phrases = extractPhrases(content, MIN_PHRASE_LENGTH);
-    const relativePath = relative(baseDir, file);
-
+    const content = readFileSync(file, 'utf-8');
+    const phrases = extractPhrases(content, minLength);
+    const relativePath = relative(dir, file);
     for (const phrase of phrases) {
       if (!phraseLocations.has(phrase)) {
         phraseLocations.set(phrase, []);
@@ -73,74 +108,29 @@ function findDuplicates(files, baseDir) {
     }
   }
 
-  // 重複のみ抽出
   const duplicates = [];
   for (const [phrase, locations] of phraseLocations) {
-    if (locations.length >= MIN_OCCURRENCES) {
+    if (locations.length >= minOccurrences) {
       duplicates.push({ phrase, locations, count: locations.length });
     }
   }
 
-  // 重複回数でソート
-  duplicates.sort((a, b) => b.count - a.count);
-
-  return duplicates;
-}
-
-function main() {
-  const args = process.argv.slice(2);
-
-  if (args.length === 0) {
-    console.log("使用方法: node check-dry-violations.mjs <directory>");
-    process.exit(1);
-  }
-
-  const targetDir = args[0];
-  let files;
-
-  try {
-    files = getAllMarkdownFiles(targetDir);
-  } catch (error) {
-    console.error(`ディレクトリを読み込めません: ${targetDir}`);
-    process.exit(1);
-  }
-
-  console.log(`\n📋 DRY違反検出レポート`);
-  console.log(`${"=".repeat(50)}\n`);
-  console.log(`対象ディレクトリ: ${targetDir}`);
-  console.log(`検出ファイル数: ${files.length}件\n`);
-
-  const duplicates = findDuplicates(files, targetDir);
-
   if (duplicates.length === 0) {
-    console.log("✅ DRY違反は検出されませんでした");
-    process.exit(0);
+    console.log('✓ no dry violations found');
+    process.exit(EXIT_SUCCESS);
   }
 
-  console.log(`⚠️  重複フレーズ: ${duplicates.length}件検出\n`);
-
+  duplicates.sort((a, b) => b.count - a.count);
+  console.log(`Found ${duplicates.length} duplicate phrases`);
   duplicates.slice(0, 10).forEach((dup, index) => {
-    console.log(
-      `${index + 1}. "${dup.phrase.substring(0, 60)}${dup.phrase.length > 60 ? "..." : ""}"`,
-    );
-    console.log(`   出現回数: ${dup.count}回`);
-    console.log(`   ファイル:`);
-    dup.locations.forEach((loc) => {
-      console.log(`     - ${loc}`);
-    });
-    console.log("");
+    console.log(`${index + 1}. ${dup.phrase.substring(0, 60)}`);
+    dup.locations.forEach((loc) => console.log(`- ${loc}`));
   });
 
-  if (duplicates.length > 10) {
-    console.log(`... 他 ${duplicates.length - 10}件`);
-  }
-
-  console.log(`\n${"=".repeat(50)}`);
-  console.log(
-    `💡 提案: 重複フレーズを common/ ディレクトリに共通化し、参照に置き換えてください`,
-  );
-
-  process.exit(duplicates.length > 0 ? 1 : 0);
+  process.exit(EXIT_VALIDATION_ERROR);
 }
 
-main();
+main().catch((err) => {
+  console.error(err?.message || 'Unknown error');
+  process.exit(EXIT_ERROR);
+});

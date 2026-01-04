@@ -1,115 +1,128 @@
 ---
-name: .claude/skills/nodejs-stream-processing/SKILL.md
+name: nodejs-stream-processing
 description: |
   Node.jsにおけるストリーム処理とバックプレッシャー管理の専門知識。
   大容量ファイルの効率的処理、メモリ使用量の最適化、
   Readable/Writable/Transform/Duplexストリームの適切な活用方法を提供。
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/backpressure-guide.md`: バックプレッシャーガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/stream-utils.ts`: Readable/Writable/Transform/Duplexストリームの実装パターンとpipeline()による安全なチェーン構築テンプレート
-  
-  Use proactively when handling nodejs stream processing tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "実践的改善"
-      - "品質維持"
+
+  Anchors:
+  • Node.js Streams API Documentation / 適用: ストリームAPI全般 / 目的: 公式APIの正確な使用
+  • Backpressuring in Streams (Node.js official) / 適用: バックプレッシャー管理 / 目的: メモリ効率最適化
+  • The Pragmatic Programmer (Hunt and Thomas) / 適用: 実装品質 / 目的: 保守性とテスタビリティ
+
+  Trigger:
+  Use when implementing stream processing in Node.js, handling large files, managing backpressure, or building data transformation pipelines.
+  nodejs stream, stream processing, backpressure, readable stream, writable stream, transform stream, duplex stream, pipeline, large file
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Node.js Stream Processing
 
 ## 概要
 
-Node.jsにおけるストリーム処理とバックプレッシャー管理の専門知識。
-大容量ファイルの効率的処理、メモリ使用量の最適化、
-Readable/Writable/Transform/Duplexストリームの適切な活用方法を提供。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+Node.jsにおけるストリーム処理とバックプレッシャー管理の専門知識を提供する。
+大容量ファイル（>10MB）の効率的処理、メモリ使用量の一定維持、データ変換パイプラインの構築を支援。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件分析
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: ストリーム処理の要件を明確化し、適切なストリームタイプを選定
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. データソースとシンクを特定（ファイル、ネットワーク、メモリ等）
+2. データフロー方向を決定（読み取り専用、書き込み専用、双方向）
+3. 変換処理の有無を確認
+4. バックプレッシャー要件を評価
+5. エラーハンドリング戦略を決定
 
-### Phase 3: 検証と記録
+**Task**: `agents/analyze-stream-requirements.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: 実装
+
+**目的**: ストリームパイプラインの実装
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. 適切なストリームタイプを選択
+2. `pipeline()` を使用した安全なチェーン構築
+3. エラーハンドリングの実装
+4. バックプレッシャー対応の確認
+5. リソースクリーンアップの実装
 
+**Task**: `agents/implement-stream-pipeline.md` を参照
+
+### Phase 3: 検証
+
+**目的**: 実装の品質と性能を検証
+
+**アクション**:
+
+1. メモリ使用量の監視
+2. バックプレッシャー動作の確認
+3. エラーケースのテスト
+4. 大容量データでの負荷テスト
+5. `scripts/log_usage.mjs` で記録
+
+## Task仕様（ナビゲーション）
+
+| Task                        | 起動タイミング | 入力             | 出力                 |
+| --------------------------- | -------------- | ---------------- | -------------------- |
+| analyze-stream-requirements | Phase 1開始時  | データフロー要件 | ストリームタイプ選定 |
+| implement-stream-pipeline   | Phase 2開始時  | ストリームタイプ | パイプライン実装     |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- 大容量ファイル（>10MB）を処理する時
-- メモリ使用量を一定に保ちたい時
-- ファイルアップロード/ダウンロードを実装する時
-- データ変換パイプラインを構築する時
-- バックプレッシャー問題を解決したい時
+
+- `pipeline()` を使用してストリームをチェーンする（エラー伝播とクリーンアップ自動化）
+- `highWaterMark` を適切に設定してメモリ使用量を制御
+- 必ずエラーイベントをハンドリング
+- `destroy()` でリソースを明示的にクリーンアップ
+- Transform ストリームで `async` ジェネレータを活用
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- `pipe()` の直接使用（エラーハンドリングが困難）
+- 同期的な大容量データ読み込み
+- `pause()`/`resume()` の手動管理（バグの温床）
+- エラーイベントの無視
+- `_read()`/`_write()` 内での例外スロー
 
-### リソース読み取り
-```bash
-cat .claude/skills/nodejs-stream-processing/resources/Level1_basics.md
-cat .claude/skills/nodejs-stream-processing/resources/Level2_intermediate.md
-cat .claude/skills/nodejs-stream-processing/resources/Level3_advanced.md
-cat .claude/skills/nodejs-stream-processing/resources/Level4_expert.md
-cat .claude/skills/nodejs-stream-processing/resources/backpressure-guide.md
-cat .claude/skills/nodejs-stream-processing/resources/legacy-skill.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/nodejs-stream-processing/scripts/log_usage.mjs --help
-node .claude/skills/nodejs-stream-processing/scripts/validate-skill.mjs --help
-```
+### references/（詳細知識）
 
-### テンプレート参照
-```bash
-cat .claude/skills/nodejs-stream-processing/templates/stream-utils.ts
-```
+| リソース           | パス                                                                     | 用途                       |
+| ------------------ | ------------------------------------------------------------------------ | -------------------------- |
+| 基礎知識           | See [references/basics.md](references/basics.md)                         | ストリーム基本概念         |
+| パターン集         | See [references/patterns.md](references/patterns.md)                     | 実装パターンとユースケース |
+| バックプレッシャー | See [references/backpressure-guide.md](references/backpressure-guide.md) | メモリ効率の最適化         |
+
+### scripts/（決定論的処理）
+
+| スクリプト      | 用途               | 使用例                                                          |
+| --------------- | ------------------ | --------------------------------------------------------------- |
+| `log_usage.mjs` | フィードバック記録 | `node scripts/log_usage.mjs --result success --phase "Phase 3"` |
+
+### assets/（テンプレート）
+
+| テンプレート      | 用途                                                 |
+| ----------------- | ---------------------------------------------------- |
+| `stream-utils.ts` | Readable/Writable/Transform/Duplexの実装テンプレート |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                    |
+| ------- | ---------- | -------------------------- |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様に完全準拠 |
+| 1.0.0   | 2025-12-24 | 初期バージョン             |

@@ -1,104 +1,83 @@
 {
-  "skill_name": "web-performance",
-  "current_level": 1,
+  "skillName": "web-performance",
+  "version": "2.0.0",
+  "lastUpdated": "2026-01-01",
   "levels": {
-    "1": {
-      "level": 1,
-      "name": "基礎",
-      "requirements": {
-        "min_usage_count": 0,
-        "min_success_rate": 0.0,
-        "min_satisfaction_score": 0.0,
-        "required_resources": [
-          "SKILL.md"
-        ]
-      },
-      "success_criteria": [
-        "SKILL.mdが存在し、基本タスクが実行可能"
+    "beginner": {
+      "description": "基本的な画像最適化とLighthouse測定",
+      "criteria": [
+        "next/imageコンポーネントを正しく使用できる",
+        "Lighthouseでパフォーマンススコアを測定できる",
+        "priority属性の適切な使用場面を理解している"
       ]
     },
-    "2": {
-      "level": 2,
-      "name": "中級",
-      "requirements": {
-        "min_usage_count": 10,
-        "min_success_rate": 0.8,
-        "min_satisfaction_score": 0.7,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "scripts/analyze-bundle.mjs"
-        ]
-      },
-      "success_criteria": [
-        "10回以上使用され、成功率80%以上"
+    "intermediate": {
+      "description": "コード分割とフォント最適化",
+      "criteria": [
+        "next/dynamicで動的インポートを実装できる",
+        "next/fontでフォントを最適化できる",
+        "Core Web Vitalsの閾値を理解している"
       ]
     },
-    "3": {
-      "level": 3,
-      "name": "上級",
-      "requirements": {
-        "min_usage_count": 50,
-        "min_success_rate": 0.9,
-        "min_satisfaction_score": 0.8,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/code-splitting.md",
-          "resources/dynamic-import.md",
-          "resources/font-optimization.md",
-          "resources/image-optimization.md",
-          "resources/legacy-skill.md",
-          "scripts/analyze-bundle.mjs",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/dynamic-import-template.md",
-          "templates/image-component-template.md"
-        ]
-      },
-      "success_criteria": [
-        "50回以上使用され、成功率90%以上"
+    "advanced": {
+      "description": "総合的なパフォーマンス最適化",
+      "criteria": [
+        "バンドル分析から最適化戦略を立案できる",
+        "CLS問題を特定し解決できる",
+        "Server Componentsを活用してバンドルサイズを削減できる"
       ]
     },
-    "4": {
-      "level": 4,
-      "name": "専門",
-      "requirements": {
-        "min_usage_count": 100,
-        "min_success_rate": 0.95,
-        "min_satisfaction_score": 0.9,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/code-splitting.md",
-          "resources/dynamic-import.md",
-          "resources/font-optimization.md",
-          "resources/image-optimization.md",
-          "resources/legacy-skill.md",
-          "scripts/analyze-bundle.mjs",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/dynamic-import-template.md",
-          "templates/image-component-template.md",
-          "LOGS.md"
-        ]
-      },
-      "success_criteria": [
-        "100回以上使用され、成功率95%以上"
+    "expert": {
+      "description": "パフォーマンスアーキテクチャ設計",
+      "criteria": [
+        "プロジェクト全体のパフォーマンス戦略を設計できる",
+        "複雑なキャッシュ戦略を実装できる",
+        "パフォーマンス監視・自動化パイプラインを構築できる"
       ]
     }
   },
   "metrics": {
-    "total_usage_count": 0,
-    "success_count": 0,
-    "failure_count": 0,
-    "average_satisfaction": 0.0,
-    "last_evaluated": "2025-12-24T00:00:00Z"
-  }
+    "lighthouseScore": {
+      "target": ">= 90",
+      "description": "Lighthouseパフォーマンススコア"
+    },
+    "lcp": {
+      "target": "<= 2500ms",
+      "description": "Largest Contentful Paint"
+    },
+    "fid": {
+      "target": "<= 100ms",
+      "description": "First Input Delay"
+    },
+    "cls": {
+      "target": "<= 0.1",
+      "description": "Cumulative Layout Shift"
+    },
+    "bundleSize": {
+      "target": "minimized",
+      "description": "初期バンドルサイズ"
+    }
+  },
+  "evaluationCriteria": [
+    {
+      "id": "metrics-measured",
+      "description": "最適化前後でメトリクスを測定している",
+      "weight": 0.3
+    },
+    {
+      "id": "core-web-vitals-improved",
+      "description": "Core Web Vitalsが改善している",
+      "weight": 0.3
+    },
+    {
+      "id": "best-practices-followed",
+      "description": "ベストプラクティスに従っている",
+      "weight": 0.2
+    },
+    {
+      "id": "maintainability-preserved",
+      "description": "メンテナンス性を損なっていない",
+      "weight": 0.2
+    }
+  ]
 }

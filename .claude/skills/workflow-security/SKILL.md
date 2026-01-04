@@ -1,115 +1,138 @@
 ---
-name: .claude/skills/workflow-security/SKILL.md
+name: workflow-security
 description: |
-  GitHub Actions ワークフローのセキュリティ強化スキル。
-  
-  📖 参照書籍:
-  - 『Web Application Security』（Andrew Hoffman）: 脅威モデリング
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/permission-hardening.md`: Permission Hardeningリソース
-  - `resources/supply-chain-security.md`: Supply Chain Securityリソース
-  - `scripts/audit-workflow.mjs`: Audit Workflowスクリプト
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/secure-workflow.yaml`: Secure Workflowテンプレート
-  
-  Use proactively when handling workflow security tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Web Application Security"
-    author: "Andrew Hoffman"
-    concepts:
-      - "脅威モデリング"
-      - "セキュア設計"
+  GitHub Actionsワークフローセキュリティの専門スキル。
+  権限最小化、シークレット保護、サプライチェーン攻撃対策を提供します。
+
+  Anchors:
+  - GitHub Actions Security Hardening（GitHub公式）/ 適用: ワークフロー権限・シークレット保護 / 目的: 安全な自動化
+  - OWASP CI/CD Security（OWASP）/ 適用: サプライチェーン対策 / 目的: 脆弱性防止
+  - Principle of Least Privilege / 適用: 権限設計全般 / 目的: 攻撃面最小化
+
+  Trigger:
+  ワークフロー権限監査時、シークレット漏洩対策時、サプライチェーン攻撃対策時、PRワークフロー設計時に使用
+
+allowed-tools:
+  - Bash
+  - Read
+  - Write
+  - Edit
+  - Glob
+  - Grep
 ---
 
 # GitHub Actions Workflow Security
 
 ## 概要
 
-GitHub Actions ワークフローのセキュリティ強化スキル。
+GitHub Actions ワークフローのセキュリティ強化スキル。4つの専門エージェントによる包括的なセキュリティ対策を提供します。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+## エージェント構成
 
+| エージェント           | 役割                       | 主な機能                                        |
+| ---------------------- | -------------------------- | ----------------------------------------------- |
+| permission-auditor     | 権限監査・最小権限設計     | GITHUB_TOKEN監査、ジョブ/ステップ権限分離       |
+| secret-protector       | シークレット保護           | 露出防止、安全な参照パターン、マスキング        |
+| supply-chain-guard     | サプライチェーン攻撃対策   | SHA固定化、Verified Creator確認、依存関係監査   |
+| pr-workflow-specialist | PRワークフローセキュリティ | pull_request_target対策、ラベルゲート、Fork対策 |
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: セキュリティ評価
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 現状のワークフローセキュリティを評価
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. `permission-auditor` で権限設定を監査
+2. `secret-protector` でシークレット露出リスクを確認
+3. `supply-chain-guard` でサードパーティアクションを検証
 
-### Phase 3: 検証と記録
+### Phase 2: セキュリティ強化
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: 特定されたリスクへの対策実施
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. 権限の最小化（ジョブ/ステップレベル）
+2. シークレット参照パターンの安全化
+3. アクションのSHA固定化
+4. PRワークフローのセキュリティ設計
 
+### Phase 3: 検証と継続監視
+
+**目的**: 対策の有効性確認と継続的監視
+
+**アクション**:
+
+1. `scripts/validate-skill.mjs` でスキル構造検証
+2. セキュリティチェックリストによる確認
+3. `scripts/log_usage.mjs` で実行記録
+
+## Task仕様ナビ
+
+| タスク                  | 説明                        | 担当エージェント       | 参照リソース               |
+| ----------------------- | --------------------------- | ---------------------- | -------------------------- |
+| GITHUB_TOKEN権限監査    | トークン権限の最小化        | permission-auditor     | `permission-hardening.md`  |
+| シークレット保護        | 露出防止とマスキング        | secret-protector       | `permission-hardening.md`  |
+| アクション固定化        | SHA pinningによる不変性確保 | supply-chain-guard     | `supply-chain-security.md` |
+| Verified Creator確認    | 信頼できるアクション選定    | supply-chain-guard     | `supply-chain-security.md` |
+| pull_request_target対策 | Fork PRからの攻撃防止       | pr-workflow-specialist | `supply-chain-security.md` |
+| ラベルゲート実装        | 信頼されたPRのみ実行        | pr-workflow-specialist | `supply-chain-security.md` |
 
 ## ベストプラクティス
 
 ### すべきこと
-- セキュリティ脆弱性の検出時（トークン露出、過剰な権限、未検証のアクション）
-- ワークフローのセキュリティレビュー時
-- PRワークフローの作成時（pull_request_targetの使用）
-- サードパーティアクションの追加時
-- 本番環境へのデプロイワークフロー設計時
+
+- ワークフロー作成時に `permission-auditor` で権限を最小化する
+- サードパーティアクション追加時に `supply-chain-guard` で検証する
+- PRワークフロー設計時に `pr-workflow-specialist` でセキュリティ確認する
+- シークレット使用箇所で `secret-protector` のパターンに従う
+- 定期的にワークフロー全体のセキュリティ監査を実施する
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- `permissions: write-all` のような過剰な権限付与
+- タグ参照（`@v4`）のみでのアクション使用（SHA固定なし）
+- `pull_request_target` でのFork PRコード直接チェックアウト
+- シークレットの環境変数への無条件展開
+- 未検証サードパーティアクションの本番使用
 
-### リソース読み取り
-```bash
-cat .claude/skills/workflow-security/resources/Level1_basics.md
-cat .claude/skills/workflow-security/resources/Level2_intermediate.md
-cat .claude/skills/workflow-security/resources/Level3_advanced.md
-cat .claude/skills/workflow-security/resources/Level4_expert.md
-cat .claude/skills/workflow-security/resources/legacy-skill.md
-cat .claude/skills/workflow-security/resources/permission-hardening.md
-cat .claude/skills/workflow-security/resources/supply-chain-security.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/workflow-security/scripts/audit-workflow.mjs --help
-node .claude/skills/workflow-security/scripts/log_usage.mjs --help
-node .claude/skills/workflow-security/scripts/validate-skill.mjs --help
-```
+### エージェント
 
-### テンプレート参照
-```bash
-cat .claude/skills/workflow-security/templates/secure-workflow.yaml
-```
+| エージェント                       | 説明                       |
+| ---------------------------------- | -------------------------- |
+| `agents/permission-auditor.md`     | 権限監査の詳細仕様         |
+| `agents/secret-protector.md`       | シークレット保護の詳細     |
+| `agents/supply-chain-guard.md`     | サプライチェーン対策       |
+| `agents/pr-workflow-specialist.md` | PRワークフローセキュリティ |
+
+### リファレンス
+
+| リソース                              | 説明                         |
+| ------------------------------------- | ---------------------------- |
+| `references/permission-hardening.md`  | 権限強化の詳細ガイド         |
+| `references/supply-chain-security.md` | サプライチェーンセキュリティ |
+
+### スクリプト
+
+| スクリプト                   | 説明           | 使用方法                             |
+| ---------------------------- | -------------- | ------------------------------------ |
+| `scripts/validate-skill.mjs` | スキル構造検証 | `node scripts/validate-skill.mjs -v` |
+| `scripts/log_usage.mjs`      | 使用記録       | `node scripts/log_usage.mjs`         |
+
+### アセット
+
+| アセット                      | 説明                       |
+| ----------------------------- | -------------------------- |
+| `assets/secure-workflow.yaml` | セキュアワークフロー実装例 |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| バージョン | 日付       | 変更内容                                      |
+| ---------- | ---------- | --------------------------------------------- |
+| 2.0.0      | 2026-01-01 | 4エージェント体制への再構成、18-skills.md準拠 |
+| 1.1.0      | 2025-12-31 | Task仕様ナビテーブル追加、日本語記述統一      |
+| 1.0.0      | 2025-12-24 | 初版リリース                                  |

@@ -1,104 +1,132 @@
 {
-  "skill_name": "test-doubles",
-  "current_level": 1,
-  "levels": {
-    "1": {
-      "level": 1,
-      "name": "基礎",
-      "requirements": {
-        "min_usage_count": 0,
-        "min_success_rate": 0.0,
-        "min_satisfaction_score": 0.0,
-        "required_resources": [
-          "SKILL.md"
-        ]
-      },
-      "success_criteria": [
-        "SKILL.mdが存在し、基本タスクが実行可能"
-      ]
-    },
-    "2": {
+  "$schema": "../../../schemas/skill-evals.schema.json",
+  "skillName": "test-doubles",
+  "version": "1.1.0",
+  "lastUpdated": "2025-12-31",
+  "metrics": {
+    "usageCount": 0,
+    "successCount": 0,
+    "failureCount": 0,
+    "successRate": 0,
+    "averageExecutionTime": null,
+    "lastUsed": null
+  },
+  "levelProgress": {
+    "currentLevel": 1,
+    "nextLevelThreshold": {
       "level": 2,
-      "name": "中級",
       "requirements": {
-        "min_usage_count": 10,
-        "min_success_rate": 0.8,
-        "min_satisfaction_score": 0.7,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "scripts/log_usage.mjs"
-        ]
-      },
-      "success_criteria": [
-        "10回以上使用され、成功率80%以上"
-      ]
+        "minUsageCount": 5,
+        "minSuccessRate": 0.8,
+        "requiredTasks": ["analysis", "implementation"]
+      }
     },
-    "3": {
-      "level": 3,
-      "name": "上級",
-      "requirements": {
-        "min_usage_count": 50,
-        "min_success_rate": 0.9,
-        "min_satisfaction_score": 0.8,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/fake-patterns.md",
-          "resources/legacy-skill.md",
-          "resources/mock-patterns.md",
-          "resources/stub-patterns.md",
-          "resources/types-overview.md",
-          "resources/verification-strategies.md",
-          "scripts/log_usage.mjs",
-          "scripts/test-double-analyzer.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/test-double-selection.md"
-        ]
+    "levels": {
+      "1": {
+        "name": "Basics",
+        "description": "基本的なテストダブル（Mock、Stub）の使い分けができる",
+        "requirements": {
+          "minUsageCount": 0,
+          "minSuccessRate": 0
+        },
+        "achieved": true,
+        "achievedAt": "2025-12-31"
       },
-      "success_criteria": [
-        "50回以上使用され、成功率90%以上"
-      ]
-    },
-    "4": {
-      "level": 4,
-      "name": "専門",
-      "requirements": {
-        "min_usage_count": 100,
-        "min_success_rate": 0.95,
-        "min_satisfaction_score": 0.9,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/fake-patterns.md",
-          "resources/legacy-skill.md",
-          "resources/mock-patterns.md",
-          "resources/stub-patterns.md",
-          "resources/types-overview.md",
-          "resources/verification-strategies.md",
-          "scripts/log_usage.mjs",
-          "scripts/test-double-analyzer.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/test-double-selection.md",
-          "LOGS.md"
-        ]
+      "2": {
+        "name": "Intermediate",
+        "description": "実務的な実装パターンを適用し、適切な検証戦略を選択できる",
+        "requirements": {
+          "minUsageCount": 5,
+          "minSuccessRate": 0.8,
+          "requiredTasks": ["analysis", "implementation"]
+        },
+        "achieved": false,
+        "achievedAt": null
       },
-      "success_criteria": [
-        "100回以上使用され、成功率95%以上"
-      ]
+      "3": {
+        "name": "Advanced",
+        "description": "複雑なシナリオでFake、Spyを活用し、高度なパターンを適用できる",
+        "requirements": {
+          "minUsageCount": 15,
+          "minSuccessRate": 0.85,
+          "requiredTasks": ["analysis", "implementation", "verification"]
+        },
+        "achieved": false,
+        "achievedAt": null
+      },
+      "4": {
+        "name": "Expert",
+        "description": "テストスメルを検出し、最適なテストダブル戦略を設計できる",
+        "requirements": {
+          "minUsageCount": 30,
+          "minSuccessRate": 0.9,
+          "requiredTasks": ["analysis", "implementation", "verification"],
+          "additionalCriteria": [
+            "複数のプロジェクトでの適用実績",
+            "テストアンチパターンの改善実績"
+          ]
+        },
+        "achieved": false,
+        "achievedAt": null
+      }
     }
   },
-  "metrics": {
-    "total_usage_count": 0,
-    "success_count": 0,
-    "failure_count": 0,
-    "average_satisfaction": 0.0,
-    "last_evaluated": "2025-12-24T00:00:00Z"
-  }
+  "taskMetrics": {
+    "analysis": {
+      "usageCount": 0,
+      "successCount": 0,
+      "failureCount": 0,
+      "averageExecutionTime": null
+    },
+    "implementation": {
+      "usageCount": 0,
+      "successCount": 0,
+      "failureCount": 0,
+      "averageExecutionTime": null
+    },
+    "verification": {
+      "usageCount": 0,
+      "successCount": 0,
+      "failureCount": 0,
+      "averageExecutionTime": null
+    }
+  },
+  "qualityMetrics": {
+    "codeQualityScore": null,
+    "testSmellsDetected": 0,
+    "patternAdherenceRate": null,
+    "refactoringCount": 0
+  },
+  "feedbackSummary": {
+    "commonIssues": [],
+    "improvementSuggestions": [],
+    "positivePatterns": []
+  },
+  "evaluationCriteria": {
+    "testDoubleSelection": {
+      "description": "適切なテストダブルタイプの選択",
+      "weight": 0.3,
+      "passingScore": 0.8
+    },
+    "patternAdherence": {
+      "description": "パターンへの準拠度",
+      "weight": 0.25,
+      "passingScore": 0.85
+    },
+    "codeQuality": {
+      "description": "テストコードの品質（可読性、保守性）",
+      "weight": 0.25,
+      "passingScore": 0.8
+    },
+    "testSmellAvoidance": {
+      "description": "テストスメルの回避",
+      "weight": 0.2,
+      "passingScore": 0.9
+    }
+  },
+  "notes": [
+    "初回作成時はLevel 1を達成済みとする",
+    "log_usage.mjsの実行により自動更新される",
+    "レベルアップは要件を満たした時点で自動的に判定される"
+  ]
 }

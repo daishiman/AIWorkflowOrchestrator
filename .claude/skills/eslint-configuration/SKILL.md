@@ -1,125 +1,132 @@
 ---
-name: .claude/skills/eslint-configuration/SKILL.md
+name: eslint-configuration
 description: |
-  ESLintルール設定とカスタマイズの専門知識。
-  プロジェクト品質基準に基づくルールセット選択、パーサー設定、プラグイン統合を行います。
-  使用タイミング:
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/parser-configuration.md`: parser-configuration の詳細ガイド
-  - `resources/plugin-integration.md`: plugin-integration の詳細ガイド
-  - `resources/rule-selection-guide.md`: rule-selection-guide のガイド
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-config.mjs`: 設定を検証するスクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/nextjs.json`: nextjs のテンプレート
-  - `templates/react-typescript.json`: react-typescript のテンプレート
-  - `templates/typescript-base.json`: typescript-base のテンプレート
-  
-  Use proactively when handling eslint configuration tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "実践的改善"
-      - "品質維持"
+  ESLint設定ファイルの作成・更新、ルールセット選択、パーサー設定、プラグイン統合を行う専門スキル。
+  プロジェクトの言語・フレームワークに最適化された設定を生成し、Prettierとの競合解決も行う。
+
+  Anchors:
+  • ESLint公式ドキュメント / 適用: ルール定義・設定形式 / 目的: 仕様準拠
+  • typescript-eslint / 適用: TypeScript設定 / 目的: 型チェック統合
+  • eslint-plugin-react / 適用: React固有ルール / 目的: JSX最適化
+  • Prettier連携ガイド / 適用: 競合解決 / 目的: フォーマッタ共存
+
+  Trigger:
+  Use when creating or updating ESLint configuration, selecting rulesets, configuring parsers, integrating plugins, or resolving Prettier conflicts.
+  eslint, eslintrc, flat config, typescript-eslint, react eslint, prettier conflict, lint rules, code quality
+
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # ESLint Configuration Skill
 
 ## 概要
 
-ESLintルール設定とカスタマイズの専門知識。
-プロジェクト品質基準に基づくルールセット選択、パーサー設定、プラグイン統合を行います。
-使用タイミング:
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+ESLint設定ファイルの作成・更新を行うスキル。プロジェクトの技術スタック（言語、フレームワーク）を分析し、最適なルールセット・パーサー・プラグインを選定・設定する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: プロジェクト分析
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: プロジェクトの技術スタックと既存設定を把握
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. package.json、tsconfig.json、既存eslint設定を確認
+2. 使用言語（JavaScript/TypeScript）を特定
+3. フレームワーク（React/Vue/Node等）を判定
+4. 既存のlint関連設定との整合性を確認
 
-### Phase 3: 検証と記録
+**Task**: `agents/analyze-project.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: 設定生成
+
+**目的**: 最適なESLint設定を生成
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. ベースルールセットを選定（recommended/strict等）
+2. パーサー設定（@typescript-eslint/parser等）
+3. プラグイン統合（react, import, boundaries等）
+4. カスタムルール適用
+5. Prettier競合ルールの無効化
 
+**Task**: `agents/configure-rules.md` を参照
+
+### Phase 3: 検証
+
+**目的**: 生成した設定の動作確認
+
+**アクション**:
+
+1. 設定ファイルの構文検証
+2. `eslint --print-config` で設定確認
+3. サンプルファイルでlint実行
+4. エラー・警告の適切性確認
+
+**Task**: `agents/validate-config.md` を参照
+
+## Task仕様（ナビゲーション）
+
+| Task            | 起動タイミング | 入力               | 出力               |
+| --------------- | -------------- | ------------------ | ------------------ |
+| analyze-project | Phase 1開始時  | プロジェクトパス   | 技術スタック情報   |
+| configure-rules | Phase 2開始時  | 技術スタック情報   | ESLint設定ファイル |
+| validate-config | Phase 3開始時  | ESLint設定ファイル | 検証結果レポート   |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- ESLint設定ファイル（.eslintrc.*）を作成・更新する時
-- プロジェクトに適したルールセットを選択する時
-- TypeScript/JavaScript向けパーサー設定が必要な時
-- プラグイン（React、境界チェック等）を統合する時
-- Prettierとの競合ルールを解決する時
+
+- Flat Config形式（eslint.config.js）を優先使用
+- TypeScriptプロジェクトでは `@typescript-eslint` を使用
+- Prettierと併用時は `eslint-config-prettier` を追加
+- 段階的に厳格化（最初は recommended から）
+- プロジェクト固有ルールは明確にコメント
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- .eslintrc形式の新規作成（レガシー形式）
+- 不要なプラグインの追加
+- ルール無効化の乱用（disable コメント）
+- 競合するプラグインの併用
+- 型チェックルールの過剰適用（パフォーマンス低下）
 
-### リソース読み取り
-```bash
-cat .claude/skills/eslint-configuration/resources/Level1_basics.md
-cat .claude/skills/eslint-configuration/resources/Level2_intermediate.md
-cat .claude/skills/eslint-configuration/resources/Level3_advanced.md
-cat .claude/skills/eslint-configuration/resources/Level4_expert.md
-cat .claude/skills/eslint-configuration/resources/legacy-skill.md
-cat .claude/skills/eslint-configuration/resources/parser-configuration.md
-cat .claude/skills/eslint-configuration/resources/plugin-integration.md
-cat .claude/skills/eslint-configuration/resources/rule-selection-guide.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/eslint-configuration/scripts/log_usage.mjs --help
-node .claude/skills/eslint-configuration/scripts/validate-config.mjs --help
-node .claude/skills/eslint-configuration/scripts/validate-skill.mjs --help
-```
+### references/（詳細知識）
 
-### テンプレート参照
-```bash
-cat .claude/skills/eslint-configuration/templates/nextjs.json
-cat .claude/skills/eslint-configuration/templates/react-typescript.json
-cat .claude/skills/eslint-configuration/templates/typescript-base.json
-```
+| リソース             | パス                                                                         | 用途                      |
+| -------------------- | ---------------------------------------------------------------------------- | ------------------------- |
+| パーサー設定ガイド   | See [references/parser-configuration.md](references/parser-configuration.md) | TypeScript/JSパーサー設定 |
+| プラグイン統合ガイド | See [references/plugin-integration.md](references/plugin-integration.md)     | プラグイン選定・設定      |
+| ルール選定ガイド     | See [references/rule-selection-guide.md](references/rule-selection-guide.md) | ルールセット選択基準      |
+
+### scripts/（決定論的処理）
+
+| スクリプト            | 用途               | 使用例                                              |
+| --------------------- | ------------------ | --------------------------------------------------- |
+| `validate-config.mjs` | 設定ファイル検証   | `node scripts/validate-config.mjs eslint.config.js` |
+| `log_usage.mjs`       | フィードバック記録 | `node scripts/log_usage.mjs --result success`       |
+
+### assets/（テンプレート）
+
+| テンプレート            | 用途                 |
+| ----------------------- | -------------------- |
+| `typescript-base.json`  | TypeScript基本設定   |
+| `react-typescript.json` | React+TypeScript設定 |
+| `nextjs.json`           | Next.js専用設定      |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                            |
+| ------- | ---------- | ---------------------------------- |
+| 2.0.0   | 2026-01-01 | 18-skills.md完全準拠版として再構築 |
+| 1.0.0   | 2025-12-24 | 初版作成                           |

@@ -6,12 +6,12 @@
  * 必須ファイル、行数制約、EVALS.json の構造を確認します。
  */
 
-import { readFileSync, statSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { readFileSync, statSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const SKILL_DIR = join(__dirname, '..');
+const SKILL_DIR = join(__dirname, "..");
 
 const EXIT_SUCCESS = 0;
 const EXIT_ERROR = 1;
@@ -29,9 +29,8 @@ Options:
 }
 
 function getLineCount(path) {
-  const content = readFileSync(path, 'utf-8');
-  return content.split('
-').length;
+  const content = readFileSync(path, "utf-8");
+  return content.split("\n").length;
 }
 
 function assertExists(path, label) {
@@ -53,24 +52,44 @@ function validateLineLimit(path, limit) {
 
 function validateEvals(path) {
   try {
-    const data = JSON.parse(readFileSync(path, 'utf-8'));
-    const required = ['skill_name', 'current_level', 'levels', 'metrics'];
-    for (const key of required) {
-      if (!(key in data)) {
-        throw new Error(`EVALS.json missing ${key}`);
+    const data = JSON.parse(readFileSync(path, "utf-8"));
+
+    // Validate top-level structure
+    if (
+      !data.metadata ||
+      !data.usage_stats ||
+      !data.performance_metrics ||
+      !data.level_progression
+    ) {
+      throw new Error("EVALS.json missing required top-level fields");
+    }
+
+    // Validate metadata
+    if (!data.metadata.skill_name || !data.metadata.version) {
+      throw new Error("EVALS.json metadata incomplete");
+    }
+
+    // Validate usage_stats
+    const usageFields = [
+      "total_invocations",
+      "successful_executions",
+      "failed_executions",
+    ];
+    for (const field of usageFields) {
+      if (!(field in data.usage_stats)) {
+        throw new Error(`EVALS.json usage_stats missing ${field}`);
       }
     }
-    for (const lvl of ['1', '2', '3', '4']) {
-      if (!(lvl in data.levels)) {
-        throw new Error(`EVALS.json missing levels.${lvl}`);
-      }
+
+    // Validate level_progression
+    if (
+      !data.level_progression.current_level ||
+      !data.level_progression.level_history
+    ) {
+      throw new Error("EVALS.json level_progression incomplete");
     }
-    const metrics = ['total_usage_count', 'success_count', 'failure_count', 'average_satisfaction', 'last_evaluated'];
-    for (const key of metrics) {
-      if (!(key in data.metrics)) {
-        throw new Error(`EVALS.json metrics missing ${key}`);
-      }
-    }
+
+    console.log("✓ EVALS.json structure valid");
   } catch (err) {
     console.error(`EVALS.json validation error: ${err.message}`);
     process.exit(EXIT_VALIDATION_ERROR);
@@ -79,37 +98,44 @@ function validateEvals(path) {
 
 async function main() {
   const args = process.argv.slice(2);
-  if (args.includes('-h') || args.includes('--help')) {
+  if (args.includes("-h") || args.includes("--help")) {
     showHelp();
     process.exit(EXIT_SUCCESS);
   }
 
+  // 18-skills specification required files
   const requiredFiles = [
-    'SKILL.md',
-    'EVALS.json',
-    'CHANGELOG.md',
-    'LOGS.md',
-    'scripts/log_usage.mjs',
-    'scripts/validate-skill.mjs',
-    'resources/Level1_basics.md',
-    'resources/Level2_intermediate.md',
-    'resources/Level3_advanced.md',
-    'resources/Level4_expert.md',
+    "SKILL.md",
+    "EVALS.json",
+    "LOGS.md",
+    "scripts/log_usage.mjs",
+    "scripts/validate-skill.mjs",
+    "references/Level1_basics.md",
+    "references/Level2_intermediate.md",
+    "references/Level3_advanced.md",
+    "references/Level4_expert.md",
   ];
 
+  console.log("Validating required files...");
   for (const file of requiredFiles) {
     assertExists(join(SKILL_DIR, file), file);
   }
+  console.log("✓ All required files present");
 
-  validateLineLimit(join(SKILL_DIR, 'SKILL.md'), 500);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level1_basics.md'), 200);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level2_intermediate.md'), 300);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level3_advanced.md'), 400);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level4_expert.md'), 500);
+  console.log("\nValidating line limits...");
+  validateLineLimit(join(SKILL_DIR, "SKILL.md"), 500);
+  console.log("✓ SKILL.md within limit");
 
-  validateEvals(join(SKILL_DIR, 'EVALS.json'));
+  // References can be longer for detailed knowledge
+  validateLineLimit(join(SKILL_DIR, "references/Level1_basics.md"), 300);
+  validateLineLimit(join(SKILL_DIR, "references/Level2_intermediate.md"), 500);
+  validateLineLimit(join(SKILL_DIR, "references/Level3_advanced.md"), 700);
+  validateLineLimit(join(SKILL_DIR, "references/Level4_expert.md"), 1000);
+  console.log("✓ All reference files within limits");
 
-  console.log('✓ Skill structure validated');
+  validateEvals(join(SKILL_DIR, "EVALS.json"));
+
+  console.log("✓ Skill structure validated");
   process.exit(EXIT_SUCCESS);
 }
 

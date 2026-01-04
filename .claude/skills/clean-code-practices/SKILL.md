@@ -1,119 +1,125 @@
 ---
-name: .claude/skills/clean-code-practices/SKILL.md
+name: clean-code-practices
 description: |
-  ロバート・C・マーティン（Uncle Bob）の『Clean Code』に基づくコード品質プラクティスを専門とするスキル。
-  
-  📖 参照書籍:
-  - 『Clean Code』（Robert C. Martin）: 命名と意図の明確化
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/comments-and-documentation.md`: コメントとドキュメンテーション
-  - `resources/dry-principle.md`: DRY原則（Do Not Repeat Yourself）
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/meaningful-names.md`: 意図を明確にする命名・発音しやすい名前・検索しやすい名前の原則と変数/関数/クラス/ブール値の品詞別命名規則
-  - `resources/small-functions.md`: 5-10行の理想サイズ・単一責任原則・抽象度の統一・パラメータ3つ以下の関数設計ガイドライン
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/measure-code-quality.mjs`: コード品質測定スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/code-review-checklist.md`: コードレビューチェックリスト
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when improving code readability, naming conventions, or applying clean code principles.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Clean Code"
-    author: "Robert C. Martin"
-    concepts:
-      - "命名と意図の明確化"
-      - "小さな関数設計"
----
+  Clean Code の原則に基づき、命名・関数分割・重複排除などのコード品質改善を支援するスキル。
+  可読性と保守性の向上、リファクタリング方針の整理を扱う。
 
-# Clean Code Practices
+  Anchors:
+  • Clean Code (Robert C. Martin) / 適用: 命名と関数設計 / 目的: 可読性の向上
+  • Refactoring (Martin Fowler) / 適用: 改善手順の整理 / 目的: 安全な改善
+  • The Pragmatic Programmer (Hunt/Thomas) / 適用: DRYと意図表現 / 目的: 保守性の向上
+
+  Trigger:
+  Use when improving naming, splitting large functions, removing duplication, or validating clean code quality.
+  clean code, naming, small functions, duplication, refactoring, readability
+---
+# clean-code-practices
 
 ## 概要
 
-ロバート・C・マーティン（Uncle Bob）の『Clean Code』に基づくコード品質プラクティスを専門とするスキル。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+Clean Code 原則に沿ってコード品質を診断し、改善方針と検証を一貫して進める。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 現状把握
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 品質課題と対象範囲を明確化する。
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 対象コードと制約を整理する。
+2. 命名・関数サイズ・重複の課題を抽出する。
+3. 参照すべき要件とレビュー基準を確認する。
+
+**Task**: `agents/analyze-clean-code-issues.md` を参照
+
+### Phase 2: 改善設計
+
+**目的**: 改善方針とリファクタリング計画を作る。
+
+**アクション**:
+
+1. 命名と関数分割の方針を決める。
+2. DRY原則とコメント方針を整理する。
+3. レビューチェックリストを更新する。
+
+**Task**: `agents/design-refactoring-plan.md` を参照
 
 ### Phase 3: 検証と記録
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: 改善効果を検証し、記録を残す。
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. 品質測定スクリプトで検証する。
+2. 変更点と改善点をレポート化する。
+3. ログと評価情報を更新する。
 
+**Task**: `agents/validate-clean-code-improvements.md` を参照
+
+## Task仕様ナビ
+
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-clean-code-issues | Phase 1開始時 | 対象コード/制約 | 課題一覧、対象範囲メモ |
+| design-refactoring-plan | Phase 2開始時 | 課題一覧 | 改善方針、リファクタリング計画 |
+| validate-clean-code-improvements | Phase 3開始時 | 改善方針 | 検証レポート、改善ログ |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- コードの命名を改善したい時
-- 関数が大きすぎると感じた時
-- コードの重複を発見した時
-- コードの可読性を向上させたい時
+
+| 推奨事項 | 理由 |
+| --- | --- |
+| 改善対象を限定して進める | 影響範囲を抑えるため |
+| 命名と関数分割をセットで検討する | 可読性が高まるため |
+| 検証結果を記録する | 再発防止につながるため |
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 一括で大規模変更を行う | レビュー負荷が増える |
+| ルールを決めずに改善する | 一貫性が失われる |
+| 測定なしで効果判断する | 改善が曖昧になる |
 
-### リソース読み取り
-```bash
-cat .claude/skills/clean-code-practices/resources/Level1_basics.md
-cat .claude/skills/clean-code-practices/resources/Level2_intermediate.md
-cat .claude/skills/clean-code-practices/resources/Level3_advanced.md
-cat .claude/skills/clean-code-practices/resources/Level4_expert.md
-cat .claude/skills/clean-code-practices/resources/comments-and-documentation.md
-cat .claude/skills/clean-code-practices/resources/dry-principle.md
-cat .claude/skills/clean-code-practices/resources/legacy-skill.md
-cat .claude/skills/clean-code-practices/resources/meaningful-names.md
-cat .claude/skills/clean-code-practices/resources/small-functions.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/clean-code-practices/scripts/log_usage.mjs --help
-node .claude/skills/clean-code-practices/scripts/measure-code-quality.mjs --help
-node .claude/skills/clean-code-practices/scripts/validate-skill.mjs --help
-```
+### scripts/（決定論的処理）
 
-### テンプレート参照
-```bash
-cat .claude/skills/clean-code-practices/templates/code-review-checklist.md
-```
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/measure-code-quality.mjs` | コード品質の測定 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
 
-## 変更履歴
+### references/（詳細知識）
 
-| Version | Date | Changes |
+| リソース | パス | 読込条件 |
 | --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Level1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
+| Level2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
+| Level3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細確認時 |
+| Level4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
+| 意味のある命名 | [references/meaningful-names.md](references/meaningful-names.md) | 命名改善時 |
+| 小さな関数 | [references/small-functions.md](references/small-functions.md) | 関数分割時 |
+| DRY原則 | [references/dry-principle.md](references/dry-principle.md) | 重複排除時 |
+| コメント方針 | [references/comments-and-documentation.md](references/comments-and-documentation.md) | ドキュメント整理時 |
+| 要求索引 | [references/requirements-index.md](references/requirements-index.md) | 要件参照時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+
+### assets/（テンプレート・素材）
+
+| アセット | 用途 |
+| --- | --- |
+| `assets/code-review-checklist.md` | コードレビューチェックリスト |
+
+### 運用ファイル
+
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

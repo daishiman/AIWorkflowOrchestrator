@@ -3,94 +3,39 @@
   "current_level": 1,
   "levels": {
     "1": {
-      "level": 1,
-      "name": "基礎",
+      "name": "Beginner",
       "requirements": {
         "min_usage_count": 0,
-        "min_success_rate": 0.0,
-        "min_satisfaction_score": 0.0,
-        "required_resources": [
-          "SKILL.md"
-        ]
-      },
-      "success_criteria": [
-        "SKILL.mdが存在し、基本タスクが実行可能"
-      ]
+        "min_success_rate": 0
+      }
     },
     "2": {
-      "level": 2,
-      "name": "中級",
+      "name": "Intermediate",
       "requirements": {
-        "min_usage_count": 10,
-        "min_success_rate": 0.8,
-        "min_satisfaction_score": 0.7,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "scripts/log_usage.mjs"
-        ]
-      },
-      "success_criteria": [
-        "10回以上使用され、成功率80%以上"
-      ]
+        "min_usage_count": 5,
+        "min_success_rate": 0.6
+      }
     },
     "3": {
-      "level": 3,
-      "name": "上級",
+      "name": "Advanced",
       "requirements": {
-        "min_usage_count": 50,
-        "min_success_rate": 0.9,
-        "min_satisfaction_score": 0.8,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/documentation-guide.md",
-          "resources/legacy-skill.md",
-          "scripts/log_usage.mjs",
-          "scripts/validate-docs.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/command-documentation.md"
-        ]
-      },
-      "success_criteria": [
-        "50回以上使用され、成功率90%以上"
-      ]
+        "min_usage_count": 15,
+        "min_success_rate": 0.75
+      }
     },
     "4": {
-      "level": 4,
-      "name": "専門",
+      "name": "Expert",
       "requirements": {
-        "min_usage_count": 100,
-        "min_success_rate": 0.95,
-        "min_satisfaction_score": 0.9,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/documentation-guide.md",
-          "resources/legacy-skill.md",
-          "scripts/log_usage.mjs",
-          "scripts/validate-docs.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/command-documentation.md",
-          "LOGS.md"
-        ]
-      },
-      "success_criteria": [
-        "100回以上使用され、成功率95%以上"
-      ]
+        "min_usage_count": 30,
+        "min_success_rate": 0.85
+      }
     }
   },
   "metrics": {
     "total_usage_count": 0,
     "success_count": 0,
     "failure_count": 0,
-    "average_satisfaction": 0.0,
-    "last_evaluated": "2025-12-24T00:00:00Z"
+    "average_satisfaction": 0,
+    "last_evaluated": null
   }
 }

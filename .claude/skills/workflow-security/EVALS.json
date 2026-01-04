@@ -1,98 +1,79 @@
 {
-  "skill_name": "workflow-security",
-  "current_level": 1,
+  "skillName": "workflow-security",
+  "version": "2.0.0",
+  "lastUpdated": "2026-01-01",
   "levels": {
-    "1": {
-      "level": 1,
-      "name": "基礎",
-      "requirements": {
-        "min_usage_count": 0,
-        "min_success_rate": 0.0,
-        "min_satisfaction_score": 0.0,
-        "required_resources": [
-          "SKILL.md"
-        ]
-      },
-      "success_criteria": [
-        "SKILL.mdが存在し、基本タスクが実行可能"
+    "beginner": {
+      "description": "基本的な権限設定とシークレット管理",
+      "criteria": [
+        "permissions設定を正しく記述できる",
+        "シークレットの安全な参照方法を理解している",
+        "過剰な権限のリスクを説明できる"
       ]
     },
-    "2": {
-      "level": 2,
-      "name": "中級",
-      "requirements": {
-        "min_usage_count": 10,
-        "min_success_rate": 0.8,
-        "min_satisfaction_score": 0.7,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "scripts/audit-workflow.mjs"
-        ]
-      },
-      "success_criteria": [
-        "10回以上使用され、成功率80%以上"
+    "intermediate": {
+      "description": "最小権限設計とサプライチェーン対策",
+      "criteria": [
+        "ジョブレベルで権限を分離できる",
+        "アクションをSHA固定化できる",
+        "Verified Creatorの重要性を理解している"
       ]
     },
-    "3": {
-      "level": 3,
-      "name": "上級",
-      "requirements": {
-        "min_usage_count": 50,
-        "min_success_rate": 0.9,
-        "min_satisfaction_score": 0.8,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/legacy-skill.md",
-          "resources/permission-hardening.md",
-          "resources/supply-chain-security.md",
-          "scripts/audit-workflow.mjs",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/secure-workflow.yaml"
-        ]
-      },
-      "success_criteria": [
-        "50回以上使用され、成功率90%以上"
+    "advanced": {
+      "description": "PRワークフローとフォーク対策",
+      "criteria": [
+        "pull_request_targetを安全に使用できる",
+        "ラベルゲートを実装できる",
+        "workflow_runパターンを適用できる"
       ]
     },
-    "4": {
-      "level": 4,
-      "name": "専門",
-      "requirements": {
-        "min_usage_count": 100,
-        "min_success_rate": 0.95,
-        "min_satisfaction_score": 0.9,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/legacy-skill.md",
-          "resources/permission-hardening.md",
-          "resources/supply-chain-security.md",
-          "scripts/audit-workflow.mjs",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/secure-workflow.yaml",
-          "LOGS.md"
-        ]
-      },
-      "success_criteria": [
-        "100回以上使用され、成功率95%以上"
+    "expert": {
+      "description": "エンタープライズセキュリティ設計",
+      "criteria": [
+        "組織全体のワークフローセキュリティ戦略を設計できる",
+        "監査自動化パイプラインを構築できる",
+        "コンプライアンス要件に対応できる"
       ]
     }
   },
   "metrics": {
-    "total_usage_count": 0,
-    "success_count": 0,
-    "failure_count": 0,
-    "average_satisfaction": 0.0,
-    "last_evaluated": "2025-12-24T00:00:00Z"
-  }
+    "permissionMinimization": {
+      "target": "100%",
+      "description": "最小権限原則の適用率"
+    },
+    "actionPinning": {
+      "target": "100%",
+      "description": "SHA固定化率"
+    },
+    "secretExposureRisk": {
+      "target": "0",
+      "description": "シークレット露出リスク件数"
+    },
+    "auditCompliance": {
+      "target": ">= 90%",
+      "description": "監査基準適合率"
+    }
+  },
+  "evaluationCriteria": [
+    {
+      "id": "permission-hardening",
+      "description": "権限が最小化されている",
+      "weight": 0.25
+    },
+    {
+      "id": "secret-protection",
+      "description": "シークレットが適切に保護されている",
+      "weight": 0.25
+    },
+    {
+      "id": "supply-chain-security",
+      "description": "サプライチェーン攻撃対策が実施されている",
+      "weight": 0.25
+    },
+    {
+      "id": "pr-workflow-safety",
+      "description": "PRワークフローが安全に設計されている",
+      "weight": 0.25
+    }
+  ]
 }

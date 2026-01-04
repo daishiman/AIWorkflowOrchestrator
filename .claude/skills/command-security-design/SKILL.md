@@ -1,115 +1,120 @@
 ---
-name: .claude/skills/command-security-design/SKILL.md
+name: command-security-design
 description: |
-  コマンドのセキュリティ設計を専門とするスキル。
-  allowed-toolsによるツール制限、disable-model-invocationによる自動実行防止、
-  機密情報保護の実装方法を提供します。
-  
-  📖 参照書籍:
-  - 『Web Application Security』（Andrew Hoffman）: 脅威モデリング
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/security-guidelines.md`: セキュリティガイドライン
-  - `scripts/audit-security.mjs`: セキュリティ監査スクリプト
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/secure-command.md`: セキュアコマンドテンプレート
-  
-  Use proactively when handling command security design tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Web Application Security"
-    author: "Andrew Hoffman"
-    concepts:
-      - "脅威モデリング"
-      - "セキュア設計"
----
+  コマンドのセキュリティ設計（allowed-tools制限/disable-model-invocation/機密情報保護）を整理し、安全な実行フローと権限制御を支援するスキル。
+  セキュリティ要件、検証手順、テンプレート運用を一貫して整理する。
 
-# Command Security Design
+  Anchors:
+  • Web Application Security (Andrew Hoffman) / 適用: 脅威モデリング / 目的: セキュア設計指針
+  • OWASP Top 10 / 適用: 一般的脅威の整理 / 目的: リスク評価基準
+
+  Trigger:
+  Use when designing secure command execution, restricting tools, or preventing unsafe automated operations.
+  command security, allowed-tools, disable-model-invocation, secret protection
+---
+# command-security-design
 
 ## 概要
 
-コマンドのセキュリティ設計を専門とするスキル。
-allowed-toolsによるツール制限、disable-model-invocationによる自動実行防止、
-機密情報保護の実装方法を提供します。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+コマンドのセキュリティ設計（allowed-tools制限/disable-model-invocation/機密情報保護）を整理し、安全な実行フローと権限制御を支援する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件整理
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: セキュリティ要件とリスクを明確化する。
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 対象コマンドとリスクを整理する。
+2. 制限すべきツールや自動実行条件を整理する。
+3. 参照ガイドとテンプレートを確認する。
+
+**Task**: `agents/analyze-security-requirements.md` を参照
+
+### Phase 2: セキュリティ設計
+
+**目的**: 制限ルールと対策を具体化する。
+
+**アクション**:
+
+1. allowed-tools と disable-model-invocation の方針を定義する。
+2. 機密情報保護と監査方針を整理する。
+3. テンプレートで表現を統一する。
+
+**Task**: `agents/design-security-controls.md` を参照
 
 ### Phase 3: 検証と記録
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: セキュリティ設計を検証し、記録を残す。
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. セキュリティ検証スクリプトで整合性を確認する。
+2. 検証結果と改善点を整理する。
+3. ログと評価情報を更新する。
 
+**Task**: `agents/validate-security-design.md` を参照
+
+## Task仕様ナビ
+
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-security-requirements | Phase 1開始時 | 対象/リスク | 要件整理メモ、制限候補 |
+| design-security-controls | Phase 2開始時 | 要件整理メモ | 制限ルール、対策方針 |
+| validate-security-design | Phase 3開始時 | 制限ルール | 検証レポート、改善方針 |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- 破壊的な操作を行うコマンドを作成する時
-- ツール使用を制限したい時
-- 機密情報の誤コミットを防ぐチェックを実装する時
+
+| 推奨事項 | 理由 |
+| --- | --- |
+| リスクと制限を明確にする | 誤操作を防ぐため |
+| 自動実行防止を検討する | 重大事故を避けるため |
+| 検証と記録を実施する | 改善が継続できるため |
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 制限ルールを曖昧にする | 事故の原因になる |
+| 機密対策を省略する | 情報漏洩のリスクがある |
+| 記録を残さない | 改善が続かない |
 
-### リソース読み取り
-```bash
-cat .claude/skills/command-security-design/resources/Level1_basics.md
-cat .claude/skills/command-security-design/resources/Level2_intermediate.md
-cat .claude/skills/command-security-design/resources/Level3_advanced.md
-cat .claude/skills/command-security-design/resources/Level4_expert.md
-cat .claude/skills/command-security-design/resources/legacy-skill.md
-cat .claude/skills/command-security-design/resources/security-guidelines.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/command-security-design/scripts/audit-security.mjs --help
-node .claude/skills/command-security-design/scripts/log_usage.mjs --help
-node .claude/skills/command-security-design/scripts/validate-skill.mjs --help
-```
+### scripts/（決定論的処理）
 
-### テンプレート参照
-```bash
-cat .claude/skills/command-security-design/templates/secure-command.md
-```
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/audit-security.mjs` | セキュリティ監査 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
 
-## 変更履歴
+### references/（詳細知識）
 
-| Version | Date | Changes |
+| リソース | パス | 読込条件 |
 | --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細設計時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
+| セキュリティ指針 | [references/security-guidelines.md](references/security-guidelines.md) | 制限設計時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+
+### assets/（テンプレート・素材）
+
+| アセット | 用途 |
+| --- | --- |
+| `assets/secure-command.md` | セキュアコマンドテンプレート |
+
+### 運用ファイル
+
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

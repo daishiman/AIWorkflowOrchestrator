@@ -1,39 +1,24 @@
 ---
-name: .claude/skills/error-message-design/SKILL.md
+name: error-message-design
 description: |
   ユーザーフレンドリーなエラーメッセージの設計を専門とするスキル。
-  エラーコード体系、多言語対応（i18n）、アクション指向のメッセージ設計を
-  通じて、ユーザー体験を向上させます。
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/api-error-responses.md`: api-error-responses の詳細ガイド
-  - `resources/error-code-system.md`: error-code-system の詳細ガイド
-  - `resources/i18n-error-handling.md`: i18n-error-handling の詳細ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/user-friendly-messages.md`: user-friendly-messages の詳細ガイド
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-error-messages.mjs`: errormessagesを検証するスクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/error-system-template.ts`: error-system-template のテンプレート
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when handling error message design tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "実践的改善"
-      - "品質維持"
+  エラーコード体系、多言語対応（i18n）、アクション指向のメッセージ設計を提供。
+
+  Anchors:
+  - The Pragmatic Programmer / 適用: 実践的改善 / 目的: 品質維持
+  - Nielsen Norman Group UX Guidelines / 適用: エラーメッセージ設計 / 目的: ユーザビリティ向上
+
+  Trigger:
+  Use when designing error messages, creating error code systems, implementing i18n for errors, or building user-friendly error responses.
+  error message, error code, i18n, user-friendly, validation error, API error response
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+  - Task
 ---
 
 # Error Message Design
@@ -42,82 +27,122 @@ references:
 
 ユーザーフレンドリーなエラーメッセージの設計を専門とするスキル。
 エラーコード体系、多言語対応（i18n）、アクション指向のメッセージ設計を
-通じて、ユーザー体験を向上させます。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+通じて、ユーザー体験を向上させる。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: エラーメッセージ設計
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: エラータイプを分類し、メッセージを設計する
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. エラー発生シナリオを分析
+2. エラーコード体系を設計
+3. ユーザー向けメッセージを作成
+4. 多言語対応を考慮
+
+**Task**: `agents/design-error-messages.md` を参照
+
+### Phase 2: エラーシステム実装
+
+**目的**: 設計に基づきエラーシステムを実装する
+
+**アクション**:
+
+1. エラークラス/型を定義
+2. メッセージカタログを実装
+3. i18n翻訳リソースを作成
+4. エラーハンドラーを実装
+
+**Task**: `agents/implement-error-messages.md` を参照
 
 ### Phase 3: 検証と記録
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: エラーメッセージの品質を検証する
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. `scripts/validate-error-messages.mjs` で検証
+2. ユーザビリティチェックを実施
+3. `scripts/log_usage.mjs` で記録
 
+## Task仕様ナビ
+
+| Task | 起動タイミング | 入力 | 出力 |
+|------|----------------|------|------|
+| design-error-messages | 設計時 | エラー要件 | エラーメッセージ仕様 |
+| implement-error-messages | 実装時 | エラーメッセージ仕様 | エラーシステム実装 |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
+
+## エラーメッセージの3原則
+
+### 1. 何が起きたかを説明
+
+**悪い例**: "Error occurred"
+**良い例**: "Your session has expired"
+
+### 2. なぜ起きたかを説明
+
+**悪い例**: "Invalid input"
+**良い例**: "The email address format is incorrect"
+
+### 3. どうすれば解決できるかを説明
+
+**悪い例**: "Please try again"
+**良い例**: "Please enter a valid email (example: user@domain.com)"
 
 ## ベストプラクティス
 
 ### すべきこと
-- バリデーションエラーメッセージの設計時
-- APIエラーレスポンスの設計時
-- 多言語対応のエラーシステム構築時
-- ユーザー向け/開発者向けエラーの分離時
+
+- ユーザーが理解できる言葉を使用
+- 具体的なアクションを提示
+- エラーコードで問い合わせを容易に
+- 多言語対応を考慮した設計
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- 技術用語の露出（SQLException, NullPointer等）
+- スタックトレースの表示
+- ユーザーを責める表現
+- 曖昧な表現（「問題が発生しました」）
 
-### リソース読み取り
-```bash
-cat .claude/skills/error-message-design/resources/Level1_basics.md
-cat .claude/skills/error-message-design/resources/Level2_intermediate.md
-cat .claude/skills/error-message-design/resources/Level3_advanced.md
-cat .claude/skills/error-message-design/resources/Level4_expert.md
-cat .claude/skills/error-message-design/resources/api-error-responses.md
-cat .claude/skills/error-message-design/resources/error-code-system.md
-cat .claude/skills/error-message-design/resources/i18n-error-handling.md
-cat .claude/skills/error-message-design/resources/legacy-skill.md
-cat .claude/skills/error-message-design/resources/user-friendly-messages.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/error-message-design/scripts/log_usage.mjs --help
-node .claude/skills/error-message-design/scripts/validate-error-messages.mjs --help
-node .claude/skills/error-message-design/scripts/validate-skill.mjs --help
-```
+### agents/（Task仕様書）
 
-### テンプレート参照
-```bash
-cat .claude/skills/error-message-design/templates/error-system-template.ts
-```
+| Task | パス | 用途 |
+|------|------|------|
+| 設計 | See [agents/design-error-messages.md](agents/design-error-messages.md) | メッセージ設計 |
+| 実装 | See [agents/implement-error-messages.md](agents/implement-error-messages.md) | システム実装 |
+
+### references/（詳細知識）
+
+| リソース | パス | 用途 |
+|----------|------|------|
+| ユーザーメッセージ | See [references/user-friendly-messages.md](references/user-friendly-messages.md) | メッセージ設計指針 |
+| エラーコード体系 | See [references/error-code-system.md](references/error-code-system.md) | コード設計 |
+| i18n対応 | See [references/i18n-error-handling.md](references/i18n-error-handling.md) | 多言語対応 |
+| APIレスポンス | See [references/api-error-responses.md](references/api-error-responses.md) | レスポンス形式 |
+
+### scripts/（決定論的処理）
+
+| スクリプト | 用途 | 使用例 |
+|------------|------|--------|
+| `validate-error-messages.mjs` | メッセージ検証 | `node scripts/validate-error-messages.mjs` |
+| `log_usage.mjs` | フィードバック記録 | `node scripts/log_usage.mjs --result success` |
+
+### assets/（テンプレート）
+
+| テンプレート | 用途 |
+|--------------|------|
+| `error-system-template.ts` | エラーシステム実装テンプレート |
 
 ## 変更履歴
 
 | Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+|---------|------|---------|
+| 2.0.0 | 2026-01-01 | agents追加、Level1-4削除、18-skills.md仕様完全準拠 |
+| 1.0.0 | 2025-12-24 | 初版作成 |

@@ -1,114 +1,137 @@
 ---
-name: .claude/skills/notification-integration-gha/SKILL.md
+name: notification-integration-gha
 description: |
-  GitHub Actions通知統合スキル - Slack、Discord、MS Teams、Email等への自動通知設定。
-  以下の場合に自動発動:
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/discord-teams.md`: Discord・MS Teams統合ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/slack-integration.md`: Slack統合詳細ガイド
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/test-webhook.mjs`: Slack/Discord/TeamsのWebhook URLに対するメッセージ送信テストスクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/notification-workflow.yaml`: Slack/Discord/Teams/Emailへの成功・失敗通知を含むGitHub Actionsワークフロー実例集
-  
-  Use proactively when handling notification integration gha tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "実践的改善"
-      - "品質維持"
+  GitHub Actions通知統合スキル。Slack、Discord、MS Teams、Emailへの
+  ビルド/デプロイ状態通知を自動化。成功/失敗メッセージのカスタマイズと
+  インタラクティブ要素をサポート。
+
+  Anchors:
+  • The Pragmatic Programmer (Hunt and Thomas) / 適用: 自動化とフィードバックループ / 目的: 迅速なフィードバックによる問題早期発見
+  • Site Reliability Engineering (Google) / 適用: モニタリングとアラート設計 / 目的: 適切な粒度と重要度の通知
+  • GitHub Actions best practices / 適用: ワークフロー設計とシークレット管理 / 目的: セキュアで保守性の高い設定
+
+  Trigger:
+  Use when setting up notifications, configuring webhooks, adding Slack/Discord/Teams/Email alerts to workflows, troubleshooting notification failures, or implementing status reporting.
+  slack notification, discord webhook, teams alert, github actions notify, workflow status, deployment notification
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# GitHub Actions Notification Integration Skill
+# GitHub Actions Notification Integration
 
 ## 概要
 
-GitHub Actions通知統合スキル - Slack、Discord、MS Teams、Email等への自動通知設定。
-以下の場合に自動発動:
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+GitHub Actionsワークフローに通知機能を統合する専門知識を提供。
+Slack、Discord、MS Teams、Emailへの自動通知設定をセキュアで保守性の高い方法で実装する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件定義と選択
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 通知要件を明確化し、適切な通知サービスを選択
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 通知先プラットフォームを選択（Slack/Discord/Teams/Email）
+2. 通知タイミングを決定（成功時/失敗時/両方）
+3. メッセージ内容を設計（シンプル/詳細/インタラクティブ）
+4. 適切なTaskを選択
 
-### Phase 3: 検証と記録
+### Phase 2: 実装
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: Webhook/トークン設定とワークフロー定義
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. GitHub Secretsの設定（Webhook URL、Bot Token等）
+2. ワークフロー定義（`assets/notification-workflow.yaml`参照）
+3. メッセージフォーマット調整
+4. 選択したTaskファイルに従って実装
 
+**Task**: 選択した `agents/*.md` を参照
+
+### Phase 3: テストと検証
+
+**目的**: 通知が正しく動作することを確認
+
+**アクション**:
+
+1. `scripts/test-webhook.mjs` でWebhook URLの有効性確認
+2. テストワークフロー実行
+3. 通知受信確認
+4. エラー時は `agents/troubleshoot.md` を参照
+
+### Phase 4: 記録
+
+**目的**: 実行結果を記録
+
+**アクション**:
+
+```bash
+node scripts/log_usage.mjs --result success --phase "Phase 2" --notes "Slack通知を実装"
+```
+
+## Task仕様（ナビゲーション）
+
+| Task          | 起動タイミング | 入力       | 出力             |
+| ------------- | -------------- | ---------- | ---------------- |
+| setup-slack   | Slack統合時    | 通知要件   | ワークフロー定義 |
+| setup-discord | Discord統合時  | 通知要件   | ワークフロー定義 |
+| setup-teams   | MS Teams統合時 | 通知要件   | ワークフロー定義 |
+| troubleshoot  | 通知失敗時     | エラー内容 | 修正手順         |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+- Secretsを安全に管理（環境変数やリポジトリシークレットを使用）
+- メッセージに必須情報を含める（リポジトリ、ブランチ、コミット、作者）
+- 成功と失敗で異なるメッセージを送信
+- Webhook URLをテストしてから本番適用
+- `if: always()` で通知ステップを保護
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- Webhook URLやトークンをハードコード
+- すべての通知を同じチャネルに送信
+- エラー情報なしで失敗通知を送る
+- テスト不十分のまま本番適用
+- 機密情報を通知メッセージに含める
 
-### リソース読み取り
-```bash
-cat .claude/skills/notification-integration-gha/resources/Level1_basics.md
-cat .claude/skills/notification-integration-gha/resources/Level2_intermediate.md
-cat .claude/skills/notification-integration-gha/resources/Level3_advanced.md
-cat .claude/skills/notification-integration-gha/resources/Level4_expert.md
-cat .claude/skills/notification-integration-gha/resources/discord-teams.md
-cat .claude/skills/notification-integration-gha/resources/legacy-skill.md
-cat .claude/skills/notification-integration-gha/resources/slack-integration.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/notification-integration-gha/scripts/log_usage.mjs --help
-node .claude/skills/notification-integration-gha/scripts/test-webhook.mjs --help
-node .claude/skills/notification-integration-gha/scripts/validate-skill.mjs --help
-```
+### references/（詳細知識）
 
-### テンプレート参照
-```bash
-cat .claude/skills/notification-integration-gha/templates/notification-workflow.yaml
-```
+| リソース      | パス                                                                   | 用途               |
+| ------------- | ---------------------------------------------------------------------- | ------------------ |
+| 基礎知識      | See [references/basics.md](references/basics.md)                       | 通知統合の基本概念 |
+| Slack統合     | See [references/slack-integration.md](references/slack-integration.md) | Slack詳細設定      |
+| Discord/Teams | See [references/discord-teams.md](references/discord-teams.md)         | Discord・Teams設定 |
+
+### scripts/（決定論的処理）
+
+| スクリプト         | 用途               | 使用例                                        |
+| ------------------ | ------------------ | --------------------------------------------- |
+| `test-webhook.mjs` | Webhook動作確認    | `node scripts/test-webhook.mjs --url <URL>`   |
+| `log_usage.mjs`    | フィードバック記録 | `node scripts/log_usage.mjs --result success` |
+
+### assets/（テンプレート）
+
+| テンプレート                 | 用途                         |
+| ---------------------------- | ---------------------------- |
+| `notification-workflow.yaml` | ワークフロー実装テンプレート |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                    |
+| ------- | ---------- | -------------------------- |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様に完全準拠 |
+| 1.1.0   | 2025-12-31 | Task navigation追加        |
+| 1.0.0   | 2025-12-24 | 初期バージョン             |

@@ -1,115 +1,119 @@
 ---
-name: .claude/skills/command-error-handling/SKILL.md
+name: command-error-handling
 description: |
-  コマンドのエラーハンドリングを専門とするスキル。
-  引数検証、事前チェック、ロールバック機能、ユーザー確認、
-  親切なエラーメッセージの設計を提供します。
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 手順設計
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/error-patterns.md`: エラーハンドリングパターン集
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-error-handling.mjs`: エラーハンドリング検証スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/command-with-error-handling.md`: エラーハンドリング付きコマンドテンプレート
-  
-  Use proactively when handling command error handling tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "手順設計"
-      - "実践的改善"
----
+  コマンドのエラーハンドリング（引数検証/事前チェック/ロールバック/ユーザー確認/エラーメッセージ設計）を整理し、失敗時の安全性と説明の一貫性を支援するスキル。
+  パターン選定、検証手順、テンプレート運用を一貫して整理する。
 
-# Command Error Handling
+  Anchors:
+  • The Pragmatic Programmer (Andrew Hunt, David Thomas) / 適用: エラーハンドリング設計 / 目的: 安定した実行フローの確立
+
+  Trigger:
+  Use when designing command error handling, validating failure paths, or implementing rollback and user confirmation flows.
+  command error handling, validation, rollback, user confirmation, error messages
+---
+# command-error-handling
 
 ## 概要
 
-コマンドのエラーハンドリングを専門とするスキル。
-引数検証、事前チェック、ロールバック機能、ユーザー確認、
-親切なエラーメッセージの設計を提供します。
-
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+コマンドのエラーハンドリング（引数検証/事前チェック/ロールバック/ユーザー確認/エラーメッセージ設計）を整理し、失敗時の安全性と説明の一貫性を支援する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件整理
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: エラー要件と失敗時フローを明確化する。
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 対象コマンドと失敗シナリオを整理する。
+2. 必須の検証・ロールバック・確認手順を整理する。
+3. 参照ガイドとテンプレートを確認する。
+
+**Task**: `agents/analyze-error-requirements.md` を参照
+
+### Phase 2: エラーフロー設計
+
+**目的**: エラーハンドリング設計を具体化する。
+
+**アクション**:
+
+1. エラーパターンと対処手順を定義する。
+2. エラーメッセージ方針とユーザー確認を設計する。
+3. テンプレートで表現を統一する。
+
+**Task**: `agents/design-error-handling.md` を参照
 
 ### Phase 3: 検証と記録
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: エラーフローを検証し、記録を残す。
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. 検証スクリプトで整合性を確認する。
+2. 検証結果と改善点を整理する。
+3. ログと評価情報を更新する。
 
+**Task**: `agents/validate-error-handling.md` を参照
+
+## Task仕様ナビ
+
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| analyze-error-requirements | Phase 1開始時 | 失敗シナリオ/制約 | 要件整理メモ、失敗一覧 |
+| design-error-handling | Phase 2開始時 | 要件整理メモ | エラーフロー設計、メッセージ方針 |
+| validate-error-handling | Phase 3開始時 | エラーフロー設計 | 検証レポート、改善方針 |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
-- 堅牢なエラー処理を実装する時
-- ロールバック機能が必要な時
-- ユーザー確認を統合する時
+
+| 推奨事項 | 理由 |
+| --- | --- |
+| 失敗シナリオを網羅する | 例外漏れを防ぐため |
+| エラーメッセージの粒度を揃える | 利用者の判断が容易になるため |
+| 検証と記録をセットで実施する | 改善が継続できるため |
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 失敗時フローを曖昧にする | 回復不能になる |
+| エラーメッセージを省略する | 利用者が迷う |
+| 記録を残さない | 改善が続かない |
 
-### リソース読み取り
-```bash
-cat .claude/skills/command-error-handling/resources/Level1_basics.md
-cat .claude/skills/command-error-handling/resources/Level2_intermediate.md
-cat .claude/skills/command-error-handling/resources/Level3_advanced.md
-cat .claude/skills/command-error-handling/resources/Level4_expert.md
-cat .claude/skills/command-error-handling/resources/error-patterns.md
-cat .claude/skills/command-error-handling/resources/legacy-skill.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/command-error-handling/scripts/log_usage.mjs --help
-node .claude/skills/command-error-handling/scripts/validate-error-handling.mjs --help
-node .claude/skills/command-error-handling/scripts/validate-skill.mjs --help
-```
+### scripts/（決定論的処理）
 
-### テンプレート参照
-```bash
-cat .claude/skills/command-error-handling/templates/command-with-error-handling.md
-```
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/validate-error-handling.mjs` | エラーハンドリング検証 |
+| `scripts/log_usage.mjs` | 使用記録と評価メトリクス更新 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
 
-## 変更履歴
+### references/（詳細知識）
 
-| Version | Date | Changes |
+| リソース | パス | 読込条件 |
 | --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| レベル1 基礎 | [references/Level1_basics.md](references/Level1_basics.md) | 初回整理時 |
+| レベル2 実務 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 設計時 |
+| レベル3 応用 | [references/Level3_advanced.md](references/Level3_advanced.md) | 詳細設計時 |
+| レベル4 専門 | [references/Level4_expert.md](references/Level4_expert.md) | 改善ループ時 |
+| エラーパターン | [references/error-patterns.md](references/error-patterns.md) | パターン選定時 |
+| 旧スキル | [references/legacy-skill.md](references/legacy-skill.md) | 互換確認時 |
+
+### assets/（テンプレート・素材）
+
+| アセット | 用途 |
+| --- | --- |
+| `assets/command-with-error-handling.md` | エラーハンドリング付きコマンドテンプレート |
+
+### 運用ファイル
+
+| ファイル | 目的 |
+| --- | --- |
+| `EVALS.json` | レベル評価・メトリクス管理 |
+| `LOGS.md` | 実行ログの蓄積 |
+| `CHANGELOG.md` | 改善履歴の記録 |

@@ -13,6 +13,25 @@
 import fs from "fs";
 import path from "path";
 
+const EXIT_SUCCESS = 0;
+const EXIT_ERROR = 1;
+const EXIT_ARGS_ERROR = 2;
+const EXIT_FILE_MISSING = 3;
+const EXIT_VALIDATION_ERROR = 4;
+
+function showHelp() {
+  console.log(`
+Authentication config validator
+
+Usage:
+  node validate-auth-config.mjs <config.json>
+  node validate-auth-config.mjs --scan <directory>
+
+Options:
+  -h, --help    Show this help message
+  `);
+}
+
 // セキュリティチェック定義
 const SECURITY_CHECKS = {
   oauth: [
@@ -385,39 +404,48 @@ function printScanReport(findings) {
 function main() {
   const args = process.argv.slice(2);
 
+  if (args.includes("-h") || args.includes("--help")) {
+    showHelp();
+    process.exit(EXIT_SUCCESS);
+  }
+
   if (args.length === 0) {
-    console.log("Usage:");
-    console.log("  node validate-auth-config.mjs <config.json>");
-    console.log("  node validate-auth-config.mjs --scan <directory>");
-    process.exit(1);
+    showHelp();
+    process.exit(EXIT_ARGS_ERROR);
   }
 
   if (args[0] === "--scan") {
     const dirPath = args[1] || ".";
     if (!fs.existsSync(dirPath)) {
       console.error("Error: Directory not found");
-      process.exit(1);
+      process.exit(EXIT_FILE_MISSING);
     }
 
     const findings = scanDirectory(dirPath);
     const isValid = printScanReport(findings);
-    process.exit(isValid ? 0 : 1);
-  } else {
-    const configPath = args[0];
-    if (!fs.existsSync(configPath)) {
-      console.error("Error: Config file not found");
-      process.exit(1);
-    }
+    process.exit(isValid ? EXIT_SUCCESS : EXIT_VALIDATION_ERROR);
+  }
 
-    try {
-      const config = JSON.parse(fs.readFileSync(configPath, "utf-8"));
-      const result = validateConfig(config);
-      const isValid = printReport(result, configPath);
-      process.exit(isValid ? 0 : 1);
-    } catch (e) {
-      console.error("Error: Failed to parse config file");
-      process.exit(1);
-    }
+  if (args[0].startsWith("-")) {
+    console.error(`Error: Unknown option: ${args[0]}`);
+    showHelp();
+    process.exit(EXIT_ARGS_ERROR);
+  }
+
+  const configPath = args[0];
+  if (!fs.existsSync(configPath)) {
+    console.error("Error: Config file not found");
+    process.exit(EXIT_FILE_MISSING);
+  }
+
+  try {
+    const config = JSON.parse(fs.readFileSync(configPath, "utf-8"));
+    const result = validateConfig(config);
+    const isValid = printReport(result, configPath);
+    process.exit(isValid ? EXIT_SUCCESS : EXIT_VALIDATION_ERROR);
+  } catch (e) {
+    console.error("Error: Failed to parse config file");
+    process.exit(EXIT_ERROR);
   }
 }
 

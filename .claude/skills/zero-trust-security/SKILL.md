@@ -1,113 +1,138 @@
 ---
-name: .claude/skills/zero-trust-security/SKILL.md
+name: zero-trust-security
 description: |
-  Zero Trust Security原則に基づく機密情報管理スキル。
-  
-  📖 参照書籍:
-  - 『Web Application Security』（Andrew Hoffman）: 脅威モデリング
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/continuous-verification-implementation.md`: Continuous Verification Implementationリソース
-  - `resources/jit-access-patterns.md`: Jit Access Patternsリソース
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/rbac-implementation.md`: Rbac Implementationリソース
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/access-policy-template.yaml`: Access Policyテンプレート
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when handling zero trust security tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Web Application Security"
-    author: "Andrew Hoffman"
-    concepts:
-      - "脅威モデリング"
-      - "セキュア設計"
+  ゼロトラストセキュリティの専門スキル。
+  認証・認可、マイクロセグメンテーション、継続的検証を提供します。
+
+  Anchors:
+  - Zero Trust Networks（Evan Gilman）/ 適用: セキュリティアーキテクチャ / 目的: 信頼境界排除と継続的検証
+  - NIST SP 800-207 Zero Trust Architecture / 適用: フレームワーク設計 / 目的: 標準準拠
+  - MITRE ATT&CK / 適用: 脅威モデリング / 目的: 攻撃パターン対策
+
+  Trigger:
+  ゼロトラスト実装時、認証・認可設計時、アクセス制御強化時、継続的検証実装時に使用
+
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Zero Trust Security
 
 ## 概要
 
-Zero Trust Security原則に基づく機密情報管理スキル。
+Zero Trust Security（ゼロトラスト・セキュリティ）は、「信頼しない、常に検証する」の原則に基づくセキュリティモデル。4つの専門エージェントによる包括的なセキュリティ実装を提供します。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+## エージェント構成
 
+| エージェント      | 役割             | 主な機能                                |
+| ----------------- | ---------------- | --------------------------------------- |
+| identity-verifier | ID検証・認証強化 | MFA設計、継続的認証、セッション管理     |
+| access-controller | アクセス制御     | RBAC/ABAC設計、最小権限、JIT権限        |
+| policy-enforcer   | ポリシー適用     | PDP/PEP実装、マイクロセグメンテーション |
+| trust-evaluator   | 信頼性評価       | リスクベース認証、UEBA、動的信頼スコア  |
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件分析と戦略策定
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: セキュリティ要件を分析し、ゼロトラスト戦略を策定
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. `identity-verifier` で認証要件を分析
+2. `access-controller` でアクセス制御要件を整理
+3. 既存セキュリティとのギャップを特定
 
-### Phase 3: 検証と記録
+### Phase 2: 設計と実装
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: ゼロトラスト原則に基づいたシステム設計・実装
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. `identity-verifier` で認証フローを設計
+2. `access-controller` でポリシーを定義
+3. `policy-enforcer` でマイクロセグメンテーションを実装
+4. `trust-evaluator` で継続的検証を設定
 
+### Phase 3: 検証と運用
+
+**目的**: 実装の検証と継続的な運用体制構築
+
+**アクション**:
+
+1. `scripts/validate-skill.mjs` でスキル構造検証
+2. ポリシー適用のテスト
+3. `scripts/log_usage.mjs` で使用記録
+
+## Task仕様ナビ
+
+| タスク             | 担当エージェント  | 参照リソース                                |
+| ------------------ | ----------------- | ------------------------------------------- |
+| MFA設計            | identity-verifier | `continuous-verification-implementation.md` |
+| RBAC設計           | access-controller | `rbac-implementation.md`                    |
+| JITアクセス        | access-controller | `jit-access-patterns.md`                    |
+| マイクロセグメント | policy-enforcer   | `rbac-implementation.md`                    |
+| リスクベース認証   | trust-evaluator   | `continuous-verification-implementation.md` |
+| 継続的検証         | trust-evaluator   | `continuous-verification-implementation.md` |
 
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+- 全てのリクエストで認証・認可を検証する
+- 最小権限の原則を厳守する
+- コンテキストに基づいて動的に信頼を評価する
+- 全てのアクセスを監査ログに記録する
+- 定期的にポリシーとアクセスパターンをレビューする
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- 「内部ネットワークだから安全」という前提
+- 一度の認証で永続的な信頼を付与
+- 過剰な権限の付与
+- 監査ログなしでの本番運用
 
-### リソース読み取り
-```bash
-cat .claude/skills/zero-trust-security/resources/Level1_basics.md
-cat .claude/skills/zero-trust-security/resources/Level2_intermediate.md
-cat .claude/skills/zero-trust-security/resources/Level3_advanced.md
-cat .claude/skills/zero-trust-security/resources/Level4_expert.md
-cat .claude/skills/zero-trust-security/resources/continuous-verification-implementation.md
-cat .claude/skills/zero-trust-security/resources/jit-access-patterns.md
-cat .claude/skills/zero-trust-security/resources/legacy-skill.md
-cat .claude/skills/zero-trust-security/resources/rbac-implementation.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/zero-trust-security/scripts/log_usage.mjs --help
-node .claude/skills/zero-trust-security/scripts/validate-skill.mjs --help
-```
+### エージェント
 
-### テンプレート参照
-```bash
-cat .claude/skills/zero-trust-security/templates/access-policy-template.yaml
-```
+| エージェント                  | 説明                   |
+| ----------------------------- | ---------------------- |
+| `agents/identity-verifier.md` | ID検証・認証強化       |
+| `agents/access-controller.md` | アクセス制御設計       |
+| `agents/policy-enforcer.md`   | ポリシー適用・実行     |
+| `agents/trust-evaluator.md`   | 信頼性評価・継続的検証 |
+
+### リファレンス
+
+| リソース                                               | 説明                 |
+| ------------------------------------------------------ | -------------------- |
+| `references/continuous-verification-implementation.md` | 継続的検証実装ガイド |
+| `references/jit-access-patterns.md`                    | JITアクセスパターン  |
+| `references/rbac-implementation.md`                    | RBAC実装ガイド       |
+
+### アセット
+
+| アセット                             | 説明                             |
+| ------------------------------------ | -------------------------------- |
+| `assets/access-policy-template.yaml` | アクセス制御ポリシーテンプレート |
+
+### スクリプト
+
+| スクリプト                   | 説明           | 使用方法                             |
+| ---------------------------- | -------------- | ------------------------------------ |
+| `scripts/validate-skill.mjs` | スキル構造検証 | `node scripts/validate-skill.mjs -v` |
+| `scripts/log_usage.mjs`      | 使用記録       | `node scripts/log_usage.mjs`         |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| バージョン | 日付       | 変更内容                                      |
+| ---------- | ---------- | --------------------------------------------- |
+| 2.0.0      | 2026-01-01 | 4エージェント体制への再構成、18-skills.md準拠 |
+| 1.1.0      | 2025-12-31 | Task仕様ナビテーブル追加、日本語記述統一      |
+| 1.0.0      | 2025-12-24 | 初版リリース                                  |

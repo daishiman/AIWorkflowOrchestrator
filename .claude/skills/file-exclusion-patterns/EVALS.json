@@ -1,94 +1,80 @@
 {
   "skill_name": "file-exclusion-patterns",
-  "current_level": 1,
-  "levels": {
-    "1": {
-      "level": 1,
-      "name": "基礎",
-      "requirements": {
-        "min_usage_count": 0,
-        "min_success_rate": 0.0,
-        "min_satisfaction_score": 0.0,
-        "required_resources": [
-          "SKILL.md"
-        ]
-      },
-      "success_criteria": [
-        "SKILL.mdが存在し、基本タスクが実行可能"
-      ]
-    },
-    "2": {
-      "level": 2,
-      "name": "中級",
-      "requirements": {
-        "min_usage_count": 10,
-        "min_success_rate": 0.8,
-        "min_satisfaction_score": 0.7,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "scripts/log_usage.mjs"
-        ]
-      },
-      "success_criteria": [
-        "10回以上使用され、成功率80%以上"
-      ]
-    },
-    "3": {
-      "level": 3,
-      "name": "上級",
-      "requirements": {
-        "min_usage_count": 50,
-        "min_success_rate": 0.9,
-        "min_satisfaction_score": 0.8,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/legacy-skill.md",
-          "resources/standard-patterns.md",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/pattern-builder.ts"
-        ]
-      },
-      "success_criteria": [
-        "50回以上使用され、成功率90%以上"
-      ]
-    },
-    "4": {
-      "level": 4,
-      "name": "専門",
-      "requirements": {
-        "min_usage_count": 100,
-        "min_success_rate": 0.95,
-        "min_satisfaction_score": 0.9,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/legacy-skill.md",
-          "resources/standard-patterns.md",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/pattern-builder.ts",
-          "LOGS.md"
-        ]
-      },
-      "success_criteria": [
-        "100回以上使用され、成功率95%以上"
-      ]
-    }
-  },
+  "version": "1.2.0",
   "metrics": {
-    "total_usage_count": 0,
+    "usage_count": 0,
     "success_count": 0,
     "failure_count": 0,
-    "average_satisfaction": 0.0,
-    "last_evaluated": "2025-12-24T00:00:00Z"
-  }
+    "success_rate": 0,
+    "avg_execution_time_seconds": 0,
+    "last_used": null
+  },
+  "level_criteria": {
+    "level_1": {
+      "description": "Basic pattern design and .gitignore creation",
+      "requirements": {
+        "usage_count": 1,
+        "success_rate": 0.5
+      },
+      "achieved": false,
+      "achieved_date": null
+    },
+    "level_2": {
+      "description": "Platform-specific optimizations and glob pattern mastery",
+      "requirements": {
+        "usage_count": 5,
+        "success_rate": 0.7
+      },
+      "achieved": false,
+      "achieved_date": null
+    },
+    "level_3": {
+      "description": "Performance tuning and anti-pattern detection",
+      "requirements": {
+        "usage_count": 10,
+        "success_rate": 0.8
+      },
+      "achieved": false,
+      "achieved_date": null
+    },
+    "level_4": {
+      "description": "Expert-level large-scale system pattern design",
+      "requirements": {
+        "usage_count": 20,
+        "success_rate": 0.9
+      },
+      "achieved": false,
+      "achieved_date": null
+    }
+  },
+  "feedback": {
+    "positive": [],
+    "negative": [],
+    "suggestions": []
+  },
+  "task_metrics": {
+    "pattern_designer": {
+      "usage_count": 0,
+      "success_count": 0,
+      "avg_execution_time_seconds": 0
+    },
+    "platform_optimizer": {
+      "usage_count": 0,
+      "success_count": 0,
+      "avg_execution_time_seconds": 0
+    },
+    "performance_tuner": {
+      "usage_count": 0,
+      "success_count": 0,
+      "avg_execution_time_seconds": 0
+    },
+    "pattern_validator": {
+      "usage_count": 0,
+      "success_count": 0,
+      "avg_execution_time_seconds": 0
+    }
+  },
+  "common_issues": [],
+  "improvement_suggestions": [],
+  "last_updated": "2025-12-31T00:00:00Z"
 }

@@ -1,116 +1,206 @@
 ---
-name: .claude/skills/skill-creation-workflow/SKILL.md
+name: skill-creation-workflow
 description: |
-  スキル作成・改善の詳細ワークフロー（Phase 1-5）を定義。
-  新規スキル作成、既存エージェント軽量化、既存スキル改善の
-  3つのワークフローパターンと、各Phaseの具体的なステップ、
-  
-  📖 参照書籍:
-  - 『Continuous Delivery』（Jez Humble）: パイプライン
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/phase-details.md`: Phase 1-5の詳細手順、判断基準、成功条件の完全ガイド
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキルファイル品質検証ツール（必須フィールド、行数チェック）
-  - `templates/skill-template.md`: 新規スキル作成用の標準テンプレート（YAML frontmatter + 本文構造）
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  - 「Use proactively when」（英語の発動条件）.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Continuous Delivery"
-    author: "Jez Humble"
-    concepts:
-      - "パイプライン"
-      - "自動化"
+  スキル改善・新規作成を、skill-creator検証からskill_list更新まで一貫実行する指示書。
+  単一/複数スキルの処理順、成果物の完全性、言語規則、確認手順を明文化する。
+
+  Anchors:
+  • 18-skills.md / 適用: スキル構造・品質基準 / 目的: 仕様準拠の担保
+  • skill-creator / 適用: 検証と作成フロー / 目的: 一貫した作業手順
+  • Continuous Delivery (Humble) / 適用: 検証・自動化・反復 / 目的: 品質パイプライン構築
+
+  Trigger:
+  Use when creating or updating skills, enforcing skill-creator validation, or coordinating multi-skill updates.
+  skill creation, skill update, skill-creator validation, skill_list update, multi-skill workflow
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+  - Task
 ---
 
 # Skill Creation Workflow
 
 ## 概要
 
-スキル作成・改善の詳細ワークフロー（Phase 1-5）を定義。
-新規スキル作成、既存エージェント軽量化、既存スキル改善の
-3つのワークフローパターンと、各Phaseの具体的なステップ、
+スキル改善・新規作成の実行指示書。skill-creatorによる検証、成果物の完全性、
+言語規則、skill_list更新までを一連のフローで運用する。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+---
 
+## 基本原則
+
+| 原則       | 説明                                                         |
+| ---------- | ------------------------------------------------------------ |
+| 目的最優先 | 既存の内容にとらわれず、目的達成を最優先に判断する           |
+| 段階的実行 | 一つのスキルを完全に完了させてから次へ進む                   |
+| 並列処理可 | 複数スキルは並列処理してもよいが、各スキルの完了は個別に保証 |
+| 完全性     | 省略せず、成果物と確認項目を漏れなく出力する                 |
+| 言語規則   | 原則日本語、指示に「英語で記述」がある場合のみ英語           |
+
+---
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+```
+verify-skill-creator → implement-skill → build-structure → review-output → update-skill-list
+```
 
-**目的**: タスクの目的と前提条件を明確にする
+### Task 1: skill-creator検証（verify-skill-creator）
 
-**アクション**:
+skill-creatorスキルを確認し、作成対象の要件を整理する。
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+**Task**: `agents/verify-skill-creator.md` を参照
 
-### Phase 2: スキル適用
+### Task 2: スキル実装（implement-skill）
 
-**目的**: スキルの指針に従って具体的な作業を進める
+仕様に基づきスキルを実装する。
 
-**アクション**:
+**Task**: `agents/implement-skill.md` を参照
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+### Task 3: 構造構築（build-skill-structure）
 
-### Phase 3: 検証と記録
+スキルのファイル構成を作成・更新する。
 
-**目的**: 成果物の検証と実行記録の保存
+**Task**: `agents/build-skill-structure.md` を参照
 
-**アクション**:
+### Task 4: 出力レビュー（review-skill-output）
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+作成内容の完全性と言語規則を確認する。
 
+**Task**: `agents/review-skill-output.md` を参照
+
+### Task 5: skill_list更新（update-skill-list）
+
+skill_list.mdを更新する。
+
+**Task**: `agents/update-skill-list.md` を参照
+
+---
+
+## Task仕様（ナビゲーション）
+
+| Task                  | 責務              | 入力                     | 出力                  |
+| --------------------- | ----------------- | ------------------------ | --------------------- |
+| verify-skill-creator  | skill-creator検証 | ユーザー要求、対象リスト | 要件整理メモ          |
+| implement-skill       | スキル実装        | 要件整理メモ             | SKILL.md草稿          |
+| build-skill-structure | 構造構築          | SKILL.md草稿             | 完全なスキル構成      |
+| review-skill-output   | 出力レビュー      | スキル構成               | 確認結果と修正案      |
+| update-skill-list     | skill_list更新    | 完成したスキル群         | 更新済みskill_list.md |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
+**注記**: 1 Task = 1 責務。複数スキルの場合はTask 1-4を並列実行可。
+
+---
+
+## 処理フロー詳細
+
+### 単一スキルの処理
+
+```
+Step 1: skill-creatorによる検証
+  ↓
+Step 2: 改善・新規作成の実施
+  ↓
+Step 3: ファイル構成の作成・更新
+  ↓
+Step 4: 作成内容の確認
+  ↓
+Step 5: skill_list.mdの更新
+```
+
+### 複数スキルの処理（並列可）
+
+```
+スキルA ────┬──→ Step 1-4 を実行
+スキルB ────┼──→ Step 1-4 を実行
+スキルC ────┘
+           ↓
+全スキル完了後に skill_list.md を統合更新
+```
+
+---
 
 ## ベストプラクティス
 
 ### すべきこと
-- 新規スキルを作成する時（ワークフローA）
-- 既存エージェントを軽量化する時（ワークフローB）
-- 既存スキルを改善する時（ワークフローC）
-- 各Phaseの詳細手順を確認したい時
-- 品質基準と成功の定義を確認したい時
+
+| 推奨事項                           | 理由           |
+| ---------------------------------- | -------------- |
+| skill-creatorを毎回実行する        | 品質基準の担保 |
+| 目的達成に必要なものは全て作成する | 成果物の完全性 |
+| 一つずつ丁寧に処理する             | 品質維持       |
+| 言語規則を守る                     | 一貫性の確保   |
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+| 禁止事項                          | 問題点               |
+| --------------------------------- | -------------------- |
+| skill-creatorの実行をスキップする | 品質基準違反のリスク |
+| ファイルやエージェントを省略する  | 成果物の不完全性     |
+| 既存情報を絶対視する              | 改善機会の喪失       |
+| 言語規則を無視する                | 一貫性の欠如         |
 
-### リソース読み取り
-```bash
-cat .claude/skills/skill-creation-workflow/resources/Level1_basics.md
-cat .claude/skills/skill-creation-workflow/resources/Level2_intermediate.md
-cat .claude/skills/skill-creation-workflow/resources/Level3_advanced.md
-cat .claude/skills/skill-creation-workflow/resources/Level4_expert.md
-cat .claude/skills/skill-creation-workflow/resources/legacy-skill.md
-cat .claude/skills/skill-creation-workflow/resources/phase-details.md
-```
+---
 
-### スクリプト実行
-```bash
-node .claude/skills/skill-creation-workflow/scripts/log_usage.mjs --help
-node .claude/skills/skill-creation-workflow/scripts/validate-skill.mjs --help
-```
+## 品質基準
 
-### テンプレート参照
-```bash
-cat .claude/skills/skill-creation-workflow/templates/skill-template.md
-```
+### 必須要件
+
+- skill-creatorを毎回実行している
+- SKILL.mdが確実に作成されている
+- agents/配下に必要なエージェントが全て作成されている
+- 仕様通りに作成されている
+- 省略せず全て出力されている
+- skill_list.mdが更新されている
+- 言語規則に従っている
+
+### 完了条件
+
+**単一スキル**:
+
+- [ ] skill-creatorで検証完了
+- [ ] 全ファイルの作成・更新完了
+- [ ] 作成内容の確認完了
+- [ ] 言語規則の確認完了
+
+**複数スキル**:
+
+- [ ] 全スキルの個別処理完了
+- [ ] skill_list.mdの統合更新完了
+
+---
+
+## リソース参照
+
+### scripts/（決定論的処理）
+
+| スクリプト           | 用途     | 使用例                                         |
+| -------------------- | -------- | ---------------------------------------------- |
+| `validate-skill.mjs` | 構造検証 | `node scripts/validate-skill.mjs <skill-path>` |
+| `log_usage.mjs`      | 使用記録 | `node scripts/log_usage.mjs --result success`  |
+
+### references/（詳細知識）
+
+| リソース         | パス                                                                       | 読込条件               |
+| ---------------- | -------------------------------------------------------------------------- | ---------------------- |
+| フェーズ詳細     | [references/phase-details.md](references/phase-details.md)                 | Step 1-5の詳細が必要時 |
+| スキル構造ガイド | [references/skill-structure-guide.md](references/skill-structure-guide.md) | 構造確認が必要時       |
+
+### assets/（テンプレート）
+
+| アセット                   | 用途                     |
+| -------------------------- | ------------------------ |
+| `assets/skill-template.md` | スキル作成チェックリスト |
+
+---
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                        |
+| ------- | ---------- | ------------------------------ |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様準拠で全面改訂 |
+| 1.0.0   | 2025-12-28 | 初版作成                       |

@@ -1,115 +1,137 @@
 ---
-name: .claude/skills/test-naming-conventions/SKILL.md
+name: test-naming-conventions
 description: |
-  テストの命名規則とドキュメンテーションを専門とするスキル。
-  
-  📖 参照書籍:
-  - 『Test-Driven Development: By Example』（Kent Beck）: Red-Green-Refactor
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/describe-structure.md`: Describe Structureリソース
-  - `resources/file-organization.md`: File Organizationリソース
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/naming-patterns.md`: Naming Patternsリソース
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/test-name-linter.mjs`: Test Name Linterスクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/naming-guide.md`: Naming Guideテンプレート
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when handling test naming conventions tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Test-Driven Development: By Example"
-    author: "Kent Beck"
-    concepts:
-      - "Red-Green-Refactor"
-      - "テスト設計"
+  テスト命名規則を設計し、可読性と一貫性を維持するスキル。
+  ファイル名、describe/it 構造、シナリオ表現を統一し、チーム運用を支援する。
+
+  Anchors:
+  • xUnit Test Patterns / 適用: 命名規則設計 / 目的: 可読性の向上
+  • Specification by Example / 適用: シナリオ命名 / 目的: 意図の共有
+
+  Trigger:
+  Use when defining, reviewing, or enforcing test naming conventions and file structures.
+  test naming, describe/it, file structure
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Test Naming Conventions
 
 ## 概要
 
-テストの命名規則とドキュメンテーションを専門とするスキル。
+テストの命名規則を体系化し、チーム全体で読みやすいテストを維持するためのスキル。ファイル構成、describe/it の構造、シナリオ名を統一し、レビュー効率と保守性を高める。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+---
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 命名要件の整理
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: プロジェクトの規模とテスト目的に合わせて命名要件を整理する
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. テストフレームワークと対象範囲を確認する
+2. 既存の命名規則と課題を整理する
+3. 必須要件と禁止事項を定義する
 
-### Phase 3: 検証と記録
+**Task**: `agents/naming-requirements.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: 規則設計と適用
+
+**目的**: 命名パターンと構造を設計し、テストに適用する
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. 命名パターンを選定する
+2. describe/it 構造とファイル命名を設計する
+3. テンプレートで規則を文書化する
 
+**Task**: `agents/naming-pattern-design.md` を参照
+
+### Phase 3: 検証と運用定着
+
+**目的**: 命名規則の遵守状況を検証し、運用に定着させる
+
+**アクション**:
+
+1. 自動チェックで逸脱を検出する
+2. レビュー観点を整理して共有する
+3. 実行記録を残す
+
+**Task**: `agents/naming-enforcement-review.md` を参照
+
+---
+
+## Task仕様ナビ
+
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| naming-requirements | Phase 1 開始時 | プロジェクト情報 | 命名要件メモ |
+| naming-pattern-design | Phase 2 開始時 | 命名要件/制約 | 命名規則ガイド |
+| naming-enforcement-review | Phase 3 開始時 | チェック結果/レビュー | 改善レポート |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
+
+---
 
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+| 推奨事項 | 理由 |
+| --- | --- |
+| 命名の目的と対象範囲を先に定義する | 規則の過不足を防ぐため |
+| describe/it の階層を固定する | 役割が明確になるため |
+| テンプレートで運用ルールを共有する | チーム合意を維持するため |
+| 自動チェックで逸脱を検知する | 継続的な品質維持のため |
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 曖昧な動詞や主語を使う | テスト意図が伝わらない |
+| 過度に長いテスト名 | 可読性が低下する |
+| ファイル命名が不統一 | 探索性が下がる |
 
-### リソース読み取り
-```bash
-cat .claude/skills/test-naming-conventions/resources/Level1_basics.md
-cat .claude/skills/test-naming-conventions/resources/Level2_intermediate.md
-cat .claude/skills/test-naming-conventions/resources/Level3_advanced.md
-cat .claude/skills/test-naming-conventions/resources/Level4_expert.md
-cat .claude/skills/test-naming-conventions/resources/describe-structure.md
-cat .claude/skills/test-naming-conventions/resources/file-organization.md
-cat .claude/skills/test-naming-conventions/resources/legacy-skill.md
-cat .claude/skills/test-naming-conventions/resources/naming-patterns.md
-```
+---
 
-### スクリプト実行
-```bash
-node .claude/skills/test-naming-conventions/scripts/log_usage.mjs --help
-node .claude/skills/test-naming-conventions/scripts/test-name-linter.mjs --help
-node .claude/skills/test-naming-conventions/scripts/validate-skill.mjs --help
-```
+## リソース参照
 
-### テンプレート参照
-```bash
-cat .claude/skills/test-naming-conventions/templates/naming-guide.md
-```
+### scripts/（決定論的処理）
+
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/test-name-linter.mjs` | 命名規則の逸脱を検出する |
+| `scripts/validate-skill.mjs` | スキル構造と必須成果物を検証する |
+| `scripts/log_usage.mjs` | 実行記録を保存する |
+
+### references/（詳細知識）
+
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| 基礎概念 | [references/Level1_basics.md](references/Level1_basics.md) | Phase 1 で参照 |
+| 実務パターン | [references/Level2_intermediate.md](references/Level2_intermediate.md) | Phase 2 で参照 |
+| 応用戦略 | [references/Level3_advanced.md](references/Level3_advanced.md) | 高度化時に参照 |
+| エキスパート | [references/Level4_expert.md](references/Level4_expert.md) | 大規模対応時に参照 |
+| 命名パターン | [references/naming-patterns.md](references/naming-patterns.md) | Phase 2 で参照 |
+| describe 構造 | [references/describe-structure.md](references/describe-structure.md) | Phase 2 で参照 |
+| ファイル構成 | [references/file-organization.md](references/file-organization.md) | Phase 2 で参照 |
+
+### assets/（テンプレート・素材）
+
+| アセット | 用途 |
+| --- | --- |
+| `assets/naming-guide.md` | 命名規則ガイドのテンプレート |
 
 ## 変更履歴
 
 | Version | Date | Changes |
 | --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| 2.0.0 | 2026-01-02 | Task仕様と検証フローを再設計し、参照を整理 |
+| 1.0.0 | 2025-12-24 | 初期バージョン |

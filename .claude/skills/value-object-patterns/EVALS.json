@@ -1,102 +1,79 @@
 {
-  "skill_name": "value-object-patterns",
-  "current_level": 1,
+  "skillName": "value-object-patterns",
+  "version": "2.0.0",
+  "lastUpdated": "2026-01-01",
   "levels": {
-    "1": {
-      "level": 1,
-      "name": "基礎",
-      "requirements": {
-        "min_usage_count": 0,
-        "min_success_rate": 0.0,
-        "min_satisfaction_score": 0.0,
-        "required_resources": [
-          "SKILL.md"
-        ]
-      },
-      "success_criteria": [
-        "SKILL.mdが存在し、基本タスクが実行可能"
+    "beginner": {
+      "description": "値オブジェクトの基礎理解",
+      "criteria": [
+        "値オブジェクトとエンティティの違いを説明できる",
+        "不変性の概念を理解している",
+        "単純な値オブジェクトを実装できる"
       ]
     },
-    "2": {
-      "level": 2,
-      "name": "中級",
-      "requirements": {
-        "min_usage_count": 10,
-        "min_success_rate": 0.8,
-        "min_satisfaction_score": 0.7,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "scripts/detect-primitive-obsession.mjs"
-        ]
-      },
-      "success_criteria": [
-        "10回以上使用され、成功率80%以上"
+    "intermediate": {
+      "description": "実践的な値オブジェクト実装",
+      "criteria": [
+        "equals/hashCodeを正しく実装できる",
+        "自己検証ロジックを実装できる",
+        "複合値オブジェクトを設計できる"
       ]
     },
-    "3": {
-      "level": 3,
-      "name": "上級",
-      "requirements": {
-        "min_usage_count": 50,
-        "min_success_rate": 0.9,
-        "min_satisfaction_score": 0.8,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/common-patterns.md",
-          "resources/legacy-skill.md",
-          "resources/validation-strategies.md",
-          "resources/value-object-fundamentals.md",
-          "scripts/detect-primitive-obsession.mjs",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/composite-value-object.ts",
-          "templates/simple-value-object.ts"
-        ]
-      },
-      "success_criteria": [
-        "50回以上使用され、成功率90%以上"
+    "advanced": {
+      "description": "プリミティブ執着の検出と改善",
+      "criteria": [
+        "プリミティブ執着パターンを識別できる",
+        "段階的なリファクタリング計画を策定できる",
+        "ファクトリパターンを適用できる"
       ]
     },
-    "4": {
-      "level": 4,
-      "name": "専門",
-      "requirements": {
-        "min_usage_count": 100,
-        "min_success_rate": 0.95,
-        "min_satisfaction_score": 0.9,
-        "required_resources": [
-          "SKILL.md",
-          "resources/Level1_basics.md",
-          "resources/Level2_intermediate.md",
-          "resources/Level3_advanced.md",
-          "resources/Level4_expert.md",
-          "resources/common-patterns.md",
-          "resources/legacy-skill.md",
-          "resources/validation-strategies.md",
-          "resources/value-object-fundamentals.md",
-          "scripts/detect-primitive-obsession.mjs",
-          "scripts/log_usage.mjs",
-          "scripts/validate-skill.mjs",
-          "templates/composite-value-object.ts",
-          "templates/simple-value-object.ts",
-          "LOGS.md"
-        ]
-      },
-      "success_criteria": [
-        "100回以上使用され、成功率95%以上"
+    "expert": {
+      "description": "ドメインモデルへの統合",
+      "criteria": [
+        "ユビキタス言語に基づいた値オブジェクト設計ができる",
+        "集約内での適切な使用パターンを適用できる",
+        "永続化戦略を設計できる"
       ]
     }
   },
   "metrics": {
-    "total_usage_count": 0,
-    "success_count": 0,
-    "failure_count": 0,
-    "average_satisfaction": 0.0,
-    "last_evaluated": "2025-12-24T00:00:00Z"
-  }
+    "immutabilityCompliance": {
+      "target": "100%",
+      "description": "不変性が保証されている値オブジェクトの割合"
+    },
+    "validationCoverage": {
+      "target": ">= 95%",
+      "description": "自己検証が実装されている値オブジェクトの割合"
+    },
+    "primitiveObsessionReduction": {
+      "target": ">= 80%",
+      "description": "プリミティブ執着パターンの削減率"
+    },
+    "domainLanguageAlignment": {
+      "target": ">= 90%",
+      "description": "ドメイン言語との整合性"
+    }
+  },
+  "evaluationCriteria": [
+    {
+      "id": "value-design",
+      "description": "値オブジェクトの識別と設計が適切",
+      "weight": 0.25
+    },
+    {
+      "id": "implementation-quality",
+      "description": "不変性・等価性・検証の実装品質",
+      "weight": 0.3
+    },
+    {
+      "id": "primitive-obsession-free",
+      "description": "プリミティブ執着パターンが排除されている",
+      "weight": 0.2
+    },
+    {
+      "id": "domain-integration",
+      "description": "ドメインモデルへの適切な統合",
+      "weight": 0.25
+    }
+  ]
 }

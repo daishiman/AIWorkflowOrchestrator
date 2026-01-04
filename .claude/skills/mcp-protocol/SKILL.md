@@ -1,123 +1,143 @@
 ---
-name: .claude/skills/mcp-protocol/SKILL.md
+name: mcp-protocol
 description: |
-  Model Context Protocol (MCP) の標準仕様とツール定義パターンに関する専門知識。
-  MCPプロトコルの構造、サーバー設定、ツール定義、パラメータスキーマ設計を提供します。
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/config-examples.md`: command/url/stdio接続方式の実例、環境変数マッピング、複数サーバー設定
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/mcp-specification.md`: プロトコル仕様、ツール定義構造、inputSchema設計、エラーコード体系
-  - `resources/troubleshooting.md`: 接続エラー診断、タイムアウト対応、レスポンス形式不正の解決
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-mcp-config.mjs`: MCP設定ファイルの自動検証（構文、必須フィールド、環境変数）
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `scripts/validate-tool-schema.mjs`: ツール定義スキーマの検証（JSON Schema準拠、型安全性）
-  - `templates/server-config-template.json`: MCPサーバー設定テンプレート（command/args/env構造）
-  - `templates/tool-definition-template.json`: ツール定義テンプレート（name/description/inputSchema）
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when handling mcp protocol tasks.
-version: 1.0.1
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "実践的改善"
-      - "品質維持"
+  Model Context Protocol (MCP) 仕様と実装パターン。サーバー設定、ツール定義、LLM統合向けJSONスキーマ設計を提供。
+
+  Anchors:
+  • MCP Official Specification / 適用: プロトコルバージョン、メッセージフォーマット / 目的: 仕様準拠
+  • JSON Schema Draft-07 / 適用: inputSchemaバリデーション / 目的: 型安全ツール定義
+  • The Pragmatic Programmer / 適用: DRY、直交性 / 目的: 保守性の高い設定
+
+  Trigger:
+  Use when configuring MCP servers, designing tool definitions with JSON Schema,
+  validating MCP protocol compliance, or troubleshooting connection/timeout errors.
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# MCP Protocol スキル
+# MCP Protocol
+
+> **相対パス**: `SKILL.md`
+> **読込条件**: スキル使用時（自動）
+
+---
 
 ## 概要
 
-Model Context Protocol (MCP) の標準仕様とツール定義パターンに関する専門知識。
-MCPプロトコルの構造、サーバー設定、ツール定義、パラメータスキーマ設計を提供します。
+Model Context Protocol (MCP) の標準仕様と実装パターン。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
+**対象領域**:
 
+| 領域             | 説明                               |
+| ---------------- | ---------------------------------- |
+| サーバー設定     | claude_mcp_config.json 構造        |
+| ツール定義       | name, description, inputSchema     |
+| プロトコル準拠   | バージョン、メッセージフォーマット |
+| トラブルシュート | 接続エラー、タイムアウト対応       |
+
+---
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件分析
 
-**目的**: タスクの目的と前提条件を明確にする
+**Task**: `agents/analyze-requirements.md`
 
-**アクション**:
+| 入力             | 出力     |
+| ---------------- | -------- |
+| MCP サーバー要件 | 設計仕様 |
 
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
+**参照**: `references/basics.md`
 
-### Phase 2: スキル適用
+### Phase 2: サーバー設定
 
-**目的**: スキルの指針に従って具体的な作業を進める
+**Task**: `agents/configure-server.md`
 
-**アクション**:
+| 入力     | 出力         |
+| -------- | ------------ |
+| 設計仕様 | 設定ファイル |
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+**参照**: `references/patterns.md`, `assets/`
 
-### Phase 3: 検証と記録
+### Phase 3: 検証
 
-**目的**: 成果物の検証と実行記録の保存
+**Task**: `agents/validate-implementation.md`
 
-**アクション**:
+| 入力         | 出力         |
+| ------------ | ------------ |
+| 設定ファイル | 検証レポート |
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+### Phase 4: トラブルシュート
 
+**Task**: `agents/troubleshoot-issues.md`
+
+| 入力       | 出力           |
+| ---------- | -------------- |
+| エラー情報 | 解決策レポート |
+
+**参照**: `references/troubleshooting.md`
+
+---
 
 ## ベストプラクティス
 
-### すべきこと
-- MCPサーバーの新規設定が必要な時
-- ツール定義のYAML/JSON構造を設計する時
-- MCPプロトコル仕様への準拠を確認する時
-- claude_mcp_config.jsonの設計・検証時
+| すべきこと                           | 避けるべきこと               |
+| ------------------------------------ | ---------------------------- |
+| inputSchema で型安全なパラメータ定義 | スキーマなしのツール定義     |
+| 明確な description を記述            | 曖昧なツール説明             |
+| 環境変数で機密情報を管理             | ハードコードされた認証情報   |
+| タイムアウト設定を適切に設定         | デフォルトタイムアウトの放置 |
+| プロトコルバージョンを明示           | バージョン不整合の放置       |
 
-### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
+---
 
-## コマンドリファレンス
+## Task ナビゲーション
 
-### リソース読み取り
-```bash
-cat .claude/skills/mcp-protocol/resources/Level1_basics.md
-cat .claude/skills/mcp-protocol/resources/Level2_intermediate.md
-cat .claude/skills/mcp-protocol/resources/Level3_advanced.md
-cat .claude/skills/mcp-protocol/resources/Level4_expert.md
-cat .claude/skills/mcp-protocol/resources/config-examples.md
-cat .claude/skills/mcp-protocol/resources/legacy-skill.md
-cat .claude/skills/mcp-protocol/resources/mcp-specification.md
-cat .claude/skills/mcp-protocol/resources/troubleshooting.md
-```
+| Task                         | 目的             | 参照リソース          |
+| ---------------------------- | ---------------- | --------------------- |
+| `analyze-requirements.md`    | サーバー要件分析 | `basics.md`           |
+| `configure-server.md`        | 設定ファイル生成 | `patterns.md`, assets |
+| `validate-implementation.md` | 実装検証         | scripts               |
+| `troubleshoot-issues.md`     | 問題解決         | `troubleshooting.md`  |
 
-### スクリプト実行
-```bash
-node .claude/skills/mcp-protocol/scripts/log_usage.mjs --help
-node .claude/skills/mcp-protocol/scripts/validate-mcp-config.mjs --help
-node .claude/skills/mcp-protocol/scripts/validate-skill.mjs --help
-node .claude/skills/mcp-protocol/scripts/validate-tool-schema.mjs --help
-```
+---
 
-### テンプレート参照
-```bash
-cat .claude/skills/mcp-protocol/templates/server-config-template.json
-cat .claude/skills/mcp-protocol/templates/tool-definition-template.json
-```
+## リソース参照
 
-## 変更履歴
+### References
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.1 | 2025-12-24 | Spec alignment and required artifacts added |
+| ファイル               | 内容                         | 読込条件   |
+| ---------------------- | ---------------------------- | ---------- |
+| `basics.md`            | MCP 基礎概念・用語           | 初回使用時 |
+| `patterns.md`          | ツール定義・設定パターン     | 設計時     |
+| `mcp-specification.md` | プロトコル仕様詳細           | 仕様確認時 |
+| `config-examples.md`   | 設定例集                     | 実装時     |
+| `troubleshooting.md`   | トラブルシューティングガイド | 問題発生時 |
+
+### Assets
+
+| ファイル                        | 内容                     |
+| ------------------------------- | ------------------------ |
+| `server-config-template.json`   | サーバー設定テンプレート |
+| `tool-definition-template.json` | ツール定義テンプレート   |
+
+### Scripts
+
+| スクリプト                 | 用途               |
+| -------------------------- | ------------------ |
+| `validate-mcp-config.mjs`  | MCP 設定検証       |
+| `validate-tool-schema.mjs` | ツールスキーマ検証 |
+| `log_usage.mjs`            | 使用記録           |
+
+---
+
+## 関連スキル
+
+- `mcp-server-patterns` - MCP サーバー実装パターン
+- `json-schema` - JSON Schema 設計
+- `api-client-patterns` - API クライアントパターン

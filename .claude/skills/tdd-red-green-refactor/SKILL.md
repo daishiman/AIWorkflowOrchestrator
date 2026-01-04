@@ -1,119 +1,133 @@
 ---
-name: .claude/skills/tdd-red-green-refactor/SKILL.md
+name: tdd-red-green-refactor
 description: |
-  ケント・ベックのテスト駆動開発（TDD）サイクルを専門とするスキル。
-  
-  📖 参照書籍:
-  - 『Test-Driven Development: By Example』（Kent Beck）: Red-Green-Refactor
-  
-  📚 リソース参照:
-  - `resources/Level1_basics.md`: レベル1の基礎ガイド
-  - `resources/Level2_intermediate.md`: レベル2の実務ガイド
-  - `resources/Level3_advanced.md`: レベル3の応用ガイド
-  - `resources/Level4_expert.md`: レベル4の専門ガイド
-  - `resources/green-phase.md`: Green Phaseリソース
-  - `resources/legacy-skill.md`: 旧SKILL.mdの全文
-  - `resources/red-phase.md`: Red Phaseリソース
-  - `resources/refactor-phase.md`: Refactor Phaseリソース
-  - `resources/tdd-anti-patterns.md`: Tdd Anti Patternsリソース
-  - `resources/test-naming.md`: Test Namingリソース
-  - `scripts/analyze-coverage.mjs`: Analyze Coverageスクリプト
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `templates/test-template.md`: Testテンプレート
-  - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when handling tdd red green refactor tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Test-Driven Development: By Example"
-    author: "Kent Beck"
-    concepts:
-      - "Red-Green-Refactor"
-      - "テスト設計"
+  Red-Green-Refactorサイクルを中心にTDDを実行するための専門スキル。
+  失敗テストの設計、最小実装、リファクタを反復し、品質と速度を両立する。
+
+  Anchors:
+  • Test-Driven Development: By Example / 適用: RGRサイクル / 目的: 反復の規律
+  • Refactoring (Martin Fowler) / 適用: 改善手順 / 目的: 振る舞い維持
+  • xUnit Test Patterns / 適用: テスト設計 / 目的: 表現の一貫性
+
+  Trigger:
+  Use when focusing on the red-green-refactor cycle, coaching TDD execution, or reviewing cycle quality.
+  red-green-refactor, TDD cycle, failing test, minimal implementation, refactoring
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# TDD Red-Green-Refactor
+# tdd-red-green-refactor
 
 ## 概要
 
-ケント・ベックのテスト駆動開発（TDD）サイクルを専門とするスキル。
+Red-Green-Refactorの各フェーズを明確にし、短いサイクルで品質を改善するスキル。
 
-詳細な手順や背景は `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を参照してください。
-
+---
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: Redフェーズ設計
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `resources/Level1_basics.md` と `resources/Level2_intermediate.md` を確認
-2. 必要な resources/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 失敗理由が明確なテストを作成する。
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 期待する振る舞いを定義する
+2. 失敗するテストを記述する
+3. テスト命名を整える
 
-### Phase 3: 検証と記録
+**Task**: `agents/red-phase.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: Greenフェーズ実行
+
+**目的**: 最小実装でテストを通す。
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. 最小実装でテストを成功させる
+2. 余計な最適化を避ける
+3. 改善候補を記録する
 
+**Task**: `agents/green-phase.md` を参照
+
+### Phase 3: Refactorフェーズ改善
+
+**目的**: 振る舞いを変えずに設計を改善する。
+
+**アクション**:
+
+1. 重複や複雑性を抽出する
+2. 安全な改善から実施する
+3. サイクルログを更新する
+
+**Task**: `agents/refactor-phase.md` を参照
+
+---
+
+## Task仕様ナビ
+
+| Task           | 起動タイミング | 入力        | 出力       |
+| -------------- | -------------- | ----------- | ---------- |
+| red-phase      | Phase 1開始時  | 仕様・要求  | Redテスト  |
+| green-phase    | Phase 2開始時  | Redテスト   | Green実装  |
+| refactor-phase | Phase 3開始時  | Green実装   | RGRログ更新 |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
+
+---
 
 ## ベストプラクティス
 
 ### すべきこと
-- resources/Level1_basics.md を参照し、適用範囲を明確にする
-- resources/Level2_intermediate.md を参照し、実務手順を整理する
+
+| 推奨事項                         | 理由                               |
+| -------------------------------- | ---------------------------------- |
+| Redで失敗理由を明確にする        | Greenの最小実装が決まりやすい      |
+| Greenは最小実装に徹する          | 過剰設計を避ける                   |
+| Refactorを毎サイクル実施する     | 品質低下を防げる                   |
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+| 禁止事項                     | 問題点                             |
+| ---------------------------- | ---------------------------------- |
+| Redを飛ばして実装を始める   | サイクルの規律が崩れる             |
+| Greenで過剰な実装を行う     | 改善対象が増える                   |
+| Refactorを省略する           | 技術的負債が蓄積する               |
 
-### リソース読み取り
-```bash
-cat .claude/skills/tdd-red-green-refactor/resources/Level1_basics.md
-cat .claude/skills/tdd-red-green-refactor/resources/Level2_intermediate.md
-cat .claude/skills/tdd-red-green-refactor/resources/Level3_advanced.md
-cat .claude/skills/tdd-red-green-refactor/resources/Level4_expert.md
-cat .claude/skills/tdd-red-green-refactor/resources/green-phase.md
-cat .claude/skills/tdd-red-green-refactor/resources/legacy-skill.md
-cat .claude/skills/tdd-red-green-refactor/resources/red-phase.md
-cat .claude/skills/tdd-red-green-refactor/resources/refactor-phase.md
-cat .claude/skills/tdd-red-green-refactor/resources/tdd-anti-patterns.md
-cat .claude/skills/tdd-red-green-refactor/resources/test-naming.md
-```
+---
 
-### スクリプト実行
-```bash
-node .claude/skills/tdd-red-green-refactor/scripts/analyze-coverage.mjs --help
-node .claude/skills/tdd-red-green-refactor/scripts/log_usage.mjs --help
-node .claude/skills/tdd-red-green-refactor/scripts/validate-skill.mjs --help
-```
+## リソース参照
 
-### テンプレート参照
-```bash
-cat .claude/skills/tdd-red-green-refactor/templates/test-template.md
-```
+### scripts/（決定論的処理）
 
-## 変更履歴
+| スクリプト                         | 機能                         |
+| ---------------------------------- | ---------------------------- |
+| `scripts/validate-rgr-log.mjs`     | サイクルログを検証する       |
+| `scripts/log_usage.mjs`            | 使用記録をLOGS.mdに記録する  |
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+### references/（詳細知識）
+
+| リソース          | パス                                                     | 読込条件     |
+| ----------------- | -------------------------------------------------------- | ------------ |
+| 基礎              | [references/Level1_basics.md](references/Level1_basics.md) | 初回利用時   |
+| 実務パターン      | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 実務適用時 |
+| 高度改善          | [references/Level3_advanced.md](references/Level3_advanced.md) | 改善時       |
+| エキスパート      | [references/Level4_expert.md](references/Level4_expert.md) | 高難度対応時 |
+| Redフェーズ       | [references/red-phase.md](references/red-phase.md) | Phase 1      |
+| Greenフェーズ     | [references/green-phase.md](references/green-phase.md) | Phase 2      |
+| Refactorフェーズ  | [references/refactor-phase.md](references/refactor-phase.md) | Phase 3      |
+| テスト命名        | [references/test-naming.md](references/test-naming.md) | Phase 1      |
+| アンチパターン    | [references/tdd-anti-patterns.md](references/tdd-anti-patterns.md) | 全フェーズ |
+
+### assets/（テンプレート）
+
+| アセット                         | 用途                       |
+| -------------------------------- | -------------------------- |
+| `assets/test-template.md`        | テスト設計テンプレート     |
+| `assets/rgr-cycle-log.md`        | RGRサイクルログ            |
+
