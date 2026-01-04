@@ -113,8 +113,9 @@ node scripts/list-specs.mjs --topics
 
 | セクション | 行 |
 |------------|----|\n| Knowledge Graph型定義（RAG実装） | L8 |
-| オフライン・同期アーキテクチャ | L157 |
-| Desktop状態管理 | L188 |
+| DiskANNベクトル検索アーキテクチャ | L157 |
+| オフライン・同期アーキテクチャ | L246 |
+| Desktop状態管理 | L277 |
 
 ---
 
@@ -218,7 +219,8 @@ node scripts/list-specs.mjs --topics
 | マイグレーション管理 | L104 |
 | テスト戦略 | L144 |
 | エラーハンドリング | L174 |
-| パフォーマンス最適化 | L205 |
+| ベクトル検索実装（DiskANN） | L205 |
+| パフォーマンス最適化 | L263 |
 
 ### references/database-operations.md
 

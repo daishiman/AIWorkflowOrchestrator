@@ -15,3 +15,7 @@ export { runMigrations, closeDatabase } from "./migrate.js";
 
 // スキーマ定義
 export * from "./schema/index.js";
+
+// クエリ関数
+export * from "./queries/chunks-search.js";
+export * from "./queries/vector-search.js";

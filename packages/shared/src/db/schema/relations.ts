@@ -3,6 +3,7 @@ import { files } from "./files";
 import { conversions } from "./conversions";
 import { extractedMetadata } from "./extracted-metadata";
 import { chunks } from "./chunks";
+import { embeddings } from "./embeddings";
 
 /**
  * filesテーブルのリレーション定義
@@ -176,5 +177,52 @@ export const chunksRelations = relations(chunks, ({ one }) => ({
     fields: [chunks.nextChunkId],
     references: [chunks.id],
     relationName: "nextChunkRelation",
+  }),
+
+  /**
+   * 埋め込み（1:1）
+   * chunks.id ← embeddings.chunkId
+   * @description 各チャンクは1つの埋め込みベクトルを持つ
+   */
+  embedding: one(embeddings, {
+    fields: [chunks.id],
+    references: [embeddings.chunkId],
+  }),
+}));
+
+/**
+ * embeddingsテーブルのリレーション定義
+ *
+ * @remarks
+ * - chunk: 1つの埋め込みは1つのチャンクに属する（1:1）
+ *   - embeddings.chunkId → chunks.id
+ *   - chunkIdにUNIQUE制約があり、1つのチャンクに対して複数の埋め込みは作成できない
+ *
+ * カスケード削除の流れ:
+ * ファイル削除 → チャンク削除（CASCADE）→ 埋め込み削除（CASCADE）
+ *
+ * @example
+ * ```typescript
+ * // 埋め込みと関連するチャンク、ファイルを一括取得
+ * const embeddingWithRelations = await db.query.embeddings.findFirst({
+ *   where: eq(embeddings.id, embeddingId),
+ *   with: {
+ *     chunk: {
+ *       with: {
+ *         file: true, // 2段階のリレーション取得も可能
+ *       },
+ *     },
+ *   },
+ * });
+ * ```
+ */
+export const embeddingsRelations = relations(embeddings, ({ one }) => ({
+  /**
+   * 親チャンク（1:1）
+   * embeddings.chunkId → chunks.id
+   */
+  chunk: one(chunks, {
+    fields: [embeddings.chunkId],
+    references: [chunks.id],
   }),
 }));
