@@ -69,16 +69,35 @@ docs/30-workflows/{{機能名}}/phase-*.md
 | parallel-1 | analyze-skills, identify-scope          | design-phases       |
 | parallel-2 | output-phase-files, update-dependencies | skill-feedback-loop |
 
-## システム仕様参照（aiworkflow-requirements連携）
+## システム仕様参照（aiworkflow-requirements連携）【必須】
 
-タスク仕様書作成時、既存システム仕様との整合性を確保するため `aiworkflow-requirements` を活用する。
+タスク仕様書作成時、既存システム仕様との整合性を確保するため `aiworkflow-requirements` を**必ず**参照する。
 
-| Phase | 参照目的                                   |
-| ----- | ------------------------------------------ |
-| 1     | 既存要件・インターフェース仕様との整合確認 |
-| 2     | アーキテクチャ・API・データベース仕様参照  |
-| 3     | 設計レビュー時の仕様準拠チェック           |
-| 10    | 仕様変更時のドキュメント更新               |
+### Phase別参照要件
+
+| Phase | 参照目的                                   | 必須 |
+| ----- | ------------------------------------------ | ---- |
+| 1     | 既存要件・インターフェース仕様との整合確認 | ✅   |
+| 2     | アーキテクチャ・API・データベース仕様参照  | ✅   |
+| 3     | 設計レビュー時の仕様準拠チェック           | ✅   |
+| 4     | テスト設計時の仕様参照                     | ✅   |
+| 5     | 実装時の仕様準拠確認                       | ✅   |
+| 6     | リファクタリング時の仕様準拠確認           | ✅   |
+| 10    | 仕様変更時のドキュメント更新               | ✅   |
+
+### 仕様書への記載形式
+
+各Phaseドキュメントの「参照資料」セクションに以下を**必ず**含める:
+
+```markdown
+### システム仕様（aiworkflow-requirements）
+
+> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
+
+| 参照資料 | パス | 内容 |
+| -------- | ---- | ---- |
+| {{該当する仕様}} | `.claude/skills/aiworkflow-requirements/references/{{ファイル名}}.md` | {{説明}} |
+```
 
 **仕様検索**: `node .claude/skills/aiworkflow-requirements/scripts/search-spec.mjs "{{キーワード}}"`
 **詳細フロー**: See [references/spec-update-workflow.md](references/spec-update-workflow.md)
@@ -128,12 +147,22 @@ docs/30-workflows/{{機能名}}/phase-*.md
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 **注記**: 1 Task = 1 責務。複数責務を1ファイルに入れない。
 
-## スキルフィードバック
+## スキルフィードバック【必須】
 
-タスク完了後、使用したスキルに対して **skill-creator** でフィードバックを記録する。
+**各Phase完了時に使用したスキルへのフィードバックを必ず記録する。** これはスキル品質改善・利用状況追跡の中核プロセス。
+
+### 記録タイミング
+
+| イベント       | 記録内容                                           |
+| -------------- | -------------------------------------------------- |
+| Phase完了時    | 使用した各スキルの結果（success/failure/partial）  |
+| スキル選定時   | 選定理由と期待される効果                           |
+| 問題発生時     | failure/partialとして記録し、改善点を備考に追加    |
+
+### 記録コマンド
 
 ```bash
-# フィードバック記録
+# フィードバック記録（各スキルごとに実行）
 node .claude/skills/task-specification-creator/scripts/log_usage.mjs \
   --skill {{skill-name}} --result {{success|failure|partial}} --phase {{phase-number}}
 
@@ -145,7 +174,68 @@ node .claude/skills/task-specification-creator/scripts/complete-phase.mjs \
 node .claude/skills/skill-creator/scripts/quick_validate.mjs .claude/skills/{{skill-name}}
 ```
 
+### Phase仕様書への記録形式
+
+各Phase仕様書の「スキルフィードバック記録」セクションに以下を**必ず**記載:
+
+```markdown
+## スキルフィードバック記録
+
+| スキル          | 結果    | 備考                           |
+| --------------- | ------- | ------------------------------ |
+| {{skill-name}}  | success | {{使用目的と結果の簡潔な説明}} |
+```
+
 **フィードバックフロー**: See [references/feedback-flow.md](references/feedback-flow.md)
+
+## artifacts.json 更新【必須】
+
+**各Phase完了時に `artifacts.json` を必ず更新する。** これはPhase管理・成果物追跡の中核ファイル。
+
+### 更新タイミング
+
+| イベント         | 更新内容                                           |
+| ---------------- | -------------------------------------------------- |
+| Phase完了時      | `phases.{N}.status` → `completed`、`completedAt` 追加 |
+| 成果物作成時     | `phases.{N}.artifacts` に成果物情報を追加          |
+| lastUpdated更新  | 常に現在のタイムスタンプに更新                     |
+
+### 更新形式
+
+```json
+{
+  "phases": {
+    "N": {
+      "status": "completed",
+      "completedAt": "2026-01-04T16:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-N/{{ファイル名}}.md",
+          "description": "{{成果物の説明}}"
+        }
+      ]
+    }
+  }
+}
+```
+
+### チェックリスト
+
+Phase完了時に以下を**すべて**実行すること:
+
+| # | 項目                                         | 対象ファイル                    |
+| - | -------------------------------------------- | ------------------------------- |
+| 1 | Phase仕様書のステータスを `完了` に更新      | `phase-N-*.md`                  |
+| 2 | Phase仕様書に `完了日` を追加                | `phase-N-*.md`                  |
+| 3 | Phase仕様書の完了条件をすべてチェック        | `phase-N-*.md`                  |
+| 4 | **スキルフィードバックを記録**【必須】       | `phase-N-*.md` + LOGS.md        |
+| 5 | **`artifacts.json` の該当Phaseを更新**【必須】 | `artifacts.json`               |
+| 6 | `index.md` のPhase一覧テーブルを更新         | `index.md`                      |
+
+**重要**: 項目4と5は必須。これらを省略するとワークフロー追跡が破綻する。
+
+**詳細**: See [references/artifact-naming-conventions.md](references/artifact-naming-conventions.md)
 
 ## ベストプラクティス
 
@@ -153,7 +243,8 @@ node .claude/skills/skill-creator/scripts/quick_validate.mjs .claude/skills/{{sk
 
 - 各Phaseを独立したMarkdownファイルとして出力
 - タスクに応じて適切なスキルを動的に選定し、選定理由を明記
-- Phase完了後にskill-creatorでフィードバック記録
+- Phase完了後に使用したskillをskill-creatorでフィードバック記録
+- **各Phase完了時に `artifacts.json` を必ず更新**
 - 100人中100人が同じ理解で実行できる粒度で記述
 - コード成果物はプロジェクトディレクトリに配置（outputs/ではない）
 - TodoWriteでサブタスクを管理し、進捗を可視化
@@ -163,6 +254,7 @@ node .claude/skills/skill-creator/scripts/quick_validate.mjs .claude/skills/{{sk
 - スキルを固定的に決めつける
 - スキル選定理由を省略
 - skill-creatorでのフィードバック記録を省略
+- **`artifacts.json` の更新を忘れる**
 - 1つのファイルに全Phaseを詰め込む
 - コード成果物を `outputs/` 配下に配置する
 
@@ -217,8 +309,10 @@ node .claude/skills/skill-creator/scripts/quick_validate.mjs .claude/skills/{{sk
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                                 |
-| ------- | ---------- | ----------------------------------------------------------------------- |
-| 2.0.0   | 2026-01-04 | 責務分離: skill仕様チェックをskill-creatorへ委譲、references/へ詳細移動 |
-| 1.1.0   | 2026-01-03 | スキル仕様準拠チェック追加、リソース参照形式統一、実行パターン追加      |
-| 1.0.0   | 2025-12-28 | 初版作成                                                                |
+| Version | Date       | Changes                                                                       |
+| ------- | ---------- | ----------------------------------------------------------------------------- |
+| 2.2.0   | 2026-01-04 | スキルフィードバック【必須】化、チェックリストをテーブル形式に改善            |
+| 2.1.0   | 2026-01-04 | artifacts.json更新の必須化を追加、Phase完了時チェックリスト追加               |
+| 2.0.0   | 2026-01-04 | 責務分離: skill仕様チェックをskill-creatorへ委譲、references/へ詳細移動       |
+| 1.1.0   | 2026-01-03 | スキル仕様準拠チェック追加、リソース参照形式統一、実行パターン追加            |
+| 1.0.0   | 2025-12-28 | 初版作成                                                                      |

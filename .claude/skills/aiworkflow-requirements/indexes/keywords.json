@@ -1,6 +1,6 @@
 {
-  "generated": "2026-01-04T00:40:45.090Z",
-  "totalKeywords": 389,
+  "generated": "2026-01-04T13:02:59.079Z",
+  "totalKeywords": 392,
   "keywords": {
     "API": [
       "api-core.md",
@@ -242,6 +242,13 @@
       "interfaces-rag.md"
     ],
     "実装": [
+      "architecture-rag.md"
+    ],
+    "DiskANN": [
+      "architecture-rag.md",
+      "database-implementation.md"
+    ],
+    "ベクトル検索アーキテクチャ": [
       "architecture-rag.md"
     ],
     "オフライン・同期アーキテクチャ": [
@@ -557,6 +564,9 @@
     "テスト戦略": [
       "database-implementation.md",
       "quality-requirements.md"
+    ],
+    "ベクトル検索実装": [
+      "database-implementation.md"
     ],
     "パフォーマンス最適化": [
       "database-implementation.md"

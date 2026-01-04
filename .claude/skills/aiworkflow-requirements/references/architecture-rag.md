@@ -154,6 +154,95 @@ Knowledge Graphのエッジ（辺）を表現するEntity型。
 
 ---
 
+## DiskANNベクトル検索アーキテクチャ
+
+### 概要
+
+libSQLのDiskANNベクトルインデックスを活用した高速な近似最近傍探索（ANN）。
+セマンティック検索基盤として、チャンクの埋め込みベクトルを効率的に検索。
+
+**実装場所**:
+- スキーマ: `packages/shared/src/db/schema/embeddings.ts`
+- インデックス管理: `packages/shared/src/db/schema/vector-index.ts`
+- 検索クエリ: `packages/shared/src/db/queries/vector-search.ts`
+
+### アーキテクチャ図
+
+```
+┌─────────────────────────────────────────────────┐
+│                  RAG Pipeline                   │
+├─────────────────────────────────────────────────┤
+│  Query Vector                                   │
+│       │                                         │
+│       ▼                                         │
+│  ┌─────────────────┐    ┌─────────────────┐    │
+│  │   Embeddings    │────│   DiskANN       │    │
+│  │   Table (BLOB)  │    │   Index         │    │
+│  └────────┬────────┘    └─────────────────┘    │
+│           │                                     │
+│           ▼                                     │
+│  ┌─────────────────┐    ┌─────────────────┐    │
+│  │     Chunks      │────│     Files       │    │
+│  │   (content)     │    │   (metadata)    │    │
+│  └─────────────────┘    └─────────────────┘    │
+└─────────────────────────────────────────────────┘
+```
+
+### 距離メトリクス
+
+| メトリクス      | libSQL関数           | 特性                            | 用途               |
+| --------------- | -------------------- | ------------------------------- | ------------------ |
+| コサイン類似度  | vector_distance_cos  | 方向の類似性を測定（0〜2）      | テキスト埋め込み   |
+| ユークリッド距離| vector_distance_l2   | ユークリッド空間での距離（0〜∞）| 空間データ         |
+| 内積            | vector_dot           | 内積値（-∞〜∞）                 | 正規化ベクトル向け |
+
+### 類似度計算
+
+| メトリクス      | 距離→類似度変換           | 範囲     |
+| --------------- | ------------------------- | -------- |
+| コサイン類似度  | `similarity = 1 - distance / 2` | 0.0〜1.0 |
+| ユークリッド距離| `similarity = 1 / (1 + distance)` | 0.0〜1.0 |
+| 内積            | `similarity = (dotProduct + 1) / 2` | 0.0〜1.0 |
+
+### ベクトルインデックス設定
+
+```typescript
+interface VectorIndexConfig {
+  name: string;              // インデックス名
+  dimensions: number;        // ベクトル次元数 (512/768/1024/1536/3072)
+  metric: 'cosine' | 'l2' | 'dot';  // 距離メトリクス
+  maxElements?: number;      // 最大要素数 (default: 1,000,000)
+  efConstruction?: number;   // 構築時パラメータ (default: 200)
+  efSearch?: number;         // 検索時パラメータ (default: 100)
+}
+```
+
+### プリセット設定
+
+| プリセット           | 次元数 | メトリクス | 用途                    |
+| -------------------- | ------ | ---------- | ----------------------- |
+| openai_small         | 1536   | cosine     | text-embedding-3-small  |
+| openai_large         | 3072   | cosine     | text-embedding-3-large  |
+| cohere_multilingual  | 1024   | cosine     | embed-multilingual-v3.0 |
+
+### データフロー
+
+1. **埋め込み生成**: チャンク → 埋め込みプロバイダー → Float32Array
+2. **BLOB変換**: Float32Array → Buffer（ゼロコピー）
+3. **挿入**: embeddings テーブルへバッチ挿入（100件単位）
+4. **インデックス作成**: DiskANN自動インデックス構築
+5. **検索**: クエリベクトル → ANN検索 → 類似チャンク取得
+
+### CASCADE DELETE
+
+chunksテーブル削除時に関連するembeddingsも自動削除:
+
+```sql
+FOREIGN KEY (chunk_id) REFERENCES chunks(id) ON DELETE CASCADE
+```
+
+---
+
 ## オフライン・同期アーキテクチャ
 
 ### Turso Embedded Replicasの活用

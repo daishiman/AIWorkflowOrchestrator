@@ -202,6 +202,64 @@ Turso の Embedded Replicas は、ローカルの SQLite ファイルとクラ�
 
 ---
 
+## ベクトル検索実装（DiskANN）
+
+### 概要
+
+libSQLのDiskANNベクトルインデックスを使用したセマンティック検索機能。
+RAGシステムの類似度検索基盤として実装。
+
+**実装場所**: `packages/shared/src/db/queries/vector-search.ts`
+
+### embeddingsテーブル
+
+| カラム              | 型        | 制約                       | 説明               |
+| ------------------- | --------- | -------------------------- | ------------------ |
+| id                  | TEXT      | PRIMARY KEY                | 埋め込みID（UUID） |
+| chunk_id            | TEXT      | UNIQUE, FK→chunks(id)      | チャンク参照       |
+| vector              | BLOB      | NOT NULL                   | Float32Arrayバイナリ |
+| model_id            | TEXT      | NOT NULL                   | 埋め込みモデルID   |
+| dimensions          | INTEGER   | NOT NULL                   | ベクトル次元数     |
+| normalized_magnitude| REAL      | NOT NULL                   | 正規化済みマグニチュード |
+| created_at          | INTEGER   | DEFAULT unixepoch()        | 作成日時           |
+| updated_at          | INTEGER   | DEFAULT unixepoch()        | 更新日時           |
+
+**インデックス**:
+- `embeddings_chunk_id_idx`: UNIQUE（高速ルックアップ）
+- `embeddings_model_id_idx`: モデル別集計用
+- `embeddings_vector_idx`: DiskANNベクトルインデックス
+
+### ベクトル検索関数
+
+| 関数                | 距離メトリクス | 用途                  |
+| ------------------- | -------------- | --------------------- |
+| searchByVector      | コサイン類似度 | セマンティック検索    |
+| searchByVectorL2    | ユークリッド距離 | 空間的な類似検索    |
+| searchByVectorDot   | 内積           | 正規化ベクトル向け    |
+
+### Float32Array ⇔ BLOB 変換
+
+ベクトルデータはFloat32Array形式でアプリケーション層で扱い、データベースにはBLOB（バイナリ）形式で保存する。変換はゼロコピー操作で効率的に行われる。
+
+**変換制約**:
+- 空のベクトルは禁止（要素数が1以上であること）
+- BLOBのバイト長は4の倍数であること（Float32は4バイト単位）
+- 変換時にNaN、Infinity、-Infinityが含まれていないことを検証
+
+### バッチ挿入
+
+大量の埋め込みを効率的に挿入するため、100件単位のバッチ処理を実装。トランザクション内で処理され、挿入前にすべてのベクトルがバリデーションされる。いずれかのベクトルが不正な場合は全体がロールバックされる。
+
+### パフォーマンス目標
+
+| データ規模   | 検索時間目標 | インデックス |
+| ------------ | ------------ | ------------ |
+| < 10,000件   | < 50ms       | 任意         |
+| 10,000-100,000件 | < 100ms  | 推奨         |
+| > 100,000件  | < 200ms      | 必須         |
+
+---
+
 ## パフォーマンス最適化
 
 ### クエリ最適化のポイント
