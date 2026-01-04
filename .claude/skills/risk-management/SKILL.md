@@ -1,15 +1,18 @@
 ---
 name: risk-management
 description: |
-  プロジェクトリスク管理の専門スキル。
-  リスク識別、評価、軽減策立案を体系的に提供します。
+  プロジェクト/プロダクトのリスクを識別・分析・対応・監視するための実務スキル。
+  影響度・確率の評価とリスクレジスター更新を通じて、意思決定と実行計画の質を高める。
 
   Anchors:
-  • 『PMBOK Guide』（PMI） / 適用: リスク管理 / 目的: プロジェクト成功率向上
-  • 『プロジェクト管理知識体系』（著: デビッド・アイ） / 適用: リスク評価 / 目的: 客観的なリスク分析
+  • PMBOK Guide (PMI) / 適用: リスク管理プロセス全体 / 目的: 標準プロセスの一貫性確保
+  • ISO 31000 / 適用: 評価基準と対応方針 / 目的: 組織横断での判断基準統一
+  • Waltzing with Bears / 適用: 開発リスク識別 / 目的: 早期発見と分類精度の向上
+  • How to Measure Anything / 適用: 定量評価と不確実性低減 / 目的: 根拠ある数値推定
 
   Trigger:
-  リスク管理計画時、プロジェクトリスク分析時、リスク軽減計画策定時、変更インパクト評価時、アーキテクチャ決定時
+  Use when you need to identify, analyze, prioritize, mitigate, or monitor project risks, build or update a risk register, or assess change impact and contingency plans.
+  risk assessment, risk register, probability impact matrix, EMV, mitigation plan, contingency plan, risk monitoring
 allowed-tools:
   - Read
   - Write
@@ -19,127 +22,149 @@ allowed-tools:
   - Grep
 ---
 
-# リスク管理スキル
+# risk-management
 
 ## 概要
 
-プロジェクトリスクの識別、評価、軽減戦略の体系的手法です。プロアクティブなリスク管理により、プロジェクトの成功確率を最大化し、予期しないトラブルを事前に防止します。
+リスクの洗い出しから評価、対応策、監視までを一貫して整理し、リスクレジスターを更新しながら意思決定の精度を高める。
+変更影響や不確実性の高い領域を可視化し、優先順位に基づいた対応計画を作成する。
 
-このスキルは以下の場面で活用されます：
-
-- プロジェクト開始時のリスク洗い出しと評価
-- スプリント計画時のリスク特定と対応策検討
-- アーキテクチャ決定時の影響分析
-- 変更管理とインパクト評価
-
-詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
+---
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+```
+識別 → 分析 → 対応計画 → 監視
+  ↑                        ↓
+  ←←←← フィードバック ←←←←←
+```
 
-**目的**: タスクの目的と前提条件を明確にする
+### Phase 1: リスク識別
 
-**アクション**:
-
-1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認し、リスク管理の基本フローを理解
-2. リスク識別、評価、軽減、監視の各段階を把握
-3. 必要な references/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的なリスク管理作業を進める
+**目的**: 潜在的なリスクを網羅的に抽出し、識別版リスクレジスターを作成する
 
 **アクション**:
 
-1. **リスク識別**: ブレインストーミング、SWOT分析、チェックリスト、デルファイ法を活用
-2. **リスク評価**: 確率・影響度マトリクスやEMV分析により優先度を決定
-3. **リスク軽減**: 対応戦略（回避、軽減、受容、転嫁）を策定
-4. 関連リソースやテンプレートを参照しながら作業を実施
-5. 重要な判断点をメモとして残す
+1. プロジェクト目的・制約・前提を整理する
+2. 主要カテゴリ（技術/スケジュール/要件/人員/外部）を設定する
+3. 手法（ブレインストーミング、SWOT、チェックリスト）でリスクを抽出する
+4. If-Then形式で記述し、初期レジスターに記録する
 
-### Phase 3: 検証と記録
+**Task**: `agents/risk-identification.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: リスク分析
+
+**目的**: 確率・影響度・EMVを評価し、優先順位を決定する
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. リスクレジスター、分析結果、対応策が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
-4. `scripts/calculate-risk-score.mjs` を活用してリスクスコアを算出
+1. 評価スケールと根拠データを定義する
+2. リスクスコアとEMVを算出する
+3. 高/中/低の優先度を割り当てる
+4. 分析結果をレジスターに反映する
+
+**Task**: `agents/risk-analysis.md` を参照
+
+### Phase 3: リスク対応計画
+
+**目的**: 対応戦略と具体的アクションを定義し、残存リスクを見積もる
+
+**アクション**:
+
+1. 回避/軽減/転嫁/受容を選定する
+2. 実行アクション、責任者、期限を設定する
+3. コスト・効果を比較し、承認事項を整理する
+4. 残存リスクを再評価しレジスターに更新する
+
+**Task**: `agents/risk-mitigation.md` を参照
+
+### Phase 4: リスク監視と更新
+
+**目的**: 進捗・トリガーを監視し、レジスターと報告を更新する
+
+**アクション**:
+
+1. 監視頻度と指標を決め、定期レビューを実施する
+2. 対応状況・トリガー兆候・新規リスクを記録する
+3. 更新版レジスターと監視レポートを共有する
+
+**Task**: `agents/risk-monitoring.md` を参照
+
+---
 
 ## Task仕様ナビ
 
-| フェーズ   | タスク                       | リソース                                    | スクリプト               |
-| ---------- | ---------------------------- | ------------------------------------------- | ------------------------ |
-| リスク識別 | リスクの包括的な洗い出し     | Level1_basics.md, risk-identification.md    | -                        |
-| リスク識別 | 識別したリスクの詳細分析     | risk-identification-guide.md                | -                        |
-| リスク評価 | 確率・影響度分析             | risk-analysis.md, Level2_intermediate.md    | calculate-risk-score.mjs |
-| リスク評価 | EMV分析・優先順位付け        | risk-analysis-framework.md                  | calculate-risk-score.mjs |
-| リスク軽減 | 対応戦略の策定               | Level3_advanced.md                          | -                        |
-| リスク監視 | リスクレジスターの作成・更新 | risk-register.md, risk-register-template.md | log_usage.mjs            |
-| 検証       | スキル構造の確認             | -                                           | validate-skill.mjs       |
+| Task                | 起動タイミング                      | 入力                             | 出力                                   |
+| ------------------- | ----------------------------------- | -------------------------------- | -------------------------------------- |
+| risk-identification | キックオフ/変更要請時               | プロジェクト概要、前提、制約     | 識別版リスクレジスター                 |
+| risk-analysis       | 識別完了後/定期レビュー時           | 識別版レジスター、履歴データ     | 評価済みレジスター、優先度リスト       |
+| risk-mitigation     | 高・中リスク確定後                  | 評価済みレジスター、制約条件     | 対応計画付きレジスター、対応計画サマリ |
+| risk-monitoring     | スプリント/マイルストーンレビュー時 | 対応計画付きレジスター、進捗情報 | 更新版レジスター、監視レポート         |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
+**注記**: Taskは責務単位で分離し、1 Task = 1 責務を基本とする。
+
+---
 
 ## ベストプラクティス
 
 ### すべきこと
 
-- **早期実施**: プロジェクト初期段階でリスク識別と評価を実施
-- **体系的実施**: リスク識別 → 評価 → 軽減 → 監視のサイクルを遵守
-- **定期的レビュー**: スプリント単位でリスク評価を見直す
-- **ステークホルダー参加**: リスク識別時にチーム全体を巻き込む
-- **ドキュメント化**: リスクレジスターを公開・共有する
-- **数量化**: 確率・影響度、EMVを用いた客観的評価を心がける
-- **対応策の明確化**: 各リスクに対して具体的な対応策を決定
+| 推奨事項                         | 理由                                   |
+| -------------------------------- | -------------------------------------- |
+| 早期にリスク識別を実施する       | 後戻りコストを抑え、対応余地を確保する |
+| 根拠データと評価基準を明示する   | 評価の再現性と説明責任を担保する       |
+| 優先順位に基づいて対応計画を絞る | 限られたリソースを集中投入する         |
+| 監視頻度とトリガーを明文化する   | 兆候を早期に捉えエスカレーションする   |
+| レジスターを常に最新版に保つ     | 判断材料の鮮度を維持する               |
 
 ### 避けるべきこと
 
-- リスク評価後に対応策を検討しないまま放置する
-- リスク分析に時間をかけすぎてプロジェクト開始が遅延する
-- 属人的な判断のみでリスク評価を行う
-- 低確率リスクを過度に懸念する
-- リスク監視を放置し、新しいリスクに気づかない
-- 評価済みリスクへの対応状況を追跡しない
-- Level4_expert.md の高度な分析手法を理解せずに適用する
+| 禁止事項                           | 問題点                                 |
+| ---------------------------------- | -------------------------------------- |
+| リスク記述を曖昧なまま放置する     | 影響評価や対応計画の精度が落ちる       |
+| 低確率リスクを記録せずに除外する   | 想定外のインパクトを見逃す             |
+| 対応策の責任者と期限を決めない     | 実行されず形骸化する                   |
+| 監視フェーズを省略して完了とする   | 新規リスクや再発を見逃す               |
+| 評価根拠を共有せず属人的に判断する | 合意形成が進まず、再評価に時間を要する |
+
+---
 
 ## リソース参照
 
-### Resources
+### scripts/（決定論的処理）
 
-- **`references/Level1_basics.md`**: リスク管理の基本概念と初期的なリスク識別手法
-- **`references/Level2_intermediate.md`**: リスク評価・軽減の実務的なアプローチ
-- **`references/Level3_advanced.md`**: 高度なリスク分析と複雑なシナリオへの対応
-- **`references/Level4_expert.md`**: 専門的なリスク管理フレームワークと組織的な運用
-- **`references/legacy-skill.md`**: 旧SKILL.mdの全文
-- **`references/risk-identification.md`**: リスク識別手法の詳細ガイド（ブレインストーミング、SWOT、チェックリスト、デルファイ法）
-- **`references/risk-identification-guide.md`**: リスク識別ガイド
-- **`references/risk-analysis.md`**: 確率・影響度マトリクス、EMV分析、モンテカルロシミュレーション等の分析手法
-- **`references/risk-analysis-framework.md`**: リスク分析フレームワークの詳細ガイド
+| スクリプト                         | 機能                                   |
+| ---------------------------------- | -------------------------------------- |
+| `scripts/calculate-risk-score.mjs` | リスクスコア/EMVの計算とマトリクス表示 |
+| `scripts/log_usage.mjs`            | 運用ログの追記                         |
+| `scripts/validate-skill.mjs`       | スキル構造と必須ファイルの検証         |
 
-### Scripts
+### references/（詳細知識）
 
-- **`scripts/calculate-risk-score.mjs`**: リスクスコア・EMV自動計算ツール（Node.js実行可能）
-  ```bash
-  node .claude/skills/risk-management/scripts/calculate-risk-score.mjs --help
-  ```
-- **`scripts/log_usage.mjs`**: 使用記録・自動評価スクリプト
-  ```bash
-  node .claude/skills/risk-management/scripts/log_usage.mjs --help
-  ```
-- **`scripts/validate-skill.mjs`**: スキル構造検証スクリプト
-  ```bash
-  node .claude/skills/risk-management/scripts/validate-skill.mjs --help
-  ```
+| リソース           | パス                                                                               | 読込条件                     |
+| ------------------ | ---------------------------------------------------------------------------------- | ---------------------------- |
+| 基本ガイド         | [references/Level1_basics.md](references/Level1_basics.md)                         | 初回適用時                   |
+| 運用ガイド         | [references/Level2_intermediate.md](references/Level2_intermediate.md)             | リスク分析/対応計画の実務時  |
+| 高度運用ガイド     | [references/Level3_advanced.md](references/Level3_advanced.md)                     | 高リスク/複雑案件の対応時    |
+| 改善ループガイド   | [references/Level4_expert.md](references/Level4_expert.md)                         | 運用改善やレビューサイクル時 |
+| 識別手法詳細       | [references/risk-identification.md](references/risk-identification.md)             | 識別フェーズの手法が必要時   |
+| 識別ワークショップ | [references/risk-identification-guide.md](references/risk-identification-guide.md) | 識別セッション準備時         |
+| 分析手法詳細       | [references/risk-analysis.md](references/risk-analysis.md)                         | 分析フェーズの手法参照時     |
+| 分析フレームワーク | [references/risk-analysis-framework.md](references/risk-analysis-framework.md)     | 評価基準設計や見直し時       |
 
-### Templates
+### assets/（テンプレート・素材）
 
-- **`assets/risk-register.md`**: リスクレジスター標準テンプレート（評価、対応策、監視計画含む）
-- **`assets/risk-register-template.md`**: リスクレジスターのテンプレート
+| アセット                           | 用途                             |
+| ---------------------------------- | -------------------------------- |
+| `assets/risk-register-template.md` | プロジェクト全体のレジスター雛形 |
+| `assets/risk-register.md`          | 個別リスク詳細シート             |
+
+---
 
 ## 変更履歴
 
-| Version | Date       | Changes                                     |
-| ------- | ---------- | ------------------------------------------- |
-| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added |
-| 1.1.0   | 2025-12-31 | 18-skills.md仕様に準拠した構成へ更新        |
+| Version | Date       | Changes                                  |
+| ------- | ---------- | ---------------------------------------- |
+| 1.1.0   | 2026-01-02 | 18-skills.md仕様準拠・変更履歴追加・整理 |
+| 1.0.0   | 2025-12-28 | 初版作成                                 |

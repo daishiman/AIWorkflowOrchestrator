@@ -1,24 +1,59 @@
 #!/usr/bin/env node
 /**
- * 文書構造分析スクリプト
+ * Document structure analyzer.
  *
- * 使用方法: node analyze-structure.mjs <directory>
- *
- * 分析項目:
- * - トピックタイプの分布
- * - 見出し階層の深さ
- * - モジュール化の度合い
- * - 再利用パターンの検出
+ * Exit codes:
+ *   0: success
+ *   1: general error
+ *   2: argument error
+ *   3: file not found
  */
 
-import { readFileSync, readdirSync, statSync } from "fs";
-import { join, extname } from "path";
+import {
+  existsSync,
+  readFileSync,
+  readdirSync,
+  statSync,
+  writeFileSync,
+} from "fs";
+import { join, extname, resolve } from "path";
+
+const EXIT_SUCCESS = 0;
+const EXIT_ERROR = 1;
+const EXIT_ARGS_ERROR = 2;
+const EXIT_FILE_NOT_FOUND = 3;
 
 const TOPIC_PATTERNS = {
   concept: /^#\s+(.*とは|.*について|.*の概要|what is|overview|introduction)/i,
   task: /^#\s+(.*する|.*方法|.*手順|how to|configure|install|setup|create)/i,
   reference: /^#\s+(.*リファレンス|.*一覧|.*仕様|reference|api|specification)/i,
 };
+
+function showHelp() {
+  console.log(`
+Document Structure Analyzer
+
+Usage:
+  node analyze-structure.mjs --input <directory> [--output <report.json>]
+
+Options:
+  --input <path>   Target directory (required)
+  --output <path>  Write JSON report to file (optional)
+  -h, --help       Show this help
+`);
+}
+
+function getArg(args, name) {
+  const index = args.indexOf(name);
+  return index !== -1 && args[index + 1] ? args[index + 1] : null;
+}
+
+function requireArg(value, name) {
+  if (!value) {
+    console.error(`Error: ${name} is required`);
+    process.exit(EXIT_ARGS_ERROR);
+  }
+}
 
 function analyzeFile(filePath) {
   const content = readFileSync(filePath, "utf-8");
@@ -35,13 +70,11 @@ function analyzeFile(filePath) {
     links: [],
   };
 
-  // メタデータチェック
   if (content.startsWith("---")) {
     result.hasMetadata = true;
   }
 
-  // トピックタイプ判定
-  const firstHeading = lines.find((l) => l.startsWith("# "));
+  const firstHeading = lines.find((line) => line.startsWith("# "));
   if (firstHeading) {
     for (const [type, pattern] of Object.entries(TOPIC_PATTERNS)) {
       if (pattern.test(firstHeading)) {
@@ -51,7 +84,6 @@ function analyzeFile(filePath) {
     }
   }
 
-  // 見出し分析
   for (const line of lines) {
     const headingMatch = line.match(/^(#{1,6})\s+(.+)/);
     if (headingMatch) {
@@ -61,7 +93,6 @@ function analyzeFile(filePath) {
     }
   }
 
-  // インクルード検出
   const includeMatches = content.matchAll(
     /\{\{(?:include|snippet|conref):([^}]+)\}\}/g,
   );
@@ -69,7 +100,6 @@ function analyzeFile(filePath) {
     result.includes.push(match[1]);
   }
 
-  // リンク検出
   const linkMatches = content.matchAll(/\[([^\]]+)\]\(([^)]+)\)/g);
   for (const match of linkMatches) {
     if (match[2].endsWith(".md")) {
@@ -77,11 +107,10 @@ function analyzeFile(filePath) {
     }
   }
 
-  // ワードカウント
   result.wordCount = content
     .replace(/[#`*_\[\]()]/g, "")
     .split(/\s+/)
-    .filter((w) => w).length;
+    .filter((word) => word).length;
 
   return result;
 }
@@ -126,75 +155,73 @@ function generateReport(results) {
     recommendations: [],
   };
 
-  // 集計
   let totalWords = 0;
   let totalDepth = 0;
 
-  for (const r of results) {
-    // トピックタイプ
-    report.summary.byTopicType[r.topicType] =
-      (report.summary.byTopicType[r.topicType] || 0) + 1;
+  for (const result of results) {
+    report.summary.byTopicType[result.topicType] =
+      (report.summary.byTopicType[result.topicType] || 0) + 1;
 
-    // ワードカウント
-    totalWords += r.wordCount;
+    totalWords += result.wordCount;
+    totalDepth += result.maxDepth;
 
-    // 深さ
-    totalDepth += r.maxDepth;
+    if (result.hasMetadata) report.summary.withMetadata++;
 
-    // メタデータ
-    if (r.hasMetadata) report.summary.withMetadata++;
+    report.summary.totalIncludes += result.includes.length;
+    report.summary.totalLinks += result.links.length;
 
-    // インクルード・リンク
-    report.summary.totalIncludes += r.includes.length;
-    report.summary.totalLinks += r.links.length;
-
-    // 問題検出
-    if (r.maxDepth > 4) {
+    if (result.maxDepth > 4) {
       report.issues.push({
-        file: r.path,
-        issue: "見出し階層が深すぎます（推奨: 4レベルまで）",
+        file: result.path,
+        issue: "見出し階層が深すぎます (推奨: 4レベルまで)",
         severity: "warning",
       });
     }
 
-    if (r.wordCount > 2000) {
+    if (result.wordCount > 2000) {
       report.issues.push({
-        file: r.path,
-        issue: "コンテンツが長すぎる可能性（分割を検討）",
+        file: result.path,
+        issue: "長文化しています (分割を検討)",
         severity: "info",
       });
     }
 
-    if (!r.hasMetadata) {
+    if (!result.hasMetadata) {
       report.issues.push({
-        file: r.path,
+        file: result.path,
         issue: "YAMLメタデータがありません",
         severity: "info",
       });
     }
 
-    if (r.topicType === "unknown") {
+    if (result.topicType === "unknown") {
       report.issues.push({
-        file: r.path,
-        issue: "トピックタイプを判別できません（タイトルを見直し）",
+        file: result.path,
+        issue: "トピック種別が判定できません",
         severity: "warning",
       });
     }
   }
 
-  report.summary.avgWordCount = Math.round(totalWords / results.length);
-  report.summary.avgMaxDepth = (totalDepth / results.length).toFixed(1);
+  report.summary.avgWordCount = results.length
+    ? Math.round(totalWords / results.length)
+    : 0;
+  report.summary.avgMaxDepth = results.length
+    ? (totalDepth / results.length).toFixed(1)
+    : "0.0";
 
-  // 推奨事項
-  const unknownRatio =
-    (report.summary.byTopicType.unknown || 0) / results.length;
+  const unknownRatio = results.length
+    ? (report.summary.byTopicType.unknown || 0) / results.length
+    : 0;
   if (unknownRatio > 0.3) {
     report.recommendations.push(
-      "トピックタイプが不明なファイルが多いです。命名規則を見直してください。",
+      "トピック種別が不明なファイルが多いです。命名規則を見直してください。",
     );
   }
 
-  const metadataRatio = report.summary.withMetadata / results.length;
+  const metadataRatio = results.length
+    ? report.summary.withMetadata / results.length
+    : 0;
   if (metadataRatio < 0.5) {
     report.recommendations.push(
       "YAMLメタデータを追加すると検索性と管理性が向上します。",
@@ -203,60 +230,87 @@ function generateReport(results) {
 
   if (report.summary.totalIncludes === 0) {
     report.recommendations.push(
-      "コンテンツ再利用（include）が検出されませんでした。共通コンテンツの抽出を検討してください。",
+      "コンテンツ再利用が検出されませんでした。共通コンテンツの抽出を検討してください。",
     );
   }
 
   return report;
 }
 
-// メイン実行
-const targetDir = process.argv[2] || ".";
+function printReport(report) {
+  console.log("=== サマリー ===");
+  console.log(`総ファイル数: ${report.summary.totalFiles}`);
+  console.log(`平均単語数: ${report.summary.avgWordCount}`);
+  console.log(`平均見出し深度: ${report.summary.avgMaxDepth}`);
+  console.log(
+    `メタデータあり: ${report.summary.withMetadata} (${report.summary.totalFiles === 0 ? 0 : Math.round((report.summary.withMetadata / report.summary.totalFiles) * 100)}%)`,
+  );
+  console.log(`インクルード数: ${report.summary.totalIncludes}`);
+  console.log(`内部リンク数: ${report.summary.totalLinks}`);
 
-console.log(`\n📊 文書構造分析: ${targetDir}\n`);
-
-const results = analyzeDirectory(targetDir);
-const report = generateReport(results);
-
-console.log("=== サマリー ===");
-console.log(`総ファイル数: ${report.summary.totalFiles}`);
-console.log(`平均文字数: ${report.summary.avgWordCount}`);
-console.log(`平均見出し深度: ${report.summary.avgMaxDepth}`);
-console.log(
-  `メタデータあり: ${report.summary.withMetadata} (${Math.round((report.summary.withMetadata / report.summary.totalFiles) * 100)}%)`,
-);
-console.log(`インクルード数: ${report.summary.totalIncludes}`);
-console.log(`内部リンク数: ${report.summary.totalLinks}`);
-
-console.log("\n=== トピックタイプ分布 ===");
-for (const [type, count] of Object.entries(report.summary.byTopicType)) {
-  const percent = Math.round((count / report.summary.totalFiles) * 100);
-  console.log(`  ${type}: ${count} (${percent}%)`);
-}
-
-if (report.issues.length > 0) {
-  console.log("\n=== 問題点 ===");
-  const warnings = report.issues.filter((i) => i.severity === "warning");
-  const infos = report.issues.filter((i) => i.severity === "info");
-
-  if (warnings.length > 0) {
-    console.log(`⚠️  警告: ${warnings.length}件`);
-    warnings
-      .slice(0, 5)
-      .forEach((i) => console.log(`   - ${i.file}: ${i.issue}`));
-    if (warnings.length > 5) console.log(`   ... 他 ${warnings.length - 5}件`);
+  console.log("\n=== トピック種別 ===");
+  for (const [type, count] of Object.entries(report.summary.byTopicType)) {
+    const percent = report.summary.totalFiles
+      ? Math.round((count / report.summary.totalFiles) * 100)
+      : 0;
+    console.log(`  ${type}: ${count} (${percent}%)`);
   }
 
-  if (infos.length > 0) {
-    console.log(`ℹ️  情報: ${infos.length}件`);
-    infos.slice(0, 3).forEach((i) => console.log(`   - ${i.file}: ${i.issue}`));
-    if (infos.length > 3) console.log(`   ... 他 ${infos.length - 3}件`);
+  if (report.issues.length > 0) {
+    console.log("\n=== 指摘事項 ===");
+    report.issues.slice(0, 10).forEach((issue) => {
+      console.log(`- ${issue.file}: ${issue.issue}`);
+    });
+  }
+
+  if (report.recommendations.length > 0) {
+    console.log("\n=== 推奨事項 ===");
+    report.recommendations.forEach((rec) => console.log(`- ${rec}`));
   }
 }
 
-if (report.recommendations.length > 0) {
-  console.log("\n=== 推奨事項 ===");
-  report.recommendations.forEach((r) => console.log(`💡 ${r}`));
+function main() {
+  const args = process.argv.slice(2);
+
+  if (args.includes("-h") || args.includes("--help")) {
+    showHelp();
+    process.exit(EXIT_SUCCESS);
+  }
+
+  const inputArg = getArg(args, "--input");
+  const outputArg = getArg(args, "--output");
+
+  requireArg(inputArg, "--input");
+
+  const inputPath = resolve(process.cwd(), inputArg);
+  if (!existsSync(inputPath)) {
+    console.error(`Error: path not found: ${inputPath}`);
+    process.exit(EXIT_FILE_NOT_FOUND);
+  }
+
+  const stats = statSync(inputPath);
+  if (!stats.isDirectory()) {
+    console.error("Error: --input must be a directory");
+    process.exit(EXIT_ARGS_ERROR);
+  }
+
+  const results = analyzeDirectory(inputPath);
+  const report = generateReport(results);
+
+  printReport(report);
+
+  if (outputArg) {
+    const outputPath = resolve(process.cwd(), outputArg);
+    writeFileSync(outputPath, JSON.stringify(report, null, 2), "utf-8");
+    console.log(`\nReport written to ${outputPath}`);
+  }
+
+  process.exit(EXIT_SUCCESS);
 }
 
-console.log("");
+try {
+  main();
+} catch (err) {
+  console.error(`Error: ${err.message}`);
+  process.exit(EXIT_ERROR);
+}

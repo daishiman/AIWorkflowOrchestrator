@@ -1,129 +1,141 @@
 ---
 name: session-management
 description: |
-  セッション管理とトークンライフサイクル戦略の実装パターン。
-  セッション設計、トークン管理、セキュリティ対策を提供します。
+  Claude Codeセッションの状態管理、コンテキスト保持、会話履歴の効率的な運用を支援するスキル。
+  長時間セッションでのコンテキスト消費最適化、セッション再開時の状態復元、
+  マルチタスク切り替え時の状態保存・復元を提供する。
 
   Anchors:
-  • 『The Pragmatic Programmer』（Andrew Hunt, David Thomas） / 適用: セッション管理 / 目的: 実践的改善と品質維持
+  • The Pragmatic Programmer (Hunt & Thomas) / 適用: 状態管理の原則 / 目的: 効率的なセッション運用
+  • Domain-Driven Design (Evans) / 適用: コンテキスト境界 / 目的: 適切な状態分離
+  • Clean Architecture (Martin) / 適用: 依存関係管理 / 目的: セッション間の独立性確保
 
   Trigger:
-  セッション管理実装、認証状態維持、セッションセキュリティ設計、トークンリフレッシュ戦略検討時に使用
-
+  Use when managing Claude Code sessions, preserving context across interactions, or optimizing token usage in long conversations.
+  session management, context preservation, token optimization, session state, conversation history
 allowed-tools:
   - Read
   - Write
   - Edit
   - Bash
   - Glob
-  - Grep
+  - TodoWrite
 ---
 
-# セッション管理
+# Session Management
 
 ## 概要
 
-セッション管理とトークンライフサイクル戦略の実装パターン。ユーザー認証後のセッション状態管理、トークン有効期限の制御、リフレッシュトークンの運用、セキュアなセッション永続化などの実装パターンを提供します。
+Claude Codeセッションの効率的な状態管理を支援するスキル。
+コンテキスト保持、トークン消費最適化、セッション再開・切り替えをスムーズに行う。
 
-詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
+---
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+```
+analyze-session → plan-context → optimize-tokens → restore-state
+                                        ↓
+                  summarize-progress ← save-checkpoint
+```
 
-**目的**: タスクの目的と前提条件を明確にする
+### Task 1: セッション分析（analyze-session）
 
-**アクション**:
+現在のセッション状態とコンテキスト使用状況を分析する。
 
-1. セッション戦略の要件を整理（DB保存 vs JWT、有効期限、リフレッシュ戦略）
-2. `references/session-strategy-comparison.md` で実装アプローチを検討
-3. 必要なテンプレートとリソースを特定
+**Task**: `agents/analyze-session.md` を参照
 
-### Phase 2: スキル適用
+### Task 2: コンテキスト計画（plan-context）
 
-**目的**: スキルの指針に従って具体的な実装を進める
+効率的なコンテキスト配分を計画する。
 
-**アクション**:
+**Task**: `agents/plan-context.md` を参照
 
-1. 選定したパターン（JWT or Database Session）に対応するテンプレートを参照
-2. `references/Level2_intermediate.md` で実務手順を確認
-3. Cookie属性やセキュリティ設定を `references/cookie-attributes-guide.md` で確認
-4. テンプレートをプロジェクトに適応させて実装
+### Task 3: トークン最適化（optimize-tokens）
 
-### Phase 3: 検証と記録
+トークン消費を最適化し、長時間セッションを可能にする。
 
-**目的**: 成果物の検証と実行記録の保存
+**Task**: `agents/optimize-tokens.md` を参照
 
-**アクション**:
+### Task 4: チェックポイント保存（save-checkpoint）
 
-1. `scripts/validate-session-config.mjs` でセッション設定を検証
-2. 実装がセキュリティ要件を満たしているか確認
-3. `scripts/log_usage.mjs` を実行して実装記録を残す
+セッション状態をチェックポイントとして保存する。
 
-## Task仕様ナビ
+**Task**: `agents/save-checkpoint.md` を参照
 
-| タスク               | リソース                       | スクリプト                  | テンプレート                 |
-| -------------------- | ------------------------------ | --------------------------- | ---------------------------- |
-| JWT実装基礎          | Level1_basics.md               | validate-skill.mjs          | jwt-session-template.ts      |
-| DBセッション実装     | Level2_intermediate.md         | validate-session-config.mjs | database-session-template.ts |
-| セキュリティ設定     | cookie-attributes-guide.md     | log_usage.mjs               | -                            |
-| 実装パターン選定     | session-strategy-comparison.md | -                           | -                            |
-| 高度なトークン戦略   | Level3_advanced.md             | -                           | -                            |
-| エキスパートパターン | Level4_expert.md               | -                           | -                            |
+### Task 5: 状態復元（restore-state）
+
+保存されたチェックポイントからセッション状態を復元する。
+
+**Task**: `agents/restore-state.md` を参照
+
+### Task 6: 進捗サマリー（summarize-progress）
+
+セッションの進捗を要約し、次のアクションを明確にする。
+
+**Task**: `agents/summarize-progress.md` を参照
+
+---
+
+## Task仕様（ナビゲーション）
+
+| Task              | 責務                 | 入力               | 出力                 |
+| ----------------- | -------------------- | ------------------ | -------------------- |
+| analyze-session   | セッション状態分析   | 現在の会話コンテキスト | 状態分析レポート     |
+| plan-context      | コンテキスト配分計画 | 状態分析レポート   | コンテキスト計画書   |
+| optimize-tokens   | トークン最適化       | コンテキスト計画書 | 最適化済みコンテキスト |
+| save-checkpoint   | チェックポイント保存 | セッション状態     | チェックポイントファイル |
+| restore-state     | 状態復元             | チェックポイント   | 復元されたコンテキスト |
+| summarize-progress| 進捗サマリー         | セッション履歴     | 進捗レポート         |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
+**注記**: 1 Task = 1 責務。必要なTaskのみ実行する。
+
+---
 
 ## ベストプラクティス
 
 ### すべきこと
 
-- セッション戦略を明確に定義してから実装を開始する（JWT vs DB Session の選定根拠）
-- `references/Level2_intermediate.md` で実務的な注意点を確認する
-- HttpOnly、Secure、SameSite などのCookie属性を `references/cookie-attributes-guide.md` で確認
-- トークン有効期限とリフレッシュ戦略を事前に計画する
-- 本番環境におけるセキュリティ設定を `scripts/validate-session-config.mjs` で検証する
-- ユーザーのログアウト時にセッション状態を完全にクリアする
+| 推奨事項                           | 理由                             |
+| ---------------------------------- | -------------------------------- |
+| 重要な状態は明示的にメモを残す     | セッション再開時の復元が容易     |
+| TodoWriteで進捗を追跡する          | 中断時の再開が容易               |
+| 不要なコンテキストは早めに削除する | トークン消費を抑制               |
+| 定期的にチェックポイントを作成する | 長時間作業での安全性確保         |
+| セッション終了時に進捗を要約する   | 次回セッションの効率向上         |
 
 ### 避けるべきこと
 
-- セッションIDをURLパラメータに含める（キャッシュやログに記録されるリスク）
-- 短すぎるトークン有効期限の設定（UXが低下）
-- 長すぎるトークン有効期限の設定（セキュリティリスク）
-- リフレッシュトークンをメモリのみに保存（ページリロードで消失）
-- CSRF保護なしでステートフルセッションを使用する
-- セッション情報を暗号化せずにクライアント側に保存する
-- セッション有効期限のアイドルタイムアウト仕様がない実装
+| 禁止事項                           | 問題点                           |
+| ---------------------------------- | -------------------------------- |
+| 大量のファイルを一度に読み込む     | コンテキスト枯渇                 |
+| 進捗メモなしで長時間作業する       | 再開困難                         |
+| 複数の無関係なタスクを同時進行する | 状態管理の複雑化                 |
+| チェックポイントなしで複雑な変更   | ロールバック不能                 |
+
+---
 
 ## リソース参照
 
-### 学習リソース（references/）
+### scripts/（決定論的処理）
 
-```bash
-cat .claude/skills/session-management/references/Level1_basics.md
-cat .claude/skills/session-management/references/Level2_intermediate.md
-cat .claude/skills/session-management/references/Level3_advanced.md
-cat .claude/skills/session-management/references/Level4_expert.md
-cat .claude/skills/session-management/references/cookie-attributes-guide.md
-cat .claude/skills/session-management/references/legacy-skill.md
-cat .claude/skills/session-management/references/session-strategy-comparison.md
-```
+| スクリプト                  | 用途                     | 使用例                                           |
+| --------------------------- | ------------------------ | ------------------------------------------------ |
+| `log_usage.mjs`             | フィードバック記録       | `node scripts/log_usage.mjs --result success`    |
 
-### スクリプト・ツール（scripts/）
+### references/（詳細知識）
 
-```bash
-node .claude/skills/session-management/scripts/log_usage.mjs --help
-node .claude/skills/session-management/scripts/validate-session-config.mjs --help
-node .claude/skills/session-management/scripts/validate-skill.mjs --help
-```
+| リソース               | パス                                                                 | 読込条件                       |
+| ---------------------- | -------------------------------------------------------------------- | ------------------------------ |
+| コンテキスト管理基礎   | [references/context-management.md](references/context-management.md) | コンテキスト管理の詳細が必要時 |
+| トークン最適化手法     | [references/token-optimization.md](references/token-optimization.md) | トークン最適化の詳細が必要時   |
+| チェックポイント設計   | [references/checkpoint-design.md](references/checkpoint-design.md)   | チェックポイント設計の詳細が必要時 |
 
-### 実装テンプレート（assets/）
-
-```bash
-cat .claude/skills/session-management/assets/database-session-template.ts
-cat .claude/skills/session-management/assets/jwt-session-template.ts
-```
+---
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                                    |
-| ------- | ---------- | -------------------------------------------------------------------------- |
-| 2.0.0   | 2025-12-31 | 18-skills.md仕様に準拠、Task仕様ナビテーブル追加、ベストプラクティス充実化 |
-| 1.0.0   | 2025-12-24 | スキル構造の整形と必須アーティファクト追加                                 |
+| Version | Date       | Changes                                |
+| ------- | ---------- | -------------------------------------- |
+| 1.0.0   | 2026-01-02 | 18-skills.md仕様準拠で新規作成         |

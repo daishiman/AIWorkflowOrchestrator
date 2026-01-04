@@ -1,4 +1,4 @@
-# Task仕様書：エディタ統合設定
+# Agent仕様書：エディタ統合設定
 
 ## 1. メタ情報
 
@@ -44,7 +44,7 @@ VS CodeやJetBrains IDEなどのエディタでPrettierを統合し、
 | VS Code公式ドキュメント                 | 設定の階層構造、ワークスペース設定の理解       |
 | Prettier Editor Integration公式ガイド   | エディタごとの統合手順、トラブルシューティング |
 
-> 詳細は `references/editor-integration.md` と `references/Level2_intermediate.md` を参照
+> 詳細は See [references/editor-integration.md](../references/editor-integration.md) と See [references/patterns.md](../references/patterns.md) を参照
 
 ---
 
@@ -86,98 +86,101 @@ VS CodeやJetBrains IDEなどのエディタでPrettierを統合し、
 
 ### 5.1 入力
 
-#### 入力1
+#### 入力1: エディタ種別
 
-- データ名: エディタ種別
-- 提供元: ユーザー
-- 検証ルール:
-  サポート対象エディタ（VS Code, WebStorm, Vim, Emacs等）
-- 拒否すべき入力:
-  サポート対象外のエディタ（カスタム手順が必要）
-- 欠損時処理:
-  使用エディタの確認を促し、デフォルトでVS Code用設定を提供
+- **データ名**: エディタ種別
+- **提供元**: ユーザー
+- **検証ルール**: サポート対象エディタ（VS Code, WebStorm, Vim, Emacs等）
+- **拒否すべき入力**: サポート対象外のエディタ（カスタム手順が必要）
+- **欠損時処理**: 使用エディタの確認を促し、デフォルトでVS Code用設定を提供
 
-#### 入力2
+#### 入力2: Prettier設定ファイル
 
-- データ名: Prettier設定ファイル
-- 提供元: プロジェクトファイル（setup-prettier Taskの出力）
-- 検証ルール:
-  .prettierrc.\*が存在し、有効なJSON形式
-- 拒否すべき入力:
-  無効な構文のPrettier設定ファイル
-- 欠損時処理:
-  setup-prettier Taskの実行を促す
+- **データ名**: Prettier設定ファイル
+- **提供元**: プロジェクトファイル（setup-prettier Agentの出力）
+- **検証ルール**: .prettierrc.\*が存在し、有効なJSON形式
+- **拒否すべき入力**: 無効な構文のPrettier設定ファイル
+- **欠損時処理**: setup-prettier Agentの実行を促す
 
 ### 5.2 出力
 
-#### 成果物1
+#### 成果物1: VS Code設定ファイル
 
-- 成果物名: VS Code設定ファイル
-- 受領先: プロジェクトルート/.vscode/
-- 出力テンプレート: `assets/vscode-settings.json`
-- 内容:
-  保存時自動フォーマット、デフォルトフォーマッターの設定
+- **成果物名**: VS Code設定ファイル
+- **受領先**: プロジェクトルート/.vscode/
+- **出力テンプレート**: `assets/vscode-settings.json`
+- **内容**: 保存時自動フォーマット、デフォルトフォーマッターの設定
 
-#### 成果物2
+#### 成果物2: エディタ統合セットアップガイド
 
-- 成果物名: エディタ統合セットアップガイド
-- 受領先: ユーザー
-- 出力テンプレート:
+- **成果物名**: エディタ統合セットアップガイド
+- **受領先**: ユーザー
+- **出力テンプレート**:
 
-  ```markdown
-  ## エディタ統合セットアップガイド
+```markdown
+## エディタ統合セットアップガイド
 
-  ### VS Code
+### VS Code
 
-  #### 1. 拡張機能のインストール
+#### 1. 拡張機能のインストール
 
-  以下の拡張機能をインストールしてください：
+以下の拡張機能をインストールしてください：
 
-  - Prettier - Code formatter (esbenp.prettier-vscode)
+- Prettier - Code formatter (esbenp.prettier-vscode)
 
-  #### 2. 設定ファイル
+#### 2. 設定ファイル
 
-  `.vscode/settings.json` が作成されました。
-  以下の設定が含まれています：
+`.vscode/settings.json` が作成されました。
+以下の設定が含まれています：
 
-  - 保存時自動フォーマット: 有効
-  - デフォルトフォーマッター: Prettier
+- 保存時自動フォーマット: 有効
+- デフォルトフォーマッター: Prettier
 
-  #### 3. 動作確認
+#### 3. 動作確認
 
-  1. JavaScriptまたはTypeScriptファイルを開く
-  2. コードを編集し、保存する
-  3. 自動的にフォーマットされることを確認
+1. JavaScriptまたはTypeScriptファイルを開く
+2. コードを編集し、保存する
+3. 自動的にフォーマットされることを確認
 
-  #### 4. トラブルシューティング
+#### 4. トラブルシューティング
 
-  - フォーマットされない場合:
-    1. 拡張機能が有効になっているか確認
-    2. 出力パネルでPrettierのログを確認
-    3. .prettierrc.jsonの構文エラーがないか確認
+- フォーマットされない場合:
+  1. 拡張機能が有効になっているか確認
+  2. 出力パネルでPrettierのログを確認
+  3. .prettierrc.jsonの構文エラーがないか確認
 
-  ### WebStorm / IntelliJ IDEA
+### WebStorm / IntelliJ IDEA
 
-  {{WebStorm用の手順}}
+#### 1. Prettier設定
 
-  ### その他のエディタ
+1. Settings → Languages & Frameworks → JavaScript → Prettier
+2. Prettier package: `node_modules/prettier`を指定
+3. On save: チェック
+4. Run on 'Reformat Code': チェック
 
-  公式ガイドを参照してください：
-  https://prettier.io/docs/en/editors.html
+#### 2. ESLint統合
 
-  ### 次のステップ
+1. Settings → Languages & Frameworks → JavaScript → Code Quality Tools → ESLint
+2. Automatic ESLint configuration: チェック
+3. Run eslint --fix on save: チェック
 
-  1. CI/CDパイプラインへの組み込み検討
-  2. チームへの展開とトレーニング
-  ```
+### その他のエディタ
 
-- 内容:
-  エディタ別セットアップ手順、動作確認方法、トラブルシューティング、次のステップ
+公式ガイドを参照してください：
+https://prettier.io/docs/en/editors.html
+
+### 次のステップ
+
+1. CI/CDパイプラインへの組み込み検討
+2. チームへの展開とトレーニング
+```
+
+- **内容**: エディタ別セットアップ手順、動作確認方法、トラブルシューティング、次のステップ
 
 ---
 
 ## 関連リソース
 
 - **エディタ統合ガイド**: See [references/editor-integration.md](../references/editor-integration.md)
-- **中級ガイド**: See [references/Level2_intermediate.md](../references/Level2_intermediate.md)
+- **統合パターン**: See [references/patterns.md](../references/patterns.md)
 - **VS Code設定テンプレート**: See [assets/vscode-settings.json](../assets/vscode-settings.json)

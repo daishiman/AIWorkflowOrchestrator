@@ -18,7 +18,7 @@ allowed-tools:
   - Grep
 ---
 
-# JSON Optimization（SQLite）
+# JSON最適化（SQLite）
 
 ## 概要
 
@@ -32,6 +32,8 @@ SQLiteのJSON1拡張を活用した柔軟なデータ構造設計とパフォー
 
 **目的**: JSON最適化タスクの要件と制約条件を明確にする
 
+**Task**: `agents/analyze-requirements.md`
+
 **アクション**:
 
 1. `references/Level1_basics.md` でJSON1拡張の基礎を確認
@@ -41,6 +43,8 @@ SQLiteのJSON1拡張を活用した柔軟なデータ構造設計とパフォー
 ### Phase 2: スキル適用
 
 **目的**: 公式テンプレートと参考資料を使用して実装を進める
+
+**Task**: `agents/design-json-structure.md`
 
 **アクション**:
 
@@ -53,6 +57,8 @@ SQLiteのJSON1拡張を活用した柔軟なデータ構造設計とパフォー
 
 **目的**: 成果物の検証と実行結果の記録
 
+**Task**: `agents/validate-optimization.md`
+
 **アクション**:
 
 1. `scripts/validate-skill.mjs` でスキル適用を検証
@@ -63,7 +69,7 @@ SQLiteのJSON1拡張を活用した柔軟なデータ構造設計とパフォー
 
 | Task                        | 対応リソース                                        | スクリプト             | 説明                             |
 | --------------------------- | --------------------------------------------------- | ---------------------- | -------------------------------- |
-| JSON構造の基本設計          | Level1_basics.md, assets/json-schema-design.md   | -                      | 半構造化データのスキーマ設計     |
+| JSON構造の基本設計          | Level1_basics.md, assets/json-schema-design.md      | -                      | 半構造化データのスキーマ設計     |
 | 検索パフォーマンス最適化    | json-functions-reference.md, Level2_intermediate.md | analyze-json-usage.mjs | json_extract, 式インデックス活用 |
 | 動的スキーマ検証            | Level3_advanced.md                                  | -                      | CHECK制約, Zodスキーマ統合       |
 | リレーショナル vs. JSON分析 | legacy-skill.md, Level4_expert.md                   | analyze-json-usage.mjs | データベース設計の選択判定       |
@@ -94,8 +100,8 @@ SQLiteのJSON1拡張を活用した柔軟なデータ構造設計とパフォー
 
 ### 段階的学習（Progressive Disclosure）
 
-| レベル | リソース                         | 対象タスク           | 読了目安 |
-| ------ | -------------------------------- | -------------------- | -------- |
+| レベル | リソース                          | 対象タスク           | 読了目安 |
+| ------ | --------------------------------- | -------------------- | -------- |
 | 基礎   | references/Level1_basics.md       | JSON1拡張の概要      | 5分      |
 | 実務   | references/Level2_intermediate.md | 実装パターン         | 15分     |
 | 応用   | references/Level3_advanced.md     | パフォーマンス最適化 | 20分     |

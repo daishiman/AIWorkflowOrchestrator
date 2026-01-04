@@ -1,305 +1,184 @@
 ---
 name: project-architecture-integration
 description: |
-  プロジェクト固有のアーキテクチャ設計原則を専門とするスキル。
-  ハイブリッドアーキテクチャ（shared/features）、データベース設計、REST API、
-  テスト戦略、エラーハンドリング、CI/CDの原則をエージェント設計に統合します。
+  プロジェクト固有のアーキテクチャ設計原則を統合するスキル。ハイブリッドアーキテクチャ（shared/features）、Clean Architecture依存関係ルール、データベース設計、REST API、テスト戦略、エラーハンドリング、CI/CD原則をエージェント設計に適用する。
 
   Anchors:
-  • Clean Architecture (Robert C. Martin) / 適用: 依存関係ルールと境界設計 / 目的: アーキテクチャ層の分離と依存方向の制御
-  • Hybrid Architecture Guide / 適用: shared/features 構造設計 / 目的: ドメイン機能の分離と再利用性の確保
-  • docs/00-requirements/ / 適用: プロジェクト固有の技術スタック仕様 / 目的: 要求仕様との整合性維持
+  • Clean Architecture / 適用: 依存関係ルールと境界設計 / 目的: アーキテクチャ層の分離と依存方向制御
+  • Hybrid Architecture (shared/features) / 適用: ドメイン分離と再利用設計 / 目的: 循環依存回避と単一責任維持
+  • docs/00-requirements/ / 適用: プロジェクト技術スタック仕様 / 目的: 要求仕様との整合性確保
 
   Trigger:
-  Use when designing agents that generate project-specific files, database operations, API integrations, test strategies, error handling, or CI/CD workflows.
-  Keywords: architecture compliance, hybrid structure, shared features, dependency rules, agent file generation, database design, REST API, testing strategy
-tags:
-  - architecture
-  - clean-architecture
-  - hybrid-architecture
-  - agent-design
-  - project-structure
-version: 2.0.0
-last_updated: 2025-12-31
+  Use when designing agents that generate project-specific files, database operations, API integrations, test strategies, error handling, or CI/CD workflows. Apply when determining file placement (shared/ vs features/), enforcing dependency rules, or ensuring architecture compliance.
+  architecture compliance, hybrid structure, shared features, dependency rules, agent file generation, database design, REST API, testing strategy
+allowed-tools:
+  - Bash
+  - Read
+  - Write
+  - Edit
+  - Glob
+  - Grep
 ---
 
 # Project Architecture Integration
 
 ## 概要
 
-プロジェクト固有のアーキテクチャ設計原則に基づいてエージェント設計を支援するスキル。Clean Architectureの依存関係ルールとHybrid Architecture（shared/features）パターンを統合し、プロジェクト構造に準拠したファイル生成、データベース設計、API連携を実現します。
+プロジェクト固有のアーキテクチャ設計原則に基づいてエージェント設計を支援するスキル。Clean Architectureの依存関係ルールとHybrid Architecture（shared/features）パターンを統合し、プロジェクト構造に準拠したファイル生成、データベース設計、API連携を実現する。
 
 ## ワークフロー
 
-### Phase 1: アーキテクチャ分析（Task起動）
+### Phase 1: アーキテクチャ分析
 
-**目的**: プロジェクト構造とアーキテクチャ要件を分析し、適用すべきパターンを特定する
+**目的**: プロジェクト構造とアーキテクチャ要件を分析し、適用すべきパターンを特定
 
-**Task**: `agents/architecture-analysis.md`
+**アクション**:
 
-**入力**:
+1. エージェントの役割と責務を分析し、ドメイン依存性を判定
+2. 生成対象ファイルの種類を特定（UI/ビジネスロジック/データアクセス層）
+3. 既存プロジェクト構造を確認し、shared/とfeatures/の現状を把握
+4. 依存関係ルールに基づいて配置先を決定
 
-- エージェントの役割と責務
-- 生成対象ファイルの種類（コンポーネント、API、データベース等）
-- 既存のプロジェクト構造
+**Task**: `agents/architecture-analysis.md` を参照
 
-**出力**:
+### Phase 2: 準拠性検証
 
-- 適用すべきアーキテクチャパターンのリスト
-- ファイル配置先の決定（shared/ or features/）
-- 依存関係の設計方針
+**目的**: 生成されたファイルやエージェント設計がアーキテクチャ原則に準拠しているか検証
 
-**実行タイミング**: エージェント設計の最初、またはアーキテクチャ判断が必要な時
+**アクション**:
 
-### Phase 2: 準拠性検証（Task起動）
+1. ファイル配置の妥当性を検証
+2. 依存方向の正当性を確認（shared/ → features/ 禁止、features/ → features/ 禁止）
+3. `scripts/check-architecture-compliance.mjs` で自動検証
+4. 違反項目をリストアップし、修正提案を作成
 
-**目的**: 生成されたファイルやエージェント設計がアーキテクチャ原則に準拠しているか検証する
-
-**Task**: `agents/compliance-check.md`
-
-**入力**:
-
-- 生成されたファイルパス
-- エージェントの設計仕様
-- 依存関係グラフ
-
-**出力**:
-
-- 準拠性チェック結果
-- 違反項目のリスト
-- 修正提案
-
-**実行タイミング**: ファイル生成後、エージェント設計完了後
-
-**検証スクリプト**: `scripts/check-architecture-compliance.mjs`
+**Task**: `agents/compliance-check.md` を参照
 
 ### Phase 3: 統合と記録
 
-**目的**: アーキテクチャ原則をエージェント設計に統合し、実行記録を保存する
+**目的**: アーキテクチャ原則をエージェント設計に統合し、実行記録を保存
 
-**Task**: `agents/integration.md`
+**アクション**:
 
-**入力**:
+1. 検証済みアーキテクチャ設計をエージェント仕様に統合
+2. アーキテクチャドキュメントを更新
+3. `scripts/log_usage.mjs` で使用記録を保存
 
-- 検証済みのアーキテクチャ設計
-- エージェント仕様
-- 統合対象のコンポーネント
+**Task**: `agents/integration.md` を参照
 
-**出力**:
+## Task仕様ナビ
 
-- 統合完了したエージェント設計
-- アーキテクチャドキュメント更新
-- 使用記録
+| Task                  | 起動タイミング                | 入力                       | 出力                           |
+| --------------------- | ----------------------------- | -------------------------- | ------------------------------ |
+| architecture-analysis | Phase 1開始時                 | エージェント仕様、構造情報 | アーキテクチャパターン、配置先 |
+| compliance-check      | Phase 2開始時、ファイル生成後 | ファイルパス、依存関係情報 | 準拠性レポート、修正提案       |
+| integration           | Phase 3開始時、検証完了後     | 検証済み設計、統合対象     | 統合完了設計、実行記録         |
 
-**実行タイミング**: 検証完了後
-
-**記録スクリプト**: `scripts/log_usage.mjs --result success --phase integration`
-
-## Task仕様（ナビゲーション）
-
-### agents/architecture-analysis.md
-
-アーキテクチャパターンの分析と適用判断を行うTask仕様。
-
-**いつ起動するか**:
-
-- 新規エージェント設計開始時
-- ファイル配置先の判断が必要な時
-- 依存関係設計が必要な時
-
-**何を入力するか**:
-
-- エージェントの役割、責務、目的
-- 生成対象ファイルの種類とドメイン
-- 既存構造の情報
-
-**何を返すか**:
-
-- shared/ or features/ の配置判断
-- 適用アーキテクチャパターン
-- 依存関係の設計方針
-
-### agents/compliance-check.md
-
-アーキテクチャ準拠性の検証を行うTask仕様。
-
-**いつ起動するか**:
-
-- ファイル生成完了後
-- エージェント設計レビュー時
-- アーキテクチャ違反の疑いがある時
-
-**何を入力するか**:
-
-- 生成ファイルのパスリスト
-- エージェント設計仕様
-- 依存関係情報
-
-**何を返すか**:
-
-- 準拠性チェック結果（合格/不合格）
-- 違反項目の詳細リスト
-- 修正提案と優先度
-
-### agents/integration.md
-
-アーキテクチャ原則をエージェント設計に統合するTask仕様。
-
-**いつ起動するか**:
-
-- 準拠性検証完了後
-- エージェント設計の最終化時
-- ドキュメント更新が必要な時
-
-**何を入力するか**:
-
-- 検証済みアーキテクチャ設計
-- エージェント仕様
-- 統合対象コンポーネント
-
-**何を返すか**:
-
-- 統合完了エージェント設計
-- 更新されたアーキテクチャドキュメント
-- 実行記録とメトリクス
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
 ## ベストプラクティス
 
 ### すべきこと
 
-- エージェントがプロジェクト構造に準拠したファイルを生成する時
-- データベース操作を行うエージェントを設計する時
-- API連携エージェントを設計する時
-- テスト実行エージェントを設計する時
-- デプロイ関連エージェントを設計する時
-- shared/ と features/ の配置判断に迷った時は必ず Task を起動する
-- 依存関係ルールの違反チェックを必ず実行する
+- エージェントがプロジェクト構造に準拠したファイルを生成する時に適用
+- データベース操作、API連携、テスト実行、デプロイ関連エージェント設計時に使用
+- shared/ と features/ の配置判断に迷った時は必ず Task を起動
+- 依存関係ルールの違反チェックを必ず実行
+- ドメイン非依存のコード（汎用UI、ユーティリティ）は shared/ に配置
+- ビジネスロジックは features/ に配置し、Bounded Contextで分離
 
 ### 避けるべきこと
 
-- アンチパターンや注意点を確認せずに進めることを避ける
-- shared/ から features/ への依存を作らない（逆方向のみ許可）
-- features/ 間の直接依存を避ける（shared/ を経由）
-- アーキテクチャ検証をスキップしない
+- shared/ から features/ への依存（循環依存の原因）
+- features/ 間の直接依存（shared/ を経由すること）
 - ドメインロジックを shared/ に配置しない
+- アーキテクチャ検証をスキップしない
+- 曖昧な命名（utils/、helpers/など）を避ける
 
-## リソース/スクリプト参照
+## リソース参照
 
-### references/ - 段階的知識参照
+### references/（詳細知識）
 
-**Level 1 (基礎)**: [references/Level1_basics.md](references/Level1_basics.md)
+| リソース             | パス                                                                                   | 内容                           |
+| -------------------- | -------------------------------------------------------------------------------------- | ------------------------------ |
+| 基礎知識             | See [references/basics.md](references/basics.md)                                       | アーキテクチャ基本概念         |
+| 実装パターン         | See [references/patterns.md](references/patterns.md)                                   | 具体的な実装例とアンチパターン |
+| Hybrid Architecture  | See [references/hybrid-architecture-guide.md](references/hybrid-architecture-guide.md) | shared/features構造詳細        |
+| 要件仕様インデックス | See [references/requirements-index.md](references/requirements-index.md)               | プロジェクト要求仕様との同期   |
+| Level 1（基礎）      | See [references/Level1_basics.md](references/Level1_basics.md)                         | スキル適用タイミングと最小要件 |
+| Level 2（実務）      | See [references/Level2_intermediate.md](references/Level2_intermediate.md)             | テンプレート運用と実践手順     |
+| Level 3（応用）      | See [references/Level3_advanced.md](references/Level3_advanced.md)                     | 複雑なアーキテクチャパターン   |
+| Level 4（専門）      | See [references/Level4_expert.md](references/Level4_expert.md)                         | カスタムパターン設計           |
 
-- スキル適用タイミングの理解
-- 基本概念の把握
-- 最小要件の確認
+### scripts/（決定論的処理）
 
-**Level 2 (実務)**: [references/Level2_intermediate.md](references/Level2_intermediate.md)
+| スクリプト                          | 用途                   | 使用例                                                         |
+| ----------------------------------- | ---------------------- | -------------------------------------------------------------- |
+| `check-architecture-compliance.mjs` | アーキテクチャ準拠検証 | `node scripts/check-architecture-compliance.mjs --path src`    |
+| `log_usage.mjs`                     | 使用記録と自動評価     | `node scripts/log_usage.mjs --result success --phase analysis` |
+| `validate-skill.mjs`                | スキル構造検証         | `node scripts/validate-skill.mjs`                              |
 
-- リソース・スクリプトの活用
-- テンプレート運用
-- 実践的な適用手順
+### assets/（テンプレート）
 
-**Level 3 (応用)**: [references/Level3_advanced.md](references/Level3_advanced.md)
+| テンプレート                           | 用途                             |
+| -------------------------------------- | -------------------------------- |
+| `architecture-compliance-checklist.md` | アーキテクチャ準拠チェックリスト |
 
-- 複雑なアーキテクチャパターン
-- 高度な統合シナリオ
-- パフォーマンス最適化
-
-**Level 4 (専門)**: [references/Level4_expert.md](references/Level4_expert.md)
-
-- アーキテクチャ設計の深い原則
-- カスタムパターンの設計
-- 大規模システムへの適用
-
-### 専門リソース
-
-- **Hybrid Architecture Guide**: [references/hybrid-architecture-guide.md](references/hybrid-architecture-guide.md)
-  - shared/ と features/ の構造設計
-  - 依存関係ルールの詳細
-  - ベストプラクティスと禁止事項
-- **Requirements Index**: [references/requirements-index.md](references/requirements-index.md)
-  - プロジェクト要求仕様との同期
-  - 技術スタック仕様書の参照
-- **Legacy Skill**: [references/legacy-skill.md](references/legacy-skill.md)
-  - 旧SKILL.mdの全文
-  - 移行履歴の参照
-
-### scripts/ - 決定論的処理
-
-**check-architecture-compliance.mjs**:
+## クイックスタート
 
 ```bash
-node scripts/check-architecture-compliance.mjs --help
-# アーキテクチャ準拠性の自動チェック
-# 終了コード: 0=準拠, 1=違反あり, 2=引数エラー
-```
-
-**log_usage.mjs**:
-
-```bash
-node scripts/log_usage.mjs --result success --phase analysis
-# 使用記録と自動評価
-# --result: success | failure
-# --phase: analysis | compliance | integration
-```
-
-**validate-skill.mjs**:
-
-```bash
-node scripts/validate-skill.mjs
-# スキル構造の検証
-# YAML frontmatter、ファイル構造の確認
-```
-
-### assets/ - 出力素材
-
-**architecture-compliance-checklist.md**:
-
-```bash
-cat assets/architecture-compliance-checklist.md
-# アーキテクチャ準拠チェックリストのテンプレート
-# エージェント設計レビュー時に使用
-```
-
-## コマンドリファレンス
-
-### クイックスタート
-
-```bash
-# 1. Level1 を読んで基礎を理解
-cat references/Level1_basics.md
+# 1. 基礎知識を理解
+cat references/basics.md
+cat references/hybrid-architecture-guide.md
 
 # 2. アーキテクチャ分析 Task を起動（詳細は agents/architecture-analysis.md）
-# Task内で Hybrid Architecture Guide を参照しながら分析
+# Task内で配置先と依存関係を決定
 
 # 3. 準拠性チェックを実行
 node scripts/check-architecture-compliance.mjs --path <target-files>
 
 # 4. 使用記録を保存
-node scripts/log_usage.mjs --result success --phase analysis
+node scripts/log_usage.mjs --result success --phase integration
 ```
 
-### 段階的学習パス
+## 学習パス
 
 ```bash
-# 初心者: Level 1 → Hybrid Architecture Guide
-cat references/Level1_basics.md
-cat references/hybrid-architecture-guide.md
+# 初心者向け
+cat references/basics.md              # 基本概念
+cat references/hybrid-architecture-guide.md  # 構造理解
 
-# 中級者: Level 2 → スクリプト実行
-cat references/Level2_intermediate.md
-node scripts/check-architecture-compliance.mjs --help
+# 中級者向け
+cat references/patterns.md            # 実装パターン
+node scripts/check-architecture-compliance.mjs --help  # 検証ツール
 
-# 上級者: Level 3 → 複雑なパターン適用
-cat references/Level3_advanced.md
+# 上級者向け
+cat references/Level3_advanced.md     # 複雑なパターン適用
 
-# 専門家: Level 4 → カスタムパターン設計
-cat references/Level4_expert.md
+# 専門家向け
+cat references/Level4_expert.md       # カスタムパターン設計
 ```
+
+## 依存関係ルールまとめ
+
+### ✅ 許可される依存
+
+- **features → shared**: ビジネスロジックが汎用コンポーネントを使用
+- **features → features（同一フィーチャー内）**: フィーチャー内の内部依存
+- **pages → features**: ページが機能を使用
+- **pages → shared**: ページが汎用コンポーネントを使用
+
+### ❌ 禁止される依存
+
+- **shared → features**: 循環依存を引き起こす
+- **features → features（異なるフィーチャー間）**: 境界を破壊する
+
+**解決策**: 共通ロジックをshared/に移動し、依存方向を一方向に保つ
 
 ## 変更履歴
 
-| Version | Date       | Changes                                             |
-| ------- | ---------- | --------------------------------------------------- |
-| 2.0.0   | 2025-12-31 | 18-skills.md 仕様準拠: agents/追加、description更新 |
-| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added         |
+| Version | Date       | Changes                                              |
+| ------- | ---------- | ---------------------------------------------------- |
+| 3.0.0   | 2026-01-02 | 18-skills.md仕様完全準拠、SKILL.md簡潔化、知識外部化 |
+| 2.0.0   | 2025-12-31 | Anchors/Trigger統合、agents/追加、description更新    |
+| 1.0.0   | 2025-12-24 | 初版作成                                             |

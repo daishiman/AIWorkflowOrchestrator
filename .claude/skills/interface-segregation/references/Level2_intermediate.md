@@ -1,4 +1,4 @@
-# Level 2: Intermediate
+# レベル2: 中級
 
 ## 概要
 

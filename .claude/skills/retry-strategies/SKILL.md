@@ -1,147 +1,138 @@
 ---
 name: retry-strategies
 description: |
-  Design and implement retry mechanisms, circuit breakers, and resilience patterns for external API calls and distributed systems. Covers exponential backoff, bulkhead patterns, timeout strategies, and failure handling.
+  外部APIや分散システムの一時的障害に対して、リトライ・タイムアウト・サーキットブレーカーを組み合わせた回復戦略を設計し、実装まで導くスキル。
+  失敗特性の分類、指数バックオフとジッター、隔離（Bulkhead）などの適用判断を整理し、過剰リトライや雪崩障害を避ける。
 
   Anchors:
-  • The Pragmatic Programmer (Andrew Hunt, David Thomas) / 適用: エラーハンドリング設計・実用的な回復戦略 / 目的: 実践的な改善アプローチの適用
-  • Resilience patterns from distributed systems / 適用: Circuit Breaker・Bulkhead・Timeout設計 / 目的: システムの耐障害性確保
+  • Designing Data-Intensive Applications / 適用: 分散システムの障害特性と復旧設計 / 目的: 失敗モードに合わせた戦略選定
+  • Release It! (Michael T. Nygard) / 適用: Circuit Breaker・Bulkhead・Timeout / 目的: 耐障害パターンの適切な適用
+  • AWS Architecture Blog - Exponential Backoff and Jitter / 適用: リトライ待機とジッター / 目的: 負荷集中の回避
 
   Trigger:
-  Use when implementing retry logic, circuit breakers, API resilience patterns, handling transient failures, designing timeout strategies, or preventing cascading failures in distributed systems.
-  Keywords: retry, backoff, circuit breaker, bulkhead, timeout, resilience, failure handling, API errors, transient failures, rate limiting
+  Use when designing retry policies, tuning timeouts, introducing circuit breakers or bulkheads, or validating resilience for external API calls.
+  retry, backoff, jitter, circuit breaker, bulkhead, timeout, transient failure, resilience
 allowed-tools:
   - Read
   - Write
   - Edit
   - Bash
+  - Glob
+  - Grep
 ---
 
 # Retry Strategies
 
 ## 概要
 
-Design and implement resilient retry mechanisms and failure handling patterns for distributed systems. This skill provides expertise in circuit breakers, exponential backoff, bulkhead patterns, and timeout strategies to handle transient failures in external API calls.
+外部APIや分散システムの一時的障害に対して、再試行の方針と耐障害パターンを設計し、実装・検証・運用設計までの判断材料を整理するスキルです。
 
 ## ワークフロー
 
-本スキルは3つのTaskで構成されます。各Taskは独立したコンテキストで実行され、入出力を明確に定義します。
+### Phase 1: 障害特性アセスメント
 
-### Phase 1: Requirements Analysis
+**目的**: 依存関係と失敗モードを整理し、リトライ対象と制約を明確化する
 
-**Task**: `agents/analyze-requirements.md`
+**アクション**:
 
-**目的**: Analyze the system context and determine appropriate resilience patterns
+1. 依存先、SLA、過去障害の情報を収集
+2. エラーを恒久/一時/部分失敗に分類
+3. 再試行可能性（べき等性、予算、上限）を整理
+4. 監視指標と制約条件を定義
 
-**入力**:
+**Task**: `agents/assess-failure-profile.md` を参照
 
-- System architecture description
-- API dependencies and SLAs
-- Current failure patterns (if any)
-- Performance requirements
+### Phase 2: リトライ/耐障害ポリシー設計
 
-**出力**:
+**目的**: 失敗特性に適合するリトライと保護パターンを設計する
 
-- Recommended resilience patterns
-- Configuration parameters (retry counts, timeouts, thresholds)
-- Risk assessment and trade-offs
+**アクション**:
 
-**実行タイミング**: プロジェクト開始時、既存システムの改善時
+1. バックオフ曲線とジッター方式を選定
+2. Circuit Breaker/Bulkhead/Timeoutの組み合わせを決定
+3. しきい値、リトライ予算、上限値を設計
+4. 設定パラメータと適用範囲を文書化
 
-### Phase 2: Strategy Implementation
+**Task**: `agents/design-retry-policy.md` を参照
 
-**Task**: `agents/implement-strategy.md`
+### Phase 3: 実装検証と運用設計
 
-**目的**: Implement the selected resilience patterns with proper configuration
+**目的**: 実装の妥当性を検証し、運用監視の設計を固める
 
-**入力**:
+**アクション**:
 
-- Phase 1の推奨パターンと設定
-- Target codebase and technology stack
-- Integration points
+1. `scripts/analyze-retry-config.mjs` で設定を分析
+2. テストシナリオと失敗注入条件を整理
+3. 監視指標、アラート、ロールバック手順を定義
 
-**出力**:
+**Task**: `agents/validate-rollout.md` を参照
 
-- Implementation code (retry logic, circuit breaker, etc.)
-- Configuration files
-- Unit test cases
+## Task仕様ナビ
 
-**実行タイミング**: 要件分析完了後
+| Task                   | 起動タイミング | 入力                         | 出力                               |
+| ---------------------- | -------------- | ---------------------------- | ---------------------------------- |
+| assess-failure-profile | Phase 1開始時  | 依存関係と障害情報           | 障害特性プロファイル               |
+| design-retry-policy    | Phase 2開始時  | 障害特性プロファイル         | リトライ/耐障害ポリシー設計書       |
+| validate-rollout       | Phase 3開始時  | 実装コードと設定             | 検証レポート・運用設計ドラフト     |
 
-### Phase 3: Validation and Monitoring
-
-**Task**: `agents/validate-results.md`
-
-**目的**: Validate implementation and establish monitoring
-
-**入力**:
-
-- Phase 2の実装コード
-- Test scenarios
-- Production metrics requirements
-
-**出力**:
-
-- Test results and validation report
-- Monitoring setup recommendations
-- Usage log entry
-
-**実行タイミング**: 実装完了後、本番デプロイ前
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
 
-- 適切なパターンを選択する前に `references/Level1_basics.md` で基礎を確認
-- 実装前に `references/Level2_intermediate.md` で実務手順を整理
-- Exponential backoffを使用し、固定間隔リトライを避ける
-- Circuit breakerで障害の連鎖を防ぐ
-- タイムアウト値は測定に基づいて設定する
+| 推奨事項                           | 理由                                       |
+| ---------------------------------- | ------------------------------------------ |
+| 失敗モードを恒久/一時で分類する    | 不要な再試行を避け、成功率を上げる         |
+| リトライ予算と上限を明示する       | 雪崩障害と過剰負荷を防ぐ                   |
+| 指数バックオフにジッターを入れる   | 同時リトライによる負荷集中を避ける         |
+| しきい値は計測値に基づいて設計する | 障害の検知精度と復旧速度を両立する         |
+| タイムアウトをSLAに合わせて設計する | 失敗検知の遅延と待ち過ぎを防ぐ             |
 
 ### 避けるべきこと
 
-- 無限リトライの実装（必ず上限を設ける）
-- 即座のリトライ（バックオフなし）
-- エラーの種類を区別しない一律のリトライ
-- モニタリングなしでの本番投入
+| 禁止事項                             | 問題点                                   |
+| ------------------------------------ | ---------------------------------------- |
+| 無限リトライや過度な再試行            | 依存先の障害を拡大させる                 |
+| 固定間隔リトライのみの設計            | サンダリングハードを誘発する             |
+| エラー種別を区別しない一律リトライ    | 永続障害で無駄な負荷をかける             |
+| タイムアウトを未設定のまま運用        | 障害検知が遅れ、回復判断ができない       |
+| Circuit Breakerを導入せず外部依存を増やす | 障害の連鎖と復旧遅延を招く           |
 
-## リソース
+## リソース参照
 
-### Knowledge References
+### references/（詳細知識）
 
-Progressive Disclosureに従い、必要時のみ参照してください。
+| リソース                     | パス                                                                     | 読込条件                     |
+| ---------------------------- | ------------------------------------------------------------------------ | ---------------------------- |
+| 基礎知識                     | [references/Level1_basics.md](references/Level1_basics.md)               | Phase 1の整理時              |
+| 実務判断の整理               | [references/Level2_intermediate.md](references/Level2_intermediate.md)   | Phase 2の設計時              |
+| 応用パターン                 | [references/Level3_advanced.md](references/Level3_advanced.md)           | 複雑なケース検討時           |
+| エッジケース                 | [references/Level4_expert.md](references/Level4_expert.md)               | 例外条件の調整時             |
+| Exponential Backoff          | [references/exponential-backoff.md](references/exponential-backoff.md)   | バックオフ設計時             |
+| Circuit Breaker              | [references/circuit-breaker.md](references/circuit-breaker.md)           | しきい値設計時               |
+| Bulkhead Pattern             | [references/bulkhead-pattern.md](references/bulkhead-pattern.md)         | 隔離戦略検討時               |
+| Timeout Strategies           | [references/timeout-strategies.md](references/timeout-strategies.md)     | タイムアウト設計時           |
 
-**基礎知識** (Phase 1で参照):
+### scripts/（決定論的処理）
 
-- **Level 1 Basics**: See [references/Level1_basics.md](references/Level1_basics.md) - スキルの適用範囲と基本概念
-- **Level 2 Intermediate**: See [references/Level2_intermediate.md](references/Level2_intermediate.md) - 実務手順と判断基準
+| スクリプト                           | 機能                                     |
+| ------------------------------------ | ---------------------------------------- |
+| `scripts/analyze-retry-config.mjs`   | リトライ/CB/タイムアウト設定の静的分析   |
+| `scripts/validate-skill.mjs`         | スキル構造と参照リンクの検証             |
+| `scripts/log_usage.mjs`              | スキル使用ログの記録                     |
 
-**詳細知識** (Phase 2で必要に応じて参照):
+### assets/（テンプレート）
 
-- **Exponential Backoff**: See [references/exponential-backoff.md](references/exponential-backoff.md) - バックオフアルゴリズムの実装詳細
-- **Circuit Breaker**: See [references/circuit-breaker.md](references/circuit-breaker.md) - 状態遷移としきい値設定
-- **Bulkhead Pattern**: See [references/bulkhead-pattern.md](references/bulkhead-pattern.md) - リソース分離パターン
-- **Timeout Strategies**: See [references/timeout-strategies.md](references/timeout-strategies.md) - タイムアウト設計ガイド
-
-**高度な知識** (複雑なケースで参照):
-
-- **Level 3 Advanced**: See [references/Level3_advanced.md](references/Level3_advanced.md) - 応用パターンと組み合わせ
-- **Level 4 Expert**: See [references/Level4_expert.md](references/Level4_expert.md) - エッジケースと最適化
-
-### Scripts
-
-- `scripts/analyze-retry-config.mjs`: Analyze retry configuration for issues and recommendations
-- `scripts/validate-skill.mjs`: Validate skill structure compliance
-- `scripts/log_usage.mjs`: Record skill usage and update metrics
-
-### Assets
-
-- `assets/circuit-breaker-template.ts`: TypeScript circuit breaker implementation template
-- `assets/retry-wrapper-template.ts`: Reusable retry wrapper with exponential backoff
+| アセット                               | 用途                                 |
+| -------------------------------------- | ------------------------------------ |
+| `assets/circuit-breaker-template.ts`   | Circuit Breaker実装の雛形            |
+| `assets/retry-wrapper-template.ts`     | リトライラッパーの再利用テンプレート  |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                             |
-| ------- | ---------- | --------------------------------------------------- |
-| 1.1.0   | 2025-12-31 | Updated to 18-skills.md spec with agents/ and EVALS |
-| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added         |
+| Version | Date       | Changes                                                           |
+| ------- | ---------- | ----------------------------------------------------------------- |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様に合わせて再設計、Task仕様書追加、構成を整理       |
+| 1.1.0   | 2025-12-31 | 18-skills.md仕様に合わせてagents/とEVALSを追加                    |
+| 1.0.0   | 2025-12-24 | 仕様整合と必要成果物の追加                                        |

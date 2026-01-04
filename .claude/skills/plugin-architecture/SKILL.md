@@ -1,15 +1,16 @@
 ---
 name: plugin-architecture
 description: |
-  プラグインアーキテクチャの専門スキル。
-  レジストリパターン、動的ロード、依存性注入を活用し、
-  拡張ポイント設計とプラグインAPI、動的ロードを提供します。
+  プラグインアーキテクチャの専門スキル。レジストリパターン、動的ロード、依存性注入を活用し、拡張可能なシステム設計を提供する。
 
   Anchors:
-  • 『Clean Architecture』（Robert C. Martin） / 適用: 拡張性設計 / 目的: 柔軟性確保
+  • Clean Architecture (Robert C. Martin) / 適用: 拡張性設計 / 目的: 柔軟性確保
+  • Dependency Injection Principles and Practices (Mark Seemann) / 適用: DI設計 / 目的: 疎結合実現
+  • Design Patterns: Elements of Reusable Object-Oriented Software (Gang of Four) / 適用: レジストリパターン / 目的: 型安全な登録管理
 
   Trigger:
-  プラグインシステム設計時、拡張ポイント実装時、動的ロード設計時に使用
+  Use when designing plugin systems, implementing extension points, managing dynamic module loading, creating registry patterns, or building workflow engines with pluggable executors.
+  plugin architecture, registry pattern, dependency injection, dynamic loading, extension points, workflow executor
 allowed-tools:
   - Read
   - Write
@@ -23,59 +24,57 @@ allowed-tools:
 
 ## 概要
 
-動的な機能拡張を可能にするプラグインアーキテクチャの設計を専門とするスキル。
-レジストリパターン、動的ロード、依存性注入を活用し、
-機能追加時の既存コード修正を不要にする拡張性の高いシステム設計を提供します。
-
-詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
+動的な機能拡張を可能にするプラグインアーキテクチャの設計を専門とするスキル。レジストリパターン、動的ロード、依存性注入を活用し、機能追加時の既存コード修正を不要にする拡張性の高いシステム設計を提供します。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件分析
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
-2. 必要なリソース/スクリプト/テンプレートを特定
-3. アーキテクチャの要件（レジストリ設計、ロード戦略、DI方式）を定義
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: プラグインシステムの拡張要件を分析
 
 **アクション**:
 
-1. 関連リソース（registry-pattern.md、dependency-injection.md、dynamic-loading.md）を参照
-2. 適切なパターンテンプレート（plugin-implementation.md、registry-implementation.md）を使用
-3. プラグインライフサイクルと依存性注入の設計を実施
-4. 重要な判断点をメモとして残す
+1. 拡張ポイントの特定（どこを拡張可能にするか）
+2. プラグインインターフェースの設計要件の整理
+3. ライフサイクル管理の必要性を評価
 
-### Phase 3: 検証と記録
+**Task**: `agents/analyze-requirements.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: システム設計
+
+**目的**: プラグインシステムの全体設計を確定
 
 **アクション**:
 
-1. `scripts/validate-plugin-structure.mjs` でプラグイン構造を検証
-2. `scripts/validate-skill.mjs` でスキル構造を確認
-3. 成果物が目的に合致するか確認
-4. `scripts/log_usage.mjs` を実行して記録を残す
+1. レジストリパターンの選択（Map-based, Service Locator等）
+2. ロード戦略の決定（Eager, Lazy, On-Demand）
+3. 依存性注入方式の設計
+4. プラグインライフサイクルフックの定義
+
+**Task**: `agents/design-plugin-system.md` を参照
+
+### Phase 3: レジストリ実装
+
+**目的**: 型安全なレジストリを実装
+
+**アクション**:
+
+1. `assets/registry-implementation.md` を基にレジストリクラスを作成
+2. CRUD操作（register, get, list, unregister）を実装
+3. エラーハンドリング（重複登録、未登録キーアクセス）を追加
+4. `scripts/validate-plugin-structure.mjs` で検証
+
+**Task**: `agents/implement-registry.md` を参照
 
 ## Task仕様ナビ
 
-| Task                         | リソース                | スクリプト                    | テンプレート               |
-| ---------------------------- | ----------------------- | ----------------------------- | -------------------------- |
-| プラグインの基本概念習得     | Level1_basics.md        | validate-skill.mjs            | -                          |
-| レジストリパターン実装       | registry-pattern.md     | validate-plugin-structure.mjs | registry-implementation.md |
-| 動的ロード戦略の選択         | dynamic-loading.md      | validate-plugin-structure.mjs | plugin-implementation.md   |
-| 依存性注入の設計             | dependency-injection.md | validate-plugin-structure.mjs | plugin-implementation.md   |
-| プラグインライフサイクル管理 | plugin-lifecycle.md     | validate-plugin-structure.mjs | plugin-implementation.md   |
-| Service Locatorパターン      | service-locator.md      | validate-plugin-structure.mjs | -                          |
-| 実務的な設計パターン         | Level2_intermediate.md  | validate-plugin-structure.mjs | registry-implementation.md |
-| 応用的なテクニック           | Level3_advanced.md      | validate-skill.mjs            | -                          |
-| エキスパート知見             | Level4_expert.md        | log_usage.mjs                 | -                          |
+| Task                 | 起動タイミング | 入力                     | 出力                     |
+| -------------------- | -------------- | ------------------------ | ------------------------ |
+| analyze-requirements | Phase 1開始時  | システム要件             | 拡張要件分析書           |
+| design-plugin-system | Phase 2開始時  | 拡張要件分析書           | プラグインシステム設計書 |
+| implement-registry   | Phase 3開始時  | プラグインシステム設計書 | Registryクラス実装       |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
 ## ベストプラクティス
 
@@ -90,40 +89,46 @@ allowed-tools:
 
 ### 避けるべきこと
 
-- アンチパターンや注意点を確認せずに進めることを避ける
-- プラグイン間の循環依存を許可することを避ける
-- グローバル状態を使用してプラグイン間通信を行うことを避ける
-- 型安全性なしでプラグインレジストリを実装することを避ける
+- プラグイン間の循環依存を許可しない
+- グローバル状態を使用してプラグイン間通信を行わない
+- 型安全性なしでプラグインレジストリを実装しない
+- ライフサイクルフックなしで動的ロードを行わない
+- 依存性注入なしでプラグイン間の依存を解決しない
 
 ## リソース参照
 
-### リソースファイル
+### references/（詳細知識）
 
-- `references/Level1_basics.md` - プラグインアーキテクチャの基礎概念
-- `references/Level2_intermediate.md` - 実装パターンと設計判断
-- `references/Level3_advanced.md` - 高度なテクニックとスケーリング
-- `references/Level4_expert.md` - エキスパートレベルの知見
-- `references/registry-pattern.md` - 型安全なレジストリ実装パターン
-- `references/dependency-injection.md` - DI Container設計とパターン
-- `references/dynamic-loading.md` - ロード戦略（Eager/Lazy/On-Demand）
-- `references/plugin-lifecycle.md` - ロード、初期化、有効化、無効化、アンロード
-- `references/service-locator.md` - Service Locatorパターンの比較検討
-- `references/legacy-skill.md` - 旧SKILL.mdの全文
-- `references/requirements-index.md` - 要求仕様の索引
+| リソース           | パス                                                                         | 内容                       |
+| ------------------ | ---------------------------------------------------------------------------- | -------------------------- |
+| 基礎知識           | See [references/Level1_basics.md](references/Level1_basics.md)               | プラグインの基本概念       |
+| 実装パターン       | See [references/Level2_intermediate.md](references/Level2_intermediate.md)   | レジストリ・DI実装パターン |
+| 高度なテクニック   | See [references/Level3_advanced.md](references/Level3_advanced.md)           | 動的ロード・スケーリング   |
+| エキスパート知見   | See [references/Level4_expert.md](references/Level4_expert.md)               | 大規模システムの設計知見   |
+| レジストリパターン | See [references/registry-pattern.md](references/registry-pattern.md)         | 型安全なレジストリ詳細     |
+| ライフサイクル管理 | See [references/plugin-lifecycle.md](references/plugin-lifecycle.md)         | 初期化・シャットダウン     |
+| 依存性注入         | See [references/dependency-injection.md](references/dependency-injection.md) | DI Container設計           |
+| 動的ロード         | See [references/dynamic-loading.md](references/dynamic-loading.md)           | 動的モジュールロード       |
+| サービスロケーター | See [references/service-locator.md](references/service-locator.md)           | Service Locatorパターン    |
 
-### スクリプト
+### scripts/（決定論的処理）
 
-- `scripts/validate-plugin-structure.mjs` - プラグインディレクトリ構造とインターフェース実装の検証
-- `scripts/validate-skill.mjs` - スキル構造検証
-- `scripts/log_usage.mjs` - 使用記録と自動評価
+| スクリプト                      | 用途               | 使用例                                                          |
+| ------------------------------- | ------------------ | --------------------------------------------------------------- |
+| `validate-plugin-structure.mjs` | プラグイン構造検証 | `node scripts/validate-plugin-structure.mjs src/features`       |
+| `validate-skill.mjs`            | スキル構造検証     | `node scripts/validate-skill.mjs`                               |
+| `log_usage.mjs`                 | フィードバック記録 | `node scripts/log_usage.mjs --result success --phase "Phase 3"` |
 
-### テンプレート
+### assets/（テンプレート）
 
-- `assets/plugin-implementation.md` - IPlugin実装、ライフサイクルフック、依存性注入を含むプラグインテンプレート
-- `assets/registry-implementation.md` - 型安全なRegistry実装テンプレート（Map-based、CRUD操作含む）
+| テンプレート                 | 用途                              |
+| ---------------------------- | --------------------------------- |
+| `plugin-implementation.md`   | IPlugin実装、ライフサイクルフック |
+| `registry-implementation.md` | 型安全なRegistry実装              |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                                                                 |
-| ------- | ---------- | ------------------------------------------------------------------------------------------------------- |
-| 1.0.0   | 2025-12-31 | 18-skills.md仕様に基づいて完全更新: Trigger/Anchorsの追加、Task仕様ナビ追加、リソース参照セクション統合 |
+| Version | Date       | Changes                              |
+| ------- | ---------- | ------------------------------------ |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様完全準拠、構造再編成 |
+| 1.0.0   | 2025-12-31 | 初版                                 |

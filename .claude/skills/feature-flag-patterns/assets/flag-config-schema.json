@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Feature Flag Configuration",
+  "type": "object",
+  "required": ["name", "type", "defaultValue", "owner"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "フラグの一意識別子（kebab-case）"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["release", "experiment", "ops", "permission"],
+      "description": "フラグのタイプ"
+    },
+    "defaultValue": {
+      "type": "boolean",
+      "description": "フラグがオフの場合のデフォルト値"
+    },
+    "owner": {
+      "type": "string",
+      "description": "フラグのオーナー（チームまたは個人）"
+    },
+    "description": {
+      "type": "string",
+      "description": "フラグの説明"
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date",
+      "description": "有効期限（ISO 8601形式）"
+    },
+    "rollout": {
+      "type": "object",
+      "properties": {
+        "percentage": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "cohorts": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

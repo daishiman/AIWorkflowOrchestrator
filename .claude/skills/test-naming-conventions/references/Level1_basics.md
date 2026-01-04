@@ -26,7 +26,7 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 
 ### 成果物の最小要件
 - テンプレートの必須項目を満たしている
-- 主要テンプレート: `templates/naming-guide.md`
+- 主要テンプレート: `assets/naming-guide.md`
 
 ### 参照書籍
 - 『Test-Driven Development: By Example』（Kent Beck）: Red-Green-Refactor
@@ -35,7 +35,10 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
-- `templates/naming-guide.md`: このレベルでは参照のみ
+- `assets/naming-guide.md`: このレベルでは参照のみ
+
+### ワークフロー対応
+- Phase 1 では命名の目的と適用範囲の整理を優先する
 
 ## 実践手順
 

@@ -41,34 +41,39 @@ last_updated: 2025-12-31
 
 **目的**: 対話設計タスクの目的と前提条件を明確にする
 
+**参照エージェント**: `agents/requirements-analysis.md`
+
 **アクション**:
 
 1. 対話の目的とユースケースを確認（サポートチャット、ウィザード、分析等）
-2. `references/Level1_basics.md` で対話パターンの基礎を理解
-3. 必要なレベルのリソース（Level 2-4）を特定
-4. コンテキスト保持方式と状態管理の戦略を選定
+2. `references/basics.md` で対話パターンの基礎を理解
+3. コンテキスト保持方式と状態管理の戦略を選定
+4. 必要なリソースを特定
 
 ### Phase 2: スキル適用と設計実装
 
 **目的**: マルチターン対話の設計・実装を進める
 
+**参照エージェント**: `agents/dialogue-flow-designer.md`
+
 **アクション**:
 
-1. `references/Level2_intermediate.md` で実務パターンを確認
+1. `references/patterns.md` で実装パターンを確認
 2. 対話フロー図またはメッセージスキーマを設計
 3. ターン管理メカニズム（メモリ・DB・キャッシュ等）を選定
-4. コンテキスト更新ロジックを実装
-5. 関連パターンガイドを参照しながら実装を進行
-6. `assets/multi-turn-template.md` でテンプレート確認
+4. コンテキスト更新ロジックを実装（`references/context-patterns.md` 参照）
+5. エラーハンドリング戦略を設計（`references/error-handling-patterns.md` 参照）
 
 ### Phase 3: 検証と記録
 
 **目的**: 成果物の検証と実行記録の保存
 
+**参照エージェント**: `agents/quality-validator.md`
+
 **アクション**:
 
 1. 対話フローの一貫性と正確性を確認
-2. エッジケース（コンテキスト喪失、超長対話等）への対応を検証
+2. エッジケース（コンテキスト喪失、超長対話等）への対応を検証（`references/edge-cases.md` 参照）
 3. `scripts/validate-skill.mjs` でスキル構造を確認
 4. `scripts/log_usage.mjs` を実行して使用記録を保存
 
@@ -91,63 +96,30 @@ last_updated: 2025-12-31
 - コンテキスト無制限保持（メモリ圧迫へのリスク）
 - 仮定に基づくユーザー状態操作（常に確認メッセージを送信）
 
-## Task仕様ナビ
-
-| Task                       | フェーズ  | 関連リソース                      | スクリプト         | テンプレート                |
-| -------------------------- | --------- | --------------------------------- | ------------------ | --------------------------- |
-| 対話パターンの基礎習得     | Phase 1   | Level1_basics.md                  | validate-skill.mjs | -                           |
-| 対話フローの設計           | Phase 2   | Level2_intermediate.md            | validate-skill.mjs | multi-turn-template.md      |
-| コンテキスト管理機構の実装 | Phase 2   | context-patterns.md               | validate-skill.mjs | context-management-guide.md |
-| ターン状態管理の構築       | Phase 2   | state-management-guide.md         | validate-skill.mjs | state-machine-template.md   |
-| 複雑対話シナリオへの適用   | Phase 2   | Level3_advanced.md, edge-cases.md | validate-skill.mjs | -                           |
-| エッジケース対応           | Phase 2   | error-handling-patterns.md        | validate-skill.mjs | -                           |
-| 検証と記録                 | Phase 3   | -                                 | log_usage.mjs      | -                           |
-| ベストプラクティス確認     | Phase 1-3 | Level4_expert.md                  | -                  | -                           |
-
 ## リソース参照
 
-### 学習リソース
+### 参照ドキュメント
 
-| リソース                                | 説明                                          | 対象         |
-| --------------------------------------- | --------------------------------------------- | ------------ |
-| `references/Level1_basics.md`           | マルチターン対話の基礎パターン                | 初心者       |
-| `references/Level2_intermediate.md`     | 実務的な対話フロー設計パターン                | 実務者       |
-| `references/Level3_advanced.md`         | 複雑なシナリオへの応用と最適化                | 上級者       |
-| `references/Level4_expert.md`           | ベストプラクティスとアンチパターン            | エキスパート |
-| `references/context-patterns.md`        | コンテキスト管理パターン集                    | Phase 2      |
-| `references/state-management-guide.md`  | ユーザー意図と対話状態の管理ガイド            | Phase 2      |
-| `references/edge-cases.md`              | エッジケースと対応パターン                    | Phase 2      |
-| `references/error-handling-patterns.md` | エラーハンドリングと復帰パターン              | Phase 2      |
-| `references/requirements-index.md`      | 要求仕様の索引（docs/00-requirements と同期） | 全レベル     |
+| ドキュメント                                                                   | 内容                       |
+| ------------------------------------------------------------------------------ | -------------------------- |
+| [references/basics.md](references/basics.md)                                   | マルチターン対話基礎概念   |
+| [references/patterns.md](references/patterns.md)                               | 実装パターン、設計戦略     |
+| [references/context-patterns.md](references/context-patterns.md)               | コンテキスト管理パターン集 |
+| [references/state-management-guide.md](references/state-management-guide.md)   | 状態管理ガイド             |
+| [references/edge-cases.md](references/edge-cases.md)                           | エッジケース対応           |
+| [references/error-handling-patterns.md](references/error-handling-patterns.md) | エラーハンドリングパターン |
 
-### 実行スクリプト
+### エージェント
 
-```bash
-# スキル構造の検証
-node .claude/skills/multi-turn-conversation/scripts/validate-skill.mjs
+| エージェント                       | 役割                       |
+| ---------------------------------- | -------------------------- |
+| `agents/requirements-analysis.md`  | 要件分析、対話設計方針決定 |
+| `agents/dialogue-flow-designer.md` | 対話フロー設計             |
+| `agents/quality-validator.md`      | 品質検証、エッジケース確認 |
 
-# 使用記録の保存
-node .claude/skills/multi-turn-conversation/scripts/log_usage.mjs --task <task-name>
+### スクリプト
 
-# リソースの確認
-cat .claude/skills/multi-turn-conversation/references/Level1_basics.md
-cat .claude/skills/multi-turn-conversation/references/Level2_intermediate.md
-cat .claude/skills/multi-turn-conversation/references/Level3_advanced.md
-cat .claude/skills/multi-turn-conversation/references/Level4_expert.md
-```
-
-### テンプレート
-
-```bash
-# テンプレートの確認
-cat .claude/skills/multi-turn-conversation/assets/multi-turn-template.md
-cat .claude/skills/multi-turn-conversation/assets/context-management-guide.md
-cat .claude/skills/multi-turn-conversation/assets/state-machine-template.md
-```
-
-## 変更履歴
-
-| Version | Date       | Changes                                                                |
-| ------- | ---------- | ---------------------------------------------------------------------- |
-| 1.1.0   | 2025-12-31 | 18-skills.md仕様に完全準拠。Anchors/Triggers実装、Task仕様ナビ追加完了 |
-| 1.0.0   | 2025-12-24 | 初版リリース。スキル基本構造の定義                                     |
+| スクリプト                   | 用途           |
+| ---------------------------- | -------------- |
+| `scripts/validate-skill.mjs` | スキル構造検証 |
+| `scripts/log_usage.mjs`      | 使用記録       |

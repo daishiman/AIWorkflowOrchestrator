@@ -1,14 +1,19 @@
 ---
 name: secret-management-architecture
 description: |
-  シークレット管理アーキテクチャの専門スキル。
-  Vault設計、ローテーション、アクセス制御を提供します。
+  シークレット管理アーキテクチャの設計・実装スキル。
+  Vault/KMS/Secrets Manager統合、キーローテーション、アクセス制御マトリクスを体系的に設計する。
+  シークレット分類からライフサイクル管理まで、エンタープライズグレードの機密情報管理戦略を提供。
 
   Anchors:
-  • 『Clean Architecture』（Robert C. Martin） / 適用: シークレット管理アーキテクチャ / 目的: 依存関係ルールの実装
+  • Clean Architecture (Robert C. Martin) / 適用: 依存関係ルール / 目的: シークレット管理層の分離
+  • Zero Trust Architecture (NIST SP 800-207) / 適用: 認証・認可 / 目的: 最小権限アクセス
+  • OWASP Secrets Management Cheat Sheet / 適用: 実装パターン / 目的: セキュリティベストプラクティス
+  • HashiCorp Vault Best Practices / 適用: Vault統合 / 目的: シークレットバックエンド設計
 
   Trigger:
-  シークレット管理アーキテクチャ設計時、Vault/KMS導入時、キーローテーション設計時、アクセス制御マトリクス設計時に使用
+  Use when designing secret management architecture, integrating Vault/KMS, planning key rotation, or creating access control matrices.
+  secret management, vault integration, key rotation, access control, KMS, secrets manager, credential management
 allowed-tools:
   - Read
   - Write
@@ -16,124 +21,149 @@ allowed-tools:
   - Bash
   - Glob
   - Grep
+  - Task
 ---
 
 # Secret Management Architecture
 
 ## 概要
 
-シークレット管理アーキテクチャスキルは、環境変数、HashiCorp Vault、AWS KMS、AWS Secrets Managerなど複数のシークレット保管・管理システムを統合して、エンタープライズグレードの機密情報管理戦略を設計・実装するための専門スキルです。
+シークレット管理アーキテクチャスキルは、環境変数、HashiCorp Vault、AWS KMS、AWS Secrets Managerなど複数のシークレット保管・管理システムを統合し、エンタープライズグレードの機密情報管理戦略を設計・実装する。
 
-このスキルでは以下を実現します：
+**主要機能**:
 
-- **ライフサイクル管理**: シークレット生成、配布、ローテーション、廃棄までの一連のプロセス設計
-- **アクセス制御**: Role-based Access Control（RBAC）による最小権限の実装
-- **分類と保護**: シークレット重要度別の保護レベル設定
-- **統合と標準化**: 複数のバックエンド間での一貫した管理インターフェース
-- **監査とコンプライアンス**: 機密情報へのアクセスログと監査証跡の確保
-
-詳細な実装手順は `references/` ディレクトリのレベル別ガイドを参照してください。
+- **分類とガバナンス**: シークレット重要度別の保護レベル設計
+- **ライフサイクル管理**: 生成・配布・ローテーション・廃棄の一連プロセス
+- **アクセス制御**: RBAC/ABACによる最小権限実装
+- **バックエンド統合**: Vault/KMS/Secrets Managerの統合アーキテクチャ
+- **監査とコンプライアンス**: アクセスログと監査証跡の確保
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+```
+analyze-requirements → classify-secrets → design-architecture
+                                                  ↓
+validate-architecture ← integrate-backend ← design-access-control
+                                                  ↑
+                                          design-rotation
+```
 
-**目的**: タスクの目的と前提条件を明確にする
+### Task 1: 要件分析（analyze-requirements）
 
-**アクション**:
+シークレット管理の要件を分析し、スコープと制約を明確化する。
 
-1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
-2. 必要な references/scripts/templates を特定
+**Task**: `agents/analyze-requirements.md` を参照
 
-### Phase 2: スキル適用
+### Task 2: シークレット分類（classify-secrets）
 
-**目的**: スキルの指針に従って具体的な作業を進める
+シークレットを重要度・用途別に分類し、保護レベルを決定する。
 
-**アクション**:
+**Task**: `agents/classify-secrets.md` を参照
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+### Task 3: アーキテクチャ設計（design-architecture）
 
-### Phase 3: 検証と記録
+シークレット管理の全体アーキテクチャを設計する。
 
-**目的**: 成果物の検証と実行記録の保存
+**Task**: `agents/design-architecture.md` を参照
 
-**アクション**:
+### Task 4: ローテーション戦略（design-rotation）
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+キーローテーション戦略と自動化フローを設計する。
 
-## Task仕様ナビ
+**Task**: `agents/design-rotation.md` を参照
 
-| タスク                               | リソース                             | 対象レベル | 期間  |
-| ------------------------------------ | ------------------------------------ | ---------- | ----- |
-| シークレット分類フレームワークの構築 | `secret-classification-framework.md` | Level 1-2  | 1-2日 |
-| Vault統合設計の実装                  | `vault-integration-patterns.md`      | Level 2-3  | 3-4日 |
-| Kubernetes Secrets管理の設定         | `kubernetes-secrets-patterns.md`     | Level 2-3  | 2-3日 |
-| アクセス制御マトリクスの作成         | `access-control-matrix-template.md`  | Level 1-2  | 1日   |
-| ライフサイクル管理フロー設計         | `Level2_intermediate.md`             | Level 2    | 2-3日 |
-| 監査・ロギング戦略の構築             | `Level3_advanced.md`                 | Level 3    | 2-3日 |
-| エンタープライズ統合アーキテクチャ   | `Level4_expert.md`                   | Level 4    | 4-5日 |
+### Task 5: アクセス制御設計（design-access-control）
+
+RBAC/ABACベースのアクセス制御マトリクスを設計する。
+
+**Task**: `agents/design-access-control.md` を参照
+
+### Task 6: バックエンド統合（integrate-backend）
+
+Vault/KMS/Secrets Managerとの統合設計を行う。
+
+**Task**: `agents/integrate-backend.md` を参照
+
+### Task 7: アーキテクチャ検証（validate-architecture）
+
+設計されたアーキテクチャがセキュリティ要件を満たすことを検証する。
+
+**Task**: `agents/validate-architecture.md` を参照
+
+## Task仕様（ナビゲーション）
+
+| Task                  | 責務                   | 入力               | 出力                   |
+| --------------------- | ---------------------- | ------------------ | ---------------------- |
+| analyze-requirements  | 要件分析               | ビジネス要件       | 要件定義書             |
+| classify-secrets      | シークレット分類       | シークレット一覧   | 分類マトリクス         |
+| design-architecture   | アーキテクチャ設計     | 要件・分類結果     | アーキテクチャ設計書   |
+| design-rotation       | ローテーション戦略設計 | アーキテクチャ     | ローテーション計画書   |
+| design-access-control | アクセス制御設計       | アーキテクチャ     | アクセス制御マトリクス |
+| integrate-backend     | バックエンド統合設計   | アーキテクチャ     | 統合設計書             |
+| validate-architecture | アーキテクチャ検証     | 全設計ドキュメント | 検証レポート           |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
+**注記**: 1 Task = 1 責務。複数責務を1ファイルに入れない。
 
 ## ベストプラクティス
 
 ### すべきこと
 
-- **事前分析**: `references/Level1_basics.md` を参照し、シークレット分類基準と管理方針を明確にする
-- **段階的導入**: `references/Level2_intermediate.md` に従い、環境別（開発→ステージング→本番）で段階的に導入
-- **アクセス制御**: 最小権限の原則（Principle of Least Privilege）を実装し、Role-based Access Control を設計
-- **ライフサイクル設計**: シークレット生成、配布、ローテーション、廃棄の全フェーズを定義
-- **監査ログ**: すべてのシークレットアクセスと変更を監査ログに記録し、コンプライアンス追跡
-- **バックアップ戦略**: 重要なシークレット設定のバックアップと災害復旧手順を確立
-- **ドキュメント化**: シークレット管理ポリシー、統合方法、トラブルシューティングを文書化
-- **テスト検証**: `scripts/validate-skill.mjs` でアーキテクチャ設計の整合性を検証
+- **事前分析**: `references/classification-framework.md` でシークレット分類基準を確認
+- **段階的導入**: 開発→ステージング→本番の順で段階的に導入
+- **最小権限**: Principle of Least Privilegeを実装し、RBACを設計
+- **ライフサイクル**: 生成・配布・ローテーション・廃棄の全フェーズを定義
+- **監査ログ**: すべてのアクセスと変更を監査ログに記録
+- **バックアップ**: 重要なシークレット設定のバックアップと災害復旧手順を確立
+- **テスト検証**: `scripts/validate-architecture.mjs` でアーキテクチャ整合性を検証
 
 ### 避けるべきこと
 
-- ハードコード: コードにシークレットをハードコードしない
-- ログ出力: シークレットをログファイルやスタックトレースに出力しない
-- バージョン管理: シークレットをGitリポジトリにコミットしない
-- 単一バックエンド: 単一の管理システムに依存しない、冗長性を確保
-- アクセス権の無制限付与: 必要最小限の権限のみ付与
-- ローテーション戦略なし: 定期的なシークレットローテーション計画がない設計
-- 監査なし: アクセスログや変更履歴の監査機能なしでの運用
-- 環境混在: 開発環境と本番環境のシークレットを混在させない
+- **ハードコード**: コードにシークレットをハードコードしない
+- **ログ出力**: シークレットをログファイルやスタックトレースに出力しない
+- **バージョン管理**: シークレットをGitリポジトリにコミットしない
+- **単一バックエンド**: 単一の管理システムに依存しない、冗長性を確保
+- **無制限アクセス**: 必要最小限の権限のみ付与
+- **ローテーションなし**: 定期的なローテーション計画なしでの運用
+- **監査なし**: アクセスログや変更履歴の監査機能なしでの運用
+- **環境混在**: 開発環境と本番環境のシークレットを混在させない
 
 ## リソース参照
 
-### 学習リソース（references/）
+### references/（詳細知識）
 
-| リソース                             | 説明                                     | 対象者                     |
-| ------------------------------------ | ---------------------------------------- | -------------------------- |
-| `Level1_basics.md`                   | シークレット管理の基本概念と分類         | すべての開発者             |
-| `Level2_intermediate.md`             | 実務的な統合パターンと運用手順           | バックエンド開発者、DevOps |
-| `Level3_advanced.md`                 | エンタープライズ設計とベストプラクティス | アーキテクト、セキュリティ |
-| `Level4_expert.md`                   | 複雑な統合シナリオと最適化               | インフラ専門家             |
-| `secret-classification-framework.md` | シークレット重要度分類基準               | すべての開発者             |
-| `vault-integration-patterns.md`      | HashiCorp Vault統合パターン              | DevOps、システム設計者     |
-| `kubernetes-secrets-patterns.md`     | Kubernetes環境での管理パターン           | Kubernetes運用者           |
-| `access-control-matrix-template.md`  | RBAC設計テンプレート                     | セキュリティ責任者         |
-| `requirements-index.md`              | 要求仕様索引（ドキュメント連携）         | 要件定義者                 |
+**注記**: references/ は責務/ドメイン単位で分割し、1ファイル=1責務を基本とする。
 
-### スクリプト（scripts/）
+| リソース                                                                  | 説明                           | 対象タスク            |
+| ------------------------------------------------------------------------- | ------------------------------ | --------------------- |
+| See [classification-framework.md](references/classification-framework.md) | シークレット分類フレームワーク | classify-secrets      |
+| See [architecture-patterns.md](references/architecture-patterns.md)       | アーキテクチャパターン         | design-architecture   |
+| See [rotation-strategies.md](references/rotation-strategies.md)           | ローテーション戦略             | design-rotation       |
+| See [access-control-patterns.md](references/access-control-patterns.md)   | アクセス制御パターン           | design-access-control |
+| See [vault-integration.md](references/vault-integration.md)               | Vault統合パターン              | integrate-backend     |
+| See [kubernetes-secrets.md](references/kubernetes-secrets.md)             | Kubernetes Secrets管理         | integrate-backend     |
+| See [compliance-checklist.md](references/compliance-checklist.md)         | コンプライアンスチェックリスト | validate-architecture |
 
-| スクリプト           | 用途                         | 実行方法                            |
-| -------------------- | ---------------------------- | ----------------------------------- |
-| `validate-skill.mjs` | アーキテクチャ設計の構造検証 | `node scripts/validate-skill.mjs`   |
-| `log_usage.mjs`      | 使用記録とスキル評価         | `node scripts/log_usage.mjs --help` |
+### scripts/（決定論的処理）
 
-### テンプレート（assets/）
+| スクリプト                  | 用途               | 使用例                                                              |
+| --------------------------- | ------------------ | ------------------------------------------------------------------- |
+| `validate-architecture.mjs` | アーキテクチャ検証 | `node scripts/validate-architecture.mjs --config architecture.yaml` |
+| `log_usage.mjs`             | 使用記録           | `node scripts/log_usage.mjs --result success --phase "Task 7"`      |
 
-| テンプレート                   | 用途                   | 対象               |
-| ------------------------------ | ---------------------- | ------------------ |
-| `env-example-template.md`      | 環境変数設定のサンプル | 開発環境構築       |
-| `rotation-plan-template.md`    | ローテーション計画書   | ライフサイクル管理 |
-| `secret-inventory-template.md` | シークレット棚卸し表   | 監査・管理         |
+### assets/（テンプレート）
+
+| テンプレート                | 用途                   | 対象               |
+| --------------------------- | ---------------------- | ------------------ |
+| `env-template.md`           | 環境変数設定のサンプル | 開発環境構築       |
+| `rotation-plan-template.md` | ローテーション計画書   | ライフサイクル管理 |
+| `inventory-template.md`     | シークレット棚卸し表   | 監査・管理         |
+| `access-matrix-template.md` | アクセス制御マトリクス | アクセス制御設計   |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                                                                                                                             |
-| ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1.1.0   | 2025-12-31 | 18-skills.md仕様への完全対応：YAML frontmatter改善（Anchors/Trigger/allowed-tools追加）、概要拡充、Task仕様ナビ追加、ベストプラクティス強化、リソース参照テーブル化 |
-| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added                                                                                                                         |
+| Version | Date       | Changes                                                   |
+| ------- | ---------- | --------------------------------------------------------- |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様完全準拠: Task分離、責務ベースreferences/ |
+| 1.1.0   | 2025-12-31 | YAML frontmatter改善、Task仕様ナビ追加                    |
+| 1.0.0   | 2025-12-24 | 初版作成                                                  |

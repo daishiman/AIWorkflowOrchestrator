@@ -4,115 +4,159 @@ description: |
   Git Hooksの基本概念、ライフサイクル、実装パターンを提供し、コミット前のコード品質チェックとプッシュ前のテスト自動化を実現するスキル。
 
   Anchors:
-  • Git Hooks基本フレームワーク / 適用: クライアント側フック設計 / 目的: コード品質の段階的チェック自動化
-  • 実装パターン集（Prettier+ESLint、型チェック、テスト検証） / 適用: プロジェクト固有の検証ワークフロー構築 / 目的: 一貫性のある自動化スクリプト実装
+  • Pro Git (Scott Chacon) / 適用: Git Hooksのライフサイクル理解 / 目的: クライアント/サーバー側フックの適切な選択
+  • Continuous Delivery (Jez Humble) / 適用: 自動化パイプライン設計 / 目的: 品質ゲートの段階的実装
 
   Trigger:
-  Git Hooksを実装してコミット前のコード品質チェックを自動化したい時、またはプッシュ前のテスト実行を強制したい時に使用する。発動キーワード：pre-commit、pre-push、フック、Git自動化、コード品質チェック。
+  Use when implementing Git hooks for pre-commit code quality checks, pre-push test execution, or commit message validation.
+  pre-commit, pre-push, git hooks, husky, lint-staged, conventional commits
 allowed-tools:
-  - bash
-  - git
-  - node
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+  - Task
 ---
 
-# Git Hooks 概念
+# Git Hooks Concepts
 
 ## 概要
 
-Git Hooksの基本概念、ライフサイクル、実装パターンを提供するスキル。クライアント側フック（pre-commit、pre-push）の設計・実装・検証を支援し、コード品質チェックとテスト自動化を実現します。
+Git Hooksの基本概念、ライフサイクル、実装パターンを提供するスキル。クライアント側フック（pre-commit、pre-push）の設計・実装・検証を支援し、コード品質チェックとテスト自動化を実現する。
+
+**適用範囲**: Git管理下のプロジェクト全般（Node.js、Python、Go等）
 
 ## ワークフロー
 
-### Phase 1: 目的と前提条件の確認
+### Phase 1: 要件確認
 
-**目的**: タスクの目的と前提条件を明確にし、どのレベル・リソースが必要かを特定する
-
-**アクション**:
-
-1. タスクの目的を言語化（「コミット前のコード品質チェック」「プッシュ前のテスト実行」など）
-2. 現在の実装レベルを確認（基礎/実務/応用/専門）
-3. 必要なリソース（テンプレート、参照、スクリプト）を特定
-
-### Phase 2: スキル指針に従った実装
-
-**目的**: スキルの知識体系と実装パターンを活用して具体的な作業を実施
+**目的**: フックの目的と検証項目を明確にする
 
 **アクション**:
 
-1. 対応するレベルのリソースを読取（Level1_basics.md から Level4_expert.md）
-2. hook-types-reference.md でフック種類を確認
-3. implementation-patterns.md から目的に合うパターンを選択・適用
-4. テンプレート（pre-commit-template.sh / pre-push-template.sh）をカスタマイズ
-5. 重要な決定点や検証項目をメモに記録
+1. フックの目的を特定（コード品質、テスト、コミットメッセージ検証など）
+2. [references/hook-types-reference.md](references/hook-types-reference.md) でフック種類を確認
+3. 対象ファイルタイプと検証ツールを決定
 
-### Phase 3: 検証と実行記録
+**Task**: `agents/confirm-requirements.md` を参照
 
-**目的**: 成果物の正確性と動作確認、フィードバックループへの記録
+### Phase 2: フック実装
+
+**目的**: 選択したフックを実装する
 
 **アクション**:
 
-1. scripts/validate-git-hooks.mjs でGit Hooks設定を検証
-2. テンプレートが目的の検証ルールを網羅しているか確認
-3. scripts/log_usage.mjs で使用実績を記録（フィードバックループへの組み込み）
+1. [references/implementation-patterns.md](references/implementation-patterns.md) から適切なパターンを選択
+2. [assets/](assets/) のテンプレートをカスタマイズ
+3. `.git/hooks/` または `.husky/` にスクリプトを配置
 
-## Task仕様ナビ
+**Task**: `agents/implement-hook.md` を参照
 
-本スキルは段階的学習（Progressive Disclosure）に対応。タスクの目的と現状に応じてリソースを読み込む：
+### Phase 3: 検証と記録
 
-| 使用場面                                                          | 対応リソース                                                                  | 読み込みタイミング                       | 成果物例                           |
-| ----------------------------------------------------------------- | ----------------------------------------------------------------------------- | ---------------------------------------- | ---------------------------------- |
-| Git Hooksの基本を学び、簡単なpre-commitを実装したい               | `references/Level1_basics.md` + `assets/pre-commit-template.sh`            | Phase 1で確認、Phase 2で参照             | .git/hooks/pre-commit スクリプト   |
-| Prettier/ESLint/型チェック等の複数検証を統合したい                | `references/Level2_intermediate.md` + `references/implementation-patterns.md` | 複雑な統合が必要と判断時                 | 統合pre-commitスクリプト           |
-| カスタム検証ルール、エラーハンドリング、ロギングを実装したい      | `references/Level3_advanced.md` + `references/hook-types-reference.md`        | パフォーマンス最適化や複雑なルール適用時 | カスタム検証フック群               |
-| 企業向けポリシーベースのフック設計、フェーズ分割、複数フック運用  | `references/Level4_expert.md`                                                 | 大規模チーム向けの統一化が必要な場合     | フック運用ガイド、ポリシー文書     |
-| フック種類の詳細（仕様・トリガータイミング・制約）                | `references/hook-types-reference.md`                                          | フック種類の理解が不足している時         | フック選択根拠の説明文             |
-| すぐに使える実装パターン（10種類：Prettier+ESLint、型チェック等） | `references/implementation-patterns.md`                                       | 実装パターン選択時・カスタマイズ時       | カスタマイズされたフックスクリプト |
+**目的**: フックの動作を確認し、記録する
+
+**アクション**:
+
+1. `scripts/validate-git-hooks.mjs` でフック設定を検証
+2. 実際にコミット/プッシュしてフックが発火することを確認
+3. `scripts/log_usage.mjs` で使用実績を記録
+
+**Task**: `agents/validate-and-log.md` を参照
+
+## Task仕様（ナビゲーション）
+
+| Task                 | 起動タイミング | 入力             | 出力               |
+| -------------------- | -------------- | ---------------- | ------------------ |
+| confirm-requirements | Phase 1        | フック要件       | 検証項目リスト     |
+| implement-hook       | Phase 2        | 検証項目リスト   | フックスクリプト   |
+| validate-and-log     | Phase 3        | フックスクリプト | 検証結果、使用記録 |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
 ## ベストプラクティス
 
 ### すべきこと
 
-- **目的を明確にして使用**: 「コミット前のコード品質チェック」「プッシュ前のテスト実行」など、具体的なユースケースから始める
-- **段階的に複雑化**: Level1_basics で基本を確認してから、必要に応じてより高度なパターンを適用する
-- **テンプレートをカスタマイズ**: 提供テンプレートをプロジェクト固有のルールに合わせて調整する
-- **バリデーション結果を記録**: スクリプト実行後、成果物の妥当性を確認し log_usage.mjs で記録する
-- **複数フックの組み合わせ**: pre-commit と pre-push を役割で分け、重複チェックを避ける
+- pre-commitは軽いチェック（1秒以内）、pre-pushで重いテスト実行
+- 明確なエラーメッセージで修正方法を提示
+- 段階的な検証（軽い→重い順序で実行）
+- Task実行前に該当する `agents/*.md` を読み、入出力を確認する
+- Phase完了後に `scripts/log_usage.mjs` で記録を残す
 
 ### 避けるべきこと
 
-- **パターンを選ばずに実装**: implementation-patterns.md で代表的なパターンを確認してから実装する（未検証のアプローチを避ける）
-- **フックの重複実装**: pre-commit と pre-push で同じ検証を繰り返さない
-- **エラーハンドリングを軽視**: フック実行失敗時の通知やロールバック戦略を検討なしに進める
-- **パフォーマンス無視**: 検証が遅いとフックがスキップされるリスク。Level3_advanced.md でパフォーマンス最適化を参照する
-- **ドキュメント化を省く**: 実装後、チームメンバーが理解できるようにコメントや手順書を作成する
+- pre-commitに重いテスト（ユーザーがスキップするようになる）
+- フックの重複実装（pre-commitとpre-pushで同じ検証）
+- `--no-verify` の日常的な使用（フックの意味がなくなる）
+- エラー時の修正方法を提示しない
+
+**詳細**: See [references/implementation-patterns.md](references/implementation-patterns.md) → ベストプラクティス
 
 ## リソース参照
 
-### 参照資料（references/）
+### references/（知識外部化）
 
-以下の参照資料を、タスクの段階と目的に応じて読み込む（すべてを一度に読む必要なし）：
+| リソース     | パス                                                                           | 内容                            |
+| ------------ | ------------------------------------------------------------------------------ | ------------------------------- |
+| フック種類   | [references/hook-types-reference.md](references/hook-types-reference.md)       | pre-commit/pre-push等の詳細仕様 |
+| 実装パターン | [references/implementation-patterns.md](references/implementation-patterns.md) | 10種類の実装パターン集          |
 
-- **references/Level1_basics.md**: Git Hooks基本概念と簡単なpre-commit実装
-- **references/Level2_intermediate.md**: 複数ツール（Prettier/ESLint/型チェック）の統合
-- **references/Level3_advanced.md**: パフォーマンス最適化、カスタムルール、エラーハンドリング
-- **references/Level4_expert.md**: 企業向けポリシーベース設計、運用ガイド
-- **references/hook-types-reference.md**: Gitフック全種類の詳細仕様（pre-commit / pre-push / prepare-commit-msg等）
-- **references/implementation-patterns.md**: 10種類の実装パターン集（Prettier+ESLint、Conventional Commits検証、テスト実行等）
+### scripts/（決定論的処理）
 
-### スクリプト（scripts/）
+| スクリプト               | 用途               | 使用例                                        |
+| ------------------------ | ------------------ | --------------------------------------------- |
+| `validate-git-hooks.mjs` | フック設定の検証   | `node scripts/validate-git-hooks.mjs`         |
+| `log_usage.mjs`          | フィードバック記録 | `node scripts/log_usage.mjs --result success` |
+| `validate-skill.mjs`     | 構造検証           | `node scripts/validate-skill.mjs`             |
 
-- **scripts/validate-git-hooks.mjs**: Git Hooks設定と実装の正確性を検証
-- **scripts/log_usage.mjs**: 実行実績をLOGS.mdに記録し、フィードバックループに組み込む
-- **scripts/validate-skill.mjs**: スキルの構造（frontmatter、ファイル整合性）を検証
+### assets/（テンプレート）
 
-### テンプレート（assets/）
+| テンプレート             | 用途                 |
+| ------------------------ | -------------------- |
+| `pre-commit-template.sh` | pre-commitフック雛形 |
+| `pre-push-template.sh`   | pre-pushフック雛形   |
 
-- **assets/pre-commit-template.sh**: pre-commitフックのテンプレート（カスタマイズして使用）
-- **assets/pre-push-template.sh**: pre-pushフックのテンプレート（カスタマイズして使用）
+## フック実行順序
+
+```
+git commit
+  ↓
+1. pre-commit（ステージ済みファイルチェック）
+  ↓
+2. prepare-commit-msg（メッセージテンプレート）
+  ↓
+[ユーザーがメッセージ編集]
+  ↓
+3. commit-msg（メッセージフォーマット検証）
+  ↓
+[コミット作成]
+  ↓
+4. post-commit（通知）
+
+git push
+  ↓
+pre-push（テスト・ビルド確認）
+  ↓
+[サーバー側フック]
+```
+
+**詳細**: See [references/hook-types-reference.md](references/hook-types-reference.md)
+
+## パフォーマンス目標
+
+| フック     | 推奨実行時間 | 検証内容例                 |
+| ---------- | ------------ | -------------------------- |
+| pre-commit | < 1秒        | Prettier、ESLint           |
+| commit-msg | < 0.5秒      | Conventional Commits検証   |
+| pre-push   | < 30秒       | テスト、ビルド、型チェック |
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                                                                                                                    |
-| ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2.0.0      | 2025-12-31 | 18-skills.md仕様に準拠: frontmatter整理（name、description、Anchors/Trigger）、Task仕様ナビ追加、ベストプラクティス詳細化、リソース参照整理 |
-| 1.0.0      | 2025-12-24 | 初期リリース: スキル構造検証と成果物定義の確立                                                                                              |
+| Version | Date       | Changes                                 |
+| ------- | ---------- | --------------------------------------- |
+| 2.1.0   | 2026-01-02 | references/を整理、18-skills.md仕様準拠 |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に準拠                  |
+| 1.0.0   | 2025-12-24 | 初版作成                                |

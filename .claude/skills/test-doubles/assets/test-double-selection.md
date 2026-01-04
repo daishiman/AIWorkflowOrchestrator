@@ -1,5 +1,7 @@
 # テストダブル選択ガイド
 
+> 対応Task: double-selection-analysis, double-implementation-design
+
 ## 選択フローチャート
 
 ```

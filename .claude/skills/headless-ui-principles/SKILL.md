@@ -1,191 +1,135 @@
 ---
 name: headless-ui-principles
 description: |
-  ヘッドレスUIアーキテクチャとスタイル非依存コンポーネント設計の専門知識。
-  Radix UI、Headless UI、React Aria等のライブラリを活用した、
-  アクセシビリティを確保しながら完全なスタイル制御を実現する手法。
+  ヘッドレスUIアーキテクチャとスタイル非依存コンポーネント設計の専門知識。Radix UI、Headless UI、React Aria等を活用し、アクセシビリティを確保しながら完全なスタイル制御を実現。
 
-  **Anchors:**
-  - headless-ui-architecture（ヘッドレスUI設計の基本原則）
-  - accessibility-wcag（アクセシビリティ実装）
-  - component-composition（コンポーネント合成パターン）
+  Anchors:
+  • Don't Make Me Think (Steve Krug) / 適用: シンプルで直感的なUI設計 / 目的: ユーザビリティ最適化
+  • Inclusive Components (Heydon Pickering) / 適用: アクセシビリティ駆動設計 / 目的: WCAG準拠コンポーネント実装
+  • Atomic Design (Brad Frost) / 適用: コンポーネント階層設計 / 目的: 再利用可能な設計システム構築
 
-  **Triggers:**
-  - ヘッドレスUIコンポーネントを実装したい時
-  - 完全なスタイル制御が必要な時
-  - アクセシビリティを確保しながら再利用可能なコンポーネントを構築したい時
-  - ライブラリの選択と導入を検討している時
-  - WAI-ARIAパターンを実装する時
+  Trigger:
+  Use when implementing headless UI components, building accessible custom components, selecting UI libraries, or designing component architecture with full style control.
+  headless ui, radix ui, react aria, accessibility, wcag, aria patterns, compound components, render props, style-agnostic
 allowed-tools:
   - Read
+  - Write
   - Edit
   - Bash
+  - Glob
   - Grep
-version: 1.0.0
-level: intermediate
-last_updated: 2025-12-31
 ---
 
-# ヘッドレスUI原則（Headless UI Principles）
+# Headless UI Principles
 
 ## 概要
 
-ヘッドレスUIは、ロジックとUIの表現を完全に分離するアーキテクチャパターンです。
-Radix UI、Headless UI、React Ariaなどのライブラリを活用することで、
-アクセシビリティ（WCAG準拠）を確保しながら、完全なスタイル制御を実現できます。
-
-このスキルは、コンポーネント設計、ライブラリ選択、WAI-ARIAパターン実装における
-ベストプラクティスと実装手法を習得することを目標としています。
+ヘッドレスUIは、ロジックとUIの表現を完全に分離するアーキテクチャパターン。
+Radix UI、Headless UI、React Ariaなどを活用し、アクセシビリティを確保しながら完全なスタイル制御を実現する。
 
 ## ワークフロー
 
-### Phase 1: 要件分析と設計方針の決定
+### Phase 1: 要件分析と設計方針決定
 
-**目的**: ヘッドレスUI導入の適切性を判断し、アーキテクチャ方針を確定する
-
-**アクション**:
-
-1. **タスク要件の確認**
-   - コンポーネントの機能要件を整理
-   - アクセシビリティ要件（WCAG Level）の確認
-   - スタイリング制御の必要範囲を把握
-
-2. **ライブラリ選択の検討**
-   - `references/library-comparison.md` でRadix UI、Headless UI、React Aria等を比較
-   - 既存プロジェクトのエコシステムとの適合性を確認
-   - パフォーマンス、バンドルサイズ等の制約を検討
-
-3. **WAI-ARIAパターンの確認**
-   - `references/aria-patterns.md` で必要なパターンを特定
-   - 対象コンポーネントのロール、属性、状態遷移を整理
-
-### Phase 2: コンポーネント実装とテスト
-
-**目的**: ヘッドレスUI原則に従ってコンポーネントを実装する
+**目的**: ヘッドレスUI導入の適切性を判断し、アーキテクチャ方針を確定
 
 **アクション**:
 
-1. **コンポーネント設計**
-   - `references/Level2_intermediate.md` でベストプラクティスを確認
-   - ロジックとプレゼンテーションの分離設計を実施
-   - `assets/headless-component-template.tsx` を参考に実装
+1. コンポーネントの機能要件を整理
+2. アクセシビリティ要件（WCAGレベル）を確認
+3. `references/library-comparison.md` でライブラリを比較選定
+4. `references/aria-patterns.md` で必要なWAI-ARIAパターンを特定
 
-2. **カスタムフックの開発**
-   - `assets/headless-hook-template.ts` を参考に状態管理ロジックを抽出
-   - フックの再利用性と単一責任を意識
+**Task**: `agents/analyze-requirements.md` を参照
 
-3. **アクセシビリティ検証**
-   - `scripts/check-a11y.mjs` でWCAG準拠状況を確認
-   - キーボード操作、スクリーンリーダー対応を検証
-   - `references/Level3_advanced.md` で高度なパターンを確認
+### Phase 2: コンポーネント実装
 
-### Phase 3: 検証、統合、記録
-
-**目的**: 成果物の品質確保と実行記録の保存
+**目的**: ヘッドレスUI原則に従ってコンポーネントを実装
 
 **アクション**:
 
-1. **スキル構造の検証**
-   - `scripts/validate-skill.mjs` でコンポーネント実装が仕様に準拠しているか確認
+1. `assets/headless-component-template.tsx` を基にコンポーネント設計
+2. `assets/headless-hook-template.ts` で状態管理ロジックを抽出
+3. WAI-ARIAパターンに基づきロール・属性を設定
+4. キーボード操作とフォーカス管理を実装
 
-2. **統合テスト**
-   - 実装したコンポーネントが既存プロジェクトと正しく統合されるか確認
-   - スタイリング、状態管理、イベントハンドリングの動作確認
+**Task**: `agents/implement-component.md` を参照
 
-3. **使用記録の保存**
-   - `scripts/log_usage.mjs` を実行してこのスキル使用を記録
-   - 今後の改善のため、実装時の知見をメモとして保存
+### Phase 3: アクセシビリティ検証
+
+**目的**: WCAG準拠を確認し、品質を保証
+
+**アクション**:
+
+1. `scripts/check-a11y.mjs` で自動検証
+2. キーボード操作のみでのナビゲーション確認
+3. スクリーンリーダーでの読み上げテスト
+4. `scripts/log_usage.mjs` で使用記録
+
+**Task**: `agents/verify-accessibility.md` を参照
 
 ## Task仕様ナビ
 
-以下のテーブルは、一般的なヘッドレスUIタスクと対応するリソース、テンプレート、スクリプトを示しています。
+| Task                 | 起動タイミング | 入力               | 出力                   |
+| -------------------- | -------------- | ------------------ | ---------------------- |
+| analyze-requirements | Phase 1開始時  | コンポーネント要件 | 設計方針書             |
+| implement-component  | Phase 2開始時  | 設計方針書         | 実装済みコンポーネント |
+| verify-accessibility | Phase 3開始時  | 実装コード         | 検証レポート           |
 
-| Task                     | 説明                                              | 関連リソース                                   | 使用テンプレート                  | 検証スクリプト       |
-| ------------------------ | ------------------------------------------------- | ---------------------------------------------- | --------------------------------- | -------------------- |
-| **ライブラリ選択**       | Radix UI vs Headless UI vs React Aria等の比較検討 | `library-comparison.md`                        | -                                 | `validate-skill.mjs` |
-| **コンポーネント実装**   | ロジックとUI表現の分離設計                        | `Level2_intermediate.md`                       | `headless-component-template.tsx` | `check-a11y.mjs`     |
-| **カスタムフック開発**   | 再利用可能な状態管理ロジックの抽出                | `Level3_advanced.md`                           | `headless-hook-template.ts`       | `validate-skill.mjs` |
-| **アクセシビリティ実装** | WAI-ARIAパターンとキーボード操作対応              | `aria-patterns.md`                             | `headless-component-template.tsx` | `check-a11y.mjs`     |
-| **デザインシステム構築** | 複数コンポーネントの統一的な実装方針              | `Level4_expert.md`, `headless-architecture.md` | `headless-component-template.tsx` | `validate-skill.mjs` |
-| **レガシーコード理解**   | 旧実装との比較や移行戦略の検討                    | `legacy-skill.md`                              | -                                 | -                    |
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
 ## ベストプラクティス
 
 ### すべきこと
 
-- **ロジックと表現の完全な分離**: コンポーネントロジック（状態、イベントハンドリング）をカスタムフックやコンテキストに抽出し、プレゼンテーション層と完全に分離する
-- **WAI-ARIAパターンの準拠**: コンポーネントの用途に応じた適切なロール、属性、ステート属性を設定し、WCAG 2.1 Level AAの達成を目指す
-- **カスタムデザインシステムの構築**: 複数のプロジェクト、チーム間で再利用可能な統一的なコンポーネント基盤を構築する
-- **完全なスタイル制御**: Tailwind CSS、CSS Modules、CSS-in-JSなど、プロジェクト固有のスタイリング戦略を自由に選択・実装できる
-- **再利用可能なロジックの抽出**: ビジネスロジック（フォーム検証、ドロップダウン開閉等）を再利用可能なカスタムフックとして実装
-- **アクセシビリティの継続的検証**: `check-a11y.mjs` でWCAG準拠状況を定期的に確認し、キーボード操作やスクリーンリーダー対応を保証
+- ロジックと表現を完全に分離（カスタムフック/コンテキスト活用）
+- WAI-ARIAパターンに準拠したロール・属性設定
+- キーボード操作をすべての機能で実装
+- フォーカスインジケータを常に可視化
+- TypeScript型定義で型安全性を確保
+- スタイルはAPI経由で完全に制御可能に
 
 ### 避けるべきこと
 
-- **ライブラリ固有の具体的なスタイルに依存**: Radix UIやHeadless UIのスタイル実装をそのまま使用するのではなく、必ず自分のスタイルシステムで上書きする
-- **無検証な機能実装**: `aria-patterns.md` を確認せずにWAI-ARIAパターンを独自に実装することを避ける
-- **アクセシビリティの後付け**: コンポーネント実装後にアクセシビリティを追加するのではなく、設計段階から組み込む
-- **ボイラープレートコードの増加**: ロジックが複雑になりすぎないよう、テンプレートやパターンの再利用性を常に意識する
-- **選定理由なしのライブラリ導入**: `library-comparison.md` での比較検討なく、流行だけでライブラリを選択することを避ける
-- **パフォーマンス無視**: 不要なレンダリングやバンドルサイズの肥大化を防ぐため、メモ化やコード分割を適切に実装する
+- ライブラリのデフォルトスタイルをそのまま使用
+- 比較検討なしのライブラリ選定
+- アクセシビリティの後付け実装
+- キーボード操作不可の機能
+- スクリーンリーダー未対応
 
 ## リソース参照
 
-このスキルは以下のリソースから構成されています。タスクに応じて必要なリソースを参照してください。
+### references/（詳細知識）
 
-### 学習リソース（レベル別）
+| リソース       | パス                                                                           | 内容                    |
+| -------------- | ------------------------------------------------------------------------------ | ----------------------- |
+| 基礎知識       | See [references/Level1_basics.md](references/Level1_basics.md)                 | 基本概念・設計原則      |
+| 中級知識       | See [references/Level2_intermediate.md](references/Level2_intermediate.md)     | 実装パターン            |
+| 上級知識       | See [references/Level3_advanced.md](references/Level3_advanced.md)             | 高度な最適化            |
+| 専門家向け     | See [references/Level4_expert.md](references/Level4_expert.md)                 | デザインシステム構築    |
+| ARIAパターン   | See [references/aria-patterns.md](references/aria-patterns.md)                 | WAI-ARIAパターン集      |
+| アーキテクチャ | See [references/headless-architecture.md](references/headless-architecture.md) | ヘッドレス設計原則      |
+| ライブラリ比較 | See [references/library-comparison.md](references/library-comparison.md)       | Radix/Headless/Aria比較 |
 
-- **`references/Level1_basics.md`**: ヘッドレスUIの基本概念、設計パターン、初心者向けの実装方法
-- **`references/Level2_intermediate.md`**: 実務的なコンポーネント実装、ライブラリ統合、状態管理パターン
-- **`references/Level3_advanced.md`**: 複雑なインタラクション、パフォーマンス最適化、カスタムパターン設計
-- **`references/Level4_expert.md`**: デザインシステム全体設計、フレームワーク比較、大規模プロジェクトへの応用
+### scripts/（決定論的処理）
 
-### 専門リソース
+| スクリプト           | 用途                 | 使用例                                          |
+| -------------------- | -------------------- | ----------------------------------------------- |
+| `check-a11y.mjs`     | アクセシビリティ検証 | `node scripts/check-a11y.mjs src/Component.tsx` |
+| `validate-skill.mjs` | スキル構造検証       | `node scripts/validate-skill.mjs`               |
+| `log_usage.mjs`      | フィードバック記録   | `node scripts/log_usage.mjs --result success`   |
 
-- **`references/aria-patterns.md`**: WAI-ARIAロール、属性、ステート属性の詳細解説とベストプラクティス
-- **`references/headless-architecture.md`**: ヘッドレスUIのアーキテクチャ詳細、ロジック分離パターン、実装戦略
-- **`references/library-comparison.md`**: Radix UI、Headless UI、React Aria、Downshift、Ariakitの特徴比較と選択ガイド
-- **`references/legacy-skill.md`**: 旧SKILL.mdの全文（参考・履歴用）
+### assets/（テンプレート）
 
-### テンプレート
-
-- **`assets/headless-component-template.tsx`**: ロジック分離されたコンポーネント実装テンプレート
-- **`assets/headless-hook-template.ts`**: カスタムフック実装テンプレート（状態管理ロジック用）
-
-### ツール・スクリプト
-
-- **`scripts/check-a11y.mjs`**: WCAG準拠状況とアクセシビリティを検証するスクリプト
-- **`scripts/validate-skill.mjs`**: コンポーネント実装がスキル仕様に準拠しているか検証
-- **`scripts/log_usage.mjs`**: スキル使用の記録と自動評価を行うスクリプト
-
-### 参考文献
-
-- **『Don't Make Me Think』** (Steve Krug): ユーザビリティと情報設計の基本書
-- 公式ドキュメント: [Radix UI](https://www.radix-ui.com), [Headless UI](https://headlessui.com), [React Aria](https://react-spectrum.adobe.com/react-aria/)
-- WCAG 2.1: [Web Content Accessibility Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
-
-## コマンドリファレンス
-
-開発時によく使用するコマンド：
-
-```bash
-# リソースの読み取り
-cat .claude/skills/headless-ui-principles/references/Level1_basics.md
-cat .claude/skills/headless-ui-principles/references/library-comparison.md
-cat .claude/skills/headless-ui-principles/references/aria-patterns.md
-
-# スクリプト実行
-node .claude/skills/headless-ui-principles/scripts/check-a11y.mjs
-node .claude/skills/headless-ui-principles/scripts/validate-skill.mjs
-node .claude/skills/headless-ui-principles/scripts/log_usage.mjs
-
-# テンプレート参照
-cat .claude/skills/headless-ui-principles/assets/headless-component-template.tsx
-```
+| テンプレート                      | 用途                           |
+| --------------------------------- | ------------------------------ |
+| `headless-component-template.tsx` | コンポーネント実装テンプレート |
+| `headless-hook-template.ts`       | カスタムフックテンプレート     |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                                                 |
-| ------- | ---------- | --------------------------------------------------------------------------------------- |
-| 2.0.0   | 2025-12-31 | 18-skills.md仕様への準拠、Trigger/Anchors追加、Task仕様ナビ、詳細ベストプラクティス追加 |
-| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added                                             |
+| Version | Date       | Changes                                     |
+| ------- | ---------- | ------------------------------------------- |
+| 2.1.0   | 2026-01-02 | 18-skills.md完全準拠、agents/追加、形式統一 |
+| 2.0.0   | 2025-12-31 | Task仕様ナビ、Trigger/Anchors追加           |
+| 1.0.0   | 2025-12-24 | 初版                                        |

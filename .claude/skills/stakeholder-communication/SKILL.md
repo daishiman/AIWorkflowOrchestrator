@@ -1,14 +1,17 @@
 ---
 name: stakeholder-communication
 description: |
-  ステークホルダーコミュニケーション管理、進捗報告、期待値調整の体系的コミュニケーション手法。
-  利害関係者との信頼構築と透明性のあるコミュニケーション戦略を提供します。
+  ステークホルダーとのコミュニケーション計画、進捗報告、期待値調整、合意形成を支援するスキル。
+  関係者の期待値と影響度を整理し、透明性の高い報告と合意形成を促進する。
 
   Anchors:
-  • 『PMBOK Guide』（PMI）/ 適用: コミュニケーション管理 / 目的: 利害関係者の調整と期待値管理
+  • PMBOK Guide / 適用: コミュニケーション管理 / 目的: 期待値調整と報告体系化
+  • Stakeholder Theory (R. Edward Freeman) / 適用: 関係者分析 / 目的: 影響度と期待値の整理
+  • Nonviolent Communication (Marshall Rosenberg) / 適用: 対話設計 / 目的: 建設的な合意形成
 
   Trigger:
-  ステークホルダー対応時、進捗報告時、期待値調整時に使用
+  Use when planning stakeholder communication, preparing status updates, managing expectations, facilitating alignment, or resolving conflicts.
+  stakeholder, communication plan, status report, expectation management, alignment, conflict resolution
 allowed-tools:
   - Read
   - Write
@@ -18,127 +21,115 @@ allowed-tools:
   - Grep
 ---
 
-# ステークホルダーコミュニケーションスキル
+# ステークホルダーコミュニケーション
 
 ## 概要
 
-ステークホルダー管理、進捗報告、期待値調整の体系的コミュニケーション手法。利害関係者との信頼構築、期待値の適切な管理、継続的で透明性のあるコミュニケーション戦略を提供します。
-
-詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
+利害関係者の期待値を整理し、進捗報告と合意形成を一貫した形式で実行するスキル。
+透明性の高いコミュニケーションで信頼関係を構築し、プロジェクトの成功を支援する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+```
+map-stakeholders → plan-communication → execute-reporting → adjust-expectations → document-agreements
+```
 
-**目的**: タスクの目的と前提条件を明確にする
+### Phase 1: ステークホルダー整理
 
-**アクション**:
-
-1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認してステークホルダーコミュニケーションの基本原則を理解
-2. 関係するステークホルダーの種類と期待値を特定
-3. コミュニケーションの目的（報告、合意、調整など）を明確化
-4. 必要なリソース、テンプレート、スクリプトを特定
-
-### Phase 2: スキル適用と実行
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 関係者の役割・期待値・影響度を明確化する
 
 **アクション**:
 
-1. `references/Level2_intermediate.md` と `references/Level3_advanced.md` を参照し、実務的なコミュニケーション方針を策定
-2. `assets/sprint-review-agenda.md` などテンプレートを活用して資料・アジェンダを準備
-3. `scripts/generate-status-report.sh` を実行して進捗報告資料を自動生成
-4. ステークホルダー別の伝達方法、頻度、フォーマットを設定
-5. 期待値調整のための対話プランを作成
-6. 重要な判断点をメモとして記録
+1. 関係者の役割と期待値を整理する
+2. 影響度と関心度を分類する
+3. コミュニケーション優先度を決定する
 
-### Phase 3: 検証と継続改善
+**Task**: `agents/sc-001-stakeholder-map.md` を参照
 
-**目的**: 成果物の検証、実行記録の保存、フィードバック反映
+### Phase 2: コミュニケーション計画
+
+**目的**: 目的別の伝達計画と合意形成の順序を設計する
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. コミュニケーション成果物が目的に合致するか検証
-3. `scripts/log_usage.mjs` を実行して使用記録を保存
-4. `references/Level4_expert.md` を参照して継続改善のポイントを確認
-5. ステークホルダーからのフィードバックを反映して次回施策に活かす
+1. チャネルと頻度を決定する
+2. 報告内容と形式を設計する
+3. 合意形成の順序を整理する
+
+**Task**: `agents/sc-002-communication-plan.md` を参照
+
+### Phase 3: 進捗報告と期待値調整
+
+**目的**: 進捗とリスクを可視化し、期待値ギャップを調整する
+
+**アクション**:
+
+1. `scripts/generate-status-report.sh` で報告資料を作成する
+2. リスクと次アクションを明文化する
+3. 期待値ギャップがあれば調整を行う
+
+**Task**: `agents/sc-003-status-report.md` を参照
 
 ## Task仕様ナビ
 
-| Task                   | 概要                                       | 対応Level | リソース                                       | スクリプト                  |
-| ---------------------- | ------------------------------------------ | --------- | ---------------------------------------------- | --------------------------- |
-| ステークホルダー分析   | ステークホルダーの特定、分類、期待値の把握 | Level 1-2 | `Level1_basics.md`, `Level2_intermediate.md`   | -                           |
-| コミュニケーション計画 | 目的別の伝達戦略、頻度、メディアの決定     | Level 2-3 | `Level2_intermediate.md`, `Level3_advanced.md` | -                           |
-| 進捗報告資料作成       | 定期的な進捗報告資料の生成と配信           | Level 1-2 | `Level2_intermediate.md`                       | `generate-status-report.sh` |
-| 期待値調整対話         | 期待値ギャップの解消と合意形成             | Level 3-4 | `Level3_advanced.md`, `Level4_expert.md`       | -                           |
-| Sprint Review実施      | スプリント完了後の関係者向けレビュー       | Level 2-3 | `Level2_intermediate.md`                       | -                           |
-| フィードバック収集     | ステークホルダーからの意見・要望の収集     | Level 2-3 | `Level2_intermediate.md`, `Level3_advanced.md` | -                           |
-| 信頼関係構築           | 継続的なエンゲージメントと信頼醸成         | Level 3-4 | `Level3_advanced.md`, `Level4_expert.md`       | -                           |
+| Task                      | 起動タイミング | 入力                         | 出力                     |
+| ------------------------- | -------------- | ---------------------------- | ------------------------ |
+| sc-001-stakeholder-map    | Phase 1開始時  | プロジェクト概要、関係者候補 | ステークホルダー整理表   |
+| sc-002-communication-plan | Phase 2開始時  | ステークホルダー整理表       | コミュニケーション計画表 |
+| sc-003-status-report      | Phase 3開始時  | 進捗情報、リスク情報         | 進捗報告資料             |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
 
-- `references/Level1_basics.md` を参照し、ステークホルダーコミュニケーションの基本原則を理解した上で適用する
-- `references/Level2_intermediate.md` を参照し、実務的な手順を整理してから実行に移す
-- ステークホルダーの属性・期待値に応じた多様なコミュニケーション手段を用意する
-- 定期的（最低でも月単位）で進捗報告を実施し、透明性を維持する
-- 期待値のズレを早期に検出し、調整の対話を実施する
-- `assets/sprint-review-agenda.md` などテンプレートを活用して、一貫性のある資料を作成する
-- ステークホルダーのフィードバックを記録し、次の施策に反映させる
-- `references/Level4_expert.md` を参照して、より洗練されたコミュニケーション手法を継続的に学習する
+| 推奨事項                           | 理由                         |
+| ---------------------------------- | ---------------------------- |
+| 期待値を定量化して記録する         | 認識ズレを早期に検出できる   |
+| 影響度と関心度で優先順位を付ける   | 重要な関係者の合意を先に確保 |
+| 進捗とリスクを同時に報告する       | 透明性と信頼性を維持         |
+| 合意事項と次アクションを明文化する | 後続の実行がぶれにくくなる   |
+| 定期的なフィードバック収集         | 認識ズレの早期発見           |
 
 ### 避けるべきこと
 
-- ステークホルダー分析なしに進捗報告を開始することを避ける
-- 一方的な情報発信のみで対話を欠かすことを避ける
-- コミュニケーション頻度が不規則になり、信頼を損なうことを避ける
-- 不都合な情報を隠蔽または後回しにすることを避ける（透明性の喪失）
-- テンプレートなしのアドホックな資料作成で一貫性を欠くことを避ける
-- ステークホルダーからのフィードバックを無視して改善を怠ることを避ける
-- `references/Level3_advanced.md` および `Level4_expert.md` で提示されるアンチパターンを実施することを避ける
+| 禁止事項             | 問題点                       |
+| -------------------- | ---------------------------- |
+| 情報の遅延共有       | 信頼低下と炎上リスク         |
+| 目的のない報告の乱発 | 読み手の疲労と重要情報の埋没 |
+| リスクの先送り       | 認識ズレが拡大               |
+| 合意事項の未記録     | 認識不一致の再発             |
+| 一方的な情報発信     | フィードバック機会の喪失     |
 
 ## リソース参照
 
-### Levelガイド
+### references/（詳細知識）
 
-```bash
-# 基礎ガイド
-cat .claude/skills/stakeholder-communication/references/Level1_basics.md
+| リソース | パス                                                                   | 読込条件             |
+| -------- | ---------------------------------------------------------------------- | -------------------- |
+| 基礎指針 | [references/Level1_basics.md](references/Level1_basics.md)             | 期待値整理を始める時 |
+| 実務指針 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 計画策定時           |
+| 応用指針 | [references/Level3_advanced.md](references/Level3_advanced.md)         | 合意形成の調整時     |
+| 専門指針 | [references/Level4_expert.md](references/Level4_expert.md)             | 高難度ケース対応時   |
 
-# 実務ガイド
-cat .claude/skills/stakeholder-communication/references/Level2_intermediate.md
+### scripts/（決定論的処理）
 
-# 応用ガイド
-cat .claude/skills/stakeholder-communication/references/Level3_advanced.md
+| スクリプト                  | 機能                     | 使用例                                          |
+| --------------------------- | ------------------------ | ----------------------------------------------- |
+| `generate-status-report.sh` | 進捗報告テンプレート生成 | `./scripts/generate-status-report.sh <project>` |
+| `log_usage.mjs`             | 使用記録の保存           | `node scripts/log_usage.mjs --result success`   |
+| `validate-skill.mjs`        | スキル構造検証           | `node scripts/validate-skill.mjs`               |
 
-# 専門ガイド
-cat .claude/skills/stakeholder-communication/references/Level4_expert.md
-```
+### assets/（テンプレート）
 
-### スクリプト実行
-
-```bash
-# 進捗報告資料の自動生成
-.claude/skills/stakeholder-communication/scripts/generate-status-report.sh
-
-# スキル使用記録の保存と評価
-node .claude/skills/stakeholder-communication/scripts/log_usage.mjs --help
-
-# スキル構造の検証
-node .claude/skills/stakeholder-communication/scripts/validate-skill.mjs --help
-```
-
-### テンプレート参照
-
-```bash
-# Sprint Review Agenda
-cat .claude/skills/stakeholder-communication/assets/sprint-review-agenda.md
-```
+| アセット                  | 用途                     |
+| ------------------------- | ------------------------ |
+| `sprint-review-agenda.md` | レビュー議事テンプレート |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                                                                                          |
-| ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| 1.0.0   | 2025-12-31 | 18-skills.md仕様に準拠。YAML frontmatter更新、Task仕様ナビ追加、Trigger/Anchors定義、リソースパス統一（references/ and assets/） |
+| Version | Date       | Changes                              |
+| ------- | ---------- | ------------------------------------ |
+| 2.0.0   | 2026-01-03 | 18-skills.md仕様に完全準拠、構造整理 |
+| 1.0.0   | 2025-12-28 | 初版作成                             |

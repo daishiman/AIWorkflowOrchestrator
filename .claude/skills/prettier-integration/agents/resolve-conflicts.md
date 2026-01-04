@@ -1,4 +1,4 @@
-# Task仕様書：ESLint-Prettier競合解決
+# Agent仕様書：ESLint-Prettier競合解決
 
 ## 1. メタ情報
 
@@ -43,7 +43,7 @@ ESLintとPrettierのルール競合を検出し、責務分離の原則に基づ
 | ESLint公式ドキュメント                  | ルール設定の理解、extends/plugins機構        |
 | eslint-config-prettier公式ガイド        | 競合ルール一覧、無効化パターン               |
 
-> 詳細は `references/conflict-resolution.md` と `references/Level2_intermediate.md` を参照
+> 詳細は See [references/conflict-resolution.md](../references/conflict-resolution.md) と See [references/patterns.md](../references/patterns.md) を参照
 
 ---
 
@@ -85,95 +85,89 @@ ESLintとPrettierのルール競合を検出し、責務分離の原則に基づ
 
 ### 5.1 入力
 
-#### 入力1
+#### 入力1: ESLint設定ファイル
 
-- データ名: ESLint設定ファイル
-- 提供元: プロジェクトファイル
-- 検証ルール:
-  .eslintrc.\*またはpackage.json内のeslintConfigが存在し、有効なJSON/YAML形式
-- 拒否すべき入力:
-  無効な構文のESLint設定ファイル
-- 欠損時処理:
-  エラーメッセージを表示し、setup-prettier Taskの実行を促す
+- **データ名**: ESLint設定ファイル
+- **提供元**: プロジェクトファイル
+- **検証ルール**: .eslintrc.\*またはpackage.json内のeslintConfigが存在し、有効なJSON/YAML形式
+- **拒否すべき入力**: 無効な構文のESLint設定ファイル
+- **欠損時処理**: エラーメッセージを表示し、setup-prettier Agentの実行を促す
 
-#### 入力2
+#### 入力2: Prettier設定ファイル
 
-- データ名: Prettier設定ファイル
-- 提供元: プロジェクトファイル（setup-prettier Taskの出力）
-- 検証ルール:
-  .prettierrc.\*が存在し、有効なJSON形式
-- 拒否すべき入力:
-  無効な構文のPrettier設定ファイル
-- 欠損時処理:
-  setup-prettier Taskの実行を促す
+- **データ名**: Prettier設定ファイル
+- **提供元**: プロジェクトファイル（setup-prettier Agentの出力）
+- **検証ルール**: .prettierrc.\*が存在し、有効なJSON形式
+- **拒否すべき入力**: 無効な構文のPrettier設定ファイル
+- **欠損時処理**: setup-prettier Agentの実行を促す
 
 ### 5.2 出力
 
-#### 成果物1
+#### 成果物1: 更新済みESLint設定
 
-- 成果物名: 更新済みESLint設定
-- 受領先: プロジェクトルート
-- 出力テンプレート:
-  ```json
-  {
-    "extends": [
-      "...",
-      "prettier" // 必ず最後に配置
-    ],
-    "rules": {
-      // Prettierと競合するルールをコメントアウトまたは削除
-    }
+- **成果物名**: 更新済みESLint設定
+- **受領先**: プロジェクトルート
+- **出力テンプレート**:
+
+```json
+{
+  "extends": [
+    "...",
+    "prettier" // 必ず最後に配置
+  ],
+  "rules": {
+    // Prettierと競合するルールをコメントアウトまたは削除
   }
-  ```
-- 内容:
-  eslint-config-prettierを追加し、競合するルールを無効化したESLint設定
+}
+```
 
-#### 成果物2
+- **内容**: eslint-config-prettierを追加し、競合するルールを無効化したESLint設定
 
-- 成果物名: 競合解決レポート
-- 受領先: ユーザー
-- 出力テンプレート:
+#### 成果物2: 競合解決レポート
 
-  ```markdown
-  ## ESLint-Prettier競合解決レポート
+- **成果物名**: 競合解決レポート
+- **受領先**: ユーザー
+- **出力テンプレート**:
 
-  ### 検出された競合ルール
+```markdown
+## ESLint-Prettier競合解決レポート
 
-  | ルール名      | 種別                | 解決方法            |
-  | ------------- | ------------------- | ------------------- |
-  | {{rule-name}} | {{ESLint/Prettier}} | {{無効化/設定変更}} |
+### 検出された競合ルール
 
-  ### 実施した変更
+| ルール名      | 種別                | 解決方法            |
+| ------------- | ------------------- | ------------------- |
+| {{rule-name}} | {{ESLint/Prettier}} | {{無効化/設定変更}} |
 
-  1. eslint-config-prettierを追加
-  2. 以下のルールを無効化:
-     - {{rule-1}}
-     - {{rule-2}}
+### 実施した変更
 
-  ### 検証結果
+1. eslint-config-prettierを追加
+2. 以下のルールを無効化:
+   - {{rule-1}}
+   - {{rule-2}}
 
-  - ESLint実行: {{成功/失敗}}
-  - Prettier実行: {{成功/失敗}}
-  - 競合なし: {{確認済み}}
+### 検証結果
 
-  ### 責務分離の状態
+- ESLint実行: {{成功/失敗}}
+- Prettier実行: {{成功/失敗}}
+- 競合なし: {{確認済み}}
 
-  - **ESLint**: コード品質（バグ検出、ベストプラクティス）
-  - **Prettier**: コードフォーマット（スタイル統一）
+### 責務分離の状態
 
-  ### 次のステップ
+- **ESLint**: コード品質（バグ検出、ベストプラクティス）
+- **Prettier**: コードフォーマット（スタイル統一）
 
-  1. エディタ統合の設定確認（integrate-editor Task）
-  2. チームへの共有とドキュメント更新
-  ```
+### 次のステップ
 
-- 内容:
-  競合検出結果、解決方法、検証結果、責務分離の状態、次のステップ
+1. エディタ統合の設定確認（integrate-editor Agent）
+2. チームへの共有とドキュメント更新
+```
+
+- **内容**: 競合検出結果、解決方法、検証結果、責務分離の状態、次のステップ
 
 ---
 
 ## 関連リソース
 
 - **競合解決パターン**: See [references/conflict-resolution.md](../references/conflict-resolution.md)
-- **中級ガイド**: See [references/Level2_intermediate.md](../references/Level2_intermediate.md)
-- **自動化戦略**: See [references/automation-strategies.md](../references/automation-strategies.md)
+- **統合パターン**: See [references/patterns.md](../references/patterns.md)
+- **責務分離の原則**: See [references/basics.md](../references/basics.md)

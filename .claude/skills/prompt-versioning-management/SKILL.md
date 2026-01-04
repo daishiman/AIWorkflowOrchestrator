@@ -1,120 +1,158 @@
 ---
-name: .claude/skills/prompt-versioning-management/SKILL.md
+name: prompt-versioning-management
 description: |
-  プロンプトのライフサイクル管理を専門とするスキル。
-  バージョン管理、デプロイ戦略、ロールバック、変更追跡により、
-  本番環境で安全かつ効率的なプロンプト運用を実現します。
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 手順設計
-  
-  📚 リソース参照:
-  - `references/Level1_basics.md`: レベル1の基礎ガイド
-  - `references/Level2_intermediate.md`: レベル2の実務ガイド
-  - `references/Level3_advanced.md`: レベル3の応用ガイド
-  - `references/Level4_expert.md`: レベル4の専門ガイド
-  - `references/deployment-patterns.md`: Blue-Green、Canary、Feature Flagなどのデプロイ戦略と実装手順
-  - `references/legacy-skill.md`: 旧SKILL.mdの全文
-  - `references/rollback-procedures.md`: 即座・段階的ロールバック手順とフォールバック設計パターン
-  - `references/versioning-strategies.md`: セマンティックバージョニング、変更分類、依存関係管理の詳細
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `assets/changelog-template.md`: 変更ログテンプレート
-  - `assets/deployment-checklist.md`: デプロイチェックリスト
-  
-  Use proactively when handling prompt versioning management tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "手順設計"
-      - "実践的改善"
+  プロンプトのライフサイクル管理を専門とするスキル。バージョン管理、デプロイ戦略、ロールバック、変更追跡により、本番環境で安全かつ効率的なプロンプト運用を実現します。
+
+  Anchors:
+  • The Pragmatic Programmer (Andrew Hunt, David Thomas) / 適用: 手順設計と実践的改善 / 目的: 体系的なバージョン管理
+  • Continuous Delivery (Jez Humble) / 適用: デプロイパイプラインとロールバック戦略 / 目的: 安全なリリースプロセス
+  • Semantic Versioning 2.0.0 / 適用: バージョン番号付けルール / 目的: 変更の影響範囲の明確化
+
+  Trigger:
+  Use when managing prompt versions, deploying prompts to production, implementing rollback strategies, tracking prompt changes, or establishing prompt lifecycle management.
+  Keywords: prompt versioning, semantic versioning, deployment strategy, rollback, change tracking, prompt lifecycle, blue-green deployment
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# Prompt Versioning Management Skill
+# Prompt Versioning Management
 
 ## 概要
 
-プロンプトのライフサイクル管理を専門とするスキル。
-バージョン管理、デプロイ戦略、ロールバック、変更追跡により、
-本番環境で安全かつ効率的なプロンプト運用を実現します。
-
-詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
-
+プロンプトのライフサイクル管理を専門とするスキル。セマンティックバージョニングに基づくバージョン管理、Blue-Green/Canaryデプロイ戦略、迅速なロールバック、変更追跡により、本番環境で安全かつ効率的なプロンプト運用を実現します。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: バージョン計画
 
-**目的**: タスクの目的と前提条件を明確にする
+**目的**: プロンプト変更を分類し、適切なバージョン番号と影響範囲を決定
 
-**アクション**:
+**Task**: `agents/version-planning.md`
 
-1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
-2. 必要な references/scripts/templates を特定
+**入力**:
 
-### Phase 2: スキル適用
+- 現在のバージョン
+- 変更内容の詳細
+- 依存関係情報
 
-**目的**: スキルの指針に従って具体的な作業を進める
+**出力**:
 
-**アクション**:
+- バージョン計画書（新バージョン・変更タイプ）
+- 影響分析レポート
+- デプロイ計画
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+**実行タイミング**: プロンプト変更時、リリース計画策定時
 
-### Phase 3: 検証と記録
+### Phase 2: デプロイ実行
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: 計画に基づき安全にデプロイを実行し、段階的ロールアウトを管理
 
-**アクション**:
+**Task**: `agents/deployment-execution.md`
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+**入力**:
 
+- Phase 1 のバージョン計画書
+- デプロイ対象環境
+- ロールアウト設定
+
+**出力**:
+
+- デプロイログ
+- ヘルスチェック結果
+- ロールアウト進捗記録
+
+**実行タイミング**: バージョン計画完了後、本番デプロイ時
+
+### Phase 3: ロールバック・監査
+
+**目的**: 問題発生時の迅速な復旧と、すべての変更の追跡・監査
+
+**Task**: `agents/rollback-audit.md`
+
+**入力**:
+
+- デプロイログ
+- ヘルスチェック結果
+- 前バージョン情報
+
+**出力**:
+
+- ロールバック記録
+- インシデントレポート
+- 監査ログ
+- ポストモーテム
+
+**実行タイミング**: デプロイ問題発生時、定期監査時
+
+## Task仕様
+
+| Task                 | 起動タイミング | 入力                   | 出力                         |
+| -------------------- | -------------- | ---------------------- | ---------------------------- |
+| version-planning     | Phase 1開始時  | 変更内容・現バージョン | バージョン計画・影響分析     |
+| deployment-execution | Phase 2開始時  | 計画書・環境設定       | デプロイログ・ヘルスチェック |
+| rollback-audit       | Phase 3開始時  | デプロイログ・問題詳細 | ロールバック記録・監査ログ   |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
+
+- [agents/version-planning.md](agents/version-planning.md)
+- [agents/deployment-execution.md](agents/deployment-execution.md)
+- [agents/rollback-audit.md](agents/rollback-audit.md)
 
 ## ベストプラクティス
 
 ### すべきこと
-- プロンプトを本番環境にデプロイする時
-- プロンプトの変更履歴を管理する時
-- ロールバック戦略を設計する時
-- プロンプトの依存関係を追跡する時
+
+- セマンティックバージョニング（x.y.z）を厳格に適用
+- 変更の影響範囲を事前に分析
+- 段階的ロールアウト（10% → 25% → 50% → 100%）を実施
+- ロールバック手順を事前に準備
+- すべての変更を監査可能な形で記録
+- ポストモーテムで学習を蓄積
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- 一度に100%へのロールアウト
+- ヘルスチェックなしのデプロイ
+- ロールバック計画なしのリリース
+- 変更履歴の記録漏れ
+- 問題発生時の責任追及（ブレームレス文化を推進）
 
-### リソース読み取り
-```bash
-cat .claude/skills/prompt-versioning-management/references/Level1_basics.md
-cat .claude/skills/prompt-versioning-management/references/Level2_intermediate.md
-cat .claude/skills/prompt-versioning-management/references/Level3_advanced.md
-cat .claude/skills/prompt-versioning-management/references/Level4_expert.md
-cat .claude/skills/prompt-versioning-management/references/deployment-patterns.md
-cat .claude/skills/prompt-versioning-management/references/legacy-skill.md
-cat .claude/skills/prompt-versioning-management/references/rollback-procedures.md
-cat .claude/skills/prompt-versioning-management/references/versioning-strategies.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/prompt-versioning-management/scripts/log_usage.mjs --help
-node .claude/skills/prompt-versioning-management/scripts/validate-skill.mjs --help
-```
+### references/（詳細知識）
 
-### テンプレート参照
-```bash
-cat .claude/skills/prompt-versioning-management/assets/changelog-template.md
-cat .claude/skills/prompt-versioning-management/assets/deployment-checklist.md
-```
+| リソース                   | パス                                                                       | 内容                         |
+| -------------------------- | -------------------------------------------------------------------------- | ---------------------------- |
+| 基礎知識                   | [references/Level1_basics.md](references/Level1_basics.md)                 | 基礎概念と用語               |
+| 実務パターン               | [references/Level2_intermediate.md](references/Level2_intermediate.md)     | 実務での適用                 |
+| 高度な戦略                 | [references/Level3_advanced.md](references/Level3_advanced.md)             | 高度なデプロイ戦略           |
+| 専門トラブルシューティング | [references/Level4_expert.md](references/Level4_expert.md)                 | 専門的な問題解決             |
+| バージョニング戦略         | [references/versioning-strategies.md](references/versioning-strategies.md) | セマンティックバージョニング |
+| デプロイパターン           | [references/deployment-patterns.md](references/deployment-patterns.md)     | Blue-Green/Canary            |
+| ロールバック手順           | [references/rollback-procedures.md](references/rollback-procedures.md)     | 復旧手順と監査               |
+
+### scripts/（決定論的処理）
+
+| スクリプト           | 用途         | 使用例                                                         |
+| -------------------- | ------------ | -------------------------------------------------------------- |
+| `log_usage.mjs`      | 使用履歴記録 | `node scripts/log_usage.mjs --result success --phase planning` |
+| `validate-skill.mjs` | 構造検証     | `node scripts/validate-skill.mjs`                              |
+
+### assets/（テンプレート）
+
+| テンプレート              | 用途                     |
+| ------------------------- | ------------------------ |
+| `changelog-template.md`   | チェンジログ作成         |
+| `deployment-checklist.md` | デプロイ前チェックリスト |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                                   |
+| ------- | ---------- | --------------------------------------------------------- |
+| 3.0.0   | 2026-01-02 | 18-skills.md仕様完全準拠: 3 Tasks追加、ワークフロー体系化 |
+| 1.0.0   | 2025-12-24 | 初版: 基本構造とリソース整備                              |

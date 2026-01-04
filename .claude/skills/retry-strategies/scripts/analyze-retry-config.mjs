@@ -6,11 +6,29 @@
  * リトライ設定を分析し、推奨値との比較や潜在的な問題を検出するスクリプト
  *
  * Usage:
- *   node analyze-retry-config.mjs <config-file.json>
- *   node analyze-retry-config.mjs --inline '{"maxRetries":3,"baseDelay":1000}'
+ *   node scripts/analyze-retry-config.mjs <config-file.json>
+ *   node scripts/analyze-retry-config.mjs --inline '{"maxRetries":3,"baseDelay":1000}'
  */
 
 import fs from "fs";
+
+const EXIT_SUCCESS = 0;
+const EXIT_ERROR = 1;
+const EXIT_ARGS_ERROR = 2;
+const EXIT_FILE_MISSING = 3;
+const EXIT_VALIDATION_ERROR = 4;
+
+function showHelp() {
+  console.log(`
+Usage:
+  node scripts/analyze-retry-config.mjs <config-file.json>
+  node scripts/analyze-retry-config.mjs --inline '{"retry":{"maxRetries":3}}'
+
+Options:
+  --inline <json>   JSON文字列で設定を渡す
+  -h, --help        ヘルプを表示
+`);
+}
 
 // 推奨設定
 const RECOMMENDED_CONFIG = {
@@ -63,36 +81,74 @@ class AnalysisResult {
   }
 }
 
+function parseArgs(args) {
+  if (args.includes("-h") || args.includes("--help")) {
+    return { help: true };
+  }
+
+  let mode = null;
+  let value = null;
+
+  for (let i = 0; i < args.length; i += 1) {
+    const arg = args[i];
+
+    if (arg === "--inline") {
+      if (mode) {
+        return { error: "--inline とファイルパスは同時に指定できません" };
+      }
+      const next = args[i + 1];
+      if (!next) {
+        return { error: "--inline の次にJSON文字列を指定してください" };
+      }
+      mode = "inline";
+      value = next;
+      i += 1;
+      continue;
+    }
+
+    if (arg.startsWith("-")) {
+      return { error: `不明なオプション: ${arg}` };
+    }
+
+    if (mode) {
+      return { error: `不要な引数が指定されています: ${arg}` };
+    }
+
+    mode = "file";
+    value = arg;
+  }
+
+  if (!mode) {
+    return { error: "設定ファイルまたは --inline を指定してください" };
+  }
+
+  return { mode, value };
+}
+
 // 設定の分析
 function analyzeConfig(config) {
   const result = new AnalysisResult();
 
-  // リトライ設定の分析
   if (config.retry) {
     analyzeRetryConfig(config.retry, result);
   }
 
-  // サーキットブレーカー設定の分析
   if (config.circuitBreaker) {
     analyzeCircuitBreakerConfig(config.circuitBreaker, result);
   }
 
-  // タイムアウト設定の分析
   if (config.timeout) {
     analyzeTimeoutConfig(config.timeout, result);
   }
 
-  // 総合分析
   analyzeOverall(config, result);
 
   return result;
 }
 
-// リトライ設定の分析
 function analyzeRetryConfig(retry, result) {
   const rec = RECOMMENDED_CONFIG.retry;
 
-  // maxRetries チェック
   if (retry.maxRetries !== undefined) {
     if (retry.maxRetries < rec.maxRetries.min) {
       result.addWarning(
@@ -116,7 +172,6 @@ function analyzeRetryConfig(retry, result) {
     }
   }
 
-  // baseDelay チェック
   if (retry.baseDelay !== undefined) {
     if (retry.baseDelay < rec.baseDelay.min) {
       result.addWarning(
@@ -140,7 +195,6 @@ function analyzeRetryConfig(retry, result) {
     }
   }
 
-  // maxDelay チェック
   if (retry.maxDelay !== undefined && retry.baseDelay !== undefined) {
     if (retry.maxDelay < retry.baseDelay) {
       result.addError(
@@ -154,7 +208,6 @@ function analyzeRetryConfig(retry, result) {
     }
   }
 
-  // ジッター チェック
   if (retry.jitterFactor !== undefined) {
     if (retry.jitterFactor < 0 || retry.jitterFactor > 1) {
       result.addError(
@@ -170,7 +223,6 @@ function analyzeRetryConfig(retry, result) {
     }
   }
 
-  // 総待機時間の計算
   if (retry.maxRetries && retry.baseDelay && retry.maxDelay) {
     const totalWaitTime = calculateTotalWaitTime(retry);
     result.setMetric("totalMaxWaitTime", totalWaitTime);
@@ -184,11 +236,9 @@ function analyzeRetryConfig(retry, result) {
   }
 }
 
-// サーキットブレーカー設定の分析
 function analyzeCircuitBreakerConfig(cb, result) {
   const rec = RECOMMENDED_CONFIG.circuitBreaker;
 
-  // failureThreshold チェック
   if (cb.failureThreshold !== undefined) {
     if (cb.failureThreshold < rec.failureThreshold.min) {
       result.addWarning(
@@ -200,9 +250,18 @@ function analyzeCircuitBreakerConfig(cb, result) {
         },
       );
     }
+    if (cb.failureThreshold > rec.failureThreshold.max) {
+      result.addWarning(
+        `failureThreshold (${cb.failureThreshold}) は推奨最大値 (${rec.failureThreshold.max}) より大きいです`,
+        {
+          field: "failureThreshold",
+          value: cb.failureThreshold,
+          recommended: rec.failureThreshold,
+        },
+      );
+    }
   }
 
-  // successThreshold チェック
   if (cb.successThreshold !== undefined && cb.failureThreshold !== undefined) {
     if (cb.successThreshold > cb.failureThreshold) {
       result.addWarning(
@@ -215,7 +274,6 @@ function analyzeCircuitBreakerConfig(cb, result) {
     }
   }
 
-  // timeout チェック
   if (cb.timeout !== undefined) {
     if (cb.timeout < rec.timeout.min) {
       result.addWarning(
@@ -226,11 +284,9 @@ function analyzeCircuitBreakerConfig(cb, result) {
   }
 }
 
-// タイムアウト設定の分析
 function analyzeTimeoutConfig(timeout, result) {
   const rec = RECOMMENDED_CONFIG.timeout;
 
-  // connection タイムアウト
   if (timeout.connection !== undefined) {
     if (timeout.connection > rec.connection.max) {
       result.addWarning(
@@ -244,7 +300,6 @@ function analyzeTimeoutConfig(timeout, result) {
     }
   }
 
-  // read タイムアウト
   if (timeout.read !== undefined && timeout.connection !== undefined) {
     if (timeout.read < timeout.connection) {
       result.addWarning(
@@ -254,7 +309,6 @@ function analyzeTimeoutConfig(timeout, result) {
     }
   }
 
-  // total タイムアウト
   if (timeout.total !== undefined) {
     if (timeout.read && timeout.total < timeout.read) {
       result.addError(
@@ -265,9 +319,7 @@ function analyzeTimeoutConfig(timeout, result) {
   }
 }
 
-// 総合分析
 function analyzeOverall(config, result) {
-  // リトライとサーキットブレーカーの整合性
   if (config.retry && config.circuitBreaker) {
     const totalWaitTime = calculateTotalWaitTime(config.retry);
     const cbTimeout =
@@ -282,7 +334,6 @@ function analyzeOverall(config, result) {
     }
   }
 
-  // リトライとタイムアウトの整合性
   if (config.retry && config.timeout) {
     const totalTimeout =
       config.timeout.total || RECOMMENDED_CONFIG.timeout.total.default;
@@ -301,7 +352,6 @@ function analyzeOverall(config, result) {
   }
 }
 
-// 総待機時間の計算
 function calculateTotalWaitTime(retry) {
   const maxRetries = retry.maxRetries || 3;
   const baseDelay = retry.baseDelay || 1000;
@@ -309,7 +359,7 @@ function calculateTotalWaitTime(retry) {
   const jitterFactor = retry.jitterFactor || 0.3;
 
   let total = 0;
-  for (let i = 0; i < maxRetries; i++) {
+  for (let i = 0; i < maxRetries; i += 1) {
     const delay = Math.min(baseDelay * Math.pow(2, i), maxDelay);
     const maxJitter = delay * jitterFactor;
     total += delay + maxJitter;
@@ -318,20 +368,17 @@ function calculateTotalWaitTime(retry) {
   return total;
 }
 
-// 時間のフォーマット
 function formatDuration(ms) {
   if (ms < 1000) return `${ms}ms`;
   if (ms < 60000) return `${(ms / 1000).toFixed(1)}秒`;
   return `${(ms / 60000).toFixed(1)}分`;
 }
 
-// レポート出力
 function printReport(result) {
   console.log("\n" + "=".repeat(60));
   console.log("Retry Configuration Analysis Report");
   console.log("=".repeat(60));
 
-  // メトリクス
   if (Object.keys(result.metrics).length > 0) {
     console.log("\n📊 Metrics:");
     for (const [key, value] of Object.entries(result.metrics)) {
@@ -341,7 +388,6 @@ function printReport(result) {
     }
   }
 
-  // エラー
   if (result.errors.length > 0) {
     console.log("\n❌ Errors:");
     result.errors.forEach((e) => {
@@ -349,7 +395,6 @@ function printReport(result) {
     });
   }
 
-  // 警告
   if (result.warnings.length > 0) {
     console.log("\n⚠️  Warnings:");
     result.warnings.forEach((w) => {
@@ -357,7 +402,6 @@ function printReport(result) {
     });
   }
 
-  // 提案
   if (result.suggestions.length > 0) {
     console.log("\nℹ️  Suggestions:");
     result.suggestions.forEach((s) => {
@@ -365,7 +409,6 @@ function printReport(result) {
     });
   }
 
-  // 結果
   console.log("\n" + "-".repeat(60));
   if (result.isValid) {
     console.log("✅ Configuration is valid");
@@ -377,50 +420,55 @@ function printReport(result) {
   return result.isValid;
 }
 
-// メイン処理
+function loadConfig(mode, value) {
+  if (mode === "inline") {
+    try {
+      return JSON.parse(value);
+    } catch (error) {
+      console.error("Error: --inline のJSON文字列が不正です");
+      process.exit(EXIT_ARGS_ERROR);
+    }
+  }
+
+  if (!fs.existsSync(value)) {
+    console.error(`Error: ファイルが見つかりません: ${value}`);
+    process.exit(EXIT_FILE_MISSING);
+  }
+
+  try {
+    return JSON.parse(fs.readFileSync(value, "utf-8"));
+  } catch (error) {
+    console.error(`Error: JSONの解析に失敗しました: ${error.message}`);
+    process.exit(EXIT_ARGS_ERROR);
+  }
+
+  return null;
+}
+
 function main() {
-  const args = process.argv.slice(2);
+  const args = parseArgs(process.argv.slice(2));
 
-  if (args.length === 0) {
-    console.log("Usage:");
-    console.log("  node analyze-retry-config.mjs <config-file.json>");
-    console.log(
-      '  node analyze-retry-config.mjs --inline \'{"retry":{"maxRetries":3}}\'',
-    );
-    process.exit(1);
+  if (args.help) {
+    showHelp();
+    process.exit(EXIT_SUCCESS);
   }
 
-  let config;
-
-  if (args[0] === "--inline") {
-    if (!args[1]) {
-      console.error("Error: --inline requires a JSON string");
-      process.exit(1);
-    }
-    try {
-      config = JSON.parse(args[1]);
-    } catch (e) {
-      console.error("Error: Invalid JSON string");
-      process.exit(1);
-    }
-  } else {
-    const filePath = args[0];
-    if (!fs.existsSync(filePath)) {
-      console.error(`Error: File not found: ${filePath}`);
-      process.exit(1);
-    }
-    try {
-      config = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-    } catch (e) {
-      console.error(`Error: Failed to parse JSON file: ${e.message}`);
-      process.exit(1);
-    }
+  if (args.error) {
+    console.error(`Error: ${args.error}`);
+    showHelp();
+    process.exit(EXIT_ARGS_ERROR);
   }
 
+  const config = loadConfig(args.mode, args.value);
   const result = analyzeConfig(config);
   const isValid = printReport(result);
 
-  process.exit(isValid ? 0 : 1);
+  process.exit(isValid ? EXIT_SUCCESS : EXIT_VALIDATION_ERROR);
 }
 
-main();
+try {
+  main();
+} catch (error) {
+  console.error(`Error: ${error.message}`);
+  process.exit(EXIT_ERROR);
+}

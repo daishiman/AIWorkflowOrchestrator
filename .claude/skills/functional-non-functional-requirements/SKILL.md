@@ -1,8 +1,7 @@
 ---
 name: functional-non-functional-requirements
 description: |
-  機能要件と非機能要件の分類と定義スキル。要件を適切なカテゴリに分類し、
-  漏れなく体系的に管理するための方法論を提供します。
+  機能要件と非機能要件の分類と定義スキル。要件を適切なカテゴリに分類し、漏れなく体系的に管理するための方法論を提供する。
 
   Anchors:
   • ISO/IEC 25010 品質モデル / 適用: NFR分類と品質特性定義 / 目的: 8品質特性による網羅的カバレッジ
@@ -10,163 +9,136 @@ description: |
   • Software Requirements (Karl Wiegers) / 適用: 要件品質検証 / 目的: SMART原則による検証可能性確保
 
   Trigger:
-  Use when classifying requirements into functional and non-functional categories.
-  Use when defining measurable quality attributes for NFRs.
-  Use when validating requirements completeness and consistency.
-  Keywords: requirements, functional, non-functional, NFR, quality attributes, ISO 25010, SMART criteria, measurability
-version: 1.0.1
-level: 1
-last_updated: 2025-12-31
-tags:
-  - requirements-engineering
-  - quality-attributes
-  - nfr
-  - software-requirements
+  Use when classifying requirements into functional and non-functional categories, defining measurable quality attributes for NFRs, or validating requirements completeness and consistency.
+  requirements, functional, non-functional, NFR, quality attributes, ISO 25010, SMART criteria, measurability
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+  - Task
 ---
 
 # Functional and Non-Functional Requirements
 
 ## 概要
 
-機能要件と非機能要件の分類と定義スキル。要件を適切なカテゴリに分類し、
-漏れなく体系的に管理するための方法論を提供します。
-専門分野:
+機能要件と非機能要件の分類と定義スキル。要件を適切なカテゴリに分類し、漏れなく体系的に管理するための方法論を提供する。
 
-詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
+**適用範囲**: ソフトウェア開発プロジェクトの要件定義フェーズ
 
 ## ワークフロー
-
-このスキルは3つのTask（agents/）に分離されています。各Taskは独立して実行可能ですが、推奨される順序で実行することで最適な結果が得られます。
 
 ### Phase 1: 要件分析（Requirements Analysis）
 
 **目的**: プロジェクトの要件を収集・分析し、初期リストを作成する
 
-**Task仕様**: `agents/requirements-analyst.md`
+**アクション**:
 
-**入力**:
+1. プロジェクト概要とステークホルダー要求を収集
+2. [references/classification-guide.md](references/classification-guide.md) で分類基準を確認
+3. 要件を機能要件と非機能要件に暫定分類
 
-- プロジェクト概要（目的、対象ユーザー、主要機能）
-- ステークホルダー要求リスト
-
-**出力**:
-
-- 要件初期リスト（要件ID、記述、初期分類、優先度）
-
-**参考リソース**:
-
-- `references/Level1_basics.md`: 基本的な要件分類の考え方
-- `references/classification-guide.md`: 詳細な分類ガイドライン
+**Task**: `agents/requirements-analyst.md` を参照
 
 ### Phase 2: 要件分類（Requirements Classification）
 
 **目的**: 要件をFR/NFRに厳密に分類し、NFRを品質特性別に細分化する
 
-**Task仕様**: `agents/requirements-classifier.md`
+**アクション**:
 
-**入力**:
+1. [references/quality-attributes.md](references/quality-attributes.md) でISO 25010品質特性を確認
+2. NFRを品質特性別に細分化
+3. [references/nfr-templates.md](references/nfr-templates.md) でテンプレートを適用
 
-- 要件初期リスト（Phase 1の出力）
-
-**出力**:
-
-- 要件分類済みリスト（FR、NFR、Constraint別）
-- NFRの測定基準初期案
-
-**参考リソース**:
-
-- `references/quality-attributes.md`: ISO 25010品質特性の詳細
-- `references/classification-guide.md`: 分類判断基準
-- `references/nfr-templates.md`: NFR記述パターン
+**Task**: `agents/requirements-classifier.md` を参照
 
 ### Phase 3: 要件検証（Requirements Validation）
 
 **目的**: 分類済み要件の品質を検証し、完全性・一貫性を確保する
 
-**Task仕様**: `agents/requirements-validator.md`
+**アクション**:
 
-**入力**:
+1. [references/measurement-guide.md](references/measurement-guide.md) でNFR測定可能性を確認
+2. `scripts/check-nfr-coverage.mjs` で品質特性カバレッジをチェック
+3. [assets/nfr-definition-template.md](assets/nfr-definition-template.md) で最終成果物を作成
 
-- 要件分類済みリスト（Phase 2の出力）
+**Task**: `agents/requirements-validator.md` を参照
 
-**出力**:
+## Task仕様（ナビゲーション）
 
-- 要件検証レポート（指摘事項、カバレッジ分析）
-- 最終要件定義書
+| Task                    | 起動タイミング | 入力                 | 出力               |
+| ----------------------- | -------------- | -------------------- | ------------------ |
+| requirements-analyst    | Phase 1        | ステークホルダー要求 | 要件初期リスト     |
+| requirements-classifier | Phase 2        | 要件初期リスト       | 分類済み要件リスト |
+| requirements-validator  | Phase 3        | 分類済み要件リスト   | 最終要件定義書     |
 
-**参考リソース**:
-
-- `references/measurement-guide.md`: NFR測定可能性のガイド
-- `scripts/check-nfr-coverage.mjs`: 品質特性カバレッジ自動チェック
-- `assets/nfr-definition-template.md`: 最終成果物テンプレート
-
-### 実行記録
-
-各Phaseの完了後、以下のコマンドで実行記録を残してください：
-
-```bash
-node .claude/skills/functional-non-functional-requirements/scripts/log_usage.mjs \
-  --result success \
-  --phase "Phase 1: Requirements Analysis" \
-  --notes "{{feedback}}"
-```
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
 ## ベストプラクティス
 
 ### すべきこと
 
-- 要件を機能/非機能に分類する時
-- 非機能要件を定義する時
-- 品質特性を網羅的に確認する時
-- 見落としがちな要件を発見する時
+- 「何をするか」は機能要件、「どのように/どの程度」は非機能要件として分類
+- NFRには必ず測定可能な目標値を設定（SMART原則）
+- ISO 25010の8品質特性でNFRの網羅性を確認
+- Task実行前に該当する `agents/*.md` を読み、入出力を確認する
+- Phase完了後に `scripts/log_usage.mjs` で記録を残す
 
 ### 避けるべきこと
 
-- アンチパターンや注意点を確認せずに進めることを避ける
+- 機能と品質の混同（「高速な検索機能」→ FR: 検索機能 + NFR: 応答時間）
+- 測定不可能なNFR（「使いやすい」→「3クリック以内で目的達成」）
+- セキュリティの一括分類（認証機能はFR、暗号化方式はNFR）
 
-## コマンドリファレンス
+**詳細**: See [references/classification-guide.md](references/classification-guide.md) → よくある間違い
 
-### リソース読み取り
+## リソース参照
 
-```bash
-cat .claude/skills/functional-non-functional-requirements/references/Level1_basics.md
-cat .claude/skills/functional-non-functional-requirements/references/Level2_intermediate.md
-cat .claude/skills/functional-non-functional-requirements/references/Level3_advanced.md
-cat .claude/skills/functional-non-functional-requirements/references/Level4_expert.md
-cat .claude/skills/functional-non-functional-requirements/references/classification-guide.md
-cat .claude/skills/functional-non-functional-requirements/references/legacy-skill.md
-cat .claude/skills/functional-non-functional-requirements/references/measurement-guide.md
-cat .claude/skills/functional-non-functional-requirements/references/nfr-templates.md
-cat .claude/skills/functional-non-functional-requirements/references/quality-attributes.md
-```
+### references/（知識外部化）
 
-### スクリプト実行
+| リソース    | パス                                                                     | 内容                     |
+| ----------- | ------------------------------------------------------------------------ | ------------------------ |
+| 分類ガイド  | [references/classification-guide.md](references/classification-guide.md) | FR/NFR分類基準、記述形式 |
+| 品質特性    | [references/quality-attributes.md](references/quality-attributes.md)     | ISO 25010、FURPS+モデル  |
+| NFRテンプレ | [references/nfr-templates.md](references/nfr-templates.md)               | NFR記述パターン          |
+| 測定ガイド  | [references/measurement-guide.md](references/measurement-guide.md)       | NFR測定可能性のガイド    |
 
-```bash
-node .claude/skills/functional-non-functional-requirements/scripts/check-nfr-coverage.mjs --help
-node .claude/skills/functional-non-functional-requirements/scripts/log_usage.mjs --help
-node .claude/skills/functional-non-functional-requirements/scripts/validate-skill.mjs --help
-```
+### scripts/（決定論的処理）
 
-### テンプレート参照
+| スクリプト               | 用途                   | 使用例                                        |
+| ------------------------ | ---------------------- | --------------------------------------------- |
+| `check-nfr-coverage.mjs` | 品質特性カバレッジ確認 | `node scripts/check-nfr-coverage.mjs`         |
+| `log_usage.mjs`          | フィードバック記録     | `node scripts/log_usage.mjs --result success` |
+| `validate-skill.mjs`     | 構造検証               | `node scripts/validate-skill.mjs`             |
 
-```bash
-cat .claude/skills/functional-non-functional-requirements/assets/nfr-definition-template.md
-```
+### assets/（テンプレート）
 
-## Task Specifications (agents/)
+| テンプレート                 | 用途                   |
+| ---------------------------- | ---------------------- |
+| `nfr-definition-template.md` | 最終成果物テンプレート |
 
-このスキルは以下のTask仕様書を提供します。各Taskは実行直前に読み込まれます：
+## 品質特性チェックリスト
 
-- **requirements-analyst.md**: Phase 1の要件分析Task仕様
-- **requirements-classifier.md**: Phase 2の要件分類Task仕様
-- **requirements-validator.md**: Phase 3の要件検証Task仕様
+NFR網羅性を確認するための簡易チェックリスト：
 
-各Task仕様には、役割、入力/出力、思考プロセス、チェックリスト、参照書籍が含まれています。
+- [ ] パフォーマンス: 応答時間、スループットの目標は？
+- [ ] スケーラビリティ: 将来の成長に対応できるか？
+- [ ] セキュリティ: 認証、認可、暗号化の要件は？
+- [ ] 可用性: SLAの目標は？
+- [ ] 信頼性: 障害時の動作は？
+- [ ] 保守性: テスト、デプロイの要件は？
+- [ ] ユーザビリティ: アクセシビリティ要件は？
+- [ ] 互換性: 対応ブラウザ、デバイスは？
+
+**詳細**: See [references/quality-attributes.md](references/quality-attributes.md)
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                                |
-| ------- | ---------- | ---------------------------------------------------------------------- |
-| 1.0.1   | 2025-12-31 | Added EVALS.json, LOGS.md, and agents/ Task specifications (18-skills) |
-| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added                            |
+| Version | Date       | Changes                                   |
+| ------- | ---------- | ----------------------------------------- |
+| 1.1.0   | 2026-01-02 | references/を整理、18-skills.md仕様準拠   |
+| 1.0.1   | 2025-12-31 | EVALS.json, LOGS.md, agents/ Task仕様追加 |
+| 1.0.0   | 2025-12-24 | 初版作成                                  |

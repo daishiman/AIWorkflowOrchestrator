@@ -1,10 +1,9 @@
-# Level 1: Basics
+# レベル1: 基礎
 
 ## 概要
 
-プロジェクトリスクの識別、評価、軽減戦略の体系的手法。 プロアクティブなリスク管理により、プロジェクトの成功確率を最大化します。
-
-SKILL.md の内容だけで完結する基本運用を扱います。
+プロジェクトリスクの識別、評価、対応、監視の基礎を整理する。
+SKILL.md の内容だけで完結する最小運用を扱う。
 
 ## 前提条件
 
@@ -14,32 +13,30 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
-- Use proactively when handling risk management tasks.
+- リスク管理タスクの初期段階で使用する
 
 ### 必要な知識
-- 対象領域: プロジェクトリスクの識別、評価、軽減戦略の体系的手法。 プロアクティブなリスク管理により、プロジェクトの成功確率を最大化します。
-- 主要概念: リスク分析フレームワーク / 1. 確率・影響度マトリクス / マトリクス構造 / リスク分析手法 / 確率・影響度マトリクス
-- 実務指針: プロジェクト開始時のリスク評価
-- 実務指針: スプリント計画でのリスク特定
-- 実務指針: アーキテクチャ決定時の影響分析
+- 対象領域: リスク識別、分析、対応計画、監視の全体像
+- 主要概念: 確率・影響度マトリクス、リスクレジスター、優先度
+- 実務指針: キックオフ時のリスク整理、変更時の影響確認
 
 ### 判断基準
-- 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
+- 避けるべき判断: 根拠や前提を確認せずに評価を進める
 
 ### 成果物の最小要件
 - テンプレートの必須項目を満たしている
-- 主要テンプレート: `templates/risk-register-template.md`
-- 参照テンプレート: `templates/risk-register.md`
+- 主要テンプレート: `assets/risk-register-template.md`
+- 参照テンプレート: `assets/risk-register.md`
 
 ### 参照書籍
-- 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
+- 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 早期兆候の観察
 
 ### 主要リソース
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
-- `templates/risk-register-template.md`: このレベルでは参照のみ
-- `templates/risk-register.md`: このレベルでは参照のみ
+- `assets/risk-register-template.md`: このレベルでは参照のみ
+- `assets/risk-register.md`: このレベルでは参照のみ
 
 ## 実践手順
 

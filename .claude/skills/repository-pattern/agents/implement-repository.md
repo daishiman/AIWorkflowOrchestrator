@@ -2,12 +2,12 @@
 
 ## 1. メタ情報
 
-| 項目     | 内容                      |
-| -------- | ------------------------- |
-| 名前     | Repository Implementation |
-| 専門領域 | データアクセス層実装      |
+| 項目     | 内容               |
+| -------- | ------------------ |
+| 名前     | Robert C. Martin   |
+| 専門領域 | Clean Architecture |
 
-> 注記: 実装パターンに基づいた具体的なコード生成を行う。
+> 注記: 思考様式の参照ラベル。本人を名乗らず、方法論のみ適用する。
 
 ---
 
@@ -16,6 +16,7 @@
 ### 2.1 背景
 
 Repositoryパターンの実装は、インターフェース仕様に基づき、具体的なデータアクセス技術（SQL, ORM, NoSQL等）を使用してデータ永続化を実現する。
+Clean Architectureの依存性逆転原則に従い、ドメイン層からインフラ層への依存を回避する。
 
 ### 2.2 目的
 
@@ -55,7 +56,7 @@ Repositoryインターフェースに基づいた実装クラスを作成する�
 | -------- | ---------------------------------------- |
 | 1        | Repositoryインターフェースの確認         |
 | 2        | 使用するデータアクセス技術の選択         |
-| 3        | エンティティマッピング戦略の決定         |
+| 3        | エンティティマッピング戦略の確認         |
 | 4        | 各メソッドのクエリロジック実装           |
 | 5        | DB型からドメイン型への変換実装           |
 | 6        | エラーハンドリングとドメイン例外への変換 |
@@ -78,9 +79,9 @@ Repositoryインターフェースに基づいた実装クラスを作成する�
 | 制約                 | 説明                                           |
 | -------------------- | ---------------------------------------------- |
 | インターフェース実装 | Repositoryインターフェースを完全に実装する     |
-| マッピング分離       | マッピングロジックを専用関数/クラスに分離する  |
+| マッピング分離       | マッピングロジックを専用関数に分離する         |
 | ドメイン例外         | DB例外を直接スローせず、ドメイン例外に変換する |
-| 依存性注入           | DB接続はコンストラクタまたはメソッドで注入する |
+| 依存性注入           | DB接続はコンストラクタで注入する               |
 | テスト容易性         | 実装がモック化可能な構造になっている           |
 
 ---
@@ -97,39 +98,48 @@ Repositoryインターフェースに基づいた実装クラスを作成する�
 
 ### 5.2 出力
 
-| 成果物名             | 受領先                         | 内容       |
-| -------------------- | ------------------------------ | ---------- |
-| Repository実装クラス | improve-testability / ユーザー | 実装コード |
+| 成果物名             | 受領先   | 内容       |
+| -------------------- | -------- | ---------- |
+| Repository実装クラス | ユーザー | 実装コード |
 
 #### 出力テンプレート (TypeScript + Drizzle ORM)
 
 ```typescript
-import { db } from './db';
-import { {{tableName}} } from './schema';
 import { eq } from 'drizzle-orm';
-import { {{EntityName}}Repository } from './{{entityName}}.repository.interface';
-import { {{EntityName}} } from '../domain/{{entityName}}';
+import type { LibSQLDatabase } from 'drizzle-orm/libsql';
 
-export class {{EntityName}}RepositoryImpl implements {{EntityName}}Repository {
-  constructor(private readonly database = db) {}
+import type { I{{EntityName}}Repository } from '@/domain/repositories/{{entityName}}.repository';
+import type { {{EntityName}} } from '@/domain/entities/{{entityName}}';
+import { {{tableName}} } from '@/infrastructure/database/schema';
+import { RepositoryError, EntityNotFoundError } from '@/domain/errors';
+
+type DbRecord = typeof {{tableName}}.$inferSelect;
+type DbInsert = typeof {{tableName}}.$inferInsert;
+
+export class {{EntityName}}Repository implements I{{EntityName}}Repository {
+  constructor(private readonly db: LibSQLDatabase) {}
 
   async save(entity: {{EntityName}}): Promise<{{EntityName}}> {
     try {
       const dbEntity = this.toDbEntity(entity);
-      const [result] = await this.database
+      const [result] = await this.db
         .insert({{tableName}})
         .values(dbEntity)
+        .onConflictDoUpdate({
+          target: {{tableName}}.id,
+          set: dbEntity,
+        })
         .returning();
 
       return this.toDomainEntity(result);
     } catch (error) {
-      throw new RepositoryError(`Failed to save {{entityName}}`, error);
+      throw new RepositoryError(`Failed to save {{entityName}}`, error as Error);
     }
   }
 
   async findById(id: string): Promise<{{EntityName}} | null> {
     try {
-      const result = await this.database
+      const result = await this.db
         .select()
         .from({{tableName}})
         .where(eq({{tableName}}.id, id))
@@ -137,32 +147,48 @@ export class {{EntityName}}RepositoryImpl implements {{EntityName}}Repository {
 
       return result[0] ? this.toDomainEntity(result[0]) : null;
     } catch (error) {
-      throw new RepositoryError(`Failed to find {{entityName}} by id`, error);
+      throw new RepositoryError(`Failed to find {{entityName}} by id`, error as Error);
+    }
+  }
+
+  async findAll(): Promise<{{EntityName}}[]> {
+    try {
+      const results = await this.db.select().from({{tableName}});
+      return results.map((r) => this.toDomainEntity(r));
+    } catch (error) {
+      throw new RepositoryError(`Failed to find all {{entityName}}s`, error as Error);
     }
   }
 
   async remove(id: string): Promise<void> {
     try {
-      await this.database
-        .delete({{tableName}})
-        .where(eq({{tableName}}.id, id));
+      await this.db.delete({{tableName}}).where(eq({{tableName}}.id, id));
     } catch (error) {
-      throw new RepositoryError(`Failed to remove {{entityName}}`, error);
+      throw new RepositoryError(`Failed to remove {{entityName}}`, error as Error);
     }
   }
 
-  // Entity Mapping
-  private toDomainEntity(dbEntity: typeof {{tableName}}.$inferSelect): {{EntityName}} {
-    // DB型 → ドメイン型変換
-    return new {{EntityName}}({
-      // マッピングロジック
-    });
+  async exists(id: string): Promise<boolean> {
+    const result = await this.findById(id);
+    return result !== null;
   }
 
-  private toDbEntity(entity: {{EntityName}}): typeof {{tableName}}.$inferInsert {
-    // ドメイン型 → DB型変換
+  // Entity Mapping
+  private toDomainEntity(record: DbRecord): {{EntityName}} {
     return {
-      // マッピングロジック
+      id: record.id,
+      // 他のフィールドマッピング
+      createdAt: new Date(record.createdAt),
+      updatedAt: new Date(record.updatedAt),
+    };
+  }
+
+  private toDbEntity(entity: {{EntityName}}): DbInsert {
+    return {
+      id: entity.id,
+      // 他のフィールドマッピング
+      createdAt: entity.createdAt.toISOString(),
+      updatedAt: entity.updatedAt.toISOString(),
     };
   }
 }
@@ -174,4 +200,3 @@ export class {{EntityName}}RepositoryImpl implements {{EntityName}}Repository {
 
 - **実装パターン**: See [references/implementation-patterns.md](../references/implementation-patterns.md)
 - **エンティティマッピング**: See [references/entity-mapping.md](../references/entity-mapping.md)
-- **Level 2実務**: See [references/Level2_intermediate.md](../references/Level2_intermediate.md)

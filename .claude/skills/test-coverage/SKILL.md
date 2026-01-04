@@ -1,17 +1,17 @@
 ---
 name: test-coverage
 description: |
-  テストカバレッジ分析と改善戦略の設計スキル。
-  カバレッジメトリクスの収集・分析・ギャップ特定・優先順位付け・改善計画を体系的に実施します。
+  テストカバレッジの計測、ギャップ分析、改善計画の策定を行うスキル。
+  リスクベースで優先順位を決め、実行可能な改善ステップに落とし込む。
 
   Anchors:
-  • Working Effectively with Legacy Code (Michael Feathers) / 適用: レガシーコードへのテスト追加戦略 / 目的: リスクベーステスト設計
-  • xUnit Test Patterns (Gerard Meszaros) / 適用: テスト設計パターン / 目的: 効果的なテストケース作成
-  • Test-Driven Development (Kent Beck) / 適用: TDDサイクル / 目的: カバレッジを自然に高める開発手法
+  • Working Effectively with Legacy Code / 適用: リスク評価 / 目的: 重点領域の特定
+  • xUnit Test Patterns / 適用: テスト設計 / 目的: 有効なテスト追加
+  • Test-Driven Development: By Example / 適用: テスト追加 / 目的: 品質改善
 
   Trigger:
-  Use when analyzing test coverage, improving test suites, identifying coverage gaps, or planning coverage improvement strategies.
-  test coverage, coverage report, code coverage, branch coverage, line coverage, statement coverage, path coverage, coverage analysis, coverage gap, untested code, test improvement
+  Use when analyzing test coverage, prioritizing coverage gaps, or planning coverage improvements.
+  test coverage, coverage report, coverage gap, risk-based testing, improvement plan
 allowed-tools:
   - Read
   - Write
@@ -19,59 +19,53 @@ allowed-tools:
   - Bash
   - Glob
   - Grep
-  - Task
 ---
 
 # test-coverage
 
 ## 概要
 
-テストカバレッジ分析と改善戦略の設計スキル。
-カバレッジメトリクスの収集・分析・ギャップ特定・優先順位付け・改善計画を体系的に実施する。
+カバレッジ指標を分析し、ギャップを優先順位付けして改善計画に落とし込むスキル。
 
 ---
 
 ## ワークフロー
 
-### Phase 1: カバレッジ収集と分析
+### Phase 1: カバレッジ分析
 
-**目的**: 現状のテストカバレッジを測定し、メトリクスを可視化
+**目的**: 現状のカバレッジ指標を整理し、ギャップを抽出する。
 
 **アクション**:
 
-1. テストランナー（Vitest/Jest/Pytest等）でカバレッジレポート生成
-2. `scripts/analyze-coverage.mjs` で詳細分析
-3. カバレッジ種別（Line/Branch/Function/Statement）別の状況確認
-4. 必要なリソースレベル（Level 1-4）を判定
+1. カバレッジレポートを取得する
+2. 指標を整理しギャップを抽出する
+3. 初期評価を記録する
 
 **Task**: `agents/analyze-coverage.md` を参照
 
-### Phase 2: ギャップ特定と優先順位付け
+### Phase 2: ギャップ優先順位付け
 
-**目的**: カバレッジギャップを特定し、リスクベースで優先順位を決定
-
-**アクション**:
-
-1. 未カバー領域の洗い出し
-2. `references/risk-assessment.md` でリスク評価
-3. ビジネスインパクト・変更頻度・複雑度でスコアリング
-4. 優先度マトリクスの作成
-
-**Task**: `agents/identify-gaps.md` を参照
-
-### Phase 3: 改善計画と実装
-
-**目的**: カバレッジ改善計画を策定し、効果的なテストを追加
+**目的**: 影響度と頻度をもとに優先順位を決定する。
 
 **アクション**:
 
-1. `assets/coverage-improvement-plan.md` を使用
-2. `references/test-design-patterns.md` でパターン選択
-3. 段階的改善ロードマップ作成
-4. `scripts/validate-coverage-improvement.mjs` で進捗確認
-5. `scripts/log_usage.mjs` で使用記録を保存
+1. リスク評価を行う
+2. 優先順位表を作成する
+3. 重点領域を特定する
 
-**Task**: `agents/improve-coverage.md` を参照
+**Task**: `agents/prioritize-gaps.md` を参照
+
+### Phase 3: 改善計画の策定
+
+**目的**: 改善施策と検証方法を定義する。
+
+**アクション**:
+
+1. 施策と目標値を決める
+2. 段階的な実施手順を作る
+3. 検証方法を明記する
+
+**Task**: `agents/plan-improvements.md` を参照
 
 ---
 
@@ -80,8 +74,8 @@ allowed-tools:
 | Task             | 起動タイミング | 入力                   | 出力                   |
 | ---------------- | -------------- | ---------------------- | ---------------------- |
 | analyze-coverage | Phase 1開始時  | カバレッジレポート     | カバレッジ分析結果     |
-| identify-gaps    | Phase 2開始時  | カバレッジ分析結果     | 優先順位付きギャップ表 |
-| improve-coverage | Phase 3開始時  | 優先順位付きギャップ表 | 改善計画と実装         |
+| prioritize-gaps  | Phase 2開始時  | カバレッジ分析結果     | 優先度付きギャップ表   |
+| plan-improvements| Phase 3開始時  | 優先度付きギャップ表   | 改善計画               |
 
 **詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
@@ -91,62 +85,47 @@ allowed-tools:
 
 ### すべきこと
 
-| 推奨事項                     | 理由                                       |
-| ---------------------------- | ------------------------------------------ |
-| リスクベースでの優先順位付け | ビジネスインパクトの高い領域から改善       |
-| 複数カバレッジメトリクス確認 | Line/Branch/Path等、多角的な視点で評価     |
-| 段階的改善                   | 一度に100%を目指さず、着実に向上           |
-| カバレッジとテスト品質の両立 | 数値目標だけでなく、意味のあるテストを作成 |
-| 継続的モニタリング           | CI/CDパイプラインでカバレッジを追跡        |
+| 推奨事項                         | 理由                               |
+| -------------------------------- | ---------------------------------- |
+| リスクベースで優先順位を決める   | 影響度の高い改善から着手できる     |
+| 複数の指標を確認する             | 偏った評価を避ける                 |
+| 段階的な改善計画にする           | 実行可能性が高まる                 |
 
 ### 避けるべきこと
 
-| 禁止事項                 | 問題点                                   |
-| ------------------------ | ---------------------------------------- |
-| カバレッジ100%を目標化   | コストパフォーマンスが悪化               |
-| カバレッジのみに注目     | テストの品質（有効性）を無視             |
-| 自動生成テストへの依存   | メンテナンス困難なテストが量産される     |
-| レガシーコード全域の改善 | リスク評価なしに手を広げると破綻         |
-| カバレッジ低下の放置     | 技術的負債が蓄積し、後の改善が困難になる |
+| 禁止事項                     | 問題点                             |
+| ---------------------------- | ---------------------------------- |
+| 数値目標だけを追う           | テスト品質が低下する               |
+| 低優先度領域に集中する       | リスク低減につながらない           |
+| 計測を省略する               | 改善効果が測れない                 |
 
 ---
 
 ## リソース参照
 
-### references/（詳細知識）
-
-| リソース                 | パス                                                                     | 読込条件                   |
-| ------------------------ | ------------------------------------------------------------------------ | -------------------------- |
-| 基礎概念                 | [references/Level1_basics.md](references/Level1_basics.md)               | 初回利用時                 |
-| 実務パターン             | [references/Level2_intermediate.md](references/Level2_intermediate.md)   | 実務適用時                 |
-| 応用技法                 | [references/Level3_advanced.md](references/Level3_advanced.md)           | 複雑なプロジェクト時       |
-| ベストプラクティス       | [references/Level4_expert.md](references/Level4_expert.md)               | アンチパターン回避         |
-| リスク評価ガイド         | [references/risk-assessment.md](references/risk-assessment.md)           | Phase 2実行時              |
-| テスト設計パターン       | [references/test-design-patterns.md](references/test-design-patterns.md) | Phase 3実行時              |
-| カバレッジメトリクス解説 | [references/coverage-metrics.md](references/coverage-metrics.md)         | Phase 1実行時              |
-| レガシーコード対応戦略   | [references/legacy-code-strategy.md](references/legacy-code-strategy.md) | レガシーコードテスト追加時 |
-
 ### scripts/（決定論的処理）
 
-| スクリプト                                  | 機能                       |
-| ------------------------------------------- | -------------------------- |
-| `scripts/analyze-coverage.mjs`              | カバレッジレポート詳細分析 |
-| `scripts/validate-coverage-improvement.mjs` | 改善進捗検証               |
-| `scripts/generate-coverage-report.mjs`      | 統合カバレッジレポート生成 |
-| `scripts/log_usage.mjs`                     | フィードバック記録         |
+| スクリプト                               | 機能                         |
+| ---------------------------------------- | ---------------------------- |
+| `scripts/analyze-coverage-report.mjs`    | カバレッジレポート解析       |
+| `scripts/validate-coverage-plan.mjs`     | 改善計画テンプレート検証     |
+| `scripts/log_usage.mjs`                  | 使用記録をLOGS.mdに記録する  |
+
+### references/（詳細知識）
+
+| リソース          | パス                                                     | 読込条件     |
+| ----------------- | -------------------------------------------------------- | ------------ |
+| 基礎              | [references/Level1_basics.md](references/Level1_basics.md) | 初回利用時   |
+| ギャップ分析      | [references/Level2_intermediate.md](references/Level2_intermediate.md) | Phase 2 |
+| 高度計測          | [references/Level3_advanced.md](references/Level3_advanced.md) | 高難度対応 |
+| 継続運用          | [references/Level4_expert.md](references/Level4_expert.md) | 運用時 |
+| リスク評価        | [references/risk-assessment.md](references/risk-assessment.md) | Phase 2 |
+| メトリクス定義    | [references/coverage-metrics.md](references/coverage-metrics.md) | Phase 1 |
 
 ### assets/（テンプレート）
 
-| アセット                              | 用途                     |
-| ------------------------------------- | ------------------------ |
-| `assets/coverage-improvement-plan.md` | 改善計画テンプレート     |
-| `assets/coverage-analysis-report.md`  | 分析レポートテンプレート |
-| `assets/priority-matrix.md`           | 優先順位マトリクス雛形   |
+| アセット                                 | 用途                       |
+| ---------------------------------------- | -------------------------- |
+| `assets/coverage-analysis-template.md`   | カバレッジ分析テンプレート |
+| `assets/coverage-improvement-plan.md`    | 改善計画テンプレート       |
 
----
-
-## 変更履歴
-
-| Version | Date       | Changes                                   |
-| ------- | ---------- | ----------------------------------------- |
-| 1.0.0   | 2025-12-31 | 18-skills.md準拠版。agents/追加、構造刷新 |

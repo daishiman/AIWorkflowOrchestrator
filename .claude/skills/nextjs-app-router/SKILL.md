@@ -28,7 +28,7 @@ Next.js App Routerのアーキテクチャと実装パターンを専門とす�
 Guillermo Rauchの「Server-First」「Convention over Configuration」思想に基づき、
 高速で保守性の高いルーティング構造を設計・実装します。
 
-詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
+詳細な手順や背景は `references/basics.md` と `references/patterns.md` を参照してください。
 
 ## ワークフロー
 
@@ -47,7 +47,7 @@ Next.js App Routerの設計・実装は以下の3フェーズで進めます。
 **参照リソース**:
 
 - `references/routing-patterns.md`: ルーティングパターン詳細
-- `references/Level1_basics.md`: 基礎概念
+- `references/basics.md`: 基礎概念
 - `scripts/analyze-routing-structure.mjs`: 既存構造解析
 
 ### Phase 2: コンポーネント設計
@@ -64,7 +64,7 @@ Next.js App Routerの設計・実装は以下の3フェーズで進めます。
 - `references/server-client-decision.md`: Server/Client判断フロー
 - `references/rendering-strategies.md`: レンダリング戦略ガイド
 - `references/layout-hierarchy.md`: Layout階層設計
-- `references/Level2_intermediate.md`: 実務パターン
+- `references/patterns.md`: 実装パターン
 
 ### Phase 3: 実装と検証
 
@@ -79,7 +79,7 @@ Next.js App Routerの設計・実装は以下の3フェーズで進めます。
 
 - `assets/layout-template.md`: Layoutテンプレート
 - `assets/page-template.md`: Pageテンプレート
-- `references/Level3_advanced.md`: 応用パターン
+- `references/patterns.md`: 応用パターン（並列ルート、インターセプト）
 - `scripts/validate-skill.mjs`: 構造検証
 
 **記録**: `scripts/log_usage.mjs` でフィードバックを記録
@@ -102,12 +102,9 @@ Next.js App Routerの設計・実装は以下の3フェーズで進めます。
 ### リソース読み取り
 
 ```bash
-cat .claude/skills/nextjs-app-router/references/Level1_basics.md
-cat .claude/skills/nextjs-app-router/references/Level2_intermediate.md
-cat .claude/skills/nextjs-app-router/references/Level3_advanced.md
-cat .claude/skills/nextjs-app-router/references/Level4_expert.md
+cat .claude/skills/nextjs-app-router/references/basics.md
+cat .claude/skills/nextjs-app-router/references/patterns.md
 cat .claude/skills/nextjs-app-router/references/layout-hierarchy.md
-cat .claude/skills/nextjs-app-router/references/legacy-skill.md
 cat .claude/skills/nextjs-app-router/references/rendering-strategies.md
 cat .claude/skills/nextjs-app-router/references/routing-patterns.md
 cat .claude/skills/nextjs-app-router/references/server-client-decision.md

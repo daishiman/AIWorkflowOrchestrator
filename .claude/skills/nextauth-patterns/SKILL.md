@@ -1,13 +1,12 @@
 ---
 name: nextauth-patterns
 description: |
-  NextAuth.js v5 configuration and customization patterns for secure authentication in Next.js applications.
-  Covers OAuth 2.0 provider setup (Google, GitHub), database adapter integration (Drizzle),
-  session strategies (JWT/Database), callback customization, and type-safe session management.
+  NextAuth.js v5の設定とカスタマイズパターンを専門とするスキル。
+  OAuth 2.0プロバイダー統合、データベースアダプター、セッション戦略、コールバック実装、型安全なセッション管理を提供する。
 
   Anchors:
-  • Web Application Security (Andrew Hoffman) / 適用: OAuth threat modeling and session security / 目的: Secure authentication flow design
-  • NextAuth.js v5 Official Docs / 適用: Provider configs and callbacks / 目的: Standards-compliant implementation
+  • Web Application Security (Andrew Hoffman) / 適用: OAuth脅威モデリングとセッションセキュリティ / 目的: 安全な認証フロー設計
+  • NextAuth.js v5 Official Docs / 適用: プロバイダー設定とコールバック / 目的: 標準準拠の実装
 
   Trigger:
   Use when implementing NextAuth.js authentication, configuring OAuth providers (Google, GitHub),
@@ -33,7 +32,7 @@ NextAuth.js v5の設定とカスタマイズパターン。OAuth 2.0プロバイ
 **アクション**:
 
 1. 実装要件を確認（OAuth provider, session strategy, database adapter）
-2. `references/Level1_basics.md` で基礎知識を確認
+2. `references/basics.md` で基礎知識を確認
 3. 必要に応じて以下のTaskを選択：
    - **基本設定Task**: `agents/config-setup.md` - 初期auth.ts設定
    - **Provider統合Task**: `agents/provider-integration.md` - OAuth 2.0プロバイダー設定
@@ -175,16 +174,12 @@ node .claude/skills/nextauth-patterns/scripts/log_usage.mjs \
 
 ## リソース参照
 
-### 基礎知識（段階的学習）
+### 参照ドキュメント
 
-- **Level 1 - 基礎**: [references/Level1_basics.md](references/Level1_basics.md)
-  - NextAuth.js基本概念、最小構成、発動タイミング
-- **Level 2 - 実務**: [references/Level2_intermediate.md](references/Level2_intermediate.md)
-  - Provider設定パターン、アダプター統合、実践的コールバック実装
-- **Level 3 - 応用**: [references/Level3_advanced.md](references/Level3_advanced.md)
-  - 高度なセッション設計、マルチプロバイダー、カスタムページ
-- **Level 4 - 専門**: [references/Level4_expert.md](references/Level4_expert.md)
-  - セキュリティ強化、パフォーマンス最適化、エンタープライズパターン
+| ドキュメント                                     | 内容                               |
+| ------------------------------------------------ | ---------------------------------- |
+| [references/basics.md](references/basics.md)     | 基礎概念、認証フロー、コールバック |
+| [references/patterns.md](references/patterns.md) | 実装パターン、アダプター統合       |
 
 ### ドメイン知識
 

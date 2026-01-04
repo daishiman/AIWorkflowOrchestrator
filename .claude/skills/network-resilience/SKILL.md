@@ -1,29 +1,26 @@
 ---
-name: .claude/skills/network-resilience/SKILL.md
+name: network-resilience
 description: |
   ネットワーク障害に対する耐性設計を専門とするスキル。
-  アンドリュー・タネンバウムの『分散システム』に基づき、
-  部分障害からの自動復旧とデータ整合性保証を設計します。
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
-  
-  📚 リソース参照:
-  - `references/Level1_basics.md`: レベル1の基礎ガイド
-  - `references/Level2_intermediate.md`: レベル2の実務ガイド
-  - `references/Level3_advanced.md`: レベル3の応用ガイド
-  - `references/Level4_expert.md`: レベル4の専門ガイド
-  - `references/legacy-skill.md`: 旧SKILL.mdの全文
-  - `references/offline-queue-patterns.md`: オフラインキュー設計パターン
-  - `references/reconnection-strategies.md`: 指数バックオフ・ジッター・ヘルスチェックによる自動再接続アルゴリズム
-  - `references/state-synchronization.md`: ローカル・リモート間のデータ整合性保証と競合解決戦略（タイムスタンプ・サーバー優先・手動解決）
-  - `scripts/analyze-network-config.mjs`: ネットワーク設定の妥当性検証とヘルスチェック間隔・タイムアウト値の推奨スクリプト
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `assets/connection-manager-template.ts`: 接続状態管理・自動再接続・イベント通知を提供する接続マネージャーテンプレート
-  - `assets/offline-queue-template.ts`: JSONL形式の永続キュー実装とFIFO順序保証・べき等性確保テンプレート
-  
-  Use proactively when implementing network-aware applications.
+  部分障害からの自動復旧、オフラインキュー、データ同期を統合的に提供し、
+  ネットワーク不安定環境でも堅牢に動作するアプリケーションを構築する。
+
+  Anchors:
+  • Distributed Systems (Andrew Tanenbaum) / 適用: 部分障害への対応設計 / 目的: 障害耐性のあるシステム構築
+  • The Pragmatic Programmer / 適用: 実践的なエラーハンドリング / 目的: 保守性の高いコード設計
+  • Release It! (Michael Nygard) / 適用: サーキットブレーカー・リトライパターン / 目的: プロダクション品質の実現
+
+  Trigger:
+  Use when implementing network-aware applications, designing offline-first features, implementing automatic reconnection, building offline queues, or ensuring data synchronization between local and remote states.
+  network resilience, offline, reconnection, retry, circuit breaker, state sync, offline queue, connection management
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+  - Task
 ---
 
 # Network Resilience
@@ -31,83 +28,99 @@ description: |
 ## 概要
 
 ネットワーク障害に対する耐性設計を専門とするスキル。
-アンドリュー・タネンバウムの『分散システム』に基づき、
-部分障害からの自動復旧とデータ整合性保証を設計します。
-
-詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
-
+部分障害からの自動復旧、オフラインキュー、データ同期を統合的に提供し、
+ネットワーク不安定環境でも堅牢に動作するアプリケーションを構築する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件分析と耐性設計
 
-**目的**: タスクの目的と前提条件を明確にする
+**目的**: ネットワーク耐性要件を分析し、設計方針を決定
 
-**アクション**:
-
-1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
-2. 必要な references/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**参照エージェント**: `agents/requirements-analysis.md`
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. `references/basics.md` でネットワーク耐性の基本概念を理解
+2. オフライン要件（完全オフライン/一時オフライン）を確認
+3. `references/reconnection-strategies.md` で再接続戦略を選定
+4. `scripts/analyze-network-config.mjs` で設定の妥当性を検証
 
-### Phase 3: 検証と記録
+### Phase 2: 実装
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: 接続管理、オフラインキュー、状態同期を実装
+
+**参照エージェント**: `agents/implementation.md`
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. `references/patterns.md` で実装パターンを確認
+2. `assets/connection-manager-template.ts` をベースに接続管理を実装
+3. `references/offline-queue-patterns.md` でオフラインキューを実装
+4. `references/state-synchronization.md` でデータ同期を実装
 
+### Phase 3: 検証
+
+**目的**: ネットワーク障害シナリオでの動作検証
+
+**参照エージェント**: `agents/validation.md`
+
+**アクション**:
+
+1. ネットワーク切断/復旧シミュレーション
+2. オフラインキューの永続性確認
+3. 競合解決の動作確認
+4. `scripts/log_usage.mjs` で実行記録を保存
+
+## リソース参照
+
+### 参照ドキュメント
+
+| ドキュメント                                                                   | 内容                     |
+| ------------------------------------------------------------------------------ | ------------------------ |
+| [references/basics.md](references/basics.md)                                   | ネットワーク耐性基礎     |
+| [references/patterns.md](references/patterns.md)                               | 実装パターン             |
+| [references/reconnection-strategies.md](references/reconnection-strategies.md) | 再接続戦略               |
+| [references/offline-queue-patterns.md](references/offline-queue-patterns.md)   | オフラインキューパターン |
+| [references/state-synchronization.md](references/state-synchronization.md)     | 状態同期戦略             |
+
+### エージェント
+
+| エージェント                      | 役割                   |
+| --------------------------------- | ---------------------- |
+| `agents/requirements-analysis.md` | 要件分析、設計方針決定 |
+| `agents/implementation.md`        | 実装ガイド             |
+| `agents/validation.md`            | 検証、品質確認         |
+
+### スクリプト
+
+| スクリプト                           | 用途                 |
+| ------------------------------------ | -------------------- |
+| `scripts/analyze-network-config.mjs` | 設定検証、推奨値算出 |
+| `scripts/validate-skill.mjs`         | スキル構造検証       |
+| `scripts/log_usage.mjs`              | 使用記録             |
+
+### テンプレート
+
+| テンプレート                            | 用途             |
+| --------------------------------------- | ---------------- |
+| `assets/connection-manager-template.ts` | 接続状態管理     |
+| `assets/offline-queue-template.ts`      | オフラインキュー |
 
 ## ベストプラクティス
 
 ### すべきこと
-- オフライン時にもタスクを蓄積したい時
-- ネットワーク復旧後の自動再同期が必要な時
-- 接続状態に応じた動的な動作切り替えが必要な時
-- ローカルとリモートのデータ整合性を保証したい時
+
+- オフライン時のタスク蓄積（キュー実装）
+- ネットワーク復旧後の自動再同期
+- 接続状態に応じた動的な動作切り替え
+- 指数バックオフによる再接続
+- べき等性を考慮したキュー設計
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
-
-### リソース読み取り
-```bash
-cat .claude/skills/network-resilience/references/Level1_basics.md
-cat .claude/skills/network-resilience/references/Level2_intermediate.md
-cat .claude/skills/network-resilience/references/Level3_advanced.md
-cat .claude/skills/network-resilience/references/Level4_expert.md
-cat .claude/skills/network-resilience/references/legacy-skill.md
-cat .claude/skills/network-resilience/references/offline-queue-patterns.md
-cat .claude/skills/network-resilience/references/reconnection-strategies.md
-cat .claude/skills/network-resilience/references/state-synchronization.md
-```
-
-### スクリプト実行
-```bash
-node .claude/skills/network-resilience/scripts/analyze-network-config.mjs --help
-node .claude/skills/network-resilience/scripts/log_usage.mjs --help
-node .claude/skills/network-resilience/scripts/validate-skill.mjs --help
-```
-
-### テンプレート参照
-```bash
-cat .claude/skills/network-resilience/assets/connection-manager-template.ts
-cat .claude/skills/network-resilience/assets/offline-queue-template.ts
-```
-
-## 変更履歴
-
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+- リトライなしのネットワーク呼び出し
+- オフライン状態の無視
+- 競合解決戦略の未定義
+- 永続化なしのキュー（ブラウザリロードで消失）
+- タイムアウトなしの接続待機

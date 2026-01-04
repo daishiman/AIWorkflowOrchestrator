@@ -1,15 +1,23 @@
 ---
 name: query-performance-tuning
 description: |
-  SQLite query performance optimization through EXPLAIN QUERY PLAN analysis, index strategies, and query rewriting. Diagnose slow queries, design optimal indexes, and improve execution plans systematically.
+  SQLiteクエリパフォーマンス最適化を専門とするスキル。EXPLAIN QUERY PLAN分析、インデックス戦略、クエリリライトを通じて、遅いクエリを診断し実行計画を改善します。
 
   Anchors:
-  • High Performance Browser Networking (Ilya Grigorik) / 適用: パフォーマンス測定とボトルネック特定 / 目的: 測定駆動の最適化
-  • SQLite Query Planner documentation / 適用: EXPLAIN QUERY PLAN解釈 / 目的: 実行計画の理解
+  • High Performance MySQL (Baron Schwartz) / 適用: クエリ分析と診断手法 / 目的: 体系的なパフォーマンス診断
+  • Use The Index, Luke (Markus Winand) / 適用: インデックス設計原則 / 目的: 効果的なインデックス活用
+  • Systems Performance (Brendan Gregg) / 適用: 測定駆動のアプローチ / 目的: 定量的な効果検証
 
   Trigger:
   Use when optimizing slow queries, analyzing execution plans, designing indexes, resolving N+1 problems, or improving database performance systematically.
-  Keywords: slow query, EXPLAIN QUERY PLAN, index optimization, query rewriting, N+1 problem, database performance
+  Keywords: slow query, EXPLAIN QUERY PLAN, index optimization, query rewriting, N+1 problem, database performance, SQLite performance
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Query Performance Tuning
@@ -20,13 +28,11 @@ SQLiteクエリパフォーマンスを測定駆動で最適化します。遅�
 
 ## ワークフロー
 
-クエリパフォーマンス最適化は以下の3つのTaskに分割して実施します。各Taskは独立して実行可能で、必要に応じて組み合わせます。
-
 ### Phase 1: Analysis（分析）
 
-**Task**: `agents/analysis.md`
-
 **目的**: 遅いクエリを特定し、実行計画を分析してボトルネックを診断
+
+**Task**: `agents/analysis.md`
 
 **入力**:
 
@@ -43,9 +49,9 @@ SQLiteクエリパフォーマンスを測定駆動で最適化します。遅�
 
 ### Phase 2: Optimization（最適化）
 
-**Task**: `agents/optimization.md`
-
 **目的**: インデックス設計、クエリリライト、N+1問題解決を実施
+
+**Task**: `agents/optimization.md`
 
 **入力**:
 
@@ -63,9 +69,9 @@ SQLiteクエリパフォーマンスを測定駆動で最適化します。遅�
 
 ### Phase 3: Validation（検証）
 
-**Task**: `agents/validation.md`
-
 **目的**: 最適化効果を測定し、パフォーマンス改善を検証
+
+**Task**: `agents/validation.md`
 
 **入力**:
 
@@ -82,11 +88,17 @@ SQLiteクエリパフォーマンスを測定駆動で最適化します。遅�
 
 ## Task仕様
 
-各Taskの詳細な仕様（役割、思考プロセス、入出力契約）は `agents/` ディレクトリを参照してください。
+| Task         | 起動タイミング | 入力               | 出力                    |
+| ------------ | -------------- | ------------------ | ----------------------- |
+| analysis     | Phase 1開始時  | クエリ・要件       | ボトルネック診断        |
+| optimization | Phase 2開始時  | 分析結果・スキーマ | インデックス・最適化SQL |
+| validation   | Phase 3開始時  | 最適化前後クエリ   | 検証レポート            |
 
-- **Analysis**: [agents/analysis.md](agents/analysis.md)
-- **Optimization**: [agents/optimization.md](agents/optimization.md)
-- **Validation**: [agents/validation.md](agents/validation.md)
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
+
+- [agents/analysis.md](agents/analysis.md)
+- [agents/optimization.md](agents/optimization.md)
+- [agents/validation.md](agents/validation.md)
 
 ## ベストプラクティス
 
@@ -97,6 +109,7 @@ SQLiteクエリパフォーマンスを測定駆動で最適化します。遅�
 - インデックス追加前にクエリパターンを分析
 - N+1問題は早期に特定して解決
 - 最適化効果を数値で検証
+- 書き込み性能への影響を考慮
 
 ### 避けるべきこと
 
@@ -104,83 +117,42 @@ SQLiteクエリパフォーマンスを測定駆動で最適化します。遅�
 - 実行計画を見ずにクエリを変更
 - 過度なインデックス（書き込み性能の劣化）
 - 単一クエリのみの最適化（全体像を見失う）
+- 統計的妥当性のない測定
 
 ## リソース参照
 
-必要に応じて以下のリソースを参照してください。
+### references/（詳細知識）
 
-### 段階的学習ガイド
+| リソース                   | パス                                                                       | 内容               |
+| -------------------------- | -------------------------------------------------------------------------- | ------------------ |
+| 基礎知識                   | [references/Level1_basics.md](references/Level1_basics.md)                 | 基礎概念と用語     |
+| 実務パターン               | [references/Level2_intermediate.md](references/Level2_intermediate.md)     | 実務での適用       |
+| 高度な最適化               | [references/Level3_advanced.md](references/Level3_advanced.md)             | 高度な最適化技法   |
+| 専門トラブルシューティング | [references/Level4_expert.md](references/Level4_expert.md)                 | 専門的な問題解決   |
+| EXPLAIN解析                | [references/explain-analyze-guide.md](references/explain-analyze-guide.md) | 実行計画の読解     |
+| インデックス戦略           | [references/index-strategies.md](references/index-strategies.md)           | インデックス設計   |
+| クエリパターン             | [references/query-patterns.md](references/query-patterns.md)               | 最適化パターン     |
+| 監視クエリ                 | [references/monitoring-queries.md](references/monitoring-queries.md)       | パフォーマンス監視 |
 
-- **Level 1 Basics**: [references/Level1_basics.md](references/Level1_basics.md) - 基礎概念と用語
-- **Level 2 Intermediate**: [references/Level2_intermediate.md](references/Level2_intermediate.md) - 実務での適用
-- **Level 3 Advanced**: [references/Level3_advanced.md](references/Level3_advanced.md) - 高度な最適化技法
-- **Level 4 Expert**: [references/Level4_expert.md](references/Level4_expert.md) - 専門的なトラブルシューティング
+### scripts/（決定論的処理）
 
-### 専門ガイド
+| スクリプト                 | 用途           | 使用例                                                                       |
+| -------------------------- | -------------- | ---------------------------------------------------------------------------- |
+| `analyze-slow-queries.mjs` | 遅いクエリ分析 | `node scripts/analyze-slow-queries.mjs --query "SELECT ..." --threshold 100` |
+| `log_usage.mjs`            | 使用履歴記録   | `node scripts/log_usage.mjs --result success --phase analysis`               |
+| `validate-skill.mjs`       | 構造検証       | `node scripts/validate-skill.mjs`                                            |
 
-- **EXPLAIN QUERY PLAN ガイド**: [references/explain-analyze-guide.md](references/explain-analyze-guide.md)
-- **インデックス戦略**: [references/index-strategies.md](references/index-strategies.md)
-- **クエリパターン最適化**: [references/query-patterns.md](references/query-patterns.md)
-- **監視クエリ集**: [references/monitoring-queries.md](references/monitoring-queries.md)
+### assets/（テンプレート）
 
-### 要求仕様参照
-
-- **Requirements Index**: [references/requirements-index.md](references/requirements-index.md) - docs/00-requirements と同期
-
-## スクリプト
-
-### analyze-slow-queries.mjs
-
-遅いクエリを自動分析します。
-
-```bash
-node scripts/analyze-slow-queries.mjs --query "SELECT ..." --threshold 100
-```
-
-**引数**:
-
-- `--query`: 分析対象のSQL（必須）
-- `--threshold`: 許容レスポンス時間（ms、デフォルト: 100）
-
-**出力**: EXPLAIN QUERY PLAN 結果とボトルネック診断
-
-### log_usage.mjs
-
-スキル使用履歴を記録します。
-
-```bash
-node scripts/log_usage.mjs --result success --phase analysis
-```
-
-**引数**:
-
-- `--result`: success または failure（必須）
-- `--phase`: 実行フェーズ名（任意）
-- `--notes`: 追加メモ（任意）
-
-### validate-skill.mjs
-
-スキル構造を検証します。
-
-```bash
-node scripts/validate-skill.mjs
-```
-
-**出力**: YAML frontmatter、ファイル構造、リンク整合性の検証結果
-
-## テンプレート
-
-### performance-report-template.md
-
-パフォーマンス分析レポートの雛形です。
-
-パス: [assets/performance-report-template.md](assets/performance-report-template.md)
-
-**用途**: Phase 1（分析）および Phase 3（検証）の結果をドキュメント化
+| テンプレート                     | 用途                       |
+| -------------------------------- | -------------------------- |
+| `performance-report-template.md` | パフォーマンス分析レポート |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                     |
-| ------- | ---------- | ------------------------------------------- |
-| 2.0.0   | 2025-12-31 | 18-skills.md 仕様に準拠、agents/ Task追加   |
-| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                                      |
+| ------- | ---------- | ------------------------------------------------------------ |
+| 3.0.0   | 2026-01-02 | 18-skills.md仕様完全準拠: optimization/validation agents追加 |
+| 2.1.0   | 2026-01-02 | Task仕様テーブル形式化                                       |
+| 2.0.0   | 2025-12-31 | 18-skills.md 仕様に準拠、agents/ Task追加                    |
+| 1.0.0   | 2025-12-24 | 初版                                                         |

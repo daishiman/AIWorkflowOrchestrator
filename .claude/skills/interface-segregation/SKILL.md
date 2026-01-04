@@ -13,6 +13,13 @@ description: |
   Use when detecting fat interfaces, segregating bloated interfaces, designing role-based interfaces,
   analyzing ISP violations, refactoring interfaces, implementing interface composition patterns,
   IWorkflowExecutor, IValidatable, IRetryable, empty implementation, exception throwing, conditional implementation.
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 version: 1.0.0
 last_updated: 2025-12-31
 tags:
@@ -24,7 +31,7 @@ dependencies:
   - clean-architecture-principles
 ---
 
-# Interface Segregation Principle (ISP)
+# インターフェース分離原則 (ISP)
 
 ## 概要
 

@@ -13,9 +13,12 @@ description: |
   setting up job dependencies with needs keyword, implementing conditional workflows,
   or aggregating outputs from matrix strategies.
 allowed-tools:
-  - github-actions-api
-  - shell-script
-  - yaml-editor
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # ジョブ出力管理（GitHub Actions）

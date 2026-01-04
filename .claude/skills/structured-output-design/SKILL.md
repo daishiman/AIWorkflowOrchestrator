@@ -1,116 +1,117 @@
 ---
-name: .claude/skills/structured-output-design/SKILL.md
+name: structured-output-design
 description: |
-  AIからの構造化出力設計を専門とするスキル。JSON Schema、Zod、
-  
-  📖 参照書籍:
-  - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
-  
-  📚 リソース参照:
-  - `references/Level1_basics.md`: レベル1の基礎ガイド
-  - `references/Level2_intermediate.md`: レベル2の実務ガイド
-  - `references/Level3_advanced.md`: レベル3の応用ガイド
-  - `references/Level4_expert.md`: レベル4の専門ガイド
-  - `references/function-calling-guide.md`: Function Calling Guideリソース
-  - `references/json-schema-patterns.md`: Json Schema Patternsリソース
-  - `references/legacy-skill.md`: 旧SKILL.mdの全文
-  - `references/zod-integration.md`: Zod Integrationリソース
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-schema.mjs`: Validate Schemaスクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `assets/json-schema-template.json`: Json Schemaテンプレート
-  - `assets/zod-schema-template.ts`: Zod Schemaテンプレート
-  
-  Use proactively when handling structured output design tasks.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "The Pragmatic Programmer"
-    author: "Andrew Hunt, David Thomas"
-    concepts:
-      - "実践的改善"
-      - "品質維持"
+  構造化出力の仕様書を設計するためのスキル。スキーマ定義、命名規則、互換性とバージョニング方針を整理し、長期運用に耐える出力契約を作成する。
+
+  Anchors:
+  • JSON Schema / 適用: スキーマ設計 / 目的: フィールド仕様の形式化
+  • Semantic Versioning 2.0.0 / 適用: バージョニング設計 / 目的: 互換性ルールの明確化
+  • Postel's Law / 適用: 互換性判断 / 目的: 入出力の許容範囲を整理
+
+  Trigger:
+  Use when defining output contracts, schema evolution rules, or compatibility plans for structured data.
+  output contract, schema design, compatibility, versioning, JSON schema
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Structured Output Design
 
 ## 概要
 
-AIからの構造化出力設計を専門とするスキル。JSON Schema、Zod、
+構造化出力の「契約」を設計し、スキーマ・命名規則・互換性方針を一貫させるスキル。仕様書を作成して関係者の合意形成を促進する。
 
-詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
-
+詳細は `references/Level1_basics.md` から段階的に参照する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 契約要件の整理
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
-2. 必要な references/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 出力仕様の目的、利用者、互換性要件を明確化する。
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 仕様の利用者と運用期間を整理する。
+2. 互換性の許容範囲を定義する。
+3. 命名規則とバージョン表現を決定する。
 
-### Phase 3: 検証と記録
+### Phase 2: 仕様書とスキーマの設計
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: 出力契約を文書化し、スキーマとテンプレートを整合させる。
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. `assets/output-contract-template.md` を埋める。
+2. `assets/json-schema-template.json` を基にスキーマを作成する。
+3. 互換性・移行方針を明記する。
 
+### Phase 3: 検証とレビュー
+
+**目的**: 仕様書とスキーマの不整合を解消する。
+
+**アクション**:
+
+1. `scripts/validate-output-contract.mjs` を実行する。
+2. `scripts/validate-schema.mjs` でスキーマの構造を点検する。
+3. 指摘事項を反映し版を確定する。
+
+## Task仕様ナビ
+
+| Phase | Task | 目的 | 入力 | 出力 |
+| --- | --- | --- | --- | --- |
+| 1 | 契約要件整理 | 利用者・互換性要件の確認 | ユーザー要求 | 要件メモ |
+| 2 | 契約設計 | 仕様書とスキーマを整備 | 要件メモ | 出力契約書 |
+| 3 | 契約検証 | 仕様書/スキーマの検証 | 出力契約書 | 検証レポート |
 
 ## ベストプラクティス
 
 ### すべきこと
-- references/Level1_basics.md を参照し、適用範囲を明確にする
-- references/Level2_intermediate.md を参照し、実務手順を整理する
+
+- フィールドに型・制約・例を必ず記載する。
+- 互換性の原則を明文化する。
+- バージョン表現を出力に含める。
+- 仕様変更は影響範囲を記録する。
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- 必須/任意を曖昧にしたまま運用しない。
+- 破壊的変更をサイレントに入れない。
+- 仕様書とスキーマの不一致を放置しない。
 
-### リソース読み取り
-```bash
-cat .claude/skills/structured-output-design/references/Level1_basics.md
-cat .claude/skills/structured-output-design/references/Level2_intermediate.md
-cat .claude/skills/structured-output-design/references/Level3_advanced.md
-cat .claude/skills/structured-output-design/references/Level4_expert.md
-cat .claude/skills/structured-output-design/references/function-calling-guide.md
-cat .claude/skills/structured-output-design/references/json-schema-patterns.md
-cat .claude/skills/structured-output-design/references/legacy-skill.md
-cat .claude/skills/structured-output-design/references/zod-integration.md
-```
+## リソース/スクリプト参照
 
-### スクリプト実行
-```bash
-node .claude/skills/structured-output-design/scripts/log_usage.mjs --help
-node .claude/skills/structured-output-design/scripts/validate-schema.mjs --help
-node .claude/skills/structured-output-design/scripts/validate-skill.mjs --help
-```
+### references/
 
-### テンプレート参照
-```bash
-cat .claude/skills/structured-output-design/assets/json-schema-template.json
-cat .claude/skills/structured-output-design/assets/zod-schema-template.ts
-```
+- `references/Level1_basics.md`: 基礎指針
+- `references/Level2_intermediate.md`: 実務パターン
+- `references/Level3_advanced.md`: 高度な設計指針
+- `references/Level4_expert.md`: 専門領域の注意点
+- `references/schema-patterns.md`: スキーマ設計パターン
+- `references/json-schema-patterns.md`: JSON Schemaの具体例
+- `references/field-naming.md`: 命名規則
+- `references/compatibility-strategies.md`: 互換性戦略
+- `references/function-calling-guide.md`: 関数呼び出し形式の注意点
+- `references/zod-integration.md`: Zod統合の指針
+
+### assets/
+
+- `assets/output-contract-template.md`: 出力契約書テンプレート
+- `assets/json-schema-template.json`: JSON Schema雛形
+- `assets/schema-versioning-template.json`: バージョン表現テンプレート
+- `assets/zod-schema-template.ts`: Zod用テンプレート
+
+### scripts/
+
+- `scripts/validate-output-contract.mjs`: 仕様書の必須項目検証
+- `scripts/validate-schema.mjs`: JSON Schema構造検証
 
 ## 変更履歴
 
 | Version | Date | Changes |
 | --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| 2.0.0 | 2026-01-02 | 18-skills.md 仕様に準拠した構造へ更新 |

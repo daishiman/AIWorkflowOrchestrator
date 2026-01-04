@@ -26,7 +26,7 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 
 ### 成果物の最小要件
 - テンプレートの必須項目を満たしている
-- 主要テンプレート: `templates/fixture-template.ts`
+- 主要テンプレート: `assets/fixture-template.ts`
 
 ### 参照書籍
 - 『Test-Driven Development: By Example』（Kent Beck）: Red-Green-Refactor
@@ -35,7 +35,10 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
-- `templates/fixture-template.ts`: このレベルでは参照のみ
+- `assets/fixture-template.ts`: このレベルでは参照のみ
+
+### ワークフロー対応
+- Phase 1 の要件整理では、対象エンティティと分離境界の定義を重視する
 
 ## 実践手順
 

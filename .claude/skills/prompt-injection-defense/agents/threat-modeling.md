@@ -42,7 +42,7 @@ LLMシステムにおけるプロンプトインジェクション攻撃の脅�
 - 適用方法:
   LLM01（プロンプトインジェクション）を中心に、間接的インジェクション、チェーン攻撃、特権昇格パターンを体系的に分類。実攻撃事例から攻撃ベクトルを抽出する。
 
-> ルール: 詳細な攻撃パターンは `references/Level1_basics.md` および `references/Level2_intermediate.md` を参照。
+> ルール: 詳細な攻撃パターンは `references/basics.md` および `references/patterns.md` を参照。
 
 ---
 

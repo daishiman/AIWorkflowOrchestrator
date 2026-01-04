@@ -32,6 +32,14 @@ This file tracks the usage history and feedback for the parallel-jobs-gha skill.
 
 ## Change Log
 
-| Version | Date       | Changes                                                |
-| ------- | ---------- | ------------------------------------------------------ |
-| 1.0.0   | 2025-12-31 | Initial structure following 18-skills.md specification |
+| Version | Date       | Changes                                                           |
+| ------- | ---------- | ----------------------------------------------------------------- |
+| 1.1.0   | 2026-01-02 | Updated to 18-skills.md specification with enhanced structure     |
+|         |            | - Added allowed-tools to frontmatter                              |
+|         |            | - Enhanced Anchors with Continuous Delivery reference             |
+|         |            | - Reorganized SKILL.md with Phase-based workflow                  |
+|         |            | - Added Task specification navigation table                       |
+|         |            | - Enhanced best practices section                                 |
+|         |            | - Added main concepts section (dependency patterns, data passing) |
+|         |            | - Updated Level1 and Level2 references with improved content      |
+| 1.0.0   | 2025-12-31 | Initial structure following 18-skills.md specification            |

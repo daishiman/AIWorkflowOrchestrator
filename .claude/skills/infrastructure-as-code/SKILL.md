@@ -11,14 +11,13 @@ description: |
   Trigger:
   Use when designing environment variables, managing secrets, configuring Railway deployments, or setting up infrastructure as code for Next.js/Electron projects.
   Keywords: railway.json, .env.example, environment variables, GitHub Secrets, Railway Secrets, Turso integration, infrastructure automation
-tags:
-  - infrastructure
-  - devops
-  - railway
-  - environment-variables
-  - secrets-management
-  - ci-cd
-dependencies: []
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Infrastructure as Code
@@ -32,33 +31,52 @@ Infrastructure as Codeの原則に基づく構成管理の自動化を専門と�
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 環境変数設計
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
-2. 必要な references/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: プロジェクトの環境変数構成を設計し、.env.exampleを整備
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 必要な環境変数を洗い出し
+2. 命名規則と分類を決定
+3. バリデーションルールを定義
+4. `assets/env-example-template.txt` をベースに.env.example作成
 
-### Phase 3: 検証と記録
+**Task**: `agents/environment-design.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: シークレット管理
+
+**目的**: GitHub Secrets/Railway Secretsの安全な管理戦略を実装
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. シークレット分類（開発/ステージング/本番）
+2. ローテーション戦略の策定
+3. アクセス制御の設定
+
+**Task**: `agents/secret-manager.md` を参照
+
+### Phase 3: Railway統合構成
+
+**目的**: Railway.jsonとデプロイ構成の最適化
+
+**アクション**:
+
+1. `assets/railway-json-template.json` をベースに設定
+2. 環境別ビルド/スタートコマンド定義
+3. `scripts/validate-env.mjs` で検証
+
+**Task**: `agents/railway-configurator.md` を参照
+
+### Phase 4: 検証と完了
+
+**目的**: 構成の整合性確認と記録
+
+**アクション**:
+
+1. `agents/railway-validator.md` で検証実行
+2. 環境間の差分レポート作成
+3. `scripts/log_usage.mjs` で記録
 
 ## ベストプラクティス
 
@@ -71,7 +89,45 @@ Infrastructure as Codeの原則に基づく構成管理の自動化を専門と�
 
 ### 避けるべきこと
 
-- アンチパターンや注意点を確認せずに進めることを避ける
+- シークレットをソースコードにハードコード
+- 環境変数のバリデーションを省略
+- 環境間の設定差分を文書化せずに運用
+
+## Task仕様ナビ
+
+| Task             | 起動タイミング | 入力             | 出力                 | 参照エージェント                 |
+| ---------------- | -------------- | ---------------- | -------------------- | -------------------------------- |
+| 環境変数設計     | Phase 1開始時  | プロジェクト要件 | .env.example         | `agents/environment-design.md`   |
+| シークレット管理 | Phase 2開始時  | 機密情報リスト   | シークレット管理計画 | `agents/secret-manager.md`       |
+| Railway構成      | Phase 3開始時  | 環境変数設計書   | railway.json         | `agents/railway-configurator.md` |
+| 構成検証         | Phase 4開始時  | 全構成ファイル   | 検証レポート         | `agents/railway-validator.md`    |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
+
+## リソース参照
+
+### references/（詳細知識）
+
+| リソース   | パス                              | 内容             |
+| ---------- | --------------------------------- | ---------------- |
+| 基礎知識   | references/Level1_basics.md       | IaC基本概念      |
+| 実務ガイド | references/Level2_intermediate.md | 環境変数管理実践 |
+| 高度な技法 | references/Level3_advanced.md     | マルチ環境戦略   |
+| 専門知識   | references/Level4_expert.md       | セキュリティ強化 |
+
+### scripts/（決定論的処理）
+
+| スクリプト       | 用途         | 使用例                                        |
+| ---------------- | ------------ | --------------------------------------------- |
+| validate-env.mjs | 環境変数検証 | `node scripts/validate-env.mjs`               |
+| log_usage.mjs    | 使用記録     | `node scripts/log_usage.mjs --result success` |
+
+### assets/（テンプレート）
+
+| テンプレート               | 用途                    |
+| -------------------------- | ----------------------- |
+| env-example-template.txt   | .env.example雛形        |
+| railway-json-template.json | Railway構成テンプレート |
 
 ## コマンドリファレンス
 
@@ -106,6 +162,8 @@ cat .claude/skills/infrastructure-as-code/assets/railway-json-template.json
 
 ## 変更履歴
 
-| Version | Date       | Changes                                     |
-| ------- | ---------- | ------------------------------------------- |
-| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                        |
+| ------- | ---------- | ---------------------------------------------- |
+| 2.1.0   | 2026-01-02 | ワークフローをPhase別に再構成、agents/参照追加 |
+| 2.0.0   | 2026-01-02 | 18-skills.md完全準拠、Task仕様ナビ追加         |
+| 1.0.0   | 2025-12-24 | 初版                                           |

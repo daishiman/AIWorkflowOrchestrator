@@ -2,6 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Audit Log Schema",
   "description": "MCPツールおよびAPI操作の監査ログスキーマ",
+  "x_task": "security-validation",
   "type": "object",
   "properties": {
     "id": {

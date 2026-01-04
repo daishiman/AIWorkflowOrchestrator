@@ -98,17 +98,13 @@ GitHub Actionsワークフロー実行時のエラー診断、デバッグログ
 
 ## リソース参照
 
-以下のリソースは必要時に参照してください（常時読み込みは不要）:
+### references/（知識外部化）
 
-### 知識リソース（references/）
-
-- **`references/Level1_basics.md`**: 基礎知識とSKILL.mdの運用方法
-- **`references/Level2_intermediate.md`**: 実務での適用手順
-- **`references/Level3_advanced.md`**: 高度な診断テクニック
-- **`references/Level4_expert.md`**: エキスパートレベルの最適化
-- **`references/debug-logging.md`**: ACTIONS_STEP_DEBUG/ACTIONS_RUNNER_DEBUGの詳細
-- **`references/diagnostic-commands.md`**: コンテキスト検査・環境診断コマンドリファレンス
-- **`references/troubleshooting-guide.md`**: 一般的なエラーパターンと解決策
+| リソース               | パス                                                                       | 内容                                  |
+| ---------------------- | -------------------------------------------------------------------------- | ------------------------------------- |
+| デバッグログ           | [references/debug-logging.md](references/debug-logging.md)                 | ACTIONS_STEP_DEBUG/RUNNER_DEBUGの詳細 |
+| 診断コマンド           | [references/diagnostic-commands.md](references/diagnostic-commands.md)     | コンテキスト検査・環境診断コマンド    |
+| トラブルシューティング | [references/troubleshooting-guide.md](references/troubleshooting-guide.md) | 一般的なエラーパターンと解決策        |
 
 ### スクリプト（scripts/）
 
@@ -194,9 +190,6 @@ gh secret remove ACTIONS_RUNNER_DEBUG
 ### リソース参照
 
 ```bash
-# 基礎知識
-cat .claude/skills/github-actions-debugging/references/Level1_basics.md
-
 # デバッグログ詳細
 cat .claude/skills/github-actions-debugging/references/debug-logging.md
 
@@ -228,5 +221,6 @@ node .claude/skills/github-actions-debugging/scripts/log_usage.mjs \
 
 | Version | Date       | Changes                                                        |
 | ------- | ---------- | -------------------------------------------------------------- |
+| 2.1.0   | 2026-01-02 | references/を整理、Level1-4削除、18-skills.md仕様準拠          |
 | 2.0.0   | 2025-12-31 | 18-skills.md spec準拠、agents/追加、Progressive Disclosure適用 |
 | 1.0.0   | 2025-12-24 | 初版リリース                                                   |

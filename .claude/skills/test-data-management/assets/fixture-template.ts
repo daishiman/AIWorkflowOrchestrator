@@ -8,6 +8,9 @@
  * 1. このファイルをコピーして、プロジェクトのtests/fixtures/ディレクトリに配置
  * 2. {{変数}}を実際の値に置き換え
  * 3. 必要に応じてカスタマイズ
+ *
+ * 対応Task:
+ * - fixture-strategy-design (フィクスチャ方式の選定と整合)
  */
 
 import { test as base } from "@playwright/test";

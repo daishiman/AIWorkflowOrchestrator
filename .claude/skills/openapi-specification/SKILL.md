@@ -25,58 +25,53 @@ allowed-tools:
 
 OpenAPI 3.x仕様に準拠したAPI仕様書の設計と作成を専門とするスキル。RESTful APIの設計原則に基づいて、セキュアで保守性の高いAPI仕様書を作成します。エンドポイント設計、スキーマ定義、認証・認可設定、エラーハンドリング、およびドキュメント生成を統合的に実施します。
 
-詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
+詳細な手順や背景は `references/` ディレクトリを参照してください。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件定義
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
-2. API仕様のスコープと要件を定義（エンドポイント数、認証方式、レート制限など）
-3. 必要なリソース、スクリプト、テンプレートを特定
-4. 既存API仕様の有無を確認（更新か新規作成か判定）
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: API仕様の要件を明確化
 
 **アクション**:
 
-1. `assets/openapi-base-template.yaml` をベースに仕様書を作成
-2. `references/openapi-structure.md` に基づいてinfo、servers、pathsセクションを構築
-3. `references/schema-design-patterns.md` を参照してコンポーネントスキーマを設計
-4. `references/security-schemes.md` に基づいてセキュリティスキームを構成
-5. 個別エンドポイントは `assets/endpoint-template.yaml` を活用
-6. 関連リソースやテンプレートを参照しながら作業を実施
+1. `references/basics.md` でOpenAPI基本構造を確認
+2. エンドポイント数、認証方式、レート制限を定義
+3. 既存API仕様の有無を確認（更新か新規作成か判定）
 
-### Phase 3: 検証と記録
+### Phase 2: 仕様設計
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: OpenAPI仕様書を設計・作成
 
 **アクション**:
 
-1. `scripts/validate-openapi.mjs` でOpenAPI仕様の構文と整合性をチェック
-2. `scripts/validate-skill.mjs` でスキル構造を確認
-3. 成果物が要件に合致するか確認（全エンドポイント、スキーマ、セキュリティ設定の網羅性）
-4. `scripts/log_usage.mjs` を実行して記録を残す
-5. 生成されたドキュメント（Swagger UI、ReDocなど）で視認性を確認
+1. `agents/design-api.md` を参照して設計を実施
+2. `assets/openapi-base-template.yaml` をベースに仕様書を作成
+3. `references/schema-design-patterns.md` でスキーマ設計
+4. `references/security-schemes.md` でセキュリティ構成
 
-## Task仕様ナビ
+**Task**: `agents/design-api.md` を参照
 
-| タスク                   | 説明                                                  | リソース参照                                          | スクリプト/テンプレート                              |
-| ------------------------ | ----------------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------- |
-| OpenAPI仕様書新規作成    | 完全なOpenAPI 3.x仕様書をゼロから作成                 | `Level1_basics.md`, `openapi-structure.md`            | `openapi-base-template.yaml`, `validate-openapi.mjs` |
-| エンドポイント設計       | RESTful原則に基づいてパス、メソッド、パラメータを定義 | `Level2_intermediate.md`, `schema-design-patterns.md` | `endpoint-template.yaml`                             |
-| スキーマ定義             | リクエスト/レスポンスのJSONスキーマを設計             | `schema-design-patterns.md`, `Level3_advanced.md`     | `openapi-base-template.yaml`内コンポーネント         |
-| セキュリティスキーム設定 | 認証（OAuth2、JWT、API Key）と認可を構成              | `security-schemes.md`, `Level3_advanced.md`           | `validate-openapi.mjs`                               |
-| 既存仕様書更新           | バージョン管理、互換性維持、マイグレーション          | `Level2_intermediate.md`, `requirements-index.md`     | `validate-openapi.mjs`                               |
-| エラーレスポンス設計     | 標準化されたエラーハンドリング定義                    | `Level2_intermediate.md`, `openapi-structure.md`      | `endpoint-template.yaml`                             |
-| ドキュメント生成         | Swagger UI、ReDocなど自動ドキュメント生成の準備       | `openapi-structure.md`, `Level3_advanced.md`          | -                                                    |
-| 構文検証・デバッグ       | 仕様ファイルのエラー検出と修正                        | `openapi-structure.md`                                | `validate-openapi.mjs`                               |
+### Phase 3: 検証
+
+**目的**: 仕様書の検証と記録
+
+**アクション**:
+
+1. `agents/validate-spec.md` を参照して検証を実施
+2. `scripts/validate-openapi.mjs` で構文チェック
+3. セキュリティ設定とベストプラクティスを確認
+
+**Task**: `agents/validate-spec.md` を参照
+
+## Task仕様（ナビゲーション）
+
+| Task          | 起動タイミング | 入力           | 出力           |
+| ------------- | -------------- | -------------- | -------------- |
+| design-api    | Phase 2開始時  | API要件        | 仕様書ドラフト |
+| validate-spec | Phase 3開始時  | 仕様書ドラフト | 検証済み仕様書 |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
 ## ベストプラクティス
 
@@ -102,38 +97,26 @@ OpenAPI 3.x仕様に準拠したAPI仕様書の設計と作成を専門とする
 
 ## リソース参照
 
-### 基礎リソース
+### references/（詳細知識）
 
-| リソース                              | 説明                                                     |
-| ------------------------------------- | -------------------------------------------------------- |
-| `references/Level1_basics.md`          | OpenAPI基礎、YAML構文、基本的なエンドポイント定義        |
-| `references/Level2_intermediate.md`    | 実務レベルの仕様書作成、スキーマ設計、エラーハンドリング |
-| `references/Level3_advanced.md`        | 応用パターン、セキュリティ統合、複雑なAPI設計            |
-| `references/Level4_expert.md`          | 専門知識、パフォーマンス最適化、マイクロサービスAPI設計  |
-| `references/openapi-structure.md`      | OpenAPI 3.x構造ガイド、全セクション仕様                  |
-| `references/schema-design-patterns.md` | スキーマ設計パターン、リクエスト/レスポンス例            |
-| `references/security-schemes.md`       | 認証・認可スキーム、ベストプラクティス                   |
-| `references/requirements-index.md`     | 要求仕様索引（docs/00-requirements と同期）              |
-| `references/legacy-skill.md`           | 旧SKILL.mdの全文（参考用）                               |
+| リソース         | パス                                                                             | 用途             |
+| ---------------- | -------------------------------------------------------------------------------- | ---------------- |
+| 基礎知識         | See [references/basics.md](references/basics.md)                                 | OpenAPI基本構造  |
+| 構造ガイド       | See [references/openapi-structure.md](references/openapi-structure.md)           | 全セクション仕様 |
+| スキーマパターン | See [references/schema-design-patterns.md](references/schema-design-patterns.md) | スキーマ設計     |
+| セキュリティ     | See [references/security-schemes.md](references/security-schemes.md)             | 認証・認可設定   |
 
-### スクリプト
+### assets/（テンプレート）
 
-| スクリプト                     | 説明                                          |
-| ------------------------------ | --------------------------------------------- |
-| `scripts/validate-openapi.mjs` | OpenAPI仕様ファイルの構文検証と整合性チェック |
-| `scripts/validate-skill.mjs`   | スキル構造検証スクリプト                      |
-| `scripts/log_usage.mjs`        | 使用記録・自動評価スクリプト                  |
-
-### テンプレート
-
-| テンプレート                           | 説明                                                                                  |
-| -------------------------------------- | ------------------------------------------------------------------------------------- |
-| `assets/openapi-base-template.yaml` | 完全なOpenAPI 3.x仕様書ベーステンプレート（info、servers、paths、components構造含む） |
-| `assets/endpoint-template.yaml`     | 個別エンドポイント定義YAML（パス、メソッド、パラメータ、レスポンス含む）              |
+| リソース           | パス                                | 用途         |
+| ------------------ | ----------------------------------- | ------------ |
+| ベーステンプレート | `assets/openapi-base-template.yaml` | 仕様書ベース |
+| エンドポイント     | `assets/endpoint-template.yaml`     | 個別パス定義 |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                                                                        |
-| ------- | ---------- | -------------------------------------------------------------------------------------------------------------- |
-| 1.1.0   | 2025-12-31 | 18-skills.md仕様に準拠：YAML frontmatter改善、Task仕様ナビ追加、ベストプラクティス拡張、リソース参照テーブル化 |
-| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added                                                                    |
+| Version | Date       | Changes                      |
+| ------- | ---------- | ---------------------------- |
+| 1.2.0   | 2026-01-02 | agents/追加、Level構造を統合 |
+| 1.1.0   | 2025-12-31 | 18-skills.md仕様に準拠       |
+| 1.0.0   | 2025-12-24 | 初期実装                     |

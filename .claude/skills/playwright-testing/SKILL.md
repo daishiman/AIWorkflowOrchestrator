@@ -18,12 +18,6 @@ allowed-tools:
   - Bash
   - Glob
   - Grep
-tags:
-  - testing
-  - playwright
-  - e2e
-  - browser-automation
-  - quality-assurance
 ---
 
 # Playwright Testing Skill
@@ -214,45 +208,31 @@ node .claude/skills/playwright-testing/scripts/log_usage.mjs \
 
 ## リソース参照
 
-### references/ - 知識ベース
+### references/（詳細知識）
 
-読み込み条件を明記し、必要時のみ参照すること。
+| リソース           | パス                                                                                   | 読み込みタイミング               |
+| ------------------ | -------------------------------------------------------------------------------------- | -------------------------------- |
+| 基礎知識           | See [references/Level1_basics.md](references/Level1_basics.md)                         | Phase 1（テスト設計時）          |
+| 中級               | See [references/Level2_intermediate.md](references/Level2_intermediate.md)             | Phase 3（実装時）                |
+| 上級               | See [references/Level3_advanced.md](references/Level3_advanced.md)                     | Phase 4（デバッグ時）            |
+| エキスパート       | See [references/Level4_expert.md](references/Level4_expert.md)                         | パフォーマンス最適化が必要な場合 |
+| ベストプラクティス | See [references/playwright-best-practices.md](references/playwright-best-practices.md) | すべてのPhase                    |
+| セレクタ戦略       | See [references/selector-strategies.md](references/selector-strategies.md)             | Phase 2（セレクタ選定時）        |
+| 待機戦略           | See [references/waiting-strategies.md](references/waiting-strategies.md)               | Phase 3, 4（実装・デバッグ時）   |
 
-| ファイル                                  | 読み込みタイミング               | 内容                         |
-| ----------------------------------------- | -------------------------------- | ---------------------------- |
-| `references/Level1_basics.md`             | Phase 1（テスト設計時）          | 基礎原則とワークフロー       |
-| `references/Level2_intermediate.md`       | Phase 3（実装時）                | 実装パターンと例             |
-| `references/Level3_advanced.md`           | Phase 4（デバッグ時）            | 高度なデバッグ技法           |
-| `references/Level4_expert.md`             | パフォーマンス最適化が必要な場合 | 最適化とスケーリング         |
-| `references/playwright-best-practices.md` | すべてのPhase                    | Playwrightベストプラクティス |
-| `references/selector-strategies.md`       | Phase 2（セレクタ選定時）        | セレクタ戦略の詳細           |
-| `references/waiting-strategies.md`        | Phase 3, 4（実装・デバッグ時）   | 待機戦略のパターン           |
+### scripts/（決定論的処理）
 
-### scripts/ - 実行スクリプト
+| スクリプト                    | 用途             | 使用例                                                             |
+| ----------------------------- | ---------------- | ------------------------------------------------------------------ |
+| `validate-skill.mjs`          | スキル構造の検証 | `node scripts/validate-skill.mjs`                                  |
+| `validate-test-structure.mjs` | テスト構造の検証 | `node scripts/validate-test-structure.mjs tests/e2e/login.spec.ts` |
+| `log_usage.mjs`               | 使用ログの記録   | `node scripts/log_usage.mjs --result success --phase "Phase 3"`    |
 
-| スクリプト                            | 目的             | 引数                             | 期待出力               |
-| ------------------------------------- | ---------------- | -------------------------------- | ---------------------- |
-| `scripts/validate-skill.mjs`          | スキル構造の検証 | なし                             | 検証レポート（stdout） |
-| `scripts/validate-test-structure.mjs` | テスト構造の検証 | `<test-file-path>`               | 検証結果（stdout）     |
-| `scripts/log_usage.mjs`               | 使用ログの記録   | `--result`, `--phase`, `--notes` | ログファイル更新       |
+### assets/（テンプレート）
 
-**失敗時の対応**:
-
-- 検証エラー: stderr の詳細メッセージを確認し、指摘された箇所を修正
-- ログ記録失敗: ファイルパーミッションとディレクトリの存在を確認
-
-### assets/ - テンプレート
-
-| ファイル                  | 用途                 | 使用タイミング    |
-| ------------------------- | -------------------- | ----------------- |
-| `assets/test-template.ts` | テストコードのひな型 | Phase 3（実装時） |
-
-**使用方法**:
-
-1. テンプレートをコピー
-2. `{{placeholder}}` を実際の値に置換
-3. 不要なシナリオを削除
-4. プロジェクト固有のロジックを追加
+| テンプレート       | 用途                 |
+| ------------------ | -------------------- |
+| `test-template.ts` | テストコードのひな型 |
 
 ## コマンドリファレンス
 

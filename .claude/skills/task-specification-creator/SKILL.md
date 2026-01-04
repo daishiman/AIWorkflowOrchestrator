@@ -1,0 +1,224 @@
+---
+name: task-specification-creator
+description: |
+  ユーザーから与えられたタスクを単一責務の原則に基づいて分解し、
+  Phase 1からPhase 11までの実行可能なタスク仕様書ドキュメントを生成する。
+
+  スキル選定は仕様書作成時に動的に行う。使用するスキルはタスクの性質に応じて
+  現在利用可能なスキル（.claude/skills/）から選定する。
+
+  Anchors:
+  • Clean Code (Robert C. Martin) / 適用: 単一責務の原則 / 目的: タスク分解の基準
+  • Continuous Delivery (Jez Humble) / 適用: フェーズゲート / 目的: 品質パイプライン構築
+  • Domain-Driven Design (Eric Evans) / 適用: ユビキタス言語 / 目的: 一貫した用語設計
+
+  Trigger:
+  タスク仕様書作成, タスク分解, ワークフロー設計, 実行計画作成
+  Use when creating task specifications for complex development tasks.
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+  - Task
+---
+
+# Task Specification Creator
+
+## 概要
+
+ユーザーからの開発タスクを分解し、Phase 1〜Phase 11の実行可能なタスク仕様書を生成するスキル。
+
+**核心的な考え方**:
+
+1. **タスク仕様書を作成する**ことが目的
+2. **使用するスキルは仕様書作成時に動的に選定する**
+3. 現在利用可能なスキル（`.claude/skills/`）からタスクに適したものを選ぶ
+4. タスク完了後は**skill-creator**でフィードバックを記録する
+
+## ワークフロー
+
+```
+ユーザー要求
+    ↓
+decompose-task（タスク分解）
+    ↓
+┌─────────────────────────────────────┐
+│ analyze-skills（利用可能スキル確認）│ ← 並列実行
+│ identify-scope（スコープ定義）      │
+└─────────────────────────────────────┘
+    ↓
+design-phases（Phase構成設計）
+    ↓
+generate-task-specs（タスク仕様書生成）
+    ↓
+┌─────────────────────────────────────┐
+│ output-phase-files（ファイル出力）  │ ← 並列実行
+│ update-dependencies（依存関係設定） │
+└─────────────────────────────────────┘
+    ↓
+docs/30-workflows/{{機能名}}/phase-*.md
+```
+
+### 並列実行グループ
+
+| グループ   | 含まれるTask                            | 同期ポイント        |
+| ---------- | --------------------------------------- | ------------------- |
+| parallel-1 | analyze-skills, identify-scope          | design-phases       |
+| parallel-2 | output-phase-files, update-dependencies | skill-feedback-loop |
+
+## システム仕様参照（aiworkflow-requirements連携）
+
+タスク仕様書作成時、既存システム仕様との整合性を確保するため `aiworkflow-requirements` を活用する。
+
+| Phase | 参照目的                                   |
+| ----- | ------------------------------------------ |
+| 1     | 既存要件・インターフェース仕様との整合確認 |
+| 2     | アーキテクチャ・API・データベース仕様参照  |
+| 3     | 設計レビュー時の仕様準拠チェック           |
+| 10    | 仕様変更時のドキュメント更新               |
+
+**仕様検索**: `node .claude/skills/aiworkflow-requirements/scripts/search-spec.mjs "{{キーワード}}"`
+**詳細フロー**: See [references/spec-update-workflow.md](references/spec-update-workflow.md)
+
+## Phase構成（フレームワーク）
+
+タスク仕様書は以下のPhase構成に従って生成する。
+
+| Phase | 名称               | 目的                             |
+| ----- | ------------------ | -------------------------------- |
+| 1     | 要件定義           | 目的・スコープ・受け入れ基準定義 |
+| 2     | 設計               | アーキテクチャ・詳細設計         |
+| 3     | 設計レビューゲート | 要件・設計の妥当性検証           |
+| 4     | テスト作成         | TDD: Red（失敗するテスト作成）   |
+| 5     | 実装               | TDD: Green（テストを通す実装）   |
+| 6     | リファクタリング   | TDD: Refactor（品質改善）        |
+| 7     | 品質保証           | 静的解析・セキュリティ・性能     |
+| 8     | 最終レビューゲート | 全体品質・整合性検証             |
+| 9     | 手動テスト検証     | UX・実環境動作確認               |
+| 10    | ドキュメント更新   | ドキュメント更新・仕様反映       |
+| 11    | PR作成             | コミット・PR・CI確認             |
+
+**Phase別テンプレート**: See [references/phase-templates.md](references/phase-templates.md)
+**出力ディレクトリ構造**: See [references/artifact-naming-conventions.md](references/artifact-naming-conventions.md)
+
+## Task仕様ナビ
+
+| Task                     | 責務                       | 実行パターン | 入力             | 出力                  |
+| ------------------------ | -------------------------- | ------------ | ---------------- | --------------------- |
+| decompose-task           | タスクを単一責務に分解     | seq          | ユーザー要求     | タスク分解リスト      |
+| analyze-skills           | 利用可能スキルを確認・選定 | **par**      | タスク分解リスト | スキル選定結果        |
+| identify-scope           | スコープ・前提・制約を定義 | **par**      | タスク分解リスト | スコープ定義          |
+| design-phases            | Phase構成を設計            | **agg**      | 上記の集約       | フェーズ設計書        |
+| generate-task-specs      | タスク仕様書を生成         | seq          | フェーズ設計書   | タスク仕様書一覧      |
+| output-phase-files       | 個別Markdownファイルを出力 | **par**      | タスク仕様書一覧 | phase-\*.md           |
+| update-dependencies      | Phase間の依存関係を設定    | **par**      | タスク仕様書一覧 | 依存関係マップ        |
+| skill-feedback-loop      | skill-creatorでFBを記録    | seq          | 実行結果         | LOGS.md更新           |
+| generate-unassigned-task | 未完了タスク指示書を生成   | cond         | レビュー課題     | unassigned-task/\*.md |
+
+**実行パターン凡例**:
+
+- `seq`: シーケンシャル（前のTaskに依存）
+- `par`: 並列実行（他と独立）
+- `cond`: 条件分岐の起点
+- `agg`: 集約処理（並列の終点）
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
+**注記**: 1 Task = 1 責務。複数責務を1ファイルに入れない。
+
+## スキルフィードバック
+
+タスク完了後、使用したスキルに対して **skill-creator** でフィードバックを記録する。
+
+```bash
+# フィードバック記録
+node .claude/skills/task-specification-creator/scripts/log_usage.mjs \
+  --skill {{skill-name}} --result {{success|failure|partial}} --phase {{phase-number}}
+
+# Phase完了・成果物登録
+node .claude/skills/task-specification-creator/scripts/complete-phase.mjs \
+  --workflow docs/30-workflows/{{機能名}} --phase {{N}} --artifacts "..."
+
+# スキル仕様準拠チェック（skill-creatorに委譲）
+node .claude/skills/skill-creator/scripts/quick_validate.mjs .claude/skills/{{skill-name}}
+```
+
+**フィードバックフロー**: See [references/feedback-flow.md](references/feedback-flow.md)
+
+## ベストプラクティス
+
+### すべきこと
+
+- 各Phaseを独立したMarkdownファイルとして出力
+- タスクに応じて適切なスキルを動的に選定し、選定理由を明記
+- Phase完了後にskill-creatorでフィードバック記録
+- 100人中100人が同じ理解で実行できる粒度で記述
+- コード成果物はプロジェクトディレクトリに配置（outputs/ではない）
+- TodoWriteでサブタスクを管理し、進捗を可視化
+
+### 避けるべきこと
+
+- スキルを固定的に決めつける
+- スキル選定理由を省略
+- skill-creatorでのフィードバック記録を省略
+- 1つのファイルに全Phaseを詰め込む
+- コード成果物を `outputs/` 配下に配置する
+
+**詳細**: See [references/quality-standards.md](references/quality-standards.md)
+
+## リソース参照
+
+### agents/（Task仕様書）
+
+| Task                 | パス                                                                         |
+| -------------------- | ---------------------------------------------------------------------------- |
+| タスク分解           | See [agents/decompose-task.md](agents/decompose-task.md)                     |
+| スキル分析           | See [agents/analyze-skills.md](agents/analyze-skills.md)                     |
+| スコープ特定         | See [agents/identify-scope.md](agents/identify-scope.md)                     |
+| フェーズ設計         | See [agents/design-phases.md](agents/design-phases.md)                       |
+| タスク仕様書生成     | See [agents/generate-task-specs.md](agents/generate-task-specs.md)           |
+| 個別ファイル出力     | See [agents/output-phase-files.md](agents/output-phase-files.md)             |
+| 依存関係更新         | See [agents/update-dependencies.md](agents/update-dependencies.md)           |
+| スキルフィードバック | See [agents/skill-feedback-loop.md](agents/skill-feedback-loop.md)           |
+| 未完了タスク生成     | See [agents/generate-unassigned-task.md](agents/generate-unassigned-task.md) |
+
+### references/（詳細知識）
+
+| リソース                 | パス                                                                                       |
+| ------------------------ | ------------------------------------------------------------------------------------------ |
+| Phase別テンプレート      | See [references/phase-templates.md](references/phase-templates.md)                         |
+| フィードバックフロー     | See [references/feedback-flow.md](references/feedback-flow.md)                             |
+| 品質基準                 | See [references/quality-standards.md](references/quality-standards.md)                     |
+| 成果物命名規則           | See [references/artifact-naming-conventions.md](references/artifact-naming-conventions.md) |
+| 未完了タスクガイドライン | See [references/unassigned-task-guidelines.md](references/unassigned-task-guidelines.md)   |
+| レビューゲート判定基準   | See [references/review-gate-criteria.md](references/review-gate-criteria.md)               |
+| システム仕様更新         | See [references/spec-update-workflow.md](references/spec-update-workflow.md)               |
+
+### assets/（テンプレート）
+
+| テンプレート               | パス                                                                         |
+| -------------------------- | ---------------------------------------------------------------------------- |
+| Phase仕様書テンプレート    | See [assets/phase-spec-template.md](assets/phase-spec-template.md)           |
+| スキル実行指示テンプレート | See [assets/skill-execution-template.md](assets/skill-execution-template.md) |
+| フィードバック記録         | See [assets/feedback-record-template.md](assets/feedback-record-template.md) |
+| 未完了タスクテンプレート   | See [assets/unassigned-task-template.md](assets/unassigned-task-template.md) |
+| メインタスクテンプレート   | See [assets/main-task-template.md](assets/main-task-template.md)             |
+
+### scripts/（決定論的処理）
+
+| スクリプト                     | 用途                            | 使用例                                                                         |
+| ------------------------------ | ------------------------------- | ------------------------------------------------------------------------------ |
+| `log_usage.mjs`                | フィードバック記録              | `node scripts/log_usage.mjs --skill tdd-principles --result success --phase 4` |
+| `validate-phase-output.mjs`    | Phase出力ファイル検証           | `node scripts/validate-phase-output.mjs docs/30-workflows/{{機能名}}`          |
+| `validate-skill-selection.mjs` | スキル選定の検証（存在確認）    | `node scripts/validate-skill-selection.mjs docs/30-workflows/{{機能名}}`       |
+| `complete-phase.mjs`           | Phase完了・成果物登録・依存更新 | `node scripts/complete-phase.mjs --workflow <path> --phase <N> --artifacts ""` |
+
+## 変更履歴
+
+| Version | Date       | Changes                                                                 |
+| ------- | ---------- | ----------------------------------------------------------------------- |
+| 2.0.0   | 2026-01-04 | 責務分離: skill仕様チェックをskill-creatorへ委譲、references/へ詳細移動 |
+| 1.1.0   | 2026-01-03 | スキル仕様準拠チェック追加、リソース参照形式統一、実行パターン追加      |
+| 1.0.0   | 2025-12-28 | 初版作成                                                                |

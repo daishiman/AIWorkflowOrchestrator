@@ -1,14 +1,16 @@
 ---
 name: test-data-management
 description: |
-  テストデータ管理の専門スキル。フィクスチャ設計、シーディング戦略、データ分離、クリーンアップパターンを提供します。E2Eテスト、統合テスト、セッションベーステストのテスト環境構築と再現性確保に対応。
+  テストデータの設計・生成・隔離・クリーンアップを体系化するスキル。
+  E2E/統合/単体テストの再現性を高め、データ依存による不安定化を防ぐ。
 
   Anchors:
-  • 『Test-Driven Development: By Example』（Kent Beck）/ 適用: テストデータ管理 / 目的: テスト効率化
+  • Test-Driven Development: By Example / 適用: テストデータ設計 / 目的: 再現性と最小実装
+  • Growing Object-Oriented Software, Guided by Tests / 適用: フィクスチャ設計 / 目的: 依存性の分離
 
   Trigger:
-  テストデータ設計時、フィクスチャ作成時、テストデータ生成時に使用
-
+  Use when planning or implementing test data setup, seeding, isolation, or cleanup.
+  test data, fixture, seeding, teardown
 allowed-tools:
   - Read
   - Write
@@ -22,116 +24,118 @@ allowed-tools:
 
 ## 概要
 
-E2Eテスト、統合テスト、セッションベーステストのためのテストデータ管理戦略。フィクスチャ、シーディング、クリーンアップパターンを活用し、テスト環境構築、データ分離、再現性の確保を実現します。
+テストに必要なデータを再現性高く用意し、テスト間の干渉を防ぐための実務スキル。フィクスチャ設計、シーディング戦略、データ分離、クリーンアップの判断を一貫した手順で支援する。
 
-**適用シナリオ**:
-
-- フィクスチャの設計と実装
-- テスト用データのシーディング戦略
-- テスト間のデータ分離と隔離
-- テスト完了後のクリーンアップ
-- データベース状態の初期化と復元
-
-詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
+---
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件とデータ境界の整理
 
-**目的**: タスクの目的と前提条件、テストデータ要件を明確にする
-
-**アクション**:
-
-1. `references/Level1_basics.md` で基礎概念を確認
-2. テスト対象システムのデータ要件を特定
-3. 必要なリソース（references/scripts/templates）を洗い出す
-4. データ分離とクリーンアップの要件を定義
-
-### Phase 2: スキル適用
-
-**目的**: テストデータ管理戦略を実装し、具体的な作業を進める
+**目的**: テスト対象のデータ要件と分離境界を明確にする
 
 **アクション**:
 
-1. `references/Level2_intermediate.md` を参照し、実装パターンを確認
-2. 適切なテンプレート（`assets/fixture-template.ts`）を活用
-3. シーディング戦略と分離パターンを適用
-4. `scripts/generate-test-data.mjs` で自動生成を実施
+1. テスト目的と対象ドメインを整理する
+2. 必要なエンティティと依存関係を洗い出す
+3. データ分離と再利用の境界を決める
+4. 制約と禁止事項（本番データ禁止など）を明文化する
 
-### Phase 3: 検証と記録
+**Task**: `agents/data-requirement-mapping.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: フィクスチャ/シーディング設計
+
+**目的**: 再現性と運用性を両立したデータ投入方式を設計する
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. テストデータの再現性とデータ分離を検証
-3. クリーンアップが正常に機能するか確認
-4. `scripts/log_usage.mjs` を実行して記録を残す
+1. フィクスチャ方針と生成方式を選択する
+2. シーディングの順序と依存を定義する
+3. 生成テンプレートと自動生成スクリプトを整備する
+4. 失敗時のロールバック手順を決める
+
+**Task**: `agents/fixture-strategy-design.md` を参照
+
+### Phase 3: 検証とクリーンアップ
+
+**目的**: データの再現性とクリーンアップの確実性を検証する
+
+**アクション**:
+
+1. 生成データの一意性と妥当性を確認する
+2. テスト実行後のクリーンアップ結果を検証する
+3. 再実行時の状態再現性を評価する
+4. 実行記録を残す
+
+**Task**: `agents/cleanup-validation.md` を参照
+
+---
 
 ## Task仕様ナビ
 
-テストデータ管理の各パターンと対応リソース：
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| data-requirement-mapping | Phase 1 開始時 | テスト目的/対象 | テストデータ要件定義 |
+| fixture-strategy-design | Phase 2 開始時 | 要件定義/制約 | フィクスチャ設計書 |
+| cleanup-validation | Phase 3 開始時 | 生成データ/実行結果 | クリーンアップ検証レポート |
 
-| Task                       | 説明                                   | リソース                             | スクリプト             | テンプレート        |
-| -------------------------- | -------------------------------------- | ------------------------------------ | ---------------------- | ------------------- |
-| **フィクスチャ設計**       | テストに必要な初期データセットの設計   | Level1, Level2                       | generate-test-data.mjs | fixture-template.ts |
-| **シーディング戦略**       | データベースへのテストデータ投入方法   | seeding-strategies.md                | generate-test-data.mjs | fixture-template.ts |
-| **データ分離技法**         | テスト間のデータ隔離と競合回避         | data-isolation-techniques.md         | generate-test-data.mjs | -                   |
-| **クリーンアップパターン** | テスト完了後のデータベース状態復元     | cleanup-patterns.md                  | -                      | -                   |
-| **高度な戦略**             | パフォーマンス最適化と大規模データ対応 | Level3_advanced.md, Level4_expert.md | -                      | -                   |
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
+
+---
 
 ## ベストプラクティス
 
 ### すべきこと
 
-- テスト開始前に要件を明確に定義し、適切なレベルのリソース（Level1-4）を参照する
-- フィクスチャテンプレートを活用して、再利用可能なテストデータセットを構築
-- テスト間でのデータ分離を徹底し、テストの独立性と再現性を確保
-- `seeding-strategies.md` を参照して、スケーラブルなデータ投入方法を採用
-- テスト終了後に必ずクリーンアップを実施し、後続テストへの影響を排除
-- スキル構造と実装の整合性を検証し、`validate-skill.mjs` で確認
+| 推奨事項 | 理由 |
+| --- | --- |
+| テスト目的とデータ境界を最初に定義する | 生成範囲の過不足を防ぐため |
+| 一意性の担保方法を固定する | 並列実行時の衝突を避けるため |
+| シーディング順序を明記する | 依存関係の破綻を防ぐため |
+| クリーンアップを自動化する | 再現性と安定運用のため |
 
 ### 避けるべきこと
 
-- アンチパターンや注意点を確認せずに進める
-- テスト間でのグローバル状態の共有やデータ依存を放置する
-- 本番データベースをテストに直結させ、データ汚染リスクを負う
-- クリーンアップなしでテストを終了し、後続テストへの悪影響を招く
-- スケーラビリティを考慮せず、フィクスチャで大量のハードコードされたデータを管理
-- `references/Level3_advanced.md` や `Level4_expert.md` の高度なパターンを無視し、パフォーマンス課題を放置
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 本番データを直接使用する | セキュリティと再現性のリスク |
+| グローバル共有データに依存する | テストの独立性が崩れる |
+| クリーンアップ確認を省略する | 後続テストの汚染につながる |
+
+---
 
 ## リソース参照
 
-### 学習リソース（references/）
+### scripts/（決定論的処理）
 
-| リソース                       | 目的                                   | 対象者       |
-| ------------------------------ | -------------------------------------- | ------------ |
-| `Level1_basics.md`             | テストデータ管理の基礎概念と用語       | 初心者       |
-| `Level2_intermediate.md`       | 実務的なテストデータ設計パターン       | 実装者       |
-| `Level3_advanced.md`           | パフォーマンス最適化とスケーラビリティ | 熟練者       |
-| `Level4_expert.md`             | エンタープライズレベルの戦略           | アーキテクト |
-| `cleanup-patterns.md`          | クリーンアップパターンの詳細な実装方法 | 実装者       |
-| `data-isolation-techniques.md` | テスト間のデータ分離実装技法           | 実装者       |
-| `seeding-strategies.md`        | データシーディング戦略と最適化         | 実装者       |
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/generate-test-data.mjs` | テストデータを生成する |
+| `scripts/validate-skill.mjs` | スキル構造と必須成果物を検証する |
+| `scripts/log_usage.mjs` | 実行記録を保存する |
 
-### スクリプト（scripts/）
+### references/（詳細知識）
 
-| スクリプト               | 説明                   | 実行方法                                     |
-| ------------------------ | ---------------------- | -------------------------------------------- |
-| `generate-test-data.mjs` | テストデータの自動生成 | `node scripts/generate-test-data.mjs --help` |
-| `validate-skill.mjs`     | スキル構造の検証       | `node scripts/validate-skill.mjs --help`     |
-| `log_usage.mjs`          | 使用記録と自動評価     | `node scripts/log_usage.mjs --help`          |
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| 基礎概念 | [references/Level1_basics.md](references/Level1_basics.md) | Phase 1 で参照 |
+| 実務パターン | [references/Level2_intermediate.md](references/Level2_intermediate.md) | Phase 2 で参照 |
+| 応用戦略 | [references/Level3_advanced.md](references/Level3_advanced.md) | 高度化時に参照 |
+| エキスパート | [references/Level4_expert.md](references/Level4_expert.md) | 大規模対応時に参照 |
+| クリーンアップ | [references/cleanup-patterns.md](references/cleanup-patterns.md) | Phase 3 で参照 |
+| データ分離 | [references/data-isolation-techniques.md](references/data-isolation-techniques.md) | Phase 1 で参照 |
+| シーディング | [references/seeding-strategies.md](references/seeding-strategies.md) | Phase 2 で参照 |
 
-### テンプレート（assets/）
+### assets/（テンプレート・素材）
 
-| テンプレート          | 説明                           | 用途                                  |
-| --------------------- | ------------------------------ | ------------------------------------- |
-| `fixture-template.ts` | フィクスチャの基本テンプレート | TypeScript/Vitestでのフィクスチャ設計 |
+| アセット | 用途 |
+| --- | --- |
+| `assets/fixture-template.ts` | フィクスチャ実装の雛形 |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                                                                     |
-| ------- | ---------- | ----------------------------------------------------------------------------------------------------------- |
-| 2.0.0   | 2025-12-31 | 18-skills.md仕様への準拠。Anchors, Trigger, allowed-tools, Task仕様ナビを追加。リソース参照セクションを整備 |
-| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added                                                                 |
+| Version | Date | Changes |
+| --- | --- | --- |
+| 3.0.0 | 2026-01-02 | スキル構造を刷新し、Task仕様と検証フローを再設計 |
+| 2.0.0 | 2025-12-31 | 18-skills.md仕様への準拠、Task仕様ナビ整備 |
+| 1.0.0 | 2025-12-24 | 初期バージョン |

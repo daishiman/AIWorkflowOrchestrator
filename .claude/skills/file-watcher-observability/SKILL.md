@@ -1,132 +1,119 @@
 ---
 name: file-watcher-observability
 description: |
-  ファイル監視システムの可観測性（Observability）を3本柱（Metrics、Logs、Traces）に基づくPrometheus/Grafana統合パターンで実装。本番環境のパフォーマンス監視、SLA遵守測定、障害根本原因分析を支援。
+  ファイル監視システムの可観測性（Observability）を3本柱（Metrics、Logs、Traces）に基づいて実装するスキル。Prometheus/Grafana統合でSLA遵守測定、パフォーマンス監視、障害根本原因分析を支援。
 
   Anchors:
-  • 『Observability Engineering』（Charity Majors） / 適用: ログ設計・テレメトリ戦略 / 目的: メトリクス・ログ・トレースの統一的設計
-  • Prometheus / 適用: メトリクス収集・保存 / 目的: ファイル監視の定量的性能監視
-  • Grafana / 適用: 可視化・ダッシュボード / 目的: リアルタイムアラートと傾向分析
+  • Observability Engineering（Charity Majors） / 適用: 3本柱設計 / 目的: メトリクス・ログ・トレースの統合
+  • Google SRE Book / 適用: ゴールデンシグナル / 目的: SLI/SLO設計
+  • Prometheus Documentation / 適用: メトリクス命名規則 / 目的: 標準準拠の実装
 
   Trigger:
-  ファイル監視システムのパフォーマンス監視、SLA遵守のための定量的測定、障害の根本原因分析、キャパシティプランニングのデータ収集が必要な場合に使用。
-
+  Use when implementing observability for file watcher systems, setting up Prometheus/Grafana monitoring, designing SLI/SLO metrics, or analyzing production performance issues.
 allowed-tools:
-  - bash
-  - node
-  - typescript
-  - prometheus
-  - grafana
-
-tags:
-  - observability
-  - monitoring
-  - metrics
-  - logs
-  - traces
-  - file-watcher
-  - prometheus
-  - grafana
-
-dependencies: []
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Task
 ---
 
 # ファイル監視システムの可観測性設計
 
 ## 概要
 
-ファイル監視システムに対してMetrics・Logs・Tracesの3本柱を統合し、Prometheus/Grafanaで本番環境のパフォーマンスを定量的に監視・分析するワークフロー。
-
-詳細な背景と実装例は [references/Level1_basics.md](references/Level1_basics.md) 、[references/Level2_intermediate.md](references/Level2_intermediate.md) を参照してください。
+ファイル監視システムに対してMetrics・Logs・Tracesの3本柱を統合し、Prometheus/Grafanaで本番環境のパフォーマンスを定量的に監視・分析するスキル。
 
 ## ワークフロー
 
-### Phase 1: 要件整理と測定設計
+### Phase 1: メトリクス設計
 
-**目的**: 監視対象システムの要件と測定指標を明確化
-
-**アクション**:
-
-1. [references/Level1_basics.md](references/Level1_basics.md) で観測可能性の基本概念を確認
-2. 監視対象のファイル監視システムのサイズ・規模・SLA要件を把握
-3. どのメトリクス（レイテンシ・スループット・エラー率）が必要かを判定
-4. Logs・Traces・Metricsのどれを優先するか決定
-
-### Phase 2: 実装と統合
-
-**目的**: Prometheus/Grafanaの設定、メトリクス収集器の実装
+**目的**: SLA要件からメトリクス定義とSLI/SLOを設計
 
 **アクション**:
 
-1. [references/Level2_intermediate.md](references/Level2_intermediate.md) でパターンを確認
-2. [assets/metrics-collector.ts](assets/metrics-collector.ts) をベースにメトリクス定義
-3. [references/grafana-dashboard.json](references/grafana-dashboard.json) でダッシュボード構築
-4. `scripts/validate-observability.mjs` で設定を検証
+1. [references/basics.md](references/basics.md) で可観測性の基本概念を確認
+2. ゴールデンシグナル（Latency、Traffic、Errors、Saturation）を定義
+3. Prometheus命名規則に準拠したメトリクス名を設計
+4. SLI/SLO目標値を明文化
 
-### Phase 3: 検証と運用準備
+**Task**: [agents/metrics-design.md](agents/metrics-design.md) を参照
 
-**目的**: 成果物の動作確認と運用情報の記録
+### Phase 2: 可観測性セットアップ
+
+**目的**: Prometheus/Grafana/Logs/Tracesの統合実装
 
 **アクション**:
 
-1. `scripts/health-check.sh` で監視の正常動作を確認
-2. 本番環境とアラート設定の整合性をチェック
-3. `scripts/log_usage.mjs --result success` で記録を保存
+1. [references/patterns.md](references/patterns.md) で実装パターンを確認
+2. [assets/metrics-collector.ts](assets/metrics-collector.ts) をカスタマイズ
+3. [assets/grafana-dashboard.json](assets/grafana-dashboard.json) でダッシュボード構築
+4. アラートルールを定義
+
+**Task**: [agents/observability-setup.md](agents/observability-setup.md) を参照
+
+### Phase 3: 検証と運用
+
+**目的**: 設定の検証と運用開始
+
+**アクション**:
+
+1. `scripts/validate-observability.mjs --all` で設定を検証
+2. 本番環境へのデプロイ
+3. アラート通知先の設定
+4. `scripts/log_usage.mjs --result success` で記録
 
 ## Task仕様ナビ
 
-本スキルは以下のTaskで構成されます。各Taskは必要に応じて実行してください：
-
-| Task                                                     | 用途                       | 入力                            | 出力                             |
-| -------------------------------------------------------- | -------------------------- | ------------------------------- | -------------------------------- |
-| [agents/metrics-design.md](agents/metrics-design.md)     | メトリクス設計             | ファイル監視システムのSLA・要件 | メトリクス定義（Prometheus形式） |
-| [agents/prometheus-setup.md](agents/prometheus-setup.md) | Prometheus設定             | メトリクス定義・収集対象        | prometheus.yml / scrape config   |
-| [agents/grafana-build.md](agents/grafana-build.md)       | ダッシュボード構築         | Prometheusデータソース          | dashboard.json / alert rules     |
-| [agents/log-integration.md](agents/log-integration.md)   | ログ統合（オプション）     | ログ形式・保持期間要件          | 構造化ログ設定（ELK/Loki）       |
-| [agents/trace-setup.md](agents/trace-setup.md)           | トレース設定（オプション） | トレース粒度・サンプリング率    | OpenTelemetry設定                |
+| Task                                                           | 用途           | 入力             | 出力                      |
+| -------------------------------------------------------------- | -------------- | ---------------- | ------------------------- |
+| [agents/metrics-design.md](agents/metrics-design.md)           | メトリクス設計 | SLA要件          | メトリクス定義書・SLO仕様 |
+| [agents/observability-setup.md](agents/observability-setup.md) | セットアップ   | メトリクス定義書 | 設定ファイル群            |
 
 ## ベストプラクティス
 
 ### すべきこと
 
-- 本番環境のファイル監視ではMetrics・Logs・Tracesをバランスよく設定する
-- SLA定義を明確にしてから測定指標を決める
+- SLA定義を明確にしてからメトリクスを設計する
+- ゴールデンシグナル4つを必ずカバーする
 - ダッシュボードはオンコール対応者向けに最小限の情報に絞る
-- アラート閾値は実運用データに基づいて段階的に調整する
+- アラート閾値は実運用データに基づいて調整する
 
 ### 避けるべきこと
 
-- 測定設計を抜かして実装を始める（後から修正が困難）
-- すべてのメトリクスを取得しようとする（コスト・ノイズ増加）
-- ダッシュボードを情報満載にする（肝心な異常が見落とされやすい）
+- 測定設計なしで実装を始める
+- すべてのメトリクスを取得しようとする（コスト増大）
+- ラベルに高カーディナリティ値（ファイルパス等）を使用する
+- ダッシュボードを情報過多にする
 
 ## リソース参照
 
-### 学習ガイド（段階的に読み進める）
+### references/（詳細知識）
 
-- **[references/Level1_basics.md](references/Level1_basics.md)**: 観測可能性の基本概念、3本柱の理解
-- **[references/Level2_intermediate.md](references/Level2_intermediate.md)**: Prometheus・Grafana基本設定、メトリクス収集パターン
-- **[references/Level3_advanced.md](references/Level3_advanced.md)**: ログ統合（ELK/Loki）、トレース設定、SLO/SLI設計
-- **[references/Level4_expert.md](references/Level4_expert.md)**: カスタムメトリクス開発、アラート最適化、多クラスタ監視
+| リソース     | パス                                             | 内容                               |
+| ------------ | ------------------------------------------------ | ---------------------------------- |
+| 基本概念     | [references/basics.md](references/basics.md)     | 3本柱・ゴールデンシグナル・SLI/SLO |
+| 実装パターン | [references/patterns.md](references/patterns.md) | Prometheus/Grafana設定例           |
 
-### 実装リソース
+### assets/（テンプレート）
 
-- **[assets/metrics-collector.ts](assets/metrics-collector.ts)**: Node.js/TypeScript向けメトリクス収集テンプレート
-- **[references/grafana-dashboard.json](references/grafana-dashboard.json)**: Grafanaダッシュボードテンプレート
+| テンプレート           | 用途                      |
+| ---------------------- | ------------------------- |
+| metrics-collector.ts   | メトリクス収集コード      |
+| grafana-dashboard.json | Grafanaダッシュボード設定 |
 
-### スクリプト
+### scripts/（検証・記録）
 
-- **`scripts/health-check.sh`**: 監視システムのヘルスチェック（動作確認用）
-- **`scripts/validate-observability.mjs`**: 観測可能性設定の妥当性検証
-- **`scripts/log_usage.mjs`**: スキル利用記録の保存（`--result success/failure`で実行）
-
-### 関連リソース
-
-- **[references/requirements-index.md](references/requirements-index.md)**: プロジェクト要求仕様への対応マッピング
+| スクリプト                 | 用途           | 使用例                                          |
+| -------------------------- | -------------- | ----------------------------------------------- |
+| validate-observability.mjs | 設定検証       | `node scripts/validate-observability.mjs --all` |
+| log_usage.mjs              | 利用記録       | `node scripts/log_usage.mjs --result success`   |
+| health-check.sh            | ヘルスチェック | `./scripts/health-check.sh`                     |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                                                                                                                                                                                                            |
-| ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1.1.0   | 2025-12-31 | 18-skills.md仕様に基づいて全面更新：Frontmatterの改訂（description にAnchors/Trigger統合、allowed-tools/tags追加）、本文構成の再編（タイトル/概要/ワークフロー3フェーズ/Task仕様ナビ/ベストプラクティス/リソース参照を標準化）、相対パスリンク統一 |
-| 1.0.0   | 2025-12-24 | 初版作成                                                                                                                                                                                                                                           |
+| Version | Date       | Changes                                                           |
+| ------- | ---------- | ----------------------------------------------------------------- |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様に完全準拠。agents/を2つに統合、references/を刷新 |
+| 1.1.0   | 2025-12-31 | frontmatter改訂、構成再編                                         |
+| 1.0.0   | 2025-12-24 | 初版作成                                                          |

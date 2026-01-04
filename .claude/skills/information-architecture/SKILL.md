@@ -1,50 +1,23 @@
 ---
-name: .claude/skills/information-architecture/SKILL.md
+name: information-architecture
 description: |
   ユーザーが必要な情報を素早く見つけられるドキュメント構造設計スキル。
   階層設計、ナビゲーション、情報粒度管理の技術を提供。
 
-  **Anchors（基本概念）:**
-  - ナビゲーションパターン: グローバルナビゲーション、パンくずリスト、サイドメニュー
-  - 情報粒度: マイクロコンテンツ、チャンク化戦略
-  - 階層設計: 3層まで推奨、ユーザー検索パターン最適化
+  Anchors:
+  • Information Architecture (Rosenfeld, Morville) / 適用: IA設計原則 / 目的: ユーザー中心の構造設計
+  • Don't Make Me Think (Steve Krug) / 適用: ナビゲーション設計 / 目的: 直感的な情報探索
+  • Clean Architecture (Robert C. Martin) / 適用: 依存関係ルール / 目的: 保守可能な構造
 
-  **Trigger（発動条件）:**
-  - ドキュメント全体の構造を設計する必要がある時
-  - ナビゲーション設計を行う時
-  - 情報の粒度を決定する時
-  - ドキュメントサイトを構築する時
-
-  📖 参照書籍:
-  - 『Clean Architecture』（Robert C. Martin）: 依存関係ルール
-
-  📚 リソース参照:
-  - `references/Level1_basics.md`: レベル1の基礎ガイド
-  - `references/Level2_intermediate.md`: レベル2の実務ガイド
-  - `references/Level3_advanced.md`: レベル3の応用ガイド
-  - `references/Level4_expert.md`: レベル4の専門ガイド
-  - `references/legacy-skill.md`: 旧SKILL.mdの全文
-  - `references/navigation-patterns.md`: ナビゲーションパターン集
-  - `references/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-links.mjs`: リンク検証スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `assets/sitemap-template.md`: サイトマップテンプレート
+  Trigger:
+  Use when designing document structures, creating navigation systems, organizing content hierarchies, building documentation sites, or planning information granularity.
+  documentation, structure, navigation, hierarchy, sitemap, content organization
 allowed-tools:
   - Read
   - Glob
   - Grep
   - Edit
   - Write
-version: 1.0.0
-level: 1
-last_updated: 2025-12-31
-references:
-  - book: "Clean Architecture"
-    author: "Robert C. Martin"
-    concepts:
-      - "依存関係ルール"
-      - "境界の設計"
 ---
 
 # Information Architecture スキル
@@ -57,33 +30,42 @@ references:
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: ドキュメント構造分析
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
-2. 必要な references/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 既存ドキュメントとユーザー検索パターンを分析し、構造設計の基礎を構築
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 既存コンテンツとユーザーニーズを調査
+2. 情報カテゴリと分類体系を特定
+3. 階層の深さと粒度を決定
 
-### Phase 3: 検証と記録
+**Task**: `agents/analyze-structure.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: ナビゲーション設計
+
+**目的**: グローバルナビ、サイドメニュー、パンくずリストの統合設計
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. ナビゲーションパターンを選択
+2. 各レベルでの発見性を最適化
+3. ユーザーメンタルモデルとの整合性を確認
+
+**Task**: `agents/design-navigation.md` を参照
+
+### Phase 3: サイトマップ作成と検証
+
+**目的**: 全体構造の可視化とSEO最適化
+
+**アクション**:
+
+1. Mermaid形式で視覚的サイトマップを作成
+2. sitemap.xmlを生成（優先度・更新頻度設定）
+3. `scripts/validate-links.mjs` でリンク検証
+4. `scripts/log_usage.mjs` で記録
+
+**Task**: `agents/create-sitemap.md` を参照
 
 ## ベストプラクティス
 
@@ -105,13 +87,13 @@ references:
 
 ## Task仕様ナビ
 
-| Task                   | 目的                                                               | 参照リソース                                   | 推奨レベル |
-| ---------------------- | ------------------------------------------------------------------ | ---------------------------------------------- | ---------- |
-| ドキュメント構造設計   | ユーザーの情報検索パターンに基づいた論理的な階層を設計             | Level1_basics.md, navigation-patterns.md       | 1-2        |
-| ナビゲーション設計     | グローバルナビゲーション、パンくずリスト、サイドメニューの統合設計 | Level2_intermediate.md, navigation-patterns.md | 2-3        |
-| 情報粒度管理           | マイクロコンテンツ、チャンク化戦略による読みやすさ向上             | Level2_intermediate.md                         | 2-3        |
-| サイトマップ作成       | 全体構造の可視化とユーザー検索パターンの最適化                     | sitemap-template.md, Level1_basics.md          | 1-2        |
-| 検索アーキテクチャ設計 | カテゴリベース、タグベース、FTS検索の統合                          | Level3_advanced.md                             | 3-4        |
+| Task               | 起動タイミング | 入力                       | 出力                 | 参照エージェント              |
+| ------------------ | -------------- | -------------------------- | -------------------- | ----------------------------- |
+| 構造分析           | Phase 1開始時  | 既存ドキュメント、要件定義 | 構造分析レポート     | `agents/analyze-structure.md` |
+| ナビゲーション設計 | Phase 2開始時  | 構造分析レポート           | ナビゲーション設計書 | `agents/design-navigation.md` |
+| サイトマップ作成   | Phase 3開始時  | ナビゲーション設計書       | sitemap.xml、視覚図  | `agents/create-sitemap.md`    |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
 ## リソース参照
 
@@ -145,7 +127,9 @@ node .claude/skills/information-architecture/scripts/log_usage.mjs --help
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                                                                                                             |
-| ------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1.1.0   | 2025-12-31 | 18-skills.md仕様に準拠：frontmatterにallowed-tools追加、Anchors/Triggerセクション追加、Task仕様ナビ（テーブル形式）追加、リソース参照セクション強化 |
-| 1.0.0   | 2025-12-24 | 初版：仕様準拠と必須成果物の追加                                                                                                                    |
+| Version | Date       | Changes                                        |
+| ------- | ---------- | ---------------------------------------------- |
+| 2.1.0   | 2026-01-02 | ワークフローをPhase別に再構成、agents/参照追加 |
+| 2.0.0   | 2026-01-02 | 18-skills.md完全準拠、Anchors/Trigger修正      |
+| 1.1.0   | 2025-12-31 | frontmatter強化、Task仕様ナビ追加              |
+| 1.0.0   | 2025-12-24 | 初版                                           |

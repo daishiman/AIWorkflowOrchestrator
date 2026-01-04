@@ -1,14 +1,16 @@
 ---
 name: structured-logging
 description: |
-  構造化ログ設計の専門スキル。JSON形式ログ、ログレベル体系、PII マスキング、ログスキーマ設計における段階的ガイダンスを提供します。
+  構造化ログのスキーマ設計、ログレベル設計、PIIマスキング、JSONログ実装を支援するスキル。
+  ログ要件整理から検証までを一貫して整理する。
 
   Anchors:
-  • Observability Engineering (Charity Majors) / 適用: ログ設計とメトリクス / 目的: 可観測性向上
-  • Structured Logging in Cloud Native (12-Factor App) / 適用: JSON形式ログ設計 / 目的: 標準ログ形式の統一
+  • Observability Engineering / 適用: ログ設計 / 目的: 可観測性向上
+  • 12-Factor App / 適用: 構造化ログ / 目的: JSONログ標準化
 
   Trigger:
-  構造化ログシステム実装、JSONログ設計、ログレベル体系設計、PII マスキング戦略、ログスキーマ定義、可観測性向上時に使用
+  Use when designing JSON log schemas, defining log levels, applying PII masking, or improving observability.
+  structured logging, json logs, log schema, log levels, pii masking
 allowed-tools:
   - Read
   - Write
@@ -18,120 +20,113 @@ allowed-tools:
   - Grep
 ---
 
-# Structured Logging - 構造化ロギング設計
+# structured-logging
 
 ## 概要
 
-構造化ログシステム設計の専門スキル。JSON形式ログ、ログレベル階層、PII マスキング、スキーマ設計の段階的ガイダンスを提供します。アプリケーションの可観測性を向上させ、ログの検索・分析・監視を効率化するためのベストプラクティスを習得できます。
+ログの要件整理からスキーマ設計、PIIマスキング、検証までを体系化する。
 
-詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
+---
 
 ## ワークフロー
 
-### Phase 1: 要件と前提の整理
+### Phase 1: 要件整理
 
-**目的**: ログシステムの要件と現在の状態を把握する
-
-**アクション**:
-
-1. 対象システムのログ要件を確認（ログレベル、形式、保持期間）
-2. 必要なガイダンスレベルを判断（基礎/中級/上級/専門）
-3. 参照する references/ ファイルを選択:
-   - 基礎: `references/Level1_basics.md`
-   - 中級: `references/Level2_intermediate.md`
-   - 上級: `references/Level3_advanced.md`
-   - 専門: `references/Level4_expert.md`
-
-### Phase 2: スキル適用と実装
-
-**目的**: スキルの指針に従って構造化ログシステムを設計・実装する
+**目的**: ログ対象イベントと保存要件を整理する
 
 **アクション**:
 
-1. 必要に応じて以下の参照資料を確認:
-   - ログレベル設計: `references/log-level-guide.md`
-   - ログスキーマ定義: `references/log-schema-design.md`
-   - PII マスキング: `references/pii-masking-patterns.md`
+1. `references/Level1_basics.md` で基本指針を確認する
+2. イベント一覧と検索要件を整理する
 
-2. テンプレートを使用して実装:
-   - ログ形式例: `assets/log-format-examples.json`
-   - Logger実装: `assets/logger-template.ts`
+**Task**: `agents/slog-001-requirements.md` を参照
 
-3. 重要な判断点をドキュメント化
+### Phase 2: スキーマとレベル設計
 
-### Phase 3: 検証と記録
-
-**目的**: 成果物の検証と実行記録の保存
+**目的**: ログスキーマとレベル体系を定義する
 
 **アクション**:
 
-1. ログ形式の検証: `node scripts/validate-log-format.mjs <log-file>`
-2. スキル構造の検証: `node scripts/validate-skill.mjs`
-3. 使用記録の保存: `node scripts/log_usage.mjs --result success --phase "implementation"`
+1. `references/log-schema-design.md` を参照する
+2. `references/log-level-guide.md` を参照する
+3. `assets/log-format-examples.json` を確認する
+
+**Task**: `agents/slog-002-schema-design.md` を参照
+
+### Phase 3: 実装と検証
+
+**目的**: PIIマスキングとログ検証を行う
+
+**アクション**:
+
+1. `references/pii-masking-patterns.md` を参照する
+2. `assets/logger-template.ts` を適用する
+3. `scripts/validate-log-format.mjs` でログ形式を検証する
+
+**Task**: `agents/slog-003-implementation-review.md` を参照
+
+---
 
 ## Task仕様ナビ
 
-| Phase   | Task           | 目的                    | 参照資料                | 成果物               |
-| ------- | -------------- | ----------------------- | ----------------------- | -------------------- |
-| Phase 1 | 要件分析       | ログ要件の明確化        | Level1_basics.md        | 要件ドキュメント     |
-| Phase 1 | 現状評価       | 既存ログシステムの確認  | legacy-skill.md         | 評価レポート         |
-| Phase 2 | スキーマ設計   | JSON ログスキーマの定義 | log-schema-design.md    | schema.json          |
-| Phase 2 | ログレベル体系 | 適切なログレベル設計    | log-level-guide.md      | level-design.md      |
-| Phase 2 | PII マスキング | 機密情報の保護戦略      | pii-masking-patterns.md | masking-config.json  |
-| Phase 2 | Logger実装     | ログ出力の実装          | logger-template.ts      | logger.ts            |
-| Phase 3 | 検証           | ログ形式の妥当性確認    | validate-log-format.mjs | validation-report.md |
-| Phase 3 | 記録           | スキル使用の記録        | log_usage.mjs           | logs.md              |
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| slog-001-requirements | Phase 1開始時 | システム概要、監視目的 | ログ要件メモ |
+| slog-002-schema-design | Phase 2開始時 | ログ要件メモ、既存ログ例 | ログスキーマ |
+| slog-003-implementation-review | Phase 3開始時 | ログスキーマ、ログ出力例 | 実装検証レポート |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
+**注記**: Task名は目的に合わせて定義する
+
+---
 
 ## ベストプラクティス
 
 ### すべきこと
 
-- JSON形式ログを採用し、機械可読性を確保する
-- ログレベル（DEBUG, INFO, WARN, ERROR, FATAL）を適切に使い分ける
-- タイムスタンプ、トレース ID、リクエスト ID を必ず含める
-- PII (個人識別情報) をマスキングし、セキュリティを確保する
-- ログスキーマを標準化し、一貫性を保つ
-- 構造化ログで検索・フィルタリング・集計を容易にする
-- contexts/Level2_intermediate.md で実務パターンを確認する
+| 推奨事項 | 理由 |
+| --- | --- |
+| JSON形式で統一する | 検索と集計が容易になる |
+| 必須フィールドを固定化する | 分析の一貫性が保てる |
+| PIIを分類してマスキングする | セキュリティ事故を防ぐ |
+| ログレベルの基準を定義する | 重要度の優先順位が明確になる |
 
 ### 避けるべきこと
 
-- プレーンテキスト形式のログを使用しない
-- ログレベルを無視してすべてを INFO で出力しない
-- 機密情報（パスワード、API キー、PII）をログに出力しない
-- 非構造化ログをデータベースに保存しない
-- ログスキーマなしに運用を開始しない
-- PII マスキングを後付けにしない（実装時に組み込む）
-- アンチパターンや注意点を確認せずに進めることを避ける
+| 禁止事項 | 問題点 |
+| --- | --- |
+| プレーンテキストのみのログ | 解析が難しくなる |
+| INFOの乱用 | ノイズが増えて監視精度が下がる |
+| PIIの生ログ出力 | セキュリティリスクが高まる |
+| スキーマ変更の未記録 | 監視ルールが破綻する |
 
-## リソース/スクリプト参照
+---
 
-### references/ （段階的参照資料）
+## リソース参照
 
-- **Level1_basics.md**: 構造化ログの基礎知識
-- **Level2_intermediate.md**: 実務レベルのログ設計と実装
-- **Level3_advanced.md**: 高度なログシステム設計パターン
-- **Level4_expert.md**: 専門的なログ監視・分析技法
-- **log-level-guide.md**: ログレベルの定義と使い分けガイド
-- **log-schema-design.md**: JSON ログスキーマ設計のベストプラクティス
-- **pii-masking-patterns.md**: 機密情報マスキング戦略とパターン集
-- **legacy-skill.md**: 旧SKILL.mdの参考資料
-- **requirements-index.md**: 要求仕様索引（docs/00-requirements と同期）
+### scripts/（決定論的処理）
 
-### scripts/ （実行スクリプト）
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/validate-log-format.mjs` | ログ形式の検証 |
+| `scripts/validate-skill.mjs` | スキル構造の検証 |
+| `scripts/log_usage.mjs` | 使用記録の保存 |
 
-- **validate-log-format.mjs**: ログ形式の構文・スキーマチェック
-- **validate-skill.mjs**: スキル構造の整合性検証
-- **log_usage.mjs**: スキル使用記録と自動評価
+### references/（詳細知識）
 
-### assets/ （出力テンプレート・例）
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| 基礎指針 | [references/Level1_basics.md](references/Level1_basics.md) | 要件整理時 |
+| 実務指針 | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 実装計画時 |
+| 応用指針 | [references/Level3_advanced.md](references/Level3_advanced.md) | 運用設計時 |
+| 専門指針 | [references/Level4_expert.md](references/Level4_expert.md) | 高度な最適化時 |
+| レベル設計 | [references/log-level-guide.md](references/log-level-guide.md) | ログレベル定義時 |
+| スキーマ設計 | [references/log-schema-design.md](references/log-schema-design.md) | スキーマ設計時 |
+| PIIマスキング | [references/pii-masking-patterns.md](references/pii-masking-patterns.md) | マスキング設計時 |
 
-- **log-format-examples.json**: JSON ログ形式の具体例
-- **logger-template.ts**: Logger実装のテンプレート
+### assets/（テンプレート・素材）
 
-## 変更履歴
-
-| Version | Date       | Changes                                                      |
-| ------- | ---------- | ------------------------------------------------------------ |
-| 2.0.0   | 2025-12-31 | 18-skills.md 仕様に準拠、Task仕様ナビ追加、日本語Trigger実装 |
-| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added                  |
+| アセット | 用途 |
+| --- | --- |
+| `assets/log-format-examples.json` | ログ形式の例 |
+| `assets/logger-template.ts` | ロガー実装テンプレート |

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json.schemastore.org/i18n-config",
+  "defaultLocale": "en",
+  "locales": ["en", "ja", "zh-CN", "zh-TW"],
+  "localeDetection": true,
+  "localeCookie": "NEXT_LOCALE",
+  "localePrefix": "as-needed",
+  "messages": {
+    "directory": "messages",
+    "format": "json"
+  },
+  "fallback": {
+    "ja": "en",
+    "zh-CN": "en",
+    "zh-TW": "zh-CN"
+  }
+}

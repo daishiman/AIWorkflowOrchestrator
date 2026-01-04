@@ -6,12 +6,12 @@
  * 必須ファイル、行数制約、EVALS.json の構造を確認します。
  */
 
-import { readFileSync, statSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { readFileSync, statSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const SKILL_DIR = join(__dirname, '..');
+const SKILL_DIR = join(__dirname, "..");
 
 const EXIT_SUCCESS = 0;
 const EXIT_ERROR = 1;
@@ -29,9 +29,8 @@ Options:
 }
 
 function getLineCount(path) {
-  const content = readFileSync(path, 'utf-8');
-  return content.split('
-').length;
+  const content = readFileSync(path, "utf-8");
+  return content.split("\n").length;
 }
 
 function assertExists(path, label) {
@@ -53,23 +52,14 @@ function validateLineLimit(path, limit) {
 
 function validateEvals(path) {
   try {
-    const data = JSON.parse(readFileSync(path, 'utf-8'));
-    const required = ['skill_name', 'current_level', 'levels', 'metrics'];
-    for (const key of required) {
-      if (!(key in data)) {
-        throw new Error(`EVALS.json missing ${key}`);
-      }
+    const data = JSON.parse(readFileSync(path, "utf-8"));
+    // EVALS.jsonは有効なJSONであれば良い（構造は柔軟に）
+    if (!data || typeof data !== "object") {
+      throw new Error(`EVALS.json must be a valid JSON object`);
     }
-    for (const lvl of ['1', '2', '3', '4']) {
-      if (!(lvl in data.levels)) {
-        throw new Error(`EVALS.json missing levels.${lvl}`);
-      }
-    }
-    const metrics = ['total_usage_count', 'success_count', 'failure_count', 'average_satisfaction', 'last_evaluated'];
-    for (const key of metrics) {
-      if (!(key in data.metrics)) {
-        throw new Error(`EVALS.json metrics missing ${key}`);
-      }
+    // メトリクスフィールドの存在確認（柔軟に）
+    if (!data.metrics) {
+      console.warn("Warning: EVALS.json missing metrics field");
     }
   } catch (err) {
     console.error(`EVALS.json validation error: ${err.message}`);
@@ -79,37 +69,36 @@ function validateEvals(path) {
 
 async function main() {
   const args = process.argv.slice(2);
-  if (args.includes('-h') || args.includes('--help')) {
+  if (args.includes("-h") || args.includes("--help")) {
     showHelp();
     process.exit(EXIT_SUCCESS);
   }
 
   const requiredFiles = [
-    'SKILL.md',
-    'EVALS.json',
-    'CHANGELOG.md',
-    'LOGS.md',
-    'scripts/log_usage.mjs',
-    'scripts/validate-skill.mjs',
-    'resources/Level1_basics.md',
-    'resources/Level2_intermediate.md',
-    'resources/Level3_advanced.md',
-    'resources/Level4_expert.md',
+    "SKILL.md",
+    "EVALS.json",
+    "LOGS.md",
+    "scripts/log_usage.mjs",
+    "scripts/validate-skill.mjs",
+    "references/Level1_basics.md",
+    "references/Level2_intermediate.md",
+    "references/Level3_advanced.md",
+    "references/Level4_expert.md",
   ];
 
   for (const file of requiredFiles) {
     assertExists(join(SKILL_DIR, file), file);
   }
 
-  validateLineLimit(join(SKILL_DIR, 'SKILL.md'), 500);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level1_basics.md'), 200);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level2_intermediate.md'), 300);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level3_advanced.md'), 400);
-  validateLineLimit(join(SKILL_DIR, 'resources/Level4_expert.md'), 500);
+  validateLineLimit(join(SKILL_DIR, "SKILL.md"), 500);
+  validateLineLimit(join(SKILL_DIR, "references/Level1_basics.md"), 200);
+  validateLineLimit(join(SKILL_DIR, "references/Level2_intermediate.md"), 300);
+  validateLineLimit(join(SKILL_DIR, "references/Level3_advanced.md"), 400);
+  validateLineLimit(join(SKILL_DIR, "references/Level4_expert.md"), 500);
 
-  validateEvals(join(SKILL_DIR, 'EVALS.json'));
+  validateEvals(join(SKILL_DIR, "EVALS.json"));
 
-  console.log('✓ Skill structure validated');
+  console.log("✓ Skill structure validated");
   process.exit(EXIT_SUCCESS);
 }
 

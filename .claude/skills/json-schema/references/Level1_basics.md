@@ -1,4 +1,4 @@
-# Level 1: Basics
+# レベル1: 基礎
 
 ## 概要
 
@@ -14,9 +14,11 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
-- Use proactively when handling json schema tasks.
+
+- JSONスキーマタスクを処理する際に積極的に使用する
 
 ### 必要な知識
+
 - 対象領域: JSON Schema仕様に基づくスキーマ設計を専門とするスキル。 API仕様の定義、OpenAPI連携、バリデーションルールの標準化を通じて、 相互運用性の高いデータ構造を設計します。
 - 主要概念: JSON Schema 基礎 / スキーマのメタデータ / 必須メタデータ / OpenAPI連携 / OpenAPIとJSON Schemaの関係
 - 実務指針: OpenAPI/Swagger仕様でAPI定義を行う際
@@ -24,19 +26,24 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 - 実務指針: 言語非依存のバリデーションルール定義時
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/api-schema-template.json`
 
 ### 参照書籍
+
 - 『Effective TypeScript』（Dan Vanderkam）: 型設計
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/api-schema-template.json`: このレベルでは参照のみ
 
 ## 実践手順

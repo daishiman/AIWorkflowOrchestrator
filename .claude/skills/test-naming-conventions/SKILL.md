@@ -1,13 +1,16 @@
 ---
 name: test-naming-conventions
 description: |
-  テスト命名規則の専門スキル。テストケース命名、ファイル構造、可読性向上を提供します。
+  テスト命名規則を設計し、可読性と一貫性を維持するスキル。
+  ファイル名、describe/it 構造、シナリオ表現を統一し、チーム運用を支援する。
 
   Anchors:
-  • 『xUnit Test Patterns』（Gerard Meszaros） / 適用: テスト命名 / 目的: 可読性向上
+  • xUnit Test Patterns / 適用: 命名規則設計 / 目的: 可読性の向上
+  • Specification by Example / 適用: シナリオ命名 / 目的: 意図の共有
 
   Trigger:
-  テスト命名規則策定時、テストファイル構造設計時、テスト可読性改善時に使用
+  Use when defining, reviewing, or enforcing test naming conventions and file structures.
+  test naming, describe/it, file structure
 allowed-tools:
   - Read
   - Write
@@ -17,134 +20,118 @@ allowed-tools:
   - Grep
 ---
 
-# テスト命名規則スキル
+# Test Naming Conventions
 
 ## 概要
 
-テストの命名規則とドキュメンテーション戦略を専門とするスキル。テストコードの可読性を向上させ、テスト構造を標準化し、保守性を高めることを目的とします。
+テストの命名規則を体系化し、チーム全体で読みやすいテストを維持するためのスキル。ファイル構成、describe/it の構造、シナリオ名を統一し、レビュー効率と保守性を高める。
 
-このスキルでは以下のレベルのガイダンスを提供します：
-
-- **Level 1（基礎）**: テスト命名の基本パターンと `describe-it` 構造
-- **Level 2（実務）**: ファイル組織、ネーミング戦略、実装パターン
-- **Level 3（応用）**: 複雑なテスト構造、パターン設計、大規模プロジェクト対応
-- **Level 4（専門）**: フレームワーク別最適化、チーム標準化、自動化戦略
-
-このスキルの詳細は、`references/` ディレクトリの各レベルガイド、テンプレート、スクリプトを参照してください。
+---
 
 ## ワークフロー
 
-### Phase 1: 要件分析と計画
+### Phase 1: 命名要件の整理
 
-**目的**: タスクの要件、プロジェクト規模、既存テスト構造を把握する
-
-**アクション**:
-
-1. テスト対象のプロジェクト構成とテストフレームワークを確認
-2. `references/Level1_basics.md` でテスト命名の基本原則を確認
-3. `references/requirements-index.md` で要求仕様の全体像を把握
-4. 既存のテスト命名規則があるか確認（リファクタリング vs 新規作成）
-5. `assets/naming-guide.md` で対応するテンプレートを確認
-6. 必要な resources、scripts、assets を特定
-
-**出力**: 適用するレベル、対象スコープ、実装パターンを決定
-
-### Phase 2: 規則設計と実装
-
-**目的**: プロジェクトに適切なテスト命名規則を設計・実装する
+**目的**: プロジェクトの規模とテスト目的に合わせて命名要件を整理する
 
 **アクション**:
 
-1. `references/Level2_intermediate.md` で実務的なテスト設計を確認
-2. `references/naming-patterns.md` から適切なパターンを選択
-3. `references/describe-structure.md` で describe/it 構造を最適化
-4. `references/file-organization.md` でファイル名の命名規則を決定
-5. プロジェクトのテストコードに規則を適用
-6. `scripts/test-name-linter.mjs` で命名規則の遵守を検証
-7. 重要な設計判断をドキュメント化
+1. テストフレームワークと対象範囲を確認する
+2. 既存の命名規則と課題を整理する
+3. 必須要件と禁止事項を定義する
 
-**出力**: テスト命名規則の実装、リンター設定、チームガイドライン
+**Task**: `agents/naming-requirements.md` を参照
 
-### Phase 3: 検証とドキュメント化
+### Phase 2: 規則設計と適用
 
-**目的**: 実装の品質を確認し、知見を記録・共有する
+**目的**: 命名パターンと構造を設計し、テストに適用する
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル適用の構造を検証
-2. テストコードの可読性と一貫性をレビュー
-3. `references/Level3_advanced.md` や `references/Level4_expert.md` で高度なパターンを確認（必要に応じて）
-4. `scripts/log_usage.mjs` で実行記録と成果を記録
-5. チーム向けナレッジドキュメント（命名ガイドラインなど）を作成
-6. 今後の改善点と学習成果を整理
+1. 命名パターンを選定する
+2. describe/it 構造とファイル命名を設計する
+3. テンプレートで規則を文書化する
 
-**出力**: 検証済みのテスト命名規則、チーム向けドキュメント、実行記録
+**Task**: `agents/naming-pattern-design.md` を参照
+
+### Phase 3: 検証と運用定着
+
+**目的**: 命名規則の遵守状況を検証し、運用に定着させる
+
+**アクション**:
+
+1. 自動チェックで逸脱を検出する
+2. レビュー観点を整理して共有する
+3. 実行記録を残す
+
+**Task**: `agents/naming-enforcement-review.md` を参照
+
+---
 
 ## Task仕様ナビ
 
-| Phase | Task               | 関連リソース                            | 出力物               | 検証方法       |
-| ----- | ------------------ | --------------------------------------- | -------------------- | -------------- |
-| 1     | 要件分析           | Level1_basics.md, requirements-index.md | スコープ定義書       | Check-list確認 |
-| 1     | フレームワーク確認 | Level2_intermediate.md                  | フレームワーク対応表 | パターン照合   |
-| 2     | パターン選択       | naming-patterns.md                      | パターン選択メモ     | 既存コード確認 |
-| 2     | describe/it 設計   | describe-structure.md                   | 構造定義書           | リンター検証   |
-| 2     | ファイル命名設計   | file-organization.md                    | ファイル命名規則     | ファイル名確認 |
-| 2     | 規則適用           | naming-guide.md template                | 修正済みテストコード | 手動レビュー   |
-| 2     | リンター実行       | test-name-linter.mjs script             | リント結果           | エラーなし     |
-| 3     | 構造検証           | validate-skill.mjs script               | 検証レポート         | 成功確認       |
-| 3     | ドキュメント作成   | Level3_advanced.md, Level4_expert.md    | チームガイド         | レビュー承認   |
-| 3     | 記録保存           | log_usage.mjs script                    | 使用ログ             | ログ確認       |
+| Task | 起動タイミング | 入力 | 出力 |
+| --- | --- | --- | --- |
+| naming-requirements | Phase 1 開始時 | プロジェクト情報 | 命名要件メモ |
+| naming-pattern-design | Phase 2 開始時 | 命名要件/制約 | 命名規則ガイド |
+| naming-enforcement-review | Phase 3 開始時 | チェック結果/レビュー | 改善レポート |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
+
+---
 
 ## ベストプラクティス
 
 ### すべきこと
 
-- **基礎から始める**: `references/Level1_basics.md` で基本原則を理解してから段階的に進める
-- **プロジェクト規模を考慮**: 小規模プロジェクトと大規模プロジェクトで異なるパターンを適用
-- **テストフレームワークに合わせる**: Jest、Vitest、Mocha など各フレームワークの特性に対応したパターンを選択
-- **チーム全体で標準化**: 個人的な好みではなく、チーム全体が遵守できる規則を設計
-- **自動検証を組み込む**: `test-name-linter.mjs` を CI パイプラインに統合
-- **段階的に改善**: 既存コードベースへの影響を最小化しながら段階的に改善
-- **ドキュメントを保守する**: 規則変更時は必ず関連ドキュメントも更新
-- **負例を共有**: アンチパターンや注意点を明記し、チームの学習を加速
+| 推奨事項 | 理由 |
+| --- | --- |
+| 命名の目的と対象範囲を先に定義する | 規則の過不足を防ぐため |
+| describe/it の階層を固定する | 役割が明確になるため |
+| テンプレートで運用ルールを共有する | チーム合意を維持するため |
+| 自動チェックで逸脱を検知する | 継続的な品質維持のため |
 
 ### 避けるべきこと
 
-- **規則なしに命名する**: テスト可読性は品質の基本。統一性なく名前を付けると後で大きな負債に
-- **言語ごとに異なる規則**: 同一プロジェクトで言語別に命名規則を変えると混乱を招く
-- **あいまいな describe ブロック**: describe ブロックは機能単位を明確に。何を描写しているか不明確は避ける
-- **過度に長いテスト名**: テスト名は説明的だが、100文字を超えるような過度な長さは避ける
-- **特殊文字や記号の乱用**: 統一されていない記号やアンダースコアの多用は混乱を招く
-- **ベストプラクティスの無視**: すでに確立したパターンを無視した独自規則は導入を避ける
-- **自動化ツールの未使用**: リンターやバリデータを使わずに手動チェックのみでは運用困難
+| 禁止事項 | 問題点 |
+| --- | --- |
+| 曖昧な動詞や主語を使う | テスト意図が伝わらない |
+| 過度に長いテスト名 | 可読性が低下する |
+| ファイル命名が不統一 | 探索性が下がる |
+
+---
 
 ## リソース参照
 
-### ガイドドキュメント
+### scripts/（決定論的処理）
 
-- **references/Level1_basics.md**: テスト命名の基本原則、基本パターン、はじめの一歩
-- **references/Level2_intermediate.md**: 実務的なテスト設計、ファイル組織、チーム標準化
-- **references/Level3_advanced.md**: 複雑なテスト構造、高度なパターン、スケーラブル設計
-- **references/Level4_expert.md**: フレームワーク最適化、自動化戦略、組織レベルの標準化
-- **references/naming-patterns.md**: 各テストフレームワーク別のパターンカタログ
-- **references/describe-structure.md**: describe/it ブロック構造のベストプラクティス
-- **references/file-organization.md**: テストファイルの組織とネーミング戦略
-- **references/requirements-index.md**: 要求仕様の索引（docs/00-requirements と同期）
+| スクリプト | 機能 |
+| --- | --- |
+| `scripts/test-name-linter.mjs` | 命名規則の逸脱を検出する |
+| `scripts/validate-skill.mjs` | スキル構造と必須成果物を検証する |
+| `scripts/log_usage.mjs` | 実行記録を保存する |
 
-### スクリプト・ツール
+### references/（詳細知識）
 
-- **scripts/test-name-linter.mjs**: テスト名の命名規則遵守を自動チェック
-- **scripts/validate-skill.mjs**: スキル適用の構造を検証、エラーを報告
-- **scripts/log_usage.mjs**: スキル使用記録を自動保存・評価
+| リソース | パス | 読込条件 |
+| --- | --- | --- |
+| 基礎概念 | [references/Level1_basics.md](references/Level1_basics.md) | Phase 1 で参照 |
+| 実務パターン | [references/Level2_intermediate.md](references/Level2_intermediate.md) | Phase 2 で参照 |
+| 応用戦略 | [references/Level3_advanced.md](references/Level3_advanced.md) | 高度化時に参照 |
+| エキスパート | [references/Level4_expert.md](references/Level4_expert.md) | 大規模対応時に参照 |
+| 命名パターン | [references/naming-patterns.md](references/naming-patterns.md) | Phase 2 で参照 |
+| describe 構造 | [references/describe-structure.md](references/describe-structure.md) | Phase 2 で参照 |
+| ファイル構成 | [references/file-organization.md](references/file-organization.md) | Phase 2 で参照 |
 
-### テンプレート・例
+### assets/（テンプレート・素材）
 
-- **assets/naming-guide.md**: 組織向けテスト命名ガイドラインのテンプレート
-- **references/legacy-skill.md**: 旧スキル定義（参考資料）
+| アセット | 用途 |
+| --- | --- |
+| `assets/naming-guide.md` | 命名規則ガイドのテンプレート |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                                                                                      |
-| ------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠。YAML frontmatter更新、日本語本文化、Task仕様ナビ追加、ワークフロー詳細化、ベストプラクティス充実 |
-| 1.0.0   | 2025-12-24 | 初期バージョン。基本構成とリソース参照を実装                                                                                 |
+| Version | Date | Changes |
+| --- | --- | --- |
+| 2.0.0 | 2026-01-02 | Task仕様と検証フローを再設計し、参照を整理 |
+| 1.0.0 | 2025-12-24 | 初期バージョン |

@@ -1,15 +1,17 @@
 ---
 name: sql-anti-patterns
 description: |
-  SQLアンチパターンの専門スキル。
-  N+1問題、デッドロック、非効率クエリの検出・回避を提供します。
+  SQLアンチパターンの検出・分析・改善提案を支援するスキル。
+  スキーマ設計レビュー、クエリ実装レビュー、パフォーマンス問題の診断と改善を行う。
 
   Anchors:
-  • 『SQLアンチパターン』（Bill Karwin）/ 適用: データベース設計 / 目的: パフォーマンス向上
-  • 『Designing Data-Intensive Applications』（Martin Kleppmann）/ 適用: データモデリング / 目的: スケーラビリティ向上
+  • SQL Antipatterns (Bill Karwin) / 適用: アンチパターンカタログ / 目的: 設計問題の体系的検出
+  • Database Design for Mere Mortals / 適用: 正規化とスキーマ設計 / 目的: 適切なデータモデリング
+  • Use The Index, Luke / 適用: インデックス最適化 / 目的: クエリパフォーマンス改善
 
   Trigger:
-  SQLアンチパターン検出時、データベース設計レビュー時、クエリ最適化時に使用
+  Use when reviewing database schema, detecting SQL anti-patterns, diagnosing performance issues, or planning schema refactoring.
+  sql anti-pattern, schema review, N+1, EAV, polymorphic associations, jaywalking, database design, query optimization
 allowed-tools:
   - Read
   - Write
@@ -19,107 +21,126 @@ allowed-tools:
   - Grep
 ---
 
-# SQL アンチパターン
+# SQLアンチパターン検出・改善
 
 ## 概要
 
-Bill Karwinの『SQLアンチパターン』に基づいて、データベース設計とクエリ実装の落とし穴（アンチパターン）を認識し、適切な解決策を提案するスキルです。スキーマ設計の矛盾、クエリパフォーマンスの問題、データ整合性の違反などを検出・改善します。
-
-詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
+スキーマやクエリのアンチパターンを特定し、影響度と優先度を整理した上で、
+改善案と移行計画を提示するスキル。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+```
+analyze-context → detect-patterns → evaluate-impact → plan-remediation → validate-changes
+```
 
-**目的**: タスクの目的と前提条件を明確にする
+### Phase 1: コンテキスト分析
 
-**アクション**:
-
-1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認してアンチパターンの分類を理解
-2. レビュー対象のスキーマ、クエリ、設計を特定
-3. 必要な references/scripts/templates を指定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従ってアンチパターン検出と改善を実施
+**目的**: 対象範囲と制約を整理する
 
 **アクション**:
 
-1. `references/anti-patterns-catalog.md` を参照してアンチパターンの詳細を把握
-2. `scripts/detect-anti-patterns.mjs` を実行してアンチパターン候補を自動検出
-3. 関連リソースやテンプレートを参照しながら改善案を作成
-4. 重要な判断点をメモとして残す
+1. 対象DBとバージョン、運用環境を確認する
+2. スキーマ定義（DDL、ORMスキーマ、ER図）を収集する
+3. 問題のクエリやログ、実行計画を収集する
+4. 目的と制約（性能目標、可用性、移行期間）を整理する
 
-### Phase 3: 検証と記録
+**Task**: `agents/context-analysis.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: アンチパターン検出
+
+**目的**: アンチパターンの候補を特定する
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 改善案がビジネス要件と設計原則に合致するか確認
-3. パフォーマンス影響を検証
-4. `scripts/log_usage.mjs` を実行して記録を残す
+1. `scripts/detect-anti-patterns.mjs` で自動検出を実行する
+2. `references/anti-patterns-catalog.md` で候補の定義と症状を確認する
+3. 直接の証拠がない指摘は「仮説」と明記する
+
+**Task**: `agents/anti-pattern-detection.md` を参照
+
+### Phase 3: 影響評価
+
+**目的**: 検出されたパターンの影響度を評価する
+
+**アクション**:
+
+1. 影響度（性能/整合性/運用）を分析する
+2. 移行コストを見積もる
+3. 優先順位を決定する
+
+**Task**: `agents/evaluate-impact.md` を参照
+
+### Phase 4: 改善計画
+
+**目的**: 具体的な改善案と移行計画を策定する
+
+**アクション**:
+
+1. 各アンチパターンに対する改善案を選定する
+2. トレードオフを整理する
+3. 移行・検証手順を策定する
+4. `assets/schema-review-checklist.md` を記入する
+
+**Task**: `agents/remediation-plan.md` を参照
 
 ## Task仕様ナビ
 
-| Task                   | 説明                                                        | 使用リソース                                     | 使用テンプレート           |
-| ---------------------- | ----------------------------------------------------------- | ------------------------------------------------ | -------------------------- |
-| **アンチパターン検出** | スキーマやクエリの既知のアンチパターンを識別                | Level1_basics.md, anti-patterns-catalog.md       | detect-anti-patterns.mjs   |
-| **スキーマレビュー**   | テーブル設計、正規化、主キー・外キー設計をレビュー          | Level2_intermediate.md, Level3_advanced.md       | schema-review-checklist.md |
-| **クエリ最適化提案**   | パフォーマンス低下、N+1問題、不適切なインデックス使用を検出 | Level2_intermediate.md, anti-patterns-catalog.md | detect-anti-patterns.mjs   |
-| **改善プラン作成**     | アンチパターン改善の具体的なステップと影響分析を記述        | Level3_advanced.md, Level4_expert.md             | schema-review-checklist.md |
+| Task                   | 起動タイミング | 入力                     | 出力               |
+| ---------------------- | -------------- | ------------------------ | ------------------ |
+| context-analysis       | Phase 1開始時  | DB情報、スキーマ、クエリ | コンテキスト整理書 |
+| anti-pattern-detection | Phase 2開始時  | コンテキスト整理書       | 検出結果レポート   |
+| evaluate-impact        | Phase 3開始時  | 検出結果レポート         | 影響評価レポート   |
+| remediation-plan       | Phase 4開始時  | 影響評価レポート         | 改善計画書         |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
 
-- `references/Level1_basics.md` を参照し、アンチパターンの分類と定義を理解する
-- `references/Level2_intermediate.md` を参照し、実務的な改善手順を整理する
-- `references/anti-patterns-catalog.md` でアンチパターンの詳細情報を確認する
-- スキーマレビューの際は `assets/schema-review-checklist.md` を使用
-- クエリ品質向上時は `scripts/detect-anti-patterns.mjs` を自動実行
-- Level3以上のリソースで応用的なアンチパターンも認識する
-- 複数のアンチパターンが相互に関連していないか確認
+| 推奨事項                     | 理由                       |
+| ---------------------------- | -------------------------- |
+| 証拠に基づいて指摘する       | 仮説と事実を明確に区別     |
+| 例外条件を先に確認する       | 誤検出を避ける             |
+| 影響度と移行コストを併記する | 優先順位判断の根拠を明確化 |
+| 段階的な移行計画を策定する   | リスク分散と検証機会の確保 |
+| テスト計画を含める           | 回帰バグの防止             |
 
 ### 避けるべきこと
 
-- アンチパターンの背景と原因を確認せずに改善を提案すること
-- ビジネス要件や既存の制約を無視した改善案を作成すること
-- パフォーマンス向上のみを優先し、保守性やスケーラビリティを無視すること
-- 簡単な修正案でなく、全体的な設計改善を検討しないこと
-- 正規化と非正規化のトレードオフを考慮しないこと
+| 禁止事項                       | 問題点                   |
+| ------------------------------ | ------------------------ |
+| 証拠なしの断定                 | 誤った判断を招く         |
+| 一括移行の強行                 | 障害リスクが高い         |
+| パフォーマンス計測なしの最適化 | 効果不明の作業になる     |
+| 例外ケースの無視               | 正当なユースケースを壊す |
+| 移行後の検証省略               | 問題の発見が遅れる       |
 
 ## リソース参照
 
-### Resources（リソース）
+### references/（詳細知識）
 
-| リソース                             | 説明                               | 用途               |
-| ------------------------------------ | ---------------------------------- | ------------------ |
-| `references/Level1_basics.md`         | アンチパターンの基礎分類と定義     | 初期学習、概念理解 |
-| `references/Level2_intermediate.md`   | 実務的な改善手順と事例             | 実装、意思決定     |
-| `references/Level3_advanced.md`       | 高度なアンチパターンと複合シナリオ | 高度な設計検討     |
-| `references/Level4_expert.md`         | エキスパートレベルの深掘り分析     | 専門的な最適化     |
-| `references/anti-patterns-catalog.md` | SQLアンチパターンの完全カタログ    | 参照、検索         |
-| `references/legacy-skill.md`          | 旧SKILL.mdの全文                   | 変更履歴確認       |
+| リソース               | パス                                                                       | 読込条件       |
+| ---------------------- | -------------------------------------------------------------------------- | -------------- |
+| アンチパターンカタログ | [references/anti-patterns-catalog.md](references/anti-patterns-catalog.md) | パターン確認時 |
 
-### Scripts（スクリプト）
+### scripts/（決定論的処理）
 
-| スクリプト                         | 説明                   | コマンド                                                                        |
-| ---------------------------------- | ---------------------- | ------------------------------------------------------------------------------- |
-| `scripts/detect-anti-patterns.mjs` | アンチパターン自動検出 | `node .claude/skills/sql-anti-patterns/scripts/detect-anti-patterns.mjs --help` |
-| `scripts/log_usage.mjs`            | 使用記録・自動評価     | `node .claude/skills/sql-anti-patterns/scripts/log_usage.mjs --help`            |
-| `scripts/validate-skill.mjs`       | スキル構造検証         | `node .claude/skills/sql-anti-patterns/scripts/validate-skill.mjs --help`       |
+| スクリプト                 | 機能                   | 使用例                                           |
+| -------------------------- | ---------------------- | ------------------------------------------------ |
+| `detect-anti-patterns.mjs` | アンチパターン自動検出 | `node scripts/detect-anti-patterns.mjs <schema>` |
+| `validate-skill.mjs`       | スキル構造検証         | `node scripts/validate-skill.mjs`                |
 
-### Templates（テンプレート）
+### assets/（テンプレート）
 
-| テンプレート                           | 説明                           | 参照コマンド                                                                |
-| -------------------------------------- | ------------------------------ | --------------------------------------------------------------------------- |
-| `assets/schema-review-checklist.md` | スキーマレビューチェックリスト | `cat .claude/skills/sql-anti-patterns/assets/schema-review-checklist.md` |
+| アセット                     | 用途                           |
+| ---------------------------- | ------------------------------ |
+| `schema-review-checklist.md` | スキーマレビューチェックリスト |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                                                                  |
-| ------- | ---------- | -------------------------------------------------------------------------------------------------------- |
-| 1.1.0   | 2025-12-31 | 18-skills.md仕様に完全準拠：YAML frontmatter(Anchor/Trigger)追加、Task仕様ナビ・リソース参照をテーブル化 |
-| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added                                                              |
+| Version | Date       | Changes                                         |
+| ------- | ---------- | ----------------------------------------------- |
+| 2.0.0   | 2026-01-03 | 18-skills.md仕様に完全準拠、Anchors/Trigger追加 |
+| 1.0.0   | 2025-12-28 | 初版作成                                        |

@@ -1,10 +1,13 @@
-# Task仕様書：SL-007 複合コンポーネントパターン
+# Task仕様書：SL-007 Compound Component設計
 
 ## 1. メタ情報
 
-- 名前: Ryan Florence
+| 項目 | 内容 |
+| --- | --- |
+| 名前 | Michael Chan |
+| 専門領域 | Reactコンポーネント設計 |
 
-> 注記: ここでの「名前」は思考様式の参照ラベル。本人を名乗らず、方法論のみ適用する。
+> 注記: 「名前」は思考様式の参照ラベル。本人を名乗らず、方法論のみ適用する。
 
 ---
 
@@ -12,18 +15,19 @@
 
 ### 2.1 背景
 
-Ryan FlorenceはReact Routerの共同作成者であり、Compound Componentパターンの普及に貢献しました。柔軟性と使いやすさを両立したコンポーネントAPI設計の専門家として知られています。
+ChanはCompound Componentパターンの普及に貢献し、コンポーネント間の状態共有を局所化する設計に強い。
 
 ### 2.2 目的
 
-Compound Componentパターンを使用して、複数の子コンポーネント間で暗黙的に状態を共有する実装を行います。親コンポーネントのContextを通じて状態を共有し、propsの明示的な受け渡しを不要にします。
+Compound Componentで状態共有を局所化し、柔軟なAPIを設計する。
 
 ### 2.3 責務
 
-- Compound Componentの親コンポーネント設計
-- 子コンポーネントの実装（Context経由で状態アクセス）
-- 柔軟なコンポーネント構成のサポート
-- TypeScript型定義と使用例の提供
+| 責務 | 成果物 |
+| --- | --- |
+| パターン設計 | コンポーネント設計案 |
+| API設計 | 使用例とprops設計 |
+| 再利用性確認 | 再利用性チェックリスト |
 
 ---
 
@@ -31,19 +35,12 @@ Compound Componentパターンを使用して、複数の子コンポーネン�
 
 ### 3.1 参考文献
 
-#### 書籍1
+| 書籍/ドキュメント | 適用方法 |
+| --- | --- |
+| Advanced React Patterns | Compound Componentの設計に適用する |
+| React Documentation - Composition | 合成の判断基準に適用する |
 
-- 書籍: React Patterns - Kent C. Dodds
-- 適用方法:
-  Compound Componentパターンの標準実装を適用。親がContextを提供し、子がContextから状態を取得するパターンを使用します。
-
-#### 書籍2
-
-- 書籍: Advanced React Component Patterns
-- 適用方法:
-  柔軟なコンポーネント構成（順序の自由度、条件付きレンダリング）をサポートする設計を適用します。
-
-> ルール: 詳細パターンは references/Level3_advanced.md を参照。テンプレートは assets/compound-component-template.md を使用。
+> 詳細は `references/Level3_advanced.md` と `references/Level4_expert.md` を参照する。
 
 ---
 
@@ -51,31 +48,30 @@ Compound Componentパターンを使用して、複数の子コンポーネン�
 
 ### 4.1 思考プロセス
 
-1. ステップ1: 親コンポーネント（Container）の責務を定義する
-2. ステップ2: 共有する状態をContextで定義する
-3. ステップ3: 子コンポーネント（Trigger、Content等）を実装する
-4. ステップ4: 各子コンポーネントがContext経由で状態にアクセスする実装を行う
-5. ステップ5: 親コンポーネントに子コンポーネントを静的プロパティとして追加する
-6. ステップ6: 使用例とドキュメントを作成する
+| ステップ | アクション |
+| --- | --- |
+| 1 | 共有状態を局所化する構成を決める |
+| 2 | 子コンポーネントの役割を定義する |
+| 3 | APIと使用例を設計する |
+| 4 | 拡張性と再利用性を確認する |
+| 5 | テンプレートに反映する |
 
 ### 4.2 チェックリスト
 
-- 項目: Context設計が適切か
-  - 基準: 必要最小限の状態のみをContextに含め、子コンポーネント間で共有している
-- 項目: 子コンポーネントが独立して動作するか
-  - 基準: 親コンポーネント外での使用時に適切なエラーメッセージを表示する
-- 項目: 柔軟な構成をサポートしているか
-  - 基準: 子コンポーネントの順序や存在に依存しない設計になっている
-- 項目: 出力検証: すべての必須項目が含まれているか
-  - 基準: 親コンポーネント、Context定義、子コンポーネント群、使用例が含まれている
-- 項目: 事実確認: 推測を事実として述べていないか
-  - 基準: パターンの利点については「可能性」または実例に基づいて説明
+| 項目 | 基準 |
+| --- | --- |
+| 役割分担 | 子コンポーネントの責務が明確 |
+| API明確化 | 使用例が提示されている |
+| 再利用性 | 他の画面で再利用可能 |
+| 出力検証 | すべての必須項目が含まれている |
+| 事実確認 | 推測には限定詞を使用している |
 
 ### 4.3 ビジネスルール（制約）
 
-- 内容: 子コンポーネントは親コンポーネントの静的プロパティとして公開する
-- 内容: Context外での使用時に明確なエラーメッセージを提供する
-- 内容: TypeScriptの型推論が効くように適切な型定義を行う
+| 制約 | 説明 |
+| --- | --- |
+| 局所化優先 | グローバル状態にしない |
+| 単一責務 | 1コンポーネント1責務を守る |
 
 ---
 
@@ -83,88 +79,30 @@ Compound Componentパターンを使用して、複数の子コンポーネン�
 
 ### 5.1 入力
 
-#### 入力1
-
-- データ名: コンポーネント設計要件
-- 提供元: 外部（ユーザー要件）
-- 検証ルール:
-  親子コンポーネントの責務分担、共有すべき状態が明確である
-- 拒否すべき入力:
-  単純なprops受け渡しで十分な要件（Compound Component不要）
-- 欠損時処理:
-  ユーザーに要件の詳細を確認する
-
-#### 入力2
-
-- データ名: 既存コンポーネント（任意）
-- 提供元: 外部（コードベース）
-- 検証ルール:
-  リファクタリング対象の既存コンポーネントコード
-- 拒否すべき入力:
-  構文エラーのあるコード
-- 欠損時処理:
-  新規に実装を作成する
+| データ名 | 提供元 | 検証ルール | 欠損時処理 |
+| --- | --- | --- | --- |
+| Context導入判断 | 外部 | 導入理由と範囲が明示されている | SL-005の再実行を依頼する |
+| UI要件 | 外部 | 必要な操作と状態が含まれる | 要件整理を依頼する |
 
 ### 5.2 出力
 
-#### 成果物1
+| 成果物名 | 受領先 | 内容 |
+| --- | --- | --- |
+| Compound Component設計 | 外部 | 構成、API、使用例 |
 
-- 成果物名: Compound Component実装コード
-- 受領先: 外部（コードベース）
-- 出力テンプレート:
+#### 出力テンプレート
 
-  ```typescript
-  // Context Definition
-  interface {{ComponentName}}ContextValue {
-    {{sharedState}}: {{types}};
-    {{sharedActions}}: {{functionTypes}};
-  }
+```markdown
+# Compound Component設計
 
-  const {{ComponentName}}Context = createContext<{{ComponentName}}ContextValue | undefined>(undefined);
+## 構成
+- {{components}}
 
-  // Parent Component
-  interface {{ComponentName}}Props {
-    children: ReactNode;
-    {{additionalProps}}?: {{types}};
-  }
+## API
+- {{api}}
 
-  function {{ComponentName}}Root({ children, {{additionalProps}} }: {{ComponentName}}Props) {
-    const [{{state}}, {{setState}}] = useState<{{StateType}}>({{initialValue}});
-
-    const value = useMemo(() => ({
-      {{state}},
-      {{actions}}
-    }), [{{dependencies}}]);
-
-    return (
-      <{{ComponentName}}Context.Provider value={value}>
-        {children}
-      </{{ComponentName}}Context.Provider>
-    );
-  }
-
-  // Child Components
-  function {{ComponentName}}{{ChildName}}({ {{props}} }: {{ChildProps}}) {
-    const context = useContext({{ComponentName}}Context);
-    if (context === undefined) {
-      throw new Error('{{ComponentName}}{{ChildName}} must be used within {{ComponentName}}');
-    }
-    // Use context.{{state}} and context.{{actions}}
-    return <div>{/* implementation */}</div>;
-  }
-
-  // Compound Component Export
-  export const {{ComponentName}} = Object.assign({{ComponentName}}Root, {
-    {{ChildName1}}: {{ComponentName}}{{ChildName1}},
-    {{ChildName2}}: {{ComponentName}}{{ChildName2}},
-  });
-
-  // Usage Example
-  // <{{ComponentName}}>
-  //   <{{ComponentName}}.{{ChildName1}} />
-  //   <{{ComponentName}}.{{ChildName2}} />
-  // </{{ComponentName}}>
-  ```
-
-- 内容:
-  親コンポーネント、Context定義、子コンポーネント群、静的プロパティ設定、使用例を含む完全な実装
+## 使用例
+```tsx
+{{example}}
+```
+```

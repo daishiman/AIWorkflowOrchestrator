@@ -1,139 +1,137 @@
 ---
 name: requirements-engineering
 description: |
-  カール・ウィーガーズの要求工学理論に基づく体系的な要件定義スキル。
-  ステークホルダーニーズを正確に把握し、曖昧性のない要件書を作成するための完全なワークフローを提供します。
+  カール・ウィーガーズの要求工学とIEEE 830に基づき、ステークホルダーニーズを抽出し、検証可能な要件に落とし込むための体系的なスキル。
+  スコープ定義、要件抽出、仕様化、品質検証、合意形成までの一貫プロセスを提供する。
 
   Anchors:
-  • 『Software Requirements』（Karl Wiegers）/ 適用: 要件工学 / 目的: 品質要件
-  • 『Don't Make Me Think』（Steve Krug）/ 適用: ユーザビリティ / 目的: 情報設計
+  • 『Software Requirements』（Karl Wiegers） / 適用: 要件工学 / 目的: 品質要件の明確化
+  • IEEE 830 / 適用: 要件仕様の構造 / 目的: 一貫したドキュメント化
+  • ISO/IEC 25010 / 適用: 非機能要件分類 / 目的: 品質特性の網羅
 
   Trigger:
-  要件エンジニアリング、要件分析プロセス、システム要件定義、ユーザーニーズ分析、ステークホルダーヒアリング時に使用
-version: 1.0.0
-level: 1
-last_updated: 2025-12-31
+  Use when defining system requirements, eliciting stakeholder needs, validating requirement quality, or drafting requirements documents.
 allowed-tools:
-  - mcp__claude-in-chrome__read_page
-  - mcp__claude-in-chrome__find
   - Read
+  - Write
+  - Edit
+  - Bash
   - Glob
   - Grep
-  - Bash
 ---
 
 # 要件エンジニアリング
 
 ## 概要
 
-カール・ウィーガーズの要求工学理論に基づく体系的な要件定義スキル。ステークホルダーニーズを正確に把握し、曖昧性のない要件書を作成するための完全なワークフローを提供します。
-
-- **要件分析**: ステークホルダーから潜在的なニーズを引き出す
-- **完全性検証**: 要件の漏れや矛盾を検出
-- **品質保証**: 曖昧性排除と優先度付けを実施
-
-詳細な手順や背景は`references/Level1_basics.md`と`references/Level2_intermediate.md`を参照してください。
+要件エンジニアリングの全工程（スコープ整理→要件抽出→仕様化→品質検証→合意形成）を、短いサイクルで反復できるように設計したスキル。
+詳細な手順は `references/` に段階的に分割し、実務では `assets/requirements-document.md` を基準として成果物を統一する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: スコープと前提の整理
 
-**目的**: タスク要件と適用範囲を明確にする
-
-**アクション**:
-
-1. ステークホルダーの一覧と期待値を整理
-2. プロジェクト制約（予算、スケジュール、リソース）を把握
-3. 既存の類似プロジェクト文書を参照
-
-### Phase 2: 要件定義と検証
-
-**目的**: 体系的に要件を抽出し、完全性と品質を検証する
+**目的**: 目的・範囲・制約・ステークホルダーを確定し、作業の起点を作る
 
 **アクション**:
 
-1. ステークホルダーヒアリングを実施
-2. `references/quality-criteria.md`で完全性をチェック
-3. `references/ambiguity-detection.md`で曖昧性を検出
-4. `assets/requirements-document.md`に基づいて要件書を作成
+1. 依頼背景とビジネス目的を確認する
+2. ステークホルダーの一覧と役割を整理する
+3. スコープ内/外を明示し、前提条件と制約を整理する
+4. 既存資料の所在を `references/requirements-index.md` で確認する
+5. 合意可能な成功指標を定義する
 
-### Phase 3: 検証と記録
+### Phase 2: 要件抽出（Elicitation）
 
-**目的**: 成果物の品質を確認し、実行記録を保存
+**目的**: ニーズと課題を収集し、要件候補を漏れなく集める
 
 **アクション**:
 
-1. `scripts/validate-requirements.mjs`で要件書を検証
-2. ステークホルダーによるレビューと承認取得
-3. `scripts/log_usage.mjs`で使用記録を記録
+1. ヒアリング/ワークショップ/観察の計画を立てる
+2. ステークホルダーの意図・問題・期待を記録する
+3. 機能要件/非機能要件の候補を分類する
+4. 衝突や重複を仮整理し、未確定事項を洗い出す
+
+### Phase 3: 要件仕様化
+
+**目的**: 要件を検証可能な形式に落とし込み、成果物を標準化する
+
+**アクション**:
+
+1. `assets/requirements-document.md` をベースに要件定義書を作成する
+2. 要件IDを付与し、FR/NFRを明確に区分する
+3. 受け入れ基準と依存関係を記述する
+4. 優先度やリスクを明記し、合意候補を整理する
+
+### Phase 4: 品質検証と合意
+
+**目的**: 要件の品質を検証し、レビューで合意を得る
+
+**アクション**:
+
+1. `references/quality-criteria.md` と `references/completeness-checklist.md` で品質確認
+2. `references/ambiguity-detection.md` で曖昧性を除去する
+3. `scripts/validate-requirements.mjs` で自動検証を行う
+4. レビュー結果を反映し、承認を取得する
+5. `scripts/log_usage.mjs` で実行記録を残す
 
 ## Task仕様ナビ
 
-| Task                   | 説明                                       | リソース                              | コマンド                                        |
-| ---------------------- | ------------------------------------------ | ------------------------------------- | ----------------------------------------------- |
-| **基礎学習**           | 要件エンジニアリングの基本原理と手法を習得 | `references/Level1_basics.md`          | `Read references/Level1_basics.md`               |
-| **実務手順**           | 実プロジェクトでの要件抽出・検証手順       | `references/Level2_intermediate.md`    | `Read references/Level2_intermediate.md`         |
-| **応用技法**           | 複雑な要件のモデリングと最適化             | `references/Level3_advanced.md`        | `Read references/Level3_advanced.md`             |
-| **専門知識**           | エキスパートレベルの戦略と設計パターン     | `references/Level4_expert.md`          | `Read references/Level4_expert.md`               |
-| **曖昧性検出**         | 要件内の曖昧性を体系的に検出               | `references/ambiguity-detection.md`    | `Read references/ambiguity-detection.md`         |
-| **完全性検証**         | 要件の漏れと矛盾を検出するチェックリスト   | `references/completeness-checklist.md` | `Read references/completeness-checklist.md`      |
-| **品質基準**           | 要件書の品質評価基準                       | `references/quality-criteria.md`       | `Read references/quality-criteria.md`            |
-| **トリアージ**         | 要件の優先度付けと分類フレームワーク       | `references/triage-framework.md`       | `Read references/triage-framework.md`            |
-| **要件テンプレート**   | 要件書の標準テンプレート                   | `assets/requirements-document.md`  | `Read assets/requirements-document.md`       |
-| **要件検証スクリプト** | 要件書の自動検証                           | `scripts/validate-requirements.mjs`   | `node scripts/validate-requirements.mjs <file>` |
-| **スキル検証**         | スキル構造の整合性確認                     | `scripts/validate-skill.mjs`          | `node scripts/validate-skill.mjs`               |
-| **使用記録**           | タスク実行の記録と評価                     | `scripts/log_usage.mjs`               | `node scripts/log_usage.mjs --help`             |
+| Phase   | Task                          | 入力                               | 出力                                     | リソース                                                  |
+| ------- | ----------------------------- | ---------------------------------- | ---------------------------------------- | --------------------------------------------------------- |
+| Phase 1 | scope-stakeholder-alignment   | 依頼背景、既存資料                 | スコープ定義、ステークホルダーマップ     | agents/scope-stakeholder-alignment.md                    |
+| Phase 2 | requirements-elicitation      | ステークホルダー一覧、前提条件     | 要件候補リスト、未確定事項               | agents/requirements-elicitation.md                       |
+| Phase 3 | requirements-specification    | 要件候補リスト、制約条件           | 要件定義書、要件ID一覧                   | agents/requirements-specification.md                     |
+| Phase 4 | requirements-quality-review   | 要件定義書、レビュー観点           | 品質レビュー結果、修正一覧               | agents/requirements-quality-review.md                    |
 
 ## ベストプラクティス
 
 ### すべきこと
 
-- 要件を抽出する前に、ステークホルダーの役割と期待値を明確に整理する
-- `references/Level1_basics.md`で基礎知識を確認してから実務に進む
-- `references/quality-criteria.md`を参考に、要件書の品質を定期的に検証する
-- 曖昧な用語や定義については、`references/ambiguity-detection.md`のパターンで検出する
-- `references/completeness-checklist.md`を使用して、要件の漏れをチェックする
-- ステークホルダーレビューを必ず実施し、承認を記録する
+1. **スコープの明確化**: スコープ内/外を初期に合意し、後続の混乱を防ぐ
+2. **多面的な要件抽出**: ヒアリング、観察、既存資料の3経路で要求を集める
+3. **IDと受け入れ基準の付与**: すべての要件にIDと検証条件を付ける
+4. **品質チェックの二重化**: 自動検証と手動チェックリストを併用する
+5. **合意と記録**: レビュー結果と修正履歴をログとして残す
 
 ### 避けるべきこと
 
-- 要件の抽出を急いで、完全性検証をスキップする
-- 単一のステークホルダーの意見のみに基づいて要件を決定する
-- 矛盾した要件を許容したまま進める
-- 曖昧性を検出しても解決せずに放置する
-- 優先度なしに全ての要件を同等に扱う
-- テンプレートを参考にしない自由形式の要件書を作成する
+1. **目的・前提の曖昧化**: 目的が定義されないまま要件を書き始める
+2. **単一ステークホルダー依存**: 1人の意見だけで要件を固定する
+3. **曖昧表現の放置**: 量的/質的曖昧性を残したまま合意しない
+4. **品質検証のスキップ**: チェックリストと自動検証のどちらかを省略する
+5. **承認記録の欠落**: 合意の証跡が残らない状態で実装へ進む
 
 ## リソース参照
 
 ### レベル別ガイド
 
-- **`references/Level1_basics.md`**: 要件エンジニアリングの基礎理論、FURPS+モデル、ユースケース分析の入門
-- **`references/Level2_intermediate.md`**: ステークホルダー調査、要件抽出テクニック、実務手順の詳細
-- **`references/Level3_advanced.md`**: 複雑な要件のモデリング、要件のトレーサビリティ、リスク分析
-- **`references/Level4_expert.md`**: エキスパートレベルの戦略、組織横断的な要件管理、進化的要件開発
+- **references/Level1_basics.md**: 基礎理論と最低限の運用指針
+- **references/Level2_intermediate.md**: リソース運用と実務プロセス
+- **references/Level3_advanced.md**: モデリング、トレーサビリティ、リスク分析
+- **references/Level4_expert.md**: フィードバックループと改善運用
 
 ### 特化リソース
 
-- **`references/ambiguity-detection.md`**: 曖昧な表現パターン、検出方法、解決アプローチ
-- **`references/completeness-checklist.md`**: 要件の完全性を確保するチェックリスト
-- **`references/quality-criteria.md`**: 要件書の品質評価基準とメトリクス
-- **`references/triage-framework.md`**: 要件の優先度付けと分類の標準フレームワーク
-- **`references/requirements-index.md`**: 要求仕様の索引（docs/00-requirements と同期）
-- **`references/legacy-skill.md`**: 旧SKILL.mdの全文
+- **references/ambiguity-detection.md**: 曖昧性パターンと除去技法
+- **references/completeness-checklist.md**: 要件の完全性チェックリスト
+- **references/quality-criteria.md**: 要件品質の評価基準
+- **references/triage-framework.md**: 要件の優先度付けフレームワーク
+- **references/requirements-index.md**: docs/00-requirements の索引
 
 ### テンプレート
 
-- **`assets/requirements-document.md`**: 要件書の標準テンプレート
+- **assets/requirements-document.md**: 要件定義書の標準テンプレート
 
 ### スクリプト
 
-- **`scripts/validate-requirements.mjs`**: 要件書の自動検証ツール
-- **`scripts/validate-skill.mjs`**: スキル構造の整合性確認
-- **`scripts/log_usage.mjs`**: タスク実行記録と自動評価
+- **scripts/validate-requirements.mjs**: 要件定義書の品質検証
+- **scripts/validate-skill.mjs**: スキル構造の整合性確認
+- **scripts/log_usage.mjs**: 使用記録と評価の更新
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                                       |
-| ------- | ---------- | ----------------------------------------------------------------------------- |
-| 1.0.0   | 2025-12-31 | 18-skills.md仕様に基づいた完全改定、Task仕様ナビの追加、Anchors/Triggerの統合 |
+| Version | Date       | Changes                                                                                 |
+| ------- | ---------- | --------------------------------------------------------------------------------------- |
+| 1.1.0   | 2026-01-02 | ワークフロー再設計、Task仕様ナビ追加、agents作成、参照パス整備、検証スクリプト更新 |
+| 1.0.0   | 2025-12-31 | 18-skills.md仕様に基づいた完全改定、Task仕様ナビの追加、Anchors/Triggerの統合           |

@@ -1,0 +1,77 @@
+{
+  "skill_name": "performance-testing",
+  "current_level": 2,
+  "levels": {
+    "1": {
+      "description": "基本的な負荷テストを実施し、ベースライン測定ができる",
+      "criteria": [
+        "SLOを定義できる",
+        "負荷テストツール（k6/JMeter）を設定できる",
+        "ベースライン測定を実施できる"
+      ]
+    },
+    "2": {
+      "description": "ストレステストを設計し、ボトルネックを特定できる",
+      "criteria": [
+        "適切なテストシナリオを設計できる",
+        "USE/REDメソッドでメトリクスを分析できる",
+        "ボトルネックコンポーネントを特定できる"
+      ]
+    },
+    "3": {
+      "description": "体系的なパフォーマンス最適化を実施できる",
+      "criteria": [
+        "プロファイリングツールを活用できる",
+        "データに基づいた最適化策を提案できる",
+        "最適化前後の効果を測定・報告できる"
+      ]
+    },
+    "4": {
+      "description": "大規模・分散システムのパフォーマンステストを統括できる",
+      "criteria": [
+        "複数環境での性能評価体制を構築できる",
+        "継続的なパフォーマンス監視を実現できる",
+        "チーム全体でパフォーマンステストプロセスを確立できる"
+      ]
+    }
+  },
+  "metrics": {
+    "total_usage_count": 0,
+    "success_count": 0,
+    "failure_count": 0,
+    "average_satisfaction": 0.0,
+    "last_evaluated": "2026-01-02T06:00:00Z",
+    "phase_metrics": {
+      "define_requirements": {
+        "count": 0,
+        "avg_duration_minutes": 0,
+        "success_rate": 0.0
+      },
+      "design_tests": {
+        "count": 0,
+        "avg_duration_minutes": 0,
+        "success_rate": 0.0
+      },
+      "execute_tests": {
+        "count": 0,
+        "avg_duration_minutes": 0,
+        "success_rate": 0.0
+      },
+      "analyze_bottlenecks": {
+        "count": 0,
+        "avg_duration_minutes": 0,
+        "success_rate": 0.0
+      },
+      "propose_optimizations": {
+        "count": 0,
+        "avg_duration_minutes": 0,
+        "success_rate": 0.0
+      }
+    }
+  },
+  "quality_indicators": {
+    "slo_achievement_rate": 0.0,
+    "bottleneck_detection_accuracy": 0.0,
+    "optimization_effectiveness": 0.0
+  }
+}

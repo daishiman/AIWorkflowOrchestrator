@@ -49,7 +49,7 @@ LLMアプリケーション開発の実践者であり、プロンプトイン�
 - 適用方法:
   多層防御（defense-in-depth）と失敗時安全（fail-secure）の原則を適用。単一の防御に依存せず、複数の独立した防御層を組み合わせる。
 
-> ルール: 詳細な実装パターンは `references/Level3_advanced.md` および `references/Level4_expert.md` を参照。
+> ルール: 詳細な実装パターンは `references/patterns.md` を参照。
 
 ---
 

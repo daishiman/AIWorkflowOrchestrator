@@ -1,98 +1,149 @@
 ---
-name: .claude/skills/railway-secrets-management/SKILL.md
+name: railway-secrets-management
 description: |
-  Railwayのシークレット管理と運用の指針を提供するスキル。
-  
-  📖 参照書籍:
-  - 『Web Application Security』（Andrew Hoffman）: 脅威モデリング
-  
-  📚 リソース参照:
-  - `references/Level1_basics.md`: レベル1の基礎ガイド
-  - `references/Level2_intermediate.md`: レベル2の実務ガイド
-  - `references/Level3_advanced.md`: レベル3の応用ガイド
-  - `references/Level4_expert.md`: レベル4の専門ガイド
-  - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
-  - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
-  - `references/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）
-  
-  Use proactively when managing secrets in Railway.
-version: 1.0.0
-level: 1
-last_updated: 2025-12-24
-references:
-  - book: "Web Application Security"
-    author: "Andrew Hoffman"
-    concepts:
-      - "脅威モデリング"
+  Railwayプラットフォーム上でのシークレット管理を専門とするスキル。環境変数設定、シークレットローテーション、アクセス制御を体系的に支援し、セキュアで運用しやすいデプロイメント環境を実現します。
+
+  Anchors:
+  • Web Application Security (Andrew Hoffman) / 適用: 脅威モデリングとリスク評価 / 目的: セキュアなシークレット管理設計
+  • Railway Documentation / 適用: Variables API・Service Variables / 目的: Railway固有機能の理解と活用
+  • The Twelve-Factor App / 適用: 環境変数による設定管理 / 目的: クラウドネイティブな設定パターン
+
+  Trigger:
+  Use when configuring Railway secrets, rotating credentials, designing access control, managing environment-specific variables, or implementing secure secret management practices on Railway platform.
+  Keywords: railway secrets, environment variables, secret rotation, railway variables api, service variables, railway security, credential management
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # Railway Secrets Management
 
 ## 概要
 
-Railwayのシークレット管理と運用の指針を提供するスキル。
-
-詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
-
+Railwayプラットフォーム上でのシークレット管理を専門とするスキル。環境変数の設定、シークレットのローテーション、アクセス制御の設計を通じて、セキュアで運用しやすいデプロイメント環境を実現します。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 設計・計画
 
-**目的**: タスクの目的と前提条件を明確にする
+**目的**: シークレット管理の要件を分析し、設定戦略を決定する
 
-**アクション**:
+**Task**: `agents/design-secret-strategy.md`
 
-1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
-2. 必要な references/scripts/templates を特定
+**入力**:
 
-### Phase 2: スキル適用
+- アプリケーションの環境構成（dev/staging/prod）
+- 必要なシークレットの種類（API Keys, DB credentials等）
+- アクセス制御要件
 
-**目的**: スキルの指針に従って具体的な作業を進める
+**出力**:
 
-**アクション**:
+- シークレット管理戦略書
+- 環境別設定マトリクス
+- ローテーションポリシー
+- 権限マトリクス
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+**実行タイミング**: Railway環境の初期セットアップ時、セキュリティ要件の見直し時
 
-### Phase 3: 検証と記録
+### Phase 2: 実装
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: Railway Variables APIを使用してシークレットを設定・管理する
 
-**アクション**:
+**Task**: `agents/implement-secrets.md`
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+**入力**:
 
+- Phase 1の設計書
+- 実際のシークレット値（セキュア管理下）
+- 環境識別子
+
+**出力**:
+
+- 設定済みのRailway Variables
+- 自動化スクリプト
+- 設定完了レポート
+
+**実行タイミング**: 初期セットアップ時、新規シークレット追加時
+
+### Phase 3: 運用・ローテーション
+
+**目的**: シークレットの定期的なローテーションとアクセス監査を実施する
+
+**Task**: `agents/rotate-and-audit.md`
+
+**入力**:
+
+- 既存のシークレット設定
+- ローテーションポリシー
+- アクセスログ
+
+**出力**:
+
+- ローテーション実施レポート
+- 監査レポート
+- 改善提案
+
+**実行タイミング**: 定期ローテーション時（90日ごと）、セキュリティインシデント後
+
+## Task仕様
+
+| Task                   | 起動タイミング | 入力                   | 出力                   |
+| ---------------------- | -------------- | ---------------------- | ---------------------- |
+| design-secret-strategy | Phase 1開始時  | アプリケーション要件   | シークレット管理戦略書 |
+| implement-secrets      | Phase 2開始時  | 設計書・シークレット値 | 設定完了レポート       |
+| rotate-and-audit       | Phase 3開始時  | ローテーションポリシー | 監査レポート           |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
+
+- [agents/design-secret-strategy.md](agents/design-secret-strategy.md)
+- [agents/implement-secrets.md](agents/implement-secrets.md)
+- [agents/rotate-and-audit.md](agents/rotate-and-audit.md)
 
 ## ベストプラクティス
 
 ### すべきこと
-- references/Level1_basics.md を参照し、適用範囲を明確にする
-- references/Level2_intermediate.md を参照し、実務手順を整理する
+
+- 環境ごとに異なるシークレットを使用する（dev/staging/prod分離）
+- シークレットをコードリポジトリにコミットしない
+- Railway Service Variablesを活用してサービス固有の設定を管理
+- 定期的なシークレットローテーションを実施（最低90日ごと）
+- アクセス権限を最小限に制限（Principle of Least Privilege）
+- シークレット変更時は監査ログを確認
 
 ### 避けるべきこと
-- アンチパターンや注意点を確認せずに進めることを避ける
 
-## コマンドリファレンス
+- ハードコードされたシークレットをソースコードに含める
+- 全環境で同一のシークレットを使い回す
+- ローテーション計画なしでシークレットを運用する
+- シークレットをプレーンテキストでログに出力する
+- 不要になったシークレットを削除せず放置する
 
-### リソース読み取り
-```bash
-cat .claude/skills/railway-secrets-management/references/Level1_basics.md
-cat .claude/skills/railway-secrets-management/references/Level2_intermediate.md
-cat .claude/skills/railway-secrets-management/references/Level3_advanced.md
-cat .claude/skills/railway-secrets-management/references/Level4_expert.md
-```
+## リソース参照
 
-### スクリプト実行
-```bash
-node .claude/skills/railway-secrets-management/scripts/log_usage.mjs --help
-node .claude/skills/railway-secrets-management/scripts/validate-skill.mjs --help
-```
+### references/（詳細知識）
+
+| リソース             | パス                                                                   | 内容                    |
+| -------------------- | ---------------------------------------------------------------------- | ----------------------- |
+| 基礎知識             | [references/Level1_basics.md](references/Level1_basics.md)             | Railway Variablesの基礎 |
+| 実務パターン         | [references/Level2_intermediate.md](references/Level2_intermediate.md) | 環境別設定パターン      |
+| ローテーション自動化 | [references/Level3_advanced.md](references/Level3_advanced.md)         | 自動化スクリプト設計    |
+| 高度なセキュリティ   | [references/Level4_expert.md](references/Level4_expert.md)             | エンタープライズ設計    |
+
+### scripts/（決定論的処理）
+
+| スクリプト           | 用途         | 使用例                                                       |
+| -------------------- | ------------ | ------------------------------------------------------------ |
+| `log_usage.mjs`      | 使用履歴記録 | `node scripts/log_usage.mjs --result success --phase design` |
+| `validate-skill.mjs` | 構造検証     | `node scripts/validate-skill.mjs`                            |
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| 1.0.0 | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                                 |
+| ------- | ---------- | ------------------------------------------------------- |
+| 3.0.0   | 2026-01-02 | 18-skills.md仕様完全準拠: agents/作成、ワークフロー強化 |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様準拠: Trigger英語化、Anchors追加        |
+| 1.0.0   | 2025-12-24 | 初版: 基本構造とリソース整備                            |

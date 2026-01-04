@@ -1,4 +1,4 @@
-# Level 2: Intermediate
+# レベル2: 中級
 
 ## 概要
 
@@ -14,13 +14,16 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 ## 詳細ガイド
 
 ### 必要な知識・情報
+
 - 主要トピック: JSON Schema 基礎 / スキーマのメタデータ / 必須メタデータ / OpenAPI連携 / OpenAPIとJSON Schemaの関係 / バージョン対応
 - 実務指針: OpenAPI/Swagger仕様でAPI定義を行う際 / 外部システムとのデータ交換フォーマット定義時 / 言語非依存のバリデーションルール定義時
 
 ### 判断基準と検証観点
+
 - 回避事項: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### リソース運用
+
 - `resources/json-schema-basics.md`: Draft 2020-12準拠の型システム、$ref参照、required/additionalProperties基礎（把握する知識: JSON Schema 基礎 / スキーマのメタデータ / 必須メタデータ）
 - `resources/openapi-integration.md`: OpenAPI 3.0/3.1のJSON Schema互換性、components定義、リクエスト/レスポンス分離（把握する知識: OpenAPI連携 / OpenAPIとJSON Schemaの関係 / バージョン対応）
 - `resources/requirements-index.md`: 要求仕様の索引（docs/00-requirements と同期）（把握する知識: REST API 設計原則 / 機能プラグイン追加手順）
@@ -29,14 +32,17 @@ resources/・scripts/・templates/ の活用を前提とした運用を整理し
 - `resources/legacy-skill.md`: 旧SKILL.mdの全文（把握する知識: JSON Schema / リソース構造 / リソース読み取り）
 
 ### スクリプト運用
+
 - `scripts/log_usage.mjs`: 使用記録・自動評価スクリプト
 - `scripts/validate-json-schema.mjs`: JSON Schemaの構文検証とDraft仕様準拠チェック
 - `scripts/validate-skill.mjs`: スキル構造検証スクリプト
 
 ### テンプレート運用
+
 - `templates/api-schema-template.json`: OpenAPI components/schemasセクション作成テンプレート
 
 ### 成果物要件
+
 - テンプレートの構成・必須項目を反映する
 
 ## 実践手順

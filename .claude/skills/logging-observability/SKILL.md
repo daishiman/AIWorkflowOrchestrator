@@ -1,17 +1,17 @@
 ---
 name: logging-observability
 description: |
-  構造化ログとオブザーバビリティの設計・実装スキル。
-  システムの可視化・監視・トラブルシューティングを実現します。
+  本番システム向け構造化ログとオブザーバビリティ設計スキル。Logs、Metrics、Tracesの3本柱を実装し、完全なシステム可視性を実現。
 
   Anchors:
-  • The Art of Monitoring (James Turnbull) / 適用: 監視戦略・メトリクス設計 / 目的: 効果的な監視システムの構築
-  • Observability Engineering (Charity Majors) / 適用: 構造化ログ・分散トレース / 目的: 高カーディナリティデータによるデバッグ
-  • Twelve-Factor App (logging as event streams) / 適用: ログ出力設計 / 目的: クラウドネイティブなログ管理
+  • 『Observability Engineering』(Charity Majors) / 適用: 高カーディナリティデバッグ / 目的: 根本原因分析
+  • 『The Art of Monitoring』(James Turnbull) / 適用: メトリクス戦略 / 目的: 効果的アラート
+  • Twelve-Factor App (Factor XI) / 適用: イベントストリームとしてのログ / 目的: クラウドネイティブロギング
+  • OpenTelemetry Specification / 適用: 計装 / 目的: ベンダー中立オブザーバビリティ
 
   Trigger:
-  Use when implementing logging, setting up observability, designing monitoring strategy, or troubleshooting production systems.
-  logging, observability, monitoring, structured logs, metrics, traces, debugging, troubleshooting, alerting, OpenTelemetry
+  Use when implementing logging, setting up observability, designing metrics/alerting,
+  integrating distributed tracing, or troubleshooting production systems.
 allowed-tools:
   - Read
   - Write
@@ -22,19 +22,24 @@ allowed-tools:
   - Task
 ---
 
-# logging-observability
+# Logging & Observability
+
+> **相対パス**: `SKILL.md`
+> **読込条件**: スキル使用時（自動）
+
+---
 
 ## 概要
 
 構造化ログとオブザーバビリティの設計・実装スキル。
-システムの可視化・監視・トラブルシューティングを実現する。
 
-**対象範囲**:
+**オブザーバビリティの3本柱**:
 
-- 構造化ログの設計と実装
-- メトリクス収集とアラート設定
-- 分散トレーシングの導入
-- ログ集約とクエリ戦略
+| 柱      | 用途                     | ツール例                        |
+| ------- | ------------------------ | ------------------------------- |
+| Logs    | イベント・エラー詳細記録 | Winston, Pino, Bunyan           |
+| Metrics | 集計データ・トレンド監視 | Prometheus, Datadog, CloudWatch |
+| Traces  | 分散リクエストフロー追跡 | Jaeger, Zipkin, OpenTelemetry   |
 
 ---
 
@@ -42,173 +47,99 @@ allowed-tools:
 
 ### Phase 1: ログ戦略設計
 
-**目的**: システムに適したログ戦略とオブザーバビリティ要件を定義
+**Task**: `agents/design-logging-strategy.md`
 
-**アクション**:
+| 入力                           | 出力                 |
+| ------------------------------ | -------------------- |
+| システム要件、アーキテクチャ図 | ログ戦略ドキュメント |
 
-1. システムアーキテクチャとログ要件を分析
-2. ログレベル・構造・保持期間を設計
-3. オブザーバビリティの3本柱（Logs/Metrics/Traces）の役割分担を明確化
-4. 必要なリソースレベル（Level 1-4）を判定
-
-**Task**: `agents/design-logging-strategy.md` を参照
-
-**入力**: システム要件、アーキテクチャ図
-**出力**: ログ戦略ドキュメント
+**参照**: `references/basics.md`
 
 ### Phase 2: 構造化ログ実装
 
-**目的**: 構造化ログの実装とログフォーマット標準化
+**Task**: `agents/implement-structured-logging.md`
 
-**アクション**:
+| 入力                 | 出力               |
+| -------------------- | ------------------ |
+| ログ戦略ドキュメント | 実装済みログコード |
 
-1. `assets/structured-log-template.json` でログ構造を確認
-2. `references/structured-logging-patterns.md` でパターンを参照
-3. ログライブラリ選定と設定
-4. コンテキスト伝播の実装（分散トレーシング対応）
-
-**Task**: `agents/implement-structured-logging.md` を参照
-
-**入力**: ログ戦略ドキュメント
-**出力**: 実装済みログコード、設定ファイル
+**参照**: `references/patterns.md`, `assets/structured-log.json`
 
 ### Phase 3: オブザーバビリティ設定
 
-**目的**: メトリクス収集・アラート・ダッシュボード構築
+**Task**: `agents/setup-observability.md`
 
-**アクション**:
+| 入力               | 出力                   |
+| ------------------ | ---------------------- |
+| 実装済みログコード | オブザーバビリティ設定 |
 
-1. `assets/observability-config-template.yaml` を使用
-2. `references/metrics-patterns.md` でメトリクス設計を確認
-3. アラートルールの定義
-4. ダッシュボードの構築
+**参照**: `references/patterns.md`, `assets/observability-config.yaml`
 
-**Task**: `agents/setup-observability.md` を参照
+### Phase 4: 検証
 
-**入力**: 実装済みログコード
-**出力**: オブザーバビリティ設定、ダッシュボード
+**Task**: `agents/validate-logging.md`
 
-### Phase 4: 検証と記録
-
-**目的**: ログ構造の検証と使用記録の保存
-
-**アクション**:
-
-1. `scripts/validate-log-structure.mjs` でログフォーマット検証
-2. ログクエリのテスト実施
-3. `scripts/log_usage.mjs` で使用記録を保存
-
-**Task**: `agents/validate-logging.md` を参照
-
-**入力**: オブザーバビリティ設定
-**出力**: 検証結果レポート
-
----
-
-## Task仕様ナビ
-
-| Task                         | 起動タイミング | 入力                         | 出力                             |
-| ---------------------------- | -------------- | ---------------------------- | -------------------------------- |
-| design-logging-strategy      | Phase 1開始時  | システム要件、アーキテクチャ | ログ戦略ドキュメント             |
-| implement-structured-logging | Phase 2開始時  | ログ戦略ドキュメント         | 実装済みログコード、設定ファイル |
-| setup-observability          | Phase 3開始時  | 実装済みログコード           | オブザーバビリティ設定           |
-| validate-logging             | Phase 4開始時  | オブザーバビリティ設定       | 検証結果レポート                 |
-
-**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
+| 入力                   | 出力             |
+| ---------------------- | ---------------- |
+| オブザーバビリティ設定 | 検証結果レポート |
 
 ---
 
 ## ベストプラクティス
 
-### すべきこと
-
-| 推奨事項                       | 理由                                           |
-| ------------------------------ | ---------------------------------------------- |
-| 構造化ログを使用               | 検索・集約・分析が容易                         |
-| コンテキストIDを含める         | 分散システムでのリクエスト追跡が可能           |
-| セマンティックなログレベル使用 | ERROR/WARN/INFO/DEBUGを適切に使い分ける        |
-| 機密情報をログに含めない       | セキュリティリスクとコンプライアンス違反を防ぐ |
-| ログローテーション設定         | ディスク容量枯渇を防ぐ                         |
-| メトリクスとログを相関付ける   | 問題の根本原因分析が迅速化                     |
-| 高カーディナリティに対応       | ユーザーID・リクエストIDなどで詳細分析が可能   |
-
-### 避けるべきこと
-
-| アンチパターン               | 問題点                                         |
-| ---------------------------- | ---------------------------------------------- |
-| プレーンテキストログ         | パースが困難、クエリ性能が低い                 |
-| 過剰なログ出力               | ノイズが多く重要な情報が埋もれる、コスト増加   |
-| ログレベルの誤用             | DEBUGでERRORレベル情報を出すなど、フィルタ困難 |
-| 個人情報のログ出力           | GDPR/プライバシー法違反のリスク                |
-| ローカルファイルのみへの出力 | コンテナ環境で消失、集約できない               |
-| サンプリングなしの高頻度ログ | ストレージコスト・性能劣化                     |
-| メトリクス名の非標準化       | 集約・比較が困難                               |
+| すべきこと                         | 避けるべきこと             |
+| ---------------------------------- | -------------------------- |
+| 構造化ログ (JSON) を使用           | プレーンテキストログ       |
+| コンテキストID (trace_id) を含める | ログレベルの誤用           |
+| 機密情報をマスキング               | 個人情報の平文出力         |
+| ログローテーション設定             | 無制限のログ出力           |
+| メトリクスとログを相関付け         | ローカルファイルのみへ出力 |
+| サンプリング戦略を検討             | 高頻度ログの無制限保持     |
 
 ---
 
-## リソース/スクリプト参照
+## Task ナビゲーション
 
-### References（必要時に読む）
-
-| ファイル                                    | 読むタイミング             | 内容                            |
-| ------------------------------------------- | -------------------------- | ------------------------------- |
-| `references/Level1_basics.md`               | 初めてログ設計する場合     | 基本概念と最小限の実装          |
-| `references/Level2_intermediate.md`         | 構造化ログを導入する場合   | 構造化ログとJSON形式            |
-| `references/Level3_advanced.md`             | 分散トレーシング導入時     | OpenTelemetry、コンテキスト伝播 |
-| `references/Level4_expert.md`               | 大規模本番環境での最適化時 | サンプリング、高可用性設計      |
-| `references/structured-logging-patterns.md` | ログフォーマット標準化時   | 各言語のベストプラクティス      |
-| `references/metrics-patterns.md`            | メトリクス設計時           | RED/USE/Four Golden Signals     |
-| `references/alerting-strategies.md`         | アラート設定時             | アラート疲労防止、SLO設計       |
-| `references/log-aggregation.md`             | ログ集約システム構築時     | ELK/Loki/CloudWatchの比較       |
-
-### Scripts
-
-| スクリプト                           | 用途                 | 引数                       |
-| ------------------------------------ | -------------------- | -------------------------- |
-| `scripts/validate-log-structure.mjs` | ログ構造の妥当性検証 | `--file <log-file>`        |
-| `scripts/log_usage.mjs`              | 使用記録の保存       | `--result --phase --notes` |
-
-### Assets（出力で使用）
-
-| ファイル                                    | 用途                                 |
-| ------------------------------------------- | ------------------------------------ |
-| `assets/structured-log-template.json`       | 構造化ログのJSONスキーマテンプレート |
-| `assets/observability-config-template.yaml` | オブザーバビリティ設定テンプレート   |
-| `assets/log-rotation-config.yaml`           | ログローテーション設定例             |
-| `assets/alert-rules-template.yaml`          | アラートルールテンプレート           |
+| Task                              | 目的                                 | 参照リソース          |
+| --------------------------------- | ------------------------------------ | --------------------- |
+| `design-logging-strategy.md`      | ログレベル・構造・保持期間設計       | `basics.md`           |
+| `implement-structured-logging.md` | 構造化ログ実装                       | `patterns.md`, assets |
+| `setup-observability.md`          | メトリクス・アラート・ダッシュボード | `patterns.md`         |
+| `validate-logging.md`             | ログ構造検証・クエリテスト           | scripts               |
 
 ---
 
-## 進行状況の確認
+## リソース参照
 
-現在のスキルレベルと使用統計は `EVALS.json` を参照。
-使用履歴とフィードバックは `LOGS.md` に記録される。
+### References
 
----
+| ファイル      | 内容                                   | 読込条件   |
+| ------------- | -------------------------------------- | ---------- |
+| `basics.md`   | ログレベル・構造化ログ基礎・用語       | 初回使用時 |
+| `patterns.md` | 実装パターン・メトリクス設計・アラート | 実装時     |
 
-## よくある質問
+### Assets
 
-**Q: どのログレベルをいつ使うべきか？**
-
-A: `references/Level1_basics.md` のログレベルガイドラインを参照。基本方針：
-
-- ERROR: 即座の対応が必要
-- WARN: 注意が必要だが動作は継続
-- INFO: 重要なビジネスイベント
-- DEBUG: 開発時の詳細情報
-
-**Q: 構造化ログとプレーンテキストログの違いは？**
-
-A: `references/Level2_intermediate.md` を参照。構造化ログはJSON等の形式で、キー・バリューで検索・集約が容易。
-
-**Q: OpenTelemetryとは何か？どう使うか？**
-
-A: `references/Level3_advanced.md` を参照。標準化された計装ライブラリで、Logs/Metrics/Tracesを統合管理。
-
-**Q: 本番環境でログが多すぎてコストが高い。どうすべきか？**
-
-A: `references/Level4_expert.md` のサンプリング戦略を参照。ヘッドベース/テールベースサンプリングで重要なログのみ保持。
+| ファイル                    | 内容                                |
+| --------------------------- | ----------------------------------- |
+| `structured-log.json`       | 構造化ログ JSON スキーマ            |
+| `observability-config.yaml` | Prometheus/Grafana 設定テンプレート |
 
 ---
 
-_最終更新: 2025-12-31_
+## ログレベルガイド
+
+| レベル | 使用基準               | 例                            |
+| ------ | ---------------------- | ----------------------------- |
+| ERROR  | 即座の対応が必要       | 未処理例外、サービス障害      |
+| WARN   | 注意が必要だが動作継続 | 遅延警告、リトライ発生        |
+| INFO   | 重要なビジネスイベント | リクエスト開始/完了、処理成功 |
+| DEBUG  | 開発時の詳細情報       | パラメータ値、中間状態        |
+
+---
+
+## 関連スキル
+
+- `log-rotation-strategies` - ログローテーション設定
+- `error-handling-patterns` - エラーハンドリング戦略
+- `metrics-tracking` - メトリクス収集

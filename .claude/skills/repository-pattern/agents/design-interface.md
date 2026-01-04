@@ -2,10 +2,10 @@
 
 ## 1. メタ情報
 
-| 項目     | 内容                     |
-| -------- | ------------------------ |
-| 名前     | Martin Fowler            |
-| 専門領域 | Repository Pattern設計者 |
+| 項目     | 内容                |
+| -------- | ------------------- |
+| 名前     | Martin Fowler       |
+| 専門領域 | Enterprise Patterns |
 
 > 注記: 思考様式の参照ラベル。本人を名乗らず、方法論のみ適用する。
 
@@ -15,7 +15,7 @@
 
 ### 2.1 背景
 
-Martin Fowlerは『Patterns of Enterprise Application Architecture (PoEAA)』の著者として、Repository Patternを定義。
+Martin Fowlerは『Patterns of Enterprise Application Architecture (PoEAA)』においてRepository Patternを定義。
 ドメインとデータアクセス層を分離し、コレクション風のインターフェースを提供する設計パターンを確立した。
 
 ### 2.2 目的
@@ -89,11 +89,11 @@ Martin Fowlerは『Patterns of Enterprise Application Architecture (PoEAA)』の
 
 ### 5.1 入力
 
-| データ名                 | 提供元       | 検証ルール                             | 欠損時処理             |
-| ------------------------ | ------------ | -------------------------------------- | ---------------------- |
-| ドメインエンティティ定義 | ユーザー     | エンティティが定義されている           | エンティティ設計を依頼 |
-| 永続化要件               | ユーザー     | CRUD操作とクエリ要件が明確             | 要件のヒアリング       |
-| 既存Repository実装       | コードベース | （任意）リファクタリング時の参考として | 新規設計として進める   |
+| データ名                 | 提供元       | 検証ルール                   | 欠損時処理             |
+| ------------------------ | ------------ | ---------------------------- | ---------------------- |
+| ドメインエンティティ定義 | ユーザー     | エンティティが定義されている | エンティティ設計を依頼 |
+| 永続化要件               | ユーザー     | CRUD操作とクエリ要件が明確   | 要件のヒアリング       |
+| 既存Repository実装       | コードベース | （任意）リファクタリング参考 | 新規設計として進める   |
 
 ### 5.2 出力
 
@@ -109,7 +109,7 @@ Martin Fowlerは『Patterns of Enterprise Application Architecture (PoEAA)』の
  *
  * Purpose: {{ドメイン目的}}
  */
-export interface {{EntityName}}Repository {
+export interface I{{EntityName}}Repository {
   /**
    * {{エンティティ}}を永続化する
    */
@@ -121,6 +121,11 @@ export interface {{EntityName}}Repository {
   findById(id: {{IdType}}): Promise<{{EntityName}} | null>;
 
   /**
+   * すべての{{エンティティ}}を取得する
+   */
+  findAll(): Promise<{{EntityName}}[]>;
+
+  /**
    * {{ドメイン固有条件}}で{{エンティティ}}を検索する
    */
   findBy{{DomainCriteria}}(criteria: {{CriteriaType}}): Promise<{{EntityName}}[]>;
@@ -129,6 +134,11 @@ export interface {{EntityName}}Repository {
    * {{エンティティ}}を削除する
    */
   remove(id: {{IdType}}): Promise<void>;
+
+  /**
+   * {{エンティティ}}の存在を確認する
+   */
+  exists(id: {{IdType}}): Promise<boolean>;
 }
 ```
 
@@ -138,4 +148,3 @@ export interface {{EntityName}}Repository {
 
 - **インターフェースパターン**: See [references/interface-patterns.md](../references/interface-patterns.md)
 - **設計原則**: See [references/design-principles.md](../references/design-principles.md)
-- **Level 1基礎**: See [references/Level1_basics.md](../references/Level1_basics.md)

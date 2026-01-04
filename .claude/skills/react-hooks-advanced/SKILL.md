@@ -1,13 +1,19 @@
 ---
 name: react-hooks-advanced
 description: |
-  React Hooksの高度な使用パターンと最適化技術を専門とするスキル。ダン・アブラモフの思想に基づき、予測可能で効率的な状態管理を実現します。
+  React Hooksの高度な使用パターンと最適化技術を専門とするスキル。
+  useEffect依存配列、メモ化戦略、カスタムフック設計、useReducerパターンを提供し、
+  予測可能で効率的な状態管理を実現。
 
   Anchors:
-  • 『React公式Documentation』（Meta） / 適用: Hooks設計 / 目的: パフォーマンス最適化
+  • React公式ドキュメント（Meta）/ 適用: Hooks設計 / 目的: 公式パターン準拠
+  • 『Learning React』（Banks/Porcello）/ 適用: コンポーネント設計 / 目的: 実践的なHooks活用
+  • Dan Abramovのブログ / 適用: useEffect思想 / 目的: 依存配列の完全性原則
 
   Trigger:
-  React Hooks高度化時、カスタムフック設計時、状態管理最適化時、パフォーマンス改善時に使用。useEffect依存配列設計、メモ化戦略検討、複雑な状態ロジック実装時に自動呼び出し。
+  Use when optimizing React hooks, designing custom hooks, implementing useReducer patterns, fixing useEffect dependency issues, or applying memoization strategies.
+  react hooks, useEffect, useCallback, useMemo, useReducer, custom hook, dependency array, memoization
+
 allowed-tools:
   - Read
   - Write
@@ -21,103 +27,120 @@ allowed-tools:
 
 ## 概要
 
-React Hooksの高度な使用パターンと最適化技術を専門とするスキル。ダン・アブラモフの思想に基づき、予測可能で効率的な状態管理を実現します。
-
-このスキルは、React開発者が複雑な状態管理、パフォーマンス最適化、カスタムフック設計を行う際に活用されます。useEffect の依存配列完全性原則、メモ化戦略の測定駆動的な適用、useReducer による複雑な状態ロジックの実装などを対象としています。
+React Hooksの高度な使用パターンと最適化技術を専門とするスキル。ダン・アブラモフの思想に基づき、依存配列の完全性原則、測定駆動のメモ化戦略、カスタムフック設計を通じて、予測可能で効率的な状態管理を実現します。
 
 ## ワークフロー
 
-### Phase 1: 要件の整理と現状分析
+### Phase 1: 現状分析
 
-**目的**: タスクの要件を明確にし、現在のコード状況を分析する
-
-**アクション**:
-
-1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
-2. 対象となるHooksパターン（useEffect, useCallback, useMemo, useReducer など）を特定
-3. 現在のコード実装を確認し、アンチパターンの有無をチェック
-
-### Phase 2: スキル適用と実装
-
-**目的**: スキルの指針に従って具体的な実装を進める
+**目的**: 現在のHooks使用状況を分析し問題点を特定する
 
 **アクション**:
 
-1. 対応するレベルのリソース（Level 1-4）を参照しながら実装を実施
-2. テンプレート（`assets/custom-hook-template.md` など）を活用して一貫性を確保
-3. 依存配列、メモ化戦略などの重要な判断点をコメントとして記録
+1. 対象コンポーネントのHooks使用状況を確認
+2. ESLint（react-hooks/exhaustive-deps）警告を確認
+3. パフォーマンス問題の有無をReact DevToolsで測定
 
-### Phase 3: 検証と最適化
+**Task**: `agents/analyze-hooks.md` を参照
 
-**目的**: 成果物の品質確認と記録の保存
+### Phase 2: 依存配列設計
+
+**目的**: useEffect/useCallback/useMemoの依存配列を適切に設計する
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造と依存配列の完全性を確認
-2. `scripts/analyze-hooks-usage.mjs` でHooks使用状況を分析
-3. `scripts/log_usage.mjs` を実行して実装記録を保存
+1. 依存配列の完全性原則を適用
+2. 古いクロージャ問題の回避パターンを適用
+3. 無限ループ発生パターンを排除
+
+**Task**: `agents/design-dependencies.md` を参照
+
+### Phase 3: メモ化戦略
+
+**目的**: 測定に基づいた適切なメモ化を実装する
+
+**アクション**:
+
+1. React.memo、useCallback、useMemoの適用判断
+2. Profilerで再レンダリング頻度を測定
+3. 実際のパフォーマンス改善を確認
+
+**Task**: `agents/apply-memoization.md` を参照
+
+### Phase 4: カスタムフック設計
+
+**目的**: 再利用可能なカスタムフックを設計する
+
+**アクション**:
+
+1. 抽出すべきロジックを特定
+2. 単一責任でカスタムフックを設計
+3. テスト可能な形で実装
+
+**Task**: `agents/design-custom-hooks.md` を参照
 
 ## Task仕様ナビ
 
-| Task                    | 対象Hooks                        | リソース                       | テンプレート              |
-| ----------------------- | -------------------------------- | ------------------------------ | ------------------------- |
-| useEffectの依存配列設計 | useEffect                        | `dependency-array-patterns.md` | なし                      |
-| メモ化戦略の検討・実装  | useCallback, useMemo, React.memo | `memoization-strategies.md`    | なし                      |
-| カスタムフック開発      | 複数（useState等の組み合わせ）   | `Level2_intermediate.md`       | `custom-hook-template.md` |
-| 複雑な状態管理          | useReducer                       | `use-reducer-patterns.md`      | `use-reducer-template.md` |
-| Hooks選択ガイダンス     | 全般                             | `hooks-selection-guide.md`     | なし                      |
-| 要求仕様確認            | 全般                             | `requirements-index.md`        | なし                      |
+| Task                | 起動タイミング | 入力               | 出力           |
+| ------------------- | -------------- | ------------------ | -------------- |
+| analyze-hooks       | Phase 1開始時  | 対象コンポーネント | 分析レポート   |
+| design-dependencies | Phase 2開始時  | 分析レポート       | 依存配列設計書 |
+| apply-memoization   | Phase 3開始時  | パフォーマンス計測 | メモ化実装     |
+| design-custom-hooks | Phase 4開始時  | 共通ロジック       | カスタムフック |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
 
-- React Hooksの最適な使い分けを判断する際、このスキルを活用する
-- useEffectの依存配列は ESLint ルール(`react-hooks/exhaustive-deps`)に準拠する
-- パフォーマンス最適化は測定駆動的に行い、実際の問題がある場合のみメモ化を適用する
-- 複雑な状態ロジックには useReducer を活用する
-- カスタムフック開発時にはテンプレートを参考に一貫性を保つ
-- 依存配列の完全性原則を理解し、古いクロージャ問題を回避する
+| 推奨事項                           | 理由                       |
+| ---------------------------------- | -------------------------- |
+| ESLint exhaustive-depsルールに従う | 古いクロージャ問題を防止   |
+| メモ化は測定してから適用           | 無駄なオーバーヘッドを回避 |
+| 複雑な状態にはuseReducerを使用     | 状態遷移の予測可能性向上   |
+| カスタムフックで共通ロジックを抽出 | 再利用性と可読性向上       |
+| useCallbackの依存配列を最小化      | 不要な再生成を防止         |
 
 ### 避けるべきこと
 
-- アンチパターンや注意点を確認せずに進めることを避ける
-- 無差別なメモ化（性能測定なしでの過度な最適化）
-- 依存配列から意図的に値を除外する（ESLint ルール無視）
-- useCallback や useMemo の過度な使用（メモ化自体が性能コストになる可能性）
-- useEffect 内での無限ループ発生（依存配列の不完全性）
+| 禁止事項                       | 問題点                               |
+| ------------------------------ | ------------------------------------ |
+| 依存配列から値を意図的に除外   | 古いクロージャ、予測不能な動作       |
+| 無差別なメモ化                 | メモ化自体がコストになる             |
+| useEffect内での無限ループ      | パフォーマンス劣化、クラッシュ       |
+| eslint-disable-next-lineの多用 | 本質的な問題を隠蔽                   |
+| useRefで依存配列を回避         | 警告を抑制するだけで問題解決にならず |
 
 ## リソース参照
 
-### Levelsリソース
+### references/（詳細知識）
 
-- `references/Level1_basics.md` - React Hooks の基礎と基本パターン
-- `references/Level2_intermediate.md` - 実務的なHooks活用パターン
-- `references/Level3_advanced.md` - 高度なパターンと最適化テクニック
-- `references/Level4_expert.md` - 専門的な設計思想と複雑なシナリオ対応
+| リソース         | パス                                                                               | 読込条件       |
+| ---------------- | ---------------------------------------------------------------------------------- | -------------- |
+| 依存配列パターン | [references/dependency-array-patterns.md](references/dependency-array-patterns.md) | 依存配列設計時 |
+| メモ化戦略       | [references/memoization-strategies.md](references/memoization-strategies.md)       | メモ化検討時   |
+| useReducer       | [references/use-reducer-patterns.md](references/use-reducer-patterns.md)           | 複雑状態管理時 |
+| Hooks選択ガイド  | [references/hooks-selection-guide.md](references/hooks-selection-guide.md)         | Hooks選択時    |
 
-### トピック別リソース
+### scripts/（決定論的処理）
 
-- `references/dependency-array-patterns.md` - 依存配列の完全性原則、ESLint準拠、無限ループと古いクロージャ問題の解決法
-- `references/hooks-selection-guide.md` - 状況に応じた最適なHooks選択ガイド
-- `references/memoization-strategies.md` - useCallback/useMemo/React.memo の測定駆動最適化と効果的パターン
-- `references/use-reducer-patterns.md` - useReducer による複雑な状態管理パターン
-- `references/requirements-index.md` - 要求仕様の索引（docs/00-requirements と同期）
-- `references/legacy-skill.md` - 旧SKILL.md の全文（参考用）
+| スクリプト                        | 機能                 |
+| --------------------------------- | -------------------- |
+| `scripts/analyze-hooks-usage.mjs` | Hooks使用状況の分析  |
+| `scripts/log_usage.mjs`           | スキル使用履歴の記録 |
 
-### アセット（テンプレート）
+### assets/（テンプレート）
 
-- `assets/custom-hook-template.md` - カスタムフック開発用テンプレート
-- `assets/use-reducer-template.md` - useReducer パターン用テンプレート
-
-### スクリプト
-
-- `scripts/analyze-hooks-usage.mjs` - React Hooks使用状況分析ツール
-- `scripts/validate-skill.mjs` - スキル構造と依存配列完全性の検証
-- `scripts/log_usage.mjs` - 使用記録・自動評価スクリプト
+| アセット                         | 用途                   |
+| -------------------------------- | ---------------------- |
+| `assets/custom-hook-template.md` | カスタムフック開発雛形 |
+| `assets/use-reducer-template.md` | useReducerパターン雛形 |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                                    |
-| ------- | ---------- | -------------------------------------------------------------------------- |
-| 1.0.0   | 2025-12-31 | 18-skills.md 仕様対応: frontmatter更新、Task仕様ナビ追加、リソース参照整理 |
+| Version | Date       | Changes                                    |
+| ------- | ---------- | ------------------------------------------ |
+| 3.1.0   | 2026-01-02 | agents/追加（4エージェント体制確立）       |
+| 3.0.0   | 2026-01-02 | 18-skills.md仕様完全準拠、ワークフロー改善 |
+| 1.0.0   | 2025-12-31 | 初版                                       |

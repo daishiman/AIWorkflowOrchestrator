@@ -616,6 +616,13 @@
 - model: sonnet
 - トリガーキーワード: pull request, pr, create pr, プルリクエスト作成, レビュー依頼
 
+### .claude/commands/ai/diff-to-pr.md
+
+- 目的: 差分からPR作成までの完全なGitワークフローを実行するコマンド。ブランチ作成 → コミット → PR作成 → PRコメント追加 → CI確認まで自動化。
+- 引数: [branch-name]
+- model: sonnet
+- トリガーキーワード: diff to pr, 差分からpr, マージ準備, pr作成ワークフロー
+
 ### .claude/commands/ai/merge-pr.md
 
 - 目的: GitHub Pull Requestのマージを安全に実行するシンプルなコマンド。

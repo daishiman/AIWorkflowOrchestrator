@@ -1,14 +1,16 @@
 ---
 name: orm-best-practices
 description: |
-  ORMベストプラクティスの専門スキル。
-  エンティティ設計、リレーション管理、パフォーマンス最適化を提供します。
+  ORMベストプラクティスの専門スキル。Drizzle ORMを活用したエンティティ設計、リレーション管理、パフォーマンス最適化を提供します。
 
-Anchors: |
-  • 『Designing Data-Intensive Applications』（Martin Kleppmann）/ 適用: ORMベストプラクティス / 目的: 型安全なスキーマ定義とパフォーマンス最適化
+  Anchors:
+  • Designing Data-Intensive Applications (Martin Kleppmann) / 適用: データモデリング / 目的: 型安全なスキーマ定義とパフォーマンス最適化
+  • Drizzle ORM Documentation / 適用: TypeScript ORM / 目的: 型推論とクエリビルダーの活用
+  • High Performance MySQL (Baron Schwartz) / 適用: クエリ最適化 / 目的: N+1問題とインデックス戦略
 
-Trigger: |
-  ORMベストプラクティス適用時、データモデル設計時、N+1問題解決時、スキーマ定義時に使用
+  Trigger:
+  Use when defining Drizzle ORM schemas, mapping entity relationships, optimizing database queries, solving N+1 problems, or implementing type-safe data access patterns.
+  ORM, Drizzle, schema, relation, N+1, query builder, type-safe, entity mapping
 
 allowed-tools:
   - Read
@@ -25,54 +27,55 @@ allowed-tools:
 
 Drizzle ORMを活用したデータベース操作のベストプラクティスを提供するスキル。型安全なスキーマ定義、クエリビルダーの効果的な使用、パフォーマンスを考慮した実装パターンを提供します。このスキルはデータベース設計段階から運用まで、ORMの最適な活用方法をガイドします。
 
-詳細な手順や背景は `references/Level1_basics.md`（基礎）、`references/Level2_intermediate.md`（実務）、`references/Level3_advanced.md`（応用）、`references/Level4_expert.md`（専門）を参照してください。
+詳細な手順や背景は `references/basics.md` を参照してください。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: スキーマ設計
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `references/Level1_basics.md` と `references/Level2_intermediate.md` で基礎知識を確認
-2. タスクに必要なリソース（テンプレート、パターンガイド）を特定
-3. 現在のスキーマや実装体制を把握
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 型安全なスキーマ定義とリレーション設計
 
 **アクション**:
 
-1. 関連リソース（`references/*.md`）やテンプレート（`assets/*.md`）を参照
-2. パフォーマンスパターン、クエリビルダーパターン、リレーション設定を検討
-3. 型安全性とスキーマ整合性を確保しながら実装
-4. 重要な判断点をメモとして記録
+1. `references/basics.md` でDrizzle ORM基礎を確認
+2. `references/schema-definition.md` でテーブル定義パターンを参照
+3. `references/relation-mapping.md` でリレーション設計を検討
 
-### Phase 3: 検証と記録
+**Task**: `agents/design-schema.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: クエリ実装
+
+**目的**: パフォーマンスを考慮したクエリ構築
+
+**アクション**:
+
+1. `references/query-builder-patterns.md` でクエリパターンを確認
+2. `references/performance-patterns.md` でN+1問題対策を検討
+3. 型安全なクエリビルダーを実装
+
+**Task**: `agents/implement-queries.md` を参照
+
+### Phase 3: 検証と最適化
+
+**目的**: スキーマとクエリの品質確保
 
 **アクション**:
 
 1. `scripts/validate-schema.mjs` でスキーマの型安全性を確認
-2. `scripts/validate-skill.mjs` でスキル構造全体を検証
-3. 成果物が目的に合致するか確認
-4. `scripts/log_usage.mjs` を実行して使用記録を保存
+2. インデックス戦略とクエリ計画を検証
+3. `scripts/log_usage.mjs` を実行して使用記録を保存
 
-## Task仕様ナビ
+**Task**: `agents/validate-optimize.md` を参照
 
-| タスク                 | 対応レベル | リソース                                         | テンプレート         | 説明                                             |
-| ---------------------- | ---------- | ------------------------------------------------ | -------------------- | ------------------------------------------------ |
-| スキーマ定義           | Level 1-2  | `schema-definition.md`                           | `schema-template.md` | Drizzle ORMのテーブルスキーマを型安全に定義      |
-| リレーション設定       | Level 2-3  | `relation-mapping.md`                            | `schema-template.md` | テーブル間のリレーション（1対多、多対多）を設定  |
-| クエリビルダー活用     | Level 2-3  | `query-builder-patterns.md`                      | -                    | 複雑なクエリを安全かつ効率的に構築               |
-| N+1問題解決            | Level 3    | `performance-patterns.md`                        | -                    | N+1問題を検出し、最適なクエリ戦略を適用          |
-| パフォーマンス最適化   | Level 3-4  | `performance-patterns.md`, `Level3_advanced.md`  | -                    | インデックス設計、クエリ最適化、キャッシング戦略 |
-| エンティティマッピング | Level 2-3  | `schema-definition.md`, `Level2_intermediate.md` | -                    | ビジネスロジックとデータモデルの整合性確保       |
-| マイグレーション管理   | Level 3-4  | `Level3_advanced.md`, `Level4_expert.md`         | -                    | スキーマ変更時の安全なマイグレーション戦略       |
-| パフォーマンス診断     | Level 4    | `Level4_expert.md`, `performance-patterns.md`    | -                    | 本番環境のパフォーマンス問題を診断・最適化       |
+## Task仕様（ナビゲーション）
+
+| Task              | 起動タイミング | 入力           | 出力                 |
+| ----------------- | -------------- | -------------- | -------------------- |
+| design-schema     | Phase 1開始時  | テーブル要件   | スキーマ定義コード   |
+| implement-queries | Phase 2開始時  | スキーマ定義   | クエリ実装コード     |
+| validate-optimize | Phase 3開始時  | 実装済みコード | 検証・最適化レポート |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
 ## ベストプラクティス
 
@@ -96,38 +99,34 @@ Drizzle ORMを活用したデータベース操作のベストプラクティス
 
 ## リソース参照
 
-### レベル別ガイド
+### references/（詳細知識）
 
-- **`references/Level1_basics.md`**: Drizzle ORM基礎、スキーマ定義の初歩、簡単なクエリ構築
-- **`references/Level2_intermediate.md`**: リレーション設定、クエリビルダーの活用、実務パターン
-- **`references/Level3_advanced.md`**: パフォーマンス最適化、複雑なマイグレーション、N+1問題対策
-- **`references/Level4_expert.md`**: 大規模データセット管理、マイグレーション戦略、本番運用パターン
+| リソース       | パス                                                                             | 用途           |
+| -------------- | -------------------------------------------------------------------------------- | -------------- |
+| 基礎知識       | See [references/basics.md](references/basics.md)                                 | ORM基本概念    |
+| スキーマ定義   | See [references/schema-definition.md](references/schema-definition.md)           | テーブル定義   |
+| リレーション   | See [references/relation-mapping.md](references/relation-mapping.md)             | 関連設定       |
+| クエリビルダー | See [references/query-builder-patterns.md](references/query-builder-patterns.md) | クエリ構築     |
+| パフォーマンス | See [references/performance-patterns.md](references/performance-patterns.md)     | 最適化パターン |
 
-### パターン・デザインガイド
+### agents/（Task仕様）
 
-- **`references/schema-definition.md`**: Drizzle ORMのテーブル定義パターン、カラム型の選択
-- **`references/relation-mapping.md`**: 1対多、多対多リレーション設定、外部キー戦略
-- **`references/query-builder-patterns.md`**: クエリビルダーのフィルタリング、ソート、ページネーション
-- **`references/performance-patterns.md`**: N+1問題検出、クエリ最適化、インデックス戦略
-- **`references/requirements-index.md`**: 要求仕様の索引（docs/00-requirements と同期）
+| Task              | 用途             |
+| ----------------- | ---------------- |
+| design-schema     | スキーマ設計支援 |
+| implement-queries | クエリ実装支援   |
+| validate-optimize | 検証・最適化支援 |
 
-### スクリプト
+### assets/（テンプレート）
 
-- **`scripts/validate-schema.mjs`**: Drizzle ORMスキーマ定義の型安全性と整合性を検証
-- **`scripts/validate-skill.mjs`**: スキル構造全体の検証
-- **`scripts/log_usage.mjs`**: スキル使用記録の自動評価
-
-### テンプレート
-
-- **`assets/schema-template.md`**: Drizzle ORMテーブルスキーマ定義のTypeScriptテンプレート（型定義、リレーション、インデックス含む）
-
-### 参考資料
-
-- **`references/legacy-skill.md`**: 旧SKILL.mdの全文（履歴参照用）
+| リソース | パス                        | 用途         |
+| -------- | --------------------------- | ------------ |
+| スキーマ | `assets/schema-template.md` | テーブル定義 |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                          |
-| ------- | ---------- | ---------------------------------------------------------------- |
-| 1.0.0   | 2025-12-31 | 18-skills.md仕様準拠へ更新（Anchors、Trigger、Task仕様ナビ追加） |
-| 0.9.0   | 2025-12-24 | Spec alignment and required artifacts added                      |
+| Version | Date       | Changes                                         |
+| ------- | ---------- | ----------------------------------------------- |
+| 1.1.0   | 2026-01-02 | description形式更新、agents/追加、basics.md作成 |
+| 1.0.0   | 2025-12-31 | 18-skills.md仕様準拠へ更新                      |
+| 0.9.0   | 2025-12-24 | Spec alignment and required artifacts added     |

@@ -1,103 +1,143 @@
 ---
 name: mcp-protocol
 description: |
-  Model Context Protocol (MCP) の標準仕様とツール定義パターンに関する専門知識。
-  MCPプロトコルの構造、サーバー設定、ツール定義、パラメータスキーマ設計を提供します。
+  Model Context Protocol (MCP) 仕様と実装パターン。サーバー設定、ツール定義、LLM統合向けJSONスキーマ設計を提供。
 
   Anchors:
-  • The Pragmatic Programmer (Hunt, Thomas) / 適用: DRY原則・直交性・リバーシブル設計 / 目的: 保守性と拡張性の高いMCP設定
-  • MCP Official Specification / 適用: プロトコルバージョン・メッセージフォーマット・エラーコード / 目的: 仕様準拠の検証
+  • MCP Official Specification / 適用: プロトコルバージョン、メッセージフォーマット / 目的: 仕様準拠
+  • JSON Schema Draft-07 / 適用: inputSchemaバリデーション / 目的: 型安全ツール定義
+  • The Pragmatic Programmer / 適用: DRY、直交性 / 目的: 保守性の高い設定
 
   Trigger:
-  Use when configuring MCP servers, designing tool definitions with JSON Schema, validating MCP protocol compliance, troubleshooting connection errors or timeouts.
-  Keywords: mcp, model context protocol, tool definition, inputSchema, server configuration, claude_mcp_config.json
+  Use when configuring MCP servers, designing tool definitions with JSON Schema,
+  validating MCP protocol compliance, or troubleshooting connection/timeout errors.
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# MCP Protocol スキル
+# MCP Protocol
+
+> **相対パス**: `SKILL.md`
+> **読込条件**: スキル使用時（自動）
+
+---
 
 ## 概要
 
-Model Context Protocol (MCP) の標準仕様とツール定義パターンに関する専門知識。
-MCPプロトコルの構造、サーバー設定、ツール定義、パラメータスキーマ設計を提供します。
+Model Context Protocol (MCP) の標準仕様と実装パターン。
 
-詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
+**対象領域**:
+
+| 領域             | 説明                               |
+| ---------------- | ---------------------------------- |
+| サーバー設定     | claude_mcp_config.json 構造        |
+| ツール定義       | name, description, inputSchema     |
+| プロトコル準拠   | バージョン、メッセージフォーマット |
+| トラブルシュート | 接続エラー、タイムアウト対応       |
+
+---
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 要件分析
 
-**目的**: タスクの目的と前提条件を明確にする
+**Task**: `agents/analyze-requirements.md`
 
-**アクション**:
+| 入力             | 出力     |
+| ---------------- | -------- |
+| MCP サーバー要件 | 設計仕様 |
 
-1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
-2. 必要な references/scripts/templates を特定
+**参照**: `references/basics.md`
 
-### Phase 2: スキル適用
+### Phase 2: サーバー設定
 
-**目的**: スキルの指針に従って具体的な作業を進める
+**Task**: `agents/configure-server.md`
 
-**アクション**:
+| 入力     | 出力         |
+| -------- | ------------ |
+| 設計仕様 | 設定ファイル |
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+**参照**: `references/patterns.md`, `assets/`
 
-### Phase 3: 検証と記録
+### Phase 3: 検証
 
-**目的**: 成果物の検証と実行記録の保存
+**Task**: `agents/validate-implementation.md`
 
-**アクション**:
+| 入力         | 出力         |
+| ------------ | ------------ |
+| 設定ファイル | 検証レポート |
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+### Phase 4: トラブルシュート
+
+**Task**: `agents/troubleshoot-issues.md`
+
+| 入力       | 出力           |
+| ---------- | -------------- |
+| エラー情報 | 解決策レポート |
+
+**参照**: `references/troubleshooting.md`
+
+---
 
 ## ベストプラクティス
 
-### すべきこと
+| すべきこと                           | 避けるべきこと               |
+| ------------------------------------ | ---------------------------- |
+| inputSchema で型安全なパラメータ定義 | スキーマなしのツール定義     |
+| 明確な description を記述            | 曖昧なツール説明             |
+| 環境変数で機密情報を管理             | ハードコードされた認証情報   |
+| タイムアウト設定を適切に設定         | デフォルトタイムアウトの放置 |
+| プロトコルバージョンを明示           | バージョン不整合の放置       |
 
-- MCPサーバーの新規設定が必要な時
-- ツール定義のYAML/JSON構造を設計する時
-- MCPプロトコル仕様への準拠を確認する時
-- claude_mcp_config.jsonの設計・検証時
+---
 
-### 避けるべきこと
+## Task ナビゲーション
 
-- アンチパターンや注意点を確認せずに進めることを避ける
+| Task                         | 目的             | 参照リソース          |
+| ---------------------------- | ---------------- | --------------------- |
+| `analyze-requirements.md`    | サーバー要件分析 | `basics.md`           |
+| `configure-server.md`        | 設定ファイル生成 | `patterns.md`, assets |
+| `validate-implementation.md` | 実装検証         | scripts               |
+| `troubleshoot-issues.md`     | 問題解決         | `troubleshooting.md`  |
 
-## コマンドリファレンス
+---
 
-### リソース読み取り
+## リソース参照
 
-```bash
-cat .claude/skills/mcp-protocol/references/Level1_basics.md
-cat .claude/skills/mcp-protocol/references/Level2_intermediate.md
-cat .claude/skills/mcp-protocol/references/Level3_advanced.md
-cat .claude/skills/mcp-protocol/references/Level4_expert.md
-cat .claude/skills/mcp-protocol/references/config-examples.md
-cat .claude/skills/mcp-protocol/references/legacy-skill.md
-cat .claude/skills/mcp-protocol/references/mcp-specification.md
-cat .claude/skills/mcp-protocol/references/troubleshooting.md
-```
+### References
 
-### スクリプト実行
+| ファイル               | 内容                         | 読込条件   |
+| ---------------------- | ---------------------------- | ---------- |
+| `basics.md`            | MCP 基礎概念・用語           | 初回使用時 |
+| `patterns.md`          | ツール定義・設定パターン     | 設計時     |
+| `mcp-specification.md` | プロトコル仕様詳細           | 仕様確認時 |
+| `config-examples.md`   | 設定例集                     | 実装時     |
+| `troubleshooting.md`   | トラブルシューティングガイド | 問題発生時 |
 
-```bash
-node .claude/skills/mcp-protocol/scripts/log_usage.mjs --help
-node .claude/skills/mcp-protocol/scripts/validate-mcp-config.mjs --help
-node .claude/skills/mcp-protocol/scripts/validate-skill.mjs --help
-node .claude/skills/mcp-protocol/scripts/validate-tool-schema.mjs --help
-```
+### Assets
 
-### テンプレート参照
+| ファイル                        | 内容                     |
+| ------------------------------- | ------------------------ |
+| `server-config-template.json`   | サーバー設定テンプレート |
+| `tool-definition-template.json` | ツール定義テンプレート   |
 
-```bash
-cat .claude/skills/mcp-protocol/assets/server-config-template.json
-cat .claude/skills/mcp-protocol/assets/tool-definition-template.json
-```
+### Scripts
 
-## 変更履歴
+| スクリプト                 | 用途               |
+| -------------------------- | ------------------ |
+| `validate-mcp-config.mjs`  | MCP 設定検証       |
+| `validate-tool-schema.mjs` | ツールスキーマ検証 |
+| `log_usage.mjs`            | 使用記録           |
 
-| Version | Date       | Changes                                     |
-| ------- | ---------- | ------------------------------------------- |
-| 1.0.1   | 2025-12-24 | Spec alignment and required artifacts added |
+---
+
+## 関連スキル
+
+- `mcp-server-patterns` - MCP サーバー実装パターン
+- `json-schema` - JSON Schema 設計
+- `api-client-patterns` - API クライアントパターン

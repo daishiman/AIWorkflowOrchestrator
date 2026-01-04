@@ -1,98 +1,150 @@
 ---
 name: solid-principles
 description: |
-  Apply SOLID principles (SRP, OCP, LSP, ISP, DIP) to evaluate and improve object-oriented design quality. Guides architecture review, refactoring decisions, and code quality assessment.
+  SOLID原則（SRP, OCP, LSP, ISP, DIP）を適用してオブジェクト指向設計の品質を評価・改善するスキル。
+  アーキテクチャレビュー、リファクタリング判断、コード品質評価を支援する。
 
   Anchors:
-  • Clean Architecture by Robert C. Martin / Apply: Dependency Rule and layer separation / Purpose: Ensure proper dependency direction in architecture
-  • SOLID Principles by Robert C. Martin / Apply: All five principles for design evaluation / Purpose: Achieve maintainable, testable, and flexible code
+  • Clean Architecture (Robert C. Martin) / 適用: 依存性逆転と層分離 / 目的: 適切な依存方向の確保
+  • SOLID Principles (Robert C. Martin) / 適用: 5原則による設計評価 / 目的: 保守性・テスト容易性・柔軟性の実現
+  • Refactoring (Martin Fowler) / 適用: コードの匂い検出と改善 / 目的: 段階的な設計改善
 
   Trigger:
-  Use when evaluating code architecture, reviewing design quality, detecting SOLID violations, planning refactoring, conducting architecture reviews, or improving object-oriented design. Keywords: single responsibility, open closed principle, liskov substitution, interface segregation, dependency inversion, architecture review, design patterns, refactoring.
+  Use when evaluating code architecture, reviewing design quality, detecting SOLID violations, planning refactoring, or improving object-oriented design.
+  single responsibility, open closed, liskov substitution, interface segregation, dependency inversion, architecture review, design patterns, refactoring, SOLID
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
 # SOLID Principles
 
 ## 概要
 
-ロバート・C・マーティンが体系化したSOLID原則（SRP, OCP, LSP, ISP, DIP）の
-
-詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
+ロバート・C・マーティンが体系化したSOLID原則を適用し、オブジェクト指向設計の品質を評価・改善するスキル。
+各原則の違反を検出し、具体的なリファクタリング方針を提示する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+```
+analyze-codebase → detect-violations → evaluate-impact → plan-refactoring → validate-improvements
+```
 
-**目的**: タスクの目的と前提条件を明確にする
+### Phase 1: コードベース分析
 
-**アクション**:
-
-1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
-2. 必要な references/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: 分析対象のコード構造と依存関係を把握する
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. 対象ファイル・モジュールを特定する
+2. クラス・関数の責務を整理する
+3. 依存関係グラフを把握する
 
-### Phase 3: 検証と記録
+**Task**: `agents/analyze-codebase.md` を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: 違反検出
+
+**目的**: SOLID原則の違反箇所を特定する
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. 各原則に対する違反パターンをチェックする
+2. `scripts/check-solid-violations.mjs` で自動検出を実行する
+3. 検出結果を整理する
+
+**Task**: `agents/detect-violations.md` を参照
+
+### Phase 3: 影響評価
+
+**目的**: 違反の影響度と優先度を評価する
+
+**アクション**:
+
+1. 各違反の影響範囲を分析する
+2. 修正の緊急度と難易度を評価する
+3. 優先順位を決定する
+
+**Task**: `agents/evaluate-impact.md` を参照
+
+### Phase 4: リファクタリング計画
+
+**目的**: 具体的な改善計画を策定する
+
+**アクション**:
+
+1. 各違反に対する改善パターンを選定する
+2. 段階的な修正手順を策定する
+3. テスト計画を含めた実行計画を作成する
+
+**Task**: `agents/plan-refactoring.md` を参照
+
+## Task仕様ナビ
+
+| Task              | 起動タイミング | 入力               | 出力                   |
+| ----------------- | -------------- | ------------------ | ---------------------- |
+| analyze-codebase  | Phase 1開始時  | 対象ファイルパス   | コード構造レポート     |
+| detect-violations | Phase 2開始時  | コード構造レポート | 違反検出レポート       |
+| evaluate-impact   | Phase 3開始時  | 違反検出レポート   | 影響評価レポート       |
+| plan-refactoring  | Phase 4開始時  | 影響評価レポート   | リファクタリング計画書 |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
 
-- references/Level1_basics.md を参照し、適用範囲を明確にする
-- references/Level2_intermediate.md を参照し、実務手順を整理する
+| 推奨事項                        | 理由                               |
+| ------------------------------- | ---------------------------------- |
+| 1クラス1責務を維持する（SRP）   | 変更理由の単一化で保守性向上       |
+| 拡張に開き修正に閉じる（OCP）   | 既存コードを壊さず機能追加可能     |
+| 派生型は基底型と置換可能（LSP） | 多態性の正しい利用を保証           |
+| クライアント固有のIF分離（ISP） | 不要な依存を排除                   |
+| 抽象に依存する（DIP）           | 高レベルモジュールの独立性確保     |
+| 小さな改善を継続する            | 大規模リファクタリングのリスク回避 |
 
 ### 避けるべきこと
 
-- アンチパターンや注意点を確認せずに進めることを避ける
+| 禁止事項                     | 問題点                     |
+| ---------------------------- | -------------------------- |
+| 神クラス（God Class）の作成  | 責務過多で変更影響が広範囲 |
+| 継承の濫用                   | LSP違反と密結合を招く      |
+| 具象クラスへの直接依存       | テスト困難と変更影響の拡大 |
+| 過度な抽象化                 | 複雑性増加で可読性低下     |
+| テストなしのリファクタリング | 回帰バグのリスク           |
 
-## コマンドリファレンス
+## リソース参照
 
-### リソース読み取り
+### references/（詳細知識）
 
-```bash
-cat .claude/skills/solid-principles/references/Level1_basics.md
-cat .claude/skills/solid-principles/references/Level2_intermediate.md
-cat .claude/skills/solid-principles/references/Level3_advanced.md
-cat .claude/skills/solid-principles/references/Level4_expert.md
-cat .claude/skills/solid-principles/references/dependency-inversion.md
-cat .claude/skills/solid-principles/references/interface-segregation.md
-cat .claude/skills/solid-principles/references/legacy-skill.md
-cat .claude/skills/solid-principles/references/liskov-substitution.md
-cat .claude/skills/solid-principles/references/open-closed.md
-cat .claude/skills/solid-principles/references/single-responsibility.md
-```
+| リソース             | パス                                                                       | 読込条件            |
+| -------------------- | -------------------------------------------------------------------------- | ------------------- |
+| 単一責務の原則       | [references/single-responsibility.md](references/single-responsibility.md) | SRP違反検出・改善時 |
+| 開放閉鎖の原則       | [references/open-closed.md](references/open-closed.md)                     | OCP違反検出・改善時 |
+| リスコフの置換原則   | [references/liskov-substitution.md](references/liskov-substitution.md)     | LSP違反検出・改善時 |
+| インターフェース分離 | [references/interface-segregation.md](references/interface-segregation.md) | ISP違反検出・改善時 |
+| 依存性逆転の原則     | [references/dependency-inversion.md](references/dependency-inversion.md)   | DIP違反検出・改善時 |
 
-### スクリプト実行
+### scripts/（決定論的処理）
 
-```bash
-node .claude/skills/solid-principles/scripts/check-solid-violations.mjs --help
-node .claude/skills/solid-principles/scripts/log_usage.mjs --help
-node .claude/skills/solid-principles/scripts/validate-skill.mjs --help
-```
+| スクリプト                   | 機能                | 使用例                                           |
+| ---------------------------- | ------------------- | ------------------------------------------------ |
+| `check-solid-violations.mjs` | SOLID違反の自動検出 | `node scripts/check-solid-violations.mjs <path>` |
+| `log_usage.mjs`              | 使用記録の保存      | `node scripts/log_usage.mjs --result success`    |
+| `validate-skill.mjs`         | スキル構造検証      | `node scripts/validate-skill.mjs`                |
 
-### テンプレート参照
+### assets/（テンプレート）
 
-```bash
-cat .claude/skills/solid-principles/assets/solid-review-checklist.md
-```
+| アセット                    | 用途                        |
+| --------------------------- | --------------------------- |
+| `solid-review-checklist.md` | SOLIDレビューチェックリスト |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                     |
-| ------- | ---------- | ------------------------------------------- |
-| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added |
+| Version | Date       | Changes                                                    |
+| ------- | ---------- | ---------------------------------------------------------- |
+| 2.0.0   | 2026-01-03 | 18-skills.md仕様に完全準拠、agents追加、ワークフロー再構成 |
+| 1.0.0   | 2025-12-24 | 初版作成                                                   |

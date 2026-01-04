@@ -26,8 +26,8 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 
 ### 成果物の最小要件
 - テンプレートの必須項目を満たしている
-- 主要テンプレート: `templates/audit-log-schema.json`
-- 参照テンプレート: `templates/security-config-template.json`
+- 主要テンプレート: `assets/audit-log-schema.json`
+- 参照テンプレート: `assets/security-config-template.json`
 
 ### 参照書籍
 - 『Web Application Security』（Andrew Hoffman）: 脅威モデリング
@@ -36,8 +36,11 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
-- `templates/audit-log-schema.json`: このレベルでは参照のみ
-- `templates/security-config-template.json`: このレベルでは参照のみ
+- `assets/audit-log-schema.json`: このレベルでは参照のみ
+- `assets/security-config-template.json`: このレベルでは参照のみ
+
+### ワークフロー対応
+- Phase 1 では攻撃面と信頼境界の整理を優先する
 
 ## 実践手順
 

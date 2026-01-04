@@ -1,0 +1,9 @@
+{
+  "required": ["items", "summary"],
+  "types": {
+    "items": "array",
+    "summary": "object"
+  },
+  "allowedKeys": ["items", "summary", "errors"],
+  "notes": "Edit this schema to match your output contract."
+}

@@ -2,15 +2,16 @@
 name: server-components-patterns
 description: |
   React Server Componentsの実装パターン専門スキル。
-  データフェッチ最適化、Suspenseストリーミング、サーバーアクション実装を提供します。
+  データフェッチ最適化、Suspenseストリーミング、サーバーアクション実装を提供する。
 
   Anchors:
-  • 『Next.js Documentation』（Vercel） / 適用: Server Components / 目的: パフォーマンス向上
-  • 『React Server Components RFC』（Facebook React Team） / 適用: RSCアーキテクチャ / 目的: フェッチ最適化
-  • 『Next.js Data Fetching』（Vercel） / 適用: キャッシング戦略 / 目的: 効率的なデータ管理
+  • Next.js Documentation / 適用: Server Components / 目的: パフォーマンス向上
+  • React Server Components RFC / 適用: RSCアーキテクチャ / 目的: フェッチ最適化
+  • Next.js Data Fetching / 適用: キャッシング戦略 / 目的: 効率的なデータ管理
 
   Trigger:
-  React Server Components実装時、RSCパターン設計時、サーバーコンポーネント最適化検討時、データフェッチ戦略立案時、Suspense境界設計時に使用
+  Use when implementing React Server Components, designing RSC patterns, optimizing data fetching, planning Suspense boundaries, or implementing Server Actions.
+  RSC, Server Components, data fetching, Suspense, streaming, Server Actions, cache, revalidate
 allowed-tools:
   - Read
   - Write
@@ -24,140 +25,109 @@ allowed-tools:
 
 ## 概要
 
-React Server Componentsのデータフェッチ最適化とSuspense活用を専門とするスキル。このスキルは、Next.js App Routerにおけるサーバーコンポーネントアーキテクチャ、効率的なデータフェッチ戦略、Suspenseを活用したストリーミング、サーバーアクションの実装をカバーしています。
-
-詳細な実装パターンと背景理論については、段階的なリソース（基礎から専門レベルまで）を参照してください。
+React Server Componentsのデータフェッチ最適化とSuspense活用を専門とするスキル。サーバーコンポーネントアーキテクチャ、データフェッチ戦略、キャッシング、サーバーアクションをカバーする。
 
 ## ワークフロー
 
-### Phase 1: タスク分析と戦略立案
+```
+analyze-requirements → design-pattern → implement-components → validate-performance
+```
 
-**目的**: 実装タスクの要件を分析し、最適なRSCパターンを選定する
+### Phase 1: 要件分析
 
-**アクション**:
+**目的**: RSCパターンの要件を分析する
 
-1. **要件の理解**
-   - クライアント側の対話性要件を確認（Client ComponentとServer Componentの分離）
-   - データフェッチのタイミング要件を確認（初期ロード vs ユーザーインタラクション後）
-   - 処理負荷の分散戦略を検討（フロントエンド vs バックエンド）
-
-2. **リソースの参照**
-   - `references/Level1_basics.md` でRSCの基本概念を確認
-   - `references/data-fetching-patterns.md` で適切なパターンを選定
-   - 必要に応じて `references/suspense-streaming.md` や `references/server-actions.md` を確認
-
-3. **実装パターンの決定**
-   - キャッシング戦略の検討（`references/caching-strategies.md` 参照）
-   - エラーハンドリング方針の決定
-   - Suspense境界の粒度設計
-
-### Phase 2: 実装と統合
-
-**目的**: 選定したパターンに基づいて、スケーラブルで保守可能なコンポーネントを実装する
+**Task**: `agents/analyze-requirements.md` を参照
 
 **アクション**:
 
-1. **テンプレートの活用**
-   - `assets/data-fetch-template.md` を参考にデータフェッチロジックを実装
-   - `assets/server-action-template.md` を参考にサーバーアクションを定義
+1. クライアント/サーバーコンポーネントの分離要件を確認
+2. データフェッチのタイミング要件を確認
+3. キャッシング戦略を検討
 
-2. **コンポーネント実装**
-   - Server ComponentとClient Componentの適切な分離
-   - キャッシング戦略の適用（revalidateタグ、時間ベース、オンデマンド）
-   - Suspense UIの実装（loading状態、エラー境界）
+### Phase 2: パターン設計・実装
 
-3. **データフェッチの最適化**
-   - N+1クエリ問題の防止
-   - バッチ処理の活用
-   - キャッシュ戦略の実装
+**目的**: 最適なRSCパターンを選定し実装する
+
+**Task**: `agents/implement-pattern.md` を参照
+
+**アクション**:
+
+1. データフェッチパターンを選定
+2. Suspense境界を設計
+3. キャッシング戦略を適用
+4. Server Actionsを実装
 
 ### Phase 3: 検証と最適化
 
-**目的**: 実装の正確性を確認し、パフォーマンス最適化を施す
+**目的**: パフォーマンスを検証し最適化する
 
 **アクション**:
 
-1. **機能検証**
-   - データ取得が正確に行われているか確認
-   - Suspense境界が適切に機能しているか確認
-   - サーバーアクションがクライアント側で正しく処理されているか確認
-
-2. **パフォーマンス評価**
-   - `scripts/analyze-data-fetching.mjs` を使用してデータフェッチパターンを分析
-   - `references/Level3_advanced.md` の最適化テクニックを適用
-   - バンドルサイズとランタイム性能の測定
-
-3. **ドキュメント化と記録**
-   - `scripts/validate-skill.mjs` でスキル構造の整合性を確認
-   - `scripts/log_usage.mjs` を実行して実装事例を記録
-   - `references/requirements-index.md` で要求仕様との整合性を確認
+1. データフェッチパターンを分析
+2. パフォーマンスを測定
+3. `scripts/log_usage.mjs` で記録
 
 ## Task仕様ナビ
 
-このスキルに関連する主要なタスク領域とリソースマッピング:
+| Task                 | 責務         | 入力               | 出力                   |
+| -------------------- | ------------ | ------------------ | ---------------------- |
+| analyze-requirements | 要件分析     | コンポーネント情報 | RSC要件定義            |
+| implement-pattern    | パターン実装 | RSC要件            | 実装済みコンポーネント |
 
-| タスク領域               | 関連リソース              | 実装レベル | 用途                                       |
-| ------------------------ | ------------------------- | ---------- | ------------------------------------------ |
-| RSC基礎理解              | Level1_basics.md          | 初級       | サーバーコンポーネントの基本的な概念習得   |
-| データフェッチ戦略       | data-fetching-patterns.md | 中級       | 複数のフェッチパターンから最適なものを選定 |
-| キャッシング実装         | caching-strategies.md     | 中級       | revalidate、キャッシュタグの実装           |
-| Suspenseとストリーミング | suspense-streaming.md     | 中級       | UI段階的レンダリングの実装                 |
-| サーバーアクション実装   | server-actions.md         | 中級       | フォーム送信とデータ更新の処理             |
-| 高度な最適化             | Level3_advanced.md        | 上級       | パフォーマンス最適化と複雑なシナリオ       |
-| エキスパート実装         | Level4_expert.md          | 専門       | 大規模アプリケーションの設計と最適化       |
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
 ### すべきこと
 
-- **段階的学習**: Level1から順序立てて進め、基礎を確立してから高度なパターンへ進む
-- **テンプレート活用**: 提供されているテンプレートを基にコンポーネントを実装し、一貫性を保つ
-- **キャッシング戦略の検討**: 各コンポーネントでどの程度のキャッシュが必要か明確にする
-- **Suspense境界の設計**: ユーザー体験を考慮した細かい粒度のSuspense境界を設計する
-- **パフォーマンス測定**: 実装後に分析スクリプトを使用してパフォーマンスを評価する
-- **要求仕様との整合性**: 実装内容が `requirements-index.md` の要求を満たしているか確認する
+| 推奨事項                           | 理由                   |
+| ---------------------------------- | ---------------------- |
+| 可能な限りServer Componentを使用   | バンドルサイズ削減     |
+| 並列フェッチにPromise.allを使用    | ウォーターフォール防止 |
+| cache関数で重複排除する            | 不要なフェッチの削減   |
+| 細かい粒度のSuspense境界を設計     | UXの向上               |
+| revalidateタグで効率的にキャッシュ | オンデマンド再検証     |
 
 ### 避けるべきこと
 
-- **オーバーキャッシング**: すべてのクエリをキャッシュすべきではない（データ鮮度とのバランス）
-- **粗粒度Suspense**: Suspense境界が大きすぎてUX が低下することを避ける
-- **Client Componentの過度な使用**: Server Componentで処理できることをClient Componentで行わない
-- **エラーハンドリングの未実装**: ネットワークエラーやデータベースエラーに対する対応をスキップしない
-- **セキュリティの軽視**: クライアント側でのデータ検証のみに依存して、サーバー検証を省略しない
-- **N+1クエリ**: ループ内での複数回のデータフェッチを避ける
+| 禁止事項                           | 問題点               |
+| ---------------------------------- | -------------------- |
+| 過度なClient Component使用         | バンドルサイズ増加   |
+| 逐次フェッチ（ウォーターフォール） | パフォーマンス低下   |
+| 粗粒度のSuspense境界               | UX低下               |
+| N+1クエリ                          | データベース負荷増大 |
+| サーバー検証の省略                 | セキュリティリスク   |
 
 ## リソース参照
 
-### 基礎学習リソース（references/）
+### references/（詳細知識）
 
-- **Level1_basics.md** - RSCの基本概念と「なぜRSCが必要か」
-- **Level2_intermediate.md** - 実務的な実装パターンと注意点
-- **Level3_advanced.md** - パフォーマンス最適化と複雑なシナリオ対応
-- **Level4_expert.md** - 大規模アプリケーション設計と高度なテクニック
-- **requirements-index.md** - 要求仕様の索引（docs/00-requirements と同期）
+| リソース       | パス                                                                         | 読込条件         |
+| -------------- | ---------------------------------------------------------------------------- | ---------------- |
+| データフェッチ | [references/data-fetching-patterns.md](references/data-fetching-patterns.md) | フェッチ実装時   |
+| キャッシング   | [references/caching-strategies.md](references/caching-strategies.md)         | キャッシュ設定時 |
+| Suspense       | [references/suspense-streaming.md](references/suspense-streaming.md)         | ストリーミング時 |
+| Server Actions | [references/server-actions.md](references/server-actions.md)                 | アクション実装時 |
 
-### パターン別リソース（references/）
+### scripts/（決定論的処理）
 
-- **data-fetching-patterns.md** - 複数のフェッチパターンの比較と選定ガイド
-- **caching-strategies.md** - キャッシュ戦略（時間ベース、タグベース、オンデマンド）
-- **suspense-streaming.md** - Suspenseと段階的レンダリングの実装
-- **server-actions.md** - Server Actionsを使用したデータ更新パターン
-- **legacy-skill.md** - 旧バージョンのドキュメント（互換性確認用）
+| スクリプト                          | 機能               |
+| ----------------------------------- | ------------------ |
+| `scripts/log_usage.mjs`             | 使用記録と自動評価 |
+| `scripts/analyze-data-fetching.mjs` | データフェッチ分析 |
 
-### テンプレート（assets/）
+### assets/（テンプレート）
 
-- **data-fetch-template.md** - データフェッチロジックの実装テンプレート
-- **server-action-template.md** - Server Action実装のテンプレート
-
-### ユーティリティスクリプト（scripts/）
-
-- **analyze-data-fetching.mjs** - データフェッチパターンの分析ツール
-- **validate-skill.mjs** - スキル構造の検証ツール
-- **log_usage.mjs** - 使用記録と自動評価スクリプト
+| アセット                           | 用途                       |
+| ---------------------------------- | -------------------------- |
+| `assets/data-fetch-template.md`    | データフェッチテンプレート |
+| `assets/server-action-template.md` | Server Actionテンプレート  |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                                                                                |
-| ------- | ---------- | ---------------------------------------------------------------------------------------------------------------------- |
-| 2.0.0   | 2025-12-31 | 18-skills.md仕様に完全準拠。YAMLフロントマター改善、ワークフロー詳細化、Task仕様ナビテーブル追加、リソース参照の再構成 |
-| 1.0.0   | 2025-12-24 | Initial version with basic structure                                                                                   |
+| Version | Date       | Changes                                            |
+| ------- | ---------- | -------------------------------------------------- |
+| 3.0.0   | 2026-01-02 | 18-skills仕様完全準拠、agents/を責務ベースに再構成 |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に基づきリファクタリング           |
+| 1.0.0   | 2025-12-24 | 初版                                               |

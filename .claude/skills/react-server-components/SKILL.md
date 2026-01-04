@@ -2,13 +2,17 @@
 name: react-server-components
 description: |
   React Server Components（RSC）の実装パターンとNext.js App Routerにおけるベストプラクティスを提供する専門スキル。
+  サーバーコンポーネントとクライアントコンポーネントの責務分離、データフェッチの最適化、
+  Suspenseとストリーミングの活用を支援します。
 
   Anchors:
   • 『Learning React Server Components』（Tejas Kumar）/ 適用: RSCアーキテクチャ / 目的: サーバーとクライアント間の責務分離
   • Next.js App Router公式ドキュメント / 適用: RSC実装パターン / 目的: Next.js固有の最適化手法
+  • Dan Abramovのブログ / 適用: RSC設計思想 / 目的: 第一原理からの理解
 
   Trigger:
-  Next.js App Router実装時、Server Components設計時、Client Components境界定義時、データフェッチ最適化時、Suspense統合時、streaming SSR実装時、キャッシュ戦略設計時に使用
+  Use when implementing Next.js App Router, designing Server Components, defining Client Component boundaries, optimizing data fetching, integrating Suspense, or implementing streaming SSR.
+  rsc, server components, client components, next.js app router, use client, suspense, streaming, data fetching
 
 allowed-tools:
   - Read
@@ -25,8 +29,6 @@ allowed-tools:
 
 React Server Components（RSC）の実装パターンとNext.js App Routerにおけるベストプラクティスを提供する専門スキル。サーバーコンポーネントとクライアントコンポーネントの責務分離、データフェッチの最適化、Suspenseとストリーミングの活用を支援します。
 
-詳細な手順や背景は `references/Level1_basics.md` から `references/Level4_expert.md` を参照してください。
-
 ## ワークフロー
 
 ### Phase 1: アーキテクチャ分析
@@ -35,7 +37,7 @@ React Server Components（RSC）の実装パターンとNext.js App Routerにお
 
 **アクション**:
 
-1. `references/Level1_basics.md` でRSCの基本概念を確認
+1. `references/basics.md` でRSCの基本概念を確認
 2. `references/server-client-boundaries.md` でコンポーネント境界を理解
 3. プロジェクトの要件とRSCの適合性を評価
 
@@ -47,9 +49,9 @@ React Server Components（RSC）の実装パターンとNext.js App Routerにお
 
 **アクション**:
 
-1. `references/Level2_intermediate.md` で設計パターンを確認
+1. `references/server-client-boundaries.md` で境界設計パターンを確認
 2. `references/composition-patterns.md` でコンポーネント構成を検討
-3. `assets/server-component-template.tsx` をベースに実装
+3. テンプレートをベースに実装
 
 **Task**: `agents/design-components.md` を参照
 
@@ -59,8 +61,8 @@ React Server Components（RSC）の実装パターンとNext.js App Routerにお
 
 **アクション**:
 
-1. `references/Level3_advanced.md` でデータフェッチ戦略を確認
-2. `references/data-fetching-patterns.md` で最適なパターンを選択
+1. `references/data-fetching-patterns.md` で最適なパターンを選択
+2. キャッシュ戦略を検討
 3. Suspense境界を適切に配置
 
 **Task**: `agents/optimize-data-fetching.md` を参照
@@ -71,28 +73,22 @@ React Server Components（RSC）の実装パターンとNext.js App Routerにお
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. `scripts/analyze-bundle.mjs` でバンドルサイズを検証
+1. バンドルサイズを検証
+2. コンポーネント境界の妥当性を確認
 3. `scripts/log_usage.mjs` を実行して記録を残す
 
 **Task**: `agents/validate-implementation.md` を参照
 
 ## Task仕様ナビ
 
-| 種類                     | 説明                                   | リソース                                 | テンプレート                           |
-| :----------------------- | :------------------------------------- | :--------------------------------------- | :------------------------------------- |
-| **基礎知識**             | RSCの基本概念とメンタルモデル          | `references/Level1_basics.md`            | -                                      |
-| **実装ガイド**           | Next.js App RouterでのRSC実装パターン  | `references/Level2_intermediate.md`      | `assets/server-component-template.tsx` |
-| **応用手法**             | 高度なデータフェッチとストリーミング   | `references/Level3_advanced.md`          | `assets/streaming-template.tsx`        |
-| **専門知識**             | RSCアーキテクチャの深い理解            | `references/Level4_expert.md`            | -                                      |
-| **境界定義**             | ServerとClientコンポーネントの境界     | `references/server-client-boundaries.md` | -                                      |
-| **構成パターン**         | コンポーネント構成とprops drilling回避 | `references/composition-patterns.md`     | `assets/composition-example.tsx`       |
-| **データフェッチ**       | 並列フェッチとウォーターフォール回避   | `references/data-fetching-patterns.md`   | -                                      |
-| **キャッシュ戦略**       | fetch cache、Request Memoization等     | `references/caching-strategies.md`       | -                                      |
-| **エラーハンドリング**   | Error BoundaryとSuspense統合           | `references/error-handling.md`           | `assets/error-boundary-template.tsx`   |
-| **パフォーマンス最適化** | バンドルサイズ削減とコード分割         | `references/performance-optimization.md` | -                                      |
-| **テスト戦略**           | RSCのテストアプローチ                  | `references/testing-strategies.md`       | `assets/test-template.test.tsx`        |
-| **移行ガイド**           | Pages RouterからApp Routerへの移行     | `references/migration-guide.md`          | -                                      |
+| Task                    | 起動タイミング | 入力               | 出力               |
+| ----------------------- | -------------- | ------------------ | ------------------ |
+| analyze-architecture    | Phase 1開始時  | プロジェクト要件   | アーキテクチャ方針 |
+| design-components       | Phase 2開始時  | アーキテクチャ方針 | コンポーネント設計 |
+| optimize-data-fetching  | Phase 3開始時  | コンポーネント設計 | データフェッチ実装 |
+| validate-implementation | Phase 4開始時  | 実装コード         | 検証済み実装       |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ## ベストプラクティス
 
@@ -120,34 +116,33 @@ React Server Components（RSC）の実装パターンとNext.js App Routerにお
 - テスト戦略を立てずに実装を進める
 - 既存のPages Router パターンをそのまま適用する
 
-## リソース/スクリプト参照
+## リソース参照
 
-### References
+### references/（詳細知識）
 
-- **Level 1（基礎）**: [references/Level1_basics.md](references/Level1_basics.md)
-- **Level 2（中級）**: [references/Level2_intermediate.md](references/Level2_intermediate.md)
-- **Level 3（上級）**: [references/Level3_advanced.md](references/Level3_advanced.md)
-- **Level 4（専門）**: [references/Level4_expert.md](references/Level4_expert.md)
-- **境界定義**: [references/server-client-boundaries.md](references/server-client-boundaries.md)
-- **構成パターン**: [references/composition-patterns.md](references/composition-patterns.md)
-- **データフェッチ**: [references/data-fetching-patterns.md](references/data-fetching-patterns.md)
-- **キャッシュ戦略**: [references/caching-strategies.md](references/caching-strategies.md)
-- **エラーハンドリング**: [references/error-handling.md](references/error-handling.md)
-- **パフォーマンス最適化**: [references/performance-optimization.md](references/performance-optimization.md)
-- **テスト戦略**: [references/testing-strategies.md](references/testing-strategies.md)
-- **移行ガイド**: [references/migration-guide.md](references/migration-guide.md)
+| リソース       | パス                                                                             | 読込条件             |
+| -------------- | -------------------------------------------------------------------------------- | -------------------- |
+| 基礎           | [references/basics.md](references/basics.md)                                     | RSC初学者、基本理解  |
+| 境界定義       | [references/server-client-boundaries.md](references/server-client-boundaries.md) | 境界設計時           |
+| 構成パターン   | [references/composition-patterns.md](references/composition-patterns.md)         | コンポーネント構成時 |
+| データフェッチ | [references/data-fetching-patterns.md](references/data-fetching-patterns.md)     | データ取得設計時     |
 
-### Scripts
+### scripts/（決定論的処理）
 
-- `scripts/validate-skill.mjs`: スキル構造の検証
-- `scripts/analyze-bundle.mjs`: バンドルサイズ分析と最適化提案
-- `scripts/log_usage.mjs`: スキル使用履歴の記録
+| スクリプト              | 機能                 |
+| ----------------------- | -------------------- |
+| `scripts/log_usage.mjs` | スキル使用履歴の記録 |
 
-### Assets
+### assets/（テンプレート）
 
-- `assets/server-component-template.tsx`: Server Componentテンプレート
-- `assets/client-component-template.tsx`: Client Componentテンプレート
-- `assets/streaming-template.tsx`: ストリーミングSSRテンプレート
-- `assets/composition-example.tsx`: コンポーネント構成例
-- `assets/error-boundary-template.tsx`: Error Boundaryテンプレート
-- `assets/test-template.test.tsx`: テストテンプレート
+| アセット                              | 用途                         |
+| ------------------------------------- | ---------------------------- |
+| `assets/server-component-template.md` | Server Componentテンプレート |
+
+## 変更履歴
+
+| Version | Date       | Changes                               |
+| ------- | ---------- | ------------------------------------- |
+| 3.1.0   | 2026-01-02 | references/整理、18-skills.md仕様準拠 |
+| 3.0.0   | 2026-01-02 | agents/追加（4エージェント体制確立）  |
+| 1.0.0   | 2025-12-31 | 初版                                  |

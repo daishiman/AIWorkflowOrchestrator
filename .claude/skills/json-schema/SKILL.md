@@ -18,7 +18,7 @@ allowed-tools:
   - Bash
 ---
 
-# JSON Schema
+# JSONスキーマ
 
 ## 概要
 
@@ -31,6 +31,8 @@ API仕様の定義、OpenAPI連携、バリデーションルール標準化、�
 ### Phase 1: 要件と構造の整理
 
 **目的**: スキーマ設計の要件と構造を把握する
+
+**Task**: `agents/analyze-requirements.md`
 
 **アクション**:
 
@@ -46,6 +48,8 @@ API仕様の定義、OpenAPI連携、バリデーションルール標準化、�
 
 **目的**: 段階的ガイダンスに従ってスキーマを設計する
 
+**Task**: `agents/design-schema.md`
+
 **アクション**:
 
 1. 必要に応じて以下の参照資料を読む:
@@ -60,6 +64,8 @@ API仕様の定義、OpenAPI連携、バリデーションルール標準化、�
 ### Phase 3: 検証と記録
 
 **目的**: 作成したスキーマを検証し、使用履歴を記録する
+
+**Task**: `agents/validate-schema.md`
 
 **アクション**:
 

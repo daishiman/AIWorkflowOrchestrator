@@ -1,4 +1,4 @@
-# Level 1: Basics
+# レベル1: 基礎
 
 ## 概要
 
@@ -14,9 +14,11 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 ## 詳細ガイド
 
 ### 使用タイミング
-- Use proactively when handling integration patterns tasks.
+
+- 統合パターンタスクを処理する際に積極的に使用する
 
 ### 必要な知識
+
 - 対象領域: MCPサーバーと外部システム間の統合パターンに関する専門知識。 同期・非同期通信、イベント駆動アーキテクチャ、データ同期パターンの設計指針を提供します。
 - 主要概念: 1. Message Queue パターン / 基本アーキテクチャ / プロデューサー実装 / イベント駆動設計ガイド / 1. イベント設計原則
 - 実務指針: MCPサーバーと外部システムの連携設計時
@@ -24,20 +26,25 @@ SKILL.md の内容だけで完結する基本運用を扱います。
 - 実務指針: イベント駆動統合の設計時
 
 ### 判断基準
+
 - 避けるべき判断: アンチパターンや注意点を確認せずに進めることを避ける
 
 ### 成果物の最小要件
+
 - テンプレートの必須項目を満たしている
 - 主要テンプレート: `templates/integration-design-template.md`
 - 参照テンプレート: `templates/message-schema-template.json`
 
 ### 参照書籍
+
 - 『The Pragmatic Programmer』（Andrew Hunt, David Thomas）: 実践的改善
 
 ### 主要リソース
+
 - `SKILL.md`: スキルの目的・前提・判断基準の基礎
 
 ### 主要テンプレート
+
 - `templates/integration-design-template.md`: このレベルでは参照のみ
 - `templates/message-schema-template.json`: このレベルでは参照のみ
 

@@ -1,17 +1,16 @@
 ---
 name: markdown-advanced-syntax
 description: |
-  Markdown高度構文を活用した技術文書作成の専門スキル。
-  Mermaid図、高度なテーブル、コードブロック、数式表現等を適切に使用し、
-  読み手にとって分かりやすく、メンテナンス性の高いドキュメントを作成します。
+  技術ドキュメント向けMarkdown高度構文スキル。Mermaid図、複雑テーブル、コードブロック、数式表現を活用。
 
   Anchors:
-  • 『GitHub Flavored Markdown仕様』（GitHub） / 適用: ドキュメント構文 / 目的: 拡張構文の正確な実装
-  • 『CommonMark仕様』（CommonMark） / 適用: 共通構文 / 目的: プラットフォーム間互換性の確保
-  • 『Mermaid公式ドキュメント』（Mermaid） / 適用: 図表化 / 目的: 視覚的な技術文書作成
+  • GitHub Flavored Markdown Spec / 適用: 拡張構文 / 目的: プラットフォーム互換ドキュメント
+  • CommonMark Spec / 適用: 基本構文 / 目的: クロスプラットフォーム互換性
+  • Mermaid Official Docs / 適用: ダイアグラム / 目的: ビジュアル技術文書
 
   Trigger:
-  Use when creating technical documentation with advanced Markdown syntax, Mermaid diagrams, complex tables, code blocks, or mathematical expressions.
+  Use when creating technical documentation with Mermaid diagrams, complex tables,
+  syntax-highlighted code blocks, mathematical expressions, or YAML front-matter.
 allowed-tools:
   - Read
   - Write
@@ -23,139 +22,112 @@ allowed-tools:
 
 # Markdown Advanced Syntax
 
-## 概要
-
-Markdown高度構文を活用した技術文書作成の専門スキル。
-Mermaid図、高度なテーブル、コードブロック、数式表現等を適切に使用し、
-読み手にとって分かりやすく、メンテナンス性の高いドキュメントを作成します。
-
-詳細な手順や背景は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
-
-## ワークフロー
-
-### Phase 1: 目的と前提の整理
-
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. ドキュメントの目的（仕様書、技術説明、ガイドなど）を確認
-2. ターゲット読者層とその前提知識を特定
-3. 必要な高度構文要素（図、表、数式など）を判定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従ってMarkdown文書を作成・編集する
-
-**アクション**:
-
-1. 適切なレベルガイド（Level 1-4）を参照
-2. テンプレートを活用して初期構造を作成
-3. Mermaid図・表・コード例を含める場合は専用リソースを確認
-4. 検証スクリプトで構文チェック（特にMermaid）
-
-### Phase 3: 検証と記録
-
-**目的**: 成果物の検証と実行記録の保存
-
-**アクション**:
-
-1. `scripts/validate-skill.mjs` でスキル構造と構文を確認
-2. `scripts/validate-mermaid.mjs` でMermaid図が正しくレンダリング可能か検証
-3. ドキュメント品質とメンテナンス性を確認
-4. `scripts/log_usage.mjs` を実行して使用記録を保存
-
-## Task仕様ナビ
-
-各フェーズで起動するTaskと、その入出力を定義します。
-
-### Phase 1: Planning（文書設計）
-
-**Task**: `agents/planning.md` - Document Planning
-
-- **役割**: 文書の目的・対象読者・必要な構文要素を特定
-- **入力**: ユーザーからの文書化要求
-- **出力**: 文書設計仕様（種類、読者層、必要な構文要素リスト、推奨レベルガイド）
-- **参照**: `references/Level1_basics.md`, `references/Level2_intermediate.md`
-
-### Phase 2: Implementation（実装）
-
-**Task**: `agents/implementation.md` - Markdown Implementation
-
-- **役割**: 設計仕様に基づいた技術文書の実装
-- **入力**: Phase 1 の文書設計仕様
-- **出力**: 実装済み技術文書（Mermaid図、テーブル、コード、数式を含む）
-- **参照**: レベルガイド（Level 1-4）、`references/mermaid-diagrams.md`、`references/advanced-tables.md`、`references/code-blocks.md`、`references/math-expressions.md`
-
-### Phase 3: Validation（検証と記録）
-
-**Task**: `agents/validation.md` - Quality Validation
-
-- **役割**: 品質検証と使用記録の保存
-- **入力**: Phase 2 の実装済み技術文書
-- **出力**: 検証レポート、使用記録（LOGS.md / EVALS.json）
-- **スクリプト**: `scripts/validate-skill.mjs`, `scripts/validate-mermaid.mjs`, `scripts/log_usage.mjs`
+> **相対パス**: `SKILL.md`
+> **読込条件**: スキル使用時（自動）
 
 ---
 
-## レベルガイド対応表
+## 概要
 
-| レベル | ガイド                              | 対応タスク                                           | 習得目標                                           |
-| ------ | ----------------------------------- | ---------------------------------------------------- | -------------------------------------------------- |
-| **1**  | `references/Level1_basics.md`       | 基本的なMarkdown記法、標準テーブル、簡単なコード例   | Markdownの基本構文と標準的なフォーマット方法を習得 |
-| **2**  | `references/Level2_intermediate.md` | 複雑なテーブル、言語別コードブロック、Mermaid基礎    | 実務的な技術文書作成と図表化の基礎スキルを習得     |
-| **3**  | `references/Level3_advanced.md`     | 高度なMermaid図（ER図、状態遷移）、数式表現、最適化  | エンタープライズレベルのドキュメント品質を実現     |
-| **4**  | `references/Level4_expert.md`       | カスタムスタイリング、パフォーマンス最適化、複合構造 | 業界標準の専門的ドキュメント作成を実現             |
+Markdown 高度構文を活用した技術文書作成スキル。
 
-## リソース参照
+**対象構文**:
 
-### レベルガイド
+| 構文         | 用途                         | ツール/仕様         |
+| ------------ | ---------------------------- | ------------------- |
+| Mermaid      | フロー図、シーケンス図、ER図 | Mermaid.js          |
+| Tables       | データ構造、API仕様          | GFM Tables          |
+| Code Blocks  | 実装例、設定サンプル         | Syntax Highlighting |
+| Math         | 数式、アルゴリズム表現       | LaTeX/KaTeX         |
+| Front-matter | メタデータ定義               | YAML                |
 
-- **基礎** (`references/Level1_basics.md`): 標準Markdown記法、基本テーブル、シンプルなコード表記
-- **応用** (`references/Level2_intermediate.md`): テーブル拡張、コードブロック装飾、図表導入
-- **専門** (`references/Level3_advanced.md`): 複雑図形化、数式統合、最適化テクニック
-- **エキスパート** (`references/Level4_expert.md`): カスタム実装、パフォーマンス、複合構造設計
+---
 
-### 構文別リソース
+## ワークフロー
 
-- **`references/advanced-tables.md`**: カラム整列、マージセル表現、複雑なデータ構造、読みやすさ最適化
-- **`references/code-blocks.md`**: 言語固有ハイライト、差分表示、行番号、ファイル名表示、実行可能コード
-- **`references/mermaid-diagrams.md`**: フローチャート・シーケンス図・ER図・状態遷移図の作成ガイド、スタイリング
-- **`references/math-expressions.md`**: LaTeX/KaTeX記法、インライン数式、ディスプレイ数式、数学記号
-- **`references/front-matter.md`**: YAMLメタデータ定義、title/version/author、ステータス管理、検索最適化
-- **`references/legacy-skill.md`**: 旧バージョンSKILL.mdのリファレンス
+### Phase 1: 文書設計
 
-### テンプレート
+**Task**: `agents/planning.md`
 
-- **`assets/specification-template.md`**: 仕様書テンプレート（Mermaid図・高度テーブル・コードブロック統合）
+| 入力       | 出力         |
+| ---------- | ------------ |
+| 文書化要求 | 文書設計仕様 |
 
-### スクリプト
+**参照**: `references/basics.md`
 
-- **`scripts/validate-skill.mjs`**: スキル構造検証スクリプト
-- **`scripts/validate-mermaid.mjs`**: Mermaid構文の自動検証（構文エラー、レンダリング可能性チェック）
-- **`scripts/log_usage.mjs`**: 使用記録・自動評価スクリプト
+### Phase 2: 実装
+
+**Task**: `agents/implementation.md`
+
+| 入力         | 出力             |
+| ------------ | ---------------- |
+| 文書設計仕様 | 実装済み技術文書 |
+
+**参照**: `references/patterns.md`, 構文別リソース
+
+### Phase 3: 検証
+
+**Task**: `agents/validation.md`
+
+| 入力             | 出力         |
+| ---------------- | ------------ |
+| 実装済み技術文書 | 検証レポート |
+
+---
 
 ## ベストプラクティス
 
-### すべきこと
+| すべきこと                         | 避けるべきこと          |
+| ---------------------------------- | ----------------------- |
+| 複雑なフローを Mermaid で図解      | 検証なしの Mermaid 出力 |
+| API/データモデルを表形式で整理     | 過度に複雑なネスト表    |
+| コード例に言語タイプと説明を含める | コード例の省略          |
+| 数式は LaTeX 表記で正確に表現      | プレーンテキスト数式    |
+| YAML front-matter でメタデータ定義 | メタデータなしの文書    |
 
-- **図解の活用**: 複雑なフローやシステム構造をMermaid図で視覚化する
-- **表の適切な使用**: APIやデータモデルの構造を表形式で整理する
-- **コード例の明示**: サンプルコードは言語タイプと説明を含めて提示する
-- **数式の正確な記述**: 数学的な概念や計算式はLaTeX表記で正確に表現する
-- **メタデータの設定**: YAML front-matterで文書のメタ情報を定義する
+---
 
-### 避けるべきこと
+## Task ナビゲーション
 
-- **構文確認不足**: Mermaid図やLaTeX式は必ず検証スクリプトで確認する
-- **テーブル過度な複雑化**: ネストが深すぎる表は逆に読みづらくなるため注意
-- **コード例の省略**: 動作確認可能なコード例を必ず含める
-- **アンチパターンの放置**: 既知の問題パターンは `references/Level3_advanced.md` で確認
+| Task                | 目的                         | 参照リソース          |
+| ------------------- | ---------------------------- | --------------------- |
+| `planning.md`       | 目的・対象読者・構文要素特定 | `basics.md`           |
+| `implementation.md` | 技術文書の実装               | `patterns.md`, 構文別 |
+| `validation.md`     | 品質検証                     | scripts               |
 
-## 変更履歴
+---
 
-| Version | Date       | Changes                                                                                                  |
-| ------- | ---------- | -------------------------------------------------------------------------------------------------------- |
-| 1.1.0   | 2025-12-31 | agents/ディレクトリ追加（planning/implementation/validation）、EVALS.json・LOGS.md追加、仕様完全準拠完了 |
-| 1.0.0   | 2025-12-31 | 18-skills.md仕様に準拠。Task仕様ナビ、リソース参照セクション追加                                         |
-| 0.9.0   | 2025-12-24 | スキル構造検証スクリプトと成果物の統合完了                                                               |
+## リソース参照
+
+### References
+
+| ファイル              | 内容                            | 読込条件       |
+| --------------------- | ------------------------------- | -------------- |
+| `basics.md`           | Markdown 基礎構文・用語         | 初回使用時     |
+| `patterns.md`         | 高度構文パターン・組み合わせ    | 実装時         |
+| `mermaid-diagrams.md` | フロー/シーケンス/ER/状態遷移図 | 図解時         |
+| `advanced-tables.md`  | 複雑テーブル・カラム整列        | テーブル作成時 |
+| `code-blocks.md`      | 言語ハイライト・差分表示        | コード記載時   |
+| `math-expressions.md` | LaTeX/KaTeX 数式記法            | 数式記載時     |
+| `front-matter.md`     | YAML メタデータ定義             | 文書作成時     |
+
+### Assets
+
+| ファイル                    | 内容               |
+| --------------------------- | ------------------ |
+| `specification-template.md` | 仕様書テンプレート |
+
+### Scripts
+
+| スクリプト             | 用途             |
+| ---------------------- | ---------------- |
+| `validate-mermaid.mjs` | Mermaid 構文検証 |
+| `log_usage.mjs`        | 使用記録         |
+
+---
+
+## 関連スキル
+
+- `api-documentation-best-practices` - API ドキュメント
+- `tutorial-design` - チュートリアル設計
+- `output-formatting` - 出力フォーマット

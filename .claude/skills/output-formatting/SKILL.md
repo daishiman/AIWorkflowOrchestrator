@@ -41,7 +41,7 @@ Markdown、JSON、YAML、表形式など、構造化された見やすい出力�
 1. 出力先のコンテキスト（ファイル/レポート/API）を確認
 2. 必要な形式（Markdown/JSON/YAML/Table）を特定
 3. 対象読者とユースケースを整理
-4. 必要なリソースレベル（Level 1-4）を判定
+4. `references/basics.md` で基礎概念を確認
 
 **Task**: `agents/analyze-format-requirements.md` を参照
 
@@ -73,7 +73,7 @@ Markdown、JSON、YAML、表形式など、構造化された見やすい出力�
 
 ---
 
-## Task仕様ナビ
+## Task仕様（ナビゲーション）
 
 | Task                        | 起動タイミング | 入力                    | 出力                 |
 | --------------------------- | -------------- | ----------------------- | -------------------- |
@@ -113,37 +113,39 @@ Markdown、JSON、YAML、表形式など、構造化された見やすい出力�
 
 ### references/（詳細知識）
 
-| リソース               | パス                                                                       | 読込条件             |
-| ---------------------- | -------------------------------------------------------------------------- | -------------------- |
-| 基礎概念               | [references/Level1_basics.md](references/Level1_basics.md)                 | 初回利用時           |
-| 実務パターン           | [references/Level2_intermediate.md](references/Level2_intermediate.md)     | 実務適用時           |
-| 応用技法               | [references/Level3_advanced.md](references/Level3_advanced.md)             | 複雑なフォーマット時 |
-| ベストプラクティス     | [references/Level4_expert.md](references/Level4_expert.md)                 | 最適化・高度な設計時 |
-| Markdownガイド         | [references/markdown-guide.md](references/markdown-guide.md)               | Markdown出力時       |
-| JSON/YAMLガイド        | [references/structured-data-guide.md](references/structured-data-guide.md) | データ構造出力時     |
-| テーブルフォーマット集 | [references/table-formatting.md](references/table-formatting.md)           | 表形式出力時         |
+| リソース | パス                                             | 用途       |
+| -------- | ------------------------------------------------ | ---------- |
+| 基礎知識 | See [references/basics.md](references/basics.md) | 形式と選択 |
 
-### scripts/（決定論的処理）
+### agents/（Task仕様）
 
-| スクリプト                    | 機能                       |
-| ----------------------------- | -------------------------- |
-| `scripts/validate-format.mjs` | 出力フォーマットの品質検証 |
-| `scripts/convert-format.mjs`  | 形式間の変換ユーティリティ |
-| `scripts/log_usage.mjs`       | フィードバック記録         |
+| Task                        | 用途                 |
+| --------------------------- | -------------------- |
+| analyze-format-requirements | フォーマット要件分析 |
+| design-format-structure     | 構造設計             |
+| generate-and-validate       | 生成と検証           |
 
 ### assets/（テンプレート）
 
-| アセット                             | 用途                         |
-| ------------------------------------ | ---------------------------- |
-| `assets/markdown-report-template.md` | Markdownレポートテンプレート |
-| `assets/json-schema-template.json`   | JSONスキーマテンプレート     |
-| `assets/yaml-config-template.yaml`   | YAML設定テンプレート         |
-| `assets/table-template.md`           | 表形式テンプレート           |
+| テンプレート     | パス                                 | 用途         |
+| ---------------- | ------------------------------------ | ------------ |
+| Markdownレポート | `assets/markdown-report-template.md` | レポート作成 |
+| JSONスキーマ     | `assets/json-schema-template.json`   | スキーマ定義 |
+| YAML設定         | `assets/yaml-config-template.yaml`   | 設定ファイル |
+
+### scripts/（決定論的処理）
+
+| スクリプト       | パス                          | 用途               |
+| ---------------- | ----------------------------- | ------------------ |
+| フォーマット検証 | `scripts/validate-format.mjs` | JSON/YAML/MD検証   |
+| 使用記録         | `scripts/log_usage.mjs`       | フィードバック記録 |
 
 ---
 
 ## 変更履歴
 
-| Version | Date       | Changes                          |
-| ------- | ---------- | -------------------------------- |
-| 1.0.0   | 2025-12-31 | 18-skills.md完全準拠版。初回作成 |
+| Version | Date       | Changes                              |
+| ------- | ---------- | ------------------------------------ |
+| 1.2.0   | 2026-01-02 | assets/scripts追加、リソース参照完備 |
+| 1.1.0   | 2026-01-02 | リソース参照更新、basics.md作成      |
+| 1.0.0   | 2025-12-31 | 18-skills.md完全準拠版。初回作成     |

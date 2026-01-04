@@ -155,7 +155,7 @@ description: |
   • TODO: アンカー名 / 適用: 適用範囲 / 目的: 目的
 
   Trigger:
-  Use when TODO: 発動条件を英語で記述.
+  TODO: 発動条件を日本語で記述。
 tags:
   - TODO
 allowed-tools:

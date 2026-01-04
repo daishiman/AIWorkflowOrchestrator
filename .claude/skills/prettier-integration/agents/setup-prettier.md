@@ -1,4 +1,4 @@
-# Task仕様書：Prettier初期セットアップ
+# Agent仕様書：Prettier初期セットアップ
 
 ## 1. メタ情報
 
@@ -43,7 +43,7 @@ Prettierの導入ベストプラクティスとESLintとの統合パターンを
 | Prettier公式ドキュメント                    | 設定オプションの選択基準、デフォルト値の理解 |
 | ESLint + Prettier統合ガイド（公式推奨手順） | 責務分離の原則、競合回避パターン             |
 
-> 詳細は `references/Level1_basics.md` と `references/automation-strategies.md` を参照
+> 詳細は See [references/basics.md](../references/basics.md) を参照
 
 ---
 
@@ -85,75 +85,66 @@ Prettierの導入ベストプラクティスとESLintとの統合パターンを
 
 ### 5.1 入力
 
-#### 入力1
+#### 入力1: プロジェクト情報
 
-- データ名: プロジェクト情報
-- 提供元: ユーザー
-- 検証ルール:
-  package.jsonが存在し、Node.jsプロジェクトであること
-- 拒否すべき入力:
-  package.jsonが存在しないプロジェクト
-- 欠損時処理:
-  エラーメッセージを表示し、package.jsonの作成を促す
+- **データ名**: プロジェクト情報
+- **提供元**: ユーザー
+- **検証ルール**: package.jsonが存在し、Node.jsプロジェクトであること
+- **拒否すべき入力**: package.jsonが存在しないプロジェクト
+- **欠損時処理**: エラーメッセージを表示し、package.jsonの作成を促す
 
-#### 入力2
+#### 入力2: 既存ESLint設定
 
-- データ名: 既存ESLint設定
-- 提供元: プロジェクトファイル
-- 検証ルール:
-  .eslintrc.\*またはpackage.json内のeslintConfigが存在
-- 拒否すべき入力:
-  なし（ESLint未導入も許容）
-- 欠損時処理:
-  ESLint設定がない場合は、Prettierのみをセットアップ
+- **データ名**: 既存ESLint設定
+- **提供元**: プロジェクトファイル
+- **検証ルール**: .eslintrc.\*またはpackage.json内のeslintConfigが存在
+- **拒否すべき入力**: なし（ESLint未導入も許容）
+- **欠損時処理**: ESLint設定がない場合は、Prettierのみをセットアップ
 
 ### 5.2 出力
 
-#### 成果物1
+#### 成果物1: Prettier設定ファイル
 
-- 成果物名: Prettier設定ファイル
-- 受領先: プロジェクトルート
-- 出力テンプレート: `assets/prettierrc-base.json`
-- 内容:
-  基本的なPrettier設定（printWidth, singleQuote等）
+- **成果物名**: Prettier設定ファイル
+- **受領先**: プロジェクトルート
+- **出力テンプレート**: `assets/prettierrc-base.json`
+- **内容**: 基本的なPrettier設定（printWidth, singleQuote等）
 
-#### 成果物2
+#### 成果物2: セットアップ完了レポート
 
-- 成果物名: セットアップ完了レポート
-- 受領先: ユーザー
-- 出力テンプレート:
+- **成果物名**: セットアップ完了レポート
+- **受領先**: ユーザー
+- **出力テンプレート**:
 
-  ```markdown
-  ## Prettierセットアップ完了
+```markdown
+## Prettierセットアップ完了
 
-  ### インストール済み依存関係
+### インストール済み依存関係
 
-  - prettier: {{version}}
-  - eslint-config-prettier: {{version}}
+- prettier: {{version}}
+- eslint-config-prettier: {{version}}
 
-  ### 作成ファイル
+### 作成ファイル
 
-  - .prettierrc.json
-  - .prettierignore (必要に応じて)
+- .prettierrc.json
+- .prettierignore (必要に応じて)
 
-  ### 追加スクリプト
+### 追加スクリプト
 
-  - npm run format: コード全体をフォーマット
-  - npm run format:check: フォーマット違反をチェック
+- pnpm format: コード全体をフォーマット
+- pnpm format:check: フォーマット違反をチェック
 
-  ### 次のステップ
+### 次のステップ
 
-  1. エディタ統合設定を実行（integrate-editor Task）
-  2. CI/CDパイプラインへの組み込み検討
-  ```
+1. エディタ統合設定を実行（integrate-editor Agent）
+2. CI/CDパイプラインへの組み込み検討
+```
 
-- 内容:
-  セットアップ結果、インストールされた依存関係、作成されたファイル、次のステップ
+- **内容**: セットアップ結果、インストールされた依存関係、作成されたファイル、次のステップ
 
 ---
 
 ## 関連リソース
 
-- **基礎概念**: See [references/Level1_basics.md](../references/Level1_basics.md)
-- **自動化戦略**: See [references/automation-strategies.md](../references/automation-strategies.md)
+- **基礎概念**: See [references/basics.md](../references/basics.md)
 - **基本設定テンプレート**: See [assets/prettierrc-base.json](../assets/prettierrc-base.json)

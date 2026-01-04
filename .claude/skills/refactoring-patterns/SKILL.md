@@ -1,17 +1,17 @@
 ---
 name: refactoring-patterns
 description: |
-  Design patterns applied in refactoring context to improve code structure systematically.
-  Focuses on pattern recognition and application for legacy code modernization.
+  設計パターンを用いた段階的リファクタリングの判断・計画・適用・検証を支援するスキル。
+  変化点の見極めとテスト保護を前提に、過剰な抽象化を避けて構造改善を進める。
 
   Anchors:
-  • Design Patterns (Gang of Four) / 適用: リファクタリング時のパターン適用 / 目的: 構造的な改善
-  • Refactoring to Patterns (Joshua Kerievsky) / 適用: パターン指向リファクタリング / 目的: 段階的なパターン導入
-  • Working Effectively with Legacy Code (Michael Feathers) / 適用: レガシーコード改善 / 目的: 安全なパターン適用
+  • Refactoring to Patterns (Joshua Kerievsky) / 適用: パターン導入手順 / 目的: 段階的移行
+  • Design Patterns (GoF) / 適用: パターン選定 / 目的: 責務分離と拡張性
+  • Working Effectively with Legacy Code (Michael Feathers) / 適用: レガシー安全性 / 目的: 変更の安全確保
 
   Trigger:
-  Use when applying design patterns during refactoring, modernizing legacy code, or introducing patterns incrementally.
-  design pattern, refactoring, legacy code, pattern application, strategy pattern, template method, factory, adapter
+  Use when refactoring legacy or complex code by introducing design patterns incrementally while preserving behavior.
+  refactoring patterns, design patterns, legacy code, strategy pattern, adapter pattern, template method, factory
 allowed-tools:
   - Read
   - Write
@@ -26,78 +26,50 @@ allowed-tools:
 
 ## 概要
 
-Design patterns applied in refactoring context to improve code structure systematically.
-リファクタリング時にデザインパターンを段階的に適用し、レガシーコードを近代化するスキル。
-
-このスキルは以下の場面で活用されます:
-
-- 複雑な条件分岐をStrategyパターンに置き換え
-- 重複コードをTemplate Methodパターンで統一
-- 密結合をAdapterパターンで分離
-- 複雑な生成ロジックをFactoryパターンに置き換え
-- レガシーコードに段階的にパターンを導入
-
-詳細な手順や背景については、レベル別ガイド（references/Level1_basics.md～Level4_expert.md）を参照してください。
+設計パターンを使ったリファクタリングを、判断→計画→段階的適用→検証の順で進めるためのスキル。
+コードスメルの背後にある変化点を特定し、最小限のパターン導入で保守性を高める。
+判断理由を記録し、再現性のある改善プロセスにする。
 
 ---
 
 ## ワークフロー
 
-### Phase 1: パターン識別
+### Phase 1: パターン機会の特定
 
-**目的**: コードスメルからパターン適用機会を特定
+**目的**: パターン導入が有効な変化点と候補パターンを洗い出す
 
 **アクション**:
 
-1. 対象コードの問題点を特定（複雑な条件分岐、重複コード、密結合など）
-2. `references/Level1_basics.md` でパターン適用の基本を確認
-3. `references/pattern-opportunities.md` で適用可能なパターンを判断
-4. 必要なリソース、スクリプト、テンプレートを特定
-
-**確認項目**:
-
-- 既存テストが通っているか確認
-- パターン適用の範囲を明確化
-- 影響を受けるコンポーネントを把握
+1. 影響範囲と既存テストを確認する
+2. `references/pattern-opportunities.md` で変化点/スメルを整理する
+3. `references/pattern-selection-matrix.md` で候補パターンを絞り込む
+4. パターン機会レポートを作成する
 
 **Task**: `agents/identify-pattern.md` を参照
 
-### Phase 2: パターン適用
+### Phase 2: パターン導入計画と段階的適用
 
-**目的**: 段階的にパターンを適用してコード構造を改善
+**目的**: 段階的な導入計画を作り、テスト保護下で小さく適用する
 
 **アクション**:
 
-1. `references/Level2_intermediate.md` でパターン適用手順を確認
-2. 対応するパターンリソース（strategy-pattern.md、template-method-pattern.md など）を参照
-3. `assets/pattern-application-checklist.md` を使用しながら段階的に実施
-4. 各段階でテストを実行して動作確認
-
-**実施戦略**:
-
-- 小さな変更の積み重ねで実施（一度に完全なパターンを導入しない）
-- テストが常に通っている状態を維持
-- パターンの過剰適用を避ける（YAGNI原則）
+1. `assets/pattern-refactor-plan-template.md` で計画を作成する
+2. `references/incremental-application-steps.md` の手順で変更を分割する
+3. `scripts/validate-pattern-plan.mjs` で計画の欠落を検出する
+4. 変更を段階的に適用し、各段階でテストを通す
 
 **Task**: `agents/apply-pattern.md` を参照
 
-### Phase 3: 検証と記録
+### Phase 3: 適用結果の検証と記録
 
-**目的**: 成果物の検証と実行記録の保存
+**目的**: 振る舞い維持とパターン適合を確認し、意思決定を残す
 
 **アクション**:
 
-1. 全テストが成功することを確認
-2. パターン適用による改善効果を測定
-3. `scripts/validate-pattern-application.mjs` でパターン適用を検証
-4. 成果物が目的に合致するか確認
-5. `scripts/log_usage.mjs` を実行して記録を残す
-
-**確認事項**:
-
-- パターンが正しく適用されているか
-- 過剰設計になっていないか
-- ドキュメント更新が必要か確認
+1. `assets/pattern-application-checklist.md` で検証する
+2. `references/validation-criteria.md` で品質条件を確認する
+3. `assets/pattern-decision-record.md` に判断理由を記録する
+4. 必要なドキュメント/テスト更新を行う
 
 **Task**: `agents/validate-pattern.md` を参照
 
@@ -105,15 +77,13 @@ Design patterns applied in refactoring context to improve code structure systema
 
 ## Task仕様ナビ
 
-| Task                  | 説明                                          | 前提条件                 | 参照リソース                            |
-| --------------------- | --------------------------------------------- | ------------------------ | --------------------------------------- |
-| パターン識別          | コードスメルからパターン適用機会を特定        | ソースコードへのアクセス | references/pattern-opportunities.md     |
-| Strategy パターン適用 | 条件分岐をStrategy パターンに置き換え         | 複雑な条件分岐がある     | references/strategy-pattern.md          |
-| Template Method 適用  | 重複コードを Template Method で統一           | 類似した処理の重複       | references/template-method-pattern.md   |
-| Factory パターン適用  | 複雑な生成ロジックを Factory に置き換え       | 複雑なオブジェクト生成   | references/factory-pattern.md           |
-| Adapter パターン適用  | 密結合を Adapter で分離                       | レガシーAPI への依存     | references/adapter-pattern.md           |
-| State パターン適用    | 状態依存の振る舞いを State パターンに置き換え | 状態による条件分岐が複雑 | references/state-pattern.md             |
-| パターン適用検証      | パターンが正しく適用されているか確認          | パターン適用完了         | assets/pattern-application-checklist.md |
+| Task              | 起動タイミング     | 入力                               | 出力                               |
+| ----------------- | ------------------ | ---------------------------------- | ---------------------------------- |
+| identify-pattern  | Phase 1 開始時      | 対象コード/テスト/現状課題          | パターン機会レポート               |
+| apply-pattern     | Phase 2 開始時      | 機会レポート/制約/テスト状況        | パターン導入計画/段階的適用結果    |
+| validate-pattern  | Phase 3 開始時      | 適用結果/テスト結果/設計判断メモ    | 検証レポート/意思決定記録          |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリを参照
 
 ---
 
@@ -121,120 +91,57 @@ Design patterns applied in refactoring context to improve code structure systema
 
 ### すべきこと
 
-- **段階的に導入する**: パターンを一度にすべて適用せず、段階的に導入する
-- **テスト駆動で実施**: パターン適用は常にテストの保護下で行う
-- **YAGNI を意識**: 将来の拡張性より現在の必要性を優先する
-- **シンプルさを保つ**: パターンで複雑さが増す場合は適用を見送る
-- **既存コードを尊重**: 既存の設計意図を理解してからパターンを適用
-- **チーム合意を得る**: パターン導入前にチームでレビュー
-- **ドキュメント更新**: パターン適用後、設計ドキュメントを更新
+| 推奨事項                       | 理由                                   |
+| ------------------------------ | -------------------------------------- |
+| 変化点を先に特定する           | パターン選定の前提が明確になる          |
+| 段階的に導入する               | テスト保護下での安全性が高まる          |
+| 置き換え単位を小さく保つ       | 差分が理解しやすくレビューしやすい      |
+| パターン適用の目的を記録する   | 過剰適用や意図の喪失を防ぐ              |
+| 既存の振る舞い維持を最優先する | レガシーの安全性を確保できる            |
 
 ### 避けるべきこと
 
-- **パターン過剰適用**: すべての問題をパターンで解決しようとしない
-- **一度に完全実装**: 段階的な導入を無視して完全なパターンを一度に実装しない
-- **テストなしで実施**: パターン適用は常にテストの保護下で行うこと
-- **抽象化の過度な導入**: 必要以上の抽象化レイヤーを作らない
-- **既存設計の無視**: 既存の設計意図を理解せずにパターンを押し付けない
-- **パフォーマンス未検証**: パターン適用後のパフォーマンスを検証せず進めない
+| 禁止事項                       | 問題点                                 |
+| ------------------------------ | -------------------------------------- |
+| パターン名ありきで導入する     | 不要な抽象化と複雑化を招く              |
+| 一度に大きく置き換える         | 影響範囲が拡大し回帰リスクが高い        |
+| テストなしで進める             | 振る舞い維持の検証ができない            |
+| 既存設計の意図を無視する       | 本質的な問題の解決にならない            |
+| パフォーマンス検証を省略する   | 遅延や負荷増大に気づけない              |
 
 ---
 
 ## リソース参照
 
-### レベル別ガイド
+### scripts/（決定論的処理）
 
-| リソース                          | 説明                                         | 対象レベル |
-| --------------------------------- | -------------------------------------------- | ---------- |
-| references/Level1_basics.md       | パターン適用の基本概念と判断基準             | 初級       |
-| references/Level2_intermediate.md | 実践的なパターン適用手法と段階的導入         | 中級       |
-| references/Level3_advanced.md     | 複雑なパターン組み合わせとレガシーコード対応 | 上級       |
-| references/Level4_expert.md       | パターン適用のアンチパターンと高度な設計判断 | 専門家向け |
+| スクリプト                          | 機能                               |
+| ----------------------------------- | ---------------------------------- |
+| `scripts/validate-pattern-plan.mjs` | 導入計画テンプレの必須項目を検証   |
 
-### パターン別リソース
+### references/（詳細知識）
 
-| パターン         | ファイル                              | 説明                                      |
-| ---------------- | ------------------------------------- | ----------------------------------------- |
-| パターン機会検出 | references/pattern-opportunities.md   | パターン適用機会の識別方法                |
-| Strategy         | references/strategy-pattern.md        | 条件分岐をStrategy パターンに置き換え     |
-| Template Method  | references/template-method-pattern.md | 重複コードを Template Method で統一       |
-| Factory          | references/factory-pattern.md         | 複雑な生成ロジックを Factory に置き換え   |
-| Adapter          | references/adapter-pattern.md         | レガシーAPI を Adapter で分離             |
-| State            | references/state-pattern.md           | 状態依存の振る舞いを State パターンに置換 |
-| Observer         | references/observer-pattern.md        | イベント通知を Observer パターンで実装    |
-| Decorator        | references/decorator-pattern.md       | 機能追加を Decorator パターンで実現       |
+| リソース                         | パス                                                                   | 読込条件                   |
+| -------------------------------- | ---------------------------------------------------------------------- | -------------------------- |
+| パターン機会の判断基準           | [references/pattern-opportunities.md](references/pattern-opportunities.md) | Phase 1 で判断する時       |
+| パターン選定マトリクス           | [references/pattern-selection-matrix.md](references/pattern-selection-matrix.md) | 候補パターンを絞る時       |
+| 段階的導入ステップ               | [references/incremental-application-steps.md](references/incremental-application-steps.md) | 計画を立てる時             |
+| パターン適用のアンチパターン     | [references/pattern-anti-patterns.md](references/pattern-anti-patterns.md) | 過剰適用の兆候を確認する時 |
+| 検証基準                         | [references/validation-criteria.md](references/validation-criteria.md) | Phase 3 で検証する時       |
 
-### スクリプトと自動化
+### assets/（テンプレート・素材）
 
-| スクリプト                               | 説明                       | 使用時期           |
-| ---------------------------------------- | -------------------------- | ------------------ |
-| scripts/detect-pattern-opportunities.mjs | パターン適用機会を自動検出 | Phase 1実行時      |
-| scripts/validate-pattern-application.mjs | パターン適用を検証         | Phase 3実行時      |
-| scripts/log_usage.mjs                    | 使用記録と自動評価を実施   | パターン適用完了後 |
-
-### テンプレート
-
-| テンプレート                            | 説明                                 | 活用場面         |
-| --------------------------------------- | ------------------------------------ | ---------------- |
-| assets/pattern-application-checklist.md | パターン適用時のチェックリスト       | 各フェーズで参照 |
-| assets/strategy-pattern-template.md     | Strategy パターンテンプレート        | Strategy 適用時  |
-| assets/template-method-template.md      | Template Method パターンテンプレート | Template 適用時  |
-| assets/factory-pattern-template.md      | Factory パターンテンプレート         | Factory 適用時   |
-
-### 参考文献
-
-- **Design Patterns** (Gang of Four): デザインパターンの標準文献
-- **Refactoring to Patterns** (Joshua Kerievsky): パターン指向リファクタリング
-- **Working Effectively with Legacy Code** (Michael Feathers): レガシーコード改善の実践
-- **Head First Design Patterns**: パターンの理解を深める入門書
-
----
-
-## コマンドリファレンス
-
-### リソース読み取り
-
-```bash
-# レベル別ガイドの読み取り
-cat .claude/skills/refactoring-patterns/references/Level1_basics.md
-cat .claude/skills/refactoring-patterns/references/Level2_intermediate.md
-cat .claude/skills/refactoring-patterns/references/Level3_advanced.md
-cat .claude/skills/refactoring-patterns/references/Level4_expert.md
-
-# パターン別リソースの読み取り
-cat .claude/skills/refactoring-patterns/references/pattern-opportunities.md
-cat .claude/skills/refactoring-patterns/references/strategy-pattern.md
-cat .claude/skills/refactoring-patterns/references/template-method-pattern.md
-cat .claude/skills/refactoring-patterns/references/factory-pattern.md
-```
-
-### スクリプト実行
-
-```bash
-# パターン適用機会検出
-node .claude/skills/refactoring-patterns/scripts/detect-pattern-opportunities.mjs --help
-
-# パターン適用検証
-node .claude/skills/refactoring-patterns/scripts/validate-pattern-application.mjs --help
-
-# 使用記録と評価
-node .claude/skills/refactoring-patterns/scripts/log_usage.mjs --help
-```
-
-### テンプレート参照
-
-```bash
-# パターン適用チェックリスト
-cat .claude/skills/refactoring-patterns/assets/pattern-application-checklist.md
-
-# Strategy パターンテンプレート
-cat .claude/skills/refactoring-patterns/assets/strategy-pattern-template.md
-```
+| アセット                                 | 用途                             |
+| ---------------------------------------- | -------------------------------- |
+| `assets/pattern-refactor-plan-template.md` | 導入計画テンプレート             |
+| `assets/pattern-application-checklist.md` | 適用後の検証チェックリスト       |
+| `assets/pattern-decision-record.md`       | 意思決定記録テンプレート         |
 
 ---
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                                                                    |
-| ------- | ---------- | ---------------------------------------------------------------------------------------------------------- |
-| 1.0.0   | 2025-12-31 | 18-skills.md仕様に基づいて新規作成。Anchors、Trigger、allowed-toolsを追加。Task仕様ナビ追加。agents/実装。 |
+| Version | Date       | Changes                                                                 |
+| ------- | ---------- | ----------------------------------------------------------------------- |
+| 2.0.0   | 2026-01-02 | skill-creator手順に沿って全面改訂。ワークフロー/Task/テンプレを再設計。 |
+| 1.0.0   | 2025-12-31 | 18-skills.md仕様に基づいて新規作成。                                    |

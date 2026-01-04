@@ -1,5 +1,7 @@
 # テスト命名ガイドテンプレート
 
+> 対応Task: naming-pattern-design, naming-enforcement-review
+
 ## プロジェクト情報
 
 - **プロジェクト名**: {{PROJECT_NAME}}

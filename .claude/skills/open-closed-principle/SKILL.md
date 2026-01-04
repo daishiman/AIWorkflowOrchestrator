@@ -33,33 +33,35 @@ SOLID原則の開放閉鎖原則（OCP: Open-Closed Principle）は、
 - Strategy、Template Method、Plugin Registryなどの拡張パターンの適用
 - レガシーコードのOCP準拠への段階的なリファクタリング
 
-詳細な手順や背景は `references/Level1_basics.md` から `Level4_expert.md` を参照してください。
+詳細な手順や背景は `references/` ディレクトリを参照してください。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 現状分析
 
-**目的**: タスクの目的と前提条件を明確にし、適用すべきレベルを決定
-
-**アクション**:
-
-1. `references/Level1_basics.md` でOCPの基本概念を確認
-2. `references/Level2_intermediate.md` で実装パターンを学習
-3. 必要に応じて `references/Level3_advanced.md` と `Level4_expert.md` で応用技法を確認
-4. タスクに適用する拡張メカニズムを特定（`references/extension-mechanisms.md` 参照）
-
-### Phase 2: スキル適用
-
-**目的**: OCPの指針に従って設計またはリファクタリングを実施
+**目的**: OCP違反パターンを検出し、改善対象を特定
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. `scripts/analyze-extensibility.mjs` でコード内のOCP違反を検出
-3. 拡張ポイントを設計：`assets/extension-point-template.md` を活用
-4. 重要な判断点（責任の分離、拡張戦略など）をメモとして記録
+1. `references/basics.md` でOCPの基本概念を確認
+2. `agents/analyze-violations.md` を参照してコード分析を実施
+3. 違反箇所をリストアップし優先度を設定
 
-### Phase 3: 検証と記録
+**Task**: `agents/analyze-violations.md` を参照
+
+### Phase 2: 拡張設計
+
+**目的**: OCP準拠の拡張ポイントを設計
+
+**アクション**:
+
+1. `references/ocp-patterns.md` で適切なパターンを選定
+2. `agents/design-extension.md` を参照して設計を実施
+3. `assets/extension-point-template.md` でテンプレートを活用
+
+**Task**: `agents/design-extension.md` を参照
+
+### Phase 3: 実装と検証
 
 **目的**: 成果物の検証と実行記録の保存
 
@@ -70,16 +72,14 @@ SOLID原則の開放閉鎖原則（OCP: Open-Closed Principle）は、
 3. 成果物がOCP原則に準拠しているか確認
 4. `scripts/log_usage.mjs` を実行して記録を残す
 
-## Task仕様ナビ
+## Task仕様（ナビゲーション）
 
-| Task               | 説明                                 | リソース                      | スクリプト                  |
-| ------------------ | ------------------------------------ | ----------------------------- | --------------------------- |
-| OCP基礎学習        | OCPの基本概念と利点を理解            | `Level1_basics.md`            | -                           |
-| アンチパターン検出 | コード内のOCP違反を特定              | `analyze-extensibility.mjs`   | `analyze-extensibility.mjs` |
-| 拡張性設計         | 新機能を追加できる拡張ポイントを設計 | `extension-point-template.md` | -                           |
-| リファクタリング   | 既存コードをOCP準拠に改善            | `refactoring-to-ocp.md`       | `analyze-extensibility.mjs` |
-| パターン適用       | Strategy、Template Methodなどを実装  | `ocp-patterns.md`             | -                           |
-| 実装検証           | 実装がOCP原則に準拠しているか確認    | `validate-skill.mjs`          | `validate-skill.mjs`        |
+| Task               | 起動タイミング | 入力         | 出力         |
+| ------------------ | -------------- | ------------ | ------------ |
+| analyze-violations | Phase 1開始時  | 対象コード   | 違反レポート |
+| design-extension   | Phase 2開始時  | 違反レポート | 拡張設計書   |
+
+**詳細仕様**: 各Taskの詳細は `agents/` ディレクトリの対応ファイルを参照
 
 ## ベストプラクティス
 
@@ -101,34 +101,26 @@ SOLID原則の開放閉鎖原則（OCP: Open-Closed Principle）は、
 
 ## リソース参照
 
-### 学習リソース
+### references/（詳細知識）
 
-- `references/Level1_basics.md`: OCPの基本概念、利点、簡単な例
-- `references/Level2_intermediate.md`: 実装パターン、アンチパターンの改善方法
-- `references/Level3_advanced.md`: 複雑なシナリオでの応用、パフォーマンス最適化
-- `references/Level4_expert.md`: エンタープライズパターン、メタプログラミング
+| リソース         | パス                                                                         | 用途                |
+| ---------------- | ---------------------------------------------------------------------------- | ------------------- |
+| 基礎知識         | See [references/basics.md](references/basics.md)                             | OCP基本概念         |
+| 原則詳細         | See [references/ocp-fundamentals.md](references/ocp-fundamentals.md)         | 定義・歴史・検証    |
+| パターン集       | See [references/ocp-patterns.md](references/ocp-patterns.md)                 | Strategy/Template等 |
+| 拡張メカニズム   | See [references/extension-mechanisms.md](references/extension-mechanisms.md) | パターン選定ガイド  |
+| リファクタリング | See [references/refactoring-to-ocp.md](references/refactoring-to-ocp.md)     | 段階的改善手順      |
 
-### テクニカルリソース
+### assets/（テンプレート）
 
-- `references/ocp-fundamentals.md`: OCPの原則、歴史的背景、基本概念
-- `references/ocp-patterns.md`: Strategy、Template Method、Plugin Registry、Factory、Decorator、Abstract Factory
-- `references/extension-mechanisms.md`: 拡張メカニズム（どのパターンをいつ使うか）
-- `references/refactoring-to-ocp.md`: レガシーコードのリファクタリング手順
-- `references/legacy-skill.md`: 旧SKILL.mdの全文（参考）
-
-### スクリプトとツール
-
-- `scripts/analyze-extensibility.mjs`: コードのOCP違反検出（switch文、if-elseチェーン、型チェック、フラグパラメータ）
-- `scripts/validate-skill.mjs`: スキル構造と成果物の検証
-- `scripts/log_usage.mjs`: 使用記録・自動評価
-
-### テンプレート
-
-- `assets/extension-point-template.md`: Strategy/Template Method/Plugin Registryによる拡張ポイント設計テンプレート
+| リソース     | パス                                 | 用途             |
+| ------------ | ------------------------------------ | ---------------- |
+| 拡張ポイント | `assets/extension-point-template.md` | 設計テンプレート |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                                                |
-| ------- | ---------- | -------------------------------------------------------------------------------------- |
-| 2.0.0   | 2025-12-31 | 18-skills.md仕様に対応（Anchor/Trigger追加、Task仕様ナビ追加、ベストプラクティス充実） |
-| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added                                            |
+| Version | Date       | Changes                      |
+| ------- | ---------- | ---------------------------- |
+| 2.1.0   | 2026-01-02 | agents/追加、Level構造を統合 |
+| 2.0.0   | 2025-12-31 | 18-skills.md仕様に対応       |
+| 1.0.0   | 2025-12-24 | 初期実装                     |

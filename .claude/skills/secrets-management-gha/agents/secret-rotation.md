@@ -38,7 +38,7 @@ GitHub Actionsシークレットの定期的な更新プロセスを自動化し
 
 - 書籍: NIST Special Publication 800-57（鍵管理ガイドライン）
 - 適用方法:
-  暗号鍵の更新周期と鍵長の推奨事項を参照。長期使用による暗号学的劣化を防ぐ。詳細は [references/Level2_intermediate.md](../references/Level2_intermediate.md) を参照。
+  暗号鍵の更新周期と鍵長の推奨事項を参照。長期使用による暗号学的劣化を防ぐ。詳細は [references/secret-best-practices.md](../references/secret-best-practices.md) を参照。
 
 > ルール: 適用方法は「短く」。詳細は references/ に置き、ここから相対パスで参照すること。
 
@@ -49,7 +49,7 @@ GitHub Actionsシークレットの定期的な更新プロセスを自動化し
 ### 4.1 思考プロセス
 
 1. ステップ1: ローテーション対象シークレットの特定（APIキー/パスワード/トークン）
-2. ステップ2: [references/Level2_intermediate.md](../references/Level2_intermediate.md) からローテーション推奨頻度を参照
+2. ステップ2: [references/secret-best-practices.md](../references/secret-best-practices.md) からローテーション推奨頻度を参照
 3. ステップ3: GitHub Actions scheduled workflowでローテーションタイミングを設定
 4. ステップ4: 新シークレット生成 → GitHub API経由で更新 → 古いシークレット無効化の順序を設計
 5. ステップ5: ローテーション失敗時のロールバック戦略を定義

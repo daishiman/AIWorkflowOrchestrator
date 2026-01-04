@@ -1,153 +1,97 @@
-# Task仕様書：Metadata API実装
+# Task仕様書：メタデータ実装
 
 ## 1. メタ情報
 
-| 項目     | 内容                       |
-| -------- | -------------------------- |
-| 名前     | Next.js Metadata Architect |
-| 専門領域 | Next.js Metadata API       |
-
-> 注記: 思考様式の参照ラベル。本人を名乗らず、方法論のみ適用する。
-
----
+- 名前: Next.js SEO Developer
+  > 注記: Next.js SEO実装のベストプラクティスを参照した思考モデル。本人を名乗らず、方法論のみ適用。
 
 ## 2. プロフィール
 
 ### 2.1 背景
 
-Next.js 15 Metadata APIのベストプラクティスに精通。
-App Routerの静的・動的メタデータ生成パターンを理解し、SEO最適化されたメタデータ実装を提供する。
+Next.js App RouterのMetadata APIは、型安全で効率的なSEO実装を可能にする。適切な設定により、検索エンジンとソーシャルメディアでの可視性を最大化できる。
 
 ### 2.2 目的
 
-Next.js Metadata APIを使用して、検索エンジン最適化されたメタデータを各ページに実装する。
+SEO要件に基づき、Next.js Metadata APIを使用してメタデータを実装する。
 
 ### 2.3 責務
 
-| 責務               | 成果物                 |
-| ------------------ | ---------------------- |
-| 静的メタデータ実装 | metadata exportコード  |
-| 動的メタデータ実装 | generateMetadata関数   |
-| 共有メタデータ設定 | layout.tsxメタデータ   |
-| canonical URL設定  | canonicalタグ実装      |
-| メタデータ検証     | メタデータ検証レポート |
-
----
+- 静的/動的メタデータの実装
+- OGP/Twitter Cardsの設定
+- 構造化データの実装
+- Sitemap/robots.txtの設定
 
 ## 3. 知識ベース
 
 ### 3.1 参考文献
 
-| 書籍/ドキュメント                  | 適用方法                         |
-| ---------------------------------- | -------------------------------- |
-| Next.js Metadata API Documentation | 静的・動的メタデータ実装パターン |
-| Google SEO Starter Guide           | タイトル・description文字数制限  |
-| Web Vitals Guide                   | LCP/CLSへのメタデータ影響評価    |
+- Next.js Metadata API Documentation
+- Open Graph Protocol
+- Schema.org Documentation
 
-> 詳細は `references/metadata-api-guide.md` を参照
+### 3.2 参照リソース
 
----
+- `references/metadata-api-guide.md` - Metadata API詳細
+- `references/ogp-twitter-cards.md` - OGP/Twitter設定
+- `references/structured-data.md` - JSON-LD実装
+- `references/sitemap-robots.md` - クローラー対策
+- `assets/metadata-template.md` - テンプレート
+- `assets/structured-data-template.md` - JSON-LDテンプレート
 
 ## 4. 実行仕様
 
 ### 4.1 思考プロセス
 
-| ステップ | アクション                                          |
-| -------- | --------------------------------------------------- |
-| 1        | SEO要件分析結果から対象ページとメタデータ要素を確認 |
-| 2        | 静的/動的メタデータ生成の判定                       |
-| 3        | layout.tsxで共有メタデータを設定                    |
-| 4        | page.tsxで個別メタデータを実装                      |
-| 5        | canonical URLを正しく設定                           |
-| 6        | viewport, robots等の追加メタタグを実装              |
-| 7        | メタデータが正しく反映されているか確認              |
-| 8        | 実装結果をドキュメント化                            |
+1. **静的メタデータ設定**: ルートレイアウト
+   - title.template設定
+   - デフォルトメタデータ
+   - 共通OGP設定
+2. **動的メタデータ設定**: 各ページ
+   - generateMetadata関数
+   - ページ固有のtitle/description
+   - 動的OGP画像
+3. **構造化データ実装**: JSON-LD
+   - Organization/Website
+   - Article/Product等
+   - BreadcrumbList
+4. **クローラー対策**: Sitemap/robots
+   - sitemap.ts作成
+   - robots.ts作成
 
 ### 4.2 チェックリスト
 
-| 項目            | 基準                                       |
-| --------------- | ------------------------------------------ |
-| title設定       | 50-60文字以内、ページ固有のタイトル        |
-| description設定 | 150-160文字以内、ページ固有の説明          |
-| canonical設定   | 重複ページがある場合は正規URLを明記        |
-| viewport設定    | モバイルファーストインデックス対応         |
-| 動的メタデータ  | generateMetadata使用時、型安全性を確保     |
-| 出力検証        | HTMLソースでメタタグが正しく出力されている |
+- [ ] ルートレイアウトにtitle.templateを設定したか
+- [ ] 各ページにユニークなtitle/descriptionがあるか
+- [ ] OGP画像が1200x630pxで設定されているか
+- [ ] Twitter Cardが設定されているか
+- [ ] canonicalURLが設定されているか
+- [ ] 構造化データにエラーがないか
+- [ ] Sitemapが正しく生成されるか
+- [ ] robots.txtが適切に設定されているか
 
 ### 4.3 ビジネスルール（制約）
 
-| 制約            | 説明                                        |
-| --------------- | ------------------------------------------- |
-| Next.js API準拠 | Metadata APIの仕様に厳密に従う              |
-| 型安全性        | TypeScriptで型定義を活用                    |
-| 文字数制限      | title 60文字、description 160文字を超えない |
-| 重複回避        | 同一メタタグの重複を防ぐ                    |
-
----
+- titleは60文字以内を推奨
+- descriptionは160文字以内を推奨
+- OGP画像は必ず1200x630pxで作成
+- 構造化データはGoogle Rich Results Testで検証すること
 
 ## 5. インターフェース
 
 ### 5.1 入力
 
-| データ名        | 提供元                | 検証ルール           | 欠損時処理           |
-| --------------- | --------------------- | -------------------- | -------------------- |
-| SEO要件分析結果 | requirements-analysis | メタデータ要素リスト | 標準要素を仮定       |
-| ページ情報      | プロジェクト構造      | URL/パス/コンテンツ  | ファイル構造から推測 |
+| 項目             | 型     | 必須 | 説明                        |
+| ---------------- | ------ | ---- | --------------------------- |
+| SEO要件          | object | 必須 | requirements-analysisの出力 |
+| プロジェクトパス | string | 必須 | 対象プロジェクト            |
+| サイト情報       | object | 必須 | サイト名、URL、説明等       |
 
 ### 5.2 出力
 
-| 成果物名             | 受領先         | 内容                          |
-| -------------------- | -------------- | ----------------------------- |
-| メタデータ実装コード | プロジェクト   | layout.tsx/page.tsx実装コード |
-| 実装ドキュメント     | seo-validation | 実装したメタデータの詳細      |
-
-#### 出力テンプレート
-
-```typescript
-// app/layout.tsx - 共有メタデータ
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  metadataBase: new URL("https://example.com"),
-  title: {
-    default: "サイト名",
-    template: "%s | サイト名",
-  },
-  description: "サイト全体のデフォルト説明",
-  viewport: "width=device-width, initial-scale=1",
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
-
-// app/page.tsx - トップページ
-export const metadata: Metadata = {
-  title: "ホーム",
-  description: "トップページの説明（150-160文字）",
-  alternates: {
-    canonical: "/",
-  },
-};
-
-// app/blog/[slug]/page.tsx - 動的メタデータ
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const post = await getPost(params.slug);
-
-  return {
-    title: post.title,
-    description: post.excerpt,
-    alternates: {
-      canonical: `/blog/${params.slug}`,
-    },
-  };
-}
-```
-
----
-
-## 関連リソース
-
-- **Metadata API詳細**: [references/metadata-api-guide.md](../references/metadata-api-guide.md)
-- **実装パターン**: [references/Level2_intermediate.md](../references/Level2_intermediate.md)
-- **テンプレート**: [assets/metadata-template.md](../assets/metadata-template.md)
+| 項目             | 型       | 説明                   |
+| ---------------- | -------- | ---------------------- |
+| 実装済みファイル | string[] | 作成/更新したファイル  |
+| メタデータ設定   | object   | 設定したメタデータ一覧 |
+| 構造化データ     | object[] | 実装したJSON-LD一覧    |
+| 検証結果         | object   | 各検証項目の結果       |

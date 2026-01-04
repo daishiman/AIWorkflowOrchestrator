@@ -1,138 +1,122 @@
 ---
 name: file-watcher-security
 description: |
-  ファイル監視システムのセキュリティ対策とプロダクション環境での安全な運用パターン。
-  最小権限の原則、Defense in Depth、Fail-Safe Defaultsに基づく多層防御設計を提供。
+  ファイル監視システムのセキュリティ対策を実装するスキル。パストラバーサル・シンボリックリンク攻撃の防止、最小権限の原則に基づく権限管理、多層防御アーキテクチャを設計・実装。
 
   Anchors:
-  • パストトラバーサル対策 / 適用: ファイルパス検証とシンボリックリンク処理 / 目的: 監視対象外ディレクトリへのアクセスを防止
-  • 権限管理 / 適用: 最小権限の原則に基づくプロセス権限設定 / 目的: 監視プロセスの権限を制限し、侵害時の影響範囲を最小化
-  • 脅威モデリング / 適用: 多層防御アーキテクチャ設計 / 目的: 予測可能な脅威シナリオに対応した多段階防御を構築
+  • Threat Modeling（Adam Shostack） / 適用: STRIDEモデル / 目的: 脅威の体系的分類
+  • Web Application Security（Andrew Hoffman） / 適用: 入力検証 / 目的: パストラバーサル対策
+  • OWASP Cheat Sheet / 適用: 防御パターン / 目的: 実装レベルのセキュリティ
 
   Trigger:
-  ファイル監視システムのセキュリティ対策、パストトラバーサル攻撃・シンボリックリンク攻撃の防止、マルチテナント環境でのセキュアな監視実装が必要な場面で活用。
+  Use when implementing file watcher security, preventing path traversal attacks, detecting symbolic link attacks, designing access control, or conducting security audits.
 allowed-tools:
-  - node
-  - typescript
-  - shell-script
-  - security-tools
-tags:
-  - file-watcher
-  - security
-  - defense-in-depth
-  - path-traversal
-  - symlink-attack
-  - multi-tenant
-  - access-control
-dependencies:
-  - event-driven-file-watching
-  - file-exclusion-patterns
-version: 1.1.0
-level: 1
-last_updated: 2025-12-31
-references:
-  - book: "Web Application Security"
-    author: "Andrew Hoffman"
-    concepts:
-      - "脅威モデリング"
-      - "セキュア設計"
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Task
 ---
 
-# File Watcher Security
+# ファイル監視システムのセキュリティ設計
 
 ## 概要
 
-ファイル監視システムのセキュリティ対策とプロダクション環境での安全な運用パターン。
-最小権限の原則、Defense in Depth、Fail-Safe Defaultsに基づく多層防御設計を提供する。パストトラバーサル攻撃・シンボリックリンク攻撃を防止し、マルチテナント環境での安全な実装を実現する。詳細は `references/Level1_basics.md` と `references/Level2_intermediate.md` を参照してください。
+ファイル監視システムのセキュリティ対策を実装するスキル。パストラバーサル攻撃・シンボリックリンク攻撃を防止し、最小権限の原則とDefense in Depthに基づく多層防御アーキテクチャを設計・実装する。
 
 ## ワークフロー
 
-### Phase 1: 目的と前提の整理
+### Phase 1: 脅威分析
 
-**目的**: タスクの目的と前提条件を明確にする
-
-**アクション**:
-
-1. `references/Level1_basics.md` と `references/Level2_intermediate.md` を確認
-2. 必要な references/scripts/templates を特定
-
-### Phase 2: スキル適用
-
-**目的**: スキルの指針に従って具体的な作業を進める
+**目的**: ファイル監視システムの脅威を特定し、防御設計を策定
 
 **アクション**:
 
-1. 関連リソースやテンプレートを参照しながら作業を実施
-2. 重要な判断点をメモとして残す
+1. [references/basics.md](references/basics.md) で脅威の基本概念を確認
+2. STRIDEモデルで脅威を体系的に分類
+3. パストラバーサル・シンボリックリンク攻撃シナリオを分析
+4. 多層防御アーキテクチャを設計
 
-### Phase 3: 検証と記録
+**Task**: [agents/threat-analysis.md](agents/threat-analysis.md) を参照
 
-**目的**: 成果物の検証と実行記録の保存
+### Phase 2: セキュリティ実装
+
+**目的**: 脅威モデルに基づく防御機能の実装
 
 **アクション**:
 
-1. `scripts/validate-skill.mjs` でスキル構造を確認
-2. 成果物が目的に合致するか確認
-3. `scripts/log_usage.mjs` を実行して記録を残す
+1. [references/patterns.md](references/patterns.md) で実装パターンを確認
+2. パス検証・シンボリックリンク検出ロジックを実装
+3. [assets/secure-watcher.ts](assets/secure-watcher.ts) をカスタマイズ
+4. 権限管理設定を実装
+
+**Task**: [agents/security-implementation.md](agents/security-implementation.md) を参照
+
+### Phase 3: セキュリティ監査
+
+**目的**: 実装のセキュリティ検証
+
+**アクション**:
+
+1. `scripts/validate-security.mjs --all` でセキュリティ検証
+2. `scripts/security-audit.sh` で監査を実行
+3. テストケースで脆弱性をチェック
+4. `scripts/log_usage.mjs --result success` で記録
 
 ## Task仕様ナビ
 
-| タスク                 | 説明                                                           | 入力                             | 出力                             | 参照                           |
-| ---------------------- | -------------------------------------------------------------- | -------------------------------- | -------------------------------- | ------------------------------ |
-| パス検証設計           | ファイルパスの正規化・検証・サニタイゼーションロジックを設計   | 監視対象パターン・除外条件       | 検証関数・テストケース           | `references/path-validation.md` |
-| シンボリックリンク対策 | シンボリックリンク攻撃を防止する検証・フィルタロジックを実装   | ファイルメタデータ・親子関係情報 | リンク検証ロジック・監視ポリシー | `references/symlink-defense.md` |
-| 権限管理設計           | 最小権限の原則に基づくプロセス権限・ファイル権限を設計         | 環境・脅威モデル                 | RBAC設定・権限ドキュメント       | `references/access-control.md`  |
-| 脅威モデリング         | 多層防御アーキテクチャ・想定脅威シナリオ・防御メカニズムを設計 | システム要件・セキュリティ基準   | 脅威モデル・防御設計図           | `references/threat-model.md`    |
-| セキュリティ監査       | 実装のセキュリティレビュー・脆弱性テスト・コンプライアンス確認 | 実装コード・設定ファイル         | 監査レポート・改善提案           | `scripts/security-audit.sh`    |
+| Task                                                                   | 用途             | 入力         | 出力                   |
+| ---------------------------------------------------------------------- | ---------------- | ------------ | ---------------------- |
+| [agents/threat-analysis.md](agents/threat-analysis.md)                 | 脅威分析         | システム要件 | 脅威モデル・防御設計書 |
+| [agents/security-implementation.md](agents/security-implementation.md) | セキュリティ実装 | 脅威モデル   | セキュアコード・設定   |
 
 ## ベストプラクティス
 
 ### すべきこと
 
-- マルチテナント環境でファイル監視を実装する際、入力値を厳密に検証する
-- パストトラバーサル対策として、ファイルパスを正規化し、許可リスト方式で検証
-- シンボリックリンクをリゾルブせず、リンク自体を除外または監視対象外とする
-- 最小権限の原則を適用し、監視プロセスの実行権限を制限
-- Defense in Depth 設計により複数の防御層を配置
-- 本番環境デプロイ前にセキュリティ監査を実施
+- パスを処理前に必ず正規化・検証する（許可リスト方式）
+- シンボリックリンクはデフォルトで監視対象外とする
+- 最小権限の原則を適用し、監視プロセスの権限を制限
+- Defense in Depth設計で複数の防御層を配置
+- Fail-Safeデフォルト（エラー時は拒否）を適用
+- セキュリティイベントを監査ログに記録
 
 ### 避けるべきこと
 
-- ユーザー入力や環境変数をパス指定に直接使用（検証なし）
-- シンボリックリンクを透過的にフォロー（リンク攻撃の対象に）
-- 広い権限でプロセスを実行（侵害時の被害拡大につながる）
-- 単層防御に依存（防御層が突破された場合の脆弱性）
-- アンチパターンや注意点を確認せずに進めることを避ける
+- ユーザー入力をパス指定に直接使用
+- シンボリックリンクを透過的にフォロー
+- 広い権限でプロセスを実行
+- 単層防御に依存
+- 拒否リスト方式（許可リスト方式を使う）
 
 ## リソース参照
 
-### 詳細ガイド
+### references/（詳細知識）
 
-詳細な手順・ベストプラクティス・実装パターンは以下を参照してください：
+| リソース     | パス                                                     | 内容                       |
+| ------------ | -------------------------------------------------------- | -------------------------- |
+| 基本概念     | [references/basics.md](references/basics.md)             | 脅威・セキュリティ原則     |
+| 実装パターン | [references/patterns.md](references/patterns.md)         | パス検証・リンク検出       |
+| 脅威モデル   | [references/threat-model.md](references/threat-model.md) | STRIDEモデル・攻撃シナリオ |
 
-- **基礎知識**: `references/Level1_basics.md` - ファイル監視セキュリティの基本概念・攻撃パターン
-- **実務パターン**: `references/Level2_intermediate.md` - 実装パターン・防御設計
-- **応用テクニック**: `references/Level3_advanced.md` - 高度なセキュリティ対策・パフォーマンス最適化
-- **エキスパート知識**: `references/Level4_expert.md` - コンプライアンス・エンタープライズ導入
+### assets/（テンプレート）
 
-### ドメイン別リソース
+| テンプレート      | 用途                           |
+| ----------------- | ------------------------------ |
+| secure-watcher.ts | セキュアな監視実装テンプレート |
 
-- **パス検証**: `references/path-validation.md` - パスの正規化・検証ロジック・サニタイゼーション
-- **シンボリックリンク対策**: `references/symlink-defense.md` - リンク検出・フィルタリング・監視ポリシー
-- **アクセス制御**: `references/access-control.md` - 最小権限設定・RBAC・ファイル権限管理
-- **脅威モデリング**: `references/threat-model.md` - 想定脅威・防御メカニズム・多層防御設計
-- **要求仕様**: `references/requirements-index.md` - 要求仕様の索引（docs/00-requirements と同期）
+### scripts/（検証・監査）
 
-### テンプレート・スクリプト
-
-- **セキュアウォッチャー**: `assets/secure-watcher.ts` - パス検証・権限管理を組み込んだ監視実装テンプレート
-- `scripts/validate-skill.mjs` - スキル構造検証
-- `scripts/log_usage.mjs` - スキル使用記録・フィードバック記録
-- `scripts/security-audit.sh` - セキュリティ監査スクリプト
+| スクリプト            | 用途             | 使用例                                        |
+| --------------------- | ---------------- | --------------------------------------------- |
+| validate-security.mjs | セキュリティ検証 | `node scripts/validate-security.mjs --all`    |
+| security-audit.sh     | セキュリティ監査 | `./scripts/security-audit.sh`                 |
+| log_usage.mjs         | 利用記録         | `node scripts/log_usage.mjs --result success` |
 
 ## 変更履歴
 
-| Version | Date       | Changes                                                                                                                                                       |
-| ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1.1.0   | 2025-12-31 | 18-skills.md仕様に基づき更新。YAML frontmatter改訂（Anchors・Trigger・allowed-tools追加）。Task仕様ナビテーブル追加。コマンドリファレンスをリソース参照に統合 |
-| 1.0.0   | 2025-12-24 | Spec alignment and required artifacts added                                                                                                                   |
+| Version | Date       | Changes                                                           |
+| ------- | ---------- | ----------------------------------------------------------------- |
+| 2.0.0   | 2026-01-02 | 18-skills.md仕様に完全準拠。agents/を2つに統合、references/を刷新 |
+| 1.1.0   | 2025-12-31 | frontmatter改訂、構成再編                                         |
+| 1.0.0   | 2025-12-24 | 初版作成                                                          |

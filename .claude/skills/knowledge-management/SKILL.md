@@ -12,18 +12,16 @@ description: |
   Trigger:
   Use when formalizing tacit knowledge, documenting best practices, converting code review insights to reusable knowledge, managing organizational knowledge base quality, or applying SECI model workflows.
   Keywords: knowledge management, tacit knowledge, explicit knowledge, SECI model, documentation, best practices, pattern extraction
-version: 1.0.0
-level: 1
-last_updated: 2025-12-31
-tags:
-  - knowledge-management
-  - seci-model
-  - documentation
-  - quality-assurance
-dependencies: []
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
 ---
 
-# Knowledge Management
+# 知識管理
 
 ## 概要
 
